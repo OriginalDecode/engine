@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="DataStructures">
+      <UniqueIdentifier>{85a06fbc-400a-4216-91fc-324bfd16b358}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataStructures\Hashmap">
+      <UniqueIdentifier>{879fea34-5ede-40b6-823d-d622081bdc41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JSON">
+      <UniqueIdentifier>{c0bba790-5703-46f3-a05c-64bd71c68cdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{f0acfa86-29c0-4437-9765-26b64c48d96a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Collision">
+      <UniqueIdentifier>{90872765-cf4c-4c16-8936-77bbd11c7d0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Matrix">
+      <UniqueIdentifier>{6dfccc93-5b0e-47e5-865c-1e9d17420a9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Vector">
+      <UniqueIdentifier>{b987c050-f5d8-46a0-9219-16027263dc5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Plane">
+      <UniqueIdentifier>{af40c95f-de02-4731-a25a-930b4fc60081}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Line">
+      <UniqueIdentifier>{2315f268-ae50-4b82-a144-d4c6388fb4f3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DataStructures\GrowingArray.h">
+      <Filter>DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStructures\Stack.h">
+      <Filter>DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStructures\StaticArray.h">
+      <Filter>DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStructures\VectorOnStack.h">
+      <Filter>DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStructures\Hashmap\Map.h">
+      <Filter>DataStructures\Hashmap</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStructures\Hashmap\MurmurHash3.h">
+      <Filter>DataStructures\Hashmap</Filter>
+    </ClInclude>
+    <ClInclude Include="JSON\JSONReader.h">
+      <Filter>JSON</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Collision\AABB.h">
+      <Filter>Math\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Collision\Fov90Frustrum.h">
+      <Filter>Math\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Collision\Intersection.h">
+      <Filter>Math\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Collision\Sphere.h">
+      <Filter>Math\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix\Matrix.h">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix\Matrix33.h">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix\Matrix33Decl.h">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix\Matrix44.h">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix\Matrix44Decl.h">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Line\Line.h">
+      <Filter>Math\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Line\LineSegment2D.h">
+      <Filter>Math\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Line\LineSegment3D.h">
+      <Filter>Math\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Line\LineVolume.h">
+      <Filter>Math\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Plane\Plane.h">
+      <Filter>Math\Plane</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Plane\PlaneVolume.h">
+      <Filter>Math\Plane</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector\Vector.h">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector\Vector2.h">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector\Vector2decl.h">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector\Vector3.h">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector\Vector3decl.h">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector\Vector4.h">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector\Vector4decl.h">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DataStructures\Hashmap\Hash.cpp">
+      <Filter>DataStructures\Hashmap</Filter>
+    </ClCompile>
+    <ClCompile Include="JSON\JSONReader.cpp">
+      <Filter>JSON</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Collision\Fov90Frustrum.cpp">
+      <Filter>Math\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Collision\Intersection.cpp">
+      <Filter>Math\Collision</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

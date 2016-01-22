@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{ebdb6c9b-009a-428b-a844-513d2386149c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="APIs">
+      <UniqueIdentifier>{0cc78201-5965-40a6-81a2-74014cda9705}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="APIs\DirectX11">
+      <UniqueIdentifier>{fbeb67db-8b2e-41b3-8cf6-223a51ef126a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="APIs\DirectX12">
+      <UniqueIdentifier>{d5dbe8f3-829b-4d69-b284-dad6e17f5ad6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="APIs\Vulkan">
+      <UniqueIdentifier>{b9cebfb6-02f8-4207-b5dc-8f6ae248455d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="APIs\OpenGL">
+      <UniqueIdentifier>{521e2da1-ffa3-4c19-ba37-c07cd15b60bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{82c2dddf-cdba-43f7-b878-275be140fb41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{59c67577-8d37-4473-a94f-c457ad068b08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Effect">
+      <UniqueIdentifier>{743f2b4d-cfb7-4112-8568-38beb8c6d0d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{e4622ef9-504c-47aa-86cf-e47ae8a05b13}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DirectX11.h">
+      <Filter>APIs\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX12.h">
+      <Filter>APIs\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL.h">
+      <Filter>APIs\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Vulkan.h">
+      <Filter>APIs\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="API.h">
+      <Filter>APIs</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineEnums.h" />
+    <ClInclude Include="Engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineDefines.h" />
+    <ClInclude Include="Effect.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Instance.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DirectX11.cpp">
+      <Filter>APIs\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX12.cpp">
+      <Filter>APIs\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL.cpp">
+      <Filter>APIs\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Vulkan.cpp">
+      <Filter>APIs\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="API.cpp">
+      <Filter>APIs</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Instance.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Bin\Data\Shaders\Cube.fx">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

@@ -4,7 +4,7 @@
 #include "Engine.h"
 #include "DirectX11.h"
 #include "Effect.h"
-
+#include "EffectContainer.h"
 namespace Snowblind
 {
 	CModel::CModel()
@@ -16,12 +16,14 @@ namespace Snowblind
 	{
 	}
 
-	void CModel::CreateCube(CEffect* anEffect, float aWidth, float aHeight, float aDepth)
+	void CModel::CreateCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
 	{
 		aDepth;
 		aWidth;
 		aHeight;
-		myEffect = anEffect;
+
+		myEffect = CEffectContainer::GetInstance()->GetEffect(anEffectPath);
+
 		SVertexTypePosCol tempVertex;
 #pragma region Vertex
 		tempVertex.myPosition = { -1.0f, 1.0f, -1.0f };

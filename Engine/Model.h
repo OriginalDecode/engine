@@ -1,9 +1,10 @@
 #pragma once
 #include "../CommonLib/Math/Matrix/Matrix44.h"
-
+#include <string>
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct ID3D11Buffer;
+
 
 namespace Snowblind
 {
@@ -27,7 +28,7 @@ namespace Snowblind
 		CModel();
 		~CModel();
 
-		void CreateCube(CEffect* anEffect, float aWidth, float aHeight, float aDepth);
+		void CreateCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth);
 		void Render();
 		CEffect* GetEffect();
 	private:

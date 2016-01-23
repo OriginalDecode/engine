@@ -5,6 +5,8 @@
 #include <Camera.h>
 #include <Instance.h>
 #include <TimeManager.h>
+#include <EngineDefines.h>
+#include "EffectContainer.h"
 CApplication::CApplication()
 {
 	CU::TimeManager::Create();
@@ -13,26 +15,17 @@ CApplication::CApplication()
 CApplication::~CApplication()
 {
 	CU::TimeManager::Destroy();
-	delete myEffect;
-	myEffect = nullptr;
-	delete myModel;
-	myModel = nullptr;
-	delete myCamera;
-	myCamera = nullptr;
-
+	SAFE_DELETE(myModel);
+	SAFE_DELETE(myCamera);
+	Snowblind::CEffectContainer::Destroy();
 	Snowblind::CEngine::Destroy();
 }
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
 	myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, Vector3f(0.f, 0.f, 5.f));
-
-	myEffect = new Snowblind::CEffect();
-	myEffect->Initiate("Data/Shaders/Cube.fx");
-
 	myModel = new Snowblind::CModel();
-	myModel->CreateCube(myEffect, 1, 1, 1);
-
+	myModel->CreateCube("Data/Shaders/Cube.fx", 1, 1, 1);
 	myInstance = new Snowblind::CInstance(myModel);
 }
 

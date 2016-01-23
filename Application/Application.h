@@ -24,7 +24,7 @@ public:
 	void Initiate(float aWindowWidth, float aWindowHeight);
 
 	bool Update();
-
+	void Render();
 
 	void OnPause();
 	void OnResume();

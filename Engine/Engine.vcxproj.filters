@@ -65,6 +65,7 @@
     <ClInclude Include="Model.h">
       <Filter>Model</Filter>
     </ClInclude>
+    <ClInclude Include="EffectContainer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectX11.cpp">
@@ -97,6 +98,7 @@
     <ClCompile Include="Model.cpp">
       <Filter>Model</Filter>
     </ClCompile>
+    <ClCompile Include="EffectContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Bin\Data\Shaders\Cube.fx">

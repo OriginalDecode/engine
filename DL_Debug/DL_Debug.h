@@ -23,6 +23,10 @@
 #define DL_MESSAGE(...) DL_Debug::Debug::GetInstance()->WriteLog("Message" , RETURN(__VA_ARGS__));
 #define DL_MESSAGE_EXP(expression, ...) if(expression){DL_Debug::Debug::GetInstance()->WriteLog("Message", RETURN(__VA_ARGS__));};
 
+#define DL_WARNINGBOX(msg) MessageBox(NULL, msg,"Warning!", MB_ICONWARNING)
+#define DL_WARNINGBOX_EXP(expression, msg) if(expression){MessageBox(NULL, msg,"Warning!", MB_ICONWARNING);};
+
+
 
 #define RENDER_LOG(...)		DL_WRITELOG("Render",	__VA_ARGS__)
 #define UPDATE_LOG(...)		DL_WRITELOG("Update",	__VA_ARGS__)
@@ -51,7 +55,7 @@ namespace DL_Debug
 		static bool Create(std::string aFile = "Log_"); //defines the start of file.
 		static bool Destroy();
 		static Debug* GetInstance();
-		
+
 		void PrintMessage(const char *aString);
 		void AssertMessage(const char *aFileName, int aLine, const char *aFunctionName, const char *aString);
 		void DebugMessage(const int aLine, const char *aFileName, const std::string& aString);

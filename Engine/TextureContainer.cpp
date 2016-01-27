@@ -25,13 +25,17 @@ namespace Snowblind
 
 	CTexture* CTextureContainer::GetTexture(const std::string& aTexturePath)
 	{
+		if (myTextures.find(aTexturePath) == myTextures.end())
+		{
+			return LoadTexture(aTexturePath);
+		}
+
 		return myTextures[aTexturePath];
 	}
 
 	CTextureContainer::CTextureContainer()
 	{
 	}
-
 
 	CTextureContainer::~CTextureContainer()
 	{
@@ -45,8 +49,13 @@ namespace Snowblind
 	{
 		CTexture* tempTexture = new CTexture();
 
-
-		return tempTexture;
+		if (tempTexture->LoadTexture(aTexturePath.c_str()) == false)
+		{
+			delete tempTexture;
+			tempTexture = nullptr;
+		}
+		myTextures[aTexturePath] = tempTexture;
+		return myTextures[aTexturePath];
 	}
 
 };

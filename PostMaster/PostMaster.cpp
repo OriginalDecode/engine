@@ -26,22 +26,19 @@ PostMaster::~PostMaster()
 
 PostMaster* PostMaster::GetInstance()
 {
-	DL_ASSERT_EXP(myInstance != nullptr, "Need to create Postmaster before getting it.");
+	DL_ASSERT_EXP(myInstance != nullptr, "Need to create a Postmaster before getting it.");
 	return myInstance;
 }
 
 void PostMaster::Create()
 {
-	DL_ASSERT_EXP(myInstance == nullptr, "Postmaster already created.");
-
+	DL_ASSERT_EXP(myInstance == nullptr, "Failed to create postmaster. Already created!");
 	myInstance = new PostMaster();
 }
 
 void PostMaster::Destroy()
 {
-	DL_ASSERT_EXP(myInstance != nullptr, "Need to create Postmaster before destroying it.");
-
-	
+	DL_ASSERT_EXP(myInstance != nullptr, "Failed to destroy postmaster. Did you call Destroy twice or forget to create?");
 	delete myInstance;
 	myInstance = nullptr;
 }

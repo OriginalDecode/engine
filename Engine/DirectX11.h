@@ -1,5 +1,7 @@
 #pragma once
 #include "API.h"
+#include <vector>
+#include <unordered_map>
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -19,6 +21,7 @@ struct ID3D11DepthStencilState;
 struct ID3D11DeviceChild;
 struct ID3D11Debug;
 struct ID3D11CommandList;
+struct IDXGIAdapter;
 
 namespace Snowblind
 {
@@ -28,39 +31,52 @@ namespace Snowblind
 	public:
 		CDirectX11(HWND aWindowHandle, float aWidth, float aHeight);
 		~CDirectX11();
-		void						Present() override;
-		void						Clear() override;
-		ID3D11Device*				GetDevice();
-		ID3D11DeviceContext*		GetContext();
+		void											Present() override;
+		void											Clear() override;
+		ID3D11Device*									GetDevice();
+		ID3D11DeviceContext*							GetContext();
+		const std::string&								GetAdapterName(unsigned short anIndex);
+		const std::string&								GetActiveAdapterName();
 
 	private:
 
-		void						SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
-		void						CreateDeviceAndSwapchain();
-		void						CreateDepthBuffer();
-		void						CreateBackBuffer();
-		void						CreateViewport();
-		void						CreateDeferredContext();
-		HWND						myHWND;
-
-		ID3D11Debug					*myDebug;
-		ID3D11Device				*myDevice;
-		IDXGISwapChain				*mySwapchain;
-		ID3D11Texture2D				*myDepthBuffer;
-
-		ID3D11DeviceContext			*myContext;
-		ID3D11DeviceContext			*myDeferredContext;
-
-		ID3D11RenderTargetView		*myRenderTarget;
-		ID3D11DepthStencilView		*myDepthView;
-		ID3D11DepthStencilState		*myDepthState;
-		ID3D11CommandList			*myCommandList[2];
+		void											SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
+		void											CreateDeviceAndSwapchain();
+		void											CreateDepthBuffer();
+		void											CreateBackBuffer();
+		void											CreateViewport();
+		void											CreateDeferredContext();
+		void											CreateAdapterList();
 
 
-		float myWidth;
-		float myHeight;
+		HWND											myHWND;
+
+		ID3D11Debug										*myDebug;
+		ID3D11Device									*myDevice;
+		IDXGISwapChain									*mySwapchain;
+		ID3D11Texture2D									*myDepthBuffer;
+
+		ID3D11DeviceContext								*myContext;
+		ID3D11DeviceContext								*myDeferredContext;
+
+		ID3D11RenderTargetView							*myRenderTarget;
+		ID3D11DepthStencilView							*myDepthView;
+		ID3D11DepthStencilState							*myDepthState;
+		ID3D11CommandList								*myCommandList[2];
+
+		std::unordered_map<std::string, IDXGIAdapter*>	myAdapters;
+		std::vector<std::string>						myAdaptersName;
+		std::string										myActiveAdapter;
+
+		float											myWidth;
+		float											myHeight;
 
 	};
+
+	__forceinline const std::string& CDirectX11::GetActiveAdapterName()
+	{
+		return myActiveAdapter;
+	}
 
 	__forceinline ID3D11Device* CDirectX11::GetDevice()
 	{

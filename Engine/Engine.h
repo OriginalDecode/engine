@@ -20,8 +20,8 @@ namespace Snowblind
 		static void Destroy();
 		static CEngine* GetInstance();
 
-		void Present();
-		void Clear();
+		static void Present();
+		static void Clear();
 		CAPI* GetAPI();
 	private:
 		CEngine(eAPIFlag anAPIFlag, float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);

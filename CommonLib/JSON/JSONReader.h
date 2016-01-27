@@ -8,8 +8,9 @@ class JSONReader
 {
 public:
 
-	void OpenDocument(const std::string& aFilePath);
-	void CloseDocument();
+	JSONReader(const std::string& aFilePath);
+	~JSONReader();
+	
 
 	void ReadElement(const std::string& aTag, bool& aBool);
 	void ReadElement(const std::string& aTag, int& anInt);
@@ -54,6 +55,9 @@ public:
 	void ForceReadElement(const std::string& aTag, CU::Math::Vector4<T>& aVector);
 
 private:
+	void OpenDocument(const std::string& aFilePath);
+	void CloseDocument();
+
 	FRESULT OpenFile();
 	void ValidateFileType(const std::string& aFilePath);
 

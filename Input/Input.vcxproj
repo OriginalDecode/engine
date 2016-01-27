@@ -44,15 +44,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)..\lib\</OutDir>
-    <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)..\Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\lib\</OutDir>
-    <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDir)\;$(IncludePath)</IncludePath>
+    <IntDir>$(SolutionDir)..\Temp\$(Configuration)\$(ProjectName)\</IntDir>
+    <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
@@ -92,17 +92,12 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Input\ControllerInput.h" />
-    <ClInclude Include="Input\InputWrapper.h" />
+    <ClInclude Include="ControllerInput.h" />
+    <ClInclude Include="InputWrapper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Input\ControllerInput.cpp" />
-    <ClCompile Include="Input\InputWrapper.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Common Utilities\CommonUtilities.vcxproj">
-      <Project>{07ecccd7-fa3d-472f-b823-a4c9dee2fb81}</Project>
-    </ProjectReference>
+    <ClCompile Include="ControllerInput.cpp" />
+    <ClCompile Include="InputWrapper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

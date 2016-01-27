@@ -122,8 +122,6 @@ namespace CommonUtilities
 
 	float ControllerInput::RightTrigger()
 	{
-		short v = myControllerState.Gamepad.bRightTrigger;
-
 		return static_cast<float>(myControllerState.Gamepad.bRightTrigger) / 255;
 	}
 }

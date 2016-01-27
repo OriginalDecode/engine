@@ -104,19 +104,14 @@ enum KButton
 
 namespace CommonUtilities
 {
-
-	class Megaton; 
-
 	namespace Input
 	{
 		class InputWrapper
 		{
 		public:
-
-			friend class Megaton; 
-
-
-			void Initiate(HWND aHWND, HINSTANCE hInstance);
+			static void Create(HWND aHWND, HINSTANCE hInstance);
+			static void Destroy();
+			static InputWrapper* GetInstance();
 
 			bool KeyDown(KButton aKey);
 			bool KeyClick(KButton aKey);
@@ -143,10 +138,12 @@ namespace CommonUtilities
 			void ReleaseCursor();
 
 		private:
-			InputWrapper();
-
+			static InputWrapper* myInstance;
+			InputWrapper(HWND aHWND, HINSTANCE hInstance);
+			~InputWrapper();
 			IDirectInput8* myDInput;
 
+			void Initiate(HWND aHWND, HINSTANCE hInstance);
 			IDirectInputDevice8* myKeyboard;
 			UCHAR myKeyState[256];
 			UCHAR myPrevKeyState[256];

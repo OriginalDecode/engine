@@ -12,6 +12,8 @@ namespace Snowblind
 
 		void Update(float aRotation);
 		void Render(CCamera& aCamera);
+		void SetPosition(CU::Math::Vector3<float> aPosition);
+
 
 	private:
 

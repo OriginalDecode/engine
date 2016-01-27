@@ -11,7 +11,7 @@ namespace DL_Debug
 
 	bool Debug::Create(std::string aFile)
 	{
-		DL_ASSERT_EXP(myInstance != nullptr, "Debug file already created");
+		DL_ASSERT_EXP(myInstance == nullptr, "Debug file already created");
 		myInstance = new DL_Debug::Debug();
 
 		time_t now = time(0);

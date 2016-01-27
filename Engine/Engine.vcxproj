@@ -89,6 +89,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\;$(SolutionDir)DL_Debug\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005</DisableSpecificWarnings>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
@@ -117,6 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\;$(SolutionDir)DL_Debug\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4005</DisableSpecificWarnings>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -159,6 +161,8 @@
     <ClInclude Include="Instance.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="OpenGL.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureContainer.h" />
     <ClInclude Include="Vulkan.h" />
   </ItemGroup>
   <ItemGroup>
@@ -172,11 +176,19 @@
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="OpenGL.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureContainer.cpp" />
     <ClCompile Include="Vulkan.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonLib\CommonLib.vcxproj">
+      <Project>{dbc8372d-e04f-4bbb-8964-12022adca9f6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\DL_Debug\DL_Debug.vcxproj">
       <Project>{d924f659-a78c-4b48-a76e-49600a883990}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Input\Input.vcxproj">
+      <Project>{bd22ff31-48a5-4061-ab37-17e68e058912}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -384,28 +384,28 @@ namespace CommonUtilities
 		template<typename TYPE>
 		void Matrix44<TYPE>::SetRight(const Vector4<TYPE>& aVector)
 		{
-			myMatrix[0] = aVector[0];
-			myMatrix[1] = aVector[1];
-			myMatrix[2] = aVector[2];
-			myMatrix[3] = aVector[3];
+			myMatrix[0] = aVector.x;
+			myMatrix[1] = aVector.y;
+			myMatrix[2] = aVector.z;
+			myMatrix[3] = aVector.w;
 		}
 
 		template<typename TYPE>
 		void Matrix44<TYPE>::SetUp(const Vector4<TYPE>& aVector)
 		{
-			myMatrix[4] = aVector[4];
-			myMatrix[5] = aVector[5];
-			myMatrix[6] = aVector[6];
-			myMatrix[7] = aVector[7];
+			myMatrix[4] = aVector.x;
+			myMatrix[5] = aVector.y;
+			myMatrix[6] = aVector.z;
+			myMatrix[7] = aVector.w;
 		}
 
 		template<typename TYPE>
 		void Matrix44<TYPE>::SetForward(const Vector4<TYPE>& aVector)
 		{
-			myMatrix[8] = aVector[8];
-			myMatrix[9] = aVector[9];
-			myMatrix[10] = aVector[10];
-			myMatrix[11] = aVector[11];
+			myMatrix[8] = aVector.x;
+			myMatrix[9] = aVector.y;
+			myMatrix[10] = aVector.z;
+			myMatrix[11] = aVector.w;
 		}
 
 		template<typename TYPE>

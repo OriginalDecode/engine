@@ -1,5 +1,6 @@
 #pragma once
 #include "../Engine/EngineEnums.h"
+#include "../CommonLib/DataStructures/GrowingArray.h"
 
 #ifndef _WINDEF_
 struct HINSTANCE__;
@@ -24,17 +25,21 @@ public:
 	void Initiate(float aWindowWidth, float aWindowHeight);
 
 	bool Update();
-	void Render();
+	void Render(); //Use later
 
 	void OnPause();
 	void OnResume();
 
 private:
-
+	void UpdateInput(float aDeltaTime);
 	Snowblind::CEffect* myEffect;
 	Snowblind::CModel* myModel;
 	Snowblind::CCamera* myCamera;
-	Snowblind::CInstance* myInstance;
+
+
+
+	CU::GrowingArray<Snowblind::CInstance*> myInstances;
+	//Snowblind::CInstance* myInstance;
 
 };
 

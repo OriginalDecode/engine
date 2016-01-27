@@ -11,6 +11,7 @@
 #include <sstream>
 #include <assert.h>
 #include <TimeManager/TimeManager.h>
+#include "../Input/InputWrapper.h"
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
@@ -20,7 +21,7 @@ namespace Snowblind
 		, myWindowHeight(aWindowHeight)
 	{
 		CreateAppWindow(anInstance, aWndProc);
-
+		CU::Input::InputWrapper::Create(myHWND, anInstance);
 		switch (anAPIFlag)
 		{
 #if defined(_WIN32) || defined(_WIN64)
@@ -39,13 +40,15 @@ namespace Snowblind
 			break;
 		};
 
-		std::stringstream windowText(myAPI->GetAPIName());
+		std::stringstream windowText;
+		windowText << "API : " << myAPI->GetAPIName() << " | " << "Adapter : " << reinterpret_cast<CDirectX11*>(myAPI)->GetActiveAdapterName();
 		SetWindowText(myHWND, windowText.str().c_str());
 	}
 
 	CEngine::~CEngine()
 	{
 		SAFE_DELETE(myAPI);
+		CU::Input::InputWrapper::Destroy();
 	}
 
 	void CEngine::Create(eAPIFlag anAPIFlag, float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc)
@@ -57,8 +60,7 @@ namespace Snowblind
 	void CEngine::Destroy()
 	{
 		assert(myInstance != nullptr && "Can't destroy the instance before it's created. Did you call Destroy twice?");
-		delete myInstance;
-		myInstance = nullptr;
+		SAFE_DELETE(myInstance);
 	}
 
 	CEngine* CEngine::GetInstance()
@@ -68,14 +70,14 @@ namespace Snowblind
 
 	void CEngine::Present()
 	{
-		myAPI->Present();
+		myInstance->myAPI->Present();
 	}
 
 	void CEngine::Clear()
 	{
-		myAPI->Clear();
+		myInstance->myAPI->Clear();
 	}
-	
+
 	void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)
 	{
 		WNDCLASSEX wc;

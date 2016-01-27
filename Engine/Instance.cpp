@@ -17,7 +17,8 @@ namespace Snowblind
 
 	void CInstance::Update(float aRotation)
 	{
-		myOrientation *= CU::Math::Matrix44<float>::CreateRotateAroundY(aRotation);
+		//myOrientation *= CU::Math::Matrix44<float>::RotateY(aRotation); // this is bad rotations
+		myOrientation = CU::Math::Matrix44<float>::RotateY(aRotation) * myOrientation;
 	}
 
 	void CInstance::Render(CCamera& aCamera)
@@ -26,4 +27,9 @@ namespace Snowblind
 		myModel.Render();
 	}
 
+	void CInstance::SetPosition(CU::Math::Vector3<float> aPosition)
+	{
+		myOrientation.SetPosition(aPosition);
+	}
+	
 };

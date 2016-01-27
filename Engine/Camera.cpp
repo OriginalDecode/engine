@@ -24,4 +24,51 @@ namespace Snowblind
 	{
 		myOrientation.SetPosition(aPosition);
 	}
+
+	void CCamera::Move(eDirection aDirection, float aSpeed)
+	{
+		CU::Math::Vector4<float> position;
+		position = myOrientation.GetTranslation();
+		switch (aDirection)
+		{
+		case eDirection::FORWARD:
+			MoveForwardAndBack(position, aSpeed);
+			break;
+		case eDirection::BACK:
+			MoveForwardAndBack(position, aSpeed);
+			break;
+		case eDirection::UP:
+			MoveUpAndDown(position, aSpeed);
+			break;
+		case eDirection::DOWN:
+			MoveUpAndDown(position, aSpeed);
+			break;
+		case eDirection::LEFT:
+			MoveLeftAndRight(position, aSpeed);
+			break;
+		case eDirection::RIGHT:
+			MoveLeftAndRight(position, aSpeed);
+			break;
+		}
+		myOrientation.SetTranslation(position);
+	}
+
+	void CCamera::MoveForwardAndBack(CU::Math::Vector4<float>& aPosition, float aSpeed)
+	{
+		CU::Math::Vector4<float> forward = myOrientation.GetForward();
+		aPosition += forward * aSpeed;
+	}
+
+	void CCamera::MoveUpAndDown(CU::Math::Vector4<float>& aPosition, float aSpeed)
+	{
+		CU::Math::Vector4<float> up = myOrientation.GetUp();
+		aPosition += up * aSpeed;
+	}
+
+	void CCamera::MoveLeftAndRight(CU::Math::Vector4<float>& aPosition, float aSpeed)
+	{
+		CU::Math::Vector4<float> right = myOrientation.GetRight();
+		aPosition += right * aSpeed;
+	}
+
 }

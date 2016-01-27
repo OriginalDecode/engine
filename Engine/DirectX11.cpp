@@ -3,9 +3,13 @@
 #include <assert.h>
 #include <D3D11.h>
 #include <sstream>
-
+#include <DL_Debug.h>
 #include "EngineDefines.h"
-
+#include <vector>
+#include <cstdlib>
+#include "../CommonLib/JSON/JSONReader.h"
+#undef VOID
+#define VOID (void**)
 namespace Snowblind
 {
 	CDirectX11::CDirectX11(HWND aWindowHandle, float aWidth, float aHeight)
@@ -15,6 +19,7 @@ namespace Snowblind
 	{
 		myAPI = "DirectX11";
 
+		CreateAdapterList();
 		CreateDeviceAndSwapchain();
 		CreateDepthBuffer();
 		CreateBackBuffer();
@@ -23,6 +28,11 @@ namespace Snowblind
 
 	CDirectX11::~CDirectX11()
 	{
+		for (auto it = myAdapters.begin(); it != myAdapters.end(); ++it)
+		{
+			SAFE_RELEASE(it->second);
+		}
+
 		SAFE_RELEASE(myDepthState);
 		SAFE_RELEASE(myDepthView);
 		SAFE_RELEASE(myDepthBuffer);
@@ -46,9 +56,14 @@ namespace Snowblind
 
 	void CDirectX11::Clear()
 	{
-		float color[4] = { 0.4f, 0.0f, 0.2f, 1.f };
+		float color[4] = { 0.4f, 0.0f, 0.2f, 1.f }; //replace with something else? DX10Math?
 		myContext->ClearRenderTargetView(myRenderTarget, color);
 		myContext->ClearDepthStencilView(myDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+	}
+
+	const std::string& CDirectX11::GetAdapterName(unsigned short anIndex)
+	{
+		return myAdaptersName[anIndex];
 	}
 
 	void CDirectX11::SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName)
@@ -61,7 +76,6 @@ namespace Snowblind
 
 	void CDirectX11::CreateDeviceAndSwapchain()
 	{
-
 		DXGI_SWAP_CHAIN_DESC scDesc;
 		ZeroMemory(&scDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
@@ -92,8 +106,17 @@ namespace Snowblind
 #endif
 		UINT featureCount = ARRAYSIZE(requested_feature_levels);
 
+		JSONReader reader("Data/Config/game.json");
+		std::string adapterString;
+		reader.ForceReadElement("GraphicsAdapter", adapterString);
+		
+		IDXGIAdapter* adapterToUse;
+		adapterToUse = myAdapters[adapterString];
+		DL_ASSERT_EXP(adapterToUse != nullptr, "Error locating graphics adapter, check game.json");
+		myActiveAdapter = adapterString;
+
 		HRESULT hr = D3D11CreateDeviceAndSwapChain(
-			nullptr,
+			adapterToUse,
 			D3D_DRIVER_TYPE_HARDWARE,
 			nullptr,
 			createDeviceFlags,
@@ -123,12 +146,11 @@ namespace Snowblind
 				&myContext);
 		}
 
-		assert(!FAILED(hr) && "Failed to Create (Device, Swapchain and Context)!");
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");
 
 #ifdef _DEBUG
 		myDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&myDebug);
 #endif
-
 		SetDebugName(myContext, "DirectX11 Context Object");
 		const std::string deviceName = "DirectX11 Device Object";
 		const std::string swapchainName = "DirectX11 Swapchain Object";
@@ -136,7 +158,7 @@ namespace Snowblind
 		myDevice->SetPrivateData(WKPDID_D3DDebugObjectName, deviceName.size(), deviceName.c_str());
 
 #ifdef DEFERREDCONTEXT
-		//CreateDeferredContext();
+		CreateDeferredContext();
 #endif
 
 	}
@@ -167,7 +189,7 @@ namespace Snowblind
 		stencilDesc.Texture2D.MipSlice = 0;
 
 		hr = myDevice->CreateDepthStencilView(myDepthBuffer, &stencilDesc, &myDepthView);
-		assert(!FAILED(hr) && "Failed to create depth stencil");
+		DL_ASSERT_EXP(hr == S_OK, "Failed to create depth stencil");
 
 		myContext->OMSetDepthStencilState(myDepthState, 1);
 		SetDebugName(myDepthBuffer, "DirectX11 DepthBuffer Object");
@@ -183,34 +205,34 @@ namespace Snowblind
 		switch (hr)
 		{
 		case D3D11_ERROR_FILE_NOT_FOUND:
-			assert(!FAILED(hr) && "Failed to get buffer! File not found!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! File not found!");
 			break;
 		case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
-			assert(!FAILED(hr) && "Failed to get buffer! Too many unique state objects!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Too many unique state objects!");
 			break;
 		case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
-			assert(!FAILED(hr) && "Failed to get buffer! Too many view objects!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Too many view objects!");
 			break;
 		case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
-			assert(!FAILED(hr) && "Failed to get buffer! Deferred Context Map Without Initial Discard!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Deferred Context Map Without Initial Discard!");
 			break;
 		case DXGI_ERROR_INVALID_CALL:
-			assert(!FAILED(hr) && "Failed to get buffer! Invalid Call");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Invalid Call");
 			break;
 		case DXGI_ERROR_WAS_STILL_DRAWING:
-			assert(!FAILED(hr) && "Failed to get buffer! Were still drawing!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Were still drawing!");
 			break;
 		case E_FAIL:
-			assert(!FAILED(hr) && "Failed to get buffer! Failed!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Failed!");
 			break;
 		case E_INVALIDARG:
-			assert(!FAILED(hr) && "Failed to get buffer! One or more arguments were invalid!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! One or more arguments were invalid!");
 			break;
 		case E_OUTOFMEMORY:
-			assert(!FAILED(hr) && "Failed to get buffer! Out of Memory!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Out of Memory!");
 			break;
 		case E_NOTIMPL:
-			assert(!FAILED(hr) && "Failed to get buffer! The method call isn't implemented with the passed parameter combination.");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! The method call isn't implemented with the passed parameter combination.");
 			break;
 		case S_FALSE:
 			break;
@@ -220,34 +242,34 @@ namespace Snowblind
 		switch (hr)
 		{
 		case D3D11_ERROR_FILE_NOT_FOUND:
-			assert(!FAILED(hr) && "Failed to set to fullscreen/borderless. I don't know which one! File not found!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! File not found!");
 			break;
 		case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
-			assert(!FAILED(hr) && "Failed to set to fullscreen/borderless. I don't know which one! Too many unique state objects!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Too many unique state objects!");
 			break;
 		case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
-			assert(!FAILED(hr) && "Failed to set to fullscreen/borderless. I don't know which one! Too many view objects!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Too many view objects!");
 			break;
 		case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
-			assert(!FAILED(hr) && "Failed to set to fullscreen/borderless. I don't know which one! Deferred Context Map Without Initial Discard!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Deferred Context Map Without Initial Discard!");
 			break;
 		case DXGI_ERROR_INVALID_CALL:
-			assert(!FAILED(hr) && "Failed to set to fullscreen/borderless. I don't know which one! Invalid Call");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Invalid Call");
 			break;
 		case DXGI_ERROR_WAS_STILL_DRAWING:
-			assert(!FAILED(hr) && "Failed to set to fullscreen/borderless. I don't know which one! Were still drawing!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Were still drawing!");
 			break;
 		case E_FAIL:
-			assert(!FAILED(hr) && "Failed to set to fullscreen/borderless. I don't know which one! Failed!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Failed!");
 			break;
 		case E_INVALIDARG:
-			assert(!FAILED(hr) && "Failed to set to fullscreen/borderless. I don't know which one! One or more arguments were invalid!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! One or more arguments were invalid!");
 			break;
 		case E_OUTOFMEMORY:
-			assert(!FAILED(hr) && "Failed to set to fullscreen/borderless. I don't know which one! Out of Memory!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Out of Memory!");
 			break;
 		case E_NOTIMPL:
-			assert(!FAILED(hr) && "Failed to set to fullscreen/borderless. I don't know which one! The method call isn't implemented with the passed parameter combination.");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! The method call isn't implemented with the passed parameter combination.");
 			break;
 		case S_FALSE:
 			break;
@@ -257,34 +279,34 @@ namespace Snowblind
 		switch (hr)
 		{
 		case D3D11_ERROR_FILE_NOT_FOUND:
-			assert(!FAILED(hr) && "Failed to Create render target view! I don't know which one! File not found!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! File not found!");
 			break;
 		case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
-			assert(!FAILED(hr) && "Failed to Create render target view! I don't know which one! Too many unique state objects!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Too many unique state objects!");
 			break;
 		case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
-			assert(!FAILED(hr) && "Failed to Create render target view! I don't know which one! Too many view objects!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Too many view objects!");
 			break;
 		case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
-			assert(!FAILED(hr) && "Failed to Create render target view! I don't know which one! Deferred Context Map Without Initial Discard!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Deferred Context Map Without Initial Discard!");
 			break;
 		case DXGI_ERROR_INVALID_CALL:
-			assert(!FAILED(hr) && "Failed to Create render target view! I don't know which one! Invalid Call");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Invalid Call");
 			break;
 		case DXGI_ERROR_WAS_STILL_DRAWING:
-			assert(!FAILED(hr) && "Failed to Create render target view! I don't know which one! Were still drawing!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Were still drawing!");
 			break;
 		case E_FAIL:
-			assert(!FAILED(hr) && "Failed to Create render target view! I don't know which one! Failed!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Failed!");
 			break;
 		case E_INVALIDARG:
-			assert(!FAILED(hr) && "Failed to Create render target view! I don't know which one! One or more arguments were invalid!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! One or more arguments were invalid!");
 			break;
 		case E_OUTOFMEMORY:
-			assert(!FAILED(hr) && "Failed to Create render target view! I don't know which one! Out of Memory!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Out of Memory!");
 			break;
 		case E_NOTIMPL:
-			assert(!FAILED(hr) && "Failed to Create render target view! I don't know which one! The method call isn't implemented with the passed parameter combination.");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! The method call isn't implemented with the passed parameter combination.");
 			break;
 		case S_FALSE:
 			break;
@@ -316,20 +338,49 @@ namespace Snowblind
 		switch (hr)
 		{
 		case DXGI_ERROR_DEVICE_REMOVED:
-			assert(false && "Failed to create Deferred Context. Device were removed!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to create Deferred Context. Device were removed!");
 			break;
 		case DXGI_ERROR_INVALID_CALL:
-			assert(false && "Failed to create Deferred Context. Invalid DXGI Call!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to create Deferred Context. Invalid DXGI Call!");
 			break;
 		case D3D11_CREATE_DEVICE_SINGLETHREADED:
-			assert(false && "Failed to create Deferred Context. Device were created Single Threaded!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to create Deferred Context. Device were created Single Threaded!");
 			break;
 		case E_INVALIDARG:
-			assert(false && "Failed to create Deferred Context. One or more args were invalid!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to create Deferred Context. One or more args were invalid!");
 			break;
 		case E_OUTOFMEMORY:
-			assert(false && "Failed to create Deferred Context. Out of Memory!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to create Deferred Context. Out of Memory!");
 			break;
 		}
 	}
+
+	void CDirectX11::CreateAdapterList()
+	{
+		std::vector<IDXGIAdapter*> enumAdapter;
+		IDXGIFactory* factory = nullptr;
+		CreateDXGIFactory(__uuidof(IDXGIFactory), VOID &factory);
+
+		IDXGIAdapter* adapter;
+
+		for (UINT i = 0; factory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND; ++i)
+		{
+			enumAdapter.push_back(adapter);
+		}
+
+		factory->Release();
+
+		for (unsigned int i = 0; i < enumAdapter.size(); ++i)
+		{
+			DXGI_ADAPTER_DESC adapterDesc;
+			enumAdapter[i]->GetDesc(&adapterDesc);
+			WCHAR* temp = adapterDesc.Description;
+			char dst[128];
+			std::wcstombs(dst, temp, 128);
+			std::string actualString(dst);
+			myAdaptersName.push_back(actualString);
+			myAdapters.insert(std::pair<std::string, IDXGIAdapter*>(actualString, enumAdapter[i]));
+		}
+	}
 };
+#undef VOID

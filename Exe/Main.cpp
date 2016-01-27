@@ -13,6 +13,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	const char* inputString = someCommandLines;
 	std::string input(inputString);
 
+
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Engine);
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Update);
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Render);
@@ -94,7 +95,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			newApplication->OnPause();
 		break;
 	case WM_EXITSIZEMOVE:
-		newApplication->OnResume();
+			newApplication->OnResume();
 		break;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);

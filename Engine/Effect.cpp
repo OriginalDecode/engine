@@ -1,10 +1,11 @@
 #include "Effect.h"
 
+#include "Engine.h"
+#include "DirectX11.h"
 
 #include <D3DX11.h>
 #include <d3dx11effect.h>
-#include "DirectX11.h"
-#include "Engine.h"
+#include <DL_Debug.h>
 
 namespace Snowblind
 {
@@ -37,7 +38,7 @@ namespace Snowblind
 		{
 			if (compilationMessage == nullptr)
 			{
-				assert(false && "Couldn't locate the file");
+				DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! File not found!");
 			}
 		}
 
@@ -48,38 +49,39 @@ namespace Snowblind
 		switch (hr)
 		{
 		case D3D11_ERROR_FILE_NOT_FOUND:
-			assert(!FAILED(hr) && "Failed to Create effect! File not found!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! File not found!");
 			break;
 		case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
-			assert(!FAILED(hr) && "Failed to Create effect! Too many unique state objects!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Too many unique state objects!");
 			break;
 		case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
-			assert(!FAILED(hr) && "Failed to Create effect! Too many view objects!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Too many view objects!");
 			break;
 		case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
-			assert(!FAILED(hr) && "Failed to Create effect! Deferred Context Map Without Initial Discard!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Deferred Context Map Without Initial Discard!");
 			break;
 		case DXGI_ERROR_INVALID_CALL:
-			assert(!FAILED(hr) && "Failed to Create effect! Invalid Call");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Invalid Call");
 			break;
 		case DXGI_ERROR_WAS_STILL_DRAWING:
-			assert(!FAILED(hr) && "Failed to Create effect! Were still drawing!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Were still drawing!");
 			break;
 		case E_FAIL:
-			assert(!FAILED(hr) && "Failed to Create effect! Failed!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Failed!");
 			break;
 		case E_INVALIDARG:
-			assert(!FAILED(hr) && "Failed to Create effect! One or more arguments were invalid!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! One or more arguments were invalid!");
 			break;
 		case E_OUTOFMEMORY:
-			assert(!FAILED(hr) && "Failed to Create effect! Out of Memory!");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Out of Memory!");
 			break;
 		case E_NOTIMPL:
-			assert(!FAILED(hr) && "Failed to Create effect! The method call isn't implemented with the passed parameter combination.");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! The method call isn't implemented with the passed parameter combination.");
 			break;
 		case S_FALSE:
 			break;
 		}
+		ENGINE_LOG("Successfully created effect.");
 
 		Validate(myEffect, "Effect Invalid!");
 
@@ -101,13 +103,13 @@ namespace Snowblind
 		Matrix44f temp = aToWorld;
 
 		HRESULT hr = myWorldMatrix->SetMatrix(static_cast<float*>(&temp.myMatrix[0]));
-		DL_ASSERT_EXP(FAILED(hr), "Failed to set world matrix!");
+		DL_ASSERT_EXP(hr == S_OK, "Failed to set world matrix!");
 		temp = CU::Math::Inverse(aToView);
 
 		hr = myViewMatrix->SetMatrix(static_cast<float*>(&temp.myMatrix[0]));
-		DL_ASSERT_EXP(FAILED(hr), "Failed to set view matrix!");
+		DL_ASSERT_EXP(hr == S_OK, "Failed to set view matrix!");
 
 		hr = myProjectionMatrix->SetMatrix(static_cast<float*>(&aProjection.myMatrix[0]));
-		DL_ASSERT_EXP(FAILED(hr), "Failed to set projection matrix!");
+		DL_ASSERT_EXP(hr == S_OK, "Failed to set projection matrix!");
 	}
 }

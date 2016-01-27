@@ -45,14 +45,11 @@ namespace Snowblind
 	{
 		return myTechnique;
 	}
-	
+
 	template <typename T>
 	void CEffect::Validate(T* anEffectVariable, const std::string& aString)
 	{
-		if (anEffectVariable->IsValid() == false)
-		{
-			DL_ASSERT(aString.c_str());
-		}
+		DL_ASSERT_EXP(anEffectVariable->IsValid() == TRUE, aString.c_str());
 	}
 
 }

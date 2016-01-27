@@ -2,6 +2,17 @@
 #include "../CommonLib/Math/Matrix/Matrix44.h"
 namespace Snowblind
 {
+	enum class eDirection
+	{
+		FORWARD,
+		BACK,
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT
+	};
+
+
 	class CCamera
 	{
 	public:
@@ -13,8 +24,13 @@ namespace Snowblind
 		Matrix44f& GetOrientation();
 		Matrix44f& GetProjection();
 
+		void Move(eDirection aDirection, float aSpeed);
 
 	private:
+
+		void MoveForwardAndBack(CU::Math::Vector4<float>& aPosition, float aSpeed);
+		void MoveUpAndDown(CU::Math::Vector4<float>& aPosition, float aSpeed);
+		void MoveLeftAndRight(CU::Math::Vector4<float>& aPosition, float aSpeed);
 
 		Matrix44f myProjectionMatrix;
 		Matrix44f myOrientation;

@@ -1,4 +1,5 @@
 #include "InputWrapper.h"
+#include <assert.h>
 
 #define RANGE(VAR, MIN, MAX) ((VAR) < (MIN)) ? (MIN) : ((VAR) > (MAX)) ? (MAX) : (VAR)
 namespace CommonUtilities
@@ -6,11 +7,42 @@ namespace CommonUtilities
 	namespace Input
 	{
 
-		InputWrapper::InputWrapper()
+		InputWrapper* InputWrapper::myInstance = nullptr;
+
+		InputWrapper::InputWrapper(HWND aHWND, HINSTANCE hInstance)
 		{
 			RECT desktop;
 			const HWND hDesktop = GetDesktopWindow();
 			GetWindowRect(hDesktop, &desktop);
+			Initiate(aHWND, hInstance);
+		}
+
+		InputWrapper::~InputWrapper()
+		{
+
+		}
+
+		void InputWrapper::Create(HWND aHWND, HINSTANCE hInstance)
+		{
+			if (myInstance == nullptr)
+			{
+				myInstance = new InputWrapper(aHWND, hInstance);
+			}
+		}
+
+		void InputWrapper::Destroy()
+		{
+			if (myInstance != nullptr)
+			{
+				delete myInstance;
+				myInstance = nullptr;
+			}
+		}
+
+		InputWrapper* InputWrapper::GetInstance()
+		{
+			assert(myInstance != nullptr && "Input wrapper were null!");
+			return myInstance;
 		}
 
 		void InputWrapper::Initiate(HWND aHWND, HINSTANCE hInstance)
@@ -57,7 +89,7 @@ namespace CommonUtilities
 
 					myMouse->Acquire();
 				}
-				
+
 				GetPhysicalCursorPos(&myCursorPos);
 				ScreenToClient(myHWND, &myCursorPos);
 				myMousePos.myX = float(myCursorPos.x);

@@ -17,6 +17,16 @@ FRESULT JSONReader::OpenFile()
 	return toReturn;
 }
 
+JSONReader::JSONReader(const std::string& aFilePath)
+{
+	OpenDocument(aFilePath);
+}
+
+JSONReader::~JSONReader()
+{
+	CloseDocument();
+}
+
 void JSONReader::OpenDocument(const std::string & aFilePath)
 {
 	ValidateFileType(aFilePath);

@@ -34,6 +34,9 @@
     <Filter Include="Texture">
       <UniqueIdentifier>{f317326c-d7aa-451c-9caf-2ba27547eb5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Surface">
+      <UniqueIdentifier>{b49960a5-5cf3-4d21-989b-e4a0379c1468}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectX11.h">
@@ -77,6 +80,16 @@
     <ClInclude Include="TextureContainer.h">
       <Filter>Texture</Filter>
     </ClInclude>
+    <ClInclude Include="Surface.h" />
+    <ClInclude Include="VertexTypes.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexWrapper.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexWrapper.h">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectX11.cpp">
@@ -118,6 +131,7 @@
     <ClCompile Include="TextureContainer.cpp">
       <Filter>Texture</Filter>
     </ClCompile>
+    <ClCompile Include="Surface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Bin\Data\Shaders\Cube.fx">

@@ -30,6 +30,8 @@ namespace Snowblind
 	{
 	public:
 		CDirectX11(HWND aWindowHandle, float aWidth, float aHeight);
+		CDirectX11(HWND aWindowHandle, float aWidth, float aHeight, bool different);
+
 		~CDirectX11();
 		void											Present() override;
 		void											Clear() override;
@@ -38,6 +40,7 @@ namespace Snowblind
 		const std::string&								GetAdapterName(unsigned short anIndex);
 		const std::string&								GetActiveAdapterName();
 
+		void											HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
 	private:
 
 		void											SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
@@ -47,7 +50,6 @@ namespace Snowblind
 		void											CreateViewport();
 		void											CreateDeferredContext();
 		void											CreateAdapterList();
-
 
 		HWND											myHWND;
 

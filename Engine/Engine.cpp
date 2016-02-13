@@ -10,8 +10,10 @@
 
 #include <sstream>
 #include <assert.h>
-#include <TimeManager/TimeManager.h>
-#include "../Input/InputWrapper.h"
+#include <TimeManager.h>
+#include <InputWrapper.h>
+
+
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;

@@ -4,7 +4,7 @@
 #include <Model.h>
 #include <Camera.h>
 #include <Instance.h>
-#include <TimeManager.h>
+#include <TimeManager.h>                                                                                                                                                                                                                                                                                                                                                                                   
 #include <EngineDefines.h>
 #include "EffectContainer.h"
 #include "../Input/InputWrapper.h"
@@ -61,6 +61,10 @@ bool CApplication::Update()
 	CU::TimeManager::Update();
 	CU::Input::InputWrapper::GetInstance()->Update();
 	float deltaTime = CU::TimeManager::GetInstance()->GetDeltaTime();
+
+	UpdateInput(deltaTime);
+
+
 	Snowblind::CEngine::Clear();
 	for (int i = 0; i < myInstances.Size(); ++i)
 	{

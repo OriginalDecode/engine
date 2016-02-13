@@ -5,23 +5,23 @@ struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct ID3D11Buffer;
 
+struct SVertexTypePosCol
+{
+	CU::Math::Vector3<float> myPosition;
+	CU::Math::Vector4<float> myColor;
+}; 
 
 namespace Snowblind
 {
 	class CDirectX11;
-}
-
-struct SVertexTypePosCol
-{
-	Vector3f myPosition;
-	Vector4f myColor;
-};
-
-
-namespace Snowblind
-{
 	class CEffect;
 	class CCamera;
+
+	struct SVertexIndexWrapper;
+	struct SVertexBufferWrapper;
+	struct SVertexDataWrapper;
+	struct SIndexBufferWrapper;
+
 	class CModel
 	{
 	public:
@@ -36,16 +36,22 @@ namespace Snowblind
 		void InitVertexBuffer();
 		void InitIndexBuffer();
 
-		ID3D11Buffer* myVertexBuffer;
-		ID3D11Buffer* myIndexBuffer;
+		//ID3D11Buffer* myVertexBuffer;
+		//ID3D11Buffer* myIndexBuffer;
 
 		CEffect	*myEffect;
 
 		ID3D11InputLayout *myVertexLayout;
 
-		//CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
+		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		CU::GrowingArray<SVertexTypePosCol> myVertices;
 		CU::GrowingArray<int> myVertexIndices;
+
+		SVertexIndexWrapper		*myIndexData;
+		SVertexDataWrapper		*myVertexData;
+
+		SVertexBufferWrapper	*myVertexBuffer;
+		SIndexBufferWrapper		*myIndexBuffer;
 
 		Matrix44f myOrientation;
 		CDirectX11* myAPI;

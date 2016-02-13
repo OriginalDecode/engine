@@ -26,6 +26,12 @@ namespace Snowblind
 		CreateViewport();
 	}
 
+	CDirectX11::CDirectX11(HWND aWindowHandle, float aWidth, float aHeight, bool different)
+	{
+		CreateAdapterList();
+		CreateDeviceAndSwapchain();
+	}
+
 	CDirectX11::~CDirectX11()
 	{
 		for (auto it = myAdapters.begin(); it != myAdapters.end(); ++it)
@@ -201,116 +207,13 @@ namespace Snowblind
 		HRESULT hr;
 		ID3D11Texture2D* backbuffer;
 		hr = mySwapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backbuffer);
-
-		switch (hr)
-		{
-		case D3D11_ERROR_FILE_NOT_FOUND:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! File not found!");
-			break;
-		case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Too many unique state objects!");
-			break;
-		case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Too many view objects!");
-			break;
-		case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Deferred Context Map Without Initial Discard!");
-			break;
-		case DXGI_ERROR_INVALID_CALL:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Invalid Call");
-			break;
-		case DXGI_ERROR_WAS_STILL_DRAWING:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Were still drawing!");
-			break;
-		case E_FAIL:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Failed!");
-			break;
-		case E_INVALIDARG:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! One or more arguments were invalid!");
-			break;
-		case E_OUTOFMEMORY:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! Out of Memory!");
-			break;
-		case E_NOTIMPL:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to get buffer! The method call isn't implemented with the passed parameter combination.");
-			break;
-		case S_FALSE:
-			break;
-		}
+		HandleErrors(hr, "Failed to get Buffer!");
 
 		hr = mySwapchain->SetFullscreenState(FALSE, nullptr);
-		switch (hr)
-		{
-		case D3D11_ERROR_FILE_NOT_FOUND:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! File not found!");
-			break;
-		case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Too many unique state objects!");
-			break;
-		case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Too many view objects!");
-			break;
-		case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Deferred Context Map Without Initial Discard!");
-			break;
-		case DXGI_ERROR_INVALID_CALL:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Invalid Call");
-			break;
-		case DXGI_ERROR_WAS_STILL_DRAWING:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Were still drawing!");
-			break;
-		case E_FAIL:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Failed!");
-			break;
-		case E_INVALIDARG:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! One or more arguments were invalid!");
-			break;
-		case E_OUTOFMEMORY:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! Out of Memory!");
-			break;
-		case E_NOTIMPL:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to set to fullscreen/borderless. I don't know which one! The method call isn't implemented with the passed parameter combination.");
-			break;
-		case S_FALSE:
-			break;
-		}
+		HandleErrors(hr, "Failed to set Fullscreen/Borderless");
 
 		hr = myDevice->CreateRenderTargetView(backbuffer, NULL, &myRenderTarget);
-		switch (hr)
-		{
-		case D3D11_ERROR_FILE_NOT_FOUND:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! File not found!");
-			break;
-		case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Too many unique state objects!");
-			break;
-		case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Too many view objects!");
-			break;
-		case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Deferred Context Map Without Initial Discard!");
-			break;
-		case DXGI_ERROR_INVALID_CALL:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Invalid Call");
-			break;
-		case DXGI_ERROR_WAS_STILL_DRAWING:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Were still drawing!");
-			break;
-		case E_FAIL:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Failed!");
-			break;
-		case E_INVALIDARG:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! One or more arguments were invalid!");
-			break;
-		case E_OUTOFMEMORY:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! Out of Memory!");
-			break;
-		case E_NOTIMPL:
-			DL_ASSERT_EXP(hr == S_OK, "Failed to Create render target view! I don't know which one! The method call isn't implemented with the passed parameter combination.");
-			break;
-		case S_FALSE:
-			break;
-		}
+		HandleErrors(hr, "Failed to create RenderTarget.");
 
 		SAFE_RELEASE(backbuffer);
 		myContext->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
@@ -382,5 +285,58 @@ namespace Snowblind
 			myAdapters.insert(std::pair<std::string, IDXGIAdapter*>(actualString, enumAdapter[i]));
 		}
 	}
+
+	void CDirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
+	{
+		std::string toError;
+		switch (aResult)
+		{
+		case D3D11_ERROR_FILE_NOT_FOUND:
+			toError = (anErrorString + " File not found!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			break;
+		case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
+			toError = (anErrorString + " Too many unique state objects!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			break;
+		case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
+			toError = (anErrorString + " Too many view objects!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			break;
+		case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
+			toError = (anErrorString + " Deferred Context Map Without Initial Discard!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			break;
+		case DXGI_ERROR_INVALID_CALL:
+			toError = (anErrorString + " Invalid call!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			break;
+		case DXGI_ERROR_WAS_STILL_DRAWING:
+			toError = (anErrorString + " Were still drawing!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			break;
+		case E_FAIL:
+			toError = (anErrorString + " Failed!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			break;
+		case E_INVALIDARG:
+			toError = (anErrorString + " One or more arguments were invalid!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			break;
+		case E_OUTOFMEMORY:
+			toError = (anErrorString + " Out of Memory!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			break;
+		case E_NOTIMPL:
+			toError = (anErrorString + " The method call isn't implemented with the passed parameter combination.");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			break;
+		case S_FALSE:
+			toError = (anErrorString + " Something went wrong. Returned false!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			break;
+		}
+	}
+
 };
 #undef VOID

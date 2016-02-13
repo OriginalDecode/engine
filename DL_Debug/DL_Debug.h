@@ -26,8 +26,6 @@
 #define DL_WARNINGBOX(msg) MessageBox(NULL, msg,"Warning!", MB_ICONWARNING)
 #define DL_WARNINGBOX_EXP(expression, msg) if(expression){MessageBox(NULL, msg,"Warning!", MB_ICONWARNING);};
 
-
-
 #define RENDER_LOG(...)		DL_WRITELOG("Render",	__VA_ARGS__)
 #define UPDATE_LOG(...)		DL_WRITELOG("Update",	__VA_ARGS__)
 #define PHYSX_LOG(...)		DL_WRITELOG("Physics",	__VA_ARGS__)

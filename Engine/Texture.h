@@ -12,7 +12,6 @@ namespace Snowblind
 		~CTexture();
 
 		const char*					GetFileName();
-	
 		bool						LoadTexture(const char* aFileName);
 		
 		ID3D11ShaderResourceView*	GetShaderView();
@@ -23,7 +22,6 @@ namespace Snowblind
 
 		ID3D11ShaderResourceView	*myShaderResource;
 		ID3D11RenderTargetView		*myRenderTarget;
-
 
 		int							myWidth;
 		int							myHeight;

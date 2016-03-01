@@ -15,23 +15,23 @@
 namespace Snowblind
 {
 	CSurface::CSurface(CEffect* anEffect)
-		: myVertexCount(0)
-		, myVertexStart(0)
-		, myIndexCount(0)
-		, myIndexStart(0)
-		, myEffect(anEffect)
-		, myPrimologyType(D3D10_PRIMITIVE_TOPOLOGY_LINELIST)
 	{
+		SetVertexCount(0);
+		SetVertexStart(0);
+		SetIndexCount(0);
+		SetIndexStart(0);
+		SetEffect(anEffect);
+		SetPrimology(D3D10_PRIMITIVE_TOPOLOGY_LINELIST);
 	}
 
 	CSurface::CSurface(CEffect* anEffect, unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int aIndexCount)
-		: myVertexCount(aVertexCount)
-		, myVertexStart(aStartVertex)
-		, myIndexCount(aIndexCount)
-		, myIndexStart(aStartIndex)
-		, myEffect(anEffect)
-		, myPrimologyType(D3D10_PRIMITIVE_TOPOLOGY_LINELIST)
 	{
+		SetVertexCount(aVertexCount);
+		SetVertexStart(aStartVertex);
+		SetIndexCount(aIndexCount);
+		SetIndexStart(aStartIndex);
+		SetEffect(anEffect);
+		SetPrimology(D3D10_PRIMITIVE_TOPOLOGY_LINELIST);
 	}
 
 	CSurface::~CSurface()
@@ -60,10 +60,16 @@ namespace Snowblind
 		DL_ASSERT_EXP(tempTexture != nullptr, "[Surface](SetTexture) : Failed to set Texture!");
 
 		ID3DX11EffectShaderResourceVariable* tempShader = myEffect->GetEffect()->GetVariableByName(aResourceName.c_str())->AsShaderResource();
+		myEffect->Validate(tempShader, "Effect invalid!");
 		DL_ASSERT_EXP(tempShader != nullptr, "[Surface](SetTexture) : Failed to set Shader!");
 
 		myShaderVariables.Add(tempShader);
 		myTextures.Add(tempTexture);
+	}
+
+	void CSurface::SetEffect(CEffect* anEffect)
+	{
+		myEffect = anEffect;
 	}
 
 	void CSurface::SetVertexStart(unsigned int aStartVertex)

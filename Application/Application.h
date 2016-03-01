@@ -34,6 +34,8 @@ private:
 	void UpdateInput(float aDeltaTime);
 	Snowblind::CEffect* myEffect;
 	Snowblind::CModel* myModel;
+	Snowblind::CModel* myTexturedModel;
+
 	Snowblind::CCamera* myCamera;
 
 

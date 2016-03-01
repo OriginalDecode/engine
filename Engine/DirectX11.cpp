@@ -26,12 +26,6 @@ namespace Snowblind
 		CreateViewport();
 	}
 
-	CDirectX11::CDirectX11(HWND aWindowHandle, float aWidth, float aHeight, bool different)
-	{
-		CreateAdapterList();
-		CreateDeviceAndSwapchain();
-	}
-
 	CDirectX11::~CDirectX11()
 	{
 		for (auto it = myAdapters.begin(); it != myAdapters.end(); ++it)
@@ -118,12 +112,22 @@ namespace Snowblind
 		
 		IDXGIAdapter* adapterToUse;
 		adapterToUse = myAdapters[adapterString];
-		DL_ASSERT_EXP(adapterToUse != nullptr, "Error locating graphics adapter, check game.json");
+		//DL_ASSERT_EXP(adapterToUse != nullptr, "Error locating graphics adapter, check game.json");
 		myActiveAdapter = adapterString;
-
+		D3D_DRIVER_TYPE type = D3D_DRIVER_TYPE_NULL;
+		if (adapterToUse == nullptr)
+		{
+			myActiveAdapter = "Unknown";
+			type = D3D_DRIVER_TYPE_HARDWARE;
+		}
+		else
+		{
+			type = D3D_DRIVER_TYPE_UNKNOWN;
+		}
+		
 		HRESULT hr = D3D11CreateDeviceAndSwapChain(
 			adapterToUse,
-			D3D_DRIVER_TYPE_HARDWARE,
+			type,
 			nullptr,
 			createDeviceFlags,
 			requested_feature_levels,
@@ -139,7 +143,7 @@ namespace Snowblind
 		{
 			hr = D3D11CreateDeviceAndSwapChain(
 				nullptr,
-				D3D_DRIVER_TYPE_HARDWARE,
+				type,
 				nullptr,
 				0,
 				requested_feature_levels,

@@ -7,16 +7,24 @@ struct ID3D11Buffer;
 
 struct SVertexTypePosCol
 {
-	CU::Math::Vector3<float> myPosition;
+	CU::Math::Vector4<float> myPosition;
 	CU::Math::Vector4<float> myColor;
 }; 
+
+struct SVertexTypePosNormUV
+{
+	CU::Math::Vector4<float> myPosition;
+	CU::Math::Vector3<float> myNormal;
+	CU::Math::Vector2<float> myUV;
+};
+
 
 namespace Snowblind
 {
 	class CDirectX11;
 	class CEffect;
 	class CCamera;
-
+	class CSurface;
 	struct SVertexIndexWrapper;
 	struct SVertexBufferWrapper;
 	struct SVertexDataWrapper;
@@ -25,10 +33,11 @@ namespace Snowblind
 	class CModel
 	{
 	public:
-		CModel();
+		CModel(CCamera* aCamera);
 		~CModel();
 
 		void CreateCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth);
+		void CreateTexturedCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth);
 		void Render();
 		CEffect* GetEffect();
 	private:
@@ -44,8 +53,7 @@ namespace Snowblind
 		ID3D11InputLayout *myVertexLayout;
 
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
-		CU::GrowingArray<SVertexTypePosCol> myVertices;
-		CU::GrowingArray<int> myVertexIndices;
+		CU::GrowingArray<CSurface*> mySurfaces;
 
 		SVertexIndexWrapper		*myIndexData;
 		SVertexDataWrapper		*myVertexData;
@@ -55,7 +63,8 @@ namespace Snowblind
 
 		Matrix44f myOrientation;
 		CDirectX11* myAPI;
-
+		bool myIsTextured;
+		CCamera* myCamera;
 	};
 	
 	__forceinline CEffect* CModel::GetEffect()

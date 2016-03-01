@@ -12,23 +12,27 @@ namespace Snowblind
 	{
 	public:
 		CSurface(CEffect* anEffect);
-		CSurface(CEffect* anEffect, unsigned int aStartVertex, unsigned int aVertexCount, 
+		CSurface(CEffect* anEffect, unsigned int aStartVertex, unsigned int aVertexCount,
 			unsigned int aStartIndex, unsigned int aIndexCount);
 		~CSurface();
 
 		void Activate();
 		void SetTexture(const std::string& aResourceName, const std::string& aFilePath);
 
-		
+		void SetEffect(CEffect* anEffect);
+
 		void SetVertexStart(unsigned int aStartVertex);
 		void SetVertexCount(unsigned int aVertexCount);
-		
+
 		void SetIndexStart(unsigned int aStartIndex);
 		void SetIndexCount(unsigned int aIndexCount);
 
 		void SetPrimology(D3D_PRIMITIVE_TOPOLOGY aPrimology);
 
-
+		int GetIndexCount() const;
+		int GetVertexCount() const;
+		int GetStartVertex() const;
+		int GetStartIndex() const;
 	private:
 
 		D3D_PRIMITIVE_TOPOLOGY myPrimologyType;
@@ -47,4 +51,24 @@ namespace Snowblind
 		unsigned int myVertexCount;
 
 	};
+
+	__forceinline int CSurface::GetIndexCount() const
+	{
+		return myIndexCount;
+	}
+
+	__forceinline int CSurface::GetVertexCount() const
+	{
+		return myVertexCount;
+	}
+
+	__forceinline int CSurface::GetStartVertex() const
+	{
+		return myVertexStart;
+	}
+
+	__forceinline int CSurface::GetStartIndex() const
+	{
+		return myIndexStart;
+	}
 };

@@ -30,7 +30,6 @@ namespace Snowblind
 	{
 	public:
 		CDirectX11(HWND aWindowHandle, float aWidth, float aHeight);
-		CDirectX11(HWND aWindowHandle, float aWidth, float aHeight, bool different);
 
 		~CDirectX11();
 		void											Present() override;

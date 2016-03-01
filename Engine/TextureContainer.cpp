@@ -4,7 +4,7 @@
 
 namespace Snowblind
 {
-
+	CTextureContainer* CTextureContainer::myInstance = nullptr;
 	CTextureContainer* CTextureContainer::GetInstance()
 	{
 		if (myInstance == nullptr)

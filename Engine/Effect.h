@@ -22,9 +22,9 @@ namespace Snowblind
 		ID3DX11Effect* GetEffect();
 		ID3DX11EffectTechnique* GetTechnique();
 
-	private:
 		template <typename T>
 		void Validate(T* anEffectVariable, const std::string& anErrorMessage);
+	private:
 
 		ID3DX11Effect* myEffect;
 

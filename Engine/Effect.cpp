@@ -6,6 +6,7 @@
 #include <D3DX11.h>
 #include <d3dx11effect.h>
 #include <DL_Debug.h>
+#include "Texture.h"
 
 namespace Snowblind
 {
@@ -96,6 +97,7 @@ namespace Snowblind
 
 		myProjectionMatrix = myEffect->GetVariableByName("Projection")->AsMatrix();
 		Validate(myProjectionMatrix, "Projection Matrix Invalid!");
+
 	}
 
 	void CEffect::SetMatrices(Matrix44f& aToWorld, Matrix44f& aToView, Matrix44f& aProjection)

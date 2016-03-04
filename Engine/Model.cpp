@@ -24,6 +24,7 @@ namespace Snowblind
 
 	CModel::~CModel()
 	{
+		myCamera = nullptr;
 		mySurfaces.DeleteAll();
 		SAFE_DELETE(myVertexData->myVertexData);
 		SAFE_DELETE(myIndexData->myIndexData);
@@ -31,6 +32,38 @@ namespace Snowblind
 		SAFE_DELETE(myVertexData);
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myIndexData);
+	}
+
+	void CModel::CreateTriangle(const std::string& anEffectPath)
+	{
+		myEffect = CEffectContainer::GetInstance()->GetEffect(anEffectPath);
+		myVertexFormat.Init(2);
+		myVertexFormat.Add(VertexLayoutPosCol[0]);
+		myVertexFormat.Add(VertexLayoutPosCol[1]);
+		SVertexTypePosCol v;
+		v.myPosition = { 0.f, 0.5f, 0.f };
+		v.myColor = { 1.f, 0.f, 0.f, 1.f };
+		myVertices.Add(v);
+
+		v.myPosition = { 0.5f, -0.5f, 0.f };
+		v.myColor = { 0.f, 0.f, 1.f, 1.f };
+		myVertices.Add(v);
+
+		v.myPosition = { -0.5f, -0.5f, 0.f };
+		v.myColor = { 0.f, 1.f, 0.f, 1.f };
+		myVertices.Add(v);
+
+		myVertexBuffer = new SVertexBufferWrapper;
+		myVertexData = new SVertexDataWrapper;
+
+		myVertexData->myNrOfVertexes = myVertices.Size();
+		myVertexData->myStride = sizeof(SVertexTypePosCol);
+		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
+		myVertexData->myVertexData = new char[myVertexData->mySize]();
+		memcpy(myVertexData->myVertexData, &myVertices[0], myVertexData->mySize);
+
+
+		InitVertexBuffer();
 	}
 
 	void CModel::CreateCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
@@ -74,7 +107,7 @@ namespace Snowblind
 		vertices.Add(tempVertex);
 
 		tempVertex.myPosition = { halfWidth, -halfHeight, halfDepth };
-		tempVertex.myColor = { .0f, 1.0f, 1.0f, 1.0f };
+		tempVertex.myColor = { 0.0f, 1.0f, 1.0f, 1.0f };
 		vertices.Add(tempVertex);
 
 		tempVertex.myPosition = { -halfWidth, -halfHeight, halfDepth };
@@ -87,15 +120,19 @@ namespace Snowblind
 		indexes.Add(3);
 		indexes.Add(1);
 		indexes.Add(0);
-		indexes.Add(2);
-		indexes.Add(1);
+
 		indexes.Add(3);
+		indexes.Add(1);
+		indexes.Add(2);
+
 		indexes.Add(0);
 		indexes.Add(5);
 		indexes.Add(4);
+
 		indexes.Add(1);
 		indexes.Add(5);
 		indexes.Add(0);
+
 		indexes.Add(3);
 		indexes.Add(4);
 		indexes.Add(7);
@@ -134,7 +171,7 @@ namespace Snowblind
 		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
 
 		myIndexData->myFormat = DXGI_FORMAT_R32_UINT;
-		myIndexData->myIndexCount = 6*6;
+		myIndexData->myIndexCount = 6 * 6;
 		myIndexData->mySize = myIndexData->myIndexCount * 4;
 
 		myIndexData->myIndexData = new char[myIndexData->mySize];
@@ -381,7 +418,7 @@ namespace Snowblind
 		context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		myEffect->SetMatrices(myOrientation, myCamera->GetOrientation(), myCamera->GetProjection());
+		//myEffect->SetMatrices(myOrientation, myCamera->GetOrientation(), myCamera->GetProjection());
 
 		D3DX11_TECHNIQUE_DESC techDesc;
 		myEffect->GetTechnique()->GetDesc(&techDesc);
@@ -389,6 +426,7 @@ namespace Snowblind
 		{
 			for (int i = 0; i < mySurfaces.Size(); i++)
 			{
+
 				mySurfaces[i]->Activate();
 				for (UINT p = 0; p < techDesc.Passes; ++p)
 				{
@@ -406,6 +444,23 @@ namespace Snowblind
 				myAPI->HandleErrors(hr, "Failed to apply pass to context!");
 				context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
 			}
+		}
+	}
+
+	void CModel::RenderPolygon()
+	{
+
+		myAPI->GetContext()->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myStride);
+
+		myAPI->GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		D3DX11_TECHNIQUE_DESC techDesc;
+		myEffect->GetTechnique()->GetDesc(&techDesc);
+
+		for (UINT p = 0; p < techDesc.Passes; ++p)
+		{
+			myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, myAPI->GetContext());
+			myAPI->GetContext()->Draw(3, 0);
 		}
 	}
 
@@ -455,8 +510,7 @@ namespace Snowblind
 		D3D11_SUBRESOURCE_DATA indexData;
 		indexData.pSysMem = myIndexData->myIndexData;
 
-		HRESULT hr = myAPI->GetDevice()->
-			CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
+		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
 
 		myIndexBuffer->myByteOffset = 0;
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;

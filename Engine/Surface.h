@@ -42,8 +42,8 @@ namespace Snowblind
 		CU::GrowingArray<std::string> myResourceNames;
 		CU::GrowingArray<std::string> myFileNames;
 
-		CEffect	*myEffect;
-
+		CEffect* myEffect;
+		CTexture* myTexture;
 
 		unsigned int myIndexStart;
 		unsigned int myIndexCount;
@@ -71,4 +71,5 @@ namespace Snowblind
 	{
 		return myIndexStart;
 	}
+
 };

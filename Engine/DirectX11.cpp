@@ -118,11 +118,11 @@ namespace Snowblind
 		if (adapterToUse == nullptr)
 		{
 			myActiveAdapter = "Unknown";
-			type = D3D_DRIVER_TYPE_HARDWARE;
+			type = D3D_DRIVER_TYPE_UNKNOWN;
 		}
 		else
 		{
-			type = D3D_DRIVER_TYPE_UNKNOWN;
+			type = D3D_DRIVER_TYPE_HARDWARE;
 		}
 		
 		HRESULT hr = D3D11CreateDeviceAndSwapChain(

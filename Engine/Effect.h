@@ -7,9 +7,10 @@ struct ID3DX11Effect;
 struct ID3DX11EffectTechnique;
 struct ID3DX11EffectMatrixVariable;
 struct ID3DX11EffectVariable;
-
+struct ID3DX11EffectShaderResourceVariable;
 namespace Snowblind
 {
+	class CTexture;
 	class CEffect
 	{
 	public:
@@ -33,7 +34,7 @@ namespace Snowblind
 		ID3DX11EffectMatrixVariable* myProjectionMatrix;
 		ID3DX11EffectMatrixVariable* myViewMatrix;
 		ID3DX11EffectMatrixVariable* myWorldMatrix;
-
+		ID3DX11EffectShaderResourceVariable* myTexture;
 	};
 
 	__forceinline ID3DX11Effect* CEffect::GetEffect()

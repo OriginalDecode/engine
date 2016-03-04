@@ -41,37 +41,23 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
 	myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, Vector3f(0.f, 0.f, 25.f));
 
-	myModel = new Snowblind::CModel(myCamera);
-	//myTexturedModel = new Snowblind::CModel(myCamera);
+	//myModel = new Snowblind::CModel(myCamera);
+	myTexturedModel = new Snowblind::CModel(myCamera);
 
-	myModel->CreateCube("Data/Shaders/Cube.fx", 1, 1, 1);
-	//myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1, 1, 1);
+
+	//myModel->CreateCube("Data/Shaders/Cube.fx", 1.f, 1.f, 1.f);
+	myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
+
 
 	Snowblind::CInstance* temp;
-	//temp = new Snowblind::CInstance(myModel);
-	//temp->SetPosition({ -20.f,0.f,0.f });
-	//myInstances.Add(temp);
 
-	temp = new Snowblind::CInstance(myModel);
-	temp->SetPosition({ 0.f,0.f,-10.f });
+	/*temp = new Snowblind::CInstance(myModel);
+	temp->SetPosition({ 0.f, 0.f, 0.f });
+	myInstances.Add(temp);*/
+
+	temp = new Snowblind::CInstance(myTexturedModel);
+	temp->SetPosition({ 0.f, 0.f, 0.f });
 	myInstances.Add(temp);
-
-	//temp = new Snowblind::CInstance(myModel);
-	//temp->SetPosition({ 0.f,0.f,0.f });
-	//myInstances.Add(temp);
-
-	//temp = new Snowblind::CInstance(myModel);
-	//temp->SetPosition({ 10.f, 0.f,0.f });
-	//myInstances.Add(temp);
-
-	//temp = new Snowblind::CInstance(myModel);
-	//temp->SetPosition({ 20.f, 0.f, 0.f });
-	//myInstances.Add(temp);
-
-	//temp = new Snowblind::CInstance(myTexturedModel);
-	//temp->SetPosition({ 0.f, 0.f, 0.f });
-	//myInstances.Add(temp);
-
 }
 
 bool CApplication::Update()
@@ -80,18 +66,22 @@ bool CApplication::Update()
 	CU::Input::InputWrapper::GetInstance()->Update();
 	float deltaTime = CU::TimeManager::GetInstance()->GetDeltaTime();
 
+	if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))
+	{
+		return false;
+	}
+
 	UpdateInput(deltaTime);
 
 	Snowblind::CEngine::Clear();
 	for (int i = 0; i < myInstances.Size(); ++i)
 	{
-		//	myInstances[i]->Update(90.f * deltaTime);
+		myInstances[i]->Update(90.f * deltaTime);
 		myInstances[i]->Render(*myCamera);
 	}
 	Snowblind::CEngine::Present();
 	return true;
 }
-
 
 void CApplication::UpdateInput(float aDeltaTime)
 {
@@ -111,4 +101,5 @@ void CApplication::UpdateInput(float aDeltaTime)
 	{
 		myCamera->Move(Snowblind::eDirection::DOWN, -MOVE_SPEED * aDeltaTime);
 	}
+
 }

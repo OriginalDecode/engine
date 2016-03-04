@@ -62,7 +62,7 @@ namespace Snowblind
 		ID3DX11EffectShaderResourceVariable* tempShader = myEffect->GetEffect()->GetVariableByName(aResourceName.c_str())->AsShaderResource();
 		myEffect->Validate(tempShader, "Effect invalid!");
 		DL_ASSERT_EXP(tempShader != nullptr, "[Surface](SetTexture) : Failed to set Shader!");
-
+		myTexture = tempTexture;
 		myShaderVariables.Add(tempShader);
 		myTextures.Add(tempTexture);
 	}
@@ -96,5 +96,4 @@ namespace Snowblind
 	{
 		myPrimologyType = aPrimology;
 	}
-
 };

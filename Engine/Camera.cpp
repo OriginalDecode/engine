@@ -2,7 +2,7 @@
 #include <xnamath.h>
 namespace Snowblind
 {
-	CCamera::CCamera(float aWidth, float aHeight, Vector3f aPosition)
+	CCamera::CCamera(float aWidth, float aHeight, const Vector3f& aPosition)
 	{
 		XMMATRIX projection;
 		projection = XMMatrixPerspectiveFovLH(XM_PI*0.3f, aWidth / FLOAT(aHeight), 0.1f, 100.f);

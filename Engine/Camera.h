@@ -16,7 +16,7 @@ namespace Snowblind
 	class CCamera
 	{
 	public:
-		CCamera(float aWidth, float aHeight, Vector3f aPosition);
+		CCamera(float aWidth, float aHeight, const Vector3f& aPosition);
 		~CCamera();
 
 		void SetPosition(const Vector3f& aPosition);

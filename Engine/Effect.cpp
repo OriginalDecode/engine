@@ -98,6 +98,7 @@ namespace Snowblind
 		myProjectionMatrix = myEffect->GetVariableByName("Projection")->AsMatrix();
 		Validate(myProjectionMatrix, "Projection Matrix Invalid!");
 
+
 	}
 
 	void CEffect::SetMatrices(Matrix44f& aToWorld, Matrix44f& aToView, Matrix44f& aProjection)
@@ -114,4 +115,13 @@ namespace Snowblind
 		hr = myProjectionMatrix->SetMatrix(static_cast<float*>(&aProjection.myMatrix[0]));
 		DL_ASSERT_EXP(hr == S_OK, "Failed to set projection matrix!");
 	}
+
+	void CEffect::SetAlbedo(CTexture* aTexturePtr)
+	{
+		myTexture = myEffect->GetVariableByName("AlbedoTexture")->AsShaderResource();
+		Validate(myTexture, "Texture Invalid");
+	
+		myTexture->SetResource(aTexturePtr->GetShaderView());
+	}
+
 }

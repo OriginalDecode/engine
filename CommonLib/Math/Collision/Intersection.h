@@ -1,5 +1,4 @@
 #pragma once
-#include "..\..\Misc\Global.h"
 #include "AABB.h"
 #include "Sphere.h"
 #include "Fov90Frustrum.h"

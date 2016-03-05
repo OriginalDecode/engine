@@ -21,7 +21,7 @@ namespace Snowblind
 		SetIndexCount(0);
 		SetIndexStart(0);
 		SetEffect(anEffect);
-		SetPrimology(D3D10_PRIMITIVE_TOPOLOGY_LINELIST);
+		SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
 	CSurface::CSurface(CEffect* anEffect, unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int aIndexCount)
@@ -31,7 +31,7 @@ namespace Snowblind
 		SetIndexCount(aIndexCount);
 		SetIndexStart(aStartIndex);
 		SetEffect(anEffect);
-		SetPrimology(D3D10_PRIMITIVE_TOPOLOGY_LINELIST);
+		SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
 	CSurface::~CSurface()

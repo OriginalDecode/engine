@@ -41,19 +41,20 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
 	myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, Vector3f(0.f, 0.f, 25.f));
 
-	//myModel = new Snowblind::CModel(myCamera);
+	myModel = new Snowblind::CModel(myCamera);
 	myTexturedModel = new Snowblind::CModel(myCamera);
 
 
-	//myModel->CreateCube("Data/Shaders/Cube.fx", 1.f, 1.f, 1.f);
+	
+	myModel->CreateCube("Data/Shaders/Cube.fx", 1.f, 1.f, 1.f);
 	myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
 
 
 	Snowblind::CInstance* temp;
 
-	/*temp = new Snowblind::CInstance(myModel);
-	temp->SetPosition({ 0.f, 0.f, 0.f });
-	myInstances.Add(temp);*/
+	temp = new Snowblind::CInstance(myModel);
+	temp->SetPosition({ 0.f, 5.f, 0.f });
+	myInstances.Add(temp);
 
 	temp = new Snowblind::CInstance(myTexturedModel);
 	temp->SetPosition({ 0.f, 0.f, 0.f });
@@ -101,5 +102,40 @@ void CApplication::UpdateInput(float aDeltaTime)
 	{
 		myCamera->Move(Snowblind::eDirection::DOWN, -MOVE_SPEED * aDeltaTime);
 	}
+	if (CU::Input::InputWrapper::GetInstance()->KeyDown(D))
+	{
+		myCamera->Move(Snowblind::eDirection::RIGHT, MOVE_SPEED * aDeltaTime);
+	}
+	if (CU::Input::InputWrapper::GetInstance()->KeyDown(A))
+	{
+		myCamera->Move(Snowblind::eDirection::LEFT, -MOVE_SPEED * aDeltaTime);
+	}
+
+	if (CU::Input::InputWrapper::GetInstance()->KeyDown(UP_ARROW))
+	{
+		myCamera->Rotate(Snowblind::eRotation::X_AXIS, -MOVE_SPEED * aDeltaTime);
+	}
+	if (CU::Input::InputWrapper::GetInstance()->KeyDown(DOWN_ARROW))
+	{
+		myCamera->Rotate(Snowblind::eRotation::X_AXIS, MOVE_SPEED * aDeltaTime);
+	}
+	if (CU::Input::InputWrapper::GetInstance()->KeyDown(LEFT_ARROW))
+	{
+		myCamera->Rotate(Snowblind::eRotation::Y_AXIS, -MOVE_SPEED * aDeltaTime);
+	}
+	if (CU::Input::InputWrapper::GetInstance()->KeyDown(RIGHT_ARROW))
+	{
+		myCamera->Rotate(Snowblind::eRotation::Y_AXIS, MOVE_SPEED * aDeltaTime);
+	}
+	if (CU::Input::InputWrapper::GetInstance()->KeyDown(Q))
+	{
+		myCamera->Rotate(Snowblind::eRotation::Z_AXIS, MOVE_SPEED * aDeltaTime);
+	}
+	if (CU::Input::InputWrapper::GetInstance()->KeyDown(E))
+	{
+		myCamera->Rotate(Snowblind::eRotation::Z_AXIS, -MOVE_SPEED * aDeltaTime);
+	}
+
+
 
 }

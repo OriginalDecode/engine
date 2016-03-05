@@ -109,22 +109,22 @@ namespace Snowblind
 		JSONReader reader("Data/Config/game.json");
 		std::string adapterString;
 		reader.ForceReadElement("GraphicsAdapter", adapterString);
-		
+
 		IDXGIAdapter* adapterToUse;
 		adapterToUse = myAdapters[adapterString];
-		//DL_ASSERT_EXP(adapterToUse != nullptr, "Error locating graphics adapter, check game.json");
 		myActiveAdapter = adapterString;
+
 		D3D_DRIVER_TYPE type = D3D_DRIVER_TYPE_NULL;
 		if (adapterToUse == nullptr)
 		{
 			myActiveAdapter = "Unknown";
-			type = D3D_DRIVER_TYPE_UNKNOWN;
+			type = D3D_DRIVER_TYPE_HARDWARE;
 		}
-		else
+		else if(type)
 		{
 			type = D3D_DRIVER_TYPE_HARDWARE;
 		}
-		
+
 		HRESULT hr = D3D11CreateDeviceAndSwapChain(
 			adapterToUse,
 			type,

@@ -12,6 +12,13 @@ namespace Snowblind
 		RIGHT
 	};
 
+	enum class eRotation
+	{
+		X_AXIS,
+		Y_AXIS,
+		Z_AXIS
+	};
+
 
 	class CCamera
 	{
@@ -25,7 +32,7 @@ namespace Snowblind
 		Matrix44f& GetProjection();
 
 		void Move(eDirection aDirection, float aSpeed);
-
+		void Rotate(eRotation anAxis, float aSpeed);
 	private:
 
 		void MoveForwardAndBack(CU::Math::Vector4<float>& aPosition, float aSpeed);

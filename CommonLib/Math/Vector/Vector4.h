@@ -1,12 +1,11 @@
 #pragma once
 #include "Vector4decl.h"
-typedef CU::Math::Vector4<float> Vector4f;
 namespace CommonUtilities
 {
 	namespace Math
 	{
 		template<typename T>
-		Vector4<T>::Vector4(T anX, T anY, T anZ, T anW)
+		Vector4<T>::Vector4(const T& anX, const T& anY, const T& anZ, const T& anW)
 		{
 			myX = anX;
 			myY = anY;
@@ -14,15 +13,15 @@ namespace CommonUtilities
 			myW = anW;
 		};
 
-		template<typename T>
-		Vector4<T>::Vector4(const Vector3<T>& aVector, T anW)
-		{
-			myX = aVector.X;
-			myY = aVector.Y;
-			myZ = aVector.Z;
-			myW = anW;
+		//template<typename T>
+		//Vector4<T>::Vector4(const Vector3<T>& aVector, T anW)
+		//{
+		//	myX = aVector.X;
+		//	myY = aVector.Y;
+		//	myZ = aVector.Z;
+		//	myW = anW;
 
-		}
+		//}
 
 		template<typename T>
 		Vector4<T>::Vector4(const Vector2<T>& aVector, T anZ, T anW)
@@ -255,3 +254,4 @@ namespace CommonUtilities
 	};
 };
 namespace CU = CommonUtilities;
+typedef CU::Math::Vector4<float> Vector4f;

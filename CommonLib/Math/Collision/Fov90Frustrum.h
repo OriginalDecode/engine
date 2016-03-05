@@ -1,6 +1,5 @@
 #pragma once
 #include "..\Plane\PlaneVolume.h"
-#include "..\..\Misc\Global.h"
 
 namespace Intersection
 {

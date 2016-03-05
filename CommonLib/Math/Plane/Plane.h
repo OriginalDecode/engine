@@ -58,12 +58,12 @@ namespace CommonUtilities
 			myData.w = Dot(temp, aFirstPoint);
 		}
 
-		template<typename TYPE>
+		/*template<typename TYPE>
 		void Plane<TYPE>::InitWithPointAndNormal(Vector3<TYPE> aPoint, Vector3<TYPE> aNormal)
 		{
 			myData = aNormal;
 			myData.w = Dot(aNormal, aPoint);
-		}
+		}*/
 
 		template<typename TYPE>
 		bool Plane<TYPE>::Inside(Vector3<TYPE> aPosition)

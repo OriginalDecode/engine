@@ -8,6 +8,7 @@ struct ID3DX11EffectTechnique;
 struct ID3DX11EffectMatrixVariable;
 struct ID3DX11EffectVariable;
 struct ID3DX11EffectShaderResourceVariable;
+
 namespace Snowblind
 {
 	class CTexture;
@@ -22,6 +23,9 @@ namespace Snowblind
 
 		ID3DX11Effect* GetEffect();
 		ID3DX11EffectTechnique* GetTechnique();
+
+		void SetAlbedo(CTexture* aTexturePtr);
+
 
 		template <typename T>
 		void Validate(T* anEffectVariable, const std::string& anErrorMessage);

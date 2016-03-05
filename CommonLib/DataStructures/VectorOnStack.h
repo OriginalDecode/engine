@@ -1,5 +1,4 @@
 #pragma once
-#include "..\Misc\Global.h"
 #include <Windows.h>
 #include <assert.h>
 

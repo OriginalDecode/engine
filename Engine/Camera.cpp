@@ -53,6 +53,22 @@ namespace Snowblind
 		myOrientation.SetTranslation(position);
 	}
 
+	void CCamera::Rotate(eRotation anAxis, float aSpeed)
+	{
+		switch (anAxis)
+		{
+		case eRotation::X_AXIS:
+			myOrientation = CU::Math::Matrix44<float>::RotateX(aSpeed) * myOrientation;
+			break;
+		case eRotation::Y_AXIS:
+			myOrientation = CU::Math::Matrix44<float>::RotateY(aSpeed) * myOrientation;
+			break;
+		case eRotation::Z_AXIS:
+			myOrientation = CU::Math::Matrix44<float>::RotateZ(aSpeed) * myOrientation;
+			break;
+		}
+	}
+
 	void CCamera::MoveForwardAndBack(CU::Math::Vector4<float>& aPosition, float aSpeed)
 	{
 		CU::Math::Vector4<float> forward = myOrientation.GetForward();

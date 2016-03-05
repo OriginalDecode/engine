@@ -1,5 +1,5 @@
 #pragma once
-#include "..\..\Misc\Global.h"
+#include "../Vector/Vector3.h"
 namespace Intersection
 {
 	struct LineSegment3D
@@ -7,8 +7,4 @@ namespace Intersection
 		Vector3f myStartPos;
 		Vector3f myEndPos;
 	};
-
-
-
-
-}
+};

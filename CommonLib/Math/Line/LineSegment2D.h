@@ -1,6 +1,5 @@
 #pragma once
-
-#include "..\..\Misc\Global.h"
+#include "../Vector/Vector2.h"
 namespace Intersection
 {
 	struct LineSegment2D

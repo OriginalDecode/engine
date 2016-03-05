@@ -12,6 +12,7 @@
 #include "VertexWrapper.h"
 #include "VertexTypes.h"
 #include "Surface.h"
+#include "TextureContainer.h"
 
 namespace Snowblind
 {
@@ -184,9 +185,9 @@ namespace Snowblind
 	void CModel::CreateTexturedCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
 	{
 		myIsTextured = true;
-		float halfWidth = aWidth *0.5f;
-		float halfDepth = aDepth *0.5f;
-		float halfHeight = aHeight *0.5f;
+		float halfWidth = aWidth * 0.5f;
+		float halfDepth = aDepth * 0.5f;
+		float halfHeight = aHeight * 0.5f;
 
 		CU::GrowingArray<SVertexTypePosNormUV> vertices;
 		CU::GrowingArray<int> indexes;
@@ -199,152 +200,34 @@ namespace Snowblind
 
 		myEffect = CEffectContainer::GetInstance()->GetEffect(anEffectPath);
 
-		SVertexTypePosNormUV tempVertex;
 #pragma region Vertex
-		tempVertex.myPosition = { -1.0f, 1.0f, -1.0f };
-		tempVertex.myNormal = { 0.0f, 1.0f, 0.0f };
-		tempVertex.myUV = { 0.0f, 0.0f };
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { 1.0f, 1.0f, -1.0f };
-		tempVertex.myNormal = { 0.0f, 1.0f, 0.0f };
-		tempVertex.myUV = { 1.0f, 0.0f };
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { 1.0f, 1.0f, 1.0f };
-		tempVertex.myNormal = { 0.0f, 1.0f, 0.0f };
-		tempVertex.myUV = { 1.0f, 1.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { -1.0f, 1.0f, 1.0f };
-		tempVertex.myNormal = { 0.0f, 1.0f, 0.0f };
-		tempVertex.myUV = { 0.0f, 1.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { -1.0f, -1.0f, -1.0f };
-		tempVertex.myNormal = { 0.0f, -1.0f, 0.0f };
-		tempVertex.myUV = { 0.0f, 0.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { 1.0f, -1.0f, -1.0f };
-		tempVertex.myNormal = { 0.0f, -1.0f, 0.0f };
-		tempVertex.myUV = { 1.0f, 0.0f };
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { 1.0f, -1.0f, 1.0f };
-		tempVertex.myNormal = { 0.0f, -1.0f, 0.0f };
-		tempVertex.myUV = { 1.0f, 1.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { -1.0f, -1.0f, 1.0f };
-		tempVertex.myNormal = { 0.0f, -1.0f, 0.0f };
-		tempVertex.myUV = { 0.0f, 1.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { -1.0f, -1.0f, 1.0f };
-		tempVertex.myNormal = { -1.0f, 0.0f, 0.0f };
-		tempVertex.myUV = { 0.0f, 0.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { -1.0f, -1.0f, -1.0f };
-		tempVertex.myNormal = { -1.0f, 0.0f, 0.0f };
-		tempVertex.myUV = { 1.0f, 0.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { -1.0f, 1.0f, -1.0f };
-		tempVertex.myNormal = { -1.0f, 0.0f, 0.0f };
-		tempVertex.myUV = { 1.0f, 1.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { -1.0f, 1.0f, 1.0f };
-		tempVertex.myNormal = { -1.0f, 0.0f, 0.0f };
-		tempVertex.myUV = { 0.0f, 1.0f };
-
-		vertices.Add(tempVertex);
-
-
-		tempVertex.myPosition = { 1.0f, -1.0f, 1.0f };
-		tempVertex.myNormal = { 1.0f, 0.0f, 0.0f };
-		tempVertex.myUV = { 0.0f, 0.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { 1.0f, -1.0f, -1.0f };
-		tempVertex.myNormal = { 1.0f, 0.0f, 0.0f };
-		tempVertex.myUV = { 1.0f, 0.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { 1.0f, 1.0f, -1.0f };
-		tempVertex.myNormal = { 1.0f, 0.0f, 0.0f };
-		tempVertex.myUV = { 1.0f, 1.0f };
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { 1.0f, 1.0f, 1.0f };
-		tempVertex.myNormal = { 1.0f, 0.0f, 0.0f };
-		tempVertex.myUV = { 0.0f, 1.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { -1.0f, -1.0f, -1.0f };
-		tempVertex.myNormal = { 0.0f, 0.0f, -1.0f };
-		tempVertex.myUV = { 0.0f, 0.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { 1.0f, -1.0f, -1.0f };
-		tempVertex.myNormal = { 0.0f, 0.0f, -1.0f };
-		tempVertex.myUV = { 1.0f, 0.0f };
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { 1.0f, 1.0f, -1.0f };
-		tempVertex.myNormal = { 0.0f, 0.0f, -1.0f };
-		tempVertex.myUV = { 1.0f, 1.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { -1.0f, 1.0f, -1.0f };
-		tempVertex.myNormal = { 0.0f, 0.0f, -1.0f };
-		tempVertex.myUV = { 0.0f, 1.0f };
-
-		vertices.Add(tempVertex);
-
-
-		tempVertex.myPosition = { -1.0f, -1.0f, 1.0f };
-		tempVertex.myNormal = { 0.0f, 0.0f, 1.0f };
-		tempVertex.myUV = { 0.0f, 0.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { 1.0f, -1.0f, 1.0f };
-		tempVertex.myNormal = { 0.0f, 0.0f, 1.0f };
-		tempVertex.myUV = { 1.0f, 0.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { 1.0f, 1.0f, 1.0f };
-		tempVertex.myNormal = { 0.0f, 0.0f, 1.0f };
-		tempVertex.myUV = { 1.0f, 1.0f };
-
-		vertices.Add(tempVertex);
-
-		tempVertex.myPosition = { -1.0f, 1.0f, 1.0f };
-		tempVertex.myNormal = { 0.0f, 0.0f, 1.0f };
-		tempVertex.myUV = { 0.0f, 1.0f };
-
-		vertices.Add(tempVertex);
+		vertices.Add(SVertexTypePosNormUV({ -halfWidth, halfHeight, -halfDepth }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f }));
+		vertices.Add(SVertexTypePosNormUV({ halfWidth, halfHeight, -halfDepth }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 0.0f }));
+		vertices.Add(SVertexTypePosNormUV({ halfWidth, halfHeight, halfDepth }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f }));
+		vertices.Add(SVertexTypePosNormUV({ -halfWidth, halfHeight, halfDepth }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 1.0f }));
+		vertices.Add(SVertexTypePosNormUV({ -halfWidth, -halfHeight, -halfDepth }, { 0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f }));
+		vertices.Add(SVertexTypePosNormUV({ halfWidth, -halfHeight, -halfDepth }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 0.0f }));
+		vertices.Add(SVertexTypePosNormUV({ halfWidth, -halfHeight, halfDepth }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 1.0f }));
+		vertices.Add(SVertexTypePosNormUV({ -halfWidth, -halfHeight, halfDepth }, { 0.0f, -1.0f, 0.0f }, { 0.0f, 1.0f }));
+		vertices.Add(SVertexTypePosNormUV({ -halfWidth, -halfHeight, halfDepth }, { -1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f }));
+		vertices.Add(SVertexTypePosNormUV({ -halfWidth, -halfHeight, -halfDepth }, { -1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f }));
+		vertices.Add(SVertexTypePosNormUV({ -halfWidth, halfHeight, -halfDepth }, { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }));
+		vertices.Add(SVertexTypePosNormUV({ -halfWidth, halfHeight, halfDepth }, { -1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f }));
+		vertices.Add(SVertexTypePosNormUV({ halfWidth,-halfHeight,halfDepth }, { 1.f,0.f,0.f }, { 0.f,0.f }));
+		vertices.Add(SVertexTypePosNormUV({ halfWidth,-halfHeight,-halfDepth }, { 1.f,0.f,0.f }, { 1.f,0.f }));
+		vertices.Add(SVertexTypePosNormUV({ halfWidth,halfHeight,-halfDepth }, { 1.f,0.f,0.f }, { 1.f,1.f }));
+		vertices.Add(SVertexTypePosNormUV({ halfWidth,halfHeight,halfDepth }, { 1.f,0.f,0.f }, { 0.f,1.f }));
+		vertices.Add(SVertexTypePosNormUV({ -halfWidth,-halfHeight,-halfDepth }, { 0.f,0.f,-1.f }, { 0.f,0.f }));
+		vertices.Add(SVertexTypePosNormUV({ halfWidth,-halfHeight,-halfDepth }, { 0.f,0.f,-1.f }, { 1.f,0.f }));
+		vertices.Add(SVertexTypePosNormUV({ halfWidth,halfHeight,-halfDepth }, { 0.f,0.f,-1.f }, { 1.f,1.f }));
+		vertices.Add(SVertexTypePosNormUV({ -halfWidth,halfHeight,-halfDepth }, { 0.f,0.f,-1.f }, { 0.f,1.f }));
+		vertices.Add(SVertexTypePosNormUV({ -halfWidth,-halfHeight,halfDepth }, { 0.f,0.f,1.f }, { 0.f,0.f }));
+		vertices.Add(SVertexTypePosNormUV({ halfWidth,-halfHeight,halfDepth }, { 0.f,0.f,1.f }, { 1.f,0.f }));
+		vertices.Add(SVertexTypePosNormUV({ halfWidth,halfHeight,halfDepth }, { 0.f,0.f,1.f }, { 1.f,1.f }));
+		vertices.Add(SVertexTypePosNormUV({ -halfWidth,halfHeight,halfDepth }, { 0.f,0.f,1.f }, { 0.f,1.f }));
 #pragma endregion
 
 #pragma region Index
-
 		indexes.Add(3);
 		indexes.Add(1);
 		indexes.Add(0);
@@ -382,6 +265,7 @@ namespace Snowblind
 		indexes.Add(4);
 		indexes.Add(6);
 #pragma endregion
+
 		myVertexBuffer = new SVertexBufferWrapper;
 		myVertexData = new SVertexDataWrapper;
 		myIndexBuffer = new SIndexBufferWrapper;
@@ -400,46 +284,54 @@ namespace Snowblind
 		myIndexData->myIndexData = new char[myIndexData->mySize];
 		memcpy(myIndexData->myIndexData, &indexes[0], myIndexData->mySize);
 
-		CSurface* tempSurface = new CSurface(myEffect);
-		tempSurface->SetVertexStart(0);
-		tempSurface->SetIndexCount(myIndexData->myIndexCount);
-		tempSurface->SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		tempSurface->SetTexture("AlbedoTexture", "Data/Textures/colors.dds");
-		mySurfaces.Add(tempSurface);
+		/*	CSurface* tempSurface = new CSurface(myEffect);
+			tempSurface->SetVertexStart(0);
+			tempSurface->SetIndexCount(myIndexData->myIndexCount);
+			tempSurface->SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			tempSurface->SetTexture("AlbedoTexture", "Data/Textures/col.dds");
+			mySurfaces.Add(tempSurface);*/
 
+		myEffect->SetAlbedo(Snowblind::CTextureContainer::GetInstance()->GetTexture("Data/Textures/colors.dds"));
 		InitVertexBuffer();
 		InitIndexBuffer();
 	}
 
 	void CModel::Render()
 	{
-		ID3D11DeviceContext* context = myAPI->GetContext();
-		context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-		context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		if (!myEffect)
+			return;
 
-		//myEffect->SetMatrices(myOrientation, myCamera->GetOrientation(), myCamera->GetProjection());
+		ID3D11DeviceContext* context = myAPI->GetContext();
+
+		context->IASetInputLayout(myVertexLayout);
+
+		context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
+		context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
+
+		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		D3DX11_TECHNIQUE_DESC techDesc;
 		myEffect->GetTechnique()->GetDesc(&techDesc);
+
 		if (myIsTextured)
 		{
-			for (int i = 0; i < mySurfaces.Size(); i++)
-			{
+			/*for (int i = 0; i < mySurfaces.Size(); i++)
+			{*/
 
-				mySurfaces[i]->Activate();
-				for (UINT p = 0; p < techDesc.Passes; ++p)
-				{
-					HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-					myAPI->HandleErrors(hr, "Failed to apply pass to context!");
-					context->DrawIndexed(mySurfaces[i]->GetIndexCount(), mySurfaces[i]->GetStartVertex(), 0);
-				}
+			//context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			for (UINT p = 0; p < techDesc.Passes; ++p)
+			{
+				HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
+				myAPI->HandleErrors(hr, "Failed to apply pass to context!");
+				context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
 			}
+			//}
 		}
 		else
 		{
 			for (UINT p = 0; p < techDesc.Passes; ++p)
 			{
+				context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 				HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
 				myAPI->HandleErrors(hr, "Failed to apply pass to context!");
 				context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
@@ -475,7 +367,6 @@ namespace Snowblind
 		hr = myAPI->GetDevice()->
 			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
 		myAPI->HandleErrors(hr, "Failed to create VertexLayout");
-		myAPI->GetContext()->IASetInputLayout(myVertexLayout);
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));

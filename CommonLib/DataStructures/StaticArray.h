@@ -1,6 +1,5 @@
 #pragma once
 #include <assert.h>
-#include "..\Misc\Global.h"
 
 namespace CommonUtilities
 {

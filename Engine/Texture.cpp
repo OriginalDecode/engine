@@ -25,13 +25,15 @@ namespace Snowblind
 	{
 		HRESULT hr;
 		hr = D3DX11CreateShaderResourceViewFromFile(reinterpret_cast<CDirectX11*>(CEngine::GetInstance()->GetAPI())->GetDevice(), aFileName, nullptr, nullptr, &myShaderResource, nullptr);
-		DL_WARNINGBOX_EXP(FAILED(hr), "Failed to load texture!");
-		if (!FAILED(hr))
+
+		if (FAILED(hr))
 		{
-			myFileName = aFileName;
-			return true;
+			DL_WARNINGBOX_EXP(FAILED(hr), "Failed to load texture!");
+			return false;
 		}
-		return false;
+
+		myFileName = aFileName;
+		return true;
 	}
 
 	ID3D11ShaderResourceView* CTexture::GetShaderView()
@@ -48,5 +50,4 @@ namespace Snowblind
 	{
 		return &myRenderTarget;
 	}
-
 };

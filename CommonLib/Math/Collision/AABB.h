@@ -1,5 +1,5 @@
 #pragma once
-#include "..\..\Misc\Global.h"
+#include "../Vector/Vector3.h"
 namespace Intersection
 {
 	struct AABB

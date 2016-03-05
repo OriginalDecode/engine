@@ -13,6 +13,13 @@ struct SVertexTypePosCol
 
 struct SVertexTypePosNormUV
 {
+	SVertexTypePosNormUV(){}
+	SVertexTypePosNormUV(const CU::Math::Vector3<float>& aPosition, const CU::Math::Vector3<float>& aNormal, const CU::Math::Vector2<float>& anUV)
+	{
+		myPosition = aPosition;
+		myNormal = aNormal;
+		myUV = anUV;
+	}
 	CU::Math::Vector3<float> myPosition;
 	CU::Math::Vector3<float> myNormal;
 	CU::Math::Vector2<float> myUV;

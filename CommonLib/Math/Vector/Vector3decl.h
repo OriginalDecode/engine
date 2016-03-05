@@ -1,6 +1,5 @@
 #pragma once
 #include <assert.h>
-#include <math.h>
 #include "Vector.h"
 namespace CommonUtilities
 {

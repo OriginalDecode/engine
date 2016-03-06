@@ -201,69 +201,197 @@ namespace Snowblind
 		myEffect = CEffectContainer::GetInstance()->GetEffect(anEffectPath);
 
 #pragma region Vertex
-		vertices.Add(SVertexTypePosNormUV({ -halfWidth, halfHeight, -halfDepth }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f }));
-		vertices.Add(SVertexTypePosNormUV({ halfWidth, halfHeight, -halfDepth }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 0.0f }));
-		vertices.Add(SVertexTypePosNormUV({ halfWidth, halfHeight, halfDepth }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f }));
-		vertices.Add(SVertexTypePosNormUV({ -halfWidth, halfHeight, halfDepth }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 1.0f }));
-		vertices.Add(SVertexTypePosNormUV({ -halfWidth, -halfHeight, -halfDepth }, { 0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f }));
-		vertices.Add(SVertexTypePosNormUV({ halfWidth, -halfHeight, -halfDepth }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 0.0f }));
-		vertices.Add(SVertexTypePosNormUV({ halfWidth, -halfHeight, halfDepth }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 1.0f }));
-		vertices.Add(SVertexTypePosNormUV({ -halfWidth, -halfHeight, halfDepth }, { 0.0f, -1.0f, 0.0f }, { 0.0f, 1.0f }));
-		vertices.Add(SVertexTypePosNormUV({ -halfWidth, -halfHeight, halfDepth }, { -1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f }));
-		vertices.Add(SVertexTypePosNormUV({ -halfWidth, -halfHeight, -halfDepth }, { -1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f }));
-		vertices.Add(SVertexTypePosNormUV({ -halfWidth, halfHeight, -halfDepth }, { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }));
-		vertices.Add(SVertexTypePosNormUV({ -halfWidth, halfHeight, halfDepth }, { -1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f }));
-		vertices.Add(SVertexTypePosNormUV({ halfWidth,-halfHeight,halfDepth }, { 1.f,0.f,0.f }, { 0.f,0.f }));
-		vertices.Add(SVertexTypePosNormUV({ halfWidth,-halfHeight,-halfDepth }, { 1.f,0.f,0.f }, { 1.f,0.f }));
-		vertices.Add(SVertexTypePosNormUV({ halfWidth,halfHeight,-halfDepth }, { 1.f,0.f,0.f }, { 1.f,1.f }));
-		vertices.Add(SVertexTypePosNormUV({ halfWidth,halfHeight,halfDepth }, { 1.f,0.f,0.f }, { 0.f,1.f }));
-		vertices.Add(SVertexTypePosNormUV({ -halfWidth,-halfHeight,-halfDepth }, { 0.f,0.f,-1.f }, { 0.f,0.f }));
-		vertices.Add(SVertexTypePosNormUV({ halfWidth,-halfHeight,-halfDepth }, { 0.f,0.f,-1.f }, { 1.f,0.f }));
-		vertices.Add(SVertexTypePosNormUV({ halfWidth,halfHeight,-halfDepth }, { 0.f,0.f,-1.f }, { 1.f,1.f }));
-		vertices.Add(SVertexTypePosNormUV({ -halfWidth,halfHeight,-halfDepth }, { 0.f,0.f,-1.f }, { 0.f,1.f }));
-		vertices.Add(SVertexTypePosNormUV({ -halfWidth,-halfHeight,halfDepth }, { 0.f,0.f,1.f }, { 0.f,0.f }));
-		vertices.Add(SVertexTypePosNormUV({ halfWidth,-halfHeight,halfDepth }, { 0.f,0.f,1.f }, { 1.f,0.f }));
-		vertices.Add(SVertexTypePosNormUV({ halfWidth,halfHeight,halfDepth }, { 0.f,0.f,1.f }, { 1.f,1.f }));
-		vertices.Add(SVertexTypePosNormUV({ -halfWidth,halfHeight,halfDepth }, { 0.f,0.f,1.f }, { 0.f,1.f }));
+		SVertexTypePosNormUV tempVertex;
+
+		//Top
+		#pragma region Top
+		tempVertex.myPosition = { -1.0f, 1.0f, -1.0f };
+		tempVertex.myNormal = { 0.0f, 1.0f, 0.0f };
+		tempVertex.myUV = { 0.0f, 0.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { 1.0f, 1.0f, -1.0f };
+		tempVertex.myNormal = { 0.0f, 1.0f, 0.0f };
+		tempVertex.myUV = { 1.0f, 0.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { 1.0f, 1.0f, 1.0f };
+		tempVertex.myNormal = { 0.0f, 1.0f, 0.0f };
+		tempVertex.myUV = { 1.0f, 1.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { -1.0f, 1.0f, 1.0f };
+		tempVertex.myNormal = { 0.0f, 1.0f, 0.0f };
+		tempVertex.myUV = { 0.0f, 1.0f };
+		vertices.Add(tempVertex);
+#pragma endregion
+		//Bottom
+		#pragma region Bottom
+		tempVertex.myPosition = { -1.0f, -1.0f, -1.0f };
+		tempVertex.myNormal = { 0.0f, -1.0f, 0.0f };
+		tempVertex.myUV = { 0.0f, 0.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { 1.0f, -1.0f, -1.0f };
+		tempVertex.myNormal = { 0.0f, -1.0f, 0.0f };
+		tempVertex.myUV = { 1.0f, 0.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { 1.0f, -1.0f, 1.0f };
+		tempVertex.myNormal = { 0.0f, -1.0f, 0.0f };
+		tempVertex.myUV = { 1.0f, 1.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { -1.0f, -1.0f, 1.0f };
+		tempVertex.myNormal = { 0.0f, -1.0f, 0.0f };
+		tempVertex.myUV = { 0.0f, 1.0f };
+		vertices.Add(tempVertex);
+#pragma endregion
+		//Left
+		#pragma region Left
+		tempVertex.myPosition = { -1.0f, -1.0f, 1.0f };
+		tempVertex.myNormal = { -1.0f, 0.0f, 0.0f };
+		tempVertex.myUV = { 0.0f, 0.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { -1.0f, -1.0f, -1.0f };
+		tempVertex.myNormal = { -1.0f, 0.0f, 0.0f };
+		tempVertex.myUV = { 1.0f, 0.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { -1.0f, 1.0f, -1.0f };
+		tempVertex.myNormal = { -1.0f, 0.0f, 0.0f };
+		tempVertex.myUV = { 1.0f, 1.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { -1.0f, 1.0f, 1.0f };
+		tempVertex.myNormal = { -1.0f, 0.0f, 0.0f };
+		tempVertex.myUV = { 0.0f, 1.0f };
+		vertices.Add(tempVertex);
+#pragma endregion
+		//Right
+		#pragma region Right
+		tempVertex.myPosition = { 1.0f, -1.0f, 1.0f };
+		tempVertex.myNormal = { 1.0f, 0.0f, 0.0f };
+		tempVertex.myUV = { 0.0f, 0.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { 1.0f, -1.0f, -1.0f };
+		tempVertex.myNormal = { 1.0f, 0.0f, 0.0f };
+		tempVertex.myUV = { 1.0f, 0.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { 1.0f, 1.0f, -1.0f };
+		tempVertex.myNormal = { 1.0f, 0.0f, 0.0f };
+		tempVertex.myUV = { 1.0f, 1.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { 1.0f, 1.0f, 1.0f };
+		tempVertex.myNormal = { 1.0f, 0.0f, 0.0f };
+		tempVertex.myUV = { 0.0f, 1.0f };
+		vertices.Add(tempVertex);
+#pragma endregion
+		//Front
+		#pragma region Front
+		tempVertex.myPosition = { -1.0f, -1.0f, -1.0f };
+		tempVertex.myNormal = { 0.0f, 0.0f, -1.0f };
+		tempVertex.myUV = { 0.0f, 0.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { 1.0f, -1.0f, -1.0f };
+		tempVertex.myNormal = { 0.0f, 0.0f, -1.0f };
+		tempVertex.myUV = { 1.0f, 0.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { 1.0f, 1.0f, -1.0f };
+		tempVertex.myNormal = { 0.0f, 0.0f, -1.0f };
+		tempVertex.myUV = { 1.0f, 1.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { -1.0f, 1.0f, -1.0f };
+		tempVertex.myNormal = { 0.0f, 0.0f, -1.0f };
+		tempVertex.myUV = { 0.0f, 1.0f };
+		vertices.Add(tempVertex);
+#pragma endregion
+		//Back
+		#pragma region Back
+		tempVertex.myPosition = { -1.0f, -1.0f, 1.0f };
+		tempVertex.myNormal = { 0.0f, 0.0f, 1.0f };
+		tempVertex.myUV = { 0.0f, 0.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { 1.0f, -1.0f, 1.0f };
+		tempVertex.myNormal = { 0.0f, 0.0f, 1.0f };
+		tempVertex.myUV = { 1.0f, 0.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { 1.0f, 1.0f, 1.0f };
+		tempVertex.myNormal = { 0.0f, 0.0f, 1.0f };
+		tempVertex.myUV = { 1.0f, 1.0f };
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { -1.0f, 1.0f, 1.0f };
+		tempVertex.myNormal = { 0.0f, 0.0f, 1.0f };
+		tempVertex.myUV = { 0.0f, 1.0f };
+		vertices.Add(tempVertex);
+#pragma endregion
+
 #pragma endregion
 
 #pragma region Index
+		//Top
 		indexes.Add(3);
 		indexes.Add(1);
 		indexes.Add(0);
+
 		indexes.Add(2);
 		indexes.Add(1);
 		indexes.Add(3);
-		indexes.Add(0);
-		indexes.Add(5);
-		indexes.Add(4);
-		indexes.Add(1);
-		indexes.Add(5);
-		indexes.Add(0);
-		indexes.Add(3);
-		indexes.Add(4);
-		indexes.Add(7);
-		indexes.Add(0);
-		indexes.Add(4);
-		indexes.Add(3);
-		indexes.Add(1);
-		indexes.Add(6);
-		indexes.Add(5);
-		indexes.Add(2);
-		indexes.Add(6);
-		indexes.Add(1);
-		indexes.Add(2);
-		indexes.Add(7);
-		indexes.Add(6);
-		indexes.Add(3);
-		indexes.Add(7);
-		indexes.Add(2);
+
+		//Bottom
 		indexes.Add(6);
 		indexes.Add(4);
 		indexes.Add(5);
+
 		indexes.Add(7);
 		indexes.Add(4);
 		indexes.Add(6);
+
+		//Left
+		indexes.Add(11);
+		indexes.Add(9);
+		indexes.Add(8);
+
+		indexes.Add(10);
+		indexes.Add(9);
+		indexes.Add(11);
+
+		//Right
+		indexes.Add(14);
+		indexes.Add(12);
+		indexes.Add(13);
+
+		indexes.Add(15);
+		indexes.Add(12);
+		indexes.Add(14);
+
+		//Front
+		indexes.Add(19);
+		indexes.Add(17);
+		indexes.Add(16);
+
+		indexes.Add(18);
+		indexes.Add(17);
+		indexes.Add(19);
+
+		//Back
+		indexes.Add(22);
+		indexes.Add(20);
+		indexes.Add(21);
+
+		indexes.Add(23);
+		indexes.Add(20);
+		indexes.Add(22);
 #pragma endregion
 
 		myVertexBuffer = new SVertexBufferWrapper;
@@ -392,20 +520,23 @@ namespace Snowblind
 	void CModel::InitIndexBuffer()
 	{
 		D3D11_BUFFER_DESC indexDesc;
-		indexDesc.Usage = D3D11_USAGE_DEFAULT;
+		ZeroMemory(&indexDesc, sizeof(indexDesc));
+		indexDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		indexDesc.ByteWidth = myIndexData->mySize;
 		indexDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		indexDesc.CPUAccessFlags = 0;
 		indexDesc.MiscFlags = 0;
+		indexDesc.StructureByteStride = 0;
 
 		D3D11_SUBRESOURCE_DATA indexData;
+		ZeroMemory(&indexData, sizeof(indexData)),
 		indexData.pSysMem = myIndexData->myIndexData;
 
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
-
-		myIndexBuffer->myByteOffset = 0;
-		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
-
 		myAPI->HandleErrors(hr, "Failed to Create IndexBuffer");
+
+		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
+		myIndexBuffer->myByteOffset = 0;
+
 	}
 }

@@ -137,12 +137,4 @@
       <Filter>Surface</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\..\Bin\Data\Shaders\Cube.fx">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Bin\Data\Shaders\TexturedCube.fx">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-  </ItemGroup>
 </Project>

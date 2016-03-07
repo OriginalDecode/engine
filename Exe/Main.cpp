@@ -24,7 +24,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	Snowblind::eAPIFlag apiFlag;
 	float w = 1280.f;
 	float h = 720.f;
-	if (input == "DX11")
+	if ((input == "DX11") || (input == ""))
 	{
 		newApplication = new CApplication();
 		apiFlag = Snowblind::eAPIFlag::DIRECTX11;

@@ -162,7 +162,6 @@
     <ClInclude Include="API.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DirectX11.h" />
-    <ClInclude Include="DirectX12.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectContainer.h" />
     <ClInclude Include="Engine.h" />
@@ -171,29 +170,24 @@
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="OpenGL.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureContainer.h" />
     <ClInclude Include="VertexTypes.h" />
     <ClInclude Include="VertexWrapper.h" />
-    <ClInclude Include="Vulkan.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DirectX11.cpp" />
-    <ClCompile Include="DirectX12.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectContainer.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="OpenGL.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureContainer.cpp" />
-    <ClCompile Include="Vulkan.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonLib\CommonLib.vcxproj">

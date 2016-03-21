@@ -12,25 +12,25 @@ typedef HWND__* HWND;
 
 namespace Snowblind
 {
-	class CAPI;
+	class CDirectX11;
 	class CEngine
 	{
 	public:
-		static void Create(eAPIFlag anAPIFlag, float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
+		static void Create(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		static void Destroy();
 		static CEngine* GetInstance();
 
 		static void Present();
 		static void Clear();
-		CAPI* GetAPI();
+		CDirectX11* GetAPI();
 	private:
-		CEngine(eAPIFlag anAPIFlag, float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
+		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		~CEngine();
 
 		void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
 
 		static CEngine* myInstance;
-		CAPI* myAPI;
+		CDirectX11* myAPI;
 
 		float myWindowWidth;
 		float myWindowHeight;
@@ -39,7 +39,7 @@ namespace Snowblind
 
 	};
 
-	__forceinline CAPI* CEngine::GetAPI()
+	__forceinline CDirectX11* CEngine::GetAPI()
 	{
 		return myAPI;
 	}

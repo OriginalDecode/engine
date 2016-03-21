@@ -44,7 +44,7 @@ namespace Snowblind
 
 	void CSurface::Activate()
 	{
-		reinterpret_cast<CDirectX11*>(CEngine::GetInstance()->GetAPI())->GetContext()->IASetPrimitiveTopology(myPrimologyType);
+		CEngine::GetInstance()->GetAPI()->GetContext()->IASetPrimitiveTopology(myPrimologyType);
 		for (int i = 0; i < myShaderVariables.Size(); ++i)
 		{
 			myShaderVariables[i]->SetResource(myTextures[i]->GetShaderView());

@@ -1,11 +1,8 @@
 #include "Engine.h"
 #if defined(_WIN32) || defined(_WIN64)
 #include "DirectX11.h"
-#include "DirectX12.h"
 #include <Windows.h>
 #endif
-#include "OpenGL.h"
-#include "Vulkan.h"
 #include "EngineDefines.h"
 
 #include <sstream>
@@ -18,32 +15,17 @@ namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
 
-	CEngine::CEngine(eAPIFlag anAPIFlag, float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc)
+	CEngine::CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc)
 		: myWindowWidth(aWindowWidth)
 		, myWindowHeight(aWindowHeight)
 	{
 		CreateAppWindow(anInstance, aWndProc);
 		CU::Input::InputWrapper::Create(myHWND, anInstance);
-		switch (anAPIFlag)
-		{
-#if defined(_WIN32) || defined(_WIN64)
-		case eAPIFlag::DIRECTX11:
-			myAPI = new CDirectX11(myHWND, aWindowWidth, aWindowHeight);
-			break;
-		case eAPIFlag::DIRECTX12:
-			myAPI = new CDirectX12();
-			break;
-#endif
-		case eAPIFlag::OPENGL:
-			myAPI = new COpenGL();
-			break;
-		case eAPIFlag::VULKAN:
-			myAPI = new CVulkan;
-			break;
-		};
+		myAPI = new CDirectX11(myHWND, aWindowWidth, aWindowHeight);
+
 
 		std::stringstream windowText;
-		windowText << "API : " << myAPI->GetAPIName() << " | " << "Adapter : " << reinterpret_cast<CDirectX11*>(myAPI)->GetActiveAdapterName();
+		windowText << "API : " << myAPI->GetAPIName() << " | " << "Adapter : " << myAPI->GetActiveAdapterName();
 		SetWindowText(myHWND, windowText.str().c_str());
 	}
 
@@ -53,10 +35,10 @@ namespace Snowblind
 		CU::Input::InputWrapper::Destroy();
 	}
 
-	void CEngine::Create(eAPIFlag anAPIFlag, float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc)
+	void CEngine::Create(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc)
 	{
 		assert(myInstance == nullptr && "Instance already created!");
-		myInstance = new CEngine(anAPIFlag, aWindowWidth, aWindowHeight, anInstance, aWndProc);
+		myInstance = new CEngine(aWindowWidth, aWindowHeight, anInstance, aWndProc);
 	}
 
 	void CEngine::Destroy()

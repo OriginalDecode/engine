@@ -11,7 +11,6 @@ namespace Snowblind
 	{
 	}
 
-
 	CTexture::~CTexture()
 	{
 	}
@@ -24,7 +23,7 @@ namespace Snowblind
 	bool CTexture::LoadTexture(const char* aFileName)
 	{
 		HRESULT hr;
-		hr = D3DX11CreateShaderResourceViewFromFile(reinterpret_cast<CDirectX11*>(CEngine::GetInstance()->GetAPI())->GetDevice(), aFileName, nullptr, nullptr, &myShaderResource, nullptr);
+		hr = D3DX11CreateShaderResourceViewFromFile(CEngine::GetInstance()->GetAPI()->GetDevice(), aFileName, nullptr, nullptr, &myShaderResource, nullptr);
 
 		if (FAILED(hr))
 		{

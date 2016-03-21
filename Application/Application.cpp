@@ -20,8 +20,6 @@ CApplication::~CApplication()
 {
 	myInstances.DeleteAll();
 	CU::TimeManager::Destroy();
-	SAFE_DELETE(myTexturedModel);
-	SAFE_DELETE(myModel);
 	SAFE_DELETE(myCamera);
 	Snowblind::CEffectContainer::Destroy();
 	Snowblind::CEngine::Destroy();
@@ -45,7 +43,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myTexturedModel = new Snowblind::CModel(myCamera);
 
 
-	
+
 	myModel->CreateCube("Data/Shaders/Cube.fx", 1.f, 1.f, 1.f);
 	myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
 
@@ -77,7 +75,7 @@ bool CApplication::Update()
 	Snowblind::CEngine::Clear();
 	for (int i = 0; i < myInstances.Size(); ++i)
 	{
-		//myInstances[i]->Update(90.f * deltaTime);
+		myInstances[i]->Update(90.f * deltaTime);
 		myInstances[i]->Render(*myCamera);
 	}
 	Snowblind::CEngine::Present();

@@ -40,7 +40,7 @@ namespace DL_Debug
 	class Debug
 	{
 	public:
-		enum DEBUGLOG
+		enum eDEBUGLOG
 		{
 			Update,
 			Render,
@@ -50,7 +50,7 @@ namespace DL_Debug
 			_COUNT
 		};
 
-		static bool Create(std::string aFile = "Log_"); //defines the start of file.
+		static bool Create(std::string aFile = "Log"); //defines the start of file.
 		static bool Destroy();
 		static Debug* GetInstance();
 
@@ -59,13 +59,13 @@ namespace DL_Debug
 		void DebugMessage(const int aLine, const char *aFileName, const std::string& aString);
 		void WriteLog(const std::string& aFilter, const std::string& aString);
 
-		void DisableFilters(const DEBUGLOG& anEnum);
-		void ActivateFilter(const DEBUGLOG& anEnum);
-		const bool CheckFilter(const DEBUGLOG& aFilter);
+		void DisableFilters(const eDEBUGLOG& anEnum);
+		void ActivateFilter(const eDEBUGLOG& anEnum);
+		const bool CheckFilter(const eDEBUGLOG& aFilter);
 
 		const float GetTime() const;
 		std::string HandleVAArgs(const char* aFormattedString, ...);
-
+		const int& GetActiveLogCount() const;
 	private:
 		Debug();
 		~Debug();
@@ -74,6 +74,8 @@ namespace DL_Debug
 
 		static Debug* myInstance;
 		std::ofstream myOutputFile;
+
+		int myActiveLogCount;
 
 		bool myEngineDebug;
 		bool myRenderDebug;

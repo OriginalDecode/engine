@@ -48,11 +48,7 @@ namespace DL_Debug
 
 	Debug::Debug()
 	{
-		myDebugLogs.set(DEBUGLOG::Update, true);
-		myDebugLogs.set(DEBUGLOG::Render, true);
-		myDebugLogs.set(DEBUGLOG::Physics, true);
-		myDebugLogs.set(DEBUGLOG::Resource, true);
-		myDebugLogs.set(DEBUGLOG::Engine, true);
+		myDebugLogs.reset();
 	}
 
 	Debug::~Debug()
@@ -121,19 +117,19 @@ namespace DL_Debug
 
 	void Debug::WriteLog(const std::string& aFilter, const std::string& aString)
 	{
-		if (aFilter == "Engine" && myDebugLogs[DEBUGLOG::Engine] == 1)
+		if (aFilter == "Engine" && myDebugLogs[eDEBUGLOG::Engine] == FALSE)
 			return;
 
-		if (aFilter == "Update" && myDebugLogs[DEBUGLOG::Update] == 1)
+		if (aFilter == "Update" && myDebugLogs[eDEBUGLOG::Update] == FALSE)
 			return;
 
-		if (aFilter == "Render" && myDebugLogs[DEBUGLOG::Render] == 1)
+		if (aFilter == "Render" && myDebugLogs[eDEBUGLOG::Render] == FALSE)
 			return;
 
-		if (aFilter == "Resource" && myDebugLogs[DEBUGLOG::Resource] == 1)
+		if (aFilter == "Resource" && myDebugLogs[eDEBUGLOG::Resource] == FALSE)
 			return;
 
-		if (aFilter == "PhysX" && myDebugLogs[DEBUGLOG::Physics] == 1)
+		if (aFilter == "PhysX" && myDebugLogs[eDEBUGLOG::Physics] == FALSE)
 			return;
 
 		myOutputFile
@@ -143,48 +139,49 @@ namespace DL_Debug
 
 	}
 
-	void Debug::DisableFilters(const DEBUGLOG& anEnum)
+	void Debug::DisableFilters(const eDEBUGLOG& anEnum)
 	{
 		switch (anEnum)
 		{
-		case DEBUGLOG::Update:
-			myDebugLogs[DEBUGLOG::Update] = 1;
+		case eDEBUGLOG::Update:
+			myDebugLogs[eDEBUGLOG::Update] = FALSE;
 			break;
-		case DEBUGLOG::Render:
-			myDebugLogs[DEBUGLOG::Render] = 1;
+		case eDEBUGLOG::Render:
+			myDebugLogs[eDEBUGLOG::Render] = FALSE;
 			break;
-		case DEBUGLOG::Physics:
-			myDebugLogs[DEBUGLOG::Physics] = 1;
+		case eDEBUGLOG::Physics:
+			myDebugLogs[eDEBUGLOG::Physics] = FALSE;
 			break;
-		case DEBUGLOG::Resource:
-			myDebugLogs[DEBUGLOG::Resource] = 1;
+		case eDEBUGLOG::Resource:
+			myDebugLogs[eDEBUGLOG::Resource] = FALSE;
 			break;
-		case DEBUGLOG::Engine:
-			myDebugLogs[DEBUGLOG::Engine] = 1;
+		case eDEBUGLOG::Engine:
+			myDebugLogs[eDEBUGLOG::Engine] = FALSE;
 			break;
 		}
 	}
 
-	void Debug::ActivateFilter(const DEBUGLOG& anEnum)
+	void Debug::ActivateFilter(const eDEBUGLOG& anEnum)
 	{
 		switch (anEnum)
 		{
-		case DEBUGLOG::Update:
-			myDebugLogs[DEBUGLOG::Update] = 0;
+		case eDEBUGLOG::Update:
+			myDebugLogs[eDEBUGLOG::Update] = TRUE;
 			break;
-		case DEBUGLOG::Render:
-			myDebugLogs[DEBUGLOG::Render] = 0;
+		case eDEBUGLOG::Render:
+			myDebugLogs[eDEBUGLOG::Render] = TRUE;
 			break;
-		case DEBUGLOG::Physics:
-			myDebugLogs[DEBUGLOG::Physics] = 0;
+		case eDEBUGLOG::Physics:
+			myDebugLogs[eDEBUGLOG::Physics] = TRUE;
 			break;
-		case DEBUGLOG::Resource:
-			myDebugLogs[DEBUGLOG::Resource] = 0;
+		case eDEBUGLOG::Resource:
+			myDebugLogs[eDEBUGLOG::Resource] = TRUE;
 			break;
-		case DEBUGLOG::Engine:
-			myDebugLogs[DEBUGLOG::Engine] = 0;
+		case eDEBUGLOG::Engine:
+			myDebugLogs[eDEBUGLOG::Engine] = TRUE;
 			break;
 		}
+		myActiveLogCount++;
 	}
 
 	std::string Debug::AddTime()
@@ -213,28 +210,33 @@ namespace DL_Debug
 		return toReturn;
 	}
 
-	const bool Debug::CheckFilter(const DEBUGLOG& aFilter)
+	const int& Debug::GetActiveLogCount() const
+	{
+		return myActiveLogCount;
+	}
+
+	const bool Debug::CheckFilter(const eDEBUGLOG& aFilter)
 	{
 		switch (aFilter)
 		{
-		case DEBUGLOG::Engine:
-			if (myDebugLogs[DEBUGLOG::Engine] == 0)
+		case eDEBUGLOG::Engine:
+			if (myDebugLogs[eDEBUGLOG::Engine] == 0)
 				return true;
 			break;
-		case DEBUGLOG::Physics:
-			if (myDebugLogs[DEBUGLOG::Physics] == 0)
+		case eDEBUGLOG::Physics:
+			if (myDebugLogs[eDEBUGLOG::Physics] == 0)
 				return true;
 			break;
-		case DEBUGLOG::Render:
-			if (myDebugLogs[DEBUGLOG::Render] == 0)
+		case eDEBUGLOG::Render:
+			if (myDebugLogs[eDEBUGLOG::Render] == 0)
 				return true;
 			break;
-		case DEBUGLOG::Resource:
-			if (myDebugLogs[DEBUGLOG::Resource] == 0)
+		case eDEBUGLOG::Resource:
+			if (myDebugLogs[eDEBUGLOG::Resource] == 0)
 				return true;
 			break;
-		case DEBUGLOG::Update:
-			if (myDebugLogs[DEBUGLOG::Update] == 0)
+		case eDEBUGLOG::Update:
+			if (myDebugLogs[eDEBUGLOG::Update] == 0)
 				return true;
 			break;
 		}

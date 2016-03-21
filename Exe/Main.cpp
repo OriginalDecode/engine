@@ -13,38 +13,20 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	const char* inputString = someCommandLines;
 	std::string input(inputString);
 
-
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Engine);
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Update);
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Render);
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Resource);
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Physics);
-	DL_DEBUG("%i Active Filters!", DL_Debug::Debug::_COUNT);
+	DL_DEBUG("%i Active Filters!", DL_Debug::Debug::GetInstance()->GetActiveLogCount());
 
 	Snowblind::eAPIFlag apiFlag;
 	float w = 1280.f;
 	float h = 720.f;
-	if ((input == "DX11") || (input == ""))
-	{
-		newApplication = new CApplication();
-		apiFlag = Snowblind::eAPIFlag::DIRECTX11;
-	}
-	else if (input == "DX12")
-	{
-		newApplication = new CApplication();
-		apiFlag = Snowblind::eAPIFlag::DIRECTX12;
-	}
-	else if (input == "GL")
-	{
-		newApplication = new CApplication();
-		apiFlag = Snowblind::eAPIFlag::OPENGL;
-	}
-	else if (input == "Vulkan")
-	{
-		newApplication = new CApplication();
-		apiFlag = Snowblind::eAPIFlag::VULKAN;
-	}
-	Snowblind::CEngine::Create(apiFlag, w, h, anInstance, WindowProc);
+	newApplication = new CApplication();
+	apiFlag = Snowblind::eAPIFlag::DIRECTX11;
+
+	Snowblind::CEngine::Create(w, h, anInstance, WindowProc);
 	newApplication->Initiate(w, h);
 
 	MSG msg;
@@ -92,10 +74,10 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		}
 		break;
 	case WM_ENTERSIZEMOVE:
-			newApplication->OnPause();
+		newApplication->OnPause();
 		break;
 	case WM_EXITSIZEMOVE:
-			newApplication->OnResume();
+		newApplication->OnResume();
 		break;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);

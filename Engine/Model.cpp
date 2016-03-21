@@ -19,7 +19,7 @@ namespace Snowblind
 	CModel::CModel(CCamera* aCamera)
 		: myCamera(aCamera)
 	{
-		myAPI = reinterpret_cast<CDirectX11*>(CEngine::GetInstance()->GetAPI());
+		myAPI = CEngine::GetInstance()->GetAPI();
 		myIsTextured = false;
 	}
 

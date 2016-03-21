@@ -10,15 +10,6 @@
     <Filter Include="APIs\DirectX11">
       <UniqueIdentifier>{fbeb67db-8b2e-41b3-8cf6-223a51ef126a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="APIs\DirectX12">
-      <UniqueIdentifier>{d5dbe8f3-829b-4d69-b284-dad6e17f5ad6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="APIs\Vulkan">
-      <UniqueIdentifier>{b9cebfb6-02f8-4207-b5dc-8f6ae248455d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="APIs\OpenGL">
-      <UniqueIdentifier>{521e2da1-ffa3-4c19-ba37-c07cd15b60bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{82c2dddf-cdba-43f7-b878-275be140fb41}</UniqueIdentifier>
     </Filter>
@@ -39,18 +30,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DirectX11.h">
-      <Filter>APIs\DirectX11</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectX12.h">
-      <Filter>APIs\DirectX12</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGL.h">
-      <Filter>APIs\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="Vulkan.h">
-      <Filter>APIs\Vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="API.h">
       <Filter>APIs</Filter>
     </ClInclude>
@@ -92,20 +71,11 @@
     <ClInclude Include="Surface.h">
       <Filter>Surface</Filter>
     </ClInclude>
+    <ClInclude Include="DirectX11.h">
+      <Filter>APIs\DirectX11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DirectX11.cpp">
-      <Filter>APIs\DirectX11</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectX12.cpp">
-      <Filter>APIs\DirectX12</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGL.cpp">
-      <Filter>APIs\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="Vulkan.cpp">
-      <Filter>APIs\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="API.cpp">
       <Filter>APIs</Filter>
     </ClCompile>
@@ -135,6 +105,9 @@
     </ClCompile>
     <ClCompile Include="Surface.cpp">
       <Filter>Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX11.cpp">
+      <Filter>APIs\DirectX11</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

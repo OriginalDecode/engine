@@ -5,6 +5,7 @@
 
 #include <D3DX11.h>
 #include <d3dx11effect.h>
+#include <d3d10effect.h>
 #include <DL_Debug.h>
 #include "Texture.h"
 
@@ -43,10 +44,9 @@ namespace Snowblind
 			}
 		}
 
-		ID3D11Device* device = reinterpret_cast<CDirectX11*>(CEngine::GetInstance()->GetAPI())->GetDevice();
+		ID3D11Device* device = CEngine::GetInstance()->GetAPI()->GetDevice();
 
 		hr = D3DX11CreateEffectFromMemory(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), 0, device, &myEffect);
-
 		switch (hr)
 		{
 		case D3D11_ERROR_FILE_NOT_FOUND:

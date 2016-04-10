@@ -24,12 +24,16 @@ namespace Snowblind
 	{
 	public:
 		CCamera(float aWidth, float aHeight, const Vector3f& aPosition);
+		CCamera(float aWidth, float aHeight);
 		~CCamera();
 
 		void SetPosition(const Vector3f& aPosition);
 		const Vector3f GetPosition() const;
 		Matrix44f& GetOrientation();
 		Matrix44f& GetProjection();
+
+		Matrix44f& GetOrthogonalMatrix();
+
 
 		void Move(eDirection aDirection, float aSpeed);
 		void Rotate(eRotation anAxis, float aSpeed);
@@ -41,6 +45,7 @@ namespace Snowblind
 
 		Matrix44f myProjectionMatrix;
 		Matrix44f myOrientation;
+		Matrix44f myOrthogonalMatrix;
 	};
 
 	inline const Vector3f CCamera::GetPosition() const 

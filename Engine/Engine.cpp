@@ -1,16 +1,13 @@
+#include "stdafx.h"
 #include "Engine.h"
-#if defined(_WIN32) || defined(_WIN64)
 #include "DirectX11.h"
 #include <Windows.h>
-#endif
 #include "EngineDefines.h"
 
 #include <sstream>
 #include <assert.h>
 #include <TimeManager.h>
 #include <InputWrapper.h>
-
-
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
@@ -23,6 +20,7 @@ namespace Snowblind
 		CU::Input::InputWrapper::Create(myHWND, anInstance);
 		myAPI = new CDirectX11(myHWND, aWindowWidth, aWindowHeight);
 
+//		myFont = new Font("Data/Font/OpenSans-Light.ttf");
 
 		std::stringstream windowText;
 		windowText << "API : " << myAPI->GetAPIName() << " | " << "Adapter : " << myAPI->GetActiveAdapterName();
@@ -34,6 +32,7 @@ namespace Snowblind
 		SAFE_DELETE(myAPI);
 		CU::Input::InputWrapper::Destroy();
 	}
+
 
 	void CEngine::Create(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc)
 	{

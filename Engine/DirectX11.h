@@ -1,7 +1,7 @@
 #pragma once
-#include "API.h"
 #include <vector>
 #include <unordered_map>
+#include <bitset>
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -23,23 +23,39 @@ struct ID3D11Debug;
 struct ID3D11CommandList;
 struct IDXGIAdapter;
 
+enum class eEngineFlags
+{
+	FULLSCREEN,
+	_COUNT
+};
+
+enum class eDepthStencil
+{
+	Z_ENABLED,
+	Z_DISABLED,
+	READ_NO_WRITE,
+	_COUNT
+};
+
+
 namespace Snowblind
 {
-	class CDirectX11 :
-		public CAPI
+	class CDirectX11
 	{
 	public:
 		CDirectX11(HWND aWindowHandle, float aWidth, float aHeight);
 
 		~CDirectX11();
-		void											Present() override;
-		void											Clear() override;
+		void											Present();
+		void											Clear();
 		ID3D11Device*									GetDevice();
 		ID3D11DeviceContext*							GetContext();
 		const std::string&								GetAdapterName(unsigned short anIndex);
 		const std::string&								GetActiveAdapterName();
-
+		void											EnableZBuffer();
+		void											DisableZBuffer();
 		void											HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
+		const char*										GetAPIName();
 	private:
 
 		void											SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
@@ -49,6 +65,10 @@ namespace Snowblind
 		void											CreateViewport();
 		void											CreateDeferredContext();
 		void											CreateAdapterList();
+		void											CreateEnabledStencilStateSetup();
+		void											CreateDisabledStencilStateSetup();
+
+	
 
 		HWND											myHWND;
 
@@ -62,7 +82,9 @@ namespace Snowblind
 
 		ID3D11RenderTargetView							*myRenderTarget;
 		ID3D11DepthStencilView							*myDepthView;
-		ID3D11DepthStencilState							*myDepthState;
+
+		ID3D11DepthStencilState							*myDepthStates[static_cast<int>(eDepthStencil::_COUNT)];
+
 		ID3D11CommandList								*myCommandList[2];
 
 		std::unordered_map<std::string, IDXGIAdapter*>	myAdapters;
@@ -71,6 +93,11 @@ namespace Snowblind
 
 		float											myWidth;
 		float											myHeight;
+
+		const char*										myAPI;
+
+		std::bitset<int(eEngineFlags::_COUNT)>			myEngineFlags;
+
 
 	};
 

@@ -1,13 +1,13 @@
+#include "stdafx.h"
 #include "DirectX11.h"
 
-#include <assert.h>
 #include <D3D11.h>
-#include <sstream>
 #include <DL_Debug.h>
 #include "EngineDefines.h"
-#include <vector>
-#include <cstdlib>
 #include "../CommonLib/JSON/JSONReader.h"
+
+#include <sstream>
+#include <stdlib.h>
 #undef VOID
 #define VOID (void**)
 namespace Snowblind
@@ -33,7 +33,9 @@ namespace Snowblind
 			SAFE_RELEASE(it->second);
 		}
 
-		SAFE_RELEASE(myDepthState);
+		SAFE_RELEASE(myDepthStates[static_cast<int>(eDepthStencil::Z_ENABLED)]);
+		SAFE_RELEASE(myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)]);
+		SAFE_RELEASE(myDepthStates[static_cast<int>(eDepthStencil::READ_NO_WRITE)]);
 		SAFE_RELEASE(myDepthView);
 		SAFE_RELEASE(myDepthBuffer);
 		SAFE_RELEASE(myRenderTarget);
@@ -87,7 +89,7 @@ namespace Snowblind
 		scDesc.OutputWindow = myHWND;
 		scDesc.SampleDesc.Count = 1;
 		scDesc.SampleDesc.Quality = 0;
-		if (myWindowFlags[int(eWindowFlags::FULLSCREEN)] == NOT_FULLSCREEN)
+		if (myEngineFlags[int(eEngineFlags::FULLSCREEN)] == FALSE)
 			scDesc.Windowed = true;
 		else
 			scDesc.Windowed = false;
@@ -201,7 +203,7 @@ namespace Snowblind
 		hr = myDevice->CreateDepthStencilView(myDepthBuffer, &stencilDesc, &myDepthView);
 		DL_ASSERT_EXP(hr == S_OK, "Failed to create depth stencil");
 
-		myContext->OMSetDepthStencilState(myDepthState, 1);
+
 		SetDebugName(myDepthBuffer, "DirectX11 DepthBuffer Object");
 		SetDebugName(myDepthView, "DirectX11 DepthView Object");
 	}
@@ -290,6 +292,16 @@ namespace Snowblind
 		}
 	}
 
+	void CDirectX11::EnableZBuffer()
+	{
+		myContext->OMSetDepthStencilState(myDepthStates[static_cast<int>(eDepthStencil::Z_ENABLED)], 1);
+	}
+
+	void CDirectX11::DisableZBuffer()
+	{
+		myContext->OMSetDepthStencilState(myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)], 1);
+	}
+
 	void CDirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
 	{
 		std::string toError;
@@ -340,6 +352,61 @@ namespace Snowblind
 			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 			break;
 		}
+	}
+
+	const char* CDirectX11::GetAPIName()
+	{
+		return myAPI;
+	}
+
+	void CDirectX11::CreateEnabledStencilStateSetup()
+	{
+		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
+		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
+
+		stencilDesc.DepthEnable = true;
+		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+		stencilDesc.StencilEnable = true;
+		stencilDesc.StencilReadMask = 0xFF;
+		stencilDesc.StencilWriteMask = 0xFF;
+		stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+		stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[static_cast<int>(eDepthStencil::Z_ENABLED)]);
+		SetDebugName(myDepthStates[static_cast<int>(eDepthStencil::Z_ENABLED)], "eDepthStencil::Z_ENABLED");
+		HandleErrors(hr, "Failed to setup Enabled Depth!");
+	}
+
+	void CDirectX11::CreateDisabledStencilStateSetup()
+	{
+		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
+		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
+
+		stencilDesc.DepthEnable = false;
+		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+		stencilDesc.StencilEnable = true;
+		stencilDesc.StencilReadMask = 0xFF;
+		stencilDesc.StencilWriteMask = 0xFF;
+		stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+		stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)]);
+		SetDebugName(myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)], "eDepthStencil::Z_DISABLED");
+		HandleErrors(hr, "Failed to setup depth buffer!");
 	}
 
 };

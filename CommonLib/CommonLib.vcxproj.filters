@@ -13,9 +13,6 @@
     <Filter Include="Math">
       <UniqueIdentifier>{f0acfa86-29c0-4437-9765-26b64c48d96a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Math\Collision">
-      <UniqueIdentifier>{90872765-cf4c-4c16-8936-77bbd11c7d0e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Math\Matrix">
       <UniqueIdentifier>{6dfccc93-5b0e-47e5-865c-1e9d17420a9d}</UniqueIdentifier>
     </Filter>
@@ -24,9 +21,6 @@
     </Filter>
     <Filter Include="Math\Plane">
       <UniqueIdentifier>{af40c95f-de02-4731-a25a-930b4fc60081}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Math\Line">
-      <UniqueIdentifier>{2315f268-ae50-4b82-a144-d4c6388fb4f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,18 +45,6 @@
     <ClInclude Include="JSON\JSONReader.h">
       <Filter>JSON</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Collision\AABB.h">
-      <Filter>Math\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Collision\Fov90Frustrum.h">
-      <Filter>Math\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Collision\Intersection.h">
-      <Filter>Math\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Collision\Sphere.h">
-      <Filter>Math\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="Math\Matrix\Matrix.h">
       <Filter>Math\Matrix</Filter>
     </ClInclude>
@@ -77,18 +59,6 @@
     </ClInclude>
     <ClInclude Include="Math\Matrix\Matrix44Decl.h">
       <Filter>Math\Matrix</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Line\Line.h">
-      <Filter>Math\Line</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Line\LineSegment2D.h">
-      <Filter>Math\Line</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Line\LineSegment3D.h">
-      <Filter>Math\Line</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Line\LineVolume.h">
-      <Filter>Math\Line</Filter>
     </ClInclude>
     <ClInclude Include="Math\Plane\Plane.h">
       <Filter>Math\Plane</Filter>
@@ -124,12 +94,6 @@
     </ClCompile>
     <ClCompile Include="JSON\JSONReader.cpp">
       <Filter>JSON</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Collision\Fov90Frustrum.cpp">
-      <Filter>Math\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Collision\Intersection.cpp">
-      <Filter>Math\Collision</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

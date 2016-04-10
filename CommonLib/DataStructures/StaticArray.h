@@ -3,7 +3,7 @@
 
 namespace CommonUtilities
 {
-	template <typename T, int Size>
+	template <typename T, int SizeType = 8>
 	class StaticArray
 	{
 	public:
@@ -24,76 +24,76 @@ namespace CommonUtilities
 
 	private:
 
-		T myData[Size];
+		T myData[SizeType];
 
 	};
 	
-	template<typename T, int Size>
-	StaticArray<T, Size>::StaticArray()
+	template<typename T, int SizeType>
+	StaticArray<T, SizeType>::StaticArray()
 	{
 	}
-	template <typename T, int Size>
-	StaticArray<T, Size>::~StaticArray()
+	template <typename T, int SizeType>
+	StaticArray<T, SizeType>::~StaticArray()
 	{
 	}
-	template <typename T, int Size>
-	StaticArray<T, Size>::StaticArray(const StaticArray& aStaticArray)
+	template <typename T, int SizeType>
+	StaticArray<T, SizeType>::StaticArray(const StaticArray& aStaticArray)
 	{
 		*this = aStaticArray;
 	}
 
-	template <typename T, int Size>
-	StaticArray<T, Size>& StaticArray<T, Size>::operator=(const StaticArray& aStaticArray)
+	template <typename T, int SizeType>
+	StaticArray<T, SizeType>& StaticArray<T, SizeType>::operator=(const StaticArray& aStaticArray)
 	{
-		for (unsigned int i = 0; i < Size; ++i)
+		for (unsigned int i = 0; i < SizeType; ++i)
 		{
 			myData[i] = aStaticArray[i];
 		}
 		return *this;
 	}
 
-	template <typename T, int Size>
-	inline const T& StaticArray<T, Size>::operator[](const int& anIndex) const
+	template <typename T, int SizeType>
+	inline const T& StaticArray<T, SizeType>::operator[](const int& anIndex) const
 	{
-		assert(anIndex >= 0 && anIndex < Size && "Index is less than 0! [Out of Bounds]");
-		assert(Size > anIndex && "Index is greater than size");
+		assert(anIndex >= 0 && anIndex < SizeType && "Index is less than 0! [Out of Bounds]");
+		assert(SizeType > anIndex && "Index is greater than size");
 		return myData[anIndex];
 	}
 
-	template <typename T, int Size>
-	inline T& StaticArray<T, Size>::operator[](const int& anIndex)
+	template <typename T, int SizeType>
+	inline T& StaticArray<T, SizeType>::operator[](const int& anIndex)
 	{
-		assert(anIndex >= 0 && anIndex < Size && "Index is less than 0! [Out of Bounds]");
-		assert(Size > anIndex && "Index is greater than size");
+		assert(anIndex >= 0 && anIndex < SizeType && "Index is less than 0! [Out of Bounds]");
+		assert(SizeType > anIndex && "Index is greater than size");
 
 		return myData[anIndex];
 	}
 
-	template <typename T, int Size>
-	inline void StaticArray<T, Size>::Insert(int anIndex, T& anObject)
+	template <typename T, int SizeType>
+	inline void StaticArray<T, SizeType>::Insert(int anIndex, T& anObject)
 	{
-		assert(anIndex >= 0 && anIndex < Size && "Index is less than 0! [Out of Bounds]");
-		assert(Size > anIndex && "Index is greater than size");
-		for (int i = (Size - 1); i > anIndex; i--)
+		assert(anIndex >= 0 && anIndex < SizeType && "Index is less than 0! [Out of Bounds]");
+		assert(SizeType > anIndex && "Index is greater than size");
+		for (int i = (SizeType - 1); i > anIndex; i--)
 		{
 			myData[i] = myData[i - 1];
 		}
 		myData[anIndex] = anObject;
 	}
 
-	template <typename T, int Size>
-	inline void StaticArray<T, Size>::DeleteAll()
+	template <typename T, int SizeType>
+	inline void StaticArray<T, SizeType>::DeleteAll()
 	{
-		for (int i = 0; i < Size; ++i)
+		for (int i = 0; i < SizeType; ++i)
 		{
 			SAFE_DELETE(myData[i]);
 		}
 	}
 
-	template <typename T, int Size>
-	inline int StaticArray<T, Size>::Capacity()
+	template <typename T, int SizeType>
+	inline int StaticArray<T, SizeType>::Capacity()
 	{
-		return Size;
+		return SizeType;
 	}
 }
 namespace CU = CommonUtilities;

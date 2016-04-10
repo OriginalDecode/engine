@@ -1,7 +1,5 @@
 #pragma once
-#include "../Engine/EngineEnums.h"
 #include "../CommonLib/DataStructures/GrowingArray.h"
-
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -15,6 +13,7 @@ namespace Snowblind
 	class CModel;
 	class CCamera;
 	class CInstance;
+	class CScene;
 };
 
 class CApplication
@@ -37,13 +36,10 @@ private:
 	Snowblind::CEffect* myEffect;
 	Snowblind::CModel* myModel;
 	Snowblind::CModel* myTexturedModel;
-
-
+	Snowblind::CInstance* myInstance;
 	Snowblind::CCamera* myCamera;
+	Snowblind::CScene* myWorldScene;
 
-
-
-	CU::GrowingArray<Snowblind::CInstance*> myInstances;
 	//Snowblind::CInstance* myInstance;
 
 };

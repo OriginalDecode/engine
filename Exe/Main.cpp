@@ -20,11 +20,9 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Physics);
 	DL_DEBUG("%i Active Filters!", DL_Debug::Debug::GetInstance()->GetActiveLogCount());
 
-	Snowblind::eAPIFlag apiFlag;
 	float w = 1280.f;
 	float h = 720.f;
 	newApplication = new CApplication();
-	apiFlag = Snowblind::eAPIFlag::DIRECTX11;
 
 	Snowblind::CEngine::Create(w, h, anInstance, WindowProc);
 	newApplication->Initiate(w, h);

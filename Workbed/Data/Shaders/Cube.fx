@@ -12,7 +12,7 @@ struct VS_INPUT
 
 struct PS_INPUT
 {
-	float4 Pos		: SV_POSITION0;
+	float4 Pos	: SV_POSITION0;
 	float4 Color	: COLOR0;
 };
 
@@ -22,15 +22,15 @@ PS_INPUT VS(VS_INPUT input)
 	
 	output.Pos = mul(input.Pos, World);
 	output.Pos = mul(output.Pos, View);
-	output.Pos = mul(output.Pos, Projection);
+	output.Pos = mul(output.Pos, Projection);	
 	output.Color = input.Color;
 	return output;
 }
 
 float4 PS(PS_INPUT input) : SV_Target
 {
-	input;
-	return float4(1.0f, 1.0f, 0.0f, 1.0f);
+
+	return input.Color;
 }
 
 
@@ -39,6 +39,7 @@ technique11 Render
 {
 	pass P0
 	{
+		
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS()));

@@ -26,14 +26,6 @@
     <ClInclude Include="DataStructures\StaticArray.h" />
     <ClInclude Include="DataStructures\VectorOnStack.h" />
     <ClInclude Include="JSON\JSONReader.h" />
-    <ClInclude Include="Math\Collision\AABB.h" />
-    <ClInclude Include="Math\Collision\Fov90Frustrum.h" />
-    <ClInclude Include="Math\Collision\Intersection.h" />
-    <ClInclude Include="Math\Collision\Sphere.h" />
-    <ClInclude Include="Math\Line\Line.h" />
-    <ClInclude Include="Math\Line\LineSegment2D.h" />
-    <ClInclude Include="Math\Line\LineSegment3D.h" />
-    <ClInclude Include="Math\Line\LineVolume.h" />
     <ClInclude Include="Math\Matrix\Matrix.h" />
     <ClInclude Include="Math\Matrix\Matrix33.h" />
     <ClInclude Include="Math\Matrix\Matrix33Decl.h" />
@@ -52,8 +44,6 @@
   <ItemGroup>
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp" />
     <ClCompile Include="JSON\JSONReader.cpp" />
-    <ClCompile Include="Math\Collision\Fov90Frustrum.cpp" />
-    <ClCompile Include="Math\Collision\Intersection.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DBC8372D-E04F-4BBB-8964-12022ADCA9F6}</ProjectGuid>
@@ -75,13 +65,13 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -115,9 +105,19 @@
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)lib\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)lib\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>

@@ -1,6 +1,7 @@
 #pragma once
-#include "../CommonLib/Math/Matrix/Matrix44.h"
 #include <string>
+#include "../CommonLib/Math/Matrix/Matrix44.h"
+#include <DataStructures/GrowingArray.h>
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct ID3D11Buffer;

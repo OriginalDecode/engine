@@ -12,30 +12,20 @@ namespace CommonUtilities
 		template<typename TYPE>
 		Matrix44<TYPE>::Matrix44()
 		{
-			if (myMatrix.Size() > 0)
-				myMatrix.RemoveAll();
-			//Set everything to 0
-			for (unsigned short i = 0; i < 16; i++)
+			for (unsigned char i = 0; i < 16; i++)
 			{
 				if (i == 0 || i == 5 || i == 10 || i == 15)
-					myMatrix.Add(1);
+					myMatrix[i] = 1;
 				else
-					myMatrix.Add(0);
+					myMatrix[i] = 0;
 			}
-			//Then set the ones who are supposed to be 1 to 1;
-			/*myMatrix[0] = 1;
-			myMatrix[5] = 1;
-			myMatrix[10] = 1;
-			myMatrix[15] = 1;*/
 		}
-
 
 		template<typename TYPE>
 		Matrix44<TYPE>::Matrix44(const Matrix44<TYPE>& aMatrix)
 		{
 			*this = aMatrix;
 		}
-
 
 #pragma endregion
 		template<typename TYPE>
@@ -48,7 +38,7 @@ namespace CommonUtilities
 		\****************************/
 
 		template<typename TYPE>
-		Matrix44<TYPE> Matrix44<TYPE>::Calculate(RotationType rotation, TYPE someCos, TYPE someSin)
+		const Matrix44<TYPE> Matrix44<TYPE>::Calculate(const RotationType& rotation, const TYPE& someCos, const TYPE& someSin)
 		{
 			Matrix44<TYPE> matrix;
 
@@ -131,78 +121,40 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		Matrix44<TYPE> Matrix44<TYPE>::CreateRotateAroundX(TYPE aAngleInRadians)
+		Matrix44<TYPE> Matrix44<TYPE>::CreateRotateAroundX(const TYPE& aRadian)
 		{
 			Matrix44<TYPE> matrix;
 
-			TYPE _cos = cos(aAngleInRadians);
-			TYPE _sin = sin(aAngleInRadians);
+			TYPE _cos = cos(aRadian);
+			TYPE _sin = sin(aRadian);
 
 			return matrix.Calculate(RotationType::Axis_X, _cos,_sin);
 		}
 
 		template<typename TYPE>
-		Matrix44<TYPE> Matrix44<TYPE>::CreateRotateAroundY(TYPE aAngleInRadians)
+		Matrix44<TYPE> Matrix44<TYPE>::CreateRotateAroundY(const TYPE& aRadian)
 		{
 			Matrix44<TYPE> matrix;
 
-			TYPE _cos = cos(aAngleInRadians);
-			TYPE _sin = sin(aAngleInRadians);
+			TYPE _cos = cos(aRadian);
+			TYPE _sin = sin(aRadian);
 
 			return matrix.Calculate(RotationType::Axis_Y, _cos, _sin);
 		}
 
 		template<typename TYPE>
-		Matrix44<TYPE> Matrix44<TYPE>::CreateRotateAroundZ(TYPE aAngleInRadians)
+		Matrix44<TYPE> Matrix44<TYPE>::CreateRotateAroundZ(const TYPE& aRadian)
 		{
 			Matrix44<TYPE> matrix;
 
-			TYPE _cos = cos(aAngleInRadians);
-			TYPE _sin = sin(aAngleInRadians);
+			TYPE _cos = cos(aRadian);
+			TYPE _sin = sin(aRadian);
 
 			return matrix.Calculate(RotationType::Axis_Z,_cos, _sin);
 		}
 
 		template<typename TYPE>
-		Matrix44<TYPE> Matrix44<TYPE>::RotateX(TYPE anAngle)
-		{
-			Matrix44<TYPE> matrix;
-
-			TYPE toRad = 3.14159f / 180.f;
-
-			TYPE _cos = cos(toRad * anAngle);
-			TYPE _sin = sin(toRad * anAngle);
-
-			return matrix.Calculate(RotationType::Axis_X, _cos, _sin);
-		}
-
-		template<typename TYPE>
-		Matrix44<TYPE> Matrix44<TYPE>::RotateY(TYPE anAngle)
-		{
-			Matrix44<TYPE> matrix;
-			TYPE toRad = 3.14159f /180.f;
-
-			TYPE _cos = cos(toRad * anAngle);
-			TYPE _sin = sin(toRad * anAngle);
-
-			return matrix.Calculate(RotationType::Axis_Y, _cos, _sin);
-		}
-
-		template<typename TYPE>
-		Matrix44<TYPE> Matrix44<TYPE>::RotateZ(TYPE anAngle)
-		{
-			Matrix44<TYPE> matrix;
-
-			TYPE toRad = 3.14159f / 180.f;
-
-			TYPE _cos = cos(toRad * anAngle);
-			TYPE _sin = sin(toRad * anAngle);
-
-			return matrix.Calculate(RotationType::Axis_Z, _cos, _sin);
-		}
-
-		template<typename TYPE>
-		void Matrix44<TYPE>::SetRotation3dX(TYPE aRadian)
+		void Matrix44<TYPE>::SetRotation3dX(const TYPE& aRadian)
 		{
 			Matrix44<TYPE> rotationMatrix = Matrix44::CreateRotateAroundX(aRadian);
 			Matrix44<TYPE> tempMatrix = *this;
@@ -222,7 +174,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		void Matrix44<TYPE>::SetRotation3dY(TYPE aRadian)
+		void Matrix44<TYPE>::SetRotation3dY(const TYPE& aRadian)
 		{
 			Matrix44<TYPE> rotationMatrix = Matrix44::CreateRotateAroundY(aRadian);
 			Matrix44<TYPE> tempMatrix = *this;
@@ -242,7 +194,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		void Matrix44<TYPE>::SetRotation3dZ(TYPE aRadian)
+		void Matrix44<TYPE>::SetRotation3dZ(const TYPE& aRadian)
 		{
 			Matrix44<TYPE> rotationMatrix = Matrix44::CreateRotateAroundZ(aRadian);
 			Matrix44<TYPE> tempMatrix = *this;
@@ -263,7 +215,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		void Matrix44<TYPE>::SetTranslation(TYPE anX, TYPE anY, TYPE anZ, TYPE anW)
+		void Matrix44<TYPE>::SetTranslation(const TYPE& anX, const TYPE& anY, const TYPE& anZ, const TYPE& anW)
 		{
 			myMatrix[12] = anX;
 			myMatrix[13] = anY;
@@ -272,7 +224,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		void Matrix44<TYPE>::SetRotationX(TYPE aRotationInDegrees)
+		void Matrix44<TYPE>::SetRotationX(const TYPE& aRotationInDegrees)
 		{
 			Matrix44<TYPE> rotationMatrix = Matrix44::RotateX(aRotationInDegrees);
 			Matrix44<TYPE> tempMatrix = *this;
@@ -292,7 +244,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		void Matrix44<TYPE>::SetRotationY(TYPE aRotationInDegrees)
+		void Matrix44<TYPE>::SetRotationY(const TYPE& aRotationInDegrees)
 		{
 			Matrix44<TYPE> rotationMatrix = Matrix44::RotateY(aRotationInDegrees);
 			Matrix44<TYPE> tempMatrix = *this;
@@ -312,7 +264,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		void Matrix44<TYPE>::SetRotationZ(TYPE aRotationInDegrees)
+		void Matrix44<TYPE>::SetRotationZ(const TYPE& aRotationInDegrees)
 		{
 			Matrix44<TYPE> rotationMatrix = Matrix44::RotateZ(aRotationInDegrees);
 			Matrix44<TYPE> tempMatrix = *this;
@@ -343,32 +295,31 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		Vector4<TYPE> Matrix44<TYPE>::GetTranslation() const
+		const Vector4<TYPE> Matrix44<TYPE>::GetTranslation() const
 		{
 			return Vector4<TYPE>(myMatrix[12], myMatrix[13], myMatrix[14], myMatrix[15]);
 		}
 
 		template<typename TYPE>
-		Vector3<TYPE> Matrix44<TYPE>::GetPosition() const
+		const Vector3<TYPE> Matrix44<TYPE>::GetPosition() const
 		{
 			return Vector3<TYPE>(myMatrix[12], myMatrix[13], myMatrix[14]);
 		}
 
-
 		template<typename TYPE>
-		Vector4<TYPE> Matrix44<TYPE>::GetRight()
+		const Vector4<TYPE> Matrix44<TYPE>::GetRight() const
 		{
 			return Vector4<TYPE>(myMatrix[0], myMatrix[1], myMatrix[2], myMatrix[3]);
 		}
 
 		template<typename TYPE>
-		Vector4<TYPE> Matrix44<TYPE>::GetUp()
+		const Vector4<TYPE> Matrix44<TYPE>::GetUp() const
 		{
 			return Vector4<TYPE>(myMatrix[4], myMatrix[5], myMatrix[6], myMatrix[7]);
 		}
 
 		template<typename TYPE>
-		Vector4<TYPE> Matrix44<TYPE>::GetForward()
+		const Vector4<TYPE> Matrix44<TYPE>::GetForward() const 
 		{
 			return Vector4<TYPE>(myMatrix[8], myMatrix[9], myMatrix[10], myMatrix[11]);
 		}
@@ -409,7 +360,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		Matrix44<TYPE> Inverse(Matrix44<TYPE> &aMatrix)
+		const Matrix44<TYPE> Inverse(Matrix44<TYPE> &aMatrix)
 		{
 			Vector4<TYPE> theTranslation;
 
@@ -466,6 +417,7 @@ namespace CommonUtilities
 			return tempVector *= aMatrix;
 		}
 
+
 		template<typename TYPE>
 		Vector3<TYPE> operator*(Vector3<TYPE>& aVector, const Matrix44<TYPE>& aMatrix)
 		{
@@ -474,12 +426,13 @@ namespace CommonUtilities
 			return Vector3<TYPE>(vector4.x, vector4.y, vector4.z);
 		}
 
+
 		/****************************\
 		|		Compound Operators	 |
 		\****************************/
 
 		template<typename TYPE>
-		Matrix44<TYPE> operator+=(Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
+		const Matrix44<TYPE> operator+=(const Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
 		{
 			for (int i = 0; i < 16; ++i)
 			{
@@ -489,7 +442,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		Matrix44<TYPE> operator-=(Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
+		const Matrix44<TYPE> operator-=(const Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
 		{
 			for (int i = 0; i < 16; ++i)
 			{
@@ -499,7 +452,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		Matrix44<TYPE> operator*=(Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
+		const Matrix44<TYPE> operator*=(Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
 		{
 			Vector4<TYPE> myFirstRow(aFirstMatrix.myMatrix[0], aFirstMatrix.myMatrix[1], aFirstMatrix.myMatrix[2], aFirstMatrix.myMatrix[3]);
 			Vector4<TYPE> mySecondRow(aFirstMatrix.myMatrix[4], aFirstMatrix.myMatrix[5], aFirstMatrix.myMatrix[6], aFirstMatrix.myMatrix[7]);
@@ -534,26 +487,22 @@ namespace CommonUtilities
 			return aFirstMatrix;
 		}
 
-
 		template<typename TYPE>
-		Vector4<TYPE>& operator*=(Vector4<TYPE>& aVector, const Matrix44<TYPE>& aMatrix)
+		const Vector4<TYPE> operator*=(const Vector4<TYPE>& aVector, const Matrix44<TYPE>& aMatrix)
 		{
 
 			Vector4<TYPE> myFirstCollumn(aMatrix.myMatrix[0], aMatrix.myMatrix[4], aMatrix.myMatrix[8], aMatrix.myMatrix[12]);
 			Vector4<TYPE> mySecondCollumn(aMatrix.myMatrix[1], aMatrix.myMatrix[5], aMatrix.myMatrix[9], aMatrix.myMatrix[13]);
 			Vector4<TYPE> myThirdCollumn(aMatrix.myMatrix[2], aMatrix.myMatrix[6], aMatrix.myMatrix[10], aMatrix.myMatrix[14]);
 			Vector4<TYPE> myFourthCollumn(aMatrix.myMatrix[3], aMatrix.myMatrix[7], aMatrix.myMatrix[11], aMatrix.myMatrix[15]);
-			
 			Vector4<TYPE> vector = aVector;
-			
-			aVector.x = Dot(vector, myFirstCollumn);
-			aVector.y = Dot(vector, mySecondCollumn);
-			aVector.z = Dot(vector, myThirdCollumn);
-			aVector.w = Dot(vector, myFourthCollumn);
+			vector.x = Dot(aVector, myFirstCollumn);
+			vector.y = Dot(aVector, mySecondCollumn);
+			vector.z = Dot(aVector, myThirdCollumn);
+			vector.w = Dot(aVector, myFourthCollumn);
 
-			return aVector;
+			return vector;
 		}
-
 
 		/****************************\
 		|		Other Operations     |
@@ -562,9 +511,8 @@ namespace CommonUtilities
 		template<typename TYPE>
 		bool operator==(Matrix44<TYPE>& aFirstMatrix, Matrix44<TYPE>& aSecondMatrix)
 		{
-			for (int i = 0; i < 9; ++i)
+			for (int i = 0; i < 16; ++i)
 			{
-				aFirstMatrix.myMatrix[i] = aSecondMatrix.myMatrix[i];
 				if (aFirstMatrix.myMatrix[i] != aSecondMatrix.myMatrix[i])
 				{
 					return false;
@@ -577,12 +525,9 @@ namespace CommonUtilities
 		template<typename TYPE>
 		Matrix44<TYPE>& Matrix44<TYPE>::operator=(const Matrix44<TYPE>& aMatrix)
 		{
-			if (myMatrix.Size() > 0)
-				myMatrix.RemoveAll();
-
 			for (unsigned short i = 0; i < 16; ++i)
 			{
-				myMatrix.Add(aMatrix.myMatrix[i]);
+				myMatrix[i] = aMatrix.myMatrix[i];
 			}
 			return *this;
 		}
@@ -602,7 +547,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		Matrix44<TYPE> Matrix44<TYPE>::Inverse(Matrix44<TYPE> &aMatrix)
+		const Matrix44<TYPE> Matrix44<TYPE>::Inverse(Matrix44<TYPE> &aMatrix) 
 		{
 			Vector4<TYPE> theTranslation;
 			theTranslation = aMatrix.GetTranslation();

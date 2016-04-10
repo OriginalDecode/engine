@@ -72,14 +72,14 @@
     <OutDir>$(SolutionDir)Workbed\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(SolutionName)_$(Configuration)</TargetName>
-    <LibraryPath>$(DXSDK_DIR)Lib\x86\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)thirdpartylib\;$(DXSDK_DIR)Lib\x86\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(DXSDK_DIR)Include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Workbed\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(SolutionName)_$(Configuration)</TargetName>
-    <LibraryPath>$(DXSDK_DIR)Lib\x86\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)thirdpartylib\;$(DXSDK_DIR)Lib\x86\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(DXSDK_DIR)Include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -90,7 +90,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration).lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libc.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -113,7 +113,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration).lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libc.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>

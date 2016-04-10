@@ -1,7 +1,6 @@
 #pragma once
-#include <Windows.h>
+#include <memory.h>
 #include <assert.h>
-
 
 namespace CommonUtilities
 {
@@ -9,42 +8,42 @@ namespace CommonUtilities
 	class GrowingArray
 	{
 	public:
-		GrowingArray();
-		GrowingArray(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true);
-		GrowingArray(const GrowingArray& aGrowingArray);
-		~GrowingArray();
+		inline GrowingArray();
+		inline GrowingArray(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true);
+		inline GrowingArray(const GrowingArray& aGrowingArray);
+		inline ~GrowingArray();
 
-		GrowingArray& operator=(const GrowingArray& aGrowingArray);
+		inline GrowingArray& operator=(const GrowingArray& aGrowingArray);
 
-		void Init(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true);
-		void ReInit(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true);
+		inline void Init(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true);
+		inline void ReInit(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true);
 
-		ObjectType& operator[](const SizeType& aIndex);
-		const ObjectType& operator[](const SizeType& aIndex) const;
+		inline ObjectType& operator[](const SizeType& aIndex);
+		inline const ObjectType& operator[](const SizeType& aIndex) const;
 
-		void Add(const ObjectType& aObject);
-		void Insert(SizeType aIndex, ObjectType& aObject);
-		void DeleteCyclic(ObjectType& aObject);
-		void DeleteCyclicAtIndex(SizeType aItemNumber);
-		void RemoveCyclic(const ObjectType& aObject);
-		void RemoveCyclicAtIndex(SizeType aItemNumber);
-		SizeType Find(const ObjectType& aObject);
+		inline void Add(const ObjectType& aObject);
+		inline void Insert(SizeType aIndex, ObjectType& aObject);
+		inline void DeleteCyclic(ObjectType& aObject);
+		inline void DeleteCyclicAtIndex(SizeType aItemNumber);
+		inline void RemoveCyclic(const ObjectType& aObject);
+		inline void RemoveCyclicAtIndex(SizeType aItemNumber);
+		inline SizeType Find(const ObjectType& aObject);
 
-		ObjectType& GetLast();
-		const ObjectType& GetLast() const;
+		inline ObjectType& GetLast();
+		inline const ObjectType& GetLast() const;
 
 		static const SizeType FoundNone = static_cast<SizeType>(-1);
 
-		void RemoveAll();
-		void DeleteAll();
-		SizeType Capacity() const;
+		inline void RemoveAll();
+		inline void DeleteAll();
+		inline int Capacity();
 
 		void Optimize();
 
-		__forceinline SizeType Size() const;
+		__forceinline int Size() const;
 
 		void Reserve(SizeType aNewSize);
-		void Resize(SizeType aNewSize);
+		inline void Resize(SizeType aNewSize);
 
 	private:
 
@@ -300,7 +299,7 @@ namespace CommonUtilities
 	};
 
 	template<typename ObjectType, typename SizeType = int>
-	__forceinline SizeType GrowingArray<ObjectType, SizeType>::Size() const
+	__forceinline int GrowingArray<ObjectType, SizeType>::Size() const
 	{
 		return myAmountOfObjects;
 	};
@@ -352,10 +351,11 @@ namespace CommonUtilities
 	}
 
 	template<typename ObjectType, typename SizeType = int>
-	SizeType GrowingArray<ObjectType, SizeType>::Capacity() const
+	int GrowingArray<ObjectType, SizeType>::Capacity()
 	{
 		return myMaxSize;
 	}
 
 };
+
 namespace CU = CommonUtilities;

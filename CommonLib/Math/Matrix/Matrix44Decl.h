@@ -1,5 +1,5 @@
 #pragma once
-#include "..\..\DataStructures\GrowingArray.h"
+#include <assert.h>
 #include "..\Vector\Vector.h"
 namespace CommonUtilities
 {
@@ -19,42 +19,34 @@ namespace CommonUtilities
 			const TYPE& operator[](const int& anIndex) const;
 			TYPE& operator[](const int& anIndex);
 
-			static Matrix44<TYPE> CreateRotateAroundX(TYPE aAngleInRadians);
-			static Matrix44<TYPE> CreateRotateAroundY(TYPE aAngleInRadians);
-			static Matrix44<TYPE> CreateRotateAroundZ(TYPE aAngleInRadians);
+			static Matrix44<TYPE> CreateRotateAroundX(const TYPE& aRadian);
+			static Matrix44<TYPE> CreateRotateAroundY(const TYPE& aRadian);
+			static Matrix44<TYPE> CreateRotateAroundZ(const TYPE& aRadian);
 
-			static Matrix44<TYPE> RotateX(TYPE anAngle);
-			static Matrix44<TYPE> RotateY(TYPE anAngle);
-			static Matrix44<TYPE> RotateZ(TYPE anAngle);
+			TYPE myMatrix[16];
 
+			void SetRotation3dX(const TYPE& aRadian);
+			void SetRotation3dY(const TYPE& aRadian);
+			void SetRotation3dZ(const TYPE& aRadian);
 
-			GrowingArray<TYPE> myMatrix;
+			void SetRotationX(const TYPE& aRotationInDegrees);
+			void SetRotationY(const TYPE& aRotationInDegrees);
+			void SetRotationZ(const TYPE& aRotationInDegrees);
 
-			
-
-			void SetRotation3dX(TYPE aRadian);
-			void SetRotation3dY(TYPE aRadian);
-			void SetRotation3dZ(TYPE aRadian);
-
-			void SetRotationX(TYPE aRotationInDegrees);
-			void SetRotationY(TYPE aRotationInDegrees);
-			void SetRotationZ(TYPE aRotationInDegrees);
-
-			void SetTranslation(TYPE anX, TYPE anY, TYPE anZ, TYPE anW);
+			void SetTranslation(const TYPE& anX, const TYPE& anY, const TYPE& anZ, const TYPE& anW);
 			void SetTranslation(const Vector4<TYPE>& aVector);
-			Vector4<TYPE> GetTranslation() const;
-			Vector3<TYPE> GetPosition() const;
+			const Vector4<TYPE> GetTranslation() const;
+			const Vector3<TYPE> GetPosition() const;
 
 			void SetForward(const Vector4<TYPE>& aVector);
 			void SetRight(const Vector4<TYPE>& aVector);
 			void SetUp(const Vector4<TYPE>& aVector);
 			void SetPosition(const Vector3<TYPE>& aVector);
-			Vector4<TYPE> GetForward();
-			Vector4<TYPE> GetRight();
-			Vector4<TYPE> GetUp();
-			Matrix44<TYPE> Inverse(Matrix44<TYPE>& aMatrix);
 
-
+			const Vector4<TYPE> GetForward() const;
+			const Vector4<TYPE> GetRight() const;
+			const Vector4<TYPE> GetUp() const;
+			const Matrix44<TYPE> Inverse(Matrix44<TYPE>& aMatrix);
 			void Init(TYPE* aMatrix)
 			{
 				myMatrix[0] = aMatrix[0];
@@ -78,20 +70,14 @@ namespace CommonUtilities
 				myMatrix[15] = aMatrix[15];
 			}
 
-
-
-
 		private:
-			
 			enum class RotationType
 			{
 				Axis_X,
 				Axis_Y,
 				Axis_Z
 			};
-
-			Matrix44<TYPE> Calculate(RotationType rotation, TYPE cos, TYPE sin);
-
+			const Matrix44<TYPE> Calculate(const RotationType& rotation, const TYPE& cos, const TYPE& sin);
 		};
 
 		template<typename TYPE>

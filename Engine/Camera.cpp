@@ -1,4 +1,6 @@
+#include "stdafx.h"
 #include "Camera.h"
+#include <Windows.h>
 #include <xnamath.h>
 namespace Snowblind
 {
@@ -14,6 +16,14 @@ namespace Snowblind
 		myOrientation.myMatrix[3] = aPosition.x;
 		myOrientation.myMatrix[7] = aPosition.y;
 		myOrientation.myMatrix[11] = aPosition.z;
+
+
+		XMMATRIX orthogonal;
+		orthogonal = XMMatrixOrthographicLH(aWidth, aHeight, 0.f, 1.f);
+		XMFLOAT4X4 orthMiddleHand;
+		XMStoreFloat4x4(&orthMiddleHand, orthogonal);
+		myOrthogonalMatrix.Init(reinterpret_cast<float*>(orthMiddleHand.m));
+
 	}
 
 	CCamera::~CCamera()
@@ -23,6 +33,11 @@ namespace Snowblind
 	void CCamera::SetPosition(const Vector3f& aPosition)
 	{
 		myOrientation.SetPosition(aPosition);
+	}
+
+	Matrix44f& CCamera::GetOrthogonalMatrix()
+	{
+		return myOrthogonalMatrix;
 	}
 
 	void CCamera::Move(eDirection aDirection, float aSpeed)
@@ -58,13 +73,13 @@ namespace Snowblind
 		switch (anAxis)
 		{
 		case eRotation::X_AXIS:
-			myOrientation = CU::Math::Matrix44<float>::RotateX(aSpeed) * myOrientation;
+			myOrientation = CU::Math::Matrix44<float>::CreateRotateAroundX(aSpeed) * myOrientation;
 			break;
 		case eRotation::Y_AXIS:
-			myOrientation = CU::Math::Matrix44<float>::RotateY(aSpeed) * myOrientation;
+			myOrientation = CU::Math::Matrix44<float>::CreateRotateAroundY(aSpeed) * myOrientation;
 			break;
 		case eRotation::Z_AXIS:
-			myOrientation = CU::Math::Matrix44<float>::RotateZ(aSpeed) * myOrientation;
+			myOrientation = CU::Math::Matrix44<float>::CreateRotateAroundZ(aSpeed) * myOrientation;
 			break;
 		}
 	}

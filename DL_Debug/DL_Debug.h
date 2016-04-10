@@ -9,11 +9,13 @@
 #include "DL_StackWalker.h"
 #include "DL_Assert.h"
 //Uses __VA_ARGS__ as an expression to crash at a specific point
+
+#ifdef _DEBUG
 #define RETURN(...) DL_Debug::Debug::GetInstance()->HandleVAArgs(__VA_ARGS__)
 
 #define DL_ASSERT(string) DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__,string);
 
-#define DL_ASSERT_EXP(expression, string) if(expression == false){DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__,string);};
+#define DL_ASSERT_EXP(expression, string)if(expression == false){DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__,string);};
 
 #define DL_PRINT(string)  DL_Debug::Debug::GetInstance()->PrintMessage(string);
 #define DL_DEBUG( ... )  DL_Debug::Debug::GetInstance()->DebugMessage(__LINE__,__FUNCTION__, RETURN(__VA_ARGS__));
@@ -34,6 +36,33 @@
 
 //expressions
 #define ENGINE_LOG_EXP(expression, ...)		if(expression) { DL_WRITELOG("Engine",__VA_ARGS__)}
+#else
+#define RETURN(...) 
+
+#define DL_ASSERT(string)
+
+#define DL_ASSERT_EXP(expression, string)
+
+#define DL_PRINT(string) 
+#define DL_DEBUG( ... )  
+
+#define DL_WRITELOG(log, ...) 
+
+#define DL_MESSAGE(...) 
+#define DL_MESSAGE_EXP(expression, ...)
+
+#define DL_WARNINGBOX(msg) 
+#define DL_WARNINGBOX_EXP(expression, msg)
+
+#define RENDER_LOG(...)		
+#define UPDATE_LOG(...)		
+#define PHYSX_LOG(...)		
+#define ENGINE_LOG(...)		
+#define RESOURCE_LOG(...)	
+
+//expressions
+#define ENGINE_LOG_EXP(expression, ...)		
+#endif
 
 namespace DL_Debug
 {

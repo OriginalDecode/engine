@@ -1,8 +1,8 @@
+#include "stdafx.h"
 #include "Instance.h"
 #include "Effect.h"
 #include "Model.h"
 #include "Camera.h"
-#include <Math/Matrix/Matrix.h>
 namespace Snowblind
 {
 	CInstance::CInstance(CModel* aModel) 
@@ -17,8 +17,7 @@ namespace Snowblind
 
 	void CInstance::Update(float aRotation)
 	{
-		//myOrientation *= CU::Math::Matrix44<float>::RotateY(aRotation); // this is bad rotations
-		myOrientation = CU::Math::Matrix44<float>::RotateY(aRotation) * myOrientation;
+		myOrientation = CU::Math::Matrix44<float>::CreateRotateAroundY(aRotation) * myOrientation;
 	}
 
 	void CInstance::Render(CCamera& aCamera)

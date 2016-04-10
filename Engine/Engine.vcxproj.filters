@@ -10,9 +10,6 @@
     <Filter Include="APIs\DirectX11">
       <UniqueIdentifier>{fbeb67db-8b2e-41b3-8cf6-223a51ef126a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{82c2dddf-cdba-43f7-b878-275be140fb41}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Camera">
       <UniqueIdentifier>{59c67577-8d37-4473-a94f-c457ad068b08}</UniqueIdentifier>
     </Filter>
@@ -28,12 +25,14 @@
     <Filter Include="Surface">
       <UniqueIdentifier>{b49960a5-5cf3-4d21-989b-e4a0379c1468}</UniqueIdentifier>
     </Filter>
+    <Filter Include="precompiled">
+      <UniqueIdentifier>{ee7c4b62-c1db-4c97-b817-ebc32e6cdba3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{c6e20f0a-752b-4c44-9d83-08f4d88043e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="API.h">
-      <Filter>APIs</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineEnums.h" />
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -74,11 +73,15 @@
     <ClInclude Include="DirectX11.h">
       <Filter>APIs\DirectX11</Filter>
     </ClInclude>
+    <ClInclude Include="Font.h" />
+    <ClInclude Include="stdafx.h">
+      <Filter>precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="API.cpp">
-      <Filter>APIs</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -108,6 +111,13 @@
     </ClCompile>
     <ClCompile Include="DirectX11.cpp">
       <Filter>APIs\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <Filter>precompiled</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

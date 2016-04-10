@@ -1,8 +1,8 @@
+#include "stdafx.h"
 #include "Surface.h"
 
 #include <d3dx11effect.h>
 
-#include "API.h"
 #include "DirectX11.h"
 #include "Engine.h"
 

@@ -2,6 +2,7 @@
 #include <Engine.h>
 #include <Effect.h>
 #include <Model.h>
+#include <Scene.h>
 #include <Camera.h>
 #include <Instance.h>
 #include <TimeManager.h>                                                                                                                                                                                                                                                                                                                                                                                   
@@ -9,8 +10,8 @@
 #include "EffectContainer.h"
 #include "../Input/InputWrapper.h"
 
+#define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
-
 CApplication::CApplication()
 {
 	CU::TimeManager::Create();
@@ -18,9 +19,12 @@ CApplication::CApplication()
 
 CApplication::~CApplication()
 {
-	myInstances.DeleteAll();
-	CU::TimeManager::Destroy();
+	SAFE_DELETE(myWorldScene);
+	SAFE_DELETE(myInstance);
+	SAFE_DELETE(myModel);
+	SAFE_DELETE(myTexturedModel);
 	SAFE_DELETE(myCamera);
+	CU::TimeManager::Destroy();
 	Snowblind::CEffectContainer::Destroy();
 	Snowblind::CEngine::Destroy();
 }
@@ -38,25 +42,17 @@ void CApplication::OnResume()
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
 	myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, Vector3f(0.f, 0.f, 25.f));
+	myWorldScene = new Snowblind::CScene();
+	myWorldScene->Initiate(myCamera);
 
 	myModel = new Snowblind::CModel(myCamera);
-	myTexturedModel = new Snowblind::CModel(myCamera);
-
-
-
 	myModel->CreateCube("Data/Shaders/Cube.fx", 1.f, 1.f, 1.f);
-	myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
-
-
-	Snowblind::CInstance* temp;
-
-	temp = new Snowblind::CInstance(myModel);
-	temp->SetPosition({ 0.f, 5.f, 0.f });
-	myInstances.Add(temp);
-
-	temp = new Snowblind::CInstance(myTexturedModel);
-	temp->SetPosition({ 0.f, 0.f, 0.f });
-	myInstances.Add(temp);
+	
+	//myTexturedModel = new Snowblind::CModel(myCamera);
+	//myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
+	myInstance = new Snowblind::CInstance(myModel);
+	myInstance->SetPosition({ 0.f, 0.f, 0.f });
+	myWorldScene->AddToScene(myInstance);
 }
 
 bool CApplication::Update()
@@ -71,15 +67,21 @@ bool CApplication::Update()
 	}
 
 	UpdateInput(deltaTime);
-
-	Snowblind::CEngine::Clear();
-	for (int i = 0; i < myInstances.Size(); ++i)
+	myWorldScene->Update(deltaTime);
+	/*for (int i = 0; i < myInstances.Size(); ++i)
 	{
-		myInstances[i]->Update(90.f * deltaTime);
+		myInstances[i]->Update(((90.f / 180.f)*float(PI)) * deltaTime);
 		myInstances[i]->Render(*myCamera);
-	}
-	Snowblind::CEngine::Present();
+	}*/
+	Render();
 	return true;
+}
+
+void CApplication::Render()
+{
+	Snowblind::CEngine::Clear();
+	myWorldScene->Render();
+	Snowblind::CEngine::Present();
 }
 
 void CApplication::UpdateInput(float aDeltaTime)
@@ -111,29 +113,26 @@ void CApplication::UpdateInput(float aDeltaTime)
 
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(UP_ARROW))
 	{
-		myCamera->Rotate(Snowblind::eRotation::X_AXIS, -MOVE_SPEED * aDeltaTime);
+		myCamera->Rotate(Snowblind::eRotation::X_AXIS, -ROTATION_SPEED * aDeltaTime);
 	}
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(DOWN_ARROW))
 	{
-		myCamera->Rotate(Snowblind::eRotation::X_AXIS, MOVE_SPEED * aDeltaTime);
+		myCamera->Rotate(Snowblind::eRotation::X_AXIS, ROTATION_SPEED * aDeltaTime);
 	}
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(LEFT_ARROW))
 	{
-		myCamera->Rotate(Snowblind::eRotation::Y_AXIS, -MOVE_SPEED * aDeltaTime);
+		myCamera->Rotate(Snowblind::eRotation::Y_AXIS, -ROTATION_SPEED * aDeltaTime);
 	}
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(RIGHT_ARROW))
 	{
-		myCamera->Rotate(Snowblind::eRotation::Y_AXIS, MOVE_SPEED * aDeltaTime);
+		myCamera->Rotate(Snowblind::eRotation::Y_AXIS, ROTATION_SPEED * aDeltaTime);
 	}
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(Q))
 	{
-		myCamera->Rotate(Snowblind::eRotation::Z_AXIS, MOVE_SPEED * aDeltaTime);
+		myCamera->Rotate(Snowblind::eRotation::Z_AXIS, ROTATION_SPEED * aDeltaTime);
 	}
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(E))
 	{
-		myCamera->Rotate(Snowblind::eRotation::Z_AXIS, -MOVE_SPEED * aDeltaTime);
+		myCamera->Rotate(Snowblind::eRotation::Z_AXIS, -ROTATION_SPEED * aDeltaTime);
 	}
-
-
-
 }

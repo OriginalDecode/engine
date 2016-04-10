@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Effect.h"
 
 #include "Engine.h"

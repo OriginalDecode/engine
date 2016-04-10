@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "Texture.h"
 #include "DirectX11.h"
-#include "API.h"
 #include <D3DX11.h>
 #include "Engine.h"
 #include <DL_Debug.h>

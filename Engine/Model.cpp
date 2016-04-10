@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Model.h"
 
 #include "Camera.h"
@@ -69,11 +70,14 @@ namespace Snowblind
 
 	void CModel::CreateCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
 	{
+		ENGINE_LOG("Creating Cube");
 		float halfWidth = aWidth *0.5f;
 		float halfDepth = aDepth *0.5f;
 		float halfHeight = aHeight *0.5f;
+
 		CU::GrowingArray<SVertexTypePosCol> vertices;
 		CU::GrowingArray<int> indexes;
+
 		myVertexFormat.Init(2);
 		myVertexFormat.Add(VertexLayoutPosCol[0]);
 		myVertexFormat.Add(VertexLayoutPosCol[1]);
@@ -185,9 +189,12 @@ namespace Snowblind
 	void CModel::CreateTexturedCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
 	{
 		myIsTextured = true;
-		float halfWidth = aWidth * 0.5f;
-		float halfDepth = aDepth * 0.5f;
-		float halfHeight = aHeight * 0.5f;
+		//float halfWidth = aWidth * 0.5f;
+		//float halfDepth = aDepth * 0.5f;
+		//float halfHeight = aHeight * 0.5f;
+		aWidth;
+		aDepth;
+		aHeight;
 
 		CU::GrowingArray<SVertexTypePosNormUV> vertices;
 		CU::GrowingArray<int> indexes;

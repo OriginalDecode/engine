@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineEnums.h"
 #include <Windows.h>
 
 #ifndef _WINDEF_
@@ -13,6 +12,8 @@ typedef HWND__* HWND;
 namespace Snowblind
 {
 	class CDirectX11;
+	class Font;
+
 	class CEngine
 	{
 	public:
@@ -23,6 +24,8 @@ namespace Snowblind
 		static void Present();
 		static void Clear();
 		CDirectX11* GetAPI();
+
+
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		~CEngine();
@@ -31,7 +34,7 @@ namespace Snowblind
 
 		static CEngine* myInstance;
 		CDirectX11* myAPI;
-
+		Font* myFont;
 		float myWindowWidth;
 		float myWindowHeight;
 

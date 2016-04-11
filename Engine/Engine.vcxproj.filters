@@ -73,13 +73,13 @@
     <ClInclude Include="DirectX11.h">
       <Filter>APIs\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Font.h" />
     <ClInclude Include="stdafx.h">
       <Filter>precompiled</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="FontManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -112,12 +112,12 @@
     <ClCompile Include="DirectX11.cpp">
       <Filter>APIs\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Font.cpp" />
     <ClCompile Include="stdafx.cpp">
       <Filter>precompiled</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="FontManager.cpp" />
   </ItemGroup>
 </Project>

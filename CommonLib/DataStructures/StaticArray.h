@@ -86,7 +86,8 @@ namespace CommonUtilities
 	{
 		for (int i = 0; i < SizeType; ++i)
 		{
-			SAFE_DELETE(myData[i]);
+			delete myData[i];
+			myData[i] = nullptr;
 		}
 	}
 

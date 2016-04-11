@@ -33,7 +33,7 @@
 #define PHYSX_LOG(...)		DL_WRITELOG("Physics",	__VA_ARGS__)
 #define ENGINE_LOG(...)		DL_WRITELOG("Engine",	__VA_ARGS__)
 #define RESOURCE_LOG(...)	DL_WRITELOG("Resource", __VA_ARGS__)
-
+#define FONT_LOG(...)		DL_WRITELOG("Font", __VA_ARGS__)
 //expressions
 #define ENGINE_LOG_EXP(expression, ...)		if(expression) { DL_WRITELOG("Engine",__VA_ARGS__)}
 #else
@@ -59,6 +59,7 @@
 #define PHYSX_LOG(...)		
 #define ENGINE_LOG(...)		
 #define RESOURCE_LOG(...)	
+#define FONT_LOG(...)
 
 //expressions
 #define ENGINE_LOG_EXP(expression, ...)		
@@ -76,6 +77,7 @@ namespace DL_Debug
 			Physics,
 			Resource,
 			Engine,
+			Font,
 			_COUNT
 		};
 

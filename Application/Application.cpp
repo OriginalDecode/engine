@@ -9,16 +9,16 @@
 #include <EngineDefines.h>
 #include "EffectContainer.h"
 #include "../Input/InputWrapper.h"
-
+#include <FontManager.h>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 CApplication::CApplication()
 {
-	CU::TimeManager::Create();
 }
 
 CApplication::~CApplication()
 {
+	SAFE_DELETE(myFontManager);
 	SAFE_DELETE(myWorldScene);
 	SAFE_DELETE(myInstance);
 	SAFE_DELETE(myModel);
@@ -41,13 +41,19 @@ void CApplication::OnResume()
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
+	CU::TimeManager::Create();
+
 	myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, Vector3f(0.f, 0.f, 25.f));
 	myWorldScene = new Snowblind::CScene();
 	myWorldScene->Initiate(myCamera);
 
+	myFontManager = new Snowblind::CFontManager();
+	myFontManager->Initiate();
+	myFontManager->LoadFont("Data/Font/OpenSans-Light.ttf", 16);
+
 	myModel = new Snowblind::CModel(myCamera);
 	myModel->CreateCube("Data/Shaders/Cube.fx", 1.f, 1.f, 1.f);
-	
+
 	//myTexturedModel = new Snowblind::CModel(myCamera);
 	//myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
 	myInstance = new Snowblind::CInstance(myModel);
@@ -68,11 +74,6 @@ bool CApplication::Update()
 
 	UpdateInput(deltaTime);
 	myWorldScene->Update(deltaTime);
-	/*for (int i = 0; i < myInstances.Size(); ++i)
-	{
-		myInstances[i]->Update(((90.f / 180.f)*float(PI)) * deltaTime);
-		myInstances[i]->Render(*myCamera);
-	}*/
 	Render();
 	return true;
 }

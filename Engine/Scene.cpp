@@ -32,7 +32,6 @@ namespace Snowblind
 		{
 			myInstances[i]->Update(((90.f / 180.f)*float(3.14f)) * aDeltaTime);
 		}
-
 	}
 
 	void CScene::AddToScene(CInstance* anInstance)

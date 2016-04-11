@@ -40,10 +40,12 @@
     <ClInclude Include="Math\Vector\Vector3decl.h" />
     <ClInclude Include="Math\Vector\Vector4.h" />
     <ClInclude Include="Math\Vector\Vector4decl.h" />
+    <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp" />
     <ClCompile Include="JSON\JSONReader.cpp" />
+    <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DBC8372D-E04F-4BBB-8964-12022ADCA9F6}</ProjectGuid>

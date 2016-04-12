@@ -56,7 +56,7 @@ namespace Snowblind
 		for (int i = 0; i < 128; i++) // I want to loop the first 256 characters
 		{
 			int glyphIndex = FT_Get_Char_Index(myFace, i);
-			error = FT_Load_Glyph(myFace, 'a', FT_LOAD_RENDER);
+			error = FT_Load_Glyph(myFace, i, FT_LOAD_RENDER);
 			DL_ASSERT_EXP(!error, "Failed to load glyph!");
 			FT_GlyphSlot slot = myFace->glyph;
 			FT_Bitmap bitmap = slot->bitmap;

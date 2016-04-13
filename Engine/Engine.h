@@ -9,8 +9,16 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
+
 namespace Snowblind
 {
+	struct SWindowSize
+	{
+		SWindowSize(float aWidth, float aHeight) : myWidth(aWidth), myHeight(aHeight) {};
+		float myWidth;
+		float myHeight;
+	};
+
 	class CDirectX11;
 	class Font;
 
@@ -24,7 +32,7 @@ namespace Snowblind
 		static void Present();
 		static void Clear();
 		CDirectX11* GetAPI();
-
+		const SWindowSize& GetWindowSize() const;
 
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
@@ -35,8 +43,7 @@ namespace Snowblind
 		static CEngine* myInstance;
 		CDirectX11* myAPI;
 		Font* myFont;
-		float myWindowWidth;
-		float myWindowHeight;
+		SWindowSize myWindowSize;
 
 		HWND myHWND;
 

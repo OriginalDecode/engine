@@ -13,8 +13,7 @@ namespace Snowblind
 	CEngine* CEngine::myInstance = nullptr;
 
 	CEngine::CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc)
-		: myWindowWidth(aWindowWidth)
-		, myWindowHeight(aWindowHeight)
+		: myWindowSize(aWindowWidth, aWindowHeight)
 	{
 		CreateAppWindow(anInstance, aWndProc);
 		CU::Input::InputWrapper::Create(myHWND, anInstance);
@@ -61,6 +60,11 @@ namespace Snowblind
 		myInstance->myAPI->Clear();
 	}
 
+	const Snowblind::SWindowSize& CEngine::GetWindowSize() const
+	{
+		return myWindowSize;
+	}
+
 	void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)
 	{
 		WNDCLASSEX wc;
@@ -75,15 +79,15 @@ namespace Snowblind
 		wc.lpszClassName = "WindowsClass";
 
 		RegisterClassEx(&wc);
-		float width = (GetSystemMetrics(SM_CXSCREEN)* 0.5f) - (myWindowWidth * 0.5f);
-		float height = (GetSystemMetrics(SM_CYSCREEN)* 0.5f) - (myWindowHeight * 0.5f);
+		float width = (GetSystemMetrics(SM_CXSCREEN)* 0.5f) - (myWindowSize.myWidth * 0.5f);
+		float height = (GetSystemMetrics(SM_CYSCREEN)* 0.5f) - (myWindowSize.myHeight * 0.5f);
 		myHWND = CreateWindow(
 			"WindowsClass",
 			NULL, WS_OVERLAPPEDWINDOW, //Windowed
 			static_cast<int>(width),
 			static_cast<int>(height),
-			static_cast<int>(myWindowWidth),
-			static_cast<int>(myWindowHeight),
+			static_cast<int>(myWindowSize.myWidth),
+			static_cast<int>(myWindowSize.myHeight),
 			NULL, NULL,
 			GetModuleHandle(NULL), NULL);
 

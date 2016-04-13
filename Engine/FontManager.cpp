@@ -81,11 +81,10 @@ namespace Snowblind
 			{
 				for (int x = 0; x < bitmap.width; x++)
 				{
-					//gData[2 * (x + y * w)] = 255;
-					gData[2 * (x + y * w)] = bitmap.buffer[x + width * y];
+					gData[2 * (x + y * w)] = 255;
+					gData[2 * (x + y * w) + 1] = bitmap.buffer[x + width * y];
 				}
 			}
-
 
 			D3D11_SUBRESOURCE_DATA data;
 			data.pSysMem = gData;

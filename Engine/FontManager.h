@@ -14,14 +14,14 @@ namespace Snowblind
 		CFontManager();
 		~CFontManager();
 		void Initiate();
-		void LoadFont(const char* aFontPath, short aFontHeight);
+		void LoadFont(const char* aFontPath, short aFontWidth);
 	private:
 
 		ID3D11Device* myDevice;
 		FT_LibraryRec_* myLibrary;
 		FT_FaceRec_* myFace;
 		const char* myFontPath;
-		short myFontHeight;
+		short myFontWidth;
 		CU::StaticArray<CTexture*, CHAR_COUNT> myTextures;
 
 

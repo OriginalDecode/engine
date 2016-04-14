@@ -34,16 +34,20 @@ namespace Snowblind
 		DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
 	}
 
-	void CFontManager::LoadFont(const char* aFontPath, short aFontHeight)
+	void CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
 	{
-		myFontHeight = aFontHeight;
+		myFontWidth = aFontWidth;
 		myFontPath = aFontPath;
 
 		int error = FT_New_Face(myLibrary, myFontPath, 0, &myFace);
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
-		error = FT_Set_Pixel_Sizes(myFace, 0, aFontHeight);
+
+		error = FT_Set_Pixel_Sizes(myFace, aFontWidth, 0);
 		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
+
+	//	error = FT_Set_Char_Size(myFace, aFontHeight, aFontHeight, 72, 72);
+
 
 		for (int i = 65; i < 128; i++)
 		{
@@ -57,6 +61,7 @@ namespace Snowblind
 				continue;
 			//DL_ASSERT_EXP(!error, "Failed to load glyph!");
 
+			myFace->glyph->format = FT_GLYPH_FORMAT_BITMAP;
 			FT_GlyphSlot slot = myFace->glyph;
 			FT_Bitmap bitmap = slot->bitmap;
 			bitmap.pixel_mode = FT_PIXEL_MODE_GRAY;

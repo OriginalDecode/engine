@@ -7,3 +7,6 @@
 #define PI 3.14159265359
 
 #define DEFERREDCONTEXT
+
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))

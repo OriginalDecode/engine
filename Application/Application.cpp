@@ -49,7 +49,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	myFontManager = new Snowblind::CFontManager();
 	myFontManager->Initiate();
-	myFontManager->LoadFont("Data/Font/OpenSans-Light.ttf", 16);
+	myFontManager->LoadFont("Data/Font/OpenSans-Light.ttf", 128);
 
 	myModel = new Snowblind::CModel(myCamera);
 	myModel->CreateCube("Data/Shaders/Cube.fx", 1.f, 1.f, 1.f);

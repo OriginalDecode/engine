@@ -11,6 +11,7 @@
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
+	CDirectX11* CEngine::myAPI = nullptr;
 
 	CEngine::CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc)
 		: myWindowSize(aWindowWidth, aWindowHeight)
@@ -48,6 +49,11 @@ namespace Snowblind
 	CEngine* CEngine::GetInstance()
 	{
 		return myInstance;
+	}
+
+	CDirectX11* CEngine::GetDirectX()
+	{
+		return myAPI;
 	}
 
 	void CEngine::Present()

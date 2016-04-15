@@ -22,10 +22,5 @@ namespace Snowblind
 		FT_FaceRec_* myFace;
 		const char* myFontPath;
 		short myFontWidth;
-		CU::StaticArray<CTexture*, CHAR_COUNT> myTextures;
-
-
-
-
 	};
 };

@@ -29,14 +29,13 @@ namespace Snowblind
 	{
 		myFontPath = nullptr;
 		myDevice = nullptr;
-		myTextures.DeleteAll();
 		FT_Done_Face(myFace);
 		FT_Done_FreeType(myLibrary);
 	}
 
 	void CFontManager::Initiate()
 	{
-		myDevice = CEngine::GetInstance()->GetAPI()->GetDevice();
+		myDevice = CEngine::GetDirectX()->GetDevice(); //Obtain the device.
 		int error = FT_Init_FreeType(&myLibrary);
 		DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
 	}
@@ -53,37 +52,26 @@ namespace Snowblind
 		//error = FT_Set_Pixel_Sizes(myFace, aFontWidth, 0);
 		error = FT_Set_Char_Size(myFace, (aFontWidth * 64), 0, 300, 300);
 		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
-
-
-
-		//	error = FT_Set_Char_Size(myFace, aFontHeight, aFontHeight, 72, 72);
-
 		CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
-
 		for (int i = 65; i < 128; i++)
 		{
 			error = FT_Load_Char(myFace, i, FT_LOAD_RENDER);
-
-			if (error) //Replace with better error handling.
-				continue;
-			//DL_ASSERT_EXP(!error, "Failed to load glyph!");
-
+			DL_ASSERT_EXP(!error, "Failed to load glyph!");
 			FT_GlyphSlot slot = myFace->glyph;
 			slot->format = FT_GLYPH_FORMAT_BITMAP;
 			FT_Bitmap bitmap = slot->bitmap;
 			bitmap.pixel_mode = FT_PIXEL_MODE_MONO;
 			FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
 			// FT_RENDER_MODE_NORMAL
-			int height = (bitmap.rows);
-			int width = (bitmap.width);
-			int pitch = bitmap.pitch;
 
+			int height = bitmap.rows;
+			int width = bitmap.width;
+			int pitch = bitmap.pitch;
 			int gHeight = slot->metrics.height;
 			int gWidth = slot->metrics.width;
 
 			unsigned char* buffer = bitmap.buffer;
 			int* gData = new int[width*height];
-
 
 			for (int x = 0; x < width; x++)
 			{
@@ -93,14 +81,14 @@ namespace Snowblind
 					{
 						continue;
 					}
-
 					int& saved = gData[y * bitmap.width + x];
 					saved = 0;
 					saved |= bitmap.buffer[y * bitmap.width + x];
+					int copySaved = saved;
 					saved = CL::Color32Reverse(saved);
 				}
 			}
-
+			FONT_LOG("Successfully created & flipped bitmap");
 
 
 			D3D11_SUBRESOURCE_DATA data;
@@ -108,7 +96,7 @@ namespace Snowblind
 			data.SysMemPitch = pitch * 4;
 
 			D3D11_TEXTURE2D_DESC info;
-			info.Width = width ;
+			info.Width = width;
 			info.Height = height;
 			info.MipLevels = 1;
 			info.ArraySize = 1;
@@ -137,7 +125,7 @@ namespace Snowblind
 			format = D3DX11_IFF_PNG;
 #endif
 			HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
-			CEngine::GetInstance()->GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
+			CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 			delete[] gData;
 			gData = nullptr;
 			texture->Release();

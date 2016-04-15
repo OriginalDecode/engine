@@ -1,5 +1,4 @@
 #include "DL_Debug.h"
-
 namespace DL_Debug
 {
 	Debug* Debug::myInstance = nullptr;

@@ -20,14 +20,13 @@ namespace Snowblind
 	};
 
 	class CDirectX11;
-	class Font;
-
 	class CEngine
 	{
 	public:
 		static void Create(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		static void Destroy();
 		static CEngine* GetInstance();
+		static CDirectX11* GetDirectX();
 
 		static void Present();
 		static void Clear();
@@ -41,8 +40,7 @@ namespace Snowblind
 		void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
 
 		static CEngine* myInstance;
-		CDirectX11* myAPI;
-		Font* myFont;
+		static CDirectX11* myAPI;
 		SWindowSize myWindowSize;
 
 		HWND myHWND;

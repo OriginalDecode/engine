@@ -4,6 +4,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
+#include FT_BITMAP_H
 
 #include <D3DX11.h>
 #include <D3D11.h>
@@ -12,6 +13,11 @@
 #include "Texture.h"
 #include <Utilities.h>
 #include "EngineDefines.h"
+
+#define SAVE_DDS
+#ifndef SAVE_DDS
+#define SAVE_PNG
+#endif
 
 namespace Snowblind
 {
@@ -50,14 +56,14 @@ namespace Snowblind
 
 
 
-	//	error = FT_Set_Char_Size(myFace, aFontHeight, aFontHeight, 72, 72);
+		//	error = FT_Set_Char_Size(myFace, aFontHeight, aFontHeight, 72, 72);
 
 		CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
 
 		for (int i = 65; i < 128; i++)
 		{
 			error = FT_Load_Char(myFace, i, FT_LOAD_RENDER);
-			
+
 			if (error) //Replace with better error handling.
 				continue;
 			//DL_ASSERT_EXP(!error, "Failed to load glyph!");
@@ -65,10 +71,44 @@ namespace Snowblind
 			FT_GlyphSlot slot = myFace->glyph;
 			slot->format = FT_GLYPH_FORMAT_BITMAP;
 			FT_Bitmap bitmap = slot->bitmap;
-			FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);  
+			FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
+
+			int height = bitmap.rows;
+			int width = bitmap.width;
+			int pitch = bitmap.pitch;
+			unsigned char* buffer = bitmap.buffer;
+			unsigned char* gData = new unsigned char[width*height];
+
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < height; x++)
+				{
+					gData[(y*width) + x] = buffer[(y*width) + x];
+				}
+			}
+
+			/*
+			for (int fill = 0; fill < height * width; fill++)
+			{
+				gData[fill] = 255;
+			}
+			std::vector<char> charData;
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < width; x++)
+				{
+					charData.push_back(buffer[(y*height) + x]);
+				}
+			}
+
+			for (int sizeOf = 0; sizeOf < charData.size(); sizeOf++)
+			{
+				gData[sizeOf] = charData[sizeOf];
+			}
+			*/
 
 			D3D11_SUBRESOURCE_DATA data;
-			data.pSysMem = bitmap.buffer;
+			data.pSysMem = gData;
 			data.SysMemPitch = bitmap.pitch;
 
 			D3D11_TEXTURE2D_DESC info;
@@ -88,11 +128,22 @@ namespace Snowblind
 			myDevice->CreateTexture2D(&info, &data, &texture);
 			DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 
-			std::stringstream ss;
-			ss << "Glyphs/Glyph_" << i << ".dds";
-			HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, D3DX11_IMAGE_FILE_FORMAT::D3DX11_IFF_DDS, ss.str().c_str());
-			CEngine::GetInstance()->GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
 
+
+			std::stringstream ss;
+			D3DX11_IMAGE_FILE_FORMAT format;
+#ifdef SAVE_DDS
+			ss << "Glyphs/Glyph_" << i << ".dds";
+			format = D3DX11_IFF_DDS;
+#endif
+#ifdef SAVE_PNG
+			ss << "Glyphs/Glyph_" << i << ".png";
+			format = D3DX11_IFF_PNG;
+#endif
+			HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
+			CEngine::GetInstance()->GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
+			delete[] gData;
+			gData = nullptr;
 			texture->Release();
 		}
 	}

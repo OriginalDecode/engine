@@ -51,7 +51,7 @@ namespace Snowblind
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
 
 		//error = FT_Set_Pixel_Sizes(myFace, aFontWidth, 0);
-		error = FT_Set_Char_Size(myFace, aFontWidth * 64, 0, 300, 300);
+		error = FT_Set_Char_Size(myFace, (aFontWidth * 64), 0, 300, 300);
 		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
 
 
@@ -71,49 +71,44 @@ namespace Snowblind
 			FT_GlyphSlot slot = myFace->glyph;
 			slot->format = FT_GLYPH_FORMAT_BITMAP;
 			FT_Bitmap bitmap = slot->bitmap;
-			FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
-
-			int height = bitmap.rows;
-			int width = bitmap.width;
+			bitmap.pixel_mode = FT_PIXEL_MODE_MONO;
+			FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
+			// FT_RENDER_MODE_NORMAL
+			int height = (bitmap.rows);
+			int width = (bitmap.width);
 			int pitch = bitmap.pitch;
+
+			int gHeight = slot->metrics.height;
+			int gWidth = slot->metrics.width;
+
+
 			unsigned char* buffer = bitmap.buffer;
-			unsigned char* gData = new unsigned char[width*height];
+			int* gData = new int[width*height];
 
-			for (int y = 0; y < height; y++)
+
+			for (int x = 0; x < width; x++)
 			{
-				for (int x = 0; x < height; x++)
+				for (int y = 0; y < height; y++)
 				{
-					gData[(y*width) + x] = buffer[(y*width) + x];
+					if (x < 0 || y < 0)
+					{
+						continue;
+					}
+
+					int& saved = gData[y * bitmap.width + x];
+					saved = 0;
+					saved |= saved & bitmap.buffer[y * bitmap.width + x];
+					saved |= 0xff000000;
 				}
 			}
-
-			/*
-			for (int fill = 0; fill < height * width; fill++)
-			{
-				gData[fill] = 255;
-			}
-			std::vector<char> charData;
-			for (int y = 0; y < height; y++)
-			{
-				for (int x = 0; x < width; x++)
-				{
-					charData.push_back(buffer[(y*height) + x]);
-				}
-			}
-
-			for (int sizeOf = 0; sizeOf < charData.size(); sizeOf++)
-			{
-				gData[sizeOf] = charData[sizeOf];
-			}
-			*/
 
 			D3D11_SUBRESOURCE_DATA data;
 			data.pSysMem = gData;
-			data.SysMemPitch = bitmap.pitch;
+			data.SysMemPitch = pitch * 4; //Use pitch for matrix effect
 
 			D3D11_TEXTURE2D_DESC info;
-			info.Width = bitmap.width;
-			info.Height = bitmap.rows;
+			info.Width = width ;
+			info.Height = height;
 			info.MipLevels = 1;
 			info.ArraySize = 1;
 			info.SampleDesc.Count = 1;

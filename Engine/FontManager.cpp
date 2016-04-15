@@ -81,7 +81,6 @@ namespace Snowblind
 			int gHeight = slot->metrics.height;
 			int gWidth = slot->metrics.width;
 
-
 			unsigned char* buffer = bitmap.buffer;
 			int* gData = new int[width*height];
 
@@ -97,14 +96,16 @@ namespace Snowblind
 
 					int& saved = gData[y * bitmap.width + x];
 					saved = 0;
-					saved |= saved & bitmap.buffer[y * bitmap.width + x];
-					saved |= 0xff000000;
+					saved |= bitmap.buffer[y * bitmap.width + x];
+					saved = CL::Color32Reverse(saved);
 				}
 			}
 
+
+
 			D3D11_SUBRESOURCE_DATA data;
 			data.pSysMem = gData;
-			data.SysMemPitch = pitch * 4; //Use pitch for matrix effect
+			data.SysMemPitch = pitch * 4;
 
 			D3D11_TEXTURE2D_DESC info;
 			info.Width = width ;

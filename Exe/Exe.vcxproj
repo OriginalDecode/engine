@@ -72,15 +72,15 @@
     <OutDir>$(SolutionDir)Workbed\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(SolutionName)_$(Configuration)</TargetName>
-    <LibraryPath>$(SolutionDir)thirdpartylib\;$(DXSDK_DIR)Lib\x86\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(DXSDK_DIR)Include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)thirdpartylib\;$(SolutionDir)DirectX11\Lib\x86\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)DirectX11\Include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Workbed\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(SolutionName)_$(Configuration)</TargetName>
-    <LibraryPath>$(SolutionDir)thirdpartylib\;$(DXSDK_DIR)Lib\x86\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(DXSDK_DIR)Include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)thirdpartylib\;$(SolutionDir)DirectX11\Lib\x86\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)DirectX11\Include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

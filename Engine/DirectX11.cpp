@@ -108,44 +108,46 @@ namespace Snowblind
 #endif
 		UINT featureCount = ARRAYSIZE(requested_feature_levels);
 
-		JSONReader reader("Data/Config/game.json");
-		std::string adapterString;
-		reader.ForceReadElement("GraphicsAdapter", adapterString);
+		//Make it work later.
 
-		IDXGIAdapter* adapterToUse;
-		adapterToUse = myAdapters[adapterString];
-		myActiveAdapter = adapterString;
+	///*	JSONReader reader("Data/Config/game.json");
+	//	std::string adapterString;
+	//	reader.ForceReadElement("GraphicsAdapter", adapterString);*/
 
-		D3D_DRIVER_TYPE type = D3D_DRIVER_TYPE_NULL;
-		if (adapterToUse == nullptr)
-		{
-			myActiveAdapter = "Unknown";
-			type = D3D_DRIVER_TYPE_HARDWARE;
-		}
-		else if(type)
-		{
-			type = D3D_DRIVER_TYPE_HARDWARE;
-		}
+	///*	IDXGIAdapter* adapterToUse;
+	//	adapterToUse = myAdapters[adapterString];
+	//	myActiveAdapter = adapterString;*/
 
-		HRESULT hr = D3D11CreateDeviceAndSwapChain(
-			adapterToUse,
-			type,
-			nullptr,
-			createDeviceFlags,
-			requested_feature_levels,
-			featureCount,
-			D3D11_SDK_VERSION,
-			&scDesc,
-			&mySwapchain,
-			&myDevice,
-			nullptr,
-			&myContext);
+	//	/*D3D_DRIVER_TYPE type = D3D_DRIVER_TYPE_NULL;
+	//	if (adapterToUse == nullptr)
+	//	{
+	//		myActiveAdapter = "Unknown";
+	//		type = D3D_DRIVER_TYPE_HARDWARE;
+	//	}
+	//	else if(type)
+	//	{
+	//		type = D3D_DRIVER_TYPE_HARDWARE;
+	//	}*/
 
+	//	HRESULT hr = D3D11CreateDeviceAndSwapChain(
+	//		adapterToUse,
+	//		type,
+	//		nullptr,
+	//		createDeviceFlags,
+	//		requested_feature_levels,
+	//		featureCount,
+	//		D3D11_SDK_VERSION,
+	//		&scDesc,
+	//		&mySwapchain,
+	//		&myDevice,
+	//		nullptr,
+	//		&myContext);
+		HRESULT hr;
 		if (myDevice == nullptr)
 		{
 			hr = D3D11CreateDeviceAndSwapChain(
 				nullptr,
-				type,
+				D3D_DRIVER_TYPE_HARDWARE,
 				nullptr,
 				0,
 				requested_feature_levels,

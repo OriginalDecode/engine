@@ -179,6 +179,7 @@
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Surface.h" />
@@ -196,6 +197,7 @@
     <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -54,11 +54,19 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myModel = new Snowblind::CModel(myCamera);
 	myModel->CreateCube("Data/Shaders/Cube.fx", 1.f, 1.f, 1.f);
 
-	//myTexturedModel = new Snowblind::CModel(myCamera);
-	//myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
+	myTexturedModel = new Snowblind::CModel(myCamera);
+	myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
+
+	Snowblind::CEffectContainer::GetInstance()->GetEffect("Data/Shaders/TexturedCube.fx")->SetAlbedo(myFontManager->GetShaderResource());
+
 	myInstance = new Snowblind::CInstance(myModel);
 	myInstance->SetPosition({ 0.f, 0.f, 0.f });
 	myWorldScene->AddToScene(myInstance);
+
+	myInstance = new Snowblind::CInstance(myTexturedModel);
+	myInstance->SetPosition({ 0.f,5.f,0.f });
+	myWorldScene->AddToScene(myInstance);
+
 }
 
 bool CApplication::Update()

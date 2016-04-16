@@ -13,6 +13,7 @@
 #include "Texture.h"
 #include <Utilities.h>
 #include "EngineDefines.h"
+#include <Math/Vector/Vector.h>
 
 #define SAVE_DDS
 #ifndef SAVE_DDS
@@ -38,18 +39,17 @@ namespace Snowblind
 		myDevice = CEngine::GetDirectX()->GetDevice(); //Obtain the device.
 		int error = FT_Init_FreeType(&myLibrary);
 		DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
+		myPacker.Initiate(512, 512);
 	}
 
 	void CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
 	{
 		myFontWidth = aFontWidth;
 		myFontPath = aFontPath;
-
 		int error = FT_New_Face(myLibrary, myFontPath, 0, &myFace);
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
 
-		//error = FT_Set_Pixel_Sizes(myFace, aFontWidth, 0);
 		error = FT_Set_Char_Size(myFace, (aFontWidth * 64), 0, 300, 300);
 		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
 		CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
@@ -62,7 +62,6 @@ namespace Snowblind
 			FT_Bitmap bitmap = slot->bitmap;
 			bitmap.pixel_mode = FT_PIXEL_MODE_MONO;
 			FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
-			// FT_RENDER_MODE_NORMAL
 
 			int height = bitmap.rows;
 			int width = bitmap.width;
@@ -84,12 +83,11 @@ namespace Snowblind
 					int& saved = gData[y * bitmap.width + x];
 					saved = 0;
 					saved |= bitmap.buffer[y * bitmap.width + x];
-					int copySaved = saved;
 					saved = CL::Color32Reverse(saved);
 				}
 			}
-			FONT_LOG("Successfully created & flipped bitmap");
 
+			FONT_LOG("Successfully created & flipped bitmap");
 
 			D3D11_SUBRESOURCE_DATA data;
 			data.pSysMem = gData;
@@ -112,26 +110,38 @@ namespace Snowblind
 			myDevice->CreateTexture2D(&info, &data, &texture);
 			DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 
+			ID3D11ShaderResourceView* shaderResource;
+			myDevice->CreateShaderResourceView(texture, nullptr, &shaderResource);
+			myTopNode = myPacker.Insert(width, height, shaderResource);
 
+//			std::stringstream ss;
+//			D3DX11_IMAGE_FILE_FORMAT format;
+//#ifdef SAVE_DDS
+//			ss << "Glyphs/Glyph_" << i << ".dds";
+//			format = D3DX11_IFF_DDS;
+//#endif
+//#ifdef SAVE_PNG
+//			ss << "Glyphs/Glyph_" << i << ".png";
+//			format = D3DX11_IFF_PNG;
+//#endif
+//			HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
+//			CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
+//			texture->Release();
 
-			std::stringstream ss;
-			D3DX11_IMAGE_FILE_FORMAT format;
-#ifdef SAVE_DDS
-			ss << "Glyphs/Glyph_" << i << ".dds";
-			format = D3DX11_IFF_DDS;
-#endif
-#ifdef SAVE_PNG
-			ss << "Glyphs/Glyph_" << i << ".png";
-			format = D3DX11_IFF_PNG;
-#endif
-			HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
-			CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 			delete[] gData;
 			gData = nullptr;
-			texture->Release();
 		}
 	}
 
 
+	ID3D11ShaderResourceView* CFontManager::GetShaderResource()
+	{
+		return myPacker.GetRoot()->myImage;
+	}
+
+	void CFontManager::BuildAtlas()
+	{
+		
+	}
 
 };

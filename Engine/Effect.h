@@ -8,6 +8,7 @@ struct ID3DX11EffectTechnique;
 struct ID3DX11EffectMatrixVariable;
 struct ID3DX11EffectVariable;
 struct ID3DX11EffectShaderResourceVariable;
+struct ID3D11ShaderResourceView;
 
 namespace Snowblind
 {
@@ -25,6 +26,7 @@ namespace Snowblind
 		ID3DX11EffectTechnique* GetTechnique();
 
 		void SetAlbedo(CTexture* aTexturePtr);
+		void SetAlbedo(ID3D11ShaderResourceView* aTexturePtr);
 
 
 		template <typename T>

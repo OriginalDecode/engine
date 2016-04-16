@@ -80,6 +80,7 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="FontManager.h" />
+    <ClInclude Include="RectangleBinPack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -119,5 +120,6 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="FontManager.cpp" />
+    <ClCompile Include="RectangleBinPack.cpp" />
   </ItemGroup>
 </Project>

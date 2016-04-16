@@ -40,11 +40,20 @@ PS_INPUT VS(VS_INPUT input)
 float4 PS(PS_INPUT input) : SV_Target
 {
 
-	float3 color = AlbedoTexture.Sample(sampleLinear, input.UV);
-	float ambient = 1.f;
-	float3 ambientDiffuse = ambient * color;
+	float4 color = AlbedoTexture.Sample(sampleLinear, input.UV);
+
+	if(color.a > 0.f) //I do not want this. But how do I get past it? kek.
+	{
+		color.r = 1.f;
+		color.g = 1.f;
+		color.b = 1.f;
+	}
+		
 	
-	return float4(ambientDiffuse, 1);
+	float ambient = 1.f;
+	float4 ambientDiffuse = ambient * color;
+	
+	return float4(ambientDiffuse);
 }
 
 technique11 Render

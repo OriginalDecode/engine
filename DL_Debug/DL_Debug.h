@@ -34,6 +34,10 @@
 #define ENGINE_LOG(...)		DL_WRITELOG("Engine",	__VA_ARGS__)
 #define RESOURCE_LOG(...)	DL_WRITELOG("Resource", __VA_ARGS__)
 #define FONT_LOG(...)		DL_WRITELOG("Font", __VA_ARGS__)
+
+#define ALGORITHM_LOG(...)  DL_WRITELOG("Algorithm", __VA_ARGS__)
+#define ALGORITHM_LOG_EXP(expression, ...) if(expression){ DL_WRITELOG("Algorithm", __VA_ARGS__)}
+
 //expressions
 #define ENGINE_LOG_EXP(expression, ...)		if(expression) { DL_WRITELOG("Engine",__VA_ARGS__)}
 #else
@@ -60,9 +64,11 @@
 #define ENGINE_LOG(...)		
 #define RESOURCE_LOG(...)	
 #define FONT_LOG(...)
+#define ALGORITHM_LOG(...)
 
 //expressions
 #define ENGINE_LOG_EXP(expression, ...)		
+#define ALGORITHM_LOG_EXP(expression, ...)
 #endif
 
 namespace DL_Debug

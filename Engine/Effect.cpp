@@ -125,4 +125,12 @@ namespace Snowblind
 		myTexture->SetResource(aTexturePtr->GetShaderView());
 	}
 
+	void CEffect::SetAlbedo(ID3D11ShaderResourceView* aTexturePtr)
+	{
+		myTexture = myEffect->GetVariableByName("AlbedoTexture")->AsShaderResource();
+		Validate(myTexture, "Texture Invalid");
+
+		myTexture->SetResource(aTexturePtr);
+	}
+
 }

@@ -22,6 +22,7 @@ struct ID3D11DeviceChild;
 struct ID3D11Debug;
 struct ID3D11CommandList;
 struct IDXGIAdapter;
+struct D3D11_VIEWPORT;
 
 enum class eEngineFlags
 {
@@ -46,59 +47,58 @@ namespace Snowblind
 		CDirectX11(HWND aWindowHandle, float aWidth, float aHeight);
 
 		~CDirectX11();
-		void											Present();
-		void											Clear();
-		ID3D11Device*									GetDevice();
-		ID3D11DeviceContext*							GetContext();
-		const std::string&								GetAdapterName(unsigned short anIndex);
-		const std::string&								GetActiveAdapterName();
-		void											EnableZBuffer();
-		void											DisableZBuffer();
-		void											HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
-		const char*										GetAPIName();
+		void Present();
+		void Clear();
+		ID3D11Device* GetDevice();
+		ID3D11DeviceContext* GetContext();
+		const std::string& GetAdapterName(unsigned short anIndex);
+		const std::string& GetActiveAdapterName();
+		void EnableZBuffer();
+		void DisableZBuffer();
+		void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
+		const char*	GetAPIName();
+
+		//	Width of Viewport
+		//	Height of Viewport
+		//	Depth of Viewport (0 - 1)
+		void SetViewport(int aWidth, int aHeight, int aDepth);
+		void ResetViewport();
+		void ResetRendertarget();
 	private:
 
-		void											SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
-		void											CreateDeviceAndSwapchain();
-		void											CreateDepthBuffer();
-		void											CreateBackBuffer();
-		void											CreateViewport();
-		void											CreateDeferredContext();
-		void											CreateAdapterList();
-		void											CreateEnabledStencilStateSetup();
-		void											CreateDisabledStencilStateSetup();
+		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
+		void CreateDeviceAndSwapchain();
+		void CreateDepthBuffer();
+		void CreateBackBuffer();
+		void CreateViewport();
+		void CreateDeferredContext();
+		void CreateAdapterList();
+		void CreateEnabledStencilStateSetup();
+		void CreateDisabledStencilStateSetup();
 
-	
+		HWND myHWND;
 
-		HWND											myHWND;
-
-		ID3D11Debug										*myDebug;
-		ID3D11Device									*myDevice;
-		IDXGISwapChain									*mySwapchain;
-		ID3D11Texture2D									*myDepthBuffer;
-
-		ID3D11DeviceContext								*myContext;
-		ID3D11DeviceContext								*myDeferredContext;
-
-		ID3D11RenderTargetView							*myRenderTarget;
-		ID3D11DepthStencilView							*myDepthView;
-
-		ID3D11DepthStencilState							*myDepthStates[static_cast<int>(eDepthStencil::_COUNT)];
-
-		ID3D11CommandList								*myCommandList[2];
+		D3D11_VIEWPORT* myViewport;
+		ID3D11Debug* myDebug;
+		ID3D11Device* myDevice;
+		IDXGISwapChain* mySwapchain;
+		ID3D11Texture2D* myDepthBuffer;
+		ID3D11DeviceContext* myContext;
+		ID3D11DeviceContext* myDeferredContext;
+		ID3D11RenderTargetView* myRenderTarget;
+		ID3D11DepthStencilView* myDepthView;
+		ID3D11DepthStencilState* myDepthStates[static_cast<int>(eDepthStencil::_COUNT)];
+		ID3D11CommandList* myCommandList[2];
 
 		std::unordered_map<std::string, IDXGIAdapter*>	myAdapters;
-		std::vector<std::string>						myAdaptersName;
-		std::string										myActiveAdapter;
+		std::vector<std::string> myAdaptersName;
+		std::string myActiveAdapter;
 
-		float											myWidth;
-		float											myHeight;
+		float myWidth;
+		float myHeight;
+		const char*	myAPI;
 
-		const char*										myAPI;
-
-		std::bitset<int(eEngineFlags::_COUNT)>			myEngineFlags;
-
-
+		std::bitset<int(eEngineFlags::_COUNT)> myEngineFlags;
 	};
 
 	__forceinline const std::string& CDirectX11::GetActiveAdapterName()

@@ -7,15 +7,19 @@ struct ID3D11Device;
 struct FT_LibraryRec_;
 struct FT_FaceRec_;
 struct ID3D11ShaderResourceView;
+struct ID3D11RenderTargetView;
+struct ID3D11Texture2D;
 
 namespace Snowblind
 {
-	struct SRectangle
+	struct SColor
 	{
-		float left;
-		float top;
-		float right;
-		float bottom;
+		SColor(int color);
+		int r;
+		int g;
+		int b;
+		int a;
+		int _color;
 	};
 
 	class CTexture;
@@ -29,14 +33,15 @@ namespace Snowblind
 		ID3D11ShaderResourceView* GetShaderResource();
 	private:
 		CRectangleBinPack myPacker;
+
+		ID3D11RenderTargetView* myRenderTarget;
+		ID3D11Texture2D* myAtlas;
 		Node* myTopNode;
 		ID3D11Device* myDevice;
 		FT_LibraryRec_* myLibrary;
 		FT_FaceRec_* myFace;
 		const char* myFontPath;
 		short myFontWidth;
-
-		void BuildAtlas();
 
 	};
 };

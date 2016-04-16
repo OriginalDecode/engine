@@ -228,17 +228,15 @@ namespace Snowblind
 
 	void CDirectX11::CreateViewport()
 	{
-
-		D3D11_VIEWPORT viewport;
-		ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
-
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-		viewport.Width = FLOAT(myWidth);
-		viewport.Height = FLOAT(myHeight);
-		viewport.MinDepth = 0.f;
-		viewport.MaxDepth = 1.f;
-		myContext->RSSetViewports(1, &viewport);
+		myViewport = new D3D11_VIEWPORT();
+		//ZeroMemory(&myViewport, sizeof(D3D11_VIEWPORT));
+		myViewport->TopLeftX = 0;
+		myViewport->TopLeftY = 0;
+		myViewport->Width = FLOAT(myWidth);
+		myViewport->Height = FLOAT(myHeight);
+		myViewport->MinDepth = 0.f;
+		myViewport->MaxDepth = 1.f;
+		myContext->RSSetViewports(1, myViewport);
 	}
 
 	void CDirectX11::CreateDeferredContext()
@@ -357,6 +355,30 @@ namespace Snowblind
 	const char* CDirectX11::GetAPIName()
 	{
 		return myAPI;
+	}
+
+	void CDirectX11::SetViewport(int aWidth, int aHeight, int aDepth)
+	{
+		D3D11_VIEWPORT viewport;
+		ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+
+		viewport.TopLeftX = 0;
+		viewport.TopLeftY = 0;
+		viewport.Width = FLOAT(aWidth);
+		viewport.Height = FLOAT(aHeight);
+		viewport.MinDepth = 0.f;
+		viewport.MaxDepth = FLOAT(aDepth);
+		myContext->RSSetViewports(1, &viewport);
+	}
+
+	void CDirectX11::ResetViewport()
+	{
+		myContext->RSSetViewports(1, myViewport);
+	}
+
+	void CDirectX11::ResetRendertarget()
+	{
+		myContext->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
 	}
 
 	void CDirectX11::CreateEnabledStencilStateSetup()

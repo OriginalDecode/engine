@@ -22,6 +22,20 @@
 
 namespace Snowblind
 {
+	SColor::SColor(int color)
+		: r(0)
+		, g(0)
+		, b(0)
+		, a(0)
+		, _color(0)
+	{
+		a = (color) & 0xFF;
+		r = (color >> 8) & 0xFF;
+		g = (color >> 16) & 0xFF;
+		b = (color >> 24) & 0xFF;
+		_color = color;
+	}
+
 	CFontManager::CFontManager()
 	{
 	}
@@ -32,6 +46,8 @@ namespace Snowblind
 		myDevice = nullptr;
 		FT_Done_Face(myFace);
 		FT_Done_FreeType(myLibrary);
+		myAtlas->Release();
+		myAtlas = nullptr;
 	}
 
 	void CFontManager::Initiate()
@@ -40,6 +56,28 @@ namespace Snowblind
 		int error = FT_Init_FreeType(&myLibrary);
 		DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
 		myPacker.Initiate(512, 512);
+
+		D3D11_TEXTURE2D_DESC info;
+		info.Width = 512;
+		info.Height = 512;
+		info.MipLevels = 1;
+		info.ArraySize = 1;
+		info.SampleDesc.Count = 1;
+		info.SampleDesc.Quality = 0;
+		info.MiscFlags = 0;
+		info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.Usage = D3D11_USAGE_DEFAULT;
+		info.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		myDevice->CreateTexture2D(&info, nullptr, &myAtlas);
+
+		D3D11_RENDER_TARGET_VIEW_DESC rtd;
+		ZeroMemory(&rtd, sizeof(rtd));
+		rtd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		rtd.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		rtd.Texture2DArray.MipSlice = 0;
+		rtd.Texture2DArray.ArraySize = 1;
+		myDevice->CreateRenderTargetView(myAtlas, &rtd, &myRenderTarget);
 	}
 
 	void CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
@@ -53,6 +91,8 @@ namespace Snowblind
 		error = FT_Set_Char_Size(myFace, (aFontWidth * 64), 0, 300, 300);
 		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
 		CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
+
+
 		for (int i = 65; i < 128; i++)
 		{
 			error = FT_Load_Char(myFace, i, FT_LOAD_RENDER);
@@ -83,11 +123,18 @@ namespace Snowblind
 					int& saved = gData[y * bitmap.width + x];
 					saved = 0;
 					saved |= bitmap.buffer[y * bitmap.width + x];
+					// Remove this if statement if you only want in the alpha channel.
+					SColor color(saved);
+					if (color.a > 0)
+					{
+						saved |= 0xffffffff;
+					}
 					saved = CL::Color32Reverse(saved);
 				}
 			}
-
 			FONT_LOG("Successfully created & flipped bitmap");
+
+			CEngine::GetDirectX()->SetViewport(width, height, 0);
 
 			D3D11_SUBRESOURCE_DATA data;
 			data.pSysMem = gData;
@@ -114,23 +161,41 @@ namespace Snowblind
 			myDevice->CreateShaderResourceView(texture, nullptr, &shaderResource);
 			myTopNode = myPacker.Insert(width, height, shaderResource);
 
-//			std::stringstream ss;
-//			D3DX11_IMAGE_FILE_FORMAT format;
-//#ifdef SAVE_DDS
-//			ss << "Glyphs/Glyph_" << i << ".dds";
-//			format = D3DX11_IFF_DDS;
-//#endif
-//#ifdef SAVE_PNG
-//			ss << "Glyphs/Glyph_" << i << ".png";
-//			format = D3DX11_IFF_PNG;
-//#endif
-//			HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
-//			CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
-//			texture->Release();
+			CEngine::GetDirectX()->GetContext()->OMSetRenderTargets(1, &myRenderTarget, nullptr);
+
+			std::stringstream ss;
+			D3DX11_IMAGE_FILE_FORMAT format;
+#ifdef SAVE_DDS
+			ss << "Glyphs/Glyph_" << i << ".dds";
+			format = D3DX11_IFF_DDS;
+#endif
+#ifdef SAVE_PNG
+			ss << "Glyphs/Glyph_" << i << ".png";
+			format = D3DX11_IFF_PNG;
+#endif
+			HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
+			CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
+			texture->Release();
 
 			delete[] gData;
 			gData = nullptr;
 		}
+
+		std::stringstream ss;
+		D3DX11_IMAGE_FILE_FORMAT format;
+#ifdef SAVE_DDS
+		ss << "Glyphs/Atlas_" << ".dds";
+		format = D3DX11_IFF_DDS;
+#endif
+#ifdef SAVE_PNG
+		ss << "Glyphs/Atlas_" << ".png";
+		format = D3DX11_IFF_PNG;
+#endif
+		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), myAtlas, format, ss.str().c_str());
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
+
+		CEngine::GetDirectX()->ResetViewport();
+		CEngine::GetDirectX()->ResetRendertarget();
 	}
 
 
@@ -138,10 +203,4 @@ namespace Snowblind
 	{
 		return myPacker.GetRoot()->myImage;
 	}
-
-	void CFontManager::BuildAtlas()
-	{
-		
-	}
-
 };

@@ -81,6 +81,7 @@
     </ClInclude>
     <ClInclude Include="FontManager.h" />
     <ClInclude Include="RectangleBinPack.h" />
+    <ClInclude Include="Sprite.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -121,5 +122,6 @@
     </ClCompile>
     <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="RectangleBinPack.cpp" />
+    <ClCompile Include="Sprite.cpp" />
   </ItemGroup>
 </Project>

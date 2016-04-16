@@ -15,6 +15,7 @@ namespace Snowblind
 	struct SColor
 	{
 		SColor(int color);
+		SColor(int red, int green, int blue, int alpha);
 		int r;
 		int g;
 		int b;

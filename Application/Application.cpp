@@ -10,6 +10,7 @@
 #include "EffectContainer.h"
 #include "../Input/InputWrapper.h"
 #include <FontManager.h>
+#include <Sprite.h>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 CApplication::CApplication()
@@ -67,6 +68,11 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myInstance->SetPosition({ 0.f,5.f,0.f });
 	myWorldScene->AddToScene(myInstance);
 
+
+	mySprite = new Snowblind::CSprite(myCamera);
+	mySprite->Initiate("Data/Textures/colors.dds", { 50.f,50.f }, { 0.f,0.f });
+
+
 }
 
 bool CApplication::Update()
@@ -89,7 +95,8 @@ bool CApplication::Update()
 void CApplication::Render()
 {
 	Snowblind::CEngine::Clear();
-	myWorldScene->Render();
+	//myWorldScene->Render();
+	mySprite->Render();
 	Snowblind::CEngine::Present();
 }
 

@@ -29,11 +29,16 @@ namespace Snowblind
 		, a(0)
 		, _color(0)
 	{
-		a = (color) & 0xFF;
+		a = (color)& 0xFF;
 		r = (color >> 8) & 0xFF;
 		g = (color >> 16) & 0xFF;
 		b = (color >> 24) & 0xFF;
 		_color = color;
+	}
+
+	SColor::SColor(int red, int green, int blue, int alpha)
+	{
+		_color = (red << 24) + (green << 16) + (blue << 8) + (alpha);
 	}
 
 	CFontManager::CFontManager()
@@ -106,10 +111,9 @@ namespace Snowblind
 			int height = bitmap.rows;
 			int width = bitmap.width;
 			int pitch = bitmap.pitch;
-			int gHeight = slot->metrics.height;
-			int gWidth = slot->metrics.width;
+			//int gHeight = slot->metrics.height;
+			//int gWidth = slot->metrics.width;
 
-			unsigned char* buffer = bitmap.buffer;
 			int* gData = new int[width*height];
 
 			for (int x = 0; x < width; x++)
@@ -123,6 +127,7 @@ namespace Snowblind
 					int& saved = gData[y * bitmap.width + x];
 					saved = 0;
 					saved |= bitmap.buffer[y * bitmap.width + x];
+
 					// Remove this if statement if you only want in the alpha channel.
 					SColor color(saved);
 					if (color.a > 0)

@@ -15,6 +15,7 @@ namespace Snowblind
 	class CInstance;
 	class CScene;
 	class CFontManager;
+	class CSprite;
 };
 
 class CApplication
@@ -41,6 +42,7 @@ private:
 	Snowblind::CCamera* myCamera;
 	Snowblind::CScene* myWorldScene;
 	Snowblind::CFontManager* myFontManager;
+	Snowblind::CSprite* mySprite;
 	//Snowblind::CInstance* myInstance;
 
 };

@@ -22,6 +22,7 @@ namespace Snowblind
 		void Initiate(const std::string& aFile);
 		void SetMatrices(Matrix44f& aToWorld, Matrix44f& aToView, Matrix44f& aProjection);
 
+
 		ID3DX11Effect* GetEffect();
 		ID3DX11EffectTechnique* GetTechnique();
 

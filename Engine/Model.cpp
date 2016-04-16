@@ -18,8 +18,8 @@
 namespace Snowblind
 {
 	CModel::CModel(CCamera* aCamera)
-		: myCamera(aCamera)
 	{
+		myCamera = aCamera;
 		myAPI = CEngine::GetInstance()->GetAPI();
 		myIsTextured = false;
 	}

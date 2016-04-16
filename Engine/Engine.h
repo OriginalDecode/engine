@@ -14,6 +14,7 @@ namespace Snowblind
 {
 	struct SWindowSize
 	{
+		SWindowSize() {};
 		SWindowSize(float aWidth, float aHeight) : myWidth(aWidth), myHeight(aHeight) {};
 		float myWidth;
 		float myHeight;

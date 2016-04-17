@@ -81,7 +81,6 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	//mySprite->SetHotspot({ mySprite->GetSize().x * 0.5f, mySprite->GetSize().y * 0.5f });
 	mySprite->SetPosition({ 1280/2, 720/2});
 	my2DScene->AddToScene(mySprite);
-	//Hello
 }
 
 bool CApplication::Update()

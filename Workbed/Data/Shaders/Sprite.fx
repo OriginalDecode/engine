@@ -2,13 +2,14 @@ matrix World;
 matrix Projection;
 matrix View;
 
+float2 SpritePosition;
 Texture2D AlbedoTexture;
 
 SamplerState sampleLinear
 {
 	Filter = MIN_MAG_MIP_LINEAR;
-	AddressU = Wrap;
-	AddressV = Wrap;
+	AddressU = Clamp;
+	AddressV = Clamp;
 };
 
 struct VS_INPUT
@@ -29,8 +30,10 @@ PS_INPUT VS(VS_INPUT input)
 	
 	output.pos = mul(input.pos, World);
 	output.pos = mul(output.pos, View);
+	output.pos.x += SpritePosition.x;
+	output.pos.y += SpritePosition.y;	
 	output.pos = mul(output.pos, Projection);
-	
+		
 	output.UV = input.UV;
 	return output;
 };
@@ -38,7 +41,12 @@ PS_INPUT VS(VS_INPUT input)
 float4 PS(PS_INPUT input) : SV_Target
 {
 	float4 color = AlbedoTexture.Sample(sampleLinear,input.UV);
-	return float4(1,1,0,1);
+	return color;
+};
+
+RasterizerState RS
+{
+	CullMode = NONE;
 };
 
 technique11 Render
@@ -47,6 +55,7 @@ technique11 Render
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
+		//SetRasterizerState(RS);
 		SetPixelShader(CompileShader(ps_5_0, PS()));
 	}
 }

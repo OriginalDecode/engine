@@ -40,11 +40,25 @@ float4 PS(PS_INPUT input) : SV_Target
 {
 
 	float4 color = AlbedoTexture.Sample(sampleLinear, input.UV);
+	color.r = 1;
+	color.g = 1;
+	color.b = 1;
 	float ambient = 1.f;
 	float4 ambientDiffuse = ambient * color;
-	
 	return float4(ambientDiffuse);
 }
+
+BlendState AlphaBlend
+{
+	BlendEnable[0] = TRUE;
+	SrcBlend = SRC_ALPHA;
+	DestBlend = INV_SRC_ALPHA;
+	BlendOp = ADD;
+	SrcBlendAlpha = ONE;
+	DestBlendAlpha = ONE;
+	BlendOpAlpha = ADD;
+	RenderTargetWriteMask[0] = 0x0F;
+};
 
 technique11 Render
 {
@@ -52,6 +66,7 @@ technique11 Render
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
+		//SetBlendState(AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xFFFFFFFF);
 		SetPixelShader(CompileShader(ps_5_0, PS()));
 	}
 }

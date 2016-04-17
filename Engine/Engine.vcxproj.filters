@@ -31,12 +31,23 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{c6e20f0a-752b-4c44-9d83-08f4d88043e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sprite">
+      <UniqueIdentifier>{ac01b05d-b9c6-4f99-ae90-8db6432ad9fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{d59bf73d-12e7-43a3-81fa-4274d70f61bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\Algorithms">
+      <UniqueIdentifier>{9294ad71-b1a9-4f43-8585-e73e393e8852}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\Vertex &amp; Index Wrapper &amp; Types">
+      <UniqueIdentifier>{ed7f4016-5fff-476c-94ec-aed65f23c14d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="EngineDefines.h" />
     <ClInclude Include="Effect.h">
       <Filter>Effect</Filter>
     </ClInclude>
@@ -58,15 +69,6 @@
     <ClInclude Include="TextureContainer.h">
       <Filter>Texture</Filter>
     </ClInclude>
-    <ClInclude Include="VertexTypes.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexWrapper.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="IndexWrapper.h">
-      <Filter>Model</Filter>
-    </ClInclude>
     <ClInclude Include="Surface.h">
       <Filter>Surface</Filter>
     </ClInclude>
@@ -80,8 +82,30 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="FontManager.h" />
-    <ClInclude Include="RectangleBinPack.h" />
-    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Sprite.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteModel.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineDefines.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexWrapper.h">
+      <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexTypes.h">
+      <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexWrapper.h">
+      <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
+    </ClInclude>
+    <ClInclude Include="RectangleBinPack.h">
+      <Filter>Utilities\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexStructs.h">
+      <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -121,7 +145,14 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="FontManager.cpp" />
-    <ClCompile Include="RectangleBinPack.cpp" />
-    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteModel.cpp">
+      <Filter>Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="RectangleBinPack.cpp">
+      <Filter>Utilities\Algorithms</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

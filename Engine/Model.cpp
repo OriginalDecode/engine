@@ -14,6 +14,8 @@
 #include "VertexTypes.h"
 #include "Surface.h"
 #include "TextureContainer.h"
+#include "VertexStructs.h"
+
 
 namespace Snowblind
 {

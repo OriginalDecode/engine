@@ -9,6 +9,7 @@ struct ID3DX11EffectMatrixVariable;
 struct ID3DX11EffectVariable;
 struct ID3DX11EffectShaderResourceVariable;
 struct ID3D11ShaderResourceView;
+struct ID3DX11EffectVectorVariable;
 
 namespace Snowblind
 {
@@ -20,7 +21,6 @@ namespace Snowblind
 		~CEffect();
 
 		void Initiate(const std::string& aFile);
-		void SetMatrices(Matrix44f& aToWorld, Matrix44f& aToView, Matrix44f& aProjection);
 
 
 		ID3DX11Effect* GetEffect();
@@ -28,11 +28,13 @@ namespace Snowblind
 
 		void SetAlbedo(CTexture* aTexturePtr);
 		void SetAlbedo(ID3D11ShaderResourceView* aTexturePtr);
-
+		void SetMatrices(Matrix44f& aToWorld, Matrix44f& aToView, Matrix44f& aProjection);
+		void SetPosition(const CU::Math::Vector2<float>& aPosition);
 
 		template <typename T>
 		void Validate(T* anEffectVariable, const std::string& anErrorMessage);
 	private:
+
 
 		ID3DX11Effect* myEffect;
 
@@ -42,6 +44,7 @@ namespace Snowblind
 		ID3DX11EffectMatrixVariable* myViewMatrix;
 		ID3DX11EffectMatrixVariable* myWorldMatrix;
 		ID3DX11EffectShaderResourceVariable* myTexture;
+		ID3DX11EffectVectorVariable* mySpritePos;
 	};
 
 	__forceinline ID3DX11Effect* CEffect::GetEffect()

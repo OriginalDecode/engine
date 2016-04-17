@@ -117,6 +117,14 @@ namespace Snowblind
 		DL_ASSERT_EXP(hr == S_OK, "Failed to set projection matrix!");
 	}
 
+	void CEffect::SetPosition(const CU::Math::Vector2<float>& aPosition)
+	{
+		mySpritePos = myEffect->GetVariableByName("SpritePosition")->AsVector();
+		Validate(mySpritePos, "SpritePosition Invalid!");
+
+		mySpritePos->SetFloatVector(&aPosition.x);
+	}
+
 	void CEffect::SetAlbedo(CTexture* aTexturePtr)
 	{
 		myTexture = myEffect->GetVariableByName("AlbedoTexture")->AsShaderResource();

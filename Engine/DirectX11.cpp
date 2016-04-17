@@ -110,44 +110,44 @@ namespace Snowblind
 
 		//Make it work later.
 
-	///*	JSONReader reader("Data/Config/game.json");
-	//	std::string adapterString;
-	//	reader.ForceReadElement("GraphicsAdapter", adapterString);*/
+		JSONReader reader("Data/Config/game.json");
+		std::string adapterString;
+		reader.ForceReadElement("GraphicsAdapter", adapterString);
 
-	///*	IDXGIAdapter* adapterToUse;
-	//	adapterToUse = myAdapters[adapterString];
-	//	myActiveAdapter = adapterString;*/
+		IDXGIAdapter* adapterToUse;
+		adapterToUse = myAdapters[adapterString];
+		myActiveAdapter = adapterString;
 
-	//	/*D3D_DRIVER_TYPE type = D3D_DRIVER_TYPE_NULL;
-	//	if (adapterToUse == nullptr)
-	//	{
-	//		myActiveAdapter = "Unknown";
-	//		type = D3D_DRIVER_TYPE_HARDWARE;
-	//	}
-	//	else if(type)
-	//	{
-	//		type = D3D_DRIVER_TYPE_HARDWARE;
-	//	}*/
+		D3D_DRIVER_TYPE type = D3D_DRIVER_TYPE_NULL;
+		if (adapterToUse == nullptr)
+		{
+			myActiveAdapter = "Unknown";
+			type = D3D_DRIVER_TYPE_HARDWARE;
+		}
+		else if(type)
+		{
+			type = D3D_DRIVER_TYPE_HARDWARE;
+		}
 
-	//	HRESULT hr = D3D11CreateDeviceAndSwapChain(
-	//		adapterToUse,
-	//		type,
-	//		nullptr,
-	//		createDeviceFlags,
-	//		requested_feature_levels,
-	//		featureCount,
-	//		D3D11_SDK_VERSION,
-	//		&scDesc,
-	//		&mySwapchain,
-	//		&myDevice,
-	//		nullptr,
-	//		&myContext);
-		HRESULT hr;
+		HRESULT hr = D3D11CreateDeviceAndSwapChain(
+			adapterToUse,
+			type,
+			nullptr,
+			createDeviceFlags,
+			requested_feature_levels,
+			featureCount,
+			D3D11_SDK_VERSION,
+			&scDesc,
+			&mySwapchain,
+			&myDevice,
+			nullptr,
+			&myContext);
+
 		if (myDevice == nullptr)
 		{
 			hr = D3D11CreateDeviceAndSwapChain(
 				nullptr,
-				D3D_DRIVER_TYPE_HARDWARE,
+				type,
 				nullptr,
 				0,
 				requested_feature_levels,

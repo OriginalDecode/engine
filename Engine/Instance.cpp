@@ -5,14 +5,18 @@
 #include "Camera.h"
 namespace Snowblind
 {
-	CInstance::CInstance(CModel* aModel) 
-		: myModel(*aModel)
+	CInstance::CInstance() 
 	{
 	}
 
 
 	CInstance::~CInstance()
 	{
+	}
+
+	void CInstance::Initiate(CModel* aModel)
+	{
+		myModel = aModel;
 	}
 
 	void CInstance::Update(float aRotation)
@@ -22,13 +26,16 @@ namespace Snowblind
 
 	void CInstance::Render(CCamera& aCamera)
 	{
-		myModel.GetEffect()->SetMatrices(myOrientation, aCamera.GetOrientation(), aCamera.GetProjection());
-		myModel.Render();
+		myModel->GetEffect()->SetMatrices(myOrientation, aCamera.GetOrientation(), aCamera.GetProjection());
+		myModel->Render();
 	}
 
 	void CInstance::SetPosition(CU::Math::Vector3<float> aPosition)
 	{
 		myOrientation.SetPosition(aPosition);
 	}
-	
+
+
+
+
 };

@@ -5,3 +5,6 @@
 #include "../CommonLib/Math/Vector/Vector.h"
 #include "../CommonLib/Utilities.h"
 #include "Engine.h"
+#include "DirectX11.h"
+#include "Camera.h"
+#include "VertexStructs.h"

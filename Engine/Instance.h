@@ -7,9 +7,9 @@ namespace Snowblind
 	class CInstance
 	{
 	public:
-		CInstance(CModel* aModel);
+		CInstance();
 		~CInstance();
-
+		void Initiate(CModel* aModel);
 		void Update(float aRotation);
 		void Render(CCamera& aCamera);
 		void SetPosition(CU::Math::Vector3<float> aPosition);
@@ -19,7 +19,7 @@ namespace Snowblind
 
 		void operator=(CInstance&) = delete;
 
-		CModel& myModel;
+		CModel* myModel;
 		Matrix44f myOrientation;
 
 

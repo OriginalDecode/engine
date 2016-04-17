@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Scene.h"
 #include "Instance.h"
+#include "Sprite.h"
 namespace Snowblind
 {
 	CScene::CScene()
@@ -13,16 +14,29 @@ namespace Snowblind
 		myInstances.RemoveAll();
 	}
 
-	void CScene::Initiate(CCamera* aCamera)
+	void CScene::Initiate(CCamera* aCamera, bool aIs2DScene)
 	{
 		myCamera = aCamera;
+		myIs2DScene = aIs2DScene;
 	}
 
 	void CScene::Render()
 	{
-		for (int i = 0; i < myInstances.Size(); i++)
+		if (!myIs2DScene)
 		{
-			myInstances[i]->Render(*myCamera);
+			for (int i = 0; i < myInstances.Size(); i++)
+			{
+				myInstances[i]->Render(*myCamera);
+			}
+		}
+		else
+		{
+			CEngine::GetDirectX()->DisableZBuffer();
+			for (int i = 0; i < my2DInstances.Size(); i++)
+			{
+				my2DInstances[i]->Render(myCamera);
+			}
+			CEngine::GetDirectX()->EnableZBuffer();
 		}
 	}
 
@@ -37,6 +51,11 @@ namespace Snowblind
 	void CScene::AddToScene(CInstance* anInstance)
 	{
 		myInstances.Add(anInstance);
+	}
+
+	void CScene::AddToScene(CSprite* aSprite)
+	{
+		my2DInstances.Add(aSprite);
 	}
 
 };

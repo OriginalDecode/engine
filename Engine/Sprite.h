@@ -1,58 +1,28 @@
 #pragma once
-#include <Math/Vector/Vector.h>
-#include <DataStructures/GrowingArray.h>
-
-struct ID3D11InputLayout;
-struct D3D11_INPUT_ELEMENT_DESC;
-struct ID3D11Buffer;
-
-struct SVertexTypePos
-{
-	CU::Math::Vector3<float> myPosition;
-	CU::Math::Vector2<float> myUV;
-
-};
+#include <Math/Matrix/Matrix.h>
 
 namespace Snowblind
 {
-	class CTexture;
 	class CCamera;
-	class CEffect;
-	
-	struct SVertexIndexWrapper;
-	struct SVertexBufferWrapper;
-	struct SVertexDataWrapper;
-	struct SIndexBufferWrapper;
+	class CSpriteModel;
 
 	class CSprite
 	{
 	public:
-		CSprite(CCamera* aCamera);
+		CSprite();
 		~CSprite();
 		void Initiate(const char* aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
-		void Render();
+		void Render(CCamera* aCamera);
+		const CU::Math::Vector2<float>& GetPosition();
+		const CU::Math::Vector2<float>& GetSize();
 
+		void SetPosition(const CU::Math::Vector2<float>& aPosition);
+		void SetHotspot(const CU::Math::Vector2<float>& aHotspot);
+		void SetSize(const CU::Math::Vector2<float>& aSize);
 	private:
-		void InitiateVertexBuffer();
-		void InitiateIndexBuffer();
 
-		const char* myTexturePath;
-		SWindowSize myWindowSize;
-		CTexture* myTexture;
-		CCamera* myCamera;
-		CEffect* myEffect;
-
-		CU::Math::Vector2<float> myPosition;
-		CU::Math::Vector2<float> mySize;
-
-		SVertexIndexWrapper* myIndexData;
-		SVertexDataWrapper* myVertexData;
-
-		SVertexBufferWrapper* myVertexBuffer;
-		SIndexBufferWrapper* myIndexBuffer;
-
-		CU::GrowingArray<SVertexTypePos> myVertices;
-		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
-		ID3D11InputLayout* myVertexLayout;
+		CSpriteModel* mySprite;
+		CU::Math::Matrix44<float> myOrientation;
+		CU::Math::Vector2<float> myHotspot;
 	};
 };

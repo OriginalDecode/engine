@@ -29,7 +29,7 @@ namespace Snowblind
 		, a(0)
 		, _color(0)
 	{
-		a = (color)& 0xFF;
+		a = (color) & 0xFF;
 		r = (color >> 8) & 0xFF;
 		g = (color >> 16) & 0xFF;
 		b = (color >> 24) & 0xFF;
@@ -129,11 +129,11 @@ namespace Snowblind
 					saved |= bitmap.buffer[y * bitmap.width + x];
 
 					// Remove this if statement if you only want in the alpha channel.
-					SColor color(saved);
-					if (color.a > 0)
-					{
-						saved |= 0xffffffff;
-					}
+					//SColor color(saved);
+					//if (color.a > 0)
+					//{
+					//	saved |= 0xffffffff;
+					//}
 					saved = CL::Color32Reverse(saved);
 				}
 			}

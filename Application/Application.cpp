@@ -19,6 +19,7 @@ CApplication::CApplication()
 
 CApplication::~CApplication()
 {
+	SAFE_DELETE(mySprite);
 	SAFE_DELETE(myFontManager);
 	SAFE_DELETE(myWorldScene);
 	SAFE_DELETE(myInstance);
@@ -45,8 +46,13 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	CU::TimeManager::Create();
 
 	myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, Vector3f(0.f, 0.f, 25.f));
+	my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, Vector3f(0.f, 0.f, 25.f));
+
 	myWorldScene = new Snowblind::CScene();
 	myWorldScene->Initiate(myCamera);
+
+	my2DScene = new Snowblind::CScene();
+	my2DScene->Initiate(my2DCamera, true);
 
 	myFontManager = new Snowblind::CFontManager();
 	myFontManager->Initiate();
@@ -60,18 +66,21 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	Snowblind::CEffectContainer::GetInstance()->GetEffect("Data/Shaders/TexturedCube.fx")->SetAlbedo(myFontManager->GetShaderResource());
 
-	myInstance = new Snowblind::CInstance(myModel);
+	myInstance = new Snowblind::CInstance();
+	myInstance->Initiate(myModel);
 	myInstance->SetPosition({ 0.f, 0.f, 0.f });
 	myWorldScene->AddToScene(myInstance);
 
-	myInstance = new Snowblind::CInstance(myTexturedModel);
+	myInstance = new Snowblind::CInstance();
+	myInstance->Initiate(myTexturedModel);
 	myInstance->SetPosition({ 0.f,5.f,0.f });
 	myWorldScene->AddToScene(myInstance);
 
-
-	mySprite = new Snowblind::CSprite(myCamera);
+	mySprite = new Snowblind::CSprite();
 	mySprite->Initiate("Data/Textures/colors.dds", { 50.f,50.f }, { 0.f,0.f });
-
+	//mySprite->SetHotspot({ mySprite->GetSize().x * 0.5f, mySprite->GetSize().y * 0.5f });
+	mySprite->SetPosition({ 1280/2, 720/2});
+	my2DScene->AddToScene(mySprite);
 
 }
 
@@ -95,8 +104,8 @@ bool CApplication::Update()
 void CApplication::Render()
 {
 	Snowblind::CEngine::Clear();
-	//myWorldScene->Render();
-	mySprite->Render();
+	myWorldScene->Render();
+	my2DScene->Render();
 	Snowblind::CEngine::Present();
 }
 

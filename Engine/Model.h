@@ -2,23 +2,10 @@
 #include <string>
 #include "../CommonLib/Math/Matrix/Matrix44.h"
 #include <DataStructures/GrowingArray.h>
+#include "VertexStructs.h"
+
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
-struct ID3D11Buffer;
-
-struct SVertexTypePosCol
-{
-	CU::Math::Vector3<float> myPosition;
-	CU::Math::Vector4<float> myColor;
-}; 
-
-struct SVertexTypePosNormUV
-{
-	CU::Math::Vector3<float> myPosition;
-	CU::Math::Vector3<float> myNormal;
-	CU::Math::Vector2<float> myUV;
-};
-
 
 namespace Snowblind
 {

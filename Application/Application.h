@@ -39,11 +39,15 @@ private:
 	Snowblind::CModel* myModel;
 	Snowblind::CModel* myTexturedModel;
 	Snowblind::CInstance* myInstance;
-	Snowblind::CCamera* myCamera;
-	Snowblind::CScene* myWorldScene;
+
 	Snowblind::CFontManager* myFontManager;
 	Snowblind::CSprite* mySprite;
-	//Snowblind::CInstance* myInstance;
+
+	Snowblind::CCamera* myCamera;
+	Snowblind::CCamera* my2DCamera;
+
+	Snowblind::CScene* myWorldScene;
+	Snowblind::CScene* my2DScene;
 
 };
 

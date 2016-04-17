@@ -19,7 +19,7 @@ namespace Snowblind
 
 
 		XMMATRIX orthogonal;
-		orthogonal = XMMatrixOrthographicLH(aWidth, aHeight, 0.f, 1.f);
+		orthogonal = XMMatrixOrthographicLH(aWidth, aHeight, 0.1f, 100.f);
 		XMFLOAT4X4 orthMiddleHand;
 		XMStoreFloat4x4(&orthMiddleHand, orthogonal);
 		myOrthogonalMatrix.Init(reinterpret_cast<float*>(orthMiddleHand.m));

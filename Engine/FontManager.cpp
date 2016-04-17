@@ -29,7 +29,7 @@ namespace Snowblind
 		, a(0)
 		, _color(0)
 	{
-		a = (color) & 0xFF;
+		a = (color)& 0xFF;
 		r = (color >> 8) & 0xFF;
 		g = (color >> 16) & 0xFF;
 		b = (color >> 24) & 0xFF;
@@ -51,8 +51,10 @@ namespace Snowblind
 		myDevice = nullptr;
 		FT_Done_Face(myFace);
 		FT_Done_FreeType(myLibrary);
-		myAtlas->Release();
+		delete myAtlas;
 		myAtlas = nullptr;
+		//myAtlas->Release();
+		//myAtlas = nullptr;
 	}
 
 	void CFontManager::Initiate()
@@ -62,27 +64,30 @@ namespace Snowblind
 		DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
 		myPacker.Initiate(512, 512);
 
-		D3D11_TEXTURE2D_DESC info;
-		info.Width = 512;
-		info.Height = 512;
-		info.MipLevels = 1;
-		info.ArraySize = 1;
-		info.SampleDesc.Count = 1;
-		info.SampleDesc.Quality = 0;
-		info.MiscFlags = 0;
-		info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		info.Usage = D3D11_USAGE_DEFAULT;
-		info.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		myDevice->CreateTexture2D(&info, nullptr, &myAtlas);
+		//D3D11_TEXTURE2D_DESC info;
+		//info.Width = 512;
+		//info.Height = 512;
+		//info.MipLevels = 1;
+		//info.ArraySize = 1;
+		//info.SampleDesc.Count = 1;
+		//info.SampleDesc.Quality = 0;
+		//info.MiscFlags = 0;
+		//info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		//info.Usage = D3D11_USAGE_DEFAULT;
+		//info.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		//info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		//myDevice->CreateTexture2D(&info, nullptr, &myAtlas);
+		//
+		//D3D11_RENDER_TARGET_VIEW_DESC rtd;
+		//ZeroMemory(&rtd, sizeof(rtd));
+		//rtd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		//rtd.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		//rtd.Texture2DArray.MipSlice = 0;
+		//rtd.Texture2DArray.ArraySize = 1;
+		//myDevice->CreateRenderTargetView(myAtlas, &rtd, &myRenderTarget);
 
-		D3D11_RENDER_TARGET_VIEW_DESC rtd;
-		ZeroMemory(&rtd, sizeof(rtd));
-		rtd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		rtd.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-		rtd.Texture2DArray.MipSlice = 0;
-		rtd.Texture2DArray.ArraySize = 1;
-		myDevice->CreateRenderTargetView(myAtlas, &rtd, &myRenderTarget);
+		myAtlas = new int[512 * 512];
+		ZeroMemory(myAtlas, 512 * 512);
 	}
 
 	void CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
@@ -96,6 +101,13 @@ namespace Snowblind
 		error = FT_Set_Char_Size(myFace, (aFontWidth * 64), 0, 300, 300);
 		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
 		CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
+
+		int atlasX = 0;
+		int atlasY = 0;
+		int atlasWidth = 512;
+		int atlasHeight = 512;
+		int currentMaxY = 0;
+
 
 
 		for (int i = 65; i < 128; i++)
@@ -116,6 +128,13 @@ namespace Snowblind
 
 			int* gData = new int[width*height];
 
+
+			//if (atlasX + width > atlasWidth)
+			//{
+			//	atlasX = 0;
+			//	atlasY = currentMaxY;
+			//}
+
 			for (int x = 0; x < width; x++)
 			{
 				for (int y = 0; y < height; y++)
@@ -127,19 +146,12 @@ namespace Snowblind
 					int& saved = gData[y * bitmap.width + x];
 					saved = 0;
 					saved |= bitmap.buffer[y * bitmap.width + x];
-
-					// Remove this if statement if you only want in the alpha channel.
-					//SColor color(saved);
-					//if (color.a > 0)
-					//{
-					//	saved |= 0xffffffff;
-					//}
 					saved = CL::Color32Reverse(saved);
 				}
 			}
 			FONT_LOG("Successfully created & flipped bitmap");
 
-			CEngine::GetDirectX()->SetViewport(width, height, 0);
+			//CEngine::GetDirectX()->SetViewport(width, height, 0);
 
 			D3D11_SUBRESOURCE_DATA data;
 			data.pSysMem = gData;
@@ -164,9 +176,37 @@ namespace Snowblind
 
 			ID3D11ShaderResourceView* shaderResource;
 			myDevice->CreateShaderResourceView(texture, nullptr, &shaderResource);
-			myTopNode = myPacker.Insert(width, height, shaderResource);
 
-			CEngine::GetDirectX()->GetContext()->OMSetRenderTargets(1, &myRenderTarget, nullptr);
+
+
+
+			if (atlasX + width > atlasWidth)
+			{
+				atlasX = 0;
+				atlasY = currentMaxY;
+			}
+
+			int startX = atlasX;
+			int startY = atlasY;
+
+			for (int x = startX; x < startX + width; x++)
+			{
+				for (int y = startY; y < startY + height; y++)
+				{
+				
+					myAtlas[(y * atlasWidth) + x] = gData[((height - y) * width ) + (x - width)];
+
+					if (y > currentMaxY)
+					{
+						currentMaxY = y;
+					}
+				}
+			}
+
+			atlasX = startX + width;
+
+
+			//	CEngine::GetDirectX()->GetContext()->OMSetRenderTargets(1, &myRenderTarget, nullptr);
 
 			std::stringstream ss;
 			D3DX11_IMAGE_FILE_FORMAT format;
@@ -186,6 +226,29 @@ namespace Snowblind
 			gData = nullptr;
 		}
 
+		D3D11_SUBRESOURCE_DATA data;
+		data.pSysMem = myAtlas;
+		data.SysMemPitch = 512 * 4;
+
+
+		D3D11_TEXTURE2D_DESC info;
+		info.Width = 512;
+		info.Height = 512;
+		info.MipLevels = 1;
+		info.ArraySize = 1;
+		info.SampleDesc.Count = 1;
+		info.SampleDesc.Quality = 0;
+		info.MiscFlags = 0;
+		info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.Usage = D3D11_USAGE_DYNAMIC;
+		info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		ID3D11Texture2D* texture;
+		myDevice->CreateTexture2D(&info, &data, &texture);
+		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
+
+
 		std::stringstream ss;
 		D3DX11_IMAGE_FILE_FORMAT format;
 #ifdef SAVE_DDS
@@ -196,16 +259,16 @@ namespace Snowblind
 		ss << "Glyphs/Atlas_" << ".png";
 		format = D3DX11_IFF_PNG;
 #endif
-		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), myAtlas, format, ss.str().c_str());
+		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 
-		CEngine::GetDirectX()->ResetViewport();
-		CEngine::GetDirectX()->ResetRendertarget();
+		//CEngine::GetDirectX()->ResetViewport();
+		//CEngine::GetDirectX()->ResetRendertarget();
 	}
 
 
-	ID3D11ShaderResourceView* CFontManager::GetShaderResource()
-	{
-		return myPacker.GetRoot()->myImage;
-	}
+	//ID3D11ShaderResourceView* CFontManager::GetShaderResource()
+	//{
+	//	return myPacker.GetRoot()->myImage;
+	//}
 };

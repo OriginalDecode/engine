@@ -64,7 +64,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myTexturedModel = new Snowblind::CModel(myCamera);
 	myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
 
-	Snowblind::CEffectContainer::GetInstance()->GetEffect("Data/Shaders/TexturedCube.fx")->SetAlbedo(myFontManager->GetShaderResource());
+	//Snowblind::CEffectContainer::GetInstance()->GetEffect("Data/Shaders/TexturedCube.fx")->SetAlbedo(myFontManager->GetShaderResource());
 
 	myInstance = new Snowblind::CInstance();
 	myInstance->Initiate(myModel);

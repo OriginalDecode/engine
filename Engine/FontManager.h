@@ -36,13 +36,12 @@ namespace Snowblind
 		CRectangleBinPack myPacker;
 
 		ID3D11RenderTargetView* myRenderTarget;
-		ID3D11Texture2D* myAtlas;
 		Node* myTopNode;
 		ID3D11Device* myDevice;
 		FT_LibraryRec_* myLibrary;
 		FT_FaceRec_* myFace;
 		const char* myFontPath;
 		short myFontWidth;
-
+		int* myAtlas;
 	};
 };

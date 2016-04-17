@@ -156,6 +156,8 @@ namespace DL_Debug
 			break;
 		case eDEBUGLOG::Engine:
 			myDebugLogs[eDEBUGLOG::Engine] = FALSE;
+		case eDEBUGLOG::Font:
+			myDebugLogs[eDEBUGLOG::Font] = FALSE;
 			break;
 		}
 	}
@@ -179,6 +181,8 @@ namespace DL_Debug
 		case eDEBUGLOG::Engine:
 			myDebugLogs[eDEBUGLOG::Engine] = TRUE;
 			break;
+		case eDEBUGLOG::Font:
+			myDebugLogs[eDEBUGLOG::Font] = TRUE;
 		}
 		myActiveLogCount++;
 	}

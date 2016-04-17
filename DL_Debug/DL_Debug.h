@@ -120,6 +120,6 @@ namespace DL_Debug
 		bool myPhysXDebug;
 		bool myResourceDebug;
 
-		std::bitset<5> myDebugLogs;
+		std::bitset<static_cast<int>(eDEBUGLOG::_COUNT)> myDebugLogs;
 	};
 };

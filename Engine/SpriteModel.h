@@ -1,7 +1,7 @@
 #pragma once
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
-
+struct ID3D11ShaderResourceView;
 namespace Snowblind
 {
 	class CTexture;
@@ -20,6 +20,8 @@ namespace Snowblind
 		~CSpriteModel();
 
 		void Initiate(const char* aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+		void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+
 		void Render();
 		CEffect* GetEffect();
 		CU::Math::Vector2<float> GetSize();

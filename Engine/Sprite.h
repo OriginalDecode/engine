@@ -1,6 +1,8 @@
 #pragma once
 #include <Math/Matrix/Matrix.h>
 
+struct ID3D11ShaderResourceView;
+
 namespace Snowblind
 {
 	class CCamera;
@@ -12,6 +14,8 @@ namespace Snowblind
 		CSprite();
 		~CSprite();
 		void Initiate(const char* aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+		void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+
 		void Render(CCamera* aCamera);
 		const CU::Math::Vector2<float>& GetPosition();
 		const CU::Math::Vector2<float>& GetSize();

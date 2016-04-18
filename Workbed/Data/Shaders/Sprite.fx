@@ -41,12 +41,14 @@ PS_INPUT VS(VS_INPUT input)
 float4 PS(PS_INPUT input) : SV_Target
 {
 	float4 color = AlbedoTexture.Sample(sampleLinear,input.UV);
-	return color;
-};
-
-RasterizerState RS
-{
-	CullMode = NONE;
+	float4 finalColor;
+	if(color.a > 0)
+	{
+		finalColor.rgba = 1;
+	}
+	
+	
+	return finalColor;
 };
 
 technique11 Render
@@ -55,7 +57,6 @@ technique11 Render
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
-		//SetRasterizerState(RS);
 		SetPixelShader(CompileShader(ps_5_0, PS()));
 	}
 }

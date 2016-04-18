@@ -1,7 +1,6 @@
 #pragma once
 #include <DataStructures/StaticArray.h>
 #include <unordered_map>
-#include "RectangleBinPack.h"
 
 struct ID3D11Device;
 struct FT_LibraryRec_;
@@ -33,15 +32,12 @@ namespace Snowblind
 		void LoadFont(const char* aFontPath, short aFontWidth);
 		ID3D11ShaderResourceView* GetShaderResource();
 	private:
-		CRectangleBinPack myPacker;
-
-		ID3D11RenderTargetView* myRenderTarget;
-		Node* myTopNode;
 		ID3D11Device* myDevice;
 		FT_LibraryRec_* myLibrary;
 		FT_FaceRec_* myFace;
 		const char* myFontPath;
 		short myFontWidth;
 		int* myAtlas;
+		ID3D11ShaderResourceView* myAtlasView;
 	};
 };

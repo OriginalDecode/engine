@@ -88,6 +88,69 @@ namespace Snowblind
 		InitiateIndexBuffer();
 	}
 
+	void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+	{
+		myWindowSize = CEngine::GetInstance()->GetWindowSize();
+		mySize = aSize;
+		myPosition = aPosition;
+		myEffect = CEffectContainer::GetInstance()->GetEffect("Data/Shaders/Sprite.fx");
+		myEffect->SetAlbedo(aShaderResource);
+		myVertexFormat.Init(2);
+		myVertexFormat.Add(VertexLayoutPosUV[0]);
+		myVertexFormat.Add(VertexLayoutPosUV[1]);
+
+		CU::GrowingArray<SVertexTypePosUV> vertices;
+		CU::GrowingArray<int> indices;
+		float halfWidth = mySize.x * 0.5f;
+		float halfHeight = mySize.y * 0.5f;
+		SVertexTypePosUV v;
+		v.myPosition = { -halfWidth, -halfHeight, 0 };
+		v.myUV = { 0, 1 };
+		vertices.Add(v);
+
+		v.myPosition = { -halfWidth, halfHeight, 0 };
+		v.myUV = { 0, 0 };
+		vertices.Add(v);
+
+		v.myPosition = { halfWidth, -halfHeight, 0 };
+		v.myUV = { 1, 1 };
+		vertices.Add(v);
+
+		v.myPosition = { halfWidth, halfHeight, 0 };
+		v.myUV = { 1, 0 };
+		vertices.Add(v);
+
+
+		indices.Add(0);
+		indices.Add(1);
+		indices.Add(2);
+
+		indices.Add(3);
+		indices.Add(2);
+		indices.Add(1);
+
+		myVertexBuffer = new SVertexBufferWrapper;
+		myVertexData = new SVertexDataWrapper;
+		myIndexBuffer = new SIndexBufferWrapper;
+		myIndexData = new SVertexIndexWrapper;
+
+		myVertexData->myNrOfVertexes = vertices.Size();
+		myVertexData->myStride = sizeof(SVertexTypePosUV);
+		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
+		myVertexData->myVertexData = new char[myVertexData->mySize]();
+		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
+
+		myIndexData->myFormat = DXGI_FORMAT_R32_UINT;
+		myIndexData->myIndexCount = 6;
+		myIndexData->mySize = myIndexData->myIndexCount * 4;
+
+		myIndexData->myIndexData = new char[myIndexData->mySize];
+		memcpy(myIndexData->myIndexData, &indices[0], myIndexData->mySize);
+
+		InitiateVertexBuffer();
+		InitiateIndexBuffer();
+	}
+
 	void CSpriteModel::Render()
 	{
 		if (!myEffect)

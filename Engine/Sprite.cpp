@@ -23,6 +23,12 @@ namespace Snowblind
 		myHotspot.y = 0;
 	}
 
+	void CSprite::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+	{
+		mySprite = new CSpriteModel();
+		mySprite->Initiate(aShaderResource, aSize, aPosition);
+	}
+
 	void CSprite::Render(CCamera* aCamera)
 	{
 		mySprite->GetEffect()->SetMatrices(myOrientation, aCamera->GetOrientation(), aCamera->GetOrthogonalMatrix());

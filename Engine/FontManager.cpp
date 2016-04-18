@@ -53,6 +53,8 @@ namespace Snowblind
 		FT_Done_FreeType(myLibrary);
 		delete myAtlas;
 		myAtlas = nullptr;
+		myAtlasView->Release();
+		myAtlasView = nullptr;
 		//myAtlas->Release();
 		//myAtlas = nullptr;
 	}
@@ -62,7 +64,6 @@ namespace Snowblind
 		myDevice = CEngine::GetDirectX()->GetDevice(); //Obtain the device.
 		int error = FT_Init_FreeType(&myLibrary);
 		DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
-		myPacker.Initiate(512, 512);
 
 		//D3D11_TEXTURE2D_DESC info;
 		//info.Width = 512;
@@ -189,12 +190,11 @@ namespace Snowblind
 			int startX = atlasX;
 			int startY = atlasY;
 
-			for (int x = startX; x < startX + width; x++)
+			for (int y = startY; y < startY + height; y++)
 			{
-				for (int y = startY; y < startY + height; y++)
+				for (int x = startX; x < startX + width; x++)
 				{
-				
-					myAtlas[(y * atlasWidth) + x] = gData[((height - y) * width ) + (x - width)];
+					myAtlas[(y * atlasWidth) + x] = gData[((height - y) * width) + (x - width)];
 
 					if (y > currentMaxY)
 					{
@@ -247,7 +247,7 @@ namespace Snowblind
 		ID3D11Texture2D* texture;
 		myDevice->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
-
+		myDevice->CreateShaderResourceView(texture, nullptr, &myAtlasView);
 
 		std::stringstream ss;
 		D3DX11_IMAGE_FILE_FORMAT format;
@@ -267,8 +267,10 @@ namespace Snowblind
 	}
 
 
-	//ID3D11ShaderResourceView* CFontManager::GetShaderResource()
-	//{
-	//	return myPacker.GetRoot()->myImage;
-	//}
+	ID3D11ShaderResourceView* CFontManager::GetShaderResource()
+	{
+		return myAtlasView;
+	}
+
+
 };

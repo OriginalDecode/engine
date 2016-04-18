@@ -77,7 +77,9 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myWorldScene->AddToScene(myInstance);
 
 	mySprite = new Snowblind::CSprite();
-	mySprite->Initiate("Data/Textures/colors.dds", { 50.f,50.f }, { 0.f,0.f });
+	//mySprite->Initiate("Data/Textures/colors.dds", { 50.f,50.f }, { 0.f,0.f });
+	mySprite->Initiate(myFontManager->GetShaderResource(), { 512.f,512.f }, { 0.f,0.f });
+
 	//mySprite->SetHotspot({ mySprite->GetSize().x * 0.5f, mySprite->GetSize().y * 0.5f });
 	mySprite->SetPosition({ 1280/2, 720/2});
 	my2DScene->AddToScene(mySprite);

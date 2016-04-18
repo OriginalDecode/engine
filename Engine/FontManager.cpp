@@ -88,8 +88,8 @@ namespace Snowblind
 
 		int atlasX = 0;
 		int atlasY = 0;
-		int atlasWidth = 512;
-		int atlasHeight = 512;
+		int atlasWidth = 512; //have to be replaced.
+		int atlasHeight = 512; //have to be replaced
 		int currentMaxY = 0;
 
 		for (int i = 33; i < 126; i++)

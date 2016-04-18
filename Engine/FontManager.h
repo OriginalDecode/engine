@@ -1,7 +1,6 @@
 #pragma once
 #include <DataStructures/StaticArray.h>
 #include <unordered_map>
-//#include "RectangleBinPack.h"
 struct ID3D11Device;
 struct FT_LibraryRec_;
 struct FT_FaceRec_;
@@ -22,6 +21,24 @@ namespace Snowblind
 		int _color;
 	};
 
+	struct SCharData
+	{
+		CU::Math::Vector2<float> myTopLeftUV;
+		short myWidth;
+		short myHeight;
+		char myChar;
+	};
+
+	struct SFontData
+	{
+		ID3D11ShaderResourceView* myAtlasView;
+		int myAtlasWidth; //Should be dynamic?
+		int myAtlasHeight; //Dynamic?
+		FT_FaceRec_* myFaceData;
+		std::unordered_map<char, SCharData> myCharData;
+	};
+
+
 	class CTexture;
 	class CFontManager
 	{
@@ -32,17 +49,15 @@ namespace Snowblind
 		void LoadFont(const char* aFontPath, short aFontWidth);
 		ID3D11ShaderResourceView* GetShaderResource();
 	private:
-
-		//CRectangleBinPack myPacker;
-
 		ID3D11Device* myDevice;
 		FT_LibraryRec_* myLibrary;
-		FT_FaceRec_* myFace;
+		FT_FaceRec_* myFace; //Create more of these if you want more fonts at the same time.
 		const char* myFontPath;
 		short myFontWidth;
 		int* myAtlas;
-		ID3D11ShaderResourceView* myAtlasView;
+		ID3D11ShaderResourceView* myAtlasView; //Will have to
 
 
 	};
 };
+

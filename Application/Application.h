@@ -44,6 +44,8 @@ private:
 
 	Snowblind::CFontManager* myFontManager;
 	Snowblind::CSprite* mySprite;
+	Snowblind::CSprite* mySprite2;
+
 
 	Snowblind::CCamera* myCamera;
 	Snowblind::CCamera* my2DCamera;

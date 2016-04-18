@@ -31,6 +31,7 @@ namespace Snowblind
 
 	void CSprite::Render(CCamera* aCamera)
 	{
+		mySprite->GetEffect()->SetPosition(myPosition);
 		mySprite->GetEffect()->SetMatrices(myOrientation, aCamera->GetOrientation(), aCamera->GetOrthogonalMatrix());
 		mySprite->Render();
 	}
@@ -52,7 +53,8 @@ namespace Snowblind
 		pos.y = -pos.y - myHotspot.y;
 		pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
 		pos.y = pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f);
-		mySprite->GetEffect()->SetPosition(pos);
+		myPosition = pos;
+		mySprite->GetEffect()->SetPosition(myPosition);
 	}
 
 	void CSprite::SetHotspot(const CU::Math::Vector2<float>& aHotspot)

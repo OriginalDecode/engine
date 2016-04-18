@@ -8,8 +8,8 @@ Texture2D AlbedoTexture;
 SamplerState sampleLinear
 {
 	Filter = MIN_MAG_MIP_LINEAR;
-	AddressU = Clamp;
-	AddressV = Clamp;
+	AddressU = Wrap;
+	AddressV = Wrap;
 };
 
 struct VS_INPUT
@@ -42,8 +42,9 @@ PS_INPUT VS(VS_INPUT input)
 
 float4 PS(PS_INPUT input) : SV_Target
 {
-	float4 color = AlbedoTexture.Sample(sampleLinear,input.UV).aaaa;	
-	color.rgba *= input.color.rgba;
+	float delta = 0.3f;
+	float4 color = AlbedoTexture.Sample(sampleLinear,input.UV).aaaa;
+	color.rgba *= input.color.rgba;	
 	return color;
 };
 

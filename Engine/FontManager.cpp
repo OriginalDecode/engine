@@ -67,10 +67,8 @@ namespace Snowblind
 		myDevice = CEngine::GetDirectX()->GetDevice(); //Obtain the device.
 		int error = FT_Init_FreeType(&myLibrary);
 		DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
-
 		myAtlas = new int[512 * 512];
 		ZeroMemory(myAtlas, (512 * 512) * sizeof(int));
-		//myPacker.Initiate(512, 512);
 	}
 
 	void CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
@@ -106,59 +104,6 @@ namespace Snowblind
 
 			int height = bitmap.rows;
 			int width = bitmap.width;
-			int pitch = bitmap.pitch;
-			int gHeight = slot->metrics.height;
-			int gWidth = slot->metrics.width;
-
-			int* gData = new int[width*height];
-
-			for (int x = 0; x < width; x++)
-			{
-				for (int y = 0; y < height; y++)
-				{
-					if (x < 0 || y < 0)
-					{
-						continue;
-					}
-					int& saved = gData[y * bitmap.width + x];
-					saved = 0;
-					saved |= bitmap.buffer[y * bitmap.width + x];
-
-					SColor color(saved);
-
-					if (color.a > 1)
-					{
-						saved |= 0xffffffff;
-					}
-
-					saved = CL::Color32Reverse(saved);
-				}
-			}
-			FONT_LOG("Successfully created & flipped bitmap");
-
-			D3D11_SUBRESOURCE_DATA data;
-			data.pSysMem = gData;
-			data.SysMemPitch = pitch * 4;
-
-			D3D11_TEXTURE2D_DESC info;
-			info.Width = width;
-			info.Height = height;
-			info.MipLevels = 1;
-			info.ArraySize = 1;
-			info.SampleDesc.Count = 1;
-			info.SampleDesc.Quality = 0;
-			info.MiscFlags = 0;
-			info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-			info.Usage = D3D11_USAGE_DYNAMIC;
-			info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-			info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-			ID3D11Texture2D* texture;
-			myDevice->CreateTexture2D(&info, &data, &texture);
-			DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
-
-			ID3D11ShaderResourceView* shaderResource;
-			myDevice->CreateShaderResourceView(texture, nullptr, &shaderResource);
 
 			if (atlasX + width > atlasWidth)
 			{
@@ -204,8 +149,6 @@ namespace Snowblind
 			CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 			texture->Release();
 #endif
-			delete[] gData;
-			gData = nullptr;
 		}
 
 		D3D11_SUBRESOURCE_DATA data;

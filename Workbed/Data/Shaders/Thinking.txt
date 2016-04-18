@@ -1,0 +1,50 @@
+
+
+struct SCharData
+{
+	int glyphWidth;
+	int glyphHeight;
+
+	CU::Math::Vector2<float> myTopLeftUV;
+	char myChar; //debug reasons.
+	
+}
+
+struct SFontData
+{
+	int atlasWidth;
+	int atlasHeight;
+	std::unordered_map<char,SCharData> myCharData;
+	ID3D11ShaderResourceView* myAtlasResource;
+}
+
+
+class CFont
+{
+	public:
+		CFont();
+		~CFont();
+		//Check if the text is a static text, in that case save the entire texture to a new texture to reuse later?
+		void Print(const std::string& aStringToPrint, const vec2& pos)
+		{
+			for each char in string
+				get char from myFontData->myCharData[char]
+					send to graphics card with
+						{ width, height, position} //Vector2+Vector3
+						Draw it at the corresponded position.
+						Do like we do with particles.
+						Create a quad from the position on the graphics card
+						then apply the texture coord to it, and draw it.
+		
+		}
+		void LoadFont(const char* aFontPath, int aSize)
+		{
+			myFontData = myManagerPtr->LoadFont(aFontPath, aSize);
+		}
+		
+	private:
+
+	CFontManager* myManagerPtr; //Should be Singleton or create with each font? Memory?
+	SFontData* myFontData;
+	
+}

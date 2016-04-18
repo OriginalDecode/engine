@@ -109,8 +109,6 @@ namespace Snowblind
 		int atlasHeight = 512;
 		int currentMaxY = 0;
 
-
-
 		for (int i = 65; i < 128; i++)
 		{
 			error = FT_Load_Char(myFace, i, FT_LOAD_RENDER);
@@ -128,14 +126,7 @@ namespace Snowblind
 			//int gWidth = slot->metrics.width;
 
 			int* gData = new int[width*height];
-
-
-			//if (atlasX + width > atlasWidth)
-			//{
-			//	atlasX = 0;
-			//	atlasY = currentMaxY;
-			//}
-
+		
 			for (int x = 0; x < width; x++)
 			{
 				for (int y = 0; y < height; y++)
@@ -151,8 +142,6 @@ namespace Snowblind
 				}
 			}
 			FONT_LOG("Successfully created & flipped bitmap");
-
-			//CEngine::GetDirectX()->SetViewport(width, height, 0);
 
 			D3D11_SUBRESOURCE_DATA data;
 			data.pSysMem = gData;
@@ -178,9 +167,6 @@ namespace Snowblind
 			ID3D11ShaderResourceView* shaderResource;
 			myDevice->CreateShaderResourceView(texture, nullptr, &shaderResource);
 
-
-
-
 			if (atlasX + width > atlasWidth)
 			{
 				atlasX = 0;
@@ -205,9 +191,6 @@ namespace Snowblind
 
 			atlasX = startX + width;
 
-
-			//	CEngine::GetDirectX()->GetContext()->OMSetRenderTargets(1, &myRenderTarget, nullptr);
-
 			std::stringstream ss;
 			D3DX11_IMAGE_FILE_FORMAT format;
 #ifdef SAVE_DDS
@@ -229,7 +212,6 @@ namespace Snowblind
 		D3D11_SUBRESOURCE_DATA data;
 		data.pSysMem = myAtlas;
 		data.SysMemPitch = 512 * 4;
-
 
 		D3D11_TEXTURE2D_DESC info;
 		info.Width = 512;
@@ -262,10 +244,7 @@ namespace Snowblind
 		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 
-		//CEngine::GetDirectX()->ResetViewport();
-		//CEngine::GetDirectX()->ResetRendertarget();
 	}
-
 
 	ID3D11ShaderResourceView* CFontManager::GetShaderResource()
 	{

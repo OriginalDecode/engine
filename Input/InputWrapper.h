@@ -137,6 +137,8 @@ namespace CommonUtilities
 			void CaptureWindowsCursor();
 			void ReleaseCursor();
 
+			static void SetActiveWindow(bool aIsWindowActive);
+
 		private:
 			static InputWrapper* myInstance;
 			InputWrapper(HWND aHWND, HINSTANCE hInstance);
@@ -157,6 +159,7 @@ namespace CommonUtilities
 			HWND myHWND;
 
 			bool myCursorIsLocked;
+			bool myWindowIsActive;
 			float myMouseSpeed;
 			float myAcceleration;
 

@@ -30,6 +30,8 @@ public:
 
 	void OnPause();
 	void OnResume();
+	void OnInactive();
+	void OnActive();
 
 private:
 	void UpdateInput(float aDeltaTime);

@@ -14,7 +14,8 @@ namespace CommonUtilities
 			RECT desktop;
 			const HWND hDesktop = GetDesktopWindow();
 			GetWindowRect(hDesktop, &desktop);
-			Initiate(aHWND, hInstance);
+			Initiate(aHWND, hInstance); 
+			myWindowIsActive = true;
 		}
 
 		InputWrapper::~InputWrapper()
@@ -68,7 +69,7 @@ namespace CommonUtilities
 
 		void InputWrapper::Update()
 		{
-			if (GetActiveWindow() != false)
+			if (myWindowIsActive == true)
 			{
 
 				memcpy_s(&myPrevKeyState, sizeof(myPrevKeyState), myKeyState, sizeof(myKeyState));
@@ -183,5 +184,12 @@ namespace CommonUtilities
 		{
 			myCursorIsLocked = false;
 		}
+
+		void InputWrapper::SetActiveWindow(bool aIsWindowActive)
+		{
+			if (myInstance != nullptr)
+				myInstance->myWindowIsActive = aIsWindowActive;
+		}
+
 	}
 }

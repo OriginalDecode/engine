@@ -41,6 +41,16 @@ void CApplication::OnResume()
 	CU::TimeManager::GetInstance()->Start();
 }
 
+void CApplication::OnInactive()
+{
+	CU::Input::InputWrapper::SetActiveWindow(false);
+}
+
+void CApplication::OnActive()
+{
+	CU::Input::InputWrapper::SetActiveWindow(true);
+}
+
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
 	CU::TimeManager::Create();

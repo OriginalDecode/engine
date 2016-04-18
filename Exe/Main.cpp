@@ -68,9 +68,11 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	case WM_ACTIVATE:
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
+			newApplication->OnInactive();
 		}
 		else
 		{
+			newApplication->OnActive();
 		}
 		break;
 	case WM_ENTERSIZEMOVE:

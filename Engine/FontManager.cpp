@@ -65,30 +65,8 @@ namespace Snowblind
 		int error = FT_Init_FreeType(&myLibrary);
 		DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
 
-		//D3D11_TEXTURE2D_DESC info;
-		//info.Width = 512;
-		//info.Height = 512;
-		//info.MipLevels = 1;
-		//info.ArraySize = 1;
-		//info.SampleDesc.Count = 1;
-		//info.SampleDesc.Quality = 0;
-		//info.MiscFlags = 0;
-		//info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		//info.Usage = D3D11_USAGE_DEFAULT;
-		//info.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		//info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		//myDevice->CreateTexture2D(&info, nullptr, &myAtlas);
-		//
-		//D3D11_RENDER_TARGET_VIEW_DESC rtd;
-		//ZeroMemory(&rtd, sizeof(rtd));
-		//rtd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		//rtd.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-		//rtd.Texture2DArray.MipSlice = 0;
-		//rtd.Texture2DArray.ArraySize = 1;
-		//myDevice->CreateRenderTargetView(myAtlas, &rtd, &myRenderTarget);
-
 		myAtlas = new int[512 * 512];
-		ZeroMemory(myAtlas, 512 * 512);
+		ZeroMemory(myAtlas, (512 * 512) * sizeof(int));
 	}
 
 	void CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
@@ -109,7 +87,7 @@ namespace Snowblind
 		int atlasHeight = 512;
 		int currentMaxY = 0;
 
-		for (int i = 65; i < 128; i++)
+		for (int i = 33; i < 126; i++)
 		{
 			error = FT_Load_Char(myFace, i, FT_LOAD_RENDER);
 			DL_ASSERT_EXP(!error, "Failed to load glyph!");
@@ -122,11 +100,11 @@ namespace Snowblind
 			int height = bitmap.rows;
 			int width = bitmap.width;
 			int pitch = bitmap.pitch;
-			//int gHeight = slot->metrics.height;
-			//int gWidth = slot->metrics.width;
+			int gHeight = slot->metrics.height;
+			int gWidth = slot->metrics.width;
 
 			int* gData = new int[width*height];
-		
+
 			for (int x = 0; x < width; x++)
 			{
 				for (int y = 0; y < height; y++)
@@ -173,23 +151,28 @@ namespace Snowblind
 				atlasY = currentMaxY;
 			}
 
-			int startX = atlasX;
-			int startY = atlasY;
-
-			for (int y = startY; y < startY + height; y++)
+			for (int x = 0; x < width; x++)
 			{
-				for (int x = startX; x < startX + width; x++)
+				for (int y = 0; y < height; y++)
 				{
-					myAtlas[(y * atlasWidth) + x] = gData[((height - y) * width) + (x - width)];
-
-					if (y > currentMaxY)
+					if (x < 0 || y < 0)
 					{
-						currentMaxY = y;
+						continue;
 					}
+					int& saved = myAtlas[(atlasY + y) * atlasWidth + (atlasX + x)];
+					saved = 0;
+					saved |= bitmap.buffer[y * bitmap.width + x];
+					saved = CL::Color32Reverse(saved);
+
+					if (y + (atlasY +8)> currentMaxY)
+					{
+						currentMaxY = y + (atlasY + 8);
+					}
+
 				}
 			}
 
-			atlasX = startX + width;
+			atlasX = atlasX + width + 2;
 
 			std::stringstream ss;
 			D3DX11_IMAGE_FILE_FORMAT format;

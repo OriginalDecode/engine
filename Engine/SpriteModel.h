@@ -46,7 +46,7 @@ namespace Snowblind
 		SVertexBufferWrapper* myVertexBuffer;
 		SIndexBufferWrapper* myIndexBuffer;
 
-		CU::GrowingArray<SVertexTypePosUV> myVertices;
+		CU::GrowingArray<SVertexTypePosColUv> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		ID3D11InputLayout* myVertexLayout;
 

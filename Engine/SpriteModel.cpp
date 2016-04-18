@@ -36,11 +36,11 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosUV[0]);
 		myVertexFormat.Add(VertexLayoutPosUV[1]);
 
-		CU::GrowingArray<SVertexTypePosUV> vertices;
+		CU::GrowingArray<SVertexTypePosColUv> vertices;
 		CU::GrowingArray<int> indices;
 		float halfWidth = mySize.x * 0.5f;
 		float halfHeight = mySize.y * 0.5f;
-		SVertexTypePosUV v;
+		SVertexTypePosColUv v;
 		v.myPosition = { -halfWidth, -halfHeight, 0 };
 		v.myUV = { 0, 1 };
 		vertices.Add(v);
@@ -72,7 +72,7 @@ namespace Snowblind
 		myIndexData = new SVertexIndexWrapper;
 
 		myVertexData->myNrOfVertexes = vertices.Size();
-		myVertexData->myStride = sizeof(SVertexTypePosUV);
+		myVertexData->myStride = sizeof(SVertexTypePosColUv);
 		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
 		myVertexData->myVertexData = new char[myVertexData->mySize]();
 		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
@@ -95,28 +95,34 @@ namespace Snowblind
 		myPosition = aPosition;
 		myEffect = CEffectContainer::GetInstance()->GetEffect("Data/Shaders/Sprite.fx");
 		myEffect->SetAlbedo(aShaderResource);
-		myVertexFormat.Init(2);
-		myVertexFormat.Add(VertexLayoutPosUV[0]);
-		myVertexFormat.Add(VertexLayoutPosUV[1]);
+		myVertexFormat.Init(3);
+		myVertexFormat.Add(VertexLayoutPosColUV[0]);
+		myVertexFormat.Add(VertexLayoutPosColUV[1]);
+		myVertexFormat.Add(VertexLayoutPosColUV[2]);
 
-		CU::GrowingArray<SVertexTypePosUV> vertices;
+
+		CU::GrowingArray<SVertexTypePosColUv> vertices;
 		CU::GrowingArray<int> indices;
 		float halfWidth = mySize.x * 0.5f;
 		float halfHeight = mySize.y * 0.5f;
-		SVertexTypePosUV v;
+		SVertexTypePosColUv v;
 		v.myPosition = { -halfWidth, -halfHeight, 0 };
+		v.myColor = { 1, 0, 0, 1.0f };
 		v.myUV = { 0, 1 };
 		vertices.Add(v);
 
 		v.myPosition = { -halfWidth, halfHeight, 0 };
+		v.myColor = { 0, 1, 0, 1.0f };
 		v.myUV = { 0, 0 };
 		vertices.Add(v);
 
 		v.myPosition = { halfWidth, -halfHeight, 0 };
+		v.myColor = { 0, 0, 1, 0.f };
 		v.myUV = { 1, 1 };
 		vertices.Add(v);
 
 		v.myPosition = { halfWidth, halfHeight, 0 };
+		v.myColor = { 1, 1, 1, 0.f };
 		v.myUV = { 1, 0 };
 		vertices.Add(v);
 
@@ -135,7 +141,7 @@ namespace Snowblind
 		myIndexData = new SVertexIndexWrapper;
 
 		myVertexData->myNrOfVertexes = vertices.Size();
-		myVertexData->myStride = sizeof(SVertexTypePosUV);
+		myVertexData->myStride = sizeof(SVertexTypePosColUv);
 		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
 		myVertexData->myVertexData = new char[myVertexData->mySize]();
 		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
@@ -158,7 +164,6 @@ namespace Snowblind
 		CEngine::GetDirectX()->DisableZBuffer();
 
 		ID3D11DeviceContext& context = *CEngine::GetDirectX()->GetContext();
-		//myEffect->SetMatrices(Matrix44f(), myCamera->GetOrientation(), myCamera->GetOrthogonalMatrix());
 		context.IASetInputLayout(myVertexLayout);
 		context.IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 		context.IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);

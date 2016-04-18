@@ -15,10 +15,14 @@
 #include "EngineDefines.h"
 #include <Math/Vector/Vector.h>
 
+//#define SAVE
+#ifdef SAVE
 #define SAVE_DDS
 #ifndef SAVE_DDS
 #define SAVE_PNG
 #endif
+#endif
+
 
 namespace Snowblind
 {
@@ -53,10 +57,9 @@ namespace Snowblind
 		FT_Done_FreeType(myLibrary);
 		delete myAtlas;
 		myAtlas = nullptr;
+
 		myAtlasView->Release();
 		myAtlasView = nullptr;
-		//myAtlas->Release();
-		//myAtlas = nullptr;
 	}
 
 	void CFontManager::Initiate()
@@ -67,6 +70,7 @@ namespace Snowblind
 
 		myAtlas = new int[512 * 512];
 		ZeroMemory(myAtlas, (512 * 512) * sizeof(int));
+		//myPacker.Initiate(512, 512);
 	}
 
 	void CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
@@ -79,7 +83,10 @@ namespace Snowblind
 
 		error = FT_Set_Char_Size(myFace, (aFontWidth * 64), 0, 300, 300);
 		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
+
+#ifdef SAVE
 		CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
+#endif
 
 		int atlasX = 0;
 		int atlasY = 0;
@@ -116,6 +123,14 @@ namespace Snowblind
 					int& saved = gData[y * bitmap.width + x];
 					saved = 0;
 					saved |= bitmap.buffer[y * bitmap.width + x];
+
+					SColor color(saved);
+
+					if (color.a > 1)
+					{
+						saved |= 0xffffffff;
+					}
+
 					saved = CL::Color32Reverse(saved);
 				}
 			}
@@ -164,7 +179,7 @@ namespace Snowblind
 					saved |= bitmap.buffer[y * bitmap.width + x];
 					saved = CL::Color32Reverse(saved);
 
-					if (y + (atlasY +8)> currentMaxY)
+					if (y + (atlasY + 8) > currentMaxY)
 					{
 						currentMaxY = y + (atlasY + 8);
 					}
@@ -172,8 +187,9 @@ namespace Snowblind
 				}
 			}
 
-			atlasX = atlasX + width + 2;
 
+			atlasX = atlasX + width + 2;
+#ifdef SAVE
 			std::stringstream ss;
 			D3DX11_IMAGE_FILE_FORMAT format;
 #ifdef SAVE_DDS
@@ -187,7 +203,7 @@ namespace Snowblind
 			HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
 			CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 			texture->Release();
-
+#endif
 			delete[] gData;
 			gData = nullptr;
 		}
@@ -213,7 +229,8 @@ namespace Snowblind
 		myDevice->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 		myDevice->CreateShaderResourceView(texture, nullptr, &myAtlasView);
-
+		texture->Release();
+#ifdef SAVE
 		std::stringstream ss;
 		D3DX11_IMAGE_FILE_FORMAT format;
 #ifdef SAVE_DDS
@@ -226,7 +243,7 @@ namespace Snowblind
 #endif
 		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
-
+#endif
 	}
 
 	ID3D11ShaderResourceView* CFontManager::GetShaderResource()

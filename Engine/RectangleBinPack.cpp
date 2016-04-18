@@ -25,18 +25,18 @@ namespace Snowblind
 		myRoot.myY = 0;
 	}
 
-	Snowblind::Node* CRectangleBinPack::Insert(int aWidth, int aHeight, ID3D11ShaderResourceView* aShaderResource)
+	SNode* CRectangleBinPack::Insert(int aWidth, int aHeight, ID3D11ShaderResourceView* aShaderResource)
 	{
 		return Insert(&myRoot, aWidth, aHeight, aShaderResource);
 	}
 
-	Snowblind::Node* CRectangleBinPack::Insert(Node* aNode, int aWidth, int aHeight, ID3D11ShaderResourceView* aShaderResource)
+	SNode* CRectangleBinPack::Insert(SNode* aNode, int aWidth, int aHeight, ID3D11ShaderResourceView* aShaderResource)
 	{
 		if (aNode->myLeft || aNode->myRight)
 		{
 			if (aNode->myLeft)
 			{
-				Node *newNode = Insert(aNode->myLeft, aWidth, aHeight, aShaderResource);
+				SNode *newNode = Insert(aNode->myLeft, aWidth, aHeight, aShaderResource);
 				if (newNode)
 				{
 					return newNode;
@@ -44,7 +44,7 @@ namespace Snowblind
 			}
 			if (aNode->myRight)
 			{
-				Node *newNode = Insert(aNode->myRight, aWidth, aHeight, aShaderResource);
+				SNode *newNode = Insert(aNode->myRight, aWidth, aHeight, aShaderResource);
 				if (newNode)
 				{
 					return newNode;
@@ -59,8 +59,8 @@ namespace Snowblind
 		int w = aNode->myWidth - aWidth;
 		int h = aNode->myHeight - aHeight;
 
-		aNode->myLeft = new Node();
-		aNode->myRight = new Node();
+		aNode->myLeft = new SNode();
+		aNode->myRight = new SNode();
 		aNode->myImage = aShaderResource;
 
 		if (w <= h) 
@@ -93,9 +93,14 @@ namespace Snowblind
 		return aNode;
 	}
 
-	Snowblind::Node* CRectangleBinPack::GetRoot()
+	SNode* CRectangleBinPack::GetRoot()
 	{
 		return &myRoot;
+	}
+
+	void SNode::Traverse()
+	{
+		DL_ASSERT("Not implemented!"); //Implement when needed to have good packing on font/texture.
 	}
 
 }

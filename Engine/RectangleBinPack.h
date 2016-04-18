@@ -4,15 +4,16 @@
 struct ID3D11ShaderResourceView;
 namespace Snowblind
 {
-	struct Node
+	struct SNode
 	{
-		Node* myLeft;
-		Node* myRight;
+		SNode* myLeft;
+		SNode* myRight;
 		int myX;
 		int myY;
 		int myWidth;
 		int myHeight;
 		ID3D11ShaderResourceView* myImage;
+		void Traverse();
 	};
 	class CRectangleBinPack
 	{
@@ -22,11 +23,11 @@ namespace Snowblind
 
 		//Fixed init size
 		void Initiate(int aWidth, int aHeight);
-		Node* Insert(int aWidth, int aHeight, ID3D11ShaderResourceView* aShaderResource);
-		Node* GetRoot();
+		SNode* Insert(int aWidth, int aHeight, ID3D11ShaderResourceView* aShaderResource);
+		SNode* GetRoot();
 	private:
-		Node* Insert(Node*, int aWidth, int aHeight, ID3D11ShaderResourceView* aShaderResource);
-		Node myRoot;
+		SNode* Insert(SNode*, int aWidth, int aHeight, ID3D11ShaderResourceView* aShaderResource);
+		SNode myRoot;
 
 	};
 };

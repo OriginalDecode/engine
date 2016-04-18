@@ -15,12 +15,14 @@ SamplerState sampleLinear
 struct VS_INPUT
 {
 	float4 pos : POSITION;
+	float4 color : COLOR0;
 	float2 UV : TEXCOORD;
 };
 
 struct PS_INPUT
 {
 	float4 pos : SV_POSITION0;
+	float4 color : COLOR0;
 	float2 UV : TEXCOORD;
 };
 
@@ -33,22 +35,25 @@ PS_INPUT VS(VS_INPUT input)
 	output.pos.x += SpritePosition.x;
 	output.pos.y += SpritePosition.y;	
 	output.pos = mul(output.pos, Projection);
-		
+	output.color = input.color;	
 	output.UV = input.UV;
 	return output;
 };
 
 float4 PS(PS_INPUT input) : SV_Target
 {
-	float4 color = AlbedoTexture.Sample(sampleLinear,input.UV);
-	float4 finalColor;
-	if(color.a > 0)
-	{
-		finalColor.rgba = 1;
-	}
-	
-	
-	return finalColor;
+	float4 color = AlbedoTexture.Sample(sampleLinear,input.UV).aaaa;	
+	color.rgba *= input.color.rgba;
+	return color;
+};
+
+BlendState AlphaBlend
+{
+	BlendEnable[0] = TRUE;
+	SrcBlend = SRC_ALPHA;
+	DestBlend = INV_SRC_ALPHA;
+	BlendOp = ADD;
+	RenderTargetWriteMask[0] = 0x0F;
 };
 
 technique11 Render
@@ -57,6 +62,7 @@ technique11 Render
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
+		SetBlendState(AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xFFFFFFFF);
 		SetPixelShader(CompileShader(ps_5_0, PS()));
 	}
 }

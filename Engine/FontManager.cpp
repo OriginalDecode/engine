@@ -58,8 +58,8 @@ namespace Snowblind
 		delete myAtlas;
 		myAtlas = nullptr;
 
-		myAtlasView->Release();
-		myAtlasView = nullptr;
+		//myAtlasView->Release();
+		//myAtlasView = nullptr;
 	}
 
 	void CFontManager::Initiate()
@@ -71,8 +71,10 @@ namespace Snowblind
 		ZeroMemory(myAtlas, (512 * 512) * sizeof(int));
 	}
 
-	void CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
+	SFontData* CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
 	{
+		SFontData* font = new SFontData();
+
 		myFontWidth = aFontWidth;
 		myFontPath = aFontPath;
 		int error = FT_New_Face(myLibrary, myFontPath, 0, &myFace);
@@ -102,8 +104,16 @@ namespace Snowblind
 			bitmap.pixel_mode = FT_PIXEL_MODE_MONO;
 			FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
 
+
 			int height = bitmap.rows;
 			int width = bitmap.width;
+
+			SCharData glyphData;
+			glyphData.myChar = i;
+			glyphData.myHeight = height;
+			glyphData.myWidth = width;
+			glyphData.myTopLeftUV = { float(atlasX / atlasWidth), float(atlasY / atlasHeight) };
+			glyphData.myBottomRightUV = { float(atlasX + width / atlasWidth), float(atlasY + height / atlasHeight) };
 
 			if (atlasX + width > atlasWidth)
 			{
@@ -132,8 +142,10 @@ namespace Snowblind
 				}
 			}
 
-
 			atlasX = atlasX + width + 2;
+			font->myCharData[i] = glyphData;
+
+
 #ifdef SAVE
 			std::stringstream ss;
 			D3DX11_IMAGE_FILE_FORMAT format;
@@ -173,6 +185,7 @@ namespace Snowblind
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 		myDevice->CreateShaderResourceView(texture, nullptr, &myAtlasView);
 		texture->Release();
+
 #ifdef SAVE
 		std::stringstream ss;
 		D3DX11_IMAGE_FILE_FORMAT format;
@@ -187,7 +200,14 @@ namespace Snowblind
 		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 #endif
+
+		font->myAtlasHeight = 512;
+		font->myAtlasWidth = 512;
+		font->myAtlasView = myAtlasView;
+		font->myFaceData = myFace;
+		return font;
 	}
+
 
 	ID3D11ShaderResourceView* CFontManager::GetShaderResource()
 	{

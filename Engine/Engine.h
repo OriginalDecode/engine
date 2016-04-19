@@ -21,6 +21,9 @@ namespace Snowblind
 	};
 
 	class CDirectX11;
+	class CFontManager;
+	struct SFontData;
+
 	class CEngine
 	{
 	public:
@@ -33,7 +36,7 @@ namespace Snowblind
 		static void Clear();
 		CDirectX11* GetAPI();
 		const SWindowSize& GetWindowSize() const;
-
+		SFontData* LoadFont(const char* aFilepath, short aFontWidth);
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		~CEngine();
@@ -45,6 +48,7 @@ namespace Snowblind
 		SWindowSize myWindowSize;
 
 		HWND myHWND;
+		CFontManager* myFontManager;
 
 	};
 

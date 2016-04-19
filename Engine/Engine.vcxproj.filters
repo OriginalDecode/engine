@@ -106,6 +106,7 @@
     <ClInclude Include="VertexStructs.h">
       <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
     </ClInclude>
+    <ClInclude Include="Font.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -154,5 +155,6 @@
     <ClCompile Include="RectangleBinPack.cpp">
       <Filter>Utilities\Algorithms</Filter>
     </ClCompile>
+    <ClCompile Include="Font.cpp" />
   </ItemGroup>
 </Project>

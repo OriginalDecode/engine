@@ -8,6 +8,9 @@
 #include <assert.h>
 #include <TimeManager.h>
 #include <InputWrapper.h>
+
+#include "FontManager.h"
+
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
@@ -25,11 +28,17 @@ namespace Snowblind
 		std::stringstream windowText;
 		windowText << "API : " << myAPI->GetAPIName() << " | " << "Adapter : " << myAPI->GetActiveAdapterName();
 		SetWindowText(myHWND, windowText.str().c_str());
+
+
+		myFontManager = new CFontManager();
+		myFontManager->Initiate();
+
 	}
 
 	CEngine::~CEngine()
 	{
 		SAFE_DELETE(myAPI);
+		SAFE_DELETE(myFontManager);
 		CU::Input::InputWrapper::Destroy();
 	}
 
@@ -69,6 +78,11 @@ namespace Snowblind
 	const Snowblind::SWindowSize& CEngine::GetWindowSize() const
 	{
 		return myWindowSize;
+	}
+
+	SFontData* CEngine::LoadFont(const char* aFilepath, short aFontWidth)
+	{
+		return myFontManager->LoadFont(aFilepath, aFontWidth);
 	}
 
 	void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)

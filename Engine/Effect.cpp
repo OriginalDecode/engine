@@ -20,6 +20,7 @@ namespace Snowblind
 	{
 		myEffect->Release();
 		myEffect = nullptr;
+
 	}
 
 	void CEffect::Initiate(const std::string& aFile)

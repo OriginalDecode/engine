@@ -24,6 +24,8 @@ namespace Snowblind
 	struct SCharData
 	{
 		CU::Math::Vector2<float> myTopLeftUV;
+		CU::Math::Vector2<float> myBottomRightUV;
+
 		short myWidth;
 		short myHeight;
 		char myChar;
@@ -32,8 +34,8 @@ namespace Snowblind
 	struct SFontData
 	{
 		ID3D11ShaderResourceView* myAtlasView;
-		int myAtlasWidth; //Should be dynamic?
-		int myAtlasHeight; //Dynamic?
+		short myAtlasWidth; 
+		short myAtlasHeight;
 		FT_FaceRec_* myFaceData;
 		std::unordered_map<char, SCharData> myCharData;
 	};
@@ -46,7 +48,7 @@ namespace Snowblind
 		CFontManager();
 		~CFontManager();
 		void Initiate();
-		void LoadFont(const char* aFontPath, short aFontWidth);
+		SFontData* LoadFont(const char* aFontPath, short aFontWidth);
 		ID3D11ShaderResourceView* GetShaderResource();
 	private:
 		ID3D11Device* myDevice;

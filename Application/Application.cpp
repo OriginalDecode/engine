@@ -64,10 +64,10 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	my2DScene = new Snowblind::CScene();
 	my2DScene->Initiate(my2DCamera, true);
 
-	
+
 	myText = new Snowblind::CText("Data/Font/OpenSans-Light.ttf", 16, my2DCamera);
 	myText->SetText("Hello World");
-	myText->SetPosition({ 1280/2,720/2 });
+	myText->SetPosition({ 0, 0 });
 	my2DScene->AddToScene(myText);
 
 	myModel = new Snowblind::CModel(myCamera);
@@ -76,7 +76,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myTexturedModel = new Snowblind::CModel(myCamera);
 	myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
 
-//	Snowblind::CEffectContainer::GetInstance()->GetEffect("Data/Shaders/TexturedCube.fx")->SetAlbedo(myFont->myAtlasView);
+	Snowblind::CEffectContainer::GetInstance()->GetEffect("Data/Shaders/TexturedCube.fx")->SetAlbedo(myText->GetAtlas());
 
 	myInstance = new Snowblind::CInstance();
 	myInstance->Initiate(myModel);
@@ -88,11 +88,11 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myInstance->SetPosition({ 0.f,5.f,0.f });
 	myWorldScene->AddToScene(myInstance);
 
-	mySprite = new Snowblind::CSprite();
-	mySprite->Initiate("Data/Textures/colors.dds", { 50.f,50.f }, { 0.f,0.f });
-	mySprite->SetPosition({ 1280/2, 720/2});
-	
-	my2DScene->AddToScene(mySprite);
+	//mySprite = new Snowblind::CSprite();
+	//mySprite->Initiate("Data/Textures/colors.dds", { 50.f,50.f }, { 0.f,0.f });
+	//mySprite->SetPosition({ 1280/2, 720/2});
+
+	//my2DScene->AddToScene(mySprite);
 }
 
 bool CApplication::Update()

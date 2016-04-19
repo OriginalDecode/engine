@@ -23,6 +23,7 @@ struct ID3D11Debug;
 struct ID3D11CommandList;
 struct IDXGIAdapter;
 struct D3D11_VIEWPORT;
+struct ID3D11RasterizerState;
 
 enum class eEngineFlags
 {
@@ -75,6 +76,7 @@ namespace Snowblind
 		void CreateAdapterList();
 		void CreateEnabledStencilStateSetup();
 		void CreateDisabledStencilStateSetup();
+		void SetRasterizer();
 		HWND myHWND;
 
 		D3D11_VIEWPORT* myViewport;
@@ -88,6 +90,7 @@ namespace Snowblind
 		ID3D11DepthStencilView* myDepthView;
 		ID3D11DepthStencilState* myDepthStates[static_cast<int>(eDepthStencil::_COUNT)];
 		ID3D11CommandList* myCommandList[2];
+		ID3D11RasterizerState* myRasterizerStates[2];
 
 		std::unordered_map<std::string, IDXGIAdapter*>	myAdapters;
 		std::vector<std::string> myAdaptersName;

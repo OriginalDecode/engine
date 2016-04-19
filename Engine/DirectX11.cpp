@@ -24,6 +24,7 @@ namespace Snowblind
 		CreateDepthBuffer();
 		CreateBackBuffer();
 		CreateViewport();
+		SetRasterizer();
 	}
 
 	CDirectX11::~CDirectX11()
@@ -431,6 +432,18 @@ namespace Snowblind
 		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)]);
 		SetDebugName(myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)], "eDepthStencil::Z_DISABLED");
 		HandleErrors(hr, "Failed to setup depth buffer!");
+	}
+
+	void CDirectX11::SetRasterizer()
+	{
+		D3D11_RASTERIZER_DESC rDesc;
+		rDesc.FillMode = D3D11_FILL_SOLID;
+		rDesc.CullMode = D3D11_CULL_BACK;
+		rDesc.FrontCounterClockwise = FALSE;
+
+		myDevice->CreateRasterizerState(&rDesc, &myRasterizerStates[0]);
+		myContext->RSSetState(myRasterizerStates[0]);
+			
 	}
 
 };

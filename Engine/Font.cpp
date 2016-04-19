@@ -69,7 +69,7 @@ namespace Snowblind
 		{
 			HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, &context);
 			CEngine::GetDirectX()->HandleErrors(hr, "Failed to apply pass to context!");
-			context.Draw(myVertices.Size(), 0);
+			context.DrawIndexed(myIndices.Size(), 0, 0);
 		}
 
 	}
@@ -77,6 +77,11 @@ namespace Snowblind
 	Snowblind::CEffect* CFont::GetEffect()
 	{
 		return myEffect;
+	}
+
+	ID3D11ShaderResourceView* CFont::GetAtlas()
+	{
+		return myData->myAtlasView;
 	}
 
 	void CFont::CreateInputLayout()
@@ -130,7 +135,7 @@ namespace Snowblind
 		int count = myText.length();
 		float drawX = 0.f;
 		float drawY = 0.f;
-
+		float z = 1.f;
 		myVertices.RemoveAll();
 		myIndices.RemoveAll();
 
@@ -152,20 +157,20 @@ namespace Snowblind
 			float top = drawY;
 			float bottom = drawY + charData.myHeight;
 
-			v.myPosition = { left, top };
+			v.myPosition = { left, bottom  };
+			v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
+			myVertices.Add(v);
+
+			v.myPosition = { left, top};
 			v.myUV = charData.myTopLeftUV;
 			myVertices.Add(v);
 
-			v.myPosition = { right, top };
-			v.myUV = { charData.myBottomRightUV.x,charData.myTopLeftUV.y };
-			myVertices.Add(v);
-
-			v.myPosition = { right, bottom };
+			v.myPosition = { right, bottom  };
 			v.myUV = charData.myBottomRightUV;
 			myVertices.Add(v);
 
-			v.myPosition = { left, bottom };
-			v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
+			v.myPosition = { right, top};
+			v.myUV = { charData.myBottomRightUV.x , charData.myTopLeftUV.y };
 			myVertices.Add(v);
 
 
@@ -173,16 +178,16 @@ namespace Snowblind
 
 			int startIndex = (i - row) * 4.f;
 
-			myIndices.Add(startIndex + 0);
-			myIndices.Add(startIndex + 1);
 			myIndices.Add(startIndex + 2);
-
 			myIndices.Add(startIndex + 0);
-			myIndices.Add(startIndex + 3);
 			myIndices.Add(startIndex + 1);
 
+			myIndices.Add(startIndex + 2);
+			myIndices.Add(startIndex + 1);
+			myIndices.Add(startIndex + 3);
 
-			//drawX += charData.myAdvanceX;
+
+			drawX += charData.myWidth + 3;
 		}
 
 		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosUV) * myVertices.Size();

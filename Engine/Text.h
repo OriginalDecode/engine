@@ -1,6 +1,6 @@
 #pragma once
 
-
+struct ID3D11ShaderResourceView;
 namespace Snowblind
 {
 	class CFont;
@@ -14,6 +14,8 @@ namespace Snowblind
 		void Render(); 
 		void SetText(const std::string& aString);
 		void SetPosition(const CU::Math::Vector2<float>& aPosition);
+		ID3D11ShaderResourceView* GetAtlas();
+
 	private:
 
 		CCamera* myCamera;

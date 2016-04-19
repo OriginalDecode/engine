@@ -35,4 +35,9 @@ namespace Snowblind
 		myPosition = aPosition;
 	}
 
+	ID3D11ShaderResourceView* CText::GetAtlas()
+	{
+		return myFont->GetAtlas();
+	}
+
 };

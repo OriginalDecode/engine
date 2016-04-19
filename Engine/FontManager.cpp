@@ -90,11 +90,11 @@ namespace Snowblind
 
 		int atlasX = 0;
 		int atlasY = 0;
-		int atlasWidth = 512; //have to be replaced.
-		int atlasHeight = 512; //have to be replaced
+		float atlasWidth = 512; //have to be replaced.
+		float atlasHeight = 512; //have to be replaced
 		int currentMaxY = 0;
 
-		for (int i = 33; i < 126; i++)
+		for (int i = 32; i < 126; i++)
 		{
 			error = FT_Load_Char(myFace, i, FT_LOAD_RENDER);
 			DL_ASSERT_EXP(!error, "Failed to load glyph!");
@@ -107,13 +107,16 @@ namespace Snowblind
 
 			int height = bitmap.rows;
 			int width = bitmap.width;
-
+			if (width <= 0)
+			{
+				width = 15;
+			}
 			SCharData glyphData;
 			glyphData.myChar = i;
 			glyphData.myHeight = height;
 			glyphData.myWidth = width;
-			glyphData.myTopLeftUV = { float(atlasX / atlasWidth), float(atlasY / atlasHeight) };
-			glyphData.myBottomRightUV = { float(atlasX + width / atlasWidth), float(atlasY + height / atlasHeight) };
+			glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
+			glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
 
 			if (atlasX + width > atlasWidth)
 			{
@@ -129,7 +132,7 @@ namespace Snowblind
 					{
 						continue;
 					}
-					int& saved = myAtlas[(atlasY + y) * atlasWidth + (atlasX + x)];
+					int& saved = myAtlas[(atlasY + y) * int(atlasWidth) + (atlasX + x)];
 					saved = 0;
 					saved |= bitmap.buffer[y * bitmap.width + x];
 					saved = CL::Color32Reverse(saved);

@@ -10,8 +10,6 @@ namespace Snowblind
 {
 	struct SVertexBufferWrapper;
 	struct SIndexBufferWrapper;
-	struct SVertexDataWrapper;
-	struct SVertexIndexWrapper;
 
 	struct SFontData;
 	class CEffect;
@@ -40,13 +38,8 @@ namespace Snowblind
 		D3D11_BUFFER_DESC* myIndexBufferDesc;
 		D3D11_SUBRESOURCE_DATA* myInitData;
 
-		SVertexIndexWrapper* myIndexData;
-		SVertexDataWrapper* myVertexData;
-
 		SVertexBufferWrapper* myVertexBuffer;
 		SIndexBufferWrapper* myIndexBuffer;
-
-
 
 		std::string myText;
 		CU::GrowingArray<SVertexTypePosUV> myVertices;

@@ -98,17 +98,16 @@ namespace Snowblind
 		myVertexBuffer = new SVertexBufferWrapper;
 		myVertexBuffer->myStride = sizeof(SVertexTypePosUV);
 		myVertexBuffer->myByteOffset = 0;
-		myVertexBuffer->myNrOfBuffers = 1;
 		myVertexBuffer->myStartSlot = 0;
+		myVertexBuffer->myNrOfBuffers = 1;
 
 
-		myVertexData = new SVertexDataWrapper;
-
-		myVertexData->myNrOfVertexes = vertices.Size();
-		myVertexData->myStride = sizeof(SVertexTypePosUV);
-		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
-		myVertexData->myVertexData = new char[myVertexData->mySize]();
-		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
+		ZeroMemory(myVertexBufferDesc, sizeof(*myVertexBufferDesc));
+		myVertexBufferDesc->Usage = D3D11_USAGE_DYNAMIC;
+		myVertexBufferDesc->BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		myVertexBufferDesc->CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		myVertexBufferDesc->MiscFlags = 0;
+		myVertexBufferDesc->StructureByteStride = 0;
 	}
 
 	void CFont::CreateIndexBuffer()
@@ -169,7 +168,7 @@ namespace Snowblind
 			v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
 			myVertices.Add(v);
 
-	
+
 
 
 			int startIndex = (i - row) * 4.f;

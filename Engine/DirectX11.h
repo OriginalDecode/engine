@@ -64,9 +64,9 @@ namespace Snowblind
 		void SetViewport(int aWidth, int aHeight, int aDepth);
 		void ResetViewport();
 		void ResetRendertarget();
+		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
 	private:
 
-		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
 		void CreateDeviceAndSwapchain();
 		void CreateDepthBuffer();
 		void CreateBackBuffer();
@@ -75,7 +75,6 @@ namespace Snowblind
 		void CreateAdapterList();
 		void CreateEnabledStencilStateSetup();
 		void CreateDisabledStencilStateSetup();
-
 		HWND myHWND;
 
 		D3D11_VIEWPORT* myViewport;

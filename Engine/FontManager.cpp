@@ -14,7 +14,7 @@
 #include <Utilities.h>
 #include "EngineDefines.h"
 #include <Math/Vector/Vector.h>
-
+#include "Font.h"
 //#define SAVE
 #ifdef SAVE
 #define SAVE_DDS
@@ -71,9 +71,9 @@ namespace Snowblind
 		ZeroMemory(myAtlas, (512 * 512) * sizeof(int));
 	}
 
-	SFontData* CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
+	CFont* CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
 	{
-		SFontData* font = new SFontData();
+		SFontData* fontData = new SFontData;
 
 		myFontWidth = aFontWidth;
 		myFontPath = aFontPath;
@@ -143,7 +143,7 @@ namespace Snowblind
 			}
 
 			atlasX = atlasX + width + 2;
-			font->myCharData[i] = glyphData;
+			fontData->myCharData[i] = glyphData;
 
 
 #ifdef SAVE
@@ -201,11 +201,13 @@ namespace Snowblind
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 #endif
 
-		font->myAtlasHeight = 512;
-		font->myAtlasWidth = 512;
-		font->myAtlasView = myAtlasView;
-		font->myFaceData = myFace;
-		return font;
+		fontData->myAtlasHeight = 512;
+		fontData->myAtlasWidth = 512;
+		fontData->myAtlasView = myAtlasView;
+		fontData->myFaceData = myFace;
+
+		CFont* newFont = new CFont(fontData);
+		return newFont;
 	}
 
 

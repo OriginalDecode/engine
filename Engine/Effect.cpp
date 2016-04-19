@@ -25,6 +25,7 @@ namespace Snowblind
 
 	void CEffect::Initiate(const std::string& aFile)
 	{
+		ENGINE_LOG("Loading %s", aFile.c_str());
 		HRESULT hr;
 		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
 #ifdef _DEBUG 
@@ -38,13 +39,9 @@ namespace Snowblind
 		hr = D3DX11CompileFromFile(aFile.c_str(), 0, 0, 0, "fx_5_0", shaderFlag,
 			0, 0, &compiledShader, &compilationMessage, 0);
 
-		if (FAILED(hr))
-		{
-			if (compilationMessage == nullptr)
-			{
-				DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! File not found!");
-			}
-		}
+
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! File not found!");
+
 
 		ID3D11Device* device = CEngine::GetInstance()->GetAPI()->GetDevice();
 
@@ -90,7 +87,7 @@ namespace Snowblind
 
 		myTechnique = myEffect->GetTechniqueByName("Render");
 		Validate(myTechnique, "Technique Invalid!");
-		
+
 		myWorldMatrix = myEffect->GetVariableByName("World")->AsMatrix();
 		Validate(myWorldMatrix, "World Matrix Invalid!");
 
@@ -130,7 +127,7 @@ namespace Snowblind
 	{
 		myTexture = myEffect->GetVariableByName("AlbedoTexture")->AsShaderResource();
 		Validate(myTexture, "Texture Invalid");
-	
+
 		myTexture->SetResource(aTexturePtr->GetShaderView());
 	}
 

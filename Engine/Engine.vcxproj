@@ -186,6 +186,7 @@
     <ClInclude Include="SpriteModel.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Surface.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureContainer.h" />
     <ClInclude Include="VertexStructs.h" />
@@ -211,6 +212,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Surface.cpp" />
+    <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureContainer.cpp" />
   </ItemGroup>

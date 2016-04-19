@@ -80,7 +80,7 @@ namespace Snowblind
 		return myWindowSize;
 	}
 
-	SFontData* CEngine::LoadFont(const char* aFilepath, short aFontWidth)
+	CFont* CEngine::LoadFont(const char* aFilepath, short aFontWidth)
 	{
 		return myFontManager->LoadFont(aFilepath, aFontWidth);
 	}

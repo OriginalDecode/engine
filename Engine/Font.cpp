@@ -1,24 +1,41 @@
 #include "stdafx.h"
 #include "Font.h"
 #include "FontManager.h"
+#include <d3dx11effect.h>
+#include "EffectContainer.h"
+#include "Effect.h"
+#include <d3d11.h>
+#include "DirectX11.h"
+#include "Engine.h"
+#include "EngineDefines.h"
+#include "VertexWrapper.h"
+#include "IndexWrapper.h"
 
 namespace Snowblind
 {
-	CFont::CFont()
+	CFont::CFont(SFontData* aFontData)
 	{
+		myData = aFontData;
+		myText = "";
+		myEffect = CEffectContainer::GetInstance()->GetEffect("Data/Shaders/Font_Effect.fx");
+		myVertexBufferDesc = new D3D11_BUFFER_DESC();
+		myIndexBufferDesc = new D3D11_BUFFER_DESC();
+		myInitData = new D3D11_SUBRESOURCE_DATA();
+		CreateInputLayout();
+		CreateVertexBuffer();
+		CreateIndexBuffer();
+		myEffect->SetAlbedo(myData->myAtlasView);
 	}
 
 	CFont::~CFont()
 	{
-		delete myData;
-		myData = nullptr;
-	}
-
-	
-
-	void CFont::LoadFont(const char* aFilepath, int aSize)
-	{
-		myData = CEngine::GetInstance()->LoadFont(aFilepath, aSize);
+		SAFE_DELETE(myData);
+		SAFE_DELETE(myIndexBuffer);
+		SAFE_DELETE(myVertexBuffer);
+		SAFE_DELETE(myVertexBufferDesc);
+		SAFE_DELETE(myIndexBufferDesc);
+		SAFE_DELETE(myInitData);
+		SAFE_RELEASE(myVertexLayout);
 	}
 
 	void CFont::SetText(const std::string& aText)
@@ -35,6 +52,80 @@ namespace Snowblind
 		return myText;
 	}
 
+	void CFont::Render()
+	{
+		if (!myEffect)
+			return;
+		ID3D11DeviceContext& context = *CEngine::GetDirectX()->GetContext();
+		context.IASetInputLayout(myVertexLayout);
+		context.IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
+		context.IASetIndexBuffer(myIndexBuffer->myIndexBuffer, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
+		context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		D3DX11_TECHNIQUE_DESC techDesc;
+		myEffect->GetTechnique()->GetDesc(&techDesc);
+
+		for (UINT p = 0; p < techDesc.Passes; ++p)
+		{
+			HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, &context);
+			CEngine::GetDirectX()->HandleErrors(hr, "Failed to apply pass to context!");
+			context.Draw(myVertices.Size(), 0);
+		}
+
+	}
+
+	Snowblind::CEffect* CFont::GetEffect()
+	{
+		return myEffect;
+	}
+
+	void CFont::CreateInputLayout()
+	{
+		myVertexFormat.Init(2);
+		myVertexFormat.Add(VertexLayoutPosUV[0]);
+		myVertexFormat.Add(VertexLayoutPosUV[1]);
+
+
+		D3DX11_PASS_DESC passDesc;
+		myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
+		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
+		CEngine::GetDirectX()->HandleErrors(hr, " [Font] : Input Layout.");
+		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Font Input Layout");
+	}
+
+	void CFont::CreateVertexBuffer()
+	{
+		myVertexBuffer = new SVertexBufferWrapper;
+		myVertexBuffer->myStride = sizeof(SVertexTypePosUV);
+		myVertexBuffer->myByteOffset = 0;
+		myVertexBuffer->myNrOfBuffers = 1;
+		myVertexBuffer->myStartSlot = 0;
+
+
+		myVertexData = new SVertexDataWrapper;
+
+		myVertexData->myNrOfVertexes = vertices.Size();
+		myVertexData->myStride = sizeof(SVertexTypePosUV);
+		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
+		myVertexData->myVertexData = new char[myVertexData->mySize]();
+		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
+	}
+
+	void CFont::CreateIndexBuffer()
+	{
+		myIndexBuffer = new SIndexBufferWrapper;
+		myIndexBuffer->myIndexBufferFormat = DXGI_FORMAT_R32_UINT;
+		myIndexBuffer->myByteOffset = 0;
+
+
+		ZeroMemory(myIndexBufferDesc, sizeof(*myIndexBufferDesc));
+		myIndexBufferDesc->Usage = D3D11_USAGE_IMMUTABLE;
+		myIndexBufferDesc->BindFlags = D3D11_BIND_INDEX_BUFFER;
+		myIndexBufferDesc->CPUAccessFlags = 0;
+		myIndexBufferDesc->MiscFlags = 0;
+		myIndexBufferDesc->StructureByteStride = 0;
+	}
+
 	void CFont::UpdateBuffer()
 	{
 		int count = myText.length();
@@ -45,7 +136,7 @@ namespace Snowblind
 		myIndices.RemoveAll();
 
 		SVertexTypePosUV v;
-		for (int i = 0, row = 0; i < count; i++)
+		for (char i = 0, row = 0; i < count; i++)
 		{
 			if (myText[i] == '\n')
 			{
@@ -55,7 +146,7 @@ namespace Snowblind
 				continue;
 			}
 
-			SCharData& charData = myData->myCharData[i];
+			SCharData& charData = myData->myCharData[myText[i]];
 
 			float left = drawX;
 			float right = left + charData.myWidth;
@@ -66,6 +157,10 @@ namespace Snowblind
 			v.myUV = charData.myTopLeftUV;
 			myVertices.Add(v);
 
+			v.myPosition = { right, top };
+			v.myUV = { charData.myBottomRightUV.x,charData.myTopLeftUV.y };
+			myVertices.Add(v);
+
 			v.myPosition = { right, bottom };
 			v.myUV = charData.myBottomRightUV;
 			myVertices.Add(v);
@@ -74,9 +169,8 @@ namespace Snowblind
 			v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
 			myVertices.Add(v);
 
-			v.myPosition = { right, top };
-			v.myUV = { charData.myBottomRightUV.x,charData.myTopLeftUV.y };
-			myVertices.Add(v);
+	
+
 
 			int startIndex = (i - row) * 4.f;
 
@@ -90,11 +184,20 @@ namespace Snowblind
 
 
 			//drawX += charData.myAdvanceX;
-
-
 		}
+
+		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosUV) * myVertices.Size();
+		myInitData->pSysMem = reinterpret_cast<char*>(&myVertices[0]);
+		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData, &myVertexBuffer->myVertexBuffer);
+
+
+		myIndexBufferDesc->ByteWidth = sizeof(UINT) * myIndices.Size();
+		myInitData->pSysMem = reinterpret_cast<char*>(&myIndices[0]);
+		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(myIndexBufferDesc, myInitData, &myIndexBuffer->myIndexBuffer);
+
+
+
 
 
 	}
-
 };

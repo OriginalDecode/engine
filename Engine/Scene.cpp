@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Instance.h"
 #include "Sprite.h"
+#include "Text.h"
 namespace Snowblind
 {
 	CScene::CScene()
@@ -36,6 +37,10 @@ namespace Snowblind
 			{
 				my2DInstances[i]->Render(myCamera);
 			}
+			for (int i = 0; i < myText.Size(); i++)
+			{
+				myText[i]->Render();
+			}
 			CEngine::GetDirectX()->EnableZBuffer();
 		}
 	}
@@ -56,6 +61,11 @@ namespace Snowblind
 	void CScene::AddToScene(CSprite* aSprite)
 	{
 		my2DInstances.Add(aSprite);
+	}
+
+	void CScene::AddToScene(CText* aText)
+	{
+		myText.Add(aText);
 	}
 
 };

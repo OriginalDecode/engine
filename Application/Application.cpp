@@ -9,7 +9,7 @@
 #include <EngineDefines.h>
 #include "EffectContainer.h"
 #include "../Input/InputWrapper.h"
-#include <Font.h>
+#include <Text.h>
 #include <Sprite.h>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
@@ -19,7 +19,7 @@ CApplication::CApplication()
 
 CApplication::~CApplication()
 {
-	delete myFont;
+	delete myText;
 	SAFE_DELETE(mySprite);
 	SAFE_DELETE(myWorldScene);
 	SAFE_DELETE(myInstance);
@@ -65,10 +65,10 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	my2DScene->Initiate(my2DCamera, true);
 
 	
-	myFont = new Snowblind::CFont();
-	myFont->LoadFont("Data/Font/OpenSans-Light.ttf", 16);
-
-
+	myText = new Snowblind::CText("Data/Font/OpenSans-Light.ttf", 16, my2DCamera);
+	myText->SetText("Hello World");
+	myText->SetPosition({ 1280/2,720/2 });
+	my2DScene->AddToScene(myText);
 
 	myModel = new Snowblind::CModel(myCamera);
 	myModel->CreateCube("Data/Shaders/Cube.fx", 1.f, 1.f, 1.f);

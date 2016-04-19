@@ -42,13 +42,14 @@ namespace Snowblind
 
 
 	class CTexture;
+	class CFont;
 	class CFontManager
 	{
 	public:
 		CFontManager();
 		~CFontManager();
 		void Initiate();
-		SFontData* LoadFont(const char* aFontPath, short aFontWidth);
+		CFont* LoadFont(const char* aFontPath, short aFontWidth);
 		ID3D11ShaderResourceView* GetShaderResource();
 	private:
 		ID3D11Device* myDevice;

@@ -16,7 +16,7 @@ namespace Snowblind
 	class CScene;
 	class CFontManager;
 	class CSprite;
-	class CFont;
+	class CText;
 };
 
 class CApplication
@@ -46,7 +46,7 @@ private:
 	Snowblind::CSprite* mySprite;
 	Snowblind::CSprite* mySprite2;
 
-	Snowblind::CFont* myFont;
+	Snowblind::CText* myText;
 
 	Snowblind::CCamera* myCamera;
 	Snowblind::CCamera* my2DCamera;

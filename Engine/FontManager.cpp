@@ -52,36 +52,32 @@ namespace Snowblind
 	CFontManager::~CFontManager()
 	{
 		myFontPath = nullptr;
-		myDevice = nullptr;
-		FT_Done_Face(myFace);
 		FT_Done_FreeType(myLibrary);
-		delete myAtlas;
-		myAtlas = nullptr;
-
+		
 		//myAtlasView->Release();
 		//myAtlasView = nullptr;
 	}
 
 	void CFontManager::Initiate()
 	{
-		myDevice = CEngine::GetDirectX()->GetDevice(); //Obtain the device.
 		int error = FT_Init_FreeType(&myLibrary);
 		DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
-		myAtlas = new int[512 * 512];
-		ZeroMemory(myAtlas, (512 * 512) * sizeof(int));
 	}
 
 	CFont* CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
 	{
 		SFontData* fontData = new SFontData;
+		fontData->myAtlas = new int[512 * 512];
+		ZeroMemory(fontData->myAtlas, (512 * 512) * sizeof(int));
+		FT_Face face = fontData->myFaceData;
 
 		myFontWidth = aFontWidth;
 		myFontPath = aFontPath;
-		int error = FT_New_Face(myLibrary, myFontPath, 0, &myFace);
+		int error = FT_New_Face(myLibrary, myFontPath, 0, &face);
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
 
-		error = FT_Set_Char_Size(myFace, (aFontWidth * 64), 0, 300, 300);
+		error = FT_Set_Char_Size(face, (aFontWidth * 64), 0, 300, 300);
 		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
 
 #ifdef SAVE
@@ -96,13 +92,15 @@ namespace Snowblind
 
 		for (int i = 32; i < 126; i++)
 		{
-			error = FT_Load_Char(myFace, i, FT_LOAD_RENDER);
+			error = FT_Load_Char(face, i, FT_LOAD_RENDER);
 			DL_ASSERT_EXP(!error, "Failed to load glyph!");
-			FT_GlyphSlot slot = myFace->glyph;
+			FT_GlyphSlot slot = face->glyph;
 			slot->format = FT_GLYPH_FORMAT_BITMAP;
 			FT_Bitmap bitmap = slot->bitmap;
 			bitmap.pixel_mode = FT_PIXEL_MODE_MONO;
 			FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
+
+			
 
 
 			int height = bitmap.rows;
@@ -111,13 +109,19 @@ namespace Snowblind
 			{
 				width = 15;
 			}
+
+			if (atlasX + width > atlasWidth)
+			{
+				atlasX = 0;
+				atlasY = currentMaxY;
+			}
+
 			SCharData glyphData;
 			glyphData.myChar = i;
 			glyphData.myHeight = height;
 			glyphData.myWidth = width;
 			glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
 			glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
-
 
 			if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
 			{
@@ -126,13 +130,7 @@ namespace Snowblind
 				FONT_LOG("TopLeftUV Y: %f", glyphData.myTopLeftUV.y);
 				FONT_LOG("BottomRightUV X: %f", glyphData.myBottomRightUV.x);
 				FONT_LOG("BottomRightUV Y: %f", glyphData.myBottomRightUV.y);
-			//	DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
-			}
-
-			if (atlasX + width > atlasWidth)
-			{
-				atlasX = 0;
-				atlasY = currentMaxY;
+				DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 			}
 
 			for (int x = 0; x < width; x++)
@@ -143,7 +141,7 @@ namespace Snowblind
 					{
 						continue;
 					}
-					int& saved = myAtlas[(atlasY + y) * int(atlasWidth) + (atlasX + x)];
+					int& saved = fontData->myAtlas[(atlasY + y) * int(atlasWidth) + (atlasX + x)];
 					saved = 0;
 					saved |= bitmap.buffer[y * bitmap.width + x];
 					saved = CL::Color32Reverse(saved);
@@ -178,7 +176,7 @@ namespace Snowblind
 		}
 
 		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = myAtlas;
+		data.pSysMem = fontData->myAtlas;
 		data.SysMemPitch = 512 * 4;
 
 		D3D11_TEXTURE2D_DESC info;
@@ -195,9 +193,10 @@ namespace Snowblind
 		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 		ID3D11Texture2D* texture;
-		myDevice->CreateTexture2D(&info, &data, &texture);
+		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
-		myDevice->CreateShaderResourceView(texture, nullptr, &myAtlasView);
+		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
+
 		texture->Release();
 
 #ifdef SAVE
@@ -217,18 +216,17 @@ namespace Snowblind
 
 		fontData->myAtlasHeight = 512;
 		fontData->myAtlasWidth = 512;
-		fontData->myAtlasView = myAtlasView;
-		fontData->myFaceData = myFace;
 
 		CFont* newFont = new CFont(fontData);
 		return newFont;
 	}
 
-
-	ID3D11ShaderResourceView* CFontManager::GetShaderResource()
+	SFontData::~SFontData()
 	{
-		return myAtlasView;
+		delete myAtlas;
+		myAtlas = nullptr;
+		myAtlasView->Release();
+		myAtlasView = nullptr;
 	}
-
 
 };

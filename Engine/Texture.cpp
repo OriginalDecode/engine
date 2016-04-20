@@ -13,6 +13,8 @@ namespace Snowblind
 
 	CTexture::~CTexture()
 	{
+		myShaderResource->Release();
+		myShaderResource = nullptr;
 	}
 
 	const char* CTexture::GetFileName()
@@ -41,16 +43,6 @@ namespace Snowblind
 		return myShaderResource;
 	}
 
-	ID3D11RenderTargetView* CTexture::GetRenderTargetView()
-	{
-		return myRenderTarget;
-	}
-
-	ID3D11RenderTargetView** CTexture::GetRenderTarget()
-	{
-		return &myRenderTarget;
-	}
-
 	void CTexture::SetTexture(ID3D11ShaderResourceView* aShaderResource)
 	{
 		myShaderResource = aShaderResource;
@@ -75,5 +67,6 @@ namespace Snowblind
 		HRESULT hr = S_OK;
 		hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), resource, D3DX11_IMAGE_FILE_FORMAT::D3DX11_IFF_DDS, aFileName);
 		CEngine::GetInstance()->GetAPI()->HandleErrors(hr, "Failed to save Texture! ");
+		resource->Release();
 	}
 };

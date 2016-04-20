@@ -9,6 +9,7 @@
 #include <d3d10effect.h>
 #include <DL_Debug.h>
 #include "Texture.h"
+#include "EngineDefines.h"
 
 namespace Snowblind
 {
@@ -20,7 +21,6 @@ namespace Snowblind
 	{
 		myEffect->Release();
 		myEffect = nullptr;
-
 	}
 
 	void CEffect::Initiate(const std::string& aFile)
@@ -117,7 +117,15 @@ namespace Snowblind
 
 	void CEffect::SetPosition(const CU::Math::Vector2<float>& aPosition)
 	{
-		mySpritePos = myEffect->GetVariableByName("SpritePosition")->AsVector();
+		mySpritePos = myEffect->GetVariableByName("Position")->AsVector();
+		Validate(mySpritePos, "SpritePosition Invalid!");
+
+		mySpritePos->SetFloatVector(&aPosition.x);
+	}
+
+	void CEffect::SetScale(const CU::Math::Vector2<float>& aPosition)
+	{
+		mySpritePos = myEffect->GetVariableByName("Scale")->AsVector();
 		Validate(mySpritePos, "SpritePosition Invalid!");
 
 		mySpritePos->SetFloatVector(&aPosition.x);

@@ -33,9 +33,11 @@ namespace Snowblind
 
 	struct SFontData
 	{
+		~SFontData();
 		ID3D11ShaderResourceView* myAtlasView;
 		short myAtlasWidth; 
 		short myAtlasHeight;
+		int* myAtlas;
 		FT_FaceRec_* myFaceData;
 		std::unordered_map<char, SCharData> myCharData;
 	};
@@ -50,16 +52,10 @@ namespace Snowblind
 		~CFontManager();
 		void Initiate();
 		CFont* LoadFont(const char* aFontPath, short aFontWidth);
-		ID3D11ShaderResourceView* GetShaderResource();
 	private:
-		ID3D11Device* myDevice;
 		FT_LibraryRec_* myLibrary;
-		FT_FaceRec_* myFace; //Create more of these if you want more fonts at the same time.
 		const char* myFontPath;
 		short myFontWidth;
-		int* myAtlas;
-		ID3D11ShaderResourceView* myAtlasView; //Will have to
-
 
 	};
 };

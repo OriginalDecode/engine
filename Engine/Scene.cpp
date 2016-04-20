@@ -12,7 +12,11 @@ namespace Snowblind
 
 	CScene::~CScene()
 	{
-		myInstances.RemoveAll();
+		delete myCamera;
+		myCamera = nullptr;
+		myInstances.DeleteAll();
+		my2DInstances.DeleteAll();
+		myText.DeleteAll();
 	}
 
 	void CScene::Initiate(CCamera* aCamera, bool aIs2DScene)

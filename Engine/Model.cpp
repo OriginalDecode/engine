@@ -32,10 +32,13 @@ namespace Snowblind
 		mySurfaces.DeleteAll();
 		SAFE_DELETE(myVertexData->myVertexData);
 		SAFE_DELETE(myIndexData->myIndexData);
+		SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
+		SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 		SAFE_DELETE(myVertexBuffer);
 		SAFE_DELETE(myVertexData);
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myIndexData);
+		SAFE_RELEASE(myVertexLayout);
 	}
 
 	void CModel::CreateTriangle(const std::string& anEffectPath)

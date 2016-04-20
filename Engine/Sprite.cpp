@@ -68,4 +68,9 @@ namespace Snowblind
 		//to be implemented
 	}
 
+	void CSprite::SetScale(const CU::Math::Vector2<float>& aScale)
+	{
+		mySprite->GetEffect()->SetScale(aScale);
+	}
+
 };

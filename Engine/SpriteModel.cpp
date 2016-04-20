@@ -10,6 +10,7 @@
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
 #include <d3dx11effect.h>
+#include "EngineDefines.h"
 namespace Snowblind
 {
 	CSpriteModel::CSpriteModel()
@@ -19,6 +20,18 @@ namespace Snowblind
 
 	CSpriteModel::~CSpriteModel()
 	{
+		SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
+		SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
+		SAFE_DELETE(myIndexBuffer);
+		SAFE_DELETE(myVertexBuffer);
+
+		SAFE_DELETE(myIndexData->myIndexData);
+		SAFE_DELETE(myIndexData);
+
+		SAFE_DELETE(myVertexData->myVertexData);
+		SAFE_DELETE(myVertexData);
+		SAFE_RELEASE(myVertexLayout);
+
 	}
 
 	void CSpriteModel::Initiate(const char* aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)

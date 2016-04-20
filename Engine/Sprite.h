@@ -29,5 +29,7 @@ namespace Snowblind
 		CU::Math::Matrix44<float> myOrientation;
 		CU::Math::Vector2<float> myHotspot;
 		CU::Math::Vector2<float> myPosition;
+	public:
+		void SetScale(const CU::Math::Vector2<float>& aScale);
 	};
 };

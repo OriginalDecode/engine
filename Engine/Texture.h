@@ -23,7 +23,6 @@ namespace Snowblind
 	private:
 
 		ID3D11ShaderResourceView* myShaderResource;
-		ID3D11RenderTargetView* myRenderTarget;
 
 		int	myWidth;
 		int	myHeight;

@@ -8,6 +8,9 @@
 
 #include <sstream>
 #include <stdlib.h>
+
+#include "TextureContainer.h"
+#include "EffectContainer.h"
 #undef VOID
 #define VOID (void**)
 namespace Snowblind
@@ -24,7 +27,7 @@ namespace Snowblind
 		CreateDepthBuffer();
 		CreateBackBuffer();
 		CreateViewport();
-		SetRasterizer();
+		//SetRasterizer();
 	}
 
 	CDirectX11::~CDirectX11()
@@ -34,6 +37,10 @@ namespace Snowblind
 			SAFE_RELEASE(it->second);
 		}
 
+		CTextureContainer::Destroy();
+		CEffectContainer::Destroy();
+
+		SAFE_DELETE(myViewport);
 		SAFE_RELEASE(myDepthStates[static_cast<int>(eDepthStencil::Z_ENABLED)]);
 		SAFE_RELEASE(myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)]);
 		SAFE_RELEASE(myDepthStates[static_cast<int>(eDepthStencil::READ_NO_WRITE)]);
@@ -41,13 +48,18 @@ namespace Snowblind
 		SAFE_RELEASE(myDepthBuffer);
 		SAFE_RELEASE(myRenderTarget);
 		SAFE_RELEASE(mySwapchain);
-		SAFE_RELEASE(myContext);
 		SAFE_RELEASE(myDeferredContext);
-		SAFE_RELEASE(myDevice);
+		SAFE_RELEASE(myRasterizerStates[0]);
+		SAFE_RELEASE(myRasterizerStates[1]);
 
+		myContext->ClearState();
+		myContext->Flush();
+		SAFE_RELEASE(myContext);
+		SAFE_RELEASE(myDevice);
 		std::stringstream ss;
 		ss << "Debug is released last. Will report as Live Object! 0x" << myDebug << "\n";
 		OutputDebugString(ss.str().c_str());
+		myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 		SAFE_RELEASE(myDebug);
 
 	}
@@ -443,6 +455,8 @@ namespace Snowblind
 
 		myDevice->CreateRasterizerState(&rDesc, &myRasterizerStates[0]);
 		myContext->RSSetState(myRasterizerStates[0]);
+		SetDebugName(myRasterizerStates[0], "Rasterizer State");
+
 			
 	}
 

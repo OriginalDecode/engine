@@ -19,15 +19,13 @@ CApplication::CApplication()
 
 CApplication::~CApplication()
 {
-	delete myText;
-	SAFE_DELETE(mySprite);
-	SAFE_DELETE(myWorldScene);
-	SAFE_DELETE(myInstance);
 	SAFE_DELETE(myModel);
 	SAFE_DELETE(myTexturedModel);
-	SAFE_DELETE(myCamera);
+
+	SAFE_DELETE(my2DScene);
+	SAFE_DELETE(myWorldScene);
+
 	CU::TimeManager::Destroy();
-	Snowblind::CEffectContainer::Destroy();
 	Snowblind::CEngine::Destroy();
 }
 
@@ -65,11 +63,19 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	my2DScene->Initiate(my2DCamera, true);
 
 
-	myText = new Snowblind::CText("Data/Font/OpenSans-Light.ttf", 16, my2DCamera);
-	myText->SetText("ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz");
-
-	myText->SetPosition({ -500, -150 });
+	myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16, my2DCamera);
+	myText->SetText("!ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz");
+	myText->SetScale({ 1, 1 });
+	myText->SetPosition({ -500, -250 });
 	my2DScene->AddToScene(myText);
+
+
+	myText2 = new Snowblind::CText("Data/Font/OpenSans-Light.ttf", 8, my2DCamera);
+	myText2->SetText("!ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz");
+	myText2->SetScale({ 1, 1});
+	myText2->SetPosition({ -500, 150 });
+	my2DScene->AddToScene(myText2);
+
 
 	myModel = new Snowblind::CModel(myCamera);
 	myModel->CreateCube("Data/Shaders/Cube.fx", 1.f, 1.f, 1.f);
@@ -92,7 +98,8 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	mySprite = new Snowblind::CSprite();
 	mySprite->Initiate(myText->GetAtlas(), { 512.f,512.f }, { 0.f,0.f });
 	mySprite->SetPosition({ 256, 256});
-	my2DScene->AddToScene(mySprite);
+	mySprite->SetScale({ 1.f, 1.f });
+	//my2DScene->AddToScene(mySprite);
 }
 
 bool CApplication::Update()
@@ -170,5 +177,14 @@ void CApplication::UpdateInput(float aDeltaTime)
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(E))
 	{
 		myCamera->Rotate(Snowblind::eRotation::Z_AXIS, -ROTATION_SPEED * aDeltaTime);
+	}
+
+	if (CU::Input::InputWrapper::GetInstance()->KeyDown(DIK_ADD))
+	{
+		myText->SetScale({ myText->GetScale().x + 10 * aDeltaTime, myText->GetScale().y + 10 * aDeltaTime });
+	}
+	if (CU::Input::InputWrapper::GetInstance()->KeyDown(DIK_SUBTRACT))
+	{
+		myText->SetScale({ myText->GetScale().x - 10 * aDeltaTime, myText->GetScale().y - 10 * aDeltaTime });
 	}
 }

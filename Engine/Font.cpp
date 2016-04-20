@@ -24,18 +24,22 @@ namespace Snowblind
 		CreateInputLayout();
 		CreateVertexBuffer();
 		CreateIndexBuffer();
-		myEffect->SetAlbedo(myData->myAtlasView);
+
 	}
 
 	CFont::~CFont()
 	{
-		SAFE_DELETE(myData);
+		SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
+		SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myVertexBuffer);
+
+
 		SAFE_DELETE(myVertexBufferDesc);
 		SAFE_DELETE(myIndexBufferDesc);
 		SAFE_DELETE(myInitData);
 		SAFE_RELEASE(myVertexLayout);
+		SAFE_DELETE(myData);
 	}
 
 	void CFont::SetText(const std::string& aText)
@@ -56,6 +60,7 @@ namespace Snowblind
 	{
 		if (!myEffect)
 			return;
+		myEffect->SetAlbedo(myData->myAtlasView);
 		ID3D11DeviceContext& context = *CEngine::GetDirectX()->GetContext();
 		context.IASetInputLayout(myVertexLayout);
 		context.IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
@@ -175,13 +180,13 @@ namespace Snowblind
 
 			int startIndex = (i - row) * 4.f;
 
-			myIndices.Add(startIndex + 2);
-			myIndices.Add(startIndex + 0);
 			myIndices.Add(startIndex + 1);
+			myIndices.Add(startIndex + 0);
+			myIndices.Add(startIndex + 2);
 
 			myIndices.Add(startIndex + 2);
-			myIndices.Add(startIndex + 1);
 			myIndices.Add(startIndex + 3);
+			myIndices.Add(startIndex + 1);
 
 
 			drawX += charData.myWidth + 3;
@@ -191,12 +196,13 @@ namespace Snowblind
 		myInitData->pSysMem = reinterpret_cast<char*>(&myVertices[0]);
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData, &myVertexBuffer->myVertexBuffer);
 
+		CEngine::GetDirectX()->SetDebugName(myVertexBuffer->myVertexBuffer, "Font Vertex Buffer");
 
 		myIndexBufferDesc->ByteWidth = sizeof(UINT) * myIndices.Size();
 		myInitData->pSysMem = reinterpret_cast<char*>(&myIndices[0]);
 		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(myIndexBufferDesc, myInitData, &myIndexBuffer->myIndexBuffer);
 
-
+		CEngine::GetDirectX()->SetDebugName(myIndexBuffer->myIndexBuffer, "Font Index Buffer");
 
 
 

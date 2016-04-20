@@ -47,6 +47,8 @@ private:
 	Snowblind::CSprite* mySprite2;
 
 	Snowblind::CText* myText;
+	Snowblind::CText* myText2;
+
 
 	Snowblind::CCamera* myCamera;
 	Snowblind::CCamera* my2DCamera;

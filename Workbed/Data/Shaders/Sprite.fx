@@ -2,7 +2,8 @@ matrix World;
 matrix Projection;
 matrix View;
 
-float2 SpritePosition;
+float2 Position;
+float2 Scale;
 Texture2D AlbedoTexture;
 
 SamplerState sampleLinear
@@ -32,8 +33,10 @@ PS_INPUT VS(VS_INPUT input)
 	
 	output.pos = mul(input.pos, World);
 	output.pos = mul(output.pos, View);
-	output.pos.x += SpritePosition.x;
-	output.pos.y += SpritePosition.y;	
+	output.pos.x *= Scale.x;
+	output.pos.y *= Scale.y;
+	output.pos.x += Position.x;
+	output.pos.y += Position.y;	
 	output.pos = mul(output.pos, Projection);
 	//output.color = input.color;	
 	output.UV = input.UV;
@@ -61,7 +64,7 @@ technique11 Render
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
-		SetBlendState(AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xFFFFFFFF);
+		//SetBlendState(AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xFFFFFFFF);
 		SetPixelShader(CompileShader(ps_5_0, PS()));
 	}
 }

@@ -35,8 +35,6 @@ namespace Snowblind
 		void InitVertexBuffer();
 		void InitIndexBuffer();
 
-		//ID3D11Buffer* myIndexBuffer;
-
 		CEffect	*myEffect;
 
 

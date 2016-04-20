@@ -30,6 +30,8 @@ namespace Snowblind
 		void SetAlbedo(ID3D11ShaderResourceView* aTexturePtr);
 		void SetMatrices(Matrix44f& aToWorld, Matrix44f& aToView, Matrix44f& aProjection);
 		void SetPosition(const CU::Math::Vector2<float>& aPosition);
+		void SetScale(const CU::Math::Vector2<float>& aPosition);
+
 
 		template <typename T>
 		void Validate(T* anEffectVariable, const std::string& anErrorMessage);

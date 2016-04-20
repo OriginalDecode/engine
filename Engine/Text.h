@@ -14,6 +14,8 @@ namespace Snowblind
 		void Render(); 
 		void SetText(const std::string& aString);
 		void SetPosition(const CU::Math::Vector2<float>& aPosition);
+		void SetScale(const CU::Math::Vector2<float>& aScale);
+		const CU::Math::Vector2<float>& GetScale();
 		ID3D11ShaderResourceView* GetAtlas();
 
 	private:
@@ -22,5 +24,6 @@ namespace Snowblind
 		CFont* myFont;
 		CU::Math::Matrix44<float> myOrientation;
 		CU::Math::Vector2<float> myPosition;
+		CU::Math::Vector2<float> myScale;
 	};
 };

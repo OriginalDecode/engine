@@ -35,6 +35,17 @@ namespace Snowblind
 		myPosition = aPosition;
 	}
 
+	void CText::SetScale(const CU::Math::Vector2<float>& aScale)
+	{
+		myFont->GetEffect()->SetScale(aScale);
+		myScale = aScale;
+	}
+
+	const CU::Math::Vector2<float>& CText::GetScale()
+	{
+		return myScale;
+	}
+
 	ID3D11ShaderResourceView* CText::GetAtlas()
 	{
 		return myFont->GetAtlas();

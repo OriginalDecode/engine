@@ -20,7 +20,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Physics);
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Font);
 
-	DL_DEBUG("%i Active Filters!", DL_Debug::Debug::GetInstance()->GetActiveLogCount());
+	DL_MESSAGE ("%i Active Filters!", DL_Debug::Debug::GetInstance()->GetActiveLogCount());
 
 	float w = 1280.f;
 	float h = 720.f;

@@ -145,7 +145,7 @@ namespace Snowblind
 			if (myText[i] == '\n')
 			{
 				drawX = 0;
-				drawY -= 33.f;
+				drawY -= 80.f;
 				row++;
 				continue;
 			}
@@ -157,24 +157,21 @@ namespace Snowblind
 			float top = drawY;
 			float bottom = drawY + charData.myHeight;
 
-			v.myPosition = { left, bottom  };
-			v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
-			myVertices.Add(v);
-
-			v.myPosition = { left, top};
+			v.myPosition = { left, bottom, 0 };
 			v.myUV = charData.myTopLeftUV;
 			myVertices.Add(v);
 
-			v.myPosition = { right, bottom  };
-			v.myUV = charData.myBottomRightUV;
+			v.myPosition = { left, top, 0 };
+			v.myUV = { charData.myTopLeftUV.x , charData.myBottomRightUV.y };
 			myVertices.Add(v);
 
-			v.myPosition = { right, top};
+			v.myPosition = { right, bottom, 0 };
 			v.myUV = { charData.myBottomRightUV.x , charData.myTopLeftUV.y };
 			myVertices.Add(v);
 
-
-
+			v.myPosition = { right, top, 0 };
+			v.myUV = charData.myBottomRightUV;
+			myVertices.Add(v);
 
 			int startIndex = (i - row) * 4.f;
 

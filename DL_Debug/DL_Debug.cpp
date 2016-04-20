@@ -62,6 +62,7 @@ namespace DL_Debug
 
 	void Debug::AssertMessage(const char *aFileName, int aLine, const char *aFunctionName, const char *aString)
 	{
+		myOutputFile << "\nCallStack:\n";
 		std::stringstream sstream;
 
 		sstream << "\nAssert at : " <<
@@ -77,13 +78,12 @@ namespace DL_Debug
 			"\n" << AddTime() << "Function: " << aFunctionName <<
 			"\n" << AddTime() << "Message: " << aString;
 
-		myOutputFile << "\nCallStack:\n";
+		myOutputFile << "\nCallStack:";
 
 		DL_Debug::StackWalker ss;
 		ss.ShowCallstack();
 
-		myOutputFile << "\nCallStack:\n";
-		myOutputFile << "\n==========================";
+		myOutputFile << "==========================";
 		myOutputFile.flush();
 
 

@@ -66,8 +66,9 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 
 	myText = new Snowblind::CText("Data/Font/OpenSans-Light.ttf", 16, my2DCamera);
-	myText->SetText("Hello World");
-	myText->SetPosition({ 0, 0 });
+	myText->SetText("ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz");
+
+	myText->SetPosition({ -500, -150 });
 	my2DScene->AddToScene(myText);
 
 	myModel = new Snowblind::CModel(myCamera);
@@ -88,11 +89,10 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myInstance->SetPosition({ 0.f,5.f,0.f });
 	myWorldScene->AddToScene(myInstance);
 
-	//mySprite = new Snowblind::CSprite();
-	//mySprite->Initiate("Data/Textures/colors.dds", { 50.f,50.f }, { 0.f,0.f });
-	//mySprite->SetPosition({ 1280/2, 720/2});
-
-	//my2DScene->AddToScene(mySprite);
+	mySprite = new Snowblind::CSprite();
+	mySprite->Initiate(myText->GetAtlas(), { 512.f,512.f }, { 0.f,0.f });
+	mySprite->SetPosition({ 256, 256});
+	my2DScene->AddToScene(mySprite);
 }
 
 bool CApplication::Update()

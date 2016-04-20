@@ -118,6 +118,17 @@ namespace Snowblind
 			glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
 			glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
 
+
+			if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
+			{
+				FONT_LOG("Tried to set a UV coord to above 1 at glyph : %c , index %d", i, i);
+				FONT_LOG("TopLeftUV X: %f", glyphData.myTopLeftUV.x);
+				FONT_LOG("TopLeftUV Y: %f", glyphData.myTopLeftUV.y);
+				FONT_LOG("BottomRightUV X: %f", glyphData.myBottomRightUV.x);
+				FONT_LOG("BottomRightUV Y: %f", glyphData.myBottomRightUV.y);
+			//	DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
+			}
+
 			if (atlasX + width > atlasWidth)
 			{
 				atlasX = 0;

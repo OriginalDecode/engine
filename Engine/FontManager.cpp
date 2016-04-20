@@ -71,13 +71,17 @@ namespace Snowblind
 		ZeroMemory(fontData->myAtlas, (512 * 512) * sizeof(int));
 		FT_Face face = fontData->myFaceData;
 
+
+
+
+
 		myFontWidth = aFontWidth;
 		myFontPath = aFontPath;
 		int error = FT_New_Face(myLibrary, myFontPath, 0, &face);
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
 
-		error = FT_Set_Char_Size(face, (aFontWidth * 64), 0, 300, 300);
+		error = FT_Set_Char_Size(face, (aFontWidth << 6), 0, 300, 300);
 		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
 
 #ifdef SAVE
@@ -89,6 +93,12 @@ namespace Snowblind
 		float atlasWidth = 512; //have to be replaced.
 		float atlasHeight = 512; //have to be replaced
 		int currentMaxY = 0;
+
+		//Create a good spacing between words. 
+		error = FT_Load_Char(face, 'x', FT_LOAD_DEFAULT);
+		DL_ASSERT_EXP(!error, "Failed to load glyph! x");
+		FT_GlyphSlot space = face->glyph;
+		fontData->myWordSpacing = space->metrics.width >> 8;
 
 		for (int i = 32; i < 126; i++)
 		{
@@ -103,11 +113,6 @@ namespace Snowblind
 			int height = bitmap.rows;
 			int width = bitmap.width;
 
-			if (width <= 0)
-			{
-				width = 15;
-			}
-
 			if (atlasX + width > atlasWidth)
 			{
 				atlasX = 0;
@@ -120,15 +125,9 @@ namespace Snowblind
 			glyphData.myWidth = width;
 			glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
 			glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
-			glyphData.myAdvanceX = slot->advance.x / 64;
-			//glyphData.myAdvanceY = slot->advance.y  / 64;
-
-			glyphData.myBearingX = slot->metrics.horiBearingX;
-			glyphData.myBearingY = slot->metrics.horiBearingY;
-			glyphData.myBearingX /= 64.f;
-			glyphData.myBearingY /= 64.f;
-
-			glyphData.myBearingY = (slot->metrics.horiBearingY - slot->metrics.height) /64.f;
+			glyphData.myAdvanceX = slot->metrics.width >> 6;
+			glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) >> 6);
+			glyphData.myBearingY = (slot->metrics.horiBearingY - slot->metrics.height) >> 6;
 
 
 			//Face holds the ascender. Look at that. I believe that can solve my issues.
@@ -224,7 +223,7 @@ namespace Snowblind
 
 		fontData->myAtlasHeight = 512;
 		fontData->myAtlasWidth = 512;
-		fontData->myLineSpacing = (face->height/64.f) * 2.f;
+		fontData->myLineSpacing = (face->height >> 6) * 2.f;
 		FT_Done_Face(face);
 		CFont* newFont = new CFont(fontData);
 		return newFont;

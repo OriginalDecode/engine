@@ -157,6 +157,10 @@ namespace Snowblind
 				continue;
 			}
 
+			if (myText[i] == ' ')
+			{
+				drawX += myData->myWordSpacing;
+			}
 
 			float left = drawX;
 			float right = left + charData.myWidth;
@@ -190,7 +194,7 @@ namespace Snowblind
 			myIndices.Add(startIndex + 1);
 
 
-			drawX += charData.myAdvanceX;
+			drawX += charData.myAdvanceX + 2 ;
 		}
 
 		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosUV) * myVertices.Size();

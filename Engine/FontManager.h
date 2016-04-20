@@ -25,7 +25,6 @@ namespace Snowblind
 	{
 		CU::Math::Vector2<float> myTopLeftUV;
 		CU::Math::Vector2<float> myBottomRightUV;
-
 		short myWidth;
 		short myHeight;
 		short myAdvanceX; //Distance to next character.
@@ -37,14 +36,14 @@ namespace Snowblind
 	struct SFontData
 	{
 		~SFontData();
-		ID3D11ShaderResourceView* myAtlasView;
+		std::unordered_map<char, SCharData> myCharData;
 		short myAtlasWidth; 
 		short myAtlasHeight;
 		short myLineSpacing;
+		short myWordSpacing;
 		int* myAtlas;
-		
+		ID3D11ShaderResourceView* myAtlasView;
 		FT_FaceRec_* myFaceData;
-		std::unordered_map<char, SCharData> myCharData;
 	};
 
 

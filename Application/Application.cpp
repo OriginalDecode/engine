@@ -64,6 +64,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16, my2DCamera);
 	myText->SetText("!ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz");
+	myText->SetText("Hello World, my name is Linus Skold and I am a programmer.");
 	myText->SetScale({ 1, 1 });
 	myText->SetPosition({ -500, -250 });
 	my2DScene->AddToScene(myText);

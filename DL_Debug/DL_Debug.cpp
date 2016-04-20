@@ -131,6 +131,12 @@ namespace DL_Debug
 		if (aFilter == "PhysX" && myDebugLogs[eDEBUGLOG::Physics] == FALSE)
 			return;
 
+		if (aFilter == "Font" && myDebugLogs[eDEBUGLOG::Font] == FALSE)
+			return;
+
+		if (aFilter == "Algorithm" && myDebugLogs[eDEBUGLOG::Font] == FALSE)
+			return;
+
 		myOutputFile
 			<< AddTime() << "[" << aFilter << "]" << " : " << aString << "\n";
 
@@ -156,6 +162,7 @@ namespace DL_Debug
 			break;
 		case eDEBUGLOG::Engine:
 			myDebugLogs[eDEBUGLOG::Engine] = FALSE;
+			break;
 		case eDEBUGLOG::Font:
 			myDebugLogs[eDEBUGLOG::Font] = FALSE;
 			break;
@@ -183,6 +190,7 @@ namespace DL_Debug
 			break;
 		case eDEBUGLOG::Font:
 			myDebugLogs[eDEBUGLOG::Font] = TRUE;
+			break;
 		}
 		myActiveLogCount++;
 	}
@@ -223,23 +231,23 @@ namespace DL_Debug
 		switch (aFilter)
 		{
 		case eDEBUGLOG::Engine:
-			if (myDebugLogs[eDEBUGLOG::Engine] == 0)
+			if (myDebugLogs[eDEBUGLOG::Engine] == TRUE)
 				return true;
 			break;
 		case eDEBUGLOG::Physics:
-			if (myDebugLogs[eDEBUGLOG::Physics] == 0)
+			if (myDebugLogs[eDEBUGLOG::Physics] == TRUE)
 				return true;
 			break;
 		case eDEBUGLOG::Render:
-			if (myDebugLogs[eDEBUGLOG::Render] == 0)
+			if (myDebugLogs[eDEBUGLOG::Render] == TRUE)
 				return true;
 			break;
 		case eDEBUGLOG::Resource:
-			if (myDebugLogs[eDEBUGLOG::Resource] == 0)
+			if (myDebugLogs[eDEBUGLOG::Resource] == TRUE)
 				return true;
 			break;
 		case eDEBUGLOG::Update:
-			if (myDebugLogs[eDEBUGLOG::Update] == 0)
+			if (myDebugLogs[eDEBUGLOG::Update] == TRUE)
 				return true;
 			break;
 		}

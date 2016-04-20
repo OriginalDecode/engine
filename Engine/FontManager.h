@@ -29,7 +29,6 @@ namespace Snowblind
 		short myWidth;
 		short myHeight;
 		short myAdvanceX; //Distance to next character.
-		short myAdvanceY; //Distance to next row.
 		short myBearingX;
 		short myBearingY;
 		char myChar;
@@ -41,7 +40,9 @@ namespace Snowblind
 		ID3D11ShaderResourceView* myAtlasView;
 		short myAtlasWidth; 
 		short myAtlasHeight;
+		short myLineSpacing;
 		int* myAtlas;
+		
 		FT_FaceRec_* myFaceData;
 		std::unordered_map<char, SCharData> myCharData;
 	};

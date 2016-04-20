@@ -152,15 +152,15 @@ namespace Snowblind
 			if (myText[i] == '\n')
 			{
 				drawX = 0;
-				drawY -= 80.f;
+				drawY -= myData->myLineSpacing;
 				row++;
 				continue;
 			}
 
 
-			float left = drawX + charData.myBearingX;
+			float left = drawX;
 			float right = left + charData.myWidth;
-			float top = drawY - charData.myBearingY;
+			float top = drawY + charData.myBearingY;
 			float bottom = top + charData.myHeight;
 			
 			v.myPosition = { left, bottom, 0 };

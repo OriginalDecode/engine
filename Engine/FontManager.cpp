@@ -103,7 +103,6 @@ namespace Snowblind
 			int height = bitmap.rows;
 			int width = bitmap.width;
 
-
 			if (width <= 0)
 			{
 				width = 15;
@@ -122,14 +121,17 @@ namespace Snowblind
 			glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
 			glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
 			glyphData.myAdvanceX = slot->advance.x / 64;
-			glyphData.myAdvanceY = slot->advance.y  /64;
-
+			//glyphData.myAdvanceY = slot->advance.y  / 64;
 
 			glyphData.myBearingX = slot->metrics.horiBearingX;
 			glyphData.myBearingY = slot->metrics.horiBearingY;
 			glyphData.myBearingX /= 64.f;
 			glyphData.myBearingY /= 64.f;
 
+			glyphData.myBearingY = (slot->metrics.horiBearingY - slot->metrics.height) /64.f;
+
+
+			//Face holds the ascender. Look at that. I believe that can solve my issues.
 			if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
 			{
 				FONT_LOG("Tried to set a UV coord to above 1 at glyph : %c , index %d", i, i);
@@ -160,7 +162,6 @@ namespace Snowblind
 
 				}
 			}
-
 			atlasX = atlasX + width + 2;
 			fontData->myCharData[i] = glyphData;
 
@@ -223,7 +224,8 @@ namespace Snowblind
 
 		fontData->myAtlasHeight = 512;
 		fontData->myAtlasWidth = 512;
-
+		fontData->myLineSpacing = (face->height/64.f) * 2.f;
+		FT_Done_Face(face);
 		CFont* newFont = new CFont(fontData);
 		return newFont;
 	}

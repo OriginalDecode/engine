@@ -41,6 +41,7 @@ namespace Snowblind
 		short myAtlasHeight;
 		short myLineSpacing;
 		short myWordSpacing;
+		short myFontHeightWidth;
 		int* myAtlas;
 		ID3D11ShaderResourceView* myAtlasView;
 		FT_FaceRec_* myFaceData;
@@ -59,8 +60,6 @@ namespace Snowblind
 	private:
 		FT_LibraryRec_* myLibrary;
 		const char* myFontPath;
-		short myFontWidth;
-
 	};
 };
 

@@ -25,7 +25,8 @@ namespace Snowblind
 		void Render();
 		CEffect* GetEffect();
 		ID3D11ShaderResourceView* GetAtlas();
-
+		const CU::Math::Vector2<float>& GetSize();
+		const short GetFontPixelSize();
 	private:
 		void operator=(const CFont&) = delete;
 
@@ -43,7 +44,7 @@ namespace Snowblind
 
 		SVertexBufferWrapper* myVertexBuffer;
 		SIndexBufferWrapper* myIndexBuffer;
-
+		CU::Math::Vector2<float> mySize;
 		std::string myText;
 		CU::GrowingArray<SVertexTypePosUV> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;

@@ -63,17 +63,17 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 
 	myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16, my2DCamera);
-	myText->SetText("!ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz");
+	//myText->SetText("!ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz");
 	myText->SetText("Hello World, my name is Linus Skold and I am a programmer.");
-	myText->SetScale({ 1, 1 });
-	myText->SetPosition({ -500, -250 });
+	myText->SetScale({ 0.36f, 0.36f });
+	myText->SetPosition({ 0, 0});
 	my2DScene->AddToScene(myText);
 
-
-	myText2 = new Snowblind::CText("Data/Font/OpenSans-Light.ttf", 8, my2DCamera);
-	myText2->SetText("!ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz");
+	 
+	myText2 = new Snowblind::CText("Data/Font/OpenSans-Light.ttf", 16, my2DCamera);
+	myText2->SetText("Hello World, my name is Linus Skold and I am a programmer.");
 	myText2->SetScale({ 1, 1});
-	myText2->SetPosition({ -500, 150 });
+	myText2->SetPosition({ 0, 150 });
 	my2DScene->AddToScene(myText2);
 
 
@@ -95,11 +95,11 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myInstance->SetPosition({ 0.f,5.f,0.f });
 	myWorldScene->AddToScene(myInstance);
 
-	mySprite = new Snowblind::CSprite();
-	mySprite->Initiate(myText->GetAtlas(), { 512.f,512.f }, { 0.f,0.f });
-	mySprite->SetPosition({ 256, 256});
-	mySprite->SetScale({ 1.f, 1.f });
-	my2DScene->AddToScene(mySprite);
+	//mySprite = new Snowblind::CSprite();
+	//mySprite->Initiate(myText->GetAtlas(), { 512.f,512.f }, { 0.f,0.f });
+	//mySprite->SetPosition({ 256, 256});
+	//mySprite->SetScale({ 1.f, 1.f });
+	//my2DScene->AddToScene(mySprite);
 }
 
 bool CApplication::Update()
@@ -112,6 +112,11 @@ bool CApplication::Update()
 	{
 		return false;
 	}
+
+	//WILL LEAK IF USED.
+	//std::stringstream ss;
+	//ss << CU::TimeManager::GetInstance()->GetFPS();
+	//myText->SetText(ss.str());
 
 	UpdateInput(deltaTime);
 	myWorldScene->Update(deltaTime);
@@ -177,14 +182,5 @@ void CApplication::UpdateInput(float aDeltaTime)
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(E))
 	{
 		myCamera->Rotate(Snowblind::eRotation::Z_AXIS, -ROTATION_SPEED * aDeltaTime);
-	}
-
-	if (CU::Input::InputWrapper::GetInstance()->KeyDown(DIK_ADD))
-	{
-		myText->SetScale({ myText->GetScale().x + 10 * aDeltaTime, myText->GetScale().y + 10 * aDeltaTime });
-	}
-	if (CU::Input::InputWrapper::GetInstance()->KeyDown(DIK_SUBTRACT))
-	{
-		myText->SetScale({ myText->GetScale().x - 10 * aDeltaTime, myText->GetScale().y - 10 * aDeltaTime });
 	}
 }

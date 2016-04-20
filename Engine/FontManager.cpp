@@ -75,13 +75,13 @@ namespace Snowblind
 
 
 
-		myFontWidth = aFontWidth;
+		fontData->myFontHeightWidth = aFontWidth;
 		myFontPath = aFontPath;
 		int error = FT_New_Face(myLibrary, myFontPath, 0, &face);
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
 
-		error = FT_Set_Char_Size(face, (aFontWidth << 6), 0, 300, 300);
+		error = FT_Set_Char_Size(face, (fontData->myFontHeightWidth << 6), 0, 300, 300);
 		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
 
 #ifdef SAVE

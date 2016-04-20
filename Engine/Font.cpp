@@ -89,6 +89,16 @@ namespace Snowblind
 		return myData->myAtlasView;
 	}
 
+	const CU::Math::Vector2<float>& CFont::GetSize()
+	{
+		return mySize;
+	}
+
+	const short CFont::GetFontPixelSize()
+	{
+		return myData->myFontHeightWidth;
+	}
+
 	void CFont::CreateInputLayout()
 	{
 		myVertexFormat.Init(2);
@@ -209,7 +219,7 @@ namespace Snowblind
 
 		CEngine::GetDirectX()->SetDebugName(myIndexBuffer->myIndexBuffer, "Font Index Buffer");
 
-
-
+		mySize.x = drawX;
+		mySize.y = drawY;
 	}
 };

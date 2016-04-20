@@ -21,6 +21,7 @@ namespace Snowblind
 	void CText::Render()
 	{
 		myFont->GetEffect()->SetPosition(myPosition);
+		myFont->GetEffect()->SetScale(myScale);
 		myFont->GetEffect()->SetMatrices(myOrientation, myCamera->GetOrientation(), myCamera->GetOrthogonalMatrix());
 		myFont->Render();
 	}
@@ -32,13 +33,15 @@ namespace Snowblind
 
 	void CText::SetPosition(const CU::Math::Vector2<float>& aPosition)
 	{
-		myPosition = aPosition;
+		CU::Math::Vector2<float> pos = aPosition;
+		pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f) + 2;
+		pos.y = -pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f) - (myFont->GetFontPixelSize() + 4);
+		myPosition = pos;
 	}
 
 	void CText::SetScale(const CU::Math::Vector2<float>& aScale)
 	{
-		myFont->GetEffect()->SetScale(aScale);
-		myScale = aScale;
+		myScale = aScale;// * 0.36f; //magic?
 	}
 
 	const CU::Math::Vector2<float>& CText::GetScale()
@@ -49,6 +52,11 @@ namespace Snowblind
 	ID3D11ShaderResourceView* CText::GetAtlas()
 	{
 		return myFont->GetAtlas();
+	}
+
+	void CText::operator>>(const std::string& aString)
+	{
+		myFont->SetText(aString);
 	}
 
 };

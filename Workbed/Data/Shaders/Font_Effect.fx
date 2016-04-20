@@ -47,7 +47,7 @@ float4 PS(PS_INPUT input) : SV_Target
 {
 	//return float4(1,1,0,1);
 	float4 color = AlbedoTexture.Sample(sampleLinear,input.UV).aaaa;
-	color.rgb = float3(0,0,0);
+	
 	//color.a *= smoothstep(0.3f ,0.75f, alphaMask);
 	return color;
 };
@@ -61,10 +61,10 @@ BlendState AlphaBlend
 	RenderTargetWriteMask[0] = 0x0F;
 };
 
-RasterizerState RS
-{
-	CullMode = NONE;
-};
+//RasterizerState RS
+//{
+//	CullMode = NONE;
+//};
 
 
 technique11 Render

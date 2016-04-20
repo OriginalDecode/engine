@@ -141,7 +141,7 @@ namespace Snowblind
 		}
 		else if(type)
 		{
-			type = D3D_DRIVER_TYPE_HARDWARE;
+			type = D3D_DRIVER_TYPE_UNKNOWN;
 		}
 
 		HRESULT hr = D3D11CreateDeviceAndSwapChain(
@@ -178,7 +178,11 @@ namespace Snowblind
 		DL_ASSERT_EXP(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");
 
 #ifdef _DEBUG
-		myDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&myDebug);
+		hr = myDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&myDebug);
+		if (hr != S_OK)
+		{
+			OutputDebugStringA("Failed to Query Debug Interface. myDebug is NULL.");
+		}
 #endif
 		SetDebugName(myContext, "DirectX11 Context Object");
 		const std::string deviceName = "DirectX11 Device Object";

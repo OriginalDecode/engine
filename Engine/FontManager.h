@@ -28,6 +28,10 @@ namespace Snowblind
 
 		short myWidth;
 		short myHeight;
+		short myAdvanceX; //Distance to next character.
+		short myAdvanceY; //Distance to next row.
+		short myBearingX;
+		short myBearingY;
 		char myChar;
 	};
 

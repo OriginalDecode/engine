@@ -100,11 +100,10 @@ namespace Snowblind
 			bitmap.pixel_mode = FT_PIXEL_MODE_MONO;
 			FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
 
-			
-
-
 			int height = bitmap.rows;
 			int width = bitmap.width;
+
+
 			if (width <= 0)
 			{
 				width = 15;
@@ -122,6 +121,14 @@ namespace Snowblind
 			glyphData.myWidth = width;
 			glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
 			glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
+			glyphData.myAdvanceX = slot->advance.x / 64;
+			glyphData.myAdvanceY = slot->advance.y  /64;
+
+
+			glyphData.myBearingX = slot->metrics.horiBearingX;
+			glyphData.myBearingY = slot->metrics.horiBearingY;
+			glyphData.myBearingX /= 64.f;
+			glyphData.myBearingY /= 64.f;
 
 			if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
 			{

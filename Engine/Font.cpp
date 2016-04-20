@@ -147,6 +147,8 @@ namespace Snowblind
 		SVertexTypePosUV v;
 		for (char i = 0, row = 0; i < count; i++)
 		{
+			SCharData& charData = myData->myCharData[myText[i]];
+
 			if (myText[i] == '\n')
 			{
 				drawX = 0;
@@ -155,13 +157,12 @@ namespace Snowblind
 				continue;
 			}
 
-			SCharData& charData = myData->myCharData[myText[i]];
 
-			float left = drawX;
+			float left = drawX + charData.myBearingX;
 			float right = left + charData.myWidth;
-			float top = drawY;
-			float bottom = drawY + charData.myHeight;
-
+			float top = drawY - charData.myBearingY;
+			float bottom = top + charData.myHeight;
+			
 			v.myPosition = { left, bottom, 0 };
 			v.myUV = charData.myTopLeftUV;
 			myVertices.Add(v);
@@ -189,7 +190,7 @@ namespace Snowblind
 			myIndices.Add(startIndex + 1);
 
 
-			drawX += charData.myWidth + 3;
+			drawX += charData.myAdvanceX;
 		}
 
 		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosUV) * myVertices.Size();

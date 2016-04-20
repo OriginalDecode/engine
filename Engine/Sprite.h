@@ -23,13 +23,12 @@ namespace Snowblind
 		void SetPosition(const CU::Math::Vector2<float>& aPosition);
 		void SetHotspot(const CU::Math::Vector2<float>& aHotspot);
 		void SetSize(const CU::Math::Vector2<float>& aSize);
+		void SetScale(const CU::Math::Vector2<float>& aScale);
 	private:
 
 		CSpriteModel* mySprite;
 		CU::Math::Matrix44<float> myOrientation;
 		CU::Math::Vector2<float> myHotspot;
 		CU::Math::Vector2<float> myPosition;
-	public:
-		void SetScale(const CU::Math::Vector2<float>& aScale);
 	};
 };

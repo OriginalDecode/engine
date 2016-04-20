@@ -54,8 +54,10 @@ namespace Snowblind
 
 		myContext->ClearState();
 		myContext->Flush();
+		
 		SAFE_RELEASE(myContext);
 		SAFE_RELEASE(myDevice);
+		
 		std::stringstream ss;
 		ss << "Debug is released last. Will report as Live Object! 0x" << myDebug << "\n";
 		OutputDebugString(ss.str().c_str());

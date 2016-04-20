@@ -213,6 +213,7 @@ namespace Snowblind
 
 		hr = CEngine::GetDirectX()->GetDevice()->
 			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
+		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "SpriteModel Vertex Layout");
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create VertexLayout");
 
 		D3D11_BUFFER_DESC vertexBufferDesc;

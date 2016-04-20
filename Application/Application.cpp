@@ -21,7 +21,6 @@ CApplication::~CApplication()
 {
 	SAFE_DELETE(myModel);
 	SAFE_DELETE(myTexturedModel);
-
 	SAFE_DELETE(my2DScene);
 	SAFE_DELETE(myWorldScene);
 
@@ -99,7 +98,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	mySprite->Initiate(myText->GetAtlas(), { 512.f,512.f }, { 0.f,0.f });
 	mySprite->SetPosition({ 256, 256});
 	mySprite->SetScale({ 1.f, 1.f });
-	//my2DScene->AddToScene(mySprite);
+	my2DScene->AddToScene(mySprite);
 }
 
 bool CApplication::Update()

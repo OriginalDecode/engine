@@ -16,14 +16,14 @@ SamplerState sampleLinear
 struct VS_INPUT
 {
 	float4 pos : POSITION;
-	//float4 color : COLOR0;
+	float4 color : COLOR0;
 	float2 UV : TEXCOORD;
 };
 
 struct PS_INPUT
 {
 	float4 pos : SV_POSITION0;
-	//float4 color : COLOR0;
+	float4 color : COLOR0;
 	float2 UV : TEXCOORD;
 };
 
@@ -38,7 +38,7 @@ PS_INPUT VS(VS_INPUT input)
 	output.pos.x += Position.x;
 	output.pos.y += Position.y;	
 	output.pos = mul(output.pos, Projection);
-	//output.color = input.color;	
+	output.color = input.color;	
 	output.UV = input.UV;
 	return output;
 };
@@ -47,7 +47,7 @@ float4 PS(PS_INPUT input) : SV_Target
 {
 	//return float4(1,1,0,1);
 	float4 color = AlbedoTexture.Sample(sampleLinear,input.UV).aaaa;
-	
+	color.rgba *= input.color.rgba;
 	//color.a *= smoothstep(0.3f ,0.75f, alphaMask);
 	return color;
 };

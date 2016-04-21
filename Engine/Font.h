@@ -1,5 +1,6 @@
 #pragma once
 #include "VertexStructs.h"
+#include "Utilities.h"
 
 struct ID3D11InputLayout;
 struct D3D11_BUFFER_DESC;
@@ -46,8 +47,10 @@ namespace Snowblind
 		SIndexBufferWrapper* myIndexBuffer;
 		CU::Math::Vector2<float> mySize;
 		std::string myText;
-		CU::GrowingArray<SVertexTypePosUV> myVertices;
+		CU::GrowingArray<SVertexTypePosColUv> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		CU::GrowingArray<int> myIndices;
+		CL::SColor myDefaultColor;
+		CL::SColor myColor;
 	};
 }

@@ -26,24 +26,8 @@
 
 namespace Snowblind
 {
-	SColor::SColor(int color)
-		: r(0)
-		, g(0)
-		, b(0)
-		, a(0)
-		, _color(0)
-	{
-		a = (color)& 0xFF;
-		r = (color >> 8) & 0xFF;
-		g = (color >> 16) & 0xFF;
-		b = (color >> 24) & 0xFF;
-		_color = color;
-	}
+	
 
-	SColor::SColor(int red, int green, int blue, int alpha)
-	{
-		_color = (red << 24) + (green << 16) + (blue << 8) + (alpha);
-	}
 
 	CFontManager::CFontManager()
 	{

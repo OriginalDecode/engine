@@ -71,7 +71,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	 
 	myText2 = new Snowblind::CText("Data/Font/OpenSans-Light.ttf", 16, my2DCamera);
-	myText2->SetText("Hello World, my name is Linus Skold and I am a programmer.");
+	myText2->SetText("Hello World, my name is #ff0000(Linus Skold) and I am a programmer.");
 	myText2->SetScale({ 1, 1});
 	myText2->SetPosition({ 0, 150 });
 	my2DScene->AddToScene(myText2);
@@ -113,7 +113,6 @@ bool CApplication::Update()
 		return false;
 	}
 
-	//WILL LEAK IF USED.
 	std::stringstream ss;
 	ss << CU::TimeManager::GetInstance()->GetFPS();
 	myText->SetText(ss.str());

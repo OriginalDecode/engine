@@ -10,16 +10,7 @@ struct ID3D11Texture2D;
 
 namespace Snowblind
 {
-	struct SColor
-	{
-		SColor(int color);
-		SColor(int red, int green, int blue, int alpha);
-		int r;
-		int g;
-		int b;
-		int a;
-		int _color;
-	};
+	
 
 	struct SCharData
 	{

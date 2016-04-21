@@ -24,6 +24,11 @@ namespace Snowblind
 		CreateInputLayout();
 		CreateVertexBuffer();
 		CreateIndexBuffer();
+		myDefaultColor.r = 1;
+		myDefaultColor.g = 1;
+		myDefaultColor.b = 1;
+		myDefaultColor.a = 1;
+		myColor = myDefaultColor;
 
 	}
 
@@ -101,9 +106,11 @@ namespace Snowblind
 
 	void CFont::CreateInputLayout()
 	{
-		myVertexFormat.Init(2);
-		myVertexFormat.Add(VertexLayoutPosUV[0]);
-		myVertexFormat.Add(VertexLayoutPosUV[1]);
+		myVertexFormat.Init(3);
+		myVertexFormat.Add(VertexLayoutPosColUV[0]);
+		myVertexFormat.Add(VertexLayoutPosColUV[1]);
+		myVertexFormat.Add(VertexLayoutPosColUV[2]);
+
 
 
 		D3DX11_PASS_DESC passDesc;
@@ -116,7 +123,7 @@ namespace Snowblind
 	void CFont::CreateVertexBuffer()
 	{
 		myVertexBuffer = new SVertexBufferWrapper;
-		myVertexBuffer->myStride = sizeof(SVertexTypePosUV);
+		myVertexBuffer->myStride = sizeof(SVertexTypePosColUv);
 		myVertexBuffer->myByteOffset = 0;
 		myVertexBuffer->myStartSlot = 0;
 		myVertexBuffer->myNrOfBuffers = 1;
@@ -153,12 +160,11 @@ namespace Snowblind
 		int count = myText.length();
 		float drawX = 0.f;
 		float drawY = 0.f;
-		float z = 1.f;
 		myVertices.RemoveAll();
 		myIndices.RemoveAll();
 
-		SVertexTypePosUV v;
-		for (char i = 0, row = 0; i < count; i++)
+		SVertexTypePosColUv v;
+		for (int i = 0, row = 0; i < count; i++)
 		{
 			SCharData& charData = myData->myCharData[myText[i]];
 
@@ -169,6 +175,40 @@ namespace Snowblind
 				row++;
 				continue;
 			}
+
+			if (myText[i] == ')')
+			{
+				myColor = myDefaultColor;
+				continue;
+			}
+
+			unsigned int colorInt;
+			unsigned int r;
+			unsigned int g;
+			unsigned int b;
+
+			if (myText[i] == '#')
+			{
+				std::string color;
+				int skip;
+				for (int j = i + 1; j < i + 7; ++j)
+				{
+					color += myText[j];
+					skip = j;
+				}
+				r = std::strtoul(color.substr(0, 2).c_str(), NULL, 16);
+				g = std::strtoul(color.substr(2, 2).c_str(), NULL, 16);
+				b = std::strtoul(color.substr(4, 2).c_str(), NULL, 16);
+
+				myColor.r = r / 255.f;
+				myColor.g = g / 255.f;
+				myColor.b = b / 255.f;
+				i += 3;
+				drawX -= myData->myCharData['#'].myWidth * 2;
+				continue;
+			}
+
+
 
 			if (myText[i] == ' ')
 			{
@@ -181,18 +221,22 @@ namespace Snowblind
 			float bottom = top + charData.myHeight;
 
 			v.myPosition = { left, bottom, 0 };
+			v.myColor = { float(myColor.r), float(myColor.g), float(myColor.b), 1.f };
 			v.myUV = charData.myTopLeftUV;
 			myVertices.Add(v);
 
 			v.myPosition = { left, top, 0 };
+			v.myColor = { float(myColor.r), float(myColor.g), float(myColor.b), 1.f };
 			v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
 			myVertices.Add(v);
 
 			v.myPosition = { right, bottom, 0 };
+			v.myColor = { float(myColor.r), float(myColor.g), float(myColor.b), 1.f };
 			v.myUV = { charData.myBottomRightUV.x, charData.myTopLeftUV.y };
 			myVertices.Add(v);
 
 			v.myPosition = { right, top, 0 };
+			v.myColor = { float(myColor.r), float(myColor.g), float(myColor.b), 1.f };
 			v.myUV = charData.myBottomRightUV;
 			myVertices.Add(v);
 
@@ -210,7 +254,7 @@ namespace Snowblind
 			drawX += charData.myAdvanceX + 2;
 		}
 
-		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosUV) * myVertices.Size();
+		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosColUv) * myVertices.Size();
 		myInitData->pSysMem = reinterpret_cast<char*>(&myVertices[0]);
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData, &myVertexBuffer->myVertexBuffer);
 

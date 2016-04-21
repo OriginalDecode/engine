@@ -120,7 +120,7 @@ namespace Snowblind
 		myVertexBuffer->myByteOffset = 0;
 		myVertexBuffer->myStartSlot = 0;
 		myVertexBuffer->myNrOfBuffers = 1;
-
+		myVertexBuffer->myVertexBuffer = nullptr;
 
 		ZeroMemory(myVertexBufferDesc, sizeof(*myVertexBufferDesc));
 		myVertexBufferDesc->Usage = D3D11_USAGE_DYNAMIC;
@@ -135,7 +135,7 @@ namespace Snowblind
 		myIndexBuffer = new SIndexBufferWrapper;
 		myIndexBuffer->myIndexBufferFormat = DXGI_FORMAT_R32_UINT;
 		myIndexBuffer->myByteOffset = 0;
-
+		myIndexBuffer->myIndexBuffer = nullptr;
 
 		ZeroMemory(myIndexBufferDesc, sizeof(*myIndexBufferDesc));
 		myIndexBufferDesc->Usage = D3D11_USAGE_IMMUTABLE;
@@ -147,6 +147,9 @@ namespace Snowblind
 
 	void CFont::UpdateBuffer()
 	{
+		SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
+		SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
+
 		int count = myText.length();
 		float drawX = 0.f;
 		float drawY = 0.f;
@@ -176,17 +179,17 @@ namespace Snowblind
 			float right = left + charData.myWidth;
 			float top = drawY + charData.myBearingY;
 			float bottom = top + charData.myHeight;
-			
+
 			v.myPosition = { left, bottom, 0 };
 			v.myUV = charData.myTopLeftUV;
 			myVertices.Add(v);
 
 			v.myPosition = { left, top, 0 };
-			v.myUV = { charData.myTopLeftUV.x , charData.myBottomRightUV.y };
+			v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
 			myVertices.Add(v);
 
 			v.myPosition = { right, bottom, 0 };
-			v.myUV = { charData.myBottomRightUV.x , charData.myTopLeftUV.y };
+			v.myUV = { charData.myBottomRightUV.x, charData.myTopLeftUV.y };
 			myVertices.Add(v);
 
 			v.myPosition = { right, top, 0 };
@@ -204,7 +207,7 @@ namespace Snowblind
 			myIndices.Add(startIndex + 1);
 
 
-			drawX += charData.myAdvanceX + 2 ;
+			drawX += charData.myAdvanceX + 2;
 		}
 
 		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosUV) * myVertices.Size();
@@ -219,7 +222,7 @@ namespace Snowblind
 
 		CEngine::GetDirectX()->SetDebugName(myIndexBuffer->myIndexBuffer, "Font Index Buffer");
 
-		mySize.x = drawX;
-		mySize.y = drawY;
+		//mySize.x = drawX;
+		//mySize.y = drawY;
 	}
 };

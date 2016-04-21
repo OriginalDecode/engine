@@ -114,9 +114,9 @@ bool CApplication::Update()
 	}
 
 	//WILL LEAK IF USED.
-	//std::stringstream ss;
-	//ss << CU::TimeManager::GetInstance()->GetFPS();
-	//myText->SetText(ss.str());
+	std::stringstream ss;
+	ss << CU::TimeManager::GetInstance()->GetFPS();
+	myText->SetText(ss.str());
 
 	UpdateInput(deltaTime);
 	myWorldScene->Update(deltaTime);

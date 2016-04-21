@@ -37,20 +37,26 @@ namespace Snowblind
 		void UpdateBuffer();
 		SFontData* myData;
 		CEffect* myEffect;
-		ID3D11InputLayout* myVertexLayout;
 
+		ID3D11InputLayout* myVertexLayout;
 		D3D11_BUFFER_DESC* myVertexBufferDesc;
 		D3D11_BUFFER_DESC* myIndexBufferDesc;
 		D3D11_SUBRESOURCE_DATA* myInitData;
 
 		SVertexBufferWrapper* myVertexBuffer;
 		SIndexBufferWrapper* myIndexBuffer;
-		CU::Math::Vector2<float> mySize;
 		std::string myText;
+
+		CU::Math::Vector2<float> mySize;
 		CU::GrowingArray<SVertexTypePosColUv> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		CU::GrowingArray<int> myIndices;
+
 		CL::SColor myDefaultColor;
 		CL::SColor myColor;
+
+
+		float myPreviousAdvance;
+
 	};
 }

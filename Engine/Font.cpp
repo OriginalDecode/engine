@@ -24,11 +24,12 @@ namespace Snowblind
 		CreateInputLayout();
 		CreateVertexBuffer();
 		CreateIndexBuffer();
-		myDefaultColor.r = 1;
-		myDefaultColor.g = 1;
-		myDefaultColor.b = 1;
-		myDefaultColor.a = 1;
+		myDefaultColor.r = 255;
+		myDefaultColor.g = 255;
+		myDefaultColor.b = 255;
+		myDefaultColor.a = 255;
 		myColor = myDefaultColor;
+		myPreviousAdvance = 0;
 
 	}
 
@@ -164,9 +165,47 @@ namespace Snowblind
 		myIndices.RemoveAll();
 
 		SVertexTypePosColUv v;
-		for (int i = 0, row = 0; i < count; i++)
+		for (int i = 0, iAsItShouldBe = 0, row = 0; i < count; i++, iAsItShouldBe++)
 		{
 			SCharData& charData = myData->myCharData[myText[i]];
+
+			if (myText[i] == '}')
+			{
+				myColor = myDefaultColor;
+				iAsItShouldBe--;
+				continue;
+			}
+
+			if (myText[i] == '{')
+			{
+				iAsItShouldBe--;
+				continue;
+			}
+
+			if (myText[i] == '#')
+			{
+				unsigned int r;
+				unsigned int g;
+				unsigned int b;
+				std::string color;
+				int skip = i;
+				for (int j = i + 1; j < i + 7; ++j)
+				{
+					color += myText[j];
+					skip++;
+				}
+				r = std::strtoul(color.substr(0, 2).c_str(), NULL, 16);
+				g = std::strtoul(color.substr(2, 2).c_str(), NULL, 16);
+				b = std::strtoul(color.substr(4, 2).c_str(), NULL, 16);
+
+				myColor.r = r;
+				myColor.g = g;
+				myColor.b = b;
+				i = skip;
+				iAsItShouldBe--;
+				continue;
+			}
+
 
 			if (myText[i] == '\n')
 			{
@@ -175,39 +214,6 @@ namespace Snowblind
 				row++;
 				continue;
 			}
-
-			if (myText[i] == ')')
-			{
-				myColor = myDefaultColor;
-				continue;
-			}
-
-			unsigned int colorInt;
-			unsigned int r;
-			unsigned int g;
-			unsigned int b;
-
-			if (myText[i] == '#')
-			{
-				std::string color;
-				int skip;
-				for (int j = i + 1; j < i + 7; ++j)
-				{
-					color += myText[j];
-					skip = j;
-				}
-				r = std::strtoul(color.substr(0, 2).c_str(), NULL, 16);
-				g = std::strtoul(color.substr(2, 2).c_str(), NULL, 16);
-				b = std::strtoul(color.substr(4, 2).c_str(), NULL, 16);
-
-				myColor.r = r / 255.f;
-				myColor.g = g / 255.f;
-				myColor.b = b / 255.f;
-				i += 3;
-				drawX -= myData->myCharData['#'].myWidth * 2;
-				continue;
-			}
-
 
 
 			if (myText[i] == ' ')
@@ -221,26 +227,26 @@ namespace Snowblind
 			float bottom = top + charData.myHeight;
 
 			v.myPosition = { left, bottom, 0 };
-			v.myColor = { float(myColor.r), float(myColor.g), float(myColor.b), 1.f };
+			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = charData.myTopLeftUV;
 			myVertices.Add(v);
 
 			v.myPosition = { left, top, 0 };
-			v.myColor = { float(myColor.r), float(myColor.g), float(myColor.b), 1.f };
+			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
 			myVertices.Add(v);
 
 			v.myPosition = { right, bottom, 0 };
-			v.myColor = { float(myColor.r), float(myColor.g), float(myColor.b), 1.f };
+			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = { charData.myBottomRightUV.x, charData.myTopLeftUV.y };
 			myVertices.Add(v);
 
 			v.myPosition = { right, top, 0 };
-			v.myColor = { float(myColor.r), float(myColor.g), float(myColor.b), 1.f };
+			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = charData.myBottomRightUV;
 			myVertices.Add(v);
 
-			int startIndex = (i - row) * 4.f;
+			int startIndex = (iAsItShouldBe - row) * 4.f;
 
 			myIndices.Add(startIndex + 1);
 			myIndices.Add(startIndex + 0);
@@ -250,8 +256,8 @@ namespace Snowblind
 			myIndices.Add(startIndex + 3);
 			myIndices.Add(startIndex + 1);
 
-
-			drawX += charData.myAdvanceX + 2;
+			myPreviousAdvance = drawX;
+			drawX += charData.myAdvanceX + 4;
 		}
 
 		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosColUv) * myVertices.Size();

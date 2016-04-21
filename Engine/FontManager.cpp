@@ -50,9 +50,16 @@ namespace Snowblind
 
 	CFont* CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
 	{
+		int atlasSize = aFontWidth * 64.f / 2.f;
+
+
+		float atlasWidth = atlasSize; //have to be replaced.
+		float atlasHeight = atlasSize; //have to be replaced
+	
+
 		SFontData* fontData = new SFontData;
-		fontData->myAtlas = new int[512 * 512];
-		ZeroMemory(fontData->myAtlas, (512 * 512) * sizeof(int));
+		fontData->myAtlas = new int[atlasSize * atlasSize];
+		ZeroMemory(fontData->myAtlas, (atlasSize * atlasSize) * sizeof(int));
 		FT_Face face = fontData->myFaceData;
 
 
@@ -65,7 +72,7 @@ namespace Snowblind
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
 
-		error = FT_Set_Char_Size(face, (fontData->myFontHeightWidth << 6), 0, 300, 300);
+		error = FT_Set_Char_Size(face, (fontData->myFontHeightWidth * 64.f), 0, 300, 300);
 		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
 
 #ifdef SAVE
@@ -74,15 +81,15 @@ namespace Snowblind
 
 		int atlasX = 0;
 		int atlasY = 0;
-		float atlasWidth = 512; //have to be replaced.
-		float atlasHeight = 512; //have to be replaced
+
+
 		int currentMaxY = 0;
 
 		//Create a good spacing between words. 
 		error = FT_Load_Char(face, 'x', FT_LOAD_DEFAULT);
 		DL_ASSERT_EXP(!error, "Failed to load glyph! x");
 		FT_GlyphSlot space = face->glyph;
-		fontData->myWordSpacing = space->metrics.width >> 8;
+		fontData->myWordSpacing = space->metrics.width / 256.f;
 
 		for (int i = 32; i < 126; i++)
 		{
@@ -109,9 +116,9 @@ namespace Snowblind
 			glyphData.myWidth = width;
 			glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
 			glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
-			glyphData.myAdvanceX = slot->metrics.width >> 6;
-			glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) >> 6);
-			glyphData.myBearingY = (slot->metrics.horiBearingY - slot->metrics.height) >> 6;
+			glyphData.myAdvanceX = slot->metrics.width / 64.f;
+			glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / 64.f);
+			glyphData.myBearingY = (slot->metrics.horiBearingY - slot->metrics.height) / 64.f;
 
 
 			//Face holds the ascender. Look at that. I believe that can solve my issues.
@@ -122,7 +129,7 @@ namespace Snowblind
 				FONT_LOG("TopLeftUV Y: %f", glyphData.myTopLeftUV.y);
 				FONT_LOG("BottomRightUV X: %f", glyphData.myBottomRightUV.x);
 				FONT_LOG("BottomRightUV Y: %f", glyphData.myBottomRightUV.y);
-				DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
+			//	DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 			}
 
 			for (int x = 0; x < width; x++)
@@ -168,11 +175,11 @@ namespace Snowblind
 
 		D3D11_SUBRESOURCE_DATA data;
 		data.pSysMem = fontData->myAtlas;
-		data.SysMemPitch = 512 * 4;
+		data.SysMemPitch = atlasSize * 4;
 
 		D3D11_TEXTURE2D_DESC info;
-		info.Width = 512;
-		info.Height = 512;
+		info.Width = atlasSize;
+		info.Height = atlasSize;
 		info.MipLevels = 1;
 		info.ArraySize = 1;
 		info.SampleDesc.Count = 1;
@@ -205,8 +212,8 @@ namespace Snowblind
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 #endif
 
-		fontData->myAtlasHeight = 512;
-		fontData->myAtlasWidth = 512;
+		fontData->myAtlasHeight = atlasSize;
+		fontData->myAtlasWidth = atlasSize;
 		fontData->myLineSpacing = (face->height >> 6) * 2.f;
 		FT_Done_Face(face);
 		CFont* newFont = new CFont(fontData);

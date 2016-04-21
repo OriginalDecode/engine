@@ -70,9 +70,9 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	my2DScene->AddToScene(myText);
 
 	 
-	myText2 = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16, my2DCamera);
+	myText2 = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 128, my2DCamera);
 	myText2->SetText("#ffff00{Hello} #ac00b2{World}, #8bb272{my} #b2007f{name} #2068ff{is} #ff0000{Linus Skold} #ff8803{and} #007fb2{I} am a #45ff24{programmer}.");
-	myText2->SetScale({ 0.5f, 0.5f});
+	myText2->SetScale({ 0.05f, 0.05f});
 	myText2->SetPosition({ 0, 150 });
 	my2DScene->AddToScene(myText2);
 
@@ -95,11 +95,11 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myInstance->SetPosition({ 0.f,5.f,0.f });
 	myWorldScene->AddToScene(myInstance);
 
-	//mySprite = new Snowblind::CSprite();
-	//mySprite->Initiate(myText->GetAtlas(), { 512.f,512.f }, { 0.f,0.f });
-	//mySprite->SetPosition({ 256, 256});
-	//mySprite->SetScale({ 1.f, 1.f });
-	//my2DScene->AddToScene(mySprite);
+	mySprite = new Snowblind::CSprite();
+	mySprite->Initiate(myText->GetAtlas(), { 512.f,512.f }, { 0.f,0.f });
+	mySprite->SetPosition({ 256, 256});
+	mySprite->SetScale({ 1.f, 1.f });
+	my2DScene->AddToScene(mySprite);
 }
 
 bool CApplication::Update()

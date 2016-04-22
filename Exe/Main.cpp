@@ -22,8 +22,8 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	DL_MESSAGE ("%i Active Filters!", DL_Debug::Debug::GetInstance()->GetActiveLogCount());
 
-	float w = 1280.f;
-	float h = 720.f;
+	float w = 1920;
+	float h = 1080;
 	newApplication = new CApplication();
 
 	Snowblind::CEngine::Create(w, h, anInstance, WindowProc);

@@ -37,7 +37,7 @@ namespace CL
 		_color = color;
 	}
 
-	SColor::SColor(int red, int green, int blue, int alpha)
+	SColor::SColor(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha)
 	{
 		_color = (red << 24) + (green << 16) + (blue << 8) + (alpha);
 	}

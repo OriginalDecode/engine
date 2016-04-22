@@ -5,7 +5,7 @@ matrix View;
 float2 Position;
 float2 Scale;
 Texture2D AlbedoTexture;
-
+int offset = 1;
 SamplerState sampleLinear
 {
 	Filter = MIN_MAG_MIP_LINEAR;
@@ -43,11 +43,16 @@ PS_INPUT VS(VS_INPUT input)
 	return output;
 };
 
+
 float4 PS(PS_INPUT input) : SV_Target
 {
-	//return float4(1,1,0,1);
-	float4 color = AlbedoTexture.Sample(sampleLinear,input.UV).aaaa;
+
+
+	float4 color = AlbedoTexture.Sample(sampleLinear, input.UV).aaaa;
+
+	
 	color.rgba *= input.color.rgba;
+
 	//color.a *= smoothstep(0.3f ,0.75f, alphaMask);
 	return color;
 };

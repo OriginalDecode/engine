@@ -50,7 +50,9 @@ namespace Snowblind
 
 	CFont* CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
 	{
-		int atlasSize = aFontWidth * 64.f / 2.f;
+		//int atlasSize = aFontWidth * 64.f / 2.f;
+		int atlasSize = (aFontWidth * aFontWidth);
+
 
 
 		float atlasWidth = atlasSize; //have to be replaced.
@@ -71,8 +73,8 @@ namespace Snowblind
 		int error = FT_New_Face(myLibrary, myFontPath, 0, &face);
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
-
-		error = FT_Set_Char_Size(face, (fontData->myFontHeightWidth * 64.f), 0, 300, 300);
+		error = FT_Set_Pixel_Sizes(face, (fontData->myFontHeightWidth), 0);
+		//error = FT_Set_Char_Size(face, (fontData->myFontHeightWidth * 64.f), 0, 300, 300);
 		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
 
 #ifdef SAVE

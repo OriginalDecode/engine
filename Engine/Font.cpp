@@ -184,9 +184,6 @@ namespace Snowblind
 
 			if (myText[i] == '#')
 			{
-				unsigned int r;
-				unsigned int g;
-				unsigned int b;
 				std::string color;
 				int skip = i;
 				for (int j = i + 1; j < i + 7; ++j)
@@ -194,13 +191,10 @@ namespace Snowblind
 					color += myText[j];
 					skip++;
 				}
-				r = std::strtoul(color.substr(0, 2).c_str(), NULL, 16);
-				g = std::strtoul(color.substr(2, 2).c_str(), NULL, 16);
-				b = std::strtoul(color.substr(4, 2).c_str(), NULL, 16);
+				myColor.r = std::strtoul(color.substr(0, 2).c_str(), NULL, 16);
+				myColor.g = std::strtoul(color.substr(2, 2).c_str(), NULL, 16);
+				myColor.b = std::strtoul(color.substr(4, 2).c_str(), NULL, 16);
 
-				myColor.r = r;
-				myColor.g = g;
-				myColor.b = b;
 				i = skip;
 				iAsItShouldBe--;
 				continue;
@@ -257,7 +251,7 @@ namespace Snowblind
 			myIndices.Add(startIndex + 1);
 
 			myPreviousAdvance = drawX;
-			drawX += charData.myAdvanceX + 4;
+			drawX += charData.myAdvanceX;
 		}
 
 		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosColUv) * myVertices.Size();

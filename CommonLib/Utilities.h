@@ -11,11 +11,11 @@ namespace CL
 	{
 		SColor();
 		SColor(unsigned int color);
-		SColor(int red, int green, int blue, int alpha);
-		int r;
-		int g;
-		int b;
-		int a;
+		SColor(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha);
+		unsigned int r;
+		unsigned int g;
+		unsigned int b;
+		unsigned int a;
 		int _color;
 		void Convert(unsigned int aColor);
 		void Convert(unsigned int aRed, unsigned int aGreen, unsigned int aBlue, unsigned int anAlpha);

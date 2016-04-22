@@ -38,6 +38,11 @@ namespace Snowblind
 		CDirectX11* GetAPI();
 		const SWindowSize& GetWindowSize() const;
 		CFont* LoadFont(const char* aFilepath, short aFontWidth);
+
+		const CU::Math::Vector2<float>& GetWindowSize();
+		const char* GetAPIName();
+
+
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		~CEngine();

@@ -26,27 +26,11 @@ CApplication::~CApplication()
 
 	CU::TimeManager::Destroy();
 	Snowblind::CEngine::Destroy();
+	//delete myText2;
+	//myText2 = nullptr;
 }
 
-void CApplication::OnPause()
-{
-	CU::TimeManager::GetInstance()->Pause();
-}
 
-void CApplication::OnResume()
-{
-	CU::TimeManager::GetInstance()->Start();
-}
-
-void CApplication::OnInactive()
-{
-	CU::Input::InputWrapper::SetActiveWindow(false);
-}
-
-void CApplication::OnActive()
-{
-	CU::Input::InputWrapper::SetActiveWindow(true);
-}
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
@@ -65,14 +49,13 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16, my2DCamera);
 	//myText->SetText("!ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz");
 	myText->SetText("Hello World, my name is Linus Skold and I am a programmer.");
-	myText->SetScale({ 1, 1});
-	myText->SetPosition({ 0, 0});
+	myText->SetScale({ 1, 1 });
+	myText->SetPosition({ 0, 0 });
 	my2DScene->AddToScene(myText);
 
-	 
 	myText2 = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 64, my2DCamera);
-	myText2->SetText("#ffff00{Hello} #ac00b2{World}, #8bb272{my} #b2007f{name} #2068ff{is} #ff0000{Linus Skold} #ff8803{and} #007fb2{I} am a #45ff24{programmer}.");
 	myText2->SetScale({ 1, 1 });
+	myText2->SetText("#ffff00{Hello} #ac00b2{World}, #8bb272{my} #b2007f{name} #2068ff{is} #ff0000{Linus Skold} #ff8803{and} #007fb2{I} am a #45ff24{programmer}.");
 	myText2->SetPosition({ 0, 150 });
 	my2DScene->AddToScene(myText2);
 
@@ -96,10 +79,12 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myWorldScene->AddToScene(myInstance);
 
 	mySprite = new Snowblind::CSprite();
-	mySprite->Initiate(myText->GetAtlas(), { 256,256}, { 0.f,0.f });
-	mySprite->SetPosition({ 128, 128});
+	mySprite->Initiate(myText->GetAtlas(), { 256, 256 }, { 0.f,0.f });
+	mySprite->SetPosition({ 128, 128 });
 	mySprite->SetScale({ 1.f, 1.f });
 	my2DScene->AddToScene(mySprite);
+	myText2->SetText("#ffff00{Hello} #ac00b2{World}, #8bb272{my} #b2007f{name} #2068ff{is} #ff0000{Linus Skold} #ff8803{and} #007fb2{I} am a #45ff24{programmer}.");
+	myText2->SetPosition({ 0, 150 });
 }
 
 bool CApplication::Update()
@@ -182,4 +167,24 @@ void CApplication::UpdateInput(float aDeltaTime)
 	{
 		myCamera->Rotate(Snowblind::eRotation::Z_AXIS, -ROTATION_SPEED * aDeltaTime);
 	}
+}
+
+void CApplication::OnPause()
+{
+	CU::TimeManager::GetInstance()->Pause();
+}
+
+void CApplication::OnResume()
+{
+	CU::TimeManager::GetInstance()->Start();
+}
+
+void CApplication::OnInactive()
+{
+	CU::Input::InputWrapper::SetActiveWindow(false);
+}
+
+void CApplication::OnActive()
+{
+	CU::Input::InputWrapper::SetActiveWindow(true);
 }

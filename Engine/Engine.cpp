@@ -85,6 +85,11 @@ namespace Snowblind
 		return myFontManager->LoadFont(aFilepath, aFontWidth);
 	}
 
+	const char* CEngine::GetAPIName()
+	{
+		return myAPI->GetAPIName();
+	}
+
 	void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)
 	{
 		WNDCLASSEX wc;

@@ -112,8 +112,6 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosColUV[1]);
 		myVertexFormat.Add(VertexLayoutPosColUV[2]);
 
-
-
 		D3DX11_PASS_DESC passDesc;
 		myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);

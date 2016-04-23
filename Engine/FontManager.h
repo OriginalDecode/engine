@@ -35,6 +35,7 @@ namespace Snowblind
 		short myFontHeightWidth;
 		int* myAtlas;
 		ID3D11ShaderResourceView* myAtlasView;
+		ID3D11ShaderResourceView* myOutlineAtlas;
 		FT_FaceRec_* myFaceData;
 	};
 

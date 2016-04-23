@@ -50,41 +50,31 @@ namespace Snowblind
 
 	CFont* CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
 	{
-		//int atlasSize = aFontWidth * 64.f / 2.f;
-		int atlasSize = (aFontWidth * aFontWidth);
-
-
+		//int atlasSize = aFontWidth * 64.f / 2.f; //This is wrong.
+		int atlasSize = (aFontWidth * aFontWidth); //This is correct
 
 		float atlasWidth = atlasSize; //have to be replaced.
 		float atlasHeight = atlasSize; //have to be replaced
-	
 
 		SFontData* fontData = new SFontData;
 		fontData->myAtlas = new int[atlasSize * atlasSize];
 		ZeroMemory(fontData->myAtlas, (atlasSize * atlasSize) * sizeof(int));
 		FT_Face face = fontData->myFaceData;
-
-
-
-
-
+		
 		fontData->myFontHeightWidth = aFontWidth;
 		myFontPath = aFontPath;
 		int error = FT_New_Face(myLibrary, myFontPath, 0, &face);
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
-		error = FT_Set_Pixel_Sizes(face, (fontData->myFontHeightWidth), 0);
-		//error = FT_Set_Char_Size(face, (fontData->myFontHeightWidth * 64.f), 0, 300, 300);
-		DL_ASSERT_EXP(!error, "Failed to set pixel size!");
+		error = FT_Set_Pixel_Sizes(face, (fontData->myFontHeightWidth), 0); //This is better to use.
+		//error = FT_Set_Char_Size(face, (fontData->myFontHeightWidth * 64.f), 0, 300, 300); // Not sure when this is supposed to be used.
+		DL_ASSERT_EXP(!error, "[FontManager] : Failed to set pixel size!");
 
 #ifdef SAVE
 		CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
 #endif
-
 		int atlasX = 0;
 		int atlasY = 0;
-
-
 		int currentMaxY = 0;
 
 		//Create a good spacing between words. 

@@ -39,7 +39,6 @@ namespace Snowblind
 		const SWindowSize& GetWindowSize() const;
 		CFont* LoadFont(const char* aFilepath, short aFontWidth);
 
-		const CU::Math::Vector2<float>& GetWindowSize();
 		const char* GetAPIName();
 
 

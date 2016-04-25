@@ -21,7 +21,7 @@ CApplication::~CApplication()
 {
 	SAFE_DELETE(my2DScene);
 	SAFE_DELETE(myWorldScene);
-	CU::TimeManager::Destroy();
+	SAFE_DELETE(myTimeManager);
 	Snowblind::CEngine::Destroy();
 }
 
@@ -29,7 +29,8 @@ CApplication::~CApplication()
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
-	CU::TimeManager::Create();
+
+	myTimeManager = new CU::TimeManager();
 
 	myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, Vector3f(0.f, 0.f, 25.f));
 	my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, Vector3f(0.f, 0.f, 1.f));
@@ -70,11 +71,11 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	myInstance = new Snowblind::CInstance();
 	myInstance->Initiate(myTexturedModel);
-	myInstance->SetPosition({ 0.f,5.f,0.f });
+	myInstance->SetPosition({ 0.f, 5.f, 0.f });
 	myWorldScene->AddToScene(myInstance);
 
 	mySprite = new Snowblind::CSprite();
-	mySprite->Initiate(myText->GetAtlas(), { 256, 256 }, { 0.f,0.f });
+	mySprite->Initiate(myText->GetAtlas(), { 256, 256 }, { 0.f, 0.f });
 	mySprite->SetPosition({ 128, 128 });
 	mySprite->SetScale({ 1.f, 1.f });
 	my2DScene->AddToScene(mySprite);
@@ -83,7 +84,6 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myText2->SetPosition({ 0, 150 });
 
 	myTextTime = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16, my2DCamera);
-	myTextTime->SetText(" ");
 	myTextTime->SetPosition({ 0, 100 });
 
 	my2DScene->AddToScene(myTextTime);
@@ -93,9 +93,9 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 bool CApplication::Update()
 {
-	CU::TimeManager::Update();
+	myTimeManager->Update();
 	CU::Input::InputWrapper::GetInstance()->Update();
-	float deltaTime = CU::TimeManager::GetInstance()->GetDeltaTime();
+	float deltaTime = myTimeManager->GetDeltaTime();
 
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))
 	{
@@ -103,7 +103,7 @@ bool CApplication::Update()
 	}
 
 	std::stringstream ss;
-	ss << CU::TimeManager::GetInstance()->GetFPS();
+	ss << myTimeManager->GetFPS();
 	myText->SetText(ss.str());
 
 
@@ -111,9 +111,8 @@ bool CApplication::Update()
 	myWorldScene->Update(deltaTime);
 	Render();
 	std::stringstream rText;
-	rText << "Render Time : " << myText->GetRenderTime() << "\n" << "Update Time : " << myText->GetUpdateTime();
+	rText << "Render Time : " << myText->GetRenderTime() << "ms\n" << "Update Time : " << myText->GetUpdateTime() << "ms";
 	myTextTime->SetText(rText.str());
-	myTextTime->Render();
 
 
 
@@ -183,12 +182,12 @@ void CApplication::UpdateInput(float aDeltaTime)
 
 void CApplication::OnPause()
 {
-	CU::TimeManager::GetInstance()->Pause();
+	myTimeManager->Pause();
 }
 
 void CApplication::OnResume()
 {
-	CU::TimeManager::GetInstance()->Start();
+	myTimeManager->Start();
 }
 
 void CApplication::OnInactive()

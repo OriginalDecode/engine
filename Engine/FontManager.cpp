@@ -5,6 +5,7 @@
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include FT_BITMAP_H
+#include FT_STROKER_H
 
 #include <D3DX11.h>
 #include <D3D11.h>
@@ -26,7 +27,7 @@
 
 namespace Snowblind
 {
-	
+
 
 
 	CFontManager::CFontManager()
@@ -37,7 +38,7 @@ namespace Snowblind
 	{
 		myFontPath = nullptr;
 		FT_Done_FreeType(myLibrary);
-		
+
 		//myAtlasView->Release();
 		//myAtlasView = nullptr;
 	}
@@ -55,12 +56,12 @@ namespace Snowblind
 
 		float atlasWidth = atlasSize; //have to be replaced.
 		float atlasHeight = atlasSize; //have to be replaced
-
+		myFontHeightWidth = aFontWidth;
 		SFontData* fontData = new SFontData;
 		fontData->myAtlas = new int[atlasSize * atlasSize];
 		ZeroMemory(fontData->myAtlas, (atlasSize * atlasSize) * sizeof(int));
 		FT_Face face = fontData->myFaceData;
-		
+
 		fontData->myFontHeightWidth = aFontWidth;
 		myFontPath = aFontPath;
 		int error = FT_New_Face(myLibrary, myFontPath, 0, &face);
@@ -121,7 +122,7 @@ namespace Snowblind
 				FONT_LOG("TopLeftUV Y: %f", glyphData.myTopLeftUV.y);
 				FONT_LOG("BottomRightUV X: %f", glyphData.myBottomRightUV.x);
 				FONT_LOG("BottomRightUV Y: %f", glyphData.myBottomRightUV.y);
-			//	DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
+				//	DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 			}
 
 			for (int x = 0; x < width; x++)
@@ -210,6 +211,20 @@ namespace Snowblind
 		FT_Done_Face(face);
 		CFont* newFont = new CFont(fontData);
 		return newFont;
+	}
+
+	void CFontManager::LoadOutline(FT_FaceRec_* aFace, int aGlyphIndex)
+	{
+		int error = 0;
+		error = FT_Load_Glyph(aFace, aGlyphIndex, FT_LOAD_NO_BITMAP);
+		DL_ASSERT_EXP(!error, "LoadOutline() : Failed to load glyph");
+
+
+		FT_Stroker stroker;
+		FT_Stroker_New(myLibrary, &stroker);
+		FT_Stroker_Set(stroker, myFontHeightWidth << 6, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+
+
 	}
 
 	SFontData::~SFontData()

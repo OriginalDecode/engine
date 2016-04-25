@@ -5,35 +5,35 @@
 
 namespace CommonUtilities
 {
-	TimeManager* TimeManager::myInstance = nullptr;
+	//TimeManager* TimeManager::myInstance = nullptr;
 
-	bool TimeManager::Create()
-	{
-		if (myInstance == nullptr)
-		{
-			myInstance = new TimeManager();
-			return true;
-		}
-
-		return false;
-	}
-
-	bool TimeManager::Destroy()
-	{
-		if (myInstance == nullptr)
-		{
-			return false;
-		}
-
-		delete(myInstance);
-
-		return true;
-	}
-
-	TimeManager* TimeManager::GetInstance()
-	{
-		return myInstance;
-	}
+	//bool TimeManager::Create()
+	//{
+	//	if (myInstance == nullptr)
+	//	{
+	//		myInstance = new TimeManager();
+	//		return true;
+	//	}
+	//
+	//	return false;
+	//}
+	//
+	//bool TimeManager::Destroy()
+	//{
+	//	if (myInstance == nullptr)
+	//	{
+	//		return false;
+	//	}
+	//
+	//	delete(myInstance);
+	//
+	//	return true;
+	//}
+	//
+	//TimeManager* TimeManager::GetInstance()
+	//{
+	//	return myInstance;
+	//}
 
 	TimeManager::TimeManager()
 	{
@@ -55,10 +55,10 @@ namespace CommonUtilities
 
 	void TimeManager::Update()
 	{
-		myInstance->myMasterTimer.Update();
-		for (unsigned char i = 0; i < myInstance->myTimers.size(); ++i)
+		myMasterTimer.Update();
+		for (unsigned char i = 0; i < myTimers.size(); ++i)
 		{
-			myInstance->myTimers[i].Update();
+			myTimers[i].Update();
 		}
 	}
 
@@ -75,13 +75,13 @@ namespace CommonUtilities
 
 	void TimeManager::Pause()
 	{
-		if (myInstance != nullptr)
+		//if (myInstance != nullptr)
 			myMasterTimer.Pause();
 	}
 
 	void TimeManager::Start()
 	{
-		if (myInstance != nullptr)
+		//if (myInstance != nullptr)
 			myMasterTimer.Start();
 	}
 

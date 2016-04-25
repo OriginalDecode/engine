@@ -7,6 +7,13 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
+
+namespace CommonUtilities
+{
+	class TimeManager;
+}
+
+
 namespace Snowblind
 {
 	class CEffect;
@@ -37,6 +44,8 @@ public:
 private:
 	void UpdateInput(float aDeltaTime);
 
+
+	CU::TimeManager* myTimeManager;
 
 	Snowblind::CEffect* myEffect;
 	Snowblind::CModel* myModel;

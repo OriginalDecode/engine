@@ -11,6 +11,7 @@
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
 #include <TimeManager.h>
+#include "TimeManager.h"
 namespace Snowblind
 {
 	CFont::CFont(SFontData* aFontData)
@@ -27,15 +28,16 @@ namespace Snowblind
 		CreateInputLayout();
 		CreateVertexBuffer();
 		CreateIndexBuffer();
-		myDefaultColor.r = 255;
-		myDefaultColor.g = 255;
-		myDefaultColor.b = 255;
-		myDefaultColor.a = 255;
+	
 		myColor = myDefaultColor;
-		myPreviousAdvance = 0;
 
-		myUpdateTimer = CU::TimeManager::GetInstance()->CreateTimer();
-		myRenderTimer = CU::TimeManager::GetInstance()->CreateTimer();
+		myTimeManager = new CU::TimeManager();
+		myUpdateTimer = myTimeManager->CreateTimer();
+		myRenderTimer = myTimeManager->CreateTimer();
+
+
+		myRenderTime = 0.f;
+		myUpdateTime = 0.f;
 
 	}
 
@@ -52,17 +54,22 @@ namespace Snowblind
 		SAFE_DELETE(myInitData);
 		SAFE_RELEASE(myVertexLayout);
 		SAFE_DELETE(myData);
+		SAFE_DELETE(myTimeManager);
 	}
 
 	void CFont::SetText(const std::string& aText)
 	{
-		CU::TimeManager::GetInstance()->GetTimer(myUpdateTimer).Update();
+		myTimeManager->GetTimer(myUpdateTimer).Update();
+		myUpdateTime = myTimeManager->GetTimer(myUpdateTimer).GetTotalTime().GetMilliseconds();
+
 		if (myText != aText)
 		{
 			myText = aText;
 			UpdateBuffer();
 		}
-		myUpdateTime = CU::TimeManager::GetInstance()->GetTimer(myUpdateTimer).GetFrameTime().GetMilliseconds();
+
+		myTimeManager->GetTimer(myUpdateTimer).Update();
+		myUpdateTime = myTimeManager->GetTimer(myUpdateTimer).GetTotalTime().GetMilliseconds() - myUpdateTime;
 	}
 
 	const std::string& CFont::GetText() const
@@ -72,7 +79,9 @@ namespace Snowblind
 
 	void CFont::Render()
 	{
-		CU::TimeManager::GetInstance()->GetTimer(myRenderTimer).Update();
+		myTimeManager->GetTimer(myRenderTimer).Update();
+		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds();
+
 		if (!myEffect)
 			return;
 		myEffect->SetAlbedo(myData->myAtlasView);
@@ -90,9 +99,12 @@ namespace Snowblind
 			HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, &context);
 			CEngine::GetDirectX()->HandleErrors(hr, "Failed to apply pass to context!");
 			context.DrawIndexed(myIndices.Size(), 0, 0);
+
 		}
 
-		myRenderTime = CU::TimeManager::GetInstance()->GetTimer(myRenderTimer).GetFrameTime().GetMilliseconds();
+		myTimeManager->GetTimer(myRenderTimer).Update();
+		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds() - myRenderTime;
+
 	}
 
 	Snowblind::CEffect* CFont::GetEffect()
@@ -117,12 +129,12 @@ namespace Snowblind
 
 	float CFont::GetUpdateTime()
 	{
-		return myUpdateTime * 1000.f;
+		return myUpdateTime;
 	}
 
 	float CFont::GetRenderTime()
 	{
-		return myRenderTime * 1000.f;
+		return myRenderTime;
 	}
 
 	void CFont::CreateInputLayout()
@@ -277,7 +289,6 @@ namespace Snowblind
 			myIndices.Add(startIndex + 3);
 			myIndices.Add(startIndex + 1);
 
-			myPreviousAdvance = drawX;
 			drawX += charData.myAdvanceX;
 		}
 
@@ -293,7 +304,5 @@ namespace Snowblind
 
 		CEngine::GetDirectX()->SetDebugName(myIndexBuffer->myIndexBuffer, "Font Index Buffer");
 
-		//mySize.x = drawX;
-		//mySize.y = drawY;
 	}
 };

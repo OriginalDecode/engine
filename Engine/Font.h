@@ -8,6 +8,13 @@ struct D3D11_INPUT_ELEMENT_DESC;
 struct D3D11_SUBRESOURCE_DATA;
 struct ID3D11ShaderResourceView;
 
+namespace CommonUtilities
+{
+	class TimeManager;
+}
+
+
+
 namespace Snowblind
 {
 	struct SInstance
@@ -63,10 +70,11 @@ namespace Snowblind
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		CU::GrowingArray<int> myIndices;
 
+		CU::TimeManager* myTimeManager;
+
 		CL::SColor myDefaultColor;
 		CL::SColor myColor;
 
-		float myPreviousAdvance;
 
 		float myUpdateTime;
 		float myRenderTime;

@@ -43,12 +43,13 @@ namespace CL
 	}
 
 	SColor::SColor()
-		: r(0)
-		, g(0)
-		, b(0)
-		, a(0)
+		: r(255)
+		, g(255)
+		, b(255)
+		, a(255)
 		, _color(0)
 	{
+		_color = (r << 24) + (g << 16) + (b << 8) + (a);
 	}
 
 	void SColor::Convert(unsigned int aColor)

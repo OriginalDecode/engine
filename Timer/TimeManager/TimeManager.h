@@ -11,10 +11,13 @@ namespace CommonUtilities
 	{
 	public:
 		
-		static bool Create();
-		static bool Destroy();
-		static TimeManager* GetInstance();
-		static void Update();
+		TimeManager();
+		~TimeManager();
+		//static bool Create();
+		//static bool Destroy();
+		//static TimeManager* GetInstance();
+		//static void Update();
+		void Update();
 
 		void UpdateMaster();
 
@@ -28,18 +31,12 @@ namespace CommonUtilities
 		void Start();
 
 	private:
-		TimeManager();
-		~TimeManager();
-		static TimeManager* myInstance;
+		//static TimeManager* myInstance;
 
 		std::vector<Timer> myTimers;
 		Timer myMasterTimer;
 	};
 
-	/*const time_type TimeManager::GetDeltaTime()
-	{
-		return myMasterTimer.GetTotalTime().GetSeconds();
-	}*/
 	const time_type TimeManager::GetDeltaTime()
 	{
 		return myMasterTimer.GetFrameTime().GetSeconds();

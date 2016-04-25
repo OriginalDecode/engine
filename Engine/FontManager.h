@@ -50,10 +50,13 @@ namespace Snowblind
 		void Initiate();
 		CFont* LoadFont(const char* aFontPath, short aFontWidth);
 	private:
+
 		void LoadOutline(FT_FaceRec_* aFace, int aGlyphIndex);
 		FT_LibraryRec_* myLibrary;
 		const char* myFontPath;
 		short myFontHeightWidth;
+		std::unordered_map<std::string, SFontData*> myFontData;
+
 	};
 };
 

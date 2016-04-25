@@ -18,7 +18,6 @@ namespace Snowblind
 		void SetScale(const CU::Math::Vector2<float>& aScale);
 		const CU::Math::Vector2<float>& GetScale();
 		ID3D11ShaderResourceView* GetAtlas();
-		void operator>>(const std::string& aString);
 		float GetRenderTime();
 		float GetUpdateTime();
 	private:

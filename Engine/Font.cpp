@@ -54,7 +54,6 @@ namespace Snowblind
 		SAFE_DELETE(myIndexBufferDesc);
 		SAFE_DELETE(myInitData);
 		SAFE_RELEASE(myVertexLayout);
-		SAFE_DELETE(myData);
 		SAFE_DELETE(myTimeManager);
 	}
 

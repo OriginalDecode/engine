@@ -39,8 +39,11 @@ namespace Snowblind
 		myFontPath = nullptr;
 		FT_Done_FreeType(myLibrary);
 
-		//myAtlasView->Release();
-		//myAtlasView = nullptr;
+		for (auto it = myFontData.begin(); it != myFontData.end(); it++)
+		{
+			SAFE_DELETE(it->second);
+		}
+
 	}
 
 	void CFontManager::Initiate()
@@ -57,7 +60,21 @@ namespace Snowblind
 		float atlasWidth = atlasSize; //have to be replaced.
 		float atlasHeight = atlasSize; //have to be replaced
 		myFontHeightWidth = aFontWidth;
-		SFontData* fontData = new SFontData;
+
+		std::stringstream key;
+		key << aFontPath << "-" << aFontWidth;
+		SFontData* fontData = nullptr;
+
+		if (myFontData.find(key.str()) == myFontData.end())
+		{
+			fontData = new SFontData;
+			myFontData[key.str()] = fontData;
+		}
+		else
+		{
+			fontData = myFontData[key.str()];
+		}
+
 		fontData->myAtlas = new int[atlasSize * atlasSize];
 		ZeroMemory(fontData->myAtlas, (atlasSize * atlasSize) * sizeof(int));
 		FT_Face face = fontData->myFaceData;
@@ -229,10 +246,8 @@ namespace Snowblind
 
 	SFontData::~SFontData()
 	{
-		delete myAtlas;
-		myAtlas = nullptr;
-		myAtlasView->Release();
-		myAtlasView = nullptr;
+		SAFE_DELETE(myAtlas);
+		SAFE_RELEASE(myAtlasView);
 	}
 
 };

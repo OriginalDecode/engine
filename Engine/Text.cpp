@@ -55,11 +55,6 @@ namespace Snowblind
 		return myFont->GetAtlas();
 	}
 
-	void CText::operator>>(const std::string& aString)
-	{
-		myFont->SetText(aString);
-	}
-
 	float CText::GetRenderTime()
 	{
 		return myFont->GetRenderTime();

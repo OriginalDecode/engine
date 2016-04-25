@@ -50,7 +50,6 @@ namespace Snowblind
 		void CreateInputLayout();
 		void CreateVertexBuffer();
 		void CreateIndexBuffer();
-		void CreateInstanceBuffer();
 		void UpdateBuffer();
 		SFontData* myData;
 		CEffect* myEffect;

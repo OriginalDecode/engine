@@ -8,7 +8,6 @@
 #include <assert.h>
 #include <TimeManager.h>
 #include <InputWrapper.h>
-
 #include "FontManager.h"
 
 namespace Snowblind
@@ -22,6 +21,8 @@ namespace Snowblind
 		CreateAppWindow(anInstance, aWndProc);
 		CU::Input::InputWrapper::Create(myHWND, anInstance);
 		myAPI = new CDirectX11(myHWND, aWindowWidth, aWindowHeight);
+
+		myTimeManager = new CU::TimeManager();
 
 //		myFont = new Font("Data/Font/OpenSans-Light.ttf");
 
@@ -39,6 +40,7 @@ namespace Snowblind
 	{
 		SAFE_DELETE(myAPI);
 		SAFE_DELETE(myFontManager);
+		SAFE_DELETE(myTimeManager);
 		CU::Input::InputWrapper::Destroy();
 	}
 
@@ -65,6 +67,11 @@ namespace Snowblind
 		return myAPI;
 	}
 
+	void CEngine::Update()
+	{
+		myInstance->myTimeManager->Update();
+	}
+
 	void CEngine::Present()
 	{
 		myInstance->myAPI->Present();
@@ -85,9 +92,29 @@ namespace Snowblind
 		return myFontManager->LoadFont(aFilepath, aFontWidth);
 	}
 
+	const time_type CEngine::GetDeltaTime()
+	{
+		return myTimeManager->GetDeltaTime();
+	}
+
+	const time_type CEngine::GetFPS()
+	{
+		return myTimeManager->GetFPS();
+	}
+
 	const char* CEngine::GetAPIName()
 	{
 		return myAPI->GetAPIName();
+	}
+
+	void CEngine::OnPause()
+	{
+		myTimeManager->Pause();
+	}
+
+	void CEngine::OnResume()
+	{
+		myTimeManager->Start();
 	}
 
 	void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)

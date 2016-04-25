@@ -5,7 +5,7 @@ matrix View;
 float2 Position;
 float2 Scale;
 Texture2D AlbedoTexture;
-int offset = 1;
+
 SamplerState sampleLinear
 {
 	Filter = MIN_MAG_MIP_LINEAR;

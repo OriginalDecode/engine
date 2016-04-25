@@ -130,7 +130,7 @@ namespace Snowblind
 			glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / 64.f);
 			glyphData.myBearingY = (slot->metrics.horiBearingY - slot->metrics.height) / 64.f;
 
-
+			//Kerning is needed and being able to render text quads through other text quads.
 			//Face holds the ascender. Look at that. I believe that can solve my issues.
 			if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
 			{

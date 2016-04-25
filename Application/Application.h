@@ -24,6 +24,7 @@ namespace Snowblind
 	class CFontManager;
 	class CSprite;
 	class CText;
+	class CEngine;
 };
 
 class CApplication
@@ -44,9 +45,6 @@ public:
 private:
 	void UpdateInput(float aDeltaTime);
 
-
-	CU::TimeManager* myTimeManager;
-
 	Snowblind::CEffect* myEffect;
 	Snowblind::CModel* myModel;
 	Snowblind::CModel* myTexturedModel;
@@ -66,6 +64,8 @@ private:
 
 	Snowblind::CScene* myWorldScene;
 	Snowblind::CScene* my2DScene;
+
+	Snowblind::CEngine* myEngine;
 
 };
 

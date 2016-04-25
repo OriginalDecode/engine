@@ -5,7 +5,6 @@
 #include <Scene.h>
 #include <Camera.h>
 #include <Instance.h>
-#include <TimeManager.h>                                                                                                                                                                                                                                                                                                                                                                                   
 #include <EngineDefines.h>
 #include "EffectContainer.h"
 #include "../Input/InputWrapper.h"
@@ -21,7 +20,6 @@ CApplication::~CApplication()
 {
 	SAFE_DELETE(my2DScene);
 	SAFE_DELETE(myWorldScene);
-	SAFE_DELETE(myTimeManager);
 	Snowblind::CEngine::Destroy();
 }
 
@@ -29,9 +27,6 @@ CApplication::~CApplication()
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
-
-	myTimeManager = new CU::TimeManager();
-
 	myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, Vector3f(0.f, 0.f, 25.f));
 	my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, Vector3f(0.f, 0.f, 1.f));
 
@@ -79,6 +74,8 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	mySprite->SetPosition({ 128, 128 });
 	mySprite->SetScale({ 1.f, 1.f });
 	my2DScene->AddToScene(mySprite);
+
+
 	myText2->SetText("#ffff00{Hello} #ac00b2{World}, #8bb272{my} #b2007f{name} #2068ff{is} #ff0000{Linus Skold} #ff8803{and} #007fb2{I} am a #45ff24{programmer}.\n"
 		"#ffff00{Hello} #ac00b2{World}, #8bb272{my} #b2007f{name} #2068ff{is} #ff0000{Linus Skold} #ff8803{and} #007fb2{I} am a #45ff24{programmer}.");
 	myText2->SetPosition({ 0, 150 });
@@ -88,14 +85,14 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	my2DScene->AddToScene(myTextTime);
 
-
+	myEngine = Snowblind::CEngine::GetInstance();
 }
 
 bool CApplication::Update()
 {
-	myTimeManager->Update();
+	myEngine->Update();
 	CU::Input::InputWrapper::GetInstance()->Update();
-	float deltaTime = myTimeManager->GetDeltaTime();
+	float deltaTime = myEngine->GetDeltaTime();
 
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))
 	{
@@ -103,7 +100,7 @@ bool CApplication::Update()
 	}
 
 	std::stringstream ss;
-	ss << myTimeManager->GetFPS();
+	ss << myEngine->GetFPS();
 	myText->SetText(ss.str());
 
 
@@ -182,12 +179,12 @@ void CApplication::UpdateInput(float aDeltaTime)
 
 void CApplication::OnPause()
 {
-	myTimeManager->Pause();
+	myEngine->OnPause();
 }
 
 void CApplication::OnResume()
 {
-	myTimeManager->Start();
+	myEngine->OnResume();
 }
 
 void CApplication::OnInactive()

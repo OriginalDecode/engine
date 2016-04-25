@@ -189,6 +189,7 @@ namespace Snowblind
 		SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 
 		int count = myText.length();
+		float z = 0.f;
 		float drawX = 0.f;
 		float drawY = 0.f;
 		float maxDrawY = 0.f;
@@ -259,22 +260,22 @@ namespace Snowblind
 
 
 
-			v.myPosition = { left, bottom, 0 };
+			v.myPosition = { left, bottom, z };
 			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = charData.myTopLeftUV;
 			myVertices.Add(v);
 
-			v.myPosition = { left, top, 0 };
+			v.myPosition = { left, top, z };
 			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
 			myVertices.Add(v);
 
-			v.myPosition = { right, bottom, 0 };
+			v.myPosition = { right, bottom, z };
 			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = { charData.myBottomRightUV.x, charData.myTopLeftUV.y };
 			myVertices.Add(v);
 
-			v.myPosition = { right, top, 0 };
+			v.myPosition = { right, top, z };
 			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = charData.myBottomRightUV;
 			myVertices.Add(v);

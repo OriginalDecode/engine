@@ -1,13 +1,17 @@
 #pragma once
 
 #include <Windows.h>
-
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
 struct HWND__;
 typedef HWND__* HWND;
 #endif
+
+namespace CommonUtilities
+{
+	class TimeManager;
+}
 
 
 namespace Snowblind
@@ -33,13 +37,18 @@ namespace Snowblind
 		static CEngine* GetInstance();
 		static CDirectX11* GetDirectX();
 
+		static void Update();
 		static void Present();
 		static void Clear();
 		CDirectX11* GetAPI();
 		const SWindowSize& GetWindowSize() const;
 		CFont* LoadFont(const char* aFilepath, short aFontWidth);
-
+		const float GetDeltaTime();
+		const float GetFPS();
 		const char* GetAPIName();
+
+		void OnPause();
+		void OnResume();
 
 
 	private:
@@ -54,7 +63,7 @@ namespace Snowblind
 
 		HWND myHWND;
 		CFontManager* myFontManager;
-
+		CU::TimeManager* myTimeManager;
 	};
 
 	__forceinline CDirectX11* CEngine::GetAPI()

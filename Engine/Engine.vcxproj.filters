@@ -43,6 +43,9 @@
     <Filter Include="Utilities\Vertex &amp; Index Wrapper &amp; Types">
       <UniqueIdentifier>{ed7f4016-5fff-476c-94ec-aed65f23c14d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Text">
+      <UniqueIdentifier>{201cd6e2-3c2f-4ff9-9fea-47e13fd4dcb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -81,7 +84,6 @@
     <ClInclude Include="Scene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="FontManager.h" />
     <ClInclude Include="Sprite.h">
       <Filter>Sprite</Filter>
     </ClInclude>
@@ -106,8 +108,15 @@
     <ClInclude Include="VertexStructs.h">
       <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
     </ClInclude>
-    <ClInclude Include="Font.h" />
-    <ClInclude Include="Text.h" />
+    <ClInclude Include="Font.h">
+      <Filter>Text</Filter>
+    </ClInclude>
+    <ClInclude Include="FontManager.h">
+      <Filter>Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -146,7 +155,6 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="Sprite.cpp">
       <Filter>Sprite</Filter>
     </ClCompile>
@@ -156,7 +164,14 @@
     <ClCompile Include="RectangleBinPack.cpp">
       <Filter>Utilities\Algorithms</Filter>
     </ClCompile>
-    <ClCompile Include="Font.cpp" />
-    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Font.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
+    <ClCompile Include="FontManager.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

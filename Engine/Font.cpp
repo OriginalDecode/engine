@@ -10,14 +10,15 @@
 #include "EngineDefines.h"
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
+
 #include <TimeManager.h>
-#include "TimeManager.h"
+
 namespace Snowblind
 {
 	CFont::CFont(SFontData* aFontData)
 	{
 		myData = aFontData;
-		myText = "";
+		myText = " ";
 		myEffect = CEffectContainer::GetInstance()->GetEffect("Data/Shaders/Font_Effect.fx");
 
 		myVertexBufferDesc = new D3D11_BUFFER_DESC();
@@ -289,7 +290,7 @@ namespace Snowblind
 			myIndices.Add(startIndex + 3);
 			myIndices.Add(startIndex + 1);
 
-			drawX += charData.myAdvanceX;
+			drawX += charData.myBearingX;
 		}
 
 		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosColUv) * myVertices.Size();

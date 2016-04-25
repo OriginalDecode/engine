@@ -9,6 +9,7 @@ namespace Snowblind
 	{
 		myCamera = aCamera;
 		myFont = CEngine::GetInstance()->LoadFont(aFilepath, aSize);
+		myScale = { 1, 1 };
 	}
 
 
@@ -57,6 +58,16 @@ namespace Snowblind
 	void CText::operator>>(const std::string& aString)
 	{
 		myFont->SetText(aString);
+	}
+
+	float CText::GetRenderTime()
+	{
+		return myFont->GetRenderTime();
+	}
+
+	float CText::GetUpdateTime()
+	{
+		return myFont->GetUpdateTime();
 	}
 
 };

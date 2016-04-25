@@ -30,7 +30,7 @@ namespace Snowblind
 		std::unordered_map<char, SCharData> myCharData;
 		short myAtlasWidth; 
 		short myAtlasHeight;
-		short myLineSpacing;
+		float myLineSpacing;
 		short myWordSpacing;
 		short myFontHeightWidth;
 		int* myAtlas;

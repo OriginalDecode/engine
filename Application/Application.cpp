@@ -19,15 +19,10 @@ CApplication::CApplication()
 
 CApplication::~CApplication()
 {
-	SAFE_DELETE(myModel);
-	SAFE_DELETE(myTexturedModel);
 	SAFE_DELETE(my2DScene);
 	SAFE_DELETE(myWorldScene);
-
 	CU::TimeManager::Destroy();
 	Snowblind::CEngine::Destroy();
-	//delete myText2;
-	//myText2 = nullptr;
 }
 
 
@@ -60,10 +55,10 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	my2DScene->AddToScene(myText2);
 
 
-	myModel = new Snowblind::CModel(myCamera);
+	myModel = new Snowblind::CModel();
 	myModel->CreateCube("Data/Shaders/Cube.fx", 1.f, 1.f, 1.f);
 
-	myTexturedModel = new Snowblind::CModel(myCamera);
+	myTexturedModel = new Snowblind::CModel();
 	myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
 
 	Snowblind::CEffectContainer::GetInstance()->GetEffect("Data/Shaders/TexturedCube.fx")->SetAlbedo(myText->GetAtlas());
@@ -83,8 +78,17 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	mySprite->SetPosition({ 128, 128 });
 	mySprite->SetScale({ 1.f, 1.f });
 	my2DScene->AddToScene(mySprite);
-	myText2->SetText("#ffff00{Hello} #ac00b2{World}, #8bb272{my} #b2007f{name} #2068ff{is} #ff0000{Linus Skold} #ff8803{and} #007fb2{I} am a #45ff24{programmer}.");
+	myText2->SetText("#ffff00{Hello} #ac00b2{World}, #8bb272{my} #b2007f{name} #2068ff{is} #ff0000{Linus Skold} #ff8803{and} #007fb2{I} am a #45ff24{programmer}.\n"
+		"#ffff00{Hello} #ac00b2{World}, #8bb272{my} #b2007f{name} #2068ff{is} #ff0000{Linus Skold} #ff8803{and} #007fb2{I} am a #45ff24{programmer}.");
 	myText2->SetPosition({ 0, 150 });
+
+	myTextTime = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16, my2DCamera);
+	myTextTime->SetText(" ");
+	myTextTime->SetPosition({ 0, 100 });
+
+	my2DScene->AddToScene(myTextTime);
+
+
 }
 
 bool CApplication::Update()
@@ -102,9 +106,17 @@ bool CApplication::Update()
 	ss << CU::TimeManager::GetInstance()->GetFPS();
 	myText->SetText(ss.str());
 
+
 	UpdateInput(deltaTime);
 	myWorldScene->Update(deltaTime);
 	Render();
+	std::stringstream rText;
+	rText << "Render Time : " << myText->GetRenderTime() << "\n" << "Update Time : " << myText->GetUpdateTime();
+	myTextTime->SetText(rText.str());
+	myTextTime->Render();
+
+
+
 	return true;
 }
 

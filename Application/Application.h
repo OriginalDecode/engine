@@ -48,6 +48,8 @@ private:
 
 	Snowblind::CText* myText;
 	Snowblind::CText* myText2;
+	Snowblind::CText* myTextTime;
+
 
 
 	Snowblind::CCamera* myCamera;

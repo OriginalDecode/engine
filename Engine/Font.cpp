@@ -10,7 +10,7 @@
 #include "EngineDefines.h"
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
-
+#include <TimeManager.h>
 namespace Snowblind
 {
 	CFont::CFont(SFontData* aFontData)
@@ -18,9 +18,12 @@ namespace Snowblind
 		myData = aFontData;
 		myText = "";
 		myEffect = CEffectContainer::GetInstance()->GetEffect("Data/Shaders/Font_Effect.fx");
+
 		myVertexBufferDesc = new D3D11_BUFFER_DESC();
 		myIndexBufferDesc = new D3D11_BUFFER_DESC();
 		myInitData = new D3D11_SUBRESOURCE_DATA();
+
+
 		CreateInputLayout();
 		CreateVertexBuffer();
 		CreateIndexBuffer();
@@ -30,6 +33,9 @@ namespace Snowblind
 		myDefaultColor.a = 255;
 		myColor = myDefaultColor;
 		myPreviousAdvance = 0;
+
+		myUpdateTimer = CU::TimeManager::GetInstance()->CreateTimer();
+		myRenderTimer = CU::TimeManager::GetInstance()->CreateTimer();
 
 	}
 
@@ -50,11 +56,13 @@ namespace Snowblind
 
 	void CFont::SetText(const std::string& aText)
 	{
+		CU::TimeManager::GetInstance()->GetTimer(myUpdateTimer).Update();
 		if (myText != aText)
 		{
 			myText = aText;
 			UpdateBuffer();
 		}
+		myUpdateTime = CU::TimeManager::GetInstance()->GetTimer(myUpdateTimer).GetFrameTime().GetMilliseconds();
 	}
 
 	const std::string& CFont::GetText() const
@@ -64,6 +72,7 @@ namespace Snowblind
 
 	void CFont::Render()
 	{
+		CU::TimeManager::GetInstance()->GetTimer(myRenderTimer).Update();
 		if (!myEffect)
 			return;
 		myEffect->SetAlbedo(myData->myAtlasView);
@@ -83,6 +92,7 @@ namespace Snowblind
 			context.DrawIndexed(myIndices.Size(), 0, 0);
 		}
 
+		myRenderTime = CU::TimeManager::GetInstance()->GetTimer(myRenderTimer).GetFrameTime().GetMilliseconds();
 	}
 
 	Snowblind::CEffect* CFont::GetEffect()
@@ -103,6 +113,16 @@ namespace Snowblind
 	const short CFont::GetFontPixelSize()
 	{
 		return myData->myFontHeightWidth;
+	}
+
+	float CFont::GetUpdateTime()
+	{
+		return myUpdateTime * 1000.f;
+	}
+
+	float CFont::GetRenderTime()
+	{
+		return myRenderTime * 1000.f;
 	}
 
 	void CFont::CreateInputLayout()
@@ -159,6 +179,7 @@ namespace Snowblind
 		int count = myText.length();
 		float drawX = 0.f;
 		float drawY = 0.f;
+		float maxDrawY = 0.f;
 		myVertices.RemoveAll();
 		myIndices.RemoveAll();
 
@@ -199,10 +220,16 @@ namespace Snowblind
 			}
 
 
+			if (maxDrawY < charData.myHeight)
+			{
+				maxDrawY = charData.myHeight;
+			}
+
+
 			if (myText[i] == '\n')
 			{
 				drawX = 0;
-				drawY -= myData->myLineSpacing;
+				drawY -= (maxDrawY + 4);
 				row++;
 				continue;
 			}
@@ -217,6 +244,8 @@ namespace Snowblind
 			float right = left + charData.myWidth;
 			float top = drawY + charData.myBearingY;
 			float bottom = top + charData.myHeight;
+
+
 
 			v.myPosition = { left, bottom, 0 };
 			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };

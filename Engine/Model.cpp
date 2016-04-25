@@ -16,12 +16,10 @@
 #include "TextureContainer.h"
 #include "VertexStructs.h"
 
-
 namespace Snowblind
 {
-	CModel::CModel(CCamera* aCamera)
+	CModel::CModel()
 	{
-		myCamera = aCamera;
 		myAPI = CEngine::GetInstance()->GetAPI();
 		myIsTextured = false;
 	}

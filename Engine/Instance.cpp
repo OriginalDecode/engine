@@ -9,9 +9,10 @@ namespace Snowblind
 	{
 	}
 
-
 	CInstance::~CInstance()
 	{
+		delete myModel;
+		myModel = nullptr;
 	}
 
 	void CInstance::Initiate(CModel* aModel)
@@ -34,8 +35,4 @@ namespace Snowblind
 	{
 		myOrientation.SetPosition(aPosition);
 	}
-
-
-
-
 };

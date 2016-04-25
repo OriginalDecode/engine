@@ -10,6 +10,13 @@ struct ID3D11ShaderResourceView;
 
 namespace Snowblind
 {
+	struct SInstance
+	{
+		CU::Math::Vector2<float> myPosition;
+	};
+
+
+
 	struct SVertexBufferWrapper;
 	struct SIndexBufferWrapper;
 
@@ -28,12 +35,15 @@ namespace Snowblind
 		ID3D11ShaderResourceView* GetAtlas();
 		const CU::Math::Vector2<float>& GetSize();
 		const short GetFontPixelSize();
+		float GetUpdateTime();
+		float GetRenderTime();
 	private:
 		void operator=(const CFont&) = delete;
 
 		void CreateInputLayout();
 		void CreateVertexBuffer();
 		void CreateIndexBuffer();
+		void CreateInstanceBuffer();
 		void UpdateBuffer();
 		SFontData* myData;
 		CEffect* myEffect;
@@ -41,6 +51,7 @@ namespace Snowblind
 		ID3D11InputLayout* myVertexLayout;
 		D3D11_BUFFER_DESC* myVertexBufferDesc;
 		D3D11_BUFFER_DESC* myIndexBufferDesc;
+
 		D3D11_SUBRESOURCE_DATA* myInitData;
 
 		SVertexBufferWrapper* myVertexBuffer;
@@ -55,8 +66,13 @@ namespace Snowblind
 		CL::SColor myDefaultColor;
 		CL::SColor myColor;
 
-
 		float myPreviousAdvance;
+
+		float myUpdateTime;
+		float myRenderTime;
+
+		int myUpdateTimer;
+		int myRenderTimer;
 
 	};
 }

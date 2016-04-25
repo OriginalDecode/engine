@@ -21,7 +21,7 @@ namespace Snowblind
 	class CModel
 	{
 	public:
-		CModel(CCamera* aCamera);
+		CModel();
 		~CModel();
 
 		void CreateTriangle(const std::string& anEffectPath);

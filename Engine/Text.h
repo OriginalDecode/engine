@@ -19,6 +19,8 @@ namespace Snowblind
 		const CU::Math::Vector2<float>& GetScale();
 		ID3D11ShaderResourceView* GetAtlas();
 		void operator>>(const std::string& aString);
+		float GetRenderTime();
+		float GetUpdateTime();
 	private:
 
 		CCamera* myCamera;
@@ -26,5 +28,8 @@ namespace Snowblind
 		CU::Math::Matrix44<float> myOrientation;
 		CU::Math::Vector2<float> myPosition;
 		CU::Math::Vector2<float> myScale;
+
+
+
 	};
 };

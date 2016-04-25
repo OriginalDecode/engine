@@ -206,7 +206,7 @@ namespace Snowblind
 
 		fontData->myAtlasHeight = atlasSize;
 		fontData->myAtlasWidth = atlasSize;
-		fontData->myLineSpacing = (face->height >> 6) * 2.f;
+		fontData->myLineSpacing = (face->ascender - face->descender) >> 6;
 		FT_Done_Face(face);
 		CFont* newFont = new CFont(fontData);
 		return newFont;

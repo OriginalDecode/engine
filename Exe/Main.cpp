@@ -20,7 +20,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Physics);
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Font);
 
-	DL_MESSAGE ("%i Active Filters!", DL_Debug::Debug::GetInstance()->GetActiveLogCount());
+	DL_MESSAGE("%i Active Filters!", DL_Debug::Debug::GetInstance()->GetActiveLogCount());
 
 	float w = 1920;
 	float h = 1080;
@@ -37,6 +37,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 		{
 			if (msg.message == WM_QUIT)
 			{
+				applicationIsRunning = false;
 				break;
 			}
 			TranslateMessage(&msg);
@@ -44,13 +45,16 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 		}
 		else if (newApplication->Update() == false)
 		{
+			applicationIsRunning = false;
 			break;
 		}
+		Snowblind::CEngine::Update();
 
 	} while (applicationIsRunning == true);
 
 	delete newApplication;
 	newApplication = nullptr;
+	Snowblind::CEngine::Destroy();
 	DL_Debug::Debug::Destroy();
 
 }

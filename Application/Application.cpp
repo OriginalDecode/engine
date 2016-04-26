@@ -20,7 +20,6 @@ CApplication::~CApplication()
 {
 	SAFE_DELETE(my2DScene);
 	SAFE_DELETE(myWorldScene);
-	Snowblind::CEngine::Destroy();
 }
 
 
@@ -90,7 +89,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 bool CApplication::Update()
 {
-	myEngine->Update();
+	//myEngine->Update();
 	CU::Input::InputWrapper::GetInstance()->Update();
 	float deltaTime = myEngine->GetDeltaTime();
 
@@ -110,8 +109,6 @@ bool CApplication::Update()
 	std::stringstream rText;
 	rText << "Render Time : " << myText->GetRenderTime() << "ms\n" << "Update Time : " << myText->GetUpdateTime() << "ms";
 	myTextTime->SetText(rText.str());
-
-
 
 	return true;
 }

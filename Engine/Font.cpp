@@ -218,17 +218,26 @@ namespace Snowblind
 			{
 				std::string color;
 				int skip = i;
+				bool hasBreaked = false;
 				for (int j = i + 1; j < i + 7; ++j)
 				{
+					if (myText[j] == 'I')
+					{
+						hasBreaked = true;
+						break;
+					}
 					color += myText[j];
 					skip++;
 				}
-				myColor.r = std::strtoul(color.substr(0, 2).c_str(), NULL, 16);
-				myColor.g = std::strtoul(color.substr(2, 2).c_str(), NULL, 16);
-				myColor.b = std::strtoul(color.substr(4, 2).c_str(), NULL, 16);
-
-				i = skip;
-				iAsItShouldBe--;
+				if (hasBreaked == false)
+				{
+					myColor.r = std::strtoul(color.substr(0, 2).c_str(), NULL, 16);
+					myColor.g = std::strtoul(color.substr(2, 2).c_str(), NULL, 16);
+					myColor.b = std::strtoul(color.substr(4, 2).c_str(), NULL, 16);
+				}
+					i = skip;
+					iAsItShouldBe--;
+				
 				continue;
 			}
 

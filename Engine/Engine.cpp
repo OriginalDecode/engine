@@ -9,6 +9,7 @@
 #include <TimeManager.h>
 #include <InputWrapper.h>
 #include "FontManager.h"
+#include <thread>
 
 namespace Snowblind
 {
@@ -24,8 +25,6 @@ namespace Snowblind
 
 		myTimeManager = new CU::TimeManager();
 
-//		myFont = new Font("Data/Font/OpenSans-Light.ttf");
-
 		std::stringstream windowText;
 		windowText << "API : " << myAPI->GetAPIName() << " | " << "Adapter : " << myAPI->GetActiveAdapterName();
 		SetWindowText(myHWND, windowText.str().c_str());
@@ -33,11 +32,11 @@ namespace Snowblind
 
 		myFontManager = new CFontManager();
 		myFontManager->Initiate();
-
 	}
 
 	CEngine::~CEngine()
 	{
+
 		SAFE_DELETE(myAPI);
 		SAFE_DELETE(myFontManager);
 		SAFE_DELETE(myTimeManager);
@@ -67,6 +66,7 @@ namespace Snowblind
 		return myAPI;
 	}
 
+
 	void CEngine::Update()
 	{
 		myInstance->myTimeManager->Update();
@@ -92,12 +92,12 @@ namespace Snowblind
 		return myFontManager->LoadFont(aFilepath, aFontWidth);
 	}
 
-	const time_type CEngine::GetDeltaTime()
+	const float CEngine::GetDeltaTime()
 	{
 		return myTimeManager->GetDeltaTime();
 	}
 
-	const time_type CEngine::GetFPS()
+	const float CEngine::GetFPS()
 	{
 		return myTimeManager->GetFPS();
 	}

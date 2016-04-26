@@ -13,7 +13,6 @@ namespace CommonUtilities
 	class TimeManager;
 }
 
-
 namespace Snowblind
 {
 
@@ -36,6 +35,7 @@ namespace Snowblind
 		static void Destroy();
 		static CEngine* GetInstance();
 		static CDirectX11* GetDirectX();
+
 
 		static void Update();
 		static void Present();
@@ -64,6 +64,7 @@ namespace Snowblind
 		HWND myHWND;
 		CFontManager* myFontManager;
 		CU::TimeManager* myTimeManager;
+
 	};
 
 	__forceinline CDirectX11* CEngine::GetAPI()

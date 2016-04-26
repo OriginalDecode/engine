@@ -117,9 +117,6 @@
     <ClInclude Include="Text.h">
       <Filter>Text</Filter>
     </ClInclude>
-    <ClInclude Include="Thread.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="Console.h" />
   </ItemGroup>
   <ItemGroup>
@@ -176,9 +173,6 @@
     </ClCompile>
     <ClCompile Include="Text.cpp">
       <Filter>Text</Filter>
-    </ClCompile>
-    <ClCompile Include="Thread.cpp">
-      <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="Console.cpp" />
   </ItemGroup>

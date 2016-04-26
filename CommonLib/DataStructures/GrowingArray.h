@@ -45,31 +45,45 @@ namespace CommonUtilities
 		void Reserve(SizeType aNewSize);
 		inline void Resize(SizeType aNewSize);
 
+		inline ObjectType* GetArrayAsPointer();
+
+		typedef ObjectType* iterator;
+		typedef const ObjectType* const_iterator;
+		iterator begin() { return &myData[0]; }
+		const_iterator begin() const { return &myData[0]; }
+		iterator end() { return &myData[mySize]; }
+		const_iterator end() const { return &myData[mySize]; }
+
 	private:
 
 		bool mySafeFlag;
-		ObjectType *myObjectData;
-		SizeType myMaxSize;
+		ObjectType *myData;
 		SizeType myCapacity;
-		SizeType myAmountOfObjects;
+		SizeType mySize;
 	};
+
+	template<typename ObjectType, typename SizeType /*= int*/>
+	ObjectType* CommonUtilities::GrowingArray<ObjectType, SizeType>::GetArrayAsPointer()
+	{
+		return myData;
+	}
 
 	template<typename ObjectType, typename SizeType = int>
 	GrowingArray<ObjectType, SizeType>::GrowingArray()
 	{
-		myMaxSize = 0;
-		myAmountOfObjects = 0;
-		myObjectData = nullptr;
+		myCapacity = 0;
+		mySize = 0;
+		myData = nullptr;
 		Init(16, true); //Default initialization of GrowingArrays. Size will start at 16 if needed Resize can be called
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	GrowingArray<ObjectType, SizeType>::~GrowingArray()
 	{
-		myMaxSize = 0;
-		myAmountOfObjects = 0;
-		delete[]myObjectData;
-		myObjectData = nullptr;
+		myCapacity = 0;
+		mySize = 0;
+		delete[]myData;
+		myData = nullptr;
 	};
 
 	template<typename ObjectType, typename SizeType = int>
@@ -81,7 +95,7 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	GrowingArray<ObjectType, SizeType>::GrowingArray(const GrowingArray& aGrowingArray)
 	{
-		myObjectData = nullptr;
+		myData = nullptr;
 		*this = aGrowingArray;
 	};
 
@@ -89,41 +103,41 @@ namespace CommonUtilities
 	void GrowingArray<ObjectType, SizeType>::Init(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true)
 	{
 		mySafeFlag = aUseSafeModeFlag;
-		myAmountOfObjects = 0;
-		myMaxSize = aNrOfRecommendedItems;
-		myCapacity = myMaxSize;
-		myObjectData = new ObjectType[myMaxSize];
+		mySize = 0;
+		myCapacity = aNrOfRecommendedItems;
+		myCapacity = myCapacity;
+		myData = new ObjectType[myCapacity];
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	void GrowingArray<ObjectType, SizeType>::ReInit(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true)
 	{
-		delete[]myObjectData;
+		delete[]myData;
 		Init(aNrOfRecommendedItems, aUseSafeModeFlag);
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	GrowingArray<ObjectType, SizeType>& GrowingArray<ObjectType, SizeType>::operator=(const GrowingArray& aGrowingArray)
 	{
-		delete[]myObjectData;
+		delete[]myData;
 		mySafeFlag = aGrowingArray.mySafeFlag;
 		if (mySafeFlag == false)
 		{
-			myMaxSize = aGrowingArray.myMaxSize;
-			myAmountOfObjects = aGrowingArray.myAmountOfObjects;
-			myObjectData = new ObjectType[myMaxSize];
+			myCapacity = aGrowingArray.myCapacity;
+			mySize = aGrowingArray.mySize;
+			myData = new ObjectType[myCapacity];
 
-			memcpy(myObjectData, aGrowingArray.myObjectData, sizeof(ObjectType)*aGrowingArray.myAmountOfObjects);
+			memcpy(myData, aGrowingArray.myData, sizeof(ObjectType)*aGrowingArray.mySize);
 		}
 		else
 		{
-			myMaxSize = aGrowingArray.myMaxSize;
-			myAmountOfObjects = aGrowingArray.myAmountOfObjects;
-			myObjectData = new ObjectType[myMaxSize];
+			myCapacity = aGrowingArray.myCapacity;
+			mySize = aGrowingArray.mySize;
+			myData = new ObjectType[myCapacity];
 
-			for (SizeType i = 0; i < myAmountOfObjects; ++i)
+			for (SizeType i = 0; i < mySize; ++i)
 			{
-				myObjectData[i] = aGrowingArray[i];
+				myData[i] = aGrowingArray[i];
 			}
 		}
 		return *this;
@@ -132,43 +146,43 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	inline ObjectType& GrowingArray<ObjectType, SizeType>::operator[](const SizeType& aIndex)
 	{
-		assert(aIndex >= 0 && aIndex < myAmountOfObjects && "Out of Bounds!");
-		return myObjectData[aIndex];
+		assert(aIndex >= 0 && aIndex < mySize && "Out of Bounds!");
+		return myData[aIndex];
 	}
 
 	template<typename ObjectType, typename SizeType = int>
 	inline const ObjectType& GrowingArray<ObjectType, SizeType>::operator[](const SizeType& aIndex) const
 	{
-		assert(aIndex >= 0 && aIndex < myAmountOfObjects && "Out of Bounds!");
-		return myObjectData[aIndex];
+		assert(aIndex >= 0 && aIndex < mySize && "Out of Bounds!");
+		return myData[aIndex];
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	inline void GrowingArray<ObjectType, SizeType>::Add(const ObjectType& aObject)
 	{
-		if (myAmountOfObjects >= myMaxSize)
+		if (mySize >= myCapacity)
 		{
-			Resize(myMaxSize * 2);
+			Resize(myCapacity * 2);
 		}
-		myObjectData[myAmountOfObjects] = aObject;
-		myAmountOfObjects++;
+		myData[mySize] = aObject;
+		mySize++;
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	inline void GrowingArray<ObjectType, SizeType>::Insert(SizeType aIndex, ObjectType& aObject)
 	{
 
-		assert(aIndex >= 0 && aIndex < myAmountOfObjects && "Out of Bounds");
-		if (myAmountOfObjects >= myMaxSize)
+		assert(aIndex >= 0 && aIndex < mySize && "Out of Bounds");
+		if (mySize >= myCapacity)
 		{
-			Resize(myMaxSize * 2);
+			Resize(myCapacity * 2);
 		}
-		for (SizeType i = myAmountOfObjects; i > aIndex; i--)
+		for (SizeType i = mySize; i > aIndex; i--)
 		{
-			myObjectData[i] = myObjectData[i - 1];
+			myData[i] = myData[i - 1];
 		}
-		myObjectData[aIndex] = aObject;
-		myAmountOfObjects++;
+		myData[aIndex] = aObject;
+		mySize++;
 	};
 
 	template<typename ObjectType, typename SizeType = int>
@@ -176,12 +190,12 @@ namespace CommonUtilities
 	{
 		bool dataDeleted = false;
 		SizeType i = 0;
-		while (dataDeleted == false && i < myAmountOfObjects)
+		while (dataDeleted == false && i < mySize)
 		{
-			if (myObjectData[i] == aObject)
+			if (myData[i] == aObject)
 			{
-				myObjectData[i] = myObjectData[myAmountOfObjects - 1];
-				myAmountOfObjects--;
+				myData[i] = myData[mySize - 1];
+				mySize--;
 				dataDeleted = true;
 			}
 			else
@@ -195,12 +209,12 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	inline void GrowingArray<ObjectType, SizeType>::DeleteCyclicAtIndex(SizeType aItemNumber)
 	{
-		assert(aItemNumber >= 0 && aItemNumber < myAmountOfObjects && "Out of Bounds");
-		myObjectData[aItemNumber] = nullptr;
-		delete myObjectData[aItemNumber];
+		assert(aItemNumber >= 0 && aItemNumber < mySize && "Out of Bounds");
+		myData[aItemNumber] = nullptr;
+		delete myData[aItemNumber];
 
-		myObjectData[aItemNumber] = myObjectData[myAmountOfObjects - 1];
-		myAmountOfObjects--;
+		myData[aItemNumber] = myData[mySize - 1];
+		mySize--;
 	};
 
 	template<typename ObjectType, typename SizeType = int>
@@ -208,12 +222,12 @@ namespace CommonUtilities
 	{
 		bool dataDeleted = false;
 		SizeType i = 0;
-		while (dataDeleted == false && i < myAmountOfObjects)
+		while (dataDeleted == false && i < mySize)
 		{
-			if (myObjectData[i] == aObject)
+			if (myData[i] == aObject)
 			{
-				myObjectData[i] = myObjectData[myAmountOfObjects - 1];
-				myAmountOfObjects--;
+				myData[i] = myData[mySize - 1];
+				mySize--;
 				dataDeleted = true;
 			}
 			else
@@ -227,17 +241,17 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	inline void GrowingArray<ObjectType, SizeType>::RemoveCyclicAtIndex(SizeType aItemNumber)
 	{
-		assert(aItemNumber >= 0 && aItemNumber < myAmountOfObjects && "Out of Bounds");
-		myObjectData[aItemNumber] = myObjectData[myAmountOfObjects - 1];
-		myAmountOfObjects--;
+		assert(aItemNumber >= 0 && aItemNumber < mySize && "Out of Bounds");
+		myData[aItemNumber] = myData[mySize - 1];
+		mySize--;
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	inline SizeType GrowingArray<ObjectType, SizeType>::Find(const ObjectType& aObject)
 	{
-		for (SizeType i = 0; i < myAmountOfObjects; ++i)
+		for (SizeType i = 0; i < mySize; ++i)
 		{
-			if (myObjectData[i] == aObject)
+			if (myData[i] == aObject)
 			{
 				return i;
 			}
@@ -248,112 +262,112 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	inline ObjectType& GrowingArray<ObjectType, SizeType>::GetLast()
 	{
-		return myObjectData[myAmountOfObjects - 1];
+		return myData[mySize - 1];
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	inline const ObjectType& GrowingArray<ObjectType, SizeType>::GetLast() const
 	{
-		return myObjectData[myAmountOfObjects - 1];
+		return myData[mySize - 1];
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	inline void GrowingArray<ObjectType, SizeType>::RemoveAll()
 	{
-		myAmountOfObjects = 0;
+		mySize = 0;
 	};
 
 	template<typename ObjectType, typename SizeType = unsigned short>
 	inline void GrowingArray<ObjectType, SizeType>::DeleteAll()
 	{
-		for (SizeType i = 0; i < myAmountOfObjects; ++i)
+		for (SizeType i = 0; i < mySize; ++i)
 		{
-			delete myObjectData[i];
-			myObjectData[i] = nullptr;
+			delete myData[i];
+			myData[i] = nullptr;
 		}
-		myAmountOfObjects = 0;
+		mySize = 0;
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	void GrowingArray<ObjectType, SizeType>::Optimize()
 	{
-		if (myMaxSize > myAmountOfObjects)
+		if (myCapacity > mySize)
 		{
-			myMaxSize = myAmountOfObjects;
-			ObjectType *newMemory = new ObjectType[myMaxSize];
+			myCapacity = mySize;
+			ObjectType *newMemory = new ObjectType[myCapacity];
 			if (mySafeFlag == true)
 			{
-				for (SizeType i = 0; i < myMaxSize; ++i)
+				for (SizeType i = 0; i < myCapacity; ++i)
 				{
-					newMemory[i] = myObjectData[i];
+					newMemory[i] = myData[i];
 				}
 			}
 			else
 			{
-				memcpy(newMemory, myObjectData, sizeof(ObjectType)*myAmountOfObjects);
+				memcpy(newMemory, myData, sizeof(ObjectType)*mySize);
 			}
-			delete[]myObjectData;
+			delete[]myData;
 
-			myObjectData = newMemory;
+			myData = newMemory;
 		}
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	__forceinline int GrowingArray<ObjectType, SizeType>::Size() const
 	{
-		return myAmountOfObjects;
+		return mySize;
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	inline void GrowingArray<ObjectType, SizeType>::Resize(SizeType aNewSize)
 	{
 
-		myMaxSize = aNewSize;
-		ObjectType *newMemory = new ObjectType[myMaxSize];
+		myCapacity = aNewSize;
+		ObjectType *newMemory = new ObjectType[myCapacity];
 		if (mySafeFlag == true)
 		{
-			for (SizeType i = 0; i < myAmountOfObjects; ++i)
+			for (SizeType i = 0; i < mySize; ++i)
 			{
-				newMemory[i] = myObjectData[i];
+				newMemory[i] = myData[i];
 			}
 		}
 		else
 		{
-			memcpy(newMemory, myObjectData, sizeof(ObjectType)*myAmountOfObjects);
+			memcpy(newMemory, myData, sizeof(ObjectType)*mySize);
 		}
-		delete[]myObjectData;
+		delete[]myData;
 
-		myObjectData = newMemory;
-		myCapacity = myMaxSize;
+		myData = newMemory;
+		myCapacity = myCapacity;
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	void GrowingArray<ObjectType, SizeType>::Reserve(SizeType aNewSize)
 	{
-		myMaxSize = aNewSize;
+		myCapacity = aNewSize;
 
-		ObjectType *newMemory = new ObjectType[myMaxSize];
+		ObjectType *newMemory = new ObjectType[myCapacity];
 		if (mySafeFlag == true)
 		{
-			for (SizeType i = 0; i < myAmountOfObjects; ++i)
+			for (SizeType i = 0; i < mySize; ++i)
 			{
-				newMemory[i] = myObjectData[i];
+				newMemory[i] = myData[i];
 			}
 		}
 		else
 		{
-			memcpy(newMemory, myObjectData, sizeof(ObjectType)*myAmountOfObjects);
+			memcpy(newMemory, myData, sizeof(ObjectType)*mySize);
 		}
-		delete[]myObjectData;
+		delete[]myData;
 
-		myObjectData = newMemory;
-		myAmountOfObjects = myMaxSize;
+		myData = newMemory;
+		mySize = myCapacity;
 	}
 
 	template<typename ObjectType, typename SizeType = int>
 	int GrowingArray<ObjectType, SizeType>::Capacity()
 	{
-		return myMaxSize;
+		return myCapacity;
 	}
 
 };

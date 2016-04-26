@@ -98,17 +98,22 @@ bool CApplication::Update()
 		return false;
 	}
 
+
 	if (CU::Input::InputWrapper::GetInstance()->KeyClick(DIK_GRAVE))
 	{
 		myConsole->ToggleConsole();
 	}
 
+	if (myConsole->GetIsActive())
+		myConsole->Update();
+	else
+		UpdateInput(deltaTime);
+
 	std::stringstream ss;
 	ss << myEngine->GetFPS();
 	myText->SetText(ss.str());
 
-
-	UpdateInput(deltaTime);
+	 
 	myWorldScene->Update(deltaTime);
 	Render();
 	std::stringstream rText;

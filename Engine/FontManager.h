@@ -50,7 +50,8 @@ namespace Snowblind
 		void Initiate();
 		CFont* LoadFont(const char* aFontPath, short aFontWidth);
 	private:
-
+		void LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
+			, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace);
 		void LoadOutline(FT_FaceRec_* aFace, int aGlyphIndex);
 		FT_LibraryRec_* myLibrary;
 		const char* myFontPath;

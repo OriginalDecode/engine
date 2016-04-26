@@ -51,7 +51,7 @@ namespace Snowblind
 			for (int i = 0; i < myStrings.Size(); i++)
 			{
 				myText->SetText(myStrings[i]);
-				myText->SetPosition({ myTopLeftPosition.x,myTopLeftPosition.y + (i * 14) });
+				myText->SetPosition({ myTopLeftPosition.x,myTopLeftPosition.y + (i * 18) });
 				myText->Render();
 			}
 			myInputText->Render();
@@ -112,9 +112,6 @@ namespace Snowblind
 			myInputText->SetText(" ");
 			mark = false;
 		}
-
-
-
 
 		if (myInputWrapper->KeyClick(DIK_BACKSPACE))
 		{

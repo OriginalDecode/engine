@@ -101,88 +101,20 @@ namespace Snowblind
 		DL_ASSERT_EXP(!error, "Failed to load glyph! x");
 		FT_GlyphSlot space = face->glyph;
 		fontData->myWordSpacing = space->metrics.width / 256.f;
-
-		for (int i = 32; i < 126; i++)
+		int currentMax = 126;
+		int currentI = 32;
+		for (int i = currentI; i < currentMax; i++)
 		{
-			error = FT_Load_Char(face, i, FT_LOAD_RENDER);
-			DL_ASSERT_EXP(!error, "Failed to load glyph!");
-			FT_GlyphSlot slot = face->glyph;
-			slot->format = FT_GLYPH_FORMAT_BITMAP;
-			FT_Bitmap bitmap = slot->bitmap;
-			bitmap.pixel_mode = FT_PIXEL_MODE_MONO;
-			FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
-
-			int height = bitmap.rows;
-			int width = bitmap.width;
-
-			if (atlasX + width > atlasWidth)
-			{
-				atlasX = 0;
-				atlasY = currentMaxY;
-			}
-
-			SCharData glyphData;
-			glyphData.myChar = i;
-			glyphData.myHeight = height;
-			glyphData.myWidth = width;
-			glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
-			glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
-			glyphData.myAdvanceX = slot->metrics.width / 64.f;
-			glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / 64.f);
-			glyphData.myBearingY = (slot->metrics.horiBearingY - slot->metrics.height) / 64.f;
-
-			//Kerning is needed and being able to render text quads through other text quads.
-			//Face holds the ascender. Look at that. I believe that can solve my issues.
-			if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
-			{
-				FONT_LOG("Tried to set a UV coord to above 1 at glyph : %c , index %d", i, i);
-				FONT_LOG("TopLeftUV X: %f", glyphData.myTopLeftUV.x);
-				FONT_LOG("TopLeftUV Y: %f", glyphData.myTopLeftUV.y);
-				FONT_LOG("BottomRightUV X: %f", glyphData.myBottomRightUV.x);
-				FONT_LOG("BottomRightUV Y: %f", glyphData.myBottomRightUV.y);
-				//	DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
-			}
-
-			for (int x = 0; x < width; x++)
-			{
-				for (int y = 0; y < height; y++)
-				{
-					if (x < 0 || y < 0)
-					{
-						continue;
-					}
-					int& saved = fontData->myAtlas[(atlasY + y) * int(atlasWidth) + (atlasX + x)];
-					saved = 0;
-					saved |= bitmap.buffer[y * bitmap.width + x];
-					saved = CL::Color32Reverse(saved);
-
-					if (y + (atlasY + 8) > currentMaxY)
-					{
-						currentMaxY = y + (atlasY + 8);
-					}
-
-				}
-			}
-			atlasX = atlasX + width + 2;
-			fontData->myCharData[i] = glyphData;
-
-
-#ifdef SAVE
-			std::stringstream ss;
-			D3DX11_IMAGE_FILE_FORMAT format;
-#ifdef SAVE_DDS
-			ss << "Glyphs/Glyph_" << i << ".dds";
-			format = D3DX11_IFF_DDS;
-#endif
-#ifdef SAVE_PNG
-			ss << "Glyphs/Glyph_" << i << ".png";
-			format = D3DX11_IFF_PNG;
-#endif
-			HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
-			CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
-			texture->Release();
-#endif
+			LoadGlyph(i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
 		}
+		LoadGlyph(132, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(134, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+
+		LoadGlyph(142, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(143, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+
+		LoadGlyph(148, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(153, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
 
 		D3D11_SUBRESOURCE_DATA data;
 		data.pSysMem = fontData->myAtlas;
@@ -229,6 +161,89 @@ namespace Snowblind
 		FT_Done_Face(face);
 		CFont* newFont = new CFont(fontData);
 		return newFont;
+	}
+
+	void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
+		, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace)
+	{
+		int error = FT_Load_Char(aFace, index, FT_LOAD_RENDER);
+		DL_ASSERT_EXP(!error, "Failed to load glyph!");
+		FT_GlyphSlot slot = aFace->glyph;
+		slot->format = FT_GLYPH_FORMAT_BITMAP;
+		FT_Bitmap bitmap = slot->bitmap;
+		bitmap.pixel_mode = FT_PIXEL_MODE_MONO;
+		FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
+
+		int height = bitmap.rows;
+		int width = bitmap.width;
+
+		if (atlasX + width > atlasWidth)
+		{
+			atlasX = 0;
+			atlasY = maxY;
+		}
+
+		SCharData glyphData;
+		glyphData.myChar = index;
+		glyphData.myHeight = height;
+		glyphData.myWidth = width;
+		glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
+		glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
+		glyphData.myAdvanceX = slot->metrics.width / 64.f;
+		glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / 64.f);
+		glyphData.myBearingY = (slot->metrics.horiBearingY - slot->metrics.height) / 64.f;
+
+		//Kerning is needed and being able to render text quads through other text quads.
+		//Face holds the ascender. Look at that. I believe that can solve my issues.
+		if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
+		{
+			FONT_LOG("Tried to set a UV coord to above 1 at glyph : %c , index %d", index, index);
+			FONT_LOG("TopLeftUV X: %f", glyphData.myTopLeftUV.x);
+			FONT_LOG("TopLeftUV Y: %f", glyphData.myTopLeftUV.y);
+			FONT_LOG("BottomRightUV X: %f", glyphData.myBottomRightUV.x);
+			FONT_LOG("BottomRightUV Y: %f", glyphData.myBottomRightUV.y);
+			//	DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
+		}
+
+		for (int x = 0; x < width; x++)
+		{
+			for (int y = 0; y < height; y++)
+			{
+				if (x < 0 || y < 0)
+				{
+					continue;
+				}
+				int& saved = aFontData->myAtlas[(atlasY + y) * int(atlasWidth) + (atlasX + x)];
+				saved = 0;
+				saved |= bitmap.buffer[y * bitmap.width + x];
+				saved = CL::Color32Reverse(saved);
+
+				if (y + (atlasY + 8) > maxY)
+				{
+					maxY = y + (atlasY + 8);
+				}
+
+			}
+		}
+		atlasX = atlasX + width + 2;
+		aFontData->myCharData[index] = glyphData;
+
+
+#ifdef SAVE
+		std::stringstream ss;
+		D3DX11_IMAGE_FILE_FORMAT format;
+#ifdef SAVE_DDS
+		ss << "Glyphs/Glyph_" << i << ".dds";
+		format = D3DX11_IFF_DDS;
+#endif
+#ifdef SAVE_PNG
+		ss << "Glyphs/Glyph_" << i << ".png";
+		format = D3DX11_IFF_PNG;
+#endif
+		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
+		texture->Release();
+#endif
 	}
 
 	void CFontManager::LoadOutline(FT_FaceRec_* aFace, int aGlyphIndex)

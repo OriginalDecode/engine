@@ -41,9 +41,10 @@ namespace Snowblind
 		myTexturePath = aTexturePath;
 		mySize = aSize;
 		myPosition = aPosition;
-		myTexture = CTextureContainer::GetInstance()->GetTexture(myTexturePath);
+		myTexture = CTextureContainer::GetInstance()->GetTexture(myTexturePath)->GetShaderView();
 		myEffect = CEffectContainer::GetInstance()->GetEffect("Data/Shaders/Sprite.fx");
 		myEffect->SetAlbedo(myTexture);
+
 		myVertexFormat.Init(2);
 		myVertexFormat.Add(VertexLayoutPosUV[0]);
 		myVertexFormat.Add(VertexLayoutPosUV[1]);
@@ -107,7 +108,7 @@ namespace Snowblind
 		mySize = aSize;
 		myPosition = aPosition;
 		myEffect = CEffectContainer::GetInstance()->GetEffect("Data/Shaders/Sprite.fx");
-
+		myTexture = aShaderResource;
 		myEffect->SetAlbedo(aShaderResource);
 
 		myVertexFormat.Init(2);
@@ -170,6 +171,8 @@ namespace Snowblind
 	{
 		if (!myEffect)
 			return;
+		myEffect->SetAlbedo(myTexture);
+
 		ID3D11DeviceContext& context = *CEngine::GetDirectX()->GetContext();
 		context.IASetInputLayout(myVertexLayout);
 		context.IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);

@@ -33,7 +33,7 @@ namespace Snowblind
 		void ConvertToNormalSpace();
 		const char* myTexturePath;
 		SWindowSize myWindowSize;
-		CTexture* myTexture;
+		ID3D11ShaderResourceView* myTexture;
 		CCamera* myCamera;
 		CEffect* myEffect;
 

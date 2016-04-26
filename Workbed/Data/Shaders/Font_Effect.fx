@@ -66,12 +66,6 @@ BlendState AlphaBlend
 	RenderTargetWriteMask[0] = 0x0F;
 };
 
-//RasterizerState RS
-//{
-//	CullMode = NONE;
-//};
-
-
 technique11 Render
 {
 	pass P0

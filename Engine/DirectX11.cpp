@@ -24,6 +24,8 @@ namespace Snowblind
 
 		CreateAdapterList();
 		CreateDeviceAndSwapchain();
+		CreateDisabledStencilStateSetup();
+		CreateEnabledStencilStateSetup();
 		CreateDepthBuffer();
 		CreateBackBuffer();
 		CreateViewport();

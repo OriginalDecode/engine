@@ -21,6 +21,7 @@ namespace Snowblind
 		mySprite->Initiate(aTexturePath, aSize, aPosition);
 		myHotspot.x = 0;
 		myHotspot.y = 0;
+		
 	}
 
 	void CSprite::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
@@ -31,6 +32,7 @@ namespace Snowblind
 
 	void CSprite::Render(CCamera* aCamera)
 	{
+		mySprite->GetEffect()->SetScale({ 1, 1 });
 		mySprite->GetEffect()->SetPosition(myPosition);
 		mySprite->GetEffect()->SetMatrices(myOrientation, aCamera->GetOrientation(), aCamera->GetOrthogonalMatrix());
 		mySprite->Render();

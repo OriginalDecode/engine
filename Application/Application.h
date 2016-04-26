@@ -25,6 +25,7 @@ namespace Snowblind
 	class CSprite;
 	class CText;
 	class CEngine;
+	class CConsole;
 };
 
 class CApplication
@@ -66,6 +67,7 @@ private:
 	Snowblind::CScene* my2DScene;
 
 	Snowblind::CEngine* myEngine;
+	Snowblind::CConsole* myConsole;
 
 };
 

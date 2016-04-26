@@ -51,7 +51,7 @@ float4 PS(PS_INPUT input) : SV_Target
 
 BlendState AlphaBlend
 {
-	BlendEnable[0] = TRUE;
+	BlendEnable[0] = FALSE;
 	SrcBlend = SRC_ALPHA;
 	DestBlend = INV_SRC_ALPHA;
 	BlendOp = ADD;

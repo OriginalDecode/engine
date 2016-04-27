@@ -108,7 +108,7 @@ namespace Snowblind
 			mark = false;
 		}
 
-		if (myMarkedText != "" && myInputWrapper->KeyClick(DIK_DELETE))
+		if (myMarkedText != "" && (myInputWrapper->KeyClick(DIK_DELETE) || myInputWrapper->KeyClick(DIK_BACKSPACE)))
 		{
 			myInput = "";
 			myMarkedText = "";

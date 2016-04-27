@@ -38,7 +38,8 @@ namespace Snowblind
 
 		myInputText = new CText("Data/Font/OpenSans-Bold.ttf", 16, myCamera);
 		myInputText->SetPosition(myBottomLeftPosition);
-
+		myTimeManager = new CU::TimeManager();
+		myDownTime = 0.f;
 	}
 
 	void CConsole::Render()
@@ -63,6 +64,8 @@ namespace Snowblind
 	{
 		if (myIsActive)
 		{
+			myTimeManager->Update();
+			myDeltaTime = myTimeManager->GetDeltaTime();
 			ReadInput();
 			if (myInput != "")
 				myInputText->SetText(myInput);
@@ -111,6 +114,36 @@ namespace Snowblind
 			myMarkedText = "";
 			myInputText->SetText(" ");
 			mark = false;
+		}
+
+
+
+		if (myInputWrapper->KeyDown(DIK_BACKSPACE))
+		{
+
+			myDownTime += myDeltaTime;
+			if (myDownTime > 0.3f)
+			{
+				myEraseTime -= myDeltaTime;
+				if (myEraseTime < 0.f)
+				{
+					if (myInput != "")
+					{
+						myInput.erase(myInput.end() - 1, myInput.end());
+					}
+					myEraseTime = 0.01f;
+				}
+				
+			}
+			if (myInput.size() <= 0)
+			{
+				myInputText->SetText(" ");
+			}
+		}
+
+		if (myInputWrapper->KeyUp(DIK_BACKSPACE))
+		{
+			myDownTime = 0.f;
 		}
 
 		if (myInputWrapper->KeyClick(DIK_BACKSPACE))
@@ -195,7 +228,7 @@ namespace Snowblind
 
 			if (myInput != "")
 			{
-				if (myInputWrapper->KeyClick(DIK_RETURN))
+				if (myInputWrapper->KeyClick(DIK_RETURN) || myInputWrapper->KeyClick(DIK_NUMPADENTER))
 				{
 					myStrings.Add(myInput);
 					myInput = "";

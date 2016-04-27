@@ -6,6 +6,7 @@ namespace CommonUtilities
 	{
 		class InputWrapper;
 	}
+	class TimeManager;
 }
 
 namespace Snowblind
@@ -29,7 +30,7 @@ namespace Snowblind
 	private:
 		CU::GrowingArray<std::string> myStrings;
 		CU::Input::InputWrapper* myInputWrapper;
-
+		CU::TimeManager* myTimeManager;
 		CCamera* myCamera;
 		CSprite* mySprite;
 		CText* myText;
@@ -42,9 +43,11 @@ namespace Snowblind
 		std::string myMarkedText;
 		std::string myCopiedText;
 
-
+		
 		bool myIsActive;
-
+		float myDeltaTime;
+		float myDownTime;
+		float myEraseTime;
 		void ReadInput();
 	};
 

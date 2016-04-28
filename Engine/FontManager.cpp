@@ -190,7 +190,7 @@ namespace Snowblind
 		glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
 		glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
 		glyphData.myAdvanceX = slot->metrics.width / 64.f;
-		glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / 64.f);
+		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f));
 		glyphData.myBearingY = (slot->metrics.horiBearingY - slot->metrics.height) / 64.f;
 
 		//Kerning is needed and being able to render text quads through other text quads.

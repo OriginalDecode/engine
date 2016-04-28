@@ -69,7 +69,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	mySprite = new Snowblind::CSprite();
 	mySprite->Initiate(myText->GetAtlas(), { 256, 256 }, { 0.f, 0.f });
-	mySprite->SetPosition({ 128, 128 });
+	mySprite->SetPosition({ 256, 256 });
 	my2DScene->AddToScene(mySprite);
 
 

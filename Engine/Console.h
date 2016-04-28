@@ -33,6 +33,7 @@ namespace Snowblind
 		CU::TimeManager* myTimeManager;
 		CCamera* myCamera;
 		CSprite* mySprite;
+
 		CText* myText;
 		CText* myInputText;
 

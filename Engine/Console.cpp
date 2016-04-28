@@ -4,6 +4,7 @@
 #include "TextureContainer.h"
 #include "Engine.h"
 #include "InputWrapper.h"
+#include "EngineDefines.h"
 namespace Snowblind
 {
 	CConsole::CConsole()
@@ -14,8 +15,10 @@ namespace Snowblind
 
 	CConsole::~CConsole()
 	{
-		delete myText;
-		myText = nullptr;
+		SAFE_DELETE(myText);
+		SAFE_DELETE(myInputText);
+		SAFE_DELETE(mySprite);
+		SAFE_DELETE(myTimeManager);
 	}
 
 	void CConsole::Initiate(CCamera* aCamera)
@@ -25,11 +28,13 @@ namespace Snowblind
 
 		myInputWrapper = CU::Input::InputWrapper::GetInstance();
 
-		myBottomLeftPosition = { (Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, (Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 2.f) - 24 };
+		myBottomLeftPosition = { (Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, (Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 2.f) - 24.f };
 		myTopLeftPosition = { (Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, 0.f };
 
 		mySprite = new CSprite();
-		mySprite->Initiate("Data/Textures/colors.dds", { Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f, Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 2.f }, { 0, 0 });
+		mySprite->Initiate("Data/Textures/consoleBG.dds", { Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f, 
+															Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 2.f },
+															{ 0, 0 });
 		mySprite->SetHotspot({ -Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 4.f, Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 4.f });
 		mySprite->SetPosition({ CEngine::GetInstance()->GetWindowSize().myWidth, 0 });
 
@@ -133,7 +138,7 @@ namespace Snowblind
 					}
 					myEraseTime = 0.01f;
 				}
-				
+
 			}
 			if (myInput.size() <= 0)
 			{
@@ -208,7 +213,7 @@ namespace Snowblind
 			myInput += myInputWrapper->KeyClick(DIK_NUMPAD6) ? shift ? "6" : "6" : "";
 			myInput += myInputWrapper->KeyClick(DIK_NUMPAD7) ? shift ? "7" : "7" : "";
 			myInput += myInputWrapper->KeyClick(DIK_NUMPAD8) ? shift ? "8" : "8" : "";
-			myInput += myInputWrapper->KeyClick(DIK_NUMPAD9) ? shift ? "9-" : "9" : "";
+			myInput += myInputWrapper->KeyClick(DIK_NUMPAD9) ? shift ? "9" : "9" : "";
 
 			myInput += myInputWrapper->KeyClick(DIK_NUMPADPLUS) ? shift ? "+" : "+" : "";
 			myInput += myInputWrapper->KeyClick(DIK_NUMPADMINUS) ? shift ? "-" : "-" : "";
@@ -231,6 +236,12 @@ namespace Snowblind
 				if (myInputWrapper->KeyClick(DIK_RETURN) || myInputWrapper->KeyClick(DIK_NUMPADENTER))
 				{
 					myStrings.Add(myInput);
+
+					if (myInput == "Clear")
+					{
+						myStrings.RemoveAll();
+					}
+
 					myInput = "";
 					myInputText->SetText(" ");
 				}

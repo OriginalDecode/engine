@@ -216,6 +216,10 @@ namespace Snowblind
 
 			if (myText[i] == '#')
 			{
+				if (myText.size() - 1 == i)
+				{
+					break;
+				}
 				std::string color;
 				int skip = i;
 				bool hasBreaked = false;

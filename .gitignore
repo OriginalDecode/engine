@@ -212,3 +212,8 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+*.db
+/texture.vs
+/texture.ps
+/Workbed/Snowblind_Debug.exe
+/lib

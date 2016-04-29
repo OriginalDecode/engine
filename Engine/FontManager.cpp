@@ -74,6 +74,8 @@ namespace Snowblind
 		else
 		{
 			fontData = myFontData[key.str()];
+			FONT_LOG("Font Data already found, creating Font Object with existing font data! %s",key.str().c_str());
+			return new CFont(fontData);
 		}
 
 		fontData->myAtlas = new int[atlasSize * atlasSize];
@@ -228,7 +230,7 @@ namespace Snowblind
 		atlasX = atlasX + width + 2;
 		aFontData->myCharData[index] = glyphData;
 
-
+		//Bryt ut till en function i utilities eller texture?
 #ifdef SAVE
 		std::stringstream ss;
 		D3DX11_IMAGE_FILE_FORMAT format;

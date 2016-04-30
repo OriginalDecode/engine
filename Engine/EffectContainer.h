@@ -19,6 +19,5 @@ namespace Snowblind
 
 		CEffect* LoadEffect(const std::string& aFileName);
 		std::unordered_map<std::string, CEffect*>myEffects;
-
 	};
 };

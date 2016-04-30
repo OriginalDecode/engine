@@ -1,20 +1,14 @@
 #include "stdafx.h"
 #include "FontManager.h"
-#include <DL_Debug.h>
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include FT_BITMAP_H
 #include FT_STROKER_H
 
-#include <D3DX11.h>
-#include <D3D11.h>
-#include "DirectX11.h"
-#include "Engine.h"
-#include "Texture.h"
 #include <Utilities.h>
 #include "EngineDefines.h"
-#include <Math/Vector/Vector.h>
 #include "Font.h"
 
 //#define SAVE

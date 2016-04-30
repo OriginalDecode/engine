@@ -34,6 +34,15 @@ namespace Snowblind
 		SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
+	CSurface::CSurface(unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
+	{
+		SetVertexCount(aVertexCount);
+		SetVertexStart(aStartVertex);
+		SetIndexCount(anIndexCount);
+		SetIndexStart(aStartIndex);
+		SetPrimology(aPrimology);
+	}
+
 	CSurface::~CSurface()
 	{
 		myShaderVariables.RemoveAll();
@@ -53,6 +62,10 @@ namespace Snowblind
 
 	void CSurface::SetTexture(const std::string& aResourceName, const std::string& aFilePath)
 	{
+		if (aResourceName == "AOTexture")
+		{
+			return;
+		}
 		myFileNames.Add(aFilePath);
 		myResourceNames.Add(aResourceName);
 

@@ -1,10 +1,8 @@
 #include "stdafx.h"
 #include "Camera.h"
-#include <Windows.h>
-#include <xnamath.h>
 namespace Snowblind
 {
-	CCamera::CCamera(float aWidth, float aHeight, const Vector3f& aPosition)
+	CCamera::CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition)
 	{
 		XMMATRIX projection;
 		projection = XMMatrixPerspectiveFovLH(XM_PI*0.3f, aWidth / FLOAT(aHeight), 0.1f, 100.f);
@@ -30,12 +28,12 @@ namespace Snowblind
 	{
 	}
 
-	void CCamera::SetPosition(const Vector3f& aPosition)
+	void CCamera::SetPosition(const CU::Vector3f& aPosition)
 	{
 		myOrientation.SetPosition(aPosition);
 	}
 
-	Matrix44f& CCamera::GetOrthogonalMatrix()
+	CU::Matrix44f& CCamera::GetOrthogonalMatrix()
 	{
 		return myOrthogonalMatrix;
 	}

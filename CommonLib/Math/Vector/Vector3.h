@@ -1,8 +1,8 @@
 #pragma once
 #include "Vector3decl.h"
-typedef CU::Math::Vector3<float> Vector3f;
 namespace CommonUtilities
 {
+	typedef Math::Vector3<float> Vector3f;
 	namespace Math
 	{
 		template<typename T>

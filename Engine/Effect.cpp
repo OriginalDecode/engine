@@ -1,15 +1,4 @@
 #include "stdafx.h"
-#include "Effect.h"
-
-#include "Engine.h"
-#include "DirectX11.h"
-
-#include <D3DX11.h>
-#include <d3dx11effect.h>
-#include <d3d10effect.h>
-#include <DL_Debug.h>
-#include "Texture.h"
-#include "EngineDefines.h"
 
 namespace Snowblind
 {
@@ -38,7 +27,6 @@ namespace Snowblind
 
 		hr = D3DX11CompileFromFile(aFile.c_str(), 0, 0, 0, "fx_5_0", shaderFlag,
 			0, 0, &compiledShader, &compilationMessage, 0);
-
 
 		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! File not found!");
 
@@ -100,9 +88,9 @@ namespace Snowblind
 
 	}
 
-	void CEffect::SetMatrices(Matrix44f& aToWorld, Matrix44f& aToView, Matrix44f& aProjection)
+	void CEffect::SetMatrices(CU::Math::Matrix44<float>& aToWorld, CU::Math::Matrix44<float>& aToView, CU::Math::Matrix44<float>& aProjection)
 	{
-		Matrix44f temp = aToWorld;
+		CU::Math::Matrix44<float> temp = aToWorld;
 
 		HRESULT hr = myWorldMatrix->SetMatrix(static_cast<float*>(&temp.myMatrix[0]));
 		DL_ASSERT_EXP(hr == S_OK, "Failed to set world matrix!");

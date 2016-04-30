@@ -1,8 +1,8 @@
 #pragma once
 #include "Matrix44Decl.h"
-typedef CU::Math::Matrix44<float> Matrix44f;
 namespace CommonUtilities
 {
+	typedef Math::Matrix44<float> Matrix44f;
 	namespace Math
 	{
 #pragma region Constructors

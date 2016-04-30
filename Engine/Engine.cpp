@@ -1,15 +1,4 @@
 #include "stdafx.h"
-#include "Engine.h"
-#include "DirectX11.h"
-#include <Windows.h>
-#include "EngineDefines.h"
-
-#include <sstream>
-#include <assert.h>
-#include <TimeManager.h>
-#include <InputWrapper.h>
-#include "FontManager.h"
-#include <thread>
 
 namespace Snowblind
 {
@@ -24,11 +13,6 @@ namespace Snowblind
 		myAPI = new CDirectX11(myHWND, aWindowWidth, aWindowHeight);
 
 		myTimeManager = new CU::TimeManager();
-
-		std::stringstream windowText;
-		windowText << "API : " << myAPI->GetAPIName() << " | " << "Adapter : " << myAPI->GetActiveAdapterName();
-		SetWindowText(myHWND, windowText.str().c_str());
-
 
 		myFontManager = new CFontManager();
 		myFontManager->Initiate();
@@ -46,13 +30,13 @@ namespace Snowblind
 
 	void CEngine::Create(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc)
 	{
-		assert(myInstance == nullptr && "Instance already created!");
+		DL_ASSERT_EXP(myInstance == nullptr, "Instance already created!");
 		myInstance = new CEngine(aWindowWidth, aWindowHeight, anInstance, aWndProc);
 	}
 
 	void CEngine::Destroy()
 	{
-		assert(myInstance != nullptr && "Can't destroy the instance before it's created. Did you call Destroy twice?");
+		DL_ASSERT_EXP(myInstance != nullptr,"Can't destroy the instance before it's created. Did you call Destroy twice?");
 		SAFE_DELETE(myInstance);
 	}
 

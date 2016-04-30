@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
-#include "../CommonLib/Math/Matrix/Matrix44.h"
-#include "../DL_Debug/DL_Debug.h"
+#include <DL_Debug.h>
+#include <Math/Matrix/Matrix44.h>
 
 struct ID3DX11Effect;
 struct ID3DX11EffectTechnique;
@@ -28,7 +28,7 @@ namespace Snowblind
 
 		void SetAlbedo(CTexture* aTexturePtr);
 		void SetAlbedo(ID3D11ShaderResourceView* aTexturePtr);
-		void SetMatrices(Matrix44f& aToWorld, Matrix44f& aToView, Matrix44f& aProjection);
+		void SetMatrices(CU::Math::Matrix44<float>& aToWorld, CU::Math::Matrix44<float>& aToView, CU::Math::Matrix44<float>& aProjection);
 		void SetPosition(const CU::Math::Vector2<float>& aPosition);
 		void SetScale(const CU::Math::Vector2<float>& aPosition);
 

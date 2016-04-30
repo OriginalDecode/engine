@@ -1,6 +1,5 @@
 #pragma once
 
-#include <unordered_map>
 namespace Snowblind
 {
 	class CTexture;

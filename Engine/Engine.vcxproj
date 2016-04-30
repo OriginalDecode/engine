@@ -69,14 +69,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)DirectX11\Include\;$(SolutionDir)DirectX11\Effects11\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)DirectX11\Include\;$(SolutionDir)DirectX11\Effects11\;$(SolutionDir)Include\fbx\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)DirectX11\Lib\x86\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)DirectX11\Include\;$(SolutionDir)DirectX11\Effects11\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)DirectX11\Include\;$(SolutionDir)DirectX11\Effects11\;$(SolutionDir)Include\fbx\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)DirectX11\Lib\x86\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
@@ -107,8 +107,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype_$(Configuration).lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -143,8 +143,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype_$(Configuration).lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -169,15 +169,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationUtility.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Common.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="DirectX11.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectContainer.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineDefines.h" />
+    <ClInclude Include="FBXFactory.h" />
+    <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontManager.h" />
+    <ClInclude Include="GeometryUtility.h" />
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="Model.h" />
@@ -195,14 +200,19 @@
     <ClInclude Include="VertexWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationUtility.cxx" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Common.cxx" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="DirectX11.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectContainer.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="FBXFactory.cpp" />
+    <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontManager.cpp" />
+    <ClCompile Include="GeometryUtility.cxx" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="RectangleBinPack.cpp" />

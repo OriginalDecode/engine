@@ -53,7 +53,7 @@ namespace Snowblind
 	{
 		for (int i = 0; i < myInstances.Size(); i++)
 		{
-			myInstances[i]->Update(((90.f / 180.f)*float(3.14f)) * aDeltaTime);
+			myInstances[i]->Update(aDeltaTime);
 		}
 	}
 

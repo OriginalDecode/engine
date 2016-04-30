@@ -137,6 +137,9 @@ namespace DL_Debug
 		if (aFilter == "Algorithm" && myDebugLogs[eDEBUGLOG::Font] == FALSE)
 			return;
 
+		if (aFilter == "Model" && myDebugLogs[eDEBUGLOG::Model] == FALSE)
+			return;
+
 		myOutputFile
 			<< AddTime() << "[" << aFilter << "]" << " : " << aString << "\n";
 
@@ -166,6 +169,9 @@ namespace DL_Debug
 		case eDEBUGLOG::Font:
 			myDebugLogs[eDEBUGLOG::Font] = FALSE;
 			break;
+		case eDEBUGLOG::Model:
+			myDebugLogs[eDEBUGLOG::Model] = FALSE;
+			break;
 		}
 	}
 
@@ -190,6 +196,9 @@ namespace DL_Debug
 			break;
 		case eDEBUGLOG::Font:
 			myDebugLogs[eDEBUGLOG::Font] = TRUE;
+			break;
+		case eDEBUGLOG::Model:
+			myDebugLogs[eDEBUGLOG::Model] = TRUE;
 			break;
 		}
 		myActiveLogCount++;

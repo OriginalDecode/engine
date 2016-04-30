@@ -1,13 +1,7 @@
 #include "stdafx.h"
 #include "Font.h"
 #include "FontManager.h"
-#include <d3dx11effect.h>
-#include "EffectContainer.h"
-#include "Effect.h"
-#include <d3d11.h>
-#include "DirectX11.h"
-#include "Engine.h"
-#include "EngineDefines.h"
+
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
 

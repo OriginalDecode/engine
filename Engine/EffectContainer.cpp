@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "EffectContainer.h"
-#include "EngineDefines.h"
-#include "Effect.h"
 namespace Snowblind
 {
 	CEffectContainer* CEffectContainer::myInstance = nullptr;

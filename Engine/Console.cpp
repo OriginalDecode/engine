@@ -9,9 +9,7 @@ namespace Snowblind
 {
 	CConsole::CConsole()
 	{
-
 	}
-
 
 	CConsole::~CConsole()
 	{
@@ -49,19 +47,22 @@ namespace Snowblind
 
 	void CConsole::Render()
 	{
-		if (myIsActive)
+		if (this)
 		{
-			CEngine::GetDirectX()->DisableZBuffer();
-			mySprite->Render(myCamera);
-
-			for (int i = 0; i < myStrings.Size(); i++)
+			if (myIsActive)
 			{
-				myText->SetText(myStrings[i]);
-				myText->SetPosition({ myTopLeftPosition.x,myTopLeftPosition.y + (i * 18) });
-				myText->Render();
+				CEngine::GetDirectX()->DisableZBuffer();
+				mySprite->Render(myCamera);
+
+				for (int i = 0; i < myStrings.Size(); i++)
+				{
+					myText->SetText(myStrings[i]);
+					myText->SetPosition({ myTopLeftPosition.x,myTopLeftPosition.y + (i * 18) });
+					myText->Render();
+				}
+				myInputText->Render();
+				CEngine::GetDirectX()->EnableZBuffer();
 			}
-			myInputText->Render();
-			CEngine::GetDirectX()->EnableZBuffer();
 		}
 	}
 

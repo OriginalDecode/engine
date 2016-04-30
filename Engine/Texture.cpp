@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "Texture.h"
-#include "DirectX11.h"
 #include <D3DX11.h>
-#include "Engine.h"
-#include <DL_Debug.h>
 
 namespace Snowblind
 {
@@ -13,7 +10,10 @@ namespace Snowblind
 
 	CTexture::~CTexture()
 	{
-		myShaderResource->Release();
+		if (myShaderResource != nullptr)
+		{
+			myShaderResource->Release();
+		}
 		myShaderResource = nullptr;
 	}
 

@@ -46,6 +46,12 @@
     <Filter Include="Text">
       <UniqueIdentifier>{201cd6e2-3c2f-4ff9-9fea-47e13fd4dcb9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utilities\Console">
+      <UniqueIdentifier>{3a1f7c40-925b-4af0-aaaf-616352a08e35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FBX">
+      <UniqueIdentifier>{7e37d80a-6fe7-4ce0-9b74-f5c0a319b0e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -117,7 +123,24 @@
     <ClInclude Include="Text.h">
       <Filter>Text</Filter>
     </ClInclude>
-    <ClInclude Include="Console.h" />
+    <ClInclude Include="Console.h">
+      <Filter>Utilities\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="FBXFactory.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxLoader.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryUtility.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationUtility.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -174,6 +197,23 @@
     <ClCompile Include="Text.cpp">
       <Filter>Text</Filter>
     </ClCompile>
-    <ClCompile Include="Console.cpp" />
+    <ClCompile Include="Console.cpp">
+      <Filter>Utilities\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.cxx">
+      <Filter>FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="FBXFactory.cpp">
+      <Filter>FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxLoader.cpp">
+      <Filter>FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryUtility.cxx">
+      <Filter>FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationUtility.cxx">
+      <Filter>FBX</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "TextureContainer.h"
-#include "EngineDefines.h"
-#include "Texture.h"
 
 namespace Snowblind
 {

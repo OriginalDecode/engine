@@ -14,6 +14,8 @@ namespace Snowblind
 		CSurface(CEffect* anEffect);
 		CSurface(CEffect* anEffect, unsigned int aStartVertex, unsigned int aVertexCount,
 			unsigned int aStartIndex, unsigned int aIndexCount);
+		CSurface(unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology);
+
 		~CSurface();
 
 		void Activate();

@@ -20,6 +20,7 @@ namespace Snowblind
 {
 	CModel::CModel()
 	{
+		myIsNULLObject = true;
 		myAPI = CEngine::GetInstance()->GetAPI();
 		myIsTextured = false;
 	}
@@ -28,10 +29,10 @@ namespace Snowblind
 	{
 		myCamera = nullptr;
 		mySurfaces.DeleteAll();
-		SAFE_DELETE(myVertexData->myVertexData);
-		SAFE_DELETE(myIndexData->myIndexData);
-		SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
-		SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
+		if (myVertexData != nullptr) SAFE_DELETE(myVertexData->myVertexData);
+		if (myIndexData != nullptr)	SAFE_DELETE(myIndexData->myIndexData);
+		if (myVertexBuffer != nullptr) SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
+		if (myIndexBuffer != nullptr) SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 		SAFE_DELETE(myVertexBuffer);
 		SAFE_DELETE(myVertexData);
 		SAFE_DELETE(myIndexBuffer);
@@ -41,6 +42,7 @@ namespace Snowblind
 
 	void CModel::CreateTriangle(const std::string& anEffectPath)
 	{
+		myIsNULLObject = false;
 		myEffect = CEffectContainer::GetInstance()->GetEffect(anEffectPath);
 		myVertexFormat.Init(2);
 		myVertexFormat.Add(VertexLayoutPosCol[0]);
@@ -58,7 +60,6 @@ namespace Snowblind
 		v.myColor = { 0.f, 1.f, 0.f, 1.f };
 		myVertices.Add(v);
 
-		myVertexBuffer = new SVertexBufferWrapper;
 		myVertexData = new SVertexDataWrapper;
 
 		myVertexData->myNrOfVertexes = myVertices.Size();
@@ -73,6 +74,7 @@ namespace Snowblind
 
 	void CModel::CreateCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
 	{
+		myIsNULLObject = false;
 		ENGINE_LOG("Creating Cube");
 		float halfWidth = aWidth *0.5f;
 		float halfDepth = aDepth *0.5f;
@@ -167,9 +169,7 @@ namespace Snowblind
 		indexes.Add(6);
 #pragma endregion
 
-		myVertexBuffer = new SVertexBufferWrapper;
 		myVertexData = new SVertexDataWrapper;
-		myIndexBuffer = new SIndexBufferWrapper;
 		myIndexData = new SVertexIndexWrapper;
 
 		myVertexData->myNrOfVertexes = vertices.Size();
@@ -191,6 +191,7 @@ namespace Snowblind
 
 	void CModel::CreateTexturedCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
 	{
+		myIsNULLObject = false;
 		myIsTextured = true;
 		//float halfWidth = aWidth * 0.5f;
 		//float halfDepth = aDepth * 0.5f;
@@ -214,7 +215,7 @@ namespace Snowblind
 		SVertexTypePosNormUV tempVertex;
 
 		//Top
-		#pragma region Top
+#pragma region Top
 		tempVertex.myPosition = { -1.0f, 1.0f, -1.0f };
 		tempVertex.myNormal = { 0.0f, 1.0f, 0.0f };
 		tempVertex.myUV = { 0.0f, 0.0f };
@@ -236,7 +237,7 @@ namespace Snowblind
 		vertices.Add(tempVertex);
 #pragma endregion
 		//Bottom
-		#pragma region Bottom
+#pragma region Bottom
 		tempVertex.myPosition = { -1.0f, -1.0f, -1.0f };
 		tempVertex.myNormal = { 0.0f, -1.0f, 0.0f };
 		tempVertex.myUV = { 0.0f, 0.0f };
@@ -258,7 +259,7 @@ namespace Snowblind
 		vertices.Add(tempVertex);
 #pragma endregion
 		//Left
-		#pragma region Left
+#pragma region Left
 		tempVertex.myPosition = { -1.0f, -1.0f, 1.0f };
 		tempVertex.myNormal = { -1.0f, 0.0f, 0.0f };
 		tempVertex.myUV = { 0.0f, 0.0f };
@@ -280,7 +281,7 @@ namespace Snowblind
 		vertices.Add(tempVertex);
 #pragma endregion
 		//Right
-		#pragma region Right
+#pragma region Right
 		tempVertex.myPosition = { 1.0f, -1.0f, 1.0f };
 		tempVertex.myNormal = { 1.0f, 0.0f, 0.0f };
 		tempVertex.myUV = { 0.0f, 0.0f };
@@ -302,7 +303,7 @@ namespace Snowblind
 		vertices.Add(tempVertex);
 #pragma endregion
 		//Front
-		#pragma region Front
+#pragma region Front
 		tempVertex.myPosition = { -1.0f, -1.0f, -1.0f };
 		tempVertex.myNormal = { 0.0f, 0.0f, -1.0f };
 		tempVertex.myUV = { 0.0f, 0.0f };
@@ -324,7 +325,7 @@ namespace Snowblind
 		vertices.Add(tempVertex);
 #pragma endregion
 		//Back
-		#pragma region Back
+#pragma region Back
 		tempVertex.myPosition = { -1.0f, -1.0f, 1.0f };
 		tempVertex.myNormal = { 0.0f, 0.0f, 1.0f };
 		tempVertex.myUV = { 0.0f, 0.0f };
@@ -404,9 +405,7 @@ namespace Snowblind
 		indexes.Add(22);
 #pragma endregion
 
-		myVertexBuffer = new SVertexBufferWrapper;
 		myVertexData = new SVertexDataWrapper;
-		myIndexBuffer = new SIndexBufferWrapper;
 		myIndexData = new SVertexIndexWrapper;
 
 		myVertexData->myNrOfVertexes = vertices.Size();
@@ -434,46 +433,71 @@ namespace Snowblind
 		InitIndexBuffer();
 	}
 
+	void CModel::CreateModel()
+	{
+		myIsTextured = true;
+		if (myIsNULLObject == false)
+		{
+			InitVertexBuffer();
+			InitIndexBuffer();
+		}
+
+		for each (CModel* child in myChildren)
+		{
+			child->CreateModel();
+		}
+	}
+
 	void CModel::Render()
 	{
 		if (!myEffect)
 			return;
 
-		ID3D11DeviceContext* context = myAPI->GetContext();
-
-		context->IASetInputLayout(myVertexLayout);
-
-		context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-		context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
-
-		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		D3DX11_TECHNIQUE_DESC techDesc;
-		myEffect->GetTechnique()->GetDesc(&techDesc);
-
-		if (myIsTextured)
+		if (!myIsNULLObject)
 		{
-			/*for (int i = 0; i < mySurfaces.Size(); i++)
-			{*/
+			ID3D11DeviceContext* context = myAPI->GetContext();
 
-			//context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			for (UINT p = 0; p < techDesc.Passes; ++p)
+			context->IASetInputLayout(myVertexLayout);
+
+			context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
+			context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
+
+			context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+			D3DX11_TECHNIQUE_DESC techDesc;
+			myEffect->GetTechnique()->GetDesc(&techDesc);
+
+			if (myIsTextured)
 			{
-				HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-				myAPI->HandleErrors(hr, "Failed to apply pass to context!");
-				context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
+				for (int i = 0; i < mySurfaces.Size(); i++)
+				{
+					mySurfaces[i]->Activate();
+
+					for (UINT p = 0; p < techDesc.Passes; ++p)
+					{
+						/*HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
+						myAPI->HandleErrors(hr, "Failed to apply pass to context!");
+						context->DrawIndexed(myIndexData->myIndexCount, 0, 0);*/
+						HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
+						myAPI->HandleErrors(hr, "Failed to apply pass to context!");
+						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
+					}
+				}
 			}
-			//}
+			else
+			{
+				for (UINT p = 0; p < techDesc.Passes; ++p)
+				{
+					context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+					HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
+					myAPI->HandleErrors(hr, "Failed to apply pass to context!");
+					context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
+				}
+			}
 		}
-		else
+		for each(CModel* child in myChildren)
 		{
-			for (UINT p = 0; p < techDesc.Passes; ++p)
-			{
-				context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-				HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-				myAPI->HandleErrors(hr, "Failed to apply pass to context!");
-				context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
-			}
+			child->Render();
 		}
 	}
 
@@ -494,8 +518,14 @@ namespace Snowblind
 		}
 	}
 
+	void CModel::SetEffect(CEffect* anEffect)
+	{
+		myEffect = anEffect;
+	}
+
 	void CModel::InitVertexBuffer()
 	{
+		myVertexBuffer = new SVertexBufferWrapper();
 		HRESULT hr;
 
 		D3DX11_PASS_DESC passDesc;
@@ -530,6 +560,8 @@ namespace Snowblind
 
 	void CModel::InitIndexBuffer()
 	{
+		myIndexBuffer = new SIndexBufferWrapper;
+
 		D3D11_BUFFER_DESC indexDesc;
 		ZeroMemory(&indexDesc, sizeof(indexDesc));
 		indexDesc.Usage = D3D11_USAGE_IMMUTABLE;
@@ -541,7 +573,7 @@ namespace Snowblind
 
 		D3D11_SUBRESOURCE_DATA indexData;
 		ZeroMemory(&indexData, sizeof(indexData)),
-		indexData.pSysMem = myIndexData->myIndexData;
+			indexData.pSysMem = myIndexData->myIndexData;
 
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
 		myAPI->HandleErrors(hr, "Failed to Create IndexBuffer");
@@ -550,4 +582,10 @@ namespace Snowblind
 		myIndexBuffer->myByteOffset = 0;
 
 	}
+
+	void CModel::AddChild(CModel* aChild)
+	{
+		myChildren.Add(aChild);
+	}
+
 }

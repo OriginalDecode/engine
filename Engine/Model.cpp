@@ -29,10 +29,26 @@ namespace Snowblind
 	{
 		myCamera = nullptr;
 		mySurfaces.DeleteAll();
-		if (myVertexData != nullptr) SAFE_DELETE(myVertexData->myVertexData);
-		if (myIndexData != nullptr)	SAFE_DELETE(myIndexData->myIndexData);
-		if (myVertexBuffer != nullptr) SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
-		if (myIndexBuffer != nullptr) SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
+		myChildren.DeleteAll();
+
+
+		if (myVertexData != NULL)
+		{
+			SAFE_DELETE(myVertexData->myVertexData);
+		}
+		if (myIndexData != NULL)
+		{
+			SAFE_DELETE(myIndexData->myIndexData);
+		}
+		if (myVertexBuffer != NULL)
+		{
+			SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
+		}
+		if (myIndexBuffer != NULL)
+		{
+			SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
+		}
+
 		SAFE_DELETE(myVertexBuffer);
 		SAFE_DELETE(myVertexData);
 		SAFE_DELETE(myIndexBuffer);
@@ -450,6 +466,7 @@ namespace Snowblind
 
 	void CModel::Render()
 	{
+		//Split to several render functions?
 		if (!myEffect)
 			return;
 
@@ -467,30 +484,21 @@ namespace Snowblind
 			D3DX11_TECHNIQUE_DESC techDesc;
 			myEffect->GetTechnique()->GetDesc(&techDesc);
 
-			if (myIsTextured)
+			for (UINT p = 0; p < techDesc.Passes; ++p)
 			{
-				for (int i = 0; i < mySurfaces.Size(); i++)
-				{
-					mySurfaces[i]->Activate();
+				HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
+				myAPI->HandleErrors(hr, "Failed to apply pass to context!");
 
-					for (UINT p = 0; p < techDesc.Passes; ++p)
+				if (mySurfaces.Size() > 0)
+				{
+					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
-						/*HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-						myAPI->HandleErrors(hr, "Failed to apply pass to context!");
-						context->DrawIndexed(myIndexData->myIndexCount, 0, 0);*/
-						HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-						myAPI->HandleErrors(hr, "Failed to apply pass to context!");
+						mySurfaces[i]->Activate();
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
 					}
 				}
-			}
-			else
-			{
-				for (UINT p = 0; p < techDesc.Passes; ++p)
+				else
 				{
-					context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-					HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-					myAPI->HandleErrors(hr, "Failed to apply pass to context!");
 					context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
 				}
 			}

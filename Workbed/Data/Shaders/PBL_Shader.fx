@@ -8,6 +8,14 @@ Texture2D RoughnessTexture;
 Texture2D SubstanceTexture;
 Texture2D AOTexture;
 
+struct DIRECTIONAL_LIGHT
+{
+	float4 Color;
+	float4 Direction;
+};
+
+DIRECTIONAL_LIGHT DirectionalLight[1];
+
 SamplerState sampleLinear
 {
 	Filter = MIN_MAG_MIP_LINEAR;
@@ -40,6 +48,8 @@ PS_INPUT VS(VS_INPUT input)
 	return output;
 }
 
+static const float ambient = 0.42f;
+
 float4 PS(PS_INPUT input) : SV_Target
 {
 	float4 albedo = AlbedoTexture.Sample(sampleLinear, input.UV);
@@ -47,7 +57,19 @@ float4 PS(PS_INPUT input) : SV_Target
 	float4 roughness = RoughnessTexture.Sample(sampleLinear, input.UV);
 	float4 metalness = SubstanceTexture.Sample(sampleLinear, input.UV);
 	
-	return albedo * normal;
+	
+	float4 diffuse = ambient * albedo;
+	
+	//return float4(input.Normal.xyz, 1);
+	float4 finalColor = 0.0f;
+	//return DirectionalLight[0].Direction;
+	for(int i = 0; i < 1; i++)
+	{
+		float lambert = dot(input.Normal, -DirectionalLight[i].Direction);
+		finalColor += saturate(lambert * DirectionalLight[i].Color);
+	}
+	
+	return float4(diffuse + (albedo * finalColor));
 }
 
 technique11 Render

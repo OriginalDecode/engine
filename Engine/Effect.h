@@ -2,6 +2,8 @@
 #include <string>
 #include <DL_Debug.h>
 #include <Math/Matrix/Matrix44.h>
+#include "LightStructs.h"
+#include <DataStructures/StaticArray.h>
 
 struct ID3DX11Effect;
 struct ID3DX11EffectTechnique;
@@ -22,7 +24,6 @@ namespace Snowblind
 
 		void Initiate(const std::string& aFile);
 
-
 		ID3DX11Effect* GetEffect();
 		ID3DX11EffectTechnique* GetTechnique();
 
@@ -32,6 +33,9 @@ namespace Snowblind
 		void SetPosition(const CU::Math::Vector2<float>& aPosition);
 		void SetScale(const CU::Math::Vector2<float>& aPosition);
 
+		void UpdateLight(CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE>& someData);
+		void UpdateLight(CU::StaticArray<SSpotlightData, SPOTLIGHT_SIZE>& someData);
+		void UpdateLight(CU::StaticArray<SPointlightData, POINTLIGHT_SIZE>& someData);
 
 		template <typename T>
 		void Validate(T* anEffectVariable, const std::string& anErrorMessage);
@@ -47,6 +51,11 @@ namespace Snowblind
 		ID3DX11EffectMatrixVariable* myWorldMatrix;
 		ID3DX11EffectShaderResourceVariable* myTexture;
 		ID3DX11EffectVectorVariable* mySpritePos;
+
+		ID3DX11EffectVariable* myDirectionalLightData;
+		ID3DX11EffectVariable* myPointLightData;
+		ID3DX11EffectVariable* mySpotLightData;
+
 	};
 
 	__forceinline ID3DX11Effect* CEffect::GetEffect()

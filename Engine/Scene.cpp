@@ -3,6 +3,7 @@
 #include "Instance.h"
 #include "Sprite.h"
 #include "Text.h"
+#include "DirectionalLight.h"
 namespace Snowblind
 {
 	CScene::CScene()
@@ -17,6 +18,7 @@ namespace Snowblind
 		myInstances.DeleteAll();
 		my2DInstances.DeleteAll();
 		myText.DeleteAll();
+		myDirectionalLights.DeleteAll();
 	}
 
 	void CScene::Initiate(CCamera* aCamera, bool aIs2DScene)
@@ -29,8 +31,10 @@ namespace Snowblind
 	{
 		if (!myIs2DScene)
 		{
+			UpdateLight();
 			for (int i = 0; i < myInstances.Size(); i++)
 			{
+				myInstances[i]->UpdateLight(myDirectionalLightData);
 				myInstances[i]->Render(*myCamera);
 			}
 		}
@@ -70,6 +74,23 @@ namespace Snowblind
 	void CScene::AddToScene(CText* aText)
 	{
 		myText.Add(aText);
+	}
+
+	void CScene::AddLight(CDirectionalLight* aDirectionalLight)
+	{
+		myDirectionalLights.Add(aDirectionalLight);
+	}
+
+	void CScene::UpdateLight()
+	{
+		for(int i = 0; i < myDirectionalLights.Size(); i++)
+		{
+			CDirectionalLight* dirLight = myDirectionalLights[i];
+			dirLight->Update();
+
+			myDirectionalLightData[i].myLightColor = dirLight->GetColor();
+			myDirectionalLightData[i].myLightDirection = dirLight->GetDirection();
+		}
 	}
 
 };

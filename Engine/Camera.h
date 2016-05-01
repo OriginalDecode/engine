@@ -39,9 +39,9 @@ namespace Snowblind
 		void Rotate(eRotation anAxis, float aSpeed);
 	private:
 
-		void MoveForwardAndBack(CU::Math::Vector4<float>& aPosition, float aSpeed);
-		void MoveUpAndDown(CU::Math::Vector4<float>& aPosition, float aSpeed);
-		void MoveLeftAndRight(CU::Math::Vector4<float>& aPosition, float aSpeed);
+		void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);
+		void MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed);
+		void MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed);
 
 		CU::Matrix44f myProjectionMatrix;
 		CU::Matrix44f myOrientation;

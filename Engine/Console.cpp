@@ -5,6 +5,10 @@
 #include "Engine.h"
 #include "InputWrapper.h"
 #include "EngineDefines.h"
+#include "FBXFactory.h"
+#include "Instance.h"
+#include "Model.h"
+#include "Scene.h"
 namespace Snowblind
 {
 	CConsole::CConsole()
@@ -88,6 +92,16 @@ namespace Snowblind
 		myStrings.Add(aMessage);
 	}
 
+	void CConsole::SetWorldScene(CScene* aScene)
+	{
+		myWorldScene = aScene;
+	}
+
+	void CConsole::Set2DScene(CScene* aScene)
+	{
+		my2DScene = aScene;
+	}
+
 	void CConsole::ReadInput()
 	{
 		bool shift = myInputWrapper->KeyDown(DIK_LSHIFT) || myInputWrapper->KeyDown(DIK_RSHIFT);
@@ -121,8 +135,6 @@ namespace Snowblind
 			myInputText->SetText(" ");
 			mark = false;
 		}
-
-
 
 		if (myInputWrapper->KeyDown(DIK_BACKSPACE))
 		{

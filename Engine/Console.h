@@ -14,6 +14,7 @@ namespace Snowblind
 	class CSprite;
 	class CCamera;
 	class CText;
+	class CScene;
 
 	class CConsole
 	{
@@ -27,6 +28,8 @@ namespace Snowblind
 		void ToggleConsole();
 		void PrintToConsole(const std::string& aMessage);
 		bool GetIsActive();
+		void SetWorldScene(CScene* aScene);
+		void Set2DScene(CScene* aScene);
 	private:
 		CU::GrowingArray<std::string> myStrings;
 		CU::Input::InputWrapper* myInputWrapper;
@@ -44,7 +47,10 @@ namespace Snowblind
 		std::string myMarkedText;
 		std::string myCopiedText;
 
-		
+		CScene* myWorldScene;
+		CScene* my2DScene;
+
+
 		bool myIsActive;
 		float myDeltaTime;
 		float myDownTime;

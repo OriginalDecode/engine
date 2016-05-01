@@ -52,6 +52,18 @@
     <Filter Include="FBX">
       <UniqueIdentifier>{7e37d80a-6fe7-4ce0-9b74-f5c0a319b0e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Light">
+      <UniqueIdentifier>{5b555923-93d1-4ca2-ab8e-8f4c6d63f0bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Light\Directional">
+      <UniqueIdentifier>{ce21cad4-b86b-4113-892e-8c857a7059ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Light\Spot">
+      <UniqueIdentifier>{2ec8ce1d-d2ea-4328-93c1-7c141521879d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Light\Point">
+      <UniqueIdentifier>{791e4e65-fbaa-4ed1-ba33-8e600bf6b28c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -141,6 +153,18 @@
     <ClInclude Include="AnimationUtility.h">
       <Filter>FBX</Filter>
     </ClInclude>
+    <ClInclude Include="LightStructs.h">
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Light\Directional</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>Light\Spot</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Light\Point</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -215,5 +239,17 @@
     <ClCompile Include="AnimationUtility.cxx">
       <Filter>FBX</Filter>
     </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Light\Directional</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
+      <Filter>Light\Spot</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Light\Point</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Workbed\Data\Shaders\PBL_Shader.fx" />
   </ItemGroup>
 </Project>

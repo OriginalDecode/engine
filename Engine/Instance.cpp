@@ -35,4 +35,20 @@ namespace Snowblind
 	{
 		myOrientation.SetPosition(aPosition);
 	}
+
+	void CInstance::UpdateLight(CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE>& someData)
+	{
+		myModel->GetEffect()->UpdateLight(someData);
+	}
+
+	void CInstance::UpdateLight(CU::StaticArray<SSpotlightData, SPOTLIGHT_SIZE>& someData)
+	{
+		myModel->GetEffect()->UpdateLight(someData);
+	}
+
+	void CInstance::UpdateLight(CU::StaticArray<SPointlightData, POINTLIGHT_SIZE>& someData)
+	{
+		myModel->GetEffect()->UpdateLight(someData);
+	}
+
 };

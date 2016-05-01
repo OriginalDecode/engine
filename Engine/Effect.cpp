@@ -85,6 +85,16 @@ namespace Snowblind
 		myProjectionMatrix = myEffect->GetVariableByName("Projection")->AsMatrix();
 		Validate(myProjectionMatrix, "Projection Matrix Invalid!");
 
+		myDirectionalLightData = myEffect->GetVariableByName("DirectionalLight");
+		//Validate(myDirectionalLightData);
+
+		myPointLightData = myEffect->GetVariableByName("PointLight");
+		//Validate(myPointLightData);
+
+		mySpotLightData = myEffect->GetVariableByName("SpotLight");
+		//Validate(mySpotLightData);
+
+
 
 	}
 
@@ -117,6 +127,39 @@ namespace Snowblind
 		Validate(mySpritePos, "SpritePosition Invalid!");
 
 		mySpritePos->SetFloatVector(&aPosition.x);
+	}
+
+	void CEffect::UpdateLight(CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE>& someData)
+	{
+		if (myEffect == nullptr)
+			return;
+
+		if (myDirectionalLightData != nullptr)
+		{
+			myDirectionalLightData->SetRawValue(&someData[0], 0, sizeof(SDirectionallightData) * DIRECTIONAL_SIZE);
+		}
+	}
+
+	void CEffect::UpdateLight(CU::StaticArray<SSpotlightData, SPOTLIGHT_SIZE>& someData)
+	{
+		if (myEffect == nullptr)
+			return;
+
+		if (mySpotLightData != nullptr)
+		{
+			mySpotLightData->SetRawValue(&someData[0], 0, sizeof(SSpotlightData) * SPOTLIGHT_SIZE);
+		}
+	}
+
+	void CEffect::UpdateLight(CU::StaticArray<SPointlightData, POINTLIGHT_SIZE>& someData)
+	{
+		if (myEffect == nullptr)
+			return;
+
+		if (myPointLightData != nullptr)
+		{
+			myPointLightData->SetRawValue(&someData[0], 0, sizeof(SPointlightData) * POINTLIGHT_SIZE);
+		}
 	}
 
 	void CEffect::SetAlbedo(CTexture* aTexturePtr)

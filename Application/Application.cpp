@@ -13,6 +13,7 @@
 #include <Console.h>
 #include <TextureContainer.h>
 #include <FBXFactory.h>
+#include <DirectionalLight.h>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 CApplication::CApplication()
@@ -56,7 +57,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	myInstance = new Snowblind::CInstance();
 	myInstance->Initiate(myModel);
-	myInstance->SetPosition({ 0.f, 0.f, 0.f });
+	myInstance->SetPosition({ 5.f, 0.f, 0.f });
 	myWorldScene->AddToScene(myInstance);
 
 	myInstance = new Snowblind::CInstance();
@@ -71,11 +72,6 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myConsole = new Snowblind::CConsole();
 	myConsole->Initiate(my2DCamera);
 
-	Snowblind::CTextureContainer::GetInstance()->GetTexture("Data/Model/pblScene/PBL_mega_col.dds");
-	Snowblind::CTextureContainer::GetInstance()->GetTexture("Data/Model/pblScene/PBL_mega_norm.dds");
-	Snowblind::CTextureContainer::GetInstance()->GetTexture("Data/Model/pblScene/PBL_mega_roughness.dds");
-	Snowblind::CTextureContainer::GetInstance()->GetTexture("Data/Model/pblScene/PBL_mega_substance.dds");
-
 	FBXFactory factory;
 	Snowblind::CModel* newModel = factory.LoadModel("Data/Model/pblScene/pblScene_03.fbx", "Data/Shaders/PBL_Shader.fx");
 	newModel->CreateModel();
@@ -83,6 +79,12 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myInstance->Initiate(newModel);
 	myWorldScene->AddToScene(myInstance);
 
+	Snowblind::CDirectionalLight* light = new Snowblind::CDirectionalLight();
+	light->Initiate({ -1, -1 ,0 }, { 0,0,0 }, { 1.f, 1.f, 0.f, 1.f });
+	myWorldScene->AddLight(light);
+
+
+	//myConsole->SetWorldScene(myWorldScene);
 }
 
 bool CApplication::Update()

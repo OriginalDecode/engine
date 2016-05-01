@@ -82,19 +82,19 @@ namespace Snowblind
 		}
 	}
 
-	void CCamera::MoveForwardAndBack(CU::Math::Vector4<float>& aPosition, float aSpeed)
+	void CCamera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)
 	{
 		CU::Math::Vector4<float> forward = myOrientation.GetForward();
 		aPosition += forward * aSpeed;
 	}
 
-	void CCamera::MoveUpAndDown(CU::Math::Vector4<float>& aPosition, float aSpeed)
+	void CCamera::MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed)
 	{
 		CU::Math::Vector4<float> up = myOrientation.GetUp();
 		aPosition += up * aSpeed;
 	}
 
-	void CCamera::MoveLeftAndRight(CU::Math::Vector4<float>& aPosition, float aSpeed)
+	void CCamera::MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed)
 	{
 		CU::Math::Vector4<float> right = myOrientation.GetRight();
 		aPosition += right * aSpeed;

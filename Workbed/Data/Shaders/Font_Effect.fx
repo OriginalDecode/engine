@@ -72,7 +72,7 @@ technique11 Render
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
-		SetBlendState(AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xFFFFFFFF);
+		//SetBlendState(AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xFFFFFFFF);
 		SetPixelShader(CompileShader(ps_5_0, PS()));
 	
 	}

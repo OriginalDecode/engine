@@ -173,6 +173,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Console.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX11.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectContainer.h" />
@@ -185,9 +186,12 @@
     <ClInclude Include="GeometryUtility.h" />
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
+    <ClInclude Include="LightStructs.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteModel.h" />
     <ClInclude Include="stdafx.h" />
@@ -204,6 +208,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Common.cxx" />
     <ClCompile Include="Console.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectX11.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectContainer.cpp" />
@@ -215,8 +220,10 @@
     <ClCompile Include="GeometryUtility.cxx" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteModel.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -238,6 +245,9 @@
     <ProjectReference Include="..\Input\Input.vcxproj">
       <Project>{bd22ff31-48a5-4061-ab37-17e68e058912}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Workbed\Data\Shaders\PBL_Shader.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

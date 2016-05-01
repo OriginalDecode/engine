@@ -2,6 +2,7 @@
 #include "Vector4decl.h"
 namespace CommonUtilities
 {
+	typedef Math::Vector4<float> Vector4f;
 	namespace Math
 	{
 		template<typename T>
@@ -13,15 +14,14 @@ namespace CommonUtilities
 			myW = anW;
 		};
 
-		//template<typename T>
-		//Vector4<T>::Vector4(const Vector3<T>& aVector, T anW)
-		//{
-		//	myX = aVector.X;
-		//	myY = aVector.Y;
-		//	myZ = aVector.Z;
-		//	myW = anW;
-
-		//}
+		template<typename T>
+		Vector4<T>::Vector4(const Vector3<T>& aVector, T anW)
+		{
+			myX = aVector.X;
+			myY = aVector.Y;
+			myZ = aVector.Z;
+			myW = anW;
+		}
 
 		template<typename T>
 		Vector4<T>::Vector4(const Vector2<T>& aVector, T anZ, T anW)
@@ -254,4 +254,3 @@ namespace CommonUtilities
 	};
 };
 namespace CU = CommonUtilities;
-typedef CU::Math::Vector4<float> Vector4f;

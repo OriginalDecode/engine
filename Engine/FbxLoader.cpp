@@ -723,7 +723,7 @@ bool FillData(ModelData* someData, FbxNode* aNode, AnimationData* aAnimation)
 			// Save the vertex position.
 			lCurrentVertex = lControlPoints[lIndex];
 
-			Vector4f position(static_cast<float>(lCurrentVertex[0]),
+			CU::Vector4f position(static_cast<float>(lCurrentVertex[0]),
 				static_cast<float>(lCurrentVertex[1]),
 				static_cast<float>(lCurrentVertex[2]),
 				1);
@@ -870,7 +870,7 @@ bool FillData(ModelData* someData, FbxNode* aNode, AnimationData* aAnimation)
 				int addedSize = VERTEX_STRIDE;
 				int currentIndex = lVertexCount * stride;
 
-				Vector4f position(static_cast<float>(lCurrentVertex[0]),
+				CU::Vector4f position(static_cast<float>(lCurrentVertex[0]),
 					static_cast<float>(lCurrentVertex[1]),
 					static_cast<float>(lCurrentVertex[2]),
 					1);

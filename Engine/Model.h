@@ -6,7 +6,6 @@
 
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
-
 namespace Snowblind
 {
 	class CDirectX11;

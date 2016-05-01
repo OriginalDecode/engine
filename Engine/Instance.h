@@ -1,5 +1,6 @@
 #pragma once
 #include "../CommonLib/Math/Matrix/Matrix44.h"
+#include "LightStructs.h"
 namespace Snowblind
 {
 	class CModel;
@@ -14,6 +15,9 @@ namespace Snowblind
 		void Render(CCamera& aCamera);
 		void SetPosition(CU::Math::Vector3<float> aPosition);
 
+		void UpdateLight(CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE>& someData);
+		void UpdateLight(CU::StaticArray<SSpotlightData, SPOTLIGHT_SIZE>& someData);
+		void UpdateLight(CU::StaticArray<SPointlightData, POINTLIGHT_SIZE>& someData);
 
 	private:
 

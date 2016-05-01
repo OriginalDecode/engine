@@ -14,6 +14,9 @@
 #include <TextureContainer.h>
 #include <FBXFactory.h>
 #include <DirectionalLight.h>
+#include <PointLight.h>
+#include "../Input/ControllerInput.h"
+
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 CApplication::CApplication()
@@ -25,13 +28,15 @@ CApplication::~CApplication()
 	SAFE_DELETE(my2DScene);
 	SAFE_DELETE(myWorldScene);
 	SAFE_DELETE(myConsole);
+	SAFE_DELETE(myController);
 }
 
 
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
-	myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0.f, 0.f, 25.f));
+
+	myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0.f, 0.f, 0.f), myOrientation);
 	my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0.f, 0.f, 1.f));
 
 	myWorldScene = new Snowblind::CScene();
@@ -79,11 +84,24 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myInstance->Initiate(newModel);
 	myWorldScene->AddToScene(myInstance);
 
-	Snowblind::CDirectionalLight* light = new Snowblind::CDirectionalLight();
-	light->Initiate({ -1, -1 ,0 }, { 0,0,0 }, { 1.f, 1.f, 0.f, 1.f });
+	//Snowblind::CDirectionalLight* light = new Snowblind::CDirectionalLight();
+	//light->Initiate({ -1, -1 ,0 }, { 0,0,0 }, { 1.f, 1.f, 0.f, 1.f });
+	//myWorldScene->AddLight(light);
+
+	Snowblind::CPointLight* light = new Snowblind::CPointLight();
+	light->Initiate({ 0,0,0 }, { 1,0,0,1 }, 10);
+	myWorldScene->AddLight(light);
+
+	light = new Snowblind::CPointLight();
+	light->Initiate({ 5,0,0 }, { 0,1,0,1 }, 10);
+	myWorldScene->AddLight(light);
+
+	light = new Snowblind::CPointLight();
+	light->Initiate({ -5,0,0 }, { 0,0,1,1 }, 10);
 	myWorldScene->AddLight(light);
 
 
+	myController = new CU::ControllerInput(0);
 	//myConsole->SetWorldScene(myWorldScene);
 }
 
@@ -112,7 +130,7 @@ bool CApplication::Update()
 	ss << myEngine->GetFPS();
 	myText->SetText(ss.str());
 
-	 
+
 	myWorldScene->Update(deltaTime);
 	Render();
 	std::stringstream rText;
@@ -133,6 +151,45 @@ void CApplication::Render()
 
 void CApplication::UpdateInput(float aDeltaTime)
 {
+	
+	//myCursorPosition.x += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectX()) * 0.01;
+	//myCursorPosition.y += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectY()) * 0.01;
+
+	if (myController->IsConnected())
+	{
+		if (myController->RightThumbstickX() > 0.5f || myController->RightThumbstickX() < -0.5f)
+		{
+			myCursorPosition.x += myController->RightThumbstickX() * 0.005f;
+		}
+		if (myController->RightThumbstickY() > 0.5f || myController->RightThumbstickY() < -0.5f)
+		{
+			myCursorPosition.y -= myController->RightThumbstickY() * 0.005f;
+		}
+	}
+
+	myCursorPosition.y = fmaxf(fminf(3.1415f / 2.f, myCursorPosition.y), -3.1415f / 2.f);
+
+	myPitch = CU::Quaternion(CU::Vector3f(1.f, 0, 0), myCursorPosition.y);
+	myYaw = CU::Quaternion(CU::Vector3f(0, 1.f, 0), myCursorPosition.x);
+
+	CU::Vector3f axisX(1.f, 0, 0);
+	CU::Vector3f axisY(0, 1.f, 0);
+	CU::Vector3f axisZ(0, 0, 1.f);
+
+	axisX = myYaw * myPitch * axisX;
+	axisY = myYaw * myPitch * axisY;
+	axisZ = myYaw * myPitch * axisZ;
+
+	myOrientation.myMatrix[0] = axisX.x;
+	myOrientation.myMatrix[1] = axisX.y;
+	myOrientation.myMatrix[2] = axisX.z;
+	myOrientation.myMatrix[4] = axisY.x;
+	myOrientation.myMatrix[5] = axisY.y;
+	myOrientation.myMatrix[6] = axisY.z;
+	myOrientation.myMatrix[8] = axisZ.x;
+	myOrientation.myMatrix[9] = axisZ.y;
+	myOrientation.myMatrix[10] = axisZ.z;
+
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(W))
 	{
 		myCamera->Move(Snowblind::eDirection::FORWARD, MOVE_SPEED * aDeltaTime);
@@ -158,29 +215,24 @@ void CApplication::UpdateInput(float aDeltaTime)
 		myCamera->Move(Snowblind::eDirection::LEFT, -MOVE_SPEED * aDeltaTime);
 	}
 
-	if (CU::Input::InputWrapper::GetInstance()->KeyDown(UP_ARROW))
+	if (myController->IsConnected())
 	{
-		myCamera->Rotate(Snowblind::eRotation::X_AXIS, -ROTATION_SPEED * aDeltaTime);
-	}
-	if (CU::Input::InputWrapper::GetInstance()->KeyDown(DOWN_ARROW))
-	{
-		myCamera->Rotate(Snowblind::eRotation::X_AXIS, ROTATION_SPEED * aDeltaTime);
-	}
-	if (CU::Input::InputWrapper::GetInstance()->KeyDown(LEFT_ARROW))
-	{
-		myCamera->Rotate(Snowblind::eRotation::Y_AXIS, -ROTATION_SPEED * aDeltaTime);
-	}
-	if (CU::Input::InputWrapper::GetInstance()->KeyDown(RIGHT_ARROW))
-	{
-		myCamera->Rotate(Snowblind::eRotation::Y_AXIS, ROTATION_SPEED * aDeltaTime);
-	}
-	if (CU::Input::InputWrapper::GetInstance()->KeyDown(Q))
-	{
-		myCamera->Rotate(Snowblind::eRotation::Z_AXIS, ROTATION_SPEED * aDeltaTime);
-	}
-	if (CU::Input::InputWrapper::GetInstance()->KeyDown(E))
-	{
-		myCamera->Rotate(Snowblind::eRotation::Z_AXIS, -ROTATION_SPEED * aDeltaTime);
+		if (myController->LeftThumbstickY() > 0.5f)
+		{
+			myCamera->Move(Snowblind::eDirection::FORWARD, MOVE_SPEED * aDeltaTime);
+		}
+		if (myController->LeftThumbstickY() < -0.5f)
+		{
+			myCamera->Move(Snowblind::eDirection::BACK, -MOVE_SPEED * aDeltaTime);
+		}
+		if (myController->LeftThumbstickX() < -0.5f)
+		{
+			myCamera->Move(Snowblind::eDirection::LEFT, -MOVE_SPEED * aDeltaTime);
+		}
+		if (myController->LeftThumbstickX() > 0.5f)
+		{
+			myCamera->Move(Snowblind::eDirection::RIGHT, MOVE_SPEED * aDeltaTime);
+		}
 	}
 }
 

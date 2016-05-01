@@ -23,7 +23,7 @@ namespace Snowblind
 	{
 		myFont->GetEffect()->SetPosition(myPosition);
 		myFont->GetEffect()->SetScale(myScale);
-		myFont->GetEffect()->SetMatrices(myOrientation, myCamera->GetOrientation(), myCamera->GetOrthogonalMatrix());
+		myFont->GetEffect()->SetMatrices(myOrientation, myCamera->Get2DOrientation(), myCamera->GetOrthogonalMatrix());
 		myFont->Render();
 	}
 

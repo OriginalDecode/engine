@@ -25,6 +25,7 @@
     <ClInclude Include="DataStructures\Stack.h" />
     <ClInclude Include="DataStructures\StaticArray.h" />
     <ClInclude Include="DataStructures\VectorOnStack.h" />
+    <ClInclude Include="FileWatcher.h" />
     <ClInclude Include="JSON\JSONReader.h" />
     <ClInclude Include="Math\Matrix\Matrix.h" />
     <ClInclude Include="Math\Matrix\Matrix33.h" />
@@ -33,6 +34,7 @@
     <ClInclude Include="Math\Matrix\Matrix44Decl.h" />
     <ClInclude Include="Math\Plane\Plane.h" />
     <ClInclude Include="Math\Plane\PlaneVolume.h" />
+    <ClInclude Include="Math\Quaternion\Quaternion.h" />
     <ClInclude Include="Math\Vector\Vector.h" />
     <ClInclude Include="Math\Vector\Vector2.h" />
     <ClInclude Include="Math\Vector\Vector2decl.h" />
@@ -44,7 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp" />
+    <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="JSON\JSONReader.cpp" />
+    <ClCompile Include="Math\Quaternion\Quaternion.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

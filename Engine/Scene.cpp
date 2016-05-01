@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include "Text.h"
 #include "DirectionalLight.h"
+#include "PointLight.h"
 namespace Snowblind
 {
 	CScene::CScene()
@@ -19,6 +20,7 @@ namespace Snowblind
 		my2DInstances.DeleteAll();
 		myText.DeleteAll();
 		myDirectionalLights.DeleteAll();
+		myPointLights.DeleteAll();
 	}
 
 	void CScene::Initiate(CCamera* aCamera, bool aIs2DScene)
@@ -35,6 +37,7 @@ namespace Snowblind
 			for (int i = 0; i < myInstances.Size(); i++)
 			{
 				myInstances[i]->UpdateLight(myDirectionalLightData);
+				myInstances[i]->UpdateLight(myPointLightData);
 				myInstances[i]->Render(*myCamera);
 			}
 		}
@@ -82,25 +85,40 @@ namespace Snowblind
 		myDirectionalLights.Add(aDirectionalLight);
 	}
 
+	void CScene::AddLight(CPointLight* aPointLight)
+	{
+		myPointLights.Add(aPointLight);
+	}
+
 	void CScene::RenderLight()
 	{
-		for(int i = 0; i < myDirectionalLights.Size(); i++)
+		for (int i = 0; i < myDirectionalLights.Size(); i++)
 		{
 			CDirectionalLight* dirLight = myDirectionalLights[i];
-			dirLight->Update();
 
 			myDirectionalLightData[i].myLightColor = dirLight->GetColor();
 			myDirectionalLightData[i].myLightDirection = dirLight->GetDirection();
 		}
+
+		for (int i = 0; i < myPointLights.Size(); i++)
+		{
+			CPointLight* pointLight = myPointLights[i];
+
+			myPointLightData[i].myRange = pointLight->GetRange();
+			myPointLightData[i].myLightColor = pointLight->GetColor();
+			myPointLightData[i].myLightPosition = pointLight->GetPosition();
+		}
+
 	}
 
-		void CScene::UpdateLight(float aDeltaTime)
+	void CScene::UpdateLight(float aDeltaTime)
+	{
+		for (int i = 0; i < myDirectionalLights.Size(); i++)
 		{
-			for (int i = 0; i < myDirectionalLights.Size(); i++)
-			{
-				CDirectionalLight* dirLight = myDirectionalLights[i];
-				dirLight->Rotate(eLightAxis::ZAxis, CL::DegreeToRad(45.f) * aDeltaTime );
-			}
+			CDirectionalLight* dirLight = myDirectionalLights[i];
+			dirLight->Rotate(eLightAxis::ZAxis, CL::DegreeToRad(45.f) * aDeltaTime);
+			dirLight->Update();
 		}
+	}
 
 };

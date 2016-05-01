@@ -23,13 +23,15 @@ namespace Snowblind
 	class CCamera
 	{
 	public:
+		CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition, CU::Matrix44f& aPlayerOrientation);
 		CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition);
-		CCamera(float aWidth, float aHeight);
 		~CCamera();
 
 		void SetPosition(const CU::Vector3f& aPosition);
 		const CU::Vector3f GetPosition() const;
 		CU::Matrix44f& GetOrientation();
+		CU::Matrix44f& Get2DOrientation();
+
 		CU::Matrix44f& GetProjection();
 
 		CU::Matrix44f& GetOrthogonalMatrix();
@@ -43,8 +45,10 @@ namespace Snowblind
 		void MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed);
 		void MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed);
 
+		CU::Matrix44f& myOrientation;
+		CU::Matrix44f my2DOrientation;
+
 		CU::Matrix44f myProjectionMatrix;
-		CU::Matrix44f myOrientation;
 		CU::Matrix44f myOrthogonalMatrix;
 	};
 
@@ -56,6 +60,11 @@ namespace Snowblind
 	inline CU::Matrix44f& CCamera::GetOrientation()
 	{
 		return myOrientation;
+	}
+
+	inline CU::Matrix44f& CCamera::Get2DOrientation()
+	{
+		return my2DOrientation;
 	}
 
 	inline CU::Matrix44f& CCamera::GetProjection()

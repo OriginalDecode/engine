@@ -1,5 +1,7 @@
 #pragma once
 #include "../CommonLib/DataStructures/GrowingArray.h"
+#include "../CommonLib/Math/Quaternion/Quaternion.h"
+#include "../CommonLib/Math/Matrix/Matrix.h"
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -11,6 +13,7 @@ typedef HWND__* HWND;
 namespace CommonUtilities
 {
 	class TimeManager;
+	class ControllerInput;
 }
 
 
@@ -27,6 +30,8 @@ namespace Snowblind
 	class CEngine;
 	class CConsole;
 };
+
+
 
 class CApplication
 {
@@ -67,5 +72,11 @@ private:
 	Snowblind::CEngine* myEngine;
 	Snowblind::CConsole* myConsole;
 
+	CU::Quaternion myPitch;
+	CU::Quaternion myYaw;
+	CU::Matrix44f myOrientation;
+	CU::Math::Vector2<float> myCursorPosition;
+
+	CU::ControllerInput* myController;
 };
 

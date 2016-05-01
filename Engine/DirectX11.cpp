@@ -60,12 +60,14 @@ namespace Snowblind
 		SAFE_RELEASE(myContext);
 		SAFE_RELEASE(myDevice);
 		
-		std::stringstream ss;
-		ss << "Debug is released last. Will report as Live Object! 0x" << myDebug << "\n";
-		OutputDebugString(ss.str().c_str());
-		myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-		SAFE_RELEASE(myDebug);
-
+		if (myDebug != nullptr)
+		{
+			std::stringstream ss;
+			ss << "Debug is released last. Will report as Live Object! 0x" << myDebug << "\n";
+			OutputDebugString(ss.str().c_str());
+			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+			SAFE_RELEASE(myDebug);
+		}
 	}
 
 	void CDirectX11::Present()

@@ -2,7 +2,8 @@
 #include "Camera.h"
 namespace Snowblind
 {
-	CCamera::CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition)
+	CCamera::CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition, CU::Matrix44f& aPlayerOrientation)
+		: myOrientation(aPlayerOrientation)
 	{
 		XMMATRIX projection;
 		projection = XMMatrixPerspectiveFovLH(XM_PI*0.3f, aWidth / FLOAT(aHeight), 0.1f, 100.f);
@@ -10,11 +11,14 @@ namespace Snowblind
 		XMFLOAT4X4 projMiddleHand;
 		XMStoreFloat4x4(&projMiddleHand, projection);
 		myProjectionMatrix.Init(reinterpret_cast<float*>(projMiddleHand.m));
+	}
 
-		myOrientation.myMatrix[3] = aPosition.x;
-		myOrientation.myMatrix[7] = aPosition.y;
-		myOrientation.myMatrix[11] = aPosition.z;
-
+	CCamera::CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition)
+		: myOrientation(CU::Matrix44f())
+	{
+		my2DOrientation.myMatrix[3] = aPosition.x;
+		my2DOrientation.myMatrix[7] = aPosition.y;
+		my2DOrientation.myMatrix[11] = aPosition.z;
 
 		XMMATRIX orthogonal;
 		orthogonal = XMMatrixOrthographicLH(aWidth, aHeight, 0.1f, 100.f);
@@ -30,7 +34,7 @@ namespace Snowblind
 
 	void CCamera::SetPosition(const CU::Vector3f& aPosition)
 	{
-		myOrientation.SetPosition(aPosition);
+		//myOrientation.SetPosition(aPosition);
 	}
 
 	CU::Matrix44f& CCamera::GetOrthogonalMatrix()
@@ -68,18 +72,7 @@ namespace Snowblind
 
 	void CCamera::Rotate(eRotation anAxis, float aSpeed)
 	{
-		switch (anAxis)
-		{
-		case eRotation::X_AXIS:
-			myOrientation = CU::Math::Matrix44<float>::CreateRotateAroundX(aSpeed) * myOrientation;
-			break;
-		case eRotation::Y_AXIS:
-			myOrientation = CU::Math::Matrix44<float>::CreateRotateAroundY(aSpeed) * myOrientation;
-			break;
-		case eRotation::Z_AXIS:
-			myOrientation = CU::Math::Matrix44<float>::CreateRotateAroundZ(aSpeed) * myOrientation;
-			break;
-		}
+
 	}
 
 	void CCamera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)

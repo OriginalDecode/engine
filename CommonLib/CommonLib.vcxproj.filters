@@ -22,6 +22,9 @@
     <Filter Include="Math\Plane">
       <UniqueIdentifier>{af40c95f-de02-4731-a25a-930b4fc60081}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quaternion">
+      <UniqueIdentifier>{29b80938-cd63-422d-a229-15f85eb1585b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataStructures\GrowingArray.h">
@@ -88,6 +91,10 @@
       <Filter>Math\Vector</Filter>
     </ClInclude>
     <ClInclude Include="Utilities.h" />
+    <ClInclude Include="FileWatcher.h" />
+    <ClInclude Include="Math\Quaternion\Quaternion.h">
+      <Filter>Quaternion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp">
@@ -97,5 +104,9 @@
       <Filter>JSON</Filter>
     </ClCompile>
     <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="FileWatcher.cpp" />
+    <ClCompile Include="Math\Quaternion\Quaternion.cpp">
+      <Filter>Quaternion</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

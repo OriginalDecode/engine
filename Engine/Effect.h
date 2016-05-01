@@ -13,6 +13,7 @@ struct ID3DX11EffectShaderResourceVariable;
 struct ID3D11ShaderResourceView;
 struct ID3DX11EffectVectorVariable;
 
+
 namespace Snowblind
 {
 	class CTexture;
@@ -40,7 +41,6 @@ namespace Snowblind
 		template <typename T>
 		void Validate(T* anEffectVariable, const std::string& anErrorMessage);
 	private:
-
 
 		ID3DX11Effect* myEffect;
 

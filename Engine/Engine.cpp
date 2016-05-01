@@ -53,6 +53,9 @@ namespace Snowblind
 
 	void CEngine::Update()
 	{
+#ifdef _DEBUG
+		CEffectContainer::GetInstance()->Update();
+#endif
 		myInstance->myTimeManager->Update();
 	}
 

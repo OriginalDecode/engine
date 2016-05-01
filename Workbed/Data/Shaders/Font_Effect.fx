@@ -32,7 +32,7 @@ PS_INPUT VS(VS_INPUT input)
 	PS_INPUT output = (PS_INPUT)0;
 	
 	output.pos = mul(input.pos, World);
-	output.pos = mul(output.pos, View);
+	output.pos = mul(input.pos, View);
 	output.pos.x *= Scale.x;
 	output.pos.y *= Scale.y;
 	output.pos.x += Position.x;

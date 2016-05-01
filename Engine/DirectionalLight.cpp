@@ -17,7 +17,6 @@ namespace Snowblind
 		myColor = aColor;
 		myOriginalDirection = aDirection;
 		myDirection = aDirection;
-		myOriginalPosition = aPosition;
 		myOrientation.SetPosition(aPosition);
 	}
 
@@ -30,12 +29,6 @@ namespace Snowblind
 	{
 		myDirection = aDirection;
 		myOriginalDirection = myDirection;
-	}
-
-	void CDirectionalLight::SetPosition(const CU::Vector3f& aPosition)
-	{
-		myOrientation.SetPosition(aPosition);
-		myOriginalPosition = myOrientation.GetPosition();
 	}
 
 	void CDirectionalLight::Update()

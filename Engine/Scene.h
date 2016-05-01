@@ -29,7 +29,8 @@ namespace Snowblind
 
 	private:
 
-		void UpdateLight();
+		void RenderLight();
+		void UpdateLight(float aDeltaTime);
 
 		CCamera* myCamera;
 		CU::GrowingArray<CInstance*> myInstances;

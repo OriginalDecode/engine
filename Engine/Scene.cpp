@@ -31,7 +31,7 @@ namespace Snowblind
 	{
 		if (!myIs2DScene)
 		{
-			UpdateLight();
+			RenderLight();
 			for (int i = 0; i < myInstances.Size(); i++)
 			{
 				myInstances[i]->UpdateLight(myDirectionalLightData);
@@ -55,6 +55,7 @@ namespace Snowblind
 
 	void CScene::Update(float aDeltaTime)
 	{
+		UpdateLight(aDeltaTime);
 		for (int i = 0; i < myInstances.Size(); i++)
 		{
 			myInstances[i]->Update(aDeltaTime);
@@ -81,7 +82,7 @@ namespace Snowblind
 		myDirectionalLights.Add(aDirectionalLight);
 	}
 
-	void CScene::UpdateLight()
+	void CScene::RenderLight()
 	{
 		for(int i = 0; i < myDirectionalLights.Size(); i++)
 		{
@@ -92,5 +93,14 @@ namespace Snowblind
 			myDirectionalLightData[i].myLightDirection = dirLight->GetDirection();
 		}
 	}
+
+		void CScene::UpdateLight(float aDeltaTime)
+		{
+			for (int i = 0; i < myDirectionalLights.Size(); i++)
+			{
+				CDirectionalLight* dirLight = myDirectionalLights[i];
+				dirLight->Rotate(eLightAxis::ZAxis, CL::DegreeToRad(45.f) * aDeltaTime );
+			}
+		}
 
 };

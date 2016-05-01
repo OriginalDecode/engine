@@ -1,5 +1,5 @@
 #pragma once
-
+#include "LightStructs.h"
 namespace Snowblind
 {
 	class CDirectionalLight
@@ -23,7 +23,7 @@ namespace Snowblind
 		const CU::Vector3f& GetOriginalPosition();
 
 		void Update();
-
+		void Rotate(const eLightAxis& anAxis, float aRotationOverTime);
 	private:
 
 		CU::Matrix44f myOrientation;

@@ -20,5 +20,10 @@ namespace CL
 		int _color;
 		void Convert(unsigned int aColor);
 		void Convert(unsigned int aRed, unsigned int aGreen, unsigned int aBlue, unsigned int anAlpha);
+
+
 	};
+
+	float RadToDegree(float aRadian);
+	float DegreeToRad(float aDegree);
 }

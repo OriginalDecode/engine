@@ -5,6 +5,15 @@
 #define POINTLIGHT_SIZE 3
 #define DIRECTIONAL_SIZE 1
 
+enum class eLightAxis
+{
+	XAxis,
+	YAxis,
+	ZAxis,
+	NONE,
+};
+
+
 struct SSpotlightData
 {
 	CU::Vector4f myLightColor;

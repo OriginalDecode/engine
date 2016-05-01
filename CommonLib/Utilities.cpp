@@ -81,4 +81,14 @@ namespace CL
 		_color = (aRed << 24) + (aGreen << 16) + (aBlue << 8) + (anAlpha);
 	}
 
+	float RadToDegree(float aRadian)
+	{
+		return aRadian = aRadian * (180 / 3.1415926535f);
+	}
+
+	float DegreeToRad(float aDegree)
+	{
+		return aDegree = aDegree * (3.1415926535f / 180);
+	}
+
 }

@@ -6,16 +6,14 @@
 #include "DirectX11.h"
 #include <DL_Debug.h>
 #include "Effect.h"
-#include "EffectContainer.h"
 #include "Engine.h"
 #include "EngineDefines.h"
 #include "IndexWrapper.h"
 #include "VertexWrapper.h"
 #include "VertexTypes.h"
 #include "Surface.h"
-#include "TextureContainer.h"
 #include "VertexStructs.h"
-
+#include "AssetsContainer.h"
 namespace Snowblind
 {
 	CModel::CModel()
@@ -41,7 +39,7 @@ namespace Snowblind
 	void CModel::CreateTriangle(const std::string& anEffectPath)
 	{
 		myIsNULLObject = false;
-		myEffect = CEffectContainer::GetInstance()->GetEffect(anEffectPath);
+		myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 		myVertexFormat.Init(2);
 		myVertexFormat.Add(VertexLayoutPosCol[0]);
 		myVertexFormat.Add(VertexLayoutPosCol[1]);
@@ -85,7 +83,7 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosCol[0]);
 		myVertexFormat.Add(VertexLayoutPosCol[1]);
 
-		myEffect = CEffectContainer::GetInstance()->GetEffect(anEffectPath);
+		myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 
 		SVertexTypePosCol tempVertex;
 
@@ -199,7 +197,7 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosCol[0]);
 		myVertexFormat.Add(VertexLayoutPosCol[1]);
 
-		myEffect = CEffectContainer::GetInstance()->GetEffect(anEffectPath);
+		myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 		float size = 0.25f;
 		SVertexTypePosCol tempVertex;
 		CU::Vector4f color = aColor;
@@ -322,7 +320,7 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosNormUV[2]);
 
 
-		myEffect = CEffectContainer::GetInstance()->GetEffect(anEffectPath);
+		myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 
 #pragma region Vertex
 		SVertexTypePosNormUV tempVertex;
@@ -541,7 +539,7 @@ namespace Snowblind
 			tempSurface->SetTexture("AlbedoTexture", "Data/Textures/col.dds");
 			mySurfaces.Add(tempSurface);*/
 
-		myEffect->SetAlbedo(Snowblind::CTextureContainer::GetInstance()->GetTexture("Data/Textures/colors.dds"));
+		myEffect->SetAlbedo(Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/colors.dds"));
 		InitVertexBuffer();
 		InitIndexBuffer();
 	}
@@ -580,7 +578,12 @@ namespace Snowblind
 
 			D3DX11_TECHNIQUE_DESC techDesc;
 			myEffect->GetTechnique()->GetDesc(&techDesc);
-
+			float blendFactor[4];
+			blendFactor[0] = 0.f;
+			blendFactor[1] = 0.f;
+			blendFactor[2] = 0.f;
+			blendFactor[3] = 0.f;
+			myEffect->SetBlendState(NULL, blendFactor);
 			for (UINT p = 0; p < techDesc.Passes; ++p)
 			{
 				HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);

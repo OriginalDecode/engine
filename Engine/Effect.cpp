@@ -163,6 +163,11 @@ namespace Snowblind
 		mySpritePos->SetFloatVector(&aPosition.x);
 	}
 
+	void CEffect::SetBlendState(ID3D11BlendState* aBlendState, float aBlendFactor[4], const unsigned int aSampleMask)
+	{
+		CEngine::GetDirectX()->GetContext()->OMSetBlendState(aBlendState, aBlendFactor, aSampleMask);
+	}
+
 	void CEffect::UpdateLight(CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE>& someData)
 	{
 		if (myEffect == nullptr)

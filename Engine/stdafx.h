@@ -12,13 +12,8 @@
 #include "Font.h"
 #include "FontManager.h"
 #include "EngineDefines.h"
-#include "TextureContainer.h"
 #include "Texture.h"
-#include "EffectContainer.h"
 #include "Effect.h"
-
-
-
 
 #include "VertexStructs.h"
 

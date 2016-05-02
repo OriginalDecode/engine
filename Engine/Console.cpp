@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Console.h"
 #include "Sprite.h"
-#include "TextureContainer.h"
 #include "Engine.h"
 #include "InputWrapper.h"
 #include "EngineDefines.h"
@@ -9,6 +8,7 @@
 #include "Instance.h"
 #include "Model.h"
 #include "Scene.h"
+#include "AssetsContainer.h"
 namespace Snowblind
 {
 	CConsole::CConsole()
@@ -253,6 +253,14 @@ namespace Snowblind
 					if (myInput == "Clear")
 					{
 						myStrings.RemoveAll();
+					}
+
+					if (myInput == "pblscene")
+					{
+						CInstance* i = new CInstance();
+						i->Initiate(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx"));
+						i->SetPosition({ -25.f,0,0 });
+						myWorldScene->AddToScene(i);
 					}
 
 					myInput = "";

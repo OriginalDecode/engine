@@ -1,5 +1,6 @@
 #pragma once
 #include "VertexTypes.h"
+#include "EngineDefines.h"
 struct ID3D11Buffer;
 
 
@@ -7,7 +8,7 @@ namespace Snowblind
 {
 	struct SVertexDataWrapper
 	{
-		~SVertexDataWrapper(){ delete myVertexData; myVertexData = nullptr; };
+		~SVertexDataWrapper() { SAFE_DELETE(myVertexData); };
 		char* myVertexData;
 		int myNrOfVertexes;
 		int mySize;
@@ -16,7 +17,7 @@ namespace Snowblind
 
 	struct SVertexBufferWrapper
 	{
-		~SVertexBufferWrapper(){ myVertexBuffer->Release(); myVertexBuffer = nullptr; };
+		~SVertexBufferWrapper(){ SAFE_RELEASE(myVertexBuffer); };
 		ID3D11Buffer* myVertexBuffer;
 		int myStartSlot;
 		int myNrOfBuffers;

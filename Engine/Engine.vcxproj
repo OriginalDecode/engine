@@ -170,19 +170,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AnimationUtility.h" />
+    <ClInclude Include="AssetsContainer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX11.h" />
     <ClInclude Include="Effect.h" />
-    <ClInclude Include="EffectContainer.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineDefines.h" />
     <ClInclude Include="FBXFactory.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontManager.h" />
+    <ClInclude Include="FullscreenQuad.h" />
     <ClInclude Include="GeometryUtility.h" />
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
@@ -198,25 +199,25 @@
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="TextureContainer.h" />
     <ClInclude Include="VertexStructs.h" />
     <ClInclude Include="VertexTypes.h" />
     <ClInclude Include="VertexWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationUtility.cxx" />
+    <ClCompile Include="AssetsContainer.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Common.cxx" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectX11.cpp" />
     <ClCompile Include="Effect.cpp" />
-    <ClCompile Include="EffectContainer.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="FBXFactory.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontManager.cpp" />
+    <ClCompile Include="FullscreenQuad.cpp" />
     <ClCompile Include="GeometryUtility.cxx" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -233,7 +234,6 @@
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TextureContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonLib\CommonLib.vcxproj">

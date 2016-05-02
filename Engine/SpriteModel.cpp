@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "SpriteModel.h"
 #include "DirectX11.h"
-#include "TextureContainer.h"
 #include "Texture.h"
 #include "Effect.h"
 #include "Engine.h"
-#include "EffectContainer.h"
 #include "VertexTypes.h"
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
 #include <d3dx11effect.h>
 #include "EngineDefines.h"
+#include "AssetsContainer.h"
+
 namespace Snowblind
 {
 	CSpriteModel::CSpriteModel()
@@ -41,8 +41,8 @@ namespace Snowblind
 		myTexturePath = aTexturePath;
 		mySize = aSize;
 		myPosition = aPosition;
-		myTexture = CTextureContainer::GetInstance()->GetTexture(myTexturePath)->GetShaderView();
-		myEffect = CEffectContainer::GetInstance()->GetEffect("Data/Shaders/Sprite.fx");
+		myTexture = CAssetsContainer::GetInstance()->GetTexture(myTexturePath)->GetShaderView();
+		myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/Sprite.fx");
 		myEffect->SetAlbedo(myTexture);
 
 		myVertexFormat.Init(2);
@@ -99,6 +99,7 @@ namespace Snowblind
 
 		InitiateVertexBuffer();
 		InitiateIndexBuffer();
+		InitiateBlendState();
 	}
 
 	void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
@@ -107,7 +108,7 @@ namespace Snowblind
 
 		mySize = aSize;
 		myPosition = aPosition;
-		myEffect = CEffectContainer::GetInstance()->GetEffect("Data/Shaders/Sprite.fx");
+		myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/Sprite.fx");
 		myTexture = aShaderResource;
 		myEffect->SetAlbedo(aShaderResource);
 
@@ -165,6 +166,7 @@ namespace Snowblind
 
 		InitiateVertexBuffer();
 		InitiateIndexBuffer();
+		InitiateBlendState();
 	}
 
 	void CSpriteModel::Render()
@@ -172,6 +174,15 @@ namespace Snowblind
 		if (!myEffect)
 			return;
 		myEffect->SetAlbedo(myTexture);
+
+		float blendFactor[4];
+		blendFactor[0] = 0.f;
+		blendFactor[1] = 0.f;
+		blendFactor[2] = 0.f;
+		blendFactor[3] = 0.f;
+
+		myEffect->SetBlendState(myBlendState, blendFactor);
+
 
 		ID3D11DeviceContext& context = *CEngine::GetDirectX()->GetContext();
 		context.IASetInputLayout(myVertexLayout);
@@ -257,6 +268,25 @@ namespace Snowblind
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		myIndexBuffer->myByteOffset = 0;
+	}
+
+	void CSpriteModel::InitiateBlendState()
+	{
+		D3D11_BLEND_DESC blendDesc;
+		blendDesc.AlphaToCoverageEnable = true;
+		blendDesc.IndependentBlendEnable = false;
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_DEST_ALPHA;
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBlendState(&blendDesc, &myBlendState);
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create blendstate.");
+		CEngine::GetDirectX()->SetDebugName(myBlendState, "SpriteModel : BlendState");
 	}
 
 	void CSpriteModel::ConvertToNormalSpace()

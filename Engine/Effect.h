@@ -12,7 +12,7 @@ struct ID3DX11EffectVariable;
 struct ID3DX11EffectShaderResourceVariable;
 struct ID3D11ShaderResourceView;
 struct ID3DX11EffectVectorVariable;
-
+struct ID3D11BlendState;
 
 namespace Snowblind
 {
@@ -33,6 +33,7 @@ namespace Snowblind
 		void SetMatrices(CU::Math::Matrix44<float>& aToWorld, CU::Math::Matrix44<float>& aToView, CU::Math::Matrix44<float>& aProjection);
 		void SetPosition(const CU::Math::Vector2<float>& aPosition);
 		void SetScale(const CU::Math::Vector2<float>& aPosition);
+		void SetBlendState(ID3D11BlendState* aBlendState, float aBlendFactor[4], const unsigned int aSampleMask = 0xFFFFFFFF);
 
 		void UpdateLight(CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE>& someData);
 		void UpdateLight(CU::StaticArray<SSpotlightData, SPOTLIGHT_SIZE>& someData);

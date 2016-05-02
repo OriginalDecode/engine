@@ -1,4 +1,6 @@
 #pragma once
+#include "EngineDefines.h"
+
 enum DXGI_FORMAT;
 struct ID3D11Buffer;
 
@@ -6,7 +8,7 @@ namespace Snowblind
 {
 	struct SVertexIndexWrapper
 	{
-		~SVertexIndexWrapper(){ delete myIndexData; myIndexData = nullptr; };
+		~SVertexIndexWrapper() { SAFE_DELETE(myIndexData); };
 		char* myIndexData;
 		int myIndexCount;
 		int mySize;
@@ -15,7 +17,7 @@ namespace Snowblind
 
 	struct SIndexBufferWrapper
 	{
-		~SIndexBufferWrapper(){ myIndexBuffer->Release(); myIndexBuffer = nullptr; };
+		~SIndexBufferWrapper() { SAFE_RELEASE(myIndexBuffer); };
 		ID3D11Buffer* myIndexBuffer;
 		DXGI_FORMAT myIndexBufferFormat;
 		int myByteOffset;

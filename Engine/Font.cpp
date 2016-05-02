@@ -6,6 +6,7 @@
 #include "IndexWrapper.h"
 
 #include <TimeManager.h>
+#include "AssetsContainer.h"
 
 namespace Snowblind
 {
@@ -13,7 +14,7 @@ namespace Snowblind
 	{
 		myData = aFontData;
 		myText = " ";
-		myEffect = CEffectContainer::GetInstance()->GetEffect("Data/Shaders/Font_Effect.fx");
+		myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/Font_Effect.fx");
 
 		myVertexBufferDesc = new D3D11_BUFFER_DESC();
 		myIndexBufferDesc = new D3D11_BUFFER_DESC();
@@ -23,7 +24,8 @@ namespace Snowblind
 		CreateInputLayout();
 		CreateVertexBuffer();
 		CreateIndexBuffer();
-	
+		InitiateBlendstate();
+
 		myColor = myDefaultColor;
 
 		myTimeManager = new CU::TimeManager();
@@ -85,6 +87,12 @@ namespace Snowblind
 		context.IASetIndexBuffer(myIndexBuffer->myIndexBuffer, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
 		context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+		float blendFactor[4];
+		blendFactor[0] = 0.f;
+		blendFactor[1] = 0.f;
+		blendFactor[2] = 0.f;
+		blendFactor[3] = 0.f;
+		myEffect->SetBlendState(myBlendState, blendFactor);
 		D3DX11_TECHNIQUE_DESC techDesc;
 		myEffect->GetTechnique()->GetDesc(&techDesc);
 
@@ -177,6 +185,25 @@ namespace Snowblind
 		myIndexBufferDesc->StructureByteStride = 0;
 	}
 
+	void CFont::InitiateBlendstate()
+	{
+		D3D11_BLEND_DESC blendDesc;
+		blendDesc.AlphaToCoverageEnable = true;
+		blendDesc.IndependentBlendEnable = false;
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_DEST_ALPHA;
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBlendState(&blendDesc, &myBlendState);
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create blendstate.");
+		CEngine::GetDirectX()->SetDebugName(myBlendState, "Font : BlendState");
+	}
+
 	void CFont::UpdateBuffer()
 	{
 		SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
@@ -233,9 +260,9 @@ namespace Snowblind
 					myColor.g = std::strtoul(color.substr(2, 2).c_str(), NULL, 16);
 					myColor.b = std::strtoul(color.substr(4, 2).c_str(), NULL, 16);
 				}
-					i = skip;
-					iAsItShouldBe--;
-				
+				i = skip;
+				iAsItShouldBe--;
+
 				continue;
 			}
 

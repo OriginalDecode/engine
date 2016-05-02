@@ -2,6 +2,8 @@
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct ID3D11ShaderResourceView;
+struct ID3D11BlendState;
+
 namespace Snowblind
 {
 	class CTexture;
@@ -30,6 +32,7 @@ namespace Snowblind
 	private:
 		void InitiateVertexBuffer();
 		void InitiateIndexBuffer();
+		void InitiateBlendState();
 		void ConvertToNormalSpace();
 		const char* myTexturePath;
 		SWindowSize myWindowSize;
@@ -45,6 +48,8 @@ namespace Snowblind
 
 		SVertexBufferWrapper* myVertexBuffer;
 		SIndexBufferWrapper* myIndexBuffer;
+
+		ID3D11BlendState* myBlendState;
 
 		CU::GrowingArray<SVertexTypePosUV> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;

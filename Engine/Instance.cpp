@@ -11,8 +11,6 @@ namespace Snowblind
 
 	CInstance::~CInstance()
 	{
-		delete myModel;
-		myModel = nullptr;
 	}
 
 	void CInstance::Initiate(CModel* aModel)

@@ -7,10 +7,9 @@
 #include "Engine.h"
 
 #include "Texture.h"
-#include "TextureContainer.h"
-
 #include "Effect.h"
-#include "EffectContainer.h"
+
+#include "AssetsContainer.h"
 
 namespace Snowblind
 {
@@ -69,7 +68,7 @@ namespace Snowblind
 		myFileNames.Add(aFilePath);
 		myResourceNames.Add(aResourceName);
 
-		CTexture* tempTexture = CTextureContainer::GetInstance()->GetTexture(aFilePath);
+		CTexture* tempTexture = CAssetsContainer::GetInstance()->GetTexture(aFilePath);
 		DL_ASSERT_EXP(tempTexture != nullptr, "[Surface](SetTexture) : Failed to set Texture!");
 
 		ID3DX11EffectShaderResourceVariable* tempShader = myEffect->GetEffect()->GetVariableByName(aResourceName.c_str())->AsShaderResource();

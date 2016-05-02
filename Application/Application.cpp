@@ -6,19 +6,19 @@
 #include <Camera.h>
 #include <Instance.h>
 #include <EngineDefines.h>
-#include "EffectContainer.h"
 #include "../Input/InputWrapper.h"
 #include <Text.h>
 #include <Sprite.h>
 #include <Console.h>
-#include <TextureContainer.h>
 #include <FBXFactory.h>
 #include <DirectionalLight.h>
 #include <PointLight.h>
 #include "../Input/ControllerInput.h"
+#include <AssetsContainer.h>
 
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
+
 CApplication::CApplication()
 {
 }
@@ -30,8 +30,6 @@ CApplication::~CApplication()
 	SAFE_DELETE(myConsole);
 	SAFE_DELETE(myController);
 }
-
-
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
@@ -57,7 +55,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myTexturedModel = new Snowblind::CModel();
 	myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
 
-	Snowblind::CEffectContainer::GetInstance()->GetEffect("Data/Shaders/TexturedCube.fx")->SetAlbedo(myText->GetAtlas());
+	Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/TexturedCube.fx")->SetAlbedo(myText->GetAtlas());
 
 	myInstance = new Snowblind::CInstance();
 	myInstance->Initiate(myModel);
@@ -76,16 +74,16 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myConsole = new Snowblind::CConsole();
 	myConsole->Initiate(my2DCamera);
 
-	FBXFactory factory;
-	Snowblind::CModel* newModel = factory.LoadModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/PBL_Shader.fx");
-	newModel->CreateModel();
+	//FBXFactory factory;
+	//Snowblind::CModel* newModel = factory.LoadModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/PBL_Shader.fx");
+	//newModel->CreateModel();
 	myInstance = new Snowblind::CInstance();
-	myInstance->Initiate(newModel);
+	myInstance->Initiate(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx"));
 	myWorldScene->AddToScene(myInstance);
 
-	//Snowblind::CDirectionalLight* light = new Snowblind::CDirectionalLight();
-	//light->Initiate({ -1, -1 ,0 }, { 0,0,0 }, { 1.f, 1.f, 0.f, 1.f });
-	//myWorldScene->AddLight(light);
+	//Snowblind::CDirectionalLight* dlight = new Snowblind::CDirectionalLight();
+	//dlight->Initiate({ -1, -1 ,0 }, { 0,0,0 }, { 1.f, 1.f, 0.f, 1.f });
+	//myWorldScene->AddLight(dlight);
 
 	Snowblind::CPointLight* light = new Snowblind::CPointLight();
 	light->Initiate({ 0, -2, 0 }, { 1, 0, 0, 1 }, 10);
@@ -101,7 +99,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 
 	myController = new CU::ControllerInput(0);
-	//myConsole->SetWorldScene(myWorldScene);
+	myConsole->SetWorldScene(myWorldScene);
 }
 
 bool CApplication::Update()
@@ -150,10 +148,6 @@ void CApplication::Render()
 
 void CApplication::UpdateInput(float aDeltaTime)
 {
-
-	//myCursorPosition.x += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectX()) * 0.01;
-	//myCursorPosition.y += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectY()) * 0.01;
-
 	if (myController->IsConnected())
 	{
 		if (myController->RightThumbstickX() > 0.5f || myController->RightThumbstickX() < -0.5f)
@@ -165,6 +159,10 @@ void CApplication::UpdateInput(float aDeltaTime)
 			myCursorPosition.y -= myController->RightThumbstickY() * 0.005f;
 		}
 
+		
+	}
+	else
+	{
 		myCursorPosition.x += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectX()) * 0.01;
 		myCursorPosition.y += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectY()) * 0.01;
 	}

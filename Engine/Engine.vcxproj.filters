@@ -81,13 +81,7 @@
     <ClInclude Include="Model.h">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="EffectContainer.h">
-      <Filter>Effect</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
-      <Filter>Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureContainer.h">
       <Filter>Texture</Filter>
     </ClInclude>
     <ClInclude Include="Surface.h">
@@ -165,6 +159,8 @@
     <ClInclude Include="PointLight.h">
       <Filter>Light\Point</Filter>
     </ClInclude>
+    <ClInclude Include="FullscreenQuad.h" />
+    <ClInclude Include="AssetsContainer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -182,13 +178,7 @@
     <ClCompile Include="Model.cpp">
       <Filter>Model</Filter>
     </ClCompile>
-    <ClCompile Include="EffectContainer.cpp">
-      <Filter>Effect</Filter>
-    </ClCompile>
     <ClCompile Include="Texture.cpp">
-      <Filter>Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureContainer.cpp">
       <Filter>Texture</Filter>
     </ClCompile>
     <ClCompile Include="Surface.cpp">
@@ -248,6 +238,8 @@
     <ClCompile Include="PointLight.cpp">
       <Filter>Light\Point</Filter>
     </ClCompile>
+    <ClCompile Include="FullscreenQuad.cpp" />
+    <ClCompile Include="AssetsContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Workbed\Data\Shaders\PBL_Shader.fx" />

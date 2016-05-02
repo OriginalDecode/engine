@@ -7,6 +7,7 @@ struct D3D11_BUFFER_DESC;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct D3D11_SUBRESOURCE_DATA;
 struct ID3D11ShaderResourceView;
+struct ID3D11BlendState;
 
 namespace CommonUtilities
 {
@@ -50,11 +51,13 @@ namespace Snowblind
 		void CreateInputLayout();
 		void CreateVertexBuffer();
 		void CreateIndexBuffer();
+		void InitiateBlendstate();
 		void UpdateBuffer();
 		SFontData* myData;
 		CEffect* myEffect;
 
 		ID3D11InputLayout* myVertexLayout;
+		ID3D11BlendState* myBlendState;
 		D3D11_BUFFER_DESC* myVertexBufferDesc;
 		D3D11_BUFFER_DESC* myIndexBufferDesc;
 

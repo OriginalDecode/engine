@@ -9,8 +9,8 @@
 #include <sstream>
 #include <stdlib.h>
 
-#include "TextureContainer.h"
-#include "EffectContainer.h"
+#include "AssetsContainer.h"
+
 #undef VOID
 #define VOID (void**)
 namespace Snowblind
@@ -21,6 +21,8 @@ namespace Snowblind
 		, myHWND(aWindowHandle)
 	{
 		myAPI = "DirectX11";
+
+		CAssetsContainer::Create();
 
 		CreateAdapterList();
 		CreateDeviceAndSwapchain();
@@ -39,8 +41,7 @@ namespace Snowblind
 			SAFE_RELEASE(it->second);
 		}
 
-		CTextureContainer::Destroy();
-		CEffectContainer::Destroy();
+		CAssetsContainer::Destroy();
 
 		SAFE_DELETE(myViewport);
 		SAFE_RELEASE(myDepthStates[static_cast<int>(eDepthStencil::Z_ENABLED)]);

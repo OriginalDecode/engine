@@ -31,24 +31,6 @@ namespace Snowblind
 		mySurfaces.DeleteAll();
 		myChildren.DeleteAll();
 
-
-		if (myVertexData != NULL)
-		{
-			SAFE_DELETE(myVertexData->myVertexData);
-		}
-		if (myIndexData != NULL)
-		{
-			SAFE_DELETE(myIndexData->myIndexData);
-		}
-		if (myVertexBuffer != NULL)
-		{
-			SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
-		}
-		if (myIndexBuffer != NULL)
-		{
-			SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
-		}
-
 		SAFE_DELETE(myVertexBuffer);
 		SAFE_DELETE(myVertexData);
 		SAFE_DELETE(myIndexBuffer);

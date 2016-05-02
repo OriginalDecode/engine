@@ -7,6 +7,7 @@ namespace Snowblind
 {
 	struct SVertexDataWrapper
 	{
+		~SVertexDataWrapper(){ delete myVertexData; myVertexData = nullptr; };
 		char* myVertexData;
 		int myNrOfVertexes;
 		int mySize;
@@ -15,6 +16,7 @@ namespace Snowblind
 
 	struct SVertexBufferWrapper
 	{
+		~SVertexBufferWrapper(){ myVertexBuffer->Release(); myVertexBuffer = nullptr; };
 		ID3D11Buffer* myVertexBuffer;
 		int myStartSlot;
 		int myNrOfBuffers;

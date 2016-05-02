@@ -82,11 +82,17 @@ namespace Snowblind
 
 	void CScene::AddLight(CDirectionalLight* aDirectionalLight)
 	{
+#ifdef _DEBUG
+		//myInstances->Add(aDirectionalLight->GetInstance());
+#endif
 		myDirectionalLights.Add(aDirectionalLight);
 	}
 
 	void CScene::AddLight(CPointLight* aPointLight)
 	{
+#ifdef _DEBUG
+		myInstances.Add(aPointLight->GetInstance());
+#endif
 		myPointLights.Add(aPointLight);
 	}
 

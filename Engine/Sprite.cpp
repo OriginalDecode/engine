@@ -34,7 +34,7 @@ namespace Snowblind
 	{
 		mySprite->GetEffect()->SetScale({ 1, 1 });
 		mySprite->GetEffect()->SetPosition(myPosition);
-		mySprite->GetEffect()->SetMatrices(myOrientation, aCamera->GetOrientation(), aCamera->GetOrthogonalMatrix());
+		mySprite->GetEffect()->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
 		mySprite->Render();
 	}
 

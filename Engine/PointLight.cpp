@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "PointLight.h"
-
+#include "Model.h"
+#include "Instance.h"
 namespace Snowblind
 {
 	CPointLight::CPointLight()
@@ -18,6 +19,15 @@ namespace Snowblind
 		myOrientation.SetPosition(myOriginalPosition);
 		myColor = aColor;
 		myRange = aRange;
+
+#ifdef _DEBUG
+		CModel* lightCube = new CModel();
+		lightCube->CreateCube("Data/Shaders/Cube.fx", { aColor.r, aColor.g, aColor.b });
+		myInstance = new CInstance();
+		myInstance->Initiate(lightCube);
+		myInstance->SetPosition(aPosition);
+#endif
+
 	}
 
 	void CPointLight::SetPosition(const CU::Vector3f& aPosition)
@@ -50,4 +60,10 @@ namespace Snowblind
 	{
 		return myRange;
 	}
+#ifdef _DEBUG
+	CInstance* CPointLight::GetInstance()
+	{
+		return myInstance;
+	}
+#endif
 };

@@ -3,6 +3,11 @@
 
 namespace Snowblind
 {
+
+#ifdef _DEBUG
+	class CInstance;
+#endif
+
 	class CPointLight
 	{
 	public:
@@ -20,7 +25,16 @@ namespace Snowblind
 		void SetRange(float aRange);
 		const float& GetRange();
 
+#ifdef _DEBUG
+		CInstance* GetInstance();
+#endif
+
 	private:
+
+#ifdef _DEBUG
+		CInstance* myInstance;
+#endif
+
 		CU::Matrix44f myOrientation;
 		CU::Vector3f myOriginalPosition;
 		CU::Vector4f myColor;

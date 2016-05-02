@@ -148,8 +148,123 @@ namespace Snowblind
 		indexes.Add(0);
 
 		indexes.Add(3);
+		indexes.Add(2);
+		indexes.Add(1);
+
+		indexes.Add(0);
+		indexes.Add(5);
+		indexes.Add(4);
+
+		indexes.Add(1);
+		indexes.Add(5);
+		indexes.Add(0);
+
+		indexes.Add(3);
+		indexes.Add(4);
+		indexes.Add(7);
+		indexes.Add(0);
+		indexes.Add(4);
+		indexes.Add(3);
+		indexes.Add(1);
+		indexes.Add(6);
+		indexes.Add(5);
+		indexes.Add(2);
+		indexes.Add(6);
 		indexes.Add(1);
 		indexes.Add(2);
+		indexes.Add(7);
+		indexes.Add(6);
+		indexes.Add(3);
+		indexes.Add(7);
+		indexes.Add(2);
+		indexes.Add(6);
+		indexes.Add(4);
+		indexes.Add(5);
+		indexes.Add(7);
+		indexes.Add(4);
+		indexes.Add(6);
+#pragma endregion
+
+		myVertexData = new SVertexDataWrapper;
+		myIndexData = new SVertexIndexWrapper;
+
+		myVertexData->myNrOfVertexes = vertices.Size();
+		myVertexData->myStride = sizeof(SVertexTypePosCol);
+		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
+		myVertexData->myVertexData = new char[myVertexData->mySize]();
+		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
+
+		myIndexData->myFormat = DXGI_FORMAT_R32_UINT;
+		myIndexData->myIndexCount = 6 * 6;
+		myIndexData->mySize = myIndexData->myIndexCount * 4;
+
+		myIndexData->myIndexData = new char[myIndexData->mySize];
+		memcpy(myIndexData->myIndexData, &indexes[0], myIndexData->mySize);
+
+		InitVertexBuffer();
+		InitIndexBuffer();
+	}
+
+	void CModel::CreateCube(const std::string& anEffectPath, const CU::Vector3f& aColor)
+	{
+		myIsNULLObject = false;
+		ENGINE_LOG("Creating Cube");
+
+		CU::GrowingArray<SVertexTypePosCol> vertices;
+		CU::GrowingArray<int> indexes;
+
+		myVertexFormat.Init(2);
+		myVertexFormat.Add(VertexLayoutPosCol[0]);
+		myVertexFormat.Add(VertexLayoutPosCol[1]);
+
+		myEffect = CEffectContainer::GetInstance()->GetEffect(anEffectPath);
+		float size = 0.25f;
+		SVertexTypePosCol tempVertex;
+		CU::Vector4f color = aColor;
+		color.a = 1.f;
+#pragma region Vertex
+		tempVertex.myPosition = { -size, size, -size };
+		tempVertex.myColor = color;
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { size, size, -size };
+		tempVertex.myColor = color;
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { size, size, size };
+		tempVertex.myColor = color;
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { -size, size, size };
+		tempVertex.myColor = color;
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { -size, -size, -size };
+		tempVertex.myColor = color;
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { size, -size, -size };
+		tempVertex.myColor = color;
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { size, -size, size };
+		tempVertex.myColor = color;
+		vertices.Add(tempVertex);
+
+		tempVertex.myPosition = { -size, -size, size };
+		tempVertex.myColor = color;
+		vertices.Add(tempVertex);
+#pragma endregion
+
+#pragma region Index
+
+		indexes.Add(3);
+		indexes.Add(1);
+		indexes.Add(0);
+
+		indexes.Add(3);
+		indexes.Add(2);
+		indexes.Add(1);
 
 		indexes.Add(0);
 		indexes.Add(5);

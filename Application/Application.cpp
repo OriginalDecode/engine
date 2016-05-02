@@ -47,7 +47,6 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	my2DScene->Initiate(my2DCamera, true);
 
 	myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16, my2DCamera);
-	myText->SetText("Hello World, my name is Linus Skold and I am a programmer.");
 	myText->SetScale({ 1, 1 });
 	myText->SetPosition({ 0, 0 });
 	my2DScene->AddToScene(myText);
@@ -78,7 +77,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myConsole->Initiate(my2DCamera);
 
 	FBXFactory factory;
-	Snowblind::CModel* newModel = factory.LoadModel("Data/Model/pblScene/pblScene_03.fbx", "Data/Shaders/PBL_Shader.fx");
+	Snowblind::CModel* newModel = factory.LoadModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/PBL_Shader.fx");
 	newModel->CreateModel();
 	myInstance = new Snowblind::CInstance();
 	myInstance->Initiate(newModel);
@@ -89,15 +88,15 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	//myWorldScene->AddLight(light);
 
 	Snowblind::CPointLight* light = new Snowblind::CPointLight();
-	light->Initiate({ 0,0,0 }, { 1,0,0,1 }, 10);
+	light->Initiate({ 0, -2, 0 }, { 1, 0, 0, 1 }, 10);
 	myWorldScene->AddLight(light);
 
 	light = new Snowblind::CPointLight();
-	light->Initiate({ 5,0,0 }, { 0,1,0,1 }, 10);
+	light->Initiate({ 5, -2, 0 }, { 0, 1, 0, 1 }, 10);
 	myWorldScene->AddLight(light);
 
 	light = new Snowblind::CPointLight();
-	light->Initiate({ -5,0,0 }, { 0,0,1,1 }, 10);
+	light->Initiate({ -5, -2, 0 }, { 0, 0, 1, 1 }, 10);
 	myWorldScene->AddLight(light);
 
 
@@ -151,7 +150,7 @@ void CApplication::Render()
 
 void CApplication::UpdateInput(float aDeltaTime)
 {
-	
+
 	//myCursorPosition.x += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectX()) * 0.01;
 	//myCursorPosition.y += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectY()) * 0.01;
 
@@ -165,6 +164,9 @@ void CApplication::UpdateInput(float aDeltaTime)
 		{
 			myCursorPosition.y -= myController->RightThumbstickY() * 0.005f;
 		}
+
+		myCursorPosition.x += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectX()) * 0.01;
+		myCursorPosition.y += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectY()) * 0.01;
 	}
 
 	myCursorPosition.y = fmaxf(fminf(3.1415f / 2.f, myCursorPosition.y), -3.1415f / 2.f);

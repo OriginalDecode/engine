@@ -26,6 +26,8 @@ namespace Snowblind
 
 		void CreateTriangle(const std::string& anEffectPath);
 		void CreateCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth);
+		void CreateCube(const std::string& anEffectPath, const CU::Vector3f& aColor);
+
 		void CreateTexturedCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth);
 		void CreateModel();
 		void Render();

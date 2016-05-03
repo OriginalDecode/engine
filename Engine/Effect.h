@@ -72,6 +72,8 @@ namespace Snowblind
 	template <typename T>
 	void CEffect::Validate(T* anEffectVariable, const std::string& aString)
 	{
+		aString;
+		anEffectVariable;
 		DL_ASSERT_EXP(anEffectVariable->IsValid() == TRUE, aString.c_str());
 	}
 

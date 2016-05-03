@@ -14,6 +14,7 @@ StackWalker::StackWalker(unsigned int aProcessId, HANDLE aProcess)
 }
 void StackWalker::OnOutput(char* aString)
 {
+	aString;
 	DL_PRINT(aString);
 }
 

@@ -5,6 +5,7 @@ namespace Snowblind
 	CCamera::CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition, CU::Matrix44f& aPlayerOrientation)
 		: myOrientation(aPlayerOrientation)
 	{
+		aPosition;
 		XMMATRIX projection;
 		projection = XMMatrixPerspectiveFovLH(XM_PI*0.3f, aWidth / FLOAT(aHeight), 0.1f, 100.f);
 
@@ -30,11 +31,6 @@ namespace Snowblind
 
 	CCamera::~CCamera()
 	{
-	}
-
-	void CCamera::SetPosition(const CU::Vector3f& aPosition)
-	{
-		//myOrientation.SetPosition(aPosition);
 	}
 
 	CU::Matrix44f& CCamera::GetOrthogonalMatrix()
@@ -68,11 +64,6 @@ namespace Snowblind
 			break;
 		}
 		myOrientation.SetTranslation(position);
-	}
-
-	void CCamera::Rotate(eRotation anAxis, float aSpeed)
-	{
-
 	}
 
 	void CCamera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)

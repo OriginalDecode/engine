@@ -241,7 +241,4 @@
     <ClCompile Include="FullscreenQuad.cpp" />
     <ClCompile Include="AssetsContainer.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\Workbed\Data\Shaders\PBL_Shader.fx" />
-  </ItemGroup>
 </Project>

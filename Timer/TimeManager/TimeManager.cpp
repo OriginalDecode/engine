@@ -50,7 +50,7 @@ namespace CommonUtilities
 		Timer newTimer;
 		newTimer.Start();
 		myTimers.push_back(newTimer);
-		return myTimers.size() - 1;
+		return static_cast<int>(myTimers.size()) - 1;
 	}
 
 	void TimeManager::Update()

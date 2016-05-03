@@ -27,7 +27,6 @@ namespace Snowblind
 		CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition);
 		~CCamera();
 
-		void SetPosition(const CU::Vector3f& aPosition);
 		const CU::Vector3f GetPosition() const;
 		CU::Matrix44f& GetOrientation();
 		CU::Matrix44f& Get2DOrientation();
@@ -38,9 +37,8 @@ namespace Snowblind
 
 
 		void Move(eDirection aDirection, float aSpeed);
-		void Rotate(eRotation anAxis, float aSpeed);
 	private:
-
+		void operator=(CCamera&) = delete;
 		void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);
 		void MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed);
 		void MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed);

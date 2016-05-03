@@ -1,5 +1,5 @@
 #pragma once
-
+#pragma warning(disable : 4005)
 #include "../CommonLib/Math/Matrix/Matrix.h"
 #include "../CommonLib/JSON/JSONReader.h"
 #include "../CommonLib/Math/Vector/Vector.h"

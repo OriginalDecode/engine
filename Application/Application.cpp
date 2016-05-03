@@ -68,7 +68,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myWorldScene->AddToScene(myInstance);
 
 	myTextTime = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16, my2DCamera);
-	myTextTime->SetPosition({ 0, 24 });
+	myTextTime->SetPosition({ 0, 82 });
 	my2DScene->AddToScene(myTextTime);
 
 	myConsole = new Snowblind::CConsole();
@@ -97,6 +97,9 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	light->Initiate({ -5, -2, 0 }, { 0, 0, 1, 1 }, 10);
 	myWorldScene->AddLight(light);
 
+	light = new Snowblind::CPointLight();
+	light->Initiate({ 0,-2, 10 }, { 1,0,1,1 }, 10);
+	myWorldScene->AddLight(light);
 
 	myController = new CU::ControllerInput(0);
 	myConsole->SetWorldScene(myWorldScene);
@@ -124,7 +127,7 @@ bool CApplication::Update()
 		UpdateInput(deltaTime);
 
 	std::stringstream ss;
-	ss << myEngine->GetFPS();
+	ss << myEngine->GetFPS() << "\n" << "Camera Position : \nX : " << myOrientation.GetPosition().x << "\nY : " << myOrientation.GetPosition().y << "\nZ : " << myOrientation.GetPosition().z;
 	myText->SetText(ss.str());
 
 

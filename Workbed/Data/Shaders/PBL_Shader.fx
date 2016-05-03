@@ -23,7 +23,7 @@ struct POINT_LIGHT
 	float  Range;
 };
 
-POINT_LIGHT PointLight[3];
+POINT_LIGHT PointLight[4];
 
 SamplerState sampleLinear
 {
@@ -113,7 +113,7 @@ float4 PS(PS_INPUT input) : SV_Target
 	//	finalColor += saturate(lambert * DirectionalLight[i].Color);
 	//}
 	
-	for(int i = 0; i < 3; i++)
+	for(int i = 0; i < 4; i++)
 	{
 		float3 lightDirection = PointLight[i].Position - input.WorldPos;
 		float distance = length(lightDirection);

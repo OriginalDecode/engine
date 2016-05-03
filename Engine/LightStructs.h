@@ -2,7 +2,7 @@
 #include <Math/Vector/Vector.h>
 
 #define SPOTLIGHT_SIZE 3
-#define POINTLIGHT_SIZE 3
+#define POINTLIGHT_SIZE 4
 #define DIRECTIONAL_SIZE 1
 
 enum class eLightAxis

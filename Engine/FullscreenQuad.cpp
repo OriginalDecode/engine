@@ -24,7 +24,8 @@ namespace Snowblind
 
 	void CFullscreenQuad::RenderFullscreenQuad(CEffect* anEffect, const std::string& aTechnique)
 	{
-		anEffect; aTechnique;
+		anEffect; 
+		aTechnique;
 	}
 
 };

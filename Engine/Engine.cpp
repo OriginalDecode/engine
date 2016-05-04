@@ -1,5 +1,7 @@
 #include "stdafx.h"
-
+#include "Synchronizer.h"
+#include "Renderer.h"
+#include <thread>
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
@@ -12,14 +14,23 @@ namespace Snowblind
 		CU::Input::InputWrapper::Create(myHWND, anInstance);
 		myAPI = new CDirectX11(myHWND, aWindowWidth, aWindowHeight);
 
-		myTimeManager = new CU::TimeManager();
 
+		myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight);
+
+		myTimeManager = new CU::TimeManager();
 		myFontManager = new CFontManager();
 		myFontManager->Initiate();
+		mySynchronizer = new CSynchronizer();
+		myRenderer = new CRenderer(*mySynchronizer, *myCamera);
+		myRenderThread = new std::thread(&CRenderer::Render, myRenderer);
 	}
 
 	CEngine::~CEngine()
 	{
+		myRenderThread->join();
+		SAFE_DELETE(mySynchronizer);
+		SAFE_DELETE(myRenderer);
+		SAFE_DELETE(myRenderThread);
 
 		SAFE_DELETE(myAPI);
 		SAFE_DELETE(myFontManager);
@@ -36,7 +47,7 @@ namespace Snowblind
 
 	void CEngine::Destroy()
 	{
-		DL_ASSERT_EXP(myInstance != nullptr,"Can't destroy the instance before it's created. Did you call Destroy twice?");
+		DL_ASSERT_EXP(myInstance != nullptr, "Can't destroy the instance before it's created. Did you call Destroy twice?");
 		SAFE_DELETE(myInstance);
 	}
 
@@ -50,6 +61,11 @@ namespace Snowblind
 		return myAPI;
 	}
 
+
+	CCamera* CEngine::GetCamera()
+	{
+		return myCamera;
+	}
 
 	void CEngine::Update()
 	{
@@ -99,6 +115,16 @@ namespace Snowblind
 	void CEngine::OnResume()
 	{
 		myTimeManager->Start();
+	}
+
+	void CEngine::OnExit()
+	{
+		mySynchronizer->Quit();
+	}
+
+	CSynchronizer* CEngine::GetSynchronizer()
+	{
+		return mySynchronizer;
 	}
 
 	void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)

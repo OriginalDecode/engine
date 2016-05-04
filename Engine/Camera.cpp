@@ -2,10 +2,9 @@
 #include "Camera.h"
 namespace Snowblind
 {
-	CCamera::CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition, CU::Matrix44f& aPlayerOrientation)
-		: myOrientation(aPlayerOrientation)
+	CCamera::CCamera(float aWidth, float aHeight)
+		: myOrientation(CU::Matrix44f())
 	{
-		aPosition;
 		XMMATRIX projection;
 		projection = XMMatrixPerspectiveFovLH(XM_PI*0.3f, aWidth / FLOAT(aHeight), 0.1f, 100.f);
 
@@ -36,6 +35,11 @@ namespace Snowblind
 	CU::Matrix44f& CCamera::GetOrthogonalMatrix()
 	{
 		return myOrthogonalMatrix;
+	}
+
+	void CCamera::AddOrientation(CU::Matrix44f* anOrientation)
+	{
+		myOrientation = *anOrientation;
 	}
 
 	void CCamera::Move(eDirection aDirection, float aSpeed)

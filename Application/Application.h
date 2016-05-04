@@ -29,6 +29,7 @@ namespace Snowblind
 	class CText;
 	class CEngine;
 	class CConsole;
+	class CSynchronizer;
 };
 
 
@@ -47,6 +48,7 @@ public:
 	void OnResume();
 	void OnInactive();
 	void OnActive();
+	void OnExit();
 
 private:
 	void UpdateInput(float aDeltaTime);
@@ -71,6 +73,8 @@ private:
 
 	Snowblind::CEngine* myEngine;
 	Snowblind::CConsole* myConsole;
+
+	Snowblind::CSynchronizer* mySynchronizer;
 
 	CU::Quaternion myPitch;
 	CU::Quaternion myYaw;

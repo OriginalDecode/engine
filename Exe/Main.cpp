@@ -86,6 +86,9 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	case WM_EXITSIZEMOVE:
 		newApplication->OnResume();
 		break;
+	case WM_CLOSE:
+		Snowblind::CEngine::GetInstance()->OnExit();
+		break;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }

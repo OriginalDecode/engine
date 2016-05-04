@@ -159,8 +159,10 @@
     <ClInclude Include="PointLight.h">
       <Filter>Light\Point</Filter>
     </ClInclude>
-    <ClInclude Include="FullscreenQuad.h" />
     <ClInclude Include="AssetsContainer.h" />
+    <ClInclude Include="Synchronizer.h" />
+    <ClInclude Include="RenderCommand.h" />
+    <ClInclude Include="Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -238,7 +240,9 @@
     <ClCompile Include="PointLight.cpp">
       <Filter>Light\Point</Filter>
     </ClCompile>
-    <ClCompile Include="FullscreenQuad.cpp" />
     <ClCompile Include="AssetsContainer.cpp" />
+    <ClCompile Include="Synchronizer.cpp" />
+    <ClCompile Include="RenderCommand.cpp" />
+    <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
 </Project>

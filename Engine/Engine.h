@@ -8,6 +8,11 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
+namespace std
+{
+	class thread;
+}
+
 namespace CommonUtilities
 {
 	class TimeManager;
@@ -26,8 +31,11 @@ namespace Snowblind
 
 	class CDirectX11;
 	class CFontManager;
-	struct SFontData;
+	class CSynchronizer;
 	class CFont;
+	class CCamera;
+	class CRenderer;
+	struct SFontData;
 	class CEngine
 	{
 	public:
@@ -36,7 +44,7 @@ namespace Snowblind
 		static CEngine* GetInstance();
 		static CDirectX11* GetDirectX();
 
-
+		CCamera* GetCamera();
 		static void Update();
 		static void Present();
 		static void Clear();
@@ -49,7 +57,8 @@ namespace Snowblind
 
 		void OnPause();
 		void OnResume();
-
+		void OnExit();
+		CSynchronizer* GetSynchronizer();
 
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
@@ -64,7 +73,11 @@ namespace Snowblind
 		HWND myHWND;
 		CFontManager* myFontManager;
 		CU::TimeManager* myTimeManager;
+		CSynchronizer* mySynchronizer;
 
+		std::thread* myRenderThread;
+		CRenderer* myRenderer;
+		CCamera*  myCamera;
 	};
 
 	__forceinline CDirectX11* CEngine::GetAPI()

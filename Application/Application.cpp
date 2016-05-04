@@ -15,7 +15,8 @@
 #include <PointLight.h>
 #include "../Input/ControllerInput.h"
 #include <AssetsContainer.h>
-
+#include <Synchronizer.h>
+#include "RenderCommand.h"
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 
@@ -29,17 +30,19 @@ CApplication::~CApplication()
 	SAFE_DELETE(myWorldScene);
 	SAFE_DELETE(myConsole);
 	SAFE_DELETE(myController);
+	SAFE_DELETE(myInstance);
 }
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
 
-	myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0.f, 0.f, 0.f), myOrientation);
 	my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0.f, 0.f, 1.f));
 
-	myWorldScene = new Snowblind::CScene();
-	myWorldScene->Initiate(myCamera);
 	myEngine = Snowblind::CEngine::GetInstance();
+	myWorldScene = new Snowblind::CScene();
+	myCamera = myEngine->GetCamera();
+	myWorldScene->Initiate(myCamera);
+	myCamera->AddOrientation(&myOrientation);
 
 	my2DScene = new Snowblind::CScene();
 	my2DScene->Initiate(my2DCamera, true);
@@ -57,15 +60,15 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/TexturedCube.fx")->SetAlbedo(myText->GetAtlas());
 
-	myInstance = new Snowblind::CInstance();
-	myInstance->Initiate(myModel);
-	myInstance->SetPosition({ 5.f, 0.f, 0.f });
-	myWorldScene->AddToScene(myInstance);
+	//myInstance = new Snowblind::CInstance();
+	//myInstance->Initiate(myModel);
+	//myInstance->SetPosition({ 5.f, 0.f, 0.f });
+	//myWorldScene->AddToScene(myInstance);
 
-	myInstance = new Snowblind::CInstance();
-	myInstance->Initiate(myTexturedModel);
-	myInstance->SetPosition({ 0.f, 5.f, 0.f });
-	myWorldScene->AddToScene(myInstance);
+	//myInstance = new Snowblind::CInstance();
+	//myInstance->Initiate(myTexturedModel);
+	//myInstance->SetPosition({ 0.f, 5.f, 0.f });
+	//myWorldScene->AddToScene(myInstance);
 
 	myTextTime = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16, my2DCamera);
 	myTextTime->SetPosition({ 0, 82 });
@@ -79,7 +82,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	//newModel->CreateModel();
 	myInstance = new Snowblind::CInstance();
 	myInstance->Initiate(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx"));
-	myWorldScene->AddToScene(myInstance);
+	//myWorldScene->AddToScene(myInstance);
 
 	//Snowblind::CDirectionalLight* dlight = new Snowblind::CDirectionalLight();
 	//dlight->Initiate({ -1, -1 ,0 }, { 0,0,0 }, { 1.f, 1.f, 0.f, 1.f });
@@ -103,6 +106,9 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	myController = new CU::ControllerInput(0);
 	myConsole->SetWorldScene(myWorldScene);
+
+	mySynchronizer = myEngine->GetSynchronizer();
+
 }
 
 bool CApplication::Update()
@@ -112,6 +118,7 @@ bool CApplication::Update()
 
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))
 	{
+		myEngine->OnExit();
 		return false;
 	}
 
@@ -137,16 +144,21 @@ bool CApplication::Update()
 	rText << "Render Time : " << myText->GetRenderTime() << "ms\n" << "Update Time : " << myText->GetUpdateTime() << "ms";
 	myTextTime->SetText(rText.str());
 
+	mySynchronizer->LogicIsDone();
+	mySynchronizer->WaitForRender();
 	return true;
 }
 
 void CApplication::Render()
 {
-	Snowblind::CEngine::Clear();
-	myWorldScene->Render();
-	my2DScene->Render();
-	myConsole->Render();
-	Snowblind::CEngine::Present();
+	//Snowblind::CEngine::Clear();
+	//myWorldScene->Render();
+	//my2DScene->Render();
+	//myConsole->Render();
+	//Snowblind::CEngine::Present();*/
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(0, 0, 0), SRenderCommand::eType::MODEL));
+
 }
 
 void CApplication::UpdateInput(float aDeltaTime)
@@ -162,7 +174,7 @@ void CApplication::UpdateInput(float aDeltaTime)
 			myCursorPosition.y -= myController->RightThumbstickY() * 0.005f;
 		}
 
-		
+
 	}
 	else
 	{
@@ -257,4 +269,9 @@ void CApplication::OnInactive()
 void CApplication::OnActive()
 {
 	CU::Input::InputWrapper::SetActiveWindow(true);
+}
+
+void CApplication::OnExit()
+{
+
 }

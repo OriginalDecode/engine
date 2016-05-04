@@ -87,7 +87,29 @@ float CalculateTotalAttenuation(float someDistance, float someRange)
 	return totalAttenuation;
 }
 
+float2 hash(float2 p) { p = float2(dot(p, float2(127.1, 311.7)), dot(p, float2(269.5, 183.3))); return frac(sin(p)*18.5453); }
 
+        // return distance, and cell id
+        float2 voronoi(in float2 x)
+        {
+            float2 n = floor(x);
+            float2 f = frac(x);
+
+            float3 m = 8.0;
+            for (int j = -1; j <= 1; j++)
+                for (int i = -1; i <= 1; i++)
+                {
+                    float2  g = float2(float(i), float(j));
+                    float2  o = hash(n + g);
+                    //vec2  r = g - f + o;
+                    float2  r = g - f + (0.5 + 0.5 *o);
+                    float d = dot(r, r);
+                    if (d<m.x)
+                        m = float3(d, o);
+                }
+
+            return float2(sqrt(m.x), m.y + m.z);
+        }
 
 float4 PS(PS_INPUT input) : SV_Target
 {
@@ -123,6 +145,8 @@ float4 PS(PS_INPUT input) : SV_Target
 		finalColor += saturate(lambert * PointLight[i].Color) * CalculateTotalAttenuation(distance,PointLight[i].Range);
 		finalColor = saturate(finalColor * 2);
 	}
+	//float2 b = voronoi(14.0 + 6.0 * input.UV);
+
 	
 	finalColor.a = 1;
 	return float4(diffuse.rgb + (albedo.rgb * finalColor.rgb), 1);

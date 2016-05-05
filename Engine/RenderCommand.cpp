@@ -11,3 +11,9 @@ SRenderCommand::SRenderCommand(Snowblind::CInstance* anInstance, const CU::Vecto
 SRenderCommand::SRenderCommand()
 {
 }
+
+SRenderCommand::SRenderCommand(Snowblind::CPointLight* aPointLight, const eType& aType)
+	: myPointLight(aPointLight)
+	, myType(aType)
+{
+}

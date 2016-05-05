@@ -17,6 +17,7 @@
 #include <AssetsContainer.h>
 #include <Synchronizer.h>
 #include "RenderCommand.h"
+#include <thread>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 
@@ -26,6 +27,8 @@ CApplication::CApplication()
 
 CApplication::~CApplication()
 {
+	myLogicThread->join();
+	SAFE_DELETE(myLogicThread);
 	SAFE_DELETE(my2DScene);
 	SAFE_DELETE(myWorldScene);
 	SAFE_DELETE(myConsole);
@@ -35,14 +38,14 @@ CApplication::~CApplication()
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
-
+	myQuitFlag = false;
 	my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0.f, 0.f, 1.f));
 
 	myEngine = Snowblind::CEngine::GetInstance();
 	myWorldScene = new Snowblind::CScene();
 	myCamera = myEngine->GetCamera();
 	myWorldScene->Initiate(myCamera);
-	myCamera->AddOrientation(&myOrientation);
+	//myCamera->AddOrientation(&myOrientation);
 
 	my2DScene = new Snowblind::CScene();
 	my2DScene->Initiate(my2DCamera, true);
@@ -101,7 +104,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myWorldScene->AddLight(light);
 
 	light = new Snowblind::CPointLight();
-	light->Initiate({ 0,-2, 10 }, { 1,0,1,1 }, 10);
+	light->Initiate({ 0, -2, 10 }, { 1, 0, 1, 1 }, 10);
 	myWorldScene->AddLight(light);
 
 	myController = new CU::ControllerInput(0);
@@ -109,44 +112,51 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	mySynchronizer = myEngine->GetSynchronizer();
 
+
+	myLogicThread = new std::thread([&]{CApplication::Update(); });
+
 }
 
-bool CApplication::Update()
+void CApplication::Update()
 {
-	CU::Input::InputWrapper::GetInstance()->Update();
-	float deltaTime = myEngine->GetDeltaTime();
 
-	if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))
+	while (mySynchronizer->HasQuit() == false)
 	{
-		myEngine->OnExit();
-		return false;
+		CU::Input::InputWrapper::GetInstance()->Update();
+		float deltaTime = myEngine->GetDeltaTime();
+
+		if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))
+		{
+			myEngine->OnExit();
+			myQuitFlag = true;
+		}
+
+
+		if (CU::Input::InputWrapper::GetInstance()->KeyClick(DIK_GRAVE))
+		{
+			myConsole->ToggleConsole();
+		}
+
+		if (myConsole->GetIsActive())
+			myConsole->Update();
+		else
+			UpdateInput(deltaTime);
+
+		std::stringstream ss;
+		ss << myEngine->GetFPS() << "\n" << "Camera Position : \nX : " << myOrientation.GetPosition().x << "\nY : " << myOrientation.GetPosition().y << "\nZ : " << myOrientation.GetPosition().z;
+		myText->SetText(ss.str());
+
+
+		myWorldScene->Update(deltaTime);
+		Render();
+		std::stringstream rText;
+		rText << "Render Time : " << myText->GetRenderTime() << "ms\n" << "Update Time : " << myText->GetUpdateTime() << "ms";
+		myTextTime->SetText(rText.str());
+
+		mySynchronizer->LogicIsDone();
+		mySynchronizer->WaitForRender();
 	}
-
-
-	if (CU::Input::InputWrapper::GetInstance()->KeyClick(DIK_GRAVE))
-	{
-		myConsole->ToggleConsole();
-	}
-
-	if (myConsole->GetIsActive())
-		myConsole->Update();
-	else
-		UpdateInput(deltaTime);
-
-	std::stringstream ss;
-	ss << myEngine->GetFPS() << "\n" << "Camera Position : \nX : " << myOrientation.GetPosition().x << "\nY : " << myOrientation.GetPosition().y << "\nZ : " << myOrientation.GetPosition().z;
-	myText->SetText(ss.str());
-
-
-	myWorldScene->Update(deltaTime);
-	Render();
-	std::stringstream rText;
-	rText << "Render Time : " << myText->GetRenderTime() << "ms\n" << "Update Time : " << myText->GetUpdateTime() << "ms";
-	myTextTime->SetText(rText.str());
-
-	mySynchronizer->LogicIsDone();
-	mySynchronizer->WaitForRender();
-	return true;
+	myQuitFlag = true;
 }
 
 void CApplication::Render()
@@ -274,4 +284,9 @@ void CApplication::OnActive()
 void CApplication::OnExit()
 {
 
+}
+
+bool CApplication::HasQuit()
+{
+	return myQuitFlag;
 }

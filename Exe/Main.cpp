@@ -44,11 +44,16 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		else if (newApplication->Update() == false)
+		if (newApplication->HasQuit() == true)
 		{
 			applicationIsRunning = false;
 			break;
 		}
+	/*	else if (newApplication->Update() == false)
+		{
+			applicationIsRunning = false;
+			break;
+		}*/
 		Snowblind::CEngine::Update();
 
 	} while (applicationIsRunning == true);

@@ -32,6 +32,10 @@ namespace Snowblind
 	class CSynchronizer;
 };
 
+namespace std
+{
+	class thread;
+};
 
 
 class CApplication
@@ -41,7 +45,7 @@ public:
 	~CApplication();
 	void Initiate(float aWindowWidth, float aWindowHeight);
 
-	bool Update();
+	void Update();
 	void Render(); //Use later
 
 	void OnPause();
@@ -49,6 +53,7 @@ public:
 	void OnInactive();
 	void OnActive();
 	void OnExit();
+	bool HasQuit();
 
 private:
 	void UpdateInput(float aDeltaTime);
@@ -82,5 +87,10 @@ private:
 	CU::Math::Vector2<float> myCursorPosition;
 
 	CU::ControllerInput* myController;
+
+	std::thread* myLogicThread;
+
+	volatile bool myQuitFlag;
+
 };
 

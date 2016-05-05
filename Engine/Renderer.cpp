@@ -23,27 +23,26 @@ namespace Snowblind
 
 	void CRenderer::Render()
 	{
-		while (mySynchronizer.HasQuit() == false)
+		CEngine::Clear();
+
+		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands();
+		for each(const SRenderCommand& command in commands)
 		{
-			CEngine::Clear();
-
-			const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands();
-			for each(const SRenderCommand& command in commands)
+			switch (command.myType)
 			{
-				switch (command.myType)
-				{
-				case SRenderCommand::eType::MODEL:
-					command.myInstance->Render(myCamera);
-					break;
-				}
+			case SRenderCommand::eType::MODEL:
+				command.myInstance->Render(myCamera);
+				break;
+			case SRenderCommand::eType::POINTLIGHT:
+				//command.myPointLight->
+				break;
 			}
-
-			CEngine::Present();
-
-			mySynchronizer.WaitForLogic();
-			mySynchronizer.SwapBuffer();
-			mySynchronizer.RenderIsDone();
-			std::this_thread::yield();
 		}
+
+		CEngine::Present();
+
+		mySynchronizer.WaitForLogic();
+		mySynchronizer.SwapBuffer();
+		mySynchronizer.RenderIsDone();
 	}
 };

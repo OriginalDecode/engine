@@ -75,7 +75,6 @@ namespace Snowblind
 		CU::TimeManager* myTimeManager;
 		CSynchronizer* mySynchronizer;
 
-		std::thread* myRenderThread;
 		CRenderer* myRenderer;
 		CCamera*  myCamera;
 	};

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Synchronizer.h"
 #include "Renderer.h"
-#include <thread>
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
@@ -22,15 +21,15 @@ namespace Snowblind
 		myFontManager->Initiate();
 		mySynchronizer = new CSynchronizer();
 		myRenderer = new CRenderer(*mySynchronizer, *myCamera);
-		myRenderThread = new std::thread(&CRenderer::Render, myRenderer);
+		//myRenderThread = new std::thread(&CRenderer::Render, myRenderer);
 	}
 
 	CEngine::~CEngine()
 	{
-		myRenderThread->join();
+		//myRenderThread->join();
 		SAFE_DELETE(mySynchronizer);
 		SAFE_DELETE(myRenderer);
-		SAFE_DELETE(myRenderThread);
+		//SAFE_DELETE(myRenderThread);
 
 		SAFE_DELETE(myAPI);
 		SAFE_DELETE(myFontManager);
@@ -70,6 +69,7 @@ namespace Snowblind
 	void CEngine::Update()
 	{
 		myInstance->myTimeManager->Update();
+		myInstance->myRenderer->Render();
 	}
 
 	void CEngine::Present()

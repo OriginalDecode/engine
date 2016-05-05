@@ -3,7 +3,6 @@
 namespace Snowblind
 {
 	CCamera::CCamera(float aWidth, float aHeight)
-		: myOrientation(CU::Matrix44f())
 	{
 		XMMATRIX projection;
 		projection = XMMatrixPerspectiveFovLH(XM_PI*0.3f, aWidth / FLOAT(aHeight), 0.1f, 100.f);
@@ -14,7 +13,6 @@ namespace Snowblind
 	}
 
 	CCamera::CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition)
-		: myOrientation(CU::Matrix44f())
 	{
 		my2DOrientation.myMatrix[3] = aPosition.x;
 		my2DOrientation.myMatrix[7] = aPosition.y;
@@ -39,13 +37,13 @@ namespace Snowblind
 
 	void CCamera::AddOrientation(CU::Matrix44f* anOrientation)
 	{
-		myOrientation = *anOrientation;
+		myOrientation = anOrientation;
 	}
 
 	void CCamera::Move(eDirection aDirection, float aSpeed)
 	{
 		CU::Math::Vector4<float> position;
-		position = myOrientation.GetTranslation();
+		position = myOrientation->GetTranslation();
 		switch (aDirection)
 		{
 		case eDirection::FORWARD:
@@ -67,24 +65,24 @@ namespace Snowblind
 			MoveLeftAndRight(position, aSpeed);
 			break;
 		}
-		myOrientation.SetTranslation(position);
+		myOrientation->SetTranslation(position);
 	}
 
 	void CCamera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)
 	{
-		CU::Math::Vector4<float> forward = myOrientation.GetForward();
+		CU::Math::Vector4<float> forward = myOrientation->GetForward();
 		aPosition += forward * aSpeed;
 	}
 
 	void CCamera::MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed)
 	{
-		CU::Math::Vector4<float> up = myOrientation.GetUp();
+		CU::Math::Vector4<float> up = myOrientation->GetUp();
 		aPosition += up * aSpeed;
 	}
 
 	void CCamera::MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed)
 	{
-		CU::Math::Vector4<float> right = myOrientation.GetRight();
+		CU::Math::Vector4<float> right = myOrientation->GetRight();
 		aPosition += right * aSpeed;
 	}
 

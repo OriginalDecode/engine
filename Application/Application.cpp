@@ -45,7 +45,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myWorldScene = new Snowblind::CScene();
 	myCamera = myEngine->GetCamera();
 	myWorldScene->Initiate(myCamera);
-	//myCamera->AddOrientation(&myOrientation);
+	myCamera->AddOrientation(&myOrientation);
 
 	my2DScene = new Snowblind::CScene();
 	my2DScene->Initiate(my2DCamera, true);

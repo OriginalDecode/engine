@@ -196,6 +196,7 @@
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontManager.h" />
+    <ClInclude Include="FullscreenHelper.h" />
     <ClInclude Include="GeometryUtility.h" />
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
@@ -232,6 +233,7 @@
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontManager.cpp" />
+    <ClCompile Include="FullscreenHelper.cpp" />
     <ClCompile Include="GeometryUtility.cxx" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Model.cpp" />

@@ -10,6 +10,8 @@ namespace Snowblind
 	{
 	public:
 		CTexture();
+		CTexture(float aWidth, float aHeight, unsigned int aBindFlag);
+
 		~CTexture();
 
 		const char*	GetFileName();
@@ -23,6 +25,8 @@ namespace Snowblind
 	private:
 
 		ID3D11ShaderResourceView* myShaderResource;
+		ID3D11RenderTargetView* myRenderTargetView;
+
 
 		int	myWidth;
 		int	myHeight;

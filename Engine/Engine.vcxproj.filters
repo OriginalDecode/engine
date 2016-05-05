@@ -163,6 +163,7 @@
     <ClInclude Include="Synchronizer.h" />
     <ClInclude Include="RenderCommand.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="FullscreenHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -244,5 +245,6 @@
     <ClCompile Include="Synchronizer.cpp" />
     <ClCompile Include="RenderCommand.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="FullscreenHelper.cpp" />
   </ItemGroup>
 </Project>

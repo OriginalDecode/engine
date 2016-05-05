@@ -84,7 +84,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	//Snowblind::CModel* newModel = factory.LoadModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/PBL_Shader.fx");
 	//newModel->CreateModel();
 	myInstance = new Snowblind::CInstance();
-	myInstance->Initiate(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx"));
+	myInstance->Initiate("Data/Model/pblScene/pblScene_03_binary.fbx");
 	//myWorldScene->AddToScene(myInstance);
 
 	//Snowblind::CDirectionalLight* dlight = new Snowblind::CDirectionalLight();

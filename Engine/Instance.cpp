@@ -3,9 +3,10 @@
 #include "Effect.h"
 #include "Model.h"
 #include "Camera.h"
+#include "AssetsContainer.h"
 namespace Snowblind
 {
-	CInstance::CInstance() 
+	CInstance::CInstance()
 	{
 	}
 
@@ -13,9 +14,19 @@ namespace Snowblind
 	{
 	}
 
-	void CInstance::Initiate(CModel* aModel)
+	void CInstance::Initiate(const char* aFilePath, const eModelType& aModelType)
 	{
-		myModel = aModel;
+		switch (aModelType)
+		{
+		case eModelType::STATIC:
+			myModel = Snowblind::CAssetsContainer::GetInstance()->GetModel(aFilePath);
+			break;
+		case eModelType::ANIMATED:
+			DL_ASSERT("Not implemented!");
+			break;
+		default:
+			break;
+		}
 	}
 
 	void CInstance::Update(float aDeltaTime)

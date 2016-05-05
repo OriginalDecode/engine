@@ -8,6 +8,38 @@ namespace Snowblind
 	{
 	}
 
+	CTexture::CTexture(float aWidth, float aHeight, unsigned int aBindFlag)
+	{
+		
+		D3D11_TEXTURE2D_DESC tempBufferInfo;
+		tempBufferInfo.Width = aWidth;
+		tempBufferInfo.Height = aHeight;
+		tempBufferInfo.MipLevels = 1;
+		tempBufferInfo.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		tempBufferInfo.SampleDesc.Count = 1;
+		tempBufferInfo.SampleDesc.Quality = 0;
+		tempBufferInfo.Usage = D3D11_USAGE_DEFAULT;
+		tempBufferInfo.BindFlags = aBindFlag;
+		tempBufferInfo.CPUAccessFlags = 0;
+		tempBufferInfo.MiscFlags = 0;
+
+		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
+
+		ID3D11Texture2D* tex;
+
+		HRESULT hr = device->CreateTexture2D(&tempBufferInfo, NULL, &tex);
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
+		
+		hr = device->CreateRenderTargetView(tex, NULL, &myRenderTargetView);
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
+
+		hr = device->CreateShaderResourceView(tex, NULL, &myShaderResource);
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
+
+
+
+	}
+
 	CTexture::~CTexture()
 	{
 		if (myShaderResource != nullptr)
@@ -32,9 +64,6 @@ namespace Snowblind
 			DL_WARNINGBOX_EXP(FAILED(hr), "Failed to load texture!");
 			return false;
 		}
-
-
-
 		return true;
 	}
 

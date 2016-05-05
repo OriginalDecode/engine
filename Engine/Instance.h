@@ -3,6 +3,13 @@
 #include "LightStructs.h"
 namespace Snowblind
 {
+	enum class eModelType
+	{
+		ANIMATED,
+		STATIC
+	};
+
+
 	class CModel;
 	class CCamera;
 	class CInstance
@@ -10,7 +17,7 @@ namespace Snowblind
 	public:
 		CInstance();
 		~CInstance();
-		void Initiate(CModel* aModel);
+		void Initiate(const char* aFilePath, const eModelType& aModelType = eModelType::STATIC);
 		void Update(float aDeltaTime);
 		void Render(CCamera& aCamera);
 		void SetPosition(CU::Math::Vector3<float> aPosition);

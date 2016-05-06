@@ -18,6 +18,7 @@ namespace Snowblind
 		CInstance();
 		~CInstance();
 		void Initiate(const char* aFilePath, const eModelType& aModelType = eModelType::STATIC);
+		void Initiate(CModel* aModel);
 		void Update(float aDeltaTime);
 		void Render(CCamera& aCamera);
 		void SetPosition(CU::Math::Vector3<float> aPosition);

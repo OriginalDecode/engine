@@ -1,0 +1,30 @@
+struct SkinnedVert
+{
+    float4 Pos;
+    float3 Norm;
+    float3 Tang;
+    float3 BiNorm;
+};
+
+SkinnedVert OptimisedSkinVertice(VS_INPUT input)
+{
+    SkinnedVert output = (SkinnedVert)0;
+
+    uint4 iBone = input.Bones;
+    float4 fWeight = input.Weights;
+
+    row_major float4x4 result;
+    result = fWeight.x * bones[iBone.x];
+    result += fWeight.y * bones[iBone.y];
+    result += fWeight.z * bones[iBone.z];
+    result += fWeight.w * bones[iBone.w];
+
+
+
+    output.Pos = mul(input.Pos, result);
+    output.Norm = mul(input.Normal, (float3x3)result);
+    output.Tang = mul(input.Tangent, (float3x3)result);
+    output.BiNorm = mul(input.BiNormal, (float3x3)result);
+
+    return output;
+}

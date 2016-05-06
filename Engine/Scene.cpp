@@ -50,7 +50,7 @@ namespace Snowblind
 			}
 			for (int i = 0; i < myText.Size(); i++)
 			{
-				myText[i]->Render();
+				myText[i]->Render(myCamera);
 			}
 			CEngine::GetDirectX()->EnableZBuffer();
 		}

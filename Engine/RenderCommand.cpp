@@ -17,3 +17,10 @@ SRenderCommand::SRenderCommand(Snowblind::CPointLight* aPointLight, const eType&
 	, myType(aType)
 {
 }
+
+SRenderCommand::SRenderCommand(const std::string aString, const CU::Math::Vector2<float>& aPosition, const eType& aType /*= eType::TEXT*/)
+	: myTextToPrint(aString)
+	, myPosition(aPosition)
+	, myType(aType)
+{
+}

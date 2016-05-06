@@ -1,25 +1,27 @@
 #include "SharedVariables.fx"
 
+
 PS_INPUT_POS_UV VS(VS_INPUT_POS_UV input)
 {
 	PS_INPUT_POS_UV output = (PS_INPUT_POS_UV)0;
-	
-	output.Pos = mul(input.Pos, World);
-	output.Pos = mul(output.Pos, View);
-	output.Pos.x *= Scale.x;
-	output.Pos.y *= Scale.y;
-	output.Pos.x += Position.x;
-	output.Pos.y += Position.y;	
-	output.Pos = mul(output.Pos, Projection);
+
 	output.UV = input.UV;
+	output.Pos = input.Pos;
+
 	return output;
-};
+}
 
 float4 PS(PS_INPUT_POS_UV input) : SV_Target
 {
-	float4 color = AlbedoTexture.Sample(linearSample_Wrap ,input.UV);	
-	return color;
-};
+	float4 albedo = AlbedoTexture.Sample(pointSample_Clamp, input.UV);
+	float4 normal = NormalTexture.Sample(pointSample_Clamp, input.UV);
+	normal.xyz *= 2.0f;
+	normal.xyz -= 1.f;
+	//float4 cubemap = CubeMap.SampleLevel(pointSample, normal, 7);
+
+	//return saturate(albedo * cubemap);
+	return saturate(albedo);
+}
 
 technique11 Render
 {

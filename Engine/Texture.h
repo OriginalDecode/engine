@@ -2,6 +2,7 @@
 
 struct ID3D11ShaderResourceView;
 struct ID3D11RenderTargetView;
+struct ID3D11DepthStencilView;
 struct ID3D11Texture2D;
 
 namespace Snowblind
@@ -10,7 +11,7 @@ namespace Snowblind
 	{
 	public:
 		CTexture();
-		CTexture(float aWidth, float aHeight, unsigned int aBindFlag);
+		CTexture(float aWidth, float aHeight, unsigned int aBindFlag, unsigned int aFormat);
 
 		~CTexture();
 
@@ -22,9 +23,11 @@ namespace Snowblind
 		ID3D11RenderTargetView** GetRenderTarget();
 		void SetTexture(ID3D11ShaderResourceView* aShaderResource);
 		void SaveToFile(const char* aFileName, int aSize);
+		void CreateDepthStencilView(float aWidth, float aHeight, int aArraySize = 1);
 	private:
 
 		ID3D11ShaderResourceView* myShaderResource;
+		ID3D11DepthStencilView* myDepthStencil;
 		ID3D11RenderTargetView* myRenderTargetView;
 
 

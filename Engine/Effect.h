@@ -27,7 +27,9 @@ namespace Snowblind
 
 		ID3DX11Effect* GetEffect();
 		ID3DX11EffectTechnique* GetTechnique();
+		ID3DX11EffectVariable* GetVariableByName(const std::string& variableName);
 
+		void SetTechniqueName(const std::string& aTechniqueName);
 		void SetAlbedo(CTexture* aTexturePtr);
 		void SetAlbedo(ID3D11ShaderResourceView* aTexturePtr);
 		void SetMatrices(CU::Math::Matrix44<float>& aToWorld, CU::Math::Matrix44<float>& aToView, CU::Math::Matrix44<float>& aProjection);
@@ -43,10 +45,11 @@ namespace Snowblind
 		void Validate(T* anEffectVariable, const std::string& anErrorMessage);
 	private:
 
+		std::string myTechniqueName;
+
 		ID3DX11Effect* myEffect;
 
 		ID3DX11EffectTechnique* myTechnique;
-
 		ID3DX11EffectMatrixVariable* myProjectionMatrix;
 		ID3DX11EffectMatrixVariable* myViewMatrix;
 		ID3DX11EffectMatrixVariable* myWorldMatrix;
@@ -62,11 +65,6 @@ namespace Snowblind
 	__forceinline ID3DX11Effect* CEffect::GetEffect()
 	{
 		return myEffect;
-	}
-
-	__forceinline ID3DX11EffectTechnique* CEffect::GetTechnique()
-	{
-		return myTechnique;
 	}
 
 	template <typename T>

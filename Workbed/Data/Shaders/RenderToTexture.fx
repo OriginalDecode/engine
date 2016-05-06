@@ -3,23 +3,16 @@
 PS_INPUT_POS_UV VS(VS_INPUT_POS_UV input)
 {
 	PS_INPUT_POS_UV output = (PS_INPUT_POS_UV)0;
-	
-	output.Pos = mul(input.Pos, World);
-	output.Pos = mul(output.Pos, View);
-	output.Pos.x *= Scale.x;
-	output.Pos.y *= Scale.y;
-	output.Pos.x += Position.x;
-	output.Pos.y += Position.y;	
-	output.Pos = mul(output.Pos, Projection);
 	output.UV = input.UV;
+	output.Pos = input.Pos;
+	
 	return output;
-};
+}
 
 float4 PS(PS_INPUT_POS_UV input) : SV_Target
 {
-	float4 color = AlbedoTexture.Sample(linearSample_Wrap ,input.UV);	
-	return color;
-};
+	return DiffuseTexture.Sample(linearSample_Clamp, input.UV);
+}
 
 technique11 Render
 {

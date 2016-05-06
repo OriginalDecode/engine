@@ -5,9 +5,8 @@
 #include "Camera.h"
 namespace Snowblind
 {
-	CText::CText(const char* aFilepath, int aSize, CCamera* aCamera)
+	CText::CText(const char* aFilepath, int aSize)
 	{
-		myCamera = aCamera;
 		myFont = CEngine::GetInstance()->LoadFont(aFilepath, aSize);
 		myScale = { 1, 1 };
 	}
@@ -19,11 +18,11 @@ namespace Snowblind
 		myFont = nullptr;
 	}
 
-	void CText::Render()
+	void CText::Render(CCamera* aCamera)
 	{
 		myFont->GetEffect()->SetPosition(myPosition);
 		myFont->GetEffect()->SetScale(myScale);
-		myFont->GetEffect()->SetMatrices(myOrientation, myCamera->Get2DOrientation(), myCamera->GetOrthogonalMatrix());
+		myFont->GetEffect()->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
 		myFont->Render();
 	}
 

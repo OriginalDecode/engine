@@ -9,10 +9,10 @@ namespace Snowblind
 	class CText
 	{
 	public:
-		CText(const char* aFilepath, int aSize, CCamera* aCamera);
+		CText(const char* aFilepath, int aSize);
 		~CText();
 	
-		void Render(); 
+		void Render(CCamera* aCamera);
 		void SetText(const std::string& aString);
 		void SetPosition(const CU::Math::Vector2<float>& aPosition);
 		void SetScale(const CU::Math::Vector2<float>& aScale);
@@ -22,7 +22,6 @@ namespace Snowblind
 		float GetUpdateTime();
 	private:
 
-		CCamera* myCamera;
 		CFont* myFont;
 		CU::Math::Matrix44<float> myOrientation;
 		CU::Math::Vector2<float> myPosition;

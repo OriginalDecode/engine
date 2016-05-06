@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Texture.h"
 #include <D3DX11.h>
+#include "BadValueException.h"
 
 namespace Snowblind
 {
@@ -8,35 +9,37 @@ namespace Snowblind
 	{
 	}
 
-	CTexture::CTexture(float aWidth, float aHeight, unsigned int aBindFlag)
+	CTexture::CTexture(float aWidth, float aHeight, unsigned int aBindFlag, unsigned int aFormat)
 	{
 		
 		D3D11_TEXTURE2D_DESC tempBufferInfo;
 		tempBufferInfo.Width = aWidth;
 		tempBufferInfo.Height = aHeight;
 		tempBufferInfo.MipLevels = 1;
-		tempBufferInfo.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		tempBufferInfo.Format = static_cast<DXGI_FORMAT>(aFormat);
 		tempBufferInfo.SampleDesc.Count = 1;
 		tempBufferInfo.SampleDesc.Quality = 0;
 		tempBufferInfo.Usage = D3D11_USAGE_DEFAULT;
 		tempBufferInfo.BindFlags = aBindFlag;
 		tempBufferInfo.CPUAccessFlags = 0;
 		tempBufferInfo.MiscFlags = 0;
+		tempBufferInfo.ArraySize = 1;
 
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
 		ID3D11Texture2D* tex;
 
 		HRESULT hr = device->CreateTexture2D(&tempBufferInfo, NULL, &tex);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
+		BAD_VALUE(hr != S_OK, hr);
+		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
 		
 		hr = device->CreateRenderTargetView(tex, NULL, &myRenderTargetView);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
+		BAD_VALUE(hr != S_OK, hr);
+		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
 
 		hr = device->CreateShaderResourceView(tex, NULL, &myShaderResource);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
-
-
+		BAD_VALUE(hr != S_OK, hr);
+		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
 
 	}
 
@@ -98,4 +101,25 @@ namespace Snowblind
 		CEngine::GetInstance()->GetAPI()->HandleErrors(hr, "Failed to save Texture! ");
 		resource->Release();
 	}
+
+	void CTexture::CreateDepthStencilView(float aWidth, float aHeight, int aArraySize)
+	{
+		D3D11_TEXTURE2D_DESC tempBufferInfo;
+		tempBufferInfo.Width = static_cast<unsigned int>(aWidth);
+		tempBufferInfo.Height = static_cast<unsigned int>(aHeight);
+		tempBufferInfo.MipLevels = 1;
+		tempBufferInfo.ArraySize = aArraySize;
+		tempBufferInfo.Format = DXGI_FORMAT_D32_FLOAT;
+		tempBufferInfo.SampleDesc.Count = 1;
+		tempBufferInfo.SampleDesc.Quality = 0;
+		tempBufferInfo.Usage = D3D11_USAGE_DEFAULT;
+		tempBufferInfo.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		tempBufferInfo.CPUAccessFlags = 0;
+		tempBufferInfo.MiscFlags = 0;
+
+		ID3D11Texture2D* tempBuffer;
+		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&tempBufferInfo, NULL, &tempBuffer);
+		CEngine::GetDirectX()->GetDevice()->CreateDepthStencilView(tempBuffer, NULL, &myDepthStencil);
+	}
+
 };

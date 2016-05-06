@@ -29,6 +29,11 @@ namespace Snowblind
 		}
 	}
 
+	void CInstance::Initiate(CModel* aModel)
+	{
+		myModel = aModel;
+	}
+
 	void CInstance::Update(float aDeltaTime)
 	{
 		//myOrientation = CU::Math::Matrix44<float>::CreateRotateAroundY(aRotation) * myOrientation;

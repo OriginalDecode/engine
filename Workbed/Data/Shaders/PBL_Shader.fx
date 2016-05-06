@@ -1,12 +1,4 @@
-matrix World;
-matrix View;
-matrix Projection;
-
-Texture2D AlbedoTexture;
-Texture2D NormalTexture;
-Texture2D RoughnessTexture;
-Texture2D SubstanceTexture;
-Texture2D AOTexture;
+#include "SharedVariables.fx"
 
 struct DIRECTIONAL_LIGHT
 {
@@ -25,35 +17,9 @@ struct POINT_LIGHT
 
 POINT_LIGHT PointLight[4];
 
-SamplerState sampleLinear
+PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG VS(VS_INPUT_POS_NORMAL_UV_BINORMAL_TANG input)
 {
-	Filter = MIN_MAG_MIP_LINEAR;
-	AddressU = Wrap;
-	AddressV = Wrap;
-};
-
-struct VS_INPUT
-{
-	float4 Pos : POSITION;
-	float3 Normal : NORMAL;
-	float2 UV : TEXCOORD;
-	float3 BiNormal : BINORMAL;
-	float3 Tang : TANGENT;
-};
-
-struct PS_INPUT
-{
-	float4 Pos : SV_POSITION0;
-	float3 Normal : NORMAL;
-	float2 UV : TEXCOORD;
-	float3 BiNormal : BINORMAL;
-	float3 Tang : TANGENT;
-	float3 WorldPos : POSITION;
-};
-
-PS_INPUT VS(VS_INPUT input)
-{
-	PS_INPUT output = (PS_INPUT)0;
+	PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG output = (PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG)0;
 	output.Pos = mul(input.Pos, World);
 	output.Pos = mul(output.Pos, View);
 	output.Pos = mul(output.Pos, Projection);
@@ -87,37 +53,13 @@ float CalculateTotalAttenuation(float someDistance, float someRange)
 	return totalAttenuation;
 }
 
-float2 hash(float2 p) { p = float2(dot(p, float2(127.1, 311.7)), dot(p, float2(269.5, 183.3))); return frac(sin(p)*18.5453); }
-
-        // return distance, and cell id
-        float2 voronoi(in float2 x)
-        {
-            float2 n = floor(x);
-            float2 f = frac(x);
-
-            float3 m = 8.0;
-            for (int j = -1; j <= 1; j++)
-                for (int i = -1; i <= 1; i++)
-                {
-                    float2  g = float2(float(i), float(j));
-                    float2  o = hash(n + g);
-                    //vec2  r = g - f + o;
-                    float2  r = g - f + (0.5 + 0.5 *o);
-                    float d = dot(r, r);
-                    if (d<m.x)
-                        m = float3(d, o);
-                }
-
-            return float2(sqrt(m.x), m.y + m.z);
-        }
-
-float4 PS(PS_INPUT input) : SV_Target
+float4 PS(PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG input) : SV_Target
 {
-	float4 albedo = AlbedoTexture.Sample(sampleLinear, input.UV);
+	float4 albedo = AlbedoTexture.Sample(linearSample_Wrap, input.UV);
 	float3 binormal = normalize(cross(input.Normal, input.Tang));
-	float3 normal = NormalTexture.Sample(sampleLinear, input.UV);
-	float4 roughness = RoughnessTexture.Sample(sampleLinear, input.UV);
-	float4 metalness = SubstanceTexture.Sample(sampleLinear, input.UV);
+	float3 normal = NormalTexture.Sample(linearSample_Wrap, input.UV);
+	float4 roughness = RoughnessTexture.Sample(linearSample_Wrap, input.UV);
+	float4 metalness = MetalnessTexture.Sample(linearSample_Wrap, input.UV);
 	
 	float3x3 tangentSpaceMatrix = float3x3(input.Tang, binormal, input.Normal);
 
@@ -125,7 +67,6 @@ float4 PS(PS_INPUT input) : SV_Target
 	normal = normalize(normal);
 	input.Tang = normalize(input.Tang);
 	normal = normalize(mul(normal, tangentSpaceMatrix));
-	//return float4(input.Normal.xyz, 1);
 	float4 finalColor = 0.0f;
 	//return DirectionalLight[0].Direction;
 	

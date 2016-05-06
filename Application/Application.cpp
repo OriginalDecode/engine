@@ -18,6 +18,8 @@
 #include <Synchronizer.h>
 #include "RenderCommand.h"
 #include <thread>
+#include <BadValueException.h>
+#include <DeferredRenderer.h>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 
@@ -34,125 +36,84 @@ CApplication::~CApplication()
 	SAFE_DELETE(myConsole);
 	SAFE_DELETE(myController);
 	SAFE_DELETE(myInstance);
+	SAFE_DELETE(myDeferredRenderer);
 }
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
+	myAverageFPS = 0;
 	myQuitFlag = false;
-	my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0.f, 0.f, 1.f));
-
 	myEngine = Snowblind::CEngine::GetInstance();
-	myWorldScene = new Snowblind::CScene();
 	myCamera = myEngine->GetCamera();
-	myWorldScene->Initiate(myCamera);
 	myCamera->AddOrientation(&myOrientation);
 
-	my2DScene = new Snowblind::CScene();
-	my2DScene->Initiate(my2DCamera, true);
-
-	myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16, my2DCamera);
-	myText->SetScale({ 1, 1 });
-	myText->SetPosition({ 0, 0 });
-	my2DScene->AddToScene(myText);
-
-	myModel = new Snowblind::CModel();
-	myModel->CreateCube("Data/Shaders/Cube.fx", 1.f, 1.f, 1.f);
-
-	myTexturedModel = new Snowblind::CModel();
-	myTexturedModel->CreateTexturedCube("Data/Shaders/TexturedCube.fx", 1.f, 1.f, 1.f);
-
-	Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/TexturedCube.fx")->SetAlbedo(myText->GetAtlas());
-
-	//myInstance = new Snowblind::CInstance();
-	//myInstance->Initiate(myModel);
-	//myInstance->SetPosition({ 5.f, 0.f, 0.f });
-	//myWorldScene->AddToScene(myInstance);
-
-	//myInstance = new Snowblind::CInstance();
-	//myInstance->Initiate(myTexturedModel);
-	//myInstance->SetPosition({ 0.f, 5.f, 0.f });
-	//myWorldScene->AddToScene(myInstance);
-
-	myTextTime = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16, my2DCamera);
-	myTextTime->SetPosition({ 0, 82 });
-	my2DScene->AddToScene(myTextTime);
-
-	myConsole = new Snowblind::CConsole();
-	myConsole->Initiate(my2DCamera);
-
-	//FBXFactory factory;
-	//Snowblind::CModel* newModel = factory.LoadModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/PBL_Shader.fx");
-	//newModel->CreateModel();
 	myInstance = new Snowblind::CInstance();
 	myInstance->Initiate("Data/Model/pblScene/pblScene_03_binary.fbx");
-	//myWorldScene->AddToScene(myInstance);
+	
 
 	//Snowblind::CDirectionalLight* dlight = new Snowblind::CDirectionalLight();
 	//dlight->Initiate({ -1, -1 ,0 }, { 0,0,0 }, { 1.f, 1.f, 0.f, 1.f });
 	//myWorldScene->AddLight(dlight);
 
-	Snowblind::CPointLight* light = new Snowblind::CPointLight();
-	light->Initiate({ 0, -2, 0 }, { 1, 0, 0, 1 }, 10);
-	myWorldScene->AddLight(light);
-
-	light = new Snowblind::CPointLight();
-	light->Initiate({ 5, -2, 0 }, { 0, 1, 0, 1 }, 10);
-	myWorldScene->AddLight(light);
-
-	light = new Snowblind::CPointLight();
-	light->Initiate({ -5, -2, 0 }, { 0, 0, 1, 1 }, 10);
-	myWorldScene->AddLight(light);
-
-	light = new Snowblind::CPointLight();
-	light->Initiate({ 0, -2, 10 }, { 1, 0, 1, 1 }, 10);
-	myWorldScene->AddLight(light);
-
-	myController = new CU::ControllerInput(0);
-	myConsole->SetWorldScene(myWorldScene);
+	//Snowblind::CPointLight* light = new Snowblind::CPointLight();
+	//light->Initiate({ 0, -2, 0 }, { 1, 0, 0, 1 }, 10);
+	//myWorldScene->AddLight(light);
+	//
+	//light = new Snowblind::CPointLight();
+	//light->Initiate({ 5, -2, 0 }, { 0, 1, 0, 1 }, 10);
+	//myWorldScene->AddLight(light);
+	//
+	//light = new Snowblind::CPointLight();
+	//light->Initiate({ -5, -2, 0 }, { 0, 0, 1, 1 }, 10);
+	//myWorldScene->AddLight(light);
+	//
+	//light = new Snowblind::CPointLight();
+	//light->Initiate({ 0, -2, 10 }, { 1, 0, 1, 1 }, 10);
+	//myWorldScene->AddLight(light);
+	//
+	//myController = new CU::ControllerInput(0);
+	//myConsole->SetWorldScene(myWorldScene);
 
 	mySynchronizer = myEngine->GetSynchronizer();
 
 
-	myLogicThread = new std::thread([&]{CApplication::Update(); });
-
+	myLogicThread = new std::thread([&] {CApplication::Update(); });
+	myDeferredRenderer = new Snowblind::CDeferredRenderer();
 }
 
 void CApplication::Update()
 {
-
+	float time = 0.f;
+	int frameCount = 0;
 	while (mySynchronizer->HasQuit() == false)
 	{
-		CU::Input::InputWrapper::GetInstance()->Update();
 		float deltaTime = myEngine->GetDeltaTime();
+
+		myAverageFPS += myEngine->GetFPS();
+		time -= deltaTime;
+		frameCount++;
+		if (time < 0.f)
+		{
+			time = 1.f;
+			myAverageFPSToPrint = myAverageFPS / frameCount;
+			myAverageFPS = 0;
+			frameCount = 0;
+		}
+
+		CU::Input::InputWrapper::GetInstance()->Update();
 
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))
 		{
 			myEngine->OnExit();
 			myQuitFlag = true;
 		}
-
-
-		if (CU::Input::InputWrapper::GetInstance()->KeyClick(DIK_GRAVE))
-		{
-			myConsole->ToggleConsole();
-		}
-
-		if (myConsole->GetIsActive())
-			myConsole->Update();
-		else
-			UpdateInput(deltaTime);
+		UpdateInput(deltaTime);
 
 		std::stringstream ss;
-		ss << myEngine->GetFPS() << "\n" << "Camera Position : \nX : " << myOrientation.GetPosition().x << "\nY : " << myOrientation.GetPosition().y << "\nZ : " << myOrientation.GetPosition().z;
-		myText->SetText(ss.str());
+		ss << myEngine->GetFPS() << "\n" << myAverageFPSToPrint << "\nCamera Position : \nX : " << myOrientation.GetPosition().x << "\nY : " << myOrientation.GetPosition().y << "\nZ : " << myOrientation.GetPosition().z;
+		mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Math::Vector2<float>(0, 0)));
 
-
-		myWorldScene->Update(deltaTime);
 		Render();
-		std::stringstream rText;
-		rText << "Render Time : " << myText->GetRenderTime() << "ms\n" << "Update Time : " << myText->GetUpdateTime() << "ms";
-		myTextTime->SetText(rText.str());
-
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();
 	}
@@ -161,36 +122,17 @@ void CApplication::Update()
 
 void CApplication::Render()
 {
-	//Snowblind::CEngine::Clear();
-	//myWorldScene->Render();
-	//my2DScene->Render();
-	//myConsole->Render();
-	//Snowblind::CEngine::Present();*/
-
 	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(0, 0, 0), SRenderCommand::eType::MODEL));
-
+	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(25, 0, 0), SRenderCommand::eType::MODEL)); 
+	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(-25, 0, 0), SRenderCommand::eType::MODEL));
 }
 
 void CApplication::UpdateInput(float aDeltaTime)
 {
-	if (myController->IsConnected())
-	{
-		if (myController->RightThumbstickX() > 0.5f || myController->RightThumbstickX() < -0.5f)
-		{
-			myCursorPosition.x += myController->RightThumbstickX() * 0.005f;
-		}
-		if (myController->RightThumbstickY() > 0.5f || myController->RightThumbstickY() < -0.5f)
-		{
-			myCursorPosition.y -= myController->RightThumbstickY() * 0.005f;
-		}
 
+	myCursorPosition.x += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectX()) * 0.01f;
+	myCursorPosition.y += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectY()) * 0.01f;
 
-	}
-	else
-	{
-		myCursorPosition.x += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectX()) * 0.01f;
-		myCursorPosition.y += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectY()) * 0.01f;
-	}
 
 	myCursorPosition.y = fmaxf(fminf(3.1415f / 2.f, myCursorPosition.y), -3.1415f / 2.f);
 
@@ -238,26 +180,6 @@ void CApplication::UpdateInput(float aDeltaTime)
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(A))
 	{
 		myCamera->Move(Snowblind::eDirection::LEFT, -MOVE_SPEED * aDeltaTime);
-	}
-
-	if (myController->IsConnected())
-	{
-		if (myController->LeftThumbstickY() > 0.5f)
-		{
-			myCamera->Move(Snowblind::eDirection::FORWARD, MOVE_SPEED * aDeltaTime);
-		}
-		if (myController->LeftThumbstickY() < -0.5f)
-		{
-			myCamera->Move(Snowblind::eDirection::BACK, -MOVE_SPEED * aDeltaTime);
-		}
-		if (myController->LeftThumbstickX() < -0.5f)
-		{
-			myCamera->Move(Snowblind::eDirection::LEFT, -MOVE_SPEED * aDeltaTime);
-		}
-		if (myController->LeftThumbstickX() > 0.5f)
-		{
-			myCamera->Move(Snowblind::eDirection::RIGHT, MOVE_SPEED * aDeltaTime);
-		}
 	}
 }
 

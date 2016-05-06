@@ -121,7 +121,7 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 		}
 		if (currentTexture.myType == SUBSTANCE)
 		{
-			resourceName = "SubstanceTexture";
+			resourceName = "MetalnessTexture";
 		}
 		if (currentTexture.myType == AO)
 		{

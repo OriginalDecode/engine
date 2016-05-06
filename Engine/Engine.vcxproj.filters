@@ -64,6 +64,9 @@
     <Filter Include="Light\Point">
       <UniqueIdentifier>{791e4e65-fbaa-4ed1-ba33-8e600bf6b28c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{d8548c38-fabc-49ce-9df5-72949776396c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -160,10 +163,22 @@
       <Filter>Light\Point</Filter>
     </ClInclude>
     <ClInclude Include="AssetsContainer.h" />
-    <ClInclude Include="Synchronizer.h" />
-    <ClInclude Include="RenderCommand.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="FullscreenHelper.h" />
+    <ClInclude Include="FullscreenHelper.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCommand.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Synchronizer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredRenderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="BadValueException.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -242,9 +257,20 @@
       <Filter>Light\Point</Filter>
     </ClCompile>
     <ClCompile Include="AssetsContainer.cpp" />
-    <ClCompile Include="Synchronizer.cpp" />
-    <ClCompile Include="RenderCommand.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="FullscreenHelper.cpp" />
+    <ClCompile Include="FullscreenHelper.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderCommand.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Synchronizer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredRenderer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

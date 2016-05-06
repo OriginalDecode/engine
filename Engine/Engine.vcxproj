@@ -184,9 +184,11 @@
   <ItemGroup>
     <ClInclude Include="AnimationUtility.h" />
     <ClInclude Include="AssetsContainer.h" />
+    <ClInclude Include="BadValueException.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Console.h" />
+    <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX11.h" />
     <ClInclude Include="Effect.h" />
@@ -225,6 +227,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Common.cxx" />
     <ClCompile Include="Console.cpp" />
+    <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectX11.cpp" />
     <ClCompile Include="Effect.cpp" />

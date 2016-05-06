@@ -43,8 +43,9 @@ namespace Snowblind
 		static void Destroy();
 		static CEngine* GetInstance();
 		static CDirectX11* GetDirectX();
-
+		void Initiate();
 		CCamera* GetCamera();
+		CCamera* Get2DCamera();
 		static void Update();
 		static void Present();
 		static void Clear();
@@ -77,6 +78,8 @@ namespace Snowblind
 
 		CRenderer* myRenderer;
 		CCamera*  myCamera;
+		CCamera*  my2DCamera;
+
 	};
 
 	__forceinline CDirectX11* CEngine::GetAPI()

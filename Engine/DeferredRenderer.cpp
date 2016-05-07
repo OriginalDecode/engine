@@ -107,7 +107,7 @@ namespace Snowblind
 		myLightPass.myNormal->SetResource(myNormal->GetShaderView());
 		myLightPass.myDepth->SetResource(myDepth->GetShaderView());
 
-		myLightPass.myEffect->SetViewMatrix(aCamera->GetOrientation());
+		myLightPass.myEffect->SetViewMatrix(CU::Math::Inverse(aCamera->GetOrientation()));
 		myLightPass.myEffect->SetProjectionMatrix(aCamera->GetProjection());
 
 		myLightPass.myInvertedProjection->SetMatrix(&CU::Math::InverseReal(aCamera->GetProjection()).myMatrix[0]);
@@ -154,9 +154,6 @@ namespace Snowblind
 		myAmbientPass.myDepth->SetResource(NULL);
 
 		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
-		
-		//UpdateLight
-		//RenderPointLights
 	}
 
 	void CDeferredRenderer::CreateLightData()

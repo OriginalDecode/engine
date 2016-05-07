@@ -76,9 +76,9 @@ namespace Snowblind
 		myData.myRange = GetRange();
 	}
 
-	void CPointLight::Render()
+	void CPointLight::Render(CCamera* camera)
 	{
-		myLightMesh->Render();
+		myLightMesh->Render(*camera);
 	}
 
 	const SPointlightData& CPointLight::GetData() const

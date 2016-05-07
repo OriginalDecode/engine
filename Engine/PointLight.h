@@ -26,7 +26,7 @@ namespace Snowblind
 		const float& GetRange();
 
 		void Update();
-		void Render();
+		void Render(CCamera* camera);
 		const SPointlightData& GetData() const;
 #ifdef _DEBUG
 		CInstance* GetInstance();

@@ -25,6 +25,8 @@ namespace Snowblind
 	{
 		SAFE_DELETE(my2DCamera);
 		SAFE_DELETE(myDeferredRenderer);
+		SAFE_DELETE(myText);
+
 	}
 
 	void CRenderer::Add2DCamera(CCamera* aCamera)
@@ -97,7 +99,7 @@ namespace Snowblind
 				command.myPointLight->SetPosition(command.myPosition);
 				command.myPointLight->SetColor({ command.myColor.r, command.myColor.g, command.myColor.b, 1.f });
 				command.myPointLight->Update();
-				myDeferredRenderer->RenderLight(command.myPointLight);
+				myDeferredRenderer->RenderLight(command.myPointLight, myCamera);
 				break;
 			}
 		}

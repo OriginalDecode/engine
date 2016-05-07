@@ -38,7 +38,7 @@ namespace Snowblind
 		ID3D11ShaderResourceView* GetDeferredTexture(const eDeferredType& aDeferredType);
 		void SetLightState(CCamera* aCamera);
 		void SetNormalState();
-		void RenderLight(CPointLight* pointlight);
+		void RenderLight(CPointLight* pointlight, CCamera* aCamera);
 	private:
 		void Render(CEffect* anEffect);
 		
@@ -62,9 +62,6 @@ namespace Snowblind
 			ID3DX11EffectShaderResourceVariable* myNormal = nullptr;
 			ID3DX11EffectShaderResourceVariable* myDepth = nullptr;
 			ID3DX11EffectVariable* myPointLightVariable;
-			ID3DX11EffectMatrixVariable* myProjection;
-			ID3DX11EffectMatrixVariable* myView;
-			ID3DX11EffectMatrixVariable* myWorld;
 			ID3DX11EffectMatrixVariable* myInvertedProjection;
 			ID3DX11EffectMatrixVariable* myNotInvertedView;
 		};

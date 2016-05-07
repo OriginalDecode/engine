@@ -107,9 +107,6 @@ namespace Snowblind
 		myLightPass.myNormal->SetResource(myNormal->GetShaderView());
 		myLightPass.myDepth->SetResource(myDepth->GetShaderView());
 
-		myLightPass.myEffect->SetViewMatrix(CU::Math::Inverse(aCamera->GetOrientation()));
-		myLightPass.myEffect->SetProjectionMatrix(aCamera->GetProjection());
-
 		myLightPass.myInvertedProjection->SetMatrix(&CU::Math::InverseReal(aCamera->GetProjection()).myMatrix[0]);
 		myLightPass.myNotInvertedView->SetMatrix(&aCamera->GetOrientation().myMatrix[0]);
 
@@ -126,10 +123,10 @@ namespace Snowblind
 		myLightPass.myDepth->SetResource(NULL);
 	}
 
-	void CDeferredRenderer::RenderLight(CPointLight* pointlight)
+	void CDeferredRenderer::RenderLight(CPointLight* pointlight, CCamera* aCamera)
 	{
 		myLightPass.myPointLightVariable->SetRawValue(&pointlight->GetData(), 0, sizeof(SPointlightData));
-		pointlight->Render();
+		pointlight->Render(aCamera);
 	}
 
 	void CDeferredRenderer::DeferredRender()
@@ -159,14 +156,12 @@ namespace Snowblind
 	void CDeferredRenderer::CreateLightData()
 	{
 		myLightPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredLightMesh.fx");
+
 		myLightPass.myAlbedo = myLightPass.myEffect->GetVariableByName("AlbedoTexture")->AsShaderResource();
 		myLightPass.myNormal = myLightPass.myEffect->GetVariableByName("NormalTexture")->AsShaderResource();
 		myLightPass.myDepth = myLightPass.myEffect->GetVariableByName("DepthTexture;")->AsShaderResource();
 		myLightPass.myPointLightVariable = myLightPass.myEffect->GetVariableByName("PointLights");
 
-		myLightPass.myView = myLightPass.myEffect->GetEffect()->GetVariableByName("View")->AsMatrix();
-		myLightPass.myProjection = myLightPass.myEffect->GetEffect()->GetVariableByName("Projection")->AsMatrix();
-		myLightPass.myWorld = myLightPass.myEffect->GetEffect()->GetVariableByName("World")->AsMatrix();
 		myLightPass.myInvertedProjection = myLightPass.myEffect->GetEffect()->GetVariableByName("InvertedProjection")->AsMatrix();
 		myLightPass.myNotInvertedView = myLightPass.myEffect->GetEffect()->GetVariableByName("NotInvertedView")->AsMatrix();
 	}
@@ -174,6 +169,7 @@ namespace Snowblind
 	void CDeferredRenderer::CreateAmbientData()
 	{
 		myAmbientPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredAmbient.fx");
+
 		myAmbientPass.myAlbedo = myAmbientPass.myEffect->GetVariableByName("AlbedoTexture")->AsShaderResource();
 		myAmbientPass.myNormal = myAmbientPass.myEffect->GetVariableByName("NormalTexture")->AsShaderResource();
 		myAmbientPass.myDepth = myAmbientPass.myEffect->GetVariableByName("DepthTexture;")->AsShaderResource();

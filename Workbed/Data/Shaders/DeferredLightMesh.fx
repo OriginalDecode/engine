@@ -6,9 +6,9 @@ PS_LIGHTMESH VS(VS_LIGHTMESH input)
 {
 	PS_LIGHTMESH output = (PS_LIGHTMESH)0;
 
-	float4 scale = float4(PointLights[0].Range,PointLights[0].Range, PointLights[0].Range, 1.0f);
+	float4 scale = float4(PointLights[0].Range, PointLights[0].Range, PointLights[0].Range, 1.0f);
 	input.Pos *= scale;
-	
+
 	input.Pos.w = 1.0f;
 
 	output.Pos = mul(input.Pos, World);
@@ -19,8 +19,8 @@ PS_LIGHTMESH VS(VS_LIGHTMESH input)
 	float y = output.Pos.y;
 	float w = output.Pos.w;
 
-	output.UV = float4((float2(x + w, w - y)) / 2, output.Pos.zw);
-	
+	output.UV = float4((float2(x + w, w - y)) *0.5f, output.Pos.zw);
+
 	return output;
 }
 
@@ -49,31 +49,31 @@ float4 PS(PS_LIGHTMESH input) : SV_Target
 {
 	input.UV /= input.UV.w;
 	float2 texCoord = input.UV.xy;
-	
+
 	float4 albedo = AlbedoTexture.Sample(pointSample_Clamp, texCoord);
 	float4 normal = NormalTexture.Sample(pointSample_Clamp, texCoord);
 	float4 depth = DepthTexture.Sample(pointSample_Clamp, texCoord);
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
 
-	//float4 diffuse = ambient * albedo;
-	
+	float4 diffuse = ambient * albedo;
+
 	float x = texCoord.x * 2.f - 1.f;
 	float y = (1.f - texCoord.y) * 2.f - 1.f;
 	float z = depth.x;
 
 	float4 worldPosition = float4(x, y, z, 1.f);
-	//worldPosition = mul(worldPosition, InvertedProjection);
+	worldPosition = mul(worldPosition, InvertedProjection);
 	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, NotInvertedView);
-	
-	
+
+
 	//PointLight-Calc
 	float3 lightVec = PointLights[0].Position - worldPosition;
-	
+
 	float distance = length(lightVec);
 	lightVec = normalize(lightVec);
-	
+
 	float lambert = dot(lightVec, normal);
 
 	float3 lightColor = 0.f;
@@ -83,8 +83,7 @@ float4 PS(PS_LIGHTMESH input) : SV_Target
 
 	float4 finalColor = float4(lightColor * intensity, 1.f);
 	finalColor.a = 1.f;
-	return finalColor;
-	//return float4(diffuse.rgb + (albedo.rgb * finalColor.rgb),1.f);
+	return float4(diffuse.rgb + (albedo.rgb * finalColor.rgb),1.f);
 }
 
 BlendState Blend

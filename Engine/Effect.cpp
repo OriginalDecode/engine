@@ -122,16 +122,6 @@ namespace Snowblind
 		myProjectionMatrix = myEffect->GetVariableByName("Projection")->AsMatrix();
 		Validate(myProjectionMatrix, "Projection Matrix Invalid!");
 
-		myDirectionalLightData = myEffect->GetVariableByName("DirectionalLight");
-		//Validate(myDirectionalLightData);
-
-		myPointLightData = myEffect->GetVariableByName("PointLight");
-		//Validate(myPointLightData);
-
-		mySpotLightData = myEffect->GetVariableByName("SpotLight");
-		//Validate(mySpotLightData);
-
-
 
 	}
 

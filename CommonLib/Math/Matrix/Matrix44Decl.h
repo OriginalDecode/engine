@@ -42,6 +42,7 @@ namespace CommonUtilities
 			void SetRight(const Vector4<TYPE>& aVector);
 			void SetUp(const Vector4<TYPE>& aVector);
 			void SetPosition(const Vector3<TYPE>& aVector);
+			void SetPosition(const Vector4<TYPE>& aVector);
 
 			const Vector4<TYPE> GetForward() const;
 			const Vector4<TYPE> GetRight() const;

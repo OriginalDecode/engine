@@ -333,6 +333,17 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
+		void Matrix44<TYPE>::SetPosition(const Vector4<TYPE>& aVector)
+		{
+			myMatrix[12] = aVector.x;
+			myMatrix[13] = aVector.y;
+			myMatrix[14] = aVector.z;
+			myMatrix[15] = aVector.w;
+
+		}
+
+
+		template<typename TYPE>
 		void Matrix44<TYPE>::SetRight(const Vector4<TYPE>& aVector)
 		{
 			myMatrix[0] = aVector.x;
@@ -362,7 +373,7 @@ namespace CommonUtilities
 		template<typename TYPE>
 		const Matrix44<TYPE> Inverse(const Matrix44<TYPE>& aMatrix)
 		{
-			Vector4<TYPE> theTranslation;
+			/*Vector4<TYPE> theTranslation;
 
 			theTranslation = aMatrix.GetTranslation();
 			theTranslation.x *= -1;
@@ -378,7 +389,19 @@ namespace CommonUtilities
 			theTranslation = theTranslation*theMatrix;
 			theMatrix.SetTranslation(theTranslation.x, theTranslation.y, theTranslation.z, theTranslation.w);
 
-			return theMatrix;
+			return theMatrix;*/
+
+			Matrix44<float> inverse(aMatrix);
+
+			Vector4<float> translation = inverse.GetTranslation();
+			inverse.SetPosition(Vector4<float>(0, 0, 0, 1.f));
+			translation *= -1.f;
+			translation.w = 1.f;
+			inverse = Transpose(inverse);
+			translation = translation * inverse;
+
+			inverse.SetPosition(translation);
+			return inverse;
 		}
 
 

@@ -24,6 +24,26 @@ PS_LIGHTMESH VS(VS_LIGHTMESH input)
 	return output;
 }
 
+static const float ambient = 0.42f;
+
+float CalculateAttenuation(float someDistance)
+{
+	float attenuation = 1.f / (1.f + 0.1f * someDistance + 0.01f * someDistance * someDistance);
+	return attenuation;
+}
+
+float CalculateFalloff(float someDistance, float someRange)
+{
+	float fallOff = 1.f - (someDistance / (someRange + 0.1f));
+	return fallOff;
+}
+
+float CalculateTotalAttenuation(float someDistance, float someRange)
+{
+	float totalAttenuation = CalculateAttenuation(someDistance) * CalculateFalloff(someDistance, someRange);
+	return totalAttenuation;
+}
+
 
 float4 PS(PS_LIGHTMESH input) : SV_Target
 {
@@ -36,35 +56,35 @@ float4 PS(PS_LIGHTMESH input) : SV_Target
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
 
+	//float4 diffuse = ambient * albedo;
+	
 	float x = texCoord.x * 2.f - 1.f;
 	float y = (1.f - texCoord.y) * 2.f - 1.f;
 	float z = depth.x;
 
 	float4 worldPosition = float4(x, y, z, 1.f);
-	worldPosition = mul(worldPosition, InvertedProjection);
+	//worldPosition = mul(worldPosition, InvertedProjection);
 	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, NotInvertedView);
-
+	
+	
 	//PointLight-Calc
-	float4 lightVec = PointLights[0].Position - worldPosition;
+	float3 lightVec = PointLights[0].Position - worldPosition;
 	
 	float distance = length(lightVec);
 	lightVec = normalize(lightVec);
-
-	float attenuation = 1.f / (1.f + 0.1f * distance + 0.01f * distance * distance);
-	float fallOff = 1.f - (distance / (PointLights[0].Range + 0.00001f));
-	float totalAttenuation = attenuation * fallOff;
-
+	
 	float lambert = dot(lightVec, normal);
 
-	float3 lightColor = PointLights[0].Color.xyz;
+	float3 lightColor = 0.f;
 	float intensity = PointLights[0].Color.w;
 
-	lightColor = saturate(lambert * lightColor);
+	lightColor = saturate(lambert * PointLights[0].Color) * CalculateTotalAttenuation(distance, PointLights[0].Range);
 
 	float4 finalColor = float4(lightColor * intensity, 1.f);
-
-	return saturate(finalColor * totalAttenuation);
+	finalColor.a = 1.f;
+	return finalColor;
+	//return float4(diffuse.rgb + (albedo.rgb * finalColor.rgb),1.f);
 }
 
 BlendState Blend

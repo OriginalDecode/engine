@@ -43,6 +43,7 @@ namespace Snowblind
 		myDeferredRenderer->SetLightState(&myCamera);
 		RenderLightCommands();
 		myDeferredRenderer->SetNormalState();
+
 		Render2DCommands();
 
 		CEngine::Present();
@@ -60,7 +61,6 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::MODEL:
-				RENDER_LOG("Rendering Static-Model");
 				command.myInstance->SetPosition(command.myPosition);
 				command.myInstance->Render(myCamera);
 				break;
@@ -77,7 +77,6 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::TEXT:
-				RENDER_LOG("Rendering Text");
 				myText->SetText(command.myTextToPrint);
 				myText->SetPosition({ command.myPosition.x, command.myPosition.y });
 				myText->Render(my2DCamera);
@@ -94,7 +93,6 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::POINTLIGHT:
-				RENDER_LOG("Rendering PointLight");
 				command.myPointLight->SetPosition(command.myPosition);
 				command.myPointLight->SetColor({ command.myColor.r, command.myColor.g, command.myColor.b, 1.f });
 				command.myPointLight->Update();

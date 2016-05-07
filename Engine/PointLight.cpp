@@ -41,6 +41,7 @@ namespace Snowblind
 	{
 		myOriginalPosition = aPosition;
 		myOrientation.SetPosition(myOriginalPosition);
+		myLightMesh->SetPosition(aPosition);
 	}
 
 	const CU::Vector3f& CPointLight::GetPosition()

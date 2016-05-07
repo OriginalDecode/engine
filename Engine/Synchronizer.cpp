@@ -76,15 +76,12 @@ namespace Snowblind
 		switch (aRenderCommand.myCommandType)
 		{
 		case eCommandType::e2D:
-			RENDER_LOG("Adding 2D Command!");
 			my2DCommandBuffer[myCurrentBuffer ^ 1].Add(aRenderCommand);
 			break;
 		case eCommandType::e3D:
-			RENDER_LOG("Adding 3D Command!");
 			my3DCommandBuffer[myCurrentBuffer ^ 1].Add(aRenderCommand);
 			break;
 		case eCommandType::LIGHT:
-			RENDER_LOG("Adding Light Command!");
 			myLightCommandBuffer[myCurrentBuffer ^ 1].Add(aRenderCommand);
 		}
 	}
@@ -93,18 +90,13 @@ namespace Snowblind
 	{
 		if (commandType == eCommandType::e2D)
 		{
-			RENDER_LOG("Getting 2D CommandBuffer.");
 			return my2DCommandBuffer[myCurrentBuffer];
 		}
 
 		if (commandType == eCommandType::LIGHT)
 		{
-			RENDER_LOG("Getting Light CommandBuffer");
 			return myLightCommandBuffer[myCurrentBuffer];
 		}
-
-
-		RENDER_LOG("3D Type Assumed, getting 3D CommandBuffer.");
 		return my3DCommandBuffer[myCurrentBuffer];
 	}
 };

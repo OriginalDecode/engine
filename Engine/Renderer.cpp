@@ -35,7 +35,7 @@ namespace Snowblind
 	void CRenderer::Render()
 	{
 		CEngine::Clear();
-		
+
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
 		myDeferredRenderer->SetBuffers();
@@ -102,7 +102,7 @@ namespace Snowblind
 			case SRenderCommand::eType::POINTLIGHT:
 				RENDER_LOG("Rendering PointLight");
 				command.myPointLight->SetPosition(command.myPosition);
-				command.myPointLight->SetColor(command.myColor);
+				command.myPointLight->SetColor({ command.myColor.r, command.myColor.g, command.myColor.b, 1.f });
 				command.myPointLight->Update();
 				myDeferredRenderer->RenderLight(command.myPointLight);
 				break;

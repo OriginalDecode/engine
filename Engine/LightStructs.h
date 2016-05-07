@@ -26,7 +26,7 @@ struct SSpotlightData
 struct SPointlightData
 {
 	CU::Vector4f myLightColor;
-	CU::Vector3f myLightPosition;
+	CU::Vector4f myLightPosition;
 	float myRange;
 };
 

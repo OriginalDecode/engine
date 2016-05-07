@@ -64,12 +64,6 @@ namespace Snowblind
 				command.myInstance->SetPosition(command.myPosition);
 				command.myInstance->Render(myCamera);
 				break;
-			case SRenderCommand::eType::POINTLIGHT:
-				RENDER_LOG("Rendering PointLight");
-				command.myPointLight->SetPosition(command.myPosition);
-				command.myPointLight->SetColor(command.myColor);
-				command.myPointLight->Update();
-				break;
 			}
 		}
 	}

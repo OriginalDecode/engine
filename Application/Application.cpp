@@ -66,7 +66,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	//myWorldScene->AddLight(light);
 	//
 	myPointLight = new Snowblind::CPointLight();
-	myPointLight->SetRange(20);
+	myPointLight->SetRange(5);
 	//light->Initiate({ 0, -2, 10 }, { 1, 0, 1, 1 }, 10);
 	//myWorldScene->AddLight(light);
 	//

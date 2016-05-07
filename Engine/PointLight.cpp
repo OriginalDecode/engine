@@ -33,7 +33,6 @@ namespace Snowblind
 		lightCube->CreateCube("Data/Shaders/Cube.fx", { aColor.r, aColor.g, aColor.b });
 		myInstance = new CInstance();
 		myInstance->Initiate(lightCube);
-		myInstance->SetPosition(aPosition);
 #endif
 
 	}

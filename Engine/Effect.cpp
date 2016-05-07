@@ -135,7 +135,7 @@ namespace Snowblind
 
 	}
 
-	void CEffect::SetMatrices(CU::Math::Matrix44<float>& aToWorld, CU::Math::Matrix44<float>& aToView, CU::Math::Matrix44<float>& aProjection)
+	void CEffect::SetMatrices(CU::Matrix44f& aToWorld, CU::Matrix44f& aToView, CU::Matrix44f& aProjection)
 	{
 		CU::Math::Matrix44<float> temp = aToWorld;
 

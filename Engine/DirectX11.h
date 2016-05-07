@@ -89,12 +89,7 @@ namespace Snowblind
 		void CreateEnabledDepthStencilState();
 		void CreateDisabledDepthStencilState();
 		void CreateReadDepthStencilState();
-		void SetRasterizer();
-
-
-
 		void CreateRazterizers();
-
 
 		HWND myHWND;
 

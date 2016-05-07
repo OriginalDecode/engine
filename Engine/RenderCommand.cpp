@@ -1,12 +1,7 @@
 #include "stdafx.h"
 #include "RenderCommand.h"
 
-SRenderCommand::SRenderCommand(Snowblind::CInstance* anInstance, const CU::Vector3f& aPosition, const eType& aType)
-	: myInstance(anInstance)
-	, myPosition(aPosition)
-	, myType(aType)
-{
-}
+
 
 SRenderCommand::SRenderCommand()
 {
@@ -22,5 +17,14 @@ SRenderCommand::SRenderCommand(const std::string aString, const CU::Math::Vector
 	: myTextToPrint(aString)
 	, myPosition(aPosition)
 	, myType(aType)
+	, myCommandType(eCommandType::e2D)
+{
+}
+
+SRenderCommand::SRenderCommand(Snowblind::CInstance* anInstance, const CU::Vector3f& aPosition, const eType& aType)
+	: myInstance(anInstance)
+	, myPosition(aPosition)
+	, myType(aType)
+	, myCommandType(eCommandType::e3D)
 {
 }

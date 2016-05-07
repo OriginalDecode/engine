@@ -5,8 +5,14 @@ namespace Snowblind
 {
 	class CInstance;
 	class CPointLight;
+
 }
 
+enum class eCommandType
+{
+	e2D,
+	e3D,
+};
 
 struct SRenderCommand
 {
@@ -25,6 +31,7 @@ struct SRenderCommand
 	Snowblind::CPointLight* myPointLight;
 	std::string myTextToPrint;
 	CU::Vector3f myPosition;
+	eCommandType myCommandType;
 	eType myType;
 
 };

@@ -66,6 +66,9 @@ namespace Snowblind
 		void ResetViewport();
 		void ResetRendertarget();
 		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
+
+		ID3D11RenderTargetView* GetBackbuffer();
+		ID3D11DepthStencilView* GetDepthView();
 	private:
 
 		void CreateDeviceAndSwapchain();

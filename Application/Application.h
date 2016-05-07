@@ -30,7 +30,6 @@ namespace Snowblind
 	class CEngine;
 	class CConsole;
 	class CSynchronizer;
-	class CDeferredRenderer;
 };
 
 namespace std
@@ -81,7 +80,6 @@ private:
 	Snowblind::CConsole* myConsole;
 
 	Snowblind::CSynchronizer* mySynchronizer;
-	Snowblind::CDeferredRenderer* myDeferredRenderer;
 	CU::Quaternion myPitch;
 	CU::Quaternion myYaw;
 	CU::Matrix44f myOrientation;

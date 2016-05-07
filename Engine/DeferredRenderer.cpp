@@ -12,7 +12,8 @@ namespace Snowblind
 {
 	CDeferredRenderer::CDeferredRenderer()
 	{
-		myContext = CEngine::GetDirectX()->GetContext();
+		myDirectX = CEngine::GetDirectX();
+		myContext = myDirectX->GetContext();
 		myEngine = CEngine::GetInstance();
 		myWindowSize = myEngine->GetWindowSize();
 		myAlbedo = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
@@ -54,9 +55,19 @@ namespace Snowblind
 		SAFE_DELETE(myDepthStencil);
 	}
 
-	void CDeferredRenderer::Render()
+	void CDeferredRenderer::SetTargets()
 	{
-		
+		myContext->ClearRenderTargetView(myAlbedo->GetRenderTargetView(), myClearColor);
+		myContext->ClearRenderTargetView(myNormal->GetRenderTargetView(), myClearColor);
+		myContext->ClearRenderTargetView(myDepth->GetRenderTargetView(), myClearColor);
+		myContext->ClearDepthStencilView(myDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+		ID3D11RenderTargetView* target[3];
+		target[0] = myAlbedo->GetRenderTargetView();
+		target[1] = myNormal->GetRenderTargetView();
+		target[2] = myDepth->GetRenderTargetView();
+
+		myContext->OMSetRenderTargets(3, target, myDepthStencil->GetDepthView());
 
 	}
 
@@ -69,7 +80,15 @@ namespace Snowblind
 			anEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, myContext);
 			myContext->DrawIndexed(6, 0, 0);
 		}
+	}
 
+	void CDeferredRenderer::SetBuffers()
+	{
+		SVertexBufferWrapper* buf = myVertexBuffer;
+		myContext->IASetInputLayout(myInputLayout);
+		myContext->IASetVertexBuffers(buf->myStartSlot, buf->myNrOfBuffers, &buf->myVertexBuffer, &buf->myStride, &buf->myByteOffset);
+		SIndexBufferWrapper* inBuf = myIndexBuffer;
+		myContext->IASetIndexBuffer(inBuf->myIndexBuffer, inBuf->myIndexBufferFormat, inBuf->myByteOffset);
 	}
 
 	ID3D11ShaderResourceView* CDeferredRenderer::GetDeferredTexture(const eDeferredType& aDeferredType)
@@ -81,6 +100,28 @@ namespace Snowblind
 	void CDeferredRenderer::DeferredRender()
 	{
 
+		myDirectX->ResetViewport();
+
+		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
+		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
+		myContext->ClearRenderTargetView(backbuffer, myClearColor);
+		myContext->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		myContext->OMSetRenderTargets(1, &backbuffer, depth);
+
+		myAmbientPass.myAlbedo->SetResource(myAlbedo->GetShaderView());
+		myAmbientPass.myNormal->SetResource(myNormal->GetShaderView());
+		myAmbientPass.myDepth->SetResource(myDepth->GetShaderView());
+
+		Render(myAmbientPass.myEffect);
+
+		myAmbientPass.myAlbedo->SetResource(NULL);
+		myAmbientPass.myNormal->SetResource(NULL);
+		myAmbientPass.myDepth->SetResource(NULL);
+
+		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
+		
+		//UpdateLight
+		//RenderPointLights
 	}
 
 	void CDeferredRenderer::CreateLightData()
@@ -162,13 +203,13 @@ namespace Snowblind
 
 		D3DX11_PASS_DESC passDesc;
 		hr = myScreenData.myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to get description from EffectPass!");
+		myDirectX->HandleErrors(hr, "Failed to get description from EffectPass!");
 
-		hr = CEngine::GetDirectX()->GetDevice()->
+		hr = myDirectX->GetDevice()->
 			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myInputLayout);
-		CEngine::GetDirectX()->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
+		myDirectX->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
 		BAD_VALUE(hr != S_OK, hr);
-		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to create VertexLayout");
+		//myDirectX->HandleErrors(hr, "Failed to create VertexLayout");
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
@@ -181,9 +222,9 @@ namespace Snowblind
 		D3D11_SUBRESOURCE_DATA vertexData;
 		vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
 
-		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
+		hr = myDirectX->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
 		BAD_VALUE(hr != S_OK, hr);
-		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create VertexBuffer!");
+		//myDirectX->HandleErrors(hr, "Failed to Create VertexBuffer!");
 
 		myVertexBuffer->myStride = myVertexData->myStride;
 		myVertexBuffer->myByteOffset = 0;
@@ -204,8 +245,8 @@ namespace Snowblind
 
 		D3D11_SUBRESOURCE_DATA indexData;
 		ZeroMemory(&indexData, sizeof(indexData)), indexData.pSysMem = myIndexData->myIndexData;
-		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create IndexBuffer");
+		HRESULT hr = myDirectX->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
+		myDirectX->HandleErrors(hr, "Failed to Create IndexBuffer");
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		myIndexBuffer->myByteOffset = 0;

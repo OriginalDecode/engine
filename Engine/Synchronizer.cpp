@@ -20,14 +20,17 @@ namespace Snowblind
 
 	void CSynchronizer::SwapBuffer()
 	{
-		myCommandBuffer[myCurrentBuffer].RemoveAll();
+		my2DCommandBuffer[myCurrentBuffer].RemoveAll();
+		my3DCommandBuffer[myCurrentBuffer].RemoveAll();
 		myCurrentBuffer ^= 1;
 	}
 
 	void CSynchronizer::Clear()
 	{
-		myCommandBuffer[0].RemoveAll();
-		myCommandBuffer[1].RemoveAll();
+		my2DCommandBuffer[0].RemoveAll();
+		my2DCommandBuffer[1].RemoveAll();
+		my3DCommandBuffer[0].RemoveAll();
+		my3DCommandBuffer[1].RemoveAll();
 	}
 
 	void CSynchronizer::Quit()
@@ -67,12 +70,27 @@ namespace Snowblind
 
 	void CSynchronizer::AddRenderCommand(const SRenderCommand& aRenderCommand)
 	{
-		myCommandBuffer[myCurrentBuffer ^ 1].Add(aRenderCommand);
+		switch (aRenderCommand.myCommandType)
+		{
+		case eCommandType::e2D:
+			RENDER_LOG("Adding 2D Command!");
+			my2DCommandBuffer[myCurrentBuffer ^ 1].Add(aRenderCommand);
+			break;
+		case eCommandType::e3D:
+			RENDER_LOG("Adding 3D Command!");
+			my3DCommandBuffer[myCurrentBuffer ^ 1].Add(aRenderCommand);
+			break;
+		}
 	}
 
-	const CU::GrowingArray<SRenderCommand>& CSynchronizer::GetRenderCommands() const
+	const CU::GrowingArray<SRenderCommand>& CSynchronizer::GetRenderCommands(const eCommandType& commandType) const
 	{
-		return myCommandBuffer[myCurrentBuffer];
+		if (commandType == eCommandType::e2D)
+		{
+			RENDER_LOG("Getting 2D CommandBuffer.");
+			return my2DCommandBuffer[myCurrentBuffer];
+		}
+		RENDER_LOG("3D Type Assumed, getting 3D CommandBuffer.");
+		return my3DCommandBuffer[myCurrentBuffer];
 	}
-
 };

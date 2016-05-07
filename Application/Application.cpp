@@ -19,7 +19,6 @@
 #include "RenderCommand.h"
 #include <thread>
 #include <BadValueException.h>
-#include <DeferredRenderer.h>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 
@@ -36,7 +35,6 @@ CApplication::~CApplication()
 	SAFE_DELETE(myConsole);
 	SAFE_DELETE(myController);
 	SAFE_DELETE(myInstance);
-	SAFE_DELETE(myDeferredRenderer);
 }
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
@@ -78,7 +76,6 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 
 	myLogicThread = new std::thread([&] {CApplication::Update(); });
-	myDeferredRenderer = new Snowblind::CDeferredRenderer();
 }
 
 void CApplication::Update()

@@ -7,6 +7,7 @@
 #include "RenderCommand.h"
 #include "Instance.h"
 #include "Camera.h"
+#include "DeferredRenderer.h"
 
 namespace Snowblind
 {
@@ -16,11 +17,13 @@ namespace Snowblind
 		, myCamera(aCamera)
 	{
 		myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16);
+		myDeferredRenderer = new CDeferredRenderer();
 	}
 
 	CRenderer::~CRenderer()
 	{
 		SAFE_DELETE(my2DCamera);
+		SAFE_DELETE(myDeferredRenderer);
 	}
 
 	void CRenderer::Add2DCamera(CCamera* aCamera)
@@ -31,26 +34,13 @@ namespace Snowblind
 	void CRenderer::Render()
 	{
 		CEngine::Clear();
+		
+		myDeferredRenderer->SetTargets();
+		Render3DCommands();
+		myDeferredRenderer->SetBuffers();
+		myDeferredRenderer->DeferredRender();
 
-		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands();
-		for each(const SRenderCommand& command in commands)
-		{
-			switch (command.myType)
-			{
-			case SRenderCommand::eType::MODEL:
-				command.myInstance->SetPosition(command.myPosition);
-				command.myInstance->Render(myCamera);
-				break;
-			case SRenderCommand::eType::POINTLIGHT:
-				//command.myPointLight->
-				break;
-			case SRenderCommand::eType::TEXT:
-				myText->SetText(command.myTextToPrint);
-				myText->SetPosition({ command.myPosition.x,command.myPosition.y });
-				myText->Render(my2DCamera);
-				break;
-			}
-		}
+		Render2DCommands();
 
 		CEngine::Present();
 
@@ -58,4 +48,41 @@ namespace Snowblind
 		mySynchronizer.SwapBuffer();
 		mySynchronizer.RenderIsDone();
 	}
+
+	void CRenderer::Render3DCommands()
+	{
+		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands();
+		for each(const SRenderCommand& command in commands)
+		{
+			switch (command.myType)
+			{
+			case SRenderCommand::eType::MODEL:
+				RENDER_LOG("Rendering Static-Model");
+				command.myInstance->SetPosition(command.myPosition);
+				command.myInstance->Render(myCamera);
+				break;
+
+			}
+		}
+	}
+
+	void CRenderer::Render2DCommands()
+	{
+		/* This happens after the deferred pass */
+		const CU::GrowingArray<SRenderCommand>& commands2D = mySynchronizer.GetRenderCommands(eCommandType::e2D);
+		for each(const SRenderCommand& command in commands2D)
+		{
+			switch (command.myType)
+			{
+			case SRenderCommand::eType::TEXT:
+				RENDER_LOG("Rendering Text");
+				myText->SetText(command.myTextToPrint);
+				myText->SetPosition({ command.myPosition.x, command.myPosition.y });
+				myText->Render(my2DCamera);
+				break;
+
+			}
+		}
+	}
+
 };

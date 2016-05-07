@@ -96,6 +96,16 @@ namespace Snowblind
 		}
 	}
 
+	ID3D11RenderTargetView* CDirectX11::GetBackbuffer()
+	{
+		return myRenderTarget;
+	}
+
+	ID3D11DepthStencilView* CDirectX11::GetDepthView()
+	{
+		return myDepthView;
+	}
+
 	void CDirectX11::CreateDeviceAndSwapchain()
 	{
 		DXGI_SWAP_CHAIN_DESC scDesc;
@@ -179,6 +189,7 @@ namespace Snowblind
 				nullptr,
 				&myContext);
 		}
+
 
 		DL_ASSERT_EXP(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");
 

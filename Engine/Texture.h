@@ -21,6 +21,7 @@ namespace Snowblind
 		ID3D11ShaderResourceView* GetShaderView();
 		ID3D11RenderTargetView*	GetRenderTargetView();
 		ID3D11RenderTargetView** GetRenderTarget();
+		ID3D11DepthStencilView* GetDepthView();
 		void SetTexture(ID3D11ShaderResourceView* aShaderResource);
 		void SaveToFile(const char* aFileName, int aSize);
 		void CreateDepthStencilView(float aWidth, float aHeight, int aArraySize = 1);

@@ -36,6 +36,7 @@
 #define FONT_LOG(...)		DL_WRITELOG("Font", __VA_ARGS__)
 #define MODEL_LOG(...)		DL_WRITELOG("Model", __VA_ARGS__)
 
+
 #define ALGORITHM_LOG(...)  DL_WRITELOG("Algorithm", __VA_ARGS__)
 #define ALGORITHM_LOG_EXP(expression, ...) if(expression){ DL_WRITELOG("Algorithm", __VA_ARGS__)}
 

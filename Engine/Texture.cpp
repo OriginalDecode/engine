@@ -75,6 +75,16 @@ namespace Snowblind
 		return myShaderResource;
 	}
 
+	ID3D11RenderTargetView* CTexture::GetRenderTargetView()
+	{
+		return myRenderTargetView;
+	}
+
+	ID3D11DepthStencilView* CTexture::GetDepthView()
+	{
+		return myDepthStencil;
+	}
+
 	void CTexture::SetTexture(ID3D11ShaderResourceView* aShaderResource)
 	{
 		myShaderResource = aShaderResource;

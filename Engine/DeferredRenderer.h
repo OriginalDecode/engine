@@ -17,6 +17,7 @@ namespace Snowblind
 	};
 
 	class CTexture;
+	class CDirectX11;
 	struct SVertexIndexWrapper;
 	struct SVertexBufferWrapper;
 	struct SVertexDataWrapper;
@@ -27,7 +28,9 @@ namespace Snowblind
 	public:
 		CDeferredRenderer();
 		~CDeferredRenderer();
-		void Render();
+		void SetTargets();
+		void SetBuffers();
+		void DeferredRender();
 		ID3D11ShaderResourceView* GetDeferredTexture(const eDeferredType& aDeferredType);
 
 	private:
@@ -61,6 +64,7 @@ namespace Snowblind
 		CTexture* myNormal;
 		CTexture* myDepth;
 		CTexture* myDepthStencil;
+		CDirectX11* myDirectX;
 
 		SWindowSize myWindowSize;
 		SAmbientPass myAmbientPass;
@@ -80,7 +84,6 @@ namespace Snowblind
 
 		float myClearColor[4];
 
-		void DeferredRender();
 
 		void CreateLightData();
 		void CreateAmbientData();

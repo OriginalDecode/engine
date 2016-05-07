@@ -371,7 +371,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		const Matrix44<TYPE> Inverse(const Matrix44<TYPE>& aMatrix)
+		Matrix44<TYPE> Inverse(const Matrix44<TYPE>& aMatrix)
 		{
 			/*Vector4<TYPE> theTranslation;
 

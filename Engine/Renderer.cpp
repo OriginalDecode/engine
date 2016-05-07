@@ -13,7 +13,7 @@
 namespace Snowblind
 {
 
-	CRenderer::CRenderer(CSynchronizer& aSynchronizer, CCamera& aCamera)
+	CRenderer::CRenderer(CSynchronizer& aSynchronizer, CCamera* aCamera)
 		: mySynchronizer(aSynchronizer)
 		, myCamera(aCamera)
 	{
@@ -40,7 +40,8 @@ namespace Snowblind
 		Render3DCommands();
 		myDeferredRenderer->SetBuffers();
 		myDeferredRenderer->DeferredRender();
-		myDeferredRenderer->SetLightState(&myCamera);
+
+		myDeferredRenderer->SetLightState(myCamera);
 		RenderLightCommands();
 		myDeferredRenderer->SetNormalState();
 
@@ -62,7 +63,7 @@ namespace Snowblind
 			{
 			case SRenderCommand::eType::MODEL:
 				command.myInstance->SetPosition(command.myPosition);
-				command.myInstance->Render(myCamera);
+				command.myInstance->Render(*myCamera);
 				break;
 			}
 		}

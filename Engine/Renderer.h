@@ -14,7 +14,7 @@ namespace Snowblind
 	class CRenderer
 	{
 	public:
-		CRenderer(CSynchronizer& aSynchronizer, CCamera& aCamera);
+		CRenderer(CSynchronizer& aSynchronizer, CCamera* aCamera);
 		~CRenderer();
 		void Add2DCamera(CCamera* aCamera);
 		void Render();
@@ -24,7 +24,7 @@ namespace Snowblind
 		void Render2DCommands();
 		void RenderLightCommands();
 		CDeferredRenderer* myDeferredRenderer;
-		CCamera& myCamera;
+		CCamera* myCamera;
 		CCamera* my2DCamera;
 		CSynchronizer& mySynchronizer;
 		CText* myText;

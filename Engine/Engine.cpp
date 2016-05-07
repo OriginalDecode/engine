@@ -64,7 +64,7 @@ namespace Snowblind
 		myFontManager->Initiate();
 
 		mySynchronizer = new CSynchronizer();
-		myRenderer = new CRenderer(*mySynchronizer, *myCamera);
+		myRenderer = new CRenderer(*mySynchronizer, myCamera);
 		myRenderer->Add2DCamera(my2DCamera);
 	}
 

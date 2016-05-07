@@ -1,5 +1,5 @@
 #pragma once
-
+#include "LightStructs.h"
 
 namespace Snowblind
 {
@@ -25,6 +25,9 @@ namespace Snowblind
 		void SetRange(float aRange);
 		const float& GetRange();
 
+		void Update();
+		void Render();
+		const SPointlightData& GetData() const;
 #ifdef _DEBUG
 		CInstance* GetInstance();
 #endif
@@ -34,10 +37,12 @@ namespace Snowblind
 #ifdef _DEBUG
 		CInstance* myInstance;
 #endif
+		CInstance* myLightMesh;
 
 		CU::Matrix44f myOrientation;
 		CU::Vector3f myOriginalPosition;
 		CU::Vector4f myColor;
+		SPointlightData myData;
 		float myRange;
 
 	};

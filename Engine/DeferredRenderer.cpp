@@ -6,7 +6,8 @@
 
 #include "IndexWrapper.h"
 #include "VertexWrapper.h"
-
+#include "Camera.h"
+#include "PointLight.h"
 
 namespace Snowblind
 {
@@ -19,17 +20,20 @@ namespace Snowblind
 		myAlbedo = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
-
+		myAlbedo->SetDebugName("DeferredAlbedo");
 		myNormal = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
+		myNormal->SetDebugName("DeferredNormal");
 
 		myDepth = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		myDepth->SetDebugName("DeferredDepth");
 
 		myDepthStencil = new CTexture();
 		myDepthStencil->CreateDepthStencilView(myWindowSize.myWidth, myWindowSize.myHeight);
+		myDepthStencil->SetDebugName("DeferredDepthStencil");
 
 		myClearColor[0] = 0.f;
 		myClearColor[1] = 0.f;
@@ -40,7 +44,7 @@ namespace Snowblind
 		myScreenData.mySource = myScreenData.myEffect->GetVariableByName("DiffuseTexture")->AsShaderResource();
 
 		CreateAmbientData();
-		//CreateLightData();
+		CreateLightData();
 
 		CreateFullscreenQuad();
 
@@ -68,7 +72,6 @@ namespace Snowblind
 		target[2] = myDepth->GetRenderTargetView();
 
 		myContext->OMSetRenderTargets(3, target, myDepthStencil->GetDepthView());
-
 	}
 
 	void CDeferredRenderer::Render(CEffect* anEffect)
@@ -89,12 +92,44 @@ namespace Snowblind
 		myContext->IASetVertexBuffers(buf->myStartSlot, buf->myNrOfBuffers, &buf->myVertexBuffer, &buf->myStride, &buf->myByteOffset);
 		SIndexBufferWrapper* inBuf = myIndexBuffer;
 		myContext->IASetIndexBuffer(inBuf->myIndexBuffer, inBuf->myIndexBufferFormat, inBuf->myByteOffset);
+		myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
 	ID3D11ShaderResourceView* CDeferredRenderer::GetDeferredTexture(const eDeferredType& aDeferredType)
 	{
 		DL_ASSERT("Not Implemented!");
 		return 0;
+	}
+
+	void CDeferredRenderer::SetLightState(CCamera* aCamera)
+	{
+		myLightPass.myAlbedo->SetResource(myAlbedo->GetShaderView());
+		myLightPass.myNormal->SetResource(myNormal->GetShaderView());
+		myLightPass.myDepth->SetResource(myDepth->GetShaderView());
+
+		myLightPass.myEffect->SetViewMatrix(aCamera->GetOrientation());
+		myLightPass.myEffect->SetProjectionMatrix(aCamera->GetProjection());
+
+		myLightPass.myInvertedProjection->SetMatrix(&CU::Math::InverseReal(aCamera->GetProjection()).myMatrix[0]);
+		myLightPass.myNotInvertedView->SetMatrix(&aCamera->GetOrientation().myMatrix[0]);
+
+		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
+		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
+	}
+
+	void CDeferredRenderer::SetNormalState()
+	{
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+		myLightPass.myAlbedo->SetResource(NULL);
+		myLightPass.myNormal->SetResource(NULL);
+		myLightPass.myDepth->SetResource(NULL);
+	}
+
+	void CDeferredRenderer::RenderLight(CPointLight* pointlight)
+	{
+		myLightPass.myPointLightVariable->SetRawValue(&pointlight->GetData(), 0, sizeof(SPointlightData));
+		pointlight->Render();
 	}
 
 	void CDeferredRenderer::DeferredRender()
@@ -131,6 +166,12 @@ namespace Snowblind
 		myLightPass.myNormal = myLightPass.myEffect->GetVariableByName("NormalTexture")->AsShaderResource();
 		myLightPass.myDepth = myLightPass.myEffect->GetVariableByName("DepthTexture;")->AsShaderResource();
 		myLightPass.myPointLightVariable = myLightPass.myEffect->GetVariableByName("PointLights");
+
+		myLightPass.myView = myLightPass.myEffect->GetEffect()->GetVariableByName("View")->AsMatrix();
+		myLightPass.myProjection = myLightPass.myEffect->GetEffect()->GetVariableByName("Projection")->AsMatrix();
+		myLightPass.myWorld = myLightPass.myEffect->GetEffect()->GetVariableByName("World")->AsMatrix();
+		myLightPass.myInvertedProjection = myLightPass.myEffect->GetEffect()->GetVariableByName("InvertedProjection")->AsMatrix();
+		myLightPass.myNotInvertedView = myLightPass.myEffect->GetEffect()->GetVariableByName("NotInvertedView")->AsMatrix();
 	}
 
 	void CDeferredRenderer::CreateAmbientData()
@@ -150,19 +191,19 @@ namespace Snowblind
 		CU::GrowingArray<SVertexTypePosUV> vertices;
 		CU::GrowingArray<int> indices;
 		SVertexTypePosUV v;
-		v.myPosition = { -1, -1, 1 };
+		v.myPosition = { -1, -1, 0 };
 		v.myUV = { 0, 1 };
 		vertices.Add(v);
 
-		v.myPosition = { -1, 1, 1 };
+		v.myPosition = { -1, 1, 0 };
 		v.myUV = { 0, 0 };
 		vertices.Add(v);
 
-		v.myPosition = { 1, -1, 1 };
+		v.myPosition = { 1, -1, 0 };
 		v.myUV = { 1, 1 };
 		vertices.Add(v);
 
-		v.myPosition = { 1, 1, 1 };
+		v.myPosition = { 1, 1, 0};
 		v.myUV = { 1, 0 };
 		vertices.Add(v);
 

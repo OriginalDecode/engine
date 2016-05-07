@@ -30,6 +30,7 @@ namespace Snowblind
 	class CEngine;
 	class CConsole;
 	class CSynchronizer;
+	class CPointLight;
 };
 
 namespace std
@@ -78,7 +79,7 @@ private:
 
 	Snowblind::CEngine* myEngine;
 	Snowblind::CConsole* myConsole;
-
+	Snowblind::CPointLight* myPointLight;
 	Snowblind::CSynchronizer* mySynchronizer;
 	CU::Quaternion myPitch;
 	CU::Quaternion myYaw;

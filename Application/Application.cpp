@@ -46,7 +46,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myCamera->AddOrientation(&myOrientation);
 
 	myInstance = new Snowblind::CInstance();
-	myInstance->Initiate("Data/Model/pblScene/pblScene_03_binary.fbx");
+	myInstance->Initiate("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/DeferredBase.fx");
 	
 
 	//Snowblind::CDirectionalLight* dlight = new Snowblind::CDirectionalLight();
@@ -65,7 +65,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	//light->Initiate({ -5, -2, 0 }, { 0, 0, 1, 1 }, 10);
 	//myWorldScene->AddLight(light);
 	//
-	//light = new Snowblind::CPointLight();
+	myPointLight = new Snowblind::CPointLight();
 	//light->Initiate({ 0, -2, 10 }, { 1, 0, 1, 1 }, 10);
 	//myWorldScene->AddLight(light);
 	//
@@ -120,8 +120,9 @@ void CApplication::Update()
 void CApplication::Render()
 {
 	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(0, 0, 0), SRenderCommand::eType::MODEL));
-	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(25, 0, 0), SRenderCommand::eType::MODEL)); 
-	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(-25, 0, 0), SRenderCommand::eType::MODEL));
+	mySynchronizer->AddRenderCommand(SRenderCommand(myPointLight, CU::Vector3f(0, 0, 0), CU::Vector3f(1,0,0), SRenderCommand::eType::POINTLIGHT));
+	//mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(25, 0, 0), SRenderCommand::eType::MODEL)); 
+	//mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(-25, 0, 0), SRenderCommand::eType::MODEL));
 }
 
 void CApplication::UpdateInput(float aDeltaTime)

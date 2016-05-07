@@ -30,7 +30,7 @@ namespace Snowblind
 	private:
 		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> my3DCommandBuffer;
 		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> my2DCommandBuffer;
-
+		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> myLightCommandBuffer;
 
 		volatile bool myLogicIsDone;
 		volatile bool myRenderIsDone;

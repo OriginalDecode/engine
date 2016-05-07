@@ -1,5 +1,7 @@
 #pragma once
 #include <DataStructures/GrowingArray.h>
+#include <DataStructures/StaticArray.h>
+#include "LightStructs.h"
 namespace Snowblind
 {
 	class CCamera;

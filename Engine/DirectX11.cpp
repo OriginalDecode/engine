@@ -26,11 +26,13 @@ namespace Snowblind
 
 		CreateAdapterList();
 		CreateDeviceAndSwapchain();
-		CreateDisabledStencilStateSetup();
-		CreateEnabledStencilStateSetup();
 		CreateDepthBuffer();
+		CreateDisabledDepthStencilState();
+		CreateEnabledDepthStencilState();
+		CreateReadDepthStencilState();
 		CreateBackBuffer();
 		CreateViewport();
+		CreateRazterizers();
 		//SetRasterizer();
 	}
 
@@ -57,10 +59,10 @@ namespace Snowblind
 
 		myContext->ClearState();
 		myContext->Flush();
-		
+
 		SAFE_RELEASE(myContext);
 		SAFE_RELEASE(myDevice);
-		
+
 		if (myDebug != nullptr)
 		{
 			std::stringstream ss;
@@ -93,6 +95,22 @@ namespace Snowblind
 		if (aChild != nullptr)
 		{
 			aChild->SetPrivateData(WKPDID_D3DDebugObjectName, aDebugName.size(), aDebugName.c_str());
+		}
+	}
+
+	void CDirectX11::SetDepthBufferState(const eDepthStencil& aDepthState)
+	{
+		switch (aDepthState)
+		{
+		case eDepthStencil::READ_NO_WRITE:
+			myContext->OMSetDepthStencilState(myDepthStates[static_cast<int>(eDepthStencil::READ_NO_WRITE)], 0);
+			break;
+		case eDepthStencil::Z_DISABLED:
+			myContext->OMSetDepthStencilState(myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)], 1);
+			break;
+		case eDepthStencil::Z_ENABLED:
+			myContext->OMSetDepthStencilState(myDepthStates[static_cast<int>(eDepthStencil::Z_ENABLED)], 1);
+			break;
 		}
 	}
 
@@ -154,7 +172,7 @@ namespace Snowblind
 			myActiveAdapter = "Unknown";
 			type = D3D_DRIVER_TYPE_HARDWARE;
 		}
-		else if(type)
+		else if (type)
 		{
 			type = D3D_DRIVER_TYPE_UNKNOWN;
 		}
@@ -418,7 +436,7 @@ namespace Snowblind
 		myContext->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
 	}
 
-	void CDirectX11::CreateEnabledStencilStateSetup()
+	void CDirectX11::CreateEnabledDepthStencilState()
 	{
 		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
 		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
@@ -443,7 +461,7 @@ namespace Snowblind
 		HandleErrors(hr, "Failed to setup Enabled Depth!");
 	}
 
-	void CDirectX11::CreateDisabledStencilStateSetup()
+	void CDirectX11::CreateDisabledDepthStencilState()
 	{
 		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
 		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
@@ -468,6 +486,31 @@ namespace Snowblind
 		HandleErrors(hr, "Failed to setup depth buffer!");
 	}
 
+	void CDirectX11::CreateReadDepthStencilState()
+	{
+		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
+		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
+
+		stencilDesc.DepthEnable = true;
+		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+		stencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
+		stencilDesc.StencilEnable = false;
+		stencilDesc.StencilReadMask = 0xFFFFFFFF;
+		stencilDesc.StencilWriteMask = 0x0;
+		stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+		stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
+		stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
+		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
+		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_ZERO;
+		stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
+		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
+
+		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[static_cast<int>(eDepthStencil::READ_NO_WRITE)]);
+		SetDebugName(myDepthStates[static_cast<int>(eDepthStencil::READ_NO_WRITE)], "eDepthStencil::READ_NO_WRITE");
+		HandleErrors(hr, "Failed to setup depth buffer!");
+	}
+
 	void CDirectX11::SetRasterizer()
 	{
 		D3D11_RASTERIZER_DESC rDesc;
@@ -479,7 +522,55 @@ namespace Snowblind
 		myContext->RSSetState(myRasterizerStates[0]);
 		SetDebugName(myRasterizerStates[0], "Rasterizer State");
 
-			
+
+	}
+
+	void CDirectX11::SetRasterizer(const eRasterizer& aRasterizer)
+	{
+		switch (aRasterizer)
+		{
+		case eRasterizer::WIREFRAME:
+			myContext->RSSetState(myRasterizerStates[static_cast<int>(eRasterizer::WIREFRAME)]);
+			break;
+		case eRasterizer::CULL_NONE:
+			myContext->RSSetState(myRasterizerStates[static_cast<int>(eRasterizer::CULL_NONE)]);
+			break;
+		case eRasterizer::CULL_BACK:
+			myContext->RSSetState(myRasterizerStates[static_cast<int>(eRasterizer::CULL_BACK)]);
+			break;
+		}
+	}
+
+	void CDirectX11::CreateRazterizers()
+	{
+		D3D11_RASTERIZER_DESC desc;
+		ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
+		desc.FrontCounterClockwise = false;
+		desc.DepthBias = false;
+		desc.DepthBiasClamp = 0;
+		desc.SlopeScaledDepthBias = 0;
+		desc.DepthClipEnable = false;
+		desc.ScissorEnable = false;
+		desc.MultisampleEnable = false;
+		desc.AntialiasedLineEnable = false;
+
+
+		desc.FillMode = D3D11_FILL_WIREFRAME;
+		desc.CullMode = D3D11_CULL_BACK;
+		myDevice->CreateRasterizerState(&desc, &myRasterizerStates[static_cast<int>(eRasterizer::WIREFRAME)]);
+		SetDebugName(myRasterizerStates[static_cast<int>(eRasterizer::WIREFRAME)], "Wireframe Rasterizer");
+
+
+		desc.FillMode = D3D11_FILL_SOLID;
+		desc.CullMode = D3D11_CULL_BACK;
+		myDevice->CreateRasterizerState(&desc, &myRasterizerStates[static_cast<int>(eRasterizer::CULL_BACK)]);
+		SetDebugName(myRasterizerStates[static_cast<int>(eRasterizer::CULL_BACK)], "CULL_BACK Rasterizer");
+
+
+		desc.FillMode = D3D11_FILL_SOLID;
+		desc.CullMode = D3D11_CULL_NONE;
+		myDevice->CreateRasterizerState(&desc, &myRasterizerStates[static_cast<int>(eRasterizer::CULL_NONE)]);
+		SetDebugName(myRasterizerStates[static_cast<int>(eRasterizer::CULL_NONE)], "CULL_NONE Rasterizer");
 	}
 
 };

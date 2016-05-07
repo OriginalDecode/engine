@@ -14,12 +14,12 @@ namespace Snowblind
 	{
 	}
 
-	void CInstance::Initiate(const char* aFilePath, const eModelType& aModelType)
+	void CInstance::Initiate(const char* aFilePath, const std::string& effect, const eModelType& aModelType)
 	{
 		switch (aModelType)
 		{
 		case eModelType::STATIC:
-			myModel = Snowblind::CAssetsContainer::GetInstance()->GetModel(aFilePath);
+			myModel = Snowblind::CAssetsContainer::GetInstance()->GetModel(aFilePath, effect);
 			break;
 		case eModelType::ANIMATED:
 			DL_ASSERT("Not implemented!");
@@ -42,6 +42,12 @@ namespace Snowblind
 	void CInstance::Render(CCamera& aCamera)
 	{
 		myModel->GetEffect()->SetMatrices(myOrientation, aCamera.GetOrientation(), aCamera.GetProjection());
+		myModel->Render();
+	}
+
+	void CInstance::Render()
+	{
+		myModel->GetEffect()->SetWorldMatrix(myOrientation);
 		myModel->Render();
 	}
 

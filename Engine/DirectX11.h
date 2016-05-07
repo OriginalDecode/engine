@@ -39,6 +39,14 @@ enum class eDepthStencil
 	_COUNT
 };
 
+enum class eRasterizer
+{
+	WIREFRAME,
+	CULL_BACK,
+	CULL_NONE,
+
+};
+
 
 namespace Snowblind
 {
@@ -66,7 +74,8 @@ namespace Snowblind
 		void ResetViewport();
 		void ResetRendertarget();
 		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
-
+		void SetDepthBufferState(const eDepthStencil& aDepthState);
+		void SetRasterizer(const eRasterizer& aRasterizer);
 		ID3D11RenderTargetView* GetBackbuffer();
 		ID3D11DepthStencilView* GetDepthView();
 	private:
@@ -77,9 +86,16 @@ namespace Snowblind
 		void CreateViewport();
 		void CreateDeferredContext();
 		void CreateAdapterList();
-		void CreateEnabledStencilStateSetup();
-		void CreateDisabledStencilStateSetup();
+		void CreateEnabledDepthStencilState();
+		void CreateDisabledDepthStencilState();
+		void CreateReadDepthStencilState();
 		void SetRasterizer();
+
+
+
+		void CreateRazterizers();
+
+
 		HWND myHWND;
 
 		D3D11_VIEWPORT* myViewport;
@@ -93,7 +109,7 @@ namespace Snowblind
 		ID3D11DepthStencilView* myDepthView;
 		ID3D11DepthStencilState* myDepthStates[static_cast<int>(eDepthStencil::_COUNT)];
 		ID3D11CommandList* myCommandList[2];
-		ID3D11RasterizerState* myRasterizerStates[2];
+		ID3D11RasterizerState* myRasterizerStates[3];
 
 		std::unordered_map<std::string, IDXGIAdapter*>	myAdapters;
 		std::vector<std::string> myAdaptersName;

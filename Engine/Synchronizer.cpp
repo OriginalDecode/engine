@@ -22,6 +22,7 @@ namespace Snowblind
 	{
 		my2DCommandBuffer[myCurrentBuffer].RemoveAll();
 		my3DCommandBuffer[myCurrentBuffer].RemoveAll();
+		myLightCommandBuffer[myCurrentBuffer].RemoveAll();
 		myCurrentBuffer ^= 1;
 	}
 
@@ -31,6 +32,8 @@ namespace Snowblind
 		my2DCommandBuffer[1].RemoveAll();
 		my3DCommandBuffer[0].RemoveAll();
 		my3DCommandBuffer[1].RemoveAll();
+		myLightCommandBuffer[0].RemoveAll();
+		myLightCommandBuffer[1].RemoveAll();
 	}
 
 	void CSynchronizer::Quit()
@@ -80,6 +83,9 @@ namespace Snowblind
 			RENDER_LOG("Adding 3D Command!");
 			my3DCommandBuffer[myCurrentBuffer ^ 1].Add(aRenderCommand);
 			break;
+		case eCommandType::LIGHT:
+			RENDER_LOG("Adding Light Command!");
+			myLightCommandBuffer[myCurrentBuffer ^ 1].Add(aRenderCommand);
 		}
 	}
 
@@ -90,6 +96,14 @@ namespace Snowblind
 			RENDER_LOG("Getting 2D CommandBuffer.");
 			return my2DCommandBuffer[myCurrentBuffer];
 		}
+
+		if (commandType == eCommandType::LIGHT)
+		{
+			RENDER_LOG("Getting Light CommandBuffer");
+			return myLightCommandBuffer[myCurrentBuffer];
+		}
+
+
 		RENDER_LOG("3D Type Assumed, getting 3D CommandBuffer.");
 		return my3DCommandBuffer[myCurrentBuffer];
 	}

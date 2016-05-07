@@ -71,11 +71,11 @@ namespace Snowblind
 		return myEffects[aFilePath];
 	}
 
-	CModel* CAssetsContainer::GetModel(const std::string& aFilePath)
+	CModel* CAssetsContainer::GetModel(const std::string& aFilePath, const std::string& effect)
 	{
 		if (myModels.find(aFilePath) == myModels.end())
 		{
-			LoadModel(aFilePath);
+			LoadModel(aFilePath, effect);
 		}
 		return myModels[aFilePath];
 	}
@@ -97,9 +97,9 @@ namespace Snowblind
 		myEffects[aFilePath] = effect;
 	}
 
-	void CAssetsContainer::LoadModel(const std::string& aFilePath)
+	void CAssetsContainer::LoadModel(const std::string& aFilePath, const std::string& effect)
 	{
-		CModel* model = myFactory->LoadModel(aFilePath.c_str(), "Data/Shaders/PBL_Shader.fx");
+		CModel* model = myFactory->LoadModel(aFilePath.c_str(), effect.c_str());
 		model->CreateModel();
 		myModels[aFilePath] = model;
 	}

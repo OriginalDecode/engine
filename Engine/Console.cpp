@@ -255,14 +255,6 @@ namespace Snowblind
 						myStrings.RemoveAll();
 					}
 
-					if (myInput == "pblscene")
-					{
-						CInstance* i = new CInstance();
-						i->Initiate(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx"));
-						i->SetPosition({ -25.f,0,0 });
-						myWorldScene->AddToScene(i);
-					}
-
 					myInput = "";
 					myInputText->SetText(" ");
 				}

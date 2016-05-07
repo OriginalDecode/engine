@@ -7,11 +7,11 @@ SRenderCommand::SRenderCommand()
 {
 }
 
-SRenderCommand::SRenderCommand(Snowblind::CPointLight* aPointLight, const eType& aType)
-	: myPointLight(aPointLight)
-	, myType(aType)
-{
-}
+//SRenderCommand::SRenderCommand(Snowblind::CPointLight* aPointLight, const eType& aType)
+//	: myPointLight(aPointLight)
+//	, myType(aType)
+//{
+//}
 
 SRenderCommand::SRenderCommand(const std::string aString, const CU::Math::Vector2<float>& aPosition, const eType& aType /*= eType::TEXT*/)
 	: myTextToPrint(aString)
@@ -26,5 +26,14 @@ SRenderCommand::SRenderCommand(Snowblind::CInstance* anInstance, const CU::Vecto
 	, myPosition(aPosition)
 	, myType(aType)
 	, myCommandType(eCommandType::e3D)
+{
+}
+
+SRenderCommand::SRenderCommand(Snowblind::CPointLight* aPointLight, const CU::Vector3f& aPosition, const CU::Vector3f& aColor, const eType& aType)
+	: myPointLight(aPointLight)
+	, myPosition(aPosition)
+	, myColor(aColor)
+	, myType(aType)
+	, myCommandType(eCommandType::LIGHT)
 {
 }

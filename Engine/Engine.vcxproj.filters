@@ -273,4 +273,9 @@
       <Filter>Rendering</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Workbed\Data\Shaders\DeferredBase.fx" />
+    <FxCompile Include="..\Workbed\Data\Shaders\DeferredAmbient.fx" />
+    <FxCompile Include="..\Workbed\Data\Shaders\DeferredLightMesh.fx" />
+  </ItemGroup>
 </Project>

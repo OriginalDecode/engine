@@ -1,6 +1,9 @@
 matrix World;
 matrix View;
 matrix Projection;
+matrix InvertedProjection;
+matrix NotInvertedView;
+
 
 float2 Scale;
 float2 Position;
@@ -15,6 +18,24 @@ Texture2D AOTexture;
 Texture2D DepthTexture;
 
 TextureCube CubeMap;
+
+struct GBuffer
+{
+	float4 Albedo;
+	float4 Normal;
+	float4 Depth;
+};
+
+struct VS_LIGHTMESH
+{
+	float4 Pos : POSITION;
+};
+
+struct PS_LIGHTMESH
+{
+	float4 Pos : SV_POSITION;
+	float4 UV : POSITION;
+};
 
 struct VS_INPUT_POS_NORM_UV
 {

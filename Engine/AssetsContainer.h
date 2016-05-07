@@ -19,7 +19,7 @@ namespace Snowblind
 
 		CTexture* GetTexture(const std::string& aFilePath);
 		CEffect* GetEffect(const std::string& aFilePath);
-		CModel* GetModel(const std::string& aFilePath);
+		CModel* GetModel(const std::string& aFilePath, const std::string& effect);
 
 	private:
 		CAssetsContainer();
@@ -32,7 +32,7 @@ namespace Snowblind
 
 		void LoadTexture(const std::string& aFilePath);
 		void LoadEffect(const std::string& aFilePath);
-		void LoadModel(const std::string& aFilePath);
+		void LoadModel(const std::string& aFilePath, const std::string& effect);
 
 		FBXFactory* myFactory;
 

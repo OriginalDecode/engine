@@ -18,6 +18,10 @@ namespace Snowblind
 
 	class CTexture;
 	class CDirectX11;
+	class CEffect;
+	class CEngine;
+	class CCamera;
+	class CPointLight;
 	struct SVertexIndexWrapper;
 	struct SVertexBufferWrapper;
 	struct SVertexDataWrapper;
@@ -32,10 +36,11 @@ namespace Snowblind
 		void SetBuffers();
 		void DeferredRender();
 		ID3D11ShaderResourceView* GetDeferredTexture(const eDeferredType& aDeferredType);
-
+		void SetLightState(CCamera* aCamera);
+		void SetNormalState();
+		void RenderLight(CPointLight* pointlight);
 	private:
 		void Render(CEffect* anEffect);
-
 		
 		struct SRenderToScreenData
 		{
@@ -57,6 +62,11 @@ namespace Snowblind
 			ID3DX11EffectShaderResourceVariable* myNormal = nullptr;
 			ID3DX11EffectShaderResourceVariable* myDepth = nullptr;
 			ID3DX11EffectVariable* myPointLightVariable;
+			ID3DX11EffectMatrixVariable* myProjection;
+			ID3DX11EffectMatrixVariable* myView;
+			ID3DX11EffectMatrixVariable* myWorld;
+			ID3DX11EffectMatrixVariable* myInvertedProjection;
+			ID3DX11EffectMatrixVariable* myNotInvertedView;
 		};
 
 		CEngine* myEngine;

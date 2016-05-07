@@ -20,7 +20,7 @@ float4 PS(PS_INPUT_POS_UV input) : SV_Target
 	//float4 cubemap = CubeMap.SampleLevel(pointSample, normal, 7);
 
 	//return saturate(albedo * cubemap);
-	return saturate(albedo);
+	return albedo;
 }
 
 technique11 Render

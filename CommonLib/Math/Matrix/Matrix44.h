@@ -128,7 +128,7 @@ namespace CommonUtilities
 			TYPE _cos = cos(aRadian);
 			TYPE _sin = sin(aRadian);
 
-			return matrix.Calculate(RotationType::Axis_X, _cos,_sin);
+			return matrix.Calculate(RotationType::Axis_X, _cos, _sin);
 		}
 
 		template<typename TYPE>
@@ -150,7 +150,7 @@ namespace CommonUtilities
 			TYPE _cos = cos(aRadian);
 			TYPE _sin = sin(aRadian);
 
-			return matrix.Calculate(RotationType::Axis_Z,_cos, _sin);
+			return matrix.Calculate(RotationType::Axis_Z, _cos, _sin);
 		}
 
 		template<typename TYPE>
@@ -319,7 +319,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		const Vector4<TYPE> Matrix44<TYPE>::GetForward() const 
+		const Vector4<TYPE> Matrix44<TYPE>::GetForward() const
 		{
 			return Vector4<TYPE>(myMatrix[8], myMatrix[9], myMatrix[10], myMatrix[11]);
 		}
@@ -360,7 +360,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		const Matrix44<TYPE> Inverse(Matrix44<TYPE> &aMatrix)
+		const Matrix44<TYPE> Inverse(const Matrix44<TYPE>& aMatrix)
 		{
 			Vector4<TYPE> theTranslation;
 
@@ -547,7 +547,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		const Matrix44<TYPE> Matrix44<TYPE>::Inverse(Matrix44<TYPE> &aMatrix) 
+		const Matrix44<TYPE> Matrix44<TYPE>::Inverse(Matrix44<TYPE> &aMatrix)
 		{
 			Vector4<TYPE> theTranslation;
 			theTranslation = aMatrix.GetTranslation();
@@ -589,6 +589,139 @@ namespace CommonUtilities
 
 
 #pragma endregion
+
+		template <typename T>
+		Matrix44<T> InverseReal(const Matrix44<T>& aMatrix)
+		{
+			T inv[16], det;
+			int i;
+
+			inv[0] = aMatrix.myMatrix[5] * aMatrix.myMatrix[10] * aMatrix.myMatrix[15] -
+				aMatrix.myMatrix[5] * aMatrix.myMatrix[11] * aMatrix.myMatrix[14] -
+				aMatrix.myMatrix[9] * aMatrix.myMatrix[6] * aMatrix.myMatrix[15] +
+				aMatrix.myMatrix[9] * aMatrix.myMatrix[7] * aMatrix.myMatrix[14] +
+				aMatrix.myMatrix[13] * aMatrix.myMatrix[6] * aMatrix.myMatrix[11] -
+				aMatrix.myMatrix[13] * aMatrix.myMatrix[7] * aMatrix.myMatrix[10];
+
+			inv[4] = -aMatrix.myMatrix[4] * aMatrix.myMatrix[10] * aMatrix.myMatrix[15] +
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[11] * aMatrix.myMatrix[14] +
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[6] * aMatrix.myMatrix[15] -
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[7] * aMatrix.myMatrix[14] -
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[6] * aMatrix.myMatrix[11] +
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[7] * aMatrix.myMatrix[10];
+
+			inv[8] = aMatrix.myMatrix[4] * aMatrix.myMatrix[9] * aMatrix.myMatrix[15] -
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[11] * aMatrix.myMatrix[13] -
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[5] * aMatrix.myMatrix[15] +
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[7] * aMatrix.myMatrix[13] +
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[5] * aMatrix.myMatrix[11] -
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[7] * aMatrix.myMatrix[9];
+
+			inv[12] = -aMatrix.myMatrix[4] * aMatrix.myMatrix[9] * aMatrix.myMatrix[14] +
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[10] * aMatrix.myMatrix[13] +
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[5] * aMatrix.myMatrix[14] -
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[6] * aMatrix.myMatrix[13] -
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[5] * aMatrix.myMatrix[10] +
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[6] * aMatrix.myMatrix[9];
+
+			inv[1] = -aMatrix.myMatrix[1] * aMatrix.myMatrix[10] * aMatrix.myMatrix[15] +
+				aMatrix.myMatrix[1] * aMatrix.myMatrix[11] * aMatrix.myMatrix[14] +
+				aMatrix.myMatrix[9] * aMatrix.myMatrix[2] * aMatrix.myMatrix[15] -
+				aMatrix.myMatrix[9] * aMatrix.myMatrix[3] * aMatrix.myMatrix[14] -
+				aMatrix.myMatrix[13] * aMatrix.myMatrix[2] * aMatrix.myMatrix[11] +
+				aMatrix.myMatrix[13] * aMatrix.myMatrix[3] * aMatrix.myMatrix[10];
+
+			inv[5] = aMatrix.myMatrix[0] * aMatrix.myMatrix[10] * aMatrix.myMatrix[15] -
+				aMatrix.myMatrix[0] * aMatrix.myMatrix[11] * aMatrix.myMatrix[14] -
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[2] * aMatrix.myMatrix[15] +
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[3] * aMatrix.myMatrix[14] +
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[2] * aMatrix.myMatrix[11] -
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[3] * aMatrix.myMatrix[10];
+
+			inv[9] = -aMatrix.myMatrix[0] * aMatrix.myMatrix[9] * aMatrix.myMatrix[15] +
+				aMatrix.myMatrix[0] * aMatrix.myMatrix[11] * aMatrix.myMatrix[13] +
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[1] * aMatrix.myMatrix[15] -
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[3] * aMatrix.myMatrix[13] -
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[1] * aMatrix.myMatrix[11] +
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[3] * aMatrix.myMatrix[9];
+
+			inv[13] = aMatrix.myMatrix[0] * aMatrix.myMatrix[9] * aMatrix.myMatrix[14] -
+				aMatrix.myMatrix[0] * aMatrix.myMatrix[10] * aMatrix.myMatrix[13] -
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[1] * aMatrix.myMatrix[14] +
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[2] * aMatrix.myMatrix[13] +
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[1] * aMatrix.myMatrix[10] -
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[2] * aMatrix.myMatrix[9];
+
+			inv[2] = aMatrix.myMatrix[1] * aMatrix.myMatrix[6] * aMatrix.myMatrix[15] -
+				aMatrix.myMatrix[1] * aMatrix.myMatrix[7] * aMatrix.myMatrix[14] -
+				aMatrix.myMatrix[5] * aMatrix.myMatrix[2] * aMatrix.myMatrix[15] +
+				aMatrix.myMatrix[5] * aMatrix.myMatrix[3] * aMatrix.myMatrix[14] +
+				aMatrix.myMatrix[13] * aMatrix.myMatrix[2] * aMatrix.myMatrix[7] -
+				aMatrix.myMatrix[13] * aMatrix.myMatrix[3] * aMatrix.myMatrix[6];
+
+			inv[6] = -aMatrix.myMatrix[0] * aMatrix.myMatrix[6] * aMatrix.myMatrix[15] +
+				aMatrix.myMatrix[0] * aMatrix.myMatrix[7] * aMatrix.myMatrix[14] +
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[2] * aMatrix.myMatrix[15] -
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[3] * aMatrix.myMatrix[14] -
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[2] * aMatrix.myMatrix[7] +
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[3] * aMatrix.myMatrix[6];
+
+			inv[10] = aMatrix.myMatrix[0] * aMatrix.myMatrix[5] * aMatrix.myMatrix[15] -
+				aMatrix.myMatrix[0] * aMatrix.myMatrix[7] * aMatrix.myMatrix[13] -
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[1] * aMatrix.myMatrix[15] +
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[3] * aMatrix.myMatrix[13] +
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[1] * aMatrix.myMatrix[7] -
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[3] * aMatrix.myMatrix[5];
+
+			inv[14] = -aMatrix.myMatrix[0] * aMatrix.myMatrix[5] * aMatrix.myMatrix[14] +
+				aMatrix.myMatrix[0] * aMatrix.myMatrix[6] * aMatrix.myMatrix[13] +
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[1] * aMatrix.myMatrix[14] -
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[2] * aMatrix.myMatrix[13] -
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[1] * aMatrix.myMatrix[6] +
+				aMatrix.myMatrix[12] * aMatrix.myMatrix[2] * aMatrix.myMatrix[5];
+
+			inv[3] = -aMatrix.myMatrix[1] * aMatrix.myMatrix[6] * aMatrix.myMatrix[11] +
+				aMatrix.myMatrix[1] * aMatrix.myMatrix[7] * aMatrix.myMatrix[10] +
+				aMatrix.myMatrix[5] * aMatrix.myMatrix[2] * aMatrix.myMatrix[11] -
+				aMatrix.myMatrix[5] * aMatrix.myMatrix[3] * aMatrix.myMatrix[10] -
+				aMatrix.myMatrix[9] * aMatrix.myMatrix[2] * aMatrix.myMatrix[7] +
+				aMatrix.myMatrix[9] * aMatrix.myMatrix[3] * aMatrix.myMatrix[6];
+
+			inv[7] = aMatrix.myMatrix[0] * aMatrix.myMatrix[6] * aMatrix.myMatrix[11] -
+				aMatrix.myMatrix[0] * aMatrix.myMatrix[7] * aMatrix.myMatrix[10] -
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[2] * aMatrix.myMatrix[11] +
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[3] * aMatrix.myMatrix[10] +
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[2] * aMatrix.myMatrix[7] -
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[3] * aMatrix.myMatrix[6];
+
+			inv[11] = -aMatrix.myMatrix[0] * aMatrix.myMatrix[5] * aMatrix.myMatrix[11] +
+				aMatrix.myMatrix[0] * aMatrix.myMatrix[7] * aMatrix.myMatrix[9] +
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[1] * aMatrix.myMatrix[11] -
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[3] * aMatrix.myMatrix[9] -
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[1] * aMatrix.myMatrix[7] +
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[3] * aMatrix.myMatrix[5];
+
+			inv[15] = aMatrix.myMatrix[0] * aMatrix.myMatrix[5] * aMatrix.myMatrix[10] -
+				aMatrix.myMatrix[0] * aMatrix.myMatrix[6] * aMatrix.myMatrix[9] -
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[1] * aMatrix.myMatrix[10] +
+				aMatrix.myMatrix[4] * aMatrix.myMatrix[2] * aMatrix.myMatrix[9] +
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[1] * aMatrix.myMatrix[6] -
+				aMatrix.myMatrix[8] * aMatrix.myMatrix[2] * aMatrix.myMatrix[5];
+
+			det = aMatrix.myMatrix[0] * inv[0] + aMatrix.myMatrix[1] * inv[4] + aMatrix.myMatrix[2] * inv[8] + aMatrix.myMatrix[3] * inv[12];
+
+			det = 1.0 / det;
+
+			Matrix44<T> returnMatrix;
+
+			for (i = 0; i < 16; i++)
+				returnMatrix.myMatrix[i] = inv[i] * det;
+
+			return returnMatrix;
+		}
+
+
+
 	};
 };
 namespace CU = CommonUtilities;

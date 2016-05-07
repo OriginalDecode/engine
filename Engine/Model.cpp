@@ -657,6 +657,7 @@ namespace Snowblind
 		vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
 
 		hr = myAPI->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
+		myAPI->SetDebugName(myVertexBuffer->myVertexBuffer, "Model : Vertex Buffer");
 		myAPI->HandleErrors(hr, "Failed to Create VertexBuffer!");
 
 		myVertexBuffer->myStride = myVertexData->myStride;
@@ -684,6 +685,7 @@ namespace Snowblind
 			indexData.pSysMem = myIndexData->myIndexData;
 
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
+		myAPI->SetDebugName(myIndexBuffer->myIndexBuffer, "Model : Index Buffer");
 		myAPI->HandleErrors(hr, "Failed to Create IndexBuffer");
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;

@@ -2,15 +2,20 @@
 #include "PointLight.h"
 #include "Model.h"
 #include "Instance.h"
+#include "AssetsContainer.h"
+
 namespace Snowblind
 {
 	CPointLight::CPointLight()
 	{
+		myLightMesh = new Snowblind::CInstance();
+		myLightMesh->Initiate("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/DeferredLightMesh.fx");
 	}
 
 
 	CPointLight::~CPointLight()
 	{
+		SAFE_DELETE(myLightMesh);
 	}
 
 	void CPointLight::Initiate(const CU::Vector3f& aPosition, const CU::Vector4f& aColor, float aRange)
@@ -19,6 +24,9 @@ namespace Snowblind
 		myOrientation.SetPosition(myOriginalPosition);
 		myColor = aColor;
 		myRange = aRange;
+
+	
+
 
 #ifdef _DEBUG
 		CModel* lightCube = new CModel();
@@ -60,6 +68,24 @@ namespace Snowblind
 	{
 		return myRange;
 	}
+
+	void CPointLight::Update()
+	{
+		myData.myLightColor = GetColor();
+		myData.myLightPosition = GetPosition();
+		myData.myRange = GetRange();
+	}
+
+	void CPointLight::Render()
+	{
+		myLightMesh->Render();
+	}
+
+	const SPointlightData& CPointLight::GetData() const
+	{
+		return myData;
+	}
+
 #ifdef _DEBUG
 	CInstance* CPointLight::GetInstance()
 	{

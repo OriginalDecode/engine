@@ -69,9 +69,11 @@ namespace Snowblind
 		myResourceNames.Add(aResourceName);
 
 		CTexture* tempTexture = CAssetsContainer::GetInstance()->GetTexture(aFilePath);
+		tempTexture->SetDebugName(aResourceName);
 		DL_ASSERT_EXP(tempTexture != nullptr, "[Surface](SetTexture) : Failed to set Texture!");
 
 		ID3DX11EffectShaderResourceVariable* tempShader = myEffect->GetEffect()->GetVariableByName(aResourceName.c_str())->AsShaderResource();
+
 		myEffect->Validate(tempShader, "Effect invalid!");
 		DL_ASSERT_EXP(tempShader != nullptr, "[Surface](SetTexture) : Failed to set Shader!");
 		myTexture = tempTexture;

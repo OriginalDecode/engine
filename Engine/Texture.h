@@ -18,6 +18,17 @@ namespace Snowblind
 		const char*	GetFileName();
 		bool LoadTexture(const char* aFileName);
 
+		/*
+			Set the prefix of the texture object. e.g UI - Albedo 
+			then it will appear as one of these
+			UI - Albedo : ShaderResource
+			UI - Albedo : DepthStencil
+			UI - Albedo : RenderTargetView
+
+		*/
+		void SetDebugName(const std::string& debugName);
+
+
 		ID3D11ShaderResourceView* GetShaderView();
 		ID3D11RenderTargetView*	GetRenderTargetView();
 		ID3D11RenderTargetView** GetRenderTarget();

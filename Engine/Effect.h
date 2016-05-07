@@ -37,6 +37,12 @@ namespace Snowblind
 		void SetScale(const CU::Math::Vector2<float>& aPosition);
 		void SetBlendState(ID3D11BlendState* aBlendState, float aBlendFactor[4], const unsigned int aSampleMask = 0xFFFFFFFF);
 
+		void SetViewMatrix(const CU::Matrix44f& aViewMatrix);
+		void SetProjectionMatrix(const CU::Matrix44f& aProjectionMatrix);
+		void SetWorldMatrix(const CU::Matrix44f& aWorldMatrix);
+
+
+
 		void UpdateLight(CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE>& someData);
 		void UpdateLight(CU::StaticArray<SSpotlightData, SPOTLIGHT_SIZE>& someData);
 		void UpdateLight(CU::StaticArray<SPointlightData, POINTLIGHT_SIZE>& someData);

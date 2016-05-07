@@ -11,7 +11,7 @@ namespace Snowblind
 
 	CTexture::CTexture(float aWidth, float aHeight, unsigned int aBindFlag, unsigned int aFormat)
 	{
-		
+
 		D3D11_TEXTURE2D_DESC tempBufferInfo;
 		tempBufferInfo.Width = aWidth;
 		tempBufferInfo.Height = aHeight;
@@ -32,7 +32,7 @@ namespace Snowblind
 		HRESULT hr = device->CreateTexture2D(&tempBufferInfo, NULL, &tex);
 		BAD_VALUE(hr != S_OK, hr);
 		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
-		
+
 		hr = device->CreateRenderTargetView(tex, NULL, &myRenderTargetView);
 		BAD_VALUE(hr != S_OK, hr);
 		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
@@ -68,6 +68,20 @@ namespace Snowblind
 			return false;
 		}
 		return true;
+	}
+
+	void CTexture::SetDebugName(const std::string& debugName)
+	{
+		std::string debug(debugName);
+		std::string sr = debug + "ShaderResource";
+		CEngine::GetDirectX()->SetDebugName(myShaderResource, sr);
+
+		std::string rt = debug + "RenderTarget";
+		CEngine::GetDirectX()->SetDebugName(myRenderTargetView, rt);
+
+		std::string ds = debug + "DepthStencil";
+		CEngine::GetDirectX()->SetDebugName(myDepthStencil, ds);
+
 	}
 
 	ID3D11ShaderResourceView* CTexture::GetShaderView()

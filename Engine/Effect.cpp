@@ -171,6 +171,21 @@ namespace Snowblind
 		CEngine::GetDirectX()->GetContext()->OMSetBlendState(aBlendState, aBlendFactor, aSampleMask);
 	}
 
+	void CEffect::SetViewMatrix(const CU::Matrix44f& aViewMatrix)
+	{
+		myViewMatrix->SetMatrix(&aViewMatrix.myMatrix[0]);
+	}
+
+	void CEffect::SetProjectionMatrix(const CU::Matrix44f& aProjectionMatrix)
+	{
+		myProjectionMatrix->SetMatrix(&aProjectionMatrix.myMatrix[0]);
+	}
+
+	void CEffect::SetWorldMatrix(const CU::Matrix44f& aWorldMatrix)
+	{
+		myWorldMatrix->SetMatrix(&aWorldMatrix.myMatrix[0]);
+	}
+
 	void CEffect::UpdateLight(CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE>& someData)
 	{
 		if (myEffect == nullptr)

@@ -8,6 +8,7 @@
 #include "Instance.h"
 #include "Camera.h"
 #include "DeferredRenderer.h"
+#include "PointLight.h"
 
 namespace Snowblind
 {
@@ -39,7 +40,9 @@ namespace Snowblind
 		Render3DCommands();
 		myDeferredRenderer->SetBuffers();
 		myDeferredRenderer->DeferredRender();
-
+		myDeferredRenderer->SetLightState(&myCamera);
+		RenderLightCommands();
+		myDeferredRenderer->SetNormalState();
 		Render2DCommands();
 
 		CEngine::Present();
@@ -61,7 +64,12 @@ namespace Snowblind
 				command.myInstance->SetPosition(command.myPosition);
 				command.myInstance->Render(myCamera);
 				break;
-
+			case SRenderCommand::eType::POINTLIGHT:
+				RENDER_LOG("Rendering PointLight");
+				command.myPointLight->SetPosition(command.myPosition);
+				command.myPointLight->SetColor(command.myColor);
+				command.myPointLight->Update();
+				break;
 			}
 		}
 	}
@@ -80,9 +88,25 @@ namespace Snowblind
 				myText->SetPosition({ command.myPosition.x, command.myPosition.y });
 				myText->Render(my2DCamera);
 				break;
-
 			}
 		}
 	}
 
+	void CRenderer::RenderLightCommands()
+	{
+		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandType::LIGHT);
+		for each(const SRenderCommand& command in commands)
+		{
+			switch (command.myType)
+			{
+			case SRenderCommand::eType::POINTLIGHT:
+				RENDER_LOG("Rendering PointLight");
+				command.myPointLight->SetPosition(command.myPosition);
+				command.myPointLight->SetColor(command.myColor);
+				command.myPointLight->Update();
+				myDeferredRenderer->RenderLight(command.myPointLight);
+				break;
+			}
+		}
+	}
 };

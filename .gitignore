@@ -208,6 +208,8 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
+*.exe
+
 # LightSwitch generated files
 GeneratedArtifacts/
 _Pvt_Extensions/
@@ -217,3 +219,4 @@ ModelManifest.xml
 /texture.ps
 /Workbed/Snowblind_Debug.exe
 /lib
+/Workbed/Data/Model/dev/.mayaSwatches

@@ -80,12 +80,13 @@ private:
 	Snowblind::CEngine* myEngine;
 	Snowblind::CConsole* myConsole;
 	Snowblind::CPointLight* myPointLight;
+
 	Snowblind::CSynchronizer* mySynchronizer;
+
 	CU::Quaternion myPitch;
 	CU::Quaternion myYaw;
 	CU::Matrix44f myOrientation;
 	CU::Math::Vector2<float> myCursorPosition;
-
 	CU::ControllerInput* myController;
 
 	std::thread* myLogicThread;

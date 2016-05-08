@@ -35,6 +35,7 @@ CApplication::~CApplication()
 	SAFE_DELETE(myConsole);
 	SAFE_DELETE(myController);
 	SAFE_DELETE(myInstance);
+	SAFE_DELETE(myPointLight);
 }
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
@@ -49,11 +50,9 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myInstance->Initiate("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/DeferredBase.fx");
 
 	myPointLight = new Snowblind::CPointLight();
-	myPointLight->SetRange(5);
+	myPointLight->SetRange(20);
 
 	mySynchronizer = myEngine->GetSynchronizer();
-
-
 	myLogicThread = new std::thread([&] {CApplication::Update(); });
 }
 
@@ -99,9 +98,11 @@ void CApplication::Update()
 void CApplication::Render()
 {
 	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(0, 0, 0), SRenderCommand::eType::MODEL));
-	mySynchronizer->AddRenderCommand(SRenderCommand(myPointLight, CU::Vector3f(5, 0, 0), CU::Vector3f(0, 1, 0), SRenderCommand::eType::POINTLIGHT));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(25, 0, 0), SRenderCommand::eType::MODEL)); 
-	//mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(-25, 0, 0), SRenderCommand::eType::MODEL));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(-5, 0, 0), CU::Vector3f(1, 0, 0), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(5, 0, 0), CU::Vector3f(0, 1, 0), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0, 0, 5), CU::Vector3f(0, 0, 1), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0, 0, -5), CU::Vector3f(1, 0, 1), 3.f, 20.f));
+
 }
 
 void CApplication::UpdateInput(float aDeltaTime)

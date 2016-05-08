@@ -16,6 +16,7 @@ enum class eCommandType
 	LIGHT,
 };
 
+
 struct SRenderCommand
 {
 	enum class eType
@@ -27,14 +28,19 @@ struct SRenderCommand
 	SRenderCommand();
 	SRenderCommand(const std::string aString, const CU::Math::Vector2<float>& aPosition, const eType& aType = eType::TEXT);
 	SRenderCommand(Snowblind::CInstance* anInstance, const CU::Vector3f& aPosition, const eType& aType);
-	SRenderCommand(Snowblind::CPointLight* aPointLight, const CU::Vector3f& aPosition, const CU::Vector3f& aColor, const eType& aType);
+	SRenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range );
 
 	Snowblind::CInstance* myInstance;
-	Snowblind::CPointLight* myPointLight;
+	//Snowblind::CPointLight* myPointLight;
 	std::string myTextToPrint;
 	CU::Vector3f myPosition;
 	CU::Vector3f myColor;
 	eCommandType myCommandType;
+
+
+	float myRange;
+	float myIntensity;
+
 	eType myType;
 
 };

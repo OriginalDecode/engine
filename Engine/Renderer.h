@@ -11,6 +11,7 @@ namespace Snowblind
 	class CText;
 	class CDeferredRenderer;
 	class CCamera;
+	class CPointLight;
 	class CRenderer
 	{
 	public:
@@ -28,5 +29,6 @@ namespace Snowblind
 		CCamera* my2DCamera;
 		CSynchronizer& mySynchronizer;
 		CText* myText;
+		CPointLight* myPointLight;
 	};
 }; 

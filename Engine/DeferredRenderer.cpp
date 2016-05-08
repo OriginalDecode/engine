@@ -155,15 +155,28 @@ namespace Snowblind
 
 	void CDeferredRenderer::CreateLightData()
 	{
+
 		myLightPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredLightMesh.fx");
+		CEffect* effect = myLightPass.myEffect;
 
-		myLightPass.myAlbedo = myLightPass.myEffect->GetVariableByName("AlbedoTexture")->AsShaderResource();
-		myLightPass.myNormal = myLightPass.myEffect->GetVariableByName("NormalTexture")->AsShaderResource();
-		myLightPass.myDepth = myLightPass.myEffect->GetVariableByName("DepthTexture;")->AsShaderResource();
-		myLightPass.myPointLightVariable = myLightPass.myEffect->GetVariableByName("PointLights");
+		myLightPass.myAlbedo = effect->GetVariableByName("AlbedoTexture")->AsShaderResource();
+		effect->Validate(myLightPass.myAlbedo, "Deferred Renderer Albedo was Invalid.");
 
-		myLightPass.myInvertedProjection = myLightPass.myEffect->GetEffect()->GetVariableByName("InvertedProjection")->AsMatrix();
-		myLightPass.myNotInvertedView = myLightPass.myEffect->GetEffect()->GetVariableByName("NotInvertedView")->AsMatrix();
+		myLightPass.myNormal = effect->GetVariableByName("NormalTexture")->AsShaderResource();
+		effect->Validate(myLightPass.myNormal, "Deferred Renderer Normal was Invalid.");
+		
+		myLightPass.myDepth = effect->GetVariableByName("DepthTexture")->AsShaderResource();
+		effect->Validate(myLightPass.myDepth, "Deferred Renderer Depth was Invalid.");
+
+		myLightPass.myPointLightVariable = effect->GetVariableByName("PointLights");
+		effect->Validate(myLightPass.myPointLightVariable, "Deferred Renderer Pointlights Variable was Invalid.");
+
+		myLightPass.myInvertedProjection = effect->GetEffect()->GetVariableByName("InvertedProjection")->AsMatrix();
+		effect->Validate(myLightPass.myDepth, "Deferred Renderer InvertedProjection was Invalid.");
+
+		myLightPass.myNotInvertedView = effect->GetEffect()->GetVariableByName("NotInvertedView")->AsMatrix();
+		effect->Validate(myLightPass.myDepth, "Deferred Renderer NotInvertedView was Invalid.");
+
 	}
 
 	void CDeferredRenderer::CreateAmbientData()
@@ -196,7 +209,7 @@ namespace Snowblind
 		v.myUV = { 1, 1 };
 		vertices.Add(v);
 
-		v.myPosition = { 1, 1, 0};
+		v.myPosition = { 1, 1, 0 };
 		v.myUV = { 1, 0 };
 		vertices.Add(v);
 

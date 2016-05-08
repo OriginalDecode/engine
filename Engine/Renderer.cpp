@@ -18,6 +18,7 @@ namespace Snowblind
 		, myCamera(aCamera)
 	{
 		myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16);
+		myPointLight = new Snowblind::CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
 	}
 
@@ -26,7 +27,7 @@ namespace Snowblind
 		SAFE_DELETE(my2DCamera);
 		SAFE_DELETE(myDeferredRenderer);
 		SAFE_DELETE(myText);
-
+		SAFE_DELETE(myPointLight);
 	}
 
 	void CRenderer::Add2DCamera(CCamera* aCamera)
@@ -96,10 +97,11 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::POINTLIGHT:
-				command.myPointLight->SetPosition(command.myPosition);
-				command.myPointLight->SetColor({ command.myColor.r, command.myColor.g, command.myColor.b, 1.f });
-				command.myPointLight->Update();
-				myDeferredRenderer->RenderLight(command.myPointLight, myCamera);
+				myPointLight->SetPosition(command.myPosition);
+				myPointLight->SetRange(command.myRange);
+				myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
+				myPointLight->Update();
+				myDeferredRenderer->RenderLight(myPointLight, myCamera);
 				break;
 			}
 		}

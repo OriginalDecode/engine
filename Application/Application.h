@@ -92,7 +92,7 @@ private:
 	CU::GrowingArray<CU::Vector3f> myPositions;
 
 
-	std::thread* myLogicThread;
+	//std::thread* myLogicThread;
 
 	volatile bool myQuitFlag;
 	float myAverageFPS;

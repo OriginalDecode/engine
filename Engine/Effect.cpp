@@ -67,7 +67,7 @@ namespace Snowblind
 		}
 */
 
-		ID3D11Device* device = CEngine::GetInstance()->GetAPI()->GetDevice();
+		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
 		hr = D3DX11CreateEffectFromMemory(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), 0, device, &myEffect);
 		BAD_VALUE(hr != S_OK, hr);

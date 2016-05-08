@@ -1,21 +1,22 @@
 #include "stdafx.h"
 #include "Synchronizer.h"
 #include "Renderer.h"
+#include <thread>
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
-	CDirectX11* CEngine::myAPI = nullptr;
+	CDirectX11* CEngine::myDirectX = nullptr;
 
 	CEngine::CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc)
 		: myWindowSize(aWindowWidth, aWindowHeight)
 	{
 		CreateAppWindow(anInstance, aWndProc);
 		CU::Input::InputWrapper::Create(myHWND, anInstance);
-		myAPI = new CDirectX11(myHWND, aWindowWidth, aWindowHeight);
+		//myDirectX = new CDirectX11(myHWND, aWindowWidth, aWindowHeight);
 
 		myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight);
 		my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0, 0, 1.f));
-		//myRenderThread = new std::thread(&CRenderer::Render, myRenderer);
+
 	}
 
 	CEngine::~CEngine()
@@ -25,7 +26,7 @@ namespace Snowblind
 		SAFE_DELETE(myRenderer);
 		//SAFE_DELETE(myRenderThread);
 		SAFE_DELETE(myCamera);
-		SAFE_DELETE(myAPI);
+		SAFE_DELETE(myDirectX);
 		SAFE_DELETE(myFontManager);
 		SAFE_DELETE(myTimeManager);
 		CU::Input::InputWrapper::Destroy();
@@ -53,18 +54,23 @@ namespace Snowblind
 
 	CDirectX11* CEngine::GetDirectX()
 	{
-		return myAPI;
+		return myDirectX;
 	}
 
 
 	void CEngine::Initiate()
 	{
+
 		myTimeManager = new CU::TimeManager();
 		myFontManager = new CFontManager();
 		myFontManager->Initiate();
 
 		mySynchronizer = new CSynchronizer();
-		myRenderer = new CRenderer(*mySynchronizer, myCamera);
+		myRenderer = new CRenderer(*mySynchronizer);
+		myRenderThread = new std::thread(&CRenderer::RenderMain, myRenderer, myWindowSize.myWidth, myWindowSize.myHeight, &myHWND);
+
+		myDirectX = myRenderer->GetDirectX();
+
 		myRenderer->Add2DCamera(my2DCamera);
 	}
 
@@ -81,17 +87,17 @@ namespace Snowblind
 	void CEngine::Update()
 	{
 		myInstance->myTimeManager->Update();
-		myInstance->myRenderer->Render();
+		//myInstance->myRenderer->Render();
 	}
 
 	void CEngine::Present()
 	{
-		myInstance->myAPI->Present();
+		myDirectX->Present();
 	}
 
 	void CEngine::Clear()
 	{
-		myInstance->myAPI->Clear();
+		myDirectX->Clear();
 	}
 
 	const Snowblind::SWindowSize& CEngine::GetWindowSize() const
@@ -116,7 +122,7 @@ namespace Snowblind
 
 	const char* CEngine::GetAPIName()
 	{
-		return myAPI->GetAPIName();
+		return myDirectX->GetAPIName();
 	}
 
 	void CEngine::OnPause()

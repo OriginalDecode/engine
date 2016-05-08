@@ -19,7 +19,7 @@ namespace Snowblind
 	CModel::CModel()
 	{
 		myIsNULLObject = true;
-		myAPI = CEngine::GetDirectX();
+		myAPI = CEngine::GetInstance()->GetAPI();
 		myIsTextured = false;
 	}
 

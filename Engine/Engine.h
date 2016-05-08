@@ -49,7 +49,7 @@ namespace Snowblind
 		static void Update();
 		static void Present();
 		static void Clear();
-
+		CDirectX11* GetAPI();
 		const SWindowSize& GetWindowSize() const;
 		CFont* LoadFont(const char* aFilepath, short aFontWidth);
 		const float GetDeltaTime();
@@ -68,7 +68,7 @@ namespace Snowblind
 		void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
 
 		static CEngine* myInstance;
-		static CDirectX11* myDirectX;
+		static CDirectX11* myAPI;
 		SWindowSize myWindowSize;
 
 		HWND myHWND;
@@ -79,6 +79,12 @@ namespace Snowblind
 		CRenderer* myRenderer;
 		CCamera*  myCamera;
 		CCamera*  my2DCamera;
-		std::thread* myRenderThread;
+
 	};
+
+	__forceinline CDirectX11* CEngine::GetAPI()
+	{
+		return myAPI;
+	}
+
 };

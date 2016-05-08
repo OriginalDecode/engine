@@ -20,7 +20,6 @@ namespace Snowblind
 	class CEffect
 	{
 	public:
-
 		CEffect();
 		~CEffect();
 
@@ -42,13 +41,14 @@ namespace Snowblind
 		void SetProjectionMatrix(const CU::Matrix44f& aProjectionMatrix);
 		void SetWorldMatrix(const CU::Matrix44f& aWorldMatrix);
 
+
+
 		void UpdateLight(CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE>& someData);
 		void UpdateLight(CU::StaticArray<SSpotlightData, SPOTLIGHT_SIZE>& someData);
 		void UpdateLight(CU::StaticArray<SPointlightData, POINTLIGHT_SIZE>& someData);
 
 		template <typename T>
 		void Validate(T* anEffectVariable, const std::string& anErrorMessage);
-
 	private:
 
 		std::string myTechniqueName;

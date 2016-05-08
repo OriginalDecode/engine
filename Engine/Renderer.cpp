@@ -13,10 +13,13 @@
 namespace Snowblind
 {
 
-	CRenderer::CRenderer(CSynchronizer& aSynchronizer)
+	CRenderer::CRenderer(CSynchronizer& aSynchronizer, CCamera* aCamera)
 		: mySynchronizer(aSynchronizer)
-		, myQuitFlag(false)
+		, myCamera(aCamera)
 	{
+		myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16);
+		myPointLight = new Snowblind::CPointLight();
+		myDeferredRenderer = new CDeferredRenderer();
 	}
 
 	CRenderer::~CRenderer()
@@ -27,64 +30,31 @@ namespace Snowblind
 		SAFE_DELETE(myPointLight);
 	}
 
-	void CRenderer::RenderMain(float aWidth, float aHeight, HWND* aHWND)
-	{
-		Initiate(aWidth, aHeight, *aHWND);
-		Render();
-	}
-
-	void CRenderer::Initiate(float aWidth, float aHeight, HWND aHWND)
-	{
-		myDirectX = new CDirectX11(aHWND, aWidth, aHeight);
-
-		myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16);
-		myPointLight = new Snowblind::CPointLight();
-		myDeferredRenderer = new CDeferredRenderer();
-
-
-	}
-
-	void CRenderer::AddCamera(CCamera* aCamera)
-	{
-		myCamera = aCamera;
-	}
-
 	void CRenderer::Add2DCamera(CCamera* aCamera)
 	{
 		my2DCamera = aCamera;
 	}
 
-	CDirectX11* CRenderer::GetDirectX()
-	{
-		return myDirectX;
-	}
-
 	void CRenderer::Render()
 	{
+		CEngine::Clear();
 
-		while (mySynchronizer.HasQuit() == false)
-		{
-			CEngine::Clear();
+		myDeferredRenderer->SetTargets();
+		Render3DCommands();
+		myDeferredRenderer->SetBuffers();
+		myDeferredRenderer->DeferredRender();
 
-			myDeferredRenderer->SetTargets();
-			Render3DCommands();
-			myDeferredRenderer->SetBuffers();
-			myDeferredRenderer->DeferredRender();
+		myDeferredRenderer->SetLightState(myCamera);
+		RenderLightCommands();
+		myDeferredRenderer->SetNormalState();
 
-			myDeferredRenderer->SetLightState(myCamera);
-			RenderLightCommands();
-			myDeferredRenderer->SetNormalState();
+		Render2DCommands();
 
-			Render2DCommands();
+		CEngine::Present();
 
-			CEngine::Present();
-
-			mySynchronizer.WaitForLogic();
-			mySynchronizer.SwapBuffer();
-			mySynchronizer.RenderIsDone();
-		}
-
-		myQuitFlag = true;
+		mySynchronizer.WaitForLogic();
+		mySynchronizer.SwapBuffer();
+		mySynchronizer.RenderIsDone();
 	}
 
 	void CRenderer::Render3DCommands()

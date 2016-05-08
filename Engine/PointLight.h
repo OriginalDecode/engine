@@ -4,10 +4,7 @@
 namespace Snowblind
 {
 
-#ifdef _DEBUG
 	class CInstance;
-#endif
-
 	class CPointLight
 	{
 	public:

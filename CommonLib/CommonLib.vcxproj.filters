@@ -95,6 +95,7 @@
     <ClInclude Include="Math\Quaternion\Quaternion.h">
       <Filter>Quaternion</Filter>
     </ClInclude>
+    <ClInclude Include="Randomizer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp">
@@ -108,5 +109,6 @@
     <ClCompile Include="Math\Quaternion\Quaternion.cpp">
       <Filter>Quaternion</Filter>
     </ClCompile>
+    <ClCompile Include="Randomizer.cpp" />
   </ItemGroup>
 </Project>

@@ -89,6 +89,9 @@ private:
 	CU::Math::Vector2<float> myCursorPosition;
 	CU::ControllerInput* myController;
 
+	CU::GrowingArray<CU::Vector3f> myPositions;
+
+
 	std::thread* myLogicThread;
 
 	volatile bool myQuitFlag;

@@ -42,6 +42,7 @@
     <ClInclude Include="Math\Vector\Vector3decl.h" />
     <ClInclude Include="Math\Vector\Vector4.h" />
     <ClInclude Include="Math\Vector\Vector4decl.h" />
+    <ClInclude Include="Randomizer.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +50,7 @@
     <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="JSON\JSONReader.cpp" />
     <ClCompile Include="Math\Quaternion\Quaternion.cpp" />
+    <ClCompile Include="Randomizer.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

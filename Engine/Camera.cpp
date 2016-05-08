@@ -5,7 +5,7 @@ namespace Snowblind
 	CCamera::CCamera(float aWidth, float aHeight)
 	{
 		XMMATRIX projection;
-		projection = XMMatrixPerspectiveFovLH(XM_PI*0.3f, aWidth / FLOAT(aHeight), 0.1f, 100.f);
+		projection = XMMatrixPerspectiveFovLH(XM_PI*0.3f, aWidth / FLOAT(aHeight), 0.1f, 1000.f);
 
 		XMFLOAT4X4 projMiddleHand;
 		XMStoreFloat4x4(&projMiddleHand, projection);

@@ -19,6 +19,7 @@
 #include "RenderCommand.h"
 #include <thread>
 #include <BadValueException.h>
+#include <Randomizer.h>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 
@@ -36,6 +37,7 @@ CApplication::~CApplication()
 	SAFE_DELETE(myController);
 	SAFE_DELETE(myInstance);
 	SAFE_DELETE(myPointLight);
+	Randomizer::Destroy();
 }
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
@@ -47,13 +49,25 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myCamera->AddOrientation(&myOrientation);
 
 	myInstance = new Snowblind::CInstance();
-	myInstance->Initiate("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/DeferredBase.fx");
+	myInstance->Initiate("Data/Model/dev/devBox.fbx", "Data/Shaders/DeferredBase.fx");
 
 	myPointLight = new Snowblind::CPointLight();
 	myPointLight->SetRange(20);
 
 	mySynchronizer = myEngine->GetSynchronizer();
 	myLogicThread = new std::thread([&] {CApplication::Update(); });
+
+	Randomizer::Create();
+
+	for (int i = 0; i < 60; i++)
+	{
+		float x = RANDOM(0, 25 );
+		float y = RANDOM(0, 25 );
+		float z = RANDOM(0, 25 );
+		myPositions.Add(CU::Vector3f(x, y, z));
+	}
+
+
 }
 
 void CApplication::Update()
@@ -88,6 +102,7 @@ void CApplication::Update()
 		ss << myEngine->GetFPS() << "\n" << myAverageFPSToPrint << "\nCamera Position : \nX : " << myOrientation.GetPosition().x << "\nY : " << myOrientation.GetPosition().y << "\nZ : " << myOrientation.GetPosition().z;
 		mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Math::Vector2<float>(0, 0)));
 
+
 		Render();
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();
@@ -97,11 +112,48 @@ void CApplication::Update()
 
 void CApplication::Render()
 {
+	for each (const CU::Vector3f& pos in myPositions)
+	{
+		mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, pos, SRenderCommand::eType::MODEL));
+
+		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, { pos.x,pos.y + 0.5f, pos.z }, CU::Vector3f(1, 0, 0), 3.f, 20.f));
+	}
+
+
+/*
 	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(0, 0, 0), SRenderCommand::eType::MODEL));
+	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(20, 0, 0), SRenderCommand::eType::MODEL));
+	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(-20, 0, 0), SRenderCommand::eType::MODEL));
+	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(35, 0, 0), SRenderCommand::eType::MODEL));
+	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(-35, 0, 0), SRenderCommand::eType::MODEL));
+
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(-5, 0, 0), CU::Vector3f(1, 0, 0), 3.f, 20.f));
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(5, 0, 0), CU::Vector3f(0, 1, 0), 3.f, 20.f));
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0, 0, 5), CU::Vector3f(0, 0, 1), 3.f, 20.f));
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0, 0, -5), CU::Vector3f(1, 0, 1), 3.f, 20.f));
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(25, 0, 0), CU::Vector3f(1, 0, 0), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(15, 0, 0), CU::Vector3f(0, 1, 0), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(20, 0, 5), CU::Vector3f(0, 0, 1), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(20, 0, -5), CU::Vector3f(1, 0, 1), 3.f, 20.f));
+
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(-25, 0, 0), CU::Vector3f(1, 0, 0), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(-15, 0, 0), CU::Vector3f(0, 1, 0), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(-20, 0, 5), CU::Vector3f(0, 0, 1), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(-20, 0, -5), CU::Vector3f(1, 0, 1), 3.f, 20.f));
+
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(40, 0, 0), CU::Vector3f(1, 0, 0), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(30, 0, 0), CU::Vector3f(0, 1, 0), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(35, 0, 5), CU::Vector3f(0, 0, 1), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(35, 0, -5), CU::Vector3f(1, 0, 1), 3.f, 20.f));
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(-40, 0, 0), CU::Vector3f(1, 0, 0), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(-30, 0, 0), CU::Vector3f(0, 1, 0), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(-35, 0, 5), CU::Vector3f(0, 0, 1), 3.f, 20.f));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(-35, 0, -5), CU::Vector3f(1, 0, 1), 3.f, 20.f));*/
+
 
 }
 

@@ -3,6 +3,8 @@
 namespace CommonUtilities
 {
 	typedef Math::Vector4<float> Vector4f;
+	typedef Math::Vector4<int> Vector4i;
+
 	namespace Math
 	{
 		template<typename T>

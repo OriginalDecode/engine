@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "DeferredRenderer.h"
 #include "PointLight.h"
+#include "EmitterInstance.h"
 
 namespace Snowblind
 {
@@ -41,8 +42,10 @@ namespace Snowblind
 
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
+		RenderParticles();
 		myDeferredRenderer->SetBuffers();
 		myDeferredRenderer->DeferredRender();
+
 
 		myDeferredRenderer->SetLightState(myCamera);
 		RenderLightCommands();
@@ -59,7 +62,7 @@ namespace Snowblind
 
 	void CRenderer::Render3DCommands()
 	{
-		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands();
+		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandType::e3D);
 		for each(const SRenderCommand& command in commands)
 		{
 			switch (command.myType)
@@ -74,7 +77,6 @@ namespace Snowblind
 
 	void CRenderer::Render2DCommands()
 	{
-		/* This happens after the deferred pass */
 		const CU::GrowingArray<SRenderCommand>& commands2D = mySynchronizer.GetRenderCommands(eCommandType::e2D);
 		for each(const SRenderCommand& command in commands2D)
 		{
@@ -102,6 +104,20 @@ namespace Snowblind
 				myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
 				myPointLight->Update();
 				myDeferredRenderer->RenderLight(myPointLight, myCamera);
+				break;
+			}
+		}
+	}
+
+	void CRenderer::RenderParticles()
+	{
+		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandType::PARTICLE);
+		for each(const SRenderCommand& command in commands)
+		{
+			switch (command.myType)
+			{
+			case SRenderCommand::eType::PARTICLE:
+				command.myEmitterInstance->Render(myCamera);
 				break;
 			}
 		}

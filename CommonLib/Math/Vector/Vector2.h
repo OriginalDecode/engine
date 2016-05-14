@@ -1,8 +1,9 @@
 #pragma once
 #include "Vector2decl.h"
-typedef CU::Math::Vector2<float> Vector2f;
 namespace CommonUtilities
 {
+	typedef CU::Math::Vector2<float> Vector2f;
+	typedef CU::Math::Vector2<int> Vector2i;
 	namespace Math
 	{
 		template<class TYPE>

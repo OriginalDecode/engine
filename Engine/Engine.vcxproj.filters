@@ -179,6 +179,8 @@
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="BadValueException.h" />
+    <ClInclude Include="EmitterInstance.h" />
+    <ClInclude Include="SnowblindParticleData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -272,10 +274,9 @@
     <ClCompile Include="DeferredRenderer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="EmitterInstance.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\Workbed\Data\Shaders\DeferredBase.fx" />
-    <FxCompile Include="..\Workbed\Data\Shaders\DeferredAmbient.fx" />
-    <FxCompile Include="..\Workbed\Data\Shaders\DeferredLightMesh.fx" />
+    <FxCompile Include="..\Workbed\Data\Shaders\Particle.fx" />
   </ItemGroup>
 </Project>

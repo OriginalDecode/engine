@@ -8,6 +8,7 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
+
 namespace std
 {
 	class thread;
@@ -60,6 +61,8 @@ namespace Snowblind
 		void OnResume();
 		void OnExit();
 		CSynchronizer* GetSynchronizer();
+
+
 
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);

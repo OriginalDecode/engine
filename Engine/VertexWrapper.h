@@ -18,7 +18,7 @@ namespace Snowblind
 	struct SVertexBufferWrapper
 	{
 		~SVertexBufferWrapper(){ SAFE_RELEASE(myVertexBuffer); };
-		ID3D11Buffer* myVertexBuffer;
+		ID3D11Buffer* myVertexBuffer = nullptr;
 		int myStartSlot;
 		int myNrOfBuffers;
 		unsigned int myStride;

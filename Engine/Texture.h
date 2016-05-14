@@ -27,7 +27,7 @@ namespace Snowblind
 
 		*/
 		void SetDebugName(const std::string& debugName);
-
+		void CreateTexture(const std::string& aTexturePath);
 
 		ID3D11ShaderResourceView* GetShaderView();
 		ID3D11RenderTargetView*	GetRenderTargetView();

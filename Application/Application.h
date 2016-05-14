@@ -31,6 +31,7 @@ namespace Snowblind
 	class CConsole;
 	class CSynchronizer;
 	class CPointLight;
+	class CEmitterInstance;
 };
 
 namespace std
@@ -82,6 +83,8 @@ private:
 	Snowblind::CPointLight* myPointLight;
 
 	Snowblind::CSynchronizer* mySynchronizer;
+	Snowblind::CEmitterInstance* myEmitter;
+
 
 	CU::Quaternion myPitch;
 	CU::Quaternion myYaw;

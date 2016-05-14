@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Synchronizer.h"
 #include "Renderer.h"
+#include <Randomizer.h>
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
@@ -16,6 +17,7 @@ namespace Snowblind
 		myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight);
 		my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0, 0, 1.f));
 		//myRenderThread = new std::thread(&CRenderer::Render, myRenderer);
+		Randomizer::Create();
 	}
 
 	CEngine::~CEngine()
@@ -29,6 +31,7 @@ namespace Snowblind
 		SAFE_DELETE(myFontManager);
 		SAFE_DELETE(myTimeManager);
 		CU::Input::InputWrapper::Destroy();
+		Randomizer::Destroy();
 	}
 
 

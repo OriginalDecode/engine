@@ -109,6 +109,23 @@ struct PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG
 	float3 WorldPos : POSITION;
 };
 
+struct PARTICLE_VS_INPUT
+{
+	float3 Pos : POSITION;
+	float Alpha : ALPHA;
+	float Size : SIZE;
+};
+
+struct PARTICLE_PS_INPUT
+{
+	float4 Pos : SV_POSITION;
+	float Alpha : ALPHA;
+	float Size : SIZE;
+	float2 UV : TEXCOORD;
+};
+
+
+
 
 SamplerState linearSample_Clamp
 {

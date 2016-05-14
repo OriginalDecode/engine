@@ -30,16 +30,13 @@ namespace Snowblind
 		ID3D11Texture2D* tex;
 
 		HRESULT hr = device->CreateTexture2D(&tempBufferInfo, NULL, &tex);
-		BAD_VALUE(hr != S_OK, hr);
-		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
 
 		hr = device->CreateRenderTargetView(tex, NULL, &myRenderTargetView);
-		BAD_VALUE(hr != S_OK, hr);
-		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
 
 		hr = device->CreateShaderResourceView(tex, NULL, &myShaderResource);
-		BAD_VALUE(hr != S_OK, hr);
-		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
 
 	}
 
@@ -82,6 +79,26 @@ namespace Snowblind
 		std::string ds = debug + "DepthStencil";
 		CEngine::GetDirectX()->SetDebugName(myDepthStencil, ds);
 
+	}
+
+	void CTexture::CreateTexture(const std::string& aTexturePath)
+	{
+		std::ifstream stream(aTexturePath.c_str(), std::ios::binary | std::ios::ate | std::ios::in);
+		std::ifstream::pos_type pos = stream.tellg();
+
+		std::vector<char> result(pos);
+
+		stream.seekg(0, std::ios::beg);
+		stream.read(&result[0], pos);
+
+		ID3D11ShaderResourceView* temp = NULL;
+
+		ID3D11Resource* resource = NULL;
+		HRESULT hr = S_OK;
+
+		//hr = D3DX11CreateTextureFromMemory(CEngine::GetDirectX()->GetDevice(), &result[0], result.size(), NULL, NULL, &resource, 0);
+		hr = D3DX11CreateShaderResourceViewFromMemory(CEngine::GetDirectX()->GetDevice(), &result[0], result.size(), 0, 0, &myShaderResource, &hr);
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create texture from memory");
 	}
 
 	ID3D11ShaderResourceView* CTexture::GetShaderView()

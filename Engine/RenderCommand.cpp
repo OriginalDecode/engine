@@ -32,3 +32,10 @@ SRenderCommand::SRenderCommand(const eType& aType, const CU::Vector3f& position,
 	, myCommandType(eCommandType::LIGHT)
 {
 }
+
+SRenderCommand::SRenderCommand(Snowblind::CEmitterInstance* anInstance)
+	: myEmitterInstance(anInstance)
+	, myCommandType(eCommandType::PARTICLE)
+	, myType(eType::PARTICLE)
+{
+}

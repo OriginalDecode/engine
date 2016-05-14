@@ -81,7 +81,7 @@ float4 PS(PS_LIGHTMESH input) : SV_Target
 
 	lightColor = saturate(lambert * PointLights[0].Color); 
 	float4 finalColor = float4(lightColor * intensity, 1.f);
-
+	finalColor *= albedo;
 	finalColor.a = 1.f;
 	return saturate(finalColor * CalculateTotalAttenuation(distance, PointLights[0].Range));
 	//return float4(diffuse.rgb + (albedo.rgb * finalColor.rgb), 1);

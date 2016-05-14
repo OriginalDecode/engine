@@ -26,11 +26,13 @@ namespace Snowblind
 		void LogicIsDone();
 		void AddRenderCommand(const SRenderCommand& aRenderCommand);
 
-		const CU::GrowingArray<SRenderCommand>& GetRenderCommands(const eCommandType& commandType = eCommandType::e3D) const;
+		const CU::GrowingArray<SRenderCommand>& GetRenderCommands(const eCommandType& commandType) const;
 	private:
 		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> my3DCommandBuffer;
 		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> my2DCommandBuffer;
 		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> myLightCommandBuffer;
+		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> myParticleCommands;
+
 
 		volatile bool myLogicIsDone;
 		volatile bool myRenderIsDone;

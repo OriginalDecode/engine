@@ -42,6 +42,7 @@ namespace Snowblind
 
 		myScreenData.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
 		myScreenData.mySource = myScreenData.myEffect->GetVariableByName("DiffuseTexture")->AsShaderResource();
+		myScreenData.myEffect->Validate(myScreenData.mySource, "DiffuseTexture is Invalid!");
 
 		CreateAmbientData();
 		CreateLightData();
@@ -184,8 +185,14 @@ namespace Snowblind
 		myAmbientPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredAmbient.fx");
 
 		myAmbientPass.myAlbedo = myAmbientPass.myEffect->GetVariableByName("AlbedoTexture")->AsShaderResource();
+		myAmbientPass.myEffect->Validate(myAmbientPass.myAlbedo, "Ambient Pass AlbedoTexture Not Valid.");
+
 		myAmbientPass.myNormal = myAmbientPass.myEffect->GetVariableByName("NormalTexture")->AsShaderResource();
-		myAmbientPass.myDepth = myAmbientPass.myEffect->GetVariableByName("DepthTexture;")->AsShaderResource();
+		myAmbientPass.myEffect->Validate(myAmbientPass.myNormal, "Ambient Pass NormalTexture Not Valid.");
+
+		myAmbientPass.myDepth = myAmbientPass.myEffect->GetVariableByName("DepthTexture")->AsShaderResource();
+		myAmbientPass.myEffect->Validate(myAmbientPass.myDepth, "Ambient Pass DepthTexture Not Valid.");
+
 	}
 
 	void CDeferredRenderer::CreateFullscreenQuad()
@@ -255,8 +262,7 @@ namespace Snowblind
 		hr = myDirectX->GetDevice()->
 			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myInputLayout);
 		myDirectX->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
-		BAD_VALUE(hr != S_OK, hr);
-		//myDirectX->HandleErrors(hr, "Failed to create VertexLayout");
+		myDirectX->HandleErrors(hr, "Failed to create VertexLayout");
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
@@ -270,8 +276,7 @@ namespace Snowblind
 		vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
 
 		hr = myDirectX->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
-		BAD_VALUE(hr != S_OK, hr);
-		//myDirectX->HandleErrors(hr, "Failed to Create VertexBuffer!");
+		myDirectX->HandleErrors(hr, "Failed to Create VertexBuffer!");
 
 		myVertexBuffer->myStride = myVertexData->myStride;
 		myVertexBuffer->myByteOffset = 0;

@@ -3,6 +3,8 @@
 namespace CommonUtilities
 {
 	typedef Math::Vector3<float> Vector3f;
+	typedef Math::Vector3<int> Vector3i;
+
 	namespace Math
 	{
 		template<typename T>

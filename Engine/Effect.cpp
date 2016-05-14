@@ -245,4 +245,12 @@ namespace Snowblind
 		myTexture->SetResource(aTexturePtr);
 	}
 
+	void CEffect::SetTexture(CTexture* texturePtr)
+	{
+		myTexture = myEffect->GetVariableByName("DiffuseTexture")->AsShaderResource();
+		Validate(myTexture, "Texture Invalid");
+
+		myTexture->SetResource(texturePtr->GetShaderView());
+	}
+
 }

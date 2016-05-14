@@ -23,6 +23,7 @@ namespace Snowblind
 		my2DCommandBuffer[myCurrentBuffer].RemoveAll();
 		my3DCommandBuffer[myCurrentBuffer].RemoveAll();
 		myLightCommandBuffer[myCurrentBuffer].RemoveAll();
+		myParticleCommands[myCurrentBuffer].RemoveAll();
 		myCurrentBuffer ^= 1;
 	}
 
@@ -34,6 +35,9 @@ namespace Snowblind
 		my3DCommandBuffer[1].RemoveAll();
 		myLightCommandBuffer[0].RemoveAll();
 		myLightCommandBuffer[1].RemoveAll();
+		myParticleCommands[0].RemoveAll();
+		myParticleCommands[1].RemoveAll();
+
 	}
 
 	void CSynchronizer::Quit()
@@ -83,6 +87,10 @@ namespace Snowblind
 			break;
 		case eCommandType::LIGHT:
 			myLightCommandBuffer[myCurrentBuffer ^ 1].Add(aRenderCommand);
+			break;
+		case eCommandType::PARTICLE:
+			myParticleCommands[myCurrentBuffer ^ 1].Add(aRenderCommand);
+			break;
 		}
 	}
 
@@ -93,10 +101,22 @@ namespace Snowblind
 			return my2DCommandBuffer[myCurrentBuffer];
 		}
 
+		if (commandType == eCommandType::PARTICLE)
+		{
+			return myParticleCommands[myCurrentBuffer];
+		}
+
 		if (commandType == eCommandType::LIGHT)
 		{
 			return myLightCommandBuffer[myCurrentBuffer];
 		}
-		return my3DCommandBuffer[myCurrentBuffer];
+
+		if (commandType == eCommandType::e3D)
+		{
+			return my3DCommandBuffer[myCurrentBuffer];
+		}
+
+		DL_ASSERT("No commandbuffer specified.");
+		return 0;
 	}
 };

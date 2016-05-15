@@ -133,6 +133,7 @@ void CApplication::Render()
 	for each(const CU::Vector3f& pos in myPositions)
 	{
 		mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, pos, SRenderCommand::eType::MODEL));
+		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, pos, CU::Vector3f(1.f, 0.f, 0.f), 1.f, 10.f));
 	}
 
 	mySynchronizer->AddRenderCommand(SRenderCommand(myEmitter));

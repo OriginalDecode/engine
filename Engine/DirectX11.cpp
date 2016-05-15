@@ -33,6 +33,7 @@ namespace Snowblind
 		CreateBackBuffer();
 		CreateViewport();
 		CreateRazterizers();
+		//CreateBlendStates();
 	}
 
 	CDirectX11::~CDirectX11()
@@ -111,16 +112,6 @@ namespace Snowblind
 			myContext->OMSetDepthStencilState(myDepthStates[static_cast<int>(eDepthStencil::Z_ENABLED)], 1);
 			break;
 		}
-	}
-
-	ID3D11RenderTargetView* CDirectX11::GetBackbuffer()
-	{
-		return myRenderTarget;
-	}
-
-	ID3D11DepthStencilView* CDirectX11::GetDepthView()
-	{
-		return myDepthView;
 	}
 
 	void CDirectX11::CreateDeviceAndSwapchain()
@@ -526,6 +517,27 @@ namespace Snowblind
 		}
 	}
 
+	void CDirectX11::SetBlendState(const eBlendStates& blendState)
+	{
+		float blend[4];
+		blend[0] = 0.f;
+		blend[1] = 0.f;
+		blend[2] = 0.f;
+		blend[3] = 0.f;
+
+		switch (blendState)
+		{
+		case eBlendStates::ALPHA_BLEND:
+			myContext->OMSetBlendState(myBlendStates[static_cast<int>(eBlendStates::ALPHA_BLEND)], blend, 0xFFFFFFFF);
+			break;
+		case eBlendStates::NO_BLEND:
+			myContext->OMSetBlendState(myBlendStates[static_cast<int>(eBlendStates::NO_BLEND)], blend, 0xFFFFFFFF);
+			break;
+		default:
+			break;
+		}
+	}
+
 	void CDirectX11::CreateRazterizers()
 	{
 		D3D11_RASTERIZER_DESC desc;
@@ -556,6 +568,30 @@ namespace Snowblind
 		desc.CullMode = D3D11_CULL_NONE;
 		myDevice->CreateRasterizerState(&desc, &myRasterizerStates[static_cast<int>(eRasterizer::CULL_NONE)]);
 		SetDebugName(myRasterizerStates[static_cast<int>(eRasterizer::CULL_NONE)], "CULL_NONE Rasterizer");
+	}
+
+	void CDirectX11::CreateBlendStates()
+	{
+		D3D11_BLEND_DESC blendDesc;
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_COLOR;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
+		myDevice->CreateBlendState(&blendDesc, &myBlendStates[static_cast<int>(eBlendStates::ALPHA_BLEND)]);
+
+		blendDesc.RenderTarget[0].BlendEnable = FALSE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		myDevice->CreateBlendState(&blendDesc, &myBlendStates[static_cast<int>(eBlendStates::NO_BLEND)]);
+
 	}
 
 };

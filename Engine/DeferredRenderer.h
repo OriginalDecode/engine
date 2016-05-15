@@ -9,7 +9,8 @@ struct ID3D11DeviceContext;
 struct ID3D11InputLayout;
 
 namespace Snowblind
-{	enum eDeferredType
+{
+	enum eDeferredType
 	{
 		ALBEDO,
 		NORMAL,
@@ -39,9 +40,17 @@ namespace Snowblind
 		void SetLightState(CCamera* aCamera);
 		void SetNormalState();
 		void RenderLight(CPointLight* pointlight, CCamera* aCamera);
+
+
+		void SetParticleRenderTarget();
+		void ResetRenderTarget();
+
+		CTexture* GetDepthStencil();
+		CTexture* GetDepth();
+		void RenderParticles();
 	private:
 		void Render(CEffect* anEffect);
-		
+
 		struct SRenderToScreenData
 		{
 			CEffect* myEffect = nullptr;
@@ -53,7 +62,7 @@ namespace Snowblind
 			ID3DX11EffectShaderResourceVariable* myAlbedo = nullptr;
 			ID3DX11EffectShaderResourceVariable* myNormal = nullptr;
 			ID3DX11EffectShaderResourceVariable* myDepth = nullptr;
-		};
+		} myAmbientPass;
 
 		struct SLightPass
 		{
@@ -64,18 +73,26 @@ namespace Snowblind
 			ID3DX11EffectVariable* myPointLightVariable;
 			ID3DX11EffectMatrixVariable* myInvertedProjection;
 			ID3DX11EffectMatrixVariable* myNotInvertedView;
-		};
+		} myLightPass;
 
 		CEngine* myEngine;
 		CTexture* myAlbedo;
 		CTexture* myNormal;
 		CTexture* myDepth;
 		CTexture* myDepthStencil;
+
+
+		struct SParticlePass
+		{
+			CEffect* myEffect;
+			ID3DX11EffectShaderResourceVariable* myDiffuse = nullptr;
+		} myParticlePass;
+
+		CTexture* myParticleTexture;
+
 		CDirectX11* myDirectX;
 
 		SWindowSize myWindowSize;
-		SAmbientPass myAmbientPass;
-		SLightPass myLightPass;
 		SRenderToScreenData myScreenData;
 
 		SVertexIndexWrapper* myIndexData;
@@ -101,4 +118,19 @@ namespace Snowblind
 		void CreateIndexBuffer();
 
 	};
+
+	__forceinline CTexture* CDeferredRenderer::GetDepth()
+	{
+		DL_ASSERT_EXP(myDepth != nullptr, "Deferred Depth Texture was null!");
+		return myDepth;
+	}
+
+	__forceinline CTexture* CDeferredRenderer::GetDepthStencil()
+	{
+		DL_ASSERT_EXP(myDepthStencil != nullptr, "Deferred Depthstencil was null!");
+		return myDepthStencil;
+	}
+
+
+
 };

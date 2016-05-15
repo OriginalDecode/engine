@@ -24,6 +24,7 @@ struct ID3D11CommandList;
 struct IDXGIAdapter;
 struct D3D11_VIEWPORT;
 struct ID3D11RasterizerState;
+struct ID3D11BlendState;
 
 enum class eEngineFlags
 {
@@ -44,8 +45,15 @@ enum class eRasterizer
 	WIREFRAME,
 	CULL_BACK,
 	CULL_NONE,
-
 };
+
+enum class eBlendStates
+{
+	NO_BLEND,
+	ALPHA_BLEND,
+	_COUNT
+};
+
 
 
 namespace Snowblind
@@ -76,8 +84,15 @@ namespace Snowblind
 		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
 		void SetDepthBufferState(const eDepthStencil& aDepthState);
 		void SetRasterizer(const eRasterizer& aRasterizer);
+
 		ID3D11RenderTargetView* GetBackbuffer();
+		const ID3D11RenderTargetView* GetBackbuffer() const;
+
 		ID3D11DepthStencilView* GetDepthView();
+		const ID3D11DepthStencilView* GetDepthView() const;
+
+		void SetBlendState(const eBlendStates& blendState);
+
 	private:
 
 		void CreateDeviceAndSwapchain();
@@ -90,6 +105,7 @@ namespace Snowblind
 		void CreateDisabledDepthStencilState();
 		void CreateReadDepthStencilState();
 		void CreateRazterizers();
+		void CreateBlendStates();
 
 		HWND myHWND;
 
@@ -105,6 +121,7 @@ namespace Snowblind
 		ID3D11DepthStencilState* myDepthStates[static_cast<int>(eDepthStencil::_COUNT)];
 		ID3D11CommandList* myCommandList[2];
 		ID3D11RasterizerState* myRasterizerStates[3];
+		ID3D11BlendState* myBlendStates[static_cast<int>(eBlendStates::_COUNT)];
 
 		std::unordered_map<std::string, IDXGIAdapter*>	myAdapters;
 		std::vector<std::string> myAdaptersName;
@@ -132,5 +149,24 @@ namespace Snowblind
 		return myContext;
 	}
 
+	__forceinline ID3D11RenderTargetView* CDirectX11::GetBackbuffer()
+	{
+		return myRenderTarget;
+	}
+
+	__forceinline const ID3D11RenderTargetView* CDirectX11::GetBackbuffer() const
+	{
+		return myRenderTarget;
+	}
+
+	__forceinline ID3D11DepthStencilView* CDirectX11::GetDepthView()
+	{
+		return myDepthView;
+	}
+
+	__forceinline const ID3D11DepthStencilView* CDirectX11::GetDepthView() const
+	{
+		return myDepthView;
+	}
 
 };

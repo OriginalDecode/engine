@@ -15,6 +15,7 @@ float4 PS(PS_INPUT_POS_UV input) : SV_Target
 {
 	float4 albedo = AlbedoTexture.Sample(pointSample_Clamp, input.UV);
 	float4 normal = NormalTexture.Sample(pointSample_Clamp, input.UV);
+
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
 	//float4 cubemap = CubeMap.SampleLevel(pointSample, normal, 7);

@@ -13,6 +13,8 @@ namespace Snowblind
 	class CCamera;
 	class CPointLight;
 	class CEmitterInstance;
+	class CTexture;
+
 	class CRenderer
 	{
 	public:
@@ -27,12 +29,12 @@ namespace Snowblind
 		void RenderLightCommands();
 		void RenderParticles();
 
-
 		CDeferredRenderer* myDeferredRenderer;
 		CCamera* myCamera;
 		CCamera* my2DCamera;
 		CSynchronizer& mySynchronizer;
 		CText* myText;
 		CPointLight* myPointLight;
+	
 	};
 }; 

@@ -21,6 +21,7 @@ namespace Snowblind
 		myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16);
 		myPointLight = new Snowblind::CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
+
 	}
 
 	CRenderer::~CRenderer()
@@ -42,14 +43,18 @@ namespace Snowblind
 
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
-		RenderParticles();
 		myDeferredRenderer->SetBuffers();
 		myDeferredRenderer->DeferredRender();
-
 
 		myDeferredRenderer->SetLightState(myCamera);
 		RenderLightCommands();
 		myDeferredRenderer->SetNormalState();
+
+		myDeferredRenderer->SetParticleRenderTarget();
+		RenderParticles();
+		myDeferredRenderer->SetBuffers();
+		myDeferredRenderer->RenderParticles();
+		CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 
 		Render2DCommands();
 

@@ -21,12 +21,12 @@ namespace Snowblind
 		data.minStartSize = 1.f;
 		data.maxStartSize = 1.f;
 		data.speed = 1.f;
-		data.startAlpha = 1.f;
+		data.startAlpha = 0.2f;
 		data.sizeDelta = 0.f;
 		data.alphaDelta = 0.f;
 
 
-		myData.diffuseTexture = Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/colors.dds");
+		myData.diffuseTexture = Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/hp.dds");
 		myData.lifeTime = -1.f;
 		myData.shader = Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/Particle.fx");
 		myData.particleData = data;
@@ -40,12 +40,8 @@ namespace Snowblind
 			myParticles.Add(toAdd);
 		}
 
-
-
-
 		CreateVertexBuffer();
 		CreateInputLayout();
-
 
 		myTimeToEmit = 0.f;
 	}
@@ -56,7 +52,7 @@ namespace Snowblind
 		if (myTimeToEmit < 0.f)
 		{
 			Emit();
-			myTimeToEmit = 0.1f;
+			myTimeToEmit = 0.25f;
 		}
 
 		UpdateParticle(aDeltaTime);
@@ -164,20 +160,19 @@ namespace Snowblind
 
 	void CEmitterInstance::Emit()
 	{
-
 		SParticleObject temp; //Replace with preallocated particles
 
 		temp.position.x = RANDOM(myOrientation.GetPosition().x, myData.size.x);
 		temp.position.y = RANDOM(myOrientation.GetPosition().y, myData.size.y);
 		temp.position.z = RANDOM(myOrientation.GetPosition().z, myData.size.z);
 
-		temp.size = 1.f;
-		temp.direction.x = RANDOM(-1.f, 1.f);
-		temp.direction.y = RANDOM(-1.f, 1.f);
-		temp.direction.z = RANDOM(-1.f, 1.f);
-		temp.lifeTime = 8.f;
-		temp.alpha = 1.f;
-		temp.speed = 20.f;
+		temp.size = 0.3f;
+		temp.direction.x = RANDOM(-0.1f, 0.1f);
+		temp.direction.y = RANDOM(0.f, 1.f);
+		temp.direction.z = RANDOM(-0.1f, 0.1f);
+		temp.lifeTime = 7.f;
+		temp.alpha = myData.particleData.startAlpha;
+		temp.speed = 0.5f;
 		myParticles.Add(temp);
 	}
 };

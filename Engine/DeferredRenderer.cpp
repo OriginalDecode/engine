@@ -21,6 +21,7 @@ namespace Snowblind
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 		myAlbedo->SetDebugName("DeferredAlbedo");
+
 		myNormal = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
@@ -30,6 +31,14 @@ namespace Snowblind
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		myDepth->SetDebugName("DeferredDepth");
+
+
+		myParticleTexture = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
+			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+			, DXGI_FORMAT_R8G8B8A8_UNORM);
+		myParticleTexture->SetDebugName("ParticleTexture");
+
+
 
 		myDepthStencil = new CTexture();
 		myDepthStencil->CreateDepthStencilView(myWindowSize.myWidth, myWindowSize.myHeight);
@@ -43,6 +52,10 @@ namespace Snowblind
 		myScreenData.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
 		myScreenData.mySource = myScreenData.myEffect->GetVariableByName("DiffuseTexture")->AsShaderResource();
 		myScreenData.myEffect->Validate(myScreenData.mySource, "DiffuseTexture is Invalid!");
+ 
+		myParticlePass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
+		myParticlePass.myDiffuse = myScreenData.myEffect->GetVariableByName("DiffuseTexture")->AsShaderResource();
+		myParticlePass.myEffect->Validate(myScreenData.mySource, "DiffuseTexture is Invalid!");
 
 		CreateAmbientData();
 		CreateLightData();
@@ -90,7 +103,8 @@ namespace Snowblind
 	{
 		SVertexBufferWrapper* buf = myVertexBuffer;
 		myContext->IASetInputLayout(myInputLayout);
-		myContext->IASetVertexBuffers(buf->myStartSlot, buf->myNrOfBuffers, &buf->myVertexBuffer, &buf->myStride, &buf->myByteOffset);
+		myContext->IASetVertexBuffers(buf->myStartSlot, buf->myNrOfBuffers
+			, &buf->myVertexBuffer, &buf->myStride, &buf->myByteOffset);
 		SIndexBufferWrapper* inBuf = myIndexBuffer;
 		myContext->IASetIndexBuffer(inBuf->myIndexBuffer, inBuf->myIndexBufferFormat, inBuf->myByteOffset);
 		myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -104,6 +118,8 @@ namespace Snowblind
 
 	void CDeferredRenderer::SetLightState(CCamera* aCamera)
 	{
+		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
+		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
 		myLightPass.myAlbedo->SetResource(myAlbedo->GetShaderView());
 		myLightPass.myNormal->SetResource(myNormal->GetShaderView());
 		myLightPass.myDepth->SetResource(myDepth->GetShaderView());
@@ -130,13 +146,48 @@ namespace Snowblind
 		pointlight->Render(aCamera);
 	}
 
-	void CDeferredRenderer::DeferredRender()
+	void CDeferredRenderer::SetParticleRenderTarget()
+	{
+		ID3D11RenderTargetView* rt = myParticleTexture->GetRenderTargetView();
+		myContext->ClearRenderTargetView(rt, myClearColor);
+
+		myContext->OMSetRenderTargets(1, &rt, myDepthStencil->GetDepthView());
+		//CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
+	}
+
+	void CDeferredRenderer::ResetRenderTarget()
+	{
+		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
+		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
+		myContext->OMSetRenderTargets(1, &backbuffer, depth);
+	}
+
+	void CDeferredRenderer::RenderParticles()
 	{
 
+		//CEngine::GetDirectX()->SetBlendState(eBlendStates::NO_BLEND);
+		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
+		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
+
+		myContext->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		myContext->OMSetRenderTargets(1, &backbuffer, depth);
+
+		myParticlePass.myDiffuse->SetResource(myParticleTexture->GetShaderView());
+
+		Render(myParticlePass.myEffect);
+
+		myParticlePass.myDiffuse->SetResource(NULL);
+
+		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
+	}
+
+	void CDeferredRenderer::DeferredRender()
+	{
 		myDirectX->ResetViewport();
 
 		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
 		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
+
 		myContext->ClearRenderTargetView(backbuffer, myClearColor);
 		myContext->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		myContext->OMSetRenderTargets(1, &backbuffer, depth);
@@ -150,8 +201,6 @@ namespace Snowblind
 		myAmbientPass.myAlbedo->SetResource(NULL);
 		myAmbientPass.myNormal->SetResource(NULL);
 		myAmbientPass.myDepth->SetResource(NULL);
-
-		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
 	}
 
 	void CDeferredRenderer::CreateLightData()

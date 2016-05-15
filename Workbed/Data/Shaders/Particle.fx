@@ -55,7 +55,8 @@ void GS (point PARTICLE_PS_INPUT input[1], inout TriangleStream<PARTICLE_PS_INPU
 float4 PS(PARTICLE_PS_INPUT input) : SV_Target
 {
 	float4 color = DiffuseTexture.Sample(linearSample_Clamp, input.UV);
-	color.a = input.Alpha;
+	color.a *= input.Alpha;
+
 	return color;	
 }
 
@@ -65,11 +66,13 @@ BlendState AlphaBlend
 	SrcBlend = SRC_ALPHA;
 	DestBlend = INV_SRC_ALPHA;
 	BlendOp = ADD;
-	
+	SrcBlendAlpha = ONE;
+	DestBlendAlpha = ONE;
+	BlendOpAlpha = ADD;
 	RenderTargetWriteMask[0] = 0x0F;
 };
 
-DepthStencilState DisableDepthMask
+DepthStencilState DisableDepthWrites
 {
 	DepthEnable = TRUE;
 	DepthWriteMask = ZERO;
@@ -83,7 +86,7 @@ technique11 Render
 		SetGeometryShader(CompileShader(gs_5_0, GS()));
 		SetPixelShader(CompileShader(ps_5_0, PS()));
 		SetBlendState(AlphaBlend, float4(0.f,0.f,0.f,0.f),0xFFFFFFFF);
-		SetDepthStencilState(DisableDepthMask,0);
+		SetDepthStencilState(DisableDepthWrites, 0);
 	}
 }
 

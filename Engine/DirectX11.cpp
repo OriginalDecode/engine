@@ -510,18 +510,7 @@ namespace Snowblind
 
 	void CDirectX11::SetRasterizer(const eRasterizer& aRasterizer)
 	{
-		switch (aRasterizer)
-		{
-		case eRasterizer::WIREFRAME:
-			myContext->RSSetState(myRasterizerStates[static_cast<int>(eRasterizer::WIREFRAME)]);
-			break;
-		case eRasterizer::CULL_NONE:
-			myContext->RSSetState(myRasterizerStates[static_cast<int>(eRasterizer::CULL_NONE)]);
-			break;
-		case eRasterizer::CULL_BACK:
-			myContext->RSSetState(myRasterizerStates[static_cast<int>(eRasterizer::CULL_BACK)]);
-			break;
-		}
+		myContext->RSSetState(myRasterizerStates[static_cast<int>(aRasterizer)]);
 	}
 
 	void CDirectX11::SetBlendState(const eBlendStates& blendState)
@@ -531,21 +520,7 @@ namespace Snowblind
 		blend[1] = 0.f;
 		blend[2] = 0.f;
 		blend[3] = 0.f;
-
-		switch (blendState)
-		{
-		case eBlendStates::ALPHA_BLEND:
-			myContext->OMSetBlendState(myBlendStates[static_cast<int>(eBlendStates::ALPHA_BLEND)], blend, 0xFFFFFFFF);
-			break;
-		case eBlendStates::PARTICLE_BLEND:
-			myContext->OMSetBlendState(myBlendStates[static_cast<int>(eBlendStates::PARTICLE_BLEND)], blend, 0xFFFFFFFF);
-			break;
-		case eBlendStates::NO_BLEND:
-			myContext->OMSetBlendState(myBlendStates[static_cast<int>(eBlendStates::NO_BLEND)], blend, 0xFFFFFFFF);
-			break;
-		default:
-			break;
-		}
+		myContext->OMSetBlendState(myBlendStates[static_cast<int>(blendState)], blend, 0xFFFFFFFF);
 	}
 
 	void CDirectX11::CreateRazterizers()
@@ -601,8 +576,8 @@ namespace Snowblind
 		blendDesc.AlphaToCoverageEnable = FALSE;
 		blendDesc.IndependentBlendEnable = FALSE;
 		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_COLOR;
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
 

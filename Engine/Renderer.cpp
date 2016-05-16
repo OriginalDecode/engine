@@ -18,7 +18,7 @@ namespace Snowblind
 		: mySynchronizer(aSynchronizer)
 		, myCamera(aCamera)
 	{
-		myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 32);
+		myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16);
 		myPointLight = new Snowblind::CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
 
@@ -52,7 +52,7 @@ namespace Snowblind
 
 		myDeferredRenderer->SetParticleRenderTarget();
 		RenderParticles();
-		myDeferredRenderer->SetBuffers(); //Krashar i release
+		myDeferredRenderer->SetBuffers();
 		myDeferredRenderer->RenderParticles();
 
 		Render2DCommands();

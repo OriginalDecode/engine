@@ -63,22 +63,21 @@ namespace Snowblind
 	void CEmitterInstance::Render(CCamera* camera)
 	{
 		UpdateVertexBuffer();
-
 		myData.shader->SetTexture(myData.diffuseTexture);
 
 		myData.shader->SetMatrices(myOrientation, camera->GetOrientation(), camera->GetProjection());
 		ID3D11DeviceContext* context = CEngine::GetDirectX()->GetContext();
 		context->IASetInputLayout(myInputLayout);
+
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		context->IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 		D3DX11_TECHNIQUE_DESC techDesc;
 		myData.shader->GetTechnique()->GetDesc(&techDesc);
 
-		for (UINT p = 0; p < techDesc.Passes; ++p)
-		{
-			myData.shader->GetTechnique()->GetPassByIndex(0)->Apply(0, context);
-			context->Draw(myParticles.Size(), 0);
-		}
+
+		myData.shader->GetTechnique()->GetPassByIndex(0)->Apply(0, context);
+		context->Draw(myParticles.Size(), 0);
+
 	}
 
 	void CEmitterInstance::CreateVertexBuffer()
@@ -102,7 +101,7 @@ namespace Snowblind
 		if (myVertexBuffer->myVertexBuffer != nullptr)
 			myVertexBuffer->myVertexBuffer->Release();
 
-		vertexBufferDesc.ByteWidth = sizeof(SParticleObject) * myParticles.Size();
+		vertexBufferDesc.ByteWidth = sizeof(SParticleObject) * myParticles.Capacity();
 
 		D3D11_SUBRESOURCE_DATA vertexData;
 		ZeroMemory(&vertexData, sizeof(vertexData));
@@ -120,7 +119,7 @@ namespace Snowblind
 			if (mappedResource.pData != nullptr)
 			{
 				SParticleObject *data = (SParticleObject*)mappedResource.pData;
-				memcpy(data, &myParticles[0], sizeof(SParticleObject)* myParticles.Capacity());
+				memcpy(data, &myParticles[0], sizeof(SParticleObject)* myParticles.Size());
 			}
 			CEngine::GetDirectX()->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
 		}

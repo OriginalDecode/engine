@@ -111,8 +111,11 @@ namespace Snowblind
 
 		SVertexBufferWrapper* buf = myVertexBuffer;
 		myContext->IASetInputLayout(myInputLayout);
-		myContext->IASetVertexBuffers(buf->myStartSlot, buf->myNrOfBuffers
-			, &buf->myVertexBuffer, &buf->myStride, &buf->myByteOffset);
+		myContext->IASetVertexBuffers(buf->myStartSlot
+			, buf->myNrOfBuffers
+			, &buf->myVertexBuffer
+			, &buf->myStride
+			, &buf->myByteOffset);
 		SIndexBufferWrapper* inBuf = myIndexBuffer;
 		myContext->IASetIndexBuffer(inBuf->myIndexBuffer, inBuf->myIndexBufferFormat, inBuf->myByteOffset);
 		myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -172,7 +175,6 @@ namespace Snowblind
 
 	void CDeferredRenderer::RenderParticles()
 	{
-
 		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
 		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
 
@@ -180,7 +182,6 @@ namespace Snowblind
 		myContext->OMSetRenderTargets(1, &backbuffer, depth);
 
 		myParticlePass.myDiffuse->SetResource(myParticleTexture->GetShaderView());
-
 		Render(myParticlePass.myEffect);
 
 		myParticlePass.myDiffuse->SetResource(NULL);

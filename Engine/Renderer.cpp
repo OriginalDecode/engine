@@ -18,7 +18,7 @@ namespace Snowblind
 		: mySynchronizer(aSynchronizer)
 		, myCamera(aCamera)
 	{
-		myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16);
+		myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 32);
 		myPointLight = new Snowblind::CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
 
@@ -54,9 +54,9 @@ namespace Snowblind
 		RenderParticles();
 		myDeferredRenderer->SetBuffers(); //Krashar i release
 		myDeferredRenderer->RenderParticles();
-		CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 
 		Render2DCommands();
+
 
 		CEngine::Present();
 
@@ -83,6 +83,7 @@ namespace Snowblind
 	void CRenderer::Render2DCommands()
 	{
 		const CU::GrowingArray<SRenderCommand>& commands2D = mySynchronizer.GetRenderCommands(eCommandType::e2D);
+		CEngine::GetDirectX()->DisableZBuffer();
 		for each(const SRenderCommand& command in commands2D)
 		{
 			switch (command.myType)
@@ -94,6 +95,8 @@ namespace Snowblind
 				break;
 			}
 		}
+		CEngine::GetDirectX()->EnableZBuffer();
+
 	}
 
 	void CRenderer::RenderLightCommands()

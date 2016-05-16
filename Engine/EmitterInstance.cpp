@@ -28,7 +28,7 @@ namespace Snowblind
 		data.alphaDelta = 0.f;
 
 
-		myData.diffuseTexture = Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/hp.dds");
+		myData.diffuseTexture = Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/smoke.dds");
 		myData.lifeTime = -1.f;
 		myData.shader = Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/Particle.fx");
 		myData.particleData = data;

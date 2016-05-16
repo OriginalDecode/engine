@@ -29,8 +29,48 @@ namespace Snowblind
 
 		hr = D3DX11CompileFromFile(aFile.c_str(), 0, 0, 0, "fx_5_0", shaderFlag,
 			0, 0, &compiledShader, &compilationMessage, 0);
-		BAD_VALUE(hr != S_OK, hr);
-		/*switch (hr)
+		switch (hr)
+		{
+		case D3D11_ERROR_FILE_NOT_FOUND:
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! File not found!");
+		break;
+		case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Too many unique state objects!");
+		break;
+		case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Too many view objects!");
+		break;
+		case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Deferred Context Map Without Initial Discard!");
+		break;
+		case DXGI_ERROR_INVALID_CALL:
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Invalid Call");
+		break;
+		case DXGI_ERROR_WAS_STILL_DRAWING:
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Were still drawing!");
+		break;
+		case E_FAIL:
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Failed!");
+		break;
+		case E_INVALIDARG:
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! One or more arguments were invalid!");
+		break;
+		case E_OUTOFMEMORY:
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Out of Memory!");
+		break;
+		case E_NOTIMPL:
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! The method call isn't implemented with the passed parameter combination.");
+		break;
+		case S_FALSE:
+		break;
+		}
+		
+
+		ID3D11Device* device = nullptr;
+		device = CEngine::GetDirectX()->GetDevice();
+
+		hr = D3DX11CreateEffectFromMemory(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), 0, device, &myEffect);
+		switch (hr)
 		{
 		case D3D11_ERROR_FILE_NOT_FOUND:
 			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! File not found!");
@@ -65,47 +105,6 @@ namespace Snowblind
 		case S_FALSE:
 			break;
 		}
-*/
-
-		ID3D11Device* device = CEngine::GetInstance()->GetAPI()->GetDevice();
-
-		hr = D3DX11CreateEffectFromMemory(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), 0, device, &myEffect);
-		BAD_VALUE(hr != S_OK, hr);
-		//switch (hr)
-		//{
-		//case D3D11_ERROR_FILE_NOT_FOUND:
-		//	DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! File not found!");
-		//	break;
-		//case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
-		//	DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Too many unique state objects!");
-		//	break;
-		//case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
-		//	DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Too many view objects!");
-		//	break;
-		//case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
-		//	DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Deferred Context Map Without Initial Discard!");
-		//	break;
-		//case DXGI_ERROR_INVALID_CALL:
-		//	DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Invalid Call");
-		//	break;
-		//case DXGI_ERROR_WAS_STILL_DRAWING:
-		//	DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Were still drawing!");
-		//	break;
-		//case E_FAIL:
-		//	DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Failed!");
-		//	break;
-		//case E_INVALIDARG:
-		//	DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! One or more arguments were invalid!");
-		//	break;
-		//case E_OUTOFMEMORY:
-		//	DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Out of Memory!");
-		//	break;
-		//case E_NOTIMPL:
-		//	DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! The method call isn't implemented with the passed parameter combination.");
-		//	break;
-		//case S_FALSE:
-		//	break;
-		//}
 		ENGINE_LOG("Successfully created effect.");
 
 		Validate(myEffect, "Effect Invalid!");

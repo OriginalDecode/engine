@@ -164,11 +164,18 @@ namespace Snowblind
 	{
 		int error = FT_Load_Char(aFace, index, FT_LOAD_RENDER);
 		DL_ASSERT_EXP(!error, "Failed to load glyph!");
+		//slot->outline
 		FT_GlyphSlot slot = aFace->glyph;
 		slot->format = FT_GLYPH_FORMAT_BITMAP;
+		//slot->format = FT_GLYPH_FORMAT_OUTLINE;
 		FT_Bitmap bitmap = slot->bitmap;
 		bitmap.pixel_mode = FT_PIXEL_MODE_MONO;
+
+	
+
 		FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
+
+
 
 		int height = bitmap.rows;
 		int width = bitmap.width;
@@ -190,7 +197,6 @@ namespace Snowblind
 		glyphData.myBearingY = (slot->metrics.horiBearingY - slot->metrics.height) / 64.f;
 
 		//Kerning is needed and being able to render text quads through other text quads.
-		//Face holds the ascender. Look at that. I believe that can solve my issues.
 		if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
 		{
 			FONT_LOG("Tried to set a UV coord to above 1 at glyph : %c , index %d", index, index);
@@ -221,38 +227,45 @@ namespace Snowblind
 
 			}
 		}
+
 		atlasX = atlasX + width + 2;
 		aFontData->myCharData[index] = glyphData;
 
 		//Bryt ut till en function i utilities eller texture?
-#ifdef SAVE
-		std::stringstream ss;
-		D3DX11_IMAGE_FILE_FORMAT format;
-#ifdef SAVE_DDS
-		ss << "Glyphs/Glyph_" << i << ".dds";
-		format = D3DX11_IFF_DDS;
-#endif
-#ifdef SAVE_PNG
-		ss << "Glyphs/Glyph_" << i << ".png";
-		format = D3DX11_IFF_PNG;
-#endif
-		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
-		texture->Release();
-#endif
+//#ifdef SAVE
+//		std::stringstream ss;
+//		D3DX11_IMAGE_FILE_FORMAT format;
+//#ifdef SAVE_DDS
+//		ss << "Glyphs/Glyph_" << i << ".dds";
+//		format = D3DX11_IFF_DDS;
+//#endif
+//#ifdef SAVE_PNG
+//		ss << "Glyphs/Glyph_" << i << ".png";
+//		format = D3DX11_IFF_PNG;
+//#endif
+//		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
+//		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
+//		texture->Release();
+//#endif
 	}
 
 	void CFontManager::LoadOutline(FT_FaceRec_* aFace, int aGlyphIndex)
 	{
-		int error = 0;
-		error = FT_Load_Glyph(aFace, aGlyphIndex, FT_LOAD_NO_BITMAP);
-		DL_ASSERT_EXP(!error, "LoadOutline() : Failed to load glyph");
 
+
+		int error = 0;
+		error = FT_Load_Glyph(aFace, aGlyphIndex, FT_LOAD_DEFAULT);
+		DL_ASSERT_EXP(!error, "LoadOutline() : Failed to load glyph");
+		FT_Glyph g;
+		FT_Get_Glyph(aFace->glyph, &g);
 
 		FT_Stroker stroker;
 		FT_Stroker_New(myLibrary, &stroker);
 		FT_Stroker_Set(stroker, myFontHeightWidth << 6, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
 
+		FT_Glyph_StrokeBorder(&g, stroker, false, true);
+		FT_Glyph_To_Bitmap(&g, FT_RENDER_MODE_NORMAL, nullptr, true);
+		FT_BitmapGlyph bmG = reinterpret_cast<FT_BitmapGlyph>(g);
 
 	}
 

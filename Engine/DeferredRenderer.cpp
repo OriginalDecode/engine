@@ -160,7 +160,7 @@ namespace Snowblind
 		myContext->ClearRenderTargetView(rt, myClearColor);
 
 		myContext->OMSetRenderTargets(1, &rt, myDepthStencil->GetDepthView());
-		//CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
+		CEngine::GetDirectX()->SetBlendState(eBlendStates::PARTICLE_BLEND);
 	}
 
 	void CDeferredRenderer::ResetRenderTarget()
@@ -173,7 +173,6 @@ namespace Snowblind
 	void CDeferredRenderer::RenderParticles()
 	{
 
-		//CEngine::GetDirectX()->SetBlendState(eBlendStates::NO_BLEND);
 		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
 		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
 
@@ -187,6 +186,7 @@ namespace Snowblind
 		myParticlePass.myDiffuse->SetResource(NULL);
 
 		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
+		CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
 	}
 
 	void CDeferredRenderer::DeferredRender()

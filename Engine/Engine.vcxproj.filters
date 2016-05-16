@@ -278,5 +278,6 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Workbed\Data\Shaders\Particle.fx" />
+    <FxCompile Include="..\Workbed\Data\Shaders\Font_Effect.fx" />
   </ItemGroup>
 </Project>

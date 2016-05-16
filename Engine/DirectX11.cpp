@@ -49,19 +49,22 @@ namespace Snowblind
 		SAFE_RELEASE(myDepthStates[static_cast<int>(eDepthStencil::Z_ENABLED)]);
 		SAFE_RELEASE(myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)]);
 		SAFE_RELEASE(myDepthStates[static_cast<int>(eDepthStencil::READ_NO_WRITE)]);
+		SAFE_RELEASE(myRasterizerStates[static_cast<int>(eRasterizer::CULL_NONE)]);
+		SAFE_RELEASE(myRasterizerStates[static_cast<int>(eRasterizer::CULL_BACK)]);
+		SAFE_RELEASE(myRasterizerStates[static_cast<int>(eRasterizer::WIREFRAME)]);
+
+		SAFE_RELEASE(myBlendStates[static_cast<int>(eBlendStates::NO_BLEND)]);
+		SAFE_RELEASE(myBlendStates[static_cast<int>(eBlendStates::ALPHA_BLEND)]);
 		SAFE_RELEASE(myDepthView);
 		SAFE_RELEASE(myDepthBuffer);
 		SAFE_RELEASE(myRenderTarget);
 		SAFE_RELEASE(mySwapchain);
 		SAFE_RELEASE(myDeferredContext);
-		SAFE_RELEASE(myRasterizerStates[0]);
-		SAFE_RELEASE(myRasterizerStates[1]);
+
 
 		myContext->ClearState();
 		myContext->Flush();
 
-		SAFE_RELEASE(myContext);
-		SAFE_RELEASE(myDevice);
 
 		if (myDebug != nullptr)
 		{
@@ -71,6 +74,8 @@ namespace Snowblind
 			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 			SAFE_RELEASE(myDebug);
 		}
+		SAFE_RELEASE(myContext);
+		SAFE_RELEASE(myDevice);
 	}
 
 	void CDirectX11::Present()
@@ -582,6 +587,7 @@ namespace Snowblind
 		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
 		myDevice->CreateBlendState(&blendDesc, &myBlendStates[static_cast<int>(eBlendStates::ALPHA_BLEND)]);
+		SetDebugName(myBlendStates[static_cast<int>(eBlendStates::ALPHA_BLEND)], "ALPHA_BLEND BlendState");
 
 		blendDesc.RenderTarget[0].BlendEnable = FALSE;
 		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
@@ -591,7 +597,7 @@ namespace Snowblind
 		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 		myDevice->CreateBlendState(&blendDesc, &myBlendStates[static_cast<int>(eBlendStates::NO_BLEND)]);
-
+		SetDebugName(myBlendStates[static_cast<int>(eBlendStates::NO_BLEND)], "NO_BLEND BlendState");
 	}
 
 };

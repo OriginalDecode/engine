@@ -40,17 +40,16 @@ namespace Snowblind
 
 	CFont::~CFont()
 	{
-		SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
-		SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myVertexBuffer);
-
+		SAFE_RELEASE(myBlendState);
 
 		SAFE_DELETE(myVertexBufferDesc);
 		SAFE_DELETE(myIndexBufferDesc);
+		SAFE_DELETE(myTimeManager);
+
 		SAFE_DELETE(myInitData);
 		SAFE_RELEASE(myVertexLayout);
-		SAFE_DELETE(myTimeManager);
 	}
 
 	void CFont::SetText(const std::string& aText)

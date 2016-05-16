@@ -11,7 +11,7 @@ namespace Snowblind
 
 struct SParticleData
 {
-	CU::Vector3f direction = { 0.f,0.f,0.f };
+	CU::Vector3f direction = { 0.f, 0.f, 0.f };
 	float speed = 0.f;
 	float minStartSize = 0.f, maxStartSize = 0.f;
 	float startAlpha = 0.f;

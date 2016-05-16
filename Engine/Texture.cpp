@@ -42,11 +42,9 @@ namespace Snowblind
 
 	CTexture::~CTexture()
 	{
-		if (myShaderResource != nullptr)
-		{
-			myShaderResource->Release();
-		}
-		myShaderResource = nullptr;
+		SAFE_RELEASE(myDepthStencil);
+		SAFE_RELEASE(myShaderResource);
+		SAFE_RELEASE(myRenderTargetView);
 	}
 
 	const char* CTexture::GetFileName()
@@ -161,6 +159,7 @@ namespace Snowblind
 		ID3D11Texture2D* tempBuffer;
 		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&tempBufferInfo, NULL, &tempBuffer);
 		CEngine::GetDirectX()->GetDevice()->CreateDepthStencilView(tempBuffer, NULL, &myDepthStencil);
+		tempBuffer->Release();
 	}
 
 };

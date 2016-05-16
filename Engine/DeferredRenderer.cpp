@@ -52,7 +52,7 @@ namespace Snowblind
 		myScreenData.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
 		myScreenData.mySource = myScreenData.myEffect->GetVariableByName("DiffuseTexture")->AsShaderResource();
 		myScreenData.myEffect->Validate(myScreenData.mySource, "DiffuseTexture is Invalid!");
- 
+
 		myParticlePass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
 		myParticlePass.myDiffuse = myScreenData.myEffect->GetVariableByName("DiffuseTexture")->AsShaderResource();
 		myParticlePass.myEffect->Validate(myScreenData.mySource, "DiffuseTexture is Invalid!");
@@ -67,10 +67,16 @@ namespace Snowblind
 
 	CDeferredRenderer::~CDeferredRenderer()
 	{
+		SAFE_DELETE(myParticleTexture);
 		SAFE_DELETE(myAlbedo);
 		SAFE_DELETE(myNormal);
 		SAFE_DELETE(myDepth);
 		SAFE_DELETE(myDepthStencil);
+		SAFE_RELEASE(myInputLayout);
+		SAFE_DELETE(myVertexBuffer);
+		SAFE_DELETE(myIndexBuffer);
+		SAFE_DELETE(myIndexData);
+		SAFE_DELETE(myVertexData);
 	}
 
 	void CDeferredRenderer::SetTargets()
@@ -101,6 +107,8 @@ namespace Snowblind
 
 	void CDeferredRenderer::SetBuffers()
 	{
+		//Krashar här i release om jag redan kört den 1 gång innan i min render funktion.
+
 		SVertexBufferWrapper* buf = myVertexBuffer;
 		myContext->IASetInputLayout(myInputLayout);
 		myContext->IASetVertexBuffers(buf->myStartSlot, buf->myNrOfBuffers
@@ -214,7 +222,7 @@ namespace Snowblind
 
 		myLightPass.myNormal = effect->GetVariableByName("NormalTexture")->AsShaderResource();
 		effect->Validate(myLightPass.myNormal, "Deferred Renderer Normal was Invalid.");
-		
+
 		myLightPass.myDepth = effect->GetVariableByName("DepthTexture")->AsShaderResource();
 		effect->Validate(myLightPass.myDepth, "Deferred Renderer Depth was Invalid.");
 

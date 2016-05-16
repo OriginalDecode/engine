@@ -27,11 +27,11 @@ namespace Snowblind
 		SAFE_DELETE(myRenderer);
 		//SAFE_DELETE(myRenderThread);
 		SAFE_DELETE(myCamera);
-		SAFE_DELETE(myAPI);
 		SAFE_DELETE(myFontManager);
 		SAFE_DELETE(myTimeManager);
 		CU::Input::InputWrapper::Destroy();
 		Randomizer::Destroy();
+		SAFE_DELETE(myAPI);
 	}
 
 

@@ -29,9 +29,6 @@ namespace Snowblind
 		void UpdateParticle(float aDeltaTime);
 		void Emit();
 
-		void CreateQuadBuffer();
-		void CreateIndexBuffer();
-
 		SEmitterData myData;
 		SVertexBufferWrapper* myVertexBuffer;
 

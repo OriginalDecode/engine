@@ -20,17 +20,14 @@ namespace Snowblind
 
 	CSpriteModel::~CSpriteModel()
 	{
-		SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
-		SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myVertexBuffer);
-
-		SAFE_DELETE(myIndexData->myIndexData);
 		SAFE_DELETE(myIndexData);
-
-		SAFE_DELETE(myVertexData->myVertexData);
 		SAFE_DELETE(myVertexData);
+
+		SAFE_RELEASE(myTexture);
 		SAFE_RELEASE(myVertexLayout);
+		SAFE_RELEASE(myBlendState);
 
 	}
 

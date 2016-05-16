@@ -119,7 +119,7 @@ namespace Snowblind
 		ID3D11RenderTargetView* myRenderTarget;
 		ID3D11DepthStencilView* myDepthView;
 		ID3D11DepthStencilState* myDepthStates[static_cast<int>(eDepthStencil::_COUNT)];
-		ID3D11CommandList* myCommandList[2];
+		//ID3D11CommandList* myCommandList[2];
 		ID3D11RasterizerState* myRasterizerStates[3];
 		ID3D11BlendState* myBlendStates[static_cast<int>(eBlendStates::_COUNT)];
 

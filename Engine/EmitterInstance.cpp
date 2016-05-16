@@ -10,6 +10,8 @@ namespace Snowblind
 
 	CEmitterInstance::~CEmitterInstance()
 	{
+		SAFE_RELEASE(myInputLayout);
+		SAFE_DELETE(myVertexBuffer);
 	}
 
 	void CEmitterInstance::Initiate(CSynchronizer* aSynchronizer)

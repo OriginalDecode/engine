@@ -52,7 +52,7 @@ namespace Snowblind
 
 		myDeferredRenderer->SetParticleRenderTarget();
 		RenderParticles();
-		myDeferredRenderer->SetBuffers();
+		myDeferredRenderer->SetBuffers(); //Krashar i release
 		myDeferredRenderer->RenderParticles();
 		CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 

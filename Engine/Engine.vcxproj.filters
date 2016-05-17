@@ -67,6 +67,9 @@
     <Filter Include="Rendering">
       <UniqueIdentifier>{d8548c38-fabc-49ce-9df5-72949776396c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="APIs\DirectX12">
+      <UniqueIdentifier>{cec70b67-a5d5-40a0-9a36-a5bcdd9584bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -178,9 +181,11 @@
     <ClInclude Include="DeferredRenderer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="BadValueException.h" />
     <ClInclude Include="EmitterInstance.h" />
     <ClInclude Include="SnowblindParticleData.h" />
+    <ClInclude Include="DirectX12.h">
+      <Filter>APIs\DirectX12</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -275,9 +280,8 @@
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="EmitterInstance.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\Workbed\Data\Shaders\Particle.fx" />
-    <FxCompile Include="..\Workbed\Data\Shaders\Font_Effect.fx" />
+    <ClCompile Include="DirectX12.cpp">
+      <Filter>APIs\DirectX12</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

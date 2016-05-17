@@ -50,9 +50,6 @@ struct SAnimatedParticleObject
 struct SEmitterData
 {
 	Snowblind::CTexture* diffuseTexture = nullptr;
-	Snowblind::CTexture* normalTexture = nullptr;
-	Snowblind::CTexture* emissiveTexture = nullptr;
-	//More?
 	Snowblind::CEffect* shader = nullptr;
 
 	SParticleData particleData;
@@ -60,5 +57,11 @@ struct SEmitterData
 	int emittsPerSecond = 0;
 	CU::Vector3f size = { 0.f,0.f,0.f };
 	float lifeTime = 0.f;
+
+};
+
+struct SEmitterGroup
+{
+	int groupCount = 0;
 
 };

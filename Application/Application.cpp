@@ -18,7 +18,6 @@
 #include <Synchronizer.h>
 #include "RenderCommand.h"
 #include <thread>
-#include <BadValueException.h>
 #include <Texture.h>
 #include <EmitterInstance.h>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
@@ -43,6 +42,8 @@ CApplication::~CApplication()
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
+	aWindowWidth;
+	aWindowHeight;
 	myAverageFPS = 0;
 	myQuitFlag = false;
 	myEngine = Snowblind::CEngine::GetInstance();

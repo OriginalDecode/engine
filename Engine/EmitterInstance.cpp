@@ -74,7 +74,6 @@ namespace Snowblind
 		D3DX11_TECHNIQUE_DESC techDesc;
 		myData.shader->GetTechnique()->GetDesc(&techDesc);
 
-
 		myData.shader->GetTechnique()->GetPassByIndex(0)->Apply(0, context);
 		context->Draw(myParticles.Size(), 0);
 

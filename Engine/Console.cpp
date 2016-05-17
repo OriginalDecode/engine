@@ -55,6 +55,7 @@ namespace Snowblind
 		{
 			if (myIsActive)
 			{
+#ifndef DX12
 				CEngine::GetDirectX()->DisableZBuffer();
 				mySprite->Render(myCamera);
 
@@ -66,6 +67,7 @@ namespace Snowblind
 				}
 				myInputText->Render(myCamera);
 				CEngine::GetDirectX()->EnableZBuffer();
+#endif
 			}
 		}
 	}

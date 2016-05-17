@@ -52,7 +52,7 @@ namespace Snowblind
 
 	void CSurface::Activate()
 	{
-		CEngine::GetInstance()->GetAPI()->GetContext()->IASetPrimitiveTopology(myPrimologyType);
+		CEngine::GetDirectX()->GetContext()->IASetPrimitiveTopology(myPrimologyType);
 		for (int i = 0; i < myShaderVariables.Size(); ++i)
 		{
 			myShaderVariables[i]->SetResource(myTextures[i]->GetShaderView());

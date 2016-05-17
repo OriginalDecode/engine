@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Texture.h"
 #include <D3DX11.h>
-#include "BadValueException.h"
 
 namespace Snowblind
 {
@@ -56,7 +55,7 @@ namespace Snowblind
 	{
 		HRESULT hr;
 		myFileName = aFileName;
-		hr = D3DX11CreateShaderResourceViewFromFile(CEngine::GetInstance()->GetAPI()->GetDevice(), myFileName, nullptr, nullptr, &myShaderResource, nullptr);
+		hr = D3DX11CreateShaderResourceViewFromFile(CEngine::GetDirectX()->GetDevice(), myFileName, nullptr, nullptr, &myShaderResource, nullptr);
 		if (FAILED(hr))
 		{
 			DL_WARNINGBOX_EXP(FAILED(hr), "Failed to load texture!");
@@ -136,8 +135,8 @@ namespace Snowblind
 		ID3D11Resource *resource;
 		myShaderResource->GetResource(&resource);
 		HRESULT hr = S_OK;
-		hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), resource, D3DX11_IMAGE_FILE_FORMAT::D3DX11_IFF_DDS, aFileName);
-		CEngine::GetInstance()->GetAPI()->HandleErrors(hr, "Failed to save Texture! ");
+		hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), resource, D3DX11_IMAGE_FILE_FORMAT::D3DX11_IFF_DDS, aFileName);
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save Texture! ");
 		resource->Release();
 	}
 

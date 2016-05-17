@@ -30,7 +30,9 @@ namespace Snowblind
 		float myHeight;
 	};
 
+#ifndef DX12
 	class CDirectX11;
+#endif
 	class CFontManager;
 	class CSynchronizer;
 	class CFont;
@@ -43,14 +45,16 @@ namespace Snowblind
 		static void Create(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		static void Destroy();
 		static CEngine* GetInstance();
+#ifndef DX12
 		static CDirectX11* GetDirectX();
+#endif
 		void Initiate();
 		CCamera* GetCamera();
 		CCamera* Get2DCamera();
 		static void Update();
 		static void Present();
 		static void Clear();
-		CDirectX11* GetAPI();
+		
 		const SWindowSize& GetWindowSize() const;
 		CFont* LoadFont(const char* aFilepath, short aFontWidth);
 		const float GetDeltaTime();
@@ -71,7 +75,9 @@ namespace Snowblind
 		void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
 
 		static CEngine* myInstance;
+#ifndef DX12
 		static CDirectX11* myAPI;
+#endif
 		SWindowSize myWindowSize;
 
 		HWND myHWND;
@@ -84,10 +90,4 @@ namespace Snowblind
 		CCamera*  my2DCamera;
 
 	};
-
-	__forceinline CDirectX11* CEngine::GetAPI()
-	{
-		return myAPI;
-	}
-
 };

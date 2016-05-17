@@ -11,8 +11,10 @@
 
 namespace Snowblind
 {
+
 	CDeferredRenderer::CDeferredRenderer()
 	{
+#ifndef DX12
 		myDirectX = CEngine::GetDirectX();
 		myContext = myDirectX->GetContext();
 		myEngine = CEngine::GetInstance();
@@ -32,13 +34,10 @@ namespace Snowblind
 			, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		myDepth->SetDebugName("DeferredDepth");
 
-
 		myParticleTexture = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 		myParticleTexture->SetDebugName("ParticleTexture");
-
-
 
 		myDepthStencil = new CTexture();
 		myDepthStencil->CreateDepthStencilView(myWindowSize.myWidth, myWindowSize.myHeight);
@@ -61,12 +60,13 @@ namespace Snowblind
 		CreateLightData();
 
 		CreateFullscreenQuad();
+#endif
 
 	}
 
-
 	CDeferredRenderer::~CDeferredRenderer()
 	{
+#ifndef DX12
 		SAFE_DELETE(myParticleTexture);
 		SAFE_DELETE(myAlbedo);
 		SAFE_DELETE(myNormal);
@@ -77,10 +77,12 @@ namespace Snowblind
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myIndexData);
 		SAFE_DELETE(myVertexData);
+#endif
 	}
 
 	void CDeferredRenderer::SetTargets()
 	{
+#ifndef DX12
 		myContext->ClearRenderTargetView(myAlbedo->GetRenderTargetView(), myClearColor);
 		myContext->ClearRenderTargetView(myNormal->GetRenderTargetView(), myClearColor);
 		myContext->ClearRenderTargetView(myDepth->GetRenderTargetView(), myClearColor);
@@ -92,10 +94,12 @@ namespace Snowblind
 		target[2] = myDepth->GetRenderTargetView();
 
 		myContext->OMSetRenderTargets(3, target, myDepthStencil->GetDepthView());
+#endif
 	}
 
 	void CDeferredRenderer::Render(CEffect* anEffect)
 	{
+#ifndef DX12
 		D3DX11_TECHNIQUE_DESC techDesc;
 		anEffect->GetTechnique()->GetDesc(&techDesc);
 		for (UINT p = 0; p < techDesc.Passes; p++)
@@ -103,12 +107,12 @@ namespace Snowblind
 			anEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, myContext);
 			myContext->DrawIndexed(6, 0, 0);
 		}
+#endif
 	}
 
 	void CDeferredRenderer::SetBuffers()
 	{
-		//Krashar här i release om jag redan kört den 1 gång innan i min render funktion.
-
+#ifndef DX12
 		SVertexBufferWrapper* buf = myVertexBuffer;
 		myContext->IASetInputLayout(myInputLayout);
 		myContext->IASetVertexBuffers(buf->myStartSlot
@@ -119,6 +123,7 @@ namespace Snowblind
 		SIndexBufferWrapper* inBuf = myIndexBuffer;
 		myContext->IASetIndexBuffer(inBuf->myIndexBuffer, inBuf->myIndexBufferFormat, inBuf->myByteOffset);
 		myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+#endif
 	}
 
 	ID3D11ShaderResourceView* CDeferredRenderer::GetDeferredTexture(const eDeferredType& aDeferredType)
@@ -129,6 +134,7 @@ namespace Snowblind
 
 	void CDeferredRenderer::SetLightState(CCamera* aCamera)
 	{
+#ifndef DX12
 		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
 		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
 		myLightPass.myAlbedo->SetResource(myAlbedo->GetShaderView());
@@ -140,15 +146,18 @@ namespace Snowblind
 
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
+#endif
 	}
 
 	void CDeferredRenderer::SetNormalState()
 	{
+#ifndef DX12
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 		myLightPass.myAlbedo->SetResource(NULL);
 		myLightPass.myNormal->SetResource(NULL);
 		myLightPass.myDepth->SetResource(NULL);
+#endif
 	}
 
 	void CDeferredRenderer::RenderLight(CPointLight* pointlight, CCamera* aCamera)
@@ -159,22 +168,27 @@ namespace Snowblind
 
 	void CDeferredRenderer::SetParticleRenderTarget()
 	{
+#ifndef DX12
 		ID3D11RenderTargetView* rt = myParticleTexture->GetRenderTargetView();
 		myContext->ClearRenderTargetView(rt, myClearColor);
 
 		myContext->OMSetRenderTargets(1, &rt, myDepthStencil->GetDepthView());
 		CEngine::GetDirectX()->SetBlendState(eBlendStates::PARTICLE_BLEND);
+#endif
 	}
 
 	void CDeferredRenderer::ResetRenderTarget()
 	{
+#ifndef DX12
 		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
 		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
 		myContext->OMSetRenderTargets(1, &backbuffer, depth);
+#endif
 	}
 
 	void CDeferredRenderer::RenderParticles()
 	{
+#ifndef DX12
 		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
 		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
 
@@ -188,10 +202,12 @@ namespace Snowblind
 
 		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
 		CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
+#endif
 	}
 
 	void CDeferredRenderer::DeferredRender()
 	{
+#ifndef DX12
 		myDirectX->ResetViewport();
 
 		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
@@ -210,11 +226,12 @@ namespace Snowblind
 		myAmbientPass.myAlbedo->SetResource(NULL);
 		myAmbientPass.myNormal->SetResource(NULL);
 		myAmbientPass.myDepth->SetResource(NULL);
+#endif
 	}
 
 	void CDeferredRenderer::CreateLightData()
 	{
-
+#ifndef DX12
 		myLightPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredLightMesh.fx");
 		CEffect* effect = myLightPass.myEffect;
 
@@ -235,11 +252,12 @@ namespace Snowblind
 
 		myLightPass.myNotInvertedView = effect->GetEffect()->GetVariableByName("NotInvertedView")->AsMatrix();
 		effect->Validate(myLightPass.myDepth, "Deferred Renderer NotInvertedView was Invalid.");
-
+#endif
 	}
 
 	void CDeferredRenderer::CreateAmbientData()
 	{
+#ifndef DX12
 		myAmbientPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredAmbient.fx");
 
 		myAmbientPass.myAlbedo = myAmbientPass.myEffect->GetVariableByName("AlbedoTexture")->AsShaderResource();
@@ -250,11 +268,12 @@ namespace Snowblind
 
 		myAmbientPass.myDepth = myAmbientPass.myEffect->GetVariableByName("DepthTexture")->AsShaderResource();
 		myAmbientPass.myEffect->Validate(myAmbientPass.myDepth, "Ambient Pass DepthTexture Not Valid.");
-
+#endif
 	}
 
 	void CDeferredRenderer::CreateFullscreenQuad()
 	{
+#ifndef DX12
 		myVertexFormat.Init(2);
 		myVertexFormat.Add(VertexLayoutPosUV[0]);
 		myVertexFormat.Add(VertexLayoutPosUV[1]);
@@ -307,10 +326,12 @@ namespace Snowblind
 
 		CreateVertexBuffer();
 		CreateIndexBuffer();
+#endif
 	}
 
 	void CDeferredRenderer::CreateVertexBuffer()
 	{
+#ifndef DX12
 		HRESULT hr;
 
 		D3DX11_PASS_DESC passDesc;
@@ -340,10 +361,12 @@ namespace Snowblind
 		myVertexBuffer->myByteOffset = 0;
 		myVertexBuffer->myStartSlot = 0;
 		myVertexBuffer->myNrOfBuffers = 1;
+#endif
 	}
 
 	void CDeferredRenderer::CreateIndexBuffer()
 	{
+#ifndef DX12
 		D3D11_BUFFER_DESC indexDesc;
 		ZeroMemory(&indexDesc, sizeof(indexDesc));
 		indexDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -360,5 +383,7 @@ namespace Snowblind
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		myIndexBuffer->myByteOffset = 0;
+#endif
 	}
+
 };

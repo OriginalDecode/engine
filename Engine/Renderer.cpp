@@ -21,7 +21,7 @@ namespace Snowblind
 		myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16);
 		myPointLight = new Snowblind::CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
-
+		myDeferredType = eDeferredType::NONE;
 	}
 
 	CRenderer::~CRenderer()
@@ -44,7 +44,16 @@ namespace Snowblind
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
 		myDeferredRenderer->SetBuffers();
-		myDeferredRenderer->DeferredRender();
+#ifdef _DEBUG
+		if (myDeferredType != eDeferredType::NONE)
+		{
+			myDeferredRenderer->RenderTexture(myDeferredType);
+		}
+		else
+#endif
+		{
+			myDeferredRenderer->DeferredRender();
+		}
 
 		myDeferredRenderer->SetLightState(myCamera);
 		RenderLightCommands();
@@ -63,6 +72,11 @@ namespace Snowblind
 		mySynchronizer.WaitForLogic();
 		mySynchronizer.SwapBuffer();
 		mySynchronizer.RenderIsDone();
+	}
+
+	void CRenderer::SetDeferredRenderType(const eDeferredType& deferredType)
+	{
+		myDeferredType = deferredType;
 	}
 
 	void CRenderer::Render3DCommands()

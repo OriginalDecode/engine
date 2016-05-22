@@ -48,6 +48,11 @@ namespace Snowblind
 		void UpdateLight(CU::StaticArray<SSpotlightData, SPOTLIGHT_SIZE>& someData);
 		void UpdateLight(CU::StaticArray<SPointlightData, POINTLIGHT_SIZE>& someData);
 
+		void GetShaderResource(ID3DX11EffectShaderResourceVariable** aShaderResource, const std::string& aVariableName);
+		void GetShaderVector(ID3DX11EffectVectorVariable** aShaderResource, const std::string& aVariableName);
+		void GetShaderMatrix(ID3DX11EffectMatrixVariable** aShaderResource, const std::string& aVariableName);
+
+
 		template <typename T>
 		void Validate(T* anEffectVariable, const std::string& anErrorMessage);
 	private:
@@ -77,8 +82,6 @@ namespace Snowblind
 	template <typename T>
 	void CEffect::Validate(T* anEffectVariable, const std::string& aString)
 	{
-		aString;
-		anEffectVariable;
 		DL_ASSERT_EXP(anEffectVariable->IsValid() == TRUE, aString.c_str());
 	}
 

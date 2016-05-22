@@ -14,7 +14,7 @@ namespace Snowblind
 
 	void CEffect::Initiate(const std::string& aFile)
 	{
-#ifndef DX12
+
 		myTechniqueName = "";
 		ENGINE_LOG("Loading %s", aFile.c_str());
 		HRESULT hr;
@@ -32,39 +32,39 @@ namespace Snowblind
 		switch (hr)
 		{
 		case D3D11_ERROR_FILE_NOT_FOUND:
-		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! File not found!");
-		break;
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! File not found!");
+			break;
 		case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
-		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Too many unique state objects!");
-		break;
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Too many unique state objects!");
+			break;
 		case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
-		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Too many view objects!");
-		break;
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Too many view objects!");
+			break;
 		case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
-		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Deferred Context Map Without Initial Discard!");
-		break;
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Deferred Context Map Without Initial Discard!");
+			break;
 		case DXGI_ERROR_INVALID_CALL:
-		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Invalid Call");
-		break;
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Invalid Call");
+			break;
 		case DXGI_ERROR_WAS_STILL_DRAWING:
-		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Were still drawing!");
-		break;
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Were still drawing!");
+			break;
 		case E_FAIL:
-		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Failed!");
-		break;
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Failed!");
+			break;
 		case E_INVALIDARG:
-		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! One or more arguments were invalid!");
-		break;
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! One or more arguments were invalid!");
+			break;
 		case E_OUTOFMEMORY:
-		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Out of Memory!");
-		break;
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! Out of Memory!");
+			break;
 		case E_NOTIMPL:
-		DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! The method call isn't implemented with the passed parameter combination.");
-		break;
+			DL_ASSERT_EXP(hr == S_OK, "Failed to Create effect! The method call isn't implemented with the passed parameter combination.");
+			break;
 		case S_FALSE:
-		break;
+			break;
 		}
-		
+
 
 		ID3D11Device* device = nullptr;
 		device = CEngine::GetDirectX()->GetDevice();
@@ -121,12 +121,11 @@ namespace Snowblind
 		myProjectionMatrix = myEffect->GetVariableByName("Projection")->AsMatrix();
 		Validate(myProjectionMatrix, "Projection Matrix Invalid!");
 
-#endif
 	}
 
 	void CEffect::SetMatrices(CU::Matrix44f& aToWorld, CU::Matrix44f& aToView, CU::Matrix44f& aProjection)
 	{
-#ifndef DX12
+
 		CU::Math::Matrix44<float> temp = aToWorld;
 
 		HRESULT hr = myWorldMatrix->SetMatrix(static_cast<float*>(&temp.myMatrix[0]));
@@ -138,60 +137,47 @@ namespace Snowblind
 
 		hr = myProjectionMatrix->SetMatrix(static_cast<float*>(&aProjection.myMatrix[0]));
 		DL_ASSERT_EXP(hr == S_OK, "Failed to set projection matrix!");
-#endif
 	}
 
 	void CEffect::SetPosition(const CU::Math::Vector2<float>& aPosition)
 	{
-#ifndef DX12
-		mySpritePos = myEffect->GetVariableByName("Position")->AsVector();
-		Validate(mySpritePos, "SpritePosition Invalid!");
-
+		//mySpritePos = myEffect->GetVariableByName("Position")->AsVector();
+		//Validate(mySpritePos, "SpritePosition Invalid!");
+		GetShaderVector(&mySpritePos, "Position");
 		mySpritePos->SetFloatVector(&aPosition.x);
-#endif
 	}
 
 	void CEffect::SetScale(const CU::Math::Vector2<float>& aPosition)
 	{
-#ifndef DX12
-		mySpritePos = myEffect->GetVariableByName("Scale")->AsVector();
-		Validate(mySpritePos, "SpritePosition Invalid!");
-
+		//mySpritePos = myEffect->GetVariableByName("Scale")->AsVector();
+		//Validate(mySpritePos, "SpritePosition Invalid!");
+		GetShaderVector(&mySpritePos, "Scale");
 		mySpritePos->SetFloatVector(&aPosition.x);
-#endif
 	}
 
 	void CEffect::SetBlendState(ID3D11BlendState* aBlendState, float aBlendFactor[4], const unsigned int aSampleMask)
 	{
-#ifndef DX12
 		CEngine::GetDirectX()->GetContext()->OMSetBlendState(aBlendState, aBlendFactor, aSampleMask);
-#endif
 	}
 
 	void CEffect::SetViewMatrix(const CU::Matrix44f& aViewMatrix)
 	{
-#ifndef DX12
 		myViewMatrix->SetMatrix(&aViewMatrix.myMatrix[0]);
-#endif
 	}
 
 	void CEffect::SetProjectionMatrix(const CU::Matrix44f& aProjectionMatrix)
 	{
-#ifndef DX12
 		myProjectionMatrix->SetMatrix(&aProjectionMatrix.myMatrix[0]);
-#endif
 	}
 
 	void CEffect::SetWorldMatrix(const CU::Matrix44f& aWorldMatrix)
 	{
-#ifndef DX12
 		myWorldMatrix->SetMatrix(&aWorldMatrix.myMatrix[0]);
-#endif
 	}
 
 	void CEffect::UpdateLight(CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE>& someData)
 	{
-#ifndef DX12
+
 		if (myEffect == nullptr)
 			return;
 
@@ -199,12 +185,10 @@ namespace Snowblind
 		{
 			myDirectionalLightData->SetRawValue(&someData[0], 0, sizeof(SDirectionallightData) * DIRECTIONAL_SIZE);
 		}
-#endif
 	}
 
 	void CEffect::UpdateLight(CU::StaticArray<SSpotlightData, SPOTLIGHT_SIZE>& someData)
 	{
-#ifndef DX12
 		if (myEffect == nullptr)
 			return;
 
@@ -212,12 +196,11 @@ namespace Snowblind
 		{
 			mySpotLightData->SetRawValue(&someData[0], 0, sizeof(SSpotlightData) * SPOTLIGHT_SIZE);
 		}
-#endif
 	}
 
 	void CEffect::UpdateLight(CU::StaticArray<SPointlightData, POINTLIGHT_SIZE>& someData)
 	{
-#ifndef DX12
+
 		if (myEffect == nullptr)
 			return;
 
@@ -225,30 +208,42 @@ namespace Snowblind
 		{
 			myPointLightData->SetRawValue(&someData[0], 0, sizeof(SPointlightData) * POINTLIGHT_SIZE);
 		}
-#endif
+	}
+
+	void CEffect::GetShaderResource(ID3DX11EffectShaderResourceVariable** aShaderResource, const std::string& aVariableName)
+	{
+		*aShaderResource = GetVariableByName(aVariableName.c_str())->AsShaderResource();
+		const std::string validationString(aVariableName + " was not found. Check shader/code");
+		Validate(*aShaderResource, validationString);
+	}
+
+	void CEffect::GetShaderVector(ID3DX11EffectVectorVariable** aShaderResource, const std::string& aVariableName)
+	{
+		*aShaderResource = GetVariableByName(aVariableName.c_str())->AsVector();
+		const std::string validationString(aVariableName + " was not found. Check shader/code");
+		Validate(*aShaderResource, validationString);
+	}
+
+	void CEffect::GetShaderMatrix(ID3DX11EffectMatrixVariable** aShaderResource, const std::string& aVariableName)
+	{
+		*aShaderResource = GetVariableByName(aVariableName.c_str())->AsMatrix();
+		const std::string validationString(aVariableName + " was not found. Check shader/code");
+		Validate(*aShaderResource, validationString);
 	}
 
 	ID3DX11EffectTechnique* CEffect::GetTechnique()
 	{
-#ifndef DX12
 		if (myTechniqueName != "")
 		{
 			return myEffect->GetTechniqueByName(myTechniqueName.c_str());
 		}
 
 		return myTechnique;
-#endif
-		DL_ASSERT("Not implemented");
-		return nullptr;
 	}
 
 	ID3DX11EffectVariable* CEffect::GetVariableByName(const std::string& variableName)
 	{
-#ifndef DX12
 		return myEffect->GetVariableByName(variableName.c_str());
-#endif
-		DL_ASSERT("Not implemented!");
-		return nullptr;
 	}
 
 	void CEffect::SetTechniqueName(const std::string& aTechniqueName)
@@ -258,32 +253,20 @@ namespace Snowblind
 
 	void CEffect::SetAlbedo(CTexture* aTexturePtr)
 	{
-#ifndef DX12
-		myTexture = myEffect->GetVariableByName("AlbedoTexture")->AsShaderResource();
-		Validate(myTexture, "Texture Invalid");
-
+		GetShaderResource(&myTexture, "AlbedoTexture");
 		myTexture->SetResource(aTexturePtr->GetShaderView());
-#endif
 	}
 
 	void CEffect::SetAlbedo(ID3D11ShaderResourceView* aTexturePtr)
 	{
-#ifndef DX12
-		myTexture = myEffect->GetVariableByName("AlbedoTexture")->AsShaderResource();
-		Validate(myTexture, "Texture Invalid");
-
+		GetShaderResource(&myTexture, "AlbedoTexture");
 		myTexture->SetResource(aTexturePtr);
-#endif
 	}
 
 	void CEffect::SetTexture(CTexture* texturePtr)
 	{
-#ifndef DX12
-		myTexture = myEffect->GetVariableByName("DiffuseTexture")->AsShaderResource();
-		Validate(myTexture, "Texture Invalid");
-
+		GetShaderResource(&myTexture, "DiffuseTexture");
 		myTexture->SetResource(texturePtr->GetShaderView());
-#endif
 	}
 
 }

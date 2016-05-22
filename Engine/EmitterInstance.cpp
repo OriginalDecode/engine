@@ -54,7 +54,7 @@ namespace Snowblind
 		if (myTimeToEmit < 0.f)
 		{
 			Emit();
-			myTimeToEmit = 0.25f;
+			myTimeToEmit = 0.5f;
 		}
 
 		UpdateParticle(aDeltaTime);
@@ -155,6 +155,7 @@ namespace Snowblind
 			}
 			myParticles[i].position += (myParticles[i].direction * myParticles[i].speed) * aDeltaTime;
 			myParticles[i].lifeTime -= aDeltaTime;
+			myParticles[i].alpha = myParticles[i].lifeTime / 7.f;
 		}
 	}
 
@@ -166,7 +167,7 @@ namespace Snowblind
 		temp.position.y = RANDOM(myOrientation.GetPosition().y, myData.size.y);
 		temp.position.z = RANDOM(myOrientation.GetPosition().z, myData.size.z);
 
-		temp.size = 0.3f;
+		temp.size = RANDOM(0.1f, 0.5f);
 		temp.direction.x = RANDOM(-0.1f, 0.1f);
 		temp.direction.y = RANDOM(0.f, 1.f);
 		temp.direction.z = RANDOM(-0.1f, 0.1f);

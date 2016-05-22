@@ -22,8 +22,9 @@ namespace Snowblind
 		~CRenderer();
 		void Add2DCamera(CCamera* aCamera);
 		void Render();
+		void SetDeferredRenderType(const eDeferredType& deferredType);
 	private:
-
+		eDeferredType myDeferredType;
 		void Render3DCommands();
 		void Render2DCommands();
 		void RenderLightCommands();

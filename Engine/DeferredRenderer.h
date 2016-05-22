@@ -11,6 +11,7 @@ namespace Snowblind
 {
 	enum eDeferredType
 	{
+		NONE,
 		ALBEDO,
 		NORMAL,
 		DEPTH,
@@ -35,7 +36,7 @@ namespace Snowblind
 		void SetTargets();
 		void SetBuffers();
 		void DeferredRender();
-		ID3D11ShaderResourceView* GetDeferredTexture(const eDeferredType& aDeferredType);
+		void RenderTexture(const eDeferredType& aDeferredType);
 		void SetLightState(CCamera* aCamera);
 		void SetNormalState();
 		void RenderLight(CPointLight* pointlight, CCamera* aCamera);

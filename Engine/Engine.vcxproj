@@ -189,7 +189,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>freetype_$(Configuration).lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration)_x86.lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <FxCompile>
@@ -210,7 +210,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>freetype_$(Configuration).lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration)_x86.lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <FxCompile>
@@ -232,7 +232,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>freetype_$(Configuration).lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_$(Platform).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration)_x64.lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_$(Platform).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -248,7 +248,7 @@
       <PreprocessorDefinitions>DirectX12;DX12;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>freetype_$(Configuration).lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_$(Platform).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration)_x64.lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_$(Platform).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -269,7 +269,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>freetype_$(Configuration).lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration)_x86.lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <FxCompile>
@@ -296,7 +296,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>freetype_$(Configuration).lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration)_x86.lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <FxCompile>
@@ -323,7 +323,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>freetype_$(Configuration).lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_$(Platform).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration)_x64.lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_$(Platform).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -344,7 +344,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>freetype_$(Configuration).lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_$(Platform).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration)_x64.lib;d3d11.lib;d3dx11d.lib;Effects11_$(Configuration).lib;D3DCompiler.lib;dxguid.lib;DXGI.lib;libfbxsdk-md_$(Configuration)_$(Platform).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>

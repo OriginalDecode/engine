@@ -1,5 +1,5 @@
 #pragma once
-#ifndef DX12
+
 #include <vector>
 #include <unordered_map>
 #include <bitset>
@@ -172,4 +172,3 @@ namespace Snowblind
 	}
 
 };
-#endif

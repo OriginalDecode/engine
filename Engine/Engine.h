@@ -21,7 +21,7 @@ namespace CommonUtilities
 
 namespace Snowblind
 {
-
+	enum eDeferredType;
 	struct SWindowSize
 	{
 		SWindowSize() {};
@@ -30,9 +30,8 @@ namespace Snowblind
 		float myHeight;
 	};
 
-#ifndef DX12
+
 	class CDirectX11;
-#endif
 	class CFontManager;
 	class CSynchronizer;
 	class CFont;
@@ -45,9 +44,8 @@ namespace Snowblind
 		static void Create(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		static void Destroy();
 		static CEngine* GetInstance();
-#ifndef DX12
+
 		static CDirectX11* GetDirectX();
-#endif
 		void Initiate();
 		CCamera* GetCamera();
 		CCamera* Get2DCamera();
@@ -65,7 +63,7 @@ namespace Snowblind
 		void OnResume();
 		void OnExit();
 		CSynchronizer* GetSynchronizer();
-
+		void ChangeDeferredTexture(const eDeferredType& deferredType);
 
 
 	private:
@@ -75,9 +73,8 @@ namespace Snowblind
 		void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
 
 		static CEngine* myInstance;
-#ifndef DX12
+
 		static CDirectX11* myAPI;
-#endif
 		SWindowSize myWindowSize;
 
 		HWND myHWND;

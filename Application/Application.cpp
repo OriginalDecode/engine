@@ -20,6 +20,7 @@
 #include <thread>
 #include <Texture.h>
 #include <EmitterInstance.h>
+#include <DeferredRenderer.h>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 
@@ -91,6 +92,23 @@ void CApplication::Update()
 
 		myEmitter->Update(deltaTime);
 
+		if (CU::Input::InputWrapper::GetInstance()->KeyDown(NUM1))
+		{
+			Snowblind::CEngine::GetInstance()->ChangeDeferredTexture(Snowblind::eDeferredType::ALBEDO);
+		}
+		else if (CU::Input::InputWrapper::GetInstance()->KeyDown(NUM2))
+		{
+			Snowblind::CEngine::GetInstance()->ChangeDeferredTexture(Snowblind::eDeferredType::NORMAL);
+		}
+		else if (CU::Input::InputWrapper::GetInstance()->KeyDown(NUM3))
+		{
+			Snowblind::CEngine::GetInstance()->ChangeDeferredTexture(Snowblind::eDeferredType::DEPTH);
+		}
+		else if (CU::Input::InputWrapper::GetInstance()->KeyDown(NUM0))
+		{
+			Snowblind::CEngine::GetInstance()->ChangeDeferredTexture(Snowblind::eDeferredType::NONE);
+		}
+
 
 		myAverageFPS += myEngine->GetFPS();
 		time -= deltaTime;
@@ -131,13 +149,9 @@ void CApplication::Update()
 
 void CApplication::Render()
 {
-	for each(const CU::Vector3f& pos in myPositions)
-	{
-		mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, pos, SRenderCommand::eType::MODEL));
-		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, pos, CU::Vector3f(1.f, 0.f, 0.f), 1.f, 10.f));
-	}
-
-	mySynchronizer->AddRenderCommand(SRenderCommand(myEmitter));
+	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(0.f, 0.f, 0.f) , SRenderCommand::eType::MODEL));
+	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, pos, CU::Vector3f(1.f, 0.f, 0.f), 1.f, 10.f));
+	//mySynchronizer->AddRenderCommand(SRenderCommand(myEmitter));
 
 }
 

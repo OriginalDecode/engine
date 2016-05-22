@@ -142,6 +142,11 @@ namespace Snowblind
 		return mySynchronizer;
 	}
 
+	void CEngine::ChangeDeferredTexture(const eDeferredType& deferredType)
+	{
+		myRenderer->SetDeferredRenderType(deferredType);
+	}
+
 	void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)
 	{
 		WNDCLASSEX wc;

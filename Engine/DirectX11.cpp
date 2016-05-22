@@ -88,6 +88,7 @@ namespace Snowblind
 
 	void CDirectX11::Clear()
 	{
+		//This is gonna be the hard part of it.
 		float color[4] = { 0.4f, 0.0f, 0.2f, 1.f }; //replace with something else? DX10Math?
 		myContext->ClearRenderTargetView(myRenderTarget, color);
 		myContext->ClearDepthStencilView(myDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);

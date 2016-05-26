@@ -17,6 +17,9 @@ Texture2D MetalnessTexture;
 Texture2D AOTexture;
 Texture2D DepthTexture;
 
+Texture2D OutlineTexture;
+Texture2D FontTexture;
+
 TextureCube CubeMap;
 
 struct GBuffer
@@ -76,6 +79,24 @@ struct PS_INPUT_POS_COL_UV
 	float4 Color : COLOR0;
 	float2 UV : TEXCOORD;
 };
+
+struct VS_INPUT_POS_COL_2UV
+{
+	float4 Pos : POSITION;
+	float4 Color : COLOR0;
+	float2 UV : TEXCOORD;
+	float2 UV2 : BORDER;
+};
+
+
+struct PS_INPUT_POS_COL_2UV
+{
+	float4 Pos : SV_POSITION0;
+	float4 Color : COLOR0;
+	float2 UV : TEXCOORD;
+	float2 UV2 : BORDER;
+};
+
 
 struct VS_INPUT_POS_COL
 {

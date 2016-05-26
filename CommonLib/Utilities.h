@@ -5,6 +5,9 @@ namespace CL
 {
 	unsigned long long nearest_Pow(unsigned long long aNum);
 	int Color32Reverse(int x);
+	int MoveToRed(int x);
+
+
 	//if readCharacterBeforeToFind == true it will read everything BEFORE the character/word you entered but if it is false it will read the word you entered and everything after.
 	std::string substr(const std::string& aStringToReadFrom, const std::string& toFind, bool readCharactersBeforeToFind);
 

@@ -32,6 +32,7 @@ namespace Snowblind
 		void SetTechniqueName(const std::string& aTechniqueName);
 		void SetAlbedo(CTexture* aTexturePtr);
 		void SetAlbedo(ID3D11ShaderResourceView* aTexturePtr);
+		void SetTexture(ID3D11ShaderResourceView* aTexturePtr, const std::string& textureName);
 		void SetTexture(CTexture* texturePtr);
 
 

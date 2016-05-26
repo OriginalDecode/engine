@@ -79,7 +79,9 @@ namespace Snowblind
 
 		if (!myEffect)
 			return;
-		myEffect->SetAlbedo(myData->myAtlasView);
+		myEffect->SetTexture(myData->myAtlasView, "FontTexture");
+		myEffect->SetTexture(myData->myOutlineAtlasView, "OutlineTexture");
+
 		ID3D11DeviceContext& context = *CEngine::GetDirectX()->GetContext();
 		context.IASetInputLayout(myVertexLayout);
 		context.IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
@@ -140,10 +142,12 @@ namespace Snowblind
 
 	void CFont::CreateInputLayout()
 	{
-		myVertexFormat.Init(3);
-		myVertexFormat.Add(VertexLayoutPosColUV[0]);
-		myVertexFormat.Add(VertexLayoutPosColUV[1]);
-		myVertexFormat.Add(VertexLayoutPosColUV[2]);
+		myVertexFormat.Init(4);
+		myVertexFormat.Add(VertexLayoutPosColUV2[0]);
+		myVertexFormat.Add(VertexLayoutPosColUV2[1]);
+		myVertexFormat.Add(VertexLayoutPosColUV2[2]);
+		myVertexFormat.Add(VertexLayoutPosColUV2[3]);
+
 
 		D3DX11_PASS_DESC passDesc;
 		myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
@@ -155,7 +159,7 @@ namespace Snowblind
 	void CFont::CreateVertexBuffer()
 	{
 		myVertexBuffer = new SVertexBufferWrapper;
-		myVertexBuffer->myStride = sizeof(SVertexTypePosColUv);
+		myVertexBuffer->myStride = sizeof(SVertexTypePosColUv2);
 		myVertexBuffer->myByteOffset = 0;
 		myVertexBuffer->myStartSlot = 0;
 		myVertexBuffer->myNrOfBuffers = 1;
@@ -216,7 +220,7 @@ namespace Snowblind
 		myVertices.RemoveAll();
 		myIndices.RemoveAll();
 
-		SVertexTypePosColUv v;
+		SVertexTypePosColUv2 v;
 		for (int i = 0, iAsItShouldBe = 0, row = 0; i < count; i++, iAsItShouldBe++)
 		{
 			SCharData& charData = myData->myCharData[myText[i]];
@@ -296,21 +300,25 @@ namespace Snowblind
 			v.myPosition = { left, bottom, z };
 			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = charData.myTopLeftUV;
+			v.myUV2 = charData.myTopLeftUVBorder;
 			myVertices.Add(v);
 
 			v.myPosition = { left, top, z };
 			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
+			v.myUV2 = { charData.myTopLeftUVBorder.x, charData.myBottomRightUVBorder.y };
 			myVertices.Add(v);
 
 			v.myPosition = { right, bottom, z };
 			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = { charData.myBottomRightUV.x, charData.myTopLeftUV.y };
+			v.myUV2 = { charData.myBottomRightUVBorder.x, charData.myTopLeftUVBorder.y };
 			myVertices.Add(v);
 
 			v.myPosition = { right, top, z };
 			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = charData.myBottomRightUV;
+			v.myUV2 = charData.myBottomRightUVBorder;
 			myVertices.Add(v);
 
 			int startIndex = (iAsItShouldBe - row) * 4.f;
@@ -326,7 +334,7 @@ namespace Snowblind
 			drawX += charData.myBearingX;
 		}
 
-		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosColUv) * myVertices.Size();
+		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosColUv2) * myVertices.Size();
 		myInitData->pSysMem = reinterpret_cast<char*>(&myVertices[0]);
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData, &myVertexBuffer->myVertexBuffer);
 

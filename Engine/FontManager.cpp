@@ -74,6 +74,12 @@ namespace Snowblind
 
 		fontData->myAtlas = new int[atlasSize * atlasSize];
 		ZeroMemory(fontData->myAtlas, (atlasSize * atlasSize) * sizeof(int));
+
+		fontData->myOutlineAtlas = new int[atlasSize * atlasSize];
+		ZeroMemory(fontData->myOutlineAtlas, (atlasSize * atlasSize) * sizeof(int));
+
+
+
 		fontData->myFontHeightWidth = aFontWidth;
 		myFontPath = aFontPath;
 
@@ -101,8 +107,8 @@ namespace Snowblind
 		int currentMax = 126;
 		int currentI = 32;
 
-
-		const int borderOffset = 2;
+		int font;
+		const int borderOffset = 1;
 		for (int i = currentI; i < currentMax; i++)
 		{
 			int error = FT_Load_Char(face, i, FT_LOAD_RENDER);
@@ -116,17 +122,18 @@ namespace Snowblind
 				atlasY = currentMaxY;
 			}
 
-			LoadOutline(i, atlasX, atlasY, atlasWidth, fontData, face, borderOffset);
-			LoadGlyph(i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face, borderOffset);
+			LoadOutline(font, i, atlasX, atlasY, atlasWidth, fontData, face, borderOffset);
+			LoadGlyph(font, i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face, borderOffset);
+			font = 0;
 		}
-		LoadGlyph(132, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
-		LoadGlyph(134, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(font, 132, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(font, 134, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
 
-		LoadGlyph(142, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
-		LoadGlyph(143, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(font, 142, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(font, 143, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
 
-		LoadGlyph(148, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
-		LoadGlyph(153, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(font, 148, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(font, 153, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
 
 		D3D11_SUBRESOURCE_DATA data;
 		data.pSysMem = fontData->myAtlas;
@@ -149,7 +156,10 @@ namespace Snowblind
 		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
-		texture->Release();
+		
+
+
+		
 
 #ifdef SAVE
 		std::stringstream ss;
@@ -165,7 +175,42 @@ namespace Snowblind
 		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss.str().c_str());
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 #endif
+		texture->Release();
+		texture = nullptr;
+		data.pSysMem = fontData->myOutlineAtlas;
+		data.SysMemPitch = atlasSize * 4;
 
+		info.Width = atlasSize;
+		info.Height = atlasSize;
+		info.MipLevels = 1;
+		info.ArraySize = 1;
+		info.SampleDesc.Count = 1;
+		info.SampleDesc.Quality = 0;
+		info.MiscFlags = 0;
+		info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.Usage = D3D11_USAGE_DYNAMIC;
+		info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
+		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
+		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myOutlineAtlasView);
+	
+
+#ifdef SAVE
+		std::stringstream ss2;
+#ifdef SAVE_DDS
+		ss2 << "Glyphs/OutlineAtlas_" << ".dds";
+		format = D3DX11_IFF_DDS;
+#endif
+#ifdef SAVE_PNG
+		ss2 << "Glyphs/OutlineAtlas_" << ".png";
+		format = D3DX11_IFF_PNG;
+#endif
+		hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss2.str().c_str());
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
+#endif
+		texture->Release();
 		fontData->myAtlasHeight = atlasSize;
 		fontData->myAtlasWidth = atlasSize;
 		fontData->myLineSpacing = (face->ascender - face->descender) >> 6;
@@ -174,7 +219,7 @@ namespace Snowblind
 		return newFont;
 	}
 
-	void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
+	void CFontManager::LoadGlyph(int& tData, int index, int& atlasX, int& atlasY, int& maxY
 		, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int borderOffset)
 	{
 
@@ -194,8 +239,8 @@ namespace Snowblind
 		glyphData.myChar = index;
 		glyphData.myHeight = height;
 		glyphData.myWidth = width;
-		glyphData.myTopLeftUVBorder = { float(atlasX - borderOffset) / atlasWidth, float(atlasY - borderOffset) / atlasHeight };
-		glyphData.myBottomRightUVBorder = { float(atlasX + borderOffset + width) / atlasWidth, float(atlasY + borderOffset + height) / atlasHeight };
+		glyphData.myTopLeftUVBorder = { float(atlasX + borderOffset) / atlasWidth, float(atlasY + borderOffset) / atlasHeight };
+		glyphData.myBottomRightUVBorder = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
 
 		glyphData.myTopLeftUV = { float(atlasX + borderOffset) / atlasWidth, float(atlasY + borderOffset) / atlasHeight };
 		glyphData.myBottomRightUV = { float(atlasX + width + borderOffset) / atlasWidth, float(atlasY + height + borderOffset) / atlasHeight };
@@ -233,6 +278,13 @@ namespace Snowblind
 				saved = 0;
 				saved |= bitmap.buffer[y * bitmap.width + x];
 				saved = CL::Color32Reverse(saved);
+
+
+				/*tData = aFontData->myAtlas[((atlasY + borderOffset) + y) * int(atlasWidth) + ((atlasX + borderOffset) + x)];
+				tData = 0;
+				tData |= bitmap.buffer[y * bitmap.width + x];
+				tData = CL::Color32Reverse(tData);*/
+
 				if (y + (atlasY + 8) > maxY)
 				{
 					maxY = y + (atlasY + 8);
@@ -240,8 +292,7 @@ namespace Snowblind
 #ifdef SAVE
 				int& toSave = gData[y * bitmap.width + x];
 				toSave = 0;
-				//toSave |= bitmap.buffer[y * bitmap.width + x];
-				//toSave = CL::Color32Reverse(toSave);
+				toSave |= bitmap.buffer[y * bitmap.width + x];
 				toSave = CL::Color32Reverse(toSave);
 #endif
 			}
@@ -299,7 +350,7 @@ namespace Snowblind
 		gData = nullptr;
 	}
 
-	void CFontManager::LoadOutline(const int index, const int atlasX, const int atlasY
+	void CFontManager::LoadOutline(int& tData, const int index, const int atlasX, const int atlasY
 		, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int borderOffset)
 	{
 		FT_Error err;
@@ -330,10 +381,10 @@ namespace Snowblind
 		{
 			for (int y = 0; y < bitmapGlyph->bitmap.rows; y++)
 			{
-				int& data = aFontData->myAtlas[(atlasY + y) * int(atlasWidth) + (atlasX + x)];
+				int& data = aFontData->myOutlineAtlas[(atlasY + y) * int(atlasWidth) + (atlasX + x)];
 				data = 0;
 				data |= bitmapGlyph->bitmap.buffer[y * bitmapGlyph->bitmap.width + x];
-				//data = CL::Color32Reverse(data);
+				data = CL::Color32Reverse(data);
 			}
 		}
 	}
@@ -341,7 +392,9 @@ namespace Snowblind
 	SFontData::~SFontData()
 	{
 		SAFE_DELETE(myAtlas);
+		SAFE_DELETE(myOutlineAtlas);
 		SAFE_RELEASE(myAtlasView);
+		SAFE_RELEASE(myOutlineAtlasView);
 	}
 
 };

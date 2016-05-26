@@ -29,7 +29,7 @@ namespace CL
 		return aNum;
 	}
 
-	// AA BB GG RR
+	// AA RR GG BB
 	int Color32Reverse(int x)
 	{
 		return
@@ -37,6 +37,15 @@ namespace CL
 			((x & 0x00FF0000) >> 8) |
 			((x & 0x0000FF00) << 8) |
 			((x & 0x000000FF) << 24);
+	}
+
+	int MoveToRed(int x)
+	{
+		return
+			((x & 0xFF000000) >> 24) |
+			((x & 0x00FF0000) >> 8) |
+			((x & 0x0000FF00) << 16) |
+			((x & 0x000000FF) << 16);
 	}
 
 	SColor::SColor(unsigned int color)

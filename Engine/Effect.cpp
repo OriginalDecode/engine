@@ -269,4 +269,10 @@ namespace Snowblind
 		myTexture->SetResource(texturePtr->GetShaderView());
 	}
 
+	void CEffect::SetTexture(ID3D11ShaderResourceView* aTexturePtr, const std::string& textureName)
+	{
+		GetShaderResource(&myTexture, textureName);
+		myTexture->SetResource(aTexturePtr);
+	}
+
 }

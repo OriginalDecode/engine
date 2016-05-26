@@ -42,7 +42,10 @@ static const float2 offset = float2(1.f / 256.f, (1.f / 256.f));
 
 float4 PS_2(PS_INPUT_POS_COL_UV input) : SV_Target
 {
-	float4 color = AlbedoTexture.Sample(linearSample_Clamp, input.UV).aaaa;
+	float4 border = AlbedoTexture.Sample(linearSample_Clamp, input.UV).bbbb;
+	float4 text = AlbedoTexture.Sample(linearSample_Clamp, input.UV).aaaa;
+	
+	float4 color = text;
 	color.rgba *= input.Color.rgba;
 	return color;
 };
@@ -68,12 +71,12 @@ float4 PS(PS_INPUT_POS_COL_UV input) : SV_Target
 
 technique11 Render
 {
-	pass P1
-	{
-		SetVertexShader(CompileShader(vs_5_0, VS()));
-		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, PS()));
-	}
+	//pass P1
+	//{
+	//	SetVertexShader(CompileShader(vs_5_0, VS()));
+	//	SetGeometryShader(NULL);
+	//	SetPixelShader(CompileShader(ps_5_0, PS()));
+	//}
 	
 	pass P0
 	{

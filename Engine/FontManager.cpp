@@ -20,6 +20,8 @@
 #endif
 #endif
 
+#define X_OFFSET 6
+
 
 namespace Snowblind
 {
@@ -72,11 +74,12 @@ namespace Snowblind
 
 		fontData->myAtlas = new int[atlasSize * atlasSize];
 		ZeroMemory(fontData->myAtlas, (atlasSize * atlasSize) * sizeof(int));
-		FT_Face face = fontData->myFaceData;
-
 		fontData->myFontHeightWidth = aFontWidth;
 		myFontPath = aFontPath;
-		int error = FT_New_Face(myLibrary, myFontPath, 0, &face);
+
+		FT_Face face;
+		FT_Error error = FT_New_Face(myLibrary, myFontPath, 0, &face);
+
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
 		error = FT_Set_Pixel_Sizes(face, (fontData->myFontHeightWidth), 0); //This is better to use.
@@ -86,7 +89,7 @@ namespace Snowblind
 #ifdef SAVE
 		CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
 #endif
-		int atlasX = 2;
+		int atlasX = X_OFFSET;
 		int atlasY = 2;
 		int currentMaxY = 0;
 
@@ -97,10 +100,24 @@ namespace Snowblind
 		fontData->myWordSpacing = space->metrics.width / 256.f;
 		int currentMax = 126;
 		int currentI = 32;
+
+
+		const int borderOffset = 2;
 		for (int i = currentI; i < currentMax; i++)
 		{
-			LoadOutline(i, atlasX, atlasY, atlasWidth, fontData, face);
-			LoadGlyph(i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+			int error = FT_Load_Char(face, i, FT_LOAD_RENDER);
+			DL_ASSERT_EXP(!error, "Failed to load glyph!");
+			FT_GlyphSlot slot = face->glyph;
+
+
+			if (atlasX + slot->bitmap.width + (borderOffset * 2) > atlasWidth)
+			{
+				atlasX = X_OFFSET;
+				atlasY = currentMaxY;
+			}
+
+			LoadOutline(i, atlasX, atlasY, atlasWidth, fontData, face, borderOffset);
+			LoadGlyph(i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face, borderOffset);
 		}
 		LoadGlyph(132, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
 		LoadGlyph(134, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
@@ -158,32 +175,31 @@ namespace Snowblind
 	}
 
 	void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
-		, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace)
+		, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int borderOffset)
 	{
 
-		//int error = FT_Load_Char(aFace, index, FT_LOAD_NO_BITMAP);
 		int error = FT_Load_Char(aFace, index, FT_LOAD_RENDER);
-
 		DL_ASSERT_EXP(!error, "Failed to load glyph!");
 		FT_GlyphSlot slot = aFace->glyph;
+		//int error = FT_Load_Char(aFace, index, FT_LOAD_NO_BITMAP);
+
 
 		FT_Bitmap bitmap = slot->bitmap;
 
 		int height = bitmap.rows;
 		int width = bitmap.width;
 
-		if (atlasX + width > atlasWidth)
-		{
-			atlasX = 2;
-			atlasY = maxY;
-		}
 
 		SCharData glyphData;
 		glyphData.myChar = index;
 		glyphData.myHeight = height;
 		glyphData.myWidth = width;
-		glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
-		glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
+		glyphData.myTopLeftUVBorder = { float(atlasX - borderOffset) / atlasWidth, float(atlasY - borderOffset) / atlasHeight };
+		glyphData.myBottomRightUVBorder = { float(atlasX + borderOffset + width) / atlasWidth, float(atlasY + borderOffset + height) / atlasHeight };
+
+		glyphData.myTopLeftUV = { float(atlasX + borderOffset) / atlasWidth, float(atlasY + borderOffset) / atlasHeight };
+		glyphData.myBottomRightUV = { float(atlasX + width + borderOffset) / atlasWidth, float(atlasY + height + borderOffset) / atlasHeight };
+
 		glyphData.myAdvanceX = slot->metrics.width / 64.f;
 		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f));
 		glyphData.myBearingY = (slot->metrics.horiBearingY - slot->metrics.height) / 64.f;
@@ -213,10 +229,10 @@ namespace Snowblind
 					continue;
 				}
 
-				int& saved = aFontData->myAtlas[(atlasY + y) * int(atlasWidth) + (atlasX + x)];
+				int& saved = aFontData->myAtlas[((atlasY + borderOffset) + y) * int(atlasWidth) + ((atlasX + borderOffset) + x)];
 				saved = 0;
 				saved |= bitmap.buffer[y * bitmap.width + x];
-				//saved = CL::Color32Reverse(saved);
+				saved = CL::Color32Reverse(saved);
 				if (y + (atlasY + 8) > maxY)
 				{
 					maxY = y + (atlasY + 8);
@@ -231,7 +247,7 @@ namespace Snowblind
 			}
 		}
 
-		atlasX = atlasX + width + 4;
+		atlasX = atlasX + width + X_OFFSET;
 		aFontData->myCharData[index] = glyphData;
 
 		if (bitmap.rows <= 0 || bitmap.pitch <= 0)
@@ -284,7 +300,7 @@ namespace Snowblind
 	}
 
 	void CFontManager::LoadOutline(const int index, const int atlasX, const int atlasY
-		, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace)
+		, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int borderOffset)
 	{
 		FT_Error err;
 		FT_Stroker stroker;
@@ -301,7 +317,7 @@ namespace Snowblind
 		err = FT_Stroker_New(myLibrary, &stroker);
 		DL_ASSERT_EXP(!err, "Failed to get glyph!");
 
-		FT_Stroker_Set(stroker, 2 * 32, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+		FT_Stroker_Set(stroker, borderOffset * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
 		err = FT_Glyph_StrokeBorder(&glyph, stroker, 0, 1);
 		DL_ASSERT_EXP(err == 0, "Failed to stroke");
 
@@ -317,7 +333,7 @@ namespace Snowblind
 				int& data = aFontData->myAtlas[(atlasY + y) * int(atlasWidth) + (atlasX + x)];
 				data = 0;
 				data |= bitmapGlyph->bitmap.buffer[y * bitmapGlyph->bitmap.width + x];
-				data = CL::Color32Reverse(data);
+				//data = CL::Color32Reverse(data);
 			}
 		}
 	}

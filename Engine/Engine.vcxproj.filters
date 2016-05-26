@@ -284,4 +284,7 @@
       <Filter>APIs\DirectX12</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Workbed\Data\Shaders\Font_Effect.fx" />
+  </ItemGroup>
 </Project>

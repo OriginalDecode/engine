@@ -113,12 +113,12 @@ void CApplication::Update()
 		UpdateInput(deltaTime);
 
 		std::stringstream ss;
-		ss << myEngine->GetFPS() << "\n" 
+		ss << "#000000{" << myEngine->GetFPS() << "\n" 
 			<< myAverageFPSToPrint 
 			<< "\nCamera Position : \nX : " 
 			<< myOrientation.GetPosition().x 
 			<< "\nY : "	<< myOrientation.GetPosition().y 
-			<< "\nZ : " << myOrientation.GetPosition().z;
+			<< "\nZ : " << myOrientation.GetPosition().z << "}";
 		mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Math::Vector2<float>(0, 0)));
 
 

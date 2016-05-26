@@ -29,6 +29,7 @@ namespace CL
 		return aNum;
 	}
 
+	// AA BB GG RR
 	int Color32Reverse(int x)
 	{
 		return

@@ -27,9 +27,8 @@ PS_INPUT_POS_COL_UV VS_2(VS_INPUT_POS_COL_UV input)
 	output.Pos.x *= Scale.x;
 	output.Pos.y *= Scale.y;
 
-		output.Pos = mul(input.Pos, World);
+	output.Pos = mul(input.Pos, World);
 	output.Pos = mul(output.Pos, View);
-	
 
 	output.Pos.x += Position.x;
 	output.Pos.y += Position.y;	
@@ -69,19 +68,17 @@ float4 PS(PS_INPUT_POS_COL_UV input) : SV_Target
 
 technique11 Render
 {
-	pass P0
+	pass P1
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS()));
-	
 	}
 	
-	pass P1
+	pass P0
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS_2()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS_2()));
-	
 	}	
 }

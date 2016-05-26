@@ -6,12 +6,13 @@
 #include FT_GLYPH_H
 #include FT_BITMAP_H
 #include FT_STROKER_H
+#include FT_OUTLINE_H
 
 #include <Utilities.h>
 #include "EngineDefines.h"
 #include "Font.h"
 
-//#define SAVE
+#define SAVE
 #ifdef SAVE
 #define SAVE_DDS
 #ifndef SAVE_DDS
@@ -22,9 +23,6 @@
 
 namespace Snowblind
 {
-
-
-
 	CFontManager::CFontManager()
 	{
 	}
@@ -68,7 +66,7 @@ namespace Snowblind
 		else
 		{
 			fontData = myFontData[key.str()];
-			FONT_LOG("Font Data already found, creating Font Object with existing font data! %s",key.str().c_str());
+			FONT_LOG("Font Data already found, creating Font Object with existing font data! %s", key.str().c_str());
 			return new CFont(fontData);
 		}
 
@@ -88,8 +86,8 @@ namespace Snowblind
 #ifdef SAVE
 		CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
 #endif
-		int atlasX = 0;
-		int atlasY = 0;
+		int atlasX = 2;
+		int atlasY = 2;
 		int currentMaxY = 0;
 
 		//Create a good spacing between words. 
@@ -101,6 +99,7 @@ namespace Snowblind
 		int currentI = 32;
 		for (int i = currentI; i < currentMax; i++)
 		{
+			LoadOutline(i, atlasX, atlasY, atlasWidth, fontData, face);
 			LoadGlyph(i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
 		}
 		LoadGlyph(132, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
@@ -133,7 +132,6 @@ namespace Snowblind
 		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
-
 		texture->Release();
 
 #ifdef SAVE
@@ -147,7 +145,7 @@ namespace Snowblind
 		ss << "Glyphs/Atlas_" << ".png";
 		format = D3DX11_IFF_PNG;
 #endif
-		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
+		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss.str().c_str());
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 #endif
 
@@ -162,27 +160,21 @@ namespace Snowblind
 	void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 		, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace)
 	{
+
+		//int error = FT_Load_Char(aFace, index, FT_LOAD_NO_BITMAP);
 		int error = FT_Load_Char(aFace, index, FT_LOAD_RENDER);
+
 		DL_ASSERT_EXP(!error, "Failed to load glyph!");
-		//slot->outline
 		FT_GlyphSlot slot = aFace->glyph;
-		slot->format = FT_GLYPH_FORMAT_BITMAP;
-		//slot->format = FT_GLYPH_FORMAT_OUTLINE;
+
 		FT_Bitmap bitmap = slot->bitmap;
-		bitmap.pixel_mode = FT_PIXEL_MODE_MONO;
-
-	
-
-		FT_Render_Glyph(slot, FT_RENDER_MODE_MONO);
-
-
 
 		int height = bitmap.rows;
 		int width = bitmap.width;
 
 		if (atlasX + width > atlasWidth)
 		{
-			atlasX = 0;
+			atlasX = 2;
 			atlasY = maxY;
 		}
 
@@ -196,7 +188,7 @@ namespace Snowblind
 		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f));
 		glyphData.myBearingY = (slot->metrics.horiBearingY - slot->metrics.height) / 64.f;
 
-		//Kerning is needed and being able to render text quads through other text quads.
+		//Kerning is needed
 		if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
 		{
 			FONT_LOG("Tried to set a UV coord to above 1 at glyph : %c , index %d", index, index);
@@ -204,8 +196,13 @@ namespace Snowblind
 			FONT_LOG("TopLeftUV Y: %f", glyphData.myTopLeftUV.y);
 			FONT_LOG("BottomRightUV X: %f", glyphData.myBottomRightUV.x);
 			FONT_LOG("BottomRightUV Y: %f", glyphData.myBottomRightUV.y);
-			//	DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
+			DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 		}
+
+#ifdef SAVE
+		int* gData = new int[bitmap.width * bitmap.rows];
+		ZeroMemory(gData, bitmap.width * bitmap.rows * sizeof(int));
+#endif
 
 		for (int x = 0; x < width; x++)
 		{
@@ -215,58 +212,114 @@ namespace Snowblind
 				{
 					continue;
 				}
+
 				int& saved = aFontData->myAtlas[(atlasY + y) * int(atlasWidth) + (atlasX + x)];
 				saved = 0;
 				saved |= bitmap.buffer[y * bitmap.width + x];
-				saved = CL::Color32Reverse(saved);
-
+				//saved = CL::Color32Reverse(saved);
 				if (y + (atlasY + 8) > maxY)
 				{
 					maxY = y + (atlasY + 8);
 				}
-
+#ifdef SAVE
+				int& toSave = gData[y * bitmap.width + x];
+				toSave = 0;
+				//toSave |= bitmap.buffer[y * bitmap.width + x];
+				//toSave = CL::Color32Reverse(toSave);
+				toSave = CL::Color32Reverse(toSave);
+#endif
 			}
 		}
 
-		atlasX = atlasX + width + 2;
+		atlasX = atlasX + width + 4;
 		aFontData->myCharData[index] = glyphData;
 
-		//Bryt ut till en function i utilities eller texture?
-//#ifdef SAVE
-//		std::stringstream ss;
-//		D3DX11_IMAGE_FILE_FORMAT format;
-//#ifdef SAVE_DDS
-//		ss << "Glyphs/Glyph_" << i << ".dds";
-//		format = D3DX11_IFF_DDS;
-//#endif
-//#ifdef SAVE_PNG
-//		ss << "Glyphs/Glyph_" << i << ".png";
-//		format = D3DX11_IFF_PNG;
-//#endif
-//		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetInstance()->GetAPI()->GetContext(), texture, format, ss.str().c_str());
-//		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
-//		texture->Release();
-//#endif
+		if (bitmap.rows <= 0 || bitmap.pitch <= 0)
+		{
+			delete[] gData;
+			gData = nullptr;
+			return;
+		}
+
+
+		D3D11_SUBRESOURCE_DATA data;
+		data.pSysMem = gData;
+		data.SysMemPitch = bitmap.pitch * 4;
+
+		D3D11_TEXTURE2D_DESC info;
+		info.Width = width;
+		info.Height = height;
+		info.MipLevels = 1;
+		info.ArraySize = 1;
+		info.SampleDesc.Count = 1;
+		info.SampleDesc.Quality = 0;
+		info.MiscFlags = 0;
+		info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.Usage = D3D11_USAGE_DYNAMIC;
+		info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		ID3D11Texture2D* texture;
+		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
+		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
+
+#ifdef SAVE
+		std::stringstream ss;
+		D3DX11_IMAGE_FILE_FORMAT format;
+#ifdef SAVE_DDS
+		ss << "Glyphs/Glyph_" << index << ".dds";
+		format = D3DX11_IFF_DDS;
+#endif
+#ifdef SAVE_PNG
+		ss << "Glyphs/Glyph_" << index << ".png";
+		format = D3DX11_IFF_PNG;
+#endif
+		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss.str().c_str());
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
+		texture->Release();
+#endif
+
+		delete[] gData;
+		gData = nullptr;
 	}
 
-	void CFontManager::LoadOutline(FT_FaceRec_* aFace, int aGlyphIndex)
+	void CFontManager::LoadOutline(const int index, const int atlasX, const int atlasY
+		, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace)
 	{
-
-
-		int error = 0;
-		error = FT_Load_Glyph(aFace, aGlyphIndex, FT_LOAD_DEFAULT);
-		DL_ASSERT_EXP(!error, "LoadOutline() : Failed to load glyph");
-		FT_Glyph g;
-		FT_Get_Glyph(aFace->glyph, &g);
-
+		FT_Error err;
 		FT_Stroker stroker;
-		FT_Stroker_New(myLibrary, &stroker);
-		FT_Stroker_Set(stroker, myFontHeightWidth << 6, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+		FT_Glyph glyph;
 
-		FT_Glyph_StrokeBorder(&g, stroker, false, true);
-		FT_Glyph_To_Bitmap(&g, FT_RENDER_MODE_NORMAL, nullptr, true);
-		FT_BitmapGlyph bmG = reinterpret_cast<FT_BitmapGlyph>(g);
+		err = FT_Load_Char(aFace, index, FT_LOAD_NO_BITMAP);
+		DL_ASSERT_EXP(!err, "Failed to load glyph!");
 
+		err = FT_Get_Glyph(aFace->glyph, &glyph);
+		DL_ASSERT_EXP(!err, "Failed to get glyph!");
+
+		glyph->format = FT_GLYPH_FORMAT_OUTLINE;
+
+		err = FT_Stroker_New(myLibrary, &stroker);
+		DL_ASSERT_EXP(!err, "Failed to get glyph!");
+
+		FT_Stroker_Set(stroker, 2 * 32, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+		err = FT_Glyph_StrokeBorder(&glyph, stroker, 0, 1);
+		DL_ASSERT_EXP(err == 0, "Failed to stroke");
+
+		err = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, nullptr, true);
+		DL_ASSERT_EXP(err == 0, "Failed to add glyph to bitmap");
+
+		FT_BitmapGlyph bitmapGlyph = reinterpret_cast<FT_BitmapGlyph>(glyph);
+
+		for (int x = 0; x < bitmapGlyph->bitmap.width; x++)
+		{
+			for (int y = 0; y < bitmapGlyph->bitmap.rows; y++)
+			{
+				int& data = aFontData->myAtlas[(atlasY + y) * int(atlasWidth) + (atlasX + x)];
+				data = 0;
+				data |= bitmapGlyph->bitmap.buffer[y * bitmapGlyph->bitmap.width + x];
+				data = CL::Color32Reverse(data);
+			}
+		}
 	}
 
 	SFontData::~SFontData()

@@ -92,24 +92,6 @@ void CApplication::Update()
 
 		myEmitter->Update(deltaTime);
 
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(NUM1))
-		{
-			Snowblind::CEngine::GetInstance()->ChangeDeferredTexture(Snowblind::eDeferredType::ALBEDO);
-		}
-		else if (CU::Input::InputWrapper::GetInstance()->KeyDown(NUM2))
-		{
-			Snowblind::CEngine::GetInstance()->ChangeDeferredTexture(Snowblind::eDeferredType::NORMAL);
-		}
-		else if (CU::Input::InputWrapper::GetInstance()->KeyDown(NUM3))
-		{
-			Snowblind::CEngine::GetInstance()->ChangeDeferredTexture(Snowblind::eDeferredType::DEPTH);
-		}
-		else if (CU::Input::InputWrapper::GetInstance()->KeyDown(NUM0))
-		{
-			Snowblind::CEngine::GetInstance()->ChangeDeferredTexture(Snowblind::eDeferredType::NONE);
-		}
-
-
 		myAverageFPS += myEngine->GetFPS();
 		time -= deltaTime;
 		frameCount++;

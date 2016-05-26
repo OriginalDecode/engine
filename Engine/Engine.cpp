@@ -18,6 +18,7 @@ namespace Snowblind
 		my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0, 0, 1.f));
 		//myRenderThread = new std::thread(&CRenderer::Render, myRenderer);
 		Randomizer::Create();
+		SetWindowText(myHWND, "Snowblind Engine");
 	}
 
 	CEngine::~CEngine()
@@ -140,11 +141,6 @@ namespace Snowblind
 	CSynchronizer* CEngine::GetSynchronizer()
 	{
 		return mySynchronizer;
-	}
-
-	void CEngine::ChangeDeferredTexture(const eDeferredType& deferredType)
-	{
-		myRenderer->SetDeferredRenderType(deferredType);
 	}
 
 	void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)

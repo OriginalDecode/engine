@@ -36,7 +36,6 @@ namespace Snowblind
 		void SetTargets();
 		void SetBuffers();
 		void DeferredRender();
-		void RenderTexture(const eDeferredType& aDeferredType);
 		void SetLightState(CCamera* aCamera);
 		void SetNormalState();
 		void RenderLight(CPointLight* pointlight, CCamera* aCamera);

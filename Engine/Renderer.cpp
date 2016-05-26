@@ -44,16 +44,8 @@ namespace Snowblind
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
 		myDeferredRenderer->SetBuffers();
-#ifdef _DEBUG
-		if (myDeferredType != eDeferredType::NONE)
-		{
-			myDeferredRenderer->RenderTexture(myDeferredType);
-		}
-		else
-#endif
-		{
-			myDeferredRenderer->DeferredRender();
-		}
+
+		myDeferredRenderer->DeferredRender();
 
 		myDeferredRenderer->SetLightState(myCamera);
 		RenderLightCommands();
@@ -72,11 +64,6 @@ namespace Snowblind
 		mySynchronizer.WaitForLogic();
 		mySynchronizer.SwapBuffer();
 		mySynchronizer.RenderIsDone();
-	}
-
-	void CRenderer::SetDeferredRenderType(const eDeferredType& deferredType)
-	{
-		myDeferredType = deferredType;
 	}
 
 	void CRenderer::Render3DCommands()

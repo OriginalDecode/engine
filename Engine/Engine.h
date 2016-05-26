@@ -63,8 +63,6 @@ namespace Snowblind
 		void OnResume();
 		void OnExit();
 		CSynchronizer* GetSynchronizer();
-		void ChangeDeferredTexture(const eDeferredType& deferredType);
-
 
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);

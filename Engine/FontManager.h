@@ -2,15 +2,17 @@
 #include <DataStructures/StaticArray.h>
 #include <unordered_map>
 struct ID3D11Device;
-struct FT_LibraryRec_;
-struct FT_FaceRec_;
 struct ID3D11ShaderResourceView;
 struct ID3D11RenderTargetView;
 struct ID3D11Texture2D;
 
+struct FT_LibraryRec_;
+struct FT_FaceRec_;
+struct FT_GlyphRec_;
+
+
 namespace Snowblind
 {
-	
 
 	struct SCharData
 	{
@@ -39,9 +41,9 @@ namespace Snowblind
 		FT_FaceRec_* myFaceData;
 	};
 
-
 	class CTexture;
 	class CFont;
+
 	class CFontManager
 	{
 	public:
@@ -52,12 +54,15 @@ namespace Snowblind
 	private:
 		void LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 			, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace);
-		void LoadOutline(FT_FaceRec_* aFace, int aGlyphIndex);
+
+		void LoadOutline(const int index, const int atlasX, const int atlasY
+			, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace);
+
+
 		FT_LibraryRec_* myLibrary;
 		const char* myFontPath;
 		short myFontHeightWidth;
 		std::unordered_map<std::string, SFontData*> myFontData;
-
 	};
 };
 

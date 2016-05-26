@@ -9,6 +9,9 @@
 #include "Camera.h"
 #include "PointLight.h"
 
+
+
+
 namespace Snowblind
 {
 
@@ -43,10 +46,12 @@ namespace Snowblind
 		myDepthStencil->CreateDepthStencilView(myWindowSize.myWidth, myWindowSize.myHeight);
 		myDepthStencil->SetDebugName("DeferredDepthStencil");
 
-		myClearColor[0] = 0.f;
-		myClearColor[1] = 0.f;
-		myClearColor[2] = 0.f;
-		myClearColor[3] = 0.f;
+
+
+		myClearColor[0] = 1.f;
+		myClearColor[1] = 1.f;
+		myClearColor[2] = 1.f;
+		myClearColor[3] = 1.f;
 
 		myScreenData.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
 		myScreenData.myEffect->GetShaderResource(&myScreenData.mySource, "DiffuseTexture");
@@ -77,7 +82,6 @@ namespace Snowblind
 
 	void CDeferredRenderer::SetTargets()
 	{
-
 		myContext->ClearRenderTargetView(myAlbedo->GetRenderTargetView(), myClearColor);
 		myContext->ClearRenderTargetView(myNormal->GetRenderTargetView(), myClearColor);
 		myContext->ClearRenderTargetView(myDepth->GetRenderTargetView(), myClearColor);
@@ -116,35 +120,6 @@ namespace Snowblind
 		SIndexBufferWrapper* inBuf = myIndexBuffer;
 		myContext->IASetIndexBuffer(inBuf->myIndexBuffer, inBuf->myIndexBufferFormat, inBuf->myByteOffset);
 		myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	}
-
-	void CDeferredRenderer::RenderTexture(const eDeferredType& aDeferredType)
-	{
-		myDirectX->ResetViewport();
-
-		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
-		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
-
-		myContext->ClearRenderTargetView(backbuffer, myClearColor);
-		myContext->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-		myContext->OMSetRenderTargets(1, &backbuffer, depth);
-
-		switch (aDeferredType)
-		{
-		case eDeferredType::ALBEDO:
-			myScreenData.mySource->SetResource(myAlbedo->GetShaderView());
-			break;
-		case eDeferredType::NORMAL:
-			myScreenData.mySource->SetResource(myNormal->GetShaderView());
-			break;
-		case eDeferredType::DEPTH:
-			myScreenData.mySource->SetResource(myDepth->GetShaderView());
-			break;
-		}
-
-		Render(myScreenData.myEffect);
-
-		myScreenData.mySource->SetResource(NULL);
 	}
 
 	void CDeferredRenderer::SetLightState(CCamera* aCamera)

@@ -40,13 +40,8 @@ namespace Snowblind
 		void SetNormalState();
 		void RenderLight(CPointLight* pointlight, CCamera* aCamera);
 
-
-		void SetParticleRenderTarget();
-		void ResetRenderTarget();
-
 		CTexture* GetDepthStencil();
 		CTexture* GetDepth();
-		void RenderParticles();
 	private:
 		void Render(CEffect* anEffect);
 

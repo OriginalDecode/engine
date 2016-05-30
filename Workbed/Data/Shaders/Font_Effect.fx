@@ -31,7 +31,7 @@ PS_INPUT_POS_COL_2UV VS_2(VS_INPUT_POS_COL_2UV input)
 	output.Pos = mul(input.Pos, World);
 	output.Pos = mul(output.Pos, View);
 
-	output.Pos.x += Position.x;
+	output.Pos.x += Position.x - 1;
 	output.Pos.y += Position.y;	
 	output.Pos = mul(output.Pos, Projection);
 	output.Color = input.Color;	
@@ -42,15 +42,26 @@ PS_INPUT_POS_COL_2UV VS_2(VS_INPUT_POS_COL_2UV input)
 
 static const float2 offset = float2(1.f / 256.f, (1.f / 256.f));
 
+float4 PS(PS_INPUT_POS_COL_2UV input) : SV_Target
+{
+	//float4 border = OutlineTexture.Sample(linearSample_Clamp, input.UV2).aaaa;
+	float4 text = FontTexture.Sample(linearSample_Clamp, input.UV).aaaa;
+	//border.rgb = float3(0,0,0);
+	//text *= input.Color;
+	//float4 color = (text+border);
+	//color.rgba *= input.Color.rgba;
+	return text;
+};
+
 float4 PS_2(PS_INPUT_POS_COL_2UV input) : SV_Target
 {
 	float4 border = OutlineTexture.Sample(linearSample_Clamp, input.UV2).aaaa;
-	float4 text = FontTexture.Sample(linearSample_Clamp, input.UV).aaaa;
+	//float4 text = FontTexture.Sample(linearSample_Clamp, input.UV).aaaa;
 	border.rgb = float3(0,0,0);
 	//text *= input.Color;
-	float4 color = (text+border);
+	//float4 color = (text+border);
 	//color.rgba *= input.Color.rgba;
-	return color;
+	return border;
 };
 
 technique11 Render
@@ -60,5 +71,12 @@ technique11 Render
 		SetVertexShader(CompileShader(vs_5_0, VS_2()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS_2()));
+	}	
+	
+	pass P1
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS()));
 	}	
 }

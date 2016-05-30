@@ -46,18 +46,16 @@ namespace Snowblind
 		myDepthStencil->CreateDepthStencilView(myWindowSize.myWidth, myWindowSize.myHeight);
 		myDepthStencil->SetDebugName("DeferredDepthStencil");
 
-
-
-		myClearColor[0] = 1.f;
-		myClearColor[1] = 1.f;
-		myClearColor[2] = 1.f;
-		myClearColor[3] = 1.f;
+		myClearColor[0] = 0.f;
+		myClearColor[1] = 0.f;
+		myClearColor[2] = 0.f;
+		myClearColor[3] = 0.f;
 
 		myScreenData.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
-		myScreenData.myEffect->GetShaderResource(&myScreenData.mySource, "DiffuseTexture");
+		myScreenData.myEffect->GetShaderResource(myScreenData.mySource, "DiffuseTexture");
 
 		myParticlePass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
-		myScreenData.myEffect->GetShaderResource(&myParticlePass.myDiffuse, "DiffuseTexture");
+		myScreenData.myEffect->GetShaderResource(myParticlePass.myDiffuse, "DiffuseTexture");
 
 		CreateAmbientData();
 		CreateLightData();
@@ -152,39 +150,6 @@ namespace Snowblind
 		pointlight->Render(aCamera);
 	}
 
-	void CDeferredRenderer::SetParticleRenderTarget()
-	{
-		ID3D11RenderTargetView* rt = myParticleTexture->GetRenderTargetView();
-		myContext->ClearRenderTargetView(rt, myClearColor);
-		myContext->OMSetRenderTargets(1, &rt, myDepthStencil->GetDepthView());
-		CEngine::GetDirectX()->SetBlendState(eBlendStates::PARTICLE_BLEND);
-	}
-
-	void CDeferredRenderer::ResetRenderTarget()
-	{
-		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
-		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
-		myContext->OMSetRenderTargets(1, &backbuffer, depth);
-	}
-
-	void CDeferredRenderer::RenderParticles()
-	{
-
-		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
-		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
-
-		myContext->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-		myContext->OMSetRenderTargets(1, &backbuffer, depth);
-
-		myParticlePass.myDiffuse->SetResource(myParticleTexture->GetShaderView());
-		Render(myParticlePass.myEffect);
-
-		myParticlePass.myDiffuse->SetResource(NULL);
-
-		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
-		CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
-	}
-
 	void CDeferredRenderer::DeferredRender()
 	{
 		myDirectX->ResetViewport();
@@ -213,9 +178,9 @@ namespace Snowblind
 		myLightPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredLightMesh.fx");
 		CEffect* effect = myLightPass.myEffect;
 
-		effect->GetShaderResource(&myLightPass.myAlbedo, "AlbedoTexture");
-		effect->GetShaderResource(&myLightPass.myNormal, "NormalTexture");
-		effect->GetShaderResource(&myLightPass.myDepth, "DepthTexture");
+		effect->GetShaderResource(myLightPass.myAlbedo, "AlbedoTexture");
+		effect->GetShaderResource(myLightPass.myNormal, "NormalTexture");
+		effect->GetShaderResource(myLightPass.myDepth, "DepthTexture");
 
 		myLightPass.myPointLightVariable = effect->GetVariableByName("PointLights");
 		effect->Validate(myLightPass.myPointLightVariable, "Deferred Renderer Pointlights Variable was Invalid.");

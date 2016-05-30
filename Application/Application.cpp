@@ -131,9 +131,8 @@ void CApplication::Update()
 
 void CApplication::Render()
 {
-	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(0.f, 0.f, 0.f) , SRenderCommand::eType::MODEL));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, pos, CU::Vector3f(1.f, 0.f, 0.f), 1.f, 10.f));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(myEmitter));
+	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(1.f, 0.f, 0.f) , SRenderCommand::eType::MODEL));
+	mySynchronizer->AddRenderCommand(SRenderCommand(myEmitter));
 
 }
 

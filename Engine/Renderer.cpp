@@ -51,10 +51,7 @@ namespace Snowblind
 		RenderLightCommands();
 		myDeferredRenderer->SetNormalState();
 
-		myDeferredRenderer->SetParticleRenderTarget();
 		RenderParticles();
-		myDeferredRenderer->SetBuffers();
-		myDeferredRenderer->RenderParticles();
 
 		Render2DCommands();
 
@@ -120,6 +117,7 @@ namespace Snowblind
 
 	void CRenderer::RenderParticles()
 	{
+		CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
 		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandType::PARTICLE);
 		for each(const SRenderCommand& command in commands)
 		{

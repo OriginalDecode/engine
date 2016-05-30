@@ -49,9 +49,9 @@ namespace Snowblind
 		void UpdateLight(CU::StaticArray<SSpotlightData, SPOTLIGHT_SIZE>& someData);
 		void UpdateLight(CU::StaticArray<SPointlightData, POINTLIGHT_SIZE>& someData);
 
-		void GetShaderResource(ID3DX11EffectShaderResourceVariable** aShaderResource, const std::string& aVariableName);
-		void GetShaderVector(ID3DX11EffectVectorVariable** aShaderResource, const std::string& aVariableName);
-		void GetShaderMatrix(ID3DX11EffectMatrixVariable** aShaderResource, const std::string& aVariableName);
+		void GetShaderResource(ID3DX11EffectShaderResourceVariable*& aShaderResource, const std::string& aVariableName);
+		void GetShaderResource(ID3DX11EffectVectorVariable*& aShaderResource, const std::string& aVariableName);
+		void GetShaderResource(ID3DX11EffectMatrixVariable*& aShaderResource, const std::string& aVariableName);
 
 
 		template <typename T>

@@ -143,7 +143,7 @@ namespace Snowblind
 	{
 		//mySpritePos = myEffect->GetVariableByName("Position")->AsVector();
 		//Validate(mySpritePos, "SpritePosition Invalid!");
-		GetShaderVector(&mySpritePos, "Position");
+		GetShaderResource(mySpritePos, "Position");
 		mySpritePos->SetFloatVector(&aPosition.x);
 	}
 
@@ -151,7 +151,7 @@ namespace Snowblind
 	{
 		//mySpritePos = myEffect->GetVariableByName("Scale")->AsVector();
 		//Validate(mySpritePos, "SpritePosition Invalid!");
-		GetShaderVector(&mySpritePos, "Scale");
+		GetShaderResource(mySpritePos, "Scale");
 		mySpritePos->SetFloatVector(&aPosition.x);
 	}
 
@@ -210,25 +210,25 @@ namespace Snowblind
 		}
 	}
 
-	void CEffect::GetShaderResource(ID3DX11EffectShaderResourceVariable** aShaderResource, const std::string& aVariableName)
+	void CEffect::GetShaderResource(ID3DX11EffectShaderResourceVariable*& aShaderResource, const std::string& aVariableName)
 	{
-		*aShaderResource = GetVariableByName(aVariableName.c_str())->AsShaderResource();
+		aShaderResource = GetVariableByName(aVariableName.c_str())->AsShaderResource();
 		const std::string validationString(aVariableName + " was not found. Check shader/code");
-		Validate(*aShaderResource, validationString);
+		Validate(aShaderResource, validationString);
 	}
 
-	void CEffect::GetShaderVector(ID3DX11EffectVectorVariable** aShaderResource, const std::string& aVariableName)
+	void CEffect::GetShaderResource(ID3DX11EffectVectorVariable*& aShaderResource, const std::string& aVariableName)
 	{
-		*aShaderResource = GetVariableByName(aVariableName.c_str())->AsVector();
+		aShaderResource = GetVariableByName(aVariableName.c_str())->AsVector();
 		const std::string validationString(aVariableName + " was not found. Check shader/code");
-		Validate(*aShaderResource, validationString);
+		Validate(aShaderResource, validationString);
 	}
 
-	void CEffect::GetShaderMatrix(ID3DX11EffectMatrixVariable** aShaderResource, const std::string& aVariableName)
+	void CEffect::GetShaderResource(ID3DX11EffectMatrixVariable*& aShaderResource, const std::string& aVariableName)
 	{
-		*aShaderResource = GetVariableByName(aVariableName.c_str())->AsMatrix();
+		aShaderResource = GetVariableByName(aVariableName.c_str())->AsMatrix();
 		const std::string validationString(aVariableName + " was not found. Check shader/code");
-		Validate(*aShaderResource, validationString);
+		Validate(aShaderResource, validationString);
 	}
 
 	ID3DX11EffectTechnique* CEffect::GetTechnique()
@@ -253,25 +253,25 @@ namespace Snowblind
 
 	void CEffect::SetAlbedo(CTexture* aTexturePtr)
 	{
-		GetShaderResource(&myTexture, "AlbedoTexture");
+		GetShaderResource(myTexture, "AlbedoTexture");
 		myTexture->SetResource(aTexturePtr->GetShaderView());
 	}
 
 	void CEffect::SetAlbedo(ID3D11ShaderResourceView* aTexturePtr)
 	{
-		GetShaderResource(&myTexture, "AlbedoTexture");
+		GetShaderResource(myTexture, "AlbedoTexture");
 		myTexture->SetResource(aTexturePtr);
 	}
 
 	void CEffect::SetTexture(CTexture* texturePtr)
 	{
-		GetShaderResource(&myTexture, "DiffuseTexture");
+		GetShaderResource(myTexture, "DiffuseTexture");
 		myTexture->SetResource(texturePtr->GetShaderView());
 	}
 
 	void CEffect::SetTexture(ID3D11ShaderResourceView* aTexturePtr, const std::string& textureName)
 	{
-		GetShaderResource(&myTexture, textureName);
+		GetShaderResource(myTexture, textureName);
 		myTexture->SetResource(aTexturePtr);
 	}
 

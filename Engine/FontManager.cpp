@@ -12,7 +12,7 @@
 #include "EngineDefines.h"
 #include "Font.h"
 
-#define SAVE
+//#define SAVE
 #ifdef SAVE
 #define SAVE_DDS
 #ifndef SAVE_DDS
@@ -107,7 +107,6 @@ namespace Snowblind
 		int currentMax = 126;
 		int currentI = 32;
 
-		int font;
 		const int borderOffset = 1;
 		for (int i = currentI; i < currentMax; i++)
 		{
@@ -122,18 +121,17 @@ namespace Snowblind
 				atlasY = currentMaxY;
 			}
 
-			LoadOutline(font, i, atlasX, atlasY, atlasWidth, fontData, face, borderOffset);
-			LoadGlyph(font, i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face, borderOffset);
-			font = 0;
+			LoadOutline(i, atlasX, atlasY, atlasWidth, fontData, face, borderOffset);
+			LoadGlyph(i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face, borderOffset);
 		}
-		LoadGlyph(font, 132, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
-		LoadGlyph(font, 134, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(132, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(134, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
 
-		LoadGlyph(font, 142, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
-		LoadGlyph(font, 143, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(142, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(143, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
 
-		LoadGlyph(font, 148, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
-		LoadGlyph(font, 153, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(148, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
+		LoadGlyph(153, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face);
 
 		D3D11_SUBRESOURCE_DATA data;
 		data.pSysMem = fontData->myAtlas;
@@ -219,21 +217,17 @@ namespace Snowblind
 		return newFont;
 	}
 
-	void CFontManager::LoadGlyph(int& tData, int index, int& atlasX, int& atlasY, int& maxY
+	void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 		, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int borderOffset)
 	{
 
 		int error = FT_Load_Char(aFace, index, FT_LOAD_RENDER);
 		DL_ASSERT_EXP(!error, "Failed to load glyph!");
 		FT_GlyphSlot slot = aFace->glyph;
-		//int error = FT_Load_Char(aFace, index, FT_LOAD_NO_BITMAP);
-
-
 		FT_Bitmap bitmap = slot->bitmap;
 
 		int height = bitmap.rows;
 		int width = bitmap.width;
-
 
 		SCharData glyphData;
 		glyphData.myChar = index;
@@ -279,12 +273,6 @@ namespace Snowblind
 				saved |= bitmap.buffer[y * bitmap.width + x];
 				saved = CL::Color32Reverse(saved);
 
-
-				/*tData = aFontData->myAtlas[((atlasY + borderOffset) + y) * int(atlasWidth) + ((atlasX + borderOffset) + x)];
-				tData = 0;
-				tData |= bitmap.buffer[y * bitmap.width + x];
-				tData = CL::Color32Reverse(tData);*/
-
 				if (y + (atlasY + 8) > maxY)
 				{
 					maxY = y + (atlasY + 8);
@@ -300,7 +288,7 @@ namespace Snowblind
 
 		atlasX = atlasX + width + X_OFFSET;
 		aFontData->myCharData[index] = glyphData;
-
+#ifdef SAVE
 		if (bitmap.rows <= 0 || bitmap.pitch <= 0)
 		{
 			delete[] gData;
@@ -329,6 +317,8 @@ namespace Snowblind
 		ID3D11Texture2D* texture;
 		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
+#endif
+
 
 #ifdef SAVE
 		std::stringstream ss;
@@ -344,13 +334,13 @@ namespace Snowblind
 		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss.str().c_str());
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 		texture->Release();
-#endif
 
 		delete[] gData;
 		gData = nullptr;
+#endif
 	}
 
-	void CFontManager::LoadOutline(int& tData, const int index, const int atlasX, const int atlasY
+	void CFontManager::LoadOutline(const int index, const int atlasX, const int atlasY
 		, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int borderOffset)
 	{
 		FT_Error err;

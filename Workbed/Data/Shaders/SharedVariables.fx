@@ -143,10 +143,8 @@ struct PARTICLE_PS_INPUT
 	float Alpha : ALPHA;
 	float Size : SIZE;
 	float2 UV : TEXCOORD;
+	float4 WorldViewProj : Pos;
 };
-
-
-
 
 SamplerState linearSample_Clamp
 {

@@ -443,6 +443,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Workbed\Data\Shaders\Font_Effect.fx" />
+    <FxCompile Include="..\Workbed\Data\Shaders\Particle.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

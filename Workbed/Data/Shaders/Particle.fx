@@ -9,8 +9,7 @@ PARTICLE_PS_INPUT VS(PARTICLE_VS_INPUT input)
 	
 	output.Pos = float4(input.Pos.xyz, 1.f);
 	output.Pos = mul(output.Pos, World);
-	output.Pos = mul(output.Pos, View);
-	
+
 	return output;	
 }
 
@@ -40,9 +39,10 @@ void GS (point PARTICLE_PS_INPUT input[1], inout TriangleStream<PARTICLE_PS_INPU
 	
 	for(int i = 0; i < 4; ++i)
 	{
-		output.Pos = (quadPos[i] * input[0].Size) + input[0].Pos;
+		output.Pos = (quadPos[i] * input[0].Size * 2) + input[0].Pos;
+		output.Pos = mul(output.Pos, View);
 		output.Pos = mul(output.Pos, Projection);
-		
+		output.WorldViewProj = output.Pos;
 		output.UV.x = quadUV[i].x;
 		output.UV.y = quadUV[i].y;
 		
@@ -52,25 +52,43 @@ void GS (point PARTICLE_PS_INPUT input[1], inout TriangleStream<PARTICLE_PS_INPU
 	triStream.RestartStrip();
 }
 
+float Contrast(float Input, float ContrastPower)
+{
+     bool IsAboveHalf = Input > 0.5 ;
+     float ToRaise = saturate(2*(IsAboveHalf ? 1-Input : Input));
+     float Output = 0.5*pow(ToRaise, ContrastPower); 
+     Output = IsAboveHalf ? 1-Output : Output;
+     return Output;
+}
+
 float4 PS(PARTICLE_PS_INPUT input) : SV_Target
 {
 	float4 color = DiffuseTexture.Sample(linearSample_Clamp, input.UV);
-	color.a *= input.Alpha;
+	
+	float SoftParticleScale = 0.2f;	
+	float SoftParticleContrast = 1.0f;
+	float intensity = 7.0f;
+	float zEpsilon = 0.0f;
+	
+	float FAR_CLIP = 1000.0f;
+	float NEAR_CLIP = 0.1f;
+	
+	float ZFARMULTZNEAR = NEAR_CLIP * FAR_CLIP;
+	float ZFARMINUSZNEAR = FAR_CLIP - NEAR_CLIP ;
+	                      
+	float zBuf = DepthTexture.Load( int4(input.Pos.x, input.Pos.y,0,0)).r;	
+	float z = ZFARMULTZNEAR / ( FAR_CLIP - zBuf * ZFARMINUSZNEAR);
+    float zdiff = (z - input.WorldViewProj.z);
 
+   	float c = Contrast(zdiff * SoftParticleScale, SoftParticleContrast);
+	
+    if( c * zdiff <= zEpsilon )
+    {
+		discard;
+    }
+	//color.a *= (half)(((c * intensity)) * input.Alpha);
 	return color;	
 }
-
-BlendState AlphaBlend
-{
-	BlendEnable[0] = TRUE;
-	SrcBlend = SRC_ALPHA;
-	DestBlend = INV_SRC_ALPHA;
-	BlendOp = ADD;
-	SrcBlendAlpha = ONE;
-	DestBlendAlpha = ONE;
-	BlendOpAlpha = ADD;
-	RenderTargetWriteMask[0] = 0x0F;
-};
 
 DepthStencilState DisableDepthWrites
 {
@@ -85,7 +103,6 @@ technique11 Render
 		SetVertexShader(CompileShader(vs_5_0,VS()));
 		SetGeometryShader(CompileShader(gs_5_0, GS()));
 		SetPixelShader(CompileShader(ps_5_0, PS()));
-		//SetBlendState(AlphaBlend, float4(0.f,0.f,0.f,0.f),0xFFFFFFFF);
 		SetDepthStencilState(DisableDepthWrites, 0);
 	}
 }

@@ -290,10 +290,10 @@ namespace Snowblind
 				drawX += myData->myWordSpacing;
 			}
 
-			float left = drawX;
-			float right = left + charData.myWidth;
-			float top = drawY + charData.myBearingY;
-			float bottom = top + charData.myHeight;
+			float left = drawX - 2;
+			float right = left + charData.myWidth + 2;
+			float top = drawY + charData.myBearingY - 2;
+			float bottom = top + charData.myHeight + 2;
 
 
 

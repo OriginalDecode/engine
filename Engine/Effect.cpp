@@ -213,21 +213,28 @@ namespace Snowblind
 	void CEffect::GetShaderResource(ID3DX11EffectShaderResourceVariable*& aShaderResource, const std::string& aVariableName)
 	{
 		aShaderResource = GetVariableByName(aVariableName.c_str())->AsShaderResource();
-		const std::string validationString(aVariableName + " was not found. Check shader/code");
+		const std::string validationString(aVariableName + " was not found or was invalid. Check shader/code");
 		Validate(aShaderResource, validationString);
 	}
 
 	void CEffect::GetShaderResource(ID3DX11EffectVectorVariable*& aShaderResource, const std::string& aVariableName)
 	{
 		aShaderResource = GetVariableByName(aVariableName.c_str())->AsVector();
-		const std::string validationString(aVariableName + " was not found. Check shader/code");
+		const std::string validationString(aVariableName + " was not found or was invalid. Check shader/code");
 		Validate(aShaderResource, validationString);
 	}
 
 	void CEffect::GetShaderResource(ID3DX11EffectMatrixVariable*& aShaderResource, const std::string& aVariableName)
 	{
 		aShaderResource = GetVariableByName(aVariableName.c_str())->AsMatrix();
-		const std::string validationString(aVariableName + " was not found. Check shader/code");
+		const std::string validationString(aVariableName + " was not found or was invalid. Check shader/code");
+		Validate(aShaderResource, validationString);
+	}
+
+	void CEffect::GetShaderResource(ID3DX11EffectVariable*& aShaderResource, const std::string& aVariableName)
+	{
+		aShaderResource = GetVariableByName(aVariableName.c_str());
+		const std::string validationString(aVariableName + " was not found or was invalid. Check shader/code");
 		Validate(aShaderResource, validationString);
 	}
 
@@ -262,17 +269,23 @@ namespace Snowblind
 		GetShaderResource(myTexture, "AlbedoTexture");
 		myTexture->SetResource(aTexturePtr);
 	}
-
-	void CEffect::SetTexture(CTexture* texturePtr)
-	{
-		GetShaderResource(myTexture, "DiffuseTexture");
-		myTexture->SetResource(texturePtr->GetShaderView());
-	}
-
+	
 	void CEffect::SetTexture(ID3D11ShaderResourceView* aTexturePtr, const std::string& textureName)
 	{
 		GetShaderResource(myTexture, textureName);
 		myTexture->SetResource(aTexturePtr);
+	}
+
+	void CEffect::SetTexture(CTexture* texturePtr, const std::string& textureName)
+	{
+		GetShaderResource(myTexture, textureName);
+		myTexture->SetResource(texturePtr->GetShaderView());
+	}
+
+	void CEffect::SetDepthTexture(CTexture* texturePtr)
+	{
+		GetShaderResource(myDepthTexture, "DepthTexture");
+		myDepthTexture->SetResource(texturePtr->GetDepthStencilView());
 	}
 
 }

@@ -18,7 +18,7 @@ namespace Snowblind
 		void Initiate(CSynchronizer* aSynchronizer);
 
 		void Update(float aDeltaTime);
-		void Render(CCamera* camera);
+		void Render(CCamera* camera, CTexture* aDepthTexture);
 
 	private:
 		void CreateVertexBuffer();
@@ -28,7 +28,6 @@ namespace Snowblind
 
 		void UpdateParticle(float aDeltaTime);
 		void Emit();
-
 		SEmitterData myData;
 		SVertexBufferWrapper* myVertexBuffer;
 

@@ -131,7 +131,7 @@ void CApplication::Update()
 
 void CApplication::Render()
 {
-	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(1.f, 0.f, 0.f) , SRenderCommand::eType::MODEL));
+	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(0.f, 0.f, 0.f) , SRenderCommand::eType::MODEL));
 	mySynchronizer->AddRenderCommand(SRenderCommand(myEmitter));
 
 }

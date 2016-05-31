@@ -18,10 +18,12 @@ namespace Snowblind
 		: mySynchronizer(aSynchronizer)
 		, myCamera(aCamera)
 	{
-		myText = new Snowblind::CText("Data/Font/OpenSans-Bold.ttf", 16);
-		myPointLight = new Snowblind::CPointLight();
+		myText = new CText("Data/Font/OpenSans-Bold.ttf", 16);
+		myPointLight = new CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
 		myDeferredType = eDeferredType::NONE;
+		myDepthTexture = new CTexture();
+		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
 	}
 
 	CRenderer::~CRenderer()
@@ -43,8 +45,8 @@ namespace Snowblind
 
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
+		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 		myDeferredRenderer->SetBuffers();
-
 		myDeferredRenderer->DeferredRender();
 
 		myDeferredRenderer->SetLightState(myCamera);
@@ -118,15 +120,17 @@ namespace Snowblind
 	void CRenderer::RenderParticles()
 	{
 		CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
+		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_NONE);
 		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandType::PARTICLE);
 		for each(const SRenderCommand& command in commands)
 		{
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::PARTICLE:
-				command.myEmitterInstance->Render(myCamera);
+				command.myEmitterInstance->Render(myCamera, myDepthTexture);
 				break;
 			}
 		}
+		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 };

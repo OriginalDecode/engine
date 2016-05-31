@@ -144,6 +144,7 @@ struct PARTICLE_PS_INPUT
 	float Size : SIZE;
 	float2 UV : TEXCOORD;
 	float4 WorldViewProj : Pos;
+	float4 Tex : TEXCOORD1;
 };
 
 SamplerState linearSample_Clamp

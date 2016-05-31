@@ -35,6 +35,8 @@ namespace Snowblind
 		CSynchronizer& mySynchronizer;
 		CText* myText;
 		CPointLight* myPointLight;
+
+		CTexture* myDepthTexture;
 	
 	};
 }; 

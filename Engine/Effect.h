@@ -32,8 +32,10 @@ namespace Snowblind
 		void SetTechniqueName(const std::string& aTechniqueName);
 		void SetAlbedo(CTexture* aTexturePtr);
 		void SetAlbedo(ID3D11ShaderResourceView* aTexturePtr);
+
 		void SetTexture(ID3D11ShaderResourceView* aTexturePtr, const std::string& textureName);
-		void SetTexture(CTexture* texturePtr);
+		void SetTexture(CTexture* texturePtr, const std::string& textureName);
+		void SetDepthTexture(CTexture* texturePtr);
 
 
 		void SetPosition(const CU::Math::Vector2<float>& aPosition);
@@ -52,6 +54,7 @@ namespace Snowblind
 		void GetShaderResource(ID3DX11EffectShaderResourceVariable*& aShaderResource, const std::string& aVariableName);
 		void GetShaderResource(ID3DX11EffectVectorVariable*& aShaderResource, const std::string& aVariableName);
 		void GetShaderResource(ID3DX11EffectMatrixVariable*& aShaderResource, const std::string& aVariableName);
+		void GetShaderResource(ID3DX11EffectVariable*& aShaderResource, const std::string& aVariableName);
 
 
 		template <typename T>
@@ -67,6 +70,8 @@ namespace Snowblind
 		ID3DX11EffectMatrixVariable* myViewMatrix;
 		ID3DX11EffectMatrixVariable* myWorldMatrix;
 		ID3DX11EffectShaderResourceVariable* myTexture;
+		ID3DX11EffectShaderResourceVariable* myDepthTexture;
+
 		ID3DX11EffectVectorVariable* mySpritePos;
 
 		ID3DX11EffectVariable* myDirectionalLightData;

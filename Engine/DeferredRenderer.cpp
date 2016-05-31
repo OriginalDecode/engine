@@ -43,7 +43,7 @@ namespace Snowblind
 		myParticleTexture->SetDebugName("ParticleTexture");
 
 		myDepthStencil = new CTexture();
-		myDepthStencil->CreateDepthStencilView(myWindowSize.myWidth, myWindowSize.myHeight);
+		myDepthStencil->InitAsDepthBuffer(myWindowSize.myWidth, myWindowSize.myHeight);
 		myDepthStencil->SetDebugName("DeferredDepthStencil");
 
 		myClearColor[0] = 0.f;
@@ -65,7 +65,6 @@ namespace Snowblind
 
 	CDeferredRenderer::~CDeferredRenderer()
 	{
-
 		SAFE_DELETE(myParticleTexture);
 		SAFE_DELETE(myAlbedo);
 		SAFE_DELETE(myNormal);
@@ -95,7 +94,6 @@ namespace Snowblind
 
 	void CDeferredRenderer::Render(CEffect* anEffect)
 	{
-
 		D3DX11_TECHNIQUE_DESC techDesc;
 		anEffect->GetTechnique()->GetDesc(&techDesc);
 		for (UINT p = 0; p < techDesc.Passes; p++)
@@ -107,7 +105,6 @@ namespace Snowblind
 
 	void CDeferredRenderer::SetBuffers()
 	{
-
 		SVertexBufferWrapper* buf = myVertexBuffer;
 		myContext->IASetInputLayout(myInputLayout);
 		myContext->IASetVertexBuffers(buf->myStartSlot
@@ -181,30 +178,18 @@ namespace Snowblind
 		effect->GetShaderResource(myLightPass.myAlbedo, "AlbedoTexture");
 		effect->GetShaderResource(myLightPass.myNormal, "NormalTexture");
 		effect->GetShaderResource(myLightPass.myDepth, "DepthTexture");
-
-		myLightPass.myPointLightVariable = effect->GetVariableByName("PointLights");
-		effect->Validate(myLightPass.myPointLightVariable, "Deferred Renderer Pointlights Variable was Invalid.");
-
-		myLightPass.myInvertedProjection = effect->GetEffect()->GetVariableByName("InvertedProjection")->AsMatrix();
-		effect->Validate(myLightPass.myDepth, "Deferred Renderer InvertedProjection was Invalid.");
-
-		myLightPass.myNotInvertedView = effect->GetEffect()->GetVariableByName("NotInvertedView")->AsMatrix();
-		effect->Validate(myLightPass.myDepth, "Deferred Renderer NotInvertedView was Invalid.");
+		effect->GetShaderResource(myLightPass.myPointLightVariable, "PointLights");
+		effect->GetShaderResource(myLightPass.myInvertedProjection, "InvertedProjection");
+		effect->GetShaderResource(myLightPass.myNotInvertedView, "NotInvertedView");
 	}
 
 	void CDeferredRenderer::CreateAmbientData()
 	{
-
 		myAmbientPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredAmbient.fx");
-
-		myAmbientPass.myAlbedo = myAmbientPass.myEffect->GetVariableByName("AlbedoTexture")->AsShaderResource();
-		myAmbientPass.myEffect->Validate(myAmbientPass.myAlbedo, "Ambient Pass AlbedoTexture Not Valid.");
-
-		myAmbientPass.myNormal = myAmbientPass.myEffect->GetVariableByName("NormalTexture")->AsShaderResource();
-		myAmbientPass.myEffect->Validate(myAmbientPass.myNormal, "Ambient Pass NormalTexture Not Valid.");
-
-		myAmbientPass.myDepth = myAmbientPass.myEffect->GetVariableByName("DepthTexture")->AsShaderResource();
-		myAmbientPass.myEffect->Validate(myAmbientPass.myDepth, "Ambient Pass DepthTexture Not Valid.");
+		CEffect* effect = myAmbientPass.myEffect;
+		effect->GetShaderResource(myAmbientPass.myAlbedo, "AlbedoTexture");
+		effect->GetShaderResource(myAmbientPass.myNormal, "NormalTexture");
+		effect->GetShaderResource(myAmbientPass.myDepth, "DepthTexture");
 	}
 
 	void CDeferredRenderer::CreateFullscreenQuad()

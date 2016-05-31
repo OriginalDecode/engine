@@ -37,11 +37,6 @@ namespace Snowblind
 			, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		myDepth->SetDebugName("DeferredDepth");
 
-		myParticleTexture = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
-			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
-		myParticleTexture->SetDebugName("ParticleTexture");
-
 		myDepthStencil = new CTexture();
 		myDepthStencil->InitAsDepthBuffer(myWindowSize.myWidth, myWindowSize.myHeight);
 		myDepthStencil->SetDebugName("DeferredDepthStencil");
@@ -65,7 +60,6 @@ namespace Snowblind
 
 	CDeferredRenderer::~CDeferredRenderer()
 	{
-		SAFE_DELETE(myParticleTexture);
 		SAFE_DELETE(myAlbedo);
 		SAFE_DELETE(myNormal);
 		SAFE_DELETE(myDepth);

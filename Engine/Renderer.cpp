@@ -21,13 +21,13 @@ namespace Snowblind
 		myText = new CText("Data/Font/OpenSans-Bold.ttf", 16);
 		myPointLight = new CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
-		myDeferredType = eDeferredType::NONE;
 		myDepthTexture = new CTexture();
 		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
 	}
 
 	CRenderer::~CRenderer()
 	{
+		SAFE_DELETE(myDepthTexture);
 		SAFE_DELETE(my2DCamera);
 		SAFE_DELETE(myDeferredRenderer);
 		SAFE_DELETE(myText);

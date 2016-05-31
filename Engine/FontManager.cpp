@@ -107,7 +107,7 @@ namespace Snowblind
 		int currentMax = 126;
 		int currentI = 32;
 
-		const int borderOffset = 1;
+		const int borderOffset = 3;
 		for (int i = currentI; i < currentMax; i++)
 		{
 			int error = FT_Load_Char(face, i, FT_LOAD_RENDER);
@@ -236,8 +236,8 @@ namespace Snowblind
 		glyphData.myTopLeftUVBorder = { float(atlasX + borderOffset) / atlasWidth, float(atlasY + borderOffset) / atlasHeight };
 		glyphData.myBottomRightUVBorder = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
 
-		glyphData.myTopLeftUV = { float(atlasX + borderOffset) / atlasWidth, float(atlasY + borderOffset) / atlasHeight };
-		glyphData.myBottomRightUV = { float(atlasX + width + borderOffset) / atlasWidth, float(atlasY + height + borderOffset) / atlasHeight };
+		glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
+		glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
 
 		glyphData.myAdvanceX = slot->metrics.width / 64.f;
 		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f));
@@ -268,7 +268,7 @@ namespace Snowblind
 					continue;
 				}
 
-				int& saved = aFontData->myAtlas[((atlasY + borderOffset) + y) * int(atlasWidth) + ((atlasX + borderOffset) + x)];
+				int& saved = aFontData->myAtlas[((atlasY) + y) * int(atlasWidth) + ((atlasX) + x)];
 				saved = 0;
 				saved |= bitmap.buffer[y * bitmap.width + x];
 				saved = CL::Color32Reverse(saved);
@@ -366,7 +366,8 @@ namespace Snowblind
 		DL_ASSERT_EXP(err == 0, "Failed to add glyph to bitmap");
 
 		FT_BitmapGlyph bitmapGlyph = reinterpret_cast<FT_BitmapGlyph>(glyph);
-
+		outlineHeight = bitmapGlyph->bitmap.rows;
+		outlineWidth = bitmapGlyph->bitmap.width;
 		for (int x = 0; x < bitmapGlyph->bitmap.width; x++)
 		{
 			for (int y = 0; y < bitmapGlyph->bitmap.rows; y++)

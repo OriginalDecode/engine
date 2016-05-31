@@ -63,7 +63,8 @@ namespace Snowblind
 
 		void LoadOutline(const int index, const int atlasX, const int atlasY
 			, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int borderOffset);
-
+		float outlineWidth;
+		float outlineHeight;
 
 		FT_LibraryRec_* myLibrary;
 		const char* myFontPath;

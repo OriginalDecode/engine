@@ -18,7 +18,7 @@ namespace Snowblind
 		: mySynchronizer(aSynchronizer)
 		, myCamera(aCamera)
 	{
-		myText = new CText("Data/Font/OpenSans-Bold.ttf", 15); //bug cant go below 15
+		myText = new CText("Data/Font/OpenSans-Bold.ttf", 32); //bug cant go below 15
 		myPointLight = new CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();

@@ -88,8 +88,8 @@ namespace Snowblind
 
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
-		//error = FT_Set_Pixel_Sizes(face, (fontData->myFontHeightWidth), 0); //This is better to use.
-		error = FT_Set_Char_Size(face, (fontData->myFontHeightWidth * 64.f), 0, 96, 96); // Not sure when this is supposed to be used.
+		error = FT_Set_Pixel_Sizes(face, (fontData->myFontHeightWidth), 0); //This is better to use.
+		//error = FT_Set_Char_Size(face, (fontData->myFontHeightWidth * 64.f), 0, 96, 96); // Not sure when this is supposed to be used.
 		DL_ASSERT_EXP(!error, "[FontManager] : Failed to set pixel size!");
 
 #ifdef SAVE
@@ -233,8 +233,10 @@ namespace Snowblind
 
 		SCharData glyphData;
 		glyphData.myChar = index;
+
 		glyphData.myHeight = height;
 		glyphData.myWidth = width;
+
 		glyphData.myTopLeftUVBorder = { (float(atlasX) / atlasWidth), (float(atlasY) / atlasHeight) };
 		glyphData.myBottomRightUVBorder = { (float(atlasX + width + 6.f) / atlasWidth), (float(atlasY + height + 6.f) / atlasHeight) };
 
@@ -242,7 +244,7 @@ namespace Snowblind
 		glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
 
 		glyphData.myAdvanceX = slot->metrics.width / 64.f;
-		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f)) - 3.f;
+		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f)) + 3.f;
 		glyphData.myBearingY = ((slot->metrics.horiBearingY - slot->metrics.height) / 64.f);
 
 		//Kerning is needed

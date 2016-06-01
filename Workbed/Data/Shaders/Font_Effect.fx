@@ -42,14 +42,16 @@ PS_INPUT_POS_COL_2UV VS_2(VS_INPUT_POS_COL_2UV input)
 
 float4 Text_PS(PS_INPUT_POS_COL_2UV input) : SV_Target
 {
-	float4 text = FontTexture.Sample(linearSample_Clamp, input.UV2).rrrr;
+	float4 text = FontTexture.Sample(pointSample_Clamp, input.UV2).rrrr;
+	text = float4(1,0,0,1);
 	return text;
 };
 
 float4 Outline_PS(PS_INPUT_POS_COL_2UV input) : SV_Target
 {
 	float4 outline = FontTexture.Sample(linearSample_Clamp, input.UV2).aaaa;
-	outline.rgb = float3(0,0,0);
+	//outline.rgb = float3(0,0,0);
+	outline.a = 0.f;
 	return outline;
 };
 

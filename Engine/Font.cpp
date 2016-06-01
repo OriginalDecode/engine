@@ -74,6 +74,7 @@ namespace Snowblind
 
 	void CFont::Render()
 	{
+		CEngine::GetDirectX()->SetRasterizer(eRasterizer::WIREFRAME);
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds();
 
@@ -107,7 +108,7 @@ namespace Snowblind
 
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds() - myRenderTime;
-
+		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
 	Snowblind::CEffect* CFont::GetEffect()

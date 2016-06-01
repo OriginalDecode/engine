@@ -80,7 +80,7 @@ namespace Snowblind
 		if (!myEffect)
 			return;
 		myEffect->SetTexture(myData->myAtlasView, "FontTexture");
-		myEffect->SetTexture(myData->myOutlineAtlasView, "OutlineTexture");
+		//myEffect->SetTexture(myData->myOutlineAtlasView, "OutlineTexture");
 
 		ID3D11DeviceContext& context = *CEngine::GetDirectX()->GetContext();
 		context.IASetInputLayout(myVertexLayout);
@@ -329,7 +329,7 @@ namespace Snowblind
 			myIndices.Add(startIndex + 3);
 			myIndices.Add(startIndex + 1);
 
-			drawX += charData.myBearingX;
+			drawX += charData.myBearingX + 3;
 		}
 
 		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosColUv2) * myVertices.Size();

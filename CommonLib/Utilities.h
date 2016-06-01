@@ -6,6 +6,8 @@ namespace CL
 	unsigned long long nearest_Pow(unsigned long long aNum);
 	int Color32Reverse(int x);
 	int MoveToRed(int x);
+	int MoveToGreen(int x);
+
 
 
 	//if readCharacterBeforeToFind == true it will read everything BEFORE the character/word you entered but if it is false it will read the word you entered and everything after.

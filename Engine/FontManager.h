@@ -42,6 +42,8 @@ namespace Snowblind
 		short myFontHeightWidth;
 		int* myAtlas;
 		int* myOutlineAtlas;
+		unsigned char* myCAtlas;
+		unsigned char* myOAtlas;
 
 		ID3D11ShaderResourceView* myAtlasView;
 		ID3D11ShaderResourceView* myOutlineAtlasView;

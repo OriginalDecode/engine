@@ -19,10 +19,6 @@ namespace Snowblind
 		CU::Math::Vector2<float> myTopLeftUV;
 		CU::Math::Vector2<float> myBottomRightUV;
 
-		CU::Math::Vector2<float> myTopLeftUVBorder;
-		CU::Math::Vector2<float> myBottomRightUVBorder;
-
-
 		short myWidth;
 		short myHeight;
 		short myAdvanceX; //Distance to next character.
@@ -42,11 +38,8 @@ namespace Snowblind
 		short myFontHeightWidth;
 		int* myAtlas;
 		int* myOutlineAtlas;
-		unsigned char* myCAtlas;
-		unsigned char* myOAtlas;
 
 		ID3D11ShaderResourceView* myAtlasView;
-		ID3D11ShaderResourceView* myOutlineAtlasView;
 	};
 
 	class CTexture;
@@ -65,8 +58,10 @@ namespace Snowblind
 
 		void LoadOutline(const int index, const int atlasX, const int atlasY
 			, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int borderOffset);
-		float outlineWidth;
-		float outlineHeight;
+
+
+		void DumpAtlas(SFontData* fontData, int atlasSize);
+		void DumpGlyph(int* source, int index, int width, int height, int pitch);
 
 		FT_LibraryRec_* myLibrary;
 		const char* myFontPath;

@@ -68,7 +68,7 @@ namespace Snowblind
 		std::string myText;
 
 		CU::Math::Vector2<float> mySize;
-		CU::GrowingArray<SVertexTypePosColUv2> myVertices;
+		CU::GrowingArray<SVertexTypePosColUv> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		CU::GrowingArray<int> myIndices;
 

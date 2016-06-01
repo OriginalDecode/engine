@@ -15,13 +15,12 @@
 #include <D3DX11async.h>
 #define SAVE
 #ifdef SAVE
-#define SAVE_DDS
+//#define SAVE_DDS
 #ifndef SAVE_DDS
 #define SAVE_PNG
 #endif
 #endif
 
-#define X_OFFSET 8
 
 namespace Snowblind
 {
@@ -51,7 +50,8 @@ namespace Snowblind
 	{
 		//int atlasSize = aFontWidth * 64.f / 2.f; //This is wrong.
 		int atlasSize = (aFontWidth * aFontWidth); //This is correct
-
+		atlasSize *= 2;
+		FONT_LOG("Font Size W/H: %d", atlasSize);
 		float atlasWidth = atlasSize; //have to be replaced.
 		float atlasHeight = atlasSize; //have to be replaced
 		myFontHeightWidth = aFontWidth;
@@ -88,14 +88,14 @@ namespace Snowblind
 
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
-		error = FT_Set_Pixel_Sizes(face, (fontData->myFontHeightWidth), 0); //This is better to use.
-		//error = FT_Set_Char_Size(face, (fontData->myFontHeightWidth * 64.f), 0, 96, 96); // Not sure when this is supposed to be used.
+		//error = FT_Set_Pixel_Sizes(face, (fontData->myFontHeightWidth), 0); //This is better to use.
+		error = FT_Set_Char_Size(face, (fontData->myFontHeightWidth * 64.f), 0, 96, 96); // Not sure when this is supposed to be used.
 		DL_ASSERT_EXP(!error, "[FontManager] : Failed to set pixel size!");
 
 #ifdef SAVE
 		CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
 #endif
-		int atlasX = X_OFFSET;
+		int atlasX = 2;
 		int atlasY = 2;
 		int currentMaxY = 0;
 
@@ -117,7 +117,7 @@ namespace Snowblind
 
 			if (atlasX + slot->bitmap.width + (borderOffset * 2) > atlasWidth)
 			{
-				atlasX = X_OFFSET;
+				atlasX = 2;
 				atlasY = currentMaxY;
 			}
 
@@ -125,83 +125,11 @@ namespace Snowblind
 			LoadGlyph(i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face, borderOffset);
 		}
 
-		ID3D11Texture2D* texture;
+		DumpAtlas(fontData, atlasSize);
 
-		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = fontData->myOutlineAtlas;
-		data.SysMemPitch = atlasSize * 4;
-
-		D3D11_TEXTURE2D_DESC info;
-		info.Width = atlasSize;
-		info.Height = atlasSize;
-		info.MipLevels = 1;
-		info.ArraySize = 1;
-		info.SampleDesc.Count = 1;
-		info.SampleDesc.Quality = 0;
-		info.MiscFlags = 0;
-		info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		info.Usage = D3D11_USAGE_DYNAMIC;
-		info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
-		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
-		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myOutlineAtlasView);
-
-#ifdef SAVE
-		std::stringstream ss2;
-		D3DX11_IMAGE_FILE_FORMAT format;
-#ifdef SAVE_DDS
-		ss2 << "Glyphs/OutlineAtlas_" << ".dds";
-		format = D3DX11_IFF_DDS;
-#endif
-#ifdef SAVE_PNG
-		ss2 << "Glyphs/OutlineAtlas_" << ".png";
-		format = D3DX11_IFF_PNG;
-#endif
-		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss2.str().c_str());
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
-#endif
-		texture->Release();
-		texture = nullptr;
-
-		data.pSysMem = fontData->myAtlas;
-		data.SysMemPitch = atlasSize * 4;
-
-		info.Width = atlasSize;
-		info.Height = atlasSize;
-		info.MipLevels = 1;
-		info.ArraySize = 1;
-		info.SampleDesc.Count = 1;
-		info.SampleDesc.Quality = 0;
-		info.MiscFlags = 0;
-		info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		info.Usage = D3D11_USAGE_DYNAMIC;
-		info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
-		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
-		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
-
-#ifdef SAVE
-		std::stringstream ss3;
-#ifdef SAVE_DDS
-		ss3 << "Glyphs/Atlas_" << ".dds";
-		format = D3DX11_IFF_DDS;
-#endif
-#ifdef SAVE_PNG
-		ss3 << "Glyphs/Atlas_" << ".png";
-		format = D3DX11_IFF_PNG;
-#endif
-		hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss3.str().c_str());
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
-#endif
-
-		texture->Release();
 		fontData->myAtlasHeight = atlasSize;
 		fontData->myAtlasWidth = atlasSize;
-		fontData->myLineSpacing = (face->ascender - face->descender) >> 6;
+		fontData->myLineSpacing = (face->ascender - face->descender) / 64.f;
 		FT_Done_Face(face);
 		CFont* newFont = new CFont(fontData);
 		return newFont;
@@ -234,15 +162,12 @@ namespace Snowblind
 		SCharData glyphData;
 		glyphData.myChar = index;
 
-		glyphData.myHeight = height;
-		glyphData.myWidth = width;
+		glyphData.myHeight = height + 6;
+		glyphData.myWidth = width + 6;
 
-		glyphData.myTopLeftUVBorder = { (float(atlasX) / atlasWidth), (float(atlasY) / atlasHeight) };
-		glyphData.myBottomRightUVBorder = { (float(atlasX + width + 6.f) / atlasWidth), (float(atlasY + height + 6.f) / atlasHeight) };
-
-		glyphData.myTopLeftUV = { float(atlasX) / atlasWidth, float(atlasY) / atlasHeight };
-		glyphData.myBottomRightUV = { float(atlasX + width) / atlasWidth, float(atlasY + height) / atlasHeight };
-
+		glyphData.myTopLeftUV = { (float(atlasX) / atlasWidth), (float(atlasY) / atlasHeight) };
+		glyphData.myBottomRightUV = { (float(atlasX + width + 6.f) / atlasWidth), (float(atlasY + height + 6.f) / atlasHeight) };
+	
 		glyphData.myAdvanceX = slot->metrics.width / 64.f;
 		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f)) + 3.f;
 		glyphData.myBearingY = ((slot->metrics.horiBearingY - slot->metrics.height) / 64.f);
@@ -255,16 +180,7 @@ namespace Snowblind
 			FONT_LOG("TopLeftUV Y: %f", glyphData.myTopLeftUV.y);
 			FONT_LOG("BottomRightUV X: %f", glyphData.myBottomRightUV.x);
 			FONT_LOG("BottomRightUV Y: %f", glyphData.myBottomRightUV.y);
-			DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
-		}
-
-		if (glyphData.myTopLeftUVBorder.x > 1 || glyphData.myTopLeftUVBorder.y > 1 || glyphData.myBottomRightUVBorder.x > 1 || glyphData.myBottomRightUVBorder.y > 1)
-		{
-			FONT_LOG("Tried to set a UV coord to above 1 at glyph : %c , index %d", index, index);
-			FONT_LOG("TopLeftUV X: %f", glyphData.myTopLeftUVBorder.x);
-			FONT_LOG("TopLeftUV Y: %f", glyphData.myTopLeftUVBorder.y);
-			FONT_LOG("BottomRightUV X: %f", glyphData.myBottomRightUVBorder.x);
-			FONT_LOG("BottomRightUV Y: %f", glyphData.myBottomRightUVBorder.y);
+			DumpAtlas(aFontData, atlasWidth);
 			DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 		}
 
@@ -281,13 +197,7 @@ namespace Snowblind
 					continue;
 				}
 				int& saved = aFontData->myAtlas[((atlasY)+y + 3) * int(atlasWidth) + ((atlasX)+x + 3 + offset)];
-				//saved = 0;
-				if (saved == 0)
-				{
-					continue;
-				}
 				saved |= bitmap.buffer[y * bitmap.width + x];
-				//saved = CL::MoveToGreen(saved);
 
 				if (y + (atlasY + 8) > maxY)
 				{
@@ -302,7 +212,7 @@ namespace Snowblind
 			}
 		}
 
-		atlasX = atlasX + width + X_OFFSET;
+		atlasX = atlasX + width + 2;
 		aFontData->myCharData[index] = glyphData;
 
 #ifdef SAVE
@@ -313,41 +223,7 @@ namespace Snowblind
 			return;
 		}
 
-
-		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = gData;
-		data.SysMemPitch = bitmap.pitch * 4;
-
-		D3D11_TEXTURE2D_DESC info;
-		info.Width = width;
-		info.Height = height;
-		info.MipLevels = 1;
-		info.ArraySize = 1;
-		info.SampleDesc.Count = 1;
-		info.SampleDesc.Quality = 0;
-		info.MiscFlags = 0;
-		info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		info.Usage = D3D11_USAGE_DYNAMIC;
-		info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-		ID3D11Texture2D* texture;
-		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
-		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
-
-		std::stringstream ss;
-		D3DX11_IMAGE_FILE_FORMAT format;
-#ifdef SAVE_DDS
-		ss << "Glyphs/Glyph_" << index << ".dds";
-		format = D3DX11_IFF_DDS;
-#endif
-#ifdef SAVE_PNG
-		ss << "Glyphs/Glyph_" << index << ".png";
-		format = D3DX11_IFF_PNG;
-#endif
-		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss.str().c_str());
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
-		texture->Release();
+		DumpGlyph(gData, index, width, height, bitmap.pitch);
 
 		delete[] gData;
 		gData = nullptr;
@@ -380,8 +256,6 @@ namespace Snowblind
 		DL_ASSERT_EXP(err == 0, "Failed to add glyph to bitmap");
 
 		FT_BitmapGlyph bitmapGlyph = reinterpret_cast<FT_BitmapGlyph>(glyph);
-		outlineHeight = bitmapGlyph->bitmap.rows;
-		outlineWidth = bitmapGlyph->bitmap.width;
 		for (int x = 0; x < bitmapGlyph->bitmap.width; x++)
 		{
 			for (int y = 0; y < bitmapGlyph->bitmap.rows; y++)
@@ -394,12 +268,86 @@ namespace Snowblind
 		}
 	}
 
+	void CFontManager::DumpAtlas(SFontData* fontData, int atlasSize)
+	{
+		D3D11_SUBRESOURCE_DATA data;
+		data.pSysMem = fontData->myAtlas;
+		data.SysMemPitch = atlasSize * 4;
+
+		D3D11_TEXTURE2D_DESC info;
+		info.Width = atlasSize;
+		info.Height = atlasSize;
+		info.MipLevels = 1;
+		info.ArraySize = 1;
+		info.SampleDesc.Count = 1;
+		info.SampleDesc.Quality = 0;
+		info.MiscFlags = 0;
+		info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.Usage = D3D11_USAGE_DYNAMIC;
+		info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		ID3D11Texture2D* texture;
+		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
+		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
+		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
+
+		std::stringstream ss3;
+		D3DX11_IMAGE_FILE_FORMAT format;
+#ifdef SAVE_DDS
+		ss3 << "Glyphs/Atlas_" << ".dds";
+		format = D3DX11_IFF_DDS;
+#endif
+#ifdef SAVE_PNG
+		ss3 << "Glyphs/Atlas_" << ".png";
+		format = D3DX11_IFF_PNG;
+#endif
+		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss3.str().c_str());
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
+	}
+
+	void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch)
+	{
+		D3D11_SUBRESOURCE_DATA data;
+		data.pSysMem = source;
+		data.SysMemPitch = pitch * 4;
+
+		D3D11_TEXTURE2D_DESC info;
+		info.Width = width;
+		info.Height = height;
+		info.MipLevels = 1;
+		info.ArraySize = 1;
+		info.SampleDesc.Count = 1;
+		info.SampleDesc.Quality = 0;
+		info.MiscFlags = 0;
+		info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.Usage = D3D11_USAGE_DYNAMIC;
+		info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		ID3D11Texture2D* texture;
+		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
+		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
+
+		std::stringstream ss;
+		D3DX11_IMAGE_FILE_FORMAT format;
+#ifdef SAVE_DDS
+		ss << "Glyphs/Glyph_" << index << ".dds";
+		format = D3DX11_IFF_DDS;
+#endif
+#ifdef SAVE_PNG
+		ss << "Glyphs/Glyph_" << index << ".png";
+		format = D3DX11_IFF_PNG;
+#endif
+		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss.str().c_str());
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
+		texture->Release();
+	}
+
 	SFontData::~SFontData()
 	{
 		SAFE_DELETE(myAtlas);
 		SAFE_DELETE(myOutlineAtlas);
 		SAFE_RELEASE(myAtlasView);
-		SAFE_RELEASE(myOutlineAtlasView);
 	}
-
 };

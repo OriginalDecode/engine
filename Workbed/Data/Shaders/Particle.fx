@@ -9,6 +9,7 @@ PARTICLE_PS_INPUT VS(PARTICLE_VS_INPUT input)
 
 	output.Pos = float4(input.Pos.xyz, 1.f);
 	output.Pos = mul(output.Pos, World);
+	output.Pos = mul(output.Pos, View);
 
 	return output;
 }
@@ -41,7 +42,6 @@ void GS(point PARTICLE_PS_INPUT input[1], inout TriangleStream<PARTICLE_PS_INPUT
 	{
 		output.Pos = (quadPos[i] * input[0].Size * 2) + input[0].Pos;
 	
-		output.Pos = mul(output.Pos, View);
 		output.Pos = mul(output.Pos, Projection);
 		
 		output.WorldViewProj = output.Pos;

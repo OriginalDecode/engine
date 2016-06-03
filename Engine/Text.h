@@ -9,7 +9,7 @@ namespace Snowblind
 	class CText
 	{
 	public:
-		CText(const char* aFilepath, int aSize);
+		CText(const char* aFilepath, int aSize, int aBorderWidth);
 		~CText();
 	
 		void Render(CCamera* aCamera);

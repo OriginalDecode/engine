@@ -40,11 +40,11 @@ namespace Snowblind
 		mySprite->SetHotspot({ -Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 4.f, Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 4.f });
 		mySprite->SetPosition({ CEngine::GetInstance()->GetWindowSize().myWidth, 0 });
 
-		myText = new CText("Data/Font/OpenSans-Bold.ttf", 16);
-		myText->SetPosition(myTopLeftPosition);
+		//myText = new CText("Data/Font/OpenSans-Bold.ttf", 16);
+		//myText->SetPosition(myTopLeftPosition);
 
-		myInputText = new CText("Data/Font/OpenSans-Bold.ttf", 16);
-		myInputText->SetPosition(myBottomLeftPosition);
+		//myInputText = new CText("Data/Font/OpenSans-Bold.ttf", 16);
+		//myInputText->SetPosition(myBottomLeftPosition);
 		myTimeManager = new CU::TimeManager();
 		myDownTime = 0.f;
 	}

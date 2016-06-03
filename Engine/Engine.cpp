@@ -103,9 +103,9 @@ namespace Snowblind
 		return myWindowSize;
 	}
 
-	CFont* CEngine::LoadFont(const char* aFilepath, short aFontWidth)
+	CFont* CEngine::LoadFont(const char* aFilepath, short aFontWidth, int aBorderWidth)
 	{
-		return myFontManager->LoadFont(aFilepath, aFontWidth);
+		return myFontManager->LoadFont(aFilepath, aFontWidth, aBorderWidth);
 	}
 
 	const float CEngine::GetDeltaTime()

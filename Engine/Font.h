@@ -53,36 +53,36 @@ namespace Snowblind
 		void CreateIndexBuffer();
 		void InitiateBlendstate();
 		void UpdateBuffer();
-		SFontData* myData;
-		CEffect* myEffect;
+		SFontData* myData = nullptr;
+		CEffect* myEffect = nullptr;
 
-		ID3D11InputLayout* myVertexLayout;
-		ID3D11BlendState* myBlendState;
-		D3D11_BUFFER_DESC* myVertexBufferDesc;
-		D3D11_BUFFER_DESC* myIndexBufferDesc;
+		ID3D11InputLayout* myVertexLayout = nullptr;
+		ID3D11BlendState* myBlendState = nullptr;
+		D3D11_BUFFER_DESC* myVertexBufferDesc = nullptr;
+		D3D11_BUFFER_DESC* myIndexBufferDesc = nullptr;
 
-		D3D11_SUBRESOURCE_DATA* myInitData;
+		D3D11_SUBRESOURCE_DATA* myInitData = nullptr;
 
-		SVertexBufferWrapper* myVertexBuffer;
-		SIndexBufferWrapper* myIndexBuffer;
-		std::string myText;
+		SVertexBufferWrapper* myVertexBuffer = nullptr;
+		SIndexBufferWrapper* myIndexBuffer = nullptr;
+		std::string myText = "NONE";
 
 		CU::Math::Vector2<float> mySize;
 		CU::GrowingArray<SVertexTypePosColUv> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		CU::GrowingArray<int> myIndices;
 
-		CU::TimeManager* myTimeManager;
+		CU::TimeManager* myTimeManager = nullptr;
 
-		CL::SColor myDefaultColor;
-		CL::SColor myColor;
+		CL::SColor myDefaultColor = SColor(0,0,0,0);
+		CL::SColor myColor = SColor(0,0,0,0);
 
+		bool toggleWireframe = false;
+		float myUpdateTime = 0.f;
+		float myRenderTime = 0.f;
 
-		float myUpdateTime;
-		float myRenderTime;
-
-		int myUpdateTimer;
-		int myRenderTimer;
+		int myUpdateTimer = 0.f;
+		int myRenderTimer = 0.f;
 
 	};
 }

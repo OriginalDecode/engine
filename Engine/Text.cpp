@@ -5,9 +5,9 @@
 #include "Camera.h"
 namespace Snowblind
 {
-	CText::CText(const char* aFilepath, int aSize)
+	CText::CText(const char* aFilepath, int aSize, int aBorderWidth)
 	{
-		myFont = CEngine::GetInstance()->LoadFont(aFilepath, aSize);
+		myFont = CEngine::GetInstance()->LoadFont(aFilepath, aSize, aBorderWidth);
 		myScale = { 1, 1 };
 	}
 

@@ -13,14 +13,14 @@
 #include "Font.h"
 #include <D3D11.h>
 #include <D3DX11async.h>
+
 #define SAVE
-#ifdef SAVE
 //#define SAVE_DDS
 #ifndef SAVE_DDS
 #define SAVE_PNG
 #endif
-#endif
 
+#define X_OFFSET 8
 
 namespace Snowblind
 {
@@ -46,7 +46,7 @@ namespace Snowblind
 		DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
 	}
 
-	CFont* CFontManager::LoadFont(const char* aFontPath, short aFontWidth)
+	CFont* CFontManager::LoadFont(const char* aFontPath, short aFontWidth, int aBorderWidth)
 	{
 		//int atlasSize = aFontWidth * 64.f / 2.f; //This is wrong.
 		int atlasSize = (aFontWidth * aFontWidth); //This is correct
@@ -95,7 +95,7 @@ namespace Snowblind
 #ifdef SAVE
 		CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
 #endif
-		int atlasX = 2;
+		int atlasX = X_OFFSET;
 		int atlasY = 2;
 		int currentMaxY = 0;
 
@@ -107,7 +107,6 @@ namespace Snowblind
 		int currentMax = 126;
 		int currentI = 32;
 
-		const int borderOffset = 3;
 		for (int i = currentI; i < currentMax; i++)
 		{
 			int error = FT_Load_Char(face, i, FT_LOAD_RENDER);
@@ -115,14 +114,17 @@ namespace Snowblind
 			FT_GlyphSlot slot = face->glyph;
 
 
-			if (atlasX + slot->bitmap.width + (borderOffset * 2) > atlasWidth)
+			if (atlasX + slot->bitmap.width + (aBorderWidth * 2) > atlasWidth)
 			{
-				atlasX = 2;
+				atlasX = X_OFFSET;
 				atlasY = currentMaxY;
 			}
+			if (aBorderWidth > 0)
+			{
+				LoadOutline(i, atlasX, atlasY, atlasWidth, fontData, face, aBorderWidth);
+			}
 
-			LoadOutline(i, atlasX, atlasY, atlasWidth, fontData, face, borderOffset);
-			LoadGlyph(i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face, borderOffset);
+			LoadGlyph(i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face, aBorderWidth);
 		}
 
 		DumpAtlas(fontData, atlasSize);
@@ -136,7 +138,7 @@ namespace Snowblind
 	}
 
 	void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
-		, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int borderOffset)
+		, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderOffset)
 	{
 
 
@@ -162,14 +164,14 @@ namespace Snowblind
 		SCharData glyphData;
 		glyphData.myChar = index;
 
-		glyphData.myHeight = height + 6;
-		glyphData.myWidth = width + 6;
+		glyphData.myHeight = height + (aBorderOffset * 2);
+		glyphData.myWidth = width + (aBorderOffset * 2);
 
 		glyphData.myTopLeftUV = { (float(atlasX) / atlasWidth), (float(atlasY) / atlasHeight) };
-		glyphData.myBottomRightUV = { (float(atlasX + width + 6.f) / atlasWidth), (float(atlasY + height + 6.f) / atlasHeight) };
+		glyphData.myBottomRightUV = { (float(atlasX + width + (aBorderOffset * 2)) / atlasWidth), (float(atlasY + height + (aBorderOffset * 2)) / atlasHeight) };
 	
 		glyphData.myAdvanceX = slot->metrics.width / 64.f;
-		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f)) + 3.f;
+		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f)) + (aBorderOffset);
 		glyphData.myBearingY = ((slot->metrics.horiBearingY - slot->metrics.height) / 64.f);
 
 		//Kerning is needed
@@ -212,7 +214,7 @@ namespace Snowblind
 			}
 		}
 
-		atlasX = atlasX + width + 2;
+		atlasX = atlasX + width + X_OFFSET;
 		aFontData->myCharData[index] = glyphData;
 
 #ifdef SAVE
@@ -231,7 +233,7 @@ namespace Snowblind
 	}
 
 	void CFontManager::LoadOutline(const int index, const int atlasX, const int atlasY
-		, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int borderOffset)
+		, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderOffset)
 	{
 		FT_Error err;
 		FT_Stroker stroker;
@@ -248,7 +250,7 @@ namespace Snowblind
 		err = FT_Stroker_New(myLibrary, &stroker);
 		DL_ASSERT_EXP(!err, "Failed to get glyph!");
 
-		FT_Stroker_Set(stroker, borderOffset * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+		FT_Stroker_Set(stroker, aBorderOffset * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
 		err = FT_Glyph_StrokeBorder(&glyph, stroker, 0, 1);
 		DL_ASSERT_EXP(err == 0, "Failed to stroke");
 

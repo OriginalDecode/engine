@@ -54,7 +54,7 @@ namespace Snowblind
 		static void Clear();
 		
 		const SWindowSize& GetWindowSize() const;
-		CFont* LoadFont(const char* aFilepath, short aFontWidth);
+		CFont* LoadFont(const char* aFilepath, short aFontWidth, int aBorderWidth);
 		const float GetDeltaTime();
 		const float GetFPS();
 		const char* GetAPIName();

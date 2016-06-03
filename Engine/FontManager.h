@@ -51,13 +51,13 @@ namespace Snowblind
 		CFontManager();
 		~CFontManager();
 		void Initiate();
-		CFont* LoadFont(const char* aFontPath, short aFontWidth);
+		CFont* LoadFont(const char* aFontPath, short aFontWidth, int aBorderWidth);
 	private:
 		void LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
-			, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int borderOffset = 0);
+			, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderWidth = 0);
 
 		void LoadOutline(const int index, const int atlasX, const int atlasY
-			, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int borderOffset);
+			, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderWidth);
 
 
 		void DumpAtlas(SFontData* fontData, int atlasSize);

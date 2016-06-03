@@ -6,13 +6,13 @@ namespace CL
 	std::string substr(const std::string& aStringToReadFrom, const std::string& toFind, bool readCharactersBeforeToFind)
 	{
 		std::string toCheck;
-		if (aStringToReadFrom.find(toFind) != aStringToReadFrom.npos)
+		if (aStringToReadFrom.rfind(toFind) != aStringToReadFrom.npos)
 		{
 			if (readCharactersBeforeToFind == true)
 			{
-				return aStringToReadFrom.substr(0, aStringToReadFrom.find(toFind));
+				return aStringToReadFrom.substr(1, aStringToReadFrom.rfind(toFind));
 			}
-			return aStringToReadFrom.substr(aStringToReadFrom.find(toFind));
+			return aStringToReadFrom.substr(aStringToReadFrom.rfind(toFind));
 		}
 		return aStringToReadFrom;
 	}

@@ -20,7 +20,7 @@
 #define SAVE_PNG
 #endif
 
-#define X_OFFSET 8
+#define X_OFFSET 10
 
 namespace Snowblind
 {
@@ -48,7 +48,7 @@ namespace Snowblind
 
 	CFont* CFontManager::LoadFont(const char* aFontPath, short aFontWidth, int aBorderWidth)
 	{
-		//int atlasSize = aFontWidth * 64.f / 2.f; //This is wrong.
+		//int atlasSize = aFontWidth * 64.f / 2.f; //This is wrong.z
 		int atlasSize = (aFontWidth * aFontWidth); //This is correct
 		atlasSize *= 2;
 		FONT_LOG("Font Size W/H: %d", atlasSize);
@@ -154,7 +154,6 @@ namespace Snowblind
 		DL_ASSERT_EXP(!error, "Failed to load glyph!");
 		FT_GlyphSlot slot = aFace->glyph;
 		FT_Bitmap bitmap = slot->bitmap;
-
 		int height = bitmap.rows;
 		int width = bitmap.width;
 
@@ -183,8 +182,10 @@ namespace Snowblind
 			DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 		}
 
-		float halfWidth = (glyphData.myWidth / 2) - (width / 2);
-		int rounded = std::ceil(halfWidth);
+		float halfWidth = std::ceil(glyphData.myWidth / 2);
+		float wBy2 = std::ceil(width / 2);
+		float half = halfWidth - wBy2;
+		int rounded = std::ceil(half);
 		
 #ifdef SAVE
 		int* gData = new int[bitmap.width * bitmap.rows];
@@ -198,7 +199,7 @@ namespace Snowblind
 				{
 					continue;
 				}
-				int& saved = aFontData->myAtlas[((atlasY) + y + aBorderOffset) * int(atlasWidth) + ((atlasX) + x + aBorderOffset)];
+				int& saved = aFontData->myAtlas[((atlasY) + aBorderOffset + y) * int(atlasWidth) + ((atlasX) + aBorderOffset + x)];
 				saved |= bitmap.buffer[y * bitmap.width + x];
 
 				if (y + (atlasY + 8) > maxY)
@@ -294,14 +295,19 @@ namespace Snowblind
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
 
+
+		std::string name = CL::substr(myFontPath, "/", false);
+		name = CL::substr(name, ".", true);
+
+
 		std::stringstream ss3;
 		D3DX11_IMAGE_FILE_FORMAT format;
 #ifdef SAVE_DDS
-		ss3 << "Glyphs/Atlas_" << ".dds";
+		ss3 << "Glyphs/Atlas_" << name << ".dds";
 		format = D3DX11_IFF_DDS;
 #endif
 #ifdef SAVE_PNG
-		ss3 << "Glyphs/Atlas_" << ".png";
+		ss3 << "Glyphs/Atlas_" << name << ".png";
 		format = D3DX11_IFF_PNG;
 #endif
 		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss3.str().c_str());

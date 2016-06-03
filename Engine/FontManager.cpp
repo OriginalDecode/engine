@@ -15,7 +15,7 @@
 #include <D3DX11async.h>
 
 #define SAVE
-//#define SAVE_DDS
+#define SAVE_DDS
 #ifndef SAVE_DDS
 #define SAVE_PNG
 #endif
@@ -54,7 +54,6 @@ namespace Snowblind
 		FONT_LOG("Font Size W/H: %d", atlasSize);
 		float atlasWidth = atlasSize; //have to be replaced.
 		float atlasHeight = atlasSize; //have to be replaced
-		myFontHeightWidth = aFontWidth;
 
 		std::stringstream key;
 		key << aFontPath << "-" << aFontWidth;
@@ -77,8 +76,6 @@ namespace Snowblind
 
 		fontData->myOutlineAtlas = new int[atlasSize * atlasSize];
 		ZeroMemory(fontData->myOutlineAtlas, (atlasSize * atlasSize) * sizeof(int));
-
-
 
 		fontData->myFontHeightWidth = aFontWidth;
 		myFontPath = aFontPath;
@@ -113,7 +110,6 @@ namespace Snowblind
 			DL_ASSERT_EXP(!error, "Failed to load glyph!");
 			FT_GlyphSlot slot = face->glyph;
 
-
 			if (atlasX + slot->bitmap.width + (aBorderWidth * 2) > atlasWidth)
 			{
 				atlasX = X_OFFSET;
@@ -143,6 +139,7 @@ namespace Snowblind
 
 
 		char toCheck = index;
+
 		int offset = 0;
 		if (toCheck == 'W' || toCheck == 'w' ||
 			toCheck == 'V' || toCheck == 'v' ||
@@ -169,7 +166,7 @@ namespace Snowblind
 
 		glyphData.myTopLeftUV = { (float(atlasX) / atlasWidth), (float(atlasY) / atlasHeight) };
 		glyphData.myBottomRightUV = { (float(atlasX + width + (aBorderOffset * 2)) / atlasWidth), (float(atlasY + height + (aBorderOffset * 2)) / atlasHeight) };
-	
+
 		glyphData.myAdvanceX = slot->metrics.width / 64.f;
 		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f)) + (aBorderOffset);
 		glyphData.myBearingY = ((slot->metrics.horiBearingY - slot->metrics.height) / 64.f);
@@ -186,6 +183,9 @@ namespace Snowblind
 			DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 		}
 
+		float halfWidth = (glyphData.myWidth / 2) - (width / 2);
+		int rounded = std::ceil(halfWidth);
+		
 #ifdef SAVE
 		int* gData = new int[bitmap.width * bitmap.rows];
 		ZeroMemory(gData, bitmap.width * bitmap.rows * sizeof(int));
@@ -198,7 +198,7 @@ namespace Snowblind
 				{
 					continue;
 				}
-				int& saved = aFontData->myAtlas[((atlasY)+y + 3) * int(atlasWidth) + ((atlasX)+x + 3 + offset)];
+				int& saved = aFontData->myAtlas[((atlasY) + y + aBorderOffset) * int(atlasWidth) + ((atlasX) + x + aBorderOffset)];
 				saved |= bitmap.buffer[y * bitmap.width + x];
 
 				if (y + (atlasY + 8) > maxY)
@@ -352,4 +352,5 @@ namespace Snowblind
 		SAFE_DELETE(myOutlineAtlas);
 		SAFE_RELEASE(myAtlasView);
 	}
+
 };

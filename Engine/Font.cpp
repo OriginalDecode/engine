@@ -74,11 +74,6 @@ namespace Snowblind
 
 	void CFont::Render()
 	{
-		CU::Input::InputWrapper::GetInstance()
-		if (toggleWireframe == true)
-		{
-			CEngine::GetDirectX()->SetRasterizer(eRasterizer::WIREFRAME);
-		}
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds();
 
@@ -112,10 +107,6 @@ namespace Snowblind
 
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds() - myRenderTime;
-		if (toggleWireframe == true)
-		{
-			CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
-		}
 	}
 
 	Snowblind::CEffect* CFont::GetEffect()
@@ -301,7 +292,7 @@ namespace Snowblind
 			float right = left + charData.myWidth;
 			float top = drawY + charData.myBearingY;
 			float bottom = top + charData.myHeight;
-			
+
 			v.myPosition = { left, bottom, z };
 			v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 			v.myUV = charData.myTopLeftUV;

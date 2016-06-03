@@ -65,7 +65,6 @@ namespace Snowblind
 
 		FT_LibraryRec_* myLibrary;
 		const char* myFontPath;
-		short myFontHeightWidth;
 		std::unordered_map<std::string, SFontData*> myFontData;
 	};
 };

@@ -74,8 +74,8 @@ namespace Snowblind
 
 		CU::TimeManager* myTimeManager = nullptr;
 
-		CL::SColor myDefaultColor = SColor(0,0,0,0);
-		CL::SColor myColor = SColor(0,0,0,0);
+		CL::SColor myDefaultColor = CL::SColor(0,0,0,0);
+		CL::SColor myColor = CL::SColor(0,0,0,0);
 
 		bool toggleWireframe = false;
 		float myUpdateTime = 0.f;

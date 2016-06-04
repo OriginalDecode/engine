@@ -98,6 +98,7 @@ private:
 	std::thread* myLogicThread;
 
 	volatile bool myQuitFlag;
+	bool myWindowIsActive = true;
 	float myAverageFPS;
 	float myAverageFPSToPrint;
 

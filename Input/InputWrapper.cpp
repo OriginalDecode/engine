@@ -14,7 +14,7 @@ namespace CommonUtilities
 			RECT desktop;
 			const HWND hDesktop = GetDesktopWindow();
 			GetWindowRect(hDesktop, &desktop);
-			Initiate(aHWND, hInstance); 
+			Initiate(aHWND, hInstance);
 			myWindowIsActive = true;
 		}
 
@@ -42,8 +42,10 @@ namespace CommonUtilities
 
 		InputWrapper* InputWrapper::GetInstance()
 		{
-			assert(myInstance != nullptr && "Input wrapper were null!");
-			return myInstance;
+			if (myInstance)
+				return myInstance;
+			
+			return nullptr;
 		}
 
 		void InputWrapper::Initiate(HWND aHWND, HINSTANCE hInstance)
@@ -69,27 +71,26 @@ namespace CommonUtilities
 
 		void InputWrapper::Update()
 		{
+			memcpy_s(&myPrevKeyState, sizeof(myPrevKeyState), myKeyState, sizeof(myKeyState));
+			memcpy_s(&myPrevMouseState, sizeof(myPrevMouseState), &myMouseState, sizeof(myMouseState));
+			HRESULT hr = myKeyboard->GetDeviceState(sizeof(myKeyState), (VOID**)&myKeyState);
+			if (FAILED(hr))
+			{
+				ZeroMemory(myKeyState, sizeof(myKeyState));
+
+				myKeyboard->Acquire();
+			}
+
+			hr = myMouse->GetDeviceState(sizeof(DIMOUSESTATE), (VOID**)&myMouseState);
+			if (FAILED(hr))
+			{
+				ZeroMemory(&myMouseState, sizeof(myMouseState));
+
+				myMouse->Acquire();
+			}
 			if (myWindowIsActive == true)
 			{
 
-				memcpy_s(&myPrevKeyState, sizeof(myPrevKeyState), myKeyState, sizeof(myKeyState));
-				memcpy_s(&myPrevMouseState, sizeof(myPrevMouseState), &myMouseState, sizeof(myMouseState));
-
-				HRESULT hr = myKeyboard->GetDeviceState(sizeof(myKeyState), (VOID**)&myKeyState);
-				if (FAILED(hr))
-				{
-					ZeroMemory(myKeyState, sizeof(myKeyState));
-
-					myKeyboard->Acquire();
-				}
-
-				hr = myMouse->GetDeviceState(sizeof(DIMOUSESTATE), (VOID**)&myMouseState);
-				if (FAILED(hr))
-				{
-					ZeroMemory(&myMouseState, sizeof(myMouseState));
-
-					myMouse->Acquire();
-				}
 
 				GetPhysicalCursorPos(&myCursorPos);
 				ScreenToClient(myHWND, &myCursorPos);
@@ -191,5 +192,19 @@ namespace CommonUtilities
 				myInstance->myWindowIsActive = aIsWindowActive;
 		}
 
+		bool InputWrapper::GetActivateWindow()
+		{
+			return myWindowIsActive;
+		}
+
+		void InputWrapper::Reset()
+		{
+			if (myInstance)
+			{
+				myMouseState.lX = 0;
+				myMouseState.lY = 0;
+				myMouseState.lZ = 0;
+			}
+		}
 	}
 }

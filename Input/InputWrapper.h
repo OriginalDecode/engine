@@ -138,6 +138,8 @@ namespace CommonUtilities
 			void ReleaseCursor();
 
 			static void SetActiveWindow(bool aIsWindowActive);
+			bool GetActivateWindow();
+			void Reset();
 
 		private:
 			static InputWrapper* myInstance;

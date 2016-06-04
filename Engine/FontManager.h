@@ -37,7 +37,6 @@ namespace Snowblind
 		short myWordSpacing;
 		short myFontHeightWidth;
 		int* myAtlas;
-		int* myOutlineAtlas;
 
 		ID3D11ShaderResourceView* myAtlasView;
 	};

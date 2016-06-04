@@ -18,7 +18,7 @@ namespace Snowblind
 		: mySynchronizer(aSynchronizer)
 		, myCamera(aCamera)
 	{
-		myText = new CText("Data/Font/OpenSans-Light.ttf", 11, 3); //bug cant go below 10
+		myText = new CText("Arial.ttf", 8, 2); //bug cant go below 10
 		myPointLight = new CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
@@ -95,6 +95,7 @@ namespace Snowblind
 				break;
 			}
 		}
+		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
 		CEngine::GetDirectX()->EnableZBuffer();
 
 	}

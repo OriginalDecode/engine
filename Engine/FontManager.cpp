@@ -13,14 +13,17 @@
 #include "Font.h"
 #include <D3D11.h>
 #include <D3DX11async.h>
-
+#include "Engine.h"
+#include <vector>
 #define SAVE
 #define SAVE_DDS
 #ifndef SAVE_DDS
 #define SAVE_PNG
 #endif
 
-#define X_OFFSET 10
+#define X_OFFSET 8
+#define X_START 2
+#define Y_OFFSET 4
 
 namespace Snowblind
 {
@@ -48,7 +51,18 @@ namespace Snowblind
 
 	CFont* CFontManager::LoadFont(const char* aFontPath, short aFontWidth, int aBorderWidth)
 	{
-		//int atlasSize = aFontWidth * 64.f / 2.f; //This is wrong.z
+		std::string fontFolder = aFontPath;
+		if (!CL::substr(aFontPath, "/"))
+		{
+			fontFolder = "";
+			TCHAR dir[32];
+			GetSystemDirectory(dir, 32);
+			fontFolder += dir;
+			fontFolder = CL::substr(fontFolder, "\\", true, 0);
+			fontFolder += "\\Fonts\\";
+			fontFolder += aFontPath;
+		}
+
 		int atlasSize = (aFontWidth * aFontWidth); //This is correct
 		atlasSize *= 2;
 		FONT_LOG("Font Size W/H: %d", atlasSize);
@@ -74,25 +88,24 @@ namespace Snowblind
 		fontData->myAtlas = new int[atlasSize * atlasSize];
 		ZeroMemory(fontData->myAtlas, (atlasSize * atlasSize) * sizeof(int));
 
-		fontData->myOutlineAtlas = new int[atlasSize * atlasSize];
-		ZeroMemory(fontData->myOutlineAtlas, (atlasSize * atlasSize) * sizeof(int));
-
 		fontData->myFontHeightWidth = aFontWidth;
-		myFontPath = aFontPath;
+		myFontPath = fontFolder.c_str();
 
 		FT_Face face;
 		FT_Error error = FT_New_Face(myLibrary, myFontPath, 0, &face);
-
+		FT_Size size = face->size;
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
-		//error = FT_Set_Pixel_Sizes(face, (fontData->myFontHeightWidth), 0); //This is better to use.
-		error = FT_Set_Char_Size(face, (fontData->myFontHeightWidth * 64.f), 0, 96, 96); // Not sure when this is supposed to be used.
+
+		FT_F26Dot6 ftSize = (FT_F26Dot6)(fontData->myFontHeightWidth * (1 << 6));
+		error = FT_Set_Char_Size(face, ftSize, 0, 96, 0); // 96 = 100% scaling in Windows. 
+		//error = FT_Set_Pixel_Sizes(face, 0, 16);
 		DL_ASSERT_EXP(!error, "[FontManager] : Failed to set pixel size!");
 
 #ifdef SAVE
 		CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
 #endif
-		int atlasX = X_OFFSET;
+		int atlasX = X_START;
 		int atlasY = 2;
 		int currentMaxY = 0;
 
@@ -101,8 +114,11 @@ namespace Snowblind
 		DL_ASSERT_EXP(!error, "Failed to load glyph! x");
 		FT_GlyphSlot space = face->glyph;
 		fontData->myWordSpacing = space->metrics.width / 256.f;
+
+
 		int currentMax = 126;
 		int currentI = 32;
+
 
 		for (int i = currentI; i < currentMax; i++)
 		{
@@ -112,14 +128,13 @@ namespace Snowblind
 
 			if (atlasX + slot->bitmap.width + (aBorderWidth * 2) > atlasWidth)
 			{
-				atlasX = X_OFFSET;
+				atlasX = X_START;
 				atlasY = currentMaxY;
 			}
 			if (aBorderWidth > 0)
 			{
 				LoadOutline(i, atlasX, atlasY, atlasWidth, fontData, face, aBorderWidth);
 			}
-
 			LoadGlyph(i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face, aBorderWidth);
 		}
 
@@ -136,30 +151,16 @@ namespace Snowblind
 	void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 		, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderOffset)
 	{
-
-
-		char toCheck = index;
-
-		int offset = 0;
-		if (toCheck == 'W' || toCheck == 'w' ||
-			toCheck == 'V' || toCheck == 'v' ||
-			toCheck == 'X' || toCheck == 'x' ||
-			toCheck == '?' || toCheck == 'y' ||
-			toCheck == '1' || toCheck == '\\')
-		{
-			offset = 1;
-		}
-
-		int error = FT_Load_Char(aFace, index, FT_LOAD_RENDER);
+		FT_Error error = FT_Load_Char(aFace, index, FT_LOAD_RENDER);
 		DL_ASSERT_EXP(!error, "Failed to load glyph!");
 		FT_GlyphSlot slot = aFace->glyph;
 		FT_Bitmap bitmap = slot->bitmap;
+
 		int height = bitmap.rows;
 		int width = bitmap.width;
 
 		SCharData glyphData;
 		glyphData.myChar = index;
-
 		glyphData.myHeight = height + (aBorderOffset * 2);
 		glyphData.myWidth = width + (aBorderOffset * 2);
 
@@ -182,11 +183,6 @@ namespace Snowblind
 			DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 		}
 
-		float halfWidth = std::ceil(glyphData.myWidth / 2);
-		float wBy2 = std::ceil(width / 2);
-		float half = halfWidth - wBy2;
-		int rounded = std::ceil(half);
-		
 #ifdef SAVE
 		int* gData = new int[bitmap.width * bitmap.rows];
 		ZeroMemory(gData, bitmap.width * bitmap.rows * sizeof(int));
@@ -199,12 +195,13 @@ namespace Snowblind
 				{
 					continue;
 				}
-				int& saved = aFontData->myAtlas[((atlasY) + aBorderOffset + y) * int(atlasWidth) + ((atlasX) + aBorderOffset + x)];
+				int& saved = aFontData->myAtlas[((atlasY)+aBorderOffset + y) *
+					int(atlasWidth) + ((atlasX)+aBorderOffset + x)];
 				saved |= bitmap.buffer[y * bitmap.width + x];
 
-				if (y + (atlasY + 8) > maxY)
+				if (y + (atlasY + Y_OFFSET) > maxY)
 				{
-					maxY = y + (atlasY + 8);
+					maxY = y + (atlasY + Y_OFFSET);
 				}
 #ifdef SAVE
 				int& toSave = gData[y * bitmap.width + x];
@@ -269,6 +266,8 @@ namespace Snowblind
 				data = CL::Color32Reverse(data);
 			}
 		}
+
+		FT_Stroker_Done(stroker);
 	}
 
 	void CFontManager::DumpAtlas(SFontData* fontData, int atlasSize)
@@ -295,10 +294,15 @@ namespace Snowblind
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
 
+		std::string name = "";
+		name = CL::substr(myFontPath, "\\", false, 1);
+		name = CL::substr(name, ".", true, 1);
 
-		std::string name = CL::substr(myFontPath, "/", false);
-		name = CL::substr(name, ".", true);
-
+		if (CL::substr(myFontPath, "/"))
+		{
+			name = CL::substr(myFontPath, "/", false, 1);
+			name = CL::substr(name, ".", true, 1);
+		}
 
 		std::stringstream ss3;
 		D3DX11_IMAGE_FILE_FORMAT format;
@@ -355,7 +359,6 @@ namespace Snowblind
 	SFontData::~SFontData()
 	{
 		SAFE_DELETE(myAtlas);
-		SAFE_DELETE(myOutlineAtlas);
 		SAFE_RELEASE(myAtlasView);
 	}
 

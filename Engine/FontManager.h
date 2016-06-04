@@ -9,6 +9,7 @@ struct ID3D11Texture2D;
 struct FT_LibraryRec_;
 struct FT_FaceRec_;
 struct FT_GlyphRec_;
+struct FT_GlyphSlotRec_;
 
 
 namespace Snowblind
@@ -41,6 +42,7 @@ namespace Snowblind
 		ID3D11ShaderResourceView* myAtlasView;
 	};
 
+	
 	class CTexture;
 	class CFont;
 
@@ -58,13 +60,26 @@ namespace Snowblind
 		void LoadOutline(const int index, const int atlasX, const int atlasY
 			, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderWidth);
 
+		int currentWidth;
+		int currentHeight;
 
 		void DumpAtlas(SFontData* fontData, int atlasSize);
-		void DumpGlyph(int* source, int index, int width, int height, int pitch);
+		void DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline = false);
 
 		FT_LibraryRec_* myLibrary;
 		const char* myFontPath;
 		std::unordered_map<std::string, SFontData*> myFontData;
+
+		void CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, int aBorderWidth);
+		void CalculateGlyphOffsets(const int index, FT_GlyphSlotRec_* glyph);
+
+		struct SOutlineOffset
+		{
+			int xDelta = 0;
+			int yDelta = 0;
+
+		} myOffset;
+	
 	};
 };
 

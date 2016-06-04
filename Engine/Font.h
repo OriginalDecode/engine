@@ -51,13 +51,11 @@ namespace Snowblind
 		void CreateInputLayout();
 		void CreateVertexBuffer();
 		void CreateIndexBuffer();
-		void InitiateBlendstate();
 		void UpdateBuffer();
 		SFontData* myData = nullptr;
 		CEffect* myEffect = nullptr;
 
 		ID3D11InputLayout* myVertexLayout = nullptr;
-		ID3D11BlendState* myBlendState = nullptr;
 		D3D11_BUFFER_DESC* myVertexBufferDesc = nullptr;
 		D3D11_BUFFER_DESC* myIndexBufferDesc = nullptr;
 
@@ -73,7 +71,7 @@ namespace Snowblind
 		CU::GrowingArray<int> myIndices;
 
 		CU::TimeManager* myTimeManager = nullptr;
-
+		
 		CL::SColor myDefaultColor = CL::SColor(0,0,0,0);
 		CL::SColor myColor = CL::SColor(0,0,0,0);
 

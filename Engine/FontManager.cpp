@@ -23,7 +23,7 @@
 
 #define X_OFFSET 8
 #define X_START 2
-#define Y_OFFSET 4
+#define Y_OFFSET 8
 
 namespace Snowblind
 {
@@ -65,6 +65,8 @@ namespace Snowblind
 
 		int atlasSize = (aFontWidth * aFontWidth); //This is correct
 		atlasSize *= 2;
+		atlasSize += 2;
+		atlasSize = int(CL::nearest_Pow(atlasSize));
 		FONT_LOG("Font Size W/H: %d", atlasSize);
 		float atlasWidth = atlasSize; //have to be replaced.
 		float atlasHeight = atlasSize; //have to be replaced
@@ -99,7 +101,6 @@ namespace Snowblind
 
 		FT_F26Dot6 ftSize = (FT_F26Dot6)(fontData->myFontHeightWidth * (1 << 6));
 		error = FT_Set_Char_Size(face, ftSize, 0, 96, 0); // 96 = 100% scaling in Windows. 
-		//error = FT_Set_Pixel_Sizes(face, 0, 16);
 		DL_ASSERT_EXP(!error, "[FontManager] : Failed to set pixel size!");
 
 #ifdef SAVE
@@ -115,7 +116,6 @@ namespace Snowblind
 		FT_GlyphSlot space = face->glyph;
 		fontData->myWordSpacing = space->metrics.width / 256.f;
 
-
 		int currentMax = 126;
 		int currentI = 32;
 
@@ -125,6 +125,13 @@ namespace Snowblind
 			int error = FT_Load_Char(face, i, FT_LOAD_RENDER);
 			DL_ASSERT_EXP(!error, "Failed to load glyph!");
 			FT_GlyphSlot slot = face->glyph;
+
+			char c = i;
+			if (c == 'g')
+				int apa = 5;
+			if (c == 'a')
+				int apa = 5;
+
 
 			if (atlasX + slot->bitmap.width + (aBorderWidth * 2) > atlasWidth)
 			{
@@ -165,10 +172,10 @@ namespace Snowblind
 		glyphData.myWidth = width + (aBorderOffset * 2);
 
 		glyphData.myTopLeftUV = { (float(atlasX) / atlasWidth), (float(atlasY) / atlasHeight) };
-		glyphData.myBottomRightUV = { (float(atlasX + width + (aBorderOffset * 2)) / atlasWidth), (float(atlasY + height + (aBorderOffset * 2)) / atlasHeight) };
+		glyphData.myBottomRightUV = { (float(atlasX + glyphData.myWidth) / atlasWidth), (float(atlasY + glyphData.myHeight) / atlasHeight) };
 
 		glyphData.myAdvanceX = slot->metrics.width / 64.f;
-		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f)) + (aBorderOffset);
+		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f)) + (aBorderOffset * 3);
 		glyphData.myBearingY = ((slot->metrics.horiBearingY - slot->metrics.height) / 64.f);
 
 		//Kerning is needed
@@ -187,6 +194,7 @@ namespace Snowblind
 		int* gData = new int[bitmap.width * bitmap.rows];
 		ZeroMemory(gData, bitmap.width * bitmap.rows * sizeof(int));
 #endif
+		CalculateGlyphOffsets(index, slot);
 		for (int x = 0; x < width; x++)
 		{
 			for (int y = 0; y < height; y++)
@@ -195,8 +203,8 @@ namespace Snowblind
 				{
 					continue;
 				}
-				int& saved = aFontData->myAtlas[((atlasY)+aBorderOffset + y) *
-					int(atlasWidth) + ((atlasX)+aBorderOffset + x)];
+				int& saved = aFontData->myAtlas[((atlasY)+aBorderOffset + myOffset.yDelta + y) *
+					int(atlasWidth) + ((atlasX + aBorderOffset + myOffset.xDelta) + x)];
 				saved |= bitmap.buffer[y * bitmap.width + x];
 
 				if (y + (atlasY + Y_OFFSET) > maxY)
@@ -239,7 +247,6 @@ namespace Snowblind
 
 		err = FT_Load_Char(aFace, index, FT_LOAD_NO_BITMAP);
 		DL_ASSERT_EXP(!err, "Failed to load glyph!");
-
 		err = FT_Get_Glyph(aFace->glyph, &glyph);
 		DL_ASSERT_EXP(!err, "Failed to get glyph!");
 
@@ -255,18 +262,51 @@ namespace Snowblind
 		err = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, nullptr, true);
 		DL_ASSERT_EXP(err == 0, "Failed to add glyph to bitmap");
 
+		FT_Size_Metrics metrics = aFace->size->metrics;
+
+		//Bitmap width can be wrong on outline glyphs and creates an issue where they're not aligned with the regular glyphs.
 		FT_BitmapGlyph bitmapGlyph = reinterpret_cast<FT_BitmapGlyph>(glyph);
-		for (int x = 0; x < bitmapGlyph->bitmap.width; x++)
+
+		unsigned int width = bitmapGlyph->bitmap.width;
+		unsigned int height = bitmapGlyph->bitmap.rows;
+		unsigned int pitch = bitmapGlyph->bitmap.pitch;
+
+#ifdef SAVE
+		int* gData = new int[width * height];
+		ZeroMemory(gData, width * height * sizeof(int));
+#endif
+		CalculateOutlineOffsets(index, aFace, aBorderOffset);
+		for (int x = 0; x < width; x++)
 		{
-			for (int y = 0; y < bitmapGlyph->bitmap.rows; y++)
+			for (int y = 0; y < height; y++)
 			{
-				int& data = aFontData->myAtlas[(atlasY + y) * int(atlasWidth) + (atlasX + x)];
+
+				int& data = aFontData->myAtlas[((atlasY + myOffset.yDelta) + y) * int(atlasWidth) + ((atlasX + myOffset.xDelta) + x)];
 				data = 0;
-				data |= bitmapGlyph->bitmap.buffer[y * bitmapGlyph->bitmap.width + x];
+				data |= bitmapGlyph->bitmap.buffer[y * width + x];
 				data = CL::Color32Reverse(data);
+
+#ifdef SAVE
+				int& toSave = gData[y * width + x];
+				toSave = 0;
+				toSave |= bitmapGlyph->bitmap.buffer[y * width + x];
+				toSave = CL::Color32Reverse(toSave);
+#endif
+
 			}
 		}
 
+		if (height <= 0 || pitch <= 0)
+		{
+			delete[] gData;
+			gData = nullptr;
+			return;
+		}
+
+		DumpGlyph(gData, index, width, height, pitch, true);
+
+		delete[] gData;
+		gData = nullptr;
 		FT_Stroker_Done(stroker);
 	}
 
@@ -318,7 +358,7 @@ namespace Snowblind
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 	}
 
-	void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch)
+	void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline)
 	{
 		D3D11_SUBRESOURCE_DATA data;
 		data.pSysMem = source;
@@ -344,16 +384,202 @@ namespace Snowblind
 		std::stringstream ss;
 		D3DX11_IMAGE_FILE_FORMAT format;
 #ifdef SAVE_DDS
-		ss << "Glyphs/Glyph_" << index << ".dds";
+		if (isOutline)
+			ss << "Glyphs/OutlineGlyph_" << index << ".dds";
+		else
+			ss << "Glyphs/Glyph_" << index << ".dds";
 		format = D3DX11_IFF_DDS;
 #endif
 #ifdef SAVE_PNG
-		ss << "Glyphs/Glyph_" << index << ".png";
+		if (isOutline)
+			ss << "Glyphs/OutlineGlyph_" << index << ".png";
+		else
+			ss << "Glyphs/Glyph_" << index << ".png";
 		format = D3DX11_IFF_PNG;
 #endif
 		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss.str().c_str());
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 		texture->Release();
+	}
+
+	void CFontManager::CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, int aBorderOffset)
+	{
+
+		myOffset.xDelta = 0;
+		myOffset.yDelta = 0;
+		FT_Error err;
+		FT_Stroker stroker;
+		FT_Glyph glyph;
+
+		err = FT_Load_Char(aFace, index, FT_LOAD_NO_BITMAP);
+		DL_ASSERT_EXP(!err, "Failed to load glyph!");
+		err = FT_Get_Glyph(aFace->glyph, &glyph);
+		DL_ASSERT_EXP(!err, "Failed to get glyph!");
+
+		glyph->format = FT_GLYPH_FORMAT_OUTLINE;
+
+		err = FT_Stroker_New(myLibrary, &stroker);
+		DL_ASSERT_EXP(!err, "Failed to get glyph!");
+
+		FT_Stroker_Set(stroker, aBorderOffset * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+		err = FT_Glyph_StrokeBorder(&glyph, stroker, 0, 1);
+		DL_ASSERT_EXP(err == 0, "Failed to stroke");
+
+		err = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, nullptr, true);
+		DL_ASSERT_EXP(err == 0, "Failed to add glyph to bitmap");
+
+		FT_BitmapGlyph bitmapGlyph = reinterpret_cast<FT_BitmapGlyph>(glyph);
+
+		unsigned int width = bitmapGlyph->bitmap.width;
+		unsigned int height = bitmapGlyph->bitmap.rows;
+		unsigned int pitch = bitmapGlyph->bitmap.pitch;
+
+		int xDelta = 0;
+		int yDelta = 0;
+
+		int xNCount = 0;
+		int xPCount = 0;
+		int yNCount = 0;
+		int yPCount = 0;
+
+		for (int x = 0; x < width; x++)
+		{
+			for (int y = 0; y < height; y++)
+			{
+				unsigned char& data = bitmapGlyph->bitmap.buffer[y * width + x];
+
+				if (data == 0)
+				{
+					if (x < 1)
+					{
+						xNCount++;
+					}
+
+					if (x > width - 1)
+					{
+						xPCount++;
+					}
+
+					if (y < 1)
+					{
+						yNCount++;
+					}
+
+					if (y > height - 1)
+					{
+						yPCount++;
+					}
+
+				}
+
+				if (xNCount == height)
+				{
+					xNCount = 0;
+					xDelta--;
+				}
+
+				if (xPCount == height)
+				{
+					xPCount = 0;
+					xDelta++;
+				}
+
+				if (yNCount == width)
+				{
+					yNCount = 0;
+					yDelta--;
+				}
+
+				if (yPCount == width)
+				{
+					yPCount = 0;
+					yDelta++;
+				}
+
+
+
+			}
+		}
+
+
+		myOffset.xDelta = xDelta;
+		myOffset.yDelta = yDelta;
+
+	}
+
+	void CFontManager::CalculateGlyphOffsets(const int index, FT_GlyphSlotRec_* glyph)
+	{
+		int xDelta = 0;
+		int yDelta = 0;
+
+		int xNCount = 0;
+		int xPCount = 0;
+		int yNCount = 0;
+		int yPCount = 0;
+
+		unsigned int width = glyph->bitmap.width;
+		unsigned int height = glyph->bitmap.rows;
+		unsigned int pitch = glyph->bitmap.pitch;
+
+		for (int x = 0; x < width; x++)
+		{
+			for (int y = 0; y < height; y++)
+			{
+				unsigned char& data = glyph->bitmap.buffer[y * width + x];
+
+				if (data == 0)
+				{
+					if (x < 1)
+					{
+						xNCount++;
+					}
+
+					if (x > width - 1)
+					{
+						xPCount++;
+					}
+
+					if (y < 1)
+					{
+						yNCount++;
+					}
+
+					if (y > height - 1)
+					{
+						yPCount++;
+					}
+
+				}
+
+				if (xNCount == height)
+				{
+					xNCount = 0;
+					xDelta--;
+				}
+
+				if (xPCount == height)
+				{
+					xPCount = 0;
+					xDelta++;
+				}
+
+				if (yNCount == width)
+				{
+					yNCount = 0;
+					yDelta--;
+				}
+
+				if (yPCount == width)
+				{
+					yPCount = 0;
+					yDelta++;
+				}
+			}
+		}
+
+
+		myOffset.xDelta = xDelta;
+		myOffset.yDelta = yDelta;
 	}
 
 	SFontData::~SFontData()

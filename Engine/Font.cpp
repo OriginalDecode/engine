@@ -24,7 +24,6 @@ namespace Snowblind
 		CreateInputLayout();
 		CreateVertexBuffer();
 		CreateIndexBuffer();
-		InitiateBlendstate();
 
 		myColor = myDefaultColor;
 
@@ -42,7 +41,6 @@ namespace Snowblind
 	{
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myVertexBuffer);
-		SAFE_RELEASE(myBlendState);
 
 		SAFE_DELETE(myVertexBufferDesc);
 		SAFE_DELETE(myIndexBufferDesc);
@@ -74,6 +72,7 @@ namespace Snowblind
 
 	void CFont::Render()
 	{
+		CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds();
 
@@ -87,12 +86,6 @@ namespace Snowblind
 		context.IASetIndexBuffer(myIndexBuffer->myIndexBuffer, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
 		context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		float blendFactor[4];
-		blendFactor[0] = 0.f;
-		blendFactor[1] = 0.f;
-		blendFactor[2] = 0.f;
-		blendFactor[3] = 0.f;
-		myEffect->SetBlendState(myBlendState, blendFactor);
 		D3DX11_TECHNIQUE_DESC techDesc;
 		myEffect->GetTechnique()->GetDesc(&techDesc);
 
@@ -185,25 +178,6 @@ namespace Snowblind
 		myIndexBufferDesc->StructureByteStride = 0;
 	}
 
-	void CFont::InitiateBlendstate()
-	{
-		D3D11_BLEND_DESC blendDesc;
-		blendDesc.AlphaToCoverageEnable = true;
-		blendDesc.IndependentBlendEnable = false;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_DEST_ALPHA;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
-
-		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBlendState(&blendDesc, &myBlendState);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create blendstate.");
-		CEngine::GetDirectX()->SetDebugName(myBlendState, "Font : BlendState");
-	}
-
 	void CFont::UpdateBuffer()
 	{
 		SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
@@ -276,7 +250,7 @@ namespace Snowblind
 			if (myText[i] == '\n')
 			{
 				drawX = 0;
-				drawY -= (maxDrawY + 4);
+				drawY -= (maxDrawY + 6);
 				row++;
 				continue;
 			}
@@ -322,7 +296,7 @@ namespace Snowblind
 			myIndices.Add(startIndex + 3);
 			myIndices.Add(startIndex + 1);
 
-			drawX += charData.myBearingX + 3;
+			drawX += charData.myBearingX;
 		}
 
 		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosColUv) * myVertices.Size();

@@ -31,7 +31,8 @@ RasterizerState Solid
 
 float4 Text_PS(PS_INPUT_POS_COL_UV input) : SV_Target
 {
-	float4 text = FontTexture.Sample(linearSample_Clamp, input.UV).rrrr;
+	float4 text = FontTexture.Sample(pointSample_Clamp, input.UV).rrrr;
+	text.rgb = float3(1,1,1);
 	return text;
 };
 

@@ -192,54 +192,9 @@ namespace Snowblind
 		myIndices.RemoveAll();
 
 		SVertexTypePosColUv v;
-		for (int i = 0, iAsItShouldBe = 0, row = 0; i < count; i++, iAsItShouldBe++)
+		for (int i = 0, row = 0; i < count; i++)
 		{
 			SCharData& charData = myData->myCharData[myText[i]];
-
-			if (myText[i] == '}')
-			{
-				myColor = myDefaultColor;
-				iAsItShouldBe--;
-				continue;
-			}
-
-			if (myText[i] == '{')
-			{
-				iAsItShouldBe--;
-				continue;
-			}
-
-			if (myText[i] == '#')
-			{
-				if (myText.size() - 1 == i)
-				{
-					break;
-				}
-				std::string color;
-				int skip = i;
-				bool hasBreaked = false;
-				for (int j = i + 1; j < i + 7; ++j)
-				{
-					if (myText[j] == 'I')
-					{
-						hasBreaked = true;
-						break;
-					}
-					color += myText[j];
-					skip++;
-				}
-				if (hasBreaked == false)
-				{
-					myColor.r = std::strtoul(color.substr(0, 2).c_str(), NULL, 16);
-					myColor.g = std::strtoul(color.substr(2, 2).c_str(), NULL, 16);
-					myColor.b = std::strtoul(color.substr(4, 2).c_str(), NULL, 16);
-				}
-				i = skip;
-				iAsItShouldBe--;
-
-				continue;
-			}
-
 
 			if (maxDrawY < charData.myHeight)
 			{
@@ -286,7 +241,7 @@ namespace Snowblind
 			v.myUV = charData.myBottomRightUV;
 			myVertices.Add(v);
 
-			int startIndex = (iAsItShouldBe - row) * 4.f;
+			int startIndex = (i - row) * 4.f;
 
 			myIndices.Add(startIndex + 1);
 			myIndices.Add(startIndex + 0);

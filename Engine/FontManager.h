@@ -60,9 +60,6 @@ namespace Snowblind
 		void LoadOutline(const int index, const int atlasX, const int atlasY
 			, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderWidth);
 
-		int currentWidth;
-		int currentHeight;
-
 		void DumpAtlas(SFontData* fontData, int atlasSize);
 		void DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline = false);
 
@@ -73,6 +70,16 @@ namespace Snowblind
 		void CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, int aBorderWidth);
 		void CalculateGlyphOffsets(const int index, FT_GlyphSlotRec_* glyph);
 
+		struct SCountData
+		{
+			int xNCount = 0;
+			int xPCount = 0;
+			int yNCount = 0;
+			int yPCount = 0;
+		};
+
+		void CountOffsets(const int& x, const int& y, const int& width, const int& height, SCountData& countData);
+		void CountDeltas(const int& width, const int& height, int& deltaX, int& deltaY, SCountData& countData);
 		struct SOutlineOffset
 		{
 			int xDelta = 0;

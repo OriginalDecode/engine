@@ -126,13 +126,6 @@ namespace Snowblind
 			DL_ASSERT_EXP(!error, "Failed to load glyph!");
 			FT_GlyphSlot slot = face->glyph;
 
-			char c = i;
-			if (c == 'g')
-				int apa = 5;
-			if (c == 'a')
-				int apa = 5;
-
-
 			if (atlasX + slot->bitmap.width + (aBorderWidth * 2) > atlasWidth)
 			{
 				atlasX = X_START;
@@ -175,7 +168,7 @@ namespace Snowblind
 		glyphData.myBottomRightUV = { (float(atlasX + glyphData.myWidth) / atlasWidth), (float(atlasY + glyphData.myHeight) / atlasHeight) };
 
 		glyphData.myAdvanceX = slot->metrics.width / 64.f;
-		glyphData.myBearingX = ((slot->metrics.horiBearingX / 64.f) + (slot->metrics.width / 64.f)) + (aBorderOffset * 3);
+		glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / 64.f) + (aBorderOffset * 2);
 		glyphData.myBearingY = ((slot->metrics.horiBearingY - slot->metrics.height) / 64.f);
 
 		//Kerning is needed
@@ -407,6 +400,7 @@ namespace Snowblind
 
 		myOffset.xDelta = 0;
 		myOffset.yDelta = 0;
+
 		FT_Error err;
 		FT_Stroker stroker;
 		FT_Glyph glyph;
@@ -437,11 +431,7 @@ namespace Snowblind
 		int xDelta = 0;
 		int yDelta = 0;
 
-		int xNCount = 0;
-		int xPCount = 0;
-		int yNCount = 0;
-		int yPCount = 0;
-
+		SCountData countData;
 		for (int x = 0; x < width; x++)
 		{
 			for (int y = 0; y < height; y++)
@@ -449,58 +439,10 @@ namespace Snowblind
 				unsigned char& data = bitmapGlyph->bitmap.buffer[y * width + x];
 
 				if (data == 0)
-				{
-					if (x < 1)
-					{
-						xNCount++;
-					}
-
-					if (x > width - 1)
-					{
-						xPCount++;
-					}
-
-					if (y < 1)
-					{
-						yNCount++;
-					}
-
-					if (y > height - 1)
-					{
-						yPCount++;
-					}
-
-				}
-
-				if (xNCount == height)
-				{
-					xNCount = 0;
-					xDelta--;
-				}
-
-				if (xPCount == height)
-				{
-					xPCount = 0;
-					xDelta++;
-				}
-
-				if (yNCount == width)
-				{
-					yNCount = 0;
-					yDelta--;
-				}
-
-				if (yPCount == width)
-				{
-					yPCount = 0;
-					yDelta++;
-				}
-
-
-
+					CountOffsets(x, y, width, height, countData);
+				CountDeltas(width, height, xDelta, yDelta, countData);
 			}
 		}
-
 
 		myOffset.xDelta = xDelta;
 		myOffset.yDelta = yDelta;
@@ -512,15 +454,11 @@ namespace Snowblind
 		int xDelta = 0;
 		int yDelta = 0;
 
-		int xNCount = 0;
-		int xPCount = 0;
-		int yNCount = 0;
-		int yPCount = 0;
-
 		unsigned int width = glyph->bitmap.width;
 		unsigned int height = glyph->bitmap.rows;
 		unsigned int pitch = glyph->bitmap.pitch;
 
+		SCountData countData;
 		for (int x = 0; x < width; x++)
 		{
 			for (int y = 0; y < height; y++)
@@ -528,58 +466,63 @@ namespace Snowblind
 				unsigned char& data = glyph->bitmap.buffer[y * width + x];
 
 				if (data == 0)
-				{
-					if (x < 1)
-					{
-						xNCount++;
-					}
-
-					if (x > width - 1)
-					{
-						xPCount++;
-					}
-
-					if (y < 1)
-					{
-						yNCount++;
-					}
-
-					if (y > height - 1)
-					{
-						yPCount++;
-					}
-
-				}
-
-				if (xNCount == height)
-				{
-					xNCount = 0;
-					xDelta--;
-				}
-
-				if (xPCount == height)
-				{
-					xPCount = 0;
-					xDelta++;
-				}
-
-				if (yNCount == width)
-				{
-					yNCount = 0;
-					yDelta--;
-				}
-
-				if (yPCount == width)
-				{
-					yPCount = 0;
-					yDelta++;
-				}
+					CountOffsets(x, y, width, height, countData);
+				CountDeltas(width, height, xDelta, yDelta, countData);
 			}
 		}
 
-
 		myOffset.xDelta = xDelta;
 		myOffset.yDelta = yDelta;
+	}
+
+	void CFontManager::CountOffsets(const int& x, const int& y, const int& width, const int& height, SCountData& countData)
+	{
+		if (x < 1)
+		{
+			countData.xNCount++;
+		}
+
+		if (x > width - 1)
+		{
+			countData.xPCount++;
+		}
+
+		if (y < 1)
+		{
+			countData.yNCount++;
+		}
+
+		if (y > height - 1)
+		{
+			countData.yPCount++;
+		}
+	}
+
+	void CFontManager::CountDeltas(const int& width, const int& height, int& deltaX, int& deltaY, SCountData& countData)
+	{
+		if (countData.xNCount == height)
+		{
+			countData.xNCount = 0;
+			deltaX--;
+		}
+
+		if (countData.xPCount == height)
+		{
+			countData.xPCount = 0;
+			deltaX++;
+		}
+
+		if (countData.yNCount == width)
+		{
+			countData.yNCount = 0;
+			deltaY--;
+		}
+
+		if (countData.yPCount == width)
+		{
+			countData.yPCount = 0;
+			deltaY++;
+		}
 	}
 
 	SFontData::~SFontData()

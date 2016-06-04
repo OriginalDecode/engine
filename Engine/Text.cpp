@@ -41,7 +41,7 @@ namespace Snowblind
 
 	void CText::SetScale(const CU::Math::Vector2<float>& aScale)
 	{
-		myScale = aScale;// * 0.36f; //magic?
+		myScale = aScale;
 	}
 
 	const CU::Math::Vector2<float>& CText::GetScale()

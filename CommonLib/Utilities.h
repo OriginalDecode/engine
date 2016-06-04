@@ -11,8 +11,8 @@ namespace CL
 
 
 	//if readCharacterBeforeToFind == true it will read everything BEFORE the character/word you entered but if it is false it will read the word you entered and everything after.
-	std::string substr(const std::string& aStringToReadFrom, const std::string& toFind, bool readCharactersBeforeToFind);
-
+	std::string substr(const std::string& aStringToReadFrom, const std::string& toFind, bool readCharactersBeforeToFind, int charsToSkip);
+	bool substr(const std::string& aStringToReadFrom, const std::string& toFind);
 	struct SColor
 	{
 		SColor();

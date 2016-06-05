@@ -357,7 +357,6 @@
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX11.h" />
-    <ClInclude Include="DirectX12.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EmitterInstance.h" />
     <ClInclude Include="Engine.h" />
@@ -399,7 +398,6 @@
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectX11.cpp" />
-    <ClCompile Include="DirectX12.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EmitterInstance.cpp" />
     <ClCompile Include="Engine.cpp" />
@@ -440,10 +438,6 @@
     <ProjectReference Include="..\Input\Input.vcxproj">
       <Project>{bd22ff31-48a5-4061-ab37-17e68e058912}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\Workbed\Data\Shaders\Font_Effect.fx" />
-    <FxCompile Include="..\Workbed\Data\Shaders\Particle.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

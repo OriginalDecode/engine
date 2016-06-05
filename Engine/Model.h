@@ -38,25 +38,19 @@ namespace Snowblind
 		void SetEffect(CEffect* anEffect);
 
 	private:
-
-		void InitVertexBuffer();
-		void InitIndexBuffer();
-
-		CEffect	*myEffect;
-
-
-		ID3D11InputLayout *myVertexLayout;
+		CEffect* myEffect;
+		ID3D11InputLayout* myVertexLayout;
 
 		CU::GrowingArray<SVertexTypePosCol> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		CU::GrowingArray<CSurface*> mySurfaces;
 		CU::GrowingArray<CModel*> myChildren;
 
-		SVertexIndexWrapper		*myIndexData;
-		SVertexDataWrapper		*myVertexData;
+		SVertexIndexWrapper* myIndexData;
+		SVertexDataWrapper* myVertexData;
 
-		SVertexBufferWrapper	*myVertexBuffer;
-		SIndexBufferWrapper		*myIndexBuffer;
+		SVertexBufferWrapper* myVertexBuffer;
+		SIndexBufferWrapper* myIndexBuffer;
 
 		CU::Matrix44f myOrientation;
 
@@ -66,6 +60,8 @@ namespace Snowblind
 		bool myIsTextured;
 		bool myIsNULLObject;
 
+		void InitVertexBuffer();
+		void InitIndexBuffer();
 	};
 	
 	__forceinline CEffect* CModel::GetEffect()

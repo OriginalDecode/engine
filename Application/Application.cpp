@@ -21,6 +21,7 @@
 #include <Texture.h>
 #include <EmitterInstance.h>
 #include <DeferredRenderer.h>
+#include <SystemMonitor.h>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 
@@ -43,8 +44,8 @@ CApplication::~CApplication()
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
-	aWindowWidth;
-	aWindowHeight;
+	myWindowWidth = aWindowWidth;
+	myWindowHeight = aWindowHeight;
 	myAverageFPS = 0;
 	myQuitFlag = false;
 	myEngine = Snowblind::CEngine::GetInstance();
@@ -84,6 +85,8 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 void CApplication::Update()
 {
+
+
 	float time = 0.f;
 	int frameCount = 0;
 	while (mySynchronizer->HasQuit() == false)
@@ -120,6 +123,10 @@ void CApplication::Update()
 			<< "\nY : "	<< myOrientation.GetPosition().y 
 			<< "\nZ : " << myOrientation.GetPosition().z;
 		mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Math::Vector2<float>(0, 0)));
+
+		std::stringstream cpuAndMem;
+		cpuAndMem << "CPU: " << Snowblind::CSystemMonitor::GetCPUUsage() << "%" << "\n" << "Mem: " << Snowblind::CSystemMonitor::GetMemoryUsage(true) << " kb";
+		mySynchronizer->AddRenderCommand(SRenderCommand(cpuAndMem.str(), CU::Vector2f(myWindowWidth - 100.f, 0)));
 
 
 		Render();

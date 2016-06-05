@@ -376,6 +376,7 @@
     <ClInclude Include="RenderCommand.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SkySphere.h" />
     <ClInclude Include="SnowblindParticleData.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
@@ -383,6 +384,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Synchronizer.h" />
+    <ClInclude Include="SystemMonitor.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VertexStructs.h" />
@@ -414,6 +416,7 @@
     <ClCompile Include="RenderCommand.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SkySphere.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteModel.cpp" />
@@ -425,6 +428,7 @@
     </ClCompile>
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Synchronizer.cpp" />
+    <ClCompile Include="SystemMonitor.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>

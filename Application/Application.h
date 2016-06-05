@@ -93,6 +93,9 @@ private:
 	CU::ControllerInput* myController;
 
 	CU::GrowingArray<CU::Vector3f> myPositions;
+	
+	float myWindowWidth;
+	float myWindowHeight;
 
 
 	std::thread* myLogicThread;

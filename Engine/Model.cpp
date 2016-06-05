@@ -18,6 +18,7 @@ namespace Snowblind
 {
 	CModel::CModel()
 	{
+
 		myIsNULLObject = true;
 		myAPI = CEngine::GetDirectX();
 		myIsTextured = false;

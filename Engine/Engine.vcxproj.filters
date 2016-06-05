@@ -180,6 +180,8 @@
     </ClInclude>
     <ClInclude Include="EmitterInstance.h" />
     <ClInclude Include="SnowblindParticleData.h" />
+    <ClInclude Include="SkySphere.h" />
+    <ClInclude Include="SystemMonitor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -274,5 +276,7 @@
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="EmitterInstance.cpp" />
+    <ClCompile Include="SkySphere.cpp" />
+    <ClCompile Include="SystemMonitor.cpp" />
   </ItemGroup>
 </Project>

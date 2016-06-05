@@ -40,8 +40,8 @@ namespace Snowblind
 		CCamera* myCamera;
 		CCamera* my2DCamera;
 		CSynchronizer& mySynchronizer;
-		CText* myText;
 		CPointLight* myPointLight;
+		CText* myText;
 
 		CTexture* myDepthTexture;
 	

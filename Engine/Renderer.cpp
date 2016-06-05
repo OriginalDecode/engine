@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include <thread>
-
 #include "Renderer.h"
 #include "Engine.h"
 #include "Synchronizer.h"
@@ -22,7 +21,7 @@ namespace Snowblind
 		int loadTimer = myTimeManager->CreateTimer();
 		myTimeManager->GetTimer(loadTimer).Update();
 		float loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds();
-		myText = new CText("Arial.ttf", 8, 1); //bug cant go below 10
+		myText = new CText("Arial.ttf", 8, 1); 
 
 		myTimeManager->GetTimer(loadTimer).Update();
 		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;

@@ -12,6 +12,13 @@ namespace Snowblind
 {
 	CFont::CFont(SFontData* aFontData)
 	{
+
+		myTimeManager = new CU::TimeManager();
+
+
+		myUpdateTimer = myTimeManager->CreateTimer();
+		myRenderTimer = myTimeManager->CreateTimer();
+
 		myData = aFontData;
 		myText = " ";
 		myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/Font_Effect.fx");
@@ -20,17 +27,11 @@ namespace Snowblind
 		myIndexBufferDesc = new D3D11_BUFFER_DESC();
 		myInitData = new D3D11_SUBRESOURCE_DATA();
 
-
 		CreateInputLayout();
 		CreateVertexBuffer();
 		CreateIndexBuffer();
 
 		myColor = myDefaultColor;
-
-		myTimeManager = new CU::TimeManager();
-		myUpdateTimer = myTimeManager->CreateTimer();
-		myRenderTimer = myTimeManager->CreateTimer();
-
 
 		myRenderTime = 0.f;
 		myUpdateTime = 0.f;
@@ -185,8 +186,8 @@ namespace Snowblind
 
 		int count = myText.length();
 		float z = 0.f;
-		float drawX = 0.f;
-		float drawY = 0.f;
+		float drawX = 5.f;
+		float drawY = -5.f;
 		float maxDrawY = 0.f;
 		myVertices.RemoveAll();
 		myIndices.RemoveAll();
@@ -204,7 +205,7 @@ namespace Snowblind
 
 			if (myText[i] == '\n')
 			{
-				drawX = 0;
+				drawX = 5;
 				drawY -= (maxDrawY + 6);
 				row++;
 				continue;

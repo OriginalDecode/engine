@@ -25,7 +25,7 @@ namespace Snowblind
 		void RenderIsDone();
 		void LogicIsDone();
 		void AddRenderCommand(const SRenderCommand& aRenderCommand);
-		void DeferredMode(const eDeferredType& deferredType);
+
 		const CU::GrowingArray<SRenderCommand>& GetRenderCommands(const eCommandType& commandType) const;
 	private:
 		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> my3DCommandBuffer;

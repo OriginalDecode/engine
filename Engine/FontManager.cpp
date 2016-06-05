@@ -15,7 +15,7 @@
 #include <D3DX11async.h>
 #include "Engine.h"
 #include <vector>
-#define SAVE
+//#define SAVE
 #define SAVE_DDS
 #ifndef SAVE_DDS
 #define SAVE_PNG
@@ -35,12 +35,10 @@ namespace Snowblind
 	{
 		myFontPath = nullptr;
 		FT_Done_FreeType(myLibrary);
-
 		for (auto it = myFontData.begin(); it != myFontData.end(); it++)
 		{
 			SAFE_DELETE(it->second);
 		}
-
 	}
 
 	void CFontManager::Initiate()
@@ -137,8 +135,31 @@ namespace Snowblind
 			}
 			LoadGlyph(i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face, aBorderWidth);
 		}
-
+#ifdef SAVE
 		DumpAtlas(fontData, atlasSize);
+#else
+		D3D11_SUBRESOURCE_DATA data;
+		data.pSysMem = fontData->myAtlas;
+		data.SysMemPitch = atlasSize * 4;
+
+		D3D11_TEXTURE2D_DESC info;
+		info.Width = atlasSize;
+		info.Height = atlasSize;
+		info.MipLevels = 1;
+		info.ArraySize = 1;
+		info.SampleDesc.Count = 1;
+		info.SampleDesc.Quality = 0;
+		info.MiscFlags = 0;
+		info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.Usage = D3D11_USAGE_DYNAMIC;
+		info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		ID3D11Texture2D* texture;
+		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
+		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
+		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
+#endif
 
 		fontData->myAtlasHeight = atlasSize;
 		fontData->myAtlasWidth = atlasSize;
@@ -171,7 +192,6 @@ namespace Snowblind
 		glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / 64.f) + (aBorderOffset * 2);
 		glyphData.myBearingY = ((slot->metrics.horiBearingY - slot->metrics.height) / 64.f);
 
-		//Kerning is needed
 		if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
 		{
 			FONT_LOG("Tried to set a UV coord to above 1 at glyph : %c , index %d", index, index);
@@ -255,8 +275,6 @@ namespace Snowblind
 		err = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, nullptr, true);
 		DL_ASSERT_EXP(err == 0, "Failed to add glyph to bitmap");
 
-		FT_Size_Metrics metrics = aFace->size->metrics;
-
 		//Bitmap width can be wrong on outline glyphs and creates an issue where they're not aligned with the regular glyphs.
 		FT_BitmapGlyph bitmapGlyph = reinterpret_cast<FT_BitmapGlyph>(glyph);
 
@@ -289,6 +307,7 @@ namespace Snowblind
 			}
 		}
 
+#ifdef SAVE
 		if (height <= 0 || pitch <= 0)
 		{
 			delete[] gData;
@@ -300,6 +319,7 @@ namespace Snowblind
 
 		delete[] gData;
 		gData = nullptr;
+#endif
 		FT_Stroker_Done(stroker);
 	}
 

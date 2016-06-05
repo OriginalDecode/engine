@@ -11,7 +11,6 @@ namespace Snowblind
 		myScale = { 1, 1 };
 	}
 
-
 	CText::~CText()
 	{
 		delete myFont;
@@ -63,5 +62,6 @@ namespace Snowblind
 	{
 		return myFont->GetUpdateTime();
 	}
-
 };
+
+

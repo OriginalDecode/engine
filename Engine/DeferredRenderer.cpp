@@ -9,9 +9,6 @@
 #include "Camera.h"
 #include "PointLight.h"
 
-
-
-
 namespace Snowblind
 {
 
@@ -41,9 +38,9 @@ namespace Snowblind
 		myDepthStencil->InitAsDepthBuffer(myWindowSize.myWidth, myWindowSize.myHeight);
 		myDepthStencil->SetDebugName("DeferredDepthStencil");
 
-		myClearColor[0] = 1.f;
-		myClearColor[1] = 1.f;
-		myClearColor[2] = 1.f;
+		myClearColor[0] = 0.f;
+		myClearColor[1] = 0.f;
+		myClearColor[2] = 0.f;
 		myClearColor[3] = 0.f;
 
 		myScreenData.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");

@@ -10,7 +10,7 @@
 #include "DeferredRenderer.h"
 #include "PointLight.h"
 #include "EmitterInstance.h"
-
+#include <TimeManager.h>
 namespace Snowblind
 {
 
@@ -18,15 +18,26 @@ namespace Snowblind
 		: mySynchronizer(aSynchronizer)
 		, myCamera(aCamera)
 	{
+		myTimeManager = new CU::TimeManager();
+		int loadTimer = myTimeManager->CreateTimer();
+		myTimeManager->GetTimer(loadTimer).Update();
+		float loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds();
 		myText = new CText("Arial.ttf", 8, 1); //bug cant go below 10
+
+		myTimeManager->GetTimer(loadTimer).Update();
+		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;
+		FONT_LOG("Font Took : %fms to load.", loadTime);
+
 		myPointLight = new CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
 		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
+
 	}
 
 	CRenderer::~CRenderer()
 	{
+		SAFE_DELETE(myTimeManager);
 		SAFE_DELETE(myDepthTexture);
 		SAFE_DELETE(my2DCamera);
 		SAFE_DELETE(myDeferredRenderer);

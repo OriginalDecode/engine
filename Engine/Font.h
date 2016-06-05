@@ -14,16 +14,12 @@ namespace CommonUtilities
 	class TimeManager;
 }
 
-
-
 namespace Snowblind
 {
 	struct SInstance
 	{
 		CU::Math::Vector2<float> myPosition;
 	};
-
-
 
 	struct SVertexBufferWrapper;
 	struct SIndexBufferWrapper;
@@ -75,7 +71,6 @@ namespace Snowblind
 		CL::SColor myDefaultColor = CL::SColor(0,0,0,0);
 		CL::SColor myColor = CL::SColor(0,0,0,0);
 
-		bool toggleWireframe = false;
 		float myUpdateTime = 0.f;
 		float myRenderTime = 0.f;
 

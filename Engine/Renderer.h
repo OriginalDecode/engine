@@ -4,6 +4,12 @@
 #include "LightStructs.h"
 
 
+namespace CommonUtilities
+{
+	class TimeManager;
+}
+
+
 namespace Snowblind
 {
 
@@ -29,6 +35,7 @@ namespace Snowblind
 		void RenderLightCommands();
 		void RenderParticles();
 
+		CU::TimeManager* myTimeManager;
 		CDeferredRenderer* myDeferredRenderer;
 		CCamera* myCamera;
 		CCamera* my2DCamera;

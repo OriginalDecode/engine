@@ -1,5 +1,4 @@
 #pragma once
-
 struct ID3D11ShaderResourceView;
 
 namespace Snowblind
@@ -11,7 +10,7 @@ namespace Snowblind
 	public:
 		CText(const char* aFilepath, int aSize, int aBorderWidth);
 		~CText();
-	
+
 		void Render(CCamera* aCamera);
 		void SetText(const std::string& aString);
 		void SetPosition(const CU::Math::Vector2<float>& aPosition);
@@ -20,14 +19,12 @@ namespace Snowblind
 		ID3D11ShaderResourceView* GetAtlas();
 		float GetRenderTime();
 		float GetUpdateTime();
-	private:
 
+	private:
 		CFont* myFont;
 		CU::Math::Matrix44<float> myOrientation;
 		CU::Math::Vector2<float> myPosition;
 		CU::Math::Vector2<float> myScale;
-
-
 
 	};
 };

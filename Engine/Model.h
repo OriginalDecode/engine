@@ -36,7 +36,7 @@ namespace Snowblind
 
 		void AddChild(CModel* aChild);
 		void SetEffect(CEffect* anEffect);
-
+		void SetIsSkysphere();
 	private:
 		CEffect* myEffect;
 		ID3D11InputLayout* myVertexLayout;
@@ -59,7 +59,7 @@ namespace Snowblind
 
 		bool myIsTextured;
 		bool myIsNULLObject;
-
+		bool myIsSkysphere = false;
 		void InitVertexBuffer();
 		void InitIndexBuffer();
 	};

@@ -16,6 +16,7 @@ namespace Snowblind
 		void SetPosition(const CU::Vector3f& aPosition);
 	private:
 
+		CTexture* mySkysphereTexture;
 		CU::Matrix44f myOrientation;
 		CModel* myModel;
 		

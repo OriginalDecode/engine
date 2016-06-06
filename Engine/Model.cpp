@@ -586,18 +586,30 @@ namespace Snowblind
 			myEffect->SetBlendState(NULL, blendFactor);
 			for (UINT p = 0; p < techDesc.Passes; ++p)
 			{
-
 				if (mySurfaces.Size() > 0)
 				{
-					for (int i = 0; i < mySurfaces.Size(); i++)
+					if (!myIsSkysphere)
 					{
-						mySurfaces[i]->Activate();
+						for (int i = 0; i < mySurfaces.Size(); i++)
+						{
+							mySurfaces[i]->Activate();
 
-						HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-						myAPI->HandleErrors(hr, "Failed to apply pass to context!");
-						
-						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
-						
+							HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
+							myAPI->HandleErrors(hr, "Failed to apply pass to context!");
+
+							context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
+
+						}
+					}
+					else
+					{
+						for (int i = 0; i < mySurfaces.Size(); i++)
+						{
+							HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
+							myAPI->HandleErrors(hr, "Failed to apply pass to context!");
+							context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
+
+						}
 					}
 				}
 				else
@@ -635,6 +647,15 @@ namespace Snowblind
 	void CModel::SetEffect(CEffect* anEffect)
 	{
 		myEffect = anEffect;
+	}
+
+	void CModel::SetIsSkysphere()
+	{
+		myIsSkysphere = true;
+		for (int i = 0; i < myChildren.Size(); i++)
+		{
+			myChildren[i]->SetIsSkysphere();
+		}
 	}
 
 	void CModel::InitVertexBuffer()

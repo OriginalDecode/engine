@@ -1,4 +1,4 @@
 {
-	"GraphicsAdapter" : "NVIDIA GeForce GTX 680"
-
+	"GraphicsAdapter" : "NVIDIA GeForce GTX 680",
+	"Skysphere" : "Data/Textures/Skysphere/Test.dds"
 }

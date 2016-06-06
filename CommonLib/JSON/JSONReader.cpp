@@ -14,6 +14,7 @@ FRESULT JSONReader::OpenFile()
 	FRESULT toReturn;
 	fopen_s(&myFile, myCurrentDocumentPath.c_str(), "r");
 	_get_errno(&toReturn);
+
 	return toReturn;
 }
 
@@ -31,7 +32,8 @@ void JSONReader::OpenDocument(const std::string & aFilePath)
 {
 	ValidateFileType(aFilePath);
 	myCurrentDocumentPath = aFilePath;
-	assert(OpenFile() == SUCCESS && "File could not be found!");
+	OpenFile();
+	assert(myFile != NULL && "File could not be found!");
 	char buffer[4]; 
 	myFileReaderStream = new rapidjson::FileReadStream(myFile, buffer, sizeof(buffer));
 	myDocument.ParseStream<0, rapidjson::UTF8<>, rapidjson::FileReadStream>(*myFileReaderStream);

@@ -19,7 +19,7 @@ namespace Snowblind
 		my2DOrientation.myMatrix[11] = aPosition.z;
 
 		XMMATRIX orthogonal;
-		orthogonal = XMMatrixOrthographicLH(aWidth, aHeight, 0.1f, 100.f);
+		orthogonal = XMMatrixOrthographicLH(aWidth, aHeight, 0.1f, 1000.f);
 		XMFLOAT4X4 orthMiddleHand;
 		XMStoreFloat4x4(&orthMiddleHand, orthogonal);
 		myOrthogonalMatrix.Init(reinterpret_cast<float*>(orthMiddleHand.m));
@@ -66,6 +66,8 @@ namespace Snowblind
 			break;
 		}
 		myOrientation->SetTranslation(position);
+
+
 	}
 
 	void CCamera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)

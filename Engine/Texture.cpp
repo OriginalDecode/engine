@@ -86,16 +86,17 @@ namespace Snowblind
 		CreateDepthStencilView(static_cast<float>(width), static_cast<float>(height));
 	}
 
-	const char* CTexture::GetFileName()
+	const std::string& CTexture::GetFileName()
 	{
 		return myFileName;
 	}
 
-	bool CTexture::LoadTexture(const char* aFileName)
+	bool CTexture::LoadTexture(const std::string& aFileName)
 	{
 		HRESULT hr;
 		myFileName = aFileName;
-		hr = D3DX11CreateShaderResourceViewFromFile(CEngine::GetDirectX()->GetDevice(), myFileName, nullptr, nullptr, &myShaderResource, nullptr);
+		hr = D3DX11CreateShaderResourceViewFromFile(CEngine::GetDirectX()->GetDevice(), myFileName.c_str(),
+			nullptr, nullptr, &myShaderResource, nullptr);
 		if (FAILED(hr))
 		{
 			DL_WARNINGBOX_EXP(FAILED(hr), "Failed to load texture!");

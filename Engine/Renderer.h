@@ -20,6 +20,7 @@ namespace Snowblind
 	class CPointLight;
 	class CEmitterInstance;
 	class CTexture;
+	class CSkySphere;
 
 	class CRenderer
 	{
@@ -35,6 +36,8 @@ namespace Snowblind
 		void RenderLightCommands();
 		void RenderParticles();
 
+		CU::Vector3f myPrevPos;
+
 		CU::TimeManager* myTimeManager;
 		CDeferredRenderer* myDeferredRenderer;
 		CCamera* myCamera;
@@ -42,8 +45,7 @@ namespace Snowblind
 		CSynchronizer& mySynchronizer;
 		CPointLight* myPointLight;
 		CText* myText;
-
 		CTexture* myDepthTexture;
-	
+		CSkySphere* mySkysphere;
 	};
 }; 

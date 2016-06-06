@@ -562,7 +562,6 @@ namespace Snowblind
 
 	void CModel::Render()
 	{
-		//Split to several render functions?
 		if (!myEffect)
 			return;
 
@@ -587,19 +586,25 @@ namespace Snowblind
 			myEffect->SetBlendState(NULL, blendFactor);
 			for (UINT p = 0; p < techDesc.Passes; ++p)
 			{
-				HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-				myAPI->HandleErrors(hr, "Failed to apply pass to context!");
 
 				if (mySurfaces.Size() > 0)
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
 						mySurfaces[i]->Activate();
+
+						HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
+						myAPI->HandleErrors(hr, "Failed to apply pass to context!");
+						
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
+						
 					}
 				}
 				else
 				{
+					HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
+					myAPI->HandleErrors(hr, "Failed to apply pass to context!");
+
 					context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
 				}
 			}

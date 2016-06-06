@@ -127,6 +127,7 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 		{
 			resourceName = "AOTexture";
 		}
+
 		surface->SetEffect(anEffect);
 		surface->SetTexture(resourceName.c_str(), currentTexture.myFileName.c_str());
 

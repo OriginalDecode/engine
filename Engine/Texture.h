@@ -16,8 +16,8 @@ namespace Snowblind
 
 		void InitAsDepthBuffer(float aWidth, float aHeight);
 
-		const char*	GetFileName();
-		bool LoadTexture(const char* aFileName);
+		const std::string& GetFileName();
+		bool LoadTexture(const std::string& aFileName);
 
 		/*
 			Set the prefix of the texture object. e.g UI - Albedo 
@@ -53,6 +53,6 @@ namespace Snowblind
 		int	myWidth;
 		int	myHeight;
 
-		const char* myFileName;
+		std::string myFileName;
 	};
 };

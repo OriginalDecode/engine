@@ -64,6 +64,7 @@ private:
 	Snowblind::CModel* myModel;
 	Snowblind::CModel* myTexturedModel;
 	Snowblind::CInstance* myInstance;
+	Snowblind::CInstance* myInstance2;
 
 	Snowblind::CSprite* mySprite;
 	Snowblind::CSprite* mySprite2;

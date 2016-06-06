@@ -40,6 +40,7 @@ CApplication::~CApplication()
 	SAFE_DELETE(myInstance);
 	SAFE_DELETE(myPointLight);
 	SAFE_DELETE(myEmitter);
+	SAFE_DELETE(myInstance2);
 }
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
@@ -54,6 +55,9 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	myInstance = new Snowblind::CInstance();
 	myInstance->Initiate("Data/Model/ls_engine_test/Radio_2.fbx", "Data/Shaders/DeferredBase.fx");
+
+	myInstance2 = new Snowblind::CInstance();
+	myInstance2->Initiate("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/DeferredBase.fx");
 
 	myPointLight = new Snowblind::CPointLight();
 	myPointLight->SetRange(10);
@@ -85,8 +89,6 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 void CApplication::Update()
 {
-
-
 	float time = 0.f;
 	int frameCount = 0;
 	while (mySynchronizer->HasQuit() == false)
@@ -139,6 +141,7 @@ void CApplication::Update()
 void CApplication::Render()
 {
 	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(0.f, 0.f, 0.f) , SRenderCommand::eType::MODEL));
+	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance2, CU::Vector3f(15.f, 0.f, 0.f), SRenderCommand::eType::MODEL));
 	mySynchronizer->AddRenderCommand(SRenderCommand(myEmitter));
 
 }

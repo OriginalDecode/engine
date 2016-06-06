@@ -45,7 +45,7 @@ namespace Snowblind
 	CSurface::~CSurface()
 	{
 		myShaderVariables.RemoveAll();
-		myTextures.RemoveAll();
+		myTextures.DeleteAll();
 		myResourceNames.RemoveAll();
 		myFileNames.RemoveAll();
 	}
@@ -53,9 +53,10 @@ namespace Snowblind
 	void CSurface::Activate()
 	{
 		CEngine::GetDirectX()->GetContext()->IASetPrimitiveTopology(myPrimologyType);
-		for (int i = 0; i < myShaderVariables.Size(); ++i)
+		for (int i = 0; i < myTextures.Size(); ++i)
 		{
-			myShaderVariables[i]->SetResource(myTextures[i]->GetShaderView());
+			myEffect->SetTexture(myTextures[i]->texture->GetShaderView(), myTextures[i]->resourceName);
+			//myShaderVariables[i]->SetResource(myTextures[i]->GetShaderView());
 		}
 	}
 
@@ -68,17 +69,15 @@ namespace Snowblind
 		myFileNames.Add(aFilePath);
 		myResourceNames.Add(aResourceName);
 
-		CTexture* tempTexture = CAssetsContainer::GetInstance()->GetTexture(aFilePath);
-		tempTexture->SetDebugName(aResourceName);
-		DL_ASSERT_EXP(tempTexture != nullptr, "[Surface](SetTexture) : Failed to set Texture!");
 
-		ID3DX11EffectShaderResourceVariable* tempShader = myEffect->GetEffect()->GetVariableByName(aResourceName.c_str())->AsShaderResource();
+		ID3DX11EffectShaderResourceVariable* srv;
+		myEffect->GetShaderResource(srv, aResourceName);
 
-		myEffect->Validate(tempShader, "Effect invalid!");
-		DL_ASSERT_EXP(tempShader != nullptr, "[Surface](SetTexture) : Failed to set Shader!");
-		myTexture = tempTexture;
-		myShaderVariables.Add(tempShader);
-		myTextures.Add(tempTexture);
+		myShaderVariables.Add(srv);
+		STexture* newTexture = new STexture();
+		newTexture->texture = CAssetsContainer::GetInstance()->GetTexture(aFilePath);
+		newTexture->resourceName = aResourceName;
+		myTextures.Add(newTexture);
 	}
 
 	void CSurface::SetEffect(CEffect* anEffect)

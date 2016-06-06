@@ -39,3 +39,12 @@ SRenderCommand::SRenderCommand(Snowblind::CEmitterInstance* anInstance)
 	, myType(eType::PARTICLE)
 {
 }
+
+
+SRenderCommand::SRenderCommand(eType aType, const CU::Vector3f& aPosition)
+	: myPosition(aPosition)
+	, myType(eType::SKYSPHERE)
+	, myCommandType(eCommandType::e3D)
+{
+
+}

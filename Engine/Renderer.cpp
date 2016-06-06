@@ -10,6 +10,7 @@
 #include "PointLight.h"
 #include "EmitterInstance.h"
 #include <TimeManager.h>
+#include "SkySphere.h"
 namespace Snowblind
 {
 
@@ -21,7 +22,7 @@ namespace Snowblind
 		int loadTimer = myTimeManager->CreateTimer();
 		myTimeManager->GetTimer(loadTimer).Update();
 		float loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds();
-		myText = new CText("Arial.ttf", 8, 1); 
+		myText = new CText("Arial.ttf", 8, 1);
 
 		myTimeManager->GetTimer(loadTimer).Update();
 		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;
@@ -31,11 +32,12 @@ namespace Snowblind
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
 		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
-
+		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/DeferredBase.fx");
 	}
 
 	CRenderer::~CRenderer()
 	{
+		SAFE_DELETE(mySkysphere);
 		SAFE_DELETE(myTimeManager);
 		SAFE_DELETE(myDepthTexture);
 		SAFE_DELETE(my2DCamera);
@@ -51,6 +53,7 @@ namespace Snowblind
 
 	void CRenderer::Render()
 	{
+		mySynchronizer.AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myCamera->GetPosition()));
 		CEngine::Clear();
 
 		myDeferredRenderer->SetTargets();
@@ -69,10 +72,10 @@ namespace Snowblind
 
 
 		CEngine::Present();
-
 		mySynchronizer.WaitForLogic();
 		mySynchronizer.SwapBuffer();
 		mySynchronizer.RenderIsDone();
+
 	}
 
 	void CRenderer::Render3DCommands()
@@ -85,6 +88,12 @@ namespace Snowblind
 			case SRenderCommand::eType::MODEL:
 				command.myInstance->SetPosition(command.myPosition);
 				command.myInstance->Render(*myCamera);
+				break;
+			case SRenderCommand::eType::SKYSPHERE:
+				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+				mySkysphere->SetPosition(command.myPosition);
+				mySkysphere->Render(myCamera);
+				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 				break;
 			}
 		}

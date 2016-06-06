@@ -16,7 +16,6 @@ namespace Snowblind
 
 		myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight);
 		my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0, 0, 1.f));
-		//myRenderThread = new std::thread(&CRenderer::Render, myRenderer);
 		Randomizer::Create();
 		SetWindowText(myHWND, "Snowblind Engine");
 	}

@@ -9,14 +9,13 @@ namespace Snowblind
 	class CSkySphere
 	{
 	public:
-		CSkySphere(const CCamera& aCamera);
+		CSkySphere(const std::string& aFilePath, const std::string& anEffect);
 		~CSkySphere();
-		void Update(float aDeltaTime);
-		void Render();
 
+		void Render(CCamera* aCamera);
+		void SetPosition(const CU::Vector3f& aPosition);
 	private:
 
-		const CCamera& myCamera;
 		CU::Matrix44f myOrientation;
 		CModel* myModel;
 		

@@ -39,13 +39,18 @@ namespace Snowblind
 
 		D3D_PRIMITIVE_TOPOLOGY myPrimologyType;
 
+		struct STexture
+		{
+			CTexture* texture;
+			std::string resourceName;
+		};
+
 		CU::GrowingArray<ID3DX11EffectShaderResourceVariable*> myShaderVariables;
-		CU::GrowingArray<CTexture*> myTextures;
+		CU::GrowingArray<STexture*> myTextures;
 		CU::GrowingArray<std::string> myResourceNames;
 		CU::GrowingArray<std::string> myFileNames;
 
 		CEffect* myEffect;
-		CTexture* myTexture;
 
 		unsigned int myIndexStart;
 		unsigned int myIndexCount;

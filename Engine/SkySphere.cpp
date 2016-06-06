@@ -5,24 +5,26 @@
 #include "AssetsContainer.h"
 namespace Snowblind
 {
-	CSkySphere::CSkySphere(const CCamera& aCamera)
-		: myCamera(aCamera)
+
+	CSkySphere::CSkySphere(const std::string& aFilePath, const std::string& anEffect)
 	{
-		myModel = CAssetsContainer::GetInstance()->GetModel("", "");
+		myModel = CAssetsContainer::GetInstance()->GetModel(aFilePath, anEffect);
 	}
 
 	CSkySphere::~CSkySphere()
 	{
 	}
 
-	void CSkySphere::Update(float aDeltaTime)
+	void CSkySphere::Render(CCamera* aCamera)
 	{
-
+		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_NONE);
+		myModel->GetEffect()->SetMatrices(myOrientation, aCamera->GetOrientation(), aCamera->GetProjection());
+		myModel->Render();
+		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
-	void CSkySphere::Render()
+	void CSkySphere::SetPosition(const CU::Vector3f& aPosition)
 	{
-		
+		myOrientation.SetPosition(aPosition);
 	}
-
 };

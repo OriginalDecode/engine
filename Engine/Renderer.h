@@ -35,11 +35,17 @@ namespace Snowblind
 		void Render2DCommands();
 		void RenderLightCommands();
 		void RenderParticles();
+
+
+		CCamera* myCamera;
+		CU::Matrix44f myPrevFrame;
+
+		CCamera* my2DCamera;
+		
 		CU::Vector3f myPrevPos;
 		CU::TimeManager* myTimeManager;
+		
 		CDeferredRenderer* myDeferredRenderer;
-		CCamera* myCamera;
-		CCamera* my2DCamera;
 		CSynchronizer& mySynchronizer;
 		CPointLight* myPointLight;
 		CText* myText;

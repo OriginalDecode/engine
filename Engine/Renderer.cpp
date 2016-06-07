@@ -40,7 +40,7 @@ namespace Snowblind
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
 		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
-		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/DeferredBase.fx");
+		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/DeferredBase.fx", aCamera);
 	}
 
 	CRenderer::~CRenderer()
@@ -85,6 +85,7 @@ namespace Snowblind
 		mySynchronizer.WaitForLogic();
 		mySynchronizer.SwapBuffer();
 		mySynchronizer.RenderIsDone();
+		myPrevFrame = myCamera->GetOrientation();
 	}
 
 	void CRenderer::Render3DCommands()
@@ -101,7 +102,7 @@ namespace Snowblind
 			case SRenderCommand::eType::SKYSPHERE:
 			
 				mySkysphere->SetPosition(command.myPosition);
-				mySkysphere->Render(myCamera);
+				mySkysphere->Render(myPrevFrame);
 				break;
 			}
 		}

@@ -35,9 +35,7 @@ namespace Snowblind
 		void Render2DCommands();
 		void RenderLightCommands();
 		void RenderParticles();
-
 		CU::Vector3f myPrevPos;
-
 		CU::TimeManager* myTimeManager;
 		CDeferredRenderer* myDeferredRenderer;
 		CCamera* myCamera;

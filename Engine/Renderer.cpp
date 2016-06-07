@@ -11,6 +11,14 @@
 #include "EmitterInstance.h"
 #include <TimeManager.h>
 #include "SkySphere.h"
+
+
+//////////////////////////////////////////////////////////////////////////
+// Add priority filter to the render commands so that it can sort. 
+//////////////////////////////////////////////////////////////////////////
+//Alpha last
+//////////////////////////////////////////////////////////////////////////
+
 namespace Snowblind
 {
 
@@ -53,7 +61,9 @@ namespace Snowblind
 
 	void CRenderer::Render()
 	{
-		mySynchronizer.AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myCamera->GetPosition()));
+		std::stringstream textTime;
+		textTime << "Render : " << myText->GetRenderTime() << "\nUpdate : " << myText->GetUpdateTime();
+		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));
 		CEngine::Clear();
 
 		myDeferredRenderer->SetTargets();
@@ -75,7 +85,6 @@ namespace Snowblind
 		mySynchronizer.WaitForLogic();
 		mySynchronizer.SwapBuffer();
 		mySynchronizer.RenderIsDone();
-
 	}
 
 	void CRenderer::Render3DCommands()
@@ -90,10 +99,9 @@ namespace Snowblind
 				command.myInstance->Render(*myCamera);
 				break;
 			case SRenderCommand::eType::SKYSPHERE:
-				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+			
 				mySkysphere->SetPosition(command.myPosition);
 				mySkysphere->Render(myCamera);
-				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 				break;
 			}
 		}

@@ -124,12 +124,12 @@ namespace Snowblind
 
 	float CFont::GetUpdateTime()
 	{
-		return myUpdateTime;
+		return myUpdateTime *1000.f;
 	}
 
 	float CFont::GetRenderTime()
 	{
-		return myRenderTime;
+		return myRenderTime *1000.f;
 	}
 
 	void CFont::CreateInputLayout()

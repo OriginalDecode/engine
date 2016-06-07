@@ -39,6 +39,7 @@ namespace Snowblind
 		ID3D11ShaderResourceView* GetAtlas();
 		const CU::Math::Vector2<float>& GetSize();
 		const short GetFontPixelSize();
+
 		float GetUpdateTime();
 		float GetRenderTime();
 	private:

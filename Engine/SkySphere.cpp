@@ -23,11 +23,21 @@ namespace Snowblind
 
 	void CSkySphere::Render(CCamera* aCamera)
 	{
+		CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_NONE);
-		myModel->GetEffect()->SetTexture(mySkysphereTexture, "AlbedoTexture");
-		myModel->GetEffect()->SetMatrices(myOrientation, aCamera->GetOrientation(), aCamera->GetProjection());
+		CEffect* effect = myModel->GetEffect();
+
+		effect->SetTexture(mySkysphereTexture, "AlbedoTexture");
+
+
+		effect->SetMatrices(myOrientation, myPrevOrientation, aCamera->GetProjection());
+		myPrevOrientation = aCamera->GetOrientation();
+
+
 		myModel->Render();
 		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
+		CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+
 	}
 
 	void CSkySphere::SetPosition(const CU::Vector3f& aPosition)

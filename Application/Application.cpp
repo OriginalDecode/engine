@@ -116,19 +116,7 @@ void CApplication::Update()
 			myQuitFlag = true;
 		}
 		UpdateInput(deltaTime);
-
-		std::stringstream ss;
-		ss << myEngine->GetFPS() << "\n" 
-			<< myAverageFPSToPrint 
-			<< "\nCamera Position : \nX : " 
-			<< myOrientation.GetPosition().x 
-			<< "\nY : "	<< myOrientation.GetPosition().y 
-			<< "\nZ : " << myOrientation.GetPosition().z;
-		mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Math::Vector2<float>(0, 0)));
-
-		std::stringstream cpuAndMem;
-		cpuAndMem << "CPU: " << Snowblind::CSystemMonitor::GetCPUUsage() << "%" << "\n" << "Mem: " << Snowblind::CSystemMonitor::GetMemoryUsage(true) << " kb";
-		mySynchronizer->AddRenderCommand(SRenderCommand(cpuAndMem.str(), CU::Vector2f(myWindowWidth - 100.f, 0)));
+	
 
 
 		Render();
@@ -140,9 +128,24 @@ void CApplication::Update()
 
 void CApplication::Render()
 {
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
 	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(0.f, 0.f, 0.f) , SRenderCommand::eType::MODEL));
 	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance2, CU::Vector3f(15.f, 0.f, 0.f), SRenderCommand::eType::MODEL));
 	mySynchronizer->AddRenderCommand(SRenderCommand(myEmitter));
+
+	std::stringstream ss;
+	ss << myEngine->GetFPS() << "\n"
+		<< myAverageFPSToPrint
+		<< "\nCamera Position : \nX : "
+		<< myOrientation.GetPosition().x
+		<< "\nY : " << myOrientation.GetPosition().y
+		<< "\nZ : " << myOrientation.GetPosition().z;
+	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Math::Vector2<float>(0, 0)));
+
+	std::stringstream cpuAndMem;
+	cpuAndMem << "CPU: " << Snowblind::CSystemMonitor::GetCPUUsage() << "%" << "\n" << "Mem: " << Snowblind::CSystemMonitor::GetMemoryUsage(true) << " kb";
+	mySynchronizer->AddRenderCommand(SRenderCommand(cpuAndMem.str(), CU::Vector2f(myWindowWidth - 100.f, 0)));
+
 
 }
 

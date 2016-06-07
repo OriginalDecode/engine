@@ -38,7 +38,7 @@ namespace Snowblind
 			{
 				myInstances[i]->UpdateLight(myDirectionalLightData);
 				myInstances[i]->UpdateLight(myPointLightData);
-				myInstances[i]->Render(*myCamera);
+//				myInstances[i]->Render(*myCamera);
 			}
 		}
 		else

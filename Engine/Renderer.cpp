@@ -97,7 +97,7 @@ namespace Snowblind
 			{
 			case SRenderCommand::eType::MODEL:
 				command.myInstance->SetPosition(command.myPosition);
-				command.myInstance->Render(*myCamera);
+				command.myInstance->Render(myPrevFrame, *myCamera);
 				break;
 			case SRenderCommand::eType::SKYSPHERE:
 			
@@ -140,7 +140,7 @@ namespace Snowblind
 				myPointLight->SetRange(command.myRange);
 				myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
 				myPointLight->Update();
-				myDeferredRenderer->RenderLight(myPointLight, myCamera);
+				myDeferredRenderer->RenderLight(myPointLight, myCamera, myPrevFrame);
 				break;
 			}
 		}

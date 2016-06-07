@@ -132,10 +132,10 @@ namespace Snowblind
 		myLightPass.myDepth->SetResource(NULL);
 	}
 
-	void CDeferredRenderer::RenderLight(CPointLight* pointlight, CCamera* aCamera)
+	void CDeferredRenderer::RenderLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation)
 	{
 		myLightPass.myPointLightVariable->SetRawValue(&pointlight->GetData(), 0, sizeof(SPointlightData));
-		pointlight->Render(aCamera);
+		pointlight->Render(previousOrientation, aCamera);
 	}
 
 	void CDeferredRenderer::DeferredRender()

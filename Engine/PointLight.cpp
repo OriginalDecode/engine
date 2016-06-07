@@ -25,7 +25,7 @@ namespace Snowblind
 		myColor = aColor;
 		myRange = aRange;
 
-	
+
 
 
 #ifdef _DEBUG
@@ -76,9 +76,9 @@ namespace Snowblind
 		myData.myRange = GetRange();
 	}
 
-	void CPointLight::Render(CCamera* camera)
+	void CPointLight::Render(CU::Matrix44f& previousOrientation, CCamera* camera)
 	{
-		myLightMesh->Render(*camera);
+		myLightMesh->Render(previousOrientation, *camera);
 	}
 
 	const SPointlightData& CPointLight::GetData() const

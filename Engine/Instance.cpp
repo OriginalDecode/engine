@@ -39,9 +39,9 @@ namespace Snowblind
 		//myOrientation = CU::Math::Matrix44<float>::CreateRotateAroundY(aRotation) * myOrientation;
 	}
 
-	void CInstance::Render(CCamera& aCamera)
+	void CInstance::Render(CU::Matrix44f& previousOrientation, CCamera& aCamera)
 	{
-		myModel->GetEffect()->SetMatrices(myOrientation, aCamera.GetOrientation(), aCamera.GetProjection());
+		myModel->GetEffect()->SetMatrices(myOrientation, previousOrientation, aCamera.GetProjection());
 		myModel->Render();
 	}
 

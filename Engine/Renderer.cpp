@@ -13,13 +13,6 @@
 #include "SkySphere.h"
 #include "Model.h"
 
-
-//////////////////////////////////////////////////////////////////////////
-// Add priority filter to the render commands so that it can sort. 
-//////////////////////////////////////////////////////////////////////////
-//Alpha last
-//////////////////////////////////////////////////////////////////////////
-
 namespace Snowblind
 {
 
@@ -41,7 +34,7 @@ namespace Snowblind
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
 		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
-		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/DeferredBase.fx", aCamera);
+		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/Skysphere.fx", aCamera);
 	}
 
 	CRenderer::~CRenderer()

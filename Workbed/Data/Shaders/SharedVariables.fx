@@ -21,7 +21,7 @@ Texture2D OutlineTexture;
 Texture2D FontTexture;
 
 TextureCube CubeMap;
-
+uniform const float ambientMultiplier = 0.42f;
 struct GBuffer
 {
 	float4 Albedo;

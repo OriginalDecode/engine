@@ -4,19 +4,12 @@
 PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG VS(VS_INPUT_POS_NORMAL_UV_BINORMAL_TANG input)
 {
 	PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG output = (PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG)0;
-	
-	//float4 scale = float4(Scale, 1.0f);
-	//input.Pos *= scale;
-	
-	//input.Pos.w = 1.0f;
-	
+
 	output.Pos = mul(input.Pos, World);
 	output.Pos = mul(output.Pos, View);
 	output.Pos = mul(output.Pos, Projection);
 	
-	
 	output.UV = input.UV;
-	
 	
 	output.Normal = mul(input.Normal, World);
 	output.BiNormal = input.BiNormal;
@@ -39,7 +32,7 @@ GBuffer PS(PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG input) : SV_Target
 	norm = normalize(mul(norm, tangentSpaceMatrix));
 
 	GBuffer output;
-	output.Albedo = AlbedoTexture.Sample(linearSample_Wrap, input.UV);
+    output.Albedo = AlbedoTexture.Sample(linearSample_Wrap, input.UV) * ambientMultiplier;
 	norm.xyz += 1.f;
 	norm.xyz *= 0.5f;
 	output.Normal = float4(norm, 0.f);

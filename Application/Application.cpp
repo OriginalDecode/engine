@@ -37,10 +37,10 @@ CApplication::~CApplication()
 	SAFE_DELETE(myWorldScene);
 	SAFE_DELETE(myConsole);
 	SAFE_DELETE(myController);
-	SAFE_DELETE(myInstance);
 	SAFE_DELETE(myPointLight);
 	SAFE_DELETE(myEmitter);
-	SAFE_DELETE(myInstance2);
+	//SAFE_DELETE(myInstance);
+	//SAFE_DELETE(myInstance2);
 }
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
@@ -53,11 +53,11 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myCamera = myEngine->GetCamera();
 	myCamera->AddOrientation(&myOrientation);
 
-	myInstance = new Snowblind::CInstance();
-	myInstance->Initiate("Data/Model/ls_engine_test/Radio_2.fbx", "Data/Shaders/DeferredBase.fx");
-
-	myInstance2 = new Snowblind::CInstance();
-	myInstance2->Initiate("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/DeferredBase.fx");
+	//myInstance = new Snowblind::CInstance();
+	//myInstance->Initiate();
+	//
+	//myInstance2 = new Snowblind::CInstance();
+	//myInstance2->Initiate("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/DeferredBase.fx");
 
 	myPointLight = new Snowblind::CPointLight();
 	myPointLight->SetRange(10);
@@ -129,9 +129,12 @@ void CApplication::Update()
 void CApplication::Render()
 {
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
-	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance, CU::Vector3f(0.f, 0.f, 0.f) , SRenderCommand::eType::MODEL));
-	mySynchronizer->AddRenderCommand(SRenderCommand(myInstance2, CU::Vector3f(15.f, 0.f, 0.f), SRenderCommand::eType::MODEL));
-	mySynchronizer->AddRenderCommand(SRenderCommand(myEmitter));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 0.f, 0.f)));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 10.f, 0.f)));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(25.f, 10.f, 0.f)));
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "Radio", CU::Vector3f(15.f, 0.f, 0.f)));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::PARTICLE, myEmitter));
 
 	std::stringstream ss;
 	ss << myEngine->GetFPS() << "\n"

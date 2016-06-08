@@ -658,6 +658,16 @@ namespace Snowblind
 		}
 	}
 
+	void CModel::SetPosition(const CU::Vector3f& aPosition)
+	{
+		myOrientation.SetPosition(aPosition);
+	}
+
+	CU::Matrix44f& CModel::GetOrientation()
+	{
+		return myOrientation;
+	}
+
 	void CModel::InitVertexBuffer()
 	{
 		myVertexBuffer = new SVertexBufferWrapper();

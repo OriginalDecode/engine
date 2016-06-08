@@ -11,6 +11,7 @@
 #include "EmitterInstance.h"
 #include <TimeManager.h>
 #include "SkySphere.h"
+#include "Model.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,6 +89,12 @@ namespace Snowblind
 		myPrevFrame = myCamera->GetOrientation();
 	}
 
+
+	void CRenderer::AddModel(CModel* aModel, const std::string& aModelKey)
+	{
+		myModels[aModelKey] = aModel;
+	}
+
 	void CRenderer::Render3DCommands()
 	{
 		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandType::e3D);
@@ -96,8 +103,9 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::MODEL:
-				command.myInstance->SetPosition(command.myPosition);
-				command.myInstance->Render(myPrevFrame, *myCamera);
+				myModels[command.myModelKey]->SetPosition(command.myPosition);
+				myModels[command.myModelKey]->GetEffect()->SetMatrices(myModels[command.myModelKey]->GetOrientation(), myPrevFrame, myCamera->GetProjection());
+				myModels[command.myModelKey]->Render();
 				break;
 			case SRenderCommand::eType::SKYSPHERE:
 			
@@ -107,7 +115,7 @@ namespace Snowblind
 			}
 		}
 	}
-
+	 
 	void CRenderer::Render2DCommands()
 	{
 		const CU::GrowingArray<SRenderCommand>& commands2D = mySynchronizer.GetRenderCommands(eCommandType::e2D);

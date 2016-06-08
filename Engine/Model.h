@@ -37,6 +37,8 @@ namespace Snowblind
 		void AddChild(CModel* aChild);
 		void SetEffect(CEffect* anEffect);
 		void SetIsSkysphere();
+		void SetPosition(const CU::Vector3f& aPosition);
+		CU::Matrix44f& GetOrientation();
 	private:
 		CEffect* myEffect;
 		ID3D11InputLayout* myVertexLayout;

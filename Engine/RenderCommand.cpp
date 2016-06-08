@@ -8,17 +8,17 @@ SRenderCommand::SRenderCommand()
 }
 
 SRenderCommand::SRenderCommand(const std::string aString, const CU::Math::Vector2<float>& aPosition, const eType& aType)
-	: myTextToPrint(aString)
+	: myType(aType)
+	, myTextToPrint(aString)
 	, myPosition(aPosition)
-	, myType(aType)
 	, myCommandType(eCommandType::e2D)
 {
 }
 
-SRenderCommand::SRenderCommand(Snowblind::CInstance* anInstance, const CU::Vector3f& aPosition, const eType& aType)
-	: myInstance(anInstance)
+SRenderCommand::SRenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& aPosition)
+	: myType(aType)
+	, myModelKey(modelKey)
 	, myPosition(aPosition)
-	, myType(aType)
 	, myCommandType(eCommandType::e3D)
 {
 }
@@ -33,18 +33,17 @@ SRenderCommand::SRenderCommand(const eType& aType, const CU::Vector3f& position,
 {
 }
 
-SRenderCommand::SRenderCommand(Snowblind::CEmitterInstance* anInstance)
-	: myEmitterInstance(anInstance)
+SRenderCommand::SRenderCommand(const eType& aType, Snowblind::CEmitterInstance* anInstance)
+	: myType(aType)
+	, myEmitterInstance(anInstance)
 	, myCommandType(eCommandType::PARTICLE)
-	, myType(eType::PARTICLE)
 {
 }
 
 
-SRenderCommand::SRenderCommand(eType aType, const CU::Vector3f& aPosition)
-	: myPosition(aPosition)
-	, myType(eType::SKYSPHERE)
+SRenderCommand::SRenderCommand(const eType& aType, const CU::Vector3f& aPosition)
+	: myType(aType)
+	, myPosition(aPosition)
 	, myCommandType(eCommandType::e3D)
 {
-
 }

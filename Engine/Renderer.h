@@ -2,7 +2,7 @@
 #include <DataStructures/StaticArray.h>
 
 #include "LightStructs.h"
-
+#include <unordered_map>
 
 namespace CommonUtilities
 {
@@ -21,6 +21,7 @@ namespace Snowblind
 	class CEmitterInstance;
 	class CTexture;
 	class CSkySphere;
+	class CModel;
 
 	class CRenderer
 	{
@@ -29,6 +30,8 @@ namespace Snowblind
 		~CRenderer();
 		void Add2DCamera(CCamera* aCamera);
 		void Render();
+
+		void AddModel(CModel* aModel, const std::string& aModelKey);
 	private:
 		eDeferredType myDeferredType;
 		void Render3DCommands();
@@ -36,6 +39,7 @@ namespace Snowblind
 		void RenderLightCommands();
 		void RenderParticles();
 
+		std::unordered_map<std::string, CModel*> myModels;
 
 		CCamera* myCamera;
 		CU::Matrix44f myPrevFrame;
@@ -51,5 +55,6 @@ namespace Snowblind
 		CText* myText;
 		CTexture* myDepthTexture;
 		CSkySphere* mySkysphere;
+
 	};
 }; 

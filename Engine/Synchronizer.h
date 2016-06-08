@@ -28,11 +28,11 @@ namespace Snowblind
 
 		const CU::GrowingArray<SRenderCommand>& GetRenderCommands(const eCommandType& commandType) const;
 	private:
+
 		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> my3DCommandBuffer;
-		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> my2DCommandBuffer;
 		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> myLightCommandBuffer;
 		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> myParticleCommands;
-
+		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> my2DCommandBuffer;
 
 		volatile bool myLogicIsDone;
 		volatile bool myRenderIsDone;

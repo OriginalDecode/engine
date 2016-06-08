@@ -193,7 +193,7 @@ namespace Snowblind
 		if (myDevice == nullptr)
 		{
 			hr = D3D11CreateDeviceAndSwapChain(
-				nullptr,
+				adapterToUse,
 				type,
 				nullptr,
 				0,

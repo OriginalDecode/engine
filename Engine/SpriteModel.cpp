@@ -7,7 +7,6 @@
 #include "VertexTypes.h"
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
-#include <d3dx11effect.h>
 #include "EngineDefines.h"
 #include "AssetsContainer.h"
 
@@ -31,7 +30,7 @@ namespace Snowblind
 
 	}
 
-	void CSpriteModel::Initiate(const char* aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+	void CSpriteModel::Initiate(const std::wstring& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 	{
 		myWindowSize = CEngine::GetInstance()->GetWindowSize();
 
@@ -188,7 +187,7 @@ namespace Snowblind
 
 		context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		D3DX11_TECHNIQUE_DESC techDesc;
+		/*D3DX11_TECHNIQUE_DESC techDesc;
 		myEffect->GetTechnique()->GetDesc(&techDesc);
 
 		for (UINT p = 0; p < techDesc.Passes; ++p)
@@ -196,7 +195,7 @@ namespace Snowblind
 			HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, &context);
 			CEngine::GetDirectX()->HandleErrors(hr, "Failed to apply pass to context!");
 			context.DrawIndexed(myIndexData->myIndexCount, 0, 0);
-		}
+		}*/
 	}
 
 	Snowblind::CEffect* CSpriteModel::GetEffect()
@@ -218,12 +217,12 @@ namespace Snowblind
 	{
 		HRESULT hr;
 
-		D3DX11_PASS_DESC passDesc;
-		hr = myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
+		/*D3DX11_PASS_DESC passDesc;
+		hr = myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);*/
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to get description from EffectPass!");
 
-		hr = CEngine::GetDirectX()->GetDevice()->
-			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
+		/*hr = CEngine::GetDirectX()->GetDevice()->
+			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);*/
 		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "SpriteModel Vertex Layout");
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create VertexLayout");
 

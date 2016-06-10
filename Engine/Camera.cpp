@@ -1,13 +1,15 @@
 #include "stdafx.h"
 #include "Camera.h"
+#include <SimpleMath.h>
 namespace Snowblind
 {
 	CCamera::CCamera(float aWidth, float aHeight)
 	{
-		XMMATRIX projection;
-		projection = XMMatrixPerspectiveFovLH(XM_PI*0.3f, aWidth / FLOAT(aHeight), 0.1f, 1000.f);
+		
+		DirectX::XMMATRIX projection;
+		projection = DirectX::XMMatrixPerspectiveFovLH(3.1415926535*0.3f, aWidth / FLOAT(aHeight), 0.1f, 1000.f);
 
-		XMFLOAT4X4 projMiddleHand;
+		DirectX::XMFLOAT4X4 projMiddleHand;
 		XMStoreFloat4x4(&projMiddleHand, projection);
 		myProjectionMatrix.Init(reinterpret_cast<float*>(projMiddleHand.m));
 	}
@@ -18,9 +20,9 @@ namespace Snowblind
 		my2DOrientation.myMatrix[7] = aPosition.y;
 		my2DOrientation.myMatrix[11] = aPosition.z;
 
-		XMMATRIX orthogonal;
-		orthogonal = XMMatrixOrthographicLH(aWidth, aHeight, 0.1f, 1000.f);
-		XMFLOAT4X4 orthMiddleHand;
+		DirectX::XMMATRIX orthogonal;
+		orthogonal = DirectX::XMMatrixOrthographicLH(aWidth, aHeight, 0.1f, 1000.f);
+		DirectX::XMFLOAT4X4 orthMiddleHand;
 		XMStoreFloat4x4(&orthMiddleHand, orthogonal);
 		myOrthogonalMatrix.Init(reinterpret_cast<float*>(orthMiddleHand.m));
 

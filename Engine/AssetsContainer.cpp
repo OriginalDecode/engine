@@ -53,7 +53,7 @@ namespace Snowblind
 		return myInstance;
 	}
 
-	CTexture* CAssetsContainer::GetTexture(const std::string& aFilePath)
+	CTexture* CAssetsContainer::GetTexture(const std::wstring& aFilePath)
 	{
 		if (myTextures.find(aFilePath) == myTextures.end())
 		{
@@ -80,7 +80,7 @@ namespace Snowblind
 		return myModels[aFilePath];
 	}
 
-	void CAssetsContainer::LoadTexture(const std::string& aFilePath)
+	void CAssetsContainer::LoadTexture(const std::wstring& aFilePath)
 	{
 		CTexture* texture = new CTexture();
 		if (texture->LoadTexture(aFilePath.c_str()) == false)
@@ -92,9 +92,9 @@ namespace Snowblind
 
 	void CAssetsContainer::LoadEffect(const std::string& aFilePath)
 	{
-		CEffect* effect = new CEffect();
-		effect->Initiate(aFilePath);
-		myEffects[aFilePath] = effect;
+		//CEffect* effect = new CEffect();
+		//effect->Initiate(aFilePath);
+		//myEffects[aFilePath] = effect;
 	}
 
 	void CAssetsContainer::LoadModel(const std::string& aFilePath, const std::string& effect)

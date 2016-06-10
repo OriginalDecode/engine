@@ -15,7 +15,7 @@ namespace Snowblind
 		mySprite = nullptr;
 	}
 
-	void CSprite::Initiate(const char* aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+	void CSprite::Initiate(const std::wstring& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 	{
 		mySprite = new CSpriteModel();
 		mySprite->Initiate(aTexturePath, aSize, aPosition);

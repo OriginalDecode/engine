@@ -85,13 +85,13 @@ namespace Snowblind
 
 	void CDeferredRenderer::Render(CEffect* anEffect)
 	{
-		D3DX11_TECHNIQUE_DESC techDesc;
-		anEffect->GetTechnique()->GetDesc(&techDesc);
-		for (UINT p = 0; p < techDesc.Passes; p++)
-		{
-			anEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, myContext);
-			myContext->DrawIndexed(6, 0, 0);
-		}
+		//D3DX11_TECHNIQUE_DESC techDesc;
+		//anEffect->GetTechnique()->GetDesc(&techDesc);
+		//for (UINT p = 0; p < techDesc.Passes; p++)
+		//{
+		//	anEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, myContext);
+		//	myContext->DrawIndexed(6, 0, 0);
+		//}
 	}
 
 	void CDeferredRenderer::SetBuffers()
@@ -112,12 +112,12 @@ namespace Snowblind
 	{
 		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
 		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
-		myLightPass.myAlbedo->SetResource(myAlbedo->GetShaderView());
-		myLightPass.myNormal->SetResource(myNormal->GetShaderView());
-		myLightPass.myDepth->SetResource(myDepth->GetShaderView());
-
-		myLightPass.myInvertedProjection->SetMatrix(&CU::Math::InverseReal(aCamera->GetProjection()).myMatrix[0]);
-		myLightPass.myNotInvertedView->SetMatrix(&aCamera->GetOrientation().myMatrix[0]);
+		//myLightPass.myAlbedo->SetResource(myAlbedo->GetShaderView());
+		//myLightPass.myNormal->SetResource(myNormal->GetShaderView());
+		//myLightPass.myDepth->SetResource(myDepth->GetShaderView());
+		//
+		//myLightPass.myInvertedProjection->SetMatrix(&CU::Math::InverseReal(aCamera->GetProjection()).myMatrix[0]);
+		//myLightPass.myNotInvertedView->SetMatrix(&aCamera->GetOrientation().myMatrix[0]);
 
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
@@ -127,14 +127,14 @@ namespace Snowblind
 	{
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
-		myLightPass.myAlbedo->SetResource(NULL);
-		myLightPass.myNormal->SetResource(NULL);
-		myLightPass.myDepth->SetResource(NULL);
+		//myLightPass.myAlbedo->SetResource(NULL);
+		//myLightPass.myNormal->SetResource(NULL);
+		//myLightPass.myDepth->SetResource(NULL);
 	}
 
 	void CDeferredRenderer::RenderLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation)
 	{
-		myLightPass.myPointLightVariable->SetRawValue(&pointlight->GetData(), 0, sizeof(SPointlightData));
+		//myLightPass.myPointLightVariable->SetRawValue(&pointlight->GetData(), 0, sizeof(SPointlightData));
 		pointlight->Render(previousOrientation, aCamera);
 	}
 
@@ -149,15 +149,15 @@ namespace Snowblind
 		myContext->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		myContext->OMSetRenderTargets(1, &backbuffer, depth);
 
-		myAmbientPass.myAlbedo->SetResource(myAlbedo->GetShaderView());
-		myAmbientPass.myNormal->SetResource(myNormal->GetShaderView());
-		myAmbientPass.myDepth->SetResource(myDepth->GetShaderView());
+		//myAmbientPass.myAlbedo->SetResource(myAlbedo->GetShaderView());
+		//myAmbientPass.myNormal->SetResource(myNormal->GetShaderView());
+		//myAmbientPass.myDepth->SetResource(myDepth->GetShaderView());
 
 		Render(myAmbientPass.myEffect);
 
-		myAmbientPass.myAlbedo->SetResource(NULL);
-		myAmbientPass.myNormal->SetResource(NULL);
-		myAmbientPass.myDepth->SetResource(NULL);
+		//myAmbientPass.myAlbedo->SetResource(NULL);
+		//myAmbientPass.myNormal->SetResource(NULL);
+		//myAmbientPass.myDepth->SetResource(NULL);
 	}
 
 	void CDeferredRenderer::CreateLightData()
@@ -245,14 +245,13 @@ namespace Snowblind
 
 		HRESULT hr;
 
-		D3DX11_PASS_DESC passDesc;
-		hr = myScreenData.myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
+		//D3DX11_PASS_DESC passDesc;
+		//hr = myScreenData.myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
 		myDirectX->HandleErrors(hr, "Failed to get description from EffectPass!");
 
-		hr = myDirectX->GetDevice()->
-			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myInputLayout);
-		myDirectX->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
-		myDirectX->HandleErrors(hr, "Failed to create VertexLayout");
+		//hr = myDirectX->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myInputLayout);
+		//myDirectX->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
+		//myDirectX->HandleErrors(hr, "Failed to create VertexLayout");
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));

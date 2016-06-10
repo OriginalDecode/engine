@@ -21,7 +21,7 @@ namespace Snowblind
 		CSpriteModel();
 		~CSpriteModel();
 
-		void Initiate(const char* aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+		void Initiate(const std::wstring& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 		void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 
 		void Render();
@@ -34,7 +34,7 @@ namespace Snowblind
 		void InitiateIndexBuffer();
 		void InitiateBlendState();
 		void ConvertToNormalSpace();
-		const char* myTexturePath;
+		std::wstring myTexturePath;
 		SWindowSize myWindowSize;
 		ID3D11ShaderResourceView* myTexture;
 		CCamera* myCamera;

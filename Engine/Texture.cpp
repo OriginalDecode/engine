@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Texture.h"
-#include <D3DX11.h>
+
+#include <DDSTextureLoader.h>
 
 namespace Snowblind
 {
@@ -54,7 +55,7 @@ namespace Snowblind
 		int width = static_cast<int>(aWidth);
 		int height = static_cast<int>(aHeight);
 
-		myFileName = "Initied as DSV";
+		myFileName = L"Initied as DSV";
 		myRenderTargetView = nullptr;
 		myShaderResource = nullptr;
 		myDepthStencil = nullptr;
@@ -86,23 +87,26 @@ namespace Snowblind
 		CreateDepthStencilView(static_cast<float>(width), static_cast<float>(height));
 	}
 
-	const std::string& CTexture::GetFileName()
+	const std::wstring& CTexture::GetFileName()
 	{
 		return myFileName;
 	}
 
-	bool CTexture::LoadTexture(const std::string& aFileName)
+	bool CTexture::LoadTexture(const std::wstring& aFileName)
 	{
+
 		HRESULT hr;
-		myFileName = aFileName;
-		hr = D3DX11CreateShaderResourceViewFromFile(CEngine::GetDirectX()->GetDevice(), myFileName.c_str(),
-			nullptr, nullptr, &myShaderResource, nullptr);
+		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
+		ID3D11Resource* resource;
+		hr = DirectX::CreateDDSTextureFromFile(device, nullptr, aFileName.c_str(), &resource, &myShaderResource);
+
 		if (FAILED(hr))
 		{
 			DL_WARNINGBOX_EXP(FAILED(hr), "Failed to load texture!");
 			return false;
 		}
 		return true;
+
 	}
 
 	void CTexture::SetDebugName(const std::string& debugName)
@@ -135,7 +139,7 @@ namespace Snowblind
 		HRESULT hr = S_OK;
 
 		//hr = D3DX11CreateTextureFromMemory(CEngine::GetDirectX()->GetDevice(), &result[0], result.size(), NULL, NULL, &resource, 0);
-		hr = D3DX11CreateShaderResourceViewFromMemory(CEngine::GetDirectX()->GetDevice(), &result[0], result.size(), 0, 0, &myShaderResource, &hr);
+		//hr = D3DX11CreateShaderResourceViewFromMemory(CEngine::GetDirectX()->GetDevice(), &result[0], result.size(), 0, 0, &myShaderResource, &hr);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create texture from memory");
 	}
 
@@ -171,7 +175,7 @@ namespace Snowblind
 
 	void CTexture::SaveToFile(const char* aFileName, int aSize)
 	{
-		D3D11_TEXTURE2D_DESC tempBufferInfo;
+		/*D3D11_TEXTURE2D_DESC tempBufferInfo;
 		tempBufferInfo.Width = aSize;
 		tempBufferInfo.Height = aSize;
 		tempBufferInfo.MipLevels = 1;
@@ -188,7 +192,7 @@ namespace Snowblind
 		HRESULT hr = S_OK;
 		hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), resource, D3DX11_IMAGE_FILE_FORMAT::D3DX11_IFF_DDS, aFileName);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save Texture! ");
-		resource->Release();
+		resource->Release();*/
 	}
 
 	void CTexture::CreateDepthStencilView(float aWidth, float aHeight, int aArraySize)

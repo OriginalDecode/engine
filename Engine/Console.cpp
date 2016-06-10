@@ -34,7 +34,7 @@ namespace Snowblind
 		myTopLeftPosition = { (Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, 0.f };
 
 		mySprite = new CSprite();
-		mySprite->Initiate("Data/Textures/consoleBG.dds", { Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f, 
+		mySprite->Initiate(L"Data/Textures/consoleBG.dds", { Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f, 
 															Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 2.f },
 															{ 0, 0 });
 		mySprite->SetHotspot({ -Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 4.f, Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 4.f });

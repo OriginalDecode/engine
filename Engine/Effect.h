@@ -23,7 +23,7 @@ namespace Snowblind
 		CEffect();
 		~CEffect();
 
-		void Initiate(const std::string& aFile);
+		void Initiate(const std::wstring& aFile);
 
 		ID3DX11Effect* GetEffect();
 		ID3DX11EffectTechnique* GetTechnique();
@@ -56,9 +56,9 @@ namespace Snowblind
 		void GetShaderResource(ID3DX11EffectMatrixVariable*& aShaderResource, const std::string& aVariableName);
 		void GetShaderResource(ID3DX11EffectVariable*& aShaderResource, const std::string& aVariableName);
 
-
+/*
 		template <typename T>
-		void Validate(T* anEffectVariable, const std::string& anErrorMessage);
+		void Validate(T* anEffectVariable, const std::string& anErrorMessage);*/
 	private:
 
 		std::string myTechniqueName;
@@ -85,10 +85,10 @@ namespace Snowblind
 		return myEffect;
 	}
 
-	template <typename T>
-	void CEffect::Validate(T* anEffectVariable, const std::string& aString)
-	{
-		DL_ASSERT_EXP(anEffectVariable->IsValid() == TRUE, aString.c_str());
-	}
+	//template <typename T>
+	//void CEffect::Validate(T* anEffectVariable, const std::string& aString)
+	//{
+	//	DL_ASSERT_EXP(anEffectVariable->IsValid() == TRUE, aString.c_str());
+	//}
 
 }

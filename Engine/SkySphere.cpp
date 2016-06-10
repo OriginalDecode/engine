@@ -11,13 +11,13 @@ namespace Snowblind
 
 	CSkySphere::CSkySphere(const std::string& aFilePath, const std::string& anEffect, CCamera* aCamera)
 	{
-		myCamera = aCamera;
-		myModel = CAssetsContainer::GetInstance()->GetModel(aFilePath, anEffect);
-		myModel->SetIsSkysphere();
-		std::string skysphereTexture;
-		JSONReader reader("Data/Config/game.json");
-		reader.ForceReadElement("Skysphere", skysphereTexture);
-		mySkysphereTexture = CAssetsContainer::GetInstance()->GetTexture(skysphereTexture);
+		//myCamera = aCamera;
+		//myModel = CAssetsContainer::GetInstance()->GetModel(aFilePath, anEffect);
+		//myModel->SetIsSkysphere();
+		//std::wstring skysphereTexture;
+		//JSONReader reader("Data/Config/game.json");
+		//reader.ForceReadElement("Skysphere", skysphereTexture);
+		//mySkysphereTexture = CAssetsContainer::GetInstance()->GetTexture(skysphereTexture);
 	}
 
 	CSkySphere::~CSkySphere()

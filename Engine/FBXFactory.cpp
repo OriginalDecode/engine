@@ -105,31 +105,32 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 	{
 		auto& currentTexture = someData->myTextures[i];
 
-		std::string resourceName;
+		std::wstring resourceName;
 		if (currentTexture.myType == DIFFUSE)
 		{
-			resourceName = "AlbedoTexture";
+			resourceName = L"AlbedoTexture";
 		}
 		if (currentTexture.myType == NORMALMAP)
 		{
-			resourceName = "NormalTexture";
+			resourceName = L"NormalTexture";
 			useSRGB = false;
 		}
 		if (currentTexture.myType == ROUGHNESS)
 		{
-			resourceName = "RoughnessTexture";
+			resourceName = L"RoughnessTexture";
 		}
 		if (currentTexture.myType == SUBSTANCE)
 		{
-			resourceName = "MetalnessTexture";
+			resourceName = L"MetalnessTexture";
 		}
 		if (currentTexture.myType == AO)
 		{
-			resourceName = "AOTexture";
+			resourceName = L"AOTexture";
 		}
 
+		std::wstring fileName(currentTexture.myFileName.begin(), currentTexture.myFileName.end());
 		surface->SetEffect(anEffect);
-		surface->SetTexture(resourceName.c_str(), currentTexture.myFileName.c_str());
+		surface->SetTexture(resourceName, fileName);
 
 	}
 	someOutData->mySurfaces.Add(surface);

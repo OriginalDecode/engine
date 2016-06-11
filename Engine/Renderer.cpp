@@ -28,7 +28,7 @@ namespace Snowblind
 
 		myTimeManager->GetTimer(loadTimer).Update();
 		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;
-		FONT_LOG("Font Took : %fms to load.", loadTime);
+		FONT_LOG(L"Font Took : %fms to load.", loadTime);
 
 		myPointLight = new CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
@@ -96,14 +96,13 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::MODEL:
-				myModels[command.myModelKey]->SetPosition(command.myPosition);
-				myModels[command.myModelKey]->GetEffect()->SetMatrices(myModels[command.myModelKey]->GetOrientation(), myPrevFrame, myCamera->GetProjection());
-				myModels[command.myModelKey]->Render();
+				//myModels[command.myModelKey]->SetPosition(command.myPosition);
+				//myModels[command.myModelKey]->GetEffect()->SetMatrices(myModels[command.myModelKey]->GetOrientation(), myPrevFrame, myCamera->GetProjection());
+				//myModels[command.myModelKey]->Render();
 				break;
 			case SRenderCommand::eType::SKYSPHERE:
-			
-				mySkysphere->SetPosition(command.myPosition);
-				mySkysphere->Render(myPrevFrame);
+				//mySkysphere->SetPosition(command.myPosition);
+				//mySkysphere->Render(myPrevFrame);
 				break;
 			}
 		}
@@ -118,9 +117,9 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::TEXT:
-				myText->SetText(command.myTextToPrint);
-				myText->SetPosition({ command.myPosition.x, command.myPosition.y });
-				myText->Render(my2DCamera);
+				//myText->SetText(command.myTextToPrint);
+				//myText->SetPosition({ command.myPosition.x, command.myPosition.y });
+				//myText->Render(my2DCamera);
 				break;
 			}
 		}
@@ -137,11 +136,11 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::POINTLIGHT:
-				myPointLight->SetPosition(command.myPosition);
-				myPointLight->SetRange(command.myRange);
-				myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
-				myPointLight->Update();
-				myDeferredRenderer->RenderLight(myPointLight, myCamera, myPrevFrame);
+				//myPointLight->SetPosition(command.myPosition);
+				//myPointLight->SetRange(command.myRange);
+				//myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
+				//myPointLight->Update();
+				//myDeferredRenderer->RenderLight(myPointLight, myCamera, myPrevFrame);
 				break;
 			}
 		}
@@ -157,7 +156,7 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::PARTICLE:
-				command.myEmitterInstance->Render(myCamera, myDepthTexture);
+				//command.myEmitterInstance->Render(myCamera, myDepthTexture);
 				break;
 			}
 		}

@@ -64,7 +64,7 @@ namespace Snowblind
 		atlasSize *= 2;
 		atlasSize += 2;
 		atlasSize = int(CL::nearest_Pow(atlasSize));
-		FONT_LOG("Font Size W/H: %d", atlasSize);
+		FONT_LOG(L"Font Size W/H: %d", atlasSize);
 		float atlasWidth = atlasSize; //have to be replaced.
 		float atlasHeight = atlasSize; //have to be replaced
 
@@ -80,7 +80,7 @@ namespace Snowblind
 		else
 		{
 			fontData = myFontData[key.str()];
-			FONT_LOG("Font Data already found, creating Font Object with existing font data! %s", key.str().c_str());
+			FONT_LOG(L"Font Data already found, creating Font Object with existing font data! %s", key.str().c_str());
 			return new CFont(fontData);
 		}
 
@@ -93,7 +93,7 @@ namespace Snowblind
 		FT_Face face;
 		FT_Error error = FT_New_Face(myLibrary, myFontPath, 0, &face);
 		FT_Size size = face->size;
-		FONT_LOG("Loading font:%s", myFontPath);
+		FONT_LOG(L"Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
 
 		FT_F26Dot6 ftSize = (FT_F26Dot6)(fontData->myFontHeightWidth * (1 << 6));
@@ -193,11 +193,11 @@ namespace Snowblind
 
 		if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
 		{
-			FONT_LOG("Tried to set a UV coord to above 1 at glyph : %c , index %d", index, index);
-			FONT_LOG("TopLeftUV X: %f", glyphData.myTopLeftUV.x);
-			FONT_LOG("TopLeftUV Y: %f", glyphData.myTopLeftUV.y);
-			FONT_LOG("BottomRightUV X: %f", glyphData.myBottomRightUV.x);
-			FONT_LOG("BottomRightUV Y: %f", glyphData.myBottomRightUV.y);
+			FONT_LOG(L"Tried to set a UV coord to above 1 at glyph : %c , index %d", index, index);
+			FONT_LOG(L"TopLeftUV X: %f", glyphData.myTopLeftUV.x);
+			FONT_LOG(L"TopLeftUV Y: %f", glyphData.myTopLeftUV.y);
+			FONT_LOG(L"BottomRightUV X: %f", glyphData.myBottomRightUV.x);
+			FONT_LOG(L"BottomRightUV Y: %f", glyphData.myBottomRightUV.y);
 			DumpAtlas(aFontData, atlasWidth);
 			DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 		}

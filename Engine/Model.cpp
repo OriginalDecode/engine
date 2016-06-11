@@ -11,13 +11,11 @@
 #include "VertexWrapper.h"
 #include "VertexTypes.h"
 #include "Surface.h"
-#include "VertexStructs.h"
-#include "AssetsContainer.h"
 namespace Snowblind
 {
 	CModel::CModel()
 	{
-
+		CShaderContainer::GetInstance()->GetVertexShader(L"Data/Shaders/base.vs");
 		myIsNULLObject = true;
 		myAPI = CEngine::GetDirectX();
 		myIsTextured = false;
@@ -71,7 +69,7 @@ namespace Snowblind
 	void CModel::CreateCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
 	{
 		myIsNULLObject = false;
-		ENGINE_LOG("Creating Cube");
+		ENGINE_LOG(L"Creating Cube");
 		float halfWidth = aWidth *0.5f;
 		float halfDepth = aDepth *0.5f;
 		float halfHeight = aHeight *0.5f;
@@ -188,7 +186,7 @@ namespace Snowblind
 	void CModel::CreateCube(const std::string& anEffectPath, const CU::Vector3f& aColor)
 	{
 		myIsNULLObject = false;
-		ENGINE_LOG("Creating Cube");
+		ENGINE_LOG(L"Creating Cube");
 
 		CU::GrowingArray<SVertexTypePosCol> vertices;
 		CU::GrowingArray<int> indexes;
@@ -539,7 +537,7 @@ namespace Snowblind
 			tempSurface->SetTexture("AlbedoTexture", "Data/Textures/col.dds");
 			mySurfaces.Add(tempSurface);*/
 
-		myEffect->SetAlbedo(Snowblind::CAssetsContainer::GetInstance()->GetTexture(L"Data/Textures/colors.dds"));
+		//myEffect->SetAlbedo(Snowblind::CAssetsContainer::GetInstance()->GetTexture(L"Data/Textures/colors.dds"));
 		InitVertexBuffer();
 		InitIndexBuffer();
 	}
@@ -674,7 +672,7 @@ namespace Snowblind
 
 		/*D3DX11_PASS_DESC passDesc;
 		hr = myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);*/
-		myAPI->HandleErrors(hr, "Failed to get description from EffectPass!");
+		myAPI->HandleErrors(hr, L"Failed to get description from EffectPass!");
 
 		/*hr = myAPI->GetDevice()->
 			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
@@ -693,8 +691,8 @@ namespace Snowblind
 		vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
 
 		hr = myAPI->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
-		myAPI->SetDebugName(myVertexBuffer->myVertexBuffer, "Model : Vertex Buffer");
-		myAPI->HandleErrors(hr, "Failed to Create VertexBuffer!");
+		myAPI->SetDebugName(myVertexBuffer->myVertexBuffer, L"Model : Vertex Buffer");
+		myAPI->HandleErrors(hr, L"Failed to Create VertexBuffer!");
 
 		myVertexBuffer->myStride = myVertexData->myStride;
 		myVertexBuffer->myByteOffset = 0;
@@ -721,8 +719,8 @@ namespace Snowblind
 			indexData.pSysMem = myIndexData->myIndexData;
 
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
-		myAPI->SetDebugName(myIndexBuffer->myIndexBuffer, "Model : Index Buffer");
-		myAPI->HandleErrors(hr, "Failed to Create IndexBuffer");
+		myAPI->SetDebugName(myIndexBuffer->myIndexBuffer, L"Model : Index Buffer");
+		myAPI->HandleErrors(hr, L"Failed to Create IndexBuffer");
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		myIndexBuffer->myByteOffset = 0;

@@ -28,14 +28,22 @@ namespace Snowblind
 	{
 		CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_NONE);
-		CEffect* effect = myModel->GetEffect();
+		
+		/*SetVertexShader(CAssetContainer::GetInstance()->GetVertexShader("String"));
+		SetPixelShader(CAssetContainer::Getinstance()->GetPixelShader("String"));
+		SetGeometryShader();
+		SetHullShader();
+		SetDomainShader();
+		SetComputeShader();*/
 
-		effect->SetTexture(mySkysphereTexture, "AlbedoTexture");
-
-
-		effect->SetMatrices(myOrientation, anOrientation, myCamera->GetProjection());
-
-		myModel->Render();
+		//CEffect* effect = myModel->GetEffect();
+		//
+		//effect->SetTexture(mySkysphereTexture, "AlbedoTexture");
+		//
+		//
+		//effect->SetMatrices(myOrientation, anOrientation, myCamera->GetProjection());
+		//
+		//myModel->Render();
 		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
 		CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 	}

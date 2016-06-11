@@ -41,13 +41,13 @@ namespace Snowblind
 
 	void CInstance::Render(CU::Matrix44f& previousOrientation, CCamera& aCamera)
 	{
-		myModel->GetEffect()->SetMatrices(myOrientation, previousOrientation, aCamera.GetProjection());
+		//myModel->GetEffect()->SetMatrices(myOrientation, previousOrientation, aCamera.GetProjection());
 		myModel->Render();
 	}
 
 	void CInstance::Render()
 	{
-		myModel->GetEffect()->SetWorldMatrix(myOrientation);
+		//myModel->GetEffect()->SetWorldMatrix(myOrientation);
 		myModel->Render();
 	}
 
@@ -58,17 +58,17 @@ namespace Snowblind
 
 	void CInstance::UpdateLight(CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE>& someData)
 	{
-		myModel->GetEffect()->UpdateLight(someData);
+		//myModel->GetEffect()->UpdateLight(someData);
 	}
 
 	void CInstance::UpdateLight(CU::StaticArray<SSpotlightData, SPOTLIGHT_SIZE>& someData)
 	{
-		myModel->GetEffect()->UpdateLight(someData);
+		//myModel->GetEffect()->UpdateLight(someData);
 	}
 
 	void CInstance::UpdateLight(CU::StaticArray<SPointlightData, POINTLIGHT_SIZE>& someData)
 	{
-		myModel->GetEffect()->UpdateLight(someData);
+		//myModel->GetEffect()->UpdateLight(someData);
 	}
 
 };

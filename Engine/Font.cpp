@@ -79,7 +79,7 @@ namespace Snowblind
 
 		if (!myEffect)
 			return;
-		myEffect->SetTexture(myData->myAtlasView, "FontTexture");
+		//myEffect->SetTexture(myData->myAtlasView, "FontTexture");
 
 		ID3D11DeviceContext& context = *CEngine::GetDirectX()->GetContext();
 		context.IASetInputLayout(myVertexLayout);
@@ -259,13 +259,13 @@ namespace Snowblind
 		myInitData->pSysMem = reinterpret_cast<char*>(&myVertices[0]);
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData, &myVertexBuffer->myVertexBuffer);
 
-		CEngine::GetDirectX()->SetDebugName(myVertexBuffer->myVertexBuffer, "Font Vertex Buffer");
+		CEngine::GetDirectX()->SetDebugName(myVertexBuffer->myVertexBuffer, L"Font Vertex Buffer");
 
 		myIndexBufferDesc->ByteWidth = sizeof(UINT) * myIndices.Size();
 		myInitData->pSysMem = reinterpret_cast<char*>(&myIndices[0]);
 		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(myIndexBufferDesc, myInitData, &myIndexBuffer->myIndexBuffer);
-
-		CEngine::GetDirectX()->SetDebugName(myIndexBuffer->myIndexBuffer, "Font Index Buffer");
+		
+		CEngine::GetDirectX()->SetDebugName(myIndexBuffer->myIndexBuffer, L"Font Index Buffer");
 
 	}
 };

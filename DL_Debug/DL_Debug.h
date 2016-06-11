@@ -16,6 +16,7 @@
 #define DL_ASSERT(string) DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__,string);
 
 #define DL_ASSERT_EXP(expression, string)if(expression == false){DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__,string);};
+#define DL_ASSERT_EXP_L(expression, string)if(expression == false){DL_Debug::Debug::GetInstance()->AssertMessageL(__FILE__,__LINE__,__FUNCTION__,string);};
 
 #define DL_PRINT(string)  DL_Debug::Debug::GetInstance()->PrintMessage(string);
 #define DL_DEBUG( ... )  DL_Debug::Debug::GetInstance()->DebugMessage(__LINE__,__FUNCTION__, RETURN(__VA_ARGS__));
@@ -97,15 +98,18 @@ namespace DL_Debug
 
 		void PrintMessage(const char *aString);
 		void AssertMessage(const char *aFileName, int aLine, const char *aFunctionName, const char *aString);
+		void AssertMessageL(const char *aFileName, int aLine, const char *aFunctionName, const std::wstring& aString);
+
 		void DebugMessage(const int aLine, const char *aFileName, const std::string& aString);
-		void WriteLog(const std::string& aFilter, const std::string& aString);
+		void WriteLog(const std::string& aFilter, const std::wstring& aString);
+
 
 		void DisableFilters(const eDEBUGLOG& anEnum);
 		void ActivateFilter(const eDEBUGLOG& anEnum);
 		const bool CheckFilter(const eDEBUGLOG& aFilter);
 
 		const float GetTime() const;
-		std::string HandleVAArgs(const char* aFormattedString, ...);
+		std::wstring HandleVAArgs(const wchar_t* aFormattedString, ...);
 		const int& GetActiveLogCount() const;
 	private:
 		Debug();

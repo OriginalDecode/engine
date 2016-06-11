@@ -46,7 +46,7 @@
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DataStructures\Hashmap\Hash.cpp" />
+    <ClCompile Include="DataStructures\Hashmap\MurmurHash3.cpp" />
     <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="JSON\JSONReader.cpp" />
     <ClCompile Include="Math\Quaternion\Quaternion.cpp" />

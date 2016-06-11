@@ -128,7 +128,7 @@ void CApplication::Update()
 
 void CApplication::Render()
 {
-	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
+	/*mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 0.f, 0.f)));
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 10.f, 0.f)));
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(25.f, 10.f, 0.f)));
@@ -137,20 +137,20 @@ void CApplication::Render()
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(25.f, 10.f, 0.f), CU::Vector3f(0.f, 0.f, 1.f), 40.f, 10.f));
 
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "Radio", CU::Vector3f(15.f, 0.f, 0.f)));
-	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::PARTICLE, myEmitter));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::PARTICLE, myEmitter));*/
 
-	std::stringstream ss;
+	/*std::stringstream ss;
 	ss << myEngine->GetFPS() << "\n"
 		<< myAverageFPSToPrint
 		<< "\nCamera Position : \nX : "
 		<< myOrientation.GetPosition().x
 		<< "\nY : " << myOrientation.GetPosition().y
 		<< "\nZ : " << myOrientation.GetPosition().z;
-	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Math::Vector2<float>(0, 0)));
+	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Math::Vector2<float>(0, 0)));*/
 
-	std::stringstream cpuAndMem;
+	/*std::stringstream cpuAndMem;
 	cpuAndMem << "CPU: " << Snowblind::CSystemMonitor::GetCPUUsage() << "%" << "\n" << "Mem: " << Snowblind::CSystemMonitor::GetMemoryUsage(true) << " kb";
-	mySynchronizer->AddRenderCommand(SRenderCommand(cpuAndMem.str(), CU::Vector2f(myWindowWidth - 100.f, 0)));
+	mySynchronizer->AddRenderCommand(SRenderCommand(cpuAndMem.str(), CU::Vector2f(myWindowWidth - 100.f, 0)));*/
 
 
 }

@@ -32,7 +32,7 @@ FbxScene* FBXLoader::LoadScene(const char* aFile)
 		printf("Call to FbxImporter::Initialize() failed.\n");
 		printf("Error returned: %s\n\n", lImporter->GetStatus().GetErrorString());
 		std::string errorMessage = "Could not find fbx file: " + std::string(aFile);
-		DL_DEBUG("[FBXLoader](LoadScene) : %s", errorMessage);
+		DL_MESSAGE(L"[FBXLoader](LoadScene) : %s", errorMessage);
 		MessageBoxA(nullptr, errorMessage.c_str(), "ERROR", 0);
 		//DL_ASSERT("Fbx file not found. Check the debug logger!");
 	}
@@ -1415,17 +1415,17 @@ void LoadNodeRecursive(FbxModelData* aModel, AnimationData& aAnimation, FbxNode*
 
 FbxModelData* FBXLoader::loadModel(const char* aFile)
 {
-	DL_PRINT("[FBXLoader](loadModel) : Creating ModelData...");
+	DL_PRINT("[FBXLoader] : Creating ModelData...");
 	myLoadingModel = new FbxModelData;
-	DL_PRINT("[FBXLoader](loadModel) : Success!");
-	DL_PRINT("[FBXLoader](loadModel) : Creating TextureData...");
+	DL_PRINT("[FBXLoader] : Success!");
+	DL_PRINT("[FBXLoader] : Creating TextureData...");
 	myLoadingModel->myTextureData = new TextureData();
-	DL_PRINT("[FBXLoader](loadModel) : Success!");
-	DL_PRINT("[FBXLoader](loadModel) : FBXLoader Loading Scene...");
+	DL_PRINT("[FBXLoader] : Success!");
+	DL_PRINT("[FBXLoader] : FBXLoader Loading Scene...");
 	auto scene = LoadScene(aFile);
-	DL_PRINT("[FBXLoader](loadModel) : Successfully loaded scene!");
+	DL_PRINT("[FBXLoader] : Successfully loaded scene!");
 
-	DL_PRINT("[FBXLoader](loadModel) : FBXLoader Loading Textures...");
+	DL_PRINT("[FBXLoader] : FBXLoader Loading Textures...");
 	//TextureData
 	const int lTextureCount = scene->GetTextureCount();
 	for (int lTextureIndex = 0; lTextureIndex < lTextureCount; ++lTextureIndex)

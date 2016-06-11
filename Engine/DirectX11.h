@@ -27,6 +27,15 @@ struct D3D11_VIEWPORT;
 struct ID3D11RasterizerState;
 struct ID3D11BlendState;
 
+struct ID3D11VertexShader;
+struct ID3D11PixelShader;
+struct ID3D11GeometryShader;
+struct ID3D11HullShader;
+struct ID3D11DomainShader;
+struct ID3D11ComputeShader;
+
+struct ID3D11SamplerState;
+
 enum class eEngineFlags
 {
 	FULLSCREEN,
@@ -46,6 +55,7 @@ enum class eRasterizer
 	WIREFRAME,
 	CULL_BACK,
 	CULL_NONE,
+	_COUNT
 };
 
 enum class eBlendStates
@@ -56,7 +66,14 @@ enum class eBlendStates
 	_COUNT
 };
 
-
+enum class eSamplerStates
+{
+	LINEAR_CLAMP,
+	LINEAR_WRAP,
+	POINT_CLAMP,
+	POINT_WRAP,
+	_COUNT
+};
 
 namespace Snowblind
 {
@@ -70,22 +87,17 @@ namespace Snowblind
 		void Clear();
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContext();
-		const std::string& GetAdapterName(unsigned short anIndex);
-		const std::string& GetActiveAdapterName();
+		const std::wstring& GetAdapterName(unsigned short anIndex);
+		const std::wstring& GetActiveAdapterName();
 		void EnableZBuffer();
 		void DisableZBuffer();
-		void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
+		void HandleErrors(const HRESULT& aResult, const std::wstring& anErrorString);
 		const char*	GetAPIName();
 
-		//	Width of Viewport
-		//	Height of Viewport
-		//	Depth of Viewport (0 - 1)
 		void SetViewport(int aWidth, int aHeight, int aDepth);
 		void ResetViewport();
 		void ResetRendertarget();
-		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
-		void SetDepthBufferState(const eDepthStencil& aDepthState);
-		void SetRasterizer(const eRasterizer& aRasterizer);
+		void SetDebugName(ID3D11DeviceChild* aChild, const std::wstring& aDebugName);
 
 		ID3D11RenderTargetView* GetBackbuffer();
 		const ID3D11RenderTargetView* GetBackbuffer() const;
@@ -93,7 +105,17 @@ namespace Snowblind
 		ID3D11DepthStencilView* GetDepthView();
 		const ID3D11DepthStencilView* GetDepthView() const;
 
+		void SetDepthBufferState(const eDepthStencil& aDepthState);
+		void SetRasterizer(const eRasterizer& aRasterizer);
 		void SetBlendState(const eBlendStates& blendState);
+		void SetSamplerState(const eSamplerStates& samplerState);
+
+		void SetVertexShader(ID3D11VertexShader*& aVertexShader);
+		void SetPixelShader(ID3D11PixelShader*& aPixelShader);
+		void SetGeometryShader(ID3D11GeometryShader*& aGeometryShader);
+		void SetHullShader(ID3D11HullShader*& aHullShader);
+		void SetDomainShader(ID3D11DomainShader*& aDomainShader);
+		void SetComputeShader(ID3D11ComputeShader*& aComputeShader);
 
 	private:
 
@@ -108,6 +130,7 @@ namespace Snowblind
 		void CreateReadDepthStencilState();
 		void CreateRazterizers();
 		void CreateBlendStates();
+		void CreateSamplerStates();
 
 		HWND myHWND;
 
@@ -120,14 +143,15 @@ namespace Snowblind
 		ID3D11DeviceContext* myDeferredContext;
 		ID3D11RenderTargetView* myRenderTarget;
 		ID3D11DepthStencilView* myDepthView;
-		ID3D11DepthStencilState* myDepthStates[static_cast<int>(eDepthStencil::_COUNT)];
-		//ID3D11CommandList* myCommandList[2];
-		ID3D11RasterizerState* myRasterizerStates[3];
-		ID3D11BlendState* myBlendStates[static_cast<int>(eBlendStates::_COUNT)];
 
-		std::unordered_map<std::string, IDXGIAdapter*>	myAdapters;
-		std::vector<std::string> myAdaptersName;
-		std::string myActiveAdapter;
+		ID3D11DepthStencilState* myDepthStates[static_cast<int>(eDepthStencil::_COUNT)];
+		ID3D11RasterizerState* myRasterizerStates[static_cast<int>(eRasterizer::_COUNT)];
+		ID3D11BlendState* myBlendStates[static_cast<int>(eBlendStates::_COUNT)];
+		ID3D11SamplerState* mySamplerStates[static_cast<int>(eSamplerStates::_COUNT)];
+
+		std::unordered_map<std::wstring, IDXGIAdapter*>	myAdapters;
+		std::vector<std::wstring> myAdaptersName;
+		std::wstring myActiveAdapter;
 
 		float myWidth;
 		float myHeight;
@@ -136,7 +160,7 @@ namespace Snowblind
 		std::bitset<int(eEngineFlags::_COUNT)> myEngineFlags;
 	};
 
-	__forceinline const std::string& CDirectX11::GetActiveAdapterName()
+	__forceinline const std::wstring& CDirectX11::GetActiveAdapterName()
 	{
 		return myActiveAdapter;
 	}

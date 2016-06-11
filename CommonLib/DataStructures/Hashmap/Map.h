@@ -19,6 +19,7 @@ namespace CommonUtilities
 		void Delete(const Key &aKey);
 		bool KeyExists(const Key &aKey);
 		Value& operator[](const Key &aKey); 
+		const int& GetBucketSize();
 	private:
 		struct Keypair
 		{
@@ -32,6 +33,12 @@ namespace CommonUtilities
 		bool ValueExists(const Value &aValue);
 
 	};
+
+	template<MAP>
+	const int& CommonUtilities::Map<>::GetBucketSize()
+	{
+		return myBucketSize;
+	}
 
 	template<MAP>
 	Map<MAP_TEMPLATE>::Map()
@@ -49,7 +56,6 @@ namespace CommonUtilities
 	template<MAP>
 	Map<MAP_TEMPLATE>::~Map()
 	{
-
 	}
 
 	template<MAP>
@@ -127,7 +133,6 @@ namespace CommonUtilities
 	template<MAP>
 	void Map<MAP_TEMPLATE>::Delete(const Key &aKey)
 	{
-
 		assert(KeyExists(aKey) != false && "[Map] : Key does not exist.");
 
 		unsigned int index = Hash(aKey);
@@ -143,8 +148,6 @@ namespace CommonUtilities
 				}
 			}
 		}
-
-
 	}
 
 	template<MAP>
@@ -170,7 +173,6 @@ namespace CommonUtilities
 		}
 
 		return false;
-
 	}
 }
 

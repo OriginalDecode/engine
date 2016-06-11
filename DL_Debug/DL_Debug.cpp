@@ -101,6 +101,51 @@ namespace DL_Debug
 		_wassert(wa, _CRT_WIDE(__FILE__), __LINE__);
 	}
 
+	void Debug::AssertMessageL(const char *aFileName, int aLine, const char *aFunctionName, const std::wstring& aString)
+	{
+
+		std::string out(aString.begin(), aString.end());
+		const char* output = out.c_str();
+
+		myOutputFile << "\nCallStack:\n";
+		std::stringstream sstream;
+
+		sstream << "\nAssert at : " <<
+			"\nFile: " << aFileName <<
+			"\nLine: " << aLine <<
+			"\nFunction: " << aFunctionName <<
+			"\nMessage: " << output;
+
+		myOutputFile <<
+			"\n" << AddTime() << "Assert at: " <<
+			"\n" << AddTime() << "File: " << aFileName <<
+			"\n" << AddTime() << "Line: " << aLine <<
+			"\n" << AddTime() << "Function: " << aFunctionName <<
+			"\n" << AddTime() << "Message: " << output;
+
+		myOutputFile << "\nCallStack:";
+
+		DL_Debug::StackWalker ss;
+		ss.ShowCallstack();
+
+		myOutputFile << "==========================";
+		myOutputFile.flush();
+
+
+		time_t now = time(0);
+		struct tm tstruct;
+		char buff[30];
+		localtime_s(&tstruct, &now);
+		strftime(buff, sizeof(buff), "%Y-%m-%d  %H_%M_%S", &tstruct);
+
+		size_t size = strlen(sstream.str().c_str()) + 1;
+		wchar_t* wa = new wchar_t[size];
+		size_t tempSize;
+		mbstowcs_s(&tempSize, wa, size, sstream.str().c_str(), size);
+
+		_wassert(wa, _CRT_WIDE(__FILE__), __LINE__);
+	}
+
 	void Debug::DebugMessage(const int aLine, const char *aFileName, const std::string& aString)
 	{
 		myOutputFile
@@ -114,7 +159,7 @@ namespace DL_Debug
 		myOutputFile.flush();
 	}
 
-	void Debug::WriteLog(const std::string& aFilter, const std::string& aString)
+	void Debug::WriteLog(const std::string& aFilter, const std::wstring& aString)
 	{
 		if (aFilter == "Engine" && myDebugLogs[eDEBUGLOG::Engine] == FALSE)
 			return;
@@ -140,8 +185,10 @@ namespace DL_Debug
 		if (aFilter == "Model" && myDebugLogs[eDEBUGLOG::Model] == FALSE)
 			return;
 
+		std::string str(aString.begin(), aString.end());
+
 		myOutputFile
-			<< AddTime() << "[" << aFilter << "]" << " : " << aString << "\n";
+			<< AddTime() << "[" << aFilter << "]" << " : " << str << "\n";
 
 		myOutputFile.flush();
 
@@ -217,15 +264,15 @@ namespace DL_Debug
 		return toReturn;
 	}
 
-	std::string Debug::HandleVAArgs(const char* aFormattedString, ...)
+	std::wstring Debug::HandleVAArgs(const wchar_t* aFormattedString, ...)
 	{
-		char buffer[255];
+		wchar_t buffer[255 * 16];
 		va_list args;
 		va_start(args, aFormattedString);
-		vsprintf_s(buffer, aFormattedString, args);
+		vswprintf_s(buffer, aFormattedString, args);
 		va_end(args);
 
-		std::string toReturn = buffer;
+		std::wstring toReturn = buffer;
 
 		return toReturn;
 	}

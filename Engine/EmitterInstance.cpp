@@ -63,10 +63,10 @@ namespace Snowblind
 	void CEmitterInstance::Render(CCamera* camera, CTexture* aDepthTexture)
 	{
 		UpdateVertexBuffer();
-		myData.shader->SetTexture(myData.diffuseTexture, "DiffuseTexture");
-		myData.shader->SetDepthTexture(aDepthTexture);
+		//myData.shader->SetTexture(myData.diffuseTexture, L"DiffuseTexture");
+		//myData.shader->SetDepthTexture(aDepthTexture);
 
-		myData.shader->SetMatrices(myOrientation, camera->GetOrientation(), camera->GetProjection());
+		//myData.shader->SetMatrices(myOrientation, camera->GetOrientation(), camera->GetProjection());
 		ID3D11DeviceContext* context = CEngine::GetDirectX()->GetContext();
 		context->IASetInputLayout(myInputLayout);
 
@@ -107,7 +107,7 @@ namespace Snowblind
 		ZeroMemory(&vertexData, sizeof(vertexData));
 		vertexData.pSysMem = reinterpret_cast<char*>(&myParticles[0]);
 		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer); //Added vertexData to this
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Particle Vertex Buffer");
+		CEngine::GetDirectX()->HandleErrors(hr, L"Failed to Create Particle Vertex Buffer");
 	}
 
 	void CEmitterInstance::UpdateVertexBuffer()

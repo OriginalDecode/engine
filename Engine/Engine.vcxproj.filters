@@ -182,6 +182,7 @@
     <ClInclude Include="SnowblindParticleData.h" />
     <ClInclude Include="SkySphere.h" />
     <ClInclude Include="SystemMonitor.h" />
+    <ClInclude Include="ShaderContainer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -278,5 +279,6 @@
     <ClCompile Include="EmitterInstance.cpp" />
     <ClCompile Include="SkySphere.cpp" />
     <ClCompile Include="SystemMonitor.cpp" />
+    <ClCompile Include="ShaderContainer.cpp" />
   </ItemGroup>
 </Project>

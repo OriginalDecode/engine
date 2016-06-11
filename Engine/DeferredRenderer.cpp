@@ -43,11 +43,11 @@ namespace Snowblind
 		myClearColor[2] = 0.f;
 		myClearColor[3] = 0.f;
 
-		myScreenData.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
-		myScreenData.myEffect->GetShaderResource(myScreenData.mySource, "DiffuseTexture");
+		//myScreenData.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
+		//myScreenData.myEffect->GetShaderResource(myScreenData.mySource, "DiffuseTexture");
 
-		myParticlePass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
-		myScreenData.myEffect->GetShaderResource(myParticlePass.myDiffuse, "DiffuseTexture");
+		//myParticlePass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
+		//myScreenData.myEffect->GetShaderResource(myParticlePass.myDiffuse, "DiffuseTexture");
 
 		CreateAmbientData();
 		CreateLightData();
@@ -166,21 +166,21 @@ namespace Snowblind
 		myLightPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredLightMesh.fx");
 		CEffect* effect = myLightPass.myEffect;
 
-		effect->GetShaderResource(myLightPass.myAlbedo, "AlbedoTexture");
-		effect->GetShaderResource(myLightPass.myNormal, "NormalTexture");
-		effect->GetShaderResource(myLightPass.myDepth, "DepthTexture");
-		effect->GetShaderResource(myLightPass.myPointLightVariable, "PointLights");
-		effect->GetShaderResource(myLightPass.myInvertedProjection, "InvertedProjection");
-		effect->GetShaderResource(myLightPass.myNotInvertedView, "NotInvertedView");
+		//effect->GetShaderResource(myLightPass.myAlbedo, "AlbedoTexture");
+		//effect->GetShaderResource(myLightPass.myNormal, "NormalTexture");
+		//effect->GetShaderResource(myLightPass.myDepth, "DepthTexture");
+		//effect->GetShaderResource(myLightPass.myPointLightVariable, "PointLights");
+		//effect->GetShaderResource(myLightPass.myInvertedProjection, "InvertedProjection");
+		//effect->GetShaderResource(myLightPass.myNotInvertedView, "NotInvertedView");
 	}
 
 	void CDeferredRenderer::CreateAmbientData()
 	{
 		myAmbientPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredAmbient.fx");
 		CEffect* effect = myAmbientPass.myEffect;
-		effect->GetShaderResource(myAmbientPass.myAlbedo, "AlbedoTexture");
-		effect->GetShaderResource(myAmbientPass.myNormal, "NormalTexture");
-		effect->GetShaderResource(myAmbientPass.myDepth, "DepthTexture");
+		//effect->GetShaderResource(myAmbientPass.myAlbedo, "AlbedoTexture");
+		//effect->GetShaderResource(myAmbientPass.myNormal, "NormalTexture");
+		//effect->GetShaderResource(myAmbientPass.myDepth, "DepthTexture");
 	}
 
 	void CDeferredRenderer::CreateFullscreenQuad()
@@ -247,7 +247,7 @@ namespace Snowblind
 
 		//D3DX11_PASS_DESC passDesc;
 		//hr = myScreenData.myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-		myDirectX->HandleErrors(hr, "Failed to get description from EffectPass!");
+		myDirectX->HandleErrors(hr, L"Failed to get description from EffectPass!");
 
 		//hr = myDirectX->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myInputLayout);
 		//myDirectX->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
@@ -265,7 +265,7 @@ namespace Snowblind
 		vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
 
 		hr = myDirectX->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
-		myDirectX->HandleErrors(hr, "Failed to Create VertexBuffer!");
+		myDirectX->HandleErrors(hr, L"Failed to Create VertexBuffer!");
 
 		myVertexBuffer->myStride = myVertexData->myStride;
 		myVertexBuffer->myByteOffset = 0;
@@ -288,7 +288,7 @@ namespace Snowblind
 		D3D11_SUBRESOURCE_DATA indexData;
 		ZeroMemory(&indexData, sizeof(indexData)), indexData.pSysMem = myIndexData->myIndexData;
 		HRESULT hr = myDirectX->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
-		myDirectX->HandleErrors(hr, "Failed to Create IndexBuffer");
+		myDirectX->HandleErrors(hr, L"Failed to Create IndexBuffer");
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		myIndexBuffer->myByteOffset = 0;

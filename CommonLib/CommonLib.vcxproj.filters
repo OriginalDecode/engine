@@ -98,9 +98,6 @@
     <ClInclude Include="Randomizer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DataStructures\Hashmap\Hash.cpp">
-      <Filter>DataStructures\Hashmap</Filter>
-    </ClCompile>
     <ClCompile Include="JSON\JSONReader.cpp">
       <Filter>JSON</Filter>
     </ClCompile>
@@ -110,5 +107,8 @@
       <Filter>Quaternion</Filter>
     </ClCompile>
     <ClCompile Include="Randomizer.cpp" />
+    <ClCompile Include="DataStructures\Hashmap\MurmurHash3.cpp">
+      <Filter>DataStructures\Hashmap</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

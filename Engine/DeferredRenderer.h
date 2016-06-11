@@ -1,4 +1,5 @@
 #pragma once
+#include <DL_Debug.h>
 
 struct ID3DX11EffectShaderResourceVariable;
 struct ID3D11ShaderResourceView;

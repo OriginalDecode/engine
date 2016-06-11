@@ -193,10 +193,10 @@ Snowblind::CModel* FBXFactory::LoadModel(const char* aFilePath, Snowblind::CEffe
 
 	if (myLoadTime > 7000.f)
 	{
-		MODEL_LOG("[%s] took %f ms to load. Check if it's saved as binary. Check amount of triangles!", aFilePath, myLoadTime);
+		MODEL_LOG(L"[%s] took %f ms to load. Check if it's saved as binary. Check amount of triangles!", aFilePath, myLoadTime);
 	}
 	else
-		MODEL_LOG("[%s] took %f ms to load", aFilePath, myLoadTime);
+		MODEL_LOG(L"[%s] took %f ms to load", aFilePath, myLoadTime);
 
 	return returnModel;
 }

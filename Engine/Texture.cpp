@@ -30,13 +30,13 @@ namespace Snowblind
 		ID3D11Texture2D* tex;
 
 		HRESULT hr = device->CreateTexture2D(&tempBufferInfo, NULL, &tex);
-		CEngine::GetDirectX()->HandleErrors(hr, L"Failed to Create Texture!");
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
 
 		hr = device->CreateRenderTargetView(tex, NULL, &myRenderTargetView);
-		CEngine::GetDirectX()->HandleErrors(hr, L"Failed to Create Texture!");
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
 
 		hr = device->CreateShaderResourceView(tex, NULL, &myShaderResource);
-		CEngine::GetDirectX()->HandleErrors(hr, L"Failed to Create Texture!");
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
 
 	}
 
@@ -55,7 +55,7 @@ namespace Snowblind
 		int width = static_cast<int>(aWidth);
 		int height = static_cast<int>(aHeight);
 
-		myFileName = L"Initied as DSV";
+		myFileName = "Initied as DSV";
 		myRenderTargetView = nullptr;
 		myShaderResource = nullptr;
 		myDepthStencil = nullptr;
@@ -79,26 +79,27 @@ namespace Snowblind
 		textureBufferInfo.CPUAccessFlags = 0;
 		textureBufferInfo.MiscFlags = 0;
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&textureBufferInfo, NULL, &myTexture);
-		CEngine::GetDirectX()->HandleErrors(hr, L"Failed to CreateTexture!");
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to CreateTexture!");
 
 		hr = CEngine::GetDirectX()->GetDevice()->CreateRenderTargetView(myTexture, NULL, &myRenderTargetView);
-		CEngine::GetDirectX()->HandleErrors(hr, L"Failed to Create Render Target View!");
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Render Target View!");
 
 		CreateDepthStencilView(static_cast<float>(width), static_cast<float>(height));
 	}
 
-	const std::wstring& CTexture::GetFileName()
+	const std::string& CTexture::GetFileName()
 	{
 		return myFileName;
 	}
 
-	bool CTexture::LoadTexture(const std::wstring& aFileName)
+	bool CTexture::LoadTexture(const std::string& aFileName)
 	{
 
 		HRESULT hr;
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 		ID3D11Resource* resource;
-		hr = DirectX::CreateDDSTextureFromFile(device, nullptr, aFileName.c_str(), &resource, &myShaderResource);
+		std::wstring fileName(aFileName.begin(), aFileName.end());
+		hr = DirectX::CreateDDSTextureFromFile(device, nullptr, fileName.c_str(), &resource, &myShaderResource);
 
 		if (FAILED(hr))
 		{
@@ -118,7 +119,7 @@ namespace Snowblind
 		std::string rt = debug + "RenderTarget";
 		//CEngine::GetDirectX()->SetDebugName(myRenderTargetView, rt);
 
-		std::string ds = debug + "DepthStencil";
+		std::string ds = debug + "DepthStenci";
 		//CEngine::GetDirectX()->SetDebugName(myDepthStencil, ds);
 		//static_assert(false,"Missing stuff");
 	}
@@ -140,7 +141,7 @@ namespace Snowblind
 
 		//hr = D3DX11CreateTextureFromMemory(CEngine::GetDirectX()->GetDevice(), &result[0], result.size(), NULL, NULL, &resource, 0);
 		//hr = D3DX11CreateShaderResourceViewFromMemory(CEngine::GetDirectX()->GetDevice(), &result[0], result.size(), 0, 0, &myShaderResource, &hr);
-		CEngine::GetDirectX()->HandleErrors(hr, L"Failed to create texture from memory");
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create texture from memory");
 	}
 
 	ID3D11Texture2D* CTexture::GetDepthTexture()
@@ -214,7 +215,7 @@ namespace Snowblind
 		ID3D11Device* device = dx->GetDevice();
 
 		HRESULT hr = device->CreateTexture2D(&tempBufferInfo, NULL, &myDepthTexture);
-		dx->HandleErrors(hr, L"Failed to create depthTexture!");
+		dx->HandleErrors(hr, "Failed to create depthTexture!");
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC depthDesc;
 		ZeroMemory(&depthDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
@@ -223,7 +224,7 @@ namespace Snowblind
 		depthDesc.Texture2D.MipSlice = 0;
 
 		hr = device->CreateDepthStencilView(myDepthTexture, &depthDesc, &myDepthStencil);
-		dx->HandleErrors(hr, L"Failed to create depthStencil!");
+		dx->HandleErrors(hr, "Failed to create depthStencil!");
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
 		ZeroMemory(&viewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
@@ -233,7 +234,7 @@ namespace Snowblind
 		viewDesc.Texture2D.MostDetailedMip = 0;
 
 		hr = CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(myDepthTexture, &viewDesc, &myDepthStencilShaderView);
-		dx->HandleErrors(hr, L"Failed to create depthstencilshaderview");
+		dx->HandleErrors(hr, "Failed to create depthstencilshaderview");
 
 
 	}

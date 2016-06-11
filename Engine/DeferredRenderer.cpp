@@ -27,7 +27,7 @@ namespace Snowblind
 		myNormal = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
-		myNormal->SetDebugName("DeferredNormal");
+		myNormal->SetDebugName("DeferredNorma");
 
 		myDepth = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
@@ -36,7 +36,7 @@ namespace Snowblind
 
 		myDepthStencil = new CTexture();
 		myDepthStencil->InitAsDepthBuffer(myWindowSize.myWidth, myWindowSize.myHeight);
-		myDepthStencil->SetDebugName("DeferredDepthStencil");
+		myDepthStencil->SetDebugName("DeferredDepthStenci");
 
 		myClearColor[0] = 0.f;
 		myClearColor[1] = 0.f;
@@ -247,7 +247,7 @@ namespace Snowblind
 
 		//D3DX11_PASS_DESC passDesc;
 		//hr = myScreenData.myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-		myDirectX->HandleErrors(hr, L"Failed to get description from EffectPass!");
+		myDirectX->HandleErrors(hr, "Failed to get description from EffectPass!");
 
 		//hr = myDirectX->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myInputLayout);
 		//myDirectX->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
@@ -265,7 +265,7 @@ namespace Snowblind
 		vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
 
 		hr = myDirectX->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
-		myDirectX->HandleErrors(hr, L"Failed to Create VertexBuffer!");
+		myDirectX->HandleErrors(hr, "Failed to Create VertexBuffer!");
 
 		myVertexBuffer->myStride = myVertexData->myStride;
 		myVertexBuffer->myByteOffset = 0;
@@ -288,7 +288,7 @@ namespace Snowblind
 		D3D11_SUBRESOURCE_DATA indexData;
 		ZeroMemory(&indexData, sizeof(indexData)), indexData.pSysMem = myIndexData->myIndexData;
 		HRESULT hr = myDirectX->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
-		myDirectX->HandleErrors(hr, L"Failed to Create IndexBuffer");
+		myDirectX->HandleErrors(hr, "Failed to Create IndexBuffer");
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		myIndexBuffer->myByteOffset = 0;

@@ -15,10 +15,10 @@ namespace Snowblind
 		CEffect();
 		~CEffect();
 
-		void Initiate(const std::wstring& aFile);
+		void Initiate(const std::string& aFile);
 	
 	private:
-		std::wstring myTechniqueName;
+		std::string myTechniqueName;
 
 
 

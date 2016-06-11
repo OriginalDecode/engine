@@ -87,17 +87,17 @@ namespace Snowblind
 		void Clear();
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContext();
-		const std::wstring& GetAdapterName(unsigned short anIndex);
-		const std::wstring& GetActiveAdapterName();
+		const std::string& GetAdapterName(unsigned short anIndex);
+		const std::string& GetActiveAdapterName();
 		void EnableZBuffer();
 		void DisableZBuffer();
-		void HandleErrors(const HRESULT& aResult, const std::wstring& anErrorString);
+		void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
 		const char*	GetAPIName();
 
 		void SetViewport(int aWidth, int aHeight, int aDepth);
 		void ResetViewport();
 		void ResetRendertarget();
-		void SetDebugName(ID3D11DeviceChild* aChild, const std::wstring& aDebugName);
+		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
 
 		ID3D11RenderTargetView* GetBackbuffer();
 		const ID3D11RenderTargetView* GetBackbuffer() const;
@@ -149,9 +149,9 @@ namespace Snowblind
 		ID3D11BlendState* myBlendStates[static_cast<int>(eBlendStates::_COUNT)];
 		ID3D11SamplerState* mySamplerStates[static_cast<int>(eSamplerStates::_COUNT)];
 
-		std::unordered_map<std::wstring, IDXGIAdapter*>	myAdapters;
-		std::vector<std::wstring> myAdaptersName;
-		std::wstring myActiveAdapter;
+		std::unordered_map<std::string, IDXGIAdapter*>	myAdapters;
+		std::vector<std::string> myAdaptersName;
+		std::string myActiveAdapter;
 
 		float myWidth;
 		float myHeight;
@@ -160,7 +160,7 @@ namespace Snowblind
 		std::bitset<int(eEngineFlags::_COUNT)> myEngineFlags;
 	};
 
-	__forceinline const std::wstring& CDirectX11::GetActiveAdapterName()
+	__forceinline const std::string& CDirectX11::GetActiveAdapterName()
 	{
 		return myActiveAdapter;
 	}

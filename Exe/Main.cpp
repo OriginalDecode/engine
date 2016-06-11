@@ -21,7 +21,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Font);
 	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Model);
 
-	DL_MESSAGE(L"%i Active Filters!", DL_Debug::Debug::GetInstance()->GetActiveLogCount());
+	DL_MESSAGE("%i Active Filters!", DL_Debug::Debug::GetInstance()->GetActiveLogCount());
 
 	float w = 1920;
 	float h = 1080;

@@ -103,12 +103,12 @@ namespace Snowblind
 		myContext->ClearDepthStencilView(myDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 	}
 
-	const std::wstring& CDirectX11::GetAdapterName(unsigned short anIndex)
+	const std::string& CDirectX11::GetAdapterName(unsigned short anIndex)
 	{
 		return myAdaptersName[anIndex];
 	}
 
-	void CDirectX11::SetDebugName(ID3D11DeviceChild* aChild, const std::wstring& aDebugName)
+	void CDirectX11::SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName)
 	{
 		if (aChild != nullptr)
 		{
@@ -167,7 +167,7 @@ namespace Snowblind
 		//Make it work later.
 
 		JSONReader reader("Data/Config/game.json");
-		std::wstring adapterString;
+		std::string adapterString;
 		reader.ForceReadElement("GraphicsAdapter", adapterString);
 
 		IDXGIAdapter* adapterToUse;
@@ -177,7 +177,7 @@ namespace Snowblind
 		D3D_DRIVER_TYPE type = D3D_DRIVER_TYPE_NULL;
 		if (adapterToUse == nullptr)
 		{
-			myActiveAdapter = L"Unknown";
+			myActiveAdapter = "Unknown";
 			type = D3D_DRIVER_TYPE_HARDWARE;
 		}
 		else if (type)
@@ -226,7 +226,7 @@ namespace Snowblind
 			OutputDebugStringA("Failed to Query Debug Interface. myDebug is NULL.");
 		}
 #endif
-		SetDebugName(myContext, L"DirectX11 Context Object");
+		SetDebugName(myContext, "DirectX11 Context Object");
 		const std::string deviceName = "DirectX11 Device Object";
 		const std::string swapchainName = "DirectX11 Swapchain Object";
 		mySwapchain->SetPrivateData(WKPDID_D3DDebugObjectName, swapchainName.size(), swapchainName.c_str());
@@ -264,11 +264,11 @@ namespace Snowblind
 		stencilDesc.Texture2D.MipSlice = 0;
 
 		hr = myDevice->CreateDepthStencilView(myDepthBuffer, &stencilDesc, &myDepthView);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create depth stencil");
+		DL_ASSERT_EXP(hr == S_OK, "Failed to create depth stenci");
 
 
-		SetDebugName(myDepthBuffer, L"DirectX11 DepthBuffer Object");
-		SetDebugName(myDepthView, L"DirectX11 DepthView Object");
+		SetDebugName(myDepthBuffer, "DirectX11 DepthBuffer Object");
+		SetDebugName(myDepthView, "DirectX11 DepthView Object");
 	}
 
 	void CDirectX11::CreateBackBuffer()
@@ -276,17 +276,17 @@ namespace Snowblind
 		HRESULT hr;
 		ID3D11Texture2D* backbuffer;
 		hr = mySwapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backbuffer);
-		HandleErrors(hr, L"Failed to get Buffer!");
+		HandleErrors(hr, "Failed to get Buffer!");
 
 		hr = mySwapchain->SetFullscreenState(FALSE, nullptr);
-		HandleErrors(hr, L"Failed to set Fullscreen/Borderless");
+		HandleErrors(hr, "Failed to set Fullscreen/Borderless");
 
 		hr = myDevice->CreateRenderTargetView(backbuffer, NULL, &myRenderTarget);
-		HandleErrors(hr, L"Failed to create RenderTarget.");
+		HandleErrors(hr, "Failed to create RenderTarget.");
 
 		SAFE_RELEASE(backbuffer);
 		myContext->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
-		SetDebugName(myRenderTarget, L"DirectX11 RenderTarget(Back Buffer) object");
+		SetDebugName(myRenderTarget, "DirectX11 RenderTarget(Back Buffer) object");
 	}
 
 	void CDirectX11::CreateViewport()
@@ -345,8 +345,11 @@ namespace Snowblind
 			DXGI_ADAPTER_DESC adapterDesc;
 			enumAdapter[i]->GetDesc(&adapterDesc);
 			WCHAR* temp = adapterDesc.Description;
-			myAdaptersName.push_back(adapterDesc.Description);
-			myAdapters.insert(std::pair<std::wstring, IDXGIAdapter*>(adapterDesc.Description, enumAdapter[i]));
+			char dst[128];
+			std::wcstombs(dst, temp, 128);
+			std::string actualString(dst);
+			myAdaptersName.push_back(actualString);
+			myAdapters.insert(std::pair<std::string, IDXGIAdapter*>(actualString, enumAdapter[i]));
 		}
 	}
 
@@ -360,54 +363,54 @@ namespace Snowblind
 		myContext->OMSetDepthStencilState(myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)], 1);
 	}
 
-	void CDirectX11::HandleErrors(const HRESULT& aResult, const std::wstring& anErrorString)
+	void CDirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
 	{
-		std::wstring toError;
+		std::string toError;
 		switch (aResult)
 		{
 		case D3D11_ERROR_FILE_NOT_FOUND:
-			toError = (anErrorString + L" File not found!");
-			DL_ASSERT_EXP_L(aResult == S_OK, toError.c_str());
+			toError = (anErrorString + " File not found!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 			break;
 		case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
-			toError = (anErrorString + L" Too many unique state objects!");
-			DL_ASSERT_EXP_L(aResult == S_OK, toError.c_str());
+			toError = (anErrorString + " Too many unique state objects!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 			break;
 		case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
-			toError = (anErrorString + L" Too many view objects!");
-			DL_ASSERT_EXP_L(aResult == S_OK, toError.c_str());
+			toError = (anErrorString + " Too many view objects!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 			break;
 		case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
-			toError = (anErrorString + L" Deferred Context Map Without Initial Discard!");
-			DL_ASSERT_EXP_L(aResult == S_OK, toError.c_str());
+			toError = (anErrorString + " Deferred Context Map Without Initial Discard!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 			break;
 		case DXGI_ERROR_INVALID_CALL:
-			toError = (anErrorString + L" Invalid call!");
-			DL_ASSERT_EXP_L(aResult == S_OK, toError.c_str());
+			toError = (anErrorString + " Invalid call!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 			break;
 		case DXGI_ERROR_WAS_STILL_DRAWING:
-			toError = (anErrorString + L" Were still drawing!");
-			DL_ASSERT_EXP_L(aResult == S_OK, toError.c_str());
+			toError = (anErrorString + " Were still drawing!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 			break;
 		case E_FAIL:
-			toError = (anErrorString + L" Failed!");
-			DL_ASSERT_EXP_L(aResult == S_OK, toError.c_str());
+			toError = (anErrorString + " Failed!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 			break;
 		case E_INVALIDARG:
-			toError = (anErrorString + L" One or more arguments were invalid!");
-			DL_ASSERT_EXP_L(aResult == S_OK, toError.c_str());
+			toError = (anErrorString + " One or more arguments were invalid!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 			break;
 		case E_OUTOFMEMORY:
-			toError = (anErrorString + L" Out of Memory!");
-			DL_ASSERT_EXP_L(aResult == S_OK, toError.c_str());
+			toError = (anErrorString + " Out of Memory!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 			break;
 		case E_NOTIMPL:
-			toError = (anErrorString + L" The method call isn't implemented with the passed parameter combination.");
-			DL_ASSERT_EXP_L(aResult == S_OK, toError.c_str());
+			toError = (anErrorString + " The method call isn't implemented with the passed parameter combination.");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 			break;
 		case S_FALSE:
-			toError = (anErrorString + L" Something went wrong. Returned false!");
-			DL_ASSERT_EXP_L(aResult == S_OK, toError.c_str());
+			toError = (anErrorString + " Something went wrong. Returned false!");
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 			break;
 		}
 	}
@@ -462,8 +465,8 @@ namespace Snowblind
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[static_cast<int>(eDepthStencil::Z_ENABLED)]);
-		SetDebugName(myDepthStates[static_cast<int>(eDepthStencil::Z_ENABLED)], L"eDepthStencil::Z_ENABLED");
-		HandleErrors(hr, L"Failed to setup Enabled Depth!");
+		SetDebugName(myDepthStates[static_cast<int>(eDepthStencil::Z_ENABLED)], "eDepthStencil::Z_ENABLED");
+		HandleErrors(hr, "Failed to setup Enabled Depth!");
 	}
 
 	void CDirectX11::CreateDisabledDepthStencilState()
@@ -487,8 +490,8 @@ namespace Snowblind
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)]);
-		SetDebugName(myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)], L"eDepthStencil::Z_DISABLED");
-		HandleErrors(hr, L"Failed to setup depth buffer!");
+		SetDebugName(myDepthStates[static_cast<int>(eDepthStencil::Z_DISABLED)], "eDepthStencil::Z_DISABLED");
+		HandleErrors(hr, "Failed to setup depth buffer!");
 	}
 
 	void CDirectX11::CreateReadDepthStencilState()
@@ -512,8 +515,8 @@ namespace Snowblind
 		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
 
 		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[static_cast<int>(eDepthStencil::READ_NO_WRITE)]);
-		SetDebugName(myDepthStates[static_cast<int>(eDepthStencil::READ_NO_WRITE)], L"eDepthStencil::READ_NO_WRITE");
-		HandleErrors(hr, L"Failed to setup depth buffer!");
+		SetDebugName(myDepthStates[static_cast<int>(eDepthStencil::READ_NO_WRITE)], "eDepthStencil::READ_NO_WRITE");
+		HandleErrors(hr, "Failed to setup depth buffer!");
 	}
 
 	void CDirectX11::SetRasterizer(const eRasterizer& aRasterizer)
@@ -583,19 +586,19 @@ namespace Snowblind
 		desc.FillMode = D3D11_FILL_WIREFRAME;
 		desc.CullMode = D3D11_CULL_BACK;
 		myDevice->CreateRasterizerState(&desc, &myRasterizerStates[static_cast<int>(eRasterizer::WIREFRAME)]);
-		SetDebugName(myRasterizerStates[static_cast<int>(eRasterizer::WIREFRAME)], L"Wireframe Rasterizer");
+		SetDebugName(myRasterizerStates[static_cast<int>(eRasterizer::WIREFRAME)], "Wireframe Rasterizer");
 
 
 		desc.FillMode = D3D11_FILL_SOLID;
 		desc.CullMode = D3D11_CULL_BACK;
 		myDevice->CreateRasterizerState(&desc, &myRasterizerStates[static_cast<int>(eRasterizer::CULL_BACK)]);
-		SetDebugName(myRasterizerStates[static_cast<int>(eRasterizer::CULL_BACK)], L"CULL_BACK Rasterizer");
+		SetDebugName(myRasterizerStates[static_cast<int>(eRasterizer::CULL_BACK)], "CULL_BACK Rasterizer");
 
 
 		desc.FillMode = D3D11_FILL_SOLID;
 		desc.CullMode = D3D11_CULL_NONE;
 		myDevice->CreateRasterizerState(&desc, &myRasterizerStates[static_cast<int>(eRasterizer::CULL_NONE)]);
-		SetDebugName(myRasterizerStates[static_cast<int>(eRasterizer::CULL_NONE)], L"CULL_NONE Rasterizer");
+		SetDebugName(myRasterizerStates[static_cast<int>(eRasterizer::CULL_NONE)], "CULL_NONE Rasterizer");
 	}
 
 	void CDirectX11::CreateBlendStates()
@@ -614,7 +617,7 @@ namespace Snowblind
 		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
 		myDevice->CreateBlendState(&blendDesc, &myBlendStates[static_cast<int>(eBlendStates::ALPHA_BLEND)]);
-		SetDebugName(myBlendStates[static_cast<int>(eBlendStates::ALPHA_BLEND)], L"ALPHA_BLEND BlendState");
+		SetDebugName(myBlendStates[static_cast<int>(eBlendStates::ALPHA_BLEND)], "ALPHA_BLEND BlendState");
 
 		blendDesc.AlphaToCoverageEnable = FALSE;
 		blendDesc.IndependentBlendEnable = FALSE;
@@ -629,7 +632,7 @@ namespace Snowblind
 		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
 		myDevice->CreateBlendState(&blendDesc, &myBlendStates[static_cast<int>(eBlendStates::PARTICLE_BLEND)]);
-		SetDebugName(myBlendStates[static_cast<int>(eBlendStates::PARTICLE_BLEND)], L"PARTICLE_BLEND BlendState");
+		SetDebugName(myBlendStates[static_cast<int>(eBlendStates::PARTICLE_BLEND)], "PARTICLE_BLEND BlendState");
 
 
 		blendDesc.AlphaToCoverageEnable = FALSE;
@@ -644,7 +647,7 @@ namespace Snowblind
 		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 		myDevice->CreateBlendState(&blendDesc, &myBlendStates[static_cast<int>(eBlendStates::NO_BLEND)]);
-		SetDebugName(myBlendStates[static_cast<int>(eBlendStates::NO_BLEND)], L"NO_BLEND BlendState");
+		SetDebugName(myBlendStates[static_cast<int>(eBlendStates::NO_BLEND)], "NO_BLEND BlendState");
 	}
 
 	void CDirectX11::CreateSamplerStates()
@@ -658,11 +661,11 @@ namespace Snowblind
 		samplerDesc.MaxAnisotropy = 0;
 		samplerDesc.MipLODBias = 0.f;
 		myDevice->CreateSamplerState(&samplerDesc, &mySamplerStates[static_cast<int>(eSamplerStates::LINEAR_CLAMP)]);
-		SetDebugName(mySamplerStates[static_cast<int>(eSamplerStates::LINEAR_CLAMP)], L"LINEAR_CLAMP SamplerState");
+		SetDebugName(mySamplerStates[static_cast<int>(eSamplerStates::LINEAR_CLAMP)], "LINEAR_CLAMP SamplerState");
 
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 		myDevice->CreateSamplerState(&samplerDesc, &mySamplerStates[static_cast<int>(eSamplerStates::POINT_CLAMP)]);
-		SetDebugName(mySamplerStates[static_cast<int>(eSamplerStates::POINT_CLAMP)], L"POINT_CLAMP SamplerState");
+		SetDebugName(mySamplerStates[static_cast<int>(eSamplerStates::POINT_CLAMP)], "POINT_CLAMP SamplerState");
 
 
 		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -671,11 +674,11 @@ namespace Snowblind
 
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 		myDevice->CreateSamplerState(&samplerDesc, &mySamplerStates[static_cast<int>(eSamplerStates::LINEAR_WRAP)]);
-		SetDebugName(mySamplerStates[static_cast<int>(eSamplerStates::LINEAR_WRAP)], L"LINEAR_WRAP SamplerState");
+		SetDebugName(mySamplerStates[static_cast<int>(eSamplerStates::LINEAR_WRAP)], "LINEAR_WRAP SamplerState");
 
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 		myDevice->CreateSamplerState(&samplerDesc, &mySamplerStates[static_cast<int>(eSamplerStates::POINT_WRAP)]);
-		SetDebugName(mySamplerStates[static_cast<int>(eSamplerStates::POINT_WRAP)], L"POINT_WRAP SamplerState");
+		SetDebugName(mySamplerStates[static_cast<int>(eSamplerStates::POINT_WRAP)], "POINT_WRAP SamplerState");
 	}
 
 };

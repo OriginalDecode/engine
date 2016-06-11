@@ -58,9 +58,9 @@ namespace Snowblind
 		}
 	}
 
-	void CSurface::SetTexture(const std::wstring& aResourceName, const std::wstring& aFilePath)
+	void CSurface::SetTexture(const std::string& aResourceName, const std::string& aFilePath)
 	{
-		if (aResourceName == L"AOTexture")
+		if (aResourceName == "AOTexture")
 		{
 			return;
 		}

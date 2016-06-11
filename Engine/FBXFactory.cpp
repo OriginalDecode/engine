@@ -65,7 +65,7 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_NORMAL)
 		{
-			desc->SemanticName = "NORMAL";
+			desc->SemanticName = "NORMA";
 			desc->Format = DXGI_FORMAT_R32G32B32_FLOAT;
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_UV)
@@ -75,7 +75,7 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_BINORMAL)
 		{
-			desc->SemanticName = "BINORMAL";
+			desc->SemanticName = "BINORMA";
 			desc->Format = DXGI_FORMAT_R32G32B32_FLOAT;
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_TANGENT)
@@ -105,30 +105,30 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 	{
 		auto& currentTexture = someData->myTextures[i];
 
-		std::wstring resourceName;
+		std::string resourceName;
 		if (currentTexture.myType == DIFFUSE)
 		{
-			resourceName = L"AlbedoTexture";
+			resourceName = "AlbedoTexture";
 		}
 		if (currentTexture.myType == NORMALMAP)
 		{
-			resourceName = L"NormalTexture";
+			resourceName = "NormalTexture";
 			useSRGB = false;
 		}
 		if (currentTexture.myType == ROUGHNESS)
 		{
-			resourceName = L"RoughnessTexture";
+			resourceName = "RoughnessTexture";
 		}
 		if (currentTexture.myType == SUBSTANCE)
 		{
-			resourceName = L"MetalnessTexture";
+			resourceName = "MetalnessTexture";
 		}
 		if (currentTexture.myType == AO)
 		{
-			resourceName = L"AOTexture";
+			resourceName = "AOTexture";
 		}
 
-		std::wstring fileName(currentTexture.myFileName.begin(), currentTexture.myFileName.end());
+		std::string fileName(currentTexture.myFileName.begin(), currentTexture.myFileName.end());
 		surface->SetEffect(anEffect);
 		surface->SetTexture(resourceName, fileName);
 
@@ -193,10 +193,10 @@ Snowblind::CModel* FBXFactory::LoadModel(const char* aFilePath, Snowblind::CEffe
 
 	if (myLoadTime > 7000.f)
 	{
-		MODEL_LOG(L"[%s] took %f ms to load. Check if it's saved as binary. Check amount of triangles!", aFilePath, myLoadTime);
+		MODEL_LOG("[%s] took %f ms to load. Check if it's saved as binary. Check amount of triangles!", aFilePath, myLoadTime);
 	}
 	else
-		MODEL_LOG(L"[%s] took %f ms to load", aFilePath, myLoadTime);
+		MODEL_LOG("[%s] took %f ms to load", aFilePath, myLoadTime);
 
 	return returnModel;
 }

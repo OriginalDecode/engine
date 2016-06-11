@@ -183,35 +183,6 @@ void JSONReader::ReadElement(const std::string& aTag, const std::string& aSubTag
 	}
 }
 
-void JSONReader::ReadElement(const std::string& aTag, const std::string& aSubTag, std::wstring& aString)
-{
-	assert(myFile != nullptr && "File were not open. Did you forget to OpenDocument()?");
-	if (myDocument.HasMember(aTag.c_str()) == true)
-	{
-		assert(myFileReaderStream != nullptr && "JSONReader were not initiated. Reader were null");
-		assert(myDocument != 0 && "Document had no valid FileReaderStream attached.");
-		std::string str = myDocument[aTag.c_str()][aSubTag.c_str()].GetString();
-		std::wstring wstr(str.length(), L' ');
-		std::copy(str.begin(), str.end(), wstr.begin());
-		aString = wstr;
-	}
-	
-}
-
-void JSONReader::ReadElement(const std::string& aTag, std::wstring& aString)
-{
-	assert(myFile != nullptr && "File were not open. Did you forget to OpenDocument()?");
-	if (myDocument.HasMember(aTag.c_str()) == true)
-	{
-		assert(myFileReaderStream != nullptr && "JSONReader were not initiated. Reader were null");
-		assert(myDocument != 0 && "Document had no valid FileReaderStream attached.");
-		std::string str = myDocument[aTag.c_str()].GetString();
-		std::wstring wstr(str.length(), L' ');
-		std::copy(str.begin(), str.end(), wstr.begin());
-		aString = wstr;
-	}
-}
-
 void JSONReader::ForceReadElement(const std::string & aTag, bool & aBool)
 {
 	assert(myFile != nullptr && "File were not open. Did you forget to OpenDocument()?");
@@ -318,28 +289,4 @@ void JSONReader::ForceReadElement(const std::string & aTag, const std::string& a
 	assert(myFileReaderStream != nullptr && "JSONReader were not initiated. Reader were null");
 	assert(myDocument != 0 && "Document had no valid FileReaderStream attached.");
 	aString = myDocument[aTag.c_str()][aSubTag.c_str()].GetString();
-}
-
-void JSONReader::ForceReadElement(const std::string& aTag, const std::string& aSubTag, std::wstring& aString)
-{
-	assert(myFile != nullptr && "File were not open. Did you forget to OpenDocument()?");
-	assert(myDocument.HasMember(aTag.c_str()) == true && "the tag were not a member of this document");
-	assert(myFileReaderStream != nullptr && "JSONReader were not initiated. Reader were null");
-	assert(myDocument != 0 && "Document had no valid FileReaderStream attached.");
-	std::string str = myDocument[aTag.c_str()][aSubTag.c_str()].GetString();
-	std::wstring wstr(str.length(), L' ');
-	std::copy(str.begin(), str.end(), wstr.begin());
-	aString = wstr;
-}
-
-void JSONReader::ForceReadElement(const std::string& aTag, std::wstring& aString)
-{
-	assert(myFile != nullptr && "File were not open. Did you forget to OpenDocument()?");
-	assert(myDocument.HasMember(aTag.c_str()) == true && "the tag were not a member of this document");
-	assert(myFileReaderStream != nullptr && "JSONReader were not initiated. Reader were null");
-	assert(myDocument != 0 && "Document had no valid FileReaderStream attached.");
-	std::string str = myDocument[aTag.c_str()].GetString();
-	std::wstring wstr(str.length(), L' ');
-	std::copy(str.begin(), str.end(), wstr.begin());
-	aString = wstr;
 }

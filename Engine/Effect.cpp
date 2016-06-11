@@ -11,12 +11,12 @@ namespace Snowblind
 	{
 	}
 
-	void CEffect::Initiate(const std::wstring& aFile)
+	void CEffect::Initiate(const std::string& aFile)
 	{
 
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
-		ENGINE_LOG(L"Loading %s", aFile.c_str());
+		ENGINE_LOG("Loading %s", aFile.c_str());
 		HRESULT hr;
 		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
 #ifdef _DEBUG 
@@ -27,8 +27,9 @@ namespace Snowblind
 		ID3D10Blob* compiledShader = 0;
 		ID3D10Blob* compilationMessage = 0;
 
-		hr = D3DCompileFromFile(aFile.c_str(), NULL, NULL, NULL, NULL, shaderFlag, NULL, &compiledShader, &compilationMessage);
-		CEngine::GetDirectX()->HandleErrors(hr, L"Failed to Compile Effect.");
+		std::wstring fileName(aFile.begin(), aFile.end());
+		hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, NULL, NULL, shaderFlag, NULL, &compiledShader, &compilationMessage);
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
 
 

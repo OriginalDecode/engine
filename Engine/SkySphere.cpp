@@ -14,7 +14,7 @@ namespace Snowblind
 		//myCamera = aCamera;
 		//myModel = CAssetsContainer::GetInstance()->GetModel(aFilePath, anEffect);
 		//myModel->SetIsSkysphere();
-		//std::wstring skysphereTexture;
+		//std::string skysphereTexture;
 		//JSONReader reader("Data/Config/game.json");
 		//reader.ForceReadElement("Skysphere", skysphereTexture);
 		//mySkysphereTexture = CAssetsContainer::GetInstance()->GetTexture(skysphereTexture);

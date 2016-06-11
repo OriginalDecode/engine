@@ -18,7 +18,6 @@ public:
 	void ReadElement(const std::string& aTag, float& aFloat);
 	void ReadElement(const std::string& aTag, double& aDouble);
 	void ReadElement(const std::string& aTag, std::string& aString);
-	void ReadElement(const std::string& aTag, std::wstring& aString);
 
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, bool& aBool);
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, int& anInt);
@@ -26,7 +25,6 @@ public:
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, float& aFloat);
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, double& aDouble);
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, std::string& aString);
-	void ReadElement(const std::string& aTag, const std::string& aSubTag, std::wstring& aString);
 
 	void ForceReadElement(const std::string& aTag, bool& aBool);
 	void ForceReadElement(const std::string& aTag, int& anInt);
@@ -34,7 +32,6 @@ public:
 	void ForceReadElement(const std::string& aTag, float& aFloat);
 	void ForceReadElement(const std::string& aTag, double& aDouble);
 	void ForceReadElement(const std::string& aTag, std::string& aString);
-	void ForceReadElement(const std::string& aTag, std::wstring& aString);
 
 
 	void ForceReadElement(const std::string& aTag, const std::string& aSubTag, bool& aBool);
@@ -43,7 +40,6 @@ public:
 	void ForceReadElement(const std::string& aTag, const std::string& aSubTag, float& aFloat);
 	void ForceReadElement(const std::string& aTag, const std::string& aSubTag, double& aDouble);
 	void ForceReadElement(const std::string& aTag, const std::string& aSubTag, std::string& aString);
-	void ForceReadElement(const std::string& aTag, const std::string& aSubTag, std::wstring& aString);
 
 	template<typename T>
 	void ReadElement(const std::string& aTag, CU::Math::Vector2<T>& aVector);

@@ -34,7 +34,7 @@ namespace Snowblind
 		myTopLeftPosition = { (Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, 0.f };
 
 		mySprite = new CSprite();
-		mySprite->Initiate(L"Data/Textures/consoleBG.dds", { Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f, 
+		mySprite->Initiate("Data/Textures/consoleBG.dds", { Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f, 
 															Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 2.f },
 															{ 0, 0 });
 		mySprite->SetHotspot({ -Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 4.f, Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 4.f });
@@ -191,7 +191,7 @@ namespace Snowblind
 			myInput += myInputWrapper->KeyClick(DIK_I) ? shift ? "I" : "i" : "";
 			myInput += myInputWrapper->KeyClick(DIK_J) ? shift ? "J" : "j" : "";
 			myInput += myInputWrapper->KeyClick(DIK_K) ? shift ? "K" : "k" : "";
-			myInput += myInputWrapper->KeyClick(DIK_L) ? shift ? "L" : "l" : "";
+			myInput += myInputWrapper->KeyClick(DIK_L) ? shift ? "" : "" : "";
 			myInput += myInputWrapper->KeyClick(DIK_M) ? shift ? "M" : "m" : "";
 			myInput += myInputWrapper->KeyClick(DIK_N) ? shift ? "N" : "n" : "";
 			myInput += myInputWrapper->KeyClick(DIK_O) ? shift ? "O" : "o" : "";

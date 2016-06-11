@@ -19,7 +19,7 @@ namespace Snowblind
 		~CSurface();
 
 		void Activate();
-		void SetTexture(const std::wstring& aResourceName, const std::wstring& aFilePath);
+		void SetTexture(const std::string& aResourceName, const std::string& aFilePath);
 
 		void SetEffect(CEffect* anEffect);
 
@@ -42,13 +42,13 @@ namespace Snowblind
 		struct STexture
 		{
 			CTexture* texture;
-			std::wstring resourceName;
+			std::string resourceName;
 		};
 
 		CU::GrowingArray<ID3DX11EffectShaderResourceVariable*> myShaderVariables;
 		CU::GrowingArray<STexture*> myTextures;
-		CU::GrowingArray<std::wstring> myResourceNames;
-		CU::GrowingArray<std::wstring> myFileNames;
+		CU::GrowingArray<std::string> myResourceNames;
+		CU::GrowingArray<std::string> myFileNames;
 
 		CEffect* myEffect;
 

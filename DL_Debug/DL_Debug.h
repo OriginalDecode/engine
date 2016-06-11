@@ -98,10 +98,9 @@ namespace DL_Debug
 
 		void PrintMessage(const char *aString);
 		void AssertMessage(const char *aFileName, int aLine, const char *aFunctionName, const char *aString);
-		void AssertMessageL(const char *aFileName, int aLine, const char *aFunctionName, const std::wstring& aString);
 
 		void DebugMessage(const int aLine, const char *aFileName, const std::string& aString);
-		void WriteLog(const std::string& aFilter, const std::wstring& aString);
+		void WriteLog(const std::string& aFilter, const std::string& aString);
 
 
 		void DisableFilters(const eDEBUGLOG& anEnum);
@@ -109,7 +108,7 @@ namespace DL_Debug
 		const bool CheckFilter(const eDEBUGLOG& aFilter);
 
 		const float GetTime() const;
-		std::wstring HandleVAArgs(const wchar_t* aFormattedString, ...);
+		std::string HandleVAArgs(const char* aFormattedString, ...);
 		const int& GetActiveLogCount() const;
 	private:
 		Debug();

@@ -28,7 +28,7 @@ namespace Snowblind
 
 		myTimeManager->GetTimer(loadTimer).Update();
 		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;
-		FONT_LOG(L"Font Took : %fms to load.", loadTime);
+		FONT_LOG("Font Took : %fms to load.", loadTime);
 
 		myPointLight = new CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();

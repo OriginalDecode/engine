@@ -32,7 +32,7 @@ FbxScene* FBXLoader::LoadScene(const char* aFile)
 		printf("Call to FbxImporter::Initialize() failed.\n");
 		printf("Error returned: %s\n\n", lImporter->GetStatus().GetErrorString());
 		std::string errorMessage = "Could not find fbx file: " + std::string(aFile);
-		DL_MESSAGE(L"[FBXLoader](LoadScene) : %s", errorMessage);
+		DL_MESSAGE("[FBXLoader](LoadScene) : %s", errorMessage);
 		MessageBoxA(nullptr, errorMessage.c_str(), "ERROR", 0);
 		//DL_ASSERT("Fbx file not found. Check the debug logger!");
 	}

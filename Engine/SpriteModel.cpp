@@ -30,7 +30,7 @@ namespace Snowblind
 
 	}
 
-	void CSpriteModel::Initiate(const std::wstring& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+	void CSpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 	{
 		//myWindowSize = CEngine::GetInstance()->GetWindowSize();
 		//

@@ -31,13 +31,15 @@ namespace Snowblind
 
 		HRESULT hr = device->CreateTexture2D(&tempBufferInfo, NULL, &tex);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
-
 		hr = device->CreateRenderTargetView(tex, NULL, &myRenderTargetView);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
+		CEngine::GetDirectX()->SetDebugName(myRenderTargetView, "Texture RTV");
 
 		hr = device->CreateShaderResourceView(tex, NULL, &myShaderResource);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
-
+		CEngine::GetDirectX()->SetDebugName(myShaderResource, "Texture SRV");
+		tex->Release();
+		tex = nullptr;
 	}
 
 	CTexture::~CTexture()
@@ -83,7 +85,7 @@ namespace Snowblind
 
 		hr = CEngine::GetDirectX()->GetDevice()->CreateRenderTargetView(myTexture, NULL, &myRenderTargetView);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Render Target View!");
-
+		CEngine::GetDirectX()->SetDebugName(myRenderTargetView, "Texture : RenderTargetView");
 		CreateDepthStencilView(static_cast<float>(width), static_cast<float>(height));
 	}
 
@@ -94,33 +96,32 @@ namespace Snowblind
 
 	bool CTexture::LoadTexture(const std::string& aFileName)
 	{
-
 		HRESULT hr;
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
-		ID3D11Resource* resource;
+
 		std::wstring fileName(aFileName.begin(), aFileName.end());
-		hr = DirectX::CreateDDSTextureFromFile(device, nullptr, fileName.c_str(), &resource, &myShaderResource);
+		hr = DirectX::CreateDDSTextureFromFile(device, nullptr, fileName.c_str(), nullptr, &myShaderResource);
+		CEngine::GetDirectX()->SetDebugName(myShaderResource, "Texture : ShaderResource");
 
 		if (FAILED(hr))
 		{
-			DL_WARNINGBOX_EXP(FAILED(hr), "Failed to load texture!");
+			OutputDebugStringA("[TEXTURE] : Failed to load texture!");
 			return false;
 		}
 		return true;
-
 	}
 
 	void CTexture::SetDebugName(const std::string& debugName)
 	{
 		std::string debug(debugName);
 		std::string sr = debug + "ShaderResource";
-		//CEngine::GetDirectX()->SetDebugName(myShaderResource, sr);
+		CEngine::GetDirectX()->SetDebugName(myShaderResource, sr);
 
 		std::string rt = debug + "RenderTarget";
-		//CEngine::GetDirectX()->SetDebugName(myRenderTargetView, rt);
+		CEngine::GetDirectX()->SetDebugName(myRenderTargetView, rt);
 
 		std::string ds = debug + "DepthStenci";
-		//CEngine::GetDirectX()->SetDebugName(myDepthStencil, ds);
+		CEngine::GetDirectX()->SetDebugName(myDepthStencil, ds);
 		//static_assert(false,"Missing stuff");
 	}
 
@@ -216,7 +217,7 @@ namespace Snowblind
 
 		HRESULT hr = device->CreateTexture2D(&tempBufferInfo, NULL, &myDepthTexture);
 		dx->HandleErrors(hr, "Failed to create depthTexture!");
-
+		dx->SetDebugName(myDepthTexture, "Texture : DepthTexture");
 		D3D11_DEPTH_STENCIL_VIEW_DESC depthDesc;
 		ZeroMemory(&depthDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
 		depthDesc.Format = DXGI_FORMAT_D32_FLOAT;
@@ -225,6 +226,7 @@ namespace Snowblind
 
 		hr = device->CreateDepthStencilView(myDepthTexture, &depthDesc, &myDepthStencil);
 		dx->HandleErrors(hr, "Failed to create depthStencil!");
+		dx->SetDebugName(myDepthStencil, "Texture : DepthStencil");
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
 		ZeroMemory(&viewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
@@ -235,6 +237,7 @@ namespace Snowblind
 
 		hr = CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(myDepthTexture, &viewDesc, &myDepthStencilShaderView);
 		dx->HandleErrors(hr, "Failed to create depthstencilshaderview");
+		dx->SetDebugName(myDepthStencilShaderView, "Texture : DepthStencilShaderView");
 
 
 	}

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <string>
 #include <Windows.h>
 #ifndef _WINDEF_
 struct HINSTANCE__;
@@ -57,7 +57,7 @@ namespace Snowblind
 		CFont* LoadFont(const char* aFilepath, short aFontWidth, int aBorderWidth);
 		const float GetDeltaTime();
 		const float GetFPS();
-		const char* GetAPIName();
+		const std::string& GetAPIName();
 
 		void OnPause();
 		void OnResume();

@@ -1,10 +1,23 @@
+//---------------------------------
+//	Base Vertex Shaders
+//---------------------------------
+//---------------------------------
+//	Constant Buffers
+//---------------------------------
+cbuffer Matrices : register(b0)
+{
 	matrix World;
 	matrix View;
 	matrix Projection;
-	matrix InvertedProjection;
-	matrix NotInvertedView;
+};
 
-struct VS_INPUT_POS_NORMAL_UV_BINORMAL_TANG
+//matrix InvertedProjection;
+//matrix NotInvertedView;
+
+//---------------------------------
+//	Base Vertex Structs
+//---------------------------------
+struct VS_INPUT
 {
 	float4 Pos : POSITION;
 	float3 Normal : NORMAL;
@@ -13,7 +26,7 @@ struct VS_INPUT_POS_NORMAL_UV_BINORMAL_TANG
 	float3 Tang : TANGENT;
 };
 
-struct PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG
+struct VS_OUTPUT
 {
 	float4 Pos : SV_POSITION0;
 	float3 Normal : NORMAL;
@@ -23,9 +36,21 @@ struct PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG
 	float3 WorldPos : POSITION;
 };
 
-
-PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG VS(VS_INPUT_POS_NORMAL_UV_BINORMAL_TANG input)
+//---------------------------------
+//	Base Vertex Shader
+//---------------------------------
+VS_OUTPUT VS(VS_INPUT input)
 {
-	PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG output = (PS_INPUT_POS_NORMAL_UV_BINORMAL_TANG)0;
+	VS_OUTPUT output = (VS_OUTPUT)0;
+	//output.Pos = mul(input.Pos, World);
+	//output.Pos = mul(output.Pos, View);
+	//output.Pos = mul(output.Pos, Projection);
+    //
+	//output.Normal = mul(input.Normal, World);
+	//output.UV = input.UV;
+	//
+	//output.Tang = mul(input.Tang, World);
+	//output.WorldPos = mul(input.Pos, World);
+
 	return output;
 }

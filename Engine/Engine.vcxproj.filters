@@ -67,6 +67,12 @@
     <Filter Include="Rendering">
       <UniqueIdentifier>{d8548c38-fabc-49ce-9df5-72949776396c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Containers">
+      <UniqueIdentifier>{c1d8275e-5baf-40d7-9e85-f9a73d92c716}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Particles">
+      <UniqueIdentifier>{b46c163a-8795-48e7-a1fa-d3d0663e7629}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -162,7 +168,6 @@
     <ClInclude Include="PointLight.h">
       <Filter>Light\Point</Filter>
     </ClInclude>
-    <ClInclude Include="AssetsContainer.h" />
     <ClInclude Include="FullscreenHelper.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -178,11 +183,24 @@
     <ClInclude Include="DeferredRenderer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="EmitterInstance.h" />
-    <ClInclude Include="SnowblindParticleData.h" />
-    <ClInclude Include="SkySphere.h" />
-    <ClInclude Include="SystemMonitor.h" />
-    <ClInclude Include="ShaderContainer.h" />
+    <ClInclude Include="SkySphere.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetsContainer.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderContainer.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="EmitterInstance.h">
+      <Filter>Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="SnowblindParticleData.h">
+      <Filter>Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemMonitor.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -260,7 +278,6 @@
     <ClCompile Include="PointLight.cpp">
       <Filter>Light\Point</Filter>
     </ClCompile>
-    <ClCompile Include="AssetsContainer.cpp" />
     <ClCompile Include="FullscreenHelper.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -276,9 +293,20 @@
     <ClCompile Include="DeferredRenderer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="EmitterInstance.cpp" />
-    <ClCompile Include="SkySphere.cpp" />
-    <ClCompile Include="SystemMonitor.cpp" />
-    <ClCompile Include="ShaderContainer.cpp" />
+    <ClCompile Include="SkySphere.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetsContainer.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderContainer.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="EmitterInstance.cpp">
+      <Filter>Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemMonitor.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

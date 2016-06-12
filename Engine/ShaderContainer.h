@@ -27,12 +27,12 @@ namespace Snowblind
 		CShaderContainer();
 		~CShaderContainer();
 
-		ID3D11VertexShader*		LoadVertexShader(const std::string& aVertexShader);
-		ID3D11PixelShader*		LoadPixelShader(const std::string& aPixelShader);
-		ID3D11GeometryShader*	LoadGeometryShader(const std::string& aGeometryShader);
-		ID3D11HullShader*		LoadHullShader(const std::string& aHullShader);
-		ID3D11DomainShader*		LoadDomainShader(const std::string& aDomainShader);
-		ID3D11ComputeShader*	LoadComputeShader(const std::string& aComputeShader);
+		void LoadVertexShader(const std::string& aVertexShader);
+		void LoadPixelShader(const std::string& aPixelShader);
+		void LoadGeometryShader(const std::string& aGeometryShader);
+		void LoadHullShader(const std::string& aHullShader);
+		void LoadDomainShader(const std::string& aDomainShader);
+		void LoadComputeShader(const std::string& aComputeShader);
 
 		void CreateShader(const std::string& aShader, ID3D11VertexShader* aVertexShader);
 		void CreateShader(const std::string& aShader, ID3D11PixelShader* aPixelShader);

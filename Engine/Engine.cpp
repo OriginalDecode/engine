@@ -30,6 +30,7 @@ namespace Snowblind
 		SAFE_DELETE(myTimeManager);
 		CU::Input::InputWrapper::Destroy();
 		Randomizer::Destroy();
+		myAPI->CleanUp();
 		SAFE_DELETE(myAPI);
 	}
 
@@ -69,8 +70,8 @@ namespace Snowblind
 		myRenderer = new CRenderer(*mySynchronizer, myCamera);
 		myRenderer->Add2DCamera(my2DCamera);
 
-		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/ls_engine_test/Radio_2.fbx", "Data/Shaders/DeferredBase.fx"), "Radio");
-		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/DeferredBase.fx"), "PBL_Room");
+		//myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/ls_engine_test/Radio_2.fbx", "Data/Shaders/DeferredBase.fx"), "Radio");
+		//myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/DeferredBase.fx"), "PBL_Room");
 
 	}
 
@@ -120,7 +121,7 @@ namespace Snowblind
 		return myTimeManager->GetFPS();
 	}
 
-	const char* CEngine::GetAPIName()
+	const std::string& CEngine::GetAPIName()
 	{
 		return myAPI->GetAPIName();
 	}

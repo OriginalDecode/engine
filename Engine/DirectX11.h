@@ -81,8 +81,10 @@ namespace Snowblind
 	{
 	public:
 		CDirectX11(HWND aWindowHandle, float aWidth, float aHeight);
-
 		~CDirectX11();
+
+		void CleanUp();
+
 		void Present();
 		void Clear();
 		ID3D11Device* GetDevice();
@@ -92,7 +94,7 @@ namespace Snowblind
 		void EnableZBuffer();
 		void DisableZBuffer();
 		void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
-		const char*	GetAPIName();
+		const std::string& GetAPIName();
 
 		void SetViewport(int aWidth, int aHeight, int aDepth);
 		void ResetViewport();
@@ -110,12 +112,12 @@ namespace Snowblind
 		void SetBlendState(const eBlendStates& blendState);
 		void SetSamplerState(const eSamplerStates& samplerState);
 
-		void SetVertexShader(ID3D11VertexShader*& aVertexShader);
-		void SetPixelShader(ID3D11PixelShader*& aPixelShader);
-		void SetGeometryShader(ID3D11GeometryShader*& aGeometryShader);
-		void SetHullShader(ID3D11HullShader*& aHullShader);
-		void SetDomainShader(ID3D11DomainShader*& aDomainShader);
-		void SetComputeShader(ID3D11ComputeShader*& aComputeShader);
+		void SetVertexShader(ID3D11VertexShader* aVertexShader);
+		void SetPixelShader(ID3D11PixelShader* aPixelShader);
+		void SetGeometryShader(ID3D11GeometryShader* aGeometryShader);
+		void SetHullShader(ID3D11HullShader* aHullShader);
+		void SetDomainShader(ID3D11DomainShader* aDomainShader);
+		void SetComputeShader(ID3D11ComputeShader* aComputeShader);
 
 	private:
 
@@ -123,7 +125,6 @@ namespace Snowblind
 		void CreateDepthBuffer();
 		void CreateBackBuffer();
 		void CreateViewport();
-		void CreateDeferredContext();
 		void CreateAdapterList();
 		void CreateEnabledDepthStencilState();
 		void CreateDisabledDepthStencilState();
@@ -134,28 +135,27 @@ namespace Snowblind
 
 		HWND myHWND;
 
-		D3D11_VIEWPORT* myViewport;
-		ID3D11Debug* myDebug;
-		ID3D11Device* myDevice;
-		IDXGISwapChain* mySwapchain;
-		ID3D11Texture2D* myDepthBuffer;
-		ID3D11DeviceContext* myContext;
-		ID3D11DeviceContext* myDeferredContext;
-		ID3D11RenderTargetView* myRenderTarget;
-		ID3D11DepthStencilView* myDepthView;
+		D3D11_VIEWPORT* myViewport = nullptr;
+		ID3D11Debug* myDebug = nullptr;
+		ID3D11Device* myDevice = nullptr;
+		IDXGISwapChain* mySwapchain = nullptr;
+		ID3D11Texture2D* myDepthBuffer = nullptr;
+		ID3D11DeviceContext* myContext = nullptr;
+		ID3D11RenderTargetView* myRenderTarget = nullptr;
+		ID3D11DepthStencilView* myDepthView = nullptr;
 
 		ID3D11DepthStencilState* myDepthStates[static_cast<int>(eDepthStencil::_COUNT)];
 		ID3D11RasterizerState* myRasterizerStates[static_cast<int>(eRasterizer::_COUNT)];
 		ID3D11BlendState* myBlendStates[static_cast<int>(eBlendStates::_COUNT)];
 		ID3D11SamplerState* mySamplerStates[static_cast<int>(eSamplerStates::_COUNT)];
 
-		std::unordered_map<std::string, IDXGIAdapter*>	myAdapters;
+		std::unordered_map<std::string, IDXGIAdapter*> myAdapters;
 		std::vector<std::string> myAdaptersName;
 		std::string myActiveAdapter;
 
 		float myWidth;
 		float myHeight;
-		const char*	myAPI;
+		const std::string myAPI;
 
 		std::bitset<int(eEngineFlags::_COUNT)> myEngineFlags;
 	};

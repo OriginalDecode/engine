@@ -57,6 +57,7 @@ namespace Snowblind
 
 	CDeferredRenderer::~CDeferredRenderer()
 	{
+		myDirectX = nullptr;
 		SAFE_DELETE(myAlbedo);
 		SAFE_DELETE(myNormal);
 		SAFE_DELETE(myDepth);
@@ -135,7 +136,7 @@ namespace Snowblind
 	void CDeferredRenderer::RenderLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation)
 	{
 		//myLightPass.myPointLightVariable->SetRawValue(&pointlight->GetData(), 0, sizeof(SPointlightData));
-		pointlight->Render(previousOrientation, aCamera);
+		//pointlight->Render(previousOrientation, aCamera);
 	}
 
 	void CDeferredRenderer::DeferredRender()
@@ -153,7 +154,7 @@ namespace Snowblind
 		//myAmbientPass.myNormal->SetResource(myNormal->GetShaderView());
 		//myAmbientPass.myDepth->SetResource(myDepth->GetShaderView());
 
-		Render(myAmbientPass.myEffect);
+		//Render(myAmbientPass.myEffect);
 
 		//myAmbientPass.myAlbedo->SetResource(NULL);
 		//myAmbientPass.myNormal->SetResource(NULL);
@@ -163,8 +164,8 @@ namespace Snowblind
 	void CDeferredRenderer::CreateLightData()
 	{
 
-		myLightPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredLightMesh.fx");
-		CEffect* effect = myLightPass.myEffect;
+		//myLightPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredLightMesh.fx");
+		//CEffect* effect = myLightPass.myEffect;
 
 		//effect->GetShaderResource(myLightPass.myAlbedo, "AlbedoTexture");
 		//effect->GetShaderResource(myLightPass.myNormal, "NormalTexture");
@@ -176,8 +177,8 @@ namespace Snowblind
 
 	void CDeferredRenderer::CreateAmbientData()
 	{
-		myAmbientPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredAmbient.fx");
-		CEffect* effect = myAmbientPass.myEffect;
+		//myAmbientPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredAmbient.fx");
+		//CEffect* effect = myAmbientPass.myEffect;
 		//effect->GetShaderResource(myAmbientPass.myAlbedo, "AlbedoTexture");
 		//effect->GetShaderResource(myAmbientPass.myNormal, "NormalTexture");
 		//effect->GetShaderResource(myAmbientPass.myDepth, "DepthTexture");

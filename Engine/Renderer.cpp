@@ -24,7 +24,7 @@ namespace Snowblind
 		int loadTimer = myTimeManager->CreateTimer();
 		myTimeManager->GetTimer(loadTimer).Update();
 		float loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds();
-		myText = new CText("Arial.ttf", 8, 1);
+		//myText = new CText("Arial.ttf", 8, 1);
 
 		myTimeManager->GetTimer(loadTimer).Update();
 		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;
@@ -34,7 +34,7 @@ namespace Snowblind
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
 		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
-		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/Skysphere.fx", aCamera);
+		//mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/Skysphere.fx", aCamera);
 	}
 
 	CRenderer::~CRenderer()
@@ -55,9 +55,9 @@ namespace Snowblind
 
 	void CRenderer::Render()
 	{
-		std::stringstream textTime;
+		/*std::stringstream textTime;
 		textTime << "Render : " << myText->GetRenderTime() << "\nUpdate : " << myText->GetUpdateTime();
-		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));
+		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));*/
 		CEngine::Clear();
 
 		myDeferredRenderer->SetTargets();
@@ -97,8 +97,14 @@ namespace Snowblind
 			{
 			case SRenderCommand::eType::MODEL:
 				//myModels[command.myModelKey]->SetPosition(command.myPosition);
+				//CEngine::GetDirectX()->SetVertexShader(CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/base.vs"));
+				//CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
+
 				//myModels[command.myModelKey]->GetEffect()->SetMatrices(myModels[command.myModelKey]->GetOrientation(), myPrevFrame, myCamera->GetProjection());
+
 				//myModels[command.myModelKey]->Render();
+
+				//CEngine::GetDirectX()->SetVertexShader(nullptr);
 				break;
 			case SRenderCommand::eType::SKYSPHERE:
 				//mySkysphere->SetPosition(command.myPosition);

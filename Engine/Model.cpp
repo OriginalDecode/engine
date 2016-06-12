@@ -37,7 +37,7 @@ namespace Snowblind
 	void CModel::CreateTriangle(const std::string& anEffectPath)
 	{
 		myIsNULLObject = false;
-		myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
+		//myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 		myVertexFormat.Init(2);
 		myVertexFormat.Add(VertexLayoutPosCol[0]);
 		myVertexFormat.Add(VertexLayoutPosCol[1]);
@@ -81,7 +81,7 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosCol[0]);
 		myVertexFormat.Add(VertexLayoutPosCol[1]);
 
-		myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
+		//myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 
 		SVertexTypePosCol tempVertex;
 
@@ -195,7 +195,7 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosCol[0]);
 		myVertexFormat.Add(VertexLayoutPosCol[1]);
 
-		myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
+		//myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 		float size = 0.25f;
 		SVertexTypePosCol tempVertex;
 		CU::Vector4f color = aColor;
@@ -318,7 +318,7 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosNormUV[2]);
 
 
-		myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
+		//myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 
 #pragma region Vertex
 		SVertexTypePosNormUV tempVertex;
@@ -537,7 +537,7 @@ namespace Snowblind
 			tempSurface->SetTexture("AlbedoTexture", "Data/Textures/col.dds");
 			mySurfaces.Add(tempSurface);*/
 
-		//myEffect->SetAlbedo(Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/colors.dds"));
+			//myEffect->SetAlbedo(Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/colors.dds"));
 		InitVertexBuffer();
 		InitIndexBuffer();
 	}
@@ -559,68 +559,54 @@ namespace Snowblind
 
 	void CModel::Render()
 	{
-		if (!myEffect)
-			return;
-
 		if (!myIsNULLObject)
 		{
-		//	ID3D11DeviceContext* context = myAPI->GetContext();
+			ID3D11DeviceContext* context = myAPI->GetContext();
 
-		//	context->IASetInputLayout(myVertexLayout);
+			context->IASetInputLayout(myVertexLayout);
+			context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
+			context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
+			context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			/*for (UINT p = 0; p < techDesc.Passes; ++p)
+			{*/
+			if (mySurfaces.Size() > 0)
+			{
+				if (!myIsSkysphere)
+				{
+					for (int i = 0; i < mySurfaces.Size(); i++)
+					{
+						mySurfaces[i]->Activate();
 
-		//	context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-		//	context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
+						//HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
+						//myAPI->HandleErrors(hr, "Failed to apply pass to context!");
 
-		//	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+						//context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
 
-		//	/*D3DX11_TECHNIQUE_DESC techDesc;
-		//	myEffect->GetTechnique()->GetDesc(&techDesc);*/
-		//	float blendFactor[4];
-		//	blendFactor[0] = 0.f;
-		//	blendFactor[1] = 0.f;
-		//	blendFactor[2] = 0.f;
-		//	blendFactor[3] = 0.f;
-		//	myEffect->SetBlendState(NULL, blendFactor);
-		//	for (UINT p = 0; p < techDesc.Passes; ++p)
-		//	{
-		//		if (mySurfaces.Size() > 0)
-		//		{
-		//			if (!myIsSkysphere)
-		//			{
-		//				for (int i = 0; i < mySurfaces.Size(); i++)
-		//				{
-		//					mySurfaces[i]->Activate();
+					}
+				}
+				else
+				{
+					for (int i = 0; i < mySurfaces.Size(); i++)
+					{
+						//HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
+						//myAPI->HandleErrors(hr, "Failed to apply pass to context!");
+						//context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
 
-		//					HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-		//					myAPI->HandleErrors(hr, "Failed to apply pass to context!");
+					}
+				}
+			}
+			else
+			{
+				//HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
+				//myAPI->HandleErrors(hr, "Failed to apply pass to context!");
 
-		//					context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
-
-		//				}
-		//			}
-		//			else
-		//			{
-		//				for (int i = 0; i < mySurfaces.Size(); i++)
-		//				{
-		//					HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-		//					myAPI->HandleErrors(hr, "Failed to apply pass to context!");
-		//					context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
-
-		//				}
-		//			}
-		//		}
-		//		else
-		//		{
-		//			HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-		//			myAPI->HandleErrors(hr, "Failed to apply pass to context!");
-
-		//			context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
-		//		}
-		//	}
+				//context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
+			}
+		}
 		//}
-		//for each(CModel* child in myChildren)
-		//{
-		//	child->Render();
+		for each(CModel* child in myChildren)
+		{
+			child->Render();
 		}
 	}
 
@@ -639,11 +625,6 @@ namespace Snowblind
 				myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, myAPI->GetContext());
 				myAPI->GetContext()->Draw(3, 0);
 			}*/
-	}
-
-	void CModel::SetEffect(CEffect* anEffect)
-	{
-		myEffect = anEffect;
 	}
 
 	void CModel::SetIsSkysphere()

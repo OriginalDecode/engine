@@ -2,6 +2,7 @@
 #include "ShaderContainer.h"
 #include <DataStructures/GrowingArray.h>
 #include <d3dcompiler.h>
+#include <vector>
 #define ITTERATE(type) auto it = type.begin(); it != type.end(); it++
 namespace Snowblind
 {
@@ -18,72 +19,72 @@ namespace Snowblind
 			SAFE_RELEASE(it->second);
 		}
 
-		for (auto it = myPixelShaders.begin(); it != myPixelShaders.end(); it++)
+		for (ITTERATE(myPixelShaders))
 		{
 			SAFE_RELEASE(it->second);
 		}
 
-		for (auto it = myGeometryShaders.begin(); it != myGeometryShaders.end(); it++)
+		for (ITTERATE(myGeometryShaders))
 		{
 			SAFE_RELEASE(it->second);
 		}
 
-		for (auto it = myHullShaders.begin(); it != myHullShaders.end(); it++)
+		for (ITTERATE(myHullShaders))
 		{
 			SAFE_RELEASE(it->second);
 		}
 
-		for (auto it = myDomainShaders.begin(); it != myDomainShaders.end(); it++)
+		for (ITTERATE(myDomainShaders))
 		{
 			SAFE_RELEASE(it->second);
 		}
 
-		for (auto it = myComputeShaders.begin(); it != myComputeShaders.end(); it++)
+		for (ITTERATE(myComputeShaders))
 		{
 			SAFE_RELEASE(it->second);
 		}
 	}
 
-	ID3D11VertexShader* CShaderContainer::LoadVertexShader(const std::string& aVertexShader)
+	void CShaderContainer::LoadVertexShader(const std::string& aVertexShader)
 	{
 		ID3D11VertexShader* shader = nullptr;
 		CreateShader(aVertexShader, shader);
-		return shader;
+		myVertexShaders[aVertexShader] = shader;
 	}
 
-	ID3D11PixelShader* CShaderContainer::LoadPixelShader(const std::string& aPixelShader)
+	void CShaderContainer::LoadPixelShader(const std::string& aPixelShader)
 	{
 		ID3D11PixelShader* shader = nullptr;
 		CreateShader(aPixelShader, shader);
-		return shader;
+		myPixelShaders[aPixelShader] = shader;
 	}
 
-	ID3D11GeometryShader* CShaderContainer::LoadGeometryShader(const std::string& aGeometryShader)
+	void CShaderContainer::LoadGeometryShader(const std::string& aGeometryShader)
 	{
 		ID3D11GeometryShader* shader = nullptr;
 		CreateShader(aGeometryShader, shader);
-		return shader;
+		myGeometryShaders[aGeometryShader] = shader;
 	}
 
-	ID3D11HullShader* CShaderContainer::LoadHullShader(const std::string& aHullShader)
+	void CShaderContainer::LoadHullShader(const std::string& aHullShader)
 	{
 		ID3D11HullShader* shader = nullptr;
 		CreateShader(aHullShader, shader);
-		return shader;
+		myHullShaders[aHullShader] = shader;
 	}
 
-	ID3D11DomainShader* CShaderContainer::LoadDomainShader(const std::string& aDomainShader)
+	void CShaderContainer::LoadDomainShader(const std::string& aDomainShader)
 	{
 		ID3D11DomainShader* shader = nullptr;
 		CreateShader(aDomainShader, shader);
-		return shader;
+		myDomainShaders[aDomainShader] = shader;
 	}
 
-	ID3D11ComputeShader* CShaderContainer::LoadComputeShader(const std::string& aComputeShader)
+	void CShaderContainer::LoadComputeShader(const std::string& aComputeShader)
 	{
 		ID3D11ComputeShader* shader = nullptr;
 		CreateShader(aComputeShader, shader);
-		return shader;
+		myComputeShaders[aComputeShader] = shader;
 	}
 
 	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11VertexShader* aVertexShader)
@@ -112,10 +113,10 @@ namespace Snowblind
 		}
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
-		SIZE_T byteSize = compiledShader->GetBufferSize();
-		hr = device->CreateVertexShader(compiledShader, byteSize, nullptr, &aVertexShader);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
 
+		hr = device->CreateVertexShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &aVertexShader);
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
+		CEngine::GetDirectX()->SetDebugName(aVertexShader, "VertexShader");
 	}
 
 	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11PixelShader* aPixelShader)
@@ -138,6 +139,7 @@ namespace Snowblind
 
 		hr = device->CreatePixelShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aPixelShader);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
+		CEngine::GetDirectX()->SetDebugName(aPixelShader, "PixelShader");
 	}
 
 	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11GeometryShader* aGeometryShader)
@@ -160,6 +162,7 @@ namespace Snowblind
 
 		hr = device->CreateGeometryShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aGeometryShader);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
+		CEngine::GetDirectX()->SetDebugName(aGeometryShader, "GeometryShader");
 	}
 
 	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11HullShader* aHullShader)
@@ -183,6 +186,7 @@ namespace Snowblind
 
 		hr = device->CreateHullShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aHullShader);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
+		CEngine::GetDirectX()->SetDebugName(aHullShader, "HullShader");
 	}
 
 	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11DomainShader* aDomainShader)
@@ -206,6 +210,7 @@ namespace Snowblind
 
 		hr = device->CreateDomainShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aDomainShader);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
+		CEngine::GetDirectX()->SetDebugName(aDomainShader, "DomainShader");
 	}
 
 	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11ComputeShader* aComputeShader)
@@ -229,6 +234,7 @@ namespace Snowblind
 
 		hr = device->CreateComputeShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aComputeShader);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
+		CEngine::GetDirectX()->SetDebugName(aComputeShader, "ComputeShader");
 	}
 
 	void CShaderContainer::Create()
@@ -253,7 +259,7 @@ namespace Snowblind
 	{
 		if (myVertexShaders.find(aVertexShader) == myVertexShaders.end())
 		{
-			return LoadVertexShader(aVertexShader);
+			LoadVertexShader(aVertexShader);
 		}
 		return myVertexShaders[aVertexShader];
 	}
@@ -262,7 +268,7 @@ namespace Snowblind
 	{
 		if (myPixelShaders.find(aPixelShader) == myPixelShaders.end())
 		{
-			return LoadPixelShader(aPixelShader);
+			LoadPixelShader(aPixelShader);
 		}
 		return myPixelShaders[aPixelShader];
 	}
@@ -271,7 +277,7 @@ namespace Snowblind
 	{
 		if (myGeometryShaders.find(aGeometryShader) == myGeometryShaders.end())
 		{
-			return LoadGeometryShader(aGeometryShader);
+			LoadGeometryShader(aGeometryShader);
 		}
 		return myGeometryShaders[aGeometryShader];
 	}
@@ -280,7 +286,7 @@ namespace Snowblind
 	{
 		if (myHullShaders.find(aHullShader) == myHullShaders.end())
 		{
-			return LoadHullShader(aHullShader);
+			LoadHullShader(aHullShader);
 		}
 		return myHullShaders[aHullShader];
 	}
@@ -289,7 +295,7 @@ namespace Snowblind
 	{
 		if (myDomainShaders.find(aDomainShader) == myDomainShaders.end())
 		{
-			return LoadDomainShader(aDomainShader);
+			LoadDomainShader(aDomainShader);
 		}
 		return myDomainShaders[aDomainShader];
 	}
@@ -298,7 +304,7 @@ namespace Snowblind
 	{
 		if (myComputeShaders.find(aComputeShader) == myComputeShaders.end())
 		{
-			return LoadComputeShader(aComputeShader);
+			LoadComputeShader(aComputeShader);
 		}
 		return myComputeShaders[aComputeShader];
 	}

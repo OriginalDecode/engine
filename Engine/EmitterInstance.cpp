@@ -27,12 +27,12 @@ namespace Snowblind
 		data.sizeDelta = 0.f;
 		data.alphaDelta = 0.f;
 
-		myData.diffuseTexture = Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/smoke.dds");
-		myData.diffuseTexture->SetDebugName("ParticleDiffuseTexture");
-		myData.lifeTime = -1.f;
-		myData.shader = Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/Particle.fx");
-		myData.particleData = data;
-		myData.size = { 0.f,0.f,0.f };
+		//myData.diffuseTexture = Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/smoke.dds");
+		//myData.diffuseTexture->SetDebugName("ParticleDiffuseTexture");
+		//myData.lifeTime = -1.f;
+		//myData.shader = Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/Particle.fx");
+		//myData.particleData = data;
+		//myData.size = { 0.f,0.f,0.f };
 
 		myParticles.Init(256);
 

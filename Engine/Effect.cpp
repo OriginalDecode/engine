@@ -141,16 +141,12 @@ namespace Snowblind
 
 	void CEffect::SetPosition(const CU::Math::Vector2<float>& aPosition)
 	{
-		//mySpritePos = myEffect->GetVariableByName("Position")->AsVector();
-		//Validate(mySpritePos, "SpritePosition Invalid!");
 		GetShaderResource(mySpritePos, "Position");
 		mySpritePos->SetFloatVector(&aPosition.x);
 	}
 
 	void CEffect::SetScale(const CU::Math::Vector2<float>& aPosition)
 	{
-		//mySpritePos = myEffect->GetVariableByName("Scale")->AsVector();
-		//Validate(mySpritePos, "SpritePosition Invalid!");
 		GetShaderResource(mySpritePos, "Scale");
 		mySpritePos->SetFloatVector(&aPosition.x);
 	}

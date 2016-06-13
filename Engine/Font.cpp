@@ -79,7 +79,7 @@ namespace Snowblind
 
 		if (!myEffect)
 			return;
-		//myEffect->SetTexture(myData->myAtlasView, "FontTexture");
+		myEffect->SetTexture(myData->myAtlasView, "FontTexture");
 
 		ID3D11DeviceContext& context = *CEngine::GetDirectX()->GetContext();
 		context.IASetInputLayout(myVertexLayout);

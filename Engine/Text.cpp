@@ -19,10 +19,10 @@ namespace Snowblind
 
 	void CText::Render(CCamera* aCamera)
 	{
-		//myFont->GetEffect()->SetPosition(myPosition);
-		//myFont->GetEffect()->SetScale(myScale);
-		//myFont->GetEffect()->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
-		//myFont->Render();
+		myFont->GetEffect()->SetPosition(myPosition);
+		myFont->GetEffect()->SetScale(myScale);
+		myFont->GetEffect()->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
+		myFont->Render();
 	}
 
 	void CText::SetText(const std::string& aString)

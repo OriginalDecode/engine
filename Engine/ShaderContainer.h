@@ -8,6 +8,50 @@ struct ID3D11ComputeShader;
 
 namespace Snowblind
 {
+	struct SShaderBase
+	{
+		SShaderBase() {};
+		virtual ~SShaderBase() {};
+		void* compiledShader;
+		SIZE_T byteLength;
+	};
+
+	struct SVertexShader : public SShaderBase
+	{
+		~SVertexShader() { SAFE_RELEASE(vertexShader); }
+		ID3D11VertexShader* vertexShader;
+	};
+
+	struct SPixelShader : public SShaderBase
+	{
+		~SPixelShader() { SAFE_RELEASE(pixelShader); }
+		ID3D11PixelShader* pixelShader;
+	};
+
+	struct SGeometryShader : public SShaderBase
+	{
+		~SGeometryShader() { SAFE_RELEASE(geometryShader); }
+		ID3D11GeometryShader* geometryShader;
+	};
+
+	struct SHullShader : public SShaderBase
+	{
+		~SHullShader() { SAFE_RELEASE(hullShader); }
+		ID3D11HullShader* hullShader;
+	};
+
+	struct SDomainShader : public SShaderBase
+	{
+		~SDomainShader() { SAFE_RELEASE(domainShader); }
+		ID3D11DomainShader* domainShader;
+	};
+
+	struct SComputeShader : public SShaderBase
+	{
+		~SComputeShader() { SAFE_RELEASE(computeShader); }
+		ID3D11ComputeShader* computeShader;
+	};
+
 	class CShaderContainer
 	{
 	public:
@@ -15,12 +59,12 @@ namespace Snowblind
 		static void Destroy();
 		static CShaderContainer* GetInstance();
 
-		ID3D11VertexShader*		GetVertexShader(const std::string& aVertexShader);
-		ID3D11PixelShader*		GetPixelShader(const std::string& aPixelShader);
-		ID3D11GeometryShader*	GetGeometryShader(const std::string& aGeometryShader);
-		ID3D11HullShader*		GetHullShader(const std::string& aHullShader);
-		ID3D11DomainShader*		GetDomainShader(const std::string& aDomainShader);
-		ID3D11ComputeShader*	GetComputeShader(const std::string& aComputeShader);
+		SVertexShader*		GetVertexShader(const std::string& aVertexShader);
+		SPixelShader*		GetPixelShader(const std::string& aPixelShader);
+		SGeometryShader*	GetGeometryShader(const std::string& aGeometryShader);
+		SHullShader*		GetHullShader(const std::string& aHullShader);
+		SDomainShader*		GetDomainShader(const std::string& aDomainShader);
+		SComputeShader*		GetComputeShader(const std::string& aComputeShader);
 
 	private:
 		static CShaderContainer* myInstance;
@@ -34,19 +78,22 @@ namespace Snowblind
 		void LoadDomainShader(const std::string& aDomainShader);
 		void LoadComputeShader(const std::string& aComputeShader);
 
-		void CreateShader(const std::string& aShader, ID3D11VertexShader*& aVertexShader);
-		void CreateShader(const std::string& aShader, ID3D11PixelShader*& aPixelShader);
-		void CreateShader(const std::string& aShader, ID3D11GeometryShader*& aGeometryShader);
-		void CreateShader(const std::string& aShader, ID3D11HullShader*& aHullShader);
-		void CreateShader(const std::string& aShader, ID3D11DomainShader*& aDomainShader);
-		void CreateShader(const std::string& aShader, ID3D11ComputeShader*& aComputeShader);
+		void CreateShader(const std::string& aShader, SVertexShader*& aVertexShader);
+		void CreateShader(const std::string& aShader, SPixelShader*& aPixelShader);
+		void CreateShader(const std::string& aShader, SGeometryShader*& aGeometryShader);
+		void CreateShader(const std::string& aShader, SHullShader*& aHullShader);
+		void CreateShader(const std::string& aShader, SDomainShader*& aDomainShader);
+		void CreateShader(const std::string& aShader, SComputeShader*& aComputeShader);
 
-		std::unordered_map<std::string, ID3D11VertexShader*> myVertexShaders;
-		std::unordered_map<std::string, ID3D11PixelShader*> myPixelShaders;
-		std::unordered_map<std::string, ID3D11GeometryShader*> myGeometryShaders;
-		std::unordered_map<std::string, ID3D11HullShader*> myHullShaders;
-		std::unordered_map<std::string, ID3D11DomainShader*> myDomainShaders;
-		std::unordered_map<std::string, ID3D11ComputeShader*> myComputeShaders;
+		std::unordered_map<std::string, SVertexShader*> myVertexShaders;
+		std::unordered_map<std::string, SPixelShader*> myPixelShaders;
+		std::unordered_map<std::string, SGeometryShader*> myGeometryShaders;
+		std::unordered_map<std::string, SHullShader*> myHullShaders;
+		std::unordered_map<std::string, SDomainShader*> myDomainShaders;
+		std::unordered_map<std::string, SComputeShader*> myComputeShaders;
 
 	};
+
+
+
 };

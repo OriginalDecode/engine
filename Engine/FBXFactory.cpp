@@ -65,7 +65,7 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_NORMAL)
 		{
-			desc->SemanticName = "NORMA";
+			desc->SemanticName = "NORMAL";
 			desc->Format = DXGI_FORMAT_R32G32B32_FLOAT;
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_UV)
@@ -75,7 +75,7 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_BINORMAL)
 		{
-			desc->SemanticName = "BINORMA";
+			desc->SemanticName = "BINORMAL";
 			desc->Format = DXGI_FORMAT_R32G32B32_FLOAT;
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_TANGENT)

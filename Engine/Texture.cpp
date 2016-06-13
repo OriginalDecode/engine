@@ -105,7 +105,7 @@ namespace Snowblind
 
 		if (FAILED(hr))
 		{
-			OutputDebugStringA("[TEXTURE] : Failed to load texture!");
+			OutputDebugStringA("[TEXTURE] : Failed to load texture!\n");
 			return false;
 		}
 		return true;

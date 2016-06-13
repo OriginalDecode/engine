@@ -15,7 +15,7 @@ namespace Snowblind
 {
 	CModel::CModel()
 	{
-		CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/base.vs");
+		//CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/base.vs");
 		myIsNULLObject = true;
 		myAPI = CEngine::GetDirectX();
 		myIsTextured = false;
@@ -32,6 +32,7 @@ namespace Snowblind
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myIndexData);
 		SAFE_RELEASE(myVertexLayout);
+		SAFE_RELEASE(myConstantBuffer);
 	}
 
 	void CModel::CreateTriangle(const std::string& anEffectPath)
@@ -549,6 +550,7 @@ namespace Snowblind
 		{
 			InitVertexBuffer();
 			InitIndexBuffer();
+			InitConstantBuffer();
 		}
 
 		for each (CModel* child in myChildren)
@@ -567,6 +569,7 @@ namespace Snowblind
 			context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 			context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
 			context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			/*for (UINT p = 0; p < techDesc.Passes; ++p)
 			{*/
 			if (mySurfaces.Size() > 0)
@@ -580,7 +583,8 @@ namespace Snowblind
 						//HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
 						//myAPI->HandleErrors(hr, "Failed to apply pass to context!");
 
-						//context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
+						
+						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
 
 					}
 				}
@@ -651,14 +655,20 @@ namespace Snowblind
 		myVertexBuffer = new SVertexBufferWrapper();
 		HRESULT hr;
 
-		/*D3DX11_PASS_DESC passDesc;
-		hr = myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);*/
-		myAPI->HandleErrors(hr, "Failed to get description from EffectPass!");
 
-		/*hr = myAPI->GetDevice()->
-			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
+
+		//D3DX11_PASS_DESC passDesc;
+		//hr = myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
+		//myAPI->HandleErrors(hr, "Failed to get description from EffectPass!");
+
+		hr = myAPI->GetDevice()->
+			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size()
+				, CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/base.vs")->compiledShader
+				, CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/base.vs")->byteLength
+				, &myVertexLayout);
+
 		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Model Vertex Layout");
-		myAPI->HandleErrors(hr, "Failed to create VertexLayout");*/
+		myAPI->HandleErrors(hr, "Failed to create VertexLayout");
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
@@ -706,6 +716,25 @@ namespace Snowblind
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		myIndexBuffer->myByteOffset = 0;
 
+	}
+
+	void CModel::InitConstantBuffer()
+	{
+		D3D11_BUFFER_DESC cbDesc;
+		cbDesc.ByteWidth = sizeof(SVertexBaseStruct);
+		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		cbDesc.MiscFlags = 0;
+		cbDesc.StructureByteStride = 0;
+
+		D3D11_SUBRESOURCE_DATA cbData;
+		cbData.pSysMem = &myBaseStruct;
+		cbData.SysMemPitch = 0;
+		cbData.SysMemSlicePitch = 0;
+
+		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, &cbData, &myConstantBuffer);
+		CEngine::GetDirectX()->HandleErrors(hr, "[Model] : Failed to Create Constant Buffer, ");
 	}
 
 	void CModel::AddChild(CModel* aChild)

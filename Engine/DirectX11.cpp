@@ -517,6 +517,11 @@ namespace Snowblind
 
 	void CDirectX11::SetSamplerState(const eSamplerStates& samplerState)
 	{
+		if (samplerState == eSamplerStates::NONE)
+		{
+			myContext->PSSetSamplers(0, 0, nullptr);
+			return;
+		}
 		myContext->PSSetSamplers(0, int(eSamplerStates::_COUNT), &mySamplerStates[int(samplerState)]);
 	}
 
@@ -527,6 +532,7 @@ namespace Snowblind
 
 	void CDirectX11::SetPixelShader(ID3D11PixelShader* aPixelShader)
 	{
+		//Check current Pixel Shader, if current == aPixelShader return
 		myContext->PSSetShader(aPixelShader, nullptr, 0);
 	}
 

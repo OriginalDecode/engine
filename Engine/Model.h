@@ -6,6 +6,7 @@
 
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
+struct ID3D11Buffer;
 namespace Snowblind
 {
 	class CDirectX11;
@@ -39,6 +40,7 @@ namespace Snowblind
 		CU::Matrix44f& GetOrientation();
 	private:
 		ID3D11InputLayout* myVertexLayout;
+		ID3D11Buffer* myConstantBuffer;
 
 		CU::GrowingArray<SVertexTypePosCol> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
@@ -51,6 +53,8 @@ namespace Snowblind
 		SVertexBufferWrapper* myVertexBuffer;
 		SIndexBufferWrapper* myIndexBuffer;
 
+		SVertexBaseStruct myBaseStruct;
+
 		CU::Matrix44f myOrientation;
 
 		CDirectX11* myAPI;
@@ -61,5 +65,6 @@ namespace Snowblind
 		bool myIsSkysphere = false;
 		void InitVertexBuffer();
 		void InitIndexBuffer();
+		void InitConstantBuffer();
 	};
 }

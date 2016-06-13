@@ -74,6 +74,7 @@ enum class eSamplerStates
 	LINEAR_WRAP,
 	POINT_CLAMP,
 	POINT_WRAP,
+	NONE,
 	_COUNT
 };
 

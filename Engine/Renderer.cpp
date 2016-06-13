@@ -97,14 +97,14 @@ namespace Snowblind
 			{
 			case SRenderCommand::eType::MODEL:
 				//myModels[command.myModelKey]->SetPosition(command.myPosition);
-				//CEngine::GetDirectX()->SetVertexShader(CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/base.vs"));
-				//CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
+				CEngine::GetDirectX()->SetVertexShader(CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/base.vs"));
+				CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
 
 				//myModels[command.myModelKey]->GetEffect()->SetMatrices(myModels[command.myModelKey]->GetOrientation(), myPrevFrame, myCamera->GetProjection());
 
 				//myModels[command.myModelKey]->Render();
 
-				//CEngine::GetDirectX()->SetVertexShader(nullptr);
+				CEngine::GetDirectX()->SetVertexShader(nullptr);
 				break;
 			case SRenderCommand::eType::SKYSPHERE:
 				//mySkysphere->SetPosition(command.myPosition);

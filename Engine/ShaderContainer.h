@@ -34,12 +34,12 @@ namespace Snowblind
 		void LoadDomainShader(const std::string& aDomainShader);
 		void LoadComputeShader(const std::string& aComputeShader);
 
-		void CreateShader(const std::string& aShader, ID3D11VertexShader* aVertexShader);
-		void CreateShader(const std::string& aShader, ID3D11PixelShader* aPixelShader);
-		void CreateShader(const std::string& aShader, ID3D11GeometryShader* aGeometryShader);
-		void CreateShader(const std::string& aShader, ID3D11HullShader* aHullShader);
-		void CreateShader(const std::string& aShader, ID3D11DomainShader* aDomainShader);
-		void CreateShader(const std::string& aShader, ID3D11ComputeShader* aComputeShader);
+		void CreateShader(const std::string& aShader, ID3D11VertexShader*& aVertexShader);
+		void CreateShader(const std::string& aShader, ID3D11PixelShader*& aPixelShader);
+		void CreateShader(const std::string& aShader, ID3D11GeometryShader*& aGeometryShader);
+		void CreateShader(const std::string& aShader, ID3D11HullShader*& aHullShader);
+		void CreateShader(const std::string& aShader, ID3D11DomainShader*& aDomainShader);
+		void CreateShader(const std::string& aShader, ID3D11ComputeShader*& aComputeShader);
 
 		std::unordered_map<std::string, ID3D11VertexShader*> myVertexShaders;
 		std::unordered_map<std::string, ID3D11PixelShader*> myPixelShaders;

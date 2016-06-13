@@ -87,7 +87,7 @@ namespace Snowblind
 		myComputeShaders[aComputeShader] = shader;
 	}
 
-	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11VertexShader* aVertexShader)
+	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11VertexShader*& aVertexShader)
 	{
 
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
@@ -119,7 +119,7 @@ namespace Snowblind
 		CEngine::GetDirectX()->SetDebugName(aVertexShader, "VertexShader");
 	}
 
-	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11PixelShader* aPixelShader)
+	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11PixelShader*& aPixelShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -142,7 +142,7 @@ namespace Snowblind
 		CEngine::GetDirectX()->SetDebugName(aPixelShader, "PixelShader");
 	}
 
-	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11GeometryShader* aGeometryShader)
+	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11GeometryShader*& aGeometryShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -165,7 +165,7 @@ namespace Snowblind
 		CEngine::GetDirectX()->SetDebugName(aGeometryShader, "GeometryShader");
 	}
 
-	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11HullShader* aHullShader)
+	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11HullShader*& aHullShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -189,7 +189,7 @@ namespace Snowblind
 		CEngine::GetDirectX()->SetDebugName(aHullShader, "HullShader");
 	}
 
-	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11DomainShader* aDomainShader)
+	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11DomainShader*& aDomainShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -213,7 +213,7 @@ namespace Snowblind
 		CEngine::GetDirectX()->SetDebugName(aDomainShader, "DomainShader");
 	}
 
-	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11ComputeShader* aComputeShader)
+	void CShaderContainer::CreateShader(const std::string& aShader, ID3D11ComputeShader*& aComputeShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 

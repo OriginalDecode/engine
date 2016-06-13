@@ -36,6 +36,8 @@ struct ID3D11ComputeShader;
 
 struct ID3D11SamplerState;
 
+struct IUnknown;
+
 enum class eEngineFlags
 {
 	FULLSCREEN,
@@ -132,7 +134,7 @@ namespace Snowblind
 		void CreateRazterizers();
 		void CreateBlendStates();
 		void CreateSamplerStates();
-
+		unsigned int GetRefCount(IUnknown* ptr);
 		HWND myHWND;
 
 		D3D11_VIEWPORT* myViewport = nullptr;
@@ -153,6 +155,7 @@ namespace Snowblind
 		std::vector<std::string> myAdaptersName;
 		std::string myActiveAdapter;
 
+		int myDeviceCount;
 		float myWidth;
 		float myHeight;
 		const std::string myAPI;

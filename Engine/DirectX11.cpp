@@ -11,6 +11,7 @@
 #include <stdlib.h>
 
 #include "AssetsContainer.h"
+#include <Unknwn.h>
 
 #undef VOID
 #define VOID (void**)
@@ -24,9 +25,10 @@ namespace Snowblind
 	{
 		CAssetsContainer::Create();
 		CShaderContainer::Create();
-		
+
 		CreateAdapterList();
 		CreateDeviceAndSwapchain();
+		myDeviceCount = GetRefCount(myDevice);
 		CreateDepthBuffer();
 		CreateDisabledDepthStencilState();
 		CreateEnabledDepthStencilState();
@@ -36,6 +38,7 @@ namespace Snowblind
 		CreateRazterizers();
 		CreateBlendStates();
 		CreateSamplerStates();
+
 	}
 
 	CDirectX11::~CDirectX11()
@@ -43,17 +46,21 @@ namespace Snowblind
 		myContext->ClearState();
 		myContext->Flush();
 		SAFE_RELEASE(myContext);
-
+		SAFE_RELEASE(myDevice);
 		if (myDebug != nullptr)
 		{
 			std::stringstream ss;
-			ss << "Debug is released last. Will report as Live Object! 0x" << myDebug << "\n";
+			ss << "\nDebug is released last. Will report as Live Object! 0x" << myDebug << "\nWatch out for false reports. \n====\n";
 			OutputDebugString(ss.str().c_str());
-			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
 			SAFE_RELEASE(myDebug);
 		}
 
-		SAFE_RELEASE(myDevice);
+
+
+#if defined (_DEBUG)
+		OutputDebugString("\nIntRef is something that D3D has internal. You cannot control these.\n\n");
+#endif
 
 	}
 
@@ -66,6 +73,7 @@ namespace Snowblind
 
 
 		SAFE_DELETE(myViewport);
+
 		SAFE_RELEASE(myDepthStates[int(eDepthStencil::Z_ENABLED)]);
 		SAFE_RELEASE(myDepthStates[int(eDepthStencil::Z_DISABLED)]);
 		SAFE_RELEASE(myDepthStates[int(eDepthStencil::READ_NO_WRITE)]);
@@ -160,6 +168,7 @@ namespace Snowblind
 			D3D_FEATURE_LEVEL_11_0,
 		};
 		UINT createDeviceFlags = 0;
+
 #ifdef _DEBUG
 		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
@@ -216,7 +225,6 @@ namespace Snowblind
 				nullptr,
 				&myContext);
 		}
-
 
 		DL_ASSERT_EXP(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");
 
@@ -311,8 +319,7 @@ namespace Snowblind
 		{
 			enumAdapter.push_back(adapter);
 		}
-
-		factory->Release();
+		SAFE_RELEASE(factory);
 
 		for (unsigned int i = 0; i < enumAdapter.size(); ++i)
 		{
@@ -655,5 +662,12 @@ namespace Snowblind
 		myDevice->CreateSamplerState(&samplerDesc, &mySamplerStates[int(eSamplerStates::POINT_WRAP)]);
 		SetDebugName(mySamplerStates[int(eSamplerStates::POINT_WRAP)], "POINT_WRAP SamplerState");
 	}
+
+	unsigned int CDirectX11::GetRefCount(IUnknown* ptr)
+	{
+		ptr->AddRef();
+		return ptr->Release();
+	}
+
 };
 #undef VOID

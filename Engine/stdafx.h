@@ -21,10 +21,13 @@
 #include <InputWrapper.h>
 #include <DL_Debug.h>
 
-#include <d3d11.h>
-#include <DDSTextureLoader.h>
+#include <D3DX11.h>
+#include <d3dx11effect.h>
+
 #include <unordered_map>
 #include <Windows.h>
+#include <xnamath.h>
+
 
 
 #include "AssetsContainer.h"

@@ -27,12 +27,12 @@ namespace Snowblind
 		data.sizeDelta = 0.f;
 		data.alphaDelta = 0.f;
 
-		//myData.diffuseTexture = Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/smoke.dds");
-		//myData.diffuseTexture->SetDebugName("ParticleDiffuseTexture");
-		//myData.lifeTime = -1.f;
-		//myData.shader = Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/Particle.fx");
-		//myData.particleData = data;
-		//myData.size = { 0.f,0.f,0.f };
+		myData.diffuseTexture = Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/smoke.dds");
+		myData.diffuseTexture->SetDebugName("ParticleDiffuseTexture");
+		myData.lifeTime = -1.f;
+		myData.shader = Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/Particle.fx");
+		myData.particleData = data;
+		myData.size = { 0.f,0.f,0.f };
 
 		myParticles.Init(256);
 
@@ -63,19 +63,19 @@ namespace Snowblind
 	void CEmitterInstance::Render(CCamera* camera, CTexture* aDepthTexture)
 	{
 		UpdateVertexBuffer();
-		//myData.shader->SetTexture(myData.diffuseTexture, "DiffuseTexture");
-		//myData.shader->SetDepthTexture(aDepthTexture);
+		myData.shader->SetTexture(myData.diffuseTexture, "DiffuseTexture");
+		myData.shader->SetDepthTexture(aDepthTexture);
 
-		//myData.shader->SetMatrices(myOrientation, camera->GetOrientation(), camera->GetProjection());
+		myData.shader->SetMatrices(myOrientation, camera->GetOrientation(), camera->GetProjection());
 		ID3D11DeviceContext* context = CEngine::GetDirectX()->GetContext();
 		context->IASetInputLayout(myInputLayout);
 
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		context->IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-		/*D3DX11_TECHNIQUE_DESC techDesc;
+		D3DX11_TECHNIQUE_DESC techDesc;
 		myData.shader->GetTechnique()->GetDesc(&techDesc);
 
-		myData.shader->GetTechnique()->GetPassByIndex(0)->Apply(0, context);*/
+		myData.shader->GetTechnique()->GetPassByIndex(0)->Apply(0, context);
 		context->Draw(myParticles.Size(), 0);
 
 	}
@@ -129,20 +129,20 @@ namespace Snowblind
 	{
 		HRESULT hr = S_OK;
 
-		/*D3DX11_PASS_DESC passDesc;
+		D3DX11_PASS_DESC passDesc;
 		hr = myData.shader->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to get tenchnique from shader.");*/
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to get tenchnique from shader.");
 
 		const D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "ALPHA", 0, DXGI_FORMAT_R32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "SIZE", 0, DXGI_FORMAT_R32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
-		/*hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(layout, ARRAYSIZE(layout), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myInputLayout);
+		hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(layout, ARRAYSIZE(layout), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myInputLayout);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create InputLayout!");
-		CEngine::GetDirectX()->SetDebugName(myInputLayout, "Particle Input Layout");*/
+		CEngine::GetDirectX()->SetDebugName(myInputLayout, "Particle Input Layout");
 	}
 
 	void CEmitterInstance::UpdateParticle(float aDeltaTime)

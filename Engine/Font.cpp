@@ -87,7 +87,7 @@ namespace Snowblind
 		context.IASetIndexBuffer(myIndexBuffer->myIndexBuffer, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
 		context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		/*D3DX11_TECHNIQUE_DESC techDesc;
+		D3DX11_TECHNIQUE_DESC techDesc;
 		myEffect->GetTechnique()->GetDesc(&techDesc);
 
 		for (UINT p = 0; p < techDesc.Passes; ++p)
@@ -96,7 +96,7 @@ namespace Snowblind
 			CEngine::GetDirectX()->HandleErrors(hr, "Failed to apply pass to context!");
 			context.DrawIndexed(myIndices.Size(), 0, 0);
 
-		}*/
+		}
 
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds() - myRenderTime;
@@ -140,11 +140,11 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosColUV[2]);
 
 
-		//D3DX11_PASS_DESC passDesc;
-		//myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-		//HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
-		//CEngine::GetDirectX()->HandleErrors(hr, " [Font] : Input Layout.");
-		//CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Font Input Layout");
+		D3DX11_PASS_DESC passDesc;
+		myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
+		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
+		CEngine::GetDirectX()->HandleErrors(hr, " [Font] : Input Layout.");
+		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Font Input Layout");
 	}
 
 	void CFont::CreateVertexBuffer()

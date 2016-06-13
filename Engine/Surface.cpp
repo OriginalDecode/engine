@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Surface.h"
 
+#include <d3dx11effect.h>
+
 #include "DirectX11.h"
 #include "Engine.h"
 
@@ -53,7 +55,7 @@ namespace Snowblind
 		CEngine::GetDirectX()->GetContext()->IASetPrimitiveTopology(myPrimologyType);
 		for (int i = 0; i < myTextures.Size(); ++i)
 		{
-			//myEffect->SetTexture(myTextures[i]->texture->GetShaderView(), myTextures[i]->resourceName);
+			myEffect->SetTexture(myTextures[i]->texture->GetShaderView(), myTextures[i]->resourceName);
 			//myShaderVariables[i]->SetResource(myTextures[i]->GetShaderView());
 		}
 	}
@@ -68,10 +70,10 @@ namespace Snowblind
 		myResourceNames.Add(aResourceName);
 
 
-		/*ID3DX11EffectShaderResourceVariable* srv;
-		myEffect->GetShaderResource(srv, aResourceName);*/
-		//myShaderVariables.Add(srv);
+		ID3DX11EffectShaderResourceVariable* srv;
+		myEffect->GetShaderResource(srv, aResourceName);
 
+		myShaderVariables.Add(srv);
 		STexture* newTexture = new STexture();
 		newTexture->texture = CAssetsContainer::GetInstance()->GetTexture(aFilePath);
 		newTexture->resourceName = aResourceName;

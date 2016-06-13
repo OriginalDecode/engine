@@ -15,7 +15,7 @@ namespace Snowblind
 		mySprite = nullptr;
 	}
 
-	void CSprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+	void CSprite::Initiate(const char* aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 	{
 		mySprite = new CSpriteModel();
 		mySprite->Initiate(aTexturePath, aSize, aPosition);
@@ -32,10 +32,10 @@ namespace Snowblind
 
 	void CSprite::Render(CCamera* aCamera)
 	{
-		//mySprite->GetEffect()->SetScale({ 1, 1 });
-		//mySprite->GetEffect()->SetPosition(myPosition);
-		//mySprite->GetEffect()->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
-		//mySprite->Render();
+		mySprite->GetEffect()->SetScale({ 1, 1 });
+		mySprite->GetEffect()->SetPosition(myPosition);
+		mySprite->GetEffect()->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
+		mySprite->Render();
 	}
 
 	const CU::Math::Vector2<float>& CSprite::GetPosition()
@@ -50,13 +50,13 @@ namespace Snowblind
 
 	void CSprite::SetPosition(const CU::Math::Vector2<float>& aPosition)
 	{
-		//CU::Math::Vector2<float> pos = aPosition;
-		//pos.x = pos.x + myHotspot.x;
-		//pos.y = -pos.y - myHotspot.y;
-		//pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
-		//pos.y = pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f);
-		//myPosition = pos;
-		//mySprite->GetEffect()->SetPosition(myPosition);
+		CU::Math::Vector2<float> pos = aPosition;
+		pos.x = pos.x + myHotspot.x;
+		pos.y = -pos.y - myHotspot.y;
+		pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
+		pos.y = pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f);
+		myPosition = pos;
+		mySprite->GetEffect()->SetPosition(myPosition);
 	}
 
 	void CSprite::SetHotspot(const CU::Math::Vector2<float>& aHotspot)
@@ -72,7 +72,7 @@ namespace Snowblind
 
 	void CSprite::SetScale(const CU::Math::Vector2<float>& aScale)
 	{
-		//mySprite->GetEffect()->SetScale(aScale);
+		mySprite->GetEffect()->SetScale(aScale);
 	}
 
 };

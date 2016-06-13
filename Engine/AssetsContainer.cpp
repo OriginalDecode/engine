@@ -92,9 +92,9 @@ namespace Snowblind
 
 	void CAssetsContainer::LoadEffect(const std::string& aFilePath)
 	{
-		//CEffect* effect = new CEffect();
-		//effect->Initiate(aFilePath);
-		//myEffects[aFilePath] = effect;
+		CEffect* effect = new CEffect();
+		effect->Initiate(aFilePath);
+		myEffects[aFilePath] = effect;
 	}
 
 	void CAssetsContainer::LoadModel(const std::string& aFilePath, const std::string& effect)

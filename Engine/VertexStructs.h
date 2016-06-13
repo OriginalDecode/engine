@@ -40,6 +40,6 @@ struct SVertexBaseStruct
 	CU::Matrix44f world; //Model/World
 	CU::Matrix44f invertedView;
 	CU::Matrix44f projection;
-	CU::Matrix44f view; //Non Inverted
-	CU::Matrix44f invertedProjection;
+	//CU::Matrix44f view; //Non Inverted
+	//CU::Matrix44f invertedProjection;
 };

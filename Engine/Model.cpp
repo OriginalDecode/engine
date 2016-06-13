@@ -32,6 +32,7 @@ namespace Snowblind
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myIndexData);
 		SAFE_RELEASE(myVertexLayout);
+		SAFE_DELETE(myBaseStruct);
 		SAFE_RELEASE(myConstantBuffer);
 	}
 
@@ -196,7 +197,6 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosCol[0]);
 		myVertexFormat.Add(VertexLayoutPosCol[1]);
 
-		//myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 		float size = 0.25f;
 		SVertexTypePosCol tempVertex;
 		CU::Vector4f color = aColor;
@@ -297,6 +297,7 @@ namespace Snowblind
 
 		InitVertexBuffer();
 		InitIndexBuffer();
+		InitConstantBuffer();
 	}
 
 	void CModel::CreateTexturedCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
@@ -517,7 +518,7 @@ namespace Snowblind
 
 		myVertexData = new SVertexDataWrapper;
 		myIndexData = new SVertexIndexWrapper;
-
+		myBaseStruct = new SVertexBaseStruct;
 		myVertexData->myNrOfVertexes = vertices.Size();
 		myVertexData->myStride = sizeof(SVertexTypePosNormUV);
 		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
@@ -559,17 +560,28 @@ namespace Snowblind
 		}
 	}
 
-	void CModel::Render()
+	void CModel::Render(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
 	{
 		if (!myIsNULLObject)
 		{
 			ID3D11DeviceContext* context = myAPI->GetContext();
 
-			context->IASetInputLayout(myVertexLayout);
+
+			SetMatrices(aCameraOrientation, aCameraProjection);
+
+			context->UpdateSubresource(myConstantBuffer, 0, 0, &myBaseStruct, 0, 0);
+
+
 			context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
+
 			context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
+
+			context->IASetInputLayout(myVertexLayout);
+
 			context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 			context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+
 			/*for (UINT p = 0; p < techDesc.Passes; ++p)
 			{*/
 			if (mySurfaces.Size() > 0)
@@ -579,11 +591,12 @@ namespace Snowblind
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
 						mySurfaces[i]->Activate();
+						//ID3D11ShaderResourceView* srv = mySurfaces[i]->GetTexture()->GetShaderView();
+						//context->PSSetShaderResources(0, 1, &srv);
 
 						//HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
 						//myAPI->HandleErrors(hr, "Failed to apply pass to context!");
 
-						
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
 
 					}
@@ -592,25 +605,21 @@ namespace Snowblind
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
-						//HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-						//myAPI->HandleErrors(hr, "Failed to apply pass to context!");
-						//context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
+						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
 
 					}
 				}
 			}
 			else
 			{
-				//HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, context);
-				//myAPI->HandleErrors(hr, "Failed to apply pass to context!");
 
-				//context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
+				context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
 			}
 		}
 		//}
 		for each(CModel* child in myChildren)
 		{
-			child->Render();
+			child->Render(aCameraOrientation, aCameraProjection);
 		}
 	}
 
@@ -650,21 +659,37 @@ namespace Snowblind
 		return myOrientation;
 	}
 
+	void CModel::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
+	{
+		//if (!myIsNULLObject)
+		//{
+			//DL_ASSERT_EXP(myBaseStruct != nullptr, "Vertex Constant Buffer Struct was null.");
+
+			myBaseStruct->world = myOrientation;
+			myBaseStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
+			myBaseStruct->projection = aCameraProjection;
+
+		/*	D3D11_MAPPED_SUBRESOURCE msr;
+			CEngine::GetDirectX()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			if (msr.pData != nullptr)
+			{
+				SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
+				memcpy(ptr, &myConstantBuffer, sizeof(SVertexBaseStruct));
+			}
+
+			CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);
+		}*/
+	}
+
 	void CModel::InitVertexBuffer()
 	{
 		myVertexBuffer = new SVertexBufferWrapper();
 		HRESULT hr;
 
-
-
-		//D3DX11_PASS_DESC passDesc;
-		//hr = myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-		//myAPI->HandleErrors(hr, "Failed to get description from EffectPass!");
-
 		hr = myAPI->GetDevice()->
 			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size()
-				, CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/base.vs")->compiledShader
-				, CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/base.vs")->byteLength
+				, CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/cube.vs")->compiledShader
+				, CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/cube.vs")->byteLength
 				, &myVertexLayout);
 
 		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Model Vertex Layout");
@@ -720,7 +745,10 @@ namespace Snowblind
 
 	void CModel::InitConstantBuffer()
 	{
+
+		myBaseStruct = new SVertexBaseStruct;
 		D3D11_BUFFER_DESC cbDesc;
+		ZeroMemory(&cbDesc, sizeof(cbDesc));
 		cbDesc.ByteWidth = sizeof(SVertexBaseStruct);
 		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
 		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;

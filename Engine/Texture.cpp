@@ -106,6 +106,8 @@ namespace Snowblind
 		if (FAILED(hr))
 		{
 			OutputDebugStringA("[TEXTURE] : Failed to load texture!\n");
+			DL_MESSAGE("[Texture] : Failed to load %s", aFileName.c_str());
+			DL_ASSERT("Failed to load Texture!");
 			return false;
 		}
 		return true;

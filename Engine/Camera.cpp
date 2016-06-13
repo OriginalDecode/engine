@@ -5,13 +5,13 @@ namespace Snowblind
 {
 	CCamera::CCamera(float aWidth, float aHeight)
 	{
-		
 		DirectX::XMMATRIX projection;
 		projection = DirectX::XMMatrixPerspectiveFovLH(3.1415926535*0.3f, aWidth / FLOAT(aHeight), 0.1f, 1000.f);
 
 		DirectX::XMFLOAT4X4 projMiddleHand;
 		XMStoreFloat4x4(&projMiddleHand, projection);
 		myProjectionMatrix.Init(reinterpret_cast<float*>(projMiddleHand.m));
+
 	}
 
 	CCamera::CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition)

@@ -522,7 +522,7 @@ namespace Snowblind
 			myContext->PSSetSamplers(0, 0, nullptr);
 			return;
 		}
-		myContext->PSSetSamplers(0, int(eSamplerStates::_COUNT), &mySamplerStates[int(samplerState)]);
+		myContext->PSSetSamplers(0, 1, &mySamplerStates[int(samplerState)]);
 	}
 
 	void CDirectX11::SetVertexShader(ID3D11VertexShader* aVertexShader)

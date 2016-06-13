@@ -55,6 +55,12 @@ namespace Snowblind
 
 	CTexture* CAssetsContainer::GetTexture(const std::string& aFilePath)
 	{
+		if (CL::substr(aFilePath, ".dds") == false)
+		{
+			DL_MESSAGE("Failed to load %s, due to incorrect fileformat. Has to be .dds", aFilePath.c_str());
+			DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
+		}
+
 		if (myTextures.find(aFilePath) == myTextures.end())
 		{
 			LoadTexture(aFilePath);

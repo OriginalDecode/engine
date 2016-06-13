@@ -42,13 +42,13 @@ namespace Snowblind
 	void CInstance::Render(CU::Matrix44f& previousOrientation, CCamera& aCamera)
 	{
 		//myModel->GetEffect()->SetMatrices(myOrientation, previousOrientation, aCamera.GetProjection());
-		myModel->Render();
+		//myModel->Render();
 	}
 
 	void CInstance::Render()
 	{
 		//myModel->GetEffect()->SetWorldMatrix(myOrientation);
-		myModel->Render();
+		//myModel->Render();
 	}
 
 	void CInstance::SetPosition(CU::Math::Vector3<float> aPosition)

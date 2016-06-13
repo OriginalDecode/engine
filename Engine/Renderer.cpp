@@ -13,6 +13,8 @@
 #include "SkySphere.h"
 #include "Model.h"
 
+//#define DEFERRED_RENDERING
+
 namespace Snowblind
 {
 
@@ -59,7 +61,7 @@ namespace Snowblind
 		textTime << "Render : " << myText->GetRenderTime() << "\nUpdate : " << myText->GetUpdateTime();
 		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));*/
 		CEngine::Clear();
-
+#if defined (DEFERRED_RENDERING)
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
 		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
@@ -69,7 +71,9 @@ namespace Snowblind
 		myDeferredRenderer->SetLightState(myCamera);
 		RenderLightCommands();
 		myDeferredRenderer->SetNormalState();
-
+#else
+		Render3DCommands();
+#endif
 		RenderParticles();
 
 		Render2DCommands();
@@ -97,13 +101,11 @@ namespace Snowblind
 			{
 			case SRenderCommand::eType::MODEL:
 				//myModels[command.myModelKey]->SetPosition(command.myPosition);
-				CEngine::GetDirectX()->SetVertexShader(CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/base.vs")->vertexShader);
+				CEngine::GetDirectX()->SetVertexShader(CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/cube.vs")->vertexShader);
 				CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
-				CEngine::GetDirectX()->SetPixelShader(CShaderContainer::GetInstance()->GetPixelShader("Data/Shaders/base.ps")->pixelShader);
+				CEngine::GetDirectX()->SetPixelShader(CShaderContainer::GetInstance()->GetPixelShader("Data/Shaders/cube.ps")->pixelShader);
 
-				//myModels[command.myModelKey]->GetEffect()->SetMatrices(myModels[command.myModelKey]->GetOrientation(), myPrevFrame, myCamera->GetProjection());
-
-				myModels[command.myModelKey]->Render();
+				myModels[command.myModelKey]->Render(myPrevFrame, myCamera->GetProjection());
 
 				CEngine::GetDirectX()->SetVertexShader(nullptr);
 				CEngine::GetDirectX()->SetSamplerState(eSamplerStates::NONE);
@@ -116,7 +118,7 @@ namespace Snowblind
 			}
 		}
 	}
-	 
+
 	void CRenderer::Render2DCommands()
 	{
 		const CU::GrowingArray<SRenderCommand>& commands2D = mySynchronizer.GetRenderCommands(eCommandType::e2D);

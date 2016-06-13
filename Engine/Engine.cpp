@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include <Randomizer.h>
 #include "AssetsContainer.h"
+#include "Model.h"
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
@@ -69,9 +70,10 @@ namespace Snowblind
 		mySynchronizer = new CSynchronizer();
 		myRenderer = new CRenderer(*mySynchronizer, myCamera);
 		myRenderer->Add2DCamera(my2DCamera);
-
-		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/ls_engine_test/Radio_2.fbx", "Data/Shaders/DeferredBase.fx"), "Radio");
-		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/DeferredBase.fx"), "PBL_Room");
+		Snowblind::CModel* model = new Snowblind::CModel();
+		model->CreateCube("null", CU::Vector3f(1, 1, 1));
+		myRenderer->AddModel(model, "Radio");
+		//myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/DeferredBase.fx"), "PBL_Room");
 
 	}
 

@@ -31,14 +31,17 @@ namespace Snowblind
 
 		void CreateTexturedCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth);
 		void CreateModel();
-		void Render();
+		void Render(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection);
 		void RenderPolygon();
 
 		void AddChild(CModel* aChild);
 		void SetIsSkysphere();
 		void SetPosition(const CU::Vector3f& aPosition);
 		CU::Matrix44f& GetOrientation();
+		
+
 	private:
+		void SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection);
 		ID3D11InputLayout* myVertexLayout;
 		ID3D11Buffer* myConstantBuffer;
 
@@ -53,7 +56,7 @@ namespace Snowblind
 		SVertexBufferWrapper* myVertexBuffer;
 		SIndexBufferWrapper* myIndexBuffer;
 
-		SVertexBaseStruct myBaseStruct;
+		SVertexBaseStruct* myBaseStruct;
 
 		CU::Matrix44f myOrientation;
 

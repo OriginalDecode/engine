@@ -129,7 +129,7 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 		}
 
 		std::string fileName(currentTexture.myFileName.begin(), currentTexture.myFileName.end());
-		surface->SetEffect(anEffect);
+		//surface->SetEffect(anEffect);
 		surface->SetTexture(resourceName, fileName);
 
 	}

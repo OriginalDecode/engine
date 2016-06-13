@@ -35,6 +35,7 @@ namespace Snowblind
 		int GetVertexCount() const;
 		int GetStartVertex() const;
 		int GetStartIndex() const;
+		CTexture* GetTexture();
 	private:
 
 		D3D_PRIMITIVE_TOPOLOGY myPrimologyType;

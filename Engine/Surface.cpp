@@ -80,7 +80,8 @@ namespace Snowblind
 
 	void CSurface::SetEffect(CEffect* anEffect)
 	{
-		myEffect = anEffect;
+		DL_ASSERT("To be removed!");
+		//myEffect = anEffect;
 	}
 
 	void CSurface::SetVertexStart(unsigned int aStartVertex)
@@ -107,4 +108,10 @@ namespace Snowblind
 	{
 		myPrimologyType = aPrimology;
 	}
+
+	CTexture* CSurface::GetTexture()
+	{
+		return myTextures[0]->texture;
+	}
+
 };

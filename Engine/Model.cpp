@@ -649,6 +649,11 @@ namespace Snowblind
 		myEffect = anEffect;
 	}
 
+	Snowblind::CEffect* CModel::GetEffect()
+	{
+		return myEffect;
+	}
+
 	void CModel::SetIsSkysphere()
 	{
 		myIsSkysphere = true;

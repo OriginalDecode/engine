@@ -8,8 +8,8 @@ namespace Snowblind
 {
 	CPointLight::CPointLight()
 	{
-		//myLightMesh = new Snowblind::CInstance();
-		//myLightMesh->Initiate("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/DeferredLightMesh.fx");
+		myLightMesh = new Snowblind::CInstance();
+		myLightMesh->Initiate("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/DeferredLightMesh.fx");
 	}
 
 

@@ -24,7 +24,6 @@ namespace Snowblind
 		, myAPI("DirectX11")
 	{
 		CAssetsContainer::Create();
-		CShaderContainer::Create();
 
 		CreateAdapterList();
 		CreateDeviceAndSwapchain();
@@ -52,7 +51,7 @@ namespace Snowblind
 			std::stringstream ss;
 			ss << "\nDebug is released last. Will report as Live Object! 0x" << myDebug << "\nWatch out for false reports. \n====\n";
 			OutputDebugString(ss.str().c_str());
-			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
+			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 			SAFE_RELEASE(myDebug);
 		}
 
@@ -97,7 +96,6 @@ namespace Snowblind
 		SAFE_RELEASE(mySwapchain);
 
 		CAssetsContainer::Destroy();
-		CShaderContainer::Destroy();
 	}
 
 	void CDirectX11::Present()

@@ -37,9 +37,11 @@ namespace Snowblind
 		void SetIsSkysphere();
 		void SetPosition(const CU::Vector3f& aPosition);
 		CU::Matrix44f& GetOrientation();
+		void SetEffect(CEffect* aEffect);
+		CEffect* GetEffect();
 	private:
 		ID3D11InputLayout* myVertexLayout;
-
+		CEffect* myEffect;
 		CU::GrowingArray<SVertexTypePosCol> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		CU::GrowingArray<CSurface*> mySurfaces;

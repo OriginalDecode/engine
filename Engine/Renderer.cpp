@@ -24,7 +24,7 @@ namespace Snowblind
 		int loadTimer = myTimeManager->CreateTimer();
 		myTimeManager->GetTimer(loadTimer).Update();
 		float loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds();
-		//myText = new CText("Arial.ttf", 8, 1);
+		myText = new CText("Arial.ttf", 8, 1);
 
 		myTimeManager->GetTimer(loadTimer).Update();
 		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;
@@ -34,7 +34,7 @@ namespace Snowblind
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
 		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
-		//mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/Skysphere.fx", aCamera);
+		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/Skysphere.fx", aCamera);
 	}
 
 	CRenderer::~CRenderer()
@@ -55,9 +55,9 @@ namespace Snowblind
 
 	void CRenderer::Render()
 	{
-		/*std::stringstream textTime;
+		std::stringstream textTime;
 		textTime << "Render : " << myText->GetRenderTime() << "\nUpdate : " << myText->GetUpdateTime();
-		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));*/
+		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));
 		CEngine::Clear();
 
 		myDeferredRenderer->SetTargets();
@@ -96,19 +96,13 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::MODEL:
-				//myModels[command.myModelKey]->SetPosition(command.myPosition);
-				CEngine::GetDirectX()->SetVertexShader(CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/base.vs"));
-				CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
-
-				//myModels[command.myModelKey]->GetEffect()->SetMatrices(myModels[command.myModelKey]->GetOrientation(), myPrevFrame, myCamera->GetProjection());
-
-				//myModels[command.myModelKey]->Render();
-
-				CEngine::GetDirectX()->SetVertexShader(nullptr);
+				myModels[command.myModelKey]->SetPosition(command.myPosition);
+				myModels[command.myModelKey]->GetEffect()->SetMatrices(myModels[command.myModelKey]->GetOrientation(), myPrevFrame, myCamera->GetProjection());
+				myModels[command.myModelKey]->Render();
 				break;
 			case SRenderCommand::eType::SKYSPHERE:
-				//mySkysphere->SetPosition(command.myPosition);
-				//mySkysphere->Render(myPrevFrame);
+				mySkysphere->SetPosition(command.myPosition);
+				mySkysphere->Render(myPrevFrame);
 				break;
 			}
 		}
@@ -123,9 +117,9 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::TEXT:
-				//myText->SetText(command.myTextToPrint);
-				//myText->SetPosition({ command.myPosition.x, command.myPosition.y });
-				//myText->Render(my2DCamera);
+				myText->SetText(command.myTextToPrint);
+				myText->SetPosition({ command.myPosition.x, command.myPosition.y });
+				myText->Render(my2DCamera);
 				break;
 			}
 		}
@@ -142,11 +136,11 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::POINTLIGHT:
-				//myPointLight->SetPosition(command.myPosition);
-				//myPointLight->SetRange(command.myRange);
-				//myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
-				//myPointLight->Update();
-				//myDeferredRenderer->RenderLight(myPointLight, myCamera, myPrevFrame);
+				myPointLight->SetPosition(command.myPosition);
+				myPointLight->SetRange(command.myRange);
+				myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
+				myPointLight->Update();
+				myDeferredRenderer->RenderLight(myPointLight, myCamera, myPrevFrame);
 				break;
 			}
 		}
@@ -162,7 +156,7 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::PARTICLE:
-				//command.myEmitterInstance->Render(myCamera, myDepthTexture);
+				command.myEmitterInstance->Render(myCamera, myDepthTexture);
 				break;
 			}
 		}

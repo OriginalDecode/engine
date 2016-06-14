@@ -23,7 +23,7 @@ struct VS_INPUT
 
 struct VS_OUTPUT
 {
-	float4 Pos 		: SV_POSITION0;
+	float4 Pos 		: SV_POSITION;
 	float3 Color	: COLOR;
 };
 

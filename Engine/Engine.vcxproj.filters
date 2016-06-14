@@ -309,4 +309,8 @@
       <Filter>Utilities</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Workbed\Data\Shaders\ps_cube.hlsl" />
+    <FxCompile Include="..\Workbed\Data\Shaders\vs_cube.hlsl" />
+  </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@
 //	Samplers & Textures
 //---------------------------------
 
-SamplerState linear_Wrap : register ( s0 );
+SamplerState linear_Wrap : register (s0);
 
 //---------------------------------
 //	Base Pixel Structs

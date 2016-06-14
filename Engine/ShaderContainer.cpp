@@ -116,8 +116,7 @@ namespace Snowblind
 
 		hr = device->CreateVertexShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &aVertexShader->vertexShader);
 
-		aVertexShader->compiledShader = compiledShader->GetBufferPointer();
-		aVertexShader->byteLength = compiledShader->GetBufferSize();
+		aVertexShader->compiledShader = compiledShader;
 
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
 		CEngine::GetDirectX()->SetDebugName(aVertexShader->vertexShader, "VertexShader");
@@ -148,8 +147,9 @@ namespace Snowblind
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
 		hr = device->CreatePixelShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &aPixelShader->pixelShader);
-		aPixelShader->compiledShader = compiledShader->GetBufferPointer();
-		aPixelShader->byteLength = compiledShader->GetBufferSize();
+		aPixelShader->compiledShader = compiledShader;
+		//aPixelShader->compiledShader = compiledShader->GetBufferPointer();
+		//aPixelShader->byteLength = compiledShader->GetBufferSize();
 
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
 		CEngine::GetDirectX()->SetDebugName(aPixelShader->pixelShader, "PixelShader");
@@ -174,8 +174,9 @@ namespace Snowblind
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 		
 		hr = device->CreateGeometryShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &aGeometryShader->geometryShader);
-		aGeometryShader->compiledShader = compiledShader->GetBufferPointer();
-		aGeometryShader->byteLength = compiledShader->GetBufferSize();
+		aGeometryShader->compiledShader = compiledShader;
+		//aGeometryShader->compiledShader = compiledShader->GetBufferPointer();
+		//aGeometryShader->byteLength = compiledShader->GetBufferSize();
 		
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
 		CEngine::GetDirectX()->SetDebugName(aGeometryShader->geometryShader, "GeometryShader");
@@ -201,8 +202,10 @@ namespace Snowblind
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
 		hr = device->CreateHullShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aHullShader->hullShader);
-		aHullShader->compiledShader = compiledShader->GetBufferPointer();
-		aHullShader->byteLength = compiledShader->GetBufferSize();
+
+		aHullShader->compiledShader = compiledShader;
+		//aHullShader->compiledShader = compiledShader->GetBufferPointer();
+		//aHullShader->byteLength = compiledShader->GetBufferSize();
 
 
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
@@ -229,8 +232,9 @@ namespace Snowblind
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
 		hr = device->CreateDomainShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aDomainShader->domainShader);
-		aDomainShader->compiledShader = compiledShader->GetBufferPointer();
-		aDomainShader->byteLength = compiledShader->GetBufferSize();
+		aDomainShader->compiledShader = compiledShader;
+		//aDomainShader->compiledShader = compiledShader->GetBufferPointer();
+		//aDomainShader->byteLength = compiledShader->GetBufferSize();
 
 
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
@@ -257,8 +261,9 @@ namespace Snowblind
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
 		hr = device->CreateComputeShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aComputeShader->computeShader);
-		aComputeShader->compiledShader = compiledShader->GetBufferPointer();
-		aComputeShader->byteLength = compiledShader->GetBufferSize();
+		aComputeShader->compiledShader = compiledShader;
+		//aComputeShader->compiledShader = compiledShader->GetBufferPointer();
+		//aComputeShader->byteLength = compiledShader->GetBufferSize();
 
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
 		CEngine::GetDirectX()->SetDebugName(aComputeShader->computeShader, "ComputeShader");

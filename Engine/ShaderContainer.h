@@ -12,8 +12,8 @@ namespace Snowblind
 	{
 		SShaderBase() {};
 		virtual ~SShaderBase() {};
-		void* compiledShader;
-		SIZE_T byteLength;
+		ID3DBlob* compiledShader;
+		
 	};
 
 	struct SVertexShader : public SShaderBase

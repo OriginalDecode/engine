@@ -42,7 +42,7 @@ namespace Snowblind
 		void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);
 		void MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed);
 		void MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed);
-
+		float myFOV = 90.f;
 		CU::Matrix44f* myOrientation;
 		CU::Matrix44f my2DOrientation;
 

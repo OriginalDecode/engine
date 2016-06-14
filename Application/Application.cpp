@@ -130,7 +130,7 @@ void CApplication::Render()
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 10.f, 0.f), CU::Vector3f(0.f, 1.f, 0.f), 40.f, 10.f));
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(25.f, 10.f, 0.f), CU::Vector3f(0.f, 0.f, 1.f), 40.f, 10.f));
 
-	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "Radio", CU::Vector3f(15.f, 0.f, 0.f)));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "Radio", CU::Vector3f(0.f, 0.f, 0.f)));
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::PARTICLE, myEmitter));
 
 	std::stringstream ss;

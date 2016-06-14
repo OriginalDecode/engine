@@ -1,3 +1,4 @@
+
 #pragma once
 #include <assert.h>
 #include "..\Vector\Vector.h"
@@ -22,7 +23,7 @@ namespace CommonUtilities
 			static Matrix44<TYPE> CreateRotateAroundX(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateRotateAroundY(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateRotateAroundZ(const TYPE& aRadian);
-
+			static Matrix44<TYPE> CreateProjectionMatrixLH(TYPE aNearZ, TYPE aFarZ, TYPE anAspectRatio, TYPE aFoVAngle);
 			TYPE myMatrix[16];
 
 #ifdef _DEBUG

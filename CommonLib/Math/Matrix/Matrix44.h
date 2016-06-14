@@ -582,6 +582,33 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
+		Matrix44<TYPE> Matrix44<TYPE>::CreateProjectionMatrixLH(TYPE aNearZ, TYPE aFarZ, TYPE anAspectRatio, TYPE aFoVAngle)
+		{
+			Matrix44 temp;
+			TYPE SinFov;
+			TYPE CosFov;
+			TYPE Height;
+			TYPE Width;
+
+			SinFov = sin(0.5f * aFoVAngle);
+			CosFov = cos(0.5f * aFoVAngle);
+
+			Width = CosFov / SinFov;
+			Height = Width / anAspectRatio;
+
+			TYPE scaling = aFarZ / (aFarZ - aNearZ);
+
+			temp.myMatrix[0] = Width;
+			temp.myMatrix[5] = Height;
+			temp.myMatrix[10] = scaling;
+			temp.myMatrix[11] = 1.0f;
+
+			temp.myMatrix[14] = -scaling * aNearZ;
+			temp.myMatrix[15] = 0.0f;
+			return temp;
+		}
+
+		template<typename TYPE>
 		const Matrix44<TYPE> Matrix44<TYPE>::Inverse(Matrix44<TYPE> &aMatrix)
 		{
 			Vector4<TYPE> theTranslation;

@@ -38,6 +38,7 @@ namespace Snowblind
 
 	void CModel::CreateTriangle(const std::string& anEffectPath)
 	{
+		anEffectPath;
 		myIsNULLObject = false;
 		//myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 		myVertexFormat.Init(2);
@@ -70,6 +71,7 @@ namespace Snowblind
 
 	void CModel::CreateCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
 	{
+		anEffectPath;
 		myIsNULLObject = false;
 		ENGINE_LOG("Creating Cube");
 		float halfWidth = aWidth *0.5f;
@@ -187,6 +189,7 @@ namespace Snowblind
 
 	void CModel::CreateCube(const std::string& anEffectPath, const CU::Vector3f& aColor)
 	{
+		anEffectPath;
 		myIsNULLObject = false;
 		ENGINE_LOG("Creating Cube");
 
@@ -302,6 +305,7 @@ namespace Snowblind
 
 	void CModel::CreateTexturedCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
 	{
+		anEffectPath;
 		myIsNULLObject = false;
 		myIsTextured = true;
 		//float halfWidth = aWidth * 0.5f;
@@ -566,21 +570,22 @@ namespace Snowblind
 		{
 			ID3D11DeviceContext* context = myAPI->GetContext();
 
-
-			SetMatrices(aCameraOrientation, aCameraProjection);
-
-			context->UpdateSubresource(myConstantBuffer, 0, 0, &myBaseStruct, 0, 0);
-
-
+			context->IASetInputLayout(myVertexLayout);
+			context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-
 			context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
 
-			context->IASetInputLayout(myVertexLayout);
 
-			context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+			SetMatrices(aCameraOrientation, aCameraProjection);
+			context->UpdateSubresource(myConstantBuffer, 0, nullptr, &myBaseStruct, 0, 0);
+			CEngine::GetDirectX()->SetVertexShader(CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/vs_cube.hlsl")->vertexShader);
 			context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+			CEngine::GetDirectX()->SetPixelShader(CShaderContainer::GetInstance()->GetPixelShader("Data/Shaders/ps_cube.hlsl")->pixelShader);
+
+			//CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
+
+
+
 
 			/*for (UINT p = 0; p < techDesc.Passes; ++p)
 			{*/
@@ -661,24 +666,25 @@ namespace Snowblind
 
 	void CModel::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
 	{
-		//if (!myIsNULLObject)
-		//{
-			//DL_ASSERT_EXP(myBaseStruct != nullptr, "Vertex Constant Buffer Struct was null.");
+		if (!myIsNULLObject)
+		{
+			DL_ASSERT_EXP(myBaseStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 
 			myBaseStruct->world = myOrientation;
 			myBaseStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
 			myBaseStruct->projection = aCameraProjection;
+
 
 		/*	D3D11_MAPPED_SUBRESOURCE msr;
 			CEngine::GetDirectX()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			if (msr.pData != nullptr)
 			{
 				SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
-				memcpy(ptr, &myConstantBuffer, sizeof(SVertexBaseStruct));
+				memcpy(ptr, &myBaseStruct, sizeof(SVertexBaseStruct));
 			}
 
-			CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);
-		}*/
+			CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);*/
+		}
 	}
 
 	void CModel::InitVertexBuffer()
@@ -687,9 +693,10 @@ namespace Snowblind
 		HRESULT hr;
 
 		hr = myAPI->GetDevice()->
+
 			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size()
-				, CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/cube.vs")->compiledShader
-				, CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/cube.vs")->byteLength
+				, CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/vs_cube.hlsl")->compiledShader->GetBufferPointer()
+				, CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/vs_cube.hlsl")->compiledShader->GetBufferSize()
 				, &myVertexLayout);
 
 		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Model Vertex Layout");
@@ -745,23 +752,24 @@ namespace Snowblind
 
 	void CModel::InitConstantBuffer()
 	{
-
 		myBaseStruct = new SVertexBaseStruct;
+
 		D3D11_BUFFER_DESC cbDesc;
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
 		cbDesc.ByteWidth = sizeof(SVertexBaseStruct);
-		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+		cbDesc.Usage = D3D11_USAGE_DEFAULT;
 		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		cbDesc.CPUAccessFlags = 0;
 		cbDesc.MiscFlags = 0;
 		cbDesc.StructureByteStride = 0;
 
-		D3D11_SUBRESOURCE_DATA cbData;
-		cbData.pSysMem = &myBaseStruct;
-		cbData.SysMemPitch = 0;
-		cbData.SysMemSlicePitch = 0;
+		//D3D11_SUBRESOURCE_DATA cbData;
+		//cbData.pSysMem = &myBaseStruct;
+		//cbData.SysMemPitch = 0;
+		//cbData.SysMemSlicePitch = 0;
 
-		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, &cbData, &myConstantBuffer);
+		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+		CEngine::GetDirectX()->SetDebugName(myConstantBuffer, "Model Constant Buffer");
 		CEngine::GetDirectX()->HandleErrors(hr, "[Model] : Failed to Create Constant Buffer, ");
 	}
 

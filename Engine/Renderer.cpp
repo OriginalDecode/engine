@@ -74,9 +74,9 @@ namespace Snowblind
 #else
 		Render3DCommands();
 #endif
-		RenderParticles();
+		//RenderParticles();
 
-		Render2DCommands();
+		//Render2DCommands();
 
 
 		CEngine::Present();
@@ -100,16 +100,9 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::MODEL:
-				//myModels[command.myModelKey]->SetPosition(command.myPosition);
-				CEngine::GetDirectX()->SetVertexShader(CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/cube.vs")->vertexShader);
-				CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
-				CEngine::GetDirectX()->SetPixelShader(CShaderContainer::GetInstance()->GetPixelShader("Data/Shaders/cube.ps")->pixelShader);
-
+				myModels[command.myModelKey]->SetPosition(command.myPosition);
 				myModels[command.myModelKey]->Render(myPrevFrame, myCamera->GetProjection());
 
-				CEngine::GetDirectX()->SetVertexShader(nullptr);
-				CEngine::GetDirectX()->SetSamplerState(eSamplerStates::NONE);
-				CEngine::GetDirectX()->SetPixelShader(nullptr);
 				break;
 			case SRenderCommand::eType::SKYSPHERE:
 				//mySkysphere->SetPosition(command.myPosition);

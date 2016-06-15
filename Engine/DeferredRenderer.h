@@ -1,7 +1,5 @@
 #pragma once
 #include <DL_Debug.h>
-
-struct ID3DX11EffectShaderResourceVariable;
 struct ID3D11ShaderResourceView;
 struct ID3DX11EffectVariable;
 struct ID3DX11EffectMatrixVariable;
@@ -49,22 +47,22 @@ namespace Snowblind
 		struct SRenderToScreenData
 		{
 			CEffect* myEffect = nullptr;
-			ID3DX11EffectShaderResourceVariable* mySource = nullptr;
+			//ID3DX11EffectShaderResourceVariable* mySource = nullptr;
 		};
 		struct SAmbientPass
 		{
 			CEffect* myEffect = nullptr;
-			ID3DX11EffectShaderResourceVariable* myAlbedo = nullptr;
-			ID3DX11EffectShaderResourceVariable* myNormal = nullptr;
-			ID3DX11EffectShaderResourceVariable* myDepth = nullptr;
+			//ID3DX11EffectShaderResourceVariable* myAlbedo = nullptr;
+			//ID3DX11EffectShaderResourceVariable* myNormal = nullptr;
+			//ID3DX11EffectShaderResourceVariable* myDepth = nullptr;
 		} myAmbientPass;
 
 		struct SLightPass
 		{
 			CEffect* myEffect = nullptr;
-			ID3DX11EffectShaderResourceVariable* myAlbedo = nullptr;
-			ID3DX11EffectShaderResourceVariable* myNormal = nullptr;
-			ID3DX11EffectShaderResourceVariable* myDepth = nullptr;
+			//ID3DX11EffectShaderResourceVariable* myAlbedo = nullptr;
+			//ID3DX11EffectShaderResourceVariable* myNormal = nullptr;
+			//ID3DX11EffectShaderResourceVariable* myDepth = nullptr;
 			ID3DX11EffectVariable* myPointLightVariable;
 			ID3DX11EffectMatrixVariable* myInvertedProjection;
 			ID3DX11EffectMatrixVariable* myNotInvertedView;
@@ -80,7 +78,7 @@ namespace Snowblind
 		struct SParticlePass
 		{
 			CEffect* myEffect;
-			ID3DX11EffectShaderResourceVariable* myDiffuse = nullptr;
+			//ID3DX11EffectShaderResourceVariable* myDiffuse = nullptr;
 		} myParticlePass;
 
 		CTexture* myParticleTexture;

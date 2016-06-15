@@ -100,7 +100,7 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::MODEL:
-				CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_NONE);
+				CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
 				myModels[command.myModelKey]->SetPosition(command.myPosition);
 				myModels[command.myModelKey]->Render(myPrevFrame, myCamera->GetProjection());
 

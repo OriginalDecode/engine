@@ -578,7 +578,10 @@ namespace Snowblind
 
 			SetMatrices(aCameraOrientation, aCameraProjection);
 			//context->UpdateSubresource(myConstantBuffer, 0, nullptr, &myBaseStruct, 0, 0);
-			CEngine::GetDirectX()->SetVertexShader(CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/vs_cube.hlsl")->vertexShader);
+			//CEngine::GetDirectX()->SetVertexShader(CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/vs_cube.hlsl")->vertexShader);
+			SVertexShader* shader;
+			CShaderContainer::GetInstance()->GetShader("Data/Shaders/vs_cube.hlsl", shader);
+			CEngine::GetDirectX()->SetVertexShader(shader->vertexShader);
 			context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			CEngine::GetDirectX()->SetPixelShader(CShaderContainer::GetInstance()->GetPixelShader("Data/Shaders/ps_cube.hlsl")->pixelShader);
 

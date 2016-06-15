@@ -27,7 +27,7 @@ namespace Snowblind
 		myNormal = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
-		myNormal->SetDebugName("DeferredNorma");
+		myNormal->SetDebugName("DeferredNormal");
 
 		myDepth = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE

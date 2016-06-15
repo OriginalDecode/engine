@@ -19,9 +19,6 @@ namespace Snowblind
 	
 	private:
 		std::string myTechniqueName;
-
-
-
-
+		SVertexShader* myVertexShader;
 	};
 };

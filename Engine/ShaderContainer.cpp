@@ -287,6 +287,36 @@ namespace Snowblind
 		return myInstance;
 	}
 
+	void CShaderContainer::GetShader(const std::string& aShader, SVertexShader& type)
+	{
+
+	}
+
+	void CShaderContainer::GetShader(const std::string& aShader, SPixelShader& type)
+	{
+
+	}
+
+	void CShaderContainer::GetShader(const std::string& aShader, SGeometryShader& type)
+	{
+
+	}
+
+	void CShaderContainer::GetShader(const std::string& aShader, SHullShader& type)
+	{
+
+	}
+
+	void CShaderContainer::GetShader(const std::string& aShader, SDomainShader& type)
+	{
+
+	}
+
+	void CShaderContainer::GetShader(const std::string& aShader, SComputeShader& type)
+	{
+
+	}
+
 	SVertexShader* CShaderContainer::GetVertexShader(const std::string& aVertexShader)
 	{
 		if (myVertexShaders.find(aVertexShader) == myVertexShaders.end())

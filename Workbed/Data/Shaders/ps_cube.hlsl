@@ -2,12 +2,6 @@
 //	Base Pixel Shader
 //---------------------------------
 //---------------------------------
-//	Samplers & Textures
-//---------------------------------
-
-SamplerState linear_Wrap : register (s0);
-
-//---------------------------------
 //	Base Pixel Structs
 //---------------------------------
 struct VS_OUTPUT

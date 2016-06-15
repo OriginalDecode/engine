@@ -11,12 +11,6 @@ namespace CommonUtilities
 		\****************************/
 		template<typename TYPE>
 		Matrix44<TYPE>::Matrix44()
-#ifdef _DEBUG
-			: x(myMatrix[12])
-			, y(myMatrix[13])
-			, z(myMatrix[14])
-			, w(myMatrix[15])
-#endif
 		{
 			for (unsigned char i = 0; i < 16; i++)
 			{
@@ -29,12 +23,6 @@ namespace CommonUtilities
 
 		template<typename TYPE>
 		Matrix44<TYPE>::Matrix44(const Matrix44<TYPE>& aMatrix)
-#ifdef _DEBUG
-			: x(myMatrix[12])
-			, y(myMatrix[13])
-			, z(myMatrix[14])
-			, w(myMatrix[15])
-#endif
 		{
 			*this = aMatrix;
 		}

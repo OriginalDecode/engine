@@ -26,15 +26,6 @@ namespace CommonUtilities
 			static Matrix44<TYPE> CreateProjectionMatrixLH(TYPE aNearZ, TYPE aFarZ, TYPE anAspectRatio, TYPE aFoVAngle);
 			TYPE myMatrix[16];
 
-#ifdef _DEBUG
-			const TYPE& x;
-			const TYPE& y;
-			const TYPE& z;
-			const TYPE& w;
-#endif
-
-
-
 			void SetRotation3dX(const TYPE& aRadian);
 			void SetRotation3dY(const TYPE& aRadian);
 			void SetRotation3dZ(const TYPE& aRadian);

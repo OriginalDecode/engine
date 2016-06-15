@@ -577,15 +577,12 @@ namespace Snowblind
 
 
 			SetMatrices(aCameraOrientation, aCameraProjection);
-			context->UpdateSubresource(myConstantBuffer, 0, nullptr, &myBaseStruct, 0, 0);
+			//context->UpdateSubresource(myConstantBuffer, 0, nullptr, &myBaseStruct, 0, 0);
 			CEngine::GetDirectX()->SetVertexShader(CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/vs_cube.hlsl")->vertexShader);
 			context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			CEngine::GetDirectX()->SetPixelShader(CShaderContainer::GetInstance()->GetPixelShader("Data/Shaders/ps_cube.hlsl")->pixelShader);
 
 			//CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
-
-
-
 
 			/*for (UINT p = 0; p < techDesc.Passes; ++p)
 			{*/
@@ -603,7 +600,6 @@ namespace Snowblind
 						//myAPI->HandleErrors(hr, "Failed to apply pass to context!");
 
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
-
 					}
 				}
 				else
@@ -611,13 +607,11 @@ namespace Snowblind
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
-
 					}
 				}
 			}
 			else
 			{
-
 				context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
 			}
 		}
@@ -675,15 +669,15 @@ namespace Snowblind
 			myBaseStruct->projection = aCameraProjection;
 
 
-		/*	D3D11_MAPPED_SUBRESOURCE msr;
+			D3D11_MAPPED_SUBRESOURCE msr;
 			CEngine::GetDirectX()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			if (msr.pData != nullptr)
 			{
 				SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
-				memcpy(ptr, &myBaseStruct, sizeof(SVertexBaseStruct));
+				memcpy(ptr, &myBaseStruct->world.myMatrix[0], sizeof(SVertexBaseStruct));
 			}
 
-			CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);*/
+			CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);
 		}
 	}
 
@@ -757,9 +751,9 @@ namespace Snowblind
 		D3D11_BUFFER_DESC cbDesc;
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
 		cbDesc.ByteWidth = sizeof(SVertexBaseStruct);
-		cbDesc.Usage = D3D11_USAGE_DEFAULT;
+		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
 		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbDesc.CPUAccessFlags = 0;
+		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		cbDesc.MiscFlags = 0;
 		cbDesc.StructureByteStride = 0;
 

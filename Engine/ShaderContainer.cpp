@@ -49,42 +49,42 @@ namespace Snowblind
 
 	void CShaderContainer::LoadVertexShader(const std::string& aVertexShader)
 	{
-		SVertexShader* shader = new SVertexShader();
+		SVertexShader shader;
 		CreateShader(aVertexShader, shader);
 		myVertexShaders[aVertexShader] = shader;
 	}
 
 	void CShaderContainer::LoadPixelShader(const std::string& aPixelShader)
 	{
-		SPixelShader* shader = new SPixelShader();
+		SPixelShader shader;
 		CreateShader(aPixelShader, shader);
 		myPixelShaders[aPixelShader] = shader;
 	}
 
 	void CShaderContainer::LoadGeometryShader(const std::string& aGeometryShader)
 	{
-		SGeometryShader* shader = new SGeometryShader();
+		SGeometryShader shader;
 		CreateShader(aGeometryShader, shader);
 		myGeometryShaders[aGeometryShader] = shader;
 	}
 
 	void CShaderContainer::LoadHullShader(const std::string& aHullShader)
 	{
-		SHullShader* shader = new SHullShader();
+		SHullShader shader;
 		CreateShader(aHullShader, shader);
 		myHullShaders[aHullShader] = shader;
 	}
 
 	void CShaderContainer::LoadDomainShader(const std::string& aDomainShader)
 	{
-		SDomainShader* shader = new SDomainShader();
+		SDomainShader shader;
 		CreateShader(aDomainShader, shader);
 		myDomainShaders[aDomainShader] = shader;
 	}
 
 	void CShaderContainer::LoadComputeShader(const std::string& aComputeShader)
 	{
-		SComputeShader* shader = new SComputeShader();
+		SComputeShader shader;
 		CreateShader(aComputeShader, shader);
 		myComputeShaders[aComputeShader] = shader;
 	}
@@ -291,27 +291,47 @@ namespace Snowblind
 
 	void CShaderContainer::GetShader(const std::string& aShaderPath, SPixelShader& aShader)
 	{
-
+		if (myPixelShaders.find(aShaderPath) == myPixelShaders.end())
+		{
+			LoadVertexShader(aShaderPath);
+		}
+		aShader = myPixelShaders[aShaderPath];
 	}
 
 	void CShaderContainer::GetShader(const std::string& aShaderPath, SGeometryShader& aShader)
 	{
-
+		if (myGeometryShaders.find(aShaderPath) == myGeometryShaders.end())
+		{
+			LoadVertexShader(aShaderPath);
+		}
+		aShader = myGeometryShaders[aShaderPath];
 	}
 
 	void CShaderContainer::GetShader(const std::string& aShaderPath, SHullShader& aShader)
 	{
-
+		if (myHullShaders.find(aShaderPath) == myHullShaders.end())
+		{
+			LoadVertexShader(aShaderPath);
+		}
+		aShader = myHullShaders[aShaderPath];
 	}
 
 	void CShaderContainer::GetShader(const std::string& aShaderPath, SDomainShader& aShader)
 	{
-
+		if (myDomainShaders.find(aShaderPath) == myDomainShaders.end())
+		{
+			LoadVertexShader(aShaderPath);
+		}
+		aShader = myDomainShaders[aShaderPath];
 	}
 
 	void CShaderContainer::GetShader(const std::string& aShaderPath, SComputeShader& aShader)
 	{
-
+		if (myComputeShaders.find(aShaderPath) == myComputeShaders.end())
+		{
+			LoadVertexShader(aShaderPath);
+		}
+		aShader = myComputeShaders[aShaderPath];
 	}
 
 };

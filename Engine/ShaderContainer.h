@@ -70,13 +70,6 @@ namespace Snowblind
 		static CShaderContainer* myInstance;
 		CShaderContainer();
 		~CShaderContainer();
-		//Remove, replace with GetShader.
-		//SVertexShader*		GetVertexShader(const std::string& aVertexShader);
-		//SPixelShader*			GetPixelShader(const std::string& aPixelShader);
-		//SGeometryShader*		GetGeometryShader(const std::string& aGeometryShader);
-		//SHullShader*			GetHullShader(const std::string& aHullShader);
-		//SDomainShader*		GetDomainShader(const std::string& aDomainShader);
-		//SComputeShader*		GetComputeShader(const std::string& aComputeShader);
 
 		void LoadVertexShader(const std::string& aVertexShader);
 		void LoadPixelShader(const std::string& aPixelShader);

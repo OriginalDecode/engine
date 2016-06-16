@@ -5,12 +5,6 @@
 
 namespace Snowblind
 {
-	struct SVertexShader;
-	struct SPixelShader;
-	struct SGeometryShader;
-	struct SHullShader;
-	struct SDomainShader;
-	struct SComputeShader;
 
 	class CTexture;
 	class CEffect
@@ -22,12 +16,12 @@ namespace Snowblind
 		void Activate();
 	private:
 		//Can I bind variables effectivly? I doubt it.
-		SVertexShader myVertexShader;
-		SPixelShader myPixelShader;
-		SGeometryShader myGeometryShader;
-		SHullShader myHullShader;
-		SDomainShader myDomainShader;
-		SComputeShader myComputeShader;
+		//SVertexShader myVertexShader;
+		//SPixelShader myPixelShader;
+		//SGeometryShader myGeometryShader;
+		//SHullShader myHullShader;
+		//SDomainShader myDomainShader;
+		//SComputeShader myComputeShader;
 
 	};
 };

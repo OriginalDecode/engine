@@ -578,11 +578,17 @@ namespace Snowblind
 
 			SetMatrices(aCameraOrientation, aCameraProjection);
 			//context->UpdateSubresource(myConstantBuffer, 0, nullptr, &myBaseStruct, 0, 0);
+			SVertexShader vShader;
 			//CEngine::GetDirectX()->SetVertexShader(CShaderContainer::GetInstance()->GetVertexShader("Data/Shaders/vs_cube.hlsl")->vertexShader);
-			//SVertexShader* shader;
-			//CShaderContainer::GetInstance()->GetShader("Data/Shaders/vs_cube.hlsl", shader);
-			//CEngine::GetDirectX()->SetVertexShader(shader->vertexShader);
-			myEffect->Activate();
+			CShaderContainer::GetInstance()->GetShader("Data/Shaders/vs_cube.hlsl", vShader);
+			CEngine::GetDirectX()->SetVertexShader(vShader.vertexShader);
+
+			SPixelShader pShader;
+			CShaderContainer::GetInstance()->GetShader("Data/Shaders/ps_cube.hlsl", pShader);
+			CEngine::GetDirectX()->SetPixelShader(pShader.pixelShader);
+
+			//myEffect->Activate();
+
 			context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			//CEngine::GetDirectX()->SetPixelShader(CShaderContainer::GetInstance()->GetPixelShader("Data/Shaders/ps_cube.hlsl")->pixelShader);
 
@@ -689,12 +695,12 @@ namespace Snowblind
 	{
 		myVertexBuffer = new SVertexBufferWrapper();
 		HRESULT hr;
-
+		SVertexShader vShader;
+		CShaderContainer::GetInstance()->GetShader("Data/Shaders/vs_cube.hlsl", vShader);
 		hr = myAPI->GetDevice()->
-
 			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size()
-				, 0 //vshader
-				, 0 //vshaderSize
+				, vShader.compiledShader->GetBufferPointer() //vshader
+				, vShader.compiledShader->GetBufferSize() //vshaderSize
 				, &myVertexLayout);
 
 		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Model Vertex Layout");

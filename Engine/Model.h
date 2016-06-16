@@ -62,7 +62,7 @@ namespace Snowblind
 
 		CDirectX11* myAPI;
 		CCamera* myCamera;
-
+		CEffect* myEffect;
 		bool myIsTextured;
 		bool myIsNULLObject;
 		bool myIsSkysphere = false;

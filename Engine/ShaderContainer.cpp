@@ -16,7 +16,7 @@ namespace Snowblind
 
 	CShaderContainer::~CShaderContainer()
 	{
-		for (ITTERATE(myVertexShaders))
+		/*for (ITTERATE(myVertexShaders))
 		{
 			SAFE_DELETE(it->second);
 		}
@@ -44,7 +44,7 @@ namespace Snowblind
 		for (ITTERATE(myComputeShaders))
 		{
 			SAFE_DELETE(it->second);
-		}
+		}*/
 	}
 
 	void CShaderContainer::LoadVertexShader(const std::string& aVertexShader)
@@ -89,7 +89,7 @@ namespace Snowblind
 		myComputeShaders[aComputeShader] = shader;
 	}
 
-	void CShaderContainer::CreateShader(const std::string& aShader, SVertexShader*& aVertexShader)
+	void CShaderContainer::CreateShader(const std::string& aShader, SVertexShader& aVertexShader)
 	{
 
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
@@ -114,15 +114,15 @@ namespace Snowblind
 		}
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
-		hr = device->CreateVertexShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &aVertexShader->vertexShader);
+		hr = device->CreateVertexShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &aVertexShader.vertexShader);
 
-		aVertexShader->compiledShader = compiledShader;
+		aVertexShader.compiledShader = compiledShader;
 
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
-		CEngine::GetDirectX()->SetDebugName(aVertexShader->vertexShader, "VertexShader");
+		CEngine::GetDirectX()->SetDebugName(aVertexShader.vertexShader, "VertexShader");
 	}
 
-	void CShaderContainer::CreateShader(const std::string& aShader, SPixelShader*& aPixelShader)
+	void CShaderContainer::CreateShader(const std::string& aShader, SPixelShader& aPixelShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -146,16 +146,14 @@ namespace Snowblind
 		}
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
-		hr = device->CreatePixelShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &aPixelShader->pixelShader);
-		aPixelShader->compiledShader = compiledShader;
-		//aPixelShader->compiledShader = compiledShader->GetBufferPointer();
-		//aPixelShader->byteLength = compiledShader->GetBufferSize();
+		hr = device->CreatePixelShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &aPixelShader.pixelShader);
+		aPixelShader.compiledShader = compiledShader;
 
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
-		CEngine::GetDirectX()->SetDebugName(aPixelShader->pixelShader, "PixelShader");
+		CEngine::GetDirectX()->SetDebugName(aPixelShader.pixelShader, "PixelShader");
 	}
 
-	void CShaderContainer::CreateShader(const std::string& aShader, SGeometryShader*& aGeometryShader)
+	void CShaderContainer::CreateShader(const std::string& aShader, SGeometryShader& aGeometryShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -173,16 +171,14 @@ namespace Snowblind
 		hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "GS", "gs_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 		
-		hr = device->CreateGeometryShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &aGeometryShader->geometryShader);
-		aGeometryShader->compiledShader = compiledShader;
-		//aGeometryShader->compiledShader = compiledShader->GetBufferPointer();
-		//aGeometryShader->byteLength = compiledShader->GetBufferSize();
+		hr = device->CreateGeometryShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &aGeometryShader.geometryShader);
+		aGeometryShader.compiledShader = compiledShader;
 		
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
-		CEngine::GetDirectX()->SetDebugName(aGeometryShader->geometryShader, "GeometryShader");
+		CEngine::GetDirectX()->SetDebugName(aGeometryShader.geometryShader, "GeometryShader");
 	}
 
-	void CShaderContainer::CreateShader(const std::string& aShader, SHullShader*& aHullShader)
+	void CShaderContainer::CreateShader(const std::string& aShader, SHullShader& aHullShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -201,18 +197,18 @@ namespace Snowblind
 		hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "HS", "hs_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
-		hr = device->CreateHullShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aHullShader->hullShader);
+		hr = device->CreateHullShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aHullShader.hullShader);
 
-		aHullShader->compiledShader = compiledShader;
+		aHullShader.compiledShader = compiledShader;
 		//aHullShader->compiledShader = compiledShader->GetBufferPointer();
 		//aHullShader->byteLength = compiledShader->GetBufferSize();
 
 
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
-		CEngine::GetDirectX()->SetDebugName(aHullShader->hullShader, "HullShader");
+		CEngine::GetDirectX()->SetDebugName(aHullShader.hullShader, "HullShader");
 	}
 
-	void CShaderContainer::CreateShader(const std::string& aShader, SDomainShader*& aDomainShader)
+	void CShaderContainer::CreateShader(const std::string& aShader, SDomainShader& aDomainShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -231,17 +227,14 @@ namespace Snowblind
 		hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "DS", "ds_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
-		hr = device->CreateDomainShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aDomainShader->domainShader);
-		aDomainShader->compiledShader = compiledShader;
-		//aDomainShader->compiledShader = compiledShader->GetBufferPointer();
-		//aDomainShader->byteLength = compiledShader->GetBufferSize();
-
+		hr = device->CreateDomainShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aDomainShader.domainShader);
+		aDomainShader.compiledShader = compiledShader;
 
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
-		CEngine::GetDirectX()->SetDebugName(aDomainShader->domainShader, "DomainShader");
+		CEngine::GetDirectX()->SetDebugName(aDomainShader.domainShader, "DomainShader");
 	}
 
-	void CShaderContainer::CreateShader(const std::string& aShader, SComputeShader*& aComputeShader)
+	void CShaderContainer::CreateShader(const std::string& aShader, SComputeShader& aComputeShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -260,13 +253,13 @@ namespace Snowblind
 		hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "CS", "cs_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
-		hr = device->CreateComputeShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aComputeShader->computeShader);
-		aComputeShader->compiledShader = compiledShader;
+		hr = device->CreateComputeShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &aComputeShader.computeShader);
+		aComputeShader.compiledShader = compiledShader;
 		//aComputeShader->compiledShader = compiledShader->GetBufferPointer();
 		//aComputeShader->byteLength = compiledShader->GetBufferSize();
 
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
-		CEngine::GetDirectX()->SetDebugName(aComputeShader->computeShader, "ComputeShader");
+		CEngine::GetDirectX()->SetDebugName(aComputeShader.computeShader, "ComputeShader");
 	}
 
 	void CShaderContainer::Create()
@@ -287,88 +280,38 @@ namespace Snowblind
 		return myInstance;
 	}
 
-	void CShaderContainer::GetShader(const std::string& aShader, SVertexShader& type)
+	void CShaderContainer::GetShader(const std::string& aShaderPath, SVertexShader& aShader)
 	{
-
-	}
-
-	void CShaderContainer::GetShader(const std::string& aShader, SPixelShader& type)
-	{
-
-	}
-
-	void CShaderContainer::GetShader(const std::string& aShader, SGeometryShader& type)
-	{
-
-	}
-
-	void CShaderContainer::GetShader(const std::string& aShader, SHullShader& type)
-	{
-
-	}
-
-	void CShaderContainer::GetShader(const std::string& aShader, SDomainShader& type)
-	{
-
-	}
-
-	void CShaderContainer::GetShader(const std::string& aShader, SComputeShader& type)
-	{
-
-	}
-
-	SVertexShader* CShaderContainer::GetVertexShader(const std::string& aVertexShader)
-	{
-		if (myVertexShaders.find(aVertexShader) == myVertexShaders.end())
+		if (myVertexShaders.find(aShaderPath) == myVertexShaders.end())
 		{
-			LoadVertexShader(aVertexShader);
+			LoadVertexShader(aShaderPath);
 		}
-		return myVertexShaders[aVertexShader];
+		aShader = myVertexShaders[aShaderPath];
 	}
 
-	SPixelShader* CShaderContainer::GetPixelShader(const std::string& aPixelShader)
+	void CShaderContainer::GetShader(const std::string& aShaderPath, SPixelShader& aShader)
 	{
-		if (myPixelShaders.find(aPixelShader) == myPixelShaders.end())
-		{
-			LoadPixelShader(aPixelShader);
-		}
-		return myPixelShaders[aPixelShader];
+
 	}
 
-	SGeometryShader* CShaderContainer::GetGeometryShader(const std::string& aGeometryShader)
+	void CShaderContainer::GetShader(const std::string& aShaderPath, SGeometryShader& aShader)
 	{
-		if (myGeometryShaders.find(aGeometryShader) == myGeometryShaders.end())
-		{
-			LoadGeometryShader(aGeometryShader);
-		}
-		return myGeometryShaders[aGeometryShader];
+
 	}
 
-	SHullShader* CShaderContainer::GetHullShader(const std::string& aHullShader)
+	void CShaderContainer::GetShader(const std::string& aShaderPath, SHullShader& aShader)
 	{
-		if (myHullShaders.find(aHullShader) == myHullShaders.end())
-		{
-			LoadHullShader(aHullShader);
-		}
-		return myHullShaders[aHullShader];
+
 	}
 
-	SDomainShader* CShaderContainer::GetDomainShader(const std::string& aDomainShader)
+	void CShaderContainer::GetShader(const std::string& aShaderPath, SDomainShader& aShader)
 	{
-		if (myDomainShaders.find(aDomainShader) == myDomainShaders.end())
-		{
-			LoadDomainShader(aDomainShader);
-		}
-		return myDomainShaders[aDomainShader];
+
 	}
 
-	SComputeShader* CShaderContainer::GetComputeShader(const std::string& aComputeShader)
+	void CShaderContainer::GetShader(const std::string& aShaderPath, SComputeShader& aShader)
 	{
-		if (myComputeShaders.find(aComputeShader) == myComputeShaders.end())
-		{
-			LoadComputeShader(aComputeShader);
-		}
-		return myComputeShaders[aComputeShader];
+
 	}
 
 };

@@ -59,24 +59,24 @@ namespace Snowblind
 		static void Destroy();
 		static CShaderContainer* GetInstance();
 
-		void GetShader(const std::string& aShader, SVertexShader& type);
-		void GetShader(const std::string& aShader, SPixelShader& type);
-		void GetShader(const std::string& aShader, SGeometryShader& type);
-		void GetShader(const std::string& aShader, SHullShader& type);
-		void GetShader(const std::string& aShader, SDomainShader& type);
-		void GetShader(const std::string& aShader, SComputeShader& type);
+		void GetShader(const std::string& aShaderPath, SVertexShader& aShader);
+		void GetShader(const std::string& aShaderPath, SPixelShader& aShader);
+		void GetShader(const std::string& aShaderPath, SGeometryShader& aShader);
+		void GetShader(const std::string& aShaderPath, SHullShader& aShader);
+		void GetShader(const std::string& aShaderPath, SDomainShader& aShader);
+		void GetShader(const std::string& aShaderPath, SComputeShader& aShader);
 
 	private:
 		static CShaderContainer* myInstance;
 		CShaderContainer();
 		~CShaderContainer();
 		//Remove, replace with GetShader.
-		SVertexShader*		GetVertexShader(const std::string& aVertexShader);
-		SPixelShader*		GetPixelShader(const std::string& aPixelShader);
-		SGeometryShader*	GetGeometryShader(const std::string& aGeometryShader);
-		SHullShader*		GetHullShader(const std::string& aHullShader);
-		SDomainShader*		GetDomainShader(const std::string& aDomainShader);
-		SComputeShader*		GetComputeShader(const std::string& aComputeShader);
+		//SVertexShader*		GetVertexShader(const std::string& aVertexShader);
+		//SPixelShader*			GetPixelShader(const std::string& aPixelShader);
+		//SGeometryShader*		GetGeometryShader(const std::string& aGeometryShader);
+		//SHullShader*			GetHullShader(const std::string& aHullShader);
+		//SDomainShader*		GetDomainShader(const std::string& aDomainShader);
+		//SComputeShader*		GetComputeShader(const std::string& aComputeShader);
 
 		void LoadVertexShader(const std::string& aVertexShader);
 		void LoadPixelShader(const std::string& aPixelShader);
@@ -86,20 +86,20 @@ namespace Snowblind
 		void LoadComputeShader(const std::string& aComputeShader);
 
 		//Generalize a Compile function
-		void CreateShader(const std::string& aShader, SVertexShader*& aVertexShader);
-		void CreateShader(const std::string& aShader, SPixelShader*& aPixelShader);
-		void CreateShader(const std::string& aShader, SGeometryShader*& aGeometryShader);
-		void CreateShader(const std::string& aShader, SHullShader*& aHullShader);
-		void CreateShader(const std::string& aShader, SDomainShader*& aDomainShader);
-		void CreateShader(const std::string& aShader, SComputeShader*& aComputeShader);
+		void CreateShader(const std::string& aShader, SVertexShader& aVertexShader);
+		void CreateShader(const std::string& aShader, SPixelShader& aPixelShader);
+		void CreateShader(const std::string& aShader, SGeometryShader& aGeometryShader);
+		void CreateShader(const std::string& aShader, SHullShader& aHullShader);
+		void CreateShader(const std::string& aShader, SDomainShader& aDomainShader);
+		void CreateShader(const std::string& aShader, SComputeShader& aComputeShader);
 
 		//One map?
-		std::unordered_map<std::string, SVertexShader*> myVertexShaders;
-		std::unordered_map<std::string, SPixelShader*> myPixelShaders;
-		std::unordered_map<std::string, SGeometryShader*> myGeometryShaders;
-		std::unordered_map<std::string, SHullShader*> myHullShaders;
-		std::unordered_map<std::string, SDomainShader*> myDomainShaders;
-		std::unordered_map<std::string, SComputeShader*> myComputeShaders;
+		std::unordered_map<std::string, SVertexShader> myVertexShaders;
+		std::unordered_map<std::string, SPixelShader> myPixelShaders;
+		std::unordered_map<std::string, SGeometryShader> myGeometryShaders;
+		std::unordered_map<std::string, SHullShader> myHullShaders;
+		std::unordered_map<std::string, SDomainShader> myDomainShaders;
+		std::unordered_map<std::string, SComputeShader> myComputeShaders;
 
 	};
 };

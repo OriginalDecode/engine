@@ -139,8 +139,8 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 Snowblind::CModel* FBXFactory::CreateModel(FbxModelData* someModelData, Snowblind::CEffect* anEffect)
 {
 	Snowblind::CModel* tempModel = new Snowblind::CModel();
-	//tempModel->SetEffect(anEffect);
-	//tempModel->myEffect = anEffect;
+	tempModel->SetEffect(anEffect);
+
 	if (someModelData->myData)
 	{
 		FillData(someModelData->myData, tempModel, anEffect);

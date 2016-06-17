@@ -15,6 +15,6 @@ struct VS_OUTPUT
 //---------------------------------
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	float4 output = float4(input.Color.rgb,1);
+	float4 output = float4(input.Color.rgb, 1);
 	return output;
 }

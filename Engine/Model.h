@@ -38,6 +38,8 @@ namespace Snowblind
 		void SetIsSkysphere();
 		void SetPosition(const CU::Vector3f& aPosition);
 		CU::Matrix44f& GetOrientation();
+
+		void SetEffect(CEffect* anEffect);
 		
 
 	private:
@@ -63,6 +65,7 @@ namespace Snowblind
 		CDirectX11* myAPI;
 		CCamera* myCamera;
 		CEffect* myEffect;
+
 		bool myIsTextured;
 		bool myIsNULLObject;
 		bool myIsSkysphere = false;

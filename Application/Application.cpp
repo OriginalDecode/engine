@@ -23,7 +23,7 @@
 #include <DeferredRenderer.h>
 #include <SystemMonitor.h>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
-#define MOVE_SPEED 50.f
+#define MOVE_SPEED 1.f
 
 CApplication::CApplication()
 {

@@ -22,7 +22,7 @@ struct VS_OUTPUT
 //---------------------------------
 //	Deferred Ambient Pixel Shader
 //---------------------------------
-float4 VS(VS_OUTPUT input) : SV_Target
+float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);
 	float4 normal = NormalTexture.Sample(point_Clamp, input.uv);

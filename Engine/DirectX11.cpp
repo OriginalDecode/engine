@@ -527,32 +527,38 @@ namespace Snowblind
 
 	void CDirectX11::SetVertexShader(ID3D11VertexShader* aVertexShader)
 	{
+		DL_ASSERT_EXP(aVertexShader != nullptr, "pixelshader was null!");
 		myContext->VSSetShader(aVertexShader, nullptr, 0);
 	}
 
 	void CDirectX11::SetPixelShader(ID3D11PixelShader* aPixelShader)
 	{
+		DL_ASSERT_EXP(aPixelShader != nullptr, "pixelshader was null.");
 		//Check current Pixel Shader, if current == aPixelShader return
 		myContext->PSSetShader(aPixelShader, nullptr, 0);
 	}
 
 	void CDirectX11::SetGeometryShader(ID3D11GeometryShader* aGeometryShader)
 	{
+		DL_ASSERT_EXP(aGeometryShader != nullptr, "geomteryshader was null.");
 		myContext->GSSetShader(aGeometryShader, nullptr, 0);
 	}
 
 	void CDirectX11::SetHullShader(ID3D11HullShader* aHullShader)
 	{
+		DL_ASSERT_EXP(aHullShader != nullptr, "hullshader was null.");
 		myContext->HSSetShader(aHullShader, nullptr, 0);
 	}
 
 	void CDirectX11::SetDomainShader(ID3D11DomainShader* aDomainShader)
 	{
+		DL_ASSERT_EXP(aDomainShader != nullptr, "domainshader was null.");
 		myContext->DSSetShader(aDomainShader, nullptr, 0);
 	}
 
 	void CDirectX11::SetComputeShader(ID3D11ComputeShader* aComputeShader)
 	{
+		DL_ASSERT_EXP(aComputeShader != nullptr, "computeshader was null.");
 		myContext->CSSetShader(aComputeShader, nullptr, 0);
 	}
 

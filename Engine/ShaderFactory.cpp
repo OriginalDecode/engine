@@ -2,6 +2,7 @@
 #include "ShaderFactory.h"
 #include <d3dcompiler.h>
 #include <Utilities.h>
+#include <JSON/JSONReader.h>
 namespace Snowblind
 {
 	CShaderFactory::CShaderFactory()
@@ -17,15 +18,69 @@ namespace Snowblind
 		std::string path = anEffect->myFileName;
 		std::string sub = CL::substr(path, "/", true, 0);
 
+		
+		std::string vertexShader;
+		std::string pixelShader;
+		std::string geometryShader;
+		std::string hullShader;
+		std::string domainShader;
+		std::string computeShader;
 
+		JSONReader reader(path);
+		reader.ReadElement("VertexShader", vertexShader);
+		reader.ReadElement("PixelShader", pixelShader);
+		reader.ReadElement("GeometryShader", geometryShader);
+		reader.ReadElement("HullShader", hullShader);
+		reader.ReadElement("DomainShader", domainShader);
+		reader.ReadElement("ComputeShader", computeShader);
 
+		std::string input(sub + "/" + vertexShader);
+		if (vertexShader != "")
+		{
+			CreateShader(input, anEffect->myVertexShader);
+		}
+
+		input.clear();
+		input = sub + "/" + pixelShader;
+		if (pixelShader != "")
+		{
+			CreateShader(input, anEffect->myPixelShader);
+		}
+
+		input.clear();
+		input = sub + "/" + geometryShader;
+		if (geometryShader != "")
+		{
+			CreateShader(input, anEffect->myGeometryShader);
+		}
+
+		input.clear();
+		input = sub + "/" + hullShader;
+		if (hullShader != "")
+		{
+			CreateShader(input, anEffect->myHullShader);
+		}
+
+		input.clear();
+		input = sub + "/" + domainShader;
+		if (domainShader != "")
+		{
+			CreateShader(input, anEffect->myDomainShader);
+		}
+
+		input.clear();
+		input = sub + "/" + computeShader;
+		if (computeShader != "")
+		{
+			CreateShader(input, anEffect->myComputeShader);
+		}
 
 	}
 
 	//----------------------------------------
 	// Vertex Shader
 	//----------------------------------------
-	void CShaderFactory::CreateShader(const std::string& aShader, SVertexShader*& aVertexShader)
+	void CShaderFactory::CreateShader(const std::string& aShader, SVertexShader* aVertexShader)
 	{
 
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
@@ -61,7 +116,7 @@ namespace Snowblind
 	//----------------------------------------
 	// Pixel Shader
 	//----------------------------------------
-	void CShaderFactory::CreateShader(const std::string& aShader, SPixelShader*& aPixelShader)
+	void CShaderFactory::CreateShader(const std::string& aShader, SPixelShader* aPixelShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -95,7 +150,7 @@ namespace Snowblind
 	//----------------------------------------
 	// Geometry Shader
 	//----------------------------------------
-	void CShaderFactory::CreateShader(const std::string& aShader, SGeometryShader*& aGeometryShader)
+	void CShaderFactory::CreateShader(const std::string& aShader, SGeometryShader* aGeometryShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -123,7 +178,7 @@ namespace Snowblind
 	//----------------------------------------
 	// Hull Shader
 	//----------------------------------------
-	void CShaderFactory::CreateShader(const std::string& aShader, SHullShader*& aHullShader)
+	void CShaderFactory::CreateShader(const std::string& aShader, SHullShader* aHullShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -151,7 +206,7 @@ namespace Snowblind
 	//----------------------------------------
 	// Domain Shader
 	//----------------------------------------
-	void CShaderFactory::CreateShader(const std::string& aShader, SDomainShader*& aDomainShader)
+	void CShaderFactory::CreateShader(const std::string& aShader, SDomainShader* aDomainShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -180,7 +235,7 @@ namespace Snowblind
 	//----------------------------------------
 	// Compute Shader
 	//----------------------------------------
-	void CShaderFactory::CreateShader(const std::string& aShader, SComputeShader*& aComputeShader)
+	void CShaderFactory::CreateShader(const std::string& aShader, SComputeShader* aComputeShader)
 	{
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 

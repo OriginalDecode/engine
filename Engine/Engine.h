@@ -38,6 +38,7 @@ namespace Snowblind
 	class CCamera;
 	class CRenderer;
 	struct SFontData;
+	class CModel;
 	class CEngine
 	{
 	public:
@@ -79,7 +80,7 @@ namespace Snowblind
 		CFontManager* myFontManager;
 		CU::TimeManager* myTimeManager;
 		CSynchronizer* mySynchronizer;
-
+		CModel* model;
 		CRenderer* myRenderer;
 		CCamera*  myCamera;
 		CCamera*  my2DCamera;

@@ -1,9 +1,4 @@
 {
-	"TechniqueName" : "Render",
 	"VertexShader" : "VS_Deferred_Ambient.hlsl",
-	"PixelShader" : "PS_Deferred_Ambient.hlsl",
-	"GeometryShader" : "NULL",
-	"HullShader" : "NULL",
-	"DomainShader" : "NULL",
-	"ComputeShader" : "NULL"
+	"PixelShader" : "PS_Deferred_Ambient.hlsl"
 }

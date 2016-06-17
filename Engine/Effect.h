@@ -1,10 +1,7 @@
 #pragma once
-#include <string>
-#include "LightStructs.h"
-#include <DataStructures/StaticArray.h>
+struct ID3D11DeviceContext;
 namespace Snowblind
 {
-
 	struct SVertexShader;
 	struct SPixelShader;
 	struct SGeometryShader;
@@ -19,12 +16,17 @@ namespace Snowblind
 	public:
 		CEffect(const std::string& aFilePath);
 		~CEffect();
-		void Activate();
 
+		SVertexShader* GetVertexShader();
+		SPixelShader* GetPixelShader();
+		SGeometryShader* GetGeometryShader();
+		SHullShader* GetHullShader();
+		SDomainShader* GetDomainShader();
+		SComputeShader* GetComputeShader();
 
 	private:
 		std::string myFileName;
-
+		ID3D11DeviceContext* myContext;
 		SVertexShader* myVertexShader = nullptr;
 		SPixelShader* myPixelShader = nullptr;
 		SGeometryShader* myGeometryShader = nullptr;

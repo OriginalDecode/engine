@@ -1,0 +1,4 @@
+{
+	"VertexShader" : "vs_base.hlsl",
+	"PixelShader" : "ps_base.hlsl"
+}

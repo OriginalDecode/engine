@@ -3,20 +3,14 @@
 #include <d3dcompiler.h>
 namespace Snowblind
 {
-	CEffect::CEffect()
+	CEffect::CEffect(const std::string& aFilePath)
+		: myFileName(aFilePath)
 	{
 	}
 
 	CEffect::~CEffect()
 	{
 	}
-
-	void CEffect::Initiate(const std::string& aFile)
-	{
-		//Call the Shader Factory to create an effect?	
-		//ShaderFactory-> ... no ... This seems dumb. I should be able to do this with just
-	}
-
 
 	void CEffect::Activate()
 	{

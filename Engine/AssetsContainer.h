@@ -5,6 +5,7 @@ class FBXFactory;
 
 namespace Snowblind
 {
+	class CShaderFactory;
 	class CModel;
 	class CEffect;
 	class CTexture;
@@ -35,6 +36,7 @@ namespace Snowblind
 		void LoadModel(const std::string& aFilePath, const std::string& effect);
 
 		FBXFactory* myFactory;
+		CShaderFactory* myShaderFactory;
 
 	};
 };

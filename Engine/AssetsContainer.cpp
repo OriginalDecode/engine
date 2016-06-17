@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "Effect.h"
 #include "FBXFactory.h"
+#include "ShaderFactory.h"
 namespace Snowblind
 {
 	CAssetsContainer* CAssetsContainer::myInstance = nullptr;
@@ -11,11 +12,13 @@ namespace Snowblind
 	CAssetsContainer::CAssetsContainer()
 	{
 		myFactory = new FBXFactory();
+		myShaderFactory = new CShaderFactory();
 	}
 
 	CAssetsContainer::~CAssetsContainer()
 	{
 		SAFE_DELETE(myFactory);
+		SAFE_DELETE(myShaderFactory);
 
 		for (auto it = myModels.begin(); it != myModels.end(); ++it)
 		{
@@ -98,9 +101,11 @@ namespace Snowblind
 
 	void CAssetsContainer::LoadEffect(const std::string& aFilePath)
 	{
-		//CEffect* effect = new CEffect();
-		//effect->Initiate(aFilePath);
-		//myEffects[aFilePath] = effect;
+		CEffect* effect = new CEffect(aFilePath);
+
+		myShaderFactory->CreateShader(effect);
+
+		myEffects[aFilePath] = effect;
 	}
 
 	void CAssetsContainer::LoadModel(const std::string& aFilePath, const std::string& effect)

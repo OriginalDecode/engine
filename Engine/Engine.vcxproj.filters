@@ -201,6 +201,7 @@
     <ClInclude Include="SystemMonitor.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -308,6 +309,7 @@
     <ClCompile Include="SystemMonitor.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Workbed\Data\Shaders\ps_cube.hlsl" />

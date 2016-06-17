@@ -587,6 +587,7 @@ namespace Snowblind
 			CShaderContainer::GetInstance()->GetShader("Data/Shaders/ps_cube.hlsl", pShader);
 			CEngine::GetDirectX()->SetPixelShader(pShader.pixelShader);
 
+
 			//myEffect->Activate();
 
 			context->VSSetConstantBuffers(0, 1, &myConstantBuffer);

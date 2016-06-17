@@ -210,6 +210,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderContainer.h" />
+    <ClInclude Include="ShaderFactory.h" />
     <ClInclude Include="SkySphere.h" />
     <ClInclude Include="SnowblindParticleData.h" />
     <ClInclude Include="SpotLight.h" />
@@ -251,6 +252,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderContainer.cpp" />
+    <ClCompile Include="ShaderFactory.cpp" />
     <ClCompile Include="SkySphere.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Sprite.cpp" />

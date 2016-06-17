@@ -3,7 +3,6 @@
 #include <DataStructures/GrowingArray.h>
 #include <d3dcompiler.h>
 #include <vector>
-
 #define ITTERATE(type) auto it = type.begin(); it != type.end(); it++
 
 namespace Snowblind
@@ -332,6 +331,11 @@ namespace Snowblind
 			LoadVertexShader(aShaderPath);
 		}
 		aShader = myComputeShaders[aShaderPath];
+
+
+		
+
+
 	}
 
 };

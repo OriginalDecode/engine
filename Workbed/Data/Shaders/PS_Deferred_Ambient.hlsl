@@ -15,7 +15,7 @@ Texture2D NormalTexture  : register ( t1 );
 
 struct VS_OUTPUT
 {
-	float4 pos	: POSITION;
+	float4 pos	: SV_POSITION0;
 	float2 uv	: TEXCOORD;
 };
 

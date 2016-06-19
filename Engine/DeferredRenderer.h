@@ -60,12 +60,15 @@ namespace Snowblind
 		struct SLightPass
 		{
 			CEffect* myEffect = nullptr;
-			//ID3DX11EffectShaderResourceVariable* myAlbedo = nullptr;
-			//ID3DX11EffectShaderResourceVariable* myNormal = nullptr;
-			//ID3DX11EffectShaderResourceVariable* myDepth = nullptr;
-			ID3DX11EffectVariable* myPointLightVariable;
-			ID3DX11EffectMatrixVariable* myInvertedProjection;
-			ID3DX11EffectMatrixVariable* myNotInvertedView;
+		/*	struct SLightPassConstantBuffer
+			{
+				ID3DX11EffectShaderResourceVariable* myAlbedo = nullptr;
+				ID3DX11EffectShaderResourceVariable* myNormal = nullptr;
+				ID3DX11EffectShaderResourceVariable* myDepth = nullptr;
+				ID3DX11EffectVariable* myPointLightVariable;
+				ID3DX11EffectMatrixVariable* myInvertedProjection;
+				ID3DX11EffectMatrixVariable* myNotInvertedView;
+			};*/
 		} myLightPass;
 
 		CEngine* myEngine;

@@ -43,7 +43,7 @@ namespace Snowblind
 		myClearColor[2] = 0.f;
 		myClearColor[3] = 0.f;
 
-		//myScreenData.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
+		myScreenData.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Render_To_Texture.json");
 		//myScreenData.myEffect->GetShaderResource(myScreenData.mySource, "DiffuseTexture");
 
 		//myParticlePass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/RenderToTexture.fx");
@@ -91,7 +91,7 @@ namespace Snowblind
 		//for (UINT p = 0; p < techDesc.Passes; p++)
 		//{
 		//	anEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, myContext);
-		//	myContext->DrawIndexed(6, 0, 0);
+			myContext->DrawIndexed(6, 0, 0);
 		//}
 	}
 
@@ -153,8 +153,16 @@ namespace Snowblind
 		//myAmbientPass.myAlbedo->SetResource(myAlbedo->GetShaderView());
 		//myAmbientPass.myNormal->SetResource(myNormal->GetShaderView());
 		//myAmbientPass.myDepth->SetResource(myDepth->GetShaderView());
-
-		//Render(myAmbientPass.myEffect);
+		
+		myDirectX->SetVertexShader(myAmbientPass.myEffect->GetVertexShader()->vertexShader);
+		myDirectX->SetPixelShader(myAmbientPass.myEffect->GetPixelShader()->pixelShader);
+		ID3D11ShaderResourceView* srv[3];
+		srv[0] = myAlbedo->GetShaderView();
+		srv[1] = myNormal->GetShaderView();
+		srv[2] = myDepth->GetShaderView();
+		myContext->PSSetShaderResources(0, 3, &srv[0]);
+		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP);
+		Render(myAmbientPass.myEffect);
 
 		//myAmbientPass.myAlbedo->SetResource(NULL);
 		//myAmbientPass.myNormal->SetResource(NULL);
@@ -177,7 +185,7 @@ namespace Snowblind
 
 	void CDeferredRenderer::CreateAmbientData()
 	{
-		//myAmbientPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/DeferredAmbient.fx");
+		myAmbientPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Deferred_Ambient.json");
 		//CEffect* effect = myAmbientPass.myEffect;
 		//effect->GetShaderResource(myAmbientPass.myAlbedo, "AlbedoTexture");
 		//effect->GetShaderResource(myAmbientPass.myNormal, "NormalTexture");
@@ -243,17 +251,11 @@ namespace Snowblind
 
 	void CDeferredRenderer::CreateVertexBuffer()
 	{
+		ID3DBlob* shader = myScreenData.myEffect->GetVertexShader()->compiledShader;
 
-		HRESULT hr;
-
-		//D3DX11_PASS_DESC passDesc;
-		//hr = myScreenData.myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-		myDirectX->HandleErrors(hr, "Failed to get description from EffectPass!");
-
-		//hr = myDirectX->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myInputLayout);
-		//myDirectX->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
-		//myDirectX->HandleErrors(hr, "Failed to create VertexLayout");
-
+		HRESULT hr = myDirectX->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), shader->GetBufferPointer(), shader->GetBufferSize(), &myInputLayout);
+		myDirectX->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
+		myDirectX->HandleErrors(hr, "Failed to create VertexLayout");
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 		vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;

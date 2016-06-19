@@ -13,7 +13,7 @@
 #include "SkySphere.h"
 #include "Model.h"
 
-//#define DEFERRED_RENDERING
+#define DEFERRED_RENDERING
 
 namespace Snowblind
 {
@@ -61,19 +61,16 @@ namespace Snowblind
 		textTime << "Render : " << myText->GetRenderTime() << "\nUpdate : " << myText->GetUpdateTime();
 		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));*/
 		CEngine::Clear();
-#if defined (DEFERRED_RENDERING)
+
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
 		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 		myDeferredRenderer->SetBuffers();
 		myDeferredRenderer->DeferredRender();
 
-		myDeferredRenderer->SetLightState(myCamera);
-		RenderLightCommands();
-		myDeferredRenderer->SetNormalState();
-#else
-		Render3DCommands();
-#endif
+		//myDeferredRenderer->SetLightState(myCamera);
+		//RenderLightCommands();
+		//myDeferredRenderer->SetNormalState();
 		//RenderParticles();
 
 		//Render2DCommands();
@@ -100,7 +97,6 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::MODEL:
-				CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
 				CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
 				myModels[command.myModelKey]->SetPosition(command.myPosition);
 				myModels[command.myModelKey]->Render(myPrevFrame, myCamera->GetProjection());

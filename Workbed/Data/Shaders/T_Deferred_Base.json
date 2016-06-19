@@ -1,0 +1,4 @@
+{
+	"VertexShader" : "VS_Deferred_Base.hlsl",
+	"PixelShader" : "PS_Deferred_Base.hlsl"
+}

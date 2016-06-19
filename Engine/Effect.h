@@ -1,5 +1,6 @@
 #pragma once
 struct ID3D11DeviceContext;
+struct ID3D11ShaderResourceView;
 namespace Snowblind
 {
 	struct SVertexShader;
@@ -16,7 +17,7 @@ namespace Snowblind
 	public:
 		CEffect(const std::string& aFilePath);
 		~CEffect();
-
+		void SetPSResource(ID3D11ShaderResourceView* aShaderResource);
 		SVertexShader* GetVertexShader();
 		SPixelShader* GetPixelShader();
 		SGeometryShader* GetGeometryShader();

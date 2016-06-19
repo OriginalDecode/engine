@@ -24,7 +24,7 @@ namespace Snowblind
 
 	CEngine::~CEngine()
 	{
-		SAFE_DELETE(model);
+		//SAFE_DELETE(model);
 		SAFE_DELETE(mySynchronizer);
 		SAFE_DELETE(myRenderer);
 		SAFE_DELETE(myCamera);
@@ -72,11 +72,11 @@ namespace Snowblind
 		myRenderer = new CRenderer(*mySynchronizer, myCamera);
 		myRenderer->Add2DCamera(my2DCamera);
 
-		model = new Snowblind::CModel();
-		model->CreateCube("Data/Shaders/T_Cube_Shader.json", CU::Vector3f(1, 1, 1));
-		myRenderer->AddModel(model, "Cube");
+		//model = new Snowblind::CModel();
+		//model->CreateCube("Data/Shaders/T_Cube_Shader.json", CU::Vector3f(1, 1, 1));
+		//myRenderer->AddModel(model, "Cube");
 
-		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/ls_engine_test/Radio_DDS.fbx", "Data/Shaders/T_Base_Shader.json"), "Radio");
+		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/ls_engine_test/Radio_DDS.fbx", "Data/Shaders/T_Deferred_Base.json"), "Radio");
 		//myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/DeferredBase.fx"), "PBL_Room");
 	}
 

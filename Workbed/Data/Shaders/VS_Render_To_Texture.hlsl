@@ -1,24 +1,23 @@
 //---------------------------------
-//	Deferred Ambient Vertex Shaders
+//	Render to Texture Vertex Shader
 //---------------------------------
 //---------------------------------
-//	Deferred Ambient Vertex Structs
+//	Render to Texture Vertex Structs
 //---------------------------------
-
 struct VS_INPUT
 {
-	float4 pos	: POSITION;
-	float2 uv	: TEXCOORD;
+	float4 pos : POSITION;
+	float2 uv : TEXCOORD;
 };
 
 struct VS_OUTPUT
 {
-	float4 pos	: SV_POSITION0;
-	float2 uv	: TEXCOORD;
+	float4 pos : SV_POSITION0;
+	float2 uv : TEXCOORD;
 };
 
 //---------------------------------
-//	Deferred Ambient Vertex Shader
+//	Render to Texture Vertex Shader
 //---------------------------------
 VS_OUTPUT VS(VS_INPUT input)
 {

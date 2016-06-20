@@ -575,27 +575,35 @@ namespace Snowblind
 			context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 			context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
 
-			SetMatrices(aCameraOrientation, aCameraProjection);
 
 			CEngine::GetDirectX()->SetVertexShader(myEffect->GetVertexShader()->vertexShader);
 			context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			CEngine::GetDirectX()->SetPixelShader(myEffect->GetPixelShader()->pixelShader);
 
-	
+
 			if (mySurfaces.Size() > 0)
 			{
+
 				if (!myIsSkysphere)
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
+						SetMatrices(aCameraOrientation, aCameraProjection);
+
 						CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 						mySurfaces[i]->Activate();
-
+							
 						ID3D11ShaderResourceView* srv = mySurfaces[i]->GetTexture()->GetShaderView();
 						context->PSSetShaderResources(0, 1, &srv);
 
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
+
+
+						srv = nullptr;
+						context->PSSetShaderResources(0, 1, &srv);
+
 					}
+
 				}
 				else
 				{
@@ -610,7 +618,6 @@ namespace Snowblind
 				context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
 			}
 		}
-		//}
 		for each(CModel* child in myChildren)
 		{
 			child->Render(aCameraOrientation, aCameraProjection);
@@ -689,8 +696,8 @@ namespace Snowblind
 
 		hr = myAPI->GetDevice()->
 			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size()
-				, shader->GetBufferPointer() 
-				, shader->GetBufferSize() 
+				, shader->GetBufferPointer()
+				, shader->GetBufferSize()
 				, &myVertexLayout);
 
 		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Model Vertex Layout");
@@ -756,7 +763,7 @@ namespace Snowblind
 		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		cbDesc.MiscFlags = 0;
 		cbDesc.StructureByteStride = 0;
-		
+
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 		CEngine::GetDirectX()->SetDebugName(myConstantBuffer, "Model Constant Buffer");
 		CEngine::GetDirectX()->HandleErrors(hr, "[Model] : Failed to Create Constant Buffer, ");

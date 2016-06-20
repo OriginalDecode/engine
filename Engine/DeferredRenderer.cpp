@@ -91,7 +91,7 @@ namespace Snowblind
 		//for (UINT p = 0; p < techDesc.Passes; p++)
 		//{
 		//	anEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, myContext);
-			myContext->DrawIndexed(6, 0, 0);
+		myContext->DrawIndexed(6, 0, 0);
 		//}
 	}
 
@@ -153,7 +153,7 @@ namespace Snowblind
 		//myAmbientPass.myAlbedo->SetResource(myAlbedo->GetShaderView());
 		//myAmbientPass.myNormal->SetResource(myNormal->GetShaderView());
 		//myAmbientPass.myDepth->SetResource(myDepth->GetShaderView());
-		
+
 		myDirectX->SetVertexShader(myAmbientPass.myEffect->GetVertexShader()->vertexShader);
 		myDirectX->SetPixelShader(myAmbientPass.myEffect->GetPixelShader()->pixelShader);
 		ID3D11ShaderResourceView* srv[3];
@@ -163,6 +163,11 @@ namespace Snowblind
 		myContext->PSSetShaderResources(0, 3, &srv[0]);
 		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP);
 		Render(myAmbientPass.myEffect);
+
+		srv[0] = nullptr;
+		srv[1] = nullptr;
+		srv[2] = nullptr;
+		myContext->PSSetShaderResources(0, 3, &srv[0]);
 
 		//myAmbientPass.myAlbedo->SetResource(NULL);
 		//myAmbientPass.myNormal->SetResource(NULL);

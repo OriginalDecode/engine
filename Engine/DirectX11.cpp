@@ -28,7 +28,6 @@ namespace Snowblind
 
 		CreateAdapterList();
 		CreateDeviceAndSwapchain();
-		myDeviceCount = GetRefCount(myDevice);
 		CreateDepthBuffer();
 		CreateDisabledDepthStencilState();
 		CreateEnabledDepthStencilState();
@@ -170,7 +169,7 @@ namespace Snowblind
 		UINT createDeviceFlags = 0;
 
 #ifdef _DEBUG
-		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG | D3D11_RLDO_DETAIL;
 #endif
 		UINT featureCount = ARRAYSIZE(requested_feature_levels);
 
@@ -254,7 +253,7 @@ namespace Snowblind
 		depthDesc.Height = UINT(myHeight);
 		depthDesc.MipLevels = 1;
 		depthDesc.ArraySize = 1;
-		depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthDesc.Format = DXGI_FORMAT_D32_FLOAT;//DXGI_FORMAT_D24_UNORM_S8_UINT;
 		depthDesc.SampleDesc.Count = 1; //sample
 		depthDesc.SampleDesc.Quality = 0; //quality pattern
 		depthDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -267,7 +266,7 @@ namespace Snowblind
 		stencilDesc.Format = depthDesc.Format;
 		stencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		stencilDesc.Texture2D.MipSlice = 0;
-
+		
 		hr = myDevice->CreateDepthStencilView(myDepthBuffer, &stencilDesc, &myDepthView);
 		DL_ASSERT_EXP(hr == S_OK, "Failed to create depth stenci");
 

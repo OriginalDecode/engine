@@ -30,7 +30,9 @@ struct VS_OUTPUT
 	float2 uv : TEXCOORD;
 	float3 binorm : BINORMAL;
 	float3 tang : TANGENT;
-	float3 worldpos : POSITION;
+	float4 worldpos : POSITION;
+	float4 padding : PADDING;
+	float pad : PAD;
 };
 
 //---------------------------------
@@ -49,7 +51,7 @@ VS_OUTPUT VS(VS_INPUT input)
 	output.normal = mul(input.normal, World);
 	output.binorm = input.binorm;
 	output.tang  = mul(input.tang , World);
-
+	
 	output.worldpos = mul(input.pos, World);
 	
 	return output;

@@ -8,7 +8,6 @@
 SamplerState linear_Wrap : register ( s0 );
 Texture2D AlbedoTexture  : register ( t0 );
 Texture2D NormalTexture  : register ( t1 );
-Texture2D DepthTexture   : register ( t2 );
 
 //---------------------------------
 //	Deferred Base Pixel Structs
@@ -22,12 +21,14 @@ struct GBuffer
 
 struct VS_OUTPUT
 {
-	float4 pos 		: SV_POSITION0;
+	float4 pos 		: SV_POSITION;
 	float3 normal 	: NORMAL;
 	float2 uv 		: TEXCOORD;
 	float3 binorm 	: BINORMAL;
 	float3 tang 	: TANGENT;
-	float3 worldpos : POSITION;
+	float4 worldpos : POSITION;
+	float4 padding : PADDING;
+	float pad : PAD;
 };
 
 //---------------------------------

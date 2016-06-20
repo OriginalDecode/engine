@@ -13,7 +13,7 @@
 #include "SkySphere.h"
 #include "Model.h"
 
-#define DEFERRED_RENDERING
+//#define DEFERRED_RENDERING
 
 namespace Snowblind
 {
@@ -62,12 +62,18 @@ namespace Snowblind
 		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));*/
 		CEngine::Clear();
 
+#if defined (DEFERRED_RENDERING)
+
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
 		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 		myDeferredRenderer->SetBuffers();
 		myDeferredRenderer->DeferredRender();
+#else
+		CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		Render3DCommands();
 
+#endif
 		//myDeferredRenderer->SetLightState(myCamera);
 		//RenderLightCommands();
 		//myDeferredRenderer->SetNormalState();

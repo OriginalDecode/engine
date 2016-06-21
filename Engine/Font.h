@@ -8,6 +8,7 @@ struct D3D11_INPUT_ELEMENT_DESC;
 struct D3D11_SUBRESOURCE_DATA;
 struct ID3D11ShaderResourceView;
 struct ID3D11BlendState;
+struct ID3D11Buffer;
 
 namespace CommonUtilities
 {
@@ -42,13 +43,19 @@ namespace Snowblind
 
 		float GetUpdateTime();
 		float GetRenderTime();
+
+		void SetPosition(const CU::Vector2f& aPosition);
+		void SetScale(const CU::Vector2f& aScale);
+		void SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
+
 	private:
 		void operator=(const CFont&) = delete;
-
 		void CreateInputLayout();
 		void CreateVertexBuffer();
 		void CreateIndexBuffer();
+		void CreateConstantBuffer();
 		void UpdateBuffer();
+		void UpdateConstantBuffer();
 		SFontData* myData = nullptr;
 		CEffect* myEffect = nullptr;
 
@@ -57,6 +64,8 @@ namespace Snowblind
 		D3D11_BUFFER_DESC* myIndexBufferDesc = nullptr;
 
 		D3D11_SUBRESOURCE_DATA* myInitData = nullptr;
+		ID3D11Buffer* myConstantBuffer = nullptr;
+
 
 		SVertexBufferWrapper* myVertexBuffer = nullptr;
 		SIndexBufferWrapper* myIndexBuffer = nullptr;
@@ -77,6 +86,12 @@ namespace Snowblind
 
 		int myUpdateTimer = 0.f;
 		int myRenderTimer = 0.f;
+
+		struct SFontConstantBuffer : public SVertexBaseStruct
+		{
+			CU::Vector2f position = CU::Vector2f(0.f, 0.f);
+			CU::Vector2f scale = CU::Vector2f(1.f, 1.f);
+		} *myConstantStruct;
 
 	};
 }

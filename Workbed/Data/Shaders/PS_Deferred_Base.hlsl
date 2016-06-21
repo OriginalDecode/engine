@@ -53,6 +53,8 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
     
 	float depth = input.pos.z;
 	output.Depth = float4(depth, depth, depth, depth);
-	
+	//float d = input.pos.z;
+	//float4 output = float4(AlbedoTexture.Sample(linear_Wrap, input.uv));
+	//float4 output = float4(d,d,d,1);
 	return output;
 }

@@ -23,7 +23,7 @@
 #include <DeferredRenderer.h>
 #include <SystemMonitor.h>
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
-#define MOVE_SPEED 1.f
+#define MOVE_SPEED 50.f
 
 CApplication::CApplication()
 {
@@ -122,16 +122,16 @@ void CApplication::Update()
 
 void CApplication::Render()
 {
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 0.f, 0.f)));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 10.f, 0.f)));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(25.f, 10.f, 0.f)));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 0.f, 0.f)));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 10.f, 0.f)));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(25.f, 10.f, 0.f)));
 	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 0.f), CU::Vector3f(1.f, 0.f, 0.f), 40.f, 10.f));
 	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 10.f, 0.f), CU::Vector3f(0.f, 1.f, 0.f), 40.f, 10.f));
 	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(25.f, 10.f, 0.f), CU::Vector3f(0.f, 0.f, 1.f), 40.f, 10.f));
 
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "Radio", CU::Vector3f(0.f, 0.f, 0.f)));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "Cube", CU::Vector3f(0.f, 0.f, 0.f)));
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "Cube", CU::Vector3f(0.05f, 0.f, 0.f)));
 
 	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::PARTICLE, myEmitter));
 	//

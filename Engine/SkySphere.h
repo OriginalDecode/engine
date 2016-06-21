@@ -18,7 +18,6 @@ namespace Snowblind
 		CCamera* myCamera;
 		CTexture* mySkysphereTexture;
 		CU::Matrix44f myOrientation;
-		CU::Matrix44f myPrevOrientation;
 
 		CModel* myModel;
 		

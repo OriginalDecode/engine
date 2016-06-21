@@ -9,8 +9,7 @@
 
 namespace Snowblind
 {
-	enum eDeferredType;
-
+	
 	class CSynchronizer
 	{
 	public:
@@ -24,7 +23,8 @@ namespace Snowblind
 		void WaitForLogic();
 		void RenderIsDone();
 		void LogicIsDone();
-		void AddRenderCommand(const SRenderCommand& aRenderCommand);
+		
+		void AddRenderCommand(const SRenderCommand& aRenderCommand, const eDeferredFlag& isDeferredFlag = eDeferredFlag::NOT_DEFERRED);
 
 		const CU::GrowingArray<SRenderCommand>& GetRenderCommands(const eCommandType& commandType) const;
 	private:

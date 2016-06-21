@@ -158,6 +158,7 @@ namespace Snowblind
 		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
+		texture->Release();
 #endif
 
 		fontData->myAtlasHeight = atlasSize;
@@ -345,6 +346,7 @@ namespace Snowblind
 		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
+		CEngine::GetDirectX()->SetDebugName(fontData->myAtlasView, "FontAtlas");
 
 		std::string name = "";
 		name = CL::substr(myFontPath, "\\", false, 1);
@@ -356,7 +358,8 @@ namespace Snowblind
 			name = CL::substr(name, ".", true, 1);
 		}
 
-		/*std::stringstream ss3;
+		/*
+		std::stringstream ss3;
 		D3DX11_IMAGE_FILE_FORMAT format;
 #ifdef SAVE_DDS
 		ss3 << "Glyphs/Atlas_" << name << ".dds";
@@ -367,7 +370,8 @@ namespace Snowblind
 		format = D3DX11_IFF_PNG;
 #endif
 		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss3.str().c_str());
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");*/
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
+		*/
 	}
 
 	void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline)
@@ -394,7 +398,8 @@ namespace Snowblind
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 
 		std::stringstream ss;
-		/*D3DX11_IMAGE_FILE_FORMAT format;
+		/*
+		D3DX11_IMAGE_FILE_FORMAT format;
 #ifdef SAVE_DDS
 		if (isOutline)
 			ss << "Glyphs/OutlineGlyph_" << index << ".dds";
@@ -411,7 +416,8 @@ namespace Snowblind
 #endif
 		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss.str().c_str());
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
-		texture->Release();*/
+		texture->Release();
+		*/
 	}
 
 	void CFontManager::CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, int aBorderOffset)

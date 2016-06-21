@@ -21,7 +21,7 @@ namespace Snowblind
 
 		myData = aFontData;
 		myText = " ";
-		//myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/Font_Effect.fx");
+		myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Font.json");
 
 		myVertexBufferDesc = new D3D11_BUFFER_DESC();
 		myIndexBufferDesc = new D3D11_BUFFER_DESC();
@@ -30,6 +30,7 @@ namespace Snowblind
 		CreateInputLayout();
 		CreateVertexBuffer();
 		CreateIndexBuffer();
+		CreateConstantBuffer();
 
 		myColor = myDefaultColor;
 
@@ -49,6 +50,9 @@ namespace Snowblind
 
 		SAFE_DELETE(myInitData);
 		SAFE_RELEASE(myVertexLayout);
+
+		SAFE_DELETE(myConstantStruct);
+		SAFE_RELEASE(myConstantBuffer);
 	}
 
 	void CFont::SetText(const std::string& aText)
@@ -81,25 +85,32 @@ namespace Snowblind
 			return;
 		//myEffect->SetTexture(myData->myAtlasView, "FontTexture");
 
+		CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
+
 		ID3D11DeviceContext& context = *CEngine::GetDirectX()->GetContext();
 		context.IASetInputLayout(myVertexLayout);
 		context.IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 		context.IASetIndexBuffer(myIndexBuffer->myIndexBuffer, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
 		context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		/*D3DX11_TECHNIQUE_DESC techDesc;
-		myEffect->GetTechnique()->GetDesc(&techDesc);
+		UpdateConstantBuffer();
 
-		for (UINT p = 0; p < techDesc.Passes; ++p)
-		{
-			HRESULT hr = myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, &context);
-			CEngine::GetDirectX()->HandleErrors(hr, "Failed to apply pass to context!");
-			context.DrawIndexed(myIndices.Size(), 0, 0);
+		CEngine::GetDirectX()->SetVertexShader(myEffect->GetVertexShader()->vertexShader);
+		context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
+		CEngine::GetDirectX()->SetPixelShader(myEffect->GetPixelShader()->pixelShader);
+		ID3D11ShaderResourceView* srv = myData->myAtlasView;
+		context.PSSetShaderResources(0, 1, &srv);
 
-		}*/
+		context.DrawIndexed(myIndices.Size(), 0, 0);
+
+		srv = nullptr;
+		context.PSSetShaderResources(0, 1, &srv);
+
 
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds() - myRenderTime;
+
+		CEngine::GetDirectX()->SetBlendState(eBlendStates::NO_BLEND);
 	}
 
 	Snowblind::CEffect* CFont::GetEffect()
@@ -132,6 +143,23 @@ namespace Snowblind
 		return myRenderTime *1000.f;
 	}
 
+	void CFont::SetPosition(const CU::Vector2f& aPosition)
+	{
+		myConstantStruct->position = aPosition;
+	}
+
+	void CFont::SetScale(const CU::Vector2f& aScale)
+	{
+		myConstantStruct->scale = aScale;
+	}
+
+	void CFont::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
+	{
+		myConstantStruct->world = anOrientation;
+		myConstantStruct->invertedView = CU::Math::Inverse(a2DCameraOrientation);
+		myConstantStruct->projection = anOrthogonalProjectionMatrix;
+	}
+
 	void CFont::CreateInputLayout()
 	{
 		myVertexFormat.Init(3);
@@ -142,9 +170,13 @@ namespace Snowblind
 
 		//D3DX11_PASS_DESC passDesc;
 		//myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-		//HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
-		//CEngine::GetDirectX()->HandleErrors(hr, " [Font] : Input Layout.");
-		//CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Font Input Layout");
+		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(&myVertexFormat[0]
+			, myVertexFormat.Size()
+			, myEffect->GetVertexShader()->compiledShader->GetBufferPointer()
+			, myEffect->GetVertexShader()->compiledShader->GetBufferSize()
+			, &myVertexLayout);
+		CEngine::GetDirectX()->HandleErrors(hr, " [Font] : Input Layout.");
+		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Font Input Layout");
 	}
 
 	void CFont::CreateVertexBuffer()
@@ -177,6 +209,24 @@ namespace Snowblind
 		myIndexBufferDesc->CPUAccessFlags = 0;
 		myIndexBufferDesc->MiscFlags = 0;
 		myIndexBufferDesc->StructureByteStride = 0;
+	}
+
+	void CFont::CreateConstantBuffer()
+	{
+		myConstantStruct = new SFontConstantBuffer;
+
+		D3D11_BUFFER_DESC cbDesc;
+		ZeroMemory(&cbDesc, sizeof(cbDesc));
+		cbDesc.ByteWidth = sizeof(SFontConstantBuffer);
+		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		cbDesc.MiscFlags = 0;
+		cbDesc.StructureByteStride = 0;
+
+		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+		CEngine::GetDirectX()->SetDebugName(myConstantBuffer, "Font Constant Buffer");
+		CEngine::GetDirectX()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
 	}
 
 	void CFont::UpdateBuffer()
@@ -264,8 +314,24 @@ namespace Snowblind
 		myIndexBufferDesc->ByteWidth = sizeof(UINT) * myIndices.Size();
 		myInitData->pSysMem = reinterpret_cast<char*>(&myIndices[0]);
 		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(myIndexBufferDesc, myInitData, &myIndexBuffer->myIndexBuffer);
-		
+
 		CEngine::GetDirectX()->SetDebugName(myIndexBuffer->myIndexBuffer, "Font Index Buffer");
 
 	}
+
+	void CFont::UpdateConstantBuffer()
+	{
+		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
+
+		D3D11_MAPPED_SUBRESOURCE msr;
+		CEngine::GetDirectX()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		if (msr.pData != nullptr)
+		{
+			SFontConstantBuffer* ptr = (SFontConstantBuffer*)msr.pData;
+			memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SFontConstantBuffer));
+		}
+
+		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);
+	}
+
 };

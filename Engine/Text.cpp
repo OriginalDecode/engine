@@ -13,16 +13,15 @@ namespace Snowblind
 
 	CText::~CText()
 	{
-		delete myFont;
-		myFont = nullptr;
+		SAFE_DELETE(myFont);
 	}
 
 	void CText::Render(CCamera* aCamera)
 	{
-		//myFont->GetEffect()->SetPosition(myPosition);
-		//myFont->GetEffect()->SetScale(myScale);
-		//myFont->GetEffect()->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
-		//myFont->Render();
+		myFont->SetPosition(myPosition);
+		myFont->SetScale(myScale);
+		myFont->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
+		myFont->Render();
 	}
 
 	void CText::SetText(const std::string& aString)

@@ -74,9 +74,10 @@ namespace Snowblind
 	{
 		myLogicIsDone = true;
 	}
-
-	void CSynchronizer::AddRenderCommand(const SRenderCommand& aRenderCommand)
+	
+	void CSynchronizer::AddRenderCommand(const SRenderCommand& aRenderCommand, const eDeferredFlag& isDeferredFlag /*= eDeferredFlag::NOT_DEFERRED*/)
 	{
+		isDeferredFlag; //To be used to separate deferred models from non deferred models.
 		switch (aRenderCommand.myCommandType)
 		{
 		case eCommandType::e2D:

@@ -24,6 +24,7 @@ namespace CommonUtilities
 			static Matrix44<TYPE> CreateRotateAroundY(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateRotateAroundZ(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateProjectionMatrixLH(TYPE aNearZ, TYPE aFarZ, TYPE anAspectRatio, TYPE aFoVAngle);
+			static Matrix44<TYPE> CreateOrthogonalMatrixLH(TYPE aWidth, TYPE aHeight, TYPE aNearZ, TYPE aFarZ);
 			TYPE myMatrix[16];
 
 			void SetRotation3dX(const TYPE& aRadian);

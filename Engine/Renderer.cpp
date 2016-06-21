@@ -13,7 +13,7 @@
 #include "SkySphere.h"
 #include "Model.h"
 
-//#define DEFERRED_RENDERING
+#define DEFERRED_RENDERING
 
 namespace Snowblind
 {
@@ -26,7 +26,7 @@ namespace Snowblind
 		int loadTimer = myTimeManager->CreateTimer();
 		myTimeManager->GetTimer(loadTimer).Update();
 		float loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds();
-		//myText = new CText("Arial.ttf", 8, 1);
+		myText = new CText("Arial.ttf", 8, 1);
 
 		myTimeManager->GetTimer(loadTimer).Update();
 		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;
@@ -36,7 +36,8 @@ namespace Snowblind
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
 		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
-		//mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/Skysphere.fx", aCamera);
+
+		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", aCamera);
 	}
 
 	CRenderer::~CRenderer()
@@ -57,9 +58,9 @@ namespace Snowblind
 
 	void CRenderer::Render()
 	{
-		/*std::stringstream textTime;
+		std::stringstream textTime;
 		textTime << "Render : " << myText->GetRenderTime() << "\nUpdate : " << myText->GetUpdateTime();
-		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));*/
+		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));
 		CEngine::Clear();
 
 #if defined (DEFERRED_RENDERING)
@@ -79,7 +80,7 @@ namespace Snowblind
 		//myDeferredRenderer->SetNormalState();
 		//RenderParticles();
 
-		//Render2DCommands();
+		Render2DCommands();
 
 
 		CEngine::Present();
@@ -109,8 +110,8 @@ namespace Snowblind
 
 				break;
 			case SRenderCommand::eType::SKYSPHERE:
-				//mySkysphere->SetPosition(command.myPosition);
-				//mySkysphere->Render(myPrevFrame);
+				mySkysphere->SetPosition(command.myPosition);
+				mySkysphere->Render(myPrevFrame);
 				break;
 			}
 		}
@@ -125,9 +126,12 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::TEXT:
-				//myText->SetText(command.myTextToPrint);
-				//myText->SetPosition({ command.myPosition.x, command.myPosition.y });
-				//myText->Render(my2DCamera);
+				CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_NONE);
+				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+				myText->SetText(command.myTextToPrint);
+				myText->SetPosition({ command.myPosition.x, command.myPosition.y });
+				myText->Render(my2DCamera);
+				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 				break;
 			}
 		}

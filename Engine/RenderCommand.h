@@ -18,6 +18,12 @@ enum class eCommandType
 	PARTICLE,
 };
 
+enum class eDeferredFlag
+{
+	IS_DEFERRED,
+	NOT_DEFERRED,
+};
+
 
 struct SRenderCommand
 {

@@ -597,6 +597,18 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
+		Matrix44<TYPE> Matrix44<TYPE>::CreateOrthogonalMatrixLH(TYPE aWidth, TYPE aHeight, TYPE aNearZ, TYPE aFarZ)
+		{
+			Matrix44<TYPE> toReturn;
+			toReturn.myMatrix[0] = 2.f / aWidth;
+			toReturn.myMatrix[5] = 2.f / aHeight;
+			toReturn.myMatrix[10] = 1.f / (aFarZ - aNearZ);
+			toReturn.myMatrix[14] = aNearZ / (aNearZ - aFarZ);
+			toReturn.myMatrix[15] = 1.f;
+			return toReturn;
+		}
+
+		template<typename TYPE>
 		const Matrix44<TYPE> Matrix44<TYPE>::Inverse(Matrix44<TYPE> &aMatrix)
 		{
 			Vector4<TYPE> theTranslation;

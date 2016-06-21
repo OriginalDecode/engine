@@ -200,7 +200,7 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosCol[0]);
 		myVertexFormat.Add(VertexLayoutPosCol[1]);
 
-		float size = 0.25f;
+		float size = 0.01f;
 		SVertexTypePosCol tempVertex;
 		CU::Vector4f color = aColor;
 		color.a = 1.f;
@@ -577,7 +577,6 @@ namespace Snowblind
 
 
 			CEngine::GetDirectX()->SetVertexShader(myEffect->GetVertexShader()->vertexShader);
-			context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			CEngine::GetDirectX()->SetPixelShader(myEffect->GetPixelShader()->pixelShader);
 
 
@@ -589,15 +588,15 @@ namespace Snowblind
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
 						SetMatrices(aCameraOrientation, aCameraProjection);
+						context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 						CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 						mySurfaces[i]->Activate();
-							
+
 						ID3D11ShaderResourceView* srv = mySurfaces[i]->GetTexture()->GetShaderView();
 						context->PSSetShaderResources(0, 1, &srv);
 
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
-
 
 						srv = nullptr;
 						context->PSSetShaderResources(0, 1, &srv);
@@ -609,17 +608,27 @@ namespace Snowblind
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
+						CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+						
+						SetMatrices(aCameraOrientation, aCameraProjection);
+
+						context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+						
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
+
 					}
 				}
 			}
 			else
 			{
+				SetMatrices(aCameraOrientation, aCameraProjection);
+				context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 				context->DrawIndexed(myIndexData->myIndexCount, 0, 0);
 			}
 		}
 		for each(CModel* child in myChildren)
 		{
+			child->SetPosition(myOrientation.GetPosition());
 			child->Render(aCameraOrientation, aCameraProjection);
 		}
 	}

@@ -17,7 +17,7 @@ namespace Snowblind
 		myAPI = new CDirectX11(myHWND, aWindowWidth, aWindowHeight);
 
 		myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight);
-		my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0, 0, 1.f));
+		my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0, 0, 0.f));
 		Randomizer::Create();
 		SetWindowText(myHWND, "Snowblind Engine");
 	}
@@ -77,7 +77,7 @@ namespace Snowblind
 		myRenderer->AddModel(model, "Cube");
 
 		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/ls_engine_test/Radio_DDS.fbx", "Data/Shaders/T_Deferred_Base.json"), "Radio");
-		//myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/DeferredBase.fx"), "PBL_Room");
+		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/T_Deferred_Base.json"), "PBL_Room");
 	}
 
 	CCamera* CEngine::GetCamera()

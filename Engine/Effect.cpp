@@ -35,7 +35,11 @@ namespace Snowblind
 
 	SPixelShader* CEffect::GetPixelShader()
 	{
-		return myPixelShader;
+		if (myPixelShader != nullptr)
+		{
+			return myPixelShader;
+		}
+		return nullptr;
 	}
 
 }

@@ -104,11 +104,7 @@ void CApplication::Update()
 
 		CU::Input::InputWrapper::GetInstance()->Update();
 
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))
-		{
-			myEngine->OnExit();
-			myQuitFlag = true;
-		}
+	
 		UpdateInput(deltaTime);
 
 
@@ -156,6 +152,12 @@ void CApplication::UpdateInput(float aDeltaTime)
 {
 	if (myWindowIsActive)
 	{
+		if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))
+		{
+			myEngine->OnExit();
+			myQuitFlag = true;
+		}
+
 		myCursorPosition.x += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectX()) * 0.01f;
 		myCursorPosition.y += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectY()) * 0.01f;
 

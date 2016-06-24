@@ -46,7 +46,7 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	norm = normalize(mul(norm, tangentSpaceMatrix));
     
 	GBuffer output;
-  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * 0.3f;//ambientMultiplier;
+  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * 0.72f;//ambientMultiplier;
 	norm.xyz += 1.f;
 	norm.xyz *= 0.5f;
 	output.Normal = float4(norm, 0.f);

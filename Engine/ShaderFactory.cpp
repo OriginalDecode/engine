@@ -90,7 +90,10 @@ namespace Snowblind
 		if (pixelShader != "")
 		{
 			LoadShader(input, anEffect->myPixelShader);
-			myPixelShaders[input]->effectPointers.Add(anEffect);
+			if (myPixelShaders[input] != nullptr)
+			{
+				myPixelShaders[input]->effectPointers.Add(anEffect);
+			}
 		}
 
 		input.clear();
@@ -210,6 +213,7 @@ namespace Snowblind
 	void CShaderFactory::CreatePixelShader(const std::string& aShader)
 	{
 		SPixelShader* newShader = new SPixelShader();
+		myPixelShaders[aShader] = newShader;
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
 		ENGINE_LOG("Creating pixelshader : %s", aShader.c_str());
@@ -230,7 +234,13 @@ namespace Snowblind
 		{
 			DL_MESSAGE("%s", (char*)compilationMessage->GetBufferPointer());
 		}
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
+
+		if (FAILED(hr))
+		{
+			DL_WARNINGBOX((char*)compilationMessage->GetBufferPointer());
+			return;
+		}
+		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
 		hr = device->CreatePixelShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &newShader->pixelShader);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Pixel Shader.");
@@ -241,7 +251,6 @@ namespace Snowblind
 
 		CEngine::GetDirectX()->SetDebugName(newShader->pixelShader, "PixelShader");
 
-		myPixelShaders[aShader] = newShader;
 	}
 
 	void CShaderFactory::ReloadPixel(const std::string& aFilePath)
@@ -509,8 +518,7 @@ namespace Snowblind
 
 	SCompiledShader::~SCompiledShader()
 	{
-		blob->Release();
-		blob = nullptr;
+		SAFE_RELEASE(blob);
 		compiledShader = nullptr;
 	}
 

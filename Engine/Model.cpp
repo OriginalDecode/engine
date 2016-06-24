@@ -577,7 +577,7 @@ namespace Snowblind
 
 
 			CEngine::GetDirectX()->SetVertexShader(myEffect->GetVertexShader()->vertexShader);
-			CEngine::GetDirectX()->SetPixelShader(myEffect->GetPixelShader()->pixelShader);
+			CEngine::GetDirectX()->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr );
 
 
 			if (mySurfaces.Size() > 0)

@@ -521,7 +521,9 @@ namespace Snowblind
 
 	void CDirectX11::SetPixelShader(ID3D11PixelShader* aPixelShader)
 	{
-		DL_ASSERT_EXP(aPixelShader != nullptr, "pixelshader was null.");
+		if (aPixelShader == nullptr)
+			return;
+		//DL_ASSERT_EXP(aPixelShader != nullptr, "pixelshader was null.");
 		//Check current Pixel Shader, if current == aPixelShader return
 		myContext->PSSetShader(aPixelShader, nullptr, 0);
 	}

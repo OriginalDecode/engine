@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Effect.h"
-#include <d3dcompiler.h>
 namespace Snowblind
 {
 	CEffect::CEffect(const std::string& aFilePath)

@@ -1,17 +1,10 @@
 #include "stdafx.h"
-#include <thread>
 #include "Renderer.h"
-#include "Engine.h"
 #include "Synchronizer.h"
 #include "RenderCommand.h"
-#include "Instance.h"
-#include "Camera.h"
 #include "DeferredRenderer.h"
-#include "PointLight.h"
 #include "EmitterInstance.h"
-#include <TimeManager.h>
 #include "SkySphere.h"
-#include "Model.h"
 
 #define DEFERRED_RENDERING
 
@@ -32,7 +25,7 @@ namespace Snowblind
 		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;
 		FONT_LOG("Font Took : %fms to load.", loadTime);
 
-		myPointLight = new CPointLight();
+		//myPointLight = new CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
 		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);

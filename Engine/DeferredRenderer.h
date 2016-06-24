@@ -1,5 +1,7 @@
 #pragma once
 #include <DL_Debug.h>
+#include "VertexStructs.h"
+
 struct ID3D11ShaderResourceView;
 struct ID3DX11EffectVariable;
 struct ID3DX11EffectMatrixVariable;
@@ -88,7 +90,6 @@ namespace Snowblind
 
 		CDirectX11* myDirectX;
 
-		SWindowSize myWindowSize;
 		SRenderToScreenData myScreenData;
 
 		SVertexIndexWrapper* myIndexData;

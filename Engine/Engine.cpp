@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "Synchronizer.h"
 #include "Renderer.h"
-#include <Randomizer.h>
-#include "AssetsContainer.h"
-#include "Model.h"
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
@@ -93,6 +90,8 @@ namespace Snowblind
 
 	void CEngine::Update()
 	{
+		CAssetsContainer::GetInstance()->Update();
+
 		myInstance->myTimeManager->Update();
 		myInstance->myRenderer->Render();
 	}

@@ -22,6 +22,8 @@ namespace Snowblind
 		CEffect* GetEffect(const std::string& aFilePath);
 		CModel* GetModel(const std::string& aFilePath, const std::string& effect);
 
+		void Update();
+
 	private:
 		CAssetsContainer();
 		~CAssetsContainer();

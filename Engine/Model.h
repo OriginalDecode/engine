@@ -18,7 +18,7 @@ namespace Snowblind
 	struct SVertexDataWrapper;
 	struct SIndexBufferWrapper;
 
-	class CModel
+	class CModel 
 	{
 		friend class FBXFactory;
 	public:
@@ -41,7 +41,6 @@ namespace Snowblind
 
 		void SetEffect(CEffect* anEffect);
 		
-
 	private:
 		void SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection);
 		ID3D11InputLayout* myVertexLayout;

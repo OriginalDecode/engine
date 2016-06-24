@@ -1,17 +1,8 @@
-
 #include "stdafx.h"
 #include "DirectX11.h"
 
-#include <D3D11.h>
-#include <DL_Debug.h>
-#include "EngineDefines.h"
-#include "../CommonLib/JSON/JSONReader.h"
-
 #include <sstream>
 #include <stdlib.h>
-
-#include "AssetsContainer.h"
-#include <Unknwn.h>
 
 #undef VOID
 #define VOID (void**)

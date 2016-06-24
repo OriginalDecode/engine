@@ -9,7 +9,6 @@ namespace CommonUtilities
 	class TimeManager;
 }
 
-
 namespace Snowblind
 {
 

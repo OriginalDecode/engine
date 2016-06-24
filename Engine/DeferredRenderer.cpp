@@ -1,14 +1,6 @@
 #include "stdafx.h"
 #include "DeferredRenderer.h"
-#include "AssetsContainer.h"
-#include "VertexStructs.h"
-#include "VertexTypes.h"
-
-#include "IndexWrapper.h"
-#include "VertexWrapper.h"
-#include "Camera.h"
 #include "PointLight.h"
-
 namespace Snowblind
 {
 
@@ -18,24 +10,24 @@ namespace Snowblind
 		myDirectX = CEngine::GetDirectX();
 		myContext = myDirectX->GetContext();
 		myEngine = CEngine::GetInstance();
-		myWindowSize = myEngine->GetWindowSize();
-		myAlbedo = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
+		SWindowSize windowSize = myEngine->GetWindowSize();
+		myAlbedo = new CTexture(windowSize.myWidth, windowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 		myAlbedo->SetDebugName("DeferredAlbedo");
 
-		myNormal = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
+		myNormal = new CTexture(windowSize.myWidth, windowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 		myNormal->SetDebugName("DeferredNormal");
 
-		myDepth = new CTexture(myWindowSize.myWidth, myWindowSize.myHeight
+		myDepth = new CTexture(windowSize.myWidth, windowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		myDepth->SetDebugName("DeferredDepth");
 
 		myDepthStencil = new CTexture();
-		myDepthStencil->InitAsDepthBuffer(myWindowSize.myWidth, myWindowSize.myHeight);
+		myDepthStencil->InitAsDepthBuffer(windowSize.myWidth, windowSize.myHeight);
 		myDepthStencil->SetDebugName("DeferredDepthStenci");
 
 		myClearColor[0] = 0.f;

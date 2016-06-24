@@ -89,6 +89,11 @@ namespace Snowblind
 		return myModels[aFilePath];
 	}
 
+	void CAssetsContainer::Update()
+	{
+		myShaderFactory->Update();
+	}
+
 	void CAssetsContainer::LoadTexture(const std::string& aFilePath)
 	{
 		CTexture* texture = new CTexture();
@@ -103,7 +108,7 @@ namespace Snowblind
 	{
 		CEffect* effect = new CEffect(aFilePath);
 
-		myShaderFactory->CreateShader(effect);
+		myShaderFactory->LoadShader(effect);
 
 		myEffects[aFilePath] = effect;
 	}

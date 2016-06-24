@@ -200,6 +200,7 @@
     </ClInclude>
     <ClInclude Include="ShaderFactory.h" />
     <ClInclude Include="FileWatcher.h" />
+    <ClInclude Include="EffectListener.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">

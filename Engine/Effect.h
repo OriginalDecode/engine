@@ -29,6 +29,7 @@ namespace Snowblind
 		SDomainShader* GetDomainShader();
 		SComputeShader* GetComputeShader();
 
+
 	private:
 		std::string myFileName;
 		ID3D11DeviceContext* myContext;

@@ -199,6 +199,7 @@
     <ClInclude Include="EngineDefines.h" />
     <ClInclude Include="FBXFactory.h" />
     <ClInclude Include="FbxLoader.h" />
+    <ClInclude Include="FileWatcher.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontManager.h" />
     <ClInclude Include="FullscreenHelper.h" />
@@ -212,7 +213,6 @@
     <ClInclude Include="RenderCommand.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="ShaderContainer.h" />
     <ClInclude Include="ShaderFactory.h" />
     <ClInclude Include="SkySphere.h" />
     <ClInclude Include="SnowblindParticleData.h" />
@@ -243,6 +243,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="FBXFactory.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
+    <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="FullscreenHelper.cpp" />
@@ -254,7 +255,6 @@
     <ClCompile Include="RenderCommand.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="ShaderContainer.cpp" />
     <ClCompile Include="ShaderFactory.cpp" />
     <ClCompile Include="SkySphere.cpp" />
     <ClCompile Include="SpotLight.cpp" />

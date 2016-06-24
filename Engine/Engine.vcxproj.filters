@@ -189,9 +189,6 @@
     <ClInclude Include="AssetsContainer.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderContainer.h">
-      <Filter>Containers</Filter>
-    </ClInclude>
     <ClInclude Include="EmitterInstance.h">
       <Filter>Particles</Filter>
     </ClInclude>
@@ -202,6 +199,7 @@
       <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="ShaderFactory.h" />
+    <ClInclude Include="FileWatcher.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -300,9 +298,6 @@
     <ClCompile Include="AssetsContainer.cpp">
       <Filter>Containers</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderContainer.cpp">
-      <Filter>Containers</Filter>
-    </ClCompile>
     <ClCompile Include="EmitterInstance.cpp">
       <Filter>Particles</Filter>
     </ClCompile>
@@ -310,5 +305,6 @@
       <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="ShaderFactory.cpp" />
+    <ClCompile Include="FileWatcher.cpp" />
   </ItemGroup>
 </Project>

@@ -256,9 +256,10 @@ namespace Snowblind
 
 	void CDeferredRenderer::CreateVertexBuffer()
 	{
-		ID3DBlob* shader = myScreenData.myEffect->GetVertexShader()->compiledShader;
+		void* shader = myScreenData.myEffect->GetVertexShader()->compiledShader;
+		int size = myScreenData.myEffect->GetVertexShader()->shaderSize;
 
-		HRESULT hr = myDirectX->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), shader->GetBufferPointer(), shader->GetBufferSize(), &myInputLayout);
+		HRESULT hr = myDirectX->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), shader, size, &myInputLayout);
 		myDirectX->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
 		myDirectX->HandleErrors(hr, "Failed to create VertexLayout");
 		D3D11_BUFFER_DESC vertexBufferDesc;

@@ -72,8 +72,13 @@ namespace Snowblind
 		myEffect->GetShaderResource(srv, aResourceName);*/
 		//myShaderVariables.Add(srv);
 
+		std::string sub = CL::substr(aFilePath, ".png", true, 0);
+		if (CL::substr(sub, ".dds") == false)
+		{
+			sub += ".dds";
+		}
 		STexture* newTexture = new STexture();
-		newTexture->texture = CAssetsContainer::GetInstance()->GetTexture(aFilePath);
+		newTexture->texture = CAssetsContainer::GetInstance()->GetTexture(sub);
 		newTexture->resourceName = aResourceName;
 		myTextures.Add(newTexture);
 	}

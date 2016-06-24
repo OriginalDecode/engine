@@ -78,6 +78,7 @@ namespace Snowblind
 
 		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/ls_engine_test/Radio_DDS.fbx", "Data/Shaders/T_Deferred_Base.json"), "Radio");
 		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/T_Deferred_Base.json"), "PBL_Room");
+
 	}
 
 	CCamera* CEngine::GetCamera()

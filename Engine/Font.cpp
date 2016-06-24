@@ -172,8 +172,8 @@ namespace Snowblind
 		//myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(&myVertexFormat[0]
 			, myVertexFormat.Size()
-			, myEffect->GetVertexShader()->compiledShader->GetBufferPointer()
-			, myEffect->GetVertexShader()->compiledShader->GetBufferSize()
+			, myEffect->GetVertexShader()->compiledShader
+			, myEffect->GetVertexShader()->shaderSize
 			, &myVertexLayout);
 		CEngine::GetDirectX()->HandleErrors(hr, " [Font] : Input Layout.");
 		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Font Input Layout");

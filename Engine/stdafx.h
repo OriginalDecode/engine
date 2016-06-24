@@ -1,9 +1,16 @@
 #pragma once
 #pragma warning(disable : 4005)
+
+#include <d3d11.h>
+#include <DDSTextureLoader.h>
+#include <unordered_map>
+#include <Windows.h>
+
 #include "../CommonLib/Math/Matrix/Matrix.h"
 #include "../CommonLib/JSON/JSONReader.h"
 #include "../CommonLib/Math/Vector/Vector.h"
 #include "../CommonLib/Utilities.h"
+
 
 #include "Engine.h"
 #include "DirectX11.h"
@@ -14,6 +21,7 @@
 #include "EngineDefines.h"
 #include "Texture.h"
 #include "Effect.h"
+#include "ShaderFactory.h"
 
 #include "VertexStructs.h"
 
@@ -21,11 +29,7 @@
 #include <InputWrapper.h>
 #include <DL_Debug.h>
 
-#include <d3d11.h>
-#include <DDSTextureLoader.h>
-#include <unordered_map>
-#include <Windows.h>
 
 
 #include "AssetsContainer.h"
-#include "ShaderContainer.h"
+#include "FileWatcher.h"

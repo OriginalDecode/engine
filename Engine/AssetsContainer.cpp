@@ -114,7 +114,4 @@ namespace Snowblind
 		model->CreateModel();
 		myModels[aFilePath] = model;
 	}
-
-
-
 };

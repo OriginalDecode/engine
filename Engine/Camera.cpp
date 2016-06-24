@@ -7,7 +7,7 @@ namespace Snowblind
 	{
 
 		myFOV *= 3.1415926535f / 180.f;
-		myProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(0.01f, 100.f, aHeight / aWidth, myFOV);
+		myProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(0.01f, 1000.f, aHeight / aWidth, myFOV);
 	}
 
 	CCamera::CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition)

@@ -107,7 +107,6 @@ namespace Snowblind
 				CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
 				myModels[command.myModelKey]->SetPosition(command.myPosition);
 				myModels[command.myModelKey]->Render(myPrevFrame, myCamera->GetProjection());
-
 				break;
 			case SRenderCommand::eType::SKYSPHERE:
 				mySkysphere->SetPosition(command.myPosition);

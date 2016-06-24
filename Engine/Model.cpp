@@ -701,12 +701,13 @@ namespace Snowblind
 	{
 		myVertexBuffer = new SVertexBufferWrapper();
 		HRESULT hr;
-		ID3DBlob* shader = myEffect->GetVertexShader()->compiledShader;
+		void* shader = myEffect->GetVertexShader()->compiledShader;
+		int size = myEffect->GetVertexShader()->shaderSize;
 
 		hr = myAPI->GetDevice()->
 			CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size()
-				, shader->GetBufferPointer()
-				, shader->GetBufferSize()
+				, shader
+				, size
 				, &myVertexLayout);
 
 		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Model Vertex Layout");

@@ -3,6 +3,7 @@
 #include <d3dcompiler.h>
 #include <Utilities.h>
 #include <JSON/JSONReader.h>
+#define ITTERATE(shadermap) auto it = shadermap.begin(); it != shadermap.end(); it++
 namespace Snowblind
 {
 	CShaderFactory::CShaderFactory()
@@ -11,6 +12,30 @@ namespace Snowblind
 
 	CShaderFactory::~CShaderFactory()
 	{
+		for (ITTERATE(myVertexShaders))
+		{
+			SAFE_DELETE(it->second);
+		}
+		for (ITTERATE(myPixelShaders))
+		{
+			SAFE_DELETE(it->second);
+		}
+		for (ITTERATE(myGeometryShaders))
+		{
+			SAFE_DELETE(it->second);
+		}
+		for (ITTERATE(myHullShaders))
+		{
+			SAFE_DELETE(it->second);
+		}
+		for (ITTERATE(myDomainShaders))
+		{
+			SAFE_DELETE(it->second);
+		}
+		for (ITTERATE(myComputeShaders))
+		{
+			SAFE_DELETE(it->second);
+		}
 	}
 
 	void CShaderFactory::CreateShader(CEffect* anEffect)

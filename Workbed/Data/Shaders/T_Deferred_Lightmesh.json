@@ -1,0 +1,4 @@
+{
+	"VertexShader" : "VS_Deferred_Lightmesh.hlsl",
+	"PixelShader" : "PS_Deferred_Lightmesh.hlsl"
+}

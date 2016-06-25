@@ -39,7 +39,6 @@
 #include "DeferredRenderer.h"
 #include "DirectX11.h"
 #include "Effect.h"
-#include "EffectListener.h"
 #include "Engine.h"
 #include "EngineDefines.h"
 #include "EmitterInstance.h"

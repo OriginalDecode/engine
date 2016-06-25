@@ -593,8 +593,11 @@ namespace Snowblind
 						CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 						mySurfaces[i]->Activate();
 
-						ID3D11ShaderResourceView* srv = mySurfaces[i]->GetTexture()->GetShaderView();
-						context->PSSetShaderResources(0, 1, &srv);
+						ID3D11ShaderResourceView* srv = mySurfaces[i]->GetTexture() ? mySurfaces[i]->GetTexture()->GetShaderView() : nullptr;
+						if (srv != nullptr)
+						{
+							context->PSSetShaderResources(0, 1, &srv);
+						}
 
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
 

@@ -5,8 +5,7 @@
 #include "DeferredRenderer.h"
 #include "EmitterInstance.h"
 #include "SkySphere.h"
-
-#define DEFERRED_RENDERING
+#include "PointLight.h"
 
 namespace Snowblind
 {
@@ -25,7 +24,7 @@ namespace Snowblind
 		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;
 		FONT_LOG("Font Took : %fms to load.", loadTime);
 
-		//myPointLight = new CPointLight();
+		myPointLight = new CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
 		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
@@ -56,21 +55,14 @@ namespace Snowblind
 		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));
 		CEngine::Clear();
 
-#if defined (DEFERRED_RENDERING)
-
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
 		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 		myDeferredRenderer->SetBuffers();
 		myDeferredRenderer->DeferredRender();
-#else
-		CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
-		Render3DCommands();
 
-#endif
-		//myDeferredRenderer->SetLightState(myCamera);
-		//RenderLightCommands();
-		//myDeferredRenderer->SetNormalState();
+		RenderLightCommands();
+		
 		//RenderParticles();
 
 		Render2DCommands();
@@ -140,11 +132,11 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::POINTLIGHT:
-				//myPointLight->SetPosition(command.myPosition);
-				//myPointLight->SetRange(command.myRange);
-				//myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
-				//myPointLight->Update();
-				//myDeferredRenderer->RenderLight(myPointLight, myCamera, myPrevFrame);
+				myPointLight->SetPosition(command.myPosition);
+				myPointLight->SetRange(command.myRange);
+				myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
+				myPointLight->Update();
+				myDeferredRenderer->RenderLight(myPointLight, myCamera, myPrevFrame);
 				break;
 			}
 		}

@@ -194,7 +194,6 @@
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX11.h" />
     <ClInclude Include="Effect.h" />
-    <ClInclude Include="EffectListener.h" />
     <ClInclude Include="EmitterInstance.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineDefines.h" />

@@ -1,12 +1,9 @@
 #pragma once
 #include <DL_Debug.h>
 #include "VertexStructs.h"
-
-struct ID3D11ShaderResourceView;
-struct ID3DX11EffectVariable;
-struct ID3DX11EffectMatrixVariable;
 struct ID3D11DeviceContext;
 struct ID3D11InputLayout;
+struct ID3D11Buffer;
 
 namespace Snowblind
 {
@@ -37,41 +34,50 @@ namespace Snowblind
 		void SetTargets();
 		void SetBuffers();
 		void DeferredRender();
-		void SetLightState(CCamera* aCamera);
-		void SetNormalState();
 		void RenderLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 
 		CTexture* GetDepthStencil();
 		CTexture* GetDepth();
 	private:
-		void Render(CEffect* anEffect);
 
 		struct SRenderToScreenData
 		{
 			CEffect* myEffect = nullptr;
-			//ID3DX11EffectShaderResourceVariable* mySource = nullptr;
-		};
+		} myScreenData;
+
 		struct SAmbientPass
 		{
 			CEffect* myEffect = nullptr;
-			//ID3DX11EffectShaderResourceVariable* myAlbedo = nullptr;
-			//ID3DX11EffectShaderResourceVariable* myNormal = nullptr;
-			//ID3DX11EffectShaderResourceVariable* myDepth = nullptr;
 		} myAmbientPass;
 
 		struct SLightPass
 		{
 			CEffect* myEffect = nullptr;
-		/*	struct SLightPassConstantBuffer
+			ID3D11Buffer* myPixelConstantBuffer = nullptr;
+			ID3D11Buffer* myVertexConstantBuffer = nullptr;
+			struct SPixelConstantBuffer
 			{
-				ID3DX11EffectShaderResourceVariable* myAlbedo = nullptr;
-				ID3DX11EffectShaderResourceVariable* myNormal = nullptr;
-				ID3DX11EffectShaderResourceVariable* myDepth = nullptr;
-				ID3DX11EffectVariable* myPointLightVariable;
-				ID3DX11EffectMatrixVariable* myInvertedProjection;
-				ID3DX11EffectMatrixVariable* myNotInvertedView;
-			};*/
+				CU::Matrix44f myView;
+				CU::Matrix44f myInvertedProjection;
+				CU::Vector4f myColor;
+				CU::Vector4f myPosition;
+
+			} myPixelConstantStruct;
+
+			struct SVertexConstantBuffer
+			{
+				CU::Matrix44f myWorld;
+				CU::Matrix44f myInvertedView;
+				CU::Matrix44f myProjection;
+				float myScale;
+				CU::Vector3f filler;
+			} myVertexConstantStruct;
+
 		} myLightPass;
+
+		void CreateLightConstantBuffers();
+		void UpdateLightBuffers(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation);
+
 
 		CEngine* myEngine;
 		CTexture* myAlbedo;
@@ -83,14 +89,14 @@ namespace Snowblind
 		struct SParticlePass
 		{
 			CEffect* myEffect;
-			//ID3DX11EffectShaderResourceVariable* myDiffuse = nullptr;
+
 		} myParticlePass;
+
+
 
 		CTexture* myParticleTexture;
 
 		CDirectX11* myDirectX;
-
-		SRenderToScreenData myScreenData;
 
 		SVertexIndexWrapper* myIndexData;
 		SVertexDataWrapper* myVertexData;
@@ -106,8 +112,6 @@ namespace Snowblind
 		float myClearColor[4];
 
 
-		void CreateLightData();
-		void CreateAmbientData();
 
 		void CreateFullscreenQuad();
 

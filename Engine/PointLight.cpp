@@ -8,8 +8,8 @@ namespace Snowblind
 {
 	CPointLight::CPointLight()
 	{
-		//myLightMesh = new Snowblind::CInstance();
-		//myLightMesh->Initiate("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/DeferredLightMesh.fx");
+		myLightMesh = new Snowblind::CInstance();
+		myLightMesh->Initiate("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/T_Deferred_Lightmesh.json");
 	}
 
 
@@ -25,15 +25,14 @@ namespace Snowblind
 		myColor = aColor;
 		myRange = aRange;
 
-
-
-
-#ifdef _DEBUG
-		CModel* lightCube = new CModel();
-		lightCube->CreateCube("Data/Shaders/Cube.fx", { aColor.r, aColor.g, aColor.b });
-		myInstance = new CInstance();
-		myInstance->Initiate(lightCube);
-#endif
+		/*
+		#ifdef _DEBUG
+				CModel* lightCube = new CModel();
+				lightCube->CreateCube("Data/Shaders/Cube.fx", { aColor.r, aColor.g, aColor.b });
+				myInstance = new CInstance();
+				myInstance->Initiate(lightCube);
+		#endif
+		*/
 
 	}
 

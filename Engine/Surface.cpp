@@ -116,7 +116,11 @@ namespace Snowblind
 
 	CTexture* CSurface::GetTexture()
 	{
-		return myTextures[0]->texture;
+		if (myTextures.Size() > 0)
+		{
+			return myTextures[0]->texture;
+		}
+		return nullptr;
 	}
 
 };

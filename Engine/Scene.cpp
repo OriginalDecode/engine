@@ -36,8 +36,8 @@ namespace Snowblind
 			RenderLight();
 			for (int i = 0; i < myInstances.Size(); i++)
 			{
-				myInstances[i]->UpdateLight(myDirectionalLightData);
-				myInstances[i]->UpdateLight(myPointLightData);
+				//myInstances[i]->UpdateLight(myDirectionalLightData);
+				//myInstances[i]->UpdateLight(myPointLightData);
 //				myInstances[i]->Render(*myCamera);
 			}
 		}
@@ -61,7 +61,7 @@ namespace Snowblind
 		UpdateLight(aDeltaTime);
 		for (int i = 0; i < myInstances.Size(); i++)
 		{
-			myInstances[i]->Update(aDeltaTime);
+			//myInstances[i]->Update(aDeltaTime);
 		}
 	}
 

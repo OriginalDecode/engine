@@ -57,8 +57,8 @@ namespace Snowblind
 			ID3D11Buffer* myVertexConstantBuffer = nullptr;
 			struct SPixelConstantBuffer
 			{
-				CU::Matrix44f myView;
 				CU::Matrix44f myInvertedProjection;
+				CU::Matrix44f myView;
 				CU::Vector4f myColor;
 				CU::Vector4f myPosition;
 

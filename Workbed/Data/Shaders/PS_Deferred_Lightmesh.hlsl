@@ -58,6 +58,7 @@ float CalculateTotalAttenuation(float someDistance, float someRange)
 //---------------------------------
 float4 PS(VS_OUTPUT input) : SV_Target
 {
+	float4 output;
 	input.uv /= input.uv.w;
 	float2 texCoord = input.uv.xy;
 
@@ -70,26 +71,24 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float x = texCoord.x * 2.f - 1.f;
 	float y = (1.f - texCoord.y) * 2.f - 1.f;
 	float z = depth.x;
-
+	
 	float4 worldPosition = float4(x, y, z, 1.f);
 	worldPosition = mul(worldPosition, InvertedProjection);
-	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, View);
 
 
 	//PointLight-Calc
 	float3 lightVec = position - worldPosition;
-	return float4(lightVec.rgb,1);
+	
 	float distance = length(lightVec);
 	lightVec = normalize(lightVec);
-
 	float lambert = dot(lightVec, normal);
-
+	return float4(lambert,lambert,lambert,1);
 	float3 lightColor = 0.f;
 	float intensity = color.w;
 
 	lightColor = saturate(lambert * color); 
-	float4 finalColor = float4(lightColor * intensity, 1.f);
+	float4 finalColor = float4(lightColor * 1.f, 1.f);
 	finalColor *= albedo;
 	finalColor.a = 1.f;
 	return saturate(finalColor * CalculateTotalAttenuation(distance, input.range));

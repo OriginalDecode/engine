@@ -130,7 +130,7 @@ namespace Snowblind
 		//----------------------------------------
 		myLightPass.myVertexConstantStruct.myWorld = pointlight->GetOrientation();
 		myLightPass.myVertexConstantStruct.myProjection = aCamera->GetProjection();
-		myLightPass.myVertexConstantStruct.myInvertedView = CU::Math::Inverse(aCamera->GetOrientation());
+		myLightPass.myVertexConstantStruct.myInvertedView = CU::Math::Inverse(previousOrientation);
 		myLightPass.myVertexConstantStruct.myScale = pointlight->GetRange();
 
 		D3D11_MAPPED_SUBRESOURCE msr;
@@ -143,8 +143,6 @@ namespace Snowblind
 
 		CEngine::GetDirectX()->GetContext()->Unmap(myLightPass.myVertexConstantBuffer, 0);
 
-
-
 		//----------------------------------------
 		// PixelShader Constant Buffer
 		//----------------------------------------
@@ -156,8 +154,8 @@ namespace Snowblind
 		CEngine::GetDirectX()->GetContext()->Map(myLightPass.myPixelConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
-			SLightPass::SVertexConstantBuffer* ptr = (SLightPass::SVertexConstantBuffer*)msr.pData;
-			memcpy(ptr, &myLightPass.myPixelConstantStruct.myView.myMatrix[0], sizeof(SLightPass::SPixelConstantBuffer));
+			SLightPass::SPixelConstantBuffer* ptr = (SLightPass::SPixelConstantBuffer*)msr.pData;
+			memcpy(ptr, &myLightPass.myPixelConstantStruct.myInvertedProjection.myMatrix[0], sizeof(SLightPass::SPixelConstantBuffer));
 		}
 
 		CEngine::GetDirectX()->GetContext()->Unmap(myLightPass.myPixelConstantBuffer, 0);

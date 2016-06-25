@@ -10,6 +10,7 @@ namespace Snowblind
 	{
 		myLightMesh = new Snowblind::CInstance();
 		myLightMesh->Initiate("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/T_Deferred_Lightmesh.json");
+		myLightMesh->SetIsLightmesh();
 	}
 
 
@@ -90,5 +91,11 @@ namespace Snowblind
 	{
 		return myInstance;
 	}
+
+	const CU::Matrix44f& CPointLight::GetOrientation()
+	{
+		return myOrientation;
+	}
+
 #endif
 };

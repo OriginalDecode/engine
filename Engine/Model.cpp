@@ -15,9 +15,7 @@ namespace Snowblind
 {
 	CModel::CModel()
 	{
-		myIsNULLObject = true;
 		myAPI = CEngine::GetDirectX();
-		myIsTextured = false;
 	}
 
 	CModel::~CModel()
@@ -575,15 +573,16 @@ namespace Snowblind
 			context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 			context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
 
-
-			CEngine::GetDirectX()->SetVertexShader(myEffect->GetVertexShader()->vertexShader);
-			CEngine::GetDirectX()->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr );
-
+			if (!myIsLightmesh)
+			{
+				CEngine::GetDirectX()->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
+				CEngine::GetDirectX()->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
+			}
 
 			if (mySurfaces.Size() > 0)
 			{
 
-				if (!myIsSkysphere)
+				if (!myIsSkysphere && !myIsLightmesh)
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
@@ -607,7 +606,7 @@ namespace Snowblind
 					}
 
 				}
-				else
+				else if(myIsSkysphere)
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
@@ -619,6 +618,14 @@ namespace Snowblind
 						
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
 
+					}
+				}
+				else if (myIsLightmesh)
+				{
+					for (int i = 0; i < mySurfaces.Size(); i++)
+					{
+						CEngine::GetDirectX()->SetSamplerState(eSamplerStates::POINT_CLAMP);
+						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
 					}
 				}
 			}
@@ -662,9 +669,22 @@ namespace Snowblind
 		}
 	}
 
+	void CModel::SetIsLightmesh()
+	{
+		myIsLightmesh = true;
+		for (int i = 0; i < myChildren.Size(); i++)
+		{
+			myChildren[i]->SetIsLightmesh();
+		}
+	}
+
 	void CModel::SetPosition(const CU::Vector3f& aPosition)
 	{
 		myOrientation.SetPosition(aPosition);
+		for each (CModel* child in myChildren)
+		{
+			child->SetPosition(aPosition);
+		}
 	}
 
 	CU::Matrix44f& CModel::GetOrientation()

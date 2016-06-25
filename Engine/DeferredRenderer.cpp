@@ -128,24 +128,11 @@ namespace Snowblind
 		//----------------------------------------
 		// VertexShader Constant Buffer
 		//----------------------------------------
-		myLightPass.myVertexConstantStruct.myWorld = previousOrientation;
+		myLightPass.myVertexConstantStruct.myWorld = pointlight->GetOrientation();
 		myLightPass.myVertexConstantStruct.myProjection = aCamera->GetProjection();
 		myLightPass.myVertexConstantStruct.myInvertedView = CU::Math::Inverse(aCamera->GetOrientation());
 		myLightPass.myVertexConstantStruct.myScale = pointlight->GetRange();
 
-		//----------------------------------------
-		// PixelShader Constant Buffer
-		//----------------------------------------
-		myLightPass.myPixelConstantStruct.myInvertedProjection = CU::Math::InverseReal(aCamera->GetProjection());
-		myLightPass.myPixelConstantStruct.myView = aCamera->GetOrientation();
-		myLightPass.myPixelConstantStruct.myColor = pointlight->GetColor();
-		myLightPass.myPixelConstantStruct.myPosition = pointlight->GetPosition();
-
-
-		//----------------------------------------
-		// Map / Unmap
-		//----------------------------------------
-		
 		D3D11_MAPPED_SUBRESOURCE msr;
 		CEngine::GetDirectX()->GetContext()->Map(myLightPass.myVertexConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
@@ -155,6 +142,16 @@ namespace Snowblind
 		}
 
 		CEngine::GetDirectX()->GetContext()->Unmap(myLightPass.myVertexConstantBuffer, 0);
+
+
+
+		//----------------------------------------
+		// PixelShader Constant Buffer
+		//----------------------------------------
+		myLightPass.myPixelConstantStruct.myInvertedProjection = CU::Math::InverseReal(aCamera->GetProjection());
+		myLightPass.myPixelConstantStruct.myView = aCamera->GetOrientation();
+		myLightPass.myPixelConstantStruct.myColor = pointlight->GetColor();
+		myLightPass.myPixelConstantStruct.myPosition = pointlight->GetPosition();
 
 		CEngine::GetDirectX()->GetContext()->Map(myLightPass.myPixelConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
@@ -175,16 +172,27 @@ namespace Snowblind
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
 
+		myDirectX->SetVertexShader(myLightPass.myEffect->GetVertexShader()->vertexShader);
+		myDirectX->SetPixelShader(myLightPass.myEffect->GetPixelShader()->pixelShader);
+
 		UpdateLightBuffers(pointlight, aCamera, previousOrientation);
 
-		myDirectX->SetVertexShader(myLightPass.myEffect->GetVertexShader()->vertexShader);
 		myContext->VSSetConstantBuffers(0, 1, &myLightPass.myVertexConstantBuffer);
-
-		myDirectX->SetPixelShader(myLightPass.myEffect->GetPixelShader()->pixelShader);
 		myContext->PSSetConstantBuffers(0, 1, &myLightPass.myPixelConstantBuffer);
+
+
+		ID3D11ShaderResourceView* gbuffer[3];
+		gbuffer[0] = myAlbedo->GetShaderView();
+		gbuffer[1] = myNormal->GetShaderView();
+		gbuffer[2] = myDepth->GetShaderView();
+		myContext->PSSetShaderResources(0, 3, &gbuffer[0]);
 
 		pointlight->Render(previousOrientation, aCamera);
 
+		gbuffer[0] = nullptr;
+		gbuffer[1] = nullptr;
+		gbuffer[2] = nullptr;
+		myContext->PSSetShaderResources(0, 3, &gbuffer[0]);
 
 
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);

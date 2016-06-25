@@ -21,6 +21,7 @@ namespace Snowblind
 		void Initiate(CModel* aModel);
 		void Render(CU::Matrix44f& previousOrientation, CCamera& aCamera);
 		void SetPosition(CU::Math::Vector3<float> aPosition);
+		void SetIsLightmesh();
 	private:
 		void operator=(CInstance&) = delete;
 

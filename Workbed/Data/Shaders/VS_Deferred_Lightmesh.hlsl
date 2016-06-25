@@ -10,6 +10,7 @@ cbuffer Matrices : register(b0) //132
 	row_major float4x4 InvertedView;
 	row_major float4x4 Projection;
 	float range;
+	float3 filler;
 };
 //---------------------------------
 //	Deferred Lightmesh Vertex Structs

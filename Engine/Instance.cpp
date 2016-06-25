@@ -42,6 +42,12 @@ namespace Snowblind
 	void CInstance::SetPosition(CU::Math::Vector3<float> aPosition)
 	{
 		myOrientation.SetPosition(aPosition);
+		myModel->SetPosition(aPosition);
+	}
+
+	void CInstance::SetIsLightmesh()
+	{
+		myModel->SetIsLightmesh();
 	}
 
 };

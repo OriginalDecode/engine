@@ -90,6 +90,7 @@ namespace Snowblind
 			{
 			case SRenderCommand::eType::MODEL:
 				CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
+				CEngine::GetDirectX()->SetBlendState(eBlendStates::NO_BLEND);
 				myModels[command.myModelKey]->SetPosition(command.myPosition);
 				myModels[command.myModelKey]->Render(myPrevFrame, myCamera->GetProjection());
 				break;

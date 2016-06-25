@@ -36,6 +36,7 @@ namespace Snowblind
 
 		void AddChild(CModel* aChild);
 		void SetIsSkysphere();
+		void SetIsLightmesh();
 		void SetPosition(const CU::Vector3f& aPosition);
 		CU::Matrix44f& GetOrientation();
 
@@ -65,8 +66,9 @@ namespace Snowblind
 		CCamera* myCamera;
 		CEffect* myEffect;
 
-		bool myIsTextured;
-		bool myIsNULLObject;
+		bool myIsLightmesh = false;
+		bool myIsTextured = false;
+		bool myIsNULLObject = true;
 		bool myIsSkysphere = false;
 		void InitVertexBuffer();
 		void InitIndexBuffer();

@@ -28,7 +28,7 @@ namespace Snowblind
 #ifdef _DEBUG
 		CInstance* GetInstance();
 #endif
-
+		const CU::Matrix44f& GetOrientation();
 	private:
 
 #ifdef _DEBUG

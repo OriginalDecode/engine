@@ -4,7 +4,7 @@
 //---------------------------------
 //	Constant Buffers
 //---------------------------------
-cbuffer Pointlight : register(b0) //96
+cbuffer Pointlight : register(b0)
 {
 	row_major float4x4 View; 
 	row_major float4x4 InvertedProjection; 
@@ -67,8 +67,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
 
-	float4 diffuse = 0.42f * albedo;
-
 	float x = texCoord.x * 2.f - 1.f;
 	float y = (1.f - texCoord.y) * 2.f - 1.f;
 	float z = depth.x;
@@ -81,7 +79,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	//PointLight-Calc
 	float3 lightVec = position - worldPosition;
-
+	return float4(lightVec.rgb,1);
 	float distance = length(lightVec);
 	lightVec = normalize(lightVec);
 

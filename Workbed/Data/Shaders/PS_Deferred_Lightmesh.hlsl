@@ -6,8 +6,8 @@
 //---------------------------------
 cbuffer Pointlight : register(b0)
 {
-	row_major float4x4 View; 
 	row_major float4x4 InvertedProjection; 
+	row_major float4x4 View; 
 	float4 color;
 	float4 position;
 };
@@ -79,8 +79,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	//PointLight-Calc
 	float3 lightVec = position - worldPosition;
-	
 	float distance = length(lightVec);
+
 	lightVec = normalize(lightVec);
 	float lambert = dot(lightVec, normal);
 	return float4(lambert,lambert,lambert,1);
@@ -88,7 +88,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float intensity = color.w;
 
 	lightColor = saturate(lambert * color); 
-	float4 finalColor = float4(lightColor * 1.f, 1.f);
+	float4 finalColor = float4(lightColor * 40.f, 1.f);
 	finalColor *= albedo;
 	finalColor.a = 1.f;
 	return saturate(finalColor * CalculateTotalAttenuation(distance, input.range));

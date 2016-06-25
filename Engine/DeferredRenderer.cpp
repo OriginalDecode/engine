@@ -147,7 +147,7 @@ namespace Snowblind
 		// PixelShader Constant Buffer
 		//----------------------------------------
 		myLightPass.myPixelConstantStruct.myInvertedProjection = CU::Math::InverseReal(aCamera->GetProjection());
-		myLightPass.myPixelConstantStruct.myView = aCamera->GetOrientation();
+		myLightPass.myPixelConstantStruct.myView = previousOrientation;
 		myLightPass.myPixelConstantStruct.myColor = pointlight->GetColor();
 		myLightPass.myPixelConstantStruct.myPosition = pointlight->GetPosition();
 

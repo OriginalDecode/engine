@@ -34,8 +34,10 @@ namespace Snowblind
 		void SetTargets();
 		void SetBuffers();
 		void DeferredRender();
-		void RenderLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 
+		void SetLightStates();
+		void RenderLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
+		void SetNormalStates();
 		CTexture* GetDepthStencil();
 		CTexture* GetDepth();
 	private:

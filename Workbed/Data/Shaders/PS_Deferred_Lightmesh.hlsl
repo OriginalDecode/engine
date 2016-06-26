@@ -58,7 +58,6 @@ float CalculateTotalAttenuation(float someDistance, float someRange)
 //---------------------------------
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	float4 output;
 	input.uv /= input.uv.w;
 	float2 texCoord = input.uv.xy;
 
@@ -67,21 +66,25 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 depth = DepthTexture.Sample(point_Clamp, texCoord);
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
-
+	
 	float x = texCoord.x * 2.f - 1.f;
 	float y = (1.f - texCoord.y) * 2.f - 1.f;
 	float z = depth.x;
 	
+	
 	float4 worldPosition = float4(x, y, z, 1.f);
+	
 	worldPosition = mul(worldPosition, InvertedProjection);
+	
 	worldPosition = mul(worldPosition, View);
-
 
 	//PointLight-Calc
 	float3 lightVec = position - worldPosition;
+	
 	float distance = length(lightVec);
-
 	lightVec = normalize(lightVec);
+	
+	
 	float lambert = dot(lightVec, normal);
 	return float4(lambert,lambert,lambert,1);
 	float3 lightColor = 0.f;

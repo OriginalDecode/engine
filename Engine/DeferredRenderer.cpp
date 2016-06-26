@@ -129,11 +129,12 @@ namespace Snowblind
 		// VertexShader Constant Buffer
 		//----------------------------------------
 		myLightPass.myVertexConstantStruct.myWorld = pointlight->GetOrientation();
-		myLightPass.myVertexConstantStruct.myProjection = aCamera->GetProjection();
 		myLightPass.myVertexConstantStruct.myInvertedView = CU::Math::Inverse(previousOrientation);
+		myLightPass.myVertexConstantStruct.myProjection = aCamera->GetProjection();
 		myLightPass.myVertexConstantStruct.myScale = pointlight->GetRange();
 
 		D3D11_MAPPED_SUBRESOURCE msr;
+		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		CEngine::GetDirectX()->GetContext()->Map(myLightPass.myVertexConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
@@ -151,6 +152,7 @@ namespace Snowblind
 		myLightPass.myPixelConstantStruct.myColor = pointlight->GetColor();
 		myLightPass.myPixelConstantStruct.myPosition = pointlight->GetPosition();
 
+		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		CEngine::GetDirectX()->GetContext()->Map(myLightPass.myPixelConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
@@ -164,15 +166,6 @@ namespace Snowblind
 
 	void CDeferredRenderer::RenderLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation)
 	{
-		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
-		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
-
-		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
-		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
-
-		myDirectX->SetVertexShader(myLightPass.myEffect->GetVertexShader()->vertexShader);
-		myDirectX->SetPixelShader(myLightPass.myEffect->GetPixelShader()->pixelShader);
-
 		UpdateLightBuffers(pointlight, aCamera, previousOrientation);
 
 		myContext->VSSetConstantBuffers(0, 1, &myLightPass.myVertexConstantBuffer);
@@ -191,8 +184,11 @@ namespace Snowblind
 		gbuffer[1] = nullptr;
 		gbuffer[2] = nullptr;
 		myContext->PSSetShaderResources(0, 3, &gbuffer[0]);
+		
+	}
 
-
+	void CDeferredRenderer::SetNormalStates()
+	{
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 	}
@@ -224,6 +220,18 @@ namespace Snowblind
 		srv[2] = nullptr;
 		myContext->PSSetShaderResources(0, 3, &srv[0]);
 
+	}
+
+	void CDeferredRenderer::SetLightStates()
+	{
+		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
+		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
+
+		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
+		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
+
+		myDirectX->SetVertexShader(myLightPass.myEffect->GetVertexShader()->vertexShader);
+		myDirectX->SetPixelShader(myLightPass.myEffect->GetPixelShader()->pixelShader);
 	}
 
 	void CDeferredRenderer::CreateFullscreenQuad()

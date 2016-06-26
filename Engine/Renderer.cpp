@@ -61,8 +61,10 @@ namespace Snowblind
 		myDeferredRenderer->SetBuffers();
 		myDeferredRenderer->DeferredRender();
 
+		myDeferredRenderer->SetLightStates();
 		RenderLightCommands();
-		
+		myDeferredRenderer->SetNormalStates();
+
 		//RenderParticles();
 
 		Render2DCommands();

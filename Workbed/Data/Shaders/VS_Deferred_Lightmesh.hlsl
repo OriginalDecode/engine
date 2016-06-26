@@ -4,7 +4,7 @@
 //---------------------------------
 //	Constant Buffers
 //---------------------------------
-cbuffer Matrices : register(b0) //132
+cbuffer Matrices : register(b0) 
 {
 	row_major float4x4 World;
 	row_major float4x4 InvertedView;
@@ -23,7 +23,7 @@ struct VS_INPUT
 
 struct VS_OUTPUT
 {
-	float4 pos	: SV_POSITION0;
+	float4 pos	: SV_POSITION;
 	float4 uv	: POSITION;
 	float range : RANGE;
 };
@@ -36,19 +36,17 @@ VS_OUTPUT VS(VS_INPUT input)
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	
 	float4 scale = float4(range, range, range, 1.0f);
-	input.pos *= scale;
 
-	input.pos.w = 1.0f;
-	output.range = range;
+	input.pos *= scale;
 	output.pos = mul(input.pos, World);
 	output.pos = mul(output.pos, InvertedView);
 	output.pos = mul(output.pos, Projection);
-
+	output.range = range;
 	float x = output.pos.x;
 	float y = output.pos.y;
 	float w = output.pos.w;
 
-	output.uv = float4((float2(x + w, w - y)) *0.5f, output.pos.zw);
+	output.uv = float4((float2(x + w, w - y)) * 0.5f, output.pos.zw);
 		
 	return output;
 };

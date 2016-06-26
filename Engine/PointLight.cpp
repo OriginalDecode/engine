@@ -46,7 +46,7 @@ namespace Snowblind
 
 	const CU::Vector3f& CPointLight::GetPosition()
 	{
-		return myOriginalPosition;
+		return myOrientation.GetPosition();
 	}
 
 	void CPointLight::SetColor(const CU::Vector4f& aColor)
@@ -92,7 +92,7 @@ namespace Snowblind
 		return myInstance;
 	}
 
-	const CU::Matrix44f& CPointLight::GetOrientation()
+	CU::Matrix44f CPointLight::GetOrientation()
 	{
 		return myOrientation;
 	}

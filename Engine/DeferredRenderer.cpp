@@ -131,7 +131,10 @@ namespace Snowblind
 		myLightPass.myVertexConstantStruct.myWorld = pointlight->GetOrientation();
 		myLightPass.myVertexConstantStruct.myInvertedView = CU::Math::Inverse(previousOrientation);
 		myLightPass.myVertexConstantStruct.myProjection = aCamera->GetProjection();
-		myLightPass.myVertexConstantStruct.myScale = pointlight->GetRange();
+		myLightPass.myVertexConstantStruct.myScale.x = pointlight->GetRange();
+		myLightPass.myVertexConstantStruct.myScale.y = pointlight->GetRange();
+		myLightPass.myVertexConstantStruct.myScale.z = pointlight->GetRange();
+		myLightPass.myVertexConstantStruct.myScale.w = pointlight->GetRange();
 
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));

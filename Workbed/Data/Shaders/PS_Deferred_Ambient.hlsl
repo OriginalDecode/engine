@@ -29,7 +29,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
-	
 	//float4 cubemap = CubeMap.SampleLevel(point_Clamp, normal, 7); //Use in the future.
 	//return saturate(albedo * cubemap);
 	return albedo;

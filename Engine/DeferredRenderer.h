@@ -71,8 +71,7 @@ namespace Snowblind
 				CU::Matrix44f myWorld;
 				CU::Matrix44f myInvertedView;
 				CU::Matrix44f myProjection;
-				float myScale;
-				CU::Vector3f filler;
+				CU::Vector4f myScale;
 			} myVertexConstantStruct;
 
 		} myLightPass;

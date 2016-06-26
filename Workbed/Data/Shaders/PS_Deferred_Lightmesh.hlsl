@@ -28,7 +28,7 @@ struct VS_OUTPUT
 {
 	float4 pos	: SV_POSITION;
 	float4 uv	: POSITION;
-	float range : RANGE;
+	float4 range : RANGE;
 };
 
 
@@ -62,10 +62,13 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float2 texCoord = input.uv.xy;
 
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, texCoord);
-	float4 normal = NormalTexture.Sample(point_Clamp, texCoord);
+	float4 normal = NormalTexture.Sample(point_Clamp, texCoord); //This is wrong, but why?
 	float4 depth = DepthTexture.Sample(point_Clamp, texCoord);
+	
+	
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
+	
 	
 	float x = texCoord.x * 2.f - 1.f;
 	float y = (1.f - texCoord.y) * 2.f - 1.f;

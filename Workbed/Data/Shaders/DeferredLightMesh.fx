@@ -53,8 +53,13 @@ float4 PS(PS_LIGHTMESH input) : SV_Target
 	float4 albedo = AlbedoTexture.Sample(pointSample_Clamp, texCoord);
 	float4 normal = NormalTexture.Sample(pointSample_Clamp, texCoord);
 	float4 depth = DepthTexture.Sample(pointSample_Clamp, texCoord);
+	
+	return float4(normal.xyz, 1);
+	
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
+	
+	
 
 	float4 diffuse = ambient * albedo;
 

@@ -209,6 +209,7 @@ namespace Snowblind
 
 		myDirectX->SetVertexShader(myAmbientPass.myEffect->GetVertexShader()->vertexShader);
 		myDirectX->SetPixelShader(myAmbientPass.myEffect->GetPixelShader()->pixelShader);
+
 		ID3D11ShaderResourceView* srv[3];
 		srv[0] = myAlbedo->GetShaderView();
 		srv[1] = myNormal->GetShaderView();

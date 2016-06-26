@@ -31,8 +31,6 @@ struct VS_OUTPUT
 	float3 binorm : BINORMAL;
 	float3 tang : TANGENT;
 	float4 worldpos : POSITION;
-	float4 padding : PADDING;
-	float pad : PAD;
 };
 
 //---------------------------------

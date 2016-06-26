@@ -27,8 +27,6 @@ struct VS_OUTPUT
 	float3 binorm 	: BINORMAL;
 	float3 tang 	: TANGENT;
 	float4 worldpos : POSITION;
-	float4 padding : PADDING;
-	float pad : PAD;
 };
 
 //---------------------------------
@@ -37,19 +35,19 @@ struct VS_OUTPUT
 GBuffer PS(VS_OUTPUT input) : SV_Target
 {
 	float3 norm = NormalTexture.Sample(linear_Wrap, input.uv) * 2.f - 1.f;
-	
 	input.normal = normalize(input.normal);
 	input.binorm = normalize(input.binorm);
 	input.tang   = normalize(input.tang);
     
 	float3x3 tangentSpaceMatrix = float3x3(input.tang, input.binorm, input.normal);
-	norm = normalize(mul(norm, tangentSpaceMatrix));
+	//norm = normalize(mul(norm, tangentSpaceMatrix));
     
 	GBuffer output;
   	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * 0.72f;//ambientMultiplier;
-	norm.xyz += 1.f;
-	norm.xyz *= 0.5f;
-	output.Normal = float4(norm, 0.f);
+	
+	//norm.xyz += 1.f;
+	//norm.xyz *= 0.5f;
+	output.Normal = float4(norm.xyz,1);//float4(norm, 0.f);
     
 	float depth = input.pos.z;
 	output.Depth = float4(depth, depth, depth, depth);

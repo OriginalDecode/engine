@@ -62,9 +62,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float2 texCoord = input.uv.xy;
 
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, texCoord);
-	float4 normal = NormalTexture.Sample(point_Clamp, texCoord); //This is wrong, but why?
+	float4 normal = NormalTexture.Sample(point_Clamp, texCoord);
 	float4 depth = DepthTexture.Sample(point_Clamp, texCoord);
-	
 	
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
@@ -78,7 +77,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 worldPosition = float4(x, y, z, 1.f);
 	
 	worldPosition = mul(worldPosition, InvertedProjection);
-	
+	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, View);
 
 	//PointLight-Calc
@@ -89,12 +88,12 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 	
 	float lambert = dot(lightVec, normal);
-	return float4(lambert,lambert,lambert,1);
 	float3 lightColor = 0.f;
+	
 	float intensity = color.w;
-
 	lightColor = saturate(lambert * color); 
-	float4 finalColor = float4(lightColor * 40.f, 1.f);
+	
+	float4 finalColor = float4(lightColor * intensity, 1.f);
 	finalColor *= albedo;
 	finalColor.a = 1.f;
 	return saturate(finalColor * CalculateTotalAttenuation(distance, input.range));

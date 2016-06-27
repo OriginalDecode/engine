@@ -42,7 +42,6 @@ namespace Snowblind
 
 	CSurface::~CSurface()
 	{
-		myShaderVariables.RemoveAll();
 		myTextures.DeleteAll();
 		myResourceNames.RemoveAll();
 		myFileNames.RemoveAll();
@@ -51,11 +50,8 @@ namespace Snowblind
 	void CSurface::Activate()
 	{
 		CEngine::GetDirectX()->GetContext()->IASetPrimitiveTopology(myPrimologyType);
-		for (int i = 0; i < myTextures.Size(); ++i)
-		{
-			//myEffect->SetTexture(myTextures[i]->texture->GetShaderView(), myTextures[i]->resourceName);
-			//myShaderVariables[i]->SetResource(myTextures[i]->GetShaderView());
-		}
+
+		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
 	}
 
 	void CSurface::SetTexture(const std::string& aResourceName, const std::string& aFilePath)
@@ -73,14 +69,17 @@ namespace Snowblind
 		//myShaderVariables.Add(srv);
 
 		std::string sub = CL::substr(aFilePath, ".png", true, 0);
+		std::string debugName = sub;
 		if (CL::substr(sub, ".dds") == false)
 		{
 			sub += ".dds";
 		}
 		STexture* newTexture = new STexture();
 		newTexture->texture = CAssetsContainer::GetInstance()->GetTexture(sub);
+		newTexture->texture->SetDebugName(debugName);
 		newTexture->resourceName = aResourceName;
 		myTextures.Add(newTexture);
+		myShaderViews.Add(newTexture->texture->GetShaderView());
 	}
 
 	void CSurface::SetEffect(CEffect* anEffect)

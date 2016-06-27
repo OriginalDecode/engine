@@ -40,13 +40,11 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	input.tang   = normalize(input.tang);
     
 	float3x3 tangentSpaceMatrix = float3x3(input.tang, input.binorm, input.normal);
-	//norm = normalize(mul(norm, tangentSpaceMatrix));
-    
+	norm = normalize(mul(norm, tangentSpaceMatrix));
+    norm.xyz += 1.f;
+	norm.xyz *= 0.5f;
 	GBuffer output;
-  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * 0.72f;//ambientMultiplier;
-	
-	//norm.xyz += 1.f;
-	//norm.xyz *= 0.5f;
+  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * 0.72f;//ambientMultiplier;	
 	output.Normal = float4(norm.xyz,1);//float4(norm, 0.f);
     
 	float depth = input.pos.z;

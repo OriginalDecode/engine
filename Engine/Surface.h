@@ -46,8 +46,9 @@ namespace Snowblind
 			std::string resourceName;
 		};
 
-		CU::GrowingArray<ID3DX11EffectShaderResourceVariable*> myShaderVariables;
 		CU::GrowingArray<STexture*> myTextures;
+		CU::GrowingArray<ID3D11ShaderResourceView*> myShaderViews;
+
 		CU::GrowingArray<std::string> myResourceNames;
 		CU::GrowingArray<std::string> myFileNames;
 

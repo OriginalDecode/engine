@@ -136,7 +136,7 @@ namespace Snowblind
 			{
 			case SRenderCommand::eType::POINTLIGHT:
 
-				CEngine::GetDirectX()->SetBlendState(eBlendStates::PARTICLE_BLEND);
+				CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
 				myPointLight->SetPosition(command.myPosition);
 				myPointLight->SetRange(command.myRange);
 				myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));

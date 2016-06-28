@@ -41,7 +41,7 @@ namespace Snowblind
 			std::stringstream ss;
 			ss << "\nDebug is released last. Will report as Live Object! 0x" << myDebug << "\nWatch out for false reports. \n====\n";
 			OutputDebugString(ss.str().c_str());
-			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
 			SAFE_RELEASE(myDebug);
 		}
 

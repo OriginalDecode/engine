@@ -1,5 +1,5 @@
 #pragma once
-#pragma message ("Texture.h is being compiled")
+
 struct ID3D11ShaderResourceView;
 struct ID3D11RenderTargetView;
 struct ID3D11DepthStencilView;
@@ -43,11 +43,9 @@ namespace Snowblind
 	private:
 
 		ID3D11Texture2D* myTexture;
-		
-		ID3D11ShaderResourceView* myShaderResource;
-
 		ID3D11Texture2D* myDepthTexture;
 
+		ID3D11ShaderResourceView* myShaderResource;
 		ID3D11DepthStencilView* myDepthStencil;
 		ID3D11ShaderResourceView* myDepthStencilShaderView;
 		ID3D11RenderTargetView* myRenderTargetView;

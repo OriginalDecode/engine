@@ -21,7 +21,7 @@ namespace Snowblind
 		mySprite->Initiate(aTexturePath, aSize, aPosition);
 		myHotspot.x = 0;
 		myHotspot.y = 0;
-		
+
 	}
 
 	void CSprite::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
@@ -35,7 +35,7 @@ namespace Snowblind
 		//mySprite->GetEffect()->SetScale({ 1, 1 });
 		//mySprite->GetEffect()->SetPosition(myPosition);
 		//mySprite->GetEffect()->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
-		//mySprite->Render();
+		mySprite->Render(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
 	}
 
 	const CU::Math::Vector2<float>& CSprite::GetPosition()
@@ -50,12 +50,12 @@ namespace Snowblind
 
 	void CSprite::SetPosition(const CU::Math::Vector2<float>& aPosition)
 	{
-		//CU::Math::Vector2<float> pos = aPosition;
-		//pos.x = pos.x + myHotspot.x;
-		//pos.y = -pos.y - myHotspot.y;
-		//pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
-		//pos.y = pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f);
-		//myPosition = pos;
+		CU::Math::Vector2<float> pos = aPosition;
+		pos.x = pos.x + myHotspot.x;
+		pos.y = -pos.y - myHotspot.y;
+		pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
+		pos.y = pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f);
+		myPosition = pos;
 		//mySprite->GetEffect()->SetPosition(myPosition);
 	}
 

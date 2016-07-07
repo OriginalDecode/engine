@@ -6,7 +6,7 @@
 #include "EmitterInstance.h"
 #include "SkySphere.h"
 #include "PointLight.h"
-
+#include "Sprite.h"
 namespace Snowblind
 {
 
@@ -30,10 +30,15 @@ namespace Snowblind
 		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
 
 		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", aCamera);
+
+		mySprite = new CSprite();
+		mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
+
 	}
 
 	CRenderer::~CRenderer()
 	{
+		SAFE_DELETE(mySprite);
 		SAFE_DELETE(mySkysphere);
 		SAFE_DELETE(myTimeManager);
 		SAFE_DELETE(myDepthTexture);
@@ -118,6 +123,12 @@ namespace Snowblind
 				myText->SetText(command.myTextToPrint);
 				myText->SetPosition({ command.myPosition.x, command.myPosition.y });
 				myText->Render(my2DCamera);
+				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+				break;
+			case SRenderCommand::eType::SPRITE:
+				CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_NONE);
+				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+				mySprite->Render(my2DCamera);
 				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 				break;
 			}

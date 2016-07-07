@@ -101,7 +101,7 @@ namespace Snowblind
 
 		std::wstring fileName(aFileName.begin(), aFileName.end());
 		hr = DirectX::CreateDDSTextureFromFile(device, nullptr, fileName.c_str(), nullptr, &myShaderResource);
-		CEngine::GetDirectX()->SetDebugName(myShaderResource, "Texture : ShaderResource");
+		CEngine::GetDirectX()->SetDebugName(myShaderResource, "Texture : ShaderResource_");
 
 		if (FAILED(hr))
 		{

@@ -53,6 +53,11 @@ namespace Snowblind
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myIndexData);
 		SAFE_DELETE(myVertexData);
+
+		SAFE_RELEASE(myLightPass.myVertexConstantBuffer);
+		SAFE_RELEASE(myLightPass.myPixelConstantBuffer);
+
+
 	}
 
 	void CDeferredRenderer::SetTargets()

@@ -54,6 +54,6 @@ namespace Snowblind
 		CText* myText;
 		CTexture* myDepthTexture;
 		CSkySphere* mySkysphere;
-
+		CSprite* mySprite;
 	};
 }; 

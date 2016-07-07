@@ -123,6 +123,9 @@ void CApplication::Render()
 	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 15.f, 0.f)));
 	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(25.f, 15.f, 0.f)));
 
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SPRITE, "colors", CU::Vector2f(0.f, 0.f)));
+
+
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 0.f), CU::Vector3f(1.f, 0.f, 0.f), 40.f, 10.f));
 	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 15.f, 0.f), CU::Vector3f(0.f, 1.f, 0.f), 40.f, 10.f));
 	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(25.f, 15.f, 0.f), CU::Vector3f(0.f, 0.f, 1.f), 40.f, 10.f));

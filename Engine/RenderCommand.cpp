@@ -47,3 +47,10 @@ SRenderCommand::SRenderCommand(const eType& aType, const CU::Vector3f& aPosition
 	, myCommandType(eCommandType::e3D)
 {
 }
+
+SRenderCommand::SRenderCommand(const eType& aType, const std::string& aSpriteName, const CU::Vector2f& aPosition)
+	: myType(aType)
+	, myPosition(aPosition)
+	, myCommandType(eCommandType::e2D)
+{
+}

@@ -34,6 +34,7 @@ namespace Snowblind
 	{
 		myContext->ClearState();
 		myContext->Flush();
+		//Swap the full screen flags correctly if swapping between.
 		SAFE_RELEASE(myContext);
 		SAFE_RELEASE(myDevice);
 		if (myDebug != nullptr)

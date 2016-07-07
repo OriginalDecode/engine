@@ -1,4 +1,5 @@
 #pragma once
+#include "VertexStructs.h"
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct ID3D11ShaderResourceView;
@@ -24,16 +25,21 @@ namespace Snowblind
 		void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 		void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 
-		void Render();
+		void Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
 		CEffect* GetEffect();
 		CU::Math::Vector2<float> GetSize();
 		const CU::Math::Vector2<float>& GetPosition();
 
 	private:
+
+		void UpdateConstantBuffer();
+
 		void InitiateVertexBuffer();
 		void InitiateIndexBuffer();
 		void InitiateBlendState();
+		void InitConstantBuffer();
 		void ConvertToNormalSpace();
+
 		std::string myTexturePath;
 		SWindowSize myWindowSize;
 		ID3D11ShaderResourceView* myTexture;
@@ -50,11 +56,19 @@ namespace Snowblind
 		SIndexBufferWrapper* myIndexBuffer;
 
 		ID3D11BlendState* myBlendState;
+		ID3D11Buffer* myConstantBuffer = nullptr;
 
 		CU::GrowingArray<SVertexTypePosUV> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		ID3D11InputLayout* myVertexLayout;
 
+		struct SSpriteConstantBuffer : public SVertexBaseStruct
+		{
+			CU::Vector2f position = CU::Vector2f(0.f, 0.f);
+			CU::Vector2f scale = CU::Vector2f(1.f, 1.f);
+		} *myConstantStruct;
 
+
+		void SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
 	};
 };

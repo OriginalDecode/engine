@@ -57,6 +57,7 @@ namespace Snowblind
 		pos.y = pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f);
 		myPosition = pos;
 		//mySprite->GetEffect()->SetPosition(myPosition);
+		myOrientation.SetPosition(CU::Vector3f(myPosition));
 	}
 
 	void CSprite::SetHotspot(const CU::Math::Vector2<float>& aHotspot)

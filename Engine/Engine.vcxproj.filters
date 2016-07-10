@@ -198,8 +198,12 @@
     <ClInclude Include="SystemMonitor.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderFactory.h" />
-    <ClInclude Include="FileWatcher.h" />
+    <ClInclude Include="FileWatcher.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderFactory.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -304,7 +308,11 @@
     <ClCompile Include="SystemMonitor.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderFactory.cpp" />
-    <ClCompile Include="FileWatcher.cpp" />
+    <ClCompile Include="FileWatcher.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderFactory.cpp">
+      <Filter>Effect</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

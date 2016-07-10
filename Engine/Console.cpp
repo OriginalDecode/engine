@@ -9,6 +9,7 @@
 #include "Model.h"
 #include "Scene.h"
 #include "AssetsContainer.h"
+#include "Text.h"
 namespace Snowblind
 {
 	CConsole::CConsole()
@@ -34,17 +35,19 @@ namespace Snowblind
 		myTopLeftPosition = { (Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, 0.f };
 
 		mySprite = new CSprite();
-		mySprite->Initiate("Data/Textures/consoleBG.dds", { Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f, 
+		mySprite->Initiate("Data/Textures/colors.dds", { Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f,
 															Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 2.f },
 															{ 0, 0 });
+
 		mySprite->SetHotspot({ -Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 4.f, Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 4.f });
 		mySprite->SetPosition({ CEngine::GetInstance()->GetWindowSize().myWidth, 0 });
 
-		//myText = new CText("Data/Font/OpenSans-Bold.ttf", 16);
-		//myText->SetPosition(myTopLeftPosition);
+		myText = new CText("Data/Font/OpenSans-Bold.ttf", 9, 1);
+		myText->SetPosition(myTopLeftPosition);
 
-		//myInputText = new CText("Data/Font/OpenSans-Bold.ttf", 16);
-		//myInputText->SetPosition(myBottomLeftPosition);
+		myInputText = new CText("Data/Font/OpenSans-Bold.ttf", 9, 1);
+		myInputText->SetPosition(myBottomLeftPosition);
+
 		myTimeManager = new CU::TimeManager();
 		myDownTime = 0.f;
 	}
@@ -62,7 +65,7 @@ namespace Snowblind
 				for (int i = 0; i < myStrings.Size(); i++)
 				{
 					myText->SetText(myStrings[i]);
-					myText->SetPosition({ myTopLeftPosition.x,myTopLeftPosition.y + (i * 18) });
+					myText->SetPosition({ myTopLeftPosition.x, myTopLeftPosition.y + (i * 18) });
 					myText->Render(myCamera);
 				}
 				myInputText->Render(myCamera);

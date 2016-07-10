@@ -122,6 +122,8 @@ namespace Snowblind
 		void SetDomainShader(ID3D11DomainShader* aDomainShader);
 		void SetComputeShader(ID3D11ComputeShader* aComputeShader);
 
+		void OnAltEnter();
+
 	private:
 
 		void CreateDeviceAndSwapchain();

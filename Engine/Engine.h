@@ -31,14 +31,17 @@ namespace Snowblind
 	};
 
 
-	class CDirectX11;
-	class CFontManager;
-	class CSynchronizer;
-	class CFont;
 	class CCamera;
-	class CRenderer;
-	struct SFontData;
+	class CConsole;
+	class CDirectX11;
+	class CFont;
+	class CFontManager;
 	class CModel;
+	class CRenderer;
+	class CSynchronizer;
+
+	struct SFontData;
+
 	class CEngine
 	{
 	public:
@@ -60,6 +63,7 @@ namespace Snowblind
 		const float GetFPS();
 		const std::string& GetAPIName();
 
+		void OnAltEnter();
 		void OnPause();
 		void OnResume();
 		void OnExit();
@@ -84,6 +88,8 @@ namespace Snowblind
 		CRenderer* myRenderer;
 		CCamera*  myCamera;
 		CCamera*  my2DCamera;
+
+		CConsole* myConsole;
 
 	};
 };

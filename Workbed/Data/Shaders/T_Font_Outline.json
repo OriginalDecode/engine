@@ -1,0 +1,4 @@
+{
+	"VertexShader" : "VS_Font.hlsl",
+	"PixelShader" : "PS_Font_Outline.hlsl"
+}

@@ -42,6 +42,7 @@ namespace Snowblind
 			std::stringstream ss;
 			ss << "\nDebug is released last. Will report as Live Object! 0x" << myDebug << "\nWatch out for false reports. \n====\n";
 			OutputDebugString(ss.str().c_str());
+
 			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
 			SAFE_RELEASE(myDebug);
 		}
@@ -61,6 +62,8 @@ namespace Snowblind
 			SAFE_RELEASE(it->second);
 		}
 
+		mySwapchain->SetFullscreenState(FALSE, nullptr);
+		myEngineFlags[static_cast<int>(eEngineFlags::FULLSCREEN)] = FALSE;
 
 		SAFE_DELETE(myViewport);
 
@@ -256,7 +259,7 @@ namespace Snowblind
 		stencilDesc.Format = depthDesc.Format;
 		stencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		stencilDesc.Texture2D.MipSlice = 0;
-		
+
 		hr = myDevice->CreateDepthStencilView(myDepthBuffer, &stencilDesc, &myDepthView);
 		DL_ASSERT_EXP(hr == S_OK, "Failed to create depth stenci");
 
@@ -551,6 +554,21 @@ namespace Snowblind
 	{
 		DL_ASSERT_EXP(aComputeShader != nullptr, "computeshader was null.");
 		myContext->CSSetShader(aComputeShader, nullptr, 0);
+	}
+
+	void CDirectX11::OnAltEnter()
+	{
+		if (this && mySwapchain)
+		{
+			mySwapchain->SetFullscreenState(FALSE, nullptr);
+			if (myEngineFlags[int(eEngineFlags::FULLSCREEN)] == FALSE)
+			{
+				mySwapchain->SetFullscreenState(TRUE, nullptr);
+				myEngineFlags[int(eEngineFlags::FULLSCREEN)] = TRUE;
+				return;
+			}
+			myEngineFlags[int(eEngineFlags::FULLSCREEN)] = FALSE;
+		}
 	}
 
 	void CDirectX11::CreateRazterizers()

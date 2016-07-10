@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Synchronizer.h"
 #include "Renderer.h"
+#include "Console.h"
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
@@ -17,10 +18,13 @@ namespace Snowblind
 		my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0, 0, 0.f));
 		Randomizer::Create();
 		SetWindowText(myHWND, "Snowblind Engine");
+
+		myConsole = new CConsole();
 	}
 
 	CEngine::~CEngine()
 	{
+		SAFE_DELETE(myConsole);
 		SAFE_DELETE(model);
 		SAFE_DELETE(mySynchronizer);
 		SAFE_DELETE(myRenderer);
@@ -75,6 +79,7 @@ namespace Snowblind
 
 		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/ls_engine_test/Radio_DDS.fbx", "Data/Shaders/T_Deferred_Base.json"), "Radio");
 		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/T_Deferred_Base.json"), "PBL_Room");
+		myConsole->Initiate(my2DCamera);
 
 	}
 
@@ -94,6 +99,20 @@ namespace Snowblind
 
 		myInstance->myTimeManager->Update();
 		myInstance->myRenderer->Render();
+
+		if (CU::Input::InputWrapper::GetInstance()->KeyClick(DIK_GRAVE))
+		{
+			myInstance->myConsole->ToggleConsole();
+
+		}
+
+
+		if (myInstance->myConsole->GetIsActive())
+			myInstance->mySynchronizer->AddRenderCommand(SRenderCommand("Console is Active", CU::Vector2f(100.f, 500.f)));
+		else
+			myInstance->mySynchronizer->AddRenderCommand(SRenderCommand("Console is Inactive", CU::Vector2f(100.f, 500.f)));
+		myInstance->myConsole->Update();
+		myInstance->myConsole->Render();
 	}
 
 	void CEngine::Present()
@@ -129,6 +148,11 @@ namespace Snowblind
 	const std::string& CEngine::GetAPIName()
 	{
 		return myAPI->GetAPIName();
+	}
+
+	void CEngine::OnAltEnter()
+	{
+		myAPI->OnAltEnter();
 	}
 
 	void CEngine::OnPause()

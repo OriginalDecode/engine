@@ -74,6 +74,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		return 0;
 		break;
 	case WM_SIZE:
+		newApplication->OnAltEnter();
 		break;
 	case WM_ACTIVATE:
 		if (LOWORD(wParam) == WA_INACTIVE)
@@ -93,6 +94,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		break;
 	case WM_CLOSE:
 		Snowblind::CEngine::GetInstance()->OnExit();
+		break;
+	default:
 		break;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);

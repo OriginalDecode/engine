@@ -57,7 +57,7 @@ namespace Snowblind
 		void UpdateBuffer();
 		void UpdateConstantBuffer();
 		SFontData* myData = nullptr;
-		CEffect* myEffect = nullptr;
+		CEffect* myEffect[2];
 
 		ID3D11InputLayout* myVertexLayout = nullptr;
 		D3D11_BUFFER_DESC* myVertexBufferDesc = nullptr;

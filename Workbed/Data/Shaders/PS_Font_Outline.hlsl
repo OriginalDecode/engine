@@ -23,6 +23,7 @@ struct VS_OUTPUT
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	float4 text = FontTexture.Sample(linear_Clamp, input.uv).rrrr;	
-	return text;
+	float4 outline = FontTexture.Sample(linear_Clamp, input.uv).aaaa;
+	outline.rgb -= outline.rgb;
+	return outline;
 };

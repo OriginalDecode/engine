@@ -3,8 +3,6 @@
 #include "../CommonLib/Math/Quaternion/Quaternion.h"
 #include "../CommonLib/Math/Matrix/Matrix.h"
 
-
-
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -16,22 +14,15 @@ typedef HWND__* HWND;
 namespace CommonUtilities
 {
 	class TimeManager;
-	class ControllerInput;
 }
 
 
 namespace Snowblind
 {
 	class CEffect;
-	class CModel;
 	class CCamera;
-	class CInstance;
-	class CScene;
 	class CFontManager;
-	class CSprite;
-	class CText;
 	class CEngine;
-	class CConsole;
 	class CSynchronizer;
 	class CPointLight;
 	class CEmitterInstance;
@@ -58,49 +49,32 @@ public:
 	void OnInactive();
 	void OnActive();
 	void OnExit();
+	void OnAltEnter();
 	bool HasQuit();
 
 private:
 	void UpdateInput(float aDeltaTime);
 
 	Snowblind::CEffect* myEffect;
-	Snowblind::CModel* myModel;
-	Snowblind::CModel* myTexturedModel;
-	Snowblind::CInstance* myInstance;
-	Snowblind::CInstance* myInstance2;
-
-	Snowblind::CSprite* mySprite;
-	Snowblind::CSprite* mySprite2;
-
-	Snowblind::CText* myText;
-	Snowblind::CText* myText2;
-	Snowblind::CText* myTextTime;
 
 	Snowblind::CCamera* myCamera;
 	Snowblind::CCamera* my2DCamera;
 
-	Snowblind::CScene* myWorldScene;
-	Snowblind::CScene* my2DScene;
-
 	Snowblind::CEngine* myEngine;
-	Snowblind::CConsole* myConsole;
 	Snowblind::CPointLight* myPointLight;
 
 	Snowblind::CSynchronizer* mySynchronizer;
 	Snowblind::CEmitterInstance* myEmitter;
 
-
 	CU::Quaternion myPitch;
 	CU::Quaternion myYaw;
 	CU::Matrix44f myOrientation;
 	CU::Math::Vector2<float> myCursorPosition;
-	CU::ControllerInput* myController;
 
 	CU::GrowingArray<CU::Vector3f> myPositions;
 	
 	float myWindowWidth;
 	float myWindowHeight;
-
 
 	std::thread* myLogicThread;
 

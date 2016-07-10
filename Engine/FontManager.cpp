@@ -46,7 +46,7 @@ namespace Snowblind
 		DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
 	}
 
-	CFont* CFontManager::LoadFont(const char* aFontPath, short aFontWidth, int aBorderWidth)
+	CFont* CFontManager::LoadFont(const char* aFontPath, short aSize, int aBorderWidth)
 	{
 		std::string fontFolder = aFontPath;
 		if (!CL::substr(aFontPath, "/"))
@@ -59,14 +59,14 @@ namespace Snowblind
 			fontFolder += "\\Fonts\\";
 			fontFolder += aFontPath;
 		}
-
+		short aFontWidth = aSize;
 		int atlasSize = (aFontWidth * aFontWidth); //This is correct
 		atlasSize *= 2;
 		atlasSize += 2;
 		atlasSize = int(CL::nearest_Pow(atlasSize));
 		FONT_LOG("Font Size W/H: %d", atlasSize);
-		float atlasWidth = atlasSize; //have to be replaced.
-		float atlasHeight = atlasSize; //have to be replaced
+		float atlasWidth =  static_cast<float>(atlasSize); //have to be replaced.
+		float atlasHeight = static_cast<float>(atlasSize); //have to be replaced
 
 		std::stringstream key;
 		key << aFontPath << "-" << aFontWidth;
@@ -92,7 +92,6 @@ namespace Snowblind
 
 		FT_Face face;
 		FT_Error error = FT_New_Face(myLibrary, myFontPath, 0, &face);
-		FT_Size size = face->size;
 		FONT_LOG("Loading font:%s", myFontPath);
 		DL_ASSERT_EXP(!error, "Failed to load requested font.");
 
@@ -111,9 +110,9 @@ namespace Snowblind
 		error = FT_Load_Char(face, 'x', FT_LOAD_DEFAULT);
 		DL_ASSERT_EXP(!error, "Failed to load glyph! x");
 		FT_GlyphSlot space = face->glyph;
-		fontData->myWordSpacing = space->metrics.width / 256.f;
+		fontData->myWordSpacing = static_cast<short>(space->metrics.width / 256.f);
 
-		int currentMax = 126;
+		int currentMax = 256;
 		int currentI = 32;
 
 
@@ -181,9 +180,9 @@ namespace Snowblind
 		int width = bitmap.width;
 
 		SCharData glyphData;
-		glyphData.myChar = index;
-		glyphData.myHeight = height + (aBorderOffset * 2);
-		glyphData.myWidth = width + (aBorderOffset * 2);
+		glyphData.myChar = static_cast<char>(index);
+		glyphData.myHeight = static_cast<short>(height + (aBorderOffset * 2));
+		glyphData.myWidth = static_cast<short>(width + (aBorderOffset * 2));
 
 		glyphData.myTopLeftUV = { (float(atlasX) / atlasWidth), (float(atlasY) / atlasHeight) };
 		glyphData.myBottomRightUV = { (float(atlasX + glyphData.myWidth) / atlasWidth), (float(atlasY + glyphData.myHeight) / atlasHeight) };
@@ -234,7 +233,7 @@ namespace Snowblind
 		}
 
 		atlasX = atlasX + width + X_OFFSET;
-		aFontData->myCharData[index] = glyphData;
+		aFontData->myCharData[static_cast<char>(index)] = glyphData;
 
 #ifdef SAVE
 		if (bitmap.rows <= 0 || bitmap.pitch <= 0)
@@ -474,7 +473,7 @@ namespace Snowblind
 
 	}
 
-	void CFontManager::CalculateGlyphOffsets(const int index, FT_GlyphSlotRec_* glyph)
+	void CFontManager::CalculateGlyphOffsets(const int /*index*/, FT_GlyphSlotRec_* glyph)
 	{
 		int xDelta = 0;
 		int yDelta = 0;

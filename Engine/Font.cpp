@@ -21,7 +21,8 @@ namespace Snowblind
 
 		myData = aFontData;
 		myText = " ";
-		myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Font.json");
+		myEffect[0] = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Font_Outline.json");
+		myEffect[1] = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Font.json");
 
 		myVertexBufferDesc = new D3D11_BUFFER_DESC();
 		myIndexBufferDesc = new D3D11_BUFFER_DESC();
@@ -81,7 +82,7 @@ namespace Snowblind
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds();
 
-		if (!myEffect)
+		if (!myEffect[0] || !myEffect[1])
 			return;
 		//myEffect->SetTexture(myData->myAtlasView, "FontTexture");
 
@@ -95,29 +96,27 @@ namespace Snowblind
 
 		UpdateConstantBuffer();
 
-		CEngine::GetDirectX()->SetVertexShader(myEffect->GetVertexShader()->vertexShader);
+		CEngine::GetDirectX()->SetVertexShader(myEffect[0]->GetVertexShader()->vertexShader);
 		context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
-		CEngine::GetDirectX()->SetPixelShader(myEffect->GetPixelShader()->pixelShader);
-		ID3D11ShaderResourceView* srv = myData->myAtlasView;
-		context.PSSetShaderResources(0, 1, &srv);
 
-		context.DrawIndexed(myIndices.Size(), 0, 0);
 
-		srv = nullptr;
-		context.PSSetShaderResources(0, 1, &srv);
+		for (int i = 0; i < 2; i++)
+		{
+			CEngine::GetDirectX()->SetPixelShader(myEffect[i]->GetPixelShader()->pixelShader);
+			ID3D11ShaderResourceView* srv = myData->myAtlasView;
+			context.PSSetShaderResources(0, 1, &srv);
+			context.DrawIndexed(myIndices.Size(), 0, 0);
 
+			srv = nullptr;
+			context.PSSetShaderResources(0, 1, &srv);
+		}
 
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds() - myRenderTime;
 
 		CEngine::GetDirectX()->SetBlendState(eBlendStates::NO_BLEND);
 	}
-
-	Snowblind::CEffect* CFont::GetEffect()
-	{
-		return myEffect;
-	}
-
+	
 	ID3D11ShaderResourceView* CFont::GetAtlas()
 	{
 		return myData->myAtlasView;
@@ -172,8 +171,8 @@ namespace Snowblind
 		//myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(&myVertexFormat[0]
 			, myVertexFormat.Size()
-			, myEffect->GetVertexShader()->compiledShader
-			, myEffect->GetVertexShader()->shaderSize
+			, myEffect[0]->GetVertexShader()->compiledShader
+			, myEffect[0]->GetVertexShader()->shaderSize
 			, &myVertexLayout);
 		CEngine::GetDirectX()->HandleErrors(hr, " [Font] : Input Layout.");
 		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Font Input Layout");
@@ -255,7 +254,7 @@ namespace Snowblind
 
 			if (myText[i] == '\n')
 			{
-				drawX = 5;
+				drawX = 0;
 				drawY -= (maxDrawY + 6);
 				row++;
 				continue;

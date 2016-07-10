@@ -1,27 +1,23 @@
 #include "Application.h"
-#include <Engine.h>
-#include <Effect.h>
-#include <Model.h>
-#include <Scene.h>
-#include <Camera.h>
-#include <Instance.h>
-#include <EngineDefines.h>
-#include "../Input/InputWrapper.h"
-#include <Text.h>
-#include <Sprite.h>
-#include <Console.h>
-#include <FBXFactory.h>
-#include <DirectionalLight.h>
-#include <PointLight.h>
-#include "../Input/ControllerInput.h"
-#include <AssetsContainer.h>
-#include <Synchronizer.h>
-#include "RenderCommand.h"
 #include <thread>
-#include <Texture.h>
+
+#include <Engine.h>
+#include <Camera.h>
+
+#include "../Input/InputWrapper.h"
+#include <Sprite.h>
+
+#include <FBXFactory.h>
+
+#include <PointLight.h>
+
+#include <Synchronizer.h>
+#include <RenderCommand.h>
 #include <EmitterInstance.h>
 #include <DeferredRenderer.h>
 #include <SystemMonitor.h>
+#include <EngineDefines.h>
+
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 
@@ -33,14 +29,8 @@ CApplication::~CApplication()
 {
 	myLogicThread->join();
 	SAFE_DELETE(myLogicThread);
-	SAFE_DELETE(my2DScene);
-	SAFE_DELETE(myWorldScene);
-	SAFE_DELETE(myConsole);
-	SAFE_DELETE(myController);
 	SAFE_DELETE(myPointLight);
 	SAFE_DELETE(myEmitter);
-	//SAFE_DELETE(myInstance);
-	//SAFE_DELETE(myInstance2);
 }
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
@@ -60,10 +50,6 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	myEmitter = new Snowblind::CEmitterInstance();
 	myEmitter->Initiate(mySynchronizer);
-
-	//Snowblind::CTexture* tex = new Snowblind::CTexture();
-	//tex->CreateTexture("Data/Textures/colors.dds");
-
 
 	float pos = 0.f;
 	for (int i = 0; i < 3; i++)
@@ -103,12 +89,7 @@ void CApplication::Update()
 		}
 
 		CU::Input::InputWrapper::GetInstance()->Update();
-
-	
 		UpdateInput(deltaTime);
-
-
-
 		Render();
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();
@@ -123,7 +104,7 @@ void CApplication::Render()
 	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 15.f, 0.f)));
 	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(25.f, 15.f, 0.f)));
 
-	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SPRITE, "colors", CU::Vector2f(0.f, 0.f)));
+	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SPRITE, "colors", CU::Vector2f(0.f, 0.f)));
 
 
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 0.f), CU::Vector3f(1.f, 0.f, 0.f), 40.f, 10.f));
@@ -147,7 +128,6 @@ void CApplication::Render()
 	std::stringstream cpuAndMem;
 	cpuAndMem << "CPU: " << Snowblind::CSystemMonitor::GetCPUUsage() << "%" << "\n" << "Mem: " << Snowblind::CSystemMonitor::GetMemoryUsage(true) << " kb";
 	mySynchronizer->AddRenderCommand(SRenderCommand(cpuAndMem.str(), CU::Vector2f(myWindowWidth - 100.f, 0)));
-
 
 }
 
@@ -240,6 +220,14 @@ void CApplication::OnActive()
 void CApplication::OnExit()
 {
 
+}
+
+void CApplication::OnAltEnter()
+{
+	if (this)
+	{
+		myEngine->OnAltEnter();
+	}
 }
 
 bool CApplication::HasQuit()

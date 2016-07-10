@@ -99,7 +99,6 @@ namespace Snowblind
 		CEngine::GetDirectX()->SetVertexShader(myEffect[0]->GetVertexShader()->vertexShader);
 		context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-
 		for (int i = 0; i < 2; i++)
 		{
 			CEngine::GetDirectX()->SetPixelShader(myEffect[i]->GetPixelShader()->pixelShader);
@@ -166,9 +165,6 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosColUV[1]);
 		myVertexFormat.Add(VertexLayoutPosColUV[2]);
 
-
-		//D3DX11_PASS_DESC passDesc;
-		//myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(&myVertexFormat[0]
 			, myVertexFormat.Size()
 			, myEffect[0]->GetVertexShader()->compiledShader

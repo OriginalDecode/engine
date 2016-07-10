@@ -51,18 +51,6 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myEmitter = new Snowblind::CEmitterInstance();
 	myEmitter->Initiate(mySynchronizer);
 
-	float pos = 0.f;
-	for (int i = 0; i < 3; i++)
-	{
-		pos += 5;
-		myPositions.Add(CU::Vector3f(pos, 0, 0));
-		myPositions.Add(CU::Vector3f(-pos, 0, 0));
-		myPositions.Add(CU::Vector3f(0, 0, pos));
-		myPositions.Add(CU::Vector3f(0, 0, -pos));
-
-	}
-
-
 	//Keep at the end of initiate...
 	myLogicThread = new std::thread([&] {CApplication::Update(); });
 }
@@ -101,19 +89,8 @@ void CApplication::Render()
 {
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 0.f, 0.f)));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 15.f, 0.f)));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(25.f, 15.f, 0.f)));
-
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SPRITE, "colors", CU::Vector2f(0.f, 0.f)));
-
-
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SPRITE, "colors", CU::Vector2f(0.f, 0.f)));
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 0.f), CU::Vector3f(1.f, 0.f, 0.f), 40.f, 10.f));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 15.f, 0.f), CU::Vector3f(0.f, 1.f, 0.f), 40.f, 10.f));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(25.f, 15.f, 0.f), CU::Vector3f(0.f, 0.f, 1.f), 40.f, 10.f));
-
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "Radio", CU::Vector3f(0.f, 0.f, 0.f)));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "Cube", CU::Vector3f(0.05f, 0.f, 0.f)));
-
 	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::PARTICLE, myEmitter));
 	
 	std::stringstream ss;

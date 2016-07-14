@@ -73,6 +73,9 @@
     <Filter Include="Particles">
       <UniqueIdentifier>{b46c163a-8795-48e7-a1fa-d3d0663e7629}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Entity System">
+      <UniqueIdentifier>{84ea08be-bac2-40dd-bbc7-40f2bb74410b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">

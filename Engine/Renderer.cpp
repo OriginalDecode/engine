@@ -18,7 +18,7 @@ namespace Snowblind
 		int loadTimer = myTimeManager->CreateTimer();
 		myTimeManager->GetTimer(loadTimer).Update();
 		float loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds();
-		myText = new CText("Arial.ttf", 12, 1);
+		myText = new CText("Arial.ttf", 14, 0);
 
 		myTimeManager->GetTimer(loadTimer).Update();
 		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;

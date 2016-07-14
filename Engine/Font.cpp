@@ -300,6 +300,9 @@ namespace Snowblind
 			drawX += charData.myBearingX;
 		}
 
+		if (myVertices.Size() <= 0)
+			return;
+
 		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosColUv) * myVertices.Size();
 		myInitData->pSysMem = reinterpret_cast<char*>(&myVertices[0]);
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData, &myVertexBuffer->myVertexBuffer);

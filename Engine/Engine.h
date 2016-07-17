@@ -8,6 +8,7 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
+class CEntityManager;
 
 namespace std
 {
@@ -88,8 +89,8 @@ namespace Snowblind
 		CRenderer* myRenderer;
 		CCamera*  myCamera;
 		CCamera*  my2DCamera;
-
 		CConsole* myConsole;
+		CEntityManager* myEntityManager;
 
 	};
 };

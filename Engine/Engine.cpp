@@ -2,6 +2,7 @@
 #include "Synchronizer.h"
 #include "Renderer.h"
 #include "Console.h"
+#include <EntityManager.h>
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
@@ -20,10 +21,12 @@ namespace Snowblind
 		SetWindowText(myHWND, "Snowblind Engine");
 
 		myConsole = new CConsole();
+		myEntityManager = new CEntityManager();
 	}
 
 	CEngine::~CEngine()
 	{
+		SAFE_DELETE(myEntityManager);
 		SAFE_DELETE(myConsole);
 		SAFE_DELETE(model);
 		SAFE_DELETE(mySynchronizer);
@@ -81,6 +84,7 @@ namespace Snowblind
 		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/T_Deferred_Base.json"), "PBL_Room");
 		myConsole->Initiate(my2DCamera);
 
+
 	}
 
 	CCamera* CEngine::GetCamera()
@@ -100,19 +104,9 @@ namespace Snowblind
 		myInstance->myTimeManager->Update();
 		myInstance->myRenderer->Render();
 
-		if (CU::Input::InputWrapper::GetInstance()->KeyClick(DIK_GRAVE))
-		{
-			myInstance->myConsole->ToggleConsole();
-
-		}
+		myInstance->myEntityManager->Update(myInstance->GetDeltaTime());
 
 
-		if (myInstance->myConsole->GetIsActive())
-			myInstance->mySynchronizer->AddRenderCommand(SRenderCommand("Console is Active", CU::Vector2f(100.f, 500.f)));
-		else
-			myInstance->mySynchronizer->AddRenderCommand(SRenderCommand("Console is Inactive", CU::Vector2f(100.f, 500.f)));
-		myInstance->myConsole->Update();
-		myInstance->myConsole->Render();
 	}
 
 	void CEngine::Present()

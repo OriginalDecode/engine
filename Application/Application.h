@@ -16,6 +16,7 @@ namespace CommonUtilities
 	class TimeManager;
 }
 
+class CEntityManager;
 
 namespace Snowblind
 {
@@ -82,6 +83,7 @@ private:
 	bool myWindowIsActive = true;
 	float myAverageFPS;
 	float myAverageFPSToPrint;
+	CEntityManager* myEntityManager;
 
 };
 

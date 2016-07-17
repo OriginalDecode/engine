@@ -18,6 +18,11 @@
 #include <SystemMonitor.h>
 #include <EngineDefines.h>
 
+#include <EntityManager.h>
+#include <RenderComponent.h>
+#include <TranslationComponent.h>
+#include <RenderSystem.h>
+
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
 
@@ -31,6 +36,7 @@ CApplication::~CApplication()
 	SAFE_DELETE(myLogicThread);
 	SAFE_DELETE(myPointLight);
 	SAFE_DELETE(myEmitter);
+	SAFE_DELETE(myEntityManager);
 }
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
@@ -50,6 +56,21 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 	myEmitter = new Snowblind::CEmitterInstance();
 	myEmitter->Initiate(mySynchronizer);
+	myEntityManager = new CEntityManager();
+
+	Entity e = myEntityManager->CreateEntity();
+	myEntityManager->AddComponent<RenderComponent>(e);
+	myEntityManager->AddComponent<TranslationComponent>(e);
+	TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
+	t.myOrientation.SetPosition(CU::Vector3f(0.f, 0.f, 0.f));
+
+	RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
+	r.myModelID = "PBL_Room";
+
+	myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);
+
+
+
 
 	//Keep at the end of initiate...
 	myLogicThread = new std::thread([&] {CApplication::Update(); });
@@ -78,7 +99,10 @@ void CApplication::Update()
 
 		CU::Input::InputWrapper::GetInstance()->Update();
 		UpdateInput(deltaTime);
-		Render();
+
+		myEntityManager->Update(deltaTime); //This is the entity System. There is currently only a render system in place.
+
+		Render(); //This sends renderCommands to my synchronizer. 
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();
 	}
@@ -88,7 +112,6 @@ void CApplication::Update()
 void CApplication::Render()
 {
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, "PBL_Room", CU::Vector3f(0.f, 0.f, 0.f)));
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SPRITE, "colors", CU::Vector2f(0.f, 0.f)));
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 0.f), CU::Vector3f(1.f, 0.f, 0.f), 40.f, 10.f));
 	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::PARTICLE, myEmitter));

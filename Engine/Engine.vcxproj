@@ -281,9 +281,6 @@
     <ProjectReference Include="..\DL_Debug\DL_Debug.vcxproj">
       <Project>{d924f659-a78c-4b48-a76e-49600a883990}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\EntitySystem\EntitySystem.vcxproj">
-      <Project>{2fc680bf-8cb1-4f07-97d0-7b7871989b9e}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Input\Input.vcxproj">
       <Project>{bd22ff31-48a5-4061-ab37-17e68e058912}</Project>
     </ProjectReference>

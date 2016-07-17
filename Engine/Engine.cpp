@@ -3,10 +3,7 @@
 #include "Renderer.h"
 #include "Console.h"
 
-#include <EntityManager.h>
-#include <RenderComponent.h>
-#include <TranslationComponent.h>
-#include <RenderSystem.h>
+
 
 namespace Snowblind
 {
@@ -26,17 +23,10 @@ namespace Snowblind
 		SetWindowText(myHWND, "Snowblind Engine");
 
 		myConsole = new CConsole();
-		myEntityManager = new CEntityManager();
-
-
-
-		
-
 	}
 
 	CEngine::~CEngine()
 	{
-		SAFE_DELETE(myEntityManager);
 		SAFE_DELETE(myConsole);
 		SAFE_DELETE(model);
 		SAFE_DELETE(mySynchronizer);
@@ -93,20 +83,6 @@ namespace Snowblind
 		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/ls_engine_test/Radio_DDS.fbx", "Data/Shaders/T_Deferred_Base.json"), "Radio");
 		myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/T_Deferred_Base.json"), "PBL_Room");
 		myConsole->Initiate(my2DCamera);
-
-
-		Entity e = myEntityManager->CreateEntity();
-		myEntityManager->AddComponent<RenderComponent>(e);
-		myEntityManager->AddComponent<TranslationComponent>(e);
-		TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
-		t.myOrientation.SetPosition(CU::Vector3f(0.f, 0.f, 0.f));
-
-		RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
-		r.myModelID = "PBL_Room";
-
-		myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);
-
-
 	}
 
 	CCamera* CEngine::GetCamera()

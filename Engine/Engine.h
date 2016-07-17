@@ -91,7 +91,6 @@ namespace Snowblind
 		CCamera*  myCamera;
 		CCamera*  my2DCamera;
 		CConsole* myConsole;
-		CEntityManager* myEntityManager;
 
 	};
 };

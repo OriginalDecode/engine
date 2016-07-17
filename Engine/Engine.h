@@ -20,6 +20,7 @@ namespace CommonUtilities
 	class TimeManager;
 }
 
+
 namespace Snowblind
 {
 	enum eDeferredType;

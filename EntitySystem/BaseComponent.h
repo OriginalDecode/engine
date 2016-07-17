@@ -1,8 +1,5 @@
 #pragma once
-class CBaseComponent
+struct SBaseComponent
 {
-public:
-	CBaseComponent();
-	virtual	~CBaseComponent();
 };
 

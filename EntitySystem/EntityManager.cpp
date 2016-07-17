@@ -1,47 +1,54 @@
 #include "EntityManager.h"
 #include "BaseSystem.h"
+#include "EngineDefines.h"
 #define TRUE 1
 #define FALSE 0
 
 CEntityManager::CEntityManager()
 {
+	mySystems.Init(16);
 	myFinishedSystems.reset();
-
 	for (int i = 0; i < MAX_COMPONENTS_COUNT; i++)
 	{
 		myFinishedSystems[i] = TRUE;
 	}
 
-	/* Create all Systems */
-	/* Start all Systems */
-	/* If a system is not needed, yield its thread */
-
-
+	myComponents = new CComponentContainer();
 }
 
 
 CEntityManager::~CEntityManager()
 {
+	SAFE_DELETE(myComponents);
 }
 
 Entity CEntityManager::CreateEntity()
 {
+	Entity newEntity = myNextEntity++;
 
+	myComponents->AddEntity();
+
+	return newEntity;
 }
 
 void CEntityManager::Update(float aDelta)
 {
 	myDeltaTime = aDelta;
 	
-	/* Get Translation System & Update */
-	while (IsSystemsFinished() == false){ }
+	
+	for each(CBaseSystem* system in mySystems)
+	{
+		system->Update(myDeltaTime);
+	}
+
+	//while (IsSystemsFinished() == false){ }
 	
 
 }
 
-const CU::GrowingArray<Entity>& CEntityManager::GetEntities(const SComponentFilter& aFilter)
+const CU::GrowingArray<Entity>& CEntityManager::GetEntities(SComponentFilter& aFilter)
 {
-
+	return myComponents->GetEntities(aFilter);
 }
 
 float CEntityManager::GetDeltaTime()

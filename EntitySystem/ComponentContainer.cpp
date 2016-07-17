@@ -28,13 +28,13 @@ void CComponentContainer::AddEntity()
 	}
 }
 
-void CComponentContainer::AddComponent(Entity anEntity, CBaseComponent* aComponent, unsigned int aComponentID)
+void CComponentContainer::AddComponent(Entity anEntity, SBaseComponent* aComponent, unsigned int aComponentID)
 {
 	myComponents[aComponentID].Add(aComponent);
 	myEntityComponents[anEntity][aComponentID] = myComponents[aComponentID].Size() - 1;
 }
 
-CBaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int aComponentID)
+SBaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int aComponentID)
 {
 	/*Error Handling*/
 
@@ -49,12 +49,12 @@ bool CComponentContainer::HasComponent(Entity anEntity, unsigned int aComponentI
 	return myEntityComponents[anEntity][aComponentID] != -1;
 }
 
-const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(const SComponentFilter& aFilter)
+const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(SComponentFilter& aFilter)
 {
 	myEntitiesToReturn.RemoveAll();
 	for (int i = 0; i < myEntityComponents.Size(); i++)
 	{
-		if (aFilter == myEntityComponents[i])
+		if (aFilter.Compare(myEntityComponents[i]) == true)
 		{
 			myEntitiesToReturn.Add(i);
 		}

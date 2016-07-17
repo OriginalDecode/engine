@@ -2,7 +2,12 @@
 #include "Synchronizer.h"
 #include "Renderer.h"
 #include "Console.h"
+
 #include <EntityManager.h>
+#include <RenderComponent.h>
+#include <TranslationComponent.h>
+#include <RenderSystem.h>
+
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
@@ -22,6 +27,11 @@ namespace Snowblind
 
 		myConsole = new CConsole();
 		myEntityManager = new CEntityManager();
+
+
+
+		
+
 	}
 
 	CEngine::~CEngine()
@@ -85,6 +95,18 @@ namespace Snowblind
 		myConsole->Initiate(my2DCamera);
 
 
+		Entity e = myEntityManager->CreateEntity();
+		myEntityManager->AddComponent<RenderComponent>(e);
+		myEntityManager->AddComponent<TranslationComponent>(e);
+		TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
+		t.myOrientation.SetPosition(CU::Vector3f(0.f, 0.f, 0.f));
+
+		RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
+		r.myModelID = "PBL_Room";
+
+		myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);
+
+
 	}
 
 	CCamera* CEngine::GetCamera()
@@ -103,10 +125,6 @@ namespace Snowblind
 
 		myInstance->myTimeManager->Update();
 		myInstance->myRenderer->Render();
-
-		myInstance->myEntityManager->Update(myInstance->GetDeltaTime());
-
-
 	}
 
 	void CEngine::Present()

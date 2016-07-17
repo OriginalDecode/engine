@@ -4,7 +4,7 @@
 #include "DataStructures/StaticArray.h"
 
 struct SComponentFilter;
-class CBaseComponent;
+struct SBaseComponent;
 class CComponentContainer
 {
 public:
@@ -12,11 +12,11 @@ public:
 	~CComponentContainer();
 
 	void AddEntity();
-	void AddComponent(Entity anEntity, CBaseComponent* aComponent, unsigned int aComponentID);
-	CBaseComponent& GetComponent(Entity anEntity, unsigned int aComponentID);
+	void AddComponent(Entity anEntity, SBaseComponent* aComponent, unsigned int aComponentID);
+	SBaseComponent& GetComponent(Entity anEntity, unsigned int aComponentID);
 	bool HasComponent(Entity anEntity, unsigned int aComponentID);
 
-	const CU::GrowingArray<Entity>& GetEntities(const SComponentFilter& aFilter);
+	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter& aFilter);
 
 private:
 	CU::GrowingArray<ComponentArray> myComponents;

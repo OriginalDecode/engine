@@ -4,6 +4,11 @@
 #include "EntityTypes.h"
 #include "DataStructures/GrowingArray.h"
 #include <atomic>
+#include "BaseComponent.h"
+namespace Snowblind
+{
+	class CSynchronizer;
+}
 class CBaseSystem;
 class CEntityManager
 {
@@ -13,7 +18,7 @@ public:
 
 	Entity CreateEntity();
 	void Update(float aDelta);
-	const CU::GrowingArray<Entity>& GetEntities(const SComponentFilter& aFilter);
+	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter& aFilter);
 
 	template<typename T>
 	void AddComponent(Entity aEntity);
@@ -26,7 +31,11 @@ public:
 
 	float GetDeltaTime();
 
-	void OnFinish(); //Call this function??
+	template <typename T>
+	void AddSystem();
+
+	template <typename T>
+	void AddSystem(Snowblind::CSynchronizer* aSynchronizer);
 
 private:
 	Entity myNextEntity = 0;
@@ -45,7 +54,8 @@ private:
 template<typename T>
 void CEntityManager::AddComponent(Entity aEntity)
 {
-
+	T* component = new T();
+	myComponents->AddComponent(aEntity, component, CTypeID<SBaseComponent>::GetID<T>());
 }
 
 template<typename T>
@@ -57,6 +67,17 @@ void CEntityManager::RemoveComponent(Entity aEntity, int aComponentID)
 template<typename T>
 T& CEntityManager::GetComponent(Entity aEntity)
 {
-
+	return static_cast<T&>(myComponents->GetComponent(aEntity, CTypeID<SBaseComponent>::GetID<T>()));
 }
 
+template <typename T>
+void CEntityManager::AddSystem()
+{
+	mySystems.Add(new T(*this));
+}
+
+template <typename T>
+void CEntityManager::AddSystem(Snowblind::CSynchronizer* aSynchronizer)
+{
+	mySystems.Add(new T(*this, aSynchronizer));
+}

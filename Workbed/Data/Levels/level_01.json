@@ -1,0 +1,7 @@
+{
+	"object":
+	{
+		"entity":"Data/Levels/entity.json",
+		"position" : [ 0, 0, 10 ]
+	}
+}

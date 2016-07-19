@@ -1,0 +1,7 @@
+{
+	"components":
+	{
+		"Translation":true,
+		"Render": "Data/Model/pblScene/pblScene_03_binary.fbx"
+	}
+}

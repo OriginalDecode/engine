@@ -13,15 +13,10 @@
 
 #include <Synchronizer.h>
 #include <RenderCommand.h>
-#include <EmitterInstance.h>
-#include <DeferredRenderer.h>
 #include <SystemMonitor.h>
 #include <EngineDefines.h>
 
-#include <EntityManager.h>
-#include <RenderComponent.h>
-#include <TranslationComponent.h>
-#include <RenderSystem.h>
+#include "Game.h"
 
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
 #define MOVE_SPEED 50.f
@@ -34,43 +29,19 @@ CApplication::~CApplication()
 {
 	myLogicThread->join();
 	SAFE_DELETE(myLogicThread);
-	SAFE_DELETE(myPointLight);
-	SAFE_DELETE(myEmitter);
-	SAFE_DELETE(myEntityManager);
+	SAFE_DELETE(myGame);
 }
 
 void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 {
-	myWindowWidth = aWindowWidth;
-	myWindowHeight = aWindowHeight;
-	myAverageFPS = 0;
-	myQuitFlag = false;
+	aWindowHeight;
+	aWindowWidth;
 	myEngine = Snowblind::CEngine::GetInstance();
 	myCamera = myEngine->GetCamera();
 	myCamera->AddOrientation(&myOrientation);
 
-	myPointLight = new Snowblind::CPointLight();
-	myPointLight->SetRange(10);
-
 	mySynchronizer = myEngine->GetSynchronizer();
-
-	myEmitter = new Snowblind::CEmitterInstance();
-	myEmitter->Initiate(mySynchronizer);
-	myEntityManager = new CEntityManager();
-
-	Entity e = myEntityManager->CreateEntity();
-	myEntityManager->AddComponent<RenderComponent>(e);
-	myEntityManager->AddComponent<TranslationComponent>(e);
-	TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
-	t.myOrientation.SetPosition(CU::Vector3f(0.f, 0.f, 0.f));
-
-	RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
-	r.myModelID = "PBL_Room";
-
-	myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);
-
-
-
+	myGame = new CGame(mySynchronizer);
 
 	//Keep at the end of initiate...
 	myLogicThread = new std::thread([&] {CApplication::Update(); });
@@ -78,61 +49,23 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 
 void CApplication::Update()
 {
-	float time = 0.f;
-	int frameCount = 0;
 	while (mySynchronizer->HasQuit() == false)
 	{
 		float deltaTime = myEngine->GetDeltaTime();
-
-		myEmitter->Update(deltaTime);
-
-		myAverageFPS += myEngine->GetFPS();
-		time -= deltaTime;
-		frameCount++;
-		if (time < 0.f)
-		{
-			time = 1.f;
-			myAverageFPSToPrint = myAverageFPS / frameCount;
-			myAverageFPS = 0;
-			frameCount = 0;
-		}
-
-		CU::Input::InputWrapper::GetInstance()->Update();
 		UpdateInput(deltaTime);
 
-		myEntityManager->Update(deltaTime); //This is the entity System. There is currently only a render system in place.
+		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
+		myGame->Update(deltaTime);
 
-		Render(); //This sends renderCommands to my synchronizer. 
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();
 	}
 	myQuitFlag = true;
 }
 
-void CApplication::Render()
-{
-	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
-	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SPRITE, "colors", CU::Vector2f(0.f, 0.f)));
-	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 0.f), CU::Vector3f(1.f, 0.f, 0.f), 40.f, 10.f));
-	//mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::PARTICLE, myEmitter));
-	
-	std::stringstream ss;
-	ss << myEngine->GetFPS() << "\n"
-		<< myAverageFPSToPrint
-		<< "\nCamera Position : \nX : "
-		<< myOrientation.GetPosition().x
-		<< "\nY : " << myOrientation.GetPosition().y
-		<< "\nZ : " << myOrientation.GetPosition().z;
-	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Math::Vector2<float>(0, 0)));
-	
-	std::stringstream cpuAndMem;
-	cpuAndMem << "CPU: " << Snowblind::CSystemMonitor::GetCPUUsage() << "%" << "\n" << "Mem: " << Snowblind::CSystemMonitor::GetMemoryUsage(true) << " kb";
-	mySynchronizer->AddRenderCommand(SRenderCommand(cpuAndMem.str(), CU::Vector2f(myWindowWidth - 100.f, 0)));
-
-}
-
 void CApplication::UpdateInput(float aDeltaTime)
 {
+	CU::Input::InputWrapper::GetInstance()->Update();
 	if (myWindowIsActive)
 	{
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))

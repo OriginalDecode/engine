@@ -21,10 +21,12 @@ CRenderSystem::~CRenderSystem()
 
 void CRenderSystem::Update(float aDeltaTime)
 {
-	CU::GrowingArray<Entity> entities = GetEntities();
+	const CU::GrowingArray<Entity>& entities = GetEntities();
 
-	for each (const Entity& e in entities)
+	/* Add more commands? */
+	for (int i = 0; i < entities.Size(); i++)
 	{
+		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
 

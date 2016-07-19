@@ -19,7 +19,8 @@ namespace Snowblind
 		switch (aModelType)
 		{
 		case eModelType::STATIC:
-			myModel = Snowblind::CAssetsContainer::GetInstance()->GetModel(aFilePath, effect);
+			Snowblind::CAssetsContainer::GetInstance()->LoadModel(aFilePath, effect);
+			myModel = Snowblind::CAssetsContainer::GetInstance()->GetModel(aFilePath);
 			break;
 		case eModelType::ANIMATED:
 			DL_ASSERT("Not implemented!");

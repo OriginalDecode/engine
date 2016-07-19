@@ -25,9 +25,9 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 
 	JSONReader entityReader(entityPath);
 	bool hasTranslation;
-	entityReader.ReadElement("components", "Translation", hasTranslation);
-	std::string entityModel;
-	entityReader.ReadElement("components", "Render", entityModel);
+	entityReader.ReadElement("Translation", hasTranslation);
+	std::string entityModel[2];
+	entityReader.ReadElement("Render", entityModel);
 
 	Entity e = myEntityManager->CreateEntity();
 	if (hasTranslation)
@@ -37,11 +37,11 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 		t.myOrientation.SetPosition(pos);
 	}
 
-	if (entityModel != "")
+	if (entityModel[0] != "")
 	{
 		myEntityManager->AddComponent<RenderComponent>(e);
 		RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
-		r.myModelID = Snowblind::CAssetsContainer::GetInstance()->LoadModel(entityModel, "Data/Shaders/T_Deferred_Base.json");
+		r.myModelID = Snowblind::CAssetsContainer::GetInstance()->LoadModel(entityModel[0], entityModel[1]);
 	}
 
 	myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);

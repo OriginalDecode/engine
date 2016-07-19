@@ -34,6 +34,9 @@ namespace Snowblind
 		mySprite = new CSprite();
 		mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
 
+		myAssetsContainer = CAssetsContainer::GetInstance();
+		myEngine = CEngine::GetInstance();
+		myDirectX = myEngine->GetDirectX();
 	}
 
 	CRenderer::~CRenderer()
@@ -58,7 +61,7 @@ namespace Snowblind
 		std::stringstream textTime;
 		textTime << "Render : " << myText->GetRenderTime() << "\nUpdate : " << myText->GetUpdateTime();
 		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));
-		CEngine::Clear();
+		myEngine->Clear();
 
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
@@ -75,17 +78,12 @@ namespace Snowblind
 		Render2DCommands();
 
 
-		CEngine::Present();
+		myEngine->Present();
+
 		mySynchronizer.WaitForLogic();
 		mySynchronizer.SwapBuffer();
 		mySynchronizer.RenderIsDone();
 		myPrevFrame = myCamera->GetOrientation();
-	}
-
-
-	void CRenderer::AddModel(CModel* aModel, const std::string& aModelKey)
-	{
-		myModels[aModelKey] = aModel;
 	}
 
 	void CRenderer::Render3DCommands()
@@ -96,15 +94,23 @@ namespace Snowblind
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::MODEL:
-				CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
-				CEngine::GetDirectX()->SetBlendState(eBlendStates::NO_BLEND);
-				myModels[command.myModelKey]->SetPosition(command.myPosition);
-				myModels[command.myModelKey]->Render(myPrevFrame, myCamera->GetProjection());
+			{
+				myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+				myDirectX->SetBlendState(eBlendStates::NO_BLEND);
+
+				CModel* model = myAssetsContainer->GetModel(command.myModelKey);
+
+				model->SetPosition(command.myPosition);
+				model->Render(myPrevFrame, myCamera->GetProjection());
+
 				break;
+			}
 			case SRenderCommand::eType::SKYSPHERE:
+			{
 				mySkysphere->SetPosition(command.myPosition);
 				mySkysphere->Render(myPrevFrame);
 				break;
+			}
 			}
 		}
 	}
@@ -112,29 +118,25 @@ namespace Snowblind
 	void CRenderer::Render2DCommands()
 	{
 		const CU::GrowingArray<SRenderCommand>& commands2D = mySynchronizer.GetRenderCommands(eCommandType::e2D);
-		CEngine::GetDirectX()->DisableZBuffer();
+		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		for each(const SRenderCommand& command in commands2D)
 		{
 			switch (command.myType)
 			{
 			case SRenderCommand::eType::TEXT:
-				CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_NONE);
-				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+
 				myText->SetText(command.myTextToPrint);
 				myText->SetPosition({ command.myPosition.x, command.myPosition.y });
 				myText->Render(my2DCamera);
-				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 				break;
 			case SRenderCommand::eType::SPRITE:
-				CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_NONE);
-				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 				mySprite->Render(my2DCamera);
-				CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 				break;
 			}
 		}
-		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
-		CEngine::GetDirectX()->EnableZBuffer();
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 
 	}
 
@@ -147,7 +149,7 @@ namespace Snowblind
 			{
 			case SRenderCommand::eType::POINTLIGHT:
 
-				CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
+				myDirectX->SetBlendState(eBlendStates::ALPHA_BLEND);
 				myPointLight->SetPosition(command.myPosition);
 				myPointLight->SetRange(command.myRange);
 				myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
@@ -160,8 +162,8 @@ namespace Snowblind
 
 	void CRenderer::RenderParticles()
 	{
-		CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
-		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_NONE);
+		myDirectX->SetBlendState(eBlendStates::ALPHA_BLEND);
+		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandType::PARTICLE);
 		for each(const SRenderCommand& command in commands)
 		{
@@ -172,6 +174,6 @@ namespace Snowblind
 				break;
 			}
 		}
-		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
+		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 };

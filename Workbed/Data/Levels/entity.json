@@ -1,7 +1,7 @@
 {
-	"components":
-	{
-		"Translation":true,
-		"Render": "Data/Model/pblScene/pblScene_03_binary.fbx"
-	}
+	"Translation":true,
+	"Render": [ 
+		"Data/Model/pblScene/pblScene_03_binary.fbx", 
+		"Data/Shaders/T_Deferred_Base.json"
+		]	
 }

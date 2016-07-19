@@ -18,13 +18,12 @@ namespace Snowblind
 		static void Destroy();
 		static CAssetsContainer* GetInstance();
 
-		CTexture* GetTexture(const std::string& aFilePath);
-		CEffect* GetEffect(const std::string& aFilePath);
-		CModel* GetModel(const std::string& aFilePath, const std::string& effect);
 		void Update();
 
+		CTexture* GetTexture(const std::string& aFilePath);
+		CEffect* GetEffect(const std::string& aFilePath);
+		CModel* GetModel(const std::string& aFilePath);
 		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
-
 
 	private:
 		CAssetsContainer();

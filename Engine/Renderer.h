@@ -1,8 +1,5 @@
 #pragma once
-#include <DataStructures/StaticArray.h>
-
 #include "LightStructs.h"
-#include <unordered_map>
 
 namespace CommonUtilities
 {
@@ -30,7 +27,6 @@ namespace Snowblind
 		void Add2DCamera(CCamera* aCamera);
 		void Render();
 
-		void AddModel(CModel* aModel, const std::string& aModelKey);
 	private:
 		eDeferredType myDeferredType;
 		void Render3DCommands();
@@ -38,7 +34,9 @@ namespace Snowblind
 		void RenderLightCommands();
 		void RenderParticles();
 
-		std::unordered_map<std::string, CModel*> myModels;
+		CAssetsContainer* myAssetsContainer;
+		CEngine* myEngine;
+		CDirectX11* myDirectX;
 
 		CCamera* myCamera;
 		CU::Matrix44f myPrevFrame;

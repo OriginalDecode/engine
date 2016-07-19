@@ -80,11 +80,12 @@ namespace Snowblind
 		return myEffects[aFilePath];
 	}
 
-	CModel* CAssetsContainer::GetModel(const std::string& aFilePath, const std::string& effect)
+	CModel* CAssetsContainer::GetModel(const std::string& aFilePath)
 	{
 		if (myModels.find(aFilePath) == myModels.end())
 		{
-			LoadModel(aFilePath, effect);
+			DL_MESSAGE("Requested Model : %s", aFilePath.c_str());
+			DL_ASSERT("Failed to find requested model. Did you enter the correct path?");
 		}
 		return myModels[aFilePath];
 	}

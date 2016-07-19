@@ -25,6 +25,11 @@ public:
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, float& aFloat);
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, double& aDouble);
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, std::string& aString);
+	template<typename T>
+	void ReadElement(const std::string& aTag, const std::string& aSubTag, T& aVariable);
+	template<typename T>
+	void ReadElement(const std::string& aTag, T& aVariable);
+
 	template <typename T>
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, CU::Math::Vector3<T>& aVec3);
 
@@ -241,6 +246,45 @@ void JSONReader::ReadElement(const std::string& aTag, const std::string& aSubTag
 		aVec3.y = data[1].GetDouble();
 		aVec3.z = data[2].GetDouble();
 
+	}
+}
+
+template<typename T>
+void JSONReader::ReadElement(const std::string& aTag, const std::string& aSubTag, T& aVariable)
+{
+	assert(myFile != nullptr && "File were not open. Did you forget to OpenDocument()?");
+	if (myDocument.HasMember(aTag.c_str()) == true)
+	{
+		if (myDocument[aTag.c_str()].HasMember(aSubTag.c_str()) == true)
+		{
+			assert(myFileReaderStream != nullptr && "JSONReader were not initiated. Reader were null");
+			assert(myDocument != 0 && "Document had no valid FileReaderStream attached.");
+
+			const auto& data = myDocument[aTag.c_str()][aSubTag.c_str()];
+
+			for (rapidjson::SizeType i = 0; i < data.Size(); i++)
+			{
+				aVariable[i] = data[i].GetString();
+			}
+		}
+	}
+}
+
+template<typename T>
+void JSONReader::ReadElement(const std::string& aTag, T& aVariable)
+{
+	assert(myFile != nullptr && "File were not open. Did you forget to OpenDocument()?");
+	if (myDocument.HasMember(aTag.c_str()) == true)
+	{
+		assert(myFileReaderStream != nullptr && "JSONReader were not initiated. Reader were null");
+		assert(myDocument != 0 && "Document had no valid FileReaderStream attached.");
+
+		const auto& data = myDocument[aTag.c_str()];
+
+		for (rapidjson::SizeType i = 0; i < data.Size(); i++)
+		{
+			aVariable[i] = data[i].GetString();
+		}
 	}
 }
 

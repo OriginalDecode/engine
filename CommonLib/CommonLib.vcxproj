@@ -43,7 +43,10 @@
     <ClInclude Include="Math\Vector\Vector4.h" />
     <ClInclude Include="Math\Vector\Vector4decl.h" />
     <ClInclude Include="Randomizer.h" />
+    <ClInclude Include="Threadpool.h" />
     <ClInclude Include="Utilities.h" />
+    <ClInclude Include="Work.h" />
+    <ClInclude Include="Worker.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataStructures\Hashmap\MurmurHash3.cpp" />
@@ -51,7 +54,10 @@
     <ClCompile Include="JSON\JSONReader.cpp" />
     <ClCompile Include="Math\Quaternion\Quaternion.cpp" />
     <ClCompile Include="Randomizer.cpp" />
+    <ClCompile Include="Threadpool.cpp" />
     <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="Work.cpp" />
+    <ClCompile Include="Worker.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DBC8372D-E04F-4BBB-8964-12022ADCA9F6}</ProjectGuid>

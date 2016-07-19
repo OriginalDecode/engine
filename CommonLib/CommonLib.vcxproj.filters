@@ -25,6 +25,9 @@
     <Filter Include="Quaternion">
       <UniqueIdentifier>{29b80938-cd63-422d-a229-15f85eb1585b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Threadpool">
+      <UniqueIdentifier>{ec38f5e6-e215-436b-a711-52cc432c030a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataStructures\GrowingArray.h">
@@ -96,6 +99,15 @@
       <Filter>Quaternion</Filter>
     </ClInclude>
     <ClInclude Include="Randomizer.h" />
+    <ClInclude Include="Threadpool.h">
+      <Filter>Threadpool</Filter>
+    </ClInclude>
+    <ClInclude Include="Work.h">
+      <Filter>Threadpool</Filter>
+    </ClInclude>
+    <ClInclude Include="Worker.h">
+      <Filter>Threadpool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JSON\JSONReader.cpp">
@@ -109,6 +121,15 @@
     <ClCompile Include="Randomizer.cpp" />
     <ClCompile Include="DataStructures\Hashmap\MurmurHash3.cpp">
       <Filter>DataStructures\Hashmap</Filter>
+    </ClCompile>
+    <ClCompile Include="Threadpool.cpp">
+      <Filter>Threadpool</Filter>
+    </ClCompile>
+    <ClCompile Include="Work.cpp">
+      <Filter>Threadpool</Filter>
+    </ClCompile>
+    <ClCompile Include="Worker.cpp">
+      <Filter>Threadpool</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

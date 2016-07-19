@@ -96,27 +96,33 @@ namespace Snowblind
 
 	void CAssetsContainer::LoadTexture(const std::string& aFilePath)
 	{
-		CTexture* texture = new CTexture();
-		if (texture->LoadTexture(aFilePath.c_str()) == false)
+		if (myTextures.find(aFilePath) == myTextures.end())
 		{
-			SAFE_DELETE(texture);
+			CTexture* texture = new CTexture();
+			if (texture->LoadTexture(aFilePath.c_str()) == false)
+			{
+				SAFE_DELETE(texture);
+			}
+			myTextures[aFilePath] = texture;
 		}
-		myTextures[aFilePath] = texture;
 	}
 
 	void CAssetsContainer::LoadEffect(const std::string& aFilePath)
 	{
-		CEffect* effect = new CEffect(aFilePath);
-
-		myShaderFactory->LoadShader(effect);
-
-		myEffects[aFilePath] = effect;
+			CEffect* effect = new CEffect(aFilePath);
+			myShaderFactory->LoadShader(effect);
+			myEffects[aFilePath] = effect;
 	}
 
-	void CAssetsContainer::LoadModel(const std::string& aFilePath, const std::string& effect)
+	const std::string& CAssetsContainer::LoadModel(const std::string& aFilePath, const std::string& effect)
 	{
-		CModel* model = myFactory->LoadModel(aFilePath.c_str(), effect.c_str());
-		model->CreateModel();
-		myModels[aFilePath] = model;
+		if (myModels.find(aFilePath) == myModels.end())
+		{
+			CModel* model = myFactory->LoadModel(aFilePath.c_str(), effect.c_str());
+			model->CreateModel();
+			myModels[aFilePath] = model;
+		}
+
+		return aFilePath;
 	}
 };

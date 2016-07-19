@@ -23,6 +23,9 @@ namespace Snowblind
 		CModel* GetModel(const std::string& aFilePath, const std::string& effect);
 		void Update();
 
+		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
+
+
 	private:
 		CAssetsContainer();
 		~CAssetsContainer();
@@ -33,9 +36,9 @@ namespace Snowblind
 		std::unordered_map<std::string, CModel*> myModels;
 		std::unordered_map<std::string, CSprite*> mySprites;
 
+		
 		void LoadTexture(const std::string& aFilePath);
 		void LoadEffect(const std::string& aFilePath);
-		void LoadModel(const std::string& aFilePath, const std::string& effect);
 
 		FBXFactory* myFactory;
 		CShaderFactory* myShaderFactory;

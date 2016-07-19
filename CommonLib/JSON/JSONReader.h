@@ -10,7 +10,7 @@ public:
 
 	JSONReader(const std::string& aFilePath);
 	~JSONReader();
-	
+
 
 	void ReadElement(const std::string& aTag, bool& aBool);
 	void ReadElement(const std::string& aTag, int& anInt);
@@ -25,6 +25,9 @@ public:
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, float& aFloat);
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, double& aDouble);
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, std::string& aString);
+	template <typename T>
+	void ReadElement(const std::string& aTag, const std::string& aSubTag, CU::Math::Vector3<T>& aVec3);
+
 
 	void ForceReadElement(const std::string& aTag, bool& aBool);
 	void ForceReadElement(const std::string& aTag, int& anInt);
@@ -221,6 +224,23 @@ void JSONReader::ReadElement(const std::string& aTag, CU::Math::Vector4<T>& aVec
 		aVector.myY = CheckYValue<T>(aTag);
 		aVector.myZ = CheckZValue<T>(aTag);
 		aVector.myW = CheckWValue<T>(aTag);
+	}
+}
+
+template<typename T>
+void JSONReader::ReadElement(const std::string& aTag, const std::string& aSubTag, CU::Math::Vector3<T>& aVec3)
+{
+	assert(myFile != nullptr && "File were not open. Did you forget to OpenDocument()?");
+	if (myDocument.HasMember(aTag.c_str()) == true)
+	{
+		assert(myFileReaderStream != nullptr && "JSONReader were not initiated. Reader were null");
+		assert(myDocument != 0 && "Document had no valid FileReaderStream attached.");
+
+		const auto& data = myDocument[aTag.c_str()][aSubTag.c_str()];
+		aVec3.x = data[0].GetDouble();
+		aVec3.y = data[1].GetDouble();
+		aVec3.z = data[2].GetDouble();
+
 	}
 }
 

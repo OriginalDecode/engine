@@ -35,6 +35,10 @@ namespace Snowblind
 		void SetBuffers();
 		void DeferredRender();
 
+		void ResetBackbufferAndDepth();
+		void Finalize();
+
+
 		void SetLightStates();
 		void RenderLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 		void SetNormalStates();
@@ -85,6 +89,7 @@ namespace Snowblind
 		CTexture* myNormal;
 		CTexture* myDepth;
 		CTexture* myDepthStencil;
+		CTexture* myFinishedTexture;
 
 
 		struct SParticlePass
@@ -101,7 +106,6 @@ namespace Snowblind
 
 		SVertexIndexWrapper* myIndexData;
 		SVertexDataWrapper* myVertexData;
-
 		SVertexBufferWrapper* myVertexBuffer;
 		SIndexBufferWrapper* myIndexBuffer;
 

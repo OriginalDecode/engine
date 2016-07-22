@@ -3,7 +3,7 @@
 #include "include\filereadstream.h"
 #include "..\Math\Vector\Vector.h"
 typedef int FRESULT;
-
+typedef rapidjson::Value  JSONElement;
 class JSONReader
 {
 public:
@@ -32,6 +32,10 @@ public:
 
 	template <typename T>
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, CU::Math::Vector3<T>& aVec3);
+
+	template <typename T>
+	void _ReadElement(const rapidjson::Value& anElement, CU::Math::Vector3<T>& aVec3);
+
 
 
 	void ForceReadElement(const std::string& aTag, bool& aBool);
@@ -62,6 +66,8 @@ public:
 	void ForceReadElement(const std::string& aTag, CU::Math::Vector3<T>& aVector);
 	template<typename T>
 	void ForceReadElement(const std::string& aTag, CU::Math::Vector4<T>& aVector);
+
+	const JSONElement& GetElement(const std::string& anElement);
 
 private:
 	void OpenDocument(const std::string& aFilePath);
@@ -286,6 +292,16 @@ void JSONReader::ReadElement(const std::string& aTag, T& aVariable)
 			aVariable[i] = data[i].GetString();
 		}
 	}
+}
+
+template <typename T>
+void JSONReader::_ReadElement(const rapidjson::Value& anElement, CU::Math::Vector3<T>& aVec3)
+{
+	//const rapidjson::Value& data = anElement->value[aTag.c_str()];
+	aVec3.x = anElement[0].GetDouble();
+	aVec3.y = anElement[1].GetDouble();
+	aVec3.z = anElement[2].GetDouble();
+
 }
 
 template<typename T>

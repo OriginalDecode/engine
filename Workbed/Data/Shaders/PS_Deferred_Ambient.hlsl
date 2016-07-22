@@ -8,6 +8,7 @@
 SamplerState point_Clamp : register ( s0 );
 Texture2D AlbedoTexture  : register ( t0 );
 Texture2D NormalTexture  : register ( t1 );
+Texture2D DepthTexture	 : register ( t2 );
 
 //---------------------------------
 //	Deferred Ambient Pixel Structs
@@ -25,11 +26,18 @@ struct VS_OUTPUT
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);
+	if(albedo.a <= 0.f)
+		discard;
+	/* Begon black background */
+	
 	float4 normal = NormalTexture.Sample(point_Clamp, input.uv);
+	float4 depth = DepthTexture.Sample(point_Clamp, input.uv);
 
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
 	//float4 cubemap = CubeMap.SampleLevel(point_Clamp, normal, 7); //Use in the future.
 	//return saturate(albedo * cubemap);
-	return albedo;
+	float4 col =  float4(1, 1, 0, 1);
+
+	return saturate(albedo * col);
 };

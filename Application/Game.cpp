@@ -12,36 +12,48 @@
 #include <EngineDefines.h>
 #include <JSON/JSONReader.h>
 
+
+struct SGameObject
+{
+	std::string entityPath;
+	CU::Vector3f pos;
+};
+
+
 CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	: mySynchronizer(aSynchronizer)
 {
 	myEntityManager = new CEntityManager();
-
 	JSONReader reader("Data/Levels/level_01.json");
-	std::string entityPath;
-	reader.ReadElement("object", "entity", entityPath);
-	CU::Vector3f pos;
-	reader.ReadElement("object", "position", pos);
 
-	JSONReader entityReader(entityPath);
-	bool hasTranslation;
-	entityReader.ReadElement("Translation", hasTranslation);
-	std::string entityModel[2];
-	entityReader.ReadElement("Render", entityModel);
-
-	Entity e = myEntityManager->CreateEntity();
-	if (hasTranslation)
+	const JSONElement& el = reader.GetElement("root");
+	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
-		myEntityManager->AddComponent<TranslationComponent>(e);
-		TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
-		t.myOrientation.SetPosition(pos);
-	}
+		std::string entityPath;
+		entityPath = it->value["entity"].GetString();
+		CU::Vector3f pos;
+		reader._ReadElement(it->value["position"], pos);
 
-	if (entityModel[0] != "")
-	{
-		myEntityManager->AddComponent<RenderComponent>(e);
-		RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
-		r.myModelID = Snowblind::CAssetsContainer::GetInstance()->LoadModel(entityModel[0], entityModel[1]);
+		JSONReader entityReader(entityPath);
+		bool hasTranslation = false;
+		entityReader.ReadElement("Translation", hasTranslation);
+		std::string entityModel[2];
+		entityReader.ReadElement("Render", entityModel);
+
+		Entity e = myEntityManager->CreateEntity();
+		if (hasTranslation)
+		{
+			myEntityManager->AddComponent<TranslationComponent>(e);
+			TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
+			t.myOrientation.SetPosition(pos);
+		}
+
+		if (entityModel[0] != "")
+		{
+			myEntityManager->AddComponent<RenderComponent>(e);
+			RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
+			r.myModelID = Snowblind::CAssetsContainer::GetInstance()->LoadModel(entityModel[0], entityModel[1]);
+		}
 	}
 
 	myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);

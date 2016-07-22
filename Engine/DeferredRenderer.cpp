@@ -25,6 +25,12 @@ namespace Snowblind
 			, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		myDepth->SetDebugName("DeferredDepth");
 
+		myFinishedTexture = new CTexture(windowSize.myWidth, windowSize.myHeight
+			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+			, DXGI_FORMAT_R8G8B8A8_UNORM);
+		myFinishedTexture->SetDebugName("DeferredFinishedTexture");
+
+
 		myDepthStencil = new CTexture();
 		myDepthStencil->InitAsDepthBuffer(windowSize.myWidth, windowSize.myHeight);
 		myDepthStencil->SetDebugName("DeferredDepthStenci");
@@ -74,7 +80,6 @@ namespace Snowblind
 
 		myContext->OMSetRenderTargets(3, target, myDepthStencil->GetDepthView());
 	}
-
 
 	void CDeferredRenderer::SetBuffers()
 	{
@@ -205,8 +210,8 @@ namespace Snowblind
 	{
 		myDirectX->ResetViewport();
 
-		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
-		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
+		ID3D11RenderTargetView* backbuffer = myFinishedTexture->GetRenderTargetView(); //myDirectX->GetBackbuffer();
+		ID3D11DepthStencilView* depth = myDepthStencil->GetDepthView(); //myDirectX->GetDepthView();
 
 		myContext->ClearRenderTargetView(backbuffer, myClearColor);
 		myContext->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -231,9 +236,36 @@ namespace Snowblind
 
 	}
 
+	void CDeferredRenderer::ResetBackbufferAndDepth()
+	{
+		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer(); //myDirectX->GetBackbuffer();
+		ID3D11DepthStencilView* depth = myDirectX->GetDepthView(); //myDirectX->GetDepthView();
+
+		myContext->ClearRenderTargetView(backbuffer, myClearColor);
+		myContext->ClearDepthStencilView(depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		myContext->OMSetRenderTargets(1, &backbuffer, depth);
+	}
+
+	void CDeferredRenderer::Finalize()
+	{
+		SetBuffers();
+		myDirectX->SetVertexShader(myAmbientPass.myEffect->GetVertexShader()->vertexShader);
+		myDirectX->SetPixelShader(myAmbientPass.myEffect->GetPixelShader()->pixelShader);
+
+		ID3D11ShaderResourceView* srv[1];
+		srv[0] = myFinishedTexture->GetShaderView();
+		myContext->PSSetShaderResources(0, 1, &srv[0]);
+		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP);
+
+		myContext->DrawIndexed(6, 0, 0);
+
+		srv[0] = nullptr;
+		myContext->PSSetShaderResources(0, 1, &srv[0]);
+	}
+
 	void CDeferredRenderer::SetLightStates()
 	{
-		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
+		ID3D11RenderTargetView* backbuffer = myFinishedTexture->GetRenderTargetView();
 		myContext->OMSetRenderTargets(1, &backbuffer, myDepthStencil->GetDepthView());
 
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);

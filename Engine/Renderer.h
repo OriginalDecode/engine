@@ -42,8 +42,7 @@ namespace Snowblind
 		CU::Matrix44f myPrevFrame;
 
 		CCamera* my2DCamera;
-		
-		CU::Vector3f myPrevPos;
+		CU::Vector3f mySpherePos;
 		CU::TimeManager* myTimeManager;
 		
 		CDeferredRenderer* myDeferredRenderer;

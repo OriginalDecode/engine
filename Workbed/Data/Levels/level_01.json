@@ -1,7 +1,7 @@
 {
-	"object":
+	"root" :
 	{
-		"entity":"Data/Levels/entity.json",
-		"position" : [ 0, 0, 10 ]
-	}
+		"object" : { "entity":"Data/Levels/entity.json", "position" : [ 0, 0, 10 ] },
+		"object" : { "entity":"Data/Levels/entity2.json", "position" : [ 25, 0, 10 ] }
+	}	
 }

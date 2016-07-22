@@ -73,10 +73,20 @@ namespace Snowblind
 		RenderLightCommands();
 		myDeferredRenderer->SetNormalStates();
 
+		myDeferredRenderer->ResetBackbufferAndDepth();
+		mySkysphere->SetPosition(mySpherePos);
+
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
+
+		mySkysphere->Render(myPrevFrame);
+		myDeferredRenderer->Finalize();
+
+		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		//RenderParticles();
 
 		Render2DCommands();
-
 
 		myEngine->Present();
 
@@ -107,8 +117,7 @@ namespace Snowblind
 			}
 			case SRenderCommand::eType::SKYSPHERE:
 			{
-				mySkysphere->SetPosition(command.myPosition);
-				mySkysphere->Render(myPrevFrame);
+				mySpherePos = command.myPosition;
 				break;
 			}
 			}

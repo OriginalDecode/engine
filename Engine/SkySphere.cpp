@@ -27,8 +27,7 @@ namespace Snowblind
 
 	void CSkySphere::Render(CU::Matrix44f& anOrientation)
 	{
-		CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
-		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_NONE);
+	
 
 		ID3D11ShaderResourceView* srv = mySkysphereTexture->GetShaderView();
 		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, 1, &srv);
@@ -38,8 +37,7 @@ namespace Snowblind
 		srv = nullptr;
 		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, 1, &srv);
 
-		CEngine::GetDirectX()->SetRasterizer(eRasterizer::CULL_BACK);
-		CEngine::GetDirectX()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+
 	}
 
 	void CSkySphere::SetPosition(const CU::Vector3f& aPosition)

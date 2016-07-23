@@ -40,6 +40,8 @@
     <ClInclude Include="RenderComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="PhysicsSystem.h" />
+    <ClInclude Include="PhysicsComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseSystem.cpp">
@@ -52,5 +54,6 @@
       <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="EntityManager.cpp" />
+    <ClCompile Include="PhysicsSystem.cpp" />
   </ItemGroup>
 </Project>

@@ -29,5 +29,5 @@ struct VS_OUTPUT
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * 1.f;//ambientMultiplier;
-	return albedo * mult;
+	return albedo;
 }

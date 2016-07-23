@@ -8,10 +8,14 @@
 /* Systems */
 #include <RenderSystem.h>
 /* End of Entity System Includes*/
+
 #include <AssetsContainer.h>
 #include <EngineDefines.h>
 #include <JSON/JSONReader.h>
-
+#include <PhysicsManager.h>
+#include <PhysicsComponent.h>
+#include <RigidBody.h>
+#include <PhysicsSystem.h>
 
 struct SGameObject
 {
@@ -24,6 +28,9 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	: mySynchronizer(aSynchronizer)
 {
 	myEntityManager = new CEntityManager();
+	myPhysicsManager = new CPhysicsManager();
+
+
 	JSONReader reader("Data/Levels/level_01.json");
 
 	const JSONElement& el = reader.GetElement("root");
@@ -54,18 +61,34 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 			RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
 			r.myModelID = Snowblind::CAssetsContainer::GetInstance()->LoadModel(entityModel[0], entityModel[1]);
 		}
+
+		bool hasPhysics = false;
+		entityReader.ReadElement("Physics", hasPhysics);
+
+		if (hasPhysics)
+		{
+			myEntityManager->AddComponent<SPhysicsComponent>(e);
+			SPhysicsComponent& p = myEntityManager->GetComponent<SPhysicsComponent>(e);
+			p.myBody = new CRigidBody();
+			myPhysicsManager->Add(p.myBody->InitAsSphere());
+		}
 	}
 
+	myEntityManager->AddSystem<CPhysicsSystem>();
 	myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);
 
+	
+	//body = myPhysicsManager->Create(10);
 }
 
 CGame::~CGame()
 {
 	SAFE_DELETE(myEntityManager);
+	SAFE_DELETE(myPhysicsManager);
 }
 
 void CGame::Update(float aDeltaTime)
 {
+	myPhysicsManager->Update();
 	myEntityManager->Update(aDeltaTime);
 }

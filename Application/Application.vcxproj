@@ -102,10 +102,11 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Physics\;$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,10 +131,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Physics\;$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -154,6 +155,9 @@
     </ProjectReference>
     <ProjectReference Include="..\EntitySystem\EntitySystem.vcxproj">
       <Project>{2fc680bf-8cb1-4f07-97d0-7b7871989b9e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Physics\Physics.vcxproj">
+      <Project>{0eb04af7-d7ca-4d95-ac81-a62d84292a93}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Timer\Timer.vcxproj">
       <Project>{969d7f97-c324-4e79-b073-12ce82554526}</Project>

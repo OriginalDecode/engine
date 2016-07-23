@@ -27,6 +27,10 @@ namespace CommonUtilities
 			static Matrix44<TYPE> CreateOrthogonalMatrixLH(TYPE aWidth, TYPE aHeight, TYPE aNearZ, TYPE aFarZ);
 			TYPE myMatrix[16];
 
+			void ConvertFromCol(const TYPE aColMatrix[16]);
+			void InitWithArray(const TYPE aColMatrix[16]);
+
+
 			void SetRotation3dX(const TYPE& aRadian);
 			void SetRotation3dY(const TYPE& aRadian);
 			void SetRotation3dZ(const TYPE& aRadian);
@@ -82,6 +86,38 @@ namespace CommonUtilities
 			};
 			const Matrix44<TYPE> Calculate(const RotationType& rotation, const TYPE& cos, const TYPE& sin);
 		};
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::InitWithArray(const TYPE aColMatrix[16])
+		{
+			for (int i = 0; i < 16; i++)
+			{
+				myMatrix[i] = aColMatrix[i];
+			}
+		}
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::ConvertFromCol(const TYPE aColMatrix[16])
+		{
+			myMatrix[1] = aColMatrix[4];
+			myMatrix[4] = aColMatrix[1];
+
+			myMatrix[2] = aColMatrix[8];
+			myMatrix[8] = aColMatrix[2];
+
+			myMatrix[3] = aColMatrix[12];
+			myMatrix[12] = aColMatrix[3];
+
+			myMatrix[6] = aColMatrix[9];
+			myMatrix[9] = aColMatrix[6];
+
+			myMatrix[7] = aColMatrix[13];
+			myMatrix[13] = aColMatrix[7];
+
+			myMatrix[11] = aColMatrix[14];
+			myMatrix[14] = aColMatrix[11];
+
+		}
 
 		template<typename TYPE>
 		inline const TYPE& CommonUtilities::Math::Matrix44<TYPE>::operator[](const int& anIndex) const

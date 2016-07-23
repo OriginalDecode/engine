@@ -53,6 +53,8 @@ namespace Snowblind
 		SAFE_DELETE(myAlbedo);
 		SAFE_DELETE(myNormal);
 		SAFE_DELETE(myDepth);
+		SAFE_DELETE(myFinishedTexture);
+
 		SAFE_DELETE(myDepthStencil);
 		SAFE_RELEASE(myInputLayout);
 		SAFE_DELETE(myVertexBuffer);
@@ -62,8 +64,6 @@ namespace Snowblind
 
 		SAFE_RELEASE(myLightPass.myVertexConstantBuffer);
 		SAFE_RELEASE(myLightPass.myPixelConstantBuffer);
-
-
 	}
 
 	void CDeferredRenderer::SetTargets()

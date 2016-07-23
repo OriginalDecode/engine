@@ -6,7 +6,8 @@ namespace Snowblind
 };
 
 class CEntityManager;
-
+class CPhysicsManager;
+class btRigidBody;
 
 class CGame
 {
@@ -19,5 +20,7 @@ public:
 private:
 	Snowblind::CSynchronizer* mySynchronizer;
 	CEntityManager* myEntityManager;
+	CPhysicsManager* myPhysicsManager;
+	btRigidBody* body;
 };
 

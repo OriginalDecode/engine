@@ -7,8 +7,6 @@
 #include "../Input/InputWrapper.h"
 #include <Sprite.h>
 
-#include <FBXFactory.h>
-
 #include <PointLight.h>
 
 #include <Synchronizer.h>

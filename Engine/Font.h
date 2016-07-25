@@ -7,7 +7,6 @@ struct D3D11_BUFFER_DESC;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct D3D11_SUBRESOURCE_DATA;
 struct ID3D11ShaderResourceView;
-struct ID3D11BlendState;
 struct ID3D11Buffer;
 
 namespace CommonUtilities

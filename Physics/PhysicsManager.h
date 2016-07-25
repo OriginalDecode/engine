@@ -1,4 +1,5 @@
 #pragma once
+#include "../CommonLib/DataStructures/GrowingArray.h"
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btBroadphaseInterface;
@@ -17,6 +18,7 @@ public:
 	~CPhysicsManager();
 
 	void Add(btRigidBody* aBody);
+	void Remove(btRigidBody* aBody);
 	btRigidBody* Create(float mass);
 	void Update();
 private:
@@ -28,6 +30,7 @@ private:
 	btDiscreteDynamicsWorld* myDynamicsWorld = nullptr;
 
 	CRigidBody* myZeroPlane;
+	CU::GrowingArray<btRigidBody*> myBodies;
 
 };
 

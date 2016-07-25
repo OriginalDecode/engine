@@ -9,6 +9,7 @@ namespace Snowblind
 {
 	class CSynchronizer;
 }
+class CPhysicsManager;
 class CBaseSystem;
 class CEntityManager
 {

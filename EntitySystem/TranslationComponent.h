@@ -3,5 +3,6 @@
 #include "BaseComponent.h"
 struct STranslationComponent : public SBaseComponent
 {
+	~STranslationComponent();
 	CU::Matrix44f myOrientation;
 } typedef TranslationComponent;

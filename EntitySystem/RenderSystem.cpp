@@ -30,11 +30,11 @@ void CRenderSystem::Update(float aDeltaTime)
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
 
-		std::stringstream ss;
-		ss << "X : " << translation.myOrientation.GetPosition().x << "\n" 
-			<< "Y : " << translation.myOrientation.GetPosition().y << "\n"
-			<< "Z : " << translation.myOrientation.GetPosition().z;
-		mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(),CU::Vector2f(0,0)));
+		//std::stringstream ss;
+		//ss << "X : " << translation.myOrientation.GetPosition().x << "\n" 
+		//	<< "Y : " << translation.myOrientation.GetPosition().y << "\n"
+		//	<< "Z : " << translation.myOrientation.GetPosition().z;
+		//mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(),CU::Vector2f(0,0)));
 		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, render.myModelID, translation.myOrientation.GetPosition() ));
 	}
 }

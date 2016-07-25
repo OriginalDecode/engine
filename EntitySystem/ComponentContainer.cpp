@@ -1,6 +1,6 @@
 #include "ComponentContainer.h"
 #include "ComponentFilter.h"
-
+#include "BaseComponent.h"
 
 CComponentContainer::CComponentContainer()
 	: myComponents(MAX_COMPONENTS_COUNT)
@@ -16,6 +16,10 @@ CComponentContainer::CComponentContainer()
 
 CComponentContainer::~CComponentContainer()
 {
+	for (int i = 0; i < myComponents.Size(); i++)
+	{
+		myComponents[i].DeleteAll();
+	}
 }
 
 void CComponentContainer::AddEntity()

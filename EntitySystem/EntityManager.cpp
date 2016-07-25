@@ -19,6 +19,10 @@ CEntityManager::CEntityManager()
 
 CEntityManager::~CEntityManager()
 {
+	for each(CBaseSystem* s in mySystems)
+	{
+		SAFE_DELETE(s);
+	}
 	SAFE_DELETE(myComponents);
 }
 

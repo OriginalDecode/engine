@@ -20,8 +20,6 @@ void CPhysicsSystem::Update(float aDeltaTime)
 		STranslationComponent& translation = GetComponent<STranslationComponent>(e);
 		SPhysicsComponent& physics = GetComponent<SPhysicsComponent>(e);
 
-		translation.myOrientation = physics.myBody->GetPosition();
-
-
+		translation.myOrientation = physics.myBody->GetOrientation();
 	}
 }

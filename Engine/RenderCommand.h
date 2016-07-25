@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <Math/Vector/Vector.h>
-
+#include "Line3D.h"
 namespace Snowblind
 {
 	class CInstance;
@@ -16,6 +16,7 @@ enum class eCommandType
 	e3D,
 	LIGHT,
 	PARTICLE,
+	LINE,
 };
 
 enum class eDeferredFlag
@@ -32,6 +33,7 @@ struct SRenderCommand
 		TEXT,
 		SPRITE,
 		MODEL,
+		LINE,
 		SKYSPHERE,
 		POINTLIGHT,
 		PARTICLE,
@@ -44,6 +46,7 @@ struct SRenderCommand
 	SRenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& aPosition);
 	SRenderCommand(const eType& aType, Snowblind::CEmitterInstance* anInstance);
 	SRenderCommand(const eType& aType,  const CU::Vector3f& aPosition);
+	SRenderCommand(const eType& aType, const SLinePoint& aFirstPoint, const SLinePoint& aSecondPoint);
 
 	Snowblind::CEmitterInstance* myEmitterInstance;
 
@@ -54,6 +57,9 @@ struct SRenderCommand
 	eCommandType myCommandType;
 	float myRange;
 	float myIntensity;
+	
+	SLinePoint firstPoint;
+	SLinePoint secondPoint;
 
 	eType myType;
 };

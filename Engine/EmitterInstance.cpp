@@ -2,6 +2,7 @@
 #include "EmitterInstance.h"
 #include "AssetsContainer.h"
 #include <Randomizer.h>
+#include "VertexStructs.h"
 namespace Snowblind
 {
 	CEmitterInstance::CEmitterInstance()
@@ -12,6 +13,8 @@ namespace Snowblind
 	{
 		SAFE_RELEASE(myInputLayout);
 		SAFE_DELETE(myVertexBuffer);
+		SAFE_RELEASE(myConstantBuffer);
+		SAFE_DELETE(myConstantStruct);
 	}
 
 	void CEmitterInstance::Initiate(CSynchronizer* aSynchronizer)
@@ -27,12 +30,12 @@ namespace Snowblind
 		data.sizeDelta = 0.f;
 		data.alphaDelta = 0.f;
 
-		//myData.diffuseTexture = Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/smoke.dds");
-		//myData.diffuseTexture->SetDebugName("ParticleDiffuseTexture");
-		//myData.lifeTime = -1.f;
-		//myData.shader = Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/Particle.fx");
-		//myData.particleData = data;
-		//myData.size = { 0.f,0.f,0.f };
+		myData.diffuseTexture = Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/smoke.dds");
+		myData.diffuseTexture->SetDebugName("ParticleDiffuseTexture");
+		myData.lifeTime = -1.f;
+		myData.shader = Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Particle.json");
+		myData.particleData = data;
+		myData.size = { 0.f,0.f,0.f };
 
 		myParticles.Init(256);
 
@@ -44,7 +47,7 @@ namespace Snowblind
 
 		CreateVertexBuffer();
 		CreateInputLayout();
-
+		CreateConstantBuffer();
 		myTimeToEmit = 0.f;
 	}
 
@@ -60,23 +63,36 @@ namespace Snowblind
 		UpdateParticle(aDeltaTime);
 	}
 
-	void CEmitterInstance::Render(CCamera* camera, CTexture* aDepthTexture)
+	void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection, CTexture* aDepthTexture)
 	{
 		UpdateVertexBuffer();
-		//myData.shader->SetTexture(myData.diffuseTexture, "DiffuseTexture");
-		//myData.shader->SetDepthTexture(aDepthTexture);
 
-		//myData.shader->SetMatrices(myOrientation, camera->GetOrientation(), camera->GetProjection());
 		ID3D11DeviceContext* context = CEngine::GetDirectX()->GetContext();
 		context->IASetInputLayout(myInputLayout);
 
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		context->IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-		/*D3DX11_TECHNIQUE_DESC techDesc;
-		myData.shader->GetTechnique()->GetDesc(&techDesc);
 
-		myData.shader->GetTechnique()->GetPassByIndex(0)->Apply(0, context);*/
+		CEngine::GetDirectX()->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->vertexShader : nullptr);
+		CEngine::GetDirectX()->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->geometryShader : nullptr);
+		CEngine::GetDirectX()->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->pixelShader : nullptr);
+
+
+		ID3D11ShaderResourceView* srv[2];
+		srv[0] = myData.diffuseTexture->GetShaderView();
+		srv[1] = aDepthTexture->GetShaderView();
+		context->PSSetShaderResources(0, 2, &srv[0]);
+
+		SetMatrices(aPreviousCameraOrientation, aProjection);
+		context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 		context->Draw(myParticles.Size(), 0);
+
+		
+		srv[0] = nullptr;
+		srv[1] = nullptr;
+		context->PSSetShaderResources(0, 2, &srv[0]);
+
+		CEngine::GetDirectX()->SetGeometryShader(nullptr);
 
 	}
 
@@ -125,13 +141,30 @@ namespace Snowblind
 		}
 	}
 
+	void CEmitterInstance::CreateConstantBuffer()
+	{
+		myConstantStruct = new SVertexBaseStruct;
+
+		D3D11_BUFFER_DESC cbDesc;
+		ZeroMemory(&cbDesc, sizeof(cbDesc));
+		cbDesc.ByteWidth = sizeof(SVertexBaseStruct);
+		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		cbDesc.MiscFlags = 0;
+		cbDesc.StructureByteStride = 0;
+
+		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+		CEngine::GetDirectX()->SetDebugName(myConstantBuffer, "Line3D Constant Buffer");
+		CEngine::GetDirectX()->HandleErrors(hr, "[Line3D] : Failed to Create Constant Buffer, ");
+	}
+
 	void CEmitterInstance::CreateInputLayout()
 	{
 		HRESULT hr = S_OK;
 
-		/*D3DX11_PASS_DESC passDesc;
-		hr = myData.shader->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to get tenchnique from shader.");*/
+		void* shader = myData.shader->GetVertexShader()->compiledShader;
+		int size = myData.shader->GetVertexShader()->shaderSize;
 
 		const D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
@@ -140,9 +173,26 @@ namespace Snowblind
 			{ "SIZE", 0, DXGI_FORMAT_R32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
-		/*hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(layout, ARRAYSIZE(layout), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myInputLayout);
+		hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(layout, ARRAYSIZE(layout), shader, size, &myInputLayout);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create InputLayout!");
-		CEngine::GetDirectX()->SetDebugName(myInputLayout, "Particle Input Layout");*/
+		CEngine::GetDirectX()->SetDebugName(myInputLayout, "Particle Input Layout");
+	}
+
+	void CEmitterInstance::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
+	{
+		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
+		myConstantStruct->world = CU::Matrix44f();
+		myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
+		myConstantStruct->projection = aCameraProjection;
+
+		D3D11_MAPPED_SUBRESOURCE msr;
+		Snowblind::CEngine::GetDirectX()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		if (msr.pData != nullptr)
+		{
+			SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
+			memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SVertexBaseStruct));
+		}
+		Snowblind::CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);
 	}
 
 	void CEmitterInstance::UpdateParticle(float aDeltaTime)

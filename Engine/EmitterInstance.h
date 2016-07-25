@@ -4,6 +4,7 @@
 #include "IndexWrapper.h"
 
 struct ID3D11InputLayout;
+struct SVertexBaseStruct;
 namespace Snowblind
 {
 	class CCamera;
@@ -18,13 +19,14 @@ namespace Snowblind
 		void Initiate(CSynchronizer* aSynchronizer);
 
 		void Update(float aDeltaTime);
-		void Render(CCamera* camera, CTexture* aDepthTexture);
+		void Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection, CTexture* aDepthTexture);
 
 	private:
 		void CreateVertexBuffer();
 		void UpdateVertexBuffer();
-
+		void CreateConstantBuffer();
 		void CreateInputLayout();
+		void SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection);
 
 		void UpdateParticle(float aDeltaTime);
 		void Emit();
@@ -35,9 +37,11 @@ namespace Snowblind
 		CU::Matrix44f myOrientation;
 
 		float myTimeToEmit;
-
 		ID3D11InputLayout* myInputLayout;
 		CSynchronizer* mySynchronizer;
-		
+
+		ID3D11Buffer* myConstantBuffer;
+		SVertexBaseStruct* myConstantStruct;
+
 	};
 };

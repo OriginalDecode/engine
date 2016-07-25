@@ -207,6 +207,7 @@
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="LightStructs.h" />
+    <ClInclude Include="Line3D.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="RectangleBinPack.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="FullscreenHelper.cpp" />
     <ClCompile Include="GeometryUtility.cxx" />
     <ClCompile Include="Instance.cpp" />
+    <ClCompile Include="Line3D.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="RectangleBinPack.cpp" />

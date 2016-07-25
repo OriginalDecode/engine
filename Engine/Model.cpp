@@ -35,7 +35,7 @@ namespace Snowblind
 
 	void CModel::CreateTriangle(const std::string& anEffectPath)
 	{
-		myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
+		myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Line3D.json");
 		myIsNULLObject = false;
 		//myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 		myVertexFormat.Init(2);
@@ -58,12 +58,13 @@ namespace Snowblind
 
 		myVertexData->myNrOfVertexes = myVertices.Size();
 		myVertexData->myStride = sizeof(SVertexTypePosCol);
-		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
+		myVertexData->mySize = myVertexData->myNrOfVertexes * myVertexData->myStride;
 		myVertexData->myVertexData = new char[myVertexData->mySize]();
 		memcpy(myVertexData->myVertexData, &myVertices[0], myVertexData->mySize);
 
 
 		InitVertexBuffer();
+		InitConstantBuffer();
 	}
 
 	void CModel::CreateCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
@@ -591,34 +592,21 @@ namespace Snowblind
 
 						CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 						mySurfaces[i]->Activate();
-
-
-
-
-						//ID3D11ShaderResourceView* srv = mySurfaces[i]->GetTexture() ? mySurfaces[i]->GetTexture()->GetShaderView() : nullptr;
-						//if (srv != nullptr)
-						//{
-						//	context->PSSetShaderResources(0, 1, &srv);
-						//}
-
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
-
-						//srv = nullptr;
-						//context->PSSetShaderResources(0, 1, &srv);
-
+						/* Deactivate surface needed */
 					}
 
 				}
-				else if(myIsSkysphere)
+				else if (myIsSkysphere)
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
 						CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-						
+
 						SetMatrices(aCameraOrientation, aCameraProjection);
 
 						context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-						
+
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
 
 					}
@@ -646,21 +634,19 @@ namespace Snowblind
 		}
 	}
 
-	void CModel::RenderPolygon()
+	void CModel::RenderPolygon(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
 	{
+		ID3D11DeviceContext* context = myAPI->GetContext();
+		context->IASetInputLayout(myVertexLayout);
+		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myStride);
 
-		myAPI->GetContext()->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myStride);
+		CEngine::GetDirectX()->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
+		CEngine::GetDirectX()->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
 
-		myAPI->GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		/*	D3DX11_TECHNIQUE_DESC techDesc;
-			myEffect->GetTechnique()->GetDesc(&techDesc);
-
-			for (UINT p = 0; p < techDesc.Passes; ++p)
-			{
-				myEffect->GetTechnique()->GetPassByIndex(p)->Apply(0, myAPI->GetContext());
-				myAPI->GetContext()->Draw(3, 0);
-			}*/
+		SetMatrices(aCameraOrientation, aCameraProjection);
+		context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+		context->Draw(3, 0);
 	}
 
 	void CModel::SetIsSkysphere()

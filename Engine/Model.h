@@ -32,7 +32,7 @@ namespace Snowblind
 		void CreateTexturedCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth);
 		void CreateModel();
 		void Render(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection);
-		void RenderPolygon();
+		void RenderPolygon(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection);
 
 		void AddChild(CModel* aChild);
 		void SetIsSkysphere();

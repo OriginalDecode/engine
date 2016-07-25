@@ -204,6 +204,7 @@
     <ClInclude Include="ShaderFactory.h">
       <Filter>Effect</Filter>
     </ClInclude>
+    <ClInclude Include="Line3D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -314,5 +315,6 @@
     <ClCompile Include="ShaderFactory.cpp">
       <Filter>Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Line3D.cpp" />
   </ItemGroup>
 </Project>

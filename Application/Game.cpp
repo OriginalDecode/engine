@@ -3,19 +3,28 @@
 /* Entity System Includes */
 #include <EntityManager.h>
 /* Components */
-#include <TranslationComponent.h>
+#include <PhysicsComponent.h>
 #include <RenderComponent.h>
+#include <TranslationComponent.h>
 /* Systems */
+#include <PhysicsSystem.h>
 #include <RenderSystem.h>
 /* End of Entity System Includes*/
+/* Physics */
+#include <PhysicsManager.h>
+#include <RigidBody.h>
+
+/* Physics End */
+
+#include <Synchronizer.h>
+#include <RenderCommand.h>
+#include <Line3D.h>
+
 
 #include <AssetsContainer.h>
 #include <EngineDefines.h>
 #include <JSON/JSONReader.h>
-#include <PhysicsManager.h>
-#include <PhysicsComponent.h>
-#include <RigidBody.h>
-#include <PhysicsSystem.h>
+#include <DL_Debug.h>
 
 struct SGameObject
 {
@@ -67,28 +76,31 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 
 		if (hasPhysics)
 		{
-			myEntityManager->AddComponent<SPhysicsComponent>(e);
-			SPhysicsComponent& p = myEntityManager->GetComponent<SPhysicsComponent>(e);
+			myEntityManager->AddComponent<PhysicsComponent>(e);
+			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
+#ifdef _DEBUG
+			p.myBody = new CRigidBody(mySynchronizer);
+#else
 			p.myBody = new CRigidBody();
-			myPhysicsManager->Add(p.myBody->InitAsSphere());
+#endif
+			myPhysicsManager->Add(p.myBody->InitAsSphere(pos));
 		}
 	}
 
 	myEntityManager->AddSystem<CPhysicsSystem>();
 	myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);
 
-	
-	//body = myPhysicsManager->Create(10);
 }
 
 CGame::~CGame()
 {
-	SAFE_DELETE(myEntityManager);
 	SAFE_DELETE(myPhysicsManager);
+	SAFE_DELETE(myEntityManager);
 }
 
 void CGame::Update(float aDeltaTime)
 {
 	myPhysicsManager->Update();
 	myEntityManager->Update(aDeltaTime);
+	
 }

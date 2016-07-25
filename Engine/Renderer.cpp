@@ -7,6 +7,7 @@
 #include "SkySphere.h"
 #include "PointLight.h"
 #include "Sprite.h"
+#include "Line3D.h"
 namespace Snowblind
 {
 
@@ -37,10 +38,15 @@ namespace Snowblind
 		myAssetsContainer = CAssetsContainer::GetInstance();
 		myEngine = CEngine::GetInstance();
 		myDirectX = myEngine->GetDirectX();
+
+
+		my3DLine = new CLine3D();
+
 	}
 
 	CRenderer::~CRenderer()
 	{
+		SAFE_DELETE(my3DLine);
 		SAFE_DELETE(mySprite);
 		SAFE_DELETE(mySkysphere);
 		SAFE_DELETE(myTimeManager);
@@ -65,6 +71,7 @@ namespace Snowblind
 
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
+
 		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 		myDeferredRenderer->SetBuffers();
 		myDeferredRenderer->DeferredRender();
@@ -85,6 +92,8 @@ namespace Snowblind
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		//RenderParticles();
+
+		RenderLines();
 
 		Render2DCommands();
 
@@ -185,4 +194,22 @@ namespace Snowblind
 		}
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 	}
+
+	void CRenderer::RenderLines()
+	{
+		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandType::LINE);
+		for each(const SRenderCommand& command in commands)
+		{
+			switch (command.myType)
+			{
+			case SRenderCommand::eType::LINE:
+			{
+				my3DLine->Update(command.firstPoint, command.secondPoint);
+				my3DLine->Render(myPrevFrame, myCamera->GetProjection());
+				break;
+			}
+			}
+		}
+	}
+
 };

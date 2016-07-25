@@ -24,6 +24,7 @@ namespace Snowblind
 		my3DCommandBuffer[myCurrentBuffer].RemoveAll();
 		myLightCommandBuffer[myCurrentBuffer].RemoveAll();
 		myParticleCommands[myCurrentBuffer].RemoveAll();
+		myLineBuffer[myCurrentBuffer].RemoveAll();
 		myCurrentBuffer ^= 1;
 	}
 
@@ -37,6 +38,8 @@ namespace Snowblind
 		myLightCommandBuffer[1].RemoveAll();
 		myParticleCommands[0].RemoveAll();
 		myParticleCommands[1].RemoveAll();
+		myLineBuffer[0].RemoveAll();
+		myLineBuffer[1].RemoveAll();
 
 	}
 
@@ -74,7 +77,7 @@ namespace Snowblind
 	{
 		myLogicIsDone = true;
 	}
-	
+
 	void CSynchronizer::AddRenderCommand(const SRenderCommand& aRenderCommand, const eDeferredFlag& isDeferredFlag /*= eDeferredFlag::NOT_DEFERRED*/)
 	{
 		isDeferredFlag; //To be used to separate deferred models from non deferred models.
@@ -91,6 +94,9 @@ namespace Snowblind
 			break;
 		case eCommandType::PARTICLE:
 			myParticleCommands[myCurrentBuffer ^ 1].Add(aRenderCommand);
+			break;
+		case eCommandType::LINE:
+			myLineBuffer[myCurrentBuffer ^ 1].Add(aRenderCommand);
 			break;
 		}
 	}
@@ -116,6 +122,12 @@ namespace Snowblind
 		{
 			return my3DCommandBuffer[myCurrentBuffer];
 		}
+
+		if (commandType == eCommandType::LINE)
+		{
+			return myLineBuffer[myCurrentBuffer];
+		}
+
 
 		DL_ASSERT("No commandbuffer specified.");
 		return 0;

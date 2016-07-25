@@ -6,6 +6,9 @@ namespace CommonUtilities
 	class TimeManager;
 }
 
+
+class CLine3D;
+
 namespace Snowblind
 {
 
@@ -28,29 +31,31 @@ namespace Snowblind
 		void Render();
 
 	private:
-		eDeferredType myDeferredType;
 		void Render3DCommands();
 		void Render2DCommands();
 		void RenderLightCommands();
 		void RenderParticles();
+		void RenderLines();
 
-		CAssetsContainer* myAssetsContainer;
-		CEngine* myEngine;
-		CDirectX11* myDirectX;
+		eDeferredType		myDeferredType;
+		CAssetsContainer*	myAssetsContainer;
+		CEngine*			myEngine;
+		CDirectX11*			myDirectX;
 
-		CCamera* myCamera;
-		CU::Matrix44f myPrevFrame;
+		CCamera*			myCamera;
+		CU::Matrix44f		myPrevFrame;
 
-		CCamera* my2DCamera;
-		CU::Vector3f mySpherePos;
-		CU::TimeManager* myTimeManager;
+		CCamera*			my2DCamera;
+		CU::Vector3f		mySpherePos;
+		CU::TimeManager*	myTimeManager;
 		
-		CDeferredRenderer* myDeferredRenderer;
-		CSynchronizer& mySynchronizer;
-		CPointLight* myPointLight;
-		CText* myText;
-		CTexture* myDepthTexture;
-		CSkySphere* mySkysphere;
-		CSprite* mySprite;
+		CDeferredRenderer*	myDeferredRenderer;
+		CSynchronizer&		mySynchronizer;
+		CPointLight*		myPointLight;
+		CText*				myText;
+		CTexture*			myDepthTexture;
+		CSkySphere*			mySkysphere;
+		CSprite*			mySprite;
+		CLine3D*			my3DLine;
 	};
 }; 

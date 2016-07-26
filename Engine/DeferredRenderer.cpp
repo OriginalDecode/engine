@@ -30,6 +30,8 @@ namespace Snowblind
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 		myFinishedTexture->SetDebugName("DeferredFinishedTexture");
 
+		myCubeMap = myEngine->GetAssetsContainer()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
+
 
 		myDepthStencil = new CTexture();
 		myDepthStencil->InitAsDepthBuffer(windowSize.myWidth, windowSize.myHeight);
@@ -220,11 +222,13 @@ namespace Snowblind
 		myDirectX->SetVertexShader(myAmbientPass.myEffect->GetVertexShader()->vertexShader);
 		myDirectX->SetPixelShader(myAmbientPass.myEffect->GetPixelShader()->pixelShader);
 
-		ID3D11ShaderResourceView* srv[3];
+		ID3D11ShaderResourceView* srv[4];
 		srv[0] = myAlbedo->GetShaderView();
 		srv[1] = myNormal->GetShaderView();
 		srv[2] = myDepth->GetShaderView();
-		myContext->PSSetShaderResources(0, 3, &srv[0]);
+		srv[3] = myCubeMap->GetShaderView();
+
+		myContext->PSSetShaderResources(0, 4, &srv[0]);
 		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP);
 
 		myContext->DrawIndexed(6, 0, 0);
@@ -232,7 +236,8 @@ namespace Snowblind
 		srv[0] = nullptr;
 		srv[1] = nullptr;
 		srv[2] = nullptr;
-		myContext->PSSetShaderResources(0, 3, &srv[0]);
+		srv[3] = nullptr;
+		myContext->PSSetShaderResources(0, 4, &srv[0]);
 
 	}
 
@@ -249,8 +254,8 @@ namespace Snowblind
 	void CDeferredRenderer::Finalize()
 	{
 		SetBuffers();
-		myDirectX->SetVertexShader(myAmbientPass.myEffect->GetVertexShader()->vertexShader);
-		myDirectX->SetPixelShader(myAmbientPass.myEffect->GetPixelShader()->pixelShader);
+		myDirectX->SetVertexShader(myScreenData.myEffect->GetVertexShader()->vertexShader);
+		myDirectX->SetPixelShader(myScreenData.myEffect->GetPixelShader()->pixelShader);
 
 		ID3D11ShaderResourceView* srv[1];
 		srv[0] = myFinishedTexture->GetShaderView();

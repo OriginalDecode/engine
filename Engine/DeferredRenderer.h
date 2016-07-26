@@ -90,6 +90,8 @@ namespace Snowblind
 		CTexture* myDepth;
 		CTexture* myDepthStencil;
 		CTexture* myFinishedTexture;
+		CTexture* myCubeMap;
+
 
 
 		struct SParticlePass

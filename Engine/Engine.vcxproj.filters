@@ -168,9 +168,6 @@
     <ClInclude Include="PointLight.h">
       <Filter>Light\Point</Filter>
     </ClInclude>
-    <ClInclude Include="FullscreenHelper.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="RenderCommand.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -281,9 +278,6 @@
     </ClCompile>
     <ClCompile Include="PointLight.cpp">
       <Filter>Light\Point</Filter>
-    </ClCompile>
-    <ClCompile Include="FullscreenHelper.cpp">
-      <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="RenderCommand.cpp">
       <Filter>Rendering</Filter>

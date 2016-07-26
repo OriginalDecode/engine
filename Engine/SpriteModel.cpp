@@ -37,8 +37,8 @@ namespace Snowblind
 		myTexturePath = aTexturePath;
 		mySize = aSize;
 		myPosition = aPosition;
-		myTexture = CAssetsContainer::GetInstance()->GetTexture(myTexturePath)->GetShaderView();
-		myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Sprite.json");
+		myTexture = CEngine::GetInstance()->GetAssetsContainer()->GetTexture(myTexturePath)->GetShaderView();
+		myEffect = CEngine::GetInstance()->GetAssetsContainer()->GetEffect("Data/Shaders/T_Sprite.json");
 		//myEffect->SetAlbedo(myTexture);
 
 		myVertexFormat.Init(2);
@@ -105,7 +105,7 @@ namespace Snowblind
 
 		mySize = aSize;
 		myPosition = aPosition;
-		myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Sprite.json");
+		myEffect = CEngine::GetInstance()->GetAssetsContainer()->GetEffect("Data/Shaders/T_Sprite.json");
 		myTexture = aShaderResource;
 		//myEffect->SetAlbedo(aShaderResource);
 

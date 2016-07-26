@@ -10,6 +10,7 @@ namespace Snowblind
 	class CCamera;
 	class CSynchronizer;
 	class CTexture;
+	class CEngine;
 	class CEmitterInstance
 	{
 	public:
@@ -42,6 +43,6 @@ namespace Snowblind
 
 		ID3D11Buffer* myConstantBuffer;
 		SVertexBaseStruct* myConstantStruct;
-
+		CEngine* myEngine;
 	};
 };

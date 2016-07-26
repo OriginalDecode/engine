@@ -12,13 +12,13 @@ namespace Snowblind
 	CSkySphere::CSkySphere(const std::string& aFilePath, const std::string& anEffect, CCamera* aCamera)
 		: myCamera(aCamera)
 	{
-		CAssetsContainer::GetInstance()->LoadModel(aFilePath, anEffect);
-		myModel = CAssetsContainer::GetInstance()->GetModel(aFilePath);
+		CEngine::GetInstance()->GetAssetsContainer()->LoadModel(aFilePath, anEffect);
+		myModel = CEngine::GetInstance()->GetAssetsContainer()->GetModel(aFilePath);
 		myModel->SetIsSkysphere();
 		std::string skysphereTexture;
 		JSONReader reader("Data/Config/game.json");
 		reader.ForceReadElement("Skysphere", skysphereTexture);
-		mySkysphereTexture = CAssetsContainer::GetInstance()->GetTexture(skysphereTexture);
+		mySkysphereTexture = CEngine::GetInstance()->GetAssetsContainer()->GetTexture(skysphereTexture);
 	}
 
 	CSkySphere::~CSkySphere()
@@ -27,7 +27,7 @@ namespace Snowblind
 
 	void CSkySphere::Render(CU::Matrix44f& anOrientation)
 	{
-	
+
 
 		ID3D11ShaderResourceView* srv = mySkysphereTexture->GetShaderView();
 		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, 1, &srv);

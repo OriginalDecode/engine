@@ -2,18 +2,12 @@
 #include "Line3D.h"
 #include <DL_Debug.h>
 #include "VertexStructs.h"
+
 CLine3D::CLine3D()
-	: myFirstPoint({ 0, 0, 0 }, { 1, 1, 1, 1 })
-	, mySecondPoint({ 0, 0, 0 }, { 1, 1, 1, 1 })
+	: myFirstPoint({ 0, 0, 0, 1 }, { 1, 1, 1, 1 })
+	, mySecondPoint({ 0, 0, 0, 1 }, { 1, 1, 1, 1 })
 {
-	myAPI = Snowblind::CEngine::GetDirectX();
-	myEffect = Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Line3D.json");
-
-
-	CreateVertexBuffer();
-	CreateConstantBuffer();
 }
-
 
 CLine3D::~CLine3D()
 {
@@ -21,6 +15,16 @@ CLine3D::~CLine3D()
 	SAFE_RELEASE(myConstantBuffer);
 	SAFE_DELETE(myConstantStruct);
 	SAFE_DELETE(myVertexBuffer);
+}
+
+void CLine3D::Initiate(int aLineAmount /*= 256*/)
+{
+	myLineAmount = aLineAmount;
+	myAPI = Snowblind::CEngine::GetDirectX();
+	myEffect =  Snowblind::CEngine::GetInstance()->GetAssetsContainer()->GetEffect("Data/Shaders/T_Line3D.json");
+	CreateVertexBuffer();
+	CreateConstantBuffer();
+
 }
 
 void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint)
@@ -38,8 +42,8 @@ void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint
 	{
 		SLinePoint* data = (SLinePoint*)mappedResource.pData;
 
-		//bool isSafe = sizeof(SLinePoint) == sizeof(myVertices[0]);
-		//DL_ASSERT_EXP(isSafe, "[Line3DRenderer](UpdateVertexBuffer) : Not safe to copy.");
+		bool isSafe = sizeof(SLinePoint) == sizeof(myVertices[0]);
+		DL_ASSERT_EXP(isSafe, "[Line3DRenderer](UpdateVertexBuffer) : Not safe to copy.");
 		memcpy(data, &myVertices[0], sizeof(SLinePoint) * myVertices.Size());
 	}
 	myAPI->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
@@ -53,7 +57,7 @@ void CLine3D::Render(CU::Matrix44f& prevOrientation, CU::Matrix44f& projection)
 	context->IASetInputLayout(myVertexLayout);
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-	context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN,0);
+	context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
 
 	myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
 	myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
@@ -66,6 +70,91 @@ void CLine3D::Render(CU::Matrix44f& prevOrientation, CU::Matrix44f& projection)
 	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 	context->Draw(myVertices.Size(), 0);
+
+}
+
+void CLine3D::AddLine(const SLine& aLine)
+{
+
+}
+
+void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
+{
+	float depth = max.z - min.z;
+	float width = max.x - min.x;
+	float height = max.y - min.y;
+
+	CU::Vector3f point;
+	CU::Vector3f nextPoint;
+
+	SLinePoint p1;
+	SLinePoint p2;
+
+	point.x = min.x;
+	point.y = min.y;
+	point.z = min.z;
+
+	point.x -= (width * 0.5f);
+	point.y -= (height * 0.5f);
+	point.z -= (depth * 0.5f);
+
+	nextPoint = point;
+	nextPoint.x += width;
+
+	p1.position = point;
+	p1.color = CU::Vector4f(1, 0, 1, 1);
+
+	p2.position = nextPoint;
+	p2.color = CU::Vector4f(1, 1, 1, 1);
+
+	myVertices.Add(p2);
+	myVertices.Add(p2);
+
+	point = nextPoint;
+	point.z += depth;
+
+	nextPoint = point;
+	nextPoint.x -= width;
+
+	p1.position = point;
+	p1.color = CU::Vector4f(0, 1, 1, 1);
+
+	p2.position = nextPoint;
+	p2.color = CU::Vector4f(0, 0, 1, 1);
+
+	myVertices.Add(p2);
+	myVertices.Add(p2);
+
+	point = nextPoint;
+	point.y += height;
+
+	nextPoint = point;
+	nextPoint.z -= depth;
+
+	p1.position = point;
+	p1.color = CU::Vector4f(1.f, 150.f/255.f, 0, 1);
+
+	p2.position = nextPoint;
+	p2.color = CU::Vector4f(1, 0, 0, 1);
+
+	myVertices.Add(p2);
+	myVertices.Add(p2);
+
+	point = nextPoint;
+	point.x += width;
+
+	nextPoint = point;
+	nextPoint.z += depth;
+
+
+	p1.position = point;
+	p1.color = CU::Vector4f(1.f, 1.f, 0, 1);
+
+	p2.position = nextPoint;
+	p2.color = CU::Vector4f(0, 1, 0, 1);
+
+	myVertices.Add(p2);
+	myVertices.Add(p2);
 
 }
 
@@ -130,7 +219,7 @@ void CLine3D::CreateVertexBuffer()
 		myVertexBuffer->myVertexBuffer->Release();
 	}
 
-	vertexBufferDesc.ByteWidth = sizeof(SLinePoint) * 2;
+	vertexBufferDesc.ByteWidth = sizeof(SLinePoint) * myLineAmount;
 
 
 

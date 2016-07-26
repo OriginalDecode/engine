@@ -15,6 +15,7 @@ namespace Snowblind
 {
 	CModel::CModel()
 	{
+		myEngine = CEngine::GetInstance();
 		myAPI = CEngine::GetDirectX();
 	}
 
@@ -35,7 +36,7 @@ namespace Snowblind
 
 	void CModel::CreateTriangle(const std::string& anEffectPath)
 	{
-		myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Line3D.json");
+		myEffect = myEngine->GetAssetsContainer()->GetEffect("Data/Shaders/T_Line3D.json");
 		myIsNULLObject = false;
 		//myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 		myVertexFormat.Init(2);
@@ -69,7 +70,7 @@ namespace Snowblind
 
 	void CModel::CreateCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
 	{
-		myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
+		myEffect = myEngine->GetAssetsContainer()->GetEffect(anEffectPath);
 		myIsNULLObject = false;
 		ENGINE_LOG("Creating Cube");
 		float halfWidth = aWidth *0.5f;
@@ -187,7 +188,7 @@ namespace Snowblind
 
 	void CModel::CreateCube(const std::string& anEffectPath, const CU::Vector3f& aColor)
 	{
-		myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
+		myEffect = myEngine->GetAssetsContainer()->GetEffect(anEffectPath);
 
 		myIsNULLObject = false;
 		ENGINE_LOG("Creating Cube");

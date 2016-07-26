@@ -32,12 +32,16 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 	float4 normal = NormalTexture.Sample(point_Clamp, input.uv);
 	float4 depth = DepthTexture.Sample(point_Clamp, input.uv);
-
+	
+	float gamma = 0.9;
+	float3 divi = 1.0 / gamma;
+	
+	albedo.rgb = pow(albedo.rgb, divi.rgb);
+	
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
 	//float4 cubemap = CubeMap.SampleLevel(point_Clamp, normal, 7); //Use in the future.
 	//return saturate(albedo * cubemap);
-	float4 col =  float4(1, 1, 0, 1);
-
-	return saturate(albedo * col);
+	
+	return saturate(albedo);
 };

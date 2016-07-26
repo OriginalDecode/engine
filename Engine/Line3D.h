@@ -11,6 +11,14 @@ struct SLinePoint
 	CU::Vector4f color;
 };
 
+struct SLine
+{
+	SLinePoint first;
+	SLinePoint second;
+};
+
+
+
 namespace Snowblind
 {
 	class CDirectX11;
@@ -29,9 +37,14 @@ public:
 	CLine3D();
 	~CLine3D();
 
+	void Initiate(int aLineAmount = 256);
+
+
 	void Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint);
 	void Render(CU::Matrix44f& prevOrientation, CU::Matrix44f& projection);
 
+	void AddLine(const SLine& aLine);
+	void AddCube(const CU::Vector3f& min, const CU::Vector3f& max);
 
 private:
 	void CreateConstantBuffer();
@@ -55,6 +68,6 @@ private:
 	ID3D11Buffer* myConstantBuffer = nullptr;
 
 	CU::GrowingArray<SLinePoint> myVertices;
-
+	int myLineAmount = 0;
 };
 

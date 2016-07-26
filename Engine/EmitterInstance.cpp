@@ -19,6 +19,7 @@ namespace Snowblind
 
 	void CEmitterInstance::Initiate(CSynchronizer* aSynchronizer)
 	{
+		myEngine = CEngine::GetInstance();
 		mySynchronizer = aSynchronizer;
 		SParticleData data;
 		data.affectedByGravity = false;
@@ -30,10 +31,10 @@ namespace Snowblind
 		data.sizeDelta = 0.f;
 		data.alphaDelta = 0.f;
 
-		myData.diffuseTexture = Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/smoke.dds");
+		myData.diffuseTexture = myEngine->GetAssetsContainer()->GetTexture("Data/Textures/smoke.dds");
 		myData.diffuseTexture->SetDebugName("ParticleDiffuseTexture");
 		myData.lifeTime = -1.f;
-		myData.shader = Snowblind::CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Particle.json");
+		myData.shader = myEngine->GetAssetsContainer()->GetEffect("Data/Shaders/T_Particle.json");
 		myData.particleData = data;
 		myData.size = { 0.f,0.f,0.f };
 

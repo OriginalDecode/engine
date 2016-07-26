@@ -2,7 +2,7 @@
 #include "Synchronizer.h"
 #include "Renderer.h"
 #include "Console.h"
-
+#include "AssetsContainer.h"
 
 
 namespace Snowblind
@@ -15,18 +15,11 @@ namespace Snowblind
 	{
 		CreateAppWindow(anInstance, aWndProc);
 		CU::Input::InputWrapper::Create(myHWND, anInstance);
-		myAPI = new CDirectX11(myHWND, aWindowWidth, aWindowHeight);
-
-		myCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight);
-		my2DCamera = new Snowblind::CCamera(aWindowWidth, aWindowHeight, CU::Vector3f(0, 0, 0.f));
-		Randomizer::Create();
-		SetWindowText(myHWND, "Snowblind Engine");
-
-		myConsole = new CConsole();
 	}
 
 	CEngine::~CEngine()
 	{
+		SAFE_DELETE(myAssetsContainer);
 		SAFE_DELETE(myConsole);
 		SAFE_DELETE(model);
 		SAFE_DELETE(mySynchronizer);
@@ -34,8 +27,9 @@ namespace Snowblind
 		SAFE_DELETE(myCamera);
 		SAFE_DELETE(myFontManager);
 		SAFE_DELETE(myTimeManager);
-		CU::Input::InputWrapper::Destroy();
+		CU::Input::InputWrapper::Destroy(); //Remove
 		Randomizer::Destroy();
+
 		myAPI->CleanUp();
 		SAFE_DELETE(myAPI);
 	}
@@ -68,7 +62,18 @@ namespace Snowblind
 
 	void CEngine::Initiate()
 	{
-		myTimeManager = new CU::TimeManager();
+		myAPI = new CDirectX11(myHWND, myWindowSize.myWidth, myWindowSize.myHeight);
+
+		myCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight);
+		my2DCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
+		SetWindowText(myHWND, "Snowblind Engine");
+
+		myAssetsContainer = new CAssetsContainer();
+		myAssetsContainer->Initiate();
+
+		Randomizer::Create();
+		
+
 		myFontManager = new CFontManager();
 		myFontManager->Initiate();
 
@@ -76,13 +81,11 @@ namespace Snowblind
 		myRenderer = new CRenderer(*mySynchronizer, myCamera);
 		myRenderer->Add2DCamera(my2DCamera);
 
-		//model = new Snowblind::CModel();
-		//model->CreateCube("Data/Shaders/T_Cube_Shader.json", CU::Vector3f(1, 1, 1));
-		//myRenderer->AddModel(model, "Cube");
-
-		//myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/ls_engine_test/Radio_DDS.fbx", "Data/Shaders/T_Deferred_Base.json"), "Radio");
-		//myRenderer->AddModel(Snowblind::CAssetsContainer::GetInstance()->GetModel("Data/Model/pblScene/pblScene_03_binary.fbx", "Data/Shaders/T_Deferred_Base.json"), "Data/Model/pblScene/pblScene_03_binary.fbx");
+		myConsole = new CConsole();
 		myConsole->Initiate(my2DCamera);
+
+		myTimeManager = new CU::TimeManager();
+
 	}
 
 	CCamera* CEngine::GetCamera()
@@ -97,8 +100,7 @@ namespace Snowblind
 
 	void CEngine::Update()
 	{
-		CAssetsContainer::GetInstance()->Update();
-
+		myInstance->myAssetsContainer->Update();
 		myInstance->myTimeManager->Update();
 		myInstance->myRenderer->Render();
 	}
@@ -161,6 +163,11 @@ namespace Snowblind
 	CSynchronizer* CEngine::GetSynchronizer()
 	{
 		return mySynchronizer;
+	}
+
+	CAssetsContainer* CEngine::GetAssetsContainer()
+	{
+		return myAssetsContainer;
 	}
 
 	void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)

@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Camera.h"
 #include "AssetsContainer.h"
+#include "Engine.h"
 namespace Snowblind
 {
 	CInstance::CInstance()
@@ -19,8 +20,8 @@ namespace Snowblind
 		switch (aModelType)
 		{
 		case eModelType::STATIC:
-			Snowblind::CAssetsContainer::GetInstance()->LoadModel(aFilePath, effect);
-			myModel = Snowblind::CAssetsContainer::GetInstance()->GetModel(aFilePath);
+			CEngine::GetInstance()->GetAssetsContainer()->LoadModel(aFilePath, effect);
+			myModel = CEngine::GetInstance()->GetAssetsContainer()->GetModel(aFilePath);
 			break;
 		case eModelType::ANIMATED:
 			DL_ASSERT("Not implemented!");

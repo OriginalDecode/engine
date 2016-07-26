@@ -14,7 +14,6 @@ namespace Snowblind
 		, myHWND(aWindowHandle)
 		, myAPI("DirectX11")
 	{
-		CAssetsContainer::Create();
 
 		CreateAdapterList();
 		CreateDeviceAndSwapchain();
@@ -89,7 +88,6 @@ namespace Snowblind
 		SAFE_RELEASE(myRenderTarget);
 		SAFE_RELEASE(mySwapchain);
 
-		CAssetsContainer::Destroy();
 	}
 
 	void CDirectX11::Present()

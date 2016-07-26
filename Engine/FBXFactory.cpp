@@ -12,6 +12,7 @@
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
 #include "AssetsContainer.h"
+#include "Engine.h"
 FBXFactory::FBXFactory()
 {
 	myLoader = new FBXLoader();
@@ -203,6 +204,6 @@ Snowblind::CModel* FBXFactory::LoadModel(const char* aFilePath, Snowblind::CEffe
 
 Snowblind::CModel* FBXFactory::LoadModel(const char* aFilePath, const char* anEffectPath)
 {
-	return LoadModel(aFilePath, Snowblind::CAssetsContainer::GetInstance()->GetEffect(anEffectPath));
+	return LoadModel(aFilePath, Snowblind::CEngine::GetInstance()->GetAssetsContainer()->GetEffect(anEffectPath));
 }
 

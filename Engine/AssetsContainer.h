@@ -13,10 +13,10 @@ namespace Snowblind
 	class CAssetsContainer
 	{
 	public:
+		CAssetsContainer();
+		~CAssetsContainer();
 
-		static void Create();
-		static void Destroy();
-		static CAssetsContainer* GetInstance();
+		void Initiate();
 
 		void Update();
 
@@ -26,9 +26,6 @@ namespace Snowblind
 		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
 
 	private:
-		CAssetsContainer();
-		~CAssetsContainer();
-		static CAssetsContainer* myInstance;
 
 		std::unordered_map<std::string, CTexture*> myTextures;
 		std::unordered_map<std::string, CEffect*> myEffects;

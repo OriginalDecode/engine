@@ -7,12 +7,9 @@
 #include "ShaderFactory.h"
 namespace Snowblind
 {
-	CAssetsContainer* CAssetsContainer::myInstance = nullptr;
 
 	CAssetsContainer::CAssetsContainer()
 	{
-		myFactory = new FBXFactory();
-		myShaderFactory = new CShaderFactory();
 	}
 
 	CAssetsContainer::~CAssetsContainer()
@@ -34,26 +31,12 @@ namespace Snowblind
 		{
 			SAFE_DELETE(it->second);
 		}
-
-
 	}
 
-	void CAssetsContainer::Create()
+	void CAssetsContainer::Initiate()
 	{
-		DL_ASSERT_EXP(myInstance == nullptr, "Can't create AssetContainer twice.");
-		myInstance = new CAssetsContainer();
-	}
-
-	void CAssetsContainer::Destroy()
-	{
-		DL_ASSERT_EXP(myInstance != nullptr, "Can't remove AssetContainer, object did not exsist.");
-		SAFE_DELETE(myInstance);
-	}
-
-	CAssetsContainer* CAssetsContainer::GetInstance()
-	{
-		DL_ASSERT_EXP(myInstance != nullptr, "Can't get AssetContainer, object did not exsist.");
-		return myInstance;
+		myFactory = new FBXFactory();
+		myShaderFactory = new CShaderFactory();
 	}
 
 	CTexture* CAssetsContainer::GetTexture(const std::string& aFilePath)
@@ -110,9 +93,9 @@ namespace Snowblind
 
 	void CAssetsContainer::LoadEffect(const std::string& aFilePath)
 	{
-			CEffect* effect = new CEffect(aFilePath);
-			myShaderFactory->LoadShader(effect);
-			myEffects[aFilePath] = effect;
+		CEffect* effect = new CEffect(aFilePath);
+		myShaderFactory->LoadShader(effect);
+		myEffects[aFilePath] = effect;
 	}
 
 	const std::string& CAssetsContainer::LoadModel(const std::string& aFilePath, const std::string& effect)

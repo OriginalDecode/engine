@@ -25,6 +25,7 @@
 #include <EngineDefines.h>
 #include <JSON/JSONReader.h>
 #include <DL_Debug.h>
+#include <Engine.h>
 
 struct SGameObject
 {
@@ -68,7 +69,7 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 		{
 			myEntityManager->AddComponent<RenderComponent>(e);
 			RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
-			r.myModelID = Snowblind::CAssetsContainer::GetInstance()->LoadModel(entityModel[0], entityModel[1]);
+			r.myModelID = Snowblind::CEngine::GetInstance()->GetAssetsContainer()->LoadModel(entityModel[0], entityModel[1]);
 		}
 
 		bool hasPhysics = false;

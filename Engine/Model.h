@@ -9,14 +9,17 @@ struct D3D11_INPUT_ELEMENT_DESC;
 struct ID3D11Buffer;
 namespace Snowblind
 {
+	class CCamera;
 	class CDirectX11;
 	class CEffect;
-	class CCamera;
+	class CEngine;
 	class CSurface;
+
 	struct SVertexIndexWrapper;
 	struct SVertexBufferWrapper;
 	struct SVertexDataWrapper;
 	struct SIndexBufferWrapper;
+
 
 	class CModel 
 	{
@@ -63,6 +66,7 @@ namespace Snowblind
 		CU::Matrix44f myOrientation;
 
 		CDirectX11* myAPI;
+		CEngine* myEngine;
 		CCamera* myCamera;
 		CEffect* myEffect;
 

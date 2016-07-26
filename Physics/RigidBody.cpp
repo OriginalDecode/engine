@@ -164,6 +164,8 @@ const CU::Vector4f& CRigidBody::GetAABBPoint(int index)
 
 void CRigidBody::CalculatePoints()
 {
+
+	/* Move this functionallity to the Line3D class instead. Add a function that takes a min and max as inparams and then add the points to the list.*/
 	btVector3 min;
 	btVector3 max;
 	myBody->getAabb(min, max);
@@ -172,9 +174,14 @@ void CRigidBody::CalculatePoints()
 	float width = max.getX() - min.getX();
 	float height = max.getY() - min.getY();
 
+
 	myPoints[0].x = min.getX();
 	myPoints[0].y = min.getY();
 	myPoints[0].z = min.getZ();
+
+	myPoints[0].x -= (width * 0.5f);
+	myPoints[0].y -= (height * 0.5f);
+	myPoints[0].z -= (depth * 0.5f);
 
 	
 	myPoints[1] = myPoints[0];

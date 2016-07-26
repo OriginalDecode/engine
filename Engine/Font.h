@@ -26,6 +26,7 @@ namespace Snowblind
 
 	struct SFontData;
 	class CEffect;
+	class CEngine;
 	class CFont
 	{
 	public:
@@ -91,6 +92,8 @@ namespace Snowblind
 			CU::Vector2f position = CU::Vector2f(0.f, 0.f);
 			CU::Vector2f scale = CU::Vector2f(1.f, 1.f);
 		} *myConstantStruct;
+
+		CEngine* myEngine;
 
 	};
 }

@@ -40,9 +40,9 @@ namespace Snowblind
 		myClearColor[2] = 0.f;
 		myClearColor[3] = 0.f;
 
-		myScreenData.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Render_To_Texture.json");
-		myLightPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Deferred_LightMesh.json");
-		myAmbientPass.myEffect = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Deferred_Ambient.json");
+		myScreenData.myEffect = myEngine->GetAssetsContainer()->GetEffect("Data/Shaders/T_Render_To_Texture.json");
+		myLightPass.myEffect = myEngine->GetAssetsContainer()->GetEffect("Data/Shaders/T_Deferred_LightMesh.json");
+		myAmbientPass.myEffect = myEngine->GetAssetsContainer()->GetEffect("Data/Shaders/T_Deferred_Ambient.json");
 		CreateLightConstantBuffers();
 		CreateFullscreenQuad();
 	}

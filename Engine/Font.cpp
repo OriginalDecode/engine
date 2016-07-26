@@ -13,6 +13,7 @@ namespace Snowblind
 	CFont::CFont(SFontData* aFontData)
 	{
 
+		myEngine = CEngine::GetInstance();
 		myTimeManager = new CU::TimeManager();
 
 
@@ -21,8 +22,8 @@ namespace Snowblind
 
 		myData = aFontData;
 		myText = " ";
-		myEffect[0] = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Font_Outline.json");
-		myEffect[1] = CAssetsContainer::GetInstance()->GetEffect("Data/Shaders/T_Font.json");
+		myEffect[0] = myEngine->GetAssetsContainer()->GetEffect("Data/Shaders/T_Font_Outline.json");
+		myEffect[1] = myEngine->GetAssetsContainer()->GetEffect("Data/Shaders/T_Font.json");
 
 		myVertexBufferDesc = new D3D11_BUFFER_DESC();
 		myIndexBufferDesc = new D3D11_BUFFER_DESC();

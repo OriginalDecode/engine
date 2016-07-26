@@ -35,12 +35,16 @@ namespace Snowblind
 		mySprite = new CSprite();
 		mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
 
-		myAssetsContainer = CAssetsContainer::GetInstance();
 		myEngine = CEngine::GetInstance();
+		myAssetsContainer = myEngine->GetAssetsContainer();
 		myDirectX = myEngine->GetDirectX();
 
 
 		my3DLine = new CLine3D();
+		my3DLine->Initiate();
+
+
+		//my3DLine->AddCube({ 0.f,0.f,0.f }, { 1.f,1.f,1.f });
 
 	}
 

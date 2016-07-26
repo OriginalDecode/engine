@@ -32,7 +32,7 @@ namespace Snowblind
 		float myHeight;
 	};
 
-
+	class CAssetsContainer;
 	class CCamera;
 	class CConsole;
 	class CDirectX11;
@@ -52,7 +52,9 @@ namespace Snowblind
 		static CEngine* GetInstance();
 
 		static CDirectX11* GetDirectX();
+
 		void Initiate();
+
 		CCamera* GetCamera();
 		CCamera* Get2DCamera();
 		static void Update();
@@ -70,7 +72,7 @@ namespace Snowblind
 		void OnResume();
 		void OnExit();
 		CSynchronizer* GetSynchronizer();
-
+		CAssetsContainer* GetAssetsContainer();
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		~CEngine();
@@ -91,6 +93,7 @@ namespace Snowblind
 		CCamera*  myCamera;
 		CCamera*  my2DCamera;
 		CConsole* myConsole;
+		CAssetsContainer* myAssetsContainer;
 
 	};
 };

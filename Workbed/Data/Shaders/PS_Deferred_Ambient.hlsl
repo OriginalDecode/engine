@@ -5,11 +5,11 @@
 //	Samplers & Textures
 //---------------------------------
 
-SamplerState point_Clamp : register ( s0 );
-Texture2D AlbedoTexture  : register ( t0 );
-Texture2D NormalTexture  : register ( t1 );
-Texture2D DepthTexture	 : register ( t2 );
-TextureCube CubeMap		 : register ( t3 );
+SamplerState point_Clamp 	: register ( s0 );
+Texture2D AlbedoTexture  	: register ( t0 );
+Texture2D NormalTexture  	: register ( t1 );
+Texture2D DepthTexture	 	: register ( t2 );
+TextureCube CubeMap		 	: register ( t3 );
 
 //---------------------------------
 //	Deferred Ambient Pixel Structs
@@ -20,6 +20,20 @@ struct VS_OUTPUT
 	float4 pos	: SV_POSITION0;
 	float2 uv	: TEXCOORD;
 };
+
+struct PixelData
+{
+	float4 albedo;
+	float4 normal;
+	float4 depth;
+	float4 metalness;
+	float4 roughness;
+	float4 AOTexture;
+	
+	float4 emissive;
+	
+};
+
 
 //---------------------------------
 //	Deferred Ambient Pixel Shader

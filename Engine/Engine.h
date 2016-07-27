@@ -41,6 +41,8 @@ namespace Snowblind
 	class CModel;
 	class CRenderer;
 	class CSynchronizer;
+	class CTexture;
+	class CEffect;
 
 	struct SFontData;
 
@@ -67,12 +69,16 @@ namespace Snowblind
 		const float GetFPS();
 		const std::string& GetAPIName();
 
+		CTexture* GetTexture(const std::string& aFilePath);
+		CEffect* GetEffect(const std::string& aFilePath);
+		CModel* GetModel(const std::string& aFilePath);
+		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
+
 		void OnAltEnter();
 		void OnPause();
 		void OnResume();
 		void OnExit();
 		CSynchronizer* GetSynchronizer();
-		CAssetsContainer* GetAssetsContainer();
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		~CEngine();

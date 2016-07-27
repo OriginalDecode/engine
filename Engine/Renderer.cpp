@@ -36,7 +36,6 @@ namespace Snowblind
 		mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
 
 		myEngine = CEngine::GetInstance();
-		myAssetsContainer = myEngine->GetAssetsContainer();
 		myDirectX = myEngine->GetDirectX();
 
 
@@ -68,14 +67,10 @@ namespace Snowblind
 
 	void CRenderer::Render()
 	{
-		std::stringstream textTime;
-		textTime << "Render : " << myText->GetRenderTime() << "\nUpdate : " << myText->GetUpdateTime();
-		mySynchronizer.AddRenderCommand(SRenderCommand(textTime.str(), CU::Vector2f(1920 - 200, 500)));
 		myEngine->Clear();
 
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
-
 		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 		myDeferredRenderer->SetBuffers();
 		myDeferredRenderer->DeferredRender();
@@ -121,7 +116,7 @@ namespace Snowblind
 				myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 				myDirectX->SetBlendState(eBlendStates::NO_BLEND);
 
-				CModel* model = myAssetsContainer->GetModel(command.myModelKey);
+				CModel* model = myEngine->GetModel(command.myModelKey);
 
 				model->SetPosition(command.myPosition);
 				model->Render(myPrevFrame, myCamera->GetProjection());

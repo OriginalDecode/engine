@@ -140,6 +140,26 @@ namespace Snowblind
 		return myAPI->GetAPIName();
 	}
 
+	Snowblind::CTexture* CEngine::GetTexture(const std::string& aFilePath)
+	{
+		return myAssetsContainer->GetTexture(aFilePath);
+	}
+
+	Snowblind::CEffect* CEngine::GetEffect(const std::string& aFilePath)
+	{
+		return myAssetsContainer->GetEffect(aFilePath);
+	}
+
+	Snowblind::CModel* CEngine::GetModel(const std::string& aFilePath)
+	{
+		return myAssetsContainer->GetModel(aFilePath);
+	}
+
+	const std::string& CEngine::LoadModel(const std::string& aFilePath, const std::string& effect)
+	{
+		return myAssetsContainer->LoadModel(aFilePath, effect);
+	}
+
 	void CEngine::OnAltEnter()
 	{
 		myAPI->OnAltEnter();
@@ -163,11 +183,6 @@ namespace Snowblind
 	CSynchronizer* CEngine::GetSynchronizer()
 	{
 		return mySynchronizer;
-	}
-
-	CAssetsContainer* CEngine::GetAssetsContainer()
-	{
-		return myAssetsContainer;
 	}
 
 	void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)

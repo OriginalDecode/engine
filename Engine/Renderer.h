@@ -12,15 +12,15 @@ class CLine3D;
 namespace Snowblind
 {
 
-	class CSynchronizer;
-	class CText;
-	class CDeferredRenderer;
 	class CCamera;
-	class CPointLight;
+	class CDeferredRenderer;
 	class CEmitterInstance;
-	class CTexture;
-	class CSkySphere;
 	class CModel;
+	class CPointLight;
+	class CSkySphere;
+	class CSynchronizer;
+	class CTexture;
+	class CText;
 
 	class CRenderer
 	{
@@ -38,7 +38,6 @@ namespace Snowblind
 		void RenderLines();
 
 		eDeferredType		myDeferredType;
-		CAssetsContainer*	myAssetsContainer;
 		CEngine*			myEngine;
 		CDirectX11*			myDirectX;
 

@@ -49,6 +49,7 @@ void CApplication::Update()
 {
 	while (mySynchronizer->HasQuit() == false)
 	{
+		
 		float deltaTime = myEngine->GetDeltaTime();
 		UpdateInput(deltaTime);
 

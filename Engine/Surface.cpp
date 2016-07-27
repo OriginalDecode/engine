@@ -75,7 +75,7 @@ namespace Snowblind
 			sub += ".dds";
 		}
 		STexture* newTexture = new STexture();
-		newTexture->texture = CEngine::GetInstance()->GetAssetsContainer()->GetTexture(sub);
+		newTexture->texture = CEngine::GetInstance()->GetTexture(sub);
 		newTexture->texture->SetDebugName(debugName);
 		newTexture->resourceName = aResourceName;
 		myTextures.Add(newTexture);

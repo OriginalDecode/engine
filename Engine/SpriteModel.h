@@ -3,7 +3,6 @@
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct ID3D11ShaderResourceView;
-struct ID3D11BlendState;
 
 namespace Snowblind
 {
@@ -36,7 +35,6 @@ namespace Snowblind
 
 		void InitiateVertexBuffer();
 		void InitiateIndexBuffer();
-		void InitiateBlendState();
 		void InitConstantBuffer();
 		void ConvertToNormalSpace();
 
@@ -55,7 +53,6 @@ namespace Snowblind
 		SVertexBufferWrapper* myVertexBuffer;
 		SIndexBufferWrapper* myIndexBuffer;
 
-		ID3D11BlendState* myBlendState;
 		ID3D11Buffer* myConstantBuffer = nullptr;
 
 		CU::GrowingArray<SVertexTypePosUV> myVertices;

@@ -14,7 +14,7 @@ namespace Snowblind
 		myHullShader = new SHullShader();
 		myDomainShader = new SDomainShader();
 		myComputeShader = new SComputeShader();*/
-		
+
 		myContext = CEngine::GetDirectX()->GetContext();
 	}
 
@@ -40,6 +40,29 @@ namespace Snowblind
 			return myPixelShader;
 		}
 		return nullptr;
+	}
+
+	void CEffect::ActivateShaderResources()
+	{
+		if (!firstOptimize)
+		{
+			myShaderResources.Optimize();
+			firstOptimize = true;
+		}
+		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
+	}
+
+	void CEffect::DeactivateShaderResources()
+	{
+		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myNULLList[0]);
+		myShaderResources.RemoveAll();
+	}
+
+	void CEffect::AddShaderResource(ID3D11ShaderResourceView* aShaderResource)
+	{
+		myShaderResources.Add(aShaderResource);
+		if (!firstOptimize)
+			myNULLList.Add(nullptr);
 	}
 
 }

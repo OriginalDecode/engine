@@ -30,7 +30,7 @@ namespace Snowblind
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 		myFinishedTexture->SetDebugName("DeferredFinishedTexture");
 
-		myCubeMap = myEngine->GetAssetsContainer()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
+		myCubeMap = myEngine->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
 
 
 		myDepthStencil = new CTexture();
@@ -42,9 +42,9 @@ namespace Snowblind
 		myClearColor[2] = 0.f;
 		myClearColor[3] = 0.f;
 
-		myScreenData.myEffect = myEngine->GetAssetsContainer()->GetEffect("Data/Shaders/T_Render_To_Texture.json");
-		myLightPass.myEffect = myEngine->GetAssetsContainer()->GetEffect("Data/Shaders/T_Deferred_LightMesh.json");
-		myAmbientPass.myEffect = myEngine->GetAssetsContainer()->GetEffect("Data/Shaders/T_Deferred_Ambient.json");
+		myScreenData.myEffect = myEngine->GetEffect("Data/Shaders/T_Render_To_Texture.json");
+		myLightPass.myEffect = myEngine->GetEffect("Data/Shaders/T_Deferred_LightMesh.json");
+		myAmbientPass.myEffect = myEngine->GetEffect("Data/Shaders/T_Deferred_Ambient.json");
 		CreateLightConstantBuffers();
 		CreateFullscreenQuad();
 	}
@@ -67,6 +67,12 @@ namespace Snowblind
 		SAFE_RELEASE(myLightPass.myVertexConstantBuffer);
 		SAFE_RELEASE(myLightPass.myPixelConstantBuffer);
 	}
+
+
+	struct SRenderTargetView
+	{
+		
+	};
 
 	void CDeferredRenderer::SetTargets()
 	{
@@ -186,19 +192,21 @@ namespace Snowblind
 		myContext->VSSetConstantBuffers(0, 1, &myLightPass.myVertexConstantBuffer);
 		myContext->PSSetConstantBuffers(0, 1, &myLightPass.myPixelConstantBuffer);
 
+		
+		ID3D11ShaderResourceView* srv[3];
+		srv[0] = myAlbedo->GetShaderView();
+		srv[1] = myNormal->GetShaderView();
+		srv[2] = myDepth->GetShaderView();
 
-		ID3D11ShaderResourceView* gbuffer[3];
-		gbuffer[0] = myAlbedo->GetShaderView();
-		gbuffer[1] = myNormal->GetShaderView();
-		gbuffer[2] = myDepth->GetShaderView();
-		myContext->PSSetShaderResources(0, 3, &gbuffer[0]);
+
+		myContext->PSSetShaderResources(0, 3, &srv[0]);
 
 		pointlight->Render(previousOrientation, aCamera);
 
-		gbuffer[0] = nullptr;
-		gbuffer[1] = nullptr;
-		gbuffer[2] = nullptr;
-		myContext->PSSetShaderResources(0, 3, &gbuffer[0]);
+		srv[0] = nullptr;
+		srv[1] = nullptr;
+		srv[2] = nullptr;
+		myContext->PSSetShaderResources(0, 3, &srv[0]);
 		
 	}
 
@@ -222,22 +230,16 @@ namespace Snowblind
 		myDirectX->SetVertexShader(myAmbientPass.myEffect->GetVertexShader()->vertexShader);
 		myDirectX->SetPixelShader(myAmbientPass.myEffect->GetPixelShader()->pixelShader);
 
-		ID3D11ShaderResourceView* srv[4];
-		srv[0] = myAlbedo->GetShaderView();
-		srv[1] = myNormal->GetShaderView();
-		srv[2] = myDepth->GetShaderView();
-		srv[3] = myCubeMap->GetShaderView();
+		myAmbientPass.myEffect->AddShaderResource(myAlbedo->GetShaderView());
+		myAmbientPass.myEffect->AddShaderResource(myNormal->GetShaderView());
+		myAmbientPass.myEffect->AddShaderResource(myDepth->GetShaderView());
+		myAmbientPass.myEffect->AddShaderResource(myCubeMap->GetShaderView());
+		myAmbientPass.myEffect->ActivateShaderResources();
 
-		myContext->PSSetShaderResources(0, 4, &srv[0]);
 		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP);
 
 		myContext->DrawIndexed(6, 0, 0);
-
-		srv[0] = nullptr;
-		srv[1] = nullptr;
-		srv[2] = nullptr;
-		srv[3] = nullptr;
-		myContext->PSSetShaderResources(0, 4, &srv[0]);
+		myAmbientPass.myEffect->DeactivateShaderResources();
 
 	}
 
@@ -385,5 +387,4 @@ namespace Snowblind
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		myIndexBuffer->myByteOffset = 0;
 	}
-
 };

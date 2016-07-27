@@ -21,7 +21,7 @@ void CLine3D::Initiate(int aLineAmount /*= 256*/)
 {
 	myLineAmount = aLineAmount;
 	myAPI = Snowblind::CEngine::GetDirectX();
-	myEffect =  Snowblind::CEngine::GetInstance()->GetAssetsContainer()->GetEffect("Data/Shaders/T_Line3D.json");
+	myEffect =  Snowblind::CEngine::GetInstance()->GetEffect("Data/Shaders/T_Line3D.json");
 	CreateVertexBuffer();
 	CreateConstantBuffer();
 

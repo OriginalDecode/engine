@@ -124,7 +124,6 @@ namespace Snowblind
 
 		void CreateVertexBuffer();
 		void CreateIndexBuffer();
-
 	};
 
 	__forceinline CTexture* CDeferredRenderer::GetDepth()

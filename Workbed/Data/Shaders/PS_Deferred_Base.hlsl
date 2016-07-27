@@ -5,9 +5,12 @@
 //	Samplers & Textures
 //---------------------------------
 
-SamplerState linear_Wrap : register ( s0 );
-Texture2D AlbedoTexture  : register ( t0 );
-Texture2D NormalTexture  : register ( t1 );
+SamplerState linear_Wrap 	: register ( s0 );
+Texture2D AlbedoTexture  	: register ( t0 );
+Texture2D NormalTexture  	: register ( t1 );
+//Texture2D RoughnessTexture 	: register ( t2 );
+//Texture2D MetalnessTexture 	: register ( t3 );
+//Texture2D AOTexture			: register ( t4 );
 
 //---------------------------------
 //	Deferred Base Pixel Structs

@@ -204,6 +204,6 @@ Snowblind::CModel* FBXFactory::LoadModel(const char* aFilePath, Snowblind::CEffe
 
 Snowblind::CModel* FBXFactory::LoadModel(const char* aFilePath, const char* anEffectPath)
 {
-	return LoadModel(aFilePath, Snowblind::CEngine::GetInstance()->GetAssetsContainer()->GetEffect(anEffectPath));
+	return LoadModel(aFilePath, Snowblind::CEngine::GetInstance()->GetEffect(anEffectPath));
 }
 

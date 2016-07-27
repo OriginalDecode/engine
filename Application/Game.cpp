@@ -69,7 +69,7 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 		{
 			myEntityManager->AddComponent<RenderComponent>(e);
 			RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
-			r.myModelID = Snowblind::CEngine::GetInstance()->GetAssetsContainer()->LoadModel(entityModel[0], entityModel[1]);
+			r.myModelID = Snowblind::CEngine::GetInstance()->LoadModel(entityModel[0], entityModel[1]);
 		}
 
 		bool hasPhysics = false;
@@ -101,6 +101,11 @@ CGame::~CGame()
 
 void CGame::Update(float aDeltaTime)
 {
+	std::stringstream ss;
+	ss << Snowblind::CEngine::GetInstance()->GetFPS();
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), { 0,0 }, SRenderCommand::eType::TEXT));
+
 	myPhysicsManager->Update();
 	myEntityManager->Update(aDeltaTime);
 	

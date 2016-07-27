@@ -26,7 +26,6 @@ namespace Snowblind
 		SAFE_DELETE(myConstantStruct);
 
 		SAFE_RELEASE(myVertexLayout);
-		SAFE_RELEASE(myBlendState);
 		SAFE_RELEASE(myConstantBuffer);
 	}
 
@@ -37,9 +36,8 @@ namespace Snowblind
 		myTexturePath = aTexturePath;
 		mySize = aSize;
 		myPosition = aPosition;
-		myTexture = CEngine::GetInstance()->GetAssetsContainer()->GetTexture(myTexturePath)->GetShaderView();
-		myEffect = CEngine::GetInstance()->GetAssetsContainer()->GetEffect("Data/Shaders/T_Sprite.json");
-		//myEffect->SetAlbedo(myTexture);
+		myTexture = CEngine::GetInstance()->GetTexture(myTexturePath)->GetShaderView();
+		myEffect = CEngine::GetInstance()->GetEffect("Data/Shaders/T_Sprite.json");
 
 		myVertexFormat.Init(2);
 		myVertexFormat.Add(VertexLayoutPosUV[0]);
@@ -105,7 +103,7 @@ namespace Snowblind
 
 		mySize = aSize;
 		myPosition = aPosition;
-		myEffect = CEngine::GetInstance()->GetAssetsContainer()->GetEffect("Data/Shaders/T_Sprite.json");
+		myEffect = CEngine::GetInstance()->GetEffect("Data/Shaders/T_Sprite.json");
 		myTexture = aShaderResource;
 		//myEffect->SetAlbedo(aShaderResource);
 
@@ -283,25 +281,6 @@ namespace Snowblind
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		myIndexBuffer->myByteOffset = 0;
-	}
-
-	void CSpriteModel::InitiateBlendState()
-	{
-		//D3D11_BLEND_DESC blendDesc;
-		//blendDesc.AlphaToCoverageEnable = true;
-		//blendDesc.IndependentBlendEnable = false;
-		//blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		//blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-		//blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-		//blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		//blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
-		//blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_DEST_ALPHA;
-		//blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		//blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
-		//
-		//HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBlendState(&blendDesc, &myBlendState);
-		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to create blendstate.");
-		//CEngine::GetDirectX()->SetDebugName(myBlendState, "SpriteModel : BlendState");
 	}
 
 	void CSpriteModel::InitConstantBuffer()

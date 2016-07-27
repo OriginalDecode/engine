@@ -2,8 +2,6 @@
 struct ID3D11DeviceContext;
 struct ID3D11ShaderResourceView;
 
-
-
 namespace Snowblind
 {
 
@@ -24,12 +22,16 @@ namespace Snowblind
 
 		SVertexShader* GetVertexShader();
 		SPixelShader* GetPixelShader();
+
+		/* TODO : IMPLEMENT THE FOLLOWING SHADERS */
 		SGeometryShader* GetGeometryShader();
 		SHullShader* GetHullShader();
 		SDomainShader* GetDomainShader();
 		SComputeShader* GetComputeShader();
 
-
+		void ActivateShaderResources();
+		void DeactivateShaderResources();
+		void AddShaderResource(ID3D11ShaderResourceView* aShaderResource);
 	private:
 		std::string myFileName;
 		ID3D11DeviceContext* myContext;
@@ -40,6 +42,9 @@ namespace Snowblind
 		SHullShader* myHullShader = nullptr;
 		SDomainShader* myDomainShader = nullptr;
 		SComputeShader* myComputeShader = nullptr;
-
+		
+		CU::GrowingArray<ID3D11ShaderResourceView*> myShaderResources;
+		CU::GrowingArray<ID3D11ShaderResourceView*> myNULLList;
+		bool firstOptimize = false;
 	};
 };

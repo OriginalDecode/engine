@@ -8,9 +8,10 @@
 SamplerState linear_Wrap 	: register ( s0 );
 Texture2D AlbedoTexture  	: register ( t0 );
 Texture2D NormalTexture  	: register ( t1 );
-//Texture2D RoughnessTexture 	: register ( t2 );
-//Texture2D MetalnessTexture 	: register ( t3 );
-//Texture2D AOTexture			: register ( t4 );
+Texture2D RoughnessTexture 	: register ( t2 );
+Texture2D MetalnessTexture 	: register ( t3 );
+Texture2D AOTexture			: register ( t4 );
+//Texture2D EmissiveTexture	: register ( t5 );
 
 //---------------------------------
 //	Deferred Base Pixel Structs
@@ -20,6 +21,7 @@ struct GBuffer
 	float4 Albedo;
 	float4 Normal;
 	float4 Depth;
+	float4 Emissive;
 };
 
 struct VS_OUTPUT
@@ -46,12 +48,18 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	norm = normalize(mul(norm, tangentSpaceMatrix));
     norm.xyz += 1.f;
 	norm.xyz *= 0.5f;
-	GBuffer output;
-  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * 0.42f;//ambientMultiplier;	
-	output.Normal = float4(norm.xyz,1);//float4(norm, 0.f);
-    
+
 	float depth = input.pos.z;
-	output.Depth = float4(depth, depth, depth, depth);
+	
+	GBuffer output;
+  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
+	output.Albedo.rgb *= 1.f; //0.42f
+	
+	output.Normal = float4(norm.xyz,0.f);//float4(norm, 0.f);
+	output.Normal.a = MetalnessTexture.Sample(linear_Wrap,input.uv).r;
+	
+	output.Depth.r = depth;
+	output.Depth.g = RoughnessTexture.Sample(linear_Wrap, input.uv).r;
 	
 	return output;
 }

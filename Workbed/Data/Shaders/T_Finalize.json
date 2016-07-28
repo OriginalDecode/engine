@@ -1,0 +1,4 @@
+{
+	"VertexShader" : "VS_Finalize.hlsl",
+	"PixelShader" : "PS_Finalize.hlsl"
+}

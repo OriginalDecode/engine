@@ -49,6 +49,7 @@ enum class eDepthStencil
 	Z_ENABLED,
 	Z_DISABLED,
 	READ_NO_WRITE,
+	MASK_TEST,
 	_COUNT
 };
 
@@ -65,6 +66,7 @@ enum class eBlendStates
 	NO_BLEND,
 	ALPHA_BLEND,
 	PARTICLE_BLEND,
+	BLEND_FALSE,
 	_COUNT
 };
 
@@ -137,6 +139,7 @@ namespace Snowblind
 		void CreateRazterizers();
 		void CreateBlendStates();
 		void CreateSamplerStates();
+		void CreateDepthStencilStates();
 		unsigned int GetRefCount(IUnknown* ptr);
 		HWND myHWND;
 

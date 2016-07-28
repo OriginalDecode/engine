@@ -1,4 +1,4 @@
 {
-	"VertexShader" : "VS_Deferred_Base.hlsl",
+	"VertexShader" : "VS_Skysphere.hlsl",
 	"PixelShader" : "PS_Skysphere.hlsl"
 }

@@ -28,7 +28,9 @@ namespace Snowblind
 		myPointLight = new CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
-		myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
+		//myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
+		myDepthTexture->InitStencil(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
+		myDepthTexture->SetDebugName("myDepthTexture");
 
 		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", aCamera);
 
@@ -69,23 +71,26 @@ namespace Snowblind
 	{
 		myEngine->Clear();
 
-		myDeferredRenderer->SetTargets();
-		Render3DCommands();
+		myDeferredRenderer->SetTargets(); //Set target to GBuffer
+		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		Render3DCommands(); //Render scene
 		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
-		myDeferredRenderer->SetBuffers();
+		myDeferredRenderer->UpdateConstantBuffer(myPrevFrame, myCamera->GetProjection());
 		myDeferredRenderer->DeferredRender();
 
 		myDeferredRenderer->SetLightStates();
 		RenderLightCommands();
 		myDeferredRenderer->SetNormalStates();
-
-		myDeferredRenderer->ResetBackbufferAndDepth();
-		mySkysphere->SetPosition(mySpherePos);
+		
 
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
+		myDeferredRenderer->ResetBackbufferAndDepth();
+		mySkysphere->SetPosition(mySpherePos);
+		mySkysphere->Render(myPrevFrame, myDepthTexture);
 
-		mySkysphere->Render(myPrevFrame);
+		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
 		myDeferredRenderer->Finalize();
 
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);

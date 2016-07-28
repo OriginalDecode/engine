@@ -577,8 +577,8 @@ namespace Snowblind
 
 			if (!myIsLightmesh)
 			{
-				CEngine::GetDirectX()->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
-				CEngine::GetDirectX()->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
+				myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
+				myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
 			}
 
 			if (mySurfaces.Size() > 0)
@@ -591,10 +591,10 @@ namespace Snowblind
 						SetMatrices(aCameraOrientation, aCameraProjection);
 						context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-						CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+						myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 						mySurfaces[i]->Activate();
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
-						/* Deactivate surface needed */
+						mySurfaces[i]->Deactivate();
 					}
 
 				}
@@ -602,7 +602,7 @@ namespace Snowblind
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
-						CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+						myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 
 						SetMatrices(aCameraOrientation, aCameraProjection);
 
@@ -616,7 +616,7 @@ namespace Snowblind
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
-						CEngine::GetDirectX()->SetSamplerState(eSamplerStates::POINT_CLAMP);
+						myAPI->SetSamplerState(eSamplerStates::POINT_CLAMP);
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
 					}
 				}
@@ -642,8 +642,8 @@ namespace Snowblind
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myStride);
 
-		CEngine::GetDirectX()->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
-		CEngine::GetDirectX()->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
+		myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
+		myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
 
 		SetMatrices(aCameraOrientation, aCameraProjection);
 		context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
@@ -699,14 +699,14 @@ namespace Snowblind
 
 
 			D3D11_MAPPED_SUBRESOURCE msr;
-			CEngine::GetDirectX()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			myAPI->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			if (msr.pData != nullptr)
 			{
 				SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
 				memcpy(ptr, &myBaseStruct->world.myMatrix[0], sizeof(SVertexBaseStruct));
 			}
 
-			CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);
+			myAPI->GetContext()->Unmap(myConstantBuffer, 0);
 		}
 	}
 
@@ -723,7 +723,7 @@ namespace Snowblind
 				, size
 				, &myVertexLayout);
 
-		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Model Vertex Layout");
+		myAPI->SetDebugName(myVertexLayout, "Model Vertex Layout");
 		myAPI->HandleErrors(hr, "Failed to create VertexLayout");
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
@@ -787,9 +787,9 @@ namespace Snowblind
 		cbDesc.MiscFlags = 0;
 		cbDesc.StructureByteStride = 0;
 
-		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-		CEngine::GetDirectX()->SetDebugName(myConstantBuffer, "Model Constant Buffer");
-		CEngine::GetDirectX()->HandleErrors(hr, "[Model] : Failed to Create Constant Buffer, ");
+		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+		myAPI->SetDebugName(myConstantBuffer, "Model Constant Buffer");
+		myAPI->HandleErrors(hr, "[Model] : Failed to Create Constant Buffer, ");
 	}
 
 	void CModel::AddChild(CModel* aChild)

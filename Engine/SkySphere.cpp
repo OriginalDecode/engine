@@ -25,18 +25,19 @@ namespace Snowblind
 	{
 	}
 
-	void CSkySphere::Render(CU::Matrix44f& anOrientation)
+	void CSkySphere::Render(CU::Matrix44f& anOrientation, CTexture* aDepthTexture)
 	{
+		ID3D11ShaderResourceView* srv[2];
+		srv[0] = mySkysphereTexture->GetShaderView();
+		srv[1] = aDepthTexture->GetDepthStencilView();
 
-
-		ID3D11ShaderResourceView* srv = mySkysphereTexture->GetShaderView();
-		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, 1, &srv);
+		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, 2, &srv[0]);
 
 		myModel->Render(anOrientation, myCamera->GetProjection());
 
-		srv = nullptr;
-		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, 1, &srv);
-
+		srv[0] = nullptr;
+		srv[1] = nullptr;
+		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, 2, &srv[0]);
 
 	}
 

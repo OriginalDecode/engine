@@ -52,8 +52,8 @@ void CApplication::Update()
 		
 		float deltaTime = myEngine->GetDeltaTime();
 		UpdateInput(deltaTime);
-
 		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
+		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 25.f), CU::Vector3f(1.f,0.f,0.f), 1.f, 5.f));
 		myGame->Update(deltaTime);
 
 		mySynchronizer->LogicIsDone();

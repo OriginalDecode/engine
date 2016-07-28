@@ -42,20 +42,26 @@ namespace Snowblind
 		return nullptr;
 	}
 
-	void CEffect::ActivateShaderResources()
+	void CEffect::Activate()
 	{
-		if (!firstOptimize)
+		CEngine::GetDirectX()->SetVertexShader(myVertexShader->vertexShader);
+		CEngine::GetDirectX()->SetPixelShader(myPixelShader->pixelShader);
+
+		if (myShaderResources.Size() > 0)
 		{
-			myShaderResources.Optimize();
-			firstOptimize = true;
+			if (!firstOptimize)
+			{
+				myShaderResources.Optimize();
+				myNULLList.Optimize();
+				firstOptimize = true;
+			}
+			CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
 		}
-		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
 	}
 
-	void CEffect::DeactivateShaderResources()
+	void CEffect::Deactivate()
 	{
 		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myNULLList[0]);
-		myShaderResources.RemoveAll();
 	}
 
 	void CEffect::AddShaderResource(ID3D11ShaderResourceView* aShaderResource)

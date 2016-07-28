@@ -29,8 +29,8 @@ namespace Snowblind
 		SDomainShader* GetDomainShader();
 		SComputeShader* GetComputeShader();
 
-		void ActivateShaderResources();
-		void DeactivateShaderResources();
+		void Activate();
+		void Deactivate();
 		void AddShaderResource(ID3D11ShaderResourceView* aShaderResource);
 	private:
 		std::string myFileName;

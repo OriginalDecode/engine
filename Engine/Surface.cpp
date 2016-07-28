@@ -13,6 +13,7 @@ namespace Snowblind
 {
 	CSurface::CSurface(CEffect* anEffect)
 	{
+		myContext = CEngine::GetDirectX()->GetContext();
 		SetVertexCount(0);
 		SetVertexStart(0);
 		SetIndexCount(0);
@@ -23,6 +24,7 @@ namespace Snowblind
 
 	CSurface::CSurface(CEffect* anEffect, unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int aIndexCount)
 	{
+		myContext = CEngine::GetDirectX()->GetContext();
 		SetVertexCount(aVertexCount);
 		SetVertexStart(aStartVertex);
 		SetIndexCount(aIndexCount);
@@ -33,6 +35,7 @@ namespace Snowblind
 
 	CSurface::CSurface(unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
 	{
+		myContext = CEngine::GetDirectX()->GetContext();
 		SetVertexCount(aVertexCount);
 		SetVertexStart(aStartVertex);
 		SetIndexCount(anIndexCount);
@@ -49,10 +52,21 @@ namespace Snowblind
 
 	void CSurface::Activate()
 	{
-		CEngine::GetDirectX()->GetContext()->IASetPrimitiveTopology(myPrimologyType);
-
-		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
+		if (!firstOptimize)
+		{
+			myShaderViews.Optimize();
+			myNullList.Optimize();
+			firstOptimize = true;
+		}
+		myContext->IASetPrimitiveTopology(myPrimologyType);
+		myContext->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
 	}
+
+	void CSurface::Deactivate()
+	{
+		myContext->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
+	}
+
 
 	void CSurface::SetTexture(const std::string& aResourceName, const std::string& aFilePath)
 	{
@@ -76,10 +90,15 @@ namespace Snowblind
 		}
 		STexture* newTexture = new STexture();
 		newTexture->texture = CEngine::GetInstance()->GetTexture(sub);
-		newTexture->texture->SetDebugName(debugName);
+
+
+		std::string dName;
+		dName = CL::substr(debugName, "\\", false, 0);
+		newTexture->texture->SetDebugName(dName);
 		newTexture->resourceName = aResourceName;
 		myTextures.Add(newTexture);
 		myShaderViews.Add(newTexture->texture->GetShaderView());
+		myNullList.Add(nullptr);
 	}
 
 	void CSurface::SetEffect(CEffect* anEffect)

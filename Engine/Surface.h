@@ -1,7 +1,7 @@
 #pragma once
 #include <DataStructures/GrowingArray.h>
 #include <string>
-struct ID3DX11EffectShaderResourceVariable;
+struct ID3D11DeviceContext;
 enum D3D_PRIMITIVE_TOPOLOGY;
 namespace Snowblind
 {
@@ -19,6 +19,7 @@ namespace Snowblind
 		~CSurface();
 
 		void Activate();
+		void Deactivate();
 		void SetTexture(const std::string& aResourceName, const std::string& aFilePath);
 
 		void SetEffect(CEffect* anEffect);
@@ -48,12 +49,13 @@ namespace Snowblind
 
 		CU::GrowingArray<STexture*> myTextures;
 		CU::GrowingArray<ID3D11ShaderResourceView*> myShaderViews;
-
+		CU::GrowingArray<ID3D11ShaderResourceView*> myNullList;
+		bool firstOptimize = false;
 		CU::GrowingArray<std::string> myResourceNames;
 		CU::GrowingArray<std::string> myFileNames;
 
 		CEffect* myEffect;
-
+		ID3D11DeviceContext* myContext;
 		unsigned int myIndexStart;
 		unsigned int myIndexCount;
 		unsigned int myVertexStart;

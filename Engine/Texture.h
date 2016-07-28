@@ -15,7 +15,7 @@ namespace Snowblind
 		~CTexture();
 
 		void InitAsDepthBuffer(float aWidth, float aHeight);
-
+		void InitStencil(float aWidth, float aHeight);
 		const std::string& GetFileName();
 		bool LoadTexture(const std::string& aFileName);
 

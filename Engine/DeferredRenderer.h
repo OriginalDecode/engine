@@ -37,6 +37,7 @@ namespace Snowblind
 
 		void ResetBackbufferAndDepth();
 		void Finalize();
+		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
 
 
 		void SetLightStates();
@@ -87,12 +88,15 @@ namespace Snowblind
 		CEngine* myEngine;
 		CTexture* myAlbedo;
 		CTexture* myNormal;
+		CTexture* myEmissive;
 		CTexture* myDepth;
 		CTexture* myDepthStencil;
-		CTexture* myFinishedTexture;
+		CTexture* myFinishedSceneTexture;
+		CTexture* myFinalTexture;
 		CTexture* myCubeMap;
+		CTexture* myDepthStencil2;
 
-
+		CEffect* myFinalizeShader;
 
 		struct SParticlePass
 		{
@@ -118,7 +122,14 @@ namespace Snowblind
 
 		float myClearColor[4];
 
-
+		void InitConstantBuffer();
+		ID3D11Buffer* myConstantBuffer;
+		struct SConstantStruct
+		{
+			CU::Vector4f camPosition;
+			CU::Matrix44f invertedProjection;
+			CU::Matrix44f view;
+		} *myConstantStruct;
 
 		void CreateFullscreenQuad();
 
@@ -135,7 +146,7 @@ namespace Snowblind
 	__forceinline CTexture* CDeferredRenderer::GetDepthStencil()
 	{
 		DL_ASSERT_EXP(myDepthStencil != nullptr, "Deferred Depthstencil was null!");
-		return myDepthStencil;
+		return myDepthStencil2;
 	}
 
 

@@ -7,7 +7,7 @@
 
 SamplerState linear_Wrap : register ( s0 );
 Texture2D AlbedoTexture  : register ( t0 );
-Texture2D NormalTexture  : register ( t1 );
+Texture2D DepthTexture   : register ( t1 );
 
 //---------------------------------
 //	Deferred Base Pixel Structs
@@ -21,6 +21,7 @@ struct VS_OUTPUT
 	float3 binorm 	: BINORMAL;
 	float3 tang 	: TANGENT;
 	float4 worldpos : POSITION;
+	float4 tex 		: TEX;
 };
 
 //---------------------------------
@@ -28,6 +29,13 @@ struct VS_OUTPUT
 //---------------------------------
 float4 PS(VS_OUTPUT input) : SV_Target
 {
+	input.tex /= input.tex.w;
+	float2 texCoord = input.tex.xy;
 	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * 1.f;//ambientMultiplier;
+	float depth = DepthTexture.Sample(linear_Wrap, texCoord).x;
+	
+	if(depth < 1.f)
+		discard;
+	
 	return albedo;
 }

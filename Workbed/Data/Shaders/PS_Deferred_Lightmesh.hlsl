@@ -95,6 +95,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 	float4 finalColor = float4(lightColor * intensity, 1.f);
 	finalColor *= albedo;
-	finalColor.a = 1.f;
-	return saturate(finalColor * CalculateTotalAttenuation(distance, input.range));
+	finalColor = saturate(finalColor * CalculateTotalAttenuation(distance, input.range));
+	return finalColor;
 };

@@ -12,7 +12,7 @@ namespace Snowblind
 		CSkySphere(const std::string& aFilePath, const std::string& anEffect, CCamera* aCamera);
 		~CSkySphere();
 
-		void Render(CU::Matrix44f& anOrientation);
+		void Render(CU::Matrix44f& anOrientation, CTexture* aDepthTexture);
 		void SetPosition(const CU::Vector3f& aPosition);
 	private:
 		CCamera* myCamera;

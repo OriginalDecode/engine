@@ -1,5 +1,5 @@
 #pragma once
-
+#include "standard_datatype.hpp"
 #include <vector>
 #include <unordered_map>
 #include <bitset>
@@ -94,14 +94,14 @@ namespace Snowblind
 		void Clear();
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContext();
-		const std::string& GetAdapterName(unsigned short anIndex);
+		const std::string& GetAdapterName(u16 anIndex);
 		const std::string& GetActiveAdapterName();
 		void EnableZBuffer();
 		void DisableZBuffer();
 		void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
 		const std::string& GetAPIName();
 
-		void SetViewport(int aWidth, int aHeight, int aDepth);
+		void SetViewport(u16 aWidth, u16 aHeight, u8 aDepth);
 		void ResetViewport();
 		void ResetRendertarget();
 		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
@@ -140,7 +140,6 @@ namespace Snowblind
 		void CreateBlendStates();
 		void CreateSamplerStates();
 		void CreateDepthStencilStates();
-		unsigned int GetRefCount(IUnknown* ptr);
 		HWND myHWND;
 
 		D3D11_VIEWPORT* myViewport = nullptr;
@@ -152,16 +151,15 @@ namespace Snowblind
 		ID3D11RenderTargetView* myRenderTarget = nullptr;
 		ID3D11DepthStencilView* myDepthView = nullptr;
 
-		ID3D11DepthStencilState* myDepthStates[static_cast<int>(eDepthStencil::_COUNT)];
-		ID3D11RasterizerState* myRasterizerStates[static_cast<int>(eRasterizer::_COUNT)];
-		ID3D11BlendState* myBlendStates[static_cast<int>(eBlendStates::_COUNT)];
-		ID3D11SamplerState* mySamplerStates[static_cast<int>(eSamplerStates::_COUNT)];
+		ID3D11DepthStencilState* myDepthStates[static_cast<u16>(eDepthStencil::_COUNT)];
+		ID3D11RasterizerState* myRasterizerStates[static_cast<u16>(eRasterizer::_COUNT)];
+		ID3D11BlendState* myBlendStates[static_cast<u16>(eBlendStates::_COUNT)];
+		ID3D11SamplerState* mySamplerStates[static_cast<u16>(eSamplerStates::_COUNT)];
 
 		std::unordered_map<std::string, IDXGIAdapter*> myAdapters;
 		std::vector<std::string> myAdaptersName;
 		std::string myActiveAdapter;
 
-		int myDeviceCount;
 		float myWidth;
 		float myHeight;
 		const std::string myAPI;

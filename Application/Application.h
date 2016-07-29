@@ -53,7 +53,7 @@ private:
 	CU::Matrix44f myOrientation;
 	CU::Math::Vector2<float> myCursorPosition;
 	bool myWindowIsActive = true;
-
+	float moveSpeed = 0.f;
 
 	CGame* myGame;
 

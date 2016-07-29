@@ -13,11 +13,11 @@
 #include <RenderCommand.h>
 #include <SystemMonitor.h>
 #include <EngineDefines.h>
+#include <sstream>
 
 #include "Game.h"
 
 #define ROTATION_SPEED  50.f / 180.f * float(PI)
-#define MOVE_SPEED 50.f
 
 CApplication::CApplication()
 {
@@ -54,6 +54,11 @@ void CApplication::Update()
 		UpdateInput(deltaTime);
 		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
 		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 25.f), CU::Vector3f(1.f,0.f,0.f), 1.f, 5.f));
+		std::stringstream ss;
+		ss << moveSpeed;
+
+		mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Vector2f(0.f, 10.f)));
+
 		myGame->Update(deltaTime);
 
 		mySynchronizer->LogicIsDone();
@@ -102,28 +107,40 @@ void CApplication::UpdateInput(float aDeltaTime)
 
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(W))
 		{
-			myCamera->Move(Snowblind::eDirection::FORWARD, MOVE_SPEED * aDeltaTime);
+			myCamera->Move(Snowblind::eDirection::FORWARD, moveSpeed * aDeltaTime);
 		}
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(S))
 		{
-			myCamera->Move(Snowblind::eDirection::BACK, -MOVE_SPEED * aDeltaTime);
+			myCamera->Move(Snowblind::eDirection::BACK, -moveSpeed * aDeltaTime);
 		}
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(SPACE))
 		{
-			myCamera->Move(Snowblind::eDirection::UP, MOVE_SPEED * aDeltaTime);
+			myCamera->Move(Snowblind::eDirection::UP, moveSpeed * aDeltaTime);
 		}
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(X))
 		{
-			myCamera->Move(Snowblind::eDirection::DOWN, -MOVE_SPEED * aDeltaTime);
+			myCamera->Move(Snowblind::eDirection::DOWN, -moveSpeed * aDeltaTime);
 		}
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(D))
 		{
-			myCamera->Move(Snowblind::eDirection::RIGHT, MOVE_SPEED * aDeltaTime);
+			myCamera->Move(Snowblind::eDirection::RIGHT, moveSpeed * aDeltaTime);
 		}
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(A))
 		{
-			myCamera->Move(Snowblind::eDirection::LEFT, -MOVE_SPEED * aDeltaTime);
+			myCamera->Move(Snowblind::eDirection::LEFT, -moveSpeed * aDeltaTime);
 		}
+		if (CU::Input::InputWrapper::GetInstance()->KeyDown(UP_ARROW))
+		{
+			moveSpeed += 0.01f;
+		}
+		if (CU::Input::InputWrapper::GetInstance()->KeyDown(DOWN_ARROW))
+		{
+			moveSpeed -= 0.01f;
+		}
+
+
+
+
 	}
 }
 

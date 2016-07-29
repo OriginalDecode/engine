@@ -30,12 +30,11 @@ struct VS_OUTPUT
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	input.tex /= input.tex.w;
-	float2 texCoord = input.tex.xy;
-	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * 1.f;//ambientMultiplier;
+	float2 texCoord = input.tex.xy;	
 	float depth = DepthTexture.Sample(linear_Wrap, texCoord).x;
-	
 	if(depth < 1.f)
 		discard;
 	
+	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * 1.f;//ambientMultiplier;
 	return albedo;
 }

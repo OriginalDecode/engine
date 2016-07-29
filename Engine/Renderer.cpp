@@ -40,12 +40,8 @@ namespace Snowblind
 		myEngine = CEngine::GetInstance();
 		myDirectX = myEngine->GetDirectX();
 
-
 		my3DLine = new CLine3D();
 		my3DLine->Initiate();
-
-
-		//my3DLine->AddCube({ 0.f,0.f,0.f }, { 1.f,1.f,1.f });
 
 	}
 
@@ -76,17 +72,17 @@ namespace Snowblind
 		Render3DCommands(); //Render scene
 		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 		myDeferredRenderer->UpdateConstantBuffer(myPrevFrame, myCamera->GetProjection());
-		myDeferredRenderer->DeferredRender();
+		myDeferredRenderer->DeferredRender(); /* Ambient pass */
 
 		myDeferredRenderer->SetLightStates();
 		RenderLightCommands();
 		myDeferredRenderer->SetNormalStates();
-		
 
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		myDeferredRenderer->ResetBackbufferAndDepth();
 		mySkysphere->SetPosition(mySpherePos);
+
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
@@ -116,23 +112,20 @@ namespace Snowblind
 		{
 			switch (command.myType)
 			{
-			case SRenderCommand::eType::MODEL:
-			{
-				myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
-				myDirectX->SetBlendState(eBlendStates::NO_BLEND);
+				case SRenderCommand::eType::MODEL:
+				{
+					myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+					myDirectX->SetBlendState(eBlendStates::BLEND_FALSE);
 
-				CModel* model = myEngine->GetModel(command.myModelKey);
+					CModel* model = myEngine->GetModel(command.myModelKey);
 
-				model->SetPosition(command.myPosition);
-				model->Render(myPrevFrame, myCamera->GetProjection());
-
-				break;
-			}
-			case SRenderCommand::eType::SKYSPHERE:
-			{
-				mySpherePos = command.myPosition;
-				break;
-			}
+					model->SetPosition(command.myPosition);
+					model->Render(myPrevFrame, myCamera->GetProjection());
+				}break;
+				case SRenderCommand::eType::SKYSPHERE:
+				{
+					mySpherePos = command.myPosition;
+				}break;
 			}
 		}
 	}
@@ -146,20 +139,20 @@ namespace Snowblind
 		{
 			switch (command.myType)
 			{
-			case SRenderCommand::eType::TEXT:
-
-				myText->SetText(command.myTextToPrint);
-				myText->SetPosition({ command.myPosition.x, command.myPosition.y });
-				myText->Render(my2DCamera);
-				break;
-			case SRenderCommand::eType::SPRITE:
-				mySprite->Render(my2DCamera);
-				break;
-			}
+				case SRenderCommand::eType::TEXT:
+				{
+					myText->SetText(command.myTextToPrint);
+					myText->SetPosition({ command.myPosition.x, command.myPosition.y });
+					myText->Render(my2DCamera);
+				}break;
+				case SRenderCommand::eType::SPRITE:
+				{
+					mySprite->Render(my2DCamera);
+				}break;
+			};
 		}
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
-
 	}
 
 	void CRenderer::RenderLightCommands()
@@ -169,15 +162,15 @@ namespace Snowblind
 		{
 			switch (command.myType)
 			{
-			case SRenderCommand::eType::POINTLIGHT:
-
-				myDirectX->SetBlendState(eBlendStates::ALPHA_BLEND);
-				myPointLight->SetPosition(command.myPosition);
-				myPointLight->SetRange(command.myRange);
-				myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
-				myPointLight->Update();
-				myDeferredRenderer->RenderLight(myPointLight, myCamera, myPrevFrame);
-				break;
+				case SRenderCommand::eType::POINTLIGHT:
+				{
+					myDirectX->SetBlendState(eBlendStates::ALPHA_BLEND);
+					myPointLight->SetPosition(command.myPosition);
+					myPointLight->SetRange(command.myRange);
+					myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
+					myPointLight->Update();
+					myDeferredRenderer->RenderLight(myPointLight, myCamera, myPrevFrame);
+				}break;
 			}
 		}
 	}
@@ -191,9 +184,9 @@ namespace Snowblind
 		{
 			switch (command.myType)
 			{
-			case SRenderCommand::eType::PARTICLE:
-				//command.myEmitterInstance->Render(myCamera, myDepthTexture);
-				break;
+				case SRenderCommand::eType::PARTICLE:
+					//command.myEmitterInstance->Render(myCamera, myDepthTexture);
+					break;
 			}
 		}
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
@@ -206,12 +199,11 @@ namespace Snowblind
 		{
 			switch (command.myType)
 			{
-			case SRenderCommand::eType::LINE:
-			{
-				my3DLine->Update(command.firstPoint, command.secondPoint);
-				my3DLine->Render(myPrevFrame, myCamera->GetProjection());
-				break;
-			}
+				case SRenderCommand::eType::LINE:
+				{
+					my3DLine->Update(command.firstPoint, command.secondPoint);
+					my3DLine->Render(myPrevFrame, myCamera->GetProjection());
+				}break;
 			}
 		}
 	}

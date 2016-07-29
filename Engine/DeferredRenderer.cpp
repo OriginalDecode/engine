@@ -283,22 +283,6 @@ namespace Snowblind
 		srv[0] = nullptr;
 		srv[1] = nullptr;
 		myContext->PSSetShaderResources(0, 2, &srv[0]);
-
-		// Above renders to 1 texture.
-
-		//backbuffer = myDirectX->GetBackbuffer();
-		//depth = myDirectX->GetDepthView();
-		//myContext->OMSetRenderTargets(1, &backbuffer, depth);
-
-		//myDirectX->SetVertexShader(myFinalizeShader->GetVertexShader()->vertexShader);
-		//myDirectX->SetPixelShader(myFinalizeShader->GetPixelShader()->pixelShader);
-		//
-		//srv[0] = myFinalTexture->GetShaderView();
-		//myContext->PSSetShaderResources(0, 1, &srv[0]);
-		//myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP);
-		//myContext->DrawIndexed(6, 0, 0);
-
-		// This renders to another texture with a different shader.
 	}
 
 	void CDeferredRenderer::SetLightStates()

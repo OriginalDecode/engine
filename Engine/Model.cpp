@@ -556,6 +556,7 @@ namespace Snowblind
 			InitVertexBuffer();
 			InitIndexBuffer();
 			InitConstantBuffer();
+
 		}
 
 		for each (CModel* child in myChildren)
@@ -738,7 +739,7 @@ namespace Snowblind
 		vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
 
 		hr = myAPI->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
-		myAPI->SetDebugName(myVertexBuffer->myVertexBuffer, "Model : Vertex Buffer");
+		myAPI->SetDebugName(myVertexBuffer->myVertexBuffer, "Model vb");
 		myAPI->HandleErrors(hr, "Failed to Create VertexBuffer!");
 
 		myVertexBuffer->myStride = myVertexData->myStride;
@@ -766,7 +767,7 @@ namespace Snowblind
 			indexData.pSysMem = myIndexData->myIndexData;
 
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
-		myAPI->SetDebugName(myIndexBuffer->myIndexBuffer, "Model : Index Buffer");
+		myAPI->SetDebugName(myIndexBuffer->myIndexBuffer, "Model ib");
 		myAPI->HandleErrors(hr, "Failed to Create IndexBuffer");
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
@@ -788,7 +789,7 @@ namespace Snowblind
 		cbDesc.StructureByteStride = 0;
 
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-		myAPI->SetDebugName(myConstantBuffer, "Model Constant Buffer");
+		myAPI->SetDebugName(myConstantBuffer, "Model cb");
 		myAPI->HandleErrors(hr, "[Model] : Failed to Create Constant Buffer, ");
 	}
 

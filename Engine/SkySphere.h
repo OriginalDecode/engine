@@ -6,6 +6,7 @@ namespace Snowblind
 	class CModel;
 	class CEffect;
 	class CCamera;
+	class CDirectX11;
 	class CSkySphere
 	{
 	public:
@@ -18,7 +19,7 @@ namespace Snowblind
 		CCamera* myCamera;
 		CTexture* mySkysphereTexture;
 		CU::Matrix44f myOrientation;
-
+		CDirectX11* myDirectX;
 		CModel* myModel;
 		
 	};

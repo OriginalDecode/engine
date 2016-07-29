@@ -67,32 +67,18 @@ namespace Snowblind
 	{
 		myEngine->Clear();
 
-		myDeferredRenderer->SetTargets(); //Set target to GBuffer
-		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
-		Render3DCommands(); //Render scene
+		Render3DCommands();
 		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 		myDeferredRenderer->UpdateConstantBuffer(myPrevFrame, myCamera->GetProjection());
 		myDeferredRenderer->DeferredRender(); /* Ambient pass */
 
-		myDeferredRenderer->SetLightStates();
 		RenderLightCommands();
-		myDeferredRenderer->SetNormalStates();
-
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
-		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
-		myDeferredRenderer->ResetBackbufferAndDepth();
-		mySkysphere->SetPosition(mySpherePos);
-
+		
+		myEngine->ResetRenderTargetAndDepth();
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
-
-		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
-		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
 		myDeferredRenderer->Finalize();
 
-		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		//RenderParticles();
-
 		RenderLines();
 
 		Render2DCommands();
@@ -107,6 +93,9 @@ namespace Snowblind
 
 	void CRenderer::Render3DCommands()
 	{
+		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		myDeferredRenderer->SetTargets();
+
 		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandType::e3D);
 		for each(const SRenderCommand& command in commands)
 		{
@@ -124,7 +113,7 @@ namespace Snowblind
 				}break;
 				case SRenderCommand::eType::SKYSPHERE:
 				{
-					mySpherePos = command.myPosition;
+					mySkysphere->SetPosition(command.myPosition);
 				}break;
 			}
 		}
@@ -158,6 +147,8 @@ namespace Snowblind
 	void CRenderer::RenderLightCommands()
 	{
 		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandType::LIGHT);
+		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
+		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
 		for each(const SRenderCommand& command in commands)
 		{
 			switch (command.myType)
@@ -173,6 +164,8 @@ namespace Snowblind
 				}break;
 			}
 		}
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
 	void CRenderer::RenderParticles()
@@ -185,8 +178,9 @@ namespace Snowblind
 			switch (command.myType)
 			{
 				case SRenderCommand::eType::PARTICLE:
+				{
 					//command.myEmitterInstance->Render(myCamera, myDepthTexture);
-					break;
+				}break;
 			}
 		}
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);

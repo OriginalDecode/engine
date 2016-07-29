@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 #include <Windows.h>
+#include <standard_datatype.hpp>
 #ifndef _WINDEF_
+
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
 struct HWND__;
@@ -64,7 +66,7 @@ namespace Snowblind
 		static void Clear();
 		
 		const SWindowSize& GetWindowSize() const;
-		CFont* LoadFont(const char* aFilepath, short aFontWidth, int aBorderWidth);
+		CFont* LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth);
 		const float GetDeltaTime();
 		const float GetFPS();
 		const std::string& GetAPIName();
@@ -73,6 +75,8 @@ namespace Snowblind
 		CEffect* GetEffect(const std::string& aFilePath);
 		CModel* GetModel(const std::string& aFilePath);
 		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
+
+		void ResetRenderTargetAndDepth();
 
 		void OnAltEnter();
 		void OnPause();

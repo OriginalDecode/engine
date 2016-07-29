@@ -35,10 +35,8 @@ namespace Snowblind
 		void SetBuffers();
 		void DeferredRender();
 
-		void ResetBackbufferAndDepth();
 		void Finalize();
 		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
-
 
 		void SetLightStates();
 		void RenderLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
@@ -68,6 +66,7 @@ namespace Snowblind
 				CU::Matrix44f myView;
 				CU::Vector4f myColor;
 				CU::Vector4f myPosition;
+				CU::Vector4f myCameraPosition;
 
 			} myPixelConstantStruct;
 

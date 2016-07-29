@@ -120,7 +120,7 @@ namespace Snowblind
 		return myWindowSize;
 	}
 
-	CFont* CEngine::LoadFont(const char* aFilepath, short aFontWidth, int aBorderWidth)
+	CFont* CEngine::LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth)
 	{
 		return myFontManager->LoadFont(aFilepath, aFontWidth, aBorderWidth);
 	}
@@ -158,6 +158,11 @@ namespace Snowblind
 	const std::string& CEngine::LoadModel(const std::string& aFilePath, const std::string& effect)
 	{
 		return myAssetsContainer->LoadModel(aFilePath, effect);
+	}
+
+	void CEngine::ResetRenderTargetAndDepth()
+	{
+		myAPI->ResetRenderTargetAndDepth();
 	}
 
 	void CEngine::OnAltEnter()

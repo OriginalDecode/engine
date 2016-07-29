@@ -112,6 +112,8 @@ namespace Snowblind
 		ID3D11DepthStencilView* GetDepthView();
 		const ID3D11DepthStencilView* GetDepthView() const;
 
+		void ResetRenderTargetAndDepth();
+
 		void SetDepthBufferState(const eDepthStencil& aDepthState);
 		void SetRasterizer(const eRasterizer& aRasterizer);
 		void SetBlendState(const eBlendStates& blendState);
@@ -123,7 +125,6 @@ namespace Snowblind
 		void SetHullShader(ID3D11HullShader* aHullShader);
 		void SetDomainShader(ID3D11DomainShader* aDomainShader);
 		void SetComputeShader(ID3D11ComputeShader* aComputeShader);
-
 		void OnAltEnter();
 
 	private:

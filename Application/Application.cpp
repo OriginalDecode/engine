@@ -53,11 +53,11 @@ void CApplication::Update()
 		float deltaTime = myEngine->GetDeltaTime();
 		UpdateInput(deltaTime);
 		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
-		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 25.f), CU::Vector3f(1.f,0.f,0.f), 1.f, 5.f));
+		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 25.f), CU::Vector3f(1.f,0.f,0.f), 1.f, 15.f));
 		std::stringstream ss;
 		ss << moveSpeed;
 
-		mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Vector2f(0.f, 10.f)));
+		mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Vector2f(0.f, 15.f)));
 
 		myGame->Update(deltaTime);
 
@@ -137,9 +137,6 @@ void CApplication::UpdateInput(float aDeltaTime)
 		{
 			moveSpeed -= 0.01f;
 		}
-
-
-
 
 	}
 }

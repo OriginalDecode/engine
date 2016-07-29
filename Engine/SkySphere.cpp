@@ -19,6 +19,7 @@ namespace Snowblind
 		JSONReader reader("Data/Config/game.json");
 		reader.ForceReadElement("Skysphere", skysphereTexture);
 		mySkysphereTexture = CEngine::GetInstance()->GetTexture(skysphereTexture);
+		myDirectX = CEngine::GetDirectX();
 	}
 
 	CSkySphere::~CSkySphere()
@@ -27,6 +28,10 @@ namespace Snowblind
 
 	void CSkySphere::Render(CU::Matrix44f& anOrientation, CTexture* aDepthTexture)
 	{
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
+
+
 		ID3D11ShaderResourceView* srv[2];
 		srv[0] = mySkysphereTexture->GetShaderView();
 		srv[1] = aDepthTexture->GetDepthStencilView();

@@ -37,7 +37,7 @@ VS_OUTPUT VS(VS_INPUT input)
 	float4 scale = range;
 	scale.w = 1.f;
 	
-	input.pos *= scale;
+	input.pos *= scale; // scale
 	input.pos.w = 1.f;
 	
 	output.pos = mul(input.pos, World);

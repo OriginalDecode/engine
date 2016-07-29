@@ -617,6 +617,7 @@ namespace Snowblind
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
+						SetMatrices(aCameraOrientation, aCameraProjection);
 						myAPI->SetSamplerState(eSamplerStates::POINT_CLAMP);
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
 					}

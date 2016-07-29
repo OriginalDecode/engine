@@ -223,26 +223,18 @@ namespace Snowblind
 
 		myContext->VSSetConstantBuffers(0, 1, &myLightPass.myVertexConstantBuffer);
 		myContext->PSSetConstantBuffers(0, 1, &myLightPass.myPixelConstantBuffer);
-
-		myLightPass.myEffect->Activate();
-		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); /* Not effect specific */
 		pointlight->Render(previousOrientation, aCamera);
-		myLightPass.myEffect->Deactivate();
-	}
-
-	void CDeferredRenderer::SetNormalStates()
-	{
-
 	}
 
 	void CDeferredRenderer::DeferredRender()
 	{
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		SetBuffers();
-
+		
 		myDirectX->ResetViewport();
 
 		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView(); //myDirectX->GetBackbuffer();
-		ID3D11DepthStencilView* depth = myDirectX->GetDepthView(); //myDirectX->GetDepthView();
+		ID3D11DepthStencilView* depth = myDirectX->GetDepthView(); //myDepthStencil2->GetDepthView(); 
 
 		myContext->ClearRenderTargetView(backbuffer, myClearColor);
 		myContext->OMSetRenderTargets(1, &backbuffer, depth);
@@ -254,7 +246,23 @@ namespace Snowblind
 		myContext->DrawIndexed(6, 0, 0);
 
 		myAmbientPass.myEffect->Deactivate();
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+	}
 
+	void CDeferredRenderer::SetLightShaders()
+	{
+		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView(); //myDirectX->GetBackbuffer();
+		ID3D11DepthStencilView* depth = myDepthStencil2->GetDepthView(); //myDirectX->GetDepthView();//
+		myContext->OMSetRenderTargets(1, &backbuffer, depth);
+		myLightPass.myEffect->Activate();
+		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); /* Not effect specific */
+
+
+	}
+
+	void CDeferredRenderer::DeactivateLight()
+	{
+		myLightPass.myEffect->Deactivate();
 	}
 
 	void CDeferredRenderer::Finalize()

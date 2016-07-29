@@ -149,13 +149,17 @@ namespace Snowblind
 		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandType::LIGHT);
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
+
+
+		myDeferredRenderer->SetLightShaders();
+
 		for each(const SRenderCommand& command in commands)
 		{
 			switch (command.myType)
 			{
 				case SRenderCommand::eType::POINTLIGHT:
 				{
-					myDirectX->SetBlendState(eBlendStates::ALPHA_BLEND);
+					myDirectX->SetBlendState(eBlendStates::LIGHT_BLEND);
 					myPointLight->SetPosition(command.myPosition);
 					myPointLight->SetRange(command.myRange);
 					myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
@@ -164,6 +168,7 @@ namespace Snowblind
 				}break;
 			}
 		}
+		myDeferredRenderer->DeactivateLight();
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 	}
@@ -188,6 +193,10 @@ namespace Snowblind
 
 	void CRenderer::RenderLines()
 	{
+		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
+		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+
 		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandType::LINE);
 		for each(const SRenderCommand& command in commands)
 		{
@@ -200,6 +209,9 @@ namespace Snowblind
 				}break;
 			}
 		}
+		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
 };

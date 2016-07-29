@@ -50,6 +50,7 @@ enum class eDepthStencil
 	Z_DISABLED,
 	READ_NO_WRITE,
 	MASK_TEST,
+	LIGHT_MASK,
 	_COUNT
 };
 
@@ -64,6 +65,7 @@ enum class eRasterizer
 enum class eBlendStates
 {
 	NO_BLEND,
+	LIGHT_BLEND,
 	ALPHA_BLEND,
 	PARTICLE_BLEND,
 	BLEND_FALSE,

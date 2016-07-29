@@ -114,8 +114,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float roughness = depth.y;
 	float roughnessOffsetted = pow(8192, roughness);
 	float ao = 1.0f;
-	  float4 substance = (0.04f - 0.04f * metalness) 
-      + albedo * metalness;
+	float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;
 	  
 	float x = texCoord.x * 2.f - 1.f;
 	float y = (1.f - texCoord.y) * 2.f - 1.f;
@@ -148,22 +147,4 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float3 directSpec = F * D * V * NdotL * lightColor;
 	
 	return float4(directSpec, 1.f);
-	
-	//PointLight-Calc
-	//float3 lightVec = position - worldPosition;
-	//
-	//float distance = length(lightVec);
-	//lightVec = normalize(lightVec);
-	//
-	//
-	//float lambert = dot(lightVec, normal);
-	//float3 lightColor = 0.f;
-	//
-	//float intensity = color.w;
-	//lightColor = saturate(lambert * color); 
-	//
-	//float4 finalColor = float4(lightColor * intensity, 1.f);
-	//finalColor *= albedo;
-	//finalColor = saturate(finalColor * CalculateTotalAttenuation(distance, //input.range));
-	//return finalColor;
 };

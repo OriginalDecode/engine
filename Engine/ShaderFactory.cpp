@@ -3,6 +3,7 @@
 #include <d3dcompiler.h>
 #include <Utilities.h>
 #include <JSON/JSONReader.h>
+#include "ShaderWarningHandler.h"
 #define ITTERATE(shadermap) auto it = shadermap.begin(); it != shadermap.end(); it++
 
 #define VERTEX 0
@@ -23,14 +24,14 @@ namespace Snowblind
 			FileWatcher* watcher = new FileWatcher();
 			myFileWatchers.Add(watcher);
 		}
-
+		myShaderWarningHandler = new ShaderWarningHandler();
 #endif
 	}
 
 	CShaderFactory::~CShaderFactory()
 	{
 		myFileWatchers.DeleteAll();
-
+		SAFE_DELETE(myShaderWarningHandler);
 		for (ITTERATE(myVertexShaders))
 		{
 			SAFE_DELETE(it->second);
@@ -166,7 +167,8 @@ namespace Snowblind
 
 		if (compilationMessage != nullptr)
 		{
-			DL_MESSAGE("%s", (char*)compilationMessage->GetBufferPointer());
+			std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
+			DL_WARNING("%s", msg.c_str());
 		}
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
@@ -232,12 +234,13 @@ namespace Snowblind
 		hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "PS", "ps_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
 		if (compilationMessage != nullptr)
 		{
-			DL_MESSAGE("%s", (char*)compilationMessage->GetBufferPointer());
+			std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
+			DL_WARNING("%s", msg.c_str());
 		}
 
 		if (FAILED(hr))
 		{
-			DL_WARNINGBOX((char*)compilationMessage->GetBufferPointer());
+			DL_WARNINGBOX(myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader).c_str());
 			return;
 		}
 		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
@@ -288,6 +291,13 @@ namespace Snowblind
 			ID3D10Blob* compilationMessage = 0;
 			std::wstring fileName(aShader.begin(), aShader.end());
 			hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "GS", "gs_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
+
+			if (compilationMessage != nullptr)
+			{
+				std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
+				DL_WARNING("%s", msg.c_str());
+			}
+
 			CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
 			hr = device->CreateGeometryShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &newShader->geometryShader);
@@ -324,6 +334,12 @@ namespace Snowblind
 
 			std::wstring fileName(aShader.begin(), aShader.end());
 			hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "HS", "hs_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
+			if (compilationMessage != nullptr)
+			{
+				std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
+				DL_WARNING("%s", msg.c_str());
+			}
+
 			CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
 			hr = device->CreateHullShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &newShader->hullShader);
@@ -361,6 +377,13 @@ namespace Snowblind
 
 			std::wstring fileName(aShader.begin(), aShader.end());
 			hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "DS", "ds_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
+
+			if (compilationMessage != nullptr)
+			{
+				std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
+				DL_WARNING("%s", msg.c_str());
+			}
+
 			CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
 			hr = device->CreateDomainShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &newShader->domainShader);
@@ -397,6 +420,13 @@ namespace Snowblind
 
 			std::wstring fileName(aShader.begin(), aShader.end());
 			hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "CS", "cs_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
+
+			if (compilationMessage != nullptr)
+			{
+				std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
+				DL_WARNING("%s", msg.c_str());
+			}
+
 			CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
 			hr = device->CreateComputeShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &newShader->computeShader);

@@ -76,12 +76,7 @@ namespace Snowblind
 		}
 		myFileNames.Add(aFilePath);
 		myResourceNames.Add(aResourceName);
-
-
-		/*ID3DX11EffectShaderResourceVariable* srv;
-		myEffect->GetShaderResource(srv, aResourceName);*/
-		//myShaderVariables.Add(srv);
-
+		
 		std::string sub = CL::substr(aFilePath, ".png", true, 0);
 		std::string debugName = sub;
 		if (CL::substr(sub, ".dds") == false)
@@ -90,8 +85,7 @@ namespace Snowblind
 		}
 		STexture* newTexture = new STexture();
 		newTexture->texture = CEngine::GetInstance()->GetTexture(sub);
-
-
+	
 		std::string dName;
 		dName = CL::substr(debugName, "\\", false, 0);
 		newTexture->texture->SetDebugName(dName);

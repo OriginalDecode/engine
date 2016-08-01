@@ -204,6 +204,10 @@
     <ClInclude Include="Line3D.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="ModelImporter.h" />
+    <ClInclude Include="ShaderWarningHandler.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -313,6 +317,10 @@
     </ClCompile>
     <ClCompile Include="Line3D.cpp">
       <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelImporter.cpp" />
+    <ClCompile Include="ShaderWarningHandler.cpp">
+      <Filter>Effect</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

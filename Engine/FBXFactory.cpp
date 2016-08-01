@@ -46,7 +46,6 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 	vertexData->mySize = sizeOfBuffer;
 	vertexData->myStride = someData->myVertexStride * sizeof(float);
 
-	//vertexData.myType = Ve;
 	someOutData->myVertexData = vertexData;
 
 	for (int i = 0; i < someData->myLayout.Size(); ++i)
@@ -100,7 +99,7 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 	}
 	someOutData->myIsNULLObject = false;
 
-	Snowblind::CSurface* surface = new Snowblind::CSurface(0, someData->myVertexCount, 0, someData->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	Snowblind::CSurface* surface = new Snowblind::CSurface(0, someData->myVertexCount, 0, someData->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); //surface = face.
 	bool useSRGB = true;
 	for (unsigned int i = 0; i < someData->myTextures.size(); ++i)
 	{

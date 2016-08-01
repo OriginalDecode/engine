@@ -2,6 +2,7 @@
 #include <unordered_map>
 
 class FBXFactory;
+class CModelImporter;
 
 namespace Snowblind
 {
@@ -26,7 +27,7 @@ namespace Snowblind
 		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
 
 	private:
-
+		
 		std::unordered_map<std::string, CTexture*> myTextures;
 		std::unordered_map<std::string, CEffect*> myEffects;
 		std::unordered_map<std::string, CModel*> myModels;
@@ -38,6 +39,7 @@ namespace Snowblind
 
 		FBXFactory* myFactory;
 		CShaderFactory* myShaderFactory;
+		CModelImporter* myModelLoader;
 
 	};
 };

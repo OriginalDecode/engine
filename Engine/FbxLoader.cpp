@@ -1436,15 +1436,11 @@ FbxModelData* FBXLoader::loadModel(const char* aFile)
 		{
 			const FbxString lFileName = lFileTexture->GetFileName();
 
-			unsigned int lTextureObject = 0;
-			bool lStatus = false;
-
 			const FbxString lAbsFbxFileName = FbxPathUtils::Resolve(aFile);
 			const FbxString lAbsFolderName = FbxPathUtils::GetFolderName(lAbsFbxFileName);
-
 			const FbxString lTextureFileName = lAbsFolderName + "\\" + lFileTexture->GetRelativeFileName();// FbxPathUtils::GetFileName(lFileName);
-
 			const FbxString lResolvedFileName = lAbsFolderName + "\\" + FbxPathUtils::GetFileName(lFileName);// lFileTexture->GetRelativeFileName();;// FbxPathUtils::Bind(lAbsFolderName, lTextureFileName);
+
 			TextureInfo info;
 			info.myFileName = lResolvedFileName;
 			//info.myFileName += "\\";
@@ -1479,6 +1475,7 @@ FbxModelData* FBXLoader::loadModel(const char* aFile)
 	}
 
 	LoadAnimation(*myLoadingModel->myAnimation, scene->GetRootNode(), FbxAMatrix(), pose, lCurrentAnimLayer, -1);
+
 	LoadNodeRecursive(myLoadingModel, *myLoadingModel->myAnimation, scene->GetRootNode(), FbxAMatrix(), pose, lCurrentAnimLayer, -1);
 	DL_PRINT("[FBXLoader](loadModel) : Success!");
 

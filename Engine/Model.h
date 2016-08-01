@@ -24,6 +24,7 @@ namespace Snowblind
 	class CModel 
 	{
 		friend class FBXFactory;
+		friend class CModelImporter;
 	public:
 		CModel();
 		~CModel();

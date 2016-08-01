@@ -122,7 +122,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Input\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)Include\fbx_vs15\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include\;$(SolutionDir)Input\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)Include\fbx_vs15\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -131,7 +131,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>freetype_$(Configuration)_x64.lib;libfbxsdk-md_$(Configuration)_vs15_x64.lib;DirectXTK_$(Configuration)_x64.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration)_x64.lib;libfbxsdk-md_$(Configuration)_vs15_x64.lib;DirectXTK_$(Configuration)_x64.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -208,12 +208,14 @@
     <ClInclude Include="LightStructs.h" />
     <ClInclude Include="Line3D.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelImporter.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderFactory.h" />
+    <ClInclude Include="ShaderWarningHandler.h" />
     <ClInclude Include="SkySphere.h" />
     <ClInclude Include="SnowblindParticleData.h" />
     <ClInclude Include="SpotLight.h" />
@@ -250,12 +252,14 @@
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Line3D.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ModelImporter.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="RenderCommand.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderFactory.cpp" />
+    <ClCompile Include="ShaderWarningHandler.cpp" />
     <ClCompile Include="SkySphere.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Sprite.cpp" />

@@ -9,6 +9,8 @@ struct ID3D11DomainShader;
 struct ID3D11ComputeShader;
 struct ID3D10Blob;
 
+class ShaderWarningHandler;
+
 class FileWatcher;
 namespace Snowblind
 {
@@ -105,6 +107,7 @@ namespace Snowblind
 
 #if defined (_DEBUG)
 		CU::GrowingArray<FileWatcher*> myFileWatchers;
+		ShaderWarningHandler* myShaderWarningHandler;
 #endif
 		CU::GrowingArray<CEffect*> GetEffectArray(const std::string& aFilePath);
 

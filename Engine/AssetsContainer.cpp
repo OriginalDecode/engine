@@ -5,10 +5,12 @@
 #include "Effect.h"
 #include "FBXFactory.h"
 #include "ShaderFactory.h"
+#include "ModelImporter.h"
 namespace Snowblind
 {
 
 	CAssetsContainer::CAssetsContainer()
+		: myModelLoader(new CModelImporter())
 	{
 	}
 
@@ -50,6 +52,7 @@ namespace Snowblind
 		if (myTextures.find(aFilePath) == myTextures.end())
 		{
 			LoadTexture(aFilePath);
+			DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
 		}
 		return myTextures[aFilePath];
 	}
@@ -102,9 +105,11 @@ namespace Snowblind
 	{
 		if (myModels.find(aFilePath) == myModels.end())
 		{
-			CModel* model = myFactory->LoadModel(aFilePath.c_str(), effect.c_str());
-			model->CreateModel();
-			myModels[aFilePath] = model;
+			myModelLoader->LoadModel("", ""); //Should return a model?
+			myModels[aFilePath] = nullptr;
+			//CModel* model = myFactory->LoadModel(aFilePath.c_str(), effect.c_str());
+			//model->CreateModel();
+			//myModels[aFilePath] = model;
 		}
 
 		return aFilePath;

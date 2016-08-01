@@ -556,7 +556,6 @@ namespace Snowblind
 			InitVertexBuffer();
 			InitIndexBuffer();
 			InitConstantBuffer();
-
 		}
 
 		for each (CModel* child in myChildren)
@@ -654,19 +653,25 @@ namespace Snowblind
 
 	void CModel::SetIsSkysphere()
 	{
-		myIsSkysphere = true;
-		for (int i = 0; i < myChildren.Size(); i++)
+		if (this)
 		{
-			myChildren[i]->SetIsSkysphere();
+			myIsSkysphere = true;
+			for (int i = 0; i < myChildren.Size(); i++)
+			{
+				myChildren[i]->SetIsSkysphere();
+			}
 		}
 	}
 
 	void CModel::SetIsLightmesh()
 	{
-		myIsLightmesh = true;
-		for (int i = 0; i < myChildren.Size(); i++)
+		if (this)
 		{
-			myChildren[i]->SetIsLightmesh();
+			myIsLightmesh = true;
+			for (int i = 0; i < myChildren.Size(); i++)
+			{
+				myChildren[i]->SetIsLightmesh();
+			}
 		}
 	}
 

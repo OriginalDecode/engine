@@ -160,6 +160,7 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	inline void GrowingArray<ObjectType, SizeType>::Add(const ObjectType& aObject)
 	{
+		assert(this && "GrowingArray was null");
 		if (mySize >= myCapacity)
 		{
 			Resize(myCapacity * 2);

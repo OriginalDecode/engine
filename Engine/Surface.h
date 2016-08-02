@@ -20,7 +20,7 @@ namespace Snowblind
 
 		void Activate();
 		void Deactivate();
-		void SetTexture(const std::string& aResourceName, const std::string& aFilePath);
+		void AddTexture(const std::string& aResourceName, const std::string& aFilePath);
 
 		void SetEffect(CEffect* anEffect);
 
@@ -36,7 +36,6 @@ namespace Snowblind
 		int GetVertexCount() const;
 		int GetStartVertex() const;
 		int GetStartIndex() const;
-		CTexture* GetTexture();
 	private:
 
 		D3D_PRIMITIVE_TOPOLOGY myPrimologyType;

@@ -421,50 +421,6 @@ bool FillData(ModelData* someData, FbxNode* aNode, AnimationData* aAnimation)
 	// Count the polygon count of each material
 	FbxLayerElementArrayTemplate<int>* lMaterialIndice = NULL;
 	FbxGeometryElement::EMappingMode lMaterialMappingMode = FbxGeometryElement::eNone;
-	if (mesh->GetElementMaterial())
-	{
-		lMaterialIndice = &mesh->GetElementMaterial()->GetIndexArray();
-		lMaterialMappingMode = mesh->GetElementMaterial()->GetMappingMode();
-		if (lMaterialIndice && lMaterialMappingMode == FbxGeometryElement::eByPolygon)
-		{
-			FBX_ASSERT(lMaterialIndice->GetCount() == lPolygonCount);
-			if (lMaterialIndice->GetCount() == lPolygonCount)
-			{
-				// Count the faces of each material
-				for (int lPolygonIndex = 0; lPolygonIndex < lPolygonCount; ++lPolygonIndex)
-				{
-					const int lMaterialIndex = lMaterialIndice->GetAt(lPolygonIndex);
-
-					/*if (someData->mSubMeshes[lMaterialIndex] == NULL)
-					{
-					someData->mSubMeshes[lMaterialIndex] = new ModelData::SubMesh;
-					}
-					someData->mSubMeshes[lMaterialIndex]->TriangleCount += 1;*/
-				}
-
-				// Make sure we have no "holes" (NULL) in the mSubMeshes table. This can happen
-				// if, in the loop above, we resized the mSubMeshes by more than one slot.
-
-				/*for (int i = 0; i < someData->mSubMeshes.Count(); i++)
-				{
-				if (someData->mSubMeshes[i] == NULL)
-				someData->mSubMeshes[i] = new ModelData::SubMesh;
-				}*/
-
-				// Record the offset (how many vertex)
-				const int lMaterialCount = someData->mSubMeshes.Size();
-				int lOffset = 0;
-				/*for (int lIndex = 0; lIndex < lMaterialCount; ++lIndex)
-				{
-				someData->mSubMeshes[lIndex]->IndexOffset = lOffset;
-				lOffset += someData->mSubMeshes[lIndex]->TriangleCount * 3;
-				// This will be used as counter in the following procedures, reset to zero
-				someData->mSubMeshes[lIndex]->TriangleCount = 0;
-				}*/
-				FBX_ASSERT(lOffset == lPolygonCount * 3);
-			}
-		}
-	}
 
 	// All faces will use the same material.
 	if (someData->mSubMeshes.Size() == 0)
@@ -478,9 +434,6 @@ bool FillData(ModelData* someData, FbxNode* aNode, AnimationData* aAnimation)
 		someData->mSubMeshes.RemoveAll();
 		someData->mSubMeshes.Add(temp);
 	}
-
-
-
 	bool hasNormalMap = false;
 
 	const int lMaterialCount = aNode->GetMaterialCount();
@@ -590,7 +543,6 @@ bool FillData(ModelData* someData, FbxNode* aNode, AnimationData* aAnimation)
 	}
 	int stride = VERTEX_STRIDE;
 	size_t size = lPolygonVertexCount * VERTEX_STRIDE;
-	//float * lVertices = new float[lPolygonVertexCount * VERTEX_STRIDE];
 	unsigned int * lIndices = new unsigned int[lPolygonCount * TRIANGLE_VERTEX_COUNT];
 	someData->myIndexCount = lPolygonCount * TRIANGLE_VERTEX_COUNT;
 	//float * lNormals = NULL;

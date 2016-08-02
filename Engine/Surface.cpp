@@ -68,7 +68,7 @@ namespace Snowblind
 	}
 
 
-	void CSurface::SetTexture(const std::string& aResourceName, const std::string& aFilePath)
+	void CSurface::AddTexture(const std::string& aResourceName, const std::string& aFilePath)
 	{
 		if (aResourceName == "AOTexture")
 		{
@@ -83,7 +83,7 @@ namespace Snowblind
 		{
 			sub += ".dds";
 		}
-		STexture* newTexture = new STexture();
+		STexture* newTexture = new STexture(); //not a memoryleak.
 		newTexture->texture = CEngine::GetInstance()->GetTexture(sub);
 	
 		std::string dName;
@@ -125,14 +125,4 @@ namespace Snowblind
 	{
 		myPrimologyType = aPrimology;
 	}
-
-	CTexture* CSurface::GetTexture()
-	{
-		if (myTextures.Size() > 0)
-		{
-			return myTextures[0]->texture;
-		}
-		return nullptr;
-	}
-
 };

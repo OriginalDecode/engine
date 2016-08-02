@@ -97,9 +97,10 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 		}
 		someOutData->myVertexFormat.Add(*desc);
 	}
-	someOutData->myIsNULLObject = false;
+	//someOutData->myIsNULLObject = false;
 
-	Snowblind::CSurface* surface = new Snowblind::CSurface(0, someData->myVertexCount, 0, someData->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); //surface = face.
+	Snowblind::CSurface* surface = new Snowblind::CSurface(0
+		, someData->myVertexCount, 0, someData->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); //surface = face.
 	bool useSRGB = true;
 	for (unsigned int i = 0; i < someData->myTextures.size(); ++i)
 	{
@@ -130,7 +131,7 @@ void FBXFactory::FillData(ModelData* someData, Snowblind::CModel* someOutData, S
 
 		std::string fileName(currentTexture.myFileName.begin(), currentTexture.myFileName.end());
 		//surface->SetEffect(anEffect);
-		surface->SetTexture(resourceName, fileName);
+		//surface->SetTexture(resourceName, fileName);
 
 	}
 	someOutData->mySurfaces.Add(surface);

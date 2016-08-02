@@ -105,11 +105,7 @@ namespace Snowblind
 	{
 		if (myModels.find(aFilePath) == myModels.end())
 		{
-			myModelLoader->LoadModel("", ""); //Should return a model?
-			myModels[aFilePath] = nullptr;
-			//CModel* model = myFactory->LoadModel(aFilePath.c_str(), effect.c_str());
-			//model->CreateModel();
-			//myModels[aFilePath] = model;
+			myModels[aFilePath] = myModelLoader->LoadModel(aFilePath, effect);
 		}
 
 		return aFilePath;

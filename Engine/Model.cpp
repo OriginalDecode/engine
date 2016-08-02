@@ -15,6 +15,8 @@ namespace Snowblind
 {
 	CModel::CModel()
 	{
+		myModelStates.reset(); //Sets all the bits to 0
+		myModelStates[NULL_OBJECT] = TRUE;
 		myEngine = CEngine::GetInstance();
 		myAPI = CEngine::GetDirectX();
 	}
@@ -37,7 +39,7 @@ namespace Snowblind
 	void CModel::CreateTriangle(const std::string& anEffectPath)
 	{
 		myEffect = myEngine->GetEffect("Data/Shaders/T_Line3D.json");
-		myIsNULLObject = false;
+		myModelStates[NULL_OBJECT] = FALSE;
 		//myEffect = CAssetsContainer::GetInstance()->GetEffect(anEffectPath);
 		myVertexFormat.Init(2);
 		myVertexFormat.Add(VertexLayoutPosCol[0]);
@@ -71,7 +73,7 @@ namespace Snowblind
 	void CModel::CreateCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
 	{
 		myEffect = myEngine->GetEffect(anEffectPath);
-		myIsNULLObject = false;
+		myModelStates[NULL_OBJECT] = FALSE;
 		ENGINE_LOG("Creating Cube");
 		float halfWidth = aWidth *0.5f;
 		float halfDepth = aDepth *0.5f;
@@ -190,7 +192,7 @@ namespace Snowblind
 	{
 		myEffect = myEngine->GetEffect(anEffectPath);
 
-		myIsNULLObject = false;
+		myModelStates[NULL_OBJECT] = FALSE;
 		ENGINE_LOG("Creating Cube");
 
 		CU::GrowingArray<SVertexTypePosCol> vertices;
@@ -306,8 +308,9 @@ namespace Snowblind
 	void CModel::CreateTexturedCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth)
 	{
 		anEffectPath;
-		myIsNULLObject = false;
-		myIsTextured = true;
+		myModelStates[NULL_OBJECT] = FALSE;
+		myModelStates[TEXTURED] = TRUE;
+
 		//float halfWidth = aWidth * 0.5f;
 		//float halfDepth = aDepth * 0.5f;
 		//float halfHeight = aHeight * 0.5f;
@@ -536,22 +539,14 @@ namespace Snowblind
 		myIndexData->myIndexData = new char[myIndexData->mySize];
 		memcpy(myIndexData->myIndexData, &indexes[0], myIndexData->mySize);
 
-		/*	CSurface* tempSurface = new CSurface(myEffect);
-			tempSurface->SetVertexStart(0);
-			tempSurface->SetIndexCount(myIndexData->myIndexCount);
-			tempSurface->SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			tempSurface->SetTexture("AlbedoTexture", "Data/Textures/col.dds");
-			mySurfaces.Add(tempSurface);*/
-
-			//myEffect->SetAlbedo(Snowblind::CAssetsContainer::GetInstance()->GetTexture("Data/Textures/colors.dds"));
 		InitVertexBuffer();
 		InitIndexBuffer();
 	}
 
-	void CModel::CreateModel()
+	CModel* CModel::CreateModel()
 	{
-		myIsTextured = true;
-		if (myIsNULLObject == false)
+		myModelStates[TEXTURED] = TRUE;
+		if (myModelStates[NULL_OBJECT] == FALSE)
 		{
 			InitVertexBuffer();
 			InitIndexBuffer();
@@ -562,11 +557,13 @@ namespace Snowblind
 		{
 			child->CreateModel();
 		}
+
+		return this;
 	}
 
 	void CModel::Render(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
 	{
-		if (!myIsNULLObject)
+		if (myModelStates[NULL_OBJECT] == FALSE)
 		{
 			ID3D11DeviceContext* context = myAPI->GetContext();
 
@@ -575,7 +572,7 @@ namespace Snowblind
 			context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 			context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
 
-			if (!myIsLightmesh)
+			if (myModelStates[LIGHT_MESH] == FALSE)
 			{
 				myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
 				myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
@@ -584,7 +581,7 @@ namespace Snowblind
 			if (mySurfaces.Size() > 0)
 			{
 
-				if (!myIsSkysphere && !myIsLightmesh)
+				if ((myModelStates[SKY_SPHERE] & myModelStates[LIGHT_MESH]) == FALSE)
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
@@ -592,13 +589,13 @@ namespace Snowblind
 						context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 						myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-						mySurfaces[i]->Activate();
-						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
-						mySurfaces[i]->Deactivate();
+						//mySurfaces[i]->Activate();
+						context->DrawIndexed(mySurfaces[i]->GetIndexCount(), mySurfaces[i]->GetStartIndex(), 0);
+						//mySurfaces[i]->Deactivate();
 					}
 
 				}
-				else if (myIsSkysphere)
+				else if (myModelStates[SKY_SPHERE] == TRUE)
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
@@ -612,7 +609,7 @@ namespace Snowblind
 
 					}
 				}
-				else if (myIsLightmesh)
+				else if (myModelStates[LIGHT_MESH] == TRUE)
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
@@ -655,7 +652,7 @@ namespace Snowblind
 	{
 		if (this)
 		{
-			myIsSkysphere = true;
+			myModelStates[SKY_SPHERE] = TRUE;
 			for (int i = 0; i < myChildren.Size(); i++)
 			{
 				myChildren[i]->SetIsSkysphere();
@@ -667,7 +664,7 @@ namespace Snowblind
 	{
 		if (this)
 		{
-			myIsLightmesh = true;
+			myModelStates[LIGHT_MESH] = TRUE;
 			for (int i = 0; i < myChildren.Size(); i++)
 			{
 				myChildren[i]->SetIsLightmesh();
@@ -696,7 +693,7 @@ namespace Snowblind
 
 	void CModel::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
 	{
-		if (!myIsNULLObject)
+		if (myModelStates[NULL_OBJECT] == FALSE)
 		{
 			DL_ASSERT_EXP(myBaseStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 
@@ -769,8 +766,8 @@ namespace Snowblind
 		indexDesc.StructureByteStride = 0;
 
 		D3D11_SUBRESOURCE_DATA indexData;
-		ZeroMemory(&indexData, sizeof(indexData)),
-			indexData.pSysMem = myIndexData->myIndexData;
+		ZeroMemory(&indexData, sizeof(indexData));
+		indexData.pSysMem = myIndexData->myIndexData;
 
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
 		myAPI->SetDebugName(myIndexBuffer->myIndexBuffer, "Model ib");
@@ -803,5 +800,4 @@ namespace Snowblind
 	{
 		myChildren.Add(aChild);
 	}
-
-}
+};

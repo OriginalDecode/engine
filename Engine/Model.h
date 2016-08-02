@@ -7,6 +7,16 @@
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct ID3D11Buffer;
+
+enum eModelStates : int
+{
+	NULL_OBJECT,
+	LIGHT_MESH,
+	SKY_SPHERE,
+	TEXTURED,
+	_COUNT
+};
+
 namespace Snowblind
 {
 	class CCamera;
@@ -19,6 +29,7 @@ namespace Snowblind
 	struct SVertexBufferWrapper;
 	struct SVertexDataWrapper;
 	struct SIndexBufferWrapper;
+
 
 
 	class CModel 
@@ -34,7 +45,7 @@ namespace Snowblind
 		void CreateCube(const std::string& anEffectPath, const CU::Vector3f& aColor);
 
 		void CreateTexturedCube(const std::string& anEffectPath, float aWidth, float aHeight, float aDepth);
-		void CreateModel();
+		CModel* CreateModel();
 		void Render(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection);
 		void RenderPolygon(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection);
 
@@ -47,36 +58,35 @@ namespace Snowblind
 		void SetEffect(CEffect* anEffect);
 		
 	private:
-		void SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection);
-		ID3D11InputLayout* myVertexLayout;
-		ID3D11Buffer* myConstantBuffer;
+		ID3D11InputLayout* myVertexLayout = nullptr;
+		ID3D11Buffer* myConstantBuffer = nullptr;
 
 		CU::GrowingArray<SVertexTypePosCol> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		CU::GrowingArray<CSurface*> mySurfaces;
 		CU::GrowingArray<CModel*> myChildren;
 
-		SVertexIndexWrapper* myIndexData;
-		SVertexDataWrapper* myVertexData;
+		SVertexIndexWrapper* myIndexData = nullptr;
+		SVertexDataWrapper* myVertexData = nullptr;
 
-		SVertexBufferWrapper* myVertexBuffer;
-		SIndexBufferWrapper* myIndexBuffer;
+		SVertexBufferWrapper* myVertexBuffer = nullptr;
+		SIndexBufferWrapper* myIndexBuffer = nullptr;
 
-		SVertexBaseStruct* myBaseStruct;
+		SVertexBaseStruct* myBaseStruct = nullptr;
 
 		CU::Matrix44f myOrientation;
 
-		CDirectX11* myAPI;
-		CEngine* myEngine;
-		CCamera* myCamera;
-		CEffect* myEffect;
+		CDirectX11* myAPI = nullptr;
+		CEngine* myEngine = nullptr;
+		CCamera* myCamera = nullptr;
+		CEffect* myEffect = nullptr;
 
-		bool myIsLightmesh = false;
-		bool myIsTextured = false;
-		bool myIsNULLObject = true;
-		bool myIsSkysphere = false;
+		/* Use bitset instead */
+		std::bitset<eModelStates::_COUNT> myModelStates;
+
 		void InitVertexBuffer();
 		void InitIndexBuffer();
 		void InitConstantBuffer();
+		void SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection);
 	};
 }

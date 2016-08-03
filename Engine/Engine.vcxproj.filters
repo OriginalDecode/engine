@@ -141,21 +141,6 @@
     <ClInclude Include="Console.h">
       <Filter>Utilities\Console</Filter>
     </ClInclude>
-    <ClInclude Include="Common.h">
-      <Filter>FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="FBXFactory.h">
-      <Filter>FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="FbxLoader.h">
-      <Filter>FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryUtility.h">
-      <Filter>FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationUtility.h">
-      <Filter>FBX</Filter>
-    </ClInclude>
     <ClInclude Include="LightStructs.h">
       <Filter>Light</Filter>
     </ClInclude>
@@ -260,21 +245,6 @@
     </ClCompile>
     <ClCompile Include="Console.cpp">
       <Filter>Utilities\Console</Filter>
-    </ClCompile>
-    <ClCompile Include="Common.cxx">
-      <Filter>FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="FBXFactory.cpp">
-      <Filter>FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="FbxLoader.cpp">
-      <Filter>FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="GeometryUtility.cxx">
-      <Filter>FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationUtility.cxx">
-      <Filter>FBX</Filter>
     </ClCompile>
     <ClCompile Include="DirectionalLight.cpp">
       <Filter>Light\Directional</Filter>

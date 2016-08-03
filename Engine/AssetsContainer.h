@@ -37,7 +37,6 @@ namespace Snowblind
 		void LoadTexture(const std::string& aFilePath);
 		void LoadEffect(const std::string& aFilePath);
 
-		FBXFactory* myFactory;
 		CShaderFactory* myShaderFactory;
 		CModelImporter* myModelLoader;
 

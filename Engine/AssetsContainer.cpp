@@ -3,7 +3,6 @@
 #include "Model.h"
 #include "Texture.h"
 #include "Effect.h"
-#include "FBXFactory.h"
 #include "ShaderFactory.h"
 #include "ModelImporter.h"
 namespace Snowblind
@@ -16,7 +15,6 @@ namespace Snowblind
 
 	CAssetsContainer::~CAssetsContainer()
 	{
-		SAFE_DELETE(myFactory);
 		SAFE_DELETE(myShaderFactory);
 
 		for (auto it = myModels.begin(); it != myModels.end(); ++it)
@@ -37,7 +35,6 @@ namespace Snowblind
 
 	void CAssetsContainer::Initiate()
 	{
-		myFactory = new FBXFactory();
 		myShaderFactory = new CShaderFactory();
 	}
 

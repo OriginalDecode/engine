@@ -67,6 +67,9 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 	ProcessNode(rootNode, scene, data);
 	Snowblind::CModel* toReturn = CreateModel(data, anEffect);
 
+	delete data->myData;
+	delete data;
+
 	loadTime = myTimeManager->GetTimer(0).GetTotalTime().GetMilliseconds() - loadTime;
 	MODEL_LOG("%s took %fms to load. %s", aFilePath, loadTime, (loadTime < 7000.f) ? "" : "Check if it's saved as binary.");
 
@@ -82,12 +85,12 @@ void CModelImporter::FillData(ModelData* someData, Snowblind::CModel* out, Snowb
 	indexWrapper->myIndexData = (s8*)indexData;
 	indexWrapper->mySize = someData->myIndexCount * sizeof(u32);
 	out->myIndexData = indexWrapper;
-
+	/* BUG HERE. CRASH. */
 	Snowblind::SVertexDataWrapper* vertexData = new Snowblind::SVertexDataWrapper();
 	s32 sizeOfBuffer = someData->myVertexCount * someData->myVertexStride * sizeof(float);
-	s8* vertexRawData = new s8[sizeOfBuffer];
+	u32* vertexRawData = new u32[sizeOfBuffer]; 
 	memcpy(vertexRawData, someData->myVertexBuffer, sizeOfBuffer);
-	vertexData->myVertexData = vertexRawData;
+	vertexData->myVertexData = (s8*)vertexRawData;
 	vertexData->myNrOfVertexes = someData->myVertexCount;
 	vertexData->mySize = sizeOfBuffer;
 	vertexData->myStride = someData->myVertexStride * sizeof(float);
@@ -157,22 +160,6 @@ void CModelImporter::FillData(ModelData* someData, Snowblind::CModel* out, Snowb
 
 	out->mySurfaces.Add(newSurface);
 }
-
-//FBXModelData* CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene)
-//{
-//	FBXModelData* data = new FBXModelData();
-//	for (u32 i = 0; i < aNode->mNumMeshes; i++)
-//	{
-//		aiMesh* mesh = aScene->mMeshes[aNode->mMeshes[i]];
-//		data->myChildren.Add(ProcessMesh(mesh, aScene));
-//	}
-//	for (u32 i = 0; i < aNode->mNumChildren; i++)
-//	{
-//		ProcessNode(aNode->mChildren[i], aScene, data->myChildren.GetLast());
-//	}
-//
-//	return data;
-//}
 
 void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData)
 {
@@ -273,10 +260,10 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 		size += polygonCount * BONEID_STRIDE;
 	}
 
-	//data.myData.myVertexBuffer = new float[size];
 	data->myData->myVertexBuffer = new float[size];
 	for (u32 i = 0; i < aMesh->mNumVertices;)
 	{
+
 		data->myData->myVertexBuffer[i] = aMesh->mVertices[i].x;
 		data->myData->myVertexBuffer[i + 1] = aMesh->mVertices[i].y;
 		data->myData->myVertexBuffer[i + 2] = aMesh->mVertices[i].z;
@@ -293,14 +280,18 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 		data->myData->myVertexBuffer[i + addedSize + 1] = aMesh->mTextureCoords[0]->y * -1.f;
 		addedSize += UV_STRIDE;
 
-		//vertexData[i + addedSize] = aMesh->
+		data->myData->myVertexBuffer[i + addedSize] = aMesh->mBitangents[i].x;
+		data->myData->myVertexBuffer[i + addedSize + 1] = aMesh->mBitangents[i].y;
+		data->myData->myVertexBuffer[i + addedSize + 2] = aMesh->mBitangents[i].z;
+		data->myData->myVertexBuffer[i + addedSize + 3] = 0;
+		addedSize += BINORMAL_STRIDE;
 
+		data->myData->myVertexBuffer[i + addedSize] = aMesh->mTangents[i].x;
+		data->myData->myVertexBuffer[i + addedSize + 1] = aMesh->mTangents[i].y;
+		data->myData->myVertexBuffer[i + addedSize + 2] = aMesh->mTangents[i].z;
+		data->myData->myVertexBuffer[i + addedSize + 3] = 0;
+		addedSize += TANGENT_STRIDE;
 
-
-		//aMesh->mVertices[i]
-		/*
-			Create and Add a vertice to the vertice list, does this really do that tho?
-		*/
 		i += addedSize;
 	}
 	
@@ -317,7 +308,6 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 			indexes.Add(face.mIndices[j]);
 		}
 	}
-
 
 	//data->myData->myIndicies = new u32[indexes.Size()];
 	data->myData->myIndicies = new u32[indexes.Size()];

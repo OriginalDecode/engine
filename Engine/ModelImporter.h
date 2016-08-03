@@ -64,13 +64,7 @@ struct ModelData
 	CU::GrowingArray<TextureInfo> myTextures;
 	CU::GrowingArray<Layout> myLayout;
 
-	bool myHasBiNormal;
-	bool myHasSkinweights;
-	bool myHasTangents;
-	bool mHasNormal;
-	bool mHasUV;
-	bool mAllByControlPoint;
-
+	
 };
 
 struct TextureData
@@ -103,9 +97,6 @@ private:
 	Snowblind::CEngine* myEngine;
 	void FillData(ModelData* someData, Snowblind::CModel* out, Snowblind::CEffect* anEffect);
 
-
-
-	//void ProcessNode(aiNode* aNode, const aiScene* aScene);
 	void ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData);
 	void ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelData* fbx);
 

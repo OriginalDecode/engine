@@ -590,7 +590,7 @@ namespace Snowblind
 
 						myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 						//mySurfaces[i]->Activate();
-						context->DrawIndexed(mySurfaces[i]->GetIndexCount(), mySurfaces[i]->GetStartIndex(), 0);
+						context->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
 						//mySurfaces[i]->Deactivate();
 					}
 
@@ -767,7 +767,7 @@ namespace Snowblind
 
 		D3D11_SUBRESOURCE_DATA indexData;
 		ZeroMemory(&indexData, sizeof(indexData));
-		indexData.pSysMem = myIndexData->myIndexData;
+		indexData.pSysMem = static_cast<void*>(myIndexData->myIndexData);
 
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
 		myAPI->SetDebugName(myIndexBuffer->myIndexBuffer, "Model ib");

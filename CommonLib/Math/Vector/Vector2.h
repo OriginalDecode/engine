@@ -189,6 +189,30 @@ namespace CommonUtilities
 			return ((aFirstVector.x*aSecondVector.x) + (aFirstVector.y*aSecondVector.y));
 		}
 
+		template<typename T>
+		bool operator==(const Vector2<T>& aFirst, const Vector2<T>& aSecond)
+		{
+			if (aFirst.x != aSecond.x)
+			{
+				return false;
+			}
+
+			if (aFirst.y != aSecond.y)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		template<typename T>
+		bool operator!=(const Vector2<T>& aFirst, const Vector2<T>& aSecond)
+		{
+			return !(aFirst == aSecond);
+		}
+
+
+
 	};
 };
 namespace CU = CommonUtilities;

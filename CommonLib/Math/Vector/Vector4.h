@@ -252,6 +252,39 @@ namespace CommonUtilities
 				(aFirstVector.w*aSecondVector.w));
 		}
 
+		template<typename T>
+		bool operator==(const Vector4<T>& aFirst, const Vector4<T>& aSecond)
+		{
+			if (aFirst.x != aSecond.x)
+			{
+				return false;
+			}
+
+			if (aFirst.y != aSecond.y)
+			{
+				return false;
+			}
+
+			if (aFirst.z != aSecond.z)
+			{
+				return false;
+			}
+
+			if (aFirst.w != aSecond.w)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		template<typename T>
+		bool operator!=(const Vector4<T>& aFirst, const Vector4<T>& aSecond)
+		{
+			return !(aFirst == aSecond);
+		}
+
+
 
 	};
 };

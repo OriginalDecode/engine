@@ -218,6 +218,34 @@ namespace CommonUtilities
 				(aFirstVector.z*aSecondVector.x) - (aFirstVector.x*aSecondVector.z),
 				(aFirstVector.x*aSecondVector.y) - (aFirstVector.y*aSecondVector.x));
 		}
+
+		template<typename T>
+		bool operator==(const Vector3<T>& aFirst, const Vector3<T>& aSecond)
+		{
+			if (aFirst.x != aSecond.x)
+			{
+				return false;
+			}
+
+			if (aFirst.y != aSecond.y)
+			{
+				return false;
+			}
+
+			if (aFirst.z != aSecond.z)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		template<typename T>
+		bool operator!=(const Vector3<T>& aFirst, const Vector3<T>& aSecond)
+		{
+			return !(aFirst == aSecond);
+		}
+
 	};
 };
 namespace CU = CommonUtilities;

@@ -86,7 +86,7 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 	DL_ASSERT_EXP(scene, "ImportModel Failed. Could not read the requested file.");
 
 	aiNode* rootNode = scene->mRootNode;
-	FBXModelData* data = new FBXModelData();
+	FBXModelData* data = new FBXModelData;
 	ProcessNode(rootNode, scene, data);
 	Snowblind::CModel* toReturn = CreateModel(data, anEffect);
 
@@ -97,8 +97,8 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 	}
 	if (data->myData)
 	{
-		delete data->myData->myIndicies;
-		delete data->myData->myVertexBuffer;
+		delete[] data->myData->myIndicies;
+		delete[] data->myData->myVertexBuffer;
 	}
 	if (data)
 	{

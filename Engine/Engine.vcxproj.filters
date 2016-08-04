@@ -49,9 +49,6 @@
     <Filter Include="Utilities\Console">
       <UniqueIdentifier>{3a1f7c40-925b-4af0-aaaf-616352a08e35}</UniqueIdentifier>
     </Filter>
-    <Filter Include="FBX">
-      <UniqueIdentifier>{7e37d80a-6fe7-4ce0-9b74-f5c0a319b0e8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Light">
       <UniqueIdentifier>{5b555923-93d1-4ca2-ab8e-8f4c6d63f0bf}</UniqueIdentifier>
     </Filter>
@@ -189,9 +186,11 @@
     <ClInclude Include="Line3D.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="ModelImporter.h" />
     <ClInclude Include="ShaderWarningHandler.h">
       <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelImporter.h">
+      <Filter>Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -288,9 +287,11 @@
     <ClCompile Include="Line3D.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="ModelImporter.cpp" />
     <ClCompile Include="ShaderWarningHandler.cpp">
       <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelImporter.cpp">
+      <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

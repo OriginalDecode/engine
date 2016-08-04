@@ -4,7 +4,6 @@
 #include "Engine.h"
 #include "InputWrapper.h"
 #include "EngineDefines.h"
-#include "FBXFactory.h"
 #include "Instance.h"
 #include "Model.h"
 #include "Scene.h"

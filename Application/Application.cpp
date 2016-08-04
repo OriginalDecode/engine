@@ -50,7 +50,6 @@ void CApplication::Update()
 	while (mySynchronizer->HasQuit() == false)
 	{
 		
-		
 		float deltaTime = myEngine->GetDeltaTime();
 		UpdateInput(deltaTime);
 		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
@@ -110,6 +109,15 @@ void CApplication::UpdateInput(float aDeltaTime)
 		myOrientation.myMatrix[9] = axisZ.y;
 		myOrientation.myMatrix[10] = axisZ.z;
 
+		float multiplier = 1.f;
+
+
+		if (CU::Input::InputWrapper::GetInstance()->KeyDown(LSHIFT))
+		{
+			multiplier = 100.f;
+		}
+
+
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(W))
 		{
 			myCamera->Move(Snowblind::eDirection::FORWARD, moveSpeed * aDeltaTime);
@@ -136,11 +144,11 @@ void CApplication::UpdateInput(float aDeltaTime)
 		}
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(UP_ARROW))
 		{
-			moveSpeed += 0.01f;
+			moveSpeed += 0.01f * multiplier;
 		}
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(DOWN_ARROW))
 		{
-			moveSpeed -= 0.01f;
+			moveSpeed -= 0.01f * multiplier;
 		}
 
 	}

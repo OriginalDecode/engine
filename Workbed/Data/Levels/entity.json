@@ -1,7 +1,7 @@
 {
 	"Translation":true,
 	"Render": [ 
-		"Data/Model/pblScene/pblScene_03_binary.fbx", 
+		"Data/Model/pblScene/pblScene_03_binary2.fbx", 
 		"Data/Shaders/T_Deferred_Base.json"
 		],
 	"Physics":true

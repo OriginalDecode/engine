@@ -581,7 +581,7 @@ namespace Snowblind
 			if (mySurfaces.Size() > 0)
 			{
 
-				if ((myModelStates[SKY_SPHERE] & myModelStates[LIGHT_MESH]) == FALSE)
+				if (myModelStates[SKY_SPHERE] == FALSE && myModelStates[LIGHT_MESH] == FALSE)
 				{
 					for (int i = 0; i < mySurfaces.Size(); i++)
 					{
@@ -589,9 +589,10 @@ namespace Snowblind
 						context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 						myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-						//mySurfaces[i]->Activate();
+						mySurfaces[i]->Activate();
+						//context->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
 						context->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
-						//mySurfaces[i]->Deactivate();
+						mySurfaces[i]->Deactivate();
 					}
 
 				}
@@ -606,7 +607,7 @@ namespace Snowblind
 						context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
-
+						//context->Draw(mySurfaces[i]->GetVertexCount(), 0);
 					}
 				}
 				else if (myModelStates[LIGHT_MESH] == TRUE)
@@ -616,6 +617,7 @@ namespace Snowblind
 						SetMatrices(aCameraOrientation, aCameraProjection);
 						myAPI->SetSamplerState(eSamplerStates::POINT_CLAMP);
 						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
+						//context->Draw(mySurfaces[i]->GetVertexCount(), 0);
 					}
 				}
 			}
@@ -784,7 +786,7 @@ namespace Snowblind
 
 		D3D11_BUFFER_DESC cbDesc;
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
-		cbDesc.ByteWidth = sizeof(SVertexBaseStruct) + 16;
+		cbDesc.ByteWidth = sizeof(SVertexBaseStruct);
 		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
 		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;

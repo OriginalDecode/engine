@@ -32,6 +32,7 @@ namespace Snowblind
 		myDepthTexture->InitStencil(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
 		myDepthTexture->SetDebugName("myDepthTexture");
 
+		//mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", aCamera);
 		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", aCamera);
 
 		mySprite = new CSprite();
@@ -67,13 +68,12 @@ namespace Snowblind
 	{
 		myEngine->Clear();
 
-		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		Render3DCommands();
-		//myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
-		//myDeferredRenderer->UpdateConstantBuffer(myPrevFrame, myCamera->GetProjection());
-		//myDeferredRenderer->DeferredRender(); /* Ambient pass */
+		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
+		myDeferredRenderer->UpdateConstantBuffer(myPrevFrame, myCamera->GetProjection());
+		myDeferredRenderer->DeferredRender(); /* Ambient pass */
 
-		//RenderLightCommands();
+		RenderLightCommands();
 		
 		myEngine->ResetRenderTargetAndDepth();
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
@@ -82,7 +82,7 @@ namespace Snowblind
 		//RenderParticles();
 		RenderLines();
 
-		//Render2DCommands();
+		Render2DCommands();
 
 		myEngine->Present();
 

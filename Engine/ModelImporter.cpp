@@ -58,7 +58,27 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 {
 	myTimeManager->Update();
 	float loadTime = myTimeManager->GetTimer(0).GetTotalTime().GetMilliseconds();
-	const aiScene* scene = importer.ReadFile(aFilePath, aiProcess_SplitLargeMeshes | aiProcess_MakeLeftHanded | aiProcess_FlipUVs | aiProcess_FlipWindingOrder | aiProcess_Triangulate); //MaxQuality, Quality, Fast 
+
+	unsigned int processFlags =
+		//aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
+		//aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
+	  //aiProcess_ValidateDataStructure  | // perform a full validation of the loader's output
+		//aiProcess_Triangulate | // Ensure all verticies are triangulated (each 3 vertices are triangle)
+		//aiProcess_ConvertToLeftHanded | // convert everything to D3D left handed space (by default right-handed, for OpenGL)
+		//aiProcess_SortByPType | // ?
+		//aiProcess_ImproveCacheLocality | // improve the cache locality of the output vertices
+		//aiProcess_RemoveRedundantMaterials | // remove redundant materials
+		//aiProcess_FindDegenerates | // remove degenerated polygons from the import
+		//aiProcess_FindInvalidData | // detect invalid model data, such as invalid normal vectors
+		//aiProcess_GenUVCoords | // convert spherical, cylindrical, box and planar mapping to proper UVs
+		////aiProcess_TransformUVCoords | // preprocess UV transformations (scaling, translation ...)
+		//aiProcess_FindInstances | // search for instanced meshes and remove them by references to one master
+		//aiProcess_LimitBoneWeights | // limit bone weights to 4 per vertex
+		//aiProcess_OptimizeMeshes | // join small meshes, if possible;
+		//aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
+		0;
+
+	const aiScene* scene = importer.ReadFile(aFilePath, processFlags); //MaxQuality, Quality, Fast 
 	DL_MESSAGE("%s", !scene ? aFilePath.c_str() : importer.GetErrorString());
 	DL_ASSERT_EXP(scene, "ImportModel Failed. Could not read the requested file.");
 
@@ -115,7 +135,7 @@ void CModelImporter::FillData(ModelData* someData, Snowblind::CModel* out, Snowb
 		if (currentLayout.myType == ModelData::VERTEX_POS)
 		{
 			desc.SemanticName = "POSITION";
-			desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			desc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_NORMAL)
 		{
@@ -153,6 +173,8 @@ void CModelImporter::FillData(ModelData* someData, Snowblind::CModel* out, Snowb
 	}
 
 
+	newSurface->AddTexture("Albedo", "Data/Textures/No-Texture.dds");
+
 	//newSurface->AddTexture()
 	/*
 		for each texture in modeldata
@@ -165,6 +187,7 @@ void CModelImporter::FillData(ModelData* someData, Snowblind::CModel* out, Snowb
 void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData)
 {
 	DL_ASSERT_EXP(someData, "Failed to process node. FBXModelData someData was null");
+
 	for (u32 i = 0; i < aNode->mNumMeshes; i++)
 	{
 		aiMesh* mesh = aScene->mMeshes[aNode->mMeshes[i]];
@@ -269,68 +292,100 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 	ZeroMemory(data->myData->myVertexBuffer, sizeof(float)*size);
 
 	DL_ASSERT_EXP(aMesh->mNumVertices < size, "the amount of vertices was MORE!? than size");
-	u32 vertexCount;
-	for (u32 i = 0; i < aMesh->mNumVertices; i++)
-	{
-		u32 addedSize = VERTEX_STRIDE;
-		u32 currIndex = i * stride;
-		u32 rest = addedSize % 18;
-		DL_MESSAGE("\nAddedSize : %d\nrest : %d\nIndex : %d", addedSize, rest, i);
-
-		DL_ASSERT_EXP(addedSize <= size, "addedSize was larger than the size of the array.");
-
-		if (aMesh->HasPositions())
-		{
-			data->myData->myVertexBuffer[currIndex] = aMesh->mVertices[i].x;
-			data->myData->myVertexBuffer[currIndex + 1] = aMesh->mVertices[i].y;
-			data->myData->myVertexBuffer[currIndex + 2] = aMesh->mVertices[i].z;
-			data->myData->myVertexBuffer[currIndex + 3] = 0;
-		}
-
-		if (aMesh->HasNormals())
-		{
-			data->myData->myVertexBuffer[currIndex + addedSize] = aMesh->mNormals[i].x;
-			data->myData->myVertexBuffer[currIndex + addedSize + 1] = aMesh->mNormals[i].y;
-			data->myData->myVertexBuffer[currIndex + addedSize + 2] = aMesh->mNormals[i].z;
-			data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
-			addedSize += NORMAL_STRIDE;
-		}
-
-		if (aMesh->HasTextureCoords(0))
-		{
-			data->myData->myVertexBuffer[currIndex + addedSize] = aMesh->mTextureCoords[0][i].x;
-			data->myData->myVertexBuffer[currIndex + addedSize + 1] = aMesh->mTextureCoords[0][i].y * -1.f;
-			addedSize += UV_STRIDE;
-		}
-
-		if (aMesh->HasTangentsAndBitangents())
-		{
-			data->myData->myVertexBuffer[currIndex + addedSize] = aMesh->mBitangents[i].x;
-			data->myData->myVertexBuffer[currIndex + addedSize + 1] = aMesh->mBitangents[i].y;
-			data->myData->myVertexBuffer[currIndex + addedSize + 2] = aMesh->mBitangents[i].z;
-			data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
-			addedSize += BINORMAL_STRIDE;
-
-			data->myData->myVertexBuffer[currIndex + addedSize] = aMesh->mTangents[i].x;
-			data->myData->myVertexBuffer[currIndex + addedSize + 1] = aMesh->mTangents[i].y;
-			data->myData->myVertexBuffer[currIndex + addedSize + 2] = aMesh->mTangents[i].z;
-			data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
-			addedSize += TANGENT_STRIDE;
-		}
-	}
-
-	data->myData->myVertexCount = aMesh->mNumVertices;
-	data->myData->myVertexStride = stride;
 	data->myData->myIndicies = new u32[polygonCount * 3];
 	ZeroMemory(data->myData->myIndicies, sizeof(u32) * polygonCount * 3);
 
+	CU::GrowingArray<u32> indices;
+	u32 vertCount = 0;
 	for (u32 i = 0; i < aMesh->mNumFaces; i++)
 	{
-		aiFace face = aMesh->mFaces[i];
-		for (u32 j = 0; j < face.mNumIndices; j++)
+		const aiFace* face = &aMesh->mFaces[i];
+
+		for (s32 j = 2; j >= 0; j--)
 		{
-			data->myData->myIndicies[i + j] = face.mIndices[j];
+			s8 indexCount = 0;
+			u32 addedSize = VERTEX_STRIDE;
+			u32 currIndex = vertCount * stride;
+			DL_ASSERT_EXP(addedSize <= size, "addedSize was larger than the size of the array.");
+
+			u32 verticeIndex = face->mIndices[j];
+
+
+			if (aMesh->HasPositions())
+			{
+
+				CU::Vector4f position(aMesh->mVertices[verticeIndex].x, aMesh->mVertices[verticeIndex].y, aMesh->mVertices[verticeIndex].z, 1);
+				CU::Matrix44f fixMatrix = CU::Math::CreateReflectionMatrixAboutAxis44(CU::Vector3f(1, 0, 0));
+				position = position * fixMatrix;
+
+				data->myData->myVertexBuffer[currIndex] = position.x;
+				data->myData->myVertexBuffer[currIndex + 1] = position.y;
+				data->myData->myVertexBuffer[currIndex + 2] = position.z;
+				data->myData->myVertexBuffer[currIndex + 3] = 0;
+			}
+
+			if (aMesh->HasNormals())
+			{
+
+				CU::Vector3f normal(aMesh->mNormals[verticeIndex].x, aMesh->mNormals[verticeIndex].y, aMesh->mNormals[verticeIndex].z);
+				normal = normal * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
+				CU::Math::Normalize(normal);
+
+				data->myData->myVertexBuffer[currIndex + addedSize] = normal.x;
+				data->myData->myVertexBuffer[currIndex + addedSize + 1] = normal.y;
+				data->myData->myVertexBuffer[currIndex + addedSize + 2] = normal.z;
+				data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
+				addedSize += NORMAL_STRIDE;
+			}
+
+			if (aMesh->HasTextureCoords(0))
+			{
+				data->myData->myVertexBuffer[currIndex + addedSize] = aMesh->mTextureCoords[0][verticeIndex].x;
+				data->myData->myVertexBuffer[currIndex + addedSize + 1] = aMesh->mTextureCoords[0][verticeIndex].y * -1.f;
+				addedSize += UV_STRIDE;
+			}
+
+			if (aMesh->HasTangentsAndBitangents())
+			{
+
+				CU::Vector3f normal(aMesh->mBitangents[verticeIndex].x, aMesh->mBitangents[verticeIndex].y, aMesh->mBitangents[verticeIndex].z);
+				normal = normal * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
+				CU::Math::Normalize(normal);
+
+				data->myData->myVertexBuffer[currIndex + addedSize] = normal.x;
+				data->myData->myVertexBuffer[currIndex + addedSize + 1] = normal.y;
+				data->myData->myVertexBuffer[currIndex + addedSize + 2] = normal.z;
+				data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
+				addedSize += BINORMAL_STRIDE;
+
+				CU::Vector3f tangent(aMesh->mTangents[verticeIndex].x, aMesh->mTangents[verticeIndex].y, aMesh->mTangents[verticeIndex].z);
+				tangent = tangent * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
+				CU::Math::Normalize(tangent);
+
+				data->myData->myVertexBuffer[currIndex + addedSize] = tangent.x;
+				data->myData->myVertexBuffer[currIndex + addedSize + 1] = tangent.y;
+				data->myData->myVertexBuffer[currIndex + addedSize + 2] = tangent.z;
+				data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
+				addedSize += TANGENT_STRIDE;
+			}
+
+			indices.Add(verticeIndex);
+			vertCount++;
+			indexCount++;
 		}
 	}
+
+	//Flips it to make it correct.
+	CU::GrowingArray<u32> indiceFix;
+	for (s32 i = indices.Size() - 1; i >= 0; i--)
+	{
+		indiceFix.Add(indices[i]);
+	}
+
+	memcpy(data->myData->myIndicies, &indiceFix[0], sizeof(u32) * indiceFix.Size());
+	data->myData->myVertexStride = stride;
+
+
+	data->myData->myVertexCount = vertCount;
 	data->myData->myIndexCount = polygonCount * 3;
 }

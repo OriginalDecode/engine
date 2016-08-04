@@ -52,19 +52,25 @@ namespace Snowblind
 
 	void CSurface::Activate()
 	{
-		if (!firstOptimize)
+		if (myShaderViews.Size() > 0)
 		{
-			myShaderViews.Optimize();
-			myNullList.Optimize();
-			firstOptimize = true;
+			if (!firstOptimize)
+			{
+				myShaderViews.Optimize();
+				myNullList.Optimize();
+				firstOptimize = true;
+			}
+			myContext->IASetPrimitiveTopology(myPrimologyType);
+			myContext->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
 		}
-		myContext->IASetPrimitiveTopology(myPrimologyType);
-		myContext->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
 	}
 
 	void CSurface::Deactivate()
 	{
-		myContext->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
+		if (myShaderViews.Size() > 0)
+		{
+			myContext->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
+		}
 	}
 
 

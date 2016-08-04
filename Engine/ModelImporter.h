@@ -33,7 +33,17 @@ struct TextureInfo
 	std::string myFilename;
 };
 
+struct Vertex
+{
+	CU::Vector4f position;
+	CU::Vector4f normal;
+	CU::Vector2f uv;
+	CU::Vector4f binormal;
+	CU::Vector4f tangent;
+};
 
+bool operator==(const Vertex& aVertice, const Vertex& aSecond);
+bool operator!=(const Vertex& aVertice, const Vertex& aSecond);
 
 struct ModelData
 {
@@ -90,13 +100,13 @@ public:
 
 private:
 	Assimp::Importer importer;
-	Snowblind::CModel* CreateModel(FBXModelData* someData, Snowblind::CEffect* anEffect);
-	CommonUtilities::TimeManager* myTimeManager;
-	Snowblind::CModel* LoadModel(const std::string& aFilePath, Snowblind::CEffect* anEffect);
 	Snowblind::CEngine* myEngine;
-	void FillData(ModelData* someData, Snowblind::CModel* out, Snowblind::CEffect* anEffect);
+	std::string myCurrentLoadingFile;
+	CommonUtilities::TimeManager* myTimeManager;
 
+	Snowblind::CModel* CreateModel(FBXModelData* someData, Snowblind::CEffect* anEffect);
+	Snowblind::CModel* LoadModel(const std::string& aFilePath, Snowblind::CEffect* anEffect);
+	void FillData(FBXModelData* someData, Snowblind::CModel* out, Snowblind::CEffect* anEffect);
 	void ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData);
 	void ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelData* fbx);
-
 };

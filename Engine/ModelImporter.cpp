@@ -8,6 +8,8 @@
 #include "Surface.h"
 #include "Model.h"
 
+#include <unordered_map>
+
 #define TRIANGLE_VERTEX_COUNT 3
 #define VERTEX_STRIDE 4
 #define NORMAL_STRIDE 4
@@ -38,7 +40,7 @@ Snowblind::CModel* CModelImporter::CreateModel(FBXModelData* someData, Snowblind
 
 	if (someData->myData)
 	{
-		FillData(someData->myData, newModel, anEffect);
+		FillData(someData, newModel, anEffect);
 		newModel->myOrientation = someData->myOrientation;
 	}
 	for (FBXModelData* child : someData->myChildren)
@@ -51,6 +53,7 @@ Snowblind::CModel* CModelImporter::CreateModel(FBXModelData* someData, Snowblind
 
 Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, const std::string& aEffectPath)
 {
+	myCurrentLoadingFile = aFilePath;
 	return LoadModel(aFilePath, myEngine->GetEffect(aEffectPath))->CreateModel();
 }
 
@@ -62,7 +65,7 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 	unsigned int processFlags =
 		//aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
 		//aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
-	  //aiProcess_ValidateDataStructure  | // perform a full validation of the loader's output
+		//aiProcess_ValidateDataStructure  | // perform a full validation of the loader's output
 		//aiProcess_Triangulate | // Ensure all verticies are triangulated (each 3 vertices are triangle)
 		//aiProcess_ConvertToLeftHanded | // convert everything to D3D left handed space (by default right-handed, for OpenGL)
 		//aiProcess_SortByPType | // ?
@@ -78,7 +81,7 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 		//aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
 		0;
 
-	const aiScene* scene = importer.ReadFile(aFilePath, processFlags); //MaxQuality, Quality, Fast 
+	const aiScene* scene = importer.ReadFile(aFilePath, processFlags);
 	DL_MESSAGE("%s", !scene ? aFilePath.c_str() : importer.GetErrorString());
 	DL_ASSERT_EXP(scene, "ImportModel Failed. Could not read the requested file.");
 
@@ -87,43 +90,60 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 	ProcessNode(rootNode, scene, data);
 	Snowblind::CModel* toReturn = CreateModel(data, anEffect);
 
-	delete data->myData;
+
+	if (data->myTextureData)
+	{
+		delete data->myTextureData;
+	}
+	if (data->myData)
+	{
+		delete data->myData->myIndicies;
+		delete data->myData->myVertexBuffer;
+	}
+	if (data)
+	{
+		delete data->myData;
+	}
 	delete data;
 
+	myTimeManager->Update();
 	loadTime = myTimeManager->GetTimer(0).GetTotalTime().GetMilliseconds() - loadTime;
 	MODEL_LOG("%s took %fms to load. %s", aFilePath.c_str(), loadTime, (loadTime < 7000.f) ? "" : "Check if it's saved as binary.");
 
 	return toReturn;
 }
 
-void CModelImporter::FillData(ModelData* someData, Snowblind::CModel* out, Snowblind::CEffect* anEffect)
+void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Snowblind::CEffect* anEffect)
 {
+	ModelData* data = someData->myData;
+
+
 	Snowblind::SVertexIndexWrapper* indexWrapper = new Snowblind::SVertexIndexWrapper();
 	indexWrapper->myFormat = DXGI_FORMAT_R32_UINT;
-	u32* indexData = new u32[someData->myIndexCount];
-	memcpy(indexData, someData->myIndicies, someData->myIndexCount * sizeof(u32));
+	u32* indexData = new u32[data->myIndexCount];
+	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
 	indexWrapper->myIndexData = (s8*)indexData;
-	indexWrapper->mySize = someData->myIndexCount * sizeof(u32);
+	indexWrapper->mySize = data->myIndexCount * sizeof(u32);
 	out->myIndexData = indexWrapper;
 
 	/* BUG HERE. CRASH. */
 	Snowblind::SVertexDataWrapper* vertexData = new Snowblind::SVertexDataWrapper();
-	s32 sizeOfBuffer = someData->myVertexCount * someData->myVertexStride * sizeof(float); //is this wrong?
+	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float); //is this wrong?
 	u32* vertexRawData = new u32[sizeOfBuffer];
-	memcpy(vertexRawData, someData->myVertexBuffer, sizeOfBuffer); // This crashes?
+	memcpy(vertexRawData, data->myVertexBuffer, sizeOfBuffer); // This crashes?
 	vertexData->myVertexData = (s8*)vertexRawData;
-	vertexData->myNrOfVertexes = someData->myVertexCount;
+	vertexData->myNrOfVertexes = data->myVertexCount;
 	vertexData->mySize = sizeOfBuffer;
-	vertexData->myStride = someData->myVertexStride * sizeof(float);
+	vertexData->myStride = data->myVertexStride * sizeof(float);
 	out->myVertexData = vertexData;
 
-	Snowblind::CSurface* newSurface = new Snowblind::CSurface(0, someData->myVertexCount, 0
-		, someData->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	Snowblind::CSurface* newSurface = new Snowblind::CSurface(0, data->myVertexCount, 0
+		, data->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	out->myModelStates[NULL_OBJECT] = FALSE;
-	for (int i = 0; i < someData->myLayout.Size(); ++i)
+	for (int i = 0; i < data->myLayout.Size(); ++i)
 	{
-		auto currentLayout = someData->myLayout[i];
+		auto currentLayout = data->myLayout[i];
 		D3D11_INPUT_ELEMENT_DESC desc;
 		ZeroMemory(&desc, sizeof(D3D11_INPUT_ELEMENT_DESC));
 		desc.SemanticIndex = 0;
@@ -173,8 +193,54 @@ void CModelImporter::FillData(ModelData* someData, Snowblind::CModel* out, Snowb
 	}
 
 
-	newSurface->AddTexture("Albedo", "Data/Textures/No-Texture.dds");
+	const CU::GrowingArray<TextureInfo>& info = someData->myTextureData->myTextures;
 
+	for (u32 i = 0; i < info.Size(); i++)
+	{
+
+		TextureType lType = static_cast<TextureType>(info[i].myType);
+		std::string type;
+		switch (lType)
+		{
+			case DIFFUSE:
+			{
+				type = "TextureType::DIFFUSE";
+			}break;
+
+			case ROUGHNESS:
+			{
+				type = "TextureType::ROUGHNESS";
+			}break;
+
+			case AO:
+			{
+				type = "TextureType::AO";
+			}break;
+
+			case EMISSIVE:
+			{
+				type = "TextureType::EMISSIVE";
+			}break;
+
+			case NORMALMAP:
+			{
+				type = "TextureType::NORMALMAP";
+			}break;
+
+			case SUBSTANCE:
+			{
+				type = "TextureType::SUBSTANCE";
+			}break;
+
+			default:
+			{
+				DL_ASSERT("Unknown type requested.")
+			}break;
+
+		}
+
+		newSurface->AddTexture(type, info[i].myFilename);
+	}
 	//newSurface->AddTexture()
 	/*
 		for each texture in modeldata
@@ -297,23 +363,22 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 	CU::GrowingArray<u32> indices;
 	u32 vertCount = 0;
+
 	for (u32 i = 0; i < aMesh->mNumFaces; i++)
 	{
 		const aiFace* face = &aMesh->mFaces[i];
 
 		for (s32 j = 2; j >= 0; j--)
 		{
-			s8 indexCount = 0;
 			u32 addedSize = VERTEX_STRIDE;
 			u32 currIndex = vertCount * stride;
 			DL_ASSERT_EXP(addedSize <= size, "addedSize was larger than the size of the array.");
-
 			u32 verticeIndex = face->mIndices[j];
 
+			Vertex vert;
 
 			if (aMesh->HasPositions())
 			{
-
 				CU::Vector4f position(aMesh->mVertices[verticeIndex].x, aMesh->mVertices[verticeIndex].y, aMesh->mVertices[verticeIndex].z, 1);
 				CU::Matrix44f fixMatrix = CU::Math::CreateReflectionMatrixAboutAxis44(CU::Vector3f(1, 0, 0));
 				position = position * fixMatrix;
@@ -340,8 +405,11 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 			if (aMesh->HasTextureCoords(0))
 			{
-				data->myData->myVertexBuffer[currIndex + addedSize] = aMesh->mTextureCoords[0][verticeIndex].x;
-				data->myData->myVertexBuffer[currIndex + addedSize + 1] = aMesh->mTextureCoords[0][verticeIndex].y * -1.f;
+				CU::Vector2f uv(aMesh->mTextureCoords[0][verticeIndex].x, aMesh->mTextureCoords[0][verticeIndex].y * -1.f);
+
+
+				data->myData->myVertexBuffer[currIndex + addedSize] = uv.x;
+				data->myData->myVertexBuffer[currIndex + addedSize + 1] = uv.y;
 				addedSize += UV_STRIDE;
 			}
 
@@ -362,6 +430,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 				tangent = tangent * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
 				CU::Math::Normalize(tangent);
 
+
 				data->myData->myVertexBuffer[currIndex + addedSize] = tangent.x;
 				data->myData->myVertexBuffer[currIndex + addedSize + 1] = tangent.y;
 				data->myData->myVertexBuffer[currIndex + addedSize + 2] = tangent.z;
@@ -371,7 +440,6 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 			indices.Add(verticeIndex);
 			vertCount++;
-			indexCount++;
 		}
 	}
 
@@ -385,7 +453,141 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 	memcpy(data->myData->myIndicies, &indiceFix[0], sizeof(u32) * indiceFix.Size());
 	data->myData->myVertexStride = stride;
 
-
 	data->myData->myVertexCount = vertCount;
-	data->myData->myIndexCount = polygonCount * 3;
+	data->myData->myIndexCount = indiceFix.Size();
+
+
+	data->myTextureData = new TextureData;
+
+	aiMaterial* material = aScene->mMaterials[aMesh->mMaterialIndex];
+	for (u32 i = 0; i < material->mNumProperties; i++)
+	{
+		aiMaterialProperty* prop = material->mProperties[i];
+		u32 type = prop->mSemantic;
+		aiString str;
+		material->GetTexture(static_cast<aiTextureType>(type), 0, &str);
+
+		std::string newPath = CL::substr(myCurrentLoadingFile, "/", true, 0);
+		std::string fileName = CL::substr(str.C_Str(), "\\", false, 0);
+		fileName.erase(0, 1);
+		newPath += "/";
+		newPath += fileName;
+		if (fileName != "")
+		{
+			//myEngine->GetTexture(newPath); //All textures now get properly loaded.
+			TextureInfo newInfo;
+			newInfo.myFilename = newPath;
+
+
+			aiTextureType lType = static_cast<aiTextureType>(type);
+			DL_MESSAGE("Type : %d, Name : %s", u32(lType), newPath.c_str());
+			switch (lType)
+			{
+				case aiTextureType_DIFFUSE:
+				{
+					newInfo.myType = TextureType::DIFFUSE;
+				}break;
+
+				case aiTextureType_SPECULAR:
+				{
+					newInfo.myType = TextureType::ROUGHNESS;
+				}break;
+
+				case aiTextureType_AMBIENT:
+				{
+					newInfo.myType = TextureType::AO;
+				}break;
+
+				case aiTextureType_EMISSIVE:
+				{
+					newInfo.myType = TextureType::EMISSIVE;
+				}break;
+
+				case aiTextureType_HEIGHT:
+				{
+					DL_ASSERT("Not implemented");
+				}break;
+
+				case aiTextureType_NORMALS:
+				{
+					newInfo.myType = TextureType::NORMALMAP;
+				}break;
+
+				case aiTextureType_SHININESS:
+				{
+					DL_ASSERT("Not implemented");
+				}break;
+
+				case aiTextureType_OPACITY:
+				{
+					DL_ASSERT("Not implemented");
+				}break;
+
+				case aiTextureType_DISPLACEMENT:
+				{
+					DL_ASSERT("Not implemented");
+				}break;
+
+				case aiTextureType_LIGHTMAP:
+				{
+					DL_ASSERT("Not implemented");
+				}break;
+
+				case aiTextureType_REFLECTION:
+				{
+					newInfo.myType = TextureType::SUBSTANCE;
+				}break;
+
+				case aiTextureType_UNKNOWN:
+				{
+					DL_ASSERT("Not implemented");
+				}break;
+			}
+
+			bool found = false;
+
+
+			const CU::GrowingArray<TextureInfo> texInfo = data->myTextureData->myTextures;
+			for (const TextureInfo& info : texInfo)
+			{
+				if (info.myFilename == newInfo.myFilename && info.myType == newInfo.myType)
+				{
+					found = true;
+					break;
+				}
+			}
+			
+			if (found == false)
+			{
+				data->myTextureData->myTextures.Add(newInfo);
+			}
+
+		}
+	}
+}
+
+bool operator==(const Vertex& aVertice, const Vertex& aSecond)
+{
+	if (aVertice.position != aSecond.position)
+		return false;
+
+	if (aVertice.normal != aSecond.normal)
+		return false;
+
+	if (aVertice.uv != aSecond.uv)
+		return false;
+
+	if (aVertice.binormal != aSecond.binormal)
+		return false;
+
+	if (aVertice.tangent != aSecond.tangent)
+		return false;
+
+
+	return true;
+}
+
+bool operator!=(const Vertex& aVertice, const Vertex& aSecond)
+{
+	return !(aVertice == aSecond);
 }

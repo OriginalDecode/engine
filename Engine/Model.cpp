@@ -590,7 +590,6 @@ namespace Snowblind
 
 						myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 						mySurfaces[i]->Activate();
-						//context->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
 						context->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
 						mySurfaces[i]->Deactivate();
 					}
@@ -606,7 +605,7 @@ namespace Snowblind
 
 						context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
+						context->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
 						//context->Draw(mySurfaces[i]->GetVertexCount(), 0);
 					}
 				}
@@ -616,7 +615,7 @@ namespace Snowblind
 					{
 						SetMatrices(aCameraOrientation, aCameraProjection);
 						myAPI->SetSamplerState(eSamplerStates::POINT_CLAMP);
-						context->DrawIndexed(mySurfaces[i]->GetVertexCount(), 0, 0);
+						context->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
 						//context->Draw(mySurfaces[i]->GetVertexCount(), 0);
 					}
 				}

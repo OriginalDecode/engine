@@ -92,7 +92,7 @@ namespace Snowblind
 
 		void CleanUp();
 
-		void Present();
+		void Present(u8 anInterval, u8 flags);
 		void Clear();
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContext();
@@ -143,6 +143,10 @@ namespace Snowblind
 		void CreateBlendStates();
 		void CreateSamplerStates();
 		void CreateDepthStencilStates();
+
+		void GetRefreshRate(u32& aNumerator, u32& aDenominator);
+
+
 		HWND myHWND;
 
 		D3D11_VIEWPORT* myViewport = nullptr;

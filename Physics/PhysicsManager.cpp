@@ -17,7 +17,7 @@ CPhysicsManager::CPhysicsManager()
 		myImpulseSolver,
 		myDefaultCollisionConfiguration);
 
-	myDynamicsWorld->setGravity(btVector3(0, -1, 0));
+	myDynamicsWorld->setGravity(btVector3(0, -9.82f, 0));
 
 	myZeroPlane = new CRigidBody();
 	Add(myZeroPlane->InitAsPlane(btVector3(0, 1, 0)));
@@ -57,5 +57,5 @@ btRigidBody* CPhysicsManager::Create(float mass)
 
 void CPhysicsManager::Update()
 {
-	myDynamicsWorld->stepSimulation(1.f / 60.f, 1);
+	myDynamicsWorld->stepSimulation(1.f/60.f, 1);
 }

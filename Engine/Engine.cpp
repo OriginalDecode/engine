@@ -15,6 +15,7 @@ namespace Snowblind
 	{
 		CreateAppWindow(anInstance, aWndProc);
 		CU::Input::InputWrapper::Create(myHWND, anInstance);
+		ToggleVsync();
 	}
 
 	CEngine::~CEngine()
@@ -72,7 +73,7 @@ namespace Snowblind
 		myAssetsContainer->Initiate();
 
 		Randomizer::Create();
-		
+
 
 		myFontManager = new CFontManager();
 		myFontManager->Initiate();
@@ -107,7 +108,10 @@ namespace Snowblind
 
 	void CEngine::Present()
 	{
-		myInstance->myAPI->Present();
+		if (myInstance->myUsingVSync)
+			myInstance->myAPI->Present(1, 0);
+		else
+			myInstance->myAPI->Present(0, 0);
 	}
 
 	void CEngine::Clear()
@@ -163,6 +167,11 @@ namespace Snowblind
 	void CEngine::ResetRenderTargetAndDepth()
 	{
 		myAPI->ResetRenderTargetAndDepth();
+	}
+
+	void CEngine::ToggleVsync()
+	{
+		myUsingVSync = !myUsingVSync;
 	}
 
 	void CEngine::OnAltEnter()

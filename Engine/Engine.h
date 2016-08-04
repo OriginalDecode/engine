@@ -77,12 +77,13 @@ namespace Snowblind
 		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
 
 		void ResetRenderTargetAndDepth();
-
+		void ToggleVsync();
 		void OnAltEnter();
 		void OnPause();
 		void OnResume();
 		void OnExit();
 		CSynchronizer* GetSynchronizer();
+	
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		~CEngine();
@@ -104,6 +105,6 @@ namespace Snowblind
 		CCamera*  my2DCamera;
 		CConsole* myConsole;
 		CAssetsContainer* myAssetsContainer;
-
+		bool myUsingVSync = false;
 	};
 };

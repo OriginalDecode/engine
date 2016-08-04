@@ -54,15 +54,13 @@ btRigidBody* CRigidBody::InitAsSphere(const CU::Vector3f& aPosition)
 	pos.setZ(aPosition.z);
 	myShape = new btSphereShape(1); 
 	myMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos)); /* btQuaternion is the rotation of the object. Figure this out.*/
-	myShape->calculateLocalInertia(1, btVector3(0, 0, 0));
+	myShape->calculateLocalInertia(1000, btVector3(0, 0, 0));
 
-	btRigidBody::btRigidBodyConstructionInfo bodyInfo(10, myMotionState, myShape, btVector3(0, 0, 0));
+	btRigidBody::btRigidBodyConstructionInfo bodyInfo(1000, myMotionState, myShape, btVector3(0, 0, 0));
 	bodyInfo.m_friction = 1.f;
 	bodyInfo.m_restitution = 0.75f;
 	myBody = new btRigidBody(bodyInfo);
 	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
-
-
 
 
 	return myBody;

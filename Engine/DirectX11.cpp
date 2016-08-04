@@ -92,9 +92,9 @@ namespace Snowblind
 
 	}
 
-	void CDirectX11::Present()
+	void CDirectX11::Present(u8 anInterval, u8 flags)
 	{
-		mySwapchain->Present(0, 0);
+		mySwapchain->Present(anInterval, flags);
 	}
 
 	void CDirectX11::Clear()
@@ -172,6 +172,19 @@ namespace Snowblind
 		scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 		scDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 		scDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		bool useVsync = false;
+
+		u32 numerator = 0;
+		u32 denominator = 1;
+
+		if (useVsync)
+		{
+			GetRefreshRate(numerator, denominator);
+		}
+
+		scDesc.BufferDesc.RefreshRate.Numerator = numerator;
+		scDesc.BufferDesc.RefreshRate.Denominator = denominator;
+
 
 		const D3D_FEATURE_LEVEL requested_feature_levels[] = {
 			D3D_FEATURE_LEVEL_11_0,
@@ -662,7 +675,7 @@ namespace Snowblind
 		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE; //no difference between zero & one
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F; 
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
 		myDevice->CreateBlendState(&blendDesc, &myBlendStates[u16(eBlendStates::LIGHT_BLEND)]);
 		SetDebugName(myBlendStates[u16(eBlendStates::LIGHT_BLEND)], "LIGHT_BLEND BlendState");
 
@@ -792,4 +805,36 @@ namespace Snowblind
 
 
 	}
+
+	void CDirectX11::GetRefreshRate(u32& aNumerator, u32& aDenominator)
+	{
+		IDXGIFactory* factory;
+		IDXGIAdapter* adapter;
+		IDXGIOutput* adapterOutput;
+		unsigned int numModes;
+		DXGI_MODE_DESC* displayModeList;
+
+		HRESULT result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
+		result = factory->EnumAdapters(0, &adapter);
+		result = adapter->EnumOutputs(0, &adapterOutput);
+		adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL);
+		displayModeList = new DXGI_MODE_DESC[numModes];
+		result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
+
+		for (unsigned int i = 0; i < numModes; ++i)
+		{
+			if (displayModeList[i].Width == myWidth && displayModeList[i].Height == myHeight)
+			{
+				aNumerator = displayModeList[i].RefreshRate.Numerator;
+				aDenominator = displayModeList[i].RefreshRate.Denominator;
+			}
+		}
+
+		delete[] displayModeList;
+		displayModeList = nullptr;
+		SAFE_RELEASE(adapterOutput);
+		SAFE_RELEASE(adapter);
+		SAFE_RELEASE(factory);
+	}
+
 };

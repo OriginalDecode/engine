@@ -66,87 +66,44 @@ namespace Snowblind
 		myVertexFormat.Add(vertexDesc[3]);
 		myVertexFormat.Add(vertexDesc[4]);
 
-
 		float newWidth = float(width) / 2.f;
 		float newHeight = float(height) / 2.f;
-
 
 		float cellWidth = 1.f;
 		float cellHeight = 1.f;
 
-
 		u32 cellWidthAmount = width / cellWidth;
 		u32 cellHeightAmount = height / cellHeight;
 
-
 		CU::GrowingArray<SVertexPosNormUVBiTang> vertices;
 		CU::GrowingArray<u32> indexes;
+		float wAndH = 1024;
 
-
-		for (u32 i = 0; i < 255; i++)
+		for (u32 i = 0; i < wAndH; i++)
 		{
-			for (u32 j = 0; j < 255; j++)
+			for (u32 j = 0; j < wAndH; j++)
 			{
 				SVertexPosNormUVBiTang vertex;
-				vertex.position.x = float(j) * width / float(255.f);
-				vertex.position.z = float(i) * height / float(255.f);
-				vertex.uv.x = float(j) / float(255.f);
-				vertex.uv.y = float(1.f - i) / float(255.f);
+				vertex.position.x = float(j) * width / float(wAndH);
+				vertex.position.z = float(i) * height / float(wAndH);
+				vertex.uv.x = float(j) / float(wAndH);
+				vertex.uv.y = float(1.f - i) / float(wAndH);
 				vertices.Add(vertex);
 			}
 		}
 
-		for (int z = 0; z < 255 - 1; ++z)
+		for (int z = 0; z < wAndH - 1; ++z)
 		{
-			for (int x = 0; x < 255 - 1; ++x)
+			for (int x = 0; x < wAndH - 1; ++x)
 			{
-				//original clock-wise, seem to have to turn it (see below) remove comment when sorted out
-				//indices.Add(z * myHeightMap->myWidth + x);
-				//indices.Add(z * myHeightMap->myWidth + x + 1);
-				//indices.Add((z + 1) * myHeightMap->myWidth + x);
-
-				//indices.Add((z + 1) * myHeightMap->myWidth + x);
-				//indices.Add(z * myHeightMap->myWidth + x + 1);
-				//indices.Add((z + 1) * myHeightMap->myWidth + x + 1);
-
-				indexes.Add(z * 255 + x);
-				indexes.Add((z + 1) * 255 + x);
-				indexes.Add(z * 255 + x + 1);
-				indexes.Add((z + 1) * 255 + x);
-				indexes.Add((z + 1) * 255 + x + 1);
-				indexes.Add(z * 255 + x + 1);
+				indexes.Add(z * wAndH + x);
+				indexes.Add((z + 1) * wAndH + x);
+				indexes.Add(z * wAndH + x + 1);
+				indexes.Add((z + 1) * wAndH + x);
+				indexes.Add((z + 1) * wAndH + x + 1);
+				indexes.Add(z * wAndH + x + 1);
 			}
 		}
-
-
-		/*	SVertexPosNormUVBiTang vert;
-			vert.position.x = -cellWidth;
-			vert.position.z = -cellHeight;
-			vert.uv = { 0.f, 0.f };
-			vertices.Add(vert);
-
-			vert.position.x = -cellWidth;
-			vert.position.z = cellHeight;
-			vert.uv = { 0.f, 1.f };
-			vertices.Add(vert);
-
-			vert.position.x = cellWidth;
-			vert.position.z = cellHeight;
-			vert.uv = { 1.f, 1.f };
-			vertices.Add(vert);
-
-			vert.position.x = cellWidth;
-			vert.position.z = -cellHeight;
-			vert.uv = { 1.f, 0.f };
-			vertices.Add(vert);
-
-			indexes.Add(0);
-			indexes.Add(1);
-			indexes.Add(2);
-
-			indexes.Add(2);
-			indexes.Add(3);
-			indexes.Add(0);*/
 
 		myVertexData = new SVertexDataWrapper;
 		myConstantStruct = new SVertexBaseStruct;

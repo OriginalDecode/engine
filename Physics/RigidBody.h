@@ -22,9 +22,7 @@ class CRigidBody
 {
 public:
 	CRigidBody();
-#ifdef _DEBUG
-	CRigidBody(Snowblind::CSynchronizer* aSychronizer);
-#endif
+
 	~CRigidBody();
 
 	btRigidBody* InitAsPlane(const btVector3& aNormal);
@@ -33,21 +31,12 @@ public:
 
 	btRigidBody* GetBody();
 	const CU::Matrix44f& GetOrientation();
-	const CU::Vector4f& GetAABBPoint(int index);
-
+	void Impulse(const CU::Vector3f& anImpulseVector);
 private:
-	void CalculatePoints();
-#ifdef _DEBUG
-	Snowblind::CSynchronizer* mySynchronizer;
-#endif
-
 	btRigidBody* myBody = nullptr;
 	btCollisionShape* myShape = nullptr;
 	btDefaultMotionState* myMotionState = nullptr;
 	btTransform* myWorldTranslation = nullptr;
 	CU::Matrix44f myOrientation;
-	CU::Vector3f myPoints[8];
-
-
 };
 

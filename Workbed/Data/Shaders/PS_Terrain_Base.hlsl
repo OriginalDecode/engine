@@ -52,13 +52,13 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	float depth = input.pos.z;
 
 	GBuffer output;
-  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
+	float v = 203.f/255.f;
+  	output.Albedo = float4(v,v,v, 1.f);//AlbedoTexture.Sample(linear_Wrap, input.uv);
 	
-	output.Normal = float4(0.f, 1.f, 0.f ,0.f);//float4(norm, 0.f);
-	output.Normal.a = MetalnessTexture.Sample(linear_Wrap,input.uv).r;
+	output.Normal = float4(0.f, 1.f, 0.f ,0.f);
 	
 	output.Depth.r = depth;
-	output.Depth.g = RoughnessTexture.Sample(linear_Wrap, input.uv).r;
+	output.Depth.g = 1;
 	
 	return output;
 }

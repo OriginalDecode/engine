@@ -18,7 +18,7 @@ CPhysicsManager::CPhysicsManager()
 		myDefaultCollisionConfiguration);
 
 	myDynamicsWorld->setGravity(btVector3(0, -9.82f, 0));
-
+	
 	myZeroPlane = new CRigidBody();
 	Add(myZeroPlane->InitAsPlane(btVector3(0, 1, 0)));
 }
@@ -50,9 +50,10 @@ void CPhysicsManager::Remove(btRigidBody* aBody)
 	myDynamicsWorld->removeRigidBody(aBody);
 }
 
-btRigidBody* CPhysicsManager::Create(float mass)
+CRigidBody* CPhysicsManager::CreateBody(float mass)
 {
-	return nullptr;
+	CRigidBody* newBody = new CRigidBody();
+	return newBody;
 }
 
 void CPhysicsManager::Update(double& additionalTime)

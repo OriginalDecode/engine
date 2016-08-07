@@ -48,8 +48,10 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	/*
 		Somewhere in the itteration we will look for a terrain file or something
 	*/
-
-	myTerrain = myEngine->CreateTerrain(100, 100);
+#if defined (_DEBUG)
+	//HRESULT hr = URLDownloadToFile(NULL, ("https://bitbucket.org/api/1.0/repositories/originaldecode/snowblind-engine/changesets?limit=0"), ("snowblind_data.json"), 0, 0);
+#endif
+	myTerrain = myEngine->CreateTerrain(1000, 1000);
 
 	const JSONElement& el = reader.GetElement("root");
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
@@ -87,12 +89,9 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 		{
 			myEntityManager->AddComponent<PhysicsComponent>(e);
 			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
-#ifdef _DEBUG
-			p.myBody = new CRigidBody(mySynchronizer);
-#else
-			p.myBody = new CRigidBody();
-#endif
+			p.myBody = myPhysicsManager->CreateBody(10);//new CRigidBody();
 			myPhysicsManager->Add(p.myBody->InitAsSphere(pos));
+
 		}
 	}
 

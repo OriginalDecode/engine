@@ -24,5 +24,8 @@ struct VS_OUTPUT
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 text = FontTexture.Sample(linear_Clamp, input.uv).rrrr;	
-	return text;
+	float4 a = FontTexture.Sample(linear_Clamp, input.uv).aaaa;
+	a -= a;
+	return text + a;
+
 };

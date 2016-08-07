@@ -16,10 +16,9 @@ class CPhysicsManager
 public:
 	CPhysicsManager();
 	~CPhysicsManager();
-
 	void Add(btRigidBody* aBody);
 	void Remove(btRigidBody* aBody);
-	btRigidBody* Create(float mass);
+	CRigidBody* CreateBody(float mass);
 	
 	void Update(double& additionalTime);
 private:

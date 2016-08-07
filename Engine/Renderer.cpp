@@ -9,9 +9,9 @@
 #include "Sprite.h"
 #include "Line3D.h"
 #include "Terrain.h"
+
 namespace Snowblind
 {
-
 	CRenderer::CRenderer(CSynchronizer& aSynchronizer, CCamera* aCamera)
 		: mySynchronizer(aSynchronizer)
 		, myCamera(aCamera)
@@ -20,7 +20,7 @@ namespace Snowblind
 		int loadTimer = myTimeManager->CreateTimer();
 		myTimeManager->GetTimer(loadTimer).Update();
 		float loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds();
-		myText = new CText("Arial.ttf", 14, 0);
+		myText = new CText("Arial.ttf", 14, 1);
 
 		myTimeManager->GetTimer(loadTimer).Update();
 		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;
@@ -29,11 +29,9 @@ namespace Snowblind
 		myPointLight = new CPointLight();
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
-		//myDepthTexture->InitAsDepthBuffer(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
 		myDepthTexture->InitStencil(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
 		myDepthTexture->SetDebugName("myDepthTexture");
 
-		//mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", aCamera);
 		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", aCamera);
 
 		mySprite = new CSprite();

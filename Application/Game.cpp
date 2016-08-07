@@ -49,7 +49,7 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 		Somewhere in the itteration we will look for a terrain file or something
 	*/
 
-	myTerrain = myEngine->CreateTerrain(1000, 1000);
+	myTerrain = myEngine->CreateTerrain(100, 100);
 
 	const JSONElement& el = reader.GetElement("root");
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)

@@ -33,11 +33,9 @@ namespace Snowblind
 		__super::Render(aCameraOrientation, aCameraProjection);
 		if (!myIsNULLObject)
 		{
-			SetMatrices(aCameraOrientation, aCameraProjection);
 			myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 			myContext->DrawIndexed(myIndexData->myIndexCount, 0, 0);
-
 		}
 	}
 
@@ -73,40 +71,84 @@ namespace Snowblind
 		float newHeight = float(height) / 2.f;
 
 
+		float cellWidth = 1.f;
+		float cellHeight = 1.f;
+
+
+		u32 cellWidthAmount = width / cellWidth;
+		u32 cellHeightAmount = height / cellHeight;
+
 
 		CU::GrowingArray<SVertexPosNormUVBiTang> vertices;
 		CU::GrowingArray<u32> indexes;
-		SVertexPosNormUVBiTang vert;
-		vert.position.x = -newWidth;
-		vert.position.z = -newHeight;
-		vert.uv = { 0.f, 0.f };
-		vertices.Add(vert);
 
-		vert.position.x = -newWidth;
-		vert.position.z = newHeight;
-		vert.uv = { 0.f, 1.f };
-		vertices.Add(vert);
 
-		vert.position.x = newWidth;
-		vert.position.z = newHeight;
-		vert.uv = { 1.f, 1.f };
-		vertices.Add(vert);
+		for (u32 i = 0; i < 255; i++)
+		{
+			for (u32 j = 0; j < 255; j++)
+			{
+				SVertexPosNormUVBiTang vertex;
+				vertex.position.x = float(j) * width / float(255.f);
+				vertex.position.z = float(i) * height / float(255.f);
+				vertex.uv.x = float(j) / float(255.f);
+				vertex.uv.y = float(1.f - i) / float(255.f);
+				vertices.Add(vertex);
+			}
+		}
 
-		vert.position.x = newWidth;
-		vert.position.z = -newHeight;
-		vert.uv = { 1.f, 0.f };
-		vertices.Add(vert);
+		for (int z = 0; z < 255 - 1; ++z)
+		{
+			for (int x = 0; x < 255 - 1; ++x)
+			{
+				//original clock-wise, seem to have to turn it (see below) remove comment when sorted out
+				//indices.Add(z * myHeightMap->myWidth + x);
+				//indices.Add(z * myHeightMap->myWidth + x + 1);
+				//indices.Add((z + 1) * myHeightMap->myWidth + x);
 
-		indexes.Add(0);
-		indexes.Add(1);
-		indexes.Add(2);
+				//indices.Add((z + 1) * myHeightMap->myWidth + x);
+				//indices.Add(z * myHeightMap->myWidth + x + 1);
+				//indices.Add((z + 1) * myHeightMap->myWidth + x + 1);
 
-		indexes.Add(2);
-		indexes.Add(3);
-		indexes.Add(0);
+				indexes.Add(z * 255 + x);
+				indexes.Add((z + 1) * 255 + x);
+				indexes.Add(z * 255 + x + 1);
+				indexes.Add((z + 1) * 255 + x);
+				indexes.Add((z + 1) * 255 + x + 1);
+				indexes.Add(z * 255 + x + 1);
+			}
+		}
+
+
+		/*	SVertexPosNormUVBiTang vert;
+			vert.position.x = -cellWidth;
+			vert.position.z = -cellHeight;
+			vert.uv = { 0.f, 0.f };
+			vertices.Add(vert);
+
+			vert.position.x = -cellWidth;
+			vert.position.z = cellHeight;
+			vert.uv = { 0.f, 1.f };
+			vertices.Add(vert);
+
+			vert.position.x = cellWidth;
+			vert.position.z = cellHeight;
+			vert.uv = { 1.f, 1.f };
+			vertices.Add(vert);
+
+			vert.position.x = cellWidth;
+			vert.position.z = -cellHeight;
+			vert.uv = { 1.f, 0.f };
+			vertices.Add(vert);
+
+			indexes.Add(0);
+			indexes.Add(1);
+			indexes.Add(2);
+
+			indexes.Add(2);
+			indexes.Add(3);
+			indexes.Add(0);*/
 
 		myVertexData = new SVertexDataWrapper;
-		myIndexData = new SVertexIndexWrapper;
 		myConstantStruct = new SVertexBaseStruct;
 		myVertexData->myNrOfVertexes = vertices.Size();
 		myVertexData->myStride = sizeof(SVertexPosNormUVBiTang);
@@ -114,6 +156,8 @@ namespace Snowblind
 		myVertexData->myVertexData = new  char[myVertexData->mySize]();
 		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
 
+
+		myIndexData = new SVertexIndexWrapper;
 		myIndexData->myFormat = DXGI_FORMAT_R32_UINT;
 		myIndexData->myIndexCount = indexes.Size();
 		myIndexData->mySize = myIndexData->myIndexCount * 4;

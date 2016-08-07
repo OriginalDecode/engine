@@ -49,7 +49,6 @@ namespace Snowblind
 					myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 				for (int i = 0; i < mySurfaces.Size(); i++)
 				{
-					SetMatrices(aCameraOrientation, aCameraProjection);
 					myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 					mySurfaces[i]->Activate();
 					myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);

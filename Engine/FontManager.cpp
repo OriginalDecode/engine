@@ -118,7 +118,7 @@ namespace Snowblind
 
 		for (int i = currentI; i < currentMax; i++)
 		{
-			int error = FT_Load_Char(face, i, FT_LOAD_RENDER);
+			error = FT_Load_Char(face, i, FT_LOAD_RENDER);
 			DL_ASSERT_EXP(!error, "Failed to load glyph!");
 			FT_GlyphSlot slot = face->glyph;
 
@@ -279,9 +279,9 @@ namespace Snowblind
 
 		unsigned int width = bitmapGlyph->bitmap.width;
 		unsigned int height = bitmapGlyph->bitmap.rows;
-		unsigned int pitch = bitmapGlyph->bitmap.pitch;
 
 #ifdef SAVE
+		unsigned int pitch = bitmapGlyph->bitmap.pitch;
 		int* gData = new int[width * height];
 		ZeroMemory(gData, width * height * sizeof(int));
 #endif
@@ -375,6 +375,8 @@ namespace Snowblind
 
 	void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline)
 	{
+		isOutline;
+		index;
 		D3D11_SUBRESOURCE_DATA data;
 		data.pSysMem = source;
 		data.SysMemPitch = pitch * 4;
@@ -450,7 +452,6 @@ namespace Snowblind
 
 		unsigned int width = bitmapGlyph->bitmap.width;
 		unsigned int height = bitmapGlyph->bitmap.rows;
-		unsigned int pitch = bitmapGlyph->bitmap.pitch;
 
 		int xDelta = 0;
 		int yDelta = 0;
@@ -480,7 +481,6 @@ namespace Snowblind
 
 		unsigned int width = glyph->bitmap.width;
 		unsigned int height = glyph->bitmap.rows;
-		unsigned int pitch = glyph->bitmap.pitch;
 
 		SCountData countData;
 		for (int x = 0; x < width; x++)

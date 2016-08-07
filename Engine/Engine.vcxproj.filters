@@ -192,6 +192,8 @@
     <ClInclude Include="ModelImporter.h">
       <Filter>Model</Filter>
     </ClInclude>
+    <ClInclude Include="Terrain.h" />
+    <ClInclude Include="BaseModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -293,5 +295,7 @@
     <ClCompile Include="ModelImporter.cpp">
       <Filter>Model</Filter>
     </ClCompile>
+    <ClCompile Include="Terrain.cpp" />
+    <ClCompile Include="BaseModel.cpp" />
   </ItemGroup>
 </Project>

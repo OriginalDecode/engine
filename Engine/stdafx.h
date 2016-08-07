@@ -1,6 +1,7 @@
 #pragma once
 #pragma warning(disable : 4005)
 #pragma warning(disable : 4006)
+#pragma warning(disable : 4099)
 
 //----------------------------------------
 // Windows

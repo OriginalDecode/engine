@@ -68,7 +68,7 @@ namespace Snowblind
 	struct SHullShader;
 	struct SDomainShader;
 	struct SComputeShader;
-	struct CEffect;
+	class CEffect;
 	class CShaderFactory
 	{
 	public:

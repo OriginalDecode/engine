@@ -27,7 +27,7 @@ CPhysicsManager::CPhysicsManager()
 CPhysicsManager::~CPhysicsManager()
 {
 	/* Remove all the rigidbodies before deleting */
-	for each(btRigidBody* rb in myBodies)
+	for (btRigidBody* rb : myBodies)
 	{
 		Remove(rb);
 	}
@@ -55,7 +55,11 @@ btRigidBody* CPhysicsManager::Create(float mass)
 	return nullptr;
 }
 
-void CPhysicsManager::Update()
+void CPhysicsManager::Update(double& additionalTime)
 {
-	myDynamicsWorld->stepSimulation(1.f/60.f, 1);
+	while (additionalTime >= 1.f / 60.f) //This feels too easy
+	{
+		myDynamicsWorld->stepSimulation(1.f / 60.f, 1);
+		additionalTime -= 1.f / 60.f;
+	}
 }

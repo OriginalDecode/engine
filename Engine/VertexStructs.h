@@ -35,6 +35,15 @@ struct SVertexTypePosNormUV
 	CU::Math::Vector2<float> myUV;
 };
 
+struct SVertexPosNormUVBiTang
+{
+	CU::Math::Vector3<float> position;
+	CU::Math::Vector3<float> normal;
+	CU::Math::Vector2<float> uv;
+	CU::Math::Vector3<float> binormal;
+	CU::Math::Vector3<float> tangent;
+};
+
 struct SVertexBaseStruct
 {
 	CU::Matrix44f world; //Model/World

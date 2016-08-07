@@ -140,7 +140,7 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 	Snowblind::CSurface* newSurface = new Snowblind::CSurface(0, data->myVertexCount, 0
 		, data->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	out->myModelStates[NULL_OBJECT] = FALSE;
+	out->myIsNULLObject = false;
 	for (int i = 0; i < data->myLayout.Size(); ++i)
 	{
 		auto currentLayout = data->myLayout[i];

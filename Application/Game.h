@@ -3,6 +3,8 @@
 namespace Snowblind
 {
 	class CSynchronizer;
+	class CTerrain;
+	class CEngine;
 };
 
 class CEntityManager;
@@ -18,9 +20,11 @@ public:
 	void Update(float aDeltaTime);
 
 private:
+	double myAccumulatedTime = 0.f;
+	Snowblind::CTerrain* myTerrain = nullptr;
 	Snowblind::CSynchronizer* mySynchronizer;
+	Snowblind::CEngine* myEngine;
 	CEntityManager* myEntityManager;
 	CPhysicsManager* myPhysicsManager;
-	btRigidBody* body;
 };
 

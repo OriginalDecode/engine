@@ -35,11 +35,8 @@ struct PixelData
 	float4 metalness;
 	float4 roughness;
 	float4 AOTexture;
-	
 	float4 emissive;
-	
 };
-
 
 //---------------------------------
 //	Deferred Ambient Pixel Shader
@@ -102,16 +99,13 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	* metalnessAlbedo * (1.f - reflectionFrensnel);
 	float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector, lysMipMap).xyz 
 	* ao * reflectionFrensnel;
-    //ambientSpec = float3(1,1,1);
     
 	float3 finalColor = ambientDiffuse + ambientSpec;
     
-	//float4 col = saturate(albedo * cubemap);
-	//col.rgb = pow (col.rgb, 1 / 2.2);
-	
-	return float4(finalColor, 1.f);
-	
-
+	// float4 col = saturate(albedo * cubemap);
+	// col.rgb = pow (col.rgb, 1 / 2.2);
+	float ambient = 1.0f;
+	return float4(finalColor, 1.f) * ambient;
 };
 
 

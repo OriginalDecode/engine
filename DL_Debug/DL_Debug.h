@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <time.h>
 #include <bitset>
 
 #include "DL_StackWalker.h"

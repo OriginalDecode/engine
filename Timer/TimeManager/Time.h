@@ -2,16 +2,12 @@
 #include <Windows.h>
 
 #define T_FLOAT
-
 #ifdef T_FLOAT
 typedef float time_type;
 #endif
 #ifndef T_FLOAT
 typedef double time_type;
 #endif
-
-
-
 
 namespace CommonUtilities
 {

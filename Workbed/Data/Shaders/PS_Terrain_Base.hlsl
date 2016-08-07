@@ -1,5 +1,5 @@
 //---------------------------------
-//	Deferred Base Pixel Shader
+//	Terrain Base Pixel Shader
 //---------------------------------
 //---------------------------------
 //	Samplers & Textures
@@ -14,7 +14,7 @@ Texture2D AOTexture			: register ( t4 );
 //Texture2D EmissiveTexture	: register ( t5 );
 
 //---------------------------------
-//	Deferred Base Pixel Structs
+//	Terrain Base Pixel Structs
 //---------------------------------
 struct GBuffer
 {
@@ -35,7 +35,7 @@ struct VS_OUTPUT
 };
 
 //---------------------------------
-//	Deferred Base Pixel Shader
+//	Terrain Base Pixel Shader
 //---------------------------------
 GBuffer PS(VS_OUTPUT input) : SV_Target
 {
@@ -50,12 +50,11 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	norm.xyz *= 0.5f;
 
 	float depth = input.pos.z;
-	/* Write splatmap stuff here */
+
 	GBuffer output;
-  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
-	output.Albedo.rgb *= 1.f; //0.42f
+  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) *float4(0.25f,1.f,0.25f,1.f);
 	
-	output.Normal = float4(norm.xyz,0.f);//float4(norm, 0.f);
+	output.Normal = float4(0.f, 1.f, 0.f ,0.f);//float4(norm, 0.f);
 	output.Normal.a = MetalnessTexture.Sample(linear_Wrap,input.uv).r;
 	
 	output.Depth.r = depth;

@@ -26,6 +26,7 @@
 #include <JSON/JSONReader.h>
 #include <DL_Debug.h>
 #include <Engine.h>
+#include <Terrain.h>
 
 struct SGameObject
 {
@@ -39,9 +40,16 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 {
 	myEntityManager = new CEntityManager();
 	myPhysicsManager = new CPhysicsManager();
+	myEngine = Snowblind::CEngine::GetInstance();
 
-
+	myEngine->ToggleVsync();
 	JSONReader reader("Data/Levels/level_01.json");
+
+	/*
+		Somewhere in the itteration we will look for a terrain file or something
+	*/
+
+	myTerrain = myEngine->CreateTerrain(1000, 1000);
 
 	const JSONElement& el = reader.GetElement("root");
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
@@ -69,7 +77,7 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 		{
 			myEntityManager->AddComponent<RenderComponent>(e);
 			RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
-			r.myModelID = Snowblind::CEngine::GetInstance()->LoadModel(entityModel[0], entityModel[1]);
+			r.myModelID = myEngine->LoadModel(entityModel[0], entityModel[1]);
 		}
 
 		bool hasPhysics = false;
@@ -97,16 +105,31 @@ CGame::~CGame()
 {
 	SAFE_DELETE(myPhysicsManager);
 	SAFE_DELETE(myEntityManager);
+	SAFE_DELETE(myTerrain);
 }
 
 void CGame::Update(float aDeltaTime)
 {
 	std::stringstream ss;
-	ss << Snowblind::CEngine::GetInstance()->GetFPS();
+	const SLocalTime& locTime = myEngine->GetLocalTime();
+	ss << myEngine->GetFPS() << "\nDeltaTime:" << aDeltaTime
+		<< "\nLocal time : "
+		<< locTime.hour << ":"
+		<< locTime.minute << ":";
+	if (locTime.second < 10)
+	{
+		ss << "0" << locTime.second;
+	}
+	else
+		ss << locTime.second;
 
 	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), { 0,0 }, SRenderCommand::eType::TEXT));
-
-	myPhysicsManager->Update();
 	myEntityManager->Update(aDeltaTime);
-	
+
+
+	myAccumulatedTime += aDeltaTime;
+	myPhysicsManager->Update(myAccumulatedTime);
+
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::TERRAIN));
 }

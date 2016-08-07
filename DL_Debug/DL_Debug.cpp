@@ -1,4 +1,6 @@
 #include "DL_Debug.h"
+#include <time.h>
+
 namespace DL_Debug
 {
 	Debug* Debug::myInstance = nullptr;
@@ -29,8 +31,7 @@ namespace DL_Debug
 #endif
 		if (myInstance == nullptr)
 		{
-			std::cout << "No file created!" << std::endl;
-			return (false);
+			return false;
 		}
 
 		myInstance->myOutputFile.open(ss.str().c_str());

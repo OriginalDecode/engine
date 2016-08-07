@@ -20,7 +20,8 @@ public:
 	void Add(btRigidBody* aBody);
 	void Remove(btRigidBody* aBody);
 	btRigidBody* Create(float mass);
-	void Update();
+	
+	void Update(double& additionalTime);
 private:
 
 	btDefaultCollisionConfiguration* myDefaultCollisionConfiguration = nullptr;

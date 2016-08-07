@@ -230,7 +230,7 @@ namespace Snowblind
 		SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
 		SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 
-		int count = myText.length();
+		u32 count = u32(myText.length());
 		float z = 0.f;
 		float drawX = 5.f;
 		float drawY = -5.f;
@@ -239,7 +239,7 @@ namespace Snowblind
 		myIndices.RemoveAll();
 
 		SVertexTypePosColUv v;
-		for (int i = 0, row = 0; i < count; i++)
+		for (u32 i = 0, row = 0; i < count; i++)
 		{
 			SCharData& charData = myData->myCharData[myText[i]];
 
@@ -288,7 +288,7 @@ namespace Snowblind
 			v.myUV = charData.myBottomRightUV;
 			myVertices.Add(v);
 
-			int startIndex = (i - row) * 4.f;
+			u32 startIndex = (i - row) * 4.f;
 
 			myIndices.Add(startIndex + 1);
 			myIndices.Add(startIndex + 0);

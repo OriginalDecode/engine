@@ -191,14 +191,13 @@ namespace Snowblind
 		stream.seekg(0, std::ios::beg);
 		stream.read(&result[0], pos);
 
-		ID3D11ShaderResourceView* temp = NULL;
 
-		ID3D11Resource* resource = NULL;
-		HRESULT hr = S_OK;
+		//ID3D11Resource* resource = NULL;
+		//HRESULT hr = S_OK;
 
 		//hr = D3DX11CreateTextureFromMemory(CEngine::GetDirectX()->GetDevice(), &result[0], result.size(), NULL, NULL, &resource, 0);
 		//hr = D3DX11CreateShaderResourceViewFromMemory(CEngine::GetDirectX()->GetDevice(), &result[0], result.size(), 0, 0, &myShaderResource, &hr);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create texture from memory");
+		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to create texture from memory");
 	}
 
 	ID3D11Texture2D* CTexture::GetDepthTexture()

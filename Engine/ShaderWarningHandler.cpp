@@ -61,7 +61,7 @@ CU::GrowingArray<std::string> ShaderWarningHandler::ParseFile(const std::string&
 
 u32 ShaderWarningHandler::CountWord(char* aWord, s8 aWordLength, const std::string& aMessage)
 {
-	u32 strLen = aMessage.length();
+	u32 strLen = u32(aMessage.length());
 	u32 i = 0;
 	u32 j = 0;
 	u32 wordCount = 0;
@@ -100,7 +100,7 @@ std::tuple<bool, std::string> ShaderWarningHandler::CreateMessage(char* aWordToF
 	u32 wordCount = CountWord(aWordToFind, aWordLength, aMessage);
 	if (wordCount > 0)
 	{
-		CU::GrowingArray<int> warningLines;
+		CU::GrowingArray<u32> warningLines;
 		std::string toCut = aMessage;
 		for (u32 m = 0; m < wordCount; m++)
 		{

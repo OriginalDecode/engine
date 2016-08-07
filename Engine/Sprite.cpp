@@ -67,12 +67,14 @@ namespace Snowblind
 
 	void CSprite::SetSize(const CU::Math::Vector2<float>& aSize)
 	{
+		aSize;
 		DL_ASSERT("Not implemented");
 		//to be implemented
 	}
 
 	void CSprite::SetScale(const CU::Math::Vector2<float>& aScale)
 	{
+		aScale;
 		//mySprite->GetEffect()->SetScale(aScale);
 	}
 

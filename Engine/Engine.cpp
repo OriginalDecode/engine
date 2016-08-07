@@ -1,10 +1,8 @@
 #include "stdafx.h"
 #include "Synchronizer.h"
 #include "Renderer.h"
-#include "Console.h"
 #include "AssetsContainer.h"
-
-
+#include "Terrain.h"
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
@@ -15,13 +13,13 @@ namespace Snowblind
 	{
 		CreateAppWindow(anInstance, aWndProc);
 		CU::Input::InputWrapper::Create(myHWND, anInstance);
-		ToggleVsync();
 	}
+	
 
 	CEngine::~CEngine()
 	{
 		SAFE_DELETE(myAssetsContainer);
-		SAFE_DELETE(myConsole);
+		//SAFE_DELETE(myConsole);
 		SAFE_DELETE(model);
 		SAFE_DELETE(mySynchronizer);
 		SAFE_DELETE(myRenderer);
@@ -82,8 +80,8 @@ namespace Snowblind
 		myRenderer = new CRenderer(*mySynchronizer, myCamera);
 		myRenderer->Add2DCamera(my2DCamera);
 
-		myConsole = new CConsole();
-		myConsole->Initiate(my2DCamera);
+		//myConsole = new CConsole();
+		//myConsole->Initiate(my2DCamera);
 
 		myTimeManager = new CU::TimeManager();
 
@@ -137,6 +135,11 @@ namespace Snowblind
 	const float CEngine::GetFPS()
 	{
 		return myTimeManager->GetFPS();
+	}
+
+	const float CEngine::GetFrameTime()
+	{
+		return myTimeManager->GetFrameTime();
 	}
 
 	const std::string& CEngine::GetAPIName()
@@ -197,6 +200,25 @@ namespace Snowblind
 	CSynchronizer* CEngine::GetSynchronizer()
 	{
 		return mySynchronizer;
+	}
+
+	const SLocalTime& CEngine::GetLocalTime()
+	{
+		/* This function should be a callback? When minute changes? How? */
+		SYSTEMTIME time;
+		::GetLocalTime(&time);
+		myLocalTime.hour = time.wHour;
+		myLocalTime.minute = time.wMinute;
+		myLocalTime.second = time.wSecond;
+
+		return myLocalTime;
+	}
+
+	CTerrain* CEngine::CreateTerrain(u32 width, u32 height)
+	{
+		CTerrain* newTerrain = new CTerrain(width, height);
+		myRenderer->AddTerrain(newTerrain);
+		return newTerrain;
 	}
 
 	void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)

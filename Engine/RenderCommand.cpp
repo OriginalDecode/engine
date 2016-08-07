@@ -53,6 +53,7 @@ SRenderCommand::SRenderCommand(const eType& aType, const std::string& aSpriteNam
 	, myPosition(aPosition)
 	, myCommandType(eCommandType::e2D)
 {
+	aSpriteName;
 }
 
 SRenderCommand::SRenderCommand(const eType& aType, const SLinePoint& aFirstPoint, const SLinePoint& aSecondPoint)
@@ -60,5 +61,11 @@ SRenderCommand::SRenderCommand(const eType& aType, const SLinePoint& aFirstPoint
 	, firstPoint(aFirstPoint)
 	, secondPoint(aSecondPoint)
 	, myCommandType(eCommandType::LINE)
+{
+}
+
+SRenderCommand::SRenderCommand(const eType& aType)
+	: myType(aType)
+	, myCommandType(eCommandType::e3D)
 {
 }

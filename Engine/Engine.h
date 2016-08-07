@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <Windows.h>
 #include <standard_datatype.hpp>
 #ifndef _WINDEF_
 
@@ -22,6 +21,12 @@ namespace CommonUtilities
 	class TimeManager;
 }
 
+struct SLocalTime
+{
+	u16 hour;
+	u16 minute;
+	u16 second;
+};
 
 namespace Snowblind
 {
@@ -45,6 +50,7 @@ namespace Snowblind
 	class CSynchronizer;
 	class CTexture;
 	class CEffect;
+	class CTerrain;
 
 	struct SFontData;
 
@@ -69,6 +75,7 @@ namespace Snowblind
 		CFont* LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth);
 		const float GetDeltaTime();
 		const float GetFPS();
+		const float GetFrameTime();
 		const std::string& GetAPIName();
 
 		CTexture* GetTexture(const std::string& aFilePath);
@@ -83,7 +90,11 @@ namespace Snowblind
 		void OnResume();
 		void OnExit();
 		CSynchronizer* GetSynchronizer();
-	
+		const SLocalTime& GetLocalTime();
+		
+		
+		CTerrain* CreateTerrain(u32 width, u32 height);
+
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		~CEngine();
@@ -94,7 +105,7 @@ namespace Snowblind
 
 		static CDirectX11* myAPI;
 		SWindowSize myWindowSize;
-
+		SLocalTime myLocalTime;
 		HWND myHWND;
 		CFontManager* myFontManager;
 		CU::TimeManager* myTimeManager;

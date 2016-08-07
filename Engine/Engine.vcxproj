@@ -186,6 +186,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AssetsContainer.h" />
+    <ClInclude Include="BaseModel.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="DeferredRenderer.h" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Synchronizer.h" />
     <ClInclude Include="SystemMonitor.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VertexStructs.h" />
@@ -228,6 +230,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssetsContainer.cpp" />
+    <ClCompile Include="BaseModel.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
@@ -265,6 +268,7 @@
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Synchronizer.cpp" />
     <ClCompile Include="SystemMonitor.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>

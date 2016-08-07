@@ -72,8 +72,7 @@ namespace Snowblind
 			myContext->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
 		}
 	}
-
-
+	
 	void CSurface::AddTexture(const std::string& aResourceName, const std::string& aFilePath)
 	{
 		if (aResourceName == "AOTexture")

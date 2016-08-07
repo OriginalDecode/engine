@@ -37,9 +37,11 @@ struct SRenderCommand
 		SKYSPHERE,
 		POINTLIGHT,
 		PARTICLE,
+		TERRAIN,
 	};
 
 	SRenderCommand();
+	SRenderCommand(const eType& aType);
 	SRenderCommand(const eType& aType, const std::string& aSpriteName, const CU::Vector2f& aPosition);
 	SRenderCommand(const std::string aString, const CU::Math::Vector2<float>& aPosition, const eType& aType = eType::TEXT);
 	SRenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range );

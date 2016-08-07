@@ -14,7 +14,7 @@ namespace Snowblind
 	{
 		CEngine::GetInstance()->LoadModel(aFilePath, anEffect);
 		myModel = CEngine::GetInstance()->GetModel(aFilePath);
-		myModel->SetIsSkysphere();
+//		myModel->SetIsSkysphere();
 		std::string skysphereTexture;
 		JSONReader reader("Data/Config/game.json");
 		reader.ForceReadElement("Skysphere", skysphereTexture);

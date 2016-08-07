@@ -8,6 +8,7 @@
 #include "PointLight.h"
 #include "Sprite.h"
 #include "Line3D.h"
+#include "Terrain.h"
 namespace Snowblind
 {
 
@@ -92,6 +93,11 @@ namespace Snowblind
 		myPrevFrame = myCamera->GetOrientation();
 	}
 
+	void CRenderer::AddTerrain(CTerrain* someTerrain)
+	{
+		myTerrainArray.Add(someTerrain);
+	}
+
 	void CRenderer::Render3DCommands()
 	{
 		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
@@ -115,6 +121,13 @@ namespace Snowblind
 				case SRenderCommand::eType::SKYSPHERE:
 				{
 					mySkysphere->SetPosition(command.myPosition);
+				}break;
+				case SRenderCommand::eType::TERRAIN:
+				{
+					for (CTerrain* terrain : myTerrainArray)
+					{
+						terrain->Render(myPrevFrame, myCamera->GetProjection());
+					}
 				}break;
 			}
 		}

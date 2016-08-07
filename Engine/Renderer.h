@@ -21,6 +21,7 @@ namespace Snowblind
 	class CSynchronizer;
 	class CTexture;
 	class CText;
+	class CTerrain;
 
 	class CRenderer
 	{
@@ -29,13 +30,15 @@ namespace Snowblind
 		~CRenderer();
 		void Add2DCamera(CCamera* aCamera);
 		void Render();
-
+		void AddTerrain(CTerrain* someTerrain);
 	private:
 		void Render3DCommands();
 		void Render2DCommands();
 		void RenderLightCommands();
 		void RenderParticles();
 		void RenderLines();
+
+		CU::GrowingArray<CTerrain*> myTerrainArray;
 
 		eDeferredType		myDeferredType;
 		CEngine*			myEngine;

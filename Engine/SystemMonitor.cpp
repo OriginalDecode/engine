@@ -22,7 +22,7 @@ namespace Snowblind
 	int CSystemMonitor::GetMemoryUsage(bool inKB)
 	{
 		PROCESS_MEMORY_COUNTERS memCounter;
-		BOOL result = GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof(memCounter));
+		GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof(memCounter));
 		int toReturn = 0;
 
 		toReturn = memCounter.WorkingSetSize / 1024 / 1024;

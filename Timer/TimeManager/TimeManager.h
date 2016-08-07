@@ -13,10 +13,6 @@ namespace CommonUtilities
 		
 		TimeManager();
 		~TimeManager();
-		//static bool Create();
-		//static bool Destroy();
-		//static TimeManager* GetInstance();
-		//static void Update();
 		void Update();
 
 		void UpdateMaster();
@@ -26,6 +22,7 @@ namespace CommonUtilities
 		Timer& GetTimer(int anIndex);
 		inline const time_type GetDeltaTime();
 		inline const time_type GetFPS();
+		inline const time_type GetFrameTime();
 
 		void Pause();
 		void Start();
@@ -46,6 +43,13 @@ namespace CommonUtilities
 	{
 		return static_cast<time_type>(1) / GetDeltaTime();
 	}
+
+
+	const time_type TimeManager::GetFrameTime()
+	{
+		return myMasterTimer.GetFrameTime().GetSeconds();
+	}
+
 
 }
 namespace CU = CommonUtilities;

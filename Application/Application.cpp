@@ -42,7 +42,7 @@ void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
 	myGame = new CGame(mySynchronizer);
 
 	//Keep at the end of initiate...
-	myLogicThread = new std::thread([&] {CApplication::Update(); });
+	myLogicThread = new std::thread([&] { CApplication::Update(); });
 }
 
 void CApplication::Update()
@@ -57,11 +57,6 @@ void CApplication::Update()
 		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 38.f), CU::Vector3f(0.f, 1.f, 0.f), 1.f, 25.f));
 		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(5.f, 0.f, 30.f), CU::Vector3f(0.f, 0.f, 1.f), 1.f, 25.f));
 		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(-5.f, 0.f, 30.f), CU::Vector3f(1.f, 0.f, 1.f), 1.f, 25.f));
-
-		std::stringstream ss;
-		ss << moveSpeed;
-
-		mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Vector2f(0.f, 15.f)));
 
 		myGame->Update(deltaTime);
 
@@ -111,13 +106,10 @@ void CApplication::UpdateInput(float aDeltaTime)
 
 		float multiplier = 1.f;
 
-
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(LSHIFT))
 		{
 			multiplier = 100.f;
 		}
-
-
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(W))
 		{
 			myCamera->Move(Snowblind::eDirection::FORWARD, moveSpeed * aDeltaTime);
@@ -150,7 +142,6 @@ void CApplication::UpdateInput(float aDeltaTime)
 		{
 			moveSpeed -= 0.01f * multiplier;
 		}
-
 	}
 }
 

@@ -109,9 +109,21 @@ CGame::~CGame()
 
 void CGame::Update(float aDeltaTime)
 {
+	// = );
+	myFrameCount++;
+	myAverageFPS += myEngine->GetFPS();
+	myTime -= aDeltaTime;
+	if (myTime <= 0.f)
+	{
+		myFPSToPrint = static_cast<u32>(myAverageFPS / myFrameCount);
+		myFrameCount = 0;
+		myAverageFPS = 0.f;
+		myTime = 1.f;
+	}
+	
 	std::stringstream ss;
 	const SLocalTime& locTime = myEngine->GetLocalTime();
-	ss << myEngine->GetFPS() << "\nDeltaTime:" << aDeltaTime
+	ss << myEngine->GetFPS() << "\n" << myFPSToPrint << "\nDeltaTime:" << aDeltaTime
 		<< "\nLocal time : "
 		<< locTime.hour << ":"
 		<< locTime.minute << ":";

@@ -70,6 +70,9 @@
     <Filter Include="Particles">
       <UniqueIdentifier>{b46c163a-8795-48e7-a1fa-d3d0663e7629}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Terrain">
+      <UniqueIdentifier>{ed1d9fdf-d838-4dc4-b0d4-af48b3de659f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -192,8 +195,12 @@
     <ClInclude Include="ModelImporter.h">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="Terrain.h" />
-    <ClInclude Include="BaseModel.h" />
+    <ClInclude Include="BaseModel.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -295,7 +302,11 @@
     <ClCompile Include="ModelImporter.cpp">
       <Filter>Model</Filter>
     </ClCompile>
-    <ClCompile Include="Terrain.cpp" />
-    <ClCompile Include="BaseModel.cpp" />
+    <ClCompile Include="BaseModel.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Terrain</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -36,6 +36,7 @@ namespace Snowblind
 			myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 			myContext->DrawIndexed(myIndexData->myIndexCount, 0, 0);
+
 		}
 	}
 
@@ -77,7 +78,7 @@ namespace Snowblind
 
 		CU::GrowingArray<SVertexPosNormUVBiTang> vertices;
 		CU::GrowingArray<u32> indexes;
-		float wAndH = 1024;
+		float wAndH = 256;
 
 		for (u32 i = 0; i < wAndH; i++)
 		{

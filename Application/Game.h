@@ -20,7 +20,13 @@ public:
 	void Update(float aDeltaTime);
 
 private:
-	double myAccumulatedTime = 0.f;
+	double myAccumulatedTime = 0.0;
+	
+	int myFrameCount = 0;
+	float myAverageFPS = 0;
+	float myTime = 0.f;
+	int myFPSToPrint = 0;
+
 	Snowblind::CTerrain* myTerrain = nullptr;
 	Snowblind::CSynchronizer* mySynchronizer;
 	Snowblind::CEngine* myEngine;

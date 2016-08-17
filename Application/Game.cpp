@@ -6,9 +6,11 @@
 #include <PhysicsComponent.h>
 #include <RenderComponent.h>
 #include <TranslationComponent.h>
+#include <LightComponent.h>
 /* Systems */
 #include <PhysicsSystem.h>
 #include <RenderSystem.h>
+#include <LightSystem.h>
 /* End of Entity System Includes*/
 /* Physics */
 #include <PhysicsManager.h>
@@ -28,13 +30,6 @@
 #include <Engine.h>
 #include <Terrain.h>
 
-struct SGameObject
-{
-	std::string entityPath;
-	CU::Vector3f pos;
-};
-
-
 CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	: mySynchronizer(aSynchronizer)
 {
@@ -43,15 +38,11 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	myEngine = Snowblind::CEngine::GetInstance();
 
 	myEngine->ToggleVsync();
-	JSONReader reader("Data/Levels/level_01.json");
 
-	/*
-		Somewhere in the itteration we will look for a terrain file or something
-	*/
-#if defined (_DEBUG)
-	//HRESULT hr = URLDownloadToFile(NULL, ("https://bitbucket.org/api/1.0/repositories/originaldecode/snowblind-engine/changesets?limit=0"), ("snowblind_data.json"), 0, 0);
-#endif
-	myTerrain = myEngine->CreateTerrain(1000, 1000);
+	//Save chunks with heightmap data embedded. They should all have a WIDTH x HEIGHT amount of data in the height map that is saved in the map data.
+
+	JSONReader reader("Data/Levels/level_01.json");
+	myTerrain = myEngine->CreateTerrain(512, 512);
 
 	const JSONElement& el = reader.GetElement("root");
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
@@ -62,42 +53,59 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 		reader._ReadElement(it->value["position"], pos);
 
 		JSONReader entityReader(entityPath);
-		bool hasTranslation = false;
-		entityReader.ReadElement("Translation", hasTranslation);
-		std::string entityModel[2];
-		entityReader.ReadElement("Render", entityModel);
 
 		Entity e = myEntityManager->CreateEntity();
-		if (hasTranslation)
+
+		//All entities usually have a start position.
+		myEntityManager->AddComponent<TranslationComponent>(e);
+		TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
+		t.myOrientation.SetPosition(pos);
+
+		if (entityReader.HasElement("light"))
 		{
-			myEntityManager->AddComponent<TranslationComponent>(e);
-			TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
-			t.myOrientation.SetPosition(pos);
+			myEntityManager->AddComponent<LightComponent>(e);
+			LightComponent& l = myEntityManager->GetComponent<LightComponent>(e);
+
+			std::string type;
+			entityReader.ReadElement("light", "type", type);
+			if (type == "pointlight")
+			{
+				l.myType = eLightType::ePOINTLIGHT;
+				reader._ReadElement(it->value["color"], l.color);
+				l.color.r /= 255.f;
+				l.color.g /= 255.f;
+				l.color.b /= 255.f;
+				reader.ReadElement(it->value["intensity"], l.intensity);
+				reader.ReadElement(it->value["range"], l.range);
+			}
 		}
 
-		if (entityModel[0] != "")
+		if (entityReader.HasElement("render"))
 		{
 			myEntityManager->AddComponent<RenderComponent>(e);
 			RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
+			std::string entityModel[2];
+			entityReader.ReadElement("render", entityModel);
 			r.myModelID = myEngine->LoadModel(entityModel[0], entityModel[1]);
 		}
 
-		bool hasPhysics = false;
-		entityReader.ReadElement("Physics", hasPhysics);
-
-		if (hasPhysics)
+		if (entityReader.HasElement("physics"))
 		{
-			myEntityManager->AddComponent<PhysicsComponent>(e);
-			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
-			p.myBody = myPhysicsManager->CreateBody(10);//new CRigidBody();
-			myPhysicsManager->Add(p.myBody->InitAsSphere(pos));
-
+			const JSONElement& phys = entityReader.GetElement("physics");
+			for (JSONElement::ConstMemberIterator obj = phys.MemberBegin(); obj != phys.MemberEnd(); obj++)
+			{
+				float mass = static_cast<float>(obj->value.GetDouble());
+				myEntityManager->AddComponent<PhysicsComponent>(e);
+				PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
+				p.myBody = myPhysicsManager->CreateBody(mass);
+				myPhysicsManager->Add(p.myBody->InitAsSphere(pos));
+			}
 		}
 	}
 
 	myEntityManager->AddSystem<CPhysicsSystem>();
 	myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);
-
+	myEntityManager->AddSystem<CLightSystem>(mySynchronizer);
 }
 
 CGame::~CGame()
@@ -109,7 +117,6 @@ CGame::~CGame()
 
 void CGame::Update(float aDeltaTime)
 {
-	// = );
 	myFrameCount++;
 	myAverageFPS += myEngine->GetFPS();
 	myTime -= aDeltaTime;
@@ -120,13 +127,20 @@ void CGame::Update(float aDeltaTime)
 		myAverageFPS = 0.f;
 		myTime = 1.f;
 	}
-	
+
 	std::stringstream ss;
 	const SLocalTime& locTime = myEngine->GetLocalTime();
 	ss << myEngine->GetFPS() << "\n" << myFPSToPrint << "\nDeltaTime:" << aDeltaTime
 		<< "\nLocal time : "
-		<< locTime.hour << ":"
-		<< locTime.minute << ":";
+		<< locTime.hour << " : ";
+
+	if (locTime.minute < 10)
+	{
+		ss << "0" << locTime.minute;
+	}
+	else
+		ss << locTime.minute << ":";
+
 	if (locTime.second < 10)
 	{
 		ss << "0" << locTime.second;

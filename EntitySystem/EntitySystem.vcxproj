@@ -78,7 +78,7 @@
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)Engine\;$(SolutionDir)CommonLib\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -134,6 +134,8 @@
     <ClInclude Include="ComponentFilter.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="EntityTypes.h" />
+    <ClInclude Include="LightComponent.h" />
+    <ClInclude Include="LightSystem.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="RenderComponent.h" />
@@ -146,6 +148,8 @@
     <ClCompile Include="BaseSystem.cpp" />
     <ClCompile Include="ComponentContainer.cpp" />
     <ClCompile Include="EntityManager.cpp" />
+    <ClCompile Include="LightComponent.cpp" />
+    <ClCompile Include="LightSystem.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="RenderComponent.cpp" />

@@ -2,6 +2,7 @@
 #include <sstream>
 #include "TranslationComponent.h"
 #include "RenderComponent.h"
+#include "LightComponent.h"
 
 /* Engine Includes */
 #include "Synchronizer.h"
@@ -9,10 +10,8 @@
 
 CRenderSystem::CRenderSystem(CEntityManager& anEntityManager, Snowblind::CSynchronizer* aSynchronizer)
 	: CBaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, SRenderComponent>>())
+	, mySynchronizer(aSynchronizer)
 {
-	mySynchronizer = aSynchronizer;
-	int apa;
-	apa = 5;
 }
 
 CRenderSystem::~CRenderSystem()
@@ -30,11 +29,6 @@ void CRenderSystem::Update(float aDeltaTime)
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
 
-		//std::stringstream ss;
-		//ss << "X : " << translation.myOrientation.GetPosition().x << "\n" 
-		//	<< "Y : " << translation.myOrientation.GetPosition().y << "\n"
-		//	<< "Z : " << translation.myOrientation.GetPosition().z;
-		//mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(),CU::Vector2f(0,0)));
 		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, render.myModelID, translation.myOrientation.GetPosition() ));
 	}
 }

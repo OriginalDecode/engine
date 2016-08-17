@@ -33,5 +33,5 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	//return saturate(albedo * cubemap);
 	//float4 col =  float4(1, 0, 1, 1);
 	//return saturate(albedo * col);
-	return albedo; 
+	return albedo * 0.2f; 
 };

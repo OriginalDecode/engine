@@ -52,11 +52,12 @@ void CApplication::Update()
 		
 		float deltaTime = myEngine->GetDeltaTime();
 		UpdateInput(deltaTime);
+		std::stringstream ss;
+		ss << "X : " << myOrientation.GetPosition().x << "\n" <<
+		"Y : " << myOrientation.GetPosition().y << "\n" <<
+		"Z : " << myOrientation.GetPosition().z << "\n";
+		mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Vector2f(500, 0)));
 		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
-		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 22.f), CU::Vector3f(1.f,0.f,0.f), 1.f, 25.f));
-		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(0.f, 0.f, 38.f), CU::Vector3f(0.f, 1.f, 0.f), 1.f, 25.f));
-		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(5.f, 0.f, 30.f), CU::Vector3f(0.f, 0.f, 1.f), 1.f, 25.f));
-		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::POINTLIGHT, CU::Vector3f(-5.f, 0.f, 30.f), CU::Vector3f(1.f, 0.f, 1.f), 1.f, 25.f));
 
 		myGame->Update(deltaTime);
 

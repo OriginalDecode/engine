@@ -63,6 +63,8 @@
 #define DL_WARNINGBOX(msg) 
 #define DL_WARNINGBOX_EXP(expression, msg)
 
+#define DL_WARNING(...) DL_WRITELOG("WARNING", __VA_ARGS__)
+
 #define RENDER_LOG(...)		
 #define UPDATE_LOG(...)		
 #define PHYSX_LOG(...)		

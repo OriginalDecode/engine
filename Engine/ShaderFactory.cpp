@@ -18,20 +18,19 @@ namespace Snowblind
 	CShaderFactory::CShaderFactory()
 		: myFileWatchers(6)
 	{
-#if defined (_DEBUG)
 		for (int i = 0; i < 6; i++)
 		{
 			FileWatcher* watcher = new FileWatcher();
 			myFileWatchers.Add(watcher);
 		}
 		myShaderWarningHandler = new ShaderWarningHandler();
-#endif
 	}
 
 	CShaderFactory::~CShaderFactory()
 	{
 		myFileWatchers.DeleteAll();
 		SAFE_DELETE(myShaderWarningHandler);
+
 		for (ITTERATE(myVertexShaders))
 		{
 			SAFE_DELETE(it->second);
@@ -139,9 +138,7 @@ namespace Snowblind
 		if (myVertexShaders.find(aShader) == myVertexShaders.end())
 		{
 			CreateVertexShader(aShader);
-#if defined (_DEBUG)
 			myFileWatchers[VERTEX]->WatchFileChangeWithDependencies(aShader, std::bind(&CShaderFactory::ReloadVertex, this, std::placeholders::_1));
-#endif
 		}
 		aVertexShader = myVertexShaders[aShader];
 	}
@@ -205,9 +202,7 @@ namespace Snowblind
 		if (myPixelShaders.find(aShader) == myPixelShaders.end())
 		{
 			CreatePixelShader(aShader);
-#if defined (_DEBUG)
 			myFileWatchers[PIXEL]->WatchFileChangeWithDependencies(aShader, std::bind(&CShaderFactory::ReloadPixel, this,std::placeholders::_1));
-#endif
 		}
 		aPixelShader = myPixelShaders[aShader];
 	}
@@ -237,7 +232,6 @@ namespace Snowblind
 			std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
 			DL_WARNING("%s", msg.c_str());
 		}
-
 		if (FAILED(hr))
 		{
 			DL_WARNINGBOX(myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader).c_str());
@@ -291,7 +285,6 @@ namespace Snowblind
 			ID3D10Blob* compilationMessage = 0;
 			std::wstring fileName(aShader.begin(), aShader.end());
 			hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "GS", "gs_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
-
 			if (compilationMessage != nullptr)
 			{
 				std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);

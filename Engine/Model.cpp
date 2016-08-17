@@ -22,12 +22,15 @@ namespace Snowblind
 
 	CModel* CModel::CreateModel()
 	{
+		Ticket_Mutex mutex;
+		BeginTicketMutex(&mutex);
 		if (myIsNULLObject == false)
 		{
 			InitVertexBuffer();
 			InitIndexBuffer();
 			InitConstantBuffer();
 		}
+		EndTicketMutex(&mutex);
 
 		for each (CModel* child in myChildren)
 		{
@@ -42,12 +45,13 @@ namespace Snowblind
 		if (!myIsNULLObject)
 		{
 			__super::Render(aCameraOrientation, aCameraProjection);
+			if (!myIsLightMesh)
+				myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			if (mySurfaces.Size() > 0)
 			{
 				//Check the lightpass if you're confused about when the lightmeshes gets their constantbuffers.
-				if(!myIsLightMesh)
-					myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-				for (int i = 0; i < mySurfaces.Size(); i++)
+				
+				for (u32 i = 0; i < mySurfaces.Size(); i++)
 				{
 					myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 					mySurfaces[i]->Activate();
@@ -57,7 +61,7 @@ namespace Snowblind
 
 			}
 		}
-		for each(CModel* child in myChildren)
+		for (CModel* child : myChildren)
 		{
 			child->SetPosition(myOrientation.GetPosition());
 			child->Render(aCameraOrientation, aCameraProjection);
@@ -117,4 +121,24 @@ namespace Snowblind
 	{
 		myChildren.Add(aChild);
 	}
+
+	void CModel::InitConstantBuffer()
+	{
+		if (!myConstantStruct)
+			myConstantStruct = new SVertexBaseStruct;
+		D3D11_BUFFER_DESC cbDesc;
+		ZeroMemory(&cbDesc, sizeof(cbDesc));
+		cbDesc.ByteWidth = sizeof(SVertexBaseStruct);
+		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		cbDesc.MiscFlags = 0;
+		cbDesc.StructureByteStride = 0;
+
+		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+		myAPI->SetDebugName(myConstantBuffer, "Model cb");
+		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+	}
+
+
 };

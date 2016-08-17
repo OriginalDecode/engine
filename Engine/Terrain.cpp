@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "Terrain.h"
+#include "TGA32.h"
+#include "Surface.h"
 
 namespace Snowblind
 {
 	CTerrain::CTerrain()
 	{
 		myIsNULLObject = false;
-
 	}
 
 
@@ -14,7 +15,11 @@ namespace Snowblind
 	{
 		myIsNULLObject = false;
 		myEffect = myEngine->GetEffect("Data/Shaders/T_Terrain_Base.json");
+		myHeightmap = SHeightMap::Create("Data/Textures/T_heightmap_level_00.tga");
 		CreateVertices(width, height);
+		mySurface = new CSurface(myEffect);
+		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/No-Texture.dds");
+
 	}
 
 	CTerrain::CTerrain(const std::string& aFilePath)
@@ -26,17 +31,19 @@ namespace Snowblind
 
 	CTerrain::~CTerrain()
 	{
+		SAFE_DELETE(mySurface);
 	}
 
 	void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
-		__super::Render(aCameraOrientation, aCameraProjection);
 		if (!myIsNULLObject)
 		{
+			__super::Render(aCameraOrientation, aCameraProjection);
 			myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+			mySurface->Activate();
 			myContext->DrawIndexed(myIndexData->myIndexCount, 0, 0);
-
+			mySurface->Deactivate();
 		}
 	}
 
@@ -47,6 +54,9 @@ namespace Snowblind
 
 	void CTerrain::Load(const std::string& aFilePath)
 	{
+
+		/* What format should we use for our heightmaps. */
+
 		DL_ASSERT("Not implemented.");
 	}
 
@@ -67,47 +77,40 @@ namespace Snowblind
 		myVertexFormat.Add(vertexDesc[3]);
 		myVertexFormat.Add(vertexDesc[4]);
 
-		float newWidth = float(width) / 2.f;
-		float newHeight = float(height) / 2.f;
-
-		float cellWidth = 1.f;
-		float cellHeight = 1.f;
-
-		u32 cellWidthAmount = width / cellWidth;
-		u32 cellHeightAmount = height / cellHeight;
-
 		CU::GrowingArray<SVertexPosNormUVBiTang> vertices;
 		CU::GrowingArray<u32> indexes;
-		float wAndH = 256;
+		u32 wAndH = 512;
 
-		for (u32 i = 0; i < wAndH; i++)
+		for (u32 z = 0; z < myHeightmap->myDepth; z++)
 		{
-			for (u32 j = 0; j < wAndH; j++)
+			for (u32 x = 0; x < myHeightmap->myWidth; x++)
 			{
 				SVertexPosNormUVBiTang vertex;
-				vertex.position.x = float(j) * width / float(wAndH);
-				vertex.position.z = float(i) * height / float(wAndH);
-				vertex.uv.x = float(j) / float(wAndH);
-				vertex.uv.y = float(1.f - i) / float(wAndH);
+				vertex.position.x = float(x) * width / float(myHeightmap->myWidth);
+				vertex.position.y = myHeightmap->myData[(myHeightmap->myDepth - (1 + z)) * myHeightmap->myWidth + x]  * height / 255.f;
+				vertex.position.z = float(z) * height / float(myHeightmap->myDepth);
+				vertex.uv.x = float(x) / float(myHeightmap->myWidth);
+				vertex.uv.y = float(1.f - z) / float(myHeightmap->myDepth);
 				vertices.Add(vertex);
 			}
 		}
 
-		for (int z = 0; z < wAndH - 1; ++z)
+		for (int z = 0; z < myHeightmap->myDepth - 1; ++z)
 		{
-			for (int x = 0; x < wAndH - 1; ++x)
+			for (int x = 0; x < myHeightmap->myWidth- 1; ++x)
 			{
-				indexes.Add(z * wAndH + x);
-				indexes.Add((z + 1) * wAndH + x);
-				indexes.Add(z * wAndH + x + 1);
-				indexes.Add((z + 1) * wAndH + x);
-				indexes.Add((z + 1) * wAndH + x + 1);
-				indexes.Add(z * wAndH + x + 1);
+				indexes.Add(z * myHeightmap->myWidth + x);
+				indexes.Add((z + 1) * myHeightmap->myWidth + x);
+				indexes.Add(z * myHeightmap->myWidth + x + 1);
+
+				indexes.Add((z + 1) * myHeightmap->myWidth + x);
+				indexes.Add((z + 1) * myHeightmap->myWidth  + x + 1);
+				indexes.Add(z * myHeightmap->myWidth + x + 1);
 			}
 		}
 
 		myVertexData = new SVertexDataWrapper;
-		myConstantStruct = new SVertexBaseStruct;
+		myConstantStruct = new TerrainConstantStruct;
 		myVertexData->myNrOfVertexes = vertices.Size();
 		myVertexData->myStride = sizeof(SVertexPosNormUVBiTang);
 		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
@@ -139,18 +142,70 @@ namespace Snowblind
 			myConstantStruct->world = myOrientation;
 			myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
 			myConstantStruct->projection = aCameraProjection;
-
-
+			myConstantStruct->time.x = myEngine->GetDeltaTime();
 			D3D11_MAPPED_SUBRESOURCE msr;
 			myAPI->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			if (msr.pData != nullptr)
 			{
-				SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
-				memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SVertexBaseStruct));
+				TerrainConstantStruct* ptr = (TerrainConstantStruct*)msr.pData;
+				memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(TerrainConstantStruct));
 			}
 
 			myAPI->GetContext()->Unmap(myConstantBuffer, 0);
 		}
+	}
+
+	void CTerrain::InitConstantBuffer()
+	{
+		D3D11_BUFFER_DESC cbDesc;
+		ZeroMemory(&cbDesc, sizeof(cbDesc));
+		cbDesc.ByteWidth = sizeof(TerrainConstantStruct);
+		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		cbDesc.MiscFlags = 0;
+		cbDesc.StructureByteStride = 0;
+
+		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+		myAPI->SetDebugName(myConstantBuffer, "Model cb");
+		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+	}
+
+	SHeightMap* SHeightMap::Create(const char* aFilePath)
+	{
+		TGA32::Image* image = TGA32::Load(aFilePath);
+
+		u32 width = image->myWidth;
+		u32 depth = image->myHeight;
+
+		u8* data = new u8[width * depth];
+
+		for (int i = 0; i < width * depth; ++i)
+		{
+			data[i] = image->myImage[i * 4];
+		}
+
+		SAFE_DELETE(image);
+
+		return new SHeightMap(width, depth, data);
+	}
+
+	SHeightMap::SHeightMap(u32 aWidth, u32 aDepth, u8* const someData)
+		: myWidth(aWidth)
+		, myDepth(aDepth)
+		, myData(someData)
+	{
+	}
+
+	SHeightMap::SHeightMap(std::fstream& aStream)
+		: myWidth(0)
+		, myDepth(0)
+		, myData(nullptr)
+	{
+		aStream.read((s8*)&myWidth, sizeof(u32));
+		aStream.read((s8*)&myDepth, sizeof(u32));
+		myData = new u8[myWidth * myDepth];
+		aStream.read((s8*)myData, sizeof(s8) * myWidth * myDepth);
 	}
 
 };

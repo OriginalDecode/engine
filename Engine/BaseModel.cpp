@@ -18,25 +18,22 @@ namespace Snowblind
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myIndexData);
 		SAFE_RELEASE(myVertexLayout);
-		SAFE_DELETE(myConstantStruct);
 		SAFE_RELEASE(myConstantBuffer);
 	}
 
 	void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
-		if (!myIsNULLObject)
-		{
-			myContext->IASetInputLayout(myVertexLayout);
-			myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			myContext->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
+		myContext->IASetInputLayout(myVertexLayout);
+		myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		myContext->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 
-			if (myIndexBuffer)
-				myContext->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
+		if (myIndexBuffer)
+			myContext->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
 
-			myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
-			myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
-			SetMatrices(aCameraOrientation, aCameraProjection);
-		}
+		myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
+		myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
+		SetMatrices(aCameraOrientation, aCameraProjection);
+
 	}
 
 	void CBaseModel::SetEffect(CEffect* anEffect)
@@ -106,21 +103,5 @@ namespace Snowblind
 		myIndexBuffer->myByteOffset = 0;
 	}
 
-	void CBaseModel::InitConstantBuffer()
-	{
-		myConstantStruct = new SVertexBaseStruct;
-
-		D3D11_BUFFER_DESC cbDesc;
-		ZeroMemory(&cbDesc, sizeof(cbDesc));
-		cbDesc.ByteWidth = sizeof(SVertexBaseStruct);
-		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		cbDesc.MiscFlags = 0;
-		cbDesc.StructureByteStride = 0;
-
-		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-		myAPI->SetDebugName(myConstantBuffer, "Model cb");
-		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
-	}
+	
 };

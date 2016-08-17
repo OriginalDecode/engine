@@ -54,3 +54,7 @@
 #include "VertexStructs.h"
 #include "VertexTypes.h"
 #include "VertexWrapper.h"
+#include "snowblind_shared.h"
+
+
+

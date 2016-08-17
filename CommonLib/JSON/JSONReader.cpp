@@ -28,6 +28,16 @@ JSONReader::~JSONReader()
 	CloseDocument();
 }
 
+bool JSONReader::HasElement(const std::string& aTag)
+{
+	return myDocument.HasMember(aTag.c_str());
+}
+
+bool JSONReader::HasElement(const rapidjson::Value& anElement)
+{
+	return anElement.HasMember("");
+}
+
 void JSONReader::OpenDocument(const std::string & aFilePath)
 {
 	ValidateFileType(aFilePath);
@@ -181,6 +191,11 @@ void JSONReader::ReadElement(const std::string& aTag, const std::string& aSubTag
 		assert(myDocument != 0 && "Document had no valid FileReaderStream attached.");
 		aString = myDocument[aTag.c_str()][aSubTag.c_str()].GetString();
 	}
+}
+
+void JSONReader::ReadElement(const rapidjson::Value& anElement, float& aFloat)
+{
+	aFloat = anElement.GetDouble();
 }
 
 void JSONReader::ForceReadElement(const std::string & aTag, bool & aBool)

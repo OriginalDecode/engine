@@ -93,7 +93,7 @@
     <OutDir>$(SolutionDir)Workbed\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(SolutionName)_$(Configuration)</TargetName>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)thirdpartylib\;$(SolutionDir)lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

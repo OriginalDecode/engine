@@ -27,7 +27,7 @@ namespace Snowblind
 		CU::Matrix44f& GetOrientation();
 		
 	private:
-
+		void InitConstantBuffer();
 		CU::GrowingArray<SVertexTypePosCol> myVertices;
 
 		CU::GrowingArray<CSurface*> mySurfaces;

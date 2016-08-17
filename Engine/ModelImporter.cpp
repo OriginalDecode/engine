@@ -468,8 +468,12 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 		material->GetTexture(static_cast<aiTextureType>(type), 0, &str);
 
 		std::string newPath = CL::substr(myCurrentLoadingFile, "/", true, 0);
+
 		std::string fileName = CL::substr(str.C_Str(), "\\", false, 0);
-		fileName.erase(0, 1);
+		if (CL::substr(str.C_Str(), "\\"))
+		{
+			fileName.erase(0, 1);
+		}
 		newPath += "/";
 		newPath += fileName;
 		if (fileName != "")

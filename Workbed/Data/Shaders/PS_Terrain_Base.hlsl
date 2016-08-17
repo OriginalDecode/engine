@@ -52,13 +52,12 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	float depth = input.pos.z;
 
 	GBuffer output;
-	float v = 203.f/255.f;
-  	output.Albedo = float4(v,v,v, 1.f);//AlbedoTexture.Sample(linear_Wrap, input.uv);
+  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
 	
 	output.Normal = float4(0.f, 1.f, 0.f ,0.f);
 	
 	output.Depth.r = depth;
-	output.Depth.g = 1;
+	output.Depth.g = 1.f;
 	
 	return output;
 }

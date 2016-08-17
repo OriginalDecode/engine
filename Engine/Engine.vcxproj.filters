@@ -46,9 +46,6 @@
     <Filter Include="Text">
       <UniqueIdentifier>{201cd6e2-3c2f-4ff9-9fea-47e13fd4dcb9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utilities\Console">
-      <UniqueIdentifier>{3a1f7c40-925b-4af0-aaaf-616352a08e35}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Light">
       <UniqueIdentifier>{5b555923-93d1-4ca2-ab8e-8f4c6d63f0bf}</UniqueIdentifier>
     </Filter>
@@ -72,6 +69,15 @@
     </Filter>
     <Filter Include="Terrain">
       <UniqueIdentifier>{ed1d9fdf-d838-4dc4-b0d4-af48b3de659f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\FileWatcher">
+      <UniqueIdentifier>{a88ef690-d1ac-464c-afd0-8137e6a5df35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Console">
+      <UniqueIdentifier>{3a1f7c40-925b-4af0-aaaf-616352a08e35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\SystemMonitor">
+      <UniqueIdentifier>{f84abf60-8b66-45fc-a803-c22aa3330c1c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -139,7 +145,7 @@
       <Filter>Text</Filter>
     </ClInclude>
     <ClInclude Include="Console.h">
-      <Filter>Utilities\Console</Filter>
+      <Filter>Console</Filter>
     </ClInclude>
     <ClInclude Include="LightStructs.h">
       <Filter>Light</Filter>
@@ -177,17 +183,8 @@
     <ClInclude Include="SnowblindParticleData.h">
       <Filter>Particles</Filter>
     </ClInclude>
-    <ClInclude Include="SystemMonitor.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="FileWatcher.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderFactory.h">
       <Filter>Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="Line3D.h">
-      <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="ShaderWarningHandler.h">
       <Filter>Effect</Filter>
@@ -201,6 +198,17 @@
     <ClInclude Include="Terrain.h">
       <Filter>Terrain</Filter>
     </ClInclude>
+    <ClInclude Include="FileWatcher.h">
+      <Filter>Utilities\FileWatcher</Filter>
+    </ClInclude>
+    <ClInclude Include="Line3D.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemMonitor.h">
+      <Filter>Utilities\SystemMonitor</Filter>
+    </ClInclude>
+    <ClInclude Include="snowblind_shared.h" />
+    <ClInclude Include="TGA32.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -252,7 +260,7 @@
       <Filter>Text</Filter>
     </ClCompile>
     <ClCompile Include="Console.cpp">
-      <Filter>Utilities\Console</Filter>
+      <Filter>Console</Filter>
     </ClCompile>
     <ClCompile Include="DirectionalLight.cpp">
       <Filter>Light\Directional</Filter>
@@ -284,17 +292,8 @@
     <ClCompile Include="EmitterInstance.cpp">
       <Filter>Particles</Filter>
     </ClCompile>
-    <ClCompile Include="SystemMonitor.cpp">
-      <Filter>Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="FileWatcher.cpp">
-      <Filter>Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="ShaderFactory.cpp">
       <Filter>Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="Line3D.cpp">
-      <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="ShaderWarningHandler.cpp">
       <Filter>Effect</Filter>
@@ -308,5 +307,15 @@
     <ClCompile Include="Terrain.cpp">
       <Filter>Terrain</Filter>
     </ClCompile>
+    <ClCompile Include="FileWatcher.cpp">
+      <Filter>Utilities\FileWatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="Line3D.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemMonitor.cpp">
+      <Filter>Utilities\SystemMonitor</Filter>
+    </ClCompile>
+    <ClCompile Include="TGA32.cpp" />
   </ItemGroup>
 </Project>

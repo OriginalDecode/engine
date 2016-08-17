@@ -67,9 +67,9 @@ namespace Snowblind
 
 	void CSurface::Deactivate()
 	{
-		if (myShaderViews.Size() > 0)
+		if (myNullList.Size() > 0)
 		{
-			myContext->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
+			myContext->PSSetShaderResources(0, myNullList.Size(), &myNullList[0]);
 		}
 	}
 	
@@ -102,8 +102,7 @@ namespace Snowblind
 
 	void CSurface::SetEffect(CEffect* anEffect)
 	{
-		DL_ASSERT("To be removed!");
-		//myEffect = anEffect;
+		myEffect = anEffect;
 	}
 
 	void CSurface::SetVertexStart(unsigned int aStartVertex)

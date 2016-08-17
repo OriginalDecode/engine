@@ -55,12 +55,10 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	if(depth.x <= 0.f)
 		discard;
 
-	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);	
+	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);
 	float4 normal = NormalTexture.Sample(point_Clamp, input.uv);
-        
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
-	
 	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
 	float roughness = depth.y;
 	float roughnessOffsetted = pow(8192, roughness);
@@ -79,7 +77,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
     
 	float4 substance = (0.04f - 0.04f * metalness) 
 	+ albedo * metalness;
-            
 	float4 metalnessAlbedo = albedo - (albedo * metalness);
 	float LdotH = dot(normal, toEye);
 	LdotH = saturate(LdotH);

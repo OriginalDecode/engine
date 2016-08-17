@@ -159,9 +159,10 @@ namespace Snowblind
 
 		if (FAILED(hr))
 		{
-			OutputDebugStringA("[TEXTURE] : Failed to load texture!\n");
-			DL_MESSAGE("[Texture] : Failed to load %s", aFileName.c_str());
-			DL_ASSERT("Failed to load Texture!");
+			std::stringstream ss;
+			ss << "[TEXTURE] : Failed to load texture! " << aFileName;
+			OutputDebugStringA(ss.str().c_str());
+			return LoadTexture("Data/Textures/No-Texture.dds");
 			return false;
 		}
 		return true;

@@ -11,6 +11,9 @@ public:
 	JSONReader(const std::string& aFilePath);
 	~JSONReader();
 
+	bool HasElement(const std::string& aTag);
+	bool HasElement(const rapidjson::Value& anElement);
+
 
 	void ReadElement(const std::string& aTag, bool& aBool);
 	void ReadElement(const std::string& aTag, int& anInt);
@@ -35,6 +38,9 @@ public:
 
 	template <typename T>
 	void _ReadElement(const rapidjson::Value& anElement, CU::Math::Vector3<T>& aVec3);
+
+	void ReadElement(const rapidjson::Value& anElement, float& aFloat);
+
 
 
 
@@ -69,9 +75,10 @@ public:
 
 	const JSONElement& GetElement(const std::string& anElement);
 
-private:
 	void OpenDocument(const std::string& aFilePath);
 	void CloseDocument();
+
+private:
 
 	FRESULT OpenFile();
 	void ValidateFileType(const std::string& aFilePath);
@@ -87,6 +94,7 @@ private:
 
 	rapidjson::Document myDocument;
 	rapidjson::FileReadStream* myFileReaderStream;
+
 
 	std::string myCurrentDocumentPath;
 	FILE* myFile;

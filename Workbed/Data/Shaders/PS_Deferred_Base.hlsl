@@ -53,9 +53,8 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	/* Write splatmap stuff here */
 	GBuffer output;
   	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
-	output.Albedo.rgb *= 1.f; //0.42f
 	
-	output.Normal = float4(norm.xyz,0.f);//float4(norm, 0.f);
+	output.Normal = float4(norm.xyz,0.f);
 	output.Normal.a = MetalnessTexture.Sample(linear_Wrap,input.uv).r;
 	
 	output.Depth.r = depth;

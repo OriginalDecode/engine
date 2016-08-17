@@ -91,11 +91,11 @@ namespace Snowblind
 	{
 		return myInstance;
 	}
+#endif
 
 	CU::Matrix44f CPointLight::GetOrientation()
 	{
 		return myOrientation;
 	}
 
-#endif
 };

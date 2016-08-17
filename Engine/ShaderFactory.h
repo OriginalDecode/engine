@@ -105,10 +105,8 @@ namespace Snowblind
 		std::unordered_map<std::string, SDomainShader*> myDomainShaders;
 		std::unordered_map<std::string, SComputeShader*> myComputeShaders;
 
-#if defined (_DEBUG)
 		CU::GrowingArray<FileWatcher*> myFileWatchers;
 		ShaderWarningHandler* myShaderWarningHandler;
-#endif
 		CU::GrowingArray<CEffect*> GetEffectArray(const std::string& aFilePath);
 
 	};

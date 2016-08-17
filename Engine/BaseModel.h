@@ -32,7 +32,7 @@ namespace Snowblind
 	protected:
 		void InitVertexBuffer();
 		void InitIndexBuffer();
-		void InitConstantBuffer();
+		virtual void InitConstantBuffer() = 0;
 		virtual void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
 
 		ID3D11DeviceContext* myContext = nullptr;
@@ -51,6 +51,7 @@ namespace Snowblind
 		SIndexBufferWrapper* myIndexBuffer = nullptr;
 
 		ID3D11Buffer* myConstantBuffer = nullptr;
+
 		SVertexBaseStruct* myConstantStruct = nullptr;
 
 		bool myIsNULLObject = true;

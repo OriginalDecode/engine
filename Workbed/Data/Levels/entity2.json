@@ -1,6 +1,5 @@
 {
-	"Translation":true,
-	"Render": [ 
+	"render": [ 
 		"Data/Model/pbl/PBL_test_balls.fbx", 
 		"Data/Shaders/T_Deferred_Base.json"
 		]	

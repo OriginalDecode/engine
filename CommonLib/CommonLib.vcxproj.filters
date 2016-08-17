@@ -25,8 +25,20 @@
     <Filter Include="Quaternion">
       <UniqueIdentifier>{29b80938-cd63-422d-a229-15f85eb1585b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Threadpool">
+    <Filter Include="Threading &amp; Concurrency">
       <UniqueIdentifier>{ec38f5e6-e215-436b-a711-52cc432c030a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Threading &amp; Concurrency\Threadpool">
+      <UniqueIdentifier>{69d87717-8254-45ca-8910-aaff4e147b10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Threading &amp; Concurrency\Threadpool\Work &amp; Workers">
+      <UniqueIdentifier>{1e81a1fa-29f3-4acb-aa78-1de39e77a39b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FileWatcher">
+      <UniqueIdentifier>{b7768c05-5595-4469-b038-7cb2b370cea5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{210766c7-532e-46f4-bc90-227c5d28a5b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -93,43 +105,55 @@
     <ClInclude Include="Math\Vector\Vector4decl.h">
       <Filter>Math\Vector</Filter>
     </ClInclude>
-    <ClInclude Include="Utilities.h" />
-    <ClInclude Include="FileWatcher.h" />
     <ClInclude Include="Math\Quaternion\Quaternion.h">
       <Filter>Quaternion</Filter>
     </ClInclude>
-    <ClInclude Include="Randomizer.h" />
-    <ClInclude Include="Threadpool.h">
-      <Filter>Threadpool</Filter>
-    </ClInclude>
     <ClInclude Include="Work.h">
-      <Filter>Threadpool</Filter>
+      <Filter>Threading &amp; Concurrency\Threadpool\Work &amp; Workers</Filter>
     </ClInclude>
     <ClInclude Include="Worker.h">
-      <Filter>Threadpool</Filter>
+      <Filter>Threading &amp; Concurrency\Threadpool\Work &amp; Workers</Filter>
+    </ClInclude>
+    <ClInclude Include="Threadpool.h">
+      <Filter>Threading &amp; Concurrency\Threadpool</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatcher.h">
+      <Filter>FileWatcher</Filter>
+    </ClInclude>
+    <ClInclude Include="Randomizer.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
+      <Filter>Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JSON\JSONReader.cpp">
       <Filter>JSON</Filter>
     </ClCompile>
-    <ClCompile Include="Utilities.cpp" />
-    <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="Math\Quaternion\Quaternion.cpp">
       <Filter>Quaternion</Filter>
     </ClCompile>
-    <ClCompile Include="Randomizer.cpp" />
     <ClCompile Include="DataStructures\Hashmap\MurmurHash3.cpp">
       <Filter>DataStructures\Hashmap</Filter>
     </ClCompile>
-    <ClCompile Include="Threadpool.cpp">
-      <Filter>Threadpool</Filter>
-    </ClCompile>
     <ClCompile Include="Work.cpp">
-      <Filter>Threadpool</Filter>
+      <Filter>Threading &amp; Concurrency\Threadpool\Work &amp; Workers</Filter>
     </ClCompile>
     <ClCompile Include="Worker.cpp">
-      <Filter>Threadpool</Filter>
+      <Filter>Threading &amp; Concurrency\Threadpool\Work &amp; Workers</Filter>
+    </ClCompile>
+    <ClCompile Include="Threadpool.cpp">
+      <Filter>Threading &amp; Concurrency\Threadpool</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatcher.cpp">
+      <Filter>FileWatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="Randomizer.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities.cpp">
+      <Filter>Utilities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

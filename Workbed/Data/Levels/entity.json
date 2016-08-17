@@ -1,8 +1,9 @@
 {
-	"Translation":true,
-	"Render": [ 
-		"Data/Model/pblScene/pblScene_03_binary2.fbx", 
+	"render": [ 
+		"Data/Model/pblScene/pblScene_03_binary.fbx", 
 		"Data/Shaders/T_Deferred_Base.json"
 		],
-	"Physics":true
+	"physics": {
+		"mass": 10
+	}
 }

@@ -48,6 +48,7 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	norm = normalize(mul(norm, tangentSpaceMatrix));
     norm.xyz += 1.f;
 	norm.xyz *= 0.5f;
+	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
 
 	float depth = input.pos.z;
 	/* Write splatmap stuff here */

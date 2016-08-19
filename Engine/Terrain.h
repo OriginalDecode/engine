@@ -19,8 +19,7 @@ namespace Snowblind
 	class CTerrain : public CBaseModel
 	{
 	public:
-		CTerrain(u32 width, u32 height);
-		CTerrain(const std::string& aFilePath);
+		CTerrain(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
 		CTerrain();
 		~CTerrain();
 
@@ -28,15 +27,23 @@ namespace Snowblind
 
 		void Save(const std::string& aFilename);
 		void Load(const std::string& aFilePath);
-
-
+		CU::GrowingArray<float> GetVerticeArrayCopy() { return myVertices; };
+		CU::GrowingArray<s32> GetIndexArrayCopy() {	return myIndexes; };
 	private:
-		void CreateVertices(u32 width, u32 height);
+
+		void CreateVertices(u32 width, u32 height, const CU::Vector3f& position);
 		void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
 		void InitConstantBuffer();
+
+
+		void CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray);
+		float GetHeight(unsigned int aX, unsigned int aY) const;
+		float GetHeight(unsigned int aIndex) const;
+		CU::GrowingArray<s32> myIndexes;
+		CU::GrowingArray<float> myVertices;
 		CU::Matrix44f myOrientation;
 		u32 myWidth;
-		u32 myHeight;
+		u32 myDepth;
 		SHeightMap* myHeightmap;
 
 		CSurface* mySurface = nullptr;

@@ -14,6 +14,7 @@ namespace Snowblind
 
 	class CCamera;
 	class CDeferredRenderer;
+	class CDirectionalLight;
 	class CEmitterInstance;
 	class CModel;
 	class CPointLight;
@@ -41,22 +42,23 @@ namespace Snowblind
 		CU::GrowingArray<CTerrain*> myTerrainArray;
 
 		eDeferredType		myDeferredType;
-		CEngine*			myEngine;
-		CDirectX11*			myDirectX;
+		CEngine*			myEngine = nullptr;
+		CDirectX11*			myDirectX = nullptr;
 
-		CCamera*			myCamera;
+		CCamera*			myCamera = nullptr;
 		CU::Matrix44f		myPrevFrame;
 
-		CCamera*			my2DCamera;
-		CU::TimeManager*	myTimeManager;
+		CCamera*			my2DCamera = nullptr;
+		CU::TimeManager*	myTimeManager = nullptr;
 		
-		CDeferredRenderer*	myDeferredRenderer;
+		CDeferredRenderer*	myDeferredRenderer = nullptr;
+		CDirectionalLight*	myDirectionalLight = nullptr;
 		CSynchronizer&		mySynchronizer;
-		CPointLight*		myPointLight;
-		CText*				myText;
-		CTexture*			myDepthTexture;
-		CSkySphere*			mySkysphere;
-		CSprite*			mySprite;
-		CLine3D*			my3DLine;
+		CPointLight*		myPointLight = nullptr;
+		CText*				myText = nullptr;
+		CTexture*			myDepthTexture = nullptr;
+		CSkySphere*			mySkysphere = nullptr;
+		CSprite*			mySprite = nullptr;
+		CLine3D*			my3DLine = nullptr;
 	};
 }; 

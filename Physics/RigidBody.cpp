@@ -1,11 +1,7 @@
 #include "stdafx.h"
 #include "RigidBody.h"
 #include "PhysicsDefines.h"
-
-#ifdef _DEBUG
-#include <RenderCommand.h>
-#include <Synchronizer.h>
-#endif
+#include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
 
 
 CRigidBody::CRigidBody()
@@ -14,9 +10,11 @@ CRigidBody::CRigidBody()
 
 CRigidBody::~CRigidBody()
 {
+	SAFE_DELETE(myVertexArray);
 	SAFE_DELETE(myShape);
 	SAFE_DELETE(myMotionState);
 	SAFE_DELETE(myBody);
+
 }
 
 btRigidBody* CRigidBody::InitAsPlane(const btVector3& aNormal)
@@ -34,6 +32,27 @@ btRigidBody* CRigidBody::InitAsPlane(const btVector3& aNormal)
 	return myBody;
 }
 
+btRigidBody* CRigidBody::InitAsTerrain(CU::GrowingArray<float> vertices, CU::GrowingArray<s32> indices)
+{
+	s32 faceCount = indices.Size() / 3;
+	s32 vStride = sizeof(CU::Vector3f);
+	s32 iStride = sizeof(u32) * 3;
+
+	btScalar* locVertices = new btScalar[vertices.Size()];
+	memcpy(&locVertices[0], &vertices[0], sizeof(float) * vertices.Size());
+	s32* locIndices = new s32[indices.Size()];
+	memcpy(&locIndices[0], &indices[0], sizeof(s32) * indices.Size());
+
+	myVertexArray = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, vertices.Size(), locVertices, vStride);
+	myShape = new btBvhTriangleMeshShape(myVertexArray, false, btVector3(0,0,0), btVector3(1,1,1), true);
+	myMotionState = new btDefaultMotionState();
+	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
+
+	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, myMotionState, myShape, btVector3(0, 0, 0));
+	myBody = new btRigidBody(bodyInfo);
+	return myBody;
+}
+
 btRigidBody* CRigidBody::InitAsSphere(const CU::Vector3f& aPosition)
 {
 	btVector3 pos;
@@ -41,14 +60,15 @@ btRigidBody* CRigidBody::InitAsSphere(const CU::Vector3f& aPosition)
 	pos.setY(aPosition.y);
 	pos.setZ(aPosition.z);
 	myShape = new btSphereShape(1); 
+	
 	myMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos)); /* btQuaternion is the rotation of the object. Figure this out.*/
-	btRigidBody::btRigidBodyConstructionInfo bodyInfo(100, myMotionState, myShape, btVector3(0, 0, 0));
+	btRigidBody::btRigidBodyConstructionInfo bodyInfo(1, myMotionState, myShape, btVector3(0, 0, 0));
 	//bodyInfo.m_friction = 1.f;
 	//bodyInfo.m_restitution = 0.75f;
 
 
 	myBody = new btRigidBody(bodyInfo);
-	myBody->setMassProps(100, btVector3(0, 0, 0));
+	myBody->setMassProps(1, btVector3(0, 0, 0));
 	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
 	
 	return myBody;

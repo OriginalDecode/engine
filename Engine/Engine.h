@@ -93,7 +93,7 @@ namespace Snowblind
 		const SLocalTime& GetLocalTime();
 		
 		
-		CTerrain* CreateTerrain(u32 width, u32 height);
+		CTerrain* CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize);
 
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);

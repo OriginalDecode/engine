@@ -14,7 +14,7 @@ namespace Snowblind
 		CreateAppWindow(anInstance, aWndProc);
 		CU::Input::InputWrapper::Create(myHWND, anInstance);
 	}
-	
+
 
 	CEngine::~CEngine()
 	{
@@ -214,9 +214,9 @@ namespace Snowblind
 		return myLocalTime;
 	}
 
-	CTerrain* CEngine::CreateTerrain(u32 width, u32 height)
+	Snowblind::CTerrain* CEngine::CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize)
 	{
-		CTerrain* newTerrain = new CTerrain(width, height);
+		CTerrain* newTerrain = new CTerrain(aFile, position, aSize);
 		myRenderer->AddTerrain(newTerrain);
 		return newTerrain;
 	}

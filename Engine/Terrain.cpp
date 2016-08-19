@@ -10,23 +10,16 @@ namespace Snowblind
 		myIsNULLObject = false;
 	}
 
-
-	CTerrain::CTerrain(u32 width, u32 height)
+	CTerrain::CTerrain(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
+		: myWidth(aSize.x)
+		, myDepth(aSize.y)
 	{
 		myIsNULLObject = false;
 		myEffect = myEngine->GetEffect("Data/Shaders/T_Terrain_Base.json");
-		myHeightmap = SHeightMap::Create("Data/Textures/T_heightmap_level_00.tga");
-		CreateVertices(width, height);
+		myHeightmap = SHeightMap::Create(aFile.c_str());
+		CreateVertices(aSize.x, aSize.y, position);
 		mySurface = new CSurface(myEffect);
 		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/No-Texture.dds");
-
-	}
-
-	CTerrain::CTerrain(const std::string& aFilePath)
-	{
-		DL_ASSERT("Not implemented.");
-		myIsNULLObject = false;
-		Load(aFilePath);
 	}
 
 	CTerrain::~CTerrain()
@@ -60,7 +53,7 @@ namespace Snowblind
 		DL_ASSERT("Not implemented.");
 	}
 
-	void CTerrain::CreateVertices(u32 width, u32 height)
+	void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)
 	{
 		D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 		{
@@ -86,28 +79,42 @@ namespace Snowblind
 			for (u32 x = 0; x < myHeightmap->myWidth; x++)
 			{
 				SVertexPosNormUVBiTang vertex;
-				vertex.position.x = float(x) * width / float(myHeightmap->myWidth);
-				vertex.position.y = myHeightmap->myData[(myHeightmap->myDepth - (1 + z)) * myHeightmap->myWidth + x]  * height / 255.f;
-				vertex.position.z = float(z) * height / float(myHeightmap->myDepth);
+				vertex.position.x = position.x + float(x) * width / float(myHeightmap->myWidth);
+				vertex.position.y = position.y + myHeightmap->myData[(myHeightmap->myDepth - (1 + z)) * myHeightmap->myWidth + x] * 128.f / 255.f;
+				vertex.position.z = position.z + float(z) * height / float(myHeightmap->myDepth);
 				vertex.uv.x = float(x) / float(myHeightmap->myWidth);
 				vertex.uv.y = float(1.f - z) / float(myHeightmap->myDepth);
 				vertices.Add(vertex);
+				myVertices.Add(vertex.position.x);
+				myVertices.Add(vertex.position.y);
+				myVertices.Add(vertex.position.z);
+
+
 			}
 		}
 
+		CalculateNormals(vertices);
+
 		for (int z = 0; z < myHeightmap->myDepth - 1; ++z)
 		{
-			for (int x = 0; x < myHeightmap->myWidth- 1; ++x)
+			for (int x = 0; x < myHeightmap->myWidth - 1; ++x)
 			{
 				indexes.Add(z * myHeightmap->myWidth + x);
 				indexes.Add((z + 1) * myHeightmap->myWidth + x);
 				indexes.Add(z * myHeightmap->myWidth + x + 1);
 
 				indexes.Add((z + 1) * myHeightmap->myWidth + x);
-				indexes.Add((z + 1) * myHeightmap->myWidth  + x + 1);
+				indexes.Add((z + 1) * myHeightmap->myWidth + x + 1);
 				indexes.Add(z * myHeightmap->myWidth + x + 1);
+
 			}
 		}
+
+		for (u32 index : indexes)
+		{
+			myIndexes.Add(index);
+		}
+
 
 		myVertexData = new SVertexDataWrapper;
 		myConstantStruct = new TerrainConstantStruct;
@@ -129,8 +136,6 @@ namespace Snowblind
 		InitVertexBuffer();
 		InitIndexBuffer();
 		InitConstantBuffer();
-
-
 	}
 
 	void CTerrain::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
@@ -169,6 +174,47 @@ namespace Snowblind
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 		myAPI->SetDebugName(myConstantBuffer, "Model cb");
 		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+	}
+
+	void CTerrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray)
+	{
+		unsigned int height = myHeightmap->myDepth;
+		unsigned int width = myHeightmap->myWidth;
+		float yScale = 128.f / 255.f;
+		yScale *= 0.2f;
+		//float xScale = mySize.x / myHeightMap->myDepth;
+		float xzScale = myDepth / myHeightmap->myDepth;
+
+
+		for (unsigned int y = 0; y < height; ++y)
+		{
+			for (unsigned int x = 0; x < width; ++x)
+			{
+				float sx = GetHeight(x < width - 1 ? x + 1 : x, y) - GetHeight(x == 0 ? x : x - 1, y);
+				if (x == 0 || x == width - 1)
+					sx *= 2;
+
+				float sy = GetHeight(x, y < height - 1 ? y + 1 : y) - GetHeight(x, y == 0 ? y : y - 1);
+				if (y == 0 || y == height - 1)
+					sy *= 2;
+
+				CU::Vector3f normal(-sx*xzScale, yScale, sy*xzScale);
+				CU::Math::Normalize(normal);
+				normal.z = -normal.z;
+
+				VertArray[y*width + x].normal = normal;
+			}
+		}
+	}
+
+	float CTerrain::GetHeight(unsigned int aX, unsigned int aY) const
+	{
+		return myHeightmap->myData[(myHeightmap->myDepth - (1 + aY)) * myHeightmap->myWidth + aX] / 255.f;
+	}
+
+	float CTerrain::GetHeight(unsigned int aIndex) const
+	{
+		return myHeightmap->myData[aIndex] / 255.f;
 	}
 
 	SHeightMap* SHeightMap::Create(const char* aFilePath)

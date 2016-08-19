@@ -22,7 +22,6 @@
 #include <RenderCommand.h>
 #include <Line3D.h>
 
-
 #include <AssetsContainer.h>
 #include <EngineDefines.h>
 #include <JSON/JSONReader.h>
@@ -39,10 +38,19 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 
 	myEngine->ToggleVsync();
 
-	//Save chunks with heightmap data embedded. They should all have a WIDTH x HEIGHT amount of data in the height map that is saved in the map data.
-
 	JSONReader reader("Data/Levels/level_01.json");
-	myTerrain = myEngine->CreateTerrain(512, 512);
+
+	//3d picking
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/playground.tga", CU::Vector3f(512, 0, 0), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(512, 0, 512), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(0, 0, 512), CU::Vector2f(512, 512)));
+
+	for (u32 i = 0; i < 1; i++)
+	{
+		myTerrainBodies.Add(myPhysicsManager->CreateBody(0));
+		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
+	}
 
 	const JSONElement& el = reader.GetElement("root");
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
@@ -112,7 +120,7 @@ CGame::~CGame()
 {
 	SAFE_DELETE(myPhysicsManager);
 	SAFE_DELETE(myEntityManager);
-	SAFE_DELETE(myTerrain);
+	myTerrain.DeleteAll();
 }
 
 void CGame::Update(float aDeltaTime)
@@ -148,12 +156,12 @@ void CGame::Update(float aDeltaTime)
 	else
 		ss << locTime.second;
 
-	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), { 0,0 }, SRenderCommand::eType::TEXT));
+	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), { 0, 0 }, SRenderCommand::eType::TEXT));
 	myEntityManager->Update(aDeltaTime);
 
 
 	myAccumulatedTime += aDeltaTime;
-	myPhysicsManager->Update(myAccumulatedTime);
+	myPhysicsManager->Update(myAccumulatedTime); //ASync Physics?
 
 
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::TERRAIN));

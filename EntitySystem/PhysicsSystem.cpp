@@ -21,6 +21,6 @@ void CPhysicsSystem::Update(float aDeltaTime)
 		SPhysicsComponent& physics = GetComponent<SPhysicsComponent>(e);
 
 		translation.myOrientation = physics.myBody->GetOrientation();
-		physics.myBody->Impulse(CU::Vector3f(0, -500, 0));
+		//physics.myBody->Impulse(CU::Vector3f(0, 0, 0));
 	}
 }

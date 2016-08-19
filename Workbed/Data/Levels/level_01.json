@@ -1,4 +1,8 @@
 {
+	"directional_light" : {
+		"color": [ 255, 255, 255 ],
+		"direction" : [ 1, 0, 0 ]
+	},
 	"root" :
 	{
 		"object" : { 
@@ -6,26 +10,11 @@
 			"position":[ 0, 0, 25 ],
 			"color": [ 0, 0, 255 ],
 			"intensity": 1, 
-			"range" : 25
+			"range" : 10
 			},
-		"object" : { 
-			"entity":"Data/Levels/pointlight.json",
-			"position":[ 0, 0, 35 ],
-			"color": [ 0, 255, 0 ],
-			"intensity": 1, 
-			"range" : 25
-			},
-		"object" : { 
-			"entity":"Data/Levels/pointlight.json",
-			"position":[ 0, 0, 20 ],
-			"color": [ 255, 0, 0 ],
-			"intensity": 1, 
-			"range" : 25
-			},
-			
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
-			"position" : [ 0, 50, 25 ]
+			"position" : [ 100, 200, 100 ]
 		}
 	}	
 }

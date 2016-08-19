@@ -23,6 +23,7 @@ namespace Snowblind
 	private:
 
 		CU::Matrix44f myOrientation;
+
 		CU::Vector4f myColor;
 		CU::Vector3f myDirection;
 		CU::Vector3f myOriginalDirection;

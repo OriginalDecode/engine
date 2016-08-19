@@ -1,14 +1,22 @@
 #include "stdafx.h"
-#include "Renderer.h"
-#include "Synchronizer.h"
-#include "RenderCommand.h"
+
 #include "DeferredRenderer.h"
-#include "EmitterInstance.h"
-#include "SkySphere.h"
+#include "Renderer.h"
+#include "RenderCommand.h"
+#include "Synchronizer.h"
+
+#include "DirectionalLight.h"
 #include "PointLight.h"
+
 #include "Sprite.h"
-#include "Line3D.h"
+
+#include "EmitterInstance.h"
+
+#include "SkySphere.h"
 #include "Terrain.h"
+
+#include "Line3D.h"
+
 
 namespace Snowblind
 {
@@ -43,6 +51,9 @@ namespace Snowblind
 		my3DLine = new CLine3D();
 		my3DLine->Initiate();
 
+		myDirectionalLight = new CDirectionalLight();
+		myDirectionalLight->Initiate(CU::Vector3f(1, 0, 0), CU::Vector3f(0, 0, 0), CU::Vector4f(0, 0, 1, 1));
+
 	}
 
 	CRenderer::~CRenderer()
@@ -56,6 +67,7 @@ namespace Snowblind
 		SAFE_DELETE(myDeferredRenderer);
 		SAFE_DELETE(myText);
 		SAFE_DELETE(myPointLight);
+		SAFE_DELETE(myDirectionalLight);
 	}
 
 	void CRenderer::Add2DCamera(CCamera* aCamera)

@@ -11,13 +11,14 @@ CPhysicsManager::CPhysicsManager()
 	myBroadphaseInterface = new btDbvtBroadphase();
 	myImpulseSolver = new btSequentialImpulseConstraintSolver();
 
+
 	myDynamicsWorld = new btDiscreteDynamicsWorld(
 		myCollisionDispatcher,
 		myBroadphaseInterface,
 		myImpulseSolver,
 		myDefaultCollisionConfiguration);
 
-	myDynamicsWorld->setGravity(btVector3(0, -9.82f, 0));
+	myDynamicsWorld->setGravity(btVector3(0, -1, 0));
 	
 	myZeroPlane = new CRigidBody();
 	Add(myZeroPlane->InitAsPlane(btVector3(0, 1, 0)));

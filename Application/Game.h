@@ -1,4 +1,5 @@
 #pragma once
+#include <DataStructures/GrowingArray.h>
 
 namespace Snowblind
 {
@@ -9,7 +10,7 @@ namespace Snowblind
 
 class CEntityManager;
 class CPhysicsManager;
-class btRigidBody;
+class CRigidBody;
 
 class CGame
 {
@@ -27,7 +28,9 @@ private:
 	float myTime = 0.f;
 	int myFPSToPrint = 0;
 
-	Snowblind::CTerrain* myTerrain = nullptr;
+	CU::GrowingArray<Snowblind::CTerrain*> myTerrain;
+	CU::GrowingArray<CRigidBody*> myTerrainBodies;
+
 	Snowblind::CSynchronizer* mySynchronizer;
 	Snowblind::CEngine* myEngine;
 	CEntityManager* myEntityManager;

@@ -21,7 +21,6 @@ public:
 	void Update(float aDeltaTime);
 
 private:
-	double myAccumulatedTime = 0.0;
 	
 	int myFrameCount = 0;
 	float myAverageFPS = 0;

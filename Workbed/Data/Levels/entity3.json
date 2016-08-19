@@ -1,9 +1,9 @@
 {
 	"render": [ 
-		"Data/Model/pblScene/pblScene_03_binary.fbx", 
+		"Data/Model/pbl/PBL_test_balls.fbx", 
 		"Data/Shaders/T_Deferred_Base.json"
 		],
 	"physics": {
-		"mass": 100
+		"mass": 10
 	}
 }

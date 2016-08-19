@@ -41,16 +41,16 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	JSONReader reader("Data/Levels/level_01.json");
 
 	//3d picking
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/playground.tga", CU::Vector3f(512, 0, 0), CU::Vector2f(512, 512)));
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(512, 0, 512), CU::Vector2f(512, 512)));
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(0, 0, 512), CU::Vector2f(512, 512)));
+	//myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
+	//myTerrain.Add(myEngine->CreateTerrain("Data/Textures/playground.tga", CU::Vector3f(512, 0, 0), CU::Vector2f(512, 512)));
+	//myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(512, 0, 512), CU::Vector2f(512, 512)));
+	//myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(0, 0, 512), CU::Vector2f(512, 512)));
 
-	for (u32 i = 0; i < 1; i++)
-	{
-		myTerrainBodies.Add(myPhysicsManager->CreateBody(0));
-		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
-	}
+	//for (u32 i = 0; i < 1; i++)
+	//{
+	//	myTerrainBodies.Add(myPhysicsManager->CreateBody(0));
+	//	myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
+	//}
 
 	const JSONElement& el = reader.GetElement("root");
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
@@ -111,7 +111,7 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 		}
 	}
 
-	myEntityManager->AddSystem<CPhysicsSystem>();
+	myEntityManager->AddSystem<CPhysicsSystem>(myPhysicsManager);
 	myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);
 	myEntityManager->AddSystem<CLightSystem>(mySynchronizer);
 }
@@ -140,7 +140,7 @@ void CGame::Update(float aDeltaTime)
 	const SLocalTime& locTime = myEngine->GetLocalTime();
 	ss << myEngine->GetFPS() << "\n" << myFPSToPrint << "\nDeltaTime:" << aDeltaTime
 		<< "\nLocal time : "
-		<< locTime.hour << " : ";
+		<< locTime.hour << ":";
 
 	if (locTime.minute < 10)
 	{
@@ -160,8 +160,6 @@ void CGame::Update(float aDeltaTime)
 	myEntityManager->Update(aDeltaTime);
 
 
-	myAccumulatedTime += aDeltaTime;
-	myPhysicsManager->Update(myAccumulatedTime); //ASync Physics?
 
 
 	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::TERRAIN));

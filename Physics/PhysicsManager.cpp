@@ -18,9 +18,9 @@ CPhysicsManager::CPhysicsManager()
 		myImpulseSolver,
 		myDefaultCollisionConfiguration);
 
-	myDynamicsWorld->setGravity(btVector3(0, -1, 0));
+	myDynamicsWorld->setGravity(btVector3(0, -9.82f, 0));
 	
-	myZeroPlane = new CRigidBody();
+	myZeroPlane = new CRigidBody(0);
 	Add(myZeroPlane->InitAsPlane(btVector3(0, 1, 0)));
 }
 
@@ -53,15 +53,11 @@ void CPhysicsManager::Remove(btRigidBody* aBody)
 
 CRigidBody* CPhysicsManager::CreateBody(float mass)
 {
-	CRigidBody* newBody = new CRigidBody();
+	CRigidBody* newBody = new CRigidBody(mass);
 	return newBody;
 }
 
 void CPhysicsManager::Update(double& additionalTime)
 {
-	while (additionalTime >= 1.f / 60.f) //This feels too easy
-	{
 		myDynamicsWorld->stepSimulation(1.f / 60.f, 1);
-		additionalTime -= 1.f / 60.f;
-	}
 }

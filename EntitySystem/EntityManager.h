@@ -38,6 +38,9 @@ public:
 	template <typename T>
 	void AddSystem(Snowblind::CSynchronizer* aSynchronizer);
 
+	template <typename T>
+	void AddSystem(CPhysicsManager* aManager);
+
 private:
 	Entity myNextEntity = 0;
 	CComponentContainer* myComponents = nullptr;
@@ -81,4 +84,10 @@ template <typename T>
 void CEntityManager::AddSystem(Snowblind::CSynchronizer* aSynchronizer)
 {
 	mySystems.Add(new T(*this, aSynchronizer));
+}
+
+template <typename T>
+void CEntityManager::AddSystem(CPhysicsManager* aManager)
+{
+	mySystems.Add(new T(*this, aManager));
 }

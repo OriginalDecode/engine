@@ -2,9 +2,10 @@
 #include "RigidBody.h"
 #include "PhysicsDefines.h"
 #include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
+#include <Utilities.h>
 
-
-CRigidBody::CRigidBody()
+CRigidBody::CRigidBody(float aMass)
+	: myMass(aMass)
 {
 }
 
@@ -59,19 +60,35 @@ btRigidBody* CRigidBody::InitAsSphere(const CU::Vector3f& aPosition)
 	pos.setX(aPosition.x);
 	pos.setY(aPosition.y);
 	pos.setZ(aPosition.z);
-	myShape = new btSphereShape(1); 
+	myShape = new btSphereShape(1);
 	
 	myMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos)); /* btQuaternion is the rotation of the object. Figure this out.*/
-	btRigidBody::btRigidBodyConstructionInfo bodyInfo(1, myMotionState, myShape, btVector3(0, 0, 0));
+	btRigidBody::btRigidBodyConstructionInfo bodyInfo(myMass, myMotionState, myShape, btVector3(0, 0, 0));
 	//bodyInfo.m_friction = 1.f;
 	//bodyInfo.m_restitution = 0.75f;
 
-
 	myBody = new btRigidBody(bodyInfo);
-	myBody->setMassProps(1, btVector3(0, 0, 0));
+	myBody->setMassProps(myMass, btVector3(0, 0, 0));
 	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
-	
+
+	terminalVelocity = CL::CalcTerminalVelocity(myMass, 9.82f, 0.47f, 1.f, 1.293f);
+	myBody->setDamping(0, 0);
 	return myBody;
+}
+
+void CRigidBody::Update(float deltaTime)
+{
+	if (velocity < terminalVelocity)
+	{
+		float a = CL::CalcAcceleration(9.82f, myMass);
+		velocity += a * deltaTime;
+	}
+	else
+		velocity = terminalVelocity;
+
+	float drag = CL::CalcDrag(1.293f, velocity, 0.47f, 1.f);
+	float temp = velocity - drag;
+	myBody->setLinearVelocity(btVector3(0, temp, 0));
 }
 
 btRigidBody* CRigidBody::GetBody()

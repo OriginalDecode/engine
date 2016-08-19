@@ -14,7 +14,11 @@
 			},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
-			"position" : [ 100, 200, 100 ]
+			"position" : [ -10, 500, 150 ]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/entity3.json", 
+			"position" : [ 10, 500, 150 ]
 		}
 	}	
 }

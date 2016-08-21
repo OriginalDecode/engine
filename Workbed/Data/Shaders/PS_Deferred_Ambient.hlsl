@@ -86,13 +86,18 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	fresnel = fresnel / (2 - 1 * (1.f - roughnessOffsetted));
 	fresnel = substance + fresnel;
   
+	if(metalness.r <= 0.f && roughness >= 1.f)
+		fresnel = 0.f;
+
 	float3 reflectionFrensnel =	fresnel;
 	float3 reflectionVector = reflect(toEye, normal);
     
 	float fakeLysSpecularPower = (2.f / (roughness * roughness)) - 2.f;
 	float lysMipMap = GetSpecPowToMip(fakeLysSpecularPower, 12);
     
-	float3 ambientDiffuse = CubeMap.SampleLevel(point_Clamp, normal, 9).rgb * ao 
+
+
+	float3 ambientDiffuse = CubeMap.SampleLevel(point_Clamp, normal, 8).rgb * ao 
 	* metalnessAlbedo * (1.f - reflectionFrensnel);
 	float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector, lysMipMap).xyz 
 	* ao * reflectionFrensnel;

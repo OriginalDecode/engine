@@ -39,6 +39,8 @@ namespace Snowblind
 		void RenderParticles();
 		void RenderLines();
 
+		//Holds the lightpass instead of deferred
+
 		CU::GrowingArray<CTerrain*> myTerrainArray;
 
 		eDeferredType		myDeferredType;

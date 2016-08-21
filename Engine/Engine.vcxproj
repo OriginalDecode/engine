@@ -201,6 +201,7 @@
     <ClInclude Include="FontManager.h" />
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
+    <ClInclude Include="LightPass.h" />
     <ClInclude Include="LightStructs.h" />
     <ClInclude Include="Line3D.h" />
     <ClInclude Include="Model.h" />
@@ -212,6 +213,10 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderFactory.h" />
     <ClInclude Include="ShaderWarningHandler.h" />
+    <ClInclude Include="ShadowPass.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="SkySphere.h" />
     <ClInclude Include="SnowblindParticleData.h" />
     <ClInclude Include="snowblind_shared.h" />
@@ -245,6 +250,7 @@
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="Instance.cpp" />
+    <ClCompile Include="LightPass.cpp" />
     <ClCompile Include="Line3D.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelImporter.cpp" />
@@ -255,6 +261,10 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderFactory.cpp" />
     <ClCompile Include="ShaderWarningHandler.cpp" />
+    <ClCompile Include="ShadowPass.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="SkySphere.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Sprite.cpp" />

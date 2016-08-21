@@ -21,7 +21,10 @@ void CPhysicsSystem::Update(float aDeltaTime)
 	while (myAccumulatedTime >= 1.f / 60.f)
 	{
 		myPhysicsManager->Update(myAccumulatedTime); //ASync Physics?
-		t += aDeltaTime;
+
+
+
+
 		const CU::GrowingArray<Entity>& entities = GetEntities();
 		for (int i = 0; i < entities.Size(); i++)
 		{

@@ -5,6 +5,7 @@
 #include "RigidBody.h"
 #include <Windows.h>
 CPhysicsManager::CPhysicsManager()
+	: myGravity(9.82f)
 {
 	myDefaultCollisionConfiguration = new btDefaultCollisionConfiguration();
 	myCollisionDispatcher = new btCollisionDispatcher(myDefaultCollisionConfiguration);
@@ -18,9 +19,9 @@ CPhysicsManager::CPhysicsManager()
 		myImpulseSolver,
 		myDefaultCollisionConfiguration);
 
-	myDynamicsWorld->setGravity(btVector3(0, -9.82f, 0));
+	myDynamicsWorld->setGravity(btVector3(0, -myGravity, 0));
 	
-	myZeroPlane = new CRigidBody(0);
+	myZeroPlane = new CRigidBody();
 	Add(myZeroPlane->InitAsPlane(btVector3(0, 1, 0)));
 }
 
@@ -51,13 +52,18 @@ void CPhysicsManager::Remove(btRigidBody* aBody)
 	myDynamicsWorld->removeRigidBody(aBody);
 }
 
-CRigidBody* CPhysicsManager::CreateBody(float mass)
+CRigidBody* CPhysicsManager::CreateBody()
 {
-	CRigidBody* newBody = new CRigidBody(mass);
+	CRigidBody* newBody = new CRigidBody();
 	return newBody;
+}
+
+float CPhysicsManager::GetGravityForce()
+{
+	return myGravity;
 }
 
 void CPhysicsManager::Update(double& additionalTime)
 {
-		myDynamicsWorld->stepSimulation(1.f / 60.f, 1);
+	myDynamicsWorld->stepSimulation(1.f / 60.f, 1);
 }

@@ -41,16 +41,16 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	JSONReader reader("Data/Levels/level_01.json");
 
 	//3d picking
-	//myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
-	//myTerrain.Add(myEngine->CreateTerrain("Data/Textures/playground.tga", CU::Vector3f(512, 0, 0), CU::Vector2f(512, 512)));
-	//myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(512, 0, 512), CU::Vector2f(512, 512)));
-	//myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(0, 0, 512), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/playground.tga", CU::Vector3f(512, 0, 0), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(512, 0, 512), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(0, 0, 512), CU::Vector2f(512, 512)));
 
-	//for (u32 i = 0; i < 1; i++)
-	//{
-	//	myTerrainBodies.Add(myPhysicsManager->CreateBody(0));
-	//	myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
-	//}
+	for (u32 i = 0; i < 1; i++)
+	{
+		myTerrainBodies.Add(myPhysicsManager->CreateBody());
+		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
+	}
 
 	const JSONElement& el = reader.GetElement("root");
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
@@ -105,8 +105,8 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 				float mass = static_cast<float>(obj->value.GetDouble());
 				myEntityManager->AddComponent<PhysicsComponent>(e);
 				PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
-				p.myBody = myPhysicsManager->CreateBody(mass);
-				myPhysicsManager->Add(p.myBody->InitAsSphere(pos));
+				p.myBody = myPhysicsManager->CreateBody();
+				myPhysicsManager->Add(p.myBody->InitAsSphere(1.f, mass, myPhysicsManager->GetGravityForce(), 1.293f, pos));
 			}
 		}
 	}

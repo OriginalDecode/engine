@@ -55,7 +55,8 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
   	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
 	
 	output.Normal = float4(norm.xyz,1.f);
-	
+	output.Normal.a = 0.f;
+
 	output.Depth.r = depth;
 	output.Depth.g = 1.f;
 	

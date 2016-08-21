@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "SpotLight.h"
 
-
-CSpotLight::CSpotLight()
+namespace Snowblind
 {
-}
+	CSpotLight::CSpotLight()
+	{
+	}
 
 
-CSpotLight::~CSpotLight()
-{
-}
+	CSpotLight::~CSpotLight()
+	{
+	}
+};

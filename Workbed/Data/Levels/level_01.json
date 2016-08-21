@@ -14,11 +14,14 @@
 			},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
-			"position" : [ -10, 500, 150 ]
+			"position" : [ 40, 1000, 150 ],
+			"color": [ 0, 0, 255 ],
+			"intensity": 1, 
+			"range" : 10
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity3.json", 
-			"position" : [ 10, 500, 150 ]
+			"position" : [ 80, 1000, 150 ]
 		}
 	}	
 }

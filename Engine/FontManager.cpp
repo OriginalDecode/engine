@@ -257,10 +257,16 @@ namespace Snowblind
 		FT_Stroker stroker;
 		FT_Glyph glyph;
 
+
 		err = FT_Load_Char(aFace, index, FT_LOAD_NO_BITMAP);
 		DL_ASSERT_EXP(!err, "Failed to load glyph!");
 		err = FT_Get_Glyph(aFace->glyph, &glyph);
 		DL_ASSERT_EXP(!err, "Failed to get glyph!");
+
+		/*FT_Outline out = aFace->glyph->outline;
+		u32 c = out.n_points;
+		FT_Vector* v = out.points;*/
+
 
 		glyph->format = FT_GLYPH_FORMAT_OUTLINE;
 

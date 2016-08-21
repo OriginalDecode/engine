@@ -15,6 +15,5 @@ private:
 	CPhysicsManager* myPhysicsManager;
 
 	double myAccumulatedTime = 0.0;
-	float t = 0.f;
 };
 

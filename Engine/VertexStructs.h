@@ -44,9 +44,13 @@ struct SVertexPosNormUVBiTang
 	CU::Math::Vector3<float> tangent;
 };
 
+
+//CU::Matrix44f world
+//CU::Matrix44f view
+//CU::Matrix44f projection
 struct SVertexBaseStruct
 {
-	CU::Matrix44f world; //Model/World
+	CU::Matrix44f world; 
 	CU::Matrix44f invertedView;
 	CU::Matrix44f projection;
 };

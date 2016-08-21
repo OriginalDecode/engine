@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DeferredRenderer.h"
 #include "PointLight.h"
+#include "LightPass.h"
 #include <DL_Debug.h>
 namespace Snowblind
 {
@@ -58,9 +59,7 @@ namespace Snowblind
 		myClearColor[3] = 0.f;
 
 		myScreenData.myEffect = myEngine->GetEffect("Data/Shaders/T_Render_To_Texture.json");
-		myLightPass.myEffect = myEngine->GetEffect("Data/Shaders/T_Deferred_LightMesh.json");
 		myAmbientPass.myEffect = myEngine->GetEffect("Data/Shaders/T_Deferred_Ambient.json");
-		CreateLightConstantBuffers();
 		CreateFullscreenQuad();
 
 		myAmbientPass.myEffect->AddShaderResource(myAlbedo->GetShaderView());
@@ -68,9 +67,11 @@ namespace Snowblind
 		myAmbientPass.myEffect->AddShaderResource(myDepth->GetShaderView());
 		myAmbientPass.myEffect->AddShaderResource(myCubeMap->GetShaderView());
 
-		myLightPass.myEffect->AddShaderResource(myAlbedo->GetShaderView());
-		myLightPass.myEffect->AddShaderResource(myNormal->GetShaderView());
-		myLightPass.myEffect->AddShaderResource(myDepth->GetShaderView());
+		myLightPass = new CLightPass();
+		CEffect* pointEffect = myLightPass->GetPointLightEffect();
+		pointEffect->AddShaderResource(myAlbedo->GetShaderView());
+		pointEffect->AddShaderResource(myNormal->GetShaderView());
+		pointEffect->AddShaderResource(myDepth->GetShaderView());
 
 		InitConstantBuffer();
 
@@ -98,9 +99,8 @@ namespace Snowblind
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myIndexData);
 		SAFE_DELETE(myVertexData);
-
-		SAFE_RELEASE(myLightPass.myVertexConstantBuffer);
-		SAFE_RELEASE(myLightPass.myPixelConstantBuffer);
+		
+		SAFE_DELETE(myLightPass);
 	}
 
 	void CDeferredRenderer::SetTargets()
@@ -135,95 +135,9 @@ namespace Snowblind
 		myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
-	void CDeferredRenderer::CreateLightConstantBuffers()
+	void CDeferredRenderer::RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation)
 	{
-		//----------------------------------------
-		// VertexShader Constant Buffer
-		//----------------------------------------
-		D3D11_BUFFER_DESC cbDesc;
-		ZeroMemory(&cbDesc, sizeof(cbDesc));
-		cbDesc.ByteWidth = sizeof(SLightPass::SVertexConstantBuffer);
-		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		cbDesc.MiscFlags = 0;
-		cbDesc.StructureByteStride = 0;
-
-		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myLightPass.myVertexConstantBuffer);
-		CEngine::GetDirectX()->SetDebugName(myLightPass.myVertexConstantBuffer, "LightPass Vertex Constant Buffer");
-		CEngine::GetDirectX()->HandleErrors(hr, "[DeferredRenderer::LightPass] : Failed to Create Vertex Constant Buffer, ");
-
-
-		//----------------------------------------
-		// PixelShader Constant Buffer
-		//----------------------------------------
-		ZeroMemory(&cbDesc, sizeof(cbDesc));
-		cbDesc.ByteWidth = sizeof(SLightPass::SPixelConstantBuffer);
-		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		cbDesc.MiscFlags = 0;
-		cbDesc.StructureByteStride = 0;
-
-		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myLightPass.myPixelConstantBuffer);
-		CEngine::GetDirectX()->SetDebugName(myLightPass.myPixelConstantBuffer, "LightPass Pixel Constant Buffer");
-		CEngine::GetDirectX()->HandleErrors(hr, "[DeferredRenderer::LightPass] : Failed to Create Pixel Constant Buffer, ");
-
-
-
-	}
-
-	void CDeferredRenderer::UpdateLightBuffers(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
-	{
-		//----------------------------------------
-		// VertexShader Constant Buffer
-		//----------------------------------------
-		myLightPass.myVertexConstantStruct.myWorld = pointlight->GetOrientation();
-		myLightPass.myVertexConstantStruct.myInvertedView = CU::Math::Inverse(previousOrientation);
-		myLightPass.myVertexConstantStruct.myProjection = aCamera->GetProjection();
-		myLightPass.myVertexConstantStruct.myScale.x = pointlight->GetRange();
-		myLightPass.myVertexConstantStruct.myScale.y = pointlight->GetRange();
-		myLightPass.myVertexConstantStruct.myScale.z = pointlight->GetRange();
-		myLightPass.myVertexConstantStruct.myScale.w = pointlight->GetRange();
-
-		D3D11_MAPPED_SUBRESOURCE msr;
-		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-		CEngine::GetDirectX()->GetContext()->Map(myLightPass.myVertexConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		if (msr.pData != nullptr)
-		{
-			SLightPass::SVertexConstantBuffer* ptr = (SLightPass::SVertexConstantBuffer*)msr.pData;
-			memcpy(ptr, &myLightPass.myVertexConstantStruct.myWorld.myMatrix[0], sizeof(SLightPass::SVertexConstantBuffer));
-		}
-
-		CEngine::GetDirectX()->GetContext()->Unmap(myLightPass.myVertexConstantBuffer, 0);
-
-		//----------------------------------------
-		// PixelShader Constant Buffer
-		//----------------------------------------
-		myLightPass.myPixelConstantStruct.myInvertedProjection = CU::Math::InverseReal(aCamera->GetProjection());
-		myLightPass.myPixelConstantStruct.myView = previousOrientation;
-		myLightPass.myPixelConstantStruct.myColor = pointlight->GetColor();
-		myLightPass.myPixelConstantStruct.myPosition = pointlight->GetPosition();
-		myLightPass.myPixelConstantStruct.myCameraPosition = previousOrientation.GetPosition();
-		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-		CEngine::GetDirectX()->GetContext()->Map(myLightPass.myPixelConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		if (msr.pData != nullptr)
-		{
-			SLightPass::SPixelConstantBuffer* ptr = (SLightPass::SPixelConstantBuffer*)msr.pData;
-			memcpy(ptr, &myLightPass.myPixelConstantStruct.myInvertedProjection.myMatrix[0], sizeof(SLightPass::SPixelConstantBuffer));
-		}
-
-		CEngine::GetDirectX()->GetContext()->Unmap(myLightPass.myPixelConstantBuffer, 0);
-
-	}
-
-	void CDeferredRenderer::RenderLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation)
-	{
-		UpdateLightBuffers(pointlight, aCamera, previousOrientation);
-
-		myContext->VSSetConstantBuffers(0, 1, &myLightPass.myVertexConstantBuffer);
-		myContext->PSSetConstantBuffers(0, 1, &myLightPass.myPixelConstantBuffer);
-		pointlight->Render(previousOrientation, aCamera);
+		myLightPass->RenderPointlight(pointlight, aCamera, previousOrientation);
 	}
 
 	void CDeferredRenderer::DeferredRender()
@@ -254,15 +168,13 @@ namespace Snowblind
 		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView(); //myDirectX->GetBackbuffer();
 		ID3D11DepthStencilView* depth = myDepthStencil2->GetDepthView(); //myDirectX->GetDepthView();//
 		myContext->OMSetRenderTargets(1, &backbuffer, depth);
-		myLightPass.myEffect->Activate();
+		myLightPass->GetPointLightEffect()->Activate();
 		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); /* Not effect specific */
-
-
 	}
 
 	void CDeferredRenderer::DeactivateLight()
 	{
-		myLightPass.myEffect->Deactivate();
+		myLightPass->GetPointLightEffect()->Deactivate();
 	}
 
 	void CDeferredRenderer::Finalize()

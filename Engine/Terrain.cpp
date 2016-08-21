@@ -19,7 +19,7 @@ namespace Snowblind
 		myHeightmap = SHeightMap::Create(aFile.c_str());
 		CreateVertices(aSize.x, aSize.y, position);
 		mySurface = new CSurface(myEffect);
-		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/No-Texture.dds");
+		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/grass.dds");
 	}
 
 	CTerrain::~CTerrain()
@@ -55,6 +55,7 @@ namespace Snowblind
 
 	void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)
 	{
+		
 		D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -63,6 +64,7 @@ namespace Snowblind
 			{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
+
 		myVertexFormat.Init(5);
 		myVertexFormat.Add(vertexDesc[0]);
 		myVertexFormat.Add(vertexDesc[1]);

@@ -28,7 +28,7 @@ namespace Snowblind
 		int loadTimer = myTimeManager->CreateTimer();
 		myTimeManager->GetTimer(loadTimer).Update();
 		float loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds();
-		myText = new CText("Arial.ttf", 14, 1);
+		myText = new CText("Arial.ttf", 12, 1);
 
 		myTimeManager->GetTimer(loadTimer).Update();
 		loadTime = myTimeManager->GetTimer(loadTimer).GetTotalTime().GetMilliseconds() - loadTime;
@@ -51,8 +51,8 @@ namespace Snowblind
 		my3DLine = new CLine3D();
 		my3DLine->Initiate();
 
-		myDirectionalLight = new CDirectionalLight();
-		myDirectionalLight->Initiate(CU::Vector3f(1, 0, 0), CU::Vector3f(0, 0, 0), CU::Vector4f(0, 0, 1, 1));
+		//myDirectionalLight = new CDirectionalLight();
+		//myDirectionalLight->Initiate(CU::Vector3f(1, 0, 0), CU::Vector3f(0, 0, 0), CU::Vector4f(0, 0, 1, 1));
 
 	}
 
@@ -67,7 +67,7 @@ namespace Snowblind
 		SAFE_DELETE(myDeferredRenderer);
 		SAFE_DELETE(myText);
 		SAFE_DELETE(myPointLight);
-		SAFE_DELETE(myDirectionalLight);
+		//SAFE_DELETE(myDirectionalLight);
 	}
 
 	void CRenderer::Add2DCamera(CCamera* aCamera)
@@ -188,7 +188,16 @@ namespace Snowblind
 					myPointLight->SetRange(command.myRange);
 					myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
 					myPointLight->Update();
-					myDeferredRenderer->RenderLight(myPointLight, myCamera, myPrevFrame);
+					myDeferredRenderer->RenderPointLight(myPointLight, myCamera, myPrevFrame);
+				}break;
+				case SRenderCommand::eType::SPOTLIGHT:
+				{
+					myDirectX->SetBlendState(eBlendStates::LIGHT_BLEND);
+					myPointLight->SetPosition(command.myPosition);
+					myPointLight->SetRange(command.myRange);
+					myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
+					myPointLight->Update();
+					//myDeferredRenderer->RenderLight(myPointLight, myCamera, myPrevFrame);
 				}break;
 			}
 		}

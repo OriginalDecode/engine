@@ -4,6 +4,6 @@
 		"Data/Shaders/T_Deferred_Base.json"
 		],
 	"physics": {
-		"mass": 10
+		"mass": 1
 	}
 }

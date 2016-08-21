@@ -4,6 +4,9 @@
 		"Data/Shaders/T_Deferred_Base.json"
 		],
 	"physics": {
-		"mass": 100
+		"mass": 10
+	},
+	"light" : {
+		"type" : "pointlight"
 	}
 }

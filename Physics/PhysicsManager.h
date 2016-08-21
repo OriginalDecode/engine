@@ -18,8 +18,8 @@ public:
 	~CPhysicsManager();
 	void Add(btRigidBody* aBody);
 	void Remove(btRigidBody* aBody);
-	CRigidBody* CreateBody(float mass);
-	
+	CRigidBody* CreateBody();
+	float GetGravityForce();
 	void Update(double& additionalTime);
 private:
 
@@ -31,6 +31,8 @@ private:
 
 	CRigidBody* myZeroPlane;
 	CU::GrowingArray<btRigidBody*> myBodies;
+
+	float myGravity = 0.f;
 
 };
 

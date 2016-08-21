@@ -209,6 +209,8 @@
     </ClInclude>
     <ClInclude Include="snowblind_shared.h" />
     <ClInclude Include="TGA32.h" />
+    <ClInclude Include="LightPass.h" />
+    <ClInclude Include="ShadowPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -317,5 +319,7 @@
       <Filter>Utilities\SystemMonitor</Filter>
     </ClCompile>
     <ClCompile Include="TGA32.cpp" />
+    <ClCompile Include="LightPass.cpp" />
+    <ClCompile Include="ShadowPass.cpp" />
   </ItemGroup>
 </Project>

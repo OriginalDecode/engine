@@ -21,6 +21,7 @@ namespace Snowblind
 	class CEngine;
 	class CCamera;
 	class CPointLight;
+	class CLightPass;
 	struct SVertexIndexWrapper;
 	struct SVertexBufferWrapper;
 	struct SVertexDataWrapper;
@@ -41,7 +42,7 @@ namespace Snowblind
 		void Finalize();
 		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
 
-		void RenderLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
+		void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 		CTexture* GetDepthStencil();
 		CTexture* GetDepth();
 	private:
@@ -56,34 +57,7 @@ namespace Snowblind
 			CEffect* myEffect = nullptr;
 		} myAmbientPass;
 
-		struct SLightPass
-		{
-			CEffect* myEffect = nullptr;
-			ID3D11Buffer* myPixelConstantBuffer = nullptr;
-			ID3D11Buffer* myVertexConstantBuffer = nullptr;
-			struct SPixelConstantBuffer
-			{
-				CU::Matrix44f myInvertedProjection;
-				CU::Matrix44f myView;
-				CU::Vector4f myColor;
-				CU::Vector4f myPosition;
-				CU::Vector4f myCameraPosition;
-
-			} myPixelConstantStruct;
-
-			struct SVertexConstantBuffer
-			{
-				CU::Matrix44f myWorld;
-				CU::Matrix44f myInvertedView;
-				CU::Matrix44f myProjection;
-				CU::Vector4f myScale;
-			} myVertexConstantStruct;
-
-		} myLightPass;
-
-		void CreateLightConstantBuffers();
-		void UpdateLightBuffers(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation);
-
+		CLightPass* myLightPass;
 
 		CEngine* myEngine;
 		CTexture* myAlbedo;

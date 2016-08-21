@@ -36,6 +36,7 @@ struct SRenderCommand
 		LINE,
 		SKYSPHERE,
 		POINTLIGHT,
+		SPOTLIGHT,
 		PARTICLE,
 		TERRAIN,
 	};

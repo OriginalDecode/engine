@@ -15,13 +15,15 @@ namespace Snowblind
 		DEPTH,
 	};
 
-	class CTexture;
+	class CCamera;
 	class CDirectX11;
 	class CEffect;
 	class CEngine;
-	class CCamera;
-	class CPointLight;
+	class CGBuffer;
 	class CLightPass;
+	class CPointLight;
+	class CTexture;
+
 	struct SVertexIndexWrapper;
 	struct SVertexBufferWrapper;
 	struct SVertexDataWrapper;
@@ -36,67 +38,44 @@ namespace Snowblind
 		void SetBuffers();
 		void DeferredRender();
 
-		void SetLightShaders();
-		void DeactivateLight();
 
 		void Finalize();
 		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
 
-		void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
+		//void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 		CTexture* GetDepthStencil();
-		CTexture* GetDepth();
+		CGBuffer* GetGBuffer();
 	private:
 
-		struct SRenderToScreenData
-		{
-			CEffect* myEffect = nullptr;
-		} myScreenData;
+		void CreateFullscreenQuad();
+		void InitConstantBuffer();
+		void CreateVertexBuffer();
+		void CreateIndexBuffer();
 
-		struct SAmbientPass
-		{
-			CEffect* myEffect = nullptr;
-		} myAmbientPass;
-
-		CLightPass* myLightPass;
-
-		CEngine* myEngine;
-		CTexture* myAlbedo;
-		CTexture* myNormal;
-		CTexture* myEmissive;
-		CTexture* myDepth;
-		CTexture* myDepthStencil;
-		CTexture* myFinishedSceneTexture;
-		CTexture* myFinalTexture;
-		CTexture* myCubeMap;
-		CTexture* myDepthStencil2;
-
-		CEffect* myFinalizeShader;
-
-		struct SParticlePass
-		{
-			CEffect* myEffect;
-
-		} myParticlePass;
+		float myClearColor[4];
+		CEngine* myEngine = nullptr;
+		CDirectX11* myDirectX = nullptr;
+		ID3D11DeviceContext* myContext = nullptr;
 
 
+		CEffect* myAmbientPassShader = nullptr;
+		CEffect* myScreenPassShader = nullptr;
+		CGBuffer* myGBuffer = nullptr;
 
-		CTexture* myParticleTexture;
+		CTexture* myDepthStencil = nullptr;
+		CTexture* myFinishedSceneTexture = nullptr;
+		CTexture* myCubeMap = nullptr;
 
-		CDirectX11* myDirectX;
+		SVertexIndexWrapper* myIndexData = nullptr;
+		SVertexDataWrapper* myVertexData = nullptr;
+		SVertexBufferWrapper* myVertexBuffer = nullptr;
+		SIndexBufferWrapper* myIndexBuffer = nullptr;
 
-		SVertexIndexWrapper* myIndexData;
-		SVertexDataWrapper* myVertexData;
-		SVertexBufferWrapper* myVertexBuffer;
-		SIndexBufferWrapper* myIndexBuffer;
+		ID3D11InputLayout* myInputLayout = nullptr;
 
 		CU::GrowingArray<SVertexTypePosUV> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
-		ID3D11DeviceContext* myContext;
-		ID3D11InputLayout* myInputLayout;
 
-		float myClearColor[4];
-
-		void InitConstantBuffer();
 		ID3D11Buffer* myConstantBuffer;
 		struct SConstantStruct
 		{
@@ -105,24 +84,11 @@ namespace Snowblind
 			CU::Matrix44f view;
 		} *myConstantStruct;
 
-		void CreateFullscreenQuad();
-
-		void CreateVertexBuffer();
-		void CreateIndexBuffer();
 	};
-
-	__forceinline CTexture* CDeferredRenderer::GetDepth()
-	{
-		DL_ASSERT_EXP(myDepth != nullptr, "Deferred Depth Texture was null!");
-		return myDepth;
-	}
 
 	__forceinline CTexture* CDeferredRenderer::GetDepthStencil()
 	{
 		DL_ASSERT_EXP(myDepthStencil != nullptr, "Deferred Depthstencil was null!");
-		return myDepthStencil2;
+		return myDepthStencil;
 	}
-
-
-
 };

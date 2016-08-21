@@ -199,6 +199,10 @@
     <ClInclude Include="FileWatcher.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontManager.h" />
+    <ClInclude Include="GBuffer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="LightPass.h" />
@@ -209,6 +213,7 @@
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />
+    <ClInclude Include="RenderCommand_Shared.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderFactory.h" />
@@ -249,6 +254,10 @@
     <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontManager.cpp" />
+    <ClCompile Include="GBuffer.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="LightPass.cpp" />
     <ClCompile Include="Line3D.cpp" />

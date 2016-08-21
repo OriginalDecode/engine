@@ -1,13 +1,21 @@
 #include "stdafx.h"
 #include "LightPass.h"
 #include "PointLight.h"
+#include "GBuffer.h"
 namespace Snowblind
 {
-	CLightPass::CLightPass()
+	CLightPass::CLightPass(CGBuffer* aGBuffer)
 		: myContext(CEngine::GetDirectX()->GetContext())
 		, myEngine(CEngine::GetInstance())
+		, myGBuffer(aGBuffer)
 	{
-		myEffect = myEngine->GetEffect("Data/Shaders/T_Deferred_LightMesh.json");
+		myEffect[u32(eLight::POINT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_LightMesh.json");
+		myEffect[u32(eLight::SPOT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_LightMesh.json");
+
+		myEffect[u32(eLight::POINT_LIGHT)]->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
+		myEffect[u32(eLight::POINT_LIGHT)]->AddShaderResource(myGBuffer->myNormal->GetShaderView());
+		myEffect[u32(eLight::POINT_LIGHT)]->AddShaderResource(myGBuffer->myDepth->GetShaderView());
+		
 		CreatePointlightBuffers();
 	}
 
@@ -20,7 +28,7 @@ namespace Snowblind
 
 	}
 
-	void CLightPass::RenderPointlight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation)
+	void CLightPass::RenderPointlight(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
 		UpdatePointlightBuffers(pointlight, aCamera, previousOrientation);
 		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)]);
@@ -28,12 +36,12 @@ namespace Snowblind
 		pointlight->Render(previousOrientation, aCamera);
 	}
 
-	CEffect* CLightPass::GetPointLightEffect()
+	CEffect* CLightPass::GetPointlightEffect()
 	{
-		return myEffect;
+		return myEffect[u32(eLight::POINT_LIGHT)];
 	}
 
-	void CLightPass::UpdatePointlightBuffers(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation)
+	void CLightPass::UpdatePointlightBuffers(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
 		//----------------------------------------
 		// VertexShader Constant Buffer

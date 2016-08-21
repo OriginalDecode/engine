@@ -33,11 +33,9 @@ namespace Snowblind
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
 		hr = device->CreateRenderTargetView(tex, NULL, &myRenderTargetView);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
-		CEngine::GetDirectX()->SetDebugName(myRenderTargetView, "Texture RTV");
 
 		hr = device->CreateShaderResourceView(tex, NULL, &myShaderResource);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
-		CEngine::GetDirectX()->SetDebugName(myShaderResource, "Texture SRV");
 		tex->Release();
 		tex = nullptr;
 	}
@@ -85,7 +83,6 @@ namespace Snowblind
 
 		hr = CEngine::GetDirectX()->GetDevice()->CreateRenderTargetView(myTexture, NULL, &myRenderTargetView);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Render Target View!");
-		CEngine::GetDirectX()->SetDebugName(myRenderTargetView, "Texture : RenderTargetView");
 		CreateDepthStencilView(static_cast<float>(width), static_cast<float>(height));
 	}
 
@@ -128,7 +125,6 @@ namespace Snowblind
 
 		hr = CEngine::GetDirectX()->GetDevice()->CreateDepthStencilView(myDepthTexture, &depthDesc, &myDepthStencil);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create depthStencil!");
-		CEngine::GetDirectX()->SetDebugName(myDepthStencil, "Texture : DepthStencil");
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
 		ZeroMemory(&viewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
@@ -139,7 +135,6 @@ namespace Snowblind
 
 		hr = CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(myDepthTexture, &viewDesc, &myDepthStencilShaderView);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create depthstencilshaderview");
-		CEngine::GetDirectX()->SetDebugName(myDepthStencilShaderView, "Texture : DepthStencilShaderView");
 
 	}
 
@@ -273,7 +268,6 @@ namespace Snowblind
 
 		HRESULT hr = device->CreateTexture2D(&tempBufferInfo, NULL, &myDepthTexture);
 		dx->HandleErrors(hr, "Failed to create depthTexture!");
-		dx->SetDebugName(myDepthTexture, "Texture : DepthTexture");
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC depthDesc;
 		ZeroMemory(&depthDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
@@ -283,7 +277,6 @@ namespace Snowblind
 
 		hr = device->CreateDepthStencilView(myDepthTexture, &depthDesc, &myDepthStencil);
 		dx->HandleErrors(hr, "Failed to create depthStencil!");
-		dx->SetDebugName(myDepthStencil, "Texture : DepthStencil");
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
 		ZeroMemory(&viewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
@@ -294,8 +287,6 @@ namespace Snowblind
 
 		hr = CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(myDepthTexture, &viewDesc, &myDepthStencilShaderView);
 		dx->HandleErrors(hr, "Failed to create depthstencilshaderview");
-		dx->SetDebugName(myDepthStencilShaderView, "Texture : DepthStencilShaderView");
-
 
 	}
 

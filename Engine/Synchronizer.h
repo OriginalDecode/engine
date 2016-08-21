@@ -1,17 +1,15 @@
 #pragma once
-
-#include <bitset>
-
 #include <DataStructures/StaticArray.h>
 #include <DataStructures/GrowingArray.h>
-
 #include "RenderCommand.h"
+#include <standard_datatype.hpp>
 
-
+typedef CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> CommandBuffer;
+typedef CU::StaticArray<CommandBuffer, static_cast<u32>(eCommandBuffer::_COUNT)> CommandBuffers;
 
 namespace Snowblind
 {
-	
+
 	class CSynchronizer
 	{
 	public:
@@ -25,22 +23,17 @@ namespace Snowblind
 		void WaitForLogic();
 		void RenderIsDone();
 		void LogicIsDone();
-		
-		void AddRenderCommand(const SRenderCommand& aRenderCommand, const eDeferredFlag& isDeferredFlag = eDeferredFlag::NOT_DEFERRED);
 
-		const CU::GrowingArray<SRenderCommand>& GetRenderCommands(const eCommandType& commandType) const;
+		void AddRenderCommand(const SRenderCommand& aRenderCommand);
+
+		const CU::GrowingArray<SRenderCommand>& GetRenderCommands(const eCommandBuffer& commandType) const;
 	private:
-
-		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> my3DCommandBuffer;
-		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> myLineBuffer;
-		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> myLightCommandBuffer;
-		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> myParticleCommands;
-		CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> my2DCommandBuffer;
+		CommandBuffers myCommandBuffers;
 
 		volatile bool myLogicIsDone;
 		volatile bool myRenderIsDone;
 		volatile bool myQuitFlag;
-		bool myCurrentBuffer; //this works. And  it is only 1 byte.
+		u16 myCurrentBuffer;
 
 	};
 

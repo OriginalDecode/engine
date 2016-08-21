@@ -156,11 +156,11 @@ void CGame::Update(float aDeltaTime)
 	else
 		ss << locTime.second;
 
-	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), { 0, 0 }, SRenderCommand::eType::TEXT));
+	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
 	myEntityManager->Update(aDeltaTime);
 
 
 
 
-	mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::TERRAIN));
+	mySynchronizer->AddRenderCommand(SRenderCommand(eType::TERRAIN));
 }

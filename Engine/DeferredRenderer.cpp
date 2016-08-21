@@ -3,122 +3,65 @@
 #include "PointLight.h"
 #include "LightPass.h"
 #include <DL_Debug.h>
+#include "GBuffer.h"
+#define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
 namespace Snowblind
 {
 	CDeferredRenderer::CDeferredRenderer()
 	{
-
 		myDirectX = CEngine::GetDirectX();
 		myContext = myDirectX->GetContext();
 		myEngine = CEngine::GetInstance();
+		BLACK_CLEAR(myClearColor);
+
+
 		SWindowSize windowSize = myEngine->GetWindowSize();
-		myAlbedo = new CTexture(windowSize.myWidth, windowSize.myHeight
-			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
-		myAlbedo->SetDebugName("DeferredAlbedo");
-
-		myEmissive = new CTexture(windowSize.myWidth, windowSize.myHeight
-			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
-		myEmissive->SetDebugName("DeferredEmissive");
-
-		myNormal = new CTexture(windowSize.myWidth, windowSize.myHeight
-			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
-		myNormal->SetDebugName("DeferredNormal");
-
-		myDepth = new CTexture(windowSize.myWidth, windowSize.myHeight
-			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R32G32B32A32_FLOAT);
-		myDepth->SetDebugName("DeferredDepth");
 
 		myFinishedSceneTexture = new CTexture(windowSize.myWidth, windowSize.myHeight
 			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 		myFinishedSceneTexture->SetDebugName("DeferredFinishedTexture");
 
-		myFinalTexture = new CTexture(windowSize.myWidth, windowSize.myHeight
-			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
-		myFinalTexture->SetDebugName("DeferredFinalTexture");
-
-		myDepthStencil2 = new CTexture();
-		myDepthStencil2->InitStencil(windowSize.myWidth, windowSize.myHeight);
-		myDepthStencil2->SetDebugName("DeferredDepth2");
+		myDepthStencil = new CTexture();
+		myDepthStencil->InitStencil(windowSize.myWidth, windowSize.myHeight);
+		myDepthStencil->SetDebugName("DeferredDepthStencil");
 
 		myCubeMap = myEngine->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
 
+		myScreenPassShader = myEngine->GetEffect("Data/Shaders/T_Render_To_Texture.json");
+		myAmbientPassShader = myEngine->GetEffect("Data/Shaders/T_Deferred_Ambient.json");
 
-		myDepthStencil = new CTexture();
-		myDepthStencil->InitAsDepthBuffer(windowSize.myWidth, windowSize.myHeight);
-		myDepthStencil->SetDebugName("DeferredDepthStenci");
+		myGBuffer = new CGBuffer();
 
-		myClearColor[0] = 0.f;
-		myClearColor[1] = 0.f;
-		myClearColor[2] = 0.f;
-		myClearColor[3] = 0.f;
+		myAmbientPassShader->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
+		myAmbientPassShader->AddShaderResource(myGBuffer->myNormal->GetShaderView());
+		myAmbientPassShader->AddShaderResource(myGBuffer->myDepth->GetShaderView());
+		myAmbientPassShader->AddShaderResource(myCubeMap->GetShaderView());
 
-		myScreenData.myEffect = myEngine->GetEffect("Data/Shaders/T_Render_To_Texture.json");
-		myAmbientPass.myEffect = myEngine->GetEffect("Data/Shaders/T_Deferred_Ambient.json");
 		CreateFullscreenQuad();
-
-		myAmbientPass.myEffect->AddShaderResource(myAlbedo->GetShaderView());
-		myAmbientPass.myEffect->AddShaderResource(myNormal->GetShaderView());
-		myAmbientPass.myEffect->AddShaderResource(myDepth->GetShaderView());
-		myAmbientPass.myEffect->AddShaderResource(myCubeMap->GetShaderView());
-
-		myLightPass = new CLightPass();
-		CEffect* pointEffect = myLightPass->GetPointLightEffect();
-		pointEffect->AddShaderResource(myAlbedo->GetShaderView());
-		pointEffect->AddShaderResource(myNormal->GetShaderView());
-		pointEffect->AddShaderResource(myDepth->GetShaderView());
-
 		InitConstantBuffer();
-
-		myFinalizeShader = myEngine->GetEffect("Data/Shaders/T_Finalize.json");
 	}
 
 	CDeferredRenderer::~CDeferredRenderer()
 	{
-		myDirectX = nullptr;
-		SAFE_DELETE(myAlbedo);
-		SAFE_DELETE(myNormal);
-		SAFE_DELETE(myDepth);
 		SAFE_DELETE(myFinishedSceneTexture);
-		SAFE_DELETE(myFinalTexture);
-		SAFE_DELETE(myEmissive);
-		SAFE_DELETE(myDepthStencil2);
-		SAFE_DELETE(myConstantStruct);
-
-
-		SAFE_RELEASE(myConstantBuffer);
-
 		SAFE_DELETE(myDepthStencil);
-		SAFE_RELEASE(myInputLayout);
+		SAFE_DELETE(myConstantStruct);
+		SAFE_DELETE(myGBuffer);
 		SAFE_DELETE(myVertexBuffer);
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myIndexData);
 		SAFE_DELETE(myVertexData);
-		
-		SAFE_DELETE(myLightPass);
+
+		SAFE_RELEASE(myConstantBuffer);
+		SAFE_RELEASE(myInputLayout);
 	}
 
 	void CDeferredRenderer::SetTargets()
 	{
-		myContext->ClearRenderTargetView(myAlbedo->GetRenderTargetView(), myClearColor);
-		myContext->ClearRenderTargetView(myNormal->GetRenderTargetView(), myClearColor);
-		myContext->ClearRenderTargetView(myDepth->GetRenderTargetView(), myClearColor);
-		myContext->ClearRenderTargetView(myEmissive->GetRenderTargetView(), myClearColor);
-		myContext->ClearDepthStencilView(myDepthStencil2->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-		ID3D11RenderTargetView* target[4];
-		target[0] = myAlbedo->GetRenderTargetView();
-		target[1] = myNormal->GetRenderTargetView();
-		target[2] = myDepth->GetRenderTargetView();
-		target[3] = myEmissive->GetRenderTargetView();
-		myContext->OMSetRenderTargets(4, target, myDepthStencil2->GetDepthView());
-
-
+		myGBuffer->Clear(myClearColor);
+		myContext->ClearDepthStencilView(myDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		myGBuffer->SetAsRenderTarget(myDepthStencil);
 	}
 
 	void CDeferredRenderer::SetBuffers()
@@ -135,46 +78,32 @@ namespace Snowblind
 		myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
-	void CDeferredRenderer::RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation)
-	{
-		myLightPass->RenderPointlight(pointlight, aCamera, previousOrientation);
-	}
-
 	void CDeferredRenderer::DeferredRender()
 	{
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		SetBuffers();
-		
+
 		myDirectX->ResetViewport();
 
-		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView(); //myDirectX->GetBackbuffer();
-		ID3D11DepthStencilView* depth = myDirectX->GetDepthView(); //myDepthStencil2->GetDepthView(); 
+		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView(); 
+		ID3D11DepthStencilView* depth = myDirectX->GetDepthView(); 
 
 		myContext->ClearRenderTargetView(backbuffer, myClearColor);
 		myContext->OMSetRenderTargets(1, &backbuffer, depth);
-		
-		myAmbientPass.myEffect->Activate();
+
+		myAmbientPassShader->Activate();
 		myContext->PSSetConstantBuffers(0, 1, &myConstantBuffer);
-		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); /* Not effect specific */
+		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); 
 
 		myContext->DrawIndexed(6, 0, 0);
 
-		myAmbientPass.myEffect->Deactivate();
+		myAmbientPassShader->Deactivate();
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
-	}
 
-	void CDeferredRenderer::SetLightShaders()
-	{
-		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView(); //myDirectX->GetBackbuffer();
-		ID3D11DepthStencilView* depth = myDepthStencil2->GetDepthView(); //myDirectX->GetDepthView();//
+
+		depth = myDepthStencil->GetDepthView();
 		myContext->OMSetRenderTargets(1, &backbuffer, depth);
-		myLightPass->GetPointLightEffect()->Activate();
-		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); /* Not effect specific */
-	}
-
-	void CDeferredRenderer::DeactivateLight()
-	{
-		myLightPass->GetPointLightEffect()->Deactivate();
+		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); 
 	}
 
 	void CDeferredRenderer::Finalize()
@@ -182,13 +111,13 @@ namespace Snowblind
 		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
 		SetBuffers();
-	
-		myDirectX->SetVertexShader(myScreenData.myEffect->GetVertexShader()->vertexShader);
-		myDirectX->SetPixelShader(myScreenData.myEffect->GetPixelShader()->pixelShader);
+
+		myDirectX->SetVertexShader(myScreenPassShader->GetVertexShader()->vertexShader);
+		myDirectX->SetPixelShader(myScreenPassShader->GetPixelShader()->pixelShader);
 
 		ID3D11ShaderResourceView* srv[2];
 		srv[0] = myFinishedSceneTexture->GetShaderView();
-		srv[1] = myDepthStencil2->GetShaderView();
+		srv[1] = myDepthStencil->GetShaderView();
 		myContext->PSSetShaderResources(0, 2, &srv[0]);
 		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP);
 		myContext->DrawIndexed(6, 0, 0);
@@ -218,7 +147,7 @@ namespace Snowblind
 		myDirectX->HandleErrors(hr, "[DeferredRenderer] : Failed to Create Constant Buffer, ");
 	}
 
-	void CDeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection )
+	void CDeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
 	{
 		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 		myConstantStruct->camPosition = previousOrientation.GetPosition();
@@ -233,6 +162,11 @@ namespace Snowblind
 		}
 
 		myDirectX->GetContext()->Unmap(myConstantBuffer, 0);
+	}
+
+	CGBuffer* CDeferredRenderer::GetGBuffer()
+	{
+		return myGBuffer;
 	}
 
 	void CDeferredRenderer::CreateFullscreenQuad()
@@ -294,8 +228,8 @@ namespace Snowblind
 
 	void CDeferredRenderer::CreateVertexBuffer()
 	{
-		void* shader = myScreenData.myEffect->GetVertexShader()->compiledShader;
-		int size = myScreenData.myEffect->GetVertexShader()->shaderSize;
+		void* shader = myScreenPassShader->GetVertexShader()->compiledShader;
+		int size = myScreenPassShader->GetVertexShader()->shaderSize;
 
 		HRESULT hr = myDirectX->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), shader, size, &myInputLayout);
 		myDirectX->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");

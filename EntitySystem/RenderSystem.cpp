@@ -29,6 +29,6 @@ void CRenderSystem::Update(float aDeltaTime)
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
 
-		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::MODEL, render.myModelID, translation.myOrientation.GetPosition() ));
+		mySynchronizer->AddRenderCommand(SRenderCommand(eType::MODEL, render.myModelID, translation.myOrientation.GetPosition() ));
 	}
 }

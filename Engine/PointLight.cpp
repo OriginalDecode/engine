@@ -76,7 +76,7 @@ namespace Snowblind
 		myData.myRange = GetRange();
 	}
 
-	void CPointLight::Render(CU::Matrix44f& previousOrientation, CCamera* camera)
+	void CPointLight::Render(const CU::Matrix44f& previousOrientation, CCamera* camera)
 	{
 		myLightMesh->Render(previousOrientation, *camera);
 	}

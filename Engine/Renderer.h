@@ -23,7 +23,7 @@ namespace Snowblind
 	class CTexture;
 	class CText;
 	class CTerrain;
-
+	class CLightPass;
 	class CRenderer
 	{
 	public:
@@ -35,7 +35,9 @@ namespace Snowblind
 	private:
 		void Render3DCommands();
 		void Render2DCommands();
-		void RenderLightCommands();
+		void RenderPointlight();
+		void RenderSpotlight();
+
 		void RenderParticles();
 		void RenderLines();
 
@@ -62,5 +64,6 @@ namespace Snowblind
 		CSkySphere*			mySkysphere = nullptr;
 		CSprite*			mySprite = nullptr;
 		CLine3D*			my3DLine = nullptr;
+		CLightPass*			myLightPass = nullptr;
 	};
 }; 

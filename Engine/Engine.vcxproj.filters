@@ -79,6 +79,12 @@
     <Filter Include="Utilities\SystemMonitor">
       <UniqueIdentifier>{f84abf60-8b66-45fc-a803-c22aa3330c1c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering\Passes">
+      <UniqueIdentifier>{786b558d-0cd4-4d15-be8b-5d347c39f501}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Commands">
+      <UniqueIdentifier>{d05875fe-cb18-4368-96b8-8a9d74d2a75d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -159,9 +165,6 @@
     <ClInclude Include="PointLight.h">
       <Filter>Light\Point</Filter>
     </ClInclude>
-    <ClInclude Include="RenderCommand.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -201,16 +204,27 @@
     <ClInclude Include="FileWatcher.h">
       <Filter>Utilities\FileWatcher</Filter>
     </ClInclude>
-    <ClInclude Include="Line3D.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="SystemMonitor.h">
       <Filter>Utilities\SystemMonitor</Filter>
     </ClInclude>
     <ClInclude Include="snowblind_shared.h" />
     <ClInclude Include="TGA32.h" />
-    <ClInclude Include="LightPass.h" />
-    <ClInclude Include="ShadowPass.h" />
+    <ClInclude Include="LightPass.h">
+      <Filter>Rendering\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowPass.h">
+      <Filter>Rendering\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCommand_Shared.h">
+      <Filter>Rendering\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCommand.h">
+      <Filter>Rendering\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Line3D.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="GBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -273,9 +287,6 @@
     <ClCompile Include="PointLight.cpp">
       <Filter>Light\Point</Filter>
     </ClCompile>
-    <ClCompile Include="RenderCommand.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -312,14 +323,22 @@
     <ClCompile Include="FileWatcher.cpp">
       <Filter>Utilities\FileWatcher</Filter>
     </ClCompile>
-    <ClCompile Include="Line3D.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="SystemMonitor.cpp">
       <Filter>Utilities\SystemMonitor</Filter>
     </ClCompile>
     <ClCompile Include="TGA32.cpp" />
-    <ClCompile Include="LightPass.cpp" />
-    <ClCompile Include="ShadowPass.cpp" />
+    <ClCompile Include="LightPass.cpp">
+      <Filter>Rendering\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowPass.cpp">
+      <Filter>Rendering\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderCommand.cpp">
+      <Filter>Rendering\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Line3D.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="GBuffer.cpp" />
   </ItemGroup>
 </Project>

@@ -90,16 +90,23 @@ void CRigidBody::Update(float deltaTime)
 {
 	if (myVelocity.y < myTerminalVelocity.y)
 	{
-		float a = CL::CalcAcceleration(myGravity, myMass);
-		myVelocity.y += a * deltaTime;
+		myVelocity.y += CL::CalcAcceleration(myGravity, myMass) * deltaTime;
+		if (myVelocity.y > myTerminalVelocity.y)
+			myVelocity.y = myTerminalVelocity.y;
 	}
-	
-	if(myVelocity.y > myTerminalVelocity.y)
-		myVelocity.y = myTerminalVelocity.y;
 
 	float drag = CL::CalcDrag(myResistanceDensity, myVelocity.y, myDragCoeff, myCrossSectionArea);
-	float temp = myVelocity.y - drag;
-	myBody->setLinearVelocity(btVector3(0, temp, 0));
+	CU::Vector3f linearVelocity = myVelocity;
+
+	if (myVelocity.x > 0.f)
+		linearVelocity.x -= drag;
+
+	linearVelocity.y -= drag;
+
+	if (myVelocity.z > 0.f)
+		linearVelocity.z -= drag;
+
+	myBody->setLinearVelocity(btVector3(linearVelocity.x, linearVelocity.y, linearVelocity.z));
 }
 
 btRigidBody* CRigidBody::GetBody()

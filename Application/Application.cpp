@@ -57,7 +57,7 @@ void CApplication::Update()
 		"Y : " << myOrientation.GetPosition().y << "\n" <<
 		"Z : " << myOrientation.GetPosition().z << "\n";
 		mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), CU::Vector2f(500, 0)));
-		mySynchronizer->AddRenderCommand(SRenderCommand(SRenderCommand::eType::SKYSPHERE, myOrientation.GetPosition()));
+		mySynchronizer->AddRenderCommand(SRenderCommand(eType::SKYSPHERE, myOrientation.GetPosition()));
 
 		myGame->Update(deltaTime);
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LightPass.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 #include "GBuffer.h"
 namespace Snowblind
 {
@@ -9,14 +10,21 @@ namespace Snowblind
 		, myEngine(CEngine::GetInstance())
 		, myGBuffer(aGBuffer)
 	{
-		myEffect[u32(eLight::POINT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_LightMesh.json");
-		myEffect[u32(eLight::SPOT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_LightMesh.json");
+		myEffect[u32(eLight::POINT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_Lightmesh.json");
+		myEffect[u32(eLight::SPOT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_Spotlight.json");
 
 		myEffect[u32(eLight::POINT_LIGHT)]->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
 		myEffect[u32(eLight::POINT_LIGHT)]->AddShaderResource(myGBuffer->myNormal->GetShaderView());
 		myEffect[u32(eLight::POINT_LIGHT)]->AddShaderResource(myGBuffer->myDepth->GetShaderView());
 		
+
+		myEffect[u32(eLight::SPOT_LIGHT)]->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
+		myEffect[u32(eLight::SPOT_LIGHT)]->AddShaderResource(myGBuffer->myNormal->GetShaderView());
+		myEffect[u32(eLight::SPOT_LIGHT)]->AddShaderResource(myGBuffer->myDepth->GetShaderView());
+
+
 		CreatePointlightBuffers();
+		CreateSpotlightBuffers();
 	}
 
 	CLightPass::~CLightPass()
@@ -36,9 +44,22 @@ namespace Snowblind
 		pointlight->Render(previousOrientation, aCamera);
 	}
 
+	void CLightPass::RenderSpotlight(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
+	{
+		UpdateSpotlightBuffers(spotlight, aCamera, previousOrientation);
+		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)]);
+		myContext->PSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)]);
+		spotlight->Render(previousOrientation, aCamera);
+	}
+
 	CEffect* CLightPass::GetPointlightEffect()
 	{
 		return myEffect[u32(eLight::POINT_LIGHT)];
+	}
+
+	CEffect* CLightPass::GetSpotlightEffect()
+	{
+		return myEffect[u32(eLight::SPOT_LIGHT)];
 	}
 
 	void CLightPass::UpdatePointlightBuffers(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
@@ -84,6 +105,55 @@ namespace Snowblind
 		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)], 0);
 	}
 
+	void CLightPass::UpdateSpotlightBuffers(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
+	{
+		//----------------------------------------
+		// VertexShader Constant Buffer
+		//----------------------------------------
+		const SSpotlightData& data = spotlight->GetData();
+
+		mySpotlightVertexConstantData.world = data.myOrientation;
+		mySpotlightVertexConstantData.invertedView = CU::Math::Inverse(previousOrientation);
+		mySpotlightVertexConstantData.projection = aCamera->GetProjection();
+
+		mySpotlightVertexConstantData.scale.x = data.myRange;
+		mySpotlightVertexConstantData.scale.y = data.myRange;
+
+		mySpotlightVertexConstantData.angle.x = data.myAngle;
+		mySpotlightVertexConstantData.angle.y = data.myAngle;
+
+		D3D11_MAPPED_SUBRESOURCE msr;
+		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
+		CEngine::GetDirectX()->GetContext()->Map(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		if (msr.pData != nullptr)
+		{
+			SSpotlightConstantBuffer* ptr = (SSpotlightConstantBuffer*)msr.pData;
+			memcpy(ptr, &mySpotlightVertexConstantData.world.myMatrix[0], sizeof(SSpotlightConstantBuffer));
+		}
+
+		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)], 0);
+
+		//----------------------------------------
+		// PixelShader Constant Buffer
+		//----------------------------------------
+		mySpotPixelConstantStruct.myInvertedProjection = CU::Math::InverseReal(aCamera->GetProjection());
+		mySpotPixelConstantStruct.myView = previousOrientation;
+		mySpotPixelConstantStruct.myColor = data.myLightColor;
+		mySpotPixelConstantStruct.myPosition = data.myOrientation.GetPosition();
+		mySpotPixelConstantStruct.myCameraPosition = previousOrientation.GetPosition();
+		mySpotPixelConstantStruct.myDirection = data.myDirection;
+
+		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
+		CEngine::GetDirectX()->GetContext()->Map(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		if (msr.pData != nullptr)
+		{
+			SSpotPixelConstantBuffer* ptr = (SSpotPixelConstantBuffer*)msr.pData;
+			memcpy(ptr, &mySpotPixelConstantStruct.myInvertedProjection.myMatrix[0], sizeof(SSpotPixelConstantBuffer));
+		}
+
+		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], 0);
+	}
+
 	void CLightPass::CreateSpotlightBuffers()
 	{
 		//----------------------------------------
@@ -91,7 +161,7 @@ namespace Snowblind
 		//----------------------------------------
 		D3D11_BUFFER_DESC cbDesc;
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
-		cbDesc.ByteWidth = sizeof(SPointlightConstantBuffer);
+		cbDesc.ByteWidth = sizeof(SSpotlightConstantBuffer);
 		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
 		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -107,7 +177,7 @@ namespace Snowblind
 		// Spotlight Constant Buffer
 		//----------------------------------------
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
-		cbDesc.ByteWidth = sizeof(SPixelConstantBuffer);
+		cbDesc.ByteWidth = sizeof(SSpotPixelConstantBuffer);
 		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
 		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;

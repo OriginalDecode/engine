@@ -6,6 +6,7 @@ struct ID3D11Buffer;
 namespace Snowblind
 {
 	class CGBuffer;
+	class CSpotLight;
 	class CLightPass
 	{
 	public:
@@ -14,12 +15,12 @@ namespace Snowblind
 
 
 		void RenderPointlight(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation);
-		void RenderSpotlight(CCamera* aCamera, const CU::Matrix44f& previousOrientation);
+		void RenderSpotlight(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation);
 		CEffect* GetPointlightEffect();
 		CEffect* GetSpotlightEffect();
 	private:
 		void UpdatePointlightBuffers(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation);
-		void UpdateSpotlightBuffers();
+		void UpdateSpotlightBuffers(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation);
 
 		void CreateSpotlightBuffers();
 		void CreatePointlightBuffers();
@@ -30,7 +31,8 @@ namespace Snowblind
 
 		struct SSpotlightConstantBuffer : public SVertexBaseStruct
 		{
-
+			CU::Vector2f scale;
+			CU::Vector2f angle;
 		} mySpotlightVertexConstantData;
 
 		struct SPixelConstantBuffer
@@ -42,6 +44,12 @@ namespace Snowblind
 			CU::Vector4f myCameraPosition;
 
 		} myPixelConstantStruct;
+
+		struct SSpotPixelConstantBuffer : public SPixelConstantBuffer
+		{
+			CU::Vector4f myDirection;
+		} mySpotPixelConstantStruct;
+
 
 		enum class eBuffer
 		{

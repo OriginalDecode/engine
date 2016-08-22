@@ -16,6 +16,7 @@ enum class eLightAxis
 
 struct SSpotlightData
 {
+	CU::Matrix44f myOrientation;
 	CU::Vector4f myLightColor;
 	CU::Vector3f myLightPosition;
 	float myRange;

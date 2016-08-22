@@ -7,6 +7,7 @@
 
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 
 #include "Sprite.h"
 
@@ -17,7 +18,6 @@
 
 #include "Line3D.h"
 #include "LightPass.h"
-
 namespace Snowblind
 {
 	CRenderer::CRenderer(CSynchronizer& aSynchronizer, CCamera* aCamera)
@@ -35,6 +35,8 @@ namespace Snowblind
 		FONT_LOG("Font Took : %fms to load.", loadTime);
 
 		myPointLight = new CPointLight();
+		mySpotlight = new CSpotLight();
+
 		myDeferredRenderer = new CDeferredRenderer();
 		myDepthTexture = new CTexture();
 		myDepthTexture->InitStencil(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
@@ -52,10 +54,6 @@ namespace Snowblind
 		my3DLine->Initiate();
 
 		myLightPass = new CLightPass(myDeferredRenderer->GetGBuffer());
-
-
-
-
 	}
 
 	CRenderer::~CRenderer()
@@ -68,8 +66,10 @@ namespace Snowblind
 		SAFE_DELETE(my2DCamera);
 		SAFE_DELETE(myDeferredRenderer);
 		SAFE_DELETE(myText);
+
 		SAFE_DELETE(myPointLight);
-		//SAFE_DELETE(myDirectionalLight);
+		SAFE_DELETE(mySpotlight);
+		SAFE_DELETE(myLightPass);
 	}
 
 	void CRenderer::Add2DCamera(CCamera* aCamera)
@@ -87,8 +87,8 @@ namespace Snowblind
 		myDeferredRenderer->DeferredRender(); /* Ambient pass */
 
 		//RenderLightCommands();
-		RenderPointlight();
-		//RenderSpotlight();
+		//RenderPointlight();
+		RenderSpotlight();
 
 		myEngine->ResetRenderTargetAndDepth();
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
@@ -138,6 +138,8 @@ namespace Snowblind
 				}break;
 				case eType::TERRAIN:
 				{
+					myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+					myDirectX->SetBlendState(eBlendStates::BLEND_FALSE);
 					for (CTerrain* terrain : myTerrainArray)
 					{
 						terrain->Render(myPrevFrame, myCamera->GetProjection());
@@ -172,27 +174,26 @@ namespace Snowblind
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
-
 	void CRenderer::RenderSpotlight()
 	{
 		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandBuffer::eSpotlight);
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
-
-
-		//myDeferredRenderer->SetLightShaders();
+		CEffect* effect = myLightPass->GetSpotlightEffect()	;
+		effect->Activate();
 
 		for each(const SRenderCommand& command in commands)
 		{
 			DL_ASSERT_EXP(command.myType == eType::SPOTLIGHT, "Wrong command type in spotlight buffer.");
 			myDirectX->SetBlendState(eBlendStates::LIGHT_BLEND);
-			myPointLight->SetPosition(command.myPosition);
-			myPointLight->SetRange(command.myRange);
-			myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
-			myPointLight->Update();
-			//myDeferredRenderer->RenderLight(myPointLight, myCamera, myPrevFrame);
+			mySpotlight->SetPosition(command.myPosition);
+			mySpotlight->SetRange(command.myRange);
+			mySpotlight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, 1));
+			mySpotlight->SetAngle(command.myIntensity);
+			mySpotlight->SetDirection(CU::Vector3f(0, -1, 0));
+			myLightPass->RenderSpotlight(mySpotlight, myCamera, myPrevFrame);
 		}
-		//myDeferredRenderer->DeactivateLight();
+		effect->Deactivate();
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 	}

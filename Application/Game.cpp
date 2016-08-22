@@ -78,7 +78,7 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 			entityReader.ReadElement("light", "type", type);
 			if (type == "pointlight")
 			{
-				l.myType = eLightType::ePOINTLIGHT;
+				l.myType = eLightType::eSPOTLIGHT;
 				reader._ReadElement(it->value["color"], l.color);
 				l.color.r /= 255.f;
 				l.color.g /= 255.f;

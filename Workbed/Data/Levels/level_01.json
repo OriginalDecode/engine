@@ -5,18 +5,11 @@
 	},
 	"root" :
 	{
-		"object" : { 
-			"entity":"Data/Levels/pointlight.json",
-			"position":[ 0, 0, 25 ],
-			"color": [ 0, 0, 255 ],
-			"intensity": 1, 
-			"range" : 10
-			},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
 			"position" : [ 40, 1000, 150 ],
 			"color": [ 0, 0, 255 ],
-			"intensity": 1, 
+			"intensity": 1.5708, 
 			"range" : 10
 		},
 		"object" : 	{ 

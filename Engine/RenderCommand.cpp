@@ -23,7 +23,7 @@ SRenderCommand::SRenderCommand(const eType& aType, const CU::Vector3f& position,
 	, myColor(color)
 	, myIntensity(intensity)
 	, myRange(range)
-	, myCommandType(eCommandBuffer::ePointlight)
+	, myCommandType(eCommandBuffer::eSpotlight)
 {
 }
 

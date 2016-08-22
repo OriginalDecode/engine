@@ -27,11 +27,12 @@ void CLightSystem::Update(float aDeltaTime)
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		LightComponent& light = GetComponent<LightComponent>(e);
+
 		if (light.myType == eLightType::ePOINTLIGHT)
 			mySynchronizer->AddRenderCommand(SRenderCommand(eType::POINTLIGHT, translation.myOrientation.GetPosition(), light.color, light.intensity, light.range));
 
 		if (light.myType == eLightType::eSPOTLIGHT)
-			assert("Not Implemented");
+			mySynchronizer->AddRenderCommand(SRenderCommand(eType::SPOTLIGHT, translation.myOrientation.GetPosition(), light.color, light.intensity, light.range));
 
 	}
 }

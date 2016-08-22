@@ -24,6 +24,7 @@ namespace Snowblind
 	class CText;
 	class CTerrain;
 	class CLightPass;
+	class CSpotLight;
 	class CRenderer
 	{
 	public:
@@ -56,9 +57,12 @@ namespace Snowblind
 		CU::TimeManager*	myTimeManager = nullptr;
 		
 		CDeferredRenderer*	myDeferredRenderer = nullptr;
+
 		CDirectionalLight*	myDirectionalLight = nullptr;
-		CSynchronizer&		mySynchronizer;
 		CPointLight*		myPointLight = nullptr;
+		CSpotLight*			mySpotlight = nullptr;
+
+		CSynchronizer&		mySynchronizer;
 		CText*				myText = nullptr;
 		CTexture*			myDepthTexture = nullptr;
 		CSkySphere*			mySkysphere = nullptr;

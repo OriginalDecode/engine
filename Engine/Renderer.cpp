@@ -87,7 +87,7 @@ namespace Snowblind
 		myDeferredRenderer->DeferredRender(); /* Ambient pass */
 
 		//RenderLightCommands();
-		//RenderPointlight();
+		RenderPointlight();
 		RenderSpotlight();
 
 		myEngine->ResetRenderTargetAndDepth();
@@ -189,8 +189,9 @@ namespace Snowblind
 			mySpotlight->SetPosition(command.myPosition);
 			mySpotlight->SetRange(command.myRange);
 			mySpotlight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, 1));
-			mySpotlight->SetAngle(command.myIntensity);
-			mySpotlight->SetDirection(CU::Vector3f(0, -1, 0));
+			mySpotlight->SetAngle(command.myAngle);
+			mySpotlight->GetData().myOrientation = command.myRotationMatrix * mySpotlight->myBaseMatrix;
+			mySpotlight->SetDirection(mySpotlight->GetData().myOrientation.GetForward());
 			myLightPass->RenderSpotlight(mySpotlight, myCamera, myPrevFrame);
 		}
 		effect->Deactivate();
@@ -213,7 +214,7 @@ namespace Snowblind
 			myDirectX->SetBlendState(eBlendStates::LIGHT_BLEND);
 			myPointLight->SetPosition(command.myPosition);
 			myPointLight->SetRange(command.myRange);
-			myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, command.myIntensity));
+			myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, 1));
 			myPointLight->Update();
 			myLightPass->RenderPointlight(myPointLight, myCamera, myPrevFrame);
 		}

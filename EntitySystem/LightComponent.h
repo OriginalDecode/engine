@@ -2,6 +2,7 @@
 #include <string>
 #include "BaseComponent.h"
 #include "Math/Vector/Vector.h"
+#include "Math/Matrix/Matrix.h"
 
 enum class eLightType
 {
@@ -15,7 +16,15 @@ struct SLightComponent : public SBaseComponent
 
 	eLightType myType;
 	CU::Vector3f color;
-	float intensity = 0.f;
+
+	union
+	{
+		float intensity;
+		float angle;
+	};
+
 	float range = 0.f;
+	CU::Vector3f direction;
+	CU::Matrix44f orientation;
 
 } typedef LightComponent;

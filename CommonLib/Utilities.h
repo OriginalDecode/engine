@@ -58,4 +58,7 @@ namespace CL
 
 	float RadToDegree(float aRadian);
 	float DegreeToRad(float aDegree);
+
+
+
 }

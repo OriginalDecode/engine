@@ -35,10 +35,6 @@ namespace CommonUtilities
 			void SetRotation3dY(const TYPE& aRadian);
 			void SetRotation3dZ(const TYPE& aRadian);
 
-			void SetRotationX(const TYPE& aRotationInDegrees);
-			void SetRotationY(const TYPE& aRotationInDegrees);
-			void SetRotationZ(const TYPE& aRotationInDegrees);
-
 			void SetTranslation(const TYPE& anX, const TYPE& anY, const TYPE& anZ, const TYPE& anW);
 			void SetTranslation(const Vector4<TYPE>& aVector);
 			const Vector4<TYPE> GetTranslation() const;

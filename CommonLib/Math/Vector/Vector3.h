@@ -196,7 +196,8 @@ namespace CommonUtilities
 		template <typename T>
 		void Normalize(Vector3<T>& aVector)
 		{
-			aVector /= Length(aVector);
+			if (Length(aVector) > 0.f)
+				aVector /= Length(aVector);
 		}
 
 		template <typename T>

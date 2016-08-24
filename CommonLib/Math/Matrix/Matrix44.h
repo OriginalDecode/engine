@@ -224,68 +224,6 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		void Matrix44<TYPE>::SetRotationX(const TYPE& aRotationInDegrees)
-		{
-			Matrix44<TYPE> rotationMatrix = Matrix44::RotateX(aRotationInDegrees);
-			Matrix44<TYPE> tempMatrix = *this;
-			tempMatrix = rotationMatrix * tempMatrix;
-
-			myMatrix[0] = tempMatrix.myMatrix[0];
-			myMatrix[1] = tempMatrix.myMatrix[1];
-			myMatrix[2] = tempMatrix.myMatrix[2];
-
-			myMatrix[4] = tempMatrix.myMatrix[4];
-			myMatrix[5] = tempMatrix.myMatrix[5];
-			myMatrix[6] = tempMatrix.myMatrix[6];
-
-			myMatrix[8] = tempMatrix.myMatrix[8];
-			myMatrix[9] = tempMatrix.myMatrix[9];
-			myMatrix[10] = tempMatrix.myMatrix[10];
-		}
-
-		template<typename TYPE>
-		void Matrix44<TYPE>::SetRotationY(const TYPE& aRotationInDegrees)
-		{
-			Matrix44<TYPE> rotationMatrix = Matrix44::RotateY(aRotationInDegrees);
-			Matrix44<TYPE> tempMatrix = *this;
-			tempMatrix = rotationMatrix * tempMatrix;
-
-			myMatrix[0] = tempMatrix.myMatrix[0];
-			myMatrix[1] = tempMatrix.myMatrix[1];
-			myMatrix[2] = tempMatrix.myMatrix[2];
-
-			myMatrix[4] = tempMatrix.myMatrix[4];
-			myMatrix[5] = tempMatrix.myMatrix[5];
-			myMatrix[6] = tempMatrix.myMatrix[6];
-
-			myMatrix[8] = tempMatrix.myMatrix[8];
-			myMatrix[9] = tempMatrix.myMatrix[9];
-			myMatrix[10] = tempMatrix.myMatrix[10];
-		}
-
-		template<typename TYPE>
-		void Matrix44<TYPE>::SetRotationZ(const TYPE& aRotationInDegrees)
-		{
-			Matrix44<TYPE> rotationMatrix = Matrix44::RotateZ(aRotationInDegrees);
-			Matrix44<TYPE> tempMatrix = *this;
-			tempMatrix = rotationMatrix * tempMatrix;
-
-
-			myMatrix[0] = tempMatrix.myMatrix[0];
-			myMatrix[1] = tempMatrix.myMatrix[1];
-			myMatrix[2] = tempMatrix.myMatrix[2];
-
-			myMatrix[4] = tempMatrix.myMatrix[4];
-			myMatrix[5] = tempMatrix.myMatrix[5];
-			myMatrix[6] = tempMatrix.myMatrix[6];
-
-			myMatrix[8] = tempMatrix.myMatrix[8];
-			myMatrix[9] = tempMatrix.myMatrix[9];
-			myMatrix[10] = tempMatrix.myMatrix[10];
-		}
-
-
-		template<typename TYPE>
 		void Matrix44<TYPE>::SetTranslation(const Vector4<TYPE>& aVector)
 		{
 			myMatrix[12] = aVector.X;

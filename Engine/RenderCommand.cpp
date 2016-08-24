@@ -23,9 +23,22 @@ SRenderCommand::SRenderCommand(const eType& aType, const CU::Vector3f& position,
 	, myColor(color)
 	, myIntensity(intensity)
 	, myRange(range)
+	, myCommandType(eCommandBuffer::ePointlight)
+{
+}
+
+SRenderCommand::SRenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& angle, const float& range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix)
+	: myType(aType)
+	, myPosition(position)
+	, myColor(color)
+	, myAngle(angle)
+	, myRange(range)
+	, myDirection(direction)
+	, myRotationMatrix(rotationMatrix)
 	, myCommandType(eCommandBuffer::eSpotlight)
 {
 }
+
 
 SRenderCommand::SRenderCommand(const eType& aType, Snowblind::CEmitterInstance* anInstance)
 	: myType(aType)
@@ -67,3 +80,4 @@ SRenderCommand::SRenderCommand(const eType& aType)
 SRenderCommand::SRenderCommand()
 {
 }
+

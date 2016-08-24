@@ -37,7 +37,10 @@ struct SRenderCommand
 	SRenderCommand(const eType& aType);
 	SRenderCommand(const eType& aType, const std::string& aSpriteName, const CU::Vector2f& aPosition);
 	SRenderCommand(const std::string aString, const CU::Math::Vector2<float>& aPosition, const eType& aType = eType::TEXT);
+
 	SRenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range);
+	SRenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& angle, const float& range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix);
+
 	SRenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& aPosition);
 	SRenderCommand(const eType& aType, Snowblind::CEmitterInstance* anInstance);
 	SRenderCommand(const eType& aType, const CU::Vector3f& aPosition);
@@ -49,8 +52,16 @@ struct SRenderCommand
 	std::string myModelKey;
 	CU::Vector3f myPosition;
 	CU::Vector3f myColor;
+	CU::Vector3f myDirection;
+	CU::Matrix44f myRotationMatrix;
+
+	union
+	{
+		float myAngle;
+		float myIntensity;
+	};
+
 	float myRange;
-	float myIntensity;
 
 	SLinePoint firstPoint;
 	SLinePoint secondPoint;

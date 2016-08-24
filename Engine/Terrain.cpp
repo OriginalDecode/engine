@@ -185,7 +185,7 @@ namespace Snowblind
 		float yScale = 128.f / 255.f;
 		yScale *= 0.2f;
 		//float xScale = mySize.x / myHeightMap->myDepth;
-		float xzScale = myDepth / myHeightmap->myDepth;
+		float xzScale = float(myDepth) / float(myHeightmap->myDepth);
 
 
 		for (unsigned int y = 0; y < height; ++y)

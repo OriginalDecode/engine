@@ -29,6 +29,9 @@
 #include <Engine.h>
 #include <Terrain.h>
 
+#include <Utilities.h>
+
+
 CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	: mySynchronizer(aSynchronizer)
 {
@@ -78,12 +81,31 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 			entityReader.ReadElement("light", "type", type);
 			if (type == "pointlight")
 			{
-				l.myType = eLightType::eSPOTLIGHT;
+				l.myType = eLightType::ePOINTLIGHT;
 				reader._ReadElement(it->value["color"], l.color);
 				l.color.r /= 255.f;
 				l.color.g /= 255.f;
 				l.color.b /= 255.f;
 				reader.ReadElement(it->value["intensity"], l.intensity);
+				reader.ReadElement(it->value["range"], l.range);
+			}
+			else if (type == "spotlight")
+			{
+				l.myType = eLightType::eSPOTLIGHT;
+				reader._ReadElement(it->value["color"], l.color);
+				l.color.r /= 255.f;
+				l.color.g /= 255.f;
+				l.color.b /= 255.f;
+
+				reader._ReadElement(it->value["direction"], l.direction);
+
+				l.orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(l.direction.y)) * l.orientation;
+				l.orientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(l.direction.x)) * l.orientation;
+				l.orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(l.direction.z)) * l.orientation;
+
+
+				reader.ReadElement(it->value["angle"], l.angle);
+				l.angle = CL::DegreeToRad(l.angle);
 				reader.ReadElement(it->value["range"], l.range);
 			}
 		}
@@ -144,7 +166,7 @@ void CGame::Update(float aDeltaTime)
 
 	if (locTime.minute < 10)
 	{
-		ss << "0" << locTime.minute;
+		ss << "0" << locTime.minute << ":";
 	}
 	else
 		ss << locTime.minute << ":";

@@ -32,7 +32,7 @@ void CLightSystem::Update(float aDeltaTime)
 			mySynchronizer->AddRenderCommand(SRenderCommand(eType::POINTLIGHT, translation.myOrientation.GetPosition(), light.color, light.intensity, light.range));
 
 		if (light.myType == eLightType::eSPOTLIGHT)
-			mySynchronizer->AddRenderCommand(SRenderCommand(eType::SPOTLIGHT, translation.myOrientation.GetPosition(), light.color, light.intensity, light.range));
+			mySynchronizer->AddRenderCommand(SRenderCommand(eType::SPOTLIGHT, translation.myOrientation.GetPosition(), light.color, light.angle, light.range, light.direction, light.orientation));
 
 	}
 }

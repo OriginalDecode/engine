@@ -22,7 +22,7 @@ namespace Snowblind
 		myLightMesh->Render(previousOrientation, *aCamera);
 	}
 
-	const SSpotlightData& CSpotLight::GetData() const
+	SSpotlightData& CSpotLight::GetData()
 	{
 		return myData;
 	}
@@ -30,14 +30,18 @@ namespace Snowblind
 	void CSpotLight::SetPosition(const CU::Vector3f& aPosition)
 	{
 		myLightMesh->SetPosition(aPosition);
+		myBaseMatrix.SetPosition(aPosition);
 		myData.myLightPosition = aPosition;
 		myData.myOrientation.SetPosition(aPosition);
 	}
 
-	void CSpotLight::SetDirection(const CU::Vector3f& aDirection)
+	void CSpotLight::SetDirection(const CU::Vector4f& aDirection)
 	{
-		myData.myDirection = aDirection;
-		myData.myOrientation.SetForward(myData.myDirection);
+		myData.myDirection.x = aDirection.x;
+		myData.myDirection.y = aDirection.y;
+		myData.myDirection.z = aDirection.z;
+
+		//myData.myOrientation.SetForward(myData.myDirection);
 	}
 
 	void CSpotLight::SetAngle(float anAngle)

@@ -16,8 +16,9 @@ namespace Snowblind
 		void SetRange(float aRange);
 		void SetAngle(float anAngle);
 		void SetPosition(const CU::Vector3f& aPosition);
-		void SetDirection(const CU::Vector3f& aDirection);
-		const SSpotlightData& GetData() const;
+		void SetDirection(const CU::Vector4f& aDirection);
+		SSpotlightData& GetData();
+		CU::Matrix44f myBaseMatrix;
 	private:
 		SSpotlightData myData;
 		CInstance* myLightMesh = nullptr;

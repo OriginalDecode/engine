@@ -107,14 +107,17 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 depth = DepthTexture.Sample(point_Clamp, texCoord);
 	
 	normal.xyz *= 2.0f;
-	normal.xyz -= 1.f;
+
+	float normLength = length(normal.xyz);
+	if(normLength != 0)
+		normal.xyz -= 1.f;
+
 	
 	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
 	float roughness = depth.y;
 	float roughnessOffsetted = pow(8192, roughness);
 	float ao = 1.0f;
 	float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;
-	  
 	float x = texCoord.x * 2.f - 1.f;
 	float y = (1.f - texCoord.y) * 2.f - 1.f;
 	float z = depth.x;
@@ -130,27 +133,27 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float3 lightToPixel = normalize(worldPosition.xyz - position.xyz);
     float spotFactor = dot(lightToPixel, normalize(direction));
 
-    if(spotFactor < input.cosAngle.x)
-        discard;
+     if(spotFactor < input.cosAngle.x)
+         discard;
 
 	float3 viewPos = camPosition.xyz;
 	float3 toEye = normalize(viewPos - worldPosition.xyz);	
 	float3 toLight = position - worldPosition;
 	float3 lightDir = normalize(toLight);
 	float3 halfVec = normalize(lightDir + toEye);
-	
+
 	float NdotL = saturate(dot(normal, lightDir));
+
 	float HdotN = saturate(dot(halfVec, normal));
 	float NdotV = saturate(dot(normal, toEye));
 	float3 F = Fresnel(substance, lightDir, halfVec);
 	float D = saturate(D_GGX(HdotN,(roughness + 1.f) / 2.f));
 	float V = saturate(V_SchlickForGGX((roughness + 1.f) / 2.f, NdotV, NdotL));
-	float lambert = NdotL;
-	float distance = length(toLight);
-	float attenuation = Attenuation(toLight, input.range);
-	float intensity = color.w;
+	
+	float angularAttenuation = (1.f - ((1.f - spotFactor) * (1.f / (1.f - input.cosAngle.x))));
+	float linearAttenuation =  Attenuation(toLight, input.range);
+	float attenuation = linearAttenuation * angularAttenuation;
 	float3 lightColor = color.rgb * 10 * attenuation;
 	float3 directSpec = F * D * V * NdotL * lightColor;
-	
 	return float4(directSpec, 1.f);
 };

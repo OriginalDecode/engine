@@ -50,12 +50,16 @@ namespace Snowblind
 			if (mySurfaces.Size() > 0)
 			{
 				//Check the lightpass if you're confused about when the lightmeshes gets their constantbuffers.
-				
+
 				for (u32 i = 0; i < mySurfaces.Size(); i++)
 				{
 					myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 					mySurfaces[i]->Activate();
-					myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
+					if (!myIsLightMesh)
+						myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
+					else
+						myContext->Draw(mySurfaces[i]->GetVertexCount(), 0);
+
 					mySurfaces[i]->Deactivate();
 				}
 

@@ -27,6 +27,12 @@ namespace Snowblind
 		return myData;
 	}
 
+	void CSpotLight::DoTranslation(const CU::Matrix44f& translationMatrix)
+	{
+		myData.myOrientation = translationMatrix * myBaseMatrix;
+		SetDirection(myData.myOrientation.GetForward());
+	}
+
 	void CSpotLight::SetPosition(const CU::Vector3f& aPosition)
 	{
 		myLightMesh->SetPosition(aPosition);

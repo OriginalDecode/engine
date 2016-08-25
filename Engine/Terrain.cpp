@@ -3,6 +3,8 @@
 #include "TGA32.h"
 #include "Surface.h"
 
+#define DIVIDE 255.f
+
 namespace Snowblind
 {
 	CTerrain::CTerrain()
@@ -82,7 +84,7 @@ namespace Snowblind
 			{
 				SVertexPosNormUVBiTang vertex;
 				vertex.position.x = position.x + float(x) * width / float(myHeightmap->myWidth);
-				vertex.position.y = position.y + myHeightmap->myData[(myHeightmap->myDepth - (1 + z)) * myHeightmap->myWidth + x] * 128.f / 255.f;
+				vertex.position.y = position.y + myHeightmap->myData[(myHeightmap->myDepth - (1 + z)) * myHeightmap->myWidth + x] * 128.f / DIVIDE;
 				vertex.position.z = position.z + float(z) * height / float(myHeightmap->myDepth);
 				vertex.uv.x = float(x) / float(myHeightmap->myWidth);
 				vertex.uv.y = float(1.f - z) / float(myHeightmap->myDepth);
@@ -182,7 +184,7 @@ namespace Snowblind
 	{
 		unsigned int height = myHeightmap->myDepth;
 		unsigned int width = myHeightmap->myWidth;
-		float yScale = 128.f / 255.f;
+		float yScale = 128.f / DIVIDE;
 		yScale *= 0.2f;
 		//float xScale = mySize.x / myHeightMap->myDepth;
 		float xzScale = float(myDepth) / float(myHeightmap->myDepth);
@@ -211,12 +213,12 @@ namespace Snowblind
 
 	float CTerrain::GetHeight(unsigned int aX, unsigned int aY) const
 	{
-		return myHeightmap->myData[(myHeightmap->myDepth - (1 + aY)) * myHeightmap->myWidth + aX] / 255.f;
+		return myHeightmap->myData[(myHeightmap->myDepth - (1 + aY)) * myHeightmap->myWidth + aX] / DIVIDE;
 	}
 
 	float CTerrain::GetHeight(unsigned int aIndex) const
 	{
-		return myHeightmap->myData[aIndex] / 255.f;
+		return myHeightmap->myData[aIndex] / DIVIDE;
 	}
 
 	SHeightMap* SHeightMap::Create(const char* aFilePath)

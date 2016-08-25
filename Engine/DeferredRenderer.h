@@ -36,16 +36,16 @@ namespace Snowblind
 		~CDeferredRenderer();
 		void SetTargets();
 		void SetBuffers();
-		void DeferredRender();
+		void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
 
 
 		void Finalize();
-		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
 
 		//void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 		CTexture* GetDepthStencil();
 		CGBuffer* GetGBuffer();
 	private:
+		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
 
 		void CreateFullscreenQuad();
 		void InitConstantBuffer();

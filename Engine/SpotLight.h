@@ -18,8 +18,11 @@ namespace Snowblind
 		void SetPosition(const CU::Vector3f& aPosition);
 		void SetDirection(const CU::Vector4f& aDirection);
 		SSpotlightData& GetData();
-		CU::Matrix44f myBaseMatrix;
+
+		void DoTranslation(const CU::Matrix44f& translationMatrix);
+
 	private:
+		CU::Matrix44f myBaseMatrix;
 		SSpotlightData myData;
 		CInstance* myLightMesh = nullptr;
 	};

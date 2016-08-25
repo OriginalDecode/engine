@@ -82,7 +82,6 @@ namespace Snowblind
 
 		//myConsole = new CConsole();
 		//myConsole->Initiate(my2DCamera);
-
 		myTimeManager = new CU::TimeManager();
 
 	}

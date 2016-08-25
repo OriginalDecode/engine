@@ -43,11 +43,10 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 
 	JSONReader reader("Data/Levels/level_01.json");
 
-	//3d picking
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/playground.tga", CU::Vector3f(512, 0, 0), CU::Vector2f(512, 512)));
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(512, 0, 512), CU::Vector2f(512, 512)));
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/T_heightmap_level_00.tga", CU::Vector3f(0, 0, 512), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 500), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(500, 0, 0), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(500, 0, 500), CU::Vector2f(512, 512)));
 
 	for (u32 i = 0; i < 1; i++)
 	{
@@ -180,9 +179,6 @@ void CGame::Update(float aDeltaTime)
 
 	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
 	myEntityManager->Update(aDeltaTime);
-
-
-
 
 	mySynchronizer->AddRenderCommand(SRenderCommand(eType::TERRAIN));
 }

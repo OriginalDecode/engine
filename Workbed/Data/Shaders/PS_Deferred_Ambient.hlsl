@@ -57,9 +57,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);
 	float4 normal = NormalTexture.Sample(point_Clamp, input.uv);
+	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
 	normal.xyz *= 2.0f;
 	normal.xyz -= 1.f;
-	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
 	float roughness = depth.y;
 	float roughnessOffsetted = pow(8192, roughness);
 	float x = input.uv.x * 2.f - 1.f;
@@ -88,15 +88,22 @@ float4 PS(VS_OUTPUT input) : SV_Target
   
 
 
+
 	float3 reflectionFrensnel =	fresnel;
 	float3 reflectionVector = reflect(toEye, normal);
     
 	float fakeLysSpecularPower = (2.f / (roughness * roughness)) - 2.f;
 	float lysMipMap = GetSpecPowToMip(fakeLysSpecularPower, 12);
     
+	float3 ambientDiffuse = ao * metalnessAlbedo * (1.f-reflectionFrensnel); 
+	if(metalness.x > 0.f && roughness < 1.f)
+	{
+		ambientDiffuse = CubeMap.SampleLevel(point_Clamp, normal, 8).rgb * ao 
+		* metalnessAlbedo * (1.f - reflectionFrensnel);
+	}
 
-	float3 ambientDiffuse = CubeMap.SampleLevel(point_Clamp, normal, 8).rgb * ao 
-	* metalnessAlbedo * (1.f - reflectionFrensnel);
+
+
 	float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector, lysMipMap).xyz 
 	* ao * reflectionFrensnel;
     

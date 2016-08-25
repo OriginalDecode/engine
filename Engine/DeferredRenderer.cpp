@@ -78,8 +78,9 @@ namespace Snowblind
 		myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
-	void CDeferredRenderer::DeferredRender()
+	void CDeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
 	{
+		UpdateConstantBuffer(previousOrientation, aProjection);
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		SetBuffers();
 

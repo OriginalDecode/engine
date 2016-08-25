@@ -98,7 +98,6 @@ namespace Snowblind
 	private:
 		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
 		~CEngine();
-
 		void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
 
 		static CEngine* myInstance;

@@ -1,5 +1,6 @@
 #pragma once
 #include "../CommonLib/DataStructures/GrowingArray.h"
+#include "../CommonLib/Math/Vector/Vector.h"
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btBroadphaseInterface;
@@ -21,6 +22,9 @@ public:
 	CRigidBody* CreateBody();
 	float GetGravityForce();
 	void Update(double& additionalTime);
+	CU::Vector3f RayCast(const CU::Vector3f& cameraPosition, const CU::Vector3f& target) const;
+
+
 private:
 
 	btDefaultCollisionConfiguration* myDefaultCollisionConfiguration = nullptr;

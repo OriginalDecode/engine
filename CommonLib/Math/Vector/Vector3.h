@@ -10,18 +10,18 @@ namespace CommonUtilities
 		template<typename T>
 		Vector3<T>::Vector3(T anX, T anY, T anZ)
 		{
-			myX = anX;
-			myY = anY;
-			myZ = anZ;
+			x = anX;
+			y = anY;
+			z = anZ;
 		};
 
 
 		template<typename T>
 		Vector3<T>::Vector3(const Vector2<T>& aVector, T aZ)
 		{
-			myX = aVector.x;
-			myY = aVector.y;
-			myZ = aZ;
+			x = aVector.x;
+			y = aVector.y;
+			z = aZ;
 		}
 
 		template<typename T>

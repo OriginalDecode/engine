@@ -78,8 +78,27 @@ void CApplication::UpdateInput(float aDeltaTime)
 			myQuitFlag = true;
 		}
 
-		myCursorPosition.x += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectX()) * 0.01f;
-		myCursorPosition.y += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectY()) * 0.01f;
+		//myCursorPosition.x += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectX()) * 0.01f;
+
+		if (CU::Input::InputWrapper::GetInstance()->KeyDown(UP_ARROW))
+		{
+			myCursorPosition.y += 0.01f;
+		}
+		if (CU::Input::InputWrapper::GetInstance()->KeyDown(DOWN_ARROW))
+		{
+			myCursorPosition.y -= 0.01f;
+		}
+
+		if (CU::Input::InputWrapper::GetInstance()->KeyDown(RIGHT_ARROW))
+		{
+			myCursorPosition.x += 0.01f;
+		}
+		if (CU::Input::InputWrapper::GetInstance()->KeyDown(LEFT_ARROW))
+		{
+			myCursorPosition.x -= 0.01f;
+		}
+
+		//myCursorPosition.y += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectY()) * 0.01f;
 
 
 		myCursorPosition.y = fmaxf(fminf(3.1415f / 2.f, myCursorPosition.y), -3.1415f / 2.f);

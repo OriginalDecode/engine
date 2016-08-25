@@ -19,17 +19,17 @@ namespace CommonUtilities
 		template<typename T>
 		Vector4<T>::Vector4(const Vector3<T>& aVector, T anW)
 		{
-			myX = aVector.X;
-			myY = aVector.Y;
-			myZ = aVector.Z;
+			myX = aVector.x;
+			myY = aVector.y;
+			myZ = aVector.z;
 			myW = anW;
 		}
 
 		template<typename T>
 		Vector4<T>::Vector4(const Vector2<T>& aVector, T anZ, T anW)
 		{
-			myX = aVector.X;
-			myY = aVector.Y;
+			myX = aVector.x;
+			myY = aVector.y;
 			myZ = anZ;
 			myW = anW;
 		}

@@ -141,6 +141,9 @@ namespace CommonUtilities
 			bool GetActivateWindow();
 			void Reset();
 
+			float GetX() { return myMousePos.myX; }
+			float GetY() { return myMousePos.myY; }
+
 		private:
 			static InputWrapper* myInstance;
 			InputWrapper(HWND aHWND, HINSTANCE hInstance);

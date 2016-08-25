@@ -1,11 +1,16 @@
 #pragma once
 #include <DataStructures/GrowingArray.h>
+#include <Math/Vector/Vector.h>
+#include <string>
+#include <Line3D.h>
 
 namespace Snowblind
 {
 	class CSynchronizer;
 	class CTerrain;
 	class CEngine;
+	class CMousePicker;
+	class CModel;
 };
 
 class CEntityManager;
@@ -32,7 +37,15 @@ private:
 
 	Snowblind::CSynchronizer* mySynchronizer;
 	Snowblind::CEngine* myEngine;
+	Snowblind::CMousePicker* myPicker;
+	std::string myModelKey;
 	CEntityManager* myEntityManager;
 	CPhysicsManager* myPhysicsManager;
+	CU::Vector3f pointHit;
+	CU::Vector3f currentRay;
+
+
+	SLinePoint raycast[2];
+
 };
 

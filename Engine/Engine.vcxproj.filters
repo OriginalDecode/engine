@@ -208,7 +208,6 @@
       <Filter>Utilities\SystemMonitor</Filter>
     </ClInclude>
     <ClInclude Include="snowblind_shared.h" />
-    <ClInclude Include="TGA32.h" />
     <ClInclude Include="LightPass.h">
       <Filter>Rendering\Passes</Filter>
     </ClInclude>
@@ -224,7 +223,13 @@
     <ClInclude Include="Line3D.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="GBuffer.h" />
+    <ClInclude Include="GBuffer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="TGA32.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="MousePicker.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -326,7 +331,6 @@
     <ClCompile Include="SystemMonitor.cpp">
       <Filter>Utilities\SystemMonitor</Filter>
     </ClCompile>
-    <ClCompile Include="TGA32.cpp" />
     <ClCompile Include="LightPass.cpp">
       <Filter>Rendering\Passes</Filter>
     </ClCompile>
@@ -339,6 +343,12 @@
     <ClCompile Include="Line3D.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="GBuffer.cpp" />
+    <ClCompile Include="GBuffer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="TGA32.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="MousePicker.cpp" />
   </ItemGroup>
 </Project>

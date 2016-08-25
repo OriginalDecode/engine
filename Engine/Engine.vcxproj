@@ -210,6 +210,10 @@
     <ClInclude Include="Line3D.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelImporter.h" />
+    <ClInclude Include="MousePicker.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />
@@ -263,6 +267,10 @@
     <ClCompile Include="Line3D.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelImporter.cpp" />
+    <ClCompile Include="MousePicker.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="RenderCommand.cpp" />

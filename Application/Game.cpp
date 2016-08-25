@@ -28,10 +28,11 @@
 #include <DL_Debug.h>
 #include <Engine.h>
 #include <Terrain.h>
-
+#include <Camera.h>
 #include <Utilities.h>
-
-
+#include <MousePicker.h>
+#include "../Input/InputWrapper.h"
+#include <Model.h>
 CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	: mySynchronizer(aSynchronizer)
 {
@@ -135,10 +136,14 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	myEntityManager->AddSystem<CPhysicsSystem>(myPhysicsManager);
 	myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);
 	myEntityManager->AddSystem<CLightSystem>(mySynchronizer);
+
+	myPicker = new Snowblind::CMousePicker();
+	myModelKey = myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
 }
 
 CGame::~CGame()
 {
+	SAFE_DELETE(myPicker);
 	SAFE_DELETE(myPhysicsManager);
 	SAFE_DELETE(myEntityManager);
 	myTerrain.DeleteAll();
@@ -177,8 +182,30 @@ void CGame::Update(float aDeltaTime)
 	else
 		ss << locTime.second;
 
+
+	if (CU::Input::InputWrapper::GetInstance()->MouseDown(0))
+	{
+		pointHit = myPhysicsManager->RayCast(myEngine->GetCamera()->GetPosition(), myPicker->GetCurrentRay());
+
+		currentRay = pointHit;
+		raycast[0] = SLinePoint(myEngine->GetCamera()->GetPosition(), CU::Vector3f(0, 1, 0));
+		raycast[1] = SLinePoint(pointHit, CU::Vector3f(0, 1, 0));
+	}
+
+
+	std::stringstream p;
+	p << "Raycast Point" << "\nX : " << pointHit.x << "\nY : " << pointHit.y << "\nZ : " << pointHit.z;
+
+	std::stringstream c;
+	c << "Cursor Coord" << "\nX : " << CU::Input::InputWrapper::GetInstance()->GetX() << "\nY : " << CU::Input::InputWrapper::GetInstance()->GetY() <<"\nRay coord" << "\nX : "<<currentRay.x << "\nY : " << currentRay.y << "\nZ : " << currentRay.z;
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(c.str(), { 200, 900 }, eType::TEXT));
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(p.str(), { 0, 900 }, eType::TEXT));
 	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
 	myEntityManager->Update(aDeltaTime);
+	mySynchronizer->AddRenderCommand(SRenderCommand(eType::MODEL, myModelKey, pointHit));
+	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
 
 	mySynchronizer->AddRenderCommand(SRenderCommand(eType::TERRAIN));
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "Matrix44Decl.h"
+#include "../Vector/Vector3.h"
 namespace CommonUtilities
 {
 	typedef Math::Matrix44<float> Matrix44f;
@@ -44,75 +45,75 @@ namespace CommonUtilities
 
 			switch (rotation)
 			{
-			case RotationType::Axis_X:
+				case RotationType::Axis_X:
 
-				matrix.myMatrix[0] = 1;
-				matrix.myMatrix[1] = 0;
-				matrix.myMatrix[2] = 0;
-				matrix.myMatrix[3] = 0;
+					matrix.myMatrix[0] = 1;
+					matrix.myMatrix[1] = 0;
+					matrix.myMatrix[2] = 0;
+					matrix.myMatrix[3] = 0;
 
-				matrix.myMatrix[4] = 0;
-				matrix.myMatrix[5] = someCos;
-				matrix.myMatrix[6] = someSin;
-				matrix.myMatrix[7] = 0;
+					matrix.myMatrix[4] = 0;
+					matrix.myMatrix[5] = someCos;
+					matrix.myMatrix[6] = someSin;
+					matrix.myMatrix[7] = 0;
 
-				matrix.myMatrix[8] = 0;
-				matrix.myMatrix[9] = -someSin;
-				matrix.myMatrix[10] = someCos;
-				matrix.myMatrix[11] = 0;
+					matrix.myMatrix[8] = 0;
+					matrix.myMatrix[9] = -someSin;
+					matrix.myMatrix[10] = someCos;
+					matrix.myMatrix[11] = 0;
 
-				matrix.myMatrix[12] = 0;
-				matrix.myMatrix[13] = 0;
-				matrix.myMatrix[14] = 0;
-				matrix.myMatrix[15] = 1;
-				break;
+					matrix.myMatrix[12] = 0;
+					matrix.myMatrix[13] = 0;
+					matrix.myMatrix[14] = 0;
+					matrix.myMatrix[15] = 1;
+					break;
 
-			case RotationType::Axis_Y:
+				case RotationType::Axis_Y:
 
-				matrix.myMatrix[0] = someCos;
-				matrix.myMatrix[1] = 0;
-				matrix.myMatrix[2] = -someSin;
-				matrix.myMatrix[3] = 0;
+					matrix.myMatrix[0] = someCos;
+					matrix.myMatrix[1] = 0;
+					matrix.myMatrix[2] = -someSin;
+					matrix.myMatrix[3] = 0;
 
-				matrix.myMatrix[4] = 0;
-				matrix.myMatrix[5] = 1;
-				matrix.myMatrix[6] = 0;
-				matrix.myMatrix[7] = 0;
+					matrix.myMatrix[4] = 0;
+					matrix.myMatrix[5] = 1;
+					matrix.myMatrix[6] = 0;
+					matrix.myMatrix[7] = 0;
 
-				matrix.myMatrix[8] = someSin;
-				matrix.myMatrix[9] = 0;
-				matrix.myMatrix[10] = someCos;
-				matrix.myMatrix[11] = 0;
+					matrix.myMatrix[8] = someSin;
+					matrix.myMatrix[9] = 0;
+					matrix.myMatrix[10] = someCos;
+					matrix.myMatrix[11] = 0;
 
-				matrix.myMatrix[12] = 0;
-				matrix.myMatrix[13] = 0;
-				matrix.myMatrix[14] = 0;
-				matrix.myMatrix[15] = 1;
+					matrix.myMatrix[12] = 0;
+					matrix.myMatrix[13] = 0;
+					matrix.myMatrix[14] = 0;
+					matrix.myMatrix[15] = 1;
 
-				break;
+					break;
 
-			case RotationType::Axis_Z:
+				case RotationType::Axis_Z:
 
-				matrix.myMatrix[0] = someCos;
-				matrix.myMatrix[1] = someSin;
-				matrix.myMatrix[2] = 0;
-				matrix.myMatrix[3] = 0;
+					matrix.myMatrix[0] = someCos;
+					matrix.myMatrix[1] = someSin;
+					matrix.myMatrix[2] = 0;
+					matrix.myMatrix[3] = 0;
 
-				matrix.myMatrix[4] = -someSin;
-				matrix.myMatrix[5] = someCos;
-				matrix.myMatrix[6] = 0;
-				matrix.myMatrix[7] = 0;
+					matrix.myMatrix[4] = -someSin;
+					matrix.myMatrix[5] = someCos;
+					matrix.myMatrix[6] = 0;
+					matrix.myMatrix[7] = 0;
 
-				matrix.myMatrix[8] = 0;
-				matrix.myMatrix[9] = 0;
-				matrix.myMatrix[10] = 1;
-				matrix.myMatrix[11] = 0;
+					matrix.myMatrix[8] = 0;
+					matrix.myMatrix[9] = 0;
+					matrix.myMatrix[10] = 1;
+					matrix.myMatrix[11] = 0;
 
-				matrix.myMatrix[12] = 0;
-				matrix.myMatrix[13] = 0;
-				matrix.myMatrix[14] = 0;
-				matrix.myMatrix[15] = 1;
-				break;
+					matrix.myMatrix[12] = 0;
+					matrix.myMatrix[13] = 0;
+					matrix.myMatrix[14] = 0;
+					matrix.myMatrix[15] = 1;
+					break;
 
 			}
 
@@ -377,6 +378,28 @@ namespace CommonUtilities
 			Vector4<TYPE> tempVector(aVector);
 			return tempVector *= aMatrix;
 		}
+
+		template<typename TYPE>
+		const Vector4<TYPE> operator*(const Matrix44<TYPE>& matrix, const Vector4<TYPE>& vector)
+		{
+			Vector4<TYPE> toReturn;
+			toReturn.x = Dot(matrix.rows[0], vector);
+			toReturn.y = Dot(matrix.rows[1], vector);
+			toReturn.z = Dot(matrix.rows[2], vector);
+			toReturn.w = Dot(matrix.rows[3], vector);
+			return toReturn;
+		}
+
+		template<typename TYPE>
+		const Vector3<TYPE> operator*(const Matrix44<TYPE>& matrix, const Vector3<TYPE>& vector)
+		{
+			return Vector3<TYPE>(
+				matrix.myMatrix[0] * vector.x + matrix.myMatrix[1] * vector.y + matrix.myMatrix[2] * vector.z,
+				matrix.myMatrix[4] * vector.x + matrix.myMatrix[5] * vector.y + matrix.myMatrix[6] * vector.z,
+				matrix.myMatrix[8] * vector.x + matrix.myMatrix[9] * vector.y + matrix.myMatrix[10] * vector.z);
+		}
+
+
 
 
 		template<typename TYPE>

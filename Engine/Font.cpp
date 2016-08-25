@@ -232,7 +232,7 @@ namespace Snowblind
 
 		u32 count = u32(myText.length());
 		float z = 0.f;
-		float drawX = 5.f;
+		float drawX = 0.f;
 		float drawY = -5.f;
 		float maxDrawY = 0.f;
 		myVertices.RemoveAll();

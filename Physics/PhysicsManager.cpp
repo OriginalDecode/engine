@@ -21,6 +21,9 @@ CPhysicsManager::CPhysicsManager()
 
 	myDynamicsWorld->setGravity(btVector3(0, -myGravity, 0));
 	
+	
+
+
 	myZeroPlane = new CRigidBody();
 	Add(myZeroPlane->InitAsPlane(btVector3(0, 1, 0)));
 }
@@ -66,4 +69,18 @@ float CPhysicsManager::GetGravityForce()
 void CPhysicsManager::Update(double& additionalTime)
 {
 	myDynamicsWorld->stepSimulation(1.f / 60.f, 1);
+}
+
+CU::Vector3f CPhysicsManager::RayCast(const CU::Vector3f& cameraPosition, const CU::Vector3f& target) const
+{
+	btVector3 from = btVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+	btVector3 to = btVector3(cameraPosition.x + target.x * 125.f, cameraPosition.y + target.y * 125.f, cameraPosition.z + target.z * 125.f);
+
+	btCollisionWorld::ClosestRayResultCallback result(from, to);
+	myDynamicsWorld->rayTest(from, to, result);
+	if (result.hasHit())
+		return CU::Vector3f(result.m_hitPointWorld.getX(), result.m_hitPointWorld.getY(), result.m_hitPointWorld.getZ());
+
+
+	return CU::Vector3f();
 }

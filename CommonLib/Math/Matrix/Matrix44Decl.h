@@ -20,14 +20,20 @@ namespace CommonUtilities
 			const TYPE& operator[](const int& anIndex) const;
 			TYPE& operator[](const int& anIndex);
 
+
 			static Matrix44<TYPE> CreateRotateAroundX(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateRotateAroundY(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateRotateAroundZ(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateProjectionMatrixLH(TYPE aNearZ, TYPE aFarZ, TYPE anAspectRatio, TYPE aFoVAngle);
 			static Matrix44<TYPE> CreateOrthogonalMatrixLH(TYPE aWidth, TYPE aHeight, TYPE aNearZ, TYPE aFarZ);
 
-			TYPE myMatrix[16]; 
-			
+
+			union
+			{
+				TYPE myMatrix[16];
+				Vector4<TYPE> rows[4];
+			};
+
 
 			void ConvertFromCol(const TYPE aColMatrix[16]);
 			void InitWithArray(const TYPE aColMatrix[16]);
@@ -85,6 +91,8 @@ namespace CommonUtilities
 			const Matrix44<TYPE> Calculate(const RotationType& rotation, const TYPE& cos, const TYPE& sin);
 		};
 
+
+
 		template<typename TYPE>
 		void CommonUtilities::Math::Matrix44<TYPE>::InitWithArray(const TYPE aColMatrix[16])
 		{
@@ -131,5 +139,5 @@ namespace CommonUtilities
 
 	};
 };
-	namespace CU = CommonUtilities;
+namespace CU = CommonUtilities;
 

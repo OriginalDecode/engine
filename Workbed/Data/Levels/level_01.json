@@ -6,31 +6,32 @@
 			"position" : [ 0, 0, 25 ]
 		},
 		"object" : 	{ 
-			"entity":"Data/Levels/spotlight.json", 
-			"position" : [ 0, 0, 35 ],
-			"color": [ 0, 0, 255 ],
-			"angle": 45, 
-			"direction" : [ 45, 0, 0], 
-			"range" : 25
-		},
-		"object" : 	{ 
 			"entity":"Data/Levels/pointlight.json", 
 			"position" : [ 0, 0, 25 ],
 			"color": [ 0, 0, 255 ],
 			"intensity": 1, 
-			"range" : 5
+			"range" : 25
 		},
 		"object" : 	{ 
-			"entity":"Data/Levels/spotlight.json", 
-			"position" : [ 1024, 256, 512 ],
-			"color": [ 0, 0, 255 ],
-			"angle": 45, 
-			"direction" : [ 45, -90, 0], 
-			"range" : 512
+			"entity":"Data/Levels/pointlight.json", 
+			"position" : [ 0, 0, 35 ],
+			"color": [ 255, 0, 255 ],
+			"intensity": 1, 
+			"range" : 25
 		},
 		"object" : 	{ 
-			"entity":"Data/Levels/entity3.json", 
-			"position" : [ 80, 1000, 150 ]
+			"entity":"Data/Levels/pointlight.json", 
+			"position" : [ 10, 0, 30 ],
+			"color": [ 0, 255, 0 ],
+			"intensity": 1, 
+			"range" : 25
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/pointlight.json", 
+			"position" : [ -10, 0, 30 ],
+			"color": [ 255, 0, 0 ],
+			"intensity": 1, 
+			"range" : 25
 		}
 	}	
 }

@@ -2,7 +2,7 @@
 #include "Texture.h"
 
 #include <DDSTextureLoader.h>
-
+#include <ScreenGrab.h>
 namespace Snowblind
 {
 	CTexture::CTexture()
@@ -246,6 +246,19 @@ namespace Snowblind
 		hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), resource, D3DX11_IMAGE_FILE_FORMAT::D3DX11_IFF_DDS, aFileName);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save Texture! ");
 		resource->Release();*/
+	}
+
+	HRESULT CTexture::SaveToFile(ID3D11Texture2D*& texture_resource, const std::string& file_name)
+	{
+		ID3D11Resource* resource = nullptr;
+		HRESULT hr = texture_resource->QueryInterface(IID_ID3D11Texture2D, (void**)&resource);
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to query interface of texture_resource");
+		std::wstring middle_hand(file_name.begin(), file_name.end());
+		LPCWSTR new_name(middle_hand.c_str());
+		hr = DirectX::SaveDDSTextureToFile(CEngine::GetDirectX()->GetContext(), resource, new_name);
+		resource->Release();
+		resource = nullptr;
+		return S_OK;
 	}
 
 	void CTexture::CreateDepthStencilView(float aWidth, float aHeight, int aArraySize)

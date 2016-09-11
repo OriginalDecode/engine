@@ -49,7 +49,10 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(500, 0, 0), CU::Vector2f(512, 512)));
 	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(500, 0, 500), CU::Vector2f(512, 512)));
 
-	for (u32 i = 0; i < 1; i++)
+
+	//Load this after we've got into the world?
+
+	for (s32 i = 0; i < myTerrain.Size(); i++)
 	{
 		myTerrainBodies.Add(myPhysicsManager->CreateBody());
 		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));

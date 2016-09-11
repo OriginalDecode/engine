@@ -14,7 +14,8 @@
 #include <D3D11.h>
 #include "Engine.h"
 #include <vector>
-//#define SAVE
+#include <ScreenGrab.h>
+#define SAVE
 #define SAVE_DDS
 #ifndef SAVE_DDS
 #define SAVE_PNG
@@ -363,20 +364,24 @@ namespace Snowblind
 			name = CL::substr(name, ".", true, 1);
 		}
 
-		/*
+		
 		std::stringstream ss3;
-		D3DX11_IMAGE_FILE_FORMAT format;
+		HRESULT hr = S_OK;
+		//D3DX11_IMAGE_FILE_FORMAT format;
 #ifdef SAVE_DDS
-		ss3 << "Glyphs/Atlas_" << name << ".dds";
-		format = D3DX11_IFF_DDS;
+		ss3 << "Glyphs/Atlas_" << name << "dds";
+		//hr = CTexture::SaveToFile(texture, ss3.str());
+		//format = D3DX11_IFsF_DDS;
 #endif
 #ifdef SAVE_PNG
 		ss3 << "Glyphs/Atlas_" << name << ".png";
 		format = D3DX11_IFF_PNG;
 #endif
-		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss3.str().c_str());
+		//HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss3.str().c_str());
+		texture->Release();
+		texture = nullptr;
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
-		*/
+		
 	}
 
 	void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline)
@@ -422,9 +427,9 @@ namespace Snowblind
 		format = D3DX11_IFF_PNG;
 #endif
 		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss.str().c_str());
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
+		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");*/
 		texture->Release();
-		*/
+		
 	}
 
 	void CFontManager::CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, int aBorderOffset)

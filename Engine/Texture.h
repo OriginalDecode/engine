@@ -37,6 +37,7 @@ namespace Snowblind
 		void SetTexture(ID3D11ShaderResourceView* aShaderResource);
 
 		void SaveToFile(const char* aFileName, int aSize);
+		static HRESULT SaveToFile(ID3D11Texture2D*& texture_resource, const std::string& file_name);
 
 		void CreateDepthStencilView(float aWidth, float aHeight, int aArraySize = 1);
 		void CopyData(ID3D11Texture2D* source);

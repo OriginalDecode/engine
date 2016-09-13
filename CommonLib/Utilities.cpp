@@ -119,4 +119,63 @@ namespace CL
 		return aDegree = aDegree * (3.1415926535f / 180);
 	}
 
+	float CalcPointOnCurve(float x, float y, float t)
+	{
+		float diff = y - x;
+		return x + (diff * t);
+	}
+
+	CU::Vector2f Bezier(CU::Vector2f p1, CU::Vector2f p2, CU::Vector2f p3, float t)
+	{
+		float xa = CalcPointOnCurve(p1.x, p2.x, t);
+		float ya = CalcPointOnCurve(p1.y, p2.y, t);
+
+		float xb = CalcPointOnCurve(p2.x, p3.x, t);
+		float yb = CalcPointOnCurve(p2.y, p3.y, t);
+
+		CU::Vector2f toReturn;
+		toReturn.x = CalcPointOnCurve(xa, xb, t);
+		toReturn.y = CalcPointOnCurve(ya, yb, t);
+		return toReturn;
+	}
+
+	CU::Vector3f Bezier(CU::Vector3f p1, CU::Vector3f p2, CU::Vector3f p3, float t)
+	{
+		float u = 1.f - t;
+
+		float tt = t * t;
+
+		float uu = u * u;
+
+		float uuu = uu * u;
+
+		float ttt = tt * t;
+
+		CU::Vector3f toReturn = p1 * uuu;
+		toReturn += p2 * (3 * uu * t);
+		toReturn += p3 * (3 * u * tt);
+		toReturn += p3 * ttt;
+		return toReturn;
+	}
+
+	CU::Vector3f CubicBezier(CU::Vector3f p1, CU::Vector3f p2, CU::Vector3f p3, CU::Vector3f p4, float t)
+	{
+		float u = 1.f - t;
+
+		float tt = t * t;
+
+		float uu = u * u;
+
+		float uuu = u * u * u;
+
+		float ttt = t* t * t;
+
+		CU::Vector3f toReturn = p1 * uuu;
+		toReturn += p2 * (3 * uu * t);
+		toReturn += p3 * (3 * u * tt);
+		toReturn += p4 * ttt;
+		return toReturn;
+	}
+	
+	
 }

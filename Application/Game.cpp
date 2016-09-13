@@ -50,6 +50,12 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(500, 0, 500), CU::Vector2f(512, 512)));
 
 
+	p1 = CU::Vector3f(0.f, 0.f, 0.f);
+	p2 = CU::Vector3f(25.f, 25.f, 0.f);
+	p3 = CU::Vector3f(50.f, 25.f, 0.f);
+	p4 = CU::Vector3f(75.f, 0.f, 0.f);
+	p5 = CU::Vector3f(37.5f, 25.f, 0.f);
+
 	//Load this after we've got into the world?
 
 	for (s32 i = 0; i < myTerrain.Size(); i++)
@@ -200,10 +206,60 @@ void CGame::Update(float aDeltaTime)
 	p << "Raycast Point" << "\nX : " << pointHit.x << "\nY : " << pointHit.y << "\nZ : " << pointHit.z;
 
 	std::stringstream c;
-	c << "Cursor Coord" << "\nX : " << CU::Input::InputWrapper::GetInstance()->GetX() << "\nY : " << CU::Input::InputWrapper::GetInstance()->GetY() <<"\nRay coord" << "\nX : "<<currentRay.x << "\nY : " << currentRay.y << "\nZ : " << currentRay.z;
+	c << "Cursor Coord" << "\nX : " << CU::Input::InputWrapper::GetInstance()->GetX() << "\nY : " << CU::Input::InputWrapper::GetInstance()->GetY() << "\nRay coord" << "\nX : " << currentRay.x << "\nY : " << currentRay.y << "\nZ : " << currentRay.z;
+
+
+	if (triggered)
+	{
+		lifetime += aDeltaTime;
+		m_position = CL::CubicBezier(p1, p2, p3, p4, lifetime / 4.f);
+		m_position2 = CL::Bezier(p1, p5, p4, lifetime / 4.f);
+		if (lifetime >= 4.f)
+		{
+			m_position = p1;
+			m_position2 = p1;
+			lifetime = 0.f;
+		}
+	}
+
+	SLinePoint point1;
+	SLinePoint point2;
+	SLinePoint point3;
+	SLinePoint point4;
+	SLinePoint point5;
+
+	point1.position = p1;
+	point1.color = CU::Vector3f(1.f, 0.f, 0.f);
+	point2.position = p2;
+	point2.color = CU::Vector3f(0.f, 1.f, 0.f);
+	point3.position = p3;
+	point3.color = CU::Vector3f(0.f, 0.f, 1.f);
+	point4.position = p4;
+	point4.color = CU::Vector3f(1.f, 0.f, 1.f);
+	point5.position = p5;
+	point5.color = CU::Vector3f(1.f, 0.f, 1.f);
+
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, point1, point2));
+	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, point2, point3));
+	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, point3, point4));
+	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, point3, point4));
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, point1, point5));
+	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, point5, point4));
+
+
+	mySynchronizer->AddRenderCommand(SRenderCommand(eType::MODEL, myModelKey, m_position));
+	mySynchronizer->AddRenderCommand(SRenderCommand(eType::MODEL, myModelKey, m_position2));
+
+	if (CU::Input::InputWrapper::GetInstance()->KeyDown(Y))
+	{
+		triggered = true;
+
+	}
+
 
 	mySynchronizer->AddRenderCommand(SRenderCommand(c.str(), { 200, 900 }, eType::TEXT));
-
 	mySynchronizer->AddRenderCommand(SRenderCommand(p.str(), { 0, 900 }, eType::TEXT));
 	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
 	myEntityManager->Update(aDeltaTime);

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <math.h>
+#include "Math/Vector/Vector.h"
 namespace CL
 {
 	unsigned long long nearest_Pow(unsigned long long aNum);
@@ -58,6 +59,11 @@ namespace CL
 
 	float RadToDegree(float aRadian);
 	float DegreeToRad(float aDegree);
+
+	float CalcPointOnCurve(float x, float y, float t);
+	CU::Vector2f Bezier(CU::Vector2f p1, CU::Vector2f p2, CU::Vector2f p3, float t);
+	CU::Vector3f Bezier(CU::Vector3f p1, CU::Vector3f p2, CU::Vector3f p3, float t);
+	CU::Vector3f CubicBezier(CU::Vector3f p1, CU::Vector3f p2, CU::Vector3f p3, CU::Vector3f p4, float t);
 
 
 

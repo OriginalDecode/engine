@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_map>
+#include "ShaderWarningHandler.h"
 
 struct ID3D11VertexShader;
 struct ID3D11PixelShader;
@@ -60,8 +61,10 @@ namespace Snowblind
 		~SComputeShader();
 		ID3D11ComputeShader* computeShader = nullptr;
 	};
+}
 
-
+namespace Snowblind
+{
 	struct SVertexShader;
 	struct SPixelShader;
 	struct SGeometryShader;
@@ -88,11 +91,10 @@ namespace Snowblind
 
 		void CreateVertexShader(const std::string& aShader);
 		void CreatePixelShader(const std::string& aShader);
-
+		//Missing create Shader functions
 
 		void ReloadVertex(const std::string& aFilePath);
 		void ReloadPixel(const std::string& aFilePath);
-
 		void ReloadGeometry(const std::string& aFilePath);
 		void ReloadHull(const std::string& aFilePath);
 		void ReloadDomain(const std::string& aFilePath);
@@ -105,8 +107,21 @@ namespace Snowblind
 		std::unordered_map<std::string, SDomainShader*> myDomainShaders;
 		std::unordered_map<std::string, SComputeShader*> myComputeShaders;
 
-		CU::GrowingArray<FileWatcher*> myFileWatchers;
-		ShaderWarningHandler* myShaderWarningHandler;
+		enum class eShaderType
+		{
+			VERTEX,
+			PIXEL,
+			GEOMETRY,
+			HULL,
+			DOMAINS,
+			COMPUTE,
+			_COUNT
+		};
+		CU::StaticArray<FileWatcher*, static_cast<u32>(eShaderType::_COUNT)> myFileWatchers;
+
+
+
+		ShaderWarningHandler myShaderWarningHandler;
 		CU::GrowingArray<CEffect*> GetEffectArray(const std::string& aFilePath);
 
 	};

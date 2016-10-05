@@ -35,7 +35,6 @@ namespace Snowblind
 
 		CU::Math::Normalize(ray);
 		myCurrentRay = ray;
-
 	}
 
 	CU::Vector4f CMousePicker::ToEyeCoords(const CU::Vector4f& clipCoords)

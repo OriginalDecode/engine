@@ -2,18 +2,17 @@
 #include "DirectX11.h"
 
 #include <sstream>
-#include <stdlib.h>
 
 #define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
 
 namespace Snowblind
 {
-	CDirectX11::CDirectX11(HWND aWindowHandle, float aWidth, float aHeight)
-		: myWidth(aWidth)
-		, myHeight(aHeight)
-		, myHWND(aWindowHandle)
-		, myAPI("DirectX11")
+	bool CDirectX11::Initiate(HWND window_handle, float window_width, float window_height)
 	{
+		myAPI = "DirectX11";
+		myWindowWidth = window_width;
+		myWindowHeight = window_height;
+		myWindowHandle = window_handle;
 
 		CreateAdapterList();
 		CreateDeviceAndSwapchain();
@@ -25,44 +24,23 @@ namespace Snowblind
 		CreateBlendStates();
 		CreateSamplerStates();
 
+		return true;
 	}
 
-	CDirectX11::~CDirectX11()
-	{
-		myContext->ClearState();
-		myContext->Flush();
-		//Swap the full screen flags correctly if swapping between.
-		SAFE_RELEASE(myContext);
-		SAFE_RELEASE(myDevice);
-		if (myDebug != nullptr)
-		{
-			std::stringstream ss;
-			ss << "\nDebug is released last. Will report as Live Object! 0x" << myDebug << "\nWatch out for false reports. \n====\n";
-			OutputDebugString(ss.str().c_str());
-
-			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
-			SAFE_RELEASE(myDebug);
-		}
-
-
-
-#if defined (_DEBUG)
-		OutputDebugString("\nIntRef is something that D3D has internal. You cannot control these.\n\n");
-#endif
-
-	}
-
-	void CDirectX11::CleanUp()
+	bool CDirectX11::CleanUp()
 	{
 		for (auto it = myAdapters.begin(); it != myAdapters.end(); ++it)
 		{
-			SAFE_RELEASE(it->second);
+			return SafeRelease((it->second));
 		}
+
 
 		mySwapchain->SetFullscreenState(FALSE, nullptr);
 		myEngineFlags[static_cast<u16>(eEngineFlags::FULLSCREEN)] = FALSE;
 
-		SAFE_DELETE(myViewport);
+		return SafeDelete(myViewport);
+
+		return SafeRelease(myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
 
 		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_ENABLED)]);
 		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_DISABLED)]);
@@ -89,6 +67,26 @@ namespace Snowblind
 		SAFE_RELEASE(myDepthBuffer);
 		SAFE_RELEASE(myRenderTarget);
 		SAFE_RELEASE(mySwapchain);
+
+
+		myContext->ClearState();
+		myContext->Flush();
+		//Swap the full screen flags correctly if swapping between.
+		SAFE_RELEASE(myContext);
+		SAFE_RELEASE(myDevice);
+		if (myDebug != nullptr)
+		{
+			std::stringstream ss;
+			ss << "\nDebug is released last. Will report as Live Object! 0x" << myDebug << "\nWatch out for false reports. \n====\n";
+			OutputDebugString(ss.str().c_str());
+
+			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
+			SAFE_RELEASE(myDebug);
+		}
+
+#if defined (_DEBUG)
+		OutputDebugString("\nIntRef is something that D3D has internal. You cannot control these.\n\n");
+#endif
 
 	}
 
@@ -157,8 +155,8 @@ namespace Snowblind
 
 		scDesc.BufferCount = 1;
 		scDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-		scDesc.BufferDesc.Width = UINT(myWidth);
-		scDesc.BufferDesc.Height = UINT(myHeight);
+		scDesc.BufferDesc.Width = UINT(myWindowWidth);
+		scDesc.BufferDesc.Height = UINT(myWindowHeight);
 		scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		scDesc.OutputWindow = myHWND;
 		scDesc.SampleDesc.Count = 1;
@@ -272,8 +270,8 @@ namespace Snowblind
 		D3D11_TEXTURE2D_DESC depthDesc;
 		ZeroMemory(&depthDesc, sizeof(depthDesc));
 
-		depthDesc.Width = UINT(myWidth);
-		depthDesc.Height = UINT(myHeight);
+		depthDesc.Width = UINT(myWindowWidth);
+		depthDesc.Height = UINT(myWindowHeight);
 		depthDesc.MipLevels = 1;
 		depthDesc.ArraySize = 1;
 		depthDesc.Format = DXGI_FORMAT_D32_FLOAT;//DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -322,8 +320,8 @@ namespace Snowblind
 		//ZeroMemory(&myViewport, sizeof(D3D11_VIEWPORT));
 		myViewport->TopLeftX = 0;
 		myViewport->TopLeftY = 0;
-		myViewport->Width = FLOAT(myWidth);
-		myViewport->Height = FLOAT(myHeight);
+		myViewport->Width = FLOAT(myWindowWidth);
+		myViewport->Height = FLOAT(myWindowHeight);
 		myViewport->MinDepth = 0.f;
 		myViewport->MaxDepth = 1.f;
 		myContext->RSSetViewports(1, myViewport);
@@ -823,7 +821,7 @@ namespace Snowblind
 
 		for (unsigned int i = 0; i < numModes; ++i)
 		{
-			if (displayModeList[i].Width == myWidth && displayModeList[i].Height == myHeight)
+			if (displayModeList[i].Width == myWindowWidth && displayModeList[i].Height == myWindowHeight)
 			{
 				aNumerator = displayModeList[i].RefreshRate.Numerator;
 				aDenominator = displayModeList[i].RefreshRate.Denominator;

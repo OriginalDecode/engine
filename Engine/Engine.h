@@ -109,7 +109,6 @@ namespace Snowblind
 		CFontManager* myFontManager;
 		CU::TimeManager* myTimeManager;
 		CSynchronizer* mySynchronizer;
-		CModel* model;
 		CRenderer* myRenderer;
 		CCamera*  myCamera;
 		CCamera*  my2DCamera;

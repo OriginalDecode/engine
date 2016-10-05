@@ -190,7 +190,7 @@ void CGame::Update(float aDeltaTime)
 	}
 	else
 		ss << locTime.second;
-
+	
 
 	if (CU::Input::InputWrapper::GetInstance()->MouseDown(0))
 	{

@@ -3,58 +3,34 @@
 #include <d3dcompiler.h>
 #include <Utilities.h>
 #include <JSON/JSONReader.h>
-#include "ShaderWarningHandler.h"
-#define ITTERATE(shadermap) auto it = shadermap.begin(); it != shadermap.end(); it++
-
-#define VERTEX 0
-#define PIXEL 1
-#define GEOMETRY 2
-#define HULL 3
-#define DOMAINS 4
-#define COMPUTE 5
+//
+//#define VERTEX 0
+//#define PIXEL 1
+//#define GEOMETRY 2
+//#define HULL 3
+//#define DOMAINS 4
+//#define COMPUTE 5
 
 namespace Snowblind
 {
 	CShaderFactory::CShaderFactory()
-		: myFileWatchers(6)
 	{
 		for (int i = 0; i < 6; i++)
 		{
 			FileWatcher* watcher = new FileWatcher();
-			myFileWatchers.Add(watcher);
+			myFileWatchers.Insert(i, watcher);
 		}
-		myShaderWarningHandler = new ShaderWarningHandler();
 	}
 
 	CShaderFactory::~CShaderFactory()
 	{
 		myFileWatchers.DeleteAll();
-		SAFE_DELETE(myShaderWarningHandler);
-
-		for (ITTERATE(myVertexShaders))
-		{
-			SAFE_DELETE(it->second);
-		}
-		for (ITTERATE(myPixelShaders))
-		{
-			SAFE_DELETE(it->second);
-		}
-		for (ITTERATE(myGeometryShaders))
-		{
-			SAFE_DELETE(it->second);
-		}
-		for (ITTERATE(myHullShaders))
-		{
-			SAFE_DELETE(it->second);
-		}
-		for (ITTERATE(myDomainShaders))
-		{
-			SAFE_DELETE(it->second);
-		}
-		for (ITTERATE(myComputeShaders))
-		{
-			SAFE_DELETE(it->second);
-		}
+		DELETE_MAP(myVertexShaders);
+		DELETE_MAP(myPixelShaders);
+		DELETE_MAP(myGeometryShaders);
+		DELETE_MAP(myHullShaders);
+		DELETE_MAP(myDomainShaders);
+		DELETE_MAP(myComputeShaders);
 	}
 
 	void CShaderFactory::LoadShader(CEffect* anEffect)
@@ -138,7 +114,7 @@ namespace Snowblind
 		if (myVertexShaders.find(aShader) == myVertexShaders.end())
 		{
 			CreateVertexShader(aShader);
-			myFileWatchers[VERTEX]->WatchFileChangeWithDependencies(aShader, std::bind(&CShaderFactory::ReloadVertex, this, std::placeholders::_1));
+			myFileWatchers[u32(eShaderType::VERTEX)]->WatchFileChangeWithDependencies(aShader, std::bind(&CShaderFactory::ReloadVertex, this, std::placeholders::_1));
 		}
 		aVertexShader = myVertexShaders[aShader];
 	}
@@ -164,7 +140,7 @@ namespace Snowblind
 
 		if (compilationMessage != nullptr)
 		{
-			std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
+			std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
 			DL_WARNING("%s", msg.c_str());
 		}
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
@@ -202,7 +178,7 @@ namespace Snowblind
 		if (myPixelShaders.find(aShader) == myPixelShaders.end())
 		{
 			CreatePixelShader(aShader);
-			myFileWatchers[PIXEL]->WatchFileChangeWithDependencies(aShader, std::bind(&CShaderFactory::ReloadPixel, this,std::placeholders::_1));
+			myFileWatchers[u32(eShaderType::PIXEL)]->WatchFileChangeWithDependencies(aShader, std::bind(&CShaderFactory::ReloadPixel, this,std::placeholders::_1));
 		}
 		aPixelShader = myPixelShaders[aShader];
 	}
@@ -229,15 +205,14 @@ namespace Snowblind
 		hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "PS", "ps_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
 		if (compilationMessage != nullptr)
 		{
-			std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
+			std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
 			DL_WARNING("%s", msg.c_str());
 		}
 		if (FAILED(hr))
 		{
-			DL_WARNINGBOX(myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader).c_str());
+			DL_WARNINGBOX(myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader).c_str());
 			return;
 		}
-		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
 
 		hr = device->CreatePixelShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &newShader->pixelShader);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Pixel Shader.");
@@ -287,7 +262,7 @@ namespace Snowblind
 			hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "GS", "gs_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
 			if (compilationMessage != nullptr)
 			{
-				std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
+				std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
 				DL_WARNING("%s", msg.c_str());
 			}
 
@@ -329,7 +304,7 @@ namespace Snowblind
 			hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "HS", "hs_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
 			if (compilationMessage != nullptr)
 			{
-				std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
+				std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
 				DL_WARNING("%s", msg.c_str());
 			}
 
@@ -373,7 +348,7 @@ namespace Snowblind
 
 			if (compilationMessage != nullptr)
 			{
-				std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
+				std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
 				DL_WARNING("%s", msg.c_str());
 			}
 
@@ -416,7 +391,7 @@ namespace Snowblind
 
 			if (compilationMessage != nullptr)
 			{
-				std::string msg = myShaderWarningHandler->CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
+				std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), aShader);
 				DL_WARNING("%s", msg.c_str());
 			}
 

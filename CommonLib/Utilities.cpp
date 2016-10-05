@@ -119,11 +119,7 @@ namespace CL
 		return aDegree = aDegree * (3.1415926535f / 180);
 	}
 
-	float CalcPointOnCurve(float x, float y, float t)
-	{
-		float diff = y - x;
-		return x + (diff * t);
-	}
+
 
 	CU::Vector2f Bezier(CU::Vector2f p1, CU::Vector2f p2, CU::Vector2f p3, float t)
 	{
@@ -158,6 +154,8 @@ namespace CL
 		return toReturn;
 	}
 
+
+
 	CU::Vector3f CubicBezier(CU::Vector3f p1, CU::Vector3f p2, CU::Vector3f p3, CU::Vector3f p4, float t)
 	{
 		float u = 1.f - t;
@@ -176,6 +174,26 @@ namespace CL
 		toReturn += p4 * ttt;
 		return toReturn;
 	}
+
+	float CalcPointOnCurve(float x, float y, float t)
+	{
+		float diff = y - x;
+		return x + (diff * t);
+	}
+
 	
-	
+	unsigned int binomialCoef(int n, int k)
+	{
+		int r = 1;
+		if (k > n)
+			return 0;
+
+		for (int d = 1; d <= k; d++)
+		{
+			r *= n--;
+			r /= d;
+		}
+		return r;
+	}
+
 }

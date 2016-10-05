@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <Windows.h>
 #include <thread>
+#include <memory>
 
 //----------------------------------------
 // Common Utilities / Common Library

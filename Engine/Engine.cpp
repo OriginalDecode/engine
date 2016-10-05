@@ -19,8 +19,6 @@ namespace Snowblind
 	CEngine::~CEngine()
 	{
 		SAFE_DELETE(myAssetsContainer);
-		//SAFE_DELETE(myConsole);
-		SAFE_DELETE(model);
 		SAFE_DELETE(mySynchronizer);
 		SAFE_DELETE(myRenderer);
 		SAFE_DELETE(myCamera);
@@ -61,7 +59,9 @@ namespace Snowblind
 
 	void CEngine::Initiate()
 	{
-		myAPI = new CDirectX11(myHWND, myWindowSize.myWidth, myWindowSize.myHeight);
+		myAPI = new CDirectX11;
+		myAPI->Initiate(myHWND, myWindowSize.myWidth, myWindowSize.myHeight);
+
 
 		myCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight);
 		my2DCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
@@ -178,7 +178,8 @@ namespace Snowblind
 
 	void CEngine::OnAltEnter()
 	{
-		myAPI->OnAltEnter();
+		if(myAPI)
+			myAPI->OnAltEnter();
 	}
 
 	void CEngine::OnPause()

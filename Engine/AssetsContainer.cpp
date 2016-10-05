@@ -7,8 +7,7 @@
 #include "ModelImporter.h"
 namespace Snowblind
 {
-
-	CAssetsContainer::CAssetsContainer()
+	CAssetsContainer::CAssetsContainer() 
 		: myModelLoader(new CModelImporter())
 	{
 	}
@@ -16,21 +15,9 @@ namespace Snowblind
 	CAssetsContainer::~CAssetsContainer()
 	{
 		SAFE_DELETE(myShaderFactory);
-
-		for (auto it = myModels.begin(); it != myModels.end(); ++it)
-		{
-			SAFE_DELETE(it->second);
-		}
-
-		for (auto it = myEffects.begin(); it != myEffects.end(); ++it)
-		{
-			SAFE_DELETE(it->second);
-		}
-
-		for (auto it = myTextures.begin(); it != myTextures.end(); ++it)
-		{
-			SAFE_DELETE(it->second);
-		}
+		DELETE_MAP(myModels);
+		DELETE_MAP(myEffects);
+		DELETE_MAP(myTextures);
 	}
 
 	void CAssetsContainer::Initiate()
@@ -51,6 +38,7 @@ namespace Snowblind
 			LoadTexture(aFilePath);
 			DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
 		}
+
 		return myTextures[aFilePath];
 	}
 

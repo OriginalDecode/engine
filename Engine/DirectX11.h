@@ -1,14 +1,8 @@
 #pragma once
-#include "standard_datatype.hpp"
 #include <vector>
 #include <unordered_map>
 #include <bitset>
-#ifndef _WINDEF_
-struct HINSTANCE__;
-typedef HINSTANCE__* HINSTANCE;
-struct HWND__;
-typedef HWND__* HWND;
-#endif
+#include "IGraphicsAPI.h"
 
 typedef long HRESULT;
 
@@ -38,68 +32,36 @@ struct ID3D11SamplerState;
 
 struct IUnknown;
 
-enum class eEngineFlags
-{
-	FULLSCREEN,
-	_COUNT
-};
-
-enum class eDepthStencil
-{
-	Z_ENABLED,
-	Z_DISABLED,
-	READ_NO_WRITE,
-	MASK_TEST,
-	LIGHT_MASK,
-	_COUNT
-};
-
-enum class eRasterizer
-{
-	WIREFRAME,
-	CULL_BACK,
-	CULL_NONE,
-	_COUNT
-};
-
-enum class eBlendStates
-{
-	NO_BLEND,
-	LIGHT_BLEND,
-	ALPHA_BLEND,
-	PARTICLE_BLEND,
-	BLEND_FALSE,
-	_COUNT
-};
-
-enum class eSamplerStates
-{
-	LINEAR_CLAMP,
-	LINEAR_WRAP,
-	POINT_CLAMP,
-	POINT_WRAP,
-	NONE,
-	_COUNT
-};
-
 namespace Snowblind
 {
-	class CDirectX11
+	class CDirectX11 : public CIGraphicsAPI
 	{
 	public:
-		CDirectX11(HWND aWindowHandle, float aWidth, float aHeight);
-		~CDirectX11();
+		CDirectX11() = default;
 
-		void CleanUp();
+		//__________________________
+		// Virtual Functions
 
-		void Present(u8 anInterval, u8 flags);
-		void Clear();
+		bool Initiate(HWND window_handle, float window_width, float window_height) override;
+		bool CleanUp() override;
+
+		void Present(u8 anInterval, u8 flags) override;
+		void Clear() override;
+
+		void OnAltEnter() override;
+
+		//__________________________
+		// DirectX Functions
+
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContext();
+		
 		const std::string& GetAdapterName(u16 anIndex);
 		const std::string& GetActiveAdapterName();
+		
 		void EnableZBuffer();
 		void DisableZBuffer();
+		
 		void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
 		const std::string& GetAPIName();
 
@@ -127,7 +89,6 @@ namespace Snowblind
 		void SetHullShader(ID3D11HullShader* aHullShader);
 		void SetDomainShader(ID3D11DomainShader* aDomainShader);
 		void SetComputeShader(ID3D11ComputeShader* aComputeShader);
-		void OnAltEnter();
 
 	private:
 
@@ -158,20 +119,18 @@ namespace Snowblind
 		ID3D11RenderTargetView* myRenderTarget = nullptr;
 		ID3D11DepthStencilView* myDepthView = nullptr;
 
+		//______________________
+		// GrowingArray / Map?
 		ID3D11DepthStencilState* myDepthStates[static_cast<u16>(eDepthStencil::_COUNT)];
 		ID3D11RasterizerState* myRasterizerStates[static_cast<u16>(eRasterizer::_COUNT)];
 		ID3D11BlendState* myBlendStates[static_cast<u16>(eBlendStates::_COUNT)];
 		ID3D11SamplerState* mySamplerStates[static_cast<u16>(eSamplerStates::_COUNT)];
-
 		std::unordered_map<std::string, IDXGIAdapter*> myAdapters;
+
 		std::vector<std::string> myAdaptersName;
 		std::string myActiveAdapter;
 
-		float myWidth;
-		float myHeight;
-		const std::string myAPI;
 
-		std::bitset<int(eEngineFlags::_COUNT)> myEngineFlags;
 	};
 
 	__forceinline const std::string& CDirectX11::GetActiveAdapterName()
@@ -208,5 +167,30 @@ namespace Snowblind
 	{
 		return myDepthView;
 	}
+
+	template<typename T>
+	bool SafeDelete(T* object_to_delete)
+	{
+		delete object_to_delete;
+		object_to_delete = nullptr;
+
+		if (object_to_delete)
+			return false;
+
+		return true;
+	}
+
+	template<typename T>
+	bool SafeRelease(T* object_to_release)
+	{
+		object_to_release->Release();
+		object_to_release = nullptr;
+
+		if (object_to_release)
+			return false;
+
+		return true;
+	}
+
 
 };

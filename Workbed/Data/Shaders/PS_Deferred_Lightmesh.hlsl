@@ -143,7 +143,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float distance = length(toLight);
 	float attenuation = Attenuation(toLight, input.range);
 	float intensity = color.w;
-	float3 lightColor = color.rgb * 10 * attenuation;
+	float3 lightColor = color.rgb * 60 * attenuation;
 	float3 directSpec = F * D * V * NdotL * lightColor;
 	
 	return float4(directSpec, 1.f);

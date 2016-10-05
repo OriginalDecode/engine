@@ -49,11 +49,6 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 			applicationIsRunning = false;
 			break;
 		}
-	/*	else if (newApplication->Update() == false)
-		{
-			applicationIsRunning = false;
-			break;
-		}*/
 		Snowblind::CEngine::Update();
 
 	} while (applicationIsRunning == true);
@@ -62,7 +57,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	newApplication = nullptr;
 	Snowblind::CEngine::Destroy();
 	DL_Debug::Debug::Destroy();
-
+	return 0;
 }
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

@@ -15,7 +15,9 @@ namespace Snowblind
 		myDomainShader = new SDomainShader();
 		myComputeShader = new SComputeShader();*/
 
+#ifndef SNOWBLIND_VULKAN
 		myContext = CEngine::GetDirectX()->GetContext();
+#endif
 	}
 
 	CEffect::~CEffect()
@@ -35,15 +37,18 @@ namespace Snowblind
 
 	SPixelShader* CEffect::GetPixelShader()
 	{
+#ifndef SNOWBLIND_VULKAN
 		if (myPixelShader != nullptr)
 		{
 			return myPixelShader;
 		}
+#endif
 		return nullptr;
 	}
 
 	void CEffect::Activate()
 	{
+#ifndef SNOWBLIND_VULKAN
 		CEngine::GetDirectX()->SetVertexShader(myVertexShader->vertexShader);
 		CEngine::GetDirectX()->SetPixelShader(myPixelShader->pixelShader);
 
@@ -57,18 +62,22 @@ namespace Snowblind
 			}
 			CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
 		}
+#endif
 	}
 
 	void CEffect::Deactivate()
 	{
+#ifndef SNOWBLIND_VULKAN
 		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myNULLList[0]);
+#endif
 	}
 
 	void CEffect::AddShaderResource(ID3D11ShaderResourceView* aShaderResource)
 	{
+#ifndef SNOWBLIND_VULKAN
 		myShaderResources.Add(aShaderResource);
 		if (!firstOptimize)
 			myNULLList.Add(nullptr);
+#endif
 	}
-
-}
+};

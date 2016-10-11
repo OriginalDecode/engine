@@ -20,6 +20,7 @@ namespace Snowblind
 		CEffect(const std::string& aFilePath);
 		~CEffect();
 		
+
 		SVertexShader* GetVertexShader();
 		SPixelShader* GetPixelShader();
 

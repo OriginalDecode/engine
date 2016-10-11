@@ -25,6 +25,7 @@ namespace Snowblind
 		myEffect[0] = myEngine->GetEffect("Data/Shaders/T_Font_Outline.json");
 		myEffect[1] = myEngine->GetEffect("Data/Shaders/T_Font.json");
 
+#ifndef SNOWBLIND_VULKAN
 		myVertexBufferDesc = new D3D11_BUFFER_DESC();
 		myIndexBufferDesc = new D3D11_BUFFER_DESC();
 		myInitData = new D3D11_SUBRESOURCE_DATA();
@@ -38,11 +39,13 @@ namespace Snowblind
 
 		myRenderTime = 0.f;
 		myUpdateTime = 0.f;
+#endif
 
 	}
 
 	CFont::~CFont()
 	{
+#ifndef SNOWBLIND_VULKAN
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myVertexBuffer);
 
@@ -55,6 +58,7 @@ namespace Snowblind
 
 		SAFE_DELETE(myConstantStruct);
 		SAFE_RELEASE(myConstantBuffer);
+#endif
 	}
 
 	void CFont::SetText(const std::string& aText)
@@ -79,6 +83,7 @@ namespace Snowblind
 
 	void CFont::Render()
 	{
+#ifndef SNOWBLIND_VULKAN
 		CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds();
@@ -115,11 +120,17 @@ namespace Snowblind
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds() - myRenderTime;
 
 		CEngine::GetDirectX()->SetBlendState(eBlendStates::NO_BLEND);
+#endif
 	}
 	
 	ID3D11ShaderResourceView* CFont::GetAtlas()
 	{
+#ifndef SNOWBLIND_VULKAN
 		return myData->myAtlasView;
+#else
+		return nullptr;
+#endif
+
 	}
 
 	const CU::Math::Vector2<float>& CFont::GetSize()
@@ -154,13 +165,16 @@ namespace Snowblind
 
 	void CFont::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 	{
+#ifndef SNOWBLIND_VULKAN
 		myConstantStruct->world = anOrientation;
 		myConstantStruct->invertedView = CU::Math::Inverse(a2DCameraOrientation);
 		myConstantStruct->projection = anOrthogonalProjectionMatrix;
+#endif
 	}
 
 	void CFont::CreateInputLayout()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myVertexFormat.Init(3);
 		myVertexFormat.Add(VertexLayoutPosColUV[0]);
 		myVertexFormat.Add(VertexLayoutPosColUV[1]);
@@ -173,10 +187,12 @@ namespace Snowblind
 			, &myVertexLayout);
 		CEngine::GetDirectX()->HandleErrors(hr, " [Font] : Input Layout.");
 		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "Font Input Layout");
+#endif
 	}
 
 	void CFont::CreateVertexBuffer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myVertexBuffer = new SVertexBufferWrapper;
 		myVertexBuffer->myStride = sizeof(SVertexTypePosColUv);
 		myVertexBuffer->myByteOffset = 0;
@@ -190,10 +206,12 @@ namespace Snowblind
 		myVertexBufferDesc->CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		myVertexBufferDesc->MiscFlags = 0;
 		myVertexBufferDesc->StructureByteStride = 0;
+#endif
 	}
 
 	void CFont::CreateIndexBuffer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myIndexBuffer = new SIndexBufferWrapper;
 		myIndexBuffer->myIndexBufferFormat = DXGI_FORMAT_R32_UINT;
 		myIndexBuffer->myByteOffset = 0;
@@ -205,10 +223,12 @@ namespace Snowblind
 		myIndexBufferDesc->CPUAccessFlags = 0;
 		myIndexBufferDesc->MiscFlags = 0;
 		myIndexBufferDesc->StructureByteStride = 0;
+#endif
 	}
 
 	void CFont::CreateConstantBuffer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myConstantStruct = new SFontConstantBuffer;
 
 		D3D11_BUFFER_DESC cbDesc;
@@ -223,10 +243,12 @@ namespace Snowblind
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 		CEngine::GetDirectX()->SetDebugName(myConstantBuffer, "Font Constant Buffer");
 		CEngine::GetDirectX()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
+#endif
 	}
 
 	void CFont::UpdateBuffer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
 		SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 
@@ -316,10 +338,12 @@ namespace Snowblind
 
 		CEngine::GetDirectX()->SetDebugName(myIndexBuffer->myIndexBuffer, "Font Index Buffer");
 
+#endif
 	}
 
 	void CFont::UpdateConstantBuffer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 
 		D3D11_MAPPED_SUBRESOURCE msr;
@@ -331,6 +355,7 @@ namespace Snowblind
 		}
 
 		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);
+#endif
 	}
 
 };

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#ifndef SNOWBLIND_VULKAN
 #include "DirectX11.h"
 
 #include <sstream>
@@ -7,12 +8,12 @@
 
 namespace Snowblind
 {
-	bool CDirectX11::Initiate(HWND window_handle, float window_width, float window_height)
+	bool DirectX11::Initiate(HWND window_handle, float window_width, float window_height)
 	{
 		myAPI = "DirectX11";
+		myWindowHandle = window_handle;
 		myWindowWidth = window_width;
 		myWindowHeight = window_height;
-		myWindowHandle = window_handle;
 
 		CreateAdapterList();
 		CreateDeviceAndSwapchain();
@@ -27,41 +28,41 @@ namespace Snowblind
 		return true;
 	}
 
-	bool CDirectX11::CleanUp()
+	bool DirectX11::CleanUp()
 	{
 		for (auto it = myAdapters.begin(); it != myAdapters.end(); ++it)
 		{
-			return SafeRelease((it->second));
+			 SAFE_RELEASE(it->second);
 		}
 
 
 		mySwapchain->SetFullscreenState(FALSE, nullptr);
 		myEngineFlags[static_cast<u16>(eEngineFlags::FULLSCREEN)] = FALSE;
 
-		return SafeDelete(myViewport);
+		SAFE_DELETE(myViewport);
 
-		return SafeRelease(myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
-
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_ENABLED)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_DISABLED)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::READ_NO_WRITE)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::MASK_TEST)]);
 		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
 
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::MASK_TEST)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::READ_NO_WRITE)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_DISABLED)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_ENABLED)]);
+
 		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::WIREFRAME)]);
+		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
+		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
 
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::NO_BLEND)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::ALPHA_BLEND)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::PARTICLE_BLEND)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::BLEND_FALSE)]);
 		SAFE_RELEASE(myBlendStates[u16(eBlendStates::LIGHT_BLEND)]);
+		SAFE_RELEASE(myBlendStates[u16(eBlendStates::BLEND_FALSE)]);
+		SAFE_RELEASE(myBlendStates[u16(eBlendStates::PARTICLE_BLEND)]);
+		SAFE_RELEASE(myBlendStates[u16(eBlendStates::ALPHA_BLEND)]);
+		SAFE_RELEASE(myBlendStates[u16(eBlendStates::NO_BLEND)]);
 
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_CLAMP)]);
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_WRAP)]);
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_CLAMP)]);
 		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_WRAP)]);
+		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_CLAMP)]);
+		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_WRAP)]);
+		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_CLAMP)]);
 
 		SAFE_RELEASE(myDepthView);
 		SAFE_RELEASE(myDepthBuffer);
@@ -88,14 +89,15 @@ namespace Snowblind
 		OutputDebugString("\nIntRef is something that D3D has internal. You cannot control these.\n\n");
 #endif
 
+		return true;
 	}
 
-	void CDirectX11::Present(u8 anInterval, u8 flags)
+	void DirectX11::Present(u8 anInterval, u8 flags)
 	{
 		mySwapchain->Present(anInterval, flags);
 	}
 
-	void CDirectX11::Clear()
+	void DirectX11::Clear()
 	{
 		float color[4];
 		BLACK_CLEAR(color);
@@ -103,12 +105,12 @@ namespace Snowblind
 		myContext->ClearDepthStencilView(myDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 	}
 
-	const std::string& CDirectX11::GetAdapterName(u16 anIndex)
+	const std::string& DirectX11::GetAdapterName(u16 anIndex)
 	{
 		return myAdaptersName[anIndex];
 	}
 
-	void CDirectX11::SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName)
+	void DirectX11::SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName)
 	{
 		if (aChild != nullptr)
 		{
@@ -116,12 +118,12 @@ namespace Snowblind
 		}
 	}
 
-	void CDirectX11::ResetRenderTargetAndDepth()
+	void DirectX11::ResetRenderTargetAndDepth()
 	{
 		myContext->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
 	}
 
-	void CDirectX11::SetDepthBufferState(const eDepthStencil& aDepthState)
+	void DirectX11::SetDepthBufferState(const eDepthStencil& aDepthState)
 	{
 		switch (aDepthState)
 		{
@@ -148,7 +150,7 @@ namespace Snowblind
 		}
 	}
 
-	void CDirectX11::CreateDeviceAndSwapchain()
+	void DirectX11::CreateDeviceAndSwapchain()
 	{
 		DXGI_SWAP_CHAIN_DESC scDesc;
 		ZeroMemory(&scDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
@@ -158,7 +160,7 @@ namespace Snowblind
 		scDesc.BufferDesc.Width = UINT(myWindowWidth);
 		scDesc.BufferDesc.Height = UINT(myWindowHeight);
 		scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		scDesc.OutputWindow = myHWND;
+		scDesc.OutputWindow = myWindowHandle;
 		scDesc.SampleDesc.Count = 1;
 		scDesc.SampleDesc.Quality = 0;
 		if (myEngineFlags[u16(eEngineFlags::FULLSCREEN)] == FALSE)
@@ -263,7 +265,7 @@ namespace Snowblind
 
 	}
 
-	void CDirectX11::CreateDepthBuffer()
+	void DirectX11::CreateDepthBuffer()
 	{
 		HRESULT hr;
 
@@ -296,7 +298,7 @@ namespace Snowblind
 		SetDebugName(myDepthView, "DirectX11 DepthView Object");
 	}
 
-	void CDirectX11::CreateBackBuffer()
+	void DirectX11::CreateBackBuffer()
 	{
 		HRESULT hr;
 		ID3D11Texture2D* backbuffer;
@@ -314,7 +316,7 @@ namespace Snowblind
 		SetDebugName(myRenderTarget, "DirectX11 RenderTarget(Back Buffer) object");
 	}
 
-	void CDirectX11::CreateViewport()
+	void DirectX11::CreateViewport()
 	{
 		myViewport = new D3D11_VIEWPORT();
 		//ZeroMemory(&myViewport, sizeof(D3D11_VIEWPORT));
@@ -327,7 +329,7 @@ namespace Snowblind
 		myContext->RSSetViewports(1, myViewport);
 	}
 
-	void CDirectX11::CreateAdapterList()
+	void DirectX11::CreateAdapterList()
 	{
 		std::vector<IDXGIAdapter*> enumAdapter;
 		IDXGIFactory* factory = nullptr;
@@ -354,17 +356,17 @@ namespace Snowblind
 		}
 	}
 
-	void CDirectX11::EnableZBuffer()
+	void DirectX11::EnableZBuffer()
 	{
 		myContext->OMSetDepthStencilState(myDepthStates[int(eDepthStencil::Z_ENABLED)], 1);
 	}
 
-	void CDirectX11::DisableZBuffer()
+	void DirectX11::DisableZBuffer()
 	{
 		myContext->OMSetDepthStencilState(myDepthStates[int(eDepthStencil::Z_DISABLED)], 1);
 	}
 
-	void CDirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
+	void DirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
 	{
 		std::string toError;
 		switch (aResult)
@@ -427,12 +429,12 @@ namespace Snowblind
 		}
 	}
 
-	const std::string& CDirectX11::GetAPIName()
+	const std::string& DirectX11::GetAPIName()
 	{
 		return myAPI;
 	}
 
-	void CDirectX11::SetViewport(u16 aWidth, u16 aHeight, u8 aDepth)
+	void DirectX11::SetViewport(u16 aWidth, u16 aHeight, u8 aDepth)
 	{
 		D3D11_VIEWPORT viewport;
 		ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
@@ -446,17 +448,17 @@ namespace Snowblind
 		myContext->RSSetViewports(1, &viewport);
 	}
 
-	void CDirectX11::ResetViewport()
+	void DirectX11::ResetViewport()
 	{
 		myContext->RSSetViewports(1, myViewport);
 	}
 
-	void CDirectX11::ResetRendertarget()
+	void DirectX11::ResetRendertarget()
 	{
 		myContext->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
 	}
 
-	void CDirectX11::CreateEnabledDepthStencilState()
+	void DirectX11::CreateEnabledDepthStencilState()
 	{
 		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
 		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
@@ -481,7 +483,7 @@ namespace Snowblind
 		HandleErrors(hr, "Failed to setup Enabled Depth!");
 	}
 
-	void CDirectX11::CreateDisabledDepthStencilState()
+	void DirectX11::CreateDisabledDepthStencilState()
 	{
 		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
 		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
@@ -506,7 +508,7 @@ namespace Snowblind
 		HandleErrors(hr, "Failed to setup depth buffer!");
 	}
 
-	void CDirectX11::CreateReadDepthStencilState()
+	void DirectX11::CreateReadDepthStencilState()
 	{
 		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
 		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
@@ -532,12 +534,12 @@ namespace Snowblind
 		HandleErrors(hr, "Failed to setup depth buffer!");
 	}
 
-	void CDirectX11::SetRasterizer(const eRasterizer& aRasterizer)
+	void DirectX11::SetRasterizer(const eRasterizer& aRasterizer)
 	{
 		myContext->RSSetState(myRasterizerStates[u16(aRasterizer)]);
 	}
 
-	void CDirectX11::SetBlendState(const eBlendStates& blendState)
+	void DirectX11::SetBlendState(const eBlendStates& blendState)
 	{
 		float blend[4];
 		blend[0] = 0.f;
@@ -547,7 +549,7 @@ namespace Snowblind
 		myContext->OMSetBlendState(myBlendStates[u16(blendState)], blend, 0xFFFFFFFF);
 	}
 
-	void CDirectX11::SetSamplerState(const eSamplerStates& samplerState)
+	void DirectX11::SetSamplerState(const eSamplerStates& samplerState)
 	{
 		if (samplerState == eSamplerStates::NONE)
 		{
@@ -557,13 +559,13 @@ namespace Snowblind
 		myContext->PSSetSamplers(0, 1, &mySamplerStates[u16(samplerState)]);
 	}
 
-	void CDirectX11::SetVertexShader(ID3D11VertexShader* aVertexShader)
+	void DirectX11::SetVertexShader(ID3D11VertexShader* aVertexShader)
 	{
 		DL_ASSERT_EXP(aVertexShader != nullptr, "pixelshader was null!");
 		myContext->VSSetShader(aVertexShader, nullptr, 0);
 	}
 
-	void CDirectX11::SetPixelShader(ID3D11PixelShader* aPixelShader)
+	void DirectX11::SetPixelShader(ID3D11PixelShader* aPixelShader)
 	{
 		if (aPixelShader == nullptr)
 			return;
@@ -572,31 +574,31 @@ namespace Snowblind
 		myContext->PSSetShader(aPixelShader, nullptr, 0);
 	}
 
-	void CDirectX11::SetGeometryShader(ID3D11GeometryShader* aGeometryShader)
+	void DirectX11::SetGeometryShader(ID3D11GeometryShader* aGeometryShader)
 	{
 		DL_ASSERT_EXP(aGeometryShader != nullptr, "geomteryshader was null.");
 		myContext->GSSetShader(aGeometryShader, nullptr, 0);
 	}
 
-	void CDirectX11::SetHullShader(ID3D11HullShader* aHullShader)
+	void DirectX11::SetHullShader(ID3D11HullShader* aHullShader)
 	{
 		DL_ASSERT_EXP(aHullShader != nullptr, "hullshader was null.");
 		myContext->HSSetShader(aHullShader, nullptr, 0);
 	}
 
-	void CDirectX11::SetDomainShader(ID3D11DomainShader* aDomainShader)
+	void DirectX11::SetDomainShader(ID3D11DomainShader* aDomainShader)
 	{
 		DL_ASSERT_EXP(aDomainShader != nullptr, "domainshader was null.");
 		myContext->DSSetShader(aDomainShader, nullptr, 0);
 	}
 
-	void CDirectX11::SetComputeShader(ID3D11ComputeShader* aComputeShader)
+	void DirectX11::SetComputeShader(ID3D11ComputeShader* aComputeShader)
 	{
 		DL_ASSERT_EXP(aComputeShader != nullptr, "computeshader was null.");
 		myContext->CSSetShader(aComputeShader, nullptr, 0);
 	}
 
-	void CDirectX11::OnAltEnter()
+	void DirectX11::OnAltEnter()
 	{
 		if (this && mySwapchain)
 		{
@@ -611,7 +613,7 @@ namespace Snowblind
 		}
 	}
 
-	void CDirectX11::CreateRazterizers()
+	void DirectX11::CreateRazterizers()
 	{
 		D3D11_RASTERIZER_DESC desc;
 		ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
@@ -643,7 +645,7 @@ namespace Snowblind
 		SetDebugName(myRasterizerStates[u16(eRasterizer::CULL_NONE)], "CULL_NONE Rasterizer");
 	}
 
-	void CDirectX11::CreateBlendStates()
+	void DirectX11::CreateBlendStates()
 	{
 		D3D11_BLEND_DESC blendDesc;
 		blendDesc.AlphaToCoverageEnable = FALSE;
@@ -714,7 +716,7 @@ namespace Snowblind
 
 	}
 
-	void CDirectX11::CreateSamplerStates()
+	void DirectX11::CreateSamplerStates()
 	{
 		D3D11_SAMPLER_DESC samplerDesc;
 		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -746,7 +748,7 @@ namespace Snowblind
 		SetDebugName(mySamplerStates[u16(eSamplerStates::POINT_WRAP)], "POINT_WRAP SamplerState");
 	}
 
-	void CDirectX11::CreateDepthStencilStates()
+	void DirectX11::CreateDepthStencilStates()
 	{
 		CreateEnabledDepthStencilState();
 		CreateDisabledDepthStencilState();
@@ -804,7 +806,7 @@ namespace Snowblind
 
 	}
 
-	void CDirectX11::GetRefreshRate(u32& aNumerator, u32& aDenominator)
+	void DirectX11::GetRefreshRate(u32& aNumerator, u32& aDenominator)
 	{
 		IDXGIFactory* factory;
 		IDXGIAdapter* adapter;
@@ -836,3 +838,4 @@ namespace Snowblind
 	}
 
 };
+#endif

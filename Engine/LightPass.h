@@ -1,8 +1,10 @@
 #pragma once
 #include "VertexStructs.h"
+#ifndef SNOWBLIND_VULKAN
 struct ID3D11DeviceContext;
 struct ID3D11InputLayout;
 struct ID3D11Buffer;
+#endif
 namespace Snowblind
 {
 	class CGBuffer;

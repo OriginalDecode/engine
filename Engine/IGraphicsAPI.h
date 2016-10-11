@@ -54,7 +54,7 @@ enum class eSamplerStates
 
 namespace Snowblind
 {
-	class CIGraphicsAPI
+	class IGraphicsAPI
 	{
 	public:
 		virtual bool Initiate(HWND window_handler, float window_width, float window_height) = 0;
@@ -64,7 +64,7 @@ namespace Snowblind
 		virtual void Present(u8 refresh_rate, u8 flags) = 0;
 
 		virtual void OnAltEnter() = 0;
-
+		const std::string& GetAPIName() { return myAPI; }
 	protected:
 		HWND myWindowHandle;
 		float myWindowWidth = 0.f;

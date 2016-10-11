@@ -3,10 +3,12 @@
 #include "Renderer.h"
 #include "AssetsContainer.h"
 #include "Terrain.h"
+#include "IGraphicsAPI.h"
+#include "Vulkan.h"
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
-	CDirectX11* CEngine::myAPI = nullptr;
+	IGraphicsAPI* CEngine::myAPI = nullptr;
 
 	CEngine::CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc)
 		: myWindowSize(aWindowWidth, aWindowHeight)
@@ -51,16 +53,21 @@ namespace Snowblind
 		return myInstance;
 	}
 
-	CDirectX11* CEngine::GetDirectX()
+#ifndef SNOWBLIND_VULKAN
+	DirectX11* CEngine::GetDirectX()
 	{
-		return myAPI;
+		return static_cast<DirectX11*>(myAPI);
 	}
-
+#endif
 
 	void CEngine::Initiate()
 	{
-		myAPI = new CDirectX11;
-		myAPI->Initiate(myHWND, myWindowSize.myWidth, myWindowSize.myHeight);
+#ifndef SNOWBLIND_VULKAN
+		myAPI = new DirectX11;
+#else
+		myAPI = new Vulkan;
+#endif
+		myAPI->Initiate(myHWND, myWindowSize.myWidth, myWindowSize.myHeight); 
 
 
 		myCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight);
@@ -80,8 +87,6 @@ namespace Snowblind
 		myRenderer = new CRenderer(*mySynchronizer, myCamera);
 		myRenderer->Add2DCamera(my2DCamera);
 
-		//myConsole = new CConsole();
-		//myConsole->Initiate(my2DCamera);
 		myTimeManager = new CU::TimeManager();
 
 	}
@@ -168,7 +173,9 @@ namespace Snowblind
 
 	void CEngine::ResetRenderTargetAndDepth()
 	{
-		myAPI->ResetRenderTargetAndDepth();
+#ifndef SNOWBLIND_VULKAN
+		GetDirectX()->ResetRenderTargetAndDepth();
+#endif
 	}
 
 	void CEngine::ToggleVsync()
@@ -204,7 +211,6 @@ namespace Snowblind
 
 	const SLocalTime& CEngine::GetLocalTime()
 	{
-		/* This function should be a callback? When minute changes? How? */
 		SYSTEMTIME time;
 		::GetLocalTime(&time);
 		myLocalTime.hour = time.wHour;
@@ -238,14 +244,16 @@ namespace Snowblind
 		float width = (GetSystemMetrics(SM_CXSCREEN)* 0.5f) - (myWindowSize.myWidth * 0.5f);
 		float height = (GetSystemMetrics(SM_CYSCREEN)* 0.5f) - (myWindowSize.myHeight * 0.5f);
 		myHWND = CreateWindow(
-			"WindowsClass",
-			NULL, WS_OVERLAPPEDWINDOW, //Windowed
-			static_cast<int>(width),
-			static_cast<int>(height),
-			static_cast<int>(myWindowSize.myWidth),
-			static_cast<int>(myWindowSize.myHeight),
-			NULL, NULL,
-			GetModuleHandle(NULL), NULL);
+			"WindowsClass"
+			, NULL
+			, WS_OVERLAPPEDWINDOW  //Windowed
+			, static_cast<int>(width)
+			, static_cast<int>(height)
+			, static_cast<int>(myWindowSize.myWidth)
+			, static_cast<int>(myWindowSize.myHeight)
+			, NULL
+			, NULL
+			, GetModuleHandle(NULL), NULL);
 
 		ShowWindow(myHWND, true);
 	}

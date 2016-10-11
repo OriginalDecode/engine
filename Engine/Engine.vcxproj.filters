@@ -229,9 +229,12 @@
     <ClInclude Include="TGA32.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="MousePicker.h" />
     <ClInclude Include="IGraphicsAPI.h">
       <Filter>APIs</Filter>
+    </ClInclude>
+    <ClInclude Include="Vulkan.h" />
+    <ClInclude Include="MousePicker.h">
+      <Filter>Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -352,6 +355,9 @@
     <ClCompile Include="TGA32.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="MousePicker.cpp" />
+    <ClCompile Include="Vulkan.cpp" />
+    <ClCompile Include="MousePicker.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

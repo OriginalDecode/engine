@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <standard_datatype.hpp>
+
 #ifndef _WINDEF_
 
 struct HINSTANCE__;
@@ -42,7 +43,7 @@ namespace Snowblind
 	class CAssetsContainer;
 	class CCamera;
 	class CConsole;
-	class CDirectX11;
+	class DirectX11;
 	class CFont;
 	class CFontManager;
 	class CModel;
@@ -51,7 +52,7 @@ namespace Snowblind
 	class CTexture;
 	class CEffect;
 	class CTerrain;
-
+	class IGraphicsAPI;
 	struct SFontData;
 
 	class CEngine
@@ -61,8 +62,9 @@ namespace Snowblind
 		static void Destroy();
 		static CEngine* GetInstance();
 
-		static CDirectX11* GetDirectX();
-
+#ifndef SNOWBLIND_VULKAN
+		static DirectX11* GetDirectX();
+#endif
 		void Initiate();
 
 		CCamera* GetCamera();
@@ -102,7 +104,7 @@ namespace Snowblind
 
 		static CEngine* myInstance;
 
-		static CDirectX11* myAPI;
+		static IGraphicsAPI* myAPI;
 		SWindowSize myWindowSize;
 		SLocalTime myLocalTime;
 		HWND myHWND;

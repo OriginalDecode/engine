@@ -25,12 +25,15 @@ namespace Snowblind
 		SAFE_DELETE(myVertexData);
 		SAFE_DELETE(myConstantStruct);
 
+#ifndef SNOWBLIND_VULKAN
 		SAFE_RELEASE(myVertexLayout);
 		SAFE_RELEASE(myConstantBuffer);
+#endif
 	}
 
 	void CSpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 	{
+#ifndef SNOWBLIND_VULKAN
 		myWindowSize = CEngine::GetInstance()->GetWindowSize();
 
 		myTexturePath = aTexturePath;
@@ -95,10 +98,12 @@ namespace Snowblind
 		InitiateIndexBuffer();
 		InitConstantBuffer();
 		//InitiateBlendState();
+#endif
 	}
 
 	void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 	{
+#ifndef SNOWBLIND_VULKAN
 		myWindowSize = CEngine::GetInstance()->GetWindowSize();
 
 		mySize = aSize;
@@ -163,10 +168,12 @@ namespace Snowblind
 		InitiateIndexBuffer();
 		InitConstantBuffer();
 		//InitiateBlendState();
+#endif
 	}
 
 	void CSpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 	{
+#ifndef SNOWBLIND_VULKAN
 		CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
 		if (!myEffect)
 			return;
@@ -194,7 +201,7 @@ namespace Snowblind
 		context.PSSetShaderResources(0, 1, &srv);
 
 		CEngine::GetDirectX()->SetBlendState(eBlendStates::NO_BLEND);
-
+#endif
 	}
 
 	Snowblind::CEffect* CSpriteModel::GetEffect()
@@ -214,6 +221,7 @@ namespace Snowblind
 
 	void CSpriteModel::UpdateConstantBuffer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myConstantStruct->scale = mySize;
 
 
@@ -228,10 +236,12 @@ namespace Snowblind
 		}
 
 		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);
+#endif
 	}
 
 	void CSpriteModel::InitiateVertexBuffer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		HRESULT hr;
 
 		hr = CEngine::GetDirectX()->GetDevice()->
@@ -261,10 +271,12 @@ namespace Snowblind
 		myVertexBuffer->myByteOffset = 0;
 		myVertexBuffer->myStartSlot = 0;
 		myVertexBuffer->myNrOfBuffers = 1;
+#endif
 	}
 
 	void CSpriteModel::InitiateIndexBuffer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		D3D11_BUFFER_DESC indexDesc;
 		ZeroMemory(&indexDesc, sizeof(indexDesc));
 		indexDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -281,10 +293,12 @@ namespace Snowblind
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		myIndexBuffer->myByteOffset = 0;
+#endif
 	}
 
 	void CSpriteModel::InitConstantBuffer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myConstantStruct = new SSpriteConstantBuffer;
 
 		D3D11_BUFFER_DESC cbDesc;
@@ -299,6 +313,7 @@ namespace Snowblind
 		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 		CEngine::GetDirectX()->SetDebugName(myConstantBuffer, "Font Constant Buffer");
 		CEngine::GetDirectX()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
+#endif
 	}
 
 	void CSpriteModel::ConvertToNormalSpace()

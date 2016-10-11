@@ -21,6 +21,8 @@ public:
 	void ReadElement(const std::string& aTag, float& aFloat);
 	void ReadElement(const std::string& aTag, double& aDouble);
 	void ReadElement(const std::string& aTag, std::string& aString);
+	std::string ReadElement(const std::string& aTag);
+
 
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, bool& aBool);
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, int& anInt);

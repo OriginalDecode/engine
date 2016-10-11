@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#ifndef SNOWBLIND_VULKAN
 #include "Console.h"
 #include "Sprite.h"
 #include "Engine.h"
@@ -266,3 +267,4 @@ namespace Snowblind
 	}
 
 };
+#endif

@@ -1,4 +1,5 @@
 #pragma once
+#ifndef SNOWBLIND_VULKAN
 #include "SnowblindParticleData.h"
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
@@ -46,3 +47,4 @@ namespace Snowblind
 		CEngine* myEngine;
 	};
 };
+#endif

@@ -331,6 +331,7 @@ namespace Snowblind
 
 	void CFontManager::DumpAtlas(SFontData* fontData, int atlasSize)
 	{
+#ifndef SNOWBLIND_VULKAN
 		D3D11_SUBRESOURCE_DATA data;
 		data.pSysMem = fontData->myAtlas;
 		data.SysMemPitch = atlasSize * 4;
@@ -382,10 +383,13 @@ namespace Snowblind
 		texture = nullptr;
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
 		
+#endif
 	}
+
 
 	void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline)
 	{
+#ifndef SNOWBLIND_VULKAN
 		isOutline;
 		index;
 		D3D11_SUBRESOURCE_DATA data;
@@ -429,12 +433,11 @@ namespace Snowblind
 		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss.str().c_str());
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");*/
 		texture->Release();
-		
+#endif
 	}
 
 	void CFontManager::CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, int aBorderOffset)
 	{
-
 		myOffset.xDelta = 0;
 		myOffset.yDelta = 0;
 
@@ -482,11 +485,11 @@ namespace Snowblind
 
 		myOffset.xDelta = xDelta;
 		myOffset.yDelta = yDelta;
-
 	}
 
 	void CFontManager::CalculateGlyphOffsets(const int /*index*/, FT_GlyphSlotRec_* glyph)
 	{
+
 		int xDelta = 0;
 		int yDelta = 0;
 
@@ -563,7 +566,9 @@ namespace Snowblind
 	SFontData::~SFontData()
 	{
 		SAFE_DELETE(myAtlas);
+#ifndef SNOWBLIND_VULKAN
 		SAFE_RELEASE(myAtlasView);
+#endif
 	}
 
 };

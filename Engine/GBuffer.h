@@ -21,7 +21,9 @@ namespace Snowblind
 
 	private:
 		CEngine* myEngine = nullptr;
-		CDirectX11* myDirectX = nullptr;
+#ifndef SNOWBLIND_VULKAN
+		DirectX11* myDirectX = nullptr;
 		ID3D11DeviceContext* myContext = nullptr;
+#endif
 	};
 };

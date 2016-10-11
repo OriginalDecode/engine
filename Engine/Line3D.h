@@ -21,15 +21,17 @@ struct SLine
 
 namespace Snowblind
 {
-	class CDirectX11;
+	class DirectX11;
 	class CEffect;
 	struct SVertexBufferWrapper;
 
 }
 
+#ifndef SNOWBLIND_VULKAN
 struct ID3D11Buffer;
-struct SVertexBaseStruct;
 struct ID3D11InputLayout;
+#endif
+struct SVertexBaseStruct;
 
 class CLine3D
 {
@@ -57,16 +59,16 @@ private:
 	SLinePoint mySecondPoint;
 
 	CU::Matrix44f myOrientation;
-	Snowblind::CDirectX11* myAPI = nullptr;
+	Snowblind::DirectX11* myAPI = nullptr;
 	Snowblind::CEffect* myEffect = nullptr;
 	Snowblind::SVertexBufferWrapper* myVertexBuffer = nullptr;
 
 	SVertexBaseStruct* myConstantStruct = nullptr;
 
-
+#ifndef SNOWBLIND_VULKAN
 	ID3D11InputLayout* myVertexLayout = nullptr;
 	ID3D11Buffer* myConstantBuffer = nullptr;
-
+#endif
 	CU::GrowingArray<SLinePoint> myVertices;
 	int myLineAmount = 0;
 };

@@ -13,7 +13,9 @@ namespace Snowblind
 {
 	CSurface::CSurface(CEffect* anEffect)
 	{
+#ifndef SNOWBLIND_VULKAN
 		myContext = CEngine::GetDirectX()->GetContext();
+#endif
 		SetVertexCount(0);
 		SetVertexStart(0);
 		SetIndexCount(0);
@@ -24,7 +26,9 @@ namespace Snowblind
 
 	CSurface::CSurface(CEffect* anEffect, unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int aIndexCount)
 	{
+#ifndef SNOWBLIND_VULKAN
 		myContext = CEngine::GetDirectX()->GetContext();
+#endif
 		SetVertexCount(aVertexCount);
 		SetVertexStart(aStartVertex);
 		SetIndexCount(aIndexCount);
@@ -35,7 +39,9 @@ namespace Snowblind
 
 	CSurface::CSurface(unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
 	{
+#ifndef SNOWBLIND_VULKAN
 		myContext = CEngine::GetDirectX()->GetContext();
+#endif
 		SetVertexCount(aVertexCount);
 		SetVertexStart(aStartVertex);
 		SetIndexCount(anIndexCount);
@@ -96,7 +102,9 @@ namespace Snowblind
 		newTexture->texture->SetDebugName(dName);
 		newTexture->resourceName = aResourceName;
 		myTextures.Add(newTexture);
+#ifndef SNOWBLIND_VULKAN
 		myShaderViews.Add(newTexture->texture->GetShaderView());
+#endif
 		myNullList.Add(nullptr);
 	}
 

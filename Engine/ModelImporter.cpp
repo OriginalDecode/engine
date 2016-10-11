@@ -35,6 +35,7 @@ CModelImporter::~CModelImporter()
 
 Snowblind::CModel* CModelImporter::CreateModel(FBXModelData* someData, Snowblind::CEffect* anEffect)
 {
+
 	Snowblind::CModel* newModel = new Snowblind::CModel();
 	newModel->SetEffect(anEffect);
 
@@ -115,6 +116,7 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 
 void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Snowblind::CEffect* anEffect)
 {
+#ifndef SNOWBLIND_VULKAN
 	ModelData* data = someData->myData;
 
 
@@ -190,6 +192,7 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 			desc.Format = DXGI_FORMAT_R32G32B32A32_SINT;
 		}
 		out->myVertexFormat.Add(desc);
+
 	}
 
 
@@ -248,10 +251,12 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 	*/
 
 	out->mySurfaces.Add(newSurface);
+#endif
 }
 
 void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData)
 {
+#ifndef SNOWBLIND_VULKAN
 	DL_ASSERT_EXP(someData, "Failed to process node. FBXModelData someData was null");
 
 	for (u32 i = 0; i < aNode->mNumMeshes; i++)
@@ -265,10 +270,12 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 		someData->myChildren.Add(new FBXModelData());
 		ProcessNode(aNode->mChildren[i], aScene, someData->myChildren.GetLast());
 	}
+#endif
 }
 
 void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelData* fbx)
 {
+#ifndef SNOWBLIND_VULKAN
 	FBXModelData* data = fbx;
 	data->myData = new ModelData();
 
@@ -568,10 +575,12 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 		}
 	}
+#endif
 }
 
 bool operator==(const Vertex& aVertice, const Vertex& aSecond)
 {
+
 	if (aVertice.position != aSecond.position)
 		return false;
 

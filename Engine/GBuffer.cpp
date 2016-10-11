@@ -4,8 +4,10 @@ namespace Snowblind
 {
 	CGBuffer::CGBuffer()
 		: myEngine(CEngine::GetInstance())
+#ifndef SNOWBLIND_VULKAN
 		, myDirectX(myEngine->GetDirectX())
 		, myContext(myDirectX->GetContext())
+#endif
 	{
 		SWindowSize windowSize = CEngine::GetInstance()->GetWindowSize();
 		myAlbedo = new CTexture(windowSize.myWidth, windowSize.myHeight
@@ -39,20 +41,24 @@ namespace Snowblind
 	
 	void CGBuffer::Clear(float* aClearColor)
 	{
+#ifndef SNOWBLIND_VULKAN
 		myContext->ClearRenderTargetView(myAlbedo->GetRenderTargetView(), aClearColor);
 		myContext->ClearRenderTargetView(myNormal->GetRenderTargetView(), aClearColor);
 		myContext->ClearRenderTargetView(myDepth->GetRenderTargetView(), aClearColor);
 		myContext->ClearRenderTargetView(myEmissive->GetRenderTargetView(), aClearColor);
+#endif
 	}
 
 	void CGBuffer::SetAsRenderTarget(CTexture* aDepthTexture)
 	{
+#ifndef SNOWBLIND_VULKAN
 		ID3D11RenderTargetView* target[4];
 		target[0] = myAlbedo->GetRenderTargetView();
 		target[1] = myNormal->GetRenderTargetView();
 		target[2] = myDepth->GetRenderTargetView();
 		target[3] = myEmissive->GetRenderTargetView();
 		myContext->OMSetRenderTargets(4, target, aDepthTexture->GetDepthView());
+#endif
 	}
 
 };

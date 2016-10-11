@@ -1,14 +1,14 @@
 #pragma once
 #include "VertexStructs.h"
 #include "Utilities.h"
-
+#ifndef SNOWBLIND_VULKAN
 struct ID3D11InputLayout;
 struct D3D11_BUFFER_DESC;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct D3D11_SUBRESOURCE_DATA;
 struct ID3D11ShaderResourceView;
 struct ID3D11Buffer;
-
+#endif
 namespace CommonUtilities
 {
 	class TimeManager;
@@ -59,13 +59,14 @@ namespace Snowblind
 		SFontData* myData = nullptr;
 		CEffect* myEffect[2];
 
+#ifndef SNOWBLIND_VULKAN
 		ID3D11InputLayout* myVertexLayout = nullptr;
 		D3D11_BUFFER_DESC* myVertexBufferDesc = nullptr;
 		D3D11_BUFFER_DESC* myIndexBufferDesc = nullptr;
 
 		D3D11_SUBRESOURCE_DATA* myInitData = nullptr;
 		ID3D11Buffer* myConstantBuffer = nullptr;
-
+#endif
 
 		SVertexBufferWrapper* myVertexBuffer = nullptr;
 		SIndexBufferWrapper* myIndexBuffer = nullptr;
@@ -73,7 +74,9 @@ namespace Snowblind
 
 		CU::Math::Vector2<float> mySize;
 		CU::GrowingArray<SVertexTypePosColUv> myVertices;
+#ifndef SNOWBLIND_VULKAN
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
+#endif
 		CU::GrowingArray<int> myIndices;
 
 		CU::TimeManager* myTimeManager = nullptr;

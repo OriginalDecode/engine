@@ -1,10 +1,11 @@
 #pragma once
 #include <DL_Debug.h>
 #include "VertexStructs.h"
+#ifndef SNOWBLIND_VULKAN
 struct ID3D11DeviceContext;
 struct ID3D11InputLayout;
 struct ID3D11Buffer;
-
+#endif
 namespace Snowblind
 {
 	enum eDeferredType
@@ -16,7 +17,7 @@ namespace Snowblind
 	};
 
 	class CCamera;
-	class CDirectX11;
+	class DirectX11;
 	class CEffect;
 	class CEngine;
 	class CGBuffer;
@@ -54,13 +55,14 @@ namespace Snowblind
 
 		float myClearColor[4];
 		CEngine* myEngine = nullptr;
-		CDirectX11* myDirectX = nullptr;
+
+		CGBuffer* myGBuffer = nullptr;
+#ifndef SNOWBLIND_VULKAN
+		DirectX11* myDirectX = nullptr;
 		ID3D11DeviceContext* myContext = nullptr;
-
-
+		
 		CEffect* myAmbientPassShader = nullptr;
 		CEffect* myScreenPassShader = nullptr;
-		CGBuffer* myGBuffer = nullptr;
 
 		CTexture* myDepthStencil = nullptr;
 		CTexture* myFinishedSceneTexture = nullptr;
@@ -83,12 +85,14 @@ namespace Snowblind
 			CU::Matrix44f invertedProjection;
 			CU::Matrix44f view;
 		} *myConstantStruct;
-
+#endif
 	};
 
+#ifndef SNOWBLIND_VULKAN
 	__forceinline CTexture* CDeferredRenderer::GetDepthStencil()
 	{
 		DL_ASSERT_EXP(myDepthStencil != nullptr, "Deferred Depthstencil was null!");
 		return myDepthStencil;
 	}
+#endif
 };

@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef SNOWBLIND_VULKAN
+
 namespace CommonUtilities
 {
 	namespace Input
@@ -63,3 +65,4 @@ namespace Snowblind
 		return myIsActive;
 	}
 };
+#endif

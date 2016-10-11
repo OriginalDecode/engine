@@ -31,6 +31,7 @@ namespace Snowblind
 
 	void CScene::Render()
 	{
+#ifndef SNOWBLIND_VULKAN
 		if (!myIs2DScene)
 		{
 			RenderLight();
@@ -54,6 +55,7 @@ namespace Snowblind
 			}
 			CEngine::GetDirectX()->EnableZBuffer();
 		}
+#endif
 	}
 
 	void CScene::Update(float aDeltaTime)

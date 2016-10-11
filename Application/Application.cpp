@@ -194,10 +194,7 @@ void CApplication::OnExit()
 
 void CApplication::OnAltEnter()
 {
-	if (this)
-	{
-		myEngine->OnAltEnter();
-	}
+	myEngine->OnAltEnter();
 }
 
 bool CApplication::HasQuit()

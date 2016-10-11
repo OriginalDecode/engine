@@ -1,9 +1,10 @@
 #pragma once
 #include "VertexStructs.h"
+#ifndef SNOWBLIND_VULKAN
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct ID3D11ShaderResourceView;
-
+#endif
 namespace Snowblind
 {
 	class CTexture;
@@ -40,7 +41,6 @@ namespace Snowblind
 
 		std::string myTexturePath;
 		SWindowSize myWindowSize;
-		ID3D11ShaderResourceView* myTexture;
 		CCamera* myCamera;
 		CEffect* myEffect;
 
@@ -53,11 +53,13 @@ namespace Snowblind
 		SVertexBufferWrapper* myVertexBuffer;
 		SIndexBufferWrapper* myIndexBuffer;
 
+#ifndef SNOWBLIND_VULKAN
+		ID3D11ShaderResourceView* myTexture;
 		ID3D11Buffer* myConstantBuffer = nullptr;
-
-		CU::GrowingArray<SVertexTypePosUV> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		ID3D11InputLayout* myVertexLayout;
+#endif
+		CU::GrowingArray<SVertexTypePosUV> myVertices;
 
 		struct SSpriteConstantBuffer : public SVertexBaseStruct
 		{

@@ -11,24 +11,28 @@ CLine3D::CLine3D()
 
 CLine3D::~CLine3D()
 {
+#ifndef SNOWBLIND_VULKAN
 	SAFE_RELEASE(myVertexLayout);
 	SAFE_RELEASE(myConstantBuffer);
 	SAFE_DELETE(myConstantStruct);
 	SAFE_DELETE(myVertexBuffer);
+#endif
 }
 
 void CLine3D::Initiate(int aLineAmount /*= 256*/)
 {
+#ifndef SNOWBLIND_VULKAN
 	myLineAmount = aLineAmount;
 	myAPI = Snowblind::CEngine::GetDirectX();
 	myEffect =  Snowblind::CEngine::GetInstance()->GetEffect("Data/Shaders/T_Line3D.json");
 	CreateVertexBuffer();
 	CreateConstantBuffer();
-
+#endif
 }
 
 void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint)
 {
+#ifndef SNOWBLIND_VULKAN
 	myFirstPoint = firstPoint;
 	mySecondPoint = secondPoint;
 	myVertices.RemoveAll();
@@ -47,11 +51,12 @@ void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint
 		memcpy(data, &myVertices[0], sizeof(SLinePoint) * myVertices.Size());
 	}
 	myAPI->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
-
+#endif
 }
 
 void CLine3D::Render(CU::Matrix44f& prevOrientation, CU::Matrix44f& projection)
 {
+#ifndef SNOWBLIND_VULKAN
 	ID3D11DeviceContext* context = myAPI->GetContext();
 
 	context->IASetInputLayout(myVertexLayout);
@@ -70,7 +75,7 @@ void CLine3D::Render(CU::Matrix44f& prevOrientation, CU::Matrix44f& projection)
 	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 	context->Draw(myVertices.Size(), 0);
-
+#endif
 }
 
 void CLine3D::AddLine(const SLine& aLine)
@@ -160,6 +165,7 @@ void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
 
 void CLine3D::CreateConstantBuffer()
 {
+#ifndef SNOWBLIND_VULKAN
 	myConstantStruct = new SVertexBaseStruct;
 
 	D3D11_BUFFER_DESC cbDesc;
@@ -174,11 +180,12 @@ void CLine3D::CreateConstantBuffer()
 	HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 	myAPI->SetDebugName(myConstantBuffer, "Line3D Constant Buffer");
 	myAPI->HandleErrors(hr, "[Line3D] : Failed to Create Constant Buffer, ");
+#endif
 }
 
 void CLine3D::CreateVertexBuffer()
 {
-
+#ifndef SNOWBLIND_VULKAN
 	HRESULT hr;
 	void* shader = myEffect->GetVertexShader()->compiledShader;
 	int size = myEffect->GetVertexShader()->shaderSize;
@@ -226,11 +233,12 @@ void CLine3D::CreateVertexBuffer()
 	hr = myAPI->GetDevice()->CreateBuffer(&vertexBufferDesc, nullptr, &myVertexBuffer->myVertexBuffer);
 	myAPI->SetDebugName(myVertexBuffer->myVertexBuffer, "Line3D : Vertex Buffer");
 	myAPI->HandleErrors(hr, "Failed to Create VertexBuffer!");
-
+#endif
 }
 
 void CLine3D::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
 {
+#ifndef SNOWBLIND_VULKAN
 	DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 	myOrientation.SetPosition(CU::Vector3f(1, 1, 1));
 	myConstantStruct->world = myOrientation;
@@ -246,6 +254,7 @@ void CLine3D::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCam
 	}
 
 	Snowblind::CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);
+#endif
 }
 
 SLinePoint::SLinePoint(const CU::Vector4f& pos, const CU::Vector4f& col)

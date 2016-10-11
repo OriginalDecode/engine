@@ -48,8 +48,9 @@ namespace Snowblind
 		mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
 
 		myEngine = CEngine::GetInstance();
+#ifndef SNOWBLIND_VULKAN
 		myDirectX = myEngine->GetDirectX();
-
+#endif
 		my3DLine = new CLine3D();
 		my3DLine->Initiate();
 
@@ -79,9 +80,11 @@ namespace Snowblind
 
 	void CRenderer::Render()
 	{
-		myEngine->Clear();
 
+		myEngine->Clear();
+#ifndef SNOWBLIND_VULKAN
 		Render3DCommands();
+
 		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
 
@@ -96,7 +99,7 @@ namespace Snowblind
 		RenderLines();
 
 		Render2DCommands();
-
+#endif
 		myEngine->Present();
 
 		mySynchronizer.WaitForLogic();
@@ -112,6 +115,7 @@ namespace Snowblind
 
 	void CRenderer::Render3DCommands()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		myDeferredRenderer->SetTargets();
 
@@ -145,10 +149,12 @@ namespace Snowblind
 				}break;
 			}
 		}
+#endif
 	}
 
 	void CRenderer::Render2DCommands()
 	{
+#ifndef SNOWBLIND_VULKAN
 		const CU::GrowingArray<SRenderCommand>& commands2D = mySynchronizer.GetRenderCommands(eCommandBuffer::e2D);
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
@@ -170,10 +176,12 @@ namespace Snowblind
 		}
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+#endif
 	}
 
 	void CRenderer::RenderSpotlight()
 	{
+#ifndef SNOWBLIND_VULKAN
 		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandBuffer::eSpotlight);
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
@@ -197,10 +205,12 @@ namespace Snowblind
 		effect->Deactivate();
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+#endif
 	}
 
 	void CRenderer::RenderPointlight()
 	{
+#ifndef SNOWBLIND_VULKAN
 		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandBuffer::ePointlight);
 
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
@@ -222,10 +232,12 @@ namespace Snowblind
 
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+#endif
 	}
 
 	void CRenderer::RenderParticles()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myDirectX->SetBlendState(eBlendStates::ALPHA_BLEND);
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		const CU::GrowingArray<SRenderCommand>& commands = mySynchronizer.GetRenderCommands(eCommandBuffer::eParticle);
@@ -240,10 +252,12 @@ namespace Snowblind
 			}
 		}
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+#endif
 	}
 
 	void CRenderer::RenderLines()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 
@@ -273,6 +287,7 @@ namespace Snowblind
 		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+#endif
 	}
 
 };

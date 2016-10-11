@@ -9,6 +9,7 @@ namespace Snowblind
 {
 	CDeferredRenderer::CDeferredRenderer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myDirectX = CEngine::GetDirectX();
 		myContext = myDirectX->GetContext();
 		myEngine = CEngine::GetInstance();
@@ -40,10 +41,12 @@ namespace Snowblind
 
 		CreateFullscreenQuad();
 		InitConstantBuffer();
+#endif
 	}
 
 	CDeferredRenderer::~CDeferredRenderer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		SAFE_DELETE(myFinishedSceneTexture);
 		SAFE_DELETE(myDepthStencil);
 		SAFE_DELETE(myConstantStruct);
@@ -55,17 +58,21 @@ namespace Snowblind
 
 		SAFE_RELEASE(myConstantBuffer);
 		SAFE_RELEASE(myInputLayout);
+#endif
 	}
 
 	void CDeferredRenderer::SetTargets()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myGBuffer->Clear(myClearColor);
 		myContext->ClearDepthStencilView(myDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		myGBuffer->SetAsRenderTarget(myDepthStencil);
+#endif
 	}
 
 	void CDeferredRenderer::SetBuffers()
 	{
+#ifndef SNOWBLIND_VULKAN
 		SVertexBufferWrapper* buf = myVertexBuffer;
 		myContext->IASetInputLayout(myInputLayout);
 		myContext->IASetVertexBuffers(buf->myStartSlot
@@ -76,10 +83,12 @@ namespace Snowblind
 		SIndexBufferWrapper* inBuf = myIndexBuffer;
 		myContext->IASetIndexBuffer(inBuf->myIndexBuffer, inBuf->myIndexBufferFormat, inBuf->myByteOffset);
 		myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+#endif
 	}
 
 	void CDeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
 	{
+#ifndef SNOWBLIND_VULKAN
 		UpdateConstantBuffer(previousOrientation, aProjection);
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		SetBuffers();
@@ -105,10 +114,12 @@ namespace Snowblind
 		depth = myDepthStencil->GetDepthView();
 		myContext->OMSetRenderTargets(1, &backbuffer, depth);
 		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); 
+#endif
 	}
 
 	void CDeferredRenderer::Finalize()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
 		SetBuffers();
@@ -128,10 +139,12 @@ namespace Snowblind
 
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+#endif
 	}
 
 	void CDeferredRenderer::InitConstantBuffer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		myConstantStruct = new SConstantStruct;
 
 		D3D11_BUFFER_DESC cbDesc;
@@ -146,10 +159,12 @@ namespace Snowblind
 		HRESULT hr = myDirectX->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 		myDirectX->SetDebugName(myConstantBuffer, "Deferred Ambient Constant Buffer");
 		myDirectX->HandleErrors(hr, "[DeferredRenderer] : Failed to Create Constant Buffer, ");
+#endif
 	}
 
 	void CDeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
 	{
+#ifndef SNOWBLIND_VULKAN
 		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 		myConstantStruct->camPosition = previousOrientation.GetPosition();
 		myConstantStruct->invertedProjection = CU::Math::InverseReal(aProjection);
@@ -163,6 +178,7 @@ namespace Snowblind
 		}
 
 		myDirectX->GetContext()->Unmap(myConstantBuffer, 0);
+#endif
 	}
 
 	CGBuffer* CDeferredRenderer::GetGBuffer()
@@ -173,6 +189,7 @@ namespace Snowblind
 	void CDeferredRenderer::CreateFullscreenQuad()
 	{
 
+#ifndef SNOWBLIND_VULKAN
 		myVertexFormat.Init(2);
 		myVertexFormat.Add(VertexLayoutPosUV[0]);
 		myVertexFormat.Add(VertexLayoutPosUV[1]);
@@ -225,10 +242,12 @@ namespace Snowblind
 
 		CreateVertexBuffer();
 		CreateIndexBuffer();
+#endif
 	}
 
 	void CDeferredRenderer::CreateVertexBuffer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		void* shader = myScreenPassShader->GetVertexShader()->compiledShader;
 		int size = myScreenPassShader->GetVertexShader()->shaderSize;
 
@@ -253,11 +272,12 @@ namespace Snowblind
 		myVertexBuffer->myByteOffset = 0;
 		myVertexBuffer->myStartSlot = 0;
 		myVertexBuffer->myNrOfBuffers = 1;
+#endif
 	}
 
 	void CDeferredRenderer::CreateIndexBuffer()
 	{
-
+#ifndef SNOWBLIND_VULKAN
 		D3D11_BUFFER_DESC indexDesc;
 		ZeroMemory(&indexDesc, sizeof(indexDesc));
 		indexDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -274,5 +294,6 @@ namespace Snowblind
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		myIndexBuffer->myByteOffset = 0;
+#endif
 	}
 };

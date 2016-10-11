@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#ifndef SNOWBLIND_VULKAN
 #include "EmitterInstance.h"
 #include "AssetsContainer.h"
 #include <Randomizer.h>
@@ -67,6 +68,7 @@ namespace Snowblind
 	void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection, CTexture* aDepthTexture)
 	{
 		UpdateVertexBuffer();
+
 
 		ID3D11DeviceContext* context = CEngine::GetDirectX()->GetContext();
 		context->IASetInputLayout(myInputLayout);
@@ -229,3 +231,4 @@ namespace Snowblind
 		myParticles.Add(temp);
 	}
 };
+#endif

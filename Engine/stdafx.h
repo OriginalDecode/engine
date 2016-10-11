@@ -2,17 +2,11 @@
 #pragma warning(disable : 4005)
 #pragma warning(disable : 4006)
 #pragma warning(disable : 4099)
-
-//----------------------------------------
-// Windows
-//----------------------------------------
+#ifndef SNOWBLIND_VULKAN
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DDSTextureLoader.h>
-#include <unordered_map>
-#include <Windows.h>
-#include <thread>
-#include <memory>
+#endif
 
 //----------------------------------------
 // Common Utilities / Common Library

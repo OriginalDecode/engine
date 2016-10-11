@@ -1,4 +1,5 @@
 #pragma once
+#ifndef SNOWBLIND_VULKAN
 #include <vector>
 #include <unordered_map>
 #include <bitset>
@@ -34,10 +35,10 @@ struct IUnknown;
 
 namespace Snowblind
 {
-	class CDirectX11 : public CIGraphicsAPI
+	class DirectX11 : public IGraphicsAPI
 	{
 	public:
-		CDirectX11() = default;
+		DirectX11() = default;
 
 		//__________________________
 		// Virtual Functions
@@ -107,9 +108,6 @@ namespace Snowblind
 
 		void GetRefreshRate(u32& aNumerator, u32& aDenominator);
 
-
-		HWND myHWND;
-
 		D3D11_VIEWPORT* myViewport = nullptr;
 		ID3D11Debug* myDebug = nullptr;
 		ID3D11Device* myDevice = nullptr;
@@ -133,64 +131,39 @@ namespace Snowblind
 
 	};
 
-	__forceinline const std::string& CDirectX11::GetActiveAdapterName()
+	__forceinline const std::string& DirectX11::GetActiveAdapterName()
 	{
 		return myActiveAdapter;
 	}
 
-	__forceinline ID3D11Device* CDirectX11::GetDevice()
+	__forceinline ID3D11Device* DirectX11::GetDevice()
 	{
 		return myDevice;
 	}
 
-	__forceinline ID3D11DeviceContext* CDirectX11::GetContext()
+	__forceinline ID3D11DeviceContext* DirectX11::GetContext()
 	{
 		return myContext;
 	}
 
-	__forceinline ID3D11RenderTargetView* CDirectX11::GetBackbuffer()
+	__forceinline ID3D11RenderTargetView* DirectX11::GetBackbuffer()
 	{
 		return myRenderTarget;
 	}
 
-	__forceinline const ID3D11RenderTargetView* CDirectX11::GetBackbuffer() const
+	__forceinline const ID3D11RenderTargetView* DirectX11::GetBackbuffer() const
 	{
 		return myRenderTarget;
 	}
 
-	__forceinline ID3D11DepthStencilView* CDirectX11::GetDepthView()
+	__forceinline ID3D11DepthStencilView* DirectX11::GetDepthView()
 	{
 		return myDepthView;
 	}
 
-	__forceinline const ID3D11DepthStencilView* CDirectX11::GetDepthView() const
+	__forceinline const ID3D11DepthStencilView* DirectX11::GetDepthView() const
 	{
 		return myDepthView;
 	}
-
-	template<typename T>
-	bool SafeDelete(T* object_to_delete)
-	{
-		delete object_to_delete;
-		object_to_delete = nullptr;
-
-		if (object_to_delete)
-			return false;
-
-		return true;
-	}
-
-	template<typename T>
-	bool SafeRelease(T* object_to_release)
-	{
-		object_to_release->Release();
-		object_to_release = nullptr;
-
-		if (object_to_release)
-			return false;
-
-		return true;
-	}
-
-
 };
+#endif

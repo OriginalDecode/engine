@@ -58,11 +58,11 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 
 	//Load this after we've got into the world?
 
-	for (s32 i = 0; i < myTerrain.Size(); i++)
+	/*for (s32 i = 0; i < myTerrain.Size(); i++)
 	{
 		myTerrainBodies.Add(myPhysicsManager->CreateBody());
 		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
-	}
+	}*/
 
 	const JSONElement& el = reader.GetElement("root");
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)

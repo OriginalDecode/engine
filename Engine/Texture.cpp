@@ -12,6 +12,7 @@ namespace Snowblind
 	CTexture::CTexture(float aWidth, float aHeight, unsigned int aBindFlag, unsigned int aFormat)
 	{
 
+#ifndef SNOWBLIND_VULKAN
 		D3D11_TEXTURE2D_DESC tempBufferInfo;
 		tempBufferInfo.Width = aWidth;
 		tempBufferInfo.Height = aHeight;
@@ -38,20 +39,24 @@ namespace Snowblind
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Texture!");
 		tex->Release();
 		tex = nullptr;
+#endif
 	}
 
 	CTexture::~CTexture()
 	{
+#ifndef SNOWBLIND_VULKAN
 		SAFE_RELEASE(myDepthStencil);
 		SAFE_RELEASE(myShaderResource);
 		SAFE_RELEASE(myRenderTargetView);
 		SAFE_RELEASE(myDepthStencilShaderView);
 		SAFE_RELEASE(myDepthTexture);
 		SAFE_RELEASE(myTexture);
+#endif
 	}
 
 	void CTexture::InitAsDepthBuffer(float aWidth, float aHeight)
 	{
+#ifndef SNOWBLIND_VULKAN
 		int width = static_cast<int>(aWidth);
 		int height = static_cast<int>(aHeight);
 
@@ -84,10 +89,12 @@ namespace Snowblind
 		hr = CEngine::GetDirectX()->GetDevice()->CreateRenderTargetView(myTexture, NULL, &myRenderTargetView);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Render Target View!");
 		CreateDepthStencilView(static_cast<float>(width), static_cast<float>(height));
+#endif
 	}
 
 	void CTexture::InitStencil(float aWidth, float aHeight)
 	{
+#ifndef SNOWBLIND_VULKAN
 		int width = static_cast<int>(aWidth);
 		int height = static_cast<int>(aHeight);
 
@@ -135,7 +142,7 @@ namespace Snowblind
 
 		hr = CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(myDepthTexture, &viewDesc, &myDepthStencilShaderView);
 		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create depthstencilshaderview");
-
+#endif
 	}
 
 	const std::string& CTexture::GetFileName()
@@ -145,6 +152,7 @@ namespace Snowblind
 
 	bool CTexture::LoadTexture(const std::string& aFileName)
 	{
+#ifndef SNOWBLIND_VULKAN
 		HRESULT hr;
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
@@ -160,6 +168,7 @@ namespace Snowblind
 			return LoadTexture("Data/Textures/No-Texture.dds");
 			return false;
 		}
+#endif
 		return true;
 	}
 
@@ -167,13 +176,17 @@ namespace Snowblind
 	{
 		std::string debug(debugName);
 		std::string sr = debug + "ShaderResource";
+#ifndef SNOWBLIND_VULKAN
 		CEngine::GetDirectX()->SetDebugName(myShaderResource, sr);
-
+#endif
 		std::string rt = debug + "RenderTarget";
+#ifndef SNOWBLIND_VULKAN
 		CEngine::GetDirectX()->SetDebugName(myRenderTargetView, rt);
-
+#endif
 		std::string ds = debug + "DepthStenci";
+#ifndef SNOWBLIND_VULKAN
 		CEngine::GetDirectX()->SetDebugName(myDepthStencil, ds);
+#endif
 		//static_assert(false,"Missing stuff");
 	}
 
@@ -195,7 +208,7 @@ namespace Snowblind
 		//hr = D3DX11CreateShaderResourceViewFromMemory(CEngine::GetDirectX()->GetDevice(), &result[0], result.size(), 0, 0, &myShaderResource, &hr);
 		//CEngine::GetDirectX()->HandleErrors(hr, "Failed to create texture from memory");
 	}
-
+#ifndef SNOWBLIND_VULKAN
 	ID3D11Texture2D* CTexture::GetDepthTexture()
 	{
 		return myDepthTexture;
@@ -226,28 +239,6 @@ namespace Snowblind
 		myShaderResource = aShaderResource;
 	}
 
-	void CTexture::SaveToFile(const char* aFileName, int aSize)
-	{
-		/*D3D11_TEXTURE2D_DESC tempBufferInfo;
-		tempBufferInfo.Width = aSize;
-		tempBufferInfo.Height = aSize;
-		tempBufferInfo.MipLevels = 1;
-		tempBufferInfo.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		tempBufferInfo.SampleDesc.Count = 1;
-		tempBufferInfo.SampleDesc.Quality = 0;
-		tempBufferInfo.Usage = D3D11_USAGE_DEFAULT;
-		tempBufferInfo.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		tempBufferInfo.CPUAccessFlags = 0;
-		tempBufferInfo.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
-
-		ID3D11Resource* resource;
-		myShaderResource->GetResource(&resource);
-		HRESULT hr = S_OK;
-		hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), resource, D3DX11_IMAGE_FILE_FORMAT::D3DX11_IFF_DDS, aFileName);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save Texture! ");
-		resource->Release();*/
-	}
-
 	HRESULT CTexture::SaveToFile(ID3D11Texture2D*& texture_resource, const std::string& file_name)
 	{
 		ID3D11Resource* resource = nullptr;
@@ -260,9 +251,11 @@ namespace Snowblind
 		resource = nullptr;
 		return S_OK;
 	}
+#endif
 
 	void CTexture::CreateDepthStencilView(float aWidth, float aHeight, int aArraySize)
 	{
+#ifndef SNOWBLIND_VULKAN
 		D3D11_TEXTURE2D_DESC tempBufferInfo;
 		tempBufferInfo.Width = static_cast<unsigned int>(aWidth);
 		tempBufferInfo.Height = static_cast<unsigned int>(aHeight);
@@ -276,7 +269,7 @@ namespace Snowblind
 		tempBufferInfo.CPUAccessFlags = 0;
 		tempBufferInfo.MiscFlags = 0;
 
-		CDirectX11* dx = CEngine::GetDirectX();
+		DirectX11* dx = CEngine::GetDirectX();
 		ID3D11Device* device = dx->GetDevice();
 
 		HRESULT hr = device->CreateTexture2D(&tempBufferInfo, NULL, &myDepthTexture);
@@ -300,13 +293,15 @@ namespace Snowblind
 
 		hr = CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(myDepthTexture, &viewDesc, &myDepthStencilShaderView);
 		dx->HandleErrors(hr, "Failed to create depthstencilshaderview");
-
+#endif
 	}
-
+#ifndef SNOWBLIND_VULKAN
 	void CTexture::CopyData(ID3D11Texture2D* source)
 	{
+
 		DL_ASSERT_EXP(this, "Texture was null!");
 		CEngine::GetDirectX()->GetContext()->CopyResource(myDepthTexture, source);
 	}
+#endif
 
 };

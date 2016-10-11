@@ -6,10 +6,13 @@
 namespace Snowblind
 {
 	CLightPass::CLightPass(CGBuffer* aGBuffer)
-		: myContext(CEngine::GetDirectX()->GetContext())
-		, myEngine(CEngine::GetInstance())
+		: myEngine(CEngine::GetInstance())
 		, myGBuffer(aGBuffer)
+#ifndef SNOWBLIND_VULKAN
+		, myContext(CEngine::GetDirectX()->GetContext())
+#endif
 	{
+#ifndef SNOWBLIND_VULKAN
 		myEffect[u32(eLight::POINT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_Lightmesh.json");
 		myEffect[u32(eLight::SPOT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_Spotlight.json");
 
@@ -21,7 +24,7 @@ namespace Snowblind
 		myEffect[u32(eLight::SPOT_LIGHT)]->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
 		myEffect[u32(eLight::SPOT_LIGHT)]->AddShaderResource(myGBuffer->myNormal->GetShaderView());
 		myEffect[u32(eLight::SPOT_LIGHT)]->AddShaderResource(myGBuffer->myDepth->GetShaderView());
-
+#endif
 
 		CreatePointlightBuffers();
 		CreateSpotlightBuffers();
@@ -64,6 +67,7 @@ namespace Snowblind
 
 	void CLightPass::UpdatePointlightBuffers(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
+#ifndef SNOWBLIND_VULKAN
 		//----------------------------------------
 		// VertexShader Constant Buffer
 		//----------------------------------------
@@ -103,10 +107,12 @@ namespace Snowblind
 		}
 
 		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)], 0);
+#endif
 	}
 
 	void CLightPass::UpdateSpotlightBuffers(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
+#ifndef SNOWBLIND_VULKAN
 		//----------------------------------------
 		// VertexShader Constant Buffer
 		//----------------------------------------
@@ -152,10 +158,12 @@ namespace Snowblind
 		}
 
 		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], 0);
+#endif
 	}
 
 	void CLightPass::CreateSpotlightBuffers()
 	{
+#ifndef SNOWBLIND_VULKAN
 		//----------------------------------------
 		// Spotlight Vertex Constant Buffer
 		//----------------------------------------
@@ -187,10 +195,12 @@ namespace Snowblind
 		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)]);
 		CEngine::GetDirectX()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], "Spotlight Pixel Constant Buffer");
 		CEngine::GetDirectX()->HandleErrors(hr, "[LightPass] : Failed to Create Spotlight Pixel Constant Buffer, ");
+#endif
 	}
 
 	void CLightPass::CreatePointlightBuffers()
 	{
+#ifndef SNOWBLIND_VULKAN
 		//----------------------------------------
 		// Pointlight Vertex Constant Buffer
 		//----------------------------------------
@@ -222,6 +232,7 @@ namespace Snowblind
 		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)]);
 		CEngine::GetDirectX()->SetDebugName(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)], "Pointlight Pixel Constant Buffer");
 		CEngine::GetDirectX()->HandleErrors(hr, "[LightPass] : Failed to Create Pointlight Pixel Constant Buffer, ");
+#endif
 	}
 
 };

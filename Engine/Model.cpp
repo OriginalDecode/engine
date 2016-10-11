@@ -42,6 +42,7 @@ namespace Snowblind
 
 	void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
+#ifndef SNOWBLIND_VULKAN
 		if (!myIsNULLObject)
 		{
 			__super::Render(aCameraOrientation, aCameraProjection);
@@ -70,6 +71,7 @@ namespace Snowblind
 			child->SetPosition(myOrientation.GetPosition());
 			child->Render(aCameraOrientation, aCameraProjection);
 		}
+#endif
 	}
 
 	void CModel::SetIsLightmesh()
@@ -100,6 +102,7 @@ namespace Snowblind
 
 	void CModel::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
+#ifndef SNOWBLIND_VULKAN
 		if (myIsNULLObject == false)
 		{
 			DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
@@ -119,6 +122,7 @@ namespace Snowblind
 
 			myAPI->GetContext()->Unmap(myConstantBuffer, 0);
 		}
+#endif
 	}
 
 	void CModel::AddChild(CModel* aChild)
@@ -128,6 +132,7 @@ namespace Snowblind
 
 	void CModel::InitConstantBuffer()
 	{
+#ifndef SNOWBLIND_VULKAN
 		if (!myConstantStruct)
 			myConstantStruct = new SVertexBaseStruct;
 		D3D11_BUFFER_DESC cbDesc;
@@ -142,7 +147,6 @@ namespace Snowblind
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 		myAPI->SetDebugName(myConstantBuffer, "Model cb");
 		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+#endif
 	}
-
-
 };

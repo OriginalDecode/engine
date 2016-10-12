@@ -1,6 +1,6 @@
 #pragma once
 #pragma message ("Texture.h is being compiled")
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 struct ID3D11ShaderResourceView;
 struct ID3D11RenderTargetView;
 struct ID3D11DepthStencilView;
@@ -22,7 +22,7 @@ namespace Snowblind
 
 		void SetDebugName(const std::string& debugName);
 		void CreateTexture(const std::string& aTexturePath);
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D11Texture2D* GetDepthTexture();
 		ID3D11ShaderResourceView* GetShaderView();
 		ID3D11ShaderResourceView* GetDepthStencilView();
@@ -37,7 +37,7 @@ namespace Snowblind
 		void CreateDepthStencilView(float aWidth, float aHeight, int aArraySize = 1);
 	private:
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D11Texture2D* myTexture;
 		ID3D11ShaderResourceView* myShaderResource;
 		ID3D11Texture2D* myDepthTexture;

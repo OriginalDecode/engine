@@ -1,6 +1,6 @@
 #pragma once
 #include "VertexStructs.h"
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct ID3D11ShaderResourceView;
@@ -53,7 +53,7 @@ namespace Snowblind
 		SVertexBufferWrapper* myVertexBuffer;
 		SIndexBufferWrapper* myIndexBuffer;
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D11ShaderResourceView* myTexture;
 		ID3D11Buffer* myConstantBuffer = nullptr;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;

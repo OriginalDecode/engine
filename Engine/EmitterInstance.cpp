@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 #include "EmitterInstance.h"
 #include "AssetsContainer.h"
 #include <Randomizer.h>

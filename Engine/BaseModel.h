@@ -37,7 +37,7 @@ namespace Snowblind
 		CEngine* myEngine = nullptr;
 
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		CEffect* myEffect = nullptr;
 		ID3D11DeviceContext* myContext = nullptr;
 		DirectX11* myAPI = nullptr;

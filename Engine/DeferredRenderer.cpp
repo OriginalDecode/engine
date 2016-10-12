@@ -9,7 +9,7 @@ namespace Snowblind
 {
 	CDeferredRenderer::CDeferredRenderer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myDirectX = CEngine::GetDirectX();
 		myContext = myDirectX->GetContext();
 		myEngine = CEngine::GetInstance();
@@ -46,7 +46,7 @@ namespace Snowblind
 
 	CDeferredRenderer::~CDeferredRenderer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_DELETE(myFinishedSceneTexture);
 		SAFE_DELETE(myDepthStencil);
 		SAFE_DELETE(myConstantStruct);
@@ -63,7 +63,7 @@ namespace Snowblind
 
 	void CDeferredRenderer::SetTargets()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myGBuffer->Clear(myClearColor);
 		myContext->ClearDepthStencilView(myDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		myGBuffer->SetAsRenderTarget(myDepthStencil);
@@ -72,7 +72,7 @@ namespace Snowblind
 
 	void CDeferredRenderer::SetBuffers()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SVertexBufferWrapper* buf = myVertexBuffer;
 		myContext->IASetInputLayout(myInputLayout);
 		myContext->IASetVertexBuffers(buf->myStartSlot
@@ -88,7 +88,7 @@ namespace Snowblind
 
 	void CDeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		UpdateConstantBuffer(previousOrientation, aProjection);
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		SetBuffers();
@@ -119,7 +119,7 @@ namespace Snowblind
 
 	void CDeferredRenderer::Finalize()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
 		SetBuffers();
@@ -144,7 +144,7 @@ namespace Snowblind
 
 	void CDeferredRenderer::InitConstantBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myConstantStruct = new SConstantStruct;
 
 		D3D11_BUFFER_DESC cbDesc;
@@ -164,7 +164,7 @@ namespace Snowblind
 
 	void CDeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 		myConstantStruct->camPosition = previousOrientation.GetPosition();
 		myConstantStruct->invertedProjection = CU::Math::InverseReal(aProjection);
@@ -189,7 +189,7 @@ namespace Snowblind
 	void CDeferredRenderer::CreateFullscreenQuad()
 	{
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myVertexFormat.Init(2);
 		myVertexFormat.Add(VertexLayoutPosUV[0]);
 		myVertexFormat.Add(VertexLayoutPosUV[1]);
@@ -247,7 +247,7 @@ namespace Snowblind
 
 	void CDeferredRenderer::CreateVertexBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		void* shader = myScreenPassShader->GetVertexShader()->compiledShader;
 		int size = myScreenPassShader->GetVertexShader()->shaderSize;
 
@@ -277,7 +277,7 @@ namespace Snowblind
 
 	void CDeferredRenderer::CreateIndexBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		D3D11_BUFFER_DESC indexDesc;
 		ZeroMemory(&indexDesc, sizeof(indexDesc));
 		indexDesc.Usage = D3D11_USAGE_DEFAULT;

@@ -2,7 +2,7 @@
 #pragma warning(disable : 4005)
 #pragma warning(disable : 4006)
 #pragma warning(disable : 4099)
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DDSTextureLoader.h>

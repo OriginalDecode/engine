@@ -11,7 +11,7 @@ CLine3D::CLine3D()
 
 CLine3D::~CLine3D()
 {
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	SAFE_RELEASE(myVertexLayout);
 	SAFE_RELEASE(myConstantBuffer);
 	SAFE_DELETE(myConstantStruct);
@@ -21,7 +21,7 @@ CLine3D::~CLine3D()
 
 void CLine3D::Initiate(int aLineAmount /*= 256*/)
 {
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	myLineAmount = aLineAmount;
 	myAPI = Snowblind::CEngine::GetDirectX();
 	myEffect =  Snowblind::CEngine::GetInstance()->GetEffect("Data/Shaders/T_Line3D.json");
@@ -32,7 +32,7 @@ void CLine3D::Initiate(int aLineAmount /*= 256*/)
 
 void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint)
 {
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	myFirstPoint = firstPoint;
 	mySecondPoint = secondPoint;
 	myVertices.RemoveAll();
@@ -56,7 +56,7 @@ void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint
 
 void CLine3D::Render(CU::Matrix44f& prevOrientation, CU::Matrix44f& projection)
 {
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	ID3D11DeviceContext* context = myAPI->GetContext();
 
 	context->IASetInputLayout(myVertexLayout);
@@ -165,7 +165,7 @@ void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
 
 void CLine3D::CreateConstantBuffer()
 {
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	myConstantStruct = new SVertexBaseStruct;
 
 	D3D11_BUFFER_DESC cbDesc;
@@ -185,7 +185,7 @@ void CLine3D::CreateConstantBuffer()
 
 void CLine3D::CreateVertexBuffer()
 {
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	HRESULT hr;
 	void* shader = myEffect->GetVertexShader()->compiledShader;
 	int size = myEffect->GetVertexShader()->shaderSize;
@@ -238,7 +238,7 @@ void CLine3D::CreateVertexBuffer()
 
 void CLine3D::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
 {
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 	myOrientation.SetPosition(CU::Vector3f(1, 1, 1));
 	myConstantStruct->world = myOrientation;

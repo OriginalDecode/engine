@@ -48,7 +48,7 @@ namespace Snowblind
 
 		eDeferredType		myDeferredType;
 		CEngine*			myEngine = nullptr;
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		DirectX11*			myDirectX = nullptr;
 #endif
 		CCamera*			myCamera = nullptr;

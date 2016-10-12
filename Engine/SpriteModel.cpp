@@ -25,7 +25,7 @@ namespace Snowblind
 		SAFE_DELETE(myVertexData);
 		SAFE_DELETE(myConstantStruct);
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(myVertexLayout);
 		SAFE_RELEASE(myConstantBuffer);
 #endif
@@ -33,7 +33,7 @@ namespace Snowblind
 
 	void CSpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myWindowSize = CEngine::GetInstance()->GetWindowSize();
 
 		myTexturePath = aTexturePath;
@@ -103,7 +103,7 @@ namespace Snowblind
 
 	void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myWindowSize = CEngine::GetInstance()->GetWindowSize();
 
 		mySize = aSize;
@@ -173,7 +173,7 @@ namespace Snowblind
 
 	void CSpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
 		if (!myEffect)
 			return;
@@ -221,7 +221,7 @@ namespace Snowblind
 
 	void CSpriteModel::UpdateConstantBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myConstantStruct->scale = mySize;
 
 
@@ -241,7 +241,7 @@ namespace Snowblind
 
 	void CSpriteModel::InitiateVertexBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		HRESULT hr;
 
 		hr = CEngine::GetDirectX()->GetDevice()->
@@ -276,7 +276,7 @@ namespace Snowblind
 
 	void CSpriteModel::InitiateIndexBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		D3D11_BUFFER_DESC indexDesc;
 		ZeroMemory(&indexDesc, sizeof(indexDesc));
 		indexDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -298,7 +298,7 @@ namespace Snowblind
 
 	void CSpriteModel::InitConstantBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myConstantStruct = new SSpriteConstantBuffer;
 
 		D3D11_BUFFER_DESC cbDesc;

@@ -331,7 +331,7 @@ namespace Snowblind
 
 	void CFontManager::DumpAtlas(SFontData* fontData, int atlasSize)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		D3D11_SUBRESOURCE_DATA data;
 		data.pSysMem = fontData->myAtlas;
 		data.SysMemPitch = atlasSize * 4;
@@ -389,7 +389,7 @@ namespace Snowblind
 
 	void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		isOutline;
 		index;
 		D3D11_SUBRESOURCE_DATA data;
@@ -566,7 +566,7 @@ namespace Snowblind
 	SFontData::~SFontData()
 	{
 		SAFE_DELETE(myAtlas);
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(myAtlasView);
 #endif
 	}

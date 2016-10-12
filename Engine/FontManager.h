@@ -1,7 +1,7 @@
 #pragma once
 #include <DataStructures/StaticArray.h>
 #include <unordered_map>
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 struct ID3D11Device;
 struct ID3D11ShaderResourceView;
 struct ID3D11RenderTargetView;
@@ -40,7 +40,7 @@ namespace Snowblind
 		short myFontHeightWidth;
 		int* myAtlas;
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D11ShaderResourceView* myAtlasView;
 #endif
 	};

@@ -16,7 +16,7 @@ namespace Snowblind
 		: myWidth(aSize.x)
 		, myDepth(aSize.y)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myIsNULLObject = false;
 		myEffect = myEngine->GetEffect("Data/Shaders/T_Terrain_Base.json");
 		myHeightmap = SHeightMap::Create(aFile.c_str());
@@ -33,7 +33,7 @@ namespace Snowblind
 
 	void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		if (!myIsNULLObject)
 		{
 			__super::Render(aCameraOrientation, aCameraProjection);
@@ -61,7 +61,7 @@ namespace Snowblind
 
 	void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -149,7 +149,7 @@ namespace Snowblind
 
 	void CTerrain::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		if (myIsNULLObject == false)
 		{
 			DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
@@ -173,7 +173,7 @@ namespace Snowblind
 
 	void CTerrain::InitConstantBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		D3D11_BUFFER_DESC cbDesc;
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
 		cbDesc.ByteWidth = sizeof(TerrainConstantStruct);

@@ -116,7 +116,7 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 
 void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Snowblind::CEffect* anEffect)
 {
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	ModelData* data = someData->myData;
 
 
@@ -256,7 +256,7 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 
 void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData)
 {
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	DL_ASSERT_EXP(someData, "Failed to process node. FBXModelData someData was null");
 
 	for (u32 i = 0; i < aNode->mNumMeshes; i++)
@@ -275,7 +275,7 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 
 void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelData* fbx)
 {
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	FBXModelData* data = fbx;
 	data->myData = new ModelData();
 

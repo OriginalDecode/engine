@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include "ShaderWarningHandler.h"
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 struct ID3D11VertexShader;
 struct ID3D11PixelShader;
 struct ID3D11GeometryShader;
@@ -21,7 +21,7 @@ namespace Snowblind
 	{
 		SCompiledShader() {};
 		virtual ~SCompiledShader();
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D10Blob* blob = nullptr;
 #endif
 		void* compiledShader = nullptr;
@@ -32,7 +32,7 @@ namespace Snowblind
 	struct SVertexShader : public SCompiledShader
 	{
 		~SVertexShader();
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D11VertexShader* vertexShader = nullptr;
 #endif
 	};
@@ -40,7 +40,7 @@ namespace Snowblind
 	struct SPixelShader : public SCompiledShader
 	{
 		~SPixelShader();
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D11PixelShader* pixelShader = nullptr;
 #endif
 	};
@@ -48,7 +48,7 @@ namespace Snowblind
 	struct SGeometryShader : public SCompiledShader
 	{
 		~SGeometryShader();
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D11GeometryShader* geometryShader = nullptr;
 #endif
 	};
@@ -56,7 +56,7 @@ namespace Snowblind
 	struct SHullShader : public SCompiledShader
 	{
 		~SHullShader();
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D11HullShader* hullShader = nullptr;
 #endif
 	};
@@ -64,7 +64,7 @@ namespace Snowblind
 	struct SDomainShader : public SCompiledShader
 	{
 		~SDomainShader();
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D11DomainShader* domainShader = nullptr;
 #endif
 	};
@@ -72,7 +72,7 @@ namespace Snowblind
 	struct SComputeShader : public SCompiledShader
 	{
 		~SComputeShader();
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D11ComputeShader* computeShader = nullptr;
 #endif
 	};
@@ -90,7 +90,7 @@ namespace Snowblind
 		void LoadShader(CEffect* anEffect);
 		void Update();
 	private:
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D10Blob* CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level);
 #endif
 		bool LoadVertexShader(const std::string& file_path, CEffect* effect);

@@ -25,7 +25,7 @@ namespace Snowblind
 		myEffect[0] = myEngine->GetEffect("Data/Shaders/T_Font_Outline.json");
 		myEffect[1] = myEngine->GetEffect("Data/Shaders/T_Font.json");
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myVertexBufferDesc = new D3D11_BUFFER_DESC();
 		myIndexBufferDesc = new D3D11_BUFFER_DESC();
 		myInitData = new D3D11_SUBRESOURCE_DATA();
@@ -45,7 +45,7 @@ namespace Snowblind
 
 	CFont::~CFont()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_DELETE(myIndexBuffer);
 		SAFE_DELETE(myVertexBuffer);
 
@@ -83,7 +83,7 @@ namespace Snowblind
 
 	void CFont::Render()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds();
@@ -125,7 +125,7 @@ namespace Snowblind
 	
 	ID3D11ShaderResourceView* CFont::GetAtlas()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		return myData->myAtlasView;
 #else
 		return nullptr;
@@ -165,7 +165,7 @@ namespace Snowblind
 
 	void CFont::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myConstantStruct->world = anOrientation;
 		myConstantStruct->invertedView = CU::Math::Inverse(a2DCameraOrientation);
 		myConstantStruct->projection = anOrthogonalProjectionMatrix;
@@ -174,7 +174,7 @@ namespace Snowblind
 
 	void CFont::CreateInputLayout()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myVertexFormat.Init(3);
 		myVertexFormat.Add(VertexLayoutPosColUV[0]);
 		myVertexFormat.Add(VertexLayoutPosColUV[1]);
@@ -192,7 +192,7 @@ namespace Snowblind
 
 	void CFont::CreateVertexBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myVertexBuffer = new SVertexBufferWrapper;
 		myVertexBuffer->myStride = sizeof(SVertexTypePosColUv);
 		myVertexBuffer->myByteOffset = 0;
@@ -211,7 +211,7 @@ namespace Snowblind
 
 	void CFont::CreateIndexBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myIndexBuffer = new SIndexBufferWrapper;
 		myIndexBuffer->myIndexBufferFormat = DXGI_FORMAT_R32_UINT;
 		myIndexBuffer->myByteOffset = 0;
@@ -228,7 +228,7 @@ namespace Snowblind
 
 	void CFont::CreateConstantBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myConstantStruct = new SFontConstantBuffer;
 
 		D3D11_BUFFER_DESC cbDesc;
@@ -248,7 +248,7 @@ namespace Snowblind
 
 	void CFont::UpdateBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
 		SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 
@@ -343,7 +343,7 @@ namespace Snowblind
 
 	void CFont::UpdateConstantBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 
 		D3D11_MAPPED_SUBRESOURCE msr;

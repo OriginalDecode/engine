@@ -62,7 +62,7 @@ namespace Snowblind
 		static void Destroy();
 		static CEngine* GetInstance();
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		static DirectX11* GetDirectX();
 #endif
 		void Initiate();

@@ -1,5 +1,5 @@
 #pragma once
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 #include "SnowblindParticleData.h"
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"

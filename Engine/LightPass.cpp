@@ -8,11 +8,11 @@ namespace Snowblind
 	CLightPass::CLightPass(CGBuffer* aGBuffer)
 		: myEngine(CEngine::GetInstance())
 		, myGBuffer(aGBuffer)
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		, myContext(CEngine::GetDirectX()->GetContext())
 #endif
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myEffect[u32(eLight::POINT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_Lightmesh.json");
 		myEffect[u32(eLight::SPOT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_Spotlight.json");
 
@@ -67,7 +67,7 @@ namespace Snowblind
 
 	void CLightPass::UpdatePointlightBuffers(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		//----------------------------------------
 		// VertexShader Constant Buffer
 		//----------------------------------------
@@ -112,7 +112,7 @@ namespace Snowblind
 
 	void CLightPass::UpdateSpotlightBuffers(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		//----------------------------------------
 		// VertexShader Constant Buffer
 		//----------------------------------------
@@ -163,7 +163,7 @@ namespace Snowblind
 
 	void CLightPass::CreateSpotlightBuffers()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		//----------------------------------------
 		// Spotlight Vertex Constant Buffer
 		//----------------------------------------
@@ -200,7 +200,7 @@ namespace Snowblind
 
 	void CLightPass::CreatePointlightBuffers()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		//----------------------------------------
 		// Pointlight Vertex Constant Buffer
 		//----------------------------------------

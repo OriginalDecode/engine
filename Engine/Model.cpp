@@ -42,7 +42,7 @@ namespace Snowblind
 
 	void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		if (!myIsNULLObject)
 		{
 			__super::Render(aCameraOrientation, aCameraProjection);
@@ -102,7 +102,7 @@ namespace Snowblind
 
 	void CModel::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		if (myIsNULLObject == false)
 		{
 			DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
@@ -132,7 +132,7 @@ namespace Snowblind
 
 	void CModel::InitConstantBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		if (!myConstantStruct)
 			myConstantStruct = new SVertexBaseStruct;
 		D3D11_BUFFER_DESC cbDesc;

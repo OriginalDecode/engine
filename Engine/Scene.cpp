@@ -31,7 +31,7 @@ namespace Snowblind
 
 	void CScene::Render()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		if (!myIs2DScene)
 		{
 			RenderLight();

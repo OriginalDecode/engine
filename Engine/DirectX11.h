@@ -1,5 +1,5 @@
 #pragma once
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 #include <vector>
 #include <unordered_map>
 #include <bitset>

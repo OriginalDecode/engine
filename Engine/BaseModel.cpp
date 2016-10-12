@@ -6,7 +6,7 @@ namespace Snowblind
 	CBaseModel::CBaseModel()
 	{
 		myEngine = CEngine::GetInstance();
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myAPI = CEngine::GetDirectX();
 		myContext = myAPI->GetContext();
 #endif
@@ -15,7 +15,7 @@ namespace Snowblind
 
 	CBaseModel::~CBaseModel()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_DELETE(myVertexBuffer);
 		SAFE_DELETE(myVertexData);
 		SAFE_DELETE(myIndexBuffer);
@@ -27,7 +27,7 @@ namespace Snowblind
 
 	void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myContext->IASetInputLayout(myVertexLayout);
 		myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		myContext->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
@@ -43,14 +43,14 @@ namespace Snowblind
 
 	void CBaseModel::SetEffect(CEffect* anEffect)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myEffect = anEffect;
 #endif
 	}
 
 	void CBaseModel::InitVertexBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myVertexBuffer = new SVertexBufferWrapper();
 		HRESULT hr;
 		void* shader = myEffect->GetVertexShader()->compiledShader;
@@ -89,7 +89,7 @@ namespace Snowblind
 
 	void CBaseModel::InitIndexBuffer()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 
 		myIndexBuffer = new SIndexBufferWrapper;
 

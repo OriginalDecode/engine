@@ -1,6 +1,6 @@
 #pragma once
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 
 namespace CommonUtilities
 {

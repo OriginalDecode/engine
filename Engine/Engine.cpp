@@ -53,7 +53,7 @@ namespace Snowblind
 		return myInstance;
 	}
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	DirectX11* CEngine::GetDirectX()
 	{
 		return static_cast<DirectX11*>(myAPI);
@@ -62,12 +62,12 @@ namespace Snowblind
 
 	void CEngine::Initiate()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myAPI = new DirectX11;
 #else
 		myAPI = new Vulkan;
 #endif
-		myAPI->Initiate(myHWND, myWindowSize.myWidth, myWindowSize.myHeight); 
+		DL_ASSERT_EXP(myAPI->Initiate(myHWND, myWindowSize.myWidth, myWindowSize.myHeight), "Failed to initiate graphicsAPI");
 
 
 		myCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight);
@@ -173,7 +173,7 @@ namespace Snowblind
 
 	void CEngine::ResetRenderTargetAndDepth()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		GetDirectX()->ResetRenderTargetAndDepth();
 #endif
 	}

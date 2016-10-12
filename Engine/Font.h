@@ -1,7 +1,7 @@
 #pragma once
 #include "VertexStructs.h"
 #include "Utilities.h"
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 struct ID3D11InputLayout;
 struct D3D11_BUFFER_DESC;
 struct D3D11_INPUT_ELEMENT_DESC;
@@ -59,7 +59,7 @@ namespace Snowblind
 		SFontData* myData = nullptr;
 		CEffect* myEffect[2];
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D11InputLayout* myVertexLayout = nullptr;
 		D3D11_BUFFER_DESC* myVertexBufferDesc = nullptr;
 		D3D11_BUFFER_DESC* myIndexBufferDesc = nullptr;
@@ -74,7 +74,7 @@ namespace Snowblind
 
 		CU::Math::Vector2<float> mySize;
 		CU::GrowingArray<SVertexTypePosColUv> myVertices;
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 #endif
 		CU::GrowingArray<int> myIndices;

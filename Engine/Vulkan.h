@@ -1,6 +1,9 @@
 #pragma once
 #include "IGraphicsAPI.h"
 
+#ifdef SNOWBLIND_VULKAN
+#include <vulkan/vulkan.h>
+
 namespace Snowblind
 {
 	class Vulkan : public IGraphicsAPI
@@ -20,5 +23,8 @@ namespace Snowblind
 		void OnAltEnter() override;
 
 	private:
+		VkInstance m_Instance;
+
 	};
 };
+#endif

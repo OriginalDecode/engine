@@ -1,6 +1,6 @@
 #pragma once
 #include "VertexStructs.h"
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 struct ID3D11DeviceContext;
 struct ID3D11InputLayout;
 struct ID3D11Buffer;

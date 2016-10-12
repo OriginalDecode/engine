@@ -1,7 +1,7 @@
 #pragma once
 #include <DL_Debug.h>
 #include "VertexStructs.h"
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 struct ID3D11DeviceContext;
 struct ID3D11InputLayout;
 struct ID3D11Buffer;
@@ -57,7 +57,7 @@ namespace Snowblind
 		CEngine* myEngine = nullptr;
 
 		CGBuffer* myGBuffer = nullptr;
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		DirectX11* myDirectX = nullptr;
 		ID3D11DeviceContext* myContext = nullptr;
 		
@@ -88,7 +88,7 @@ namespace Snowblind
 #endif
 	};
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	__forceinline CTexture* CDeferredRenderer::GetDepthStencil()
 	{
 		DL_ASSERT_EXP(myDepthStencil != nullptr, "Deferred Depthstencil was null!");

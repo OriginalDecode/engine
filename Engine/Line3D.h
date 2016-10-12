@@ -27,7 +27,7 @@ namespace Snowblind
 
 }
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 struct ID3D11Buffer;
 struct ID3D11InputLayout;
 #endif
@@ -65,7 +65,7 @@ private:
 
 	SVertexBaseStruct* myConstantStruct = nullptr;
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	ID3D11InputLayout* myVertexLayout = nullptr;
 	ID3D11Buffer* myConstantBuffer = nullptr;
 #endif

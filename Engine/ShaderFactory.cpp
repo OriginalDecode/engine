@@ -63,7 +63,7 @@ namespace Snowblind
 	SVertexShader* CShaderFactory::CreateVertexShader(const std::string& file_path)
 	{
 		SVertexShader* newShader = new SVertexShader();
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 
 		ENGINE_LOG("Creating vertexshader %s", file_path.c_str());
@@ -113,7 +113,7 @@ namespace Snowblind
 	SPixelShader* CShaderFactory::CreatePixelShader(const std::string& file_path)
 	{
 		SPixelShader* newShader = new SPixelShader();
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		myPixelShaders[file_path] = newShader;
 		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
 		ENGINE_LOG("Creating pixelshader : %s", file_path.c_str());
@@ -151,7 +151,7 @@ namespace Snowblind
 	//----------------------------------------
 	void CShaderFactory::LoadGeometryShader(const std::string& file_path, CEffect* effect)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		if (myGeometryShaders.find(file_path) == myGeometryShaders.end())
 		{
 			SGeometryShader* newShader = new SGeometryShader();
@@ -194,7 +194,7 @@ namespace Snowblind
 	//----------------------------------------
 	void CShaderFactory::LoadHullShader(const std::string& file_path, CEffect* effect)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		if (myHullShaders.find(file_path) == myHullShaders.end())
 		{
 			SHullShader* newShader = new SHullShader();
@@ -239,7 +239,7 @@ namespace Snowblind
 	void CShaderFactory::LoadDomainShader(const std::string& file_path, CEffect* effect)
 	{
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		if (myDomainShaders.find(file_path) == myDomainShaders.end())
 		{
 			SDomainShader* newShader = new SDomainShader();
@@ -284,7 +284,7 @@ namespace Snowblind
 	//----------------------------------------
 	void CShaderFactory::LoadComputeShader(const std::string& file_path, CEffect* effect)
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		if (myComputeShaders.find(file_path) == myComputeShaders.end())
 		{
 			SComputeShader* newShader = new SComputeShader();
@@ -326,7 +326,7 @@ namespace Snowblind
 	}
 	
 
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 	ID3D10Blob* CShaderFactory::CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level)
 	{
 		HRESULT hr;
@@ -461,7 +461,7 @@ namespace Snowblind
 
 	SCompiledShader::~SCompiledShader()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(blob);
 #endif
 		compiledShader = nullptr;
@@ -469,42 +469,42 @@ namespace Snowblind
 
 	SVertexShader::~SVertexShader()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(vertexShader);
 #endif
 	}
 
 	SPixelShader::~SPixelShader()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(pixelShader);
 #endif
 	}
 
 	SGeometryShader::~SGeometryShader()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(geometryShader);
 #endif
 	}
 
 	SHullShader::~SHullShader()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(hullShader);
 #endif
 	}
 
 	SDomainShader::~SDomainShader()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(domainShader);
 #endif
 	}
 
 	SComputeShader::~SComputeShader()
 	{
-#ifndef SNOWBLIND_VULKAN
+#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(computeShader);
 #endif
 	}

@@ -29,8 +29,8 @@ namespace Snowblind
 		CU::Input::InputWrapper::Destroy(); //Remove
 		Randomizer::Destroy();
 
-		myAPI->CleanUp();
-		SAFE_DELETE(myAPI);
+		DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
+		SAFE_DELETE(myAPI);		
 	}
 
 

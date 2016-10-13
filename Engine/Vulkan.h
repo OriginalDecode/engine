@@ -10,7 +10,6 @@ namespace Snowblind
 	{
 	public:
 		Vulkan() = default;
-
 		//__________________________
 		// Virtual Functions
 
@@ -28,8 +27,16 @@ namespace Snowblind
 		bool CreateVKInstance();
 		bool EnumerateDevices(VkPhysicalDevice& in_out_device);
 		bool CreateDevice();
-		VkInstance m_Instance;
-		VkDevice m_Device;
+		bool CreateCommandPool(u32 queue_family_index);
+		bool CreateCommandBuffer();
+		//Too much stuff?
+		
+		VkDevice* m_Device;
+		VkCommandBuffer* m_CommandBuffer;
+		VkCommandPool* m_CommandPool;
+		VkInstance* m_Instance;
+		VkPhysicalDevice* m_PhysDevice;
+
 	};
 };
 #endif

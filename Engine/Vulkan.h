@@ -13,9 +13,7 @@ namespace Snowblind
 		//__________________________
 		// Virtual Functions
 
-		bool Initiate(HWND window_handle, float window_width, float window_height) override;
-
-
+		bool Initiate(CreateInfo create_info) override;
 		bool CleanUp() override;
 
 		void Present(u8 anInterval, u8 flags) override;
@@ -24,18 +22,40 @@ namespace Snowblind
 		void OnAltEnter() override;
 
 	private:
+
+		struct SwapchainCreateInfo
+		{
+			VkPresentModeKHR present_mode_out = VK_PRESENT_MODE_FIFO_KHR;
+			VkSurfaceTransformFlagBitsKHR surface_transform_out;
+			u32 swapchain_image_count;
+			VkExtent2D swapchain_extent;
+		};
+
+	private:
 		bool CreateVKInstance();
-		bool EnumerateDevices(VkPhysicalDevice& in_out_device);
+		bool EnumerateDevices();
 		bool CreateDevice();
 		bool CreateCommandPool(u32 queue_family_index);
 		bool CreateCommandBuffer();
-		//Too much stuff?
+		bool CreateSurface(u32 queue_family_index);
+		bool CreateSwapchain();
+
+
+		bool GetPresentMode(SwapchainCreateInfo& swapchain_create_info);
+
 		
 		VkDevice* m_Device;
 		VkCommandBuffer* m_CommandBuffer;
 		VkCommandPool* m_CommandPool;
 		VkInstance* m_Instance;
 		VkPhysicalDevice* m_PhysDevice;
+		VkSurfaceKHR* m_Surface;
+		VkSwapchainKHR* m_Swapchain;
+		VkFormat m_Format;
+
+	
+
+
 
 	};
 };

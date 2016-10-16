@@ -1,16 +1,17 @@
 #include "stdafx.h"
+#define VK_USE_PLATFORM_WIN32_KHR
 #include "Vulkan.h"
 #ifdef SNOWBLIND_VULKAN
 namespace Snowblind
 {
-	bool Vulkan::Initiate(HWND window_handle, float window_width, float window_height)
+	bool Vulkan::Initiate(CreateInfo create_info)
 	{
-		myAPI = "Vulkan";
-		myWindowHandle = window_handle;
-		myWindowWidth = window_width;
-		myWindowHeight = window_height;
+		m_CreateInfo = create_info;
 
 		if (!CreateVKInstance())
+			return false;
+
+		if (!EnumerateDevices())
 			return false;
 
 		if (!CreateDevice())
@@ -18,6 +19,10 @@ namespace Snowblind
 
 		if (!CreateCommandBuffer())
 			return false;
+
+		if (!CreateSwapchain())
+			return false;
+
 
 		return true;
 	}
@@ -34,17 +39,32 @@ namespace Snowblind
 		app_info.engineVersion = 1;
 		app_info.apiVersion = VK_API_VERSION_1_0;
 
+		std::vector<char*> extension;
+		extension.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
+		extension.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+
+#ifdef VALIDATE_VULKAN
+		extension.push_back("VK_EXT_debug_report");
+#endif
+
+		std::vector<char*> layers;
+#ifdef VALIDATE_VULKAN
+		layers.push_back("VK_LAYER_LUNARG_standard_validation");
+#endif
+
+
 		VkInstanceCreateInfo instance_info;
 		memset(&instance_info, 0, sizeof(VkInstanceCreateInfo));
 		instance_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		instance_info.pNext = NULL;
 		instance_info.flags = 0;
 		instance_info.pApplicationInfo = &app_info;
-		instance_info.enabledExtensionCount = 0;
-		instance_info.ppEnabledExtensionNames = NULL;
+		instance_info.enabledExtensionCount = u32(extension.size());
+		instance_info.ppEnabledExtensionNames = extension.data();
 		instance_info.enabledLayerCount = 0;
 		instance_info.ppEnabledLayerNames = NULL;
 		m_Instance = new VkInstance;
+
 		VkResult result = vkCreateInstance(&instance_info, NULL, m_Instance);
 		if (result != VK_SUCCESS)
 		{
@@ -56,8 +76,9 @@ namespace Snowblind
 		return true;
 	}
 
-	bool Vulkan::EnumerateDevices(VkPhysicalDevice& in_out_device)
+	bool Vulkan::EnumerateDevices()
 	{
+
 		u32 device_count = 0;
 		VkResult result = vkEnumeratePhysicalDevices(*m_Instance, &device_count, NULL);
 		if (result != VK_SUCCESS)
@@ -65,7 +86,9 @@ namespace Snowblind
 			DL_MESSAGE("Failed to find valid devices for vulkan. VK_ERROR : %d", result);
 			return false;
 		}
-		result = vkEnumeratePhysicalDevices(*m_Instance, &device_count, &in_out_device);
+
+		m_PhysDevice = new VkPhysicalDevice;
+		result = vkEnumeratePhysicalDevices(*m_Instance, &device_count, m_PhysDevice);
 		if (result != VK_SUCCESS)
 		{
 			DL_MESSAGE("Failed to enumerate selected device. VK_ERROR : %d", result);
@@ -78,10 +101,6 @@ namespace Snowblind
 
 	bool Vulkan::CreateDevice()
 	{
-		m_PhysDevice = new VkPhysicalDevice;
-		if (!EnumerateDevices(*m_PhysDevice))
-			return false;
-
 		u32 queue_family_count = 0;
 		VkQueueFamilyProperties queue_properties;
 		memset(&queue_properties, 0, sizeof(VkQueueFamilyProperties));
@@ -89,13 +108,11 @@ namespace Snowblind
 
 		VkDeviceQueueCreateInfo queue_info;
 		memset(&queue_info, 0, sizeof(VkDeviceQueueCreateInfo));
-		bool found = false;
 		for (u32 i = 0; i < queue_family_count; i++)
 		{
 			if (queue_properties.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 			{
 				queue_info.queueFamilyIndex = i;
-				found = true;
 				break;
 			}
 		}
@@ -127,6 +144,9 @@ namespace Snowblind
 		}
 
 		if (!CreateCommandPool(queue_info.queueFamilyIndex))
+			return false;
+
+		if (!CreateSurface(queue_info.queueFamilyIndex))
 			return false;
 
 		return true;
@@ -170,8 +190,202 @@ namespace Snowblind
 		return true;
 	}
 
+	bool Vulkan::CreateSwapchain()
+	{
+		SwapchainCreateInfo sc_create_info;
+		memset(&sc_create_info, 0, sizeof(SwapchainCreateInfo));
+		if (!GetPresentMode(sc_create_info))
+			return false;
+
+		VkSwapchainCreateInfoKHR create_info;
+		memset(&create_info, 0, sizeof(VkSwapchainCreateInfoKHR));
+		create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+		create_info.pNext = NULL;
+		create_info.surface = *m_Surface;
+		create_info.minImageCount = sc_create_info.swapchain_image_count;
+		create_info.imageFormat = m_Format;
+		create_info.imageExtent.width = sc_create_info.swapchain_extent.width;
+		create_info.imageExtent.height = sc_create_info.swapchain_extent.height;
+		create_info.preTransform = sc_create_info.surface_transform_out;
+		create_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+		create_info.imageArrayLayers = 1;
+		create_info.presentMode = sc_create_info.present_mode_out;
+		create_info.oldSwapchain = VK_NULL_HANDLE;
+		create_info.clipped = true;
+		create_info.imageColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
+		create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+		create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		create_info.queueFamilyIndexCount = 0;
+		create_info.pQueueFamilyIndices = NULL;
+
+		uint32_t queueFamilyIndices[2] = { (uint32_t)info.graphics_queue_family_index, (uint32_t)info.present_queue_family_index };
+
+		if (info.graphics_queue_family_index != info.present_queue_family_index)
+		{
+			create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+			create_info.queueFamilyIndexCount = 2;
+			create_info.pQueueFamilyIndices = queueFamilyIndices;
+		}
+
+		m_Swapchain = new VkSwapchainKHR;
+		VkResult result = vkCreateSwapchainKHR(info.device, &create_info, NULL, m_Swapchain);
+
+
+
+
+		return true;
+	}
+
+	bool Vulkan::CreateSurface(u32 queue_family_index)
+	{
+		VkWin32SurfaceCreateInfoKHR create_info;
+		create_info.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+		create_info.pNext = NULL;
+		create_info.hinstance = m_CreateInfo.m_Instance;
+		create_info.hwnd = m_CreateInfo.m_HWND;
+
+		m_Surface = new VkSurfaceKHR;
+		VkResult result = vkCreateWin32SurfaceKHR(*m_Instance, &create_info, NULL, m_Surface);
+		if (result != VK_SUCCESS)
+		{
+			DL_MESSAGE("Failed to create a surface for vulkan. VK_ERROR : %d", result);
+			return false;
+		}
+
+		VkBool32 supported = VK_FALSE;
+		result = vkGetPhysicalDeviceSurfaceSupportKHR(*m_PhysDevice, queue_family_index, *m_Surface, &supported);
+		if (result != VK_SUCCESS)
+		{
+			DL_MESSAGE("Failed to find any surface support on current graphics card. VK_ERROR : %d", result);
+			return false;
+		}
+
+		if (supported == VK_FALSE)
+		{
+			DL_MESSAGE("Failed to find any surface support on current graphics card. VK_ERROR : %d", result);
+			return false;
+		}
+
+		u32 format_count = 0;
+		result = vkGetPhysicalDeviceSurfaceFormatsKHR(*m_PhysDevice, *m_Surface, &format_count, NULL);
+		if (result != VK_SUCCESS)
+		{
+			DL_MESSAGE("Failed to get any formats from the graphicsCard. VK_ERROR : %d", result);
+			return false;
+		}
+
+		VkSurfaceFormatKHR* surface_formats = (VkSurfaceFormatKHR*)malloc(format_count * sizeof(VkSurfaceFormatKHR));
+		result = vkGetPhysicalDeviceSurfaceFormatsKHR(*m_PhysDevice, *m_Surface, &format_count, surface_formats);
+		if (result != VK_SUCCESS)
+		{
+			DL_MESSAGE("Failed to create surfaceFormats. VK_ERROR : %d ", result);
+			return false;
+		}
+
+		if (format_count == 1 && surface_formats[0].format == VK_FORMAT_UNDEFINED)
+		{
+			m_Format = VK_FORMAT_B8G8R8A8_UNORM;
+		}
+		else
+		{
+			DL_MESSAGE_EXP(format_count >= 1, "There was more than one format available!");
+			m_Format = surface_formats[0].format;
+		}
+		free(surface_formats);
+
+		return true;
+	}
+
+	bool Vulkan::GetPresentMode(SwapchainCreateInfo& swapchain_create_info)
+	{
+		VkSurfaceCapabilitiesKHR capabilities;
+		VkResult result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(*m_PhysDevice, *m_Surface, &capabilities);
+		if (result != VK_SUCCESS)
+		{
+			DL_MESSAGE("Failed to find any surface capabilities on graphics card. VK_ERROR : %d", result);
+			return false;
+		}
+
+		u32 present_mode_count = 0;
+		result = vkGetPhysicalDeviceSurfacePresentModesKHR(*m_PhysDevice, *m_Surface, &present_mode_count, NULL);
+		if (result != VK_SUCCESS)
+		{
+			DL_MESSAGE("Failed to get any present modes from graphics card. VK_ERROR : %d", result);
+			return false;
+		}
+
+		if (present_mode_count == 0)
+		{
+			DL_MESSAGE("Present mode count was %d, VK_ERROR : %d", present_mode_count, result);
+			return false;
+		}
+
+		VkPresentModeKHR* present_modes = (VkPresentModeKHR*)malloc(present_mode_count * sizeof(VkPresentModeKHR));
+		result = vkGetPhysicalDeviceSurfacePresentModesKHR(*m_PhysDevice, *m_Surface, &present_mode_count, present_modes);
+		if (result != VK_SUCCESS)
+		{
+			DL_MESSAGE("Failed to get any present modes from graphics card. VK_ERROR : %d", result);
+			return false;
+		}
+
+		if (capabilities.currentExtent.width == 0xFFFFFFFF)
+		{
+			swapchain_create_info.swapchain_extent.width = m_CreateInfo.m_WindowWidth;
+			swapchain_create_info.swapchain_extent.height = m_CreateInfo.m_WindowHeight;
+
+			if (swapchain_create_info.swapchain_extent.width < capabilities.minImageExtent.width)
+			{
+				swapchain_create_info.swapchain_extent.width = capabilities.minImageExtent.width;
+			}
+			else if (swapchain_create_info.swapchain_extent.width > capabilities.maxImageExtent.width)
+			{
+				swapchain_create_info.swapchain_extent.width = capabilities.maxImageExtent.width;
+			}
+
+			if (swapchain_create_info.swapchain_extent.height < capabilities.minImageExtent.height)
+			{
+				swapchain_create_info.swapchain_extent.height = capabilities.minImageExtent.height;
+			}
+			else if (swapchain_create_info.swapchain_extent.height > capabilities.maxImageExtent.height)
+			{
+				swapchain_create_info.swapchain_extent.height = capabilities.maxImageExtent.height;
+			}
+		}
+		else
+		{
+			swapchain_create_info.swapchain_extent = capabilities.currentExtent;
+		}
+
+		for (u32 i = 0; i < present_mode_count; i++)
+		{
+			if (present_modes[i] == VK_PRESENT_MODE_MAILBOX_KHR)
+			{
+				swapchain_create_info.present_mode_out = VK_PRESENT_MODE_MAILBOX_KHR;
+				break;
+			}
+			if ((swapchain_create_info.present_mode_out != VK_PRESENT_MODE_MAILBOX_KHR) && (present_modes[i] == VK_PRESENT_MODE_IMMEDIATE_KHR))
+			{
+				swapchain_create_info.present_mode_out = VK_PRESENT_MODE_IMMEDIATE_KHR;
+			}
+		}
+
+		swapchain_create_info.swapchain_image_count = capabilities.minImageCount;
+		if (capabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
+		{
+			swapchain_create_info.surface_transform_out = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+		}
+		else
+		{
+			swapchain_create_info.surface_transform_out = capabilities.currentTransform;
+		}
+
+
+		return true;
+	}
+
 	bool Vulkan::CleanUp()
 	{
+		vkDestroySurfaceKHR(*m_Instance, *m_Surface, NULL);
 		vkFreeCommandBuffers(*m_Device, *m_CommandPool, 1, m_CommandBuffer);
 		vkDestroyCommandPool(*m_Device, *m_CommandPool, NULL);
 		vkDestroyDevice(*m_Device, NULL);
@@ -181,11 +395,13 @@ namespace Snowblind
 		SAFE_DELETE(m_Instance);
 		SAFE_DELETE(m_CommandPool);
 		SAFE_DELETE(m_CommandBuffer);
+		SAFE_DELETE(m_Surface);
 
 		if (m_Device) return false;
 		if (m_Instance) return false;
 		if (m_CommandBuffer) return false;
 		if (m_CommandPool) return false;
+		if (m_Surface) return false;
 
 		return true;
 	}

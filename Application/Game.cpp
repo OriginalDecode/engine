@@ -240,17 +240,17 @@ void CGame::Update(float aDeltaTime)
 	point5.color = CU::Vector3f(1.f, 0.f, 1.f);
 
 
-	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, point1, point2));
-	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, point2, point3));
-	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, point3, point4));
-	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, point3, point4));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, point1, point2));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, point2, point3));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, point3, point4));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, point3, point4));
 
-	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, point1, point5));
-	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, point5, point4));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, point1, point5));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, point5, point4));
 
 
-	mySynchronizer->AddRenderCommand(SRenderCommand(eType::MODEL, myModelKey, m_position));
-	mySynchronizer->AddRenderCommand(SRenderCommand(eType::MODEL, myModelKey, m_position2));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, myModelKey, m_position));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, myModelKey, m_position2));
 
 	if (CU::Input::InputWrapper::GetInstance()->KeyDown(Y))
 	{
@@ -259,12 +259,12 @@ void CGame::Update(float aDeltaTime)
 	}
 
 
-	mySynchronizer->AddRenderCommand(SRenderCommand(c.str(), { 200, 900 }, eType::TEXT));
-	mySynchronizer->AddRenderCommand(SRenderCommand(p.str(), { 0, 900 }, eType::TEXT));
-	mySynchronizer->AddRenderCommand(SRenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
+	mySynchronizer->AddRenderCommand(RenderCommand(c.str(), { 200, 900 }, eType::TEXT));
+	mySynchronizer->AddRenderCommand(RenderCommand(p.str(), { 0, 900 }, eType::TEXT));
+	mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
 	myEntityManager->Update(aDeltaTime);
-	mySynchronizer->AddRenderCommand(SRenderCommand(eType::MODEL, myModelKey, pointHit));
-	mySynchronizer->AddRenderCommand(SRenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, myModelKey, pointHit));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
 
-	mySynchronizer->AddRenderCommand(SRenderCommand(eType::TERRAIN));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
 }

@@ -8,12 +8,9 @@
 
 namespace Snowblind
 {
-	bool DirectX11::Initiate(HWND window_handle, float window_width, float window_height)
+	bool DirectX11::Initiate(CreateInfo create_info)
 	{
-		myAPI = "DirectX11";
-		myWindowHandle = window_handle;
-		myWindowWidth = window_width;
-		myWindowHeight = window_height;
+		m_CreateInfo = create_info;
 
 		CreateAdapterList();
 		CreateDeviceAndSwapchain();

@@ -8,6 +8,17 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
+struct CreateInfo
+{
+	HWND m_HWND;
+	HINSTANCE m_Instance;
+	float m_WindowWidth = 0.f;
+	float m_WindowHeight = 0.f;
+	const char* m_APIName = '\0';
+};
+
+
+
 enum class eEngineFlags
 {
 	FULLSCREEN,
@@ -57,19 +68,16 @@ namespace Snowblind
 	class IGraphicsAPI
 	{
 	public:
-		virtual bool Initiate(HWND window_handler, float window_width, float window_height) = 0;
+		virtual bool Initiate(CreateInfo create_info) = 0;
 		virtual bool CleanUp() = 0;
 
 		virtual void Clear() = 0;
 		virtual void Present(u8 refresh_rate, u8 flags) = 0;
 
 		virtual void OnAltEnter() = 0;
-		const std::string& GetAPIName() { return myAPI; }
+		const std::string& GetAPIName() { return m_CreateInfo.m_APIName; }
 	protected:
-		HWND myWindowHandle;
-		float myWindowWidth = 0.f;
-		float myWindowHeight = 0.f;
-		const char* myAPI = { '\0' };
+		CreateInfo m_CreateInfo;
 
 		std::bitset<int(eEngineFlags::_COUNT)> myEngineFlags;
 	};

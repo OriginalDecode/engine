@@ -28,8 +28,11 @@ namespace Snowblind
 	class CRenderer
 	{
 	public:
-		CRenderer(CSynchronizer& aSynchronizer, CCamera* aCamera);
-		~CRenderer();
+		CRenderer() = default;
+
+		bool Initiate(CSynchronizer* synchronizer, CCamera* camera_3d, CCamera* camera_2d);
+		bool CleanUp();
+
 		void Add2DCamera(CCamera* aCamera);
 		void Render();
 		void AddTerrain(CTerrain* someTerrain);
@@ -47,28 +50,28 @@ namespace Snowblind
 		CU::GrowingArray<CTerrain*> myTerrainArray;
 
 		eDeferredType		myDeferredType;
-		CEngine*			myEngine = nullptr;
+		CEngine*			myEngine			= nullptr;
 #ifdef SNOWBLIND_DX11
-		DirectX11*			myDirectX = nullptr;
+		DirectX11*			myDirectX			= nullptr;
 #endif
-		CCamera*			myCamera = nullptr;
+		CCamera*			myCamera			= nullptr;
 		CU::Matrix44f		myPrevFrame;
 
-		CCamera*			my2DCamera = nullptr;
-		CU::TimeManager*	myTimeManager = nullptr;
+		CCamera*			my2DCamera			= nullptr;
+		CU::TimeManager*	myTimeManager		= nullptr;
 		
-		CDeferredRenderer*	myDeferredRenderer = nullptr;
+		CDeferredRenderer*	myDeferredRenderer	= nullptr;
 
-		CDirectionalLight*	myDirectionalLight = nullptr;
-		CPointLight*		myPointLight = nullptr;
-		CSpotLight*			mySpotlight = nullptr;
+		CDirectionalLight*	myDirectionalLight	= nullptr;
+		CPointLight*		myPointLight		= nullptr;
+		CSpotLight*			mySpotlight			= nullptr;
 
-		CSynchronizer&		mySynchronizer;
-		CText*				myText = nullptr;
-		CTexture*			myDepthTexture = nullptr;
-		CSkySphere*			mySkysphere = nullptr;
-		CSprite*			mySprite = nullptr;
-		CLine3D*			my3DLine = nullptr;
-		CLightPass*			myLightPass = nullptr;
+		CSynchronizer*		mySynchronizer		= nullptr;
+		CText*				myText				= nullptr;
+		CTexture*			myDepthTexture		= nullptr;
+		CSkySphere*			mySkysphere			= nullptr;
+		CSprite*			mySprite			= nullptr;
+		CLine3D*			my3DLine			= nullptr;
+		CLightPass*			myLightPass			= nullptr;
 	};
 }; 

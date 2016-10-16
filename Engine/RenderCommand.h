@@ -32,20 +32,20 @@ enum class eType
 	TERRAIN,
 };
 
-struct SRenderCommand
+struct RenderCommand
 {
-	SRenderCommand();
-	SRenderCommand(const eType& aType);
-	SRenderCommand(const eType& aType, const std::string& aSpriteName, const CU::Vector2f& aPosition);
-	SRenderCommand(const std::string aString, const CU::Math::Vector2<float>& aPosition, const eType& aType = eType::TEXT);
+	RenderCommand();
+	RenderCommand(const eType& aType);
+	RenderCommand(const eType& aType, const std::string& aSpriteName, const CU::Vector2f& aPosition);
+	RenderCommand(const std::string aString, const CU::Math::Vector2<float>& aPosition, const eType& aType = eType::TEXT);
 
-	SRenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range);
-	SRenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& angle, const float& range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix);
+	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range);
+	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& angle, const float& range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix);
 
-	SRenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& aPosition);
-	SRenderCommand(const eType& aType, Snowblind::CEmitterInstance* anInstance);
-	SRenderCommand(const eType& aType, const CU::Vector3f& aPosition);
-	SRenderCommand(const eType& aType, const SLinePoint& aFirstPoint, const SLinePoint& aSecondPoint);
+	RenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& aPosition);
+	RenderCommand(const eType& aType, Snowblind::CEmitterInstance* anInstance);
+	RenderCommand(const eType& aType, const CU::Vector3f& aPosition);
+	RenderCommand(const eType& aType, const SLinePoint& aFirstPoint, const SLinePoint& aSecondPoint);
 
 	Snowblind::CEmitterInstance* myEmitterInstance;
 

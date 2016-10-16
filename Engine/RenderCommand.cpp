@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RenderCommand.h"
 
-SRenderCommand::SRenderCommand(const std::string aString, const CU::Math::Vector2<float>& aPosition, const eType& aType)
+RenderCommand::RenderCommand(const std::string aString, const CU::Math::Vector2<float>& aPosition, const eType& aType)
 	: myType(aType)
 	, myTextToPrint(aString)
 	, myPosition(aPosition)
@@ -9,7 +9,7 @@ SRenderCommand::SRenderCommand(const std::string aString, const CU::Math::Vector
 {
 }
 
-SRenderCommand::SRenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& aPosition)
+RenderCommand::RenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& aPosition)
 	: myType(aType)
 	, myModelKey(modelKey)
 	, myPosition(aPosition)
@@ -17,7 +17,7 @@ SRenderCommand::SRenderCommand(const eType& aType, const std::string& modelKey, 
 {
 }
 
-SRenderCommand::SRenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range)
+RenderCommand::RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range)
 	: myType(aType)
 	, myPosition(position)
 	, myColor(color)
@@ -27,7 +27,7 @@ SRenderCommand::SRenderCommand(const eType& aType, const CU::Vector3f& position,
 {
 }
 
-SRenderCommand::SRenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& angle, const float& range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix)
+RenderCommand::RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& angle, const float& range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix)
 	: myType(aType)
 	, myPosition(position)
 	, myColor(color)
@@ -40,7 +40,7 @@ SRenderCommand::SRenderCommand(const eType& aType, const CU::Vector3f& position,
 }
 
 
-SRenderCommand::SRenderCommand(const eType& aType, Snowblind::CEmitterInstance* anInstance)
+RenderCommand::RenderCommand(const eType& aType, Snowblind::CEmitterInstance* anInstance)
 	: myType(aType)
 	, myEmitterInstance(anInstance)
 	, myCommandType(eCommandBuffer::eParticle)
@@ -48,14 +48,14 @@ SRenderCommand::SRenderCommand(const eType& aType, Snowblind::CEmitterInstance* 
 }
 
 
-SRenderCommand::SRenderCommand(const eType& aType, const CU::Vector3f& aPosition)
+RenderCommand::RenderCommand(const eType& aType, const CU::Vector3f& aPosition)
 	: myType(aType)
 	, myPosition(aPosition)
 	, myCommandType(eCommandBuffer::e3D)
 {
 }
 
-SRenderCommand::SRenderCommand(const eType& aType, const std::string& aSpriteName, const CU::Vector2f& aPosition)
+RenderCommand::RenderCommand(const eType& aType, const std::string& aSpriteName, const CU::Vector2f& aPosition)
 	: myType(aType)
 	, myPosition(aPosition)
 	, myCommandType(eCommandBuffer::e2D)
@@ -63,7 +63,7 @@ SRenderCommand::SRenderCommand(const eType& aType, const std::string& aSpriteNam
 	aSpriteName;
 }
 
-SRenderCommand::SRenderCommand(const eType& aType, const SLinePoint& aFirstPoint, const SLinePoint& aSecondPoint)
+RenderCommand::RenderCommand(const eType& aType, const SLinePoint& aFirstPoint, const SLinePoint& aSecondPoint)
 	: myType(aType)
 	, firstPoint(aFirstPoint)
 	, secondPoint(aSecondPoint)
@@ -71,13 +71,13 @@ SRenderCommand::SRenderCommand(const eType& aType, const SLinePoint& aFirstPoint
 {
 }
 
-SRenderCommand::SRenderCommand(const eType& aType)
+RenderCommand::RenderCommand(const eType& aType)
 	: myType(aType)
 	, myCommandType(eCommandBuffer::e3D)
 {
 }
 
-SRenderCommand::SRenderCommand()
+RenderCommand::RenderCommand()
 {
 }
 

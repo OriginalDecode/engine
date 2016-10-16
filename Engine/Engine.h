@@ -58,14 +58,15 @@ namespace Snowblind
 	class CEngine
 	{
 	public:
-		static void Create(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
+		static void Create(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc);
 		static void Destroy();
 		static CEngine* GetInstance();
 
 #ifdef SNOWBLIND_DX11
 		static DirectX11* GetDirectX();
 #endif
-		void Initiate();
+		bool Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc);
+		bool CleanUp();
 
 		CCamera* GetCamera();
 		CCamera* Get2DCamera();
@@ -98,24 +99,25 @@ namespace Snowblind
 		CTerrain* CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize);
 
 	private:
-		CEngine(float aWindowWidth, float aWindowHeight, HINSTANCE anInstance, WNDPROC aWndProc);
-		~CEngine();
+		CEngine() = default;
 		void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
 
 		static CEngine* myInstance;
-
 		static IGraphicsAPI* myAPI;
+
 		SWindowSize myWindowSize;
 		SLocalTime myLocalTime;
 		HWND myHWND;
-		CFontManager* myFontManager;
-		CU::TimeManager* myTimeManager;
-		CSynchronizer* mySynchronizer;
-		CRenderer* myRenderer;
-		CCamera*  myCamera;
-		CCamera*  my2DCamera;
-		CConsole* myConsole;
-		CAssetsContainer* myAssetsContainer;
+
+		CFontManager* myFontManager			= nullptr;
+		CU::TimeManager* myTimeManager		= nullptr;
+		CSynchronizer* mySynchronizer		= nullptr;
+		CRenderer* myRenderer				= nullptr;
+		CCamera*  myCamera					= nullptr;
+		CCamera*  my2DCamera				= nullptr;
+		CConsole* myConsole					= nullptr;
+		CAssetsContainer* myAssetsContainer	= nullptr;
+
 		bool myUsingVSync = false;
 	};
 };

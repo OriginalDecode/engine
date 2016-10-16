@@ -5,16 +5,14 @@
 
 namespace Snowblind
 {
-	CSynchronizer::CSynchronizer()
-		: myCurrentBuffer(0)
-		, myLogicIsDone(false)
-		, myRenderIsDone(false)
-		, myQuitFlag(false)
+	bool CSynchronizer::Initiate()
 	{
-	}
+		myCurrentBuffer = 0;
+		myLogicIsDone = false;
+		myRenderIsDone = false;
+		myQuitFlag = false;
 
-	CSynchronizer::~CSynchronizer()
-	{
+		return true;
 	}
 
 	void CSynchronizer::SwapBuffer()
@@ -70,12 +68,12 @@ namespace Snowblind
 		myLogicIsDone = true;
 	}
 
-	void CSynchronizer::AddRenderCommand(const SRenderCommand& aRenderCommand)
+	void CSynchronizer::AddRenderCommand(const RenderCommand& aRenderCommand)
 	{
 		myCommandBuffers[u32(aRenderCommand.myCommandType)][myCurrentBuffer ^ 1].Add(aRenderCommand);
 	}
 
-	const CU::GrowingArray<SRenderCommand>& CSynchronizer::GetRenderCommands(const eCommandBuffer& commandType) const
+	const CU::GrowingArray<RenderCommand>& CSynchronizer::GetRenderCommands(const eCommandBuffer& commandType) const
 	{
 		return myCommandBuffers[u32(commandType)][myCurrentBuffer];
 	}

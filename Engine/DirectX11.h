@@ -43,7 +43,7 @@ namespace Snowblind
 		//__________________________
 		// Virtual Functions
 
-		bool Initiate(HWND window_handle, float window_width, float window_height) override;
+		bool Initiate(CreateInfo create_info) override;
 		bool CleanUp() override;
 
 		void Present(u8 anInterval, u8 flags) override;

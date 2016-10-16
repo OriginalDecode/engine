@@ -4,7 +4,7 @@
 #include "RenderCommand.h"
 #include <standard_datatype.hpp>
 
-typedef CU::StaticArray<CU::GrowingArray<SRenderCommand>, 2> CommandBuffer;
+typedef CU::StaticArray<CU::GrowingArray<RenderCommand>, 2> CommandBuffer;
 typedef CU::StaticArray<CommandBuffer, static_cast<u32>(eCommandBuffer::_COUNT)> CommandBuffers;
 
 namespace Snowblind
@@ -13,8 +13,8 @@ namespace Snowblind
 	class CSynchronizer
 	{
 	public:
-		CSynchronizer();
-		~CSynchronizer();
+		CSynchronizer() = default;
+		bool Initiate();
 		void SwapBuffer();
 		void Clear();
 		void Quit();
@@ -24,12 +24,12 @@ namespace Snowblind
 		void RenderIsDone();
 		void LogicIsDone();
 
-		void AddRenderCommand(const SRenderCommand& aRenderCommand);
+		void AddRenderCommand(const RenderCommand& aRenderCommand);
 
-		const CU::GrowingArray<SRenderCommand>& GetRenderCommands(const eCommandBuffer& commandType) const;
+		const CU::GrowingArray<RenderCommand>& GetRenderCommands(const eCommandBuffer& commandType) const;
 	private:
-		CommandBuffers myCommandBuffers;
 
+		CommandBuffers myCommandBuffers;
 		volatile bool myLogicIsDone;
 		volatile bool myRenderIsDone;
 		volatile bool myQuitFlag;

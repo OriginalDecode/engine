@@ -44,7 +44,7 @@ namespace Snowblind
 		}
 		else
 		{
-			CEngine::GetDirectX()->DisableZBuffer();
+			CEngine::DisableZ();
 			for (int i = 0; i < my2DInstances.Size(); i++)
 			{
 				my2DInstances[i]->Render(myCamera);
@@ -53,7 +53,7 @@ namespace Snowblind
 			{
 				myText[i]->Render(myCamera);
 			}
-			CEngine::GetDirectX()->EnableZBuffer();
+			CEngine::EnableZ();
 		}
 #endif
 	}

@@ -10,7 +10,7 @@ namespace Snowblind
 	CDeferredRenderer::CDeferredRenderer()
 	{
 #ifdef SNOWBLIND_DX11
-		myDirectX = CEngine::GetDirectX();
+		myDirectX = CEngine::GetAPI();
 		myContext = myDirectX->GetContext();
 		myEngine = CEngine::GetInstance();
 		BLACK_CLEAR(myClearColor);

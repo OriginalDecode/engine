@@ -59,7 +59,7 @@ namespace Snowblind
 			if (myIsActive)
 			{
 
-				CEngine::GetDirectX()->DisableZBuffer();
+				CEngine::DisableZ();
 				mySprite->Render(myCamera);
 
 				for (int i = 0; i < myStrings.Size(); i++)
@@ -69,7 +69,7 @@ namespace Snowblind
 					myText->Render(myCamera);
 				}
 				myInputText->Render(myCamera);
-				CEngine::GetDirectX()->EnableZBuffer();
+				CEngine::EnableZ();
 			}
 		}
 	}

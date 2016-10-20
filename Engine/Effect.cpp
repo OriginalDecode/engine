@@ -16,7 +16,7 @@ namespace Snowblind
 		myComputeShader = new SComputeShader();*/
 
 #ifdef SNOWBLIND_DX11
-		myContext = CEngine::GetDirectX()->GetContext();
+		myContext = CEngine::GetAPI()->GetContext();
 #endif
 	}
 
@@ -49,8 +49,8 @@ namespace Snowblind
 	void CEffect::Activate()
 	{
 #ifdef SNOWBLIND_DX11
-		CEngine::GetDirectX()->SetVertexShader(myVertexShader->vertexShader);
-		CEngine::GetDirectX()->SetPixelShader(myPixelShader->pixelShader);
+		CEngine::GetAPI()->SetVertexShader(myVertexShader->vertexShader);
+		CEngine::GetAPI()->SetPixelShader(myPixelShader->pixelShader);
 
 		if (myShaderResources.Size() > 0)
 		{
@@ -60,7 +60,7 @@ namespace Snowblind
 				myNULLList.Optimize();
 				firstOptimize = true;
 			}
-			CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
+			CEngine::GetAPI()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
 		}
 #endif
 	}
@@ -68,7 +68,7 @@ namespace Snowblind
 	void CEffect::Deactivate()
 	{
 #ifdef SNOWBLIND_DX11
-		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myNULLList[0]);
+		CEngine::GetAPI()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myNULLList[0]);
 #endif
 	}
 

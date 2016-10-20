@@ -23,7 +23,7 @@ void CLine3D::Initiate(int aLineAmount /*= 256*/)
 {
 #ifdef SNOWBLIND_DX11
 	myLineAmount = aLineAmount;
-	myAPI = Snowblind::CEngine::GetDirectX();
+	myAPI = Snowblind::CEngine::GetAPI();
 	myEffect =  Snowblind::CEngine::GetInstance()->GetEffect("Data/Shaders/T_Line3D.json");
 	CreateVertexBuffer();
 	CreateConstantBuffer();
@@ -246,14 +246,14 @@ void CLine3D::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCam
 	myConstantStruct->projection = aCameraProjection;
 
 	D3D11_MAPPED_SUBRESOURCE msr;
-	Snowblind::CEngine::GetDirectX()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	Snowblind::CEngine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	if (msr.pData != nullptr)
 	{
 		SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
 		memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SVertexBaseStruct));
 	}
 
-	Snowblind::CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);
+	Snowblind::CEngine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
 #endif
 }
 

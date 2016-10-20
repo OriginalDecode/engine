@@ -60,8 +60,8 @@ namespace Snowblind
 		const std::string& GetAdapterName(u16 anIndex);
 		const std::string& GetActiveAdapterName();
 		
-		void EnableZBuffer();
-		void DisableZBuffer();
+		void EnableZBuffer() override;
+		void DisableZBuffer() override;
 		
 		void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
 		const std::string& GetAPIName();
@@ -98,6 +98,9 @@ namespace Snowblind
 		void CreateBackBuffer();
 		void CreateViewport();
 		void CreateAdapterList();
+
+
+
 		void CreateEnabledDepthStencilState();
 		void CreateDisabledDepthStencilState();
 		void CreateReadDepthStencilState();

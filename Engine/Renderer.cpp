@@ -62,7 +62,7 @@ namespace Snowblind
 		if (!myEngine)
 			return false;
 #ifdef SNOWBLIND_DX11
-		myDirectX = myEngine->GetDirectX();
+		myDirectX = myEngine->GetAPI();
 #endif
 		my3DLine = new CLine3D; //Where should this live?
 		if (!my3DLine)

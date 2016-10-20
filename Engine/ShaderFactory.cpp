@@ -64,7 +64,7 @@ namespace Snowblind
 	{
 		SVertexShader* newShader = new SVertexShader();
 #ifdef SNOWBLIND_DX11
-		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
+		ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 
 		ENGINE_LOG("Creating vertexshader %s", file_path.c_str());
 		HRESULT hr;
@@ -76,8 +76,8 @@ namespace Snowblind
 		newShader->compiledShader = compiled_shader->GetBufferPointer();
 		newShader->shaderSize = compiled_shader->GetBufferSize();
 
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Vertex Shader.");
-		CEngine::GetDirectX()->SetDebugName(newShader->vertexShader, "VertexShader");
+		CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Vertex Shader.");
+		CEngine::GetAPI()->SetDebugName(newShader->vertexShader, "VertexShader");
 #endif
 		return newShader;
 	}
@@ -115,20 +115,20 @@ namespace Snowblind
 		SPixelShader* newShader = new SPixelShader();
 #ifdef SNOWBLIND_DX11
 		myPixelShaders[file_path] = newShader;
-		ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
+		ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 		ENGINE_LOG("Creating pixelshader : %s", file_path.c_str());
 		
 		HRESULT hr;
 		ID3D10Blob* compiled_shader = CompileShader(file_path, "PS", "ps_5_0");
 
 		hr = device->CreatePixelShader(compiled_shader->GetBufferPointer(), compiled_shader->GetBufferSize(), nullptr, &newShader->pixelShader);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Pixel Shader.");
+		CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Pixel Shader.");
 
 		newShader->blob = compiled_shader;
 		newShader->compiledShader = compiled_shader->GetBufferPointer();
 		newShader->shaderSize = compiled_shader->GetBufferSize();
 
-		CEngine::GetDirectX()->SetDebugName(newShader->pixelShader, "PixelShader");
+		CEngine::GetAPI()->SetDebugName(newShader->pixelShader, "PixelShader");
 #endif
 		return newShader;
 	}
@@ -155,7 +155,7 @@ namespace Snowblind
 		if (myGeometryShaders.find(file_path) == myGeometryShaders.end())
 		{
 			SGeometryShader* newShader = new SGeometryShader();
-			ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
+			ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 
 			ENGINE_LOG("Creating geometryshader : %s", file_path.c_str());
 			HRESULT hr;
@@ -175,14 +175,14 @@ namespace Snowblind
 				DL_WARNING("%s", msg.c_str());
 			}
 
-			CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
+			CEngine::GetAPI()->HandleErrors(hr, "Failed to Compile Effect.");
 
 			hr = device->CreateGeometryShader(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), nullptr, &newShader->geometryShader);
-			CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Geometry Shader.");
+			CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Geometry Shader.");
 			newShader->blob = compiledShader;
 			newShader->compiledShader = compiledShader->GetBufferPointer();
 			newShader->shaderSize = compiledShader->GetBufferSize();
-			CEngine::GetDirectX()->SetDebugName(newShader->geometryShader, "GeometryShader");
+			CEngine::GetAPI()->SetDebugName(newShader->geometryShader, "GeometryShader");
 			myGeometryShaders[file_path] = newShader;
 		}
 		effect->myGeometryShader = myGeometryShaders[file_path];
@@ -198,7 +198,7 @@ namespace Snowblind
 		if (myHullShaders.find(file_path) == myHullShaders.end())
 		{
 			SHullShader* newShader = new SHullShader();
-			ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
+			ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 
 			ENGINE_LOG("Creating hullshader : %s", file_path.c_str());
 			HRESULT hr;
@@ -219,14 +219,14 @@ namespace Snowblind
 				DL_WARNING("%s", msg.c_str());
 			}
 
-			CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
+			CEngine::GetAPI()->HandleErrors(hr, "Failed to Compile Effect.");
 
 			hr = device->CreateHullShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &newShader->hullShader);
-			CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Hull Shader.");
+			CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Hull Shader.");
 			newShader->blob = compiledShader;
 			newShader->compiledShader = compiledShader->GetBufferPointer();
 			newShader->shaderSize = compiledShader->GetBufferSize();
-			CEngine::GetDirectX()->SetDebugName(newShader->hullShader, "HullShader");
+			CEngine::GetAPI()->SetDebugName(newShader->hullShader, "HullShader");
 			myHullShaders[file_path] = newShader;
 		}
 		effect->myHullShader = myHullShaders[file_path];
@@ -243,7 +243,7 @@ namespace Snowblind
 		if (myDomainShaders.find(file_path) == myDomainShaders.end())
 		{
 			SDomainShader* newShader = new SDomainShader();
-			ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
+			ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 
 			ENGINE_LOG("Creating domainshader : %s", file_path.c_str());
 			HRESULT hr;
@@ -265,14 +265,14 @@ namespace Snowblind
 				DL_WARNING("%s", msg.c_str());
 			}
 
-			CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
+			CEngine::GetAPI()->HandleErrors(hr, "Failed to Compile Effect.");
 
 			hr = device->CreateDomainShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &newShader->domainShader);
-			CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Domain Shader.");
+			CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Domain Shader.");
 			newShader->blob = compiledShader;
 			newShader->compiledShader = compiledShader->GetBufferPointer();
 			newShader->shaderSize = compiledShader->GetBufferSize();
-			CEngine::GetDirectX()->SetDebugName(newShader->domainShader, "DomainShader");
+			CEngine::GetAPI()->SetDebugName(newShader->domainShader, "DomainShader");
 			myDomainShaders[file_path] = newShader;
 		}
 		effect->myDomainShader = myDomainShaders[file_path];
@@ -288,7 +288,7 @@ namespace Snowblind
 		if (myComputeShaders.find(file_path) == myComputeShaders.end())
 		{
 			SComputeShader* newShader = new SComputeShader();
-			ID3D11Device* device = CEngine::GetDirectX()->GetDevice();
+			ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 
 			ENGINE_LOG("Creating computeshader : %s", file_path.c_str());
 			HRESULT hr;
@@ -310,14 +310,14 @@ namespace Snowblind
 				DL_WARNING("%s", msg.c_str());
 			}
 
-			CEngine::GetDirectX()->HandleErrors(hr, "Failed to Compile Effect.");
+			CEngine::GetAPI()->HandleErrors(hr, "Failed to Compile Effect.");
 
 			hr = device->CreateComputeShader(compiledShader, compiledShader->GetBufferSize(), nullptr, &newShader->computeShader);
-			CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Compute Shader.");
+			CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Compute Shader.");
 			newShader->blob = compiledShader;
 			newShader->compiledShader = compiledShader->GetBufferPointer();
 			newShader->shaderSize = compiledShader->GetBufferSize();
-			CEngine::GetDirectX()->SetDebugName(newShader->computeShader, "ComputeShader");
+			CEngine::GetAPI()->SetDebugName(newShader->computeShader, "ComputeShader");
 
 			myComputeShaders[file_path] = newShader;
 		}

@@ -7,7 +7,7 @@ namespace Snowblind
 	{
 		myEngine = CEngine::GetInstance();
 #ifdef SNOWBLIND_DX11
-		myAPI = CEngine::GetDirectX();
+		myAPI = CEngine::GetAPI();
 		myContext = myAPI->GetContext();
 #endif
 	}

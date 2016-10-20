@@ -154,10 +154,10 @@ namespace Snowblind
 
 		scDesc.BufferCount = 1;
 		scDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-		scDesc.BufferDesc.Width = UINT(myWindowWidth);
-		scDesc.BufferDesc.Height = UINT(myWindowHeight);
+		scDesc.BufferDesc.Width = UINT(m_CreateInfo.m_WindowWidth);
+		scDesc.BufferDesc.Height = UINT(m_CreateInfo.m_WindowHeight);
 		scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		scDesc.OutputWindow = myWindowHandle;
+		scDesc.OutputWindow = m_CreateInfo.m_HWND;
 		scDesc.SampleDesc.Count = 1;
 		scDesc.SampleDesc.Quality = 0;
 		if (myEngineFlags[u16(eEngineFlags::FULLSCREEN)] == FALSE)
@@ -269,8 +269,8 @@ namespace Snowblind
 		D3D11_TEXTURE2D_DESC depthDesc;
 		ZeroMemory(&depthDesc, sizeof(depthDesc));
 
-		depthDesc.Width = UINT(myWindowWidth);
-		depthDesc.Height = UINT(myWindowHeight);
+		depthDesc.Width = UINT(m_CreateInfo.m_WindowWidth);
+		depthDesc.Height = UINT(m_CreateInfo.m_WindowHeight);
 		depthDesc.MipLevels = 1;
 		depthDesc.ArraySize = 1;
 		depthDesc.Format = DXGI_FORMAT_D32_FLOAT;//DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -319,8 +319,8 @@ namespace Snowblind
 		//ZeroMemory(&myViewport, sizeof(D3D11_VIEWPORT));
 		myViewport->TopLeftX = 0;
 		myViewport->TopLeftY = 0;
-		myViewport->Width = FLOAT(myWindowWidth);
-		myViewport->Height = FLOAT(myWindowHeight);
+		myViewport->Width = FLOAT(m_CreateInfo.m_WindowWidth);
+		myViewport->Height = FLOAT(m_CreateInfo.m_WindowHeight);
 		myViewport->MinDepth = 0.f;
 		myViewport->MaxDepth = 1.f;
 		myContext->RSSetViewports(1, myViewport);
@@ -428,7 +428,7 @@ namespace Snowblind
 
 	const std::string& DirectX11::GetAPIName()
 	{
-		return myAPI;
+		return m_CreateInfo.m_APIName;
 	}
 
 	void DirectX11::SetViewport(u16 aWidth, u16 aHeight, u8 aDepth)
@@ -453,82 +453,6 @@ namespace Snowblind
 	void DirectX11::ResetRendertarget()
 	{
 		myContext->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
-	}
-
-	void DirectX11::CreateEnabledDepthStencilState()
-	{
-		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
-		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
-
-		stencilDesc.DepthEnable = true;
-		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-		stencilDesc.StencilEnable = true;
-		stencilDesc.StencilReadMask = 0xFF;
-		stencilDesc.StencilWriteMask = 0xFF;
-		stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-		stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-		stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::Z_ENABLED)]);
-		SetDebugName(myDepthStates[u16(eDepthStencil::Z_ENABLED)], "eDepthStencil::Z_ENABLED");
-		HandleErrors(hr, "Failed to setup Enabled Depth!");
-	}
-
-	void DirectX11::CreateDisabledDepthStencilState()
-	{
-		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
-		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
-
-		stencilDesc.DepthEnable = false;
-		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-		stencilDesc.StencilEnable = true;
-		stencilDesc.StencilReadMask = 0xFF;
-		stencilDesc.StencilWriteMask = 0xFF;
-		stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-		stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-		stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::Z_DISABLED)]);
-		SetDebugName(myDepthStates[u16(eDepthStencil::Z_DISABLED)], "eDepthStencil::Z_DISABLED");
-		HandleErrors(hr, "Failed to setup depth buffer!");
-	}
-
-	void DirectX11::CreateReadDepthStencilState()
-	{
-		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
-		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
-		stencilDesc.DepthEnable = true;
-		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-		stencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
-		stencilDesc.StencilEnable = false;
-		stencilDesc.StencilReadMask = u8(0xFF);
-		stencilDesc.StencilWriteMask = 0x0;
-
-		stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
-		stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
-		stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
-
-		stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
-		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
-		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_ZERO;
-		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
-
-		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::READ_NO_WRITE)]);
-		SetDebugName(myDepthStates[u16(eDepthStencil::READ_NO_WRITE)], "eDepthStencil::READ_NO_WRITE");
-		HandleErrors(hr, "Failed to setup depth buffer!");
 	}
 
 	void DirectX11::SetRasterizer(const eRasterizer& aRasterizer)
@@ -642,167 +566,6 @@ namespace Snowblind
 		SetDebugName(myRasterizerStates[u16(eRasterizer::CULL_NONE)], "CULL_NONE Rasterizer");
 	}
 
-	void DirectX11::CreateBlendStates()
-	{
-		D3D11_BLEND_DESC blendDesc;
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
-		myDevice->CreateBlendState(&blendDesc, &myBlendStates[u16(eBlendStates::ALPHA_BLEND)]);
-		SetDebugName(myBlendStates[u16(eBlendStates::ALPHA_BLEND)], "ALPHA_BLEND BlendState");
-
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE; // dest blend makes it go bonkers?
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE; //no difference between zero & one
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
-		myDevice->CreateBlendState(&blendDesc, &myBlendStates[u16(eBlendStates::LIGHT_BLEND)]);
-		SetDebugName(myBlendStates[u16(eBlendStates::LIGHT_BLEND)], "LIGHT_BLEND BlendState");
-
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
-		myDevice->CreateBlendState(&blendDesc, &myBlendStates[u16(eBlendStates::PARTICLE_BLEND)]);
-		SetDebugName(myBlendStates[u16(eBlendStates::PARTICLE_BLEND)], "PARTICLE_BLEND BlendState");
-
-
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		myDevice->CreateBlendState(&blendDesc, &myBlendStates[u16(eBlendStates::NO_BLEND)]);
-		SetDebugName(myBlendStates[u16(eBlendStates::NO_BLEND)], "NO_BLEND BlendState");
-
-		blendDesc.RenderTarget[0].BlendEnable = FALSE;
-		myDevice->CreateBlendState(&blendDesc, &myBlendStates[u16(eBlendStates::BLEND_FALSE)]);
-		SetDebugName(myBlendStates[u16(eBlendStates::BLEND_FALSE)], "NO_BLEND BlendState");
-
-
-	}
-
-	void DirectX11::CreateSamplerStates()
-	{
-		D3D11_SAMPLER_DESC samplerDesc;
-		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-
-		samplerDesc.MaxAnisotropy = 0;
-		samplerDesc.MipLODBias = 0.f;
-
-		myDevice->CreateSamplerState(&samplerDesc, &mySamplerStates[u16(eSamplerStates::LINEAR_CLAMP)]);
-		SetDebugName(mySamplerStates[u16(eSamplerStates::LINEAR_CLAMP)], "LINEAR_CLAMP SamplerState");
-
-		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-		myDevice->CreateSamplerState(&samplerDesc, &mySamplerStates[u16(eSamplerStates::POINT_CLAMP)]);
-		SetDebugName(mySamplerStates[u16(eSamplerStates::POINT_CLAMP)], "POINT_CLAMP SamplerState");
-
-
-		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-
-		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		myDevice->CreateSamplerState(&samplerDesc, &mySamplerStates[u16(eSamplerStates::LINEAR_WRAP)]);
-		SetDebugName(mySamplerStates[u16(eSamplerStates::LINEAR_WRAP)], "LINEAR_WRAP SamplerState");
-
-		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-		myDevice->CreateSamplerState(&samplerDesc, &mySamplerStates[u16(eSamplerStates::POINT_WRAP)]);
-		SetDebugName(mySamplerStates[u16(eSamplerStates::POINT_WRAP)], "POINT_WRAP SamplerState");
-	}
-
-	void DirectX11::CreateDepthStencilStates()
-	{
-		CreateEnabledDepthStencilState();
-		CreateDisabledDepthStencilState();
-		CreateReadDepthStencilState();
-
-		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
-		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
-
-		stencilDesc.DepthEnable = true;
-		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-
-		stencilDesc.StencilEnable = true;
-		stencilDesc.StencilReadMask = 0xFF;
-		stencilDesc.StencilWriteMask = 0xFF;
-
-		stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-		stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;
-
-		stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
-
-		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
-		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
-
-		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::MASK_TEST)]);
-		SetDebugName(myDepthStates[u16(eDepthStencil::MASK_TEST)], "eDepthStencil::MASK_TEST");
-		HandleErrors(hr, "Failed to setup depth buffer!");
-
-
-		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
-		stencilDesc.DepthEnable = true;
-		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-		stencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
-		stencilDesc.StencilEnable = false;
-		stencilDesc.StencilReadMask = u8(0xFF);
-		stencilDesc.StencilWriteMask = 0x0;
-
-		stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
-		stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
-		stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
-
-		stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
-		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
-		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_ZERO;
-		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
-
-		hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
-		SetDebugName(myDepthStates[u16(eDepthStencil::LIGHT_MASK)], "eDepthStencil::MASK_TEST");
-		HandleErrors(hr, "Failed to setup depth buffer!");
-
-
-	}
-
 	void DirectX11::GetRefreshRate(u32& aNumerator, u32& aDenominator)
 	{
 		IDXGIFactory* factory;
@@ -820,7 +583,7 @@ namespace Snowblind
 
 		for (unsigned int i = 0; i < numModes; ++i)
 		{
-			if (displayModeList[i].Width == myWindowWidth && displayModeList[i].Height == myWindowHeight)
+			if (displayModeList[i].Width == m_CreateInfo.m_WindowWidth && displayModeList[i].Height == m_CreateInfo.m_WindowHeight)
 			{
 				aNumerator = displayModeList[i].RefreshRate.Numerator;
 				aDenominator = displayModeList[i].RefreshRate.Denominator;

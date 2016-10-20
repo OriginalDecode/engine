@@ -30,12 +30,16 @@ namespace Snowblind
 	}
 
 #ifdef SNOWBLIND_DX11
-	DirectX11* CEngine::GetDirectX()
+	DirectX11* CEngine::GetAPI()
 	{
 		return static_cast<DirectX11*>(myAPI);
 	}
+#else
+	Vulkan* CEngine::GetAPI()
+	{
+		return static_cast<Vulkan*>(myAPI);
+	}
 #endif
-
 	bool CEngine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 	{
 		myWindowSize.myHeight = window_height;
@@ -120,14 +124,24 @@ namespace Snowblind
 	void CEngine::Present()
 	{
 		if (myInstance->myUsingVSync)
-			myInstance->myAPI->Present(1, 0);
+			myAPI->Present(1, 0);
 		else
-			myInstance->myAPI->Present(0, 0);
+			myAPI->Present(0, 0);
 	}
 
 	void CEngine::Clear()
 	{
-		myInstance->myAPI->Clear();
+		myAPI->Clear();
+	}
+
+	void CEngine::EnableZ()
+	{
+		myAPI->EnableZBuffer();
+	}
+
+	void CEngine::DisableZ()
+	{
+		myAPI->DisableZBuffer();
 	}
 
 	const Snowblind::SWindowSize& CEngine::GetWindowSize() const
@@ -183,7 +197,7 @@ namespace Snowblind
 	void CEngine::ResetRenderTargetAndDepth()
 	{
 #ifdef SNOWBLIND_DX11
-		GetDirectX()->ResetRenderTargetAndDepth();
+		GetAPI()->ResetRenderTargetAndDepth();
 #endif
 	}
 

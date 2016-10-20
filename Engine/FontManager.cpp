@@ -155,9 +155,9 @@ namespace Snowblind
 		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 		ID3D11Texture2D* texture;
-		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
+		CEngine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
-		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
+		CEngine::GetAPI()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
 		texture->Release();
 #endif
 
@@ -350,10 +350,10 @@ namespace Snowblind
 		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 		ID3D11Texture2D* texture;
-		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
+		CEngine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
-		CEngine::GetDirectX()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
-		CEngine::GetDirectX()->SetDebugName(fontData->myAtlasView, "FontAtlas");
+		CEngine::GetAPI()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
+		CEngine::GetAPI()->SetDebugName(fontData->myAtlasView, "FontAtlas");
 
 		std::string name = "";
 		name = CL::substr(myFontPath, "\\", false, 1);
@@ -381,7 +381,7 @@ namespace Snowblind
 		//HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss3.str().c_str());
 		texture->Release();
 		texture = nullptr;
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");
+		CEngine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
 		
 #endif
 	}
@@ -410,7 +410,7 @@ namespace Snowblind
 		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 		ID3D11Texture2D* texture;
-		CEngine::GetDirectX()->GetDevice()->CreateTexture2D(&info, &data, &texture);
+		CEngine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 
 		std::stringstream ss;

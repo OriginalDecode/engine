@@ -70,15 +70,15 @@ namespace Snowblind
 		UpdateVertexBuffer();
 
 
-		ID3D11DeviceContext* context = CEngine::GetDirectX()->GetContext();
+		ID3D11DeviceContext* context = CEngine::GetAPI()->GetContext();
 		context->IASetInputLayout(myInputLayout);
 
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		context->IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 
-		CEngine::GetDirectX()->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->vertexShader : nullptr);
-		CEngine::GetDirectX()->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->geometryShader : nullptr);
-		CEngine::GetDirectX()->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->pixelShader : nullptr);
+		CEngine::GetAPI()->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->vertexShader : nullptr);
+		CEngine::GetAPI()->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->geometryShader : nullptr);
+		CEngine::GetAPI()->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->pixelShader : nullptr);
 
 
 		ID3D11ShaderResourceView* srv[2];
@@ -95,7 +95,7 @@ namespace Snowblind
 		srv[1] = nullptr;
 		context->PSSetShaderResources(0, 2, &srv[0]);
 
-		CEngine::GetDirectX()->SetGeometryShader(nullptr);
+		CEngine::GetAPI()->SetGeometryShader(nullptr);
 
 	}
 
@@ -125,8 +125,8 @@ namespace Snowblind
 		D3D11_SUBRESOURCE_DATA vertexData;
 		ZeroMemory(&vertexData, sizeof(vertexData));
 		vertexData.pSysMem = reinterpret_cast<char*>(&myParticles[0]);
-		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer); //Added vertexData to this
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create Particle Vertex Buffer");
+		hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer); //Added vertexData to this
+		CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Particle Vertex Buffer");
 	}
 
 	void CEmitterInstance::UpdateVertexBuffer()
@@ -134,13 +134,13 @@ namespace Snowblind
 		if (myParticles.Size() > 0)
 		{
 			D3D11_MAPPED_SUBRESOURCE mappedResource;
-			CEngine::GetDirectX()->GetContext()->Map(myVertexBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			CEngine::GetAPI()->GetContext()->Map(myVertexBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (mappedResource.pData != nullptr)
 			{
 				SParticleObject *data = (SParticleObject*)mappedResource.pData;
 				memcpy(data, &myParticles[0], sizeof(SParticleObject)* myParticles.Size());
 			}
-			CEngine::GetDirectX()->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
+			CEngine::GetAPI()->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
 		}
 	}
 
@@ -157,9 +157,9 @@ namespace Snowblind
 		cbDesc.MiscFlags = 0;
 		cbDesc.StructureByteStride = 0;
 
-		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-		CEngine::GetDirectX()->SetDebugName(myConstantBuffer, "Line3D Constant Buffer");
-		CEngine::GetDirectX()->HandleErrors(hr, "[Line3D] : Failed to Create Constant Buffer, ");
+		HRESULT hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+		CEngine::GetAPI()->SetDebugName(myConstantBuffer, "Line3D Constant Buffer");
+		CEngine::GetAPI()->HandleErrors(hr, "[Line3D] : Failed to Create Constant Buffer, ");
 	}
 
 	void CEmitterInstance::CreateInputLayout()
@@ -176,9 +176,9 @@ namespace Snowblind
 			{ "SIZE", 0, DXGI_FORMAT_R32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
-		hr = CEngine::GetDirectX()->GetDevice()->CreateInputLayout(layout, ARRAYSIZE(layout), shader, size, &myInputLayout);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create InputLayout!");
-		CEngine::GetDirectX()->SetDebugName(myInputLayout, "Particle Input Layout");
+		hr = CEngine::GetAPI()->GetDevice()->CreateInputLayout(layout, ARRAYSIZE(layout), shader, size, &myInputLayout);
+		CEngine::GetAPI()->HandleErrors(hr, "Failed to create InputLayout!");
+		CEngine::GetAPI()->SetDebugName(myInputLayout, "Particle Input Layout");
 	}
 
 	void CEmitterInstance::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
@@ -189,13 +189,13 @@ namespace Snowblind
 		myConstantStruct->projection = aCameraProjection;
 
 		D3D11_MAPPED_SUBRESOURCE msr;
-		Snowblind::CEngine::GetDirectX()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		Snowblind::CEngine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
 			SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
 			memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SVertexBaseStruct));
 		}
-		Snowblind::CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);
+		Snowblind::CEngine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
 	}
 
 	void CEmitterInstance::UpdateParticle(float aDeltaTime)

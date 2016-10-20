@@ -20,7 +20,7 @@ namespace Snowblind
 		reader.ForceReadElement("Skysphere", skysphereTexture);
 		mySkysphereTexture = CEngine::GetInstance()->GetTexture(skysphereTexture);
 #ifdef SNOWBLIND_DX11
-		myDirectX = CEngine::GetDirectX();
+		myDirectX = CEngine::GetAPI();
 #endif
 	}
 
@@ -39,13 +39,13 @@ namespace Snowblind
 		srv[0] = mySkysphereTexture->GetShaderView();
 		srv[1] = aDepthTexture->GetDepthStencilView();
 
-		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, 2, &srv[0]);
+		CEngine::GetAPI()->GetContext()->PSSetShaderResources(0, 2, &srv[0]);
 
 		myModel->Render(anOrientation, myCamera->GetProjection());
 
 		srv[0] = nullptr;
 		srv[1] = nullptr;
-		CEngine::GetDirectX()->GetContext()->PSSetShaderResources(0, 2, &srv[0]);
+		CEngine::GetAPI()->GetContext()->PSSetShaderResources(0, 2, &srv[0]);
 #endif
 	}
 

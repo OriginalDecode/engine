@@ -5,7 +5,7 @@ namespace Snowblind
 	CGBuffer::CGBuffer()
 		: myEngine(CEngine::GetInstance())
 #ifdef SNOWBLIND_DX11
-		, myDirectX(myEngine->GetDirectX())
+		, myDirectX(myEngine->GetAPI())
 		, myContext(myDirectX->GetContext())
 #endif
 	{

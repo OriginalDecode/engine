@@ -76,6 +76,10 @@ namespace Snowblind
 
 		virtual void OnAltEnter() = 0;
 		const std::string& GetAPIName() { return m_CreateInfo.m_APIName; }
+
+		virtual void EnableZBuffer() = 0;
+		virtual void DisableZBuffer() = 0;
+
 	protected:
 		CreateInfo m_CreateInfo;
 

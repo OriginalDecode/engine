@@ -9,7 +9,7 @@ namespace Snowblind
 		: myEngine(CEngine::GetInstance())
 		, myGBuffer(aGBuffer)
 #ifdef SNOWBLIND_DX11
-		, myContext(CEngine::GetDirectX()->GetContext())
+		, myContext(CEngine::GetAPI()->GetContext())
 #endif
 	{
 #ifdef SNOWBLIND_DX11
@@ -81,14 +81,14 @@ namespace Snowblind
 
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-		CEngine::GetDirectX()->GetContext()->Map(myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		CEngine::GetAPI()->GetContext()->Map(myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
 			SPointlightConstantBuffer* ptr = (SPointlightConstantBuffer*)msr.pData;
 			memcpy(ptr, &myPointlightVertexConstantData.world.myMatrix[0], sizeof(SPointlightConstantBuffer));
 		}
 
-		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)], 0);
+		CEngine::GetAPI()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)], 0);
 
 		//----------------------------------------
 		// PixelShader Constant Buffer
@@ -99,14 +99,14 @@ namespace Snowblind
 		myPixelConstantStruct.myPosition = pointlight->GetPosition();
 		myPixelConstantStruct.myCameraPosition = previousOrientation.GetPosition();
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-		CEngine::GetDirectX()->GetContext()->Map(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		CEngine::GetAPI()->GetContext()->Map(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
 			SPixelConstantBuffer* ptr = (SPixelConstantBuffer*)msr.pData;
 			memcpy(ptr, &myPixelConstantStruct.myInvertedProjection.myMatrix[0], sizeof(SPixelConstantBuffer));
 		}
 
-		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)], 0);
+		CEngine::GetAPI()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)], 0);
 #endif
 	}
 
@@ -130,14 +130,14 @@ namespace Snowblind
 
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-		CEngine::GetDirectX()->GetContext()->Map(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		CEngine::GetAPI()->GetContext()->Map(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
 			SSpotlightConstantBuffer* ptr = (SSpotlightConstantBuffer*)msr.pData;
 			memcpy(ptr, &mySpotlightVertexConstantData.world.myMatrix[0], sizeof(SSpotlightConstantBuffer));
 		}
 
-		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)], 0);
+		CEngine::GetAPI()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)], 0);
 
 		//----------------------------------------
 		// PixelShader Constant Buffer
@@ -150,14 +150,14 @@ namespace Snowblind
 		mySpotPixelConstantStruct.myDirection = data.myDirection;
 
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-		CEngine::GetDirectX()->GetContext()->Map(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		CEngine::GetAPI()->GetContext()->Map(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
 			SSpotPixelConstantBuffer* ptr = (SSpotPixelConstantBuffer*)msr.pData;
 			memcpy(ptr, &mySpotPixelConstantStruct.myInvertedProjection.myMatrix[0], sizeof(SSpotPixelConstantBuffer));
 		}
 
-		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], 0);
+		CEngine::GetAPI()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], 0);
 #endif
 	}
 
@@ -176,9 +176,9 @@ namespace Snowblind
 		cbDesc.MiscFlags = 0;
 		cbDesc.StructureByteStride = 0;
 
-		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)]);
-		CEngine::GetDirectX()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)], "Spotlight Vertex Constant Buffer");
-		CEngine::GetDirectX()->HandleErrors(hr, "[LightPass] : Failed to Create Spotlight Vertex Constant Buffer, ");
+		HRESULT hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)]);
+		CEngine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)], "Spotlight Vertex Constant Buffer");
+		CEngine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Spotlight Vertex Constant Buffer, ");
 
 
 		//----------------------------------------
@@ -192,9 +192,9 @@ namespace Snowblind
 		cbDesc.MiscFlags = 0;
 		cbDesc.StructureByteStride = 0;
 
-		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)]);
-		CEngine::GetDirectX()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], "Spotlight Pixel Constant Buffer");
-		CEngine::GetDirectX()->HandleErrors(hr, "[LightPass] : Failed to Create Spotlight Pixel Constant Buffer, ");
+		hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)]);
+		CEngine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], "Spotlight Pixel Constant Buffer");
+		CEngine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Spotlight Pixel Constant Buffer, ");
 #endif
 	}
 
@@ -213,9 +213,9 @@ namespace Snowblind
 		cbDesc.MiscFlags = 0;
 		cbDesc.StructureByteStride = 0;
 
-		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)]);
-		CEngine::GetDirectX()->SetDebugName(myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)], "Pointlight Vertex Constant Buffer");
-		CEngine::GetDirectX()->HandleErrors(hr, "[LightPass] : Failed to Create Pointlight Vertex Constant Buffer, ");
+		HRESULT hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)]);
+		CEngine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)], "Pointlight Vertex Constant Buffer");
+		CEngine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Pointlight Vertex Constant Buffer, ");
 
 
 		//----------------------------------------
@@ -229,9 +229,9 @@ namespace Snowblind
 		cbDesc.MiscFlags = 0;
 		cbDesc.StructureByteStride = 0;
 
-		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)]);
-		CEngine::GetDirectX()->SetDebugName(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)], "Pointlight Pixel Constant Buffer");
-		CEngine::GetDirectX()->HandleErrors(hr, "[LightPass] : Failed to Create Pointlight Pixel Constant Buffer, ");
+		hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)]);
+		CEngine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)], "Pointlight Pixel Constant Buffer");
+		CEngine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Pointlight Pixel Constant Buffer, ");
 #endif
 	}
 

@@ -14,7 +14,7 @@ namespace Snowblind
 	CSurface::CSurface(CEffect* anEffect)
 	{
 #ifdef SNOWBLIND_DX11
-		myContext = CEngine::GetDirectX()->GetContext();
+		myContext = CEngine::GetAPI()->GetContext();
 #endif
 		SetVertexCount(0);
 		SetVertexStart(0);
@@ -27,7 +27,7 @@ namespace Snowblind
 	CSurface::CSurface(CEffect* anEffect, unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int aIndexCount)
 	{
 #ifdef SNOWBLIND_DX11
-		myContext = CEngine::GetDirectX()->GetContext();
+		myContext = CEngine::GetAPI()->GetContext();
 #endif
 		SetVertexCount(aVertexCount);
 		SetVertexStart(aStartVertex);
@@ -40,7 +40,7 @@ namespace Snowblind
 	CSurface::CSurface(unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
 	{
 #ifdef SNOWBLIND_DX11
-		myContext = CEngine::GetDirectX()->GetContext();
+		myContext = CEngine::GetAPI()->GetContext();
 #endif
 		SetVertexCount(aVertexCount);
 		SetVertexStart(aStartVertex);

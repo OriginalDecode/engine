@@ -39,11 +39,13 @@ namespace Snowblind
 		float myWidth;
 		float myHeight;
 	};
+	
+	class DirectX11;
+	class Vulkan;
 
 	class CAssetsContainer;
 	class CCamera;
 	class CConsole;
-	class DirectX11;
 	class CFont;
 	class CFontManager;
 	class CModel;
@@ -63,8 +65,11 @@ namespace Snowblind
 		static CEngine* GetInstance();
 
 #ifdef SNOWBLIND_DX11
-		static DirectX11* GetDirectX();
+		static DirectX11* GetAPI();
+#else
+		static Vulkan* GetAPI();
 #endif
+
 		bool Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc);
 		bool CleanUp();
 
@@ -73,6 +78,9 @@ namespace Snowblind
 		static void Update();
 		static void Present();
 		static void Clear();
+		static void EnableZ();
+		static void DisableZ();
+
 		
 		const SWindowSize& GetWindowSize() const;
 		CFont* LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth);

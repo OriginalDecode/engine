@@ -174,14 +174,14 @@ namespace Snowblind
 	void CSpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 	{
 #ifdef SNOWBLIND_DX11
-		CEngine::GetDirectX()->SetBlendState(eBlendStates::ALPHA_BLEND);
+		CEngine::GetAPI()->SetBlendState(eBlendStates::ALPHA_BLEND);
 		if (!myEffect)
 			return;
-		CEngine::GetDirectX()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
+		CEngine::GetAPI()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
 
 		SetMatrices(anOrientation, a2DCameraOrientation, anOrthogonalProjectionMatrix);
 
-		ID3D11DeviceContext& context = *CEngine::GetDirectX()->GetContext();
+		ID3D11DeviceContext& context = *CEngine::GetAPI()->GetContext();
 		context.IASetInputLayout(myVertexLayout);
 		context.IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 		context.IASetIndexBuffer(myIndexBuffer->myIndexBuffer, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
@@ -189,9 +189,9 @@ namespace Snowblind
 
 		UpdateConstantBuffer();
 
-		CEngine::GetDirectX()->SetVertexShader(myEffect->GetVertexShader()->vertexShader);
+		CEngine::GetAPI()->SetVertexShader(myEffect->GetVertexShader()->vertexShader);
 		context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
-		CEngine::GetDirectX()->SetPixelShader(myEffect->GetPixelShader()->pixelShader);
+		CEngine::GetAPI()->SetPixelShader(myEffect->GetPixelShader()->pixelShader);
 		ID3D11ShaderResourceView* srv = myTexture;
 		context.PSSetShaderResources(0, 1, &srv);
 
@@ -200,7 +200,7 @@ namespace Snowblind
 		srv = nullptr;
 		context.PSSetShaderResources(0, 1, &srv);
 
-		CEngine::GetDirectX()->SetBlendState(eBlendStates::NO_BLEND);
+		CEngine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
 #endif
 	}
 
@@ -228,14 +228,14 @@ namespace Snowblind
 		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 
 		D3D11_MAPPED_SUBRESOURCE msr;
-		CEngine::GetDirectX()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		CEngine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
 			SSpriteConstantBuffer* ptr = (SSpriteConstantBuffer*)msr.pData;
 			memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SSpriteConstantBuffer));
 		}
 
-		CEngine::GetDirectX()->GetContext()->Unmap(myConstantBuffer, 0);
+		CEngine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
 #endif
 	}
 
@@ -244,14 +244,14 @@ namespace Snowblind
 #ifdef SNOWBLIND_DX11
 		HRESULT hr;
 
-		hr = CEngine::GetDirectX()->GetDevice()->
+		hr = CEngine::GetAPI()->GetDevice()->
 			CreateInputLayout(&myVertexFormat[0]
 				, myVertexFormat.Size()
 				, myEffect->GetVertexShader()->compiledShader
 				, myEffect->GetVertexShader()->shaderSize
 				, &myVertexLayout);
-		CEngine::GetDirectX()->SetDebugName(myVertexLayout, "SpriteModel Vertex Layout");
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to create VertexLayout");
+		CEngine::GetAPI()->SetDebugName(myVertexLayout, "SpriteModel Vertex Layout");
+		CEngine::GetAPI()->HandleErrors(hr, "Failed to create VertexLayout");
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
@@ -264,8 +264,8 @@ namespace Snowblind
 		D3D11_SUBRESOURCE_DATA vertexData;
 		vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
 
-		hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create VertexBuffer!");
+		hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
+		CEngine::GetAPI()->HandleErrors(hr, "Failed to Create VertexBuffer!");
 
 		myVertexBuffer->myStride = myVertexData->myStride;
 		myVertexBuffer->myByteOffset = 0;
@@ -288,8 +288,8 @@ namespace Snowblind
 
 		D3D11_SUBRESOURCE_DATA indexData;
 		ZeroMemory(&indexData, sizeof(indexData)), indexData.pSysMem = myIndexData->myIndexData;
-		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to Create IndexBuffer");
+		HRESULT hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
+		CEngine::GetAPI()->HandleErrors(hr, "Failed to Create IndexBuffer");
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		myIndexBuffer->myByteOffset = 0;
@@ -310,9 +310,9 @@ namespace Snowblind
 		cbDesc.MiscFlags = 0;
 		cbDesc.StructureByteStride = 0;
 
-		HRESULT hr = CEngine::GetDirectX()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-		CEngine::GetDirectX()->SetDebugName(myConstantBuffer, "Font Constant Buffer");
-		CEngine::GetDirectX()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
+		HRESULT hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+		CEngine::GetAPI()->SetDebugName(myConstantBuffer, "Font Constant Buffer");
+		CEngine::GetAPI()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
 #endif
 	}
 

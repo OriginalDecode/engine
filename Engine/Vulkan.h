@@ -21,6 +21,9 @@ namespace Snowblind
 
 		void OnAltEnter() override;
 
+		void EnableZBuffer() override;
+		void DisableZBuffer() override;
+
 	private:
 
 		struct SwapchainCreateInfo

@@ -27,8 +27,10 @@ namespace Snowblind
 		{
 			VkPresentModeKHR present_mode_out = VK_PRESENT_MODE_FIFO_KHR;
 			VkSurfaceTransformFlagBitsKHR surface_transform_out;
-			u32 swapchain_image_count;
 			VkExtent2D swapchain_extent;
+			u32 swapchain_image_count;
+			u32 present_queue_family_index;
+			u32 graphics_queue_family_index;
 		};
 
 	private:
@@ -37,10 +39,8 @@ namespace Snowblind
 		bool CreateDevice();
 		bool CreateCommandPool(u32 queue_family_index);
 		bool CreateCommandBuffer();
-		bool CreateSurface(u32 queue_family_index);
-		bool CreateSwapchain();
-
-
+		bool CreateSurface(u32 queue_family_index, u32 queue_family_count_in, SwapchainCreateInfo& swapchain_create_info);
+		bool CreateSwapchain(SwapchainCreateInfo& swapchain_create_info);
 		bool GetPresentMode(SwapchainCreateInfo& swapchain_create_info);
 
 		

@@ -7,7 +7,6 @@ namespace Snowblind
 	bool Vulkan::Initiate(CreateInfo create_info)
 	{
 		m_CreateInfo = create_info;
-
 		if (!CreateVKInstance())
 			return false;
 
@@ -20,8 +19,7 @@ namespace Snowblind
 		if (!CreateCommandBuffer())
 			return false;
 
-		if (!CreateSwapchain())
-			return false;
+
 
 
 		return true;
@@ -146,7 +144,16 @@ namespace Snowblind
 		if (!CreateCommandPool(queue_info.queueFamilyIndex))
 			return false;
 
-		if (!CreateSurface(queue_info.queueFamilyIndex))
+
+		SwapchainCreateInfo sc_create_info;
+		memset(&sc_create_info, 0, sizeof(SwapchainCreateInfo));
+
+
+		if (!CreateSurface(queue_info.queueFamilyIndex, queue_family_count, sc_create_info))
+			return false;
+
+
+		if (!CreateSwapchain(sc_create_info))
 			return false;
 
 		return true;
@@ -190,11 +197,10 @@ namespace Snowblind
 		return true;
 	}
 
-	bool Vulkan::CreateSwapchain()
+	bool Vulkan::CreateSwapchain(SwapchainCreateInfo& swapchain_create_info)
 	{
-		SwapchainCreateInfo sc_create_info;
-		memset(&sc_create_info, 0, sizeof(SwapchainCreateInfo));
-		if (!GetPresentMode(sc_create_info))
+
+		if (!GetPresentMode(swapchain_create_info))
 			return false;
 
 		VkSwapchainCreateInfoKHR create_info;
@@ -202,41 +208,29 @@ namespace Snowblind
 		create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 		create_info.pNext = NULL;
 		create_info.surface = *m_Surface;
-		create_info.minImageCount = sc_create_info.swapchain_image_count;
 		create_info.imageFormat = m_Format;
-		create_info.imageExtent.width = sc_create_info.swapchain_extent.width;
-		create_info.imageExtent.height = sc_create_info.swapchain_extent.height;
-		create_info.preTransform = sc_create_info.surface_transform_out;
+		create_info.minImageCount = swapchain_create_info.swapchain_image_count;
+		create_info.imageExtent.width = swapchain_create_info.swapchain_extent.width;
+		create_info.imageExtent.height = swapchain_create_info.swapchain_extent.height;
+		create_info.preTransform = swapchain_create_info.surface_transform_out;
+		create_info.presentMode = swapchain_create_info.present_mode_out;
+		create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		create_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 		create_info.imageArrayLayers = 1;
-		create_info.presentMode = sc_create_info.present_mode_out;
 		create_info.oldSwapchain = VK_NULL_HANDLE;
 		create_info.clipped = true;
 		create_info.imageColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
 		create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-		create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		create_info.queueFamilyIndexCount = 0;
 		create_info.pQueueFamilyIndices = NULL;
 
-		uint32_t queueFamilyIndices[2] = { (uint32_t)info.graphics_queue_family_index, (uint32_t)info.present_queue_family_index };
-
-		if (info.graphics_queue_family_index != info.present_queue_family_index)
-		{
-			create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-			create_info.queueFamilyIndexCount = 2;
-			create_info.pQueueFamilyIndices = queueFamilyIndices;
-		}
-
 		m_Swapchain = new VkSwapchainKHR;
-		VkResult result = vkCreateSwapchainKHR(info.device, &create_info, NULL, m_Swapchain);
-
-
-
+		VkResult result = vkCreateSwapchainKHR(*m_Device, &create_info, NULL, m_Swapchain);
 
 		return true;
 	}
 
-	bool Vulkan::CreateSurface(u32 queue_family_index)
+	bool Vulkan::CreateSurface(u32 queue_family_index, u32 queue_family_count_in, SwapchainCreateInfo& swapchain_create_info)
 	{
 		VkWin32SurfaceCreateInfoKHR create_info;
 		create_info.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
@@ -251,47 +245,6 @@ namespace Snowblind
 			DL_MESSAGE("Failed to create a surface for vulkan. VK_ERROR : %d", result);
 			return false;
 		}
-
-		VkBool32 supported = VK_FALSE;
-		result = vkGetPhysicalDeviceSurfaceSupportKHR(*m_PhysDevice, queue_family_index, *m_Surface, &supported);
-		if (result != VK_SUCCESS)
-		{
-			DL_MESSAGE("Failed to find any surface support on current graphics card. VK_ERROR : %d", result);
-			return false;
-		}
-
-		if (supported == VK_FALSE)
-		{
-			DL_MESSAGE("Failed to find any surface support on current graphics card. VK_ERROR : %d", result);
-			return false;
-		}
-
-		u32 format_count = 0;
-		result = vkGetPhysicalDeviceSurfaceFormatsKHR(*m_PhysDevice, *m_Surface, &format_count, NULL);
-		if (result != VK_SUCCESS)
-		{
-			DL_MESSAGE("Failed to get any formats from the graphicsCard. VK_ERROR : %d", result);
-			return false;
-		}
-
-		VkSurfaceFormatKHR* surface_formats = (VkSurfaceFormatKHR*)malloc(format_count * sizeof(VkSurfaceFormatKHR));
-		result = vkGetPhysicalDeviceSurfaceFormatsKHR(*m_PhysDevice, *m_Surface, &format_count, surface_formats);
-		if (result != VK_SUCCESS)
-		{
-			DL_MESSAGE("Failed to create surfaceFormats. VK_ERROR : %d ", result);
-			return false;
-		}
-
-		if (format_count == 1 && surface_formats[0].format == VK_FORMAT_UNDEFINED)
-		{
-			m_Format = VK_FORMAT_B8G8R8A8_UNORM;
-		}
-		else
-		{
-			DL_MESSAGE_EXP(format_count >= 1, "There was more than one format available!");
-			m_Format = surface_formats[0].format;
-		}
-		free(surface_formats);
 
 		return true;
 	}
@@ -385,12 +338,14 @@ namespace Snowblind
 
 	bool Vulkan::CleanUp()
 	{
+		vkDestroySwapchainKHR(*m_Device, *m_Swapchain, NULL);
 		vkDestroySurfaceKHR(*m_Instance, *m_Surface, NULL);
 		vkFreeCommandBuffers(*m_Device, *m_CommandPool, 1, m_CommandBuffer);
 		vkDestroyCommandPool(*m_Device, *m_CommandPool, NULL);
 		vkDestroyDevice(*m_Device, NULL);
 		vkDestroyInstance(*m_Instance, NULL);
 
+		SAFE_DELETE(m_Swapchain);
 		SAFE_DELETE(m_Device);
 		SAFE_DELETE(m_Instance);
 		SAFE_DELETE(m_CommandPool);
@@ -402,6 +357,7 @@ namespace Snowblind
 		if (m_CommandBuffer) return false;
 		if (m_CommandPool) return false;
 		if (m_Surface) return false;
+		if (m_Swapchain) return false;
 
 		return true;
 	}

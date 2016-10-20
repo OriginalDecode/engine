@@ -157,7 +157,7 @@ namespace Snowblind
 			myConstantStruct->world = myOrientation;
 			myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
 			myConstantStruct->projection = aCameraProjection;
-			myEngine->GetDeltaTime(myConstantStruct->time.x);
+			myConstantStruct->time.x = myEngine->GetDeltaTime();
 			D3D11_MAPPED_SUBRESOURCE msr;
 			myAPI->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			if (msr.pData != nullptr)

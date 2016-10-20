@@ -75,16 +75,16 @@ namespace Snowblind
 
 		CCamera* GetCamera();
 		CCamera* Get2DCamera();
-		static void Update();
 		static void Present();
 		static void Clear();
 		static void EnableZ();
 		static void DisableZ();
 
+		void Update();
 		
 		const SWindowSize& GetWindowSize() const;
 		CFont* LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth);
-		void GetDeltaTime(float& delta_time_out);
+		float GetDeltaTime();
 		const float GetFPS();
 		const float GetFrameTime();
 		const std::string& GetAPIName();
@@ -93,7 +93,6 @@ namespace Snowblind
 		CEffect* GetEffect(const std::string& aFilePath);
 		CModel* GetModel(const std::string& aFilePath);
 		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
-
 		void ResetRenderTargetAndDepth();
 		void ToggleVsync();
 
@@ -103,7 +102,9 @@ namespace Snowblind
 		void OnExit();
 
 		CSynchronizer* GetSynchronizer();
+
 		const SLocalTime& GetLocalTime();
+		std::string GetLocalTimeAsString();
 
 		CTerrain* CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize);
 
@@ -128,5 +129,6 @@ namespace Snowblind
 		CAssetsContainer* myAssetsContainer	= nullptr;
 
 		bool myUsingVSync = false;
+		float m_DeltaTime = 0.f;
 	};
 };

@@ -117,10 +117,10 @@ namespace Snowblind
 
 	void CEngine::Update()
 	{
-		//AssetsContainer should be a debug feature update.
-		myInstance->myAssetsContainer->Update();
-		myInstance->myTimeManager->Update();
-		myInstance->myRenderer->Render();
+		m_DeltaTime = myTimeManager->GetDeltaTime();
+		myAssetsContainer->Update();
+		myTimeManager->Update();
+		myRenderer->Render();
 	}
 
 	void CEngine::Present()
@@ -156,13 +156,16 @@ namespace Snowblind
 		return myFontManager->LoadFont(aFilepath, aFontWidth, aBorderWidth);
 	}
 
-	void CEngine::GetDeltaTime(float& delta_time_out)
+	float CEngine::GetDeltaTime()
 	{
-		DL_MESSAGE("Ticket : %d", g_Mutex.ticket);
-		BeginTicketMutex(&g_Mutex);
-		DL_MESSAGE("Serving : %d", g_Mutex.serving);
-		delta_time_out = myTimeManager->GetDeltaTime();
-		EndTicketMutex(&g_Mutex);
+		//DL_MESSAGE("Ticket : %d", g_Mutex.ticket);
+		//BeginTicketMutex(&g_Mutex);
+		//DL_MESSAGE("Serving : %d", g_Mutex.serving);
+
+		//delta_time_out = myTimeManager->GetDeltaTime();
+
+		//EndTicketMutex(&g_Mutex);
+		return m_DeltaTime;
 	}
 
 	const float CEngine::GetFPS()
@@ -198,6 +201,24 @@ namespace Snowblind
 	const std::string& CEngine::LoadModel(const std::string& aFilePath, const std::string& effect)
 	{
 		return myAssetsContainer->LoadModel(aFilePath, effect);
+	}
+
+	// I AM FUNNY !!
+	std::string string_together(u16 time, u16 to_compare)
+	{
+		std::string to_return;
+		to_return += (time < to_compare ? ("0" + std::to_string(time)) : std::to_string(time));
+		return to_return;
+	}
+
+	std::string CEngine::GetLocalTimeAsString()
+	{
+		GetLocalTime();
+		std::string return_value = "Local Time : ";
+		return_value += string_together(myLocalTime.hour, 10) + ":";
+		return_value += string_together(myLocalTime.minute, 10) + ":";
+		return_value += string_together(myLocalTime.second, 10);
+		return return_value;
 	}
 
 	void CEngine::ResetRenderTargetAndDepth()

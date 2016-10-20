@@ -172,25 +172,7 @@ void CGame::Update(float aDeltaTime)
 	}
 
 	std::stringstream ss;
-	const SLocalTime& locTime = myEngine->GetLocalTime();
-	ss << myEngine->GetFPS() << "\n" << myFPSToPrint << "\nDeltaTime:" << aDeltaTime
-		<< "\nLocal time : "
-		<< locTime.hour << ":";
-
-	if (locTime.minute < 10)
-	{
-		ss << "0" << locTime.minute << ":";
-	}
-	else
-		ss << locTime.minute << ":";
-
-	if (locTime.second < 10)
-	{
-		ss << "0" << locTime.second;
-	}
-	else
-		ss << locTime.second;
-	
+	ss << myEngine->GetFPS() << "\n" << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::CEngine::GetInstance()->GetLocalTimeAsString();
 
 	if (CU::Input::InputWrapper::GetInstance()->MouseDown(0))
 	{

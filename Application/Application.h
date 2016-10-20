@@ -37,10 +37,6 @@ public:
 private:
 	void UpdateInput(float aDeltaTime);
 
-	static void RandomWork();
-	static void OtherRandomWork();
-	Threadpool* m_ThreadPool = nullptr;
-
 	/* Threading */
 	std::thread* myLogicThread;
 	volatile bool myQuitFlag = false;

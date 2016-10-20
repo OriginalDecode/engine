@@ -50,8 +50,7 @@ void CApplication::Update()
 	while (mySynchronizer->HasQuit() == false)
 	{
 		
-		float deltaTime = 0.f;
-		myEngine->GetDeltaTime(deltaTime);
+		float deltaTime = myEngine->GetDeltaTime();
 		UpdateInput(deltaTime);
 		std::stringstream ss;
 		ss << "X : " << myOrientation.GetPosition().x << "\n" <<
@@ -61,6 +60,7 @@ void CApplication::Update()
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SKYSPHERE, myOrientation.GetPosition()));
 
 		myGame->Update(deltaTime);
+
 
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();
@@ -164,23 +164,6 @@ void CApplication::UpdateInput(float aDeltaTime)
 			moveSpeed -= 0.01f * multiplier;
 		}
 	}
-}
-
-void CApplication::RandomWork()
-{
-	float delta_time;
-	Snowblind::CEngine::GetInstance()->GetDeltaTime(delta_time);
-}
-
-void CApplication::OtherRandomWork()
-{
-	RandomWork();
-	RandomWork();
-	RandomWork();
-	RandomWork();
-	RandomWork();
-	RandomWork();
-	RandomWork();
 }
 
 void CApplication::OnPause()

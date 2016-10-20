@@ -5,16 +5,18 @@
 #include "Terrain.h"
 #include "IGraphicsAPI.h"
 #include "Vulkan.h"
+
+Ticket_Mutex g_Mutex;
+
 namespace Snowblind
 {
 	CEngine* CEngine::myInstance = nullptr;
 	IGraphicsAPI* CEngine::myAPI = nullptr;
 
-	void CEngine::Create(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
+	void CEngine::Create()
 	{
 		DL_ASSERT_EXP(myInstance == nullptr, "Instance already created!");
 		myInstance = new CEngine;
-		myInstance->Initiate(window_width, window_height, instance_handle, window_proc);
 	}
 
 	void CEngine::Destroy()
@@ -154,9 +156,13 @@ namespace Snowblind
 		return myFontManager->LoadFont(aFilepath, aFontWidth, aBorderWidth);
 	}
 
-	const float CEngine::GetDeltaTime()
+	void CEngine::GetDeltaTime(float& delta_time_out)
 	{
-		return myTimeManager->GetDeltaTime();
+		DL_MESSAGE("Ticket : %d", g_Mutex.ticket);
+		BeginTicketMutex(&g_Mutex);
+		DL_MESSAGE("Serving : %d", g_Mutex.serving);
+		delta_time_out = myTimeManager->GetDeltaTime();
+		EndTicketMutex(&g_Mutex);
 	}
 
 	const float CEngine::GetFPS()

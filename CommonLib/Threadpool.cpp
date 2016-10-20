@@ -2,12 +2,12 @@
 #include <thread>
 #define FOR_EACH(_array) for (int i = 0; i < _array; i++)
 
-CThreadpool::CThreadpool()
+Threadpool::Threadpool()
 {
 	myWorkers.Init(1);
 	for (int i = 0; i < std::thread::hardware_concurrency(); i++)
 	{
-		CWorker worker;
+		Worker worker;
 		myWorkers.Add(worker);
 	}
 	myWorkers.Optimize();
@@ -18,12 +18,12 @@ CThreadpool::CThreadpool()
 	}
 }
 
-CThreadpool::~CThreadpool()
+Threadpool::~Threadpool()
 {
 	myWorkers.RemoveAll();
 }
 
-void CThreadpool::Update()
+void Threadpool::Update()
 {
 	FOR_EACH(myWorkers.Size())
 	{
@@ -40,12 +40,12 @@ void CThreadpool::Update()
 	}
 }
 
-void CThreadpool::AddWork(CWork aWorkOrder)
+void Threadpool::AddWork(Work aWorkOrder)
 {
 	myWorkOrders.push(aWorkOrder);
 }
 
-void CThreadpool::CleanUp()
+void Threadpool::CleanUp()
 {
 	FOR_EACH(myWorkers.Size())
 	{

@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <standard_datatype.hpp>
-
+#include "snowblind_shared.h"
 #ifndef _WINDEF_
 
 struct HINSTANCE__;
@@ -60,7 +60,7 @@ namespace Snowblind
 	class CEngine
 	{
 	public:
-		static void Create(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc);
+		static void Create();
 		static void Destroy();
 		static CEngine* GetInstance();
 
@@ -84,7 +84,7 @@ namespace Snowblind
 		
 		const SWindowSize& GetWindowSize() const;
 		CFont* LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth);
-		const float GetDeltaTime();
+		void GetDeltaTime(float& delta_time_out);
 		const float GetFPS();
 		const float GetFrameTime();
 		const std::string& GetAPIName();
@@ -96,14 +96,15 @@ namespace Snowblind
 
 		void ResetRenderTargetAndDepth();
 		void ToggleVsync();
+
 		void OnAltEnter();
 		void OnPause();
 		void OnResume();
 		void OnExit();
+
 		CSynchronizer* GetSynchronizer();
 		const SLocalTime& GetLocalTime();
-		
-		
+
 		CTerrain* CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize);
 
 	private:
@@ -116,7 +117,7 @@ namespace Snowblind
 		SWindowSize myWindowSize;
 		SLocalTime myLocalTime;
 		HWND myHWND;
-
+		
 		CFontManager* myFontManager			= nullptr;
 		CU::TimeManager* myTimeManager		= nullptr;
 		CSynchronizer* mySynchronizer		= nullptr;

@@ -3,18 +3,18 @@
 #include "DataStructures/GrowingArray.h"
 #include "Worker.h"
 #include "Work.h"
-class CThreadpool
+class Threadpool
 {
 public:
-	CThreadpool();
-	~CThreadpool();
+	Threadpool();
+	~Threadpool();
 
 	void Update();
-	void AddWork(CWork aWorkOrder);
+	void AddWork(Work aWorkOrder);
 	void CleanUp();
 
 private:
-	std::queue<CWork> myWorkOrders;
-	CU::GrowingArray<CWorker> myWorkers;
+	std::queue<Work> myWorkOrders;
+	CU::GrowingArray<Worker> myWorkers;
 };
 

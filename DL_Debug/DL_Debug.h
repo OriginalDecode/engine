@@ -111,7 +111,6 @@ namespace DL_Debug
 		void ActivateFilter(const eDEBUGLOG& anEnum);
 		const bool CheckFilter(const eDEBUGLOG& aFilter);
 
-		const float GetTime() const;
 		std::string HandleVAArgs(const char* aFormattedString, ...);
 		const int& GetActiveLogCount() const;
 	private:

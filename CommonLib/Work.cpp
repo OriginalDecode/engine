@@ -1,19 +1,19 @@
 #include "Work.h"
 
-CWork::CWork(const std::function<void()> aFunction)
+Work::Work(const std::function<void()> aFunction)
 	: myFunction(aFunction)
 {
 }
 
-CWork::CWork()
+Work::Work()
 {
 }
 
-CWork::~CWork()
+Work::~Work()
 {
 }
 
-void CWork::DoWork()
+void Work::DoWork()
 {
 	myFunction();
 }

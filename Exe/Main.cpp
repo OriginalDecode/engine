@@ -27,7 +27,8 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	float h = 1080;
 	newApplication = new CApplication();
 
-	Snowblind::CEngine::Create(w, h, anInstance, WindowProc);
+	Snowblind::CEngine::Create();
+	Snowblind::CEngine::GetInstance()->Initiate(w, h, anInstance, WindowProc);
 	newApplication->Initiate(w, h);
 
 	MSG msg;

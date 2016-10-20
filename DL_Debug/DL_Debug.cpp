@@ -1,6 +1,7 @@
 #include "DL_Debug.h"
 #include <time.h>
-
+#include "../Engine/snowblind_shared.h"
+Ticket_Mutex dlDebug_Mutex;
 namespace DL_Debug
 {
 	Debug* Debug::myInstance = nullptr;
@@ -84,7 +85,7 @@ namespace DL_Debug
 		DL_Debug::StackWalker ss;
 		ss.ShowCallstack();
 
-		myOutputFile << "==========================";
+		myOutputFile << "_________________________";
 		myOutputFile.flush();
 
 
@@ -105,12 +106,12 @@ namespace DL_Debug
 	void Debug::DebugMessage(const int aLine, const char *aFileName, const std::string& aString)
 	{
 		myOutputFile
-			<< AddTime() << "==========DEBUG MESSAGE==========\n" 
+			<< AddTime() << "______DEBUG MESSAGE______\n" 
 			<< AddTime() << "File : " << __FILE__ << "\n"
 			<< AddTime() << "Function : " << aFileName << "\n"
 			<< AddTime() << "Line : " << aLine << "\n"
 			<< AddTime() << "[Message] : " << aString << "\n"
-			<< AddTime() << "=================================\n";
+			<< AddTime() << "_______________\n";
 
 		myOutputFile.flush();
 	}
@@ -143,10 +144,11 @@ namespace DL_Debug
 
 		std::string str(aString.begin(), aString.end());
 
-		myOutputFile
-			<< AddTime() << "[" << aFilter << "]" << " : " << str << "\n";
 
+		BeginTicketMutex(&dlDebug_Mutex);
+		myOutputFile << AddTime() << "[" << aFilter << "]" << " : " << str << "\n";
 		myOutputFile.flush();
+		EndTicketMutex(&dlDebug_Mutex);
 
 	}
 

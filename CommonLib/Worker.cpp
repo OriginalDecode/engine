@@ -2,42 +2,42 @@
 #include "Work.h"
 #include <thread>
 #include <iostream>
-CWorker::CWorker()
+Worker::Worker()
 	: myIsDone(true)
 	, myIsRunning(true)
 	, myWorkThread(nullptr)
 {
 }
 
-CWorker::~CWorker()
+Worker::~Worker()
 {
 	myIsDone = true;
 	myIsRunning = false;
 }
 
-void CWorker::Initiate()
+void Worker::Initiate()
 {
 	myWorkThread = new std::thread([&] {Run(); });
 }
 
-bool CWorker::IsDone()
+bool Worker::IsDone()
 {
 	return myIsDone;
 }
 
-void CWorker::AddWork(const CWork& aWorkOrder)
+void Worker::AddWork(const Work& aWorkOrder)
 {
 	myWork = aWorkOrder;
 	myIsDone = false;
 }
 
-void CWorker::Stop()
+void Worker::Stop()
 {
 	myIsRunning = false;
 	myIsDone = true;
 }
 
-void CWorker::CleanUp()
+void Worker::CleanUp()
 {
 	myIsStopping = true;
 	myIsDone = true;
@@ -48,7 +48,7 @@ void CWorker::CleanUp()
 	myWorkThread = nullptr;
 }
 
-void CWorker::Run()
+void Worker::Run()
 {
 	while (myIsRunning)
 	{

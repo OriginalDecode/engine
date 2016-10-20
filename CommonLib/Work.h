@@ -1,11 +1,11 @@
 #pragma once
 #include <functional>
-class CWork
+class Work
 {
 public:
-	CWork();
-	CWork(const std::function<void()> aFunction);
-	~CWork();
+	Work();
+	Work(std::function<void()> aFunction);
+	~Work();
 
 	void DoWork(); /* Adapt for delta time. */
 

@@ -6,22 +6,22 @@ namespace std
 	class thread;
 }
 
-class CWorker
+class Worker
 {
 public:
-	CWorker();
-	~CWorker();
+	Worker();
+	~Worker();
 
 	void Initiate();
 
 	bool IsDone();
-	void AddWork(const CWork& aWorkOrder);
+	void AddWork(const Work& aWorkOrder);
 	void Stop();
 	void CleanUp();
 
 private:
 	std::thread* myWorkThread;
-	CWork myWork;
+	Work myWork;
 	volatile std::atomic<bool> myIsDone;
 	volatile std::atomic<bool> myIsRunning;
 	volatile std::atomic<bool> myIsStopping = false;

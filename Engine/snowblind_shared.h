@@ -10,20 +10,21 @@ struct Ticket_Mutex
 
 inline u64 AtmoicAddU64(u64 volatile *value, u64 toAdd)
 {
-	u64 result = _InterlockedExchange64((__int64 volatile *)value, toAdd);
+	u64 result = _InterlockedExchange64((__int64 volatile *)value, (*value + toAdd));
 	return result;
 };
-
-
 
 inline void BeginTicketMutex(Ticket_Mutex* mutex)
 {
 	u64 ticket = AtmoicAddU64(&mutex->ticket, 1); //AtomicAdd?
-	while (ticket != mutex->serving);
+	while (ticket != mutex->serving)
+	{
+	
+	}
 }
 
 inline void EndTicketMutex(Ticket_Mutex* mutex)
 {
-	AtmoicAddU64(&mutex->serving, 1); //AtomicAdd?
+	mutex->serving++;
 }
 

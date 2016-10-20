@@ -1,7 +1,7 @@
 #pragma once
 #include "../CommonLib/Math/Quaternion/Quaternion.h"
 #include "../CommonLib/Math/Matrix/Matrix.h"
-
+#include "../CommonLib/Threadpool.h"
 
 namespace Snowblind
 {
@@ -36,6 +36,10 @@ public:
 
 private:
 	void UpdateInput(float aDeltaTime);
+
+	static void RandomWork();
+	static void OtherRandomWork();
+	Threadpool* m_ThreadPool = nullptr;
 
 	/* Threading */
 	std::thread* myLogicThread;

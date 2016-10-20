@@ -50,7 +50,8 @@ void CApplication::Update()
 	while (mySynchronizer->HasQuit() == false)
 	{
 		
-		float deltaTime = myEngine->GetDeltaTime();
+		float deltaTime = 0.f;
+		myEngine->GetDeltaTime(deltaTime);
 		UpdateInput(deltaTime);
 		std::stringstream ss;
 		ss << "X : " << myOrientation.GetPosition().x << "\n" <<
@@ -163,6 +164,23 @@ void CApplication::UpdateInput(float aDeltaTime)
 			moveSpeed -= 0.01f * multiplier;
 		}
 	}
+}
+
+void CApplication::RandomWork()
+{
+	float delta_time;
+	Snowblind::CEngine::GetInstance()->GetDeltaTime(delta_time);
+}
+
+void CApplication::OtherRandomWork()
+{
+	RandomWork();
+	RandomWork();
+	RandomWork();
+	RandomWork();
+	RandomWork();
+	RandomWork();
+	RandomWork();
 }
 
 void CApplication::OnPause()

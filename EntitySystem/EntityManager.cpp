@@ -19,7 +19,7 @@ CEntityManager::CEntityManager()
 
 CEntityManager::~CEntityManager()
 {
-	for each(CBaseSystem* s in mySystems)
+	for each(BaseSystem* s in mySystems)
 	{
 		SAFE_DELETE(s);
 	}
@@ -40,7 +40,7 @@ void CEntityManager::Update(float aDelta)
 	myDeltaTime = aDelta;
 	
 	
-	for each(CBaseSystem* system in mySystems)
+	for each(BaseSystem* system in mySystems)
 	{
 		system->Update(myDeltaTime);
 	}

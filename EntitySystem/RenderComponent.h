@@ -1,8 +1,7 @@
 #pragma once
 #include <string>
 #include "BaseComponent.h"
-struct SRenderComponent : public SBaseComponent
+struct SRenderComponent : public BaseComponent
 {
-	~SRenderComponent();
 	std::string myModelID;
 } typedef RenderComponent;

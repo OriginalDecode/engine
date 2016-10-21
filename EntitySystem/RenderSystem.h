@@ -7,11 +7,10 @@ namespace Snowblind
 }
 
 class CEntityManager;
-class CRenderSystem : public CBaseSystem
+class CRenderSystem : public BaseSystem
 {
 public:
 	CRenderSystem(CEntityManager& anEntityManager, Snowblind::CSynchronizer* aSynchronizer);
-	~CRenderSystem();
 
 	void Update(float aDeltaTime) override;
 

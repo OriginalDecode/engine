@@ -10,9 +10,8 @@ enum class eLightType
 	eSPOTLIGHT,
 };
 
-struct SLightComponent : public SBaseComponent
+struct SLightComponent : public BaseComponent
 {
-	~SLightComponent();
 
 	eLightType myType;
 	CU::Vector3f color;

@@ -7,12 +7,12 @@ namespace Snowblind
 	class CSynchronizer;
 }
 
-class CBaseSystem
+class BaseSystem
 {
 public:
-	CBaseSystem(CEntityManager& anEntityManager);
-	CBaseSystem(CEntityManager& anEntityManager, const SComponentFilter& aFilter);
-	virtual ~CBaseSystem();
+	BaseSystem(CEntityManager& anEntityManager);
+	BaseSystem(CEntityManager& anEntityManager, const SComponentFilter& aFilter);
+	virtual ~BaseSystem() = 0;
 
 	virtual void Update(float aDeltaTime) = 0;
 
@@ -25,7 +25,7 @@ public:
 
 
 private:
-	void operator=(CBaseSystem&) = delete;
+	void operator=(BaseSystem&) = delete;
 	bool myHasFinished = false;
 	CEntityManager& myEntityManager;
 	SComponentFilter myFilter;
@@ -33,7 +33,7 @@ private:
 };
 
 template<typename T>
-T& CBaseSystem::GetComponent(Entity anEntity)
+T& BaseSystem::GetComponent(Entity anEntity)
 {
 	return myEntityManager.GetComponent<T>(anEntity);
 }

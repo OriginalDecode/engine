@@ -17,7 +17,7 @@ static void Types(EntityComponentArray&, STypeList<Args...>) { };
 template<typename T, typename... Args>
 static void Types(EntityComponentArray& someComponents, STypeList<T, Args...>)
 {
-	someComponents[CTypeID<SBaseComponent>::GetID<T>()] = 1;
+	someComponents[CTypeID<BaseComponent>::GetID<T>()] = 1;
 	Types(someComponents, STypeList<Args...>());
 };
 

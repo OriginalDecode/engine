@@ -6,12 +6,8 @@
 #include "../Physics/PhysicsManager.h"
 
 CPhysicsSystem::CPhysicsSystem(CEntityManager& anEntityManager, CPhysicsManager* aPhysicsManager)
-	: CBaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, SPhysicsComponent>>())
+	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, SPhysicsComponent>>())
 	, myPhysicsManager(aPhysicsManager)
-{
-}
-
-CPhysicsSystem::~CPhysicsSystem()
 {
 }
 

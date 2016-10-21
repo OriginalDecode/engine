@@ -7,10 +7,6 @@ namespace CommonUtilities
 		myControllerID = aPlayer;
 	}
 
-	ControllerInput::~ControllerInput()
-	{
-	}
-
 	XINPUT_STATE ControllerInput::GetState()
 	{
 		ZeroMemory(&myControllerState, sizeof(XINPUT_STATE));

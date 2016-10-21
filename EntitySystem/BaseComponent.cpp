@@ -1,5 +1,3 @@
 #include "BaseComponent.h"
 
-SBaseComponent::~SBaseComponent()
-{
-}
+BaseComponent::~BaseComponent() = default;

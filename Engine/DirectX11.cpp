@@ -564,6 +564,17 @@ namespace Snowblind
 		desc.CullMode = D3D11_CULL_NONE;
 		myDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
 		SetDebugName(myRasterizerStates[u16(eRasterizer::CULL_NONE)], "CULL_NONE Rasterizer");
+
+
+		desc.MultisampleEnable = true;
+		desc.AntialiasedLineEnable = true;
+		desc.FillMode = D3D11_FILL_SOLID;
+		desc.CullMode = D3D11_CULL_NONE;
+		myDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::MSAA)]);
+		SetDebugName(myRasterizerStates[u16(eRasterizer::MSAA)], "MSAA Rasterizer");
+
+
+
 	}
 
 	void DirectX11::GetRefreshRate(u32& aNumerator, u32& aDenominator)

@@ -2,28 +2,26 @@
 
 
 
-CBaseSystem::CBaseSystem(CEntityManager& anEntityManager)
+BaseSystem::BaseSystem(CEntityManager& anEntityManager)
 	: myEntityManager(anEntityManager)
 {
 }
 
 
-CBaseSystem::CBaseSystem(CEntityManager& anEntityManager, const SComponentFilter& aFilter)
+BaseSystem::BaseSystem(CEntityManager& anEntityManager, const SComponentFilter& aFilter)
 	: myEntityManager(anEntityManager)
 	, myFilter(aFilter)
 {
 }
 
-CBaseSystem::~CBaseSystem()
-{
-}
+BaseSystem::~BaseSystem() = default;
 
-bool CBaseSystem::HasFinished()
+bool BaseSystem::HasFinished()
 {
 	return myHasFinished;
 }
 
-const CU::GrowingArray<Entity>& CBaseSystem::GetEntities()
+const CU::GrowingArray<Entity>& BaseSystem::GetEntities()
 {
 	return myEntityManager.GetEntities(myFilter);
 }

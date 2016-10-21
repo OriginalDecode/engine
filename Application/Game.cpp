@@ -7,10 +7,16 @@
 #include <RenderComponent.h>
 #include <TranslationComponent.h>
 #include <LightComponent.h>
+#include <InputComponent.h>
+#include <AIComponent.h>
+#include <NetworkComponent.h>
 /* Systems */
 #include <PhysicsSystem.h>
 #include <RenderSystem.h>
 #include <LightSystem.h>
+#include <InputSystem.h>
+#include <AISystem.h>
+#include <NetworkSystem.h>
 /* End of Entity System Includes*/
 /* Physics */
 #include <PhysicsManager.h>
@@ -42,7 +48,6 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 
 	myEngine->ToggleVsync();
 
-	JSONReader reader("Data/Levels/level_01.json");
 
 	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
 	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 500), CU::Vector2f(512, 512)));
@@ -50,20 +55,22 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(500, 0, 500), CU::Vector2f(512, 512)));
 
 
-	p1 = CU::Vector3f(0.f, 0.f, 0.f);
-	p2 = CU::Vector3f(25.f, 25.f, 0.f);
+	p1 = CU::Vector3f(0.f, 10.f, 0.f);
+	p2 = CU::Vector3f(40.f, 25.f, 0.f);
 	p3 = CU::Vector3f(50.f, 25.f, 0.f);
+
+	p5 = CU::Vector3f(70.0f, 20.f, 0.f);
 	p4 = CU::Vector3f(75.f, 0.f, 0.f);
-	p5 = CU::Vector3f(37.5f, 25.f, 0.f);
 
 	//Load this after we've got into the world?
 
-	/*for (s32 i = 0; i < myTerrain.Size(); i++)
+	for (s32 i = 0; i < myTerrain.Size(); i++)
 	{
 		myTerrainBodies.Add(myPhysicsManager->CreateBody());
 		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
-	}*/
+	}
 
+	JSONReader reader("Data/Levels/level_01.json");
 	const JSONElement& el = reader.GetElement("root");
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
@@ -142,10 +149,35 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 		}
 	}
 
+
+	reader.CloseDocument();
+	reader.OpenDocument("Data/Levels/player.json");
+	if (reader.HasElement("controller"))
+	{
+		Entity e = myEntityManager->CreateEntity();
+		std::string controller_type;
+		reader.ReadElement("controller", controller_type);
+		
+		if (controller_type == "input")
+		{
+			myEntityManager->AddComponent<InputController>(e);
+		}
+		else if (controller_type == "ai")
+		{
+			myEntityManager->AddComponent<AIController>(e);
+		}
+		else if (controller_type == "network")
+		{
+			myEntityManager->AddComponent<NetworkController>(e);
+		}
+	}
+
 	myEntityManager->AddSystem<CPhysicsSystem>(myPhysicsManager);
 	myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);
 	myEntityManager->AddSystem<CLightSystem>(mySynchronizer);
-
+	myEntityManager->AddSystem<InputSystem>();
+	myEntityManager->AddSystem<NetworkSystem>();
+	myEntityManager->AddSystem<AISystem>();
 	myPicker = new Snowblind::CMousePicker();
 	myModelKey = myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
 }
@@ -194,11 +226,11 @@ void CGame::Update(float aDeltaTime)
 	if (triggered)
 	{
 		lifetime += aDeltaTime;
-		m_position = CL::CubicBezier(p1, p2, p3, p4, lifetime / 4.f);
+		//m_position = CL::CubicBezier(p1, p2, p3, p4, lifetime / 4.f);
 		m_position2 = CL::Bezier(p1, p5, p4, lifetime / 4.f);
 		if (lifetime >= 4.f)
 		{
-			m_position = p1;
+			//m_position = p1;
 			m_position2 = p1;
 			lifetime = 0.f;
 		}

@@ -8,12 +8,8 @@
 #include "RenderCommand.h"
 
 CLightSystem::CLightSystem(CEntityManager& anEntityManager, Snowblind::CSynchronizer* aSynchronizer)
-	: CBaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, LightComponent>>())
+	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, LightComponent>>())
 	, mySynchronizer(aSynchronizer)
-{
-}
-
-CLightSystem::~CLightSystem()
 {
 }
 

@@ -84,7 +84,6 @@ namespace Snowblind
 	void CFont::Render()
 	{
 #ifdef SNOWBLIND_DX11
-		CEngine::GetAPI()->SetBlendState(eBlendStates::ALPHA_BLEND);
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds();
 
@@ -92,7 +91,9 @@ namespace Snowblind
 			return;
 		//myEffect->SetTexture(myData->myAtlasView, "FontTexture");
 
+		CEngine::GetAPI()->SetBlendState(eBlendStates::ALPHA_BLEND);
 		CEngine::GetAPI()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
+		//CEngine::GetAPI()->SetRasterizer(eRasterizer::MSAA);
 
 		ID3D11DeviceContext& context = *CEngine::GetAPI()->GetContext();
 		context.IASetInputLayout(myVertexLayout);
@@ -111,7 +112,6 @@ namespace Snowblind
 			ID3D11ShaderResourceView* srv = myData->myAtlasView;
 			context.PSSetShaderResources(0, 1, &srv);
 			context.DrawIndexed(myIndices.Size(), 0, 0);
-
 			srv = nullptr;
 			context.PSSetShaderResources(0, 1, &srv);
 		}

@@ -32,13 +32,13 @@ void CComponentContainer::AddEntity()
 	}
 }
 
-void CComponentContainer::AddComponent(Entity anEntity, SBaseComponent* aComponent, unsigned int aComponentID)
+void CComponentContainer::AddComponent(Entity anEntity, BaseComponent* aComponent, unsigned int aComponentID)
 {
 	myComponents[aComponentID].Add(aComponent);
 	myEntityComponents[anEntity][aComponentID] = myComponents[aComponentID].Size() - 1;
 }
 
-SBaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int aComponentID)
+BaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int aComponentID)
 {
 	/*Error Handling*/
 

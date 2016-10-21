@@ -238,6 +238,8 @@
     <ClInclude Include="Vulkan.h">
       <Filter>APIs</Filter>
     </ClInclude>
+    <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="InputCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -366,11 +368,12 @@
     <ClCompile Include="DXDepthstencilStates.cpp">
       <Filter>APIs\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="DXSamplerStates.cpp">
-      <Filter>APIs</Filter>
-    </ClCompile>
     <ClCompile Include="DXBlendStates.cpp">
-      <Filter>APIs</Filter>
+      <Filter>APIs\DirectX11</Filter>
     </ClCompile>
+    <ClCompile Include="DXSamplerStates.cpp">
+      <Filter>APIs\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler.cpp" />
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@ namespace Snowblind
 	class CSynchronizer;
 }
 class CPhysicsManager;
-class CBaseSystem;
+class BaseSystem;
 class CEntityManager
 {
 public:
@@ -44,7 +44,7 @@ public:
 private:
 	Entity myNextEntity = 0;
 	CComponentContainer* myComponents = nullptr;
-	CU::GrowingArray<CBaseSystem*> mySystems;
+	CU::GrowingArray<BaseSystem*> mySystems;
 	std::atomic<float> myDeltaTime = 0.f;
 	std::atomic<bool> mySystemsFinished = false;
 
@@ -59,7 +59,7 @@ template<typename T>
 void CEntityManager::AddComponent(Entity aEntity)
 {
 	T* component = new T();
-	myComponents->AddComponent(aEntity, component, CTypeID<SBaseComponent>::GetID<T>());
+	myComponents->AddComponent(aEntity, component, CTypeID<BaseComponent>::GetID<T>());
 }
 
 template<typename T>
@@ -71,7 +71,7 @@ void CEntityManager::RemoveComponent(Entity aEntity, int aComponentID)
 template<typename T>
 T& CEntityManager::GetComponent(Entity aEntity)
 {
-	return static_cast<T&>(myComponents->GetComponent(aEntity, CTypeID<SBaseComponent>::GetID<T>()));
+	return static_cast<T&>(myComponents->GetComponent(aEntity, CTypeID<BaseComponent>::GetID<T>()));
 }
 
 template <typename T>

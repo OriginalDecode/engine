@@ -1,7 +1,6 @@
 #pragma once
 #include <Windows.h>
 #include <Xinput.h>
-#include <string>
 #pragma comment(lib,"XInput9_1_0.lib")
 
 enum class eXboxButton
@@ -28,11 +27,9 @@ namespace CommonUtilities
 	{
 	public:
 		ControllerInput(int aPlayer);
-		~ControllerInput();
 		XINPUT_STATE GetState();
-		bool IsConnected();
 
-		
+		bool IsConnected();
 		void Update(float aDeltaTime);
 		
 		void Vibrate(unsigned short aLeftVal = 0, unsigned short aRightVal = 0, float someTime = 0);

@@ -3,11 +3,10 @@
 class CEntityManager;
 class CPhysicsManager;
 
-class CPhysicsSystem : public CBaseSystem 
+class CPhysicsSystem : public BaseSystem 
 {
 public:
 	CPhysicsSystem(CEntityManager& anEntityManager, CPhysicsManager* aPhysicsManager);
-	~CPhysicsSystem();
 
 	void Update(float aDeltaTime) override;
 

@@ -44,7 +44,7 @@ void JSONReader::OpenDocument(const std::string & aFilePath)
 	myCurrentDocumentPath = aFilePath;
 	OpenFile();
 	assert(myFile != NULL && "File could not be found!");
-	char buffer[4];
+	char buffer[2048];
 	myFileReaderStream = new rapidjson::FileReadStream(myFile, buffer, sizeof(buffer));
 	myDocument.ParseStream<0, rapidjson::UTF8<>, rapidjson::FileReadStream>(*myFileReaderStream);
 	assert(myFile != nullptr && "File were not open. Failed to open file, does it exist?");

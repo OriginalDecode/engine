@@ -366,23 +366,10 @@ namespace Snowblind
 		}
 
 		
-		std::stringstream ss3;
 		HRESULT hr = S_OK;
-		//D3DX11_IMAGE_FILE_FORMAT format;
-#ifdef SAVE_DDS
-		ss3 << "Glyphs/Atlas_" << name << "dds";
-		//hr = CTexture::SaveToFile(texture, ss3.str());
-		//format = D3DX11_IFsF_DDS;
-#endif
-#ifdef SAVE_PNG
-		ss3 << "Glyphs/Atlas_" << name << ".png";
-		format = D3DX11_IFF_PNG;
-#endif
-		//HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss3.str().c_str());
-		texture->Release();
-		texture = nullptr;
+		hr = CTexture::SaveToFile(texture, "Glyphs/Atlas_" + name + "dds");
 		CEngine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
-		
+		SAFE_RELEASE(texture);
 #endif
 	}
 
@@ -390,8 +377,6 @@ namespace Snowblind
 	void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline)
 	{
 #ifdef SNOWBLIND_DX11
-		isOutline;
-		index;
 		D3D11_SUBRESOURCE_DATA data;
 		data.pSysMem = source;
 		data.SysMemPitch = pitch * 4;
@@ -413,26 +398,24 @@ namespace Snowblind
 		CEngine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 
-		std::stringstream ss;
-		/*
-		D3DX11_IMAGE_FILE_FORMAT format;
-#ifdef SAVE_DDS
-		if (isOutline)
-			ss << "Glyphs/OutlineGlyph_" << index << ".dds";
-		else
-			ss << "Glyphs/Glyph_" << index << ".dds";
-		format = D3DX11_IFF_DDS;
-#endif
-#ifdef SAVE_PNG
-		if (isOutline)
-			ss << "Glyphs/OutlineGlyph_" << index << ".png";
-		else
-			ss << "Glyphs/Glyph_" << index << ".png";
-		format = D3DX11_IFF_PNG;
-#endif
-		HRESULT hr = D3DX11SaveTextureToFile(CEngine::GetDirectX()->GetContext(), texture, format, ss.str().c_str());
-		CEngine::GetDirectX()->HandleErrors(hr, "Failed to save texture because : ");*/
-		texture->Release();
+		//CEngine::GetAPI()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
+		//CEngine::GetAPI()->SetDebugName(fontData->myAtlasView, "FontAtlas");
+
+		std::string name = "";
+		name = CL::substr(myFontPath, "\\", false, 1);
+		name = CL::substr(name, ".", true, 1);
+
+		if (CL::substr(myFontPath, "/"))
+		{
+			name = CL::substr(myFontPath, "/", false, 1);
+			name = CL::substr(name, ".", true, 1);
+		}
+
+
+		HRESULT hr = S_OK;
+		hr = CTexture::SaveToFile(texture, "Glyphs/Glpyh_" + name + std::to_string(index) + ".dds");
+		CEngine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
+		SAFE_RELEASE(texture);
 #endif
 	}
 

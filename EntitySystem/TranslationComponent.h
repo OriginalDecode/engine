@@ -1,8 +1,7 @@
 #pragma once
 #include "Math/Matrix/Matrix44.h"
 #include "BaseComponent.h"
-struct STranslationComponent : public SBaseComponent
+struct STranslationComponent : public BaseComponent
 {
-	~STranslationComponent();
 	CU::Matrix44f myOrientation;
 } typedef TranslationComponent;

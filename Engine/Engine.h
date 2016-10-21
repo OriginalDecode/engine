@@ -11,12 +11,6 @@ typedef HWND__* HWND;
 #endif
 
 class CEntityManager;
-
-namespace std
-{
-	class thread;
-}
-
 namespace CommonUtilities
 {
 	class TimeManager;
@@ -55,7 +49,6 @@ namespace Snowblind
 	class CEffect;
 	class CTerrain;
 	class IGraphicsAPI;
-	struct SFontData;
 
 	class CEngine
 	{
@@ -85,13 +78,15 @@ namespace Snowblind
 		const SWindowSize& GetWindowSize() const;
 		CFont* LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth);
 		float GetDeltaTime();
-		const float GetFPS();
-		const float GetFrameTime();
+		float GetFPS();
+		float GetFrameTime();
 		const std::string& GetAPIName();
 
 		CTexture* GetTexture(const std::string& aFilePath);
 		CEffect* GetEffect(const std::string& aFilePath);
 		CModel* GetModel(const std::string& aFilePath);
+
+
 		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
 		void ResetRenderTargetAndDepth();
 		void ToggleVsync();

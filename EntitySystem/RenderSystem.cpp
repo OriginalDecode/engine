@@ -9,12 +9,8 @@
 #include "RenderCommand.h"
 
 CRenderSystem::CRenderSystem(CEntityManager& anEntityManager, Snowblind::CSynchronizer* aSynchronizer)
-	: CBaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, SRenderComponent>>())
+	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, SRenderComponent>>())
 	, mySynchronizer(aSynchronizer)
-{
-}
-
-CRenderSystem::~CRenderSystem()
 {
 }
 

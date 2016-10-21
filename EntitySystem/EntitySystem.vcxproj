@@ -241,14 +241,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AIComponent.h" />
+    <ClInclude Include="AISystem.h" />
     <ClInclude Include="BaseComponent.h" />
     <ClInclude Include="BaseSystem.h" />
+    <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="ComponentContainer.h" />
     <ClInclude Include="ComponentFilter.h" />
+    <ClInclude Include="ControllerComponent.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="EntityTypes.h" />
+    <ClInclude Include="InputComponent.h" />
+    <ClInclude Include="InputSystem.h" />
     <ClInclude Include="LightComponent.h" />
     <ClInclude Include="LightSystem.h" />
+    <ClInclude Include="NetworkComponent.h" />
+    <ClInclude Include="NetworkSystem.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="RenderComponent.h" />
@@ -257,12 +266,16 @@
     <ClInclude Include="TypeID.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AISystem.cpp" />
     <ClCompile Include="BaseComponent.cpp" />
     <ClCompile Include="BaseSystem.cpp" />
+    <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="ComponentContainer.cpp" />
     <ClCompile Include="EntityManager.cpp" />
+    <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="LightSystem.cpp" />
+    <ClCompile Include="NetworkSystem.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="RenderComponent.cpp" />

@@ -1,6 +1,6 @@
 #pragma once
-struct SBaseComponent
+struct BaseComponent
 {
-	virtual ~SBaseComponent();
+	virtual ~BaseComponent() = 0;
 };
 

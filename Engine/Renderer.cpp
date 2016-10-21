@@ -31,7 +31,7 @@ namespace Snowblind
 		my2DCamera = camera_2d;
 		if (!my2DCamera)
 			return false;
-		myText = new CText("Arial.ttf", 14, 1);
+		myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 		if (!myText)
 			return false;
 		//FONT_LOG("Font Took : %fms to load.", loadTime);

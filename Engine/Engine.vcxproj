@@ -375,6 +375,8 @@
     </ClInclude>
     <ClInclude Include="IGraphicsAPI.h" />
     <ClInclude Include="IndexWrapper.h" />
+    <ClInclude Include="InputCommand.h" />
+    <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="LightPass.h" />
     <ClInclude Include="LightStructs.h" />
@@ -437,6 +439,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="LightPass.cpp" />
     <ClCompile Include="Line3D.cpp" />

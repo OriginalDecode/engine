@@ -158,22 +158,15 @@ namespace Snowblind
 
 	float CEngine::GetDeltaTime()
 	{
-		//DL_MESSAGE("Ticket : %d", g_Mutex.ticket);
-		//BeginTicketMutex(&g_Mutex);
-		//DL_MESSAGE("Serving : %d", g_Mutex.serving);
-
-		//delta_time_out = myTimeManager->GetDeltaTime();
-
-		//EndTicketMutex(&g_Mutex);
 		return m_DeltaTime;
 	}
 
-	const float CEngine::GetFPS()
+	float CEngine::GetFPS()
 	{
 		return myTimeManager->GetFPS();
 	}
 
-	const float CEngine::GetFrameTime()
+	float CEngine::GetFrameTime()
 	{
 		return myTimeManager->GetFrameTime();
 	}

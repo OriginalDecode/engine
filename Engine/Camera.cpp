@@ -20,21 +20,27 @@ namespace Snowblind
 
 	}
 
-	CCamera::~CCamera()
-	{
-	}
-
 	CU::Matrix44f& CCamera::GetOrthogonalMatrix()
 	{
 		return myOrthogonalMatrix;
 	}
 
-	void CCamera::AddOrientation(CU::Matrix44f* anOrientation)
+	void CCamera::SetPosition(const CU::Vector3f& position)
 	{
-		myOrientation = anOrientation;
+		myOrientation.SetPosition(position);
 	}
 
-	void CCamera::Move(eDirection aDirection, float aSpeed)
+	void CCamera::SetTranslation(const CU::Vector4f& translation)
+	{
+		myOrientation.SetTranslation(translation);
+	}
+
+	//void CCamera::AddOrientation(CU::Matrix44f* anOrientation)
+	//{
+	//	myOrientation = anOrientation;
+	//}
+
+	/*void CCamera::Move(eDirection aDirection, float aSpeed)
 	{
 		CU::Math::Vector4<float> position;
 		position = myOrientation->GetTranslation();
@@ -60,9 +66,9 @@ namespace Snowblind
 			break;
 		}
 		myOrientation->SetTranslation(position);
-
-
 	}
+
+
 
 	void CCamera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)
 	{
@@ -80,6 +86,6 @@ namespace Snowblind
 	{
 		CU::Math::Vector4<float> right = myOrientation->GetRight();
 		aPosition += right * aSpeed;
-	}
+	}*/
 
 }

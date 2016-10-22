@@ -73,9 +73,11 @@
     <ClInclude Include="AISystem.h">
       <Filter>Systems</Filter>
     </ClInclude>
-    <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraSystem.h">
       <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

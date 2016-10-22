@@ -3,7 +3,7 @@
 #include "../CommonLib/DataStructures/GrowingArray.h"
 #include "../Engine/VertexStructs.h"
 #include <standard_datatype.hpp>
-
+#include <vector>
 class btRigidBody;
 class btCollisionShape;
 struct btDefaultMotionState;
@@ -30,7 +30,7 @@ public:
 	~CRigidBody();
 
 	btRigidBody* InitAsPlane(const btVector3& aNormal);
-	btRigidBody* InitAsTerrain(CU::GrowingArray<float> vertices, CU::GrowingArray<s32> indices);
+	btRigidBody* InitAsTerrain(std::vector<float> vertices, std::vector<s32> indices);
 	btRigidBody* InitAsSphere(float aRadius, float aMass, float aGravityForce, float anInitialResistance, const CU::Vector3f& aPosition);
 	/*
 		Air Resistance, Water Resistance, Sludge etc...

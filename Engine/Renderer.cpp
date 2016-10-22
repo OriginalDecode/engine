@@ -156,7 +156,7 @@ namespace Snowblind
 				}break;
 				case eType::SKYSPHERE:
 				{
-					mySkysphere->SetPosition(command.myPosition);//only updating the position here because it's supposed to be rendered after the light and be unaffected by the ambient pass
+					mySkysphere->SetPosition(myCamera->GetPosition());//only updating the position here because it's supposed to be rendered after the light and be unaffected by the ambient pass
 				}break;
 				case eType::TERRAIN:
 				{

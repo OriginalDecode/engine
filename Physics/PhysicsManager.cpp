@@ -20,10 +20,6 @@ CPhysicsManager::CPhysicsManager()
 		myDefaultCollisionConfiguration);
 
 	myDynamicsWorld->setGravity(btVector3(0, -myGravity, 0));
-	
-	
-
-
 	myZeroPlane = new CRigidBody();
 	Add(myZeroPlane->InitAsPlane(btVector3(0, 1, 0)));
 }
@@ -68,7 +64,7 @@ float CPhysicsManager::GetGravityForce()
 
 void CPhysicsManager::Update(double& additionalTime)
 {
-	myDynamicsWorld->stepSimulation(1.f / 60.f, 1);
+	myDynamicsWorld->stepSimulation(1.f / 60.f, 8);
 }
 
 CU::Vector3f CPhysicsManager::RayCast(const CU::Vector3f& cameraPosition, const CU::Vector3f& target) const

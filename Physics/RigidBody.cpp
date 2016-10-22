@@ -32,18 +32,18 @@ btRigidBody* CRigidBody::InitAsPlane(const btVector3& aNormal)
 	return myBody;
 }
 
-btRigidBody* CRigidBody::InitAsTerrain(CU::GrowingArray<float> vertices, CU::GrowingArray<s32> indices)
+btRigidBody* CRigidBody::InitAsTerrain(std::vector<float> vertices, std::vector<s32> indices)
 {
-	s32 faceCount = indices.Size() / 3;
+	s32 faceCount = indices.size() / 3;
 	s32 vStride = sizeof(CU::Vector3f);
 	s32 iStride = sizeof(u32) * 3;
 
-	btScalar* locVertices = new btScalar[vertices.Size()];
-	memcpy(&locVertices[0], &vertices[0], sizeof(float) * vertices.Size());
-	s32* locIndices = new s32[indices.Size()];
-	memcpy(&locIndices[0], &indices[0], sizeof(s32) * indices.Size());
+	btScalar* locVertices = new btScalar[vertices.size()];
+	memcpy(&locVertices[0], &vertices[0], sizeof(float) * vertices.size());
+	s32* locIndices = new s32[indices.size()];
+	memcpy(&locIndices[0], &indices[0], sizeof(s32) * indices.size());
 
-	myVertexArray = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, vertices.Size(), locVertices, vStride);
+	myVertexArray = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, vertices.size(), locVertices, vStride);
 	myShape = new btBvhTriangleMeshShape(myVertexArray, false, btVector3(0, 0, 0), btVector3(1, 1, 1), true);
 	myMotionState = new btDefaultMotionState();
 	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
@@ -88,7 +88,14 @@ void CRigidBody::SetPosition(const CU::Vector3f& aPosition)
 
 void CRigidBody::Update(float deltaTime)
 {
-	if (myVelocity.y < myTerminalVelocity.y)
+ 	if (myOrientation.GetPosition().y <= 0.f)
+	{
+		myOrientation.SetPosition(CU::Vector3f(myOrientation.GetPosition().x, 0.1f, myOrientation.GetPosition().z));
+	}
+	
+	
+	
+	/*if (myVelocity.y < myTerminalVelocity.y)
 	{
 		myVelocity.y += CL::CalcAcceleration(myGravity, myMass) * deltaTime;
 		if (myVelocity.y > myTerminalVelocity.y)
@@ -97,16 +104,15 @@ void CRigidBody::Update(float deltaTime)
 
 	float drag = CL::CalcDrag(myResistanceDensity, myVelocity.y, myDragCoeff, myCrossSectionArea);
 	CU::Vector3f linearVelocity = myVelocity;
-
 	if (myVelocity.x > 0.f)
 		linearVelocity.x -= drag;
 
 	linearVelocity.y -= drag;
 
 	if (myVelocity.z > 0.f)
-		linearVelocity.z -= drag;
+		linearVelocity.z -= drag;*/
 
-	myBody->setLinearVelocity(btVector3(linearVelocity.x, linearVelocity.y, linearVelocity.z));
+	//myBody->setLinearVelocity(btVector3(linearVelocity.x, linearVelocity.y, linearVelocity.z));
 }
 
 btRigidBody* CRigidBody::GetBody()
@@ -122,6 +128,8 @@ const CU::Matrix44f& CRigidBody::GetOrientation()
 
 void CRigidBody::Impulse(const CU::Vector3f& anImpulseVector)
 {
-	myBody->applyCentralImpulse(btVector3(anImpulseVector.x, anImpulseVector.y, anImpulseVector.z));
+	//myBody->applyCentralImpulse(btVector3(anImpulseVector.x, anImpulseVector.y, anImpulseVector.z));
+	//myVelocity += anImpulseVector * 1.f * (1.f / myMass);
+	myBody->applyForce(btVector3(anImpulseVector.x, anImpulseVector.y, anImpulseVector.z), btVector3(0.f,0.f,0.f));
 }
 

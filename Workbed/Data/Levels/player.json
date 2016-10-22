@@ -2,5 +2,5 @@
 	"controller" : "input",
 	"physics": {
 		"mass": 10
-	}	
+	}
 }

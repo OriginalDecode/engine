@@ -10,6 +10,7 @@
 #include <InputComponent.h>
 #include <AIComponent.h>
 #include <NetworkComponent.h>
+#include <CameraComponent.h>
 /* Systems */
 #include <PhysicsSystem.h>
 #include <RenderSystem.h>
@@ -17,6 +18,7 @@
 #include <InputSystem.h>
 #include <AISystem.h>
 #include <NetworkSystem.h>
+#include <CameraSystem.h>
 /* End of Entity System Includes*/
 /* Physics */
 #include <PhysicsManager.h>
@@ -39,6 +41,9 @@
 #include <MousePicker.h>
 #include "../Input/InputWrapper.h"
 #include <Model.h>
+
+#include <RigidBody.h>
+
 CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	: mySynchronizer(aSynchronizer)
 {
@@ -48,21 +53,10 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 
 	myEngine->ToggleVsync();
 
-
 	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
 	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 500), CU::Vector2f(512, 512)));
 	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(500, 0, 0), CU::Vector2f(512, 512)));
 	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(500, 0, 500), CU::Vector2f(512, 512)));
-
-
-	p1 = CU::Vector3f(0.f, 10.f, 0.f);
-	p2 = CU::Vector3f(40.f, 25.f, 0.f);
-	p3 = CU::Vector3f(50.f, 25.f, 0.f);
-
-	p5 = CU::Vector3f(70.0f, 20.f, 0.f);
-	p4 = CU::Vector3f(75.f, 0.f, 0.f);
-
-	//Load this after we've got into the world?
 
 	for (s32 i = 0; i < myTerrain.Size(); i++)
 	{
@@ -149,7 +143,6 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 		}
 	}
 
-
 	reader.CloseDocument();
 	reader.OpenDocument("Data/Levels/player.json");
 	if (reader.HasElement("controller"))
@@ -157,10 +150,20 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 		Entity e = myEntityManager->CreateEntity();
 		std::string controller_type;
 		reader.ReadElement("controller", controller_type);
-		
+
 		if (controller_type == "input")
 		{
 			myEntityManager->AddComponent<InputController>(e);
+			myEntityManager->AddComponent<PhysicsComponent>(e);
+			myEntityManager->AddComponent<TranslationComponent>(e);
+			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
+			p.myBody = myPhysicsManager->CreateBody();
+			myPhysicsManager->Add(p.myBody->InitAsSphere(1.f, 10, myPhysicsManager->GetGravityForce(), 1.293f, CU::Vector3f(5,20,5)));
+			rigidbody = p.myBody;
+			myEntityManager->AddComponent<CameraComponent>(e);
+			CameraComponent& camera = myEntityManager->GetComponent<CameraComponent>(e);
+			camera.m_Camera = Snowblind::CEngine::GetInstance()->GetCamera();
+
 		}
 		else if (controller_type == "ai")
 		{
@@ -175,11 +178,14 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 	myEntityManager->AddSystem<CPhysicsSystem>(myPhysicsManager);
 	myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);
 	myEntityManager->AddSystem<CLightSystem>(mySynchronizer);
+
 	myEntityManager->AddSystem<InputSystem>();
 	myEntityManager->AddSystem<NetworkSystem>();
 	myEntityManager->AddSystem<AISystem>();
+	myEntityManager->AddSystem<CameraSystem>();
+
 	myPicker = new Snowblind::CMousePicker();
-	myModelKey = myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
+	m_ModelKey = myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
 }
 
 CGame::~CGame()
@@ -215,70 +221,28 @@ void CGame::Update(float aDeltaTime)
 		raycast[1] = SLinePoint(pointHit, CU::Vector3f(0, 1, 0));
 	}
 
-
 	std::stringstream p;
 	p << "Raycast Point" << "\nX : " << pointHit.x << "\nY : " << pointHit.y << "\nZ : " << pointHit.z;
 
 	std::stringstream c;
-	c << "Cursor Coord" << "\nX : " << CU::Input::InputWrapper::GetInstance()->GetX() << "\nY : " << CU::Input::InputWrapper::GetInstance()->GetY() << "\nRay coord" << "\nX : " << currentRay.x << "\nY : " << currentRay.y << "\nZ : " << currentRay.z;
-
-
-	if (triggered)
-	{
-		lifetime += aDeltaTime;
-		//m_position = CL::CubicBezier(p1, p2, p3, p4, lifetime / 4.f);
-		m_position2 = CL::Bezier(p1, p5, p4, lifetime / 4.f);
-		if (lifetime >= 4.f)
-		{
-			//m_position = p1;
-			m_position2 = p1;
-			lifetime = 0.f;
-		}
-	}
-
-	SLinePoint point1;
-	SLinePoint point2;
-	SLinePoint point3;
-	SLinePoint point4;
-	SLinePoint point5;
-
-	point1.position = p1;
-	point1.color = CU::Vector3f(1.f, 0.f, 0.f);
-	point2.position = p2;
-	point2.color = CU::Vector3f(0.f, 1.f, 0.f);
-	point3.position = p3;
-	point3.color = CU::Vector3f(0.f, 0.f, 1.f);
-	point4.position = p4;
-	point4.color = CU::Vector3f(1.f, 0.f, 1.f);
-	point5.position = p5;
-	point5.color = CU::Vector3f(1.f, 0.f, 1.f);
-
-
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, point1, point2));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, point2, point3));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, point3, point4));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, point3, point4));
-
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, point1, point5));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, point5, point4));
-
-
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, myModelKey, m_position));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, myModelKey, m_position2));
-
-	if (CU::Input::InputWrapper::GetInstance()->KeyDown(Y))
-	{
-		triggered = true;
-
-	}
-
+	c << "Cursor Coord" << "\nX : " << CU::Input::InputWrapper::GetInstance()->GetX() << "\nY : " << CU::Input::InputWrapper::GetInstance()->GetY() 
+		<< "\nRay coord" << "\nX : " << currentRay.x << "\nY : " << currentRay.y << "\nZ : " << currentRay.z;
 
 	mySynchronizer->AddRenderCommand(RenderCommand(c.str(), { 200, 900 }, eType::TEXT));
 	mySynchronizer->AddRenderCommand(RenderCommand(p.str(), { 0, 900 }, eType::TEXT));
 	mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
-	myEntityManager->Update(aDeltaTime);
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, myModelKey, pointHit));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
 
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
+
+
+	std::stringstream b;
+	CU::Vector3f vec = rigidbody->GetLinearVelocity();
+	b << "player_entity_velocity :\nX : " << vec.x << "\nY : "<< vec.y << "\nZ : " << vec.z;
+	mySynchronizer->AddRenderCommand(RenderCommand(b.str(), { 0, 500 }, eType::TEXT));
+
+
+
+	myEntityManager->Update(aDeltaTime);
 }

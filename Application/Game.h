@@ -38,24 +38,12 @@ private:
 	Snowblind::CSynchronizer* mySynchronizer;
 	Snowblind::CEngine* myEngine;
 	Snowblind::CMousePicker* myPicker;
-	std::string myModelKey;
 	CEntityManager* myEntityManager;
 	CPhysicsManager* myPhysicsManager;
+	std::string m_ModelKey;
 	CU::Vector3f pointHit;
 	CU::Vector3f currentRay;
-
-	CU::Vector3f p1;
-	CU::Vector3f p2;
-	CU::Vector3f p3;
-	CU::Vector3f p4;
-	CU::Vector3f p5;
-
-
-	CU::Vector3f m_position;
-	CU::Vector3f m_position2;
-
-	float lifetime = 0.f;
-	bool triggered = false;
+	CRigidBody* rigidbody;
 	SLinePoint raycast[2];
 
 };

@@ -17,58 +17,43 @@
 
 #include "Game.h"
 
-#define ROTATION_SPEED  50.f / 180.f * float(PI)
-
-CApplication::CApplication()
+bool CApplication::Initiate()
 {
-}
-
-CApplication::~CApplication()
-{
-	myLogicThread->join();
-	SAFE_DELETE(myLogicThread);
-	SAFE_DELETE(myGame);
-}
-
-void CApplication::Initiate(float aWindowWidth, float aWindowHeight)
-{
-	aWindowHeight;
-	aWindowWidth;
 	myEngine = Snowblind::CEngine::GetInstance();
 	myCamera = myEngine->GetCamera();
-	myCamera->AddOrientation(&myOrientation);
 
 	mySynchronizer = myEngine->GetSynchronizer();
 	myGame = new CGame(mySynchronizer);
 
 	//Keep at the end of initiate...
 	myLogicThread = new std::thread([&] { CApplication::Update(); });
+	return true;
 }
 
 void CApplication::Update()
 {
 	while (mySynchronizer->HasQuit() == false)
 	{
-		
 		float deltaTime = myEngine->GetDeltaTime();
-		UpdateInput(deltaTime);
+
 		std::stringstream ss;
-		ss << "X : " << myOrientation.GetPosition().x << "\n" <<
-		"Y : " << myOrientation.GetPosition().y << "\n" <<
-		"Z : " << myOrientation.GetPosition().z << "\n";
+		ss << "X : " << myCamera->GetPosition().x << "\n" <<
+		"Y : " << myCamera->GetPosition().y << "\n" <<
+		"Z : " << myCamera->GetPosition().z << "\n";
+
 		mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), CU::Vector2f(500, 0)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SKYSPHERE, myOrientation.GetPosition()));
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::SKYSPHERE, myCamera->GetPosition()));
+
+		UpdateInput(deltaTime);
 
 		myGame->Update(deltaTime);
-
-
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();
 	}
 	myQuitFlag = true;
 }
 
-void CApplication::UpdateInput(float aDeltaTime)
+void CApplication::UpdateInput(float /*aDeltaTime*/)
 {
 	CU::Input::InputWrapper::GetInstance()->Update();
 	if (myWindowIsActive)
@@ -77,91 +62,6 @@ void CApplication::UpdateInput(float aDeltaTime)
 		{
 			myEngine->OnExit();
 			myQuitFlag = true;
-		}
-
-		//myCursorPosition.x += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectX()) * 0.01f;
-
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(UP_ARROW))
-		{
-			myCursorPosition.y += 0.01f;
-		}
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(DOWN_ARROW))
-		{
-			myCursorPosition.y -= 0.01f;
-		}
-
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(RIGHT_ARROW))
-		{
-			myCursorPosition.x += 0.01f;
-		}
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(LEFT_ARROW))
-		{
-			myCursorPosition.x -= 0.01f;
-		}
-
-		//myCursorPosition.y += static_cast<float>(CU::Input::InputWrapper::GetInstance()->MouseDirectY()) * 0.01f;
-
-
-		myCursorPosition.y = fmaxf(fminf(3.1415f / 2.f, myCursorPosition.y), -3.1415f / 2.f);
-
-		myPitch = CU::Quaternion(CU::Vector3f(1.f, 0, 0), myCursorPosition.y);
-		myYaw = CU::Quaternion(CU::Vector3f(0, 1.f, 0), myCursorPosition.x);
-
-		CU::Vector3f axisX(1.f, 0, 0);
-		CU::Vector3f axisY(0, 1.f, 0);
-		CU::Vector3f axisZ(0, 0, 1.f);
-
-		axisX = myYaw * myPitch * axisX;
-		axisY = myYaw * myPitch * axisY;
-		axisZ = myYaw * myPitch * axisZ;
-
-		myOrientation.myMatrix[0] = axisX.x;
-		myOrientation.myMatrix[1] = axisX.y;
-		myOrientation.myMatrix[2] = axisX.z;
-		myOrientation.myMatrix[4] = axisY.x;
-		myOrientation.myMatrix[5] = axisY.y;
-		myOrientation.myMatrix[6] = axisY.z;
-		myOrientation.myMatrix[8] = axisZ.x;
-		myOrientation.myMatrix[9] = axisZ.y;
-		myOrientation.myMatrix[10] = axisZ.z;
-
-		float multiplier = 1.f;
-
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(LSHIFT))
-		{
-			multiplier = 100.f;
-		}
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(W))
-		{
-			myCamera->Move(Snowblind::eDirection::FORWARD, moveSpeed * aDeltaTime);
-		}
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(S))
-		{
-			myCamera->Move(Snowblind::eDirection::BACK, -moveSpeed * aDeltaTime);
-		}
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(SPACE))
-		{
-			myCamera->Move(Snowblind::eDirection::UP, moveSpeed * aDeltaTime);
-		}
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(X))
-		{
-			myCamera->Move(Snowblind::eDirection::DOWN, -moveSpeed * aDeltaTime);
-		}
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(D))
-		{
-			myCamera->Move(Snowblind::eDirection::RIGHT, moveSpeed * aDeltaTime);
-		}
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(A))
-		{
-			myCamera->Move(Snowblind::eDirection::LEFT, -moveSpeed * aDeltaTime);
-		}
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(UP_ARROW))
-		{
-			moveSpeed += 0.01f * multiplier;
-		}
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(DOWN_ARROW))
-		{
-			moveSpeed -= 0.01f * multiplier;
 		}
 	}
 }
@@ -201,4 +101,19 @@ void CApplication::OnAltEnter()
 bool CApplication::HasQuit()
 {
 	return myQuitFlag;
+}
+
+bool CApplication::CleanUp()
+{
+	myLogicThread->join();
+
+	SAFE_DELETE(myLogicThread);
+	if (myLogicThread)
+		return false;
+
+	SAFE_DELETE(myGame);
+	if (myGame)
+		return false;
+
+	return true;
 }

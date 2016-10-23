@@ -50,7 +50,7 @@
 
 #define DL_ASSERT(string)
 
-#define DL_ASSERT_EXP(expression, string)
+#define DL_ASSERT_EXP(expression, string) expression
 
 #define DL_PRINT(string) 
 #define DL_DEBUG( ... )  
@@ -58,10 +58,10 @@
 #define DL_WRITELOG(log, ...) 
 
 #define DL_MESSAGE(...) 
-#define DL_MESSAGE_EXP(expression, ...)
+#define DL_MESSAGE_EXP(expression, ...) expression
 
 #define DL_WARNINGBOX(msg) 
-#define DL_WARNINGBOX_EXP(expression, msg)
+#define DL_WARNINGBOX_EXP(expression, msg) expression
 
 #define DL_WARNING(...) DL_WRITELOG("WARNING", __VA_ARGS__)
 

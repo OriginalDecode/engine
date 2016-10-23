@@ -7,11 +7,6 @@
 
 namespace Snowblind
 {
-	CTerrain::CTerrain()
-	{
-		myIsNULLObject = false;
-	}
-
 	CTerrain::CTerrain(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
 		: myWidth(aSize.x)
 		, myDepth(aSize.y)
@@ -19,7 +14,26 @@ namespace Snowblind
 #ifdef SNOWBLIND_DX11
 		myIsNULLObject = false;
 		myEffect = myEngine->GetEffect("Data/Shaders/T_Terrain_Base.json");
-		myHeightmap = SHeightMap::Create(aFile.c_str());
+
+		TGA32::Image* image = TGA32::Load(aFile.c_str());
+		/*u8* data;*/
+		myHeightmap.myData = new u8[image->myWidth * image->myHeight];
+		for (int i = 0; i < image->myWidth * image->myHeight; ++i)
+		{
+			myHeightmap.myData[i] = image->myImage[i * 4];
+		}
+		
+		if (*myHeightmap.myData == 0x0000000000000001)
+		{
+			DL_ASSERT("what the fuck");
+		}
+
+
+		//memcpy(&, &data, sizeof(u8) * (image->myWidth * image->myHeight));
+		myHeightmap.myDepth = image->myHeight;
+		myHeightmap.myWidth = image->myWidth;
+
+		SAFE_DELETE(image);
 		CreateVertices(aSize.x, aSize.y, position);
 		mySurface = new CSurface(myEffect);
 		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/grass.dds");
@@ -53,10 +67,17 @@ namespace Snowblind
 
 	void CTerrain::Load(const std::string& aFilePath)
 	{
-
-		/* What format should we use for our heightmaps. */
-
 		DL_ASSERT("Not implemented.");
+	}
+
+	std::vector<float> CTerrain::GetVerticeArrayCopy()
+	{
+		return myVertices;
+	}
+
+	std::vector<s32> CTerrain::GetIndexArrayCopy()
+	{
+		return myIndexes;
 	}
 
 	void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)
@@ -80,22 +101,21 @@ namespace Snowblind
 
 		CU::GrowingArray<SVertexPosNormUVBiTang> vertices;
 		CU::GrowingArray<u32> indexes;
-		u32 wAndH = 512;
 
-		for (u32 z = 0; z < myHeightmap->myDepth; z++)
+		for (u32 z = 0; z < myHeightmap.myDepth; z++)
 		{
-			for (u32 x = 0; x < myHeightmap->myWidth; x++)
+			for (u32 x = 0; x < myHeightmap.myWidth; x++)
 			{
 				SVertexPosNormUVBiTang vertex;
-				vertex.position.x = position.x + float(x) * width / float(myHeightmap->myWidth);
-				vertex.position.y = position.y + myHeightmap->myData[(myHeightmap->myDepth - (1 + z)) * myHeightmap->myWidth + x] * 128.f / DIVIDE;
-				vertex.position.z = position.z + float(z) * height / float(myHeightmap->myDepth);
-				vertex.uv.x = float(x) / float(myHeightmap->myWidth);
-				vertex.uv.y = float(1.f - z) / float(myHeightmap->myDepth);
+				vertex.position.x = position.x + float(x) * width / float(myHeightmap.myWidth);
+				vertex.position.y = position.y + myHeightmap.myData[(myHeightmap.myDepth - (1 + z)) * myHeightmap.myWidth + x] * 128.f / DIVIDE;
+				vertex.position.z = position.z + float(z) * height / float(myHeightmap.myDepth);
+				vertex.uv.x = float(x) / float(myHeightmap.myWidth);
+				vertex.uv.y = float(1.f - z) / float(myHeightmap.myDepth);
 				vertices.Add(vertex);
-				myVertices.Add(vertex.position.x);
-				myVertices.Add(vertex.position.y);
-				myVertices.Add(vertex.position.z);
+				myVertices.push_back(vertex.position.x);
+				myVertices.push_back(vertex.position.y);
+				myVertices.push_back(vertex.position.z);
 
 
 			}
@@ -103,24 +123,24 @@ namespace Snowblind
 
 		CalculateNormals(vertices);
 
-		for (int z = 0; z < myHeightmap->myDepth - 1; ++z)
+		for (int z = 0; z < myHeightmap.myDepth - 1; ++z)
 		{
-			for (int x = 0; x < myHeightmap->myWidth - 1; ++x)
+			for (int x = 0; x < myHeightmap.myWidth - 1; ++x)
 			{
-				indexes.Add(z * myHeightmap->myWidth + x);
-				indexes.Add((z + 1) * myHeightmap->myWidth + x);
-				indexes.Add(z * myHeightmap->myWidth + x + 1);
+				indexes.Add(z * myHeightmap.myWidth + x);
+				indexes.Add((z + 1) * myHeightmap.myWidth + x);
+				indexes.Add(z * myHeightmap.myWidth + x + 1);
 
-				indexes.Add((z + 1) * myHeightmap->myWidth + x);
-				indexes.Add((z + 1) * myHeightmap->myWidth + x + 1);
-				indexes.Add(z * myHeightmap->myWidth + x + 1);
+				indexes.Add((z + 1) * myHeightmap.myWidth + x);
+				indexes.Add((z + 1) * myHeightmap.myWidth + x + 1);
+				indexes.Add(z * myHeightmap.myWidth + x + 1);
 
 			}
 		}
 
 		for (u32 index : indexes)
 		{
-			myIndexes.Add(index);
+			myIndexes.push_back(index);
 		}
 
 
@@ -192,12 +212,12 @@ namespace Snowblind
 	void CTerrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray)
 	{
 
-		unsigned int height = myHeightmap->myDepth;
-		unsigned int width = myHeightmap->myWidth;
+		unsigned int height = myHeightmap.myDepth;
+		unsigned int width = myHeightmap.myWidth;
 		float yScale = 128.f / DIVIDE;
 		yScale *= 0.2f;
 		//float xScale = mySize.x / myHeightMap->myDepth;
-		float xzScale = float(myDepth) / float(myHeightmap->myDepth);
+		float xzScale = float(myDepth) / float(myHeightmap.myDepth);
 
 
 		for (unsigned int y = 0; y < height; ++y)
@@ -223,15 +243,15 @@ namespace Snowblind
 
 	float CTerrain::GetHeight(unsigned int aX, unsigned int aY) const
 	{
-		return myHeightmap->myData[(myHeightmap->myDepth - (1 + aY)) * myHeightmap->myWidth + aX] / DIVIDE;
+		return myHeightmap.myData[(myHeightmap.myDepth - (1 + aY)) * myHeightmap.myWidth + aX] / DIVIDE;
 	}
 
 	float CTerrain::GetHeight(unsigned int aIndex) const
 	{
-		return myHeightmap->myData[aIndex] / DIVIDE;
+		return myHeightmap.myData[aIndex] / DIVIDE;
 	}
 
-	SHeightMap* SHeightMap::Create(const char* aFilePath)
+	SHeightMap Create(const char* aFilePath)
 	{
 		TGA32::Image* image = TGA32::Load(aFilePath);
 
@@ -247,25 +267,31 @@ namespace Snowblind
 
 		SAFE_DELETE(image);
 
-		return new SHeightMap(width, depth, data);
+		SHeightMap height_map;
+		height_map.myWidth = width;
+		height_map.myDepth = depth;
+		height_map.myData = data;
+
+//		return SHeightMap(width, depth, data);
+		return height_map;
 	}
 
-	SHeightMap::SHeightMap(u32 aWidth, u32 aDepth, u8* const someData)
-		: myWidth(aWidth)
-		, myDepth(aDepth)
-		, myData(someData)
-	{
-	}
+	//SHeightMap::SHeightMap(u32 aWidth, u32 aDepth, u8* const someData)
+	//	: myWidth(aWidth)
+	//	, myDepth(aDepth)
+	//	, myData(someData)
+	//{
+	//}
 
-	SHeightMap::SHeightMap(std::fstream& aStream)
-		: myWidth(0)
-		, myDepth(0)
-		, myData(nullptr)
-	{
-		aStream.read((s8*)&myWidth, sizeof(u32));
-		aStream.read((s8*)&myDepth, sizeof(u32));
-		myData = new u8[myWidth * myDepth];
-		aStream.read((s8*)myData, sizeof(s8) * myWidth * myDepth);
-	}
+	//SHeightMap::SHeightMap(std::fstream& aStream)
+	//	: myWidth(0)
+	//	, myDepth(0)
+	//	, myData(nullptr)
+	//{
+	//	aStream.read((s8*)&myWidth, sizeof(u32));
+	//	aStream.read((s8*)&myDepth, sizeof(u32));
+	//	myData = new u8[myWidth * myDepth];
+	//	aStream.read((s8*)myData, sizeof(s8) * myWidth * myDepth);
+	//}
 
 };

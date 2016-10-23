@@ -20,9 +20,9 @@ class CGame;
 class CApplication
 {
 public:
-	CApplication();
-	~CApplication();
-	void Initiate(float aWindowWidth, float aWindowHeight);
+	CApplication() = default;
+	
+	bool Initiate();
 
 	void Update();
 
@@ -33,7 +33,7 @@ public:
 	void OnExit();
 	void OnAltEnter();
 	bool HasQuit();
-
+	bool CleanUp();
 private:
 	void UpdateInput(float aDeltaTime);
 

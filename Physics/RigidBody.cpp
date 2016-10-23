@@ -66,10 +66,12 @@ btRigidBody* CRigidBody::InitAsSphere(float aRadius, float aMass, float aGravity
 	myShape = new btSphereShape(myRadius);
 	myMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos)); /* btQuaternion is the rotation of the object. Figure this out.*/
 	btRigidBody::btRigidBodyConstructionInfo bodyInfo(myMass, myMotionState, myShape, btVector3(0, 0, 0));
+	
 	//bodyInfo.m_friction = 1.f;
 	//bodyInfo.m_restitution = 0.75f;
 
 	myBody = new btRigidBody(bodyInfo);
+	myBody->setActivationState(DISABLE_DEACTIVATION);
 	myBody->setMassProps(myMass, btVector3(0, 0, 0));
 	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
 	myTerminalVelocity.y = CL::CalcTerminalVelocity(myMass, myGravity, myDragCoeff, myCrossSectionArea, myResistanceDensity);
@@ -88,31 +90,19 @@ void CRigidBody::SetPosition(const CU::Vector3f& aPosition)
 
 void CRigidBody::Update(float deltaTime)
 {
- 	if (myOrientation.GetPosition().y <= 0.f)
-	{
-		myOrientation.SetPosition(CU::Vector3f(myOrientation.GetPosition().x, 0.1f, myOrientation.GetPosition().z));
-	}
-	
-	
-	
-	/*if (myVelocity.y < myTerminalVelocity.y)
-	{
-		myVelocity.y += CL::CalcAcceleration(myGravity, myMass) * deltaTime;
-		if (myVelocity.y > myTerminalVelocity.y)
-			myVelocity.y = myTerminalVelocity.y;
-	}
+	//if (myVelocity.y < myTerminalVelocity.y)
+	//{
+	//	myVelocity.y += CL::CalcAcceleration(myGravity, myMass) * deltaTime;
+	//	if (myVelocity.y > myTerminalVelocity.y)
+	//		myVelocity.y = myTerminalVelocity.y;
+	//}
+	//float drag = CL::CalcDrag(myResistanceDensity, myVelocity.y, myDragCoeff, myCrossSectionArea);
+	//
+	//CU::Vector3f linearVelocity = myVelocity;
+	//linearVelocity.y -= drag;
 
-	float drag = CL::CalcDrag(myResistanceDensity, myVelocity.y, myDragCoeff, myCrossSectionArea);
-	CU::Vector3f linearVelocity = myVelocity;
-	if (myVelocity.x > 0.f)
-		linearVelocity.x -= drag;
-
-	linearVelocity.y -= drag;
-
-	if (myVelocity.z > 0.f)
-		linearVelocity.z -= drag;*/
-
-	//myBody->setLinearVelocity(btVector3(linearVelocity.x, linearVelocity.y, linearVelocity.z));
+	//btVector3 velocity = myBody->getLinearVelocity();
+	//myBody->setLinearVelocity(btVector3(velocity.getX(), linearVelocity.y, velocity.getZ()));
 }
 
 btRigidBody* CRigidBody::GetBody()
@@ -128,8 +118,12 @@ const CU::Matrix44f& CRigidBody::GetOrientation()
 
 void CRigidBody::Impulse(const CU::Vector3f& anImpulseVector)
 {
-	//myBody->applyCentralImpulse(btVector3(anImpulseVector.x, anImpulseVector.y, anImpulseVector.z));
-	//myVelocity += anImpulseVector * 1.f * (1.f / myMass);
+	// (#LINUS) myBody->applyCentralImpulse(btVector3(anImpulseVector.x, anImpulseVector.y, anImpulseVector.z));
 	myBody->applyForce(btVector3(anImpulseVector.x, anImpulseVector.y, anImpulseVector.z), btVector3(0.f,0.f,0.f));
+}
+
+CU::Vector3f CRigidBody::GetLinearVelocity()
+{
+	return CU::Vector3f(myBody->getLinearVelocity().getX(), myBody->getLinearVelocity().getY(), myBody->getLinearVelocity().getZ());
 }
 

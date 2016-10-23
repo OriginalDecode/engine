@@ -29,7 +29,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	Snowblind::CEngine::Create();
 	Snowblind::CEngine::GetInstance()->Initiate(w, h, anInstance, WindowProc);
-	newApplication->Initiate(w, h);
+	DL_ASSERT_EXP(newApplication->Initiate(), "Failed to initiate game");
 
 	MSG msg;
 	bool applicationIsRunning = true;
@@ -54,8 +54,11 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	} while (applicationIsRunning == true);
 
+	newApplication->CleanUp();
+
 	delete newApplication;
 	newApplication = nullptr;
+
 	Snowblind::CEngine::Destroy();
 	DL_Debug::Debug::Destroy();
 	return 0;

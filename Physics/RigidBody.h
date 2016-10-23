@@ -43,7 +43,7 @@ public:
 	btRigidBody* GetBody();
 	const CU::Matrix44f& GetOrientation();
 	void Impulse(const CU::Vector3f& anImpulseVector);
-
+	CU::Vector3f GetLinearVelocity();
 private:
 	CU::Vector3f myVelocity; //Only downwards right now.
 	CU::Vector3f myTerminalVelocity;

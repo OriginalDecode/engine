@@ -39,7 +39,9 @@ void InputSystem::Update(float delta_time)
 
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(SPACE))
 		{
-			physics.myBody->Impulse(CU::Vector3f(0.f, 100.f, 0.f));
+
+			float force = (physics.myBody->GetMass() * physics.myBody->GetGravity()) * 10.f;
+			physics.myBody->Impulse(CU::Vector3f(0.f, force, 0.f));
 		}
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(X))
 		{

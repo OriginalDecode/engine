@@ -44,13 +44,18 @@ public:
 	const CU::Matrix44f& GetOrientation();
 	void Impulse(const CU::Vector3f& anImpulseVector);
 	CU::Vector3f GetLinearVelocity();
+
+	float GetMass() { return myMass; }
+	float GetGravity() { return myGravity; }
+
 private:
 	CU::Vector3f myVelocity; //Only downwards right now.
 	CU::Vector3f myTerminalVelocity;
 
 	float myMass = 0.f;
-	float myDragCoeff = 0.f;
 	float myGravity = 0.f;
+
+	float myDragCoeff = 0.f;
 	float myCrossSectionArea = 0.f;
 	float myResistanceDensity = 0.f;
 	float myRadius = 0.f;

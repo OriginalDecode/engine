@@ -23,7 +23,9 @@ bool CApplication::Initiate()
 	myCamera = myEngine->GetCamera();
 
 	mySynchronizer = myEngine->GetSynchronizer();
-	myGame = new CGame(mySynchronizer);
+	myGame = new CGame;
+	if (!myGame->Initiate(mySynchronizer))
+		return false;
 
 	//Keep at the end of initiate...
 	myLogicThread = new std::thread([&] { CApplication::Update(); });
@@ -109,6 +111,9 @@ bool CApplication::CleanUp()
 
 	SAFE_DELETE(myLogicThread);
 	if (myLogicThread)
+		return false;
+
+	if (!myGame->CleanUp())
 		return false;
 
 	SAFE_DELETE(myGame);

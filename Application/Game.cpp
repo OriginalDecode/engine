@@ -32,7 +32,6 @@
 
 #include <AssetsContainer.h>
 #include <EngineDefines.h>
-#include <JSON/JSONReader.h>
 #include <DL_Debug.h>
 #include <Engine.h>
 #include <Terrain.h>
@@ -44,141 +43,21 @@
 
 #include <RigidBody.h>
 
-CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
-	: mySynchronizer(aSynchronizer)
+bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
 {
-	myEntityManager = new CEntityManager();
-	myPhysicsManager = new CPhysicsManager();
+	mySynchronizer = synchronizer;
 	myEngine = Snowblind::CEngine::GetInstance();
 
-	myEngine->ToggleVsync();
-
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 500), CU::Vector2f(512, 512)));
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(500, 0, 0), CU::Vector2f(512, 512)));
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(500, 0, 500), CU::Vector2f(512, 512)));
-
-	for (s32 i = 0; i < myTerrain.Size(); i++)
-	{
-		myTerrainBodies.Add(myPhysicsManager->CreateBody());
-		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
-	}
-
-	JSONReader reader("Data/Levels/level_01.json");
-	const JSONElement& el = reader.GetElement("root");
-	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
-	{
-		std::string entityPath;
-		entityPath = it->value["entity"].GetString();
-		CU::Vector3f pos;
-		reader._ReadElement(it->value["position"], pos);
-
-		JSONReader entityReader(entityPath);
-
-		Entity e = myEntityManager->CreateEntity();
-
-		//All entities usually have a start position.
-		myEntityManager->AddComponent<TranslationComponent>(e);
-		TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
-		t.myOrientation.SetPosition(pos);
-
-		if (entityReader.HasElement("light"))
-		{
-			myEntityManager->AddComponent<LightComponent>(e);
-			LightComponent& l = myEntityManager->GetComponent<LightComponent>(e);
-
-			std::string type;
-			entityReader.ReadElement("light", "type", type);
-			if (type == "pointlight")
-			{
-				l.myType = eLightType::ePOINTLIGHT;
-				reader._ReadElement(it->value["color"], l.color);
-				l.color.r /= 255.f;
-				l.color.g /= 255.f;
-				l.color.b /= 255.f;
-				reader.ReadElement(it->value["intensity"], l.intensity);
-				reader.ReadElement(it->value["range"], l.range);
-			}
-			else if (type == "spotlight")
-			{
-				l.myType = eLightType::eSPOTLIGHT;
-				reader._ReadElement(it->value["color"], l.color);
-				l.color.r /= 255.f;
-				l.color.g /= 255.f;
-				l.color.b /= 255.f;
-
-				reader._ReadElement(it->value["direction"], l.direction);
-
-				l.orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(l.direction.y)) * l.orientation;
-				l.orientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(l.direction.x)) * l.orientation;
-				l.orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(l.direction.z)) * l.orientation;
+	myEntityManager = new CEntityManager;
+	myPhysicsManager = new CPhysicsManager;
 
 
-				reader.ReadElement(it->value["angle"], l.angle);
-				l.angle = CL::DegreeToRad(l.angle);
-				reader.ReadElement(it->value["range"], l.range);
-			}
-		}
-
-		if (entityReader.HasElement("render"))
-		{
-			myEntityManager->AddComponent<RenderComponent>(e);
-			RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
-			std::string entityModel[2];
-			entityReader.ReadElement("render", entityModel);
-			r.myModelID = myEngine->LoadModel(entityModel[0], entityModel[1]);
-		}
-
-		if (entityReader.HasElement("physics"))
-		{
-			const JSONElement& phys = entityReader.GetElement("physics");
-			for (JSONElement::ConstMemberIterator obj = phys.MemberBegin(); obj != phys.MemberEnd(); obj++)
-			{
-				float mass = static_cast<float>(obj->value.GetDouble());
-				myEntityManager->AddComponent<PhysicsComponent>(e);
-				PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
-				p.myBody = myPhysicsManager->CreateBody();
-				myPhysicsManager->Add(p.myBody->InitAsSphere(1.f, mass, myPhysicsManager->GetGravityForce(), 1.293f, pos));
-			}
-		}
-	}
-
-	reader.CloseDocument();
-	reader.OpenDocument("Data/Levels/player.json");
-	if (reader.HasElement("controller"))
-	{
-		Entity e = myEntityManager->CreateEntity();
-		std::string controller_type;
-		reader.ReadElement("controller", controller_type);
-
-		if (controller_type == "input")
-		{
-			myEntityManager->AddComponent<InputController>(e);
-			myEntityManager->AddComponent<PhysicsComponent>(e);
-			myEntityManager->AddComponent<TranslationComponent>(e);
-			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
-			p.myBody = myPhysicsManager->CreateBody();
-			myPhysicsManager->Add(p.myBody->InitAsSphere(1.f, 10, myPhysicsManager->GetGravityForce(), 1.293f, CU::Vector3f(5,20,5)));
-			rigidbody = p.myBody;
-			myEntityManager->AddComponent<CameraComponent>(e);
-			CameraComponent& camera = myEntityManager->GetComponent<CameraComponent>(e);
-			camera.m_Camera = Snowblind::CEngine::GetInstance()->GetCamera();
-
-		}
-		else if (controller_type == "ai")
-		{
-			myEntityManager->AddComponent<AIController>(e);
-		}
-		else if (controller_type == "network")
-		{
-			myEntityManager->AddComponent<NetworkController>(e);
-		}
-	}
+	if (!CreateLevel("Data/Levels/level_01.json"))
+		return false;
 
 	myEntityManager->AddSystem<CPhysicsSystem>(myPhysicsManager);
 	myEntityManager->AddSystem<CRenderSystem>(mySynchronizer);
 	myEntityManager->AddSystem<CLightSystem>(mySynchronizer);
-
 	myEntityManager->AddSystem<InputSystem>();
 	myEntityManager->AddSystem<NetworkSystem>();
 	myEntityManager->AddSystem<AISystem>();
@@ -186,15 +65,33 @@ CGame::CGame(Snowblind::CSynchronizer* aSynchronizer)
 
 	myPicker = new Snowblind::CMousePicker();
 	m_ModelKey = myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
+
+	myEngine->ToggleVsync();
+
+	return true;
 }
 
-CGame::~CGame()
+bool CGame::CleanUp()
 {
 	SAFE_DELETE(myPicker);
+	if (myPicker)
+		return false;
+
 	SAFE_DELETE(myPhysicsManager);
+	if (myPhysicsManager)
+		return false;
+
 	SAFE_DELETE(myEntityManager);
+	if (myEntityManager)
+		return false;
+
 	myTerrain.DeleteAll();
+	if (myTerrain.Size() > 0)
+		return false;
+
+	return true;
 }
+
 
 void CGame::Update(float aDeltaTime)
 {
@@ -238,11 +135,140 @@ void CGame::Update(float aDeltaTime)
 
 
 	std::stringstream b;
-	CU::Vector3f vec = rigidbody->GetLinearVelocity();
-	b << "player_entity_velocity :\nX : " << vec.x << "\nY : "<< vec.y << "\nZ : " << vec.z;
-	mySynchronizer->AddRenderCommand(RenderCommand(b.str(), { 0, 500 }, eType::TEXT));
-
+	if (rigidbody)
+	{
+		CU::Vector3f vec = rigidbody->GetLinearVelocity();
+		b << "player_entity_velocity :\nX : " << vec.x << "\nY : " << vec.y << "\nZ : " << vec.z;
+		mySynchronizer->AddRenderCommand(RenderCommand(b.str(), { 0, 500 }, eType::TEXT));
+	}
 
 
 	myEntityManager->Update(aDeltaTime);
+}
+
+bool CGame::CreateLevel(const char* level_path)
+{
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 500), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(500, 0, 0), CU::Vector2f(512, 512)));
+	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(500, 0, 500), CU::Vector2f(512, 512)));
+
+	/*for (s32 i = 0; i < myTerrain.Size(); i++)
+	{
+		myTerrainBodies.Add(myPhysicsManager->CreateBody());
+		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
+	}*/
+
+	JSONReader reader(level_path);
+	const JSONElement& el = reader.GetElement("root");
+	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
+	{
+		DL_ASSERT_EXP(CreateEntity(it->value["entity"].GetString(), reader, it), "Failed to create entity!");
+	}
+
+	return true;
+}
+
+bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONElement::ConstMemberIterator it)
+{
+	JSONReader entityReader(entity_path);
+	Entity e = myEntityManager->CreateEntity();
+	
+	myEntityManager->AddComponent<TranslationComponent>(e);
+	
+	CU::Vector3f pos;
+	
+	level_reader._ReadElement(it->value["position"], pos);
+
+	TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
+	t.myOrientation.SetPosition(pos);
+
+	if (entityReader.HasElement("light"))
+	{
+		myEntityManager->AddComponent<LightComponent>(e);
+		LightComponent& l = myEntityManager->GetComponent<LightComponent>(e);
+
+		std::string type;
+		entityReader.ReadElement("light", "type", type);
+		if (type == "pointlight")
+		{
+			l.myType = eLightType::ePOINTLIGHT;
+			level_reader._ReadElement(it->value["color"], l.color);
+			l.color.r /= 255.f;
+			l.color.g /= 255.f;
+			l.color.b /= 255.f;
+			level_reader.ReadElement(it->value["intensity"], l.intensity);
+			level_reader.ReadElement(it->value["range"], l.range);
+		}
+		else if (type == "spotlight")
+		{
+			l.myType = eLightType::eSPOTLIGHT;
+			level_reader._ReadElement(it->value["color"], l.color);
+			l.color.r /= 255.f;
+			l.color.g /= 255.f;
+			l.color.b /= 255.f;
+
+			level_reader._ReadElement(it->value["direction"], l.direction);
+
+			l.orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(l.direction.y)) * l.orientation;
+			l.orientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(l.direction.x)) * l.orientation;
+			l.orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(l.direction.z)) * l.orientation;
+
+
+			level_reader.ReadElement(it->value["angle"], l.angle);
+			l.angle = CL::DegreeToRad(l.angle);
+			level_reader.ReadElement(it->value["range"], l.range);
+		}
+	}
+
+	if (entityReader.HasElement("render"))
+	{
+		myEntityManager->AddComponent<RenderComponent>(e);
+		RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
+		std::string entityModel[2];
+		entityReader.ReadElement("render", entityModel);
+		r.myModelID = myEngine->LoadModel(entityModel[0], entityModel[1]);
+	}
+
+	if (entityReader.HasElement("physics"))
+	{
+		const JSONElement& phys = entityReader.GetElement("physics");
+		for (JSONElement::ConstMemberIterator obj = phys.MemberBegin(); obj != phys.MemberEnd(); obj++)
+		{
+			float mass = static_cast<float>(obj->value.GetDouble());
+			myEntityManager->AddComponent<PhysicsComponent>(e);
+			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
+			p.myBody = myPhysicsManager->CreateBody();
+			myPhysicsManager->Add(p.myBody->InitAsSphere(1.f, mass, myPhysicsManager->GetGravityForce(), 1.293f, pos));
+		}
+	}
+
+	if (entityReader.HasElement("controller"))
+	{
+		std::string controller_type;
+		entityReader.ReadElement("controller", controller_type);
+
+		if (controller_type == "input")
+		{
+			myEntityManager->AddComponent<InputController>(e);
+			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
+			rigidbody = p.myBody;
+		}
+		else if (controller_type == "ai")
+		{
+			myEntityManager->AddComponent<AIController>(e);
+		}
+		else if (controller_type == "network")
+		{
+			myEntityManager->AddComponent<NetworkController>(e);
+		}
+	}
+
+	if (entityReader.HasElement("camera"))
+	{
+		myEntityManager->AddComponent<CameraComponent>(e);
+		CameraComponent& camera = myEntityManager->GetComponent<CameraComponent>(e);
+		camera.m_Camera = Snowblind::CEngine::GetInstance()->GetCamera();
+	}
+	return true;
 }

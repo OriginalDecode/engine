@@ -32,6 +32,10 @@
 			"color": [ 255, 0, 0 ],
 			"intensity": 1, 
 			"range" : 25
+		},
+		"player" : {
+			"entity" : "Data/Levels/player.json",
+			"position" : [ 5, 0, 5]
 		}
 	}	
 }

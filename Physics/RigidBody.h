@@ -62,5 +62,6 @@ private:
 	btTransform* myWorldTranslation = nullptr;
 	btTriangleIndexVertexArray* myVertexArray = nullptr;
 	CU::Matrix44f myOrientation;
+
 };
 

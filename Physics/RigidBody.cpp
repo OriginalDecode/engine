@@ -90,19 +90,21 @@ void CRigidBody::SetPosition(const CU::Vector3f& aPosition)
 
 void CRigidBody::Update(float deltaTime)
 {
-	//if (myVelocity.y < myTerminalVelocity.y)
-	//{
-	//	myVelocity.y += CL::CalcAcceleration(myGravity, myMass) * deltaTime;
-	//	if (myVelocity.y > myTerminalVelocity.y)
-	//		myVelocity.y = myTerminalVelocity.y;
-	//}
-	//float drag = CL::CalcDrag(myResistanceDensity, myVelocity.y, myDragCoeff, myCrossSectionArea);
-	//
-	//CU::Vector3f linearVelocity = myVelocity;
-	//linearVelocity.y -= drag;
+	btVector3 linear_velocity = myBody->getLinearVelocity();
+	myVelocity.x = linear_velocity.getX();
+	myVelocity.y = linear_velocity.getY();
+	myVelocity.z = linear_velocity.getZ();
 
-	//btVector3 velocity = myBody->getLinearVelocity();
-	//myBody->setLinearVelocity(btVector3(velocity.getX(), linearVelocity.y, velocity.getZ()));
+	if (myVelocity.y < myTerminalVelocity.y)
+	{
+		myVelocity.y += CL::CalcAcceleration(myGravity, myMass) * deltaTime;
+		if (myVelocity.y > myTerminalVelocity.y)
+			myVelocity.y = myTerminalVelocity.y;
+	}
+	float drag = CL::CalcDrag(myResistanceDensity, myVelocity.y, myDragCoeff, myCrossSectionArea);
+	myVelocity.y -= drag;
+	
+	myBody->setLinearVelocity(btVector3(myVelocity.x, myVelocity.y, myVelocity.z));
 }
 
 btRigidBody* CRigidBody::GetBody()

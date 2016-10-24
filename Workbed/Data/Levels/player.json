@@ -1,6 +1,7 @@
 {
 	"controller" : "input",
-	"physics": {
+	"physics" : {
 		"mass": 10
-	}
+	},
+	"camera" : true 
 }

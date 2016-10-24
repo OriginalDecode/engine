@@ -3,7 +3,6 @@
 #include "Console.h"
 #include "Sprite.h"
 #include "Engine.h"
-#include "InputWrapper.h"
 #include "EngineDefines.h"
 #include "Instance.h"
 #include "Model.h"
@@ -28,8 +27,6 @@ namespace Snowblind
 	{
 		myCamera = aCamera;
 		myIsActive = false;
-
-		myInputWrapper = CU::Input::InputWrapper::GetInstance();
 
 		myBottomLeftPosition = { (Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, (Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 2.f) - 24.f };
 		myTopLeftPosition = { (Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, 0.f };
@@ -108,7 +105,7 @@ namespace Snowblind
 
 	void CConsole::ReadInput()
 	{
-		bool shift = myInputWrapper->KeyDown(DIK_LSHIFT) || myInputWrapper->KeyDown(DIK_RSHIFT);
+		/*bool shift = myInputWrapper->KeyDown(DIK_LSHIFT) || myInputWrapper->KeyDown(DIK_RSHIFT);
 		bool mark = myInputWrapper->KeyDown(DIK_LCONTROL) && myInputWrapper->KeyDown(A);
 		bool cpy = myInputWrapper->KeyDown(DIK_LCONTROL) && myInputWrapper->KeyDown(C);
 		bool paste = myInputWrapper->KeyDown(DIK_LCONTROL) && myInputWrapper->KeyClick(V);
@@ -263,7 +260,7 @@ namespace Snowblind
 					myInputText->SetText(" ");
 				}
 			}
-		}
+		}*/
 	}
 
 };

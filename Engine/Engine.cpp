@@ -10,6 +10,12 @@ Ticket_Mutex g_Mutex;
 
 namespace Snowblind
 {
+
+	bool CEngine::HasInitiated()
+	{
+		return (this && m_IsInitiated);
+	}
+
 	CEngine* CEngine::myInstance = nullptr;
 	IGraphicsAPI* CEngine::myAPI = nullptr;
 
@@ -47,9 +53,18 @@ namespace Snowblind
 		myWindowSize.myHeight = window_height;
 		myWindowSize.myWidth = window_width;
 
-		CreateAppWindow(instance_handle, window_proc);
+		//CreateAppWindow(instance_handle, window_proc);
+
+		WindowCreateInfo window_create_info;
+		window_create_info.window_height = window_height;
+		window_create_info.window_width = window_width;
+		window_create_info.window_process = window_proc;
+		window_create_info.instance = instance_handle;
+		m_Window.Initiate(window_create_info);
+		m_Window.ShowWindow();
+		myHWND = m_Window.GetHWND();
+
 		SetWindowText(myHWND, "Snowblind Engine");
-		CU::Input::InputWrapper::Create(myHWND, instance_handle);
 
 #ifdef SNOWBLIND_DX11
 		myAPI = new DirectX11;
@@ -86,6 +101,7 @@ namespace Snowblind
 		myTimeManager = new CU::TimeManager;
 		Randomizer::Create();
 
+		m_IsInitiated = true;
 		return true;
 	}
 
@@ -97,7 +113,6 @@ namespace Snowblind
 		SAFE_DELETE(myCamera);
 		SAFE_DELETE(myFontManager);
 		SAFE_DELETE(myTimeManager);
-		CU::Input::InputWrapper::Destroy(); //Remove
 		Randomizer::Destroy();
 
 		DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
@@ -228,7 +243,7 @@ namespace Snowblind
 
 	void CEngine::OnAltEnter()
 	{
-		if(myAPI)
+		if (myAPI)
 			myAPI->OnAltEnter();
 	}
 
@@ -244,7 +259,23 @@ namespace Snowblind
 
 	void CEngine::OnExit()
 	{
-		mySynchronizer->Quit();
+		if (HasInitiated())
+		{
+			mySynchronizer->Quit();
+			CleanUp();
+		}
+	}
+
+	void CEngine::OnInactive()
+	{
+		if (HasInitiated())
+			m_Window.OnInactive();
+	}
+
+	void CEngine::OnActive()
+	{
+		if (HasInitiated())
+			m_Window.OnActive();
 	}
 
 	CSynchronizer* CEngine::GetSynchronizer()
@@ -270,34 +301,8 @@ namespace Snowblind
 		return newTerrain;
 	}
 
-	void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)
-	{
-		WNDCLASSEX wc;
-		ZeroMemory(&wc, sizeof(WNDCLASSEX));
-
-		wc.cbSize = sizeof(WNDCLASSEX);
-		wc.style = CS_HREDRAW | CS_VREDRAW;
-		wc.lpfnWndProc = aWndProc;
-		wc.hInstance = anInstance;
-		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-		wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-		wc.lpszClassName = "WindowsClass";
-
-		RegisterClassEx(&wc);
-		float width = (GetSystemMetrics(SM_CXSCREEN)* 0.5f) - (myWindowSize.myWidth * 0.5f);
-		float height = (GetSystemMetrics(SM_CYSCREEN)* 0.5f) - (myWindowSize.myHeight * 0.5f);
-		myHWND = CreateWindow(
-			"WindowsClass"
-			, NULL
-			, WS_OVERLAPPEDWINDOW  //Windowed
-			, static_cast<int>(width)
-			, static_cast<int>(height)
-			, static_cast<int>(myWindowSize.myWidth)
-			, static_cast<int>(myWindowSize.myHeight)
-			, NULL
-			, NULL
-			, GetModuleHandle(NULL), NULL);
-
-		ShowWindow(myHWND, true);
-	}
+	//void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)
+	//{
+	//	
+	//}
 };

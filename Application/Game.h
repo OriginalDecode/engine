@@ -4,7 +4,7 @@
 #include <string>
 #include <Line3D.h>
 #include <JSON/JSONReader.h>
-
+#include <standard_datatype.hpp>
 namespace Snowblind
 {
 	class CSynchronizer;
@@ -31,7 +31,7 @@ private:
 	bool CreateLevel(const char* level_path);
 	bool CreateEntity(const char* entity_path, JSONReader& level_reader, JSONElement::ConstMemberIterator it);
 
-
+	s16 m_LocalPlayerCount = 0;
 	int myFrameCount = 0;
 	int myFPSToPrint = 0;
 	float myAverageFPS = 0;
@@ -55,4 +55,9 @@ private:
 	CRigidBody* rigidbody;
 	SLinePoint raycast[2];
 };
+static void Jump(CRigidBody* rigidbody);
+static void Forward(CRigidBody* rigidbody);
+static void Backward(CRigidBody* rigidbody);
+static void Right(CRigidBody* rigidbody);
+static void Left(CRigidBody* rigidbody);
 

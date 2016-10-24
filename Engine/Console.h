@@ -34,7 +34,6 @@ namespace Snowblind
 		void Set2DScene(CScene* aScene);
 	private:
 		CU::GrowingArray<std::string> myStrings;
-		CU::Input::InputWrapper* myInputWrapper;
 		CU::TimeManager* myTimeManager;
 		CCamera* myCamera;
 		CSprite* mySprite;

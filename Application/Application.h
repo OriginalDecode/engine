@@ -52,7 +52,6 @@ private:
 	CU::Quaternion myYaw;
 	CU::Matrix44f myOrientation;
 	CU::Math::Vector2<float> myCursorPosition;
-	bool myWindowIsActive = true;
 	float moveSpeed = 15.f;
 
 	CGame* myGame;

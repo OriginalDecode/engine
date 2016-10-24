@@ -17,7 +17,7 @@ enum MButton
 	MIDDLE
 };
 
-enum KButton
+enum class KButton
 {
 
 	A = DIK_A,
@@ -102,73 +102,65 @@ enum KButton
 	END = DIK_END,
 };
 
-namespace CommonUtilities
+class InputWrapper
 {
-	namespace Input
-	{
-		class InputWrapper
-		{
-		public:
-			static void Create(HWND aHWND, HINSTANCE hInstance);
-			static void Destroy();
-			static InputWrapper* GetInstance();
+public:
+	InputWrapper() = default;
+	//static void Create(HWND aHWND, HINSTANCE hInstance);
+	//static void Destroy();
+	bool Initiate(HWND aHWND, HINSTANCE hInstance);
 
-			bool KeyDown(KButton aKey);
-			bool KeyClick(KButton aKey);
-			bool KeyUp(KButton aKey);
+	//static InputWrapper* GetInstance();
 
-			bool KeyDown(UCHAR aKey);
-			bool KeyClick(UCHAR aKey);
-			bool KeyUp(UCHAR aKey);
+	bool KeyDown(KButton aKey);
+	bool KeyClick(KButton aKey);
+	bool KeyUp(KButton aKey);
 
-			bool MouseClick(int aButton);
-			bool MouseDown(int aButton);
-			bool MouseUp(int aButton);
+	bool KeyDown(UCHAR aKey);
+	bool KeyClick(UCHAR aKey);
+	bool KeyUp(UCHAR aKey);
 
-			float MouseDirectX();
-			float MouseDirectY();
+	bool MouseClick(int aButton);
+	bool MouseDown(int aButton);
+	bool MouseUp(int aButton);
 
-			void LockCursor(bool someLock);
+	float MouseDirectX();
+	float MouseDirectY();
 
-			void Update();
+	void LockCursor(bool someLock);
 
-			void SetMouseSpeed(const float aMouseSpeed);
+	bool Update();
 
-			void CaptureWindowsCursor();
-			void ReleaseCursor();
+	void SetMouseSpeed(const float aMouseSpeed);
 
-			static void SetActiveWindow(bool aIsWindowActive);
-			bool GetActivateWindow();
-			void Reset();
+	void CaptureWindowsCursor();
+	void ReleaseCursor();
 
-			float GetX() { return myMousePos.myX; }
-			float GetY() { return myMousePos.myY; }
 
-		private:
-			static InputWrapper* myInstance;
-			InputWrapper(HWND aHWND, HINSTANCE hInstance);
-			~InputWrapper();
-			IDirectInput8* myDInput;
+	float GetX() { return myMousePos.myX; }
+	float GetY() { return myMousePos.myY; }
 
-			void Initiate(HWND aHWND, HINSTANCE hInstance);
-			IDirectInputDevice8* myKeyboard;
-			UCHAR myKeyState[256];
-			UCHAR myPrevKeyState[256];
+private:
+	//static InputWrapper* myInstance;
+	//InputWrapper(HWND aHWND, HINSTANCE hInstance);
+	//~InputWrapper();
+	IDirectInput8* myDInput;
 
-			IDirectInputDevice8* myMouse;
-			DIMOUSESTATE2 myMouseState;
-			DIMOUSESTATE2 myPrevMouseState;
+	IDirectInputDevice8* myKeyboard;
+	UCHAR myKeyState[256];
+	UCHAR myPrevKeyState[256];
 
-			Position myMousePos;
-			POINT myCursorPos;
-			HWND myHWND;
+	IDirectInputDevice8* myMouse;
+	DIMOUSESTATE2 myMouseState;
+	DIMOUSESTATE2 myPrevMouseState;
 
-			bool myCursorIsLocked;
-			bool myWindowIsActive;
-			float myMouseSpeed;
-			float myAcceleration;
+	Position myMousePos;
+	POINT myCursorPos;
+	HWND myHWND;
 
-		};
-	}
-}
-namespace CU = CommonUtilities;
+	bool myCursorIsLocked;
+	bool myWindowIsActive;
+	float myMouseSpeed;
+	float myAcceleration;
+
+};

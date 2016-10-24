@@ -2,6 +2,8 @@
 #include <string>
 #include <standard_datatype.hpp>
 #include "snowblind_shared.h"
+#include "Window.h"
+#include <CommonLib/Math/Vector/Vector.h>
 #ifndef _WINDEF_
 
 struct HINSTANCE__;
@@ -95,6 +97,10 @@ namespace Snowblind
 		void OnPause();
 		void OnResume();
 		void OnExit();
+		void OnInactive();
+		void OnActive();
+
+		bool IsWindowActive() { return m_Window.IsWindowActive(); }
 
 		CSynchronizer* GetSynchronizer();
 
@@ -102,10 +108,12 @@ namespace Snowblind
 		std::string GetLocalTimeAsString();
 
 		CTerrain* CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize);
-
+		Window& GetWindow() { return m_Window; }
 	private:
 		CEngine() = default;
-		void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
+		//void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
+		bool HasInitiated();
+		bool m_IsInitiated = false;
 
 		static CEngine* myInstance;
 		static IGraphicsAPI* myAPI;
@@ -113,7 +121,8 @@ namespace Snowblind
 		SWindowSize myWindowSize;
 		SLocalTime myLocalTime;
 		HWND myHWND;
-		
+		Window m_Window;
+
 		CFontManager* myFontManager			= nullptr;
 		CU::TimeManager* myTimeManager		= nullptr;
 		CSynchronizer* mySynchronizer		= nullptr;

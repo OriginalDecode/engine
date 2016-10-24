@@ -2,7 +2,6 @@
 #include "MousePicker.h"
 #include "Camera.h"
 #include "Engine.h"
-#include <InputWrapper.h>
 namespace Snowblind
 {
 	CMousePicker::CMousePicker()
@@ -24,17 +23,17 @@ namespace Snowblind
 
 	void CMousePicker::CalculateCurrentRay()
 	{
-		CU::Vector2f cursorPos;
-		cursorPos.x = CU::Input::InputWrapper::GetInstance()->GetX();
-		cursorPos.y = CU::Input::InputWrapper::GetInstance()->GetY();
-
-		cursorPos = NormalizedSpace(cursorPos.x, cursorPos.y);
-		CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.f, 0.f); //Clip Space
-		CU::Vector4f eyeCoord = ToEyeCoords(clip);
-		CU::Vector3f ray = ToWorldCoords(eyeCoord);
-
-		CU::Math::Normalize(ray);
-		myCurrentRay = ray;
+		//CU::Vector2f cursorPos;
+		//cursorPos.x = CU::Input::InputWrapper::GetInstance()->GetX();
+		//cursorPos.y = CU::Input::InputWrapper::GetInstance()->GetY();
+		//
+		//cursorPos = NormalizedSpace(cursorPos.x, cursorPos.y);
+		//CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.f, 0.f); //Clip Space
+		//CU::Vector4f eyeCoord = ToEyeCoords(clip);
+		//CU::Vector3f ray = ToWorldCoords(eyeCoord);
+		//
+		//CU::Math::Normalize(ray);
+		//myCurrentRay = ray;
 	}
 
 	CU::Vector4f CMousePicker::ToEyeCoords(const CU::Vector4f& clipCoords)

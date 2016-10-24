@@ -4,7 +4,6 @@
 #include <Engine.h>
 #include <Camera.h>
 
-#include "../Input/InputWrapper.h"
 #include <Sprite.h>
 
 #include <PointLight.h>
@@ -46,7 +45,7 @@ void CApplication::Update()
 		mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), CU::Vector2f(500, 0)));
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SKYSPHERE, myCamera->GetPosition()));
 
-		UpdateInput(deltaTime);
+		//UpdateInput(deltaTime);
 
 		myGame->Update(deltaTime);
 		mySynchronizer->LogicIsDone();
@@ -57,7 +56,7 @@ void CApplication::Update()
 
 void CApplication::UpdateInput(float /*aDeltaTime*/)
 {
-	CU::Input::InputWrapper::GetInstance()->Update();
+	/*CU::Input::InputWrapper::GetInstance()->Update();
 	if (myWindowIsActive)
 	{
 		if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))
@@ -65,7 +64,7 @@ void CApplication::UpdateInput(float /*aDeltaTime*/)
 			myEngine->OnExit();
 			myQuitFlag = true;
 		}
-	}
+	}*/
 }
 
 void CApplication::OnPause()
@@ -80,19 +79,18 @@ void CApplication::OnResume()
 
 void CApplication::OnInactive()
 {
-	CU::Input::InputWrapper::SetActiveWindow(false);
-	myWindowIsActive = false;
+	myEngine->OnInactive();
 }
 
 void CApplication::OnActive()
 {
-	CU::Input::InputWrapper::SetActiveWindow(true);
-	myWindowIsActive = true;
+	myEngine->OnActive();
 }
 
 void CApplication::OnExit()
 {
-
+	myEngine->OnExit();
+	CleanUp();
 }
 
 void CApplication::OnAltEnter()

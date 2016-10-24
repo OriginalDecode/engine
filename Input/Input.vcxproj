@@ -248,10 +248,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ControllerInput.h" />
+    <ClInclude Include="InputCommand.h" />
+    <ClInclude Include="InputHandle.h" />
     <ClInclude Include="InputWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ControllerInput.cpp" />
+    <ClCompile Include="InputHandle.cpp" />
     <ClCompile Include="InputWrapper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

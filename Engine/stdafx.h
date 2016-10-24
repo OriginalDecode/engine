@@ -12,12 +12,10 @@
 // Common Utilities / Common Library
 //----------------------------------------
 
-#include <InputWrapper.h>
 #include <JSON/JSONReader.h>
 #include <Math/Matrix/Matrix.h>
 #include <TimeManager.h>
 #include <Utilities.h>
-#include <Math/Vector/Vector.h>
 #include <Randomizer.h>
 
 //----------------------------------------

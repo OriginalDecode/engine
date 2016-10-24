@@ -39,8 +39,10 @@
 #include <Utilities.h>
 #include <MousePicker.h>
 #include "../Input/InputWrapper.h"
+#include "../Input/ControllerInput.h"
 #include <Model.h>
 
+#include "../Input/InputHandle.h"
 #include <RigidBody.h>
 
 bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
@@ -109,24 +111,24 @@ void CGame::Update(float aDeltaTime)
 	std::stringstream ss;
 	ss << myEngine->GetFPS() << "\n" << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::CEngine::GetInstance()->GetLocalTimeAsString();
 
-	if (CU::Input::InputWrapper::GetInstance()->MouseDown(0))
-	{
-		pointHit = myPhysicsManager->RayCast(myEngine->GetCamera()->GetPosition(), myPicker->GetCurrentRay());
+	//if (CU::Input::InputWrapper::GetInstance()->MouseDown(0))
+	//{
+	//	pointHit = myPhysicsManager->RayCast(myEngine->GetCamera()->GetPosition(), myPicker->GetCurrentRay());
 
-		currentRay = pointHit;
-		raycast[0] = SLinePoint(myEngine->GetCamera()->GetPosition(), CU::Vector3f(0, 1, 0));
-		raycast[1] = SLinePoint(pointHit, CU::Vector3f(0, 1, 0));
-	}
+	//	currentRay = pointHit;
+	//	raycast[0] = SLinePoint(myEngine->GetCamera()->GetPosition(), CU::Vector3f(0, 1, 0));
+	//	raycast[1] = SLinePoint(pointHit, CU::Vector3f(0, 1, 0));
+	//}
 
-	std::stringstream p;
-	p << "Raycast Point" << "\nX : " << pointHit.x << "\nY : " << pointHit.y << "\nZ : " << pointHit.z;
+	/*std::stringstream p;
+	p << "Raycast Point" << "\nX : " << pointHit.x << "\nY : " << pointHit.y << "\nZ : " << pointHit.z;*/
 
-	std::stringstream c;
+	/*std::stringstream c;
 	c << "Cursor Coord" << "\nX : " << CU::Input::InputWrapper::GetInstance()->GetX() << "\nY : " << CU::Input::InputWrapper::GetInstance()->GetY() 
 		<< "\nRay coord" << "\nX : " << currentRay.x << "\nY : " << currentRay.y << "\nZ : " << currentRay.z;
 
-	mySynchronizer->AddRenderCommand(RenderCommand(c.str(), { 200, 900 }, eType::TEXT));
-	mySynchronizer->AddRenderCommand(RenderCommand(p.str(), { 0, 900 }, eType::TEXT));
+	mySynchronizer->AddRenderCommand(RenderCommand(c.str(), { 200, 900 }, eType::TEXT));*/
+	//mySynchronizer->AddRenderCommand(RenderCommand(p.str(), { 0, 900 }, eType::TEXT));
 	mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
@@ -250,9 +252,43 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 
 		if (controller_type == "input")
 		{
-			myEntityManager->AddComponent<InputController>(e);
 			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
 			rigidbody = p.myBody;
+
+			myEntityManager->AddComponent<InputController>(e);
+			InputController& input = myEntityManager->GetComponent<InputController>(e);
+			input.m_ID = m_LocalPlayerCount++;
+			//input.m_Controller = new ControllerInput(input.m_ID);
+			input.m_InputHandle = new InputHandle;
+			input.m_InputHandle->Initiate(input.m_ID);
+
+			InputCommand* bind_me = new InputCommand;
+			bind_me->m_Function = std::bind(&Jump, rigidbody);
+			input.m_InputHandle->BindA(bind_me);
+
+			bind_me = new InputCommand;
+			bind_me->m_Function = std::bind(&Jump, rigidbody);
+			input.m_InputHandle->BindSpaceBar(bind_me);
+
+			bind_me = new InputCommand;
+			bind_me->m_Function = std::bind(&Forward, rigidbody);
+			input.m_InputHandle->BindLTYP(bind_me);
+
+			bind_me = new InputCommand;
+			bind_me->m_Function = std::bind(&Backward, rigidbody);
+			input.m_InputHandle->BindLTYN(bind_me);
+
+			bind_me = new InputCommand;
+			bind_me->m_Function = std::bind(&Left, rigidbody);
+			input.m_InputHandle->BindLTXN(bind_me);
+
+			bind_me = new InputCommand;
+			bind_me->m_Function = std::bind(&Right, rigidbody);
+			input.m_InputHandle->BindLTXP(bind_me);
+
+
+
+
 		}
 		else if (controller_type == "ai")
 		{
@@ -271,4 +307,29 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 		camera.m_Camera = Snowblind::CEngine::GetInstance()->GetCamera();
 	}
 	return true;
+}
+
+void Jump(CRigidBody* rigidbody)
+{
+	rigidbody->Impulse(CU::Vector3f(0, 1500, 0));
+}
+
+void Forward(CRigidBody* rigidbody)
+{
+	rigidbody->Impulse(CU::Vector3f(0, 0, 1500));
+}
+
+void Backward(CRigidBody* rigidbody)
+{
+	rigidbody->Impulse(CU::Vector3f(0, 0, -1500));
+}
+
+void Right(CRigidBody* rigidbody)
+{
+	rigidbody->Impulse(CU::Vector3f(1500, 0, 0));
+}
+
+void Left(CRigidBody* rigidbody)
+{
+	rigidbody->Impulse(CU::Vector3f(-1500, 0, 0));
 }

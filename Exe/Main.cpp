@@ -54,13 +54,8 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	} while (applicationIsRunning == true);
 
-	newApplication->CleanUp();
-
 	delete newApplication;
 	newApplication = nullptr;
-
-	Snowblind::CEngine::Destroy();
-	DL_Debug::Debug::Destroy();
 	return 0;
 }
 
@@ -88,7 +83,9 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		newApplication->OnResume();
 		break;
 	case WM_CLOSE:
-		Snowblind::CEngine::GetInstance()->OnExit();
+		newApplication->OnExit();
+		DL_Debug::Debug::Destroy();
+		Snowblind::CEngine::Destroy();
 		break;
 	default:
 		break;

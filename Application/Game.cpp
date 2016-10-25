@@ -283,14 +283,24 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			input.m_InputHandle->BindLThumbYN(bind_me);
 
 			bind_me = new InputCommand;
+			bind_me->m_Function = std::bind(&Backward, rigidbody);
+			input.m_InputHandle->BindSKey(bind_me);
+
+			bind_me = new InputCommand;
 			bind_me->m_Function = std::bind(&Left, rigidbody);
 			input.m_InputHandle->BindLThumbXN(bind_me);
+
+			bind_me = new InputCommand;
+			bind_me->m_Function = std::bind(&Left, rigidbody);
+			input.m_InputHandle->BindAKey(bind_me);
 
 			bind_me = new InputCommand;
 			bind_me->m_Function = std::bind(&Right, rigidbody);
 			input.m_InputHandle->BindLThumbXP(bind_me);
 
-
+			bind_me = new InputCommand;
+			bind_me->m_Function = std::bind(&Right, rigidbody);
+			input.m_InputHandle->BindDKey(bind_me);
 
 
 		}

@@ -96,6 +96,22 @@ void CRigidBody::Update(float deltaTime)
 	myVelocity.y = linear_velocity.getY();
 	myVelocity.z = linear_velocity.getZ();
 
+	if (myVelocity.x > 50.f)
+		myVelocity.x = 50.f;
+	if (myVelocity.x < -50.f)
+		myVelocity.x = -50.f;
+
+
+	if (myVelocity.y > 50.f)
+		myVelocity.y = 50.f;
+	if (myVelocity.y < -50.f)
+		myVelocity.y = -50.f;
+
+	if (myVelocity.z > 50.f)
+		myVelocity.z = 50.f;
+	if (myVelocity.z < -50.f)
+		myVelocity.z = -50.f;
+
 	/*if (myVelocity.y > -myTerminalVelocity.y)
 	{
 		myVelocity.y -= CL::CalcAcceleration(myGravity, myMass) * deltaTime;

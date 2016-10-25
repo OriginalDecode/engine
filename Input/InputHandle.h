@@ -1,15 +1,27 @@
 #pragma once
 #include "../standard_datatype.hpp"
+#include <functional>
+#include <vector>
 class InputCommand;
 class ControllerInput;
 class InputWrapper;
 
-#define BIND_DECL(name) \
-public : \
-void Bind##name(InputCommand* input_command) { m_##name = input_command; } \
-private : \
-InputCommand * m_##name;
-
+#define BIND_DECL(name)                                                        \
+  \
+public:                                                                        \
+  \
+void Bind##name(std::function<void()> input_command) {                         \
+	m_##name = input_command;                                                  \
+  }                                                                            \
+  \
+private:                                                                       \
+  \
+void Classify##name() {                                                        \
+	m_Names.push_back(#name);                                                  \
+  }                                                                            \
+  \
+std::function<void()>                                                          \
+	  m_##name;
 
 class InputHandle
 {
@@ -17,7 +29,7 @@ public:
 	InputHandle() = default;
 	void Initiate(u16 controller_ID);
 	void CleanUp();
-	InputCommand* HandleInput();
+	void HandleInput();
 	void Update();
 
 	BIND_DECL(XButton);
@@ -36,6 +48,7 @@ public:
 private:
 	ControllerInput* m_Controller = nullptr;
 	InputWrapper* m_Input = nullptr;
+	std::vector<const char*> m_Names;
 };
 
 #undef BIND_DECL

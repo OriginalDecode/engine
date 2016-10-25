@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // MurmurHash3 was written by Austin Appleby, and is placed in the public
 // domain. The author hereby disclaims copyright to this source code.
-
+#include <standard_datatype.hpp>
 #ifndef _MURMURHASH3_H_
 #define _MURMURHASH3_H_
 
@@ -31,6 +31,8 @@ void MurmurHash3_x86_32(const void* aKey, int aLength, uint32_t aSeed, void* out
 void MurmurHash3_x86_128(const void* aKey, int aLength, uint32_t aSeed, void* out);
 
 void MurmurHash3_x64_128(const void* aKey, int aLength, uint32_t aSeed, void* out);
+
+u32 Hash(const char* key);
 
 //-----------------------------------------------------------------------------
 

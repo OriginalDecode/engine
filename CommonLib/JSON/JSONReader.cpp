@@ -212,6 +212,11 @@ void JSONReader::ReadElement(const rapidjson::Value& anElement, float& aFloat)
 
 
 
+std::string JSONReader::ReadElement(const rapidjson::Value& element, int index)
+{
+	return element[index].GetString();
+}
+
 void JSONReader::ForceReadElement(const std::string & aTag, bool & aBool)
 {
 	assert(myFile != nullptr && "File were not open. Did you forget to OpenDocument()?");

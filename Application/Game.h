@@ -5,6 +5,7 @@
 #include <Line3D.h>
 #include <JSON/JSONReader.h>
 #include <standard_datatype.hpp>
+#include <functional>
 namespace Snowblind
 {
 	class CSynchronizer;
@@ -16,7 +17,7 @@ class JSONReader;
 class CEntityManager;
 class CPhysicsManager;
 class CRigidBody;
-
+struct InputController;
 class CGame
 {
 public:
@@ -54,6 +55,8 @@ private:
 
 	CRigidBody* rigidbody;
 	SLinePoint raycast[2];
+
+	void BindToFunction(InputController& input, u32 hash, std::function<void(void)> fnc);
 };
 static void Jump(CRigidBody* rigidbody);
 static void Forward(CRigidBody* rigidbody);

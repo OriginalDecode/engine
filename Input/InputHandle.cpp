@@ -3,17 +3,75 @@
 #include "ControllerInput.h"
 #include "InputWrapper.h"
 #include "InputCommand.h"
-
-#define SAFE_DELETE(name) delete m_##name; m_##name = nullptr;
-
-
+#include "../CommonLib/DataStructures/Hashmap/Hash.h"
+#include <fstream>
+#include <iostream>
+#include <sstream>
 void InputHandle::Initiate(u16 controller_ID)
 {
 	m_Controller = new ControllerInput(controller_ID);
 	m_Input = new InputWrapper;
 	Snowblind::CEngine* engine = Snowblind::CEngine::GetInstance();
 	m_Input->Initiate(engine->GetWindow().GetHWND()
-		, engine->GetWindow().GetWindowInstance());
+					, engine->GetWindow().GetWindowInstance());
+
+	ClassifyBButton();
+	ClassifyYButton();
+	ClassifyXButton();
+	ClassifyAButton();
+	ClassifyWKey();
+	ClassifyAKey();
+	ClassifySKey();
+	ClassifyDKey();
+	ClassifySpaceBar();
+	ClassifyLThumbXN();
+	ClassifyLThumbXP();
+	ClassifyLThumbYN();
+	ClassifyLThumbYP();
+
+	std::stringstream total_string;
+	for (u32 i = 0; i < m_Names.size(); i++)
+	{
+		total_string << m_Names[i];
+	}
+
+	u32 m_TotalHash = Hash(total_string.str().c_str());
+
+	bool updated = false;
+
+	std::fstream file;
+	file.open("../hashlist.h");
+	if (file.good())
+	{
+		u32 hex_value;
+		file.ignore(2);
+		file >> std::hex >> hex_value;
+		if (hex_value != m_TotalHash)
+			updated = true;
+		file.close();
+	}
+
+	if (updated)
+	{
+		std::ofstream out_file;
+		out_file.open("../hashlist.h");
+		out_file << "//0x" << std::hex << m_TotalHash << "\n";
+		out_file.flush();
+		out_file << "#pragma once\n";
+		out_file.flush();
+		out_file << "#include \"standard_datatype.hpp\"\n";
+		out_file.flush();
+
+		for (u32 i = 0; i < m_Names.size(); i++)
+		{
+			out_file 
+				<< "static const u32 s_" << m_Names[i] << "_hash = "
+				<< "0x" << std::hex << Hash(m_Names[i]) << ";\n";
+			out_file.flush();
+		}
+
+		out_file.close();
+	}
 }
 
 void InputHandle::CleanUp()
@@ -23,55 +81,32 @@ void InputHandle::CleanUp()
 
 	delete m_Input;
 	m_Input = nullptr;
-
-	SAFE_DELETE(XButton);
-	SAFE_DELETE(YButton);
-	SAFE_DELETE(BButton);
-	SAFE_DELETE(AButton);
-	SAFE_DELETE(WKey);
-	SAFE_DELETE(SKey);
-	SAFE_DELETE(AKey);
-	SAFE_DELETE(DKey);
-	SAFE_DELETE(SpaceBar);
-	SAFE_DELETE(LThumbYP);
-	SAFE_DELETE(LThumbYN);
-	SAFE_DELETE(LThumbXP);
-	SAFE_DELETE(LThumbXN);
 }
 
-InputCommand* InputHandle::HandleInput()
+void InputHandle::HandleInput()
 {
 	if (m_Controller->IsConnected())
 	{
-		if (m_Controller->ButtonDown(eXboxButton::X)) return m_XButton;
-		if (m_Controller->ButtonDown(eXboxButton::Y)) return m_YButton;
-		if (m_Controller->ButtonDown(eXboxButton::B)) return m_BButton;
-		if (m_Controller->ButtonDown(eXboxButton::A)) return m_AButton;
-	}
-	if (m_Input->Update())
-	{
-		if (m_Input->KeyDown(KButton::SPACE)) return m_SpaceBar;
-		if (m_Input->KeyDown(KButton::W)) return m_WKey;
-		if (m_Input->KeyDown(KButton::S)) return m_SKey;
-		if (m_Input->KeyDown(KButton::A)) return m_AKey;
-		if (m_Input->KeyDown(KButton::D)) return m_DKey;
+		if (m_Controller->ButtonDown(eXboxButton::X)) m_XButton();
+		if (m_Controller->ButtonDown(eXboxButton::Y)) m_YButton();
+		if (m_Controller->ButtonDown(eXboxButton::B)) m_BButton();
+		if (m_Controller->ButtonDown(eXboxButton::A)) m_AButton();
 	}
 
-	return nullptr;
+	if (m_Input->Update())
+	{
+		if (m_Input->KeyDown(KButton::SPACE))  m_SpaceBar();
+		if (m_Input->KeyDown(KButton::W)) m_WKey();
+		if (m_Input->KeyDown(KButton::S)) m_SKey();
+		if (m_Input->KeyDown(KButton::A)) m_AKey();
+		if (m_Input->KeyDown(KButton::D)) m_DKey();
+	}
 }
 
 void InputHandle::Update()
 {
-	//Handle value operations
-	if (m_Controller->LeftThumbstickY() > 0.5f)
-		m_LThumbYP->m_Function();
-
-	if (m_Controller->LeftThumbstickY() < -0.5f)
-		m_LThumbYN->m_Function();
-
-	if (m_Controller->LeftThumbstickX() > 0.5f)
-		m_LThumbXP->m_Function();
-
-	if (m_Controller->LeftThumbstickX() < -0.5f)
-		m_LThumbXN->m_Function();
+	if (m_Controller->LeftThumbstickY() > 0.5f) m_LThumbYP();
+	if (m_Controller->LeftThumbstickY() < -0.5f) m_LThumbYN();
+	if (m_Controller->LeftThumbstickX() > 0.5f) m_LThumbXP();
+	if (m_Controller->LeftThumbstickX() < -0.5f) m_LThumbXN();
 }

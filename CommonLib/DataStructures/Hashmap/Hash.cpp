@@ -7,7 +7,8 @@
 // compile and run any of them on any platform, but your performance with the
 // non-native version will be less than optimal.
 
-#include "MurmurHash3.h"
+#include "Hash.h"
+#include <iostream>
 //-----------------------------------------------------------------------------
 // Platform-specific functions and macros
 
@@ -327,6 +328,14 @@ void MurmurHash3_x64_128(const void * key, const int len, const uint32_t seed, v
 
 	((uint64_t*)out)[0] = h1;
 	((uint64_t*)out)[1] = h2;
+}
+
+u32 Hash(const char* key)
+{
+	s32 size = strlen(key);
+	u32 result;
+	MurmurHash3_x86_32(key, size, 0, &result);
+	return result;
 }
 
 //-----------------------------------------------------------------------------

@@ -40,7 +40,7 @@ public:
 
 	template <typename T>
 	void _ReadElement(const rapidjson::Value& anElement, CU::Math::Vector3<T>& aVec3);
-
+	std::string ReadElement(const rapidjson::Value& element, int index);
 	void ReadElement(const rapidjson::Value& anElement, float& aFloat);
 
 
@@ -307,11 +307,9 @@ void JSONReader::ReadElement(const std::string& aTag, T& aVariable)
 template <typename T>
 void JSONReader::_ReadElement(const rapidjson::Value& anElement, CU::Math::Vector3<T>& aVec3)
 {
-	//const rapidjson::Value& data = anElement->value[aTag.c_str()];
 	aVec3.x = anElement[0].GetDouble();
 	aVec3.y = anElement[1].GetDouble();
 	aVec3.z = anElement[2].GetDouble();
-
 }
 
 template<typename T>

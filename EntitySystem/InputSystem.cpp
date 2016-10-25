@@ -19,12 +19,8 @@ void InputSystem::Update(float delta_time)
 	for (const Entity& e : entities)
 	{
 		InputController& input = GetComponent<InputController>(e);
-		InputCommand* command = input.m_InputHandle->HandleInput();
-		if (command)
-			command->m_Function();
-
+		input.m_InputHandle->HandleInput();
 		input.m_InputHandle->Update();
-
 	}
 }
 

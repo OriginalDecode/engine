@@ -44,6 +44,11 @@
 
 #include "../Input/InputHandle.h"
 #include <RigidBody.h>
+#include <hashlist.h>
+#include <DataStructures/Hashmap/Hash.h>
+
+#define BIND(name) input.m_InputHandle->Bind##name(fnc)
+
 
 bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
 {
@@ -179,7 +184,6 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 	myEntityManager->AddComponent<TranslationComponent>(e);
 	
 	CU::Vector3f pos;
-	
 	level_reader._ReadElement(it->value["position"], pos);
 
 	TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
@@ -258,50 +262,38 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			myEntityManager->AddComponent<InputController>(e);
 			InputController& input = myEntityManager->GetComponent<InputController>(e);
 			input.m_ID = m_LocalPlayerCount++;
-			//input.m_Controller = new ControllerInput(input.m_ID);
+
 			input.m_InputHandle = new InputHandle;
 			input.m_InputHandle->Initiate(input.m_ID);
+	
+			JSONReader read_input_config("Data/Config/input_config.json");
+			if(read_input_config.HasElement("Forward"))
+			{
+				const JSONElement& el = read_input_config.GetElement("Forward");
+				std::string first = read_input_config.ReadElement(el, 0);
+				std::string second = read_input_config.ReadElement(el, 1);
 
-			InputCommand* bind_me = new InputCommand;
-			bind_me->m_Function = std::bind(&Jump, rigidbody);
-			input.m_InputHandle->BindAButton(bind_me);
+				BindToFunction(input, Hash(first.c_str()), [&] { Forward(rigidbody); });
+				BindToFunction(input, Hash(second.c_str()), [&] { Forward(rigidbody); });
 
-			bind_me = new InputCommand;
-			bind_me->m_Function = std::bind(&Jump, rigidbody);
-			input.m_InputHandle->BindSpaceBar(bind_me);
+			}
 
-			bind_me = new InputCommand;
-			bind_me->m_Function = std::bind(&Forward, rigidbody);
-			input.m_InputHandle->BindLThumbYP(bind_me);
 
-			bind_me = new InputCommand;
-			bind_me->m_Function = std::bind(&Forward, rigidbody);
-			input.m_InputHandle->BindWKey(bind_me);
 
-			bind_me = new InputCommand;
-			bind_me->m_Function = std::bind(&Backward, rigidbody);
-			input.m_InputHandle->BindLThumbYN(bind_me);
+			/*input.m_InputHandle->BindSpaceBar([&] { Jump(rigidbody); });
+			input.m_InputHandle->BindAButton([&] { Jump(rigidbody); });
 
-			bind_me = new InputCommand;
-			bind_me->m_Function = std::bind(&Backward, rigidbody);
-			input.m_InputHandle->BindSKey(bind_me);
+			input.m_InputHandle->BindWKey([&] { Forward(rigidbody); });
+			input.m_InputHandle->BindLThumbYP([&] { Forward(rigidbody); });
 
-			bind_me = new InputCommand;
-			bind_me->m_Function = std::bind(&Left, rigidbody);
-			input.m_InputHandle->BindLThumbXN(bind_me);
+			input.m_InputHandle->BindAKey([&] { Left(rigidbody); });
+			input.m_InputHandle->BindLThumbXN([&] { Left(rigidbody); });
 
-			bind_me = new InputCommand;
-			bind_me->m_Function = std::bind(&Left, rigidbody);
-			input.m_InputHandle->BindAKey(bind_me);
+			input.m_InputHandle->BindDKey([&] { Right(rigidbody); });
+			input.m_InputHandle->BindLThumbXP([&] { Right(rigidbody); });
 
-			bind_me = new InputCommand;
-			bind_me->m_Function = std::bind(&Right, rigidbody);
-			input.m_InputHandle->BindLThumbXP(bind_me);
-
-			bind_me = new InputCommand;
-			bind_me->m_Function = std::bind(&Right, rigidbody);
-			input.m_InputHandle->BindDKey(bind_me);
-
+			input.m_InputHandle->BindSKey([&] { Backward(rigidbody); });
+			input.m_InputHandle->BindLThumbYN([&] { Backward(rigidbody); });*/
 
 		}
 		else if (controller_type == "ai")
@@ -323,27 +315,87 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 	return true;
 }
 
-void Jump(CRigidBody* rigidbody)
+void CGame::BindToFunction(InputController& input, u32 hash, std::function<void(void)> fnc)
 {
-	rigidbody->Impulse(CU::Vector3f(0, 1500, 0));
+	switch (hash)
+	{
+		case s_WKey_hash: 
+		{
+			BIND(WKey);
+		} break;
+
+		case s_AKey_hash :
+		{
+			BIND(AKey);
+		} break;
+		case s_SKey_hash: 
+		{
+			BIND(SKey);
+		} break;
+		case s_DKey_hash :
+		{
+			BIND(DKey);
+		} break;
+		case s_SpaceBar_hash : 
+		{
+			BIND(SpaceBar);
+		} break;
+		case s_BButton_hash :
+		{
+			BIND(BButton);
+		} break;
+		case s_YButton_hash :
+		{
+			BIND(YButton);
+		} break;
+		case s_XButton_hash :
+		{
+			BIND(XButton);
+		} break;
+		case s_AButton_hash :
+		{
+			BIND(AButton);
+		} break;
+		case s_LThumbYP_hash:
+		{
+			BIND(LThumbYP);
+		} break;
+		case s_LThumbYN_hash:
+		{
+			BIND(LThumbYN);
+		} break;
+		case s_LThumbXP_hash:
+		{
+			BIND(LThumbXP);
+		} break;
+		case s_LThumbXN_hash:
+		{
+			BIND(LThumbXN);
+		} break;
+	}
 }
 
+//void Jump(CRigidBody* rigidbody)
+//{
+//	rigidbody->Impulse(CU::Vector3f(0, 1500, 0));
+//}
+//
 void Forward(CRigidBody* rigidbody)
 {
 	rigidbody->Impulse(CU::Vector3f(0, 0, 1500));
 }
-
-void Backward(CRigidBody* rigidbody)
-{
-	rigidbody->Impulse(CU::Vector3f(0, 0, -1500));
-}
-
-void Right(CRigidBody* rigidbody)
-{
-	rigidbody->Impulse(CU::Vector3f(1500, 0, 0));
-}
-
-void Left(CRigidBody* rigidbody)
-{
-	rigidbody->Impulse(CU::Vector3f(-1500, 0, 0));
-}
+//
+//void Backward(CRigidBody* rigidbody)
+//{
+//	rigidbody->Impulse(CU::Vector3f(0, 0, -1500));
+//}
+//
+//void Right(CRigidBody* rigidbody)
+//{
+//	rigidbody->Impulse(CU::Vector3f(1500, 0, 0));
+//}
+//
+//void Left(CRigidBody* rigidbody)
+//{
+//	rigidbody->Impulse(CU::Vector3f(-1500, 0, 0));
+//}

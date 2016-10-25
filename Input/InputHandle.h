@@ -3,6 +3,9 @@
 class InputCommand;
 class ControllerInput;
 class InputWrapper;
+
+#define BIND_DECL(name_, to_bind) Bind##name_(InputCommand* input_command) { to_bind = input_command; }
+
 class InputHandle
 {
 public:
@@ -10,7 +13,7 @@ public:
 	void Initiate(u16 controller_ID);
 	void CleanUp();
 	InputCommand* HandleInput();
-
+	void Update();
 
 	void BindX(InputCommand* input_command) { m_XButton = input_command; }
 	void BindY(InputCommand* input_command)	{ m_YButton = input_command; }
@@ -23,6 +26,8 @@ public:
 	void BindLTXN(InputCommand* input_command) { m_LThumbXN = input_command; }
 
 	void BindSpaceBar(InputCommand* input_command) { m_SpaceBar = input_command; }
+	BIND_DECL(WKey, m_WKey);
+
 
 private:
 	ControllerInput* m_Controller = nullptr;
@@ -34,12 +39,19 @@ private:
 	InputCommand* m_BButton = nullptr;
 
 	InputCommand* m_AButton = nullptr;
-	InputCommand* m_SpaceBar = nullptr;
 
 	InputCommand* m_LThumbYP = nullptr;
 	InputCommand* m_LThumbYN = nullptr;
 	InputCommand* m_LThumbXP = nullptr;
 	InputCommand* m_LThumbXN = nullptr;
 
-};
+	InputCommand* m_SpaceBar = nullptr;
+	InputCommand* m_WKey = nullptr;
+	InputCommand* m_SKey = nullptr;
+	InputCommand* m_AKey = nullptr;
+	InputCommand* m_DKey = nullptr;
 
+
+
+
+};

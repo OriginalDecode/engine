@@ -275,6 +275,10 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			input.m_InputHandle->BindLTYP(bind_me);
 
 			bind_me = new InputCommand;
+			bind_me->m_Function = std::bind(&Forward, rigidbody);
+			input.m_InputHandle->BindLTYP(bind_me);
+
+			bind_me = new InputCommand;
 			bind_me->m_Function = std::bind(&Backward, rigidbody);
 			input.m_InputHandle->BindLTYN(bind_me);
 

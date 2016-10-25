@@ -4,7 +4,12 @@ class InputCommand;
 class ControllerInput;
 class InputWrapper;
 
-#define BIND_DECL(name_, to_bind) Bind##name_(InputCommand* input_command) { to_bind = input_command; }
+#define BIND_DECL(name) \
+public : \
+void Bind##name(InputCommand* input_command) { m_##name = input_command; } \
+private : \
+InputCommand * m_##name;
+
 
 class InputHandle
 {
@@ -15,43 +20,22 @@ public:
 	InputCommand* HandleInput();
 	void Update();
 
-	void BindX(InputCommand* input_command) { m_XButton = input_command; }
-	void BindY(InputCommand* input_command)	{ m_YButton = input_command; }
-	void BindB(InputCommand* input_command)	{ m_BButton = input_command; }
-	void BindA(InputCommand* input_command) { m_AButton = input_command; }
-
-	void BindLTYP(InputCommand* input_command) { m_LThumbYP = input_command; }
-	void BindLTYN(InputCommand* input_command) { m_LThumbYN = input_command; }
-	void BindLTXP(InputCommand* input_command) { m_LThumbXP = input_command; }
-	void BindLTXN(InputCommand* input_command) { m_LThumbXN = input_command; }
-
-	void BindSpaceBar(InputCommand* input_command) { m_SpaceBar = input_command; }
-	BIND_DECL(WKey, m_WKey);
-
-
+	BIND_DECL(XButton);
+	BIND_DECL(YButton);
+	BIND_DECL(BButton);
+	BIND_DECL(AButton);
+	BIND_DECL(WKey);
+	BIND_DECL(SKey);
+	BIND_DECL(AKey);
+	BIND_DECL(DKey);
+	BIND_DECL(SpaceBar);
+	BIND_DECL(LThumbYP);
+	BIND_DECL(LThumbYN);
+	BIND_DECL(LThumbXP);
+	BIND_DECL(LThumbXN);
 private:
 	ControllerInput* m_Controller = nullptr;
 	InputWrapper* m_Input = nullptr;
-
-
-	InputCommand* m_XButton = nullptr;
-	InputCommand* m_YButton = nullptr;
-	InputCommand* m_BButton = nullptr;
-
-	InputCommand* m_AButton = nullptr;
-
-	InputCommand* m_LThumbYP = nullptr;
-	InputCommand* m_LThumbYN = nullptr;
-	InputCommand* m_LThumbXP = nullptr;
-	InputCommand* m_LThumbXN = nullptr;
-
-	InputCommand* m_SpaceBar = nullptr;
-	InputCommand* m_WKey = nullptr;
-	InputCommand* m_SKey = nullptr;
-	InputCommand* m_AKey = nullptr;
-	InputCommand* m_DKey = nullptr;
-
-
-
-
 };
+
+#undef BIND_DECL

@@ -3,6 +3,10 @@
 #include "ControllerInput.h"
 #include "InputWrapper.h"
 #include "InputCommand.h"
+
+#define SAFE_DELETE(name) delete m_##name; m_##name = nullptr;
+
+
 void InputHandle::Initiate(u16 controller_ID)
 {
 	m_Controller = new ControllerInput(controller_ID);
@@ -20,16 +24,19 @@ void InputHandle::CleanUp()
 	delete m_Input;
 	m_Input = nullptr;
 
-	delete  m_XButton;
-	delete  m_YButton;
-	delete  m_BButton;
-	delete  m_AButton;
-
-	delete  m_LThumbYP;
-	delete  m_LThumbYN;
-	delete  m_LThumbXP;
-	delete  m_LThumbXN;
-
+	SAFE_DELETE(XButton);
+	SAFE_DELETE(YButton);
+	SAFE_DELETE(BButton);
+	SAFE_DELETE(AButton);
+	SAFE_DELETE(WKey);
+	SAFE_DELETE(SKey);
+	SAFE_DELETE(AKey);
+	SAFE_DELETE(DKey);
+	SAFE_DELETE(SpaceBar);
+	SAFE_DELETE(LThumbYP);
+	SAFE_DELETE(LThumbYN);
+	SAFE_DELETE(LThumbXP);
+	SAFE_DELETE(LThumbXN);
 }
 
 InputCommand* InputHandle::HandleInput()

@@ -264,7 +264,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 
 			InputCommand* bind_me = new InputCommand;
 			bind_me->m_Function = std::bind(&Jump, rigidbody);
-			input.m_InputHandle->BindA(bind_me);
+			input.m_InputHandle->BindAButton(bind_me);
 
 			bind_me = new InputCommand;
 			bind_me->m_Function = std::bind(&Jump, rigidbody);
@@ -272,23 +272,23 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 
 			bind_me = new InputCommand;
 			bind_me->m_Function = std::bind(&Forward, rigidbody);
-			input.m_InputHandle->BindLTYP(bind_me);
+			input.m_InputHandle->BindLThumbYP(bind_me);
 
 			bind_me = new InputCommand;
 			bind_me->m_Function = std::bind(&Forward, rigidbody);
-			input.m_InputHandle->BindLTYP(bind_me);
+			input.m_InputHandle->BindWKey(bind_me);
 
 			bind_me = new InputCommand;
 			bind_me->m_Function = std::bind(&Backward, rigidbody);
-			input.m_InputHandle->BindLTYN(bind_me);
+			input.m_InputHandle->BindLThumbYN(bind_me);
 
 			bind_me = new InputCommand;
 			bind_me->m_Function = std::bind(&Left, rigidbody);
-			input.m_InputHandle->BindLTXN(bind_me);
+			input.m_InputHandle->BindLThumbXN(bind_me);
 
 			bind_me = new InputCommand;
 			bind_me->m_Function = std::bind(&Right, rigidbody);
-			input.m_InputHandle->BindLTXP(bind_me);
+			input.m_InputHandle->BindLThumbXP(bind_me);
 
 
 

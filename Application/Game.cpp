@@ -47,7 +47,6 @@
 #include <hashlist.h>
 #include <DataStructures/Hashmap/Hash.h>
 
-#define BIND(name) input.m_InputHandle->Bind##name(fnc)
 
 
 bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
@@ -273,9 +272,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 				std::string first = read_input_config.ReadElement(el, 0);
 				std::string second = read_input_config.ReadElement(el, 1);
 
-				BindToFunction(input, Hash(first.c_str()), [&] { Forward(rigidbody); });
-				BindToFunction(input, Hash(second.c_str()), [&] { Forward(rigidbody); });
-
+				input.m_InputHandle->Bind(Hash(second.c_str()), [&]() { Forward(rigidbody); });
 			}
 
 
@@ -313,66 +310,6 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 		camera.m_Camera = Snowblind::CEngine::GetInstance()->GetCamera();
 	}
 	return true;
-}
-
-void CGame::BindToFunction(InputController& input, u32 hash, std::function<void(void)> fnc)
-{
-	switch (hash)
-	{
-		case s_WKey_hash: 
-		{
-			BIND(WKey);
-		} break;
-
-		case s_AKey_hash :
-		{
-			BIND(AKey);
-		} break;
-		case s_SKey_hash: 
-		{
-			BIND(SKey);
-		} break;
-		case s_DKey_hash :
-		{
-			BIND(DKey);
-		} break;
-		case s_SpaceBar_hash : 
-		{
-			BIND(SpaceBar);
-		} break;
-		case s_BButton_hash :
-		{
-			BIND(BButton);
-		} break;
-		case s_YButton_hash :
-		{
-			BIND(YButton);
-		} break;
-		case s_XButton_hash :
-		{
-			BIND(XButton);
-		} break;
-		case s_AButton_hash :
-		{
-			BIND(AButton);
-		} break;
-		case s_LThumbYP_hash:
-		{
-			BIND(LThumbYP);
-		} break;
-		case s_LThumbYN_hash:
-		{
-			BIND(LThumbYN);
-		} break;
-		case s_LThumbXP_hash:
-		{
-			BIND(LThumbXP);
-		} break;
-		case s_LThumbXN_hash:
-		{
-			BIND(LThumbXN);
-		} break;
-	}
 }
 
 //void Jump(CRigidBody* rigidbody)

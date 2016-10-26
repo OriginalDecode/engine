@@ -31,7 +31,7 @@ public:
 	void CleanUp();
 	void HandleInput();
 	void Update();
-
+	void Bind(u32 hash, std::function<void()> function);
 	BIND_DECL(XButton);
 	BIND_DECL(YButton);
 	BIND_DECL(BButton);
@@ -46,6 +46,7 @@ public:
 	BIND_DECL(LThumbXP);
 	BIND_DECL(LThumbXN);
 private:
+	void CheckHash(u32 hash);
 	ControllerInput* m_Controller = nullptr;
 	InputWrapper* m_Input = nullptr;
 	std::vector<const char*> m_Names;

@@ -1,19 +1,24 @@
-#include "../Engine/Engine.h"
 #include "InputHandle.h"
-#include "ControllerInput.h"
-#include "InputWrapper.h"
-#include "InputCommand.h"
-#include "../CommonLib/DataStructures/Hashmap/Hash.h"
+
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
+#include "../CommonLib/DataStructures/Hashmap/Hash.h"
+#include "../Engine/Engine.h"
+#include "../hashlist.h"
+
+#include "ControllerInput.h"
+#include "InputWrapper.h"
+#include "InputCommand.h"
 void InputHandle::Initiate(u16 controller_ID)
 {
 	m_Controller = new ControllerInput(controller_ID);
 	m_Input = new InputWrapper;
 	Snowblind::CEngine* engine = Snowblind::CEngine::GetInstance();
 	m_Input->Initiate(engine->GetWindow().GetHWND()
-					, engine->GetWindow().GetWindowInstance());
+		, engine->GetWindow().GetWindowInstance());
 
 	ClassifyBButton();
 	ClassifyYButton();
@@ -64,7 +69,7 @@ void InputHandle::Initiate(u16 controller_ID)
 
 		for (u32 i = 0; i < m_Names.size(); i++)
 		{
-			out_file 
+			out_file
 				<< "static const u32 s_" << m_Names[i] << "_hash = "
 				<< "0x" << std::hex << Hash(m_Names[i]) << ";\n";
 			out_file.flush();
@@ -109,4 +114,30 @@ void InputHandle::Update()
 	if (m_Controller->LeftThumbstickY() < -0.5f) m_LThumbYN();
 	if (m_Controller->LeftThumbstickX() > 0.5f) m_LThumbXP();
 	if (m_Controller->LeftThumbstickX() < -0.5f) m_LThumbXN();
+}
+
+void InputHandle::Bind(u32 hash, std::function<void()> function)
+{
+	//Generate a new header file and add a separate file for the bind switch case?
+	switch (hash)
+	{
+		case s_WKey_hash:
+		{
+			BindWKey(function);
+		}break;
+		case s_SKey_hash:
+		{
+			BindSKey(function);
+		}break;
+		case s_AKey_hash:
+		{
+			BindAKey(function);
+		}break;
+		case s_DKey_hash:
+		{
+			BindDKey(function);
+		}break;
+		default:
+		break;
+	}
 }

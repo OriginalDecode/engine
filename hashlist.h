@@ -1,4 +1,4 @@
-//0xd16eecb0
+//0x4be859b
 #pragma once
 #include "standard_datatype.hpp"
 static const u32 s_EscKey_hash = 0xbfa5b8d7;
@@ -95,7 +95,7 @@ static const u32 s_ArrowUp_hash = 0xc93c2e8d;
 static const u32 s_ArrowDown_hash = 0x5509e283;
 static const u32 s_ArrowLeft_hash = 0x64228f31;
 static const u32 s_ArrowRight_hash = 0xff551079;
-static const u32 s_DeleteKey_hash = 0xc3a8895;
+static const u32 s_KeyDelete_hash = 0x503507b7;
 static const u32 s_InsertKey_hash = 0x12559a3c;
 static const u32 s_PageDown_hash = 0x5a7063c5;
 static const u32 s_PageUp_hash = 0xb04bbce1;

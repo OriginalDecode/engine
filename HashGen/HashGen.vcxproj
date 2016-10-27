@@ -120,10 +120,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\CommonLib\DataStructures\Hashmap\Hash.cpp" />
+    <ClCompile Include="..\CommonLib\Utilities.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CommonLib\DataStructures\Hashmap\Hash.h" />
+    <ClInclude Include="..\CommonLib\Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

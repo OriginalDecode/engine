@@ -21,9 +21,15 @@
     <ClCompile Include="..\CommonLib\DataStructures\Hashmap\Hash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\CommonLib\Utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CommonLib\DataStructures\Hashmap\Hash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommonLib\Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

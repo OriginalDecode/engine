@@ -7,7 +7,8 @@
 
 #include "../CommonLib/DataStructures/Hashmap/Hash.h"
 #include "../Engine/Engine.h"
-#include "../hashlist.h"
+
+#include "hashlist.h"
 
 #include "ControllerInput.h"
 #include "InputWrapper.h"
@@ -19,64 +20,6 @@ void InputHandle::Initiate(u16 controller_ID)
 	Snowblind::CEngine* engine = Snowblind::CEngine::GetInstance();
 	m_Input->Initiate(engine->GetWindow().GetHWND()
 		, engine->GetWindow().GetWindowInstance());
-
-	ClassifyBButton();
-	ClassifyYButton();
-	ClassifyXButton();
-	ClassifyAButton();
-	ClassifyWKey();
-	ClassifyAKey();
-	ClassifySKey();
-	ClassifyDKey();
-	ClassifySpaceBar();
-	ClassifyLThumbXN();
-	ClassifyLThumbXP();
-	ClassifyLThumbYN();
-	ClassifyLThumbYP();
-
-	std::stringstream total_string;
-	for (u32 i = 0; i < m_Names.size(); i++)
-	{
-		total_string << m_Names[i];
-	}
-
-	u32 m_TotalHash = Hash(total_string.str().c_str());
-
-	bool updated = false;
-
-	std::fstream file;
-	file.open("../hashlist.h");
-	if (file.good())
-	{
-		u32 hex_value;
-		file.ignore(2);
-		file >> std::hex >> hex_value;
-		if (hex_value != m_TotalHash)
-			updated = true;
-		file.close();
-	}
-
-	if (updated)
-	{
-		std::ofstream out_file;
-		out_file.open("../hashlist.h");
-		out_file << "//0x" << std::hex << m_TotalHash << "\n";
-		out_file.flush();
-		out_file << "#pragma once\n";
-		out_file.flush();
-		out_file << "#include \"standard_datatype.hpp\"\n";
-		out_file.flush();
-
-		for (u32 i = 0; i < m_Names.size(); i++)
-		{
-			out_file
-				<< "static const u32 s_" << m_Names[i] << "_hash = "
-				<< "0x" << std::hex << Hash(m_Names[i]) << ";\n";
-			out_file.flush();
-		}
-
-		out_file.close();
-	}
 }
 
 void InputHandle::CleanUp()

@@ -44,9 +44,10 @@
 
 #include "../Input/InputHandle.h"
 #include <RigidBody.h>
-#include <hashlist.h>
-#include <DataStructures/Hashmap/Hash.h>
 
+
+
+#include <DataStructures/Hashmap/Hash.h>
 
 
 bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)

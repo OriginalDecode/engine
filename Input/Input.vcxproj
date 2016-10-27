@@ -233,7 +233,7 @@
     </ClCompile>
     <PreBuildEvent>
       <Command>cd $(SolutionDir)
-GenHashes.exe</Command>
+HashGen.exe</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|x64'">

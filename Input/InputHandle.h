@@ -16,10 +16,6 @@ void Bind##name(std::function<void()> input_command) {                         \
   \
 private:                                                                       \
   \
-void Classify##name() {                                                        \
-	m_Names.push_back(#name);                                                  \
-  }                                                                            \
-  \
 std::function<void()>                                                          \
 	  m_##name;
 
@@ -46,7 +42,6 @@ public:
 	BIND_DECL(LThumbXP);
 	BIND_DECL(LThumbXN);
 private:
-	void CheckHash(u32 hash);
 	ControllerInput* m_Controller = nullptr;
 	InputWrapper* m_Input = nullptr;
 	std::vector<const char*> m_Names;

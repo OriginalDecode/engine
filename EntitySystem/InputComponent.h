@@ -4,8 +4,7 @@
 class InputHandle;
 struct InputController final : public ControllerComponent
 {
-	//~InputController() override { delete m_Controller; m_Controller = nullptr; }
+	~InputController() override { delete m_InputHandle; m_InputHandle = nullptr; }
 	s16 m_ID = -1;
 	InputHandle* m_InputHandle = nullptr;
-	//ControllerInput* m_Controller = nullptr;
 };

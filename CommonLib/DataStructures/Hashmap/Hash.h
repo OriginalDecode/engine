@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // MurmurHash3 was written by Austin Appleby, and is placed in the public
 // domain. The author hereby disclaims copyright to this source code.
-#include <standard_datatype.hpp>
+#include "standard_datatype.hpp"
 #ifndef _MURMURHASH3_H_
 #define _MURMURHASH3_H_
 

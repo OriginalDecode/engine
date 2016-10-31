@@ -15,6 +15,6 @@ void CameraSystem::Update(float delta_time)
 	{
 		STranslationComponent& translation = GetComponent<STranslationComponent>(e);
 		CameraComponent& camera = GetComponent<CameraComponent>(e);
-		camera.m_Camera->SetPosition(translation.myOrientation.GetPosition());
+		camera.m_Camera->SetOrientation(translation.myOrientation);
 	}
 }

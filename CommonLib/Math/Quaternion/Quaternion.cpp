@@ -38,13 +38,6 @@ namespace CommonUtilities
 
 	CU::Vector3f Quaternion::operator*(const CU::Vector3f& aVector) const
 	{
-		//Quaternion p;
-		//p.w = 0;
-		//p.v = aVector;
-
-		//const Quaternion& q = *this;
-		//return (q * p * q.Inverted()).v;
-
 		CU::Vector3f vcV = Cross(v, aVector);
 		return aVector + vcV * (2.f * w) + Cross(v, vcV) * 2.f;
 	}

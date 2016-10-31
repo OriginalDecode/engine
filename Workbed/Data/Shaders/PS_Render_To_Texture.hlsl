@@ -26,6 +26,5 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {	
 	float4 diffuse = DiffuseTexture.Sample(linear_Clamp, input.uv);
 	float depth = Depth.Sample(linear_Clamp, input.uv);
-	
 	return diffuse;
 }

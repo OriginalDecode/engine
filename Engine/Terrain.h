@@ -57,5 +57,11 @@ namespace Snowblind
 			CU::Vector4f time;
 		} *myConstantStruct;
 
+		ID3D11Buffer* m_PSConstantBuffer;
+		struct TerrainCameraPos
+		{
+			CU::Vector4f camPos;
+		} *m_PSConstantStruct;
+
 	};
 };

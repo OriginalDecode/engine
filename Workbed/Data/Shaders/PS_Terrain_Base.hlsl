@@ -5,6 +5,11 @@
 //	Samplers & Textures
 //---------------------------------
 
+cbuffer CameraPosition : register(b0)
+{
+	float4 camPosition;
+};
+
 SamplerState linear_Wrap 	: register ( s0 );
 Texture2D AlbedoTexture  	: register ( t0 );
 Texture2D RoughnessTexture 	: register ( t1 );
@@ -48,12 +53,17 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	norm = normalize(mul(input.normal, tangentSpaceMatrix));
     norm.xyz += 1.f;
 	norm.xyz *= 0.5f;
-
 	float depth = input.pos.z;
-
+	float dist = length(camPosition - input.pos);
+	dist = normalize(dist);
 	GBuffer output;
+	
   	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
 	output.Normal = float4(input.normal.xyz, 0.f);
+
+	//if(dist<=1.f)
+	//  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * 0.5;
+
 
 	output.Depth.r = depth;
 	output.Depth.g = 1.f;

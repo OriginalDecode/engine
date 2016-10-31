@@ -22,8 +22,7 @@ void CPhysicsSystem::Update(float aDeltaTime)
 			Entity e = entities[i];
 			STranslationComponent& translation = GetComponent<STranslationComponent>(e);
 			SPhysicsComponent& physics = GetComponent<SPhysicsComponent>(e);
-
-			translation.myOrientation = physics.myBody->GetOrientation();
+			translation.myOrientation = physics.myBody->GetOrientation(physics.m_IsPlayer);
 			physics.myBody->Update(aDeltaTime);
 
 		}

@@ -2,14 +2,15 @@
 
 #include "InputComponent.h"
 #include "TranslationComponent.h"
-#include "PhysicsComponent.h"
-#include "../Physics/RigidBody.h"
-#include "../Physics/PhysicsManager.h"
+#include "CameraComponent.h"
+
+#include "../Input/ControllerInput.h"
 #include "../Input/InputWrapper.h"
 #include "../Input/InputHandle.h"
+#include "../Engine/Camera.h";
 
 InputSystem::InputSystem(CEntityManager& anEntityManager)
-	: BaseSystem(anEntityManager, CreateFilter<Requires<PhysicsComponent, InputController>>())
+	: BaseSystem(anEntityManager, CreateFilter<Requires<CameraComponent, InputController>>())
 {
 }
 
@@ -20,7 +21,8 @@ void InputSystem::Update(float delta_time)
 	{
 		InputController& input = GetComponent<InputController>(e);
 		input.m_InputHandle->HandleInput();
-		input.m_InputHandle->Update();
+		//CameraComponent& camera = GetComponent<CameraComponent>(e);
+		//camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
 	}
 }
 

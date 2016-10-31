@@ -2,36 +2,49 @@
 #include <Windows.h>
 #include <Xinput.h>
 #pragma comment(lib,"XInput9_1_0.lib")
+#include <standard_datatype.hpp>
 
-enum class eXboxButton
+enum eXboxButton
 {
-	A = XINPUT_GAMEPAD_A,
-	B = XINPUT_GAMEPAD_B,
-	Y = XINPUT_GAMEPAD_Y,
-	X = XINPUT_GAMEPAD_X,
-	LB = XINPUT_GAMEPAD_LEFT_SHOULDER,
-	RB = XINPUT_GAMEPAD_RIGHT_SHOULDER,
-	DOWN = XINPUT_GAMEPAD_DPAD_DOWN,
-	UP = XINPUT_GAMEPAD_DPAD_UP,
-	RIGHT = XINPUT_GAMEPAD_DPAD_RIGHT,
-	LEFT = XINPUT_GAMEPAD_DPAD_LEFT,
-	LT = XINPUT_GAMEPAD_LEFT_THUMB,
-	RT = XINPUT_GAMEPAD_RIGHT_THUMB,
-	START = XINPUT_GAMEPAD_START,
-	BACK = XINPUT_GAMEPAD_BACK
+	x_UP = XINPUT_GAMEPAD_DPAD_UP,
+	x_DOWN = XINPUT_GAMEPAD_DPAD_DOWN,
+	x_LEFT = XINPUT_GAMEPAD_DPAD_LEFT,
+	x_RIGHT = XINPUT_GAMEPAD_DPAD_RIGHT,
+	x_START = XINPUT_GAMEPAD_START,
+	x_BACK = XINPUT_GAMEPAD_BACK,
+	x_LT = XINPUT_GAMEPAD_LEFT_THUMB,
+	x_RT = XINPUT_GAMEPAD_RIGHT_THUMB,
+	x_LB = XINPUT_GAMEPAD_LEFT_SHOULDER,
+	x_RB = XINPUT_GAMEPAD_RIGHT_SHOULDER,
+	x_A = XINPUT_GAMEPAD_A,
+	x_B = XINPUT_GAMEPAD_B,
+	x_X = XINPUT_GAMEPAD_X,
+	x_Y = XINPUT_GAMEPAD_Y,
+};
+
+struct ControllerState
+{
+	u16 m_Buttons;
+
+	s16 m_ThumbRX;
+	s16 m_ThumbRY;
+	s16 m_ThumbLY;
+	s16 m_ThumbLX;
+	u8 m_RTrigger;
+	u8 m_LTrigger;
 };
 
 class ControllerInput
 {
 public:
 	ControllerInput(int aPlayer);
-	XINPUT_STATE GetState();
-
+	const ControllerState& GetState() const { return m_State; }
 	bool IsConnected();
 	void Update(float aDeltaTime);
 
 	void Vibrate(unsigned short aLeftVal = 0, unsigned short aRightVal = 0, float someTime = 0);
 
+	int ButtonDown();
 
 	bool ButtonDown(int aKey);
 	bool ButtonUp(int aKey);
@@ -53,6 +66,9 @@ public:
 	const int GetControllerID() const;
 
 private:
+	ControllerState m_State;
+	ControllerState m_PrevState;
+
 
 	XINPUT_STATE myControllerState;
 	XINPUT_STATE myPrevControllerState;

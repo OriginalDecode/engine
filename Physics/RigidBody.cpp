@@ -3,6 +3,7 @@
 #include "PhysicsDefines.h"
 #include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
 #include <Utilities.h>
+#include "ControllerInput.h"
 
 CRigidBody::CRigidBody()
 {
@@ -112,15 +113,6 @@ void CRigidBody::Update(float deltaTime)
 	if (myVelocity.z < -50.f)
 		myVelocity.z = -50.f;
 
-	/*if (myVelocity.y > -myTerminalVelocity.y)
-	{
-		myVelocity.y -= CL::CalcAcceleration(myGravity, myMass) * deltaTime;
-		if (myVelocity.y < -myTerminalVelocity.y)
-			myVelocity.y = -myTerminalVelocity.y;
-	}
-	float drag = CL::CalcDrag(myResistanceDensity, myVelocity.y, myDragCoeff, myCrossSectionArea);
-	myVelocity.y -= drag;*/
-	
 	myBody->setLinearVelocity(btVector3(myVelocity.x, myVelocity.y, myVelocity.z));
 }
 
@@ -129,20 +121,49 @@ btRigidBody* CRigidBody::GetBody()
 	return myBody;
 }
 
-const CU::Matrix44f& CRigidBody::GetOrientation()
+const CU::Matrix44f& CRigidBody::GetOrientation(bool is_player)
 {
 	myWorldTranslation->getOpenGLMatrix(&myOrientation.myMatrix[0]);
+
+	CU::Vector3f axisX(1.f, 0.f, 0.f);
+	CU::Vector3f axisY(0.f, 1.f, 0.f);
+	CU::Vector3f axisZ(0.f, 0.f, 1.f);
+
+	axisX = m_Yaw * m_Pitch * axisX;
+	axisY = m_Yaw * m_Pitch * axisY;
+	axisZ = m_Yaw * m_Pitch * axisZ;
+
+	myOrientation[0] = axisX.x;
+	myOrientation[1] = axisX.y;
+	myOrientation[2] = axisX.z;
+	myOrientation[4] = axisY.x;
+	myOrientation[5] = axisY.y;
+	myOrientation[6] = axisY.z;
+	myOrientation[8] = axisZ.x;
+	myOrientation[9] = axisZ.y;
+	myOrientation[10] = axisZ.z;
+
 	return myOrientation;
 }
 
 void CRigidBody::Impulse(const CU::Vector3f& anImpulseVector)
 {
-	// (#LINUS) myBody->applyCentralImpulse(btVector3(anImpulseVector.x, anImpulseVector.y, anImpulseVector.z));
 	myBody->applyForce(btVector3(anImpulseVector.x, anImpulseVector.y, anImpulseVector.z), btVector3(0.f,0.f,0.f));
 }
 
 CU::Vector3f CRigidBody::GetLinearVelocity()
 {
 	return CU::Vector3f(myBody->getLinearVelocity().getX(), myBody->getLinearVelocity().getY(), myBody->getLinearVelocity().getZ());
+}
+
+void CRigidBody::UpdateOrientation(const ControllerState& controller_state)
+{
+	m_CenterPoint.y -= ((float)controller_state.m_ThumbRY / SHRT_MAX) * 0.01f;
+	m_CenterPoint.x += ((float)controller_state.m_ThumbRX / SHRT_MAX) * 0.01f;
+
+	m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
+
+	m_Pitch = CU::Quaternion(CU::Vector3f(1.f, 0.f, 0.f), m_CenterPoint.y);
+	m_Yaw = CU::Quaternion(CU::Vector3f(0.f, 1.f, 0.f), m_CenterPoint.x);
 }
 

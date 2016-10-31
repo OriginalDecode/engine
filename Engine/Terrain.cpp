@@ -146,6 +146,9 @@ namespace Snowblind
 
 		myVertexData = new SVertexDataWrapper;
 		myConstantStruct = new TerrainConstantStruct;
+
+		m_PSConstantStruct = new TerrainCameraPos;
+
 		myVertexData->myNrOfVertexes = vertices.Size();
 		myVertexData->myStride = sizeof(SVertexPosNormUVBiTang);
 		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
@@ -178,6 +181,9 @@ namespace Snowblind
 			myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
 			myConstantStruct->projection = aCameraProjection;
 			myConstantStruct->time.x = myEngine->GetDeltaTime();
+
+			m_PSConstantStruct->camPos = aCameraOrientation.GetTranslation();
+
 			D3D11_MAPPED_SUBRESOURCE msr;
 			myAPI->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			if (msr.pData != nullptr)
@@ -187,6 +193,16 @@ namespace Snowblind
 			}
 
 			myAPI->GetContext()->Unmap(myConstantBuffer, 0);
+
+			myAPI->GetContext()->Map(m_PSConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+			if (msr.pData != nullptr)
+			{
+				TerrainCameraPos* ptr = (TerrainCameraPos*)msr.pData;
+				memcpy(ptr, &m_PSConstantStruct->camPos, sizeof(TerrainCameraPos));
+			}
+
+			myAPI->GetContext()->Unmap(m_PSConstantBuffer, 0);
+
 		}
 #endif
 	}
@@ -206,6 +222,19 @@ namespace Snowblind
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 		myAPI->SetDebugName(myConstantBuffer, "Model cb");
 		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+
+		ZeroMemory(&cbDesc, sizeof(cbDesc));
+		cbDesc.ByteWidth = sizeof(TerrainCameraPos);
+		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		cbDesc.MiscFlags = 0;
+		cbDesc.StructureByteStride = 0;
+
+		hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &m_PSConstantBuffer);
+		myAPI->SetDebugName(m_PSConstantBuffer, "Model cb");
+		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+
 #endif
 	}
 

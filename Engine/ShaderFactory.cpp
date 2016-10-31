@@ -3,7 +3,7 @@
 #include <d3dcompiler.h>
 #include <Utilities.h>
 #include <JSON/JSONReader.h>
-
+#define SLEEP_TIME 1000
 
 namespace Snowblind
 {
@@ -67,26 +67,25 @@ namespace Snowblind
 		ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 
 		ENGINE_LOG("Creating vertexshader %s", file_path.c_str());
-		HRESULT hr;
 
 		ID3D10Blob* compiled_shader = CompileShader(file_path, "VS", "vs_5_0");
-		hr = device->CreateVertexShader(compiled_shader->GetBufferPointer(), compiled_shader->GetBufferSize(), nullptr, &newShader->vertexShader);
+		HRESULT hr = device->CreateVertexShader(compiled_shader->GetBufferPointer(), compiled_shader->GetBufferSize(), nullptr, &newShader->vertexShader);
 
 		newShader->blob = compiled_shader;
 		newShader->compiledShader = compiled_shader->GetBufferPointer();
 		newShader->shaderSize = compiled_shader->GetBufferSize();
 
 		CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Vertex Shader.");
-		CEngine::GetAPI()->SetDebugName(newShader->vertexShader, "VertexShader");
+		CEngine::GetAPI()->SetDebugName(newShader->vertexShader, file_path);
 #endif
 		return newShader;
 	}
 
 	void CShaderFactory::ReloadVertex(const std::string& aFilePath)
 	{
-		Sleep(10);
+		Sleep(SLEEP_TIME);
 		CU::GrowingArray<CEffect*> effectPointers = GetEffectArray(aFilePath);
-		CreateVertexShader(aFilePath);
+		myVertexShaders[aFilePath] = CreateVertexShader(aFilePath);
 		for each (CEffect* effect in effectPointers)
 		{
 			effect->myVertexShader = myVertexShaders[aFilePath];
@@ -120,7 +119,7 @@ namespace Snowblind
 		
 		HRESULT hr;
 		ID3D10Blob* compiled_shader = CompileShader(file_path, "PS", "ps_5_0");
-
+		DL_ASSERT_EXP(compiled_shader, "Shader was null");
 		hr = device->CreatePixelShader(compiled_shader->GetBufferPointer(), compiled_shader->GetBufferSize(), nullptr, &newShader->pixelShader);
 		CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Pixel Shader.");
 
@@ -135,9 +134,9 @@ namespace Snowblind
 
 	void CShaderFactory::ReloadPixel(const std::string& aFilePath)
 	{
-		Sleep(10);
+		Sleep(SLEEP_TIME);
 		CU::GrowingArray<CEffect*> effectPointers = GetEffectArray(aFilePath);
-		CreatePixelShader(aFilePath);
+		myPixelShaders[aFilePath] = CreatePixelShader(aFilePath);
 		for each (CEffect* effect in effectPointers)
 		{
 			effect->myPixelShader = myPixelShaders[aFilePath];
@@ -336,8 +335,8 @@ namespace Snowblind
 		shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
 #endif
 
-		ID3D10Blob* compiledShader = 0;
-		ID3D10Blob* compilationMessage = 0;
+		ID3D10Blob* compiledShader = nullptr;
+		ID3D10Blob* compilationMessage = nullptr;
 		std::wstring fileName(file_path.begin(), file_path.end());
 
 		hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, shader_type.c_str(), feature_level.c_str(), shaderFlag, NULL, &compiledShader, &compilationMessage);
@@ -345,12 +344,14 @@ namespace Snowblind
 		{
 			std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), file_path);
 			DL_WARNING("%s", msg.c_str());
-		}
-		if (FAILED(hr))
-		{
-			DL_WARNINGBOX(myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), file_path).c_str());
-		}
+			// (#LINUS) Should be output to a warninglist in engine debug tools.
+			//DL_WARNINGBOX(myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), file_path).c_str());
 
+		}
+		if(!CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Shader.") && hr != S_OK)
+		{
+			DL_MESSAGE("D3DCompileFromFile returned != S_OK but did not assert?");
+		}
 		return compiledShader;
 	}
 #endif
@@ -449,7 +450,7 @@ namespace Snowblind
 
 	void CShaderFactory::Update()
 	{
-		for each(FileWatcher* watcher in myFileWatchers)
+		for (FileWatcher* watcher : myFileWatchers)
 		{
 			watcher->FlushChanges();
 		}

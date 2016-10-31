@@ -18,6 +18,13 @@ class CEntityManager;
 class CPhysicsManager;
 class CRigidBody;
 struct InputController;
+
+static void Jump(CRigidBody* rigidbody);
+static void Forward(CRigidBody* rigidbody);
+static void Backward(CRigidBody* rigidbody);
+static void Right(CRigidBody* rigidbody);
+static void Left(CRigidBody* rigidbody);
+
 class CGame
 {
 public:
@@ -28,7 +35,6 @@ public:
 	void Update(float aDeltaTime);
 
 private:
-
 	bool CreateLevel(const char* level_path);
 	bool CreateEntity(const char* entity_path, JSONReader& level_reader, JSONElement::ConstMemberIterator it);
 
@@ -56,11 +62,6 @@ private:
 	CRigidBody* rigidbody;
 	SLinePoint raycast[2];
 
-	void BindToFunction(InputController& input, u32 hash, std::function<void(void)> fnc);
 };
-static void Jump(CRigidBody* rigidbody);
-static void Forward(CRigidBody* rigidbody);
-static void Backward(CRigidBody* rigidbody);
-static void Right(CRigidBody* rigidbody);
-static void Left(CRigidBody* rigidbody);
+
 

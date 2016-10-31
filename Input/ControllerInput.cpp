@@ -1,28 +1,28 @@
 #include "ControllerInput.h"
 ControllerInput::ControllerInput(int aPlayer)
 {
-	//Set the controller ID (0 -> 3) 
 	myControllerID = aPlayer;
-}
-
-XINPUT_STATE ControllerInput::GetState()
-{
-	ZeroMemory(&myControllerState, sizeof(XINPUT_STATE));
-	XInputGetState(myControllerID, &myControllerState);
-
-	return myControllerState;
 }
 
 bool ControllerInput::IsConnected()
 {
-	//Copy the current controllerState to the Previous one, needed to check ButtonUp and ButtonTap.
 	memcpy_s(&myPrevControllerState, sizeof(myPrevControllerState), &myControllerState, sizeof(myControllerState));
-
-	//Gets the state and saves in the stateResult DWORD.
 	DWORD stateResult = XInputGetState(myControllerID, &myControllerState);
-
 	if (stateResult != ERROR_SUCCESS)
+	{
 		return false;
+	}
+
+
+	m_PrevState = m_State;
+
+	m_State.m_Buttons = myControllerState.Gamepad.wButtons;
+	m_State.m_ThumbRX = myControllerState.Gamepad.sThumbRX;
+	m_State.m_ThumbRY = myControllerState.Gamepad.sThumbRY;
+	m_State.m_ThumbLY = myControllerState.Gamepad.sThumbLY;
+	m_State.m_ThumbLX = myControllerState.Gamepad.sThumbLX;
+	m_State.m_RTrigger = myControllerState.Gamepad.bRightTrigger;
+	m_State.m_LTrigger = myControllerState.Gamepad.bLeftTrigger;
 
 	return true;
 }
@@ -57,64 +57,4 @@ void ControllerInput::Vibrate(unsigned short aLeftVal, unsigned short aRightVal,
 	myVibrationTime = someTime;
 	myRightMotorValue = aRightVal;
 	myLeftMotorValue = aLeftVal;
-}
-
-bool ControllerInput::ButtonDown(eXboxButton aKey)
-{
-	return (myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0;
-}
-
-bool ControllerInput::ButtonUp(eXboxButton aKey)
-{
-	return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0));
-}
-
-bool ControllerInput::ButtonTap(eXboxButton aKey)
-{
-	return (((myControllerState.Gamepad.wButtons & static_cast<int>(aKey)) != 0) && ((myPrevControllerState.Gamepad.wButtons & static_cast<int>(aKey)) == 0));
-}
-
-bool ControllerInput::ButtonDown(int aKey)
-{
-
-	return (myControllerState.Gamepad.wButtons & (aKey)) != 0;
-}
-
-bool ControllerInput::ButtonUp(int aKey)
-{
-	return (((myControllerState.Gamepad.wButtons & (aKey)) == 0) && ((myPrevControllerState.Gamepad.wButtons & (aKey)) != 0));
-}
-
-bool ControllerInput::ButtonTap(int aKey)
-{
-	return (((myControllerState.Gamepad.wButtons & (aKey)) != 0) && ((myPrevControllerState.Gamepad.wButtons & (aKey)) == 0));
-}
-
-float ControllerInput::LeftThumbstickX()
-{
-	return static_cast<float>(myControllerState.Gamepad.sThumbLX) / SHRT_MAX;
-}
-
-float ControllerInput::LeftThumbstickY()
-{
-	return static_cast<float>(myControllerState.Gamepad.sThumbLY) / SHRT_MAX;
-}
-
-float ControllerInput::RightThumbstickX()
-{
-	return static_cast<float>(myControllerState.Gamepad.sThumbRX) / SHRT_MAX;
-}
-float ControllerInput::RightThumbstickY()
-{
-	return static_cast<float>(myControllerState.Gamepad.sThumbRY) / SHRT_MAX;
-}
-
-float ControllerInput::LeftTrigger()
-{
-	return static_cast<float>(myControllerState.Gamepad.bLeftTrigger) / 255;
-}
-
-float ControllerInput::RightTrigger()
-{
-	return static_cast<float>(myControllerState.Gamepad.bRightTrigger) / 255;
 }

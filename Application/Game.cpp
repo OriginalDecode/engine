@@ -116,24 +116,6 @@ void CGame::Update(float aDeltaTime)
 	std::stringstream ss;
 	ss << myEngine->GetFPS() << "\n" << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::CEngine::GetInstance()->GetLocalTimeAsString();
 
-	//if (CU::Input::InputWrapper::GetInstance()->MouseDown(0))
-	//{
-	//	pointHit = myPhysicsManager->RayCast(myEngine->GetCamera()->GetPosition(), myPicker->GetCurrentRay());
-
-	//	currentRay = pointHit;
-	//	raycast[0] = SLinePoint(myEngine->GetCamera()->GetPosition(), CU::Vector3f(0, 1, 0));
-	//	raycast[1] = SLinePoint(pointHit, CU::Vector3f(0, 1, 0));
-	//}
-
-	/*std::stringstream p;
-	p << "Raycast Point" << "\nX : " << pointHit.x << "\nY : " << pointHit.y << "\nZ : " << pointHit.z;*/
-
-	/*std::stringstream c;
-	c << "Cursor Coord" << "\nX : " << CU::Input::InputWrapper::GetInstance()->GetX() << "\nY : " << CU::Input::InputWrapper::GetInstance()->GetY() 
-		<< "\nRay coord" << "\nX : " << currentRay.x << "\nY : " << currentRay.y << "\nZ : " << currentRay.z;
-
-	mySynchronizer->AddRenderCommand(RenderCommand(c.str(), { 200, 900 }, eType::TEXT));*/
-	//mySynchronizer->AddRenderCommand(RenderCommand(p.str(), { 0, 900 }, eType::TEXT));
 	mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
@@ -160,11 +142,11 @@ bool CGame::CreateLevel(const char* level_path)
 	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(500, 0, 0), CU::Vector2f(512, 512)));
 	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(500, 0, 500), CU::Vector2f(512, 512)));
 
-	/*for (s32 i = 0; i < myTerrain.Size(); i++)
+	for (s32 i = 0; i < myTerrain.Size(); i++)
 	{
 		myTerrainBodies.Add(myPhysicsManager->CreateBody());
 		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
-	}*/
+	}
 
 	JSONReader reader(level_path);
 	const JSONElement& el = reader.GetElement("root");
@@ -249,6 +231,13 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 		}
 	}
 
+	if (entityReader.HasElement("camera"))
+	{
+		myEntityManager->AddComponent<CameraComponent>(e);
+		CameraComponent& camera = myEntityManager->GetComponent<CameraComponent>(e);
+		camera.m_Camera = Snowblind::CEngine::GetInstance()->GetCamera();
+	}
+
 	if (entityReader.HasElement("controller"))
 	{
 		std::string controller_type;
@@ -258,7 +247,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 		{
 			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
 			rigidbody = p.myBody;
-
+			p.m_IsPlayer = true;
 			myEntityManager->AddComponent<InputController>(e);
 			InputController& input = myEntityManager->GetComponent<InputController>(e);
 			input.m_ID = m_LocalPlayerCount++;
@@ -267,31 +256,67 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			input.m_InputHandle->Initiate(input.m_ID);
 	
 			JSONReader read_input_config("Data/Config/input_config.json");
+
 			if(read_input_config.HasElement("Forward"))
 			{
 				const JSONElement& el = read_input_config.GetElement("Forward");
 				std::string first = read_input_config.ReadElement(el, 0);
 				std::string second = read_input_config.ReadElement(el, 1);
-
+				input.m_InputHandle->Bind(Hash(first.c_str()), [&]() { Forward(rigidbody); });
 				input.m_InputHandle->Bind(Hash(second.c_str()), [&]() { Forward(rigidbody); });
 			}
 
+			if (read_input_config.HasElement("Back"))
+			{
+				const JSONElement& el = read_input_config.GetElement("Back");
+				std::string first = read_input_config.ReadElement(el, 0);
+				std::string second = read_input_config.ReadElement(el, 1);
+				input.m_InputHandle->Bind(Hash(first.c_str()), [&]() { Backward(rigidbody); });
+				input.m_InputHandle->Bind(Hash(second.c_str()), [&]() { Backward(rigidbody); });
+			}
 
+			if (read_input_config.HasElement("Left"))
+			{
+				const JSONElement& el = read_input_config.GetElement("Left");
+				std::string first = read_input_config.ReadElement(el, 0);
+				std::string second = read_input_config.ReadElement(el, 1);
+				input.m_InputHandle->Bind(Hash(first.c_str()), [&]() { Left(rigidbody); });
+				input.m_InputHandle->Bind(Hash(second.c_str()), [&]() { Left(rigidbody); });
+			}
 
-			/*input.m_InputHandle->BindSpaceBar([&] { Jump(rigidbody); });
-			input.m_InputHandle->BindAButton([&] { Jump(rigidbody); });
+			if (read_input_config.HasElement("Right"))
+			{
+				const JSONElement& el = read_input_config.GetElement("Right");
+				std::string first = read_input_config.ReadElement(el, 0);
+				std::string second = read_input_config.ReadElement(el, 1);
+				input.m_InputHandle->Bind(Hash(first.c_str()), [&]() { Right(rigidbody); });
+				input.m_InputHandle->Bind(Hash(second.c_str()), [&]() { Right(rigidbody); });
+			}
 
-			input.m_InputHandle->BindWKey([&] { Forward(rigidbody); });
-			input.m_InputHandle->BindLThumbYP([&] { Forward(rigidbody); });
+			if (read_input_config.HasElement("Jump"))
+			{
+				const JSONElement& el = read_input_config.GetElement("Jump");
+				std::string first = read_input_config.ReadElement(el, 0);
+				std::string second = read_input_config.ReadElement(el, 1);
+				input.m_InputHandle->Bind(Hash(first.c_str()), [&]() { Jump(rigidbody); });
+				input.m_InputHandle->Bind(Hash(second.c_str()), [&]() { Jump(rigidbody); });
+			}
 
-			input.m_InputHandle->BindAKey([&] { Left(rigidbody); });
-			input.m_InputHandle->BindLThumbXN([&] { Left(rigidbody); });
+			input.m_InputHandle->Bind(Hash("RThumbYP"), [&](){
+				p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+			});
 
-			input.m_InputHandle->BindDKey([&] { Right(rigidbody); });
-			input.m_InputHandle->BindLThumbXP([&] { Right(rigidbody); });
+			input.m_InputHandle->Bind(Hash("RThumbYN"), [&]() {
+				p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+			});
+			
+			input.m_InputHandle->Bind(Hash("RThumbXP"), [&]() {
+				p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+			});
 
-			input.m_InputHandle->BindSKey([&] { Backward(rigidbody); });
-			input.m_InputHandle->BindLThumbYN([&] { Backward(rigidbody); });*/
+			input.m_InputHandle->Bind(Hash("RThumbXN"), [&]() {
+				p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+			});
 
 		}
 		else if (controller_type == "ai")
@@ -303,37 +328,45 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			myEntityManager->AddComponent<NetworkController>(e);
 		}
 	}
-
-	if (entityReader.HasElement("camera"))
-	{
-		myEntityManager->AddComponent<CameraComponent>(e);
-		CameraComponent& camera = myEntityManager->GetComponent<CameraComponent>(e);
-		camera.m_Camera = Snowblind::CEngine::GetInstance()->GetCamera();
-	}
+	
 	return true;
 }
 
-//void Jump(CRigidBody* rigidbody)
-//{
-//	rigidbody->Impulse(CU::Vector3f(0, 1500, 0));
-//}
-//
+// (#LINUS) Needs to be addressed in the future.
+
+void Jump(CRigidBody* rigidbody)
+{
+	rigidbody->Impulse(CU::Vector3f(0, 1500, 0));
+}
+
 void Forward(CRigidBody* rigidbody)
 {
-	rigidbody->Impulse(CU::Vector3f(0, 0, 1500));
+	CU::Matrix44f orientation = rigidbody->GetOrientation(false);
+	CU::Vector4f forward = orientation.GetForward();
+	forward *= 150.f;
+	rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
 }
-//
-//void Backward(CRigidBody* rigidbody)
-//{
-//	rigidbody->Impulse(CU::Vector3f(0, 0, -1500));
-//}
-//
-//void Right(CRigidBody* rigidbody)
-//{
-//	rigidbody->Impulse(CU::Vector3f(1500, 0, 0));
-//}
-//
-//void Left(CRigidBody* rigidbody)
-//{
-//	rigidbody->Impulse(CU::Vector3f(-1500, 0, 0));
-//}
+
+void Backward(CRigidBody* rigidbody)
+{
+	CU::Matrix44f orientation = rigidbody->GetOrientation(false);
+	CU::Vector4f forward = orientation.GetForward();
+	forward *= -150.f;
+	rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
+}
+
+void Right(CRigidBody* rigidbody)
+{
+	CU::Matrix44f orientation = rigidbody->GetOrientation(false);
+	CU::Vector4f right = orientation.GetRight();
+	right *= 150.f;
+	rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
+}
+
+void Left(CRigidBody* rigidbody)
+{
+	CU::Matrix44f orientation = rigidbody->GetOrientation(false);
+	CU::Vector4f right = orientation.GetRight();
+	right *= -150.f;
+	rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
+}

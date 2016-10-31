@@ -1,3 +1,7 @@
 {
-    "Forward" : ["LThumbYP", "AKey"]
+    "Forward" : ["LThumbYP", "WKey"],
+    "Back" : ["LThumbYN", "SKey"],
+    "Right" : ["LThumbXP", "DKey"],
+    "Left" : ["LThumbXN", "AKey"],
+    "Jump" : ["AButton", "SpaceBar"]
 }

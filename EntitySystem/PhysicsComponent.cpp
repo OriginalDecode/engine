@@ -4,4 +4,5 @@ SPhysicsComponent::~SPhysicsComponent()
 {
 	delete myBody;
 	myBody = nullptr;
+	bool isPlayer = false;
 }

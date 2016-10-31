@@ -1,5 +1,8 @@
 #pragma once
 #include "../CommonLib/Math/Matrix/Matrix44.h"
+#include "../CommonLib/Math/Quaternion/Quaternion.h"
+
+struct ControllerState;
 namespace Snowblind
 {
 	enum class eDirection
@@ -37,7 +40,8 @@ namespace Snowblind
 		void Move(eDirection aDirection, float aSpeed);
 		void SetPosition(const CU::Vector3f& position);
 		void SetTranslation(const CU::Vector4f& translation);
-
+		void Update(const ControllerState& controller_state);
+		void SetOrientation(const CU::Matrix44f& matrix);
 	private:
 		void operator=(CCamera&) = delete;
 		void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);
@@ -49,6 +53,12 @@ namespace Snowblind
 
 		CU::Matrix44f myProjectionMatrix;
 		CU::Matrix44f myOrthogonalMatrix;
+
+
+		CU::Vector2f m_CenterPoint;
+		CU::Quaternion myPitch;
+		CU::Quaternion myYaw;
+
 	};
 
 	inline const CU::Vector3f CCamera::GetPosition() const

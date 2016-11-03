@@ -36,7 +36,6 @@ namespace Snowblind
 		void SetText(const std::string& aText);
 		const std::string& GetText() const;
 		void Render();
-		CEffect* GetEffect();
 		ID3D11ShaderResourceView* GetAtlas();
 		const CU::Math::Vector2<float>& GetSize();
 		const short GetFontPixelSize();

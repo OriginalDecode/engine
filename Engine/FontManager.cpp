@@ -15,7 +15,7 @@
 #include "Engine.h"
 #include <vector>
 #include <ScreenGrab.h>
-#define SAVE
+//#define SAVE
 #define SAVE_DDS
 #ifndef SAVE_DDS
 #define SAVE_PNG

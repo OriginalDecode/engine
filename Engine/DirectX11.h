@@ -90,7 +90,7 @@ namespace Snowblind
 		void SetHullShader(ID3D11HullShader* aHullShader);
 		void SetDomainShader(ID3D11DomainShader* aDomainShader);
 		void SetComputeShader(ID3D11ComputeShader* aComputeShader);
-
+		void ReportLiveObjects();
 	private:
 
 		void CreateDeviceAndSwapchain();

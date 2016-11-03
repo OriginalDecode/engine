@@ -34,7 +34,6 @@ namespace Snowblind
 		myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 		if (!myText)
 			return false;
-		//FONT_LOG("Font Took : %fms to load.", loadTime);
 
 		myPointLight = new CPointLight; //Where should this live?
 		if (!myPointLight)
@@ -48,11 +47,13 @@ namespace Snowblind
 		myDepthTexture = new CTexture; //Where should this live?
 		if (!myDepthTexture)
 			return false;
-
+		
 		myDepthTexture->InitStencil(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
 		myDepthTexture->SetDebugName("myDepthTexture");
 
-		mySkysphere = new CSkySphere("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", camera_3d);
+		mySkysphere = new CSkySphere;
+		mySkysphere->Initiate("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", camera_3d);
+		mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Data/Shaders/T_Skysphere_Layer.json");
 		if (!mySkysphere)
 			return false;
 		//mySprite = new CSprite;
@@ -81,6 +82,7 @@ namespace Snowblind
 	{
 		SAFE_DELETE(my3DLine);
 		SAFE_DELETE(mySprite);
+		mySkysphere->CleanUp();
 		SAFE_DELETE(mySkysphere);
 		SAFE_DELETE(myDepthTexture);
 		SAFE_DELETE(my2DCamera);
@@ -112,6 +114,7 @@ namespace Snowblind
 		RenderSpotlight();
 
 		myEngine->ResetRenderTargetAndDepth();
+		mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
 		myDeferredRenderer->Finalize();
 

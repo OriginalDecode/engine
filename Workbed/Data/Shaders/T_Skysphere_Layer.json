@@ -1,0 +1,4 @@
+{
+	"VertexShader" : "VS_Skysphere_Layer.hlsl",
+	"PixelShader" : "PS_Skysphere_Layer.hlsl"
+}

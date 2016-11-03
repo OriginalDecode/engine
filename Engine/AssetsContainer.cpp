@@ -18,6 +18,7 @@ namespace Snowblind
 		DELETE_MAP(myModels);
 		DELETE_MAP(myEffects);
 		DELETE_MAP(myTextures);
+		DELETE_MAP(mySprites);
 	}
 
 	void CAssetsContainer::Initiate()

@@ -42,8 +42,10 @@ CPhysicsManager::~CPhysicsManager()
 
 void CPhysicsManager::Add(btRigidBody* aBody)
 {
+	BeginTicketMutex(&m_Mutex);
 	myDynamicsWorld->addRigidBody(aBody);
 	myBodies.Add(aBody);
+	EndTicketMutex(&m_Mutex);
 }
 
 void CPhysicsManager::Remove(btRigidBody* aBody)

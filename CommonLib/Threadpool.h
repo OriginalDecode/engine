@@ -6,9 +6,9 @@
 class Threadpool
 {
 public:
-	Threadpool();
-	~Threadpool();
+	Threadpool() = default;
 
+	void Initiate();
 	void Update();
 	void AddWork(Work aWorkOrder);
 	void CleanUp();

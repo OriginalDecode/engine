@@ -4,6 +4,7 @@
 #include "snowblind_shared.h"
 #include "Window.h"
 #include <CommonLib/Math/Vector/Vector.h>
+#include <CommonLib/Threadpool.h>
 #ifndef _WINDEF_
 
 struct HINSTANCE__;
@@ -106,9 +107,10 @@ namespace Snowblind
 
 		const SLocalTime& GetLocalTime();
 		std::string GetLocalTimeAsString();
-
 		CTerrain* CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize);
 		Window& GetWindow() { return m_Window; }
+
+		Threadpool& GetThreadpool();
 	private:
 		CEngine() = default;
 		//void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
@@ -117,6 +119,7 @@ namespace Snowblind
 
 		static CEngine* myInstance;
 		static IGraphicsAPI* myAPI;
+		Threadpool m_Threadpool;
 
 		SWindowSize myWindowSize;
 		SLocalTime myLocalTime;

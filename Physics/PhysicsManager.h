@@ -1,6 +1,8 @@
 #pragma once
 #include "../CommonLib/DataStructures/GrowingArray.h"
 #include "../CommonLib/Math/Vector/Vector.h"
+#include "../Engine/snowblind_shared.h"
+
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btBroadphaseInterface;
@@ -26,6 +28,7 @@ public:
 
 
 private:
+	Ticket_Mutex m_Mutex;
 
 	btDefaultCollisionConfiguration* myDefaultCollisionConfiguration = nullptr;
 	btCollisionDispatcher* myCollisionDispatcher = nullptr;

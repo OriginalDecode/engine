@@ -53,8 +53,6 @@ namespace Snowblind
 		myWindowSize.myHeight = window_height;
 		myWindowSize.myWidth = window_width;
 
-		//CreateAppWindow(instance_handle, window_proc);
-
 		WindowCreateInfo window_create_info;
 		window_create_info.window_height = window_height;
 		window_create_info.window_width = window_width;
@@ -63,12 +61,10 @@ namespace Snowblind
 		m_Window.Initiate(window_create_info);
 		m_Window.ShowWindow();
 		myHWND = m_Window.GetHWND();
-
+	
 		if(!m_Window.IsWindowActive())
 			m_Window.OnActive();
-		
 		SetWindowText(myHWND, "Snowblind Engine");
-
 #ifdef SNOWBLIND_DX11
 		myAPI = new DirectX11;
 		const char* api_name = "DirectX11";
@@ -76,46 +72,50 @@ namespace Snowblind
 		myAPI = new Vulkan;
 		const char* api_name = "Vulkan";
 #endif
-
+	
 		CreateInfo create_info;
 		create_info.m_HWND = myHWND;
 		create_info.m_Instance = instance_handle;
 		create_info.m_WindowWidth = window_width;
 		create_info.m_WindowHeight = window_height;
 		create_info.m_APIName = api_name;
-
+	
 		DL_ASSERT_EXP(myAPI->Initiate(create_info), "Engine : Failed to initiate graphicsAPI");
-
+	
 		myAssetsContainer = new CAssetsContainer;
 		myAssetsContainer->Initiate();
-
+	
 		myFontManager = new CFontManager;
 		myFontManager->Initiate();
-
+	
 		mySynchronizer = new CSynchronizer;
 		DL_ASSERT_EXP(mySynchronizer->Initiate(), "Engine : Failed to Initiate Synchronizer!");
-
-
+	
+	
 		myCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight);
 		my2DCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
 		myRenderer = new CRenderer;
 		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
-
+	
 		myTimeManager = new CU::TimeManager;
 		Randomizer::Create();
-
+	
+	
+		m_Threadpool.Initiate();
 		m_IsInitiated = true;
 		return true;
 	}
 
 	bool CEngine::CleanUp()
 	{
+		m_Threadpool.CleanUp();
 		SAFE_DELETE(myAssetsContainer);
 		SAFE_DELETE(mySynchronizer);
 		SAFE_DELETE(myRenderer);
 		SAFE_DELETE(myCamera);
 		SAFE_DELETE(myFontManager);
 		SAFE_DELETE(myTimeManager);
+
 		Randomizer::Destroy();
 
 		DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
@@ -136,9 +136,10 @@ namespace Snowblind
 	void CEngine::Update()
 	{
 		m_DeltaTime = myTimeManager->GetDeltaTime();
-		myAssetsContainer->Update();
+		//myAssetsContainer->Update();
 		myTimeManager->Update();
 		myRenderer->Render();
+		m_Threadpool.Update();
 	}
 
 	void CEngine::Present()
@@ -211,10 +212,12 @@ namespace Snowblind
 
 	const std::string& CEngine::LoadModel(const std::string& aFilePath, const std::string& effect)
 	{
+		//m_Threadpool.AddWork(Work([&]() {
 		return myAssetsContainer->LoadModel(aFilePath, effect);
+	/*	}));
+		return aFilePath;*/
 	}
 
-	// I AM FUNNY !!
 	std::string string_together(u16 time, u16 to_compare)
 	{
 		std::string to_return;
@@ -304,8 +307,8 @@ namespace Snowblind
 		return newTerrain;
 	}
 
-	//void CEngine::CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc)
-	//{
-	//	
-	//}
+	Threadpool& CEngine::GetThreadpool()
+	{
+		return m_Threadpool;
+	}
 };

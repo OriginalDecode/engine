@@ -45,12 +45,12 @@ namespace Snowblind
 	CTexture::~CTexture()
 	{
 #ifdef SNOWBLIND_DX11
-		SAFE_RELEASE(myDepthStencil);
-		SAFE_RELEASE(myShaderResource);
-		SAFE_RELEASE(myRenderTargetView);
-		SAFE_RELEASE(myDepthStencilShaderView);
-		SAFE_RELEASE(myDepthTexture);
 		SAFE_RELEASE(myTexture);
+		SAFE_RELEASE(myShaderResource);
+		SAFE_RELEASE(myDepthTexture);
+		SAFE_RELEASE(myDepthStencil);
+		SAFE_RELEASE(myDepthStencilShaderView);
+		SAFE_RELEASE(myRenderTargetView);
 #endif
 	}
 

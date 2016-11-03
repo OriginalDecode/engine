@@ -43,6 +43,8 @@ namespace Snowblind
 	CTerrain::~CTerrain()
 	{
 		SAFE_DELETE(mySurface);
+		SAFE_DELETE(m_PSConstantStruct);
+		SAFE_RELEASE(m_PSConstantBuffer);
 	}
 
 	void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)

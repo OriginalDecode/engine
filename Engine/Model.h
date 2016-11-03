@@ -9,9 +9,9 @@ enum eModelStates : int
 	LIGHT_MESH,
 	_COUNT
 };
-
 namespace Snowblind
 {
+static Ticket_Mutex g_ModelMutex;
 	class CModel : public CBaseModel
 	{
 		friend class CModelImporter;
@@ -25,7 +25,8 @@ namespace Snowblind
 		void SetIsLightmesh();
 		void SetPosition(const CU::Vector3f& aPosition);
 		CU::Matrix44f& GetOrientation();
-		
+		void SetOrientation(CU::Matrix44f orientation) { myOrientation = orientation; }
+		void Update(float dt);
 	private:
 		void InitConstantBuffer();
 		CU::GrowingArray<SVertexTypePosCol> myVertices;

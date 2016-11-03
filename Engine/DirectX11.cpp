@@ -31,35 +31,33 @@ namespace Snowblind
 		{
 			 SAFE_RELEASE(it->second);
 		}
-
-
 		mySwapchain->SetFullscreenState(FALSE, nullptr);
 		myEngineFlags[static_cast<u16>(eEngineFlags::FULLSCREEN)] = FALSE;
 
 		SAFE_DELETE(myViewport);
 
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
-
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::MASK_TEST)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::READ_NO_WRITE)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_DISABLED)]);
 		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_ENABLED)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_DISABLED)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::READ_NO_WRITE)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::MASK_TEST)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
 
 		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::WIREFRAME)]);
 		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
 		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
+		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::MSAA)]);
 
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::LIGHT_BLEND)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::BLEND_FALSE)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::PARTICLE_BLEND)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::ALPHA_BLEND)]);
+
 		SAFE_RELEASE(myBlendStates[u16(eBlendStates::NO_BLEND)]);
+		SAFE_RELEASE(myBlendStates[u16(eBlendStates::LIGHT_BLEND)]);
+		SAFE_RELEASE(myBlendStates[u16(eBlendStates::ALPHA_BLEND)]);
+		SAFE_RELEASE(myBlendStates[u16(eBlendStates::BLEND_FALSE)]);
 
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_WRAP)]);
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_CLAMP)]);
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_WRAP)]);
 		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_CLAMP)]);
+		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_WRAP)]);
+		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_CLAMP)]);
+		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_WRAP)]);
+		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::NONE)]);
 
 		SAFE_RELEASE(myDepthView);
 		SAFE_RELEASE(myDepthBuffer);
@@ -78,7 +76,7 @@ namespace Snowblind
 			ss << "\nDebug is released last. Will report as Live Object! 0x" << myDebug << "\nWatch out for false reports. \n====\n";
 			OutputDebugString(ss.str().c_str());
 
-			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL /*| D3D11_RLDO_IGNORE_INTERNAL*/);
+			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
 			SAFE_RELEASE(myDebug);
 		}
 
@@ -518,6 +516,13 @@ namespace Snowblind
 	{
 		DL_ASSERT_EXP(aComputeShader != nullptr, "computeshader was null.");
 		myContext->CSSetShader(aComputeShader, nullptr, 0);
+	}
+
+	void DirectX11::ReportLiveObjects()
+	{
+		myContext->ClearState();
+		myContext->Flush();
+		myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
 	}
 
 	void DirectX11::OnAltEnter()

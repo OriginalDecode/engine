@@ -18,19 +18,20 @@ namespace Snowblind
 	{
 		mySurfaces.DeleteAll();
 		myChildren.DeleteAll();
+		
 	}
 
 	CModel* CModel::CreateModel()
 	{
-		Ticket_Mutex mutex;
-		BeginTicketMutex(&mutex);
+		
+		BeginTicketMutex(&g_ModelMutex);
 		if (myIsNULLObject == false)
 		{
 			InitVertexBuffer();
 			InitIndexBuffer();
 			InitConstantBuffer();
 		}
-		EndTicketMutex(&mutex);
+		EndTicketMutex(&g_ModelMutex);
 
 		for each (CModel* child in myChildren)
 		{
@@ -98,6 +99,15 @@ namespace Snowblind
 	CU::Matrix44f& CModel::GetOrientation()
 	{
 		return myOrientation;
+	}
+
+	void CModel::Update(float dt)
+	{
+		myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(0.5f)* dt) * myOrientation;
+		for (CModel* child : myChildren)
+		{
+			child->Update(dt);
+		}
 	}
 
 	void CModel::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)

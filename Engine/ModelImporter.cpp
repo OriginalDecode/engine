@@ -55,7 +55,8 @@ Snowblind::CModel* CModelImporter::CreateModel(FBXModelData* someData, Snowblind
 Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, const std::string& aEffectPath)
 {
 	myCurrentLoadingFile = aFilePath;
-	return LoadModel(aFilePath, myEngine->GetEffect(aEffectPath))->CreateModel();
+	Snowblind::CModel* model = LoadModel(aFilePath, myEngine->GetEffect(aEffectPath))->CreateModel();
+	return model;
 }
 
 Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowblind::CEffect* anEffect)

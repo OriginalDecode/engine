@@ -2,7 +2,7 @@
 #include <thread>
 #define FOR_EACH(_array) for (int i = 0; i < _array; i++)
 
-Threadpool::Threadpool()
+void Threadpool::Initiate()
 {
 	myWorkers.Init(1);
 	for (int i = 0; i < std::thread::hardware_concurrency(); i++)
@@ -16,11 +16,6 @@ Threadpool::Threadpool()
 	{
 		myWorkers[i].Initiate();
 	}
-}
-
-Threadpool::~Threadpool()
-{
-	myWorkers.RemoveAll();
 }
 
 void Threadpool::Update()

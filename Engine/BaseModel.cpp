@@ -17,11 +17,12 @@ namespace Snowblind
 	{
 #ifdef SNOWBLIND_DX11
 		SAFE_DELETE(myVertexBuffer);
-		SAFE_DELETE(myVertexData);
 		SAFE_DELETE(myIndexBuffer);
+		SAFE_DELETE(myVertexData);
 		SAFE_DELETE(myIndexData);
-		SAFE_RELEASE(myVertexLayout);
+		SAFE_DELETE(myConstantStruct);
 		SAFE_RELEASE(myConstantBuffer);
+		SAFE_RELEASE(myVertexLayout);
 #endif
 	}
 

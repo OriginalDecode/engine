@@ -3,6 +3,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "snowblind_shared.h"
 namespace Snowblind
 {
 	class CModel;
@@ -99,6 +100,7 @@ public:
 	Snowblind::CModel* LoadModel(const std::string& aFilePath, const std::string& aEffectPath);
 
 private:
+	Ticket_Mutex m_LoaderMutex;
 	Assimp::Importer importer;
 	Snowblind::CEngine* myEngine;
 	std::string myCurrentLoadingFile;

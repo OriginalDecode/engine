@@ -45,7 +45,8 @@
 #include "../Input/InputHandle.h"
 #include <RigidBody.h>
 
-
+#include <Work.h>
+#include <Worker.h>
 
 #include <DataStructures/Hashmap/Hash.h>
 
@@ -58,7 +59,7 @@ bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
 	myEntityManager = new CEntityManager;
 	myPhysicsManager = new CPhysicsManager;
 
-
+	
 	if (!CreateLevel("Data/Levels/level_01.json"))
 		return false;
 
@@ -69,12 +70,9 @@ bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
 	myEntityManager->AddSystem<NetworkSystem>();
 	myEntityManager->AddSystem<AISystem>();
 	myEntityManager->AddSystem<CameraSystem>();
-
-	myPicker = new Snowblind::CMousePicker();
-	m_ModelKey = myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
-
+	
+	//myPicker = new Snowblind::CMousePicker();
 	myEngine->ToggleVsync();
-
 	return true;
 }
 
@@ -99,7 +97,6 @@ bool CGame::CleanUp()
 	return true;
 }
 
-
 void CGame::Update(float aDeltaTime)
 {
 	myFrameCount++;
@@ -117,11 +114,10 @@ void CGame::Update(float aDeltaTime)
 	ss << myEngine->GetFPS() << "\n" << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::CEngine::GetInstance()->GetLocalTimeAsString();
 
 	mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
+	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
+	//mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
 
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
-
 
 	std::stringstream b;
 	if (rigidbody)
@@ -137,16 +133,21 @@ void CGame::Update(float aDeltaTime)
 
 bool CGame::CreateLevel(const char* level_path)
 {
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 500), CU::Vector2f(512, 512)));
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(500, 0, 0), CU::Vector2f(512, 512)));
-	myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(500, 0, 500), CU::Vector2f(512, 512)));
+	Snowblind::CEngine::GetInstance()->GetThreadpool().AddWork(
+		Work([&]() {
+		myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
+		myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 500), CU::Vector2f(512, 512)));
+		myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(500, 0, 0), CU::Vector2f(512, 512)));
+		myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(500, 0, 500), CU::Vector2f(512, 512)));
 
-	for (s32 i = 0; i < myTerrain.Size(); i++)
-	{
-		myTerrainBodies.Add(myPhysicsManager->CreateBody());
-		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
-	}
+
+		for (s32 i = 0; i < myTerrain.Size(); i++)
+		{
+			myTerrainBodies.Add(myPhysicsManager->CreateBody());
+			myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
+		}
+	})
+	);	
 
 	JSONReader reader(level_path);
 	const JSONElement& el = reader.GetElement("root");

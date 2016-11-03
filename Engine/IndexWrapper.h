@@ -21,7 +21,7 @@ namespace Snowblind
 
 	struct SIndexBufferWrapper
 	{
-		//~SIndexBufferWrapper() { SAFE_RELEASE(myIndexBuffer); };
+		~SIndexBufferWrapper() { SAFE_RELEASE(myIndexBuffer); };
 #ifdef SNOWBLIND_DX11
 		ID3D11Buffer* myIndexBuffer;
 		DXGI_FORMAT myIndexBufferFormat;

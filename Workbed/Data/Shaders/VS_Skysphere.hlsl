@@ -40,7 +40,7 @@ struct VS_OUTPUT
 VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-	
+
 	output.pos = mul(input.pos, World);
 	output.pos = mul(output.pos, InvertedView);
 	output.pos = mul(output.pos, Projection);
@@ -57,7 +57,7 @@ VS_OUTPUT VS(VS_INPUT input)
 
 	output.tex = float4((float2(x + w, w - y)) * 0.5f, output.pos.zw);
 	
-	output.worldpos = mul(input.pos, World);
+	output.worldpos = input.pos;
 	
 	return output;
 };

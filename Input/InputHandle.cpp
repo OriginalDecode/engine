@@ -36,92 +36,95 @@ void InputHandle::CleanUp()
 
 void InputHandle::HandleInput()
 {
-	if (m_Controller->IsConnected())
+	if(Snowblind::CEngine::GetInstance()->IsWindowActive())
 	{
-		const ControllerState& state = m_Controller->GetState();
+		if (m_Controller->IsConnected())
+		{
+			const ControllerState& state = m_Controller->GetState();
 
-		if ( state.m_Buttons & x_X )
-		{
-			CallFunction(s_XButton_hash);
-		}
-		else if ( state.m_Buttons & x_Y )
-		{
-			CallFunction(s_YButton_hash);
-		}
-		else if ( state.m_Buttons & x_B )
-		{
-			CallFunction(s_BButton_hash);
-		}
-		else if ( state.m_Buttons & x_A )
-		{
-			CallFunction(s_AButton_hash);
-		}
+			if (state.m_Buttons & x_X)
+			{
+				CallFunction(s_XButton_hash);
+			}
+			else if (state.m_Buttons & x_Y)
+			{
+				CallFunction(s_YButton_hash);
+			}
+			else if (state.m_Buttons & x_B)
+			{
+				CallFunction(s_BButton_hash);
+			}
+			else if (state.m_Buttons & x_A)
+			{
+				CallFunction(s_AButton_hash);
+			}
 
 
-		const float ly_value = (float)state.m_ThumbLY / SHRT_MAX;
-		const float lx_value = (float)state.m_ThumbLX / SHRT_MAX;
+			const float ly_value = (float)state.m_ThumbLY / SHRT_MAX;
+			const float lx_value = (float)state.m_ThumbLX / SHRT_MAX;
 
-		if (ly_value > 0.5f)
-		{
-			CallFunction(s_LThumbYP_hash);
-		}
-		else if (ly_value < -0.5f)
-		{
-			CallFunction(s_LThumbYN_hash);
+			if (ly_value > 0.5f)
+			{
+				CallFunction(s_LThumbYP_hash);
+			}
+			else if (ly_value < -0.5f)
+			{
+				CallFunction(s_LThumbYN_hash);
+			}
+
+			if (lx_value > 0.5f)
+			{
+				CallFunction(s_LThumbXP_hash);
+			}
+			else if (lx_value < -0.5f)
+			{
+				CallFunction(s_LThumbXN_hash);
+			}
+
+			const float ry_value = (float)state.m_ThumbRY / SHRT_MAX;
+			const float rx_value = (float)state.m_ThumbRX / SHRT_MAX;
+
+			if (rx_value > 0.5f)
+			{
+				CallFunction(s_RThumbYP_hash);
+			}
+			else if (rx_value < -0.5f)
+			{
+				CallFunction(s_RThumbYN_hash);
+			}
+
+			if (ry_value > 0.5f)
+			{
+				CallFunction(s_RThumbXP_hash);
+			}
+			else if (ry_value < -0.5f)
+			{
+				CallFunction(s_RThumbXN_hash);
+			}
 		}
 
-		if (lx_value > 0.5f)
+		if (m_Input->Update())
 		{
-			CallFunction(s_LThumbXP_hash);
-		}
-		else if (lx_value < -0.5f)
-		{
-			CallFunction(s_LThumbXN_hash);
-		}
-
-		const float ry_value = (float)state.m_ThumbRY / SHRT_MAX;
-		const float rx_value = (float)state.m_ThumbRX / SHRT_MAX;
-		
-		if (rx_value > 0.5f)
-		{
-			CallFunction(s_RThumbYP_hash);
-		}
-		else if (rx_value < -0.5f)
-		{
-			CallFunction(s_RThumbYN_hash);
-		}
-
-		if (ry_value > 0.5f)
-		{
-			CallFunction(s_RThumbXP_hash);
-		}
-		else if (ry_value < -0.5f)
-		{
-			CallFunction(s_RThumbXN_hash);
-		}
-	}
-
-	if (m_Input->Update())
-	{
-		if (m_Input->KeyClick(KButton::SPACE)) 
-		{
-			CallFunction(s_SpaceBar_hash);
-		}
-		if (m_Input->KeyDown(KButton::W))
-		{
-			CallFunction(s_WKey_hash);
-		}
-		if (m_Input->KeyDown(KButton::S))
-		{
-			CallFunction(s_SKey_hash);
-		}
-		if (m_Input->KeyDown(KButton::A))
-		{
-			CallFunction(s_AKey_hash);
-		}
-		if (m_Input->KeyDown(KButton::D)) 
-		{
-			CallFunction(s_DKey_hash);
+			if (m_Input->KeyClick(KButton::SPACE))
+			{
+				CallFunction(s_SpaceBar_hash);
+			}
+			if (m_Input->KeyDown(KButton::W))
+			{
+				CallFunction(s_WKey_hash);
+			}
+			if (m_Input->KeyDown(KButton::S))
+			{
+				CallFunction(s_SKey_hash);
+			}
+			if (m_Input->KeyDown(KButton::A))
+			{
+				CallFunction(s_AKey_hash);
+			}
+			if (m_Input->KeyDown(KButton::D))
+			{
+				CallFunction(s_DKey_hash);
+			}
 		}
 	}
 }

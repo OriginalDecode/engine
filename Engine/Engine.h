@@ -101,7 +101,7 @@ namespace Snowblind
 		void OnActive();
 
 		bool IsWindowActive() { return m_Window.IsWindowActive(); }
-
+		
 		CSynchronizer* GetSynchronizer();
 
 		const SLocalTime& GetLocalTime();

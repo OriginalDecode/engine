@@ -3,11 +3,11 @@ namespace Snowblind
 {
 
 	class CTexture;
-	class CGBuffer
+	class GBuffer
 	{
 	public:
-		CGBuffer();
-		~CGBuffer();
+		GBuffer();
+		~GBuffer();
 
 		void Clear(float* aClearColor);
 

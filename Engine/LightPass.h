@@ -7,15 +7,15 @@ struct ID3D11Buffer;
 #endif
 namespace Snowblind
 {
-	class CGBuffer;
+	class GBuffer;
 	class CSpotLight;
-	class CLightPass
+	class LightPass
 	{
 	public:
-		CLightPass(CGBuffer* aGBuffer);
-		~CLightPass();
+		LightPass() = default;
 
-
+		bool Initiate(GBuffer* aGBuffer);
+		bool CleanUp();
 		void RenderPointlight(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation);
 		void RenderSpotlight(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation);
 		CEffect* GetPointlightEffect();
@@ -73,6 +73,19 @@ namespace Snowblind
 
 		CEffect* myEffect[u32(eLight::_COUNT)];
 		CEngine* myEngine;
-		const CGBuffer* myGBuffer;
+		const GBuffer* myGBuffer;
+
+	public:
+		bool HasInitiated() {
+			return (myGBuffer 
+				&& myEngine 
+				&& myEffect[u32(eLight::POINT_LIGHT)] 
+				&& myEffect[u32(eLight::SPOT_LIGHT)] 
+				&& myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)]
+				&& myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)]
+				&& myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)]
+				&& myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)]);
+		}
+
 	};
 };

@@ -20,7 +20,7 @@ namespace Snowblind
 
 		void Activate();
 		void Deactivate();
-		void AddTexture(const std::string& aResourceName, const std::string& aFilePath);
+		void AddTexture(const std::string& aResourceName, const std::string& aFilePath, bool mips = false);
 
 		void SetEffect(CEffect* anEffect);
 

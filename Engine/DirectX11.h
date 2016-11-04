@@ -65,8 +65,7 @@ namespace Snowblind
 		
 		bool HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
 		const std::string& GetAPIName();
-
-		void SetViewport(u16 aWidth, u16 aHeight, u8 aDepth);
+		
 		void ResetViewport();
 		void ResetRendertarget();
 		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
@@ -91,6 +90,9 @@ namespace Snowblind
 		void SetDomainShader(ID3D11DomainShader* aDomainShader);
 		void SetComputeShader(ID3D11ComputeShader* aComputeShader);
 		void ReportLiveObjects();
+
+		void SetViewport(D3D11_VIEWPORT* viewport);
+		D3D11_VIEWPORT* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y);
 	private:
 
 		void CreateDeviceAndSwapchain();

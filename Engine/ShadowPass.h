@@ -1,10 +1,13 @@
 #pragma once
 namespace Snowblind
 {
-	class CShadowPass
+	class ShadowPass
 	{
 	public:
-		CShadowPass();
-		~CShadowPass();
+		ShadowPass();
+		~ShadowPass();
+
+	private:
+
 	};
 };

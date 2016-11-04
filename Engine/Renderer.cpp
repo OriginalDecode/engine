@@ -18,6 +18,7 @@
 
 #include "Line3D.h"
 #include "LightPass.h"
+#include "ShadowSpotlight.h"
 namespace Snowblind
 {
 	bool CRenderer::Initiate(CSynchronizer* synchronizer, CCamera* camera_3d, CCamera* camera_2d)
@@ -59,6 +60,11 @@ namespace Snowblind
 		//mySprite = new CSprite;
 		//mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
 
+		m_Shadowlight = new ShadowSpotlight;
+		m_Shadowlight->Initiate(CU::Vector3f(1024.f, 5.f, 512.f), CU::Vector3f(1.f, 0.f, 0.f));
+
+
+
 		myEngine = CEngine::GetInstance();
 		if (!myEngine)
 			return false;
@@ -71,15 +77,16 @@ namespace Snowblind
 
 		my3DLine->Initiate();
 
-		myLightPass = new CLightPass(myDeferredRenderer->GetGBuffer());
-		if (!myLightPass)
-			return false;
+		DL_ASSERT_EXP(m_LightPass.Initiate(myDeferredRenderer->GetGBuffer()), "failed to initiate LightPass!");
 
 		return true;
 	}
 
 	bool CRenderer::CleanUp()
 	{
+		m_Shadowlight->CleanUp();
+		SAFE_DELETE(m_Shadowlight);
+
 		SAFE_DELETE(my3DLine);
 		SAFE_DELETE(mySprite);
 		mySkysphere->CleanUp();
@@ -91,7 +98,6 @@ namespace Snowblind
 
 		SAFE_DELETE(myPointLight);
 		SAFE_DELETE(mySpotlight);
-		SAFE_DELETE(myLightPass);
 		return true;
 	}
 
@@ -116,6 +122,9 @@ namespace Snowblind
 		myEngine->ResetRenderTargetAndDepth();
 		mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
+
+
+
 		myDeferredRenderer->Finalize();
 
 		//RenderParticles();
@@ -133,7 +142,7 @@ namespace Snowblind
 
 	void CRenderer::AddTerrain(CTerrain* someTerrain)
 	{
-		//myTerrainArray.Add(someTerrain);
+		myTerrainArray.Add(someTerrain);
 	}
 
 	void CRenderer::Render3DCommands()
@@ -208,7 +217,7 @@ namespace Snowblind
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eSpotlight);
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
-		CEffect* effect = myLightPass->GetSpotlightEffect()	;
+		CEffect* effect = m_LightPass.GetSpotlightEffect()	;
 		effect->Activate();
 
 		for each(const RenderCommand& command in commands)
@@ -223,7 +232,7 @@ namespace Snowblind
 
 			mySpotlight->DoTranslation(command.myRotationMatrix);
 
-			myLightPass->RenderSpotlight(mySpotlight, myCamera, myPrevFrame);
+			m_LightPass.RenderSpotlight(mySpotlight, myCamera, myPrevFrame);
 		}
 		effect->Deactivate();
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
@@ -238,7 +247,7 @@ namespace Snowblind
 
 		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
 		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
-		CEffect* effect = myLightPass->GetPointlightEffect();
+		CEffect* effect = m_LightPass.GetPointlightEffect();
 		effect->Activate();
 
 		for each(const RenderCommand& command in commands)
@@ -249,7 +258,7 @@ namespace Snowblind
 			myPointLight->SetRange(command.myRange);
 			myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, 1));
 			myPointLight->Update();
-			myLightPass->RenderPointlight(myPointLight, myCamera, myPrevFrame);
+			m_LightPass.RenderPointlight(myPointLight, myCamera, myPrevFrame);
 		}
 		effect->Deactivate();
 
@@ -311,6 +320,23 @@ namespace Snowblind
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
 #endif
+	}
+
+	void CRenderer::ProcessShadows()
+	{
+		m_Shadowlight->SetViewport();
+		ID3D11RenderTargetView* backbuffer = m_Shadowlight->GetTexture()->GetRenderTargetView();
+		ID3D11DepthStencilView* depth = m_Shadowlight->GetTexture()->GetDepthStencilView();
+		myDirectX->GetContext()->OMSetRenderTargets(1, &backbuffer, depth);
+		m_Shadowlight->ClearTexture();
+		CCamera* camera = myCamera;
+
+		myCamera = m_Shadowlight->GetCamera();
+		Render3DCommands();
+
+		CEngine::GetInstance()->ResetRenderTargetAndDepth();
+
+		myCamera = camera;
 	}
 
 };

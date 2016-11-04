@@ -79,7 +79,7 @@ namespace Snowblind
 		}
 	}
 	
-	void CSurface::AddTexture(const std::string& aResourceName, const std::string& aFilePath)
+	void CSurface::AddTexture(const std::string& aResourceName, const std::string& aFilePath, bool mips)
 	{
 		if (aResourceName == "AOTexture")
 		{

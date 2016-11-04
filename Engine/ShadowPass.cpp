@@ -2,14 +2,13 @@
 #include "ShadowPass.h"
 namespace Snowblind
 {
-	CShadowPass::CShadowPass()
+	ShadowPass::ShadowPass()
 	{
 		
 	}
 	
-	CShadowPass::~CShadowPass()
+	ShadowPass::~ShadowPass()
 	{
 		
 	}
-	
 };

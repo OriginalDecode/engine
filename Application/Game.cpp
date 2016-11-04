@@ -89,11 +89,16 @@ bool CGame::CleanUp()
 	if (myEntityManager)
 		return false;
 
+	while (!m_TerrainIsCreated);
 	for (Snowblind::CTerrain* terrain : myTerrain)
 	{
-		DL_ASSERT_EXP(!terrain->CleanUp(), "Failed to cleanup terrain!");
+		
+
+		DL_ASSERT_EXP(terrain->CleanUp(), "Failed to cleanup terrain!");
+		delete terrain;
+		terrain = nullptr;
 	}
-	myTerrain.DeleteAll();
+
 	if (myTerrain.Size() > 0)
 		return false;
 
@@ -149,6 +154,8 @@ bool CGame::CreateLevel(const char* level_path)
 			myTerrainBodies.Add(myPhysicsManager->CreateBody());
 			myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
 		}
+
+		m_TerrainIsCreated = true;
 	})
 	);	
 

@@ -58,7 +58,7 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	dist = normalize(dist);
 	GBuffer output;
 	
-  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
+  	output.Albedo = AlbedoTexture.SampleLevel(linear_Wrap, input.uv, 1);
 	output.Normal = float4(input.normal.xyz, 0.f);
 
 	//if(dist<=1.f)

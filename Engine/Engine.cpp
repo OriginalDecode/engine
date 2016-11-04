@@ -94,8 +94,8 @@ namespace Snowblind
 	
 		myCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight);
 		my2DCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
-		//myRenderer = new CRenderer;
-		//DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
+		myRenderer = new CRenderer;
+		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
 	
 		myTimeManager = new CU::TimeManager;
 		Randomizer::Create();
@@ -136,9 +136,9 @@ namespace Snowblind
 	void CEngine::Update()
 	{
 		m_DeltaTime = myTimeManager->GetDeltaTime();
-		//myAssetsContainer->Update();
+		myAssetsContainer->Update();
 		myTimeManager->Update();
-		//myRenderer->Render();
+		myRenderer->Render();
 		m_Threadpool.Update();
 	}
 
@@ -198,6 +198,11 @@ namespace Snowblind
 	Snowblind::CTexture* CEngine::GetTexture(const std::string& aFilePath)
 	{
 		return myAssetsContainer->GetTexture(aFilePath);
+	}
+
+	Snowblind::CTexture* CEngine::GetTexture(const std::string& filepath, bool mips)
+	{
+		return myAssetsContainer->GetTexture(filepath, mips);
 	}
 
 	Snowblind::CEffect* CEngine::GetEffect(const std::string& aFilePath)

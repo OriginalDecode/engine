@@ -18,7 +18,7 @@ namespace Snowblind
 
 		for (auto it = myModels.begin(); it != myModels.end(); it++)
 		{
-			DL_ASSERT_EXP(!it->second->CleanUp(), "failed to cleanup model.");
+			DL_ASSERT_EXP(it->second->CleanUp(), "failed to cleanup model.");
 		}
 
 		DELETE_MAP(myEffects);
@@ -42,6 +42,23 @@ namespace Snowblind
 		if (myTextures.find(aFilePath) == myTextures.end())
 		{
 			LoadTexture(aFilePath);
+			DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
+		}
+
+		return myTextures[aFilePath];
+	}
+
+	Snowblind::CTexture* CAssetsContainer::GetTexture(const std::string& aFilePath, bool mips)
+	{
+		if (CL::substr(aFilePath, ".dds") == false)
+		{
+			DL_MESSAGE("Failed to load %s, due to incorrect fileformat. Has to be .dds", aFilePath.c_str());
+			DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
+		}
+
+		if (myTextures.find(aFilePath) == myTextures.end())
+		{
+			LoadTexture(aFilePath, mips);
 			DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
 		}
 
@@ -76,12 +93,25 @@ namespace Snowblind
 	{
 		if (myTextures.find(aFilePath) == myTextures.end())
 		{
-			CTexture* texture = new CTexture();
+			CTexture* texture = new CTexture;
 			if (texture->LoadTexture(aFilePath.c_str()) == false)
 			{
 				SAFE_DELETE(texture);
 			}
 			myTextures[aFilePath] = texture;
+		}
+	}
+
+	void CAssetsContainer::LoadTexture(const std::string& filepath, bool mips)
+	{
+		if (myTextures.find(filepath) == myTextures.end())
+		{
+			CTexture* texture = new CTexture;
+			if (texture->LoadTexture(filepath.c_str(), mips) == false)
+			{
+				SAFE_DELETE(texture);
+			}
+			myTextures[filepath] = texture;
 		}
 	}
 

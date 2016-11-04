@@ -20,8 +20,8 @@ namespace Snowblind
 	class DirectX11;
 	class CEffect;
 	class CEngine;
-	class CGBuffer;
-	class CLightPass;
+	class GBuffer;
+	class LightPass;
 	class CPointLight;
 	class CTexture;
 
@@ -44,7 +44,7 @@ namespace Snowblind
 
 		//void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 		CTexture* GetDepthStencil();
-		CGBuffer* GetGBuffer();
+		GBuffer* GetGBuffer();
 	private:
 		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
 
@@ -56,7 +56,7 @@ namespace Snowblind
 		float myClearColor[4];
 		CEngine* myEngine = nullptr;
 
-		CGBuffer* myGBuffer = nullptr;
+		GBuffer* myGBuffer = nullptr;
 #ifdef SNOWBLIND_DX11
 		DirectX11* myDirectX = nullptr;
 		ID3D11DeviceContext* myContext = nullptr;

@@ -25,6 +25,7 @@ namespace Snowblind
 	{
 	public:
 		CBaseModel();
+		virtual ~CBaseModel();
 		virtual bool CleanUp() = 0;
 		virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection);
 		void SetEffect(CEffect* anEffect);

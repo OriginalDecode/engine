@@ -1,11 +1,12 @@
 #pragma once
 #include "LightStructs.h"
+#include "ShadowPass.h"
+#include "LightPass.h"
 
 namespace CommonUtilities
 {
 	class TimeManager;
 }
-
 
 class CLine3D;
 
@@ -23,8 +24,10 @@ namespace Snowblind
 	class CTexture;
 	class CText;
 	class CTerrain;
-	class CLightPass;
+	class LightPass;
 	class CSpotLight;
+	class ShadowSpotlight;
+
 	class CRenderer
 	{
 	public:
@@ -44,7 +47,7 @@ namespace Snowblind
 
 		void RenderParticles();
 		void RenderLines();
-
+		void ProcessShadows();
 		//Holds the lightpass instead of deferred
 
 		CU::GrowingArray<CTerrain*> myTerrainArray;
@@ -65,6 +68,7 @@ namespace Snowblind
 		CDirectionalLight*	myDirectionalLight	= nullptr;
 		CPointLight*		myPointLight		= nullptr;
 		CSpotLight*			mySpotlight			= nullptr;
+		ShadowSpotlight*	m_Shadowlight		= nullptr;
 
 		CSynchronizer*		mySynchronizer		= nullptr;
 		CText*				myText				= nullptr;
@@ -72,6 +76,8 @@ namespace Snowblind
 		CSkySphere*			mySkysphere			= nullptr;
 		CSprite*			mySprite			= nullptr;
 		CLine3D*			my3DLine			= nullptr;
-		CLightPass*			myLightPass			= nullptr;
+
+		LightPass			m_LightPass;
+		ShadowPass			m_ShadowPass;
 	};
 }; 

@@ -18,7 +18,7 @@ namespace Snowblind
 		void InitAsDepthBuffer(float aWidth, float aHeight);
 		void InitStencil(float aWidth, float aHeight);
 		const std::string& GetFileName();
-		bool LoadTexture(const std::string& aFileName);
+		bool LoadTexture(const std::string& aFileName, bool mip = false);
 
 		void SetDebugName(const std::string& debugName);
 		void CreateTexture(const std::string& aTexturePath);

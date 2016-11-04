@@ -150,14 +150,35 @@ namespace Snowblind
 		return myFileName;
 	}
 
-	bool CTexture::LoadTexture(const std::string& aFileName)
+	bool CTexture::LoadTexture(const std::string& aFileName, bool mip)
 	{
 #ifdef SNOWBLIND_DX11
 		HRESULT hr;
 		ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 
 		std::wstring fileName(aFileName.begin(), aFileName.end());
-		hr = DirectX::CreateDDSTextureFromFile(device, nullptr, fileName.c_str(), nullptr, &myShaderResource);
+		
+		if (!mip)
+		{
+			hr = DirectX::CreateDDSTextureFromFile(device, nullptr, fileName.c_str(), nullptr, &myShaderResource);
+		}
+		else
+		{
+			hr = DirectX::CreateDDSTextureFromFileEx(
+				device, fileName.c_str()
+				, 0
+				, D3D11_USAGE_DEFAULT
+				, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET
+				, 0
+				, D3D11_RESOURCE_MISC_GENERATE_MIPS
+				, false
+				, nullptr
+				, &myShaderResource);
+
+			CEngine::GetAPI()->GetContext()->GenerateMips(myShaderResource);
+		};
+
+
 		CEngine::GetAPI()->SetDebugName(myShaderResource, "Texture : ShaderResource_");
 
 		if (FAILED(hr))
@@ -165,7 +186,7 @@ namespace Snowblind
 			std::stringstream ss;
 			ss << "[TEXTURE] : Failed to load texture! " << aFileName;
 			OutputDebugStringA(ss.str().c_str());
-			return LoadTexture("Data/Textures/No-Texture.dds");
+			//return LoadTexture("Data/Textures/No-Texture.dds");
 			return false;
 		}
 #endif

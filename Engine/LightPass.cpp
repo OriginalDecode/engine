@@ -5,13 +5,11 @@
 #include "GBuffer.h"
 namespace Snowblind
 {
-	CLightPass::CLightPass(CGBuffer* aGBuffer)
-		: myEngine(CEngine::GetInstance())
-		, myGBuffer(aGBuffer)
-#ifdef SNOWBLIND_DX11
-		, myContext(CEngine::GetAPI()->GetContext())
-#endif
+	bool LightPass::Initiate(GBuffer* aGBuffer)
 	{
+		myEngine = CEngine::GetInstance();
+		myContext = myEngine->GetAPI()->GetContext();
+		myGBuffer = aGBuffer;
 #ifdef SNOWBLIND_DX11
 		myEffect[u32(eLight::POINT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_Lightmesh.json");
 		myEffect[u32(eLight::SPOT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_Spotlight.json");
@@ -19,7 +17,7 @@ namespace Snowblind
 		myEffect[u32(eLight::POINT_LIGHT)]->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
 		myEffect[u32(eLight::POINT_LIGHT)]->AddShaderResource(myGBuffer->myNormal->GetShaderView());
 		myEffect[u32(eLight::POINT_LIGHT)]->AddShaderResource(myGBuffer->myDepth->GetShaderView());
-		
+
 
 		myEffect[u32(eLight::SPOT_LIGHT)]->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
 		myEffect[u32(eLight::SPOT_LIGHT)]->AddShaderResource(myGBuffer->myNormal->GetShaderView());
@@ -28,26 +26,31 @@ namespace Snowblind
 
 		CreatePointlightBuffers();
 		CreateSpotlightBuffers();
+
+		return true;
 	}
 
-	CLightPass::~CLightPass()
+	bool LightPass::CleanUp()
 	{
 		SAFE_RELEASE(myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)]);
 		SAFE_RELEASE(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)]);
 		SAFE_RELEASE(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)]);
 		SAFE_RELEASE(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)]);
-
+		return true;
 	}
 
-	void CLightPass::RenderPointlight(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
+	void LightPass::RenderPointlight(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
-		UpdatePointlightBuffers(pointlight, aCamera, previousOrientation);
-		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)]);
-		myContext->PSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)]);
-		pointlight->Render(previousOrientation, aCamera);
+		if (HasInitiated())
+		{
+			UpdatePointlightBuffers(pointlight, aCamera, previousOrientation);
+			myContext->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)]);
+			myContext->PSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)]);
+			pointlight->Render(previousOrientation, aCamera);
+		}
 	}
 
-	void CLightPass::RenderSpotlight(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
+	void LightPass::RenderSpotlight(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
 		UpdateSpotlightBuffers(spotlight, aCamera, previousOrientation);
 		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)]);
@@ -55,17 +58,17 @@ namespace Snowblind
 		spotlight->Render(previousOrientation, aCamera);
 	}
 
-	CEffect* CLightPass::GetPointlightEffect()
+	CEffect* LightPass::GetPointlightEffect()
 	{
 		return myEffect[u32(eLight::POINT_LIGHT)];
 	}
 
-	CEffect* CLightPass::GetSpotlightEffect()
+	CEffect* LightPass::GetSpotlightEffect()
 	{
 		return myEffect[u32(eLight::SPOT_LIGHT)];
 	}
 
-	void CLightPass::UpdatePointlightBuffers(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
+	void LightPass::UpdatePointlightBuffers(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
 #ifdef SNOWBLIND_DX11
 		//----------------------------------------
@@ -110,7 +113,7 @@ namespace Snowblind
 #endif
 	}
 
-	void CLightPass::UpdateSpotlightBuffers(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
+	void LightPass::UpdateSpotlightBuffers(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
 #ifdef SNOWBLIND_DX11
 		//----------------------------------------
@@ -161,7 +164,7 @@ namespace Snowblind
 #endif
 	}
 
-	void CLightPass::CreateSpotlightBuffers()
+	void LightPass::CreateSpotlightBuffers()
 	{
 #ifdef SNOWBLIND_DX11
 		//----------------------------------------
@@ -198,7 +201,7 @@ namespace Snowblind
 #endif
 	}
 
-	void CLightPass::CreatePointlightBuffers()
+	void LightPass::CreatePointlightBuffers()
 	{
 #ifdef SNOWBLIND_DX11
 		//----------------------------------------

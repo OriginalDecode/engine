@@ -86,6 +86,7 @@ namespace Snowblind
 		const std::string& GetAPIName();
 
 		CTexture* GetTexture(const std::string& aFilePath);
+		CTexture* GetTexture(const std::string& filepath, bool mips);
 		CEffect* GetEffect(const std::string& aFilePath);
 		CModel* GetModel(const std::string& aFilePath);
 

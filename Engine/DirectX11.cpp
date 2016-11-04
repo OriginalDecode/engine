@@ -34,6 +34,11 @@ namespace Snowblind
 		mySwapchain->SetFullscreenState(FALSE, nullptr);
 		myEngineFlags[static_cast<u16>(eEngineFlags::FULLSCREEN)] = FALSE;
 
+		float blend[4];
+		BLACK_CLEAR(blend);
+		myContext->OMSetBlendState(nullptr, blend, 0xFFFFFFFF);
+
+
 		SAFE_DELETE(myViewport);
 
 		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_ENABLED)]);
@@ -76,7 +81,7 @@ namespace Snowblind
 			ss << "\nDebug is released last. Will report as Live Object! 0x" << myDebug << "\nWatch out for false reports. \n====\n";
 			OutputDebugString(ss.str().c_str());
 
-			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
+			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL /*| D3D11_RLDO_IGNORE_INTERNAL*/);
 			SAFE_RELEASE(myDebug);
 		}
 
@@ -313,15 +318,21 @@ namespace Snowblind
 
 	void DirectX11::CreateViewport()
 	{
-		myViewport = new D3D11_VIEWPORT();
-		//ZeroMemory(&myViewport, sizeof(D3D11_VIEWPORT));
-		myViewport->TopLeftX = 0;
-		myViewport->TopLeftY = 0;
-		myViewport->Width = FLOAT(m_CreateInfo.m_WindowWidth);
-		myViewport->Height = FLOAT(m_CreateInfo.m_WindowHeight);
-		myViewport->MinDepth = 0.f;
-		myViewport->MaxDepth = 1.f;
-		myContext->RSSetViewports(1, myViewport);
+		myViewport = CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
+	}
+
+	D3D11_VIEWPORT* DirectX11::CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y)
+	{
+		D3D11_VIEWPORT* new_viewport = new D3D11_VIEWPORT;
+
+		new_viewport->TopLeftX = top_left_x;
+		new_viewport->TopLeftY = top_left_y;
+		new_viewport->Width = FLOAT(width);
+		new_viewport->Height = FLOAT(height);
+		new_viewport->MinDepth = min_depth;
+		new_viewport->MaxDepth = max_depth;
+
+		return new_viewport;
 	}
 
 	void DirectX11::CreateAdapterList()
@@ -430,23 +441,9 @@ namespace Snowblind
 		return m_CreateInfo.m_APIName;
 	}
 
-	void DirectX11::SetViewport(u16 aWidth, u16 aHeight, u8 aDepth)
-	{
-		D3D11_VIEWPORT viewport;
-		ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
-
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-		viewport.Width = float(aWidth);
-		viewport.Height = float(aHeight);
-		viewport.MinDepth = 0.f;
-		viewport.MaxDepth = float(aDepth);
-		myContext->RSSetViewports(1, &viewport);
-	}
-
 	void DirectX11::ResetViewport()
 	{
-		myContext->RSSetViewports(1, myViewport);
+		SetViewport(myViewport);
 	}
 
 	void DirectX11::ResetRendertarget()
@@ -522,7 +519,12 @@ namespace Snowblind
 	{
 		myContext->ClearState();
 		myContext->Flush();
-		myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
+		myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL /*| D3D11_RLDO_IGNORE_INTERNAL*/);
+	}
+
+	void DirectX11::SetViewport(D3D11_VIEWPORT* viewport)
+	{
+		myContext->RSSetViewports(1, viewport);
 	}
 
 	void DirectX11::OnAltEnter()

@@ -239,6 +239,7 @@
       <Filter>APIs</Filter>
     </ClInclude>
     <ClInclude Include="Window.h" />
+    <ClInclude Include="ShadowSpotlight.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -374,5 +375,6 @@
       <Filter>APIs\DirectX11</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="ShadowSpotlight.cpp" />
   </ItemGroup>
 </Project>

@@ -11,6 +11,7 @@ namespace Snowblind
 		myContext = myAPI->GetContext();
 #endif
 	}
+	CBaseModel::~CBaseModel() = default;
 
 	void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{

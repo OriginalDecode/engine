@@ -14,11 +14,6 @@ namespace Snowblind
 		myModelStates.reset();
 	}
 
-	CModel::~CModel()
-	{
-	
-		
-	}
 
 	bool CModel::CleanUp()
 	{

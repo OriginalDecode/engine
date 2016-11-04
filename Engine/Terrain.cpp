@@ -36,12 +36,14 @@ namespace Snowblind
 		SAFE_DELETE(image);
 		CreateVertices(aSize.x, aSize.y, position);
 		mySurface = new CSurface(myEffect);
-		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/grass.dds");
+		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/grass.dds", true);
 #endif
 	}
 
 	bool CTerrain::CleanUp()
 	{
+		myIndexes.clear();
+		myVertices.clear();
 		SAFE_DELETE(mySurface);
 		SAFE_DELETE(m_PSConstantStruct);
 		SAFE_RELEASE(m_PSConstantBuffer);

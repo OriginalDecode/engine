@@ -22,6 +22,8 @@ namespace Snowblind
 		void Update();
 
 		CTexture* GetTexture(const std::string& aFilePath);
+		CTexture* GetTexture(const std::string& aFilePath, bool mips);
+
 		CEffect* GetEffect(const std::string& aFilePath);
 		CModel* GetModel(const std::string& aFilePath);
 		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
@@ -35,6 +37,7 @@ namespace Snowblind
 
 		
 		void LoadTexture(const std::string& aFilePath);
+		void LoadTexture(const std::string& filepath, bool mips);
 		void LoadEffect(const std::string& aFilePath);
 
 		CShaderFactory* myShaderFactory;

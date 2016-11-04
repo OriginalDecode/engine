@@ -2,7 +2,7 @@
 #include "GBuffer.h"
 namespace Snowblind
 {
-	CGBuffer::CGBuffer()
+	GBuffer::GBuffer()
 		: myEngine(CEngine::GetInstance())
 #ifdef SNOWBLIND_DX11
 		, myDirectX(myEngine->GetAPI())
@@ -31,7 +31,7 @@ namespace Snowblind
 		myDepth->SetDebugName("Deferred_Depth");
 	}
 	
-	CGBuffer::~CGBuffer()
+	GBuffer::~GBuffer()
 	{
 		SAFE_DELETE(myAlbedo);
 		SAFE_DELETE(myEmissive);
@@ -39,7 +39,7 @@ namespace Snowblind
 		SAFE_DELETE(myDepth);
 	}
 	
-	void CGBuffer::Clear(float* aClearColor)
+	void GBuffer::Clear(float* aClearColor)
 	{
 #ifdef SNOWBLIND_DX11
 		myContext->ClearRenderTargetView(myAlbedo->GetRenderTargetView(), aClearColor);
@@ -49,7 +49,7 @@ namespace Snowblind
 #endif
 	}
 
-	void CGBuffer::SetAsRenderTarget(CTexture* aDepthTexture)
+	void GBuffer::SetAsRenderTarget(CTexture* aDepthTexture)
 	{
 #ifdef SNOWBLIND_DX11
 		ID3D11RenderTargetView* target[4];

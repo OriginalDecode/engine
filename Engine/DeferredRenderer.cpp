@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DeferredRenderer.h"
 #include "PointLight.h"
-#include "LightPass.h"
 #include <DL_Debug.h>
 #include "GBuffer.h"
 #define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
@@ -32,7 +31,7 @@ namespace Snowblind
 		myScreenPassShader = myEngine->GetEffect("Data/Shaders/T_Render_To_Texture.json");
 		myAmbientPassShader = myEngine->GetEffect("Data/Shaders/T_Deferred_Ambient.json");
 
-		myGBuffer = new CGBuffer();
+		myGBuffer = new GBuffer();
 
 		myAmbientPassShader->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
 		myAmbientPassShader->AddShaderResource(myGBuffer->myNormal->GetShaderView());
@@ -181,7 +180,7 @@ namespace Snowblind
 #endif
 	}
 
-	CGBuffer* CDeferredRenderer::GetGBuffer()
+	GBuffer* CDeferredRenderer::GetGBuffer()
 	{
 		return myGBuffer;
 	}

@@ -17,7 +17,6 @@ static Ticket_Mutex g_ModelMutex;
 		friend class CModelImporter;
 	public:
 		CModel();
-		~CModel();
 		bool CleanUp() override;
 		CModel* CreateModel();
 		void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;

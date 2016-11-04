@@ -16,9 +16,37 @@ namespace Snowblind
 
 	CModel::~CModel()
 	{
+	
+		
+	}
+
+	bool CModel::CleanUp()
+	{
+		SAFE_DELETE(myVertexBuffer);
+		if (myVertexBuffer)
+			return false;
+		SAFE_DELETE(myIndexBuffer);
+		if (myIndexBuffer)
+			return false;
+		SAFE_DELETE(myVertexData);
+		if (myVertexData)
+			return false;
+		SAFE_DELETE(myIndexData);
+		if (myIndexData)
+			return false;
+		SAFE_DELETE(myConstantStruct);
+		if (myConstantStruct)
+			return false;
+		SAFE_RELEASE(myConstantBuffer);
+		if (myConstantBuffer)
+			return false;
+		SAFE_RELEASE(myVertexLayout);
+		if (myVertexLayout)
+			return false;
+
 		mySurfaces.DeleteAll();
 		myChildren.DeleteAll();
-		
+		return true;
 	}
 
 	CModel* CModel::CreateModel()

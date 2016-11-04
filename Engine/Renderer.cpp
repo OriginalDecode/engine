@@ -133,7 +133,7 @@ namespace Snowblind
 
 	void CRenderer::AddTerrain(CTerrain* someTerrain)
 	{
-		myTerrainArray.Add(someTerrain);
+		//myTerrainArray.Add(someTerrain);
 	}
 
 	void CRenderer::Render3DCommands()

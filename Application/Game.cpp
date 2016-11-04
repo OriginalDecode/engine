@@ -71,7 +71,6 @@ bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
 	myEntityManager->AddSystem<AISystem>();
 	myEntityManager->AddSystem<CameraSystem>();
 	
-	//myPicker = new Snowblind::CMousePicker();
 	myEngine->ToggleVsync();
 	return true;
 }
@@ -90,6 +89,10 @@ bool CGame::CleanUp()
 	if (myEntityManager)
 		return false;
 
+	for (Snowblind::CTerrain* terrain : myTerrain)
+	{
+		DL_ASSERT_EXP(!terrain->CleanUp(), "Failed to cleanup terrain!");
+	}
 	myTerrain.DeleteAll();
 	if (myTerrain.Size() > 0)
 		return false;

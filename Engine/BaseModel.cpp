@@ -12,20 +12,6 @@ namespace Snowblind
 #endif
 	}
 
-
-	CBaseModel::~CBaseModel()
-	{
-#ifdef SNOWBLIND_DX11
-		SAFE_DELETE(myVertexBuffer);
-		SAFE_DELETE(myIndexBuffer);
-		SAFE_DELETE(myVertexData);
-		SAFE_DELETE(myIndexData);
-		SAFE_DELETE(myConstantStruct);
-		SAFE_RELEASE(myConstantBuffer);
-		SAFE_RELEASE(myVertexLayout);
-#endif
-	}
-
 	void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
 #ifdef SNOWBLIND_DX11

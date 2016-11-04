@@ -19,8 +19,7 @@ namespace Snowblind
 	{
 	public:
 		CTerrain(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
-		~CTerrain();
-
+		bool CleanUp() override;
 		void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
 
 		void Save(const std::string& aFilename);

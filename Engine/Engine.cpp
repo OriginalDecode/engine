@@ -94,8 +94,8 @@ namespace Snowblind
 	
 		myCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight);
 		my2DCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
-		myRenderer = new CRenderer;
-		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
+		//myRenderer = new CRenderer;
+		//DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
 	
 		myTimeManager = new CU::TimeManager;
 		Randomizer::Create();
@@ -138,7 +138,7 @@ namespace Snowblind
 		m_DeltaTime = myTimeManager->GetDeltaTime();
 		//myAssetsContainer->Update();
 		myTimeManager->Update();
-		myRenderer->Render();
+		//myRenderer->Render();
 		m_Threadpool.Update();
 	}
 

@@ -15,7 +15,12 @@ namespace Snowblind
 	CAssetsContainer::~CAssetsContainer()
 	{
 		SAFE_DELETE(myShaderFactory);
-		DELETE_MAP(myModels);
+
+		for (auto it = myModels.begin(); it != myModels.end(); it++)
+		{
+			DL_ASSERT_EXP(!it->second->CleanUp(), "failed to cleanup model.");
+		}
+
 		DELETE_MAP(myEffects);
 		DELETE_MAP(myTextures);
 		DELETE_MAP(mySprites);

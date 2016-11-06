@@ -121,19 +121,19 @@ void CGame::Update(float aDeltaTime)
 	std::stringstream ss;
 	ss << myEngine->GetFPS() << "\n" << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::CEngine::GetInstance()->GetLocalTimeAsString();
 
-	mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
+	//mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
 
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
 
-	std::stringstream b;
-	if (rigidbody)
-	{
-		CU::Vector3f vec = rigidbody->GetLinearVelocity();
-		b << "player_entity_velocity :\nX : " << vec.x << "\nY : " << vec.y << "\nZ : " << vec.z;
-		mySynchronizer->AddRenderCommand(RenderCommand(b.str(), { 0, 500 }, eType::TEXT));
-	}
+	//std::stringstream b;
+	//if (rigidbody)
+	//{
+	//	CU::Vector3f vec = rigidbody->GetLinearVelocity();
+	//	b << "player_entity_velocity :\nX : " << vec.x << "\nY : " << vec.y << "\nZ : " << vec.z;
+	//	mySynchronizer->AddRenderCommand(RenderCommand(b.str(), { 0, 500 }, eType::TEXT));
+	//}
 
 
 	myEntityManager->Update(aDeltaTime);
@@ -327,6 +327,10 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 
 			input.m_InputHandle->Bind(Hash("RThumbXN"), [&]() {
 				p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+			});
+
+			input.m_InputHandle->Bind(Hash("YButton"), [&]() {
+				Snowblind::CEngine::GetInstance()->ToggleDebugMenu();
 			});
 
 		}

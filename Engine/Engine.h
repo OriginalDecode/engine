@@ -5,6 +5,7 @@
 #include "Window.h"
 #include <CommonLib/Math/Vector/Vector.h>
 #include <CommonLib/Threadpool.h>
+#include "DebugSystem.h"
 #ifndef _WINDEF_
 
 struct HINSTANCE__;
@@ -110,8 +111,8 @@ namespace Snowblind
 		std::string GetLocalTimeAsString();
 		CTerrain* CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize);
 		Window& GetWindow() { return m_Window; }
-
 		Threadpool& GetThreadpool();
+		void ToggleDebugMenu();
 	private:
 		CEngine() = default;
 		//void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
@@ -126,6 +127,7 @@ namespace Snowblind
 		SLocalTime myLocalTime;
 		HWND myHWND;
 		Window m_Window;
+		DebugSystem m_DebugSystem;
 
 		CFontManager* myFontManager			= nullptr;
 		CU::TimeManager* myTimeManager		= nullptr;

@@ -91,7 +91,12 @@ namespace Snowblind
 		mySynchronizer = new CSynchronizer;
 		DL_ASSERT_EXP(mySynchronizer->Initiate(), "Engine : Failed to Initiate Synchronizer!");
 	
-	
+		m_DebugSystem.Initiate(mySynchronizer);
+		m_DebugSystem.AddDebugMenuItem("Toggle VSync", [&]() 
+		{
+			ToggleVsync();
+		});
+
 		myCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight);
 		my2DCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
 		myRenderer = new CRenderer;
@@ -140,6 +145,7 @@ namespace Snowblind
 		myTimeManager->Update();
 		myRenderer->Render();
 		m_Threadpool.Update();
+		m_DebugSystem.Render();
 	}
 
 	void CEngine::Present()
@@ -316,4 +322,10 @@ namespace Snowblind
 	{
 		return m_Threadpool;
 	}
+
+	void CEngine::ToggleDebugMenu()
+	{
+		m_DebugSystem.GetDebugMenuIsActive() ? m_DebugSystem.DeactivateDebugMenu() : m_DebugSystem.ActivateDebugMenu();
+	}
+
 };

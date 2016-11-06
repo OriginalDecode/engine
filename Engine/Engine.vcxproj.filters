@@ -240,6 +240,7 @@
     </ClInclude>
     <ClInclude Include="Window.h" />
     <ClInclude Include="ShadowSpotlight.h" />
+    <ClInclude Include="DebugSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -376,5 +377,6 @@
     </ClCompile>
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="ShadowSpotlight.cpp" />
+    <ClCompile Include="DebugSystem.cpp" />
   </ItemGroup>
 </Project>

@@ -54,16 +54,21 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
     norm.xyz += 1.f;
 	norm.xyz *= 0.5f;
 	float depth = input.pos.z;
-	float dist = length(camPosition - input.pos);
+	float dist = length(float4(500.f,0.f, 500.f, 1.f) - input.worldpos);
 	dist = normalize(dist);
 	GBuffer output;
 	
   	output.Albedo = AlbedoTexture.SampleLevel(linear_Wrap, input.uv, 1);
 	output.Normal = float4(input.normal.xyz, 0.f);
+	float height = input.worldpos.y;
+	if(height < 0)
+		height = 0;
+	float4 centerColor = float4(1.0f, 1.0f, 1.0f, 1.f);
+	float4 apexColor = float4(0.8f, 0.8f, 0.8f, 0.2f) ;
+	
+	float4 outputColor = lerp(centerColor, apexColor, height / 8);
 
-	//if(dist<=1.f)
-	//  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * 0.5;
-
+ 	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * outputColor;
 
 	output.Depth.r = depth;
 	output.Depth.g = 1.f;

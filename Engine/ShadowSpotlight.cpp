@@ -10,6 +10,9 @@ namespace Snowblind
 		m_Device = CEngine::GetInstance()->GetAPI()->GetDevice();
 		m_Context = CEngine::GetInstance()->GetAPI()->GetContext();
 
+		m_Texture = new CTexture();
+		m_Texture->InitStencil(2048.f, 2048.f);
+
 		return true;
 	}
 

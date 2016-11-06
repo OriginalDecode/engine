@@ -133,6 +133,28 @@ namespace Snowblind
 		}
 	}
 
+	std::vector<float> CModel::GetVertices()
+	{
+		std::vector<float> to_return;
+		for (const SVertexTypePosCol& vert : myVertices)
+		{
+			to_return.push_back(vert.myPosition.x);
+			to_return.push_back(vert.myPosition.y);
+			to_return.push_back(vert.myPosition.z);
+		}
+		return to_return;
+	}
+
+	std::vector<s32> CModel::GetIndices()
+	{
+		std::vector<s32> to_return;
+		for (s32 index : m_Indices)
+		{
+			to_return.push_back(index);
+		}
+		return to_return;
+	}
+
 	void CModel::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
 #ifdef SNOWBLIND_DX11

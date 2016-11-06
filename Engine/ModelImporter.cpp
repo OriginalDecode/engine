@@ -129,6 +129,13 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 	indexWrapper->mySize = data->myIndexCount * sizeof(u32);
 	out->myIndexData = indexWrapper;
 
+	for (s32 i = 0; i < data->myIndexCount; i++)
+	{
+		out->m_Indices.Add(data->myIndicies[i]);
+	}
+
+
+
 	/* BUG HERE. CRASH. */
 	Snowblind::SVertexDataWrapper* vertexData = new Snowblind::SVertexDataWrapper();
 	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float); //is this wrong?

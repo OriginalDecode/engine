@@ -38,6 +38,8 @@ public:
 	btRigidBody* InitAsPlane(const btVector3& aNormal);
 	btRigidBody* InitAsTerrain(std::vector<float> vertices, std::vector<s32> indices);
 	btRigidBody* InitAsSphere(float aRadius, float aMass, float aGravityForce, float anInitialResistance, const CU::Vector3f& aPosition);
+	btRigidBody* InitWithMeshCollision(std::vector<float> vertices, std::vector<s32> indices);
+
 	/*
 		Air Resistance, Water Resistance, Sludge etc...
 		Air is 1.293

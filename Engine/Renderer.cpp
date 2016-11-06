@@ -111,6 +111,9 @@ namespace Snowblind
 
 		myEngine->Clear();
 #ifdef SNOWBLIND_DX11
+
+		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		myDeferredRenderer->SetTargets();
 		Render3DCommands();
 
 		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
@@ -123,7 +126,7 @@ namespace Snowblind
 		mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
 
-
+		ProcessShadows();
 
 		myDeferredRenderer->Finalize();
 
@@ -148,11 +151,9 @@ namespace Snowblind
 	void CRenderer::Render3DCommands()
 	{
 #ifdef SNOWBLIND_DX11
-		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
-		myDeferredRenderer->SetTargets();
-
+		
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
-		for each(const RenderCommand& command in commands)
+		for (const RenderCommand& command : commands)
 		{
 			switch (command.myType)
 			{
@@ -162,7 +163,6 @@ namespace Snowblind
 					myDirectX->SetBlendState(eBlendStates::BLEND_FALSE);
 
 					CModel* model = myEngine->GetModel(command.myModelKey);
-
 					model->SetPosition(command.myPosition);
 					model->Render(myPrevFrame, myCamera->GetProjection());
 				}break;
@@ -324,19 +324,22 @@ namespace Snowblind
 
 	void CRenderer::ProcessShadows()
 	{
-		m_Shadowlight->SetViewport();
-		ID3D11RenderTargetView* backbuffer = m_Shadowlight->GetTexture()->GetRenderTargetView();
-		ID3D11DepthStencilView* depth = m_Shadowlight->GetTexture()->GetDepthStencilView();
-		myDirectX->GetContext()->OMSetRenderTargets(1, &backbuffer, depth);
-		m_Shadowlight->ClearTexture();
 		CCamera* camera = myCamera;
+
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_Shadowlight->SetViewport();
+
+		//m_Shadowlight->ClearTexture();
+		ID3D11RenderTargetView* backbuffer = m_Shadowlight->GetTexture()->GetRenderTargetView();
+		ID3D11DepthStencilView* depth = m_Shadowlight->GetTexture()->GetDepthView();
+
+		myDirectX->GetContext()->OMSetRenderTargets(1, &backbuffer, depth);
 
 		myCamera = m_Shadowlight->GetCamera();
 		Render3DCommands();
 
 		CEngine::GetInstance()->ResetRenderTargetAndDepth();
-
+		CEngine::GetInstance()->GetAPI()->ResetViewport();
 		myCamera = camera;
 	}
-
 };

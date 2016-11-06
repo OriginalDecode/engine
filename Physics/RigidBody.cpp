@@ -79,6 +79,30 @@ btRigidBody* CRigidBody::InitAsSphere(float aRadius, float aMass, float aGravity
 	return myBody;
 }
 
+btRigidBody* CRigidBody::InitWithMeshCollision(std::vector<float> vertices, std::vector<s32> indices)
+{
+	if (vertices.size() <= 0 || indices.size() <= 0)
+		return nullptr;
+
+	s32 faceCount = indices.size() / 3;
+	s32 vStride = sizeof(CU::Vector3f);
+	s32 iStride = sizeof(u32) * 3;
+
+	btScalar* locVertices = new btScalar[vertices.size()];
+	memcpy(&locVertices[0], &vertices[0], sizeof(float) * vertices.size());
+	s32* locIndices = new s32[indices.size()];
+	memcpy(&locIndices[0], &indices[0], sizeof(s32) * indices.size());
+
+	myVertexArray = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, vertices.size(), locVertices, vStride);
+	myShape = new btBvhTriangleMeshShape(myVertexArray, false, btVector3(0, 0, 0), btVector3(1, 1, 1), true);
+	myMotionState = new btDefaultMotionState();
+	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
+
+	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, myMotionState, myShape, btVector3(0, 0, 0));
+	myBody = new btRigidBody(bodyInfo);
+	return myBody;
+}
+
 void CRigidBody::SetResistanceDensity(float aDensity)
 {
 	myResistanceDensity = aDensity;

@@ -51,7 +51,7 @@ VS_OUTPUT VS(VS_INPUT input)
 	output.binorm = input.binorm;
 	output.tang  = mul(input.tang , World);
 
-	output.worldpos = mul(input.pos, World);
+	output.worldpos = input.pos;;
 	
 	return output;
 };

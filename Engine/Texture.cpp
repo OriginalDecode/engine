@@ -89,6 +89,9 @@ namespace Snowblind
 		hr = CEngine::GetAPI()->GetDevice()->CreateRenderTargetView(myTexture, NULL, &myRenderTargetView);
 		CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Render Target View!");
 		CreateDepthStencilView(static_cast<float>(width), static_cast<float>(height));
+
+
+		CEngine::GetAPI()->SetDebugName(myRenderTargetView, "RenderTargetView");
 #endif
 	}
 

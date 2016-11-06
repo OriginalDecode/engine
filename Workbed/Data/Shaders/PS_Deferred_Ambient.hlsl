@@ -85,9 +85,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float3 fresnel = LdotH * (1.f - substance);
 	fresnel = fresnel / (2 - 1 * (1.f - roughnessOffsetted));
 	fresnel = substance + fresnel;
-  
-
-
 
 	float3 reflectionFrensnel =	fresnel;
 	float3 reflectionVector = reflect(toEye, normal);

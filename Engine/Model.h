@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseModel.h"
+#include <vector>
 struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct ID3D11Buffer;
@@ -27,9 +28,14 @@ static Ticket_Mutex g_ModelMutex;
 		CU::Matrix44f& GetOrientation();
 		void SetOrientation(CU::Matrix44f orientation) { myOrientation = orientation; }
 		void Update(float dt);
+
+		std::vector<float> GetVertices();
+		std::vector<s32> GetIndices();
+
 	private:
 		void InitConstantBuffer();
 		CU::GrowingArray<SVertexTypePosCol> myVertices;
+		CU::GrowingArray<s32> m_Indices;
 
 		CU::GrowingArray<CSurface*> mySurfaces;
 		CU::GrowingArray<CModel*> myChildren;

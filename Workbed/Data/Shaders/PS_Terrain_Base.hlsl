@@ -68,8 +68,10 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	
 	float4 outputColor = lerp(centerColor, apexColor, height / 8);
 
- 	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * outputColor;
-
+	float4 d = length(input.pos - camPosition); 
+	d = normalize(d);
+ 	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
+	
 	output.Depth.r = depth;
 	output.Depth.g = 1.f;
 	

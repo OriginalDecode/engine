@@ -210,7 +210,7 @@ namespace Snowblind
 			myConstantStruct->projection = aCameraProjection;
 			myConstantStruct->time.x = myEngine->GetDeltaTime();
 
-			m_PSConstantStruct->camPos = aCameraOrientation.GetTranslation();
+			m_PSConstantStruct->camPos = myOrientation.GetTranslation();
 
 			D3D11_MAPPED_SUBRESOURCE msr;
 			myAPI->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
@@ -332,23 +332,5 @@ namespace Snowblind
 //		return SHeightMap(width, depth, data);
 		return height_map;
 	}
-
-	//SHeightMap::SHeightMap(u32 aWidth, u32 aDepth, u8* const someData)
-	//	: myWidth(aWidth)
-	//	, myDepth(aDepth)
-	//	, myData(someData)
-	//{
-	//}
-
-	//SHeightMap::SHeightMap(std::fstream& aStream)
-	//	: myWidth(0)
-	//	, myDepth(0)
-	//	, myData(nullptr)
-	//{
-	//	aStream.read((s8*)&myWidth, sizeof(u32));
-	//	aStream.read((s8*)&myDepth, sizeof(u32));
-	//	myData = new u8[myWidth * myDepth];
-	//	aStream.read((s8*)myData, sizeof(s8) * myWidth * myDepth);
-	//}
 
 };

@@ -266,6 +266,9 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			input.m_InputHandle = new InputHandle;
 			input.m_InputHandle->Initiate(input.m_ID);
 	
+			Snowblind::CEngine::GetInstance()->InitiateDebugSystem(mySynchronizer, input.m_InputHandle);
+
+
 			JSONReader read_input_config("Data/Config/input_config.json");
 
 			if(read_input_config.HasElement("Forward"))
@@ -330,7 +333,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			});
 
 			input.m_InputHandle->Bind(Hash("YButton"), [&]() {
-				Snowblind::CEngine::GetInstance()->ToggleDebugMenu();
+				Snowblind::CEngine::GetInstance()->ToggleDebugMenu(); // (#LINUS) inte trådsäker
 			});
 
 		}

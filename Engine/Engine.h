@@ -13,7 +13,7 @@ typedef HINSTANCE__* HINSTANCE;
 struct HWND__;
 typedef HWND__* HWND;
 #endif
-
+class InputHandle;
 class CEntityManager;
 namespace CommonUtilities
 {
@@ -67,6 +67,8 @@ namespace Snowblind
 		static Vulkan* GetAPI();
 #endif
 
+		bool InitiateDebugSystem(CSynchronizer* synchronizer, InputHandle* input_handle);
+
 		bool Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc);
 		bool CleanUp();
 
@@ -113,6 +115,7 @@ namespace Snowblind
 		Window& GetWindow() { return m_Window; }
 		Threadpool& GetThreadpool();
 		void ToggleDebugMenu();
+		bool IsDebugMenuActive() { return m_DebugSystem.GetDebugMenuIsActive(); }
 	private:
 		CEngine() = default;
 		//void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);

@@ -2,22 +2,23 @@
 #include <sstream>
 #include <functional>
 #include <vector>
+
+class InputHandle;
 namespace Snowblind
 {
 	class CSynchronizer;
-
-
 	class DebugMenu
 	{
 	public:
 		DebugMenu() = default;
-		bool Initiate(CSynchronizer* synchronizer);
+		bool Initiate(CSynchronizer* synchronizer, InputHandle* input_handle);
 		void Activate() { m_IsActive = true; }
 		void Deactivate() { m_IsActive = false; }
 		bool GetIsActive() { return m_IsActive; }
 
 		void AddToMenu(std::string item_name, std::function<void()> item_function);
 		void Render();
+		void Update();
 	private:
 		struct Menu_Item
 		{
@@ -34,19 +35,20 @@ namespace Snowblind
 		CSynchronizer* m_Synchronizer = nullptr;
 		std::vector<Menu_Item> m_MenuItems;
 		std::stringstream m_Stream;
+		InputHandle* m_InputHandle = nullptr;
 	};
 
 	class DebugSystem
 	{
 	public:
 		DebugSystem() = default;
-		bool Initiate(CSynchronizer* synchronizer);
+		bool Initiate(CSynchronizer* synchronizer, InputHandle* input_handle);
+		void Update();
 		void Render();
 		void ActivateDebugMenu();
 		void DeactivateDebugMenu();
 		bool GetDebugMenuIsActive() { return m_DebugMenu.GetIsActive(); }
 		void AddDebugMenuItem(const std::string& item_name, std::function<void()> function) { m_DebugMenu.AddToMenu(item_name, function); }
-
 	private:
 		DebugMenu m_DebugMenu;
 		CSynchronizer* m_Synchronizer = nullptr;

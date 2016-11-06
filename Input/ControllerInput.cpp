@@ -2,6 +2,10 @@
 ControllerInput::ControllerInput(int aPlayer)
 {
 	myControllerID = aPlayer;
+
+	memset(&m_State, 0, sizeof(ControllerState));
+	memset(&m_PrevState, 0, sizeof(ControllerState));
+
 }
 
 bool ControllerInput::IsConnected()

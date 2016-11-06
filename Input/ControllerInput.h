@@ -24,14 +24,15 @@ enum eXboxButton
 
 struct ControllerState
 {
-	u16 m_Buttons;
-
-	s16 m_ThumbRX;
-	s16 m_ThumbRY;
-	s16 m_ThumbLY;
-	s16 m_ThumbLX;
-	u8 m_RTrigger;
-	u8 m_LTrigger;
+	u16 m_Buttons = 0;
+	s16 m_ThumbRX = 0;
+	s16 m_ThumbRY = 0;
+	s16 m_ThumbLY = 0;
+	s16 m_ThumbLX = 0;
+	u8 m_RTrigger = 0;
+	u8 m_LTrigger = 0;
+	XINPUT_STATE myControllerState;
+	XINPUT_STATE myPrevControllerState;
 };
 
 class ControllerInput
@@ -39,6 +40,7 @@ class ControllerInput
 public:
 	ControllerInput(int aPlayer);
 	const ControllerState& GetState() const { return m_State; }
+	const ControllerState& GetPrevState() const { return m_PrevState; }
 	bool IsConnected();
 	void Update(float aDeltaTime);
 

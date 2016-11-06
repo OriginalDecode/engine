@@ -41,12 +41,12 @@ void InputHandle::HandleInput()
 		if (m_Controller->IsConnected())
 		{
 			const ControllerState& state = m_Controller->GetState();
-
+			const ControllerState& prev_state = m_Controller->GetPrevState();
 			if (state.m_Buttons & x_X)
 			{
 				CallFunction(s_XButton_hash);
 			}
-			else if (state.m_Buttons & x_Y)
+			else if ((state.m_Buttons & x_Y) == 0 && (prev_state.m_Buttons & x_Y) != 0)
 			{
 				CallFunction(s_YButton_hash);
 			}

@@ -7,8 +7,8 @@
 #include "../Input/ControllerInput.h"
 #include "../Input/InputWrapper.h"
 #include "../Input/InputHandle.h"
-#include "../Engine/Camera.h";
-
+#include "../Engine/Camera.h"
+#include "../Engine/Engine.h"
 InputSystem::InputSystem(CEntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<CameraComponent, InputController>>())
 {
@@ -16,13 +16,16 @@ InputSystem::InputSystem(CEntityManager& anEntityManager)
 
 void InputSystem::Update(float delta_time)
 {
+	if (Snowblind::CEngine::GetInstance()->IsDebugMenuActive())
+		return;
+
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (const Entity& e : entities)
 	{
+
 		InputController& input = GetComponent<InputController>(e);
 		input.m_InputHandle->HandleInput();
-		//CameraComponent& camera = GetComponent<CameraComponent>(e);
-		//camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
+
 	}
 }
 

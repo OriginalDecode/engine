@@ -48,6 +48,13 @@ namespace Snowblind
 		return static_cast<Vulkan*>(myAPI);
 	}
 #endif
+
+	bool CEngine::InitiateDebugSystem(CSynchronizer* synchronizer, InputHandle* input_handle)
+	{
+		m_DebugSystem.Initiate(synchronizer, input_handle);
+		return true;
+	}
+
 	bool CEngine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 	{
 		myWindowSize.myHeight = window_height;
@@ -91,7 +98,6 @@ namespace Snowblind
 		mySynchronizer = new CSynchronizer;
 		DL_ASSERT_EXP(mySynchronizer->Initiate(), "Engine : Failed to Initiate Synchronizer!");
 	
-		m_DebugSystem.Initiate(mySynchronizer);
 		m_DebugSystem.AddDebugMenuItem("Toggle VSync", [&]() 
 		{
 			ToggleVsync();
@@ -145,6 +151,7 @@ namespace Snowblind
 		myTimeManager->Update();
 		myRenderer->Render();
 		m_Threadpool.Update();
+		m_DebugSystem.Update();
 		m_DebugSystem.Render();
 	}
 

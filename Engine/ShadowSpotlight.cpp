@@ -26,6 +26,10 @@ namespace Snowblind
 		if (m_Camera)
 			return false;
 
+		SAFE_DELETE(m_Texture);
+		if (m_Texture)
+			return false;
+
 		return true;
 	}
 

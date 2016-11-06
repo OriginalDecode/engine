@@ -2,10 +2,12 @@
 #include "DebugSystem.h"
 #include "Synchronizer.h"
 #include "RenderCommand.h"
+#include "../Input/InputHandle.h"
 
-bool Snowblind::DebugMenu::Initiate(CSynchronizer* synchronizer)
+bool Snowblind::DebugMenu::Initiate(CSynchronizer* synchronizer, InputHandle* input_handle)
 {
 	m_Synchronizer = synchronizer;
+	m_InputHandle = input_handle;
 	return true;
 }
 
@@ -23,12 +25,22 @@ void Snowblind::DebugMenu::Render()
 	}
 }
 
-bool Snowblind::DebugSystem::Initiate(CSynchronizer* synchronizer)
+void Snowblind::DebugMenu::Update()
+{
+	m_InputHandle->HandleInput();
+}
+
+bool Snowblind::DebugSystem::Initiate(CSynchronizer* synchronizer, InputHandle* input_handle)
 {
 	m_Synchronizer = synchronizer;
-	m_DebugMenu.Initiate(m_Synchronizer);
+	m_DebugMenu.Initiate(m_Synchronizer, input_handle);
 
 	return true;
+}
+
+void Snowblind::DebugSystem::Update()
+{
+	m_DebugMenu.Update();
 }
 
 void Snowblind::DebugSystem::Render()

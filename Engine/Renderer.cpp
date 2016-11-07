@@ -116,7 +116,7 @@ namespace Snowblind
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
 
-		myDepthTexture->CopyData(myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
+		CTexture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
 
 		RenderPointlight();

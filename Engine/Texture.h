@@ -6,17 +6,33 @@ struct ID3D11RenderTargetView;
 struct ID3D11DepthStencilView;
 struct ID3D11Texture2D;
 #endif
+typedef DXGI_FORMAT TextureFormat;
+
+enum TextureUsageFlags
+{
+	DEFAULT_USAGE,
+	IMMUTABLE_USAGE,
+	DYNAMIC_USAGE,
+	STAGING_USAGE,
+};
+
 namespace Snowblind
 {
 	class CTexture
 	{
 	public:
-		CTexture();
+		CTexture() = default;
 		CTexture(float aWidth, float aHeight, unsigned int aBindFlag, unsigned int aFormat);
-		~CTexture();
+
+		bool CleanUp();
 
 		void InitAsDepthBuffer(float aWidth, float aHeight);
 		void InitStencil(float aWidth, float aHeight);
+
+		void Initiate(u16 width, u16 height, s32 flags, TextureFormat format, const std::string& debug_name);
+		void Initiate(u16 width, u16 height, s32 flags, TextureFormat format, TextureFormat depth_view_format, TextureFormat depth_stencil_format, const std::string& debug_name);
+
+
 		const std::string& GetFileName();
 		bool LoadTexture(const std::string& aFileName, bool mip = false);
 
@@ -30,20 +46,24 @@ namespace Snowblind
 		ID3D11DepthStencilView* GetDepthView();
 		void SetTexture(ID3D11ShaderResourceView* aShaderResource);
 		static HRESULT SaveToFile(ID3D11Texture2D*& texture_resource, const std::string& file_name);
-		void CopyData(ID3D11Texture2D* source);
+		static void CopyData(ID3D11Texture2D* dest, ID3D11Texture2D* source);
 #endif
 
 		void SaveToFile(const char* aFileName, int aSize);
 		void CreateDepthStencilView(float aWidth, float aHeight, int aArraySize = 1);
 	private:
 
+		D3D11_USAGE GetUsage(int flags) const;
+
 #ifdef SNOWBLIND_DX11
-		ID3D11Texture2D* myTexture;
-		ID3D11ShaderResourceView* myShaderResource;
-		ID3D11Texture2D* myDepthTexture;
-		ID3D11DepthStencilView* myDepthStencil;
-		ID3D11ShaderResourceView* myDepthStencilShaderView;
-		ID3D11RenderTargetView* myRenderTargetView;
+		ID3D11Texture2D* m_Texture = nullptr;
+		ID3D11Texture2D* m_DepthTexture = nullptr;
+
+		ID3D11ShaderResourceView* m_ShaderResource = nullptr;
+		ID3D11ShaderResourceView* m_DepthStencilShaderView = nullptr;
+
+		ID3D11DepthStencilView* m_DepthStencil = nullptr;
+		ID3D11RenderTargetView* m_RenderTargetView = nullptr;
 #endif
 		int	myWidth;
 		int	myHeight;

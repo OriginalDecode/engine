@@ -96,6 +96,7 @@ namespace Snowblind
 			CTexture* texture = new CTexture;
 			if (texture->LoadTexture(aFilePath.c_str()) == false)
 			{
+				DL_ASSERT_EXP(texture->CleanUp(), "Failed to cleanup texture!");
 				SAFE_DELETE(texture);
 			}
 			myTextures[aFilePath] = texture;

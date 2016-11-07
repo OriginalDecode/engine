@@ -348,10 +348,7 @@ namespace Snowblind
 			//DL_WARNINGBOX(myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), file_path).c_str());
 
 		}
-		if(!CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Shader.") && hr != S_OK)
-		{
-			DL_MESSAGE("D3DCompileFromFile returned != S_OK but did not assert?");
-		}
+		CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Shader.");
 		return compiledShader;
 	}
 #endif

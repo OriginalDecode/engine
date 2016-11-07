@@ -372,7 +372,7 @@ namespace Snowblind
 		myContext->OMSetDepthStencilState(myDepthStates[int(eDepthStencil::Z_DISABLED)], 1);
 	}
 
-	bool DirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
+	void DirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
 	{
 		std::string toError;
 		switch (aResult)
@@ -380,60 +380,55 @@ namespace Snowblind
 			case D3D11_ERROR_FILE_NOT_FOUND:
 			{
 				toError = (anErrorString + " File not found!");
-				DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-			}return true;
+			}break;
 			case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
 			{
 				toError = (anErrorString + " Too many unique state objects!");
-				DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-			}return true;
+			}break;
 			case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
 			{
 				toError = (anErrorString + " Too many view objects!");
-				DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-			}return true;
+			}break;
 			case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
 			{
 				toError = (anErrorString + " Deferred Context Map Without Initial Discard!");
-				DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-			}return true;
+			}break;
 			case DXGI_ERROR_INVALID_CALL:
 			{
 				toError = (anErrorString + " Invalid call!");
-				DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-			}return true;
+			}break;
 			case DXGI_ERROR_WAS_STILL_DRAWING:
 			{
 				toError = (anErrorString + " Were still drawing!");
-				DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-			}return true;
+			}break;
 			case E_FAIL:
 			{
 				toError = (anErrorString + " Failed!");
-				DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-			}return true;
+			}break;
 			case E_INVALIDARG:
 			{
 				toError = (anErrorString + " One or more arguments were invalid!");
-				DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-			}return true;
+			}break;
 			case E_OUTOFMEMORY:
 			{
 				toError = (anErrorString + " Out of Memory!");
-				DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-			}return true;
+			}break;
 			case E_NOTIMPL:
 			{
 				toError = (anErrorString + " The method call isn't implemented with the passed parameter combination.");
-				DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-			}return true;
+			}break;
 			case S_FALSE:
 			{
 				toError = (anErrorString + " Something went wrong. Returned false!");
-				DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-			}return true;
+				
+			}break;
 		}
-		return false;
+
+		if (!toError.empty())
+		{
+			DL_MESSAGE("%s", toError.c_str());
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+		}
 	}
 
 	const std::string& DirectX11::GetAPIName()

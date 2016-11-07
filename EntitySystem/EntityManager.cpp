@@ -1,6 +1,6 @@
 #include "EntityManager.h"
 #include "BaseSystem.h"
-#include "EngineDefines.h"
+#include <EngineDefines.h>
 #define TRUE 1
 #define FALSE 0
 
@@ -39,15 +39,10 @@ void CEntityManager::Update(float aDelta)
 {
 	myDeltaTime = aDelta;
 	
-	
 	for each(BaseSystem* system in mySystems)
 	{
 		system->Update(myDeltaTime);
 	}
-
-	//while (IsSystemsFinished() == false){ }
-	
-
 }
 
 const CU::GrowingArray<Entity>& CEntityManager::GetEntities(SComponentFilter& aFilter)

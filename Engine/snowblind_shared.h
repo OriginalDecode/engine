@@ -27,4 +27,3 @@ inline void EndTicketMutex(Ticket_Mutex* mutex)
 {
 	mutex->serving++;
 }
-

@@ -14,7 +14,7 @@ namespace Snowblind
 	class CAssetsContainer
 	{
 	public:
-		CAssetsContainer();
+		CAssetsContainer() = default;
 		~CAssetsContainer();
 
 		void Initiate();
@@ -22,7 +22,6 @@ namespace Snowblind
 		void Update();
 
 		CTexture* GetTexture(const std::string& aFilePath);
-		CTexture* GetTexture(const std::string& aFilePath, bool mips);
 
 		CEffect* GetEffect(const std::string& aFilePath);
 		CModel* GetModel(const std::string& aFilePath);
@@ -34,14 +33,11 @@ namespace Snowblind
 		std::unordered_map<std::string, CEffect*> myEffects;
 		std::unordered_map<std::string, CModel*> myModels;
 		std::unordered_map<std::string, CSprite*> mySprites;
-
 		
-		void LoadTexture(const std::string& aFilePath);
-		void LoadTexture(const std::string& filepath, bool mips);
+		bool LoadTexture(const std::string& aFilePath);
 		void LoadEffect(const std::string& aFilePath);
 
 		CShaderFactory* myShaderFactory;
 		CModelImporter* myModelLoader;
-
 	};
 };

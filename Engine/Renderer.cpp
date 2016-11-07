@@ -49,8 +49,9 @@ namespace Snowblind
 		if (!myDepthTexture)
 			return false;
 		
-		myDepthTexture->InitStencil(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight);
-		myDepthTexture->SetDebugName("myDepthTexture");
+
+		myDepthTexture->Initiate(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+			, DXGI_FORMAT_R24G8_TYPELESS, DXGI_FORMAT_R24_UNORM_X8_TYPELESS, DXGI_FORMAT_D24_UNORM_S8_UINT, "Renderer : Depth");
 
 		mySkysphere = new CSkySphere;
 		mySkysphere->Initiate("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", camera_3d);
@@ -91,8 +92,11 @@ namespace Snowblind
 		SAFE_DELETE(mySprite);
 		mySkysphere->CleanUp();
 		SAFE_DELETE(mySkysphere);
+
+		myDepthTexture->CleanUp();
 		SAFE_DELETE(myDepthTexture);
 		SAFE_DELETE(my2DCamera);
+
 		SAFE_DELETE(myDeferredRenderer);
 		SAFE_DELETE(myText);
 
@@ -126,7 +130,7 @@ namespace Snowblind
 		mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
 
-		ProcessShadows();
+		//ProcessShadows();
 
 		myDeferredRenderer->Finalize();
 

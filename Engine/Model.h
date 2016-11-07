@@ -19,7 +19,7 @@ static Ticket_Mutex g_ModelMutex;
 	public:
 		CModel();
 		bool CleanUp() override;
-		CModel* CreateModel();
+		CModel* CreateModel(const std::string& filename);
 		void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
 
 		void AddChild(CModel* aChild);

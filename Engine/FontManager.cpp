@@ -374,7 +374,7 @@ namespace Snowblind
 	}
 
 
-	void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline)
+	void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch, bool /*isOutline*/)
 	{
 #ifdef SNOWBLIND_DX11
 		D3D11_SUBRESOURCE_DATA data;

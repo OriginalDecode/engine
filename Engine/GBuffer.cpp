@@ -9,33 +9,35 @@ namespace Snowblind
 		, myContext(myDirectX->GetContext())
 #endif
 	{
-		SWindowSize windowSize = CEngine::GetInstance()->GetWindowSize();
-		myAlbedo = new CTexture(windowSize.myWidth, windowSize.myHeight
-			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R16G16B16A16_FLOAT);
-		myAlbedo->SetDebugName("Deferred_Albedo");
+		const SWindowSize windowSize = CEngine::GetInstance()->GetWindowSize();
 
-		myEmissive = new CTexture(windowSize.myWidth, windowSize.myHeight
-			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
-		myEmissive->SetDebugName("Deferred_Emissive");
+		myAlbedo = new CTexture;
+		myAlbedo->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "GBuffer : Albedo");
 
-		myNormal = new CTexture(windowSize.myWidth, windowSize.myHeight
-			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
-		myNormal->SetDebugName("Deferred_Normal");
+		myEmissive = new CTexture;
+		myEmissive->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM, "GBuffer : Emissive");
 
-		myDepth = new CTexture(windowSize.myWidth, windowSize.myHeight
-			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R32G32B32A32_FLOAT);
-		myDepth->SetDebugName("Deferred_Depth");
+		myNormal = new CTexture;
+		myNormal->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM, "GBuffer : Normal");
+		
+		myDepth = new CTexture;
+		myDepth->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R32G32B32A32_FLOAT, "GBuffer : Depth");
+
+
 	}
 	
 	GBuffer::~GBuffer()
 	{
+		myAlbedo->CleanUp();
 		SAFE_DELETE(myAlbedo);
+
+		myEmissive->CleanUp();
 		SAFE_DELETE(myEmissive);
+
+		myNormal->CleanUp();
 		SAFE_DELETE(myNormal);
+
+		myDepth->CleanUp();
 		SAFE_DELETE(myDepth);
 	}
 	

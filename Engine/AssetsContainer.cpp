@@ -7,28 +7,29 @@
 #include "ModelImporter.h"
 namespace Snowblind
 {
-	CAssetsContainer::CAssetsContainer() 
-		: myModelLoader(new CModelImporter())
-	{
-	}
-
 	CAssetsContainer::~CAssetsContainer()
 	{
 		SAFE_DELETE(myShaderFactory);
-
+		SAFE_DELETE(myModelLoader);
 		for (auto it = myModels.begin(); it != myModels.end(); it++)
 		{
-			DL_ASSERT_EXP(it->second->CleanUp(), "failed to cleanup model.");
+			DL_ASSERT_EXP(it->second->CleanUp(), "Failed to cleanup a model.");
+			SAFE_DELETE(it->second);
+		}
+
+		for (auto it = myTextures.begin(); it != myTextures.end(); it++)
+		{
+			DL_ASSERT_EXP(it->second->CleanUp(), "Failed to cleanup a model.");
+			SAFE_DELETE(it->second);
 		}
 
 		DELETE_MAP(myEffects);
-		DELETE_MAP(myTextures);
-		DELETE_MAP(mySprites);
 	}
 
 	void CAssetsContainer::Initiate()
 	{
-		myShaderFactory = new CShaderFactory();
+		myShaderFactory = new CShaderFactory;
+		myModelLoader = new CModelImporter;
 	}
 
 	CTexture* CAssetsContainer::GetTexture(const std::string& aFilePath)
@@ -41,24 +42,8 @@ namespace Snowblind
 
 		if (myTextures.find(aFilePath) == myTextures.end())
 		{
-			LoadTexture(aFilePath);
-			DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
-		}
-
-		return myTextures[aFilePath];
-	}
-
-	Snowblind::CTexture* CAssetsContainer::GetTexture(const std::string& aFilePath, bool mips)
-	{
-		if (CL::substr(aFilePath, ".dds") == false)
-		{
-			DL_MESSAGE("Failed to load %s, due to incorrect fileformat. Has to be .dds", aFilePath.c_str());
-			DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
-		}
-
-		if (myTextures.find(aFilePath) == myTextures.end())
-		{
-			LoadTexture(aFilePath, mips);
+			if (!LoadTexture(aFilePath))
+				return nullptr;
 			DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
 		}
 
@@ -89,30 +74,19 @@ namespace Snowblind
 		myShaderFactory->Update();
 	}
 
-	void CAssetsContainer::LoadTexture(const std::string& aFilePath)
+	bool CAssetsContainer::LoadTexture(const std::string& aFilePath)
 	{
 		if (myTextures.find(aFilePath) == myTextures.end())
 		{
 			CTexture* texture = new CTexture;
-			if (texture->LoadTexture(aFilePath.c_str()) == false)
+			if (texture->Load(aFilePath.c_str()) == false)
 			{
 				DL_ASSERT_EXP(texture->CleanUp(), "Failed to cleanup texture!");
 				SAFE_DELETE(texture);
+				return false;
 			}
 			myTextures[aFilePath] = texture;
-		}
-	}
-
-	void CAssetsContainer::LoadTexture(const std::string& filepath, bool mips)
-	{
-		if (myTextures.find(filepath) == myTextures.end())
-		{
-			CTexture* texture = new CTexture;
-			if (texture->LoadTexture(filepath.c_str(), mips) == false)
-			{
-				SAFE_DELETE(texture);
-			}
-			myTextures[filepath] = texture;
+			return true;
 		}
 	}
 

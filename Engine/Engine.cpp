@@ -122,7 +122,10 @@ namespace Snowblind
 		m_Threadpool.CleanUp();
 		SAFE_DELETE(myAssetsContainer);
 		SAFE_DELETE(mySynchronizer);
+
+		myRenderer->CleanUp();
 		SAFE_DELETE(myRenderer);
+
 		SAFE_DELETE(myCamera);
 		SAFE_DELETE(myFontManager);
 		SAFE_DELETE(myTimeManager);
@@ -178,7 +181,7 @@ namespace Snowblind
 		myAPI->DisableZBuffer();
 	}
 
-	const Snowblind::SWindowSize& CEngine::GetWindowSize() const
+	SWindowSize CEngine::GetWindowSize() const
 	{
 		return myWindowSize;
 	}
@@ -211,11 +214,6 @@ namespace Snowblind
 	Snowblind::CTexture* CEngine::GetTexture(const std::string& aFilePath)
 	{
 		return myAssetsContainer->GetTexture(aFilePath);
-	}
-
-	Snowblind::CTexture* CEngine::GetTexture(const std::string& filepath, bool mips)
-	{
-		return myAssetsContainer->GetTexture(filepath, mips);
 	}
 
 	Snowblind::CEffect* CEngine::GetEffect(const std::string& aFilePath)

@@ -17,7 +17,7 @@ private:
 	std::string substr(const std::string& aStringToReadFrom, const std::string& toFind, bool readCharactersBeforeToFind, bool readFromFront, int charsToSkip);
 	bool substr(const std::string& aStringToReadFrom, const std::string& toFind);
 
-	u32 CountWord(char* aWord, s8 aWordLength, const std::string& aMessage);
+	u32 CountWord(char* aWord, s32 aWordLength, const std::string& aMessage);
 	std::tuple<bool, std::string> CreateMessage(char* aWordToFind, s8 aWordLength, const std::string& aMessage);
 	std::string myFilepath;
 

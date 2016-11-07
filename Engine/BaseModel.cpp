@@ -11,6 +11,7 @@ namespace Snowblind
 		myContext = myAPI->GetContext();
 #endif
 	}
+
 	CBaseModel::~CBaseModel() = default;
 
 	void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
@@ -50,7 +51,7 @@ namespace Snowblind
 				, size
 				, &myVertexLayout);
 
-		myAPI->SetDebugName(myVertexLayout, "Model Vertex Layout");
+		myAPI->SetDebugName(myVertexLayout, "Model Vertex Layout : " + m_Filename);
 		myAPI->HandleErrors(hr, "[BaseModel] : Failed to create VertexLayout");
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
@@ -65,7 +66,7 @@ namespace Snowblind
 		vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
 
 		hr = myAPI->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
-		myAPI->SetDebugName(myVertexBuffer->myVertexBuffer, "Model vb");
+		myAPI->SetDebugName(myVertexBuffer->myVertexBuffer, "Model Vertex Buffer " + m_Filename);
 		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create VertexBuffer!");
 
 		myVertexBuffer->myStride = myVertexData->myStride;
@@ -95,7 +96,7 @@ namespace Snowblind
 		indexData.pSysMem = static_cast<void*>(myIndexData->myIndexData);
 
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
-		myAPI->SetDebugName(myIndexBuffer->myIndexBuffer, "Model ib");
+		myAPI->SetDebugName(myIndexBuffer->myIndexBuffer, "Model Index Buffer " + m_Filename);
 		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create IndexBuffer");
 
 		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;

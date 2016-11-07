@@ -81,7 +81,7 @@ namespace Snowblind
 
 		void Update();
 		
-		const SWindowSize& GetWindowSize() const;
+		SWindowSize GetWindowSize() const;
 		CFont* LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth);
 		float GetDeltaTime();
 		float GetFPS();
@@ -89,7 +89,6 @@ namespace Snowblind
 		const std::string& GetAPIName();
 
 		CTexture* GetTexture(const std::string& aFilePath);
-		CTexture* GetTexture(const std::string& filepath, bool mips);
 		CEffect* GetEffect(const std::string& aFilePath);
 		CModel* GetModel(const std::string& aFilePath);
 

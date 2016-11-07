@@ -12,6 +12,7 @@ namespace Snowblind
 		, myDepth(aSize.y)
 	{
 #ifdef SNOWBLIND_DX11
+		m_Filename = "Terrain";
 		myIsNULLObject = false;
 		myEffect = myEngine->GetEffect("Data/Shaders/T_Terrain_Base.json");
 
@@ -23,12 +24,6 @@ namespace Snowblind
 			myHeightmap.myData[i] = image->myImage[i * 4];
 		}
 		
-		if (*myHeightmap.myData == 0x0000000000000001)
-		{
-			DL_ASSERT("what the fuck");
-		}
-
-
 		//memcpy(&, &data, sizeof(u8) * (image->myWidth * image->myHeight));
 		myHeightmap.myDepth = image->myHeight;
 		myHeightmap.myWidth = image->myWidth;
@@ -36,7 +31,7 @@ namespace Snowblind
 		SAFE_DELETE(image);
 		CreateVertices(aSize.x, aSize.y, position);
 		mySurface = new CSurface(myEffect);
-		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/grass.dds", true);
+		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/grass.dds");
 #endif
 	}
 
@@ -88,12 +83,12 @@ namespace Snowblind
 #endif
 	}
 
-	void CTerrain::Save(const std::string& aFilename)
+	void CTerrain::Save(const std::string& /*aFilename*/)
 	{
 		DL_ASSERT("Not implemented.");
 	}
 
-	void CTerrain::Load(const std::string& aFilePath)
+	void CTerrain::Load(const std::string& /*aFilePath*/)
 	{
 		DL_ASSERT("Not implemented.");
 	}
@@ -151,9 +146,9 @@ namespace Snowblind
 
 		CalculateNormals(vertices);
 
-		for (int z = 0; z < myHeightmap.myDepth - 1; ++z)
+		for (u32 z = 0; z < myHeightmap.myDepth - 1; ++z)
 		{
-			for (int x = 0; x < myHeightmap.myWidth - 1; ++x)
+			for (u32 x = 0; x < myHeightmap.myWidth - 1; ++x)
 			{
 				indexes.Add(z * myHeightmap.myWidth + x);
 				indexes.Add((z + 1) * myHeightmap.myWidth + x);
@@ -248,7 +243,7 @@ namespace Snowblind
 		cbDesc.StructureByteStride = 0;
 
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-		myAPI->SetDebugName(myConstantBuffer, "Model cb");
+		myAPI->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
 		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
@@ -260,7 +255,7 @@ namespace Snowblind
 		cbDesc.StructureByteStride = 0;
 
 		hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &m_PSConstantBuffer);
-		myAPI->SetDebugName(m_PSConstantBuffer, "Model cb");
+		myAPI->SetDebugName(m_PSConstantBuffer, "Model Pixel Constant Buffer : " + m_Filename);
 		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 
 #endif
@@ -317,7 +312,7 @@ namespace Snowblind
 
 		u8* data = new u8[width * depth];
 
-		for (int i = 0; i < width * depth; ++i)
+		for (u32 i = 0; i < width * depth; ++i)
 		{
 			data[i] = image->myImage[i * 4];
 		}

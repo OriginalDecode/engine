@@ -22,12 +22,12 @@ void CRenderSystem::Update(float aDeltaTime)
 	/* Add more commands? */
 	for (int i = 0; i < entities.Size(); i++)
 	{
-		Snowblind::CEngine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
+		
 			Entity e = entities[i];
 			TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 			RenderComponent& render = GetComponent<RenderComponent>(e);
 
 			mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, render.myModelID, translation.myOrientation.GetPosition()));
-		}));
+
 	}
 }

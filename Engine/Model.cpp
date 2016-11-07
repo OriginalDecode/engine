@@ -44,9 +44,9 @@ namespace Snowblind
 		return true;
 	}
 
-	CModel* CModel::CreateModel()
+	CModel* CModel::CreateModel(const std::string& filename)
 	{
-		
+		m_Filename = CL::substr(filename, "/", false, 0);
 		BeginTicketMutex(&g_ModelMutex);
 		if (myIsNULLObject == false)
 		{
@@ -58,7 +58,7 @@ namespace Snowblind
 
 		for each (CModel* child in myChildren)
 		{
-			child->CreateModel();
+			child->CreateModel(filename);
 		}
 
 		return this;
@@ -200,7 +200,8 @@ namespace Snowblind
 		cbDesc.StructureByteStride = 0;
 
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-		myAPI->SetDebugName(myConstantBuffer, "Model cb");
+		
+		myAPI->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
 		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 #endif
 	}

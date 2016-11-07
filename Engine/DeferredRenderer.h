@@ -68,9 +68,10 @@ namespace Snowblind
 		CTexture* myFinishedSceneTexture = nullptr;
 		CTexture* myCubeMap = nullptr;
 
-		SVertexIndexWrapper* myIndexData = nullptr;
 		SVertexDataWrapper* myVertexData = nullptr;
 		SVertexBufferWrapper* myVertexBuffer = nullptr;
+
+		SVertexIndexWrapper* myIndexData = nullptr;
 		SIndexBufferWrapper* myIndexBuffer = nullptr;
 
 		ID3D11InputLayout* myInputLayout = nullptr;

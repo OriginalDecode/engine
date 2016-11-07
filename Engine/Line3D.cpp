@@ -78,7 +78,7 @@ void CLine3D::Render(CU::Matrix44f& prevOrientation, CU::Matrix44f& projection)
 #endif
 }
 
-void CLine3D::AddLine(const SLine& aLine)
+void CLine3D::AddLine(const SLine& /*aLine*/)
 {
 
 }

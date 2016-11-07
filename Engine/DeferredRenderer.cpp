@@ -14,25 +14,24 @@ namespace Snowblind
 		myEngine = CEngine::GetInstance();
 		BLACK_CLEAR(myClearColor);
 
-
 		SWindowSize windowSize = myEngine->GetWindowSize();
 
-		myFinishedSceneTexture = new CTexture(windowSize.myWidth, windowSize.myHeight
-			, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R8G8B8A8_UNORM);
-		myFinishedSceneTexture->SetDebugName("DeferredFinishedTexture");
+		myFinishedSceneTexture = new CTexture;
+		myFinishedSceneTexture->Initiate(windowSize.myWidth, windowSize.myHeight
+			, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM
+			, "Texture : FinishedScene");
 
-		myDepthStencil = new CTexture();
-		myDepthStencil->InitStencil(windowSize.myWidth, windowSize.myHeight);
-		myDepthStencil->SetDebugName("DeferredDepthStencil");
+		myDepthStencil = new CTexture;
+		myDepthStencil->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+			, DXGI_FORMAT_R24G8_TYPELESS, DXGI_FORMAT_R24_UNORM_X8_TYPELESS, DXGI_FORMAT_D24_UNORM_S8_UINT, "DeferredRenderer : ");
 
 		myCubeMap = myEngine->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
 
 		myScreenPassShader = myEngine->GetEffect("Data/Shaders/T_Render_To_Texture.json");
+
+		myGBuffer = new GBuffer;
+
 		myAmbientPassShader = myEngine->GetEffect("Data/Shaders/T_Deferred_Ambient.json");
-
-		myGBuffer = new GBuffer();
-
 		myAmbientPassShader->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
 		myAmbientPassShader->AddShaderResource(myGBuffer->myNormal->GetShaderView());
 		myAmbientPassShader->AddShaderResource(myGBuffer->myDepth->GetShaderView());
@@ -46,17 +45,23 @@ namespace Snowblind
 	CDeferredRenderer::~CDeferredRenderer()
 	{
 #ifdef SNOWBLIND_DX11
+		myFinishedSceneTexture->CleanUp();
 		SAFE_DELETE(myFinishedSceneTexture);
+		myDepthStencil->CleanUp();
 		SAFE_DELETE(myDepthStencil);
-		SAFE_DELETE(myConstantStruct);
 		SAFE_DELETE(myGBuffer);
+
+		SAFE_DELETE(myConstantStruct);
+		SAFE_RELEASE(myConstantBuffer);
+
 		SAFE_DELETE(myVertexBuffer);
-		SAFE_DELETE(myIndexBuffer);
-		SAFE_DELETE(myIndexData);
 		SAFE_DELETE(myVertexData);
 
-		SAFE_RELEASE(myConstantBuffer);
+		SAFE_DELETE(myIndexBuffer);
+		SAFE_DELETE(myIndexData);
+
 		SAFE_RELEASE(myInputLayout);
+
 #endif
 	}
 

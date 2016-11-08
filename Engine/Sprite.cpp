@@ -43,7 +43,7 @@ namespace Snowblind
 		return mySprite->GetPosition();
 	}
 
-	const CU::Math::Vector2<float>& CSprite::GetSize()
+	CU::Math::Vector2<float> CSprite::GetSize()
 	{
 		return mySprite->GetSize();
 	}

@@ -1,5 +1,6 @@
 #pragma once
 #include <bitset>
+#include "standard_datatype.hpp"
 #include "DataStructures/GrowingArray.h"
 #include "DataStructures/StaticArray.h"
 

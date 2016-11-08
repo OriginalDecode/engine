@@ -15,7 +15,7 @@ namespace Snowblind
 		void Initiate();
 
 		void SetPosition(const CU::Vector3f& aPosition);
-		const CU::Vector3f& GetPosition();
+		CU::Vector3f GetPosition();
 
 		void SetColor(const CU::Vector4f& aColor);
 		const CU::Vector4f& GetColor();

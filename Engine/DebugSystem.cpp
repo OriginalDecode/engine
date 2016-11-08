@@ -3,6 +3,7 @@
 #include "Synchronizer.h"
 #include "RenderCommand.h"
 #include "../Input/InputHandle.h"
+constexpr s16 max_error_count = 32;
 
 bool Snowblind::DebugMenu::Initiate(CSynchronizer* synchronizer, InputHandle* input_handle)
 {
@@ -49,6 +50,11 @@ void Snowblind::DebugSystem::Render()
 	{
 		m_DebugMenu.Render();
 	}
+
+	for(s32 i = 0; i < m_ErrorMessages.size(); i++)
+	{
+		m_Synchronizer->AddRenderCommand(RenderCommand(m_ErrorMessages[i], { 0.5f, (1.f - (i != 0) ? 1.f / i : 0.f) }, eType::TEXT));
+	}
 }
 
 void Snowblind::DebugSystem::ActivateDebugMenu()
@@ -61,5 +67,13 @@ void Snowblind::DebugSystem::DeactivateDebugMenu()
 	m_DebugMenu.Deactivate();
 }
 
+void Snowblind::DebugSystem::AddToErrorList(std::string error)
+{
+	if (m_ErrorMessages.size() > max_error_count)
+	{
+		m_ErrorMessages.pop_front();
+	}
+	m_ErrorMessages.push_back(error);
+}
 
 

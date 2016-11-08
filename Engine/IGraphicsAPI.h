@@ -14,7 +14,7 @@ struct CreateInfo
 	HINSTANCE m_Instance;
 	float m_WindowWidth = 0.f;
 	float m_WindowHeight = 0.f;
-	const char* m_APIName = '\0';
+	std::string m_APIName;
 };
 
 
@@ -75,7 +75,7 @@ namespace Snowblind
 		virtual void Present(u8 refresh_rate, u8 flags) = 0;
 
 		virtual void OnAltEnter() = 0;
-		const std::string& GetAPIName() { return m_CreateInfo.m_APIName; }
+		std::string GetAPIName() { return m_CreateInfo.m_APIName; }
 
 		virtual void EnableZBuffer() = 0;
 		virtual void DisableZBuffer() = 0;

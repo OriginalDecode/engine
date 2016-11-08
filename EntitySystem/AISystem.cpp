@@ -6,7 +6,7 @@ AISystem::AISystem(CEntityManager& anEntityManager)
 {
 }
 
-void AISystem::Update(float delta_time)
+void AISystem::Update(float /*delta_time*/)
 {
 
 }

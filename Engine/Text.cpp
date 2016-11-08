@@ -34,7 +34,7 @@ namespace Snowblind
 		CU::Math::Vector2<float> pos = aPosition;
 		pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
 		pos.y = -pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f) - (myFont->GetFontPixelSize());
-		myPosition = pos;
+		myPosition = aPosition;
 	}
 
 	void CText::SetScale(const CU::Math::Vector2<float>& aScale)

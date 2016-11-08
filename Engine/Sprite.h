@@ -18,7 +18,7 @@ namespace Snowblind
 
 		void Render(CCamera* aCamera);
 		const CU::Math::Vector2<float>& GetPosition();
-		const CU::Math::Vector2<float>& GetSize();
+		CU::Math::Vector2<float> GetSize();
 
 		void SetPosition(const CU::Math::Vector2<float>& aPosition);
 		void SetHotspot(const CU::Math::Vector2<float>& aHotspot);

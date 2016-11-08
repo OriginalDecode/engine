@@ -129,7 +129,7 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 	indexWrapper->mySize = data->myIndexCount * sizeof(u32);
 	out->myIndexData = indexWrapper;
 
-	for (s32 i = 0; i < data->myIndexCount; i++)
+	for (u32 i = 0; i < data->myIndexCount; i++)
 	{
 		out->m_Indices.Add(data->myIndicies[i]);
 	}
@@ -206,7 +206,7 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 
 	const CU::GrowingArray<TextureInfo>& info = someData->myTextureData->myTextures;
 
-	for (u32 i = 0; i < info.Size(); i++)
+	for (s32 i = 0; i < info.Size(); i++)
 	{
 
 		TextureType lType = static_cast<TextureType>(info[i].myType);

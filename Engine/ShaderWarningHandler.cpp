@@ -119,7 +119,7 @@ std::tuple<bool, std::string> ShaderWarningHandler::CreateMessage(char* aWordToF
 		outPath.erase(0, 1);
 		std::string errorMessage(outPath);
 		errorMessage += " has generated warnings.\n";
-		for (u32 l = 0; l < warningLines.Size(); l++)
+		for (s32 l = 0; l < warningLines.Size(); l++)
 		{
 			std::string shaderLine = myShader[warningLines[l] - 1];
 			if (!substr(shaderLine, ";"))

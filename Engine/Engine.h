@@ -86,7 +86,7 @@ namespace Snowblind
 		float GetDeltaTime();
 		float GetFPS();
 		float GetFrameTime();
-		const std::string& GetAPIName();
+		std::string GetAPIName();
 
 		CTexture* GetTexture(const std::string& aFilePath);
 		CEffect* GetEffect(const std::string& aFilePath);

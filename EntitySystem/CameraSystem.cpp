@@ -8,7 +8,7 @@ CameraSystem::CameraSystem(CEntityManager& entitymanager)
 {
 }
 
-void CameraSystem::Update(float delta_time)
+void CameraSystem::Update(float /*delta_time*/)
 {
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (const Entity& e : entities)

@@ -431,7 +431,7 @@ namespace Snowblind
 		}
 	}
 
-	const std::string& DirectX11::GetAPIName()
+	std::string DirectX11::GetAPIName()
 	{
 		return m_CreateInfo.m_APIName;
 	}

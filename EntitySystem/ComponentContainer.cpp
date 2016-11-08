@@ -48,7 +48,7 @@ BaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int a
 
 bool CComponentContainer::HasComponent(Entity anEntity, unsigned int aComponentID)
 {
-	if (myEntityComponents.Size() <= anEntity)
+	if ((u32)myEntityComponents.Size() <= anEntity)
 		return false;
 	return myEntityComponents[anEntity][aComponentID] != -1;
 }

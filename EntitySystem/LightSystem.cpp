@@ -13,7 +13,7 @@ CLightSystem::CLightSystem(CEntityManager& anEntityManager, Snowblind::CSynchron
 {
 }
 
-void CLightSystem::Update(float aDeltaTime)
+void CLightSystem::Update(float /*aDeltaTime*/)
 {
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 

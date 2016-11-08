@@ -86,8 +86,8 @@ namespace Snowblind
 				return false;
 			}
 			myTextures[aFilePath] = texture;
-			return true;
 		}
+		return true;
 	}
 
 	void CAssetsContainer::LoadEffect(const std::string& aFilePath)

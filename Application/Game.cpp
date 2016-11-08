@@ -248,7 +248,6 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 		{
 			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
 			rigidbody = p.myBody;
-			p.m_IsPlayer = true;
 			myEntityManager->AddComponent<InputController>(e);
 			InputController& input = myEntityManager->GetComponent<InputController>(e);
 			input.m_ID = m_LocalPlayerCount++;
@@ -349,7 +348,7 @@ void Jump(CRigidBody* rigidbody)
 
 void Forward(CRigidBody* rigidbody)
 {
-	CU::Matrix44f orientation = rigidbody->GetOrientation(false);
+	CU::Matrix44f orientation = rigidbody->GetOrientation();
 	CU::Vector4f forward = orientation.GetForward();
 	forward *= 150.f;
 	rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
@@ -357,7 +356,7 @@ void Forward(CRigidBody* rigidbody)
 
 void Backward(CRigidBody* rigidbody)
 {
-	CU::Matrix44f orientation = rigidbody->GetOrientation(false);
+	CU::Matrix44f orientation = rigidbody->GetOrientation();
 	CU::Vector4f forward = orientation.GetForward();
 	forward *= -150.f;
 	rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
@@ -365,7 +364,7 @@ void Backward(CRigidBody* rigidbody)
 
 void Right(CRigidBody* rigidbody)
 {
-	CU::Matrix44f orientation = rigidbody->GetOrientation(false);
+	CU::Matrix44f orientation = rigidbody->GetOrientation();
 	CU::Vector4f right = orientation.GetRight();
 	right *= 150.f;
 	rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
@@ -373,7 +372,7 @@ void Right(CRigidBody* rigidbody)
 
 void Left(CRigidBody* rigidbody)
 {
-	CU::Matrix44f orientation = rigidbody->GetOrientation(false);
+	CU::Matrix44f orientation = rigidbody->GetOrientation();
 	CU::Vector4f right = orientation.GetRight();
 	right *= -150.f;
 	rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));

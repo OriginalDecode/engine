@@ -7,7 +7,7 @@ NetworkSystem::NetworkSystem(CEntityManager& anEntityManager)
 {
 }
 
-void NetworkSystem::Update(float delta_time)
+void NetworkSystem::Update(float /*delta_time*/)
 {
 
 }

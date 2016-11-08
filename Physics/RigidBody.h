@@ -49,7 +49,7 @@ public:
 
 	void Update(float deltaTime);
 	btRigidBody* GetBody();
-	const CU::Matrix44f& GetOrientation(bool is_player);
+	const CU::Matrix44f& GetOrientation();
 	void Impulse(const CU::Vector3f& anImpulseVector);
 	CU::Vector3f GetLinearVelocity();
 	void UpdateOrientation(const ControllerState& controller_state);

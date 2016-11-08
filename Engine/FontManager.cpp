@@ -293,9 +293,9 @@ namespace Snowblind
 		ZeroMemory(gData, width * height * sizeof(int));
 #endif
 		CalculateOutlineOffsets(index, aFace, aBorderOffset);
-		for (int x = 0; x < width; x++)
+		for (u32 x = 0; x < width; x++)
 		{
-			for (int y = 0; y < height; y++)
+			for (u32 y = 0; y < height; y++)
 			{
 
 				int& data = aFontData->myAtlas[((atlasY + myOffset.yDelta) + y) * int(atlasWidth) + ((atlasX + myOffset.xDelta) + x)];
@@ -454,9 +454,9 @@ namespace Snowblind
 		int yDelta = 0;
 
 		SCountData countData;
-		for (int x = 0; x < width; x++)
+		for (u32 x = 0; x < width; x++)
 		{
-			for (int y = 0; y < height; y++)
+			for (u32 y = 0; y < height; y++)
 			{
 				unsigned char& data = bitmapGlyph->bitmap.buffer[y * width + x];
 
@@ -480,9 +480,9 @@ namespace Snowblind
 		unsigned int height = glyph->bitmap.rows;
 
 		SCountData countData;
-		for (int x = 0; x < width; x++)
+		for (u32 x = 0; x < width; x++)
 		{
-			for (int y = 0; y < height; y++)
+			for (u32 y = 0; y < height; y++)
 			{
 				unsigned char& data = glyph->bitmap.buffer[y * width + x];
 

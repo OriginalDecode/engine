@@ -1,5 +1,5 @@
 #pragma once
-#pragma message ("Texture.h is being compiled")
+#pragma message ("Compiling File : Texture.h")
 #ifdef SNOWBLIND_DX11
 struct ID3D11ShaderResourceView;
 struct ID3D11RenderTargetView;

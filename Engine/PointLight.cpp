@@ -21,7 +21,7 @@ namespace Snowblind
 		m_Model->SetPosition(aPosition);
 	}
 
-	const CU::Vector3f& CPointLight::GetPosition()
+	CU::Vector3f CPointLight::GetPosition()
 	{
 		return myOrientation.GetPosition();
 	}

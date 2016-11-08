@@ -15,7 +15,7 @@ CRenderSystem::CRenderSystem(CEntityManager& anEntityManager, Snowblind::CSynchr
 {
 }
 
-void CRenderSystem::Update(float aDeltaTime)
+void CRenderSystem::Update(float /*aDeltaTime*/)
 {
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 

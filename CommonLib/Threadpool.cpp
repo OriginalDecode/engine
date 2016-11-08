@@ -5,14 +5,14 @@
 void Threadpool::Initiate()
 {
 	myWorkers.Init(1);
-	for (int i = 0; i < std::thread::hardware_concurrency(); i++)
+	for (unsigned int i = 0; i < std::thread::hardware_concurrency(); i++)
 	{
 		Worker worker;
 		myWorkers.Add(worker);
 	}
 	myWorkers.Optimize();
 
-	for (int i = 0; i < std::thread::hardware_concurrency(); i++)
+	for (unsigned int i = 0; i < std::thread::hardware_concurrency(); i++)
 	{
 		myWorkers[i].Initiate();
 	}

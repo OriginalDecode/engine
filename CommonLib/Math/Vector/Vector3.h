@@ -34,7 +34,7 @@ namespace CommonUtilities
 		\****************************/
 
 		template<typename T>
-		__forceinline Vector3<T> operator+(const Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
+		inline Vector3<T> operator+(const Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
 		{
 			return Vector3<T>((aFirstVector.x + aSecondVector.x),
 				(aFirstVector.y + aSecondVector.y),
@@ -42,7 +42,7 @@ namespace CommonUtilities
 		}
 
 		template<typename T>
-		__forceinline Vector3<T> operator-(const Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
+		inline Vector3<T> operator-(const Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
 		{
 			return Vector3<T>((aFirstVector.x - aSecondVector.x),
 				(aFirstVector.y - aSecondVector.y),
@@ -50,7 +50,7 @@ namespace CommonUtilities
 		}
 
 		template<typename T>
-		__forceinline Vector3<T> operator*(const Vector3<T>& aFirstVector, const Vector3<T> aSecondVector)
+		inline Vector3<T> operator*(const Vector3<T>& aFirstVector, const Vector3<T> aSecondVector)
 		{
 			return Vector3<T>((aFirstVector.x * aSecondVector.x),
 				(aFirstVector.y * aSecondVector.y),
@@ -58,7 +58,7 @@ namespace CommonUtilities
 		}
 
 		template<typename T>
-		__forceinline Vector3<T> operator/(const Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
+		inline Vector3<T> operator/(const Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
 		{
 			assert(aSecondVector.x >= 0 && aSecondVector.y >= 0 && aSecondVector.z >= 0 && "Can't divide by Zero");
 			return Vector3<T>((aFirstVector.x / aSecondVector.x),
@@ -69,7 +69,7 @@ namespace CommonUtilities
 		|		Compound Operators	 |
 		\****************************/
 		template<typename T>
-		__forceinline void operator+=(Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
+		inline void operator+=(Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
 		{
 			aFirstVector.x += aSecondVector.x;
 			aFirstVector.y += aSecondVector.y;
@@ -77,7 +77,7 @@ namespace CommonUtilities
 		}
 
 		template<typename T>
-		__forceinline void operator-=(Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
+		inline void operator-=(Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
 		{
 			aFirstVector.x -= aSecondVector.x;
 			aFirstVector.y -= aSecondVector.y;
@@ -85,7 +85,7 @@ namespace CommonUtilities
 		}
 
 		template<typename T>
-		__forceinline void operator*=(Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
+		inline void operator*=(Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
 		{
 			aFirstVector.x *= aSecondVector.x;
 			aFirstVector.y *= aSecondVector.y;
@@ -93,7 +93,7 @@ namespace CommonUtilities
 		}
 
 		template<typename T>
-		__forceinline void operator/=(Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
+		inline void operator/=(Vector3<T>& aFirstVector, const Vector3<T>& aSecondVector)
 		{
 			assert(aSecondVector.x >= 0 && aSecondVector.y >= 0 && aSecondVector.z >= 0 && "Can't divide by Zero");
 			aFirstVector.x /= aSecondVector.x;
@@ -105,7 +105,7 @@ namespace CommonUtilities
 		|	Normal Scalar Operators	 |
 		\****************************/
 		template<typename T>
-		__forceinline Vector3<T> operator+(const Vector3<T>& aFirstVector, const T aScale)
+		inline Vector3<T> operator+(const Vector3<T>& aFirstVector, const T aScale)
 		{
 			return Vector3<T>((aFirstVector.x + aScale),
 				(aFirstVector.y + aScale),
@@ -113,7 +113,7 @@ namespace CommonUtilities
 		}
 
 		template<typename T>
-		__forceinline Vector3<T> operator-(const Vector3<T>& aFirstVector, const T aScale)
+		inline Vector3<T> operator-(const Vector3<T>& aFirstVector, const T aScale)
 		{
 			return Vector3<T>((aFirstVector.x - aScale),
 				(aFirstVector.y - aScale),
@@ -121,7 +121,7 @@ namespace CommonUtilities
 		}
 
 		template<typename T>
-		__forceinline Vector3<T> operator*(const Vector3<T>& aFirstVector, const T aScale)
+		inline Vector3<T> operator*(const Vector3<T>& aFirstVector, const T aScale)
 		{
 			return Vector3<T>((aFirstVector.x*aScale),
 				(aFirstVector.y*aScale),
@@ -129,7 +129,7 @@ namespace CommonUtilities
 		}
 
 		template<typename T>
-		__forceinline Vector3<T> operator/(const Vector3<T>& aFirstVector, const T aScale)
+		inline Vector3<T> operator/(const Vector3<T>& aFirstVector, const T aScale)
 		{
 			assert(aScale >= 0 && "Can't divide by Zero");
 			return Vector3<T>((aFirstVector.x / aScale),
@@ -143,7 +143,7 @@ namespace CommonUtilities
 		\****************************/
 
 		template<typename T>
-		__forceinline void operator+=(Vector3<T>& aFirstVector, const T aScale)
+		inline void operator+=(Vector3<T>& aFirstVector, const T aScale)
 		{
 			aFirstVector.x += aScale;
 			aFirstVector.y += aScale;
@@ -151,7 +151,7 @@ namespace CommonUtilities
 		}
 
 		template<typename T>
-		__forceinline void operator-=(Vector3<T>& aFirstVector, const T aScale)
+		inline void operator-=(Vector3<T>& aFirstVector, const T aScale)
 		{
 			aFirstVector.x -= aScale;
 			aFirstVector.y -= aScale;
@@ -159,7 +159,7 @@ namespace CommonUtilities
 		}
 
 		template<typename T>
-		__forceinline void operator*=(Vector3<T>& aFirstVector, const T aScale)
+		inline void operator*=(Vector3<T>& aFirstVector, const T aScale)
 		{
 			aFirstVector.x *= aScale;
 			aFirstVector.y *= aScale;
@@ -168,7 +168,7 @@ namespace CommonUtilities
 
 
 		template<typename T>
-		__forceinline  void operator/=(Vector3<T>& aFirstVector, const T aScale)
+		inline  void operator/=(Vector3<T>& aFirstVector, const T aScale)
 		{
 			assert(aScale >= 0 && "Can't divide by Zero");
 			aFirstVector.x /= aScale;

@@ -1,7 +1,7 @@
 #pragma once
 #include "ControllerComponent.h"
 #include <standard_datatype.hpp>
-class InputHandle;
+#include "../Input/InputHandle.h"
 struct InputController final : public ControllerComponent
 {
 	~InputController() override { delete m_InputHandle; m_InputHandle = nullptr; }

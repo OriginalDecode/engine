@@ -2,6 +2,7 @@
 #include <sstream>
 #include <functional>
 #include <vector>
+#include <deque>
 
 class InputHandle;
 namespace Snowblind
@@ -49,8 +50,11 @@ namespace Snowblind
 		void DeactivateDebugMenu();
 		bool GetDebugMenuIsActive() { return m_DebugMenu.GetIsActive(); }
 		void AddDebugMenuItem(const std::string& item_name, std::function<void()> function) { m_DebugMenu.AddToMenu(item_name, function); }
+		void AddToErrorList(std::string error);
+
 	private:
 		DebugMenu m_DebugMenu;
+		std::deque<std::string> m_ErrorMessages;
 		CSynchronizer* m_Synchronizer = nullptr;
 	};
 };

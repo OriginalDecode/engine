@@ -64,7 +64,7 @@ namespace Snowblind
 		void DisableZBuffer() override;
 		
 		void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
-		const std::string& GetAPIName();
+		std::string GetAPIName();
 		
 		void ResetViewport();
 		void ResetRendertarget();

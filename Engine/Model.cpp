@@ -81,7 +81,7 @@ namespace Snowblind
 			{
 				//Check the lightpass if you're confused about when the lightmeshes gets their constantbuffers.
 
-				for (u32 i = 0; i < mySurfaces.Size(); i++)
+				for (s32 i = 0; i < mySurfaces.Size(); i++)
 				{
 					myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 					mySurfaces[i]->Activate();

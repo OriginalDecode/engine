@@ -137,6 +137,7 @@ std::string JSONReader::ReadElement(const std::string& aTag)
 
 		return myDocument[aTag.c_str()].GetString();
 	}
+	return "NO_STRING_FOUND";
 }
 
 void JSONReader::ReadElement(const std::string& aTag, const std::string& aSubTag, bool& aBool)

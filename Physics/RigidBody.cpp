@@ -35,7 +35,7 @@ btRigidBody* CRigidBody::InitAsPlane(const btVector3& aNormal)
 
 btRigidBody* CRigidBody::InitAsTerrain(std::vector<float> vertices, std::vector<s32> indices)
 {
-	s32 faceCount = indices.size() / 3;
+	s32 faceCount = (s32)indices.size() / 3;
 	s32 vStride = sizeof(CU::Vector3f);
 	s32 iStride = sizeof(u32) * 3;
 
@@ -44,7 +44,7 @@ btRigidBody* CRigidBody::InitAsTerrain(std::vector<float> vertices, std::vector<
 	s32* locIndices = new s32[indices.size()];
 	memcpy(&locIndices[0], &indices[0], sizeof(s32) * indices.size());
 
-	myVertexArray = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, vertices.size(), locVertices, vStride);
+	myVertexArray = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, (s32)vertices.size(), locVertices, vStride);
 	myShape = new btBvhTriangleMeshShape(myVertexArray, false, btVector3(0, 0, 0), btVector3(1, 1, 1), true);
 	myMotionState = new btDefaultMotionState();
 	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
@@ -84,7 +84,7 @@ btRigidBody* CRigidBody::InitWithMeshCollision(std::vector<float> vertices, std:
 	if (vertices.size() <= 0 || indices.size() <= 0)
 		return nullptr;
 
-	s32 faceCount = indices.size() / 3;
+	s32 faceCount = (s32)indices.size() / 3;
 	s32 vStride = sizeof(CU::Vector3f);
 	s32 iStride = sizeof(u32) * 3;
 
@@ -93,7 +93,7 @@ btRigidBody* CRigidBody::InitWithMeshCollision(std::vector<float> vertices, std:
 	s32* locIndices = new s32[indices.size()];
 	memcpy(&locIndices[0], &indices[0], sizeof(s32) * indices.size());
 
-	myVertexArray = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, vertices.size(), locVertices, vStride);
+	myVertexArray = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, (s32)vertices.size(), locVertices, vStride);
 	myShape = new btBvhTriangleMeshShape(myVertexArray, false, btVector3(0, 0, 0), btVector3(1, 1, 1), true);
 	myMotionState = new btDefaultMotionState();
 	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
@@ -145,7 +145,7 @@ btRigidBody* CRigidBody::GetBody()
 	return myBody;
 }
 
-const CU::Matrix44f& CRigidBody::GetOrientation(bool is_player)
+const CU::Matrix44f& CRigidBody::GetOrientation()
 {
 	myWorldTranslation->getOpenGLMatrix(&myOrientation.myMatrix[0]);
 

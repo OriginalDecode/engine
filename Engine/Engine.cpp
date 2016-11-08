@@ -206,7 +206,7 @@ namespace Snowblind
 		return myTimeManager->GetFrameTime();
 	}
 
-	const std::string& CEngine::GetAPIName()
+	std::string CEngine::GetAPIName()
 	{
 		return myAPI->GetAPIName();
 	}

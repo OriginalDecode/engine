@@ -14,7 +14,7 @@ InputSystem::InputSystem(CEntityManager& anEntityManager)
 {
 }
 
-void InputSystem::Update(float delta_time)
+void InputSystem::Update(float /*delta_time*/)
 {
 	if (Snowblind::CEngine::GetInstance()->IsDebugMenuActive())
 		return;

@@ -180,7 +180,7 @@ namespace Snowblind
 		cbDesc.StructureByteStride = 0;
 
 		HRESULT hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)]);
-		CEngine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)], "Spotlight Vertex Constant Buffer");
+		CEngine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)], "LightPass : Spotlight Vertex Constant Buffer");
 		CEngine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Spotlight Vertex Constant Buffer, ");
 
 
@@ -196,7 +196,7 @@ namespace Snowblind
 		cbDesc.StructureByteStride = 0;
 
 		hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)]);
-		CEngine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], "Spotlight Pixel Constant Buffer");
+		CEngine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], "LightPass : Spotlight Pixel Constant Buffer");
 		CEngine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Spotlight Pixel Constant Buffer, ");
 #endif
 	}
@@ -217,7 +217,7 @@ namespace Snowblind
 		cbDesc.StructureByteStride = 0;
 
 		HRESULT hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)]);
-		CEngine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)], "Pointlight Vertex Constant Buffer");
+		CEngine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)], "LightPass : Pointlight Vertex Constant Buffer");
 		CEngine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Pointlight Vertex Constant Buffer, ");
 
 
@@ -233,7 +233,7 @@ namespace Snowblind
 		cbDesc.StructureByteStride = 0;
 
 		hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)]);
-		CEngine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)], "Pointlight Pixel Constant Buffer");
+		CEngine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)], "LightPass : Pointlight Pixel Constant Buffer");
 		CEngine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Pointlight Pixel Constant Buffer, ");
 #endif
 	}

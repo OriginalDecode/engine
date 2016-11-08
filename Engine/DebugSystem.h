@@ -51,10 +51,11 @@ namespace Snowblind
 		bool GetDebugMenuIsActive() { return m_DebugMenu.GetIsActive(); }
 		void AddDebugMenuItem(const std::string& item_name, std::function<void()> function) { m_DebugMenu.AddToMenu(item_name, function); }
 		void AddToErrorList(std::string error);
-
+		void AddToDebugText(std::string debug_text);
 	private:
 		DebugMenu m_DebugMenu;
 		std::deque<std::string> m_ErrorMessages;
+		std::vector<std::string> m_DebugStrings;
 		CSynchronizer* m_Synchronizer = nullptr;
 	};
 };

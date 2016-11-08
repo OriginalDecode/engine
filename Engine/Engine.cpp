@@ -333,4 +333,14 @@ namespace Snowblind
 		m_DebugSystem.GetDebugMenuIsActive() ? m_DebugSystem.DeactivateDebugMenu() : m_DebugSystem.ActivateDebugMenu();
 	}
 
+	void CEngine::AddError(const std::string& error_message)
+	{
+		m_DebugSystem.AddToErrorList(error_message);
+	}
+
+	void CEngine::AddDebugText(const std::string& debug_text)
+	{
+		m_DebugSystem.AddToDebugText(debug_text);
+	}
+
 };

@@ -45,21 +45,21 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	input.tang   = normalize(input.tang);
     
 	float3x3 tangentSpaceMatrix = float3x3(input.tang, input.binorm, input.normal);
-	norm = normalize(mul(norm, tangentSpaceMatrix));
-    norm.xyz += 1.f;
+	//norm = normalize(mul(norm, tangentSpaceMatrix));
+    input.normal.xyz += 1.f;
 	norm.xyz *= 0.5f;
 	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
 
 	float depth = input.pos.z;
 	/* Write splatmap stuff here */
 	GBuffer output;
-  	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
+	output.Albedo = float4(1, 1, 1, 1);// AlbedoTexture.Sample(linear_Wrap, input.uv);
 	
-	output.Normal = float4(norm.xyz,0.f);
-	output.Normal.a = MetalnessTexture.Sample(linear_Wrap,input.uv).r;
+	output.Normal = float4(input.normal.xyz,0.f);
+	output.Normal.a = 0.f;// MetalnessTexture.Sample(linear_Wrap, input.uv).r;
 	
 	output.Depth.r = depth;
-	output.Depth.g = RoughnessTexture.Sample(linear_Wrap, input.uv).r;
+	output.Depth.g = 0.f;//RoughnessTexture.Sample(linear_Wrap, input.uv).r;
 	
 	return output;
 }

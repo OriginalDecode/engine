@@ -70,7 +70,7 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 
 	float4 d = length(input.pos - camPosition); 
 	d = normalize(d);
- 	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
+	output.Albedo = float4(1, 1, 1, 1);//AlbedoTexture.Sample(linear_Wrap, input.uv) * 0.2f;
 	
 	output.Depth.r = depth;
 	output.Depth.g = 1.f;

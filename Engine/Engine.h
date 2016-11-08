@@ -113,8 +113,14 @@ namespace Snowblind
 		CTerrain* CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize);
 		Window& GetWindow() { return m_Window; }
 		Threadpool& GetThreadpool();
+
 		void ToggleDebugMenu();
 		bool IsDebugMenuActive() { return m_DebugSystem.GetDebugMenuIsActive(); }
+		void AddError(const std::string& error_message);
+		void AddDebugText(const std::string& debug_text);
+
+
+
 	private:
 		CEngine() = default;
 		//void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);

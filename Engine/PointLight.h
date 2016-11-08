@@ -10,7 +10,7 @@ namespace Snowblind
 	class CPointLight
 	{
 	public:
-		CPointLight() = default;
+		CPointLight();
 
 		void Initiate();
 

@@ -7,6 +7,12 @@
 namespace Snowblind
 {
 
+	CPointLight::CPointLight()
+	{
+		int apa; 
+		apa = 5;
+	}
+
 	void CPointLight::Initiate()
 	{
 		CEngine::GetInstance()->LoadModel("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/T_Deferred_Lightmesh.json");

@@ -42,7 +42,8 @@ void CApplication::Update()
 		"Y : " << myCamera->GetPosition().y << "\n" <<
 		"Z : " << myCamera->GetPosition().z << "\n";
 
-		mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), CU::Vector2f(500, 0)));
+		myEngine->AddDebugText(ss.str());
+		//mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), CU::Vector2f(0, 0)));
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SKYSPHERE, myCamera->GetPosition()));
 
 		//UpdateInput(deltaTime);

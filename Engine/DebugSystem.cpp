@@ -55,6 +55,15 @@ void Snowblind::DebugSystem::Render()
 	{
 		m_Synchronizer->AddRenderCommand(RenderCommand(m_ErrorMessages[i], { 0.5f, (1.f - (i != 0) ? 1.f / i : 0.f) }, eType::TEXT));
 	}
+	
+	std::stringstream debug_text;
+	for (s32 i = 0; i < m_DebugStrings.size(); i++)
+	{
+		debug_text << m_DebugStrings[i] << "\n";
+	}
+
+	m_Synchronizer->AddRenderCommand(RenderCommand(debug_text.str(), { -1.f, -1.f }, eType::TEXT));
+	m_DebugStrings.clear();
 }
 
 void Snowblind::DebugSystem::ActivateDebugMenu()
@@ -76,4 +85,8 @@ void Snowblind::DebugSystem::AddToErrorList(std::string error)
 	m_ErrorMessages.push_back(error);
 }
 
+void Snowblind::DebugSystem::AddToDebugText(std::string debug_text)
+{
+	m_DebugStrings.push_back(debug_text);
+}
 

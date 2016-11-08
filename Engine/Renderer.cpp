@@ -86,6 +86,8 @@ namespace Snowblind
 
 	bool CRenderer::CleanUp()
 	{
+		m_LightPass.CleanUp();
+
 		m_Shadowlight->CleanUp();
 		SAFE_DELETE(m_Shadowlight);
 
@@ -142,16 +144,17 @@ namespace Snowblind
 
 		myEngine->ResetRenderTargetAndDepth();
 		mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
-		mySkysphere->Render(myPrevFrame, myDepthTexture);
+		//myDirectX->SetBlendState(eBlendStates::LIGHT_BLEND);
+		//mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		//ProcessShadows();
 
 		myDeferredRenderer->Finalize();
 
 		//RenderParticles();
-		RenderLines();
+		//RenderLines();
 
-		Render2DCommands();
+		//Render2DCommands();
 #endif
 		myEngine->Present();
 

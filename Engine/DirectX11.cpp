@@ -354,6 +354,7 @@ namespace Snowblind
 			DXGI_ADAPTER_DESC adapterDesc;
 			enumAdapter[i]->GetDesc(&adapterDesc);
 			WCHAR* temp = adapterDesc.Description;
+			//adapterDesc.DedicatedVideoMemory;
 			s8 dst[128];
 			std::wcstombs(dst, temp, 128);
 			std::string actualString(dst);

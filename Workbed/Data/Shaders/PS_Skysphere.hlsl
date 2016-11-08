@@ -47,7 +47,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 apexColor = float4(0.0f, 0.0f, 0.2f, 1.f) ;
 	
 	float4 outputColor = lerp(centerColor, apexColor, height/24);
-	
+	outputColor.a = 0.f;
 	//float4 albedo = float4(0.2f, 0.8f, 0.0f, 1.f) * input.worldpos;
 	return outputColor;
 }

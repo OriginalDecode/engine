@@ -104,7 +104,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector, lysMipMap).xyz 
 	* ao * reflectionFrensnel;
     
-	float3 finalColor = ambientDiffuse + ambientSpec;
+	float3 finalColor = ambientDiffuse;// +ambientSpec;
     
 	// float4 col = saturate(albedo * cubemap);
 	// col.rgb = pow (col.rgb, 1 / 2.2);

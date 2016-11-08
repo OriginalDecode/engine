@@ -50,7 +50,7 @@ float CalculateFalloff(float someDistance, float someRange)
 
 float CalculateTotalAttenuation(float someDistance, float someRange)
 {
-	float totalAttenuation = saturate(CalculateAttenuation(someDistance) * CalculateFalloff(someDistance, someRange));
+	float totalAttenuation = saturate(CalculateAttenuation(someDistance) );
 	return totalAttenuation;
 }
 
@@ -133,9 +133,10 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float3 lightDir = normalize(toLight);
 	float3 halfVec = normalize(lightDir + toEye);
 	
-	float NdotL = saturate(dot(normal, lightDir));
-	float HdotN = saturate(dot(halfVec, normal));
-	float NdotV = saturate(dot(normal, toEye));
+	float3 nnormal = normalize(normal);
+	float NdotL = saturate(dot(nnormal, lightDir));
+	float HdotN = saturate(dot(halfVec, nnormal));
+	float NdotV = saturate(dot(nnormal, toEye));
 	float3 F = Fresnel(substance, lightDir, halfVec);
 	float D = saturate(D_GGX(HdotN,(roughness + 1.f) / 2.f));
 	float V = saturate(V_SchlickForGGX((roughness + 1.f) / 2.f, NdotV, NdotL));
@@ -144,7 +145,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float attenuation = Attenuation(toLight, input.range);
 	float intensity = color.w;
 	float3 lightColor = color.rgb * 10 * attenuation;
-	float3 directSpec = F * D * V * NdotL * lightColor;
+	float3 directSpec = NdotL;
 	
 	return float4(directSpec, 1.f);
 };

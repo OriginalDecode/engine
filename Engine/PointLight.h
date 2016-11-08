@@ -1,17 +1,18 @@
 #pragma once
 #include "LightStructs.h"
 
+
+
 namespace Snowblind
 {
 
-	class CInstance;
+	class CModel;
 	class CPointLight
 	{
 	public:
-		CPointLight();
-		~CPointLight();
+		CPointLight() = default;
 
-		void Initiate(const CU::Vector3f& aPosition, const CU::Vector4f& aColor, float aRange);
+		void Initiate();
 
 		void SetPosition(const CU::Vector3f& aPosition);
 		const CU::Vector3f& GetPosition();
@@ -25,17 +26,10 @@ namespace Snowblind
 		void Update();
 		void Render(const CU::Matrix44f& previousOrientation, CCamera* camera);
 		const SPointlightData& GetData() const;
-#ifdef _DEBUG
-		CInstance* GetInstance();
-#endif
+
 		CU::Matrix44f GetOrientation();
 	private:
-
-#ifdef _DEBUG
-		CInstance* myInstance;
-#endif
-		CInstance* myLightMesh;
-
+		CModel* m_Model;
 		CU::Matrix44f myOrientation;
 		CU::Vector3f myOriginalPosition;
 		CU::Vector4f myColor;

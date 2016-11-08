@@ -7,13 +7,6 @@
 #include "Engine.h"
 namespace Snowblind
 {
-	CInstance::CInstance()
-	{
-	}
-
-	CInstance::~CInstance()
-	{
-	}
 
 	void CInstance::Initiate(const char* aFilePath, const std::string& effect, const eModelType& aModelType)
 	{

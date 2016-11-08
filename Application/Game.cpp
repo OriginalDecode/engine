@@ -89,16 +89,6 @@ bool CGame::CleanUp()
 	if (myEntityManager)
 		return false;
 
-	while (!m_TerrainIsCreated);
-	for (Snowblind::CTerrain* terrain : myTerrain)
-	{
-		
-
-		DL_ASSERT_EXP(terrain->CleanUp(), "Failed to cleanup terrain!");
-		delete terrain;
-		terrain = nullptr;
-	}
-
 	if (myTerrain.Size() > 0)
 		return false;
 

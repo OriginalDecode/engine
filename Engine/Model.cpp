@@ -40,6 +40,11 @@ namespace Snowblind
 			return false;
 
 		mySurfaces.DeleteAll();
+
+		for (CModel* children : myChildren)
+		{
+			children->CleanUp();
+		}
 		myChildren.DeleteAll();
 		return true;
 	}

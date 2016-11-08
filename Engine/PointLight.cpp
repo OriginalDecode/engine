@@ -6,42 +6,19 @@
 
 namespace Snowblind
 {
-	CPointLight::CPointLight()
+
+	void CPointLight::Initiate()
 	{
-		myLightMesh = new Snowblind::CInstance();
-		myLightMesh->Initiate("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/T_Deferred_Lightmesh.json");
-		myLightMesh->SetIsLightmesh();
-	}
-
-
-	CPointLight::~CPointLight()
-	{
-		SAFE_DELETE(myLightMesh);
-	}
-
-	void CPointLight::Initiate(const CU::Vector3f& aPosition, const CU::Vector4f& aColor, float aRange)
-	{
-		myOriginalPosition = aPosition;
-		myOrientation.SetPosition(myOriginalPosition);
-		myColor = aColor;
-		myRange = aRange;
-
-		/*
-		#ifdef _DEBUG
-				CModel* lightCube = new CModel();
-				lightCube->CreateCube("Data/Shaders/Cube.fx", { aColor.r, aColor.g, aColor.b });
-				myInstance = new CInstance();
-				myInstance->Initiate(lightCube);
-		#endif
-		*/
-
+		CEngine::GetInstance()->LoadModel("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/T_Deferred_Lightmesh.json");
+		m_Model = CEngine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx"); //Initiate("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/T_Deferred_Lightmesh.json");
+		m_Model->SetIsLightmesh();
 	}
 
 	void CPointLight::SetPosition(const CU::Vector3f& aPosition)
 	{
 		myOriginalPosition = aPosition;
 		myOrientation.SetPosition(myOriginalPosition);
-		myLightMesh->SetPosition(aPosition);
+		m_Model->SetPosition(aPosition);
 	}
 
 	const CU::Vector3f& CPointLight::GetPosition()
@@ -78,20 +55,13 @@ namespace Snowblind
 
 	void CPointLight::Render(const CU::Matrix44f& previousOrientation, CCamera* camera)
 	{
-		myLightMesh->Render(previousOrientation, *camera);
+		m_Model->Render(previousOrientation, camera->GetProjection());
 	}
 
 	const SPointlightData& CPointLight::GetData() const
 	{
 		return myData;
 	}
-
-#ifdef _DEBUG
-	CInstance* CPointLight::GetInstance()
-	{
-		return myInstance;
-	}
-#endif
 
 	CU::Matrix44f CPointLight::GetOrientation()
 	{

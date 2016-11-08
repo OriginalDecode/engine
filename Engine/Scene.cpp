@@ -92,9 +92,6 @@ namespace Snowblind
 
 	void CScene::AddLight(CPointLight* aPointLight)
 	{
-#ifdef _DEBUG
-		myInstances.Add(aPointLight->GetInstance());
-#endif
 		myPointLights.Add(aPointLight);
 	}
 

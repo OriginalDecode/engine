@@ -30,32 +30,31 @@ namespace Snowblind
 		std::vector<float> GetVerticeArrayCopy();
 		std::vector<s32> GetIndexArrayCopy();
 	private:
+		void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
 
 		void CreateVertices(u32 width, u32 height, const CU::Vector3f& position);
-		void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
 		void InitConstantBuffer();
-
 
 		void CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray);
 		float GetHeight(unsigned int aX, unsigned int aY) const;
 		float GetHeight(unsigned int aIndex) const;
+		
+		SHeightMap myHeightmap;
 		std::vector<s32> myIndexes;
 		std::vector<float> myVertices;
-		//CU::GrowingArray<s32> myIndexes;
-		//CU::GrowingArray<float> myVertices;
+
 		CU::Matrix44f myOrientation;
 		u32 myWidth;
 		u32 myDepth;
-		SHeightMap myHeightmap;
 
 		CSurface* mySurface = nullptr;
-
 
 		struct TerrainConstantStruct : public SVertexBaseStruct
 		{
 			CU::Vector4f time;
 		} *myConstantStruct;
 
+		
 		ID3D11Buffer* m_PSConstantBuffer;
 		struct TerrainCameraPos
 		{

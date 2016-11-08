@@ -37,6 +37,7 @@ namespace Snowblind
 			return false;
 
 		myPointLight = new CPointLight; //Where should this live?
+		myPointLight->Initiate();
 		if (!myPointLight)
 			return false;
 		mySpotlight = new CSpotLight; // Where should this live?
@@ -100,8 +101,21 @@ namespace Snowblind
 		SAFE_DELETE(myDeferredRenderer);
 		SAFE_DELETE(myText);
 
+		for (CTerrain* terrain : myTerrainArray)
+		{
+			if (terrain)
+			{
+				terrain->CleanUp();
+				SAFE_DELETE(terrain);
+			}
+		}
+				
 		SAFE_DELETE(myPointLight);
+
 		SAFE_DELETE(mySpotlight);
+		
+		
+		
 		return true;
 	}
 

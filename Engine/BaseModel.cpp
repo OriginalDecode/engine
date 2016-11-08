@@ -6,10 +6,8 @@ namespace Snowblind
 	CBaseModel::CBaseModel()
 	{
 		myEngine = CEngine::GetInstance();
-#ifdef SNOWBLIND_DX11
 		myAPI = CEngine::GetAPI();
 		myContext = myAPI->GetContext();
-#endif
 	}
 
 	CBaseModel::~CBaseModel() = default;

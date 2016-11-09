@@ -7,7 +7,7 @@
 cbuffer Matrices : register(b0)
 {
 	row_major matrix World;
-	row_major matrix InvertedView;
+	row_major matrix View;
 	row_major matrix Projection;
 };
 //---------------------------------
@@ -33,7 +33,7 @@ VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	output.Pos = mul(input.Pos, World);
-	output.Pos = mul(output.Pos, InvertedView);
+	output.Pos = mul(output.Pos, View);
 	output.Pos = mul(output.Pos, Projection);
 
 	output.Color = input.Color;

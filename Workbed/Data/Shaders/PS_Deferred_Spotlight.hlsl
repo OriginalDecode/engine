@@ -7,7 +7,7 @@
 cbuffer Pointlight : register(b0)
 {
 	row_major float4x4 InvertedProjection; 
-	row_major float4x4 View; 
+	row_major float4x4 InvertedView; 
 	float4 color;
 	float4 position;
 	float4 camPosition;
@@ -127,7 +127,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 	worldPosition = mul(worldPosition, InvertedProjection);
 	worldPosition = worldPosition / worldPosition.w;
-	worldPosition = mul(worldPosition, View);
+	worldPosition = mul(worldPosition, InvertedView);
 
 
     float3 lightToPixel = normalize(worldPosition.xyz - position.xyz);

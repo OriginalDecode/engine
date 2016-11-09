@@ -18,7 +18,7 @@ namespace Snowblind
 		myEmissive->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM, "GBuffer : Emissive");
 
 		myNormal = new CTexture;
-		myNormal->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM, "GBuffer : Normal");
+		myNormal->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "GBuffer : Normal");
 		
 		myDepth = new CTexture;
 		myDepth->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R32G32B32A32_FLOAT, "GBuffer : Depth");

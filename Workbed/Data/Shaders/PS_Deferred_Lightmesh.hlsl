@@ -7,7 +7,7 @@
 cbuffer Pointlight : register(b0)
 {
 	row_major float4x4 InvertedProjection; 
-	row_major float4x4 View; 
+	row_major float4x4 InvertedView; 
 	float4 color;
 	float4 position;
 	float4 camPosition;
@@ -50,7 +50,7 @@ float CalculateFalloff(float someDistance, float someRange)
 
 float CalculateTotalAttenuation(float someDistance, float someRange)
 {
-	float totalAttenuation = saturate(CalculateAttenuation(someDistance) );
+	float totalAttenuation = CalculateAttenuation(someDistance) * CalculateFalloff(someDistance, someRange);
 	return totalAttenuation;
 }
 
@@ -96,8 +96,6 @@ float3 Fresnel(const float3 aSubstance, const float3 aLightDir, const float3 aHa
 	return fresnel;
 }
 
-
-
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	input.uv /= input.uv.w;
@@ -106,54 +104,43 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, texCoord);
 	float4 normal = NormalTexture.Sample(point_Clamp, texCoord);
 	float4 depth = DepthTexture.Sample(point_Clamp, texCoord);
-	
-	// float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
-	// float roughness = depth.y;
-	// float roughnessOffsetted = pow(8192, roughness);
-	// float ao = 1.0f;
-	// float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;
-	  
+
+	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
+	float roughness = depth.y;
+	float roughnessOffsetted = pow(8192, roughness);
+	float ao = 1.0f;
+	float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;
+
 	float x = texCoord.x * 2.f - 1.f;
 	float y = (1.f - texCoord.y) * 2 - 1;
 	float z = depth.x;
-	
+
 	float4 worldPosition = float4(x, y, z, 1.f);
 	
 	worldPosition = mul(worldPosition, InvertedProjection);
 	worldPosition = worldPosition / worldPosition.w;
-	worldPosition = mul(worldPosition, View);
+	worldPosition = mul(worldPosition, InvertedView);
 
 	float3 viewPos = camPosition.xyz;
-	float3 toEye = normalize(worldPosition.xyz - viewPos);	
-	float3 toLight = worldPosition - position;
+	float3 toEye = normalize(viewPos - worldPosition.xyz);	
+	float3 toLight = position - worldPosition;
 	float3 lightDir = normalize(toLight);
-	//float3 halfVec = normalize(lightDir + toEye);
-	float lambert = dot(lightDir, float3(normal.xyz));
+	float3 halfVec = normalize(lightDir + toEye);
 
 	normal = normalize(normal);
-	float m_NdotL = dot(normal, normalize(float3(0, -1, 0)));
-	if(m_NdotL > 0)
-		return float4(m_NdotL,m_NdotL, m_NdotL, 1);
-	else if(m_NdotL == 0)
-		return float4(1,0,0,1);
+	float m_NdotL = dot(normal, lightDir);
 
-	return float4(1,1,0,1);
-	//return float4(normalize(float3(0,1,1)), 1.f);
-	
+	float NdotL = saturate(dot(normal, lightDir));
+	float HdotN = saturate(dot(halfVec, normal));
+	float NdotV = saturate(dot(normal, toEye));
+	float3 F = Fresnel(substance, lightDir, halfVec);
+	float D = saturate(D_GGX(HdotN,(roughness + 1.f) / 2.f));
+	float V = saturate(V_SchlickForGGX((roughness + 1.f) / 2.f, NdotV, m_NdotL));
 
-	// float3 nnormal = normalize(normal);
-	// float3 NdotL = dot(nnormal,lightDir);//saturate(dot(normal, lightDir));
-	// float HdotN = saturate(dot(halfVec, nnormal));
-	// float NdotV = saturate(dot(nnormal, toEye));
-	// float3 F = Fresnel(substance, lightDir, halfVec);
-	// float D = saturate(D_GGX(HdotN,(roughness + 1.f) / 2.f));
-	// float V = saturate(V_SchlickForGGX((roughness + 1.f) / 2.f, NdotV, NdotL));
-	// //float lambert = NdotL;
-	// float distance = length(toLight);
-	// float attenuation = Attenuation(toLight, input.range);
-	// float intensity = color.w;
-	// float3 lightColor = color.rgb * 10 * attenuation;
+	float attenuation = Attenuation(toLight, 25);
+	float3 directSpec = F * D * V * m_NdotL;
 	
-	// float3 directSpec = NdotL;
-	//return float4( directSpec.xyz, 1.f);
+	//float3 output = float3(m_NdotL,m_NdotL,m_NdotL) * color * abs(attenuation) * 25;
+
+	return float4(directSpec, 1.f);
 };

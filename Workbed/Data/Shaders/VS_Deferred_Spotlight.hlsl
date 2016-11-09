@@ -7,7 +7,7 @@
 cbuffer Matrices : register(b0) 
 {
 	row_major float4x4 World;
-	row_major float4x4 InvertedView;
+	row_major float4x4 View;
 	row_major float4x4 Projection;
 	float2 range;
     float2 angle;
@@ -44,7 +44,7 @@ VS_OUTPUT VS(VS_INPUT input)
     input.pos.w = 1.f;
 	
 	output.pos = mul(input.pos, World);
-	output.pos = mul(output.pos, InvertedView);
+	output.pos = mul(output.pos, View);
 	output.pos = mul(output.pos, Projection);
 	output.cosAngle.x = cos(angle.x);
 	output.range.x = range.x;

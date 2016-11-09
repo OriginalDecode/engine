@@ -345,7 +345,7 @@ namespace Snowblind
 			std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), file_path);
 			DL_WARNING("%s", msg.c_str());
 			// (#LINUS) Should be output to a warninglist in engine debug tools.
-			//DL_WARNINGBOX(myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), file_path).c_str());
+			//DL_WARNINGBOX((char*)compilationMessage->GetBufferPointer());
 
 		}
 		CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Shader.");

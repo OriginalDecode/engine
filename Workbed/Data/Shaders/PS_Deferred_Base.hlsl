@@ -39,27 +39,27 @@ struct VS_OUTPUT
 //---------------------------------
 GBuffer PS(VS_OUTPUT input) : SV_Target
 {
-	float3 norm = NormalTexture.Sample(linear_Wrap, input.uv) * 2.f - 1.f;
+	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
+	float3 norm = NormalTexture.Sample(linear_Wrap, input.uv) * 2 - 1;
+
 	input.normal = normalize(input.normal);
 	input.binorm = normalize(input.binorm);
 	input.tang   = normalize(input.tang);
     
 	float3x3 tangentSpaceMatrix = float3x3(input.tang, input.binorm, input.normal);
-	//norm = normalize(mul(norm, tangentSpaceMatrix));
-    input.normal.xyz += 1.f;
-	norm.xyz *= 0.5f;
-	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
+	float3 _normal = normalize(mul(norm.xyz, tangentSpaceMatrix));
 
-	float depth = input.pos.z;
 	/* Write splatmap stuff here */
+
+	float depth = normalize(input.worldpos.z);
 	GBuffer output;
-	output.Albedo = float4(1, 1, 1, 1);// AlbedoTexture.Sample(linear_Wrap, input.uv);
+	output.Albedo = float4(1,1,1,1);
+	output.Normal = float4(_normal.xyz, 1);
+	output.Depth = float4(depth, depth, depth, depth);
+
+	//output.Depth.x = depth;
+	//output.Depth.g = 0.f;//RoughnessTexture.Sample(linear_Wrap, input.uv).r;
 	
-	output.Normal = float4(input.normal.xyz,0.f);
-	output.Normal.a = 0.f;// MetalnessTexture.Sample(linear_Wrap, input.uv).r;
-	
-	output.Depth.r = depth;
-	output.Depth.g = 0.f;//RoughnessTexture.Sample(linear_Wrap, input.uv).r;
-	
+	//output.Normal.a = 0.f;// MetalnessTexture.Sample(linear_Wrap, input.uv).r;
 	return output;
 }

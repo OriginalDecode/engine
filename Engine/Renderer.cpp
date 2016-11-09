@@ -51,8 +51,12 @@ namespace Snowblind
 			return false;
 		
 
-		myDepthTexture->Initiate(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-			, DXGI_FORMAT_R24G8_TYPELESS, DXGI_FORMAT_R24_UNORM_X8_TYPELESS, DXGI_FORMAT_D24_UNORM_S8_UINT, "Renderer : Depth");
+		myDepthTexture->Initiate(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight
+			, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+			, DXGI_FORMAT_R32_TYPELESS
+			, DXGI_FORMAT_R32_FLOAT
+			, DXGI_FORMAT_D32_FLOAT
+			, "Renderer : Depth");
 
 		mySkysphere = new CSkySphere;
 		mySkysphere->Initiate("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", camera_3d);

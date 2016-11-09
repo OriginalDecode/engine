@@ -115,7 +115,7 @@ void CGame::Update(float aDeltaTime)
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
 
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
+	//mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
 
 	//std::stringstream b;
 	//if (rigidbody)

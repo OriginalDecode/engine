@@ -34,12 +34,12 @@ VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	
-	float4 scale = range;
+	float4 scale = 25;
 	scale.w = 1.f;
 	
 	input.pos *= scale; // scale
 	input.pos.w = 1.f;
-	
+
 	output.pos = mul(input.pos, World);
 	output.pos = mul(output.pos, InvertedView);
 	output.pos = mul(output.pos, Projection);

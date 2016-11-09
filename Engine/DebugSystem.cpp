@@ -46,7 +46,7 @@ void Snowblind::DebugSystem::Update()
 
 void Snowblind::DebugSystem::Render()
 {
-	if (m_DebugMenu.GetIsActive())
+	/*if (m_DebugMenu.GetIsActive())
 	{
 		m_DebugMenu.Render();
 	}
@@ -63,7 +63,7 @@ void Snowblind::DebugSystem::Render()
 	}
 
 	m_Synchronizer->AddRenderCommand(RenderCommand(debug_text.str(), { -1.f, -1.f }, eType::TEXT));
-	m_DebugStrings.clear();
+	m_DebugStrings.clear();*/
 }
 
 void Snowblind::DebugSystem::ActivateDebugMenu()

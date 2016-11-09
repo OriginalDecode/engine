@@ -42,6 +42,7 @@ namespace Snowblind
 		void Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, const std::string& debug_name);
 		void Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format
 			, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name);
+		void Initiate(u16 width, u16 height, s32 flags, TextureFormat render_target_format, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name);
 
 		bool CleanUp();
 		bool Load(const std::string& filepath);
@@ -57,6 +58,7 @@ namespace Snowblind
 		void SetTexture(IShaderResourceView* aShaderResource);
 		static HRESULT SaveToFile(ITexture2D*& texture_resource, const std::string& file_name);
 		static void CopyData(ITexture2D* dest, ITexture2D* source);
+		static void CopyData(IShaderResourceView* dest, IShaderResourceView* source);
 #endif
 
 		//void CreateDepthStencilView(float aWidth, float aHeight, int aArraySize = 1);

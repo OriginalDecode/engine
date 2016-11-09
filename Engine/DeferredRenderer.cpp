@@ -22,8 +22,13 @@ namespace Snowblind
 			, "Texture : FinishedScene");
 
 		myDepthStencil = new CTexture;
-		myDepthStencil->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-			, DXGI_FORMAT_R24G8_TYPELESS, DXGI_FORMAT_R24_UNORM_X8_TYPELESS, DXGI_FORMAT_D24_UNORM_S8_UINT, "DeferredRenderer : ");
+		myDepthStencil->Initiate(windowSize.myWidth, windowSize.myHeight
+			, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
+			, DXGI_FORMAT_R16G16B16A16_FLOAT
+			, DXGI_FORMAT_R32_TYPELESS
+			, DXGI_FORMAT_R32_FLOAT
+			, DXGI_FORMAT_D32_FLOAT
+			, "DeferredRenderer : ");
 
 		myCubeMap = myEngine->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
 
@@ -92,32 +97,33 @@ namespace Snowblind
 
 	void CDeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
 	{
+		//CTexture::CopyData(myGBuffer->myDepth->GetDepthTexture(), myDepthStencil->GetDepthTexture());
+
 #ifdef SNOWBLIND_DX11
 		UpdateConstantBuffer(previousOrientation, aProjection);
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		SetBuffers();
 
 		myDirectX->ResetViewport();
 
 		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView(); 
-		ID3D11DepthStencilView* depth = myDirectX->GetDepthView(); 
+		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
 
 		myContext->ClearRenderTargetView(backbuffer, myClearColor);
 		myContext->OMSetRenderTargets(1, &backbuffer, depth);
 
 		myAmbientPassShader->Activate();
 		myContext->PSSetConstantBuffers(0, 1, &myConstantBuffer);
-		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); 
 
+		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); 
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		myContext->DrawIndexed(6, 0, 0);
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 
 		myAmbientPassShader->Deactivate();
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 
 
 		depth = myDepthStencil->GetDepthView();
 		myContext->OMSetRenderTargets(1, &backbuffer, depth);
-		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); 
 #endif
 	}
 

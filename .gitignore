@@ -227,3 +227,5 @@ ModelManifest.xml
 /Temp/
 /HashGen.iobj
 /HashGen.ipdb
+/Workbed/Snowblind_Debug.pdb
+/Workbed/Snowblind_Release.pdb

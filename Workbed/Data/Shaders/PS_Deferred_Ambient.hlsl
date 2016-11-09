@@ -112,8 +112,10 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	// float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector, lysMipMap).xyz 
 	// * ao * reflectionFrensnel;
-    
-	float3 finalColor = ambientDiffuse; //+ambientSpec;
+    float3 lightDir = normalize(worldPosition - float4(0,0,0,1));
+	normal = normalize(normal);
+	float3 m_NdotL = dot(normal, lightDir);
+	float3 finalColor = m_NdotL; //+ambientSpec;
 	return float4(finalColor, 1.f);
 };
 

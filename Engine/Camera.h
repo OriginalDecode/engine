@@ -40,8 +40,15 @@ namespace Snowblind
 		void Move(eDirection aDirection, float aSpeed);
 		void SetPosition(const CU::Vector3f& position);
 		void SetTranslation(const CU::Vector4f& translation);
+
 		void Update(const ControllerState& controller_state);
+
+
+
 		void SetOrientation(const CU::Matrix44f& matrix);
+
+
+
 	private:
 		void operator=(CCamera&) = delete;
 		void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);

@@ -51,7 +51,6 @@ private:
 	CU::Quaternion myPitch;
 	CU::Quaternion myYaw;
 	CU::Matrix44f myOrientation;
-	CU::Math::Vector2<float> myCursorPosition;
 	float moveSpeed = 15.f;
 
 	CGame* myGame;

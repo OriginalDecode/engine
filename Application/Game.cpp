@@ -246,8 +246,8 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 
 		if (controller_type == "input")
 		{
-			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
-			rigidbody = p.myBody;
+			//PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
+			//rigidbody = p.myBody;
 			myEntityManager->AddComponent<InputController>(e);
 			InputController& input = myEntityManager->GetComponent<InputController>(e);
 			input.m_ID = m_LocalPlayerCount++;
@@ -259,14 +259,23 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 
 
 			JSONReader read_input_config("Data/Config/input_config.json");
-
-			if(read_input_config.HasElement("Forward"))
+			CameraComponent& camera = myEntityManager->GetComponent<CameraComponent>(e);
+			
+			if (read_input_config.HasElement("Forward"))
 			{
 				const JSONElement& el = read_input_config.GetElement("Forward");
 				std::string first = read_input_config.ReadElement(el, 0);
 				std::string second = read_input_config.ReadElement(el, 1);
-				input.m_InputHandle->Bind(Hash(first.c_str()), [&]() { Forward(rigidbody); });
-				input.m_InputHandle->Bind(Hash(second.c_str()), [&]() { Forward(rigidbody); });
+
+				std::function<void()> function;
+
+				if (rigidbody)
+					function = [&]() { Forward(rigidbody); };
+				else
+					function = [&]() { Forward(camera.m_Camera); };
+
+				input.m_InputHandle->Bind(Hash(first.c_str()), function);
+				input.m_InputHandle->Bind(Hash(second.c_str()), function);
 			}
 
 			if (read_input_config.HasElement("Back"))
@@ -274,8 +283,16 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 				const JSONElement& el = read_input_config.GetElement("Back");
 				std::string first = read_input_config.ReadElement(el, 0);
 				std::string second = read_input_config.ReadElement(el, 1);
-				input.m_InputHandle->Bind(Hash(first.c_str()), [&]() { Backward(rigidbody); });
-				input.m_InputHandle->Bind(Hash(second.c_str()), [&]() { Backward(rigidbody); });
+
+				std::function<void()> function;
+
+				if (rigidbody)
+					function = [&]() { Backward(rigidbody); };
+				else
+					function = [&]() { Backward(camera.m_Camera); };
+
+				input.m_InputHandle->Bind(Hash(first.c_str()), function);
+				input.m_InputHandle->Bind(Hash(second.c_str()), function);
 			}
 
 			if (read_input_config.HasElement("Left"))
@@ -283,8 +300,16 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 				const JSONElement& el = read_input_config.GetElement("Left");
 				std::string first = read_input_config.ReadElement(el, 0);
 				std::string second = read_input_config.ReadElement(el, 1);
-				input.m_InputHandle->Bind(Hash(first.c_str()), [&]() { Left(rigidbody); });
-				input.m_InputHandle->Bind(Hash(second.c_str()), [&]() { Left(rigidbody); });
+
+				std::function<void()> function;
+
+				if (rigidbody)
+					function = [&]() { Left(rigidbody); };
+				else
+					function = [&]() { Left(camera.m_Camera); };
+
+				input.m_InputHandle->Bind(Hash(first.c_str()), function);
+				input.m_InputHandle->Bind(Hash(second.c_str()), function);
 			}
 
 			if (read_input_config.HasElement("Right"))
@@ -292,8 +317,16 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 				const JSONElement& el = read_input_config.GetElement("Right");
 				std::string first = read_input_config.ReadElement(el, 0);
 				std::string second = read_input_config.ReadElement(el, 1);
-				input.m_InputHandle->Bind(Hash(first.c_str()), [&]() { Right(rigidbody); });
-				input.m_InputHandle->Bind(Hash(second.c_str()), [&]() { Right(rigidbody); });
+
+				std::function<void()> function;
+
+				if (rigidbody)
+					function = [&]() { Right(rigidbody); };
+				else
+					function = [&]() { Right(camera.m_Camera); };
+
+				input.m_InputHandle->Bind(Hash(first.c_str()), function);
+				input.m_InputHandle->Bind(Hash(second.c_str()), function);
 			}
 
 			if (read_input_config.HasElement("Jump"))
@@ -301,29 +334,41 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 				const JSONElement& el = read_input_config.GetElement("Jump");
 				std::string first = read_input_config.ReadElement(el, 0);
 				std::string second = read_input_config.ReadElement(el, 1);
-				input.m_InputHandle->Bind(Hash(first.c_str()), [&]() { Jump(rigidbody); });
-				input.m_InputHandle->Bind(Hash(second.c_str()), [&]() { Jump(rigidbody); });
+
+				std::function<void()> function;
+
+				if (rigidbody)
+					function = [&]() { Jump(rigidbody); };
+				else
+					function = [&]() { Up(camera.m_Camera); };
+
+				input.m_InputHandle->Bind(Hash(first.c_str()), function);
+				input.m_InputHandle->Bind(Hash(second.c_str()), function);
 			}
 
 			input.m_InputHandle->Bind(Hash("RThumbYP"), [&](){
-				p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+				//p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+				camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
 			});
 
 			input.m_InputHandle->Bind(Hash("RThumbYN"), [&]() {
-				p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+				//p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+				camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
 			});
 			
 			input.m_InputHandle->Bind(Hash("RThumbXP"), [&]() {
-				p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+				//p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+				camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
 			});
 
 			input.m_InputHandle->Bind(Hash("RThumbXN"), [&]() {
-				p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+				//p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+				camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
 			});
 
-			input.m_InputHandle->Bind(Hash("YButton"), [&]() {
-				Snowblind::CEngine::GetInstance()->ToggleDebugMenu(); // (#LINUS) inte trådsäker
-			});
+			//input.m_InputHandle->Bind(Hash("YButton"), [&]() {
+			//	Snowblind::CEngine::GetInstance()->ToggleDebugMenu(); // (#LINUS) inte trådsäker
+			//});
 
 		}
 		else if (controller_type == "ai")
@@ -348,32 +393,64 @@ void Jump(CRigidBody* rigidbody)
 
 void Forward(CRigidBody* rigidbody)
 {
-	CU::Matrix44f orientation = rigidbody->GetOrientation();
-	CU::Vector4f forward = orientation.GetForward();
-	forward *= 150.f;
-	rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
+		CU::Matrix44f orientation = rigidbody->GetOrientation();
+		CU::Vector4f forward = orientation.GetForward();
+		forward *= 150.f;
+		rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
 }
 
 void Backward(CRigidBody* rigidbody)
 {
-	CU::Matrix44f orientation = rigidbody->GetOrientation();
-	CU::Vector4f forward = orientation.GetForward();
-	forward *= -150.f;
-	rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
+		CU::Matrix44f orientation = rigidbody->GetOrientation();
+		CU::Vector4f forward = orientation.GetForward();
+		forward *= -150.f;
+		rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
 }
 
 void Right(CRigidBody* rigidbody)
 {
-	CU::Matrix44f orientation = rigidbody->GetOrientation();
-	CU::Vector4f right = orientation.GetRight();
-	right *= 150.f;
-	rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
+		CU::Matrix44f orientation = rigidbody->GetOrientation();
+		CU::Vector4f right = orientation.GetRight();
+		right *= 150.f;
+		rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
 }
 
 void Left(CRigidBody* rigidbody)
 {
-	CU::Matrix44f orientation = rigidbody->GetOrientation();
-	CU::Vector4f right = orientation.GetRight();
-	right *= -150.f;
-	rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
+		CU::Matrix44f orientation = rigidbody->GetOrientation();
+		CU::Vector4f right = orientation.GetRight();
+		right *= -150.f;
+		rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
+}
+
+static const float speed = 50.f;
+
+void Up(Snowblind::CCamera* camera)
+{
+	camera->Move(Snowblind::eDirection::UP, speed * 0.016f);
+}
+
+void Down(Snowblind::CCamera* camera)
+{
+	camera->Move(Snowblind::eDirection::DOWN, -speed * 0.016f);
+}
+
+void Forward(Snowblind::CCamera* camera)
+{
+	camera->Move(Snowblind::eDirection::FORWARD, speed * 0.016f);
+}
+
+void Backward(Snowblind::CCamera* camera)
+{
+	camera->Move(Snowblind::eDirection::BACK, -speed * 0.016f);
+}
+
+void Right(Snowblind::CCamera* camera)
+{
+	camera->Move(Snowblind::eDirection::RIGHT, speed * 0.016f);
+}
+
+void Left(Snowblind::CCamera* camera)
+{
+	camera->Move(Snowblind::eDirection::LEFT, -speed * 0.016f);
 }

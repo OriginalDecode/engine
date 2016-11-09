@@ -114,7 +114,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	// float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;
 	  
 	float x = texCoord.x * 2.f - 1.f;
-	float y = (1.f - texCoord.y) * 2.f - 1.f;
+	float y = (1.f - texCoord.y) * 2 - 1;
 	float z = depth.x;
 	
 	float4 worldPosition = float4(x, y, z, 1.f);
@@ -131,8 +131,15 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float lambert = dot(lightDir, float3(normal.xyz));
 
 	normal = normalize(normal);
-	float3 m_NdotL = dot(normal, lightDir);
-	return float4(m_NdotL.rgb, 1.f);
+	float m_NdotL = dot(normal, normalize(float3(0, -1, 0)));
+	if(m_NdotL > 0)
+		return float4(m_NdotL,m_NdotL, m_NdotL, 1);
+	else if(m_NdotL == 0)
+		return float4(1,0,0,1);
+
+	return float4(1,1,0,1);
+	//return float4(normalize(float3(0,1,1)), 1.f);
+	
 
 	// float3 nnormal = normalize(normal);
 	// float3 NdotL = dot(nnormal,lightDir);//saturate(dot(normal, lightDir));

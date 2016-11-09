@@ -12,6 +12,7 @@ namespace Snowblind
 	class CTerrain;
 	class CEngine;
 	class CMousePicker;
+	class CCamera;
 };
 class JSONReader;
 class CEntityManager;
@@ -24,6 +25,14 @@ static void Forward(CRigidBody* rigidbody);
 static void Backward(CRigidBody* rigidbody);
 static void Right(CRigidBody* rigidbody);
 static void Left(CRigidBody* rigidbody);
+
+static void Up(Snowblind::CCamera* camera);
+static void Forward(Snowblind::CCamera* camera);
+static void Backward(Snowblind::CCamera* camera);
+static void Right(Snowblind::CCamera* camera);
+static void Left(Snowblind::CCamera* camera);
+static void Down(Snowblind::CCamera* camera);
+
 
 class CGame
 {
@@ -59,7 +68,7 @@ private:
 	CU::Vector3f pointHit;
 	CU::Vector3f currentRay;
 
-	CRigidBody* rigidbody;
+	CRigidBody* rigidbody = nullptr;
 	SLinePoint raycast[2];
 	volatile bool m_TerrainIsCreated = false;
 };

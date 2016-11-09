@@ -143,8 +143,8 @@ namespace Snowblind
 		CTexture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
 
-		//RenderPointlight();
-		//RenderSpotlight();
+		RenderPointlight();
+		RenderSpotlight();
 
 		myEngine->ResetRenderTargetAndDepth();
 		mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());

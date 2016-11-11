@@ -5,6 +5,7 @@
 #include <sstream>
 
 #define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
+#define PINK_CLEAR(v) v[0] = 1.f; v[1] = 0.07f; v[2] = 255.f; v[3] = 0.f;
 
 namespace Snowblind
 {
@@ -100,7 +101,7 @@ namespace Snowblind
 	void DirectX11::Clear()
 	{
 		float color[4];
-		BLACK_CLEAR(color);
+		PINK_CLEAR(color);
 		myContext->ClearRenderTargetView(myRenderTarget, color);
 		myContext->ClearDepthStencilView(myDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 	}

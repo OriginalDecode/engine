@@ -185,7 +185,7 @@ namespace Snowblind
 			{
 				case eType::MODEL:
 				{
-					myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+					myDirectX->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 					myDirectX->SetBlendState(eBlendStates::BLEND_FALSE);
 
 					CModel* model = myEngine->GetModel(command.myModelKey);
@@ -367,5 +367,10 @@ namespace Snowblind
 		CEngine::GetInstance()->ResetRenderTargetAndDepth();
 		CEngine::GetInstance()->GetAPI()->ResetViewport();
 		myCamera = camera;
+	}
+
+	void CRenderer::ToggleWireframe()
+	{
+		m_RenderWireframe = !m_RenderWireframe;
 	}
 };

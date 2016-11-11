@@ -39,9 +39,8 @@ namespace Snowblind
 		void Add2DCamera(CCamera* aCamera);
 		void Render();
 		void AddTerrain(CTerrain* someTerrain);
+		void ToggleWireframe();
 	private:
-		void DeferredRender();
-		void ForwardRender();
 
 		void Render3DCommands();
 		void Render2DCommands();
@@ -51,12 +50,12 @@ namespace Snowblind
 		void RenderParticles();
 		void RenderLines();
 		void ProcessShadows();
+
 		//Holds the lightpass instead of deferred
 
 		CU::GrowingArray<CTerrain*> myTerrainArray;
 
-		bool m_ForwardRender = false;
-
+		bool m_RenderWireframe = false;
 		eDeferredType		myDeferredType;
 		CEngine*			myEngine			= nullptr;
 #ifdef SNOWBLIND_DX11

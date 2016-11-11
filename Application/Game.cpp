@@ -366,9 +366,12 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 				camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
 			});
 
-			//input.m_InputHandle->Bind(Hash("YButton"), [&]() {
-			//	Snowblind::CEngine::GetInstance()->ToggleDebugMenu(); // (#LINUS) inte trådsäker
-			//});
+			input.m_InputHandle->Bind(Hash("YButton"), [&]() {
+				Snowblind::CEngine::GetInstance()->ToggleWireframe(); // (#LINUS) inte trådsäker
+			});
+
+
+
 
 		}
 		else if (controller_type == "ai")

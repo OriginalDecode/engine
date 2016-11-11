@@ -78,7 +78,7 @@ namespace Snowblind
 		static void Clear();
 		static void EnableZ();
 		static void DisableZ();
-
+		static void ToggleWireframe();
 		void Update();
 		
 		SWindowSize GetWindowSize() const;

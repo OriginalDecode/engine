@@ -181,6 +181,11 @@ namespace Snowblind
 		myAPI->DisableZBuffer();
 	}
 
+	void CEngine::ToggleWireframe()
+	{
+		myInstance->myRenderer->ToggleWireframe();
+	}
+
 	SWindowSize CEngine::GetWindowSize() const
 	{
 		return myWindowSize;

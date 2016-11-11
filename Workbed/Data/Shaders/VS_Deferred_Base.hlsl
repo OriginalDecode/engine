@@ -38,8 +38,10 @@ struct VS_OUTPUT
 //---------------------------------
 VS_OUTPUT VS(VS_INPUT input)
 {
-	VS_OUTPUT output = (VS_OUTPUT)0;
 
+	
+
+	VS_OUTPUT output = (VS_OUTPUT)0;
 	output.pos = mul(input.pos, World);
 	output.pos = mul(output.pos, View);
 	output.pos = mul(output.pos, Projection);
@@ -47,7 +49,7 @@ VS_OUTPUT VS(VS_INPUT input)
 	output.uv = input.uv;
 	
 	output.normal = mul(input.normal, World);
-	output.binorm = input.binorm;
+	output.binorm = mul(input.binorm, World);
 	output.tang  = mul(input.tang , World);
 	
 	output.worldpos = mul(input.pos, World);

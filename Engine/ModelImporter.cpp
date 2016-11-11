@@ -79,11 +79,13 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 		////aiProcess_TransformUVCoords | // preprocess UV transformations (scaling, translation ...)
 		//aiProcess_FindInstances | // search for instanced meshes and remove them by references to one master
 		//aiProcess_LimitBoneWeights | // limit bone weights to 4 per vertex
-		//aiProcess_OptimizeMeshes | // join small meshes, if possible;
-		//aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
+		aiProcess_OptimizeMeshes | // join small meshes, if possible;
+		aiProcess_OptimizeGraph |
+								   //aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
 		0;
 
 	const aiScene* scene = importer.ReadFile(aFilePath, processFlags);
+
 	DL_MESSAGE("%s", !scene ? aFilePath.c_str() : importer.GetErrorString());
 	DL_ASSERT_EXP(scene, "ImportModel Failed. Could not read the requested file.");
 

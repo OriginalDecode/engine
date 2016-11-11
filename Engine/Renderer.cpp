@@ -135,25 +135,26 @@ namespace Snowblind
 
 		myEngine->Clear();
 #ifdef SNOWBLIND_DX11
+		myEngine->GetAPI()->ResetViewport();
+		//myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		//myDeferredRenderer->SetTargets();
 
-		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
-		myDeferredRenderer->SetTargets();
 		Render3DCommands();
 
-		CTexture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
-		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
+		//CTexture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
+		//myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
 
 		//RenderPointlight();
 		//RenderSpotlight();
 
-		myEngine->ResetRenderTargetAndDepth();
-		mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
+		//myEngine->ResetRenderTargetAndDepth();
+		//mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
 		//myDirectX->SetBlendState(eBlendStates::LIGHT_BLEND);
 		//mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		//ProcessShadows();
 
-		myDeferredRenderer->Finalize();
+		//myDeferredRenderer->Finalize();
 
 		//RenderParticles();
 		//RenderLines();

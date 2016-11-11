@@ -442,7 +442,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 				addedSize += BINORMAL_STRIDE;
 
 				CU::Vector3f tangent(aMesh->mTangents[verticeIndex].x, aMesh->mTangents[verticeIndex].y, aMesh->mTangents[verticeIndex].z);
-				tangent = tangent * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
+				tangent = tangent * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(-1, 0, 0));
 				CU::Math::Normalize(tangent);
 
 

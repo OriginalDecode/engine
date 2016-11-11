@@ -40,6 +40,9 @@ namespace Snowblind
 		void Render();
 		void AddTerrain(CTerrain* someTerrain);
 	private:
+		void DeferredRender();
+		void ForwardRender();
+
 		void Render3DCommands();
 		void Render2DCommands();
 		void RenderPointlight();
@@ -51,6 +54,8 @@ namespace Snowblind
 		//Holds the lightpass instead of deferred
 
 		CU::GrowingArray<CTerrain*> myTerrainArray;
+
+		bool m_ForwardRender = false;
 
 		eDeferredType		myDeferredType;
 		CEngine*			myEngine			= nullptr;

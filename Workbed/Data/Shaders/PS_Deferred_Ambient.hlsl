@@ -126,7 +126,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	 
 	float ln = length(_pos - worldPosition);
 	float attenuation = 1.f / (1.f + 0.1f * ln + 0.01f * ln * ln);
-	float _falloff = 1 - (ln / ( 5 + 0.0001));	
+	float _falloff = 1 - (ln / ( 1 + 0.0001));	
 	float totAtt = attenuation * _falloff;
 	float3 finalColor = ambientDiffuse;
   	lightColor *= abs(totAtt);

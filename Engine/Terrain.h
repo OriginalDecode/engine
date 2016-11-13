@@ -26,7 +26,7 @@ namespace Snowblind
 		void Load(const std::string& aFilePath);
 		//CU::GrowingArray<float> GetVerticeArrayCopy() { return myVertices; };
 		//CU::GrowingArray<s32> GetIndexArrayCopy() {	return myIndexes; };
-
+		void AddNormalMap(const std::string& filepath);
 		std::vector<float> GetVerticeArrayCopy();
 		std::vector<s32> GetIndexArrayCopy();
 	private:

@@ -409,9 +409,13 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 			if (aMesh->HasNormals())
 			{
 
-				CU::Vector3f normal(aMesh->mNormals[verticeIndex].x, aMesh->mNormals[verticeIndex].y, aMesh->mNormals[verticeIndex].z);
+				CU::Vector3f normal(
+					aMesh->mNormals[verticeIndex].x,
+					aMesh->mNormals[verticeIndex].y,
+					aMesh->mNormals[verticeIndex].z);
 				normal = normal * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
 				CU::Math::Normalize(normal);
+
 
 				data->myData->myVertexBuffer[currIndex + addedSize] = normal.x;
 				data->myData->myVertexBuffer[currIndex + addedSize + 1] = normal.y;
@@ -433,17 +437,23 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 			if (aMesh->HasTangentsAndBitangents())
 			{
 
-				CU::Vector3f normal(aMesh->mBitangents[verticeIndex].x, aMesh->mBitangents[verticeIndex].y, aMesh->mBitangents[verticeIndex].z);
-				normal = normal * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
-				CU::Math::Normalize(normal);
+				CU::Vector3f binorm(
+					aMesh->mBitangents[verticeIndex].x,
+					aMesh->mBitangents[verticeIndex].y,
+					aMesh->mBitangents[verticeIndex].z);
+				binorm = binorm * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
+				CU::Math::Normalize(binorm);
 
-				data->myData->myVertexBuffer[currIndex + addedSize] = normal.x;
-				data->myData->myVertexBuffer[currIndex + addedSize + 1] = normal.y;
-				data->myData->myVertexBuffer[currIndex + addedSize + 2] = normal.z;
+				data->myData->myVertexBuffer[currIndex + addedSize] = binorm.x;
+				data->myData->myVertexBuffer[currIndex + addedSize + 1] = binorm.y;
+				data->myData->myVertexBuffer[currIndex + addedSize + 2] = binorm.z;
 				data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
 				addedSize += BINORMAL_STRIDE;
 
-				CU::Vector3f tangent(aMesh->mTangents[verticeIndex].x, aMesh->mTangents[verticeIndex].y, aMesh->mTangents[verticeIndex].z);
+				CU::Vector3f tangent(
+					aMesh->mTangents[verticeIndex].x, 
+					aMesh->mTangents[verticeIndex].y,
+					aMesh->mTangents[verticeIndex].z);
 				tangent = tangent * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(-1, 0, 0));
 				CU::Math::Normalize(tangent);
 

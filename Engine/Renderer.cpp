@@ -36,38 +36,38 @@ namespace Snowblind
 		if (!myText)
 			return false;
 
-		myPointLight = new CPointLight; //Where should this live?
-		myPointLight->Initiate();
-		if (!myPointLight)
-			return false;
-		mySpotlight = new CSpotLight; // Where should this live?
-		if (!mySpotlight)
-			return false;
-		myDeferredRenderer = new CDeferredRenderer; // Where should this live?
-		if (!myDeferredRenderer)
-			return false;
-		myDepthTexture = new CTexture; //Where should this live?
-		if (!myDepthTexture)
-			return false;
+		//myPointLight = new CPointLight; //Where should this live?
+		//myPointLight->Initiate();
+		//if (!myPointLight)
+		//	return false;
+		//mySpotlight = new CSpotLight; // Where should this live?
+		//if (!mySpotlight)
+		//	return false;
+		//myDeferredRenderer = new CDeferredRenderer; // Where should this live?
+		//if (!myDeferredRenderer)
+		//	return false;
+		//myDepthTexture = new CTexture; //Where should this live?
+		//if (!myDepthTexture)
+		//	return false;
 		
 
-		myDepthTexture->Initiate(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight
-			, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-			, DXGI_FORMAT_R32_TYPELESS
-			, DXGI_FORMAT_R32_FLOAT
-			, DXGI_FORMAT_D32_FLOAT
-			, "Renderer : Depth");
+		//myDepthTexture->Initiate(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight
+		//	, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+		//	, DXGI_FORMAT_R32_TYPELESS
+		//	, DXGI_FORMAT_R32_FLOAT
+		//	, DXGI_FORMAT_D32_FLOAT
+		//	, "Renderer : Depth");
 
-		mySkysphere = new CSkySphere;
-		mySkysphere->Initiate("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", camera_3d);
-		mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Data/Shaders/T_Skysphere_Layer.json");
-		if (!mySkysphere)
-			return false;
+		//mySkysphere = new CSkySphere;
+		//mySkysphere->Initiate("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", camera_3d);
+		//mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Data/Shaders/T_Skysphere_Layer.json");
+		//if (!mySkysphere)
+		//	return false;
 		//mySprite = new CSprite;
 		//mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
 
-		m_Shadowlight = new ShadowSpotlight;
-		m_Shadowlight->Initiate(CU::Vector3f(1024.f, 5.f, 512.f), CU::Vector3f(1.f, 0.f, 0.f));
+		//m_Shadowlight = new ShadowSpotlight;
+		//m_Shadowlight->Initiate(CU::Vector3f(1024.f, 5.f, 512.f), CU::Vector3f(1.f, 0.f, 0.f));
 
 
 
@@ -83,7 +83,7 @@ namespace Snowblind
 
 		my3DLine->Initiate();
 
-		DL_ASSERT_EXP(m_LightPass.Initiate(myDeferredRenderer->GetGBuffer()), "failed to initiate LightPass!");
+		//DL_ASSERT_EXP(m_LightPass.Initiate(myDeferredRenderer->GetGBuffer()), "failed to initiate LightPass!");
 
 		return true;
 	}
@@ -92,16 +92,16 @@ namespace Snowblind
 	{
 		m_LightPass.CleanUp();
 
-		m_Shadowlight->CleanUp();
-		SAFE_DELETE(m_Shadowlight);
+		//m_Shadowlight->CleanUp();
+		//SAFE_DELETE(m_Shadowlight);
 
 		SAFE_DELETE(my3DLine);
 		SAFE_DELETE(mySprite);
-		mySkysphere->CleanUp();
-		SAFE_DELETE(mySkysphere);
+		//mySkysphere->CleanUp();
+		//SAFE_DELETE(mySkysphere);
 
-		myDepthTexture->CleanUp();
-		SAFE_DELETE(myDepthTexture);
+		//myDepthTexture->CleanUp();
+		//SAFE_DELETE(myDepthTexture);
 		SAFE_DELETE(my2DCamera);
 
 		SAFE_DELETE(myDeferredRenderer);
@@ -194,7 +194,7 @@ namespace Snowblind
 				}break;
 				case eType::SKYSPHERE:
 				{
-					mySkysphere->SetPosition(myCamera->GetPosition());//only updating the position here because it's supposed to be rendered after the light and be unaffected by the ambient pass
+//					mySkysphere->SetPosition(myCamera->GetPosition());//only updating the position here because it's supposed to be rendered after the light and be unaffected by the ambient pass
 				}break;
 				case eType::TERRAIN:
 				{

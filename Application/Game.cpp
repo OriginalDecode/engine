@@ -115,7 +115,7 @@ void CGame::Update(float aDeltaTime)
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
 
-	//mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
 
 	//std::stringstream b;
 	//if (rigidbody)
@@ -133,11 +133,21 @@ bool CGame::CreateLevel(const char* level_path)
 {
 	Snowblind::CEngine::GetInstance()->GetThreadpool().AddWork(
 		Work([&]() {
-		myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512)));
-		myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 500), CU::Vector2f(512, 512)));
-		myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(500, 0, 0), CU::Vector2f(512, 512)));
-		myTerrain.Add(myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(500, 0, 500), CU::Vector2f(512, 512)));
+		Snowblind::CTerrain* terrain = myEngine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+		terrain->AddNormalMap("Data/Textures/t0_n.dds");
+		myTerrain.Add(terrain);
 
+		terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(512, 512));
+		terrain->AddNormalMap("Data/Textures/t1_n.dds");
+		myTerrain.Add(terrain);
+
+		terrain = myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(512, 0, 0), CU::Vector2f(512, 512));
+		terrain->AddNormalMap("Data/Textures/t2_n.dds");
+		myTerrain.Add(terrain);
+
+		terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(512, 0, 510), CU::Vector2f(512, 512));
+		terrain->AddNormalMap("Data/Textures/t3_n.dds");
+		myTerrain.Add(terrain);
 
 		for (s32 i = 0; i < myTerrain.Size(); i++)
 		{
@@ -146,8 +156,7 @@ bool CGame::CreateLevel(const char* level_path)
 		}
 
 		m_TerrainIsCreated = true;
-	})
-	);	
+	}));	
 
 	JSONReader reader(level_path);
 	const JSONElement& el = reader.GetElement("root");

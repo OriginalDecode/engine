@@ -40,43 +40,18 @@ struct VS_OUTPUT
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
-
 	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv) * 2 - 1;
+
 	float3 binorm = normalize(cross(input.normal, input.tang));
-	
-	float3x3 tangentSpaceMatrix = float3x3(input.tang, input.binorm, input.normal);
-    
-	_normal = normalize(_normal);
-	
-	input.tang   = normalize(input.tang);
+	float3x3 tangentSpaceMatrix = float3x3(input.tang, binorm, input.normal);
 	_normal = normalize(mul(_normal.xyz, tangentSpaceMatrix));
-	
-	
-	// float3 _normal = normalize(mul(norm.xyz, tangentSpaceMatrix));
+	return float4(_normal.rgb, 1);
 
-	// /* Write splatmap stuff here */
-	// float depth = normalize(input.worldpos.z);
-	// GBuffer output;
-	// output.Albedo = albedo;//float4(1,1,1,1);
-	// output.Normal = float4(_normal.xyz, 1);
-	// output.Normal.a = MetalnessTexture.Sample(linear_Wrap, input.uv).r;
-	
-	// output.Depth = float4(depth, 0, 0, 0);
-	// output.Depth.g = RoughnessTexture.Sample(linear_Wrap, input.uv).r;
-
-	float3 _pos = float3(0,0,25); //lights world position
-	float3 toEye = _pos - input.worldpos;
-	float3 lightDir = normalize(toEye);
-	float NdotL = dot(_normal, lightDir);
+	float3 _pos = float3(25,0,29); //lights world position
+	float3 toLight = _pos - input.worldpos;
+	float3 lightDir = normalize(toLight);
+	float3 nnormal = normalize(_normal);
+	float NdotL = dot(nnormal, lightDir);
 	float3 lightColor = saturate(float3(1,1,1) * NdotL);
-	
-	float ln = length(lightDir);
-	
-	float attenuation = 1.f / (1.f + 0.1f * ln + 0.01f * ln * ln);
-	float _falloff = 1 - (ln / ( 1 + 0.0001));	
-	float totAtt = attenuation * _falloff;
-	lightColor *= attenuation;
-	//output.Depth.x = depth;
-	
-	return float4(lightColor.rgb,1);
+	return float4(NdotL, NdotL, NdotL, 1);
 }

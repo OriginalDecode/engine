@@ -31,7 +31,7 @@ namespace Snowblind
 		SAFE_DELETE(image);
 		CreateVertices(aSize.x, aSize.y, position);
 		mySurface = new CSurface(myEffect);
-		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/grass.dds");
+		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/terrain.dds");
 #endif
 	}
 
@@ -104,6 +104,11 @@ namespace Snowblind
 	void CTerrain::Load(const std::string& /*aFilePath*/)
 	{
 		DL_ASSERT("Not implemented.");
+	}
+
+	void CTerrain::AddNormalMap(const std::string& filepath)
+	{
+		mySurface->AddTexture("NormalMap", filepath);
 	}
 
 	std::vector<float> CTerrain::GetVerticeArrayCopy()

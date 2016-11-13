@@ -50,7 +50,7 @@ void InputHandle::HandleInput()
 			{
 				CallFunction(s_YButton_hash);
 			}
-			else if (state.m_Buttons & x_B)
+			else if ((state.m_Buttons & x_B) && !(prev_state.m_Buttons & x_B))
 			{
 				CallFunction(s_BButton_hash);
 			}

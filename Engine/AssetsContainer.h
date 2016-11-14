@@ -1,7 +1,6 @@
 #pragma once
 #include <unordered_map>
 
-class FBXFactory;
 class CModelImporter;
 
 namespace Snowblind
@@ -11,6 +10,10 @@ namespace Snowblind
 	class CEffect;
 	class CTexture;
 	class CSprite;
+};
+
+namespace Cache
+{
 	class CAssetsContainer
 	{
 	public:
@@ -21,23 +24,23 @@ namespace Snowblind
 
 		void Update();
 
-		CTexture* GetTexture(const std::string& aFilePath);
+		Snowblind::CTexture* GetTexture(const std::string& aFilePath);
 
-		CEffect* GetEffect(const std::string& aFilePath);
-		CModel* GetModel(const std::string& aFilePath);
+		Snowblind::CEffect* GetEffect(const std::string& aFilePath);
+		Snowblind::CModel* GetModel(const std::string& aFilePath);
 		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
 
 	private:
 		
-		std::unordered_map<std::string, CTexture*> myTextures;
-		std::unordered_map<std::string, CEffect*> myEffects;
-		std::unordered_map<std::string, CModel*> myModels;
-		std::unordered_map<std::string, CSprite*> mySprites;
+		std::unordered_map<std::string, Snowblind::CTexture*> myTextures;
+		std::unordered_map<std::string, Snowblind::CEffect*> myEffects;
+		std::unordered_map<std::string, Snowblind::CModel*> myModels;
+		std::unordered_map<std::string, Snowblind::CSprite*> mySprites;
 		
 		bool LoadTexture(const std::string& aFilePath);
 		void LoadEffect(const std::string& aFilePath);
 
-		CShaderFactory* myShaderFactory;
+		Snowblind::CShaderFactory* myShaderFactory;
 		CModelImporter* myModelLoader;
 	};
 };

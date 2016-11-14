@@ -126,6 +126,7 @@
     <ClInclude Include="DataStructures\Hashmap\Hash.h">
       <Filter>DataStructures\Hashmap</Filter>
     </ClInclude>
+    <ClInclude Include="HashString.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JSON\JSONReader.cpp">
@@ -155,5 +156,6 @@
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp">
       <Filter>DataStructures\Hashmap</Filter>
     </ClCompile>
+    <ClCompile Include="HashString.cpp" />
   </ItemGroup>
 </Project>

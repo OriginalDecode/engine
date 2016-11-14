@@ -107,14 +107,14 @@ namespace Snowblind
 		SAFE_DELETE(myDeferredRenderer);
 		SAFE_DELETE(myText);
 
-		for (CTerrain* terrain : myTerrainArray)
+		/*for (CTerrain* terrain : myTerrainArray)
 		{
 			if (terrain)
 			{
 				terrain->CleanUp();
 				SAFE_DELETE(terrain);
 			}
-		}
+		}*/
 				
 		SAFE_DELETE(myPointLight);
 
@@ -202,6 +202,8 @@ namespace Snowblind
 					myDirectX->SetBlendState(eBlendStates::BLEND_FALSE);
 					for (CTerrain* terrain : myTerrainArray)
 					{
+						if(!terrain->HasLoaded())
+							continue;
 						terrain->Render(myPrevFrame, myCamera->GetProjection());
 					}
 				}break;

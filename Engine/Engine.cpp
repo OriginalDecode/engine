@@ -5,7 +5,7 @@
 #include "Terrain.h"
 #include "IGraphicsAPI.h"
 #include "Vulkan.h"
-
+#include "TerrainManager.h"
 Ticket_Mutex g_Mutex;
 
 namespace Snowblind
@@ -89,9 +89,11 @@ namespace Snowblind
 	
 		DL_ASSERT_EXP(myAPI->Initiate(create_info), "Engine : Failed to initiate graphicsAPI");
 	
-		myAssetsContainer = new CAssetsContainer;
+		myAssetsContainer = new Cache::CAssetsContainer;
 		myAssetsContainer->Initiate();
 	
+		m_TerrainManager = new Cache::TerrainManager;
+		
 		myFontManager = new CFontManager;
 		myFontManager->Initiate();
 	
@@ -113,6 +115,9 @@ namespace Snowblind
 	
 	
 		m_Threadpool.Initiate();
+
+
+
 		m_IsInitiated = true;
 		return true;
 	}
@@ -122,6 +127,9 @@ namespace Snowblind
 		m_Threadpool.CleanUp();
 		SAFE_DELETE(myAssetsContainer);
 		SAFE_DELETE(mySynchronizer);
+
+		m_TerrainManager->CleanUp();
+		SAFE_DELETE(m_TerrainManager);
 
 		myRenderer->CleanUp();
 		SAFE_DELETE(myRenderer);
@@ -134,6 +142,8 @@ namespace Snowblind
 
 		DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
 		SAFE_DELETE(myAPI);
+
+
 		return true;
 	}
 
@@ -323,7 +333,8 @@ namespace Snowblind
 
 	Snowblind::CTerrain* CEngine::CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize)
 	{
-		CTerrain* newTerrain = new CTerrain(aFile, position, aSize);
+		CTerrain* newTerrain = m_TerrainManager->GetTerrain(aFile);
+		newTerrain->Initiate(aFile, position, aSize);
 		myRenderer->AddTerrain(newTerrain);
 		return newTerrain;
 	}

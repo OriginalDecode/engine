@@ -5,7 +5,8 @@
 #include "Effect.h"
 #include "ShaderFactory.h"
 #include "ModelImporter.h"
-namespace Snowblind
+
+namespace Cache
 {
 	CAssetsContainer::~CAssetsContainer()
 	{
@@ -28,11 +29,11 @@ namespace Snowblind
 
 	void CAssetsContainer::Initiate()
 	{
-		myShaderFactory = new CShaderFactory;
+		myShaderFactory = new Snowblind::CShaderFactory;
 		myModelLoader = new CModelImporter;
 	}
 
-	CTexture* CAssetsContainer::GetTexture(const std::string& aFilePath)
+	Snowblind::CTexture* CAssetsContainer::GetTexture(const std::string& aFilePath)
 	{
 		if (CL::substr(aFilePath, ".dds") == false)
 		{
@@ -50,7 +51,7 @@ namespace Snowblind
 		return myTextures[aFilePath];
 	}
 
-	CEffect* CAssetsContainer::GetEffect(const std::string& aFilePath)
+	Snowblind::CEffect* CAssetsContainer::GetEffect(const std::string& aFilePath)
 	{
 		if (myEffects.find(aFilePath) == myEffects.end())
 		{
@@ -59,7 +60,7 @@ namespace Snowblind
 		return myEffects[aFilePath];
 	}
 
-	CModel* CAssetsContainer::GetModel(const std::string& aFilePath)
+	Snowblind::CModel* CAssetsContainer::GetModel(const std::string& aFilePath)
 	{
 		if (myModels.find(aFilePath) == myModels.end())
 		{
@@ -78,7 +79,7 @@ namespace Snowblind
 	{
 		if (myTextures.find(aFilePath) == myTextures.end())
 		{
-			CTexture* texture = new CTexture;
+			Snowblind::CTexture* texture = new Snowblind::CTexture;
 			if (texture->Load(aFilePath.c_str()) == false)
 			{
 				DL_ASSERT_EXP(texture->CleanUp(), "Failed to cleanup texture!");
@@ -92,7 +93,7 @@ namespace Snowblind
 
 	void CAssetsContainer::LoadEffect(const std::string& aFilePath)
 	{
-		CEffect* effect = new CEffect(aFilePath);
+		Snowblind::CEffect* effect = new Snowblind::CEffect(aFilePath);
 		myShaderFactory->LoadShader(effect);
 		myEffects[aFilePath] = effect;
 	}

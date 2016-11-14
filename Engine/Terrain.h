@@ -18,7 +18,9 @@ namespace Snowblind
 	class CTerrain : public CBaseModel
 	{
 	public:
-		CTerrain(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
+		CTerrain() = default;
+		
+		bool Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
 		bool CleanUp() override;
 		void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
 
@@ -29,7 +31,13 @@ namespace Snowblind
 		void AddNormalMap(const std::string& filepath);
 		std::vector<float> GetVerticeArrayCopy();
 		std::vector<s32> GetIndexArrayCopy();
+		void SetPosition(CU::Vector2f position);
+
+
+		bool HasLoaded() const { return m_HasLoaded; }
 	private:
+		bool m_HasLoaded = false;
+
 		void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
 
 		void CreateVertices(u32 width, u32 height, const CU::Vector3f& position);

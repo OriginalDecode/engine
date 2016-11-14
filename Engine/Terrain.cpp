@@ -7,10 +7,10 @@
 
 namespace Snowblind
 {
-	CTerrain::CTerrain(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
-		: myWidth(aSize.x)
-		, myDepth(aSize.y)
+	bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
 	{
+		myWidth = aSize.x;
+		myDepth = aSize.y;
 #ifdef SNOWBLIND_DX11
 		m_Filename = "Terrain";
 		myIsNULLObject = false;
@@ -23,7 +23,7 @@ namespace Snowblind
 		{
 			myHeightmap.myData[i] = image->myImage[i * 4];
 		}
-		
+
 		//memcpy(&, &data, sizeof(u8) * (image->myWidth * image->myHeight));
 		myHeightmap.myDepth = image->myHeight;
 		myHeightmap.myWidth = image->myWidth;
@@ -33,6 +33,8 @@ namespace Snowblind
 		mySurface = new CSurface(myEffect);
 		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/terrain.dds");
 #endif
+		m_HasLoaded = true;
+		return true;
 	}
 
 	bool CTerrain::CleanUp()
@@ -119,6 +121,11 @@ namespace Snowblind
 	std::vector<s32> CTerrain::GetIndexArrayCopy()
 	{
 		return myIndexes;
+	}
+
+	void CTerrain::SetPosition(CU::Vector2f position)
+	{
+		
 	}
 
 	void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)

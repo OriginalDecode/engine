@@ -27,6 +27,12 @@ struct SLocalTime
 	u16 second;
 };
 
+namespace Cache
+{
+	class CAssetsContainer;
+	class TerrainManager;
+};
+
 namespace Snowblind
 {
 	enum eDeferredType;
@@ -41,7 +47,6 @@ namespace Snowblind
 	class DirectX11;
 	class Vulkan;
 
-	class CAssetsContainer;
 	class CCamera;
 	class CConsole;
 	class CFont;
@@ -119,7 +124,7 @@ namespace Snowblind
 		void AddError(const std::string& error_message);
 		void AddDebugText(const std::string& debug_text);
 
-
+		CTerrain* GetTerrain(const std::string& aFile);
 
 	private:
 		CEngine() = default;
@@ -137,15 +142,15 @@ namespace Snowblind
 		Window m_Window;
 		DebugSystem m_DebugSystem;
 
-		CFontManager* myFontManager			= nullptr;
-		CU::TimeManager* myTimeManager		= nullptr;
-		CSynchronizer* mySynchronizer		= nullptr;
-		CRenderer* myRenderer				= nullptr;
-		CCamera*  myCamera					= nullptr;
-		CCamera*  my2DCamera				= nullptr;
-		CConsole* myConsole					= nullptr;
-		CAssetsContainer* myAssetsContainer	= nullptr;
-
+		CFontManager* myFontManager					= nullptr;
+		CU::TimeManager* myTimeManager				= nullptr;
+		CSynchronizer* mySynchronizer				= nullptr;
+		CRenderer* myRenderer						= nullptr;
+		CCamera*  myCamera							= nullptr;
+		CCamera*  my2DCamera						= nullptr;
+		CConsole* myConsole							= nullptr;
+		Cache::CAssetsContainer* myAssetsContainer	= nullptr;
+		Cache::TerrainManager* m_TerrainManager		= nullptr;
 		bool myUsingVSync = false;
 		float m_DeltaTime = 0.f;
 	};

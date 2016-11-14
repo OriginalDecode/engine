@@ -36,8 +36,8 @@ namespace Snowblind
 		bool Initiate(CSynchronizer* synchronizer, CCamera* camera_3d, CCamera* camera_2d);
 		bool CleanUp();
 
-		void Add2DCamera(CCamera* aCamera);
 		void Render();
+		void Add2DCamera(CCamera* aCamera);
 		void AddTerrain(CTerrain* someTerrain);
 		void ToggleWireframe();
 	private:
@@ -56,7 +56,7 @@ namespace Snowblind
 		CU::GrowingArray<CTerrain*> myTerrainArray;
 
 		bool m_RenderWireframe = false;
-		eDeferredType		myDeferredType;
+
 		CEngine*			myEngine			= nullptr;
 #ifdef SNOWBLIND_DX11
 		DirectX11*			myDirectX			= nullptr;

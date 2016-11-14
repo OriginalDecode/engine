@@ -241,6 +241,7 @@
     <ClInclude Include="Window.h" />
     <ClInclude Include="ShadowSpotlight.h" />
     <ClInclude Include="DebugSystem.h" />
+    <ClInclude Include="TerrainManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -378,5 +379,6 @@
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="ShadowSpotlight.cpp" />
     <ClCompile Include="DebugSystem.cpp" />
+    <ClCompile Include="TerrainManager.cpp" />
   </ItemGroup>
 </Project>

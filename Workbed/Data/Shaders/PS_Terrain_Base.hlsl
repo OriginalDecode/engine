@@ -50,16 +50,16 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float3 nonParalell = float3(1.f, 0.f, 0.f);
 	float3 binorm = normalize(cross(input.normal, nonParalell));
-	float3 tang = cross(input.normal, binorm);
-	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, input.normal);
+	float3 tang = normalize(cross(input.normal, binorm));
+	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, normalize(input.normal));
 	_normal = normalize(mul(_normal.xyz, tangentSpaceMatrix));
 
-	float3 _pos = float3(500,80,500); //lights world position
+	float3 _pos = float3(510,128,510); //lights world position
 	float3 toLight = _pos - input.worldpos;
 	float3 lightDir = normalize(toLight);
-	float3 nnormal = normalize(_normal);
+	float3 nnormal = normalize(input.normal);
 	float NdotL = dot(nnormal, lightDir);
-	float3 lightColor = saturate(albedo.rgb * NdotL);
+	float3 lightColor = saturate(albedo.rgb * NdotL);// float3(NdotL, NdotL, NdotL);//saturate(albedo.rgb * NdotL);
 	
 
 

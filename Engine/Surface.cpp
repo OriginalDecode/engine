@@ -54,6 +54,8 @@ namespace Snowblind
 		myTextures.DeleteAll();
 		myResourceNames.RemoveAll();
 		myFileNames.RemoveAll();
+
+		//Can cause heap corruption?
 	}
 
 	void CSurface::Activate()

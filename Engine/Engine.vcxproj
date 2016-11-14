@@ -410,6 +410,7 @@
     <ClInclude Include="Synchronizer.h" />
     <ClInclude Include="SystemMonitor.h" />
     <ClInclude Include="Terrain.h" />
+    <ClInclude Include="TerrainManager.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TGA32.h" />
@@ -484,6 +485,7 @@
     <ClCompile Include="Synchronizer.cpp" />
     <ClCompile Include="SystemMonitor.cpp" />
     <ClCompile Include="Terrain.cpp" />
+    <ClCompile Include="TerrainManager.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TGA32.cpp" />

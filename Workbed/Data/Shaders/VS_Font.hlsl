@@ -39,11 +39,8 @@ struct VS_OUTPUT
 VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-
 	output.pos = mul(input.pos, World);
-	
-	output.pos.x *= 1;
-	output.pos.y *= 1;
+
 	
 	output.pos = mul(output.pos, View);
 	

@@ -31,10 +31,14 @@ namespace Snowblind
 
 	void CText::SetPosition(const CU::Math::Vector2<float>& aPosition)
 	{
-		CU::Math::Vector2<float> pos = aPosition;
-		pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
-		pos.y = -pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f) - (myFont->GetFontPixelSize());
-		myPosition = aPosition;
+		float w = CEngine::GetInstance()->GetWindowSize().myWidth;
+		float h = CEngine::GetInstance()->GetWindowSize().myHeight;
+		CU::Math::Vector2<float> pos(-(w * 0.5f), (h * 0.5f) - (myFont->GetFontPixelSize()));
+		//pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
+		//pos.y = -pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f) - (myFont->GetFontPixelSize());
+		pos.x = pos.x + (w * aPosition.x);
+		pos.y = pos.y - (h * aPosition.y);
+		myPosition = pos;
 	}
 
 	void CText::SetScale(const CU::Math::Vector2<float>& aScale)

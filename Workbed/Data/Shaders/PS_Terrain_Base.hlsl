@@ -47,19 +47,19 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
 	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv2) * 2 - 1;
-
+	input.normal = normalize(input.normal);
 	float3 nonParalell = float3(1.f, 0.f, 0.f);
-	float3 binorm = normalize(cross(input.normal, nonParalell));
-	float3 tang = normalize(cross(input.normal, binorm));
-	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, normalize(input.normal));
-	_normal = normalize(mul(_normal.xyz, tangentSpaceMatrix));
 
-	float3 _pos = float3(510,128,510); //lights world position
+	float3 binorm = cross(input.normal, nonParalell);
+	float3 tang = normalize(cross(input.normal, binorm));
+	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, input.normal);
+	_normal = normalize(mul(_normal.xyz, tangentSpaceMatrix));
+	float3 _pos = float3(510,50,510); //lights world position
 	float3 toLight = _pos - input.worldpos;
 	float3 lightDir = normalize(toLight);
-	float3 nnormal = normalize(input.normal);
+	float3 nnormal = normalize(_normal);
 	float NdotL = dot(nnormal, lightDir);
-	float3 lightColor = saturate(albedo.rgb * NdotL);// float3(NdotL, NdotL, NdotL);//saturate(albedo.rgb * NdotL);
+	float4 lightColor = float4(saturate(albedo.rgb * NdotL), 1);// float3(NdotL, NdotL, NdotL);//saturate(albedo.rgb * NdotL);
 	
 
 
@@ -69,5 +69,5 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float _falloff = 1 - (ln / ( 3 + 0.0001));	
 	float totAtt = attenuation * _falloff;
 	lightColor *= totAtt;
-	return float4(lightColor.rgb, 1);
+	return lightColor;
 }

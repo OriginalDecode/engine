@@ -43,29 +43,13 @@ void CApplication::Update()
 		"Z : " << myCamera->GetPosition().z << "\n";
 
 		myEngine->AddDebugText(ss.str());
-		//mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), CU::Vector2f(0, 0)));
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SKYSPHERE, myCamera->GetPosition()));
-
-		//UpdateInput(deltaTime);
 
 		myGame->Update(deltaTime);
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();
 	}
 	myQuitFlag = true;
-}
-
-void CApplication::UpdateInput(float /*aDeltaTime*/)
-{
-	/*CU::Input::InputWrapper::GetInstance()->Update();
-	if (myWindowIsActive)
-	{
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))
-		{
-			myEngine->OnExit();
-			myQuitFlag = true;
-		}
-	}*/
 }
 
 void CApplication::OnPause()

@@ -58,7 +58,6 @@ namespace Snowblind
 		void SetTexture(IShaderResourceView* aShaderResource);
 		static HRESULT SaveToFile(ITexture2D*& texture_resource, const std::string& file_name);
 		static void CopyData(ITexture2D* dest, ITexture2D* source);
-		static void CopyData(IShaderResourceView* dest, IShaderResourceView* source);
 #endif
 
 		//void CreateDepthStencilView(float aWidth, float aHeight, int aArraySize = 1);

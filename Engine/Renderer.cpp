@@ -159,7 +159,7 @@ namespace Snowblind
 		//RenderParticles();
 		//RenderLines();
 
-		//Render2DCommands();
+		Render2DCommands();
 #endif
 		myEngine->Present();
 
@@ -198,7 +198,7 @@ namespace Snowblind
 				}break;
 				case eType::TERRAIN:
 				{
-					myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+					myDirectX->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 					myDirectX->SetBlendState(eBlendStates::BLEND_FALSE);
 					for (CTerrain* terrain : myTerrainArray)
 					{

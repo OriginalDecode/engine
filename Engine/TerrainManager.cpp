@@ -10,6 +10,7 @@ namespace Cache
 	{
 		for (auto it = m_Terrain.begin(); it != m_Terrain.end(); it++)
 		{
+			it->second->CleanUp();
 			delete it->second;
 			it->second = nullptr;
 		}

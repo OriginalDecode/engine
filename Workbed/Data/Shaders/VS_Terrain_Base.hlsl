@@ -46,7 +46,7 @@ VS_OUTPUT VS(VS_INPUT input)
 	output.pos = mul(output.pos, View);
 	output.pos = mul(output.pos, Projection);
 
-	output.uv = input.uv;
+	output.uv2 = input.uv;
 	output.uv = input.uv * 100;
 	
 

@@ -313,7 +313,7 @@ namespace Snowblind
 				CU::Math::Normalize(normal);
 				normal.z = -normal.z;
 
-				VertArray[y*width + x].normal = normal;
+				VertArray[y * width + x].normal = normal;
 			}
 		}
 	}

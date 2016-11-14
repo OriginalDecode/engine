@@ -144,21 +144,21 @@ namespace Snowblind
 
 		if (flags & D3D11_BIND_RENDER_TARGET)
 		{
-			D3D11_TEXTURE2D_DESC text_desc;
-			text_desc.Width = (UINT)width;
-			text_desc.Height = (UINT)height;
-			text_desc.MipLevels = 1;
-			text_desc.Format = render_target_format;
-			text_desc.SampleDesc.Count = 1;
-			text_desc.SampleDesc.Quality = 0;
-			text_desc.Usage = GetUsage(flags);
-			text_desc.BindFlags = (flags & ~(DEFAULT_USAGE | IMMUTABLE_USAGE | DYNAMIC_USAGE | STAGING_USAGE | D3D11_BIND_DEPTH_STENCIL));
-			text_desc.CPUAccessFlags = 0;
-			text_desc.MiscFlags = 0;
-			text_desc.ArraySize = 1;
+			D3D11_TEXTURE2D_DESC rt_text_desc;
+			rt_text_desc.Width = (UINT)width;
+			rt_text_desc.Height = (UINT)height;
+			rt_text_desc.MipLevels = 1;
+			rt_text_desc.Format = render_target_format;
+			rt_text_desc.SampleDesc.Count = 1;
+			rt_text_desc.SampleDesc.Quality = 0;
+			rt_text_desc.Usage = GetUsage(flags);
+			rt_text_desc.BindFlags = (flags & ~(DEFAULT_USAGE | IMMUTABLE_USAGE | DYNAMIC_USAGE | STAGING_USAGE | D3D11_BIND_DEPTH_STENCIL));
+			rt_text_desc.CPUAccessFlags = 0;
+			rt_text_desc.MiscFlags = 0;
+			rt_text_desc.ArraySize = 1;
 
 			ID3D11Texture2D* texture = nullptr;
-			hr = device->CreateTexture2D(&text_desc, NULL, &texture);
+			hr = device->CreateTexture2D(&rt_text_desc, NULL, &texture);
 			api->HandleErrors(hr, "[Texture](Initiate) : Failed to initiate texture.");
 
 			hr = device->CreateRenderTargetView(texture, NULL, &m_RenderTargetView);
@@ -278,9 +278,4 @@ namespace Snowblind
 		CEngine::GetAPI()->GetContext()->CopyResource(dest, source);
 #endif
 	}
-
-	void CTexture::CopyData(IShaderResourceView* dest, IShaderResourceView* source)
-	{
-	}
-
 };

@@ -20,7 +20,7 @@ namespace DL_Debug
 		struct tm tstruct;
 		char buff[30];
 		localtime_s(&tstruct, &now);
-		strftime(buff, sizeof(buff), "%Y-%m-%d  %H_%M_%S", &tstruct); //Create a timestamp for the file, for debugg purpose.
+		strftime(buff, sizeof(buff), "%Y-%m-%d  %H_%M_%S", &tstruct); //Create a timestamp for the file, for debug purpose.
 
 		std::stringstream ss;
 		char dirName[] = "Logs"; //Directory name
@@ -36,7 +36,7 @@ namespace DL_Debug
 		}
 
 		myInstance->myOutputFile.open(ss.str().c_str());
-		return (true);
+		return (true); 
 	}
 
 	bool Debug::Destroy()
@@ -49,7 +49,7 @@ namespace DL_Debug
 
 	Debug::Debug()
 	{
-		myDebugLogs.reset();
+		m_LogFlags |= Warning_Filter;
 	}
 
 	Debug::~Debug()
@@ -116,97 +116,60 @@ namespace DL_Debug
 		myOutputFile.flush();
 	}
 
-	void Debug::WriteLog(const std::string& aFilter, const std::string& aString)
+	void Debug::WriteLog(int filter_flag, const std::string& aString)
 	{
-		if (aFilter == "Engine" && myDebugLogs[eDEBUGLOG::Engine] == FALSE)
-			return;
+		std::string filter_tag;
 
-		if (aFilter == "Update" && myDebugLogs[eDEBUGLOG::Update] == FALSE)
-			return;
-
-		if (aFilter == "Render" && myDebugLogs[eDEBUGLOG::Render] == FALSE)
-			return;
-
-		if (aFilter == "Resource" && myDebugLogs[eDEBUGLOG::Resource] == FALSE)
-			return;
-
-		if (aFilter == "PhysX" && myDebugLogs[eDEBUGLOG::Physics] == FALSE)
-			return;
-
-		if (aFilter == "Font" && myDebugLogs[eDEBUGLOG::Font] == FALSE)
-			return;
-
-		if (aFilter == "Algorithm" && myDebugLogs[eDEBUGLOG::Font] == FALSE)
-			return;
-
-		if (aFilter == "Model" && myDebugLogs[eDEBUGLOG::Model] == FALSE)
-			return;
-
+		if (filter_flag != 0)
+		{
+			if (m_LogFlags & filter_flag)
+			{
+				if (filter_flag & Engine_Filter)
+					filter_tag = "Engine";
+				else if (filter_flag & Font_Filter)
+					filter_tag = "Font";
+				else if (filter_flag & Model_Filter)
+					filter_tag = "Model";
+				else if (filter_flag & Physics_Filter)
+					filter_tag = "Physics";
+				else if (filter_flag & Render_Filter)
+					filter_tag = "Model";
+				else if (filter_flag & Resource_Filter)
+					filter_tag = "Resource";
+				else if (filter_flag & Update_Filter)
+					filter_tag = "Update";
+				else if (filter_flag & Warning_Filter)
+					filter_tag = "Warning";
+			}
+		}
+		else
+		{
+			filter_tag = "Message";
+		}
 		std::string str(aString.begin(), aString.end());
 
-
 		BeginTicketMutex(&dlDebug_Mutex);
-		myOutputFile << AddTime() << "[" << aFilter << "]" << " : " << str << "\n";
+
+		myOutputFile << AddTime() << "[" << filter_tag << "]" << " : " << str << "\n";
 		myOutputFile.flush();
+
 		EndTicketMutex(&dlDebug_Mutex);
 
 	}
 
-	void Debug::DisableFilters(const eDEBUGLOG& anEnum)
+	void Debug::DisableFilters(int flags)
 	{
-		switch (anEnum)
-		{
-		case eDEBUGLOG::Update:
-			myDebugLogs[eDEBUGLOG::Update] = FALSE;
-			break;
-		case eDEBUGLOG::Render:
-			myDebugLogs[eDEBUGLOG::Render] = FALSE;
-			break;
-		case eDEBUGLOG::Physics:
-			myDebugLogs[eDEBUGLOG::Physics] = FALSE;
-			break;
-		case eDEBUGLOG::Resource:
-			myDebugLogs[eDEBUGLOG::Resource] = FALSE;
-			break;
-		case eDEBUGLOG::Engine:
-			myDebugLogs[eDEBUGLOG::Engine] = FALSE;
-			break;
-		case eDEBUGLOG::Font:
-			myDebugLogs[eDEBUGLOG::Font] = FALSE;
-			break;
-		case eDEBUGLOG::Model:
-			myDebugLogs[eDEBUGLOG::Model] = FALSE;
-			break;
-		}
+		m_LogFlags &= ~flags;
 	}
 
-	void Debug::ActivateFilter(const eDEBUGLOG& anEnum)
+	void Debug::ActivateFilters(int flags)
 	{
-		switch (anEnum)
-		{
-		case eDEBUGLOG::Update:
-			myDebugLogs[eDEBUGLOG::Update] = TRUE;
-			break;
-		case eDEBUGLOG::Render:
-			myDebugLogs[eDEBUGLOG::Render] = TRUE;
-			break;
-		case eDEBUGLOG::Physics:
-			myDebugLogs[eDEBUGLOG::Physics] = TRUE;
-			break;
-		case eDEBUGLOG::Resource:
-			myDebugLogs[eDEBUGLOG::Resource] = TRUE;
-			break;
-		case eDEBUGLOG::Engine:
-			myDebugLogs[eDEBUGLOG::Engine] = TRUE;
-			break;
-		case eDEBUGLOG::Font:
-			myDebugLogs[eDEBUGLOG::Font] = TRUE;
-			break;
-		case eDEBUGLOG::Model:
-			myDebugLogs[eDEBUGLOG::Model] = TRUE;
-			break;
-		}
-		myActiveLogCount++;
+		m_LogFlags |= flags;
+	}
+
+	bool Debug::CheckFilter(int flags)
+	{
+		return m_LogFlags & flags;
 	}
 
 	std::string Debug::AddTime()
@@ -235,38 +198,5 @@ namespace DL_Debug
 		return toReturn;
 	}
 
-	const int& Debug::GetActiveLogCount() const
-	{
-		return myActiveLogCount;
-	}
-
-	const bool Debug::CheckFilter(const eDEBUGLOG& aFilter)
-	{
-		switch (aFilter)
-		{
-		case eDEBUGLOG::Engine:
-			if (myDebugLogs[eDEBUGLOG::Engine] == TRUE)
-				return true;
-			break;
-		case eDEBUGLOG::Physics:
-			if (myDebugLogs[eDEBUGLOG::Physics] == TRUE)
-				return true;
-			break;
-		case eDEBUGLOG::Render:
-			if (myDebugLogs[eDEBUGLOG::Render] == TRUE)
-				return true;
-			break;
-		case eDEBUGLOG::Resource:
-			if (myDebugLogs[eDEBUGLOG::Resource] == TRUE)
-				return true;
-			break;
-		case eDEBUGLOG::Update:
-			if (myDebugLogs[eDEBUGLOG::Update] == TRUE)
-				return true;
-			break;
-		}
-
-		return false;
-	}
 
 }

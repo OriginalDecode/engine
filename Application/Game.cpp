@@ -89,6 +89,7 @@ bool CGame::CleanUp()
 	if (myEntityManager)
 		return false;
 
+	myTerrain.RemoveAll();
 	if (myTerrain.Size() > 0)
 		return false;
 
@@ -137,15 +138,15 @@ bool CGame::CreateLevel(const char* level_path)
 		terrain->AddNormalMap("Data/Textures/t0_n.dds");
 		myTerrain.Add(terrain);
 
-		terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(512, 512));
+		terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(513, 513));
 		terrain->AddNormalMap("Data/Textures/t1_n.dds");
 		myTerrain.Add(terrain);
 
-		terrain = myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(512, 0, 0), CU::Vector2f(512, 512));
+		terrain = myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, 0, 0), CU::Vector2f(513, 513));
 		terrain->AddNormalMap("Data/Textures/t2_n.dds");
 		myTerrain.Add(terrain);
 
-		terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(512, 0, 510), CU::Vector2f(512, 512));
+		terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, 0, 510), CU::Vector2f(513, 513));
 		terrain->AddNormalMap("Data/Textures/t3_n.dds");
 		myTerrain.Add(terrain);
 

@@ -48,7 +48,6 @@ VS_OUTPUT VS(VS_INPUT input)
 
 	output.uv2 = input.uv;
 	output.uv = input.uv * 100;
-	
 
 	output.normal = mul(input.normal, World);
 	output.binorm = input.binorm;

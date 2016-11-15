@@ -124,8 +124,7 @@ namespace Snowblind
 		void AddError(const std::string& error_message);
 		void AddDebugText(const std::string& debug_text);
 
-		CTerrain* GetTerrain(const std::string& aFile);
-
+		void Render();
 	private:
 		CEngine() = default;
 		//void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);

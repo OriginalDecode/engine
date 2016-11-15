@@ -40,13 +40,9 @@ VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	output.pos = mul(input.pos, World);
-
-	
 	output.pos = mul(output.pos, View);
-	
 	output.pos.x += Position.x;
 	output.pos.y += Position.y; 	
-	
 	output.pos = mul(output.pos, Projection);
 	output.color = input.color;	
 	output.uv = input.uv;

@@ -110,9 +110,9 @@ void CGame::Update(float aDeltaTime)
 	}
 
 	std::stringstream ss;
-	ss << myEngine->GetFPS() << "\n" << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::CEngine::GetInstance()->GetLocalTimeAsString();
+	ss << "FPS : " << myEngine->GetFPS() << "\n" << "Average FPS : " << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::CEngine::GetInstance()->GetLocalTimeAsString();
+	myEngine->AddDebugText(ss.str());
 
-	//mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), { 0, 0 }, eType::TEXT));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
 
@@ -138,15 +138,15 @@ bool CGame::CreateLevel(const char* level_path)
 		terrain->AddNormalMap("Data/Textures/t0_n.dds");
 		myTerrain.Add(terrain);
 
-		terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(513, 513));
+		terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(512, 512));
 		terrain->AddNormalMap("Data/Textures/t1_n.dds");
 		myTerrain.Add(terrain);
 
-		terrain = myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, 0, 0), CU::Vector2f(513, 513));
+		terrain = myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, 0, 0), CU::Vector2f(512, 512));
 		terrain->AddNormalMap("Data/Textures/t2_n.dds");
 		myTerrain.Add(terrain);
 
-		terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, 0, 510), CU::Vector2f(513, 513));
+		terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, 0, 510), CU::Vector2f(512, 512));
 		terrain->AddNormalMap("Data/Textures/t3_n.dds");
 		myTerrain.Add(terrain);
 
@@ -156,7 +156,6 @@ bool CGame::CreateLevel(const char* level_path)
 			myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
 		}
 
-		m_TerrainIsCreated = true;
 	}));	
 
 	JSONReader reader(level_path);
@@ -379,10 +378,6 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			input.m_InputHandle->Bind(Hash("YButton"), [&]() {
 				Snowblind::CEngine::GetInstance()->ToggleWireframe(); // (#LINUS) inte trådsäker
 			});
-
-
-
-
 		}
 		else if (controller_type == "ai")
 		{

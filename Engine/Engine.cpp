@@ -165,6 +165,10 @@ namespace Snowblind
 		myRenderer->Render();
 		m_Threadpool.Update();
 		m_DebugSystem.Update();
+	}
+
+	void CEngine::Render()
+	{
 		m_DebugSystem.Render();
 	}
 
@@ -359,4 +363,4 @@ namespace Snowblind
 		m_DebugSystem.AddToDebugText(debug_text);
 	}
 
-};
+	};

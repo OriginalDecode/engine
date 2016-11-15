@@ -64,9 +64,9 @@ namespace Snowblind
 	void CSkySphere::Render(CU::Matrix44f& anOrientation, CTexture* aDepthTexture)
 	{
 #ifdef SNOWBLIND_DX11
+		myAPI->SetBlendState(eBlendStates::LIGHT_BLEND);
 		myAPI->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		myAPI->SetRasterizer(eRasterizer::CULL_NONE);
-
 
 		for (const SkysphereLayer& layer : m_Layers )
 		{

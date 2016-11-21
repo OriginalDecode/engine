@@ -100,6 +100,7 @@ namespace DL_Debug
 		size_t tempSize;
 		mbstowcs_s(&tempSize, wa, size, sstream.str().c_str(), size);
 
+
 		_wassert(wa, _CRT_WIDE(__FILE__), __LINE__);
 	}
 

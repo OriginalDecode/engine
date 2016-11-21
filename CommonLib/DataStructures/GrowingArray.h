@@ -1,6 +1,7 @@
 #pragma once
 #include <memory.h>
 #include <assert.h>
+#include "../../DL_Debug/DL_Debug.h"
 
 namespace CommonUtilities
 {
@@ -56,10 +57,11 @@ namespace CommonUtilities
 
 	private:
 
-		bool mySafeFlag;
-		ObjectType *myData;
-		SizeType myCapacity;
-		SizeType mySize;
+		bool mySafeFlag : 1;
+		bool m_HasInited : 1;
+		ObjectType *myData = nullptr;
+		SizeType myCapacity = 16;
+		SizeType mySize = 0;
 	};
 
 	template<typename ObjectType, typename SizeType /*= int*/>
@@ -71,10 +73,11 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	GrowingArray<ObjectType, SizeType>::GrowingArray()
 	{
+		m_HasInited = false;
 		myCapacity = 0;
 		mySize = 0;
 		myData = nullptr;
-		Init(16, true); //Default initialization of GrowingArrays. Size will start at 16 if needed Resize can be called
+		Init(16);
 	};
 
 	template<typename ObjectType, typename SizeType = int>
@@ -95,24 +98,27 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	GrowingArray<ObjectType, SizeType>::GrowingArray(const GrowingArray& aGrowingArray)
 	{
-		myData = nullptr;
 		*this = aGrowingArray;
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	void GrowingArray<ObjectType, SizeType>::Init(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true)
 	{
+		assert(!m_HasInited && "Already initiated!");
+
 		mySafeFlag = aUseSafeModeFlag;
 		mySize = 0;
 		myCapacity = aNrOfRecommendedItems;
 		myCapacity = myCapacity;
 		myData = new ObjectType[myCapacity];
+		m_HasInited = true;
 	};
 
 	template<typename ObjectType, typename SizeType = int>
 	void GrowingArray<ObjectType, SizeType>::ReInit(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true)
 	{
 		delete[]myData;
+		m_HasInited = false;
 		Init(aNrOfRecommendedItems, aUseSafeModeFlag);
 	};
 
@@ -121,6 +127,7 @@ namespace CommonUtilities
 	{
 		delete[]myData;
 		mySafeFlag = aGrowingArray.mySafeFlag;
+		m_HasInited = aGrowingArray.m_HasInited;
 		if (mySafeFlag == false)
 		{
 			myCapacity = aGrowingArray.myCapacity;
@@ -160,7 +167,8 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	inline void GrowingArray<ObjectType, SizeType>::Add(const ObjectType& aObject)
 	{
-		assert(this && "GrowingArray was null");
+		DL_ASSERT_EXP(myCapacity > 0 , "Capacity is 0 or less");
+		assert(this && "Growingarray not initilized. Failed to add");
 		if (mySize >= myCapacity)
 		{
 			Resize(myCapacity * 2);
@@ -172,7 +180,6 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	inline void GrowingArray<ObjectType, SizeType>::Insert(SizeType aIndex, ObjectType& aObject)
 	{
-
 		assert(aIndex >= 0 && aIndex < mySize && "Out of Bounds");
 		if (mySize >= myCapacity)
 		{
@@ -211,8 +218,8 @@ namespace CommonUtilities
 	inline void GrowingArray<ObjectType, SizeType>::DeleteCyclicAtIndex(SizeType aItemNumber)
 	{
 		assert(aItemNumber >= 0 && aItemNumber < mySize && "Out of Bounds");
-		myData[aItemNumber] = nullptr;
 		delete myData[aItemNumber];
+		myData[aItemNumber] = nullptr;
 
 		myData[aItemNumber] = myData[mySize - 1];
 		mySize--;
@@ -221,22 +228,19 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	inline void GrowingArray<ObjectType, SizeType>::RemoveCyclic(const ObjectType& aObject)
 	{
-		bool dataDeleted = false;
 		SizeType i = 0;
-		while (dataDeleted == false && i < mySize)
+
+		while (i < mySize)
 		{
 			if (myData[i] == aObject)
 			{
-				myData[i] = myData[mySize - 1];
+				myData[i] = GetLast();
 				mySize--;
-				dataDeleted = true;
+				break;
 			}
-			else
-			{
-				i++;
-			}
+
+			i++;
 		}
-		assert(dataDeleted == true && "No Data to Delete in Vector");
 	};
 
 	template<typename ObjectType, typename SizeType = int>
@@ -337,7 +341,7 @@ namespace CommonUtilities
 			memcpy(newMemory, myData, sizeof(ObjectType)*mySize);
 		}
 		delete[]myData;
-
+		myData = nullptr;
 		myData = newMemory;
 		myCapacity = myCapacity;
 	};

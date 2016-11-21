@@ -73,7 +73,7 @@ namespace CL
 		, a(0)
 		, _color(0)
 	{
-		a = (color)& 0xFF;
+		a = (color) & 0xFF;
 		r = (color >> 8) & 0xFF;
 		g = (color >> 16) & 0xFF;
 		b = (color >> 24) & 0xFF;
@@ -97,7 +97,7 @@ namespace CL
 
 	void SColor::Convert(unsigned int aColor)
 	{
-		a = (aColor)& 0xFF;
+		a = (aColor) & 0xFF;
 		r = (aColor >> 8) & 0xFF;
 		g = (aColor >> 16) & 0xFF;
 		b = (aColor >> 24) & 0xFF;
@@ -181,7 +181,7 @@ namespace CL
 		return x + (diff * t);
 	}
 
-	
+
 	unsigned int binomialCoef(int n, int k)
 	{
 		int r = 1;
@@ -194,6 +194,52 @@ namespace CL
 			r /= d;
 		}
 		return r;
+	}
+};
+
+
+#include <Windows.h>
+#include <thread>
+
+#pragma region ThreadNaming
+	const DWORD MS_VC_EXCEPTION = 0x406D1388;
+#pragma pack(push,8)
+	typedef struct tagTHREADNAME_INFO
+	{
+		DWORD dwType; // Must be 0x1000.
+		LPCSTR szName; // Pointer to name (in user addr space).
+		DWORD dwThreadID; // Thread ID (-1=caller thread).
+		DWORD dwFlags; // Reserved for future use, must be zero.
+	} THREADNAME_INFO;
+#pragma pack(pop)
+	void SetThreadName(DWORD dwThreadID, const char* threadName)
+	{
+		THREADNAME_INFO info;
+		info.dwType = 0x1000;
+		info.szName = threadName;
+		info.dwThreadID = dwThreadID;
+		info.dwFlags = 0;
+#pragma warning(push)
+#pragma warning(disable: 6320 6322)
+		__try {
+			RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR*)&info);
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER) {
+		}
+#pragma warning(pop)
+	}
+
+
+namespace CL
+{
+	void SetThreadName(const std::thread::id& id, const char* name)
+	{
+
+		std::stringstream ss;
+		ss << id;
+		DWORD word_id;
+		ss >> word_id;
+		::SetThreadName(word_id, name);
 	}
 
 }

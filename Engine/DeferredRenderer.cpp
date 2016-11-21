@@ -59,10 +59,10 @@ namespace Snowblind
 		SAFE_DELETE(myConstantStruct);
 		SAFE_RELEASE(myConstantBuffer);
 
-		SAFE_DELETE(myVertexBuffer);
+		SAFE_DELETE(m_VertexBuffer);
 		SAFE_DELETE(myVertexData);
 
-		SAFE_DELETE(myIndexBuffer);
+		SAFE_DELETE(m_IndexBuffer);
 		SAFE_DELETE(myIndexData);
 
 		SAFE_RELEASE(myInputLayout);
@@ -82,15 +82,18 @@ namespace Snowblind
 	void CDeferredRenderer::SetBuffers()
 	{
 #ifdef SNOWBLIND_DX11
-		SVertexBufferWrapper* buf = myVertexBuffer;
 		myContext->IASetInputLayout(myInputLayout);
-		myContext->IASetVertexBuffers(buf->myStartSlot
-			, buf->myNrOfBuffers
-			, &buf->myVertexBuffer
-			, &buf->myStride
-			, &buf->myByteOffset);
-		SIndexBufferWrapper* inBuf = myIndexBuffer;
-		myContext->IASetIndexBuffer(inBuf->myIndexBuffer, inBuf->myIndexBufferFormat, inBuf->myByteOffset);
+
+		myContext->IASetVertexBuffers(m_VertexBuffer->myStartSlot
+			, m_VertexBuffer->myNrOfBuffers
+			, &m_VertexBuffer->myVertexBuffer
+			, &m_VertexBuffer->myStride
+			, &m_VertexBuffer->myByteOffset);
+
+		myContext->IASetIndexBuffer(m_IndexBuffer->myIndexBuffer
+			, m_IndexBuffer->myIndexBufferFormat
+			, m_IndexBuffer->myByteOffset);
+
 		myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 #endif
 	}
@@ -116,6 +119,7 @@ namespace Snowblind
 
 		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); 
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+		myDirectX->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 		myContext->DrawIndexed(6, 0, 0);
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 
@@ -130,8 +134,10 @@ namespace Snowblind
 	void CDeferredRenderer::Finalize()
 	{
 #ifdef SNOWBLIND_DX11
-		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
+		myDirectX->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
+
 		SetBuffers();
 
 		myDirectX->SetVertexShader(myScreenPassShader->GetVertexShader()->vertexShader);
@@ -200,7 +206,7 @@ namespace Snowblind
 	{
 
 #ifdef SNOWBLIND_DX11
-		myVertexFormat.Init(2);
+		myVertexFormat.ReInit(2);
 		myVertexFormat.Add(VertexLayoutPosUV[0]);
 		myVertexFormat.Add(VertexLayoutPosUV[1]);
 
@@ -232,9 +238,9 @@ namespace Snowblind
 		indices.Add(2);
 		indices.Add(1);
 
-		myVertexBuffer = new SVertexBufferWrapper;
+		m_VertexBuffer = new SVertexBufferWrapper;
 		myVertexData = new SVertexDataWrapper;
-		myIndexBuffer = new SIndexBufferWrapper;
+		m_IndexBuffer = new SIndexBufferWrapper;
 		myIndexData = new SVertexIndexWrapper;
 
 		myVertexData->myNrOfVertexes = vertices.Size();
@@ -275,13 +281,13 @@ namespace Snowblind
 		D3D11_SUBRESOURCE_DATA vertexData;
 		vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
 
-		hr = myDirectX->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
+		hr = myDirectX->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &m_VertexBuffer->myVertexBuffer);
 		myDirectX->HandleErrors(hr, "Failed to Create VertexBuffer!");
 
-		myVertexBuffer->myStride = myVertexData->myStride;
-		myVertexBuffer->myByteOffset = 0;
-		myVertexBuffer->myStartSlot = 0;
-		myVertexBuffer->myNrOfBuffers = 1;
+		m_VertexBuffer->myStride = myVertexData->myStride;
+		m_VertexBuffer->myByteOffset = 0;
+		m_VertexBuffer->myStartSlot = 0;
+		m_VertexBuffer->myNrOfBuffers = 1;
 #endif
 	}
 
@@ -299,11 +305,11 @@ namespace Snowblind
 
 		D3D11_SUBRESOURCE_DATA indexData;
 		ZeroMemory(&indexData, sizeof(indexData)), indexData.pSysMem = myIndexData->myIndexData;
-		HRESULT hr = myDirectX->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
+		HRESULT hr = myDirectX->GetDevice()->CreateBuffer(&indexDesc, &indexData, &m_IndexBuffer->myIndexBuffer);
 		myDirectX->HandleErrors(hr, "Failed to Create IndexBuffer");
 
-		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
-		myIndexBuffer->myByteOffset = 0;
+		m_IndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
+		m_IndexBuffer->myByteOffset = 0;
 #endif
 	}
 };

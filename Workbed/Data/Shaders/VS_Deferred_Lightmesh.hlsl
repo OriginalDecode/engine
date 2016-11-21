@@ -34,7 +34,7 @@ VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	
-	float4 scale = range;
+	float4 scale = 5;
 	scale.w = 1.f;
 	
 	input.pos *= scale; // scale

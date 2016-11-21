@@ -3,7 +3,7 @@
 //---------------------------------
 cbuffer CameraPosition : register(b0)
 {
-	float4 camPosition;
+	float4 camera_position;
 	row_major float4x4 InvertedProjection;
 	row_major float4x4 InvertedView;
 };
@@ -70,87 +70,58 @@ float CalculateTotalAttenuation(float someDistance, float someRange)
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 depth = DepthTexture.Sample(point_Clamp, input.uv);
+	if(depth.x <= 0.f)
+		discard;
 
-	if(depth.x <= 1 || depth.y <= 1 ||depth.z <= 1||depth.w <= 1)
-		 return float4(1,0,0,1);
 
+	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);	
+	float4 normal = NormalTexture.Sample(point_Clamp, input.uv) * 2 - 1;
+	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
+	float roughness = depth.y;
+	float roughnessOffsetted = pow(8192, roughness);
 	float x = input.uv.x * 2.f - 1.f;
 	float y = (1.f - input.uv.y) * 2.f - 1.f;
 	float z = depth.x; 	
+	float ao = 1.0f;
 	
 	float4 worldPosition = float4(x, y, z, 1.f);
 	worldPosition = mul (worldPosition, InvertedProjection);
 	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, InvertedView);	
-
-	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);
-	float4 normal = NormalTexture.Sample(point_Clamp, input.uv) * 2 - 1;
-
-
-	float3 _pos = float3(510,50,510); //lights world position
-	float3 toLight = _pos - worldPosition;
-	float3 lightDir = normalize(toLight);
-	float3 nnormal = normalize(normal.rgb);
-	float NdotL = dot(nnormal, lightDir);
-	float4 lightColor = albedo*NdotL;// float3(NdotL, NdotL, NdotL);//saturate(albedo.rgb * NdotL);
-	 
-	 return lightColor;
-
-	//  float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
-	//  float roughness = depth.y;
-	//  float roughnessOffsetted = pow(8192, roughness);
-
-	//  float x = input.uv.x * 2.f - 1.f;
-	//  float y = (1.f - input.uv.y) * 2.f - 1.f;
-	//  float z = depth; 	
 	
-	//  float4 worldPosition = float4(x, y, z, 1.f);
-	//  worldPosition = mul (worldPosition, InvertedProjection);
-	//  worldPosition = worldPosition / worldPosition.w;
-	//  worldPosition = mul(worldPosition, InvertedView);	
+	float3 viewPos = camera_position.xyz;
+	float3 toEye = normalize(viewPos -  worldPosition.xyz);
+    
+	float4 substance = (0.04f - 0.04f * metalness) 
+	+ albedo * metalness;
+            
+	float4 metalnessAlbedo = albedo - (albedo * metalness);
+	float LdotH = dot(normal, toEye);
+	LdotH = saturate(LdotH);
+	LdotH = 1.0f - LdotH;
+	LdotH = pow(LdotH, 5);
+	float3 fresnel = LdotH * (1.f - substance);
+	fresnel = fresnel / (2 - 1 * (1.f - roughnessOffsetted));
+	fresnel = substance + fresnel;
+  
+	float3 reflectionFrensnel =	fresnel;
+	float3 reflectionVector = reflect(toEye, normal);
+    
+	float fakeLysSpecularPower = (2.f / (roughness * roughness)) - 2.f;
+	float lysMipMap = GetSpecPowToMip(fakeLysSpecularPower, 12);
+    
+	float3 ambientDiffuse = CubeMap.SampleLevel(point_Clamp, normal, 9).rgb * ao 
+	* metalnessAlbedo * (1.f - reflectionFrensnel);
 
-	//  float ao = 1.0f;
-	//  float3 viewPos = camPosition.xyz;
-	//  float3 toEye = normalize(viewPos -  worldPosition.xyz);
-   
-	//  float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;
-	//  float4 metalnessAlbedo = albedo - (albedo * metalness);
-	//  float LdotH = dot(normal, toEye);
-	//  LdotH = saturate(LdotH);
-	//  LdotH = 1.0f - LdotH;
-	//  LdotH = pow(LdotH, 5);
-	//  float3 fresnel = LdotH * (1.f - substance);
-	//  fresnel = fresnel / (2 - 1 * (1.f - roughnessOffsetted));
-	//  fresnel = substance + fresnel;
+	float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector, lysMipMap).xyz 
+	* ao * reflectionFrensnel;
+    //ambientSpec = float3(1,1,1);
+    
+	float3 finalColor = metalnessAlbedo.rgb;
+    
+	//float4 col = saturate(albedo * cubemap);
+	//col.rgb = pow (col.rgb, 1 / 2.2);
+	
+	return float4(finalColor, 1.f)*0.42;
 
-	//  float3 reflectionFrensnel =	fresnel;
-	//  float3 reflectionVector = reflect(toEye, normal);
-   
-	//  float fakeLysSpecularPower = (2.f / (roughness * roughness)) - 2.f;
-	//  float lysMipMap = GetSpecPowToMip(fakeLysSpecularPower, 12);
-   
-	//  float3 ambientDiffuse = ao * metalnessAlbedo * (1.f-reflectionFrensnel); 
-	//  if(metalness.x > 0.f && roughness < 1.f)
-	//  {
-	//  	ambientDiffuse = CubeMap.SampleLevel(point_Clamp, normal, 8).rgb * ao 
-	//  	* metalnessAlbedo * (1.f - reflectionFrensnel);
-	//  }
-
-	// float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector, lysMipMap).xyz 
-	// * ao * reflectionFrensnel;
-   
-	// float3 _pos = float3(0,0,0);
-	// float3 lightDir = normalize(_pos - worldPosition);
-	// float NdotL = dot(normal, lightDir);
-	// float3 lightColor = saturate(float3(1,1,1) * NdotL);
-	 
-	// float ln = length(_pos - worldPosition);
-	// float attenuation = 1.f / (1.f + 0.1f * ln + 0.01f * ln * ln);
-	// float _falloff = 1 - (ln / ( 1 + 0.0001));	
-	// float totAtt = attenuation * _falloff;
-	// float3 finalColor = ambientDiffuse;
-  	// lightColor *= abs(totAtt);
-	//  // float4 col = saturate(albedo * cubemap);
-	//  // col.rgb = pow (col.rgb, 1 / 2.2);
-	//  return float4(lightColor, 1.f);
 };

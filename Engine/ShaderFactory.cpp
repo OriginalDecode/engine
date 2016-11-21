@@ -342,8 +342,8 @@ namespace Snowblind
 		hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, shader_type.c_str(), feature_level.c_str(), shaderFlag, NULL, &compiledShader, &compilationMessage);
 		if (compilationMessage != nullptr)
 		{
-			std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), file_path);
-			DL_WARNING("%s", msg.c_str());
+			//std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), file_path);
+			DL_WARNING("%s", (char*)compilationMessage->GetBufferPointer());
 			// (#LINUS) Should be output to a warninglist in engine debug tools.
 			//DL_WARNINGBOX((char*)compilationMessage->GetBufferPointer());
 

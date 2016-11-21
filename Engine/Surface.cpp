@@ -52,7 +52,6 @@ namespace Snowblind
 	CSurface::~CSurface()
 	{
 		myTextures.DeleteAll();
-		myResourceNames.RemoveAll();
 		myFileNames.RemoveAll();
 
 		//Can cause heap corruption?
@@ -80,28 +79,29 @@ namespace Snowblind
 			myContext->PSSetShaderResources(0, myNullList.Size(), &myNullList[0]);
 		}
 	}
-	
-	void CSurface::AddTexture(const std::string& aResourceName, const std::string& aFilePath)
+
+	void CSurface::AddTexture(const std::string& file_path, TextureType type)
 	{
-		if (aResourceName == "AOTexture")
-		{
-			return;
-		}
-		myFileNames.Add(aFilePath);
-		myResourceNames.Add(aResourceName);
-		
-		std::string sub = CL::substr(aFilePath, ".png", true, 0);
+		m_ContainingTextures |= type;
+
+		myFileNames.Add(file_path);
+		std::string sub = CL::substr(file_path, ".png", true, 0);
 		std::string debugName = sub;
 		if (CL::substr(sub, ".dds") == false)
-		{
 			sub += ".dds";
-		}
-		STexture* newTexture = new STexture; //not a memoryleak.
-		newTexture->texture = CEngine::GetInstance()->GetTexture(sub);
-		newTexture->resourceName = aResourceName;
-		myTextures.Add(newTexture);
+
+		STexture* new_texture = new STexture; 
+		new_texture->texture = CEngine::GetInstance()->GetTexture(sub);
+		new_texture->m_Type = type;
+		myTextures.Add(new_texture);
+
+		std::sort(myTextures.begin(), myTextures.end(), [&](STexture* first, STexture* second) {
+			return first->m_Type < second->m_Type;
+		});
+
+
 #ifdef SNOWBLIND_DX11
-		myShaderViews.Add(newTexture->texture->GetShaderView());
+		myShaderViews.Add(new_texture->texture->GetShaderView());
 #endif
 		myNullList.Add(nullptr);
 	}
@@ -135,4 +135,28 @@ namespace Snowblind
 	{
 		myPrimologyType = aPrimology;
 	}
+
+	void CSurface::AddMissingTexture(TextureType type)
+	{
+		if (!(m_ContainingTextures & type))
+		{
+			AddTexture("Data/Textures/No-Texture.dds", type);
+			return;
+		}
+		MODEL_LOG("Already contained texture");
+	}
+
+	void CSurface::ValidateTextures()
+	{
+		MODEL_LOG("Validating Textures of surface.");
+
+		AddMissingTexture(_ALBEDO);
+		AddMissingTexture(_NORMAL);
+		AddMissingTexture(_ROUGHNESS);
+		AddMissingTexture(_METALNESS);
+		AddMissingTexture(_EMISSIVE);
+		AddMissingTexture(_AO);
+	}
+
+	
 };

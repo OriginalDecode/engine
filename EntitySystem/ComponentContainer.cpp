@@ -10,7 +10,7 @@ CComponentContainer::CComponentContainer()
 	for (int i = 0; i < MAX_COMPONENTS_COUNT; i++)
 	{
 		myComponents.Add(ComponentArray());
-		myComponents[i].Init(128);
+		myComponents[i].ReInit(128);
 	}
 }
 

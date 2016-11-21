@@ -175,7 +175,7 @@ namespace Snowblind
 	void CFont::CreateInputLayout()
 	{
 #ifdef SNOWBLIND_DX11
-		myVertexFormat.Init(3);
+		myVertexFormat.ReInit(3);
 		myVertexFormat.Add(VertexLayoutPosColUV[0]);
 		myVertexFormat.Add(VertexLayoutPosColUV[1]);
 		myVertexFormat.Add(VertexLayoutPosColUV[2]);

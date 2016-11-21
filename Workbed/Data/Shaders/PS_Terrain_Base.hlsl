@@ -5,18 +5,13 @@
 //	Samplers & Textures
 //---------------------------------
 
-cbuffer CameraPosition : register(b0)
-{
-	float4 camPosition;
-};
-
 SamplerState linear_Wrap 	: register ( s0 );
 Texture2D AlbedoTexture  	: register ( t0 );
 Texture2D NormalTexture  	: register ( t1 );
 Texture2D RoughnessTexture 	: register ( t2 );
 Texture2D MetalnessTexture 	: register ( t3 );
-Texture2D AOTexture			: register ( t4 );
-//Texture2D EmissiveTexture	: register ( t5 );
+Texture2D Emissive			: register ( t4 );
+Texture2D AOTexture			: register ( t5 );
 
 //---------------------------------
 //	Terrain Base Pixel Structs
@@ -43,31 +38,28 @@ struct VS_OUTPUT
 //---------------------------------
 //	Terrain Base Pixel Shader
 //---------------------------------
-float4 PS(VS_OUTPUT input) : SV_Target
+GBuffer PS(VS_OUTPUT input) : SV_Target
 {
-	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
-	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv2) * 2 - 1;
+	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv2).rgb * 2 - 1;
+	float3 nnormal = normalize(input.normal.xyz);
 
 	float3 nonParalell = float3(1.f, 0.f, 0.f);
 	float3 binorm = normalize(cross(input.normal, nonParalell));
 	float3 tang = normalize(cross(input.normal, binorm));
-	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, normalize(input.normal));
+	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, nnormal);
 	_normal = normalize(mul(_normal.xyz, tangentSpaceMatrix));
 
-	float3 _pos = float3(510,128,510); //lights world position
-	float3 toLight = _pos - input.worldpos;
-	float3 lightDir = normalize(toLight);
-	float3 nnormal = normalize(input.normal);
-	float NdotL = dot(nnormal, lightDir);
-	float3 lightColor = saturate(albedo.rgb * NdotL);// float3(NdotL, NdotL, NdotL);//saturate(albedo.rgb * NdotL);
-	
+	_normal += 1;
+	_normal *= 0.5;
 
 
-	
-	float ln = length(lightDir);
-	float attenuation = 1.f / (1.f + 0.1f * ln + 0.01f * ln * ln);
-	float _falloff = 1 - (ln / ( 3 + 0.0001));	
-	float totAtt = attenuation * _falloff;
-	lightColor *= totAtt;
-	return float4(lightColor.rgb, 1);
+	GBuffer output;
+	output = (GBuffer)0;
+	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
+	output.Normal = float4(_normal.rgb, 0);
+	output.Depth.x = input.pos.z;
+	output.Depth.y = 1.f;
+	output.Emissive = float4(1,1,1,1);
+	return output;
+
 }

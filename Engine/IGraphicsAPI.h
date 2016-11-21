@@ -40,6 +40,7 @@ enum class eRasterizer
 	WIREFRAME,
 	CULL_BACK,
 	CULL_NONE,
+	CULL_FRONT,
 	MSAA,
 	_COUNT
 };

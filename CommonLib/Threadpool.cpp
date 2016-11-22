@@ -4,7 +4,7 @@
 
 void Threadpool::Initiate()
 {
-	myWorkers.Init(1);
+	myWorkers.ReInit(1);
 	for (unsigned int i = 0; i < std::thread::hardware_concurrency(); i++)
 	{
 		Worker worker;

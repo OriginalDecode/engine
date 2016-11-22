@@ -8,6 +8,17 @@ namespace Snowblind
 	class CTexture;
 	class CEffect;
 
+	enum TextureType
+	{
+		_ALBEDO = 1,
+		_NORMAL = 2,
+		_ROUGHNESS = 4,
+		_METALNESS = 8,
+		_EMISSIVE = 16,
+		_AO = 32,
+	};
+
+
 	class CSurface
 	{
 	public:
@@ -20,9 +31,9 @@ namespace Snowblind
 
 		void Activate();
 		void Deactivate();
-		void AddTexture(const std::string& aResourceName, const std::string& aFilePath);
+		void AddTexture(const std::string& file_path, TextureType type);
 
-		void SetEffect(CEffect* anEffect);
+		void SetEffect(CEffect* anEffect); 
 
 		void SetVertexStart(unsigned int aStartVertex);
 		void SetVertexCount(unsigned int aVertexCount);
@@ -36,20 +47,22 @@ namespace Snowblind
 		int GetVertexCount() const;
 		int GetStartVertex() const;
 		int GetStartIndex() const;
+
+		void ValidateTextures();
 	private:
+		void AddMissingTexture(TextureType type);
 
 		D3D_PRIMITIVE_TOPOLOGY myPrimologyType;
-
+		s32 m_ContainingTextures = 0;
 		struct STexture
 		{
 			CTexture* texture;
-			std::string resourceName;
+			TextureType m_Type;
 		};
 
 		CU::GrowingArray<STexture*> myTextures;
 		CU::GrowingArray<ID3D11ShaderResourceView*> myShaderViews;
 		bool firstOptimize = false;
-		CU::GrowingArray<std::string> myResourceNames;
 		CU::GrowingArray<std::string> myFileNames;
 
 		CEffect* myEffect;

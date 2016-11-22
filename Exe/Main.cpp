@@ -13,15 +13,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	const char* inputString = someCommandLines;
 	std::string input(inputString);
 
-	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Engine);
-	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Update);
-	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Render);
-	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Resource);
-	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Physics);
-	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Font);
-	DL_Debug::Debug::GetInstance()->ActivateFilter(DL_Debug::Debug::Model);
-
-	DL_MESSAGE("%i Active Filters!", DL_Debug::Debug::GetInstance()->GetActiveLogCount());
+	DL_Debug::Debug::GetInstance()->ActivateFilters(Update_Filter | Render_Filter | Physics_Filter | Resource_Filter | Engine_Filter | Font_Filter | Model_Filter);
 
 	float w = 1920;
 	float h = 1080;

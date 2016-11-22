@@ -3,6 +3,7 @@
 #include <math.h>
 #include "Math/Vector/Vector.h"
 #include "DataStructures/GrowingArray.h"
+#include <thread>
 namespace CL
 {
 	unsigned long long nearest_Pow(unsigned long long aNum);
@@ -68,5 +69,6 @@ namespace CL
 	CU::Vector3f CubicBezier(CU::Vector3f p1, CU::Vector3f p2, CU::Vector3f p3, CU::Vector3f p4, float t);
 	unsigned int binomialCoef(int n, int k);
 
+	void SetThreadName(const std::thread::id& id, const char* name);
 
 }

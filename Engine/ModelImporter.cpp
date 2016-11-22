@@ -210,55 +210,10 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 
 	for (s32 i = 0; i < info.Size(); i++)
 	{
-
-		TextureType lType = static_cast<TextureType>(info[i].myType);
-		std::string type;
-		switch (lType)
-		{
-			case DIFFUSE:
-			{
-				type = "TextureType::DIFFUSE";
-			}break;
-
-			case ROUGHNESS:
-			{
-				type = "TextureType::ROUGHNESS";
-			}break;
-
-			case AO:
-			{
-				type = "TextureType::AO";
-			}break;
-
-			case EMISSIVE:
-			{
-				type = "TextureType::EMISSIVE";
-			}break;
-
-			case NORMALMAP:
-			{
-				type = "TextureType::NORMALMAP";
-			}break;
-
-			case SUBSTANCE:
-			{
-				type = "TextureType::SUBSTANCE";
-			}break;
-
-			default:
-			{
-				DL_ASSERT("Unknown type requested.")
-			}break;
-
-		}
-
-		newSurface->AddTexture(type, info[i].myFilename);
+		newSurface->AddTexture(info[i].myFilename, (Snowblind::TextureType)info[i].myType);
 	}
-	//newSurface->AddTexture()
-	/*
-		for each texture in modeldata
-		add new texture to surface
-	*/
+
+	newSurface->ValidateTextures();
 
 	out->mySurfaces.Add(newSurface);
 #endif
@@ -516,22 +471,22 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 			{
 				case aiTextureType_DIFFUSE:
 				{
-					newInfo.myType = TextureType::DIFFUSE;
+					newInfo.myType = Snowblind::TextureType::_ALBEDO;
 				}break;
 
 				case aiTextureType_SPECULAR:
 				{
-					newInfo.myType = TextureType::ROUGHNESS;
+					newInfo.myType = Snowblind::TextureType::_ROUGHNESS;
 				}break;
 
 				case aiTextureType_AMBIENT:
 				{
-					newInfo.myType = TextureType::AO;
+					newInfo.myType = Snowblind::TextureType::_AO;
 				}break;
 
 				case aiTextureType_EMISSIVE:
 				{
-					newInfo.myType = TextureType::EMISSIVE;
+					newInfo.myType = Snowblind::TextureType::_EMISSIVE;
 				}break;
 
 				case aiTextureType_HEIGHT:
@@ -541,7 +496,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 				case aiTextureType_NORMALS:
 				{
-					newInfo.myType = TextureType::NORMALMAP;
+					newInfo.myType = Snowblind::TextureType::_NORMAL;
 				}break;
 
 				case aiTextureType_SHININESS:
@@ -566,7 +521,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 				case aiTextureType_REFLECTION:
 				{
-					newInfo.myType = TextureType::SUBSTANCE;
+					newInfo.myType = Snowblind::TextureType::_METALNESS;
 				}break;
 
 				case aiTextureType_UNKNOWN:

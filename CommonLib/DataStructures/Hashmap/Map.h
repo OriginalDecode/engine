@@ -1,5 +1,5 @@
 #pragma once
-#include "MurmurHash3.h"
+#include "Hash.h"
 #include "..\GrowingArray.h"
 #define MAP typename Key, typename Value, int Size = 16
 #define MAP_TEMPLATE Key, Value, Size

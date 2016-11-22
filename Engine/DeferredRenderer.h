@@ -45,7 +45,9 @@ namespace Snowblind
 		//void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 		CTexture* GetDepthStencil();
 		GBuffer* GetGBuffer();
+		void ToggleWireframe() { m_Wireframe = !m_Wireframe; }
 	private:
+		bool m_Wireframe = false;
 		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
 
 		void CreateFullscreenQuad();
@@ -69,10 +71,10 @@ namespace Snowblind
 		CTexture* myCubeMap = nullptr;
 
 		SVertexDataWrapper* myVertexData = nullptr;
-		SVertexBufferWrapper* myVertexBuffer = nullptr;
+		SVertexBufferWrapper* m_VertexBuffer = nullptr;
 
 		SVertexIndexWrapper* myIndexData = nullptr;
-		SIndexBufferWrapper* myIndexBuffer = nullptr;
+		SIndexBufferWrapper* m_IndexBuffer = nullptr;
 
 		ID3D11InputLayout* myInputLayout = nullptr;
 

@@ -9,6 +9,19 @@
 #include "DL_Assert.h"
 //Uses __VA_ARGS__ as an expression to crash at a specific point
 
+
+enum eDEBUGLOG
+{
+	Update_Filter = 1,
+	Render_Filter = 2,
+	Physics_Filter = 4,
+	Resource_Filter = 8,
+	Engine_Filter = 16,
+	Font_Filter = 32,
+	Model_Filter = 64,
+	Warning_Filter = 128,
+};
+
 #ifdef _DEBUG
 #define RETURN(...) DL_Debug::Debug::GetInstance()->HandleVAArgs(__VA_ARGS__)
 
@@ -18,26 +31,26 @@
 #define DL_ASSERT_EXP_L(expression, string)if(expression == false){DL_Debug::Debug::GetInstance()->AssertMessageL(__FILE__,__LINE__,__FUNCTION__,string);};
 
 #define DL_PRINT(string)  DL_Debug::Debug::GetInstance()->PrintMessage(string);
-#define DL_DEBUG( ... )  DL_Debug::Debug::GetInstance()->DebugMessage(__LINE__,__FUNCTION__, RETURN(__VA_ARGS__));
+//#define DL_DEBUG( ... )  DL_Debug::Debug::GetInstance()->DebugMessage(__LINE__,__FUNCTION__, RETURN(__VA_ARGS__));
 
 #define DL_WRITELOG(log, ...) DL_Debug::Debug::GetInstance()->WriteLog(log , RETURN(__VA_ARGS__));
 
-#define DL_MESSAGE(...) DL_Debug::Debug::GetInstance()->WriteLog("Message" , RETURN(__VA_ARGS__));
-#define DL_MESSAGE_EXP(expression, ...) if(expression){DL_Debug::Debug::GetInstance()->WriteLog("Message", RETURN(__VA_ARGS__));};
+#define DL_MESSAGE(...) DL_Debug::Debug::GetInstance()->WriteLog(0, RETURN(__VA_ARGS__));
+#define DL_MESSAGE_EXP(expression, ...) if(expression){DL_Debug::Debug::GetInstance()->WriteLog(0, RETURN(__VA_ARGS__));};
 
 #define DL_WARNINGBOX(msg) MessageBox(NULL, msg,"Warning!", MB_ICONWARNING)
 #define DL_WARNINGBOX_EXP(expression, msg) if(expression){MessageBox(NULL, msg,"Warning!", MB_ICONWARNING);};
 
-#define DL_WARNING(...) DL_WRITELOG("WARNING", __VA_ARGS__)
+#define DL_WARNING(...) DL_WRITELOG(Warning_Filter, __VA_ARGS__)
 
 
-#define RENDER_LOG(...)		DL_WRITELOG("Render",	__VA_ARGS__)
-#define UPDATE_LOG(...)		DL_WRITELOG("Update",	__VA_ARGS__)
-#define PHYSX_LOG(...)		DL_WRITELOG("Physics",	__VA_ARGS__)
-#define ENGINE_LOG(...)		DL_WRITELOG("Engine",	__VA_ARGS__)
-#define RESOURCE_LOG(...)	DL_WRITELOG("Resource", __VA_ARGS__)
-#define FONT_LOG(...)		DL_WRITELOG("Font", __VA_ARGS__)
-#define MODEL_LOG(...)		DL_WRITELOG("Model", __VA_ARGS__)
+#define RENDER_LOG(...)		DL_WRITELOG( Render_Filter,		__VA_ARGS__)
+#define UPDATE_LOG(...)		DL_WRITELOG( Update_Filter,		__VA_ARGS__)
+#define PHYSX_LOG(...)		DL_WRITELOG( Physics_Filter,	__VA_ARGS__)
+#define ENGINE_LOG(...)		DL_WRITELOG( Engine_Filter,		__VA_ARGS__)
+#define RESOURCE_LOG(...)	DL_WRITELOG( Resource_Filter,	__VA_ARGS__)
+#define FONT_LOG(...)		DL_WRITELOG( Font_Filter,		__VA_ARGS__)
+#define MODEL_LOG(...)		DL_WRITELOG( Model_Filter,		__VA_ARGS__)
 
 
 #define ALGORITHM_LOG(...)  DL_WRITELOG("Algorithm", __VA_ARGS__)
@@ -79,22 +92,13 @@
 #define ALGORITHM_LOG_EXP(expression, ...)
 #endif
 
+
 namespace DL_Debug
 {
 	class Debug
 	{
 	public:
-		enum eDEBUGLOG
-		{
-			Update,
-			Render,
-			Physics,
-			Resource,
-			Engine,
-			Font,
-			Model,
-			_COUNT
-		};
+	
 
 		static bool Create(std::string aFile = "Log"); //defines the start of file.
 		static bool Destroy();
@@ -104,15 +108,14 @@ namespace DL_Debug
 		void AssertMessage(const char *aFileName, int aLine, const char *aFunctionName, const char *aString);
 
 		void DebugMessage(const int aLine, const char *aFileName, const std::string& aString);
-		void WriteLog(const std::string& aFilter, const std::string& aString);
+		void WriteLog(int filter_flag, const std::string& aString);
 
 
-		void DisableFilters(const eDEBUGLOG& anEnum);
-		void ActivateFilter(const eDEBUGLOG& anEnum);
-		const bool CheckFilter(const eDEBUGLOG& aFilter);
+		void DisableFilters(int flags);
+		void ActivateFilters(int flags);
+		bool CheckFilter(int flags);
 
 		std::string HandleVAArgs(const char* aFormattedString, ...);
-		const int& GetActiveLogCount() const;
 	private:
 		Debug();
 		~Debug();
@@ -122,14 +125,6 @@ namespace DL_Debug
 		static Debug* myInstance;
 		std::ofstream myOutputFile;
 
-		int myActiveLogCount;
-
-		bool myEngineDebug;
-		bool myRenderDebug;
-		bool myUpdateDebug;
-		bool myPhysXDebug;
-		bool myResourceDebug;
-
-		std::bitset<static_cast<int>(eDEBUGLOG::_COUNT)> myDebugLogs;
+		int m_LogFlags = 0;
 	};
 };

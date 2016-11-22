@@ -84,11 +84,15 @@ namespace Snowblind
 				for (s32 i = 0; i < mySurfaces.Size(); i++)
 				{
 					myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-					mySurfaces[i]->Activate();
 					if (!myIsLightMesh)
+					{
+						mySurfaces[i]->Activate(); //Gets a ton of junk data. What???
 						myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
+					}
 					else
+					{
 						myContext->Draw(mySurfaces[i]->GetVertexCount(), 0);
+					}
 
 					mySurfaces[i]->Deactivate();
 				}

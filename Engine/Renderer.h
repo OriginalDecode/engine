@@ -51,8 +51,6 @@ namespace Snowblind
 		void RenderLines();
 		void ProcessShadows();
 
-		//Holds the lightpass instead of deferred
-
 		CU::GrowingArray<CTerrain*> myTerrainArray;
 
 		bool m_RenderWireframe = false;

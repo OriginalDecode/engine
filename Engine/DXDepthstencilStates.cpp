@@ -57,11 +57,14 @@ namespace Snowblind
 	{
 		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
 		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
-		stencilDesc.DepthEnable = true;
+
+
+		stencilDesc.DepthEnable = TRUE;
 		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 		stencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
-		stencilDesc.StencilEnable = false;
-		stencilDesc.StencilReadMask = u8(0xFF);
+
+		stencilDesc.StencilEnable = TRUE;
+		stencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
 		stencilDesc.StencilWriteMask = 0x0;
 
 		stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;

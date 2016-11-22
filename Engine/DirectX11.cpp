@@ -101,7 +101,7 @@ namespace Snowblind
 	void DirectX11::Clear()
 	{
 		float color[4];
-		PINK_CLEAR(color);
+		BLACK_CLEAR(color);
 		myContext->ClearRenderTargetView(myRenderTarget, color);
 		myContext->ClearDepthStencilView(myDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 	}
@@ -564,6 +564,10 @@ namespace Snowblind
 		myDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
 		SetDebugName(myRasterizerStates[u16(eRasterizer::CULL_BACK)], "CULL_BACK Rasterizer");
 
+		desc.FillMode = D3D11_FILL_SOLID;
+		desc.CullMode = D3D11_CULL_FRONT;
+		myDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::CULL_FRONT)]);
+		SetDebugName(myRasterizerStates[u16(eRasterizer::CULL_FRONT)], "CULL_FRONT Rasterizer");
 
 		desc.FillMode = D3D11_FILL_SOLID;
 		desc.CullMode = D3D11_CULL_NONE;

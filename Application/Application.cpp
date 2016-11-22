@@ -38,34 +38,21 @@ void CApplication::Update()
 		float deltaTime = myEngine->GetDeltaTime();
 
 		std::stringstream ss;
-		ss << "X : " << myCamera->GetPosition().x << "\n" <<
+		ss << "m_camera_position\n" <<
+		"X : " << myCamera->GetPosition().x << "\n" <<
 		"Y : " << myCamera->GetPosition().y << "\n" <<
-		"Z : " << myCamera->GetPosition().z << "\n";
+		"Z : " << myCamera->GetPosition().z;
 
 		myEngine->AddDebugText(ss.str());
-		//mySynchronizer->AddRenderCommand(RenderCommand(ss.str(), CU::Vector2f(0, 0)));
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SKYSPHERE, myCamera->GetPosition()));
 
-		//UpdateInput(deltaTime);
-
 		myGame->Update(deltaTime);
+		Snowblind::CEngine::GetInstance()->Render();
+
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();
 	}
 	myQuitFlag = true;
-}
-
-void CApplication::UpdateInput(float /*aDeltaTime*/)
-{
-	/*CU::Input::InputWrapper::GetInstance()->Update();
-	if (myWindowIsActive)
-	{
-		if (CU::Input::InputWrapper::GetInstance()->KeyDown(ESCAPE))
-		{
-			myEngine->OnExit();
-			myQuitFlag = true;
-		}
-	}*/
 }
 
 void CApplication::OnPause()

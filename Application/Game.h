@@ -70,7 +70,6 @@ private:
 
 	CRigidBody* rigidbody = nullptr;
 	SLinePoint raycast[2];
-	volatile bool m_TerrainIsCreated = false;
 };
 
 

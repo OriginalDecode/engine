@@ -31,7 +31,7 @@ namespace Snowblind
 		SAFE_DELETE(image);
 		CreateVertices(aSize.x, aSize.y, position);
 		mySurface = new CSurface(myEffect);
-		mySurface->AddTexture("TerrainAlbedo", "Data/Textures/terrain.dds");
+		mySurface->AddTexture("Data/Textures/terrain.dds", _ALBEDO);
 #endif
 		m_HasLoaded = true;
 		return true;
@@ -94,6 +94,7 @@ namespace Snowblind
 			mySurface->Activate();
 			myContext->DrawIndexed(myIndexData->myIndexCount, 0, 0);
 			mySurface->Deactivate();
+
 		}
 #endif
 	}
@@ -110,7 +111,7 @@ namespace Snowblind
 
 	void CTerrain::AddNormalMap(const std::string& filepath)
 	{
-		mySurface->AddTexture("NormalMap", filepath);
+		mySurface->AddTexture(filepath, _NORMAL);
 	}
 
 	std::vector<float> CTerrain::GetVerticeArrayCopy()
@@ -140,7 +141,7 @@ namespace Snowblind
 			{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
-		myVertexFormat.Init(5);
+		myVertexFormat.ReInit(5);
 		myVertexFormat.Add(vertexDesc[0]);
 		myVertexFormat.Add(vertexDesc[1]);
 		myVertexFormat.Add(vertexDesc[2]);
@@ -313,7 +314,7 @@ namespace Snowblind
 				CU::Math::Normalize(normal);
 				normal.z = -normal.z;
 
-				VertArray[y*width + x].normal = normal;
+				VertArray[y * width + x].normal = normal;
 			}
 		}
 	}

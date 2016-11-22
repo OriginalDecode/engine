@@ -57,5 +57,7 @@ namespace Snowblind
 		std::deque<std::string> m_ErrorMessages;
 		std::vector<std::string> m_DebugStrings;
 		CSynchronizer* m_Synchronizer = nullptr;
+		Ticket_Mutex m_Mutex;
+
 	};
 };

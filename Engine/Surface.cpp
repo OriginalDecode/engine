@@ -52,7 +52,6 @@ namespace Snowblind
 	CSurface::~CSurface()
 	{
 		myTextures.DeleteAll();
-		myResourceNames.RemoveAll();
 		myFileNames.RemoveAll();
 
 		//Can cause heap corruption?
@@ -81,28 +80,50 @@ namespace Snowblind
 			myContext->PSSetShaderResources(0, myShaderViews.Size(), nullptr);
 		}
 	}
-	
-	void CSurface::AddTexture(const std::string& aResourceName, const std::string& aFilePath)
+
+	std::string CheckTextureType(TextureType type)
 	{
-		if (aResourceName == "AOTexture")
+		switch (type)
 		{
-			return;
+			case _ALBEDO: return "ALBEDO";
+			case _NORMAL: return "NORMAL";
+			case _METALNESS: return "METALNESS";
+			case _ROUGHNESS: return "ROUGHNESS";
+			case _AO: return "AO";
+			case _EMISSIVE: return "EMISSIVE";
 		}
-		myFileNames.Add(aFilePath);
-		myResourceNames.Add(aResourceName);
-		
-		std::string sub = CL::substr(aFilePath, ".png", true, 0);
+	}
+
+	void CSurface::AddTexture(const std::string& file_path, TextureType type)
+	{
+		m_ContainingTextures |= type;
+
+		myFileNames.Add(file_path);
+		std::string sub = CL::substr(file_path, ".png", true, 0);
 		std::string debugName = sub;
 		if (CL::substr(sub, ".dds") == false)
-		{
 			sub += ".dds";
+
+		STexture* new_texture = new STexture; 
+		new_texture->texture = CEngine::GetInstance()->GetTexture(sub);
+		new_texture->m_Type = type;
+		myTextures.Add(new_texture);
+
+		std::sort(myTextures.begin(), myTextures.end(), [&](STexture* first, STexture* second) {
+			DL_MESSAGE("\nFirst : %d\nType : %s", (u64)first, CheckTextureType(first->m_Type).c_str());
+			DL_MESSAGE("\nSecond : %d\nType : %s", (u64)second, CheckTextureType(second->m_Type).c_str());
+			return first->m_Type < second->m_Type;
+		});
+
+		for (s32 i = 0; i < myTextures.Size(); i++)
+		{
+			DL_MESSAGE("\nIndex : %d\nPointer : %d\nType : %s", i, (u64)myTextures[i], CheckTextureType(myTextures[i]->m_Type).c_str());
 		}
-		STexture* newTexture = new STexture; //not a memoryleak.
-		newTexture->texture = CEngine::GetInstance()->GetTexture(sub);
-		newTexture->resourceName = aResourceName;
-		myTextures.Add(newTexture);
+
+
+
 #ifdef SNOWBLIND_DX11
-		myShaderViews.Add(newTexture->texture->GetShaderView());
+		myShaderViews.Add(new_texture->texture->GetShaderView());
 #endif
 	}
 
@@ -135,4 +156,28 @@ namespace Snowblind
 	{
 		myPrimologyType = aPrimology;
 	}
+
+	void CSurface::AddMissingTexture(TextureType type)
+	{
+		if (!(m_ContainingTextures & type))
+		{
+			AddTexture("Data/Textures/No-Texture.dds", type);
+			return;
+		}
+		MODEL_LOG("Already contained texture");
+	}
+
+	void CSurface::ValidateTextures()
+	{
+		MODEL_LOG("Validating Textures of surface.");
+
+		AddMissingTexture(_ALBEDO);
+		AddMissingTexture(_NORMAL);
+		AddMissingTexture(_ROUGHNESS);
+		AddMissingTexture(_METALNESS);
+		AddMissingTexture(_EMISSIVE);
+		AddMissingTexture(_AO);
+	}
+
+	
 };

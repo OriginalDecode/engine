@@ -6,7 +6,7 @@
 
 CEntityManager::CEntityManager()
 {
-	mySystems.Init(16);
+	mySystems.ReInit(16);
 	myFinishedSystems.reset();
 	for (int i = 0; i < MAX_COMPONENTS_COUNT; i++)
 	{

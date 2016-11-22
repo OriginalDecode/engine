@@ -2,8 +2,12 @@
 	"root" :
 	{
 		"object" : 	{ 
+			"entity":"Data/Levels/entity.json", 
+			"position" : [ 510, 80, 510 ]
+		},
+		"object" : 	{ 
 			"entity":"Data/Levels/pointlight.json", 
-			"position" : [ 0, 0, 25 ],
+			"position" : [ 510, 80, 510 ],
 			"color": [ 0, 0, 255 ],
 			"intensity": 1, 
 			"range" : 10

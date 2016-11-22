@@ -1,7 +1,7 @@
 #include "Worker.h"
 #include "Work.h"
 #include <thread>
-#include <iostream>
+#include "Utilities.h"
 Worker::Worker()
 	: myIsDone(true)
 	, myIsRunning(true)
@@ -18,6 +18,7 @@ Worker::~Worker()
 void Worker::Initiate()
 {
 	myWorkThread = new std::thread([&] {Run(); });
+	CL::SetThreadName(myWorkThread->get_id(), "Worker Thread");
 }
 
 bool Worker::IsDone()

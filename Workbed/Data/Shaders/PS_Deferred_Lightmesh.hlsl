@@ -32,7 +32,6 @@ struct VS_OUTPUT
 	float4 range : RANGE;
 };
 
-
 //---------------------------------
 //	Deferred Lightmesh Functions
 //---------------------------------
@@ -56,11 +55,11 @@ float CalculateTotalAttenuation(float someDistance, float someRange)
 
 float Attenuation(float3 aLightVec, float aRange)
 {
-	float distance = length(aLightVec);
+	float ln = length(aLightVec);
 	//return 1 - (distance / aRange);
 
 	float attenuation = 1.f;// / (1.f + 0.1f * distance + 0.01f * distance * distance);
-	float fallOff = 0.9f - (distance / (aRange + 0.00001f));
+	float fallOff = 0.9f - (ln / (aRange + 0.00001f));
 	return saturate(attenuation * fallOff);
 }
 
@@ -102,9 +101,10 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float2 texCoord = input.uv.xy;
 
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, texCoord);
-	float4 normal = NormalTexture.Sample(point_Clamp, texCoord);
-	float4 depth = DepthTexture.Sample(point_Clamp, texCoord);
+	float4 normal = NormalTexture.Sample(point_Clamp, texCoord) * 2 - 1;
 
+	float4 depth = DepthTexture.Sample(point_Clamp, texCoord);
+	
 	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
 	float roughness = depth.y;
 	float roughnessOffsetted = pow(8192, roughness);
@@ -123,13 +123,12 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float3 viewPos = camPosition.xyz;
 	float3 toEye = normalize(viewPos - worldPosition.xyz);	
-	float3 toLight = position - worldPosition;
+	float3 toLight = float3(510,82,510) - worldPosition.xyz;
 	float3 lightDir = normalize(toLight);
 	float3 halfVec = normalize(lightDir + toEye);
 
-	normal = normalize(normal);
-	float m_NdotL = dot(normal, lightDir);
 
+	float m_NdotL = dot(normal, lightDir);
 	float NdotL = saturate(dot(normal, lightDir));
 	float HdotN = saturate(dot(halfVec, normal));
 	float NdotV = saturate(dot(normal, toEye));
@@ -137,10 +136,11 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float D = saturate(D_GGX(HdotN,(roughness + 1.f) / 2.f));
 	float V = saturate(V_SchlickForGGX((roughness + 1.f) / 2.f, NdotV, m_NdotL));
 
-	float attenuation = Attenuation(toLight, 25);
-	float3 directSpec = F * D * V * m_NdotL;
-	
-	//float3 output = float3(m_NdotL,m_NdotL,m_NdotL) * color * abs(attenuation) * 25;
+	float ln = length(lightDir);
 
-	return float4(directSpec, 1.f);
+	float attenuation = CalculateTotalAttenuation(ln, 2);
+	float3 light_color = float3(1,0,0) * 10 * attenuation;
+	float3 directSpec = F * D * V * m_NdotL *light_color;
+
+	return float4(directSpec, 1);
 };

@@ -4,6 +4,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "snowblind_shared.h"
+#include "Surface.h"
 namespace Snowblind
 {
 	class CModel;
@@ -16,21 +17,9 @@ namespace CommonUtilities
 	class TimeManager;
 }
 
-
-enum TextureType
-{
-	DIFFUSE,
-	NORMALMAP,
-	ROUGHNESS,
-	SUBSTANCE,
-	EMISSIVE,
-	AO,
-	NR_OF_TEXTURETYPES,
-};
-
 struct TextureInfo
 {
-	TextureType myType;
+	Snowblind::TextureType myType;
 	std::string myFilename;
 };
 

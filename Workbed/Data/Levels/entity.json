@@ -1,10 +1,7 @@
 {
 	"render": [ 
-		"Data/Model/pblScene/pblScene_03_binary.fbx", 		
+		"Data/Model/plane/plane.fbx", 		
 		"Data/Shaders/T_Deferred_Base.json"
 		],
-	"physics": {
-		"mass": 10
-	},
 		"Data/Model/pblScene/pblScene_03_binary.fbx" : "Data/Model/plane/plane.fbx"
 }

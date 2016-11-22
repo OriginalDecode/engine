@@ -36,16 +36,16 @@ namespace Snowblind
 		if (!myText)
 			return false;
 
-		//myPointLight = new CPointLight; //Where should this live?
-		//myPointLight->Initiate();
-		//if (!myPointLight)
-		//	return false;
+		myPointLight = new CPointLight; //Where should this live?
+		myPointLight->Initiate();
+		if (!myPointLight)
+			return false;
 		//mySpotlight = new CSpotLight; // Where should this live?
 		//if (!mySpotlight)
 		//	return false;
-		//myDeferredRenderer = new CDeferredRenderer; // Where should this live?
-		//if (!myDeferredRenderer)
-		//	return false;
+		myDeferredRenderer = new CDeferredRenderer; // Where should this live?
+		if (!myDeferredRenderer)
+			return false;
 		//myDepthTexture = new CTexture; //Where should this live?
 		//if (!myDepthTexture)
 		//	return false;
@@ -83,7 +83,7 @@ namespace Snowblind
 
 		my3DLine->Initiate();
 
-		//DL_ASSERT_EXP(m_LightPass.Initiate(myDeferredRenderer->GetGBuffer()), "failed to initiate LightPass!");
+		DL_ASSERT_EXP(m_LightPass.Initiate(myDeferredRenderer->GetGBuffer()), "failed to initiate LightPass!");
 
 		return true;
 	}
@@ -135,31 +135,32 @@ namespace Snowblind
 
 		myEngine->Clear();
 #ifdef SNOWBLIND_DX11
-		myEngine->GetAPI()->ResetViewport();
-		//myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
-		//myDeferredRenderer->SetTargets();
+		//myEngine->GetAPI()->ResetViewport();
+		
 
+		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		myDeferredRenderer->SetTargets();
 		Render3DCommands();
-
 		//CTexture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
-		//myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
+		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
 
-		//RenderPointlight();
+		RenderPointlight();
 		//RenderSpotlight();
 
-		//myEngine->ResetRenderTargetAndDepth();
+		myEngine->ResetRenderTargetAndDepth();
+
 		//mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
 		//myDirectX->SetBlendState(eBlendStates::LIGHT_BLEND);
 		//mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		//ProcessShadows();
 
-		//myDeferredRenderer->Finalize();
+		myDeferredRenderer->Finalize();
 
 		//RenderParticles();
 		//RenderLines();
 
-		//Render2DCommands();
+		Render2DCommands();
 #endif
 		myEngine->Present();
 
@@ -198,7 +199,7 @@ namespace Snowblind
 				}break;
 				case eType::TERRAIN:
 				{
-					myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+					myDirectX->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 					myDirectX->SetBlendState(eBlendStates::BLEND_FALSE);
 					for (CTerrain* terrain : myTerrainArray)
 					{

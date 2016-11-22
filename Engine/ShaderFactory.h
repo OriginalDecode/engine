@@ -2,78 +2,56 @@
 #include <unordered_map>
 #include "ShaderWarningHandler.h"
 
-#ifdef SNOWBLIND_DX11
-struct ID3D11VertexShader;
-struct ID3D11PixelShader;
-struct ID3D11GeometryShader;
-struct ID3D11HullShader;
-struct ID3D11DomainShader;
-struct ID3D11ComputeShader;
-struct ID3D10Blob;
-
-
-typedef ID3D11VertexShader		*pVertexShader;
-typedef ID3D11PixelShader		*pPixelShader;
-typedef ID3D11GeometryShader	*pGeometryShader;
-typedef ID3D11HullShader		*pHullShader;
-typedef ID3D11DomainShader		*pDomainShader;
-typedef ID3D11ComputeShader		*pComputeShader;
-typedef ID3D10Blob				*pBlob;
-
-#else
-
-
-#endif
 class ShaderWarningHandler;
-
 class FileWatcher;
+
 namespace Snowblind
 {
 
-	struct SCompiledShader
+	struct CompiledShader
 	{
-		SCompiledShader() = default;
-		virtual ~SCompiledShader();
-		pBlob blob = nullptr;
+		CompiledShader() = default;
+		virtual ~CompiledShader();
+		IBlob* blob = nullptr;
 		void* compiledShader = nullptr;
 		int shaderSize = 0;
 		CU::GrowingArray<CEffect*> effectPointers;
 	};
 
-	struct SVertexShader : public SCompiledShader
+	struct VertexShader : public CompiledShader
 	{
-		~SVertexShader();
-		pVertexShader vertexShader = nullptr;
+		~VertexShader();
+		IVertexShader* vertexShader = nullptr;
 	};
 
-	struct SPixelShader : public SCompiledShader
+	struct PixelShader : public CompiledShader
 	{
-		~SPixelShader();
-		pPixelShader pixelShader = nullptr;
+		~PixelShader();
+		IPixelShader* pixelShader = nullptr;
 	};
 
-	struct SGeometryShader : public SCompiledShader
+	struct GeometryShader : public CompiledShader
 	{
-		~SGeometryShader();
-		pGeometryShader geometryShader = nullptr;
+		~GeometryShader();
+		IGeometryShader* geometryShader = nullptr;
 	};
 
-	struct SHullShader : public SCompiledShader
+	struct HullShader : public CompiledShader
 	{
-		~SHullShader();
-		pHullShader hullShader = nullptr;
+		~HullShader();
+		IHullShader* hullShader = nullptr;
 	};
 
-	struct SDomainShader : public SCompiledShader
+	struct DomainShader : public CompiledShader
 	{
-		~SDomainShader();
-		pDomainShader domainShader = nullptr;
+		~DomainShader();
+		IDomainShader* domainShader = nullptr;
 	};
 
-	struct SComputeShader : public SCompiledShader
+	struct ComputeShader : public CompiledShader
 	{
-		~SComputeShader();
-		pComputeShader computeShader = nullptr;
+		~ComputeShader();
+		IComputeShader* computeShader = nullptr;
 	};
 }
 
@@ -90,7 +68,7 @@ namespace Snowblind
 		void Update();
 	private:
 
-		pBlob CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level);
+		IBlob* CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level);
 
 		bool LoadVertexShader(const std::string& file_path, CEffect* effect);
 		void LoadPixelShader(const std::string& file_path, CEffect* effect);
@@ -99,12 +77,12 @@ namespace Snowblind
 		void LoadDomainShader(const std::string& file_path, CEffect* effect);
 		void LoadComputeShader(const std::string& file_path, CEffect* effect);
 
-		SVertexShader*		CreateVertexShader(const std::string& file_path);
-		SPixelShader*		CreatePixelShader(const std::string& file_path);
-		SGeometryShader*	CreateGeometryShader(const std::string& file_path);
-		SHullShader*		CreateHullShader(const std::string& file_path);
-		SDomainShader*		CreateDomainShader(const std::string& file_path);
-		SComputeShader*		CreateComputeShader(const std::string& file_path);
+		VertexShader*		CreateVertexShader(const std::string& file_path);
+		PixelShader*		CreatePixelShader(const std::string& file_path);
+		GeometryShader*		CreateGeometryShader(const std::string& file_path);
+		HullShader*			CreateHullShader(const std::string& file_path);
+		DomainShader*		CreateDomainShader(const std::string& file_path);
+		ComputeShader*		CreateComputeShader(const std::string& file_path);
 
 		void ReloadVertex(const std::string& aFilePath);
 		void ReloadPixel(const std::string& aFilePath);
@@ -113,24 +91,14 @@ namespace Snowblind
 		void ReloadDomain(const std::string& aFilePath);
 		void ReloadCompute(const std::string& aFilePath);
 
-		std::unordered_map<std::string, SVertexShader*> myVertexShaders;
-		std::unordered_map<std::string, SPixelShader*> myPixelShaders;
-		std::unordered_map<std::string, SGeometryShader*> myGeometryShaders;
-		std::unordered_map<std::string, SHullShader*> myHullShaders;
-		std::unordered_map<std::string, SDomainShader*> myDomainShaders;
-		std::unordered_map<std::string, SComputeShader*> myComputeShaders;
+		std::unordered_map<std::string, VertexShader*> myVertexShaders;
+		std::unordered_map<std::string, PixelShader*> myPixelShaders;
+		std::unordered_map<std::string, GeometryShader*> myGeometryShaders;
+		std::unordered_map<std::string, HullShader*> myHullShaders;
+		std::unordered_map<std::string, DomainShader*> myDomainShaders;
+		std::unordered_map<std::string, ComputeShader*> myComputeShaders;
 
-		enum class eShaderType
-		{
-			VERTEX,
-			PIXEL,
-			GEOMETRY,
-			HULL,
-			DOMAINS,
-			COMPUTE,
-			_COUNT
-		};
-
+		
 		CU::StaticArray<FileWatcher*, static_cast<u32>(eShaderType::_COUNT)> myFileWatchers;
 		ShaderWarningHandler myShaderWarningHandler;
 		CU::GrowingArray<CEffect*> GetEffectArray(const std::string& aFilePath);

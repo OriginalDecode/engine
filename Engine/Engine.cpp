@@ -174,7 +174,7 @@ namespace Snowblind
 		m_DebugSystem.Render();
 	}
 
-	void CEngine::CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, pBlob& out_compiled_shader, pBlob& out_compile_message)
+	void CEngine::CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
 	{
 		std::wstring w_file_path(file_path.begin(), file_path.end());
 		HRESULT hr = D3DCompileFromFile(

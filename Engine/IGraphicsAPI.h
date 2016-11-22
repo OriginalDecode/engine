@@ -1,6 +1,6 @@
 #pragma once
 #include "standard_datatype.hpp"
-
+#include "snowblind_shared.h"
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -80,6 +80,10 @@ namespace Snowblind
 
 		virtual void EnableZBuffer() = 0;
 		virtual void DisableZBuffer() = 0;
+
+
+		void SetShaderResource(s32 start_pos, s32 view_count, IShaderResourceView* shader_resource);
+
 
 	protected:
 		CreateInfo m_CreateInfo;

@@ -62,9 +62,9 @@ namespace Snowblind
 		return true;
 	}
 
-	SVertexShader* CShaderFactory::CreateVertexShader(const std::string& file_path)
+	VertexShader* CShaderFactory::CreateVertexShader(const std::string& file_path)
 	{
-		SVertexShader* newShader = new SVertexShader();
+		VertexShader* newShader = new VertexShader();
 #ifdef SNOWBLIND_DX11
 		ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 
@@ -110,9 +110,9 @@ namespace Snowblind
 		myPixelShaders[file_path]->effectPointers.Add(effect);
 	}
 
-	SPixelShader* CShaderFactory::CreatePixelShader(const std::string& file_path)
+	PixelShader* CShaderFactory::CreatePixelShader(const std::string& file_path)
 	{
-		SPixelShader* newShader = new SPixelShader();
+		PixelShader* newShader = new PixelShader();
 #ifdef SNOWBLIND_DX11
 		myPixelShaders[file_path] = newShader;
 		ID3D11Device* device = CEngine::GetAPI()->GetDevice();
@@ -154,7 +154,7 @@ namespace Snowblind
 #ifdef SNOWBLIND_DX11
 		if (myGeometryShaders.find(file_path) == myGeometryShaders.end())
 		{
-			SGeometryShader* newShader = new SGeometryShader();
+			GeometryShader* newShader = new GeometryShader();
 			ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 
 			ENGINE_LOG("Creating geometryshader : %s", file_path.c_str());
@@ -196,7 +196,7 @@ namespace Snowblind
 #ifdef SNOWBLIND_DX11
 		if (myHullShaders.find(file_path) == myHullShaders.end())
 		{
-			SHullShader* newShader = new SHullShader();
+			HullShader* newShader = new HullShader();
 			ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 
 			ENGINE_LOG("Creating hullshader : %s", file_path.c_str());
@@ -240,7 +240,7 @@ namespace Snowblind
 #ifdef SNOWBLIND_DX11
 		if (myDomainShaders.find(file_path) == myDomainShaders.end())
 		{
-			SDomainShader* newShader = new SDomainShader();
+			DomainShader* newShader = new DomainShader();
 			ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 
 			ENGINE_LOG("Creating domainshader : %s", file_path.c_str());
@@ -284,7 +284,7 @@ namespace Snowblind
 #ifdef SNOWBLIND_DX11
 		if (myComputeShaders.find(file_path) == myComputeShaders.end())
 		{
-			SComputeShader* newShader = new SComputeShader();
+			ComputeShader* newShader = new ComputeShader();
 			ID3D11Device* device = CEngine::GetAPI()->GetDevice();
 
 			ENGINE_LOG("Creating computeshader : %s", file_path.c_str());
@@ -323,16 +323,15 @@ namespace Snowblind
 	}
 	
 
-	pBlob CShaderFactory::CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level)
+	IBlob* CShaderFactory::CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level)
 	{
-		HRESULT hr;
 		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
 #ifdef _DEBUG 
 		shaderFlag |= D3D10_SHADER_DEBUG;
 		shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
 #endif
-		pBlob compiledShader = nullptr;
-		pBlob compilationMessage = nullptr;
+		IBlob* compiledShader = nullptr;
+		IBlob* compilationMessage = nullptr;
 
 		//Can this be more generalized?
 		CEngine::GetInstance()->CompileShaderFromFile(file_path, shader_type, feature_level, shaderFlag, compiledShader, compilationMessage);
@@ -444,54 +443,40 @@ namespace Snowblind
 	//________________________________________
 	// Shader Structs
 
-	SCompiledShader::~SCompiledShader()
+	CompiledShader::~CompiledShader()
 	{
-#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(blob);
-#endif
 		compiledShader = nullptr;
 	}
 
-	SVertexShader::~SVertexShader()
+	VertexShader::~VertexShader()
 	{
-#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(vertexShader);
-#endif
 	}
 
-	SPixelShader::~SPixelShader()
+	PixelShader::~PixelShader()
 	{
-#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(pixelShader);
-#endif
 	}
 
-	SGeometryShader::~SGeometryShader()
+	GeometryShader::~GeometryShader()
 	{
-#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(geometryShader);
-#endif
 	}
 
-	SHullShader::~SHullShader()
+	HullShader::~HullShader()
 	{
-#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(hullShader);
-#endif
 	}
 
-	SDomainShader::~SDomainShader()
+	DomainShader::~DomainShader()
 	{
-#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(domainShader);
-#endif
 	}
 
-	SComputeShader::~SComputeShader()
+	ComputeShader::~ComputeShader()
 	{
-#ifdef SNOWBLIND_DX11
 		SAFE_RELEASE(computeShader);
-#endif
 	}
 
 };

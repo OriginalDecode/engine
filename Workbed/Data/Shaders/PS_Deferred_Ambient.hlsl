@@ -117,7 +117,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	* ao * reflectionFrensnel;
     //ambientSpec = float3(1,1,1);
     
-	float3 finalColor = metalnessAlbedo.rgb;
+	float3 finalColor = metalnessAlbedo.rgb;// ambientDiffuse.rgb + ambientSpec;
     
 	//float4 col = saturate(albedo * cubemap);
 	//col.rgb = pow (col.rgb, 1 / 2.2);

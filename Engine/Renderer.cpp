@@ -75,7 +75,7 @@ namespace Snowblind
 		if (!myEngine)
 			return false;
 #ifdef SNOWBLIND_DX11
-		myDirectX = myEngine->GetAPI();
+		m_API = myEngine->GetAPI();
 #endif
 		my3DLine = new CLine3D; //Where should this live?
 		if (!my3DLine)
@@ -138,7 +138,7 @@ namespace Snowblind
 		//myEngine->GetAPI()->ResetViewport();
 		
 
-		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
 		//CTexture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
@@ -150,7 +150,7 @@ namespace Snowblind
 		myEngine->ResetRenderTargetAndDepth();
 
 		//mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
-		//myDirectX->SetBlendState(eBlendStates::LIGHT_BLEND);
+		//m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
 		//mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		//ProcessShadows();
@@ -186,8 +186,8 @@ namespace Snowblind
 			{
 				case eType::MODEL:
 				{
-					myDirectX->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-					myDirectX->SetBlendState(eBlendStates::BLEND_FALSE);
+					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+					m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
 					CModel* model = myEngine->GetModel(command.myModelKey);
 					model->SetPosition(command.myPosition);
@@ -199,8 +199,8 @@ namespace Snowblind
 				}break;
 				case eType::TERRAIN:
 				{
-					myDirectX->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-					myDirectX->SetBlendState(eBlendStates::BLEND_FALSE);
+					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+					m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 					for (CTerrain* terrain : myTerrainArray)
 					{
 						if(!terrain->HasLoaded())
@@ -217,8 +217,8 @@ namespace Snowblind
 	{
 #ifdef SNOWBLIND_DX11
 		const CU::GrowingArray<RenderCommand>& commands2D = mySynchronizer->GetRenderCommands(eCommandBuffer::e2D);
-		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+		m_API->SetRasterizer(eRasterizer::CULL_NONE);
+		m_API->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		for each(const RenderCommand& command in commands2D)
 		{
 			switch (command.myType)
@@ -235,8 +235,8 @@ namespace Snowblind
 				}break;
 			};
 		}
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
-		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 #endif
 	}
 
@@ -244,15 +244,15 @@ namespace Snowblind
 	{
 #ifdef SNOWBLIND_DX11
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eSpotlight);
-		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
-		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
+		m_API->SetRasterizer(eRasterizer::CULL_NONE);
+		m_API->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
 		CEffect* effect = m_LightPass.GetSpotlightEffect()	;
 		effect->Activate();
 
 		for each(const RenderCommand& command in commands)
 		{
 			DL_ASSERT_EXP(command.myType == eType::SPOTLIGHT, "Wrong command type in spotlight buffer.");
-			myDirectX->SetBlendState(eBlendStates::LIGHT_BLEND);
+			m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
 
 			mySpotlight->SetPosition(command.myPosition);
 			mySpotlight->SetRange(command.myRange);
@@ -264,8 +264,8 @@ namespace Snowblind
 			m_LightPass.RenderSpotlight(mySpotlight, myCamera, myPrevFrame);
 		}
 		effect->Deactivate();
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
-		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 #endif
 	}
 
@@ -274,15 +274,15 @@ namespace Snowblind
 #ifdef SNOWBLIND_DX11
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::ePointlight);
 
-		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
-		myDirectX->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
+		m_API->SetRasterizer(eRasterizer::CULL_NONE);
+		m_API->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
 		CEffect* effect = m_LightPass.GetPointlightEffect();
 		effect->Activate();
 
 		for each(const RenderCommand& command in commands)
 		{
 			DL_ASSERT_EXP(command.myType == eType::POINTLIGHT, "Wrong command type in pointlight buffer.");
-			myDirectX->SetBlendState(eBlendStates::LIGHT_BLEND);
+			m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
 			myPointLight->SetPosition(command.myPosition);
 			myPointLight->SetRange(command.myRange);
 			myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, 1));
@@ -291,16 +291,16 @@ namespace Snowblind
 		}
 		effect->Deactivate();
 
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
-		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 #endif
 	}
 
 	void CRenderer::RenderParticles()
 	{
 #ifdef SNOWBLIND_DX11
-		myDirectX->SetBlendState(eBlendStates::ALPHA_BLEND);
-		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
+		m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
+		m_API->SetRasterizer(eRasterizer::CULL_NONE);
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eParticle);
 		for each(const RenderCommand& command in commands)
 		{
@@ -312,19 +312,19 @@ namespace Snowblind
 				}break;
 			}
 		}
-		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 #endif
 	}
 
 	void CRenderer::RenderLines()
 	{
 #ifdef SNOWBLIND_DX11
-		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
-		myDirectX->SetRasterizer(eRasterizer::CULL_NONE);
+		m_API->SetBlendState(eBlendStates::NO_BLEND);
+		m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
-		ID3D11RenderTargetView* backbuffer = myDirectX->GetBackbuffer();
+		ID3D11RenderTargetView* backbuffer = m_API->GetBackbuffer();
 		ID3D11DepthStencilView* depth = myDeferredRenderer->GetDepthStencil()->GetDepthView();
-		myDirectX->GetContext()->OMSetRenderTargets(1, &backbuffer, depth);
+		m_API->GetContext()->OMSetRenderTargets(1, &backbuffer, depth);
 
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eLine);
 		for each(const RenderCommand& command in commands)
@@ -333,21 +333,21 @@ namespace Snowblind
 			{
 				case eType::LINE_Z_ENABLE:
 				{
-					myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+					m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 					my3DLine->Update(command.firstPoint, command.secondPoint);
 					my3DLine->Render(myPrevFrame, myCamera->GetProjection());
 				}break;
 				case eType::LINE_Z_DISABLE:
 				{
-					myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+					m_API->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 					my3DLine->Update(command.firstPoint, command.secondPoint);
 					my3DLine->Render(myPrevFrame, myCamera->GetProjection());
 				}break;
 			}
 		}
-		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
-		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
+		m_API->SetBlendState(eBlendStates::NO_BLEND);
+		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 #endif
 	}
 
@@ -355,14 +355,14 @@ namespace Snowblind
 	{
 		CCamera* camera = myCamera;
 
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 		m_Shadowlight->SetViewport();
 
 		//m_Shadowlight->ClearTexture();
 		ID3D11RenderTargetView* backbuffer = m_Shadowlight->GetTexture()->GetRenderTargetView();
 		ID3D11DepthStencilView* depth = m_Shadowlight->GetTexture()->GetDepthView();
 
-		myDirectX->GetContext()->OMSetRenderTargets(1, &backbuffer, depth);
+		m_API->GetContext()->OMSetRenderTargets(1, &backbuffer, depth);
 
 		myCamera = m_Shadowlight->GetCamera();
 		Render3DCommands();

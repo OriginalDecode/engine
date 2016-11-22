@@ -61,11 +61,7 @@ namespace Snowblind
 	{
 		if (myShaderViews.Size() > 0)
 		{
-			if (!firstOptimize)
-			{
-				myShaderViews.Optimize();
-				firstOptimize = true;
-			}
+			myShaderViews.Optimize();
 			myContext->IASetPrimitiveTopology(myPrimologyType);
 			myContext->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
 		}
@@ -73,12 +69,8 @@ namespace Snowblind
 
 	void CSurface::Deactivate()
 	{
-		if (myShaderViews.Size() > 0)
-		{
-			ID3D11ShaderResourceView* view;
-			memset(&view, 0, sizeof(ID3D11ShaderResourceView));
-			myContext->PSSetShaderResources(0, myShaderViews.Size(), nullptr);
-		}
+		//ID3D11ShaderResourceView* view[1] = { nullptr };
+		//myContext->PSSetShaderResources(0, myShaderViews.Size(), view);
 	}
 
 	std::string CheckTextureType(TextureType type)
@@ -92,6 +84,7 @@ namespace Snowblind
 			case _AO: return "AO";
 			case _EMISSIVE: return "EMISSIVE";
 		}
+		return "failed";
 	}
 
 	void CSurface::AddTexture(const std::string& file_path, TextureType type)

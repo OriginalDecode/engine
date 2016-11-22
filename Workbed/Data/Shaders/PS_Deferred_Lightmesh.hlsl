@@ -123,24 +123,23 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float3 viewPos = camPosition.xyz;
 	float3 toEye = normalize(viewPos - worldPosition.xyz);	
-	float3 toLight = float3(510,82,510) - worldPosition.xyz;
+	float3 toLight = float3(433,76,510) - worldPosition.xyz;
 	float3 lightDir = normalize(toLight);
 	float3 halfVec = normalize(lightDir + toEye);
 
 
-	float m_NdotL = dot(normal, lightDir);
 	float NdotL = saturate(dot(normal, lightDir));
 	float HdotN = saturate(dot(halfVec, normal));
 	float NdotV = saturate(dot(normal, toEye));
 	float3 F = Fresnel(substance, lightDir, halfVec);
 	float D = saturate(D_GGX(HdotN,(roughness + 1.f) / 2.f));
-	float V = saturate(V_SchlickForGGX((roughness + 1.f) / 2.f, NdotV, m_NdotL));
+	float V = saturate(V_SchlickForGGX((roughness + 1.f) / 2.f, NdotV, NdotL));
 
-	float ln = length(lightDir);
+	float ln = length(toLight);
 
-	float attenuation = CalculateTotalAttenuation(ln, 2);
-	float3 light_color = float3(1,0,0) * 10 * attenuation;
-	float3 directSpec = F * D * V * m_NdotL *light_color;
+	float attenuation = CalculateTotalAttenuation(ln, input.range.x);
+	float3 light_color = float3(1,0,0) * 80 * attenuation;
+	float3 directSpec = F * D * V * NdotL * light_color;
 
 	return float4(directSpec, 1);
 };

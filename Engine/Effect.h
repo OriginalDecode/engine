@@ -5,12 +5,12 @@ struct ID3D11ShaderResourceView;
 namespace Snowblind
 {
 
-	struct SVertexShader;
-	struct SPixelShader;
-	struct SGeometryShader;
-	struct SHullShader;
-	struct SDomainShader;
-	struct SComputeShader;
+	struct VertexShader;
+	struct PixelShader;
+	struct GeometryShader;
+	struct HullShader;
+	struct DomainShader;
+	struct ComputeShader;
 	
 	class CTexture;
 	class CEffect
@@ -21,14 +21,14 @@ namespace Snowblind
 		~CEffect();
 		
 
-		SVertexShader* GetVertexShader();
-		SPixelShader* GetPixelShader();
+		VertexShader* GetVertexShader();
+		PixelShader* GetPixelShader();
 
 		/* TODO : IMPLEMENT THE FOLLOWING SHADERS */
-		SGeometryShader* GetGeometryShader();
-		SHullShader* GetHullShader();
-		SDomainShader* GetDomainShader();
-		SComputeShader* GetComputeShader();
+		GeometryShader* GetGeometryShader();
+		HullShader* GetHullShader();
+		DomainShader* GetDomainShader();
+		ComputeShader* GetComputeShader();
 
 		void Activate();
 		void Deactivate();
@@ -37,12 +37,12 @@ namespace Snowblind
 		std::string myFileName;
 		ID3D11DeviceContext* myContext;
 
-		SVertexShader* myVertexShader = nullptr;
-		SPixelShader* myPixelShader = nullptr;
-		SGeometryShader* myGeometryShader = nullptr;
-		SHullShader* myHullShader = nullptr;
-		SDomainShader* myDomainShader = nullptr;
-		SComputeShader* myComputeShader = nullptr;
+		VertexShader* myVertexShader = nullptr;
+		PixelShader* myPixelShader = nullptr;
+		GeometryShader* myGeometryShader = nullptr;
+		HullShader* myHullShader = nullptr;
+		DomainShader* myDomainShader = nullptr;
+		ComputeShader* myComputeShader = nullptr;
 		
 		CU::GrowingArray<ID3D11ShaderResourceView*> myShaderResources;
 		CU::GrowingArray<ID3D11ShaderResourceView*> myNULLList;

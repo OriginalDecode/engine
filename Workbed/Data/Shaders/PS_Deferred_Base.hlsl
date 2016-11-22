@@ -58,7 +58,7 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	output.Albedo = float4(0.3,0.3,0.3,1);//AlbedoTexture.Sample(linear_Wrap, input.uv);
 	output.Normal = float4(_normal.rgb, 1);
 	output.Depth.x = input.pos.z;
-	output.Depth.y = 0.f;
+	output.Depth.y = 0.5f;
 	output.Emissive = float4(1,1,1,1);
 	return output;
 }

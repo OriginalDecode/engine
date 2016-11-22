@@ -13,7 +13,6 @@ typedef HINSTANCE__* HINSTANCE;
 struct HWND__;
 typedef HWND__* HWND;
 #endif
-typedef struct ID3D10Blob *pBlob;
 
 class InputHandle;
 class CEntityManager;
@@ -38,6 +37,7 @@ namespace Cache
 	class TerrainManager;
 };
 
+typedef struct ID3D10Blob IBlob;
 namespace Snowblind
 {
 	enum eDeferredType;
@@ -132,7 +132,7 @@ namespace Snowblind
 		void Render();
 
 
-		void CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, pBlob& out_compiled_shader, pBlob& out_compile_message);
+		void CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
 
 	private:
 		CEngine() = default;

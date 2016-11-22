@@ -1,28 +1,8 @@
 #pragma once
 #pragma message ("Compiling File : Texture.h")
-#ifdef SNOWBLIND_DX11
-struct ID3D11ShaderResourceView;
-struct ID3D11RenderTargetView;
-struct ID3D11DepthStencilView;
-struct ID3D11Texture2D;
 
-typedef ID3D11Texture2D ITexture2D;
-typedef ID3D11ShaderResourceView IShaderResourceView;
-typedef ID3D11DepthStencilView IDepthStencilView;
-typedef ID3D11RenderTargetView IRenderTargetView;
+#include "snowblind_shared.h"
 
-typedef DXGI_FORMAT TextureFormat;
-typedef D3D11_USAGE UsageType;
-#else
-
-/*typedef ID3D11Texture2D ITexture2D;
-typedef ID3D11ShaderResourceView IShaderResourceView;
-typedef ID3D11DepthStencilView IDepthStencilView;
-typedef ID3D11RenderTargetView IRenderTargetView;
-
-typedef DXGI_FORMAT TextureFormat; */
-
-#endif
 
 enum TextureUsageFlags
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include <cassert>
-#define SA_TEMPLATE template<typename Type, int Size>
-#define SA_TYPE StaticArray<Type, Size>
+#define SA_TEMPLATE template<typename Type, int T2 = 32>
+#define SA_TYPE StaticArray<Type, T2>
 
 namespace CommonUtilities
 {
@@ -28,10 +28,10 @@ namespace CommonUtilities
 		typedef const Type* const_iterator;
 		iterator begin() { return &myData[0]; }
 		const_iterator begin() const { return &myData[0]; }
-		iterator end() { return &myData[Size]; }
-		const_iterator end() const { return &myData[Size]; }
+		iterator end() { return &myData[T2]; }
+		const_iterator end() const { return &myData[T2]; }
 	private:
-		Type myData[Size];
+		Type myData[T2];
 	};
 
 	SA_TEMPLATE
@@ -55,7 +55,7 @@ namespace CommonUtilities
 	SA_TEMPLATE
 		SA_TYPE& SA_TYPE::operator=(const StaticArray& aStaticArray)
 	{
-		for (int i = 0; i < Size; ++i)
+		for (int i = 0; i < T2; ++i)
 		{
 			myData[i] = aStaticArray.myData[i];
 		}
@@ -66,7 +66,7 @@ namespace CommonUtilities
 		inline const Type& SA_TYPE::operator[](const int& aIndex) const
 	{
 		assert(aIndex >= 0 && "Index has to be 0 or more.");
-		assert(aIndex < Size && "a index out of bounds!");
+		assert(aIndex < T2 && "a index out of bounds!");
 		return myData[aIndex];
 	}
 
@@ -74,7 +74,7 @@ namespace CommonUtilities
 		inline Type& SA_TYPE::operator[](const int& aIndex)
 	{
 		assert(aIndex >= 0 && "Index has to be 0 or more.");
-		assert(aIndex < Size && "a index out of bounds!");
+		assert(aIndex < T2 && "a index out of bounds!");
 		return myData[aIndex];
 	}
 
@@ -82,8 +82,8 @@ namespace CommonUtilities
 		inline void SA_TYPE::Insert(int aIndex, Type& aObject)
 	{
 		assert(aIndex >= 0 && "Index has to be 0 or more.");
-		assert(aIndex < Size && "a index out of bounds!");
-		for (int i = Size - 2; i >= aIndex; --i)
+		assert(aIndex < T2 && "a index out of bounds!");
+		for (int i = T2 - 2; i >= aIndex; --i)
 		{
 			myData[i + 1] = myData[i];
 		}
@@ -93,7 +93,7 @@ namespace CommonUtilities
 	SA_TEMPLATE
 		inline void SA_TYPE::DeleteAll()
 	{
-		for (int i = 0; i < Size; ++i)
+		for (int i = 0; i < T2; ++i)
 		{
 			delete myData[i];
 			myData[i] = nullptr;

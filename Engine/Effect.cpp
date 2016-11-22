@@ -30,12 +30,12 @@ namespace Snowblind
 		SAFE_DELETE(myComputeShader);*/
 	}
 
-	SVertexShader* CEffect::GetVertexShader()
+	VertexShader* CEffect::GetVertexShader()
 	{
 		return myVertexShader;
 	}
 
-	SPixelShader* CEffect::GetPixelShader()
+	PixelShader* CEffect::GetPixelShader()
 	{
 #ifdef SNOWBLIND_DX11
 		if (myPixelShader != nullptr)
@@ -54,12 +54,7 @@ namespace Snowblind
 
 		if (myShaderResources.Size() > 0)
 		{
-			if (!firstOptimize)
-			{
-				myShaderResources.Optimize();
-				myNULLList.Optimize();
-				firstOptimize = true;
-			}
+			myShaderResources.Optimize();
 			CEngine::GetAPI()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
 		}
 #endif

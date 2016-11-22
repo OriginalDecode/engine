@@ -296,8 +296,9 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	void GrowingArray<ObjectType, SizeType>::Optimize()
 	{
-		if (myCapacity > mySize)
-		{
+		if (myCapacity == mySize)
+			return;
+
 			myCapacity = mySize;
 			ObjectType *newMemory = new ObjectType[myCapacity];
 			if (mySafeFlag == true)
@@ -314,7 +315,6 @@ namespace CommonUtilities
 			delete[]myData;
 
 			myData = newMemory;
-		}
 	};
 
 	template<typename ObjectType, typename SizeType = int>

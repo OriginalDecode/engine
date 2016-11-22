@@ -57,7 +57,9 @@ namespace Snowblind
 
 		CEngine*			myEngine			= nullptr;
 #ifdef SNOWBLIND_DX11
-		DirectX11*			myDirectX			= nullptr;
+		DirectX11*			m_API				= nullptr;
+#else
+		Vulkan*				m_API				= nullptr;
 #endif
 		CCamera*			myCamera			= nullptr;
 		CU::Matrix44f		myPrevFrame;

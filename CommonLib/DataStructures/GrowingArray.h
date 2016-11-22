@@ -13,7 +13,7 @@ namespace CommonUtilities
 		inline GrowingArray(const GrowingArray& aGrowingArray);
 		inline ~GrowingArray();
 
-		inline GrowingArray& operator=(const GrowingArray& aGrowingArray);
+		inline GrowingArray operator=(const GrowingArray& aGrowingArray);
 
 		inline void Init(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true);
 		inline void ReInit(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true);
@@ -41,7 +41,6 @@ namespace CommonUtilities
 		void Optimize();
 
 		__forceinline int Size() const;
-
 		void Reserve(SizeType aNewSize);
 		inline void Resize(SizeType aNewSize);
 
@@ -61,6 +60,7 @@ namespace CommonUtilities
 		SizeType myCapacity;
 		SizeType mySize;
 	};
+
 
 	template<typename ObjectType, typename SizeType /*= int*/>
 	ObjectType* CommonUtilities::GrowingArray<ObjectType, SizeType>::GetArrayAsPointer()
@@ -95,8 +95,7 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	GrowingArray<ObjectType, SizeType>::GrowingArray(const GrowingArray& aGrowingArray)
 	{
-		myData = nullptr;
-		*this = aGrowingArray;
+		this = aGrowingArray;
 	};
 
 	template<typename ObjectType, typename SizeType = int>
@@ -117,9 +116,10 @@ namespace CommonUtilities
 	};
 
 	template<typename ObjectType, typename SizeType = int>
-	GrowingArray<ObjectType, SizeType>& GrowingArray<ObjectType, SizeType>::operator=(const GrowingArray& aGrowingArray)
+	GrowingArray<ObjectType, SizeType> GrowingArray<ObjectType, SizeType>::operator=(const GrowingArray& aGrowingArray)
 	{
 		delete[]myData;
+		myData = nullptr;
 		mySafeFlag = aGrowingArray.mySafeFlag;
 		if (mySafeFlag == false)
 		{

@@ -65,7 +65,6 @@ namespace Snowblind
 			if (!firstOptimize)
 			{
 				myShaderViews.Optimize();
-				myNullList.Optimize();
 				firstOptimize = true;
 			}
 			myContext->IASetPrimitiveTopology(myPrimologyType);
@@ -75,9 +74,11 @@ namespace Snowblind
 
 	void CSurface::Deactivate()
 	{
-		if (myNullList.Size() > 0)
+		if (myShaderViews.Size() > 0)
 		{
-			myContext->PSSetShaderResources(0, myNullList.Size(), &myNullList[0]);
+			ID3D11ShaderResourceView* view;
+			memset(&view, 0, sizeof(ID3D11ShaderResourceView));
+			myContext->PSSetShaderResources(0, myShaderViews.Size(), nullptr);
 		}
 	}
 	
@@ -103,7 +104,6 @@ namespace Snowblind
 #ifdef SNOWBLIND_DX11
 		myShaderViews.Add(newTexture->texture->GetShaderView());
 #endif
-		myNullList.Add(nullptr);
 	}
 
 	void CSurface::SetEffect(CEffect* anEffect)

@@ -48,7 +48,6 @@ namespace Snowblind
 
 		CU::GrowingArray<STexture*> myTextures;
 		CU::GrowingArray<ID3D11ShaderResourceView*> myShaderViews;
-		CU::GrowingArray<ID3D11ShaderResourceView*> myNullList;
 		bool firstOptimize = false;
 		CU::GrowingArray<std::string> myResourceNames;
 		CU::GrowingArray<std::string> myFileNames;

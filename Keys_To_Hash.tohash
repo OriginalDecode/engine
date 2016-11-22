@@ -121,3 +121,8 @@ DPadUp
 DPadDown
 DPadRight
 DPadLeft
+LMouseButton
+RMouseButton
+MouseButton3
+MouseButton4
+MouseButton5

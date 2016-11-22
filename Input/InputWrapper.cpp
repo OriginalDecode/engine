@@ -83,25 +83,21 @@ bool InputWrapper::Update()
 		ZeroMemory(&myMouseState, sizeof(myMouseState));
 		myMouse->Acquire();
 	}
-	if (myWindowIsActive == true)
+
+
+	GetPhysicalCursorPos(&myCursorPos);
+	ScreenToClient(myHWND, &myCursorPos);
+	myMousePos.myX = float(myCursorPos.x);
+	myMousePos.myY = float(myCursorPos.y);
+
+	myMousePos.myZ += float(myMouseState.lZ);
+	if (myCursorIsLocked == true)
 	{
-
-
-		GetPhysicalCursorPos(&myCursorPos);
-		ScreenToClient(myHWND, &myCursorPos);
-		myMousePos.myX = float(myCursorPos.x);
-		myMousePos.myY = float(myCursorPos.y);
-
-		myMousePos.myZ += float(myMouseState.lZ);
-		if (myCursorIsLocked == true)
-		{
-			SetCursorPos(0, 0);
-		}
-		//tagPOINT cursorXandY;
-		GetCursorPos(&myCursorPos);
-		ScreenToClient(myHWND, &myCursorPos);
-
+		SetCursorPos(0, 0);
 	}
+	//tagPOINT cursorXandY;
+	GetCursorPos(&myCursorPos);
+	ScreenToClient(myHWND, &myCursorPos);
 	return true;
 }
 

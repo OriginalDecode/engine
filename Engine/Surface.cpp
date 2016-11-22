@@ -8,6 +8,7 @@
 #include "Effect.h"
 
 #include "AssetsContainer.h"
+#include <DL_Debug.h>
 
 namespace Snowblind
 {
@@ -24,7 +25,7 @@ namespace Snowblind
 		SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
-	CSurface::CSurface(CEffect* anEffect, unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int aIndexCount)
+	CSurface::CSurface(CEffect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount)
 	{
 #ifdef SNOWBLIND_DX11
 		myContext = CEngine::GetAPI()->GetContext();
@@ -37,7 +38,7 @@ namespace Snowblind
 		SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
-	CSurface::CSurface(unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
+	CSurface::CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
 	{
 #ifdef SNOWBLIND_DX11
 		myContext = CEngine::GetAPI()->GetContext();
@@ -51,7 +52,6 @@ namespace Snowblind
 
 	CSurface::~CSurface()
 	{
-		myTextures.DeleteAll();
 		myFileNames.RemoveAll();
 
 		//Can cause heap corruption?
@@ -97,27 +97,27 @@ namespace Snowblind
 		if (CL::substr(sub, ".dds") == false)
 			sub += ".dds";
 
-		STexture* new_texture = new STexture; 
-		new_texture->texture = CEngine::GetInstance()->GetTexture(sub);
-		new_texture->m_Type = type;
+		
+		STexture new_texture;
+		new_texture.m_Type = type;
+		new_texture.texture = CEngine::GetInstance()->GetTexture(sub)->GetShaderView();
+
 		myTextures.Add(new_texture);
 
-		std::sort(myTextures.begin(), myTextures.end(), [&](STexture* first, STexture* second) {
-			DL_MESSAGE("\nFirst : %d\nType : %s", (u64)first, CheckTextureType(first->m_Type).c_str());
-			DL_MESSAGE("\nSecond : %d\nType : %s", (u64)second, CheckTextureType(second->m_Type).c_str());
-			return first->m_Type < second->m_Type;
+
+		//myTextures.Add(new_texture);
+
+		std::sort(myTextures.begin(), myTextures.end(), [&](STexture& first, STexture& second) {
+			TRACE_LOG("\nFirst : %d\nType : %s", (u64)first.texture, CheckTextureType(first.m_Type).c_str());
+			TRACE_LOG("\nSecond : %d\nType : %s", (u64)second.texture, CheckTextureType(second.m_Type).c_str());
+			return first.m_Type < second.m_Type;
 		});
 
+		myShaderViews.RemoveAll();
 		for (s32 i = 0; i < myTextures.Size(); i++)
 		{
-			DL_MESSAGE("\nIndex : %d\nPointer : %d\nType : %s", i, (u64)myTextures[i], CheckTextureType(myTextures[i]->m_Type).c_str());
+			myShaderViews.Add(myTextures[i].texture);
 		}
-
-
-
-#ifdef SNOWBLIND_DX11
-		myShaderViews.Add(new_texture->texture->GetShaderView());
-#endif
 	}
 
 	void CSurface::SetEffect(CEffect* anEffect)
@@ -125,22 +125,22 @@ namespace Snowblind
 		myEffect = anEffect;
 	}
 
-	void CSurface::SetVertexStart(unsigned int aStartVertex)
+	void CSurface::SetVertexStart(u32 aStartVertex)
 	{
 		myVertexStart = aStartVertex;
 	}
 
-	void CSurface::SetVertexCount(unsigned int aVertexCount)
+	void CSurface::SetVertexCount(u32 aVertexCount)
 	{
 		myVertexCount = aVertexCount;
 	}
 
-	void CSurface::SetIndexStart(unsigned int aStartIndex)
+	void CSurface::SetIndexStart(u32 aStartIndex)
 	{
 		myIndexStart = aStartIndex;
 	}
 
-	void CSurface::SetIndexCount(unsigned int aIndexCount)
+	void CSurface::SetIndexCount(u32 aIndexCount)
 	{
 		myIndexCount = aIndexCount;
 	}
@@ -150,27 +150,34 @@ namespace Snowblind
 		myPrimologyType = aPrimology;
 	}
 
-	void CSurface::AddMissingTexture(TextureType type)
+	void CSurface::AddMissingTexture(TextureType type, const std::string& file_path )
 	{
 		if (!(m_ContainingTextures & type))
 		{
-			AddTexture("Data/Textures/No-Texture.dds", type);
+			AddTexture(file_path, type);
 			return;
 		}
 		MODEL_LOG("Already contained texture");
 	}
 
+	std::string s_file_path = "Data/Textures/default_textures/";
+
 	void CSurface::ValidateTextures()
 	{
 		MODEL_LOG("Validating Textures of surface.");
 
-		AddMissingTexture(_ALBEDO);
-		AddMissingTexture(_NORMAL);
-		AddMissingTexture(_ROUGHNESS);
-		AddMissingTexture(_METALNESS);
-		AddMissingTexture(_EMISSIVE);
-		AddMissingTexture(_AO);
-	}
+		AddMissingTexture(_ALBEDO,		s_file_path + "no-texture.dds");
+		AddMissingTexture(_NORMAL,		s_file_path + "no-texture.dds");
+		AddMissingTexture(_ROUGHNESS,	s_file_path + "no-roughness.dds");
+		AddMissingTexture(_METALNESS,	s_file_path + "no-metalness.dds");
+		AddMissingTexture(_EMISSIVE,	s_file_path + "full-metalness.dds");
+		AddMissingTexture(_AO,			s_file_path + "no-metalness.dds");
 
+		for (s32 i = 0; i < myTextures.Size(); i++)
+		{
+			TRACE_LOG("\nIndex : %d\nPointer : %d\nType : %s", i, (u64)myTextures[i].texture, CheckTextureType(myTextures[i].m_Type).c_str());
+		}
+
+	}
 	
 };

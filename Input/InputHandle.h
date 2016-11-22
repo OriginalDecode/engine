@@ -14,6 +14,9 @@ public:
 	void HandleInput();
 	void Bind(u32 hash, std::function<void()> function);
 	const ControllerInput& GetController() { return *m_Controller; }
+
+	float GetX();
+	float GetY();
 private:
 	void CallFunction(u32 hash);
 	ControllerInput* m_Controller = nullptr;

@@ -41,7 +41,7 @@ struct VS_OUTPUT
 //---------------------------------
 GBuffer PS(VS_OUTPUT input) : SV_Target
 {
-	float3 _normal = AlbedoTexture.Sample(linear_Wrap, input.uv).rgb * 2 - 1;
+	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv).rgb * 2 - 1;
 	float3 nnormal = normalize(input.normal.xyz);
 
 	float3 binorm = normalize(cross(input.normal, input.tang));

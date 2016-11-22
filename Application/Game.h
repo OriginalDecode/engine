@@ -47,6 +47,9 @@ private:
 	bool CreateLevel(const char* level_path);
 	bool CreateEntity(const char* entity_path, JSONReader& level_reader, JSONElement::ConstMemberIterator it);
 
+	void LeftClick(float x, float y);
+
+
 	s16 m_LocalPlayerCount = 0;
 	int myFrameCount = 0;
 	int myFPSToPrint = 0;
@@ -67,6 +70,9 @@ private:
 
 	CU::Vector3f pointHit;
 	CU::Vector3f currentRay;
+
+	u32 selected_entity;
+
 
 	CRigidBody* rigidbody = nullptr;
 	SLinePoint raycast[2];

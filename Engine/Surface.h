@@ -23,9 +23,9 @@ namespace Snowblind
 	{
 	public:
 		CSurface(CEffect* anEffect);
-		CSurface(CEffect* anEffect, unsigned int aStartVertex, unsigned int aVertexCount,
-			unsigned int aStartIndex, unsigned int aIndexCount);
-		CSurface(unsigned int aStartVertex, unsigned int aVertexCount, unsigned int aStartIndex, unsigned int anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology);
+		CSurface(CEffect* anEffect, u32 aStartVertex, u32 aVertexCount,
+			u32 aStartIndex, u32 aIndexCount);
+		CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology);
 
 		~CSurface();
 
@@ -35,11 +35,11 @@ namespace Snowblind
 
 		void SetEffect(CEffect* anEffect); 
 
-		void SetVertexStart(unsigned int aStartVertex);
-		void SetVertexCount(unsigned int aVertexCount);
+		void SetVertexStart(u32 aStartVertex);
+		void SetVertexCount(u32 aVertexCount);
 
-		void SetIndexStart(unsigned int aStartIndex);
-		void SetIndexCount(unsigned int aIndexCount);
+		void SetIndexStart(u32 aStartIndex);
+		void SetIndexCount(u32 aIndexCount);
 
 		void SetPrimology(D3D_PRIMITIVE_TOPOLOGY aPrimology);
 
@@ -50,27 +50,29 @@ namespace Snowblind
 
 		void ValidateTextures();
 	private:
-		void AddMissingTexture(TextureType type);
+		void AddMissingTexture(TextureType type, const std::string& file_path);
 
 		D3D_PRIMITIVE_TOPOLOGY myPrimologyType;
 		s32 m_ContainingTextures = 0;
+
 		struct STexture
 		{
-			CTexture* texture;
+			IShaderResourceView* texture;
 			TextureType m_Type;
 		};
 
-		CU::GrowingArray<STexture*> myTextures;
-		CU::GrowingArray<ID3D11ShaderResourceView*> myShaderViews;
-		bool firstOptimize = false;
+		CU::GrowingArray<STexture> myTextures;
+
+		CU::GrowingArray<IShaderResourceView*> myShaderViews;
+
 		CU::GrowingArray<std::string> myFileNames;
 
 		CEffect* myEffect;
 		ID3D11DeviceContext* myContext;
-		unsigned int myIndexStart;
-		unsigned int myIndexCount;
-		unsigned int myVertexStart;
-		unsigned int myVertexCount;
+		u32 myIndexStart;
+		u32 myIndexCount;
+		u32 myVertexStart;
+		u32 myVertexCount;
 
 	};
 

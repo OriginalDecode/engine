@@ -158,6 +158,15 @@ namespace DL_Debug
 
 	}
 
+	void Debug::WriteLogNoTimeStamp(const std::string& string)
+	{
+		BeginTicketMutex(&dlDebug_Mutex);
+		std::string str(string.begin(), string.end());
+		myOutputFile << str << "\n";
+		myOutputFile.flush();
+		EndTicketMutex(&dlDebug_Mutex);
+	}
+
 	void Debug::DisableFilters(int flags)
 	{
 		m_LogFlags &= ~flags;

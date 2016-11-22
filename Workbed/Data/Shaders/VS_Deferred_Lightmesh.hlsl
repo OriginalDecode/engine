@@ -33,8 +33,7 @@ struct VS_OUTPUT
 VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-	float r = 110;
-	float4 scale = r;
+	float4 scale = range;
 	scale.w = 1.f;
 	
 	input.pos *= scale; // scale
@@ -43,7 +42,7 @@ VS_OUTPUT VS(VS_INPUT input)
 	output.pos = mul(input.pos, World);
 	output.pos = mul(output.pos, View);
 	output.pos = mul(output.pos, Projection);
-	output.range = r;
+	output.range = range;
 	
 	float x = output.pos.x;
 	float y = output.pos.y;

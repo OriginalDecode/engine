@@ -71,6 +71,9 @@ namespace Snowblind
 		m_Window.ShowWindow();
 		myHWND = m_Window.GetHWND();
 	
+
+
+
 		if(!m_Window.IsWindowActive())
 			m_Window.OnActive();
 		SetWindowText(myHWND, "Snowblind Engine");

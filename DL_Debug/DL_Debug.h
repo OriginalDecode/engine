@@ -34,6 +34,8 @@ enum eDEBUGLOG
 //#define DL_DEBUG( ... )  DL_Debug::Debug::GetInstance()->DebugMessage(__LINE__,__FUNCTION__, RETURN(__VA_ARGS__));
 
 #define DL_WRITELOG(log, ...) DL_Debug::Debug::GetInstance()->WriteLog(log , RETURN(__VA_ARGS__));
+#define TRACE_LOG(...) DL_Debug::Debug::GetInstance()->WriteLogNoTimeStamp(RETURN(__VA_ARGS__));
+
 
 #define DL_MESSAGE(...) DL_Debug::Debug::GetInstance()->WriteLog(0, RETURN(__VA_ARGS__));
 #define DL_MESSAGE_EXP(expression, ...) if(expression){DL_Debug::Debug::GetInstance()->WriteLog(0, RETURN(__VA_ARGS__));};
@@ -109,7 +111,7 @@ namespace DL_Debug
 
 		void DebugMessage(const int aLine, const char *aFileName, const std::string& aString);
 		void WriteLog(int filter_flag, const std::string& aString);
-
+		void WriteLogNoTimeStamp(const std::string& string);
 
 		void DisableFilters(int flags);
 		void ActivateFilters(int flags);

@@ -71,6 +71,8 @@ bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
 	myEntityManager->AddSystem<AISystem>();
 	myEntityManager->AddSystem<CameraSystem>();
 	
+	myPicker = new Snowblind::CMousePicker;
+
 	myEngine->ToggleVsync();
 	return true;
 }
@@ -117,6 +119,9 @@ void CGame::Update(float aDeltaTime)
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
 
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
+
+	TranslationComponent& translation = myEntityManager->GetComponent<TranslationComponent>(3);
+	translation.myOrientation.SetPosition(CU::Vector3f(pointHit.x, pointHit.y + 2.f, pointHit.z));
 
 	//std::stringstream b;
 	//if (rigidbody)
@@ -378,6 +383,11 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			input.m_InputHandle->Bind(Hash("YButton"), [&]() {
 				Snowblind::CEngine::GetInstance()->ToggleWireframe(); // (#LINUS) inte trådsäker
 			});
+
+			input.m_InputHandle->Bind(Hash("LMouseButton"), [&]() {
+				CGame::LeftClick(input.m_InputHandle->GetX(), input.m_InputHandle->GetY());
+			});
+
 		}
 		else if (controller_type == "ai")
 		{
@@ -390,6 +400,11 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 	}
 	
 	return true;
+}
+
+void CGame::LeftClick(float x, float y)
+{
+	pointHit = myPhysicsManager->RayCast(myEngine->GetCamera()->GetPosition(), myPicker->GetCurrentRay(x,y));
 }
 
 // (#LINUS) Needs to be addressed in the future.

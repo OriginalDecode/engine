@@ -15,25 +15,25 @@ namespace Snowblind
 
 	}
 
-	const CU::Vector3f& CMousePicker::GetCurrentRay()
+	const CU::Vector3f& CMousePicker::GetCurrentRay(float x, float y)
 	{
-		CalculateCurrentRay();
+		CalculateCurrentRay(x,y);
 		return myCurrentRay;
 	}
 
-	void CMousePicker::CalculateCurrentRay()
+	void CMousePicker::CalculateCurrentRay(float x, float y)
 	{
-		//CU::Vector2f cursorPos;
-		//cursorPos.x = CU::Input::InputWrapper::GetInstance()->GetX();
-		//cursorPos.y = CU::Input::InputWrapper::GetInstance()->GetY();
-		//
-		//cursorPos = NormalizedSpace(cursorPos.x, cursorPos.y);
-		//CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.f, 0.f); //Clip Space
-		//CU::Vector4f eyeCoord = ToEyeCoords(clip);
-		//CU::Vector3f ray = ToWorldCoords(eyeCoord);
-		//
-		//CU::Math::Normalize(ray);
-		//myCurrentRay = ray;
+		CU::Vector2f cursorPos;
+		cursorPos.x = x;//CU::Input::InputWrapper::GetInstance()->GetX();
+		cursorPos.y = y;//CU::Input::InputWrapper::GetInstance()->GetY();
+
+		cursorPos = NormalizedSpace(cursorPos.x, cursorPos.y);
+		CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.f, 0.f); //Clip Space
+		CU::Vector4f eyeCoord = ToEyeCoords(clip);
+		CU::Vector3f ray = ToWorldCoords(eyeCoord);
+
+		CU::Math::Normalize(ray);
+		myCurrentRay = ray;
 	}
 
 	CU::Vector4f CMousePicker::ToEyeCoords(const CU::Vector4f& clipCoords)

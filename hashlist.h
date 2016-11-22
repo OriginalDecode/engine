@@ -1,4 +1,4 @@
-//0x4be859b
+//0x5f5a2914
 #pragma once
 #include "standard_datatype.hpp"
 static const u32 s_EscKey_hash = 0xbfa5b8d7;
@@ -124,3 +124,8 @@ static const u32 s_DPadUp_hash = 0xfdda15d2;
 static const u32 s_DPadDown_hash = 0xe5a62348;
 static const u32 s_DPadRight_hash = 0x1063d3e2;
 static const u32 s_DPadLeft_hash = 0x2114217a;
+static const u32 s_LMouseButton_hash = 0xa1dd09bf;
+static const u32 s_RMouseButton_hash = 0x7836ebc7;
+static const u32 s_MouseButton3_hash = 0x252d44b2;
+static const u32 s_MouseButton4_hash = 0xf778e0e4;
+static const u32 s_MouseButton5_hash = 0x4dedfb60;

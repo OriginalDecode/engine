@@ -123,7 +123,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float3 viewPos = camPosition.xyz;
 	float3 toEye = normalize(viewPos - worldPosition.xyz);	
-	float3 toLight = float3(433,76,510) - worldPosition.xyz;
+	float3 toLight = position - worldPosition.xyz;
 	float3 lightDir = normalize(toLight);
 	float3 halfVec = normalize(lightDir + toEye);
 
@@ -138,7 +138,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float ln = length(toLight);
 
 	float attenuation = CalculateTotalAttenuation(ln, input.range.x);
-	float3 light_color = float3(1,0,0) * 80 * attenuation;
+	float3 light_color = color * 10 * attenuation;
 	float3 directSpec = F * D * V * NdotL * light_color;
 
 	return float4(directSpec, 1);

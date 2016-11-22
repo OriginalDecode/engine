@@ -125,6 +125,10 @@ void InputHandle::HandleInput()
 			{
 				CallFunction(s_DKey_hash);
 			}
+			if (m_Input->MouseDown(0))
+				CallFunction(s_LMouseButton_hash);
+
+
 		}
 	}
 }
@@ -132,6 +136,16 @@ void InputHandle::HandleInput()
 void InputHandle::Bind(u32 hash, std::function<void()> function)
 {
 	m_Functions.emplace(hash, function);
+}
+
+float InputHandle::GetX()
+{
+	return m_Input->GetX();
+}
+
+float InputHandle::GetY()
+{
+	return m_Input->GetY(); 
 }
 
 void InputHandle::CallFunction(u32 hash)

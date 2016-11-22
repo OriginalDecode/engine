@@ -7,11 +7,33 @@
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/pointlight.json", 
-			"position" : [ 510, 80, 510 ],
+			"position" : [ 510, 81, 510 ],
 			"color": [ 0, 0, 255 ],
 			"intensity": 1, 
 			"range" : 10
 		},
+		"object" : 	{ 
+			"entity":"Data/Levels/pointlight.json", 
+			"position" : [ 520, 81, 520 ],
+			"color": [ 255, 0, 0 ],
+			"intensity": 1, 
+			"range" : 10
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/pointlight.json", 
+			"position" : [ 433, 77, 480 ],
+			"color": [ 0, 0, 255 ],
+			"intensity": 1, 
+			"range" : 10
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/pointlight.json", 
+			"position" : [ 433, 77, 530 ],
+			"color": [ 255, 0, 255 ],
+			"intensity": 1, 
+			"range" : 10
+		},
+
 		"player" : {
 			"entity" : "Data/Levels/player.json",
 			"position" : [ 0, 0, 5]

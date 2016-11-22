@@ -6,21 +6,6 @@
 #include "Hash.h"
 #include "CommonLib/Utilities.h"
 
-std::string CreateCase(const std::string& hash_name)
-{
-	std::stringstream to_output;
-	to_output << "	case s_" << hash_name << "_hash:\n	{\n		Bind" << hash_name << "(function);\n	}break;\n";
-	return to_output.str();
-}
-
-std::string CreateDecl(const std::string& hash_name)
-{
-	std::stringstream to_output;
-	to_output << "	BIND_DECL(" << hash_name << ");";
-	return to_output.str();
-}
-
-#define PUSH_BACK(name) m_Names.push_back(name); 
 int main(int argc, char* argv[])
 {
 	std::cout << "Running Script\n";
@@ -69,6 +54,7 @@ int main(int argc, char* argv[])
 	}
 	else
 		not_updated = false;
+
 	if (!not_updated)
 	{
 		float counter = 0.f;
@@ -103,88 +89,6 @@ int main(int argc, char* argv[])
 		out_file.close();
 		std::cout << "Closing file.\n";
 	}
-	if (!not_updated)
-		std::cout << "Finished generating hashlist.h\n";
-	else
-		std::cout << "Failed to generate new hashlist.\n";
-
-	if (!not_updated)
-	{
-		std::string line;
-		std::fstream file;
-		file.open("Input/InputHandle.h");
-		if (file.good())
-		{
-			std::vector<std::string> m_File;
-			while (!file.eof())
-			{
-				std::string str;
-				std::getline(file, str);
-				m_File.push_back(str + "\n");
-				if (str == "\t")
-				{
-					break;
-				}
-			}
-
-			int index = 0;
-			for(int i = 0; i < m_Names.size(); i++)
-			{
-				m_File.push_back(CreateDecl(m_Names[i]) + "\n");
-			}
-			m_File.push_back("};");
-			
-			std::ofstream out_file;
-			out_file.open("Input/InputHandle.h");
-			for (const std::string& line : m_File)
-			{
-				out_file << line;
-				out_file.flush();
-			}
-			out_file.close();
-		}
-	}
-
-	if (!not_updated)
-	{
-		std::string line;
-		std::fstream file;
-		file.open("Input/InputHandle.cpp");
-		if (file.good())
-		{
-			std::vector<std::string> m_File;
-			while (!file.eof())
-			{
-				std::string str;
-				std::getline(file, str);
-				m_File.push_back(str + "\n");
-				if (str.find("Bind") != str.npos)
-				{
-					break;
-				}
-			}
-			m_File.push_back("{\n");
-			m_File.push_back("switch(hash)\n{\n");
-
-
-
-			int index = 0;
-			for (int i = 0; i < m_Names.size(); i++)
-			{
-				m_File.push_back(CreateCase(m_Names[i]));
-			}
-
-			std::ofstream out_file;
-			out_file.open("Input/InputHandle.cpp");
-			for (const std::string& line : m_File)
-			{
-				out_file << line;
-				out_file.flush();
-			}
-			out_file << "	}\n}\n";
-			out_file.flush();
-			out_file.close();
-		}
-	}
+	
 	return 0;
 }

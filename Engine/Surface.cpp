@@ -80,6 +80,19 @@ namespace Snowblind
 		}
 	}
 
+	std::string CheckTextureType(TextureType type)
+	{
+		switch (type)
+		{
+			case _ALBEDO: return "ALBEDO";
+			case _NORMAL: return "NORMAL";
+			case _METALNESS: return "METALNESS";
+			case _ROUGHNESS: return "ROUGHNESS";
+			case _AO: return "AO";
+			case _EMISSIVE: return "EMISSIVE";
+		}
+	}
+
 	void CSurface::AddTexture(const std::string& file_path, TextureType type)
 	{
 		m_ContainingTextures |= type;
@@ -96,8 +109,16 @@ namespace Snowblind
 		myTextures.Add(new_texture);
 
 		std::sort(myTextures.begin(), myTextures.end(), [&](STexture* first, STexture* second) {
+			DL_MESSAGE("\nFirst : %d\nType : %s", (u64)first, CheckTextureType(first->m_Type).c_str());
+			DL_MESSAGE("\nSecond : %d\nType : %s", (u64)second, CheckTextureType(second->m_Type).c_str());
 			return first->m_Type < second->m_Type;
 		});
+
+		for (s32 i = 0; i < myTextures.Size(); i++)
+		{
+			DL_MESSAGE("\nIndex : %d\nPointer : %d\nType : %s", i, (u64)myTextures[i], CheckTextureType(myTextures[i]->m_Type).c_str());
+		}
+
 
 
 #ifdef SNOWBLIND_DX11

@@ -1,12 +1,14 @@
 #include "stdafx.h"
-#include "Synchronizer.h"
-#include "Renderer.h"
+
+#include <d3dcompiler.h>
+
 #include "AssetsContainer.h"
-#include "Terrain.h"
 #include "IGraphicsAPI.h"
-#include "Vulkan.h"
+#include "Renderer.h"
+#include "Synchronizer.h"
+#include "Terrain.h"
 #include "TerrainManager.h"
-Ticket_Mutex g_Mutex;
+
 
 namespace Snowblind
 {
@@ -170,6 +172,23 @@ namespace Snowblind
 	void CEngine::Render()
 	{
 		m_DebugSystem.Render();
+	}
+
+	void CEngine::CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, pBlob& out_compiled_shader, pBlob& out_compile_message)
+	{
+		std::wstring w_file_path(file_path.begin(), file_path.end());
+		HRESULT hr = D3DCompileFromFile(
+			w_file_path.c_str(),
+			NULL,
+			NULL,
+			shader_type.c_str(),
+			feature_level.c_str(), 
+			shader_flags, 
+			NULL, 
+			&out_compiled_shader, 
+			&out_compile_message);
+
+		GetAPI()->HandleErrors(hr, "Failed to compile shader!");
 	}
 
 	void CEngine::Present()

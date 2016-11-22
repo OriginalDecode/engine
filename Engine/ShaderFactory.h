@@ -10,6 +10,19 @@ struct ID3D11HullShader;
 struct ID3D11DomainShader;
 struct ID3D11ComputeShader;
 struct ID3D10Blob;
+
+
+typedef ID3D11VertexShader		*pVertexShader;
+typedef ID3D11PixelShader		*pPixelShader;
+typedef ID3D11GeometryShader	*pGeometryShader;
+typedef ID3D11HullShader		*pHullShader;
+typedef ID3D11DomainShader		*pDomainShader;
+typedef ID3D11ComputeShader		*pComputeShader;
+typedef ID3D10Blob				*pBlob;
+
+#else
+
+
 #endif
 class ShaderWarningHandler;
 
@@ -19,11 +32,9 @@ namespace Snowblind
 
 	struct SCompiledShader
 	{
-		SCompiledShader() {};
+		SCompiledShader() = default;
 		virtual ~SCompiledShader();
-#ifdef SNOWBLIND_DX11
-		ID3D10Blob* blob = nullptr;
-#endif
+		pBlob blob = nullptr;
 		void* compiledShader = nullptr;
 		int shaderSize = 0;
 		CU::GrowingArray<CEffect*> effectPointers;
@@ -32,49 +43,37 @@ namespace Snowblind
 	struct SVertexShader : public SCompiledShader
 	{
 		~SVertexShader();
-#ifdef SNOWBLIND_DX11
-		ID3D11VertexShader* vertexShader = nullptr;
-#endif
+		pVertexShader vertexShader = nullptr;
 	};
 
 	struct SPixelShader : public SCompiledShader
 	{
 		~SPixelShader();
-#ifdef SNOWBLIND_DX11
-		ID3D11PixelShader* pixelShader = nullptr;
-#endif
+		pPixelShader pixelShader = nullptr;
 	};
 
 	struct SGeometryShader : public SCompiledShader
 	{
 		~SGeometryShader();
-#ifdef SNOWBLIND_DX11
-		ID3D11GeometryShader* geometryShader = nullptr;
-#endif
+		pGeometryShader geometryShader = nullptr;
 	};
 
 	struct SHullShader : public SCompiledShader
 	{
 		~SHullShader();
-#ifdef SNOWBLIND_DX11
-		ID3D11HullShader* hullShader = nullptr;
-#endif
+		pHullShader hullShader = nullptr;
 	};
 
 	struct SDomainShader : public SCompiledShader
 	{
 		~SDomainShader();
-#ifdef SNOWBLIND_DX11
-		ID3D11DomainShader* domainShader = nullptr;
-#endif
+		pDomainShader domainShader = nullptr;
 	};
 
 	struct SComputeShader : public SCompiledShader
 	{
 		~SComputeShader();
-#ifdef SNOWBLIND_DX11
-		ID3D11ComputeShader* computeShader = nullptr;
-#endif
+		pComputeShader computeShader = nullptr;
 	};
 }
 
@@ -90,9 +89,9 @@ namespace Snowblind
 		void LoadShader(CEffect* anEffect);
 		void Update();
 	private:
-#ifdef SNOWBLIND_DX11
-		ID3D10Blob* CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level);
-#endif
+
+		pBlob CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level);
+
 		bool LoadVertexShader(const std::string& file_path, CEffect* effect);
 		void LoadPixelShader(const std::string& file_path, CEffect* effect);
 		void LoadGeometryShader(const std::string& file_path, CEffect* effect);
@@ -100,9 +99,12 @@ namespace Snowblind
 		void LoadDomainShader(const std::string& file_path, CEffect* effect);
 		void LoadComputeShader(const std::string& file_path, CEffect* effect);
 
-		SVertexShader* CreateVertexShader(const std::string& file_path);
-		SPixelShader* CreatePixelShader(const std::string& file_path);
-		//Missing create Shader functions
+		SVertexShader*		CreateVertexShader(const std::string& file_path);
+		SPixelShader*		CreatePixelShader(const std::string& file_path);
+		SGeometryShader*	CreateGeometryShader(const std::string& file_path);
+		SHullShader*		CreateHullShader(const std::string& file_path);
+		SDomainShader*		CreateDomainShader(const std::string& file_path);
+		SComputeShader*		CreateComputeShader(const std::string& file_path);
 
 		void ReloadVertex(const std::string& aFilePath);
 		void ReloadPixel(const std::string& aFilePath);
@@ -128,6 +130,7 @@ namespace Snowblind
 			COMPUTE,
 			_COUNT
 		};
+
 		CU::StaticArray<FileWatcher*, static_cast<u32>(eShaderType::_COUNT)> myFileWatchers;
 		ShaderWarningHandler myShaderWarningHandler;
 		CU::GrowingArray<CEffect*> GetEffectArray(const std::string& aFilePath);

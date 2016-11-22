@@ -33,18 +33,20 @@ namespace Snowblind
 		std::string sub = CL::substr(path, "/", true, 0) + "/";
 
 		JSONReader reader(path);
-		/*	std::string geometry_shader = reader.ReadElement("GeometryShader");
-			std::string hull_shader = reader.ReadElement("HullShader");
-			std::string domain_shader = reader.ReadElement("DomainShader");
-			std::string compute_shader = reader.ReadElement("ComputeShader");*/
+		/*	
+		std::string geometry_shader = reader.ReadElement("GeometryShader");
+		std::string hull_shader = reader.ReadElement("HullShader");
+		std::string domain_shader = reader.ReadElement("DomainShader");
+		std::string compute_shader = reader.ReadElement("ComputeShader");
+		*/
 
 		LoadVertexShader(sub + reader.ReadElement("VertexShader"), anEffect);
 		LoadPixelShader(sub + reader.ReadElement("PixelShader"), anEffect);
+
 	}
 
-	//----------------------------------------
+	//________________________________________
 	// Vertex Shader
-	//----------------------------------------
 	bool CShaderFactory::LoadVertexShader(const std::string& file_path, CEffect* effect)
 	{
 		if (myVertexShaders.find(file_path) == myVertexShaders.end())
@@ -94,9 +96,8 @@ namespace Snowblind
 		}
 	}
 
-	//----------------------------------------
+	//________________________________________
 	// Pixel Shader
-	//----------------------------------------
 	void CShaderFactory::LoadPixelShader(const std::string& file_path, CEffect* effect)
 	{
 		if (myPixelShaders.find(file_path) == myPixelShaders.end())
@@ -145,9 +146,9 @@ namespace Snowblind
 		}
 	}
 
-	//----------------------------------------
+	//________________________________________
 	// Geometry Shader
-	//----------------------------------------
+
 	void CShaderFactory::LoadGeometryShader(const std::string& file_path, CEffect* effect)
 	{
 #ifdef SNOWBLIND_DX11
@@ -188,9 +189,8 @@ namespace Snowblind
 #endif
 	}
 
-	//----------------------------------------
+	//________________________________________
 	// Hull Shader
-	//----------------------------------------
 	void CShaderFactory::LoadHullShader(const std::string& file_path, CEffect* effect)
 	{
 #ifdef SNOWBLIND_DX11
@@ -232,9 +232,8 @@ namespace Snowblind
 #endif
 	}
 
-	//----------------------------------------
+	//________________________________________
 	// Domain Shader
-	//----------------------------------------
 	void CShaderFactory::LoadDomainShader(const std::string& file_path, CEffect* effect)
 	{
 
@@ -278,9 +277,8 @@ namespace Snowblind
 #endif
 	}
 
-	//----------------------------------------
+	//________________________________________
 	// Compute Shader
-	//----------------------------------------
 	void CShaderFactory::LoadComputeShader(const std::string& file_path, CEffect* effect)
 	{
 #ifdef SNOWBLIND_DX11
@@ -325,8 +323,7 @@ namespace Snowblind
 	}
 	
 
-#ifdef SNOWBLIND_DX11
-	ID3D10Blob* CShaderFactory::CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level)
+	pBlob CShaderFactory::CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level)
 	{
 		HRESULT hr;
 		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
@@ -334,32 +331,28 @@ namespace Snowblind
 		shaderFlag |= D3D10_SHADER_DEBUG;
 		shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
 #endif
+		pBlob compiledShader = nullptr;
+		pBlob compilationMessage = nullptr;
 
-		ID3D10Blob* compiledShader = nullptr;
-		ID3D10Blob* compilationMessage = nullptr;
-		std::wstring fileName(file_path.begin(), file_path.end());
-
-		hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, shader_type.c_str(), feature_level.c_str(), shaderFlag, NULL, &compiledShader, &compilationMessage);
+		//Can this be more generalized?
+		CEngine::GetInstance()->CompileShaderFromFile(file_path, shader_type, feature_level, shaderFlag, compiledShader, compilationMessage);
+		DL_ASSERT_EXP(compiledShader, "Shader was null?");
 		if (compilationMessage != nullptr)
 		{
 			//std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), file_path);
 			DL_WARNING("%s", (char*)compilationMessage->GetBufferPointer());
 			// (#LINUS) Should be output to a warninglist in engine debug tools.
 			//DL_WARNINGBOX((char*)compilationMessage->GetBufferPointer());
-
 		}
-		CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Shader.");
 		return compiledShader;
 	}
-#endif
 
 	CU::GrowingArray<CEffect*> CShaderFactory::GetEffectArray(const std::string& aFilePath)
 	{
 		CU::GrowingArray<CEffect*> effectPointers;
 
-		//----------------------------------------
+		//________________________________________
 		// Vertex Shader
-		//----------------------------------------
 		if (myVertexShaders.find(aFilePath) != myVertexShaders.end())
 		{
 			for each(CEffect* effect in myVertexShaders[aFilePath]->effectPointers)
@@ -371,9 +364,8 @@ namespace Snowblind
 			return effectPointers;
 		}
 
-		//----------------------------------------
+		//________________________________________
 		// Pixel Shader
-		//----------------------------------------
 		if (myPixelShaders.find(aFilePath) != myPixelShaders.end())
 		{
 			for each(CEffect* effect in myPixelShaders[aFilePath]->effectPointers)
@@ -385,9 +377,8 @@ namespace Snowblind
 			return effectPointers;
 		}
 
-		//----------------------------------------
+		//________________________________________
 		// Geometry Shader
-		//----------------------------------------
 		if (myGeometryShaders.find(aFilePath) != myGeometryShaders.end())
 		{
 			for each(CEffect* effect in myGeometryShaders[aFilePath]->effectPointers)
@@ -399,9 +390,8 @@ namespace Snowblind
 			return effectPointers;
 		}
 
-		//----------------------------------------
+		//________________________________________
 		// Hull Shader
-		//----------------------------------------
 		if (myHullShaders.find(aFilePath) != myHullShaders.end())
 		{
 			for each(CEffect* effect in myHullShaders[aFilePath]->effectPointers)
@@ -413,9 +403,8 @@ namespace Snowblind
 			return effectPointers;
 		}
 
-		//----------------------------------------
+		//________________________________________
 		// Domain Shader
-		//----------------------------------------
 		if (myDomainShaders.find(aFilePath) != myDomainShaders.end())
 		{
 			for each(CEffect* effect in myDomainShaders[aFilePath]->effectPointers)
@@ -427,9 +416,8 @@ namespace Snowblind
 			return effectPointers;
 		}
 
-		//----------------------------------------
+		//________________________________________
 		// Compute Shader
-		//----------------------------------------
 		if (myComputeShaders.find(aFilePath) != myComputeShaders.end())
 		{
 			for each(CEffect* effect in myComputeShaders[aFilePath]->effectPointers)
@@ -453,9 +441,8 @@ namespace Snowblind
 		}
 	}
 
-	//----------------------------------------
+	//________________________________________
 	// Shader Structs
-	//----------------------------------------
 
 	SCompiledShader::~SCompiledShader()
 	{

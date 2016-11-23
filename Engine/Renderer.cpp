@@ -150,7 +150,7 @@ namespace Snowblind
 		myEngine->ResetRenderTargetAndDepth();
 		mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
 		myDeferredRenderer->Finalize();
-		mySkysphere->Render(myPrevFrame, myDepthTexture);
+		//mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		//ProcessShadows();
 

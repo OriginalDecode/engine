@@ -123,15 +123,6 @@ void CGame::Update(float aDeltaTime)
 	TranslationComponent& translation = myEntityManager->GetComponent<TranslationComponent>(3);
 	translation.myOrientation.SetPosition(CU::Vector3f(pointHit.x, pointHit.y + 2.f, pointHit.z));
 
-	//std::stringstream b;
-	//if (rigidbody)
-	//{
-	//	CU::Vector3f vec = rigidbody->GetLinearVelocity();
-	//	b << "player_entity_velocity :\nX : " << vec.x << "\nY : " << vec.y << "\nZ : " << vec.z;
-	//	mySynchronizer->AddRenderCommand(RenderCommand(b.str(), { 0, 500 }, eType::TEXT));
-	//}
-
-
 	myEntityManager->Update(aDeltaTime);
 }
 

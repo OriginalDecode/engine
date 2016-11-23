@@ -70,9 +70,6 @@ namespace Snowblind
 		m_Window.Initiate(window_create_info);
 		m_Window.ShowWindow();
 		myHWND = m_Window.GetHWND();
-	
-
-
 
 		if(!m_Window.IsWindowActive())
 			m_Window.OnActive();

@@ -69,8 +69,8 @@ namespace Snowblind
 
 	void CSurface::Deactivate()
 	{
-		//ID3D11ShaderResourceView* view[1] = { nullptr };
-		//myContext->PSSetShaderResources(0, myShaderViews.Size(), view);
+		if(m_Null.Size() > 0)
+			myContext->PSSetShaderResources(0, m_Null.Size(), &m_Null[0]);
 	}
 
 	std::string CheckTextureType(TextureType type)
@@ -114,9 +114,11 @@ namespace Snowblind
 		});
 
 		myShaderViews.RemoveAll();
+		m_Null.RemoveAll();
 		for (s32 i = 0; i < myTextures.Size(); i++)
 		{
 			myShaderViews.Add(myTextures[i].texture);
+			m_Null.Add(nullptr);
 		}
 	}
 
@@ -180,4 +182,9 @@ namespace Snowblind
 
 	}
 	
+	void CSurface::RemoveTextureByIndex(s32 index)
+	{
+		myShaderViews.RemoveCyclicAtIndex(index);
+	}
+
 };

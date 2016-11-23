@@ -46,23 +46,22 @@ namespace Snowblind
 		myDeferredRenderer = new CDeferredRenderer; // Where should this live?
 		if (!myDeferredRenderer)
 			return false;
-		//myDepthTexture = new CTexture; //Where should this live?
-		//if (!myDepthTexture)
-		//	return false;
-		
 
-		//myDepthTexture->Initiate(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight
-		//	, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-		//	, DXGI_FORMAT_R32_TYPELESS
-		//	, DXGI_FORMAT_R32_FLOAT
-		//	, DXGI_FORMAT_D32_FLOAT
-		//	, "Renderer : Depth");
+		myDepthTexture = new CTexture; //Where should this live?
+		if (!myDepthTexture)
+			return false;
+		myDepthTexture->Initiate(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight
+			, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+			, DXGI_FORMAT_R32_TYPELESS
+			, DXGI_FORMAT_R32_FLOAT
+			, DXGI_FORMAT_D32_FLOAT
+			, "Renderer : Depth");
 
-		//mySkysphere = new CSkySphere;
-		//mySkysphere->Initiate("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", camera_3d);
-		//mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Data/Shaders/T_Skysphere_Layer.json");
-		//if (!mySkysphere)
-		//	return false;
+		mySkysphere = new CSkySphere;
+		mySkysphere->Initiate("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", camera_3d);
+		mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Data/Shaders/T_Skysphere_Layer.json");
+		if (!mySkysphere)
+			return false;
 		//mySprite = new CSprite;
 		//mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
 
@@ -141,21 +140,20 @@ namespace Snowblind
 		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
-		//CTexture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
+		CTexture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
 
 		RenderPointlight();
 		//RenderSpotlight();
 
-		myEngine->ResetRenderTargetAndDepth();
 
-		//mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
-		//m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
-		//mySkysphere->Render(myPrevFrame, myDepthTexture);
+		myEngine->ResetRenderTargetAndDepth();
+		mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
+		myDeferredRenderer->Finalize();
+		mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		//ProcessShadows();
 
-		myDeferredRenderer->Finalize();
 
 		//RenderParticles();
 		//RenderLines();
@@ -195,7 +193,7 @@ namespace Snowblind
 				}break;
 				case eType::SKYSPHERE:
 				{
-//					mySkysphere->SetPosition(myCamera->GetPosition());//only updating the position here because it's supposed to be rendered after the light and be unaffected by the ambient pass
+					mySkysphere->SetPosition(myPrevFrame.GetPosition());//only updating the position here because it's supposed to be rendered after the light and be unaffected by the ambient pass
 				}break;
 				case eType::TERRAIN:
 				{

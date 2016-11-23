@@ -49,6 +49,7 @@ namespace Snowblind
 		int GetStartIndex() const;
 
 		void ValidateTextures();
+		void RemoveTextureByIndex(s32 index);
 	private:
 		void AddMissingTexture(TextureType type, const std::string& file_path);
 
@@ -64,6 +65,7 @@ namespace Snowblind
 		CU::GrowingArray<STexture> myTextures;
 
 		CU::GrowingArray<IShaderResourceView*> myShaderViews;
+		CU::GrowingArray<IShaderResourceView*> m_Null;
 
 		CU::GrowingArray<std::string> myFileNames;
 

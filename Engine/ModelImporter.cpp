@@ -213,7 +213,7 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 		newSurface->AddTexture(info[i].myFilename, (Snowblind::TextureType)info[i].myType);
 	}
 
-	newSurface->ValidateTextures();
+	//newSurface->ValidateTextures();
 
 	out->mySurfaces.Add(newSurface);
 #endif

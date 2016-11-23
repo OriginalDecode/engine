@@ -134,7 +134,7 @@ namespace Snowblind
 	void CDeferredRenderer::Finalize()
 	{
 #ifdef SNOWBLIND_DX11
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
 		myDirectX->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 

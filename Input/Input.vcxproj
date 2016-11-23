@@ -263,6 +263,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\hashlist.h" />
     <ClInclude Include="ControllerInput.h" />
     <ClInclude Include="InputCommand.h" />
     <ClInclude Include="InputHandle.h" />

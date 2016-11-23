@@ -76,7 +76,10 @@ int main(int argc, char* argv[])
 		file.close();
 	}
 	else
-		not_updated = false;
+	{
+		std::cout << "File was not updated\n";
+		return 0;
+	}
 
 	if (!not_updated)
 	{
@@ -102,6 +105,6 @@ int main(int argc, char* argv[])
 		out_file.close();
 		std::cout << "Closing file.\n";
 	}
-	
+	std::cout << "Done\n";
 	return 0;
 }

@@ -120,8 +120,8 @@ void CGame::Update(float aDeltaTime)
 
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
 
-	TranslationComponent& translation = myEntityManager->GetComponent<TranslationComponent>(3);
-	translation.myOrientation.SetPosition(CU::Vector3f(pointHit.x, pointHit.y + 2.f, pointHit.z));
+	//TranslationComponent& translation = myEntityManager->GetComponent<TranslationComponent>(3);
+	//translation.myOrientation.SetPosition(CU::Vector3f(pointHit.x, pointHit.y + 2.f, pointHit.z));
 
 	myEntityManager->Update(aDeltaTime);
 }
@@ -130,22 +130,22 @@ bool CGame::CreateLevel(const char* level_path)
 {
 	Snowblind::CEngine::GetInstance()->GetThreadpool().AddWork(
 		Work([&]() {
-		Snowblind::CTerrain* terrain = myEngine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
-		terrain->AddNormalMap("Data/Textures/t0_n.dds");
+		Snowblind::CTerrain* terrain = myEngine->CreateTerrain("Data/Textures/flat_height.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+		terrain->AddNormalMap("Data/Textures/normal.dds");
 		myTerrain.Add(terrain);
+		/*
+				terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(512, 512));
+				terrain->AddNormalMap("Data/Textures/t1_n.dds");
+				myTerrain.Add(terrain);
 
-		terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(512, 512));
-		terrain->AddNormalMap("Data/Textures/t1_n.dds");
-		myTerrain.Add(terrain);
+				terrain = myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, 0, 0), CU::Vector2f(512, 512));
+				terrain->AddNormalMap("Data/Textures/t2_n.dds");
+				myTerrain.Add(terrain);
 
-		terrain = myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, 0, 0), CU::Vector2f(512, 512));
-		terrain->AddNormalMap("Data/Textures/t2_n.dds");
-		myTerrain.Add(terrain);
-
-		terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, 0, 510), CU::Vector2f(512, 512));
-		terrain->AddNormalMap("Data/Textures/t3_n.dds");
-		myTerrain.Add(terrain);
-
+				terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, 0, 510), CU::Vector2f(512, 512));
+				terrain->AddNormalMap("Data/Textures/t3_n.dds");
+				myTerrain.Add(terrain);
+		*/
 		for (s32 i = 0; i < myTerrain.Size(); i++)
 		{
 			myTerrainBodies.Add(myPhysicsManager->CreateBody());

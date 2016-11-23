@@ -43,12 +43,13 @@ struct PixelData
 //---------------------------------
 
 
-const float k0 = 0.00098, k1 = 0.9921; 
-
+const float k0 = 0.00098,
+			k1 = 0.9921; 
+const float specMax = (2 / (0.0014 * 0.0014)) - 2;
 float GetSpecPowToMip(float fSpecPow, int nMips)
 {
 	float fSmulMaxT = (exp2(-10 / sqrt(fSpecPow)) - k0) / k1;
-    float fMaxT = (exp2(-10 / 100000) - k0) / k1;
+	float fMaxT = exp2(-10 / sqrt(specMax) - k0) / k1;
 	return float(nMips - 1) * (1 - clamp(fSmulMaxT / fMaxT, 0.0, 1.0));
 }
 
@@ -70,62 +71,67 @@ float CalculateTotalAttenuation(float someDistance, float someRange)
 	return totalAttenuation;
 }
 
+float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const float3 half_vector, float roughness)
+{
+	float LdotH = dot(light_dir, half_vector);
+	LdotH = saturate(LdotH);
+	LdotH = 1 - LdotH;
+	LdotH = pow(LdotH, 5);
+	float3 fresnel = LdotH * (1-substance);
+	fresnel = fresnel / (6 - 5 * roughness);
+	fresnel = substance + fresnel;
+	return fresnel;
+}
+
+float RoughToSPow(float fRoughness)
+{
+	return (2 / (fRoughness * fRoughness)) - 2;
+}
+
+
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 depth = DepthTexture.Sample(point_Clamp, input.uv);
 	if(depth.x <= 0.f)
 		discard;
 
-
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);	
-	float4 normal = NormalTexture.Sample(point_Clamp, input.uv) * 2 - 1;
-	float4 metalness = float4(0,0,0,0);//float4(normal.w, normal.w, normal.w, normal.w);
-	float roughness = depth.y;
+	float4 normal = NormalTexture.Sample(point_Clamp, input.uv);
+	
+	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
+
+	normal *= 2;
+	normal -= 1;
+	float roughness = 1;depth.y;
+	
+	float roughnessOffsetted = pow(8192, roughness);
+
+
+	float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;
+	float4 metalnessAlbedo = albedo - (albedo * metalness);
+
 	float x = input.uv.x * 2.f - 1.f;
 	float y = (1.f - input.uv.y) * 2.f - 1.f;
 	float z = depth.x; 	
-	float ao = 1.0f;
+	float3 ao = float3(1,1,1);
 	
 	float4 worldPosition = float4(x, y, z, 1.f);
 	worldPosition = mul (worldPosition, InvertedProjection);
 	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, InvertedView);	
 	
-	float3 viewPos = camera_position.xyz;
-	float3 toEye = normalize(viewPos -  worldPosition.xyz);
-    
-	float4 substance = (0.04f - 0.04f * metalness) 
-	+ albedo * metalness;
-            
-	float4 metalnessAlbedo = albedo - (albedo * substance);
+	float3 toEye = normalize(camera_position.xyz -  worldPosition.xyz);
+	float3 reflection_fresnel = ReflectionFresnel(substance, normal, toEye, 1 - roughnessOffsetted);
 
-	float LdotH = dot(normal, toEye);
-	LdotH = saturate(LdotH);
-	LdotH = 1.0f - LdotH;
-	LdotH = pow(LdotH, 5);
-
-	float3 fresnel = LdotH * (1.f - substance);
+	float3	ambientDiffuse = CubeMap.SampleLevel(point_Clamp, normal.xyz, 9).rgb * ao * metalnessAlbedo * (1.f - reflection_fresnel);
 	
-	fresnel = fresnel / (2 - 1 * (1.f - roughness));
-	fresnel = substance + fresnel;
+	float3 reflectionVector = reflect(toEye, normal.xyz);
   
-	float3 reflectionFrensnel =	fresnel;
-	float3 reflectionVector = reflect(toEye, normal);
-	float fakeLysSpecularPower = 1;// (2.f / (roughness * roughness)) - 2.f;
+	float fakeLysSpecularPower = RoughToSPow(roughness);
 	float lysMipMap = GetSpecPowToMip(fakeLysSpecularPower, 12);
     
-	float3 ambientDiffuse = CubeMap.SampleLevel(point_Clamp, reflectionVector, 9).rgb * ao 
-	* (1.f - reflectionFrensnel);
-
-	float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector, lysMipMap).xyz 
-	* ao;
-    //ambientSpec = float3(1,1,1);
-    float rdotv = pow(saturate(dot(reflectionVector, toEye)), 100);
-    
-
-	float NdotL = dot(normal, float3(1,0,0));
-
-
-	float3 finalColor = albedo + ambientDiffuse * 0.2 + rdotv;
-	return float4(finalColor, 1.f)*0.42;
+	float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector,lysMipMap).xyz * ao * reflection_fresnel;
+	
+	float3 finalColor = saturate(ambientDiffuse + ambientSpec);
+	return float4(finalColor, 1.f) * 0.42;
 };

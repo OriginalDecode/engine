@@ -102,7 +102,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, texCoord);
 	float4 normal = NormalTexture.Sample(point_Clamp, texCoord) * 2 - 1;
-
 	float4 depth = DepthTexture.Sample(point_Clamp, texCoord);
 	
 	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);

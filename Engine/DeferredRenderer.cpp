@@ -30,7 +30,7 @@ namespace Snowblind
 			, DXGI_FORMAT_D32_FLOAT
 			, "DeferredRenderer : ");
 
-		myCubeMap = myEngine->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
+		myCubeMap = myEngine->GetTexture("Data/Textures/T_cubemap_level01.dds");
 
 		myScreenPassShader = myEngine->GetEffect("Data/Shaders/T_Render_To_Texture.json");
 

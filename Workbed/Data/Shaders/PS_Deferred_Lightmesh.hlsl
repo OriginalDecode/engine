@@ -120,8 +120,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, InvertedView);
 
-	float3 viewPos = camPosition.xyz;
-	float3 toEye = normalize(viewPos - worldPosition.xyz);	
+	float3 toEye = normalize(worldPosition.xyz - camPosition.xyz);	
 	float3 toLight = position - worldPosition.xyz;
 	float3 lightDir = normalize(toLight);
 	float3 halfVec = normalize(lightDir + toEye);

@@ -120,18 +120,19 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, InvertedView);	
 	
-	float3 toEye = normalize(camera_position.xyz -  worldPosition.xyz);
-	float3 reflection_fresnel = ReflectionFresnel(substance, normal, toEye, 1 - roughnessOffsetted);
+	float3 toEye = normalize(worldPosition.xyz - camera_position.xyz);
+	float3 reflection_fresnel = ReflectionFresnel(substance, normal, -toEye, 1 - roughnessOffsetted);
 
-	float3	ambientDiffuse = CubeMap.SampleLevel(point_Clamp, normal.xyz, 9).rgb * ao * metalnessAlbedo * (1.f - reflection_fresnel);
-	
+
 	float3 reflectionVector = reflect(toEye, normal.xyz);
+	float3	ambientDiffuse = CubeMap.SampleLevel(point_Clamp, reflectionVector, 9).rgb * (metalness * 0.45) + albedo * (1 - reflection_fresnel) * ao;
+
   
 	float fakeLysSpecularPower = RoughToSPow(roughness);
 	float lysMipMap = GetSpecPowToMip(fakeLysSpecularPower, 12);
     
 	float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector,lysMipMap).xyz * ao * reflection_fresnel;
 	
-	float3 finalColor = saturate(ambientDiffuse + ambientSpec);
-	return float4(finalColor, 1.f) * 0.42;
+	float3 finalColor = (ambientDiffuse + ambientSpec);
+	return float4(finalColor, 1.f);
 };

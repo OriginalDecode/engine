@@ -6,6 +6,8 @@
 #include <JSON/JSONReader.h>
 #include <standard_datatype.hpp>
 #include <functional>
+#include <AABB.h>
+
 namespace Snowblind
 {
 	class CSynchronizer;
@@ -56,6 +58,7 @@ private:
 	float myAverageFPS = 0;
 	float myTime = 0.f;
 
+	CU::GrowingArray<cl::AABB*> m_AABBs;
 	CU::GrowingArray<Snowblind::CTerrain*> myTerrain;
 	CU::GrowingArray<CRigidBody*> myTerrainBodies;
 

@@ -254,6 +254,12 @@ namespace Snowblind
 		return true;
 	}
 
+	void CTexture::OnReload()
+	{
+		CleanUp();
+		Load(myFileName);
+	}
+
 	void CTexture::SetTexture(IShaderResourceView* aShaderResource)
 	{
 		m_ShaderResource = aShaderResource;

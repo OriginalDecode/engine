@@ -66,11 +66,11 @@ namespace Snowblind
 	{
 		VertexShader* newShader = new VertexShader();
 #ifdef SNOWBLIND_DX11
-		ID3D11Device* device = CEngine::GetAPI()->GetDevice();
+		IDevice* device = CEngine::GetAPI()->GetDevice();
 
 		ENGINE_LOG("Creating vertexshader %s", file_path.c_str());
 
-		ID3D10Blob* compiled_shader = CompileShader(file_path, "VS", "vs_5_0");
+		IBlob* compiled_shader = CompileShader(file_path, "VS", "vs_5_0");
 		HRESULT hr = device->CreateVertexShader(compiled_shader->GetBufferPointer(), compiled_shader->GetBufferSize(), nullptr, &newShader->vertexShader);
 
 		newShader->blob = compiled_shader;
@@ -115,11 +115,11 @@ namespace Snowblind
 		PixelShader* newShader = new PixelShader();
 #ifdef SNOWBLIND_DX11
 		myPixelShaders[file_path] = newShader;
-		ID3D11Device* device = CEngine::GetAPI()->GetDevice();
+		IDevice* device = CEngine::GetAPI()->GetDevice();
 		ENGINE_LOG("Creating pixelshader : %s", file_path.c_str());
 		
 		HRESULT hr;
-		ID3D10Blob* compiled_shader = CompileShader(file_path, "PS", "ps_5_0");
+		IBlob* compiled_shader = CompileShader(file_path, "PS", "ps_5_0");
 		DL_ASSERT_EXP(compiled_shader, "Shader was null");
 		hr = device->CreatePixelShader(compiled_shader->GetBufferPointer(), compiled_shader->GetBufferSize(), nullptr, &newShader->pixelShader);
 		CEngine::GetAPI()->HandleErrors(hr, "Failed to Create Pixel Shader.");
@@ -148,14 +148,13 @@ namespace Snowblind
 
 	//________________________________________
 	// Geometry Shader
-
 	void CShaderFactory::LoadGeometryShader(const std::string& file_path, CEffect* effect)
 	{
 #ifdef SNOWBLIND_DX11
 		if (myGeometryShaders.find(file_path) == myGeometryShaders.end())
 		{
 			GeometryShader* newShader = new GeometryShader();
-			ID3D11Device* device = CEngine::GetAPI()->GetDevice();
+			IDevice* device = CEngine::GetAPI()->GetDevice();
 
 			ENGINE_LOG("Creating geometryshader : %s", file_path.c_str());
 			HRESULT hr;
@@ -165,8 +164,8 @@ namespace Snowblind
 			shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
 #endif
 
-			ID3D10Blob* compiledShader = 0;
-			ID3D10Blob* compilationMessage = 0;
+			IBlob* compiledShader = 0;
+			IBlob* compilationMessage = 0;
 			std::wstring fileName(file_path.begin(), file_path.end());
 			hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "GS", "gs_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
 			if (compilationMessage != nullptr)
@@ -197,7 +196,7 @@ namespace Snowblind
 		if (myHullShaders.find(file_path) == myHullShaders.end())
 		{
 			HullShader* newShader = new HullShader();
-			ID3D11Device* device = CEngine::GetAPI()->GetDevice();
+			IDevice* device = CEngine::GetAPI()->GetDevice();
 
 			ENGINE_LOG("Creating hullshader : %s", file_path.c_str());
 			HRESULT hr;
@@ -207,8 +206,8 @@ namespace Snowblind
 			shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
 #endif
 
-			ID3D10Blob* compiledShader = 0;
-			ID3D10Blob* compilationMessage = 0;
+			IBlob* compiledShader = 0;
+			IBlob* compilationMessage = 0;
 
 			std::wstring fileName(file_path.begin(), file_path.end());
 			hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "HS", "hs_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
@@ -241,7 +240,7 @@ namespace Snowblind
 		if (myDomainShaders.find(file_path) == myDomainShaders.end())
 		{
 			DomainShader* newShader = new DomainShader();
-			ID3D11Device* device = CEngine::GetAPI()->GetDevice();
+			IDevice* device = CEngine::GetAPI()->GetDevice();
 
 			ENGINE_LOG("Creating domainshader : %s", file_path.c_str());
 			HRESULT hr;
@@ -251,8 +250,8 @@ namespace Snowblind
 			shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
 #endif
 
-			ID3D10Blob* compiledShader = 0;
-			ID3D10Blob* compilationMessage = 0;
+			IBlob* compiledShader = 0;
+			IBlob* compilationMessage = 0;
 
 			std::wstring fileName(file_path.begin(), file_path.end());
 			hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "DS", "ds_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);
@@ -285,7 +284,7 @@ namespace Snowblind
 		if (myComputeShaders.find(file_path) == myComputeShaders.end())
 		{
 			ComputeShader* newShader = new ComputeShader();
-			ID3D11Device* device = CEngine::GetAPI()->GetDevice();
+			IDevice* device = CEngine::GetAPI()->GetDevice();
 
 			ENGINE_LOG("Creating computeshader : %s", file_path.c_str());
 			HRESULT hr;
@@ -295,8 +294,8 @@ namespace Snowblind
 			shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
 #endif
 
-			ID3D10Blob* compiledShader = 0;
-			ID3D10Blob* compilationMessage = 0;
+			IBlob* compiledShader = 0;
+			IBlob* compilationMessage = 0;
 
 			std::wstring fileName(file_path.begin(), file_path.end());
 			hr = D3DCompileFromFile(fileName.c_str(), NULL, NULL, "CS", "cs_5_0", shaderFlag, NULL, &compiledShader, &compilationMessage);

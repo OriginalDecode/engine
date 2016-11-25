@@ -100,6 +100,8 @@ enum class KButton
 	PGUP = DIK_PGUP,
 	HOME = DIK_HOME,
 	END = DIK_END,
+	NUMADD = DIK_ADD,
+	NUMMINUS = DIK_SUBTRACT
 };
 
 class InputWrapper

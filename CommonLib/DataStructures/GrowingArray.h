@@ -46,7 +46,6 @@ namespace CommonUtilities
 		void Reserve(SizeType aNewSize);
 		inline void Resize(SizeType aNewSize);
 
-		inline ObjectType* GetArrayAsPointer();
 
 		typedef ObjectType* iterator;
 		typedef const ObjectType* const_iterator;
@@ -63,12 +62,6 @@ namespace CommonUtilities
 		SizeType myCapacity = 16;
 		SizeType mySize = 0;
 	};
-
-	template<typename ObjectType, typename SizeType /*= int*/>
-	ObjectType* CommonUtilities::GrowingArray<ObjectType, SizeType>::GetArrayAsPointer()
-	{
-		return myData;
-	}
 
 	template<typename ObjectType, typename SizeType = int>
 	GrowingArray<ObjectType, SizeType>::GrowingArray()

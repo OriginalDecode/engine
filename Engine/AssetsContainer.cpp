@@ -5,6 +5,7 @@
 #include "Effect.h"
 #include "ShaderFactory.h"
 #include "ModelImporter.h"
+#include "Texture.h"
 
 namespace Cache
 {
@@ -73,6 +74,11 @@ namespace Cache
 	void CAssetsContainer::Update()
 	{
 		myShaderFactory->Update();
+	}
+
+	void CAssetsContainer::ReloadTexture(Snowblind::CTexture* texture)
+	{
+		texture->OnReload();
 	}
 
 	bool CAssetsContainer::LoadTexture(const std::string& aFilePath)

@@ -33,7 +33,7 @@ void CRenderSystem::Update(float /*aDeltaTime*/)
 			RenderComponent& render = GetComponent<RenderComponent>(e);
 			AABBComponent& aabb = GetComponent<AABBComponent>(e);
 
-			aabb.m_AABB.Update(Snowblind::CEngine::GetInstance()->GetModel(render.myModelID)->GetWHD(), translation.myOrientation);
+			aabb.m_AABB.Update(Snowblind::CEngine::GetInstance()->GetModel(render.myModelID)->GetOrientation());
 			const CU::GrowingArray<RenderCommand> commands = aabb.m_AABB.GetCommands();
 			for (const RenderCommand& command : commands)
 			{

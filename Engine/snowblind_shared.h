@@ -2,19 +2,6 @@
 #include <Windows.h>
 #include <standard_datatype.hpp>
 #ifdef SNOWBLIND_DX11
-//struct ID3D11ShaderResourceView;
-//struct ID3D11RenderTargetView;
-//struct ID3D11DepthStencilView;
-//struct ID3D11Texture2D;
-//
-//struct ID3D11VertexShader;
-//struct ID3D11PixelShader;
-//struct ID3D11GeometryShader;
-//struct ID3D11HullShader;
-//struct ID3D11DomainShader;
-//struct ID3D11ComputeShader;
-//struct ID3D10Blob;
-
 typedef struct ID3D11Texture2D				ITexture2D;
 typedef struct ID3D11ShaderResourceView		IShaderResourceView;
 typedef struct ID3D11DepthStencilView		IDepthStencilView;
@@ -30,6 +17,9 @@ typedef struct ID3D11HullShader				IHullShader;
 typedef struct ID3D11DomainShader			IDomainShader;
 typedef struct ID3D11ComputeShader			IComputeShader;
 typedef struct ID3D10Blob					IBlob;
+
+typedef struct ID3D11Device					IDevice;
+typedef struct ID3D11DeviceContext			IContext_;
 
 #else
 

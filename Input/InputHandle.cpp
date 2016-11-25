@@ -127,7 +127,10 @@ void InputHandle::HandleInput()
 			}
 			if (m_Input->MouseDown(0))
 				CallFunction(s_LMouseButton_hash);
-
+			if (m_Input->KeyDown(KButton::NUMADD))
+				CallFunction(s_NumpadAdd_hash);
+			if (m_Input->KeyDown(KButton::NUMMINUS))
+				CallFunction(s_NumpadMinus_hash);
 
 		}
 	}

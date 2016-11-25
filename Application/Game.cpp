@@ -50,6 +50,7 @@
 
 #include <DataStructures/Hashmap/Hash.h>
 #include <AABBComponent.h>
+#include <hashlist.h>
 
 
 bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
@@ -98,6 +99,7 @@ bool CGame::CleanUp()
 
 	return true;
 }
+static float speed = 50.f;
 
 void CGame::Update(float aDeltaTime)
 {
@@ -113,7 +115,8 @@ void CGame::Update(float aDeltaTime)
 	}
 
 	std::stringstream ss;
-	ss << "FPS : " << myEngine->GetFPS() << "\n" << "Average FPS : " << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::CEngine::GetInstance()->GetLocalTimeAsString();
+	ss << "FPS : " << myEngine->GetFPS() << "\n" << "Average FPS : " << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::CEngine::GetInstance()->GetLocalTimeAsString()
+		<< "\ncamera_speed_multiplier : " << speed;
 	myEngine->AddDebugText(ss.str());
 
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
@@ -123,7 +126,10 @@ void CGame::Update(float aDeltaTime)
 
 	//TranslationComponent& translation = myEntityManager->GetComponent<TranslationComponent>(3);
 	//translation.myOrientation.SetPosition(CU::Vector3f(pointHit.x, pointHit.y + 2.f, pointHit.z));
-
+	for (s32 i = 0; i < m_AABBs.Size(); i++)
+	{
+		m_AABBs[i]->Intersect(pointHit);
+	}
 	myEntityManager->Update(aDeltaTime);
 }
 
@@ -225,10 +231,13 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 		entityReader.ReadElement("render", entityModel);
 		r.myModelID = myEngine->LoadModel(entityModel[0], entityModel[1]);
 
+		TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
+
+
 		myEntityManager->AddComponent<AABBComponent>(e);
 		AABBComponent& aabb = myEntityManager->GetComponent<AABBComponent>(e);
-
-
+		aabb.m_AABB.Initiate(&t.myOrientation, Snowblind::CEngine::GetInstance()->GetModel(r.myModelID)->GetWHD());
+		m_AABBs.Add(&aabb.m_AABB);
 	}
 
 	if (entityReader.HasElement("physics"))
@@ -386,6 +395,13 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 				CGame::LeftClick(input.m_InputHandle->GetX(), input.m_InputHandle->GetY());
 			});
 
+			input.m_InputHandle->Bind(s_NumpadAdd_hash, [&]() {
+				speed += 0.1f;
+			});
+
+			input.m_InputHandle->Bind(s_NumpadMinus_hash, [&]() {
+				speed -= 0.1f;
+			});
 		}
 		else if (controller_type == "ai")
 		{
@@ -444,34 +460,33 @@ void Left(CRigidBody* rigidbody)
 		rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
 }
 
-static const float speed = 1.f;
 
 void Up(Snowblind::CCamera* camera)
 {
-	camera->Move(Snowblind::eDirection::UP, speed * 0.016f);
+	camera->Move(Snowblind::eDirection::UP, speed * Snowblind::CEngine::GetInstance()->GetDeltaTime());
 }
 
 void Down(Snowblind::CCamera* camera)
 {
-	camera->Move(Snowblind::eDirection::DOWN, -speed * 0.016f);
+	camera->Move(Snowblind::eDirection::DOWN, -speed * Snowblind::CEngine::GetInstance()->GetDeltaTime());
 }
 
 void Forward(Snowblind::CCamera* camera)
 {
-	camera->Move(Snowblind::eDirection::FORWARD, speed * 0.016f);
+	camera->Move(Snowblind::eDirection::FORWARD, speed* Snowblind::CEngine::GetInstance()->GetDeltaTime());
 }
 
 void Backward(Snowblind::CCamera* camera)
 {
-	camera->Move(Snowblind::eDirection::BACK, -speed * 0.016f);
+	camera->Move(Snowblind::eDirection::BACK, -speed * Snowblind::CEngine::GetInstance()->GetDeltaTime());
 }
 
 void Right(Snowblind::CCamera* camera)
 {
-	camera->Move(Snowblind::eDirection::RIGHT, speed * 0.016f);
+	camera->Move(Snowblind::eDirection::RIGHT, speed * Snowblind::CEngine::GetInstance()->GetDeltaTime());
 }
 
 void Left(Snowblind::CCamera* camera)
 {
-	camera->Move(Snowblind::eDirection::LEFT, -speed * 0.016f);
+	camera->Move(Snowblind::eDirection::LEFT, -speed * Snowblind::CEngine::GetInstance()->GetDeltaTime());
 }

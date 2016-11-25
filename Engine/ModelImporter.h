@@ -63,7 +63,7 @@ struct ModelData
 	CU::GrowingArray<TextureInfo> myTextures;
 	CU::GrowingArray<Layout> myLayout;
 
-	
+	CU::Vector3f m_WHD;
 };
 
 struct TextureData

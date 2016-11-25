@@ -11,6 +11,7 @@ namespace Snowblind
 {
 	CModel::CModel()
 	{
+		m_WHD = { 0.f,0.f,0.f };
 		myModelStates.reset();
 	}
 
@@ -162,6 +163,11 @@ namespace Snowblind
 			to_return.push_back(index);
 		}
 		return to_return;
+	}
+
+	void CModel::SetWHD(CU::Vector3f whd)
+	{
+		m_WHD = whd;
 	}
 
 	void CModel::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)

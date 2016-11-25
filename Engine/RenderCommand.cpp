@@ -77,7 +77,11 @@ RenderCommand::RenderCommand(const eType& aType)
 {
 }
 
-RenderCommand::RenderCommand()
+RenderCommand::RenderCommand(const eType& aType, const std::string& modelKey, const CU::Matrix44f& orientation)
+	: myType(aType)
+	, myModelKey(modelKey)
+	, myRotationMatrix(orientation)
+	, myCommandType(eCommandBuffer::e3D)
 {
 }
 

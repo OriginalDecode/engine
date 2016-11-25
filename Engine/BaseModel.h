@@ -36,6 +36,7 @@ namespace Snowblind
 		virtual void InitConstantBuffer() = 0;
 		virtual void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
 		CEngine* myEngine = nullptr;
+		CU::Vector3f m_WHD;
 
 
 #ifdef SNOWBLIND_DX11

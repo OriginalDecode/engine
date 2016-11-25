@@ -240,7 +240,6 @@ void CLine3D::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCam
 {
 #ifdef SNOWBLIND_DX11
 	DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
-	myOrientation.SetPosition(CU::Vector3f(1, 1, 1));
 	myConstantStruct->world = myOrientation;
 	myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
 	myConstantStruct->projection = aCameraProjection;

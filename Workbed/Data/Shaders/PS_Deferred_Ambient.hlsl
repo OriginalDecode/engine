@@ -125,7 +125,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 
 	float3 reflectionVector = reflect(toEye, normal.xyz);
-	float3	ambientDiffuse = CubeMap.SampleLevel(point_Clamp, reflectionVector, 9).rgb * (metalness * 0.45) + albedo * (1 - reflection_fresnel) * ao;
+	float3	ambientDiffuse = CubeMap.SampleLevel(point_Clamp, reflectionVector, 9).rgb * (metalness * 0) + albedo * (1 - reflection_fresnel) * ao;
 
   
 	float fakeLysSpecularPower = RoughToSPow(roughness);

@@ -1,5 +1,6 @@
 #pragma once
 #include <Math/Vector/Vector.h>
+#include <Math/Matrix/Matrix.h>
 struct SVertexTypePosCol
 {
 	CU::Math::Vector4<float> myPosition;

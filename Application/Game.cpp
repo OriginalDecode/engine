@@ -49,6 +49,7 @@
 #include <Worker.h>
 
 #include <DataStructures/Hashmap/Hash.h>
+#include <AABBComponent.h>
 
 
 bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
@@ -133,7 +134,7 @@ bool CGame::CreateLevel(const char* level_path)
 		Snowblind::CTerrain* terrain = myEngine->CreateTerrain("Data/Textures/flat_height.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
 		terrain->AddNormalMap("Data/Textures/normal.dds");
 		myTerrain.Add(terrain);
-		/*
+		
 				terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(512, 512));
 				terrain->AddNormalMap("Data/Textures/t1_n.dds");
 				myTerrain.Add(terrain);
@@ -145,7 +146,7 @@ bool CGame::CreateLevel(const char* level_path)
 				terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, 0, 510), CU::Vector2f(512, 512));
 				terrain->AddNormalMap("Data/Textures/t3_n.dds");
 				myTerrain.Add(terrain);
-		*/
+		
 		for (s32 i = 0; i < myTerrain.Size(); i++)
 		{
 			myTerrainBodies.Add(myPhysicsManager->CreateBody());
@@ -219,9 +220,15 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 	{
 		myEntityManager->AddComponent<RenderComponent>(e);
 		RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
+
 		std::string entityModel[2];
 		entityReader.ReadElement("render", entityModel);
 		r.myModelID = myEngine->LoadModel(entityModel[0], entityModel[1]);
+
+		myEntityManager->AddComponent<AABBComponent>(e);
+		AABBComponent& aabb = myEntityManager->GetComponent<AABBComponent>(e);
+
+
 	}
 
 	if (entityReader.HasElement("physics"))
@@ -437,7 +444,7 @@ void Left(CRigidBody* rigidbody)
 		rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
 }
 
-static const float speed = 50.f;
+static const float speed = 1.f;
 
 void Up(Snowblind::CCamera* camera)
 {

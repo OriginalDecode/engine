@@ -122,7 +122,9 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 #ifdef SNOWBLIND_DX11
 	ModelData* data = someData->myData;
 
-
+	float x, y, z;
+	out->SetWHD(data->m_WHD);
+	x = data->m_WHD.x;
 	Snowblind::SVertexIndexWrapper* indexWrapper = new Snowblind::SVertexIndexWrapper();
 	indexWrapper->myFormat = DXGI_FORMAT_R32_UINT;
 	u32* indexData = new u32[data->myIndexCount];
@@ -232,7 +234,7 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 
 	for (u32 i = 0; i < aNode->mNumChildren; i++)
 	{
-		someData->myChildren.Add(new FBXModelData());
+		someData->myChildren.Add(new FBXModelData);
 		ProcessNode(aNode->mChildren[i], aScene, someData->myChildren.GetLast());
 	}
 #endif
@@ -336,6 +338,10 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 	CU::GrowingArray<u32> indices;
 	u32 vertCount = 0;
 
+	float w;
+	float h;
+	float d;
+
 	for (u32 i = 0; i < aMesh->mNumFaces; i++)
 	{
 		const aiFace* face = &aMesh->mFaces[i];
@@ -359,6 +365,24 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 				data->myData->myVertexBuffer[currIndex + 1] = position.y;
 				data->myData->myVertexBuffer[currIndex + 2] = position.z;
 				data->myData->myVertexBuffer[currIndex + 3] = 0;
+
+				if (i != 0)
+				{
+					if (w < position.x)
+						w = position.x;
+					if (h < position.y)
+						h = position.y;
+					if (d < position.z)
+						d = position.z;
+				}
+				else
+				{
+					w = position.x;
+					h = position.y;
+					d = position.z;
+				}
+
+
 			}
 
 			if (aMesh->HasNormals())
@@ -424,6 +448,9 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 			vertCount++;
 		}
 	}
+	data->myData->m_WHD.x = w;
+	data->myData->m_WHD.y = h;
+	data->myData->m_WHD.z = d;
 
 	//Flips it to make it correct.
 	CU::GrowingArray<u32> indiceFix;

@@ -8,7 +8,7 @@ namespace CommonUtilities
 	namespace Math
 	{
 		template<typename T>
-		Vector3<T>::Vector3(T anX, T anY, T anZ)
+		Vector3<T>::Vector3(T anX = 0, T anY = 0, T anZ = 0)
 		{
 			x = anX;
 			y = anY;
@@ -219,6 +219,8 @@ namespace CommonUtilities
 				(aFirstVector.z*aSecondVector.x) - (aFirstVector.x*aSecondVector.z),
 				(aFirstVector.x*aSecondVector.y) - (aFirstVector.y*aSecondVector.x));
 		}
+
+
 
 		template<typename T>
 		bool operator==(const Vector3<T>& aFirst, const Vector3<T>& aSecond)

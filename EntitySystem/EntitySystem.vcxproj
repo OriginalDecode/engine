@@ -241,6 +241,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AABBComponent.h" />
     <ClInclude Include="AIComponent.h" />
     <ClInclude Include="AISystem.h" />
     <ClInclude Include="BaseComponent.h" />

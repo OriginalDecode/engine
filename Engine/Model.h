@@ -31,7 +31,8 @@ static Ticket_Mutex g_ModelMutex;
 
 		std::vector<float> GetVertices();
 		std::vector<s32> GetIndices();
-
+		CU::Vector3f GetWHD() const { return m_WHD; }
+		void SetWHD(CU::Vector3f whd);
 	private:
 		void InitConstantBuffer();
 		CU::GrowingArray<SVertexTypePosCol> myVertices;
@@ -41,7 +42,6 @@ static Ticket_Mutex g_ModelMutex;
 		CU::GrowingArray<CModel*> myChildren;
 
 		CU::Matrix44f myOrientation;
-
 		std::bitset<eModelStates::_COUNT> myModelStates;
 
 		void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;

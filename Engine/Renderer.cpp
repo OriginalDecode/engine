@@ -156,7 +156,7 @@ namespace Snowblind
 
 
 		//RenderParticles();
-		//RenderLines();
+		RenderLines();
 
 		Render2DCommands();
 #endif
@@ -189,6 +189,7 @@ namespace Snowblind
 
 					CModel* model = myEngine->GetModel(command.myModelKey);
 					model->SetPosition(command.myPosition);
+					model->SetOrientation(command.myRotationMatrix);
 					model->Render(myPrevFrame, myCamera->GetProjection());
 				}break;
 				case eType::SKYSPHERE:

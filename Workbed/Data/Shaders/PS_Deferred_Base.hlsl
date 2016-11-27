@@ -11,7 +11,7 @@ Texture2D NormalTexture  	: register ( t1 );
 Texture2D RoughnessTexture 	: register ( t2 );
 Texture2D MetalnessTexture 	: register ( t3 );
 Texture2D AOTexture			: register ( t4 );
-Texture2D Emissive			: register ( t5 );
+//Texture2D Emissive			: register ( t5 );
 
 //Texture2D EmissiveTexture	: register ( t5 );
 
@@ -52,13 +52,14 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	_normal += 1;
 	_normal *= 0.5;
 
-
 	GBuffer output;
 	output = (GBuffer)0;
 	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * AOTexture.Sample(linear_Wrap, input.uv);
 	output.Normal = float4(_normal.rgb, MetalnessTexture.Sample(linear_Wrap, input.uv).r);
 	output.Depth.x = input.pos.z;
 	output.Depth.y = RoughnessTexture.Sample(linear_Wrap, input.uv).r;
+	output.Depth.w = 1;
+	
 	output.Emissive = float4(1,1,1,1);
 	return output;
 }

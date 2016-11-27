@@ -44,7 +44,7 @@ void CApplication::Update()
 		"Z : " << myCamera->GetPosition().z;
 
 		myEngine->AddDebugText(ss.str());
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SKYSPHERE, myCamera->GetPosition()));
+//		mySynchronizer->AddRenderCommand(RenderCommand(eType::SKYSPHERE, myCamera->GetPosition()));
 
 		myGame->Update(deltaTime);
 		Snowblind::CEngine::GetInstance()->Render();

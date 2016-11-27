@@ -205,6 +205,8 @@ namespace CommonUtilities
 		template<typename T>
 		inline const Vector4<T> operator/=(Vector4<T>& aFirstVector, const T aScale)
 		{
+			if (aScale <= 0.f)
+				return CU::Vector4f();
 			assert(aScale != 0 && "Can't divide by Zero");
 			aFirstVector.x /= aScale;
 			aFirstVector.y /= aScale;

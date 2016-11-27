@@ -4,7 +4,7 @@
 
 #include "../Physics/RigidBody.h"
 #include "../Physics/PhysicsManager.h"
-
+#include "AABBComponent.h"
 CPhysicsSystem::CPhysicsSystem(CEntityManager& anEntityManager, CPhysicsManager* aPhysicsManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, SPhysicsComponent>>())
 	, myPhysicsManager(aPhysicsManager)
@@ -24,6 +24,12 @@ void CPhysicsSystem::Update(float aDeltaTime)
 			SPhysicsComponent& physics = GetComponent<SPhysicsComponent>(e);
 			translation.myOrientation = physics.myBody->GetOrientation();
 			physics.myBody->Update(aDeltaTime);
+
+			AABBComponent& aabb = GetComponent<AABBComponent>(e);
+			if(aabb.m_Body)
+			aabb.m_Body->Update(aDeltaTime);
+
+
 
 		}
 		myPhysicsManager->Update(myAccumulatedTime); //ASync Physics?

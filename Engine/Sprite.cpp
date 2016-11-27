@@ -57,6 +57,16 @@ namespace Snowblind
 		pos.y = pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f);
 		myPosition = pos;
 		//mySprite->GetEffect()->SetPosition(myPosition);
+
+		//float w = CEngine::GetInstance()->GetWindowSize().myWidth;
+		//float h = CEngine::GetInstance()->GetWindowSize().myHeight;
+		//CU::Math::Vector2<float> pos(-(w * 0.5f), (h * 0.5f));
+		////pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
+		////pos.y = -pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f) - (myFont->GetFontPixelSize());
+		//pos.x = pos.x + (w * aPosition.x);
+		//pos.y = pos.y - (h * aPosition.y);
+		//myPosition = pos;
+
 		myOrientation.SetPosition(CU::Vector3f(myPosition));
 	}
 
@@ -76,6 +86,11 @@ namespace Snowblind
 	{
 		aScale;
 		//mySprite->GetEffect()->SetScale(aScale);
+	}
+
+	void CSprite::SetShaderView(ID3D11ShaderResourceView* srv)
+	{
+		mySprite->SetTexture(srv);
 	}
 
 };

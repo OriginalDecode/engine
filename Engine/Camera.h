@@ -28,6 +28,8 @@ namespace Snowblind
 	public:
 		CCamera(float aWidth, float aHeight);
 		CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition);
+		CCamera(float aWidth, float aHeight, float far_plane, float near_plane);
+		CCamera(float aWidth, float aHeight, float far_plane, float near_plane, float fov);
 
 		const CU::Vector3f GetPosition() const;
 		CU::Matrix44f& GetOrientation();
@@ -47,8 +49,12 @@ namespace Snowblind
 
 		void SetOrientation(const CU::Matrix44f& matrix);
 
+		void RotateAroundX(float rad);
+		void RotateAroundY(float rad);
+		void RotateAroundZ(float rad);
 
-
+		void SetFOV(float field_of_view) { myFOV = field_of_view; }
+	
 	private:
 		void operator=(CCamera&) = delete;
 		void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);

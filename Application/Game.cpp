@@ -51,7 +51,7 @@
 #include <DataStructures/Hashmap/Hash.h>
 #include <AABBComponent.h>
 #include <hashlist.h>
-
+#include <AABB.h>
 
 bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
 {
@@ -61,7 +61,7 @@ bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
 	myEntityManager = new CEntityManager;
 	myPhysicsManager = new CPhysicsManager;
 
-	
+
 	if (!CreateLevel("Data/Levels/level_01.json"))
 		return false;
 
@@ -72,7 +72,7 @@ bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
 	myEntityManager->AddSystem<NetworkSystem>();
 	myEntityManager->AddSystem<AISystem>();
 	myEntityManager->AddSystem<CameraSystem>();
-	
+
 	myPicker = new Snowblind::CMousePicker;
 
 	myEngine->ToggleVsync();
@@ -118,18 +118,22 @@ void CGame::Update(float aDeltaTime)
 	ss << "FPS : " << myEngine->GetFPS() << "\n" << "Average FPS : " << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::CEngine::GetInstance()->GetLocalTimeAsString()
 		<< "\ncamera_speed_multiplier : " << speed;
 	myEngine->AddDebugText(ss.str());
-
-	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
-	//mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, raycast[0], raycast[1]));
-
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
 
-	//TranslationComponent& translation = myEntityManager->GetComponent<TranslationComponent>(3);
-	//translation.myOrientation.SetPosition(CU::Vector3f(pointHit.x, pointHit.y + 2.f, pointHit.z));
-	for (s32 i = 0; i < m_AABBs.Size(); i++)
+	CU::Vector4f ray_dir = pointHit - myEngine->GetCamera()->GetPosition();
+	CU::Math::Normalize(ray_dir);
+	for (cl::AABB& aabb : m_AABBs)
 	{
-		m_AABBs[i]->Intersect(pointHit);
+		aabb.Update();
+		/*aabb.Intersect(pointHit, ray_dir);*/
+		for (const RenderCommand& command : aabb.GetCommands())
+		{
+			mySynchronizer->AddRenderCommand(command);
+		}
 	}
+
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", pointHit));
+
 	myEntityManager->Update(aDeltaTime);
 }
 
@@ -140,26 +144,26 @@ bool CGame::CreateLevel(const char* level_path)
 		Snowblind::CTerrain* terrain = myEngine->CreateTerrain("Data/Textures/flat_height.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
 		terrain->AddNormalMap("Data/Textures/normal.dds");
 		myTerrain.Add(terrain);
-		
-				terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(512, 512));
-				terrain->AddNormalMap("Data/Textures/t1_n.dds");
-				myTerrain.Add(terrain);
 
-				terrain = myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, 0, 0), CU::Vector2f(512, 512));
-				terrain->AddNormalMap("Data/Textures/t2_n.dds");
-				myTerrain.Add(terrain);
+		//terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(512, 512));
+		//terrain->AddNormalMap("Data/Textures/t1_n.dds");
+		//myTerrain.Add(terrain);
 
-				terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, 0, 510), CU::Vector2f(512, 512));
-				terrain->AddNormalMap("Data/Textures/t3_n.dds");
-				myTerrain.Add(terrain);
-		
-		for (s32 i = 0; i < myTerrain.Size(); i++)
-		{
-			myTerrainBodies.Add(myPhysicsManager->CreateBody());
-			myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
-		}
+		//terrain = myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, 0, 0), CU::Vector2f(512, 512));
+		//terrain->AddNormalMap("Data/Textures/t2_n.dds");
+		//myTerrain.Add(terrain);
 
-	}));	
+		//terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, 0, 510), CU::Vector2f(512, 512));
+		//terrain->AddNormalMap("Data/Textures/t3_n.dds");
+		//myTerrain.Add(terrain);
+
+		//for (s32 i = 0; i < myTerrain.Size(); i++)
+		//{
+		//	myTerrainBodies.Add(myPhysicsManager->CreateBody());
+		//	myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
+		//}
+
+	}));
 
 	JSONReader reader(level_path);
 	const JSONElement& el = reader.GetElement("root");
@@ -175,9 +179,9 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 {
 	JSONReader entityReader(entity_path);
 	Entity e = myEntityManager->CreateEntity();
-	
+
 	myEntityManager->AddComponent<TranslationComponent>(e);
-	
+
 	CU::Vector3f pos;
 	level_reader._ReadElement(it->value["position"], pos);
 
@@ -222,6 +226,8 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 		}
 	}
 
+
+	std::string model_key;
 	if (entityReader.HasElement("render"))
 	{
 		myEntityManager->AddComponent<RenderComponent>(e);
@@ -230,14 +236,12 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 		std::string entityModel[2];
 		entityReader.ReadElement("render", entityModel);
 		r.myModelID = myEngine->LoadModel(entityModel[0], entityModel[1]);
-
+		model_key = r.myModelID;
 		TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
 
-
-		myEntityManager->AddComponent<AABBComponent>(e);
-		AABBComponent& aabb = myEntityManager->GetComponent<AABBComponent>(e);
-		aabb.m_AABB.Initiate(&t.myOrientation, Snowblind::CEngine::GetInstance()->GetModel(r.myModelID)->GetWHD());
-		m_AABBs.Add(&aabb.m_AABB);
+		cl::AABB aabb;
+		aabb.Initiate(e, &t.myOrientation, Snowblind::CEngine::GetInstance()->GetModel(r.myModelID)->GetWHD());
+		m_AABBs.Add(aabb);
 	}
 
 	if (entityReader.HasElement("physics"))
@@ -250,6 +254,14 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
 			p.myBody = myPhysicsManager->CreateBody();
 			myPhysicsManager->Add(p.myBody->InitAsSphere(1.f, mass, myPhysicsManager->GetGravityForce(), 1.293f, pos));
+
+			myEntityManager->AddComponent<AABBComponent>(e);
+			AABBComponent& aabb = myEntityManager->GetComponent<AABBComponent>(e);
+			aabb.m_Body = myPhysicsManager->CreateBody();
+			CU::Vector3f whd = Snowblind::CEngine::GetInstance()->GetModel(model_key)->GetWHD();
+			myPhysicsManager->Add(aabb.m_Body->InitAsBox(whd.x, whd.y, whd.z, pos));
+
+
 		}
 	}
 
@@ -275,13 +287,13 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 
 			input.m_InputHandle = new InputHandle;
 			input.m_InputHandle->Initiate(input.m_ID);
-	
+
 			Snowblind::CEngine::GetInstance()->InitiateDebugSystem(mySynchronizer, input.m_InputHandle);
 
 
 			JSONReader read_input_config("Data/Config/input_config.json");
 			CameraComponent& camera = myEntityManager->GetComponent<CameraComponent>(e);
-			
+
 			if (read_input_config.HasElement("Forward"))
 			{
 				const JSONElement& el = read_input_config.GetElement("Forward");
@@ -367,7 +379,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 				input.m_InputHandle->Bind(Hash(second.c_str()), function);
 			}
 
-			input.m_InputHandle->Bind(Hash("RThumbYP"), [&](){
+			input.m_InputHandle->Bind(Hash("RThumbYP"), [&]() {
 				//p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
 				camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
 			});
@@ -376,7 +388,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 				//p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
 				camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
 			});
-			
+
 			input.m_InputHandle->Bind(Hash("RThumbXP"), [&]() {
 				//p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
 				camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
@@ -412,13 +424,13 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			myEntityManager->AddComponent<NetworkController>(e);
 		}
 	}
-	
+
 	return true;
 }
 
 void CGame::LeftClick(float x, float y)
 {
-	pointHit = myPhysicsManager->RayCast(myEngine->GetCamera()->GetPosition(), myPicker->GetCurrentRay(x,y));
+	pointHit = myPhysicsManager->RayCast(myEngine->GetCamera()->GetPosition(), myPicker->GetCurrentRay(x, y));
 }
 
 // (#LINUS) Needs to be addressed in the future.
@@ -430,34 +442,34 @@ void Jump(CRigidBody* rigidbody)
 
 void Forward(CRigidBody* rigidbody)
 {
-		CU::Matrix44f orientation = rigidbody->GetOrientation();
-		CU::Vector4f forward = orientation.GetForward();
-		forward *= 150.f;
-		rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
+	CU::Matrix44f orientation = rigidbody->GetOrientation();
+	CU::Vector4f forward = orientation.GetForward();
+	forward *= 150.f;
+	rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
 }
 
 void Backward(CRigidBody* rigidbody)
 {
-		CU::Matrix44f orientation = rigidbody->GetOrientation();
-		CU::Vector4f forward = orientation.GetForward();
-		forward *= -150.f;
-		rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
+	CU::Matrix44f orientation = rigidbody->GetOrientation();
+	CU::Vector4f forward = orientation.GetForward();
+	forward *= -150.f;
+	rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
 }
 
 void Right(CRigidBody* rigidbody)
 {
-		CU::Matrix44f orientation = rigidbody->GetOrientation();
-		CU::Vector4f right = orientation.GetRight();
-		right *= 150.f;
-		rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
+	CU::Matrix44f orientation = rigidbody->GetOrientation();
+	CU::Vector4f right = orientation.GetRight();
+	right *= 150.f;
+	rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
 }
 
 void Left(CRigidBody* rigidbody)
 {
-		CU::Matrix44f orientation = rigidbody->GetOrientation();
-		CU::Vector4f right = orientation.GetRight();
-		right *= -150.f;
-		rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
+	CU::Matrix44f orientation = rigidbody->GetOrientation();
+	CU::Vector4f right = orientation.GetRight();
+	right *= -150.f;
+	rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
 }
 
 

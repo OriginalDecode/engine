@@ -33,11 +33,12 @@ namespace Snowblind
 	class CDeferredRenderer
 	{
 	public:
-		CDeferredRenderer();
-		~CDeferredRenderer();
+		CDeferredRenderer() = default;
+		bool Initiate(CTexture* shadow_texture);
+		bool CleanUp();
 		void SetTargets();
 		void SetBuffers();
-		void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
+		void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& light_projection, const CU::Matrix44f& light_orientation);
 
 
 		void Finalize();
@@ -48,7 +49,7 @@ namespace Snowblind
 		void ToggleWireframe() { m_Wireframe = !m_Wireframe; }
 	private:
 		bool m_Wireframe = false;
-		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
+		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& light_projection, const CU::Matrix44f& light_orientation);
 
 		void CreateFullscreenQuad();
 		void InitConstantBuffer();
@@ -87,6 +88,8 @@ namespace Snowblind
 			CU::Vector4f camPosition;
 			CU::Matrix44f invertedProjection;
 			CU::Matrix44f view;
+			CU::Matrix44f m_LightProjection;
+			CU::Matrix44f m_LightOrientation;
 		} *myConstantStruct;
 #endif
 	};

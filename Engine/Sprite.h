@@ -1,6 +1,5 @@
 #pragma once
 #include <Math/Matrix/Matrix.h>
-
 struct ID3D11ShaderResourceView;
 
 namespace Snowblind
@@ -24,6 +23,7 @@ namespace Snowblind
 		void SetHotspot(const CU::Math::Vector2<float>& aHotspot);
 		void SetSize(const CU::Math::Vector2<float>& aSize);
 		void SetScale(const CU::Math::Vector2<float>& aScale);
+		void SetShaderView(ID3D11ShaderResourceView* srv);
 	private:
 
 		CSpriteModel* mySprite;

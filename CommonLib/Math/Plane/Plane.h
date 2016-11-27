@@ -16,12 +16,12 @@ namespace CommonUtilities
 
 			bool operator==(Plane<TYPE> aPlane);
 			void InitWith3Points(Vector3<TYPE> aFirstPoint, Vector3<TYPE> aSecondPoint, Vector3<TYPE> aThirdPoint);
-			void InitWithPointAndNormal(Vector3<TYPE> aPoint, Vector3<TYPE> aNormal);
+			//void InitWithPointAndNormal(Vector3<TYPE> aPoint, Vector3<TYPE> aNormal);
 			bool Inside(Vector3<TYPE> aPosition);
 			void IncreaseDistance(TYPE aDistance);
 
 		private:
-
+			Vector3<TYPE> m_Normal;
 			Vector4<TYPE> myData;
 		};
 
@@ -44,14 +44,12 @@ namespace CommonUtilities
 		template<typename TYPE>
 		Plane<TYPE>::Plane(Vector3<TYPE> aPoint, Vector3<TYPE> aNormal)
 		{
-			InitWithPointAndNormal(aPoint, aNormal);
+			//InitWithPointAndNormal(aPoint, aNormal);
 		}
 
 		template<typename TYPE>
 		void Plane<TYPE>::InitWith3Points(Vector3<TYPE> aFirstPoint, Vector3<TYPE> aSecondPoint, Vector3<TYPE> aThirdPoint)
 		{
-			myPoint = aFirstPoint;
-
 			Vector3<TYPE> temp(Cross(aFirstPoint - aSecondPoint, aThirdPoint - aSecondPoint));
 
 			myData = temp;

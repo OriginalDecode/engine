@@ -385,6 +385,7 @@
     <ClInclude Include="LightStructs.h" />
     <ClInclude Include="Line3D.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelCommand.h" />
     <ClInclude Include="ModelImporter.h" />
     <ClInclude Include="MousePicker.h">
       <SubType>

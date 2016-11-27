@@ -6,7 +6,7 @@
 #define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
 namespace Snowblind
 {
-	CDeferredRenderer::CDeferredRenderer()
+	bool CDeferredRenderer::Initiate(CTexture* shadow_texture)
 	{
 #ifdef SNOWBLIND_DX11
 		myDirectX = CEngine::GetAPI();
@@ -41,13 +41,14 @@ namespace Snowblind
 		myAmbientPassShader->AddShaderResource(myGBuffer->myNormal->GetShaderView());
 		myAmbientPassShader->AddShaderResource(myGBuffer->myDepth->GetShaderView());
 		myAmbientPassShader->AddShaderResource(myCubeMap->GetShaderView());
-
+		myAmbientPassShader->AddShaderResource(shadow_texture->GetShaderView());
 		CreateFullscreenQuad();
 		InitConstantBuffer();
 #endif
+		return true;
 	}
 
-	CDeferredRenderer::~CDeferredRenderer()
+	bool CDeferredRenderer::CleanUp()
 	{
 #ifdef SNOWBLIND_DX11
 		myFinishedSceneTexture->CleanUp();
@@ -68,6 +69,7 @@ namespace Snowblind
 		SAFE_RELEASE(myInputLayout);
 
 #endif
+		return true;
 	}
 
 	void CDeferredRenderer::SetTargets()
@@ -98,17 +100,17 @@ namespace Snowblind
 #endif
 	}
 
-	void CDeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
+	void CDeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& light_projection, const CU::Matrix44f& light_orientation)
 	{
 		//CTexture::CopyData(myGBuffer->myDepth->GetDepthTexture(), myDepthStencil->GetDepthTexture());
 
 #ifdef SNOWBLIND_DX11
-		UpdateConstantBuffer(previousOrientation, aProjection);
+		UpdateConstantBuffer(previousOrientation, aProjection, light_projection, light_orientation);
 		SetBuffers();
 
 		myDirectX->ResetViewport();
 
-		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView(); 
+		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView();
 		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
 
 		myContext->ClearRenderTargetView(backbuffer, myClearColor);
@@ -117,7 +119,7 @@ namespace Snowblind
 		myAmbientPassShader->Activate();
 		myContext->PSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP); 
+		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP);
 		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		myDirectX->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 		myContext->DrawIndexed(6, 0, 0);
@@ -178,13 +180,15 @@ namespace Snowblind
 #endif
 	}
 
-	void CDeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
+	void CDeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& light_projection, const CU::Matrix44f& light_orientation)
 	{
 #ifdef SNOWBLIND_DX11
 		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 		myConstantStruct->camPosition = previousOrientation.GetPosition();
 		myConstantStruct->invertedProjection = CU::Math::InverseReal(aProjection);
 		myConstantStruct->view = previousOrientation;
+		myConstantStruct->m_LightProjection = light_projection;
+		myConstantStruct->m_LightOrientation = CU::Math::Inverse(light_orientation);
 		D3D11_MAPPED_SUBRESOURCE msr;
 		myDirectX->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)

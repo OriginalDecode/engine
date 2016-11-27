@@ -278,6 +278,9 @@
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="ModelCommand.h">
+      <Filter>Rendering\Commands</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">

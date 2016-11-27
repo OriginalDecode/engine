@@ -39,10 +39,10 @@ namespace Snowblind
 		myTexturePath = aTexturePath;
 		mySize = aSize;
 		myPosition = aPosition;
-		myTexture = CEngine::GetInstance()->GetTexture(myTexturePath)->GetShaderView();
+		CTexture* text = CEngine::GetInstance()->GetTexture(myTexturePath);
+		myTexture = text->GetShaderView();
 		myEffect = CEngine::GetInstance()->GetEffect("Data/Shaders/T_Sprite.json");
 
-		myVertexFormat.Init(2);
 		myVertexFormat.Add(VertexLayoutPosUV[0]);
 		myVertexFormat.Add(VertexLayoutPosUV[1]);
 
@@ -217,6 +217,11 @@ namespace Snowblind
 	const CU::Math::Vector2<float>& CSpriteModel::GetPosition()
 	{
 		return myPosition;
+	}
+
+	void CSpriteModel::SetTexture(ID3D11ShaderResourceView* srv)
+	{
+		myTexture = srv;
 	}
 
 	void CSpriteModel::UpdateConstantBuffer()

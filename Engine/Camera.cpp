@@ -21,6 +21,18 @@ namespace Snowblind
 
 	}
 
+	CCamera::CCamera(float aWidth, float aHeight, float far_plane, float near_plane)
+	{
+		myFOV *= 3.1415926535f / 180.f;
+		myProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, aHeight / aWidth, myFOV);
+	}
+
+	CCamera::CCamera(float aWidth, float aHeight, float far_plane, float near_plane, float fov)
+	{
+		myFOV = fov * (3.1415926535f / 180.f);
+		myProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, aHeight / aWidth, myFOV);
+	}
+
 	CU::Matrix44f& CCamera::GetOrthogonalMatrix()
 	{
 		return myOrthogonalMatrix;
@@ -67,6 +79,21 @@ namespace Snowblind
 	void CCamera::SetOrientation(const CU::Matrix44f& matrix)
 	{
 		myOrientation = matrix;
+	}
+
+	void CCamera::RotateAroundX(float rad)
+	{
+		myOrientation = CU::Matrix44f::CreateRotateAroundX(rad) * myOrientation;
+	}
+
+	void CCamera::RotateAroundY(float rad)
+	{
+		myOrientation = CU::Matrix44f::CreateRotateAroundY(rad) * myOrientation;
+	}
+
+	void CCamera::RotateAroundZ(float rad)
+	{
+		myOrientation = CU::Matrix44f::CreateRotateAroundZ(rad) * myOrientation;
 	}
 
 	void CCamera::Move(eDirection aDirection, float aSpeed)

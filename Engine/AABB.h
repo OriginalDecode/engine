@@ -12,25 +12,32 @@ namespace cl
 	{
 	public:
 		AABB() = default;
-		bool Initiate(const CU::Matrix44f* orientation, CU::Vector3f width_height_depth);
+		bool Initiate(u32 entity_id, const CU::Matrix44f* orientation, CU::Vector3f width_height_depth);
 		
 		u32 GetEntity() const { return m_Entity; }
 		const CU::GrowingArray<RenderCommand>& GetCommands() { return m_Commands; }
-		void Update(const CU::Matrix44f& orientation);
-		bool Intersect(CU::Vector4f position);
-		bool Intersect(CU::Vector3f pos1, CU::Vector3f pos2);
+		void Update();
+		bool Intersect(CU::Vector4f position, CU::Vector4f direction);
+
+
 	private:
+		u32 m_Entity;
+		CU::Vector3f m_MinPos;
+		CU::Vector3f m_MaxPos;
 		static const s32 array_size = 8;
 
 		SLinePoint m_Points[array_size];
 		CU::Matrix44f m_PointsOrientation[array_size];
+
 		const CU::Matrix44f* m_Orientation;
+		
 		CU::Vector4f m_CollisionColor = CU::Vector4f(1.f, 0.f, 0.f, 1.f);
 		CU::Vector3f m_WidthHeightDepth;
-		float m_ColorValue = 0.f;
+
+		CU::Vector4f m_ColorValue;
+		CU::Vector4f m_IntersectedColor;
 
 
-		u32 m_Entity;
 		CU::GrowingArray<RenderCommand> m_Commands;
 		bool m_HasIntersected = false;
 	};

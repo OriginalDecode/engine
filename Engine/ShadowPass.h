@@ -4,8 +4,11 @@ namespace Snowblind
 	class ShadowPass
 	{
 	public:
-		ShadowPass();
-		~ShadowPass();
+		ShadowPass() = default;
+
+		bool Initiate();
+		bool CleanUp();
+
 
 	private:
 

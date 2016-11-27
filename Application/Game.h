@@ -58,7 +58,7 @@ private:
 	float myAverageFPS = 0;
 	float myTime = 0.f;
 
-	CU::GrowingArray<cl::AABB*> m_AABBs;
+	CU::GrowingArray<cl::AABB> m_AABBs;
 	CU::GrowingArray<Snowblind::CTerrain*> myTerrain;
 	CU::GrowingArray<CRigidBody*> myTerrainBodies;
 

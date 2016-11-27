@@ -29,8 +29,9 @@ namespace Snowblind
 		CEffect* GetEffect();
 		CU::Math::Vector2<float> GetSize();
 		const CU::Math::Vector2<float>& GetPosition();
-
+		void SetTexture(ID3D11ShaderResourceView* srv);
 	private:
+		ID3D11ShaderResourceView* myTexture;
 
 		void UpdateConstantBuffer();
 
@@ -41,8 +42,8 @@ namespace Snowblind
 
 		std::string myTexturePath;
 		SWindowSize myWindowSize;
-		CCamera* myCamera;
-		CEffect* myEffect;
+		CCamera* myCamera = nullptr;
+		CEffect* myEffect = nullptr;
 
 		CU::Math::Vector2<float> myPosition;
 		CU::Math::Vector2<float> mySize;
@@ -54,7 +55,6 @@ namespace Snowblind
 		SIndexBufferWrapper* myIndexBuffer;
 
 #ifdef SNOWBLIND_DX11
-		ID3D11ShaderResourceView* myTexture;
 		ID3D11Buffer* myConstantBuffer = nullptr;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 		ID3D11InputLayout* myVertexLayout;

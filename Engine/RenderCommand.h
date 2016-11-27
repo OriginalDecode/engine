@@ -3,20 +3,8 @@
 #include <Math/Vector/Vector.h>
 #include "Line3D.h"
 #include "RenderCommand_Shared.h"
-namespace Snowblind
-{
-	class CInstance;
-	class CPointLight;
-	class CEmitterInstance;
-	class CSkySphere;
-}
 
-enum class eDeferredFlag
-{
-	IS_DEFERRED,
-	NOT_DEFERRED,
-};
-
+typedef struct ID3D11ShaderResourceView IShaderResourceView;
 
 enum class eType
 {
@@ -36,27 +24,29 @@ struct RenderCommand
 {
 	RenderCommand() = default;
 	RenderCommand(const eType& aType);
-	RenderCommand(const eType& aType, const std::string& aSpriteName, const CU::Vector2f& aPosition);
-	RenderCommand(const std::string aString, const CU::Math::Vector2<float>& aPosition, const eType& aType = eType::TEXT);
+
+	RenderCommand(const eType& type, const std::string& sprite_key, const CU::Vector2f& position);
+	RenderCommand(const eType& type, IShaderResourceView* shader_resource, const CU::Vector2f& position);
 
 	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range);
 	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& angle, const float& range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix);
 
-	RenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& aPosition);
 	RenderCommand(const eType& aType, const std::string& modelKey, const CU::Matrix44f& orientation);
+	RenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& position);
 
-	RenderCommand(const eType& aType, Snowblind::CEmitterInstance* anInstance);
+
 	RenderCommand(const eType& aType, const CU::Vector3f& aPosition);
 	RenderCommand(const eType& aType, const SLinePoint& aFirstPoint, const SLinePoint& aSecondPoint);
 
-	Snowblind::CEmitterInstance* myEmitterInstance;
+	IShaderResourceView* m_ShaderResource = nullptr;
 
-	std::string myTextToPrint;
-	std::string myModelKey;
+	std::string m_KeyOrText;
+
 	CU::Vector3f myPosition;
 	CU::Vector3f myColor;
 	CU::Vector3f myDirection;
-	CU::Matrix44f myRotationMatrix;
+
+	CU::Matrix44f m_Orientation;
 
 	union
 	{
@@ -72,4 +62,3 @@ struct RenderCommand
 	eCommandBuffer myCommandType;
 	eType myType;
 };
-

@@ -24,11 +24,11 @@ void CLightSystem::Update(float /*aDeltaTime*/)
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		LightComponent& light = GetComponent<LightComponent>(e);
 
-		if (light.myType == eLightType::ePOINTLIGHT)
-			mySynchronizer->AddRenderCommand(RenderCommand(eType::POINTLIGHT, translation.myOrientation.GetPosition(), light.color, light.intensity, light.range));
+		//if (light.myType == eLightType::ePOINTLIGHT)
+		//	mySynchronizer->AddRenderCommand(RenderCommand(eType::POINTLIGHT, translation.myOrientation.GetPosition(), light.color, light.intensity, light.range));
 
-		if (light.myType == eLightType::eSPOTLIGHT)
-			mySynchronizer->AddRenderCommand(RenderCommand(eType::SPOTLIGHT, translation.myOrientation.GetPosition(), light.color, light.angle, light.range, light.direction, light.orientation));
+		//if (light.myType == eLightType::eSPOTLIGHT)
+			//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPOTLIGHT, translation.myOrientation.GetPosition(), light.color, light.angle, light.range, light.direction, light.orientation));
 
 	}
 }

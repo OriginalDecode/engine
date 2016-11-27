@@ -38,8 +38,6 @@ namespace Snowblind
 		CEngine* myEngine = nullptr;
 		CU::Vector3f m_WHD;
 
-
-#ifdef SNOWBLIND_DX11
 		CEffect* myEffect = nullptr;
 		ID3D11DeviceContext* myContext = nullptr;
 		DirectX11* myAPI = nullptr;
@@ -55,7 +53,7 @@ namespace Snowblind
 		ID3D11Buffer* myConstantBuffer = nullptr;
 
 		SVertexBaseStruct* myConstantStruct = nullptr;
-#endif
+
 		bool myIsNULLObject = true;
 		bool myIsLightMesh = false;
 	};

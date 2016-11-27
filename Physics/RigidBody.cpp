@@ -103,6 +103,20 @@ btRigidBody* CRigidBody::InitWithMeshCollision(std::vector<float> vertices, std:
 	return myBody;
 }
 
+btRigidBody* CRigidBody::InitAsBox(float width, float height, float depth, CU::Vector3f position)
+{
+	myMass = 0.f;
+	myShape = new btBoxShape(btVector3(width/2.f, height/2.f, depth/2.f));
+	btVector3 pos = btVector3(position.x, position.y, position.z); //initial position
+	myMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos));
+	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, myMotionState, myShape, btVector3(0, 0, 0));
+	myBody = new btRigidBody(bodyInfo);
+
+	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
+
+	return myBody;
+}
+
 void CRigidBody::SetResistanceDensity(float aDensity)
 {
 	myResistanceDensity = aDensity;

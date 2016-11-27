@@ -61,8 +61,10 @@ namespace Snowblind
 #else
 		Vulkan*				m_API				= nullptr;
 #endif
+		bool m_ProcessShadows = false;
 		CCamera*			myCamera			= nullptr;
 		CU::Matrix44f		myPrevFrame;
+		CU::Matrix44f		myPrevShadowFrame;
 
 		CCamera*			my2DCamera			= nullptr;
 		CU::TimeManager*	myTimeManager		= nullptr;
@@ -79,7 +81,10 @@ namespace Snowblind
 		CTexture*			myDepthTexture		= nullptr;
 		CSkySphere*			mySkysphere			= nullptr;
 		CSprite*			mySprite			= nullptr;
+		CSprite*			myClearColor = nullptr;
+
 		CLine3D*			my3DLine			= nullptr;
+
 
 		LightPass			m_LightPass;
 		ShadowPass			m_ShadowPass;

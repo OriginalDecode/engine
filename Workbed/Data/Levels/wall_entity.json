@@ -1,0 +1,6 @@
+{
+	"render": [ 
+		"Data/Model/wall.fbx", 		
+		"Data/Shaders/T_Deferred_Base.json"
+		]
+}

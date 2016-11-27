@@ -65,7 +65,8 @@ namespace Snowblind
 
 	void CSkySphere::Render(CU::Matrix44f& anOrientation, CTexture* aDepthTexture)
 	{
-#ifdef SNOWBLIND_DX11
+		SetPosition(anOrientation.GetPosition());
+
 		myAPI->SetBlendState(eBlendStates::LIGHT_BLEND);
 		myAPI->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		myAPI->SetRasterizer(eRasterizer::CULL_NONE);
@@ -83,7 +84,6 @@ namespace Snowblind
 			srv[1] = nullptr;
 			myAPI->GetContext()->PSSetShaderResources(0, 2, &srv[0]);
 		}
-#endif
 	}
 
 	void CSkySphere::SetPosition(const CU::Vector3f& aPosition)

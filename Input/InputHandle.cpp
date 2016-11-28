@@ -84,6 +84,8 @@ void InputHandle::HandleInput()
 			const float ry_value = (float)state.m_ThumbRY / SHRT_MAX;
 			const float rx_value = (float)state.m_ThumbRX / SHRT_MAX;
 
+
+
 			if (rx_value > 0.5f)
 			{
 				CallFunction(s_RThumbYP_hash);

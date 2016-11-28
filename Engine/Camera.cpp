@@ -50,8 +50,20 @@ namespace Snowblind
 
 	void CCamera::Update(const ControllerState& controller_state)
 	{
-		m_CenterPoint.x += ((float)controller_state.m_ThumbRX / SHRT_MAX) * 0.007f;
-		m_CenterPoint.y -= ((float)controller_state.m_ThumbRY / SHRT_MAX) * 0.007f;
+
+		float x_value = (float)controller_state.m_ThumbRX / SHRT_MAX;
+		float y_value = (float)controller_state.m_ThumbRY / SHRT_MAX;
+		if (0.5f < x_value && 0.5f < y_value || 
+			x_value < -0.5f && y_value < -0.5f ||
+			x_value < -0.5f && 0.5f < y_value ||
+			0.5f < x_value && y_value < -0.5f)
+		{
+			x_value /= 2.f;
+			y_value /= 2.f;
+		}
+
+		m_CenterPoint.x += x_value * 0.05f;
+		m_CenterPoint.y -= y_value * 0.05f;
 		m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
 
 		myPitch = CU::Quaternion(CU::Vector3f(1.f, 0, 0), m_CenterPoint.y);

@@ -178,14 +178,14 @@ namespace Snowblind
 		//Debug stuff
 		/*mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, myDeferredRenderer->GetGBuffer()->myAlbedo->GetShaderView(), CU::Vector2f(1920.f - 128.f, 128.f)));
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, myDeferredRenderer->GetGBuffer()->myNormal->GetShaderView(), CU::Vector2f(1920.f - 128.f, 384.f)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, myDeferredRenderer->GetGBuffer()->myDepth->GetShaderView(), CU::Vector2f(1920.f - 128.f, 640.f)));
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, myDeferredRenderer->GetGBuffer()->myDepth->GetShaderView(), CU::Vector2f(1920.f - 128.f, 640.f)));*/
 
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetRenderTarget()->GetShaderView(), CU::Vector2f(1920.f - 384.f, 128.f)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Normal->GetShaderView(), CU::Vector2f(1920.f - 384.f, 384.f)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Depth->GetShaderView(), CU::Vector2f(1920.f - 384.f, 640.f)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Texture->GetDepthStencilView(), CU::Vector2f(1920.f - 384.f, 896.f)));*/
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetRenderTarget()->GetShaderView(), CU::Vector2f(1920.f - 128.f, 128.f)));
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Normal->GetShaderView(), CU::Vector2f(1920.f - 128.f, 384.f)));
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Depth->GetShaderView(), CU::Vector2f(1920.f - 128.f, 640.f)));
+		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Texture->GetDepthStencilView(), CU::Vector2f(1920.f - 384.f, 896.f)));
 
-		//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_Shadowlight->GetOrientation()));
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_Shadowlight->GetOrientation()));
 	}
 
 	void CRenderer::AddTerrain(CTerrain* someTerrain)
@@ -208,7 +208,7 @@ namespace Snowblind
 						continue;
 					}
 
-					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
+					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 					m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 					 
 					CModel* model = myEngine->GetModel(command.m_KeyOrText);

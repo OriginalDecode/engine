@@ -135,6 +135,7 @@ void CGame::Update(float aDeltaTime)
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", pointHit));
 
 	myEntityManager->Update(aDeltaTime);
+	
 }
 
 bool CGame::CreateLevel(const char* level_path)
@@ -414,6 +415,16 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			input.m_InputHandle->Bind(s_NumpadMinus_hash, [&]() {
 				speed -= 0.1f;
 			});
+			
+			input.m_InputHandle->Bind(s_LBumper_hash, [&]() {
+				camera.m_Camera->IncreaseLookModifier();
+			});
+
+			input.m_InputHandle->Bind(s_LBumper_hash, [&]() {
+				camera.m_Camera->IncreaseLookModifier();
+			});
+
+
 		}
 		else if (controller_type == "ai")
 		{

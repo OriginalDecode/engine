@@ -54,8 +54,10 @@ namespace Snowblind
 		void RotateAroundZ(float rad);
 
 		void SetFOV(float field_of_view) { myFOV = field_of_view; }
-	
+		void IncreaseLookModifier() { m_LookSpeedModifier += 0.001f; }
+		void DecreaseLookModifier() { m_LookSpeedModifier -= 0.001f; }
 	private:
+		float m_LookSpeedModifier = 0.01f;
 		void operator=(CCamera&) = delete;
 		void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);
 		void MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed);

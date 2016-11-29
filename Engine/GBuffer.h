@@ -2,7 +2,7 @@
 namespace Snowblind
 {
 
-	class CTexture;
+	class Texture;
 	class GBuffer
 	{
 	public:
@@ -11,12 +11,12 @@ namespace Snowblind
 
 		void Clear(float* aClearColor);
 
-		void SetAsRenderTarget(CTexture* aDepthTexture);
+		void SetAsRenderTarget(Texture* aDepthTexture);
 
-		CTexture* myAlbedo = nullptr;
-		CTexture* myNormal = nullptr;
-		CTexture* myEmissive = nullptr;
-		CTexture* myDepth = nullptr;
+		Texture* myAlbedo = nullptr;
+		Texture* myNormal = nullptr;
+		Texture* myEmissive = nullptr;
+		Texture* myDepth = nullptr;
 
 
 	private:

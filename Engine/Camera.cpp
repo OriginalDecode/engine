@@ -62,8 +62,39 @@ namespace Snowblind
 			y_value /= 2.f;
 		}
 
-		m_CenterPoint.x += x_value * 0.05f;
-		m_CenterPoint.y -= y_value * 0.05f;
+		m_CenterPoint.x += x_value * m_LookSpeedModifier;
+		m_CenterPoint.y -= y_value * m_LookSpeedModifier;
+		m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
+
+		myPitch = CU::Quaternion(CU::Vector3f(1.f, 0, 0), m_CenterPoint.y);
+		myYaw = CU::Quaternion(CU::Vector3f(0, 1.f, 0), m_CenterPoint.x);
+
+		CU::Vector3f axisX(1.f, 0, 0);
+		CU::Vector3f axisY(0, 1.f, 0);
+		CU::Vector3f axisZ(0, 0, 1.f);
+
+		axisX = myYaw * myPitch * axisX;
+		axisY = myYaw * myPitch * axisY;
+		axisZ = myYaw * myPitch * axisZ;
+
+		myOrientation.myMatrix[0] = axisX.x;
+		myOrientation.myMatrix[1] = axisX.y;
+		myOrientation.myMatrix[2] = axisX.z;
+		myOrientation.myMatrix[4] = axisY.x;
+		myOrientation.myMatrix[5] = axisY.y;
+		myOrientation.myMatrix[6] = axisY.z;
+		myOrientation.myMatrix[8] = axisZ.x;
+		myOrientation.myMatrix[9] = axisZ.y;
+		myOrientation.myMatrix[10] = axisZ.z;
+	}
+
+	void CCamera::Update(float x, float y)
+	{
+		float x_value = x;//(float)controller_state.m_ThumbRX / SHRT_MAX;
+		float y_value = y;//(float)controller_state.m_ThumbRY / SHRT_MAX;
+
+		m_CenterPoint.x += x_value * m_LookSpeedModifier;
+		m_CenterPoint.y += y_value * m_LookSpeedModifier;
 		m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
 
 		myPitch = CU::Quaternion(CU::Vector3f(1.f, 0, 0), m_CenterPoint.y);

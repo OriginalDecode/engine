@@ -9,7 +9,7 @@ typedef struct ID3D11RenderTargetView		IRenderTargetView;
 
 typedef DXGI_FORMAT							TextureFormat;
 typedef D3D11_USAGE							UsageType;
-
+typedef D3D11_VIEWPORT						Viewport;
 typedef struct ID3D11VertexShader			IVertexShader;
 typedef struct ID3D11PixelShader			IPixelShader;
 typedef struct ID3D11GeometryShader			IGeometryShader;
@@ -19,7 +19,7 @@ typedef struct ID3D11ComputeShader			IComputeShader;
 typedef struct ID3D10Blob					IBlob;
 
 typedef struct ID3D11Device					IDevice;
-typedef struct ID3D11DeviceContext			IContext_;
+typedef struct ID3D11DeviceContext			IDevContext;
 
 #else
 

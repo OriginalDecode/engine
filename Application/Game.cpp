@@ -158,11 +158,11 @@ bool CGame::CreateLevel(const char* level_path)
 		//terrain->AddNormalMap("Data/Textures/t3_n.dds");
 		//myTerrain.Add(terrain);
 
-		//for (s32 i = 0; i < myTerrain.Size(); i++)
-		//{
-		//	myTerrainBodies.Add(myPhysicsManager->CreateBody());
-		//	myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
-		//}
+		for (s32 i = 0; i < myTerrain.Size(); i++)
+		{
+			myTerrainBodies.Add(myPhysicsManager->CreateBody());
+			myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
+		}
 
 	}));
 
@@ -401,7 +401,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			});
 
 			input.m_InputHandle->Bind(Hash("YButton"), [&]() {
-				Snowblind::CEngine::GetInstance()->ToggleWireframe(); // (#LINUS) inte trådsäker
+				Snowblind::CEngine::GetInstance()->ToggleWireframe(); 
 			});
 
 			input.m_InputHandle->Bind(Hash("LMouseButton"), [&]() {
@@ -416,14 +416,22 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 				speed -= 0.1f;
 			});
 			
-			input.m_InputHandle->Bind(s_LBumper_hash, [&]() {
+			input.m_InputHandle->Bind(s_RBumper_hash, [&]() {
 				camera.m_Camera->IncreaseLookModifier();
 			});
 
 			input.m_InputHandle->Bind(s_LBumper_hash, [&]() {
-				camera.m_Camera->IncreaseLookModifier();
+				camera.m_Camera->DecreaseLookModifier();
 			});
 
+			input.m_InputHandle->Bind(s_MoveMouse_hash, [&]() {
+				if(!m_DisableMouseCameraMovement)
+					camera.m_Camera->Update(input.m_InputHandle->GetDX(), input.m_InputHandle->GetDY());
+			});
+
+			input.m_InputHandle->Bind(s_TabKey_hash, [&]() {
+				m_DisableMouseCameraMovement = !m_DisableMouseCameraMovement;
+			});
 
 		}
 		else if (controller_type == "ai")

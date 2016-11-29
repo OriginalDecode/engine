@@ -7,7 +7,7 @@ struct ID3D11ShaderResourceView;
 #endif
 namespace Snowblind
 {
-	class CTexture;
+	class Texture;
 	class CCamera;
 	class CEffect;
 

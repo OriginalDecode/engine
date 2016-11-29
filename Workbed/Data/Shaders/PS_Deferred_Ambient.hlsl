@@ -6,8 +6,7 @@ cbuffer CameraPosition : register(b0)
 	float4 camera_position;
 	row_major float4x4 InvertedProjection;
 	row_major float4x4 InvertedView;
-	row_major float4x4 light_projection;
-	row_major float4x4 light_orientation;
+	row_major float4x4 shadowMVP;
 };
 //---------------------------------
 //	Samplers & Textures
@@ -121,20 +120,24 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 	float3 finalColor = (ambientDiffuse + ambientSpec);
 
-	float4 shadowVec = mul(worldPosition, light_orientation);
-	shadowVec = mul(shadowVec, light_projection);
-	shadowVec.xyz = shadowVec.xyz / shadowVec.w;
-	shadowVec.y = shadowVec.y * -1;
-	shadowVec.x = shadowVec.x * -1;
-	shadowVec.xy = shadowVec.xy + 1;
-	shadowVec.xy = shadowVec.xy * 0.5;
-	float compareValue = shadowVec.z;
-	float2 sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).xy;
-	
+	float4 wp2 = float4(x, y, z, 1.f);
+	wp2 = mul (wp2, InvertedProjection);
+	wp2 = wp2 / wp2.w;
+	wp2 = mul(wp2, InvertedView);	
 
-	if(sampleValue.x < compareValue - 0.0005)
+	float4 shadowVec = mul(wp2, shadowMVP);
+	shadowVec.xyz /= shadowVec.w;
+	shadowVec.y = -shadowVec.y;
+	shadowVec.x = -shadowVec.x;
+	shadowVec.xy += 1;
+	shadowVec.xy *= 0.5;
+	float compareValue = shadowVec.z;
+
+	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
+
+	if(sampleValue < compareValue )
 	{
-		if(shadowVec.x > 0 && shadowVec.x < 1 && shadowVec.y > 0 && shadowVec.z < 1)
+		if(shadowVec.x > 0 && shadowVec.x < 1 && shadowVec.y > 0 && shadowVec.y < 1 && shadowVec.z < 1)
 		{
 			finalColor *= 0.42;
 		}

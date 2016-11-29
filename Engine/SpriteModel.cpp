@@ -39,7 +39,7 @@ namespace Snowblind
 		myTexturePath = aTexturePath;
 		mySize = aSize;
 		myPosition = aPosition;
-		CTexture* text = CEngine::GetInstance()->GetTexture(myTexturePath);
+		Texture* text = CEngine::GetInstance()->GetTexture(myTexturePath);
 		myTexture = text->GetShaderView();
 		myEffect = CEngine::GetInstance()->GetEffect("Data/Shaders/T_Sprite.json");
 

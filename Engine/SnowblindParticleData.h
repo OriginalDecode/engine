@@ -5,7 +5,7 @@
 
 namespace Snowblind
 {
-	class CTexture;
+	class Texture;
 	class CEffect;
 };
 
@@ -49,7 +49,7 @@ struct SAnimatedParticleObject
 
 struct SEmitterData
 {
-	Snowblind::CTexture* diffuseTexture = nullptr;
+	Snowblind::Texture* diffuseTexture = nullptr;
 	Snowblind::CEffect* shader = nullptr;
 
 	SParticleData particleData;

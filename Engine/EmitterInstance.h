@@ -10,7 +10,7 @@ namespace Snowblind
 {
 	class CCamera;
 	class CSynchronizer;
-	class CTexture;
+	class Texture;
 	class CEngine;
 	class CEmitterInstance
 	{
@@ -21,7 +21,7 @@ namespace Snowblind
 		void Initiate(CSynchronizer* aSynchronizer);
 
 		void Update(float aDeltaTime);
-		void Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection, CTexture* aDepthTexture);
+		void Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection, Texture* aDepthTexture);
 
 	private:
 		void CreateVertexBuffer();

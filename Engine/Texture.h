@@ -12,10 +12,10 @@ enum TextureUsageFlags
 
 namespace Snowblind
 {
-	class CTexture
+	class Texture
 	{
 	public:
-		CTexture() = default;
+		Texture() = default;
 
 		void Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, const std::string& debug_name);
 		void Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name);

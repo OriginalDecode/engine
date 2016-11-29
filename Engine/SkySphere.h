@@ -11,7 +11,7 @@ namespace Snowblind
 	struct SkysphereLayer
 	{
 		CModel* m_Model;
-		CTexture* m_Texture;
+		Texture* m_Texture;
 		bool m_ShouldRotate = false;
 	};
 
@@ -22,7 +22,7 @@ namespace Snowblind
 		bool Initiate(const std::string& model_filepath, const std::string& skysphere_shader, CCamera* camera);
 		bool AddLayer(const std::string& layer_filepath, const std::string& layer_shader);
 		bool CleanUp();
-		void Render(CU::Matrix44f& anOrientation, CTexture* aDepthTexture);
+		void Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture);
 		void SetPosition(const CU::Vector3f& aPosition);
 		void Update(float dt);
 	private:

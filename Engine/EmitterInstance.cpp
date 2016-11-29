@@ -65,7 +65,7 @@ namespace Snowblind
 		UpdateParticle(aDeltaTime);
 	}
 
-	void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection, CTexture* aDepthTexture)
+	void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection, Texture* aDepthTexture)
 	{
 		UpdateVertexBuffer();
 

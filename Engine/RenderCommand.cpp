@@ -72,8 +72,8 @@ RenderCommand::RenderCommand(const eType& aType, const std::string& modelKey, co
 RenderCommand::RenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& position)
 	: myType(aType)
 	, m_KeyOrText(modelKey)
-	, myPosition(position)
 	, myCommandType(eCommandBuffer::e3D)
 {
+	m_Orientation.SetPosition(position);
 }
 

@@ -1,34 +1,7 @@
 {
 	"root" :
 	{
-		"object" : 	{ 
-			"entity":"Data/Levels/entity.json", 
-			"position" : [ 25, 5, 25 ]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/entity.json", 
-			"position" : [ 25, 7, 23 ]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 25 ]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 27 ]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 29 ]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 31 ]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 33 ]
-		},
+
 
 		"player" : {
 			"entity" : "Data/Levels/player.json",

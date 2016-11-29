@@ -34,7 +34,7 @@ namespace Cache
 		myModelLoader = new CModelImporter;
 	}
 
-	Snowblind::CTexture* CAssetsContainer::GetTexture(const std::string& aFilePath)
+	Snowblind::Texture* CAssetsContainer::GetTexture(const std::string& aFilePath)
 	{
 		if (CL::substr(aFilePath, ".dds") == false)
 		{
@@ -76,7 +76,7 @@ namespace Cache
 		myShaderFactory->Update();
 	}
 
-	void CAssetsContainer::ReloadTexture(Snowblind::CTexture* texture)
+	void CAssetsContainer::ReloadTexture(Snowblind::Texture* texture)
 	{
 		texture->OnReload();
 	}
@@ -85,7 +85,7 @@ namespace Cache
 	{
 		if (myTextures.find(aFilePath) == myTextures.end())
 		{
-			Snowblind::CTexture* texture = new Snowblind::CTexture;
+			Snowblind::Texture* texture = new Snowblind::Texture;
 			if (texture->Load(aFilePath.c_str()) == false)
 			{
 				DL_ASSERT_EXP(texture->CleanUp(), "Failed to cleanup texture!");

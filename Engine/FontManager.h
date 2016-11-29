@@ -46,7 +46,7 @@ namespace Snowblind
 	};
 
 	
-	class CTexture;
+	class Texture;
 	class CFont;
 
 	class CFontManager

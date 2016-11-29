@@ -104,6 +104,7 @@ enum class KButton
 	NUMMINUS = DIK_SUBTRACT
 };
 
+
 class InputWrapper
 {
 public:
@@ -143,9 +144,6 @@ public:
 	float GetY() { return myMousePos.myY; }
 
 private:
-	//static InputWrapper* myInstance;
-	//InputWrapper(HWND aHWND, HINSTANCE hInstance);
-	//~InputWrapper();
 	IDirectInput8* myDInput;
 
 	IDirectInputDevice8* myKeyboard;

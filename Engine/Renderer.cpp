@@ -45,18 +45,18 @@ namespace Snowblind
 		//mySpotlight = new CSpotLight; // Where should this live?
 		//if (!mySpotlight)
 		//	return false;
-
+		//CU::Vector3f(95, 7.f, 28.f)
 		m_Shadowlight = new ShadowSpotlight;
 		m_Shadowlight->Initiate(
 			CU::Vector3f(95, 7.f, 28.f)
 			, CU::Vector3f(1.f, 0.5f, 0.f)
-			, 2048.f);
+			, 512.f);
 
 		myDeferredRenderer = new CDeferredRenderer; // Where should this live?
 		if (!myDeferredRenderer->Initiate(m_Shadowlight->m_Depth))
 			return false;
 
-		myDepthTexture = new CTexture; //Where should this live?
+		myDepthTexture = new Texture; //Where should this live?
 		if (!myDepthTexture)
 			return false;
 		myDepthTexture->Initiate(CEngine::GetInstance()->GetWindowSize().myWidth, CEngine::GetInstance()->GetWindowSize().myHeight
@@ -81,9 +81,8 @@ namespace Snowblind
 		myEngine = CEngine::GetInstance();
 		if (!myEngine)
 			return false;
-#ifdef SNOWBLIND_DX11
 		m_API = myEngine->GetAPI();
-#endif
+
 		my3DLine = new CLine3D; //Where should this live?
 		if (!my3DLine)
 			return false;
@@ -147,21 +146,21 @@ namespace Snowblind
 		myEngine->Clear();
 		//myEngine->GetAPI()->ResetViewport();
 
-		ProcessShadows();
 		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		myDeferredRenderer->SetTargets();
 		Render3DCommands();
 		
-		CTexture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
-		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection(), m_Shadowlight->GetCamera()->GetProjection(), myPrevShadowFrame);
+		Texture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
+		ProcessShadows();
+		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection(), m_Shadowlight->GetMVP());
 
 		//RenderPointlight();
 		//RenderSpotlight();
 
 		myEngine->ResetRenderTargetAndDepth();
 		mySkysphere->Update(CEngine::GetInstance()->GetDeltaTime());
-		myDeferredRenderer->Finalize();
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
+		myDeferredRenderer->Finalize();
 
 		//RenderParticles();
 		RenderLines();
@@ -185,7 +184,6 @@ namespace Snowblind
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Depth->GetShaderView(), CU::Vector2f(1920.f - 128.f, 640.f)));
 		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Texture->GetDepthStencilView(), CU::Vector2f(1920.f - 384.f, 896.f)));
 
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_Shadowlight->GetOrientation()));
 	}
 
 	void CRenderer::AddTerrain(CTerrain* someTerrain)
@@ -208,7 +206,7 @@ namespace Snowblind
 						continue;
 					}
 
-					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 					m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 					 
 					CModel* model = myEngine->GetModel(command.m_KeyOrText);
@@ -381,7 +379,7 @@ namespace Snowblind
 		m_Shadowlight->SetTargets();
 
 
-		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		//m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		myCamera = m_Shadowlight->GetCamera();
 		Render3DCommands();
 
@@ -391,6 +389,7 @@ namespace Snowblind
 		myPrevShadowFrame = myCamera->GetOrientation();
 		myCamera = camera;
 		m_ProcessShadows = false;
+
 	}
 
 	void CRenderer::ToggleWireframe()

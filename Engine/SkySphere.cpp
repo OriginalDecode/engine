@@ -63,7 +63,7 @@ namespace Snowblind
 		return true;
 	}
 
-	void CSkySphere::Render(CU::Matrix44f& anOrientation, CTexture* aDepthTexture)
+	void CSkySphere::Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture)
 	{
 		SetPosition(anOrientation.GetPosition());
 

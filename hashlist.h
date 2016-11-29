@@ -1,4 +1,4 @@
-//0x5f5a2914
+//0x88285de5
 #pragma once
 #include "standard_datatype.hpp"
 static const u32 s_EscKey_hash = 0xbfa5b8d7;
@@ -129,3 +129,4 @@ static const u32 s_RMouseButton_hash = 0x7836ebc7;
 static const u32 s_MouseButton3_hash = 0x252d44b2;
 static const u32 s_MouseButton4_hash = 0xf778e0e4;
 static const u32 s_MouseButton5_hash = 0x4dedfb60;
+static const u32 s_MoveMouse_hash = 0x46229714;

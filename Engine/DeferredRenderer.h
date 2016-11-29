@@ -23,7 +23,7 @@ namespace Snowblind
 	class GBuffer;
 	class LightPass;
 	class CPointLight;
-	class CTexture;
+	class Texture;
 
 	struct SVertexIndexWrapper;
 	struct SVertexBufferWrapper;
@@ -34,22 +34,22 @@ namespace Snowblind
 	{
 	public:
 		CDeferredRenderer() = default;
-		bool Initiate(CTexture* shadow_texture);
+		bool Initiate(Texture* shadow_texture);
 		bool CleanUp();
 		void SetTargets();
 		void SetBuffers();
-		void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& light_projection, const CU::Matrix44f& light_orientation);
+		void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_matrix);
 
 
 		void Finalize();
 
 		//void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
-		CTexture* GetDepthStencil();
+		Texture* GetDepthStencil();
 		GBuffer* GetGBuffer();
 		void ToggleWireframe() { m_Wireframe = !m_Wireframe; }
 	private:
 		bool m_Wireframe = false;
-		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& light_projection, const CU::Matrix44f& light_orientation);
+		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_matrix);
 
 		void CreateFullscreenQuad();
 		void InitConstantBuffer();
@@ -67,9 +67,9 @@ namespace Snowblind
 		CEffect* myAmbientPassShader = nullptr;
 		CEffect* myScreenPassShader = nullptr;
 
-		CTexture* myDepthStencil = nullptr;
-		CTexture* myFinishedSceneTexture = nullptr;
-		CTexture* myCubeMap = nullptr;
+		Texture* myDepthStencil = nullptr;
+		Texture* myFinishedSceneTexture = nullptr;
+		Texture* myCubeMap = nullptr;
 
 		SVertexDataWrapper* myVertexData = nullptr;
 		SVertexBufferWrapper* m_VertexBuffer = nullptr;
@@ -88,14 +88,13 @@ namespace Snowblind
 			CU::Vector4f camPosition;
 			CU::Matrix44f invertedProjection;
 			CU::Matrix44f view;
-			CU::Matrix44f m_LightProjection;
-			CU::Matrix44f m_LightOrientation;
+			CU::Matrix44f m_ShadowMVP;
 		} *myConstantStruct;
 #endif
 	};
 
 #ifdef SNOWBLIND_DX11
-	__forceinline CTexture* CDeferredRenderer::GetDepthStencil()
+	__forceinline Texture* CDeferredRenderer::GetDepthStencil()
 	{
 		DL_ASSERT_EXP(myDepthStencil != nullptr, "Deferred Depthstencil was null!");
 		return myDepthStencil;

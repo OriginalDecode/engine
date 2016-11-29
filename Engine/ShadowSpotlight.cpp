@@ -13,20 +13,24 @@ namespace Snowblind
 		m_Camera->RotateAroundY(CL::DegreeToRad(90.f) * direction.x);
 		m_Camera->RotateAroundX(CL::DegreeToRad(90.f) * direction.y);
 
+		m_Bias.myMatrix[0] = 0.5;
+		m_Bias.myMatrix[5] = 0.5;
+		m_Bias.myMatrix[10] = 0.5;
+		m_Bias.SetTranslation({ 0.5, 0.5, 0.5, 1.f });
 		
 		m_Device = CEngine::GetInstance()->GetAPI()->GetDevice();
 		m_Context = CEngine::GetInstance()->GetAPI()->GetContext();
 
-		m_RenderTarget = new CTexture;
+		m_RenderTarget = new Texture;
 		m_RenderTarget->Initiate(m_BufferSize, m_BufferSize, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "Shadowlight : ");
 
-		m_Normal = new CTexture;
+		m_Normal = new Texture;
 		m_Normal->Initiate(m_BufferSize, m_BufferSize, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "Shadowlight : ");
 
-		m_Depth = new CTexture;
+		m_Depth = new Texture;
 		m_Depth->Initiate(m_BufferSize, m_BufferSize, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "Shadowlight : ");
 
-		m_Texture = new CTexture;
+		m_Texture = new Texture;
 		m_Texture->Initiate(m_BufferSize, m_BufferSize , DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
 			, DXGI_FORMAT_R16G16B16A16_FLOAT
 			, DXGI_FORMAT_R32_TYPELESS
@@ -97,6 +101,11 @@ namespace Snowblind
 	CU::Matrix44f ShadowSpotlight::GetOrientation()
 	{
 		return m_Camera->GetOrientation();
+	}
+
+	CU::Matrix44f ShadowSpotlight::GetMVP()
+	{
+		return CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetProjection();// *m_Bias;
 	}
 
 };

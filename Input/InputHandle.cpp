@@ -58,7 +58,10 @@ void InputHandle::HandleInput()
 			{
 				CallFunction(s_AButton_hash);
 			}
-
+			else if (state.m_Buttons & x_LB)
+				CallFunction(s_LBumper_hash);
+			else if (state.m_Buttons & x_RB)
+				CallFunction(s_RBumper_hash);
 
 			const float ly_value = (float)state.m_ThumbLY / SHRT_MAX;
 			const float lx_value = (float)state.m_ThumbLX / SHRT_MAX;
@@ -133,6 +136,9 @@ void InputHandle::HandleInput()
 				CallFunction(s_NumpadAdd_hash);
 			if (m_Input->KeyDown(KButton::NUMMINUS))
 				CallFunction(s_NumpadMinus_hash);
+			if (m_Input->KeyClick(KButton::TAB))
+				CallFunction(s_TabKey_hash);
+			CallFunction(s_MoveMouse_hash);
 
 		}
 	}
@@ -151,6 +157,16 @@ float InputHandle::GetX()
 float InputHandle::GetY()
 {
 	return m_Input->GetY(); 
+}
+
+float InputHandle::GetDX()
+{
+	return m_Input->MouseDirectX();
+}
+
+float InputHandle::GetDY()
+{
+	return m_Input->MouseDirectY(); 
 }
 
 void InputHandle::CallFunction(u32 hash)

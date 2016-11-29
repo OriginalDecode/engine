@@ -5,7 +5,7 @@ struct ID3D11DeviceContext;
 enum D3D_PRIMITIVE_TOPOLOGY;
 namespace Snowblind
 {
-	class CTexture;
+	class Texture;
 	class CEffect;
 
 	enum TextureType

@@ -1,7 +1,8 @@
 #pragma once
+#include "snowblind_shared.h"
 namespace Snowblind
 {
-	class CTexture;
+	class Texture;
 	class CCamera;
 	class ShadowSpotlight
 	{
@@ -15,26 +16,27 @@ namespace Snowblind
 		CCamera* GetCamera() const { return m_Camera; }
 		void SetViewport();
 
-		CTexture* GetTexture() { return m_Texture; }
-		CTexture* GetRenderTarget() { return m_RenderTarget; }
+		Texture* GetTexture() { return m_Texture; }
+		Texture* GetRenderTarget() { return m_RenderTarget; }
 
 		void ClearTexture();
 
 		void SetTargets();
 		CU::Matrix44f GetOrientation();
 
-		CTexture* m_Texture;
-		CTexture* m_Normal;
-		CTexture* m_Depth;
-		CTexture* m_RenderTarget;
+		Texture* m_Texture;
+		Texture* m_Normal;
+		Texture* m_Depth;
+		Texture* m_RenderTarget;
+		CU::Matrix44f GetMVP();
 	private:
+		CCamera* m_Camera = nullptr;
+		Viewport* m_Viewport = nullptr;
+		IDevice* m_Device = nullptr;
+		IDevContext* m_Context = nullptr;
 
-		CU::Matrix44f m_Orientation;
 
-		CCamera* m_Camera; // Unique for Shadows.
-		D3D11_VIEWPORT* m_Viewport;
-		ID3D11Device* m_Device;
-		ID3D11DeviceContext* m_Context;
+		CU::Matrix44f m_Bias;
 		CU::Vector3f m_Position;
 		CU::Vector3f m_Direction;
 		float m_BufferSize = 0.f;

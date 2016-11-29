@@ -50,6 +50,8 @@ private:
 	bool CreateEntity(const char* entity_path, JSONReader& level_reader, JSONElement::ConstMemberIterator it);
 
 	void LeftClick(float x, float y);
+	bool m_DisableMouseCameraMovement = false;
+
 
 
 	s16 m_LocalPlayerCount = 0;

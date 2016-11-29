@@ -367,7 +367,7 @@ namespace Snowblind
 
 		
 		HRESULT hr = S_OK;
-		hr = CTexture::SaveToFile(texture, "Glyphs/Atlas_" + name + "dds");
+		hr = Texture::SaveToFile(texture, "Glyphs/Atlas_" + name + "dds");
 		CEngine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
 		SAFE_RELEASE(texture);
 #endif
@@ -413,7 +413,7 @@ namespace Snowblind
 
 
 		HRESULT hr = S_OK;
-		hr = CTexture::SaveToFile(texture, "Glyphs/Glpyh_" + name + std::to_string(index) + ".dds");
+		hr = Texture::SaveToFile(texture, "Glyphs/Glpyh_" + name + std::to_string(index) + ".dds");
 		CEngine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
 		SAFE_RELEASE(texture);
 #endif

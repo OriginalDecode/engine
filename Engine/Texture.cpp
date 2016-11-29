@@ -6,7 +6,7 @@
 namespace Snowblind
 {
 
-	void CTexture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, const std::string& debug_name)
+	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, const std::string& debug_name)
 	{
 
 #ifdef SNOWBLIND_DX11
@@ -55,7 +55,7 @@ namespace Snowblind
 		SAFE_RELEASE(texture);
 	}
 
-	void CTexture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name)
+	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name)
 	{
 #ifdef SNOWBLIND_DX11
 		DirectX11* api = CEngine::GetAPI();
@@ -115,7 +115,7 @@ namespace Snowblind
 
 	}
 
-	void CTexture::Initiate(u16 width, u16 height, s32 flags, TextureFormat render_target_format, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name)
+	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat render_target_format, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name)
 	{
 
 #ifdef SNOWBLIND_DX11
@@ -196,7 +196,7 @@ namespace Snowblind
 
 	}
 
-	bool CTexture::CleanUp()
+	bool Texture::CleanUp()
 	{
 		SAFE_RELEASE(m_ShaderResource);
 		if (m_ShaderResource)
@@ -217,7 +217,7 @@ namespace Snowblind
 		return true;
 	}
 
-	UsageType CTexture::GetUsage(int flags) const
+	UsageType Texture::GetUsage(int flags) const
 	{
 		if (flags & IMMUTABLE_USAGE)
 		{
@@ -234,7 +234,7 @@ namespace Snowblind
 		return D3D11_USAGE_DEFAULT;
 	}
 
-	bool CTexture::Load(const std::string& filepath)
+	bool Texture::Load(const std::string& filepath)
 	{
 		myFileName = filepath;
 #ifdef SNOWBLIND_DX11
@@ -254,18 +254,18 @@ namespace Snowblind
 		return true;
 	}
 
-	void CTexture::OnReload()
+	void Texture::OnReload()
 	{
 		CleanUp();
 		Load(myFileName);
 	}
 
-	void CTexture::SetTexture(IShaderResourceView* aShaderResource)
+	void Texture::SetTexture(IShaderResourceView* aShaderResource)
 	{
 		m_ShaderResource = aShaderResource;
 	}
 
-	HRESULT CTexture::SaveToFile(ITexture2D*& texture_resource, const std::string& file_name)
+	HRESULT Texture::SaveToFile(ITexture2D*& texture_resource, const std::string& file_name)
 	{
 		ID3D11Resource* resource = nullptr;
 		HRESULT hr = texture_resource->QueryInterface(IID_ID3D11Texture2D, (void**)&resource);
@@ -278,7 +278,7 @@ namespace Snowblind
 		return S_OK;
 	}
 
-	void CTexture::CopyData(ITexture2D* dest, ITexture2D* source)
+	void Texture::CopyData(ITexture2D* dest, ITexture2D* source)
 	{
 #ifdef SNOWBLIND_DX11
 		CEngine::GetAPI()->GetContext()->CopyResource(dest, source);

@@ -12,7 +12,7 @@ namespace Snowblind
 	struct DomainShader;
 	struct ComputeShader;
 	
-	class CTexture;
+	class Texture;
 	class CEffect
 	{
 		friend class CShaderFactory;

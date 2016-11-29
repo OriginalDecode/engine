@@ -1,48 +1,5 @@
 #include "InputWrapper.h"
 #include <assert.h>
-
-
-/*InputWrapper* InputWrapper::myInstance = nullptr;
-
-InputWrapper::InputWrapper(HWND aHWND, HINSTANCE hInstance)
-{
-	RECT desktop;
-	const HWND hDesktop = GetDesktopWindow();
-	GetWindowRect(hDesktop, &desktop);
-	Initiate(aHWND, hInstance);
-	myWindowIsActive = true;
-}
-
-InputWrapper::~InputWrapper()
-{
-
-}
-
-void InputWrapper::Create(HWND aHWND, HINSTANCE hInstance)
-{
-	if (myInstance == nullptr)
-	{
-		myInstance = new InputWrapper(aHWND, hInstance);
-	}
-}
-
-void InputWrapper::Destroy()
-{
-	if (myInstance != nullptr)
-	{
-		delete myInstance;
-		myInstance = nullptr;
-	}
-}
-
-InputWrapper* InputWrapper::GetInstance()
-{
-	if (myInstance)
-		return myInstance;
-
-	return nullptr;
-}
-*/
 bool InputWrapper::Initiate(HWND aHWND, HINSTANCE hInstance)
 {
 	DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&myDInput, nullptr);
@@ -95,7 +52,7 @@ bool InputWrapper::Update()
 	{
 		SetCursorPos(0, 0);
 	}
-	//tagPOINT cursorXandY;
+
 	GetCursorPos(&myCursorPos);
 	ScreenToClient(myHWND, &myCursorPos);
 	return true;
@@ -178,23 +135,3 @@ void InputWrapper::ReleaseCursor()
 	myCursorIsLocked = false;
 }
 
-/*void InputWrapper::SetActiveWindow(bool aIsWindowActive)
-{
-	if (myInstance != nullptr)
-		myInstance->myWindowIsActive = aIsWindowActive;
-}
-
-bool InputWrapper::GetActivateWindow()
-{
-	return myWindowIsActive;
-}
-
-void InputWrapper::Reset()
-{
-	if (myInstance)
-	{
-		myMouseState.lX = 0;
-		myMouseState.lY = 0;
-		myMouseState.lZ = 0;
-	}
-}*/

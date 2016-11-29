@@ -21,7 +21,7 @@ namespace Snowblind
 	class CPointLight;
 	class CSkySphere;
 	class CSynchronizer;
-	class CTexture;
+	class Texture;
 	class CText;
 	class CTerrain;
 	class LightPass;
@@ -78,7 +78,7 @@ namespace Snowblind
 
 		CSynchronizer*		mySynchronizer		= nullptr;
 		CText*				myText				= nullptr;
-		CTexture*			myDepthTexture		= nullptr;
+		Texture*			myDepthTexture		= nullptr;
 		CSkySphere*			mySkysphere			= nullptr;
 		CSprite*			mySprite			= nullptr;
 		CSprite*			myClearColor = nullptr;

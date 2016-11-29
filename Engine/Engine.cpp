@@ -249,7 +249,7 @@ namespace Snowblind
 		return myAPI->GetAPIName();
 	}
 
-	Snowblind::CTexture* CEngine::GetTexture(const std::string& aFilePath)
+	Snowblind::Texture* CEngine::GetTexture(const std::string& aFilePath)
 	{
 		return myAssetsContainer->GetTexture(aFilePath);
 	}

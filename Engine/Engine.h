@@ -59,7 +59,7 @@ namespace Snowblind
 	class CModel;
 	class CRenderer;
 	class CSynchronizer;
-	class CTexture;
+	class Texture;
 	class CEffect;
 	class CTerrain;
 	class IGraphicsAPI;
@@ -98,7 +98,7 @@ namespace Snowblind
 		float GetFrameTime();
 		std::string GetAPIName();
 
-		CTexture* GetTexture(const std::string& aFilePath);
+		Texture* GetTexture(const std::string& aFilePath);
 		CEffect* GetEffect(const std::string& aFilePath);
 		CModel* GetModel(const std::string& aFilePath);
 

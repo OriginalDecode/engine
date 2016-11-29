@@ -12,5 +12,9 @@ namespace Snowblind
 
 	private:
 
+		Texture* m_DepthTexture = nullptr;
+
+
+
 	};
 };

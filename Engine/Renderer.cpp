@@ -50,10 +50,10 @@ namespace Snowblind
 		m_Shadowlight->Initiate(
 			CU::Vector3f(95, 7.f, 28.f)
 			, CU::Vector3f(1.f, 0.5f, 0.f)
-			, 512.f);
+			, 2048.f);
 
 		myDeferredRenderer = new CDeferredRenderer; // Where should this live?
-		if (!myDeferredRenderer->Initiate(m_Shadowlight->GetDepthTexture()))
+		if (!myDeferredRenderer->Initiate(m_Shadowlight->GetDepthStencil()))
 			return false;
 
 		myDepthTexture = new Texture; //Where should this live?
@@ -137,10 +137,12 @@ namespace Snowblind
 
 		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		myDeferredRenderer->SetTargets();
+
 		Render3DCommands();
-		
 		Texture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
+
 		ProcessShadows();
+
 		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection(), m_Shadowlight->GetMVP());
 
 		//RenderPointlight();
@@ -170,7 +172,8 @@ namespace Snowblind
 
 		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetRenderTarget()->GetShaderView(), CU::Vector2f(1920.f - 128.f, 128.f)));
 		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Normal->GetShaderView(), CU::Vector2f(1920.f - 128.f, 384.f)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthTexture()->GetShaderView(), CU::Vector2f(1920.f - 128.f, 640.f)));
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthTexture()->GetShaderView(), CU::Vector2f(1920.f - 128.f, 128.f)));
+
 		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Texture->GetDepthStencilView(), CU::Vector2f(1920.f - 384.f, 896.f)));
 
 	}
@@ -359,20 +362,18 @@ namespace Snowblind
 
 	void CRenderer::ProcessShadows()
 	{
-		CCamera* camera = myCamera;
+		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		m_ProcessShadows = true;
 
+		CCamera* camera = myCamera;
+		myCamera = m_Shadowlight->GetCamera();
 		m_Shadowlight->SetViewport();
 
 		m_Shadowlight->ClearTexture();
-
 		m_Shadowlight->SetTargets();
-
-
-		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
-		myCamera = m_Shadowlight->GetCamera();
+		m_Shadowlight->ToggleShader(m_ProcessShadows);
 		Render3DCommands();
-
+		m_Shadowlight->Copy();
 		myEngine->ResetRenderTargetAndDepth();
 		m_API->ResetViewport();
 		
@@ -380,7 +381,7 @@ namespace Snowblind
 		myCamera = camera;
 
 		m_ProcessShadows = false;
-
+		m_Shadowlight->ToggleShader(m_ProcessShadows);
 	}
 
 	void CRenderer::ToggleWireframe()

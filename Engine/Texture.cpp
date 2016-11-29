@@ -29,30 +29,28 @@ namespace Snowblind
 		text_desc.MiscFlags = 0;
 		text_desc.ArraySize = 1;
 
-		ID3D11Texture2D* texture = nullptr;
-		HRESULT hr = device->CreateTexture2D(&text_desc, NULL, &texture);
+		HRESULT hr = device->CreateTexture2D(&text_desc, NULL, &m_DepthTexture);
 		api->HandleErrors(hr, "[Texture](Initiate) : Failed to initiate texture.");
 
 		if (flags & D3D11_BIND_RENDER_TARGET)
 		{
-			hr = device->CreateRenderTargetView(texture, NULL, &m_RenderTargetView);
+			hr = device->CreateRenderTargetView(m_DepthTexture, NULL, &m_RenderTargetView);
 			api->HandleErrors(hr, "[Texture](Initiate) : Failed to create RenderTargetView.");
 			api->SetDebugName(m_RenderTargetView, debug_name + "RenderTargetView");
 		}
 
 		if (flags & D3D11_BIND_SHADER_RESOURCE)
 		{
-			hr = device->CreateShaderResourceView(texture, NULL, &m_ShaderResource);
+			hr = device->CreateShaderResourceView(m_DepthTexture, NULL, &m_ShaderResource);
 			api->HandleErrors(hr, "[Texture](Initiate) : Failed to create ShaderResourceView.");
 			api->SetDebugName(m_ShaderResource, debug_name + "ShaderResourceView");
 		}
 
 		if (flags & D3D11_BIND_DEPTH_STENCIL)
 		{
-			DL_ASSERT("Invalid flag D3D11_BIND_DEPTH_STENCIL for creating regular texture!");
+			DL_ASSERT("Invalid flag D3D11_BIND_DEPTH_STENCIL for cr'eating regular texture!");
 		}
 
-		SAFE_RELEASE(texture);
 	}
 
 	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name)

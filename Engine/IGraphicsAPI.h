@@ -32,6 +32,7 @@ enum class eDepthStencil
 	READ_NO_WRITE,
 	MASK_TEST,
 	LIGHT_MASK,
+	DEPTH_TEST,
 	_COUNT
 };
 

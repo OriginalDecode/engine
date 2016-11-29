@@ -21,6 +21,7 @@ namespace Snowblind
 
 		if (myIndexBuffer)
 			myContext->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
+
 		if (!render_shadows)
 		{
 			myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);

@@ -16,8 +16,8 @@ SamplerState point_Clamp 	: register ( s0 );
 Texture2D AlbedoTexture  	: register ( t0 );
 Texture2D NormalTexture  	: register ( t1 );
 Texture2D DepthTexture	 	: register ( t2 );
-TextureCube CubeMap		 	: register ( t3 );
-Texture2D ShadowTexture		: register ( t4 );
+Texture2D ShadowTexture		: register ( t3 );
+TextureCube CubeMap		 	: register ( t4 );
 
 //---------------------------------
 //	Deferred Ambient Pixel Structs
@@ -128,7 +128,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 shadowVec = mul(wp2, shadowMVP);
 	shadowVec.xyz /= shadowVec.w;
 	shadowVec.y = -shadowVec.y;
-	shadowVec.x = -shadowVec.x;
+	shadowVec.x = shadowVec.x;
 	shadowVec.xy += 1;
 	shadowVec.xy *= 0.5;
 
@@ -136,7 +136,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
 
-	if(sampleValue < compareValue)
+	if(sampleValue < compareValue - 0.0005)
 	{
 		if(shadowVec.x > 0 && shadowVec.x < 1 && shadowVec.y > 0 && shadowVec.y < 1 && shadowVec.z < 1)
 		{

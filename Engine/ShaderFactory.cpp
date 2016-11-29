@@ -128,7 +128,7 @@ namespace Snowblind
 		newShader->compiledShader = compiled_shader->GetBufferPointer();
 		newShader->shaderSize = compiled_shader->GetBufferSize();
 
-		Engine::GetAPI()->SetDebugName(newShader->pixelShader, "PixelShader");
+		Engine::GetAPI()->SetDebugName(newShader->pixelShader, file_path);
 #endif
 		return newShader;
 	}

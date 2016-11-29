@@ -50,6 +50,7 @@ VS_OUTPUT VS(VS_INPUT input)
 	output.tang  = mul(input.tang , World);
 	
 	output.worldpos = mul(input.pos, World);
+	output.worldpos = mul(output.worldpos, View);
 	
 	return output;
 };

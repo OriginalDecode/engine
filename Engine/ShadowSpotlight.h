@@ -28,6 +28,7 @@ namespace Snowblind
 
 		CU::Matrix44f GetOrientation();
 		CU::Matrix44f GetMVP();
+		void Copy();
 	private:
 		Effect* m_ShadowEffect = nullptr;
 		CCamera* m_Camera = nullptr;
@@ -37,10 +38,13 @@ namespace Snowblind
 
 		Texture* m_Depth;
 		Texture* m_DepthStencil;
+		Texture* m_Holder;
+
 
 		CU::Matrix44f m_Bias;
 		CU::Vector3f m_Position;
 		CU::Vector3f m_Direction;
 		float m_BufferSize = 0.f;
+
 	};
 };

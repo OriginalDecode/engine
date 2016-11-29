@@ -40,8 +40,8 @@ namespace Snowblind
 		myAmbientPassShader->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
 		myAmbientPassShader->AddShaderResource(myGBuffer->myNormal->GetShaderView());
 		myAmbientPassShader->AddShaderResource(myGBuffer->myDepth->GetShaderView());
+		myAmbientPassShader->AddShaderResource(shadow_texture->GetDepthStencilView());
 		myAmbientPassShader->AddShaderResource(myCubeMap->GetShaderView());
-		myAmbientPassShader->AddShaderResource(shadow_texture->GetShaderView());
 		CreateFullscreenQuad();
 		InitConstantBuffer();
 #endif

@@ -136,6 +136,50 @@ namespace Snowblind
 		hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
 		SetDebugName(myDepthStates[u16(eDepthStencil::LIGHT_MASK)], "eDepthStencil::LIGHT_MASK");
 		HandleErrors(hr, "Failed to setup depth buffer!");
+
+
+
+
+
+
+		//stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		//stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;
+
+		//stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		//stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+
+		//stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
+		//stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		//stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		//stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+
+
+		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
+		
+		stencilDesc.DepthEnable = true;
+		stencilDesc.StencilEnable = true;
+		stencilDesc.StencilReadMask = 0xFF;
+		stencilDesc.StencilWriteMask = 0xFF;
+
+		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		stencilDesc.DepthFunc = D3D11_COMPARISON_GREATER;
+
+		stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+		stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+		stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_ZERO;
+		stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
+
+		stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
+		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
+		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_ZERO;
+		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
+
+
+		hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::DEPTH_TEST)]);
+		SetDebugName(myDepthStates[u16(eDepthStencil::DEPTH_TEST)], "eDepthStencil::DEPTH_TEST");
+		HandleErrors(hr, "Failed to setup depth buffer!");
+
 	}
 };
 #endif

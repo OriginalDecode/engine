@@ -92,9 +92,11 @@ namespace Snowblind
 			__super::Render(aCameraOrientation, aCameraProjection, render_shadows);
 			myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-			mySurface->Activate();
+			if (!render_shadows)
+				mySurface->Activate();
 			myContext->DrawIndexed(myIndexData->myIndexCount, 0, 0);
-			mySurface->Deactivate();
+			if (!render_shadows)
+				mySurface->Deactivate();
 
 		}
 #endif
@@ -127,7 +129,7 @@ namespace Snowblind
 
 	void CTerrain::SetPosition(CU::Vector2f position)
 	{
-		
+
 	}
 
 	void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)
@@ -351,7 +353,7 @@ namespace Snowblind
 		height_map.myDepth = depth;
 		height_map.myData = data;
 
-//		return SHeightMap(width, depth, data);
+		//		return SHeightMap(width, depth, data);
 		return height_map;
 	}
 

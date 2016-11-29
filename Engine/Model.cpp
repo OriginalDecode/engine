@@ -87,7 +87,8 @@ namespace Snowblind
 					myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 					if (!myIsLightMesh)
 					{
-						mySurfaces[i]->Activate(); //Gets a ton of junk data. What???
+						if (!render_shadows)
+							mySurfaces[i]->Activate(); //Gets a ton of junk data. What???
 						myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
 					}
 					else
@@ -215,7 +216,7 @@ namespace Snowblind
 		cbDesc.StructureByteStride = 0;
 
 		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-		
+
 		myAPI->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
 		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 #endif

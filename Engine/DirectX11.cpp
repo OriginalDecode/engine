@@ -146,7 +146,11 @@ namespace Snowblind
 			}break;
 			case eDepthStencil::LIGHT_MASK:
 			{
-				myContext->OMSetDepthStencilState(myDepthStates[u16(eDepthStencil::MASK_TEST)], 0);
+				myContext->OMSetDepthStencilState(myDepthStates[u16(eDepthStencil::LIGHT_MASK)], 0);
+			}break;
+			case eDepthStencil::DEPTH_TEST:
+			{
+				myContext->OMSetDepthStencilState(myDepthStates[u16(eDepthStencil::DEPTH_TEST)], 1);
 			}break;
 		}
 	}

@@ -60,16 +60,16 @@ namespace Snowblind
 	class CRenderer;
 	class CSynchronizer;
 	class Texture;
-	class CEffect;
+	class Effect;
 	class CTerrain;
 	class IGraphicsAPI;
 
-	class CEngine
+	class Engine
 	{
 	public:
 		static void Create();
 		static void Destroy();
-		static CEngine* GetInstance();
+		static Engine* GetInstance();
 
 #ifdef SNOWBLIND_DX11
 		static DirectX11* GetAPI();
@@ -99,7 +99,7 @@ namespace Snowblind
 		std::string GetAPIName();
 
 		Texture* GetTexture(const std::string& aFilePath);
-		CEffect* GetEffect(const std::string& aFilePath);
+		Effect* GetEffect(const std::string& aFilePath);
 		CModel* GetModel(const std::string& aFilePath);
 
 
@@ -135,12 +135,12 @@ namespace Snowblind
 		void CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
 
 	private:
-		CEngine() = default;
+		Engine() = default;
 		//void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
 		bool HasInitiated();
 		bool m_IsInitiated = false;
 
-		static CEngine* myInstance;
+		static Engine* myInstance;
 		static IGraphicsAPI* myAPI;
 		Threadpool m_Threadpool;
 

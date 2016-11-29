@@ -6,7 +6,7 @@ namespace Snowblind
 {
 	CMousePicker::CMousePicker()
 	{
-		myEngine = CEngine::GetInstance();
+		myEngine = Engine::GetInstance();
 		myCamera = myEngine->GetCamera();
 	}
 

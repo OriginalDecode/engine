@@ -1,13 +1,11 @@
 #pragma once
 #include "VertexStructs.h"
 #include "Utilities.h"
+
 #ifdef SNOWBLIND_DX11
-struct ID3D11InputLayout;
 struct D3D11_BUFFER_DESC;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct D3D11_SUBRESOURCE_DATA;
-struct ID3D11ShaderResourceView;
-struct ID3D11Buffer;
 #endif
 namespace CommonUtilities
 {
@@ -21,12 +19,12 @@ namespace Snowblind
 		CU::Math::Vector2<float> myPosition;
 	};
 
-	struct SVertexBufferWrapper;
-	struct SIndexBufferWrapper;
+	struct VertexBufferWrapper;
+	struct IndexBufferWrapper;
 
 	struct SFontData;
-	class CEffect;
-	class CEngine;
+	class Effect;
+	class Engine;
 	class CFont
 	{
 	public:
@@ -56,10 +54,10 @@ namespace Snowblind
 		void UpdateBuffer();
 		void UpdateConstantBuffer();
 		SFontData* myData = nullptr;
-		CEffect* myEffect[2];
+		Effect* myEffect[2];
 
 #ifdef SNOWBLIND_DX11
-		ID3D11InputLayout* myVertexLayout = nullptr;
+		IInputLayout* myVertexLayout = nullptr;
 		D3D11_BUFFER_DESC* myVertexBufferDesc = nullptr;
 		D3D11_BUFFER_DESC* myIndexBufferDesc = nullptr;
 
@@ -67,8 +65,8 @@ namespace Snowblind
 		ID3D11Buffer* myConstantBuffer = nullptr;
 #endif
 
-		SVertexBufferWrapper* myVertexBuffer = nullptr;
-		SIndexBufferWrapper* myIndexBuffer = nullptr;
+		VertexBufferWrapper* myVertexBuffer = nullptr;
+		IndexBufferWrapper* myIndexBuffer = nullptr;
 		std::string myText = "NONE";
 
 		CU::Math::Vector2<float> mySize;
@@ -95,7 +93,7 @@ namespace Snowblind
 			CU::Vector2f scale = CU::Vector2f(1.f, 1.f);
 		} *myConstantStruct;
 
-		CEngine* myEngine;
+		Engine* myEngine;
 
 	};
 }

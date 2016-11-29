@@ -4,14 +4,12 @@
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
 
-struct ID3D11InputLayout;
-struct SVertexBaseStruct;
 namespace Snowblind
 {
 	class CCamera;
 	class CSynchronizer;
 	class Texture;
-	class CEngine;
+	class Engine;
 	class CEmitterInstance
 	{
 	public:
@@ -33,18 +31,18 @@ namespace Snowblind
 		void UpdateParticle(float aDeltaTime);
 		void Emit();
 		SEmitterData myData;
-		SVertexBufferWrapper* myVertexBuffer;
+		VertexBufferWrapper* myVertexBuffer;
 
 		CU::GrowingArray<SParticleObject> myParticles;
 		CU::Matrix44f myOrientation;
 
 		float myTimeToEmit;
-		ID3D11InputLayout* myInputLayout;
+		IInputLayout* myInputLayout;
 		CSynchronizer* mySynchronizer;
 
 		ID3D11Buffer* myConstantBuffer;
 		SVertexBaseStruct* myConstantStruct;
-		CEngine* myEngine;
+		Engine* myEngine;
 	};
 };
 #endif

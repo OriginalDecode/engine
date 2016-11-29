@@ -8,8 +8,8 @@
 namespace Snowblind
 {
 	class CModel;
-	class CEffect;
-	class CEngine;
+	class Effect;
+	class Engine;
 };
 
 namespace CommonUtilities
@@ -91,13 +91,13 @@ public:
 private:
 	Ticket_Mutex m_LoaderMutex;
 	Assimp::Importer importer;
-	Snowblind::CEngine* myEngine;
+	Snowblind::Engine* myEngine;
 	std::string myCurrentLoadingFile;
 	CommonUtilities::TimeManager* myTimeManager;
 
-	Snowblind::CModel* CreateModel(FBXModelData* someData, Snowblind::CEffect* anEffect);
-	Snowblind::CModel* LoadModel(const std::string& aFilePath, Snowblind::CEffect* anEffect);
-	void FillData(FBXModelData* someData, Snowblind::CModel* out, Snowblind::CEffect* anEffect);
+	Snowblind::CModel* CreateModel(FBXModelData* someData, Snowblind::Effect* anEffect);
+	Snowblind::CModel* LoadModel(const std::string& aFilePath, Snowblind::Effect* anEffect);
+	void FillData(FBXModelData* someData, Snowblind::CModel* out, Snowblind::Effect* anEffect);
 	void ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData);
 	void ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelData* fbx);
 };

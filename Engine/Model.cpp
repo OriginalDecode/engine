@@ -70,12 +70,12 @@ namespace Snowblind
 		return this;
 	}
 
-	void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+	void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
 	{
 #ifdef SNOWBLIND_DX11
 		if (!myIsNULLObject)
 		{
-			__super::Render(aCameraOrientation, aCameraProjection);
+			__super::Render(aCameraOrientation, aCameraProjection, render_shadows);
 			if (!myIsLightMesh)
 				myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			if (mySurfaces.Size() > 0)

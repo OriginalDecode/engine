@@ -21,7 +21,7 @@
 
 
 CModelImporter::CModelImporter()
-	: myEngine(Snowblind::CEngine::GetInstance())
+	: myEngine(Snowblind::Engine::GetInstance())
 	, myTimeManager(new CommonUtilities::TimeManager())
 {
 	myTimeManager->CreateTimer();
@@ -33,7 +33,7 @@ CModelImporter::~CModelImporter()
 	SAFE_DELETE(myTimeManager);
 }
 
-Snowblind::CModel* CModelImporter::CreateModel(FBXModelData* someData, Snowblind::CEffect* anEffect)
+Snowblind::CModel* CModelImporter::CreateModel(FBXModelData* someData, Snowblind::Effect* anEffect)
 {
 
 	Snowblind::CModel* newModel = new Snowblind::CModel();
@@ -59,7 +59,7 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, const
 	return model;
 }
 
-Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowblind::CEffect* anEffect)
+Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowblind::Effect* anEffect)
 {
 	myTimeManager->Update();
 	float loadTime = myTimeManager->GetTimer(0).GetTotalTime().GetMilliseconds();
@@ -117,15 +117,13 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 	return toReturn;
 }
 
-void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Snowblind::CEffect* /*anEffect*/)
+void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Snowblind::Effect* /*anEffect*/)
 {
 #ifdef SNOWBLIND_DX11
 	ModelData* data = someData->myData;
 
-	float x, y, z;
 	out->SetWHD(data->m_WHD);
-	x = data->m_WHD.x;
-	Snowblind::SVertexIndexWrapper* indexWrapper = new Snowblind::SVertexIndexWrapper();
+	Snowblind::VertexIndexWrapper* indexWrapper = new Snowblind::VertexIndexWrapper();
 	indexWrapper->myFormat = DXGI_FORMAT_R32_UINT;
 	u32* indexData = new u32[data->myIndexCount];
 	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
@@ -141,7 +139,7 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 
 
 	/* BUG HERE. CRASH. */
-	Snowblind::SVertexDataWrapper* vertexData = new Snowblind::SVertexDataWrapper();
+	Snowblind::VertexDataWrapper* vertexData = new Snowblind::VertexDataWrapper();
 	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float); //is this wrong?
 	u32* vertexRawData = new u32[sizeOfBuffer];
 	memcpy(vertexRawData, data->myVertexBuffer, sizeOfBuffer); // This crashes?
@@ -338,9 +336,9 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 	CU::GrowingArray<u32> indices;
 	u32 vertCount = 0;
 
-	float w;
-	float h;
-	float d;
+	float w = 0.f;
+	float h = 0.f;
+	float d = 0.f;
 
 	for (u32 i = 0; i < aMesh->mNumFaces; i++)
 	{

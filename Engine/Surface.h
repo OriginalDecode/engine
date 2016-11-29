@@ -6,7 +6,7 @@ enum D3D_PRIMITIVE_TOPOLOGY;
 namespace Snowblind
 {
 	class Texture;
-	class CEffect;
+	class Effect;
 
 	enum TextureType
 	{
@@ -22,8 +22,8 @@ namespace Snowblind
 	class CSurface
 	{
 	public:
-		CSurface(CEffect* anEffect);
-		CSurface(CEffect* anEffect, u32 aStartVertex, u32 aVertexCount,
+		CSurface(Effect* anEffect);
+		CSurface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount,
 			u32 aStartIndex, u32 aIndexCount);
 		CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology);
 
@@ -33,7 +33,7 @@ namespace Snowblind
 		void Deactivate();
 		void AddTexture(const std::string& file_path, TextureType type);
 
-		void SetEffect(CEffect* anEffect); 
+		void SetEffect(Effect* anEffect); 
 
 		void SetVertexStart(u32 aStartVertex);
 		void SetVertexCount(u32 aVertexCount);
@@ -69,7 +69,7 @@ namespace Snowblind
 
 		CU::GrowingArray<std::string> myFileNames;
 
-		CEffect* myEffect;
+		Effect* myEffect;
 		ID3D11DeviceContext* myContext;
 		u32 myIndexStart;
 		u32 myIndexCount;

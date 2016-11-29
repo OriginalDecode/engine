@@ -16,7 +16,7 @@ InputSystem::InputSystem(CEntityManager& anEntityManager)
 
 void InputSystem::Update(float /*delta_time*/)
 {
-	if (Snowblind::CEngine::GetInstance()->IsDebugMenuActive())
+	if (Snowblind::Engine::GetInstance()->IsDebugMenuActive())
 		return;
 
 	const CU::GrowingArray<Entity>& entities = GetEntities();

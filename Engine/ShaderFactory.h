@@ -15,7 +15,7 @@ namespace Snowblind
 		IBlob* blob = nullptr;
 		void* compiledShader = nullptr;
 		int shaderSize = 0;
-		CU::GrowingArray<CEffect*> effectPointers;
+		CU::GrowingArray<Effect*> effectPointers;
 	};
 
 	struct VertexShader : public CompiledShader
@@ -57,25 +57,25 @@ namespace Snowblind
 
 namespace Snowblind
 {
-	class CEffect;
+	class Effect;
 	class CShaderFactory
 	{
 	public:
 		CShaderFactory();
 		~CShaderFactory();
 		
-		void LoadShader(CEffect* anEffect);
+		void LoadShader(Effect* anEffect);
 		void Update();
 	private:
 
 		IBlob* CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level);
 
-		bool LoadVertexShader(const std::string& file_path, CEffect* effect);
-		void LoadPixelShader(const std::string& file_path, CEffect* effect);
-		void LoadGeometryShader(const std::string& file_path, CEffect* effect);
-		void LoadHullShader(const std::string& file_path, CEffect* effect);
-		void LoadDomainShader(const std::string& file_path, CEffect* effect);
-		void LoadComputeShader(const std::string& file_path, CEffect* effect);
+		bool LoadVertexShader(const std::string& file_path, Effect* effect);
+		void LoadPixelShader(const std::string& file_path, Effect* effect);
+		void LoadGeometryShader(const std::string& file_path, Effect* effect);
+		void LoadHullShader(const std::string& file_path, Effect* effect);
+		void LoadDomainShader(const std::string& file_path, Effect* effect);
+		void LoadComputeShader(const std::string& file_path, Effect* effect);
 
 		VertexShader*		CreateVertexShader(const std::string& file_path);
 		PixelShader*		CreatePixelShader(const std::string& file_path);
@@ -101,6 +101,6 @@ namespace Snowblind
 		
 		CU::StaticArray<FileWatcher*, static_cast<u32>(eShaderType::_COUNT)> myFileWatchers;
 		ShaderWarningHandler myShaderWarningHandler;
-		CU::GrowingArray<CEffect*> GetEffectArray(const std::string& aFilePath);
+		CU::GrowingArray<Effect*> GetEffectArray(const std::string& aFilePath);
 	};
 };

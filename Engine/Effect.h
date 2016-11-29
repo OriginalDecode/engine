@@ -13,12 +13,12 @@ namespace Snowblind
 	struct ComputeShader;
 	
 	class Texture;
-	class CEffect
+	class Effect
 	{
 		friend class CShaderFactory;
 	public:
-		CEffect(const std::string& aFilePath);
-		~CEffect();
+		Effect(const std::string& aFilePath);
+		~Effect();
 		
 
 		VertexShader* GetVertexShader();

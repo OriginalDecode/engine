@@ -28,16 +28,16 @@ namespace Snowblind
 		myCamera = aCamera;
 		myIsActive = false;
 
-		myBottomLeftPosition = { (Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, (Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 2.f) - 24.f };
-		myTopLeftPosition = { (Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, 0.f };
+		myBottomLeftPosition = { (Snowblind::Engine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, (Snowblind::Engine::GetInstance()->GetWindowSize().myHeight / 2.f) - 24.f };
+		myTopLeftPosition = { (Snowblind::Engine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, 0.f };
 
 		mySprite = new CSprite();
-		mySprite->Initiate("Data/Textures/colors.dds", { Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 2.f,
-															Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 2.f },
+		mySprite->Initiate("Data/Textures/colors.dds", { Snowblind::Engine::GetInstance()->GetWindowSize().myWidth / 2.f,
+															Snowblind::Engine::GetInstance()->GetWindowSize().myHeight / 2.f },
 															{ 0, 0 });
 
-		mySprite->SetHotspot({ -Snowblind::CEngine::GetInstance()->GetWindowSize().myWidth / 4.f, Snowblind::CEngine::GetInstance()->GetWindowSize().myHeight / 4.f });
-		mySprite->SetPosition({ CEngine::GetInstance()->GetWindowSize().myWidth, 0 });
+		mySprite->SetHotspot({ -Snowblind::Engine::GetInstance()->GetWindowSize().myWidth / 4.f, Snowblind::Engine::GetInstance()->GetWindowSize().myHeight / 4.f });
+		mySprite->SetPosition({ Engine::GetInstance()->GetWindowSize().myWidth, 0 });
 
 		myText = new CText("Data/Font/OpenSans-Bold.ttf", 9, 1);
 		myText->SetPosition(myTopLeftPosition);
@@ -56,7 +56,7 @@ namespace Snowblind
 			if (myIsActive)
 			{
 
-				CEngine::DisableZ();
+				Engine::DisableZ();
 				mySprite->Render(myCamera);
 
 				for (int i = 0; i < myStrings.Size(); i++)
@@ -66,7 +66,7 @@ namespace Snowblind
 					myText->Render(myCamera);
 				}
 				myInputText->Render(myCamera);
-				CEngine::EnableZ();
+				Engine::EnableZ();
 			}
 		}
 	}

@@ -7,7 +7,7 @@ namespace Snowblind
 {
 	CText::CText(const char* aFilepath, int aSize, int aBorderWidth)
 	{
-		myFont = CEngine::GetInstance()->LoadFont(aFilepath, aSize, aBorderWidth);
+		myFont = Engine::GetInstance()->LoadFont(aFilepath, aSize, aBorderWidth);
 		myScale = { 1, 1 };
 	}
 
@@ -31,8 +31,8 @@ namespace Snowblind
 
 	void CText::SetPosition(const CU::Math::Vector2<float>& aPosition)
 	{
-		float w = CEngine::GetInstance()->GetWindowSize().myWidth;
-		float h = CEngine::GetInstance()->GetWindowSize().myHeight;
+		float w = Engine::GetInstance()->GetWindowSize().myWidth;
+		float h = Engine::GetInstance()->GetWindowSize().myHeight;
 		CU::Math::Vector2<float> pos(-(w * 0.5f), (h * 0.5f) - (myFont->GetFontPixelSize()));
 		//pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
 		//pos.y = -pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f) - (myFont->GetFontPixelSize());

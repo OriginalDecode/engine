@@ -4,7 +4,7 @@
 
 namespace cl
 {
-	bool AABB::Initiate(u32 entity_id, const CU::Matrix44f* orientation, CU::Vector3f width_height_depth)
+	bool AABB::Initiate(u32 /*entity_id*/, const CU::Matrix44f* orientation, CU::Vector3f width_height_depth)
 	{
 		m_Orientation = orientation;
 		m_WidthHeightDepth = width_height_depth + 0.1f;

@@ -15,7 +15,7 @@ bool InputHandle::Initiate(u16 controller_ID)
 	if (!m_Input)
 		return false;
 
-	Snowblind::CEngine* engine = Snowblind::CEngine::GetInstance();
+	Snowblind::Engine* engine = Snowblind::Engine::GetInstance();
 	if (!engine)
 		return false;
 
@@ -36,7 +36,7 @@ void InputHandle::CleanUp()
 
 void InputHandle::HandleInput()
 {
-	if(Snowblind::CEngine::GetInstance()->IsWindowActive())
+	if(Snowblind::Engine::GetInstance()->IsWindowActive())
 	{
 		if (m_Controller->IsConnected())
 		{

@@ -13,8 +13,8 @@ namespace Snowblind
 		switch (aModelType)
 		{
 		case eModelType::STATIC:
-			CEngine::GetInstance()->LoadModel(aFilePath, effect);
-			myModel = CEngine::GetInstance()->GetModel(aFilePath);
+			Engine::GetInstance()->LoadModel(aFilePath, effect);
+			myModel = Engine::GetInstance()->GetModel(aFilePath);
 			break;
 		case eModelType::ANIMATED:
 			DL_ASSERT("Not implemented!");

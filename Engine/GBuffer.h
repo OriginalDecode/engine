@@ -20,7 +20,7 @@ namespace Snowblind
 
 
 	private:
-		CEngine* myEngine = nullptr;
+		Engine* myEngine = nullptr;
 #ifdef SNOWBLIND_DX11
 		DirectX11* myDirectX = nullptr;
 		ID3D11DeviceContext* myContext = nullptr;

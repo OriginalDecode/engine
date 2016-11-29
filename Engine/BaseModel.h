@@ -3,23 +3,24 @@
 #include <Math/Matrix/Matrix44.h>
 #include <DataStructures/GrowingArray.h>
 
-struct ID3D11InputLayout;
+
 struct D3D11_INPUT_ELEMENT_DESC;
-struct ID3D11Buffer;
-struct ID3D11DeviceContext;
+typedef struct ID3D11InputLayout IInputLayout;
+typedef struct ID3D11Buffer IBuffer;
+typedef struct ID3D11DeviceContext IDevContext;
 
 namespace Snowblind
 {
 
 	class DirectX11;
-	class CEffect;
-	class CEngine;
+	class Effect;
+	class Engine;
 	class CSurface;
 
-	struct SVertexIndexWrapper;
-	struct SVertexBufferWrapper;
-	struct SVertexDataWrapper;
-	struct SIndexBufferWrapper;
+	struct VertexIndexWrapper;
+	struct VertexBufferWrapper;
+	struct VertexDataWrapper;
+	struct IndexBufferWrapper;
 
 	class CBaseModel
 	{
@@ -27,30 +28,34 @@ namespace Snowblind
 		CBaseModel();
 		virtual ~CBaseModel() = 0;
 		virtual bool CleanUp() = 0;
-		virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection);
-		void SetEffect(CEffect* anEffect);
+		virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false);
+		void SetEffect(Effect* anEffect);
 	protected:
 		std::string m_Filename;
 		void InitVertexBuffer();
 		void InitIndexBuffer();
 		virtual void InitConstantBuffer() = 0;
 		virtual void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
-		CEngine* myEngine = nullptr;
+		Engine* myEngine = nullptr;
 		CU::Vector3f m_WHD;
 
-		CEffect* myEffect = nullptr;
-		ID3D11DeviceContext* myContext = nullptr;
+		Effect* myEffect = nullptr;
+		IDevContext* myContext = nullptr;
+#ifdef SNOWBLIND_DX11
 		DirectX11* myAPI = nullptr;
-		ID3D11InputLayout* myVertexLayout = nullptr;
+#else
+		Vulkan* myAPI = nullptr;
+#endif
+		IInputLayout* myVertexLayout = nullptr;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 
-		SVertexIndexWrapper* myIndexData = nullptr;
-		SVertexDataWrapper* myVertexData = nullptr;
+		VertexIndexWrapper* myIndexData = nullptr;
+		VertexDataWrapper* myVertexData = nullptr;
 
-		SVertexBufferWrapper* myVertexBuffer = nullptr;
-		SIndexBufferWrapper* myIndexBuffer = nullptr;
+		VertexBufferWrapper* myVertexBuffer = nullptr;
+		IndexBufferWrapper* myIndexBuffer = nullptr;
 
-		ID3D11Buffer* myConstantBuffer = nullptr;
+		IBuffer* myConstantBuffer = nullptr;
 
 		SVertexBaseStruct* myConstantStruct = nullptr;
 

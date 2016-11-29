@@ -13,51 +13,51 @@
 namespace Snowblind
 {
 
-	bool CEngine::HasInitiated()
+	bool Engine::HasInitiated()
 	{
 		return (this && m_IsInitiated);
 	}
 
-	CEngine* CEngine::myInstance = nullptr;
-	IGraphicsAPI* CEngine::myAPI = nullptr;
+	Engine* Engine::myInstance = nullptr;
+	IGraphicsAPI* Engine::myAPI = nullptr;
 
-	void CEngine::Create()
+	void Engine::Create()
 	{
 		DL_ASSERT_EXP(myInstance == nullptr, "Instance already created!");
-		myInstance = new CEngine;
+		myInstance = new Engine;
 	}
 
-	void CEngine::Destroy()
+	void Engine::Destroy()
 	{
 		DL_ASSERT_EXP(myInstance != nullptr, "Can't destroy the instance before it's created. Did you call Destroy twice?");
 		SAFE_DELETE(myInstance);
 	}
 
-	CEngine* CEngine::GetInstance()
+	Engine* Engine::GetInstance()
 	{
 		DL_ASSERT_EXP(myInstance != nullptr, "Can't Get the instance before it's created. Did you call Destroy twice?");
 		return myInstance;
 	}
 
 #ifdef SNOWBLIND_DX11
-	DirectX11* CEngine::GetAPI()
+	DirectX11* Engine::GetAPI()
 	{
 		return static_cast<DirectX11*>(myAPI);
 	}
 #else
-	Vulkan* CEngine::GetAPI()
+	Vulkan* Engine::GetAPI()
 	{
 		return static_cast<Vulkan*>(myAPI);
 	}
 #endif
 
-	bool CEngine::InitiateDebugSystem(CSynchronizer* synchronizer, InputHandle* input_handle)
+	bool Engine::InitiateDebugSystem(CSynchronizer* synchronizer, InputHandle* input_handle)
 	{
 		m_DebugSystem.Initiate(synchronizer, input_handle);
 		return true;
 	}
 
-	bool CEngine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
+	bool Engine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 	{
 		myWindowSize.myHeight = window_height;
 		myWindowSize.myWidth = window_width;
@@ -124,7 +124,7 @@ namespace Snowblind
 		return true;
 	}
 
-	bool CEngine::CleanUp()
+	bool Engine::CleanUp()
 	{
 		m_Threadpool.CleanUp();
 		SAFE_DELETE(myAssetsContainer);
@@ -149,17 +149,17 @@ namespace Snowblind
 		return true;
 	}
 
-	CCamera* CEngine::GetCamera()
+	CCamera* Engine::GetCamera()
 	{
 		return myCamera;
 	}
 
-	Snowblind::CCamera* CEngine::Get2DCamera()
+	Snowblind::CCamera* Engine::Get2DCamera()
 	{
 		return my2DCamera;
 	}
 
-	void CEngine::Update()
+	void Engine::Update()
 	{
 		m_DeltaTime = myTimeManager->GetDeltaTime();
 		myAssetsContainer->Update();
@@ -169,12 +169,12 @@ namespace Snowblind
 		m_DebugSystem.Update();
 	}
 
-	void CEngine::Render()
+	void Engine::Render()
 	{
 		m_DebugSystem.Render();
 	}
 
-	void CEngine::CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
+	void Engine::CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
 	{
 		std::wstring w_file_path(file_path.begin(), file_path.end());
 		HRESULT hr = D3DCompileFromFile(
@@ -191,7 +191,7 @@ namespace Snowblind
 		GetAPI()->HandleErrors(hr, "Failed to compile shader!");
 	}
 
-	void CEngine::Present()
+	void Engine::Present()
 	{
 		if (myInstance->myUsingVSync)
 			myAPI->Present(1, 0);
@@ -199,72 +199,72 @@ namespace Snowblind
 			myAPI->Present(0, 0);
 	}
 
-	void CEngine::Clear()
+	void Engine::Clear()
 	{
 		myAPI->Clear();
 	}
 
-	void CEngine::EnableZ()
+	void Engine::EnableZ()
 	{
 		myAPI->EnableZBuffer();
 	}
 
-	void CEngine::DisableZ()
+	void Engine::DisableZ()
 	{
 		myAPI->DisableZBuffer();
 	}
 
-	void CEngine::ToggleWireframe()
+	void Engine::ToggleWireframe()
 	{
 		myInstance->myRenderer->ToggleWireframe();
 	}
 
-	SWindowSize CEngine::GetWindowSize() const
+	SWindowSize Engine::GetWindowSize() const
 	{
 		return myWindowSize;
 	}
 
-	CFont* CEngine::LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth)
+	CFont* Engine::LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth)
 	{
 		return myFontManager->LoadFont(aFilepath, aFontWidth, aBorderWidth);
 	}
 
-	float CEngine::GetDeltaTime()
+	float Engine::GetDeltaTime()
 	{
 		return m_DeltaTime;
 	}
 
-	float CEngine::GetFPS()
+	float Engine::GetFPS()
 	{
 		return myTimeManager->GetFPS();
 	}
 
-	float CEngine::GetFrameTime()
+	float Engine::GetFrameTime()
 	{
 		return myTimeManager->GetFrameTime();
 	}
 
-	std::string CEngine::GetAPIName()
+	std::string Engine::GetAPIName()
 	{
 		return myAPI->GetAPIName();
 	}
 
-	Snowblind::Texture* CEngine::GetTexture(const std::string& aFilePath)
+	Snowblind::Texture* Engine::GetTexture(const std::string& aFilePath)
 	{
 		return myAssetsContainer->GetTexture(aFilePath);
 	}
 
-	Snowblind::CEffect* CEngine::GetEffect(const std::string& aFilePath)
+	Snowblind::Effect* Engine::GetEffect(const std::string& aFilePath)
 	{
 		return myAssetsContainer->GetEffect(aFilePath);
 	}
 
-	Snowblind::CModel* CEngine::GetModel(const std::string& aFilePath)
+	Snowblind::CModel* Engine::GetModel(const std::string& aFilePath)
 	{
 		return myAssetsContainer->GetModel(aFilePath);
 	}
 
-	const std::string& CEngine::LoadModel(const std::string& aFilePath, const std::string& effect)
+	const std::string& Engine::LoadModel(const std::string& aFilePath, const std::string& effect)
 	{
 		//m_Threadpool.AddWork(Work([&]() {
 		return myAssetsContainer->LoadModel(aFilePath, effect);
@@ -279,7 +279,7 @@ namespace Snowblind
 		return to_return;
 	}
 
-	std::string CEngine::GetLocalTimeAsString()
+	std::string Engine::GetLocalTimeAsString()
 	{
 		GetLocalTime();
 		std::string return_value = "Local Time : ";
@@ -289,35 +289,35 @@ namespace Snowblind
 		return return_value;
 	}
 
-	void CEngine::ResetRenderTargetAndDepth()
+	void Engine::ResetRenderTargetAndDepth()
 	{
 #ifdef SNOWBLIND_DX11
 		GetAPI()->ResetRenderTargetAndDepth();
 #endif
 	}
 
-	void CEngine::ToggleVsync()
+	void Engine::ToggleVsync()
 	{
 		myUsingVSync = !myUsingVSync;
 	}
 
-	void CEngine::OnAltEnter()
+	void Engine::OnAltEnter()
 	{
 		if (myAPI)
 			myAPI->OnAltEnter();
 	}
 
-	void CEngine::OnPause()
+	void Engine::OnPause()
 	{
 		myTimeManager->Pause();
 	}
 
-	void CEngine::OnResume()
+	void Engine::OnResume()
 	{
 		myTimeManager->Start();
 	}
 
-	void CEngine::OnExit()
+	void Engine::OnExit()
 	{
 		if (HasInitiated())
 		{
@@ -326,24 +326,24 @@ namespace Snowblind
 		}
 	}
 
-	void CEngine::OnInactive()
+	void Engine::OnInactive()
 	{
 		if (HasInitiated())
 			m_Window.OnInactive();
 	}
 
-	void CEngine::OnActive()
+	void Engine::OnActive()
 	{
 		if (HasInitiated())
 			m_Window.OnActive();
 	}
 
-	CSynchronizer* CEngine::GetSynchronizer()
+	CSynchronizer* Engine::GetSynchronizer()
 	{
 		return mySynchronizer;
 	}
 
-	const SLocalTime& CEngine::GetLocalTime()
+	const SLocalTime& Engine::GetLocalTime()
 	{
 		SYSTEMTIME time;
 		::GetLocalTime(&time);
@@ -354,7 +354,7 @@ namespace Snowblind
 		return myLocalTime;
 	}
 
-	Snowblind::CTerrain* CEngine::CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize)
+	Snowblind::CTerrain* Engine::CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize)
 	{
 		CTerrain* newTerrain = m_TerrainManager->GetTerrain(aFile);
 		newTerrain->Initiate(aFile, position, aSize);
@@ -362,22 +362,22 @@ namespace Snowblind
 		return newTerrain;
 	}
 
-	Threadpool& CEngine::GetThreadpool()
+	Threadpool& Engine::GetThreadpool()
 	{
 		return m_Threadpool;
 	}
 
-	void CEngine::ToggleDebugMenu()
+	void Engine::ToggleDebugMenu()
 	{
 		m_DebugSystem.GetDebugMenuIsActive() ? m_DebugSystem.DeactivateDebugMenu() : m_DebugSystem.ActivateDebugMenu();
 	}
 
-	void CEngine::AddError(const std::string& error_message)
+	void Engine::AddError(const std::string& error_message)
 	{
 		m_DebugSystem.AddToErrorList(error_message);
 	}
 
-	void CEngine::AddDebugText(const std::string& debug_text)
+	void Engine::AddDebugText(const std::string& debug_text)
 	{
 		m_DebugSystem.AddToDebugText(debug_text);
 	}

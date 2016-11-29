@@ -7,7 +7,7 @@ struct SVertexTypePosCol
 	CU::Math::Vector4<float> myColor;
 };
 
-struct SVertexTypePosUV
+struct VertexTypePosUV
 {
 	CU::Math::Vector3<float> myPosition;
 	CU::Math::Vector2<float> myUV;

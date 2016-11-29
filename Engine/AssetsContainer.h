@@ -7,7 +7,7 @@ namespace Snowblind
 {
 	class CShaderFactory;
 	class CModel;
-	class CEffect;
+	class Effect;
 	class Texture;
 	class CSprite;
 };
@@ -27,7 +27,7 @@ namespace Cache
 		void ReloadTexture(Snowblind::Texture* texture);
 		Snowblind::Texture* GetTexture(const std::string& aFilePath);
 
-		Snowblind::CEffect* GetEffect(const std::string& aFilePath);
+		Snowblind::Effect* GetEffect(const std::string& aFilePath);
 		Snowblind::CModel* GetModel(const std::string& aFilePath);
 		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
 		
@@ -35,7 +35,7 @@ namespace Cache
 		FileWatcher* m_TextureWatcher = nullptr;
 		
 		std::unordered_map<std::string, Snowblind::Texture*> myTextures;
-		std::unordered_map<std::string, Snowblind::CEffect*> myEffects;
+		std::unordered_map<std::string, Snowblind::Effect*> myEffects;
 		std::unordered_map<std::string, Snowblind::CModel*> myModels;
 		std::unordered_map<std::string, Snowblind::CSprite*> mySprites;
 		

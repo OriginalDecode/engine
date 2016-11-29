@@ -155,9 +155,9 @@ namespace Snowblind
 		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 		ID3D11Texture2D* texture;
-		CEngine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
+		Engine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
-		CEngine::GetAPI()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
+		Engine::GetAPI()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
 		texture->Release();
 #endif
 
@@ -350,10 +350,10 @@ namespace Snowblind
 		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 		ID3D11Texture2D* texture;
-		CEngine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
+		Engine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
-		CEngine::GetAPI()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
-		CEngine::GetAPI()->SetDebugName(fontData->myAtlasView, "FontAtlas");
+		Engine::GetAPI()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
+		Engine::GetAPI()->SetDebugName(fontData->myAtlasView, "FontAtlas");
 
 		std::string name = "";
 		name = CL::substr(myFontPath, "\\", false, 1);
@@ -368,7 +368,7 @@ namespace Snowblind
 		
 		HRESULT hr = S_OK;
 		hr = Texture::SaveToFile(texture, "Glyphs/Atlas_" + name + "dds");
-		CEngine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
+		Engine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
 		SAFE_RELEASE(texture);
 #endif
 	}
@@ -395,7 +395,7 @@ namespace Snowblind
 		info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 		ID3D11Texture2D* texture;
-		CEngine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
+		Engine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
 		DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 
 		//CEngine::GetAPI()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
@@ -414,7 +414,7 @@ namespace Snowblind
 
 		HRESULT hr = S_OK;
 		hr = Texture::SaveToFile(texture, "Glyphs/Glpyh_" + name + std::to_string(index) + ".dds");
-		CEngine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
+		Engine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
 		SAFE_RELEASE(texture);
 #endif
 	}

@@ -84,12 +84,12 @@ namespace Snowblind
 		return true;
 	}
 
-	void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+	void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
 	{
 #ifdef SNOWBLIND_DX11
 		if (!myIsNULLObject)
 		{
-			__super::Render(aCameraOrientation, aCameraProjection);
+			__super::Render(aCameraOrientation, aCameraProjection, render_shadows);
 			myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 			mySurface->Activate();
@@ -194,7 +194,7 @@ namespace Snowblind
 		}
 
 
-		myVertexData = new SVertexDataWrapper;
+		myVertexData = new VertexDataWrapper;
 		myConstantStruct = new TerrainConstantStruct;
 
 		m_PSConstantStruct = new TerrainCameraPos;
@@ -206,7 +206,7 @@ namespace Snowblind
 		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
 
 
-		myIndexData = new SVertexIndexWrapper;
+		myIndexData = new VertexIndexWrapper;
 		myIndexData->myFormat = DXGI_FORMAT_R32_UINT;
 		myIndexData->myIndexCount = indexes.Size();
 		myIndexData->mySize = myIndexData->myIndexCount * 4;

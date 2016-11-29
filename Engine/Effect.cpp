@@ -2,7 +2,7 @@
 #include "Effect.h"
 namespace Snowblind
 {
-	CEffect::CEffect(const std::string& aFilePath)
+	Effect::Effect(const std::string& aFilePath)
 		: myFileName(aFilePath)
 	{
 		//-----------------------------
@@ -16,11 +16,11 @@ namespace Snowblind
 		myComputeShader = new SComputeShader();*/
 
 #ifdef SNOWBLIND_DX11
-		myContext = CEngine::GetAPI()->GetContext();
+		myContext = Engine::GetAPI()->GetContext();
 #endif
 	}
 
-	CEffect::~CEffect()
+	Effect::~Effect()
 	{
 		/*SAFE_DELETE(myVertexShader);
 		SAFE_DELETE(myPixelShader);
@@ -30,12 +30,12 @@ namespace Snowblind
 		SAFE_DELETE(myComputeShader);*/
 	}
 
-	VertexShader* CEffect::GetVertexShader()
+	VertexShader* Effect::GetVertexShader()
 	{
 		return myVertexShader;
 	}
 
-	PixelShader* CEffect::GetPixelShader()
+	PixelShader* Effect::GetPixelShader()
 	{
 #ifdef SNOWBLIND_DX11
 		if (myPixelShader != nullptr)
@@ -46,28 +46,28 @@ namespace Snowblind
 		return nullptr;
 	}
 
-	void CEffect::Activate()
+	void Effect::Activate()
 	{
 #ifdef SNOWBLIND_DX11
-		CEngine::GetAPI()->SetVertexShader(myVertexShader->vertexShader);
-		CEngine::GetAPI()->SetPixelShader(myPixelShader->pixelShader);
+		Engine::GetAPI()->SetVertexShader(myVertexShader->vertexShader);
+		Engine::GetAPI()->SetPixelShader(myPixelShader->pixelShader);
 
 		if (myShaderResources.Size() > 0)
 		{
 			myShaderResources.Optimize();
-			CEngine::GetAPI()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
+			Engine::GetAPI()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
 		}
 #endif
 	}
 
-	void CEffect::Deactivate()
+	void Effect::Deactivate()
 	{
 #ifdef SNOWBLIND_DX11
-		CEngine::GetAPI()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myNULLList[0]);
+		Engine::GetAPI()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myNULLList[0]);
 #endif
 	}
 
-	void CEffect::AddShaderResource(ID3D11ShaderResourceView* aShaderResource)
+	void Effect::AddShaderResource(ID3D11ShaderResourceView* aShaderResource)
 	{
 #ifdef SNOWBLIND_DX11
 		myShaderResources.Add(aShaderResource);

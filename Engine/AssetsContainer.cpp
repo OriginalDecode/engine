@@ -52,7 +52,7 @@ namespace Cache
 		return myTextures[aFilePath];
 	}
 
-	Snowblind::CEffect* CAssetsContainer::GetEffect(const std::string& aFilePath)
+	Snowblind::Effect* CAssetsContainer::GetEffect(const std::string& aFilePath)
 	{
 		if (myEffects.find(aFilePath) == myEffects.end())
 		{
@@ -99,7 +99,7 @@ namespace Cache
 
 	void CAssetsContainer::LoadEffect(const std::string& aFilePath)
 	{
-		Snowblind::CEffect* effect = new Snowblind::CEffect(aFilePath);
+		Snowblind::Effect* effect = new Snowblind::Effect(aFilePath);
 		myShaderFactory->LoadShader(effect);
 		myEffects[aFilePath] = effect;
 	}

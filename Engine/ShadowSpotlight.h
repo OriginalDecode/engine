@@ -4,6 +4,8 @@ namespace Snowblind
 {
 	class Texture;
 	class CCamera;
+	class Effect;
+
 	class ShadowSpotlight
 	{
 	public:
@@ -16,25 +18,25 @@ namespace Snowblind
 		CCamera* GetCamera() const { return m_Camera; }
 		void SetViewport();
 
-		Texture* GetTexture() { return m_Texture; }
-		Texture* GetRenderTarget() { return m_RenderTarget; }
+		Texture* GetDepthStencil() { return m_DepthStencil; }
+		Texture* GetDepthTexture() { return m_Depth; }
 
 		void ClearTexture();
-
 		void SetTargets();
-		CU::Matrix44f GetOrientation();
 
-		Texture* m_Texture;
-		Texture* m_Normal;
-		Texture* m_Depth;
-		Texture* m_RenderTarget;
+		void ToggleShader(bool on_or_off);
+
+		CU::Matrix44f GetOrientation();
 		CU::Matrix44f GetMVP();
 	private:
+		Effect* m_ShadowEffect = nullptr;
 		CCamera* m_Camera = nullptr;
 		Viewport* m_Viewport = nullptr;
 		IDevice* m_Device = nullptr;
 		IDevContext* m_Context = nullptr;
 
+		Texture* m_Depth;
+		Texture* m_DepthStencil;
 
 		CU::Matrix44f m_Bias;
 		CU::Vector3f m_Position;

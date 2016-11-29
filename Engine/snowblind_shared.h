@@ -21,6 +21,9 @@ typedef struct ID3D10Blob					IBlob;
 typedef struct ID3D11Device					IDevice;
 typedef struct ID3D11DeviceContext			IDevContext;
 
+typedef struct ID3D11Buffer					IBuffer;
+typedef struct ID3D11InputLayout			IInputLayout;
+
 #else
 
 #endif

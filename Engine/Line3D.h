@@ -1,4 +1,5 @@
 #pragma once
+#include "snowblind_shared.h"
 #include <Math/Matrix/Matrix44.h>
 #include <DataStructures/GrowingArray.h>
 
@@ -22,15 +23,11 @@ struct SLine
 namespace Snowblind
 {
 	class DirectX11;
-	class CEffect;
-	struct SVertexBufferWrapper;
+	class Effect;
+	struct VertexBufferWrapper;
 
 }
 
-#ifdef SNOWBLIND_DX11
-struct ID3D11Buffer;
-struct ID3D11InputLayout;
-#endif
 struct SVertexBaseStruct;
 
 class CLine3D
@@ -60,13 +57,13 @@ private:
 
 	CU::Matrix44f myOrientation;
 	Snowblind::DirectX11* myAPI = nullptr;
-	Snowblind::CEffect* myEffect = nullptr;
-	Snowblind::SVertexBufferWrapper* myVertexBuffer = nullptr;
+	Snowblind::Effect* myEffect = nullptr;
+	Snowblind::VertexBufferWrapper* myVertexBuffer = nullptr;
 
 	SVertexBaseStruct* myConstantStruct = nullptr;
 
 #ifdef SNOWBLIND_DX11
-	ID3D11InputLayout* myVertexLayout = nullptr;
+	IInputLayout* myVertexLayout = nullptr;
 	ID3D11Buffer* myConstantBuffer = nullptr;
 #endif
 	CU::GrowingArray<SLinePoint> myVertices;

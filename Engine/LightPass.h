@@ -1,10 +1,6 @@
 #pragma once
 #include "VertexStructs.h"
-#ifdef SNOWBLIND_DX11
-struct ID3D11DeviceContext;
-struct ID3D11InputLayout;
-struct ID3D11Buffer;
-#endif
+#include "snowblind_shared.h"
 namespace Snowblind
 {
 	class GBuffer;
@@ -18,8 +14,8 @@ namespace Snowblind
 		bool CleanUp();
 		void RenderPointlight(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation);
 		void RenderSpotlight(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation);
-		CEffect* GetPointlightEffect();
-		CEffect* GetSpotlightEffect();
+		Effect* GetPointlightEffect();
+		Effect* GetSpotlightEffect();
 	private:
 		void UpdatePointlightBuffers(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation);
 		void UpdateSpotlightBuffers(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation);
@@ -71,8 +67,8 @@ namespace Snowblind
 			_COUNT
 		};
 
-		CEffect* myEffect[u32(eLight::_COUNT)];
-		CEngine* myEngine;
+		Effect* myEffect[u32(eLight::_COUNT)];
+		Engine* myEngine;
 		const GBuffer* myGBuffer;
 
 	public:

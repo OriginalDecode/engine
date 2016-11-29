@@ -55,7 +55,7 @@ namespace Snowblind
 
 		bool m_RenderWireframe = false;
 
-		CEngine*			myEngine			= nullptr;
+		Engine*			myEngine			= nullptr;
 #ifdef SNOWBLIND_DX11
 		DirectX11*			m_API				= nullptr;
 #else

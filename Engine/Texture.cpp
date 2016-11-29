@@ -10,11 +10,11 @@ namespace Snowblind
 	{
 
 #ifdef SNOWBLIND_DX11
-		DirectX11* api = CEngine::GetAPI();
+		DirectX11* api = Engine::GetAPI();
 #else
-		Vulkan* api = CEngine::GetAPI();
+		Vulkan* api = Engine::GetAPI();
 #endif
-		ID3D11Device* device = CEngine::GetAPI()->GetDevice();
+		ID3D11Device* device = Engine::GetAPI()->GetDevice();
 
 		D3D11_TEXTURE2D_DESC text_desc;
 		text_desc.Width = (UINT)width;
@@ -58,11 +58,11 @@ namespace Snowblind
 	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name)
 	{
 #ifdef SNOWBLIND_DX11
-		DirectX11* api = CEngine::GetAPI();
+		DirectX11* api = Engine::GetAPI();
 #else
-		Vulkan* api = CEngine::GetAPI();
+		Vulkan* api = Engine::GetAPI();
 #endif
-		ID3D11Device* device = CEngine::GetAPI()->GetDevice();
+		ID3D11Device* device = Engine::GetAPI()->GetDevice();
 
 		D3D11_TEXTURE2D_DESC text_desc;
 		text_desc.Width = (UINT)width;
@@ -119,11 +119,11 @@ namespace Snowblind
 	{
 
 #ifdef SNOWBLIND_DX11
-		DirectX11* api = CEngine::GetAPI();
+		DirectX11* api = Engine::GetAPI();
 #else
-		Vulkan* api = CEngine::GetAPI();
+		Vulkan* api = Engine::GetAPI();
 #endif
-		ID3D11Device* device = CEngine::GetAPI()->GetDevice();
+		ID3D11Device* device = Engine::GetAPI()->GetDevice();
 
 		D3D11_TEXTURE2D_DESC text_desc;
 		text_desc.Width = (UINT)width;
@@ -238,7 +238,7 @@ namespace Snowblind
 	{
 		myFileName = filepath;
 #ifdef SNOWBLIND_DX11
-		ID3D11Device* device = CEngine::GetAPI()->GetDevice();
+		ID3D11Device* device = Engine::GetAPI()->GetDevice();
 		HRESULT hr = DirectX::CreateDDSTextureFromFile(device
 			, nullptr
 			, std::wstring(filepath.begin(), filepath.end()).c_str()
@@ -246,7 +246,7 @@ namespace Snowblind
 			, &m_ShaderResource);
 #endif
 		std::string debugname = CL::substr(filepath, "/", false, 0);
-		CEngine::GetAPI()->SetDebugName(m_ShaderResource, debugname);
+		Engine::GetAPI()->SetDebugName(m_ShaderResource, debugname);
 		DL_MESSAGE_EXP(FAILED(hr), "[Texture](Load) : Failed to load texture %s", filepath);
 		if (FAILED(hr))
 			return false;
@@ -269,10 +269,10 @@ namespace Snowblind
 	{
 		ID3D11Resource* resource = nullptr;
 		HRESULT hr = texture_resource->QueryInterface(IID_ID3D11Texture2D, (void**)&resource);
-		CEngine::GetAPI()->HandleErrors(hr, "Failed to query interface of texture_resource");
+		Engine::GetAPI()->HandleErrors(hr, "Failed to query interface of texture_resource");
 		std::wstring middle_hand(file_name.begin(), file_name.end());
 		LPCWSTR new_name(middle_hand.c_str());
-		hr = DirectX::SaveDDSTextureToFile(CEngine::GetAPI()->GetContext(), resource, new_name);
+		hr = DirectX::SaveDDSTextureToFile(Engine::GetAPI()->GetContext(), resource, new_name);
 		resource->Release();
 		resource = nullptr;
 		return S_OK;
@@ -281,7 +281,7 @@ namespace Snowblind
 	void Texture::CopyData(ITexture2D* dest, ITexture2D* source)
 	{
 #ifdef SNOWBLIND_DX11
-		CEngine::GetAPI()->GetContext()->CopyResource(dest, source);
+		Engine::GetAPI()->GetContext()->CopyResource(dest, source);
 #endif
 	}
 };

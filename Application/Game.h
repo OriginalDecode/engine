@@ -12,7 +12,7 @@ namespace Snowblind
 {
 	class CSynchronizer;
 	class CTerrain;
-	class CEngine;
+	class Engine;
 	class CMousePicker;
 	class CCamera;
 };
@@ -65,7 +65,7 @@ private:
 	CU::GrowingArray<CRigidBody*> myTerrainBodies;
 
 	Snowblind::CSynchronizer* mySynchronizer = nullptr;
-	Snowblind::CEngine* myEngine = nullptr;
+	Snowblind::Engine* myEngine = nullptr;
 	Snowblind::CMousePicker* myPicker = nullptr;
 
 	CEntityManager* myEntityManager = nullptr;

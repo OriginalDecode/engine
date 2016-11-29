@@ -53,8 +53,8 @@ namespace Snowblind
 		CU::Math::Vector2<float> pos = aPosition;
 		pos.x = pos.x + myHotspot.x;
 		pos.y = -pos.y - myHotspot.y;
-		pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
-		pos.y = pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f);
+		pos.x = pos.x - (Engine::GetInstance()->GetWindowSize().myWidth * 0.5f);
+		pos.y = pos.y + (Engine::GetInstance()->GetWindowSize().myHeight * 0.5f);
 		myPosition = pos;
 		//mySprite->GetEffect()->SetPosition(myPosition);
 

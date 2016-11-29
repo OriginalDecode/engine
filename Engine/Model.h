@@ -1,9 +1,11 @@
 #pragma once
-#include "BaseModel.h"
+
 #include <vector>
-struct ID3D11InputLayout;
+
+#include "BaseModel.h"
+#include "snowblind_shared.h"
+
 struct D3D11_INPUT_ELEMENT_DESC;
-struct ID3D11Buffer;
 
 enum eModelStates : int
 {
@@ -20,7 +22,7 @@ static Ticket_Mutex g_ModelMutex;
 		CModel();
 		bool CleanUp() override;
 		CModel* CreateModel(const std::string& filename);
-		void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
+		void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false) override;
 
 		void AddChild(CModel* aChild);
 		void SetIsLightmesh();

@@ -5,14 +5,14 @@ namespace Snowblind
 {
 	CBaseModel::CBaseModel()
 	{
-		myEngine = CEngine::GetInstance();
-		myAPI = CEngine::GetAPI();
+		myEngine = Engine::GetInstance();
+		myAPI = Engine::GetAPI();
 		myContext = myAPI->GetContext();
 	}
 
 	CBaseModel::~CBaseModel() = default;
 
-	void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+	void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
 	{
 #ifdef SNOWBLIND_DX11
 		myContext->IASetInputLayout(myVertexLayout);
@@ -21,24 +21,24 @@ namespace Snowblind
 
 		if (myIndexBuffer)
 			myContext->IASetIndexBuffer(myIndexBuffer->myIndexBuffer, DXGI_FORMAT_R32_UINT, myIndexBuffer->myByteOffset);
-
-		myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
-		myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
+		if (!render_shadows)
+		{
+			myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
+			myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
+		}
 		SetMatrices(aCameraOrientation, aCameraProjection);
 #endif
 	}
 
-	void CBaseModel::SetEffect(CEffect* anEffect)
+	void CBaseModel::SetEffect(Effect* anEffect)
 	{
-#ifdef SNOWBLIND_DX11
 		myEffect = anEffect;
-#endif
 	}
 
 	void CBaseModel::InitVertexBuffer()
 	{
 #ifdef SNOWBLIND_DX11
-		myVertexBuffer = new SVertexBufferWrapper();
+		myVertexBuffer = new VertexBufferWrapper();
 		HRESULT hr;
 		void* shader = myEffect->GetVertexShader()->compiledShader;
 		int size = myEffect->GetVertexShader()->shaderSize;
@@ -78,7 +78,7 @@ namespace Snowblind
 	{
 #ifdef SNOWBLIND_DX11
 
-		myIndexBuffer = new SIndexBufferWrapper;
+		myIndexBuffer = new IndexBufferWrapper;
 
 		D3D11_BUFFER_DESC indexDesc;
 		ZeroMemory(&indexDesc, sizeof(indexDesc));

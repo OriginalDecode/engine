@@ -12,10 +12,10 @@
 
 namespace Snowblind
 {
-	CSurface::CSurface(CEffect* anEffect)
+	CSurface::CSurface(Effect* anEffect)
 	{
 #ifdef SNOWBLIND_DX11
-		myContext = CEngine::GetAPI()->GetContext();
+		myContext = Engine::GetAPI()->GetContext();
 #endif
 		SetVertexCount(0);
 		SetVertexStart(0);
@@ -25,10 +25,10 @@ namespace Snowblind
 		SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
-	CSurface::CSurface(CEffect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount)
+	CSurface::CSurface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount)
 	{
 #ifdef SNOWBLIND_DX11
-		myContext = CEngine::GetAPI()->GetContext();
+		myContext = Engine::GetAPI()->GetContext();
 #endif
 		SetVertexCount(aVertexCount);
 		SetVertexStart(aStartVertex);
@@ -41,7 +41,7 @@ namespace Snowblind
 	CSurface::CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
 	{
 #ifdef SNOWBLIND_DX11
-		myContext = CEngine::GetAPI()->GetContext();
+		myContext = Engine::GetAPI()->GetContext();
 #endif
 		SetVertexCount(aVertexCount);
 		SetVertexStart(aStartVertex);
@@ -100,7 +100,7 @@ namespace Snowblind
 		
 		STexture new_texture;
 		new_texture.m_Type = type;
-		new_texture.texture = CEngine::GetInstance()->GetTexture(sub)->GetShaderView();
+		new_texture.texture = Engine::GetInstance()->GetTexture(sub)->GetShaderView();
 
 		myTextures.Add(new_texture);
 
@@ -122,7 +122,7 @@ namespace Snowblind
 		}
 	}
 
-	void CSurface::SetEffect(CEffect* anEffect)
+	void CSurface::SetEffect(Effect* anEffect)
 	{
 		myEffect = anEffect;
 	}

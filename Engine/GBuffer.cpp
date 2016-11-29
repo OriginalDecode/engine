@@ -3,13 +3,13 @@
 namespace Snowblind
 {
 	GBuffer::GBuffer()
-		: myEngine(CEngine::GetInstance())
+		: myEngine(Engine::GetInstance())
 #ifdef SNOWBLIND_DX11
 		, myDirectX(myEngine->GetAPI())
 		, myContext(myDirectX->GetContext())
 #endif
 	{
-		const SWindowSize windowSize = CEngine::GetInstance()->GetWindowSize();
+		const SWindowSize windowSize = Engine::GetInstance()->GetWindowSize();
 
 		myAlbedo = new Texture;
 		myAlbedo->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "GBuffer : Albedo");

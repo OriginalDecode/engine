@@ -19,8 +19,8 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	float h = 1080;
 	newApplication = new CApplication();
 
-	Snowblind::CEngine::Create();
-	Snowblind::CEngine::GetInstance()->Initiate(w, h, anInstance, WindowProc);
+	Snowblind::Engine::Create();
+	Snowblind::Engine::GetInstance()->Initiate(w, h, anInstance, WindowProc);
 	DL_ASSERT_EXP(newApplication->Initiate(), "Failed to initiate game");
 
 	MSG msg;
@@ -42,7 +42,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 			applicationIsRunning = false;
 			break;
 		}
-		Snowblind::CEngine::GetInstance()->Update();
+		Snowblind::Engine::GetInstance()->Update();
 
 	} while (applicationIsRunning == true);
 
@@ -77,7 +77,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	case WM_CLOSE:
 		newApplication->OnExit();
 		DL_Debug::Debug::Destroy();
-		Snowblind::CEngine::Destroy();
+		Snowblind::Engine::Destroy();
 		break;
 	default:
 		break;

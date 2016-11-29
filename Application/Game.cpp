@@ -56,7 +56,7 @@
 bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
 {
 	mySynchronizer = synchronizer;
-	myEngine = Snowblind::CEngine::GetInstance();
+	myEngine = Snowblind::Engine::GetInstance();
 
 	myEntityManager = new CEntityManager;
 	myPhysicsManager = new CPhysicsManager;
@@ -115,7 +115,7 @@ void CGame::Update(float aDeltaTime)
 	}
 
 	std::stringstream ss;
-	ss << "FPS : " << myEngine->GetFPS() << "\n" << "Average FPS : " << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::CEngine::GetInstance()->GetLocalTimeAsString()
+	ss << "FPS : " << myEngine->GetFPS() << "\n" << "Average FPS : " << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::Engine::GetInstance()->GetLocalTimeAsString()
 		<< "\ncamera_speed_multiplier : " << speed;
 	myEngine->AddDebugText(ss.str());
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
@@ -140,7 +140,7 @@ void CGame::Update(float aDeltaTime)
 
 bool CGame::CreateLevel(const char* level_path)
 {
-	Snowblind::CEngine::GetInstance()->GetThreadpool().AddWork(
+	Snowblind::Engine::GetInstance()->GetThreadpool().AddWork(
 		Work([&]() {
 		Snowblind::CTerrain* terrain = myEngine->CreateTerrain("Data/Textures/flat_height.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
 		terrain->AddNormalMap("Data/Textures/normal.dds");
@@ -241,7 +241,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 		TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
 
 		cl::AABB aabb;
-		aabb.Initiate(e, &t.myOrientation, Snowblind::CEngine::GetInstance()->GetModel(r.myModelID)->GetWHD());
+		aabb.Initiate(e, &t.myOrientation, Snowblind::Engine::GetInstance()->GetModel(r.myModelID)->GetWHD());
 		m_AABBs.Add(aabb);
 	}
 
@@ -259,7 +259,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			myEntityManager->AddComponent<AABBComponent>(e);
 			AABBComponent& aabb = myEntityManager->GetComponent<AABBComponent>(e);
 			aabb.m_Body = myPhysicsManager->CreateBody();
-			CU::Vector3f whd = Snowblind::CEngine::GetInstance()->GetModel(model_key)->GetWHD();
+			CU::Vector3f whd = Snowblind::Engine::GetInstance()->GetModel(model_key)->GetWHD();
 			myPhysicsManager->Add(aabb.m_Body->InitAsBox(whd.x, whd.y, whd.z, pos));
 
 
@@ -270,7 +270,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 	{
 		myEntityManager->AddComponent<CameraComponent>(e);
 		CameraComponent& camera = myEntityManager->GetComponent<CameraComponent>(e);
-		camera.m_Camera = Snowblind::CEngine::GetInstance()->GetCamera();
+		camera.m_Camera = Snowblind::Engine::GetInstance()->GetCamera();
 	}
 
 	if (entityReader.HasElement("controller"))
@@ -289,7 +289,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			input.m_InputHandle = new InputHandle;
 			input.m_InputHandle->Initiate(input.m_ID);
 
-			Snowblind::CEngine::GetInstance()->InitiateDebugSystem(mySynchronizer, input.m_InputHandle);
+			Snowblind::Engine::GetInstance()->InitiateDebugSystem(mySynchronizer, input.m_InputHandle);
 
 
 			JSONReader read_input_config("Data/Config/input_config.json");
@@ -401,7 +401,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			});
 
 			input.m_InputHandle->Bind(Hash("YButton"), [&]() {
-				Snowblind::CEngine::GetInstance()->ToggleWireframe(); 
+				Snowblind::Engine::GetInstance()->ToggleWireframe(); 
 			});
 
 			input.m_InputHandle->Bind(Hash("LMouseButton"), [&]() {
@@ -494,30 +494,30 @@ void Left(CRigidBody* rigidbody)
 
 void Up(Snowblind::CCamera* camera)
 {
-	camera->Move(Snowblind::eDirection::UP, speed * Snowblind::CEngine::GetInstance()->GetDeltaTime());
+	camera->Move(Snowblind::eDirection::UP, speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
 void Down(Snowblind::CCamera* camera)
 {
-	camera->Move(Snowblind::eDirection::DOWN, -speed * Snowblind::CEngine::GetInstance()->GetDeltaTime());
+	camera->Move(Snowblind::eDirection::DOWN, -speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
 void Forward(Snowblind::CCamera* camera)
 {
-	camera->Move(Snowblind::eDirection::FORWARD, speed* Snowblind::CEngine::GetInstance()->GetDeltaTime());
+	camera->Move(Snowblind::eDirection::FORWARD, speed* Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
 void Backward(Snowblind::CCamera* camera)
 {
-	camera->Move(Snowblind::eDirection::BACK, -speed * Snowblind::CEngine::GetInstance()->GetDeltaTime());
+	camera->Move(Snowblind::eDirection::BACK, -speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
 void Right(Snowblind::CCamera* camera)
 {
-	camera->Move(Snowblind::eDirection::RIGHT, speed * Snowblind::CEngine::GetInstance()->GetDeltaTime());
+	camera->Move(Snowblind::eDirection::RIGHT, speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
 void Left(Snowblind::CCamera* camera)
 {
-	camera->Move(Snowblind::eDirection::LEFT, -speed * Snowblind::CEngine::GetInstance()->GetDeltaTime());
+	camera->Move(Snowblind::eDirection::LEFT, -speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }

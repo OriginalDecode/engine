@@ -4,7 +4,7 @@
 namespace Snowblind
 {
 	class CModel;
-	class CEffect;
+	class Effect;
 	class CCamera;
 	class DirectX11;
 

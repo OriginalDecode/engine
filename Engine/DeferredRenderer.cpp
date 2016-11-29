@@ -9,9 +9,9 @@ namespace Snowblind
 	bool CDeferredRenderer::Initiate(Texture* shadow_texture)
 	{
 #ifdef SNOWBLIND_DX11
-		myDirectX = CEngine::GetAPI();
-		myContext = myDirectX->GetContext();
-		myEngine = CEngine::GetInstance();
+		m_API = Engine::GetAPI();
+		myContext = m_API->GetContext();
+		myEngine = Engine::GetInstance();
 		BLACK_CLEAR(myClearColor);
 
 		SWindowSize windowSize = myEngine->GetWindowSize();
@@ -108,10 +108,10 @@ namespace Snowblind
 		UpdateConstantBuffer(previousOrientation, aProjection, shadow_matrix);
 		SetBuffers();
 
-		myDirectX->ResetViewport();
+		m_API->ResetViewport();
 
 		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView();
-		ID3D11DepthStencilView* depth = myDirectX->GetDepthView();
+		ID3D11DepthStencilView* depth = m_API->GetDepthView();
 
 		myContext->ClearRenderTargetView(backbuffer, myClearColor);
 		myContext->OMSetRenderTargets(1, &backbuffer, depth);
@@ -119,11 +119,11 @@ namespace Snowblind
 		myAmbientPassShader->Activate();
 		myContext->PSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP);
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_DISABLED);
-		myDirectX->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
+		m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
+		m_API->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+		m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 		myContext->DrawIndexed(6, 0, 0);
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 
 		myAmbientPassShader->Deactivate();
 
@@ -136,27 +136,27 @@ namespace Snowblind
 	void CDeferredRenderer::Finalize()
 	{
 #ifdef SNOWBLIND_DX11
-		myDirectX->SetDepthBufferState(eDepthStencil::MASK_TEST);
-		myDirectX->SetBlendState(eBlendStates::NO_BLEND);
-		myDirectX->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
+		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		m_API->SetBlendState(eBlendStates::NO_BLEND);
+		m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 
 		SetBuffers();
 
-		myDirectX->SetVertexShader(myScreenPassShader->GetVertexShader()->vertexShader);
-		myDirectX->SetPixelShader(myScreenPassShader->GetPixelShader()->pixelShader);
+		m_API->SetVertexShader(myScreenPassShader->GetVertexShader()->vertexShader);
+		m_API->SetPixelShader(myScreenPassShader->GetPixelShader()->pixelShader);
 
 		ID3D11ShaderResourceView* srv[2];
 		srv[0] = myFinishedSceneTexture->GetShaderView();
 		srv[1] = myDepthStencil->GetShaderView();
 		myContext->PSSetShaderResources(0, 2, &srv[0]);
-		myDirectX->SetSamplerState(eSamplerStates::POINT_CLAMP);
+		m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
 		myContext->DrawIndexed(6, 0, 0);
 		srv[0] = nullptr;
 		srv[1] = nullptr;
 		myContext->PSSetShaderResources(0, 2, &srv[0]);
 
-		myDirectX->SetRasterizer(eRasterizer::CULL_BACK);
-		myDirectX->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetRasterizer(eRasterizer::CULL_BACK);
+		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 #endif
 	}
 
@@ -174,9 +174,9 @@ namespace Snowblind
 		cbDesc.MiscFlags = 0;
 		cbDesc.StructureByteStride = 0;
 
-		HRESULT hr = myDirectX->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-		myDirectX->SetDebugName(myConstantBuffer, "Deferred Ambient Constant Buffer");
-		myDirectX->HandleErrors(hr, "[DeferredRenderer] : Failed to Create Constant Buffer, ");
+		HRESULT hr = m_API->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+		m_API->SetDebugName(myConstantBuffer, "Deferred Ambient Constant Buffer");
+		m_API->HandleErrors(hr, "[DeferredRenderer] : Failed to Create Constant Buffer, ");
 #endif
 	}
 
@@ -190,14 +190,14 @@ namespace Snowblind
 		myConstantStruct->m_ShadowMVP = shadow_matrix;// CU::Math::Inverse(light_orientation) * light_projection;
 
 		D3D11_MAPPED_SUBRESOURCE msr;
-		myDirectX->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		m_API->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
 			SConstantStruct* ptr = (SConstantStruct*)msr.pData;
 			memcpy(ptr, &myConstantStruct->camPosition, sizeof(SConstantStruct));
 		}
 
-		myDirectX->GetContext()->Unmap(myConstantBuffer, 0);
+		m_API->GetContext()->Unmap(myConstantBuffer, 0);
 #endif
 	}
 
@@ -214,9 +214,9 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosUV[0]);
 		myVertexFormat.Add(VertexLayoutPosUV[1]);
 
-		CU::GrowingArray<SVertexTypePosUV> vertices;
+		CU::GrowingArray<VertexTypePosUV> vertices;
 		CU::GrowingArray<int> indices;
-		SVertexTypePosUV v;
+		VertexTypePosUV v;
 		v.myPosition = { -1, -1, 0 };
 		v.myUV = { 0, 1 };
 		vertices.Add(v);
@@ -242,13 +242,13 @@ namespace Snowblind
 		indices.Add(2);
 		indices.Add(1);
 
-		m_VertexBuffer = new SVertexBufferWrapper;
-		myVertexData = new SVertexDataWrapper;
-		m_IndexBuffer = new SIndexBufferWrapper;
-		myIndexData = new SVertexIndexWrapper;
+		m_VertexBuffer = new VertexBufferWrapper;
+		myVertexData = new VertexDataWrapper;
+		m_IndexBuffer = new IndexBufferWrapper;
+		myIndexData = new VertexIndexWrapper;
 
 		myVertexData->myNrOfVertexes = vertices.Size();
-		myVertexData->myStride = sizeof(SVertexTypePosUV);
+		myVertexData->myStride = sizeof(VertexTypePosUV);
 		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
 		myVertexData->myVertexData = new char[myVertexData->mySize]();
 		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
@@ -271,9 +271,9 @@ namespace Snowblind
 		void* shader = myScreenPassShader->GetVertexShader()->compiledShader;
 		int size = myScreenPassShader->GetVertexShader()->shaderSize;
 
-		HRESULT hr = myDirectX->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), shader, size, &myInputLayout);
-		myDirectX->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
-		myDirectX->HandleErrors(hr, "Failed to create VertexLayout");
+		HRESULT hr = m_API->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), shader, size, &myInputLayout);
+		m_API->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
+		m_API->HandleErrors(hr, "Failed to create VertexLayout");
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 		vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -285,8 +285,8 @@ namespace Snowblind
 		D3D11_SUBRESOURCE_DATA vertexData;
 		vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
 
-		hr = myDirectX->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &m_VertexBuffer->myVertexBuffer);
-		myDirectX->HandleErrors(hr, "Failed to Create VertexBuffer!");
+		hr = m_API->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &m_VertexBuffer->myVertexBuffer);
+		m_API->HandleErrors(hr, "Failed to Create VertexBuffer!");
 
 		m_VertexBuffer->myStride = myVertexData->myStride;
 		m_VertexBuffer->myByteOffset = 0;
@@ -309,8 +309,8 @@ namespace Snowblind
 
 		D3D11_SUBRESOURCE_DATA indexData;
 		ZeroMemory(&indexData, sizeof(indexData)), indexData.pSysMem = myIndexData->myIndexData;
-		HRESULT hr = myDirectX->GetDevice()->CreateBuffer(&indexDesc, &indexData, &m_IndexBuffer->myIndexBuffer);
-		myDirectX->HandleErrors(hr, "Failed to Create IndexBuffer");
+		HRESULT hr = m_API->GetDevice()->CreateBuffer(&indexDesc, &indexData, &m_IndexBuffer->myIndexBuffer);
+		m_API->HandleErrors(hr, "Failed to Create IndexBuffer");
 
 		m_IndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 		m_IndexBuffer->myByteOffset = 0;

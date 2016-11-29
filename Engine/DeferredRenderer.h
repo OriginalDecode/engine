@@ -1,11 +1,8 @@
 #pragma once
+#include "snowblind_shared.h"
 #include <DL_Debug.h>
 #include "VertexStructs.h"
-#ifdef SNOWBLIND_DX11
-struct ID3D11DeviceContext;
-struct ID3D11InputLayout;
-struct ID3D11Buffer;
-#endif
+
 namespace Snowblind
 {
 	enum eDeferredType
@@ -18,17 +15,17 @@ namespace Snowblind
 
 	class CCamera;
 	class DirectX11;
-	class CEffect;
-	class CEngine;
+	class Effect;
+	class Engine;
 	class GBuffer;
 	class LightPass;
 	class CPointLight;
 	class Texture;
 
-	struct SVertexIndexWrapper;
-	struct SVertexBufferWrapper;
-	struct SVertexDataWrapper;
-	struct SIndexBufferWrapper;
+	struct VertexIndexWrapper;
+	struct VertexBufferWrapper;
+	struct VertexDataWrapper;
+	struct IndexBufferWrapper;
 
 	class CDeferredRenderer
 	{
@@ -57,32 +54,37 @@ namespace Snowblind
 		void CreateIndexBuffer();
 
 		float myClearColor[4];
-		CEngine* myEngine = nullptr;
+		Engine* myEngine = nullptr;
 
 		GBuffer* myGBuffer = nullptr;
+
 #ifdef SNOWBLIND_DX11
-		DirectX11* myDirectX = nullptr;
-		ID3D11DeviceContext* myContext = nullptr;
+		DirectX11* m_API = nullptr;
+#else
+		Vulkan* m_API = nullptr;
+#endif
+
+		IDevContext* myContext = nullptr;
 		
-		CEffect* myAmbientPassShader = nullptr;
-		CEffect* myScreenPassShader = nullptr;
+		Effect* myAmbientPassShader = nullptr;
+		Effect* myScreenPassShader = nullptr;
 
 		Texture* myDepthStencil = nullptr;
 		Texture* myFinishedSceneTexture = nullptr;
 		Texture* myCubeMap = nullptr;
 
-		SVertexDataWrapper* myVertexData = nullptr;
-		SVertexBufferWrapper* m_VertexBuffer = nullptr;
+		VertexDataWrapper* myVertexData = nullptr;
+		VertexBufferWrapper* m_VertexBuffer = nullptr;
 
-		SVertexIndexWrapper* myIndexData = nullptr;
-		SIndexBufferWrapper* m_IndexBuffer = nullptr;
+		VertexIndexWrapper* myIndexData = nullptr;
+		IndexBufferWrapper* m_IndexBuffer = nullptr;
 
-		ID3D11InputLayout* myInputLayout = nullptr;
+		IInputLayout* myInputLayout = nullptr;
 
-		CU::GrowingArray<SVertexTypePosUV> myVertices;
+		CU::GrowingArray<VertexTypePosUV> myVertices;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 
-		ID3D11Buffer* myConstantBuffer;
+		IBuffer* myConstantBuffer;
 		struct SConstantStruct
 		{
 			CU::Vector4f camPosition;
@@ -90,14 +92,11 @@ namespace Snowblind
 			CU::Matrix44f view;
 			CU::Matrix44f m_ShadowMVP;
 		} *myConstantStruct;
-#endif
 	};
 
-#ifdef SNOWBLIND_DX11
 	__forceinline Texture* CDeferredRenderer::GetDepthStencil()
 	{
 		DL_ASSERT_EXP(myDepthStencil != nullptr, "Deferred Depthstencil was null!");
 		return myDepthStencil;
 	}
-#endif
 };

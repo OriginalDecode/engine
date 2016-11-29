@@ -14,17 +14,17 @@ namespace Snowblind
 		if (!myCamera)
 			return false;
 
-		CEngine::GetInstance()->LoadModel(model_filepath, skysphere_shader);
+		Engine::GetInstance()->LoadModel(model_filepath, skysphere_shader);
 
 		SkysphereLayer layer;
-		layer.m_Model = CEngine::GetInstance()->GetModel(model_filepath);
+		layer.m_Model = Engine::GetInstance()->GetModel(model_filepath);
 		layer.m_Texture = nullptr;
 
 		m_Layers.Add(layer);
 		if (m_Layers.Size() <= 0)
 			return false;
 
-		myAPI = CEngine::GetAPI();
+		myAPI = Engine::GetAPI();
 		if (!myAPI)
 			return false;
 
@@ -35,18 +35,18 @@ namespace Snowblind
 
 	bool CSkySphere::AddLayer(const std::string& layer_filepath, const std::string& layer_shader)
 	{
-		CEngine::GetInstance()->LoadModel(layer_filepath, layer_shader);
+		Engine::GetInstance()->LoadModel(layer_filepath, layer_shader);
 
 		SkysphereLayer layer;
-		layer.m_Model = CEngine::GetInstance()->GetModel(layer_filepath);
+		layer.m_Model = Engine::GetInstance()->GetModel(layer_filepath);
 		JSONReader reader("Data/Config/game.json");
-		layer.m_Texture = CEngine::GetInstance()->GetTexture(reader.ReadElement("Skysphere"));
+		layer.m_Texture = Engine::GetInstance()->GetTexture(reader.ReadElement("Skysphere"));
 		layer.m_ShouldRotate = true;
 		m_Layers.Add(layer);
 		if (m_Layers.Size() <= 0)
 			return false;
 
-		myAPI = CEngine::GetAPI();
+		myAPI = Engine::GetAPI();
 		if (!myAPI)
 			return false;
 

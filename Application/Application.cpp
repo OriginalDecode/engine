@@ -18,7 +18,7 @@
 
 bool CApplication::Initiate()
 {
-	myEngine = Snowblind::CEngine::GetInstance();
+	myEngine = Snowblind::Engine::GetInstance();
 	myCamera = myEngine->GetCamera();
 
 	mySynchronizer = myEngine->GetSynchronizer();
@@ -47,7 +47,7 @@ void CApplication::Update()
 //		mySynchronizer->AddRenderCommand(RenderCommand(eType::SKYSPHERE, myCamera->GetPosition()));
 
 		myGame->Update(deltaTime);
-		Snowblind::CEngine::GetInstance()->Render();
+		Snowblind::Engine::GetInstance()->Render();
 
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();

@@ -6,7 +6,7 @@
 namespace Snowblind
 {
 	class CCamera;
-	class CEngine;
+	class Engine;
 	class CSynchronizer;
 };
 
@@ -42,7 +42,7 @@ private:
 	volatile bool myQuitFlag = false;
 
 	/* General */
-	Snowblind::CEngine* myEngine;
+	Snowblind::Engine* myEngine;
 	Snowblind::CSynchronizer* mySynchronizer;
 
 	/* Should be moved to some kind of InputComponent */

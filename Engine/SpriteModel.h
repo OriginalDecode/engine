@@ -1,20 +1,19 @@
 #pragma once
 #include "VertexStructs.h"
+#include "snowblind_shared.h"
 #ifdef SNOWBLIND_DX11
-struct ID3D11InputLayout;
 struct D3D11_INPUT_ELEMENT_DESC;
-struct ID3D11ShaderResourceView;
 #endif
 namespace Snowblind
 {
 	class Texture;
 	class CCamera;
-	class CEffect;
+	class Effect;
 
-	struct SVertexIndexWrapper;
-	struct SVertexBufferWrapper;
-	struct SVertexDataWrapper;
-	struct SIndexBufferWrapper;
+	struct VertexIndexWrapper;
+	struct VertexBufferWrapper;
+	struct VertexDataWrapper;
+	struct IndexBufferWrapper;
 
 	class CSpriteModel
 	{
@@ -26,7 +25,7 @@ namespace Snowblind
 		void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 
 		void Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
-		CEffect* GetEffect();
+		Effect* GetEffect();
 		CU::Math::Vector2<float> GetSize();
 		const CU::Math::Vector2<float>& GetPosition();
 		void SetTexture(ID3D11ShaderResourceView* srv);
@@ -43,23 +42,23 @@ namespace Snowblind
 		std::string myTexturePath;
 		SWindowSize myWindowSize;
 		CCamera* myCamera = nullptr;
-		CEffect* myEffect = nullptr;
+		Effect* myEffect = nullptr;
 
 		CU::Math::Vector2<float> myPosition;
 		CU::Math::Vector2<float> mySize;
 
-		SVertexIndexWrapper* myIndexData;
-		SVertexDataWrapper* myVertexData;
+		VertexIndexWrapper* myIndexData;
+		VertexDataWrapper* myVertexData;
 
-		SVertexBufferWrapper* myVertexBuffer;
-		SIndexBufferWrapper* myIndexBuffer;
+		VertexBufferWrapper* myVertexBuffer;
+		IndexBufferWrapper* myIndexBuffer;
 
 #ifdef SNOWBLIND_DX11
 		ID3D11Buffer* myConstantBuffer = nullptr;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
-		ID3D11InputLayout* myVertexLayout;
+		IInputLayout* myVertexLayout;
 #endif
-		CU::GrowingArray<SVertexTypePosUV> myVertices;
+		CU::GrowingArray<VertexTypePosUV> myVertices;
 
 		struct SSpriteConstantBuffer : public SVertexBaseStruct
 		{

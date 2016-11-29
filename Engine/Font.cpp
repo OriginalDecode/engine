@@ -13,7 +13,7 @@ namespace Snowblind
 	CFont::CFont(SFontData* aFontData)
 	{
 
-		myEngine = CEngine::GetInstance();
+		myEngine = Engine::GetInstance();
 		myTimeManager = new CU::TimeManager();
 
 
@@ -91,11 +91,11 @@ namespace Snowblind
 			return;
 		//myEffect->SetTexture(myData->myAtlasView, "FontTexture");
 
-		CEngine::GetAPI()->SetBlendState(eBlendStates::ALPHA_BLEND);
-		CEngine::GetAPI()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
+		Engine::GetAPI()->SetBlendState(eBlendStates::ALPHA_BLEND);
+		Engine::GetAPI()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
 		//CEngine::GetAPI()->SetRasterizer(eRasterizer::MSAA);
 
-		ID3D11DeviceContext& context = *CEngine::GetAPI()->GetContext();
+		ID3D11DeviceContext& context = *Engine::GetAPI()->GetContext();
 		context.IASetInputLayout(myVertexLayout);
 		context.IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 		context.IASetIndexBuffer(myIndexBuffer->myIndexBuffer, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
@@ -103,12 +103,12 @@ namespace Snowblind
 
 		UpdateConstantBuffer();
 
-		CEngine::GetAPI()->SetVertexShader(myEffect[0]->GetVertexShader()->vertexShader);
+		Engine::GetAPI()->SetVertexShader(myEffect[0]->GetVertexShader()->vertexShader);
 		context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 		for (int i = 0; i < 2; i++)
 		{
-			CEngine::GetAPI()->SetPixelShader(myEffect[i]->GetPixelShader()->pixelShader);
+			Engine::GetAPI()->SetPixelShader(myEffect[i]->GetPixelShader()->pixelShader);
 			ID3D11ShaderResourceView* srv = myData->myAtlasView;
 			context.PSSetShaderResources(0, 1, &srv);
 			context.DrawIndexed(myIndices.Size(), 0, 0);
@@ -119,7 +119,7 @@ namespace Snowblind
 		myTimeManager->GetTimer(myRenderTimer).Update();
 		myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds() - myRenderTime;
 
-		CEngine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
+		Engine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
 #endif
 	}
 	
@@ -180,20 +180,20 @@ namespace Snowblind
 		myVertexFormat.Add(VertexLayoutPosColUV[1]);
 		myVertexFormat.Add(VertexLayoutPosColUV[2]);
 
-		HRESULT hr = CEngine::GetAPI()->GetDevice()->CreateInputLayout(&myVertexFormat[0]
+		HRESULT hr = Engine::GetAPI()->GetDevice()->CreateInputLayout(&myVertexFormat[0]
 			, myVertexFormat.Size()
 			, myEffect[0]->GetVertexShader()->compiledShader
 			, myEffect[0]->GetVertexShader()->shaderSize
 			, &myVertexLayout);
-		CEngine::GetAPI()->HandleErrors(hr, " [Font] : Input Layout.");
-		CEngine::GetAPI()->SetDebugName(myVertexLayout, "Font Input Layout");
+		Engine::GetAPI()->HandleErrors(hr, " [Font] : Input Layout.");
+		Engine::GetAPI()->SetDebugName(myVertexLayout, "Font Input Layout");
 #endif
 	}
 
 	void CFont::CreateVertexBuffer()
 	{
 #ifdef SNOWBLIND_DX11
-		myVertexBuffer = new SVertexBufferWrapper;
+		myVertexBuffer = new VertexBufferWrapper;
 		myVertexBuffer->myStride = sizeof(SVertexTypePosColUv);
 		myVertexBuffer->myByteOffset = 0;
 		myVertexBuffer->myStartSlot = 0;
@@ -212,7 +212,7 @@ namespace Snowblind
 	void CFont::CreateIndexBuffer()
 	{
 #ifdef SNOWBLIND_DX11
-		myIndexBuffer = new SIndexBufferWrapper;
+		myIndexBuffer = new IndexBufferWrapper;
 		myIndexBuffer->myIndexBufferFormat = DXGI_FORMAT_R32_UINT;
 		myIndexBuffer->myByteOffset = 0;
 		myIndexBuffer->myIndexBuffer = nullptr;
@@ -240,9 +240,9 @@ namespace Snowblind
 		cbDesc.MiscFlags = 0;
 		cbDesc.StructureByteStride = 0;
 
-		HRESULT hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-		CEngine::GetAPI()->SetDebugName(myConstantBuffer, "Font Constant Buffer");
-		CEngine::GetAPI()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
+		HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+		Engine::GetAPI()->SetDebugName(myConstantBuffer, "Font Constant Buffer");
+		Engine::GetAPI()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
 #endif
 	}
 
@@ -328,15 +328,15 @@ namespace Snowblind
 
 		myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosColUv) * myVertices.Size();
 		myInitData->pSysMem = reinterpret_cast<char*>(&myVertices[0]);
-		HRESULT hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData, &myVertexBuffer->myVertexBuffer);
+		HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData, &myVertexBuffer->myVertexBuffer);
 
-		CEngine::GetAPI()->SetDebugName(myVertexBuffer->myVertexBuffer, "Font Vertex Buffer");
+		Engine::GetAPI()->SetDebugName(myVertexBuffer->myVertexBuffer, "Font Vertex Buffer");
 
 		myIndexBufferDesc->ByteWidth = sizeof(UINT) * myIndices.Size();
 		myInitData->pSysMem = reinterpret_cast<char*>(&myIndices[0]);
-		hr = CEngine::GetAPI()->GetDevice()->CreateBuffer(myIndexBufferDesc, myInitData, &myIndexBuffer->myIndexBuffer);
+		hr = Engine::GetAPI()->GetDevice()->CreateBuffer(myIndexBufferDesc, myInitData, &myIndexBuffer->myIndexBuffer);
 
-		CEngine::GetAPI()->SetDebugName(myIndexBuffer->myIndexBuffer, "Font Index Buffer");
+		Engine::GetAPI()->SetDebugName(myIndexBuffer->myIndexBuffer, "Font Index Buffer");
 
 #endif
 	}
@@ -347,14 +347,14 @@ namespace Snowblind
 		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 
 		D3D11_MAPPED_SUBRESOURCE msr;
-		CEngine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
 			SFontConstantBuffer* ptr = (SFontConstantBuffer*)msr.pData;
 			memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SFontConstantBuffer));
 		}
 
-		CEngine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
+		Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
 #endif
 	}
 

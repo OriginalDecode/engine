@@ -5,8 +5,11 @@ namespace Snowblind
 {
 	bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f& direction, float buffer_size)
 	{
+		m_Device = Engine::GetInstance()->GetAPI()->GetDevice();
+		m_Context = Engine::GetInstance()->GetAPI()->GetContext();
+		m_Viewport = Engine::GetInstance()->GetAPI()->CreateViewport(m_BufferSize, m_BufferSize, 0.f, 1.f, 0, 0);
+
 		m_BufferSize = buffer_size;
-		m_Viewport = CEngine::GetInstance()->GetAPI()->CreateViewport(m_BufferSize, m_BufferSize, 0.f, 1.f, 0, 0);
 
 		m_Camera = new CCamera(m_BufferSize, m_BufferSize, 25.f, 0.01f, 90.f);
 		m_Camera->SetPosition(position);
@@ -17,26 +20,20 @@ namespace Snowblind
 		m_Bias.myMatrix[5] = 0.5;
 		m_Bias.myMatrix[10] = 0.5;
 		m_Bias.SetTranslation({ 0.5, 0.5, 0.5, 1.f });
-		
-		m_Device = CEngine::GetInstance()->GetAPI()->GetDevice();
-		m_Context = CEngine::GetInstance()->GetAPI()->GetContext();
-
-		m_RenderTarget = new Texture;
-		m_RenderTarget->Initiate(m_BufferSize, m_BufferSize, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "Shadowlight : ");
-
-		m_Normal = new Texture;
-		m_Normal->Initiate(m_BufferSize, m_BufferSize, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "Shadowlight : ");
 
 		m_Depth = new Texture;
-		m_Depth->Initiate(m_BufferSize, m_BufferSize, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "Shadowlight : ");
+		m_Depth->Initiate(m_BufferSize, m_BufferSize, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "Shadowlight : Depth ");
 
-		m_Texture = new Texture;
-		m_Texture->Initiate(m_BufferSize, m_BufferSize , DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
+		m_DepthStencil = new Texture;
+		m_DepthStencil->Initiate(m_BufferSize, m_BufferSize , DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
 			, DXGI_FORMAT_R16G16B16A16_FLOAT
 			, DXGI_FORMAT_R32_TYPELESS
 			, DXGI_FORMAT_R32_FLOAT
 			, DXGI_FORMAT_D32_FLOAT
 			, "Shadowlight : ");
+
+		m_ShadowEffect = Engine::GetInstance()->GetEffect("Data/Shaders/T_Render_Depth.json");
+
 
 		return true;
 	}
@@ -51,24 +48,14 @@ namespace Snowblind
 		if (m_Camera)
 			return false;
 
-		m_Texture->CleanUp();
-		SAFE_DELETE(m_Texture);
-		if (m_Texture)
-			return false;
-
-		m_RenderTarget->CleanUp();
-		SAFE_DELETE(m_RenderTarget);
-		if (m_RenderTarget)
-			return false;
-
 		m_Depth->CleanUp();
 		SAFE_DELETE(m_Depth);
 		if (m_Depth)
 			return false;
 
-		m_Normal->CleanUp();
-		SAFE_DELETE(m_Normal);
-		if (m_Normal)
+		m_DepthStencil->CleanUp();
+		SAFE_DELETE(m_DepthStencil);
+		if (m_DepthStencil)
 			return false;
 
 		return true;
@@ -76,26 +63,32 @@ namespace Snowblind
 
 	void ShadowSpotlight::SetViewport()
 	{
-		CEngine::GetInstance()->GetAPI()->SetViewport(m_Viewport);
+		Engine::GetInstance()->GetAPI()->SetViewport(m_Viewport);
 	}
 
 	void ShadowSpotlight::ClearTexture()
 	{
 		float clear[4] = { 0.f, 0.f, 0.f, 0.f };
-
-
-		m_Context->ClearRenderTargetView(m_RenderTarget->GetRenderTargetView(), clear);
-		m_Context->ClearDepthStencilView(m_Texture->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		m_Context->ClearRenderTargetView(m_Depth->GetRenderTargetView(), clear);
+		m_Context->ClearDepthStencilView(m_DepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
 	void ShadowSpotlight::SetTargets()
 	{
-		ID3D11RenderTargetView* target[3];
-		target[0] = m_RenderTarget->GetRenderTargetView();
-		target[1] = m_Normal->GetRenderTargetView();
-		target[2] = m_Depth->GetRenderTargetView();
+		IRenderTargetView* rtv = m_Depth->GetRenderTargetView();
+		m_Context->OMSetRenderTargets(1, &rtv, m_DepthStencil->GetDepthView());
 
-		m_Context->OMSetRenderTargets(3, target, m_Texture->GetDepthView());
+		DirectX11* api = Engine::GetInstance()->GetAPI();
+		api->SetVertexShader(m_ShadowEffect->GetVertexShader()->vertexShader);
+		api->SetPixelShader(m_ShadowEffect->GetPixelShader()->pixelShader);
+	}
+
+	void ShadowSpotlight::ToggleShader(bool on_or_off)
+	{
+		if (on_or_off)
+			m_ShadowEffect->Activate();
+		else
+			m_ShadowEffect->Deactivate();
 	}
 
 	CU::Matrix44f ShadowSpotlight::GetOrientation()
@@ -105,7 +98,7 @@ namespace Snowblind
 
 	CU::Matrix44f ShadowSpotlight::GetMVP()
 	{
-		return CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetProjection();// *m_Bias;
+		return CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetProjection(); //*m_Bias;
 	}
 
 };

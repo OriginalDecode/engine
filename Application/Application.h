@@ -5,7 +5,7 @@
 
 namespace Snowblind
 {
-	class Camera;
+	class CCamera;
 	class Engine;
 	class CSynchronizer;
 };
@@ -46,7 +46,7 @@ private:
 	Snowblind::CSynchronizer* mySynchronizer;
 
 	/* Should be moved to some kind of InputComponent */
-	Snowblind::Camera* myCamera;
+	Snowblind::CCamera* myCamera;
 
 	CU::Quaternion myPitch;
 	CU::Quaternion myYaw;

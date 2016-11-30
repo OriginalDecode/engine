@@ -492,32 +492,32 @@ void Left(CRigidBody* rigidbody)
 }
 
 
-void Up(Snowblind::Camera* camera)
+void Up(Snowblind::CCamera* camera)
 {
 	camera->Move(Snowblind::eDirection::UP, speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
-void Down(Snowblind::Camera* camera)
+void Down(Snowblind::CCamera* camera)
 {
 	camera->Move(Snowblind::eDirection::DOWN, -speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
-void Forward(Snowblind::Camera* camera)
+void Forward(Snowblind::CCamera* camera)
 {
 	camera->Move(Snowblind::eDirection::FORWARD, speed* Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
-void Backward(Snowblind::Camera* camera)
+void Backward(Snowblind::CCamera* camera)
 {
 	camera->Move(Snowblind::eDirection::BACK, -speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
-void Right(Snowblind::Camera* camera)
+void Right(Snowblind::CCamera* camera)
 {
 	camera->Move(Snowblind::eDirection::RIGHT, speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
-void Left(Snowblind::Camera* camera)
+void Left(Snowblind::CCamera* camera)
 {
 	camera->Move(Snowblind::eDirection::LEFT, -speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }

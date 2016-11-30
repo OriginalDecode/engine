@@ -29,7 +29,7 @@ namespace Snowblind
 		myModel = aModel;
 	}
 
-	void CInstance::Render(const CU::Matrix44f& previousOrientation, Camera& aCamera)
+	void CInstance::Render(const CU::Matrix44f& previousOrientation, CCamera& aCamera)
 	{
 		myModel->Render(previousOrientation, aCamera.GetProjection());
 	}

@@ -2,7 +2,7 @@
 namespace Snowblind
 {
 
-	class Camera;
+	class CCamera;
 	class Engine;
 	class CMousePicker
 	{
@@ -17,7 +17,7 @@ namespace Snowblind
 		CU::Vector3f ToWorldCoords(const CU::Vector4f& eyeCoords);
 		CU::Vector2f NormalizedSpace(float x, float y);
 		CU::Vector3f myCurrentRay;
-		Camera* myCamera;
+		CCamera* myCamera;
 		Engine* myEngine;
 	};
 };

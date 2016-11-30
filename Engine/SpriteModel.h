@@ -7,7 +7,7 @@ struct D3D11_INPUT_ELEMENT_DESC;
 namespace Snowblind
 {
 	class Texture;
-	class Camera;
+	class CCamera;
 	class Effect;
 
 	struct VertexIndexWrapper;
@@ -41,7 +41,7 @@ namespace Snowblind
 
 		std::string myTexturePath;
 		SWindowSize myWindowSize;
-		Camera* myCamera = nullptr;
+		CCamera* myCamera = nullptr;
 		Effect* myEffect = nullptr;
 
 		CU::Math::Vector2<float> myPosition;

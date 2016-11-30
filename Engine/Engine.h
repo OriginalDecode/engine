@@ -52,7 +52,7 @@ namespace Snowblind
 	class DirectX11;
 	class Vulkan;
 
-	class Camera;
+	class CCamera;
 	class CConsole;
 	class CFont;
 	class CFontManager;
@@ -82,8 +82,8 @@ namespace Snowblind
 		bool Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc);
 		bool CleanUp();
 
-		Camera* GetCamera();
-		Camera* Get2DCamera();
+		CCamera* GetCamera();
+		CCamera* Get2DCamera();
 		static void Present();
 		static void Clear();
 		static void EnableZ();
@@ -154,8 +154,8 @@ namespace Snowblind
 		CU::TimeManager* myTimeManager				= nullptr;
 		CSynchronizer* mySynchronizer				= nullptr;
 		CRenderer* myRenderer						= nullptr;
-		Camera*  myCamera							= nullptr;
-		Camera*  my2DCamera						= nullptr;
+		CCamera*  myCamera							= nullptr;
+		CCamera*  my2DCamera						= nullptr;
 		CConsole* myConsole							= nullptr;
 		Cache::CAssetsContainer* myAssetsContainer	= nullptr;
 		Cache::TerrainManager* m_TerrainManager		= nullptr;

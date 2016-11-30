@@ -14,7 +14,7 @@ namespace CommonUtilities
 namespace Snowblind
 {
 	class CSprite;
-	class Camera;
+	class CCamera;
 	class CText;
 	class CScene;
 
@@ -24,7 +24,7 @@ namespace Snowblind
 		CConsole();
 		~CConsole();
 
-		void Initiate(Camera* aCamera);
+		void Initiate(CCamera* aCamera);
 		void Render();
 		void Update();
 		void ToggleConsole();
@@ -35,7 +35,7 @@ namespace Snowblind
 	private:
 		CU::GrowingArray<std::string> myStrings;
 		CU::TimeManager* myTimeManager;
-		Camera* myCamera;
+		CCamera* myCamera;
 		CSprite* mySprite;
 
 		CText* myText;

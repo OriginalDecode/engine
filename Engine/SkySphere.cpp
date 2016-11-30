@@ -8,7 +8,7 @@
 
 namespace Snowblind
 {
-	bool CSkySphere::Initiate(const std::string& model_filepath, const std::string& skysphere_shader, Camera* camera)
+	bool CSkySphere::Initiate(const std::string& model_filepath, const std::string& skysphere_shader, CCamera* camera)
 	{
 		myCamera = camera;
 		if (!myCamera)

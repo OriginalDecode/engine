@@ -3,7 +3,7 @@
 namespace Snowblind
 {
 	class CInstance;
-	class Camera;
+	class CCamera;
 
 	class CSpotLight
 	{
@@ -11,7 +11,7 @@ namespace Snowblind
 		CSpotLight();
 		~CSpotLight();
 
-		void Render(const CU::Matrix44f& previousOrientation, Camera* aCamera);
+		void Render(const CU::Matrix44f& previousOrientation, CCamera* aCamera);
 		void SetColor(const CU::Vector4f& aColor);
 		void SetRange(float aRange);
 		void SetAngle(float anAngle);

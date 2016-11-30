@@ -13,7 +13,7 @@ namespace Snowblind
 		DEPTH,
 	};
 
-	class Camera;
+	class CCamera;
 	class DirectX11;
 	class Effect;
 	class Engine;

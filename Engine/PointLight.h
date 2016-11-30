@@ -24,7 +24,7 @@ namespace Snowblind
 		const float& GetRange();
 
 		void Update();
-		void Render(const CU::Matrix44f& previousOrientation, Camera* camera);
+		void Render(const CU::Matrix44f& previousOrientation, CCamera* camera);
 		const SPointlightData& GetData() const;
 
 		CU::Matrix44f GetOrientation();

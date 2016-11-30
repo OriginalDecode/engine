@@ -16,7 +16,7 @@ namespace Snowblind
 		SAFE_DELETE(myFont);
 	}
 
-	void CText::Render(Camera* aCamera)
+	void CText::Render(CCamera* aCamera)
 	{
 		myFont->SetPosition(myPosition);
 		myFont->SetScale(myScale);

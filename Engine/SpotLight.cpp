@@ -17,7 +17,7 @@ namespace Snowblind
 		SAFE_DELETE(myLightMesh);
 	}
 
-	void CSpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera)
+	void CSpotLight::Render(const CU::Matrix44f& previousOrientation, CCamera* aCamera)
 	{
 		myLightMesh->Render(previousOrientation, *aCamera);
 	}

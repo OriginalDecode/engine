@@ -119,7 +119,7 @@ namespace Snowblind
 		myAmbientPassShader->Activate();
 		myContext->PSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-		m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
+		m_API->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
 		m_API->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 		myContext->DrawIndexed(6, 0, 0);

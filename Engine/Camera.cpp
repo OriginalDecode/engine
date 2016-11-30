@@ -4,14 +4,19 @@
 #include "../Input/ControllerInput.h"
 namespace Snowblind
 {
-	CCamera::CCamera(float aWidth, float aHeight)
+	void Camera::Initiate(float width, float height, float near_plane, float far_plane, u32 camera_type_flag)
+	{
+		myOrthogonalMatrix = CU::Matrix44f::CreateOrthogonalMatrixLH(width, height, near_plane, far_plane);
+	}
+
+	Camera::Camera(float aWidth, float aHeight)
 	{
 
 		myFOV *= 3.1415926535f / 180.f;
 		myProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(0.01f, 1000.f, aHeight / aWidth, myFOV);
 	}
 
-	CCamera::CCamera(float aWidth, float aHeight, const CU::Vector3f& aPosition)
+	Camera::Camera(float aWidth, float aHeight, const CU::Vector3f& aPosition)
 	{
 		my2DOrientation.myMatrix[3] = aPosition.x;
 		my2DOrientation.myMatrix[7] = aPosition.y;
@@ -21,34 +26,34 @@ namespace Snowblind
 
 	}
 
-	CCamera::CCamera(float aWidth, float aHeight, float far_plane, float near_plane)
+	Camera::Camera(float aWidth, float aHeight, float far_plane, float near_plane)
 	{
 		myFOV *= 3.1415926535f / 180.f;
 		myProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, aHeight / aWidth, myFOV);
 	}
 
-	CCamera::CCamera(float aWidth, float aHeight, float far_plane, float near_plane, float fov)
+	Camera::Camera(float aWidth, float aHeight, float far_plane, float near_plane, float fov)
 	{
 		myFOV = fov * (3.1415926535f / 180.f);
 		myProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, aHeight / aWidth, myFOV);
 	}
 
-	CU::Matrix44f& CCamera::GetOrthogonalMatrix()
+	CU::Matrix44f& Camera::GetOrthogonalMatrix()
 	{
 		return myOrthogonalMatrix;
 	}
 
-	void CCamera::SetPosition(const CU::Vector3f& position)
+	void Camera::SetPosition(const CU::Vector3f& position)
 	{
 		myOrientation.SetPosition(position);
 	}
 
-	void CCamera::SetTranslation(const CU::Vector4f& translation)
+	void Camera::SetTranslation(const CU::Vector4f& translation)
 	{
 		myOrientation.SetTranslation(translation);
 	}
 
-	void CCamera::Update(const ControllerState& controller_state)
+	void Camera::Update(const ControllerState& controller_state)
 	{
 
 		float x_value = (float)controller_state.m_ThumbRX / SHRT_MAX;
@@ -88,7 +93,7 @@ namespace Snowblind
 		myOrientation.myMatrix[10] = axisZ.z;
 	}
 
-	void CCamera::Update(float x, float y)
+	void Camera::Update(float x, float y)
 	{
 		float x_value = x;//(float)controller_state.m_ThumbRX / SHRT_MAX;
 		float y_value = y;//(float)controller_state.m_ThumbRY / SHRT_MAX;
@@ -119,27 +124,29 @@ namespace Snowblind
 		myOrientation.myMatrix[10] = axisZ.z;
 	}
 
-	void CCamera::SetOrientation(const CU::Matrix44f& matrix)
+	void Camera::SetOrientation(const CU::Matrix44f& matrix)
 	{
 		myOrientation = matrix;
 	}
 
-	void CCamera::RotateAroundX(float rad)
+	void Camera::RotateAroundX(float rad)
 	{
 		myOrientation = CU::Matrix44f::CreateRotateAroundX(rad) * myOrientation;
 	}
 
-	void CCamera::RotateAroundY(float rad)
+	void Camera::RotateAroundY(float rad)
 	{
 		myOrientation = CU::Matrix44f::CreateRotateAroundY(rad) * myOrientation;
 	}
 
-	void CCamera::RotateAroundZ(float rad)
+	void Camera::RotateAroundZ(float rad)
 	{
 		myOrientation = CU::Matrix44f::CreateRotateAroundZ(rad) * myOrientation;
 	}
 
-	void CCamera::Move(eDirection aDirection, float aSpeed)
+	
+
+	void Camera::Move(eDirection aDirection, float aSpeed)
 	{
 	CU::Math::Vector4<float> position;
 	position = myOrientation.GetTranslation();
@@ -167,19 +174,19 @@ namespace Snowblind
 	myOrientation.SetTranslation(position);
 	}
 
-	void CCamera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)
+	void Camera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)
 	{
 	CU::Math::Vector4<float> forward = myOrientation.GetForward();
 	aPosition += forward * aSpeed;
 	}
 
-	void CCamera::MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed)
+	void Camera::MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed)
 	{
 	CU::Math::Vector4<float> up = myOrientation.GetUp();
 	aPosition += up * aSpeed;
 	}
 
-	void CCamera::MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed)
+	void Camera::MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed)
 	{
 	CU::Math::Vector4<float> right = myOrientation.GetRight();
 	aPosition += right * aSpeed;

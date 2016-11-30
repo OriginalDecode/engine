@@ -136,12 +136,10 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
 
-	if(sampleValue < compareValue - 0.0005)
+	//borde vara 1/ buffer_size
+	if(sampleValue < compareValue)
 	{
-		if(shadowVec.x > 0 && shadowVec.x < 1 && shadowVec.y > 0 && shadowVec.y < 1 && shadowVec.z < 1)
-		{
 			finalColor *= 0.42;
-		}
 	}
 
 	return float4(finalColor, 1.f);

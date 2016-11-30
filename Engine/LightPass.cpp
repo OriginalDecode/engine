@@ -39,7 +39,7 @@ namespace Snowblind
 		return true;
 	}
 
-	void LightPass::RenderPointlight(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
+	void LightPass::RenderPointlight(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
 		if (HasInitiated())
 		{
@@ -50,7 +50,7 @@ namespace Snowblind
 		}
 	}
 
-	void LightPass::RenderSpotlight(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
+	void LightPass::RenderSpotlight(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
 		UpdateSpotlightBuffers(spotlight, aCamera, previousOrientation);
 		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)]);
@@ -68,7 +68,7 @@ namespace Snowblind
 		return myEffect[u32(eLight::SPOT_LIGHT)];
 	}
 
-	void LightPass::UpdatePointlightBuffers(CPointLight* pointlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
+	void LightPass::UpdatePointlightBuffers(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
 #ifdef SNOWBLIND_DX11
 		//----------------------------------------
@@ -113,7 +113,7 @@ namespace Snowblind
 #endif
 	}
 
-	void LightPass::UpdateSpotlightBuffers(CSpotLight* spotlight, CCamera* aCamera, const CU::Matrix44f& previousOrientation)
+	void LightPass::UpdateSpotlightBuffers(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation)
 	{
 #ifdef SNOWBLIND_DX11
 		//----------------------------------------

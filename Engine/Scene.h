@@ -4,7 +4,7 @@
 #include "LightStructs.h"
 namespace Snowblind
 {
-	class CCamera;
+	class Camera;
 	class CInstance;
 	class CSprite;
 	class CText;
@@ -17,7 +17,7 @@ namespace Snowblind
 		CScene();
 		~CScene();
 
-		void Initiate(CCamera* aCamera, bool aIs2DScene = false);
+		void Initiate(Camera* aCamera, bool aIs2DScene = false);
 		void Render();
 		void Update(float aDeltaTime);
 
@@ -34,7 +34,7 @@ namespace Snowblind
 		void RenderLight();
 		void UpdateLight(float aDeltaTime);
 
-		CCamera* myCamera;
+		Camera* myCamera;
 		CU::GrowingArray<CInstance*> myInstances;
 		CU::GrowingArray<CSprite*> my2DInstances;
 		CU::GrowingArray<CText*> myText;

@@ -13,7 +13,7 @@ class CLine3D;
 namespace Snowblind
 {
 
-	class CCamera;
+	class Camera;
 	class CDeferredRenderer;
 	class CDirectionalLight;
 	class CEmitterInstance;
@@ -33,11 +33,11 @@ namespace Snowblind
 	public:
 		CRenderer() = default;
 
-		bool Initiate(CSynchronizer* synchronizer, CCamera* camera_3d, CCamera* camera_2d);
+		bool Initiate(CSynchronizer* synchronizer, Camera* camera_3d, Camera* camera_2d);
 		bool CleanUp();
 
 		void Render();
-		void Add2DCamera(CCamera* aCamera);
+		void Add2DCamera(Camera* aCamera);
 		void AddTerrain(CTerrain* someTerrain);
 		void ToggleWireframe();
 	private:
@@ -62,11 +62,11 @@ namespace Snowblind
 		Vulkan*				m_API				= nullptr;
 #endif
 		bool m_ProcessShadows = false;
-		CCamera*			myCamera			= nullptr;
+		Camera*			myCamera			= nullptr;
 		CU::Matrix44f		myPrevFrame;
 		CU::Matrix44f		myPrevShadowFrame;
 
-		CCamera*			my2DCamera			= nullptr;
+		Camera*			my2DCamera			= nullptr;
 		CU::TimeManager*	myTimeManager		= nullptr;
 		
 		CDeferredRenderer*	myDeferredRenderer	= nullptr;

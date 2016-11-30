@@ -30,7 +30,7 @@ namespace Snowblind
 		mySprite->Initiate(aShaderResource, aSize, aPosition);
 	}
 
-	void CSprite::Render(CCamera* aCamera)
+	void CSprite::Render(Camera* aCamera)
 	{
 		//mySprite->GetEffect()->SetScale({ 1, 1 });
 		//mySprite->GetEffect()->SetPosition(myPosition);

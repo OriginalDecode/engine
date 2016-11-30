@@ -107,8 +107,8 @@ namespace Snowblind
 			ToggleVsync();
 		});
 
-		myCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight);
-		my2DCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
+		myCamera = new Snowblind::Camera(myWindowSize.myWidth, myWindowSize.myHeight);
+		my2DCamera = new Snowblind::Camera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
 		myRenderer = new CRenderer;
 		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
 	
@@ -149,12 +149,12 @@ namespace Snowblind
 		return true;
 	}
 
-	CCamera* Engine::GetCamera()
+	Camera* Engine::GetCamera()
 	{
 		return myCamera;
 	}
 
-	Snowblind::CCamera* Engine::Get2DCamera()
+	Snowblind::Camera* Engine::Get2DCamera()
 	{
 		return my2DCamera;
 	}
@@ -382,4 +382,4 @@ namespace Snowblind
 		m_DebugSystem.AddToDebugText(debug_text);
 	}
 
-	};
+};

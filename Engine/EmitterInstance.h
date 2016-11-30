@@ -6,7 +6,7 @@
 
 namespace Snowblind
 {
-	class CCamera;
+	class Camera;
 	class CSynchronizer;
 	class Texture;
 	class Engine;

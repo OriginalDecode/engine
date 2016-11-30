@@ -23,7 +23,7 @@ namespace Snowblind
 		SAFE_DELETE(myTimeManager);
 	}
 
-	void CConsole::Initiate(CCamera* aCamera)
+	void CConsole::Initiate(Camera* aCamera)
 	{
 		myCamera = aCamera;
 		myIsActive = false;

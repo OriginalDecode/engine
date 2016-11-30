@@ -23,7 +23,7 @@
 #include "Texture.h"
 namespace Snowblind
 {
-	bool CRenderer::Initiate(CSynchronizer* synchronizer, CCamera* camera_3d, CCamera* camera_2d)
+	bool CRenderer::Initiate(CSynchronizer* synchronizer, Camera* camera_3d, Camera* camera_2d)
 	{
 		mySynchronizer = synchronizer;
 		if (!mySynchronizer)
@@ -34,7 +34,8 @@ namespace Snowblind
 		my2DCamera = camera_2d;
 		if (!my2DCamera)
 			return false;
-		myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
+		//myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
+		myText = new CText("Arial.ttf", 8, 1);
 		if (!myText)
 			return false;
 
@@ -48,8 +49,8 @@ namespace Snowblind
 		//CU::Vector3f(95, 7.f, 28.f)
 		m_Shadowlight = new ShadowSpotlight;
 		m_Shadowlight->Initiate(
-			CU::Vector3f(95, 7.f, 28.f)
-			, CU::Vector3f(1.f, 0.5f, 0.f)
+			CU::Vector3f(95.f, 7.f, 28.f)
+			, CU::Vector3f(1.f, 0.5f, 0)
 			, 2048.f);
 
 		myDeferredRenderer = new CDeferredRenderer; // Where should this live?
@@ -125,7 +126,7 @@ namespace Snowblind
 		return true;
 	}
 
-	void CRenderer::Add2DCamera(CCamera* aCamera)
+	void CRenderer::Add2DCamera(Camera* aCamera)
 	{
 		my2DCamera = aCamera;
 	}
@@ -172,7 +173,7 @@ namespace Snowblind
 
 		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetRenderTarget()->GetShaderView(), CU::Vector2f(1920.f - 128.f, 128.f)));
 		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Normal->GetShaderView(), CU::Vector2f(1920.f - 128.f, 384.f)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthTexture()->GetShaderView(), CU::Vector2f(1920.f - 128.f, 128.f)));
+		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthTexture()->GetShaderView(), CU::Vector2f(1920.f - 128.f, 128.f)));
 
 		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Texture->GetDepthStencilView(), CU::Vector2f(1920.f - 384.f, 896.f)));
 
@@ -365,23 +366,20 @@ namespace Snowblind
 		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		m_ProcessShadows = true;
 
-		CCamera* camera = myCamera;
+		Camera* camera = myCamera;
 		myCamera = m_Shadowlight->GetCamera();
 		m_Shadowlight->SetViewport();
 
 		m_Shadowlight->ClearTexture();
 		m_Shadowlight->SetTargets();
-		m_Shadowlight->ToggleShader(m_ProcessShadows);
 		Render3DCommands();
-		m_Shadowlight->Copy();
 		myEngine->ResetRenderTargetAndDepth();
-		m_API->ResetViewport();
 		
+		m_API->ResetViewport();
 		myPrevShadowFrame = myCamera->GetOrientation();
 		myCamera = camera;
 
 		m_ProcessShadows = false;
-		m_Shadowlight->ToggleShader(m_ProcessShadows);
 	}
 
 	void CRenderer::ToggleWireframe()

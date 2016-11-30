@@ -14,7 +14,7 @@ namespace Snowblind
 	class CTerrain;
 	class Engine;
 	class CMousePicker;
-	class CCamera;
+	class Camera;
 };
 class JSONReader;
 class CEntityManager;
@@ -28,12 +28,12 @@ static void Backward(CRigidBody* rigidbody);
 static void Right(CRigidBody* rigidbody);
 static void Left(CRigidBody* rigidbody);
 
-static void Up(Snowblind::CCamera* camera);
-static void Forward(Snowblind::CCamera* camera);
-static void Backward(Snowblind::CCamera* camera);
-static void Right(Snowblind::CCamera* camera);
-static void Left(Snowblind::CCamera* camera);
-static void Down(Snowblind::CCamera* camera);
+static void Up(Snowblind::Camera* camera);
+static void Forward(Snowblind::Camera* camera);
+static void Backward(Snowblind::Camera* camera);
+static void Right(Snowblind::Camera* camera);
+static void Left(Snowblind::Camera* camera);
+static void Down(Snowblind::Camera* camera);
 
 
 class CGame

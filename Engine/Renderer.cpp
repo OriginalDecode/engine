@@ -198,7 +198,7 @@ namespace Snowblind
 						continue;
 					}
 
-					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
+					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 					m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 					 
 					CModel* model = myEngine->GetModel(command.m_KeyOrText);

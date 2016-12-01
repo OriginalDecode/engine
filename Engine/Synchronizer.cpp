@@ -5,7 +5,7 @@
 
 namespace Snowblind
 {
-	bool CSynchronizer::Initiate()
+	bool Synchronizer::Initiate()
 	{
 		myCurrentBuffer = 0;
 		myLogicIsDone = false;
@@ -15,7 +15,7 @@ namespace Snowblind
 		return true;
 	}
 
-	void CSynchronizer::SwapBuffer()
+	void Synchronizer::SwapBuffer()
 	{
 		for (CommandBuffer& buffer : myCommandBuffers)
 		{
@@ -24,7 +24,7 @@ namespace Snowblind
 		myCurrentBuffer ^= 1;
 	}
 
-	void CSynchronizer::Clear()
+	void Synchronizer::Clear()
 	{
 		for (CommandBuffer& buffer : myCommandBuffers)
 		{
@@ -33,14 +33,14 @@ namespace Snowblind
 		}
 	}
 
-	void CSynchronizer::Quit()
+	void Synchronizer::Quit()
 	{
 		myLogicIsDone = true;
 		myRenderIsDone = true;
 		myQuitFlag = true;
 	}
 
-	void CSynchronizer::WaitForRender()
+	void Synchronizer::WaitForRender()
 	{
 		while (!myRenderIsDone)
 		{
@@ -49,7 +49,7 @@ namespace Snowblind
 		myRenderIsDone = false;
 	}
 
-	void CSynchronizer::WaitForLogic()
+	void Synchronizer::WaitForLogic()
 	{
 		while (!myLogicIsDone)
 		{
@@ -58,22 +58,22 @@ namespace Snowblind
 		myLogicIsDone = false;
 	}
 
-	void CSynchronizer::RenderIsDone()
+	void Synchronizer::RenderIsDone()
 	{
 		myRenderIsDone = true;
 	}
 
-	void CSynchronizer::LogicIsDone()
+	void Synchronizer::LogicIsDone()
 	{
 		myLogicIsDone = true;
 	}
 
-	void CSynchronizer::AddRenderCommand(const RenderCommand& aRenderCommand)
+	void Synchronizer::AddRenderCommand(const RenderCommand& aRenderCommand)
 	{
 		myCommandBuffers[u32(aRenderCommand.myCommandType)][myCurrentBuffer ^ 1].Add(aRenderCommand);
 	}
 
-	const CU::GrowingArray<RenderCommand>& CSynchronizer::GetRenderCommands(const eCommandBuffer& commandType) const
+	const CU::GrowingArray<RenderCommand>& Synchronizer::GetRenderCommands(const eCommandBuffer& commandType) const
 	{
 		return myCommandBuffers[u32(commandType)][myCurrentBuffer];
 	}

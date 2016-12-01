@@ -330,11 +330,12 @@ void MurmurHash3_x64_128(const void * key, const int len, const uint32_t seed, v
 	((uint64_t*)out)[1] = h2;
 }
 
-u32 Hash(const char* key)
+u64 Hash(const char* key)
 {
 	s32 size = (s32)strlen(key);
-	u32 result;
-	MurmurHash3_x86_32(key, size, 0, &result);
+	u64 result;
+	//MurmurHash3_x86_32(key, size, 0, &result);
+	MurmurHash3_x64_128(key, size, 0, &result);
 	return result;
 }
 

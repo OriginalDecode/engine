@@ -30,7 +30,7 @@ namespace Cache
 
 	void CAssetsContainer::Initiate()
 	{
-		myShaderFactory = new Snowblind::CShaderFactory;
+		myShaderFactory = new Snowblind::ShaderFactory;
 		myModelLoader = new CModelImporter;
 	}
 

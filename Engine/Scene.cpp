@@ -23,7 +23,7 @@ namespace Snowblind
 		myPointLights.DeleteAll();
 	}
 
-	void CScene::Initiate(CCamera* aCamera, bool aIs2DScene)
+	void CScene::Initiate(Camera* aCamera, bool aIs2DScene)
 	{
 		myCamera = aCamera;
 		myIs2DScene = aIs2DScene;
@@ -72,7 +72,7 @@ namespace Snowblind
 		myInstances.Add(anInstance);
 	}
 
-	void CScene::AddToScene(CSprite* aSprite)
+	void CScene::AddToScene(Sprite* aSprite)
 	{
 		my2DInstances.Add(aSprite);
 	}

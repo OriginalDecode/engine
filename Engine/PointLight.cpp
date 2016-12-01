@@ -59,7 +59,7 @@ namespace Snowblind
 		myData.myRange = GetRange();
 	}
 
-	void CPointLight::Render(const CU::Matrix44f& previousOrientation, CCamera* camera)
+	void CPointLight::Render(const CU::Matrix44f& previousOrientation, Camera* camera)
 	{
 		m_Model->Render(previousOrientation, camera->GetProjection());
 	}

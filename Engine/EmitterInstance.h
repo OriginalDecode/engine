@@ -6,8 +6,8 @@
 
 namespace Snowblind
 {
-	class CCamera;
-	class CSynchronizer;
+	class Camera;
+	class Synchronizer;
 	class Texture;
 	class Engine;
 	class CEmitterInstance
@@ -16,7 +16,7 @@ namespace Snowblind
 		CEmitterInstance();
 		~CEmitterInstance();
 
-		void Initiate(CSynchronizer* aSynchronizer);
+		void Initiate(Synchronizer* aSynchronizer);
 
 		void Update(float aDeltaTime);
 		void Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection, Texture* aDepthTexture);
@@ -38,7 +38,7 @@ namespace Snowblind
 
 		float myTimeToEmit;
 		IInputLayout* myInputLayout;
-		CSynchronizer* mySynchronizer;
+		Synchronizer* mySynchronizer;
 
 		ID3D11Buffer* myConstantBuffer;
 		SVertexBaseStruct* myConstantStruct;

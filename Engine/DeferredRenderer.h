@@ -13,7 +13,7 @@ namespace Snowblind
 		DEPTH,
 	};
 
-	class CCamera;
+	class Camera;
 	class DirectX11;
 	class Effect;
 	class Engine;
@@ -27,10 +27,10 @@ namespace Snowblind
 	struct VertexDataWrapper;
 	struct IndexBufferWrapper;
 
-	class CDeferredRenderer
+	class DeferredRenderer
 	{
 	public:
-		CDeferredRenderer() = default;
+		DeferredRenderer() = default;
 		bool Initiate(Texture* shadow_texture);
 		bool CleanUp();
 		void SetTargets();
@@ -94,7 +94,7 @@ namespace Snowblind
 		} *myConstantStruct;
 	};
 
-	__forceinline Texture* CDeferredRenderer::GetDepthStencil()
+	__forceinline Texture* DeferredRenderer::GetDepthStencil()
 	{
 		DL_ASSERT_EXP(myDepthStencil != nullptr, "Deferred Depthstencil was null!");
 		return myDepthStencil;

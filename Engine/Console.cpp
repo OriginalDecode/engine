@@ -23,7 +23,7 @@ namespace Snowblind
 		SAFE_DELETE(myTimeManager);
 	}
 
-	void CConsole::Initiate(CCamera* aCamera)
+	void CConsole::Initiate(Camera* aCamera)
 	{
 		myCamera = aCamera;
 		myIsActive = false;
@@ -31,7 +31,7 @@ namespace Snowblind
 		myBottomLeftPosition = { (Snowblind::Engine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, (Snowblind::Engine::GetInstance()->GetWindowSize().myHeight / 2.f) - 24.f };
 		myTopLeftPosition = { (Snowblind::Engine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, 0.f };
 
-		mySprite = new CSprite();
+		mySprite = new Sprite();
 		mySprite->Initiate("Data/Textures/colors.dds", { Snowblind::Engine::GetInstance()->GetWindowSize().myWidth / 2.f,
 															Snowblind::Engine::GetInstance()->GetWindowSize().myHeight / 2.f },
 															{ 0, 0 });

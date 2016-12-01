@@ -23,7 +23,7 @@
 #include "Texture.h"
 namespace Snowblind
 {
-	bool CRenderer::Initiate(CSynchronizer* synchronizer, CCamera* camera_3d, CCamera* camera_2d)
+	bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera_3d, Camera* camera_2d)
 	{
 		mySynchronizer = synchronizer;
 		if (!mySynchronizer)
@@ -50,15 +50,16 @@ namespace Snowblind
 		m_Shadowlight->Initiate(
 			CU::Vector3f(95, 7.f, 28.f)
 			, CU::Vector3f(1.f, 0.5f, 0.f)
-			, 2048.f);
+			, 512.f);
 
-		myDeferredRenderer = new CDeferredRenderer; // Where should this live?
+		myDeferredRenderer = new DeferredRenderer; // Where should this live?
 		if (!myDeferredRenderer->Initiate(m_Shadowlight->GetDepthStencil()))
 			return false;
 
 		myDepthTexture = new Texture; //Where should this live?
 		if (!myDepthTexture)
 			return false;
+
 		myDepthTexture->Initiate(Engine::GetInstance()->GetWindowSize().myWidth, Engine::GetInstance()->GetWindowSize().myHeight
 			, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
 			, DXGI_FORMAT_R32_TYPELESS
@@ -66,17 +67,15 @@ namespace Snowblind
 			, DXGI_FORMAT_D32_FLOAT
 			, "Renderer : Depth");
 
-		mySkysphere = new CSkySphere;
+		mySkysphere = new SkySphere;
 		mySkysphere->Initiate("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", camera_3d);
 		mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Data/Shaders/T_Skysphere_Layer.json");
 		if (!mySkysphere)
 			return false;
 
-	
-
-		mySprite = new CSprite;
+		mySprite = new Sprite;
 		mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
-		myClearColor = new CSprite;
+		myClearColor = new Sprite;
 		myClearColor->Initiate("Data/Textures/flat_height.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
 		myEngine = Engine::GetInstance();
 		if (!myEngine)
@@ -95,7 +94,7 @@ namespace Snowblind
 		return true;
 	}
 
-	bool CRenderer::CleanUp()
+	bool Renderer::CleanUp()
 	{
 		m_LightPass.CleanUp();
 
@@ -125,12 +124,12 @@ namespace Snowblind
 		return true;
 	}
 
-	void CRenderer::Add2DCamera(CCamera* aCamera)
+	void Renderer::Add2DCamera(Camera* aCamera)
 	{
 		my2DCamera = aCamera;
 	}
 
-	void CRenderer::Render()
+	void Renderer::Render()
 	{
 		myEngine->Clear();
 		//myEngine->GetAPI()->ResetViewport();
@@ -178,12 +177,12 @@ namespace Snowblind
 
 	}
 
-	void CRenderer::AddTerrain(CTerrain* someTerrain)
+	void Renderer::AddTerrain(CTerrain* someTerrain)
 	{
 		myTerrainArray.Add(someTerrain);
 	}
 
-	void CRenderer::Render3DCommands()
+	void Renderer::Render3DCommands()
 	{
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 		for (const RenderCommand& command : commands)
@@ -226,7 +225,7 @@ namespace Snowblind
 		}
 	}
 
-	void CRenderer::Render2DCommands()
+	void Renderer::Render2DCommands()
 	{
 		const CU::GrowingArray<RenderCommand>& commands2D = mySynchronizer->GetRenderCommands(eCommandBuffer::e2D);
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
@@ -257,7 +256,7 @@ namespace Snowblind
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
-	void CRenderer::RenderSpotlight()
+	void Renderer::RenderSpotlight()
 	{
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eSpotlight);
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
@@ -284,7 +283,7 @@ namespace Snowblind
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
-	void CRenderer::RenderPointlight()
+	void Renderer::RenderPointlight()
 	{
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::ePointlight);
 
@@ -309,7 +308,7 @@ namespace Snowblind
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
-	void CRenderer::RenderParticles()
+	void Renderer::RenderParticles()
 	{
 		m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
@@ -327,7 +326,7 @@ namespace Snowblind
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
-	void CRenderer::RenderLines()
+	void Renderer::RenderLines()
 	{
 		m_API->SetBlendState(eBlendStates::NO_BLEND);
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
@@ -360,12 +359,12 @@ namespace Snowblind
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
-	void CRenderer::ProcessShadows()
+	void Renderer::ProcessShadows()
 	{
 		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
 		m_ProcessShadows = true;
 
-		CCamera* camera = myCamera;
+		Camera* camera = myCamera;
 		myCamera = m_Shadowlight->GetCamera();
 		m_Shadowlight->SetViewport();
 
@@ -384,7 +383,7 @@ namespace Snowblind
 		m_Shadowlight->ToggleShader(m_ProcessShadows);
 	}
 
-	void CRenderer::ToggleWireframe()
+	void Renderer::ToggleWireframe()
 	{
 		m_RenderWireframe = !m_RenderWireframe;
 	}

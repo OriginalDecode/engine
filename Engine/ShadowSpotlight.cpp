@@ -10,7 +10,7 @@ namespace Snowblind
 		m_Context = Engine::GetInstance()->GetAPI()->GetContext();
 		m_Viewport = Engine::GetInstance()->GetAPI()->CreateViewport(m_BufferSize, m_BufferSize, 0.f, 1.f, 0, 0);
 
-		m_Camera = new CCamera(m_BufferSize, m_BufferSize, 50.f, 1.f, 90.f);
+		m_Camera = new Camera(m_BufferSize, m_BufferSize, 50.f, 1.f, 90.f);
 		m_Camera->SetPosition(position);
 		m_Camera->RotateAroundY(CL::DegreeToRad(90.f) * direction.x);
 		m_Camera->RotateAroundX(CL::DegreeToRad(90.f) * direction.y);
@@ -89,8 +89,8 @@ namespace Snowblind
 		m_Context->OMSetRenderTargets(1, &target, m_DepthStencil->GetDepthView());
 
 		DirectX11* api = Engine::GetInstance()->GetAPI();
-		api->SetVertexShader(m_ShadowEffect->GetVertexShader()->vertexShader);
-		api->SetPixelShader(m_ShadowEffect->GetPixelShader()->pixelShader);
+		api->SetVertexShader(m_ShadowEffect->GetVertexShader()->m_Shader);
+		api->SetPixelShader(m_ShadowEffect->GetPixelShader()->m_Shader);
 	}
 
 	void ShadowSpotlight::ToggleShader(bool on_or_off)

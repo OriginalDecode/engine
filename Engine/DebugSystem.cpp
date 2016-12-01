@@ -5,7 +5,7 @@
 #include "../Input/InputHandle.h"
 constexpr s16 max_error_count = 32;
 
-bool Snowblind::DebugMenu::Initiate(CSynchronizer* synchronizer, InputHandle* input_handle)
+bool Snowblind::DebugMenu::Initiate(Synchronizer* synchronizer, InputHandle* input_handle)
 {
 	m_Synchronizer = synchronizer;
 	m_InputHandle = input_handle;
@@ -31,7 +31,7 @@ void Snowblind::DebugMenu::Update()
 	m_InputHandle->HandleInput();
 }
 
-bool Snowblind::DebugSystem::Initiate(CSynchronizer* synchronizer, InputHandle* input_handle)
+bool Snowblind::DebugSystem::Initiate(Synchronizer* synchronizer, InputHandle* input_handle)
 {
 	m_Synchronizer = synchronizer;
 	m_DebugMenu.Initiate(m_Synchronizer, input_handle);

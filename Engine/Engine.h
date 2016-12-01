@@ -52,13 +52,13 @@ namespace Snowblind
 	class DirectX11;
 	class Vulkan;
 
-	class CCamera;
+	class Camera;
 	class CConsole;
 	class CFont;
 	class CFontManager;
 	class CModel;
-	class CRenderer;
-	class CSynchronizer;
+	class Renderer;
+	class Synchronizer;
 	class Texture;
 	class Effect;
 	class CTerrain;
@@ -77,13 +77,13 @@ namespace Snowblind
 		static Vulkan* GetAPI();
 #endif
 
-		bool InitiateDebugSystem(CSynchronizer* synchronizer, InputHandle* input_handle);
+		bool InitiateDebugSystem(Synchronizer* synchronizer, InputHandle* input_handle);
 
 		bool Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc);
 		bool CleanUp();
 
-		CCamera* GetCamera();
-		CCamera* Get2DCamera();
+		Camera* GetCamera();
+		Camera* Get2DCamera();
 		static void Present();
 		static void Clear();
 		static void EnableZ();
@@ -116,7 +116,7 @@ namespace Snowblind
 
 		bool IsWindowActive() { return m_Window.IsWindowActive(); }
 		
-		CSynchronizer* GetSynchronizer();
+		Synchronizer* GetSynchronizer();
 
 		const SLocalTime& GetLocalTime();
 		std::string GetLocalTimeAsString();
@@ -133,7 +133,7 @@ namespace Snowblind
 
 
 		void CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
-
+		void* CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name);
 	private:
 		Engine() = default;
 		//void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
@@ -152,10 +152,10 @@ namespace Snowblind
 
 		CFontManager* myFontManager					= nullptr;
 		CU::TimeManager* myTimeManager				= nullptr;
-		CSynchronizer* mySynchronizer				= nullptr;
-		CRenderer* myRenderer						= nullptr;
-		CCamera*  myCamera							= nullptr;
-		CCamera*  my2DCamera						= nullptr;
+		Synchronizer* mySynchronizer				= nullptr;
+		Renderer* myRenderer						= nullptr;
+		Camera*  myCamera							= nullptr;
+		Camera*  my2DCamera							= nullptr;
 		CConsole* myConsole							= nullptr;
 		Cache::CAssetsContainer* myAssetsContainer	= nullptr;
 		Cache::TerrainManager* m_TerrainManager		= nullptr;

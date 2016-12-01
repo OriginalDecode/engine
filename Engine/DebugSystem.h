@@ -7,12 +7,12 @@
 class InputHandle;
 namespace Snowblind
 {
-	class CSynchronizer;
+	class Synchronizer;
 	class DebugMenu
 	{
 	public:
 		DebugMenu() = default;
-		bool Initiate(CSynchronizer* synchronizer, InputHandle* input_handle);
+		bool Initiate(Synchronizer* synchronizer, InputHandle* input_handle);
 		void Activate() { m_IsActive = true; }
 		void Deactivate() { m_IsActive = false; }
 		bool GetIsActive() { return m_IsActive; }
@@ -33,7 +33,7 @@ namespace Snowblind
 		};
 
 		bool m_IsActive = false;
-		CSynchronizer* m_Synchronizer = nullptr;
+		Synchronizer* m_Synchronizer = nullptr;
 		std::vector<Menu_Item> m_MenuItems;
 		std::stringstream m_Stream;
 		InputHandle* m_InputHandle = nullptr;
@@ -43,7 +43,7 @@ namespace Snowblind
 	{
 	public:
 		DebugSystem() = default;
-		bool Initiate(CSynchronizer* synchronizer, InputHandle* input_handle);
+		bool Initiate(Synchronizer* synchronizer, InputHandle* input_handle);
 		void Update();
 		void Render();
 		void ActivateDebugMenu();
@@ -56,7 +56,7 @@ namespace Snowblind
 		DebugMenu m_DebugMenu;
 		std::deque<std::string> m_ErrorMessages;
 		std::vector<std::string> m_DebugStrings;
-		CSynchronizer* m_Synchronizer = nullptr;
+		Synchronizer* m_Synchronizer = nullptr;
 		Ticket_Mutex m_Mutex;
 
 	};

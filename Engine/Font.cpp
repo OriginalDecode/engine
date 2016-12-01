@@ -103,12 +103,12 @@ namespace Snowblind
 
 		UpdateConstantBuffer();
 
-		Engine::GetAPI()->SetVertexShader(myEffect[0]->GetVertexShader()->vertexShader);
+		Engine::GetAPI()->SetVertexShader(myEffect[0]->GetVertexShader()->m_Shader);
 		context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 		for (int i = 0; i < 2; i++)
 		{
-			Engine::GetAPI()->SetPixelShader(myEffect[i]->GetPixelShader()->pixelShader);
+			Engine::GetAPI()->SetPixelShader(myEffect[i]->GetPixelShader()->m_Shader);
 			ID3D11ShaderResourceView* srv = myData->myAtlasView;
 			context.PSSetShaderResources(0, 1, &srv);
 			context.DrawIndexed(myIndices.Size(), 0, 0);

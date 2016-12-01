@@ -5,16 +5,7 @@ namespace Snowblind
 	Effect::Effect(const std::string& aFilePath)
 		: myFileName(aFilePath)
 	{
-		//-----------------------------
-		//	Should probably just new the effects that are going to be used.
-		//-----------------------------
-		/*myVertexShader = new SVertexShader();
-		myPixelShader = new SPixelShader();
-		myGeometryShader = new SGeometryShader();
-		myHullShader = new SHullShader();
-		myDomainShader = new SDomainShader();
-		myComputeShader = new SComputeShader();*/
-
+	
 #ifdef SNOWBLIND_DX11
 		myContext = Engine::GetAPI()->GetContext();
 #endif
@@ -22,35 +13,29 @@ namespace Snowblind
 
 	Effect::~Effect()
 	{
-		/*SAFE_DELETE(myVertexShader);
-		SAFE_DELETE(myPixelShader);
-		SAFE_DELETE(myGeometryShader);
-		SAFE_DELETE(myHullShader);
-		SAFE_DELETE(myDomainShader);
-		SAFE_DELETE(myComputeShader);*/
 	}
 
-	VertexShader* Effect::GetVertexShader()
-	{
-		return myVertexShader;
-	}
+	//VertexShader* Effect::GetVertexShader()
+	//{
+	//	return myVertexShader;
+	//}
 
-	PixelShader* Effect::GetPixelShader()
-	{
-#ifdef SNOWBLIND_DX11
-		if (myPixelShader != nullptr)
-		{
-			return myPixelShader;
-		}
-#endif
-		return nullptr;
-	}
+//	PixelShader* Effect::GetPixelShader()
+//	{
+//#ifdef SNOWBLIND_DX11
+//		if (myPixelShader != nullptr)
+//		{
+//			return myPixelShader;
+//		}
+//#endif
+//		return nullptr;
+//	}
 
 	void Effect::Activate()
 	{
 #ifdef SNOWBLIND_DX11
-		Engine::GetAPI()->SetVertexShader(myVertexShader->vertexShader);
-		Engine::GetAPI()->SetPixelShader(myPixelShader->pixelShader);
+		Engine::GetAPI()->SetVertexShader(m_VertexShader->m_Shader);
+		Engine::GetAPI()->SetPixelShader(m_PixelShader->m_Shader);
 
 		if (myShaderResources.Size() > 0)
 		{

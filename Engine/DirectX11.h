@@ -54,7 +54,7 @@ namespace Snowblind
 		//__________________________
 		// DirectX Functions
 
-		ID3D11Device* GetDevice();
+		IDevice* GetDevice() override;
 		ID3D11DeviceContext* GetContext();
 		
 		const std::string& GetAdapterName(u16 anIndex);
@@ -83,8 +83,8 @@ namespace Snowblind
 		void SetBlendState(const eBlendStates& blendState);
 		void SetSamplerState(const eSamplerStates& samplerState);
 
-		void SetVertexShader(ID3D11VertexShader* aVertexShader);
-		void SetPixelShader(ID3D11PixelShader* aPixelShader);
+		void SetVertexShader(void* vertex_shader);
+		void SetPixelShader(void* pixel_shader);
 		void SetGeometryShader(ID3D11GeometryShader* aGeometryShader);
 		void SetHullShader(ID3D11HullShader* aHullShader);
 		void SetDomainShader(ID3D11DomainShader* aDomainShader);

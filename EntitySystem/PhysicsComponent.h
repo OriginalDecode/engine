@@ -1,10 +1,10 @@
 #pragma once
 #include "BaseComponent.h"
-class CRigidBody;
+class RigidBody;
 struct SPhysicsComponent : public BaseComponent
 {
 	~SPhysicsComponent();
-	CRigidBody* myBody = nullptr;
+	RigidBody* myBody = nullptr;
 	/* Data goes here */
 } typedef PhysicsComponent;
 

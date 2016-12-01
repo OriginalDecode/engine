@@ -1,51 +1,43 @@
 #pragma once
-struct ID3D11DeviceContext;
-struct ID3D11ShaderResourceView;
+#include "snowblind_shared.h"
 
 namespace Snowblind
 {
-
-	struct VertexShader;
-	struct PixelShader;
-	struct GeometryShader;
-	struct HullShader;
-	struct DomainShader;
-	struct ComputeShader;
-	
+	struct CompiledShader;	
 	class Texture;
 	class Effect
 	{
-		friend class CShaderFactory;
-	public:
+		friend class ShaderFactory;
+	public: 
 		Effect(const std::string& aFilePath);
 		~Effect();
 		
 
-		VertexShader* GetVertexShader();
-		PixelShader* GetPixelShader();
+		CompiledShader* GetVertexShader() { return m_VertexShader; }
+		CompiledShader* GetPixelShader() { return m_PixelShader; }
 
 		/* TODO : IMPLEMENT THE FOLLOWING SHADERS */
-		GeometryShader* GetGeometryShader();
-		HullShader* GetHullShader();
-		DomainShader* GetDomainShader();
-		ComputeShader* GetComputeShader();
+		CompiledShader* GetGeometryShader();
+		CompiledShader* GetHullShader();
+		CompiledShader* GetDomainShader();
+		CompiledShader* GetComputeShader();
 
 		void Activate();
 		void Deactivate();
-		void AddShaderResource(ID3D11ShaderResourceView* aShaderResource);
+		void AddShaderResource(IShaderResourceView* aShaderResource);
 	private:
 		std::string myFileName;
 		ID3D11DeviceContext* myContext;
 
-		VertexShader* myVertexShader = nullptr;
-		PixelShader* myPixelShader = nullptr;
-		GeometryShader* myGeometryShader = nullptr;
-		HullShader* myHullShader = nullptr;
-		DomainShader* myDomainShader = nullptr;
-		ComputeShader* myComputeShader = nullptr;
+		CompiledShader* m_VertexShader		= nullptr;
+		CompiledShader* m_PixelShader		= nullptr;
+		CompiledShader* m_GeometryShader	= nullptr;
+		CompiledShader* m_HullShader		= nullptr;
+		CompiledShader* m_DomainShader		= nullptr;
+		CompiledShader* m_ComputeShader		= nullptr;
 		
-		CU::GrowingArray<ID3D11ShaderResourceView*> myShaderResources;
-		CU::GrowingArray<ID3D11ShaderResourceView*> myNULLList;
+		CU::GrowingArray<IShaderResourceView*> myShaderResources;
+		CU::GrowingArray<IShaderResourceView*> myNULLList;
 		bool firstOptimize = false;
 	};
 };

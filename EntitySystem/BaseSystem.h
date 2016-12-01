@@ -4,7 +4,7 @@
 
 namespace Snowblind
 {
-	class CSynchronizer;
+	class Synchronizer;
 }
 
 class BaseSystem

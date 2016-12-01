@@ -4,18 +4,18 @@ struct ID3D11ShaderResourceView;
 
 namespace Snowblind
 {
-	class CCamera;
+	class Camera;
 	class CSpriteModel;
 
-	class CSprite
+	class Sprite
 	{
 	public:
-		CSprite();
-		~CSprite();
+		Sprite();
+		~Sprite();
 		void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 		void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 
-		void Render(CCamera* aCamera);
+		void Render(Camera* aCamera);
 		const CU::Math::Vector2<float>& GetPosition();
 		CU::Math::Vector2<float> GetSize();
 

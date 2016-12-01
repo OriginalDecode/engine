@@ -10,10 +10,10 @@ typedef CU::StaticArray<CommandBuffer, static_cast<u32>(eCommandBuffer::_COUNT)>
 namespace Snowblind
 {
 
-	class CSynchronizer
+	class Synchronizer
 	{
 	public:
-		CSynchronizer() = default;
+		Synchronizer() = default;
 		bool Initiate();
 		void SwapBuffer();
 		void Clear();
@@ -39,7 +39,7 @@ namespace Snowblind
 
 	};
 
-	__forceinline bool CSynchronizer::HasQuit()
+	__forceinline bool Synchronizer::HasQuit()
 	{
 		return myQuitFlag;
 	}

@@ -32,7 +32,7 @@ void MurmurHash3_x86_128(const void* aKey, int aLength, uint32_t aSeed, void* ou
 
 void MurmurHash3_x64_128(const void* aKey, int aLength, uint32_t aSeed, void* out);
 
-u32 Hash(const char* key);
+u64 Hash(const char* key);
 
 //-----------------------------------------------------------------------------
 

@@ -3,10 +3,10 @@
 
 namespace Snowblind
 {
-	class CCamera;
+	class Camera;
 }
 
 struct CameraComponent final : public BaseComponent
 {
-	Snowblind::CCamera* m_Camera = nullptr;
+	Snowblind::Camera* m_Camera = nullptr;
 };

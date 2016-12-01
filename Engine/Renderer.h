@@ -13,14 +13,14 @@ class CLine3D;
 namespace Snowblind
 {
 
-	class CCamera;
-	class CDeferredRenderer;
+	class Camera;
+	class DeferredRenderer;
 	class CDirectionalLight;
 	class CEmitterInstance;
 	class CModel;
 	class CPointLight;
-	class CSkySphere;
-	class CSynchronizer;
+	class SkySphere;
+	class Synchronizer;
 	class Texture;
 	class CText;
 	class CTerrain;
@@ -28,16 +28,16 @@ namespace Snowblind
 	class CSpotLight;
 	class ShadowSpotlight;
 
-	class CRenderer
+	class Renderer
 	{
 	public:
-		CRenderer() = default;
+		Renderer() = default;
 
-		bool Initiate(CSynchronizer* synchronizer, CCamera* camera_3d, CCamera* camera_2d);
+		bool Initiate(Synchronizer* synchronizer, Camera* camera_3d, Camera* camera_2d);
 		bool CleanUp();
 
 		void Render();
-		void Add2DCamera(CCamera* aCamera);
+		void Add2DCamera(Camera* aCamera);
 		void AddTerrain(CTerrain* someTerrain);
 		void ToggleWireframe();
 	private:
@@ -62,26 +62,26 @@ namespace Snowblind
 		Vulkan*				m_API				= nullptr;
 #endif
 		bool m_ProcessShadows = false;
-		CCamera*			myCamera			= nullptr;
+		Camera*			myCamera			= nullptr;
 		CU::Matrix44f		myPrevFrame;
 		CU::Matrix44f		myPrevShadowFrame;
 
-		CCamera*			my2DCamera			= nullptr;
+		Camera*			my2DCamera			= nullptr;
 		CU::TimeManager*	myTimeManager		= nullptr;
 		
-		CDeferredRenderer*	myDeferredRenderer	= nullptr;
+		DeferredRenderer*	myDeferredRenderer	= nullptr;
 
 		CDirectionalLight*	myDirectionalLight	= nullptr;
 		CPointLight*		myPointLight		= nullptr;
 		CSpotLight*			mySpotlight			= nullptr;
 		ShadowSpotlight*	m_Shadowlight		= nullptr;
 
-		CSynchronizer*		mySynchronizer		= nullptr;
+		Synchronizer*		mySynchronizer		= nullptr;
 		CText*				myText				= nullptr;
 		Texture*			myDepthTexture		= nullptr;
-		CSkySphere*			mySkysphere			= nullptr;
-		CSprite*			mySprite			= nullptr;
-		CSprite*			myClearColor = nullptr;
+		SkySphere*			mySkysphere			= nullptr;
+		Sprite*			mySprite			= nullptr;
+		Sprite*			myClearColor = nullptr;
 
 		CLine3D*			my3DLine			= nullptr;
 

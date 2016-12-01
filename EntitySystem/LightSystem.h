@@ -4,7 +4,7 @@
 
 namespace Snowblind
 {
-	class CSynchronizer;
+	class Synchronizer;
 
 };
 
@@ -12,9 +12,9 @@ class CEntityManager;
 class CLightSystem : public BaseSystem
 {
 public:
-	CLightSystem(CEntityManager& anEntityManager, Snowblind::CSynchronizer* aSynchronizer);
+	CLightSystem(CEntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer);
 	void Update(float aDeltaTime) override;
 private:
-	Snowblind::CSynchronizer* mySynchronizer;
+	Snowblind::Synchronizer* mySynchronizer;
 };
 

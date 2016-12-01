@@ -7,7 +7,7 @@
 #include "BaseComponent.h"
 namespace Snowblind
 {
-	class CSynchronizer;
+	class Synchronizer;
 }
 class CPhysicsManager;
 class BaseSystem;
@@ -36,7 +36,7 @@ public:
 	void AddSystem();
 
 	template <typename T>
-	void AddSystem(Snowblind::CSynchronizer* aSynchronizer);
+	void AddSystem(Snowblind::Synchronizer* aSynchronizer);
 
 	template <typename T>
 	void AddSystem(CPhysicsManager* aManager);
@@ -81,7 +81,7 @@ void CEntityManager::AddSystem()
 }
 
 template <typename T>
-void CEntityManager::AddSystem(Snowblind::CSynchronizer* aSynchronizer)
+void CEntityManager::AddSystem(Snowblind::Synchronizer* aSynchronizer)
 {
 	mySystems.Add(new T(*this, aSynchronizer));
 }

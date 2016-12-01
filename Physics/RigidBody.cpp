@@ -5,11 +5,11 @@
 #include <Utilities.h>
 #include "ControllerInput.h"
 
-CRigidBody::CRigidBody()
+RigidBody::RigidBody()
 {
 }
 
-CRigidBody::~CRigidBody()
+RigidBody::~RigidBody()
 {
 	SAFE_DELETE(myVertexArray);
 	SAFE_DELETE(myShape);
@@ -18,7 +18,7 @@ CRigidBody::~CRigidBody()
 
 }
 
-btRigidBody* CRigidBody::InitAsPlane(const btVector3& aNormal)
+btRigidBody* RigidBody::InitAsPlane(const btVector3& aNormal)
 {
 	myShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
 	myMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
@@ -33,7 +33,7 @@ btRigidBody* CRigidBody::InitAsPlane(const btVector3& aNormal)
 	return myBody;
 }
 
-btRigidBody* CRigidBody::InitAsTerrain(std::vector<float> vertices, std::vector<s32> indices)
+btRigidBody* RigidBody::InitAsTerrain(std::vector<float> vertices, std::vector<s32> indices)
 {
 	s32 faceCount = (s32)indices.size() / 3;
 	s32 vStride = sizeof(CU::Vector3f);
@@ -54,7 +54,7 @@ btRigidBody* CRigidBody::InitAsTerrain(std::vector<float> vertices, std::vector<
 	return myBody;
 }
 
-btRigidBody* CRigidBody::InitAsSphere(float aRadius, float aMass, float aGravityForce, float anInitialResistance, const CU::Vector3f& aPosition)
+btRigidBody* RigidBody::InitAsSphere(float aRadius, float aMass, float aGravityForce, float anInitialResistance, const CU::Vector3f& aPosition)
 {
 	myRadius = aRadius;
 	myGravity = aGravityForce;
@@ -79,7 +79,7 @@ btRigidBody* CRigidBody::InitAsSphere(float aRadius, float aMass, float aGravity
 	return myBody;
 }
 
-btRigidBody* CRigidBody::InitWithMeshCollision(std::vector<float> vertices, std::vector<s32> indices)
+btRigidBody* RigidBody::InitWithMeshCollision(std::vector<float> vertices, std::vector<s32> indices)
 {
 	if (vertices.size() <= 0 || indices.size() <= 0)
 		return nullptr;
@@ -103,7 +103,7 @@ btRigidBody* CRigidBody::InitWithMeshCollision(std::vector<float> vertices, std:
 	return myBody;
 }
 
-btRigidBody* CRigidBody::InitAsBox(float width, float height, float depth, CU::Vector3f position)
+btRigidBody* RigidBody::InitAsBox(float width, float height, float depth, CU::Vector3f position)
 {
 	myMass = 0.f;
 	myShape = new btBoxShape(btVector3(width/2.f, height/2.f, depth/2.f));
@@ -117,17 +117,17 @@ btRigidBody* CRigidBody::InitAsBox(float width, float height, float depth, CU::V
 	return myBody;
 }
 
-void CRigidBody::SetResistanceDensity(float aDensity)
+void RigidBody::SetResistanceDensity(float aDensity)
 {
 	myResistanceDensity = aDensity;
 }
 
-void CRigidBody::SetPosition(const CU::Vector3f& aPosition)
+void RigidBody::SetPosition(const CU::Vector3f& aPosition)
 {
 	assert("Not Implemented");
 }
 
-void CRigidBody::Update(float deltaTime)
+void RigidBody::Update(float deltaTime)
 {
 	// (#LINUS) Terrain should probably be above 0y so that we can make a arbitrary check to see if you are out of bounds
 	btVector3 linear_velocity = myBody->getLinearVelocity();
@@ -154,12 +154,12 @@ void CRigidBody::Update(float deltaTime)
 	myBody->setLinearVelocity(btVector3(myVelocity.x, myVelocity.y, myVelocity.z));
 }
 
-btRigidBody* CRigidBody::GetBody()
+btRigidBody* RigidBody::GetBody()
 {
 	return myBody;
 }
 
-const CU::Matrix44f& CRigidBody::GetOrientation()
+const CU::Matrix44f& RigidBody::GetOrientation()
 {
 	myWorldTranslation->getOpenGLMatrix(&myOrientation.myMatrix[0]);
 
@@ -184,17 +184,17 @@ const CU::Matrix44f& CRigidBody::GetOrientation()
 	return myOrientation;
 }
 
-void CRigidBody::Impulse(const CU::Vector3f& anImpulseVector)
+void RigidBody::Impulse(const CU::Vector3f& anImpulseVector)
 {
 	myBody->applyForce(btVector3(anImpulseVector.x, anImpulseVector.y, anImpulseVector.z), btVector3(0.f,0.f,0.f));
 }
 
-CU::Vector3f CRigidBody::GetLinearVelocity()
+CU::Vector3f RigidBody::GetLinearVelocity()
 {
 	return CU::Vector3f(myBody->getLinearVelocity().getX(), myBody->getLinearVelocity().getY(), myBody->getLinearVelocity().getZ());
 }
 
-void CRigidBody::UpdateOrientation(const ControllerState& controller_state)
+void RigidBody::UpdateOrientation(const ControllerState& controller_state)
 {
 	m_CenterPoint.y -= ((float)controller_state.m_ThumbRY / SHRT_MAX) * 0.01f;
 	m_CenterPoint.x += ((float)controller_state.m_ThumbRX / SHRT_MAX) * 0.01f;

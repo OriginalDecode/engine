@@ -24,8 +24,8 @@ namespace Snowblind
 
 		if (!render_shadows)
 		{
-			myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
-			myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
+			myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->m_Shader : nullptr);
+			myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->m_Shader : nullptr);
 		}
 		SetMatrices(aCameraOrientation, aCameraProjection);
 #endif

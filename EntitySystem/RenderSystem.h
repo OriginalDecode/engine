@@ -3,19 +3,19 @@
 
 namespace Snowblind
 {
-	class CSynchronizer;
+	class Synchronizer;
 }
 
 class CEntityManager;
 class CRenderSystem : public BaseSystem
 {
 public:
-	CRenderSystem(CEntityManager& anEntityManager, Snowblind::CSynchronizer* aSynchronizer);
+	CRenderSystem(CEntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer);
 
 	void Update(float aDeltaTime) override;
 
 private:
-	Snowblind::CSynchronizer* mySynchronizer;
+	Snowblind::Synchronizer* mySynchronizer;
 
 };
 

@@ -5,11 +5,11 @@ class CModelImporter;
 class FileWatcher;
 namespace Snowblind
 {
-	class CShaderFactory;
+	class ShaderFactory;
 	class CModel;
 	class Effect;
 	class Texture;
-	class CSprite;
+	class Sprite;
 };
 
 namespace Cache
@@ -37,12 +37,12 @@ namespace Cache
 		std::unordered_map<std::string, Snowblind::Texture*> myTextures;
 		std::unordered_map<std::string, Snowblind::Effect*> myEffects;
 		std::unordered_map<std::string, Snowblind::CModel*> myModels;
-		std::unordered_map<std::string, Snowblind::CSprite*> mySprites;
+		std::unordered_map<std::string, Snowblind::Sprite*> mySprites;
 		
 		bool LoadTexture(const std::string& aFilePath);
 		void LoadEffect(const std::string& aFilePath);
 
-		Snowblind::CShaderFactory* myShaderFactory;
+		Snowblind::ShaderFactory* myShaderFactory;
 		CModelImporter* myModelLoader;
 	};
 };

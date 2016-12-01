@@ -64,8 +64,8 @@ void CLine3D::Render(CU::Matrix44f& prevOrientation, CU::Matrix44f& projection)
 	context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 	context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
 
-	myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->vertexShader : nullptr);
-	myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->pixelShader : nullptr);
+	myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->m_Shader: nullptr);
+	myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->m_Shader : nullptr);
 
 	ID3D11ShaderResourceView* srv[1];
 	srv[0] = nullptr;

@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseSystem.h"
 #include "../Input/InputCommand.h"
-class CRigidBody;
+class RigidBody;
 //class JumpCommand final : public InputCommand
 //{
 //	~JumpCommand();

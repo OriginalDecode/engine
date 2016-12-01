@@ -7,7 +7,7 @@
 #include "Synchronizer.h"
 #include "RenderCommand.h"
 
-CLightSystem::CLightSystem(CEntityManager& anEntityManager, Snowblind::CSynchronizer* aSynchronizer)
+CLightSystem::CLightSystem(CEntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, LightComponent>>())
 	, mySynchronizer(aSynchronizer)
 {

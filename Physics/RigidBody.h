@@ -24,16 +24,16 @@ enum class eBodyType
 
 namespace Snowblind
 {
-	class CSynchronizer;
+	class Synchronizer;
 }
 
 struct ControllerState;
 
-class CRigidBody
+class RigidBody
 {
 public:
-	CRigidBody();
-	~CRigidBody();
+	RigidBody();
+	~RigidBody();
 
 	btRigidBody* InitAsPlane(const btVector3& aNormal);
 	btRigidBody* InitAsTerrain(std::vector<float> vertices, std::vector<s32> indices);

@@ -81,9 +81,11 @@ namespace Snowblind
 
 		virtual void EnableZBuffer() = 0;
 		virtual void DisableZBuffer() = 0;
+		virtual IDevice* GetDevice() = 0;
 
 
 		void SetShaderResource(s32 start_pos, s32 view_count, IShaderResourceView* shader_resource);
+
 
 
 	protected:

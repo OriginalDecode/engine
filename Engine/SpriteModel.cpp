@@ -189,9 +189,9 @@ namespace Snowblind
 
 		UpdateConstantBuffer();
 
-		Engine::GetAPI()->SetVertexShader(myEffect->GetVertexShader()->vertexShader);
+		Engine::GetAPI()->SetVertexShader(myEffect->GetVertexShader()->m_Shader);
 		context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
-		Engine::GetAPI()->SetPixelShader(myEffect->GetPixelShader()->pixelShader);
+		Engine::GetAPI()->SetPixelShader(myEffect->GetPixelShader()->m_Shader);
 		ID3D11ShaderResourceView* srv = myTexture;
 		context.PSSetShaderResources(0, 1, &srv);
 

@@ -22,7 +22,7 @@ bool CApplication::Initiate()
 	myCamera = myEngine->GetCamera();
 
 	mySynchronizer = myEngine->GetSynchronizer();
-	myGame = new CGame;
+	myGame = new Game;
 	if (!myGame->Initiate(mySynchronizer))
 		return false;
 

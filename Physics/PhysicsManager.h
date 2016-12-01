@@ -12,7 +12,7 @@ class btRigidBody;
 class btCollisionShape;
 struct btDefaultMotionState;
 
-class CRigidBody;
+class RigidBody;
 
 class CPhysicsManager
 {
@@ -21,7 +21,7 @@ public:
 	~CPhysicsManager();
 	void Add(btRigidBody* aBody);
 	void Remove(btRigidBody* aBody);
-	CRigidBody* CreateBody();
+	RigidBody* CreateBody();
 	float GetGravityForce();
 	void Update(double& additionalTime);
 	CU::Vector3f RayCast(const CU::Vector3f& cameraPosition, const CU::Vector3f& target) const;
@@ -36,7 +36,7 @@ private:
 	btSequentialImpulseConstraintSolver* myImpulseSolver = nullptr;
 	btDiscreteDynamicsWorld* myDynamicsWorld = nullptr;
 
-	CRigidBody* myZeroPlane;
+	RigidBody* myZeroPlane;
 	CU::GrowingArray<btRigidBody*> myBodies;
 
 	float myGravity = 0.f;

@@ -53,7 +53,7 @@
 #include <hashlist.h>
 #include <AABB.h>
 
-bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
+bool Game::Initiate(Snowblind::Synchronizer* synchronizer)
 {
 	mySynchronizer = synchronizer;
 	myEngine = Snowblind::Engine::GetInstance();
@@ -79,7 +79,7 @@ bool CGame::Initiate(Snowblind::CSynchronizer* synchronizer)
 	return true;
 }
 
-bool CGame::CleanUp()
+bool Game::CleanUp()
 {
 	SAFE_DELETE(myPicker);
 	if (myPicker)
@@ -101,7 +101,7 @@ bool CGame::CleanUp()
 }
 static float speed = 50.f;
 
-void CGame::Update(float aDeltaTime)
+void Game::Update(float aDeltaTime)
 {
 	myFrameCount++;
 	myAverageFPS += myEngine->GetFPS();
@@ -138,7 +138,7 @@ void CGame::Update(float aDeltaTime)
 	
 }
 
-bool CGame::CreateLevel(const char* level_path)
+bool Game::CreateLevel(const char* level_path)
 {
 	Snowblind::Engine::GetInstance()->GetThreadpool().AddWork(
 		Work([&]() {
@@ -176,7 +176,7 @@ bool CGame::CreateLevel(const char* level_path)
 	return true;
 }
 
-bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONElement::ConstMemberIterator it)
+bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONElement::ConstMemberIterator it)
 {
 	JSONReader entityReader(entity_path);
 	Entity e = myEntityManager->CreateEntity();
@@ -405,7 +405,7 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 			});
 
 			input.m_InputHandle->Bind(Hash("LMouseButton"), [&]() {
-				CGame::LeftClick(input.m_InputHandle->GetX(), input.m_InputHandle->GetY());
+				Game::LeftClick(input.m_InputHandle->GetX(), input.m_InputHandle->GetY());
 			});
 
 			input.m_InputHandle->Bind(s_NumpadAdd_hash, [&]() {
@@ -447,19 +447,19 @@ bool CGame::CreateEntity(const char* entity_path, JSONReader& level_reader, JSON
 	return true;
 }
 
-void CGame::LeftClick(float x, float y)
+void Game::LeftClick(float x, float y)
 {
 	pointHit = myPhysicsManager->RayCast(myEngine->GetCamera()->GetPosition(), myPicker->GetCurrentRay(x, y));
 }
 
 // (#LINUS) Needs to be addressed in the future.
 
-void Jump(CRigidBody* rigidbody)
+void Jump(RigidBody* rigidbody)
 {
 	rigidbody->Impulse(CU::Vector3f(0, 1500, 0));
 }
 
-void Forward(CRigidBody* rigidbody)
+void Forward(RigidBody* rigidbody)
 {
 	CU::Matrix44f orientation = rigidbody->GetOrientation();
 	CU::Vector4f forward = orientation.GetForward();
@@ -467,7 +467,7 @@ void Forward(CRigidBody* rigidbody)
 	rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
 }
 
-void Backward(CRigidBody* rigidbody)
+void Backward(RigidBody* rigidbody)
 {
 	CU::Matrix44f orientation = rigidbody->GetOrientation();
 	CU::Vector4f forward = orientation.GetForward();
@@ -475,7 +475,7 @@ void Backward(CRigidBody* rigidbody)
 	rigidbody->Impulse(CU::Vector3f(forward.x, 0, forward.z));
 }
 
-void Right(CRigidBody* rigidbody)
+void Right(RigidBody* rigidbody)
 {
 	CU::Matrix44f orientation = rigidbody->GetOrientation();
 	CU::Vector4f right = orientation.GetRight();
@@ -483,7 +483,7 @@ void Right(CRigidBody* rigidbody)
 	rigidbody->Impulse(CU::Vector3f(right.x, 0, right.z));
 }
 
-void Left(CRigidBody* rigidbody)
+void Left(RigidBody* rigidbody)
 {
 	CU::Matrix44f orientation = rigidbody->GetOrientation();
 	CU::Vector4f right = orientation.GetRight();
@@ -492,32 +492,32 @@ void Left(CRigidBody* rigidbody)
 }
 
 
-void Up(Snowblind::CCamera* camera)
+void Up(Snowblind::Camera* camera)
 {
 	camera->Move(Snowblind::eDirection::UP, speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
-void Down(Snowblind::CCamera* camera)
+void Down(Snowblind::Camera* camera)
 {
 	camera->Move(Snowblind::eDirection::DOWN, -speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
-void Forward(Snowblind::CCamera* camera)
+void Forward(Snowblind::Camera* camera)
 {
 	camera->Move(Snowblind::eDirection::FORWARD, speed* Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
-void Backward(Snowblind::CCamera* camera)
+void Backward(Snowblind::Camera* camera)
 {
 	camera->Move(Snowblind::eDirection::BACK, -speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
-void Right(Snowblind::CCamera* camera)
+void Right(Snowblind::Camera* camera)
 {
 	camera->Move(Snowblind::eDirection::RIGHT, speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }
 
-void Left(Snowblind::CCamera* camera)
+void Left(Snowblind::Camera* camera)
 {
 	camera->Move(Snowblind::eDirection::LEFT, -speed * Snowblind::Engine::GetInstance()->GetDeltaTime());
 }

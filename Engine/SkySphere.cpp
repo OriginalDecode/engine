@@ -8,7 +8,7 @@
 
 namespace Snowblind
 {
-	bool CSkySphere::Initiate(const std::string& model_filepath, const std::string& skysphere_shader, CCamera* camera)
+	bool SkySphere::Initiate(const std::string& model_filepath, const std::string& skysphere_shader, Camera* camera)
 	{
 		myCamera = camera;
 		if (!myCamera)
@@ -33,7 +33,7 @@ namespace Snowblind
 		return true;
 	}
 
-	bool CSkySphere::AddLayer(const std::string& layer_filepath, const std::string& layer_shader)
+	bool SkySphere::AddLayer(const std::string& layer_filepath, const std::string& layer_shader)
 	{
 		Engine::GetInstance()->LoadModel(layer_filepath, layer_shader);
 
@@ -53,7 +53,7 @@ namespace Snowblind
 		return true;
 	}
 
-	bool CSkySphere::CleanUp()
+	bool SkySphere::CleanUp()
 	{
 		m_Layers.RemoveAll();
 		
@@ -63,7 +63,7 @@ namespace Snowblind
 		return true;
 	}
 
-	void CSkySphere::Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture)
+	void SkySphere::Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture)
 	{
 		SetPosition(anOrientation.GetPosition());
 
@@ -86,7 +86,7 @@ namespace Snowblind
 		}
 	}
 
-	void CSkySphere::SetPosition(const CU::Vector3f& aPosition)
+	void SkySphere::SetPosition(const CU::Vector3f& aPosition)
 	{
 		for (const SkysphereLayer& layer : m_Layers)
 		{
@@ -94,7 +94,7 @@ namespace Snowblind
 		}
 	}
 
-	void CSkySphere::Update(float dt)
+	void SkySphere::Update(float dt)
 	{
 		for (const SkysphereLayer& layer : m_Layers)
 		{

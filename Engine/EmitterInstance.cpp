@@ -18,7 +18,7 @@ namespace Snowblind
 		SAFE_DELETE(myConstantStruct);
 	}
 
-	void CEmitterInstance::Initiate(CSynchronizer* aSynchronizer)
+	void CEmitterInstance::Initiate(Synchronizer* aSynchronizer)
 	{
 		myEngine = Engine::GetInstance();
 		mySynchronizer = aSynchronizer;
@@ -76,9 +76,9 @@ namespace Snowblind
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		context->IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 
-		Engine::GetAPI()->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->vertexShader : nullptr);
-		Engine::GetAPI()->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->geometryShader : nullptr);
-		Engine::GetAPI()->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->pixelShader : nullptr);
+		Engine::GetAPI()->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->m_Shader : nullptr);
+		//Engine::GetAPI()->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->m_Shader : nullptr);
+		Engine::GetAPI()->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->m_Shader : nullptr);
 
 
 		ID3D11ShaderResourceView* srv[2];

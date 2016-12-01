@@ -5,9 +5,9 @@
 
 namespace Snowblind
 {
-	class CCamera;
+	class Camera;
 	class Engine;
-	class CSynchronizer;
+	class Synchronizer;
 };
 
 namespace std
@@ -15,7 +15,7 @@ namespace std
 	class thread;
 };
 
-class CGame;
+class Game;
 
 class CApplication
 {
@@ -43,17 +43,17 @@ private:
 
 	/* General */
 	Snowblind::Engine* myEngine;
-	Snowblind::CSynchronizer* mySynchronizer;
+	Snowblind::Synchronizer* mySynchronizer;
 
 	/* Should be moved to some kind of InputComponent */
-	Snowblind::CCamera* myCamera;
+	Snowblind::Camera* myCamera;
 
 	CU::Quaternion myPitch;
 	CU::Quaternion myYaw;
 	CU::Matrix44f myOrientation;
 	float moveSpeed = 15.f;
 
-	CGame* myGame;
+	Game* myGame;
 
 };
 

@@ -51,7 +51,7 @@ namespace Snowblind
 	}
 #endif
 
-	bool Engine::InitiateDebugSystem(CSynchronizer* synchronizer, InputHandle* input_handle)
+	bool Engine::InitiateDebugSystem(Synchronizer* synchronizer, InputHandle* input_handle)
 	{
 		m_DebugSystem.Initiate(synchronizer, input_handle);
 		return true;
@@ -99,7 +99,7 @@ namespace Snowblind
 		myFontManager = new CFontManager;
 		myFontManager->Initiate();
 	
-		mySynchronizer = new CSynchronizer;
+		mySynchronizer = new Synchronizer;
 		DL_ASSERT_EXP(mySynchronizer->Initiate(), "Engine : Failed to Initiate Synchronizer!");
 	
 		m_DebugSystem.AddDebugMenuItem("Toggle VSync", [&]() 
@@ -107,9 +107,9 @@ namespace Snowblind
 			ToggleVsync();
 		});
 
-		myCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight);
-		my2DCamera = new Snowblind::CCamera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
-		myRenderer = new CRenderer;
+		myCamera = new Snowblind::Camera(myWindowSize.myWidth, myWindowSize.myHeight);
+		my2DCamera = new Snowblind::Camera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
+		myRenderer = new Renderer;
 		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
 	
 		myTimeManager = new CU::TimeManager;
@@ -149,12 +149,12 @@ namespace Snowblind
 		return true;
 	}
 
-	CCamera* Engine::GetCamera()
+	Camera* Engine::GetCamera()
 	{
 		return myCamera;
 	}
 
-	Snowblind::CCamera* Engine::Get2DCamera()
+	Snowblind::Camera* Engine::Get2DCamera()
 	{
 		return my2DCamera;
 	}
@@ -189,6 +189,78 @@ namespace Snowblind
 			&out_compile_message);
 
 		GetAPI()->HandleErrors(hr, "Failed to compile shader!");
+	}
+
+
+	static constexpr vertex_shader = "VS";
+	static constexpr pixel_shader = "PS";
+	static constexpr geometry_shader = "GS";
+	static constexpr hull_shader = "HS";
+	static constexpr domain_shader = "DS";
+	static constexpr compute_shader = "CS";
+
+
+	void* Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name)
+	{
+
+		IDevice* device = myAPI->GetDevice();
+		if (shader_type.find(vertex_shader))
+		{
+			IVertexShader* shader = nullptr;
+			HRESULT hr = device->CreateVertexShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
+			GetAPI()->HandleErrors(hr, "Failed to create Vertex Shader!");
+			GetAPI()->SetDebugName(shader, debug_name);
+			void* to_return = shader;
+			return to_return;
+		}
+		else if (shader_type.find(vertex_shader))
+		{
+			IPixelShader* shader = nullptr;
+			HRESULT hr = device->CreatePixelShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
+			GetAPI()->HandleErrors(hr, "Failed to create Pixel Shader!");
+			GetAPI()->SetDebugName(shader, debug_name);
+			void* to_return = shader;
+			return to_return;
+		}
+		else if (shader_type.find(vertex_shader))
+		{
+			IGeometryShader* shader = nullptr;
+			HRESULT hr = device->CreateGeometryShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
+			GetAPI()->HandleErrors(hr, "Failed to create Geometry Shader!");
+			GetAPI()->SetDebugName(shader, debug_name);
+			void* to_return = shader;
+			return to_return;
+		}
+		else if (shader_type.find(vertex_shader))
+		{
+			IHullShader* shader = nullptr;
+			HRESULT hr = device->CreateHullShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
+			GetAPI()->HandleErrors(hr, "Failed to create Hull Shader!");
+			GetAPI()->SetDebugName(shader, debug_name);
+			void* to_return = shader;
+			return to_return;
+		}
+		else if (shader_type.find(vertex_shader))
+		{
+			IDomainShader* shader = nullptr;
+			HRESULT hr = device->CreateDomainShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
+			GetAPI()->HandleErrors(hr, "Failed to create Domain Shader!");
+			GetAPI()->SetDebugName(shader, debug_name);
+			void* to_return = shader;
+			return to_return;
+		}
+		else if (shader_type.find(vertex_shader))
+		{
+			IComputeShader* shader = nullptr;
+			HRESULT hr = device->CreateComputeShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
+			GetAPI()->HandleErrors(hr, "Failed to create Compute Shader!");
+			GetAPI()->SetDebugName(shader, debug_name);
+			void* to_return = shader;
+			return to_return;
+		}
+		TRACE_LOG("FAILED TO CREATE ANY SHADER! TYPE NOT FOUND!");
+		DL_ASSERT("FAILED TO CREATE ANY SHADER! TYPE NOT FOUND!");
+		return nullptr;
 	}
 
 	void Engine::Present()
@@ -338,7 +410,7 @@ namespace Snowblind
 			m_Window.OnActive();
 	}
 
-	CSynchronizer* Engine::GetSynchronizer()
+	Synchronizer* Engine::GetSynchronizer()
 	{
 		return mySynchronizer;
 	}

@@ -6,7 +6,7 @@
 #define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
 namespace Snowblind
 {
-	bool CDeferredRenderer::Initiate(Texture* shadow_texture)
+	bool DeferredRenderer::Initiate(Texture* shadow_texture)
 	{
 #ifdef SNOWBLIND_DX11
 		m_API = Engine::GetAPI();
@@ -48,7 +48,7 @@ namespace Snowblind
 		return true;
 	}
 
-	bool CDeferredRenderer::CleanUp()
+	bool DeferredRenderer::CleanUp()
 	{
 #ifdef SNOWBLIND_DX11
 		myFinishedSceneTexture->CleanUp();
@@ -72,7 +72,7 @@ namespace Snowblind
 		return true;
 	}
 
-	void CDeferredRenderer::SetTargets()
+	void DeferredRenderer::SetTargets()
 	{
 #ifdef SNOWBLIND_DX11
 		myGBuffer->Clear(myClearColor);
@@ -81,7 +81,7 @@ namespace Snowblind
 #endif
 	}
 
-	void CDeferredRenderer::SetBuffers()
+	void DeferredRenderer::SetBuffers()
 	{
 #ifdef SNOWBLIND_DX11
 		myContext->IASetInputLayout(myInputLayout);
@@ -100,7 +100,7 @@ namespace Snowblind
 #endif
 	}
 
-	void CDeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_matrix)
+	void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_matrix)
 	{
 		//CTexture::CopyData(myGBuffer->myDepth->GetDepthTexture(), myDepthStencil->GetDepthTexture());
 
@@ -133,7 +133,7 @@ namespace Snowblind
 #endif
 	}
 
-	void CDeferredRenderer::Finalize()
+	void DeferredRenderer::Finalize()
 	{
 #ifdef SNOWBLIND_DX11
 		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
@@ -142,8 +142,8 @@ namespace Snowblind
 
 		SetBuffers();
 
-		m_API->SetVertexShader(myScreenPassShader->GetVertexShader()->vertexShader);
-		m_API->SetPixelShader(myScreenPassShader->GetPixelShader()->pixelShader);
+		m_API->SetVertexShader(myScreenPassShader->GetVertexShader()->m_Shader);
+		m_API->SetPixelShader(myScreenPassShader->GetPixelShader()->m_Shader);
 
 		ID3D11ShaderResourceView* srv[2];
 		srv[0] = myFinishedSceneTexture->GetShaderView();
@@ -160,7 +160,7 @@ namespace Snowblind
 #endif
 	}
 
-	void CDeferredRenderer::InitConstantBuffer()
+	void DeferredRenderer::InitConstantBuffer()
 	{
 #ifdef SNOWBLIND_DX11
 		myConstantStruct = new SConstantStruct;
@@ -180,7 +180,7 @@ namespace Snowblind
 #endif
 	}
 
-	void CDeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_matrix)
+	void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_matrix)
 	{
 #ifdef SNOWBLIND_DX11
 		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
@@ -201,12 +201,12 @@ namespace Snowblind
 #endif
 	}
 
-	GBuffer* CDeferredRenderer::GetGBuffer()
+	GBuffer* DeferredRenderer::GetGBuffer()
 	{
 		return myGBuffer;
 	}
 
-	void CDeferredRenderer::CreateFullscreenQuad()
+	void DeferredRenderer::CreateFullscreenQuad()
 	{
 
 #ifdef SNOWBLIND_DX11
@@ -265,7 +265,7 @@ namespace Snowblind
 #endif
 	}
 
-	void CDeferredRenderer::CreateVertexBuffer()
+	void DeferredRenderer::CreateVertexBuffer()
 	{
 #ifdef SNOWBLIND_DX11
 		void* shader = myScreenPassShader->GetVertexShader()->compiledShader;
@@ -295,7 +295,7 @@ namespace Snowblind
 #endif
 	}
 
-	void CDeferredRenderer::CreateIndexBuffer()
+	void DeferredRenderer::CreateIndexBuffer()
 	{
 #ifdef SNOWBLIND_DX11
 		D3D11_BUFFER_DESC indexDesc;

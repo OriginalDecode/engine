@@ -5,17 +5,17 @@
 
 namespace Snowblind
 {
-	CSprite::CSprite()
+	Sprite::Sprite()
 	{
 	}
 
-	CSprite::~CSprite()
+	Sprite::~Sprite()
 	{
 		delete mySprite;
 		mySprite = nullptr;
 	}
 
-	void CSprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+	void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 	{
 		mySprite = new CSpriteModel();
 		mySprite->Initiate(aTexturePath, aSize, aPosition);
@@ -24,13 +24,13 @@ namespace Snowblind
 
 	}
 
-	void CSprite::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+	void Sprite::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 	{
 		mySprite = new CSpriteModel();
 		mySprite->Initiate(aShaderResource, aSize, aPosition);
 	}
 
-	void CSprite::Render(CCamera* aCamera)
+	void Sprite::Render(Camera* aCamera)
 	{
 		//mySprite->GetEffect()->SetScale({ 1, 1 });
 		//mySprite->GetEffect()->SetPosition(myPosition);
@@ -38,17 +38,17 @@ namespace Snowblind
 		mySprite->Render(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
 	}
 
-	const CU::Math::Vector2<float>& CSprite::GetPosition()
+	const CU::Math::Vector2<float>& Sprite::GetPosition()
 	{
 		return mySprite->GetPosition();
 	}
 
-	CU::Math::Vector2<float> CSprite::GetSize()
+	CU::Math::Vector2<float> Sprite::GetSize()
 	{
 		return mySprite->GetSize();
 	}
 
-	void CSprite::SetPosition(const CU::Math::Vector2<float>& aPosition)
+	void Sprite::SetPosition(const CU::Math::Vector2<float>& aPosition)
 	{
 		CU::Math::Vector2<float> pos = aPosition;
 		pos.x = pos.x + myHotspot.x;
@@ -70,25 +70,25 @@ namespace Snowblind
 		myOrientation.SetPosition(CU::Vector3f(myPosition));
 	}
 
-	void CSprite::SetHotspot(const CU::Math::Vector2<float>& aHotspot)
+	void Sprite::SetHotspot(const CU::Math::Vector2<float>& aHotspot)
 	{
 		myHotspot = aHotspot;
 	}
 
-	void CSprite::SetSize(const CU::Math::Vector2<float>& aSize)
+	void Sprite::SetSize(const CU::Math::Vector2<float>& aSize)
 	{
 		aSize;
 		DL_ASSERT("Not implemented");
 		//to be implemented
 	}
 
-	void CSprite::SetScale(const CU::Math::Vector2<float>& aScale)
+	void Sprite::SetScale(const CU::Math::Vector2<float>& aScale)
 	{
 		aScale;
 		//mySprite->GetEffect()->SetScale(aScale);
 	}
 
-	void CSprite::SetShaderView(ID3D11ShaderResourceView* srv)
+	void Sprite::SetShaderView(ID3D11ShaderResourceView* srv)
 	{
 		mySprite->SetTexture(srv);
 	}

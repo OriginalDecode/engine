@@ -10,37 +10,37 @@
 
 namespace Snowblind
 {
-	class CSynchronizer;
+	class Synchronizer;
 	class CTerrain;
 	class Engine;
 	class CMousePicker;
-	class CCamera;
+	class Camera;
 };
 class JSONReader;
 class CEntityManager;
 class CPhysicsManager;
-class CRigidBody;
+class RigidBody;
 struct InputController;
 
-static void Jump(CRigidBody* rigidbody);
-static void Forward(CRigidBody* rigidbody);
-static void Backward(CRigidBody* rigidbody);
-static void Right(CRigidBody* rigidbody);
-static void Left(CRigidBody* rigidbody);
+static void Jump(RigidBody* rigidbody);
+static void Forward(RigidBody* rigidbody);
+static void Backward(RigidBody* rigidbody);
+static void Right(RigidBody* rigidbody);
+static void Left(RigidBody* rigidbody);
 
-static void Up(Snowblind::CCamera* camera);
-static void Forward(Snowblind::CCamera* camera);
-static void Backward(Snowblind::CCamera* camera);
-static void Right(Snowblind::CCamera* camera);
-static void Left(Snowblind::CCamera* camera);
-static void Down(Snowblind::CCamera* camera);
+static void Up(Snowblind::Camera* camera);
+static void Forward(Snowblind::Camera* camera);
+static void Backward(Snowblind::Camera* camera);
+static void Right(Snowblind::Camera* camera);
+static void Left(Snowblind::Camera* camera);
+static void Down(Snowblind::Camera* camera);
 
 
-class CGame
+class Game
 {
 public:
-	CGame() = default;
-	bool Initiate(Snowblind::CSynchronizer* synchronizer);
+	Game() = default;
+	bool Initiate(Snowblind::Synchronizer* synchronizer);
 	bool CleanUp();
 
 	void Update(float aDeltaTime);
@@ -62,9 +62,9 @@ private:
 
 	CU::GrowingArray<cl::AABB> m_AABBs;
 	CU::GrowingArray<Snowblind::CTerrain*> myTerrain;
-	CU::GrowingArray<CRigidBody*> myTerrainBodies;
+	CU::GrowingArray<RigidBody*> myTerrainBodies;
 
-	Snowblind::CSynchronizer* mySynchronizer = nullptr;
+	Snowblind::Synchronizer* mySynchronizer = nullptr;
 	Snowblind::Engine* myEngine = nullptr;
 	Snowblind::CMousePicker* myPicker = nullptr;
 
@@ -79,7 +79,7 @@ private:
 	u32 selected_entity;
 
 
-	CRigidBody* rigidbody = nullptr;
+	RigidBody* rigidbody = nullptr;
 	SLinePoint raycast[2];
 };
 

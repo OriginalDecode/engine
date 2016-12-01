@@ -477,19 +477,18 @@ namespace Snowblind
 		myContext->PSSetSamplers(0, 1, &mySamplerStates[u16(samplerState)]);
 	}
 
-	void DirectX11::SetVertexShader(ID3D11VertexShader* aVertexShader)
+	void DirectX11::SetVertexShader(void* vertex_shader)
 	{
-		DL_ASSERT_EXP(aVertexShader != nullptr, "pixelshader was null!");
-		myContext->VSSetShader(aVertexShader, nullptr, 0);
+		DL_ASSERT_EXP(vertex_shader != nullptr, "vertexshader was null!");
+		myContext->VSSetShader(static_cast<IVertexShader*>(vertex_shader), nullptr, 0);
 	}
 
-	void DirectX11::SetPixelShader(ID3D11PixelShader* aPixelShader)
+	void DirectX11::SetPixelShader(void* pixel_shader)
 	{
-		if (aPixelShader == nullptr)
+		if (pixel_shader == nullptr)
 			return;
-		//DL_ASSERT_EXP(aPixelShader != nullptr, "pixelshader was null.");
-		//Check current Pixel Shader, if current == aPixelShader return
-		myContext->PSSetShader(aPixelShader, nullptr, 0);
+
+		myContext->PSSetShader(static_cast<IPixelShader*>(pixel_shader), nullptr, 0);
 	}
 
 	void DirectX11::SetGeometryShader(ID3D11GeometryShader* aGeometryShader)

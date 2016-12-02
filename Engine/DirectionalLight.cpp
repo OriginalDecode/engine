@@ -3,16 +3,8 @@
 
 namespace Snowblind
 {
-	CDirectionalLight::CDirectionalLight()
-	{
-	}
-
-
-	CDirectionalLight::~CDirectionalLight()
-	{
-	}
-
-	void CDirectionalLight::Initiate(const CU::Vector3f& aDirection, const CU::Vector3f& aPosition, const CU::Vector4f& aColor)
+	
+	void DirectionalLight::Initiate(const CU::Vector3f& aDirection, const CU::Vector3f& aPosition, const CU::Vector4f& aColor)
 	{
 		myColor = aColor;
 		myOriginalDirection = aDirection;
@@ -20,23 +12,23 @@ namespace Snowblind
 		myOrientation.SetPosition(aPosition);
 	}
 
-	void CDirectionalLight::SetColor(const CU::Vector4f& aColor)
+	void DirectionalLight::SetColor(const CU::Vector4f& aColor)
 	{
 		myColor = aColor;
 	}
 
-	void CDirectionalLight::SetDirection(const CU::Vector3f& aDirection)
+	void DirectionalLight::SetDirection(const CU::Vector3f& aDirection)
 	{
 		myDirection = aDirection;
 		myOriginalDirection = myDirection;
 	}
 
-	void CDirectionalLight::Update()
+	void DirectionalLight::Update()
 	{
 		myDirection = myOriginalDirection * myOrientation;
 	}
 
-	void CDirectionalLight::Rotate(const eLightAxis& anAxis, float aRotationOverTime)
+	void DirectionalLight::Rotate(const eLightAxis& anAxis, float aRotationOverTime)
 	{
 		switch (anAxis)
 		{

@@ -10,45 +10,45 @@ namespace CommonUtilities
 		template<typename T>
 		Vector4<T>::Vector4(const T& anX, const T& anY, const T& anZ, const T& anW)
 		{
-			myX = anX;
-			myY = anY;
-			myZ = anZ;
-			myW = anW;
+			x = anX;
+			y = anY;
+			z = anZ;
+			w = anW;
 		};
 
 		template<typename T>
 		Vector4<T>::Vector4(const Vector3<T>& aVector, T anW)
 		{
-			myX = aVector.x;
-			myY = aVector.y;
-			myZ = aVector.z;
-			myW = anW;
+			x = aVector.x;
+			y = aVector.y;
+			z = aVector.z;
+			w = anW;
 		}
 
 		template<typename T>
 		Vector4<T>::Vector4(const Vector2<T>& aVector, T anZ, T anW)
 		{
-			myX = aVector.x;
-			myY = aVector.y;
-			myZ = anZ;
-			myW = anW;
+			x = aVector.x;
+			y = aVector.y;
+			z = anZ;
+			w = anW;
 		}
 
 		template<typename T>
 		Vector4<T>::Vector4(T anX, T anY, const Vector2<T>& aVector)
 		{
-			myX = anX;
-			myY = anY;
-			myZ = aVector.X;
-			myW = aVector.Y;
+			x = anX;
+			y = anY;
+			z = aVector.X;
+			w = aVector.Y;
 		}
 		template<typename T> 
 		Vector4<T>::Vector4(const Vector2<T>& aVector, const Vector2<T>& aSecondVector)
 		{
-			myX = aVector.x;
-			myY = aVector.y;
-			myZ = aSecondVector.x;
-			myW = aSecondVector.y;
+			x = aVector.x;
+			y = aVector.y;
+			z = aSecondVector.x;
+			w = aSecondVector.y;
 		}
 
 

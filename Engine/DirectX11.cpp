@@ -47,10 +47,12 @@ namespace Snowblind
 		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::READ_NO_WRITE)]);
 		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::MASK_TEST)]);
 		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::DEPTH_TEST)]);
 
 		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::WIREFRAME)]);
 		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
 		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
+		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_FRONT)]);
 		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::MSAA)]);
 
 

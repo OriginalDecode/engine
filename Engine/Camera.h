@@ -57,8 +57,8 @@ namespace Snowblind
 		void DecreaseLookModifier() { m_LookSpeedModifier -= 0.0001f; }
 
 
-
-
+		void ToggleFreefly() { m_Controller = !m_Controller; }
+		bool GetCanFreeFly() { return m_Controller; }
 	private:
 		float m_LookSpeedModifier = 0.005f;
 		void operator=(Camera&) = delete;
@@ -76,6 +76,9 @@ namespace Snowblind
 		CU::Vector2f m_CenterPoint;
 		CU::Quaternion myPitch;
 		CU::Quaternion myYaw;
+
+		// false = physics, true = freefly
+		bool m_Controller = false;
 
 	};
 

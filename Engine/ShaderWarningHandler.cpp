@@ -1,17 +1,9 @@
 #include "stdafx.h"
 #include "ShaderWarningHandler.h"
+
 #include <string>
 #include <fstream>
 #include <algorithm>
-
-ShaderWarningHandler::ShaderWarningHandler()
-{
-}
-
-
-ShaderWarningHandler::~ShaderWarningHandler()
-{
-}
 
 std::string ShaderWarningHandler::CheckWarning(const std::string& aWarningMessage, const std::string& aFilePath)
 {

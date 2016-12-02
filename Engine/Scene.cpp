@@ -82,7 +82,7 @@ namespace Snowblind
 		myText.Add(aText);
 	}
 
-	void CScene::AddLight(CDirectionalLight* aDirectionalLight)
+	void CScene::AddLight(DirectionalLight* aDirectionalLight)
 	{
 #ifdef _DEBUG
 		//myInstances->Add(aDirectionalLight->GetInstance());
@@ -99,7 +99,7 @@ namespace Snowblind
 	{
 		for (int i = 0; i < myDirectionalLights.Size(); i++)
 		{
-			CDirectionalLight* dirLight = myDirectionalLights[i];
+			DirectionalLight* dirLight = myDirectionalLights[i];
 
 			myDirectionalLightData[i].myLightColor = dirLight->GetColor();
 			myDirectionalLightData[i].myLightDirection = dirLight->GetDirection();
@@ -120,7 +120,7 @@ namespace Snowblind
 	{
 		for (int i = 0; i < myDirectionalLights.Size(); i++)
 		{
-			CDirectionalLight* dirLight = myDirectionalLights[i];
+			DirectionalLight* dirLight = myDirectionalLights[i];
 			dirLight->Rotate(eLightAxis::ZAxis, CL::DegreeToRad(45.f) * aDeltaTime);
 			dirLight->Update();
 		}

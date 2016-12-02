@@ -55,6 +55,8 @@ public:
 	void UpdateOrientation(const ControllerState& controller_state);
 	float GetMass() { return myMass; }
 	float GetGravity() { return myGravity; }
+	bool IsEnabled() { return m_IsEnabled; }
+	void ToggleBody() { m_IsEnabled = !m_IsEnabled; }
 private:
 	CU::Vector3f myVelocity; //Only downwards right now.
 	CU::Vector3f myTerminalVelocity;
@@ -67,6 +69,8 @@ private:
 	float myResistanceDensity = 0.f;
 	float myRadius = 0.f;
 	
+	bool m_IsEnabled = true;
+
 	CU::Quaternion m_Yaw;
 	CU::Quaternion m_Pitch;
 	CU::Vector2f m_CenterPoint;

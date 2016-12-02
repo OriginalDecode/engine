@@ -227,10 +227,10 @@ namespace CommonUtilities
 		template<typename TYPE>
 		void Matrix44<TYPE>::SetTranslation(const Vector4<TYPE>& aVector)
 		{
-			myMatrix[12] = aVector.X;
-			myMatrix[13] = aVector.Y;
-			myMatrix[14] = aVector.Z;
-			myMatrix[15] = aVector.W;
+			myMatrix[12] = aVector.x;
+			myMatrix[13] = aVector.y;
+			myMatrix[14] = aVector.z;
+			myMatrix[15] = aVector.w;
 		}
 
 		template<typename TYPE>

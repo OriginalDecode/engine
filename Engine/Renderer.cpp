@@ -149,8 +149,9 @@ namespace Snowblind
 
 		myEngine->ResetRenderTargetAndDepth();
 		mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
-		mySkysphere->Render(myPrevFrame, myDepthTexture);
+
 		myDeferredRenderer->Finalize();
+		mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		//RenderParticles();
 		RenderLines();
@@ -162,19 +163,6 @@ namespace Snowblind
 		mySynchronizer->SwapBuffer();
 		mySynchronizer->RenderIsDone();
 		myPrevFrame = myCamera->GetOrientation();
-
-
-		//Debug stuff
-		/*mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, myDeferredRenderer->GetGBuffer()->myAlbedo->GetShaderView(), CU::Vector2f(1920.f - 128.f, 128.f)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, myDeferredRenderer->GetGBuffer()->myNormal->GetShaderView(), CU::Vector2f(1920.f - 128.f, 384.f)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, myDeferredRenderer->GetGBuffer()->myDepth->GetShaderView(), CU::Vector2f(1920.f - 128.f, 640.f)));*/
-
-		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetRenderTarget()->GetShaderView(), CU::Vector2f(1920.f - 128.f, 128.f)));
-		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Normal->GetShaderView(), CU::Vector2f(1920.f - 128.f, 384.f)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthTexture()->GetShaderView(), CU::Vector2f(1920.f - 128.f, 128.f)));
-
-		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->m_Texture->GetDepthStencilView(), CU::Vector2f(1920.f - 384.f, 896.f)));
-
 	}
 
 	void Renderer::AddTerrain(CTerrain* someTerrain)
@@ -271,7 +259,7 @@ namespace Snowblind
 
 			mySpotlight->SetPosition(command.myPosition);
 			mySpotlight->SetRange(command.myRange);
-			mySpotlight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, 1));
+			mySpotlight->SetColor(CU::Vector4f(command.myColor.x, command.myColor.y, command.myColor.z, 1));
 			mySpotlight->SetAngle(command.myAngle);
 
 			mySpotlight->DoTranslation(command.m_Orientation);
@@ -298,7 +286,7 @@ namespace Snowblind
 			m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
 			myPointLight->SetPosition(command.myPosition);
 			myPointLight->SetRange(command.myRange);
-			myPointLight->SetColor(CU::Vector4f(command.myColor.r, command.myColor.g, command.myColor.b, 1));
+			myPointLight->SetColor(CU::Vector4f(command.myColor.x, command.myColor.y, command.myColor.z, 1));
 			myPointLight->Update();
 			m_LightPass.RenderPointlight(myPointLight, myCamera, myPrevFrame);
 		}

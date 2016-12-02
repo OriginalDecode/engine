@@ -15,7 +15,7 @@ namespace Snowblind
 
 	class Camera;
 	class DeferredRenderer;
-	class CDirectionalLight;
+	class DirectionalLight;
 	class CEmitterInstance;
 	class CModel;
 	class CPointLight;
@@ -71,7 +71,7 @@ namespace Snowblind
 		
 		DeferredRenderer*	myDeferredRenderer	= nullptr;
 
-		CDirectionalLight*	myDirectionalLight	= nullptr;
+		DirectionalLight*	myDirectionalLight	= nullptr;
 		CPointLight*		myPointLight		= nullptr;
 		CSpotLight*			mySpotlight			= nullptr;
 		ShadowSpotlight*	m_Shadowlight		= nullptr;
@@ -80,8 +80,8 @@ namespace Snowblind
 		CText*				myText				= nullptr;
 		Texture*			myDepthTexture		= nullptr;
 		SkySphere*			mySkysphere			= nullptr;
-		Sprite*			mySprite			= nullptr;
-		Sprite*			myClearColor = nullptr;
+		Sprite*				mySprite			= nullptr;
+		Sprite*				myClearColor		= nullptr;
 
 		CLine3D*			my3DLine			= nullptr;
 

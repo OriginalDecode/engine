@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 #include <unordered_map>
 
 class CModelImporter;
@@ -10,6 +11,7 @@ namespace Snowblind
 	class Effect;
 	class Texture;
 	class Sprite;
+	struct CompiledShader;
 };
 
 namespace Cache

@@ -9,10 +9,10 @@ namespace cl
 		m_Orientation = orientation;
 		m_WidthHeightDepth = width_height_depth + 0.1f;
 
-		m_ColorValue.r = 1;//RANDOM(0.f, 1.f);
-		m_ColorValue.g = 1;//RANDOM(0.f, 1.f);
-		m_ColorValue.b = 1;//RANDOM(0.f, 1.f);
-		m_ColorValue.a = 1;
+		m_ColorValue.x = 1;//RANDOM(0.f, 1.f);
+		m_ColorValue.y = 1;//RANDOM(0.f, 1.f);
+		m_ColorValue.z = 1;//RANDOM(0.f, 1.f);
+		m_ColorValue.w = 1;
 
 		m_IntersectedColor = CU::Vector4f(1.f, 0.f, 0.f, 1.f);
 		return true;

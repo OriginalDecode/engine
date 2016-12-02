@@ -16,38 +16,10 @@ namespace CommonUtilities
 			Vector4(const Vector2<T>& aVector, const Vector2<T>& aSecondVector);
 			Vector4(const Vector3<T>& aVector, T anW = 0);
 			~Vector4();
-			union
-			{
-				T X;
-				T x;
-				T myX;
-				T r;
-				T myR;
-			};
-			union
-			{
-				T Y;
-				T y;
-				T myY;
-				T g;
-				T myG;
-			};
-			union
-			{
-				T Z;
-				T z;
-				T myZ;
-				T b;
-				T myB;
-			};
-			union
-			{
-				T W;
-				T w;
-				T myW;
-				T a;
-				T myA;
-			};
+			T x;
+			T y;
+			T z;
+			T w;
 		};
 	};
 }

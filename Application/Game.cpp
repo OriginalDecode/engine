@@ -135,7 +135,7 @@ void Game::Update(float aDeltaTime)
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", pointHit));
 
 	myEntityManager->Update(aDeltaTime);
-	
+
 }
 
 bool Game::CreateLevel(const char* level_path)
@@ -200,9 +200,9 @@ bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONE
 		{
 			l.myType = eLightType::ePOINTLIGHT;
 			level_reader._ReadElement(it->value["color"], l.color);
-			l.color.r /= 255.f;
-			l.color.g /= 255.f;
-			l.color.b /= 255.f;
+			l.color.x /= 255.f;
+			l.color.y /= 255.f;
+			l.color.z /= 255.f;
 			level_reader.ReadElement(it->value["intensity"], l.intensity);
 			level_reader.ReadElement(it->value["range"], l.range);
 		}
@@ -210,9 +210,9 @@ bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONE
 		{
 			l.myType = eLightType::eSPOTLIGHT;
 			level_reader._ReadElement(it->value["color"], l.color);
-			l.color.r /= 255.f;
-			l.color.g /= 255.f;
-			l.color.b /= 255.f;
+			l.color.x /= 255.f;
+			l.color.y /= 255.f;
+			l.color.z /= 255.f;
 
 			level_reader._ReadElement(it->value["direction"], l.direction);
 
@@ -256,12 +256,14 @@ bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONE
 			p.myBody = myPhysicsManager->CreateBody();
 			myPhysicsManager->Add(p.myBody->InitAsSphere(1.f, mass, myPhysicsManager->GetGravityForce(), 1.293f, pos));
 
-			myEntityManager->AddComponent<AABBComponent>(e);
-			AABBComponent& aabb = myEntityManager->GetComponent<AABBComponent>(e);
-			aabb.m_Body = myPhysicsManager->CreateBody();
-			CU::Vector3f whd = Snowblind::Engine::GetInstance()->GetModel(model_key)->GetWHD();
-			myPhysicsManager->Add(aabb.m_Body->InitAsBox(whd.x, whd.y, whd.z, pos));
-
+			if (!model_key.empty())
+			{
+				myEntityManager->AddComponent<AABBComponent>(e);
+				AABBComponent& aabb = myEntityManager->GetComponent<AABBComponent>(e);
+				aabb.m_Body = myPhysicsManager->CreateBody();
+				CU::Vector3f whd = Snowblind::Engine::GetInstance()->GetModel(model_key)->GetWHD();
+				myPhysicsManager->Add(aabb.m_Body->InitAsBox(whd.x, whd.y, whd.z, pos));
+			}
 
 		}
 	}
@@ -280,14 +282,16 @@ bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONE
 
 		if (controller_type == "input")
 		{
-			//PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
-			//rigidbody = p.myBody;
+			PhysicsComponent& p = myEntityManager->GetComponent<PhysicsComponent>(e);
+			rigidbody = p.myBody;
+			p.m_IsPlayer = true;
 			myEntityManager->AddComponent<InputController>(e);
 			InputController& input = myEntityManager->GetComponent<InputController>(e);
 			input.m_ID = m_LocalPlayerCount++;
 
 			input.m_InputHandle = new InputHandle;
 			input.m_InputHandle->Initiate(input.m_ID);
+
 
 			Snowblind::Engine::GetInstance()->InitiateDebugSystem(mySynchronizer, input.m_InputHandle);
 
@@ -301,15 +305,15 @@ bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONE
 				std::string first = read_input_config.ReadElement(el, 0);
 				std::string second = read_input_config.ReadElement(el, 1);
 
-				std::function<void()> function;
+				std::function<void()> function = [&]() {
+					if (rigidbody->IsEnabled())
+						Forward(rigidbody);
+					else
+						Forward(camera.m_Camera);
+				};
 
-				if (rigidbody)
-					function = [&]() { Forward(rigidbody); };
-				else
-					function = [&]() { Forward(camera.m_Camera); };
-
-				input.m_InputHandle->Bind(Hash(first.c_str()), function);
-				input.m_InputHandle->Bind(Hash(second.c_str()), function);
+			input.m_InputHandle->Bind(Hash(first.c_str()), function);
+			input.m_InputHandle->Bind(Hash(second.c_str()), function);
 			}
 
 			if (read_input_config.HasElement("Back"))
@@ -318,12 +322,12 @@ bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONE
 				std::string first = read_input_config.ReadElement(el, 0);
 				std::string second = read_input_config.ReadElement(el, 1);
 
-				std::function<void()> function;
-
-				if (rigidbody)
-					function = [&]() { Backward(rigidbody); };
-				else
-					function = [&]() { Backward(camera.m_Camera); };
+				std::function<void()> function = [&]() {
+					if (rigidbody->IsEnabled())
+						Backward(rigidbody);
+					else
+						Backward(camera.m_Camera);
+				};
 
 				input.m_InputHandle->Bind(Hash(first.c_str()), function);
 				input.m_InputHandle->Bind(Hash(second.c_str()), function);
@@ -335,12 +339,12 @@ bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONE
 				std::string first = read_input_config.ReadElement(el, 0);
 				std::string second = read_input_config.ReadElement(el, 1);
 
-				std::function<void()> function;
-
-				if (rigidbody)
-					function = [&]() { Left(rigidbody); };
-				else
-					function = [&]() { Left(camera.m_Camera); };
+				std::function<void()> function = [&]() {
+					if (rigidbody->IsEnabled())
+						Left(rigidbody);
+					else
+						Left(camera.m_Camera);
+				};
 
 				input.m_InputHandle->Bind(Hash(first.c_str()), function);
 				input.m_InputHandle->Bind(Hash(second.c_str()), function);
@@ -352,12 +356,12 @@ bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONE
 				std::string first = read_input_config.ReadElement(el, 0);
 				std::string second = read_input_config.ReadElement(el, 1);
 
-				std::function<void()> function;
-
-				if (rigidbody)
-					function = [&]() { Right(rigidbody); };
-				else
-					function = [&]() { Right(camera.m_Camera); };
+				std::function<void()> function = [&]() {
+					if (rigidbody->IsEnabled())
+						Right(rigidbody);
+					else
+						Right(camera.m_Camera);
+				};
 
 				input.m_InputHandle->Bind(Hash(first.c_str()), function);
 				input.m_InputHandle->Bind(Hash(second.c_str()), function);
@@ -369,39 +373,50 @@ bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONE
 				std::string first = read_input_config.ReadElement(el, 0);
 				std::string second = read_input_config.ReadElement(el, 1);
 
-				std::function<void()> function;
-
-				if (rigidbody)
-					function = [&]() { Jump(rigidbody); };
-				else
-					function = [&]() { Up(camera.m_Camera); };
+				std::function<void()> function = [&]() {
+					if (rigidbody->IsEnabled())
+						Jump(rigidbody);
+					else
+						Up(camera.m_Camera);
+				};
 
 				input.m_InputHandle->Bind(Hash(first.c_str()), function);
 				input.m_InputHandle->Bind(Hash(second.c_str()), function);
 			}
 
 			input.m_InputHandle->Bind(Hash("RThumbYP"), [&]() {
-				//p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
-				camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
+
+				if(rigidbody->IsEnabled())
+					p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+				else
+					camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
+
+
 			});
 
 			input.m_InputHandle->Bind(Hash("RThumbYN"), [&]() {
-				//p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
-				camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
+				if (rigidbody->IsEnabled())
+					p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+				else
+					camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
 			});
 
 			input.m_InputHandle->Bind(Hash("RThumbXP"), [&]() {
-				//p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
-				camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
+				if (rigidbody->IsEnabled())
+					p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+				else
+					camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
 			});
 
 			input.m_InputHandle->Bind(Hash("RThumbXN"), [&]() {
-				//p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
-				camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
+				if (rigidbody->IsEnabled())
+					p.myBody->UpdateOrientation(input.m_InputHandle->GetController().GetState());
+				else
+					camera.m_Camera->Update(input.m_InputHandle->GetController().GetState());
 			});
 
 			input.m_InputHandle->Bind(Hash("YButton"), [&]() {
-				Snowblind::Engine::GetInstance()->ToggleWireframe(); 
+				Snowblind::Engine::GetInstance()->ToggleWireframe();
 			});
 
 			input.m_InputHandle->Bind(Hash("LMouseButton"), [&]() {
@@ -415,7 +430,7 @@ bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONE
 			input.m_InputHandle->Bind(s_NumpadMinus_hash, [&]() {
 				speed -= 0.1f;
 			});
-			
+
 			input.m_InputHandle->Bind(s_RBumper_hash, [&]() {
 				camera.m_Camera->IncreaseLookModifier();
 			});
@@ -425,12 +440,17 @@ bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONE
 			});
 
 			input.m_InputHandle->Bind(s_MoveMouse_hash, [&]() {
-				if(!m_DisableMouseCameraMovement)
+				if (!m_DisableMouseCameraMovement)
 					camera.m_Camera->Update(input.m_InputHandle->GetDX(), input.m_InputHandle->GetDY());
 			});
 
 			input.m_InputHandle->Bind(s_TabKey_hash, [&]() {
 				m_DisableMouseCameraMovement = !m_DisableMouseCameraMovement;
+			});
+
+			input.m_InputHandle->Bind(s_F9Key_hash, [&]() {
+				rigidbody->ToggleBody();
+				camera.m_Camera->ToggleFreefly();
 			});
 
 		}

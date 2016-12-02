@@ -1,11 +1,10 @@
 #pragma once
-#include <DataStructures/GrowingArray.h>
 #include <tuple>
+#include <DataStructures/GrowingArray.h>
 class ShaderWarningHandler
 {
 public:
-	ShaderWarningHandler();
-	~ShaderWarningHandler();
+	ShaderWarningHandler() = default;
 	std::string CheckWarning(const std::string& aWarningMessage, const std::string& aFilePath);
 
 private:

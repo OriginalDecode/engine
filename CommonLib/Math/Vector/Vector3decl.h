@@ -13,21 +13,9 @@ namespace CommonUtilities
 			Vector3(T anX = 0, T anY = 0, T anZ = 0);
 			Vector3(const Vector2<T>& aVector, T aZ = 0);
 			~Vector3();
-			union
-			{
-				T x;
-				T r;
-			};
-			union
-			{
-				T y;
-				T g;
-			};
-			union
-			{
-				T z;
-				T b;
-			};
+			T x;
+			T y;
+			T z;
 		};
 
 

@@ -2,12 +2,11 @@
 #include "LightStructs.h"
 namespace Snowblind
 {
-	class CDirectionalLight
+	class DirectionalLight
 	{
 	public:
 
-		CDirectionalLight();
-		~CDirectionalLight();
+		DirectionalLight() = default;
 
 		void Initiate(const CU::Vector3f& aDirection, const CU::Vector3f& aPosition, const CU::Vector4f& aColor);
 
@@ -29,17 +28,17 @@ namespace Snowblind
 		CU::Vector3f myOriginalDirection;
 	};
 
-	__forceinline const CU::Vector3f& CDirectionalLight::GetDirection()
+	__forceinline const CU::Vector3f& DirectionalLight::GetDirection()
 	{
 		return myDirection;
 	}
 
-	__forceinline const CU::Vector3f& CDirectionalLight::GetOriginalDirection()
+	__forceinline const CU::Vector3f& DirectionalLight::GetOriginalDirection()
 	{
 		return myOriginalDirection;
 	}
 
-	__forceinline const CU::Vector4f& CDirectionalLight::GetColor()
+	__forceinline const CU::Vector4f& DirectionalLight::GetColor()
 	{
 		return myColor;
 	}

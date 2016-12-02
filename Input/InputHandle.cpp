@@ -138,6 +138,8 @@ void InputHandle::HandleInput()
 				CallFunction(s_NumpadMinus_hash);
 			if (m_Input->KeyClick(KButton::TAB))
 				CallFunction(s_TabKey_hash);
+			if (m_Input->KeyClick(KButton::F9))
+				CallFunction(s_F9Key_hash);
 			CallFunction(s_MoveMouse_hash);
 
 		}

@@ -9,6 +9,12 @@
 #include "Terrain.h"
 #include "TerrainManager.h"
 
+static constexpr char* vertex_shader = "VS";
+static constexpr char* pixel_shader = "PS";
+static constexpr char* geometry_shader = "GS";
+static constexpr char* hull_shader = "HS";
+static constexpr char* domain_shader = "DS";
+static constexpr char* compute_shader = "CS";
 
 namespace Snowblind
 {
@@ -191,20 +197,11 @@ namespace Snowblind
 		GetAPI()->HandleErrors(hr, "Failed to compile shader!");
 	}
 
-
-	static constexpr vertex_shader = "VS";
-	static constexpr pixel_shader = "PS";
-	static constexpr geometry_shader = "GS";
-	static constexpr hull_shader = "HS";
-	static constexpr domain_shader = "DS";
-	static constexpr compute_shader = "CS";
-
-
 	void* Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name)
 	{
 
 		IDevice* device = myAPI->GetDevice();
-		if (shader_type.find(vertex_shader))
+		if (shader_type.find(vertex_shader) != shader_type.npos)
 		{
 			IVertexShader* shader = nullptr;
 			HRESULT hr = device->CreateVertexShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
@@ -213,7 +210,7 @@ namespace Snowblind
 			void* to_return = shader;
 			return to_return;
 		}
-		else if (shader_type.find(vertex_shader))
+		else if (shader_type.find(pixel_shader) != shader_type.npos)
 		{
 			IPixelShader* shader = nullptr;
 			HRESULT hr = device->CreatePixelShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
@@ -222,7 +219,7 @@ namespace Snowblind
 			void* to_return = shader;
 			return to_return;
 		}
-		else if (shader_type.find(vertex_shader))
+		else if (shader_type.find(geometry_shader) != shader_type.npos)
 		{
 			IGeometryShader* shader = nullptr;
 			HRESULT hr = device->CreateGeometryShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
@@ -231,7 +228,7 @@ namespace Snowblind
 			void* to_return = shader;
 			return to_return;
 		}
-		else if (shader_type.find(vertex_shader))
+		else if (shader_type.find(hull_shader) != shader_type.npos)
 		{
 			IHullShader* shader = nullptr;
 			HRESULT hr = device->CreateHullShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
@@ -240,7 +237,7 @@ namespace Snowblind
 			void* to_return = shader;
 			return to_return;
 		}
-		else if (shader_type.find(vertex_shader))
+		else if (shader_type.find(domain_shader) != shader_type.npos)
 		{
 			IDomainShader* shader = nullptr;
 			HRESULT hr = device->CreateDomainShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
@@ -249,7 +246,7 @@ namespace Snowblind
 			void* to_return = shader;
 			return to_return;
 		}
-		else if (shader_type.find(vertex_shader))
+		else if (shader_type.find(compute_shader) != shader_type.npos)
 		{
 			IComputeShader* shader = nullptr;
 			HRESULT hr = device->CreateComputeShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);

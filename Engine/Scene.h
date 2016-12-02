@@ -8,7 +8,7 @@ namespace Snowblind
 	class CInstance;
 	class Sprite;
 	class CText;
-	class CDirectionalLight;
+	class DirectionalLight;
 	class CPointLight;
 
 	class CScene
@@ -25,7 +25,7 @@ namespace Snowblind
 		void AddToScene(Sprite* aSprite);
 		void AddToScene(CText* aText);
 
-		void AddLight(CDirectionalLight* aDirectionalLight);
+		void AddLight(DirectionalLight* aDirectionalLight);
 		void AddLight(CPointLight* aPointLight);
 
 
@@ -39,7 +39,7 @@ namespace Snowblind
 		CU::GrowingArray<Sprite*> my2DInstances;
 		CU::GrowingArray<CText*> myText;
 
-		CU::GrowingArray<CDirectionalLight*> myDirectionalLights;
+		CU::GrowingArray<DirectionalLight*> myDirectionalLights;
 		CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE> myDirectionalLightData;
 
 		CU::GrowingArray<CPointLight*> myPointLights;

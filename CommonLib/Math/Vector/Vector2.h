@@ -9,8 +9,8 @@ namespace CommonUtilities
 		template<class TYPE>
 		Vector2<TYPE>::Vector2(TYPE anX, TYPE anY)
 		{
-			myX = anX;
-			myY = anY;
+			x = anX;
+			y = anY;
 		};
 
 		template<class TYPE>

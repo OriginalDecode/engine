@@ -335,7 +335,7 @@ u64 Hash(const char* key)
 	s32 size = (s32)strlen(key);
 	u64 result;
 	//MurmurHash3_x86_32(key, size, 0, &result);
-	MurmurHash3_x64_128(key, size, 0, &result);
+	MurmurHash3_x86_32(key, size, 0, &result);
 	return result;
 }
 

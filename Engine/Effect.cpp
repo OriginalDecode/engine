@@ -6,58 +6,31 @@ namespace Snowblind
 		: myFileName(aFilePath)
 	{
 	
-#ifdef SNOWBLIND_DX11
-		myContext = Engine::GetAPI()->GetContext();
-#endif
+		//This should be API agnostic
+		m_Context = Engine::GetAPI()->GetContext();
 	}
-
-	Effect::~Effect()
-	{
-	}
-
-	//VertexShader* Effect::GetVertexShader()
-	//{
-	//	return myVertexShader;
-	//}
-
-//	PixelShader* Effect::GetPixelShader()
-//	{
-//#ifdef SNOWBLIND_DX11
-//		if (myPixelShader != nullptr)
-//		{
-//			return myPixelShader;
-//		}
-//#endif
-//		return nullptr;
-//	}
 
 	void Effect::Activate()
 	{
-#ifdef SNOWBLIND_DX11
+		//The set vertex & pixel ... should be API agnostic.
 		Engine::GetAPI()->SetVertexShader(m_VertexShader->m_Shader);
 		Engine::GetAPI()->SetPixelShader(m_PixelShader->m_Shader);
 
 		if (myShaderResources.Size() > 0)
 		{
 			myShaderResources.Optimize();
-			Engine::GetAPI()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
+			m_Context->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
 		}
-#endif
 	}
 
 	void Effect::Deactivate()
 	{
-#ifdef SNOWBLIND_DX11
-		Engine::GetAPI()->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myNULLList[0]);
-#endif
+		m_Context->PSSetShaderResources(0, myShaderResources.Size(), &myNULLList[0]);
 	}
 
-	void Effect::AddShaderResource(ID3D11ShaderResourceView* aShaderResource)
+	void Effect::AddShaderResource(IShaderResourceView* aShaderResource)
 	{
-#ifdef SNOWBLIND_DX11
 		myShaderResources.Add(aShaderResource);
-		if (!firstOptimize)
-			myNULLList.Add(nullptr);
-#endif
+		myNULLList.Add(nullptr);
 	}
 };

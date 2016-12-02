@@ -10,24 +10,20 @@ namespace Snowblind
 		friend class ShaderFactory;
 	public: 
 		Effect(const std::string& aFilePath);
-		~Effect();
-		
 
 		CompiledShader* GetVertexShader() { return m_VertexShader; }
 		CompiledShader* GetPixelShader() { return m_PixelShader; }
-
-		/* TODO : IMPLEMENT THE FOLLOWING SHADERS */
-		CompiledShader* GetGeometryShader();
-		CompiledShader* GetHullShader();
-		CompiledShader* GetDomainShader();
-		CompiledShader* GetComputeShader();
+		CompiledShader* GetGeometryShader() { return m_GeometryShader; }
+		CompiledShader* GetHullShader() { return m_HullShader; }
+		CompiledShader* GetDomainShader() { return m_DomainShader; }
+		CompiledShader* GetComputeShader() { return m_ComputeShader; }
 
 		void Activate();
 		void Deactivate();
 		void AddShaderResource(IShaderResourceView* aShaderResource);
 	private:
 		std::string myFileName;
-		ID3D11DeviceContext* myContext;
+		IDevContext* m_Context;
 
 		CompiledShader* m_VertexShader		= nullptr;
 		CompiledShader* m_PixelShader		= nullptr;

@@ -1,4 +1,6 @@
 #pragma once
+#include "snowblind_shared.h"
+#include <Windows.h>
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;

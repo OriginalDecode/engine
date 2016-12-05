@@ -9,7 +9,7 @@
 #include "../Input/InputHandle.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Engine.h"
-InputSystem::InputSystem(CEntityManager& anEntityManager)
+InputSystem::InputSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<CameraComponent, InputController>>())
 {
 }

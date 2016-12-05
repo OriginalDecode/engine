@@ -39,9 +39,6 @@ enum class eShaderType
 	_COUNT
 };
 
-
-
-
 struct Ticket_Mutex
 {
 	u64 volatile ticket = 0;

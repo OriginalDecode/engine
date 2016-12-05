@@ -4,7 +4,7 @@ class NetworkSystem :
 	public BaseSystem
 {
 public:
-	NetworkSystem(CEntityManager& anEntityManager);
+	NetworkSystem(EntityManager& anEntityManager);
 	void Update(float delta_time) override;
 };
 

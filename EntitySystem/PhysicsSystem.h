@@ -1,17 +1,17 @@
 #pragma once
 #include "BaseSystem.h"
-class CEntityManager;
-class CPhysicsManager;
+class EntityManager;
+class PhysicsManager;
 
 class CPhysicsSystem : public BaseSystem 
 {
 public:
-	CPhysicsSystem(CEntityManager& anEntityManager, CPhysicsManager* aPhysicsManager);
+	CPhysicsSystem(EntityManager& anEntityManager, PhysicsManager* aPhysicsManager);
 
 	void Update(float aDeltaTime) override;
 
 private:
-	CPhysicsManager* myPhysicsManager;
+	PhysicsManager* myPhysicsManager;
 
 	double myAccumulatedTime = 0.0;
 };

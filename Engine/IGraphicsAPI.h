@@ -1,5 +1,4 @@
 #pragma once
-#include "standard_datatype.hpp"
 #include "snowblind_shared.h"
 #ifndef _WINDEF_
 struct HINSTANCE__;
@@ -16,8 +15,6 @@ struct CreateInfo
 	float m_WindowHeight = 0.f;
 	std::string m_APIName;
 };
-
-
 
 enum class eEngineFlags
 {
@@ -82,9 +79,6 @@ namespace Snowblind
 		virtual void EnableZBuffer() = 0;
 		virtual void DisableZBuffer() = 0;
 		virtual IDevice* GetDevice() = 0;
-
-
-		void SetShaderResource(s32 start_pos, s32 view_count, IShaderResourceView* shader_resource);
 
 
 

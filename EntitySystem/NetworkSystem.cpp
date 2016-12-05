@@ -2,7 +2,7 @@
 #include "NetworkComponent.h"
 
 
-NetworkSystem::NetworkSystem(CEntityManager& anEntityManager)
+NetworkSystem::NetworkSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<NetworkController>>())
 {
 }

@@ -1,9 +1,8 @@
 #pragma once
 #ifdef SNOWBLIND_DX11
-#include <vector>
-#include <unordered_map>
-#include <bitset>
 #include "IGraphicsAPI.h"
+#include "snowblind_shared.h"
+#include <vector>
 
 typedef long HRESULT;
 
@@ -91,8 +90,8 @@ namespace Snowblind
 		void SetComputeShader(ID3D11ComputeShader* aComputeShader);
 		void ReportLiveObjects();
 
-		void SetViewport(D3D11_VIEWPORT* viewport);
-		D3D11_VIEWPORT* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y);
+		void SetViewport(Viewport* viewport);
+		Viewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y);
 	private:
 
 		void CreateDeviceAndSwapchain();
@@ -113,14 +112,14 @@ namespace Snowblind
 
 		void GetRefreshRate(u32& aNumerator, u32& aDenominator);
 
-		D3D11_VIEWPORT* myViewport = nullptr;
+		Viewport* myViewport = nullptr;
 		ID3D11Debug* myDebug = nullptr;
-		ID3D11Device* myDevice = nullptr;
+		IDevice* myDevice = nullptr;
 		IDXGISwapChain* mySwapchain = nullptr;
 		ID3D11Texture2D* myDepthBuffer = nullptr;
-		ID3D11DeviceContext* myContext = nullptr;
-		ID3D11RenderTargetView* myRenderTarget = nullptr;
-		ID3D11DepthStencilView* myDepthView = nullptr;
+		IDevContext* myContext = nullptr;
+		IRenderTargetView* myRenderTarget = nullptr;
+		IDepthStencilView* myDepthView = nullptr;
 
 		//______________________
 		// GrowingArray / Map?

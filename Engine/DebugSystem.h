@@ -1,4 +1,5 @@
 #pragma once
+#include "snowblind_shared.h"
 #include <sstream>
 #include <functional>
 #include <vector>
@@ -12,7 +13,7 @@ namespace Snowblind
 	{
 	public:
 		DebugMenu() = default;
-		bool Initiate(Synchronizer* synchronizer, InputHandle* input_handle);
+		bool Initiate(InputHandle* input_handle);
 		void Activate() { m_IsActive = true; }
 		void Deactivate() { m_IsActive = false; }
 		bool GetIsActive() { return m_IsActive; }
@@ -43,7 +44,7 @@ namespace Snowblind
 	{
 	public:
 		DebugSystem() = default;
-		bool Initiate(Synchronizer* synchronizer, InputHandle* input_handle);
+		bool Initiate(InputHandle* input_handle);
 		void Update();
 		void Render();
 		void ActivateDebugMenu();

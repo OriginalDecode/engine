@@ -9,15 +9,19 @@ namespace Snowblind
 {
 	class Synchronizer;
 }
-class CPhysicsManager;
+class PhysicsManager;
 class BaseSystem;
-class CEntityManager
+class EntityManager
 {
 public:
-	CEntityManager();
-	~CEntityManager();
+	EntityManager() = default;
+
+	void Initiate();
+	void CleanUp();
+
 
 	Entity CreateEntity();
+	void Clear();
 	void Update(float aDelta);
 	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter& aFilter);
 
@@ -39,7 +43,7 @@ public:
 	void AddSystem(Snowblind::Synchronizer* aSynchronizer);
 
 	template <typename T>
-	void AddSystem(CPhysicsManager* aManager);
+	void AddSystem(PhysicsManager* aManager);
 
 private:
 	Entity myNextEntity = 0;
@@ -56,38 +60,38 @@ private:
 };
 
 template<typename T>
-void CEntityManager::AddComponent(Entity aEntity)
+void EntityManager::AddComponent(Entity aEntity)
 {
 	T* component = new T();
 	myComponents->AddComponent(aEntity, component, CTypeID<BaseComponent>::GetID<T>());
 }
 
 template<typename T>
-void CEntityManager::RemoveComponent(Entity aEntity, int aComponentID)
+void EntityManager::RemoveComponent(Entity aEntity, int aComponentID)
 {
 
 }
 
 template<typename T>
-T& CEntityManager::GetComponent(Entity aEntity)
+T& EntityManager::GetComponent(Entity aEntity)
 {
 	return static_cast<T&>(myComponents->GetComponent(aEntity, CTypeID<BaseComponent>::GetID<T>()));
 }
 
 template <typename T>
-void CEntityManager::AddSystem()
+void EntityManager::AddSystem()
 {
 	mySystems.Add(new T(*this));
 }
 
 template <typename T>
-void CEntityManager::AddSystem(Snowblind::Synchronizer* aSynchronizer)
+void EntityManager::AddSystem(Snowblind::Synchronizer* aSynchronizer)
 {
 	mySystems.Add(new T(*this, aSynchronizer));
 }
 
 template <typename T>
-void CEntityManager::AddSystem(CPhysicsManager* aManager)
+void EntityManager::AddSystem(PhysicsManager* aManager)
 {
 	mySystems.Add(new T(*this, aManager));
 }

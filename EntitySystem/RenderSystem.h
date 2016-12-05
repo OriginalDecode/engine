@@ -6,11 +6,11 @@ namespace Snowblind
 	class Synchronizer;
 }
 
-class CEntityManager;
+class EntityManager;
 class CRenderSystem : public BaseSystem
 {
 public:
-	CRenderSystem(CEntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer);
+	CRenderSystem(EntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer);
 
 	void Update(float aDeltaTime) override;
 

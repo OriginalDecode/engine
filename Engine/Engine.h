@@ -1,11 +1,13 @@
 #pragma once
-#include <string>
-#include <standard_datatype.hpp>
-#include "snowblind_shared.h"
+
+#include "DebugSystem.h"
 #include "Window.h"
+
 #include <CommonLib/Math/Vector/Vector.h>
 #include <CommonLib/Threadpool.h>
-#include "DebugSystem.h"
+
+#include "snowblind_shared.h"
+#include <string>
 #ifndef _WINDEF_
 
 struct HINSTANCE__;
@@ -15,9 +17,8 @@ typedef HWND__* HWND;
 #endif
 
 class InputHandle;
-class CEntityManager;
-
-
+class EntityManager;
+class PhysicsManager;
 
 namespace CommonUtilities
 {
@@ -38,6 +39,7 @@ namespace Cache
 };
 
 typedef struct ID3D10Blob IBlob;
+
 namespace Snowblind
 {
 	enum eDeferredType;
@@ -71,23 +73,29 @@ namespace Snowblind
 		static void Destroy();
 		static Engine* GetInstance();
 
+		bool Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc);
+		bool CleanUp();
+
 #ifdef SNOWBLIND_DX11
 		static DirectX11* GetAPI();
 #else
 		static Vulkan* GetAPI();
 #endif
+		//_________________________________________
+		// Settings
+		void ToggleVsync();
 
-		bool InitiateDebugSystem(Synchronizer* synchronizer, InputHandle* input_handle);
 
-		bool Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc);
-		bool CleanUp();
-
+		
 		Camera* GetCamera();
 		Camera* Get2DCamera();
+
+
 		static void Present();
 		static void Clear();
 		static void EnableZ();
 		static void DisableZ();
+
 		static void ToggleWireframe();
 		void Update();
 		
@@ -98,15 +106,18 @@ namespace Snowblind
 		float GetFrameTime();
 		std::string GetAPIName();
 
+		//_________________________________________
+		// Get Resources
 		Texture* GetTexture(const std::string& aFilePath);
 		Effect* GetEffect(const std::string& aFilePath);
 		CModel* GetModel(const std::string& aFilePath);
 
-
 		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
-		void ResetRenderTargetAndDepth();
-		void ToggleVsync();
 
+		void ResetRenderTargetAndDepth();
+
+		//_________________________________________
+		// Windows Message Handling
 		void OnAltEnter();
 		void OnPause();
 		void OnResume();
@@ -116,14 +127,25 @@ namespace Snowblind
 
 		bool IsWindowActive() { return m_Window.IsWindowActive(); }
 		
-		Synchronizer* GetSynchronizer();
-
+		//_________________________________________
+		// Get Systems
+		Synchronizer* GetSynchronizer() { return mySynchronizer; }
+		EntityManager* GetEntityManager() { return m_EntityManager; }
+		PhysicsManager* GetPhysicsManager() { return m_PhysicsManager; }
+		
 		const SLocalTime& GetLocalTime();
-		std::string GetLocalTimeAsString();
-		CTerrain* CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize);
 		Window& GetWindow() { return m_Window; }
+		std::string GetLocalTimeAsString();
+
+
+
+		CTerrain* CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize);
+
 		Threadpool& GetThreadpool();
 
+		//_________________________________________
+		// Debug Handling
+		bool InitiateDebugSystem(InputHandle* input_handle);
 		void ToggleDebugMenu();
 		bool IsDebugMenuActive() { return m_DebugSystem.GetDebugMenuIsActive(); }
 		void AddError(const std::string& error_message);
@@ -131,12 +153,16 @@ namespace Snowblind
 
 		void Render();
 
-
+		//_________________________________________
+		// Shader Creation
 		void CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
 		void* CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name);
 	private:
 		Engine() = default;
 		//void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);
+		
+		void AddEntitySystems();
+
 		bool HasInitiated();
 		bool m_IsInitiated = false;
 
@@ -149,6 +175,9 @@ namespace Snowblind
 		HWND myHWND;
 		Window m_Window;
 		DebugSystem m_DebugSystem;
+
+		EntityManager* m_EntityManager				= nullptr;
+		PhysicsManager* m_PhysicsManager			= nullptr;
 
 		CFontManager* myFontManager					= nullptr;
 		CU::TimeManager* myTimeManager				= nullptr;

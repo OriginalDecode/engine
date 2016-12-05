@@ -3,7 +3,7 @@
 #include "TranslationComponent.h"
 #include "CameraComponent.h"
 #include <Camera.h>
-CameraSystem::CameraSystem(CEntityManager& entitymanager)
+CameraSystem::CameraSystem(EntityManager& entitymanager)
 	: BaseSystem(entitymanager, CreateFilter<Requires<STranslationComponent, CameraComponent>>())
 {
 }

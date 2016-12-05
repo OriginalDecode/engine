@@ -4,7 +4,7 @@
 #include "../CommonLib/Math/Matrix/Matrix.h"
 #include "RigidBody.h"
 #include <Windows.h>
-CPhysicsManager::CPhysicsManager()
+PhysicsManager::PhysicsManager()
 	: myGravity(9.82f)
 {
 	myDefaultCollisionConfiguration = new btDefaultCollisionConfiguration();
@@ -25,7 +25,7 @@ CPhysicsManager::CPhysicsManager()
 }
 
 
-CPhysicsManager::~CPhysicsManager()
+PhysicsManager::~PhysicsManager()
 {
 	/* Remove all the rigidbodies before deleting */
 	for (btRigidBody* rb : myBodies)
@@ -40,7 +40,7 @@ CPhysicsManager::~CPhysicsManager()
 	SAFE_DELETE(myDynamicsWorld);
 }
 
-void CPhysicsManager::Add(btRigidBody* aBody)
+void PhysicsManager::Add(btRigidBody* aBody)
 {
 	BeginTicketMutex(&m_Mutex);
 	myDynamicsWorld->addRigidBody(aBody);
@@ -48,28 +48,28 @@ void CPhysicsManager::Add(btRigidBody* aBody)
 	EndTicketMutex(&m_Mutex);
 }
 
-void CPhysicsManager::Remove(btRigidBody* aBody)
+void PhysicsManager::Remove(btRigidBody* aBody)
 {
 	myDynamicsWorld->removeRigidBody(aBody);
 }
 
-RigidBody* CPhysicsManager::CreateBody()
+RigidBody* PhysicsManager::CreateBody()
 {
 	RigidBody* newBody = new RigidBody();
 	return newBody;
 }
 
-float CPhysicsManager::GetGravityForce()
+float PhysicsManager::GetGravityForce()
 {
 	return myGravity;
 }
 
-void CPhysicsManager::Update(double& additionalTime)
+void PhysicsManager::Update(double& additionalTime)
 {
 	myDynamicsWorld->stepSimulation(1.f / 60.f, 8);
 }
 
-CU::Vector3f CPhysicsManager::RayCast(const CU::Vector3f& cameraPosition, const CU::Vector3f& target) const
+CU::Vector3f PhysicsManager::RayCast(const CU::Vector3f& cameraPosition, const CU::Vector3f& target) const
 {
 	const float vector_extent = 125.f;
 	btVector3 from = btVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z);

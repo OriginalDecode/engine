@@ -2,12 +2,11 @@
 #include "Synchronizer.h"
 #include <thread>
 
-
 namespace Snowblind
 {
 	bool Synchronizer::Initiate()
 	{
-		myCurrentBuffer = 0;
+		m_CurrentBuffer = 0;
 		myLogicIsDone = false;
 		myRenderIsDone = false;
 		myQuitFlag = false;
@@ -19,17 +18,17 @@ namespace Snowblind
 	{
 		for (CommandBuffer& buffer : myCommandBuffers)
 		{
-			buffer[myCurrentBuffer].RemoveAll();
+			buffer[m_CurrentBuffer].RemoveAll();
 		}
-		myCurrentBuffer ^= 1;
+		m_CurrentBuffer ^= 1;
 	}
 
 	void Synchronizer::Clear()
 	{
 		for (CommandBuffer& buffer : myCommandBuffers)
 		{
-			buffer[myCurrentBuffer].RemoveAll();
-			buffer[myCurrentBuffer ^ 1].RemoveAll();
+			buffer[m_CurrentBuffer].RemoveAll();
+			buffer[m_CurrentBuffer ^ 1].RemoveAll();
 		}
 	}
 
@@ -70,11 +69,15 @@ namespace Snowblind
 
 	void Synchronizer::AddRenderCommand(const RenderCommand& aRenderCommand)
 	{
-		myCommandBuffers[u32(aRenderCommand.myCommandType)][myCurrentBuffer ^ 1].Add(aRenderCommand);
+		BeginTicketMutex(&m_Ticket);
+		CommandBuffer& buffer = myCommandBuffers[u32(aRenderCommand.myCommandType)]; 
+		buffer[m_CurrentBuffer ^ 1].Add(aRenderCommand);
+		EndTicketMutex(&m_Ticket);
+
 	}
 
 	const CU::GrowingArray<RenderCommand>& Synchronizer::GetRenderCommands(const eCommandBuffer& commandType) const
 	{
-		return myCommandBuffers[u32(commandType)][myCurrentBuffer];
+		return myCommandBuffers[u32(commandType)][m_CurrentBuffer];
 	}
 };

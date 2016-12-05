@@ -12,7 +12,7 @@
 #include "AABBComponent.h"
 #include <Utilities.h>
 
-CRenderSystem::CRenderSystem(CEntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer)
+CRenderSystem::CRenderSystem(EntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, SRenderComponent>>())
 	, mySynchronizer(aSynchronizer)
 {

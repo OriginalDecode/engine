@@ -50,7 +50,7 @@ namespace Snowblind
 		m_Shadowlight->Initiate(
 			CU::Vector3f(95, 7.f, 28.f)
 			, CU::Vector3f(1.f, 0.5f, 0.f)
-			, 512.f);
+			, 2048.f);
 
 		myDeferredRenderer = new DeferredRenderer; // Where should this live?
 		if (!myDeferredRenderer->Initiate(m_Shadowlight->GetDepthStencil()))

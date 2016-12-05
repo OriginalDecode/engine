@@ -3,7 +3,7 @@
 class CameraSystem final : public BaseSystem
 {
 public:
-	CameraSystem(CEntityManager& entitymanager);
+	CameraSystem(EntityManager& entitymanager);
 	void Update(float delta_time) override;
 
 

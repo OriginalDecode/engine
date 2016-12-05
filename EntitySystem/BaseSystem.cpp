@@ -2,13 +2,13 @@
 
 
 
-BaseSystem::BaseSystem(CEntityManager& anEntityManager)
+BaseSystem::BaseSystem(EntityManager& anEntityManager)
 	: myEntityManager(anEntityManager)
 {
 }
 
 
-BaseSystem::BaseSystem(CEntityManager& anEntityManager, const SComponentFilter& aFilter)
+BaseSystem::BaseSystem(EntityManager& anEntityManager, const SComponentFilter& aFilter)
 	: myEntityManager(anEntityManager)
 	, myFilter(aFilter)
 {

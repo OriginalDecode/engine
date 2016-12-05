@@ -23,7 +23,7 @@ bool CApplication::Initiate()
 
 	mySynchronizer = myEngine->GetSynchronizer();
 	myGame = new Game;
-	if (!myGame->Initiate(mySynchronizer))
+	if (!myGame->Initiate())
 		return false;
 
 	//Keep at the end of initiate...
@@ -36,6 +36,7 @@ void CApplication::Update()
 	while (mySynchronizer->HasQuit() == false)
 	{
 		float deltaTime = myEngine->GetDeltaTime();
+		myGame->Update(deltaTime);
 
 		std::stringstream ss;
 		ss << "m_camera_position\n" <<
@@ -44,10 +45,10 @@ void CApplication::Update()
 		"Z : " << myCamera->GetPosition().z;
 
 		myEngine->AddDebugText(ss.str());
-//		mySynchronizer->AddRenderCommand(RenderCommand(eType::SKYSPHERE, myCamera->GetPosition()));
-
-		myGame->Update(deltaTime);
-		Snowblind::Engine::GetInstance()->Render();
+		
+#ifdef _DEBUG
+		myEngine->Render();
+#endif
 
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();

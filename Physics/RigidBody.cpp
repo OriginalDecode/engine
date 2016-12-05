@@ -106,7 +106,7 @@ btRigidBody* RigidBody::InitWithMeshCollision(std::vector<float> vertices, std::
 btRigidBody* RigidBody::InitAsBox(float width, float height, float depth, CU::Vector3f position)
 {
 	myMass = 0.f;
-	myShape = new btBoxShape(btVector3(width/2.f, height/2.f, depth/2.f));
+	myShape = new btBoxShape(btVector3(width, height, depth));
 	btVector3 pos = btVector3(position.x, position.y, position.z); //initial position
 	myMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos));
 	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, myMotionState, myShape, btVector3(0, 0, 0));

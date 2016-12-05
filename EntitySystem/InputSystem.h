@@ -10,7 +10,7 @@ class RigidBody;
 class InputSystem : public BaseSystem
 {
 public:
-	InputSystem(CEntityManager& anEntityManager);
+	InputSystem(EntityManager& anEntityManager);
 	void Update(float delta_time) override;
 
 };

@@ -1,13 +1,28 @@
 #include "stdafx.h"
 
-#include <d3dcompiler.h>
+
+#include <PhysicsSystem.h>
+#include <RenderSystem.h>
+#include <LightSystem.h>
+#include <InputSystem.h>
+#include <AISystem.h>
+#include <NetworkSystem.h>
+#include <CameraSystem.h>
 
 #include "AssetsContainer.h"
-#include "IGraphicsAPI.h"
+
 #include "Renderer.h"
 #include "Synchronizer.h"
+
 #include "Terrain.h"
 #include "TerrainManager.h"
+
+#include <EntityManager.h>
+#include <PhysicsManager.h>
+
+#include "IGraphicsAPI.h"
+#include <d3dcompiler.h>
+
 
 static constexpr char* vertex_shader = "VS";
 static constexpr char* pixel_shader = "PS";
@@ -18,6 +33,17 @@ static constexpr char* compute_shader = "CS";
 
 namespace Snowblind
 {
+
+	void Engine::AddEntitySystems()
+	{
+		m_EntityManager->AddSystem<CPhysicsSystem>();
+		m_EntityManager->AddSystem<CRenderSystem>();
+		m_EntityManager->AddSystem<CLightSystem>();
+		m_EntityManager->AddSystem<InputSystem>();
+		m_EntityManager->AddSystem<NetworkSystem>();
+		m_EntityManager->AddSystem<AISystem>();
+		m_EntityManager->AddSystem<CameraSystem>();
+	}
 
 	bool Engine::HasInitiated()
 	{
@@ -57,9 +83,9 @@ namespace Snowblind
 	}
 #endif
 
-	bool Engine::InitiateDebugSystem(Synchronizer* synchronizer, InputHandle* input_handle)
+	bool Engine::InitiateDebugSystem(InputHandle* input_handle)
 	{
-		m_DebugSystem.Initiate(synchronizer, input_handle);
+		m_DebugSystem.Initiate(input_handle);
 		return true;
 	}
 
@@ -121,7 +147,13 @@ namespace Snowblind
 		myTimeManager = new CU::TimeManager;
 		Randomizer::Create();
 	
+		m_EntityManager = new EntityManager;
+		AddEntitySystems(); 
 	
+		m_PhysicsManager = new PhysicsManager;
+
+
+		
 		m_Threadpool.Initiate();
 
 
@@ -147,6 +179,9 @@ namespace Snowblind
 		SAFE_DELETE(myTimeManager);
 
 		Randomizer::Destroy();
+
+		SAFE_DELETE(m_PhysicsManager);
+		SAFE_DELETE(m_EntityManager);
 
 		DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
 		SAFE_DELETE(myAPI);
@@ -405,11 +440,6 @@ namespace Snowblind
 	{
 		if (HasInitiated())
 			m_Window.OnActive();
-	}
-
-	Synchronizer* Engine::GetSynchronizer()
-	{
-		return mySynchronizer;
 	}
 
 	const SLocalTime& Engine::GetLocalTime()

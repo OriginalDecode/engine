@@ -10,8 +10,8 @@ namespace Snowblind
 class BaseSystem
 {
 public:
-	BaseSystem(CEntityManager& anEntityManager);
-	BaseSystem(CEntityManager& anEntityManager, const SComponentFilter& aFilter);
+	BaseSystem(EntityManager& anEntityManager);
+	BaseSystem(EntityManager& anEntityManager, const SComponentFilter& aFilter);
 	virtual ~BaseSystem() = 0;
 
 	virtual void Update(float aDeltaTime) = 0;
@@ -27,7 +27,7 @@ public:
 private:
 	void operator=(BaseSystem&) = delete;
 	bool myHasFinished = false;
-	CEntityManager& myEntityManager;
+	EntityManager& myEntityManager;
 	SComponentFilter myFilter;
 
 };

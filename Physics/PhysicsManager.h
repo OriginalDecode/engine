@@ -14,11 +14,11 @@ struct btDefaultMotionState;
 
 class RigidBody;
 
-class CPhysicsManager
+class PhysicsManager
 {
 public:
-	CPhysicsManager();
-	~CPhysicsManager();
+	PhysicsManager();
+	~PhysicsManager();
 	void Add(btRigidBody* aBody);
 	void Remove(btRigidBody* aBody);
 	RigidBody* CreateBody();

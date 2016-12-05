@@ -8,11 +8,11 @@ namespace Snowblind
 
 };
 
-class CEntityManager;
+class EntityManager;
 class CLightSystem : public BaseSystem
 {
 public:
-	CLightSystem(CEntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer);
+	CLightSystem(EntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer);
 	void Update(float aDeltaTime) override;
 private:
 	Snowblind::Synchronizer* mySynchronizer;

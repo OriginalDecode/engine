@@ -4,7 +4,7 @@
 #define TRUE 1
 #define FALSE 0
 
-CEntityManager::CEntityManager()
+void EntityManager::Initiate()
 {
 	mySystems.ReInit(16);
 	myFinishedSystems.reset();
@@ -13,11 +13,10 @@ CEntityManager::CEntityManager()
 		myFinishedSystems[i] = TRUE;
 	}
 
-	myComponents = new CComponentContainer();
+	myComponents = new CComponentContainer;
 }
 
-
-CEntityManager::~CEntityManager()
+void EntityManager::CleanUp()
 {
 	for each(BaseSystem* s in mySystems)
 	{
@@ -26,7 +25,7 @@ CEntityManager::~CEntityManager()
 	SAFE_DELETE(myComponents);
 }
 
-Entity CEntityManager::CreateEntity()
+Entity EntityManager::CreateEntity()
 {
 	Entity newEntity = myNextEntity++;
 
@@ -35,7 +34,13 @@ Entity CEntityManager::CreateEntity()
 	return newEntity;
 }
 
-void CEntityManager::Update(float aDelta)
+void EntityManager::Clear()
+{
+	SAFE_DELETE(myComponents);
+	myNextEntity = 0;
+}
+
+void EntityManager::Update(float aDelta)
 {
 	myDeltaTime = aDelta;
 	
@@ -45,17 +50,17 @@ void CEntityManager::Update(float aDelta)
 	}
 }
 
-const CU::GrowingArray<Entity>& CEntityManager::GetEntities(SComponentFilter& aFilter)
+const CU::GrowingArray<Entity>& EntityManager::GetEntities(SComponentFilter& aFilter)
 {
 	return myComponents->GetEntities(aFilter);
 }
 
-float CEntityManager::GetDeltaTime()
+float EntityManager::GetDeltaTime()
 {
 	return myDeltaTime;
 }
 
-bool CEntityManager::IsSystemsFinished()
+bool EntityManager::IsSystemsFinished()
 {
 	int count = 0;
 	for (int i = 0; i < mySystems.Size(); i++)

@@ -5,7 +5,7 @@
 #include "../Physics/RigidBody.h"
 #include "../Physics/PhysicsManager.h"
 #include "AABBComponent.h"
-CPhysicsSystem::CPhysicsSystem(CEntityManager& anEntityManager, CPhysicsManager* aPhysicsManager)
+CPhysicsSystem::CPhysicsSystem(EntityManager& anEntityManager, PhysicsManager* aPhysicsManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, SPhysicsComponent>>())
 	, myPhysicsManager(aPhysicsManager)
 {

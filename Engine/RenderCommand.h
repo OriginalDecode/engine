@@ -41,6 +41,7 @@ struct RenderCommand
 	IShaderResourceView* m_ShaderResource = nullptr;
 
 	std::string m_KeyOrText;
+	u64 m_HashKey;
 
 	CU::Vector3f myPosition;
 	CU::Vector3f myColor;

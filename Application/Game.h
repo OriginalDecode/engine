@@ -17,8 +17,6 @@ namespace Snowblind
 	class Camera;
 };
 class JSONReader;
-class CEntityManager;
-class CPhysicsManager;
 class RigidBody;
 struct InputController;
 
@@ -40,7 +38,7 @@ class Game
 {
 public:
 	Game() = default;
-	bool Initiate(Snowblind::Synchronizer* synchronizer);
+	bool Initiate();
 	bool CleanUp();
 
 	void Update(float aDeltaTime);
@@ -51,7 +49,7 @@ private:
 
 	void LeftClick(float x, float y);
 	bool m_DisableMouseCameraMovement = false;
-
+	Snowblind::Camera* m_Camera = nullptr;
 
 
 	s16 m_LocalPlayerCount = 0;
@@ -68,8 +66,6 @@ private:
 	Snowblind::Engine* myEngine = nullptr;
 	Snowblind::CMousePicker* myPicker = nullptr;
 
-	CEntityManager* myEntityManager = nullptr;
-	CPhysicsManager* myPhysicsManager = nullptr;
 
 	std::string m_ModelKey;
 

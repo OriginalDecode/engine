@@ -76,10 +76,19 @@ namespace Snowblind
 		bool Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc);
 		bool CleanUp();
 
+		void Update();
+		void Render();
+
+
+		/*
+			Both of the APIs should be available at all time.
+			and you should not get the api but you should get 
+			whatever is selected
+		*/
 #ifdef SNOWBLIND_DX11
-		static DirectX11* GetAPI();
+		static DirectX11* GetAPI(); //Should not be a define.
 #else
-		static Vulkan* GetAPI();
+		static Vulkan* GetAPI(); //Should not be a define.
 #endif
 		//_________________________________________
 		// Settings
@@ -97,7 +106,6 @@ namespace Snowblind
 		static void DisableZ();
 
 		static void ToggleWireframe();
-		void Update();
 		
 		SWindowSize GetWindowSize() const;
 		CFont* LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth);
@@ -132,16 +140,20 @@ namespace Snowblind
 		Synchronizer* GetSynchronizer() { return mySynchronizer; }
 		EntityManager* GetEntityManager() { return m_EntityManager; }
 		PhysicsManager* GetPhysicsManager() { return m_PhysicsManager; }
+		Threadpool& GetThreadpool();
 		
 		const SLocalTime& GetLocalTime();
 		Window& GetWindow() { return m_Window; }
 		std::string GetLocalTimeAsString();
 
 
-
+		//_________________________________________
+		// Level Creation, Loading, Saving
 		CTerrain* CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize);
+		void LoadLevel(const std::string& level_filepath);
+		void SaveLevel();
 
-		Threadpool& GetThreadpool();
+
 
 		//_________________________________________
 		// Debug Handling
@@ -151,7 +163,6 @@ namespace Snowblind
 		void AddError(const std::string& error_message);
 		void AddDebugText(const std::string& debug_text);
 
-		void Render();
 
 		//_________________________________________
 		// Shader Creation
@@ -165,7 +176,7 @@ namespace Snowblind
 
 		bool HasInitiated();
 		bool m_IsInitiated = false;
-
+		bool m_IsLoadingLevel = false;
 		static Engine* myInstance;
 		static IGraphicsAPI* myAPI;
 		Threadpool m_Threadpool;

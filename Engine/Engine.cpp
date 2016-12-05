@@ -203,11 +203,16 @@ namespace Snowblind
 	void Engine::Update()
 	{
 		m_DeltaTime = myTimeManager->GetDeltaTime();
-		myAssetsContainer->Update();
-		myTimeManager->Update();
+		if (!m_IsLoadingLevel)
+		{
+			myTimeManager->Update();
+			myAssetsContainer->Update();
+			m_EntityManager->Update(m_DeltaTime);
+		}
 		myRenderer->Render();
 		m_Threadpool.Update();
 		m_DebugSystem.Update();
+
 	}
 
 	void Engine::Render()
@@ -459,6 +464,17 @@ namespace Snowblind
 		newTerrain->Initiate(aFile, position, aSize);
 		myRenderer->AddTerrain(newTerrain);
 		return newTerrain;
+	}
+
+	void Engine::LoadLevel(const std::string& level_filepath)
+	{
+		m_IsLoadingLevel = true;
+		LevelFactory level_factory;
+		//Loading Screen hoooooooooo or skip for quick start.
+		
+
+
+		m_IsLoadingLevel = false;
 	}
 
 	Threadpool& Engine::GetThreadpool()

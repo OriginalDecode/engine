@@ -1,23 +1,14 @@
 #pragma once
-#include "snowblind_shared.h"
-class Level;
-
-namespace Snowblind
-{
-	class Engine;
-};
-class EntityManager;
-
-class LevelManager
+class LevelFactory
 {
 public:
-	LevelManager() = default;
+	LevelFactory() = default;
+
 	void Initiate();
-	void CleanUp();
-	Level* LoadLevel(const std::string& level_filepath);
-	void SaveLevel();
+	bool CreateLevel(const std::string& level_path);
+
 private:
-	
+
 	void CreateEntitiy(const std::string& entity_filepath, JSONReader& level_reader, JSONElement::ConstMemberIterator it);
 	void CreateTerrain(const std::string& terrain_path);
 
@@ -27,9 +18,8 @@ private:
 	void CreateAIComponent();
 	void CreateNetworkComponent();
 
-
-
-	Level* m_CurrentLevel = nullptr;
 	Snowblind::Engine* m_Engine = nullptr;
 	EntityManager* m_EntityManager = nullptr;
+
 };
+

@@ -285,6 +285,7 @@
     </ClInclude>
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -445,5 +446,6 @@
     </ClCompile>
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelFactory.cpp" />
   </ItemGroup>
 </Project>

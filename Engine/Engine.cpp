@@ -149,16 +149,13 @@ namespace Snowblind
 		myTimeManager = new CU::TimeManager;
 		Randomizer::Create();
 	
-		m_EntityManager = new EntityManager;
-		AddEntitySystems(); 
-	
 		m_PhysicsManager = new PhysicsManager;
 
+		m_EntityManager = new EntityManager;
+		m_EntityManager->Initiate();
+		AddEntitySystems(); 
 
-		
 		m_Threadpool.Initiate();
-
-
 
 		m_IsInitiated = true;
 		return true;
@@ -183,6 +180,7 @@ namespace Snowblind
 		Randomizer::Destroy();
 
 		SAFE_DELETE(m_PhysicsManager);
+		m_EntityManager->CleanUp();
 		SAFE_DELETE(m_EntityManager);
 
 		DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
@@ -204,6 +202,9 @@ namespace Snowblind
 
 	void Engine::Update()
 	{
+		if (!HasInitiated())
+			return;
+
 		m_DeltaTime = myTimeManager->GetDeltaTime();
 		if (!m_IsLoadingLevel)
 		{
@@ -213,13 +214,13 @@ namespace Snowblind
 		}
 		myRenderer->Render();
 		m_Threadpool.Update();
-		m_DebugSystem.Update();
+		//m_DebugSystem.Update();
 
 	}
 
 	void Engine::Render()
 	{
-		m_DebugSystem.Render();
+		//m_DebugSystem.Render();
 	}
 
 	void Engine::CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
@@ -460,7 +461,7 @@ namespace Snowblind
 		return myLocalTime;
 	}
 
-	Snowblind::CTerrain* Engine::CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize)
+	Snowblind::CTerrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize)
 	{
 		CTerrain* newTerrain = m_TerrainManager->GetTerrain(aFile);
 		newTerrain->Initiate(aFile, position, aSize);
@@ -472,8 +473,8 @@ namespace Snowblind
 	{
 		m_IsLoadingLevel = true;
 		LevelFactory level_factory;
-		//Loading Screen hoooooooooo or skip for quick start.
-		
+		level_factory.Initiate();
+		level_factory.CreateLevel(level_filepath);
 
 
 		m_IsLoadingLevel = false;

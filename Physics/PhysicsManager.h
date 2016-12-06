@@ -12,7 +12,13 @@ class btRigidBody;
 class btCollisionShape;
 struct btDefaultMotionState;
 
+
+
+
 class RigidBody;
+
+
+static constexpr float  air_preassure = 1.293f;
 
 class PhysicsManager
 {

@@ -44,6 +44,7 @@ bool Game::Initiate()
 	myEngine = Snowblind::Engine::GetInstance();
 	mySynchronizer = myEngine->GetSynchronizer();
 
+	myEngine->LoadLevel("Data/Levels/level_01.json");
 	/*if (!CreateLevel("Data/Levels/level_01.json"))
 		return false;*/
 
@@ -83,30 +84,25 @@ void Game::Update(float aDeltaTime)
 	std::stringstream ss;
 	ss << "FPS : " << myEngine->GetFPS() << "\n" << "Average FPS : " << myFPSToPrint << "\nDeltaTime:" << aDeltaTime << "\n" << Snowblind::Engine::GetInstance()->GetLocalTimeAsString()
 		<< "\ncamera_speed_multiplier : " << speed;
-	myEngine->AddDebugText(ss.str());
+	//myEngine->AddDebugText(ss.str());
 
 	// Should move to level? Should move...
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
-
+	//mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN));
+/*
 	CU::Vector4f ray_dir = pointHit - myEngine->GetCamera()->GetPosition();
 	CU::Math::Normalize(ray_dir);
-
-	for (cl::AABB& aabb : m_AABBs)
-	{
-		aabb.Update();
-		//aabb.Intersect(m_Camera->GetOrientation().GetTranslation(), ray_dir);
-		for (const RenderCommand& command : aabb.GetCommands())
-		{
-			mySynchronizer->AddRenderCommand(command);
-		}
-	}
+*/
+	//for (cl::AABB& aabb : m_AABBs)
+	//{
+	//	aabb.Update();
+	//	//aabb.Intersect(m_Camera->GetOrientation().GetTranslation(), ray_dir);
+	//	for (const RenderCommand& command : aabb.GetCommands())
+	//	{
+	//		mySynchronizer->AddRenderCommand(command);
+	//	}
+	//}
 
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", pointHit));
-
-
-	//Live in engine, update from game/level
-	//myEntityManager->Update(aDeltaTime);
-
 }
 //
 //bool Game::CreateLevel(const char* level_path)
@@ -125,17 +121,6 @@ void Game::Update(float aDeltaTime)
 
 //bool Game::CreateEntity(const char* entity_path, JSONReader& level_reader, JSONElement::ConstMemberIterator it)
 //{
-//	JSONReader entityReader(entity_path);
-//	Entity e = myEntityManager->CreateEntity();
-//
-//	myEntityManager->AddComponent<TranslationComponent>(e);
-//
-//	CU::Vector3f pos;
-//	level_reader._ReadElement(it->value["position"], pos);
-//
-//	TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
-//	t.myOrientation.SetPosition(pos);
-//
 //	if (entityReader.HasElement("light"))
 //	{
 //		myEntityManager->AddComponent<LightComponent>(e);
@@ -175,22 +160,7 @@ void Game::Update(float aDeltaTime)
 //	}
 //
 //
-//	std::string model_key;
-//	if (entityReader.HasElement("render"))
-//	{
-//		myEntityManager->AddComponent<RenderComponent>(e);
-//		RenderComponent& r = myEntityManager->GetComponent<RenderComponent>(e);
-//
-//		std::string entityModel[2];
-//		entityReader.ReadElement("render", entityModel);
-//		r.myModelID = myEngine->LoadModel(entityModel[0], entityModel[1]);
-//		model_key = r.myModelID;
-//		TranslationComponent& t = myEntityManager->GetComponent<TranslationComponent>(e);
-//
-//		cl::AABB aabb;
-//		aabb.Initiate(e, &t.myOrientation, Snowblind::Engine::GetInstance()->GetModel(r.myModelID)->GetWHD());
-//		m_AABBs.Add(aabb);
-//	}
+
 //
 //	if (entityReader.HasElement("physics"))
 //	{

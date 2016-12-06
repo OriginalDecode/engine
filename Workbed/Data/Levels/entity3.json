@@ -1,9 +1,10 @@
 {
-	"render": [ 
-		"Data/Model/pbl/PBL_test_balls.fbx", 
-		"Data/Shaders/T_Deferred_Base.json"
-		],
-	"physics": {
-		"mass": 1
+	"render": {
+		"model":"Data/Model/pbl/PBL_test_balls.fbx", 
+		"shader":"Data/Shaders/T_Deferred_Base.json"
+	},
+	"physics":{
+		"mass":1,
+		"shape" : "mesh"
 	}
 }

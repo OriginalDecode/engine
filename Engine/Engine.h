@@ -149,7 +149,7 @@ namespace Snowblind
 
 		//_________________________________________
 		// Level Creation, Loading, Saving
-		CTerrain* CreateTerrain(const std::string& aFile, const CU::Vector3f& position, const CU::Vector2f& aSize);
+		CTerrain* CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize);
 		void LoadLevel(const std::string& level_filepath);
 		void SaveLevel();
 

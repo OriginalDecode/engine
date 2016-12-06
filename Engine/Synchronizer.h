@@ -30,7 +30,6 @@ namespace Snowblind
 
 		const CU::GrowingArray<RenderCommand>& GetRenderCommands(const eCommandBuffer& commandType) const;
 	private:
-		Ticket_Mutex m_Ticket;
 		CommandBuffers myCommandBuffers;
 		volatile bool myLogicIsDone;
 		volatile bool myRenderIsDone;

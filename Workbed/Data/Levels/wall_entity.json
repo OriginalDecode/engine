@@ -1,9 +1,10 @@
 {
-	"render": [ 
-		"Data/Model/wall.fbx", 		
-		"Data/Shaders/T_Deferred_Base.json"
-	],
+	"render": {
+		"model":"Data/Model/wall.fbx", 		
+		"shader":"Data/Shaders/T_Deferred_Base.json"
+	},
 	"physics":{
-		"mass":1
+		"mass":1,
+		"shape" : "mesh"
 	}
 }

@@ -69,10 +69,8 @@ namespace Snowblind
 
 	void Synchronizer::AddRenderCommand(const RenderCommand& aRenderCommand)
 	{
-		BeginTicketMutex(&m_Ticket);
 		CommandBuffer& buffer = myCommandBuffers[u32(aRenderCommand.myCommandType)]; 
 		buffer[m_CurrentBuffer ^ 1].Add(aRenderCommand);
-		EndTicketMutex(&m_Ticket);
 
 	}
 

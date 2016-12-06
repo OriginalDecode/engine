@@ -31,12 +31,12 @@ void CPhysicsSystem::Update(float aDeltaTime)
 			translation.myOrientation = physics.myBody->GetOrientation();
 			physics.myBody->Update(aDeltaTime);
 
-			if(!physics.m_IsPlayer)
-			{
-				AABBComponent& aabb = GetComponent<AABBComponent>(e);
-				if (aabb.m_Body)
-					aabb.m_Body->Update(aDeltaTime);
-			}
+			//if(!physics.m_IsPlayer)
+			//{
+			//	AABBComponent& aabb = GetComponent<AABBComponent>(e);
+			//	if (aabb.m_Body)
+			//		aabb.m_Body->Update(aDeltaTime);
+			//}
 
 		}
 		myPhysicsManager->Update(myAccumulatedTime); //ASync Physics?

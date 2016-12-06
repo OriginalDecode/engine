@@ -3,6 +3,7 @@
 
 #include "Engine.h"
 #include <EntityManager.h>
+#include <PhysicsManager.h>
 #include "Terrain.h"
 
 #include <PhysicsComponent.h>
@@ -13,11 +14,13 @@
 #include <AIComponent.h>
 #include <NetworkComponent.h>
 #include <CameraComponent.h>
+#include <RigidBody.h>
 
 void LevelFactory::Initiate()
 {
 	m_Engine = Snowblind::Engine::GetInstance();
 	m_EntityManager = m_Engine->GetEntityManager();
+	m_PhysicsManager = m_Engine->GetPhysicsManager();
 }
 
 bool LevelFactory::CreateLevel(const std::string& level_path)
@@ -43,8 +46,14 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONReader&
 	JSONReader entity_reader(entity_filepath);
 	Entity e = m_EntityManager->CreateEntity();
 
+	CU::Vector3f pos;
+	level_reader._ReadElement(it->value["position"], pos);
+	CreateTranslationComponent(e, pos);
 
-	CreateTranslationComponent(e);
+
+	//		cl::AABB aabb;
+	//		aabb.Initiate(e, &t.myOrientation, Snowblind::Engine::GetInstance()->GetModel(r.myModelID)->GetWHD());
+	//		m_AABBs.Add(aabb);
 
 	if (entity_reader.HasElement("graphics"))
 		CreateGraphicsComponent(entity_reader, e);
@@ -68,11 +77,11 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONReader&
 	}
 }
 
-void LevelFactory::CreateTranslationComponent(JSONReader& entity_reader, Entity entity_id)
+void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position)
 {
-	m_EntityManager->AddComponent<TranslationComponent>(e);
-	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
-	//handle start position?
+	m_EntityManager->AddComponent<TranslationComponent>(entity_id);
+	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+	component.myOrientation.SetPosition(position);
 }
 
 void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id)
@@ -80,16 +89,38 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	m_EntityManager->AddComponent<RenderComponent>(entity_id);
 	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 
+	const JSONElement& el = entity_reader.GetElement("graphics");
 	component.myModelID = m_Engine->LoadModel(
-		entity_reader.ReadElement("model"),
-		entity_reader.ReadElement("shader"));
+		el["model"].GetString(),
+		el["shader"].GetString());
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)
 {
 	m_EntityManager->AddComponent<PhysicsComponent>(entity_id);
 	PhysicsComponent& component = m_EntityManager->GetComponent<PhysicsComponent>(entity_id);
-	//create a body and stuff. Read what shape it should be etc...
+
+	const JSONElement& el = entity_reader.GetElement("physics");
+	float object_mass = (float)el["mass"].GetDouble();
+
+	component.myBody = m_PhysicsManager->CreateBody();
+	btRigidBody* phys_body = nullptr;
+
+	std::string shape = el["shape"].GetString();
+	if (shape == "mesh")
+	{
+		phys_body = component.myBody->InitAsBox(1, 1, 1, { 0,0,0 });
+	}
+	else if (shape == "box")
+	{
+		phys_body = component.myBody->InitAsBox(1, 1, 1, { 0,0,0 });
+	}
+	else if (shape == "sphere")
+	{
+		phys_body = component.myBody->InitAsSphere(1, object_mass, m_PhysicsManager->GetGravityForce(), air_preassure, { 0,0,0 });
+	}
+	
+	m_PhysicsManager->Add(phys_body);
 }
 
 void LevelFactory::CreateCameraComponent(JSONReader& entity_reader, Entity entity_id)
@@ -110,7 +141,6 @@ void LevelFactory::CreateInputComponent(JSONReader& entity_reader, Entity entity
 	component.m_InputHandle->Initiate(component.m_ID);
 
 	//Read Input stuffies
-	assert(false);
 }
 
 void LevelFactory::CreateAIComponent(JSONReader& entity_reader, Entity entity_id)
@@ -129,10 +159,10 @@ void LevelFactory::CreateNetworkComponent(JSONReader& entity_reader, Entity enti
 	assert(false);
 }
 
-void LevelFactory::CreateTerrain(const std::string& terrain_path)
+void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	Snowblind::Engine::GetInstance()->GetThreadpool().AddWork(
-		Work([&]() {
+	//Snowblind::Engine::GetInstance()->GetThreadpool().AddWork(
+		//Work([&]() {
 		Snowblind::CTerrain* terrain = m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
 		terrain->AddNormalMap("Data/Textures/normal.dds");
 		//myTerrain.Add(terrain);
@@ -155,5 +185,5 @@ void LevelFactory::CreateTerrain(const std::string& terrain_path)
 		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
 		}*/
 
-	}));
+	//}));
 }

@@ -20,6 +20,8 @@
 #include <EntityManager.h>
 #include <PhysicsManager.h>
 
+#include "LevelFactory.h"
+
 #include "IGraphicsAPI.h"
 #include <d3dcompiler.h>
 

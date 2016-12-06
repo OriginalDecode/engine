@@ -2,7 +2,7 @@
 #include "AIComponent.h"
 
 AISystem::AISystem(EntityManager& anEntityManager)
-	: BaseSystem(anEntityManager, CreateFilter<Requires<AIController>>())
+	: BaseSystem(anEntityManager, CreateFilter<Requires<AIComponent>>())
 {
 }
 

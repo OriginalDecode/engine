@@ -6,7 +6,7 @@ class PhysicsManager;
 class CPhysicsSystem : public BaseSystem 
 {
 public:
-	CPhysicsSystem(EntityManager& anEntityManager, PhysicsManager* aPhysicsManager);
+	CPhysicsSystem(EntityManager& anEntityManager);
 
 	void Update(float aDeltaTime) override;
 

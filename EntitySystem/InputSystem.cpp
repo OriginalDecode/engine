@@ -10,7 +10,7 @@
 #include "../Engine/Camera.h"
 #include "../Engine/Engine.h"
 InputSystem::InputSystem(EntityManager& anEntityManager)
-	: BaseSystem(anEntityManager, CreateFilter<Requires<CameraComponent, InputController>>())
+	: BaseSystem(anEntityManager, CreateFilter<Requires<CameraComponent, InputComponent>>())
 {
 }
 
@@ -23,7 +23,7 @@ void InputSystem::Update(float /*delta_time*/)
 	for (const Entity& e : entities)
 	{
 
-		InputController& input = GetComponent<InputController>(e);
+		InputComponent& input = GetComponent<InputComponent>(e);
 		input.m_InputHandle->HandleInput();
 
 	}

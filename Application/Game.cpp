@@ -2,14 +2,7 @@
 
 /* Entity System Includes */
 /* Components */
-#include <PhysicsComponent.h>
-#include <RenderComponent.h>
-#include <TranslationComponent.h>
-#include <LightComponent.h>
-#include <InputComponent.h>
-#include <AIComponent.h>
-#include <NetworkComponent.h>
-#include <CameraComponent.h>
+
 /* Systems */
 
 /* End of Entity System Includes*/
@@ -51,8 +44,8 @@ bool Game::Initiate()
 	myEngine = Snowblind::Engine::GetInstance();
 	mySynchronizer = myEngine->GetSynchronizer();
 
-	if (!CreateLevel("Data/Levels/level_01.json"))
-		return false;
+	/*if (!CreateLevel("Data/Levels/level_01.json"))
+		return false;*/
 
 	myPicker = new Snowblind::CMousePicker;
 

@@ -12,7 +12,7 @@ class EntityManager;
 class CLightSystem : public BaseSystem
 {
 public:
-	CLightSystem(EntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer);
+	CLightSystem(EntityManager& anEntityManager);
 	void Update(float aDeltaTime) override;
 private:
 	Snowblind::Synchronizer* mySynchronizer;

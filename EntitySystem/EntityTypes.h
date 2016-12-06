@@ -1,6 +1,5 @@
 #pragma once
-#include <bitset>
-#include "standard_datatype.hpp"
+#include "../Engine/snowblind_shared.h"
 #include "DataStructures/GrowingArray.h"
 #include "DataStructures/StaticArray.h"
 

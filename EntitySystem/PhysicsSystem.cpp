@@ -5,10 +5,13 @@
 #include "../Physics/RigidBody.h"
 #include "../Physics/PhysicsManager.h"
 #include "AABBComponent.h"
-CPhysicsSystem::CPhysicsSystem(EntityManager& anEntityManager, PhysicsManager* aPhysicsManager)
+
+#include "../Engine/Engine.h"
+
+CPhysicsSystem::CPhysicsSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, SPhysicsComponent>>())
-	, myPhysicsManager(aPhysicsManager)
 {
+	myPhysicsManager = Snowblind::Engine::GetInstance()->GetPhysicsManager();
 }
 
 void CPhysicsSystem::Update(float aDeltaTime)

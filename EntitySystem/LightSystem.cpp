@@ -6,11 +6,11 @@
 /* Engine Includes */
 #include "Synchronizer.h"
 #include "RenderCommand.h"
-
-CLightSystem::CLightSystem(EntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer)
+#include "../Engine/Engine.h"
+CLightSystem::CLightSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, LightComponent>>())
-	, mySynchronizer(aSynchronizer)
 {
+	mySynchronizer = Snowblind::Engine::GetInstance()->GetSynchronizer();
 }
 
 void CLightSystem::Update(float /*aDeltaTime*/)

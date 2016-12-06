@@ -1,7 +1,7 @@
 #pragma once
 #include "ControllerComponent.h"
 
-struct AIController final: public ControllerComponent
+struct AIComponent final: public ControllerComponent
 {
 
 };

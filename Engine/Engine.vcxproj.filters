@@ -283,7 +283,6 @@
     <ClInclude Include="AABB.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="LevelManager.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelFactory.h" />
   </ItemGroup>
@@ -444,7 +443,6 @@
     <ClCompile Include="AABB.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelFactory.cpp" />
   </ItemGroup>

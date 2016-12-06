@@ -12,10 +12,12 @@
 #include "AABBComponent.h"
 #include <Utilities.h>
 
-CRenderSystem::CRenderSystem(EntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer)
+#include "../Engine/Engine.h"
+
+CRenderSystem::CRenderSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, SRenderComponent>>())
-	, mySynchronizer(aSynchronizer)
 {
+	mySynchronizer = Snowblind::Engine::GetInstance()->GetSynchronizer();
 }
 
 void CRenderSystem::Update(float /*aDeltaTime*/)

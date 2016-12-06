@@ -18,7 +18,7 @@ namespace Snowblind
 };
 class JSONReader;
 class RigidBody;
-struct InputController;
+struct InputComponent;
 
 static void Jump(RigidBody* rigidbody);
 static void Forward(RigidBody* rigidbody);

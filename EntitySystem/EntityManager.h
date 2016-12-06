@@ -83,15 +83,3 @@ void EntityManager::AddSystem()
 {
 	mySystems.Add(new T(*this));
 }
-
-template <typename T>
-void EntityManager::AddSystem(Snowblind::Synchronizer* aSynchronizer)
-{
-	mySystems.Add(new T(*this, aSynchronizer));
-}
-
-template <typename T>
-void EntityManager::AddSystem(PhysicsManager* aManager)
-{
-	mySystems.Add(new T(*this, aManager));
-}

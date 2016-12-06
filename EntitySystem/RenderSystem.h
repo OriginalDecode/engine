@@ -10,7 +10,7 @@ class EntityManager;
 class CRenderSystem : public BaseSystem
 {
 public:
-	CRenderSystem(EntityManager& anEntityManager, Snowblind::Synchronizer* aSynchronizer);
+	CRenderSystem(EntityManager& anEntityManager);
 
 	void Update(float aDeltaTime) override;
 

@@ -3,7 +3,7 @@
 
 
 NetworkSystem::NetworkSystem(EntityManager& anEntityManager)
-	: BaseSystem(anEntityManager, CreateFilter<Requires<NetworkController>>())
+	: BaseSystem(anEntityManager, CreateFilter<Requires<NetworkComponent>>())
 {
 }
 

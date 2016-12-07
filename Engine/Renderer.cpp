@@ -173,6 +173,16 @@ namespace Snowblind
 	void Renderer::Render3DCommands()
 	{
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
+
+		m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+		for (CTerrain* terrain : myTerrainArray)
+		{
+			if (!terrain->HasLoaded())
+				continue;
+			terrain->Render(m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, myCamera->GetProjection(), m_ProcessShadows);
+		}
+
 		for (const RenderCommand& command : commands)
 		{
 			switch (command.myType)
@@ -181,7 +191,7 @@ namespace Snowblind
 				{
 					if (command.m_KeyOrText.empty())
 					{
-						TRACE_LOG("Failed to find model!");
+						TRACE_LOG("Key was empty");
 						continue;
 					}
 
@@ -197,17 +207,6 @@ namespace Snowblind
 					if(m_ProcessShadows)
 						continue;
 					mySkysphere->SetPosition(myPrevFrame.GetPosition());
-				}break;
-				case eType::TERRAIN:
-				{
-					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-					m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-					for (CTerrain* terrain : myTerrainArray)
-					{
-						if(!terrain->HasLoaded())
-							continue;
-						terrain->Render(m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, myCamera->GetProjection(), m_ProcessShadows);
-					}
 				}break;
 			}
 		}

@@ -32,7 +32,7 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 	const JSONElement& el = read_level.GetElement("root");
 
 
-	CreateTerrain("Data/Textures/flat_height.tga");
+	m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
 		CreateEntitiy(it->value["entity"].GetString(), read_level, it);
@@ -139,16 +139,14 @@ void LevelFactory::CreateInputComponent(JSONReader& entity_reader, Entity entity
 	component.m_ID = 0; //talk to network_manager for this id
 	component.m_InputHandle = new InputHandle;
 	component.m_InputHandle->Initiate(component.m_ID);
-
-	//Read Input stuffies
+	//input.m_InputHandle->Bind(Hash("string_to_hash"), [&] { function(); }); <- this is how you bind
 }
 
 void LevelFactory::CreateAIComponent(JSONReader& entity_reader, Entity entity_id)
 {
 	m_EntityManager->AddComponent<AIComponent>(entity_id);
-	AIComponent& component = m_EntityManager->GetComponent<AIComponent>(entity_id);
-
-	assert(false);
+	AIComponent& component = m_EntityManager->GetComponent<AIComponent>(entity_id); 
+	//read behaviour trees and stuff here...
 }
 
 void LevelFactory::CreateNetworkComponent(JSONReader& entity_reader, Entity entity_id)
@@ -156,34 +154,42 @@ void LevelFactory::CreateNetworkComponent(JSONReader& entity_reader, Entity enti
 	m_EntityManager->AddComponent<NetworkComponent>(entity_id);
 	NetworkComponent& component = m_EntityManager->GetComponent<NetworkComponent>(entity_id);
 
-	assert(false);
 }
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	//Snowblind::Engine::GetInstance()->GetThreadpool().AddWork(
-		//Work([&]() {
-		Snowblind::CTerrain* terrain = m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+	Snowblind::CTerrain* terrain = Snowblind::Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+	terrain->AddNormalMap("Data/Textures/normal.dds"); 
+	/*
+	Work([&](std::string texture) {
+		Snowblind::CTerrain* terrain = m_Engine->CreateTerrain(texture, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
 		terrain->AddNormalMap("Data/Textures/normal.dds");
-		//myTerrain.Add(terrain);
+	});
+	*/
+	
+	/*
+	myTerrain.Add(terrain);
 
-		//terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(512, 512));
-		//terrain->AddNormalMap("Data/Textures/t1_n.dds");
-		//myTerrain.Add(terrain);
+	terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(512, 512));
+	terrain->AddNormalMap("Data/Textures/t1_n.dds");
+	myTerrain.Add(terrain);
 
-		//terrain = myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, 0, 0), CU::Vector2f(512, 512));
-		//terrain->AddNormalMap("Data/Textures/t2_n.dds");
-		//myTerrain.Add(terrain);
+	terrain = myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, 0, 0), CU::Vector2f(512, 512));
+	terrain->AddNormalMap("Data/Textures/t2_n.dds");
+	myTerrain.Add(terrain);
 
-		//terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, 0, 510), CU::Vector2f(512, 512));
-		//terrain->AddNormalMap("Data/Textures/t3_n.dds");
-		//myTerrain.Add(terrain);
-		/*
-		for (s32 i = 0; i < myTerrain.Size(); i++)
-		{
+	terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, 0, 510), CU::Vector2f(512, 512));
+	terrain->AddNormalMap("Data/Textures/t3_n.dds");
+	myTerrain.Add(terrain);
+	
+	for (s32 i = 0; i < myTerrain.Size(); i++)
+	{
 		myTerrainBodies.Add(myPhysicsManager->CreateBody());
 		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
-		}*/
+	}
+	
 
-	//}));
+	}));*/
 }
+
+

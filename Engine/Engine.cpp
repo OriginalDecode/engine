@@ -210,7 +210,6 @@ namespace Snowblind
 		{
 			myTimeManager->Update();
 			myAssetsContainer->Update();
-			m_EntityManager->Update(m_DeltaTime);
 		}
 		myRenderer->Render();
 		m_Threadpool.Update();

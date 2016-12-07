@@ -29,5 +29,5 @@ private:
 	Snowblind::Engine* m_Engine			= nullptr;
 	EntityManager* m_EntityManager		= nullptr;
 	PhysicsManager* m_PhysicsManager	= nullptr;
-};
 
+};

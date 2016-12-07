@@ -108,8 +108,8 @@ namespace Snowblind
 		//myTextures.Add(new_texture);
 
 		std::sort(myTextures.begin(), myTextures.end(), [&](STexture& first, STexture& second) {
-			TRACE_LOG("\nFirst : %d\nType : %s", (u64)first.texture, CheckTextureType(first.m_Type).c_str());
-			TRACE_LOG("\nSecond : %d\nType : %s", (u64)second.texture, CheckTextureType(second.m_Type).c_str());
+			//TRACE_LOG("\nFirst : %d\nType : %s", (u64)first.texture, CheckTextureType(first.m_Type).c_str());
+			//TRACE_LOG("\nSecond : %d\nType : %s", (u64)second.texture, CheckTextureType(second.m_Type).c_str());
 			return first.m_Type < second.m_Type;
 		});
 

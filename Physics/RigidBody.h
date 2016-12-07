@@ -57,6 +57,7 @@ public:
 	float GetGravity() { return myGravity; }
 	bool IsEnabled() { return m_IsEnabled; }
 	void ToggleBody() { m_IsEnabled = !m_IsEnabled; }
+
 private:
 	CU::Vector3f myVelocity; //Only downwards right now.
 	CU::Vector3f myTerminalVelocity;

@@ -8,8 +8,8 @@
 
 #include "snowblind_shared.h"
 #include <string>
-#ifndef _WINDEF_
 
+#ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
 struct HWND__;
@@ -78,7 +78,7 @@ namespace Snowblind
 
 		void Update();
 		void Render();
-
+		void UpdateInput();
 
 		/*
 			Both of the APIs should be available at all time.
@@ -93,8 +93,6 @@ namespace Snowblind
 		//_________________________________________
 		// Settings
 		void ToggleVsync();
-
-
 		
 		Camera* GetCamera();
 		Camera* Get2DCamera();
@@ -142,10 +140,13 @@ namespace Snowblind
 		PhysicsManager* GetPhysicsManager() { return m_PhysicsManager; }
 		Threadpool& GetThreadpool();
 		
+
+		//_________________________________________
+		// Gets
 		const SLocalTime& GetLocalTime();
 		Window& GetWindow() { return m_Window; }
 		std::string GetLocalTimeAsString();
-
+		InputHandle* GetInputHandle() { return m_InputHandle; }
 
 		//_________________________________________
 		// Level Creation, Loading, Saving
@@ -186,6 +187,8 @@ namespace Snowblind
 		HWND myHWND;
 		Window m_Window;
 		DebugSystem m_DebugSystem;
+
+		InputHandle* m_InputHandle					= nullptr;
 
 		EntityManager* m_EntityManager				= nullptr;
 		PhysicsManager* m_PhysicsManager			= nullptr;

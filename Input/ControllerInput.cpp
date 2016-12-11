@@ -8,47 +8,46 @@ ControllerInput::ControllerInput(int aPlayer)
 
 }
 
-bool ControllerInput::IsConnected()
+void ControllerInput::Update()
 {
-	memcpy_s(&myPrevControllerState, sizeof(myPrevControllerState), &myControllerState, sizeof(myControllerState));
-	DWORD stateResult = XInputGetState(myControllerID, &myControllerState);
-	if (stateResult != ERROR_SUCCESS)
-	{
-		return false;
-	}
+	//memcpy_s(&m_PrevControllerState, sizeof(m_PrevControllerState), &m_ControllerState, sizeof(m_ControllerState));
 
+	DWORD stateResult = XInputGetState(myControllerID, &m_ControllerState);
+	if (stateResult != ERROR_SUCCESS)
+		return;
+
+	if (m_PrevState.m_PacketNum == m_ControllerState.dwPacketNumber)
+		return;
 
 	m_PrevState = m_State;
-
-	m_State.m_Buttons = myControllerState.Gamepad.wButtons;
-	m_State.m_ThumbRX = myControllerState.Gamepad.sThumbRX;
-	m_State.m_ThumbRY = myControllerState.Gamepad.sThumbRY;
-	m_State.m_ThumbLY = myControllerState.Gamepad.sThumbLY;
-	m_State.m_ThumbLX = myControllerState.Gamepad.sThumbLX;
-	m_State.m_RTrigger = myControllerState.Gamepad.bRightTrigger;
-	m_State.m_LTrigger = myControllerState.Gamepad.bLeftTrigger;
-
-	return true;
+	m_State.m_PacketNum = m_ControllerState.dwPacketNumber;
+	m_State.m_Buttons = m_ControllerState.Gamepad.wButtons;
+	m_State.m_ThumbRX = m_ControllerState.Gamepad.sThumbRX;
+	m_State.m_ThumbRY = m_ControllerState.Gamepad.sThumbRY;
+	m_State.m_ThumbLY = m_ControllerState.Gamepad.sThumbLY;
+	m_State.m_ThumbLX = m_ControllerState.Gamepad.sThumbLX;
+	m_State.m_RTrigger = m_ControllerState.Gamepad.bRightTrigger;
+	m_State.m_LTrigger = m_ControllerState.Gamepad.bLeftTrigger;
 }
 
 const int ControllerInput::GetControllerID() const //Get the controllerID, required to controll a player (as an example)
 {
 	return myControllerID;
 }
-
-void ControllerInput::Update(float aDeltaTime)
-{
-	myVibrationTime -= aDeltaTime;
-	if (myVibrationTime < 0)
-	{
-		XINPUT_VIBRATION vibration;
-		ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
-		vibration.wLeftMotorSpeed = 0;
-		vibration.wRightMotorSpeed = 0;
-		XInputSetState(myControllerID, &vibration);
-	}
-
-}
+//
+//void ControllerInput::Update(float aDeltaTime)
+//{
+//	myVibrationTime -= aDeltaTime;
+//	if (myVibrationTime < 0)
+//	{
+//		XINPUT_VIBRATION vibration;
+//		ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
+//		vibration.wLeftMotorSpeed = 0;
+//		vibration.wRightMotorSpeed = 0;
+//		XInputSetState(myControllerID, &vibration);
+//	}
+//
+//}
 
 void ControllerInput::Vibrate(unsigned short aLeftVal, unsigned short aRightVal, float someTime)
 {

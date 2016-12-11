@@ -148,9 +148,12 @@ namespace Snowblind
 		//RenderSpotlight();
 
 		myEngine->ResetRenderTargetAndDepth();
-		mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
 
 		myDeferredRenderer->Finalize();
+
+		/* condence these 3 calls to 1 with multiple data prameters? */
+		mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
+		mySkysphere->SetPosition(myPrevFrame.GetPosition());
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		//RenderParticles();
@@ -201,12 +204,6 @@ namespace Snowblind
 					CModel* model = myEngine->GetModel(command.m_KeyOrText);
 					model->SetOrientation(command.m_Orientation);
 					model->Render( m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, myCamera->GetProjection(), m_ProcessShadows);
-				}break;
-				case eType::SKYSPHERE:
-				{
-					if(m_ProcessShadows)
-						continue;
-					mySkysphere->SetPosition(myPrevFrame.GetPosition());
 				}break;
 			}
 		}

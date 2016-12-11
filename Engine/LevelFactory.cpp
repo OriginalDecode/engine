@@ -16,6 +16,8 @@
 #include <CameraComponent.h>
 #include <RigidBody.h>
 
+#include "../hashlist.h"
+
 void LevelFactory::Initiate()
 {
 	m_Engine = Snowblind::Engine::GetInstance();
@@ -66,14 +68,19 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONReader&
 
 	if (entity_reader.HasElement("controller"))
 	{
-		if(entity_reader.ReadElement("controller") == "input")
-		CreateInputComponent(entity_reader, e);
+		if (entity_reader.ReadElement("controller") == "input")
+			CreateInputComponent(entity_reader, e);
 
-		if (entity_reader.ReadElement("controller") == "network")
+		else if (entity_reader.ReadElement("controller") == "network")
 			CreateNetworkComponent(entity_reader, e);
 
-		if (entity_reader.ReadElement("controller") == "ai")
+		else if (entity_reader.ReadElement("controller") == "ai")
 			CreateAIComponent(entity_reader, e);
+
+		else
+
+			DL_ASSERT("Failed to find correct input controller tag!");
+
 	}
 }
 
@@ -133,12 +140,10 @@ void LevelFactory::CreateCameraComponent(JSONReader& entity_reader, Entity entit
 
 void LevelFactory::CreateInputComponent(JSONReader& entity_reader, Entity entity_id)
 {
+	//Is this component needed?
 	m_EntityManager->AddComponent<InputComponent>(entity_id);
 	InputComponent& component = m_EntityManager->GetComponent<InputComponent>(entity_id);
 	
-	component.m_ID = 0; //talk to network_manager for this id
-	component.m_InputHandle = new InputHandle;
-	component.m_InputHandle->Initiate(component.m_ID);
 	//input.m_InputHandle->Bind(Hash("string_to_hash"), [&] { function(); }); <- this is how you bind
 }
 

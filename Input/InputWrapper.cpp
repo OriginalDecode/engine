@@ -1,5 +1,6 @@
 #include "InputWrapper.h"
 #include <assert.h>
+
 bool InputWrapper::Initiate(HWND aHWND, HINSTANCE hInstance)
 {
 	DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&myDInput, nullptr);
@@ -15,25 +16,21 @@ bool InputWrapper::Initiate(HWND aHWND, HINSTANCE hInstance)
 	myKeyboard->Acquire();
 	myMouse->Acquire();
 
-	SetMouseSpeed(1);
-
-	LockCursor(false);
 	myHWND = aHWND;
 	return true;
 }
 
-bool InputWrapper::Update()
+void InputWrapper::Update()
 {
 	memcpy_s(&myPrevKeyState, sizeof(myPrevKeyState), myKeyState, sizeof(myKeyState));
-	memcpy_s(&myPrevMouseState, sizeof(myPrevMouseState), &myMouseState, sizeof(myMouseState));
 	HRESULT hr = myKeyboard->GetDeviceState(sizeof(myKeyState), (VOID**)&myKeyState);
 	if (FAILED(hr))
 	{
 		ZeroMemory(myKeyState, sizeof(myKeyState));
-
 		myKeyboard->Acquire();
 	}
 
+	memcpy_s(&myPrevMouseState, sizeof(myPrevMouseState), &myMouseState, sizeof(myMouseState));
 	hr = myMouse->GetDeviceState(sizeof(DIMOUSESTATE), (VOID**)&myMouseState);
 	if (FAILED(hr))
 	{
@@ -41,26 +38,13 @@ bool InputWrapper::Update()
 		myMouse->Acquire();
 	}
 
-
 	GetPhysicalCursorPos(&myCursorPos);
 	ScreenToClient(myHWND, &myCursorPos);
-	myMousePos.myX = float(myCursorPos.x);
-	myMousePos.myY = float(myCursorPos.y);
+	m_CurorPos.x = float(myCursorPos.x);
+	m_CurorPos.y = float(myCursorPos.y);
 
-	myMousePos.myZ += float(myMouseState.lZ);
-	if (myCursorIsLocked == true)
-	{
-		SetCursorPos(0, 0);
-	}
-
-	GetCursorPos(&myCursorPos);
-	ScreenToClient(myHWND, &myCursorPos);
-	return true;
-}
-
-void InputWrapper::LockCursor(bool someLock)
-{
-	myCursorIsLocked = someLock;
+	//GetCursorPos(&myCursorPos);
+	//ScreenToClient(myHWND, &myCursorPos);
 }
 
 float InputWrapper::MouseDirectX()
@@ -73,65 +57,48 @@ float InputWrapper::MouseDirectY()
 	return static_cast<float>(myMouseState.lY);
 }
 
-bool InputWrapper::MouseClick(int aButton)
-{
-	return (myMouseState.rgbButtons[aButton] & 0x80) != 0 && (myPrevMouseState.rgbButtons[aButton] & 0x80) == 0;
-}
-
-bool InputWrapper::MouseDown(int aButton)
-{
-	return (myMouseState.rgbButtons[aButton] & 0x80) != 0;
-}
-
-bool InputWrapper::MouseUp(int aButton)
-{
-	return (myMouseState.rgbButtons[aButton] & 0x80) == 0 && (myPrevMouseState.rgbButtons[aButton] & 0x80) != 0;
-}
-
-bool InputWrapper::KeyDown(KButton aKey)
+bool InputWrapper::IsDown(KButton aKey)
 {
 	return (myKeyState[UCHAR(aKey)] & 0x80) != 0;
 }
 
-bool InputWrapper::KeyClick(KButton aKey)
+bool InputWrapper::OnDown(KButton aKey)
 {
 	return (myKeyState[UCHAR(aKey)] & 0x80) != 0 && (myPrevKeyState[UCHAR(aKey)] & 0x80) == 0;
 }
 
-bool InputWrapper::KeyUp(KButton aKey)
+
+bool InputWrapper::OnRelease(KButton aKey)
 {
 	return (myKeyState[UCHAR(aKey)] & 0x80) == 0 && (myPrevKeyState[UCHAR(aKey)] & 0x80) != 0;
 }
 
-bool InputWrapper::KeyDown(UCHAR aKey)
+bool InputWrapper::IsDown(MouseInput button)
+{
+	return (myMouseState.rgbButtons[(s32)button] & 0x80) != 0;
+}
+
+bool InputWrapper::OnRelease(MouseInput button)
+{
+	return (myMouseState.rgbButtons[(s32)button] & 0x80) == 0 && (myPrevMouseState.rgbButtons[(s32)button] & 0x80) != 0;
+}
+
+bool InputWrapper::OnClick(MouseInput button)
+{
+	return (myMouseState.rgbButtons[(s32)button] & 0x80) != 0 && (myPrevMouseState.rgbButtons[(s32)button] & 0x80) == 0;
+}
+
+bool InputWrapper::IsDown(UCHAR aKey)
 {
 	return (myKeyState[aKey] & 0x80) != 0;
 }
 
-bool InputWrapper::KeyClick(UCHAR aKey)
+bool InputWrapper::OnDown(UCHAR aKey)
 {
 	return (myKeyState[aKey] & 0x80) != 0 && (myPrevKeyState[aKey] & 0x80) == 0;
 }
 
-bool InputWrapper::KeyUp(UCHAR aKey)
+bool InputWrapper::OnRelease(UCHAR aKey)
 {
 	return (myKeyState[aKey] & 0x80) == 0 && (myPrevKeyState[aKey] & 0x80) != 0;
 }
-
-void InputWrapper::SetMouseSpeed(const float aMouseSpeed)
-{
-	myMouseSpeed = aMouseSpeed;
-	if (myMouseSpeed < 0.01f)
-		myMouseSpeed = 0.01f;
-}
-
-void InputWrapper::CaptureWindowsCursor()
-{
-	myCursorIsLocked = !myCursorIsLocked;
-}
-
-void InputWrapper::ReleaseCursor()
-{
-	myCursorIsLocked = false;
-}
-

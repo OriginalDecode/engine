@@ -44,7 +44,7 @@ namespace Snowblind
 		void SetTranslation(const CU::Vector4f& translation);
 
 		void Update(const ControllerState& controller_state);
-		void Update(float x, float y);
+		void Update(const CU::Vector2f& cursor_pos );
 
 		void SetOrientation(const CU::Matrix44f& matrix);
 

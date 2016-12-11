@@ -13,10 +13,9 @@
 #include <SystemMonitor.h>
 #include <EngineDefines.h>
 #include <sstream>
-
 #include "Game.h"
 
-bool CApplication::Initiate()
+bool Application::Initiate()
 {
 	myEngine = Snowblind::Engine::GetInstance();
 	myCamera = myEngine->GetCamera();
@@ -26,16 +25,19 @@ bool CApplication::Initiate()
 	if (!myGame->Initiate())
 		return false;
 
+
 	//Keep at the end of initiate...
-	myLogicThread = new std::thread([&] { CApplication::Update(); });
+	myLogicThread = new std::thread([&] { Application::Update(); });
 	return true;
 }
 
-void CApplication::Update()
+void Application::Update()
 {
 	while (mySynchronizer->HasQuit() == false)
 	{
 		float deltaTime = myEngine->GetDeltaTime();
+
+		myEngine->UpdateInput();
 		myGame->Update(deltaTime);
 
 		std::stringstream ss;
@@ -49,50 +51,49 @@ void CApplication::Update()
 #ifdef _DEBUG
 		myEngine->Render();
 #endif
-
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();
 	}
 	myQuitFlag = true;
 }
 
-void CApplication::OnPause()
+void Application::OnPause()
 {
 	myEngine->OnPause();
 }
 
-void CApplication::OnResume()
+void Application::OnResume()
 {
 	myEngine->OnResume();
 }
 
-void CApplication::OnInactive()
+void Application::OnInactive()
 {
 	myEngine->OnInactive();
 }
 
-void CApplication::OnActive()
+void Application::OnActive()
 {
 	myEngine->OnActive();
 }
 
-void CApplication::OnExit()
+void Application::OnExit()
 {
 	myEngine->OnExit();
 	CleanUp();
 }
 
-void CApplication::OnAltEnter()
+void Application::OnAltEnter()
 {
 	myEngine->OnAltEnter();
 }
 
-bool CApplication::HasQuit()
+bool Application::HasQuit()
 {
 	return myQuitFlag;
 }
 
-bool CApplication::CleanUp()
+bool Application::CleanUp()
 {
 	myLogicThread->join();
 

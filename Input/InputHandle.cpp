@@ -5,38 +5,58 @@
 #include "ControllerInput.h"
 #include "InputWrapper.h"
 
-bool InputHandle::Initiate(u16 controller_ID)
+bool InputHandle::Initiate(HWND window_handle, HINSTANCE window_instance)
 {
-	m_Controller = new ControllerInput(controller_ID);
-	if (!m_Controller)
+
+	Snowblind::Engine* engine = Snowblind::Engine::GetInstance();
+	if (!engine)
 		return false;
 
 	m_Input = new InputWrapper;
 	if (!m_Input)
 		return false;
 
-	Snowblind::Engine* engine = Snowblind::Engine::GetInstance();
-	if (!engine)
-		return false;
-
-	if (!m_Input->Initiate(engine->GetWindow().GetHWND(), engine->GetWindow().GetWindowInstance()))
+	if (!m_Input->Initiate(window_handle, window_instance))
 		return false;
 	
 	return true;
 }
 
+void InputHandle::AddController(u16 controller_id)
+{
+	DL_ASSERT_EXP(m_ControllerID < m_ControllerMaxAmount, "Can't add more than %d controllers", m_ControllerMaxAmount);
+	m_Controller[m_ControllerID++] = new ControllerInput(controller_id);
+	DL_ASSERT_EXP(m_Controller[controller_id], "Failed to create a controller!");
+}
+
 void InputHandle::CleanUp()
 {
-	delete m_Controller;
-	m_Controller = nullptr;
+	for (ControllerInput* c : m_Controller)
+	{
+		delete c;
+		c = nullptr;
+	}
 
 	delete m_Input;
 	m_Input = nullptr;
 }
 
+void InputHandle::Update(float dt)
+{
+	if (!Snowblind::Engine::GetInstance()->IsWindowActive())
+		return;
+	/*
+	for (s32 i = 0; i < m_ControllerID; i++)
+	{
+		m_Controller[i]->Update();
+	}
+	*/
+	m_Input->Update();
+}
+
 void InputHandle::HandleInput()
 {
-	if(Snowblind::Engine::GetInstance()->IsWindowActive())
+	/*if(Snowblind::Engine::GetInstance()->IsWindowActive())
 	{
 		if (m_Controller->IsConnected())
 		{
@@ -143,7 +163,7 @@ void InputHandle::HandleInput()
 			CallFunction(s_MoveMouse_hash);
 
 		}
-	}
+	}*/
 }
 
 void InputHandle::Bind(u32 hash, std::function<void()> function)
@@ -153,12 +173,14 @@ void InputHandle::Bind(u32 hash, std::function<void()> function)
 
 float InputHandle::GetX()
 {
-	return m_Input->GetX();
+//	return m_Input->GetX();
+	return 0.f;
 }
 
 float InputHandle::GetY()
 {
-	return m_Input->GetY(); 
+	//return m_Input->GetY(); 
+	return 0.f;
 }
 
 float InputHandle::GetDX()

@@ -1,8 +1,4 @@
 {
 	"controller" : "input",
-	"camera" : true,
-	"physics": {
-		"mass": 10,
-		"shape":"box"
-	}
+	"camera" : true
 }

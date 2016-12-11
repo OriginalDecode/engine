@@ -88,11 +88,12 @@ namespace Snowblind
 		myOrientation.myMatrix[10] = axisZ.z;
 	}
 
-	void Camera::Update(float x, float y)
+	void Camera::Update(const CU::Vector2f& cursor_pos)
 	{
-		float x_value = x;//(float)controller_state.m_ThumbRX / SHRT_MAX;
-		float y_value = y;//(float)controller_state.m_ThumbRY / SHRT_MAX;
+		float x_value = cursor_pos.x;//(float)controller_state.m_ThumbRX / SHRT_MAX;
+		float y_value = cursor_pos.y;//(float)controller_state.m_ThumbRY / SHRT_MAX;
 
+		//m_CenterPoint += cursor_pos * m_LookSpeedModifier;
 		m_CenterPoint.x += x_value * m_LookSpeedModifier;
 		m_CenterPoint.y += y_value * m_LookSpeedModifier;
 		m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);

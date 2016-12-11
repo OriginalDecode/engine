@@ -25,6 +25,7 @@
 #include "IGraphicsAPI.h"
 #include <d3dcompiler.h>
 
+#include <Input/InputHandle.h>
 
 static constexpr char* vertex_shader = "VS";
 static constexpr char* pixel_shader = "PS";
@@ -105,7 +106,7 @@ namespace Snowblind
 		m_Window.ShowWindow();
 		myHWND = m_Window.GetHWND();
 
-		if(!m_Window.IsWindowActive())
+		if (!m_Window.IsWindowActive())
 			m_Window.OnActive();
 		SetWindowText(myHWND, "Snowblind Engine");
 #ifdef SNOWBLIND_DX11
@@ -115,28 +116,30 @@ namespace Snowblind
 		myAPI = new Vulkan;
 		const char* api_name = "Vulkan";
 #endif
-	
+
 		CreateInfo create_info;
 		create_info.m_HWND = myHWND;
 		create_info.m_Instance = instance_handle;
 		create_info.m_WindowWidth = window_width;
 		create_info.m_WindowHeight = window_height;
 		create_info.m_APIName = api_name;
-	
+
 		DL_ASSERT_EXP(myAPI->Initiate(create_info), "Engine : Failed to initiate graphicsAPI");
-	
+
 		myAssetsContainer = new Cache::CAssetsContainer;
 		myAssetsContainer->Initiate();
-	
+
 		m_TerrainManager = new Cache::TerrainManager;
-		
+
 		myFontManager = new CFontManager;
 		myFontManager->Initiate();
-	
+
 		mySynchronizer = new Synchronizer;
 		DL_ASSERT_EXP(mySynchronizer->Initiate(), "Engine : Failed to Initiate Synchronizer!");
-	
-		m_DebugSystem.AddDebugMenuItem("Toggle VSync", [&]() 
+
+		m_DebugSystem.Initiate(m_InputHandle);
+
+		m_DebugSystem.AddDebugMenuItem("Toggle VSync", [&]()
 		{
 			ToggleVsync();
 		});
@@ -145,17 +148,22 @@ namespace Snowblind
 		my2DCamera = new Snowblind::Camera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
 		myRenderer = new Renderer;
 		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
-	
+
 		myTimeManager = new CU::TimeManager;
 		Randomizer::Create();
-	
+
 		m_PhysicsManager = new PhysicsManager;
 
 		m_EntityManager = new EntityManager;
 		m_EntityManager->Initiate();
-		AddEntitySystems(); 
+		AddEntitySystems();
 
 		m_Threadpool.Initiate();
+
+		m_InputHandle = new InputHandle;
+		m_InputHandle->Initiate(myHWND, instance_handle);
+		m_InputHandle->AddController(0);
+
 
 		m_IsInitiated = true;
 		return true;
@@ -163,6 +171,11 @@ namespace Snowblind
 
 	bool Engine::CleanUp()
 	{
+		m_InputHandle->CleanUp();
+		SAFE_DELETE(m_InputHandle);
+		if (m_InputHandle)
+			return false;
+
 		m_Threadpool.CleanUp();
 		SAFE_DELETE(myAssetsContainer);
 		SAFE_DELETE(mySynchronizer);
@@ -213,13 +226,18 @@ namespace Snowblind
 		}
 		myRenderer->Render();
 		m_Threadpool.Update();
-		//m_DebugSystem.Update();
+		m_DebugSystem.Update();
 
 	}
 
 	void Engine::Render()
 	{
-		//m_DebugSystem.Render();
+		m_DebugSystem.Render();
+	}
+
+	void Engine::UpdateInput()
+	{
+		m_InputHandle->Update(m_DeltaTime);
 	}
 
 	void Engine::CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
@@ -230,10 +248,10 @@ namespace Snowblind
 			NULL,
 			NULL,
 			shader_type.c_str(),
-			feature_level.c_str(), 
-			shader_flags, 
-			NULL, 
-			&out_compiled_shader, 
+			feature_level.c_str(),
+			shader_flags,
+			NULL,
+			&out_compiled_shader,
 			&out_compile_message);
 
 		GetAPI()->HandleErrors(hr, "Failed to compile shader!");
@@ -379,8 +397,8 @@ namespace Snowblind
 	{
 		//m_Threadpool.AddWork(Work([&]() {
 		return myAssetsContainer->LoadModel(aFilePath, effect);
-	/*	}));
-		return aFilePath;*/
+		/*	}));
+			return aFilePath;*/
 	}
 
 	std::string string_together(u16 time, u16 to_compare)
@@ -499,4 +517,4 @@ namespace Snowblind
 		m_DebugSystem.AddToDebugText(debug_text);
 	}
 
-	};
+};

@@ -16,11 +16,10 @@ namespace std
 };
 
 class Game;
-
-class CApplication
+class Application
 {
 public:
-	CApplication() = default;
+	Application() = default;
 	
 	bool Initiate();
 
@@ -35,8 +34,6 @@ public:
 	bool HasQuit();
 	bool CleanUp();
 private:
-	void UpdateInput(float aDeltaTime);
-
 	/* Threading */
 	std::thread* myLogicThread;
 	volatile bool myQuitFlag = false;

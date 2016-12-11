@@ -2,19 +2,16 @@
 #pragma comment (lib, "dinput8.lib")
 #pragma comment (lib, "dxguid.lib")
 #include <dinput.h>
+#include <standard_datatype.hpp>
+#include "../CommonLib/Math/Vector/Vector.h"
 
-struct Position
-{
-	float myX;
-	float myY;
-	float myZ;
-};
-
-enum MButton
+enum class MouseInput
 {
 	LEFT,
 	RIGHT,
-	MIDDLE
+	SCROLL,
+	SIDE_UP,
+	SIDE_DOWN
 };
 
 enum class KButton
@@ -109,58 +106,48 @@ class InputWrapper
 {
 public:
 	InputWrapper() = default;
-	//static void Create(HWND aHWND, HINSTANCE hInstance);
-	//static void Destroy();
+	
 	bool Initiate(HWND aHWND, HINSTANCE hInstance);
+	void Update();
 
-	//static InputWrapper* GetInstance();
 
-	bool KeyDown(KButton aKey);
-	bool KeyClick(KButton aKey);
-	bool KeyUp(KButton aKey);
+	//________________________
+	// KEYBOARD
+	bool IsDown(KButton aKey);
+	bool OnDown(KButton aKey);
+	bool OnRelease(KButton aKey);
 
-	bool KeyDown(UCHAR aKey);
-	bool KeyClick(UCHAR aKey);
-	bool KeyUp(UCHAR aKey);
+	bool IsDown(UCHAR aKey);
+	bool OnDown(UCHAR aKey);
+	bool OnRelease(UCHAR aKey);
 
-	bool MouseClick(int aButton);
-	bool MouseDown(int aButton);
-	bool MouseUp(int aButton);
+
+	//________________________
+	// MOUSE
+	bool OnClick(MouseInput button);
+	bool IsDown(MouseInput button);
+	bool OnRelease(MouseInput button);
+
+	CU::Vector2f GetCursorPos() const { return m_CurorPos; }
 
 	float MouseDirectX();
 	float MouseDirectY();
 
-	void LockCursor(bool someLock);
-
-	bool Update();
-
-	void SetMouseSpeed(const float aMouseSpeed);
-
-	void CaptureWindowsCursor();
-	void ReleaseCursor();
-
-
-	float GetX() { return myMousePos.myX; }
-	float GetY() { return myMousePos.myY; }
 
 private:
+	HWND myHWND;
 	IDirectInput8* myDInput;
 
+	/* Keyboard */
 	IDirectInputDevice8* myKeyboard;
 	UCHAR myKeyState[256];
 	UCHAR myPrevKeyState[256];
-
+	
+	/* Mouse */
 	IDirectInputDevice8* myMouse;
 	DIMOUSESTATE2 myMouseState;
 	DIMOUSESTATE2 myPrevMouseState;
 
-	Position myMousePos;
 	POINT myCursorPos;
-	HWND myHWND;
-
-	bool myCursorIsLocked;
-	bool myWindowIsActive;
-	float myMouseSpeed;
-	float myAcceleration;
-
+	CU::Vector2f m_CurorPos;
 };

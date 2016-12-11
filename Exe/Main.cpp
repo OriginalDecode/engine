@@ -5,7 +5,7 @@
 #include "../Engine/Engine.h"
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-CApplication* newApplication = nullptr;
+Application* newApplication = nullptr;
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
 	DL_Debug::Debug::Create();
@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	float w = 1920;
 	float h = 1080;
-	newApplication = new CApplication();
+	newApplication = new Application();
 
 	Snowblind::Engine::Create();
 	Snowblind::Engine::GetInstance()->Initiate(w, h, anInstance, WindowProc);

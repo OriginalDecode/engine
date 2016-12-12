@@ -22,7 +22,7 @@ static Ticket_Mutex g_ModelMutex;
 		CModel();
 		bool CleanUp() override;
 		CModel* CreateModel(const std::string& filename);
-		void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false) override;
+		void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows = false) override;
 
 		void AddChild(CModel* aChild);
 		void SetIsLightmesh();
@@ -37,6 +37,8 @@ static Ticket_Mutex g_ModelMutex;
 		void SetWHD(CU::Vector3f whd);
 	private:
 		void InitConstantBuffer();
+		void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale) override;
+
 		CU::GrowingArray<SVertexTypePosCol> myVertices;
 		CU::GrowingArray<s32> m_Indices;
 
@@ -45,7 +47,5 @@ static Ticket_Mutex g_ModelMutex;
 
 		CU::Matrix44f myOrientation;
 		std::bitset<eModelStates::_COUNT> myModelStates;
-
-		void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
 	};
 }

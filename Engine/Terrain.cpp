@@ -84,12 +84,12 @@ namespace Snowblind
 		return true;
 	}
 
-	void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
+	void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows)
 	{
 #ifdef SNOWBLIND_DX11
 		if (!myIsNULLObject)
 		{
-			__super::Render(aCameraOrientation, aCameraProjection, render_shadows);
+			__super::Render(aCameraOrientation, aCameraProjection, scale, render_shadows);
 			myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 			if (!render_shadows)
@@ -222,7 +222,7 @@ namespace Snowblind
 #endif
 	}
 
-	void CTerrain::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+	void CTerrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale)
 	{
 #ifdef SNOWBLIND_DX11
 		if (myIsNULLObject == false)
@@ -233,6 +233,7 @@ namespace Snowblind
 			myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
 			myConstantStruct->projection = aCameraProjection;
 			myConstantStruct->time.x = myEngine->GetDeltaTime();
+			myConstantStruct->scale = scale;
 
 			m_PSConstantStruct->camPos = myOrientation.GetTranslation();
 

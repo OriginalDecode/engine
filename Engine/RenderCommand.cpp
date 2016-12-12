@@ -61,10 +61,11 @@ RenderCommand::RenderCommand(const eType& aType)
 {
 }
 
-RenderCommand::RenderCommand(const eType& aType, const std::string& modelKey, const CU::Matrix44f& orientation)
+RenderCommand::RenderCommand(const eType& aType, const std::string& modelKey, const CU::Matrix44f& orientation, const CU::Vector4f& scale)
 	: myType(aType)
 	, m_KeyOrText(modelKey)
 	, m_Orientation(orientation)
+	, m_Scale(scale)
 	, myCommandType(eCommandBuffer::e3D)
 {
 }

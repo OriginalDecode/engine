@@ -12,7 +12,7 @@ namespace Snowblind
 
 	CBaseModel::~CBaseModel() = default;
 
-	void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
+	void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows)
 	{
 #ifdef SNOWBLIND_DX11
 		myContext->IASetInputLayout(myVertexLayout);
@@ -27,7 +27,7 @@ namespace Snowblind
 			myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->m_Shader : nullptr);
 			myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->m_Shader : nullptr);
 		}
-		SetMatrices(aCameraOrientation, aCameraProjection);
+		UpdateConstantBuffer(aCameraOrientation, aCameraProjection, scale);
 #endif
 	}
 

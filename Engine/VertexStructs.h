@@ -54,4 +54,5 @@ struct SVertexBaseStruct
 	CU::Matrix44f world; 
 	CU::Matrix44f invertedView;
 	CU::Matrix44f projection;
+	CU::Vector4f scale;
 };

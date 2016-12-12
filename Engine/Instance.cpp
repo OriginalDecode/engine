@@ -31,7 +31,7 @@ namespace Snowblind
 
 	void CInstance::Render(const CU::Matrix44f& previousOrientation, Camera& aCamera)
 	{
-		myModel->Render(previousOrientation, aCamera.GetProjection());
+		//myModel->Render(previousOrientation, aCamera.GetProjection());
 	}
 
 	void CInstance::SetPosition(CU::Math::Vector3<float> aPosition)

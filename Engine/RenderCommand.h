@@ -31,7 +31,9 @@ struct RenderCommand
 	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range);
 	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& angle, const float& range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix);
 
-	RenderCommand(const eType& aType, const std::string& modelKey, const CU::Matrix44f& orientation);
+
+	//Should all of this data be copied instead of const ref since the memory is going to get lost the next frame anyway?
+	RenderCommand(const eType& aType, const std::string& modelKey, const CU::Matrix44f& orientation, const CU::Vector4f& scale);
 	RenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& position);
 
 
@@ -46,6 +48,7 @@ struct RenderCommand
 	CU::Vector3f myPosition;
 	CU::Vector3f myColor;
 	CU::Vector3f myDirection;
+	CU::Vector4f m_Scale;
 
 	CU::Matrix44f m_Orientation;
 

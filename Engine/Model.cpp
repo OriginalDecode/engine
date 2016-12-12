@@ -62,7 +62,7 @@ namespace Snowblind
 		}
 		EndTicketMutex(&g_ModelMutex);
 
-		for each (CModel* child in myChildren)
+		for (CModel* child : myChildren)
 		{
 			child->CreateModel(filename);
 		}
@@ -70,12 +70,12 @@ namespace Snowblind
 		return this;
 	}
 
-	void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
+	void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows)
 	{
 #ifdef SNOWBLIND_DX11
 		if (!myIsNULLObject)
 		{
-			__super::Render(aCameraOrientation, aCameraProjection, render_shadows);
+			__super::Render(aCameraOrientation, aCameraProjection, scale, render_shadows);
 			if (!myIsLightMesh)
 				myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			if (mySurfaces.Size() > 0)
@@ -104,7 +104,7 @@ namespace Snowblind
 		for (CModel* child : myChildren)
 		{
 			child->SetPosition(myOrientation.GetPosition());
-			child->Render(aCameraOrientation, aCameraProjection);
+			child->Render(aCameraOrientation, aCameraProjection, scale, render_shadows);
 		}
 #endif
 	}
@@ -171,7 +171,7 @@ namespace Snowblind
 		m_WHD = whd;
 	}
 
-	void CModel::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+	void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale)
 	{
 #ifdef SNOWBLIND_DX11
 		if (myIsNULLObject == false)
@@ -181,6 +181,7 @@ namespace Snowblind
 			myConstantStruct->world = myOrientation;
 			myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
 			myConstantStruct->projection = aCameraProjection;
+			myConstantStruct->scale = scale;
 
 
 			D3D11_MAPPED_SUBRESOURCE msr;

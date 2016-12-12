@@ -22,7 +22,7 @@ namespace Snowblind
 		
 		bool Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
 		bool CleanUp() override;
-		void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false) override;
+		void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows = false) override;
 
 		void Save(const std::string& aFilename);
 		void Load(const std::string& aFilePath);
@@ -38,7 +38,7 @@ namespace Snowblind
 	private:
 		bool m_HasLoaded = false;
 
-		void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
+		void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale) override;
 
 		void CreateVertices(u32 width, u32 height, const CU::Vector3f& position);
 		void InitConstantBuffer();

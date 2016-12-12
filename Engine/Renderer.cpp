@@ -183,7 +183,7 @@ namespace Snowblind
 		{
 			if (!terrain->HasLoaded())
 				continue;
-			terrain->Render(m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, myCamera->GetProjection(), m_ProcessShadows);
+			terrain->Render(m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, myCamera->GetProjection(), CU::Vector4f(1,1,1,1), m_ProcessShadows);
 		}
 
 		for (const RenderCommand& command : commands)
@@ -203,7 +203,7 @@ namespace Snowblind
 					 
 					CModel* model = myEngine->GetModel(command.m_KeyOrText);
 					model->SetOrientation(command.m_Orientation);
-					model->Render( m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, myCamera->GetProjection(), m_ProcessShadows);
+					model->Render( m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, myCamera->GetProjection(), command.m_Scale, m_ProcessShadows);
 				}break;
 			}
 		}

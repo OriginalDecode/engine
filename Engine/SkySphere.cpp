@@ -77,8 +77,8 @@ namespace Snowblind
 			srv[0] = layer.m_Texture ? layer.m_Texture->GetShaderView() : nullptr;
 			srv[1] = aDepthTexture->GetDepthStencilView();
 			myAPI->GetContext()->PSSetShaderResources(0, 2, &srv[0]);
-
-			layer.m_Model->Render(anOrientation, myCamera->GetProjection());
+			//(#LINUS) Fix scale.
+			layer.m_Model->Render(anOrientation, myCamera->GetProjection(), CU::Vector4f(1,1,1,1));
 
 			srv[0] = nullptr;
 			srv[1] = nullptr;

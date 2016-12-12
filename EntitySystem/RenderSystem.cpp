@@ -30,6 +30,10 @@ void CRenderSystem::Update(float /*aDeltaTime*/)
 			TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 
 			RenderComponent& render = GetComponent<RenderComponent>(e);
-			mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, render.myModelID, translation.myOrientation));
+			mySynchronizer->AddRenderCommand(RenderCommand(
+				eType::MODEL
+				, render.myModelID
+				, translation.myOrientation
+				, render.scale));
 	}
 }

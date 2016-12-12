@@ -9,6 +9,7 @@ cbuffer Matrices : register(b0)
 	row_major float4x4 World;
 	row_major float4x4 View;
 	row_major float4x4 Projection;
+	float4 scale;
 };
 
 //---------------------------------
@@ -39,9 +40,8 @@ struct VS_OUTPUT
 VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-
-
-	output.pos = mul(input.pos, World);
+	output.pos = input.pos * float4(scale.xyz, 1);
+	output.pos = mul(output.pos, World);
 	output.pos = mul(output.pos, View);
 	output.pos = mul(output.pos, Projection);
 	output.uv = input.uv;

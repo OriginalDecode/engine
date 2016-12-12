@@ -3,31 +3,38 @@
 	{
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
-			"position" : [ 25, 5, 25 ]
+			"position" : [ 25, 5, 25 ],
+			"scale" : [1,2,1]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
-			"position" : [ 25, 7, 23 ]
+			"position" : [ 25, 7, 23 ],
+			"scale" : [1,1,1]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 25 ]
+			"position" : [ 100, 0, 25 ],
+			"scale" : [1,1,1]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 27 ]
+			"position" : [ 100, 0, 27 ],
+			"scale" : [1,1,1]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 29 ]
+			"position" : [ 100, 0, 29 ],
+			"scale" : [1,1,1]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 31 ]
+			"position" : [ 100, 0, 31 ],
+			"scale" : [1,1,1]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 33 ]
+			"position" : [ 100, 0, 33 ],
+			"scale" : [1,1,1]
 		},
 		"player" : {
 			"entity" : "Data/Levels/player.json",

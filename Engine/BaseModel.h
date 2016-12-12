@@ -28,14 +28,14 @@ namespace Snowblind
 		CBaseModel();
 		virtual ~CBaseModel() = 0;
 		virtual bool CleanUp() = 0;
-		virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false);
+		virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows = false);
 		void SetEffect(Effect* anEffect);
 	protected:
 		std::string m_Filename;
 		void InitVertexBuffer();
 		void InitIndexBuffer();
 		virtual void InitConstantBuffer() = 0;
-		virtual void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
+		virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale) = 0;
 		Engine* myEngine = nullptr;
 		CU::Vector3f m_WHD;
 
@@ -56,8 +56,8 @@ namespace Snowblind
 		IndexBufferWrapper* myIndexBuffer = nullptr;
 
 		IBuffer* myConstantBuffer = nullptr;
-
 		SVertexBaseStruct* myConstantStruct = nullptr;
+
 
 		bool myIsNULLObject = true;
 		bool myIsLightMesh = false;

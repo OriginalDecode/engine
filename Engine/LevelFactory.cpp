@@ -58,7 +58,11 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONReader&
 	//		m_AABBs.Add(aabb);
 
 	if (entity_reader.HasElement("graphics"))
-		CreateGraphicsComponent(entity_reader, e);
+	{
+		CU::Vector3f scale;
+		level_reader._ReadElement(it->value["scale"], scale);
+		CreateGraphicsComponent(entity_reader, scale, e);
+	}
 
 	if (entity_reader.HasElement("physics"))
 		CreatePhysicsComponent(entity_reader, e);
@@ -91,7 +95,7 @@ void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector
 	component.myOrientation.SetPosition(position);
 }
 
-void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id)
+void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, CU::Vector4f scale, Entity entity_id)
 {
 	m_EntityManager->AddComponent<RenderComponent>(entity_id);
 	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
@@ -100,6 +104,8 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
 		el["shader"].GetString());
+
+	component.scale = scale;
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)

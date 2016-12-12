@@ -24,7 +24,7 @@
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
 			"position" : [ 100, 0, 29 ],
-			"scale" : [1,1,1]
+			"scale" : [1,5,1]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 

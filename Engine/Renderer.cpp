@@ -48,7 +48,7 @@ namespace Snowblind
 		//CU::Vector3f(95, 7.f, 28.f)
 		m_Shadowlight = new ShadowSpotlight;
 		m_Shadowlight->Initiate(
-			CU::Vector3f(95, 7.f, 28.f)
+			CU::Vector3f(85, 7.f, 28.f)
 			, CU::Vector3f(1.f, 0.5f, 0.f)
 			, 2048.f);
 
@@ -161,6 +161,8 @@ namespace Snowblind
 
 		Render2DCommands();
 		myEngine->Present();
+
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
 
 		mySynchronizer->WaitForLogic();
 		mySynchronizer->SwapBuffer();

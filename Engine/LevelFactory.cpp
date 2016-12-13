@@ -106,6 +106,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, CU::Vector
 		el["shader"].GetString());
 
 	component.scale = scale;
+	component.scale.w = 1;
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)

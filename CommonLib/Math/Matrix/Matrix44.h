@@ -155,6 +155,17 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
+		Matrix44<TYPE> Matrix44<TYPE>::CreateScaleMatrix(const Vector4<TYPE>& scale = Vector4<TYPE>(1,1,1,1))
+		{
+			Matrix44 to_return;
+			to_return.rows[0] = Vector4<TYPE>(scale.x, 0, 0, 0);
+			to_return.rows[1] = Vector4<TYPE>(0, scale.y, 0, 0);
+			to_return.rows[2] = Vector4<TYPE>(0, 0, scale.z, 0);
+			to_return.rows[3] = Vector4<TYPE>(0, 0, 0, scale.w);
+			return to_return;
+		}
+
+		template<typename TYPE>
 		void Matrix44<TYPE>::SetRotation3dX(const TYPE& aRadian)
 		{
 			Matrix44<TYPE> rotationMatrix = Matrix44::CreateRotateAroundX(aRadian);

@@ -33,8 +33,8 @@
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 33 ],
-			"scale" : [1,1,1]
+			"position" : [ 100, 0, 41 ],
+			"scale" : [1,1,5]
 		},
 		"player" : {
 			"entity" : "Data/Levels/player.json",

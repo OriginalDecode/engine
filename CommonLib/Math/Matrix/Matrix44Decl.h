@@ -26,7 +26,7 @@ namespace CommonUtilities
 			static Matrix44<TYPE> CreateRotateAroundZ(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateProjectionMatrixLH(TYPE aNearZ, TYPE aFarZ, TYPE anAspectRatio, TYPE aFoVAngle);
 			static Matrix44<TYPE> CreateOrthogonalMatrixLH(TYPE aWidth, TYPE aHeight, TYPE aNearZ, TYPE aFarZ);
-
+			static Matrix44<TYPE> CreateScaleMatrix(const Vector4<TYPE>& scale /* = CU::Vector4<T>(1,1,1,1) */);
 
 			union
 			{

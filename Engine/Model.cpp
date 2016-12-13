@@ -178,7 +178,7 @@ namespace Snowblind
 		{
 			DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 
-			myConstantStruct->world = myOrientation;
+			myConstantStruct->world = myOrientation * CU::Matrix44f::CreateScaleMatrix(scale);
 			myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
 			myConstantStruct->projection = aCameraProjection;
 			myConstantStruct->scale = scale;

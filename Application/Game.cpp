@@ -73,7 +73,8 @@ void Game::Update(float dt)
 		m_Camera->Move(Snowblind::eDirection::UP, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::X))
 		m_Camera->Move(Snowblind::eDirection::DOWN, -50.f * dt);
-
+	if (input_wrapper->OnDown(KButton::Y))
+		Snowblind::Engine::GetInstance()->ToggleWireframe();
 
 
 

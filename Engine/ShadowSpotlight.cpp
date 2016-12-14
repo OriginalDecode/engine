@@ -13,6 +13,7 @@ namespace Snowblind
 		m_Camera = new Camera(m_BufferSize, m_BufferSize, 50.f, 1.f, 90.f);
 		m_Camera->SetPosition(position);
 		m_Camera->RotateAroundY(CL::DegreeToRad(90.f) * direction.x);
+		m_Camera->RotateAroundZ(CL::DegreeToRad(90.f) * direction.z);
 		m_Camera->RotateAroundX(CL::DegreeToRad(90.f) * direction.y);
 
 

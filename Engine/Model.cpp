@@ -178,11 +178,10 @@ namespace Snowblind
 		{
 			DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 
-			myConstantStruct->world = myOrientation * CU::Matrix44f::CreateScaleMatrix(scale);
+			myConstantStruct->world = myOrientation;
 			myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
 			myConstantStruct->projection = aCameraProjection;
 			myConstantStruct->scale = scale;
-
 
 			D3D11_MAPPED_SUBRESOURCE msr;
 			myAPI->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);

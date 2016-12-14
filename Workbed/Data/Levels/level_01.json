@@ -4,37 +4,44 @@
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
 			"position" : [ 25, 5, 25 ],
-			"scale" : [1,2,1]
+			"scale" : [1,2,1],
+			"rotation" : [1,1,1]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
 			"position" : [ 25, 7, 23 ],
-			"scale" : [1,1,1]
+			"scale" : [1,1,1],
+			"rotation" : [1,1,1]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
 			"position" : [ 100, 0, 25 ],
-			"scale" : [1,1,1]
+			"scale" : [1,1,1],
+			"rotation" : [0,0,0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
 			"position" : [ 100, 0, 27 ],
-			"scale" : [1,1,1]
+			"scale" : [1,1,1],
+			"rotation" : [0,0,0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
 			"position" : [ 100, 0, 29 ],
-			"scale" : [1,5,1]
+			"scale" : [1,5,1],
+			"rotation" : [0,0,0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
 			"position" : [ 100, 0, 31 ],
-			"scale" : [1,1,1]
+			"scale" : [1,1,1],
+			"rotation" : [0,0,0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
 			"position" : [ 100, 0, 41 ],
-			"scale" : [1,1,5]
+			"scale" : [1,1,5],
+			"rotation" : [0,0,0]
 		},
 		"player" : {
 			"entity" : "Data/Levels/player.json",

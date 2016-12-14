@@ -61,7 +61,10 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONReader&
 	{
 		CU::Vector3f scale;
 		level_reader._ReadElement(it->value["scale"], scale);
-		CreateGraphicsComponent(entity_reader, scale, e);
+		CU::Vector3f rotation;
+		level_reader._ReadElement(it->value["rotation"], rotation);
+
+		CreateGraphicsComponent(entity_reader, scale, rotation, e);
 	}
 
 	if (entity_reader.HasElement("physics"))
@@ -95,7 +98,7 @@ void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector
 	component.myOrientation.SetPosition(position);
 }
 
-void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, CU::Vector4f scale, Entity entity_id)
+void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, CU::Vector4f scale, CU::Vector4f rotation, Entity entity_id)
 {
 	m_EntityManager->AddComponent<RenderComponent>(entity_id);
 	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
@@ -104,6 +107,8 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, CU::Vector
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
 		el["shader"].GetString());
+
+	component.m_Rotation = rotation; 
 
 	component.scale = scale;
 	component.scale.w = 1;

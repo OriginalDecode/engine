@@ -18,7 +18,7 @@ private:
 	void CreateTerrain(std::string terrain_path);
 
 	void CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position);
-	void CreateGraphicsComponent(JSONReader& entity_reader, CU::Vector4f scale, Entity entity_id);
+	void CreateGraphicsComponent(JSONReader& entity_reader, CU::Vector4f scale, CU::Vector4f rotation, Entity entity_id);
 	void CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id);
 	void CreateCameraComponent(JSONReader& entity_reader, Entity entity_id);
 

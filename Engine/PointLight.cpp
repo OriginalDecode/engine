@@ -61,7 +61,7 @@ namespace Snowblind
 
 	void CPointLight::Render(const CU::Matrix44f& previousOrientation, Camera* camera)
 	{
-		//m_Model->Render(previousOrientation, camera->GetProjection());
+		m_Model->Render(previousOrientation, camera->GetProjection(), CU::Vector4f(1,1,1,1));
 	}
 
 	const SPointlightData& CPointLight::GetData() const

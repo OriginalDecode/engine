@@ -139,5 +139,5 @@ float4 PS(VS_OUTPUT input) : SV_Target
 			finalColor *= 0.42;
 	}
 
-	return float4(finalColor, 1.f);
+	return float4(finalColor, 1.f) * 0.5;
 };

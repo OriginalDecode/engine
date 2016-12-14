@@ -43,6 +43,20 @@
 			"scale" : [1,1,5],
 			"rotation" : [0,0,0]
 		},
+		"object" : 	{ 
+			"entity":"Data/Levels/spotlight.json", 
+			"position" : [ 85, 7, 28 ],
+			"range" : 50,
+			"angle" : 75,
+			"color" : [255,255,255],
+			"direction":[0, 90, 0]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/pointlight.json", 
+			"position" : [ 50, 2, 50 ],
+			"color": [ 0, 0, 255 ],
+			"range" : 10
+		},
 		"player" : {
 			"entity" : "Data/Levels/player.json",
 			"position" : [ 0, 10, 5]

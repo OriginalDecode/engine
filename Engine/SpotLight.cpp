@@ -6,20 +6,24 @@ namespace Snowblind
 {
 	CSpotLight::CSpotLight()
 	{
-		myLightMesh = new CInstance();
-		myLightMesh->Initiate("Data/Model/lightMeshes/cone.fbx", "Data/Shaders/T_Deferred_Spotlight.json");
-		myLightMesh->SetIsLightmesh();
+		Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/cone.fbx", "Data/Shaders/T_Deferred_Spotlight.json");
+		m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/cone.fbx");
+		m_Model->SetIsLightmesh();
+		//myLightMesh = new CInstance;
+		//myLightMesh->Initiate("Data/Model/lightMeshes/cone.fbx", "Data/Shaders/T_Deferred_Spotlight.json");
+		//myLightMesh->SetIsLightmesh();
 	}
 
 
 	CSpotLight::~CSpotLight()
 	{
-		SAFE_DELETE(myLightMesh);
+		//SAFE_DELETE(myLightMesh);
 	}
 
 	void CSpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera)
 	{
-		myLightMesh->Render(previousOrientation, *aCamera);
+		//#LINUS Make a better way to scale
+		m_Model->Render(previousOrientation, aCamera->GetProjection(), CU::Vector4f(1,1,1,1));
 	}
 
 	SSpotlightData& CSpotLight::GetData()
@@ -35,7 +39,8 @@ namespace Snowblind
 
 	void CSpotLight::SetPosition(const CU::Vector3f& aPosition)
 	{
-		myLightMesh->SetPosition(aPosition);
+		m_Model->GetOrientation().SetPosition(aPosition);
+		//myLightMesh->SetPosition(aPosition);
 		myBaseMatrix.SetPosition(aPosition);
 		myData.myLightPosition = aPosition;
 		myData.myOrientation.SetPosition(aPosition);
@@ -46,6 +51,9 @@ namespace Snowblind
 		myData.myDirection.x = aDirection.x;
 		myData.myDirection.y = aDirection.y;
 		myData.myDirection.z = aDirection.z;
+
+
+		m_Model->GetOrientation().SetForward(myData.myDirection);
 
 		//myData.myOrientation.SetForward(myData.myDirection);
 	}

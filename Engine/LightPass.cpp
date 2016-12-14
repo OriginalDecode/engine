@@ -128,8 +128,8 @@ namespace Snowblind
 		mySpotlightVertexConstantData.scale.x = data.myRange;
 		mySpotlightVertexConstantData.scale.y = data.myRange;
 
-		mySpotlightVertexConstantData.angle.x = data.myAngle;
-		mySpotlightVertexConstantData.angle.y = data.myAngle;
+		mySpotlightVertexConstantData.scale.z = data.myAngle;
+		mySpotlightVertexConstantData.scale.w = data.myAngle;
 
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));

@@ -51,18 +51,8 @@ float CalculateFalloff(float someDistance, float someRange)
 
 float CalculateTotalAttenuation(float someDistance, float someRange)
 {
-	float totalAttenuation = saturate(CalculateAttenuation(someDistance) * CalculateFalloff(someDistance, someRange));
+	float totalAttenuation = CalculateAttenuation(someDistance) * CalculateFalloff(someDistance, someRange);
 	return totalAttenuation;
-}
-
-float Attenuation(float3 aLightVec, float aRange)
-{
-	float distance = length(aLightVec);
-	//return 1 - (distance / aRange);
-
-	float attenuation = 1.f;// / (1.f + 0.1f * distance + 0.01f * distance * distance);
-	float fallOff = 0.9f - (distance / (aRange + 0.00001f));
-	return saturate(attenuation * fallOff);
 }
 
 //---------------------------------
@@ -103,26 +93,22 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float2 texCoord = input.uv.xy;
 
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, texCoord);
-	float4 normal = NormalTexture.Sample(point_Clamp, texCoord);
+	float4 normal = NormalTexture.Sample(point_Clamp, texCoord) * 2;
 	float4 depth = DepthTexture.Sample(point_Clamp, texCoord);
-	
-	normal.xyz *= 2.0f;
-
 	float normLength = length(normal.xyz);
 	if(normLength != 0)
 		normal.xyz -= 1.f;
-
 	
 	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
-	float roughness = depth.y;
+	float roughness = 0;
 	float roughnessOffsetted = pow(8192, roughness);
 	float ao = 1.0f;
 	float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;
+
 	float x = texCoord.x * 2.f - 1.f;
-	float y = (1.f - texCoord.y) * 2.f - 1.f;
+	float y = (1.f - texCoord.y) * 2 - 1;
 	float z = depth.x;
-	
-	
+
 	float4 worldPosition = float4(x, y, z, 1.f);
 	
 	worldPosition = mul(worldPosition, InvertedProjection);
@@ -136,24 +122,28 @@ float4 PS(VS_OUTPUT input) : SV_Target
      if(spotFactor < input.cosAngle.x)
          discard;
 
-	float3 viewPos = camPosition.xyz;
-	float3 toEye = normalize(viewPos - worldPosition.xyz);	
-	float3 toLight = position - worldPosition;
+	float3 toEye = normalize(worldPosition.xyz - camPosition.xyz);	
+	float3 toLight = position - worldPosition.xyz;
 	float3 lightDir = normalize(toLight);
 	float3 halfVec = normalize(lightDir + toEye);
 
-	float NdotL = saturate(dot(normal, lightDir));
 
+	float NdotL = saturate(dot(normal, lightDir));
 	float HdotN = saturate(dot(halfVec, normal));
 	float NdotV = saturate(dot(normal, toEye));
 	float3 F = Fresnel(substance, lightDir, halfVec);
 	float D = saturate(D_GGX(HdotN,(roughness + 1.f) / 2.f));
 	float V = saturate(V_SchlickForGGX((roughness + 1.f) / 2.f, NdotV, NdotL));
-	
+
+	float ln = length(toLight);
+
 	float angularAttenuation = (1.f - ((1.f - spotFactor) * (1.f / (1.f - input.cosAngle.x))));
-	float linearAttenuation =  Attenuation(toLight, input.range);
-	float attenuation = linearAttenuation * angularAttenuation;
-	float3 lightColor = color.rgb * 10 * attenuation;
+	float linearAttenuation =  CalculateTotalAttenuation(ln, input.range);
+	float attenuation = linearAttenuation  * angularAttenuation;
+	float3 lightColor = color.rgb * 100 * attenuation ;
 	float3 directSpec = F * D * V * NdotL * lightColor;
-	return float4(directSpec, 1.f);
+
+	float attNdotL =( NdotL * attenuation) * 10;
+
+	return float4( attNdotL,attNdotL,attNdotL,1);
 };

@@ -42,9 +42,10 @@ namespace Snowblind
 		myPointLight->Initiate();
 		if (!myPointLight)
 			return false;
-		//mySpotlight = new CSpotLight; // Where should this live?
-		//if (!mySpotlight)
-		//	return false;
+		mySpotlight = new CSpotLight; // Where should this live?
+		if (!mySpotlight)
+			return false;
+
 		//CU::Vector3f(95, 7.f, 28.f)
 		m_Shadowlight = new ShadowSpotlight;
 		m_Shadowlight->Initiate(
@@ -144,8 +145,8 @@ namespace Snowblind
 
 		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection(), m_Shadowlight->GetMVP());
 
-		//RenderPointlight();
-		//RenderSpotlight();
+		RenderPointlight();
+		RenderSpotlight();
 
 		myEngine->ResetRenderTargetAndDepth();
 
@@ -261,7 +262,7 @@ namespace Snowblind
 			mySpotlight->SetRange(command.myRange);
 			mySpotlight->SetColor(CU::Vector4f(command.myColor.x, command.myColor.y, command.myColor.z, 1));
 			mySpotlight->SetAngle(command.myAngle);
-
+			//mySpotlight->set
 			mySpotlight->DoTranslation(command.m_Orientation);
 
 			m_LightPass.RenderSpotlight(mySpotlight, myCamera, myPrevFrame);

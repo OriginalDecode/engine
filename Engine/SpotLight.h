@@ -1,5 +1,6 @@
 #pragma once
 #include "LightStructs.h"
+#include "Model.h"
 namespace Snowblind
 {
 	class CInstance;
@@ -22,6 +23,7 @@ namespace Snowblind
 		void DoTranslation(const CU::Matrix44f& translationMatrix);
 
 	private:
+		CModel* m_Model;
 		CU::Matrix44f myBaseMatrix;
 		SSpotlightData myData;
 		CInstance* myLightMesh = nullptr;

@@ -24,13 +24,10 @@ namespace Snowblind
 		void CreatePointlightBuffers();
 		struct SPointlightConstantBuffer : public SVertexBaseStruct
 		{
-			CU::Vector4f scale;
 		} myPointlightVertexConstantData; //Longest name.
 
 		struct SSpotlightConstantBuffer : public SVertexBaseStruct
 		{
-			CU::Vector2f scale;
-			CU::Vector2f angle;
 		} mySpotlightVertexConstantData;
 
 		struct SPixelConstantBuffer

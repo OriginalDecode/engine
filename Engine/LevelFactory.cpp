@@ -29,49 +29,40 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 {
 	//m_Engine->GetEntityManager()->CleanUp();
 	//m_Engine->GetEntityManager()->Initiate();
+	m_LevelReader.OpenDocument(level_path);
 
-	JSONReader read_level(level_path);
-	const JSONElement& el = read_level.GetElement("root");
+	const JSONElement& el = m_LevelReader.GetElement("root");
 
 
 	m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
-		CreateEntitiy(it->value["entity"].GetString(), read_level, it);
+		CreateEntitiy(it->value["entity"].GetString(), it);
 	}
 
 	return true;
 }
 
-void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONReader& level_reader, JSONElement::ConstMemberIterator it)
+void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it)
 {
 	JSONReader entity_reader(entity_filepath);
 	Entity e = m_EntityManager->CreateEntity();
 
 	CU::Vector3f pos;
-	level_reader._ReadElement(it->value["position"], pos);
+	m_LevelReader._ReadElement(it->value["position"], pos);
 	CreateTranslationComponent(e, pos);
 
-
-	//		cl::AABB aabb;
-	//		aabb.Initiate(e, &t.myOrientation, Snowblind::Engine::GetInstance()->GetModel(r.myModelID)->GetWHD());
-	//		m_AABBs.Add(aabb);
-
 	if (entity_reader.HasElement("graphics"))
-	{
-		CU::Vector3f scale;
-		level_reader._ReadElement(it->value["scale"], scale);
-		CU::Vector3f rotation;
-		level_reader._ReadElement(it->value["rotation"], rotation);
-
-		CreateGraphicsComponent(entity_reader, scale, rotation, e);
-	}
+		CreateGraphicsComponent(entity_reader, e, it);
 
 	if (entity_reader.HasElement("physics"))
 		CreatePhysicsComponent(entity_reader, e);
 
 	if (entity_reader.HasElement("camera"))
 		CreateCameraComponent(entity_reader, e);
+
+	if (entity_reader.HasElement("light"))
+		CreateLightComponent(entity_reader, e, it);
 
 	if (entity_reader.HasElement("controller"))
 	{
@@ -83,11 +74,8 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONReader&
 
 		else if (entity_reader.ReadElement("controller") == "ai")
 			CreateAIComponent(entity_reader, e);
-
 		else
-
 			DL_ASSERT("Failed to find correct input controller tag!");
-
 	}
 }
 
@@ -98,7 +86,7 @@ void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector
 	component.myOrientation.SetPosition(position);
 }
 
-void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, CU::Vector4f scale, CU::Vector4f rotation, Entity entity_id)
+void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
 {
 	m_EntityManager->AddComponent<RenderComponent>(entity_id);
 	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
@@ -108,7 +96,13 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, CU::Vector
 		el["model"].GetString(),
 		el["shader"].GetString());
 
-	component.m_Rotation = rotation; 
+
+	CU::Vector3f scale;
+	m_LevelReader._ReadElement(it->value["scale"], scale);
+	CU::Vector3f rotation;
+	m_LevelReader._ReadElement(it->value["rotation"], rotation); 
+
+	component.m_Rotation = rotation;
 
 	component.scale = scale;
 	component.scale.w = 1.f;
@@ -138,7 +132,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	{
 		phys_body = component.myBody->InitAsSphere(1, object_mass, m_PhysicsManager->GetGravityForce(), air_preassure, { 0,0,0 });
 	}
-	
+
 	m_PhysicsManager->Add(phys_body);
 }
 
@@ -148,6 +142,43 @@ void LevelFactory::CreateCameraComponent(JSONReader& entity_reader, Entity entit
 	CameraComponent& component = m_EntityManager->GetComponent<CameraComponent>(entity_id);
 
 	component.m_Camera = Snowblind::Engine::GetInstance()->GetCamera();
+}
+
+void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
+{
+	m_EntityManager->AddComponent<LightComponent>(entity_id);
+	LightComponent& component = m_EntityManager->GetComponent<LightComponent>(entity_id);
+
+	std::string type;
+	entity_reader.ReadElement("light", "type", type);
+
+	m_LevelReader._ReadElement(it->value["color"], component.color);
+	m_LevelReader.ReadElement(it->value["range"], component.range);
+
+	component.color.x /= 255;
+	component.color.y /= 255;
+	component.color.z /= 255;
+
+	if (type == "pointlight")
+	{
+		component.myType = eLightType::ePOINTLIGHT;
+
+	}
+	else if (type == "spotlight")
+	{
+		component.myType = eLightType::eSPOTLIGHT;
+
+		m_LevelReader._ReadElement(it->value["direction"], component.direction);
+
+		component.orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(component.direction.y)) * component.orientation;
+		component.orientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(component.direction.x)) * component.orientation;
+		component.orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * component.orientation;
+
+		m_LevelReader.ReadElement(it->value["angle"], component.angle);
+		component.angle = CL::DegreeToRad(component.angle);
+
+	}
+
 }
 
 void LevelFactory::CreateInputComponent(JSONReader& entity_reader, Entity entity_id)
@@ -162,14 +193,14 @@ void LevelFactory::CreateInputComponent(JSONReader& entity_reader, Entity entity
 	//handle->AddController(0);
 	//handle->GetController(0)->GetState().m_ThumbLY
 
-	
+
 	//input.m_InputHandle->Bind(Hash("string_to_hash"), [&] { function(); }); <- this is how you bind
 }
 
 void LevelFactory::CreateAIComponent(JSONReader& entity_reader, Entity entity_id)
 {
 	m_EntityManager->AddComponent<AIComponent>(entity_id);
-	AIComponent& component = m_EntityManager->GetComponent<AIComponent>(entity_id); 
+	AIComponent& component = m_EntityManager->GetComponent<AIComponent>(entity_id);
 	//read behaviour trees and stuff here...
 }
 
@@ -183,14 +214,14 @@ void LevelFactory::CreateNetworkComponent(JSONReader& entity_reader, Entity enti
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
 	Snowblind::CTerrain* terrain = Snowblind::Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
-	terrain->AddNormalMap("Data/Textures/normal.dds"); 
+	terrain->AddNormalMap("Data/Textures/normal.dds");
 	/*
 	Work([&](std::string texture) {
 		Snowblind::CTerrain* terrain = m_Engine->CreateTerrain(texture, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
 		terrain->AddNormalMap("Data/Textures/normal.dds");
 	});
 	*/
-	
+
 	/*
 	myTerrain.Add(terrain);
 
@@ -205,13 +236,13 @@ void LevelFactory::CreateTerrain(std::string terrain_path)
 	terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, 0, 510), CU::Vector2f(512, 512));
 	terrain->AddNormalMap("Data/Textures/t3_n.dds");
 	myTerrain.Add(terrain);
-	
+
 	for (s32 i = 0; i < myTerrain.Size(); i++)
 	{
 		myTerrainBodies.Add(myPhysicsManager->CreateBody());
 		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
 	}
-	
+
 
 	}));*/
 }

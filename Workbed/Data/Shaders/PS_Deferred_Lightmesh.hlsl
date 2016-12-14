@@ -53,16 +53,6 @@ float CalculateTotalAttenuation(float someDistance, float someRange)
 	return totalAttenuation;
 }
 
-float Attenuation(float3 aLightVec, float aRange)
-{
-	float ln = length(aLightVec);
-	//return 1 - (distance / aRange);
-
-	float attenuation = 1.f;// / (1.f + 0.1f * distance + 0.01f * distance * distance);
-	float fallOff = 0.9f - (ln / (aRange + 0.00001f));
-	return saturate(attenuation * fallOff);
-}
-
 //---------------------------------
 //	Deferred Lightmesh Pixel Shader
 //---------------------------------
@@ -119,7 +109,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	worldPosition = mul(worldPosition, InvertedProjection);
 	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, InvertedView);
-
 	float3 toEye = normalize(worldPosition.xyz - camPosition.xyz);	
 	float3 toLight = position - worldPosition.xyz;
 	float3 lightDir = normalize(toLight);
@@ -138,6 +127,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float attenuation = CalculateTotalAttenuation(ln, input.range.x);
 	float3 light_color = color * 10 * attenuation;
 	float3 directSpec = F * D * V * NdotL * light_color;
+	float attNdotL = NdotL * attenuation;
+
 
 	return float4(directSpec, 1);
 };

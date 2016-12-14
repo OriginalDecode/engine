@@ -9,6 +9,7 @@ class JSONReader
 public:
 
 	JSONReader(const std::string& aFilePath);
+	JSONReader() = default;
 	~JSONReader();
 
 	bool HasElement(const std::string& aTag);

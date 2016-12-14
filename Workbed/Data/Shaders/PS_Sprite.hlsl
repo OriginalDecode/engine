@@ -22,5 +22,9 @@ struct VS_OUTPUT
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	return DiffuseTexture.Sample(linear_Clamp, input.uv);
+	float4 sprite =  DiffuseTexture.Sample(linear_Clamp, input.uv);
+
+	float newX = (sprite.x - 0.9) / (1 - 0.9);	
+	sprite.x = newX;
+	return sprite;
 };

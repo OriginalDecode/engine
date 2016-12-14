@@ -163,6 +163,8 @@ namespace Snowblind
 		myEngine->Present();
 
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_Shadowlight->GetOrientation(), CU::Vector4f(1,1,1,1)));
+
 
 		mySynchronizer->WaitForLogic();
 		mySynchronizer->SwapBuffer();

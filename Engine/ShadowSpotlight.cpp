@@ -8,9 +8,9 @@ namespace Snowblind
 		m_BufferSize = buffer_size;
 		m_Device = Engine::GetInstance()->GetAPI()->GetDevice();
 		m_Context = Engine::GetInstance()->GetAPI()->GetContext();
-		m_Viewport = Engine::GetInstance()->GetAPI()->CreateViewport(m_BufferSize, m_BufferSize, 0.f, 1.f, 0, 0);
+		m_Viewport = Engine::GetInstance()->GetAPI()->CreateViewport(1920, 1080, 0.f, 1.f, 0, 0);
 
-		m_Camera = new Camera(m_BufferSize, m_BufferSize, 50.f, 1.f, 90.f);
+		m_Camera = new Camera(1920, 1080, 50.f, 1.f, 90.f);
 		m_Camera->SetPosition(position);
 		m_Camera->RotateAroundY(CL::DegreeToRad(90.f) * direction.x);
 		m_Camera->RotateAroundZ(CL::DegreeToRad(90.f) * direction.z);
@@ -18,13 +18,13 @@ namespace Snowblind
 
 
 		m_Depth = new Texture;
-		m_Depth->Initiate(m_BufferSize, m_BufferSize, 
+		m_Depth->Initiate(1920, 1080,
 			DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 			, DXGI_FORMAT_R16G16B16A16_FLOAT
 			, "Shadowlight : Depth ");
 
 		m_Holder = new Texture;
-		m_Holder->Initiate(m_BufferSize, m_BufferSize
+		m_Holder->Initiate(1920, 1080
 			, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
 			, DXGI_FORMAT_R32_TYPELESS
 			, DXGI_FORMAT_R32_FLOAT
@@ -32,7 +32,7 @@ namespace Snowblind
 			, "Shadowlight : DepthStencil ");
 
 		m_DepthStencil = new Texture;
-		m_DepthStencil->Initiate(m_BufferSize, m_BufferSize
+		m_DepthStencil->Initiate(1920, 1080
 			, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
 			, DXGI_FORMAT_R32_TYPELESS
 			, DXGI_FORMAT_R32_FLOAT
@@ -109,7 +109,7 @@ namespace Snowblind
 
 	CU::Matrix44f ShadowSpotlight::GetMVP()
 	{
-		return (CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetProjection());
+		return CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(5,5,5,1) * CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetProjection());
 	}
 
 	void ShadowSpotlight::Copy()

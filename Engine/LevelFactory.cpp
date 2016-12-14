@@ -111,7 +111,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, CU::Vector
 	component.m_Rotation = rotation; 
 
 	component.scale = scale;
-	component.scale.w = 1;
+	component.scale.w = 1.f;
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)
@@ -155,6 +155,13 @@ void LevelFactory::CreateInputComponent(JSONReader& entity_reader, Entity entity
 	//Is this component needed?
 	m_EntityManager->AddComponent<InputComponent>(entity_id);
 	InputComponent& component = m_EntityManager->GetComponent<InputComponent>(entity_id);
+	//PhysicsComponent& component = m_EntityManager->GetComponent<PhysicsComponent>(entity_id);
+
+	//component.m_InputHandle = new InputHandle; 
+	//InputHandle handle = component.m_InputHandle;
+	//handle->AddController(0);
+	//handle->GetController(0)->GetState().m_ThumbLY
+
 	
 	//input.m_InputHandle->Bind(Hash("string_to_hash"), [&] { function(); }); <- this is how you bind
 }

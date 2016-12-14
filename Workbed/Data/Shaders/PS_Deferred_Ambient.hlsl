@@ -121,7 +121,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float3 finalColor = (ambientDiffuse + ambientSpec);
 
 	float4 shadowVec = mul(worldPosition, shadowMVP);
-	shadowVec.xyz /= shadowVec.w;
+	shadowVec.xy /= shadowVec.w;
 	shadowVec.y = -shadowVec.y;
 	shadowVec.x = shadowVec.x;
 	shadowVec.xy += 1;
@@ -130,12 +130,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
-	if(sampleValue < compareValue - 0.005 )
+	if(sampleValue < compareValue )
 	{
-		if(shadowVec.x > 0 && shadowVec.x < 1 && shadowVec.y > 0 && shadowVec.y < 1 && shadowVec.z < 1 && shadowVec.z > 0)
-		{
 			finalColor *= 0.42;
-		}
 	}
 
 	return float4(finalColor, 1.f);

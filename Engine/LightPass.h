@@ -10,15 +10,15 @@ namespace Snowblind
 	public:
 		LightPass() = default;
 
-		bool Initiate(GBuffer* aGBuffer);
+		bool Initiate(GBuffer* aGBuffer, Texture* shadow_texture);
 		bool CleanUp();
-		void RenderPointlight(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation);
-		void RenderSpotlight(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation);
+		void RenderPointlight(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
+		void RenderSpotlight(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
 		Effect* GetPointlightEffect();
 		Effect* GetSpotlightEffect();
 	private:
-		void UpdatePointlightBuffers(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation);
-		void UpdateSpotlightBuffers(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation);
+		void UpdatePointlightBuffers(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
+		void UpdateSpotlightBuffers(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
 
 		void CreateSpotlightBuffers();
 		void CreatePointlightBuffers();
@@ -37,6 +37,7 @@ namespace Snowblind
 			CU::Vector4f myColor;
 			CU::Vector4f myPosition;
 			CU::Vector4f myCameraPosition;
+			CU::Matrix44f m_ShadowMVP;
 
 		} myPixelConstantStruct;
 

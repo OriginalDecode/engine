@@ -18,6 +18,7 @@ enum class eType
 	SPOTLIGHT,
 	PARTICLE,
 	TERRAIN,
+	WIREFRAME,
 };
 
 struct RenderCommand

@@ -54,7 +54,7 @@ namespace Snowblind
 			, 2048.f);
 
 		myDeferredRenderer = new DeferredRenderer; // Where should this live?
-		if (!myDeferredRenderer->Initiate(m_Shadowlight->GetDepthStencil()))
+		if (!myDeferredRenderer->Initiate())
 			return false;
 
 		myDepthTexture = new Texture; //Where should this live?
@@ -89,7 +89,7 @@ namespace Snowblind
 
 		my3DLine->Initiate();
 
-		DL_ASSERT_EXP(m_LightPass.Initiate(myDeferredRenderer->GetGBuffer()), "failed to initiate LightPass!");
+		DL_ASSERT_EXP(m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil()), "failed to initiate LightPass!");
 
 		myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
 		return true;
@@ -143,7 +143,7 @@ namespace Snowblind
 
 		ProcessShadows();
 
-		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection(), m_Shadowlight->GetMVP());
+		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
 
 		RenderPointlight();
 		RenderSpotlight();
@@ -154,7 +154,6 @@ namespace Snowblind
 
 		/* condence these 3 calls to 1 with multiple data prameters? */
 		mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
-		mySkysphere->SetPosition(myPrevFrame.GetPosition());
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		//RenderParticles();
@@ -165,6 +164,7 @@ namespace Snowblind
 
 		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
 		//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_Shadowlight->GetOrientation(), CU::Vector4f(1,1,1,1)));
+
 
 
 		mySynchronizer->WaitForLogic();
@@ -182,7 +182,7 @@ namespace Snowblind
 	{
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 
-		m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+		//m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 		for (CTerrain* terrain : myTerrainArray)
 		{
@@ -265,7 +265,7 @@ namespace Snowblind
 			//mySpotlight->set
 			mySpotlight->DoTranslation(command.m_Orientation);
 
-			m_LightPass.RenderSpotlight(mySpotlight, myCamera, myPrevFrame);
+			m_LightPass.RenderSpotlight(mySpotlight, myCamera, myPrevFrame, m_Shadowlight->GetMVP());
 		}
 		effect->Deactivate();
 		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
@@ -289,7 +289,7 @@ namespace Snowblind
 			myPointLight->SetRange(command.myRange);
 			myPointLight->SetColor(CU::Vector4f(command.myColor.x, command.myColor.y, command.myColor.z, 1));
 			myPointLight->Update();
-			m_LightPass.RenderPointlight(myPointLight, myCamera, myPrevFrame);
+			m_LightPass.RenderPointlight(myPointLight, myCamera, myPrevFrame, m_Shadowlight->GetMVP());
 		}
 		effect->Deactivate();
 

@@ -11,6 +11,8 @@ cbuffer Pointlight : register(b0)
 	float4 color;
 	float4 position;
 	float4 camPosition;
+	row_major float4x4 shadowMVP;
+
 };
 //---------------------------------
 //	Samplers & Textures
@@ -20,7 +22,7 @@ SamplerState point_Clamp : register ( s0 );
 Texture2D AlbedoTexture  : register ( t0 );
 Texture2D NormalTexture  : register ( t1 );
 Texture2D DepthTexture	 : register ( t2 );
-
+Texture2D ShadowTexture  : register ( t3 );
 //---------------------------------
 //	Deferred Lightmesh Pixel Structs
 //---------------------------------
@@ -109,6 +111,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	worldPosition = mul(worldPosition, InvertedProjection);
 	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, InvertedView);
+	
 	float3 toEye = normalize(worldPosition.xyz - camPosition.xyz);	
 	float3 toLight = position - worldPosition.xyz;
 	float3 lightDir = normalize(toLight);
@@ -127,8 +130,5 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float attenuation = CalculateTotalAttenuation(ln, input.range.x);
 	float3 light_color = color * 10 * attenuation;
 	float3 directSpec = F * D * V * NdotL * light_color;
-	float attNdotL = NdotL * attenuation;
-
-
 	return float4(directSpec, 1);
 };

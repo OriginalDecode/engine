@@ -21,7 +21,7 @@ namespace Snowblind
 		SSpotlightData& GetData();
 
 		void DoTranslation(const CU::Matrix44f& translationMatrix);
-
+		CU::Matrix44f GetOrientatino();
 	private:
 		CModel* m_Model;
 		CU::Matrix44f myBaseMatrix;

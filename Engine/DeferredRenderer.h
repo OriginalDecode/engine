@@ -31,11 +31,11 @@ namespace Snowblind
 	{
 	public:
 		DeferredRenderer() = default;
-		bool Initiate(Texture* shadow_texture);
+		bool Initiate();
 		bool CleanUp();
 		void SetTargets();
 		void SetBuffers();
-		void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_matrix);
+		void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
 
 
 		void Finalize();
@@ -46,7 +46,7 @@ namespace Snowblind
 		void ToggleWireframe() { m_Wireframe = !m_Wireframe; }
 	private:
 		bool m_Wireframe = false;
-		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_matrix);
+		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
 
 		void CreateFullscreenQuad();
 		void InitConstantBuffer();

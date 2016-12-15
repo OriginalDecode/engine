@@ -37,6 +37,11 @@ namespace Snowblind
 		SetDirection(myData.myOrientation.GetForward());
 	}
 
+	CU::Matrix44f CSpotLight::GetOrientatino()
+	{
+		return m_Model->GetOrientation();
+	}
+
 	void CSpotLight::SetPosition(const CU::Vector3f& aPosition)
 	{
 		m_Model->GetOrientation().SetPosition(aPosition);

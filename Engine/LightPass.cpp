@@ -5,7 +5,7 @@
 #include "GBuffer.h"
 namespace Snowblind
 {
-	bool LightPass::Initiate(GBuffer* aGBuffer)
+	bool LightPass::Initiate(GBuffer* aGBuffer, Texture* shadow_texture)
 	{
 		myEngine = Engine::GetInstance();
 		myContext = myEngine->GetAPI()->GetContext();
@@ -27,6 +27,8 @@ namespace Snowblind
 		CreatePointlightBuffers();
 		CreateSpotlightBuffers();
 
+		myEffect[u32(eLight::POINT_LIGHT)]->AddShaderResource(shadow_texture->GetDepthStencilView());
+		myEffect[u32(eLight::SPOT_LIGHT)]->AddShaderResource(shadow_texture->GetDepthStencilView());
 		return true;
 	}
 
@@ -39,20 +41,20 @@ namespace Snowblind
 		return true;
 	}
 
-	void LightPass::RenderPointlight(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation)
+	void LightPass::RenderPointlight(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
 	{
 		if (HasInitiated())
 		{
-			UpdatePointlightBuffers(pointlight, aCamera, previousOrientation);
+			UpdatePointlightBuffers(pointlight, aCamera, previousOrientation, shadow_matrix);
 			myContext->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)]);
 			myContext->PSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)]);
 			pointlight->Render(previousOrientation, aCamera);
 		}
 	}
 
-	void LightPass::RenderSpotlight(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation)
+	void LightPass::RenderSpotlight(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
 	{
-		UpdateSpotlightBuffers(spotlight, aCamera, previousOrientation);
+		UpdateSpotlightBuffers(spotlight, aCamera, previousOrientation, shadow_matrix);
 		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)]);
 		myContext->PSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)]);
 		spotlight->Render(previousOrientation, aCamera);
@@ -68,7 +70,7 @@ namespace Snowblind
 		return myEffect[u32(eLight::SPOT_LIGHT)];
 	}
 
-	void LightPass::UpdatePointlightBuffers(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation)
+	void LightPass::UpdatePointlightBuffers(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
 	{
 #ifdef SNOWBLIND_DX11
 		//----------------------------------------
@@ -101,6 +103,8 @@ namespace Snowblind
 		myPixelConstantStruct.myColor = pointlight->GetColor();
 		myPixelConstantStruct.myPosition = pointlight->GetPosition();
 		myPixelConstantStruct.myCameraPosition = previousOrientation.GetPosition();
+		myPixelConstantStruct.m_ShadowMVP = shadow_matrix;
+
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		Engine::GetAPI()->GetContext()->Map(myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
@@ -113,7 +117,7 @@ namespace Snowblind
 #endif
 	}
 
-	void LightPass::UpdateSpotlightBuffers(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation)
+	void LightPass::UpdateSpotlightBuffers(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
 	{
 #ifdef SNOWBLIND_DX11
 		//----------------------------------------
@@ -151,6 +155,7 @@ namespace Snowblind
 		mySpotPixelConstantStruct.myPosition = data.myOrientation.GetPosition();
 		mySpotPixelConstantStruct.myCameraPosition = previousOrientation.GetPosition();
 		mySpotPixelConstantStruct.myDirection = data.myDirection;
+		mySpotPixelConstantStruct.m_ShadowMVP = shadow_matrix;
 
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		Engine::GetAPI()->GetContext()->Map(myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);

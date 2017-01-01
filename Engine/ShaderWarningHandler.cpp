@@ -115,7 +115,7 @@ std::tuple<bool, std::string> ShaderWarningHandler::CreateMessage(char* aWordToF
 		{
 			if (l - 1 > 0)
 			{
-				std::string shaderLine = myShader[warningLines[l] ];
+				std::string shaderLine = myShader[warningLines[l - 1] ];
 				if (!substr(shaderLine, ";"))
 				{
 					shaderLine += myShader[warningLines[l]];

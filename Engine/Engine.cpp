@@ -240,7 +240,7 @@ namespace Snowblind
 		m_InputHandle->Update(m_DeltaTime);
 	}
 
-	void Engine::CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
+	HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
 	{
 		std::wstring w_file_path(file_path.begin(), file_path.end());
 		HRESULT hr = D3DCompileFromFile(
@@ -253,8 +253,7 @@ namespace Snowblind
 			NULL,
 			&out_compiled_shader,
 			&out_compile_message);
-
-		GetAPI()->HandleErrors(hr, "Failed to compile shader!");
+		return hr;
 	}
 
 	void* Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name)

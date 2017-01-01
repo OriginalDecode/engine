@@ -213,16 +213,18 @@ namespace Snowblind
 		IBlob* compiledShader = nullptr;
 		IBlob* compilationMessage = nullptr;
 
-		//Can this be more generalized?
-		Engine::GetInstance()->CompileShaderFromFile(file_path, shader_type, feature_level, shaderFlag, compiledShader, compilationMessage);
-		DL_ASSERT_EXP(compiledShader, "Shader was null?");
+	
+		HRESULT hr  = Engine::GetInstance()->CompileShaderFromFile(file_path, shader_type, feature_level, shaderFlag, compiledShader, compilationMessage);
+		//DL_ASSERT_EXP(compiledShader, "Shader was null?");
 		if (compilationMessage != nullptr)
 		{
-			//std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), file_path);
+			std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), file_path);
+			DL_WARNING("%s", msg.c_str());
 			DL_WARNING("%s", (char*)compilationMessage->GetBufferPointer());
 			// (#LINUS) Should be output to a warninglist in engine debug tools.
 			//DL_WARNINGBOX((char*)compilationMessage->GetBufferPointer());
 		}
+		Engine::GetInstance()->GetAPI()->HandleErrors(hr,"Failed to compile shader!");
 		return compiledShader;
 	}
 

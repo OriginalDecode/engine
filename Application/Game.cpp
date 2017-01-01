@@ -84,7 +84,7 @@ void Game::Update(float dt)
 	myEngine->AddDebugText(ss.str());
 
 
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", pointHit));
+	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", pointHit));
 
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN)); This shouldn't even be a command. This should just be rendered
 

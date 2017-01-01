@@ -45,17 +45,17 @@
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/spotlight.json", 
-			"position" : [ 78, 25, 28 ],
-			"range" : 25,
-			"angle" : 45,
+			"position" : [ 95,2, 32 ],
+			"range" : 10,
+			"angle" : 18,
 			"color" : [255,0,0],
-			"direction":[90, 0, 0]
+			"direction":[0, 90, 0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/pointlight.json", 
-			"position" : [ 50, 1, 50 ],
+			"position" : [ 50, 4, 50 ],
 			"color": [ 0, 0, 255 ],
-			"range" : 25
+			"range" : 10
 		},
 		"player" : {
 			"entity" : "Data/Levels/player.json",

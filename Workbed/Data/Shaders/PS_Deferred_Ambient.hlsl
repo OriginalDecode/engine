@@ -88,6 +88,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	normal *= 2;
 	normal -= 1;
+
 	float roughness = 1;//depth.y;
 	
 	float roughnessOffsetted = pow(8192, roughness);

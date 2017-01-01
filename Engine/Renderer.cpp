@@ -153,8 +153,8 @@ namespace Snowblind
 		myDeferredRenderer->Finalize();
 
 		/* condence these 3 calls to 1 with multiple data prameters? */
-		mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
-		mySkysphere->Render(myPrevFrame, myDepthTexture);
+		//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
+		//mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		//RenderParticles();
 		RenderLines();

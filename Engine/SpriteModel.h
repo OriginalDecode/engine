@@ -4,7 +4,7 @@
 #ifdef SNOWBLIND_DX11
 struct D3D11_INPUT_ELEMENT_DESC;
 #endif
-namespace Snowblind
+namespace Hex
 {
 	class Texture;
 	class Camera;

@@ -7,7 +7,7 @@
 #include "Engine.h"
 #include "Surface.h"
 
-namespace Snowblind
+namespace Hex
 {
 	CModel::CModel()
 	{

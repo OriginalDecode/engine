@@ -10,7 +10,7 @@
 CLightSystem::CLightSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, LightComponent>>())
 {
-	mySynchronizer = Snowblind::Engine::GetInstance()->GetSynchronizer();
+	mySynchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
 }
 
 void CLightSystem::Update(float /*aDeltaTime*/)

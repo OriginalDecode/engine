@@ -25,7 +25,7 @@
 #define X_START 2
 #define Y_OFFSET 8
 
-namespace Snowblind
+namespace Hex
 {
 	CFontManager::CFontManager()
 	{

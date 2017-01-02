@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DirectionalLight.h"
 
-namespace Snowblind
+namespace Hex
 {
 	
 	void DirectionalLight::Initiate(const CU::Vector3f& aDirection, const CU::Vector3f& aPosition, const CU::Vector4f& aColor)

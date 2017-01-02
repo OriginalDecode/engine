@@ -3,7 +3,7 @@
 
 #include <DDSTextureLoader.h>
 #include <ScreenGrab.h>
-namespace Snowblind
+namespace Hex
 {
 
 	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, const std::string& debug_name)

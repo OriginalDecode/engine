@@ -3,7 +3,7 @@
 #include "../CommonLib/Math/Matrix/Matrix.h"
 #include "../CommonLib/Threadpool.h"
 
-namespace Snowblind
+namespace Hex
 {
 	class Camera;
 	class Engine;
@@ -39,11 +39,11 @@ private:
 	volatile bool myQuitFlag = false;
 
 	/* General */
-	Snowblind::Engine* myEngine;
-	Snowblind::Synchronizer* mySynchronizer;
+	Hex::Engine* myEngine;
+	Hex::Synchronizer* mySynchronizer;
 
 	/* Should be moved to some kind of InputComponent */
-	Snowblind::Camera* myCamera;
+	Hex::Camera* myCamera;
 
 	CU::Quaternion myPitch;
 	CU::Quaternion myYaw;

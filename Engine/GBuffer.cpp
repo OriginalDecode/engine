@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "GBuffer.h"
-namespace Snowblind
+namespace Hex
 {
 	GBuffer::GBuffer()
 		: myEngine(Engine::GetInstance())

@@ -3,7 +3,7 @@
 #include "Effect.h"
 #include "SpriteModel.h"
 
-namespace Snowblind
+namespace Hex
 {
 	Sprite::Sprite()
 	{

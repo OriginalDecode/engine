@@ -2,7 +2,7 @@
 #include "DirectX11.h"
 
 #ifdef SNOWBLIND_DX11
-namespace Snowblind
+namespace Hex
 {
 	void DirectX11::CreateSamplerStates()
 	{

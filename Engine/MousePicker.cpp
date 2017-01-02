@@ -2,7 +2,7 @@
 #include "MousePicker.h"
 #include "Camera.h"
 #include "Engine.h"
-namespace Snowblind
+namespace Hex
 {
 	CMousePicker::CMousePicker()
 	{

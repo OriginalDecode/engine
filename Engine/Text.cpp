@@ -3,7 +3,7 @@
 #include "Font.h"
 #include "Effect.h"
 #include "Camera.h"
-namespace Snowblind
+namespace Hex
 {
 	CText::CText(const char* aFilepath, int aSize, int aBorderWidth)
 	{

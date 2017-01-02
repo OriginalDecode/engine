@@ -1,6 +1,6 @@
 #pragma once
 #include "snowblind_shared.h"
-namespace Snowblind
+namespace Hex
 {
 	class Texture;
 	class Camera;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ShadowSpotlight.h"
 #include <Utilities.h>
-namespace Snowblind
+namespace Hex
 {
 	bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f& direction, float buffer_size)
 	{

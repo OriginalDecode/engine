@@ -40,7 +40,7 @@ namespace Cache
 
 typedef struct ID3D10Blob IBlob;
 
-namespace Snowblind
+namespace Hex
 {
 	enum eDeferredType;
 	struct SWindowSize

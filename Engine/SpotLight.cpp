@@ -2,7 +2,7 @@
 #include "SpotLight.h"
 #include "Instance.h"
 #include "Camera.h"
-namespace Snowblind
+namespace Hex
 {
 	CSpotLight::CSpotLight()
 	{

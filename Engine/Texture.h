@@ -10,7 +10,7 @@ enum TextureUsageFlags
 	STAGING_USAGE = 16384
 };
 
-namespace Snowblind
+namespace Hex
 {
 	class Texture
 	{

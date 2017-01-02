@@ -2,7 +2,7 @@
 #include <DataStructures/GrowingArray.h>
 #include <DataStructures/StaticArray.h>
 #include "LightStructs.h"
-namespace Snowblind
+namespace Hex
 {
 	class Camera;
 	class CInstance;

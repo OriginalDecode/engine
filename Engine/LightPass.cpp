@@ -3,7 +3,7 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "GBuffer.h"
-namespace Snowblind
+namespace Hex
 {
 	bool LightPass::Initiate(GBuffer* aGBuffer, Texture* shadow_texture)
 	{

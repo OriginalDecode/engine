@@ -4,7 +4,7 @@
 #include <DL_Debug.h>
 #include "GBuffer.h"
 #define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
-namespace Snowblind
+namespace Hex
 {
 	bool DeferredRenderer::Initiate(/*Texture* shadow_texture*/)
 	{

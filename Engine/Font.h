@@ -12,7 +12,7 @@ namespace CommonUtilities
 	class TimeManager;
 }
 
-namespace Snowblind
+namespace Hex
 {
 	struct SInstance
 	{

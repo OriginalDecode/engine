@@ -1,6 +1,6 @@
 #pragma once
 #include "LightStructs.h"
-namespace Snowblind
+namespace Hex
 {
 	class DirectionalLight
 	{

@@ -3,7 +3,7 @@
 #include <DL_Debug.h>
 #include "VertexStructs.h"
 
-namespace Snowblind
+namespace Hex
 {
 	enum eDeferredType
 	{

@@ -18,12 +18,12 @@
 
 bool Game::Initiate()
 {
-	myEngine = Snowblind::Engine::GetInstance();
+	myEngine = Hex::Engine::GetInstance();
 	mySynchronizer = myEngine->GetSynchronizer();
 
 	myEngine->LoadLevel("Data/Levels/level_01.json");
 
-	myPicker = new Snowblind::CMousePicker;
+	myPicker = new Hex::CMousePicker;
 
 	myEngine->ToggleVsync(); //settings
 	m_Camera = myEngine->GetCamera();
@@ -62,25 +62,25 @@ void Game::Update(float dt)
 	InputWrapper* input_wrapper = myEngine->GetInputHandle()->GetInputWrapper();
 
 	if (input_wrapper->IsDown(KButton::W))
-		m_Camera->Move(Snowblind::eDirection::FORWARD, 50.f * dt);
+		m_Camera->Move(Hex::eDirection::FORWARD, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::S))
-		m_Camera->Move(Snowblind::eDirection::BACK, -50.f * dt);
+		m_Camera->Move(Hex::eDirection::BACK, -50.f * dt);
 	if (input_wrapper->IsDown(KButton::A))
-		m_Camera->Move(Snowblind::eDirection::LEFT, -50.f * dt);
+		m_Camera->Move(Hex::eDirection::LEFT, -50.f * dt);
 	if (input_wrapper->IsDown(KButton::D))
-		m_Camera->Move(Snowblind::eDirection::RIGHT, 50.f * dt);
+		m_Camera->Move(Hex::eDirection::RIGHT, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::SPACE))
-		m_Camera->Move(Snowblind::eDirection::UP, 50.f * dt);
+		m_Camera->Move(Hex::eDirection::UP, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::X))
-		m_Camera->Move(Snowblind::eDirection::DOWN, -50.f * dt);
+		m_Camera->Move(Hex::eDirection::DOWN, -50.f * dt);
 	if (input_wrapper->OnDown(KButton::Y))
-		Snowblind::Engine::GetInstance()->ToggleWireframe();
+		Hex::Engine::GetInstance()->ToggleWireframe();
 
 
 
 	CU::Vector2f cur_pos = myEngine->GetInputHandle()->GetDeltaCursorPos();
 	std::stringstream ss;
-	ss << "FPS : " << myEngine->GetFPS() << "\n" << "Average FPS : " << myFPSToPrint << "\nDeltaTime:" << dt << "\n" << Snowblind::Engine::GetInstance()->GetLocalTimeAsString() << "\ncursor_pos : \n" << cur_pos.x << "\n" << cur_pos.y;
+	ss << "FPS : " << myEngine->GetFPS() << "\n" << "Average FPS : " << myFPSToPrint << "\nDeltaTime:" << dt << "\n" << Hex::Engine::GetInstance()->GetLocalTimeAsString() << "\ncursor_pos : \n" << cur_pos.x << "\n" << cur_pos.y;
 	myEngine->AddDebugText(ss.str());
 
 

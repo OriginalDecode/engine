@@ -5,7 +5,7 @@
 #include "DataStructures/GrowingArray.h"
 #include <atomic>
 #include "BaseComponent.h"
-namespace Snowblind
+namespace Hex
 {
 	class Synchronizer;
 }
@@ -40,7 +40,7 @@ public:
 	void AddSystem();
 
 	template <typename T>
-	void AddSystem(Snowblind::Synchronizer* aSynchronizer);
+	void AddSystem(Hex::Synchronizer* aSynchronizer);
 
 	template <typename T>
 	void AddSystem(PhysicsManager* aManager);

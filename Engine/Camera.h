@@ -3,7 +3,7 @@
 #include "../CommonLib/Math/Quaternion/Quaternion.h"
 
 struct ControllerState;
-namespace Snowblind
+namespace Hex
 {
 	enum class eDirection
 	{

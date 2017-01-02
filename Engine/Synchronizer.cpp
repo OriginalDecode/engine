@@ -2,7 +2,7 @@
 #include "Synchronizer.h"
 #include <thread>
 
-namespace Snowblind
+namespace Hex
 {
 	bool Synchronizer::Initiate()
 	{

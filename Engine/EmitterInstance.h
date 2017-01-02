@@ -4,7 +4,7 @@
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
 
-namespace Snowblind
+namespace Hex
 {
 	class Camera;
 	class Synchronizer;

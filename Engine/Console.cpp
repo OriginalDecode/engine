@@ -9,7 +9,7 @@
 #include "Scene.h"
 #include "AssetsContainer.h"
 #include "Text.h"
-namespace Snowblind
+namespace Hex
 {
 	CConsole::CConsole()
 	{
@@ -28,15 +28,15 @@ namespace Snowblind
 		myCamera = aCamera;
 		myIsActive = false;
 
-		myBottomLeftPosition = { (Snowblind::Engine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, (Snowblind::Engine::GetInstance()->GetWindowSize().myHeight / 2.f) - 24.f };
-		myTopLeftPosition = { (Snowblind::Engine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, 0.f };
+		myBottomLeftPosition = { (Hex::Engine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, (Hex::Engine::GetInstance()->GetWindowSize().myHeight / 2.f) - 24.f };
+		myTopLeftPosition = { (Hex::Engine::GetInstance()->GetWindowSize().myWidth / 2.f) + 4.f, 0.f };
 
 		mySprite = new Sprite();
-		mySprite->Initiate("Data/Textures/colors.dds", { Snowblind::Engine::GetInstance()->GetWindowSize().myWidth / 2.f,
-															Snowblind::Engine::GetInstance()->GetWindowSize().myHeight / 2.f },
+		mySprite->Initiate("Data/Textures/colors.dds", { Hex::Engine::GetInstance()->GetWindowSize().myWidth / 2.f,
+															Hex::Engine::GetInstance()->GetWindowSize().myHeight / 2.f },
 															{ 0, 0 });
 
-		mySprite->SetHotspot({ -Snowblind::Engine::GetInstance()->GetWindowSize().myWidth / 4.f, Snowblind::Engine::GetInstance()->GetWindowSize().myHeight / 4.f });
+		mySprite->SetHotspot({ -Hex::Engine::GetInstance()->GetWindowSize().myWidth / 4.f, Hex::Engine::GetInstance()->GetWindowSize().myHeight / 4.f });
 		mySprite->SetPosition({ Engine::GetInstance()->GetWindowSize().myWidth, 0 });
 
 		myText = new CText("Data/Font/OpenSans-Bold.ttf", 9, 1);

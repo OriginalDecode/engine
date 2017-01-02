@@ -10,7 +10,7 @@
 #include "AssetsContainer.h"
 #include <DL_Debug.h>
 
-namespace Snowblind
+namespace Hex
 {
 	CSurface::CSurface(Effect* anEffect)
 	{

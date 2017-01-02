@@ -24,7 +24,7 @@
 
 //#define AMBIENT_PASS_ONLY
 
-namespace Snowblind
+namespace Hex
 {
 	bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera_3d, Camera* camera_2d)
 	{

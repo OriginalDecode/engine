@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BaseModel.h"
 
-namespace Snowblind
+namespace Hex
 {
 	CBaseModel::CBaseModel()
 	{

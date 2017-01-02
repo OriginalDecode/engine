@@ -4,7 +4,7 @@
 #include "AssetsContainer.h"
 #include <Randomizer.h>
 #include "VertexStructs.h"
-namespace Snowblind
+namespace Hex
 {
 	CEmitterInstance::CEmitterInstance()
 	{
@@ -189,13 +189,13 @@ namespace Snowblind
 		myConstantStruct->projection = aCameraProjection;
 
 		D3D11_MAPPED_SUBRESOURCE msr;
-		Snowblind::Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		Hex::Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
 			SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
 			memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SVertexBaseStruct));
 		}
-		Snowblind::Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
+		Hex::Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
 	}
 
 	void CEmitterInstance::UpdateParticle(float aDeltaTime)

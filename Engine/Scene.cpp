@@ -5,7 +5,7 @@
 #include "Text.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
-namespace Snowblind
+namespace Hex
 {
 	CScene::CScene()
 	{

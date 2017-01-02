@@ -10,7 +10,7 @@ namespace CommonUtilities
 
 class CLine3D;
 
-namespace Snowblind
+namespace Hex
 {
 
 	class Camera;

@@ -1,7 +1,7 @@
 #pragma once
 #include "LightStructs.h"
 #include "Model.h"
-namespace Snowblind
+namespace Hex
 {
 	class CInstance;
 	class Camera;

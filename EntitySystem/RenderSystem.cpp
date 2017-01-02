@@ -17,7 +17,7 @@
 CRenderSystem::CRenderSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, SRenderComponent>>())
 {
-	mySynchronizer = Snowblind::Engine::GetInstance()->GetSynchronizer();
+	mySynchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
 }
 
 void CRenderSystem::Update(float /*aDeltaTime*/)

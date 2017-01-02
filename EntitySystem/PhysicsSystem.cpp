@@ -11,7 +11,7 @@
 CPhysicsSystem::CPhysicsSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, SPhysicsComponent>>())
 {
-	myPhysicsManager = Snowblind::Engine::GetInstance()->GetPhysicsManager();
+	myPhysicsManager = Hex::Engine::GetInstance()->GetPhysicsManager();
 }
 
 void CPhysicsSystem::Update(float aDeltaTime)

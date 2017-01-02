@@ -14,7 +14,7 @@ static constexpr char* hull_shader = "HS";
 static constexpr char* domain_shader = "DS";
 static constexpr char* compute_shader = "CS";
 
-namespace Snowblind
+namespace Hex
 {
 	ShaderFactory::ShaderFactory()
 	{

@@ -20,7 +20,7 @@ struct SLine
 
 
 
-namespace Snowblind
+namespace Hex
 {
 	class DirectX11;
 	class Effect;
@@ -56,9 +56,9 @@ private:
 	SLinePoint mySecondPoint;
 
 	CU::Matrix44f myOrientation;
-	Snowblind::DirectX11* myAPI = nullptr;
-	Snowblind::Effect* myEffect = nullptr;
-	Snowblind::VertexBufferWrapper* myVertexBuffer = nullptr;
+	Hex::DirectX11* myAPI = nullptr;
+	Hex::Effect* myEffect = nullptr;
+	Hex::VertexBufferWrapper* myVertexBuffer = nullptr;
 
 	SVertexBaseStruct* myConstantStruct = nullptr;
 

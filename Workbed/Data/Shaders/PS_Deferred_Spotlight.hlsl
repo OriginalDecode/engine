@@ -91,7 +91,7 @@ float3 Fresnel(const float3 aSubstance, const float3 aLightDir, const float3 aHa
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-		input.uv /= input.uv.w;
+	input.uv /= input.uv.w;
 	float2 texCoord = input.uv.xy;
 
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, texCoord);
@@ -99,7 +99,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 depth = DepthTexture.Sample(point_Clamp, texCoord);
 	
 	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
-	float roughness = 0;//depth.y;
+	float roughness = depth.y;
 	float roughnessOffsetted = pow(8192, roughness);
 	float ao = 1.0f;
 	float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;
@@ -121,8 +121,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float NdotL = dot(normal, lightDir);
 	float HdotN = saturate(dot(halfVec, normal));
-	float NdotV = saturate(dot(normal, -toEye));
-
+	float NdotV = saturate(dot(normal, toEye));
+	
 	float3 F = float3(1,1,1);
 	float D = 1;
 	float V = 1;
@@ -130,16 +130,17 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	D += saturate(D_GGX(HdotN,(roughness + 1.f) / 2.f));
 	V += saturate(V_SchlickForGGX((roughness + 1.f) / 2.f, NdotV, NdotL));
 
-    float3 lightToPixel = normalize(worldPosition.xyz - position.xyz);
-    float spotFactor = max(0,dot(lightToPixel, normalize(direction)));
-	float angularAttenuation =  (1 - (1 - spotFactor) * 1 / (1 - input.cosAngle.x)) / 2;
+    float3 lightToPixel = normalize(-toLight);
+    float spotFactor = max(0, dot(lightToPixel, normalize(direction)));
+
+	float angularAttenuation = (1 - (1 - spotFactor) * ( 1 / ( 1 - input.cosAngle.x))) / 2;
 
 	float ln = length(toLight);
 	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range.x));
 
-	float3 directSpec = D * F * V * attenuation * angularAttenuation * color ;
+	float3 directSpec = D * F * V * attenuation * angularAttenuation * color;
 
-	float3 final_color = directSpec * 10;
+	float3 final_color = directSpec;
 
 	float4 newPos = worldPosition + (normal * 0.4);
 	newPos.w = 1;
@@ -155,31 +156,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
 	if(sampleValue < compareValue)
 	{
-	 	final_color = 0;
-	}
-
-
+		if(0 < shadowVec.x && shadowVec.x < 1 && 0 < shadowVec.y && shadowVec.y < 1)
+	 		final_color = 0;
+	}	 
 
 	return float4(final_color, 1);
 };
-//	float angularAttenuation =  (1 - (1 - spotFactor) * 1 / (1 - input.cosAngle.x)) / 2;
-
-    // float spotFactor = dot(lightToPixel, normalize(direction));
-
-		//Shadow
-	// float4 newPos = worldPosition + (normal * 0.4);
-	// newPos.w = 1;
-	// float4 shadowVec = mul(newPos, shadowMVP);
-	// shadowVec.xyz /= shadowVec.w;
-	// shadowVec.y = -shadowVec.y;
-	// shadowVec.x = shadowVec.x;
-	// shadowVec.xy += 1;
-	// shadowVec.xy *= 0.5;
-
-	// float compareValue = shadowVec.z;
-
-	// float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
-	// if(sampleValue < compareValue)
-	// {
-	// 	final_color = 0;
-	// }

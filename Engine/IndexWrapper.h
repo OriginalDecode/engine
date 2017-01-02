@@ -6,7 +6,7 @@
 enum DXGI_FORMAT;
 struct ID3D11Buffer;
 #endif
-namespace Snowblind
+namespace Hex
 {
 	struct VertexIndexWrapper
 	{

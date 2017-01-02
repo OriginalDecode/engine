@@ -5,7 +5,7 @@
 #include "Camera.h"
 #include "AssetsContainer.h"
 #include "Engine.h"
-namespace Snowblind
+namespace Hex
 {
 
 	void CInstance::Initiate(const char* aFilePath, const std::string& effect, const eModelType& aModelType)

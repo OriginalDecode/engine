@@ -5,7 +5,7 @@
 
 #define DIVIDE 255.f
 
-namespace Snowblind
+namespace Hex
 {
 	bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
 	{

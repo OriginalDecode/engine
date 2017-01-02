@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseModel.h"
 #include <standard_datatype.hpp>
-namespace Snowblind
+namespace Hex
 {
 	class CSurface;
 

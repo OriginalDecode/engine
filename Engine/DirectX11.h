@@ -32,7 +32,7 @@ struct ID3D11SamplerState;
 
 struct IUnknown;
 
-namespace Snowblind
+namespace Hex
 {
 	class DirectX11 : public IGraphicsAPI
 	{

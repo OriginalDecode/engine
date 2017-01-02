@@ -2,7 +2,7 @@
 #include "Camera.h"
 #include <SimpleMath.h>
 #include "../Input/ControllerInput.h"
-namespace Snowblind
+namespace Hex
 {
 	Camera::Camera(float aWidth, float aHeight)
 	{

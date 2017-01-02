@@ -20,7 +20,7 @@
 
 void LevelFactory::Initiate()
 {
-	m_Engine = Snowblind::Engine::GetInstance();
+	m_Engine = Hex::Engine::GetInstance();
 	m_EntityManager = m_Engine->GetEntityManager();
 	m_PhysicsManager = m_Engine->GetPhysicsManager();
 }
@@ -141,7 +141,7 @@ void LevelFactory::CreateCameraComponent(JSONReader& entity_reader, Entity entit
 	m_EntityManager->AddComponent<CameraComponent>(entity_id);
 	CameraComponent& component = m_EntityManager->GetComponent<CameraComponent>(entity_id);
 
-	component.m_Camera = Snowblind::Engine::GetInstance()->GetCamera();
+	component.m_Camera = Hex::Engine::GetInstance()->GetCamera();
 }
 
 void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
@@ -213,11 +213,11 @@ void LevelFactory::CreateNetworkComponent(JSONReader& entity_reader, Entity enti
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	Snowblind::CTerrain* terrain = Snowblind::Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+	Hex::CTerrain* terrain = Hex::Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
 	terrain->AddNormalMap("Data/Textures/normal.dds");
 	/*
 	Work([&](std::string texture) {
-		Snowblind::CTerrain* terrain = m_Engine->CreateTerrain(texture, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+		Hex::CTerrain* terrain = m_Engine->CreateTerrain(texture, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
 		terrain->AddNormalMap("Data/Textures/normal.dds");
 	});
 	*/

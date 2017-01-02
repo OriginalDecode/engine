@@ -1,7 +1,7 @@
 #pragma once
 #include "VertexStructs.h"
 #include "snowblind_shared.h"
-namespace Snowblind
+namespace Hex
 {
 	class GBuffer;
 	class CSpotLight;

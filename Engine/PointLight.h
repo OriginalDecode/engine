@@ -3,7 +3,7 @@
 
 
 
-namespace Snowblind
+namespace Hex
 {
 
 	class CModel;

@@ -5,7 +5,7 @@
 #include "../Input/InputHandle.h"
 constexpr s16 max_error_count = 32;
 
-namespace Snowblind
+namespace Hex
 {
 	bool DebugMenu::Initiate(InputHandle* input_handle)
 	{

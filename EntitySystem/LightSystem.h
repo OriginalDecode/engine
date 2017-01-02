@@ -2,7 +2,7 @@
 #include "BaseSystem.h"
 
 
-namespace Snowblind
+namespace Hex
 {
 	class Synchronizer;
 
@@ -15,6 +15,6 @@ public:
 	CLightSystem(EntityManager& anEntityManager);
 	void Update(float aDeltaTime) override;
 private:
-	Snowblind::Synchronizer* mySynchronizer;
+	Hex::Synchronizer* mySynchronizer;
 };
 

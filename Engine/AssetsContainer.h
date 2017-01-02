@@ -4,7 +4,7 @@
 
 class CModelImporter;
 class FileWatcher;
-namespace Snowblind
+namespace Hex
 {
 	class ShaderFactory;
 	class CModel;
@@ -26,25 +26,25 @@ namespace Cache
 
 		void Update();
 
-		void ReloadTexture(Snowblind::Texture* texture);
-		Snowblind::Texture* GetTexture(const std::string& aFilePath);
+		void ReloadTexture(Hex::Texture* texture);
+		Hex::Texture* GetTexture(const std::string& aFilePath);
 
-		Snowblind::Effect* GetEffect(const std::string& aFilePath);
-		Snowblind::CModel* GetModel(const std::string& aFilePath);
+		Hex::Effect* GetEffect(const std::string& aFilePath);
+		Hex::CModel* GetModel(const std::string& aFilePath);
 		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
 		
 	private:
 		FileWatcher* m_TextureWatcher = nullptr;
 		
-		std::unordered_map<std::string, Snowblind::Texture*> myTextures;
-		std::unordered_map<std::string, Snowblind::Effect*> myEffects;
-		std::unordered_map<std::string, Snowblind::CModel*> myModels;
-		std::unordered_map<std::string, Snowblind::Sprite*> mySprites;
+		std::unordered_map<std::string, Hex::Texture*> myTextures;
+		std::unordered_map<std::string, Hex::Effect*> myEffects;
+		std::unordered_map<std::string, Hex::CModel*> myModels;
+		std::unordered_map<std::string, Hex::Sprite*> mySprites;
 		
 		bool LoadTexture(const std::string& aFilePath);
 		void LoadEffect(const std::string& aFilePath);
 
-		Snowblind::ShaderFactory* myShaderFactory;
+		Hex::ShaderFactory* myShaderFactory;
 		CModelImporter* myModelLoader;
 	};
 };

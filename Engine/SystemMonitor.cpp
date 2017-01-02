@@ -2,7 +2,7 @@
 #include "SystemMonitor.h"
 #include <Psapi.h>
 
-namespace Snowblind
+namespace Hex
 {
 	FILETIME CSystemMonitor::myPrevSysKernel;
 	FILETIME CSystemMonitor::myPrevSysUser;

@@ -7,7 +7,7 @@
 typedef CU::StaticArray<CU::GrowingArray<RenderCommand>, 2> CommandBuffer;
 typedef CU::StaticArray<CommandBuffer, static_cast<u32>(eCommandBuffer::_COUNT)> CommandBuffers;
 
-namespace Snowblind
+namespace Hex
 {
 
 	class Synchronizer

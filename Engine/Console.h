@@ -11,7 +11,7 @@ namespace CommonUtilities
 	class TimeManager;
 }
 
-namespace Snowblind
+namespace Hex
 {
 	class Sprite;
 	class Camera;

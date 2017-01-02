@@ -1,12 +1,12 @@
 #pragma once
 #include "BaseComponent.h"
 
-namespace Snowblind
+namespace Hex
 {
 	class Camera;
 }
 
 struct CameraComponent final : public BaseComponent
 {
-	Snowblind::Camera* m_Camera = nullptr;
+	Hex::Camera* m_Camera = nullptr;
 };

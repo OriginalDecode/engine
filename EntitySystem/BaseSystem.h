@@ -2,7 +2,7 @@
 #include "ComponentFilter.h"
 #include "EntityManager.h"
 
-namespace Snowblind
+namespace Hex
 {
 	class Synchronizer;
 }

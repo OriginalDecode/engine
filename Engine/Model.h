@@ -12,7 +12,7 @@ enum eModelStates : int
 	LIGHT_MESH,
 	_COUNT
 };
-namespace Snowblind
+namespace Hex
 {
 static Ticket_Mutex g_ModelMutex;
 	class CModel : public CBaseModel

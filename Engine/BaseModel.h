@@ -9,7 +9,7 @@ typedef struct ID3D11InputLayout IInputLayout;
 typedef struct ID3D11Buffer IBuffer;
 typedef struct ID3D11DeviceContext IDevContext;
 
-namespace Snowblind
+namespace Hex
 {
 
 	class DirectX11;

@@ -1,7 +1,7 @@
 #pragma once
 struct ID3D11ShaderResourceView;
 
-namespace Snowblind
+namespace Hex
 {
 	class CFont;
 	class Camera;

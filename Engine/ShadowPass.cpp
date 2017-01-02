@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ShadowPass.h"
-namespace Snowblind
+namespace Hex
 {
 
 	bool ShadowPass::Initiate()

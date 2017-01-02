@@ -1,7 +1,7 @@
 #pragma once
 #include "snowblind_shared.h"
 
-namespace Snowblind
+namespace Hex
 {
 	struct CompiledShader;	
 	class Texture;

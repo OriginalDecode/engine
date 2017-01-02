@@ -30,11 +30,11 @@ namespace Cache
 
 	void CAssetsContainer::Initiate()
 	{
-		myShaderFactory = new Snowblind::ShaderFactory;
+		myShaderFactory = new Hex::ShaderFactory;
 		myModelLoader = new CModelImporter;
 	}
 
-	Snowblind::Texture* CAssetsContainer::GetTexture(const std::string& aFilePath)
+	Hex::Texture* CAssetsContainer::GetTexture(const std::string& aFilePath)
 	{
 		if (CL::substr(aFilePath, ".dds") == false)
 		{
@@ -52,7 +52,7 @@ namespace Cache
 		return myTextures[aFilePath];
 	}
 
-	Snowblind::Effect* CAssetsContainer::GetEffect(const std::string& aFilePath)
+	Hex::Effect* CAssetsContainer::GetEffect(const std::string& aFilePath)
 	{
 		if (myEffects.find(aFilePath) == myEffects.end())
 		{
@@ -61,7 +61,7 @@ namespace Cache
 		return myEffects[aFilePath];
 	}
 
-	Snowblind::CModel* CAssetsContainer::GetModel(const std::string& aFilePath)
+	Hex::CModel* CAssetsContainer::GetModel(const std::string& aFilePath)
 	{
 		if (myModels.find(aFilePath) == myModels.end())
 		{
@@ -76,7 +76,7 @@ namespace Cache
 		myShaderFactory->Update();
 	}
 
-	void CAssetsContainer::ReloadTexture(Snowblind::Texture* texture)
+	void CAssetsContainer::ReloadTexture(Hex::Texture* texture)
 	{
 		texture->OnReload();
 	}
@@ -85,7 +85,7 @@ namespace Cache
 	{
 		if (myTextures.find(aFilePath) == myTextures.end())
 		{
-			Snowblind::Texture* texture = new Snowblind::Texture;
+			Hex::Texture* texture = new Hex::Texture;
 			if (texture->Load(aFilePath.c_str()) == false)
 			{
 				DL_ASSERT_EXP(texture->CleanUp(), "Failed to cleanup texture!");
@@ -99,7 +99,7 @@ namespace Cache
 
 	void CAssetsContainer::LoadEffect(const std::string& aFilePath)
 	{
-		Snowblind::Effect* effect = new Snowblind::Effect(aFilePath);
+		Hex::Effect* effect = new Hex::Effect(aFilePath);
 		myShaderFactory->LoadShader(effect);
 		myEffects[aFilePath] = effect;
 	}

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Window.h"
 
-namespace Snowblind
+namespace Hex
 {
 
 	bool Window::Initiate(WindowCreateInfo window_create_info)

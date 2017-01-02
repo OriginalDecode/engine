@@ -22,7 +22,7 @@ enum class eBodyType
 };
 
 
-namespace Snowblind
+namespace Hex
 {
 	class Synchronizer;
 }

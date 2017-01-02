@@ -5,7 +5,7 @@
 struct ID3D11Buffer;
 
 
-namespace Snowblind
+namespace Hex
 {
 	struct VertexDataWrapper
 	{

@@ -17,7 +17,7 @@
 
 bool Application::Initiate()
 {
-	myEngine = Snowblind::Engine::GetInstance();
+	myEngine = Hex::Engine::GetInstance();
 	myCamera = myEngine->GetCamera();
 
 	mySynchronizer = myEngine->GetSynchronizer();

@@ -7,7 +7,7 @@ typedef HINSTANCE__* HINSTANCE;
 struct HWND__;
 typedef HWND__* HWND;
 #endif
-namespace Snowblind
+namespace Hex
 {
 	struct WindowCreateInfo
 	{

@@ -3,7 +3,7 @@
 
 
 
-namespace Snowblind
+namespace Hex
 {
 	class Texture;
 	class Effect;
@@ -49,8 +49,8 @@ struct SAnimatedParticleObject
 
 struct SEmitterData
 {
-	Snowblind::Texture* diffuseTexture = nullptr;
-	Snowblind::Effect* shader = nullptr;
+	Hex::Texture* diffuseTexture = nullptr;
+	Hex::Effect* shader = nullptr;
 
 	SParticleData particleData;
 

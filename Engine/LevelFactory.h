@@ -32,7 +32,7 @@ private:
 	void CreateNetworkComponent(JSONReader& entity_reader, Entity entity_id);
 	JSONReader m_LevelReader;
 
-	Snowblind::Engine* m_Engine			= nullptr;
+	Hex::Engine* m_Engine			= nullptr;
 	EntityManager* m_EntityManager		= nullptr;
 	PhysicsManager* m_PhysicsManager	= nullptr;
 

@@ -62,7 +62,7 @@ enum class eSamplerStates
 	_COUNT
 };
 
-namespace Snowblind
+namespace Hex
 {
 	class IGraphicsAPI
 	{

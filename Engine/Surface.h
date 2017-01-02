@@ -3,7 +3,7 @@
 #include <string>
 struct ID3D11DeviceContext;
 enum D3D_PRIMITIVE_TOPOLOGY;
-namespace Snowblind
+namespace Hex
 {
 	class Texture;
 	class Effect;

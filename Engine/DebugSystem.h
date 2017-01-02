@@ -6,7 +6,7 @@
 #include <deque>
 
 class InputHandle;
-namespace Snowblind
+namespace Hex
 {
 	class Synchronizer;
 	class DebugMenu

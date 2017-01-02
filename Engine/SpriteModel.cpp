@@ -10,7 +10,7 @@
 #include "EngineDefines.h"
 #include "AssetsContainer.h"
 
-namespace Snowblind
+namespace Hex
 {
 	CSpriteModel::CSpriteModel()
 	{
@@ -204,7 +204,7 @@ namespace Snowblind
 #endif
 	}
 
-	Snowblind::Effect* CSpriteModel::GetEffect()
+	Hex::Effect* CSpriteModel::GetEffect()
 	{
 		return myEffect;
 	}

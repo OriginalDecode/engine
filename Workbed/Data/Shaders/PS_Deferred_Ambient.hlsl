@@ -147,37 +147,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 	float3 finalColor = (ambientDiffuse + ambientSpec);
 
-	// float3 position = float3(95,2,32);
-
-	// float3 toLight = position - worldPosition.xyz;
-	// float3 lightDir = normalize(toLight);
-	// float3 halfVec = normalize(lightDir + toEye);
-
-	// float NdotL = dot(normal, lightDir);
-	// float HdotN = saturate(dot(halfVec, normal));
-	// float NdotV = saturate(dot(normal, -toEye));
-
-	// float3 F = float3(1,1,1);
-	// float D = 1;
-	// float V = 1;
-	// F += saturate(Fresnel(substance, -lightDir, halfVec));
-	// D += saturate(D_GGX(HdotN,(roughness + 1.f) / 2.f));
-	// V += saturate(V_SchlickForGGX((roughness + 1.f) / 2.f, NdotV, NdotL));
-
- 	// float3 lightToPixel = normalize(-toLight);
- 	// float spotFactor = dot(lightToPixel, normalize(float3(1,0,0)));
-
-	//  if(spotFactor < 0)
-	//  	spotFactor = 0;
-
-	// float angularAttenuation =  1 - (1 - spotFactor) * 1 / (1 - cos(6)) / 2;
-
-	// float ln = length(toLight);
-	// float attenuation = CalculateTotalAttenuation(ln, 10);
-	// float attNdotL =  NdotL * attenuation * angularAttenuation;
-
-	// float3 directSpec = D * F * V * attenuation * angularAttenuation * float4(1,0,0,1);
-
 	float3 output = (finalColor * 0.5);
 	
 	return float4(output, 1.f);

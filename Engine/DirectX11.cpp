@@ -7,7 +7,7 @@
 #define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
 #define PINK_CLEAR(v) v[0] = 1.f; v[1] = 0.07f; v[2] = 255.f; v[3] = 0.f;
 
-namespace Snowblind
+namespace Hex
 {
 	bool DirectX11::Initiate(CreateInfo create_info)
 	{

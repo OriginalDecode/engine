@@ -8,7 +8,7 @@
 #include <functional>
 #include <AABB.h>
 
-namespace Snowblind
+namespace Hex
 {
 	class Synchronizer;
 	class CTerrain;
@@ -26,12 +26,12 @@ static void Backward(RigidBody* rigidbody);
 static void Right(RigidBody* rigidbody);
 static void Left(RigidBody* rigidbody);
 
-static void Up(Snowblind::Camera* camera);
-static void Forward(Snowblind::Camera* camera);
-static void Backward(Snowblind::Camera* camera);
-static void Right(Snowblind::Camera* camera);
-static void Left(Snowblind::Camera* camera);
-static void Down(Snowblind::Camera* camera);
+static void Up(Hex::Camera* camera);
+static void Forward(Hex::Camera* camera);
+static void Backward(Hex::Camera* camera);
+static void Right(Hex::Camera* camera);
+static void Left(Hex::Camera* camera);
+static void Down(Hex::Camera* camera);
 
 
 class Game
@@ -49,7 +49,7 @@ private:
 
 	void LeftClick(float x, float y);
 	bool m_DisableMouseCameraMovement = false;
-	Snowblind::Camera* m_Camera = nullptr;
+	Hex::Camera* m_Camera = nullptr;
 
 
 	s16 m_LocalPlayerCount = 0;
@@ -59,12 +59,12 @@ private:
 	float myTime = 0.f;
 
 	CU::GrowingArray<cl::AABB> m_AABBs;
-	CU::GrowingArray<Snowblind::CTerrain*> myTerrain;
+	CU::GrowingArray<Hex::CTerrain*> myTerrain;
 	CU::GrowingArray<RigidBody*> myTerrainBodies;
 
-	Snowblind::Synchronizer* mySynchronizer = nullptr;
-	Snowblind::Engine* myEngine = nullptr;
-	Snowblind::CMousePicker* myPicker = nullptr;
+	Hex::Synchronizer* mySynchronizer = nullptr;
+	Hex::Engine* myEngine = nullptr;
+	Hex::CMousePicker* myPicker = nullptr;
 
 
 	std::string m_ModelKey;

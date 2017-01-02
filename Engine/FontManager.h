@@ -13,7 +13,7 @@ struct FT_GlyphRec_;
 struct FT_GlyphSlotRec_;
 
 
-namespace Snowblind
+namespace Hex
 {
 
 	struct SCharData

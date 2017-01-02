@@ -2,7 +2,7 @@
 
 
 struct ID3D11ShaderResourceView;
-namespace Snowblind
+namespace Hex
 {
 	struct SNode
 	{

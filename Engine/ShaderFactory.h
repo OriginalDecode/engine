@@ -8,7 +8,7 @@
 class ShaderWarningHandler;
 class FileWatcher;
 
-namespace Snowblind
+namespace Hex
 {
 	struct CompiledShader
 	{
@@ -22,7 +22,7 @@ namespace Snowblind
 	};
 };
 
-namespace Snowblind
+namespace Hex
 {
 	class Effect;
 	class ShaderFactory

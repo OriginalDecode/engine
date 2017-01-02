@@ -8,7 +8,7 @@
 #include <TimeManager.h>
 #include "AssetsContainer.h"
 
-namespace Snowblind
+namespace Hex
 {
 	CFont::CFont(SFontData* aFontData)
 	{

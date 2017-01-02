@@ -21,7 +21,7 @@
 
 
 CModelImporter::CModelImporter()
-	: myEngine(Snowblind::Engine::GetInstance())
+	: myEngine(Hex::Engine::GetInstance())
 	, myTimeManager(new CommonUtilities::TimeManager())
 {
 	myTimeManager->CreateTimer();
@@ -33,10 +33,10 @@ CModelImporter::~CModelImporter()
 	SAFE_DELETE(myTimeManager);
 }
 
-Snowblind::CModel* CModelImporter::CreateModel(FBXModelData* someData, Snowblind::Effect* anEffect)
+Hex::CModel* CModelImporter::CreateModel(FBXModelData* someData, Hex::Effect* anEffect)
 {
 
-	Snowblind::CModel* newModel = new Snowblind::CModel();
+	Hex::CModel* newModel = new Hex::CModel();
 	newModel->SetEffect(anEffect);
 
 	if (someData->myData)
@@ -52,14 +52,14 @@ Snowblind::CModel* CModelImporter::CreateModel(FBXModelData* someData, Snowblind
 	return newModel;
 }
 
-Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, const std::string& aEffectPath)
+Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, const std::string& aEffectPath)
 {
 	myCurrentLoadingFile = aFilePath;
-	Snowblind::CModel* model = LoadModel(aFilePath, myEngine->GetEffect(aEffectPath))->CreateModel(aFilePath);
+	Hex::CModel* model = LoadModel(aFilePath, myEngine->GetEffect(aEffectPath))->CreateModel(aFilePath);
 	return model;
 }
 
-Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowblind::Effect* anEffect)
+Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect* anEffect)
 {
 	myTimeManager->Update();
 	float loadTime = myTimeManager->GetTimer(0).GetTotalTime().GetMilliseconds();
@@ -92,7 +92,7 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 	aiNode* rootNode = scene->mRootNode;
 	FBXModelData* data = new FBXModelData;
 	ProcessNode(rootNode, scene, data);
-	Snowblind::CModel* toReturn = CreateModel(data, anEffect);
+	Hex::CModel* toReturn = CreateModel(data, anEffect);
 
 
 	if (data->myTextureData)
@@ -117,13 +117,13 @@ Snowblind::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Snowb
 	return toReturn;
 }
 
-void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Snowblind::Effect* /*anEffect*/)
+void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Effect* /*anEffect*/)
 {
 #ifdef SNOWBLIND_DX11
 	ModelData* data = someData->myData;
 
 	out->SetWHD(data->m_WHD);
-	Snowblind::VertexIndexWrapper* indexWrapper = new Snowblind::VertexIndexWrapper();
+	Hex::VertexIndexWrapper* indexWrapper = new Hex::VertexIndexWrapper();
 	indexWrapper->myFormat = DXGI_FORMAT_R32_UINT;
 	u32* indexData = new u32[data->myIndexCount];
 	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
@@ -139,7 +139,7 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 
 
 	/* BUG HERE. CRASH. */
-	Snowblind::VertexDataWrapper* vertexData = new Snowblind::VertexDataWrapper();
+	Hex::VertexDataWrapper* vertexData = new Hex::VertexDataWrapper();
 	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float); //is this wrong?
 	u32* vertexRawData = new u32[sizeOfBuffer];
 	memcpy(vertexRawData, data->myVertexBuffer, sizeOfBuffer); // This crashes?
@@ -149,7 +149,7 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 	vertexData->myStride = data->myVertexStride * sizeof(float);
 	out->myVertexData = vertexData;
 
-	Snowblind::CSurface* newSurface = new Snowblind::CSurface(0, data->myVertexCount, 0
+	Hex::CSurface* newSurface = new Hex::CSurface(0, data->myVertexCount, 0
 		, data->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	out->myIsNULLObject = false;
@@ -210,7 +210,7 @@ void CModelImporter::FillData(FBXModelData* someData, Snowblind::CModel* out, Sn
 
 	for (s32 i = 0; i < info.Size(); i++)
 	{
-		newSurface->AddTexture(info[i].myFilename, (Snowblind::TextureType)info[i].myType);
+		newSurface->AddTexture(info[i].myFilename, (Hex::TextureType)info[i].myType);
 	}
 
 	//newSurface->ValidateTextures();
@@ -496,22 +496,22 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 			{
 				case aiTextureType_DIFFUSE:
 				{
-					newInfo.myType = Snowblind::TextureType::_ALBEDO;
+					newInfo.myType = Hex::TextureType::_ALBEDO;
 				}break;
 
 				case aiTextureType_SPECULAR:
 				{
-					newInfo.myType = Snowblind::TextureType::_ROUGHNESS;
+					newInfo.myType = Hex::TextureType::_ROUGHNESS;
 				}break;
 
 				case aiTextureType_AMBIENT:
 				{
-					newInfo.myType = Snowblind::TextureType::_AO;
+					newInfo.myType = Hex::TextureType::_AO;
 				}break;
 
 				case aiTextureType_EMISSIVE:
 				{
-					newInfo.myType = Snowblind::TextureType::_EMISSIVE;
+					newInfo.myType = Hex::TextureType::_EMISSIVE;
 				}break;
 
 				case aiTextureType_HEIGHT:
@@ -521,7 +521,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 				case aiTextureType_NORMALS:
 				{
-					newInfo.myType = Snowblind::TextureType::_NORMAL;
+					newInfo.myType = Hex::TextureType::_NORMAL;
 				}break;
 
 				case aiTextureType_SHININESS:
@@ -546,7 +546,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 				case aiTextureType_REFLECTION:
 				{
-					newInfo.myType = Snowblind::TextureType::_METALNESS;
+					newInfo.myType = Hex::TextureType::_METALNESS;
 				}break;
 
 				case aiTextureType_UNKNOWN:

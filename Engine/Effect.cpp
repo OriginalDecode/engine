@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Effect.h"
-namespace Snowblind
+namespace Hex
 {
 	Effect::Effect(const std::string& aFilePath)
 		: myFileName(aFilePath)

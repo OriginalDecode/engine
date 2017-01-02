@@ -34,7 +34,7 @@ static constexpr char* hull_shader = "HS";
 static constexpr char* domain_shader = "DS";
 static constexpr char* compute_shader = "CS";
 
-namespace Snowblind
+namespace Hex
 {
 
 	void Engine::AddEntitySystems()
@@ -144,8 +144,8 @@ namespace Snowblind
 			ToggleVsync();
 		});
 
-		myCamera = new Snowblind::Camera(myWindowSize.myWidth, myWindowSize.myHeight);
-		my2DCamera = new Snowblind::Camera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
+		myCamera = new Hex::Camera(myWindowSize.myWidth, myWindowSize.myHeight);
+		my2DCamera = new Hex::Camera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
 		myRenderer = new Renderer;
 		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
 
@@ -208,7 +208,7 @@ namespace Snowblind
 		return myCamera;
 	}
 
-	Snowblind::Camera* Engine::Get2DCamera()
+	Hex::Camera* Engine::Get2DCamera()
 	{
 		return my2DCamera;
 	}
@@ -377,17 +377,17 @@ namespace Snowblind
 		return myAPI->GetAPIName();
 	}
 
-	Snowblind::Texture* Engine::GetTexture(const std::string& aFilePath)
+	Hex::Texture* Engine::GetTexture(const std::string& aFilePath)
 	{
 		return myAssetsContainer->GetTexture(aFilePath);
 	}
 
-	Snowblind::Effect* Engine::GetEffect(const std::string& aFilePath)
+	Hex::Effect* Engine::GetEffect(const std::string& aFilePath)
 	{
 		return myAssetsContainer->GetEffect(aFilePath);
 	}
 
-	Snowblind::CModel* Engine::GetModel(const std::string& aFilePath)
+	Hex::CModel* Engine::GetModel(const std::string& aFilePath)
 	{
 		return myAssetsContainer->GetModel(aFilePath);
 	}
@@ -477,7 +477,7 @@ namespace Snowblind
 		return myLocalTime;
 	}
 
-	Snowblind::CTerrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize)
+	Hex::CTerrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize)
 	{
 		CTerrain* newTerrain = m_TerrainManager->GetTerrain(aFile);
 		newTerrain->Initiate(aFile, position, aSize);

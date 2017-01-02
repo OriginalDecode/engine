@@ -2,7 +2,7 @@
 #include <Math/Matrix/Matrix.h>
 struct ID3D11ShaderResourceView;
 
-namespace Snowblind
+namespace Hex
 {
 	class Camera;
 	class CSpriteModel;

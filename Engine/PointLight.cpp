@@ -4,7 +4,7 @@
 #include "Instance.h"
 #include "AssetsContainer.h"
 
-namespace Snowblind
+namespace Hex
 {
 
 	CPointLight::CPointLight()

@@ -6,7 +6,7 @@
 #include <JSON/JSONReader.h>
 #include "Camera.h"
 
-namespace Snowblind
+namespace Hex
 {
 	bool SkySphere::Initiate(const std::string& model_filepath, const std::string& skysphere_shader, Camera* camera)
 	{

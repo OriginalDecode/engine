@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace Snowblind
+namespace Hex
 {
 	class CModel;
 	class Effect;

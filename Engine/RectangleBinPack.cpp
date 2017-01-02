@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RectangleBinPack.h"
 
-namespace Snowblind
+namespace Hex
 {
 
 	CRectangleBinPack::CRectangleBinPack()

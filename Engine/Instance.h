@@ -1,7 +1,7 @@
 #pragma once
 #include "../CommonLib/Math/Matrix/Matrix44.h"
 #include "LightStructs.h"
-namespace Snowblind
+namespace Hex
 {
 	enum class eModelType
 	{

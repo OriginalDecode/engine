@@ -1,5 +1,5 @@
 #pragma once
-namespace Snowblind
+namespace Hex
 {
 
 	class Camera;

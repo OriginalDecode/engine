@@ -135,16 +135,32 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float angularAttenuation =  (1 - (1 - spotFactor) * 1 / (1 - input.cosAngle.x)) / 2;
 
 	float ln = length(toLight);
-	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range.x)); // current problem
-	/*
-		attenuation dictates if you're able to see the lightmesh. Which would imply that if the attenuation is 0 or less it should not be visible
-	*/
-	
-	float attNdotL =  NdotL * attenuation * angularAttenuation;
+	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range.x));
 
 	float3 directSpec = D * F * V * attenuation * angularAttenuation * color ;
 
-	return float4(directSpec, 1);
+	float3 final_color = directSpec * 10;
+
+	float4 newPos = worldPosition + (normal * 0.4);
+	newPos.w = 1;
+	float4 shadowVec = mul(newPos, shadowMVP);
+	shadowVec.xyz /= shadowVec.w;
+	shadowVec.y = -shadowVec.y;
+	shadowVec.x = shadowVec.x;
+	shadowVec.xy += 1;
+	shadowVec.xy *= 0.5;
+
+	float compareValue = shadowVec.z;
+
+	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
+	if(sampleValue < compareValue)
+	{
+	 	final_color = 0;
+	}
+
+
+
+	return float4(final_color, 1);
 };
 //	float angularAttenuation =  (1 - (1 - spotFactor) * 1 / (1 - input.cosAngle.x)) / 2;
 

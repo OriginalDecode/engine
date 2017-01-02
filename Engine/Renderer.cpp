@@ -21,6 +21,9 @@
 #include "ShadowSpotlight.h"
 #include "GBuffer.h"
 #include "Texture.h"
+
+//#define AMBIENT_PASS_ONLY
+
 namespace Snowblind
 {
 	bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera_3d, Camera* camera_2d)
@@ -130,6 +133,34 @@ namespace Snowblind
 		my2DCamera = aCamera;
 	}
 
+#if defined (AMBIENT_PASS_ONLY)
+	void Renderer::Render()
+	{
+		myEngine->Clear();
+		//myEngine->GetAPI()->ResetViewport();
+
+		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		myDeferredRenderer->SetTargets();
+
+		Render3DCommands();
+		Texture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
+
+		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
+
+		myEngine->ResetRenderTargetAndDepth();
+		myDeferredRenderer->Finalize();
+
+		RenderLines();
+
+		Render2DCommands();
+		myEngine->Present();
+
+		mySynchronizer->WaitForLogic();
+		mySynchronizer->SwapBuffer();
+		mySynchronizer->RenderIsDone();
+		myPrevFrame = myCamera->GetOrientation();
+	}
+#else
 	void Renderer::Render()
 	{
 		myEngine->Clear();
@@ -172,6 +203,7 @@ namespace Snowblind
 		mySynchronizer->RenderIsDone();
 		myPrevFrame = myCamera->GetOrientation();
 	}
+#endif
 
 	void Renderer::AddTerrain(CTerrain* someTerrain)
 	{

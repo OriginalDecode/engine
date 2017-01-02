@@ -46,7 +46,7 @@ VS_OUTPUT VS(VS_INPUT input)
 	output.pos = mul(input.pos, World);
 	output.pos = mul(output.pos, View);
 	output.pos = mul(output.pos, Projection);
-	output.cosAngle.x = cos(angle.x);
+	output.cosAngle.x = cos(angle.x / 2);
 	output.range.x = range.x;
 	output.range.y = angle.x;
 

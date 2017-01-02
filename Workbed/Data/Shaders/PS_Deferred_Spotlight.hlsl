@@ -132,11 +132,13 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     float3 lightToPixel = normalize(worldPosition.xyz - position.xyz);
     float spotFactor = dot(lightToPixel, normalize(direction));
+	if(spotFactor < 0)
+		spotFactor = 0;
 	float angularAttenuation =  (1 - (1 - spotFactor) * 1 / (1 - input.cosAngle.x)) / 2;
 
 	float ln = length(toLight);
-	float attenuation = CalculateTotalAttenuation(ln, input.range.x);
-	
+	float attenuation = CalculateTotalAttenuation(ln, 2); // current problem
+		
 	float attNdotL =  NdotL * attenuation * angularAttenuation;
 
 	float3 directSpec = D * F * V * attenuation * angularAttenuation * color ;

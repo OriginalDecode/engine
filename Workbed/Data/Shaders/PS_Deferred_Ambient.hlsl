@@ -75,6 +75,34 @@ float RoughToSPow(float fRoughness)
 	return (2 / (fRoughness * fRoughness)) - 2;
 }
 
+float V_SchlickForGGX(float aRoughness, float aNdotV, float aNdotL)
+{
+	float k = (aRoughness * aRoughness) * 0.5f;
+	float G1V = aNdotV * (1.f - k) + k;
+	float G1L = aNdotL * (1.f - k) + k;
+
+	return 0.25f / (G1V * G1L);
+}
+
+float D_GGX(float aHdotN, float aRoughness)
+{
+	float m = aRoughness*aRoughness;
+	float m2 = m*m;
+	float Denominator = aHdotN*aHdotN*(m2 - 1.f) + 1.f;
+	float D = m2 / (3.14159*Denominator*Denominator);
+	return D;
+}
+
+float3 Fresnel(const float3 aSubstance, const float3 aLightDir, const float3 aHalfVec)
+{
+	float LdotH = dot(aLightDir, aHalfVec);
+	LdotH = 1.0f - LdotH;
+	LdotH = pow(LdotH, 5);
+	float3 fresnel = LdotH * (1.f - aSubstance);
+	fresnel = aSubstance + fresnel;
+	return fresnel;
+}
+
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 depth = DepthTexture.Sample(point_Clamp, input.uv);
@@ -119,5 +147,38 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 	float3 finalColor = (ambientDiffuse + ambientSpec);
 
-	return float4(finalColor, 1.f) * 0.5;
+	// float3 position = float3(95,2,32);
+
+	// float3 toLight = position - worldPosition.xyz;
+	// float3 lightDir = normalize(toLight);
+	// float3 halfVec = normalize(lightDir + toEye);
+
+	// float NdotL = dot(normal, lightDir);
+	// float HdotN = saturate(dot(halfVec, normal));
+	// float NdotV = saturate(dot(normal, -toEye));
+
+	// float3 F = float3(1,1,1);
+	// float D = 1;
+	// float V = 1;
+	// F += saturate(Fresnel(substance, -lightDir, halfVec));
+	// D += saturate(D_GGX(HdotN,(roughness + 1.f) / 2.f));
+	// V += saturate(V_SchlickForGGX((roughness + 1.f) / 2.f, NdotV, NdotL));
+
+ 	// float3 lightToPixel = normalize(-toLight);
+ 	// float spotFactor = dot(lightToPixel, normalize(float3(1,0,0)));
+
+	//  if(spotFactor < 0)
+	//  	spotFactor = 0;
+
+	// float angularAttenuation =  1 - (1 - spotFactor) * 1 / (1 - cos(6)) / 2;
+
+	// float ln = length(toLight);
+	// float attenuation = CalculateTotalAttenuation(ln, 10);
+	// float attNdotL =  NdotL * attenuation * angularAttenuation;
+
+	// float3 directSpec = D * F * V * attenuation * angularAttenuation * float4(1,0,0,1);
+
+	float3 output = (finalColor * 0.5);
+	
+	return float4(output, 1.f);
 };

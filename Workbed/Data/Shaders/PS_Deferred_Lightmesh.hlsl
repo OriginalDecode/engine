@@ -97,7 +97,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 depth = DepthTexture.Sample(point_Clamp, texCoord);
 	
 	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
-	float roughness = depth.y;
+	float roughness = 0;//depth.y;
 	float roughnessOffsetted = pow(8192, roughness);
 	float ao = 1.0f;
 	float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;

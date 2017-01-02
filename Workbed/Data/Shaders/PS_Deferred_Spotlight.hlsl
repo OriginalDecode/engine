@@ -99,7 +99,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 depth = DepthTexture.Sample(point_Clamp, texCoord);
 	
 	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
-	float roughness = depth.y;
+	float roughness = 0;//depth.y;
 	float roughnessOffsetted = pow(8192, roughness);
 	float ao = 1.0f;
 	float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;
@@ -131,14 +131,15 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	V += saturate(V_SchlickForGGX((roughness + 1.f) / 2.f, NdotV, NdotL));
 
     float3 lightToPixel = normalize(worldPosition.xyz - position.xyz);
-    float spotFactor = dot(lightToPixel, normalize(direction));
-	if(spotFactor < 0)
-		spotFactor = 0;
+    float spotFactor = max(0,dot(lightToPixel, normalize(direction)));
 	float angularAttenuation =  (1 - (1 - spotFactor) * 1 / (1 - input.cosAngle.x)) / 2;
 
 	float ln = length(toLight);
-	float attenuation = CalculateTotalAttenuation(ln, 2); // current problem
-		
+	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range.x)); // current problem
+	/*
+		attenuation dictates if you're able to see the lightmesh. Which would imply that if the attenuation is 0 or less it should not be visible
+	*/
+	
 	float attNdotL =  NdotL * attenuation * angularAttenuation;
 
 	float3 directSpec = D * F * V * attenuation * angularAttenuation * color ;

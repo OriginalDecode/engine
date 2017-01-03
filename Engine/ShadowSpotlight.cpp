@@ -10,7 +10,7 @@ namespace Hex
 		m_Context = Engine::GetInstance()->GetAPI()->GetContext();
 		m_Viewport = Engine::GetInstance()->GetAPI()->CreateViewport(m_BufferSize, m_BufferSize, 0.f, 1.f, 0, 0);
 
-		m_Camera = new Camera(m_BufferSize, m_BufferSize, 50.f, 10.f, 90.f);
+		m_Camera = new Camera(m_BufferSize, m_BufferSize, 50.f, 1.f, 90.f);
 		m_Camera->SetPosition(position);
 		m_Camera->RotateAroundY(CL::DegreeToRad(90.f) * direction.x);
 		m_Camera->RotateAroundZ(CL::DegreeToRad(90.f) * direction.y);

@@ -76,17 +76,10 @@ void Game::Update(float dt)
 	if (input_wrapper->OnDown(KButton::Y))
 		Hex::Engine::GetInstance()->ToggleWireframe();
 
-
-
 	CU::Vector2f cur_pos = myEngine->GetInputHandle()->GetDeltaCursorPos();
 	std::stringstream ss;
 	ss << "FPS : " << myEngine->GetFPS() << "\n" << "Average FPS : " << myFPSToPrint << "\nDeltaTime:" << dt << "\n" << Hex::Engine::GetInstance()->GetLocalTimeAsString() << "\ncursor_pos : \n" << cur_pos.x << "\n" << cur_pos.y;
 	myEngine->AddDebugText(ss.str());
-
-
-	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", pointHit));
-
-	//mySynchronizer->AddRenderCommand(RenderCommand(eType::TERRAIN)); This shouldn't even be a command. This should just be rendered
 
 	myEngine->GetEntityManager()->Update(dt);
 }

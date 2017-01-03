@@ -243,19 +243,20 @@ namespace Hex
 	HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
 	{
 		std::wstring w_file_path(file_path.begin(), file_path.end());
+		ID3DInclude* include = D3D_COMPILE_STANDARD_FILE_INCLUDE;
 		HRESULT hr = D3DCompileFromFile(
 			w_file_path.c_str(),
-			NULL,
-			NULL,
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
 			shader_type.c_str(),
 			feature_level.c_str(),
 			shader_flags,
-			NULL,
+			0,
 			&out_compiled_shader,
 			&out_compile_message);
 		return hr;
 	}
-
+	
 	void* Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name)
 	{
 

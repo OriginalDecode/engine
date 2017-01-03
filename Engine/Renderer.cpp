@@ -52,7 +52,7 @@ namespace Hex
 		//CU::Vector3f(95, 7.f, 28.f)
 		m_Shadowlight = new ShadowSpotlight;
 		m_Shadowlight->Initiate(
-			CU::Vector3f(85, 7.f, 28.f)
+			CU::Vector3f(98, 2.f, 41.f)
 			, CU::Vector3f(1.f, 0.f, 0.5f)
 			, 2048.f);
 
@@ -176,6 +176,8 @@ namespace Hex
 
 		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
 
+
+		//DirectionalLight?
 		RenderPointlight();
 		RenderSpotlight();
 
@@ -185,7 +187,7 @@ namespace Hex
 
 		/* condence these 3 calls to 1 with multiple data prameters? */
 		mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
-		mySkysphere->Render(myPrevFrame, myDepthTexture);
+		//mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		//RenderParticles();
 		RenderLines();
@@ -193,10 +195,7 @@ namespace Hex
 		Render2DCommands();
 		myEngine->Present();
 
-		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
-		//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_Shadowlight->GetOrientation(), CU::Vector4f(1,1,1,1)));
-
-
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
 
 		mySynchronizer->WaitForLogic();
 		mySynchronizer->SwapBuffer();

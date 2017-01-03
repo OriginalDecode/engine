@@ -40,24 +40,6 @@ float GetSpecPowToMip(float fSpecPow, int nMips)
 	return float(nMips - 1) * (1 - clamp(fSmulMaxT / fMaxT, 0.0, 1.0));
 }
 
-float CalculateAttenuation(float someDistance)
-{
-	float attenuation = 1.f / (1.f + 0.1f * someDistance + 0.01f * someDistance * someDistance);
-	return attenuation;
-}
-
-float CalculateFalloff(float someDistance, float someRange)
-{
-	float fallOff = 1.f - (someDistance / (someRange + 0.001));
-	return fallOff;
-}
-
-float CalculateTotalAttenuation(float someDistance, float someRange)
-{
-	float totalAttenuation = CalculateAttenuation(someDistance) * CalculateFalloff(someDistance, someRange);
-	return totalAttenuation;
-}
-
 float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const float3 half_vector, float roughness)
 {
 	float LdotH = dot(light_dir, half_vector);
@@ -147,7 +129,13 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 	float3 finalColor = (ambientDiffuse + ambientSpec);
 
-	float3 output = (finalColor * 0.5);
+	float3 light_dir = float3(-1,1,0);
+	float NdotL = dot(normal.xyz, light_dir);
+	// float3 directColor = float3(1, 0.5, 1) * NdotL;
+	
+
+
+	float3 output = (finalColor * NdotL) * 0.42;
 	
 	return float4(output, 1.f);
 };

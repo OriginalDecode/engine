@@ -5,13 +5,13 @@
 			"entity":"Data/Levels/entity.json", 
 			"position" : [ 25, 5, 25 ],
 			"scale" : [1,2,1],
-			"rotation" : [1,1,1]
+			"rotation" : [0,0,1]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
 			"position" : [ 25, 7, 23 ],
 			"scale" : [1,1,1],
-			"rotation" : [1,1,1]
+			"rotation" : [1,0,0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
@@ -23,7 +23,7 @@
 			"entity":"Data/Levels/wall_entity.json", 
 			"position" : [ 100.01, 0, 23 ],
 			"scale" : [1,1,1],
-			"rotation" : [2,0,0]
+			"rotation" : [0,-2,0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
@@ -35,7 +35,7 @@
 			"entity":"Data/Levels/wall_entity.json", 
 			"position" : [ 100.01, 0, 25 ],
 			"scale" : [1,1,1],
-			"rotation" : [2,0,0]
+			"rotation" : [0,-2,0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
@@ -47,7 +47,7 @@
 			"entity":"Data/Levels/wall_entity.json", 
 			"position" : [ 100.01, 0, 27 ],
 			"scale" : [1,5,1],
-			"rotation" : [2,0,0]
+			"rotation" : [0,-2,0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
@@ -59,7 +59,7 @@
 			"entity":"Data/Levels/wall_entity.json", 
 			"position" : [ 100.01, 0, 29 ],
 			"scale" : [1,1,1],
-			"rotation" : [2,0,0]
+			"rotation" : [0,-2,0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
@@ -71,11 +71,11 @@
 			"entity":"Data/Levels/wall_entity.json", 
 			"position" : [ 100.01, 0, 31 ],
 			"scale" : [1,1,5],
-			"rotation" : [2,0,0]
+			"rotation" : [0,-2,0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/spotlight.json", 
-			"position" : [ 80, 2, 32 ],
+			"position" : [ 95, 2, 32 ],
 			"range" : 15,
 			"angle" : 45,
 			"color" : [255,0,0],

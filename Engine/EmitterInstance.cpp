@@ -73,7 +73,7 @@ namespace Hex
 		context->IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 
 		Engine::GetAPI()->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->m_Shader : nullptr);
-		//Engine::GetAPI()->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->m_Shader : nullptr);
+		Engine::GetAPI()->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->m_Shader : nullptr);
 		Engine::GetAPI()->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->m_Shader : nullptr);
 
 
@@ -129,6 +129,7 @@ namespace Hex
 	{
 		if (myParticles.Size() > 0)
 		{
+			/*
 			D3D11_MAPPED_SUBRESOURCE mappedResource;
 			Engine::GetAPI()->GetContext()->Map(myVertexBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (mappedResource.pData != nullptr)
@@ -137,6 +138,10 @@ namespace Hex
 				memcpy(data, &myParticles[0], sizeof(SParticleObject)* myParticles.Size());
 			}
 			Engine::GetAPI()->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
+			*/
+			
+			Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles);
+
 		}
 	}
 
@@ -173,15 +178,6 @@ namespace Hex
 		myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
 		myConstantStruct->projection = aCameraProjection;
 
-		/*D3D11_MAPPED_SUBRESOURCE msr;
-		Hex::Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		if (msr.pData != nullptr)
-		{
-			SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
-			memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SVertexBaseStruct));
-		}
-		Hex::Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
-*/
 		Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, myConstantStruct);
 
 	}

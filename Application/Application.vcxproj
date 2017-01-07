@@ -281,10 +281,13 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="StateStack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="StateStack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">

@@ -84,10 +84,10 @@ namespace Hex
 
 		void SetVertexShader(void* vertex_shader);
 		void SetPixelShader(void* pixel_shader);
-		void SetGeometryShader(ID3D11GeometryShader* aGeometryShader);
-		void SetHullShader(ID3D11HullShader* aHullShader);
-		void SetDomainShader(ID3D11DomainShader* aDomainShader);
-		void SetComputeShader(ID3D11ComputeShader* aComputeShader);
+		void SetGeometryShader(void* geometry_shader);
+		void SetHullShader(void* hull_shader);
+		void SetDomainShader(void* domain_shader);
+		void SetComputeShader(void* compute_shader);
 		void ReportLiveObjects();
 
 		void SetViewport(Viewport* viewport);

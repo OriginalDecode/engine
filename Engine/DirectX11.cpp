@@ -496,40 +496,32 @@ namespace Hex
 
 	void DirectX11::SetVertexShader(void* vertex_shader)
 	{
-		DL_ASSERT_EXP(vertex_shader != nullptr, "vertexshader was null!");
-		myContext->VSSetShader(static_cast<IVertexShader*>(vertex_shader), nullptr, 0);
+		myContext->VSSetShader(vertex_shader ? static_cast<IVertexShader*>(vertex_shader) : nullptr , nullptr, 0);
 	}
 
 	void DirectX11::SetPixelShader(void* pixel_shader)
 	{
-		if (pixel_shader == nullptr)
-			return;
-
-		myContext->PSSetShader(static_cast<IPixelShader*>(pixel_shader), nullptr, 0);
+		myContext->PSSetShader(pixel_shader ? static_cast<IPixelShader*>(pixel_shader) : nullptr , nullptr, 0);
 	}
 
-	void DirectX11::SetGeometryShader(ID3D11GeometryShader* aGeometryShader)
+	void DirectX11::SetGeometryShader(void* geomtery_shader)
 	{
-		DL_ASSERT_EXP(aGeometryShader != nullptr, "geomteryshader was null.");
-		myContext->GSSetShader(aGeometryShader, nullptr, 0);
+		myContext->GSSetShader(geomtery_shader ? static_cast<IGeometryShader*>(geomtery_shader) : nullptr , nullptr, 0);
 	}
 
-	void DirectX11::SetHullShader(ID3D11HullShader* aHullShader)
+	void DirectX11::SetHullShader(void* hull_shader)
 	{
-		DL_ASSERT_EXP(aHullShader != nullptr, "hullshader was null.");
-		myContext->HSSetShader(aHullShader, nullptr, 0);
+		myContext->HSSetShader(hull_shader ? static_cast<IHullShader*>(hull_shader) : nullptr , nullptr, 0);
 	}
 
-	void DirectX11::SetDomainShader(ID3D11DomainShader* aDomainShader)
+	void DirectX11::SetDomainShader(void* domain_shader)
 	{
-		DL_ASSERT_EXP(aDomainShader != nullptr, "domainshader was null.");
-		myContext->DSSetShader(aDomainShader, nullptr, 0);
+		myContext->DSSetShader(domain_shader ? static_cast<IDomainShader*>(domain_shader) : nullptr , nullptr, 0);
 	}
 
-	void DirectX11::SetComputeShader(ID3D11ComputeShader* aComputeShader)
+	void DirectX11::SetComputeShader(void* compute_shader)
 	{
-		DL_ASSERT_EXP(aComputeShader != nullptr, "computeshader was null.");
-		myContext->CSSetShader(aComputeShader, nullptr, 0);
+		myContext->CSSetShader(compute_shader ? static_cast<IComputeShader*>(compute_shader) : nullptr , nullptr, 0);
 	}
 
 	void DirectX11::ReportLiveObjects()

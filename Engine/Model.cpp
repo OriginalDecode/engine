@@ -173,7 +173,6 @@ namespace Hex
 
 	void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale)
 	{
-#ifdef SNOWBLIND_DX11
 		if (myIsNULLObject == false)
 		{
 			DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
@@ -183,20 +182,9 @@ namespace Hex
 			myConstantStruct->projection = aCameraProjection;
 			myConstantStruct->scale = scale;
 
-			/*D3D11_MAPPED_SUBRESOURCE msr;
-			myAPI->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			if (msr.pData != nullptr)
-			{
-				SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
-				memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SVertexBaseStruct));
-			}
-			myAPI->GetContext()->Unmap(myConstantBuffer, 0);
-	*/
 			myAPI->UpdateConstantBuffer(myConstantBuffer, myConstantStruct);
 
-
 		}
-#endif
 	}
 
 	void CModel::AddChild(CModel* aChild)
@@ -209,6 +197,7 @@ namespace Hex
 #ifdef SNOWBLIND_DX11
 		if (!myConstantStruct)
 			myConstantStruct = new SVertexBaseStruct;
+
 		D3D11_BUFFER_DESC cbDesc;
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
 		cbDesc.ByteWidth = sizeof(SVertexBaseStruct);

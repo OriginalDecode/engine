@@ -52,8 +52,8 @@ namespace Hex
 		//CU::Vector3f(95, 7.f, 28.f)
 		m_Shadowlight = new ShadowSpotlight;
 		m_Shadowlight->Initiate(
-			CU::Vector3f(98, 2.f, 41.f)
-			, CU::Vector3f(1.f, 0.f, 0.5f)
+			CU::Vector3f(99, 8.f, 31.f)
+			, CU::Vector3f(1.f, 0.f, 1.f)
 			, 2048.f);
 
 		myDeferredRenderer = new DeferredRenderer; // Where should this live?
@@ -94,6 +94,9 @@ namespace Hex
 
 		DL_ASSERT_EXP(m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil()), "failed to initiate LightPass!");
 
+		m_ParticleEmitter = new CEmitterInstance;
+		m_ParticleEmitter->Initiate(mySynchronizer);
+
 		myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
 		return true;
 	}
@@ -124,6 +127,8 @@ namespace Hex
 		SAFE_DELETE(myPointLight);
 		SAFE_DELETE(mySpotlight);
 
+		m_ParticleEmitter->CleanUp();
+		SAFE_DELETE(m_ParticleEmitter);
 		
 		return true;
 	}

@@ -179,7 +179,6 @@ namespace Hex
 		myVertexFormat.Add(VertexLayoutPosColUV[0]);
 		myVertexFormat.Add(VertexLayoutPosColUV[1]);
 		myVertexFormat.Add(VertexLayoutPosColUV[2]);
-		CompiledShader* shader = myEffect[0]->GetVertexShader();
 		HRESULT hr = Engine::GetAPI()->GetDevice()->CreateInputLayout(&myVertexFormat[0]
 			, myVertexFormat.Size()
 			, myEffect[0]->GetVertexShader()->compiledShader

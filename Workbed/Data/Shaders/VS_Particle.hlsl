@@ -8,7 +8,7 @@ cbuffer Matrices : register(b0)
 {
 	row_major float4x4 World;
 	row_major float4x4 View;
-	row_major float4x4 Projection;
+	// row_major float4x4 Projection;
 };
 
 //---------------------------------
@@ -17,13 +17,18 @@ cbuffer Matrices : register(b0)
 struct VS_INPUT
 {
 	float4 pos : POSITION;
-	float4 color : COLOR;
+	float2 alpha : ALPHA;
+	float2 size : SIZE;
 };
 
 struct VS_OUTPUT
 {
 	float4 pos : SV_POSITION;
-	float4 color : COLOR;
+	float2 size : SIZE;
+	float2 alpha : ALPHA;
+	float2 uv : TEXCOORD;
+	// float4 worldviewproj : WVP;
+	// float4 Tex : TEXCOORD1;
 };
 
 
@@ -36,8 +41,11 @@ VS_OUTPUT VS(VS_INPUT input)
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	output.pos = mul(input.pos, World);
 	output.pos = mul(output.pos, View);
-	output.pos = mul(output.pos, Projection);
-	output.color = input.color;
+	output.size.xy = float2(1,1);
+	output.alpha.x = 1;
+	
+	// output.pos = mul(output.pos, Projection);
+	// output.color = input.color;
 	
 	return output;
 };

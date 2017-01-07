@@ -75,11 +75,11 @@
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/spotlight.json", 
-			"position" : [ 98, 2, 41 ],
-			"range" : 15,
+			"position" : [ 99, 8, 31 ],
+			"range" : 25,
 			"angle" : 45,
 			"color" : [255,0,0],
-			"direction":[45, 90, 0]
+			"direction":[90, 0, 0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/pointlight.json", 

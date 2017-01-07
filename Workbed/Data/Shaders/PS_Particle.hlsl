@@ -2,13 +2,19 @@
 //	Line3D Pixel Shader
 //---------------------------------
 
+SamplerState point_sample : register ( s0 );
+Texture2D ParticleTexture : register ( t0 );
+
+
 //---------------------------------
 //	Line3D Pixel Structs
 //---------------------------------
 struct VS_OUTPUT
 {
 	float4 pos : SV_POSITION;
-	float4 color : COLOR;
+	float2 size : SIZE;
+	float2 alpha : ALPHA;
+	float2 uv : TEXCOORD;
 };
 
 //---------------------------------
@@ -17,7 +23,7 @@ struct VS_OUTPUT
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	float4 position = input.pos;
-	
-	return input.color * position;
+	float4 color = ParticleTexture.Sample(point_sample, input.uv);
+	color.a = alpha.x;
+	return color;
 };

@@ -97,7 +97,7 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	void GrowingArray<ObjectType, SizeType>::Init(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true)
 	{
-		assert(!m_HasInited && "Already initiated!");
+		//assert(m_HasInited && "Already initiated!");
 
 		mySafeFlag = aUseSafeModeFlag;
 		mySize = 0;

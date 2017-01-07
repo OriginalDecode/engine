@@ -92,6 +92,15 @@ namespace Hex
 
 		void SetViewport(Viewport* viewport);
 		Viewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y);
+
+		void CreateConstantBuffer(IBuffer* buffer, s32 size);
+
+		template<typename T>
+		void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size);
+
+		template<typename T>
+		void UpdateConstantBuffer(IBuffer* dest, T* src);
+
 	private:
 
 		void CreateDeviceAndSwapchain();
@@ -169,5 +178,27 @@ namespace Hex
 	{
 		return myDepthView;
 	}
+
+	template<typename T>
+	void DirectX11::UpdateConstantBuffer(IBuffer* dest, T* src, s32 size)
+	{
+		D3D11_MAPPED_SUBRESOURCE msr;
+		myContext->Map(dest, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+		if (msr.pData)
+		{
+			T* data = (T*)msr.pData;
+			memcpy(data, &src[0], size);
+		}
+		myContext->Unmap(dest, 0);
+
+	}
+
+	template<typename T>
+	void DirectX11::UpdateConstantBuffer(IBuffer* dest, T* src)
+	{
+		UpdateConstantBuffer(dest, src, sizeof(T));
+	}
+
 };
 #endif

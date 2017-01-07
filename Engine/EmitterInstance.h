@@ -13,11 +13,10 @@ namespace Hex
 	class CEmitterInstance
 	{
 	public:
-		CEmitterInstance();
-		~CEmitterInstance();
+		CEmitterInstance() = default;
 
 		void Initiate(Synchronizer* aSynchronizer);
-
+		void CleanUp();
 		void Update(float aDeltaTime);
 		void Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection, Texture* aDepthTexture);
 

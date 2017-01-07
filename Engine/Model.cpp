@@ -183,15 +183,18 @@ namespace Hex
 			myConstantStruct->projection = aCameraProjection;
 			myConstantStruct->scale = scale;
 
-			D3D11_MAPPED_SUBRESOURCE msr;
+			/*D3D11_MAPPED_SUBRESOURCE msr;
 			myAPI->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 			if (msr.pData != nullptr)
 			{
 				SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
 				memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SVertexBaseStruct));
 			}
-
 			myAPI->GetContext()->Unmap(myConstantBuffer, 0);
+	*/
+			myAPI->UpdateConstantBuffer(myConstantBuffer, myConstantStruct);
+
+
 		}
 #endif
 	}

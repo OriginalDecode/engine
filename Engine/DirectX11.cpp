@@ -342,6 +342,21 @@ namespace Hex
 		return new_viewport;
 	}
 
+	void DirectX11::CreateConstantBuffer(IBuffer* buffer, s32 size)
+	{
+		D3D11_BUFFER_DESC cbDesc;
+		ZeroMemory(&cbDesc, sizeof(cbDesc));
+		cbDesc.ByteWidth = size;
+		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		cbDesc.MiscFlags = 0;
+		cbDesc.StructureByteStride = 0;
+
+		HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &buffer);
+		HandleErrors(hr, "Failed to create constant buffer");
+	}
+
 	void DirectX11::CreateAdapterList()
 	{
 		std::vector<IDXGIAdapter*> enumAdapter;
@@ -524,7 +539,7 @@ namespace Hex
 		myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL /*| D3D11_RLDO_IGNORE_INTERNAL*/);
 	}
 
-	void DirectX11::SetViewport(D3D11_VIEWPORT* viewport)
+	void DirectX11::SetViewport(Viewport* viewport)
 	{
 		myContext->RSSetViewports(1, viewport);
 	}

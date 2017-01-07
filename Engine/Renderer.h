@@ -54,6 +54,7 @@ namespace Hex
 		CU::GrowingArray<CTerrain*> myTerrainArray;
 
 		bool m_RenderWireframe = false;
+		bool m_ProcessShadows					= false;
 
 		Engine*			myEngine			= nullptr;
 #ifdef SNOWBLIND_DX11
@@ -61,12 +62,11 @@ namespace Hex
 #else
 		Vulkan*				m_API				= nullptr;
 #endif
-		bool m_ProcessShadows = false;
-		Camera*			myCamera			= nullptr;
+		Camera*				myCamera			= nullptr;
 		CU::Matrix44f		myPrevFrame;
 		CU::Matrix44f		myPrevShadowFrame;
 
-		Camera*			my2DCamera			= nullptr;
+		Camera*				my2DCamera			= nullptr;
 		CU::TimeManager*	myTimeManager		= nullptr;
 		
 		DeferredRenderer*	myDeferredRenderer	= nullptr;
@@ -85,6 +85,7 @@ namespace Hex
 
 		CLine3D*			my3DLine			= nullptr;
 
+		CEmitterInstance*	m_ParticleEmitter	= nullptr;
 
 		LightPass			m_LightPass;
 		ShadowPass			m_ShadowPass;

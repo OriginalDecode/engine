@@ -29,7 +29,7 @@ namespace Hex
 		myModel = aModel;
 	}
 
-	void CInstance::Render(const CU::Matrix44f& previousOrientation, Camera& aCamera)
+	void CInstance::Render(const CU::Matrix44f&, Camera&)
 	{
 		//myModel->Render(previousOrientation, aCamera.GetProjection());
 	}

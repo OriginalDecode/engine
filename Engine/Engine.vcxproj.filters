@@ -91,9 +91,6 @@
     <Filter Include="Window">
       <UniqueIdentifier>{39e4120e-a772-4034-9338-7e804078a325}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utilities\imgui">
-      <UniqueIdentifier>{974133b8-fbc5-4d91-a2ee-9100e964908d}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -256,24 +253,6 @@
     <ClInclude Include="Window.h">
       <Filter>Window</Filter>
     </ClInclude>
-    <ClInclude Include="stb_truetype.h">
-      <Filter>Utilities\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="stb_textedit.h">
-      <Filter>Utilities\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="stb_rect_pack.h">
-      <Filter>Utilities\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_internal.h">
-      <Filter>Utilities\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui.h">
-      <Filter>Utilities\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imconfig.h">
-      <Filter>Utilities\imgui</Filter>
-    </ClInclude>
     <ClInclude Include="Line3D.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -427,15 +406,6 @@
     </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Window</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_draw.cpp">
-      <Filter>Utilities\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_demo.cpp">
-      <Filter>Utilities\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui.cpp">
-      <Filter>Utilities\imgui</Filter>
     </ClCompile>
     <ClCompile Include="Line3D.cpp">
       <Filter>Rendering</Filter>

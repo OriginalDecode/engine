@@ -136,7 +136,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	m_PhysicsManager->Add(phys_body);
 }
 
-void LevelFactory::CreateCameraComponent(JSONReader& entity_reader, Entity entity_id)
+void LevelFactory::CreateCameraComponent(JSONReader& /*entity_reader*/, Entity entity_id)
 {
 	m_EntityManager->AddComponent<CameraComponent>(entity_id);
 	CameraComponent& component = m_EntityManager->GetComponent<CameraComponent>(entity_id);
@@ -181,11 +181,11 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 
 }
 
-void LevelFactory::CreateInputComponent(JSONReader& entity_reader, Entity entity_id)
+void LevelFactory::CreateInputComponent(JSONReader& /*entity_reader*/, Entity entity_id)
 {
 	//Is this component needed?
 	m_EntityManager->AddComponent<InputComponent>(entity_id);
-	InputComponent& component = m_EntityManager->GetComponent<InputComponent>(entity_id);
+	//InputComponent& component = m_EntityManager->GetComponent<InputComponent>(entity_id);
 	//PhysicsComponent& component = m_EntityManager->GetComponent<PhysicsComponent>(entity_id);
 
 	//component.m_InputHandle = new InputHandle; 
@@ -197,17 +197,17 @@ void LevelFactory::CreateInputComponent(JSONReader& entity_reader, Entity entity
 	//input.m_InputHandle->Bind(Hash("string_to_hash"), [&] { function(); }); <- this is how you bind
 }
 
-void LevelFactory::CreateAIComponent(JSONReader& entity_reader, Entity entity_id)
+void LevelFactory::CreateAIComponent(JSONReader& /*entity_reader*/, Entity entity_id)
 {
 	m_EntityManager->AddComponent<AIComponent>(entity_id);
-	AIComponent& component = m_EntityManager->GetComponent<AIComponent>(entity_id);
+	//AIComponent& component = m_EntityManager->GetComponent<AIComponent>(entity_id);
 	//read behaviour trees and stuff here...
 }
 
-void LevelFactory::CreateNetworkComponent(JSONReader& entity_reader, Entity entity_id)
+void LevelFactory::CreateNetworkComponent(JSONReader& /*entity_reader*/, Entity entity_id)
 {
 	m_EntityManager->AddComponent<NetworkComponent>(entity_id);
-	NetworkComponent& component = m_EntityManager->GetComponent<NetworkComponent>(entity_id);
+	//NetworkComponent& component = m_EntityManager->GetComponent<NetworkComponent>(entity_id);
 
 }
 

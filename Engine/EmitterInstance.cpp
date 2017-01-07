@@ -6,18 +6,6 @@
 #include "VertexStructs.h"
 namespace Hex
 {
-	CEmitterInstance::CEmitterInstance()
-	{
-	}
-
-	CEmitterInstance::~CEmitterInstance()
-	{
-		SAFE_RELEASE(myInputLayout);
-		SAFE_DELETE(myVertexBuffer);
-		SAFE_RELEASE(myConstantBuffer);
-		SAFE_DELETE(myConstantStruct);
-	}
-
 	void CEmitterInstance::Initiate(Synchronizer* aSynchronizer)
 	{
 		myEngine = Engine::GetInstance();
@@ -32,12 +20,12 @@ namespace Hex
 		data.sizeDelta = 0.f;
 		data.alphaDelta = 0.f;
 
-		myData.diffuseTexture = myEngine->GetTexture("Data/Textures/smoke.dds");
+		myData.diffuseTexture = myEngine->GetTexture("Data/Textures/hp.dds");
 		//myData.diffuseTexture->SetDebugName("ParticleDiffuseTexture");
 		myData.lifeTime = -1.f;
-		myData.shader = myEngine->GetEffect("Data/Shaders/T_Particle.json");
+		//myData.shader = myEngine->GetEffect("Data/Shaders/T_Particle.json");
 		myData.particleData = data;
-		myData.size = { 0.f,0.f,0.f };
+		myData.size = { 0.f, 0.f, 0.f };
 
 		myParticles.Init(256);
 
@@ -48,9 +36,17 @@ namespace Hex
 		}
 
 		CreateVertexBuffer();
-		CreateInputLayout();
+		//CreateInputLayout();
 		CreateConstantBuffer();
 		myTimeToEmit = 0.f;
+	}
+
+	void CEmitterInstance::CleanUp()
+	{
+		SAFE_RELEASE(myInputLayout);
+		SAFE_DELETE(myVertexBuffer);
+		SAFE_RELEASE(myConstantBuffer);
+		SAFE_DELETE(myConstantStruct);
 	}
 
 	void CEmitterInstance::Update(float aDeltaTime)
@@ -147,19 +143,8 @@ namespace Hex
 	void CEmitterInstance::CreateConstantBuffer()
 	{
 		myConstantStruct = new SVertexBaseStruct;
-
-		D3D11_BUFFER_DESC cbDesc;
-		ZeroMemory(&cbDesc, sizeof(cbDesc));
-		cbDesc.ByteWidth = sizeof(SVertexBaseStruct);
-		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		cbDesc.MiscFlags = 0;
-		cbDesc.StructureByteStride = 0;
-
-		HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-		Engine::GetAPI()->SetDebugName(myConstantBuffer, "Line3D Constant Buffer");
-		Engine::GetAPI()->HandleErrors(hr, "[Line3D] : Failed to Create Constant Buffer, ");
+		Engine::GetAPI()->CreateConstantBuffer(myConstantBuffer, sizeof(SVertexBaseStruct));
+		Engine::GetAPI()->SetDebugName(myConstantBuffer, "EmitterInstance : Constant Buffer");
 	}
 
 	void CEmitterInstance::CreateInputLayout()
@@ -188,7 +173,7 @@ namespace Hex
 		myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
 		myConstantStruct->projection = aCameraProjection;
 
-		D3D11_MAPPED_SUBRESOURCE msr;
+		/*D3D11_MAPPED_SUBRESOURCE msr;
 		Hex::Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
@@ -196,6 +181,9 @@ namespace Hex
 			memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SVertexBaseStruct));
 		}
 		Hex::Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
+*/
+		Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, myConstantStruct);
+
 	}
 
 	void CEmitterInstance::UpdateParticle(float aDeltaTime)

@@ -1,5 +1,5 @@
 {
 	"VertexShader" : "VS_Particle.hlsl",
-	"PixelShader" : "PS_Particle.hlsl"
+	"PixelShader" : "PS_Particle.hlsl",
 	"GeometryShader" : "GS_Particle.hlsl"
 }

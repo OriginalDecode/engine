@@ -15,10 +15,12 @@ namespace Hex
 	public:
 		CEmitterInstance() = default;
 
-		void Initiate(Synchronizer* aSynchronizer);
+		void Initiate(Synchronizer* aSynchronizer, Texture* depth_texture);
 		void CleanUp();
 		void Update(float aDeltaTime);
-		void Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection, Texture* aDepthTexture);
+		void Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection);
+
+		void SetPosition(const CU::Vector3f& position);
 
 	private:
 		void CreateVertexBuffer();
@@ -42,6 +44,15 @@ namespace Hex
 		ID3D11Buffer* myConstantBuffer;
 		SVertexBaseStruct* myConstantStruct;
 		Engine* myEngine;
+
+
+		struct cbParticleVertex
+		{
+			CU::Matrix44f m_World;
+			CU::Matrix44f m_View;
+		} m_VertexCB;
+
+
 	};
 };
 #endif

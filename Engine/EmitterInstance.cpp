@@ -6,7 +6,7 @@
 #include "VertexStructs.h"
 namespace Hex
 {
-	void CEmitterInstance::Initiate(Synchronizer* aSynchronizer)
+	void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_texture)
 	{
 		myEngine = Engine::GetInstance();
 		mySynchronizer = aSynchronizer;
@@ -23,7 +23,7 @@ namespace Hex
 		myData.diffuseTexture = myEngine->GetTexture("Data/Textures/hp.dds");
 		//myData.diffuseTexture->SetDebugName("ParticleDiffuseTexture");
 		myData.lifeTime = -1.f;
-		//myData.shader = myEngine->GetEffect("Data/Shaders/T_Particle.json");
+		myData.shader = myEngine->GetEffect("Data/Shaders/T_Particle.json");
 		myData.particleData = data;
 		myData.size = { 0.f, 0.f, 0.f };
 
@@ -36,8 +36,12 @@ namespace Hex
 		}
 
 		CreateVertexBuffer();
-		//CreateInputLayout();
+		CreateInputLayout();
 		CreateConstantBuffer();
+
+		myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView());
+		myData.shader->AddShaderResource(depth_texture->GetShaderView());
+
 		myTimeToEmit = 0.f;
 	}
 
@@ -61,38 +65,44 @@ namespace Hex
 		UpdateParticle(aDeltaTime);
 	}
 
-	void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection, Texture* aDepthTexture)
+	void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection)
 	{
+		if (!myConstantBuffer)
+			return;
+
 		UpdateVertexBuffer();
 
-
+		DirectX11* dx = Engine::GetAPI();
 		ID3D11DeviceContext* context = Engine::GetAPI()->GetContext();
 		context->IASetInputLayout(myInputLayout);
 
 		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		context->IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 
-		Engine::GetAPI()->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->m_Shader : nullptr);
-		Engine::GetAPI()->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->m_Shader : nullptr);
-		Engine::GetAPI()->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->m_Shader : nullptr);
+		if (!myData.shader->GetVertexShader())
+			return;
 
-
-		ID3D11ShaderResourceView* srv[2];
-		srv[0] = myData.diffuseTexture->GetShaderView();
-		srv[1] = aDepthTexture->GetShaderView();
-		context->PSSetShaderResources(0, 2, &srv[0]);
+		dx->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->m_Shader : nullptr);
+		dx->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->m_Shader : nullptr);
+		dx->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->m_Shader : nullptr);
 
 		SetMatrices(aPreviousCameraOrientation, aProjection);
 		context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+
+		myData.shader->Activate();
 		context->Draw(myParticles.Size(), 0);
+		myData.shader->Deactivate();
 
-		
-		srv[0] = nullptr;
-		srv[1] = nullptr;
-		context->PSSetShaderResources(0, 2, &srv[0]);
+		//needs to clean up 
+		dx->SetVertexShader(nullptr);
+		dx->SetGeometryShader(nullptr);
+		dx->SetPixelShader(nullptr);
 
-		Engine::GetAPI()->SetGeometryShader(nullptr);
+	}
 
+	void CEmitterInstance::SetPosition(const CU::Vector3f& position)
+	{
+		myOrientation.SetPosition(position);
 	}
 
 	void CEmitterInstance::CreateVertexBuffer()
@@ -129,27 +139,15 @@ namespace Hex
 	{
 		if (myParticles.Size() > 0)
 		{
-			/*
-			D3D11_MAPPED_SUBRESOURCE mappedResource;
-			Engine::GetAPI()->GetContext()->Map(myVertexBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-			if (mappedResource.pData != nullptr)
-			{
-				SParticleObject *data = (SParticleObject*)mappedResource.pData;
-				memcpy(data, &myParticles[0], sizeof(SParticleObject)* myParticles.Size());
-			}
-			Engine::GetAPI()->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
-			*/
-			
-			Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles);
-
+			Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles, sizeof(SParticleObject) * myParticles.Size());
 		}
 	}
 
 	void CEmitterInstance::CreateConstantBuffer()
 	{
-		myConstantStruct = new SVertexBaseStruct;
-		Engine::GetAPI()->CreateConstantBuffer(myConstantBuffer, sizeof(SVertexBaseStruct));
-		Engine::GetAPI()->SetDebugName(myConstantBuffer, "EmitterInstance : Constant Buffer");
+		//myConstantStruct = new SVertexBaseStruct;
+		Engine::GetAPI()->CreateConstantBuffer(myConstantBuffer, sizeof(cbParticleVertex));
+		Engine::GetAPI()->SetDebugName(myConstantBuffer, "EmitterInstance : Vertex Constant Buffer");
 	}
 
 	void CEmitterInstance::CreateInputLayout()
@@ -173,12 +171,16 @@ namespace Hex
 
 	void CEmitterInstance::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
 	{
+		/*
 		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 		myConstantStruct->world = CU::Matrix44f();
 		myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
 		myConstantStruct->projection = aCameraProjection;
+		*/
 
-		Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, myConstantStruct);
+		m_VertexCB.m_World = CU::Matrix44f();
+		m_VertexCB.m_View = CU::Math::Inverse(aCameraProjection);
+		Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, &m_VertexCB);
 
 	}
 
@@ -201,9 +203,10 @@ namespace Hex
 	{
 		SParticleObject temp; //Replace with preallocated particles
 
-		temp.position.x = RANDOM(myOrientation.GetPosition().x, myData.size.x);
-		temp.position.y = RANDOM(myOrientation.GetPosition().y, myData.size.y);
-		temp.position.z = RANDOM(myOrientation.GetPosition().z, myData.size.z);
+		temp.position = myOrientation.GetPosition();
+		//temp.position.x = RANDOM(myOrientation.GetPosition().x, myData.size.x);
+		//temp.position.y = RANDOM(myOrientation.GetPosition().y, myData.size.y);
+		//temp.position.z = RANDOM(myOrientation.GetPosition().z, myData.size.z);
 
 		temp.size = RANDOM(0.1f, 0.5f);
 		temp.direction.x = RANDOM(-0.1f, 0.1f);

@@ -94,6 +94,8 @@ namespace Hex
 
 	bool Engine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 	{
+		Randomizer::Create();
+
 		myWindowSize.myHeight = window_height;
 		myWindowSize.myWidth = window_width;
 
@@ -150,7 +152,6 @@ namespace Hex
 		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
 
 		myTimeManager = new CU::TimeManager;
-		Randomizer::Create();
 
 		m_PhysicsManager = new PhysicsManager;
 

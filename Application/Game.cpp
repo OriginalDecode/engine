@@ -16,6 +16,8 @@
 #include <Camera.h>
 #include "../Input/InputHandle.h"
 
+#include <RenderCommand_Shared.h>
+
 bool Game::Initiate()
 {
 	myEngine = Hex::Engine::GetInstance();
@@ -76,10 +78,15 @@ void Game::Update(float dt)
 	if (input_wrapper->OnDown(KButton::Y))
 		Hex::Engine::GetInstance()->ToggleWireframe();
 
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::PARTICLE, CU::Vector3f(5.f, 5.f, 5.f)));
+
+
 	CU::Vector2f cur_pos = myEngine->GetInputHandle()->GetDeltaCursorPos();
 	std::stringstream ss;
 	ss << "FPS : " << myEngine->GetFPS() << "\n" << "Average FPS : " << myFPSToPrint << "\nDeltaTime:" << dt << "\n" << Hex::Engine::GetInstance()->GetLocalTimeAsString() << "\ncursor_pos : \n" << cur_pos.x << "\n" << cur_pos.y;
 	myEngine->AddDebugText(ss.str());
+
+
 
 	myEngine->GetEntityManager()->Update(dt);
 }

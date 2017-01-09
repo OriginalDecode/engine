@@ -23,7 +23,14 @@
 #include "Texture.h"
 
 //#define AMBIENT_PASS_ONLY
-
+/*
+	abstract this into different renderers?
+	So that the render pass would simply be.
+	RenderWorld();
+	RenderLight();
+	RenderShadows();
+	Maybe, we'll see.
+*/
 namespace Hex
 {
 	bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera_3d, Camera* camera_2d)
@@ -95,7 +102,7 @@ namespace Hex
 		DL_ASSERT_EXP(m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil()), "failed to initiate LightPass!");
 
 		m_ParticleEmitter = new CEmitterInstance;
-		m_ParticleEmitter->Initiate(mySynchronizer);
+		m_ParticleEmitter->Initiate(mySynchronizer, myDepthTexture);
 
 		myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
 		return true;
@@ -194,7 +201,7 @@ namespace Hex
 		mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
 		//mySkysphere->Render(myPrevFrame, myDepthTexture);
 
-		//RenderParticles();
+		RenderParticles();
 		RenderLines();
 
 		Render2DCommands();
@@ -337,14 +344,16 @@ namespace Hex
 	{
 		m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
-		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eParticle);
+		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 		for each(const RenderCommand& command in commands)
 		{
 			switch (command.myType)
 			{
 				case eType::PARTICLE:
 				{
-					//command.myEmitterInstance->Render(myCamera, myDepthTexture);
+					m_ParticleEmitter->SetPosition(CU::Vector3f(5.f, 5.f, 5.f));
+					m_ParticleEmitter->Update(myEngine->GetDeltaTime());
+					m_ParticleEmitter->Render(myPrevFrame, myCamera->GetProjection());
 				}break;
 			}
 		}

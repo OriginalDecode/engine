@@ -170,6 +170,9 @@ namespace Hex
 		HRESULT CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
 		void* CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name);
 
+
+
+
 	private:
 		Engine() = default;
 		//void CreateAppWindow(HINSTANCE anInstance, WNDPROC aWndProc);

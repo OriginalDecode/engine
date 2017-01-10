@@ -1,6 +1,7 @@
 #pragma once
 
 #include <random>
+//if you input a higher value in min than max, it will crash. The following must be true. min <= max. Otherwise you will crash.
 #define RANDOM(min,max) Randomizer::GetInstance()->Rand(min,max)
 class Randomizer
 {

@@ -38,11 +38,9 @@ struct VS_OUTPUT
 VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-	output.pos = mul(input.pos, World);
+	output.pos = mul(input.pos, 1);
 	output.pos = mul(output.pos, View);
-	output.size.xy = float2(1,1);
-	output.alpha.x = 1;
-	
+	output.size.xy = float2(1,1);	
 	// output.pos = mul(output.pos, Projection);
 	// output.color = input.color;
 	

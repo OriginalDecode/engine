@@ -32,6 +32,16 @@ struct ID3D11SamplerState;
 
 struct IUnknown;
 
+enum eBoundBuffer
+{
+	eVertex = 0,
+	eGeometry = 1,
+	ePixel = 2,
+	eHull = 4,
+	eDomain = 8,
+	eCompute = 16
+};
+
 namespace Hex
 {
 	class DirectX11 : public IGraphicsAPI
@@ -101,8 +111,10 @@ namespace Hex
 		template<typename T>
 		void UpdateConstantBuffer(IBuffer*& dest, T* src);
 
-	private:
+		void ClearConstantBuffers();
+		void BindConstantBuffer(s32 bound_buffer_flag, IBuffer*& constant_buffer);
 
+	private:
 		void CreateDeviceAndSwapchain();
 		void CreateDepthBuffer();
 		void CreateBackBuffer();
@@ -141,6 +153,7 @@ namespace Hex
 		std::vector<std::string> myAdaptersName;
 		std::string myActiveAdapter;
 
+		s32 m_BoundConstantBuffers;
 
 	};
 

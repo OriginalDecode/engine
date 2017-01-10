@@ -22,6 +22,5 @@ struct VS_OUTPUT
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 color = ParticleTexture.Sample(point_sample, input.uv);
-	color.a = input.alpha.x;
 	return color;
 };

@@ -17,23 +17,20 @@ struct VS_OUTPUT
 	float2 uv : TEXCOORD;
 };
 
-cbuffer createQuad
+static const float4 quadPos[4] =
 {
-	float4 quadPos[4] =
-	{
-		float4(-1,-1,0,0),
-		float4(-1,1,0,0),
-		float4(1,-1,0,0),
-		float4(1,1,0,0),
-	};
+	float4(-1,-1,0,0),
+	float4(-1,1,0,0),
+	float4(1,-1,0,0),
+	float4(1,1,0,0),
+};
 
-	float2 quadUV[4] =
-	{
-		float2(0,1),
-		float2(0,0),
-		float2(1,1),
-		float2(1,0),
-	};
+static const float2 quadUV[4] =
+{
+	float2(0,1),
+	float2(0,0),
+	float2(1,1),
+	float2(1,0),
 };
 
 [maxvertexcount(4)]

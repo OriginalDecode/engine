@@ -357,6 +357,16 @@ namespace Hex
 		HandleErrors(hr, "Failed to create constant buffer");
 	}
 
+	void DirectX11::ClearConstantBuffers()
+	{
+		
+	}
+
+	void DirectX11::BindConstantBuffer(s32 bound_buffer_flag, IBuffer*& constant_buffer)
+	{
+
+	}
+
 	void DirectX11::CreateAdapterList()
 	{
 		std::vector<IDXGIAdapter*> enumAdapter;

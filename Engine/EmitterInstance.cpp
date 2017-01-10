@@ -59,7 +59,7 @@ namespace Hex
 		if (myTimeToEmit < 0.f)
 		{
 			Emit();
-			myTimeToEmit = 0.5f;
+			myTimeToEmit = 0.1f;
 		}
 
 		UpdateParticle(aDeltaTime);
@@ -87,8 +87,11 @@ namespace Hex
 		dx->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->m_Shader : nullptr);
 
 		SetMatrices(aPreviousCameraOrientation, aProjection);
-		context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+
+		context->VSSetConstantBuffers(0, 1, &myConstantBuffer);  
 		context->GSSetConstantBuffers(0, 1, &m_GeometryBuffer);
+		//context->PSSetConstantBuffers(0, 1, nullptr);
+
 		myData.shader->Activate();
 		context->Draw(myParticles.Size(), 0);
 		myData.shader->Deactivate();
@@ -139,7 +142,8 @@ namespace Hex
 	{
 		if (myParticles.Size() > 0)
 		{
-			/*
+			//Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles, sizeof(SParticleObject) * myParticles.Size());
+
 			D3D11_MAPPED_SUBRESOURCE msr;
 			Engine::GetAPI()->GetContext()->Map(myVertexBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
@@ -148,11 +152,8 @@ namespace Hex
 				SParticleObject* data = (SParticleObject*)msr.pData;
 				memcpy(data, &myParticles[0], sizeof(SParticleObject) * myParticles.Size());
 			}
-
 			Engine::GetAPI()->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
-			*/
 
-			Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles, sizeof(SParticleObject) * myParticles.Size());
 		}
 	}
 
@@ -187,7 +188,7 @@ namespace Hex
 	void CEmitterInstance::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
 	{
 		m_VertexCB.m_World = CU::Matrix44f();
-		m_VertexCB.m_View = CU::Math::Inverse(aCameraProjection);
+		m_VertexCB.m_View = CU::Math::Inverse(aCameraOrientation);
 		Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, &m_VertexCB);
 
 		m_GeometryCB.m_Projection = aCameraProjection;
@@ -214,9 +215,19 @@ namespace Hex
 		SParticleObject temp; //Replace with preallocated particles
 
 		temp.position = myOrientation.GetPosition();
-		//temp.position.x = RANDOM(myOrientation.GetPosition().x, myData.size.x);
-		//temp.position.y = RANDOM(myOrientation.GetPosition().y, myData.size.y);
-		//temp.position.z = RANDOM(myOrientation.GetPosition().z, myData.size.z);
+		float x0 = myData.size.x;
+		float y0 = myData.size.y;
+		float z0 = myData.size.z;
+
+		float x1 = temp.position.x;
+		float y1 = temp.position.y;
+		float z1 = temp.position.z;
+
+
+
+		temp.position.x = RANDOM(x0,x1);
+		temp.position.y = RANDOM(y0,y1);
+		temp.position.z = RANDOM(z0,z1);
 
 		temp.size = RANDOM(5.0f, 10.0f);
 		temp.direction.x = RANDOM(-0.1f, 0.1f);
@@ -224,7 +235,7 @@ namespace Hex
 		temp.direction.z = RANDOM(-0.1f, 0.1f);
 		temp.lifeTime = 7.f;
 		temp.alpha = 1;// myData.particleData.startAlpha;
-		temp.speed = 0.5f;
+		temp.speed = 8.f;
 		myParticles.Add(temp);
 	}
 };

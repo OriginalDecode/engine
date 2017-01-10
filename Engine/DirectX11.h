@@ -93,7 +93,7 @@ namespace Hex
 		void SetViewport(Viewport* viewport);
 		Viewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y);
 
-		void CreateConstantBuffer(IBuffer* buffer, s32 size);
+		void CreateConstantBuffer(IBuffer*& buffer, s32 size);
 
 		template<typename T>
 		void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size);

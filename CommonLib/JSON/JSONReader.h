@@ -23,6 +23,8 @@ public:
 	void ReadElement(const std::string& aTag, double& aDouble);
 	void ReadElement(const std::string& aTag, std::string& aString);
 	std::string ReadElement(const std::string& aTag);
+	bool ReadElement(const std::string& tag, std::string out);
+
 
 
 	void ReadElement(const std::string& aTag, const std::string& aSubTag, bool& aBool);

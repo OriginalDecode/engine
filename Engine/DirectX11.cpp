@@ -342,7 +342,7 @@ namespace Hex
 		return new_viewport;
 	}
 
-	void DirectX11::CreateConstantBuffer(IBuffer* buffer, s32 size)
+	void DirectX11::CreateConstantBuffer(IBuffer*& buffer, s32 size)
 	{
 		D3D11_BUFFER_DESC cbDesc;
 		ZeroMemory(&cbDesc, sizeof(cbDesc));

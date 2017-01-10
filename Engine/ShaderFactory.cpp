@@ -39,6 +39,10 @@ namespace Hex
 		JSONReader reader(path);
 		LoadShader(sub + reader.ReadElement("VertexShader"), anEffect);
 		LoadShader(sub + reader.ReadElement("PixelShader"), anEffect);
+		LoadShader(sub + reader.ReadElement("GeometryShader"), anEffect);
+		LoadShader(sub + reader.ReadElement("HullShader"), anEffect);
+		LoadShader(sub + reader.ReadElement("DomainShader"), anEffect);
+		LoadShader(sub + reader.ReadElement("ComputeShader"), anEffect);
 
 	}
 
@@ -73,6 +77,10 @@ namespace Hex
 
 	void ShaderFactory::LoadShader(const std::string& file_path, Effect* effect)
 	{
+		if (file_path.find("NO_STRING_FOUND") != file_path.npos)
+			return;
+
+
 		u64 hash_key = Hash(file_path.c_str());
 
 

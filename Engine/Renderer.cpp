@@ -59,7 +59,7 @@ namespace Hex
 		//CU::Vector3f(95, 7.f, 28.f)
 		m_Shadowlight = new ShadowSpotlight;
 		m_Shadowlight->Initiate(
-			CU::Vector3f(99, 8.f, 31.f)
+			CU::Vector3f(99, 50.f, 31.f)
 			, CU::Vector3f(1.f, 0.f, 1.f)
 			, 2048.f);
 
@@ -344,7 +344,7 @@ namespace Hex
 	{
 		//m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
-		m_API->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
+		m_API->SetDepthBufferState(m_ProcessShadows ? eDepthStencil::Z_ENABLED : eDepthStencil::READ_NO_WRITE);
 
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 		for (const RenderCommand& command : commands)
@@ -353,9 +353,12 @@ namespace Hex
 			{
 				case eType::PARTICLE:
 				{
-					m_ParticleEmitter->SetPosition(CU::Vector3f(5.f, 5.f, 5.f));
-					m_ParticleEmitter->Update(myEngine->GetDeltaTime());
-					m_ParticleEmitter->Render(myPrevFrame, myCamera->GetProjection());
+					if (!m_ProcessShadows)
+					{
+						m_ParticleEmitter->SetPosition(CU::Vector3f(100.f, 0.f, 31.f));
+						m_ParticleEmitter->Update(myEngine->GetDeltaTime());
+					}
+					m_ParticleEmitter->Render(m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, myCamera->GetProjection());
 				}break;
 			}
 		}
@@ -408,6 +411,7 @@ namespace Hex
 		m_Shadowlight->SetTargets();
 		m_Shadowlight->ToggleShader(m_ProcessShadows);
 		Render3DCommands();
+		RenderParticles();
 		m_Shadowlight->Copy();
 		myEngine->ResetRenderTargetAndDepth();
 		m_API->ResetViewport();

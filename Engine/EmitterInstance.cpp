@@ -142,9 +142,9 @@ namespace Hex
 	{
 		if (myParticles.Size() > 0)
 		{
-			//Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles, sizeof(SParticleObject) * myParticles.Size());
+			Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles[0], sizeof(SParticleObject) * myParticles.Size());
 
-			D3D11_MAPPED_SUBRESOURCE msr;
+			/*D3D11_MAPPED_SUBRESOURCE msr;
 			Engine::GetAPI()->GetContext()->Map(myVertexBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
 			if (msr.pData)
@@ -152,7 +152,7 @@ namespace Hex
 				SParticleObject* data = (SParticleObject*)msr.pData;
 				memcpy(data, &myParticles[0], sizeof(SParticleObject) * myParticles.Size());
 			}
-			Engine::GetAPI()->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
+			Engine::GetAPI()->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);*/
 
 		}
 	}

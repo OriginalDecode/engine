@@ -342,10 +342,12 @@ namespace Hex
 
 	void Renderer::RenderParticles()
 	{
-		m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
+		//m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
+		m_API->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
+
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
-		for each(const RenderCommand& command in commands)
+		for (const RenderCommand& command : commands)
 		{
 			switch (command.myType)
 			{

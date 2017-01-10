@@ -52,7 +52,11 @@ namespace Hex
 			CU::Matrix44f m_View;
 		} m_VertexCB;
 
-
+		ID3D11Buffer* m_GeometryBuffer;
+		struct cbParticleGeometry
+		{
+			CU::Matrix44f m_Projection;
+		} m_GeometryCB;
 	};
 };
 #endif

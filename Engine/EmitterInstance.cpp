@@ -88,7 +88,7 @@ namespace Hex
 
 		SetMatrices(aPreviousCameraOrientation, aProjection);
 		context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-
+		context->GSSetConstantBuffers(0, 1, &m_GeometryBuffer);
 		myData.shader->Activate();
 		context->Draw(myParticles.Size(), 0);
 		myData.shader->Deactivate();
@@ -139,6 +139,7 @@ namespace Hex
 	{
 		if (myParticles.Size() > 0)
 		{
+			/*
 			D3D11_MAPPED_SUBRESOURCE msr;
 			Engine::GetAPI()->GetContext()->Map(myVertexBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
@@ -149,9 +150,9 @@ namespace Hex
 			}
 
 			Engine::GetAPI()->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
+			*/
 
-
-			//Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles, sizeof(SParticleObject) * myParticles.Size());
+			Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles, sizeof(SParticleObject) * myParticles.Size());
 		}
 	}
 
@@ -159,6 +160,9 @@ namespace Hex
 	{
 		Engine::GetAPI()->CreateConstantBuffer(myConstantBuffer, sizeof(cbParticleVertex));
 		Engine::GetAPI()->SetDebugName(myConstantBuffer, "EmitterInstance : Vertex Constant Buffer");
+
+		Engine::GetAPI()->CreateConstantBuffer(m_GeometryBuffer, sizeof(cbParticleGeometry));
+		Engine::GetAPI()->SetDebugName(m_GeometryBuffer, "EmitterInstance : Geometry Constant Buffer");
 	}
 
 	void CEmitterInstance::CreateInputLayout()
@@ -186,6 +190,8 @@ namespace Hex
 		m_VertexCB.m_View = CU::Math::Inverse(aCameraProjection);
 		Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, &m_VertexCB);
 
+		m_GeometryCB.m_Projection = aCameraProjection;
+		Engine::GetAPI()->UpdateConstantBuffer(m_GeometryBuffer, &m_GeometryCB);
 	}
 
 	void CEmitterInstance::UpdateParticle(float aDeltaTime)

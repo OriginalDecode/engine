@@ -9,6 +9,14 @@ cbuffer Matrices : register(b0)
 	row_major float4x4 Projection;
 };
 
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION;
+	float2 size : SIZE;
+	float2 alpha : ALPHA;
+	float2 uv : TEXCOORD;
+};
+
 cbuffer createQuad
 {
 	float4 quadPos[4] =
@@ -28,15 +36,16 @@ cbuffer createQuad
 	};
 };
 
+[maxvertexcount(4)]
 void GS(point VS_OUTPUT input[1], inout TriangleStream<VS_OUTPUT> triStream)
 {
-	Out = 0;
+	VS_OUTPUT output = (VS_OUTPUT)0;
 
 	for(int i = 0; i < 4; ++i)
 	{
-		output.Pos = (quadPos[i] * input.size.x * 2) + input[0].pos;
-		output.Pos = mul(output.Pos, projection);
-		output.WorldViewProj = output.pos;
+		output.pos = (quadPos[i] * input[0].size.x * 2) + input[0].pos;
+		output.pos = mul(output.pos, Projection);
+		// output.WorldViewProj = output.pos;
 		output.uv.x = quadUV[i].x;
 		output.uv.y = quadUV[i].y;
 		// output.Alpha = input[0].Alpha;

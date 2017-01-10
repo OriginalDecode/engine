@@ -139,13 +139,24 @@ namespace Hex
 	{
 		if (myParticles.Size() > 0)
 		{
-			Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles, sizeof(SParticleObject) * myParticles.Size());
+			D3D11_MAPPED_SUBRESOURCE msr;
+			Engine::GetAPI()->GetContext()->Map(myVertexBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+			if (msr.pData)
+			{
+				SParticleObject* data = (SParticleObject*)msr.pData;
+				memcpy(data, &myParticles[0], sizeof(SParticleObject) * myParticles.Size());
+			}
+
+			Engine::GetAPI()->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
+
+
+			//Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles, sizeof(SParticleObject) * myParticles.Size());
 		}
 	}
 
 	void CEmitterInstance::CreateConstantBuffer()
 	{
-		//myConstantStruct = new SVertexBaseStruct;
 		Engine::GetAPI()->CreateConstantBuffer(myConstantBuffer, sizeof(cbParticleVertex));
 		Engine::GetAPI()->SetDebugName(myConstantBuffer, "EmitterInstance : Vertex Constant Buffer");
 	}
@@ -171,13 +182,6 @@ namespace Hex
 
 	void CEmitterInstance::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
 	{
-		/*
-		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
-		myConstantStruct->world = CU::Matrix44f();
-		myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
-		myConstantStruct->projection = aCameraProjection;
-		*/
-
 		m_VertexCB.m_World = CU::Matrix44f();
 		m_VertexCB.m_View = CU::Math::Inverse(aCameraProjection);
 		Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, &m_VertexCB);
@@ -208,12 +212,12 @@ namespace Hex
 		//temp.position.y = RANDOM(myOrientation.GetPosition().y, myData.size.y);
 		//temp.position.z = RANDOM(myOrientation.GetPosition().z, myData.size.z);
 
-		temp.size = RANDOM(0.1f, 0.5f);
+		temp.size = RANDOM(5.0f, 10.0f);
 		temp.direction.x = RANDOM(-0.1f, 0.1f);
 		temp.direction.y = RANDOM(0.f, 1.f);
 		temp.direction.z = RANDOM(-0.1f, 0.1f);
 		temp.lifeTime = 7.f;
-		temp.alpha = myData.particleData.startAlpha;
+		temp.alpha = 1;// myData.particleData.startAlpha;
 		temp.speed = 0.5f;
 		myParticles.Add(temp);
 	}

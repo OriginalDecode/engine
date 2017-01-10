@@ -248,7 +248,7 @@ namespace Hex
 
 					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 					m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-					 
+										 
 					CModel* model = myEngine->GetModel(command.m_KeyOrText);
 					model->SetOrientation(command.m_Orientation);
 					model->Render( m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, myCamera->GetProjection(), command.m_Scale, m_ProcessShadows);

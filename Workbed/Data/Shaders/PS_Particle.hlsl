@@ -4,8 +4,6 @@
 
 SamplerState point_sample : register ( s0 );
 Texture2D ParticleTexture : register ( t0 );
-
-
 //---------------------------------
 //	Line3D Pixel Structs
 //---------------------------------

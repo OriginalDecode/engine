@@ -96,10 +96,10 @@ namespace Hex
 		void CreateConstantBuffer(IBuffer*& buffer, s32 size);
 
 		template<typename T>
-		void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size);
+		void UpdateConstantBuffer(IBuffer*& dest, T* src, s32 size);
 
 		template<typename T>
-		void UpdateConstantBuffer(IBuffer* dest, T* src);
+		void UpdateConstantBuffer(IBuffer*& dest, T* src);
 
 	private:
 
@@ -180,7 +180,7 @@ namespace Hex
 	}
 
 	template<typename T>
-	void DirectX11::UpdateConstantBuffer(IBuffer* dest, T* src, s32 size)
+	void DirectX11::UpdateConstantBuffer(IBuffer*& dest, T* src, s32 size)
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		myContext->Map(dest, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
@@ -195,7 +195,7 @@ namespace Hex
 	}
 
 	template<typename T>
-	void DirectX11::UpdateConstantBuffer(IBuffer* dest, T* src)
+	void DirectX11::UpdateConstantBuffer(IBuffer*& dest, T* src)
 	{
 		UpdateConstantBuffer(dest, src, sizeof(T));
 	}

@@ -9,20 +9,10 @@ namespace Hex
 		Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/cone.fbx", "Data/Shaders/T_Deferred_Spotlight.json");
 		m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/cone.fbx");
 		m_Model->SetIsLightmesh();
-		//myLightMesh = new CInstance;
-		//myLightMesh->Initiate("Data/Model/lightMeshes/cone.fbx", "Data/Shaders/T_Deferred_Spotlight.json");
-		//myLightMesh->SetIsLightmesh();
-	}
-
-
-	CSpotLight::~CSpotLight()
-	{
-		//SAFE_DELETE(myLightMesh);
 	}
 
 	void CSpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera)
 	{
-		//#LINUS Make a better way to scale
 		m_Model->Render(previousOrientation, aCamera->GetProjection(), CU::Vector4f(1,1,1,1));
 	}
 

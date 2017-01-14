@@ -77,7 +77,6 @@ namespace Hex
 		CU::Quaternion myPitch;
 		CU::Quaternion myYaw;
 
-		// false = physics, true = freefly
 		bool m_Controller = false;
 
 	};

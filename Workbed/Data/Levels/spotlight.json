@@ -1,5 +1,6 @@
 {
 	"light" : {
-		"type" : "spotlight"
+		"type" : "spotlight",
+		"shadow_casting" : true
 	}
 }

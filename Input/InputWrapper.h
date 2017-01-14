@@ -108,6 +108,7 @@ public:
 	InputWrapper() = default;
 	
 	bool Initiate(HWND aHWND, HINSTANCE hInstance);
+	bool CleanUp();
 	void Update();
 
 
@@ -120,6 +121,10 @@ public:
 	bool IsDown(UCHAR aKey);
 	bool OnDown(UCHAR aKey);
 	bool OnRelease(UCHAR aKey);
+
+	bool PS4IsDown(UCHAR button);
+	bool PS4OnDown(UCHAR button);
+	bool PS4OnRelease(UCHAR button);
 
 
 	//________________________
@@ -147,6 +152,10 @@ private:
 	IDirectInputDevice8* myMouse;
 	DIMOUSESTATE2 myMouseState;
 	DIMOUSESTATE2 myPrevMouseState;
+
+	IDirectInputDevice8* m_PS4;
+	UCHAR m_ButtonState[256];
+	UCHAR m_PrevButtonState[256];
 
 	POINT myCursorPos;
 	CU::Vector2f m_CurorPos;

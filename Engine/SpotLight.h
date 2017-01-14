@@ -10,7 +10,6 @@ namespace Hex
 	{
 	public:
 		CSpotLight();
-		~CSpotLight();
 
 		void Render(const CU::Matrix44f& previousOrientation, Camera* aCamera);
 		void SetColor(const CU::Vector4f& aColor);

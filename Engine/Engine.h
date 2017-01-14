@@ -171,7 +171,7 @@ namespace Hex
 		void* CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name);
 
 
-
+		const HWND& GetHWND() const { return myHWND; }
 
 	private:
 		Engine() = default;

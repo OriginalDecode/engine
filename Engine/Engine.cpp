@@ -27,6 +27,120 @@
 
 #include <Input/InputHandle.h>
 
+#define ID3D11DeviceContext_IASetInputLayout(context, input_layout)\
+	context->IASetInputLayout(input_layout)
+
+#define ID3D11DeviceContext_IASetVertexBuffers(context, start_slot, num_buffers, ppVertexBuffers, pStrides, pOffsets)\
+	context->IASetVertexBuffers(start_slot, num_buffers, ppVertexBuffers, pStrides, pOffsets)
+
+#define ID3D11DeviceContext_IASetIndexBuffer(context, pIndexBuffer, format, offset)\
+	context->IASetIndexBuffer(pIndexBuffer,format,offset)
+
+#define ID3D11DeviceContext_IASetPrimitiveTopology(context, format)\
+	context->IASetPrimitiveTopology(format);
+
+#define ID3D11DeviceContext_VSSetShader(context, pVSShader, pClassInstance, NumClassInstances)\
+	context->VSSetShader(pVSShader, pClassInstance, NumClassInstances)
+
+#define ID3D11DeviceContext_VSSetConstantBuffers(context, StartSlot, NumBuffers, ppConstantBuffer)\
+	context->VSSetConstantBuffers(StartSlot, NumBuffers, ppConstantBuffer)
+
+#define ID3D11DeviceContext_PSSetShader(context, pPSShader, pClassInstance, NumClassInstances)\
+	context->PSSetShader(pPSShader, pClassInstance, NumClassInstances)
+
+#define ID3D11DeviceContext_PSSetSamplers(context, StartSlot, NumSamplers, ppSamplers)\
+	context->PSSetSamplers(StartSlot, NumSamplers, ppSamplers)
+
+#define ID3D11DeviceContext_OMSetBlendState(context, blend_state, blend_factor, mask)\
+	context->OMSetBlendState(blend_state, blend_factor, mask);
+
+#define ID3D11DeviceContext_RSSetState(context, pRasterizer)\
+	context->RSSetState(pRasterizer)
+
+#define ID3D11DeviceContext_RSSetViewports(context, numViewports, pViewports)\
+	context->RSSetViewports(numViewports, pViewports)
+
+#define ID3D11DeviceContext_Map(context, pResource, subresource, MapType, MapFlags, pMappedResource)\
+	context->Map(pResource,subresource,MapType, MapFlags, pMappedResource)
+#define ID3D11DeviceContext_Unmap(context, pResource, subresource)\
+	context->Unmap(pResource, subresource)
+
+#define ID3D11DeviceContext_PSSetShaderResources(context, StartSlot, NumViews, ppShaderResourceView)\
+	context->PSSetShaderResources(StartSlot, NumViews, ppShaderResourceView)
+
+#define ID3D11DeviceContext_RSSetScissorRects(context, NumRects, pRects)\
+	context->RSSetScissorRects(NumRects, pRects)
+
+#define ID3D11DeviceContext_DrawIndexed(context, NumIndexes, StartIndexLocation, BaseVertexLocation)\
+	context->DrawIndexed(NumIndexes, StartIndexLocation, BaseVertexLocation)
+
+#define ID3D11Device_CreateRasterizerState(device, desc, pRasterizerState)\
+	device->CreateRasterizerState(desc, pRasterizerState)
+
+#define ID3D11Device_CreateVertexShader(device, pShaderBytecode, BytecodeLength, pClassLinkage, ppVertexShader)\
+	device->CreateVertexShader(pShaderBytecode, BytecodeLength, pClassLinkage, ppVertexShader)
+
+#define ID3D11Device_CreateInputLayout(device, pInputElementDescs, NumElements, pShaderBytecodeWithInputSignature, BytecodeLenght, ppInputLayout)\
+	device->CreateInputLayout(pInputElementDescs, NumElements, pShaderBytecodeWithInputSignature, BytecodeLenght, ppInputLayout)
+
+#define ID3D11Device_CreateBuffer(device, desc, pInitialData, ppBuffer)\
+	device->CreateBuffer(desc, pInitialData, ppBuffer)
+
+#define ID3D11Device_CreatePixelShader(device, pShaderBytecode, BytecodeLength, pClassLinkage, ppPixelShader)\
+	device->CreatePixelShader(pShaderBytecode, BytecodeLength, pClassLinkage, ppPixelShader)
+
+#define ID3D11Device_CreateBlendState(device, desc, pBlendState)\
+	device->CreateBlendState(desc, pBlendState)
+
+#define ID3D11Device_CreateSamplerState(device, desc, pSamplerState)\
+	device->CreateSamplerState(desc, pSamplerState)
+
+#define ID3D11Device_CreateTexture2D(device, pDesc, pInitialData, ppTexture2D)\
+	device->CreateTexture2D(pDesc, pInitialData, ppTexture2D)
+
+#define ID3D11Device_CreateShaderResourceView(device, pResource, pDesc, ppSRView)\
+	device->CreateShaderResourceView(pResource, pDesc, ppSRView)
+
+#define ID3D11Device_AddRef(device)\
+	device->AddRef()
+
+#define ID3D11Texture2D_Release(This)\
+	This->Release()
+#define ID3D11SamplerState_Release(This)\
+	This->Release()
+#define ID3D11ShaderResourceView_Release(This)\
+	This->Release()
+#define ID3D11Buffer_Release(This)\
+	This->Release()
+#define ID3D11Buffer_Release(This)\
+	This->Release()
+#define ID3D11BlendState_Release(This)\
+	This->Release()
+#define ID3D11PixelShader_Release(This)\
+	This->Release()
+#define ID3D11Buffer_Release(This)\
+	This->Release()
+#define ID3D11VertexShader_Release(This)\
+	This->Release()
+#define ID3D11InputLayout_Release(This)\
+	This->Release()
+#define ID3D11RasterizerState_Release(This)\
+	This->Release()
+#define ID3D11Device_Release(This)\
+	This->Release()
+
+#define NK_INCLUDE_FIXED_TYPES
+#define NK_INCLUDE_STANDARD_IO
+#define NK_INCLUDE_STANDARD_VARARGS
+#define NK_INCLUDE_DEFAULT_ALLOCATOR
+#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
+#define NK_INCLUDE_FONT_BAKING
+#define NK_INCLUDE_DEFAULT_FONT
+#define NK_IMPLEMENTATION
+#define NK_D3D11_IMPLEMENTATION
+#include "nuklear.h"
+#include "nuklear_d3d11.h"
+
 static constexpr char* vertex_shader = "VS";
 static constexpr char* pixel_shader = "PS";
 static constexpr char* geometry_shader = "GS";
@@ -166,12 +280,27 @@ namespace Hex
 		m_InputHandle->AddController(0);
 
 
+		//_____
+		// NUKLEAR
+		
+		static s32 MAX_VERTEX_BUFFER = (512 * 1024);
+		static s32 MAX_INDEX_BUFFER = (128 * 1024);
+		m_NKContext = nk_d3d11_init(myAPI->GetDevice(), window_width, window_height, MAX_VERTEX_BUFFER, MAX_INDEX_BUFFER);
+
+		nk_d3d11_font_stash_begin(&m_NKAtlas);
+
+		nk_d3d11_font_stash_end();
+		m_NKColor = nk_rgb(28, 48, 62);
+		// END 
+		//_____
+
 		m_IsInitiated = true;
 		return true;
 	}
 
 	bool Engine::CleanUp()
 	{
+
 		m_InputHandle->CleanUp();
 		SAFE_DELETE(m_InputHandle);
 		if (m_InputHandle)
@@ -216,6 +345,9 @@ namespace Hex
 
 	void Engine::Update()
 	{
+		//nk_input_begin(m_NKContext);
+		//nk_input_end(m_NKContext);
+
 		if (!HasInitiated())
 			return;
 
@@ -229,6 +361,37 @@ namespace Hex
 		m_Threadpool.Update();
 		m_DebugSystem.Update();
 
+		if (nk_begin(m_NKContext, "Demo", nk_rect(50, 50, 230, 250), NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE))
+		{
+			enum { EASY, HARD };
+			static int op = EASY;
+			static int property = 20;
+
+			nk_layout_row_static(m_NKContext, 30, 80, 1);
+			if (nk_button_label(m_NKContext, "button"))
+				fprintf(stdout, "button pressed\n");
+			nk_layout_row_dynamic(m_NKContext, 30, 2);
+			if (nk_option_label(m_NKContext, "easy", op == EASY)) op = EASY;
+			if (nk_option_label(m_NKContext, "hard", op == HARD)) op = HARD;
+			nk_layout_row_dynamic(m_NKContext, 22, 1);
+			nk_property_int(m_NKContext, "Compression:", 0, &property, 100, 10, 1);
+
+			nk_layout_row_dynamic(m_NKContext, 20, 1);
+			nk_label(m_NKContext, "background:", NK_TEXT_LEFT);
+			nk_layout_row_dynamic(m_NKContext, 25, 1);
+			if (nk_combo_begin_color(m_NKContext, m_NKColor, nk_vec2(nk_widget_width(m_NKContext), 400))) {
+				nk_layout_row_dynamic(m_NKContext, 120, 1);
+				m_NKColor = nk_color_picker(m_NKContext, m_NKColor, NK_RGBA);
+				nk_layout_row_dynamic(m_NKContext, 25, 1);
+				m_NKColor.r = (nk_byte)nk_propertyi(m_NKContext, "#R:", 0, m_NKColor.r, 255, 1, 1);
+				m_NKColor.g = (nk_byte)nk_propertyi(m_NKContext, "#G:", 0, m_NKColor.g, 255, 1, 1);
+				m_NKColor.b = (nk_byte)nk_propertyi(m_NKContext, "#B:", 0, m_NKColor.b, 255, 1, 1);
+				m_NKColor.a = (nk_byte)nk_propertyi(m_NKContext, "#A:", 0, m_NKColor.a, 255, 1, 1);
+				nk_combo_end(m_NKContext);
+			}
+		}
+		nk_end(m_NKContext);
+		nk_d3d11_render(GetAPI()->GetContext(), NK_ANTI_ALIASING_ON);
 	}
 
 	void Engine::Render()

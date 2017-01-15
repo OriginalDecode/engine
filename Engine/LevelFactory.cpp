@@ -9,6 +9,7 @@
 #include <PhysicsComponent.h>
 #include <RenderComponent.h>
 #include <TranslationComponent.h>
+#include <DebugComponent.h>
 #include <LightComponent.h>
 #include <InputComponent.h>
 #include <AIComponent.h>
@@ -34,7 +35,7 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 	const JSONElement& el = m_LevelReader.GetElement("root");
 
 
-	m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
+	m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/t_1.tga"); }));
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
 		CreateEntitiy(it->value["entity"].GetString(), it);
@@ -64,18 +65,27 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	if (entity_reader.HasElement("light"))
 		CreateLightComponent(entity_reader, e, it);
 
+
 	if (entity_reader.HasElement("controller"))
 	{
 		if (entity_reader.ReadElement("controller") == "input")
 			CreateInputComponent(entity_reader, e);
-
 		else if (entity_reader.ReadElement("controller") == "network")
 			CreateNetworkComponent(entity_reader, e);
-
 		else if (entity_reader.ReadElement("controller") == "ai")
 			CreateAIComponent(entity_reader, e);
 		else
 			DL_ASSERT("Failed to find correct input controller tag!");
+
+		if (entity_reader.ReadElement("controller") != "input")
+		{
+			CreateEditingPhysicsComponent(e);
+		}
+	}
+	else
+	{
+		if(!entity_reader.HasElement("light"))
+			CreateEditingPhysicsComponent(e);
 	}
 }
 
@@ -132,6 +142,22 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	{
 		phys_body = component.myBody->InitAsSphere(1, object_mass, m_PhysicsManager->GetGravityForce(), air_preassure, { 0,0,0 });
 	}
+
+	m_PhysicsManager->Add(phys_body);
+}
+
+void LevelFactory::CreateEditingPhysicsComponent(Entity entity_id)
+{
+	RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+	CU::Vector3f whd = m_Engine->GetModel(render.myModelID)->GetWHD();
+
+
+	m_EntityManager->AddComponent<DebugComponent>(entity_id);
+	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(entity_id);
+	component.m_Body = m_PhysicsManager->CreateBody();
+
+	btRigidBody* phys_body = nullptr;
+	phys_body = component.m_Body->InitAsBox(whd.x, whd.y, whd.z, { 0, 0, 0 });
 
 	m_PhysicsManager->Add(phys_body);
 }

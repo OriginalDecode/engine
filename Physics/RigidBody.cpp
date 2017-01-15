@@ -76,6 +76,7 @@ btRigidBody* RigidBody::InitAsSphere(float aRadius, float aMass, float aGravityF
 	myBody->setMassProps(myMass, btVector3(0, 0, 0));
 	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
 	myTerminalVelocity.y = CL::CalcTerminalVelocity(myMass, myGravity, myDragCoeff, myCrossSectionArea, myResistanceDensity);
+	
 	return myBody;
 }
 
@@ -111,7 +112,6 @@ btRigidBody* RigidBody::InitAsBox(float width, float height, float depth, CU::Ve
 	myMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos));
 	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, myMotionState, myShape, btVector3(0, 0, 0));
 	myBody = new btRigidBody(bodyInfo);
-
 	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
 
 	return myBody;
@@ -124,7 +124,7 @@ void RigidBody::SetResistanceDensity(float aDensity)
 
 void RigidBody::SetPosition(const CU::Vector3f& aPosition)
 {
-	assert("Not Implemented");
+	myBody->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), ConvertVector(aPosition) ));
 }
 
 void RigidBody::Update(float deltaTime)
@@ -205,3 +205,14 @@ void RigidBody::UpdateOrientation(const ControllerState& controller_state)
 	m_Yaw = CU::Quaternion(CU::Vector3f(0.f, 1.f, 0.f), m_CenterPoint.x);
 }
 
+btVector3 RigidBody::ConvertVector(const CU::Vector3f& vec3)
+{
+	btVector3 btVec3;
+
+	btVec3.setX(vec3.x);
+	btVec3.setY(vec3.y);
+	btVec3.setZ(vec3.z);
+	btVec3.setW(1);
+
+	return btVec3;
+}

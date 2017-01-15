@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseComponent.h"
+
 class RigidBody;
 struct SPhysicsComponent : public BaseComponent
 {

@@ -11,7 +11,8 @@
 #include <Utilities.h>
 #include "EngineDefines.h"
 #include "Font.h"
-#include <D3D11.h>
+#define COBJMACROS
+#include <d3d11.h>
 #include "Engine.h"
 #include <vector>
 #include <ScreenGrab.h>

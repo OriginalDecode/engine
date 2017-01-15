@@ -82,6 +82,9 @@
     <ClInclude Include="AABBComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="DebugComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseSystem.cpp">

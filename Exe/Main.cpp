@@ -74,7 +74,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	*/
 
 	g_windowactive = true;
-	ShowCursor(false);
+	//ShowCursor(false);
 	MSG msg;
 	bool applicationIsRunning = true;
 	do
@@ -90,11 +90,6 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 			applicationIsRunning = false;
 			break;
 		}
-		else if (msg.message == WM_INPUT)
-		{
-			int apa = 5;
-		}
-
 
 		if (newApplication->HasQuit() == true)
 		{
@@ -102,10 +97,10 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 			break;
 		}
 		Hex::Engine::GetInstance()->Update();
-		if (g_windowactive)
+		/*if (g_windowactive)
 		{
 			SetCursorPos(w / 2.f, h / 2.f);
-		}
+		}*/
 
 	} while (applicationIsRunning == true);
 
@@ -131,15 +126,15 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	{
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
-			g_windowactive = false;
+			//g_windowactive = false;
 			newApplication->OnInactive();
-			ShowCursor(!g_windowactive);
+			//ShowCursor(!g_windowactive);
 		}
 		else
 		{
-			g_windowactive = true;
+			//g_windowactive = true;
 			newApplication->OnActive();
-			ShowCursor(!g_windowactive);
+			//ShowCursor(!g_windowactive);
 		}
 	}break;
 	case WM_ENTERSIZEMOVE:

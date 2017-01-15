@@ -18,9 +18,9 @@ void EntityManager::Initiate()
 
 void EntityManager::CleanUp()
 {
-	for each(BaseSystem* s in mySystems)
+	for (BaseSystem* system : mySystems)
 	{
-		SAFE_DELETE(s);
+		SAFE_DELETE(system);
 	}
 	SAFE_DELETE(myComponents);
 }

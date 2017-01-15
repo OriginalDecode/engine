@@ -17,6 +17,7 @@
 #include "../Input/InputHandle.h"
 
 #include <RenderCommand_Shared.h>
+#include <PhysicsManager.h>
 
 bool Game::Initiate()
 {
@@ -29,6 +30,11 @@ bool Game::Initiate()
 
 	myEngine->ToggleVsync(); //settings
 	m_Camera = myEngine->GetCamera();
+
+	m_Plane.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 5.f), CU::Vector3f(0.f, -1.f, 0.f));
+
+	m_ModelKey = myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
+
 	return true;
 }
 
@@ -47,6 +53,8 @@ bool Game::CleanUp()
 
 void Game::Update(float dt)
 {
+	InputWrapper* input_wrapper = myEngine->GetInputHandle()->GetInputWrapper();
+
 	myFrameCount++;
 	myAverageFPS += myEngine->GetFPS();
 	myTime -= dt;
@@ -59,10 +67,13 @@ void Game::Update(float dt)
 	}
 
 
+	if (input_wrapper->IsDown(MouseInput::LEFT))
+	{
+		pointHit = Hex::Engine::GetInstance()->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), myPicker->GetCurrentRay(input_wrapper->GetCursorPos()));
+	}
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
+
 	m_Camera->Update(myEngine->GetInputHandle()->GetDeltaCursorPos());
-
-	InputWrapper* input_wrapper = myEngine->GetInputHandle()->GetInputWrapper();
-
 	if (input_wrapper->IsDown(KButton::W))
 		m_Camera->Move(Hex::eDirection::FORWARD, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::S))
@@ -80,10 +91,14 @@ void Game::Update(float dt)
 
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::PARTICLE, CU::Vector3f(5.f, 5.f, 5.f)));
 
-
 	CU::Vector2f cur_pos = myEngine->GetInputHandle()->GetDeltaCursorPos();
 	std::stringstream ss;
-	ss << "FPS : " << myEngine->GetFPS() << "\n" << "Average FPS : " << myFPSToPrint << "\nDeltaTime:" << dt << "\n" << Hex::Engine::GetInstance()->GetLocalTimeAsString() << "\ncursor_pos : \n" << cur_pos.x << "\n" << cur_pos.y;
+	ss << "FPS : " << myEngine->GetFPS()
+		<< "\nAverage FPS : " << myFPSToPrint
+		<< "\nDeltaTime:" << dt
+		<< "\n" << Hex::Engine::GetInstance()->GetLocalTimeAsString()
+		<< "\ncursor_pos : \n" << cur_pos.x << "\n" << cur_pos.y
+		<< "\nCollision : " << (m_collision ? "true" : "false");
 	myEngine->AddDebugText(ss.str());
 
 

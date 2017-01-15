@@ -1,93 +1,77 @@
 #pragma once
-#include "..\Vector\Vector.h"
+#include "../Vector/Vector.h"
 namespace CommonUtilities
 {
-	namespace Math
+	template<typename TYPE>
+	class Plane
 	{
+	public:
+		Plane() = default;
+		Plane(Math::Vector3<TYPE>aFirstPoint, Math::Vector3<TYPE> aSecondPoint, Math::Vector3<TYPE> aThirdPoint);
+		Plane(Math::Vector3<TYPE> aPoint, Math::Vector3<TYPE> aNormal);
 
-		template<typename TYPE>
-		class Plane
-		{
-		public:
-			Plane();
-			Plane(Vector3<TYPE>aFirstPoint, Vector3<TYPE> aSecondPoint, Vector3<TYPE> aThirdPoint);
-			Plane(Vector3<TYPE> aPoint, Vector3<TYPE> aNormal);
-			~Plane();
 
-			bool operator==(Plane<TYPE> aPlane);
-			void InitWith3Points(Vector3<TYPE> aFirstPoint, Vector3<TYPE> aSecondPoint, Vector3<TYPE> aThirdPoint);
-			//void InitWithPointAndNormal(Vector3<TYPE> aPoint, Vector3<TYPE> aNormal);
-			bool Inside(Vector3<TYPE> aPosition);
-			void IncreaseDistance(TYPE aDistance);
+		void InitWith3Points(Math::Vector3<TYPE> aFirstPoint, Math::Vector3<TYPE> aSecondPoint, Math::Vector3<TYPE> aThirdPoint);
+		void InitWithPointAndNormal(Math::Vector3<TYPE> aPoint, Math::Vector3<TYPE> aNormal);
 
-		private:
-			Vector3<TYPE> m_Normal;
-			Vector4<TYPE> myData;
-		};
+		bool Inside(Math::Vector3<TYPE> aPosition);
 
-		template<typename TYPE>
-		Plane<TYPE>::Plane()
-		{
-		}
+		Math::Vector3<TYPE> GetNormal() const;
+		Math::Vector3<TYPE> GetPoint() const;
 
-		template<typename TYPE>
-		Plane<TYPE>::~Plane()
-		{
-		}
+	private:
 
-		template<typename TYPE>
-		Plane<TYPE>::Plane(Vector3<TYPE> aFirstPoint, Vector3<TYPE> aSecondPoint, Vector3<TYPE> aThirdPoint)
-		{
-			InitWith3Points(aFirstPoint, aSecondPoint, aThirdPoint);
-		}
+		Math::Vector3<TYPE> myNorm;
+		Math::Vector3<TYPE> myPoint;
+	};
 
-		template<typename TYPE>
-		Plane<TYPE>::Plane(Vector3<TYPE> aPoint, Vector3<TYPE> aNormal)
-		{
-			//InitWithPointAndNormal(aPoint, aNormal);
-		}
+	template<typename TYPE>
+	Plane<TYPE>::Plane(Math::Vector3<TYPE> aFirstPoint, Math::Vector3<TYPE> aSecondPoint, Math::Vector3<TYPE> aThirdPoint)
+	{
+		myPoint = aFirstPoint;
+		myNorm = Cross(aSecondPoint - aFirstPoint, aThirdPoint - aFirstPoint);
 
-		template<typename TYPE>
-		void Plane<TYPE>::InitWith3Points(Vector3<TYPE> aFirstPoint, Vector3<TYPE> aSecondPoint, Vector3<TYPE> aThirdPoint)
-		{
-			Vector3<TYPE> temp(Cross(aFirstPoint - aSecondPoint, aThirdPoint - aSecondPoint));
-
-			myData = temp;
-			myData.w = Dot(temp, aFirstPoint);
-		}
-
-		/*template<typename TYPE>
-		void Plane<TYPE>::InitWithPointAndNormal(Vector3<TYPE> aPoint, Vector3<TYPE> aNormal)
-		{
-			myData = aNormal;
-			myData.w = Dot(aNormal, aPoint);
-		}*/
-
-		template<typename TYPE>
-		bool Plane<TYPE>::Inside(Vector3<TYPE> aPosition)
-		{
-			Vector3<TYPE> normal(myData.x, myData.y, myData.z);
-			return Dot(aPosition, normal) - myData.w <= 0;
-		}
-
-		template <typename TYPE>
-		void Plane<TYPE>::IncreaseDistance(TYPE aDistance)
-		{
-			myData.w += aDistance;
-		}
-
-		template<typename TYPE>
-		bool Plane<TYPE>::operator==(Plane<TYPE> aPlane)
-		{
-			if (myData == aPlane)
-			{
-				return true;
-			}
-
-			return false;
-		}
-
+		Normalize(myNorm);
 	}
 
+	template<typename TYPE>
+	Plane<TYPE>::Plane(Math::Vector3<TYPE> aPoint, Math::Vector3<TYPE> aNormal)
+	{
+		InitWithPointAndNormal(aPoint, aNormal);
+	}
+
+	template<typename TYPE>
+	void Plane<TYPE>::InitWith3Points(Math::Vector3<TYPE> aFirstPoint, Math::Vector3<TYPE> aSecondPoint, Math::Vector3<TYPE> aThirdPoint)
+	{
+		CommonUtilities::Plane(aFirstPoint, aSecondPoint, aThirdPoint);
+	}
+
+	template<typename TYPE>
+	void Plane<TYPE>::InitWithPointAndNormal(Math::Vector3<TYPE> aPoint, Math::Vector3<TYPE> aNormal)
+	{
+		myPoint = aPoint;
+		myNorm = aNormal;
+		Normalize(myNorm);
+	}
+
+	template<typename TYPE>
+	bool Plane<TYPE>::Inside(Math::Vector3<TYPE> aPosition)
+	{
+		if (Math::Dot<float>(aPosition - myPoint, myNorm) > 0.f)
+			return false;
+		else
+			return true;
+	}
+
+	template<typename TYPE>
+	Math::Vector3<TYPE> Plane<TYPE>::GetPoint() const
+	{
+		return myPoint;
+	}
+
+	template<typename TYPE>
+	Math::Vector3<TYPE> Plane<TYPE>::GetNormal() const
+	{
+		return myNorm;
+	}
 };
-namespace CU = CommonUtilities;

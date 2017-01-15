@@ -57,8 +57,12 @@ public:
 	float GetGravity() { return myGravity; }
 	bool IsEnabled() { return m_IsEnabled; }
 	void ToggleBody() { m_IsEnabled = !m_IsEnabled; }
+	btCollisionShape* GetShape() const { return myShape; }
 
 private:
+
+	btVector3 ConvertVector(const CU::Vector3f& vec3);
+
 	CU::Vector3f myVelocity; //Only downwards right now.
 	CU::Vector3f myTerminalVelocity;
 

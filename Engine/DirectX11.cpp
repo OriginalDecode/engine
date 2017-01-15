@@ -12,7 +12,6 @@ namespace Hex
 	bool DirectX11::Initiate(CreateInfo create_info)
 	{
 		m_CreateInfo = create_info;
-
 		CreateAdapterList();
 		CreateDeviceAndSwapchain();
 		CreateDepthBuffer();

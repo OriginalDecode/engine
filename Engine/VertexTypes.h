@@ -1,6 +1,7 @@
 #pragma once
 #include <Math\Vector\Vector4.h>
-#include <D3D11.h>
+#define COBJMACROS
+#include <d3d11.h>
 
 const D3D11_INPUT_ELEMENT_DESC VertexLayoutPosCol[] =
 {

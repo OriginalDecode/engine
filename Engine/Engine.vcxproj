@@ -229,9 +229,10 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>SNOWBLIND_DX11;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__WIN64;COBJMACROS;SNOWBLIND_DX11;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <UndefinePreprocessorDefinitions>__WIN32;WIN32;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>freetype_$(Configuration)_x64.lib;DirectXTK_$(Configuration)_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -247,9 +248,10 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;SNOWBLIND_VULKAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__WIN64;COBJMACROS;_CRT_SECURE_NO_WARNINGS;SNOWBLIND_VULKAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <UndefinePreprocessorDefinitions>__WIN32;WIN32;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>freetype_Debug_x64.lib;assimp_Debug.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -320,8 +322,9 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Matrix\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <PreprocessorDefinitions>SNOWBLIND_DX11; _CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__WIN64;COBJMACROS;SNOWBLIND_DX11; _CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <UndefinePreprocessorDefinitions>__WIN32;WIN32;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -342,8 +345,9 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Input\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;SNOWBLIND_VULKAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__WIN64;COBJMACROS;_CRT_SECURE_NO_WARNINGS;SNOWBLIND_VULKAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <UndefinePreprocessorDefinitions>__WIN32;WIN32;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -390,6 +394,10 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="nuklear.h" />
+    <ClInclude Include="nuklear_d3d11.h" />
+    <ClInclude Include="nuklear_d3d11_pixel_shader.h" />
+    <ClInclude Include="nuklear_d3d11_vertex_shader.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />

@@ -7,7 +7,7 @@
 #include <standard_datatype.hpp>
 #include <functional>
 #include <AABB.h>
-
+#include <Math/Plane/Plane.h>
 namespace Hex
 {
 	class Synchronizer;
@@ -44,13 +44,11 @@ public:
 	void Update(float aDeltaTime);
 
 private:
-	bool CreateLevel(const char* level_path);
-	bool CreateEntity(const char* entity_path, JSONReader& level_reader, JSONElement::ConstMemberIterator it);
-
-	void LeftClick(float x, float y);
 	bool m_DisableMouseCameraMovement = false;
 	Hex::Camera* m_Camera = nullptr;
 
+
+	bool m_collision = false;
 
 	s16 m_LocalPlayerCount = 0;
 	int myFrameCount = 0;
@@ -73,7 +71,7 @@ private:
 	CU::Vector3f currentRay;
 
 	u32 selected_entity;
-
+	CU::Plane<float> m_Plane;
 
 	RigidBody* rigidbody = nullptr;
 	SLinePoint raycast[2];

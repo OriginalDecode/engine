@@ -21,11 +21,17 @@ namespace Hex
 		return myCurrentRay;
 	}
 
+	const CU::Vector3f& CMousePicker::GetCurrentRay(CU::Vector2f pos)
+	{
+		CalculateCurrentRay(pos.x, pos.y);
+		return myCurrentRay;
+	}
+
 	void CMousePicker::CalculateCurrentRay(float x, float y)
 	{
 		CU::Vector2f cursorPos;
-		cursorPos.x = x;//CU::Input::InputWrapper::GetInstance()->GetX();
-		cursorPos.y = y;//CU::Input::InputWrapper::GetInstance()->GetY();
+		cursorPos.x = x;
+		cursorPos.y = y;
 
 		cursorPos = NormalizedSpace(cursorPos.x, cursorPos.y);
 		CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.f, 0.f); //Clip Space

@@ -251,6 +251,7 @@
     <ClInclude Include="ComponentContainer.h" />
     <ClInclude Include="ComponentFilter.h" />
     <ClInclude Include="ControllerComponent.h" />
+    <ClInclude Include="DebugComponent.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="EntityTypes.h" />
     <ClInclude Include="InputComponent.h" />

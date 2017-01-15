@@ -22,6 +22,7 @@ private:
 
 	void CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position);
 	void CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id);
+	void CreateEditingPhysicsComponent(Entity entity_id);
 	void CreateCameraComponent(JSONReader& entity_reader, Entity entity_id);
 
 	void CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it);
@@ -30,6 +31,9 @@ private:
 	void CreateInputComponent(JSONReader& entity_reader, Entity entity_id);
 	void CreateAIComponent(JSONReader& entity_reader, Entity entity_id);
 	void CreateNetworkComponent(JSONReader& entity_reader, Entity entity_id);
+
+
+
 	JSONReader m_LevelReader;
 
 	Hex::Engine* m_Engine			= nullptr;

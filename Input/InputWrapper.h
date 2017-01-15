@@ -138,7 +138,6 @@ public:
 	float MouseDirectX();
 	float MouseDirectY();
 
-
 private:
 	HWND myHWND;
 	IDirectInput8* myDInput;

@@ -264,6 +264,10 @@
     </ClInclude>
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelFactory.h" />
+    <ClInclude Include="nuklear.h" />
+    <ClInclude Include="nuklear_d3d11_pixel_shader.h" />
+    <ClInclude Include="nuklear_d3d11_vertex_shader.h" />
+    <ClInclude Include="nuklear_d3d11.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">

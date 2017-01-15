@@ -360,38 +360,6 @@ namespace Hex
 		myRenderer->Render();
 		m_Threadpool.Update();
 		m_DebugSystem.Update();
-
-		if (nk_begin(m_NKContext, "Demo", nk_rect(50, 50, 230, 250), NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE))
-		{
-			enum { EASY, HARD };
-			static int op = EASY;
-			static int property = 20;
-
-			nk_layout_row_static(m_NKContext, 30, 80, 1);
-			if (nk_button_label(m_NKContext, "button"))
-				fprintf(stdout, "button pressed\n");
-			nk_layout_row_dynamic(m_NKContext, 30, 2);
-			if (nk_option_label(m_NKContext, "easy", op == EASY)) op = EASY;
-			if (nk_option_label(m_NKContext, "hard", op == HARD)) op = HARD;
-			nk_layout_row_dynamic(m_NKContext, 22, 1);
-			nk_property_int(m_NKContext, "Compression:", 0, &property, 100, 10, 1);
-
-			nk_layout_row_dynamic(m_NKContext, 20, 1);
-			nk_label(m_NKContext, "background:", NK_TEXT_LEFT);
-			nk_layout_row_dynamic(m_NKContext, 25, 1);
-			if (nk_combo_begin_color(m_NKContext, m_NKColor, nk_vec2(nk_widget_width(m_NKContext), 400))) {
-				nk_layout_row_dynamic(m_NKContext, 120, 1);
-				m_NKColor = nk_color_picker(m_NKContext, m_NKColor, NK_RGBA);
-				nk_layout_row_dynamic(m_NKContext, 25, 1);
-				m_NKColor.r = (nk_byte)nk_propertyi(m_NKContext, "#R:", 0, m_NKColor.r, 255, 1, 1);
-				m_NKColor.g = (nk_byte)nk_propertyi(m_NKContext, "#G:", 0, m_NKColor.g, 255, 1, 1);
-				m_NKColor.b = (nk_byte)nk_propertyi(m_NKContext, "#B:", 0, m_NKColor.b, 255, 1, 1);
-				m_NKColor.a = (nk_byte)nk_propertyi(m_NKContext, "#A:", 0, m_NKColor.a, 255, 1, 1);
-				nk_combo_end(m_NKContext);
-			}
-		}
-		nk_end(m_NKContext);
-		nk_d3d11_render(GetAPI()->GetContext(), NK_ANTI_ALIASING_ON);
 	}
 
 	void Engine::Render()

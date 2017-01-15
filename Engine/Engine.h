@@ -1,23 +1,5 @@
 #pragma once
 
-#if defined (__WIN32)
-#undef __WIN32
-#endif
-#if defined (WIN32)
-#undef WIN32
-#endif
-#ifndef __WIN64
-#define __WIN64
-#endif
-#define NK_INCLUDE_FIXED_TYPES
-#define NK_INCLUDE_STANDARD_IO
-#define NK_INCLUDE_STANDARD_VARARGS
-#define NK_INCLUDE_DEFAULT_ALLOCATOR
-#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
-#define NK_INCLUDE_FONT_BAKING
-#define NK_INCLUDE_DEFAULT_FONT
-#include "nuklear.h"
-
 #include "DebugSystem.h"
 #include "Window.h"
 
@@ -50,17 +32,10 @@ struct SLocalTime
 	u16 second;
 };
 
-namespace Cache
-{
-	class CAssetsContainer;
-	class TerrainManager;
-};
+class CAssetsContainer;
+class TerrainManager;
 
 typedef struct ID3D10Blob IBlob;
-
-struct nk_context;
-struct nk_font_atlas;
-struct nk_color;
 
 namespace Hex
 {
@@ -226,14 +201,11 @@ namespace Hex
 		Camera*  myCamera							= nullptr;
 		Camera*  my2DCamera							= nullptr;
 		CConsole* myConsole							= nullptr;
-		Cache::CAssetsContainer* myAssetsContainer	= nullptr;
-		Cache::TerrainManager* m_TerrainManager		= nullptr;
+		CAssetsContainer* myAssetsContainer	= nullptr;
+		TerrainManager* m_TerrainManager		= nullptr;
 		bool myUsingVSync = false;
 		float m_DeltaTime = 0.f;
 
-		nk_context* m_NKContext;
-		nk_font_atlas* m_NKAtlas;
-		nk_color m_NKColor;
 	};
 };
 

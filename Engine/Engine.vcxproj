@@ -394,10 +394,6 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="nuklear.h" />
-    <ClInclude Include="nuklear_d3d11.h" />
-    <ClInclude Include="nuklear_d3d11_pixel_shader.h" />
-    <ClInclude Include="nuklear_d3d11_vertex_shader.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />

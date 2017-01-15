@@ -14,37 +14,34 @@ namespace Hex
 	struct CompiledShader;
 };
 
-namespace Cache
+class CAssetsContainer
 {
-	class CAssetsContainer
-	{
-	public:
-		CAssetsContainer() = default;
-		~CAssetsContainer();
+public:
+	CAssetsContainer() = default;
+	~CAssetsContainer();
 
-		void Initiate();
+	void Initiate();
 
-		void Update();
+	void Update();
 
-		void ReloadTexture(Hex::Texture* texture);
-		Hex::Texture* GetTexture(const std::string& aFilePath);
+	void ReloadTexture(Hex::Texture* texture);
+	Hex::Texture* GetTexture(const std::string& aFilePath);
 
-		Hex::Effect* GetEffect(const std::string& aFilePath);
-		Hex::CModel* GetModel(const std::string& aFilePath);
-		const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
-		
-	private:
-		FileWatcher* m_TextureWatcher = nullptr;
-		
-		std::unordered_map<std::string, Hex::Texture*> myTextures;
-		std::unordered_map<std::string, Hex::Effect*> myEffects;
-		std::unordered_map<std::string, Hex::CModel*> myModels;
-		std::unordered_map<std::string, Hex::Sprite*> mySprites;
-		
-		bool LoadTexture(const std::string& aFilePath);
-		void LoadEffect(const std::string& aFilePath);
+	Hex::Effect* GetEffect(const std::string& aFilePath);
+	Hex::CModel* GetModel(const std::string& aFilePath);
+	const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
 
-		Hex::ShaderFactory* myShaderFactory;
-		CModelImporter* myModelLoader;
-	};
+private:
+	FileWatcher* m_TextureWatcher = nullptr;
+
+	std::unordered_map<std::string, Hex::Texture*> myTextures;
+	std::unordered_map<std::string, Hex::Effect*> myEffects;
+	std::unordered_map<std::string, Hex::CModel*> myModels;
+	std::unordered_map<std::string, Hex::Sprite*> mySprites;
+
+	bool LoadTexture(const std::string& aFilePath);
+	void LoadEffect(const std::string& aFilePath);
+
+	Hex::ShaderFactory* myShaderFactory;
+	CModelImporter* myModelLoader;
 };

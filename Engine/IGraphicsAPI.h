@@ -62,6 +62,12 @@ enum class eSamplerStates
 	_COUNT
 };
 
+enum class eGraphicsAPI
+{
+	D3D11,
+	VULKAN,
+};
+
 namespace Hex
 {
 	class IGraphicsAPI
@@ -80,10 +86,16 @@ namespace Hex
 		virtual void DisableZBuffer() = 0;
 		virtual IDevice* GetDevice() = 0;
 
+		virtual void CopyResource(void * pDestination, void * pSource) = 0;
+
+		virtual void SetDebugName(void * pResource, std::string debug_name) = 0;
+		eGraphicsAPI GetActiveAPI() const { return m_ActiveAPI; }
 
 
 	protected:
 		CreateInfo m_CreateInfo;
+		eGraphicsAPI m_ActiveAPI;
+
 
 		std::bitset<int(eEngineFlags::_COUNT)> myEngineFlags;
 	};

@@ -82,10 +82,11 @@ namespace Hex
 			and you should not get the api but you should get 
 			whatever is selected
 		*/
+		static IGraphicsAPI* GetGraphicsAPI();
 #ifdef SNOWBLIND_DX11
-		static DirectX11* GetAPI(); //Should not be a define.
+		static DirectX11* GetAPI(); 
 #else
-		static Vulkan* GetAPI(); //Should not be a define.
+		static Vulkan* GetAPI(); 
 #endif
 		//_________________________________________
 		// Settings
@@ -179,8 +180,10 @@ namespace Hex
 		bool HasInitiated();
 		bool m_IsInitiated = false;
 		bool m_IsLoadingLevel = false;
+
 		static Engine* myInstance;
 		static IGraphicsAPI* myAPI;
+
 		Threadpool m_Threadpool;
 
 		SWindowSize myWindowSize;
@@ -198,13 +201,17 @@ namespace Hex
 		CU::TimeManager* myTimeManager				= nullptr;
 		Synchronizer* mySynchronizer				= nullptr;
 		Renderer* myRenderer						= nullptr;
+
+		//Shouldn't need 2 cameras?
 		Camera*  myCamera							= nullptr;
 		Camera*  my2DCamera							= nullptr;
+
 		CConsole* myConsole							= nullptr;
-		CAssetsContainer* myAssetsContainer	= nullptr;
-		TerrainManager* m_TerrainManager		= nullptr;
-		bool myUsingVSync = false;
-		float m_DeltaTime = 0.f;
+		CAssetsContainer* myAssetsContainer			= nullptr;
+		TerrainManager* m_TerrainManager			= nullptr;
+
+		bool myUsingVSync							= false;
+		float m_DeltaTime							= 0.f;
 
 	};
 };

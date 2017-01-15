@@ -41,36 +41,44 @@ namespace Hex
 
 		SAFE_DELETE(myViewport);
 
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_ENABLED)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_DISABLED)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::READ_NO_WRITE)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::MASK_TEST)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencil::DEPTH_TEST)]);
+		{
+			SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_ENABLED)]);
+			SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_DISABLED)]);
+			SAFE_RELEASE(myDepthStates[u16(eDepthStencil::READ_NO_WRITE)]);
+			SAFE_RELEASE(myDepthStates[u16(eDepthStencil::MASK_TEST)]);
+			SAFE_RELEASE(myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
+			SAFE_RELEASE(myDepthStates[u16(eDepthStencil::DEPTH_TEST)]);
+		}
 
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::WIREFRAME)]);
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_FRONT)]);
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::MSAA)]);
+		{
+			SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::WIREFRAME)]);
+			SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
+			SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
+			SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_FRONT)]);
+			SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::MSAA)]);
+		}
 
+		{
+			SAFE_RELEASE(myBlendStates[u16(eBlendStates::NO_BLEND)]);
+			SAFE_RELEASE(myBlendStates[u16(eBlendStates::LIGHT_BLEND)]);
+			SAFE_RELEASE(myBlendStates[u16(eBlendStates::ALPHA_BLEND)]);
+			SAFE_RELEASE(myBlendStates[u16(eBlendStates::BLEND_FALSE)]);
+		}
 
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::NO_BLEND)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::LIGHT_BLEND)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::ALPHA_BLEND)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::BLEND_FALSE)]);
+		{
+			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_CLAMP)]);
+			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_WRAP)]);
+			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_CLAMP)]);
+			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_WRAP)]);
+			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::NONE)]);
+		}
 
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_CLAMP)]);
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_WRAP)]);
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_CLAMP)]);
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_WRAP)]);
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::NONE)]);
-
-		SAFE_RELEASE(myDepthView);
-		SAFE_RELEASE(myDepthBuffer);
-		SAFE_RELEASE(myRenderTarget);
-		SAFE_RELEASE(mySwapchain);
-
+		{
+			SAFE_RELEASE(myDepthView);
+			SAFE_RELEASE(myDepthBuffer);
+			SAFE_RELEASE(myRenderTarget);
+			SAFE_RELEASE(mySwapchain);
+		}
 
 		myContext->ClearState();
 		myContext->Flush();
@@ -112,11 +120,20 @@ namespace Hex
 		return myAdaptersName[anIndex];
 	}
 
-	void DirectX11::SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName)
+	//void DirectX11::SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName)
+	//{
+	//	if (aChild != nullptr)
+	//	{
+	//		aChild->SetPrivateData(WKPDID_D3DDebugObjectName, u32(aDebugName.size()), aDebugName.c_str());
+	//	}
+	//}
+
+	void DirectX11::SetDebugName(void * pResource, std::string debug_name)
 	{
-		if (aChild != nullptr)
+		if (pResource)
 		{
-			aChild->SetPrivateData(WKPDID_D3DDebugObjectName, u32(aDebugName.size()), aDebugName.c_str());
+			ID3D11DeviceChild* resource = static_cast<ID3D11DeviceChild*>(pResource);
+			resource->SetPrivateData(WKPDID_D3DDebugObjectName, (u32)debug_name.size(), debug_name.c_str());
 		}
 	}
 
@@ -558,6 +575,11 @@ namespace Hex
 			}
 			myEngineFlags[u16(eEngineFlags::FULLSCREEN)] = FALSE;
 		}
+	}
+
+	void DirectX11::CopyResource(void * pDestination, void * pSource)
+	{
+		myContext->CopyResource(static_cast<ID3D11Resource*>(pDestination), static_cast<ID3D11Resource*>(pSource));
 	}
 
 	void DirectX11::CreateRazterizers()

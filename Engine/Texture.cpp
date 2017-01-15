@@ -9,12 +9,8 @@ namespace Hex
 	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, const std::string& debug_name)
 	{
 
-#ifdef SNOWBLIND_DX11
-		DirectX11* api = Engine::GetAPI();
-#else
-		Vulkan* api = Engine::GetAPI();
-#endif
-		ID3D11Device* device = Engine::GetAPI()->GetDevice();
+		DirectX11* api = static_cast<DirectX11*>(Engine::GetGraphicsAPI());
+		ID3D11Device* device = api->GetDevice();
 
 		D3D11_TEXTURE2D_DESC text_desc;
 		text_desc.Width = (UINT)width;
@@ -278,8 +274,6 @@ namespace Hex
 
 	void Texture::CopyData(ITexture2D* dest, ITexture2D* source)
 	{
-#ifdef SNOWBLIND_DX11
-		Engine::GetAPI()->GetContext()->CopyResource(dest, source);
-#endif
+		Engine::GetGraphicsAPI()->CopyResource(dest, source);
 	}
 };

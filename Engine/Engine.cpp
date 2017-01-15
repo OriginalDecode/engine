@@ -218,9 +218,6 @@ namespace Hex
 
 	void Engine::Update()
 	{
-		//nk_input_begin(m_NKContext);
-		//nk_input_end(m_NKContext);
-
 		if (!HasInitiated())
 			return;
 
@@ -243,6 +240,11 @@ namespace Hex
 	void Engine::UpdateInput()
 	{
 		m_InputHandle->Update(m_DeltaTime);
+	}
+
+	IGraphicsAPI* Engine::GetGraphicsAPI()
+	{
+		return myAPI;
 	}
 
 	HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)

@@ -4,7 +4,7 @@
 #include "snowblind_shared.h"
 #include <vector>
 
-#if defined (_cplusplus)
+#if defined (_cplusplus) && defined (CINTERFACE)
 
 #define ID3D11DeviceContext_IASetInputLayout(context, input_layout)\
 	context->IASetInputLayout(input_layout)
@@ -166,6 +166,9 @@ namespace Hex
 
 		void OnAltEnter() override;
 
+		void CopyResource(void * pDestination, void * pSource) override;
+
+
 		//__________________________
 		// DirectX Functions
 
@@ -183,7 +186,10 @@ namespace Hex
 		
 		void ResetViewport();
 		void ResetRendertarget();
-		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
+
+		//void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
+		void SetDebugName(void * pResource, std::string debug_name) override;
+
 
 		ID3D11RenderTargetView* GetBackbuffer();
 		const ID3D11RenderTargetView* GetBackbuffer() const;
@@ -219,6 +225,7 @@ namespace Hex
 
 		void ClearConstantBuffers();
 		void BindConstantBuffer(s32 bound_buffer_flag, IBuffer*& constant_buffer);
+
 
 	private:
 		void CreateDeviceAndSwapchain();

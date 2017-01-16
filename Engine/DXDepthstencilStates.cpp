@@ -23,8 +23,8 @@ namespace Hex
 		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::Z_ENABLED)]);
-		SetDebugName(myDepthStates[u16(eDepthStencil::Z_ENABLED)], "eDepthStencil::Z_ENABLED");
+		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencilState::Z_ENABLED)]);
+		SetDebugName(myDepthStates[u16(eDepthStencilState::Z_ENABLED)], "eDepthStencilState::Z_ENABLED");
 		HandleErrors(hr, "Failed to setup Enabled Depth!");
 	}
 
@@ -48,8 +48,8 @@ namespace Hex
 		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::Z_DISABLED)]);
-		SetDebugName(myDepthStates[u16(eDepthStencil::Z_DISABLED)], "eDepthStencil::Z_DISABLED");
+		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencilState::Z_DISABLED)]);
+		SetDebugName(myDepthStates[u16(eDepthStencilState::Z_DISABLED)], "eDepthStencilState::Z_DISABLED");
 		HandleErrors(hr, "Failed to setup depth buffer!");
 	}
 
@@ -77,8 +77,8 @@ namespace Hex
 		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_ZERO;
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
 
-		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::READ_NO_WRITE)]);
-		SetDebugName(myDepthStates[u16(eDepthStencil::READ_NO_WRITE)], "eDepthStencil::READ_NO_WRITE");
+		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencilState::READ_NO_WRITE)]);
+		SetDebugName(myDepthStates[u16(eDepthStencilState::READ_NO_WRITE)], "eDepthStencilState::READ_NO_WRITE");
 		HandleErrors(hr, "Failed to setup depth buffer!");
 	}
 
@@ -110,8 +110,8 @@ namespace Hex
 		stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 
-		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::MASK_TEST)]);
-		SetDebugName(myDepthStates[u16(eDepthStencil::MASK_TEST)], "eDepthStencil::MASK_TEST");
+		HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencilState::MASK_TEST)]);
+		SetDebugName(myDepthStates[u16(eDepthStencilState::MASK_TEST)], "eDepthStencilState::MASK_TEST");
 		HandleErrors(hr, "Failed to setup depth buffer!");
 
 
@@ -133,26 +133,9 @@ namespace Hex
 		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_ZERO;
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
 
-		hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
-		SetDebugName(myDepthStates[u16(eDepthStencil::LIGHT_MASK)], "eDepthStencil::LIGHT_MASK");
+		hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencilState::LIGHT_MASK)]);
+		SetDebugName(myDepthStates[u16(eDepthStencilState::LIGHT_MASK)], "eDepthStencilState::LIGHT_MASK");
 		HandleErrors(hr, "Failed to setup depth buffer!");
-
-
-
-
-
-
-		//stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-		//stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;
-
-		//stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		//stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
-
-		//stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
-		//stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		//stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		//stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
-
 
 		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
 		
@@ -176,8 +159,8 @@ namespace Hex
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
 
 
-		hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencil::DEPTH_TEST)]);
-		SetDebugName(myDepthStates[u16(eDepthStencil::DEPTH_TEST)], "eDepthStencil::DEPTH_TEST");
+		hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencilState::DEPTH_TEST)]);
+		SetDebugName(myDepthStates[u16(eDepthStencilState::DEPTH_TEST)], "eDepthStencilState::DEPTH_TEST");
 		HandleErrors(hr, "Failed to setup depth buffer!");
 
 	}

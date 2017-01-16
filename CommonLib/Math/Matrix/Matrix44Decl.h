@@ -20,7 +20,9 @@ namespace CommonUtilities
 			const TYPE& operator[](const int& anIndex) const;
 			TYPE& operator[](const int& anIndex);
 
-
+			TYPE GetXRotation();
+			TYPE GetYRotation();
+			TYPE GetZRotation();
 			static Matrix44<TYPE> CreateRotateAroundX(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateRotateAroundY(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateRotateAroundZ(const TYPE& aRadian);

@@ -102,8 +102,6 @@ namespace Hex
 
 	void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
 	{
-		//CTexture::CopyData(myGBuffer->myDepth->GetDepthTexture(), myDepthStencil->GetDepthTexture());
-
 #ifdef SNOWBLIND_DX11
 		UpdateConstantBuffer(previousOrientation, aProjection);
 		SetBuffers();
@@ -120,10 +118,10 @@ namespace Hex
 		myContext->PSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 		m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
-		m_API->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+		m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
 		m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 		myContext->DrawIndexed(6, 0, 0);
-		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 
 		myAmbientPassShader->Deactivate();
 
@@ -136,7 +134,7 @@ namespace Hex
 	void DeferredRenderer::Finalize()
 	{
 #ifdef SNOWBLIND_DX11
-		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
 		m_API->SetBlendState(eBlendStates::NO_BLEND);
 		m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 
@@ -156,7 +154,7 @@ namespace Hex
 		myContext->PSSetShaderResources(0, 2, &srv[0]);
 
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
-		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 #endif
 	}
 

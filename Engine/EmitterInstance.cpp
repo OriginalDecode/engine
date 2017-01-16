@@ -90,13 +90,11 @@ namespace Hex
 
 		context->VSSetConstantBuffers(0, 1, &myConstantBuffer);  
 		context->GSSetConstantBuffers(0, 1, &m_GeometryBuffer);
-		//context->PSSetConstantBuffers(0, 1, nullptr);
 
 		myData.shader->Activate();
 		context->Draw(myParticles.Size(), 0);
 		myData.shader->Deactivate();
 
-		//needs to clean up 
 		dx->SetVertexShader(nullptr);
 		dx->SetGeometryShader(nullptr);
 		dx->SetPixelShader(nullptr);

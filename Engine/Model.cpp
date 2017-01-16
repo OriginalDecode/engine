@@ -15,7 +15,6 @@ namespace Hex
 		myModelStates.reset();
 	}
 
-
 	bool CModel::CleanUp()
 	{
 		SAFE_DELETE(myVertexBuffer);
@@ -80,8 +79,6 @@ namespace Hex
 				myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 			if (mySurfaces.Size() > 0)
 			{
-				//Check the lightpass if you're confused about when the lightmeshes gets their constantbuffers.
-
 				for (s32 i = 0; i < mySurfaces.Size(); i++)
 				{
 					myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
@@ -95,7 +92,6 @@ namespace Hex
 					{
 						myContext->Draw(mySurfaces[i]->GetVertexCount(), 0);
 					}
-
 					mySurfaces[i]->Deactivate();
 				}
 

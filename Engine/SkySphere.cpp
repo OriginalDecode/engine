@@ -68,7 +68,7 @@ namespace Hex
 		SetPosition(anOrientation.GetPosition());
 
 		myAPI->SetBlendState(eBlendStates::LIGHT_BLEND);
-		myAPI->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+		myAPI->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
 		myAPI->SetRasterizer(eRasterizer::CULL_NONE);
 
 		for (const SkysphereLayer& layer : m_Layers )

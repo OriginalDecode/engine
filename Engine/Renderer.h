@@ -2,6 +2,7 @@
 #include "LightStructs.h"
 #include "ShadowPass.h"
 #include "LightPass.h"
+#include "RenderCommand.h"
 
 namespace CommonUtilities
 {
@@ -89,5 +90,7 @@ namespace Hex
 
 		LightPass			m_LightPass;
 		ShadowPass			m_ShadowPass;
+
+		RenderCommand m_CubeCommand;
 	};
 }; 

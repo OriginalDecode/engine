@@ -37,18 +37,6 @@ static constexpr char* compute_shader = "CS";
 
 namespace Hex
 {
-
-	void Engine::AddEntitySystems()
-	{
-		m_EntityManager->AddSystem<CPhysicsSystem>();
-		m_EntityManager->AddSystem<CRenderSystem>();
-		m_EntityManager->AddSystem<CLightSystem>();
-		m_EntityManager->AddSystem<InputSystem>();
-		m_EntityManager->AddSystem<NetworkSystem>();
-		m_EntityManager->AddSystem<AISystem>();
-		m_EntityManager->AddSystem<CameraSystem>();
-	}
-
 	bool Engine::HasInitiated()
 	{
 		return (this && m_IsInitiated);
@@ -158,13 +146,23 @@ namespace Hex
 
 		m_EntityManager = new EntityManager;
 		m_EntityManager->Initiate();
-		AddEntitySystems();
+
+
+
 
 		m_Threadpool.Initiate();
 
 		m_InputHandle = new InputHandle;
 		m_InputHandle->Initiate(myHWND, instance_handle);
 		m_InputHandle->AddController(0);
+
+		m_EntityManager->AddSystem<CPhysicsSystem>();
+		m_EntityManager->AddSystem<CRenderSystem>();
+		m_EntityManager->AddSystem<CLightSystem>();
+		m_EntityManager->AddSystem<InputSystem>();
+		m_EntityManager->AddSystem<NetworkSystem>();
+		m_EntityManager->AddSystem<AISystem>();
+		m_EntityManager->AddSystem<CameraSystem>();
 
 
 		m_IsInitiated = true;

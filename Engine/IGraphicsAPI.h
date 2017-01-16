@@ -22,7 +22,7 @@ enum class eEngineFlags
 	_COUNT
 };
 
-enum class eDepthStencil
+enum class eDepthStencilState
 {
 	Z_ENABLED,
 	Z_DISABLED,
@@ -91,6 +91,26 @@ namespace Hex
 		virtual void SetDebugName(void * pResource, std::string debug_name) = 0;
 		eGraphicsAPI GetActiveAPI() const { return m_ActiveAPI; }
 
+		/*
+		vulkan has
+		Vertex = Vertex
+		Fragment = Pixel
+		Geometry = Geometry
+		Compute = Compute
+		Tesselation Control = Hull
+		Tesselation Evaluation = Domain
+		*/
+		virtual void SetVertexShader(void * vertex_shader) = 0;
+		virtual void SetPixelShader(void * vertex_shader) = 0;
+		virtual void SetGeometryShader(void * vertex_shader) = 0;
+		virtual void SetHullShader(void * vertex_shader) = 0;
+		virtual void SetDomainShader(void * vertex_shader) = 0;
+		virtual void SetComputeShader(void * vertex_shader) = 0;
+
+		/*
+			The depth_value variable is what the depth buffer is testing against in that state. 0.0 - 1.0
+		*/
+		virtual void SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value) = 0;
 
 	protected:
 		CreateInfo m_CreateInfo;

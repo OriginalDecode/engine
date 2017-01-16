@@ -167,7 +167,16 @@ namespace Hex
 		void OnAltEnter() override;
 
 		void CopyResource(void * pDestination, void * pSource) override;
+		void SetDebugName(void * pResource, std::string debug_name) override;
 
+		void SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value) override;
+
+		void SetVertexShader(void* vertex_shader) override;
+		void SetPixelShader(void* pixel_shader) override;
+		void SetGeometryShader(void* geometry_shader) override;
+		void SetHullShader(void* hull_shader) override;
+		void SetDomainShader(void* domain_shader) override;
+		void SetComputeShader(void* compute_shader) override;
 
 		//__________________________
 		// DirectX Functions
@@ -187,8 +196,6 @@ namespace Hex
 		void ResetViewport();
 		void ResetRendertarget();
 
-		//void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName);
-		void SetDebugName(void * pResource, std::string debug_name) override;
 
 
 		ID3D11RenderTargetView* GetBackbuffer();
@@ -199,17 +206,13 @@ namespace Hex
 
 		void ResetRenderTargetAndDepth();
 
-		void SetDepthBufferState(const eDepthStencil& aDepthState);
+		//void SetDepthBufferState(const eDepthStencil& aDepthState);
+
 		void SetRasterizer(const eRasterizer& aRasterizer);
 		void SetBlendState(const eBlendStates& blendState);
 		void SetSamplerState(const eSamplerStates& samplerState);
 
-		void SetVertexShader(void* vertex_shader);
-		void SetPixelShader(void* pixel_shader);
-		void SetGeometryShader(void* geometry_shader);
-		void SetHullShader(void* hull_shader);
-		void SetDomainShader(void* domain_shader);
-		void SetComputeShader(void* compute_shader);
+	
 		void ReportLiveObjects();
 
 		void SetViewport(Viewport* viewport);
@@ -233,9 +236,6 @@ namespace Hex
 		void CreateBackBuffer();
 		void CreateViewport();
 		void CreateAdapterList();
-
-
-
 		void CreateEnabledDepthStencilState();
 		void CreateDisabledDepthStencilState();
 		void CreateReadDepthStencilState();
@@ -257,7 +257,7 @@ namespace Hex
 
 		//______________________
 		// GrowingArray / Map?
-		ID3D11DepthStencilState* myDepthStates[static_cast<u16>(eDepthStencil::_COUNT)];
+		ID3D11DepthStencilState* myDepthStates[static_cast<u16>(eDepthStencilState::_COUNT)];
 		ID3D11RasterizerState* myRasterizerStates[static_cast<u16>(eRasterizer::_COUNT)];
 		ID3D11BlendState* myBlendStates[static_cast<u16>(eBlendStates::_COUNT)];
 		ID3D11SamplerState* mySamplerStates[static_cast<u16>(eSamplerStates::_COUNT)];

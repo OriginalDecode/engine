@@ -16,6 +16,10 @@ namespace Hex
 		m_Camera->RotateAroundZ(CL::DegreeToRad(90.f) * direction.y);
 		m_Camera->RotateAroundX(CL::DegreeToRad(90.f) * direction.z);
 
+		float x = m_Camera->GetOrientation().GetXRotation();
+		float y = m_Camera->GetOrientation().GetYRotation();
+		float z = m_Camera->GetOrientation().GetZRotation();
+
 
 		m_Depth = new Texture;
 		m_Depth->Initiate(m_BufferSize, m_BufferSize,

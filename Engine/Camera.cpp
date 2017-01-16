@@ -90,10 +90,9 @@ namespace Hex
 
 	void Camera::Update(const CU::Vector2f& cursor_pos)
 	{
-		float x_value = cursor_pos.x;//(float)controller_state.m_ThumbRX / SHRT_MAX;
-		float y_value = cursor_pos.y;//(float)controller_state.m_ThumbRY / SHRT_MAX;
+		float x_value = cursor_pos.x;
+		float y_value = cursor_pos.y;
 
-		//m_CenterPoint += cursor_pos * m_LookSpeedModifier;
 		m_CenterPoint.x += x_value * m_LookSpeedModifier;
 		m_CenterPoint.y += y_value * m_LookSpeedModifier;
 		m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
@@ -112,9 +111,11 @@ namespace Hex
 		myOrientation.myMatrix[0] = axisX.x;
 		myOrientation.myMatrix[1] = axisX.y;
 		myOrientation.myMatrix[2] = axisX.z;
+
 		myOrientation.myMatrix[4] = axisY.x;
 		myOrientation.myMatrix[5] = axisY.y;
 		myOrientation.myMatrix[6] = axisY.z;
+
 		myOrientation.myMatrix[8] = axisZ.x;
 		myOrientation.myMatrix[9] = axisZ.y;
 		myOrientation.myMatrix[10] = axisZ.z;

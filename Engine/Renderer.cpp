@@ -23,14 +23,6 @@
 #include "Texture.h"
 
 //#define AMBIENT_PASS_ONLY
-/*
-	abstract this into different renderers?
-	So that the render pass would simply be.
-	RenderWorld();
-	RenderLight();
-	RenderShadows();
-	Maybe, we'll see.
-*/
 namespace Hex
 {
 	bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera_3d, Camera* camera_2d)
@@ -176,16 +168,12 @@ namespace Hex
 	void Renderer::Render()
 	{
 		myEngine->Clear();
-		//myEngine->GetAPI()->ResetViewport();
-
-		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
 		myDeferredRenderer->SetTargets();
 
 		Render3DCommands();
 		Texture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
-
 		ProcessShadows();
-
 		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
 
 
@@ -203,6 +191,7 @@ namespace Hex
 
 		RenderParticles();
 		RenderLines();
+
 
 		Render2DCommands();
 		myEngine->Present();
@@ -246,6 +235,7 @@ namespace Hex
 						continue;
 					}
 
+					
 					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 					m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 										 
@@ -261,7 +251,7 @@ namespace Hex
 	{
 		const CU::GrowingArray<RenderCommand>& commands2D = mySynchronizer->GetRenderCommands(eCommandBuffer::e2D);
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
-		m_API->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+		m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
 		for each(const RenderCommand& command in commands2D)
 		{
 			switch (command.myType)
@@ -284,7 +274,7 @@ namespace Hex
 				}break;
 			};
 		}
-		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
@@ -292,7 +282,7 @@ namespace Hex
 	{
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eSpotlight);
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
-		m_API->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
+		m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
 		Effect* effect = m_LightPass.GetSpotlightEffect()	;
 		effect->Activate();
 
@@ -311,7 +301,7 @@ namespace Hex
 			m_LightPass.RenderSpotlight(mySpotlight, myCamera, myPrevFrame, m_Shadowlight->GetMVP());
 		}
 		effect->Deactivate();
-		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
@@ -320,7 +310,7 @@ namespace Hex
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::ePointlight);
 
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
-		m_API->SetDepthBufferState(eDepthStencil::READ_NO_WRITE);
+		m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
 		Effect* effect = m_LightPass.GetPointlightEffect();
 		effect->Activate();
 
@@ -336,15 +326,19 @@ namespace Hex
 		}
 		effect->Deactivate();
 
-		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
 	void Renderer::RenderParticles()
 	{
-		//m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
+		m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
-		m_API->SetDepthBufferState(m_ProcessShadows ? eDepthStencil::Z_ENABLED : eDepthStencil::READ_NO_WRITE);
+
+		if(m_ProcessShadows)
+			m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+		else
+			m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
 
 		const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 		for (const RenderCommand& command : commands)
@@ -381,26 +375,26 @@ namespace Hex
 			{
 				case eType::LINE_Z_ENABLE:
 				{
-					m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+					m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 					my3DLine->Update(command.firstPoint, command.secondPoint);
 					my3DLine->Render(myPrevFrame, myCamera->GetProjection());
 				}break;
 				case eType::LINE_Z_DISABLE:
 				{
-					m_API->SetDepthBufferState(eDepthStencil::Z_DISABLED);
+					m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
 					my3DLine->Update(command.firstPoint, command.secondPoint);
 					my3DLine->Render(myPrevFrame, myCamera->GetProjection());
 				}break;
 			}
 		}
 		m_API->SetBlendState(eBlendStates::NO_BLEND);
-		m_API->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 	}
 
 	void Renderer::ProcessShadows()
 	{
-		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
+		m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
 		m_ProcessShadows = true;
 
 		Camera* camera = myCamera;

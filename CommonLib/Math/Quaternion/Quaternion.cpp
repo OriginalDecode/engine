@@ -56,10 +56,6 @@ namespace CommonUtilities
 
 	Quaternion Quaternion::Slerp(const Quaternion& other, float aT) const
 	{
-		//const Quaternion& q = *this;
-
-		//Quaternion r = other;
-
 		return ((other * Inverted()) ^ aT) * (*this);
 	}
 

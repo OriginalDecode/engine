@@ -196,9 +196,9 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 
 		m_LevelReader._ReadElement(it->value["direction"], component.direction);
 
+		component.orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * component.orientation;
 		component.orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(component.direction.y)) * component.orientation;
 		component.orientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(component.direction.x)) * component.orientation;
-		component.orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * component.orientation;
 
 		m_LevelReader.ReadElement(it->value["angle"], component.angle);
 		component.angle = CL::DegreeToRad(component.angle);
@@ -240,7 +240,7 @@ void LevelFactory::CreateNetworkComponent(JSONReader& /*entity_reader*/, Entity 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
 	Hex::CTerrain* terrain = Hex::Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
-	terrain->AddNormalMap("Data/Textures/normal.dds");
+	terrain->AddNormalMap("Data/Textures/t1_n.dds");
 	/*
 	Work([&](std::string texture) {
 		Hex::CTerrain* terrain = m_Engine->CreateTerrain(texture, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));

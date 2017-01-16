@@ -42,12 +42,12 @@ namespace Hex
 		SAFE_DELETE(myViewport);
 
 		{
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_ENABLED)]);
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencil::Z_DISABLED)]);
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencil::READ_NO_WRITE)]);
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencil::MASK_TEST)]);
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencil::LIGHT_MASK)]);
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencil::DEPTH_TEST)]);
+			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::Z_ENABLED)]);
+			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::Z_DISABLED)]);
+			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::READ_NO_WRITE)]);
+			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::MASK_TEST)]);
+			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::LIGHT_MASK)]);
+			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::DEPTH_TEST)]);
 		}
 
 		{
@@ -120,14 +120,6 @@ namespace Hex
 		return myAdaptersName[anIndex];
 	}
 
-	//void DirectX11::SetDebugName(ID3D11DeviceChild* aChild, const std::string& aDebugName)
-	//{
-	//	if (aChild != nullptr)
-	//	{
-	//		aChild->SetPrivateData(WKPDID_D3DDebugObjectName, u32(aDebugName.size()), aDebugName.c_str());
-	//	}
-	//}
-
 	void DirectX11::SetDebugName(void * pResource, std::string debug_name)
 	{
 		if (pResource)
@@ -137,40 +129,14 @@ namespace Hex
 		}
 	}
 
+	void DirectX11::SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value)
+	{
+		myContext->OMSetDepthStencilState(myDepthStates[u16(depth_stencil_state)], depth_value);
+	}
+
 	void DirectX11::ResetRenderTargetAndDepth()
 	{
 		myContext->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
-	}
-
-	void DirectX11::SetDepthBufferState(const eDepthStencil& aDepthState)
-	{
-		switch (aDepthState)
-		{
-			case eDepthStencil::READ_NO_WRITE:
-			{
-				myContext->OMSetDepthStencilState(myDepthStates[u16(eDepthStencil::READ_NO_WRITE)], 0);
-			}break;
-			case eDepthStencil::Z_DISABLED:
-			{
-				myContext->OMSetDepthStencilState(myDepthStates[u16(eDepthStencil::Z_DISABLED)], 1);
-			}break;
-			case eDepthStencil::Z_ENABLED:
-			{
-				myContext->OMSetDepthStencilState(myDepthStates[u16(eDepthStencil::Z_ENABLED)], 1);
-			}break;
-			case eDepthStencil::MASK_TEST:
-			{
-				myContext->OMSetDepthStencilState(myDepthStates[u16(eDepthStencil::MASK_TEST)], 0);
-			}break;
-			case eDepthStencil::LIGHT_MASK:
-			{
-				myContext->OMSetDepthStencilState(myDepthStates[u16(eDepthStencil::LIGHT_MASK)], 0);
-			}break;
-			case eDepthStencil::DEPTH_TEST:
-			{
-				myContext->OMSetDepthStencilState(myDepthStates[u16(eDepthStencil::DEPTH_TEST)], 1);
-			}break;
-		}
 	}
 
 	void DirectX11::CreateDeviceAndSwapchain()
@@ -413,12 +379,12 @@ namespace Hex
 
 	void DirectX11::EnableZBuffer()
 	{
-		myContext->OMSetDepthStencilState(myDepthStates[int(eDepthStencil::Z_ENABLED)], 1);
+		myContext->OMSetDepthStencilState(myDepthStates[int(eDepthStencilState::Z_ENABLED)], 1);
 	}
 
 	void DirectX11::DisableZBuffer()
 	{
-		myContext->OMSetDepthStencilState(myDepthStates[int(eDepthStencil::Z_DISABLED)], 1);
+		myContext->OMSetDepthStencilState(myDepthStates[int(eDepthStencilState::Z_DISABLED)], 1);
 	}
 
 	void DirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
@@ -502,11 +468,7 @@ namespace Hex
 
 	void DirectX11::SetBlendState(const eBlendStates& blendState)
 	{
-		float blend[4];
-		blend[0] = 0.f;
-		blend[1] = 0.f;
-		blend[2] = 0.f;
-		blend[3] = 0.f;
+		float blend[4] = { 0.f , 0.f , 0.f , 0.f };
 		myContext->OMSetBlendState(myBlendStates[u16(blendState)], blend, 0xFFFFFFFF);
 	}
 

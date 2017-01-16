@@ -33,10 +33,32 @@ namespace CommonUtilities
 		Matrix44<TYPE>::~Matrix44()
 		{
 		}
+
 #pragma region Functions
 		/****************************\
 		|		   Functions	     |
 		\****************************/
+
+		template<typename T>
+		T Matrix44<T>::GetXRotation()
+		{
+			float angle = atan2f(myMatrix[5], myMatrix[6]);
+			return static_cast<T>(angle);
+		}
+
+		template<typename T>
+		T Matrix44<T>::GetYRotation()
+		{
+			float angle = atan2f(-myMatrix[8], sqrtf((2.f/myMatrix[5]) + (2.f / myMatrix[6])));
+			return static_cast<T>(angle);
+		}
+
+		template<typename T>
+		T Matrix44<T>::GetZRotation()
+		{
+			float angle = atan2f(myMatrix[0], myMatrix[1]);
+			return static_cast<T>(angle);
+		}
 
 		template<typename TYPE>
 		const Matrix44<TYPE> Matrix44<TYPE>::Calculate(const RotationType& rotation, const TYPE& someCos, const TYPE& someSin)

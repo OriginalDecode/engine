@@ -257,12 +257,18 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BulletUtilities.h" />
+    <ClInclude Include="CollisionObject.h" />
+    <ClInclude Include="GhostObject.h" />
     <ClInclude Include="PhysicsDefines.h" />
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BulletUtilities.cpp" />
+    <ClCompile Include="CollisionObject.cpp" />
+    <ClCompile Include="GhostObject.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="stdafx.cpp">

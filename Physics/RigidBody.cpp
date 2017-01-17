@@ -2,7 +2,6 @@
 #include "RigidBody.h"
 #include "PhysicsDefines.h"
 #include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
-#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 #include <Utilities.h>
 #include "ControllerInput.h"
@@ -14,24 +13,23 @@ RigidBody::RigidBody()
 RigidBody::~RigidBody()
 {
 	SAFE_DELETE(myVertexArray);
-	SAFE_DELETE(myShape);
-	SAFE_DELETE(myMotionState);
+	SAFE_DELETE(m_Shape);
+	SAFE_DELETE(m_MotionState);
 	SAFE_DELETE(myBody);
-	SAFE_DELETE(m_GhostObject);
 
 }
 
 btRigidBody* RigidBody::InitAsPlane(const btVector3& aNormal)
 {
-	myShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-	myMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
-	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, myMotionState, myShape, btVector3(0, 0, 0));
+	m_Shape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+	m_MotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
+	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, m_MotionState, m_Shape, btVector3(0, 0, 0));
 	bodyInfo.m_friction = 1.5f;
 	bodyInfo.m_restitution = 1.0f;
 
 	myBody = new btRigidBody(bodyInfo);
 
-	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
+	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
 
 	return myBody;
 }
@@ -48,11 +46,11 @@ btRigidBody* RigidBody::InitAsTerrain(std::vector<float> vertices, std::vector<s
 	memcpy(&locIndices[0], &indices[0], sizeof(s32) * indices.size());
 
 	myVertexArray = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, (s32)vertices.size(), locVertices, vStride);
-	myShape = new btBvhTriangleMeshShape(myVertexArray, false, btVector3(0, 0, 0), btVector3(1, 1, 1), true);
-	myMotionState = new btDefaultMotionState();
-	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
+	m_Shape = new btBvhTriangleMeshShape(myVertexArray, false, btVector3(0, 0, 0), btVector3(1, 1, 1), true);
+	m_MotionState = new btDefaultMotionState();
+	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
 
-	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, myMotionState, myShape, btVector3(0, 0, 0));
+	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, m_MotionState, m_Shape, btVector3(0, 0, 0));
 	myBody = new btRigidBody(bodyInfo);
 	return myBody;
 }
@@ -67,9 +65,9 @@ btRigidBody* RigidBody::InitAsSphere(float aRadius, float aMass, float aGravityF
 	myCrossSectionArea = (myRadius * myRadius) * 3.14f;
 
 	btVector3 pos = btVector3(aPosition.x, aPosition.y, aPosition.z); //initial position
-	myShape = new btSphereShape(myRadius);
-	myMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos)); /* btQuaternion is the rotation of the object. Figure this out.*/
-	btRigidBody::btRigidBodyConstructionInfo bodyInfo(myMass, myMotionState, myShape, btVector3(0, 0, 0));
+	m_Shape = new btSphereShape(myRadius);
+	m_MotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos)); /* btQuaternion is the rotation of the object. Figure this out.*/
+	btRigidBody::btRigidBodyConstructionInfo bodyInfo(myMass, m_MotionState, m_Shape, btVector3(0, 0, 0));
 	
 	//bodyInfo.m_friction = 1.f;
 	//bodyInfo.m_restitution = 0.75f;
@@ -77,7 +75,7 @@ btRigidBody* RigidBody::InitAsSphere(float aRadius, float aMass, float aGravityF
 	myBody = new btRigidBody(bodyInfo);
 	myBody->setActivationState(DISABLE_DEACTIVATION);
 	myBody->setMassProps(myMass, btVector3(0, 0, 0));
-	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
+	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
 	myTerminalVelocity.y = CL::CalcTerminalVelocity(myMass, myGravity, myDragCoeff, myCrossSectionArea, myResistanceDensity);
 	
 	return myBody;
@@ -98,11 +96,11 @@ btRigidBody* RigidBody::InitWithMeshCollision(std::vector<float> vertices, std::
 	memcpy(&locIndices[0], &indices[0], sizeof(s32) * indices.size());
 
 	myVertexArray = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, (s32)vertices.size(), locVertices, vStride);
-	myShape = new btBvhTriangleMeshShape(myVertexArray, false, btVector3(0, 0, 0), btVector3(1, 1, 1), true);
-	myMotionState = new btDefaultMotionState();
-	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
+	m_Shape = new btBvhTriangleMeshShape(myVertexArray, false, btVector3(0, 0, 0), btVector3(1, 1, 1), true);
+	m_MotionState = new btDefaultMotionState();
+	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
 
-	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, myMotionState, myShape, btVector3(0, 0, 0));
+	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, m_MotionState, m_Shape, btVector3(0, 0, 0));
 	myBody = new btRigidBody(bodyInfo);
 	return myBody;
 }
@@ -110,33 +108,14 @@ btRigidBody* RigidBody::InitWithMeshCollision(std::vector<float> vertices, std::
 btRigidBody* RigidBody::InitAsBox(float width, float height, float depth, CU::Vector3f position)
 {
 	myMass = 0.f;
-	myShape = new btBoxShape(btVector3(width, height, depth));
+	m_Shape = new btBoxShape(btVector3(width, height, depth));
 	btVector3 pos = btVector3(position.x, position.y, position.z); //initial position
-	myMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos));
-	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, myMotionState, myShape, btVector3(0, 0, 0));
+	m_MotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos));
+	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, m_MotionState, m_Shape, btVector3(0, 0, 0));
 	myBody = new btRigidBody(bodyInfo);
-	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
+	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
 
 	return myBody;
-}
-
-btGhostObject* RigidBody::InitAsGhostObject(float width, float height, float depth, CU::Vector3f position)
-{
-	m_GhostObject = new btGhostObject;
-	myShape = new btBoxShape(btVector3(width, height, depth));
-	btVector3 pos = ConvertVector(position);
-	m_GhostObject->setCollisionShape(myShape);
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(pos);
-	m_GhostObject->setWorldTransform(transform);
-
-	return m_GhostObject;
-}
-
-btGhostObject* RigidBody::InitAsGhostObject(CU::Vector3f width_height_depth, CU::Vector3f position)
-{
-	return InitAsGhostObject(width_height_depth.x, width_height_depth.y, width_height_depth.z, position);
 }
 
 void RigidBody::SetResistanceDensity(float aDensity)
@@ -146,7 +125,7 @@ void RigidBody::SetResistanceDensity(float aDensity)
 
 void RigidBody::SetPosition(const CU::Vector3f& aPosition)
 {
-	myBody->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), ConvertVector(aPosition) ));
+	myBody->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), bullet_utilities::ConvertVector(aPosition) ));
 }
 
 void RigidBody::Update(float deltaTime)

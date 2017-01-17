@@ -8,18 +8,13 @@
 
 #include <vector>
 
-class btRigidBody;
-class btCollisionShape;
 struct btDefaultMotionState;
 class btVector3;
+class btRigidBody;
 class btTransform;
+class btGhostObject;
+class btCollisionShape;
 class btTriangleIndexVertexArray;
-enum class eBodyType
-{
-	eSTATIC,
-	eDYNAMIC,
-	
-};
 
 
 namespace Hex
@@ -40,6 +35,9 @@ public:
 	btRigidBody* InitAsSphere(float aRadius, float aMass, float aGravityForce, float anInitialResistance, const CU::Vector3f& aPosition);
 	btRigidBody* InitWithMeshCollision(std::vector<float> vertices, std::vector<s32> indices);
 	btRigidBody* InitAsBox(float width, float height, float depth, CU::Vector3f position);
+	btGhostObject* InitAsGhostObject(float width, float height, float depth, CU::Vector3f position);
+	btGhostObject* InitAsGhostObject(CU::Vector3f width_height_depth, CU::Vector3f position);
+
 	/*
 		Air Resistance, Water Resistance, Sludge etc...
 		Air is 1.293
@@ -79,13 +77,16 @@ private:
 	CU::Quaternion m_Yaw;
 	CU::Quaternion m_Pitch;
 	CU::Vector2f m_CenterPoint;
-
-	btRigidBody* myBody = nullptr;
-	btCollisionShape* myShape = nullptr;
-	btDefaultMotionState* myMotionState = nullptr;
-	btTransform* myWorldTranslation = nullptr;
-	btTriangleIndexVertexArray* myVertexArray = nullptr;
 	CU::Matrix44f myOrientation;
+
+
+	btGhostObject* m_GhostObject				= nullptr;
+	btRigidBody* myBody							= nullptr;
+	btCollisionShape* myShape					= nullptr;
+	btDefaultMotionState* myMotionState			= nullptr;
+	btTransform* myWorldTranslation				= nullptr;
+	btTriangleIndexVertexArray* myVertexArray	= nullptr;
+
 
 };
 

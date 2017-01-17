@@ -4,6 +4,10 @@
 #include "../CommonLib/Math/Matrix/Matrix.h"
 #include "RigidBody.h"
 #include <Windows.h>
+
+//Had to be included to add to phys world?
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
+
 PhysicsManager::PhysicsManager()
 	: myGravity(9.82f)
 {
@@ -28,7 +32,7 @@ PhysicsManager::PhysicsManager()
 PhysicsManager::~PhysicsManager()
 {
 	/* Remove all the rigidbodies before deleting */
-	for (btRigidBody* rb : myBodies)
+	for (btCollisionObject* rb : myBodies)
 	{
 		Remove(rb);
 	}
@@ -48,9 +52,30 @@ void PhysicsManager::Add(btRigidBody* aBody)
 	EndTicketMutex(&m_Mutex);
 }
 
+void PhysicsManager::Add(btCollisionObject* collision_object)
+{
+	BeginTicketMutex(&m_Mutex);
+	myDynamicsWorld->addCollisionObject(collision_object);
+	myBodies.Add(collision_object);
+	EndTicketMutex(&m_Mutex);
+}
+
+void PhysicsManager::Add(btGhostObject* ghost_object)
+{
+	BeginTicketMutex(&m_Mutex);
+	myDynamicsWorld->addCollisionObject(ghost_object);
+	myBodies.Add(ghost_object);
+	EndTicketMutex(&m_Mutex);
+}
+
 void PhysicsManager::Remove(btRigidBody* aBody)
 {
 	myDynamicsWorld->removeRigidBody(aBody);
+}
+
+void PhysicsManager::Remove(btCollisionObject* collision_object)
+{
+	myDynamicsWorld->removeCollisionObject(collision_object);
 }
 
 RigidBody* PhysicsManager::CreateBody()

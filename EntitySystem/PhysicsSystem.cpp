@@ -39,7 +39,7 @@ void CPhysicsSystem::Update(float aDeltaTime)
 			
 			DebugComponent& debug = GetComponent<DebugComponent>(e);
 			CU::Vector3f pos = translation.myOrientation.GetPosition();
-			debug.m_Body->SetPosition(pos);
+			//debug.m_Body->SetPosition(pos);
 			//debug.m_Body->
 			//Hex::Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE,)
 			//if(!physics.m_IsPlayer)

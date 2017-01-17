@@ -140,7 +140,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	}
 	else if (shape == "sphere")
 	{
-		phys_body = component.myBody->InitAsSphere(1, object_mass, m_PhysicsManager->GetGravityForce(), air_preassure, { 0,0,0 });
+		phys_body = component.myBody->InitAsSphere(1, object_mass, m_PhysicsManager->GetGravityForce(), scientific_constants::pressure::air_pressure, { 0,0,0 });
 	}
 
 	m_PhysicsManager->Add(phys_body);
@@ -156,10 +156,9 @@ void LevelFactory::CreateEditingPhysicsComponent(Entity entity_id)
 	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(entity_id);
 	component.m_Body = m_PhysicsManager->CreateBody();
 
-	btRigidBody* phys_body = nullptr;
-	phys_body = component.m_Body->InitAsBox(whd.x, whd.y, whd.z, { 0, 0, 0 });
+	btGhostObject * ghostObject = component.m_Body->InitAsGhostObject(whd.x, whd.y, whd.z, { 0, 0, 0 });
 
-	m_PhysicsManager->Add(phys_body);
+	m_PhysicsManager->Add(ghostObject);
 }
 
 void LevelFactory::CreateCameraComponent(JSONReader& /*entity_reader*/, Entity entity_id)

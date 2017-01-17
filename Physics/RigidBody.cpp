@@ -2,6 +2,8 @@
 #include "RigidBody.h"
 #include "PhysicsDefines.h"
 #include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
+
 #include <Utilities.h>
 #include "ControllerInput.h"
 
@@ -15,6 +17,7 @@ RigidBody::~RigidBody()
 	SAFE_DELETE(myShape);
 	SAFE_DELETE(myMotionState);
 	SAFE_DELETE(myBody);
+	SAFE_DELETE(m_GhostObject);
 
 }
 
@@ -115,6 +118,25 @@ btRigidBody* RigidBody::InitAsBox(float width, float height, float depth, CU::Ve
 	myWorldTranslation = &myMotionState->m_graphicsWorldTrans;
 
 	return myBody;
+}
+
+btGhostObject* RigidBody::InitAsGhostObject(float width, float height, float depth, CU::Vector3f position)
+{
+	m_GhostObject = new btGhostObject;
+	myShape = new btBoxShape(btVector3(width, height, depth));
+	btVector3 pos = ConvertVector(position);
+	m_GhostObject->setCollisionShape(myShape);
+	btTransform transform;
+	transform.setIdentity();
+	transform.setOrigin(pos);
+	m_GhostObject->setWorldTransform(transform);
+
+	return m_GhostObject;
+}
+
+btGhostObject* RigidBody::InitAsGhostObject(CU::Vector3f width_height_depth, CU::Vector3f position)
+{
+	return InitAsGhostObject(width_height_depth.x, width_height_depth.y, width_height_depth.z, position);
 }
 
 void RigidBody::SetResistanceDensity(float aDensity)

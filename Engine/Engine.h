@@ -177,8 +177,7 @@ namespace Hex
 		//void AddEntitySystems();
 
 		bool HasInitiated();
-		bool m_IsInitiated = false;
-		bool m_IsLoadingLevel = false;
+	
 
 		static Engine* myInstance;
 		static IGraphicsAPI* myAPI;
@@ -209,7 +208,16 @@ namespace Hex
 		CAssetsContainer* myAssetsContainer			= nullptr;
 		TerrainManager* m_TerrainManager			= nullptr;
 
-		bool myUsingVSync							= false;
+		enum class eEngineStates
+		{
+			USE_VSYNC,
+			INITIATED,
+			LOADING,
+			_COUNT
+		};
+		std::bitset<(u16)eEngineStates::_COUNT> m_States;
+
+	
 		float m_DeltaTime							= 0.f;
 
 	};

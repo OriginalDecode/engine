@@ -4,7 +4,6 @@
 #include "CommonLib/DataStructures/GrowingArray.h"
 #include "Engine/VertexStructs.h"
 #include <vector>
-
 class btVector3;
 class btRigidBody;
 class btTransform;
@@ -18,7 +17,7 @@ class RigidBody : public CollisionObject
 {
 public:
 	RigidBody();
-	~RigidBody();
+	~RigidBody() override;
 
 	btRigidBody* InitAsPlane(const btVector3& aNormal);
 	btRigidBody* InitAsTerrain(std::vector<float> vertices, std::vector<s32> indices);
@@ -42,9 +41,7 @@ public:
 	btCollisionShape* GetShape() const { return m_Shape; }
 
 private:
-
-
-	CU::Vector3f myVelocity; //Only downwards right now.
+	CU::Vector3f myVelocity; 
 	CU::Vector3f myTerminalVelocity;
 
 	float myMass = 0.f;
@@ -60,8 +57,6 @@ private:
 	CU::Quaternion m_Yaw;
 	CU::Quaternion m_Pitch;
 	CU::Vector2f m_CenterPoint;
-	CU::Matrix44f myOrientation;
-
 
 	btRigidBody* myBody							= nullptr;
 	btTransform* myWorldTranslation				= nullptr;

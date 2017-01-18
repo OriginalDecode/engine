@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 
+#include <DebugSystem.h>
 #include <PhysicsSystem.h>
 #include <RenderSystem.h>
 #include <LightSystem.h>
@@ -39,7 +40,7 @@ namespace Hex
 {
 	bool Engine::HasInitiated()
 	{
-		return (this && m_IsInitiated);
+		return (this && m_States[(u16)eEngineStates::INITIATED] == TRUE);
 	}
 
 	Engine* Engine::myInstance = nullptr;
@@ -155,7 +156,9 @@ namespace Hex
 		m_InputHandle = new InputHandle;
 		m_InputHandle->Initiate(myHWND, instance_handle);
 		m_InputHandle->AddController(0);
+		
 
+		m_EntityManager->AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
 		m_EntityManager->AddSystem<CPhysicsSystem>();
 		m_EntityManager->AddSystem<CRenderSystem>();
 		m_EntityManager->AddSystem<CLightSystem>();
@@ -165,7 +168,7 @@ namespace Hex
 		m_EntityManager->AddSystem<CameraSystem>();
 
 
-		m_IsInitiated = true;
+		m_States[(u16)eEngineStates::INITIATED] = TRUE;
 		return true;
 	}
 
@@ -220,7 +223,7 @@ namespace Hex
 			return;
 
 		m_DeltaTime = myTimeManager->GetDeltaTime();
-		if (!m_IsLoadingLevel)
+		if (m_States[(u16)eEngineStates::LOADING] == FALSE)
 		{
 			myTimeManager->Update();
 			myAssetsContainer->Update();
@@ -326,7 +329,7 @@ namespace Hex
 
 	void Engine::Present()
 	{
-		if (myInstance->myUsingVSync)
+		if (myInstance->m_States[(u16)eEngineStates::USE_VSYNC] == TRUE)
 			myAPI->Present(1, 0);
 		else
 			myAPI->Present(0, 0);
@@ -431,7 +434,10 @@ namespace Hex
 
 	void Engine::ToggleVsync()
 	{
-		myUsingVSync = !myUsingVSync;
+		if (m_States[(u16)eEngineStates::USE_VSYNC] == TRUE)
+			m_States[(u16)eEngineStates::USE_VSYNC] = FALSE;
+		else
+			m_States[(u16)eEngineStates::USE_VSYNC] = TRUE;
 	}
 
 	void Engine::OnAltEnter()
@@ -492,13 +498,14 @@ namespace Hex
 
 	void Engine::LoadLevel(const std::string& level_filepath)
 	{
-		m_IsLoadingLevel = true;
+		m_States[(u16)eEngineStates::LOADING] = TRUE;
+		//m_IsLoadingLevel = true;
 		LevelFactory level_factory;
 		level_factory.Initiate();
 		level_factory.CreateLevel(level_filepath);
 
-
-		m_IsLoadingLevel = false;
+		m_States[(u16)eEngineStates::LOADING] = FALSE;
+		//m_IsLoadingLevel = false;
 	}
 
 	Threadpool& Engine::GetThreadpool()

@@ -44,6 +44,8 @@
     <ClInclude Include="FileWatcher.h" />
     <ClInclude Include="HashString.h" />
     <ClInclude Include="JSON\JSONReader.h" />
+    <ClInclude Include="Math\Line\Line.h" />
+    <ClInclude Include="Math\Line\LineVolume.h" />
     <ClInclude Include="Math\Matrix\Matrix.h" />
     <ClInclude Include="Math\Matrix\Matrix33.h" />
     <ClInclude Include="Math\Matrix\Matrix33Decl.h" />

@@ -19,21 +19,6 @@ namespace Hex
 class JSONReader;
 class RigidBody;
 struct InputComponent;
-
-static void Jump(RigidBody* rigidbody);
-static void Forward(RigidBody* rigidbody);
-static void Backward(RigidBody* rigidbody);
-static void Right(RigidBody* rigidbody);
-static void Left(RigidBody* rigidbody);
-
-static void Up(Hex::Camera* camera);
-static void Forward(Hex::Camera* camera);
-static void Backward(Hex::Camera* camera);
-static void Right(Hex::Camera* camera);
-static void Left(Hex::Camera* camera);
-static void Down(Hex::Camera* camera);
-
-
 class Game
 {
 public:
@@ -71,7 +56,13 @@ private:
 	CU::Vector3f currentRay;
 
 	u32 selected_entity;
-	CU::Plane<float> m_Plane;
+	CU::Plane<float> m_Plane0;
+	CU::Plane<float> m_Plane1;
+	CU::Plane<float> m_Plane2;
+	CU::Plane<float> m_Plane3;
+	CU::Plane<float> m_Plane4;
+	CU::Plane<float> m_Plane5;
+
 
 	RigidBody* rigidbody = nullptr;
 	SLinePoint raycast[2];

@@ -16,7 +16,7 @@
 #include <NetworkComponent.h>
 #include <CameraComponent.h>
 #include <RigidBody.h>
-
+#include <GhostObject.h>
 #include "../hashlist.h"
 
 void LevelFactory::Initiate()
@@ -142,7 +142,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	{
 		phys_body = component.myBody->InitAsSphere(1, object_mass, m_PhysicsManager->GetGravityForce(), scientific_constants::pressure::air_pressure, { 0,0,0 });
 	}
-
+	component.myBody->SetEntity(entity_id);
 	m_PhysicsManager->Add(phys_body);
 }
 
@@ -150,14 +150,15 @@ void LevelFactory::CreateEditingPhysicsComponent(Entity entity_id)
 {
 	RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 	CU::Vector3f whd = m_Engine->GetModel(render.myModelID)->GetWHD();
-
+	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+	CU::Vector3f pos = translation.myOrientation.GetPosition();
 
 	m_EntityManager->AddComponent<DebugComponent>(entity_id);
 	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(entity_id);
-	component.m_Body = m_PhysicsManager->CreateBody();
-
-	btGhostObject * ghostObject = component.m_Body->InitAsGhostObject(whd.x, whd.y, whd.z, { 0, 0, 0 });
-
+	component.m_GhostObject = new GhostObject;
+	component.m_GhostObject->SetEntity(entity_id);
+	btGhostObject * ghostObject = component.m_GhostObject->InitAsBox(whd.x, whd.y, whd.z, pos);
+	component.m_GhostObject->SetPosition(pos);
 	m_PhysicsManager->Add(ghostObject);
 }
 

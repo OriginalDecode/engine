@@ -252,6 +252,7 @@
     <ClInclude Include="ComponentFilter.h" />
     <ClInclude Include="ControllerComponent.h" />
     <ClInclude Include="DebugComponent.h" />
+    <ClInclude Include="DebugSystem.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="EntityTypes.h" />
     <ClInclude Include="InputComponent.h" />
@@ -273,6 +274,7 @@
     <ClCompile Include="BaseSystem.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="ComponentContainer.cpp" />
+    <ClCompile Include="DebugSystem.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="LightComponent.cpp" />

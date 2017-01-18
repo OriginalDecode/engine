@@ -162,7 +162,7 @@ btRigidBody* RigidBody::GetBody()
 
 const CU::Matrix44f& RigidBody::GetOrientation()
 {
-	myWorldTranslation->getOpenGLMatrix(&myOrientation.myMatrix[0]);
+	myWorldTranslation->getOpenGLMatrix(&m_Orientation.myMatrix[0]);
 
 	CU::Vector3f axisX(1.f, 0.f, 0.f);
 	CU::Vector3f axisY(0.f, 1.f, 0.f);
@@ -172,17 +172,17 @@ const CU::Matrix44f& RigidBody::GetOrientation()
 	axisY = m_Yaw * m_Pitch * axisY;
 	axisZ = m_Yaw * m_Pitch * axisZ;
 
-	myOrientation[0] = axisX.x;
-	myOrientation[1] = axisX.y;
-	myOrientation[2] = axisX.z;
-	myOrientation[4] = axisY.x;
-	myOrientation[5] = axisY.y;
-	myOrientation[6] = axisY.z;
-	myOrientation[8] = axisZ.x;
-	myOrientation[9] = axisZ.y;
-	myOrientation[10] = axisZ.z;
+	m_Orientation[0] = axisX.x;
+	m_Orientation[1] = axisX.y;
+	m_Orientation[2] = axisX.z;
+	m_Orientation[4] = axisY.x;
+	m_Orientation[5] = axisY.y;
+	m_Orientation[6] = axisY.z;
+	m_Orientation[8] = axisZ.x;
+	m_Orientation[9] = axisZ.y;
+	m_Orientation[10] = axisZ.z;
 
-	return myOrientation;
+	return m_Orientation;
 }
 
 void RigidBody::Impulse(const CU::Vector3f& anImpulseVector)
@@ -204,16 +204,4 @@ void RigidBody::UpdateOrientation(const ControllerState& controller_state)
 
 	m_Pitch = CU::Quaternion(CU::Vector3f(1.f, 0.f, 0.f), m_CenterPoint.y);
 	m_Yaw = CU::Quaternion(CU::Vector3f(0.f, 1.f, 0.f), m_CenterPoint.x);
-}
-
-btVector3 RigidBody::ConvertVector(const CU::Vector3f& vec3)
-{
-	btVector3 btVec3;
-
-	btVec3.setX(vec3.x);
-	btVec3.setY(vec3.y);
-	btVec3.setZ(vec3.z);
-	btVec3.setW(1);
-
-	return btVec3;
 }

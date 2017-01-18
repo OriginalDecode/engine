@@ -1,135 +1,74 @@
 #pragma once
-#include "..\Vector\Vector.h"
+#include "../Vector/Vector.h"
 
 namespace CommonUtilities
 {
-	template<typename T>
 	class Line
 	{
 	public:
-		Line();
-		Line(CU::Math::Vector2<T>aFirstPoint, CU::Math::Vector2<T> aSecondPoint);
-		~Line();
+		Line(Vector3f  aFirstPoint, Vector3f  aSecondPoint);
 
-		void InitWith2Points(CU::Math::Vector2<T> aFirstPoint, CU::Math::Vector2<T> aSecondPoint);
-		void InitWithPointAndDirection(CU::Math::Vector2<T> aPoint, CU::Math::Vector2<T> aDirection);
-		bool Inside(CU::Math::Vector2<T> aPosition);
-		const bool Inside(CU::Math::Vector2<T> aPosition, const T aRadius) const;
-		bool operator==(Line<T> aLine);
+		void InitWith2Points(Vector3f aFirstPoint, Vector3f aSecondPoint);
+		void InitWithPointAndDirection(Vector3f aPoint, Vector3f aDirection);
 
+		bool Inside(Vector3f aPosition);
 
-		Math::Vector3<T> myData;
-		Math::Vector2<T> myStart;
-		Math::Vector2<T> myEnd;
-		Math::Vector2<T> myNormal;
+		Vector3f GetNormal() const;
+		Vector3f  GetPoint() const;
 
+	private:
 
+		Vector3f myOld;
+		Vector3f myPoint;
+		Vector3f myNorm;
 	};
 
-	template<typename T>
-	Line<T>::Line()
+	Line::Line(Vector3f aFirstPoint, Vector3f aSecondPoint)
 	{
-	}
+		Vector3f result = 
+			( (aSecondPoint.x - aFirstPoint.x)
+			, (aSecondPoint.y - aFirstPoint.y)
+			, (aSecondPoint.z - aFirstPoint.z) );
+		Normalize(result);
 
-	template<typename T>
-	Line<T>::~Line()
-	{
-	}
+		myOld.x = result.x;
 
-	template<typename T>
-	Line<T>::Line(CU::Math::Vector2<T> aFirstPoint, CU::Math::Vector2<T> aSecondPoint)
-	{
-		InitWith2Points(aFirstPoint, aSecondPoint);
-	}
-
-	template<typename T>
-	void Line<T>::InitWith2Points(CU::Math::Vector2<T> aFirstPoint, CU::Math::Vector2<T>aSecondPoint)
-	{
-
-		Math::Vector2<T> line = aSecondPoint - aFirstPoint;
-		Math::Vector2<T> normal = Math::Vector2<T>(-line.y, line.x);
-		Math::Normalize(normal);
-
-		myStart = aFirstPoint;
-		myEnd = aSecondPoint;
-		myNormal = normal;
+		result.x = (-aFirstPoint.y);
+		result.y = myOld.x;
 		
-		//T oldX = normal.x;
-
-		//normal.x = -normal.y;
-		//normal.y = oldX;
-
-		myData.x = normal.x;
-		myData.y = normal.y;
-		myData.z = Math::Dot(aFirstPoint, normal);
+	}
+	
+	void Line::InitWith2Points(Vector3f aFirstPoint, Vector3f aSecondPoint)
+	{
+		CommonUtilities::Line(aFirstPoint, aSecondPoint);
 	}
 
-	template<typename T>
-	void Line<T>::InitWithPointAndDirection(CU::Math::Vector2<T> aPoint, const CU::Math::Vector2<T> aDirection)
+	void Line::InitWithPointAndDirection(Vector3f aPoint, Vector3f aDirection)
 	{
-		CU::Math::Normalize(aDirection);
+		myPoint = aPoint;
+		myNorm = GetNormalized(aDirection);
 
-		T oldX = aDirection.x;
+		myOld.x = myNorm.x;
 
-		aDirection.x = -aDirection.y;
-		aDirection.y = oldX;
-
-		myData = { (aDirection.x, aDirection.y) };
-		myData.z = CU::Math::Dot(aDirection, aPoint);
-
+		myNorm.x = (-myNorm.y);
+		myNorm.y = myOld.x;
 	}
 
-	template<typename T>
-	bool Line<T>::Inside(CU::Math::Vector2<T> aPosition)
+	bool Line::Inside(Vector3f aPosition)
 	{
-		//CU::Math::Vector2<T> normal(myData.x, myData.y);
-		//CU::Math::Vector2<T> point = aPosition - (normal*myData.z);
-		//
-
-		if (CU::Math::Dot(aPosition, Vector2f(myData.x, myData.y)) < myData.z)
-		{
+		if (Dot(aPosition - myPoint, myNorm) > 0)
+			return false;
+		else
 			return true;
-		}
-		return false;
+	}
+	
+	Vector3f Line::GetPoint() const
+	{
+		return myPoint;
 	}
 
-	template <typename T>
-	const bool Line<T>::Inside(Math::Vector2<T> aPosition, const T aRadius) const
+	Vector3f Line::GetNormal() const
 	{
-		//Math::Vector2<float> normal = (myData.x, myData.y);
-		Math::Vector2<float> normal = myEnd - myStart;
-		float tempNormalX = normal.x;
-
-		normal.x = -normal.y;
-		normal.y = tempNormalX;
-
-		
-		Math::Vector2<float> line = aPosition - myStart;
-		
-		if (Math::Dot(normal, line) > 0)
-		{
-			return true;
-		}
-
-		float length = Math::Dot(normal, normal);
-		Math::Normalize(normal);
-
-		float d1 = Math::Dot(normal, myStart);
-		float d2 = Math::Dot(normal, aPosition);
-
-		return abs(d1 - d2) < aRadius;
-	}
-
-
-	template<typename T>
-	bool Line<T>::operator==(Line<T> aLine)
-	{
-		if (myData == aLine.myData)
-		{
-			return true;
-		}
-		return false;
+		return myNorm;
 	}
 };
-
-namespace CU = CommonUtilities;

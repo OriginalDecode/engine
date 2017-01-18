@@ -85,6 +85,9 @@
     <ClInclude Include="DebugComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="DebugSystem.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseSystem.cpp">
@@ -128,6 +131,9 @@
       <Filter>Systems</Filter>
     </ClCompile>
     <ClCompile Include="CameraSystem.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugSystem.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
   </ItemGroup>

@@ -31,7 +31,12 @@ bool Game::Initiate()
 	myEngine->ToggleVsync(); //settings
 	m_Camera = myEngine->GetCamera();
 
-	m_Plane.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 5.f), CU::Vector3f(0.f, -1.f, 0.f));
+	m_Plane0.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 5.f), CU::Vector3f(0.f, 0.f, -1.f));
+	m_Plane1.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 10.f), CU::Vector3f(0.f, 0.f, 1.f));
+	m_Plane2.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 7.5f), CU::Vector3f(1.f, 0.f, 1.f));
+	m_Plane3.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 7.5f), CU::Vector3f(-1.f, 0.f, -1.f));
+	m_Plane4.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 7.5f), CU::Vector3f(0.f, 1.f, 0.f));
+	m_Plane5.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 7.5f), CU::Vector3f(0.f, -1.f, 0.f));
 
 	m_ModelKey = myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Cube.json");
 
@@ -69,7 +74,26 @@ void Game::Update(float dt)
 
 	if (input_wrapper->IsDown(MouseInput::LEFT))
 	{
-		pointHit = Hex::Engine::GetInstance()->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), myPicker->GetCurrentRay(input_wrapper->GetCursorPos()));
+		//pointHit = Hex::Engine::GetInstance()->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), myPicker->GetCurrentRay(input_wrapper->GetCursorPos()));
+
+		CU::Vector3f ray_dir = myPicker->GetCurrentRay(input_wrapper->GetCursorPos());
+		CU::Vector3f new_pos = m_Camera->GetPosition();
+		for (int i = 0; i < 1000; i++)
+		{
+			new_pos = m_Camera->GetPosition() + (ray_dir * float(i));
+			if (m_Plane0.Inside(new_pos) 
+				&& m_Plane1.Inside(new_pos) )
+			{
+				m_collision = true;
+				break;
+			}
+			else
+			{
+				m_collision = false;
+			}
+
+		}
+		//if((ray_dir * 10.f) m_Plane.Get)
 	}
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
 

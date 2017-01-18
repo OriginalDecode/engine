@@ -41,4 +41,5 @@ private:
 	PhysicsManager* m_PhysicsManager	= nullptr;
 
 
+	void CreateDebugComponent(Entity e);
 };

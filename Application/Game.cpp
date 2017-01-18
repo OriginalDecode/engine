@@ -31,12 +31,22 @@ bool Game::Initiate()
 	myEngine->ToggleVsync(); //settings
 	m_Camera = myEngine->GetCamera();
 
-	m_Plane0.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 5.f), CU::Vector3f(0.f, 0.f, -1.f));
-	m_Plane1.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 10.f), CU::Vector3f(0.f, 0.f, 1.f));
-	m_Plane2.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 7.5f), CU::Vector3f(1.f, 0.f, 1.f));
-	m_Plane3.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 7.5f), CU::Vector3f(-1.f, 0.f, -1.f));
-	m_Plane4.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 7.5f), CU::Vector3f(0.f, 1.f, 0.f));
-	m_Plane5.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 7.5f), CU::Vector3f(0.f, -1.f, 0.f));
+
+	CU::Plane<float> plane0; plane0.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 5.f), CU::Vector3f(0.f, 0.f, -1.f));
+	CU::Plane<float> plane1; plane1.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 10.f), CU::Vector3f(0.f, 0.f, 1.f));
+
+	CU::Plane<float> plane2; plane2.InitWithPointAndNormal(CU::Vector3f(5.f, 0.f, 7.5f), CU::Vector3f(1.f, 0.f, 0.f));
+	CU::Plane<float> plane3; plane3.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 7.5f), CU::Vector3f(-1.f, 0.f, 0.f));
+
+	CU::Plane<float> plane4; plane4.InitWithPointAndNormal(CU::Vector3f(0.f, -5.f, 7.5f), CU::Vector3f(0.f, -1.f, 0.f));
+	CU::Plane<float> plane5; plane5.InitWithPointAndNormal(CU::Vector3f(0.f, 5.f, 7.5f), CU::Vector3f(0.f, 1.f, 0.f));
+
+	m_PlaneVolume.AddPlane(plane0);
+	m_PlaneVolume.AddPlane(plane1);
+	m_PlaneVolume.AddPlane(plane2);
+	m_PlaneVolume.AddPlane(plane3);
+	m_PlaneVolume.AddPlane(plane4);
+	m_PlaneVolume.AddPlane(plane5);
 
 	m_ModelKey = myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Cube.json");
 
@@ -80,24 +90,19 @@ void Game::Update(float dt)
 		CU::Vector3f new_pos = m_Camera->GetPosition();
 		for (int i = 0; i < 1000; i++)
 		{
+			m_collision = false;
 			new_pos = m_Camera->GetPosition() + (ray_dir * float(i));
-			if (m_Plane0.Inside(new_pos) 
-				&& m_Plane1.Inside(new_pos) )
+
+			if (m_PlaneVolume.Inside(new_pos))
 			{
 				m_collision = true;
 				break;
 			}
-			else
-			{
-				m_collision = false;
-			}
-
 		}
-		//if((ray_dir * 10.f) m_Plane.Get)
 	}
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
 
-	m_Camera->Update(myEngine->GetInputHandle()->GetDeltaCursorPos());
+	//m_Camera->Update(myEngine->GetInputHandle()->GetDeltaCursorPos());
 	if (input_wrapper->IsDown(KButton::W))
 		m_Camera->Move(Hex::eDirection::FORWARD, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::S))
@@ -112,6 +117,12 @@ void Game::Update(float dt)
 		m_Camera->Move(Hex::eDirection::DOWN, -50.f * dt);
 	if (input_wrapper->OnDown(KButton::Y))
 		Hex::Engine::GetInstance()->ToggleWireframe();
+	if (input_wrapper->IsDown(KButton::UP_ARROW))
+		m_Camera->RotateAroundX(0.5f * dt);
+	if (input_wrapper->IsDown(KButton::DOWN_ARROW))
+		m_Camera->RotateAroundX(-0.5f * dt);
+
+
 
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::PARTICLE, CU::Vector3f(5.f, 5.f, 5.f)));
 

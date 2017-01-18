@@ -5,8 +5,4 @@
 
 struct AABBComponent : public BaseComponent
 {
-	~AABBComponent(){ delete m_Body; m_Body = nullptr; }
-	cl::AABB m_AABB;
-	RigidBody* m_Body = nullptr;
-	bool m_IsActive = true;
 };

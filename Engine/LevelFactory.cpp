@@ -65,7 +65,6 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	if (entity_reader.HasElement("light"))
 		CreateLightComponent(entity_reader, e, it);
 
-
 	if (entity_reader.HasElement("controller"))
 	{
 		if (entity_reader.ReadElement("controller") == "input")
@@ -76,17 +75,8 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 			CreateAIComponent(entity_reader, e);
 		else
 			DL_ASSERT("Failed to find correct input controller tag!");
+	}
 
-		if (entity_reader.ReadElement("controller") != "input")
-		{
-			CreateEditingPhysicsComponent(e);
-		}
-	}
-	else
-	{
-		if(!entity_reader.HasElement("light"))
-			CreateEditingPhysicsComponent(e);
-	}
 }
 
 void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position)
@@ -116,6 +106,8 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	component.scale = scale;
 	component.scale.w = 1.f;
+	CreateDebugComponent(entity_id);
+
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)
@@ -145,22 +137,22 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	component.myBody->SetEntity(entity_id);
 	m_PhysicsManager->Add(phys_body);
 }
-
-void LevelFactory::CreateEditingPhysicsComponent(Entity entity_id)
-{
-	RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(entity_id);
-	CU::Vector3f whd = m_Engine->GetModel(render.myModelID)->GetWHD();
-	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
-	CU::Vector3f pos = translation.myOrientation.GetPosition();
-
-	m_EntityManager->AddComponent<DebugComponent>(entity_id);
-	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(entity_id);
-	component.m_GhostObject = new GhostObject;
-	component.m_GhostObject->SetEntity(entity_id);
-	btGhostObject * ghostObject = component.m_GhostObject->InitAsBox(whd.x, whd.y, whd.z, pos);
-	component.m_GhostObject->SetPosition(pos);
-	m_PhysicsManager->Add(ghostObject);
-}
+//
+//void LevelFactory::CreateEditingPhysicsComponent(Entity entity_id)
+//{
+//	RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+//	CU::Vector3f whd = m_Engine->GetModel(render.myModelID)->GetWHD();
+//	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+//	CU::Vector3f pos = translation.myOrientation.GetPosition();
+//
+//	m_EntityManager->AddComponent<DebugComponent>(entity_id);
+//	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(entity_id);
+//	component.m_GhostObject = new GhostObject;
+//	component.m_GhostObject->SetEntity(entity_id);
+//	btGhostObject * ghostObject = component.m_GhostObject->InitAsBox(whd.x, whd.y, whd.z, pos);
+//	component.m_GhostObject->SetPosition(pos);
+//	m_PhysicsManager->Add(ghostObject);
+//}
 
 void LevelFactory::CreateCameraComponent(JSONReader& /*entity_reader*/, Entity entity_id)
 {
@@ -234,6 +226,41 @@ void LevelFactory::CreateNetworkComponent(JSONReader& /*entity_reader*/, Entity 
 {
 	m_EntityManager->AddComponent<NetworkComponent>(entity_id);
 	//NetworkComponent& component = m_EntityManager->GetComponent<NetworkComponent>(entity_id);
+
+}
+
+void LevelFactory::CreateDebugComponent(Entity e)
+{
+	RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
+	CU::Vector3f whd = m_Engine->GetModel(render.myModelID)->GetWHD();
+	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
+	CU::Vector3f pos = translation.myOrientation.GetPosition();
+
+	m_EntityManager->AddComponent<DebugComponent>(e);
+	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
+
+	float x = whd.x;
+	float y = whd.y;
+	float z = whd.z;
+	component.m_WHD = whd;
+	CU::Plane<float> plane0;
+	//x
+	plane0.InitWithPointAndNormal(CU::Vector3f(pos.x + x, pos.y, pos.z) * translation.myOrientation, CU::Vector3f(1.f, 0.f, 0.f)* translation.myOrientation);
+	component.m_OBB.AddPlane(plane0);
+	plane0.InitWithPointAndNormal(CU::Vector3f(pos.x - x, pos.y, pos.z)* translation.myOrientation, CU::Vector3f(-1.f, 0.f, 0.f)* translation.myOrientation);
+	component.m_OBB.AddPlane(plane0);
+
+	//y
+	plane0.InitWithPointAndNormal(CU::Vector3f(pos.x, pos.y + y, pos.z)* translation.myOrientation, CU::Vector3f(0.f, 1.f, 0.f)* translation.myOrientation);
+	component.m_OBB.AddPlane(plane0);
+	plane0.InitWithPointAndNormal(CU::Vector3f(pos.x, pos.y - y, pos.z)* translation.myOrientation, CU::Vector3f(0.f, -1.f, 0.f)* translation.myOrientation);
+	component.m_OBB.AddPlane(plane0);
+
+	//z
+	plane0.InitWithPointAndNormal(CU::Vector3f(pos.x, pos.y, pos.z + z)* translation.myOrientation, CU::Vector3f(0.f, 0.f, 1.f)* translation.myOrientation);
+	component.m_OBB.AddPlane(plane0);
+	plane0.InitWithPointAndNormal(CU::Vector3f(pos.x, pos.y, pos.z - z)* translation.myOrientation, CU::Vector3f(0.f, 0.f, -1.f)* translation.myOrientation);
+	component.m_OBB.AddPlane(plane0);
 
 }
 

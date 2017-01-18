@@ -10,20 +10,13 @@ DebugSystem::DebugSystem(EntityManager& entity_manager)
 #define FIXED_TIMESTEP 1.f / 60.f
 void DebugSystem::Update(float dt)
 {
-	m_AccumulatedTime += dt;
-	while (m_AccumulatedTime >= FIXED_TIMESTEP)
-	{
 		const CU::GrowingArray<Entity>& entities = GetEntities();
 		for (Entity e : entities)
 		{
 			DebugComponent& debug = GetComponent<DebugComponent>(e);
 			TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 
-			translation.myOrientation = debug.m_GhostObject->GetOrientation();
 
 		}
-		//m_PhysicsManager->Update(m_AccumulatedTime); //ASync Physics?
-		m_AccumulatedTime -= FIXED_TIMESTEP;
-	}
 }
 

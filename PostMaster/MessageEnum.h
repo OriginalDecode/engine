@@ -2,6 +2,6 @@
 
 enum class eMessageType
 {
-
+	ONE,
 	COUNT,
 };

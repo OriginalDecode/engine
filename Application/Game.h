@@ -8,6 +8,8 @@
 #include <functional>
 #include <AABB.h>
 #include <Math/Plane/Plane.h>
+#include <Math/Plane/PlaneVolume.h>
+
 namespace Hex
 {
 	class Synchronizer;
@@ -56,13 +58,8 @@ private:
 	CU::Vector3f currentRay;
 
 	u32 selected_entity;
-	CU::Plane<float> m_Plane0;
-	CU::Plane<float> m_Plane1;
-	CU::Plane<float> m_Plane2;
-	CU::Plane<float> m_Plane3;
-	CU::Plane<float> m_Plane4;
-	CU::Plane<float> m_Plane5;
 
+	CU::PlaneVolume<float> m_PlaneVolume;
 
 	RigidBody* rigidbody = nullptr;
 	SLinePoint raycast[2];

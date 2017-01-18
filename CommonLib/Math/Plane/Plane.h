@@ -19,6 +19,9 @@ namespace CommonUtilities
 		Math::Vector3<TYPE> GetNormal() const;
 		Math::Vector3<TYPE> GetPoint() const;
 
+		void SetNormal(Math::Vector3<Type> normal);
+		void SetPoint(Math::Vector3<TYPE> position);
+
 	private:
 
 		Math::Vector3<TYPE> myNorm;
@@ -26,12 +29,21 @@ namespace CommonUtilities
 	};
 
 	template<typename TYPE>
+	void CommonUtilities::Plane<TYPE>::SetPoint(Math::Vector3<TYPE> position)
+	{
+		myPoint = position;
+	}
+
+	template<typename TYPE>
+	void CommonUtilities::Plane<TYPE>::SetNormal(Math::Vector3<Type> normal)
+	{
+		myNorm = normal;
+	}
+
+	template<typename TYPE>
 	Plane<TYPE>::Plane(Math::Vector3<TYPE> aFirstPoint, Math::Vector3<TYPE> aSecondPoint, Math::Vector3<TYPE> aThirdPoint)
 	{
-		myPoint = aFirstPoint;
-		myNorm = Cross(aSecondPoint - aFirstPoint, aThirdPoint - aFirstPoint);
-
-		Normalize(myNorm);
+		InitWith3Points(aFirstPoint, aSecondPoint, aThirdPoint);
 	}
 
 	template<typename TYPE>
@@ -43,7 +55,11 @@ namespace CommonUtilities
 	template<typename TYPE>
 	void Plane<TYPE>::InitWith3Points(Math::Vector3<TYPE> aFirstPoint, Math::Vector3<TYPE> aSecondPoint, Math::Vector3<TYPE> aThirdPoint)
 	{
-		CommonUtilities::Plane(aFirstPoint, aSecondPoint, aThirdPoint);
+		myPoint = (aSecondPoint + aThirdPoint) / 2.f;
+
+		myNorm = Cross(aSecondPoint - aFirstPoint, aThirdPoint - aFirstPoint);
+
+		Normalize(myNorm);
 	}
 
 	template<typename TYPE>

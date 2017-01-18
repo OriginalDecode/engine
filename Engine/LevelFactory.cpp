@@ -100,9 +100,14 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	CU::Vector3f scale;
 	m_LevelReader._ReadElement(it->value["scale"], scale);
 	CU::Vector3f rotation;
-	m_LevelReader._ReadElement(it->value["rotation"], rotation); 
+	m_LevelReader._ReadElement(it->value["rotation"], rotation);
 
 	component.m_Rotation = rotation;
+
+	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+	translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(90.f) * rotation.y) * translation.myOrientation;
+	translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(90.f) * rotation.z) * translation.myOrientation;
+	translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(90.f) * rotation.x) * translation.myOrientation;
 
 	component.scale = scale;
 	component.scale.w = 1.f;
@@ -137,22 +142,6 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	component.myBody->SetEntity(entity_id);
 	m_PhysicsManager->Add(phys_body);
 }
-//
-//void LevelFactory::CreateEditingPhysicsComponent(Entity entity_id)
-//{
-//	RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(entity_id);
-//	CU::Vector3f whd = m_Engine->GetModel(render.myModelID)->GetWHD();
-//	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
-//	CU::Vector3f pos = translation.myOrientation.GetPosition();
-//
-//	m_EntityManager->AddComponent<DebugComponent>(entity_id);
-//	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(entity_id);
-//	component.m_GhostObject = new GhostObject;
-//	component.m_GhostObject->SetEntity(entity_id);
-//	btGhostObject * ghostObject = component.m_GhostObject->InitAsBox(whd.x, whd.y, whd.z, pos);
-//	component.m_GhostObject->SetPosition(pos);
-//	m_PhysicsManager->Add(ghostObject);
-//}
 
 void LevelFactory::CreateCameraComponent(JSONReader& /*entity_reader*/, Entity entity_id)
 {
@@ -238,29 +227,57 @@ void LevelFactory::CreateDebugComponent(Entity e)
 
 	m_EntityManager->AddComponent<DebugComponent>(e);
 	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
-
+	component.m_Rotation = render.m_Rotation;
 	float x = whd.x;
 	float y = whd.y;
 	float z = whd.z;
 	component.m_WHD = whd;
 	CU::Plane<float> plane0;
+
+
+	CU::Vector4f up = translation.myOrientation.GetUp();
+	CU::Vector4f right = translation.myOrientation.GetRight();
+	CU::Vector4f forward = translation.myOrientation.GetForward();
+
+	CU::Vector4f position = translation.myOrientation.GetTranslation();
+
+
 	//x
-	plane0.InitWithPointAndNormal(CU::Vector3f(pos.x + x, pos.y, pos.z) * translation.myOrientation, CU::Vector3f(1.f, 0.f, 0.f)* translation.myOrientation);
+	position += right * x;
+	plane0.InitWithPointAndNormal(position, right);
 	component.m_OBB.AddPlane(plane0);
-	plane0.InitWithPointAndNormal(CU::Vector3f(pos.x - x, pos.y, pos.z)* translation.myOrientation, CU::Vector3f(-1.f, 0.f, 0.f)* translation.myOrientation);
+
+	position = translation.myOrientation.GetTranslation();
+	position -= right * x;
+	right -= (right * 2.f);
+	plane0.InitWithPointAndNormal(position, right);
 	component.m_OBB.AddPlane(plane0);
 
 	//y
-	plane0.InitWithPointAndNormal(CU::Vector3f(pos.x, pos.y + y, pos.z)* translation.myOrientation, CU::Vector3f(0.f, 1.f, 0.f)* translation.myOrientation);
+	position = translation.myOrientation.GetTranslation();
+	position += up * y;
+	plane0.InitWithPointAndNormal(position, up);
 	component.m_OBB.AddPlane(plane0);
-	plane0.InitWithPointAndNormal(CU::Vector3f(pos.x, pos.y - y, pos.z)* translation.myOrientation, CU::Vector3f(0.f, -1.f, 0.f)* translation.myOrientation);
+
+	position = translation.myOrientation.GetTranslation();
+	position -= up * y;
+	up -= (up * 2.f);
+	plane0.InitWithPointAndNormal(position, up);
 	component.m_OBB.AddPlane(plane0);
 
 	//z
-	plane0.InitWithPointAndNormal(CU::Vector3f(pos.x, pos.y, pos.z + z)* translation.myOrientation, CU::Vector3f(0.f, 0.f, 1.f)* translation.myOrientation);
+	position = translation.myOrientation.GetTranslation();
+	position += forward * z;
+	plane0.InitWithPointAndNormal(position, forward);
 	component.m_OBB.AddPlane(plane0);
-	plane0.InitWithPointAndNormal(CU::Vector3f(pos.x, pos.y, pos.z - z)* translation.myOrientation, CU::Vector3f(0.f, 0.f, -1.f)* translation.myOrientation);
+
+
+	position = translation.myOrientation.GetTranslation();
+	position -= forward * z;
+	forward -= (forward * 2.f);
+	plane0.InitWithPointAndNormal(position, forward);
 	component.m_OBB.AddPlane(plane0);
+
 
 }
 

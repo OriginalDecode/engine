@@ -2,6 +2,7 @@
 
 enum class eMessageType
 {
-	ONE,
+	ON_LEFT_CLICK,
+	COLLIDED,
 	COUNT,
 };

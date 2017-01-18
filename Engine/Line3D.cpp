@@ -264,4 +264,5 @@ SLinePoint::SLinePoint(const CU::Vector4f& pos, const CU::Vector4f& col)
 
 SLinePoint::SLinePoint()
 {
+	color = { 255.f, 255.f, 255.f, 255.f };
 }

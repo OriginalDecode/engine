@@ -21,5 +21,8 @@
     <ClInclude Include="Message.h">
       <Filter>Message</Filter>
     </ClInclude>
+    <ClInclude Include="OnLeftClick.h">
+      <Filter>Message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

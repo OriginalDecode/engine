@@ -9,7 +9,7 @@
 #include <AABB.h>
 #include <Math/Plane/Plane.h>
 #include <Math/Plane/PlaneVolume.h>
-
+#include <Subscriber.h>
 namespace Hex
 {
 	class Synchronizer;
@@ -21,7 +21,8 @@ namespace Hex
 class JSONReader;
 class RigidBody;
 struct InputComponent;
-class Game
+
+class Game : public Subscriber
 {
 public:
 	Game() = default;
@@ -63,6 +64,10 @@ private:
 
 	RigidBody* rigidbody = nullptr;
 	SLinePoint raycast[2];
+
+	void ReceiveMessage(const OnLeftClick& message);
+	
+
 };
 
 

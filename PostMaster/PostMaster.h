@@ -69,7 +69,7 @@ void PostMaster::SendMessage(const Message& aMessage)
 			}
 		}
 	}
-	else if (aMessage.myMessageType != eMessageType::RESIZE)
+	else 
 	{
 		DL_ASSERT("Message sent without subscriber.");
 	}

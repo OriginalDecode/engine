@@ -253,6 +253,7 @@
   <ItemGroup>
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageEnum.h" />
+    <ClInclude Include="OnLeftClick.h" />
     <ClInclude Include="PostMaster.h" />
     <ClInclude Include="Subscriber.h" />
   </ItemGroup>

@@ -387,6 +387,7 @@ namespace Hex
 				}break;
 			}
 		}
+
 		m_API->SetBlendState(eBlendStates::NO_BLEND);
 		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);

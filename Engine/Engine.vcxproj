@@ -225,7 +225,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Matrix\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Matrix\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -244,7 +244,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Input\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Input\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -319,7 +319,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Matrix\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Matrix\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
       <PreprocessorDefinitions>__WIN64;COBJMACROS;SNOWBLIND_DX11; _CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -342,7 +342,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Input\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Input\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
       <PreprocessorDefinitions>__WIN64;COBJMACROS;_CRT_SECURE_NO_WARNINGS;SNOWBLIND_VULKAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -512,6 +512,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Input\Input.vcxproj">
       <Project>{bd22ff31-48a5-4061-ab37-17e68e058912}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\PostMaster\PostMaster.vcxproj">
+      <Project>{ef362edc-8fff-400b-a5ff-05a9bc551d65}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

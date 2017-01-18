@@ -7,6 +7,7 @@ struct DebugComponent final : public BaseComponent
 {
 	~DebugComponent() { }
 	CU::PlaneVolume<float> m_OBB;
-	CU::StaticArray<CU::Vector3f, 8> m_BoxPointList;
-	CU::Vector3f m_WHD;
+	CU::Vector4f m_WHD;
+	CU::Vector4f m_Rotation;
+	CU::Vector4f debugColor = { 255.f, 255.f, 255.f, 255.f };
 };

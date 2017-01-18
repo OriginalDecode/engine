@@ -27,6 +27,7 @@
 #include <d3dcompiler.h>
 
 #include <Input/InputHandle.h>
+#include <PostMaster.h>
 
 
 static constexpr char* vertex_shader = "VS";
@@ -85,7 +86,7 @@ namespace Hex
 	bool Engine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 	{
 		Randomizer::Create();
-
+		PostMaster::Create();
 		myWindowSize.myHeight = window_height;
 		myWindowSize.myWidth = window_width;
 
@@ -175,6 +176,7 @@ namespace Hex
 	bool Engine::CleanUp()
 	{
 
+
 		m_InputHandle->CleanUp();
 		SAFE_DELETE(m_InputHandle);
 		if (m_InputHandle)
@@ -194,7 +196,6 @@ namespace Hex
 		SAFE_DELETE(myFontManager);
 		SAFE_DELETE(myTimeManager);
 
-		Randomizer::Destroy();
 
 		SAFE_DELETE(m_PhysicsManager);
 		m_EntityManager->CleanUp();
@@ -203,6 +204,8 @@ namespace Hex
 		DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
 		SAFE_DELETE(myAPI);
 
+		PostMaster::Destroy();
+		Randomizer::Destroy();
 
 		return true;
 	}

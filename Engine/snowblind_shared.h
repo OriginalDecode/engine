@@ -1,7 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <standard_datatype.hpp>
-typedef u32 Entity;
+typedef s32 Entity;
 #ifdef SNOWBLIND_DX11
 typedef struct ID3D11Texture2D				ITexture2D;
 typedef struct ID3D11ShaderResourceView		IShaderResourceView;

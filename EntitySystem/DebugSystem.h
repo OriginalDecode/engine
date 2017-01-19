@@ -1,6 +1,8 @@
 #pragma once
 #include "BaseSystem.h"
 #include <Subscriber.h>
+#include <Math/Vector/Vector.h>
+
 struct OnLeftClick;
 namespace Hex
 {
@@ -17,4 +19,10 @@ private:
 	void ReceiveMessage(const OnLeftClick& message) override;
 	Hex::Synchronizer* m_Synchronizer = nullptr;
 	double m_AccumulatedTime = 0.0f;
+	struct entity_collisions
+	{
+		Entity m_ID;
+		CU::Vector3f m_Position;
+	};
+	CU::GrowingArray<entity_collisions> m_Collisions;
 };

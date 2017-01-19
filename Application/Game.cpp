@@ -179,10 +179,15 @@ void Game::Update(float dt)
 		m_Camera->Move(Hex::eDirection::DOWN, -50.f * dt);
 	if (input_wrapper->OnDown(KButton::Y))
 		Hex::Engine::GetInstance()->ToggleWireframe();
+
 	if (input_wrapper->IsDown(KButton::UP_ARROW))
 		m_Camera->RotateAroundX(0.5f * dt);
 	if (input_wrapper->IsDown(KButton::DOWN_ARROW))
 		m_Camera->RotateAroundX(-0.5f * dt);
+	if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
+		m_Camera->RotateAroundY(0.5f * dt);
+	if (input_wrapper->IsDown(KButton::LEFT_ARROW))
+		m_Camera->RotateAroundY(-0.5f * dt);
 
 
 

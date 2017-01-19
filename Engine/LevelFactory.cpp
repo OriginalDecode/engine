@@ -239,10 +239,11 @@ void LevelFactory::CreateDebugComponent(Entity e)
 	CU::Vector4f right = translation.myOrientation.GetRight();
 	CU::Vector4f forward = translation.myOrientation.GetForward();
 
-	CU::Vector4f position = translation.myOrientation.GetTranslation();
 
-
+	CU::Vector4f position;
 	//x
+
+	position = translation.myOrientation.GetTranslation();
 	position += right * x;
 	plane0.InitWithPointAndNormal(position, right);
 	component.m_OBB.AddPlane(plane0);

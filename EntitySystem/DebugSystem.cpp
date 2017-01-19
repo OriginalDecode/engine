@@ -37,80 +37,103 @@ void DebugSystem::Update(float dt)
 			p8.color = p1.color;
 
 			p1.position = translation.myOrientation.GetTranslation();
-			p8.position = translation.myOrientation.GetTranslation();
-
-			p1.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
-			p8.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
+			p2.position = p1.position;
+			p3.position = p1.position;
+			p4.position = p1.position;
+			p5.position = p1.position;
+			p6.position = p1.position;
+			p7.position = p1.position;
+			p8.position = p1.position;
 
 			p1.position -= translation.myOrientation.GetRight() * debug.m_WHD.x;
-			p8.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
-
 			p1.position -= translation.myOrientation.GetUp() * debug.m_WHD.y;
+			p1.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
+
+			p2.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
+			p2.position -= translation.myOrientation.GetUp() * debug.m_WHD.y;
+			p2.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
+
+			p3.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
+			p3.position -= translation.myOrientation.GetUp() * debug.m_WHD.y;
+			p3.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
+
+			p4.position -= translation.myOrientation.GetRight() * debug.m_WHD.x;
+			p4.position -= translation.myOrientation.GetUp() * debug.m_WHD.y;
+			p4.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
+
+			p5.position -= translation.myOrientation.GetRight() * debug.m_WHD.x;
+			p5.position += translation.myOrientation.GetUp() * debug.m_WHD.y;
+			p5.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
+
+			p6.position -= translation.myOrientation.GetRight() * debug.m_WHD.x;
+			p6.position += translation.myOrientation.GetUp() * debug.m_WHD.y;
+			p6.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
+
+			p7.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
+			p7.position += translation.myOrientation.GetUp() * debug.m_WHD.y;
+			p7.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
+
+			p8.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
 			p8.position += translation.myOrientation.GetUp() * debug.m_WHD.y;
+			p8.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
 
-			p2.position = p1.position;
-			p2.position.x = p8.position.x;
 			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
-
-			p3.position = p8.position;
-			p3.position.y = p1.position.y;
 			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));
-
-			p4.position = p1.position;
-			p4.position.z = p8.position.z;
 			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p3, p4));
 			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p4, p1));
-
-			p5.position = p1.position;
-			p5.position.y = p8.position.y;
 			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p5));
-
-			p6.position = p8.position;
-			p6.position.x = p1.position.x;
 			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p5, p6));
 			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p8));
-
-			p7.position = p8.position;
-			p7.position.z = p1.position.z;
 			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p7));
 			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p5));
-
 			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p4));
 			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p2));
 			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));
 		}
 }
 
+//This needs to be optimized as hell.
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
+	CU::Vector3f cam_pos = CU::Vector3f(message.camera_pos_x, message.camera_pos_y, message.camera_pos_z);
+	//Should be optimized for a quad/oct -tree solution to only retrieve the entities in THIS part
 	const CU::GrowingArray<Entity>& entities = GetEntities();
-	bool collision = false;
-	for (Entity e : entities)
-	{
-		DebugComponent& debug = GetComponent<DebugComponent>(e);
-		debug.debugColor = { 255.f,255.f,255.f,255.f };
-	}
 	for (Entity i = entities.Size() -1; i >= 0; i--)
 	{
 		Entity e = entities[i];
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
+		debug.debugColor = { 255.f,255.f,255.f,255.f };
+
 		for (s32 i = 0; i < 50; i++)
 		{
-			CU::Vector3f pos = CU::Vector3f(message.camera_pos_x, message.camera_pos_y, message.camera_pos_z);
 			CU::Vector3f step = (CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z) * float(i));
-			CU::Vector3f new_post = pos + step;
+			CU::Vector3f new_post = cam_pos + step;
 
 			if (debug.m_OBB.Inside(new_post))
 			{
 				PostMaster::GetInstance()->SendMessage(OnLeftClick());
-				collision = true;
-				debug.debugColor = { 255.f,0.f,0.f,255.f };
-				break;
-			}
 
+				/*	entity_collisions collision;
+					collision.m_ID = e;
+					collision.m_Position = new_post;
+					m_Collisions.Add(collision);*/
+				debug.debugColor = { 255.f,0.f,0.f,255.f };
+			}
 		}
-		if (collision)
-			break;
 	}
+
+	//float prev_length = 0.f;
+	//entity_collisions closest;
+	//for (const entity_collisions& collision : m_Collisions)
+	//{
+	//	float new_length = CU::Math::Length2(cam_pos - collision.m_Position);
+	//	if (new_length > prev_length)
+	//	{
+	//		prev_length = new_length;
+	//		closest = collision;
+	//	}
+	//}
+	//DebugComponent& debug = GetComponent<DebugComponent>(closest.m_ID);
+	//debug.debugColor = { 255.f,0.f,0.f,255.f };
 }
 

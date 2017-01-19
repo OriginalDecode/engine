@@ -122,6 +122,13 @@ void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Eff
 #ifdef SNOWBLIND_DX11
 	ModelData* data = someData->myData;
 
+	if (data->m_WHD.x <= 0.f + FLT_EPSILON)
+		data->m_WHD.x += 0.1f;
+	if (data->m_WHD.y <= 0.f + FLT_EPSILON)
+		data->m_WHD.y += 0.1f;
+	if (data->m_WHD.z <= 0.f + FLT_EPSILON)
+		data->m_WHD.z += 0.1f;
+
 	out->SetWHD(data->m_WHD);
 	Hex::VertexIndexWrapper* indexWrapper = new Hex::VertexIndexWrapper();
 	indexWrapper->myFormat = DXGI_FORMAT_R32_UINT;
@@ -366,6 +373,31 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 				if (i != 0)
 				{
+					float temp_x, temp_y, temp_z;
+					if (position.x < 0.f)
+					{
+						temp_x = -position.x;
+
+						if (w < temp_x)
+							w = temp_x;
+					}
+
+					if (position.y < 0.f)
+					{
+						temp_y = -position.y;
+
+						if (w < temp_y)
+							w = temp_y;
+					}
+
+					if (position.z < 0.f)
+					{
+						temp_z = -position.z;
+
+						if (d < temp_z)
+							d = temp_z;
+					}
+
 					if (w < position.x)
 						w = position.x;
 					if (h < position.y)
@@ -379,8 +411,6 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 					h = position.y;
 					d = position.z;
 				}
-
-
 			}
 
 			if (aMesh->HasNormals())

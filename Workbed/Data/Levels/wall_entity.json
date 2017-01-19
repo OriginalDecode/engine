@@ -1,6 +1,6 @@
 {
 	"graphics": {
-		"model":"Data/Model/wall.fbx", 		
+		"model":"Data/Model/wall_2.fbx", 		
 		"shader":"Data/Shaders/T_Deferred_Base_Scale.json"
 	}
 }

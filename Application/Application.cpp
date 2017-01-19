@@ -79,6 +79,7 @@ void Application::OnActive()
 
 void Application::OnExit()
 {
+	myGame->CleanUp();
 	myEngine->OnExit();
 	CleanUp();
 }
@@ -99,9 +100,6 @@ bool Application::CleanUp()
 
 	SAFE_DELETE(myLogicThread);
 	if (myLogicThread)
-		return false;
-
-	if (!myGame->CleanUp())
 		return false;
 
 	SAFE_DELETE(myGame);

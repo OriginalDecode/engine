@@ -64,7 +64,7 @@ private:
 
 	RigidBody* rigidbody = nullptr;
 	SLinePoint raycast[2];
-
+	bool m_toggle = false;
 	void ReceiveMessage(const OnLeftClick& message);
 	
 

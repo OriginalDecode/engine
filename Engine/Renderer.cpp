@@ -22,6 +22,8 @@
 #include "GBuffer.h"
 #include "Texture.h"
 
+#include "imgui_impl_dx11.h"
+
 //#define AMBIENT_PASS_ONLY
 namespace Hex
 {
@@ -194,6 +196,36 @@ namespace Hex
 
 
 		Render2DCommands();
+
+
+
+		ImGui_ImplDX11_NewFrame();
+		
+		{
+			ImGuiStyle& style = ImGui::GetStyle();
+			style.FrameRounding = 100.0f;
+
+			ImGui::SetNextWindowPos(ImVec2(0, 0));
+			ImGui::SetNextWindowSize(ImVec2(200, 200));
+
+			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
+			ImGui::Begin("Hello World");
+
+			ImGui::End();
+			ImGui::PopStyleVar();
+		}
+
+
+	/*	{
+			static float f = 0.0f;
+			ImGui::Text("Hello, world!");
+			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		}*/
+
+
+		ImGui::Render();
+
 		myEngine->Present();
 
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));

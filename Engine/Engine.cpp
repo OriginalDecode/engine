@@ -29,6 +29,7 @@
 #include <Input/InputHandle.h>
 #include <PostMaster.h>
 
+#include "imgui_impl_dx11.h"
 
 static constexpr char* vertex_shader = "VS";
 static constexpr char* pixel_shader = "PS";
@@ -157,7 +158,7 @@ namespace Hex
 		m_InputHandle = new InputHandle;
 		m_InputHandle->Initiate(myHWND, instance_handle);
 		m_InputHandle->AddController(0);
-		
+
 
 		m_EntityManager->AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
 		m_EntityManager->AddSystem<CPhysicsSystem>();
@@ -169,13 +170,17 @@ namespace Hex
 		m_EntityManager->AddSystem<CameraSystem>();
 
 
+		//ImGui_ImplDX11_Init(void* hwnd, ID3D11Device* device, ID3D11DeviceContext* device_context);
+
+		ImGui_ImplDX11_Init(myHWND, GetAPI()->GetDevice(), GetAPI()->GetContext());
+
 		m_States[(u16)eEngineStates::INITIATED] = TRUE;
 		return true;
 	}
 
 	bool Engine::CleanUp()
 	{
-
+		ImGui_ImplDX11_Shutdown();
 
 		m_InputHandle->CleanUp();
 		SAFE_DELETE(m_InputHandle);
@@ -266,7 +271,7 @@ namespace Hex
 			&out_compile_message);
 		return hr;
 	}
-	
+
 	void* Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name)
 	{
 

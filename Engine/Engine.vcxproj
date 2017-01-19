@@ -380,6 +380,10 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="IGraphicsAPI.h" />
+    <ClInclude Include="imconfig.h" />
+    <ClInclude Include="imgui.h" />
+    <ClInclude Include="imgui_impl_dx11.h" />
+    <ClInclude Include="imgui_internal.h" />
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="Level.h" />
@@ -413,6 +417,9 @@
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteModel.h" />
+    <ClInclude Include="stb_rect_pack.h" />
+    <ClInclude Include="stb_textedit.h" />
+    <ClInclude Include="stb_truetype.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="Synchronizer.h" />
@@ -451,6 +458,10 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="imgui.cpp" />
+    <ClCompile Include="imgui_demo.cpp" />
+    <ClCompile Include="imgui_draw.cpp" />
+    <ClCompile Include="imgui_impl_dx11.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelFactory.cpp" />

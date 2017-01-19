@@ -234,7 +234,6 @@ void LevelFactory::CreateDebugComponent(Entity e)
 	component.m_WHD = whd;
 	CU::Plane<float> plane0;
 
-
 	CU::Vector4f up = translation.myOrientation.GetUp();
 	CU::Vector4f right = translation.myOrientation.GetRight();
 	CU::Vector4f forward = translation.myOrientation.GetForward();

@@ -20,6 +20,7 @@
 #include <PhysicsManager.h>
 #include <PostMaster.h>
 #include <OnLeftClick.h>
+#include <imgui.h>
 bool Game::Initiate()
 {
 	myEngine = Hex::Engine::GetInstance();
@@ -89,11 +90,7 @@ void Game::Update(float dt)
 
 	if (input_wrapper->IsDown(MouseInput::LEFT))
 	{
-		//pointHit = Hex::Engine::GetInstance()->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), myPicker->GetCurrentRay(input_wrapper->GetCursorPos()));
-
-
 		CU::Vector3f ray_dir = myPicker->GetCurrentRay(input_wrapper->GetCursorPos());
-		//This is the shitties event system ever
 		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z));
 
 		CU::Vector3f new_pos = m_Camera->GetPosition();
@@ -110,61 +107,6 @@ void Game::Update(float dt)
 		}
 	}
 
-	SLinePoint p1, p2, p3, p4, p5, p6, p7, p8;
-	CU::Vector3f min = { 0.f, -5.f, 5.f };
-	CU::Vector3f max = { 5.f, 5.f, 10.f };
-
-	float depth = max.z - min.z;
-	float width = max.x - min.x;
-	float height = max.y - min.y;
-	p1.color = !m_collision ? CU::Vector4f(255.f, 255.f, 255.f, 255.f) : CU::Vector4f(255.f, 0.f, 0.f, 255.f);
-	p2.color = p1.color;
-	p3.color = p1.color;
-	p4.color = p1.color;
-	p5.color = p1.color;
-	p6.color = p1.color;
-	p7.color = p1.color;
-	p8.color = p1.color;
-
-
-
-	p1.position = min;
-	p8.position = max;
-
-	p2.position = p1.position;
-	p2.position.x = p8.position.x;
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
-
-	p3.position = p8.position;
-	p3.position.y = p1.position.y;
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));
-
-	p4.position = p1.position;
-	p4.position.z = p8.position.z;
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p3, p4));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p4, p1));
-
-	p5.position = p1.position;
-	p5.position.y = p8.position.y;
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p5));
-
-	p6.position = p8.position;
-	p6.position.x = p1.position.x;
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p5, p6));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p8));
-
-	p7.position = p8.position;
-	p7.position.z = p1.position.z;
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p7));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p5));
-
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p4));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p2));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));
-
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, pointHit));
-
-	//m_Camera->Update(myEngine->GetInputHandle()->GetDeltaCursorPos());
 	if (input_wrapper->IsDown(KButton::W))
 		m_Camera->Move(Hex::eDirection::FORWARD, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::S))
@@ -177,8 +119,7 @@ void Game::Update(float dt)
 		m_Camera->Move(Hex::eDirection::UP, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::X))
 		m_Camera->Move(Hex::eDirection::DOWN, -50.f * dt);
-	if (input_wrapper->OnDown(KButton::Y))
-		Hex::Engine::GetInstance()->ToggleWireframe();
+
 
 	if (input_wrapper->IsDown(KButton::UP_ARROW))
 		m_Camera->RotateAroundX(0.5f * dt);

@@ -19,7 +19,8 @@ namespace Hex
 		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
 		wc.lpszClassName = "WindowsClass";
-
+		float sym_x = GetSystemMetrics(SM_CXSCREEN);
+		float sym_y = GetSystemMetrics(SM_CYSCREEN);
 		RegisterClassEx(&wc);
 		float width = (GetSystemMetrics(SM_CXSCREEN)* 0.5f) - (m_CreateInfo.window_width * 0.5f);
 		float height = (GetSystemMetrics(SM_CYSCREEN)* 0.5f) - (m_CreateInfo.window_height * 0.5f);

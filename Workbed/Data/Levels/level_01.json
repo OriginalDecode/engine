@@ -15,63 +15,9 @@
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 25 ],
+			"position" : [ 100, 2, 25 ],
 			"scale" : [1,1,1],
 			"rotation" : [0,0,0]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100.01, 0, 23 ],
-			"scale" : [1,1,1],
-			"rotation" : [0,-2,0]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 27 ],
-			"scale" : [1,1,1],
-			"rotation" : [0,0,0]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100.01, 0, 25 ],
-			"scale" : [1,1,1],
-			"rotation" : [0,-2,0]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 29 ],
-			"scale" : [1,5,1],
-			"rotation" : [0,0,0]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100.01, 0, 27 ],
-			"scale" : [1,5,1],
-			"rotation" : [0,-2,0]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 31 ],
-			"scale" : [1,1,1],
-			"rotation" : [0,0,0]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100.01, 0, 29 ],
-			"scale" : [1,1,1],
-			"rotation" : [0,-2,0]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 0, 41 ],
-			"scale" : [1,1,5],
-			"rotation" : [0,0,0]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100.01, 0, 31 ],
-			"scale" : [1,1,5],
-			"rotation" : [0,-2,0]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/spotlight.json", 

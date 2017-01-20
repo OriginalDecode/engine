@@ -227,6 +227,55 @@ namespace Hex
 
 	void Engine::Update()
 	{
+
+
+		{
+			ImGui::SetNextWindowPos(ImVec2(0, 0));
+			ImGui::SetNextWindowSize(ImVec2(300, GetWindowSize().myHeight));
+
+			ImGuiWindowFlags flags = 0;
+
+			flags |= ImGuiWindowFlags_NoTitleBar;
+			flags |= ImGuiWindowFlags_NoResize;
+			//flags |= ImGuiWindowFlags_NoCollapse;
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+			static bool pOpen = false;
+			static bool new_window = false;
+			if (ImGui::Begin("Information", &pOpen, flags))
+			{
+				ImGui::Text("Delta Time : %.3f", GetDeltaTime());
+
+
+				ImGui::Separator();
+
+				if (ImGui::Button("New Entity", ImVec2(100.f, 25.f)))
+				{
+					new_window = !new_window;
+				}
+
+				ImGui::End();
+			}
+			ImGui::PopStyleVar();
+
+
+			if (new_window)
+			{
+				ImGui::SetNextWindowPos(ImVec2(300.f, 0.f));
+				ImGui::SetNextWindowSize(ImVec2(300.f, 300.f));
+
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+				if (ImGui::Begin("New Window", &new_window, flags))
+				{
+
+					ImGui::End();
+				}
+				ImGui::PopStyleVar();
+
+			}
+
+
+		}
+
 		if (!HasInitiated())
 			return;
 
@@ -237,8 +286,10 @@ namespace Hex
 			myAssetsContainer->Update();
 		}
 		myRenderer->Render();
+
 		m_Threadpool.Update();
 		m_DebugSystem.Update();
+
 	}
 
 	void Engine::Render()

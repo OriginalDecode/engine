@@ -14,7 +14,7 @@
 #include <EngineDefines.h>
 #include <sstream>
 #include "Game.h"
-
+#include <imgui.h>
 bool Application::Initiate()
 {
 	myEngine = Hex::Engine::GetInstance();
@@ -40,17 +40,15 @@ void Application::Update()
 		myEngine->UpdateInput();
 		myGame->Update(deltaTime);
 
-		std::stringstream ss;
+		/*std::stringstream ss;
 		ss << "m_camera_position\n" <<
 		"X : " << myCamera->GetPosition().x << "\n" <<
 		"Y : " << myCamera->GetPosition().y << "\n" <<
 		"Z : " << myCamera->GetPosition().z;
 
-		myEngine->AddDebugText(ss.str());
+		myEngine->AddDebugText(ss.str());*/
+		//myEngine->Render();
 		
-#ifdef _DEBUG
-		myEngine->Render();
-#endif
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();
 	}

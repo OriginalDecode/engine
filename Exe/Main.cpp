@@ -3,6 +3,7 @@
 #include "../Application/Application.h"
 #include "../DL_Debug/DL_Debug.h"
 #include "../Engine/Engine.h"
+#include "../Engine/imgui_impl_dx11.h"
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 enum ERawInputType
@@ -79,6 +80,8 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	bool applicationIsRunning = true;
 	do
 	{
+
+		ImGui_ImplDX11_NewFrame();
 		while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
@@ -101,6 +104,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 		{
 			SetCursorPos(w / 2.f, h / 2.f);
 		}*/
+
 
 	} while (applicationIsRunning == true);
 

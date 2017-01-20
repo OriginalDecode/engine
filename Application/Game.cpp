@@ -92,20 +92,9 @@ void Game::Update(float dt)
 	{
 		CU::Vector3f ray_dir = myPicker->GetCurrentRay(input_wrapper->GetCursorPos());
 		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z));
-
-		CU::Vector3f new_pos = m_Camera->GetPosition();
-		for (int i = 0; i < 1000; i++)
-		{
-			m_collision = false;
-			new_pos = m_Camera->GetPosition() + (ray_dir * float(i));
-
-			if (m_PlaneVolume.Inside(new_pos))
-			{
-				m_collision = true;
-				break;
-			}
-		}
 	}
+
+	m_Camera->Update(myEngine->GetInputHandle()->GetDeltaCursorPos());
 
 	if (input_wrapper->IsDown(KButton::W))
 		m_Camera->Move(Hex::eDirection::FORWARD, 50.f * dt);
@@ -121,28 +110,28 @@ void Game::Update(float dt)
 		m_Camera->Move(Hex::eDirection::DOWN, -50.f * dt);
 
 
-	if (input_wrapper->IsDown(KButton::UP_ARROW))
-		m_Camera->RotateAroundX(0.5f * dt);
-	if (input_wrapper->IsDown(KButton::DOWN_ARROW))
-		m_Camera->RotateAroundX(-0.5f * dt);
-	if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
-		m_Camera->RotateAroundY(0.5f * dt);
-	if (input_wrapper->IsDown(KButton::LEFT_ARROW))
-		m_Camera->RotateAroundY(-0.5f * dt);
+	//if (input_wrapper->IsDown(KButton::UP_ARROW))
+	//	m_Camera->RotateAroundX(0.5f * dt);
+	//if (input_wrapper->IsDown(KButton::DOWN_ARROW))
+	//	m_Camera->RotateAroundX(-0.5f * dt);
+	//if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
+	//	m_Camera->RotateAroundY(0.5f * dt);
+	//if (input_wrapper->IsDown(KButton::LEFT_ARROW))
+	//	m_Camera->RotateAroundY(-0.5f * dt);
 
-
+	
 
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::PARTICLE, CU::Vector3f(5.f, 5.f, 5.f)));
 
-	CU::Vector2f cur_pos = myEngine->GetInputHandle()->GetDeltaCursorPos();
-	std::stringstream ss;
-	ss << "FPS : " << myEngine->GetFPS()
-		<< "\nAverage FPS : " << myFPSToPrint
-		<< "\nDeltaTime:" << dt
-		<< "\n" << Hex::Engine::GetInstance()->GetLocalTimeAsString()
-		<< "\ncursor_pos : \n" << cur_pos.x << "\n" << cur_pos.y
-		<< "\nCollision : " << (m_collision ? "true" : "false");
-	myEngine->AddDebugText(ss.str());
+	//CU::Vector2f cur_pos = myEngine->GetInputHandle()->GetDeltaCursorPos();
+	//std::stringstream ss;
+	//ss << "FPS : " << myEngine->GetFPS()
+	//	<< "\nAverage FPS : " << myFPSToPrint
+	//	<< "\nDeltaTime:" << dt
+	//	<< "\n" << Hex::Engine::GetInstance()->GetLocalTimeAsString()
+	//	<< "\ncursor_pos : \n" << cur_pos.x << "\n" << cur_pos.y
+	//	<< "\nCollision : " << (m_collision ? "true" : "false");
+	//myEngine->AddDebugText(ss.str());
 
 
 

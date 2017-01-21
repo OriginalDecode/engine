@@ -27,7 +27,7 @@ namespace Hex
 		m_HWND = CreateWindow(
 			"WindowsClass"
 			, NULL
-			, WS_OVERLAPPEDWINDOW  //Windowed
+			, WS_POPUP //Windowed
 			, s32(width) // start x
 			, s32(height) // start y
 			, s32(m_CreateInfo.window_width)

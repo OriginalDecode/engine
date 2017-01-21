@@ -539,6 +539,54 @@ namespace Hex
 		}
 	}
 
+	void DirectX11::OnResize()
+	{
+		mySwapchain->Release();
+		mySwapchain = nullptr;
+
+		IDXGIFactory* factory;
+		HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
+		HandleErrors(hr, "(OnResize) Failed to create Factory!");
+		
+		DXGI_SWAP_CHAIN_DESC scDesc;
+		ZeroMemory(&scDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
+
+		float sym_x = GetSystemMetrics(SM_CXSCREEN);
+		float sym_y = GetSystemMetrics(SM_CYSCREEN);
+
+		scDesc.BufferCount = 1;
+		scDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		scDesc.BufferDesc.Width = UINT(sym_x);
+		scDesc.BufferDesc.Height = UINT(sym_y);
+		scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		scDesc.OutputWindow = m_CreateInfo.m_HWND;
+		scDesc.SampleDesc.Count = 1;
+		scDesc.SampleDesc.Quality = 0;
+		if (myEngineFlags[u16(eEngineFlags::FULLSCREEN)] == FALSE)
+			scDesc.Windowed = true;
+		else
+			scDesc.Windowed = false;
+
+		scDesc.Flags = 0;
+		scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+		scDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		scDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		bool useVsync = false;
+
+		u32 numerator = 0;
+		u32 denominator = 1;
+
+		if (useVsync)
+		{
+			GetRefreshRate(numerator, denominator);
+		}
+
+		scDesc.BufferDesc.RefreshRate.Numerator = numerator;
+		scDesc.BufferDesc.RefreshRate.Denominator = denominator;
+		
+		hr = factory->CreateSwapChain(myDevice, &scDesc, &mySwapchain);
+	}
+
 	void DirectX11::CopyResource(void * pDestination, void * pSource)
 	{
 		myContext->CopyResource(static_cast<ID3D11Resource*>(pDestination), static_cast<ID3D11Resource*>(pSource));

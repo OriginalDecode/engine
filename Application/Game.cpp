@@ -94,7 +94,22 @@ void Game::Update(float dt)
 		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z));
 	}
 
-	m_Camera->Update(myEngine->GetInputHandle()->GetDeltaCursorPos());
+	
+	if (input_wrapper->IsDown(MouseInput::RIGHT))
+	{
+		m_Camera->Update(myEngine->GetInputHandle()->GetDeltaCursorPos());
+	}
+
+	{
+		if (input_wrapper->IsDown(KButton::UP_ARROW))
+			m_Camera->RotateAroundX(0.5f * dt);
+		if (input_wrapper->IsDown(KButton::DOWN_ARROW))
+			m_Camera->RotateAroundX(-0.5f * dt);
+		if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
+			m_Camera->RotateAroundY(0.5f * dt);
+		if (input_wrapper->IsDown(KButton::LEFT_ARROW))
+			m_Camera->RotateAroundY(-0.5f * dt);
+	}
 
 	if (input_wrapper->IsDown(KButton::W))
 		m_Camera->Move(Hex::eDirection::FORWARD, 50.f * dt);
@@ -108,18 +123,6 @@ void Game::Update(float dt)
 		m_Camera->Move(Hex::eDirection::UP, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::X))
 		m_Camera->Move(Hex::eDirection::DOWN, -50.f * dt);
-
-
-	//if (input_wrapper->IsDown(KButton::UP_ARROW))
-	//	m_Camera->RotateAroundX(0.5f * dt);
-	//if (input_wrapper->IsDown(KButton::DOWN_ARROW))
-	//	m_Camera->RotateAroundX(-0.5f * dt);
-	//if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
-	//	m_Camera->RotateAroundY(0.5f * dt);
-	//if (input_wrapper->IsDown(KButton::LEFT_ARROW))
-	//	m_Camera->RotateAroundY(-0.5f * dt);
-
-	
 
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::PARTICLE, CU::Vector3f(5.f, 5.f, 5.f)));
 

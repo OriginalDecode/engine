@@ -45,6 +45,8 @@ public:
 	template <typename T>
 	void AddSystem(PhysicsManager* aManager);
 
+	bool HasComponent(Entity e, SComponentFilter& filter);
+
 private:
 	Entity myNextEntity = 0;
 	CComponentContainer* myComponents = nullptr;
@@ -82,4 +84,4 @@ template <typename T>
 void EntityManager::AddSystem()
 {
 	mySystems.Add(new T(*this));
-}
+} 

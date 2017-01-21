@@ -29,6 +29,9 @@
 #include <Input/InputHandle.h>
 #include <PostMaster.h>
 
+#include "EditObject.h"
+#include <DebugComponent.h>
+
 #include "imgui_impl_dx11.h"
 
 static constexpr char* vertex_shader = "VS";
@@ -37,6 +40,20 @@ static constexpr char* geometry_shader = "GS";
 static constexpr char* hull_shader = "HS";
 static constexpr char* domain_shader = "DS";
 static constexpr char* compute_shader = "CS";
+
+
+#define REGISTERCOMPONENT(x) x,
+enum RegisteredComponents
+{
+#include "Components.h"
+};
+#undef REGISTERCOMPONENT
+
+#define REGISTERCOMPONENT(x) #x,
+const char* RegisteredComponentsStr[] = {
+#include "Components.h"
+};
+#undef REGISTERCOMPONENT
 
 namespace Hex
 {
@@ -253,6 +270,8 @@ namespace Hex
 					new_window = !new_window;
 				}
 
+				ImGui::Checkbox("Use mouse movement for Camera", &m_CameraUseMouse);
+
 				ImGui::End();
 			}
 			ImGui::PopStyleVar();
@@ -261,19 +280,132 @@ namespace Hex
 			if (new_window)
 			{
 				ImGui::SetNextWindowPos(ImVec2(300.f, 0.f));
-				ImGui::SetNextWindowSize(ImVec2(300.f, 300.f));
+				//ImGui::SetNextWindowSize(ImVec2(300.f, 300.f));
 
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-				if (ImGui::Begin("New Window", &new_window, flags))
+				if (ImGui::Begin("New Window", &new_window, ImGuiWindowFlags_NoTitleBar))
 				{
+					ImGui::Text("Entity Creation");
+					ImGui::Separator();
 
-					ImGui::End();
+
+					/*if (ImGui::Button("New Entity", ImVec2(100.f, 25.f)))
+					{
+						int apa;
+						apa = 5;
+					}
+					if (ImGui::IsItemHovered())
+					{
+						ImGui::BeginTooltip();
+						ImGui::Text("Create a new Entity using a Blueprint.");
+						ImGui::EndTooltip();
+					}*/
+					//ImGui::SameLine();
+					static bool new_bp = false;
+					if (ImGui::Button("New Blueprint", ImVec2(100.f, 25.f)))
+					{
+						new_bp = true;
+					}
+					if (ImGui::IsItemHovered())
+					{
+						ImGui::BeginTooltip();
+						ImGui::Text("Create and Edit a new Blueprint.");
+						ImGui::EndTooltip();
+					}
+					ImGui::Separator();
+
+					if (new_bp)
+					{
+						static bool new_component = false;
+						static const int item_count = ARRAYSIZE(RegisteredComponentsStr) - 1;
+						static int components = 0;
+
+						static int selected[item_count] = { 0 };
+						static char* str = { "Translation\0Graphics\0Physics\0AI\0Network\0Input" };
+
+						ImGui::BeginChildFrame(0, ImVec2(ImGui::GetWindowSize().x, 200.f));
+						static bool edit_t = false;
+						if (new_component)
+						{
+							for (int i = 0; i < components; i++)
+							{
+								std::stringstream ss;
+								ss << "Box_" << i;
+								std::stringstream ss2;
+								ss2 << "X_" << i;
+								std::stringstream ss3;
+								ss3 << "Edit_" << i;
+								if (ImGui::Button(ss2.str().c_str()))
+								{
+									for (int j = i; j < components - 1; j++)
+									{
+										selected[i] = selected[j + 1];
+									}
+									components--;
+								}
+								ImGui::SameLine();
+								ImGui::Combo(ss.str().c_str(), &selected[i], str);
+								ImGui::SameLine();
+								if (ImGui::Button(ss3.str().c_str()))
+								{
+									switch (selected[i])
+									{
+									case RegisteredComponents::translation:
+									{
+										edit_t = !edit_t;
+									}break;
+									}
+								}
+							}
+
+							ImGui::Separator();
+						}
+
+						if (edit_t)
+						{
+							ImGui::Begin("Hello World");
+
+							static float x_value = 0.f;
+							static float y_value = 0.f;
+							static float z_value = 0.f;
+
+							ImGui::SliderFloat("X", &x_value, 0, 1);
+							ImGui::SliderFloat("Y", &y_value, 0, 1);
+							ImGui::SliderFloat("Z", &z_value, 0, 1);
+
+
+
+							ImGui::End();
+						}
+
+						if (components < item_count)
+						{
+							if (ImGui::Button("Add Component"))
+							{
+								if (components < item_count)
+									components++;
+								new_component = true;
+							}
+						}
+
+						ImGui::EndChildFrame();
+
+						if (ImGui::Button("Save"))
+						{
+
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("Cancel"))
+						{
+							new_bp = false;
+						}
+					}
 				}
+				ImGui::End();
 				ImGui::PopStyleVar();
 
 			}
-
-
+			EditEntity();
 		}
 
 		if (!HasInitiated())
@@ -384,6 +516,112 @@ namespace Hex
 		TRACE_LOG("FAILED TO CREATE ANY SHADER! TYPE NOT FOUND!");
 		DL_ASSERT("FAILED TO CREATE ANY SHADER! TYPE NOT FOUND!");
 		return nullptr;
+	}
+
+	void Engine::EditEntity()
+	{
+		if (!m_IsEditingEntity)
+			return;
+
+		DebugComponent& debug = m_EntityManager->GetComponent<DebugComponent>(m_EntityToEdit);
+		EditObject& to_edit = debug.m_EditObject;
+
+		std::stringstream ss;
+		ss << "Entity : " << m_EntityToEdit;
+		ImGui::SetNextWindowPos(ImVec2(300.f, 0));
+		ImGui::SetNextWindowSize(ImVec2(300.f, 600.f));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		if (ImGui::Begin(ss.str().c_str(), &m_IsEditingEntity, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
+		{
+			to_edit.Update();
+			//float x = 150.f;// ImGui::GetWindowSize().x;
+			//float y = 20.f;
+			//ImGui::Text(ss.str().c_str()); ImGui::Separator();
+
+			//if (ImGui::Button("Edit Light", ImVec2(x, y)))
+			//{
+			//	to_edit.SetComponentToEdit(EditObject::LIGHT);
+			//}
+
+			//if (ImGui::Button("Edit Graphics", ImVec2(x, y)))
+			//{
+			//	m_EditRender = !m_EditRender;
+			//}
+
+			//if (ImGui::Button("Edit AI", ImVec2(x, y)))
+			//{
+			//	m_EditLight = !m_EditLight;
+			//}
+
+			//if (ImGui::Button("Edit Network", ImVec2(x, y)))
+			//{
+			//	m_EditLight = !m_EditLight;
+			//}
+
+			//if (ImGui::Button("Edit Physics", ImVec2(x, y)))
+			//{
+			//	m_EditLight = !m_EditLight;
+			//}
+
+			//EditGraphicsComponent();
+
+
+			ImGui::End();
+		}
+		ImGui::PopStyleVar();
+	}
+
+	void Engine::EditGraphicsComponent()
+	{
+		//if (!m_EditRender)
+		//	return;
+
+		//std::stringstream ss;
+		//ss << "GraphicsComponent" << m_EntityToEdit;
+		//ImGui::SetNextWindowPos(ImVec2(300.f, ImGui::GetWindowSize().y));
+		//ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		//if (ImGui::BeginChildFrame(0, ImVec2(300.f, ImGui::GetWindowSize().y / 2)))
+		//{
+		//	RenderComponent& l = m_EntityManager->GetComponent<RenderComponent>(m_EntityToEdit);
+
+		//	std::string model_path = l.myModelID.c_str();
+		//	char buff[512] = { 0 };
+		//	if (ImGui::InputText("Model", buff, 512))
+		//	{
+		//		ImGui::Text(buff);
+		//	}
+		//	else
+		//	{
+		//		ImGui::Text(model_path.c_str());
+		//	}
+
+
+
+		//	//char shader_path[512] = { 0 };
+		//	//ImGui::InputText("Shader", shader_path, 512);
+
+		//	ImGui::Separator();
+
+		//	if (ImGui::Button("Done"))
+		//	{
+		//		m_EditRender = !m_EditRender;
+		//	}
+
+		//	ImGui::EndChildFrame();
+		//}
+		//ImGui::PopStyleVar();
+	}
+
+	void Engine::SelectEntity(u32 e)
+	{
+		m_EntityToEdit = e;
+		m_IsEditingEntity = true;
+	}
+
+	void Engine::DeselectEntity()
+	{
+		m_EntityToEdit = 0;
+		m_IsEditingEntity = false;
 	}
 
 	void Engine::Present()
@@ -534,6 +772,12 @@ namespace Hex
 	{
 		if (HasInitiated())
 			m_Window.OnActive();
+	}
+
+	void Engine::OnResize()
+	{
+		if (myAPI)
+			myAPI->OnResize();
 	}
 
 	const SLocalTime& Engine::GetLocalTime()

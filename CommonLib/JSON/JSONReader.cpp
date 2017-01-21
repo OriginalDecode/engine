@@ -40,7 +40,7 @@ bool JSONReader::HasElement(const rapidjson::Value& anElement)
 
 void JSONReader::OpenDocument(const std::string & aFilePath)
 {
-	ValidateFileType(aFilePath);
+	//ValidateFileType(aFilePath);
 	myCurrentDocumentPath = aFilePath;
 	OpenFile();
 	assert(myFile != NULL && "File could not be found!");

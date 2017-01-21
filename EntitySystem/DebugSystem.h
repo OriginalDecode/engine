@@ -24,4 +24,5 @@ private:
 		Entity m_ID;
 		CU::Vector3f m_Position;
 	};
+	Entity m_PrevID;
 };

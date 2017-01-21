@@ -27,9 +27,10 @@ public:
 private:
 	void operator=(BaseSystem&) = delete;
 	bool myHasFinished = false;
-	EntityManager& myEntityManager;
 	SComponentFilter myFilter;
 
+protected:
+	EntityManager& myEntityManager;
 };
 
 template<typename T>

@@ -49,33 +49,58 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	JSONReader entity_reader(entity_filepath);
 	Entity e = m_EntityManager->CreateEntity();
 
+	s32 debug_flags = 0;
+
 	CU::Vector3f pos;
 	m_LevelReader._ReadElement(it->value["position"], pos);
 	CreateTranslationComponent(e, pos);
-
+	bool hasLight = true;
 	if (entity_reader.HasElement("graphics"))
+	{
 		CreateGraphicsComponent(entity_reader, e, it);
+		hasLight = false;
+		debug_flags |= EditObject::GRAPHICS;
+	}
 
 	if (entity_reader.HasElement("physics"))
+	{
 		CreatePhysicsComponent(entity_reader, e);
+		debug_flags |= EditObject::PHYSICS;
+	}
 
 	if (entity_reader.HasElement("camera"))
+	{
 		CreateCameraComponent(entity_reader, e);
-
+		//debug_flags |= EditObject::PHYSICS;
+	}
 	if (entity_reader.HasElement("light"))
+	{
 		CreateLightComponent(entity_reader, e, it);
+		debug_flags |= EditObject::LIGHT;
+	}
 
 	if (entity_reader.HasElement("controller"))
 	{
 		if (entity_reader.ReadElement("controller") == "input")
+		{
 			CreateInputComponent(entity_reader, e);
+			debug_flags |= EditObject::INPUT;
+		}
 		else if (entity_reader.ReadElement("controller") == "network")
+		{
 			CreateNetworkComponent(entity_reader, e);
+			debug_flags |= EditObject::NETWORK;
+		}
 		else if (entity_reader.ReadElement("controller") == "ai")
+		{
 			CreateAIComponent(entity_reader, e);
+			debug_flags |= EditObject::AI;
+		}
 		else
 			DL_ASSERT("Failed to find correct input controller tag!");
 	}
+
+	CreateDebugComponent(e, hasLight, debug_flags);
 
 }
 
@@ -111,7 +136,6 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	component.scale = scale;
 	component.scale.w = 1.f;
-	CreateDebugComponent(entity_id);
 
 }
 
@@ -218,16 +242,24 @@ void LevelFactory::CreateNetworkComponent(JSONReader& /*entity_reader*/, Entity 
 
 }
 
-void LevelFactory::CreateDebugComponent(Entity e)
+void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 {
-	RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
-	CU::Vector3f whd = m_Engine->GetModel(render.myModelID)->GetWHD();
+	m_EntityManager->AddComponent<DebugComponent>(e);
+	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
+	CU::Vector3f whd;
+	if (!isLight)
+	{
+		RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
+		whd = m_Engine->GetModel(render.myModelID)->GetWHD();
+		component.m_Rotation = render.m_Rotation;
+	}
+	else
+	{
+		whd = { 0.25f,0.25f, 0.25f };
+	}
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
 	CU::Vector3f pos = translation.myOrientation.GetPosition();
 
-	m_EntityManager->AddComponent<DebugComponent>(e);
-	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
-	component.m_Rotation = render.m_Rotation;
 	float x = whd.x;
 	float y = whd.y;
 	float z = whd.z;
@@ -278,6 +310,8 @@ void LevelFactory::CreateDebugComponent(Entity e)
 	plane0.InitWithPointAndNormal(position, forward);
 	component.m_OBB.AddPlane(plane0);
 
+
+	component.m_EditObject.Initiate(e, flags);
 
 }
 

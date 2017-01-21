@@ -128,6 +128,8 @@ namespace Hex
 		void OnExit();
 		void OnInactive();
 		void OnActive();
+		void OnResize();
+
 
 		bool IsWindowActive() { return m_Window.IsWindowActive(); }
 		
@@ -170,15 +172,31 @@ namespace Hex
 		void* CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name);
 
 
+		bool UseMouse() { return m_CameraUseMouse; }
+		void ToggleUseMouse() { m_CameraUseMouse = !m_CameraUseMouse; }
+
 		const HWND& GetHWND() const { return myHWND; }
 
+		void SelectEntity(u32 e);
+		void DeselectEntity();
+		void EditEntity();
 	private:
+
+		bool m_EditLight = false;
+		//void EditLightComponent();
+		bool m_EditRender = false;
+		void EditGraphicsComponent();
+
+
 		Engine() = default;
 		//void AddEntitySystems();
+		u32 m_EntityToEdit = 0;
+		bool m_IsEditingEntity;
+
 
 		bool HasInitiated();
+		bool m_CameraUseMouse = false;
 	
-
 		static Engine* myInstance;
 		static IGraphicsAPI* myAPI;
 

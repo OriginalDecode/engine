@@ -80,6 +80,9 @@ namespace Hex
 		virtual void Present(u8 refresh_rate, u8 flags) = 0;
 
 		virtual void OnAltEnter() = 0;
+		virtual void OnResize() = 0;
+
+
 		std::string GetAPIName() { return m_CreateInfo.m_APIName; }
 
 		virtual void EnableZBuffer() = 0;

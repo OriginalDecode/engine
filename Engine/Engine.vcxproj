@@ -363,11 +363,13 @@
     <ClInclude Include="AssetsContainer.h" />
     <ClInclude Include="BaseModel.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Components.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="DebugSystem.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX11.h" />
+    <ClInclude Include="EditObject.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EmitterInstance.h" />
     <ClInclude Include="Engine.h" />
@@ -448,6 +450,7 @@
     <ClCompile Include="DXBlendStates.cpp" />
     <ClCompile Include="DXDepthstencilStates.cpp" />
     <ClCompile Include="DXSamplerStates.cpp" />
+    <ClCompile Include="EditObject.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EmitterInstance.cpp" />
     <ClCompile Include="Engine.cpp" />

@@ -6,6 +6,9 @@
 #include <Synchronizer.h>
 #include <OnLeftClick.h>
 #include <PostMaster.h>
+#include "TypeID.h"
+#include "RenderComponent.h"
+#include "EntityManager.h"
 DebugSystem::DebugSystem(EntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
@@ -140,6 +143,16 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(closest.m_ID);
 		debug.debugColor = { 255.f,0.f,0.f,255.f };
+		//bool has_render = myEntityManager.HasComponent(closest.m_ID, CreateFilter<Requires<RenderComponent>>());
+		Hex::Engine::GetInstance()->SelectEntity(closest.m_ID);
+		m_PrevID = prev_entity;
+	}
+	else
+	{
+		DebugComponent& debug = GetComponent<DebugComponent>(m_PrevID);
+		debug.debugColor = { 255.f,0.f,0.f,255.f };
+		//Hex::Engine::GetInstance()->SelectEntity(closest.m_ID);
+		//m_PrevID = prev_entity;
 	}
 }
 

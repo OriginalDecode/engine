@@ -282,6 +282,8 @@
     <ClInclude Include="imgui_impl_dx11.h">
       <Filter>imgui</Filter>
     </ClInclude>
+    <ClInclude Include="Components.h" />
+    <ClInclude Include="EditObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -445,5 +447,6 @@
     <ClCompile Include="imgui_impl_dx11.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="EditObject.cpp" />
   </ItemGroup>
 </Project>

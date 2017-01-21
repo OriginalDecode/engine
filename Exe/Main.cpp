@@ -128,7 +128,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		return 0;
 		break;
 	case WM_SIZE:
-		newApplication->OnAltEnter();
+		//newApplication->OnAltEnter();
+		//newApplication->OnResize();
 		break;
 	case WM_ACTIVATE:
 	{
@@ -161,6 +162,12 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
 			return 0;
 		break;
+	case WM_SYSKEYDOWN:
+		if (wParam == VK_RETURN)
+		{
+			if ((HIWORD(lParam) & KF_ALTDOWN))
+				newApplication->OnAltEnter();
+		}
 	default:
 		break;
 	}

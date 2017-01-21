@@ -165,6 +165,7 @@ namespace Hex
 		void Clear() override;
 
 		void OnAltEnter() override;
+		void OnResize() override;
 
 		void CopyResource(void * pDestination, void * pSource) override;
 		void SetDebugName(void * pResource, std::string debug_name) override;

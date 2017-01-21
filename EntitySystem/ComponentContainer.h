@@ -14,7 +14,9 @@ public:
 	void AddEntity();
 	void AddComponent(Entity anEntity, BaseComponent* aComponent, unsigned int aComponentID);
 	BaseComponent& GetComponent(Entity anEntity, unsigned int aComponentID);
-	bool HasComponent(Entity anEntity, unsigned int aComponentID);
+
+	//have filter with only 1 to check plz
+	bool HasComponent(Entity e, SComponentFilter& filter);
 
 	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter& aFilter);
 

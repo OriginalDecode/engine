@@ -84,7 +84,13 @@ void Application::OnExit()
 
 void Application::OnAltEnter()
 {
+	//myEngine->OnResize();
 	myEngine->OnAltEnter();
+}
+
+void Application::OnResize()
+{
+	myEngine->OnResize();
 }
 
 bool Application::HasQuit()

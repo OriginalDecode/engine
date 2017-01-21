@@ -31,6 +31,7 @@ public:
 	void OnActive();
 	void OnExit();
 	void OnAltEnter();
+	void OnResize();
 	bool HasQuit();
 	bool CleanUp();
 private:

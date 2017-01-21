@@ -22,7 +22,6 @@ private:
 
 	void CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position);
 	void CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id);
-	void CreateEditingPhysicsComponent(Entity entity_id);
 	void CreateCameraComponent(JSONReader& entity_reader, Entity entity_id);
 
 	void CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it);
@@ -41,5 +40,5 @@ private:
 	PhysicsManager* m_PhysicsManager	= nullptr;
 
 
-	void CreateDebugComponent(Entity e);
+	void CreateDebugComponent(Entity e, bool isLight, s32 flags);
 };

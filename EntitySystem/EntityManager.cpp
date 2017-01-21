@@ -60,6 +60,11 @@ float EntityManager::GetDeltaTime()
 	return myDeltaTime;
 }
 
+bool EntityManager::HasComponent(Entity e, SComponentFilter& filter)
+{
+	return myComponents->HasComponent(e, filter);
+}
+
 bool EntityManager::IsSystemsFinished()
 {
 	int count = 0;

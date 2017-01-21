@@ -46,11 +46,25 @@ BaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int a
 	return *myComponents[aComponentID][componentIndex];
 }
 
-bool CComponentContainer::HasComponent(Entity anEntity, unsigned int aComponentID)
+//bool CComponentContainer::HasComponent(Entity anEntity, unsigned int aComponentID)
+//{
+//
+//
+//
+//	if ((u32)myEntityComponents.Size() <= anEntity)
+//		return false;
+//	return myEntityComponents[anEntity][aComponentID] != -1;
+//}
+
+bool CComponentContainer::HasComponent(Entity e, SComponentFilter& filter)
 {
-	if ((u32)myEntityComponents.Size() <= anEntity)
-		return false;
-	return myEntityComponents[anEntity][aComponentID] != -1;
+	//for (int i = 0; i < myEntityComponents.Size(); i++)
+	//{
+		if (filter.Compare(myEntityComponents[e]) == true)
+		{
+			return true;
+		}
+	//}
 }
 
 const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(SComponentFilter& aFilter)

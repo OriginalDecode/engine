@@ -1,0 +1,55 @@
+Engine Tasks:
+ Input Handling:
+    ☐ Create an input system that supports rebindable keys from the user
+     Maybe should listen to input using the observer pattern.
+     This action is bound to this function, this function is bound to this key, key comes from the outside
+  Entities:
+    ☐ Create and edit entities in engine.
+    ☐ Standardize rotations in engine
+     Shadow Spotlights, Lights, Camera etc..
+    ☐ Flag lights that should be able to cast shadows.
+    ✔ OBB click collision on entities @done (17-01-22 00:59)
+      ✔ Add box around entity @done (17-01-18 21:05)
+      ✘ Use physics for OBB click collision on entities @cancelled (17-01-18 18:43)
+      ✔ Receive callback on clicked entity @done (17-01-18 21:05)
+      ✔ Have the box be oriented around the model / entity @done (17-01-18 22:28)
+        Should preferrably rotate with the entity as well.
+        I can do a screen-space clickable area to collide with the object
+        and then when the entity has been interacted with
+      ✔ Collision Checks are a bit broken on some rotations @done (17-01-22 00:59)
+        ✔ Fix it @done (17-01-22 00:59)
+    ☐ Entity rotation & physics rotation should be loaded in euler angles
+    ☐ When entities save, their rotation is stored as euler angles
+    ☐ When entities are edited in the engine, they will change with quaternions
+  Debug UI:
+    ✔ Hook up some kind of debug/edit-mode UI (imgui) @done (17-01-19 22:32)
+    ✔ Configure imgui @done (17-01-22 00:59)
+    ✔ Hook up some relevant variables @done (17-01-22 00:59)
+  Particles:
+    ☐ Custom particle shapes
+    ☐ Emitter System
+  Network:
+    ☐ Add the network API to the engine and make the engine able to run without Graphics.
+    ☐ NetworkComponent for Entities should be setting positions of the other entities.
+    ☐ The level / world needs/Should be verified by the server with some kind of hash 
+      (network_version + map_name + user_name) or something like that
+    ☐ FlatBuffers
+      Calle rekommenderade denna, man kommer åt datan utan deserialize / unpacking.
+  Rendering:
+     ☐ Abstract
+       ☐ All the calls should go through the interface and not through the API.  
+       ☐ Remove GetAPI()
+         GetAPI() should be replaced with something else, e.g GetRenderInterface() or GetInterface() or GetGraphicsAPI(), simply GetAPI() does not communicate that it's getting the
+         graphics api from the engine, should the engine be responsible for the api or is it the renderer that should be responsible for that? Should the renderer be the one that dictates
+         everything? All the setting of states? Would make sense.
+       ☐ Resize Message 
+         Make it work, everything looks funky and does not work correctly when you have a requested size of 1920x1080 but it ends up as 1910x1057 or something
+CommonLib:
+  Math:
+    ☐ Quaternion -> Matrix
+        ☐ Convert quaternion rotation into matrix
+        ☐ Convert matrix rotation into quaternion
+  Containers:
+    ☐ GrowingArray might be broken
+
+

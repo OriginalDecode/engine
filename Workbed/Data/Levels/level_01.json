@@ -14,12 +14,6 @@
 			"rotation" : [0,5,0.5,0.5]
 		},
 		"object" : 	{ 
-			"entity":"Data/Levels/wall_entity.json", 
-			"position" : [ 100, 2, 25 ],
-			"scale" : [1,1,1],
-			"rotation" : [0,0,0]
-		},
-		"object" : 	{ 
 			"entity":"Data/Levels/spotlight.json", 
 			"position" : [ 99, 50, 31 ],
 			"range" : 100,
@@ -32,10 +26,6 @@
 			"position" : [ 50, 4, 50 ],
 			"color": [ 0, 0, 255 ],
 			"range" : 10
-		},
-		"player" : {
-			"entity" : "Data/Levels/player.json",
-			"position" : [ 0, 10, 5]
 		}
 	}	
 }

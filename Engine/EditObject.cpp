@@ -97,7 +97,6 @@ void EditObject::EditLight()
 		ss << "LightComponent" << m_ID;
 		ImGui::SetNextWindowPos(ImVec2(300.f, ImGui::GetWindowSize().y));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-		//if (ImGui::Begin(ss.str().c_str(), &m_EditLight, ImGuiWindowFlags_NoTitleBar))
 		if (ImGui::BeginChildFrame(0, ImVec2(300.f, ImGui::GetWindowSize().y / 2)))
 		{
 			static float rgb[3];

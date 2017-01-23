@@ -114,8 +114,6 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 
 			if (debug.m_OBB.Inside(new_post))
 			{
-				PostMaster::GetInstance()->SendMessage(OnLeftClick());
-
 				entity_collisions collision;
 				collision.m_ID = e;
 				collision.m_Position = new_post;

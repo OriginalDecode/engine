@@ -15,17 +15,18 @@
 #include <sstream>
 #include "Game.h"
 #include <imgui.h>
+#include "../Input/InputHandle.h"
+#include "../Input/InputWrapper.h"
 bool Application::Initiate()
 {
 	myEngine = Hex::Engine::GetInstance();
-	myCamera = myEngine->GetCamera();
-
 	mySynchronizer = myEngine->GetSynchronizer();
-	myGame = new Game;
+
+	/*myGame = new Game;
 	if (!myGame->Initiate())
-		return false;
+		return false;*/
 
-
+	m_States.PushState(&m_Game, StateStack::MAIN);
 	//Keep at the end of initiate...
 	myLogicThread = new std::thread([&] { Application::Update(); });
 	return true;
@@ -38,17 +39,26 @@ void Application::Update()
 		float deltaTime = myEngine->GetDeltaTime();
 
 		myEngine->UpdateInput();
-		myGame->Update(deltaTime);
+		InputWrapper* input_wrapper = myEngine->GetInputHandle()->GetInputWrapper();
+		if (input_wrapper->OnDown(KButton::P))
+		{
+			m_States.PauseCurrentState();
+		}
 
-		/*std::stringstream ss;
-		ss << "m_camera_position\n" <<
-		"X : " << myCamera->GetPosition().x << "\n" <<
-		"Y : " << myCamera->GetPosition().y << "\n" <<
-		"Z : " << myCamera->GetPosition().z;
+		if (input_wrapper->OnDown(KButton::O))
+		{
+			m_States.ResumeCurrentState();
+		}
 
-		myEngine->AddDebugText(ss.str());*/
-		//myEngine->Render();
-		
+
+
+		if (!m_States.UpdateCurrentState(deltaTime))
+		{
+			mySynchronizer->Quit();
+		}
+
+		//myGame->Update(deltaTime);
+
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();
 	}
@@ -77,7 +87,8 @@ void Application::OnActive()
 
 void Application::OnExit()
 {
-	myGame->CleanUp();
+	//myGame->CleanUp();
+	m_States.Clear();
 	myEngine->OnExit();
 	CleanUp();
 }
@@ -104,10 +115,6 @@ bool Application::CleanUp()
 
 	SAFE_DELETE(myLogicThread);
 	if (myLogicThread)
-		return false;
-
-	SAFE_DELETE(myGame);
-	if (myGame)
 		return false;
 
 	return true;

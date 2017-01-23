@@ -42,8 +42,14 @@ Engine Tasks:
          GetAPI() should be replaced with something else, e.g GetRenderInterface() or GetInterface() or GetGraphicsAPI(), simply GetAPI() does not communicate that it's getting the
          graphics api from the engine, should the engine be responsible for the api or is it the renderer that should be responsible for that? Should the renderer be the one that dictates
          everything? All the setting of states? Would make sense.
-       ☐ Resize Message 
-         Make it work, everything looks funky and does not work correctly when you have a requested size of 1920x1080 but it ends up as 1910x1057 or something
+     ☐ Resize Message 
+        Make it work, everything looks funky and does not work correctly when you have a requested size of 1920x1080 but it ends up as 1910x1057 or something
+     ☐ Finish the current render frame before initiating / removing a main/sub state.
+StateStack:
+  ☐ Move to engine
+    States are still game-bound but having the statestack in the Engine should make it easier to move between projects
+
+
 CommonLib:
   Math:
     ☐ Quaternion -> Matrix

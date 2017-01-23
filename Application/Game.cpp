@@ -17,87 +17,72 @@
 #include "../Input/InputHandle.h"
 
 #include <RenderCommand_Shared.h>
-#include <PhysicsManager.h>
 #include <PostMaster.h>
 #include <OnLeftClick.h>
 #include <imgui.h>
-bool Game::Initiate()
+#include "StateStack.h"
+
+void Game::InitState(StateStack* state_stack)
 {
-	myEngine = Hex::Engine::GetInstance();
-	mySynchronizer = myEngine->GetSynchronizer();
+	m_StateStack = state_stack;
 
-	myEngine->LoadLevel("Data/Levels/level_01.json");
+	m_Engine = Hex::Engine::GetInstance();
+	m_Synchronizer = m_Engine->GetSynchronizer();
 
-	myPicker = new Hex::CMousePicker;
+	m_Engine->LoadLevel("Data/Levels/level_01.json");
+	m_Picker = new Hex::CMousePicker;
 
-	myEngine->ToggleVsync(); //settings
-	m_Camera = myEngine->GetCamera();
+	m_Engine->ToggleVsync(); //settings
+	m_Camera = m_Engine->GetCamera();
 
+	m_ModelKey = m_Engine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Cube.json").c_str();
 
-	CU::Plane<float> plane0; plane0.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 5.f), CU::Vector3f(0.f, 0.f, -1.f));
-	CU::Plane<float> plane1; plane1.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 10.f), CU::Vector3f(0.f, 0.f, 1.f));
-
-	CU::Plane<float> plane2; plane2.InitWithPointAndNormal(CU::Vector3f(5.f, 0.f, 7.5f), CU::Vector3f(1.f, 0.f, 0.f));
-	CU::Plane<float> plane3; plane3.InitWithPointAndNormal(CU::Vector3f(0.f, 0.f, 7.5f), CU::Vector3f(-1.f, 0.f, 0.f));
-
-	CU::Plane<float> plane4; plane4.InitWithPointAndNormal(CU::Vector3f(0.f, -5.f, 7.5f), CU::Vector3f(0.f, -1.f, 0.f));
-	CU::Plane<float> plane5; plane5.InitWithPointAndNormal(CU::Vector3f(0.f, 5.f, 7.5f), CU::Vector3f(0.f, 1.f, 0.f));
-
-	m_PlaneVolume.AddPlane(plane0);
-	m_PlaneVolume.AddPlane(plane1);
-	m_PlaneVolume.AddPlane(plane2);
-	m_PlaneVolume.AddPlane(plane3);
-	m_PlaneVolume.AddPlane(plane4);
-	m_PlaneVolume.AddPlane(plane5);
-
-	m_ModelKey = myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Cube.json");
-
-	PostMaster::GetInstance()->Subscribe(eMessageType::COLLIDED, this);
-
-	return true;
+	m_PauseState.InitState(m_StateStack);
 }
 
-bool Game::CleanUp()
+void Game::EndState()
 {
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::COLLIDED, this);
+	SAFE_DELETE(m_Picker);
+}
 
-	SAFE_DELETE(myPicker);
-	if (myPicker)
-		return false;
-
-	myTerrain.RemoveAll();
-	if (myTerrain.Size() > 0)
-		return false;
-
-	return true;
+void Game::Render(bool render_through)
+{
+	render_through;
+	//what do?
 }
 
 void Game::Update(float dt)
 {
-	InputWrapper* input_wrapper = myEngine->GetInputHandle()->GetInputWrapper();
+	if (m_Paused)
+		return;
 
-	myFrameCount++;
-	myAverageFPS += myEngine->GetFPS();
-	myTime -= dt;
-	if (myTime <= 0.f)
+	m_FrameCount++;
+	m_AverageFPS += m_Engine->GetFPS();
+	m_Time -= dt;
+	if (m_Time <= 0.f)
 	{
-		myFPSToPrint = static_cast<u32>(myAverageFPS / myFrameCount);
-		myFrameCount = 0;
-		myAverageFPS = 0.f;
-		myTime = 1.f;
+		m_FPSToPrint = u32(m_AverageFPS / m_FrameCount);
+		m_FrameCount = 0;
+		m_AverageFPS = 0.f;
+		m_Time = 1.f;
 	}
 
 
+	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
 	if (input_wrapper->IsDown(MouseInput::LEFT))
 	{
-		CU::Vector3f ray_dir = myPicker->GetCurrentRay(input_wrapper->GetCursorPos());
+		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
 		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z));
 	}
 
-	
+	if (input_wrapper->OnDown(KButton::ESCAPE))
+	{
+		m_StateStack->PopCurrentMainState();
+	}
+
 	if (input_wrapper->IsDown(MouseInput::RIGHT))
 	{
-		m_Camera->Update(myEngine->GetInputHandle()->GetDeltaCursorPos());
+		m_Camera->Update(m_Engine->GetInputHandle()->GetDeltaCursorPos());
 	}
 
 	{
@@ -124,25 +109,5 @@ void Game::Update(float dt)
 	if (input_wrapper->IsDown(KButton::X))
 		m_Camera->Move(Hex::eDirection::DOWN, -50.f * dt);
 
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::PARTICLE, CU::Vector3f(5.f, 5.f, 5.f)));
-
-	//CU::Vector2f cur_pos = myEngine->GetInputHandle()->GetDeltaCursorPos();
-	//std::stringstream ss;
-	//ss << "FPS : " << myEngine->GetFPS()
-	//	<< "\nAverage FPS : " << myFPSToPrint
-	//	<< "\nDeltaTime:" << dt
-	//	<< "\n" << Hex::Engine::GetInstance()->GetLocalTimeAsString()
-	//	<< "\ncursor_pos : \n" << cur_pos.x << "\n" << cur_pos.y
-	//	<< "\nCollision : " << (m_collision ? "true" : "false");
-	//myEngine->AddDebugText(ss.str());
-
-
-
-	myEngine->GetEntityManager()->Update(dt);
-}
-
-void Game::ReceiveMessage(const OnLeftClick& message)
-{
-	int apa;
-	apa = 5;
+	m_Engine->GetEntityManager()->Update(dt);
 }

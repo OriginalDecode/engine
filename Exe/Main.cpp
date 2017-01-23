@@ -108,6 +108,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	} while (applicationIsRunning == true);
 
+	newApplication->OnExit();
 	delete newApplication;
 	newApplication = nullptr;
 	return 0;

@@ -48,7 +48,14 @@ Engine Tasks:
 StateStack:
   ☐ Move to engine
     States are still game-bound but having the statestack in the Engine should make it easier to move between projects
-
+World:
+  ☐ Quadtree / Octree
+     The world needs a basic implementation of a Quadtree or an Octree
+  ☐ Create the World - Patch - Entity hirarchy
+    The patch will most likely be a dweller in the world, the world will have an octree which we place the patches within. The patches will be on level 2 of each node in the tree
+    and the entities will the populate the remaining space - sounds reasonable?
+  ☐ Create world patches as dwellers in the World.
+    The world might be a 2D Array with patches?
 
 CommonLib:
   Math:

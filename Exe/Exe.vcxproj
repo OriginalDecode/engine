@@ -213,7 +213,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\TimeManager\;$(SolutionDir)CommonLib\;$(SolutionDir);$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Engine_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CommonLib_$(Configuration).lib;DL_Debug_$(Configuration).lib;EntitySystem_$(Configuration).lib;Input_$(Configuration).lib;Physics_$(Configuration).lib;PostMaster_$(Configuration).lib;Timer_$(Configuration).lib;Engine_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libc.lib</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>

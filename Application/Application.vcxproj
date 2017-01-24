@@ -288,29 +288,6 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="PauseState.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CommonLib\CommonLib.vcxproj">
-      <Project>{dbc8372d-e04f-4bbb-8964-12022adca9f6}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\DL_Debug\DL_Debug.vcxproj">
-      <Project>{d924f659-a78c-4b48-a76e-49600a883990}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\Engine.vcxproj">
-      <Project>{f6bfc4a9-1a8d-4564-b2a7-71a1ecbd78e7}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\EntitySystem\EntitySystem.vcxproj">
-      <Project>{2fc680bf-8cb1-4f07-97d0-7b7871989b9e}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Input\Input.vcxproj">
-      <Project>{bd22ff31-48a5-4061-ab37-17e68e058912}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\PostMaster\PostMaster.vcxproj">
-      <Project>{ef362edc-8fff-400b-a5ff-05a9bc551d65}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Timer\Timer.vcxproj">
-      <Project>{969d7f97-c324-4e79-b073-12ce82554526}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

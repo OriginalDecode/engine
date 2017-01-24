@@ -1,5 +1,5 @@
 #pragma once
-#include "State.h"
+#include <State.h>
 
 class CPauseState : public State
 {

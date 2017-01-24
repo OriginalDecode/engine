@@ -1,6 +1,5 @@
 #pragma once
-
-#include "StateStack.h"
+#include <StateStack.h>
 #include "Game.h"
 namespace Hex
 {
@@ -34,8 +33,8 @@ private:
 	/* Threading */
 	std::thread* myLogicThread;
 	volatile bool myQuitFlag = false;
+
 	Game m_Game;
-	/* General */
 	Hex::Engine* myEngine;
 	Hex::Synchronizer* mySynchronizer;
 

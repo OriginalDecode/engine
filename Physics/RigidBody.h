@@ -11,7 +11,7 @@ class btTriangleIndexVertexArray;
 
 
 
-struct ControllerState;
+//struct ControllerState;
 
 class RigidBody : public CollisionObject
 {
@@ -33,7 +33,7 @@ public:
 	const CU::Matrix44f& GetOrientation();
 	void Impulse(const CU::Vector3f& anImpulseVector);
 	CU::Vector3f GetLinearVelocity();
-	void UpdateOrientation(const ControllerState& controller_state);
+	//void UpdateOrientation(const ControllerState& controller_state);
 	float GetMass() { return myMass; }
 	float GetGravity() { return myGravity; }
 	bool IsEnabled() { return m_IsEnabled; }

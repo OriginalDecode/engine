@@ -19,8 +19,8 @@
 #include <RenderCommand_Shared.h>
 #include <PostMaster.h>
 #include <OnLeftClick.h>
-#include <imgui.h>
-#include "StateStack.h"
+#include <StateStack.h>
+#include <Math/Vector/Vector.h>
 
 void Game::InitState(StateStack* state_stack)
 {
@@ -36,6 +36,8 @@ void Game::InitState(StateStack* state_stack)
 	m_Camera = m_Engine->GetCamera();
 
 	m_ModelKey = m_Engine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Cube.json").c_str();
+
+	m_World.Initiate(CU::Vector3f(256,0,256)); //Might be a v2 instead and a set y pos 
 
 	m_PauseState.InitState(m_StateStack);
 }

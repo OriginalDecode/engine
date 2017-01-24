@@ -1,5 +1,7 @@
 #pragma once
-#include "State.h"
+#include <State.h>
+#include <World.h>
+
 #include "PauseState.h"
 namespace Hex
 {
@@ -22,6 +24,7 @@ public:
 	void Render(bool render_through) override;
 
 private:
+	World m_World;
 	CPauseState m_PauseState;
 
 	Hex::Camera* m_Camera = nullptr;

@@ -126,25 +126,25 @@
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)Input\;$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|x64'">
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)Input\;$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)Input\;$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|x64'">
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)Input\;$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -167,7 +167,7 @@
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
-      <AdditionalIncludeDirectories>$(SolutionDir)CommonLib\;$(SolutionDir)Engine\;$(SolutionDir)Include\Bullet_Physics\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)Engine\;$(SolutionDir)Include\Bullet_Physics\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Lib>
@@ -182,7 +182,7 @@
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
-      <AdditionalIncludeDirectories>$(SolutionDir)CommonLib\;$(SolutionDir)Engine\;$(SolutionDir)Include\Bullet_Physics\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)Engine\;$(SolutionDir)Include\Bullet_Physics\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Lib>
@@ -224,7 +224,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)CommonLib\;$(SolutionDir)Engine\;$(SolutionDir)Include\Bullet_Physics\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)Engine\;$(SolutionDir)Include\Bullet_Physics\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -244,7 +244,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)CommonLib\;$(SolutionDir)Engine\;$(SolutionDir)Include\Bullet_Physics\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)Engine\;$(SolutionDir)Include\Bullet_Physics\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>

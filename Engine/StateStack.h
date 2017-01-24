@@ -1,6 +1,6 @@
 #pragma once
-#include <standard_datatype.hpp>
-#include "../CommonLib/DataStructures/GrowingArray.h"
+#include "snowblind_shared.h"
+#include <DataStructures/GrowingArray.h>
 
 class State;
 typedef CU::GrowingArray<State*> SubStateContainer;

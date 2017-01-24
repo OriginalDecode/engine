@@ -51,6 +51,7 @@ namespace Hex
 		SAFE_DELETE(myVertexBuffer);
 		SAFE_RELEASE(myConstantBuffer);
 		SAFE_DELETE(myConstantStruct);
+		SAFE_RELEASE(m_GeometryBuffer);
 	}
 
 	void CEmitterInstance::Update(float aDeltaTime)

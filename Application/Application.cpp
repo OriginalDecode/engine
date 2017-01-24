@@ -2,16 +2,9 @@
 #include <thread>
 
 #include <Engine.h>
-#include <Camera.h>
-
-#include <Sprite.h>
-
-#include <PointLight.h>
-
 #include <Synchronizer.h>
 #include <RenderCommand.h>
-#include <SystemMonitor.h>
-#include <EngineDefines.h>
+
 #include <sstream>
 #include "Game.h"
 #include <imgui.h>

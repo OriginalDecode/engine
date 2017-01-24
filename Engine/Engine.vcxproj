@@ -154,29 +154,29 @@
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|x64'">
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir);$(VULKAN_SDK)\Include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(VULKAN_SDK)\Bin\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|x64'">
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir);$(VULKAN_SDK)\Include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(VULKAN_SDK)\Bin\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -225,7 +225,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Matrix\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\Math\Matrix\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -419,6 +419,8 @@
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteModel.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="StateStack.h" />
     <ClInclude Include="stb_rect_pack.h" />
     <ClInclude Include="stb_textedit.h" />
     <ClInclude Include="stb_truetype.h" />
@@ -431,11 +433,13 @@
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TGA32.h" />
+    <ClInclude Include="TreeNode.h" />
     <ClInclude Include="VertexStructs.h" />
     <ClInclude Include="VertexTypes.h" />
     <ClInclude Include="VertexWrapper.h" />
     <ClInclude Include="Vulkan.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
@@ -492,6 +496,7 @@
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteModel.cpp" />
+    <ClCompile Include="StateStack.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|Win32'">Create</PrecompiledHeader>
@@ -514,15 +519,14 @@
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TGA32.cpp" />
+    <ClCompile Include="TreeNode.cpp" />
     <ClCompile Include="Vulkan.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonLib\CommonLib.vcxproj">
       <Project>{dbc8372d-e04f-4bbb-8964-12022adca9f6}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\DL_Debug\DL_Debug.vcxproj">
-      <Project>{d924f659-a78c-4b48-a76e-49600a883990}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Input\Input.vcxproj">
       <Project>{bd22ff31-48a5-4061-ab37-17e68e058912}</Project>

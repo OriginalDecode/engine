@@ -146,25 +146,25 @@
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)lib\</OutDir>
-    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|x64'">
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)lib\</OutDir>
-    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)lib\</OutDir>
-    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|x64'">
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)lib\</OutDir>
-    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -189,7 +189,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)PostMaster\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)EntitySystem\;$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)Engine\;$(SolutionDir)DL_Debug\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -204,7 +204,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Engine\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -251,7 +251,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Engine\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -268,7 +268,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Engine\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -282,26 +282,30 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="PauseState.h" />
-    <ClInclude Include="State.h" />
-    <ClInclude Include="StateStack.h" />
-    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="PauseState.cpp" />
-    <ClCompile Include="StateStack.cpp" />
-    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonLib\CommonLib.vcxproj">
+      <Project>{dbc8372d-e04f-4bbb-8964-12022adca9f6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\DL_Debug\DL_Debug.vcxproj">
+      <Project>{d924f659-a78c-4b48-a76e-49600a883990}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\Engine.vcxproj">
       <Project>{f6bfc4a9-1a8d-4564-b2a7-71a1ecbd78e7}</Project>
     </ProjectReference>
     <ProjectReference Include="..\EntitySystem\EntitySystem.vcxproj">
       <Project>{2fc680bf-8cb1-4f07-97d0-7b7871989b9e}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Physics\Physics.vcxproj">
-      <Project>{0eb04af7-d7ca-4d95-ac81-a62d84292a93}</Project>
+    <ProjectReference Include="..\Input\Input.vcxproj">
+      <Project>{bd22ff31-48a5-4061-ab37-17e68e058912}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\PostMaster\PostMaster.vcxproj">
+      <Project>{ef362edc-8fff-400b-a5ff-05a9bc551d65}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Timer\Timer.vcxproj">
       <Project>{969d7f97-c324-4e79-b073-12ce82554526}</Project>

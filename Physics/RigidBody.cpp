@@ -4,7 +4,6 @@
 #include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
 
 #include <Utilities.h>
-#include "ControllerInput.h"
 
 RigidBody::RigidBody()
 {
@@ -194,14 +193,14 @@ CU::Vector3f RigidBody::GetLinearVelocity()
 {
 	return CU::Vector3f(myBody->getLinearVelocity().getX(), myBody->getLinearVelocity().getY(), myBody->getLinearVelocity().getZ());
 }
-
-void RigidBody::UpdateOrientation(const ControllerState& controller_state)
-{
-	m_CenterPoint.y -= ((float)controller_state.m_ThumbRY / SHRT_MAX) * 0.01f;
-	m_CenterPoint.x += ((float)controller_state.m_ThumbRX / SHRT_MAX) * 0.01f;
-
-	m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
-
-	m_Pitch = CU::Quaternion(CU::Vector3f(1.f, 0.f, 0.f), m_CenterPoint.y);
-	m_Yaw = CU::Quaternion(CU::Vector3f(0.f, 1.f, 0.f), m_CenterPoint.x);
-}
+//
+//void RigidBody::UpdateOrientation(const ControllerState& controller_state)
+//{
+//	m_CenterPoint.y -= ((float)controller_state.m_ThumbRY / SHRT_MAX) * 0.01f;
+//	m_CenterPoint.x += ((float)controller_state.m_ThumbRX / SHRT_MAX) * 0.01f;
+//
+//	m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
+//
+//	m_Pitch = CU::Quaternion(CU::Vector3f(1.f, 0.f, 0.f), m_CenterPoint.y);
+//	m_Yaw = CU::Quaternion(CU::Vector3f(0.f, 1.f, 0.f), m_CenterPoint.x);
+//}

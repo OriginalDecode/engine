@@ -160,7 +160,6 @@ namespace Hex
 		myRenderer = new Renderer;
 		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
 
-		myTimeManager = new CU::TimeManager;
 
 		m_PhysicsManager = new PhysicsManager;
 
@@ -216,7 +215,6 @@ namespace Hex
 
 		SAFE_DELETE(myCamera);
 		SAFE_DELETE(myFontManager);
-		SAFE_DELETE(myTimeManager);
 
 
 		SAFE_DELETE(m_PhysicsManager);
@@ -411,10 +409,10 @@ namespace Hex
 		if (!HasInitiated())
 			return;
 
-		m_DeltaTime = myTimeManager->GetDeltaTime();
+		m_DeltaTime = myTimeManager.GetDeltaTime();
 		if (m_States[(u16)eEngineStates::LOADING] == FALSE)
 		{
-			myTimeManager->Update();
+			myTimeManager.Update();
 			myAssetsContainer->Update();
 		}
 		myRenderer->Render();
@@ -669,12 +667,12 @@ namespace Hex
 
 	float Engine::GetFPS()
 	{
-		return myTimeManager->GetFPS();
+		return myTimeManager.GetFPS();
 	}
 
 	float Engine::GetFrameTime()
 	{
-		return myTimeManager->GetFrameTime();
+		return myTimeManager.GetFrameTime();
 	}
 
 	std::string Engine::GetAPIName()
@@ -745,12 +743,12 @@ namespace Hex
 
 	void Engine::OnPause()
 	{
-		myTimeManager->Pause();
+		myTimeManager.Pause();
 	}
 
 	void Engine::OnResume()
 	{
-		myTimeManager->Start();
+		myTimeManager.Start();
 	}
 
 	void Engine::OnExit()

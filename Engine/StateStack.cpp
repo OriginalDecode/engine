@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "StateStack.h"
 #include "State.h"
 

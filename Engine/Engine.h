@@ -5,7 +5,7 @@
 
 #include <CommonLib/Math/Vector/Vector.h>
 #include <CommonLib/Threadpool.h>
-
+#include <TimeManager.h>
 #include "snowblind_shared.h"
 #include <string>
 
@@ -19,11 +19,6 @@ typedef HWND__* HWND;
 class InputHandle;
 class EntityManager;
 class PhysicsManager;
-
-namespace CommonUtilities
-{
-	class TimeManager;
-}
 
 struct SLocalTime
 {
@@ -214,7 +209,7 @@ namespace Hex
 		PhysicsManager* m_PhysicsManager			= nullptr;
 
 		CFontManager* myFontManager					= nullptr;
-		CU::TimeManager* myTimeManager				= nullptr;
+		CU::TimeManager myTimeManager;
 		Synchronizer* mySynchronizer				= nullptr;
 		Renderer* myRenderer						= nullptr;
 

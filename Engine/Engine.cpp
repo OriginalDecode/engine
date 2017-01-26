@@ -95,11 +95,11 @@ namespace Hex
 	}
 #endif
 
-	bool Engine::InitiateDebugSystem(InputHandle* input_handle)
+	/*bool Engine::InitiateDebugSystem(InputHandle* input_handle)
 	{
 		m_DebugSystem.Initiate(input_handle);
 		return true;
-	}
+	}*/
 
 	bool Engine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 	{
@@ -148,12 +148,12 @@ namespace Hex
 		mySynchronizer = new Synchronizer;
 		DL_ASSERT_EXP(mySynchronizer->Initiate(), "Engine : Failed to Initiate Synchronizer!");
 
-		m_DebugSystem.Initiate(m_InputHandle);
+		/*m_DebugSystem.Initiate(m_InputHandle);
 
 		m_DebugSystem.AddDebugMenuItem("Toggle VSync", [&]()
 		{
 			ToggleVsync();
-		});
+		});*/
 
 		myCamera = new Hex::Camera(myWindowSize.myWidth, myWindowSize.myHeight);
 		my2DCamera = new Hex::Camera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
@@ -162,10 +162,6 @@ namespace Hex
 
 
 		m_PhysicsManager = new PhysicsManager;
-
-
-
-
 
 		m_Threadpool.Initiate();
 
@@ -283,20 +279,7 @@ namespace Hex
 				{
 					ImGui::Text("Entity Creation");
 					ImGui::Separator();
-
-
-					/*if (ImGui::Button("New Entity", ImVec2(100.f, 25.f)))
-					{
-						int apa;
-						apa = 5;
-					}
-					if (ImGui::IsItemHovered())
-					{
-						ImGui::BeginTooltip();
-						ImGui::Text("Create a new Entity using a Blueprint.");
-						ImGui::EndTooltip();
-					}*/
-					//ImGui::SameLine();
+			
 					static bool new_bp = false;
 					if (ImGui::Button("New Blueprint", ImVec2(100.f, 25.f)))
 					{
@@ -416,13 +399,7 @@ namespace Hex
 		myRenderer->Render();
 
 		m_Threadpool.Update();
-		m_DebugSystem.Update();
 
-	}
-
-	void Engine::Render()
-	{
-		m_DebugSystem.Render();
 	}
 
 	void Engine::UpdateInput()
@@ -530,82 +507,9 @@ namespace Hex
 		if (ImGui::Begin(ss.str().c_str(), &m_IsEditingEntity, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
 		{
 			to_edit.Update();
-			//float x = 150.f;// ImGui::GetWindowSize().x;
-			//float y = 20.f;
-			//ImGui::Text(ss.str().c_str()); ImGui::Separator();
-
-			//if (ImGui::Button("Edit Light", ImVec2(x, y)))
-			//{
-			//	to_edit.SetComponentToEdit(EditObject::LIGHT);
-			//}
-
-			//if (ImGui::Button("Edit Graphics", ImVec2(x, y)))
-			//{
-			//	m_EditRender = !m_EditRender;
-			//}
-
-			//if (ImGui::Button("Edit AI", ImVec2(x, y)))
-			//{
-			//	m_EditLight = !m_EditLight;
-			//}
-
-			//if (ImGui::Button("Edit Network", ImVec2(x, y)))
-			//{
-			//	m_EditLight = !m_EditLight;
-			//}
-
-			//if (ImGui::Button("Edit Physics", ImVec2(x, y)))
-			//{
-			//	m_EditLight = !m_EditLight;
-			//}
-
-			//EditGraphicsComponent();
-
-
 			ImGui::End();
 		}
 		ImGui::PopStyleVar();
-	}
-
-	void Engine::EditGraphicsComponent()
-	{
-		//if (!m_EditRender)
-		//	return;
-
-		//std::stringstream ss;
-		//ss << "GraphicsComponent" << m_EntityToEdit;
-		//ImGui::SetNextWindowPos(ImVec2(300.f, ImGui::GetWindowSize().y));
-		//ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-		//if (ImGui::BeginChildFrame(0, ImVec2(300.f, ImGui::GetWindowSize().y / 2)))
-		//{
-		//	RenderComponent& l = m_EntityManager->GetComponent<RenderComponent>(m_EntityToEdit);
-
-		//	std::string model_path = l.myModelID.c_str();
-		//	char buff[512] = { 0 };
-		//	if (ImGui::InputText("Model", buff, 512))
-		//	{
-		//		ImGui::Text(buff);
-		//	}
-		//	else
-		//	{
-		//		ImGui::Text(model_path.c_str());
-		//	}
-
-
-
-		//	//char shader_path[512] = { 0 };
-		//	//ImGui::InputText("Shader", shader_path, 512);
-
-		//	ImGui::Separator();
-
-		//	if (ImGui::Button("Done"))
-		//	{
-		//		m_EditRender = !m_EditRender;
-		//	}
-
-		//	ImGui::EndChildFrame();
-		//}
-		//ImGui::PopStyleVar();
 	}
 
 	void Engine::SelectEntity(u32 e)
@@ -811,20 +715,4 @@ namespace Hex
 	{
 		return m_Threadpool;
 	}
-
-	void Engine::ToggleDebugMenu()
-	{
-		m_DebugSystem.GetDebugMenuIsActive() ? m_DebugSystem.DeactivateDebugMenu() : m_DebugSystem.ActivateDebugMenu();
-	}
-
-	void Engine::AddError(const std::string& error_message)
-	{
-		m_DebugSystem.AddToErrorList(error_message);
-	}
-
-	void Engine::AddDebugText(const std::string& debug_text)
-	{
-		m_DebugSystem.AddToDebugText(debug_text);
-	}
-
 };

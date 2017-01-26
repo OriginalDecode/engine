@@ -433,6 +433,7 @@
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TGA32.h" />
+    <ClInclude Include="TreeDweller.h" />
     <ClInclude Include="TreeNode.h" />
     <ClInclude Include="VertexStructs.h" />
     <ClInclude Include="VertexTypes.h" />
@@ -519,6 +520,7 @@
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TGA32.cpp" />
+    <ClCompile Include="TreeDweller.cpp" />
     <ClCompile Include="TreeNode.cpp" />
     <ClCompile Include="Vulkan.cpp" />
     <ClCompile Include="Window.cpp" />

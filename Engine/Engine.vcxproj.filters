@@ -97,6 +97,9 @@
     <Filter Include="Statestack">
       <UniqueIdentifier>{7fb703f8-e38c-4aff-ba23-4522a95ba148}</UniqueIdentifier>
     </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{4fa57eca-e053-4eb3-ac16-d5c53883127b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -268,8 +271,6 @@
     <ClInclude Include="AABB.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="Level.h" />
-    <ClInclude Include="LevelFactory.h" />
     <ClInclude Include="imconfig.h">
       <Filter>imgui</Filter>
     </ClInclude>
@@ -303,8 +304,19 @@
     <ClInclude Include="Components.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="World.h" />
-    <ClInclude Include="TreeNode.h" />
+    <ClInclude Include="Level.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelFactory.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeNode.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeDweller.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -454,8 +466,6 @@
     <ClCompile Include="AABB.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="Level.cpp" />
-    <ClCompile Include="LevelFactory.cpp" />
     <ClCompile Include="imgui.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
@@ -474,7 +484,18 @@
     <ClCompile Include="EditObject.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="World.cpp" />
-    <ClCompile Include="TreeNode.cpp" />
+    <ClCompile Include="Level.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelFactory.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeNode.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeDweller.cpp" />
   </ItemGroup>
 </Project>

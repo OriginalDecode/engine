@@ -70,3 +70,12 @@ CommonLib:
     ☐ GrowingArray might be broken
 
 
+!-- General thoughts --!
+
+ EntityManager should be renamed to ECSManager to better understand what it does
+ There should be a new class called NodeEntityManager that contains a list of
+ the systems and a list of all the entities in the node.
+ The Systems will request lists of entities from the NodeEntityManagers instead of 
+ from the EntityManager (ECSManager) and will then update accordingly.
+ The TreeDwellers will contain an entity & a list of all components that the entity has.
+ We will then be able to extract the information about the entity at load time

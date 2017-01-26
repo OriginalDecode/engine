@@ -1,6 +1,5 @@
 #pragma once
 
-#include "DebugSystem.h"
 #include "Window.h"
 
 #include <CommonLib/Math/Vector/Vector.h>
@@ -149,17 +148,6 @@ namespace Hex
 		void LoadLevel(const std::string& level_filepath);
 		void SaveLevel();
 
-
-
-		//_________________________________________
-		// Debug Handling
-		bool InitiateDebugSystem(InputHandle* input_handle);
-		void ToggleDebugMenu();
-		bool IsDebugMenuActive() { return m_DebugSystem.GetDebugMenuIsActive(); }
-		void AddError(const std::string& error_message);
-		void AddDebugText(const std::string& debug_text);
-
-
 		//_________________________________________
 		// Shader Creation
 		//This should probably be moved to the graphics API instead.
@@ -201,7 +189,7 @@ namespace Hex
 		SLocalTime myLocalTime;
 		HWND myHWND;
 		Window m_Window;
-		DebugSystem m_DebugSystem;
+		//DebugSystem m_DebugSystem;
 		EntityManager m_EntityManager;
 
 		InputHandle* m_InputHandle					= nullptr;

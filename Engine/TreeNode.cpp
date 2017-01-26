@@ -34,14 +34,11 @@ void TreeNode::SetPosition(CU::Vector3f position)
 
 void TreeNode::Update(float dt)
 {
+	RenderBox();
 	for (TreeNode* node : m_Children)
 	{
 		node->Update(dt);
 	}
-
-	RenderBox();
-
-
 }
 
 void TreeNode::RenderBox()

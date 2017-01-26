@@ -114,5 +114,5 @@ void Game::Update(float dt)
 
 
 	m_World.Update(dt);
-	//m_Engine->GetEntityManager()->Update(dt);
+	m_Engine->GetEntityManager().Update(dt);
 }

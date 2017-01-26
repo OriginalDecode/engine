@@ -2,9 +2,12 @@
 #include "ComponentContainer.h"
 #include "TypeID.h"
 #include "EntityTypes.h"
-#include "DataStructures/GrowingArray.h"
+#include "../CommonLib/DataStructures/GrowingArray.h"
 #include <atomic>
 #include "BaseComponent.h"
+
+typedef CU::GrowingArray<Entity> EntityArray;
+
 namespace Hex
 {
 	class Synchronizer;
@@ -23,9 +26,9 @@ public:
 	Entity CreateEntity();
 	void Clear();
 	void Update(float aDelta);
-	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter& aFilter);
+	const EntityArray& GetEntities(SComponentFilter& aFilter);
 
-	const CU::GrowingArray<Entity>& GetEntities();
+	const EntityArray& GetEntities();
 
 	template<typename T>
 	void AddComponent(Entity aEntity);

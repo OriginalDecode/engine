@@ -1,8 +1,8 @@
 #pragma once
 
 #include <bitset>
+#include "../EntitySystem/EntityManager.h"
 
-class EntityManager;
 class EditObject
 {
 public:
@@ -33,6 +33,6 @@ private:
 	s32 m_EditComponent = 0;
 	float m_ButtonX = 150.f;
 	float m_ButtonY = 20.f;
-	EntityManager* m_EntityManager = nullptr;
+	EntityManager* m_EntityManager;
 };
 

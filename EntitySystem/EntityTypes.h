@@ -1,7 +1,7 @@
 #pragma once
 #include "../Engine/snowblind_shared.h"
-#include "DataStructures/GrowingArray.h"
-#include "DataStructures/StaticArray.h"
+#include "../CommonLib/DataStructures/GrowingArray.h"
+#include "../CommonLib/DataStructures/StaticArray.h"
 
 #define MAX_COMPONENTS_COUNT 32
 

@@ -45,7 +45,7 @@ void EntityManager::Update(float aDelta)
 {
 	myDeltaTime = aDelta;
 	
-	for each(BaseSystem* system in mySystems)
+	for (BaseSystem* system : mySystems)
 	{
 		system->Update(myDeltaTime);
 	}

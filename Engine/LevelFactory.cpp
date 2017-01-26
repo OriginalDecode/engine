@@ -22,7 +22,7 @@
 void LevelFactory::Initiate()
 {
 	m_Engine = Hex::Engine::GetInstance();
-	m_EntityManager = m_Engine->GetEntityManager();
+	m_EntityManager = &m_Engine->GetEntityManager();
 	m_PhysicsManager = m_Engine->GetPhysicsManager();
 }
 

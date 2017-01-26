@@ -2,7 +2,7 @@
 
 #include <JSON/JSONReader.h>
 #include "snowblind_shared.h"
-
+#include <EntityManager.h>
 
 class EntityManager;
 class PhysicsManager;
@@ -36,7 +36,7 @@ private:
 	JSONReader m_LevelReader;
 
 	Hex::Engine* m_Engine			= nullptr;
-	EntityManager* m_EntityManager		= nullptr;
+	EntityManager* m_EntityManager;
 	PhysicsManager* m_PhysicsManager	= nullptr;
 
 

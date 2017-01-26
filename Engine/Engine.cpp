@@ -18,7 +18,7 @@
 #include "Terrain.h"
 #include "TerrainManager.h"
 
-#include <EntityManager.h>
+//#include <EntityManager.h>
 #include <PhysicsManager.h>
 
 #include "LevelFactory.h"
@@ -163,8 +163,6 @@ namespace Hex
 
 		m_PhysicsManager = new PhysicsManager;
 
-		m_EntityManager = new EntityManager;
-		m_EntityManager->Initiate();
 
 
 
@@ -175,15 +173,16 @@ namespace Hex
 		m_InputHandle->Initiate(myHWND, instance_handle);
 		m_InputHandle->AddController(0);
 
+		m_EntityManager.Initiate();
 
-		m_EntityManager->AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
-		m_EntityManager->AddSystem<CPhysicsSystem>();
-		m_EntityManager->AddSystem<CRenderSystem>();
-		m_EntityManager->AddSystem<CLightSystem>();
-		m_EntityManager->AddSystem<InputSystem>();
-		m_EntityManager->AddSystem<NetworkSystem>();
-		m_EntityManager->AddSystem<AISystem>();
-		m_EntityManager->AddSystem<CameraSystem>();
+		m_EntityManager.AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
+		m_EntityManager.AddSystem<CPhysicsSystem>();
+		m_EntityManager.AddSystem<CRenderSystem>();
+		m_EntityManager.AddSystem<CLightSystem>();
+		m_EntityManager.AddSystem<InputSystem>();
+		m_EntityManager.AddSystem<NetworkSystem>();
+		m_EntityManager.AddSystem<AISystem>();
+		m_EntityManager.AddSystem<CameraSystem>();
 
 
 		//ImGui_ImplDX11_Init(void* hwnd, ID3D11Device* device, ID3D11DeviceContext* device_context);
@@ -197,6 +196,7 @@ namespace Hex
 	bool Engine::CleanUp()
 	{
 		ImGui_ImplDX11_Shutdown();
+		m_EntityManager.CleanUp();
 
 		m_InputHandle->CleanUp();
 		SAFE_DELETE(m_InputHandle);
@@ -218,8 +218,6 @@ namespace Hex
 
 
 		SAFE_DELETE(m_PhysicsManager);
-		m_EntityManager->CleanUp();
-		SAFE_DELETE(m_EntityManager);
 
 		DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
 		SAFE_DELETE(myAPI);
@@ -521,7 +519,7 @@ namespace Hex
 		if (!m_IsEditingEntity)
 			return;
 
-		DebugComponent& debug = m_EntityManager->GetComponent<DebugComponent>(m_EntityToEdit);
+		DebugComponent& debug = m_EntityManager.GetComponent<DebugComponent>(m_EntityToEdit);
 		EditObject& to_edit = debug.m_EditObject;
 
 		std::stringstream ss;

@@ -9,6 +9,7 @@
 #include "snowblind_shared.h"
 #include <string>
 
+#include "../EntitySystem/EntityManager.h"
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -17,7 +18,6 @@ typedef HWND__* HWND;
 #endif
 
 class InputHandle;
-class EntityManager;
 class PhysicsManager;
 
 struct SLocalTime
@@ -131,7 +131,7 @@ namespace Hex
 		//_________________________________________
 		// Get Systems
 		Synchronizer* GetSynchronizer() { return mySynchronizer; }
-		EntityManager* GetEntityManager() { return m_EntityManager; }
+		EntityManager& GetEntityManager() { return m_EntityManager; }
 		PhysicsManager* GetPhysicsManager() { return m_PhysicsManager; }
 		Threadpool& GetThreadpool();
 		
@@ -202,10 +202,10 @@ namespace Hex
 		HWND myHWND;
 		Window m_Window;
 		DebugSystem m_DebugSystem;
+		EntityManager m_EntityManager;
 
 		InputHandle* m_InputHandle					= nullptr;
 
-		EntityManager* m_EntityManager				= nullptr;
 		PhysicsManager* m_PhysicsManager			= nullptr;
 
 		CFontManager* myFontManager					= nullptr;

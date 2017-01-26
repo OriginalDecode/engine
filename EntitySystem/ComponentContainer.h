@@ -1,7 +1,7 @@
 #pragma once
 #include "EntityTypes.h"
-#include "DataStructures/GrowingArray.h"
-#include "DataStructures/StaticArray.h"
+#include "../CommonLib/DataStructures/GrowingArray.h"
+#include "../CommonLib/DataStructures/StaticArray.h"
 
 struct SComponentFilter;
 struct BaseComponent;

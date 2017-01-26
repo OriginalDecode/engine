@@ -1,6 +1,11 @@
 #pragma once
 #include "TreeNode.h"
 
+namespace Hex
+{
+	class Synchronizer;
+};
+
 class World
 {
 public:
@@ -10,5 +15,7 @@ public:
 private:
 	TreeNode m_Root;
 	CU::Vector3f m_WorldPos;
+	Hex::Synchronizer* m_Synchronizer;
+	
 };
 

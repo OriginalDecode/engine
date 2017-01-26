@@ -38,6 +38,7 @@ void Game::InitState(StateStack* state_stack)
 	m_ModelKey = m_Engine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Cube.json").c_str();
 
 	m_World.Initiate(CU::Vector3f(256,0,256)); //Might be a v2 instead and a set y pos 
+	
 
 	m_PauseState.InitState(m_StateStack);
 }
@@ -111,5 +112,7 @@ void Game::Update(float dt)
 	if (input_wrapper->IsDown(KButton::X))
 		m_Camera->Move(Hex::eDirection::DOWN, -50.f * dt);
 
-	m_Engine->GetEntityManager()->Update(dt);
+
+	m_World.Update(dt);
+	//m_Engine->GetEntityManager()->Update(dt);
 }

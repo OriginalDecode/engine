@@ -34,10 +34,12 @@ bool Client::Initiate(HINSTANCE aHInstance, HWND aHWND, float aWindowsWidth, flo
 	myActor.Initiate();
 	InitDwellers();
 	myQuadTree.CreateRoot({ OFFSET_X + (800 * 0.5f), OFFSET_Y + (800 * 0.5f) }, 800 * 0.5f);
+
 	for (int i = 0; i < myDwellers.Size(); ++i)
 	{
 		myQuadTree.InsertObject(&myDwellers[i]);
 	}
+
 	myDelta = 0.16f;
 	myAverageFPS = 0;
 	return true;

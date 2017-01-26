@@ -1,6 +1,7 @@
 #include "EntityManager.h"
 #include "BaseSystem.h"
 #include <EngineDefines.h>
+#include "TranslationComponent.h"
 #define TRUE 1
 #define FALSE 0
 
@@ -53,6 +54,11 @@ void EntityManager::Update(float aDelta)
 const CU::GrowingArray<Entity>& EntityManager::GetEntities(SComponentFilter& aFilter)
 {
 	return myComponents->GetEntities(aFilter);
+}
+
+const CU::GrowingArray<Entity>& EntityManager::GetEntities()
+{
+	return GetEntities(CreateFilter<Requires<TranslationComponent>>());
 }
 
 float EntityManager::GetDeltaTime()

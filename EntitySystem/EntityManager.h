@@ -25,6 +25,8 @@ public:
 	void Update(float aDelta);
 	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter& aFilter);
 
+	const CU::GrowingArray<Entity>& GetEntities();
+
 	template<typename T>
 	void AddComponent(Entity aEntity);
 
@@ -38,12 +40,6 @@ public:
 
 	template <typename T>
 	void AddSystem();
-
-	template <typename T>
-	void AddSystem(Hex::Synchronizer* aSynchronizer);
-
-	template <typename T>
-	void AddSystem(PhysicsManager* aManager);
 
 	bool HasComponent(Entity e, SComponentFilter& filter);
 

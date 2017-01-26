@@ -2,6 +2,12 @@
 #include "snowblind_shared.h"
 #include <DataStructures/GrowingArray.h>
 #include <Math/Vector/Vector.h>
+
+namespace Hex
+{
+	class Synchronizer;
+};
+
 typedef CU::GrowingArray<Entity> EntityList;
 class TreeNode
 {
@@ -17,11 +23,14 @@ typedef CU::GrowingArray<TreeNode*> NodeList;
 	void SetPosition(CU::Vector3f position);
 	void Update(float dt);
 private:
+
+	void RenderBox();
+
 	CU::Vector3f m_CenterPosition;
 	float m_HalfWidth = 0.f;
 	TreeNode* m_Parent = nullptr;
 	NodeList m_Children;
 	EntityList m_Entities;
-
+	Hex::Synchronizer* m_Synchronizer = nullptr;
 
 };

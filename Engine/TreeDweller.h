@@ -38,6 +38,10 @@ public:
 	template <typename T>
 	void AddComponent(T* component);
 
+
+	Entity GetEntity() const;
+	const ComponentList& GetComponentPairList() const;
+
 private:
 	Entity m_Entity;
 	ComponentList m_ComponentList;

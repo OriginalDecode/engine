@@ -400,6 +400,7 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="NodeEntityManager.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />
@@ -481,6 +482,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="NodeEntityManager.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="RenderCommand.cpp" />

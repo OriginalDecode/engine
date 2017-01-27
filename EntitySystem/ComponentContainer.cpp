@@ -66,3 +66,9 @@ const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(SComponentFilte
 	}
 	return myEntitiesToReturn;
 }
+
+void CComponentContainer::RemoveComponent(Entity entity, BaseComponent* component, u32 component_id)
+{
+	myEntityComponents[entity][component_id]--;
+	myComponents[component_id].RemoveCyclic(component);
+}

@@ -317,6 +317,7 @@
       <Filter>World</Filter>
     </ClInclude>
     <ClInclude Include="TreeDweller.h" />
+    <ClInclude Include="NodeEntityManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -497,5 +498,6 @@
       <Filter>World</Filter>
     </ClCompile>
     <ClCompile Include="TreeDweller.cpp" />
+    <ClCompile Include="NodeEntityManager.cpp" />
   </ItemGroup>
 </Project>

@@ -20,6 +20,8 @@ public:
 
 	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter& aFilter);
 
+	void RemoveComponent(Entity entity, BaseComponent* component, u32 component_id);
+
 private:
 	CU::GrowingArray<ComponentArray> myComponents;
 	CU::GrowingArray<EntityComponentArray> myEntityComponents;

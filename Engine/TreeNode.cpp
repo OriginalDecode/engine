@@ -7,6 +7,7 @@ void TreeNode::Initiate(float halfwidth)
 {
 	m_HalfWidth = halfwidth;
 	m_Synchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
+	m_NodeEntityManager.Initiate();
 }
 
 void TreeNode::AddChild(TreeNode& child_node)
@@ -20,9 +21,14 @@ void TreeNode::AddParent(TreeNode& parent_node)
 	m_Parent = &parent_node;
 }
 
-void TreeNode::AddEntity(Entity entity)
+void TreeNode::AddEntity(TreeDweller* dweller)
 {
-	//Check if the entity is in a deeper level than parent
+	m_NodeEntityManager.AddEntity(dweller);
+}
+
+void TreeNode::AddEntity(TreeDweller* dweller, s32 node)
+{
+	m_Children[node]->AddEntity(dweller);
 }
 
 void TreeNode::SetPosition(CU::Vector3f position)
@@ -34,11 +40,20 @@ void TreeNode::SetPosition(CU::Vector3f position)
 
 void TreeNode::Update(float dt)
 {
+	if (m_Paused)
+		return;
 	RenderBox();
+	Hex::Engine::GetInstance()->GetEntityManager().SetActiveNodeManager(&m_NodeEntityManager);
+	m_NodeEntityManager.Update(dt);
 	for (TreeNode* node : m_Children)
 	{
 		node->Update(dt);
 	}
+}
+
+TreeNode& TreeNode::GetChildByIndex(s32 index)
+{
+	return *m_Children[index];
 }
 
 void TreeNode::RenderBox()

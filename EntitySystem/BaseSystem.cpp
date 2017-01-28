@@ -1,6 +1,6 @@
 #include "BaseSystem.h"
 
-
+#include "../Engine/NodeEntityManager.h"
 
 BaseSystem::BaseSystem(EntityManager& anEntityManager)
 	: myEntityManager(anEntityManager)
@@ -23,6 +23,8 @@ bool BaseSystem::HasFinished()
 
 const CU::GrowingArray<Entity>& BaseSystem::GetEntities()
 {
-	return myEntityManager.GetEntities(myFilter);
-}
+	//return myEntityManager.GetEntities(myFilter);
 
+
+	return myEntityManager.GetNodeManager()->GetEntities(myFilter);
+}

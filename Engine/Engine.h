@@ -30,7 +30,7 @@ class CAssetsContainer;
 class TerrainManager;
 
 typedef struct ID3D10Blob IBlob;
-
+class TreeDweller;
 namespace Hex
 {
 	enum eDeferredType;
@@ -145,7 +145,7 @@ namespace Hex
 		//_________________________________________
 		// Level Creation, Loading, Saving
 		CTerrain* CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize);
-		void LoadLevel(const std::string& level_filepath);
+		CU::GrowingArray<TreeDweller*> LoadLevel(const std::string& level_filepath);
 		void SaveLevel();
 
 		//_________________________________________

@@ -699,7 +699,7 @@ namespace Hex
 		return newTerrain;
 	}
 
-	void Engine::LoadLevel(const std::string& level_filepath)
+	CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepath)
 	{
 		m_States[(u16)eEngineStates::LOADING] = TRUE;
 		//m_IsLoadingLevel = true;
@@ -708,7 +708,7 @@ namespace Hex
 		level_factory.CreateLevel(level_filepath);
 
 		m_States[(u16)eEngineStates::LOADING] = FALSE;
-		//m_IsLoadingLevel = false;
+		return level_factory.GetDwellers();
 	}
 
 	Threadpool& Engine::GetThreadpool()

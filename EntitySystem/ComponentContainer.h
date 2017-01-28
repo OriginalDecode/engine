@@ -5,13 +5,21 @@
 
 struct SComponentFilter;
 struct BaseComponent;
+
+struct EntityComponent
+{
+	Entity m_Entity;
+	EntityComponentArray m_EntityArray;
+};
+
+
 class CComponentContainer
 {
 public:
 	CComponentContainer();
 	~CComponentContainer();
 
-	void AddEntity();
+	void AddEntity(Entity id);
 	void AddComponent(Entity anEntity, BaseComponent* aComponent, unsigned int aComponentID);
 	BaseComponent& GetComponent(Entity anEntity, unsigned int aComponentID);
 
@@ -24,7 +32,7 @@ public:
 
 private:
 	CU::GrowingArray<ComponentArray> myComponents;
-	CU::GrowingArray<EntityComponentArray> myEntityComponents;
+	CU::GrowingArray<EntityComponent> myEntityComponents;
 	CU::GrowingArray<Entity> myEntitiesToReturn;
 
 };

@@ -1,7 +1,6 @@
 #pragma once
 #include "ComponentFilter.h"
 #include "EntityManager.h"
-
 namespace Hex
 {
 	class Synchronizer;
@@ -22,7 +21,6 @@ public:
 
 	template<typename T>
 	T& GetComponent(Entity anEntity);
-
 
 private:
 	void operator=(BaseSystem&) = delete;

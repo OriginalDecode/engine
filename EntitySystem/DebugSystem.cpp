@@ -126,7 +126,7 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 
 	float prev_length = FLT_MAX;
 	entity_collisions closest;
-	Entity prev_entity = 0;
+	Entity prev_entity = -1;
 	for (const entity_collisions& collision : collisions)
 	{
 		float new_length = CU::Math::Length2(collision.m_Position - cam_pos);

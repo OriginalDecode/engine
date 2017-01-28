@@ -18,6 +18,7 @@
 #include <RigidBody.h>
 #include <GhostObject.h>
 #include "../hashlist.h"
+#include "TreeDweller.h"
 
 void LevelFactory::Initiate()
 {
@@ -35,7 +36,7 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 	const JSONElement& el = m_LevelReader.GetElement("root");
 
 
-	m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/t_1.tga"); }));
+	m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
 		CreateEntitiy(it->value["entity"].GetString(), it);
@@ -53,6 +54,9 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	Entity e = m_EntityManager->CreateEntity();
 
 	s32 debug_flags = 0;
+
+	m_DwellerList.Add(new TreeDweller);
+
 
 	CU::Vector3f pos;
 	m_LevelReader._ReadElement(it->value["position"], pos);
@@ -105,19 +109,26 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	CreateDebugComponent(e, hasLight, debug_flags);
 
+	m_DwellerList.GetLast()->Initiate(e);
+
 }
 
 void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position)
 {
 	m_EntityManager->AddComponent<TranslationComponent>(entity_id);
+
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+	m_DwellerList.GetLast()->AddComponent<TranslationComponent>(&component);
+
 	component.myOrientation.SetPosition(position);
 }
 
 void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
 {
 	m_EntityManager->AddComponent<RenderComponent>(entity_id);
+
 	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component);
 
 	const JSONElement& el = entity_reader.GetElement("graphics");
 	component.myModelID = m_Engine->LoadModel(
@@ -140,12 +151,15 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.scale = scale;
 	component.scale.w = 1.f;
 
+
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)
 {
 	m_EntityManager->AddComponent<PhysicsComponent>(entity_id);
+
 	PhysicsComponent& component = m_EntityManager->GetComponent<PhysicsComponent>(entity_id);
+	m_DwellerList.GetLast()->AddComponent<PhysicsComponent>(&component);
 
 	const JSONElement& el = entity_reader.GetElement("physics");
 	float object_mass = (float)el["mass"].GetDouble();
@@ -174,6 +188,7 @@ void LevelFactory::CreateCameraComponent(JSONReader& /*entity_reader*/, Entity e
 {
 	m_EntityManager->AddComponent<CameraComponent>(entity_id);
 	CameraComponent& component = m_EntityManager->GetComponent<CameraComponent>(entity_id);
+	m_DwellerList.GetLast()->AddComponent<CameraComponent>(&component);
 
 	component.m_Camera = Hex::Engine::GetInstance()->GetCamera();
 }
@@ -182,6 +197,7 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 {
 	m_EntityManager->AddComponent<LightComponent>(entity_id);
 	LightComponent& component = m_EntityManager->GetComponent<LightComponent>(entity_id);
+	m_DwellerList.GetLast()->AddComponent<LightComponent>(&component);
 
 	std::string type;
 	entity_reader.ReadElement("light", "type", type);
@@ -249,6 +265,8 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 {
 	m_EntityManager->AddComponent<DebugComponent>(e);
 	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
+	m_DwellerList.GetLast()->AddComponent<DebugComponent>(&component);
+
 	CU::Vector3f whd;
 	if (!isLight)
 	{
@@ -321,7 +339,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
 	Hex::CTerrain* terrain = Hex::Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
-	terrain->AddNormalMap("Data/Textures/t1_n.dds");
+	//terrain->AddNormalMap("Data/Textures/t1_n.dds");
 	/*
 	Work([&](std::string texture) {
 		Hex::CTerrain* terrain = m_Engine->CreateTerrain(texture, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));

@@ -6,7 +6,7 @@
 
 class EntityManager;
 class PhysicsManager;
-
+class TreeDweller;
 class LevelFactory
 {
 public:
@@ -14,7 +14,7 @@ public:
 
 	void Initiate();
 	bool CreateLevel(const std::string& level_path);
-
+	CU::GrowingArray<TreeDweller*> GetDwellers() { return m_DwellerList; }
 private:
 
 	void CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it);
@@ -31,7 +31,7 @@ private:
 	void CreateAIComponent(JSONReader& entity_reader, Entity entity_id);
 	void CreateNetworkComponent(JSONReader& entity_reader, Entity entity_id);
 
-
+	CU::GrowingArray<TreeDweller*> m_DwellerList;
 
 	JSONReader m_LevelReader;
 

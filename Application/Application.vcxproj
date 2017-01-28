@@ -288,6 +288,11 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="PauseState.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.vcxproj">
+      <Project>{f6bfc4a9-1a8d-4564-b2a7-71a1ecbd78e7}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

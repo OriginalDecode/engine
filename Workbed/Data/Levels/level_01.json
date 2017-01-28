@@ -3,13 +3,25 @@
 	{
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
-			"position" : [ 20, 5, 25 ],
+			"position" : [ 250, 5, 250 ],
 			"scale" : [1,2,1],
 			"rotation" : [0,0,1]
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
-			"position" : [ 25, 7, 23 ],
+			"position" : [ 350, 5, 250 ],
+			"scale" : [1,1,1],
+			"rotation" : [0,5,0.5,0.5]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/entity.json", 
+			"position" : [ 350, 5, 350 ],
+			"scale" : [1,1,1],
+			"rotation" : [0,5,0.5,0.5]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/entity.json", 
+			"position" : [ 250, 5, 350 ],
 			"scale" : [1,1,1],
 			"rotation" : [0,5,0.5,0.5]
 		},

@@ -30,7 +30,7 @@ Entity EntityManager::CreateEntity()
 {
 	Entity newEntity = myNextEntity++;
 
-	myComponents->AddEntity();
+	myComponents->AddEntity(newEntity);
 
 	return newEntity;
 }

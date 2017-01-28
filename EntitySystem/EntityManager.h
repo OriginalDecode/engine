@@ -7,7 +7,7 @@
 #include "BaseComponent.h"
 
 typedef CU::GrowingArray<Entity> EntityArray;
-
+class NodeEntityManager;
 namespace Hex
 {
 	class Synchronizer;
@@ -45,8 +45,13 @@ public:
 	void AddSystem();
 
 	bool HasComponent(Entity e, SComponentFilter& filter);
+	CU::GrowingArray<BaseSystem*> GetSystems() { return mySystems; }
 
+	void SetActiveNodeManager(NodeEntityManager* manager) { m_ActiveNode = manager; }
+	NodeEntityManager* GetNodeManager() { return m_ActiveNode; }
 private:
+	NodeEntityManager* m_ActiveNode = nullptr;
+
 	Entity myNextEntity = 0;
 	CComponentContainer* myComponents = nullptr;
 	CU::GrowingArray<BaseSystem*> mySystems;
@@ -55,7 +60,6 @@ private:
 
 	std::bitset<MAX_COMPONENTS_COUNT> myFinishedSystems;
 	short myNextFinish = 0;
-
 	bool IsSystemsFinished();
 
 };

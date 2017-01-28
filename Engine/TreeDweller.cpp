@@ -11,7 +11,7 @@ Entity TreeDweller::GetEntity() const
 	return m_Entity;
 }
 
-const ComponentList& TreeDweller::GetComponentPairList() const
+ComponentList& TreeDweller::GetComponentPairList()
 {
 	return m_ComponentList;
 }

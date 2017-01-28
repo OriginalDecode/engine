@@ -156,26 +156,11 @@ void QuadTree::InsertObject(TreeNode* aTreeNode, TreeDweller* anObject, int aCur
 
 	int index = 0;
 	bool straddle = false;
-	float deltaX;
-	float deltaY;
-
-	deltaX = anObject->GetPosition().x - aTreeNode->myPosition.x;
-	straddle = abs(deltaX) <= anObject->GetCircle().GetRadius();
-	if (deltaX > 0.f)
+	
+	for (s32 i = 0;)
 	{
-		index = 1;
 	}
 
-	if (straddle == false)
-	{
-		deltaY = anObject->GetPosition().y - aTreeNode->myPosition.y;
-		straddle = abs(deltaY) <= anObject->GetCircle().GetRadius();
-		if (deltaY > 0.f)
-		{
-			index += 2;
-		}
-
-	}
 
 
 	if (straddle == false)

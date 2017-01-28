@@ -401,6 +401,7 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="NodeEntityManager.h" />
+    <ClInclude Include="Octree.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />
@@ -483,6 +484,7 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="NodeEntityManager.cpp" />
+    <ClCompile Include="Octree.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="RenderCommand.cpp" />

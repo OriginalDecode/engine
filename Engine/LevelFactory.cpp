@@ -118,7 +118,7 @@ void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector
 	m_EntityManager->AddComponent<TranslationComponent>(entity_id);
 
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
-	m_DwellerList.GetLast()->AddComponent<TranslationComponent>(&component);
+	m_DwellerList.GetLast()->AddComponent<TranslationComponent>(&component, TreeDweller::TRANSLATION);
 
 	component.myOrientation.SetPosition(position);
 }
@@ -128,7 +128,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	m_EntityManager->AddComponent<RenderComponent>(entity_id);
 
 	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
-	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component);
+	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
 
 	const JSONElement& el = entity_reader.GetElement("graphics");
 	component.myModelID = m_Engine->LoadModel(
@@ -159,7 +159,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	m_EntityManager->AddComponent<PhysicsComponent>(entity_id);
 
 	PhysicsComponent& component = m_EntityManager->GetComponent<PhysicsComponent>(entity_id);
-	m_DwellerList.GetLast()->AddComponent<PhysicsComponent>(&component);
+	m_DwellerList.GetLast()->AddComponent<PhysicsComponent>(&component, TreeDweller::PHYSICS);
 
 	const JSONElement& el = entity_reader.GetElement("physics");
 	float object_mass = (float)el["mass"].GetDouble();
@@ -188,7 +188,7 @@ void LevelFactory::CreateCameraComponent(JSONReader& /*entity_reader*/, Entity e
 {
 	m_EntityManager->AddComponent<CameraComponent>(entity_id);
 	CameraComponent& component = m_EntityManager->GetComponent<CameraComponent>(entity_id);
-	m_DwellerList.GetLast()->AddComponent<CameraComponent>(&component);
+	m_DwellerList.GetLast()->AddComponent<CameraComponent>(&component, TreeDweller::CAMERA);
 
 	component.m_Camera = Hex::Engine::GetInstance()->GetCamera();
 }
@@ -197,7 +197,7 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 {
 	m_EntityManager->AddComponent<LightComponent>(entity_id);
 	LightComponent& component = m_EntityManager->GetComponent<LightComponent>(entity_id);
-	m_DwellerList.GetLast()->AddComponent<LightComponent>(&component);
+	m_DwellerList.GetLast()->AddComponent<LightComponent>(&component, TreeDweller::LIGHT);
 
 	std::string type;
 	entity_reader.ReadElement("light", "type", type);
@@ -250,14 +250,16 @@ void LevelFactory::CreateInputComponent(JSONReader& /*entity_reader*/, Entity en
 void LevelFactory::CreateAIComponent(JSONReader& /*entity_reader*/, Entity entity_id)
 {
 	m_EntityManager->AddComponent<AIComponent>(entity_id);
-	//AIComponent& component = m_EntityManager->GetComponent<AIComponent>(entity_id);
+	AIComponent& component = m_EntityManager->GetComponent<AIComponent>(entity_id);
+	m_DwellerList.GetLast()->AddComponent<AIComponent>(&component, TreeDweller::AI);
 	//read behaviour trees and stuff here...
 }
 
 void LevelFactory::CreateNetworkComponent(JSONReader& /*entity_reader*/, Entity entity_id)
 {
 	m_EntityManager->AddComponent<NetworkComponent>(entity_id);
-	//NetworkComponent& component = m_EntityManager->GetComponent<NetworkComponent>(entity_id);
+	NetworkComponent& component = m_EntityManager->GetComponent<NetworkComponent>(entity_id);
+	m_DwellerList.GetLast()->AddComponent<NetworkComponent>(&component, TreeDweller::NETWORK);
 
 }
 
@@ -265,7 +267,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 {
 	m_EntityManager->AddComponent<DebugComponent>(e);
 	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
-	m_DwellerList.GetLast()->AddComponent<DebugComponent>(&component);
+	m_DwellerList.GetLast()->AddComponent<DebugComponent>(&component, TreeDweller::DEBUG);
 
 	CU::Vector3f whd;
 	if (!isLight)

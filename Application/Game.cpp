@@ -30,7 +30,7 @@ void Game::InitState(StateStack* state_stack)
 	m_Synchronizer = m_Engine->GetSynchronizer();
 
 
-	m_World.Initiate(CU::Vector3f(256, 0, 256)); //Might be a v2 instead and a set y pos 
+	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
 	m_World.AddDwellers(m_Engine->LoadLevel("Data/Levels/level_01.json"));
 
 
@@ -101,15 +101,6 @@ void Game::Update(float dt)
 			m_Camera->RotateAroundY(-0.5f * dt);
 	}
 
-	if (input_wrapper->OnDown(KButton::NUMPAD0))
-		m_World.ToggleNode(0);
-	if (input_wrapper->OnDown(KButton::NUMPAD1))
-		m_World.ToggleNode(1);
-	if (input_wrapper->OnDown(KButton::NUMPAD4))
-		m_World.ToggleNode(2);
-	if (input_wrapper->OnDown(KButton::NUMPAD7))
-		m_World.ToggleNode(3);
-
 	if (input_wrapper->IsDown(KButton::W))
 		m_Camera->Move(Hex::eDirection::FORWARD, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::S))
@@ -125,5 +116,4 @@ void Game::Update(float dt)
 
 
 	m_World.Update(dt);
-	//m_Engine->GetEntityManager().Update(dt);
 }

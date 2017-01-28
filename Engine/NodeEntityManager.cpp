@@ -3,6 +3,7 @@
 #include <BaseSystem.h>
 #include "Engine.h"
 #include <EntityManager.h>
+
 void NodeEntityManager::Initiate()
 {
 	m_Systems = Hex::Engine::GetInstance()->GetEntityManager().GetSystems();
@@ -30,11 +31,6 @@ void NodeEntityManager::RemoveEntity(TreeDweller* entity)
 	}
 	m_Entities.RemoveCyclic(entity);
 }
-
-//void NodeEntityManager::AddSystem(BaseSystem* system)
-//{
-//	m_Systems.Add(system);
-//}
 
 void NodeEntityManager::Update(float dt)
 {

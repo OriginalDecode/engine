@@ -316,8 +316,13 @@
     <ClInclude Include="World.h">
       <Filter>World</Filter>
     </ClInclude>
-    <ClInclude Include="TreeDweller.h" />
-    <ClInclude Include="NodeEntityManager.h" />
+    <ClInclude Include="NodeEntityManager.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeDweller.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="Octree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -497,7 +502,12 @@
     <ClCompile Include="World.cpp">
       <Filter>World</Filter>
     </ClCompile>
-    <ClCompile Include="TreeDweller.cpp" />
-    <ClCompile Include="NodeEntityManager.cpp" />
+    <ClCompile Include="NodeEntityManager.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeDweller.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="Octree.cpp" />
   </ItemGroup>
 </Project>

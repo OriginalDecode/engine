@@ -1,6 +1,5 @@
 #pragma once
-#include "TreeNode.h"
-
+#include "Octree.h"
 namespace Hex
 {
 	class Synchronizer;
@@ -16,15 +15,12 @@ public:
 	void AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers);
 
 
-	void ToggleNode(s32 index);
+	//void ToggleNode(s32 index);
 
 private:
-	TreeNode m_Root;
-	CU::GrowingArray<TreeNode> tempchildern;
-
-
 	CU::Vector3f m_WorldPos;
 	Hex::Synchronizer* m_Synchronizer;
+	Octree m_Octree;
 	
 };
 

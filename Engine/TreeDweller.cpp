@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "TreeDweller.h"
+#include "TranslationComponent.h"
 
 void TreeDweller::Initiate(Entity entity)
 {
@@ -14,5 +15,17 @@ Entity TreeDweller::GetEntity() const
 ComponentList& TreeDweller::GetComponentPairList()
 {
 	return m_ComponentList;
+}
+
+const CU::Vector3f& TreeDweller::GetPosition() const
+{
+	for (const ComponentPair& pair : m_ComponentList)
+	{
+		if (pair.m_Type & TreeDweller::TRANSLATION)
+		{
+			return static_cast<TranslationComponent*>(pair.m_Component)->myOrientation.GetPosition();
+		}
+	}
+	return CU::Vector3f();
 }
 

@@ -38,7 +38,7 @@ Engine Tasks:
     ☐ The level / world needs/Should be verified by the server with some kind of hash 
       (network_version + map_name + user_name) or something like that
     ☐ FlatBuffers
-      Calle rekommenderade denna, man kommer åt datan utan deserialize / unpacking.
+      Calle recomended this, you can access the data without deserializing / unpacking messages
   Rendering:
      ☐ Abstract
        ☐ All the calls should go through the interface and not through the API.  
@@ -49,17 +49,22 @@ Engine Tasks:
      ☐ Resize Message 
         Make it work, everything looks funky and does not work correctly when you have a requested size of 1920x1080 but it ends up as 1910x1057 or something
      ☐ Finish the current render frame before initiating / removing a main/sub state.
-StateStack:
-  ☐ Move to engine
-    States are still game-bound but having the statestack in the Engine should make it easier to move between projects
-World:
-  ☐ Quadtree / Octree
-     The world needs a basic implementation of a Quadtree or an Octree
-  ☐ Create the World - Patch - Entity hirarchy
-    The patch will most likely be a dweller in the world, the world will have an octree which we place the patches within. The patches will be on level 2 of each node in the tree
-    and the entities will the populate the remaining space - sounds reasonable?
-  ☐ Create world patches as dwellers in the World.
-    The world might be a 2D Array with patches?
+  StateStack:
+    ✔ Move to engine @done (17-01-29 23:57)
+      States are still game-bound but having the statestack in the Engine should make it easier to move between projects
+  World:
+    ✔ Quadtree / Octree @done (17-01-29 23:57)
+       The world needs a basic implementation of a Quadtree or an Octree
+    ✔ Treenode updates entities by themselves. @done (17-01-29 23:57)
+  Memory:
+    ☐ Investigate Memory Allocators
+    ☐ Implement custom memory allocators
+      ☐ Linear Allocator
+      ☐ Stack Allocator
+      ☐ Circle Allocator
+      The main purpose for implementing custom allocators is to solve the potential memory lookup issue 
+      when creating new nodes in the octree.
+
 
 CommonLib:
   Math:
@@ -68,14 +73,3 @@ CommonLib:
         ☐ Convert matrix rotation into quaternion
   Containers:
     ☐ GrowingArray might be broken
-
-
-!-- General thoughts --!
-
- EntityManager should be renamed to ECSManager to better understand what it does
- There should be a new class called NodeEntityManager that contains a list of
- the systems and a list of all the entities in the node.
- The Systems will request lists of entities from the NodeEntityManagers instead of 
- from the EntityManager (ECSManager) and will then update accordingly.
- The TreeDwellers will contain an entity & a list of all components that the entity has.
- We will then be able to extract the information about the entity at load time

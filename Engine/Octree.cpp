@@ -48,10 +48,10 @@ void Octree::Update(float dt)
 {
 	m_Root.Update(dt);
 }
-
+#define MAX_DEPTH 8
 void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
 {
-	if (depth >= 8)
+	if (depth >= MAX_DEPTH)
 	{
 		node->AddEntity(dweller);
 		dweller->SetFirstNode(node);
@@ -91,14 +91,15 @@ void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
 		}
 	}
 
-	if (straddle == false && depth < 5 - 1)
+	if (straddle == false && depth < MAX_DEPTH - 1)
 	{
 		if (!node->GetChildByIndex(index))
 		{
-			node->AddChild(CreateNode(m_Position, m_HalfWidth, index), index);
+			node->AddChild(CreateNode(node->GetPosition(), node->GetHalfWidth(), index), index);
 			node->SetDepth(depth);
 
 		}
+
 		InsertDweller(node->GetChildByIndex(index), dweller, depth + 1);
 
 	}

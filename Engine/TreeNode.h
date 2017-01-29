@@ -13,7 +13,7 @@ class TreeNode
 {
 public:
 	TreeNode() = default;
-
+	~TreeNode();
 	void Initiate(float halfwidth);
 
 	void AddChild(TreeNode* child_node, s32 index);

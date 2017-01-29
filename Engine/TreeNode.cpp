@@ -3,15 +3,25 @@
 #include "Synchronizer.h"
 #include "RenderCommand.h"
 
+TreeNode::~TreeNode()
+{
+
+	for (s32 i = 0; i < 8; i++)
+	{
+		delete m_Children[i];
+		m_Children[i] = nullptr;
+	}
+}
+
 void TreeNode::Initiate(float halfwidth)
 {
 	m_HalfWidth = halfwidth;
 	m_Synchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
 	m_NodeEntityManager.Initiate();
 
-	for (TreeNode* node : m_Children)
+	for (s32 i = 0; i < 8; i++)
 	{
-		node = nullptr;
+		m_Children[i] = nullptr;
 	}
 }
 
@@ -41,7 +51,6 @@ void TreeNode::SetPosition(CU::Vector3f position)
 	m_CenterPosition = position;
 }
 
-#define RED CU::Vector4f(255.f,0.f,0.f,255.f)
 
 void TreeNode::Update(float dt)
 {
@@ -52,7 +61,7 @@ void TreeNode::Update(float dt)
 	m_NodeEntityManager.Update(dt);
 	for (TreeNode* node : m_Children)
 	{
-		if(!node) continue;
+		if (!node) continue;
 		node->Update(dt);
 	}
 }
@@ -62,37 +71,59 @@ TreeNode* TreeNode::GetChildByIndex(s32 index)
 	return m_Children[index];
 }
 
+#define RED CU::Vector4f(255.f,0.f,0.f,255.f)
+#define GREEN CU::Vector4f(0.f,255.f,0.f,255.f)
+#define BLUE CU::Vector4f(0.f,0.f,255.f,255.f)
+#define YELLOW CU::Vector4f(255.f,255.f,0.f,255.f)
 void TreeNode::RenderBox()
 {
 	SLinePoint points[8];
-	points[0].color = RED;
+
+
+	switch (m_Depth)
+	{
+		case 0:
+			points[0].color = RED;
+			break;
+		case 1:
+			points[0].color = GREEN;
+			break;
+		case 2:
+			points[0].color = BLUE;
+			break;
+		case 3:
+			points[0].color = YELLOW;
+			break;
+	}
+
+	points[1].color = points[0].color;
+	points[2].color = points[0].color;
+	points[3].color = points[0].color;
+	points[4].color = points[0].color;
+	points[5].color = points[0].color;
+	points[6].color = points[0].color;
+	points[7].color = points[0].color;
+
 	points[0].position = CU::Vector4f(m_CenterPosition.x - m_HalfWidth, m_CenterPosition.y - m_HalfWidth, m_CenterPosition.z - m_HalfWidth, 1);
 
-	points[1].color = RED;
 	points[1].position = points[0].position;
 	points[1].position.y = m_CenterPosition.y + m_HalfWidth;
 
 
-	points[2].color = RED;
 	points[2].position = CU::Vector4f(m_CenterPosition.x - m_HalfWidth, m_CenterPosition.y - m_HalfWidth, m_CenterPosition.z + m_HalfWidth, 1);
 
-	points[3].color = RED;
 	points[3].position = points[2].position;
 	points[3].position.y = m_CenterPosition.y + m_HalfWidth;
 
 
-	points[4].color = RED;
 	points[4].position = CU::Vector4f(m_CenterPosition.x + m_HalfWidth, m_CenterPosition.y - m_HalfWidth, m_CenterPosition.z + m_HalfWidth, 1);
 
-	points[5].color = RED;
 	points[5].position = points[4].position;
 	points[5].position.y = m_CenterPosition.y + m_HalfWidth;
 
 
-	points[6].color = RED;
 	points[6].position = CU::Vector4f(m_CenterPosition.x + m_HalfWidth, m_CenterPosition.y - m_HalfWidth, m_CenterPosition.z - m_HalfWidth, 1);
 
-	points[7].color = RED;
 	points[7].position = points[6].position;
 	points[7].position.y = m_CenterPosition.y + m_HalfWidth;
 
@@ -115,5 +146,5 @@ void TreeNode::RenderBox()
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[2], points[3]));
 
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[6], points[7]));
-	
+
 }

@@ -8,26 +8,6 @@ void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 	m_Root.Initiate(m_HalfWidth);
 	m_Root.SetPosition(m_Position);
 
-	/*TreeNode node;
-	node.Initiate(128.f);
-	node.SetPosition(CU::Vector3f(128.f, 0.f, 128.f));
-	tempchildern.Add(node);
-	m_Root.AddChild(tempchildern.GetLast());
-
-	node.Initiate(128.f);
-	node.SetPosition(CU::Vector3f(384.f, 0.f, 128.f));
-	tempchildern.Add(node);
-	m_Root.AddChild(tempchildern.GetLast());
-
-	node.Initiate(128.f);
-	node.SetPosition(CU::Vector3f(128.f, 0.f, 384.f));
-	tempchildern.Add(node);
-	m_Root.AddChild(tempchildern.GetLast());
-
-	node.Initiate(128.f);
-	node.SetPosition(CU::Vector3f(384.f, 0.f, 384.f));
-	tempchildern.Add(node);
-	m_Root.AddChild(tempchildern.GetLast());*/
 }
 
 void Octree::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
@@ -36,18 +16,14 @@ void Octree::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
 	{
 		InsertDweller(&m_Root, dweller, 1);
 	}
-
-	/*m_Root.AddEntity(dwellers[0], 0);
-	m_Root.AddEntity(dwellers[1], 1);
-	m_Root.AddEntity(dwellers[2], 2);
-	m_Root.AddEntity(dwellers[3], 3);
-*/
 }
+
 
 void Octree::Update(float dt)
 {
 	m_Root.Update(dt);
 }
+
 #define MAX_DEPTH 8
 void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
 {
@@ -118,32 +94,32 @@ TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 in
 	switch (index)
 	{
 		case 0:
-			dir = CU::Vector3i(-1, -1, -1);
-			break;
+		dir = CU::Vector3i(-1, -1, -1);
+		break;
 		case 1:
-			dir = CU::Vector3i(+1, -1, -1);
-			break;
+		dir = CU::Vector3i(+1, -1, -1);
+		break;
 		case 2:
-			dir = CU::Vector3i(-1, +1, -1);
-			break;
+		dir = CU::Vector3i(-1, +1, -1);
+		break;
 		case 3:
-			dir = CU::Vector3i(+1, +1, -1);
-			break;
+		dir = CU::Vector3i(+1, +1, -1);
+		break;
 		case 4:
-			dir = CU::Vector3i(-1, -1, +1);
-			break;
+		dir = CU::Vector3i(-1, -1, +1);
+		break;
 		case 5:
-			dir = CU::Vector3i(+1, -1, +1);
-			break;
+		dir = CU::Vector3i(+1, -1, +1);
+		break;
 		case 6:
-			dir = CU::Vector3i(-1, +1, +1);
-			break;
+		dir = CU::Vector3i(-1, +1, +1);
+		break;
 		case 7:
-			dir = CU::Vector3i(+1, +1, +1);
-			break;
+		dir = CU::Vector3i(+1, +1, +1);
+		break;
 		default:
-			DL_ASSERT("bad index!");
-			break;
+		DL_ASSERT("bad index!");
+		break;
 	}
 
 	CU::Vector3f pos(center);
@@ -156,4 +132,78 @@ TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 in
 	node->SetPosition(pos);
 
 	return node;
+}
+
+bool Octree::NodeCollision(TreeNode* node, TreeDweller* dweller)
+{
+	const CU::Vector3f position = node->GetPosition();
+	const float halfwidth = node->GetHalfWidth();
+
+	const float bLeft = position.x - halfwidth;
+	const float bRight = position.x + halfwidth;
+
+	const float bTop = position.y + halfwidth;
+	const float bBottom = position.y - halfwidth;
+
+	const float bBack = position.z + halfwidth;
+	const float bFront = position.z - halfwidth;
+
+	const CU::Vector3f dweller_position = dweller->GetPosition();
+
+	const float cLeft = position.x - 4.f;
+	const float cRight = position.x + 4.f;
+
+	const float cTop = position.y + 4.f;
+	const float cBottom = position.y - 4.f;
+
+	const float cBack = position.z + 4.f;
+	const float cFront = position.z - 4.f;
+
+	return (cLeft > bLeft && cRight < bRight && cTop > bTop && cBottom < bBottom && cBottom > bBack && cFront < bFront);
+}
+
+void Octree::MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth)
+{
+	if (NodeCollision(node, dweller) || node == &m_Root)
+	{
+		InsertDweller(node, dweller, depth);
+		return;
+	}
+
+	MoveUp(node->GetParent(), dweller, depth - 1);
+
+}
+
+bool Octree::RemoveNode(TreeNode* node)
+{
+	if (node->GetEntityCount() > 0)
+		return false;
+
+	bool empty = true;
+	for (s32 i = 0; i < 8; ++i)
+	{
+		if (node->GetChildByIndex(i) != nullptr)
+		{
+			empty = RemoveNode(node->GetChildByIndex(i));
+			if (!empty)
+				return empty;
+		}
+	}
+
+	if (empty)
+	{
+		for (s32 i = 0; i < 8; i++)
+		{
+			if (node->GetParent()->GetChildByIndex(i) == node)
+			{
+				node->GetParent()->AddChild(nullptr, i);
+			}
+		}
+
+		node->AddParent(nullptr);
+		delete node;
+		node = nullptr;
+		return true;
+	}
+	return false;
 }

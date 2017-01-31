@@ -14,9 +14,11 @@ public:
 
 	void Update(float dt);
 private:
-
+	bool RemoveNode(TreeNode* node);
 	void InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth);
 	TreeNode* CreateNode(const CU::Vector3f& center, float halfwidth, s32 index);
+	bool NodeCollision(TreeNode* node, TreeDweller* dweller);
+	void MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth);
 
 	CU::Vector3f m_Position;
 	float m_HalfWidth = 0.f;

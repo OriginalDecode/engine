@@ -38,6 +38,7 @@ void TreeNode::AddParent(TreeNode* parent_node)
 
 void TreeNode::AddEntity(TreeDweller* dweller)
 {
+	m_Entities.Add(dweller->GetEntity());
 	m_NodeEntityManager.AddEntity(dweller);
 }
 
@@ -51,14 +52,26 @@ void TreeNode::SetPosition(CU::Vector3f position)
 	m_CenterPosition = position;
 }
 
-
+#include <ComponentFilter.h>
+#include <TranslationComponent.h>
+#include "Engine.h"
+#include <EntityManager.h>
 void TreeNode::Update(float dt)
 {
 	if (m_Paused)
 		return;
 	RenderBox();
+
 	Hex::Engine::GetInstance()->GetEntityManager().SetActiveNodeManager(&m_NodeEntityManager);
 	m_NodeEntityManager.Update(dt);
+
+	const EntityList& entities = m_NodeEntityManager.GetEntities(CreateFilter<Requires<TranslationComponent>>());
+	for (Entity e : entities)
+	{
+		TranslationComponent& component = Hex::Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(e);
+		
+	}
+
 	for (TreeNode* node : m_Children)
 	{
 		if (!node) continue;

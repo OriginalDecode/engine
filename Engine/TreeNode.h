@@ -30,6 +30,9 @@ public:
 	s32 GetDepth() const { return m_Depth; }
 	float GetHalfWidth() const { return m_HalfWidth; }
 
+	s32 GetEntityCount() const { return m_Entities.Size(); }
+	TreeNode* GetParent() { return m_Parent; }
+
 private:
 	bool m_Paused = false;
 	void RenderBox();

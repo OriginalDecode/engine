@@ -1,8 +1,8 @@
+#include "../Engine/Engine.h"
 #include <Windows.h>
 #include <string>
 #include "../Application/Application.h"
 #include "../DL_Debug/DL_Debug.h"
-#include "../Engine/Engine.h"
 #include "../Engine/imgui_impl_dx11.h"
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -30,7 +30,7 @@ static bool g_windowactive = false;
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
 	DL_Debug::Debug::Create();
-	//double res16x9 = 1.777777777777777777777777777777778; best
+	//do/uble res16x9 = 1.777777777777777777777777777777778; best
 	const char* inputString = someCommandLines;
 	std::string input(inputString);
 

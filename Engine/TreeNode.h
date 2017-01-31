@@ -33,9 +33,10 @@ public:
 	s32 GetDepth() const { return m_Depth; }
 	float GetHalfWidth() const { return m_HalfWidth; }
 
-	s32 GetEntityCount() const { return m_Entities.Size(); }
+	s32 GetEntityCount();
 	TreeNode* GetParent() { return m_Parent; }
-
+	bool SubNodeContainsDwellers();
+	void SetDebugName(std::string name);
 private:
 	Octree* m_Octree = nullptr;
 	bool m_Paused = false;
@@ -50,6 +51,7 @@ private:
 	CU::GrowingArray<TreeDweller*> m_Dwellers;
 
 
+	std::string m_DebugName;
 	Hex::Synchronizer* m_Synchronizer = nullptr;
 	s32 m_Depth;
 };

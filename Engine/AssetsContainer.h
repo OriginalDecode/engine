@@ -17,7 +17,6 @@ namespace Hex
 class CAssetsContainer
 {
 public:
-	CAssetsContainer() = default;
 	~CAssetsContainer();
 
 	void Initiate();

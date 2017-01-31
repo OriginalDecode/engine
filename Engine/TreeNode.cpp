@@ -23,12 +23,48 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 	{
 		m_Children[i] = nullptr;
 	}
+	//if (!m_Parent)
+		//m_DebugName == "Octree : Root Node";
 }
 
 void TreeNode::AddChild(TreeNode* child_node, s32 index)
 {
-	child_node->AddParent(this);
+	if(child_node)
+		child_node->AddParent(this);
+
 	m_Children[index] = child_node;
+
+	/*std::stringstream ss;
+	ss << "parent : " << m_DebugName << " | child : ";
+
+	switch (index)
+	{
+			case 0:
+			ss << "bottom_left";
+			break;
+			case 1:
+			ss << "bottom_right";
+			break;
+			case 2:
+			ss << "top_left";
+			break;
+			case 3:
+			ss << "top_right";
+			break;
+			case 4:
+			ss << "bottom_far_left";
+			break;
+			case 5:
+			ss << "bottom_far_right";
+			break;
+			case 6:
+			ss << "top_far_left";
+			break;
+			case 7:
+			ss << "top_far_right";
+			break;
+	}
+	child_node->SetDebugName(ss.str());*/
 }
 
 void TreeNode::AddParent(TreeNode* parent_node)
@@ -51,6 +87,7 @@ void TreeNode::AddEntity(TreeDweller* dweller, s32 node)
 void TreeNode::RemoveEntity(TreeDweller* dweller)
 {
 	m_NodeEntityManager.RemoveEntity(dweller);
+	m_Dwellers.RemoveCyclic(dweller);
 }
 
 void TreeNode::SetPosition(CU::Vector3f position)
@@ -72,6 +109,7 @@ void TreeNode::Update(float dt)
 	m_NodeEntityManager.Update(dt);
 
 	const EntityList& entities = m_NodeEntityManager.GetEntities(CreateFilter<Requires<TranslationComponent>>());
+	TreeDweller* to_remove = nullptr;
 	for (TreeDweller* dweller : m_Dwellers)
 	{
 		bool found = false;
@@ -80,16 +118,39 @@ void TreeNode::Update(float dt)
 		{
 			if (pair.m_Type & TreeDweller::TRANSLATION)
 			{
-				if (InsideNode(static_cast<TranslationComponent*>(pair.m_Component)->myOrientation.GetPosition()))
+				if (!InsideNode(static_cast<TranslationComponent*>(pair.m_Component)->myOrientation.GetPosition()))
 				{
-					m_Octree->MoveUp(this, dweller, m_Depth - 1);
-					found = true;
-					break;
+					if (m_Parent)
+					{
+						m_Octree->MoveUp(m_Parent, dweller, m_Depth - 1);
+						RemoveEntity(dweller);
+						found = true;
+						break;
+					}
 				}
 			}
 		}
 		if (found)
 			break;
+	}
+
+	if (m_Dwellers.Size() <= 0)
+	{
+		if (!SubNodeContainsDwellers())
+		{
+			if (m_Parent)
+			{
+				for (s32 i = 0; i < 8; i++)
+				{
+					if (m_Parent->GetChildByIndex(i) == this)
+					{
+						m_Parent->AddChild(nullptr, i);
+						m_Octree->ToDelete(this);
+						return;
+					}
+				}
+			}
+		}
 	}
 
 	for (TreeNode* node : m_Children)
@@ -104,6 +165,34 @@ TreeNode* TreeNode::GetChildByIndex(s32 index)
 	return m_Children[index];
 }
 
+s32 TreeNode::GetEntityCount()
+{
+	return m_Dwellers.Size();
+}
+
+bool TreeNode::SubNodeContainsDwellers()
+{
+	if (m_Dwellers.Size() > 0)
+	{
+		return true;
+	}
+
+	for (s32 i = 0; i < 8; i++)
+	{
+		if (m_Children[i])
+		{
+			if (m_Children[i]->SubNodeContainsDwellers())
+				return true;
+		}
+	}
+	return false;
+}
+
+void TreeNode::SetDebugName(std::string name)
+{
+	m_DebugName = name;
+}
+
 #define RED CU::Vector4f(255.f,0.f,0.f,255.f)
 #define GREEN CU::Vector4f(0.f,255.f,0.f,255.f)
 #define BLUE CU::Vector4f(0.f,0.f,255.f,255.f)
@@ -116,17 +205,17 @@ void TreeNode::RenderBox()
 	switch (m_Depth)
 	{
 		case 0:
-			points[0].color = RED;
-			break;
+		points[0].color = RED;
+		break;
 		case 1:
-			points[0].color = GREEN;
-			break;
+		points[0].color = GREEN;
+		break;
 		case 2:
-			points[0].color = BLUE;
-			break;
+		points[0].color = BLUE;
+		break;
 		case 3:
-			points[0].color = YELLOW;
-			break;
+		points[0].color = YELLOW;
+		break;
 	}
 
 	points[1].color = points[0].color;
@@ -207,5 +296,5 @@ bool TreeNode::InsideNode(CU::Vector3f pos)
 	const float cBack = position.z + 4.f;
 	const float cFront = position.z - 4.f;
 
-	return (cLeft > bLeft && cRight < bRight && cTop > bTop && cBottom < bBottom && cBottom > bBack && cFront < bFront);
+	return (cLeft < bLeft && cRight > bRight && cTop < bTop && cBottom > bBottom && cBottom < bBack && cFront > bFront);
 }

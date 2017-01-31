@@ -100,6 +100,9 @@
     <Filter Include="World">
       <UniqueIdentifier>{4fa57eca-e053-4eb3-ac16-d5c53883127b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Allocators">
+      <UniqueIdentifier>{cb1b4330-5634-491b-97a7-c23bb22f263b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -322,7 +325,13 @@
     <ClInclude Include="TreeDweller.h">
       <Filter>World</Filter>
     </ClInclude>
-    <ClInclude Include="Octree.h" />
+    <ClInclude Include="BaseAllocator.h">
+      <Filter>Allocators</Filter>
+    </ClInclude>
+    <ClInclude Include="Octree.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearAllocator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -508,6 +517,12 @@
     <ClCompile Include="TreeDweller.cpp">
       <Filter>World</Filter>
     </ClCompile>
-    <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="BaseAllocator.cpp">
+      <Filter>Allocators</Filter>
+    </ClCompile>
+    <ClCompile Include="Octree.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearAllocator.cpp" />
   </ItemGroup>
 </Project>

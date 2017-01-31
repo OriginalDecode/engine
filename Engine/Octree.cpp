@@ -21,6 +21,12 @@ void Octree::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
 
 void Octree::Update(float dt)
 {
+	for (TreeNode* node : m_GarbageNodes)
+	{
+		delete node;
+	}
+	m_GarbageNodes.RemoveAll();
+
 	m_Root.Update(dt);
 }
 
@@ -172,6 +178,11 @@ void Octree::MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth)
 
 	MoveUp(node->GetParent(), dweller, depth - 1);
 
+}
+
+void Octree::ToDelete(TreeNode* node)
+{
+	m_GarbageNodes.Add(node);
 }
 
 bool Octree::RemoveNode(TreeNode* node)

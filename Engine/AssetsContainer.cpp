@@ -7,6 +7,7 @@
 #include "ModelImporter.h"
 #include "Texture.h"
 
+
 CAssetsContainer::~CAssetsContainer()
 {
 	SAFE_DELETE(myShaderFactory);
@@ -30,6 +31,10 @@ void CAssetsContainer::Initiate()
 {
 	myShaderFactory = new Hex::ShaderFactory;
 	myModelLoader = new CModelImporter;
+	myTextures.empty();
+	myEffects.empty();
+	myModels.empty();
+	mySprites.empty();
 }
 
 Hex::Texture* CAssetsContainer::GetTexture(const std::string& aFilePath)

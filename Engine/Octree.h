@@ -21,6 +21,9 @@ private:
 	bool NodeCollision(TreeNode* node, TreeDweller* dweller);
 	void MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth);
 
+	void ToDelete(TreeNode* node);
+	CU::GrowingArray<TreeNode*> m_GarbageNodes;
+
 	CU::Vector3f m_Position;
 	float m_HalfWidth = 0.f;
 	TreeNode m_Root;

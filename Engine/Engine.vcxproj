@@ -361,6 +361,7 @@
   <ItemGroup>
     <ClInclude Include="AABB.h" />
     <ClInclude Include="AssetsContainer.h" />
+    <ClInclude Include="BaseAllocator.h" />
     <ClInclude Include="BaseModel.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Components.h" />
@@ -393,6 +394,7 @@
     <ClInclude Include="LightPass.h" />
     <ClInclude Include="LightStructs.h" />
     <ClInclude Include="Line3D.h" />
+    <ClInclude Include="LinearAllocator.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelCommand.h" />
     <ClInclude Include="ModelImporter.h" />
@@ -447,6 +449,7 @@
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="AssetsContainer.cpp" />
+    <ClCompile Include="BaseAllocator.cpp" />
     <ClCompile Include="BaseModel.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Console.cpp" />
@@ -477,6 +480,7 @@
     <ClCompile Include="LevelFactory.cpp" />
     <ClCompile Include="LightPass.cpp" />
     <ClCompile Include="Line3D.cpp" />
+    <ClCompile Include="LinearAllocator.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelImporter.cpp" />
     <ClCompile Include="MousePicker.cpp">
@@ -533,6 +537,9 @@
   <ItemGroup>
     <ProjectReference Include="..\CommonLib\CommonLib.vcxproj">
       <Project>{dbc8372d-e04f-4bbb-8964-12022adca9f6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\EntitySystem\EntitySystem.vcxproj">
+      <Project>{2fc680bf-8cb1-4f07-97d0-7b7871989b9e}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Input\Input.vcxproj">
       <Project>{bd22ff31-48a5-4061-ab37-17e68e058912}</Project>

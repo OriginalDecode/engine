@@ -2,7 +2,7 @@
 #include "TreeNode.h"
 #include "Synchronizer.h"
 #include "RenderCommand.h"
-
+#include "Octree.h"
 TreeNode::~TreeNode()
 {
 
@@ -13,12 +13,12 @@ TreeNode::~TreeNode()
 	}
 }
 
-void TreeNode::Initiate(float halfwidth)
+void TreeNode::Initiate(float halfwidth, Octree* octree)
 {
 	m_HalfWidth = halfwidth;
 	m_Synchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
 	m_NodeEntityManager.Initiate();
-
+	m_Octree = octree;
 	for (s32 i = 0; i < 8; i++)
 	{
 		m_Children[i] = nullptr;
@@ -39,12 +39,18 @@ void TreeNode::AddParent(TreeNode* parent_node)
 void TreeNode::AddEntity(TreeDweller* dweller)
 {
 	m_Entities.Add(dweller->GetEntity());
+	m_Dwellers.Add(dweller);
 	m_NodeEntityManager.AddEntity(dweller);
 }
 
 void TreeNode::AddEntity(TreeDweller* dweller, s32 node)
 {
 	m_Children[node]->AddEntity(dweller);
+}
+
+void TreeNode::RemoveEntity(TreeDweller* dweller)
+{
+	m_NodeEntityManager.RemoveEntity(dweller);
 }
 
 void TreeNode::SetPosition(CU::Vector3f position)
@@ -66,10 +72,24 @@ void TreeNode::Update(float dt)
 	m_NodeEntityManager.Update(dt);
 
 	const EntityList& entities = m_NodeEntityManager.GetEntities(CreateFilter<Requires<TranslationComponent>>());
-	for (Entity e : entities)
+	for (TreeDweller* dweller : m_Dwellers)
 	{
-		TranslationComponent& component = Hex::Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(e);
-		
+		bool found = false;
+		const ComponentList& list = dweller->GetComponentPairList();
+		for (const ComponentPair& pair : list)
+		{
+			if (pair.m_Type & TreeDweller::TRANSLATION)
+			{
+				if (InsideNode(static_cast<TranslationComponent*>(pair.m_Component)->myOrientation.GetPosition()))
+				{
+					m_Octree->MoveUp(this, dweller, m_Depth - 1);
+					found = true;
+					break;
+				}
+			}
+		}
+		if (found)
+			break;
 	}
 
 	for (TreeNode* node : m_Children)
@@ -160,4 +180,32 @@ void TreeNode::RenderBox()
 
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[6], points[7]));
 
+}
+
+bool TreeNode::InsideNode(CU::Vector3f pos)
+{
+	const CU::Vector3f position = m_CenterPosition;
+	const float halfwidth = m_HalfWidth;
+
+	const float bLeft = position.x - halfwidth;
+	const float bRight = position.x + halfwidth;
+
+	const float bTop = position.y + halfwidth;
+	const float bBottom = position.y - halfwidth;
+
+	const float bBack = position.z + halfwidth;
+	const float bFront = position.z - halfwidth;
+
+	const CU::Vector3f dweller_position = pos;
+
+	const float cLeft = position.x - 4.f;
+	const float cRight = position.x + 4.f;
+
+	const float cTop = position.y + 4.f;
+	const float cBottom = position.y - 4.f;
+
+	const float cBack = position.z + 4.f;
+	const float cFront = position.z - 4.f;
+
+	return (cLeft > bLeft && cRight < bRight && cTop > bTop && cBottom < bBottom && cBottom > bBack && cFront < bFront);
 }

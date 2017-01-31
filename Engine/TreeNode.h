@@ -7,6 +7,7 @@ namespace Hex
 {
 	class Synchronizer;
 };
+class Octree;
 class TreeDweller;
 typedef CU::GrowingArray<Entity> EntityList;
 class TreeNode
@@ -14,12 +15,14 @@ class TreeNode
 public:
 	TreeNode() = default;
 	~TreeNode();
-	void Initiate(float halfwidth);
+	void Initiate(float halfwidth, Octree* octree);
 
 	void AddChild(TreeNode* child_node, s32 index);
 	void AddParent(TreeNode* parent_node);
 	void AddEntity(TreeDweller* dweller);
 	void AddEntity(TreeDweller* dweller, s32 node);
+	void RemoveEntity(TreeDweller* dweller);
+
 	void SetPosition(CU::Vector3f position);
 	void Update(float dt);
 	TreeNode* GetChildByIndex(s32 index);
@@ -34,14 +37,19 @@ public:
 	TreeNode* GetParent() { return m_Parent; }
 
 private:
+	Octree* m_Octree = nullptr;
 	bool m_Paused = false;
 	void RenderBox();
+	bool InsideNode(CU::Vector3f pos);
 	NodeEntityManager m_NodeEntityManager;
 	CU::Vector3f m_CenterPosition;
 	float m_HalfWidth = 0.f;
 	TreeNode* m_Parent = nullptr;
 	TreeNode* m_Children[8];
 	EntityList m_Entities;
+	CU::GrowingArray<TreeDweller*> m_Dwellers;
+
+
 	Hex::Synchronizer* m_Synchronizer = nullptr;
 	s32 m_Depth;
 };

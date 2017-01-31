@@ -7,6 +7,12 @@ Engine Tasks:
     ☐ Create an input system that supports rebindable keys from the user
      Maybe should listen to input using the observer pattern.
      This action is bound to this function, this function is bound to this key, key comes from the outside
+  Level / World:
+    ☐ Rework the loading to handle patches instead of loading the entire world in 1 go.
+    ☐ Load patches with entities
+    ☐ Load patches around the player position
+    ☐ Distance LOD from player
+    ☐ Distance Fog or other fancy solution
   Entities:
     ☐ Create and edit entities in engine.
     ☐ Standardize rotations in engine
@@ -36,7 +42,7 @@ Engine Tasks:
     ☐ Add the network API to the engine and make the engine able to run without Graphics.
     ☐ NetworkComponent for Entities should be setting positions of the other entities.
     ☐ The level / world needs/Should be verified by the server with some kind of hash 
-      (network_version + map_name + user_name) or something like that
+       (network_version + map_name + user_name) or something like that
     ☐ FlatBuffers
       Calle recomended this, you can access the data without deserializing / unpacking messages
   Rendering:
@@ -56,9 +62,11 @@ Engine Tasks:
     ✔ Quadtree / Octree @done (17-01-29 23:57)
        The world needs a basic implementation of a Quadtree or an Octree
     ✔ Treenode updates entities by themselves. @done (17-01-29 23:57)
+    ☐ Remove / Add Nodes dynamically @started
+    ☐ Move entities from node to node with minimum overhead. @started
   Memory:
-    ☐ Investigate Memory Allocators
-    ☐ Implement custom memory allocators
+    ☐ Investigate Memory Allocators @started
+    ☐ Implement custom memory allocators 
       ☐ Linear Allocator
       ☐ Stack Allocator
       ☐ Circle Allocator
@@ -72,4 +80,4 @@ CommonLib:
         ☐ Convert quaternion rotation into matrix
         ☐ Convert matrix rotation into quaternion
   Containers:
-    ☐ GrowingArray might be broken
+    ☐ GrowingArray might be broke

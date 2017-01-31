@@ -1,7 +1,7 @@
 #pragma once
 #include <State.h>
 #include <World.h>
-
+#include "../EntitySystem/TranslationComponent.h"
 #include "PauseState.h"
 namespace Hex
 {
@@ -26,7 +26,8 @@ public:
 private:
 	World m_World;
 	CPauseState m_PauseState;
-
+	CU::Vector3f pointHit;
+	TranslationComponent* component;
 	Hex::Camera* m_Camera = nullptr;
 	Hex::Engine* m_Engine = nullptr;
 	Hex::CMousePicker* m_Picker = nullptr;

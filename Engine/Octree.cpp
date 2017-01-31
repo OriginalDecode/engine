@@ -5,7 +5,7 @@ void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 	m_Position = world_position;
 	m_HalfWidth = world_half_width;
 
-	m_Root.Initiate(m_HalfWidth);
+	m_Root.Initiate(m_HalfWidth, this);
 	m_Root.SetPosition(m_Position);
 
 }
@@ -128,7 +128,7 @@ TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 in
 	pos.z += dir.z * halfwidth / 2.f;
 
 	TreeNode* node = new TreeNode;
-	node->Initiate(halfwidth / 2.f);
+	node->Initiate(halfwidth / 2.f, this);
 	node->SetPosition(pos);
 
 	return node;

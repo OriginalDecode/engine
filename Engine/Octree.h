@@ -5,6 +5,7 @@
 
 class Octree
 {
+	friend TreeNode;
 public:
 	Octree() = default;
 

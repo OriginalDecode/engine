@@ -5,12 +5,11 @@ class LinearAllocator : public BaseAllocator
 public:
 	LinearAllocator() = default;
 
-	void Initiate(u64 size_in_bytes) override;
-	void CleanUp() override;
-	void* Alloc(u64 size_in_bytes) override;
+	bool CleanUp() override;
+	void* alloc(s32 size_in_bytes, u8 alignmnet = sizeof(void*)) override;
+	void dealloc(void* pMemroy) override;
 
 
-	void Dealloc(void* pMemroy) override;
 
 	void Clear();
 private:

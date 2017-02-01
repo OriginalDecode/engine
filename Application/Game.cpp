@@ -76,15 +76,21 @@ void Game::Update(float dt)
 		m_Time = 1.f;
 	}
 
+	//CU::Vector3f pos = { 256.f, 5.f, 256.f };
+	//CU::Vector3f original_pos = component->myOrientation.GetPosition();
+	//component->myOrientation.SetPosition(original_pos - pos);
+
+	//component->myOrientation = component->myOrientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(25.f) * dt);
+	//component->myOrientation.SetPosition(component->myOrientation.GetPosition() + pos);
 
 	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
 	if (input_wrapper->IsDown(MouseInput::LEFT))
 	{
 		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
 		//PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z));
-		pointHit = m_Engine->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), ray_dir);
+		//pointHit = m_Engine->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), ray_dir);
 
-		component->myOrientation.SetPosition(pointHit);
+		//component->myOrientation.SetPosition(pointHit);
 	}
 
 	if (input_wrapper->OnDown(KButton::ESCAPE))

@@ -1,26 +1,74 @@
 #pragma once
-#include <assert.h>
 #include "snowblind_shared.h"
-void * operator new(size_t size);
+
+#include <assert.h>
+#include <memory.h>
+
+#ifndef _WIN64
+typedef u32 uptr;
+#else
+typedef u64 uptr;
+#endif
+
+namespace
+{
+	inline void* alignForward(void* address, u8 alignment)
+	{
+		return (void*)((reinterpret_cast<uptr>(address) + static_cast<uptr>(alignment - 1)) & ~(alignment - 1));
+	}
+
+	inline u8 alignForwardAdjustment(const void* address, u8 alignment)
+	{
+		u8 adjustment = alignment - (reinterpret_cast<u64>(address)
+			& static_cast<uptr>(alignment - 1));
+		if (adjustment == alignment)
+			return 0;
+
+		return adjustment;
+	}
+
+	inline u8 alignForwardAdjustmentWithHeader(const void* address, u8 alignment, u8 headerSize)
+	{
+		u8 adjustment = alignForwardAdjustment(address, alignment);
+
+		u8 neededSpace = headerSize;
+
+		if (adjustment < neededSpace)
+		{
+			neededSpace -= adjustment;
+
+			//Increase adjustment to fit header
+			adjustment += alignment * (neededSpace / alignment);
+
+			if (neededSpace % alignment > 0)
+				adjustment += alignment;
+		}
+
+		return adjustment;
+	}
+};
+
 class BaseAllocator
 {
 public:
-	BaseAllocator() = default;
-		
-	virtual void Initiate(u64 size_in_bytes) = 0;
-	virtual void CleanUp() = 0;
+	BaseAllocator(s32 size_in_bytes, void* pStart);
+	virtual bool CleanUp();
 
-	virtual void* Alloc(u64 size_in_bytes) = 0;
-	virtual void Dealloc(void* pMemory) = 0;
-	
-	u32 GetAllocatedMemory() const { return m_AllocatedMemory; }
-	u32 GetUsedMemory() const { return m_UsedMemory; }
-	u32 GetNumAllocations() const { return m_NumAllocations; }
+	virtual void* alloc(s32 size_in_bytes, u8 alignmnet = sizeof(void*)) = 0;
+	virtual void dealloc(void* p) = 0;
+
+	void* GetStart() const { return m_Start; }
+	void* GetCurrentPos() const { return m_CurrentPos; }
+	s32 GetMemoryUsed() const { return m_UsedMemory; }
+	s32 GetAllocationSize() const { return m_AllocatedMemory; }
+	s32 GetNumberOfAllocations() const { return m_NumberOfAllocations; }
+
 protected:
+	void* m_Start = nullptr;
+	void* m_CurrentPos = nullptr;
+	s32 m_AllocatedMemory = 0;
+	s32 m_UsedMemory = 0;
+	s32 m_NumberOfAllocations = 0;
 
-	void* m_Memory = nullptr;
-	u32 m_UsedMemory = 0;
-	u32 m_AllocatedMemory = 0;
-	u32 m_NumAllocations = 0;
 };
 

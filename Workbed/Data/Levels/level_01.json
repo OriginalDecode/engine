@@ -3,7 +3,7 @@
 	{
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
-			"position" : [ 250, 5, 250 ],
+			"position" : [ 200, 5, 200 ],
 			"scale" : [1,2,1],
 			"rotation" : [0,0,1]
 		},

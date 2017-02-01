@@ -5,7 +5,6 @@
 #include "Octree.h"
 TreeNode::~TreeNode()
 {
-
 	for (s32 i = 0; i < 8; i++)
 	{
 		delete m_Children[i];
@@ -23,48 +22,15 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 	{
 		m_Children[i] = nullptr;
 	}
-	//if (!m_Parent)
-		//m_DebugName == "Octree : Root Node";
 }
 
 void TreeNode::AddChild(TreeNode* child_node, s32 index)
 {
-	if(child_node)
+	if (child_node)
 		child_node->AddParent(this);
 
 	m_Children[index] = child_node;
 
-	/*std::stringstream ss;
-	ss << "parent : " << m_DebugName << " | child : ";
-
-	switch (index)
-	{
-			case 0:
-			ss << "bottom_left";
-			break;
-			case 1:
-			ss << "bottom_right";
-			break;
-			case 2:
-			ss << "top_left";
-			break;
-			case 3:
-			ss << "top_right";
-			break;
-			case 4:
-			ss << "bottom_far_left";
-			break;
-			case 5:
-			ss << "bottom_far_right";
-			break;
-			case 6:
-			ss << "top_far_left";
-			break;
-			case 7:
-			ss << "top_far_right";
-			break;
-	}
-	child_node->SetDebugName(ss.str());*/
 }
 
 void TreeNode::AddParent(TreeNode* parent_node)
@@ -118,15 +84,13 @@ void TreeNode::Update(float dt)
 		{
 			if (pair.m_Type & TreeDweller::TRANSLATION)
 			{
-				if (!InsideNode(static_cast<TranslationComponent*>(pair.m_Component)->myOrientation.GetPosition()))
+				CU::Vector3f pos = static_cast<TranslationComponent*>(pair.m_Component)->myOrientation.GetPosition();
+				if (m_Parent)
 				{
-					if (m_Parent)
-					{
-						m_Octree->MoveUp(m_Parent, dweller, m_Depth - 1);
-						RemoveEntity(dweller);
-						found = true;
-						break;
-					}
+					
+					m_Octree->MoveUp(this, dweller, m_Depth - 1);
+					found = true;
+					break;
 				}
 			}
 		}

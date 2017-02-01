@@ -118,6 +118,7 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	GrowingArray<ObjectType, SizeType>& GrowingArray<ObjectType, SizeType>::operator=(const GrowingArray& aGrowingArray)
 	{
+
 		delete[]myData;
 		mySafeFlag = aGrowingArray.mySafeFlag;
 		m_HasInited = aGrowingArray.m_HasInited;

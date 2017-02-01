@@ -199,7 +199,7 @@ namespace Hex
 		ImGui::Render();
 		myEngine->Present();
 
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
+		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
 
 		mySynchronizer->WaitForLogic();
 		mySynchronizer->SwapBuffer();

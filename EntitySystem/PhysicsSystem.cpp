@@ -12,7 +12,7 @@
 #include "../Engine/RenderCommand.h"
 
 CPhysicsSystem::CPhysicsSystem(EntityManager& anEntityManager)
-	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, DebugComponent>>())
+	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, PhysicsComponent>>())
 {
 	myPhysicsManager = Hex::Engine::GetInstance()->GetPhysicsManager();
 }
@@ -27,7 +27,7 @@ void CPhysicsSystem::Update(float aDeltaTime)
 		{
 			Entity e = entities[i];
 			STranslationComponent& translation = GetComponent<STranslationComponent>(e);
-			/*S
+			/*
 			PhysicsComponent& physics = GetComponent<SPhysicsComponent>(e);
 			if (!physics.myBody->IsEnabled())
 				continue;
@@ -37,18 +37,6 @@ void CPhysicsSystem::Update(float aDeltaTime)
 			physics.myBody->Update(aDeltaTime);
 			*/
 			
-			//DebugComponent& debug = GetComponent<DebugComponent>(e);
-			//CU::Vector3f pos = translation.myOrientation.GetPosition();
-			//debug.m_Body->SetPosition(pos);
-			//debug.m_Body->
-			//Hex::Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE,)
-			//if(!physics.m_IsPlayer)
-			//{
-			//	AABBComponent& aabb = GetComponent<AABBComponent>(e);
-			//	if (aabb.m_Body)
-			//		aabb.m_Body->Update(aDeltaTime);
-			//}
-
 		}
 		myPhysicsManager->Update(myAccumulatedTime); //ASync Physics?
 		myAccumulatedTime -= 1.f / 60.f;

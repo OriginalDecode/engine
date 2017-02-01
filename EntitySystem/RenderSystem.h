@@ -12,7 +12,7 @@ class CRenderSystem : public BaseSystem
 public:
 	CRenderSystem(EntityManager& anEntityManager);
 
-	void Update(float aDeltaTime) override;
+	void Update(float dt) override;
 
 private:
 	Hex::Synchronizer* mySynchronizer;

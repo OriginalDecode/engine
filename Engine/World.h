@@ -4,6 +4,7 @@ namespace Hex
 {
 	class Synchronizer;
 };
+#include <TimeManager.h>
 
 class World
 {
@@ -17,10 +18,15 @@ public:
 
 	//void ToggleNode(s32 index);
 
+	float getTime(int index);
+
 private:
+
+	int timer_index = 0;
+
 	CU::Vector3f m_WorldPos;
 	Hex::Synchronizer* m_Synchronizer;
 	Octree m_Octree;
-	
+	CU::TimeManager m_Timer;
 };
 

@@ -20,7 +20,7 @@ CRenderSystem::CRenderSystem(EntityManager& anEntityManager)
 	mySynchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
 }
 
-void CRenderSystem::Update(float /*aDeltaTime*/)
+void CRenderSystem::Update(float dt)
 {
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 
@@ -34,6 +34,16 @@ void CRenderSystem::Update(float /*aDeltaTime*/)
 			//#LINUS This needs to be profiled.
 			CU::Matrix44f t = translation.myOrientation;
 			t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
+
+			if (e == 0)
+			{
+				CU::Vector3f pos = { 256.f, 5.f, 256.f };
+				CU::Vector3f original_pos = translation.myOrientation.GetPosition();
+				translation.myOrientation.SetPosition(original_pos - pos);
+
+				translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(25.f) * dt);
+				translation.myOrientation.SetPosition(translation.myOrientation.GetPosition() + pos);
+			}
 
 			mySynchronizer->AddRenderCommand(RenderCommand(
 				eType::MODEL

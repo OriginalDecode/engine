@@ -170,9 +170,11 @@ bool Octree::NodeCollision(TreeNode* node, TreeDweller* dweller)
 
 void Octree::MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth)
 {
-	if (NodeCollision(node, dweller) || node == &m_Root)
+	TreeNode* parent = node->GetParent();
+	if (NodeCollision(parent, dweller) || parent == &m_Root)
 	{
-		InsertDweller(node, dweller, depth);
+		node->RemoveEntity(dweller);
+		InsertDweller(parent, dweller, depth);
 		return;
 	}
 

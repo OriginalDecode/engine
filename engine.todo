@@ -12,7 +12,12 @@ Engine Tasks:
     ☐ Load patches with entities
     ☐ Load patches around the player position
     ☐ Distance LOD from player
-    ☐ Distance Fog or other fancy solution
+    ☐ Distance Fog or other fancy solution   
+    ✔ Quadtree / Octree @done (17-01-29 23:57)
+       The world needs a basic implementation of a Quadtree or an Octree
+    ✔ Treenode updates entities by themselves. @done (17-01-29 23:57)
+    ☐ Remove / Add Nodes dynamically @started
+    ☐ Move entities from node to node with minimum overhead. @started
   Entities:
     ☐ Create and edit entities in engine.
     ☐ Standardize rotations in engine
@@ -58,12 +63,6 @@ Engine Tasks:
   StateStack:
     ✔ Move to engine @done (17-01-29 23:57)
       States are still game-bound but having the statestack in the Engine should make it easier to move between projects
-  World:
-    ✔ Quadtree / Octree @done (17-01-29 23:57)
-       The world needs a basic implementation of a Quadtree or an Octree
-    ✔ Treenode updates entities by themselves. @done (17-01-29 23:57)
-    ☐ Remove / Add Nodes dynamically @started
-    ☐ Move entities from node to node with minimum overhead. @started
   Memory:
     ☐ Investigate Memory Allocators @started
     ☐ Implement custom memory allocators 
@@ -72,7 +71,9 @@ Engine Tasks:
       ☐ Circle Allocator
       The main purpose for implementing custom allocators is to solve the potential memory lookup issue 
       when creating new nodes in the octree.
-
+    ☐ Rewrite the CommonLib containers 
+       They will have to use the allocators as well else they will not function.
+       They will need to contain an allocator or request one at creation from somewhere
 
 CommonLib:
   Math:

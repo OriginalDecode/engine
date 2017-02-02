@@ -44,3 +44,9 @@ const CU::GrowingArray<Entity>& NodeEntityManager::GetEntities(SComponentFilter&
 {
 	return m_Components.GetEntities(filter);
 }
+
+NodeEntityManager::~NodeEntityManager()
+{
+	m_Entities.RemoveAll();
+	m_Systems.RemoveAll();
+}

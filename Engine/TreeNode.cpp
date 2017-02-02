@@ -3,8 +3,14 @@
 #include "Synchronizer.h"
 #include "RenderCommand.h"
 #include "Octree.h"
+#include <ComponentFilter.h>
+#include <TranslationComponent.h>
+#include "Engine.h"
+#include <EntityManager.h>
+
 TreeNode::~TreeNode()
 {
+	
 	for (s32 i = 0; i < 8; i++)
 	{
 		delete m_Children[i];
@@ -61,14 +67,11 @@ void TreeNode::SetPosition(CU::Vector3f position)
 	m_CenterPosition = position;
 }
 
-#include <ComponentFilter.h>
-#include <TranslationComponent.h>
-#include "Engine.h"
-#include <EntityManager.h>
 void TreeNode::Update(float dt)
 {
 	if (m_Paused)
 		return;
+
 	RenderBox();
 
 	Hex::Engine::GetInstance()->GetEntityManager().SetActiveNodeManager(&m_NodeEntityManager);
@@ -76,6 +79,8 @@ void TreeNode::Update(float dt)
 
 	const EntityList& entities = m_NodeEntityManager.GetEntities(CreateFilter<Requires<TranslationComponent>>());
 	TreeDweller* to_remove = nullptr;
+
+
 	for (TreeDweller* dweller : m_Dwellers)
 	{
 		bool found = false;
@@ -85,12 +90,18 @@ void TreeNode::Update(float dt)
 			if (pair.m_Type & TreeDweller::TRANSLATION)
 			{
 				CU::Vector3f pos = static_cast<TranslationComponent*>(pair.m_Component)->myOrientation.GetPosition();
-				if (m_Parent)
+				if (m_Parent && !InsideNode(pos))
 				{
-					
+					/* These two lines makes everything super slow */
 					m_Octree->MoveUp(this, dweller, m_Depth - 1);
+					RemoveEntity(dweller);
+
 					found = true;
 					break;
+				}
+				else
+				{
+					assert(false && "Dweller is outside of octree!");
 				}
 			}
 		}

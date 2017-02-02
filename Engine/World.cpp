@@ -33,12 +33,25 @@ void World::Update(float dt)
 	if (timer_index > 4)
 		timer_index = 0;
 
+	if (sec > 0.f)
+	{
+		sec -= dt;
+	}
+	else
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			if (getTime(i) > highest)
+				highest = getTime(i);
+		}
+	}
 	std::stringstream ss;
 	ss << "0 : " << m_Timer.GetTimer(0).GetTotalTime().GetMilliseconds() << "\n"
 		<< "1 : " << m_Timer.GetTimer(1).GetTotalTime().GetMilliseconds() << "\n"
 		<< "2 : " << m_Timer.GetTimer(2).GetTotalTime().GetMilliseconds() << "\n"
 		<< "3 : " << m_Timer.GetTimer(3).GetTotalTime().GetMilliseconds() << "\n"
-		<< "4 : " << m_Timer.GetTimer(4).GetTotalTime().GetMilliseconds();
+		<< "4 : " << m_Timer.GetTimer(4).GetTotalTime().GetMilliseconds() << "\n"
+		<< "Highest : " << highest;
 
 	Hex::Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::TEXT, ss.str().c_str(), CU::Vector2f(0.75f, 0.0f)));
 	

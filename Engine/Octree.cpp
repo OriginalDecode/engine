@@ -1,5 +1,9 @@
 #include "stdafx.h"
 #include "Octree.h"
+#include "RenderCommand.h"
+#include "Engine.h"
+#include "Synchronizer.h"
+
 void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 {
 	m_Position = world_position;
@@ -7,7 +11,7 @@ void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 
 	m_Root.Initiate(m_HalfWidth, this);
 	m_Root.SetPosition(m_Position);
-
+	m_Timer.CreateTimer();
 }
 
 void Octree::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
@@ -33,15 +37,23 @@ void Octree::Update(float dt)
 #define MAX_DEPTH 8
 void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
 {
-	if (depth >= MAX_DEPTH)
+	if (node == &m_Root)
 	{
-		node->AddEntity(dweller);
-		dweller->SetFirstNode(node);
-		dweller->SetDepth(depth);
-		return;
-	}
+		to_print = total_time;
+		std::stringstream ss;
+		ss << to_print * 1000;
+		Hex::Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::TEXT, ss.str().c_str(), CU::Vector2f(0.85f, 0.0f)));
 
-	int index = 0;
+		total_time = 0.f;
+	}
+	m_Timer.GetTimer(0).ClearTime();
+	m_Timer.GetTimer(0).Start();
+
+	// Potentially this function is very very slow
+	if (depth < 0)
+		depth = 0;
+
+	s32 index = 0;
 	bool straddle = false; //what is straddle?
 
 	for (s32 i = 0; i < 3; i++)
@@ -61,7 +73,7 @@ void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
 			delta = dweller->GetPosition().z - node->GetPosition().z;
 		}
 
-		if (abs(delta) + node->GetHalfWidth() /** (myLooseness - 1.f)*/ <= 5.f/*dweller->GetObjectCullingRadius()*/)
+		if (abs(delta) + node->GetHalfWidth() /** (myLooseness - 1.f)*/ <= 4.f/*dweller->GetObjectCullingRadius()*/)
 		{
 			straddle = true;
 			break;
@@ -69,21 +81,22 @@ void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
 
 		if (delta > 0.f)
 		{
-			index |= (1 << i);
+			index |= ( 1 << i );
 		}
 	}
 
-	if (straddle == false && depth < MAX_DEPTH - 1)
+
+
+	if (straddle == false && node->GetDepth() < MAX_DEPTH - 1)
 	{
 		if (!node->GetChildByIndex(index))
 		{
-			node->AddChild(CreateNode(node->GetPosition(), node->GetHalfWidth(), index), index);
-			node->SetDepth(depth);
-
+			TreeNode* child = CreateNode(node->GetPosition(), node->GetHalfWidth(), index);
+			node->AddChild(child, index);
+			child->SetDepth(depth);
 		}
 
 		InsertDweller(node->GetChildByIndex(index), dweller, depth + 1);
-
 	}
 	else
 	{
@@ -91,6 +104,12 @@ void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
 		dweller->SetFirstNode(node);
 		dweller->SetDepth(depth);
 	}
+
+	m_Timer.GetTimer(0).Update();
+	total_time = m_Timer.GetTimer(0).GetTotalTime().GetMilliseconds();
+
+
+	
 }
 
 TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 index)
@@ -171,14 +190,13 @@ bool Octree::NodeCollision(TreeNode* node, TreeDweller* dweller)
 void Octree::MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth)
 {
 	TreeNode* parent = node->GetParent();
-	if (NodeCollision(parent, dweller) || parent == &m_Root)
+	if (parent && !NodeCollision(parent, dweller))
 	{
-		node->RemoveEntity(dweller);
-		InsertDweller(parent, dweller, depth);
+		MoveUp(parent, dweller, depth - 1);
 		return;
 	}
 
-	MoveUp(node->GetParent(), dweller, depth - 1);
+	InsertDweller(node, dweller, depth);
 
 }
 

@@ -22,8 +22,10 @@ public:
 
 private:
 
-	int timer_index = 0;
+	float sec = 10.f;
 
+	int timer_index = 0;
+	float highest = 0.f;
 	CU::Vector3f m_WorldPos;
 	Hex::Synchronizer* m_Synchronizer;
 	Octree m_Octree;

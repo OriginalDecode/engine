@@ -15,7 +15,7 @@ public:
 	void Update(float dt);
 
 	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter& filter);
-
+	~NodeEntityManager();
 private:
 	CU::GrowingArray<TreeDweller*> m_Entities;
 	CU::GrowingArray<BaseSystem*> m_Systems;

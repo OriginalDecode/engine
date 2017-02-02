@@ -27,6 +27,8 @@ namespace CommonUtilities
 		void Pause();
 		void Start();
 
+		Timer& GetMasterTimer() { return myMasterTimer; }
+
 	private:
 		//static TimeManager* myInstance;
 

@@ -3,15 +3,6 @@ Engine Tasks:
     The refs in Visual studio is just a fast link to the *.lib output file, we could probably set this up better in someway.
     Add all the .libs to the .exe might work
 
-    /*  
-      How to .todo
-      ☐ task @critical
-      ☐ task @high
-      ☐ task @low
-      ☐ task @due( 1 )
-      ☐ task @due( --1 )
-    */
-
  Input Handling:
     ☐ Create an input system that supports rebindable keys from the user
      Maybe should listen to input using the observer pattern.
@@ -83,8 +74,6 @@ Engine Tasks:
     ☐ Rewrite the CommonLib containers 
        They will have to use the allocators as well else they will not function.
        They will need to contain an allocator or request one at creation from somewhere
-    ☐ Replace std::string with custom string (hashstring?) .\hashlist.h:11\
-    ☐ Remove all standard library usage 
 
 CommonLib:
   Math:

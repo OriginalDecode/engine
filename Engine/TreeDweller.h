@@ -51,12 +51,16 @@ public:
 
 	const CU::Vector3f& GetPosition() const;
 
+	void SetWHD(const CU::Vector3f& whd) { m_WHD = whd; }
+	const CU::Vector3f& GetWHD() const { return m_WHD; }
 
 private:
 	Entity m_Entity;
 	ComponentList m_ComponentList;
 	s32 m_Depth = 0;
 	s32 m_ComponentFlag = 0;
+
+	CU::Vector3f m_WHD;
 
 	TreeNode* m_First = nullptr;
 	TreeNode* m_Second = nullptr;

@@ -26,7 +26,9 @@ void World::Update(float dt)
 	CU::Timer& timer = m_Timer.GetTimer(timer_index);
 	timer.ClearTime();
 	timer.Start();
+
 	m_Octree.Update(dt);
+
 	timer.Update();
 	timer.Pause();
 	timer_index++;

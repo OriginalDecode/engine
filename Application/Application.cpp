@@ -10,6 +10,7 @@
 #include <imgui.h>
 #include "../Input/InputHandle.h"
 #include "../Input/InputWrapper.h"
+#include "../CommonLib/Utilities.h"
 bool Application::Initiate()
 {
 	myEngine = Hex::Engine::GetInstance();
@@ -22,6 +23,8 @@ bool Application::Initiate()
 	m_States.PushState(&m_Game, StateStack::MAIN);
 	//Keep at the end of initiate...
 	myLogicThread = new std::thread([&] { Application::Update(); });
+	CL::SetThreadName(myLogicThread->get_id(), "Logic Thread");
+
 	return true;
 }
 

@@ -36,22 +36,21 @@ public:
 	s32 GetEntityCount();
 	TreeNode* GetParent() { return m_Parent; }
 	bool SubNodeContainsDwellers();
-	void SetDebugName(std::string name);
+	bool InsideNode(TreeDweller* dweller);
 private:
 	Octree* m_Octree = nullptr;
 	bool m_Paused = false;
 	void RenderBox();
-	bool InsideNode(CU::Vector3f pos);
-	NodeEntityManager m_NodeEntityManager;
-	CU::Vector3f m_CenterPosition;
+
 	float m_HalfWidth = 0.f;
+
 	TreeNode* m_Parent = nullptr;
 	TreeNode* m_Children[8];
-	EntityList m_Entities;
+
+	NodeEntityManager m_NodeEntityManager;
 	CU::GrowingArray<TreeDweller*> m_Dwellers;
+	CU::Vector3f m_CenterPosition;
 
-
-	std::string m_DebugName;
 	Hex::Synchronizer* m_Synchronizer = nullptr;
 	s32 m_Depth;
 };

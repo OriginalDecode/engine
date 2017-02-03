@@ -46,7 +46,6 @@ void TreeNode::AddParent(TreeNode* parent_node)
 
 void TreeNode::AddEntity(TreeDweller* dweller)
 {
-	m_Entities.Add(dweller->GetEntity());
 	m_Dwellers.Add(dweller);
 	m_NodeEntityManager.AddEntity(dweller);
 }
@@ -58,6 +57,8 @@ void TreeNode::AddEntity(TreeDweller* dweller, s32 node)
 
 void TreeNode::RemoveEntity(TreeDweller* dweller)
 {
+	dweller->SetFirstNode(nullptr);
+	
 	m_NodeEntityManager.RemoveEntity(dweller);
 	m_Dwellers.RemoveCyclic(dweller);
 }
@@ -78,8 +79,6 @@ void TreeNode::Update(float dt)
 	m_NodeEntityManager.Update(dt);
 
 	const EntityList& entities = m_NodeEntityManager.GetEntities(CreateFilter<Requires<TranslationComponent>>());
-	TreeDweller* to_remove = nullptr;
-
 
 	for (TreeDweller* dweller : m_Dwellers)
 	{
@@ -89,19 +88,19 @@ void TreeNode::Update(float dt)
 		{
 			if (pair.m_Type & TreeDweller::TRANSLATION)
 			{
-				CU::Vector3f pos = static_cast<TranslationComponent*>(pair.m_Component)->myOrientation.GetPosition();
-				if (m_Parent && !InsideNode(pos))
+				//CU::Vector3f pos = static_cast<TranslationComponent*>(pair.m_Component)->myOrientation.GetPosition();
+				if (m_Parent && !InsideNode(dweller))
 				{
 					/* These two lines makes everything super slow */
+
 					m_Octree->MoveUp(this, dweller, m_Depth - 1);
-					RemoveEntity(dweller);
 
 					found = true;
 					break;
 				}
 				else
 				{
-					assert(false && "Dweller is outside of octree!");
+					//assert(false && "Dweller is outside of octree!");
 				}
 			}
 		}
@@ -130,7 +129,9 @@ void TreeNode::Update(float dt)
 
 	for (TreeNode* node : m_Children)
 	{
-		if (!node) continue;
+		if (!node) 
+			continue;
+		
 		node->Update(dt);
 	}
 }
@@ -161,11 +162,6 @@ bool TreeNode::SubNodeContainsDwellers()
 		}
 	}
 	return false;
-}
-
-void TreeNode::SetDebugName(std::string name)
-{
-	m_DebugName = name;
 }
 
 #define RED CU::Vector4f(255.f,0.f,0.f,255.f)
@@ -246,13 +242,13 @@ void TreeNode::RenderBox()
 
 }
 
-bool TreeNode::InsideNode(CU::Vector3f pos)
+bool TreeNode::InsideNode(TreeDweller* dweller)
 {
 	const CU::Vector3f position = m_CenterPosition;
 	const float halfwidth = m_HalfWidth;
 
-	const float bLeft = position.x - halfwidth;
 	const float bRight = position.x + halfwidth;
+	const float bLeft = position.x - halfwidth;
 
 	const float bTop = position.y + halfwidth;
 	const float bBottom = position.y - halfwidth;
@@ -260,16 +256,23 @@ bool TreeNode::InsideNode(CU::Vector3f pos)
 	const float bBack = position.z + halfwidth;
 	const float bFront = position.z - halfwidth;
 
-	const CU::Vector3f dweller_position = pos;
+	const CU::Vector3f dweller_position = dweller->GetPosition();
+	const CU::Vector3f dweller_bounds = dweller->GetWHD();
 
-	const float cLeft = position.x - 4.f;
-	const float cRight = position.x + 4.f;
 
-	const float cTop = position.y + 4.f;
-	const float cBottom = position.y - 4.f;
+	const float cRight = dweller_position.x + dweller_bounds.x;
+	const float cLeft = dweller_position.x - dweller_bounds.x;
 
-	const float cBack = position.z + 4.f;
-	const float cFront = position.z - 4.f;
+	const float cTop = dweller_position.y + dweller_bounds.y;
+	const float cBottom = dweller_position.y - dweller_bounds.y;
 
-	return (cLeft < bLeft && cRight > bRight && cTop < bTop && cBottom > bBottom && cBottom < bBack && cFront > bFront);
+	const float cBack = dweller_position.z + dweller_bounds.z;
+	const float cFront = dweller_position.z - dweller_bounds.z;
+
+	return (cLeft > bLeft 
+			&& cRight < bRight 
+			&& cTop > bTop 
+			&& cBottom < bBottom 
+			&& cBack > bBack 
+			&& cFront < bFront);
 }

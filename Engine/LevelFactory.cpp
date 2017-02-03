@@ -109,6 +109,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	CreateDebugComponent(e, hasLight, debug_flags);
 
+	
 	m_DwellerList.GetLast()->Initiate(e);
 
 }
@@ -128,8 +129,6 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	m_EntityManager->AddComponent<RenderComponent>(entity_id);
 
 	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
-	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
-
 	const JSONElement& el = entity_reader.GetElement("graphics");
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
@@ -152,6 +151,8 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.scale.w = 1.f;
 
 
+	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
+	m_DwellerList.GetLast()->SetWHD(m_Engine->GetModel(component.myModelID)->GetWHD());
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)

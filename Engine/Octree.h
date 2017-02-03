@@ -20,7 +20,10 @@ private:
 	CU::TimeManager m_Timer;
 
 	bool RemoveNode(TreeNode* node);
+	void MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth);
+
 	void InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth);
+
 	TreeNode* CreateNode(const CU::Vector3f& center, float halfwidth, s32 index);
 	bool NodeCollision(TreeNode* node, TreeDweller* dweller);
 	void MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth);

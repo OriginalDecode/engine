@@ -3,26 +3,27 @@ Engine Tasks:
     The refs in Visual studio is just a fast link to the *.lib output file, we could probably set this up better in someway.
     Add all the .libs to the .exe might work
 
- Input Handling:
-    ☐ Create an input system that supports rebindable keys from the user
+ Input Handling: 
+    ☐ Create an input system that supports rebindable keys from the user 
      Maybe should listen to input using the observer pattern.
      This action is bound to this function, this function is bound to this key, key comes from the outside
   Level / World:
-    ☐ Rework the loading to handle patches instead of loading the entire world in 1 go.
-    ☐ Load patches with entities
-    ☐ Load patches around the player position
-    ☐ Distance LOD from player
-    ☐ Distance Fog or other fancy solution   
+    ☐ Rework the loading to handle patches instead of loading the entire world in 1 go. @low
+    ☐ Load patches with entities @low 
+    ☐ Load patches around the player position @low
+    ☐ Distance LOD from player @low
+    ☐ Distance Fog or other fancy solution @low
     ✔ Quadtree / Octree @done (17-01-29 23:57)
        The world needs a basic implementation of a Quadtree or an Octree
     ✔ Treenode updates entities by themselves. @done (17-01-29 23:57)
     ☐ Remove / Add Nodes dynamically @started
-    ☐ Move entities from node to node with minimum overhead. @started
+    ☐ Move entities from node to node with minimum overhead. @started 
+      ☐ BUG: Update time of the octree increases overtime the more you call the "InsertDweller" function @critical
   Entities:
-    ☐ Create and edit entities in engine.
-    ☐ Standardize rotations in engine
+    ☐ Create and edit entities in engine. @low
+    ☐ Standardize rotations in engine @high
      Shadow Spotlights, Lights, Camera etc..
-    ☐ Flag lights that should be able to cast shadows.
+    ☐ Flag lights that should be able to cast shadows. @low
     ✔ OBB click collision on entities @done (17-01-22 00:59)
       ✔ Add box around entity @done (17-01-18 21:05)
       ✘ Use physics for OBB click collision on entities @cancelled (17-01-18 18:43)
@@ -40,8 +41,10 @@ Engine Tasks:
     ✔ Hook up some kind of debug/edit-mode UI (imgui) @done (17-01-19 22:32)
     ✔ Configure imgui @done (17-01-22 00:59)
     ✔ Hook up some relevant variables @done (17-01-22 00:59)
+    ☐ Entity Editing @low
   Particles:
-    ☐ Custom particle shapes
+    ☐ @low section
+    ☐ Custom particle shapes 
     ☐ Emitter System
   Network:
     ☐ Add the network API to the engine and make the engine able to run without Graphics.
@@ -50,6 +53,11 @@ Engine Tasks:
        (network_version + map_name + user_name) or something like that
     ☐ FlatBuffers
       Calle recomended this, you can access the data without deserializing / unpacking messages
+    ☐ Make the Engine run in the Terminal without any graphics or rendercommands. @low
+      This is to make sure that I can run the game on Linux.
+    ☐ Handshake message
+      ☐ Check MTU size of Client
+    ☐ Reliability filter
   Rendering:
      ☐ Abstract
        ☐ All the calls should go through the interface and not through the API.  
@@ -65,7 +73,7 @@ Engine Tasks:
       States are still game-bound but having the statestack in the Engine should make it easier to move between projects
   Memory:
     ☐ Investigate Memory Allocators @started
-    ☐ Implement custom memory allocators 
+    ☐ Implement custom memory allocators @high 
       ☐ Linear Allocator
       ☐ Stack Allocator
       ☐ Circle Allocator
@@ -82,3 +90,4 @@ CommonLib:
         ☐ Convert matrix rotation into quaternion
   Containers:
     ☐ GrowingArray might be broke
+    ☐ Rewrite with the use of custom allocators

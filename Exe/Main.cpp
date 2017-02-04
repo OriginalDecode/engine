@@ -36,8 +36,8 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	DL_Debug::Debug::GetInstance()->ActivateFilters(Update_Filter | Render_Filter | Physics_Filter | Resource_Filter | Engine_Filter | Font_Filter | Model_Filter);
 
-	float w = 1280;
-	float h = 720;
+	float w = 1920;
+	float h = 1080;
 	newApplication = new Application();
 
 	Hex::Engine::Create();

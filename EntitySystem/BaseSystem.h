@@ -1,6 +1,7 @@
 #pragma once
 #include "ComponentFilter.h"
 #include "EntityManager.h"
+#include <Utilities.h>
 namespace Hex
 {
 	class Synchronizer;
@@ -29,6 +30,7 @@ private:
 
 protected:
 	EntityManager& myEntityManager;
+	Ticket_Mutex m_Mutex;
 };
 
 template<typename T>

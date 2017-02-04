@@ -283,7 +283,7 @@ namespace CommonUtilities
 		{
 			delete myData[i];
 			myData[i] = nullptr;
-		}
+		} 
 		mySize = 0;
 	};
 

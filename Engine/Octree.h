@@ -14,22 +14,23 @@ public:
 	void AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers);
 
 	void Update(float dt);
+	void RemoveNode();
 private:
-	float total_time = 0.f;
-	float to_print = 0.f;
 	CU::TimeManager m_Timer;
 
-	bool RemoveNode(TreeNode* node);
 	void MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth);
-
+	int node_count = 0;
 	void InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth);
 
 	TreeNode* CreateNode(const CU::Vector3f& center, float halfwidth, s32 index);
-	bool NodeCollision(TreeNode* node, TreeDweller* dweller);
 	void MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth);
 
 	void ToDelete(TreeNode* node);
 	CU::GrowingArray<TreeNode*> m_GarbageNodes;
+	CU::GrowingArray<TreeNode*> allNodes;
+
+
+	
 	CU::Vector3f m_Position;
 	float m_HalfWidth = 0.f;
 	TreeNode m_Root;

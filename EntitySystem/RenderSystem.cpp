@@ -20,8 +20,12 @@ CRenderSystem::CRenderSystem(EntityManager& anEntityManager)
 	mySynchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
 }
 
+
+#define MUTEX_SCOPE(mutex)
+
 void CRenderSystem::Update(float dt)
 {
+	BeginTicketMutex(&m_Mutex);
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 
 	for (int i = 0; i < entities.Size(); i++)
@@ -37,12 +41,12 @@ void CRenderSystem::Update(float dt)
 
 			//if (e == 0)
 			{
-			/*	CU::Vector3f pos = { 256.f, 5.f, 256.f };
+				/**/CU::Vector3f pos = { 256.f, 5.f, 256.f };
 				CU::Vector3f original_pos = translation.myOrientation.GetPosition();
 				translation.myOrientation.SetPosition(original_pos - pos);
 
 				translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(25.f) * dt);
-				translation.myOrientation.SetPosition(translation.myOrientation.GetPosition() + pos);*/
+				translation.myOrientation.SetPosition(translation.myOrientation.GetPosition() + pos);/**/
 			}
 
 			mySynchronizer->AddRenderCommand(RenderCommand(
@@ -51,4 +55,5 @@ void CRenderSystem::Update(float dt)
 				, translation.myOrientation
 				, render.scale));
 	}
+	EndTicketMutex(&m_Mutex);
 }

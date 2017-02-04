@@ -19,8 +19,7 @@ void Octree::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
 {
 	for (TreeDweller* dweller : dwellers)
 	{
-		//InsertDweller(&m_Root, dweller, 0);
-		MoveDown(&m_Root, dweller, m_Root.GetDepth());
+		MoveDown(&m_Root, dweller, m_Root.GetDepth() + 1);
 	}
 }
 
@@ -30,23 +29,32 @@ void Octree::Update(float dt)
 	for (TreeNode* node : m_GarbageNodes)
 	{
 		delete node;
+		node_count--;
 	}
 	m_GarbageNodes.RemoveAll();
+	
 
+	std::stringstream ss;
+	ss << "node count : " << node_count << " + Root";
+	Hex::Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::TEXT, ss.str(), CU::Vector2f(0.85f, 0.f)));
 	m_Root.Update(dt);
 }
 
-#define MAX_DEPTH 8
+void Octree::RemoveNode()
+{
+	node_count--;
+}
+
+#define MAX_DEPTH 5
 void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 {
 	TreeNode* remve_from = dweller->GetFirstNode();
 	if (remve_from)
 	{
-		remve_from->RemoveEntity(dweller);
+		assert(false && "should be removed already!");
 	}
 	// Potentially this function is very very slow
-	if (depth < 0)
-		depth = 0;
+	assert(depth >= 0 && "Depth was lower than 0?");
 
 	s32 index = 0;
 	bool straddle = false; 
@@ -54,6 +62,23 @@ void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 	const CU::Vector3f node_position = node->GetPosition();
 	const CU::Vector3f dweller_position = dweller->GetPosition();
 	const CU::Vector3f dweller_bounds = dweller->GetWHD();
+
+	float max_bound = 0.f;
+	if (max_bound < dweller_bounds.x)
+	{
+		max_bound = dweller_bounds.x;
+	}
+
+	if (max_bound < dweller_bounds.x)
+	{
+		max_bound = dweller_bounds.x;
+	}
+
+	if (max_bound < dweller_bounds.x)
+	{
+		max_bound = dweller_bounds.x;
+	}
+
 
 	for (s32 i = 0; i < 3; i++)
 	{
@@ -75,7 +100,9 @@ void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 			bound_value = dweller_bounds.z;
 		}
 
-		if (abs(delta) + node->GetHalfWidth() /* * (myLooseness - 1.f)*/ < bound_value)
+		//without halfwidth we can't get more nodes?
+
+		if (abs(delta) + node->GetHalfWidth() /* (1.f - 1.f)*/ <= max_bound)
 		{
 			straddle = true;
 			break;
@@ -87,9 +114,7 @@ void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 		}
 	}
 
-
-
-	if (straddle == false && node->GetDepth() < MAX_DEPTH)
+	if (straddle == false && node->GetDepth() < MAX_DEPTH - 1)
 	{
 		if (!node->GetChildByIndex(index))
 		{
@@ -102,7 +127,7 @@ void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 	}
 	else
 	{
-		InsertDweller(node->GetParent(), dweller, depth - 1);
+		InsertDweller(node, dweller, depth);
 	}
 	
 }
@@ -118,7 +143,7 @@ void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
 TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 index)
 {
 	CU::Vector3i dir;
-
+	node_count++;
 	switch (index)
 	{
 		case 0:
@@ -164,42 +189,9 @@ TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 in
 	return node;
 }
 
-bool Octree::NodeCollision(TreeNode* node, TreeDweller* dweller)
-{
-	const CU::Vector3f position = node->GetPosition();
-	const float halfwidth = node->GetHalfWidth();
-
-	const float bLeft = position.x - halfwidth;
-	const float bRight = position.x + halfwidth;
-
-	const float bTop = position.y + halfwidth;
-	const float bBottom = position.y - halfwidth;
-
-	const float bBack = position.z + halfwidth;
-	const float bFront = position.z - halfwidth;
-
-	const CU::Vector3f dweller_position = dweller->GetPosition();
-	const CU::Vector3f dweller_bounds = dweller->GetWHD();
-
-	const float cLeft = dweller_position.x - dweller_bounds.x;
-	const float cRight = dweller_position.x + dweller_bounds.x;
-
-	const float cTop = dweller_position.y + dweller_bounds.y;
-	const float cBottom = dweller_position.y - dweller_bounds.y;
-
-	const float cBack = dweller_position.z + dweller_bounds.z;
-	const float cFront = dweller_position.z - dweller_bounds.z;
-
-	return (cLeft > bLeft 
-			&& cRight < bRight 
-			&& cTop > bTop 
-			&& cBottom < bBottom 
-			&& cBack > bBack 
-			&& cFront < bFront);
-}
-
 void Octree::MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth)
 {
+	assert(depth >= 0 && "MoveUp : Depth was lower than 0?");
 	TreeNode* parent = node->GetParent();
 	node->RemoveEntity(dweller);
 	if (parent && !node->InsideNode(dweller))
@@ -207,9 +199,8 @@ void Octree::MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth)
 		MoveUp(parent, dweller, depth - 1);
 		return;
 	}
-	else
-		MoveDown(node, dweller, depth + 1);
 
+	MoveDown(node, dweller, depth + 1);
 }
 
 void Octree::ToDelete(TreeNode* node)
@@ -217,36 +208,3 @@ void Octree::ToDelete(TreeNode* node)
 	m_GarbageNodes.Add(node);
 }
 
-//bool Octree::RemoveNode(TreeNode* node)
-//{
-//	if (node->GetEntityCount() > 0)
-//		return false;
-//
-//	bool empty = true;
-//	for (s32 i = 0; i < 8; ++i)
-//	{
-//		if (node->GetChildByIndex(i) != nullptr)
-//		{
-//			empty = RemoveNode(node->GetChildByIndex(i));
-//			if (!empty)
-//				return empty;
-//		}
-//	}
-//
-//	if (empty)
-//	{
-//		for (s32 i = 0; i < 8; i++)
-//		{
-//			if (node->GetParent()->GetChildByIndex(i) == node)
-//			{
-//				node->GetParent()->AddChild(nullptr, i);
-//			}
-//		}
-//
-//		node->AddParent(nullptr);
-//		delete node;
-//		node = nullptr;
-//		return true;
-//	}
-//	return false;
-//}

@@ -6,6 +6,50 @@
 			"position" : [ 200, 5, 200 ],
 			"scale" : [1,2,1],
 			"rotation" : [0,0,1]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/entity.json", 
+			"position" : [ 350, 5, 250 ],
+			"scale" : [1,1,1],
+			"rotation" : [0,5,0.5,0.5]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/entity.json", 
+			"position" : [ 350, 5, 350 ],
+			"scale" : [1,1,1],
+			"rotation" : [0,5,0.5,0.5]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/entity.json", 
+			"position" : [ 250, 5, 350 ],
+			"scale" : [1,1,1],
+			"rotation" : [0,5,0.5,0.5]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/entity.json", 
+			"position" : [ 100, 5, 200 ],
+			"scale" : [1,1,1],
+			"rotation" : [0,5,0.5,0.5]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/entity.json", 
+			"position" : [ 200, 5, 100 ],
+			"scale" : [1,1,1],
+			"rotation" : [0,5,0.5,0.5]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/spotlight.json", 
+			"position" : [ 99, 4, 31 ],
+			"range" : 100,
+			"angle" : 45,
+			"color" : [255,0,0],
+			"direction":[90, 0, 0]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/pointlight.json", 
+			"position" : [ 50, 4, 50 ],
+			"color": [ 0, 0, 255 ],
+			"range" : 10
 		}
 	}	
 }

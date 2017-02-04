@@ -23,76 +23,78 @@ DebugSystem::~DebugSystem()
 
 void DebugSystem::Update(float dt)
 {
-		const CU::GrowingArray<Entity>& entities = GetEntities();
-		for (Entity e : entities)
-		{
-			DebugComponent& debug = GetComponent<DebugComponent>(e);
-			TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-			
-			SLinePoint p1, p2, p3, p4, p5, p6, p7, p8;
-			p1.color = debug.debugColor;
-			p2.color = p1.color;
-			p3.color = p1.color;
-			p4.color = p1.color;
-			p5.color = p1.color;
-			p6.color = p1.color;
-			p7.color = p1.color;
-			p8.color = p1.color;
+	BeginTicketMutex(&m_Mutex);
+	const CU::GrowingArray<Entity>& entities = GetEntities();
+	for (Entity e : entities)
+	{
+		DebugComponent& debug = GetComponent<DebugComponent>(e);
+		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 
-			p1.position = translation.myOrientation.GetTranslation();
-			p2.position = p1.position;
-			p3.position = p1.position;
-			p4.position = p1.position;
-			p5.position = p1.position;
-			p6.position = p1.position;
-			p7.position = p1.position;
-			p8.position = p1.position;
+		SLinePoint p1, p2, p3, p4, p5, p6, p7, p8;
+		p1.color = debug.debugColor;
+		p2.color = p1.color;
+		p3.color = p1.color;
+		p4.color = p1.color;
+		p5.color = p1.color;
+		p6.color = p1.color;
+		p7.color = p1.color;
+		p8.color = p1.color;
 
-			p1.position -= translation.myOrientation.GetRight() * debug.m_WHD.x;
-			p1.position -= translation.myOrientation.GetUp() * debug.m_WHD.y;
-			p1.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
+		p1.position = translation.myOrientation.GetTranslation();
+		p2.position = p1.position;
+		p3.position = p1.position;
+		p4.position = p1.position;
+		p5.position = p1.position;
+		p6.position = p1.position;
+		p7.position = p1.position;
+		p8.position = p1.position;
 
-			p2.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
-			p2.position -= translation.myOrientation.GetUp() * debug.m_WHD.y;
-			p2.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
+		p1.position -= translation.myOrientation.GetRight() * debug.m_WHD.x;
+		p1.position -= translation.myOrientation.GetUp() * debug.m_WHD.y;
+		p1.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
 
-			p3.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
-			p3.position -= translation.myOrientation.GetUp() * debug.m_WHD.y;
-			p3.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
+		p2.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
+		p2.position -= translation.myOrientation.GetUp() * debug.m_WHD.y;
+		p2.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
 
-			p4.position -= translation.myOrientation.GetRight() * debug.m_WHD.x;
-			p4.position -= translation.myOrientation.GetUp() * debug.m_WHD.y;
-			p4.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
+		p3.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
+		p3.position -= translation.myOrientation.GetUp() * debug.m_WHD.y;
+		p3.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
 
-			p5.position -= translation.myOrientation.GetRight() * debug.m_WHD.x;
-			p5.position += translation.myOrientation.GetUp() * debug.m_WHD.y;
-			p5.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
+		p4.position -= translation.myOrientation.GetRight() * debug.m_WHD.x;
+		p4.position -= translation.myOrientation.GetUp() * debug.m_WHD.y;
+		p4.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
 
-			p6.position -= translation.myOrientation.GetRight() * debug.m_WHD.x;
-			p6.position += translation.myOrientation.GetUp() * debug.m_WHD.y;
-			p6.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
+		p5.position -= translation.myOrientation.GetRight() * debug.m_WHD.x;
+		p5.position += translation.myOrientation.GetUp() * debug.m_WHD.y;
+		p5.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
 
-			p7.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
-			p7.position += translation.myOrientation.GetUp() * debug.m_WHD.y;
-			p7.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
+		p6.position -= translation.myOrientation.GetRight() * debug.m_WHD.x;
+		p6.position += translation.myOrientation.GetUp() * debug.m_WHD.y;
+		p6.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
 
-			p8.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
-			p8.position += translation.myOrientation.GetUp() * debug.m_WHD.y;
-			p8.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
+		p7.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
+		p7.position += translation.myOrientation.GetUp() * debug.m_WHD.y;
+		p7.position -= translation.myOrientation.GetForward() * debug.m_WHD.z;
 
-			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
-			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));
-			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p3, p4));
-			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p4, p1));
-			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p5));
-			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p5, p6));
-			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p8));
-			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p7));
-			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p5));
-			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p4));
-			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p2));
-			m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));
-		}
+		p8.position += translation.myOrientation.GetRight() * debug.m_WHD.x;
+		p8.position += translation.myOrientation.GetUp() * debug.m_WHD.y;
+		p8.position += translation.myOrientation.GetForward() * debug.m_WHD.z;
+
+		m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
+		m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));
+		m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p3, p4));
+		m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p4, p1));
+		m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p5));
+		m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p5, p6));
+		m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p8));
+		m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p7));
+		m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p5));
+		m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p4));
+		m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p2));
+		m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));
+	}
+	EndTicketMutex(&m_Mutex);
 }
 
 //This needs to be optimized as hell.
@@ -102,7 +104,7 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 	//Should be optimized for a quad/oct -tree solution to only retrieve the entities in THIS part
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	CU::GrowingArray<entity_collisions> collisions;
-	for (Entity i = entities.Size() -1; i >= 0; i--)
+	for (Entity i = entities.Size() - 1; i >= 0; i--)
 	{
 		Entity e = entities[i];
 		DebugComponent& debug = GetComponent<DebugComponent>(e);

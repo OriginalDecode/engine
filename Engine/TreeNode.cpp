@@ -10,11 +10,13 @@
 
 TreeNode::~TreeNode()
 {
-	
 	for (s32 i = 0; i < 8; i++)
 	{
+		if (m_Children[i])
+			m_Children[i]->m_Octree->RemoveNode();
 		delete m_Children[i];
 		m_Children[i] = nullptr;
+
 	}
 }
 
@@ -58,7 +60,7 @@ void TreeNode::AddEntity(TreeDweller* dweller, s32 node)
 void TreeNode::RemoveEntity(TreeDweller* dweller)
 {
 	dweller->SetFirstNode(nullptr);
-	
+
 	m_NodeEntityManager.RemoveEntity(dweller);
 	m_Dwellers.RemoveCyclic(dweller);
 }
@@ -88,13 +90,9 @@ void TreeNode::Update(float dt)
 		{
 			if (pair.m_Type & TreeDweller::TRANSLATION)
 			{
-				//CU::Vector3f pos = static_cast<TranslationComponent*>(pair.m_Component)->myOrientation.GetPosition();
 				if (m_Parent && !InsideNode(dweller))
 				{
-					/* These two lines makes everything super slow */
-
-					m_Octree->MoveUp(this, dweller, m_Depth - 1);
-
+					m_Octree->MoveUp(this, dweller, m_Depth);
 					found = true;
 					break;
 				}
@@ -129,12 +127,15 @@ void TreeNode::Update(float dt)
 
 	for (TreeNode* node : m_Children)
 	{
-		if (!node) 
+		if (!node)
 			continue;
-		
-		node->Update(dt);
+		/*Hex::Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {*/
+			node->Update(dt); /*}));*/
 	}
 }
+
+
+
 
 TreeNode* TreeNode::GetChildByIndex(s32 index)
 {
@@ -148,11 +149,6 @@ s32 TreeNode::GetEntityCount()
 
 bool TreeNode::SubNodeContainsDwellers()
 {
-	if (m_Dwellers.Size() > 0)
-	{
-		return true;
-	}
-
 	for (s32 i = 0; i < 8; i++)
 	{
 		if (m_Children[i])
@@ -161,6 +157,12 @@ bool TreeNode::SubNodeContainsDwellers()
 				return true;
 		}
 	}
+
+	if (m_Dwellers.Size() > 0)
+	{
+		return true;
+	}
+
 	return false;
 }
 
@@ -269,10 +271,10 @@ bool TreeNode::InsideNode(TreeDweller* dweller)
 	const float cBack = dweller_position.z + dweller_bounds.z;
 	const float cFront = dweller_position.z - dweller_bounds.z;
 
-	return (cLeft > bLeft 
-			&& cRight < bRight 
-			&& cTop > bTop 
-			&& cBottom < bBottom 
-			&& cBack > bBack 
-			&& cFront < bFront);
+	return (cLeft > bLeft
+		&& cRight < bRight
+		&& cBottom > bBottom
+		&& cTop < bTop
+		&& cFront > bFront
+		&& cBack < bBack);
 }

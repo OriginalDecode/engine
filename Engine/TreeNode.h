@@ -38,9 +38,11 @@ public:
 	bool SubNodeContainsDwellers();
 	bool InsideNode(TreeDweller* dweller);
 private:
+	void RenderBox();
+
+
 	Octree* m_Octree = nullptr;
 	bool m_Paused = false;
-	void RenderBox();
 
 	float m_HalfWidth = 0.f;
 

@@ -129,8 +129,16 @@ void TreeNode::Update(float dt)
 	{
 		if (!node)
 			continue;
-		/*Hex::Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {*/
-			node->Update(dt); /*}));*/
+
+		/*if (m_Parent && !m_Parent->GetParent())
+		{
+			Hex::Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
+				node->Update(dt); }));
+		}
+		else
+		{*/
+			node->Update(dt);
+		//}
 	}
 }
 

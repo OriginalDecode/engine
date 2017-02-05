@@ -205,6 +205,7 @@ namespace Hex
 		mySynchronizer->SwapBuffer();
 		mySynchronizer->RenderIsDone();
 		myPrevFrame = myCamera->GetOrientation();
+		myEngine->ToggleFrame();
 	}
 #endif
 

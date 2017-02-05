@@ -1,9 +1,10 @@
 #include "BaseSystem.h"
 
 #include "../Engine/NodeEntityManager.h"
-
+#include "../Engine/Engine.h"
 BaseSystem::BaseSystem(EntityManager& anEntityManager)
 	: myEntityManager(anEntityManager)
+	, m_Engine(Hex::Engine::GetInstance())
 {
 }
 
@@ -11,6 +12,7 @@ BaseSystem::BaseSystem(EntityManager& anEntityManager)
 BaseSystem::BaseSystem(EntityManager& anEntityManager, const SComponentFilter& aFilter)
 	: myEntityManager(anEntityManager)
 	, myFilter(aFilter)
+	, m_Engine(Hex::Engine::GetInstance())
 {
 }
 

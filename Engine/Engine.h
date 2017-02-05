@@ -163,6 +163,8 @@ namespace Hex
 		void SelectEntity(u32 e);
 		void DeselectEntity();
 		void EditEntity();
+		void ToggleFrame() { m_Frame ^= 1; }
+		s32 GetFrame() { return m_Frame; }
 	private:
 
 		bool m_EditLight = false;
@@ -220,7 +222,7 @@ namespace Hex
 
 	
 		float m_DeltaTime							= 0.f;
-
+		s32	m_Frame									= 0;
 	};
 };
 

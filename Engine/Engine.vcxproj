@@ -235,7 +235,7 @@
       <UndefinePreprocessorDefinitions>__WIN32;WIN32;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>freetype_$(Configuration)_x64.lib;DirectXTK_$(Configuration)_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration)_x64.lib;DirectXTK_$(Configuration)_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_$(Configuration).lib;ProfilerCore64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>

@@ -54,7 +54,7 @@ namespace Hex
 		CU::Matrix44f myOrientation;
 		u32 myWidth;
 		u32 myDepth;
-
+		
 		CSurface* mySurface = nullptr;
 
 		struct TerrainConstantStruct : public SVertexBaseStruct

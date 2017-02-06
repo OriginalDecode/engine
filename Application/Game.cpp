@@ -38,7 +38,7 @@ void Game::InitState(StateStack* state_stack)
 
 	m_Picker = new Hex::CMousePicker;
 
-	m_Engine->ToggleVsync(); //settings
+	//m_Engine->ToggleVsync(); //settings
 	m_Camera = m_Engine->GetCamera();
 
 	m_ModelKey = m_Engine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Cube.json").c_str();

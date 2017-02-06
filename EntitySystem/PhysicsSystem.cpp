@@ -27,15 +27,13 @@ void CPhysicsSystem::Update(float aDeltaTime)
 		{
 			Entity e = entities[i];
 			STranslationComponent& translation = GetComponent<STranslationComponent>(e);
-			/*
+			
 			PhysicsComponent& physics = GetComponent<SPhysicsComponent>(e);
-			if (!physics.myBody->IsEnabled())
-				continue;
 			
 
 			translation.myOrientation = physics.myBody->GetOrientation();
 			physics.myBody->Update(aDeltaTime);
-			*/
+			
 			
 		}
 		myPhysicsManager->Update(myAccumulatedTime); //ASync Physics?

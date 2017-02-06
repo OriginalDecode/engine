@@ -24,6 +24,8 @@
 
 #include "imgui_impl_dx11.h"
 
+#include <Brofiler.h>
+
 //#define AMBIENT_PASS_ONLY
 namespace Hex
 {
@@ -169,6 +171,7 @@ namespace Hex
 #else
 	void Renderer::Render()
 	{
+		BROFILER_FRAME("Render");
 		myEngine->Clear();
 		m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
 		myDeferredRenderer->SetTargets();

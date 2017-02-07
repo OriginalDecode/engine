@@ -102,7 +102,7 @@ Engine Tasks:
     ☐ Investigate possible performance gains (not that I need them right now) from internally threading physics
     ☐ Investigate grouping up vertex buffers & index buffers
       ☐ CommandBuffers / RenderCommands
-      ☐ A big drawcall instead of several small ones. Context swaps are expensive and can be solved by having a lot of vertices & indices in a single call.
+      ☐ A big drawcall instead of several small ones. Context swaps are expensive and can be solved by having a lot of vertices & indices in a single call. 
 CommonLib:
   Math:
     ☐ Quaternion -> Matrix

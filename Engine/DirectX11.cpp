@@ -189,7 +189,7 @@ namespace Hex
 
 		JSONReader reader("Data/Config/game.json");
 		std::string adapterString;
-		reader.ForceReadElement("GraphicsAdapter", adapterString);
+		reader.ReadElement("GraphicsAdapter", adapterString);
 
 		IDXGIAdapter* adapterToUse;
 		adapterToUse = myAdapters[adapterString];

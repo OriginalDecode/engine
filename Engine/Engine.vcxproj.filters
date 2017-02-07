@@ -331,7 +331,9 @@
     <ClInclude Include="Octree.h">
       <Filter>World</Filter>
     </ClInclude>
-    <ClInclude Include="LinearAllocator.h" />
+    <ClInclude Include="LinearAllocator.h">
+      <Filter>Allocators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -523,6 +525,8 @@
     <ClCompile Include="Octree.cpp">
       <Filter>World</Filter>
     </ClCompile>
-    <ClCompile Include="LinearAllocator.cpp" />
+    <ClCompile Include="LinearAllocator.cpp">
+      <Filter>Allocators</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

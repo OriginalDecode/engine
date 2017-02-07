@@ -3,7 +3,7 @@ Engine Tasks:
     The refs in Visual studio is just a fast link to the *.lib output file, we could probably set this up better in someway.
     Add all the .libs to the .exe might work
 
- Input Handling: 
+  Input Handling: 
     ☐ Create an input system that supports rebindable keys from the user 
      Maybe should listen to input using the observer pattern.
      This action is bound to this function, this function is bound to this key, key comes from the outside
@@ -103,6 +103,7 @@ Engine Tasks:
     ☐ Investigate grouping up vertex buffers & index buffers
       ☐ CommandBuffers / RenderCommands
       ☐ A big drawcall instead of several small ones. Context swaps are expensive and can be solved by having a lot of vertices & indices in a single call. 
+    ☐ TreeNodes to be threaded?
 CommonLib:
   Math:
     ☐ Quaternion -> Matrix

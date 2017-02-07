@@ -59,34 +59,34 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 
 	CU::Vector3f pos;
-	m_LevelReader._ReadElement(it->value["position"], pos);
+	m_LevelReader.ReadElement(it->value["position"], pos);
 	CreateTranslationComponent(e, pos);
 	bool hasLight = true;
-	if (entity_reader.HasElement("graphics"))
+	if (entity_reader.DocumentHasMember("graphics"))
 	{
 		CreateGraphicsComponent(entity_reader, e, it);
 		hasLight = false;
 		debug_flags |= EditObject::GRAPHICS;
 	}
 
-	if (entity_reader.HasElement("physics"))
+	if (entity_reader.DocumentHasMember("physics"))
 	{
 		CreatePhysicsComponent(entity_reader, e);
 		debug_flags |= EditObject::PHYSICS;
 	}
 
-	if (entity_reader.HasElement("camera"))
+	if (entity_reader.DocumentHasMember("camera"))
 	{
 		CreateCameraComponent(entity_reader, e);
 		//debug_flags |= EditObject::PHYSICS;
 	}
-	if (entity_reader.HasElement("light"))
+	if (entity_reader.DocumentHasMember("light"))
 	{
 		CreateLightComponent(entity_reader, e, it);
 		debug_flags |= EditObject::LIGHT;
 	}
 
-	if (entity_reader.HasElement("controller"))
+	if (entity_reader.DocumentHasMember("controller"))
 	{
 		if (entity_reader.ReadElement("controller") == "input")
 		{
@@ -136,9 +136,9 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 
 	CU::Vector3f scale;
-	m_LevelReader._ReadElement(it->value["scale"], scale);
+	m_LevelReader.ReadElement(it->value["scale"], scale);
 	CU::Vector3f rotation;
-	m_LevelReader._ReadElement(it->value["rotation"], rotation);
+	m_LevelReader.ReadElement(it->value["rotation"], rotation);
 
 	component.m_Rotation = rotation;
 
@@ -201,9 +201,18 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 	m_DwellerList.GetLast()->AddComponent<LightComponent>(&component, TreeDweller::LIGHT);
 
 	std::string type;
-	entity_reader.ReadElement("light", "type", type);
 
-	m_LevelReader._ReadElement(it->value["color"], component.color);
+
+	if (entity_reader.DocumentHasMember("light"))
+	{
+		const JSONElement& el = entity_reader.GetElement("light");
+		if (entity_reader.ElementHasMember(el, "type"))
+		{
+			type = el["type"].GetString();
+		}
+	}
+
+	m_LevelReader.ReadElement(it->value["color"], component.color);
 	m_LevelReader.ReadElement(it->value["range"], component.range);
 
 	component.color.x /= 255;
@@ -219,7 +228,7 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 	{
 		component.myType = eLightType::eSPOTLIGHT;
 
-		m_LevelReader._ReadElement(it->value["direction"], component.direction);
+		m_LevelReader.ReadElement(it->value["direction"], component.direction);
 
 		component.orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * component.orientation;
 		component.orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(component.direction.y)) * component.orientation;

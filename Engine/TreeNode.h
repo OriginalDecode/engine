@@ -54,5 +54,5 @@ private:
 	CU::Vector3f m_CenterPosition;
 
 	Hex::Synchronizer* m_Synchronizer = nullptr;
-	s32 m_Depth;
+	s32 m_Depth = 0;
 };

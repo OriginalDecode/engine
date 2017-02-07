@@ -96,10 +96,6 @@ void TreeNode::Update(float dt)
 					found = true;
 					break;
 				}
-				else
-				{
-					//assert(false && "Dweller is outside of octree!");
-				}
 			}
 		}
 		if (found)
@@ -130,15 +126,16 @@ void TreeNode::Update(float dt)
 		if (!node)
 			continue;
 
-		/*if (m_Parent && !m_Parent->GetParent())
+		/*
+		if (m_Parent && !m_Parent->GetParent())
 		{
 			Hex::Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
 				node->Update(dt); }));
 		}
-		else
-		{*/
+		else/**/
+		{
 			node->Update(dt);
-		//}
+		}
 	}
 }
 

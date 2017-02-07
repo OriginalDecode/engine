@@ -37,6 +37,7 @@ namespace Hex
 		std::string sub = CL::substr(path, "/", true, 0) + "/";
 
 		JSONReader reader(path);
+
 		LoadShader(sub + reader.ReadElement("VertexShader"), anEffect);
 		LoadShader(sub + reader.ReadElement("PixelShader"), anEffect);
 		LoadShader(sub + reader.ReadElement("GeometryShader"), anEffect);
@@ -77,19 +78,16 @@ namespace Hex
 
 	void ShaderFactory::LoadShader(const std::string& file_path, Effect* effect)
 	{
-		if (file_path.find("NO_STRING_FOUND") != file_path.npos)
+		if (file_path.find(JSONReader::ERROR_STR) != file_path.npos)
 			return;
 
 
 		u64 hash_key = Hash(file_path.c_str());
 
-
-
 		if (m_Shaders.find(hash_key) == m_Shaders.end())
 		{
 			m_Shaders[hash_key] = CreateShader(file_path);
 		}
-
 
 		std::string shader_type = CheckType(file_path);
 

@@ -7,10 +7,10 @@ namespace Hex
 }
 
 class EntityManager;
-class CRenderSystem : public BaseSystem
+class RenderSystem : public BaseSystem
 {
 public:
-	CRenderSystem(EntityManager& anEntityManager);
+	RenderSystem(EntityManager& anEntityManager);
 
 	void Update(float dt) override;
 

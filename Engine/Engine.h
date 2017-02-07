@@ -165,7 +165,17 @@ namespace Hex
 		void EditEntity();
 		void ToggleFrame() { m_Frame ^= 1; }
 		s32 GetFrame() { return m_Frame; }
+
+		enum class eEngineStates
+		{
+			USE_VSYNC,
+			INITIATED,
+			LOADING,
+			_COUNT
+		};
 	private:
+
+		void UpdateDebugUI();
 
 		bool m_EditLight = false;
 		//void EditLightComponent();
@@ -211,13 +221,7 @@ namespace Hex
 		CAssetsContainer* myAssetsContainer			= nullptr;
 		TerrainManager* m_TerrainManager			= nullptr;
 
-		enum class eEngineStates
-		{
-			USE_VSYNC,
-			INITIATED,
-			LOADING,
-			_COUNT
-		};
+		
 		std::bitset<(u16)eEngineStates::_COUNT> m_States;
 
 	

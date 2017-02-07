@@ -124,7 +124,7 @@ void RigidBody::SetResistanceDensity(float aDensity)
 
 void RigidBody::SetPosition(const CU::Vector3f& aPosition)
 {
-	myBody->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), bullet_utilities::ConvertVector(aPosition) ));
+	myBody->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), btu::ConvertVector(aPosition) ));
 }
 
 void RigidBody::Update(float deltaTime)

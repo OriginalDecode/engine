@@ -57,6 +57,7 @@ const char* RegisteredComponentsStr[] = {
 
 namespace Hex
 {
+
 	bool Engine::HasInitiated()
 	{
 		return (this && m_States[(u16)eEngineStates::INITIATED] == TRUE);
@@ -172,9 +173,10 @@ namespace Hex
 		m_EntityManager.Initiate();
 
 		m_EntityManager.AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
-		m_EntityManager.AddSystem<CPhysicsSystem>();
-		m_EntityManager.AddSystem<CRenderSystem>();
-		m_EntityManager.AddSystem<CLightSystem>();
+
+		m_EntityManager.AddSystem<PhysicsSystem>();
+		m_EntityManager.AddSystem<RenderSystem>();
+		m_EntityManager.AddSystem<LightSystem>();
 		m_EntityManager.AddSystem<InputSystem>();
 		m_EntityManager.AddSystem<NetworkSystem>();
 		m_EntityManager.AddSystem<AISystem>();
@@ -182,7 +184,6 @@ namespace Hex
 
 
 		//ImGui_ImplDX11_Init(void* hwnd, ID3D11Device* device, ID3D11DeviceContext* device_context);
-
 		ImGui_ImplDX11_Init(myHWND, GetAPI()->GetDevice(), GetAPI()->GetContext());
 
 		m_States[(u16)eEngineStates::INITIATED] = TRUE;
@@ -238,157 +239,10 @@ namespace Hex
 	{
 
 
-		{
-			ImGui::SetNextWindowPos(ImVec2(0, 0));
-			ImGui::SetNextWindowSize(ImVec2(300, GetWindowSize().myHeight));
-
-			ImGuiWindowFlags flags = 0;
-
-			flags |= ImGuiWindowFlags_NoTitleBar;
-			flags |= ImGuiWindowFlags_NoResize;
-			//flags |= ImGuiWindowFlags_NoCollapse;
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-			static bool pOpen = false;
-			static bool new_window = false;
-			if (ImGui::Begin("Information", &pOpen, flags))
-			{
-				ImGui::Text("Delta Time : %.3f", GetDeltaTime());
-
-
-				ImGui::Separator();
-
-				if (ImGui::Button("New Entity", ImVec2(100.f, 25.f)))
-				{
-					new_window = !new_window;
-				}
-
-				ImGui::Checkbox("Use mouse movement for Camera", &m_CameraUseMouse);
-
-				ImGui::End();
-			}
-			ImGui::PopStyleVar();
-
-
-			if (new_window)
-			{
-				ImGui::SetNextWindowPos(ImVec2(300.f, 0.f));
-				//ImGui::SetNextWindowSize(ImVec2(300.f, 300.f));
-
-				ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-				if (ImGui::Begin("New Window", &new_window, ImGuiWindowFlags_NoTitleBar))
-				{
-					ImGui::Text("Entity Creation");
-					ImGui::Separator();
-			
-					static bool new_bp = false;
-					if (ImGui::Button("New Blueprint", ImVec2(100.f, 25.f)))
-					{
-						new_bp = true;
-					}
-					if (ImGui::IsItemHovered())
-					{
-						ImGui::BeginTooltip();
-						ImGui::Text("Create and Edit a new Blueprint.");
-						ImGui::EndTooltip();
-					}
-					ImGui::Separator();
-
-					if (new_bp)
-					{
-						static bool new_component = false;
-						static const int item_count = ARRAYSIZE(RegisteredComponentsStr) - 1;
-						static int components = 0;
-
-						static int selected[item_count] = { 0 };
-						static char* str = { "Translation\0Graphics\0Physics\0AI\0Network\0Input" };
-
-						ImGui::BeginChildFrame(0, ImVec2(ImGui::GetWindowSize().x, 200.f));
-						static bool edit_t = false;
-						if (new_component)
-						{
-							for (int i = 0; i < components; i++)
-							{
-								std::stringstream ss;
-								ss << "Box_" << i;
-								std::stringstream ss2;
-								ss2 << "X_" << i;
-								std::stringstream ss3;
-								ss3 << "Edit_" << i;
-								if (ImGui::Button(ss2.str().c_str()))
-								{
-									for (int j = i; j < components - 1; j++)
-									{
-										selected[i] = selected[j + 1];
-									}
-									components--;
-								}
-								ImGui::SameLine();
-								ImGui::Combo(ss.str().c_str(), &selected[i], str);
-								ImGui::SameLine();
-								if (ImGui::Button(ss3.str().c_str()))
-								{
-									switch (selected[i])
-									{
-									case RegisteredComponents::translation:
-									{
-										edit_t = !edit_t;
-									}break;
-									}
-								}
-							}
-
-							ImGui::Separator();
-						}
-
-						if (edit_t)
-						{
-							ImGui::Begin("Hello World");
-
-							static float x_value = 0.f;
-							static float y_value = 0.f;
-							static float z_value = 0.f;
-
-							ImGui::SliderFloat("X", &x_value, 0, 1);
-							ImGui::SliderFloat("Y", &y_value, 0, 1);
-							ImGui::SliderFloat("Z", &z_value, 0, 1);
-
-
-
-							ImGui::End();
-						}
-
-						if (components < item_count)
-						{
-							if (ImGui::Button("Add Component"))
-							{
-								if (components < item_count)
-									components++;
-								new_component = true;
-							}
-						}
-
-						ImGui::EndChildFrame();
-
-						if (ImGui::Button("Save"))
-						{
-
-						}
-						ImGui::SameLine();
-						if (ImGui::Button("Cancel"))
-						{
-							new_bp = false;
-						}
-					}
-				}
-				ImGui::End();
-				ImGui::PopStyleVar();
-
-			}
-			EditEntity();
-		}
-
 		if (!HasInitiated())
 			return;
+
+		//UpdateDebugUI();
 
 		m_DeltaTime = myTimeManager.GetDeltaTime();
 		if (m_States[(u16)eEngineStates::LOADING] == FALSE)
@@ -631,10 +485,7 @@ namespace Hex
 
 	void Engine::ToggleVsync()
 	{
-		if (m_States[(u16)eEngineStates::USE_VSYNC] == TRUE)
-			m_States[(u16)eEngineStates::USE_VSYNC] = FALSE;
-		else
-			m_States[(u16)eEngineStates::USE_VSYNC] = TRUE;
+		m_States[(u16)eEngineStates::USE_VSYNC] = !m_States[(u16)eEngineStates::USE_VSYNC];
 	}
 
 	void Engine::OnAltEnter()
@@ -715,4 +566,156 @@ namespace Hex
 	{
 		return m_Threadpool;
 	}
+
+	void Engine::UpdateDebugUI()
+	{
+
+		ImGui::SetNextWindowPos(ImVec2(0, 0));
+		ImGui::SetNextWindowSize(ImVec2(300, GetWindowSize().myHeight));
+
+		ImGuiWindowFlags flags = 0;
+
+		flags |= ImGuiWindowFlags_NoTitleBar;
+		flags |= ImGuiWindowFlags_NoResize;
+		//flags |= ImGuiWindowFlags_NoCollapse;
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		static bool pOpen = false;
+		static bool new_window = false;
+		if (ImGui::Begin("Information", &pOpen, flags))
+		{
+			ImGui::Text("Delta Time : %.3f", GetDeltaTime());
+
+
+			ImGui::Separator();
+
+			if (ImGui::Button("New Entity", ImVec2(100.f, 25.f)))
+			{
+				new_window = !new_window;
+			}
+
+			ImGui::Checkbox("Use mouse movement for Camera", &m_CameraUseMouse);
+
+			ImGui::End();
+		}
+		ImGui::PopStyleVar();
+
+
+		if (new_window)
+		{
+			ImGui::SetNextWindowPos(ImVec2(300.f, 0.f));
+			//ImGui::SetNextWindowSize(ImVec2(300.f, 300.f));
+
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+			if (ImGui::Begin("New Window", &new_window, ImGuiWindowFlags_NoTitleBar))
+			{
+				ImGui::Text("Entity Creation");
+				ImGui::Separator();
+
+				static bool new_bp = false;
+				if (ImGui::Button("New Blueprint", ImVec2(100.f, 25.f)))
+				{
+					new_bp = true;
+				}
+				if (ImGui::IsItemHovered())
+				{
+					ImGui::BeginTooltip();
+					ImGui::Text("Create and Edit a new Blueprint.");
+					ImGui::EndTooltip();
+				}
+				ImGui::Separator();
+
+				if (new_bp)
+				{
+					static bool new_component = false;
+					static const int item_count = ARRAYSIZE(RegisteredComponentsStr) - 1;
+					static int components = 0;
+
+					static int selected[item_count] = { 0 };
+					static char* str = { "Translation\0Graphics\0Physics\0AI\0Network\0Input" };
+
+					ImGui::BeginChildFrame(0, ImVec2(ImGui::GetWindowSize().x, 200.f));
+					static bool edit_t = false;
+					if (new_component)
+					{
+						for (int i = 0; i < components; i++)
+						{
+							std::stringstream ss;
+							ss << "Box_" << i;
+							std::stringstream ss2;
+							ss2 << "X_" << i;
+							std::stringstream ss3;
+							ss3 << "Edit_" << i;
+							if (ImGui::Button(ss2.str().c_str()))
+							{
+								for (int j = i; j < components - 1; j++)
+								{
+									selected[i] = selected[j + 1];
+								}
+								components--;
+							}
+							ImGui::SameLine();
+							ImGui::Combo(ss.str().c_str(), &selected[i], str);
+							ImGui::SameLine();
+							if (ImGui::Button(ss3.str().c_str()))
+							{
+								switch (selected[i])
+								{
+								case RegisteredComponents::translation:
+								{
+									edit_t = !edit_t;
+								}break;
+								}
+							}
+						}
+
+						ImGui::Separator();
+					}
+
+					if (edit_t)
+					{
+						ImGui::Begin("Hello World");
+
+						static float x_value = 0.f;
+						static float y_value = 0.f;
+						static float z_value = 0.f;
+
+						ImGui::SliderFloat("X", &x_value, 0, 1);
+						ImGui::SliderFloat("Y", &y_value, 0, 1);
+						ImGui::SliderFloat("Z", &z_value, 0, 1);
+
+
+
+						ImGui::End();
+					}
+
+					if (components < item_count)
+					{
+						if (ImGui::Button("Add Component"))
+						{
+							if (components < item_count)
+								components++;
+							new_component = true;
+						}
+					}
+
+					ImGui::EndChildFrame();
+
+					if (ImGui::Button("Save"))
+					{
+
+					}
+					ImGui::SameLine();
+					if (ImGui::Button("Cancel"))
+					{
+						new_bp = false;
+					}
+				}
+			}
+			ImGui::End();
+			ImGui::PopStyleVar();
+
+		}
+		EditEntity();
+	}
+
 };

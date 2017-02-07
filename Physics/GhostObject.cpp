@@ -22,7 +22,7 @@ btGhostObject* GhostObject::InitAsBox(float width, float height, float depth, CU
 	
 	btTransform transform;
 	transform.setIdentity();
-	transform.setOrigin(bullet_utilities::ConvertVector(position));
+	transform.setOrigin(btu::ConvertVector(position));
 
 	m_GhostObject->setWorldTransform(transform);
 
@@ -42,7 +42,7 @@ btGhostObject* GhostObject::InitAsSphere(float radius, CU::Vector3f position)
 
 	btTransform transform;
 	transform.setIdentity();
-	transform.setOrigin(bullet_utilities::ConvertVector(position));
+	transform.setOrigin(btu::ConvertVector(position));
 
 	m_GhostObject->setWorldTransform(transform);
 	return m_GhostObject;
@@ -50,7 +50,7 @@ btGhostObject* GhostObject::InitAsSphere(float radius, CU::Vector3f position)
 
 void GhostObject::SetPosition(const CU::Vector3f& position)
 {
-	m_GhostObject->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), bullet_utilities::ConvertVector(position)));
+	m_GhostObject->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), btu::ConvertVector(position)));
 	m_Orientation.SetPosition(position);
 }
 

@@ -9,10 +9,10 @@ namespace Hex
 };
 
 class EntityManager;
-class CLightSystem : public BaseSystem
+class LightSystem : public BaseSystem
 {
 public:
-	CLightSystem(EntityManager& anEntityManager);
+	LightSystem(EntityManager& anEntityManager);
 	void Update(float aDeltaTime) override;
 private:
 	Hex::Synchronizer* mySynchronizer;

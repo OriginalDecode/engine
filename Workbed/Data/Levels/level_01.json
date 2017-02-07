@@ -5,37 +5,49 @@
 			"entity":"Data/Levels/entity.json", 
 			"position" : [ 200, 5, 200 ],
 			"scale" : [1,2,1],
-			"rotation" : [0,0,1]
+			"rotation" : [0,0,1],
+			"color": [ 0, 0, 255 ],
+			"range" : 10
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
 			"position" : [ 350, 5, 250 ],
 			"scale" : [1,1,1],
-			"rotation" : [0,5,0.5,0.5]
+			"rotation" : [0,5,0.5,0.5],
+			"color": [ 0, 0, 255 ],
+			"range" : 10
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
 			"position" : [ 350, 5, 350 ],
 			"scale" : [1,1,1],
-			"rotation" : [0,5,0.5,0.5]
+			"rotation" : [0,5,0.5,0.5],
+			"color": [ 0, 0, 255 ],
+			"range" : 10
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
 			"position" : [ 250, 5, 350 ],
 			"scale" : [1,1,1],
-			"rotation" : [0,5,0.5,0.5]
+			"rotation" : [0,5,0.5,0.5],
+			"color": [ 0, 0, 255 ],
+			"range" : 10
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
 			"position" : [ 100, 5, 200 ],
 			"scale" : [1,1,1],
-			"rotation" : [0,5,0.5,0.5]
+			"rotation" : [0,5,0.5,0.5],
+			"color": [ 0, 0, 255 ],
+			"range" : 10
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
 			"position" : [ 200, 5, 100 ],
 			"scale" : [1,1,1],
-			"rotation" : [0,5,0.5,0.5]
+			"rotation" : [0,5,0.5,0.5],
+			"color": [ 0, 0, 255 ],
+			"range" : 10
 		},
 		"object" : 	{ 
 			"entity":"Data/Levels/spotlight.json", 

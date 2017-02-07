@@ -3,10 +3,10 @@
 class EntityManager;
 class PhysicsManager;
 
-class CPhysicsSystem : public BaseSystem 
+class PhysicsSystem : public BaseSystem 
 {
 public:
-	CPhysicsSystem(EntityManager& anEntityManager);
+	PhysicsSystem(EntityManager& anEntityManager);
 
 	void Update(float aDeltaTime) override;
 

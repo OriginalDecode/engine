@@ -11,13 +11,13 @@
 #include "../Engine/Synchronizer.h"
 #include "../Engine/RenderCommand.h"
 
-CPhysicsSystem::CPhysicsSystem(EntityManager& anEntityManager)
+PhysicsSystem::PhysicsSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, PhysicsComponent>>())
 {
 	myPhysicsManager = Hex::Engine::GetInstance()->GetPhysicsManager();
 }
 
-void CPhysicsSystem::Update(float aDeltaTime)
+void PhysicsSystem::Update(float aDeltaTime)
 {
 	myAccumulatedTime += aDeltaTime;
 	while (myAccumulatedTime >= 1.f / 60.f)

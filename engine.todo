@@ -16,9 +16,9 @@ Engine Tasks:
     ✔ Quadtree / Octree @done (17-01-29 23:57)
        The world needs a basic implementation of a Quadtree or an Octree
     ✔ Treenode updates entities by themselves. @done (17-01-29 23:57)
-    ☐ Remove / Add Nodes dynamically @started
+    ✔ Remove / Add Nodes dynamically @started @done (17-02-07 14:26)
     ☐ Move entities from node to node with minimum overhead. @started 
-      ☐ BUG: Update time of the octree increases overtime the more you call the "InsertDweller" function @critical
+      ✔ BUG: Update time of the octree increases overtime the more you call the "InsertDweller" function @critical @done (17-02-07 14:26)
   Entities:
     ☐ Create and edit entities in engine. @low
     ☐ Standardize rotations in engine @high
@@ -36,14 +36,13 @@ Engine Tasks:
         ✔ Fix it @done (17-01-22 00:59)
     ☐ Entity rotation & physics rotation should be loaded in euler angles
     ☐ When entities save, their rotation is stored as euler angles
-    ☐ When entities are edited in the engine, they will change with quaternions
+    ☐ When entities are edited in the engine, they will change with quaternions 
   Debug UI:
     ✔ Hook up some kind of debug/edit-mode UI (imgui) @done (17-01-19 22:32)
     ✔ Configure imgui @done (17-01-22 00:59)
     ✔ Hook up some relevant variables @done (17-01-22 00:59)
     ☐ Entity Editing @low
   Particles:
-    ☐ @low section
     ☐ Custom particle shapes 
     ☐ Emitter System
   Network:
@@ -58,6 +57,12 @@ Engine Tasks:
     ☐ Handshake message
       ☐ Check MTU size of Client
     ☐ Reliability filter
+  Shaders:
+    Compute Shaders:
+       ☐ Experiment with compute shaders
+         ☐ Send a buffer of work to the shader
+         ☐ read the data on the CPU
+         This should not be that different from what I already do in the 
   Rendering:
      ☐ Abstract
        ☐ All the calls should go through the interface and not through the API.  
@@ -82,7 +87,22 @@ Engine Tasks:
     ☐ Rewrite the CommonLib containers 
        They will have to use the allocators as well else they will not function.
        They will need to contain an allocator or request one at creation from somewhere
+  Physics:
+    ☐ Physics Bodies
+      ☐ Mesh
+      ☐ Cube
+      ☐ Sphere
+    ☐ ASync? Calculations on GPU?
+  Terrain:
+    Terrain patches that contains its own physics? Generate multiple levels of collision mesh for terrain to LoD it?
+    ☐ Merge the render & physics body into one object
 
+  Multi-Threading:
+    ☐ Investigate fiber
+    ☐ Investigate possible performance gains (not that I need them right now) from internally threading physics
+    ☐ Investigate grouping up vertex buffers & index buffers
+      ☐ CommandBuffers / RenderCommands
+      ☐ A big drawcall instead of several small ones. Context swaps are expensive and can be solved by having a lot of vertices & indices in a single call.
 CommonLib:
   Math:
     ☐ Quaternion -> Matrix
@@ -91,3 +111,5 @@ CommonLib:
   Containers:
     ☐ GrowingArray might be broke
     ☐ Rewrite with the use of custom allocators
+      Use different init functions for custom allocators?
+        growingarray::Initiate(size, void*, allocator&)

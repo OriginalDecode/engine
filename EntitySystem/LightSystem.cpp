@@ -7,13 +7,13 @@
 #include "Synchronizer.h"
 #include "RenderCommand.h"
 #include "../Engine/Engine.h"
-CLightSystem::CLightSystem(EntityManager& anEntityManager)
+LightSystem::LightSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, LightComponent>>())
 {
 	mySynchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
 }
 
-void CLightSystem::Update(float /*aDeltaTime*/)
+void LightSystem::Update(float /*aDeltaTime*/)
 {
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 

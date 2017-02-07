@@ -14,14 +14,14 @@
 
 #include "../Engine/Engine.h"
 
-CRenderSystem::CRenderSystem(EntityManager& anEntityManager)
+RenderSystem::RenderSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, RenderComponent>>())
 {
 	mySynchronizer = m_Engine->GetSynchronizer();
 }
 
 
-void CRenderSystem::Update(float dt)
+void RenderSystem::Update(float dt)
 {
 	
 	const CU::GrowingArray<Entity>& entities = GetEntities();

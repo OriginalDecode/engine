@@ -16,6 +16,7 @@ struct btDefaultMotionState;
 
 class RigidBody;
 
+//This should be moved to a different location, this makes 0 sense that the manager holds it.
 namespace scientific_constants
 {
 	namespace pressure
@@ -23,6 +24,7 @@ namespace scientific_constants
 		static constexpr float  air_pressure = 1.293f;
 	};
 };
+
 class PhysicsManager
 {
 public:

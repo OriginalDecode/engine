@@ -22,6 +22,7 @@ bool Application::Initiate()
 
 	m_States.PushState(&m_Game, StateStack::MAIN);
 	//Keep at the end of initiate...
+
 	myLogicThread = new std::thread([&] { Application::Update(); });
 	CL::SetThreadName(myLogicThread->get_id(), "Logic Thread");
 
@@ -45,8 +46,6 @@ void Application::Update()
 		{
 			m_States.ResumeCurrentState();
 		}
-
-
 
 		if (!m_States.UpdateCurrentState(deltaTime))
 		{

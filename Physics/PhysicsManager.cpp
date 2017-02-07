@@ -97,14 +97,15 @@ void PhysicsManager::Update(double& additionalTime)
 CU::Vector3f PhysicsManager::RayCast(const CU::Vector3f& cameraPosition, const CU::Vector3f& target) const
 {
 	const float vector_extent = 125.f;
-	btVector3 from = btVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-	btVector3 to = btVector3(cameraPosition.x + (target.x * vector_extent), cameraPosition.y + (target.y * vector_extent), cameraPosition.z + (target.z * vector_extent));
+
+	
+	btVector3 from = btu::ConvertVector(cameraPosition);
+	btVector3 to = btu::ConvertVector(cameraPosition + (target * vector_extent));
 
 	btCollisionWorld::ClosestRayResultCallback result(from, to);
 	myDynamicsWorld->rayTest(from, to, result);
 	if (result.hasHit())
-		return CU::Vector3f(result.m_hitPointWorld.getX(), result.m_hitPointWorld.getY(), result.m_hitPointWorld.getZ());
-
+		return btu::ConvertVector(result.m_hitPointWorld);
 
 	return CU::Vector3f();
 }

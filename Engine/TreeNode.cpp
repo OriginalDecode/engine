@@ -12,8 +12,6 @@ TreeNode::~TreeNode()
 {
 	for (s32 i = 0; i < 8; i++)
 	{
-		if (m_Children[i])
-			m_Children[i]->m_Octree->RemoveNode();
 		delete m_Children[i];
 		m_Children[i] = nullptr;
 

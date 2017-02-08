@@ -43,8 +43,8 @@ public:
 	void SetFirstNode(TreeNode* node) { m_First = node; }
 	TreeNode* GetFirstNode() { return m_First; }
 
-	void SetSecondNode(TreeNode* node) { m_Second = node; }
-	TreeNode* GetSecondNode() { return m_Second; }
+	/*void SetSecondNode(TreeNode* node) { m_Second = node; }
+	TreeNode* GetSecondNode() { return m_Second; }*/
 
 	void SetDepth(s32 depth) { m_Depth = depth; }
 	s32 GetDepth() const { return m_Depth; }
@@ -63,7 +63,7 @@ private:
 	CU::Vector3f m_WHD;
 
 	TreeNode* m_First = nullptr;
-	TreeNode* m_Second = nullptr;
+	//TreeNode* m_Second = nullptr;
 };
 
 template <typename T>

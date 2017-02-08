@@ -16,7 +16,7 @@ struct EntityComponent
 class CComponentContainer
 {
 public:
-	CComponentContainer();
+	CComponentContainer(bool owner = false);
 	~CComponentContainer();
 
 	void AddEntity(Entity id);
@@ -34,6 +34,7 @@ private:
 	CU::GrowingArray<ComponentArray> myComponents;
 	CU::GrowingArray<EntityComponent> myEntityComponents;
 	CU::GrowingArray<Entity> myEntitiesToReturn;
+	bool m_Owner = false;
 
 };
 

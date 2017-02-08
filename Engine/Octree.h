@@ -14,12 +14,10 @@ public:
 	void AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers);
 
 	void Update(float dt);
-	void RemoveNode();
 private:
 	CU::TimeManager m_Timer;
 
 	void MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth);
-	int node_count = 0;
 	void InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth);
 
 	TreeNode* CreateNode(const CU::Vector3f& center, float halfwidth, s32 index);

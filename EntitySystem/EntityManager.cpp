@@ -14,7 +14,7 @@ void EntityManager::Initiate()
 		myFinishedSystems[i] = TRUE;
 	}
 
-	myComponents = new CComponentContainer;
+	myComponents = new CComponentContainer(true);
 }
 
 void EntityManager::CleanUp()

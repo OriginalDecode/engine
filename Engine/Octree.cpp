@@ -29,20 +29,11 @@ void Octree::Update(float dt)
 	for (TreeNode* node : m_GarbageNodes)
 	{
 		delete node;
-		node_count--;
 	}
 	m_GarbageNodes.RemoveAll();
 	
 
-	std::stringstream ss;
-	ss << "node count : " << node_count << " + Root";
-	Hex::Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::TEXT, ss.str(), CU::Vector2f(0.85f, 0.f)));
 	m_Root.Update(dt);
-}
-
-void Octree::RemoveNode()
-{
-	node_count--;
 }
 
 #define MAX_DEPTH 5
@@ -143,7 +134,6 @@ void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
 TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 index)
 {
 	CU::Vector3i dir;
-	node_count++;
 	switch (index)
 	{
 		case 0:

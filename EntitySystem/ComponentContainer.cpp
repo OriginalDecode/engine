@@ -3,10 +3,11 @@
 #include "BaseComponent.h"
 #include "TranslationComponent.h"
 #include "../DL_Debug/DL_Debug.h"
-CComponentContainer::CComponentContainer()
+CComponentContainer::CComponentContainer(bool owner)
 	: myComponents(MAX_COMPONENTS_COUNT)
 	, myEntityComponents(128)
 	, myEntitiesToReturn(128)
+	, m_Owner(owner)
 {
 	for (int i = 0; i < MAX_COMPONENTS_COUNT; i++)
 	{
@@ -17,6 +18,9 @@ CComponentContainer::CComponentContainer()
 
 CComponentContainer::~CComponentContainer()
 {
+	if (!m_Owner)
+		return;
+
 	for (int i = 0; i < myComponents.Size(); i++)
 	{
 		myComponents[i].DeleteAll();

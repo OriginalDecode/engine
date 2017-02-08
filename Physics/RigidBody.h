@@ -16,7 +16,7 @@ class btTriangleIndexVertexArray;
 class RigidBody : public CollisionObject
 {
 public:
-	RigidBody();
+	RigidBody() = default;
 	~RigidBody() override;
 
 	btRigidBody* InitAsPlane(const btVector3& aNormal);

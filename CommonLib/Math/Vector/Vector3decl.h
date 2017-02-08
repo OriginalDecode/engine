@@ -6,7 +6,8 @@ namespace CommonUtilities
 	namespace Math
 	{
 		template<typename T>
-		class Vector3
+		//The alignment will change the size of the vector to 16 from 12, breaking the shaders.
+		class /*__declspec(align(16))*/ Vector3
 		{
 		public:
 			
@@ -16,10 +17,7 @@ namespace CommonUtilities
 			T x;
 			T y;
 			T z;
-		};
-
-
-
+		} ;
 	};
 };
 namespace CU = CommonUtilities;

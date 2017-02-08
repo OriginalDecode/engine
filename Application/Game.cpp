@@ -64,7 +64,7 @@ void Game::Update(float dt)
 {
 	if (m_Paused)
 		return;
-
+	
 	m_FrameCount++;
 	m_AverageFPS += m_Engine->GetFPS();
 	m_Time -= dt;

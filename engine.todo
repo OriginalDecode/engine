@@ -73,6 +73,8 @@ Engine Tasks:
      ☐ Resize Message 
         Make it work, everything looks funky and does not work correctly when you have a requested size of 1920x1080 but it ends up as 1910x1057 or something
      ☐ Finish the current render frame before initiating / removing a main/sub state.
+     ☐ Add Vulkan to regular build instead of having its separate build
+     ☐ Check if the compile platform is windows for DirectX
   StateStack:
     ✔ Move to engine @done (17-01-29 23:57)
       States are still game-bound but having the statestack in the Engine should make it easier to move between projects

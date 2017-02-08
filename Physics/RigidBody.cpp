@@ -5,10 +5,6 @@
 
 #include <Utilities.h>
 
-RigidBody::RigidBody()
-{
-}
-
 RigidBody::~RigidBody()
 {
 	SAFE_DELETE(myVertexArray);

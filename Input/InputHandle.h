@@ -38,7 +38,7 @@ public:
 	float GetDX();
 	float GetDY();
 
-	ControllerInput* GetController(u16 controller_id) { return m_Controller[controller_id]; }
+	ControllerInput* GetController(u16 controller_id);
 	InputWrapper* GetInputWrapper() { return m_Input; }
 
 private:

@@ -36,7 +36,7 @@ void PhysicsSystem::Update(float aDeltaTime)
 			
 			
 		}
-		myPhysicsManager->Update(myAccumulatedTime); //ASync Physics?
+		//myPhysicsManager->Update(myAccumulatedTime); //ASync Physics?
 		myAccumulatedTime -= 1.f / 60.f;
 	}
 }

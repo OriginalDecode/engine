@@ -13,6 +13,12 @@ namespace Hex
 		u32 myDepth;
 		u8* myData;
 	};
+
+	/*
+		Terrain should consist of two parts
+		The interaction / gameobject part & the physical body
+	*/
+
 	SHeightMap Create(const char* aFilePath);
 
 	class CTerrain : public CBaseModel
@@ -48,8 +54,11 @@ namespace Hex
 		float GetHeight(unsigned int aIndex) const;
 		
 		SHeightMap myHeightmap;
+
+		/* Look into this */
 		std::vector<s32> myIndexes;
 		std::vector<float> myVertices;
+
 
 		CU::Matrix44f myOrientation;
 		u32 myWidth;
@@ -60,14 +69,14 @@ namespace Hex
 		struct TerrainConstantStruct : public SVertexBaseStruct
 		{
 			CU::Vector4f time;
-		} *myConstantStruct;
+		} myConstantStruct;
 
 		
 		ID3D11Buffer* m_PSConstantBuffer;
 		struct TerrainCameraPos
 		{
 			CU::Vector4f camPos;
-		} *m_PSConstantStruct;
+		} m_PSConstantStruct;
 
 	};
 };

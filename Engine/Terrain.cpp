@@ -69,16 +69,8 @@ namespace Hex
 		if (myIndexData)
 			return false;
 
-		SAFE_DELETE(myConstantStruct);
-		if (myConstantStruct)
-			return false;
-
 		SAFE_DELETE(myVertexData);
 		if (myVertexData)
-			return false;
-
-		SAFE_DELETE(m_PSConstantStruct);
-		if (m_PSConstantStruct)
 			return false;
 
 		return true;
@@ -97,7 +89,6 @@ namespace Hex
 			myContext->DrawIndexed(myIndexData->myIndexCount, 0, 0);
 			if (!render_shadows)
 				mySurface->Deactivate();
-
 		}
 #endif
 	}
@@ -197,9 +188,6 @@ namespace Hex
 
 
 		myVertexData = new VertexDataWrapper;
-		myConstantStruct = new TerrainConstantStruct;
-
-		m_PSConstantStruct = new TerrainCameraPos;
 
 		myVertexData->myNrOfVertexes = vertices.Size();
 		myVertexData->myStride = sizeof(SVertexPosNormUVBiTang);
@@ -227,35 +215,16 @@ namespace Hex
 #ifdef SNOWBLIND_DX11
 		if (myIsNULLObject == false)
 		{
-			DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 
-			myConstantStruct->world = myOrientation;
-			myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
-			myConstantStruct->projection = aCameraProjection;
-			myConstantStruct->time.x = myEngine->GetDeltaTime();
-			myConstantStruct->scale = scale;
+			myConstantStruct.world = myOrientation;
+			myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);
+			myConstantStruct.projection = aCameraProjection;
+			myConstantStruct.time.x = myEngine->GetDeltaTime();
+			myConstantStruct.scale = scale;
+			myAPI->UpdateConstantBuffer((myConstantBuffer), &myConstantStruct);
 
-			m_PSConstantStruct->camPos = myOrientation.GetTranslation();
-
-			D3D11_MAPPED_SUBRESOURCE msr;
-			myAPI->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			if (msr.pData != nullptr)
-			{
-				TerrainConstantStruct* ptr = (TerrainConstantStruct*)msr.pData;
-				memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(TerrainConstantStruct));
-			}
-
-			myAPI->GetContext()->Unmap(myConstantBuffer, 0);
-
-			myAPI->GetContext()->Map(m_PSConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-			if (msr.pData != nullptr)
-			{
-				TerrainCameraPos* ptr = (TerrainCameraPos*)msr.pData;
-				memcpy(ptr, &m_PSConstantStruct->camPos, sizeof(TerrainCameraPos));
-			}
-
-			myAPI->GetContext()->Unmap(m_PSConstantBuffer, 0);
-
+			m_PSConstantStruct.camPos = myOrientation.GetTranslation();
+			myAPI->UpdateConstantBuffer((m_PSConstantBuffer), &m_PSConstantStruct);
 		}
 #endif
 	}

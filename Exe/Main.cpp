@@ -111,6 +111,9 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	newApplication->OnExit();
 	delete newApplication;
 	newApplication = nullptr;
+
+	DL_Debug::Debug::Destroy();
+	Hex::Engine::Destroy();
 	return 0;
 }
 
@@ -155,9 +158,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		newApplication->OnResume();
 		break;
 	case WM_CLOSE:
-		newApplication->OnExit();
-		DL_Debug::Debug::Destroy();
-		Hex::Engine::Destroy();
+		//newApplication->OnExit();
+		/* Unsure that this is needed since I can cleanup when the loop cancel */
 		break;
 	case WM_SYSCOMMAND:
 		if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu

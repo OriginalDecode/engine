@@ -7,7 +7,7 @@
 #include <RenderCommand.h>
 #include <Input/InputHandle.h>
 #include <Input/ControllerInput.h>
-
+#include <Utilities.h>
 void Player::Initiate()
 {
 	m_Engine = Hex::Engine::GetInstance();
@@ -51,11 +51,8 @@ void Player::Update(float dt)
 	}
 
 	m_Orientation.SetTranslation(position);
-	//m_Orientation.SetPosition(position);
 
-	position = position - (forward * 5.f);
-	m_Camera->SetPosition(CU::Vector3f(position.x, position.y, position.z));
-	m_Camera->Update(state);
+	//m_Camera->Update(state);
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::MODEL, m_ModelKey, m_Orientation, CU::Vector4f()));
 
 }

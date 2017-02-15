@@ -95,7 +95,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 normal = NormalTexture.Sample(point_Clamp, input.uv);
 	
 	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
-
+	
 	normal *= 2;
 	normal -= 1;
 
@@ -135,7 +135,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 
 
-	float3 output = (finalColor * NdotL) * 0.42;
+	float3 output = (finalColor);// * 0.42;
 	
 	return float4(output, 1.f);
 };

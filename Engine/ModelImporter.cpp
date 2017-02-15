@@ -80,7 +80,7 @@ Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect
 		//aiProcess_FindInstances | // search for instanced meshes and remove them by references to one master
 		//aiProcess_LimitBoneWeights | // limit bone weights to 4 per vertex
 		aiProcess_OptimizeMeshes | // join small meshes, if possible;
-		aiProcess_OptimizeGraph |
+		//aiProcess_OptimizeGraph |
 								   //aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
 		0;
 
@@ -91,6 +91,7 @@ Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect
 
 	aiNode* rootNode = scene->mRootNode;
 	FBXModelData* data = new FBXModelData;
+
 	ProcessNode(rootNode, scene, data);
 	Hex::CModel* toReturn = CreateModel(data, anEffect);
 
@@ -546,7 +547,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 				case aiTextureType_HEIGHT:
 				{
-					DL_ASSERT("Not implemented");
+					newInfo.myType = Hex::TextureType::_HEIGHT;
 				}break;
 
 				case aiTextureType_NORMALS:
@@ -556,22 +557,22 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 				case aiTextureType_SHININESS:
 				{
-					DL_ASSERT("Not implemented");
+					newInfo.myType = Hex::TextureType::_SHININESS;
 				}break;
 
 				case aiTextureType_OPACITY:
 				{
-					DL_ASSERT("Not implemented");
+					newInfo.myType = Hex::TextureType::_OPACITY;
 				}break;
 
 				case aiTextureType_DISPLACEMENT:
 				{
-					DL_ASSERT("Not implemented");
+					newInfo.myType = Hex::TextureType::_DISPLACEMENT;
 				}break;
 
 				case aiTextureType_LIGHTMAP:
 				{
-					DL_ASSERT("Not implemented");
+					newInfo.myType = Hex::TextureType::_LIGHTMAP;
 				}break;
 
 				case aiTextureType_REFLECTION:

@@ -28,7 +28,7 @@ static Ticket_Mutex g_ModelMutex;
 		void SetIsLightmesh();
 		void SetPosition(const CU::Vector3f& aPosition);
 		CU::Matrix44f& GetOrientation();
-		void SetOrientation(CU::Matrix44f orientation) { myOrientation = orientation; }
+		void SetOrientation(CU::Matrix44f orientation);
 		void Update(float dt);
 
 		std::vector<float> GetVertices();

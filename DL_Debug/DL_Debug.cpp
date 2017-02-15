@@ -58,7 +58,7 @@ namespace DL_Debug
 
 	void Debug::PrintMessage(const char *aString)
 	{
-		myOutputFile << AddTime() << aString << "\n";
+		myOutputFile << aString << "\n";
 		myOutputFile.flush();
 	}
 
@@ -74,11 +74,11 @@ namespace DL_Debug
 			"\nMessage: " << aString;
 
 		myOutputFile <<
-			"\n" << AddTime() << "Assert at: " <<
-			"\n" << AddTime() << "File: " << aFileName <<
-			"\n" << AddTime() << "Line: " << aLine <<
-			"\n" << AddTime() << "Function: " << aFunctionName <<
-			"\n" << AddTime() << "Message: " << aString;
+			"\n" << "Assert at: " <<
+			"\n" << "File: " << aFileName <<
+			"\n" << "Line: " << aLine <<
+			"\n" << "Function: " << aFunctionName <<
+			"\n" << "Message: " << aString;
 
 		myOutputFile << "\nCallStack:";
 
@@ -106,12 +106,12 @@ namespace DL_Debug
 	void Debug::DebugMessage(const int aLine, const char *aFileName, const std::string& aString)
 	{
 		myOutputFile
-			<< AddTime() << "______DEBUG MESSAGE______\n" 
-			<< AddTime() << "File : " << __FILE__ << "\n"
-			<< AddTime() << "Function : " << aFileName << "\n"
-			<< AddTime() << "Line : " << aLine << "\n"
-			<< AddTime() << "[Message] : " << aString << "\n"
-			<< AddTime() << "_______________\n";
+			<< "______DEBUG MESSAGE______\n" 
+			<< "File : " << __FILE__ << "\n"
+			<< "Function : " << aFileName << "\n"
+			<< "Line : " << aLine << "\n"
+			<< "[Message] : " << aString << "\n"
+			<< "_______________\n";
 
 		myOutputFile.flush();
 	}
@@ -150,7 +150,7 @@ namespace DL_Debug
 
 		BeginTicketMutex(&dlDebug_Mutex);
 
-		myOutputFile << AddTime() << "[" << filter_tag << "]" << " : " << str << "\n";
+		myOutputFile << "[" << filter_tag << "]" << " : " << str << "\n";
 		myOutputFile.flush();
 
 		EndTicketMutex(&dlDebug_Mutex);

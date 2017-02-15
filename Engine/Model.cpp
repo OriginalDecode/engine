@@ -131,6 +131,15 @@ namespace Hex
 		return myOrientation;
 	}
 
+	void CModel::SetOrientation(CU::Matrix44f orientation)
+	{
+		myOrientation = orientation; 
+		for (CModel* child : myChildren)
+		{
+			child->SetOrientation(myOrientation);
+		}
+	}
+
 	void CModel::Update(float dt)
 	{
 		myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(0.5f)* dt) * myOrientation;

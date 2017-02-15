@@ -91,8 +91,21 @@ namespace Hex
 	{
 		m_ContainingTextures |= type;
 
-		myFileNames.Add(file_path);
-		std::string sub = CL::substr(file_path, ".png", true, 0);
+		std::string sub;
+		if (CL::substr(file_path, ".png"))
+		{
+			sub = CL::substr(file_path, ".png", true, 0);
+		}
+		else if (CL::substr(file_path, ".tga"))
+		{
+			sub = CL::substr(file_path, ".tga", true, 0);
+		}
+		else
+		{
+			sub = file_path;
+		}
+
+
 		std::string debugName = sub;
 		if (CL::substr(sub, ".dds") == false)
 			sub += ".dds";
@@ -100,10 +113,16 @@ namespace Hex
 		
 		STexture new_texture;
 		new_texture.m_Type = type;
-		new_texture.texture = Engine::GetInstance()->GetTexture(sub)->GetShaderView();
+
+		if(Engine::GetInstance()->GetTexture(sub))
+			new_texture.texture = Engine::GetInstance()->GetTexture(sub)->GetShaderView();
+		else
+			new_texture.texture = Engine::GetInstance()->GetTexture("Data/Textures/default_textures/no-texture-bw.dds")->GetShaderView();
+
 
 		myTextures.Add(new_texture);
 
+		myFileNames.Add(sub);
 
 		//myTextures.Add(new_texture);
 

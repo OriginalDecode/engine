@@ -2,8 +2,5 @@
 	"graphics": {
 		"model": "Data/Model/PBL_metalness_arm/pbl_metalness_arm_binary_2.fbx",
 		"shader": "Data/Shaders/T_Deferred_Base.json"
-	},
-	"light" : {
-		"type" : "pointlight"
 	}
 }

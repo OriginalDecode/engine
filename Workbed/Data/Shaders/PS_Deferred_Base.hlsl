@@ -10,10 +10,13 @@ Texture2D AlbedoTexture  	: register ( t0 );
 Texture2D NormalTexture  	: register ( t1 );
 Texture2D RoughnessTexture 	: register ( t2 );
 Texture2D MetalnessTexture 	: register ( t3 );
-Texture2D AOTexture			: register ( t4 );
-//Texture2D Emissive			: register ( t5 );
-
-//Texture2D EmissiveTexture	: register ( t5 );
+Texture2D EmissiveTexture	: register ( t4 );
+Texture2D OpacityTexture	: register ( t5 );
+Texture2D AOTexture			: register ( t6 );
+Texture2D HeightTexture		: register ( t7 );
+Texture2D Displacement		: register ( t8 );
+Texture2D LightmapTexture	: register ( t9 );
+Texture2D ShininessTexture	: register ( t10 );
 
 //---------------------------------
 //	Deferred Base Pixel Structs

@@ -53,7 +53,7 @@ void RenderSystem::Update(float dt)
 		mySynchronizer->AddRenderCommand(RenderCommand(
 			eType::MODEL,
 			render.myModelID,
-			translation.myOrientation,
+			t,
 			render.scale));
 
 

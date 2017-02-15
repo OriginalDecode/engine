@@ -241,7 +241,7 @@ namespace Hex
 #endif
 		std::string debugname = CL::substr(filepath, "/", false, 0);
 		Engine::GetAPI()->SetDebugName(m_ShaderResource, debugname);
-		DL_MESSAGE_EXP(FAILED(hr), "[Texture](Load) : Failed to load texture %s", filepath);
+		DL_MESSAGE_EXP(FAILED(hr), "[Texture](Load) : Failed to load texture %s", filepath.c_str());
 		if (FAILED(hr))
 			return false;
 

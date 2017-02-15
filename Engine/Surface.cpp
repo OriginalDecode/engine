@@ -83,6 +83,7 @@ namespace Hex
 			case _ROUGHNESS: return "ROUGHNESS";
 			case _AO: return "AO";
 			case _EMISSIVE: return "EMISSIVE";
+			default:return"NO_STRING";
 		}
 		return "failed";
 	}
@@ -187,12 +188,17 @@ namespace Hex
 	{
 		MODEL_LOG("Validating Textures of surface.");
 
-		AddMissingTexture(_ALBEDO,		s_file_path + "no-texture.dds");
-		AddMissingTexture(_NORMAL,		s_file_path + "no-texture.dds");
-		AddMissingTexture(_ROUGHNESS,	s_file_path + "no-roughness.dds");
-		AddMissingTexture(_METALNESS,	s_file_path + "no-metalness.dds");
-		AddMissingTexture(_EMISSIVE,	s_file_path + "full-metalness.dds");
-		AddMissingTexture(_AO,			s_file_path + "no-metalness.dds");
+		AddMissingTexture(_ALBEDO,			s_file_path + "no-texture.dds");
+		AddMissingTexture(_NORMAL,			s_file_path + "no-texture.dds");
+		AddMissingTexture(_ROUGHNESS,		s_file_path + "no-roughness.dds");
+		AddMissingTexture(_METALNESS,		s_file_path + "no-metalness.dds");
+		AddMissingTexture(_EMISSIVE,		s_file_path + "full-metalness.dds");
+		AddMissingTexture(_OPACITY,			s_file_path + "black.dds");
+		AddMissingTexture(_AO,				s_file_path + "no-metalness.dds");
+		AddMissingTexture(_HEIGHT,			s_file_path + "black.dds");
+		AddMissingTexture(_DISPLACEMENT,	s_file_path + "black.dds");
+		AddMissingTexture(_LIGHTMAP,		s_file_path + "black.dds");
+		AddMissingTexture(_SHININESS,		s_file_path + "black.dds");
 
 		for (s32 i = 0; i < myTextures.Size(); i++)
 		{

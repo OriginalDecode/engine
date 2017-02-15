@@ -106,17 +106,17 @@ void Game::Update(float dt)
 	}
 
 	if (input_wrapper->IsDown(KButton::W))
-		m_Camera->Move(Hex::eDirection::FORWARD, 500.f * dt);
+		m_Camera->Move(Hex::eDirection::FORWARD, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::S))
-		m_Camera->Move(Hex::eDirection::BACK, -500.f * dt);
+		m_Camera->Move(Hex::eDirection::BACK, -50.f * dt);
 	if (input_wrapper->IsDown(KButton::A))
-		m_Camera->Move(Hex::eDirection::LEFT, -500.f * dt);
+		m_Camera->Move(Hex::eDirection::LEFT, -50.f * dt);
 	if (input_wrapper->IsDown(KButton::D))
-		m_Camera->Move(Hex::eDirection::RIGHT, 500.f * dt);
+		m_Camera->Move(Hex::eDirection::RIGHT, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::SPACE))
-		m_Camera->Move(Hex::eDirection::UP, 500.f * dt);
+		m_Camera->Move(Hex::eDirection::UP, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::X))
-		m_Camera->Move(Hex::eDirection::DOWN, -500.f * dt);
+		m_Camera->Move(Hex::eDirection::DOWN, -50.f * dt);
 
 	m_World.Update(dt);
 }

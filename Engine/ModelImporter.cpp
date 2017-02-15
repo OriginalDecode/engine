@@ -65,7 +65,7 @@ Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect
 	float loadTime = myTimeManager->GetTimer(0).GetTotalTime().GetMilliseconds();
 
 	unsigned int processFlags =
-		//aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
+		aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
 		//aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
 		//aiProcess_ValidateDataStructure  | // perform a full validation of the loader's output
 		//aiProcess_Triangulate | // Ensure all verticies are triangulated (each 3 vertices are triangle)
@@ -220,6 +220,7 @@ void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Eff
 	{
 		newSurface->AddTexture(info[i].myFilename, (Hex::TextureType)info[i].myType);
 	}
+	newSurface->ValidateTextures();
 
 	//newSurface->ValidateTextures();
 

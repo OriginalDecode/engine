@@ -331,6 +331,7 @@ namespace Hex
 			myPointLight->Update();
 			m_LightPass.RenderPointlight(myPointLight, myCamera, myPrevFrame, m_Shadowlight->GetMVP());
 		}
+
 		effect->Deactivate();
 
 		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);

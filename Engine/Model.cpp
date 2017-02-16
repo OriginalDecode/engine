@@ -77,6 +77,7 @@ namespace Hex
 			__super::Render(aCameraOrientation, aCameraProjection, scale, render_shadows);
 			if (!myIsLightMesh)
 				myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+
 			if (mySurfaces.Size() > 0)
 			{
 				for (s32 i = 0; i < mySurfaces.Size(); i++)
@@ -84,17 +85,19 @@ namespace Hex
 					myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 					if (!myIsLightMesh)
 					{
-						if (!render_shadows)
+						if (!render_shadows && !myIsLightMesh)
 							mySurfaces[i]->Activate(); //Gets a ton of junk data. What???
+
 						myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
 					}
 					else
 					{
 						myContext->Draw(mySurfaces[i]->GetVertexCount(), 0);
 					}
-					mySurfaces[i]->Deactivate();
-				}
 
+					if (!render_shadows && !myIsLightMesh)
+						mySurfaces[i]->Deactivate();
+				}
 			}
 		}
 		for (CModel* child : myChildren)

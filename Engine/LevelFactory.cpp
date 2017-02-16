@@ -42,9 +42,6 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 		CreateEntitiy(it->value["entity"].GetString(), it);
 	}
 
-
-
-
 	return true;
 }
 
@@ -116,7 +113,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	if (sponza)
 	{
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 80; i++)
 		{
 			Entity entity = m_EntityManager->CreateEntity();
 			m_DwellerList.Add(new TreeDweller);

@@ -12,6 +12,14 @@
 			"position" : [ 256, 0, 256 ],
 			"scale" : [0.1,0.1,0.1],
 			"rotation" : [-1,0,0]
+		},
+		"object" : {
+			"entity":"Data/Levels/spotlight.json",
+			"position":[256,128,253],
+			"range":256,
+			"angle":89,
+			"color":[255,255,255],
+			"direction":[0,-1,0]
 		}
 	}	
 }

@@ -55,7 +55,7 @@ namespace Hex
 		//CU::Vector3f(95, 7.f, 28.f)
 		m_Shadowlight = new ShadowSpotlight;
 		m_Shadowlight->Initiate(
-			CU::Vector3f(99, 50.f, 31.f)
+			CU::Vector3f(256.f, 128.f, 252.f)
 			, CU::Vector3f(1.f, 0.f, 1.f)
 			, 2048.f);
 
@@ -202,7 +202,7 @@ namespace Hex
 		ImGui::Render();
 		myEngine->Present();
 
-		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
 
 		mySynchronizer->WaitForLogic();
 		mySynchronizer->SwapBuffer();
@@ -243,7 +243,7 @@ namespace Hex
 					}
 
 					
-					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 					m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 										 
 					CModel* model = myEngine->GetModel(command.m_KeyOrText);

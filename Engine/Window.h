@@ -27,6 +27,7 @@ namespace Hex
 		HINSTANCE GetWindowInstance() { return m_CreateInfo.instance; }
 		bool IsWindowActive() { return m_WindowIsActive; }
 
+
 	public:
 		//________________
 

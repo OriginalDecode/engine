@@ -86,7 +86,7 @@ Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect
 
 	const aiScene* scene = importer.ReadFile(aFilePath, processFlags);
 
-	DL_MESSAGE("%s", !scene ? aFilePath.c_str() : importer.GetErrorString());
+	DL_MESSAGE_EXP(!scene , "%s", importer.GetErrorString());
 	DL_ASSERT_EXP(scene, "ImportModel Failed. Could not read the requested file.");
 
 	aiNode* rootNode = scene->mRootNode;
@@ -113,7 +113,7 @@ Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect
 
 	myTimeManager->Update();
 	loadTime = myTimeManager->GetTimer(0).GetTotalTime().GetMilliseconds() - loadTime;
-	MODEL_LOG("%s took %fms to load. %s", aFilePath.c_str(), loadTime, (loadTime < 7000.f) ? "" : "Check if it's saved as binary.");
+	MODEL_LOG("%s took %fms to load. %s", aFilePath.c_str(), loadTime, (loadTime > 7000.f) ? "Check if it's saved as binary." : 0);
 
 	return toReturn;
 }

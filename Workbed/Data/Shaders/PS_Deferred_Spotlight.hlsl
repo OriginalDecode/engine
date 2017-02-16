@@ -44,8 +44,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	LightVectors vectors = CalculateLightVectors(data, camPosition, position);
 	
 	float3 F = 1 + saturate(Fresnel(data.substance, -vectors.light_dir, vectors.halfVec));
-	float3 D = 1 + saturate(D_GGX(vectors.HdotN,(data.roughness + 1.f) / 2.f));
-	float3 V = 1 + saturate(V_SchlickForGGX((data.roughness + 1.f) / 2.f, vectors.NdotV, vectors.NdotL));
+	float3 D = 1 + saturate(D_GGX(vectors.HdotN,(data.roughness + 1) / 2.f));
+	float3 V = 1 + saturate(V_SchlickForGGX((data.roughness + 1) / 2.f, vectors.NdotV, vectors.NdotL));
 
     float3 lightToPixel = normalize(-vectors.toLight);
     float spotFactor = max(0, dot(lightToPixel, normalize(direction)));
@@ -55,7 +55,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float ln = length(vectors.toLight);
 	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range.x));
 
-	float3 directSpec = D * F * V * attenuation * angularAttenuation * color * 25;
+
+	float3 directSpec = (D * F * V) * attenuation * angularAttenuation * color * 35;
 
 	float3 final_color = directSpec;
 

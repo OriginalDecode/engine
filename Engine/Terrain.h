@@ -7,17 +7,10 @@ namespace Hex
 
 	struct SHeightMap
 	{
-		/*SHeightMap(u32 aWidth, u32 aDepth, u8* const someData);
-		SHeightMap(std::fstream& aStream);*/
 		u32 myWidth;
 		u32 myDepth;
 		u8* myData;
 	};
-
-	/*
-		Terrain should consist of two parts
-		The interaction / gameobject part & the physical body
-	*/
 
 	SHeightMap Create(const char* aFilePath);
 
@@ -32,8 +25,7 @@ namespace Hex
 
 		void Save(const std::string& aFilename);
 		void Load(const std::string& aFilePath);
-		//CU::GrowingArray<float> GetVerticeArrayCopy() { return myVertices; };
-		//CU::GrowingArray<s32> GetIndexArrayCopy() {	return myIndexes; };
+
 		void AddNormalMap(const std::string& filepath);
 		std::vector<float> GetVerticeArrayCopy();
 		std::vector<s32> GetIndexArrayCopy();

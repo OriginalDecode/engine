@@ -323,7 +323,6 @@ namespace Hex
 		height_map.myDepth = depth;
 		height_map.myData = data;
 
-		//		return SHeightMap(width, depth, data);
 		return height_map;
 	}
 

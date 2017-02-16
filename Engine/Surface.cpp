@@ -77,12 +77,28 @@ namespace Hex
 	{
 		switch (type)
 		{
-			case _ALBEDO: return "ALBEDO";
-			case _NORMAL: return "NORMAL";
-			case _METALNESS: return "METALNESS";
-			case _ROUGHNESS: return "ROUGHNESS";
-			case _AO: return "AO";
-			case _EMISSIVE: return "EMISSIVE";
+			case _ALBEDO: 
+				return "ALBEDO";
+			case _NORMAL: 
+				return "NORMAL";
+			case _METALNESS: 
+				return "METALNESS";
+			case _ROUGHNESS: 
+				return "ROUGHNESS";
+			case _AO: 
+				return "AO";
+			case _EMISSIVE: 
+				return "EMISSIVE";
+			case _DISPLACEMENT:
+				return "DISPLACEMENT";
+			case _HEIGHT:
+				return "HEIGHT";
+			case _LIGHTMAP:
+				return "LIGHTMAP";
+			case _OPACITY:
+				return "OPACITY";
+			case _SHININESS:
+				return "SHININESS";
 			default:return"NO_STRING";
 		}
 		return "failed";
@@ -92,20 +108,12 @@ namespace Hex
 	{
 		m_ContainingTextures |= type;
 
-		std::string sub;
-		if (CL::substr(file_path, ".png"))
+		std::string sub = file_path;
+		if (!CL::substr(file_path, ".dds"))
 		{
-			sub = CL::substr(file_path, ".png", true, 0);
+			sub = CL::substr(file_path, ".", true, 0);
+			DL_WARNING("Incorrect filetype! %s", file_path.c_str());
 		}
-		else if (CL::substr(file_path, ".tga"))
-		{
-			sub = CL::substr(file_path, ".tga", true, 0);
-		}
-		else
-		{
-			sub = file_path;
-		}
-
 
 		std::string debugName = sub;
 		if (CL::substr(sub, ".dds") == false)
@@ -188,8 +196,8 @@ namespace Hex
 	{
 		MODEL_LOG("Validating Textures of surface.");
 
-		AddMissingTexture(_ALBEDO,			s_file_path + "no-texture.dds");
-		AddMissingTexture(_NORMAL,			s_file_path + "no-texture.dds");
+		AddMissingTexture(_ALBEDO,			s_file_path + "white.dds");
+		AddMissingTexture(_NORMAL,			s_file_path + "white.dds");
 		AddMissingTexture(_ROUGHNESS,		s_file_path + "no-roughness.dds");
 		AddMissingTexture(_METALNESS,		s_file_path + "no-metalness.dds");
 		AddMissingTexture(_EMISSIVE,		s_file_path + "full-metalness.dds");
@@ -202,7 +210,7 @@ namespace Hex
 
 		for (s32 i = 0; i < myTextures.Size(); i++)
 		{
-			TRACE_LOG("\nIndex : %d\nPointer : %d\nType : %s", i, (u64)myTextures[i].texture, CheckTextureType(myTextures[i].m_Type).c_str());
+			TRACE_LOG("Index : %d | Pointer : %d | Type : %s", i, (u64)myTextures[i].texture, CheckTextureType(myTextures[i].m_Type).c_str());
 		}
 
 	}

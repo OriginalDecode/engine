@@ -120,9 +120,9 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 			CU::Vector3f random_position;
 
 			CU::Vector3f position = translation.myOrientation.GetPosition();
-			random_position.x = RANDOM(position.x - 64.f, position.x + 64.f);
-			random_position.y = RANDOM(position.y, position.y + 128.f);
-			random_position.z = RANDOM(position.z - 32.f, position.z + 32.f);
+			random_position.x = RANDOM(position.x - 128.f, position.x + 128.f);
+			random_position.y = RANDOM(position.y, position.y + 64.f);
+			random_position.z = RANDOM(position.z - 64.f, position.z + 64.f);
 			CreateTranslationComponent(entity, random_position);
 
 			m_EntityManager->AddComponent<LightComponent>(entity);

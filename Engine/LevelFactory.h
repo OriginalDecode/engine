@@ -38,7 +38,7 @@ private:
 	Hex::Engine* m_Engine			= nullptr;
 	EntityManager* m_EntityManager;
 	PhysicsManager* m_PhysicsManager	= nullptr;
-
+	bool sponza = false;
 
 	void CreateDebugComponent(Entity e, bool isLight, s32 flags);
 };

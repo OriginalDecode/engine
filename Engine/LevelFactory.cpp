@@ -109,8 +109,43 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	CreateDebugComponent(e, hasLight, debug_flags);
 
-	
+
 	m_DwellerList.GetLast()->Initiate(e);
+
+	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
+
+	if (sponza)
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			Entity entity = m_EntityManager->CreateEntity();
+			m_DwellerList.Add(new TreeDweller);
+			CU::Vector3f random_position;
+
+			CU::Vector3f position = translation.myOrientation.GetPosition();
+			random_position.x = RANDOM(position.x - 64.f, position.x + 64.f);
+			random_position.y = RANDOM(position.y, position.y + 128.f);
+			random_position.z = RANDOM(position.z - 32.f, position.z + 32.f);
+			CreateTranslationComponent(entity, random_position);
+
+			m_EntityManager->AddComponent<LightComponent>(entity);
+			LightComponent& light = m_EntityManager->GetComponent<LightComponent>(entity);
+			m_DwellerList.GetLast()->AddComponent<LightComponent>(&light, TreeDweller::LIGHT);
+
+
+
+			light.color.x = RANDOM(0.f, 1.f);
+			light.color.y = RANDOM(0.f, 1.f);
+			light.color.z = RANDOM(0.f, 1.f);
+
+			light.myType = eLightType::ePOINTLIGHT;
+			light.range = 25.f;
+			m_DwellerList.GetLast()->Initiate(entity);
+			CreateDebugComponent(entity, true, EditObject::LIGHT);
+
+		}
+	}
+
 
 }
 
@@ -135,6 +170,10 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 		el["shader"].GetString());
 
 
+	if (el["model"] == "Data/Model/sponza/Sponza.fbx")
+		sponza = true;
+
+
 	CU::Vector3f scale;
 	m_LevelReader.ReadElement(it->value["scale"], scale);
 	CU::Vector3f rotation;
@@ -150,9 +189,11 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.scale = scale;
 	component.scale.w = 1.f;
 
-
+	CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
 	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
-	m_DwellerList.GetLast()->SetWHD(m_Engine->GetModel(component.myModelID)->GetWHD());
+	m_DwellerList.GetLast()->SetWHD(whd);
+
+	
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)

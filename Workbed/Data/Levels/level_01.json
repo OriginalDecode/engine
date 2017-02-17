@@ -19,7 +19,7 @@
 			"range":256,
 			"angle":89,
 			"color":[255,255,255],
-			"direction":[0,-1,0]
+			"direction":[90,0,0]
 		}
 	}	
 }

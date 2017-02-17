@@ -26,7 +26,7 @@ DeferredPixelData CalculateDeferredPixelData(float2 tex_coord)
 	data.roughness = depth.y;
 	float ao = 1.0f;
 	float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;
-
+	data.substance = substance;
     float x = tex_coord.x * 2.f - 1.f;
 	float y = (1.f - tex_coord.y) * 2 - 1;
 	float z = depth.x;

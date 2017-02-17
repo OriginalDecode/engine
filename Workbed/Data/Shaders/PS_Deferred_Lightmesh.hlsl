@@ -42,13 +42,14 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	DeferredPixelData data = CalculateDeferredPixelData(texCoord);
 	LightVectors vectors = CalculateLightVectors(data, camPosition, position);
 	
-	float3 F = 1 + saturate(Fresnel(data.substance, -vectors.light_dir, vectors.halfVec));
-	float3 D = 1 + saturate(D_GGX(vectors.HdotN,(data.roughness + 1.f) / 2.f));
-	float3 V = 1 + saturate(V_SchlickForGGX((data.roughness + 1.f) / 2.f, vectors.NdotV, vectors.NdotL));
+	float3 F = saturate(Fresnel(data.substance, -vectors.light_dir, vectors.halfVec));
+	float3 D = saturate(D_GGX(vectors.HdotN,(data.roughness + 1.f) / 2.f));
+	float3 V = saturate(V_SchlickForGGX((data.roughness + 1.f) / 2.f, vectors.NdotV, vectors.NdotL));
 
 	float ln = length(vectors.toLight);
 	float attenuation = CalculateTotalAttenuation(ln, input.range.x);
-	float3 directSpec = D * F * V * attenuation * color ;
+	float3 directSpec = (D * F * V);
+	float3 final_color = (directSpec * (attenuation * color)) * 5;
 
-	return float4(directSpec, 1);
+	return float4(final_color, 1);
 };

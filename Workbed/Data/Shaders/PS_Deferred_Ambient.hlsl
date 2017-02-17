@@ -129,7 +129,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 	float3 finalColor = (ambientDiffuse + ambientSpec);
 
-	float3 light_dir = float3(-1,1,0);
+	float3 light_dir = float3(1,1,0);
 	float NdotL = dot(normal.xyz, light_dir);
 	// float3 directColor = float3(1, 0.5, 1) * NdotL;
 	

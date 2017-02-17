@@ -70,6 +70,7 @@ Engine Tasks:
          GetAPI() should be replaced with something else, e.g GetRenderInterface() or GetInterface() or GetGraphicsAPI(), simply GetAPI() does not communicate that it's getting the
          graphics api from the engine, should the engine be responsible for the api or is it the renderer that should be responsible for that? Should the renderer be the one that dictates
          everything? All the setting of states? Would make sense.
+
      ☐ Resize Message 
         Make it work, everything looks funky and does not work correctly when you have a requested size of 1920x1080 but it ends up as 1910x1057 or something
      ☐ Finish the current render frame before initiating / removing a main/sub state.
@@ -77,7 +78,7 @@ Engine Tasks:
      ☐ Check if the compile platform is windows for DirectX
      ☐ Post Processing Effects (HDR, Blur, ...)
      ☐ Soft Shadows
-     
+     ☐ Separate light pass to its own texture
   StateStack:
     ✔ Move to engine @done (17-01-29 23:57)
       States are still game-bound but having the statestack in the Engine should make it easier to move between projects
@@ -119,3 +120,4 @@ CommonLib:
     ☐ Rewrite with the use of custom allocators
       Use different init functions for custom allocators?
         growingarray::Initiate(size, void*, allocator&)
+

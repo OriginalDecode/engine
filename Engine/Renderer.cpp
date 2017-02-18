@@ -64,16 +64,19 @@ namespace Hex
 			return false;
 
 		myDepthTexture = new Texture; //Where should this live?
-		if (!myDepthTexture)
-			return false;
+		DL_ASSERT_EXP(myDepthTexture, "DepthTexture in Renderer was null?");
 
-		myDepthTexture->Initiate(Engine::GetInstance()->GetWindowSize().myWidth, Engine::GetInstance()->GetWindowSize().myHeight
+		SWindowSize window_size;
+		window_size = Engine::GetInstance()->GetWindowSize();
+
+		myDepthTexture->Initiate(window_size.myWidth, window_size.myHeight
 			, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
 			, DXGI_FORMAT_R32_TYPELESS
 			, DXGI_FORMAT_R32_FLOAT
 			, DXGI_FORMAT_D32_FLOAT
 			, "Renderer : Depth");
 
+		
 		mySkysphere = new SkySphere;
 		mySkysphere->Initiate("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", camera_3d);
 		mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Data/Shaders/T_Skysphere_Layer.json");
@@ -110,7 +113,6 @@ namespace Hex
 
 		m_Shadowlight->CleanUp();
 		SAFE_DELETE(m_Shadowlight);
-
 		SAFE_DELETE(my3DLine);
 		SAFE_DELETE(mySprite);
 		SAFE_DELETE(myClearColor);
@@ -120,6 +122,7 @@ namespace Hex
 
 		myDepthTexture->CleanUp();
 		SAFE_DELETE(myDepthTexture);
+
 		SAFE_DELETE(my2DCamera);
 
 		myDeferredRenderer->CleanUp();
@@ -181,14 +184,13 @@ namespace Hex
 		ProcessShadows();
 		myDeferredRenderer->DeferredRender(myPrevFrame, myCamera->GetProjection());
 
-
-		//DirectionalLight?
 		RenderPointlight();
 		RenderSpotlight();
 
+
 		myEngine->ResetRenderTargetAndDepth();
 
-		myDeferredRenderer->Finalize();
+		myDeferredRenderer->Finalize(m_LightTexture);
 
 		/* condence these 3 calls to 1 with multiple data prameters? */
 		//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
@@ -243,7 +245,7 @@ namespace Hex
 					}
 
 					
-					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
+					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 					m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 										 
 					CModel* model = myEngine->GetModel(command.m_KeyOrText);

@@ -6,9 +6,9 @@
 //	Samplers & Textures
 //---------------------------------
 
-SamplerState linear_Clamp : register ( s0 );
-Texture2D DiffuseTexture  : register ( t0 );
-Texture2D DepthTexture	  : register ( t1 );
+SamplerState linear_Clamp 	: register ( s0 );
+Texture2D DiffuseTexture  	: register ( t0 );
+Texture2D DepthTexture	  	: register ( t1 );
 
 //---------------------------------
 //	Render to Texture Vertex Structs

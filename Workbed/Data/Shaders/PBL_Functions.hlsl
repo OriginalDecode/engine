@@ -4,6 +4,7 @@
 struct DeferredPixelData
 {
     float4 world_pos;
+    float4 albedo;
     float4 substance;
     float4 normal;
     float roughness;
@@ -18,14 +19,13 @@ DeferredPixelData CalculateDeferredPixelData(float2 tex_coord)
 {
     DeferredPixelData data = (DeferredPixelData)0;
   
-    float4 albedo = AlbedoTexture.Sample(point_Clamp, tex_coord);
+    data.albedo = AlbedoTexture.Sample(point_Clamp, tex_coord);
 	data.normal = NormalTexture.Sample(point_Clamp, tex_coord) * 2 - 1;
 	float4 depth = DepthTexture.Sample(point_Clamp, tex_coord);
-	
     float4 metalness = float4(data.normal.w, data.normal.w, data.normal.w, data.normal.w);
 	data.roughness = depth.y;
 	float ao = 1.0f;
-	float4 substance = (0.04f - 0.04f * metalness) + albedo * metalness;
+	float4 substance = (0.04f - 0.04f * metalness) + data.albedo * metalness;
 	data.substance = substance;
     float x = tex_coord.x * 2.f - 1.f;
 	float y = (1.f - tex_coord.y) * 2 - 1;

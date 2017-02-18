@@ -27,7 +27,11 @@ namespace Hex
 #ifdef SNOWBLIND_DX11
 
 		ITexture2D* GetDepthTexture() const { return m_DepthTexture; }
-		IShaderResourceView* GetShaderView() const { return m_ShaderResource; }
+		ITexture2D* GetTexture() const { return m_DepthTexture; }
+		IShaderResourceView* GetShaderView() { return m_ShaderResource; }
+		IShaderResourceView** GetShaderViewRef() { return &m_ShaderResource; }
+
+
 		IShaderResourceView* GetDepthStencilView() const { return m_DepthStencilShaderView; }
 		IRenderTargetView*	GetRenderTargetView() const { return m_RenderTargetView; }
 		IDepthStencilView* GetDepthView() const { return m_DepthStencilView; }

@@ -8,7 +8,6 @@
 
 SamplerState linear_Clamp : register ( s0 );
 Texture2D DiffuseTexture  : register ( t0 );
-
 //---------------------------------
 //	Render to Texture Vertex Structs
 //---------------------------------
@@ -24,6 +23,5 @@ struct VS_OUTPUT
 float4 PS(VS_OUTPUT input) : SV_Target
 {	
 	float4 diffuse = DiffuseTexture.Sample(linear_Clamp, input.uv);
-	diffuse.a = 1.f;
 	return diffuse;
 }

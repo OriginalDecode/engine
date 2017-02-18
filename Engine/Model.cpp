@@ -75,6 +75,7 @@ namespace Hex
 		if (!myIsNULLObject)
 		{
 			__super::Render(aCameraOrientation, aCameraProjection, scale, render_shadows);
+
 			if (!myIsLightMesh)
 				myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 

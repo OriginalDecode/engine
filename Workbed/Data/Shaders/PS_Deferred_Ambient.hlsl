@@ -135,7 +135,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 
 
-	float3 output = (finalColor) * 0.42;
+	float3 output = (finalColor) * 0.42f;
 	
 	return float4(output, 1.f);
 };

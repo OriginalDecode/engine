@@ -54,10 +54,10 @@ namespace Hex
 
 		CU::GrowingArray<CTerrain*> myTerrainArray;
 
-		bool m_RenderWireframe = false;
-		bool m_ProcessShadows					= false;
+		bool				m_RenderWireframe	= false;
+		bool				m_ProcessShadows	= false;
 
-		Engine*			myEngine			= nullptr;
+		Engine*				myEngine			= nullptr;
 #ifdef SNOWBLIND_DX11
 		DirectX11*			m_API				= nullptr;
 #else
@@ -90,7 +90,9 @@ namespace Hex
 
 		LightPass			m_LightPass;
 		ShadowPass			m_ShadowPass;
+		Texture*			m_LightTexture		= nullptr;
 
-		RenderCommand m_CubeCommand;
+
+		RenderCommand		m_CubeCommand;
 	};
 }; 

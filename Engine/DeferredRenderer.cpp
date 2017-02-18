@@ -131,7 +131,7 @@ namespace Hex
 #endif
 	}
 
-	void DeferredRenderer::Finalize()
+	void DeferredRenderer::Finalize(Texture* light_texture)
 	{
 #ifdef SNOWBLIND_DX11
 		m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
@@ -143,15 +143,23 @@ namespace Hex
 		m_API->SetVertexShader(myScreenPassShader->GetVertexShader()->m_Shader);
 		m_API->SetPixelShader(myScreenPassShader->GetPixelShader()->m_Shader);
 
-		ID3D11ShaderResourceView* srv[2];
-		srv[0] = myFinishedSceneTexture->GetShaderView();
-		srv[1] = myDepthStencil->GetShaderView();
-		myContext->PSSetShaderResources(0, 2, &srv[0]);
+		//Can I make this dynamic somehow? and return a value?
+		ID3D11ShaderResourceView* srv[] = 
+		{
+			myFinishedSceneTexture->GetShaderView(),
+			myDepthStencil->GetShaderView()
+		};
+
+		myContext->PSSetShaderResources(0, ARRAYSIZE(srv), &srv[0]);
 		m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
 		myContext->DrawIndexed(6, 0, 0);
-		srv[0] = nullptr;
-		srv[1] = nullptr;
-		myContext->PSSetShaderResources(0, 2, &srv[0]);
+
+		for (s32 i = 0; i <  ARRAYSIZE(srv); i++)
+		{
+			srv[i] = nullptr;
+		}
+
+		myContext->PSSetShaderResources(0, ARRAYSIZE(srv), &srv[0]);
 
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);

@@ -10,8 +10,8 @@
 		"object" : 	{ 
 			"entity":"Data/Levels/entity2.json",
 			"position" : [ 256, 0, 256 ],
-			"scale" : [0.1,0.1,0.1],
-			"rotation" : [-1,0,0]
+			"scale" : [1,1,1],
+			"rotation" : [0,0,0]
 		},
 		"object" : {
 			"entity":"Data/Levels/spotlight.json",

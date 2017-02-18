@@ -167,7 +167,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 		el["shader"].GetString());
 
 
-	if (el["model"] == "Data/Model/sponza/Sponza.fbx")
+	if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
 		sponza = true;
 
 

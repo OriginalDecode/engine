@@ -38,7 +38,7 @@ namespace Hex
 		void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
 
 
-		void Finalize();
+		void Finalize(Texture* light_texture);
 
 		//void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 		Texture* GetDepthStencil();

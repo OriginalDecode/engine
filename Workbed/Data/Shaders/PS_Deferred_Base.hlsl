@@ -44,6 +44,8 @@ struct VS_OUTPUT
 //---------------------------------
 GBuffer PS(VS_OUTPUT input) : SV_Target
 {
+	GBuffer output;
+
 	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv).rgb * 2 - 1;
 	float3 nnormal = normalize(input.normal.xyz);
 
@@ -55,7 +57,6 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	_normal += 1;
 	_normal *= 0.5;
 
-	GBuffer output;
 	output = (GBuffer)0;
 	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * AOTexture.Sample(linear_Wrap, input.uv);
 	output.Normal = float4(_normal.rgb, MetalnessTexture.Sample(linear_Wrap, input.uv).r);

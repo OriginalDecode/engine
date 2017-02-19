@@ -36,7 +36,15 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float depth = DepthTexture.Sample(linear_Wrap, texCoord).x;
 	if(depth < 1.f)
 		discard;
+
+	if(height < 0.f)
+		height = 0.f;
 	
+	float4 centerColor = float4(1.0f, 1.0f, 1.0f, 1.f);
+	float4 apexColor = float4(0.0f, 0.0f, 0.2f, 1.f) ;
+	
+	float4 outputColor = lerp(centerColor, apexColor, height/8);
+
 	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
-	return albedo;
+	return outputColor;
 }

@@ -133,10 +133,10 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float3 final_color = (ambientDiffuse + ambientSpec);
 
 	float3 light_dir = float3(1,1,0);
-	float NdotL = dot(normal.xyz, light_dir);
+	float NdotL = dot(normal.xyz, light_direction);
 	// float3 directColor = float3(1, 0.5, 1) * NdotL;
 	
-	float4 newPos = worldPosition + (normal * 1);
+	float4 newPos = worldPosition + (normal * 0.4);
 	newPos.w = 1;
 	float4 shadowVec = mul(newPos, ShadowMVP);
 	shadowVec.xyz /= shadowVec.w;

@@ -68,12 +68,14 @@ namespace Hex
 		m_DirectionalCamera = new Camera;
 		m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 256.f);
 
-		m_DirectionalCamera->SetPosition({ 256.f, 256.f, 256.f });
+		m_DirectionalCamera->SetPosition({ 250.f, 256.f, 256.f });
+		//m_DirectionalCamera->RotateAroundY(CL::DegreeToRad(90.f) * 1.f);
+		m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(75.f) * 1.f);
 
 
-		m_DirectionalCamera->RotateAroundY(CL::DegreeToRad(90.f) * 1.f);
-		m_DirectionalCamera->RotateAroundZ(CL::DegreeToRad(90.f) * 0.f);
-		m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
+		//m_DirectionalCamera->RotateAroundY(CL::DegreeToRad(90.f) * 1.f);
+		//m_DirectionalCamera->RotateAroundZ(CL::DegreeToRad(90.f) * 0.f);
+		//m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
 
 
 
@@ -138,7 +140,7 @@ namespace Hex
 
 
 		m_ShadowEffect = Engine::GetInstance()->GetEffect("Data/Shaders/T_Render_Depth.json");
-		m_Direction = { 0.f,-1.f,0.f };
+		m_Direction = { 0.f, -1.f, 0.f };
 
 		myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
 		return true;
@@ -175,7 +177,7 @@ namespace Hex
 		SAFE_DELETE(myPointLight);
 		SAFE_DELETE(mySpotlight);
 
-		m_ParticleEmitter->CleanUp();
+		//m_ParticleEmitter->CleanUp();
 		SAFE_DELETE(m_ParticleEmitter);
 		
 		return true;
@@ -293,7 +295,7 @@ namespace Hex
 					}
 
 					
-					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 					m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 										 
 					CModel* model = myEngine->GetModel(command.m_KeyOrText);

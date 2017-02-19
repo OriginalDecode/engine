@@ -93,6 +93,7 @@ Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect
 	FBXModelData* data = new FBXModelData;
 
 	ProcessNode(rootNode, scene, data);
+
 	Hex::CModel* toReturn = CreateModel(data, anEffect);
 
 
@@ -220,7 +221,10 @@ void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Eff
 	{
 		newSurface->AddTexture(info[i].myFilename, (Hex::TextureType)info[i].myType);
 	}
-	newSurface->ValidateTextures();
+
+
+	if(!CL::substr(myCurrentLoadingFile, "Skysphere"))
+		newSurface->ValidateTextures();
 
 	//newSurface->ValidateTextures();
 

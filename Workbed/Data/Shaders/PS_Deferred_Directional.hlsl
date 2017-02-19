@@ -4,13 +4,12 @@
 //---------------------------------
 //	Constant Buffers
 //---------------------------------
-cbuffer Spotlight : register( b0 )
+cbuffer DirectionalLight : register( b0 )
 {
 	row_major float4x4 InvertedProjection; 
 	row_major float4x4 InvertedView; 
 	float4 color;
-	float4 position;
-	float4 camPosition;
+	float4 cam_pos;
 	row_major float4x4 shadowMVP;
     float4 direction;
 };
@@ -26,9 +25,7 @@ Texture2D ShadowTexture	 : register ( t3 );
 struct VS_OUTPUT
 {
 	float4 pos	: SV_POSITION;
-	float4 uv	: POSITION;
-	float2 cosAngle : COSANGLE;
-    float2 range : RANGE;
+	float2 uv : TEXCOORD;
 };
 
 //---------------------------------
@@ -37,27 +34,26 @@ struct VS_OUTPUT
 #include "PBL_Functions.hlsl"
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	input.uv /= input.uv.w;
-	float2 texCoord = input.uv.xy;
 
-	DeferredPixelData data = CalculateDeferredPixelData(texCoord);
-	LightVectors vectors = CalculateLightVectors(data, camPosition, position);
+	DeferredPixelData data = CalculateDeferredPixelData(input.uv);
+	//LightVectors vectors = CalculateLightVectors(data, camPosition, position);
+	float3 light_pos = float3(256,256,256);
+  	float3 toEye = normalize(cam_pos - data.world_pos.xyz);	
+	float3 light_dir = normalize(-direction.xyz);
+	float3 halfVec = normalize(light_dir + toEye);
+
+	float NdotL = saturate(dot(data.normal, light_dir));
+	float HdotN = saturate(dot(halfVec, data.normal));
+	float NdotV = saturate(dot(data.normal, toEye));
 	
-	float3 F = saturate(Fresnel(data.substance, -vectors.light_dir, vectors.halfVec));
-	float3 D = saturate(D_GGX(vectors.HdotN,(data.roughness + 1) / 2.f));
-	float3 V = saturate(V_SchlickForGGX((data.roughness + 1) / 2.f, vectors.NdotV, vectors.NdotL));
+	float3 F = saturate(Fresnel(data.substance, -light_dir, halfVec));
+	float3 D = saturate(D_GGX(HdotN,(data.roughness + 1) / 2.f));
+	float3 V = saturate(V_SchlickForGGX((data.roughness + 1) / 2.f, NdotV, NdotL));
 
-    float3 lightToPixel = normalize(-vectors.toLight);
-    float spotFactor = max(0, dot(lightToPixel, normalize(direction)));
-
-	float angularAttenuation = (1 - (1 - spotFactor) * ( 1 / ( 1 - input.cosAngle.x))) / 2;
-
-	float ln = length(vectors.toLight);
-	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range.x));
-
-	float4 col = float4(1,0.47,0.03,1);
-	float3 directSpec = (D * F * V);
-	float3 final_color = ( directSpec * ((attenuation * angularAttenuation) * col));
+    float3 color_ = float3(1,1,1);
+	float3 directSpec = (F * D * V);
+	float3 final_color = directSpec * NdotL * color;
+	//float3 final_color = ( directSpec * ((attenuation * angularAttenuation) * color)) * 200;
 
 	float4 newPos = data.world_pos + (data.normal * 0.4);
 	newPos.w = 1;
@@ -69,10 +65,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	shadowVec.xy *= 0.5;
 
 	float compareValue = shadowVec.z;
-
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
 	if(sampleValue < compareValue)
  		final_color = 0;
-
 	return float4(final_color, 1);
 };

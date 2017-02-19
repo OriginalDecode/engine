@@ -40,7 +40,7 @@ public:
 
 
 	void Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint);
-	void Render(CU::Matrix44f& prevOrientation, CU::Matrix44f& projection);
+	void Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& projection);
 
 	void AddLine(const SLine& aLine);
 	void AddCube(const CU::Vector3f& min, const CU::Vector3f& max);
@@ -50,7 +50,7 @@ private:
 	void CreateVertexBuffer();
 
 
-	void SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection);
+	void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection);
 
 	SLinePoint myFirstPoint;
 	SLinePoint mySecondPoint;

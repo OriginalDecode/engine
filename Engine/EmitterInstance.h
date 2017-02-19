@@ -18,7 +18,7 @@ namespace Hex
 		void Initiate(Synchronizer* aSynchronizer, Texture* depth_texture);
 		void CleanUp();
 		void Update(float aDeltaTime);
-		void Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection);
+		void Render(CU::Matrix44f& aPreviousCameraOrientation, const CU::Matrix44f& aProjection);
 
 		void SetPosition(const CU::Vector3f& position);
 
@@ -27,7 +27,7 @@ namespace Hex
 		void UpdateVertexBuffer();
 		void CreateConstantBuffer();
 		void CreateInputLayout();
-		void SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection);
+		void SetMatrices(CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection);
 
 		void UpdateParticle(float aDeltaTime);
 		void Emit();

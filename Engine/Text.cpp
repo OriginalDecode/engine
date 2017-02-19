@@ -20,7 +20,7 @@ namespace Hex
 	{
 		myFont->SetPosition(myPosition);
 		myFont->SetScale(myScale);
-		myFont->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
+		myFont->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonal());
 		myFont->Render();
 	}
 

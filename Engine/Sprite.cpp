@@ -35,7 +35,7 @@ namespace Hex
 		//mySprite->GetEffect()->SetScale({ 1, 1 });
 		//mySprite->GetEffect()->SetPosition(myPosition);
 		//mySprite->GetEffect()->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
-		mySprite->Render(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
+		mySprite->Render(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonal());
 	}
 
 	const CU::Math::Vector2<float>& Sprite::GetPosition()

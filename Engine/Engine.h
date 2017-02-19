@@ -87,7 +87,6 @@ namespace Hex
 		void ToggleVsync();
 		
 		Camera* GetCamera();
-		Camera* Get2DCamera();
 
 
 		static void Present();
@@ -173,6 +172,7 @@ namespace Hex
 			LOADING,
 			_COUNT
 		};
+
 	private:
 
 		void UpdateDebugUI();
@@ -214,8 +214,8 @@ namespace Hex
 		Renderer* myRenderer						= nullptr;
 
 		//Shouldn't need 2 cameras?
-		Camera*  myCamera							= nullptr;
-		Camera*  my2DCamera							= nullptr;
+		Camera* m_Camera = nullptr;
+
 
 		CConsole* myConsole							= nullptr;
 		CAssetsContainer* myAssetsContainer			= nullptr;

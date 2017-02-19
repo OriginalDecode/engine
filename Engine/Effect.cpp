@@ -30,6 +30,7 @@ namespace Hex
 
 	void Effect::AddShaderResource(IShaderResourceView* aShaderResource)
 	{
+		DL_ASSERT_EXP(aShaderResource, "Shader Resource was null. Check if initiated correctly.");
 		myShaderResources.Add(aShaderResource);
 		myNULLList.Add(nullptr);
 	}

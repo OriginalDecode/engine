@@ -66,7 +66,7 @@ namespace Hex
 		UpdateParticle(aDeltaTime);
 	}
 
-	void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection)
+	void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, const CU::Matrix44f& aProjection)
 	{
 		if (!myConstantBuffer)
 			return;
@@ -173,7 +173,7 @@ namespace Hex
 		Engine::GetAPI()->SetDebugName(myInputLayout, "Particle Input Layout");
 	}
 
-	void CEmitterInstance::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
+	void CEmitterInstance::SetMatrices(CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
 		m_VertexCB.m_World = CU::Matrix44f();
 		m_VertexCB.m_View = CU::Math::Inverse(aCameraOrientation);

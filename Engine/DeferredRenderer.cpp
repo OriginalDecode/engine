@@ -6,7 +6,7 @@
 #define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
 namespace Hex
 {
-	bool DeferredRenderer::Initiate(/*Texture* shadow_texture*/)
+	bool DeferredRenderer::Initiate(Texture* shadow_texture)
 	{
 #ifdef SNOWBLIND_DX11
 		m_API = Engine::GetAPI();
@@ -40,7 +40,7 @@ namespace Hex
 		myAmbientPassShader->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
 		myAmbientPassShader->AddShaderResource(myGBuffer->myNormal->GetShaderView());
 		myAmbientPassShader->AddShaderResource(myGBuffer->myDepth->GetShaderView());
-		//myAmbientPassShader->AddShaderResource(shadow_texture->GetDepthStencilView());
+		myAmbientPassShader->AddShaderResource(shadow_texture->GetDepthStencilView());
 		myAmbientPassShader->AddShaderResource(myCubeMap->GetShaderView());
 		CreateFullscreenQuad();
 		InitConstantBuffer();
@@ -56,8 +56,8 @@ namespace Hex
 		myDepthStencil->CleanUp();
 		SAFE_DELETE(myDepthStencil);
 		SAFE_DELETE(myGBuffer);
-
-		SAFE_DELETE(myConstantStruct);
+		
+		//SAFE_DELETE(myConstantStruct);
 		SAFE_RELEASE(myConstantBuffer);
 
 		SAFE_DELETE(m_VertexBuffer);
@@ -100,10 +100,10 @@ namespace Hex
 #endif
 	}
 
-	void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
+	void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
 	{
 #ifdef SNOWBLIND_DX11
-		UpdateConstantBuffer(previousOrientation, aProjection);
+		UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);
 		SetBuffers();
 
 		m_API->ResetViewport();
@@ -143,7 +143,6 @@ namespace Hex
 		m_API->SetVertexShader(myScreenPassShader->GetVertexShader()->m_Shader);
 		m_API->SetPixelShader(myScreenPassShader->GetPixelShader()->m_Shader);
 
-		//Can I make this dynamic somehow? and return a value?
 		ID3D11ShaderResourceView* srv[] = 
 		{
 			myFinishedSceneTexture->GetShaderView(),
@@ -169,7 +168,6 @@ namespace Hex
 	void DeferredRenderer::InitConstantBuffer()
 	{
 #ifdef SNOWBLIND_DX11
-		myConstantStruct = new SConstantStruct;
 
 		D3D11_BUFFER_DESC cbDesc;
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
@@ -186,24 +184,28 @@ namespace Hex
 #endif
 	}
 
-	void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
+	void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
 	{
 #ifdef SNOWBLIND_DX11
-		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
-		myConstantStruct->camPosition = previousOrientation.GetPosition();
-		myConstantStruct->invertedProjection = CU::Math::InverseReal(aProjection);
-		myConstantStruct->view = previousOrientation;
+		m_ConstantStruct.camPosition = previousOrientation.GetPosition();
+		m_ConstantStruct.invertedProjection = CU::Math::InverseReal(aProjection);
+		m_ConstantStruct.view = previousOrientation;
+		m_ConstantStruct.m_ShadowMVP = shadow_mvp;
+		m_ConstantStruct.m_Direction = light_dir;
 		//myConstantStruct->m_ShadowMVP = shadow_matrix;// CU::Math::Inverse(light_orientation) * light_projection;
 
-		D3D11_MAPPED_SUBRESOURCE msr;
+
+		m_API->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
+
+		/*D3D11_MAPPED_SUBRESOURCE msr;
 		m_API->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
 			SConstantStruct* ptr = (SConstantStruct*)msr.pData;
-			memcpy(ptr, &myConstantStruct->camPosition, sizeof(SConstantStruct));
+			memcpy(ptr, &m_ConstantStruct->camPosition, sizeof(SConstantStruct));
 		}
 
-		m_API->GetContext()->Unmap(myConstantBuffer, 0);
+		m_API->GetContext()->Unmap(myConstantBuffer, 0);*/
 #endif
 	}
 

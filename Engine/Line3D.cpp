@@ -54,7 +54,7 @@ void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint
 #endif
 }
 
-void CLine3D::Render(CU::Matrix44f& prevOrientation, CU::Matrix44f& projection)
+void CLine3D::Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& projection)
 {
 #ifdef SNOWBLIND_DX11
 	ID3D11DeviceContext* context = myAPI->GetContext();
@@ -76,11 +76,6 @@ void CLine3D::Render(CU::Matrix44f& prevOrientation, CU::Matrix44f& projection)
 
 	context->Draw(myVertices.Size(), 0);
 #endif
-}
-
-void CLine3D::AddLine(const SLine& /*aLine*/)
-{
-
 }
 
 void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
@@ -236,7 +231,7 @@ void CLine3D::CreateVertexBuffer()
 #endif
 }
 
-void CLine3D::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
+void CLine3D::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
 #ifdef SNOWBLIND_DX11
 	DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");

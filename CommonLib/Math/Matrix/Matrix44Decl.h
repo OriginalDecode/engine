@@ -28,6 +28,7 @@ namespace CommonUtilities
 			static Matrix44<TYPE> CreateRotateAroundZ(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateProjectionMatrixLH(TYPE aNearZ, TYPE aFarZ, TYPE anAspectRatio, TYPE aFoVAngle);
 			static Matrix44<TYPE> CreateOrthogonalMatrixLH(TYPE aWidth, TYPE aHeight, TYPE aNearZ, TYPE aFarZ);
+			static Matrix44<TYPE> CreateOrthographicMatrixLH(float width, float height, float near_plane, float far_plane);
 			static Matrix44<TYPE> CreateScaleMatrix(const Vector4<TYPE>& scale);
 
 			union
@@ -93,6 +94,20 @@ namespace CommonUtilities
 			const Matrix44<TYPE> Calculate(const RotationType& rotation, const TYPE& cos, const TYPE& sin);
 		};
 
+		template<typename TYPE>
+		Matrix44<TYPE> CommonUtilities::Math::Matrix44<TYPE>::CreateOrthographicMatrixLH(float width, float height, float near_plane, float far_plane)
+		{
+			Matrix44<TYPE> new_matrix;
+			new_matrix[0] = 2.f / width;
+
+			new_matrix[5] = 2.f / height;
+			
+			new_matrix[10] = 1.f / (far_plane - near_plane);
+
+			new_matrix[14] = near_plane / (near_plane - far_plane);
+			new_matrix[15] = 1.f;
+			return new_matrix;
+		}
 
 
 		template<typename TYPE>

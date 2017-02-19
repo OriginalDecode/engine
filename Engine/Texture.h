@@ -21,6 +21,10 @@ namespace Hex
 		void Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name);
 		void Initiate(u16 width, u16 height, s32 flags, TextureFormat render_target_format, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name);
 
+		void InitiateAsDepthStencil(float width, float height, const std::string& debug_name);
+		void InitiateAsRenderTarget(float width, float height, const std::string& debug_name);
+
+
 		bool CleanUp();
 		bool Load(const std::string& filepath);
 		void OnReload();
@@ -34,6 +38,8 @@ namespace Hex
 
 		IShaderResourceView* GetDepthStencilView() const { return m_DepthStencilShaderView; }
 		IRenderTargetView*	GetRenderTargetView() const { return m_RenderTargetView; }
+		IRenderTargetView** GetRenderTargetRef() { return &m_RenderTargetView; }
+
 		IDepthStencilView* GetDepthView() const { return m_DepthStencilView; }
 
 		void SetTexture(IShaderResourceView* aShaderResource);

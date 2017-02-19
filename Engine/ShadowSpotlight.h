@@ -41,7 +41,6 @@ namespace Hex
 		Texture* m_Holder;
 
 
-		CU::Matrix44f m_Bias;
 		CU::Vector3f m_Position;
 		CU::Vector3f m_Direction;
 		float m_BufferSize = 0.f;

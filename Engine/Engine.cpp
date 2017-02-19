@@ -156,10 +156,16 @@ namespace Hex
 			ToggleVsync();
 		});*/
 
-		myCamera = new Hex::Camera(myWindowSize.myWidth, myWindowSize.myHeight);
-		my2DCamera = new Hex::Camera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
+		//myCamera = new Hex::Camera(myWindowSize.myWidth, myWindowSize.myHeight);
+
+		m_Camera = new Camera;
+		m_Camera->CreatePerspectiveProjection(myWindowSize.myWidth, myWindowSize.myHeight, 0.01f, 10000.f, 90.f);
+		m_Camera->CreateOrthogonalProjection(myWindowSize.myWidth, myWindowSize.myHeight, 0.01f, 100.f);
+
+		//my2DCamera = new Hex::Camera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
+
 		myRenderer = new Renderer;
-		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
+		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, m_Camera), "Engine : Failed to initiate Renderer!");
 
 
 		m_PhysicsManager = new PhysicsManager;
@@ -210,7 +216,7 @@ namespace Hex
 		myRenderer->CleanUp();
 		SAFE_DELETE(myRenderer);
 
-		SAFE_DELETE(myCamera);
+		SAFE_DELETE(m_Camera);
 		SAFE_DELETE(myFontManager);
 
 
@@ -227,12 +233,7 @@ namespace Hex
 
 	Camera* Engine::GetCamera()
 	{
-		return myCamera;
-	}
-
-	Hex::Camera* Engine::Get2DCamera()
-	{
-		return my2DCamera;
+		return m_Camera;
 	}
 
 	void Engine::Update()

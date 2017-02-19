@@ -190,6 +190,24 @@ namespace Hex
 
 	}
 
+	void Texture::InitiateAsDepthStencil(float width, float height, const std::string& debug_name)
+	{
+		Initiate(width, height
+			, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+			, DXGI_FORMAT_R32_TYPELESS
+			, DXGI_FORMAT_R32_FLOAT
+			, DXGI_FORMAT_D32_FLOAT
+			, debug_name);
+	}
+
+	void Texture::InitiateAsRenderTarget(float width, float height, const std::string& debug_name)
+	{
+		Initiate(width, height,
+			DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+			, DXGI_FORMAT_R16G16B16A16_FLOAT
+			, debug_name);
+	}
+
 	bool Texture::CleanUp()
 	{
 		SAFE_RELEASE(m_ShaderResource);

@@ -461,6 +461,11 @@ namespace Hex
 		myContext->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
 	}
 
+	void DirectX11::ClearDepthStencilState()
+	{
+		myContext->OMSetDepthStencilState(nullptr, 0);
+	}
+
 	void DirectX11::SetRasterizer(const eRasterizer& aRasterizer)
 	{
 		myContext->RSSetState(myRasterizerStates[u16(aRasterizer)]);

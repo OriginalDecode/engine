@@ -197,6 +197,7 @@ namespace Hex
 		void ResetViewport();
 		void ResetRendertarget();
 
+		void ClearDepthStencilState();
 
 
 		ID3D11RenderTargetView* GetBackbuffer();

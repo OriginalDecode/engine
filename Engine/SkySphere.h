@@ -24,7 +24,7 @@ namespace Hex
 		bool CleanUp();
 		void Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture);
 		void SetPosition(const CU::Vector3f& aPosition);
-		void Update(float dt);
+		//void Update(float dt);
 	private:
 		Camera* myCamera;
 #ifdef SNOWBLIND_DX11

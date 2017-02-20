@@ -108,11 +108,11 @@ namespace Hex
 
 		m_API->ResetViewport();
 
-		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView();
+		ID3D11RenderTargetView* render_target = myFinishedSceneTexture->GetRenderTargetView();
 		ID3D11DepthStencilView* depth = m_API->GetDepthView();
 
-		myContext->ClearRenderTargetView(backbuffer, myClearColor);
-		myContext->OMSetRenderTargets(1, &backbuffer, depth);
+		myContext->ClearRenderTargetView(render_target, myClearColor);
+		myContext->OMSetRenderTargets(1, &render_target, depth);
 
 		myAmbientPassShader->Activate();
 		myContext->PSSetConstantBuffers(0, 1, &myConstantBuffer);
@@ -127,7 +127,7 @@ namespace Hex
 
 
 		depth = myDepthStencil->GetDepthView();
-		myContext->OMSetRenderTargets(1, &backbuffer, depth);
+		myContext->OMSetRenderTargets(1, &render_target, depth);
 #endif
 	}
 

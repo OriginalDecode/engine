@@ -94,7 +94,7 @@ namespace Hex
 		}
 	}
 
-	void SkySphere::Update(float dt)
+	/*void SkySphere::Update(float dt)
 	{
 		for (const SkysphereLayer& layer : m_Layers)
 		{
@@ -103,5 +103,5 @@ namespace Hex
 				layer.m_Model->Update(dt);
 			}
 		}
-	}
+	}*/
 };

@@ -239,7 +239,7 @@ namespace Hex
 
 		myDeferredRenderer->Finalize(m_LightTexture);
 
-		mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
+		//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 		RenderParticles();
@@ -250,8 +250,8 @@ namespace Hex
 		ImGui::Render();
 		myEngine->Present();
 
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
+		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
+		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
 
 
 

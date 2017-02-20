@@ -57,7 +57,6 @@ namespace Hex
 
 	void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows)
 	{
-#ifdef SNOWBLIND_DX11
 		if (!myIsNULLObject)
 		{
 			__super::Render(aCameraOrientation, aCameraProjection, scale, render_shadows);
@@ -92,7 +91,6 @@ namespace Hex
 			child->SetPosition(myOrientation.GetPosition());
 			child->Render(aCameraOrientation, aCameraProjection, scale, render_shadows);
 		}
-#endif
 	}
 
 	void CModel::SetIsLightmesh()
@@ -156,8 +154,6 @@ namespace Hex
 
 	void CModel::InitConstantBuffer()
 	{
-#ifdef SNOWBLIND_DX11
-
 		D3D11_BUFFER_DESC cbDesc;
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
 		cbDesc.ByteWidth = sizeof(VertexBaseStruct);
@@ -171,6 +167,5 @@ namespace Hex
 
 		myAPI->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
 		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
-#endif
 	}
 };

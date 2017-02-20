@@ -334,6 +334,7 @@
     <ClInclude Include="LinearAllocator.h">
       <Filter>Allocators</Filter>
     </ClInclude>
+    <ClInclude Include="LightModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -528,5 +529,6 @@
     <ClCompile Include="LinearAllocator.cpp">
       <Filter>Allocators</Filter>
     </ClCompile>
+    <ClCompile Include="LightModel.cpp" />
   </ItemGroup>
 </Project>

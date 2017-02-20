@@ -57,7 +57,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float4 col = float4(1,0.47,0.03,1);
 	float3 directSpec = (D * F * V);
-	float3 final_color = ( directSpec * ((attenuation * angularAttenuation))) * 200;
+	float3 final_color = ( directSpec * ((attenuation * angularAttenuation)));
 
 	float4 newPos = data.world_pos + (data.normal * 0.4);
 	newPos.w = 1;
@@ -73,6 +73,5 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
 	if(sampleValue < compareValue)
  		final_color = 0;
-
 	return float4(final_color, 1);
 };

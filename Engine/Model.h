@@ -29,10 +29,6 @@ static Ticket_Mutex g_ModelMutex;
 		void SetPosition(const CU::Vector3f& aPosition);
 		CU::Matrix44f& GetOrientation();
 		void SetOrientation(CU::Matrix44f orientation);
-		void Update(float dt);
-
-		std::vector<float> GetVertices();
-		std::vector<s32> GetIndices();
 		CU::Vector3f GetWHD() const { return m_WHD; }
 		void SetWHD(CU::Vector3f whd);
 	private:

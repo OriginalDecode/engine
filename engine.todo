@@ -78,7 +78,8 @@ Engine Tasks:
      ☐ Check if the compile platform is windows for DirectX
      ☐ Post Processing Effects (HDR, Blur, ...)
      ☐ Soft Shadows
-     ☐ Separate light pass to its own texture
+     ✘ Separate light pass to its own texture @cancelled (17-02-20 13:15)
+     ☐ Move directional light to its own shader pass & not when the ambient runs.
   StateStack:
     ✔ Move to engine @done (17-01-29 23:57)
       States are still game-bound but having the statestack in the Engine should make it easier to move between projects

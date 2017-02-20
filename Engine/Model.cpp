@@ -130,37 +130,6 @@ namespace Hex
 		}
 	}
 
-	void CModel::Update(float dt)
-	{
-		myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(0.5f)* dt) * myOrientation;
-		for (CModel* child : myChildren)
-		{
-			child->Update(dt);
-		}
-	}
-
-	std::vector<float> CModel::GetVertices()
-	{
-		std::vector<float> to_return;
-		for (const SVertexTypePosCol& vert : myVertices)
-		{
-			to_return.push_back(vert.myPosition.x);
-			to_return.push_back(vert.myPosition.y);
-			to_return.push_back(vert.myPosition.z);
-		}
-		return to_return;
-	}
-
-	std::vector<s32> CModel::GetIndices()
-	{
-		std::vector<s32> to_return;
-		for (s32 index : m_Indices)
-		{
-			to_return.push_back(index);
-		}
-		return to_return;
-	}
-
 	void CModel::SetWHD(CU::Vector3f whd)
 	{
 		m_WHD = whd;

@@ -229,7 +229,7 @@ namespace Hex
 		ProcessShadows(m_DirectionalCamera);
 		myDeferredRenderer->DeferredRender(myPrevFrame, m_Camera->GetPerspective(), CU::Math::Inverse(m_DirectionalCamera->GetOrientation()) * m_DirectionalCamera->GetPerspective() , m_Direction);
 
-		myDeferredRenderer->SetBuffers();
+		//myDeferredRenderer->SetBuffers();
 		//RenderDirectionalLight();
 		RenderPointlight();
 		RenderSpotlight();

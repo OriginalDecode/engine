@@ -60,7 +60,7 @@ namespace Hex
 #endif
 		CU::GrowingArray<VertexTypePosUV> myVertices;
 
-		struct SSpriteConstantBuffer : public SVertexBaseStruct
+		struct SSpriteConstantBuffer : public VertexBaseStruct
 		{
 			CU::Vector2f position = CU::Vector2f(0.f, 0.f);
 			CU::Vector2f scale = CU::Vector2f(1.f, 1.f);

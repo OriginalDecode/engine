@@ -87,7 +87,7 @@ namespace Hex
 		int myUpdateTimer = 0.f;
 		int myRenderTimer = 0.f;
 
-		struct SFontConstantBuffer : public SVertexBaseStruct
+		struct SFontConstantBuffer : public VertexBaseStruct
 		{
 			CU::Vector2f position = CU::Vector2f(0.f, 0.f);
 			CU::Vector2f scale = CU::Vector2f(1.f, 1.f);

@@ -161,11 +161,11 @@ void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
 void CLine3D::CreateConstantBuffer()
 {
 #ifdef SNOWBLIND_DX11
-	myConstantStruct = new SVertexBaseStruct;
+	myConstantStruct = new VertexBaseStruct;
 
 	D3D11_BUFFER_DESC cbDesc;
 	ZeroMemory(&cbDesc, sizeof(cbDesc));
-	cbDesc.ByteWidth = sizeof(SVertexBaseStruct);
+	cbDesc.ByteWidth = sizeof(VertexBaseStruct);
 	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
 	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -243,8 +243,8 @@ void CLine3D::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Mat
 	Hex::Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	if (msr.pData != nullptr)
 	{
-		SVertexBaseStruct* ptr = (SVertexBaseStruct*)msr.pData;
-		memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SVertexBaseStruct));
+		VertexBaseStruct* ptr = (VertexBaseStruct*)msr.pData;
+		memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(VertexBaseStruct));
 	}
 
 	Hex::Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);

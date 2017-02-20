@@ -12,8 +12,8 @@ namespace Hex
 
 		//m_Camera = new Camera(m_BufferSize, m_BufferSize, 256.f, 1.f, 90.f);
 		m_Camera = new Camera;
-		//m_Camera->CreatePerspectiveProjection(m_BufferSize, m_BufferSize, 1.f, 256.f, 90.f);
-		m_Camera->CreateOrthographicProjection(200.f, 200.f, 0.01f, 1024.f);
+		m_Camera->CreatePerspectiveProjection(m_BufferSize, m_BufferSize, 1.f, 256.f, 90.f);
+		//m_Camera->CreateOrthographicProjection(200.f, 200.f, 0.01f, 1024.f);
 
 
 		m_Camera->SetPosition(position);

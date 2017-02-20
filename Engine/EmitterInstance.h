@@ -42,7 +42,7 @@ namespace Hex
 		Synchronizer* mySynchronizer;
 
 		ID3D11Buffer* myConstantBuffer;
-		SVertexBaseStruct* myConstantStruct;
+		VertexBaseStruct* myConstantStruct;
 		Engine* myEngine;
 
 

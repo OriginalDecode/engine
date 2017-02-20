@@ -132,13 +132,13 @@ void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Eff
 		data->m_WHD.z += 0.1f;
 
 	out->SetWHD(data->m_WHD);
-	Hex::VertexIndexWrapper* indexWrapper = new Hex::VertexIndexWrapper();
-	indexWrapper->myFormat = DXGI_FORMAT_R32_UINT;
+	//Hex::VertexIndexWrapper* indexWrapper = new Hex::VertexIndexWrapper();
+	out->m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
 	u32* indexData = new u32[data->myIndexCount];
 	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
-	indexWrapper->myIndexData = (s8*)indexData;
-	indexWrapper->mySize = data->myIndexCount * sizeof(u32);
-	out->myIndexData = indexWrapper;
+	out->m_IndexData.myIndexData = (s8*)indexData;
+	out->m_IndexData.mySize = data->myIndexCount * sizeof(u32);
+	//out->m_IndexData = indexWrapper;
 
 	for (u32 i = 0; i < data->myIndexCount; i++)
 	{
@@ -148,15 +148,15 @@ void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Eff
 
 
 	/* BUG HERE. CRASH. */
-	Hex::VertexDataWrapper* vertexData = new Hex::VertexDataWrapper();
+	//Hex::VertexDataWrapper* vertexData = new Hex::VertexDataWrapper();
 	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float); //is this wrong?
 	u32* vertexRawData = new u32[sizeOfBuffer];
 	memcpy(vertexRawData, data->myVertexBuffer, sizeOfBuffer); // This crashes?
-	vertexData->myVertexData = (s8*)vertexRawData;
-	vertexData->myNrOfVertexes = data->myVertexCount;
-	vertexData->mySize = sizeOfBuffer;
-	vertexData->myStride = data->myVertexStride * sizeof(float);
-	out->myVertexData = vertexData;
+	out->m_VertexData.myVertexData = (s8*)vertexRawData;
+	out->m_VertexData.myNrOfVertexes = data->myVertexCount;
+	out->m_VertexData.mySize = sizeOfBuffer;
+	out->m_VertexData.myStride = data->myVertexStride * sizeof(float);
+	//out->myVertexData = vertexData;
 
 	Hex::CSurface* newSurface = new Hex::CSurface(0, data->myVertexCount, 0
 		, data->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

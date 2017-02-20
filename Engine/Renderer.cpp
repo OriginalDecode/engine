@@ -56,7 +56,7 @@ namespace Hex
 		m_Shadowlight = new ShadowSpotlight;
 		m_Shadowlight->Initiate(
 			CU::Vector3f(256.f, 128.f, 256.f)
-			, CU::Vector3f(1.f, 0.f, 1.f)
+			, CU::Vector3f(0.f, 0.f, 1.f)
 			, 2048.f);
 
 

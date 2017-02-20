@@ -339,14 +339,36 @@ namespace Hex
 		HandleErrors(hr, "Failed to create constant buffer");
 	}
 
-	void DirectX11::ClearConstantBuffers()
+	IBuffer* DirectX11::CreateVertexBuffer(s32 size, void* pData, D3D11_USAGE usage_flag /*= D3D11_USAGE_IMMUTABLE*/, u32 bind_flag /*= D3D11_BIND_VERTEX_BUFFER*/, u32 cpu_access_flag /*= 0*/, u32 misc_flag /*= 0*/)
 	{
 		
+		D3D11_BUFFER_DESC vertexBufferDesc;
+		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
+		vertexBufferDesc.Usage = usage_flag;
+		vertexBufferDesc.ByteWidth = size;
+		vertexBufferDesc.BindFlags = bind_flag;
+		vertexBufferDesc.CPUAccessFlags = cpu_access_flag;
+		vertexBufferDesc.MiscFlags = misc_flag;
+
+		D3D11_SUBRESOURCE_DATA vertex_data;
+		vertex_data.pSysMem = pData;
+
+		IBuffer* return_value = nullptr;
+		HRESULT hr = myDevice->CreateBuffer(&vertexBufferDesc, &vertex_data, &return_value);
+		HandleErrors(hr, "Failed to create vertex buffer!");
+		return return_value;
 	}
 
-	void DirectX11::BindConstantBuffer(s32 bound_buffer_flag, IBuffer*& constant_buffer)
+	IInputLayout* DirectX11::CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements)
 	{
+		IInputLayout* return_value = nullptr;
+		HRESULT hr = myDevice->CreateInputLayout(pLayout, num_layout_elements, pShader, shader_byte_size, &return_value);
 
+#ifdef _DEBUG
+		HandleErrors(hr, "CreateInputLayout : Failed to create input layout.");
+#endif
+
+		return return_value;
 	}
 
 	void DirectX11::CreateAdapterList()

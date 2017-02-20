@@ -28,7 +28,7 @@ namespace Hex
 
 }
 
-struct SVertexBaseStruct;
+struct VertexBaseStruct;
 
 class CLine3D
 {
@@ -60,7 +60,7 @@ private:
 	Hex::Effect* myEffect = nullptr;
 	Hex::VertexBufferWrapper* myVertexBuffer = nullptr;
 
-	SVertexBaseStruct* myConstantStruct = nullptr;
+	VertexBaseStruct* myConstantStruct = nullptr;
 
 #ifdef SNOWBLIND_DX11
 	IInputLayout* myVertexLayout = nullptr;

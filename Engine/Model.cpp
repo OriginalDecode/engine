@@ -17,35 +17,21 @@ namespace Hex
 
 	bool CModel::CleanUp()
 	{
-		SAFE_DELETE(myVertexBuffer);
-		if (myVertexBuffer)
-			return false;
-		SAFE_DELETE(myIndexBuffer);
-		if (myIndexBuffer)
-			return false;
-		SAFE_DELETE(myVertexData);
-		if (myVertexData)
-			return false;
-		SAFE_DELETE(myIndexData);
-		if (myIndexData)
-			return false;
-		SAFE_DELETE(myConstantStruct);
-		if (myConstantStruct)
-			return false;
-		SAFE_RELEASE(myConstantBuffer);
-		if (myConstantBuffer)
-			return false;
-		SAFE_RELEASE(myVertexLayout);
-		if (myVertexLayout)
-			return false;
-
 		mySurfaces.DeleteAll();
-
 		for (CModel* children : myChildren)
 		{
 			children->CleanUp();
 		}
 		myChildren.DeleteAll();
+
+		SAFE_RELEASE(myConstantBuffer);
+		if (myConstantBuffer)
+			return false;
+		SAFE_RELEASE(m_VertexLayout);
+		if (m_VertexLayout)
+			return false;
+
+		
 		return true;
 	}
 
@@ -184,14 +170,12 @@ namespace Hex
 	{
 		if (myIsNULLObject == false)
 		{
-			DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
+			m_ConstantStruct.m_World = myOrientation;
+			m_ConstantStruct.m_InvertedView = CU::Math::Inverse(aCameraOrientation);
+			m_ConstantStruct.m_Projection = aCameraProjection;
+			m_ConstantStruct.m_Scale = scale;
 
-			myConstantStruct->world = myOrientation;
-			myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
-			myConstantStruct->projection = aCameraProjection;
-			myConstantStruct->scale = scale;
-
-			myAPI->UpdateConstantBuffer(myConstantBuffer, myConstantStruct);
+			myAPI->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
 
 		}
 	}
@@ -204,12 +188,10 @@ namespace Hex
 	void CModel::InitConstantBuffer()
 	{
 #ifdef SNOWBLIND_DX11
-		if (!myConstantStruct)
-			myConstantStruct = new SVertexBaseStruct;
 
 		D3D11_BUFFER_DESC cbDesc;
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
-		cbDesc.ByteWidth = sizeof(SVertexBaseStruct);
+		cbDesc.ByteWidth = sizeof(VertexBaseStruct);
 		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
 		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;

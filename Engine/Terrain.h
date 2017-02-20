@@ -58,7 +58,7 @@ namespace Hex
 		
 		CSurface* mySurface = nullptr;
 
-		struct TerrainConstantStruct : public SVertexBaseStruct
+		struct TerrainConstantStruct : public VertexBaseStruct
 		{
 			CU::Vector4f time;
 		} myConstantStruct;

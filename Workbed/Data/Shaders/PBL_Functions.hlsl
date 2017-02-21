@@ -8,7 +8,9 @@ struct DeferredPixelData
     float4 substance;
     float4 normal;
     float4 metalnessAlbedo;
+    float4 depth;
     float roughness;
+
 };
 
 SamplerState point_Clamp : register (ps, s0 );
@@ -24,7 +26,7 @@ DeferredPixelData CalculateDeferredPixelData(float2 tex_coord)
 	data.normal = NormalTexture.Sample(point_Clamp, tex_coord) * 2 - 1;
 	float4 depth = DepthTexture.Sample(point_Clamp, tex_coord);
     float4 metalness = float4(data.normal.w, data.normal.w, data.normal.w, data.normal.w);
-	
+	data.depth = depth;
 	data.roughness = depth.y;
 	float ao = 1.0f;
 	float4 substance = (0.04f - 0.04f * metalness) + data.albedo * metalness;

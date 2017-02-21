@@ -108,7 +108,8 @@ namespace Hex
 			, DXGI_FORMAT_D32_FLOAT
 			, "Renderer : Depth");
 
-	
+		m_LightTexture = new Texture;
+		m_LightTexture->InitiateAsRenderTarget(window_size.myWidth, window_size.myHeight, "LightTexture");
 
 
 		mySkysphere = new SkySphere;
@@ -231,6 +232,11 @@ namespace Hex
 
 		//myDeferredRenderer->SetBuffers();
 		//RenderDirectionalLight();
+
+
+		float clear[4] = { 1.f, 1.f, 1.f, 0.f };
+		m_API->GetContext()->ClearRenderTargetView(m_LightTexture->GetRenderTargetView(), clear);
+		m_API->GetContext()->OMSetRenderTargets(1, m_LightTexture->GetRenderTargetRef(), myDeferredRenderer->GetGBuffer()->myDepth->GetDepthView());
 		RenderPointlight();
 		RenderSpotlight();
 

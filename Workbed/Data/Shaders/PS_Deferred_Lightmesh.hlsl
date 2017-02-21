@@ -33,7 +33,7 @@ struct VS_OUTPUT
 };
 
 //---------------------------------
-//	Deferred Lightmesh Pixel Shader
+//	Deferred Lightmesh Pixel Shaderf
 //---------------------------------
 #include "PBL_Functions.hlsl"
 float4 PS(VS_OUTPUT input) : SV_Target
@@ -52,6 +52,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float ln = length(vectors.toLight);
 	float attenuation = CalculateTotalAttenuation(ln, input.range.x);
 	float3 directSpec = (D * F * V);
-	float3 final_color =  directSpec * ( attenuation * color ) * 4;
+	float3 final_color =   ( attenuation * color ) ;
 	return float4(final_color, 1);
 };

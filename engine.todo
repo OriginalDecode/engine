@@ -76,7 +76,7 @@ Engine Tasks:
      ☐ Finish the current render frame before initiating / removing a main/sub state.
      ☐ Add Vulkan to regular build instead of having its separate build
      ☐ Check if the compile platform is windows for DirectX
-     ☐ Post Processing Effects (HDR, Blur, ...)
+     ☐ Post Processing Effects (HDR, Blur, Bloom, ...)
      ☐ Soft Shadows
      ✘ Separate light pass to its own texture @cancelled (17-02-20 13:15)
      ☐ Move directional light to its own shader pass & not when the ambient runs.
@@ -111,6 +111,8 @@ Engine Tasks:
       ☐ CommandBuffers / RenderCommands
       ☐ A big drawcall instead of several small ones. Context swaps are expensive and can be solved by having a lot of vertices & indices in a single call. 
     ☐ TreeNodes to be threaded?
+  I/O:
+    ☐ Thread loading of models.
 CommonLib:
   Math:
     ☐ Quaternion -> Matrix

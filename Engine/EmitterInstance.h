@@ -23,7 +23,7 @@ namespace Hex
 		void SetPosition(const CU::Vector3f& position);
 
 	private:
-		void CreateVertexBuffer();
+		void CreateBuffer();
 		void UpdateVertexBuffer();
 		void CreateConstantBuffer();
 		void CreateInputLayout();

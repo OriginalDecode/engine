@@ -43,7 +43,7 @@ namespace Hex
 #ifdef _DEBUG
 		myAPI->SetDebugName(m_VertexLayout, "Model Vertex Layout : " + m_Filename);
 #endif
-		m_VertexBuffer.myVertexBuffer = myAPI->CreateVertexBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
+		m_VertexBuffer.myVertexBuffer = myAPI->CreateBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
 #ifdef _DEBUG
 		myAPI->SetDebugName(m_VertexBuffer.myVertexBuffer, "Model Vertex Buffer " + m_Filename);
 #endif
@@ -57,23 +57,9 @@ namespace Hex
 
 	void CBaseModel::InitIndexBuffer()
 	{
-		D3D11_BUFFER_DESC indexDesc;
-		ZeroMemory(&indexDesc, sizeof(indexDesc));
-		indexDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		indexDesc.ByteWidth = m_IndexData.mySize;
-		indexDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		indexDesc.CPUAccessFlags = 0;
-		indexDesc.MiscFlags = 0;
-		indexDesc.StructureByteStride = 0;
+		m_IndexBuffer.myIndexBuffer = myAPI->CreateBuffer(m_IndexData.mySize, m_IndexData.myIndexData, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER);
 
-		D3D11_SUBRESOURCE_DATA indexData;
-		ZeroMemory(&indexData, sizeof(indexData));
-		indexData.pSysMem = static_cast<void*>(m_IndexData.myIndexData);
-
-		HRESULT hr = myAPI->GetDevice()->CreateBuffer(&indexDesc, &indexData, &m_IndexBuffer.myIndexBuffer);
-		myAPI->SetDebugName(m_IndexBuffer.myIndexBuffer, "Model Index Buffer " + m_Filename);
-		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create IndexBuffer");
-
+		myAPI->SetDebugName(m_IndexBuffer.myIndexBuffer, "Mode§l Index Buffer " + m_Filename);
 		m_IndexBuffer.myIndexBufferFormat = m_IndexData.myFormat;
 		m_IndexBuffer.myByteOffset = 0;
 	}

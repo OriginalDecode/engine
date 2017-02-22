@@ -229,9 +229,9 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	component.scale = CU::Vector4f(1,1,1,1);
 
-	CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
-	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
-	m_DwellerList.GetLast()->SetWHD(whd);
+	//CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
+	//m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
+	//m_DwellerList.GetLast()->SetWHD(whd);
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)
@@ -443,7 +443,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	Hex::CTerrain* terrain = Hex::Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+	Hex::CTerrain* terrain = Hex::Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 2, 0), CU::Vector2f(512, 512));
 	//terrain->AddNormalMap("Data/Textures/t1_n.dds");
 	/*
 	Work([&](std::string texture) {

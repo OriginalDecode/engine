@@ -50,7 +50,7 @@ namespace Hex
 
 		void CreateFullscreenQuad();
 		void InitConstantBuffer();
-		void CreateVertexBuffer();
+		void CreateBuffer();
 		void CreateIndexBuffer();
 
 		float myClearColor[4];

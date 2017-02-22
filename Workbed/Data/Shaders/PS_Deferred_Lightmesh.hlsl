@@ -52,7 +52,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float ln = length(vectors.toLight);
 	float attenuation = CalculateTotalAttenuation(ln, input.range.x);
 	float3 directSpec = (D * F * V);
-	float3 final_color = directSpec * ( attenuation * color ) *32;
+	float3 final_color = directSpec * ( attenuation * color ) ;
 
 	return float4(final_color, 1);
 };

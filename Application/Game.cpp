@@ -118,11 +118,6 @@ void Game::Update(float dt)
 	if (input_wrapper->IsDown(KButton::X))
 		m_Camera->Move(Hex::eDirection::DOWN, -50.f * dt);
 
-	if (input_wrapper->IsDown(KButton::H))
-	{
-		m_World->AddDweller(m_Engine->CreateEntity("Data/Levels/entity.json", CU::Vector3f(256.f, 256.f, 256.f)));
-	}
-
 
 
 	m_World.Update(dt);

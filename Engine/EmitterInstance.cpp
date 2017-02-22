@@ -35,7 +35,7 @@ namespace Hex
 			myParticles.Add(toAdd);
 		}
 
-		CreateVertexBuffer();
+		CreateBuffer();
 		CreateInputLayout();
 		CreateConstantBuffer();
 
@@ -107,7 +107,7 @@ namespace Hex
 		myOrientation.SetPosition(position);
 	}
 
-	void CEmitterInstance::CreateVertexBuffer()
+	void CEmitterInstance::CreateBuffer()
 	{
 		myVertexBuffer = new VertexBufferWrapper();
 		myVertexBuffer->myStride = sizeof(SParticleObject);
@@ -147,10 +147,10 @@ namespace Hex
 
 	void CEmitterInstance::CreateConstantBuffer()
 	{
-		Engine::GetAPI()->CreateConstantBuffer(myConstantBuffer, sizeof(cbParticleVertex));
+		myConstantBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbParticleVertex));
 		Engine::GetAPI()->SetDebugName(myConstantBuffer, "EmitterInstance : Vertex Constant Buffer");
 
-		Engine::GetAPI()->CreateConstantBuffer(m_GeometryBuffer, sizeof(cbParticleGeometry));
+		m_GeometryBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbParticleGeometry));
 		Engine::GetAPI()->SetDebugName(m_GeometryBuffer, "EmitterInstance : Geometry Constant Buffer");
 	}
 

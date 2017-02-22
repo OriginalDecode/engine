@@ -59,12 +59,9 @@ namespace Hex
 			, CU::Vector3f(0.f, 0.f, 1.f)
 			, 2048.f);
 
-
-
-
 		//const GBuffer* gbuffer = myDeferredRenderer->GetGBuffer();
 
-		Engine::GetAPI()->CreateConstantBuffer(m_DirectionalLightBuffer, sizeof(m_DirectionalLightStruct));
+		m_DirectionalLightBuffer = Engine::GetAPI()->CreateBuffer(sizeof(m_DirectionalLightStruct), nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE);
 		m_DirectionalCamera = new Camera;
 		m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 256.f);
 
@@ -243,9 +240,9 @@ namespace Hex
 		myDeferredRenderer->Finalize(m_LightTexture);
 
 		//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
-		mySkysphere->Render(myPrevFrame, myDepthTexture);
-
+		//mySkysphere->Render(myPrevFrame, myDepthTexture);
 		RenderParticles();
+		// POST PROCESSING
 		RenderLines();
 
 		Render2DCommands();
@@ -253,8 +250,8 @@ namespace Hex
 		ImGui::Render();
 		myEngine->Present();
 
-		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
-		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
 
 
 
@@ -282,7 +279,24 @@ namespace Hex
 		{
 			if (!terrain->HasLoaded())
 				continue;
-			terrain->Render(m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, m_Camera->GetPerspective(), CU::Vector4f(1,1,1,1), m_ProcessShadows);
+
+			if (m_ProcessDirectionalShadows)
+			{
+				terrain->Render(m_DirectionalFrame, m_Camera->GetPerspective(), CU::Vector4f(1, 1, 1, 1), true);
+
+			}
+			else if (m_ProcessShadows)
+			{
+				terrain->Render(myPrevShadowFrame, m_Camera->GetPerspective(), CU::Vector4f(1, 1, 1, 1), true);
+
+			}
+			else
+			{
+				terrain->Render(myPrevFrame, m_Camera->GetPerspective(), CU::Vector4f(1, 1, 1, 1), false);
+
+			}
+
+			//terrain->Render(m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, m_Camera->GetPerspective(), CU::Vector4f(1,1,1,1), m_ProcessShadows);
 		}
 
 		for (const RenderCommand& command : commands)
@@ -563,3 +577,5 @@ namespace Hex
 		m_RenderWireframe = !m_RenderWireframe;
 	}
 };
+
+

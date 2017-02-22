@@ -47,7 +47,7 @@ public:
 
 private:
 	void CreateConstantBuffer();
-	void CreateVertexBuffer();
+	void CreateBuffer();
 
 
 	void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection);

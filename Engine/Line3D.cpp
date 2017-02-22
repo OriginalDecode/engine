@@ -25,7 +25,7 @@ void CLine3D::Initiate(int aLineAmount /*= 256*/)
 	myLineAmount = aLineAmount;
 	myAPI = Hex::Engine::GetAPI();
 	myEffect =  Hex::Engine::GetInstance()->GetEffect("Data/Shaders/T_Line3D.json");
-	CreateVertexBuffer();
+	CreateBuffer();
 	CreateConstantBuffer();
 #endif
 }
@@ -178,7 +178,7 @@ void CLine3D::CreateConstantBuffer()
 #endif
 }
 
-void CLine3D::CreateVertexBuffer()
+void CLine3D::CreateBuffer()
 {
 #ifdef SNOWBLIND_DX11
 	HRESULT hr;

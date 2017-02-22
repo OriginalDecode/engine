@@ -324,38 +324,37 @@ namespace Hex
 		return new_viewport;
 	}
 
-	void DirectX11::CreateConstantBuffer(IBuffer*& buffer, s32 size)
+	IBuffer* DirectX11::CreateConstantBuffer(s32 size)
 	{
-		D3D11_BUFFER_DESC cbDesc;
-		ZeroMemory(&cbDesc, sizeof(cbDesc));
-		cbDesc.ByteWidth = size;
-		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		cbDesc.MiscFlags = 0;
-		cbDesc.StructureByteStride = 0;
-
-		HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &buffer);
-		HandleErrors(hr, "Failed to create constant buffer");
+		return CreateBuffer(size, nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE);
 	}
 
-	IBuffer* DirectX11::CreateVertexBuffer(s32 size, void* pData, D3D11_USAGE usage_flag /*= D3D11_USAGE_IMMUTABLE*/, u32 bind_flag /*= D3D11_BIND_VERTEX_BUFFER*/, u32 cpu_access_flag /*= 0*/, u32 misc_flag /*= 0*/)
+	IBuffer* DirectX11::CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag /*= D3D11_USAGE_IMMUTABLE*/, u32 bind_flag /*= D3D11_BIND_VERTEX_BUFFER*/, u32 cpu_access_flag /*= 0*/, u32 misc_flag /*= 0*/)
 	{
 		
-		D3D11_BUFFER_DESC vertexBufferDesc;
-		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-		vertexBufferDesc.Usage = usage_flag;
-		vertexBufferDesc.ByteWidth = size;
-		vertexBufferDesc.BindFlags = bind_flag;
-		vertexBufferDesc.CPUAccessFlags = cpu_access_flag;
-		vertexBufferDesc.MiscFlags = misc_flag;
-
-		D3D11_SUBRESOURCE_DATA vertex_data;
-		vertex_data.pSysMem = pData;
+		D3D11_BUFFER_DESC buffer_desc;
+		ZeroMemory(&buffer_desc, sizeof(buffer_desc));
+		buffer_desc.Usage = usage_flag;
+		buffer_desc.ByteWidth = size;
+		buffer_desc.BindFlags = bind_flag;
+		buffer_desc.CPUAccessFlags = cpu_access_flag;
+		buffer_desc.MiscFlags = misc_flag;
 
 		IBuffer* return_value = nullptr;
-		HRESULT hr = myDevice->CreateBuffer(&vertexBufferDesc, &vertex_data, &return_value);
-		HandleErrors(hr, "Failed to create vertex buffer!");
+		HRESULT hr = S_OK;
+
+		D3D11_SUBRESOURCE_DATA srd;
+		if (pData)
+		{
+			srd.pSysMem = pData;
+			hr = myDevice->CreateBuffer(&buffer_desc, &srd, &return_value);
+		}
+		else
+		{
+			hr = myDevice->CreateBuffer(&buffer_desc, nullptr, &return_value);
+		}
+		HandleErrors(hr, "Failed to create buffer!");
+
 		return return_value;
 	}
 

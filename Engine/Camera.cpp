@@ -24,6 +24,16 @@ namespace Hex
 		m_ProjectionMatrix = CU::Matrix44f::CreateOrthographicMatrixLH(width, height, near_plane, far_plane);
 	}
 
+	CU::Vector3f Camera::RotateAroundPoint(const CU::Vector3f& position)
+	{
+		CU::Vector3f original_pos = GetPosition();
+		SetPosition(original_pos - position);
+		m_Orientation = m_Orientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(25.f) * (Hex::Engine::GetInstance()->GetDeltaTime()));
+		SetPosition(GetPosition() + position);
+
+		return CU::Vector3f(position - original_pos);
+	}
+
 	void Camera::SetPosition(const CU::Vector3f& position)
 	{
 		m_Orientation.SetPosition(position);

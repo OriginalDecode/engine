@@ -48,7 +48,7 @@ namespace Hex
 	private:
 		void operator=(const CFont&) = delete;
 		void CreateInputLayout();
-		void CreateVertexBuffer();
+		void CreateBuffer();
 		void CreateIndexBuffer();
 		void CreateConstantBuffer();
 		void UpdateBuffer();

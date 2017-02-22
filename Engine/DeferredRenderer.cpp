@@ -271,12 +271,12 @@ namespace Hex
 		myIndexData->myIndexData = new char[myIndexData->mySize];
 		memcpy(myIndexData->myIndexData, &indices[0], myIndexData->mySize);
 
-		CreateVertexBuffer();
+		CreateBuffer();
 		CreateIndexBuffer();
 #endif
 	}
 
-	void DeferredRenderer::CreateVertexBuffer()
+	void DeferredRenderer::CreateBuffer()
 	{
 #ifdef SNOWBLIND_DX11
 		void* shader = myScreenPassShader->GetVertexShader()->compiledShader;

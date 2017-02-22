@@ -41,6 +41,7 @@ namespace Hex
 		void CreateOrthographicProjection(float width, float height, float near_plane, float far_plane);
 		const CU::Matrix44f& GetOrthographic() const { return m_ProjectionMatrix; }
 
+		CU::Vector3f RotateAroundPoint(const CU::Vector3f& position);
 
 		CU::Matrix44f& GetOrientation() { return m_Orientation; }
 		const CU::Vector3f& GetPosition() const { return m_Orientation.GetPosition(); }

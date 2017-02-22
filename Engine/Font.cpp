@@ -31,7 +31,7 @@ namespace Hex
 		myInitData = new D3D11_SUBRESOURCE_DATA();
 
 		CreateInputLayout();
-		CreateVertexBuffer();
+		CreateBuffer();
 		CreateIndexBuffer();
 		CreateConstantBuffer();
 
@@ -189,7 +189,7 @@ namespace Hex
 #endif
 	}
 
-	void CFont::CreateVertexBuffer()
+	void CFont::CreateBuffer()
 	{
 #ifdef SNOWBLIND_DX11
 		myVertexBuffer = new VertexBufferWrapper;

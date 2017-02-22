@@ -44,7 +44,7 @@ namespace Hex
 		CU::Vector3f RotateAroundPoint(const CU::Vector3f& position);
 
 		CU::Matrix44f& GetOrientation() { return m_Orientation; }
-		const CU::Vector3f& GetPosition() const { return m_Orientation.GetPosition(); }
+		CU::Vector3f GetPosition() const { return m_Orientation.GetPosition(); }
 		CU::Matrix44f& Get2DOrientation() { return my2DOrientation; }
 
 		const CU::Vector4f& GetAt() const { return m_Orientation.GetForward(); }

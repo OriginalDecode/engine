@@ -122,7 +122,6 @@ namespace Hex
 		} m_DirectionalLightStruct;
 
 
-
 		RenderCommand		m_CubeCommand;
 	};
 }; 

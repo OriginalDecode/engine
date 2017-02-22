@@ -28,8 +28,13 @@ namespace Hex
 	{
 		CU::Vector3f original_pos = GetPosition();
 		SetPosition(original_pos - position);
-		m_Orientation = m_Orientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(25.f) * (Hex::Engine::GetInstance()->GetDeltaTime()));
+		m_Orientation = m_Orientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(5.f) * (Hex::Engine::GetInstance()->GetDeltaTime()));
 		SetPosition(GetPosition() + position);
+
+
+		CU::Vector4f new_forward = position - original_pos;
+		CU::Math::Normalize(new_forward);
+		m_Orientation.SetForward(new_forward);
 
 		return CU::Vector3f(position - original_pos);
 	}

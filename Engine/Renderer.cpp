@@ -26,6 +26,9 @@
 
 #include <Brofiler.h>
 
+#include <Input/InputHandle.h>
+#include <Input/InputWrapper.h>
+
 //#define AMBIENT_PASS_ONLY
 namespace Hex
 {
@@ -63,16 +66,18 @@ namespace Hex
 
 		m_DirectionalLightBuffer = Engine::GetAPI()->CreateBuffer(sizeof(m_DirectionalLightStruct), nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE);
 		m_DirectionalCamera = new Camera;
-		m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 256.f);
+		m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 128.f);
 
-		m_DirectionalCamera->SetPosition({ 250.f, 256.f, 256.f });
+		m_DirectionalCamera->SetPosition({ 256.f, 128.f, 256.f });
 		//m_DirectionalCamera->RotateAroundY(CL::DegreeToRad(90.f) * 1.f);
-		m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(75.f) * 1.f);
+		m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
 
 
 		//m_DirectionalCamera->RotateAroundY(CL::DegreeToRad(90.f) * 1.f);
 		//m_DirectionalCamera->RotateAroundZ(CL::DegreeToRad(90.f) * 0.f);
 		//m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
+
+
 
 
 
@@ -231,16 +236,21 @@ namespace Hex
 		//RenderDirectionalLight();
 
 
+		InputHandle* input_handle = Engine::GetInstance()->GetInputHandle();
+		if (input_handle->GetInputWrapper()->IsDown(KButton::Y))
+		{
+			m_DirectionalCamera->RotateAroundPoint({ 256.f, 64.f, 256.f });
+		}
+
 		RenderPointlight();
 		RenderSpotlight();
-
 
 		myEngine->ResetRenderTargetAndDepth();
 
 		myDeferredRenderer->Finalize(m_LightTexture);
 
 		//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
-		//mySkysphere->Render(myPrevFrame, myDepthTexture);
+		mySkysphere->Render(myPrevFrame, myDepthTexture);
 		RenderParticles();
 		// POST PROCESSING
 		RenderLines();
@@ -252,7 +262,7 @@ namespace Hex
 
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
-
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
 
 
 		mySynchronizer->WaitForLogic();

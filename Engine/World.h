@@ -14,7 +14,7 @@ public:
 	void Update(float dt);
 
 	void AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers);
-
+	void AddDweller(TreeDweller* dweller);
 private:
 	CU::Vector3f m_WorldPos;
 	Hex::Synchronizer* m_Synchronizer;

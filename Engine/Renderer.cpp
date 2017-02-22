@@ -234,9 +234,6 @@ namespace Hex
 		//RenderDirectionalLight();
 
 
-		float clear[4] = { 1.f, 1.f, 1.f, 0.f };
-		m_API->GetContext()->ClearRenderTargetView(m_LightTexture->GetRenderTargetView(), clear);
-		m_API->GetContext()->OMSetRenderTargets(1, m_LightTexture->GetRenderTargetRef(), myDeferredRenderer->GetGBuffer()->myDepth->GetDepthView());
 		RenderPointlight();
 		RenderSpotlight();
 

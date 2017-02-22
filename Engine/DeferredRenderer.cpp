@@ -134,7 +134,7 @@ namespace Hex
 	void DeferredRenderer::Finalize(Texture* light_texture)
 	{
 #ifdef SNOWBLIND_DX11
-		m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
+		m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
 		m_API->SetBlendState(eBlendStates::NO_BLEND);
 		m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 
@@ -147,7 +147,7 @@ namespace Hex
 		{
 			myFinishedSceneTexture->GetShaderView(),
 			myDepthStencil->GetShaderView(),
-			light_texture->GetShaderView()
+			//light_texture->GetShaderView(),
 		};
 
 		s32 num_srv = ARRAYSIZE(srv);

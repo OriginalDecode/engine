@@ -31,6 +31,7 @@ class TerrainManager;
 
 typedef struct ID3D10Blob IBlob;
 class TreeDweller;
+class LevelFactory;
 namespace Hex
 {
 	enum eDeferredType;
@@ -88,6 +89,7 @@ namespace Hex
 		
 		Camera* GetCamera();
 
+		TreeDweller* CreateEntity(const std::string& filepath, CU::Vector3f& position);
 
 		static void Present();
 		static void Clear();
@@ -220,7 +222,7 @@ namespace Hex
 		CConsole* myConsole							= nullptr;
 		CAssetsContainer* myAssetsContainer			= nullptr;
 		TerrainManager* m_TerrainManager			= nullptr;
-
+		LevelFactory* m_LevelFactory = nullptr;
 		
 		std::bitset<(u16)eEngineStates::_COUNT> m_States;
 

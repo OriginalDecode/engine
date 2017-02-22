@@ -133,6 +133,50 @@ namespace Hex
 		m_WHD = whd;
 	}
 
+	std::vector<float> CModel::GetVertices()
+	{
+		std::vector<float> to_return;
+
+		for (CModel* child : myChildren)
+		{
+			std::vector<float> child_verts = child->GetVertices();
+			for (const float& vert : child_verts)
+			{
+				to_return.push_back(vert);
+			}
+		}
+
+		for (const SVertexTypePosCol& vert : myVertices)
+		{
+			to_return.push_back(vert.myPosition.x);
+			to_return.push_back(vert.myPosition.y);
+			to_return.push_back(vert.myPosition.z);
+		}
+		return to_return;
+	}
+
+	std::vector<s32> CModel::GetIndices()
+	{
+		std::vector<s32> to_return;
+		
+		for (CModel* child : myChildren)
+		{
+			std::vector<s32> child_verts = child->GetIndices();
+			for (const s32& indice : child_verts)
+			{
+				to_return.push_back(indice);
+			}
+		}
+
+		
+		for (s32 index : m_Indices)
+		{
+			to_return.push_back(index);
+		}
+		return to_return;
+	}
+
+
 	void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale)
 	{
 		if (myIsNULLObject == false)

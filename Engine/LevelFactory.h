@@ -15,6 +15,8 @@ public:
 	void Initiate();
 	bool CreateLevel(const std::string& level_path);
 	CU::GrowingArray<TreeDweller*> GetDwellers() { return m_DwellerList; }
+	TreeDweller* CreateEntitiy(const std::string& entity_filepath, const CU::Vector3f& position);
+
 private:
 
 	void CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it);
@@ -25,6 +27,8 @@ private:
 	void CreateCameraComponent(JSONReader& entity_reader, Entity entity_id);
 
 	void CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it);
+	void CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id);
+
 	void CreateLightComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it);
 
 	void CreateInputComponent(JSONReader& entity_reader, Entity entity_id);

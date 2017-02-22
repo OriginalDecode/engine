@@ -24,6 +24,11 @@ void Octree::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
 }
 
 
+void Octree::AddDweller(TreeDweller* dweller)
+{
+	MoveDown(&m_Root, dweller, m_Root.GetDepth() + 1);
+}
+
 void Octree::Update(float dt)
 {
 	for (TreeNode* node : m_GarbageNodes)

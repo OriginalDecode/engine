@@ -31,6 +31,9 @@ static Ticket_Mutex g_ModelMutex;
 		void SetOrientation(CU::Matrix44f orientation);
 		CU::Vector3f GetWHD() const { return m_WHD; }
 		void SetWHD(CU::Vector3f whd);
+		std::vector<float> GetVertices();
+		std::vector<s32> GetIndices();
+
 	private:
 		void InitConstantBuffer();
 		void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale) override;

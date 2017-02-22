@@ -23,6 +23,9 @@ public:
 	void EndState() override;
 	void Render(bool render_through) override;
 
+
+
+
 private:
 	World m_World;
 	CPauseState m_PauseState;

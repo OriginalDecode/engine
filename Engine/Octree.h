@@ -12,7 +12,7 @@ public:
 	void Initiate(CU::Vector3f world_position, float world_half_width);
 
 	void AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers);
-
+	void AddDweller(TreeDweller* dweller);
 	void Update(float dt);
 private:
 	CU::TimeManager m_Timer;

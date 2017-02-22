@@ -21,7 +21,6 @@
 //#include <EntityManager.h>
 #include <PhysicsManager.h>
 
-#include "LevelFactory.h"
 
 #include "IGraphicsAPI.h"
 #include <d3dcompiler.h>
@@ -33,6 +32,7 @@
 #include <DebugComponent.h>
 
 #include "imgui_impl_dx11.h"
+#include "LevelFactory.h"
 
 static constexpr char* vertex_shader = "VS";
 static constexpr char* pixel_shader = "PS";
@@ -193,6 +193,9 @@ namespace Hex
 		ImGui_ImplDX11_Init(myHWND, GetAPI()->GetDevice(), GetAPI()->GetContext());
 
 		m_States[(u16)eEngineStates::INITIATED] = TRUE;
+		m_LevelFactory = new LevelFactory;
+		m_LevelFactory->Initiate();
+
 		return true;
 	}
 
@@ -234,6 +237,11 @@ namespace Hex
 	Camera* Engine::GetCamera()
 	{
 		return m_Camera;
+	}
+
+	TreeDweller* Engine::CreateEntity(const std::string& filepath, CU::Vector3f& position)
+	{
+		return m_LevelFactory->CreateEntitiy(filepath, position);
 	}
 
 	void Engine::Update()
@@ -555,12 +563,10 @@ namespace Hex
 	{
 		m_States[(u16)eEngineStates::LOADING] = TRUE;
 		//m_IsLoadingLevel = true;
-		LevelFactory level_factory;
-		level_factory.Initiate();
-		level_factory.CreateLevel(level_filepath);
+		m_LevelFactory->CreateLevel(level_filepath);
 
 		m_States[(u16)eEngineStates::LOADING] = FALSE;
-		return level_factory.GetDwellers();
+		return m_LevelFactory->GetDwellers();
 	}
 
 	Threadpool& Engine::GetThreadpool()

@@ -146,6 +146,32 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 }
 
+TreeDweller* LevelFactory::CreateEntitiy(const std::string& entity_filepath, const CU::Vector3f& position)
+{
+	Entity e = m_EntityManager->CreateEntity();
+	JSONReader entity_reader(entity_filepath);
+	s32 debug_flags = 0;
+
+	TreeDweller* dweller = new TreeDweller;
+
+	CreateTranslationComponent(e, position);
+
+	if (entity_reader.DocumentHasMember("graphics"))
+	{
+		CreateGraphicsComponent(entity_reader, e);
+		debug_flags |= EditObject::GRAPHICS;
+	}
+
+	if (entity_reader.DocumentHasMember("physics"))
+	{
+		CreatePhysicsComponent(entity_reader, e);
+		debug_flags |= EditObject::PHYSICS;
+	}
+
+	dweller->Initiate(e);
+	return dweller;
+}
+
 void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position)
 {
 	m_EntityManager->AddComponent<TranslationComponent>(entity_id);
@@ -189,8 +215,23 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
 	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
 	m_DwellerList.GetLast()->SetWHD(whd);
+}
 
-	
+void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id)
+{
+	m_EntityManager->AddComponent<RenderComponent>(entity_id);
+
+	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+	const JSONElement& el = entity_reader.GetElement("graphics");
+	component.myModelID = m_Engine->LoadModel(
+		el["model"].GetString(),
+		el["shader"].GetString());
+
+	component.scale = CU::Vector4f(1,1,1,1);
+
+	CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
+	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
+	m_DwellerList.GetLast()->SetWHD(whd);
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)
@@ -206,10 +247,18 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	component.myBody = m_PhysicsManager->CreateBody();
 	btRigidBody* phys_body = nullptr;
 
+	TranslationComponent& translation_component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+	
+
+
 	std::string shape = el["shape"].GetString();
 	if (shape == "mesh")
 	{
-		phys_body = component.myBody->InitAsBox(1, 1, 1, { 0,0,0 });
+		RenderComponent& render_component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+		Hex::CModel* model = m_Engine->GetModel(render_component.myModelID);
+		
+		phys_body = component.myBody->InitAsBox(200, 100, 100, translation_component.myOrientation.GetPosition());// ->GetVertices(), model->GetIndices()); //InitAsBox(1, 1, 1, { 0,0,0 });
+
 	}
 	else if (shape == "box")
 	{
@@ -217,7 +266,13 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	}
 	else if (shape == "sphere")
 	{
-		phys_body = component.myBody->InitAsSphere(1, object_mass, m_PhysicsManager->GetGravityForce(), scientific_constants::pressure::air_pressure, { 0,0,0 });
+		phys_body = component.myBody->InitAsSphere(
+			1, //Radius
+			object_mass, //Mass
+			m_PhysicsManager->GetGravityForce(), //Gravity
+			scientific_constants::pressure::air_pressure, //Air pressure / resistance
+			translation_component.myOrientation.GetPosition()); //Start position
+		
 	}
 	component.myBody->SetEntity(entity_id);
 	m_PhysicsManager->Add(phys_body);

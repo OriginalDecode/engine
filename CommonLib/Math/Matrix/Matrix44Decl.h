@@ -31,6 +31,9 @@ namespace CommonUtilities
 			static Matrix44<TYPE> CreateOrthographicMatrixLH(float width, float height, float near_plane, float far_plane);
 			static Matrix44<TYPE> CreateScaleMatrix(const Vector4<TYPE>& scale);
 
+			void SetPerspectiveFOV(float fov, float aspect_ratio);
+
+
 			union
 			{
 				TYPE myMatrix[16];

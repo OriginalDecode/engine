@@ -527,7 +527,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 
 			aiTextureType lType = static_cast<aiTextureType>(type);
-			DL_MESSAGE("Type : %d, Name : %s", u32(lType), newPath.c_str());
+			//DL_MESSAGE("Type : %d, Name : %s", u32(lType), newPath.c_str());
 			switch (lType)
 			{
 				case aiTextureType_DIFFUSE:

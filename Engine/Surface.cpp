@@ -14,9 +14,7 @@ namespace Hex
 {
 	CSurface::CSurface(Effect* anEffect)
 	{
-#ifdef SNOWBLIND_DX11
 		myContext = Engine::GetAPI()->GetContext();
-#endif
 		SetVertexCount(0);
 		SetVertexStart(0);
 		SetIndexCount(0);
@@ -27,9 +25,7 @@ namespace Hex
 
 	CSurface::CSurface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount)
 	{
-#ifdef SNOWBLIND_DX11
 		myContext = Engine::GetAPI()->GetContext();
-#endif
 		SetVertexCount(aVertexCount);
 		SetVertexStart(aStartVertex);
 		SetIndexCount(aIndexCount);
@@ -40,9 +36,7 @@ namespace Hex
 
 	CSurface::CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
 	{
-#ifdef SNOWBLIND_DX11
 		myContext = Engine::GetAPI()->GetContext();
-#endif
 		SetVertexCount(aVertexCount);
 		SetVertexStart(aStartVertex);
 		SetIndexCount(anIndexCount);
@@ -53,13 +47,12 @@ namespace Hex
 	CSurface::~CSurface()
 	{
 		myFileNames.RemoveAll();
-
 		//Can cause heap corruption?
 	}
 
 	void CSurface::Activate()
 	{
-		if (myShaderViews.Size() > 0)
+		if (!myShaderViews.Empty())
 		{
 			myShaderViews.Optimize();
 			myContext->IASetPrimitiveTopology(myPrimologyType);
@@ -119,7 +112,6 @@ namespace Hex
 		if (CL::substr(sub, ".dds") == false)
 			sub += ".dds";
 
-		
 		STexture new_texture;
 		new_texture.m_Type = type;
 
@@ -185,7 +177,7 @@ namespace Hex
 			AddTexture(file_path, type);
 			return;
 		}
-		MODEL_LOG("Already contained texture");
+		//MODEL_LOG("Already contained texture");
 	}
 
 	std::string s_file_path = "Data/Textures/default_textures/";
@@ -205,12 +197,12 @@ namespace Hex
 		AddMissingTexture(_DISPLACEMENT,	s_file_path + "black.dds");
 		AddMissingTexture(_LIGHTMAP,		s_file_path + "black.dds");
 		AddMissingTexture(_SHININESS,		s_file_path + "black.dds");
-
+/*
 		for (s32 i = 0; i < myTextures.Size(); i++)
 		{
 			TRACE_LOG("Index : %d | Pointer : %d | Type : %s", i, (u64)myTextures[i].texture, CheckTextureType(myTextures[i].m_Type).c_str());
 		}
-
+*/
 	}
 	
 	void CSurface::RemoveTextureByIndex(s32 index)

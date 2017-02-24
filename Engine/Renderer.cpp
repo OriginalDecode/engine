@@ -34,15 +34,19 @@ namespace Hex
 {
 	bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	{
+		m_Engine = Engine::GetInstance();
+		if (!m_Engine)
+			return false;
+
+		m_API = m_Engine->GetAPI();
+
 		mySynchronizer = synchronizer;
 		if (!mySynchronizer)
 			return false;
 		m_Camera = camera;
 		if (!m_Camera)
 			return false;
-		/*my2DCamera = camera_2d;
-		if (!my2DCamera)
-			return false;*/
+
 		myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 		if (!myText)
 			return false;
@@ -55,28 +59,18 @@ namespace Hex
 		if (!mySpotlight)
 			return false;
 
-		//CU::Vector3f(95, 7.f, 28.f)
 		m_Shadowlight = new ShadowSpotlight;
 		m_Shadowlight->Initiate(
 			CU::Vector3f(256.f, 128.f, 256.f)
 			, CU::Vector3f(0.f, 0.f, 1.f)
 			, 2048.f);
 
-		//const GBuffer* gbuffer = myDeferredRenderer->GetGBuffer();
-
-		m_DirectionalLightBuffer = Engine::GetAPI()->CreateBuffer(sizeof(m_DirectionalLightStruct), nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE);
+		m_DirectionalLightBuffer = m_API->CreateBuffer(sizeof(m_DirectionalLightStruct), nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE);
 		m_DirectionalCamera = new Camera;
 		m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 128.f);
 
 		m_DirectionalCamera->SetPosition({ 256.f, 128.f, 256.f });
-		//m_DirectionalCamera->RotateAroundY(CL::DegreeToRad(90.f) * 1.f);
 		m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
-
-
-		//m_DirectionalCamera->RotateAroundY(CL::DegreeToRad(90.f) * 1.f);
-		//m_DirectionalCamera->RotateAroundZ(CL::DegreeToRad(90.f) * 0.f);
-		//m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
-
 
 
 
@@ -86,16 +80,23 @@ namespace Hex
 
 		m_ShadowDepthStencil = new Texture;
 		m_ShadowDepthStencil->InitiateAsDepthStencil(2048.f, 2048.f, "DirectionalLight : Depthstencil View");
-		//m_DirectionalLight = Engine::GetInstance()->GetEffect("Data/Shaders/T_Deferred_DirectionalLight.json");
-
-		//m_DirectionalLight->AddShaderResource(gbuffer->myAlbedo->GetShaderView());
-		//m_DirectionalLight->AddShaderResource(gbuffer->myNormal->GetShaderView());
-		//m_DirectionalLight->AddShaderResource(gbuffer->myDepth->GetShaderView());
-		//m_DirectionalLight->AddShaderResource(m_ShadowDepthStencil->GetDepthStencilView());
+		m_DirectionalLight = m_Engine->GetEffect("Data/Shaders/T_Deferred_DirectionalLight.json");
 
 		myDeferredRenderer = new DeferredRenderer; // Where should this live?
 		if (!myDeferredRenderer->Initiate(m_ShadowDepthStencil))
 			return false;
+
+
+		const GBuffer* gbuffer = myDeferredRenderer->GetGBuffer();
+		m_DirectionalLight->AddShaderResource(gbuffer->myAlbedo->GetShaderView());
+		m_DirectionalLight->AddShaderResource(gbuffer->myNormal->GetShaderView());
+		m_DirectionalLight->AddShaderResource(gbuffer->myDepth->GetShaderView());
+		m_DirectionalLight->AddShaderResource(m_ShadowDepthStencil->GetDepthStencilView());
+
+		m_Direction = { 0.f, -1.f, 0.f };
+
+
+	
 
 		myDepthTexture = new Texture; //Where should this live?
 		DL_ASSERT_EXP(myDepthTexture, "DepthTexture in Renderer was null?");
@@ -122,12 +123,11 @@ namespace Hex
 
 		mySprite = new Sprite;
 		mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
+
 		myClearColor = new Sprite;
 		myClearColor->Initiate("Data/Textures/flat_height.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
-		myEngine = Engine::GetInstance();
-		if (!myEngine)
-			return false;
-		m_API = myEngine->GetAPI();
+
+
 
 		my3DLine = new CLine3D; //Where should this live?
 		if (!my3DLine)
@@ -135,17 +135,17 @@ namespace Hex
 
 		my3DLine->Initiate();
 
-		DL_ASSERT_EXP(m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil()), "failed to initiate LightPass!");
+		bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil());
+		DL_ASSERT_EXP(success, "failed to initiate lightpass!");
 
 	/*	m_ParticleEmitter = new CEmitterInstance;
 		m_ParticleEmitter->Initiate(mySynchronizer, myDepthTexture);*/
 
 
 
-		m_ShadowEffect = Engine::GetInstance()->GetEffect("Data/Shaders/T_Render_Depth.json");
-		m_Direction = { 0.f, -1.f, 0.f };
+		m_ShadowEffect = m_Engine->GetEffect("Data/Shaders/T_Render_Depth.json");
 
-		myEngine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
+		m_Engine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
 		return true;
 	}
 
@@ -194,7 +194,7 @@ namespace Hex
 #if defined (AMBIENT_PASS_ONLY)
 	void Renderer::Render()
 	{
-		myEngine->Clear();
+		m_Engine->Clear();
 		//myEngine->GetAPI()->ResetViewport();
 
 		m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
@@ -205,13 +205,13 @@ namespace Hex
 
 		myDeferredRenderer->DeferredRender(myPrevFrame, m_Camera->GetPerspective());
 
-		myEngine->ResetRenderTargetAndDepth();
+		m_Engine->ResetRenderTargetAndDepth();
 		myDeferredRenderer->Finalize();
 
 		RenderLines();
 
 		Render2DCommands();
-		myEngine->Present();
+		m_Engine->Present();
 
 		mySynchronizer->WaitForLogic();
 		mySynchronizer->SwapBuffer();
@@ -222,7 +222,7 @@ namespace Hex
 	void Renderer::Render()
 	{
 		BROFILER_FRAME("Render");
-		myEngine->Clear();
+		m_Engine->Clear();
 		m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
 		myDeferredRenderer->SetTargets(); 
 
@@ -232,33 +232,57 @@ namespace Hex
 		ProcessShadows(m_DirectionalCamera);
 		myDeferredRenderer->DeferredRender(myPrevFrame, m_Camera->GetPerspective(), CU::Math::Inverse(m_DirectionalCamera->GetOrientation()) * m_DirectionalCamera->GetPerspective() , m_Direction);
 
-		//myDeferredRenderer->SetBuffers();
-		//RenderDirectionalLight();
-
-
+		/* This has to be moved or removed */
 		InputHandle* input_handle = Engine::GetInstance()->GetInputHandle();
 		if (input_handle->GetInputWrapper()->IsDown(KButton::Y))
 		{
-			m_DirectionalCamera->RotateAroundPoint({ 256.f, 64.f, 256.f });
+			CU::Vector3f target_position ( 256.f, 64.f, 256.f );
+			m_DirectionalCamera->RotateAroundPoint(target_position);
+
+			m_Direction = target_position - m_DirectionalCamera->GetPosition();
+			CU::Math::Normalize(m_Direction);
+		}
+
+		/* Should be moved into settings */
+
+		if (input_handle->GetInputWrapper()->OnDown(KButton::NUMMINUS))
+		{
+			float current_fov = m_Camera->GetFOV();
+			current_fov -= 1.f;
+			m_Camera->SetFOV(current_fov);
+		}
+
+		if (input_handle->GetInputWrapper()->OnDown(KButton::NUMADD))
+		{
+			float current_fov = m_Camera->GetFOV();
+			current_fov += 1.f;
+			m_Camera->SetFOV(current_fov);
 		}
 
 		RenderPointlight();
 		RenderSpotlight();
 
-		myEngine->ResetRenderTargetAndDepth();
+		m_Engine->ResetRenderTargetAndDepth();
 
 		myDeferredRenderer->Finalize(m_LightTexture);
 
 		//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
 		mySkysphere->Render(myPrevFrame, myDepthTexture);
 		RenderParticles();
+
+		
+
 		// POST PROCESSING
+
+
+
+
 		RenderLines();
 
 		Render2DCommands();
 
 		ImGui::Render();
-		myEngine->Present();
+		m_Engine->Present();
 
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
 		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
@@ -269,7 +293,7 @@ namespace Hex
 		mySynchronizer->SwapBuffer();
 		mySynchronizer->RenderIsDone();
 		myPrevFrame = m_Camera->GetOrientation();
-		myEngine->ToggleFrame();
+		m_Engine->ToggleFrame();
 	}
 #endif
 
@@ -325,7 +349,7 @@ namespace Hex
 					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 					m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 										 
-					CModel* model = myEngine->GetModel(command.m_KeyOrText);
+					CModel* model = m_Engine->GetModel(command.m_KeyOrText);
 					model->SetOrientation(command.m_Orientation);
 
 
@@ -482,7 +506,7 @@ namespace Hex
 					if (!m_ProcessShadows)
 					{
 						m_ParticleEmitter->SetPosition(CU::Vector3f(100.f, 0.f, 31.f));
-						m_ParticleEmitter->Update(myEngine->GetDeltaTime());
+						m_ParticleEmitter->Update(m_Engine->GetDeltaTime());
 					}
 					m_ParticleEmitter->Render(m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, m_Camera->GetPerspective());
 				}break;
@@ -540,7 +564,7 @@ namespace Hex
 		Render3DCommands();
 		//RenderParticles();
 		m_Shadowlight->Copy();
-		myEngine->ResetRenderTargetAndDepth();
+		m_Engine->ResetRenderTargetAndDepth();
 		m_API->ResetViewport();
 		
 		myPrevShadowFrame = m_Camera->GetOrientation();
@@ -573,7 +597,7 @@ namespace Hex
 		Render3DCommands();
 		m_ProcessDirectionalShadows = false;
 
-		myEngine->ResetRenderTargetAndDepth();
+		m_Engine->ResetRenderTargetAndDepth();
 		m_API->ResetViewport();
 
 		m_DirectionalFrame = m_Camera->GetOrientation();

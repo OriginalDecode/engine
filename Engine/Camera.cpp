@@ -9,8 +9,8 @@ namespace Hex
 	void Camera::CreatePerspectiveProjection(float width, float height, float near_plane, float far_plane, float fov)
 	{
 		DL_ASSERT_EXP(!m_ProjectionCreated, "Projection already created. Can't have two 3D projection matrices on same camera!");
-		float field_of_view = fov * 3.1415926535f / 180.f;
-		m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, field_of_view);
+		m_CurrentFoV = fov;
+		m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, CL::DegreeToRad(m_CurrentFoV));
 	}
 
 	void Camera::CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane)
@@ -123,7 +123,12 @@ namespace Hex
 
 	void Camera::SetFOV(float field_of_view)
 	{
+		const SWindowSize& window_size = Engine::GetInstance()->GetWindowSize();
+		if(field_of_view >= 60.f && field_of_view <= 120.f)
+			m_CurrentFoV = field_of_view;
 
+
+		m_ProjectionMatrix.SetPerspectiveFOV(CL::DegreeToRad(m_CurrentFoV), window_size.myHeight / window_size.myWidth);
 	}
 
 	void Camera::Move(eDirection aDirection, float aSpeed)

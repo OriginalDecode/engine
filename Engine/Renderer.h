@@ -63,7 +63,7 @@ namespace Hex
 		bool				m_RenderWireframe	= false;
 		bool				m_ProcessShadows	= false;
 
-		Engine*				myEngine			= nullptr;
+		Engine*				m_Engine			= nullptr;
 #ifdef SNOWBLIND_DX11
 		DirectX11*			m_API				= nullptr;
 #else

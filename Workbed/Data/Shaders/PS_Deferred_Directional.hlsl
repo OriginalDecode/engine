@@ -37,7 +37,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	DeferredPixelData data = CalculateDeferredPixelData(input.uv);
 	//LightVectors vectors = CalculateLightVectors(data, camPosition, position);
-	float3 light_pos = float3(256,256,256);
   	float3 toEye = normalize(cam_pos - data.world_pos.xyz);	
 	float3 light_dir = normalize(-direction.xyz);
 	float3 halfVec = normalize(light_dir + toEye);
@@ -46,13 +45,13 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float HdotN = saturate(dot(halfVec, data.normal));
 	float NdotV = saturate(dot(data.normal, toEye));
 	
-	float3 F = saturate(Fresnel(data.substance, -light_dir, halfVec));
-	float3 D = saturate(D_GGX(HdotN,(data.roughness + 1) / 2.f));
-	float3 V = saturate(V_SchlickForGGX((data.roughness + 1) / 2.f, NdotV, NdotL));
+	float3 F = saturate(Fresnel(data.metalnessAlbedo , light_dir, halfVec));
+	float D = saturate(D_GGX(HdotN,(data.roughness +1 ) / 2.f));
+	float V = saturate(V_SchlickForGGX((data.roughness + 1) / 2.f, NdotV, NdotL));
 
-    float3 color_ = float3(1,1,1);
+    float3 color_ = float3(1, 0.8, 0.8);
 	float3 directSpec = (F * D * V);
-	float3 final_color = directSpec * NdotL * color;
+	float3 final_color = (directSpec * NdotL * color_) * 8;
 	//float3 final_color = ( directSpec * ((attenuation * angularAttenuation) * color)) * 200;
 
 	float4 newPos = data.world_pos + (data.normal * 0.4);
@@ -67,6 +66,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float compareValue = shadowVec.z;
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
 	if(sampleValue < compareValue)
- 		final_color = 0;
+ 		final_color *= 0.42;
+
 	return float4(final_color, 1);
 };

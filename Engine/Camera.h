@@ -70,6 +70,7 @@ namespace Hex
 
 		//void ToggleFreefly() { m_Controller = !m_Controller; }
 		//bool GetCanFreeFly() { return m_Controller; }
+		float GetFOV() { return m_CurrentFoV; }
 	private:
 		float m_LookSpeedModifier = 0.005f;
 		void operator=(Camera&) = delete;
@@ -86,7 +87,7 @@ namespace Hex
 		bool m_ProjectionCreated = false;
 		CU::Matrix44f m_ProjectionMatrix;
 		CU::Matrix44f m_OrthogonalMatrix;
-		float m_FOV = 90.f;
+		float m_CurrentFoV = 90.f;
 
 		CU::Vector2f m_CenterPoint;
 		CU::Quaternion m_Pitch;

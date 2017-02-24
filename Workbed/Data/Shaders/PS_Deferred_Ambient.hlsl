@@ -119,7 +119,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, InvertedView);	
 
-	float3 toEye = normalize(worldPosition.xyz - camera_position.xyz);
+	float3 toEye = normalize(camera_position.xyz - worldPosition.xyz);
 	float3 reflection_fresnel = ReflectionFresnel(substance, normal, -toEye, 1 - roughnessOffsetted);
 	float3 reflectionVector = reflect(toEye, normal.xyz);
 	float3	ambientDiffuse = CubeMap.SampleLevel(point_Clamp, reflectionVector, 9).rgb * 
@@ -132,8 +132,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	
 	float3 final_color = (ambientDiffuse + ambientSpec);
 
-	float3 light_dir = float3(1,1,0);
-	float NdotL = dot(normal.xyz, light_direction);
+	float NdotL = dot(normal.xyz, -light_direction);
 	// float3 directColor = float3(1, 0.5, 1) * NdotL;
 	
 	float4 newPos = worldPosition + (normal * 0.4);
@@ -150,7 +149,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	if(sampleValue < compareValue)
  		final_color *= 0.42;
 
-	float3 output = final_color;
+ 	float3 dir_color = float3(1,0.8,0.8);
+	float3 output = final_color * NdotL * dir_color;
 	
 	return float4(output, 1.f);
 };

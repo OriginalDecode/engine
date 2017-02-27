@@ -2,8 +2,20 @@
 #include "PostProcessManager.h"
 
 
+void PostProcessManager::Initiate()
+{
+	m_Engine = Hex::Engine::GetInstance();
+	m_HDRPass.Initiate();
+}
+
+void PostProcessManager::CleanUp()
+{
+
+}
+
 void PostProcessManager::Process(Hex::Texture*  current_frame_texture)
 {
+	m_Engine->DisableZ();
 
 	if (m_PassFlags & HDR)
 		m_HDRPass.Process(current_frame_texture);
@@ -13,6 +25,8 @@ void PostProcessManager::Process(Hex::Texture*  current_frame_texture)
 
 	if (m_PassFlags & MOTIONBLUR)
 		m_MotionBlurPass.Process(current_frame_texture);
+
+	m_Engine->EnableZ();
 }
 
 void PostProcessManager::SetPassesToProcess(s32 pass_flags)

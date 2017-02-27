@@ -85,13 +85,6 @@ namespace Hex
 		if (!myDeferredRenderer->Initiate(m_ShadowDepthStencil))
 			return false;
 
-
-	/*	const GBuffer* gbuffer = myDeferredRenderer->GetGBuffer();
-		m_DirectionalLight->AddShaderResource(gbuffer->myAlbedo->GetShaderView());
-		m_DirectionalLight->AddShaderResource(gbuffer->myNormal->GetShaderView());
-		m_DirectionalLight->AddShaderResource(gbuffer->myDepth->GetShaderView());
-		m_DirectionalLight->AddShaderResource(m_ShadowDepthStencil->GetDepthStencilView());*/
-
 		m_Direction = { 0.f, -1.f, 0.f };
 
 
@@ -124,7 +117,7 @@ namespace Hex
 		mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
 
 		myClearColor = new Sprite;
-		myClearColor->Initiate("Data/Textures/flat_height.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
+		myClearColor->Initiate("Data/Textures/blank.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
 
 
 
@@ -143,11 +136,12 @@ namespace Hex
 
 
 		m_ShadowEffect = m_Engine->GetEffect("Data/Shaders/T_Render_Depth.json");
-		m_ToneMapping = m_Engine->GetEffect("Data/Shaders/T_Tonemapping.json");
-		m_ToneMapping->AddShaderResource(myDeferredRenderer->GetFinalTexture()->GetShaderView());
 
 
 		m_Engine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
+
+		m_PostProcessManager.Initiate();
+		m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
 		return true;
 	}
 
@@ -157,7 +151,6 @@ namespace Hex
 
 		SAFE_DELETE(m_ShadowDepthStencil);
 		SAFE_DELETE(m_ShadowDepth);
-		SAFE_DELETE(m_ToneMapping);
 
 		m_Shadowlight->CleanUp();
 		SAFE_DELETE(m_Shadowlight);
@@ -265,8 +258,8 @@ namespace Hex
 
 
 		m_Engine->ResetRenderTargetAndDepth();
-		myDeferredRenderer->SetBuffers();
-		m_ToneMapping->Activate();
+
+	/*	m_ToneMapping->Activate();
 
 		m_API->DisableZBuffer();
 		
@@ -274,13 +267,11 @@ namespace Hex
 
 		m_API->EnableZBuffer();
 
-		m_ToneMapping->Deactivate();
-
-		//Tonemapping?
-
-
 		
+		m_ToneMapping->Deactivate();*/
 
+		myDeferredRenderer->SetBuffers();
+		m_PostProcessManager.Process(myDeferredRenderer->GetFinalTexture());
 		//myDeferredRenderer->Finalize(m_LightTexture);
 
 
@@ -299,7 +290,7 @@ namespace Hex
 
 		//RenderLines();
 
-		//Render2DCom/mands();
+		Render2DCommands();
 
 		ImGui::Render();
 		m_Engine->Present();
@@ -408,7 +399,7 @@ namespace Hex
 					myText->SetPosition({ command.myPosition.x, command.myPosition.y });
 					myText->Render(m_Camera);
 				}break;
-				case eType::SPRITE:
+				case eType::SPRITE: 
 				{
 
 					myClearColor->SetPosition({ command.myPosition.x, command.myPosition.y });

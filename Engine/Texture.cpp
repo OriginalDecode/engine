@@ -9,6 +9,8 @@ namespace Hex
 	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, const std::string& debug_name)
 	{
 
+		myWidth = width;
+		myHeight = height;
 		DirectX11* api = static_cast<DirectX11*>(Engine::GetGraphicsAPI());
 		ID3D11Device* device = api->GetDevice();
 
@@ -51,6 +53,9 @@ namespace Hex
 
 	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name)
 	{
+
+		myWidth = width;
+		myHeight = height;
 #ifdef SNOWBLIND_DX11
 		DirectX11* api = Engine::GetAPI();
 #else
@@ -112,6 +117,8 @@ namespace Hex
 	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat render_target_format, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name)
 	{
 
+		myWidth = width;
+		myHeight = height;
 #ifdef SNOWBLIND_DX11
 		DirectX11* api = Engine::GetAPI();
 #else

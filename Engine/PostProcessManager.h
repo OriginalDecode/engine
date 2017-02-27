@@ -8,6 +8,7 @@ namespace Hex
 {
 	class Texture;
 	class Effect;
+	class Engine;
 };
 
 #define BITFLAG(x) (1 << x)
@@ -24,7 +25,8 @@ public:
 
 
 	PostProcessManager() = default;
-
+	void Initiate();
+	void CleanUp();
 
 	void Process(Hex::Texture* current_frame_texture);
 
@@ -36,6 +38,6 @@ private:
 	MotionBlurPass	m_MotionBlurPass;
 	BloomPass		m_BloomPass;
 
-
+	Hex::Engine* m_Engine = nullptr;
 };
 

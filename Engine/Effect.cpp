@@ -25,7 +25,8 @@ namespace Hex
 
 	void Effect::Deactivate()
 	{
-		m_Context->PSSetShaderResources(0, myShaderResources.Size(), &myNULLList[0]);
+		if (myNULLList.Size() > 0)
+			m_Context->PSSetShaderResources(0, myNULLList.Size(), &myNULLList[0]);
 	}
 
 	void Effect::AddShaderResource(IShaderResourceView* aShaderResource)

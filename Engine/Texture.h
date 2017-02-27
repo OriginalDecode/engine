@@ -47,6 +47,8 @@ namespace Hex
 		static void CopyData(ITexture2D* dest, ITexture2D* source);
 #endif
 
+		s32 GetWidth() const { return myWidth; }
+		s32 GetHeight() const { return myHeight; }
 		//void CreateDepthStencilView(float aWidth, float aHeight, int aArraySize = 1);
 	private:
 

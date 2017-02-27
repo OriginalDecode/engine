@@ -4,7 +4,7 @@
 #include "LightPass.h"
 #include "RenderCommand.h"
 #include <Math/Matrix/Matrix.h>
-
+#include "PostProcessManager.h"
 namespace CommonUtilities
 {
 	class TimeManager;
@@ -98,8 +98,6 @@ namespace Hex
 		LightPass			m_LightPass;
 		ShadowPass			m_ShadowPass;
 		Texture*			m_LightTexture		= nullptr;
-		Effect* m_DirectionalLight = nullptr;
-		Effect* m_ToneMapping = nullptr;
 
 
 		IBuffer* m_DirectionalLightBuffer = nullptr;
@@ -123,6 +121,7 @@ namespace Hex
 			CU::Vector4f m_Direction;
 		} m_DirectionalLightStruct;
 
+		PostProcessManager m_PostProcessManager;
 
 		RenderCommand		m_CubeCommand;
 	};

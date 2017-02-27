@@ -18,7 +18,7 @@ namespace Hex
 
 		myFinishedSceneTexture = new Texture;
 		myFinishedSceneTexture->Initiate(windowSize.myWidth, windowSize.myHeight
-			, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM
+			, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM
 			, "Texture : FinishedScene");
 
 		myDepthStencil = new Texture;
@@ -166,6 +166,11 @@ namespace Hex
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 #endif
+	}
+
+	Texture* DeferredRenderer::GetFinalTexture()
+	{
+		return myFinishedSceneTexture;
 	}
 
 	void DeferredRenderer::InitConstantBuffer()

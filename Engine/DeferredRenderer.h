@@ -40,6 +40,8 @@ namespace Hex
 
 		void Finalize(Texture* light_texture);
 
+		Texture* GetFinalTexture();
+
 		//void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 		Texture* GetDepthStencil();
 		GBuffer* GetGBuffer();

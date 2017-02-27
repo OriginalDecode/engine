@@ -99,6 +99,8 @@ namespace Hex
 		ShadowPass			m_ShadowPass;
 		Texture*			m_LightTexture		= nullptr;
 		Effect* m_DirectionalLight = nullptr;
+		Effect* m_ToneMapping = nullptr;
+
 
 		IBuffer* m_DirectionalLightBuffer = nullptr;
 

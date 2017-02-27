@@ -1,0 +1,4 @@
+{
+	"VertexShader" : "VS_Render_To_Texture.hlsl",
+	"PixelShader" : "PS_Tonemapping.hlsl"
+}

@@ -80,18 +80,17 @@ namespace Hex
 
 		m_ShadowDepthStencil = new Texture;
 		m_ShadowDepthStencil->InitiateAsDepthStencil(2048.f, 2048.f, "DirectionalLight : Depthstencil View");
-		m_DirectionalLight = m_Engine->GetEffect("Data/Shaders/T_Deferred_DirectionalLight.json");
 
 		myDeferredRenderer = new DeferredRenderer; // Where should this live?
 		if (!myDeferredRenderer->Initiate(m_ShadowDepthStencil))
 			return false;
 
 
-		const GBuffer* gbuffer = myDeferredRenderer->GetGBuffer();
+	/*	const GBuffer* gbuffer = myDeferredRenderer->GetGBuffer();
 		m_DirectionalLight->AddShaderResource(gbuffer->myAlbedo->GetShaderView());
 		m_DirectionalLight->AddShaderResource(gbuffer->myNormal->GetShaderView());
 		m_DirectionalLight->AddShaderResource(gbuffer->myDepth->GetShaderView());
-		m_DirectionalLight->AddShaderResource(m_ShadowDepthStencil->GetDepthStencilView());
+		m_DirectionalLight->AddShaderResource(m_ShadowDepthStencil->GetDepthStencilView());*/
 
 		m_Direction = { 0.f, -1.f, 0.f };
 
@@ -144,6 +143,9 @@ namespace Hex
 
 
 		m_ShadowEffect = m_Engine->GetEffect("Data/Shaders/T_Render_Depth.json");
+		m_ToneMapping = m_Engine->GetEffect("Data/Shaders/T_Tonemapping.json");
+		m_ToneMapping->AddShaderResource(myDeferredRenderer->GetFinalTexture()->GetShaderView());
+
 
 		m_Engine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
 		return true;
@@ -153,10 +155,9 @@ namespace Hex
 	{
 		m_LightPass.CleanUp();
 
-		SAFE_DELETE(m_DirectionalCamera);
 		SAFE_DELETE(m_ShadowDepthStencil);
 		SAFE_DELETE(m_ShadowDepth);
-
+		SAFE_DELETE(m_ToneMapping);
 
 		m_Shadowlight->CleanUp();
 		SAFE_DELETE(m_Shadowlight);
@@ -262,13 +263,32 @@ namespace Hex
 		RenderPointlight();
 		RenderSpotlight();
 
-		m_Engine->ResetRenderTargetAndDepth();
 
-		myDeferredRenderer->Finalize(m_LightTexture);
+		m_Engine->ResetRenderTargetAndDepth();
+		myDeferredRenderer->SetBuffers();
+		m_ToneMapping->Activate();
+
+		m_API->DisableZBuffer();
+		
+		m_API->GetContext()->DrawIndexed(6, 0, 0);
+
+		m_API->EnableZBuffer();
+
+		m_ToneMapping->Deactivate();
+
+		//Tonemapping?
+
+
+		
+
+		//myDeferredRenderer->Finalize(m_LightTexture);
+
+
+
 
 		//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
-		mySkysphere->Render(myPrevFrame, myDepthTexture);
-		RenderParticles();
+		//mySkysphere->Render(myPrevFrame, myDepthTexture);
+		//RenderParticles();
 
 		
 
@@ -277,16 +297,16 @@ namespace Hex
 
 
 
-		RenderLines();
+		//RenderLines();
 
-		Render2DCommands();
+		//Render2DCom/mands();
 
 		ImGui::Render();
 		m_Engine->Present();
 
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
-		mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
+		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
+		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
+		//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
 
 
 		mySynchronizer->WaitForLogic();
@@ -429,35 +449,6 @@ namespace Hex
 		effect->Deactivate();
 		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
-	}
-
-	void Renderer::RenderDirectionalLight()
-	{
-		m_DirectionalLightStruct.m_InvertedProjection = CU::Math::InverseReal(m_Camera->GetPerspective());
-		m_DirectionalLightStruct.m_View = myPrevFrame;
-		m_DirectionalLightStruct.m_Color = CU::Vector4f(1,1,1,1);
-		m_DirectionalLightStruct.m_CameraPosition = m_Camera->GetPosition();
-		m_DirectionalLightStruct.m_Direction = m_Direction;
-		m_DirectionalLightStruct.m_ShadowMVP = CU::Math::Inverse(m_DirectionalCamera->GetOrientation()) * m_DirectionalCamera->GetPerspective();
-
-
-		IDevContext* ctx = m_API->GetContext();
-
-		m_API->UpdateConstantBuffer(m_DirectionalLightBuffer, &m_DirectionalLightStruct);
-
-		m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
-		m_API->SetRasterizer(eRasterizer::CULL_NONE);
-
-		ctx->PSSetConstantBuffers(0, 1, &m_DirectionalLightBuffer);
-
-		m_DirectionalLight->Activate();
-		m_API->GetContext()->DrawIndexed(6, 0, 0);
-		m_DirectionalLight->Deactivate();
-
-		m_API->SetRasterizer(eRasterizer::CULL_BACK);
-		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-
-
 	}
 
 	void Renderer::RenderPointlight()

@@ -148,7 +148,7 @@ namespace Hex
 	bool Renderer::CleanUp()
 	{
 		m_LightPass.CleanUp();
-
+		m_PostProcessManager.CleanUp();
 		SAFE_DELETE(m_ShadowDepthStencil);
 		SAFE_DELETE(m_ShadowDepth);
 

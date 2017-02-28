@@ -10,7 +10,7 @@ void PostProcessManager::Initiate()
 
 void PostProcessManager::CleanUp()
 {
-
+	m_HDRPass.CleanUp();
 }
 
 void PostProcessManager::Process(Hex::Texture*  current_frame_texture)

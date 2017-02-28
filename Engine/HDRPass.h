@@ -18,13 +18,15 @@ public:
 	void CleanUp();
 	void Process(Hex::Texture* scene_texture);
 	void OnResize();
+	bool toggle_debug = false;
 private:
 	void Downsample(IRenderTargetView* render_target, IShaderResourceView* source);
-	void Copy(IRenderTargetView* target, IShaderResourceView* source[2]);
+	void Tonemapping(IRenderTargetView* target, IShaderResourceView* source[2], s32 resource_count);
 
 	void FillViewportData(Viewport& viewport);
 
 	float y_height = 0.f;
+	float x_width = 0.f;
 
 	CU::GrowingArray<Hex::Texture*> m_Downsamples;
 

@@ -39,7 +39,6 @@ namespace Hex
 		bool CleanUp();
 
 		void Render();
-		void Add2DCamera(Camera* aCamera);
 		void AddTerrain(CTerrain* someTerrain);
 		void ToggleWireframe();
 	private:
@@ -74,7 +73,6 @@ namespace Hex
 		CU::Matrix44f		myPrevShadowFrame;
 		CU::Matrix44f		m_DirectionalFrame;
 		bool m_ProcessDirectionalShadows = false;
-		Camera*				my2DCamera			= nullptr;
 		CU::TimeManager*	myTimeManager		= nullptr;
 		
 		DeferredRenderer*	myDeferredRenderer	= nullptr;

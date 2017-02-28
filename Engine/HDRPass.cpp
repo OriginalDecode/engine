@@ -19,7 +19,7 @@ void HDRPass::Initiate()
 		m_WindowSize.myWidth,
 		m_WindowSize.myHeight,
 		D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, 
-		DXGI_FORMAT_R16G16B16A16_FLOAT, 
+		DXGI_FORMAT_R8G8B8A8_UNORM, 
 		"HDRPass | HDRTexture");
 	s32 downsample_amount = s32(log(__min(m_WindowSize.myWidth, m_WindowSize.myHeight)) / log(2.f)) + 1;
 	s32 sample_size = 1;
@@ -58,6 +58,7 @@ void HDRPass::Process(Hex::Texture* scene_texture)
 	m_API->SetViewport(&viewport);
 
 	y_height = 128.f;
+	x_width = 128.f;
 	const s32 downsamples = m_Downsamples.Size() - 1;
 	Downsample(m_Downsamples[downsamples]->GetRenderTargetView(), scene_texture->GetShaderView());
 
@@ -76,10 +77,11 @@ void HDRPass::Process(Hex::Texture* scene_texture)
 
 	IShaderResourceView* sources[] = {
 		scene_texture->GetShaderView(),
-		m_Downsamples[0]->GetShaderView()
+		m_Downsamples.GetLast()->GetShaderView(),
+		m_Downsamples[0]->GetShaderView() // average
 	};
 
-	Copy(m_HDRTexture->GetRenderTargetView(), sources);
+	Tonemapping(m_HDRTexture->GetRenderTargetView(), sources, ARRAYSIZE(sources));
 
 	m_API->ResetRendertarget();
 
@@ -107,12 +109,20 @@ void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* 
 
 	m_DownsampleEffect->Deactivate();
 
-	m_Engine->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::SPRITE, source, CU::Vector2f(128.f, y_height)));
+	if (toggle_debug)
+	{
+		m_Engine->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::SPRITE, source, CU::Vector2f(x_width, y_height)));
+	}
 	y_height += 256.f;
+	if (y_height > 1080.f)
+	{
+		x_width += 256.f;
+		y_height = 128.f;
+	}
 
 }
 
-void HDRPass::Copy(IRenderTargetView* target, IShaderResourceView* source[2])
+void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source[2], s32 resource_count)
 {
 	IDevContext* ctx = m_API->GetContext();
 	const float clear[4] = { 0,0,0,0 };
@@ -120,7 +130,7 @@ void HDRPass::Copy(IRenderTargetView* target, IShaderResourceView* source[2])
 	ctx->OMSetRenderTargets(1, &target, m_API->GetDepthView());
 	
 	m_HDREffect->Activate();
-	ctx->PSSetShaderResources(0, 2, source);
+	ctx->PSSetShaderResources(0, resource_count, source);
 
 	ctx->DrawIndexed(6, 0, 0);
 	m_HDREffect->Deactivate();

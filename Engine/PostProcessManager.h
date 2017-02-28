@@ -32,6 +32,9 @@ public:
 
 	void SetPassesToProcess(s32 pass_flags);
 	void RemovePassToProcess(s32 pass_flag);
+
+	HDRPass& GetHDRPass() { return m_HDRPass; }
+
 private:
 	s32				m_PassFlags;
 	HDRPass			m_HDRPass;

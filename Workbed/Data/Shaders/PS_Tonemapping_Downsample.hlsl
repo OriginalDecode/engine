@@ -29,9 +29,12 @@ float LinearToLum(float4 color)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {	
-	float4 diffuse = DiffuseTexture.Sample(linear_Clamp, input.uv) ;
-	if(LinearToLum(diffuse) > 0.1)
-		return diffuse;
 
-	return float4(0, 0, 0, 0);
+
+	float4 diffuse = DiffuseTexture.Sample(linear_Clamp, input.uv) ;
+	float lum = (diffuse.r * (0.2126)) + (diffuse.g * (0.7152)) + (diffuse.b * (0.0722));
+
+		return float4(lum,lum,lum,1);
+
+	return float4(0,0,0,1);
 }

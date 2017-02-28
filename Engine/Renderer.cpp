@@ -164,8 +164,6 @@ namespace Hex
 		myDepthTexture->CleanUp();
 		SAFE_DELETE(myDepthTexture);
 
-		SAFE_DELETE(my2DCamera);
-
 		myDeferredRenderer->CleanUp();
 		SAFE_DELETE(myDeferredRenderer);
 
@@ -178,11 +176,6 @@ namespace Hex
 		SAFE_DELETE(m_ParticleEmitter);
 		
 		return true;
-	}
-
-	void Renderer::Add2DCamera(Camera* aCamera)
-	{
-		my2DCamera = aCamera;
 	}
 
 #if defined (AMBIENT_PASS_ONLY)
@@ -298,7 +291,16 @@ namespace Hex
 		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f)));
 		//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
 		//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
+#ifdef _DEBUG
 
+		std::stringstream ss;
+		ss << "DeltaTime : " << m_Engine->GetDeltaTime() << "\nFPS:" << m_Engine->GetFPS() << "\nPress U to toggle downsamples\n\nControls :\nW - Forward \nS - Backward\nA - Left\nD - Right\nSpace - Up\nX - Down\nHold Right Mouse button and\ndrag the mouse to rotate the camera";
+		mySynchronizer->AddRenderCommand(RenderCommand(eType::TEXT, ss.str(), CU::Vector2f(0.75, 0)));
+		if (input_handle->GetInputWrapper()->OnDown(KButton::U))
+		{
+			m_PostProcessManager.GetHDRPass().toggle_debug = !m_PostProcessManager.GetHDRPass().toggle_debug;
+		}
+#endif
 
 		mySynchronizer->WaitForLogic();
 		mySynchronizer->SwapBuffer();
@@ -388,7 +390,7 @@ namespace Hex
 	{
 		const CU::GrowingArray<RenderCommand>& commands2D = mySynchronizer->GetRenderCommands(eCommandBuffer::e2D);
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
-		m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
+		m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
 		for each(const RenderCommand& command in commands2D)
 		{
 			switch (command.myType)

@@ -33,5 +33,5 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	if(LinearToLum(diffuse) > 0.1)
 		return diffuse;
 
-	return float4(0, 0, 0, 1);
+	return float4(0, 0, 0, 0);
 }

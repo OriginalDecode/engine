@@ -44,10 +44,10 @@ float3 Tonemap(float3 color)
 float4 PS(VS_OUTPUT input) : SV_Target
 {	
 	float4 diffuse = DiffuseTexture.Sample(linear_Clamp, input.uv);
-	float4 luminance = LuminanceTexture.Sample(linear_Clamp, input.uv);
+	float luminance = LuminanceTexture.Sample(linear_Clamp, input.uv);
 
 	luminance = min(max(luminance.x, lumMin), lumMax);
-	float exposure = 0.75;
+	float exposure = 0.18;
 
 	float3 color = (diffuse * exposure) / luminance.r;
 	

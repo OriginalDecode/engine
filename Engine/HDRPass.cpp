@@ -19,7 +19,7 @@ void HDRPass::Initiate()
 		m_WindowSize.myWidth,
 		m_WindowSize.myHeight,
 		D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, 
-		DXGI_FORMAT_R8G8B8A8_UNORM, 
+		DXGI_FORMAT_R16G16B16A16_FLOAT, 
 		"HDRPass | HDRTexture");
 	s32 downsample_amount = s32(log(__min(m_WindowSize.myWidth, m_WindowSize.myHeight)) / log(2.f)) + 1;
 	s32 sample_size = 1;
@@ -65,17 +65,11 @@ void HDRPass::Process(Hex::Texture* scene_texture)
 	{
 		viewport.Height = (float)m_Downsamples[i]->GetHeight();
 		viewport.Width = (float)m_Downsamples[i]->GetWidth();
-		/*s32 width_diff = m_WindowSize.myWidth - viewport.Width;
-		s32 height_diff = m_WindowSize.myHeight - viewport.Height;
-
-		viewport.TopLeftX = width_diff;
-		viewport.TopLeftY = height_diff;
-*/
-
 
 		m_API->SetViewport(&viewport);
 
 		Downsample(m_Downsamples[i]->GetRenderTargetView(), m_Downsamples[i + 1]->GetShaderView());
+
 	}
 
 	m_API->ResetViewport();
@@ -113,8 +107,8 @@ void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* 
 
 	m_DownsampleEffect->Deactivate();
 
-	//m_Engine->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::SPRITE, source, CU::Vector2f(128.f, y_height)));
-	//y_height += 256.f;
+	m_Engine->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::SPRITE, source, CU::Vector2f(128.f, y_height)));
+	y_height += 256.f;
 
 }
 

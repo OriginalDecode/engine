@@ -130,7 +130,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     
 	float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector,lysMipMap).xyz * ao * reflection_fresnel;
 	
-	float3 final_color = (ambientDiffuse + ambientSpec);
+	float3 final_color = (ambientDiffuse + ambientSpec) *2;
 
 	float NdotL = dot(normal.xyz, -light_direction);
 	// float3 directColor = float3(1, 0.5, 1) * NdotL;
@@ -144,13 +144,13 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	shadowVec.xy += 1;
 	shadowVec.xy *= 0.5;
 
-	/*float compareValue = shadowVec.z;
+	float compareValue = shadowVec.z;
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
 	if(sampleValue < compareValue)
- 		final_color *= 0.42;*/
+ 		final_color *= 0.42;
 
  	float3 dir_color = float3(1,0.8,0.8);
-	float3 output = final_color/* * NdotL * dir_color */;
+	float3 output = final_color * NdotL * dir_color ;
 	
 	return float4(output, 1.f);
 };

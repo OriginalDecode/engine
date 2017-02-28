@@ -31,14 +31,16 @@ namespace Hex
 	{
 	public:
 		DeferredRenderer() = default;
-		bool Initiate();
+		bool Initiate(Texture* shadow_texture);
 		bool CleanUp();
 		void SetTargets();
 		void SetBuffers();
-		void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
+		void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir);
 
 
-		void Finalize();
+		void Finalize(Texture* light_texture);
+
+		Texture* GetFinalTexture();
 
 		//void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 		Texture* GetDepthStencil();
@@ -46,11 +48,11 @@ namespace Hex
 		void ToggleWireframe() { m_Wireframe = !m_Wireframe; }
 	private:
 		bool m_Wireframe = false;
-		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection);
+		void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir);
 
 		void CreateFullscreenQuad();
 		void InitConstantBuffer();
-		void CreateVertexBuffer();
+		void CreateBuffer();
 		void CreateIndexBuffer();
 
 		float myClearColor[4];
@@ -91,7 +93,8 @@ namespace Hex
 			CU::Matrix44f invertedProjection;
 			CU::Matrix44f view;
 			CU::Matrix44f m_ShadowMVP;
-		} *myConstantStruct;
+			CU::Vector4f m_Direction;
+		} m_ConstantStruct;
 	};
 
 	__forceinline Texture* DeferredRenderer::GetDepthStencil()

@@ -43,9 +43,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	DeferredPixelData data = CalculateDeferredPixelData(texCoord);
 	LightVectors vectors = CalculateLightVectors(data, camPosition, position);
 	
-	float3 F = 1 + saturate(Fresnel(data.substance, -vectors.light_dir, vectors.halfVec));
-	float3 D = 1 + saturate(D_GGX(vectors.HdotN,(data.roughness + 1.f) / 2.f));
-	float3 V = 1 + saturate(V_SchlickForGGX((data.roughness + 1.f) / 2.f, vectors.NdotV, vectors.NdotL));
+	float3 F = saturate(Fresnel(data.substance, -vectors.light_dir, vectors.halfVec));
+	float3 D = saturate(D_GGX(vectors.HdotN,(data.roughness + 1) / 2.f));
+	float3 V = saturate(V_SchlickForGGX((data.roughness + 1) / 2.f, vectors.NdotV, vectors.NdotL));
 
     float3 lightToPixel = normalize(-vectors.toLight);
     float spotFactor = max(0, dot(lightToPixel, normalize(direction)));
@@ -55,9 +55,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float ln = length(vectors.toLight);
 	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range.x));
 
-	float3 directSpec = D * F * V * attenuation * angularAttenuation * color * 25;
-
-	float3 final_color = directSpec;
+	float4 col = float4(1,0.47,0.03,1);
+	float3 directSpec = (D * F * V);
+	float3 final_color = ( directSpec * ((attenuation * angularAttenuation)));
 
 	float4 newPos = data.world_pos + (data.normal * 0.4);
 	newPos.w = 1;
@@ -73,6 +73,5 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
 	if(sampleValue < compareValue)
  		final_color = 0;
-
 	return float4(final_color, 1);
 };

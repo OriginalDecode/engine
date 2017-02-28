@@ -10,12 +10,17 @@ namespace Hex
 
 	enum TextureType
 	{
-		_ALBEDO = 1,
-		_NORMAL = 2,
-		_ROUGHNESS = 4,
-		_METALNESS = 8,
-		_EMISSIVE = 16,
-		_AO = 32,
+		_ALBEDO = (1 << 0 ),
+		_NORMAL = (1 << 1),
+		_ROUGHNESS = (1 << 2),
+		_METALNESS = (1 << 3),
+		_EMISSIVE = (1 << 4),
+		_OPACITY = (1 << 5),
+		_AO = (1 << 6),
+		_HEIGHT = (1 << 7),
+		_DISPLACEMENT = (1 << 8),
+		_LIGHTMAP = (1 << 9),
+		_SHININESS = (1 << 10),
 	};
 
 

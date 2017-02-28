@@ -2,30 +2,24 @@
 #include "EngineDefines.h"
 #include <standard_datatype.hpp>
 
-#ifdef SNOWBLIND_DX11
 enum DXGI_FORMAT;
 struct ID3D11Buffer;
-#endif
 namespace Hex
 {
 	struct VertexIndexWrapper
 	{
 		~VertexIndexWrapper() { SAFE_DELETE(myIndexData); };
-		s8* myIndexData;
-		s32 myIndexCount;
-		s32 mySize;
-#ifdef SNOWBLIND_DX11
+		s8* myIndexData = nullptr;
+		s32 myIndexCount = 0;
+		s32 mySize = 0;
 		DXGI_FORMAT myFormat;
-#endif
 	};
 
 	struct IndexBufferWrapper
 	{
 		~IndexBufferWrapper() { SAFE_RELEASE(myIndexBuffer); };
-#ifdef SNOWBLIND_DX11
-		ID3D11Buffer* myIndexBuffer;
+		ID3D11Buffer* myIndexBuffer = nullptr;
 		DXGI_FORMAT myIndexBufferFormat;
-#endif
-		u16 myByteOffset;
+		u16 myByteOffset = 0;
 	};
 };

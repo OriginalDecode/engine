@@ -3,7 +3,6 @@
 #include <World.h>
 #include "../EntitySystem/TranslationComponent.h"
 #include "PauseState.h"
-#include "Player.h"
 namespace Hex
 {
 	class Synchronizer;
@@ -24,6 +23,9 @@ public:
 	void EndState() override;
 	void Render(bool render_through) override;
 
+
+
+
 private:
 	World m_World;
 	CPauseState m_PauseState;
@@ -39,5 +41,4 @@ private:
 	float m_Time = 0.f;
 
 	const char* m_ModelKey;
-	Player m_Player;
 };

@@ -31,6 +31,7 @@ class TerrainManager;
 
 typedef struct ID3D10Blob IBlob;
 class TreeDweller;
+class LevelFactory;
 namespace Hex
 {
 	enum eDeferredType;
@@ -87,8 +88,8 @@ namespace Hex
 		void ToggleVsync();
 		
 		Camera* GetCamera();
-		Camera* Get2DCamera();
 
+		TreeDweller* CreateEntity(const std::string& filepath, CU::Vector3f& position);
 
 		static void Present();
 		static void Clear();
@@ -173,6 +174,7 @@ namespace Hex
 			LOADING,
 			_COUNT
 		};
+
 	private:
 
 		void UpdateDebugUI();
@@ -214,13 +216,13 @@ namespace Hex
 		Renderer* myRenderer						= nullptr;
 
 		//Shouldn't need 2 cameras?
-		Camera*  myCamera							= nullptr;
-		Camera*  my2DCamera							= nullptr;
+		Camera* m_Camera = nullptr;
+
 
 		CConsole* myConsole							= nullptr;
 		CAssetsContainer* myAssetsContainer			= nullptr;
 		TerrainManager* m_TerrainManager			= nullptr;
-
+		LevelFactory* m_LevelFactory = nullptr;
 		
 		std::bitset<(u16)eEngineStates::_COUNT> m_States;
 

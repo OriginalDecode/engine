@@ -44,7 +44,7 @@ namespace Hex
 
 	CU::Vector4f CMousePicker::ToEyeCoords(const CU::Vector4f& clipCoords)
 	{
-		CU::Matrix44f invertedProjection = CU::Math::InverseReal(myCamera->GetProjection());
+		CU::Matrix44f invertedProjection = CU::Math::InverseReal(myCamera->GetPerspective());
 		CU::Vector4f rayOrigin = invertedProjection * clipCoords;
 		return CU::Vector4f(rayOrigin.x, rayOrigin.y, 1.f, 0.f);
 	}

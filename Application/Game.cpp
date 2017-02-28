@@ -42,9 +42,6 @@ void Game::InitState(StateStack* state_stack)
 	m_Camera = m_Engine->GetCamera();
 
 	
-	m_Player.Initiate();
-
-
 	m_PauseState.InitState(m_StateStack);
 
 	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
@@ -121,6 +118,7 @@ void Game::Update(float dt)
 	if (input_wrapper->IsDown(KButton::X))
 		m_Camera->Move(Hex::eDirection::DOWN, -50.f * dt);
 
-	m_Player.Update(dt);
+
+
 	m_World.Update(dt);
 }

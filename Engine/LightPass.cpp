@@ -78,7 +78,7 @@ namespace Hex
 		//----------------------------------------
 		myPointlightVertexConstantData.world = pointlight->GetOrientation();
 		myPointlightVertexConstantData.invertedView = CU::Math::Inverse(previousOrientation);
-		myPointlightVertexConstantData.projection = aCamera->GetProjection();
+		myPointlightVertexConstantData.projection = aCamera->GetPerspective();
 		myPointlightVertexConstantData.scale.x = pointlight->GetRange();
 		myPointlightVertexConstantData.scale.y = pointlight->GetRange();
 		myPointlightVertexConstantData.scale.z = pointlight->GetRange();
@@ -98,7 +98,7 @@ namespace Hex
 		//----------------------------------------
 		// PixelShader Constant Buffer
 		//----------------------------------------
-		myPixelConstantStruct.myInvertedProjection = CU::Math::InverseReal(aCamera->GetProjection());
+		myPixelConstantStruct.myInvertedProjection = CU::Math::InverseReal(aCamera->GetPerspective());
 		myPixelConstantStruct.myView = previousOrientation;
 		myPixelConstantStruct.myColor = pointlight->GetColor();
 		myPixelConstantStruct.myPosition = pointlight->GetPosition();
@@ -127,7 +127,7 @@ namespace Hex
 
 		mySpotlightVertexConstantData.world = data.myOrientation;
 		mySpotlightVertexConstantData.invertedView = CU::Math::Inverse(previousOrientation);
-		mySpotlightVertexConstantData.projection = aCamera->GetProjection();
+		mySpotlightVertexConstantData.projection = aCamera->GetPerspective();
 
 		mySpotlightVertexConstantData.scale.x = data.myRange;
 		mySpotlightVertexConstantData.scale.y = data.myRange;
@@ -149,7 +149,7 @@ namespace Hex
 		//----------------------------------------
 		// PixelShader Constant Buffer
 		//----------------------------------------
-		mySpotPixelConstantStruct.myInvertedProjection = CU::Math::InverseReal(aCamera->GetProjection());
+		mySpotPixelConstantStruct.myInvertedProjection = CU::Math::InverseReal(aCamera->GetPerspective());
 		mySpotPixelConstantStruct.myView = previousOrientation;
 		mySpotPixelConstantStruct.myColor = data.myLightColor;
 		mySpotPixelConstantStruct.myPosition = data.myOrientation.GetPosition();

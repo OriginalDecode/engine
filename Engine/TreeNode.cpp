@@ -175,6 +175,9 @@ bool TreeNode::SubNodeContainsDwellers()
 #define YELLOW CU::Vector4f(255.f,255.f,0.f,255.f)
 void TreeNode::RenderBox()
 {
+	if (!m_RenderBox)
+		return;
+
 	SLinePoint points[8];
 
 

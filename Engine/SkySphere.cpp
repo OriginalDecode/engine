@@ -78,7 +78,7 @@ namespace Hex
 			srv[1] = aDepthTexture->GetDepthStencilView();
 			myAPI->GetContext()->PSSetShaderResources(0, 2, &srv[0]);
 			//(#LINUS) Fix scale.
-			layer.m_Model->Render(anOrientation, myCamera->GetProjection(), CU::Vector4f(1,1,1,1));
+			layer.m_Model->Render(anOrientation, myCamera->GetPerspective(), CU::Vector4f(1,1,1,1));
 
 			srv[0] = nullptr;
 			srv[1] = nullptr;
@@ -94,7 +94,7 @@ namespace Hex
 		}
 	}
 
-	void SkySphere::Update(float dt)
+	/*void SkySphere::Update(float dt)
 	{
 		for (const SkysphereLayer& layer : m_Layers)
 		{
@@ -103,5 +103,5 @@ namespace Hex
 				layer.m_Model->Update(dt);
 			}
 		}
-	}
+	}*/
 };

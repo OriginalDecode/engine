@@ -564,6 +564,19 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::SetPerspectiveFOV(float fov, float aspect_ratio)
+		{
+			float sin_fov = sin(0.5f * fov);
+			float cos_fov = cos(0.5f * fov);
+			float width = cos_fov / sin_fov;
+			float height = width / aspect_ratio;
+			
+			myMatrix[0] = width;
+			myMatrix[5] = height;
+
+		}
+
+		template<typename TYPE>
 		Matrix44<TYPE> Matrix44<TYPE>::CreateProjectionMatrixLH(TYPE aNearZ, TYPE aFarZ, TYPE anAspectRatio, TYPE aFoVAngle)
 		{
 			Matrix44 temp;

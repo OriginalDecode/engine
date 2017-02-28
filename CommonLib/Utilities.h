@@ -7,6 +7,8 @@
 namespace CL
 {
 	unsigned long long nearest_Pow(unsigned long long aNum);
+	unsigned long long nearest_Pow_Under(unsigned long long aNum);
+
 	int Color32Reverse(int x);
 	int MoveToRed(int x);
 	int MoveToGreen(int x);

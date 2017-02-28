@@ -14,9 +14,7 @@ namespace Hex
 {
 	CSurface::CSurface(Effect* anEffect)
 	{
-#ifdef SNOWBLIND_DX11
 		myContext = Engine::GetAPI()->GetContext();
-#endif
 		SetVertexCount(0);
 		SetVertexStart(0);
 		SetIndexCount(0);
@@ -27,9 +25,7 @@ namespace Hex
 
 	CSurface::CSurface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount)
 	{
-#ifdef SNOWBLIND_DX11
 		myContext = Engine::GetAPI()->GetContext();
-#endif
 		SetVertexCount(aVertexCount);
 		SetVertexStart(aStartVertex);
 		SetIndexCount(aIndexCount);
@@ -40,9 +36,7 @@ namespace Hex
 
 	CSurface::CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
 	{
-#ifdef SNOWBLIND_DX11
 		myContext = Engine::GetAPI()->GetContext();
-#endif
 		SetVertexCount(aVertexCount);
 		SetVertexStart(aStartVertex);
 		SetIndexCount(anIndexCount);
@@ -53,13 +47,12 @@ namespace Hex
 	CSurface::~CSurface()
 	{
 		myFileNames.RemoveAll();
-
 		//Can cause heap corruption?
 	}
 
 	void CSurface::Activate()
 	{
-		if (myShaderViews.Size() > 0)
+		if (!myShaderViews.Empty())
 		{
 			myShaderViews.Optimize();
 			myContext->IASetPrimitiveTopology(myPrimologyType);
@@ -77,12 +70,29 @@ namespace Hex
 	{
 		switch (type)
 		{
-			case _ALBEDO: return "ALBEDO";
-			case _NORMAL: return "NORMAL";
-			case _METALNESS: return "METALNESS";
-			case _ROUGHNESS: return "ROUGHNESS";
-			case _AO: return "AO";
-			case _EMISSIVE: return "EMISSIVE";
+			case _ALBEDO: 
+				return "ALBEDO";
+			case _NORMAL: 
+				return "NORMAL";
+			case _METALNESS: 
+				return "METALNESS";
+			case _ROUGHNESS: 
+				return "ROUGHNESS";
+			case _AO: 
+				return "AO";
+			case _EMISSIVE: 
+				return "EMISSIVE";
+			case _DISPLACEMENT:
+				return "DISPLACEMENT";
+			case _HEIGHT:
+				return "HEIGHT";
+			case _LIGHTMAP:
+				return "LIGHTMAP";
+			case _OPACITY:
+				return "OPACITY";
+			case _SHININESS:
+				return "SHININESS";
+			default:return"NO_STRING";
 		}
 		return "failed";
 	}
@@ -91,25 +101,33 @@ namespace Hex
 	{
 		m_ContainingTextures |= type;
 
-		myFileNames.Add(file_path);
-		std::string sub = CL::substr(file_path, ".png", true, 0);
+		std::string sub = file_path;
+		if (!CL::substr(file_path, ".dds"))
+		{
+			sub = CL::substr(file_path, ".", true, 0);
+			DL_WARNING("Incorrect filetype! %s", file_path.c_str());
+		}
+
 		std::string debugName = sub;
 		if (CL::substr(sub, ".dds") == false)
 			sub += ".dds";
 
-		
 		STexture new_texture;
 		new_texture.m_Type = type;
-		new_texture.texture = Engine::GetInstance()->GetTexture(sub)->GetShaderView();
+
+		if(Engine::GetInstance()->GetTexture(sub))
+			new_texture.texture = Engine::GetInstance()->GetTexture(sub)->GetShaderView();
+		else
+			new_texture.texture = Engine::GetInstance()->GetTexture("Data/Textures/default_textures/no-texture-bw.dds")->GetShaderView();
+
 
 		myTextures.Add(new_texture);
 
+		myFileNames.Add(sub);
 
 		//myTextures.Add(new_texture);
 
 		std::sort(myTextures.begin(), myTextures.end(), [&](STexture& first, STexture& second) {
-			//TRACE_LOG("\nFirst : %d\nType : %s", (u64)first.texture, CheckTextureType(first.m_Type).c_str());
-			//TRACE_LOG("\nSecond : %d\nType : %s", (u64)second.texture, CheckTextureType(second.m_Type).c_str());
 			return first.m_Type < second.m_Type;
 		});
 
@@ -159,7 +177,7 @@ namespace Hex
 			AddTexture(file_path, type);
 			return;
 		}
-		MODEL_LOG("Already contained texture");
+		//MODEL_LOG("Already contained texture");
 	}
 
 	std::string s_file_path = "Data/Textures/default_textures/";
@@ -168,18 +186,23 @@ namespace Hex
 	{
 		MODEL_LOG("Validating Textures of surface.");
 
-		AddMissingTexture(_ALBEDO,		s_file_path + "no-texture.dds");
-		AddMissingTexture(_NORMAL,		s_file_path + "no-texture.dds");
-		AddMissingTexture(_ROUGHNESS,	s_file_path + "no-roughness.dds");
-		AddMissingTexture(_METALNESS,	s_file_path + "no-metalness.dds");
-		AddMissingTexture(_EMISSIVE,	s_file_path + "full-metalness.dds");
-		AddMissingTexture(_AO,			s_file_path + "no-metalness.dds");
-
+		AddMissingTexture(_ALBEDO,			s_file_path + "white.dds");
+		AddMissingTexture(_NORMAL,			s_file_path + "black.dds");
+		AddMissingTexture(_ROUGHNESS,		s_file_path + "no-roughness.dds");
+		AddMissingTexture(_METALNESS,		s_file_path + "no-metalness.dds");
+		AddMissingTexture(_EMISSIVE,		s_file_path + "black.dds");
+		AddMissingTexture(_OPACITY,			s_file_path + "black.dds");
+		AddMissingTexture(_AO,				s_file_path + "black.dds");
+		AddMissingTexture(_HEIGHT,			s_file_path + "black.dds");
+		AddMissingTexture(_DISPLACEMENT,	s_file_path + "black.dds");
+		AddMissingTexture(_LIGHTMAP,		s_file_path + "black.dds");
+		AddMissingTexture(_SHININESS,		s_file_path + "black.dds");
+/*
 		for (s32 i = 0; i < myTextures.Size(); i++)
 		{
-			TRACE_LOG("\nIndex : %d\nPointer : %d\nType : %s", i, (u64)myTextures[i].texture, CheckTextureType(myTextures[i].m_Type).c_str());
+			TRACE_LOG("Index : %d | Pointer : %d | Type : %s", i, (u64)myTextures[i].texture, CheckTextureType(myTextures[i].m_Type).c_str());
 		}
-
+*/
 	}
 	
 	void CSurface::RemoveTextureByIndex(s32 index)

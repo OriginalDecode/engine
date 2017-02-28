@@ -17,35 +17,21 @@ namespace Hex
 
 	bool CModel::CleanUp()
 	{
-		SAFE_DELETE(myVertexBuffer);
-		if (myVertexBuffer)
-			return false;
-		SAFE_DELETE(myIndexBuffer);
-		if (myIndexBuffer)
-			return false;
-		SAFE_DELETE(myVertexData);
-		if (myVertexData)
-			return false;
-		SAFE_DELETE(myIndexData);
-		if (myIndexData)
-			return false;
-		SAFE_DELETE(myConstantStruct);
-		if (myConstantStruct)
-			return false;
-		SAFE_RELEASE(myConstantBuffer);
-		if (myConstantBuffer)
-			return false;
-		SAFE_RELEASE(myVertexLayout);
-		if (myVertexLayout)
-			return false;
-
 		mySurfaces.DeleteAll();
-
 		for (CModel* children : myChildren)
 		{
 			children->CleanUp();
 		}
 		myChildren.DeleteAll();
+
+		SAFE_RELEASE(myConstantBuffer);
+		if (myConstantBuffer)
+			return false;
+		SAFE_RELEASE(m_VertexLayout);
+		if (m_VertexLayout)
+			return false;
+
+		
 		return true;
 	}
 
@@ -71,12 +57,13 @@ namespace Hex
 
 	void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows)
 	{
-#ifdef SNOWBLIND_DX11
 		if (!myIsNULLObject)
 		{
 			__super::Render(aCameraOrientation, aCameraProjection, scale, render_shadows);
+
 			if (!myIsLightMesh)
 				myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+
 			if (mySurfaces.Size() > 0)
 			{
 				for (s32 i = 0; i < mySurfaces.Size(); i++)
@@ -84,17 +71,19 @@ namespace Hex
 					myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 					if (!myIsLightMesh)
 					{
-						if (!render_shadows)
+						if (!render_shadows && !myIsLightMesh)
 							mySurfaces[i]->Activate(); //Gets a ton of junk data. What???
+
 						myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
 					}
 					else
 					{
 						myContext->Draw(mySurfaces[i]->GetVertexCount(), 0);
 					}
-					mySurfaces[i]->Deactivate();
-				}
 
+					if (!render_shadows && !myIsLightMesh)
+						mySurfaces[i]->Deactivate();
+				}
 			}
 		}
 		for (CModel* child : myChildren)
@@ -102,7 +91,6 @@ namespace Hex
 			child->SetPosition(myOrientation.GetPosition());
 			child->Render(aCameraOrientation, aCameraProjection, scale, render_shadows);
 		}
-#endif
 	}
 
 	void CModel::SetIsLightmesh()
@@ -131,18 +119,33 @@ namespace Hex
 		return myOrientation;
 	}
 
-	void CModel::Update(float dt)
+	void CModel::SetOrientation(CU::Matrix44f orientation)
 	{
-		myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(0.5f)* dt) * myOrientation;
+		myOrientation = orientation; 
 		for (CModel* child : myChildren)
 		{
-			child->Update(dt);
+			child->SetOrientation(myOrientation);
 		}
+	}
+
+	void CModel::SetWHD(CU::Vector3f whd)
+	{
+		m_WHD = whd;
 	}
 
 	std::vector<float> CModel::GetVertices()
 	{
 		std::vector<float> to_return;
+
+		for (CModel* child : myChildren)
+		{
+			std::vector<float> child_verts = child->GetVertices();
+			for (const float& vert : child_verts)
+			{
+				to_return.push_back(vert);
+			}
+		}
+
 		for (const SVertexTypePosCol& vert : myVertices)
 		{
 			to_return.push_back(vert.myPosition.x);
@@ -155,6 +158,17 @@ namespace Hex
 	std::vector<s32> CModel::GetIndices()
 	{
 		std::vector<s32> to_return;
+		
+		for (CModel* child : myChildren)
+		{
+			std::vector<s32> child_verts = child->GetIndices();
+			for (const s32& indice : child_verts)
+			{
+				to_return.push_back(indice);
+			}
+		}
+
+		
 		for (s32 index : m_Indices)
 		{
 			to_return.push_back(index);
@@ -162,23 +176,17 @@ namespace Hex
 		return to_return;
 	}
 
-	void CModel::SetWHD(CU::Vector3f whd)
-	{
-		m_WHD = whd;
-	}
 
 	void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale)
 	{
 		if (myIsNULLObject == false)
 		{
-			DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
+			m_ConstantStruct.m_World = myOrientation;
+			m_ConstantStruct.m_InvertedView = CU::Math::Inverse(aCameraOrientation);
+			m_ConstantStruct.m_Projection = aCameraProjection;
+			m_ConstantStruct.m_Scale = scale;
 
-			myConstantStruct->world = myOrientation;
-			myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
-			myConstantStruct->projection = aCameraProjection;
-			myConstantStruct->scale = scale;
-
-			myAPI->UpdateConstantBuffer(myConstantBuffer, myConstantStruct);
+			myAPI->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
 
 		}
 	}
@@ -190,13 +198,9 @@ namespace Hex
 
 	void CModel::InitConstantBuffer()
 	{
-#ifdef SNOWBLIND_DX11
-		if (!myConstantStruct)
-			myConstantStruct = new SVertexBaseStruct;
-
 		D3D11_BUFFER_DESC cbDesc;
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
-		cbDesc.ByteWidth = sizeof(SVertexBaseStruct);
+		cbDesc.ByteWidth = sizeof(VertexBaseStruct);
 		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
 		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -207,6 +211,5 @@ namespace Hex
 
 		myAPI->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
 		myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
-#endif
 	}
 };

@@ -37,9 +37,12 @@ public:
 	TreeNode* GetParent() { return m_Parent; }
 	bool SubNodeContainsDwellers();
 	bool InsideNode(TreeDweller* dweller);
+
+
+	void ToggleNodeVisibility() { m_RenderBox = !m_RenderBox; }
 private:
 	void RenderBox();
-
+	bool m_RenderBox = false;
 
 	Octree* m_Octree = nullptr;
 	bool m_Paused = false;

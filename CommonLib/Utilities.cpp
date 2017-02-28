@@ -38,6 +38,11 @@ namespace CL
 		return aNum;
 	}
 
+	unsigned long long nearest_Pow_Under(unsigned long long aNum)
+	{
+		return nearest_Pow(aNum)* 0.5f;
+	}
+
 	// AA RR GG BB
 	int Color32Reverse(int x)
 	{

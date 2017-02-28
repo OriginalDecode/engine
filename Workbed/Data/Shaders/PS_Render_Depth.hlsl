@@ -1,4 +1,4 @@
-SamplerState Sampler 	: register (s0);
+ SamplerState Sampler 	: register (s0);
 Texture2D DepthBuffer 	: register (t0);
 
 struct VS_OUTPUT

@@ -21,15 +21,25 @@ namespace Hex
 		void Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name);
 		void Initiate(u16 width, u16 height, s32 flags, TextureFormat render_target_format, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name);
 
+		void InitiateAsDepthStencil(float width, float height, const std::string& debug_name);
+		void InitiateAsRenderTarget(float width, float height, const std::string& debug_name);
+
+
 		bool CleanUp();
 		bool Load(const std::string& filepath);
 		void OnReload();
 #ifdef SNOWBLIND_DX11
 
 		ITexture2D* GetDepthTexture() const { return m_DepthTexture; }
-		IShaderResourceView* GetShaderView() const { return m_ShaderResource; }
+		ITexture2D* GetTexture() const { return m_DepthTexture; }
+		IShaderResourceView* GetShaderView() { return m_ShaderResource; }
+		IShaderResourceView** GetShaderViewRef() { return &m_ShaderResource; }
+
+
 		IShaderResourceView* GetDepthStencilView() const { return m_DepthStencilShaderView; }
 		IRenderTargetView*	GetRenderTargetView() const { return m_RenderTargetView; }
+		IRenderTargetView** GetRenderTargetRef() { return &m_RenderTargetView; }
+
 		IDepthStencilView* GetDepthView() const { return m_DepthStencilView; }
 
 		void SetTexture(IShaderResourceView* aShaderResource);
@@ -37,6 +47,8 @@ namespace Hex
 		static void CopyData(ITexture2D* dest, ITexture2D* source);
 #endif
 
+		s32 GetWidth() const { return myWidth; }
+		s32 GetHeight() const { return myHeight; }
 		//void CreateDepthStencilView(float aWidth, float aHeight, int aArraySize = 1);
 	private:
 

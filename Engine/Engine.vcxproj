@@ -363,6 +363,7 @@
     <ClInclude Include="AssetsContainer.h" />
     <ClInclude Include="BaseAllocator.h" />
     <ClInclude Include="BaseModel.h" />
+    <ClInclude Include="BloomPass.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Console.h" />
@@ -382,6 +383,7 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="HDRPass.h" />
     <ClInclude Include="IGraphicsAPI.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
@@ -398,6 +400,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelCommand.h" />
     <ClInclude Include="ModelImporter.h" />
+    <ClInclude Include="MotionBlurPass.h" />
     <ClInclude Include="MousePicker.h">
       <SubType>
       </SubType>
@@ -405,6 +408,7 @@
     <ClInclude Include="NodeEntityManager.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="PostProcessManager.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />
     <ClInclude Include="RenderCommand_Shared.h" />
@@ -451,6 +455,7 @@
     <ClCompile Include="AssetsContainer.cpp" />
     <ClCompile Include="BaseAllocator.cpp" />
     <ClCompile Include="BaseModel.cpp" />
+    <ClCompile Include="BloomPass.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="DebugSystem.cpp" />
@@ -471,6 +476,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="HDRPass.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
@@ -483,6 +489,7 @@
     <ClCompile Include="LinearAllocator.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelImporter.cpp" />
+    <ClCompile Include="MotionBlurPass.cpp" />
     <ClCompile Include="MousePicker.cpp">
       <SubType>
       </SubType>
@@ -490,6 +497,7 @@
     <ClCompile Include="NodeEntityManager.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="PostProcessManager.cpp" />
     <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="RenderCommand.cpp" />
     <ClCompile Include="Renderer.cpp" />

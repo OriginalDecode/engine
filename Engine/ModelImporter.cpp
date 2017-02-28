@@ -65,7 +65,7 @@ Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect
 	float loadTime = myTimeManager->GetTimer(0).GetTotalTime().GetMilliseconds();
 
 	unsigned int processFlags =
-		//aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
+		aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
 		//aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
 		//aiProcess_ValidateDataStructure  | // perform a full validation of the loader's output
 		//aiProcess_Triangulate | // Ensure all verticies are triangulated (each 3 vertices are triangle)
@@ -80,18 +80,20 @@ Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect
 		//aiProcess_FindInstances | // search for instanced meshes and remove them by references to one master
 		//aiProcess_LimitBoneWeights | // limit bone weights to 4 per vertex
 		aiProcess_OptimizeMeshes | // join small meshes, if possible;
-		aiProcess_OptimizeGraph |
+		//aiProcess_OptimizeGraph |
 								   //aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
 		0;
 
 	const aiScene* scene = importer.ReadFile(aFilePath, processFlags);
 
-	DL_MESSAGE("%s", !scene ? aFilePath.c_str() : importer.GetErrorString());
+	DL_MESSAGE_EXP(!scene , "%s", importer.GetErrorString());
 	DL_ASSERT_EXP(scene, "ImportModel Failed. Could not read the requested file.");
 
 	aiNode* rootNode = scene->mRootNode;
 	FBXModelData* data = new FBXModelData;
+
 	ProcessNode(rootNode, scene, data);
+
 	Hex::CModel* toReturn = CreateModel(data, anEffect);
 
 
@@ -112,7 +114,7 @@ Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect
 
 	myTimeManager->Update();
 	loadTime = myTimeManager->GetTimer(0).GetTotalTime().GetMilliseconds() - loadTime;
-	MODEL_LOG("%s took %fms to load. %s", aFilePath.c_str(), loadTime, (loadTime < 7000.f) ? "" : "Check if it's saved as binary.");
+	MODEL_LOG("%s took %fms to load. %s", aFilePath.c_str(), loadTime, (loadTime > 7000.f) ? "Check if it's saved as binary." : 0);
 
 	return toReturn;
 }
@@ -130,13 +132,13 @@ void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Eff
 		data->m_WHD.z += 0.1f;
 
 	out->SetWHD(data->m_WHD);
-	Hex::VertexIndexWrapper* indexWrapper = new Hex::VertexIndexWrapper();
-	indexWrapper->myFormat = DXGI_FORMAT_R32_UINT;
+	//Hex::VertexIndexWrapper* indexWrapper = new Hex::VertexIndexWrapper();
+	out->m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
 	u32* indexData = new u32[data->myIndexCount];
 	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
-	indexWrapper->myIndexData = (s8*)indexData;
-	indexWrapper->mySize = data->myIndexCount * sizeof(u32);
-	out->myIndexData = indexWrapper;
+	out->m_IndexData.myIndexData = (s8*)indexData;
+	out->m_IndexData.mySize = data->myIndexCount * sizeof(u32);
+	//out->m_IndexData = indexWrapper;
 
 	for (u32 i = 0; i < data->myIndexCount; i++)
 	{
@@ -146,15 +148,15 @@ void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Eff
 
 
 	/* BUG HERE. CRASH. */
-	Hex::VertexDataWrapper* vertexData = new Hex::VertexDataWrapper();
+	//Hex::VertexDataWrapper* vertexData = new Hex::VertexDataWrapper();
 	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float); //is this wrong?
 	u32* vertexRawData = new u32[sizeOfBuffer];
 	memcpy(vertexRawData, data->myVertexBuffer, sizeOfBuffer); // This crashes?
-	vertexData->myVertexData = (s8*)vertexRawData;
-	vertexData->myNrOfVertexes = data->myVertexCount;
-	vertexData->mySize = sizeOfBuffer;
-	vertexData->myStride = data->myVertexStride * sizeof(float);
-	out->myVertexData = vertexData;
+	out->m_VertexData.myVertexData = (s8*)vertexRawData;
+	out->m_VertexData.myNrOfVertexes = data->myVertexCount;
+	out->m_VertexData.mySize = sizeOfBuffer;
+	out->m_VertexData.myStride = data->myVertexStride * sizeof(float);
+	//out->myVertexData = vertexData;
 
 	Hex::CSurface* newSurface = new Hex::CSurface(0, data->myVertexCount, 0
 		, data->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -219,6 +221,10 @@ void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Eff
 	{
 		newSurface->AddTexture(info[i].myFilename, (Hex::TextureType)info[i].myType);
 	}
+
+
+	if(!CL::substr(myCurrentLoadingFile, "Skysphere"))
+		newSurface->ValidateTextures();
 
 	//newSurface->ValidateTextures();
 
@@ -521,7 +527,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 
 			aiTextureType lType = static_cast<aiTextureType>(type);
-			DL_MESSAGE("Type : %d, Name : %s", u32(lType), newPath.c_str());
+			//DL_MESSAGE("Type : %d, Name : %s", u32(lType), newPath.c_str());
 			switch (lType)
 			{
 				case aiTextureType_DIFFUSE:
@@ -546,7 +552,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 				case aiTextureType_HEIGHT:
 				{
-					DL_ASSERT("Not implemented");
+					newInfo.myType = Hex::TextureType::_HEIGHT;
 				}break;
 
 				case aiTextureType_NORMALS:
@@ -556,22 +562,22 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 				case aiTextureType_SHININESS:
 				{
-					DL_ASSERT("Not implemented");
+					newInfo.myType = Hex::TextureType::_SHININESS;
 				}break;
 
 				case aiTextureType_OPACITY:
 				{
-					DL_ASSERT("Not implemented");
+					newInfo.myType = Hex::TextureType::_OPACITY;
 				}break;
 
 				case aiTextureType_DISPLACEMENT:
 				{
-					DL_ASSERT("Not implemented");
+					newInfo.myType = Hex::TextureType::_DISPLACEMENT;
 				}break;
 
 				case aiTextureType_LIGHTMAP:
 				{
-					DL_ASSERT("Not implemented");
+					newInfo.myType = Hex::TextureType::_LIGHTMAP;
 				}break;
 
 				case aiTextureType_REFLECTION:

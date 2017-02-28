@@ -21,7 +21,6 @@
 //#include <EntityManager.h>
 #include <PhysicsManager.h>
 
-#include "LevelFactory.h"
 
 #include "IGraphicsAPI.h"
 #include <d3dcompiler.h>
@@ -33,6 +32,7 @@
 #include <DebugComponent.h>
 
 #include "imgui_impl_dx11.h"
+#include "LevelFactory.h"
 
 static constexpr char* vertex_shader = "VS";
 static constexpr char* pixel_shader = "PS";
@@ -156,10 +156,16 @@ namespace Hex
 			ToggleVsync();
 		});*/
 
-		myCamera = new Hex::Camera(myWindowSize.myWidth, myWindowSize.myHeight);
-		my2DCamera = new Hex::Camera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
+		//myCamera = new Hex::Camera(myWindowSize.myWidth, myWindowSize.myHeight);
+
+		m_Camera = new Camera;
+		m_Camera->CreatePerspectiveProjection(myWindowSize.myWidth, myWindowSize.myHeight, 0.01f, 10000.f, 90.f);
+		m_Camera->CreateOrthogonalProjection(myWindowSize.myWidth, myWindowSize.myHeight, 0.01f, 100.f);
+
+		//my2DCamera = new Hex::Camera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
+
 		myRenderer = new Renderer;
-		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, myCamera, my2DCamera), "Engine : Failed to initiate Renderer!");
+		DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, m_Camera), "Engine : Failed to initiate Renderer!");
 
 
 		m_PhysicsManager = new PhysicsManager;
@@ -187,6 +193,9 @@ namespace Hex
 		ImGui_ImplDX11_Init(myHWND, GetAPI()->GetDevice(), GetAPI()->GetContext());
 
 		m_States[(u16)eEngineStates::INITIATED] = TRUE;
+		m_LevelFactory = new LevelFactory;
+		m_LevelFactory->Initiate();
+
 		return true;
 	}
 
@@ -210,7 +219,7 @@ namespace Hex
 		myRenderer->CleanUp();
 		SAFE_DELETE(myRenderer);
 
-		SAFE_DELETE(myCamera);
+		SAFE_DELETE(m_Camera);
 		SAFE_DELETE(myFontManager);
 
 
@@ -227,12 +236,12 @@ namespace Hex
 
 	Camera* Engine::GetCamera()
 	{
-		return myCamera;
+		return m_Camera;
 	}
 
-	Hex::Camera* Engine::Get2DCamera()
+	TreeDweller* Engine::CreateEntity(const std::string& filepath, CU::Vector3f& position)
 	{
-		return my2DCamera;
+		return m_LevelFactory->CreateEntitiy(filepath, position);
 	}
 
 	void Engine::Update()
@@ -554,12 +563,10 @@ namespace Hex
 	{
 		m_States[(u16)eEngineStates::LOADING] = TRUE;
 		//m_IsLoadingLevel = true;
-		LevelFactory level_factory;
-		level_factory.Initiate();
-		level_factory.CreateLevel(level_filepath);
+		m_LevelFactory->CreateLevel(level_filepath);
 
 		m_States[(u16)eEngineStates::LOADING] = FALSE;
-		return level_factory.GetDwellers();
+		return m_LevelFactory->GetDwellers();
 	}
 
 	Threadpool& Engine::GetThreadpool()

@@ -10,10 +10,13 @@ Texture2D AlbedoTexture  	: register ( t0 );
 Texture2D NormalTexture  	: register ( t1 );
 Texture2D RoughnessTexture 	: register ( t2 );
 Texture2D MetalnessTexture 	: register ( t3 );
-Texture2D AOTexture			: register ( t4 );
-//Texture2D Emissive			: register ( t5 );
-
-//Texture2D EmissiveTexture	: register ( t5 );
+Texture2D EmissiveTexture	: register ( t4 );
+Texture2D OpacityTexture	: register ( t5 );
+Texture2D AOTexture			: register ( t6 );
+Texture2D HeightTexture		: register ( t7 );
+Texture2D Displacement		: register ( t8 );
+Texture2D LightmapTexture	: register ( t9 );
+Texture2D ShininessTexture	: register ( t10 );
 
 //---------------------------------
 //	Deferred Base Pixel Structs
@@ -41,6 +44,8 @@ struct VS_OUTPUT
 //---------------------------------
 GBuffer PS(VS_OUTPUT input) : SV_Target
 {
+	GBuffer output;
+
 	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv).rgb * 2 - 1;
 	float3 nnormal = normalize(input.normal.xyz);
 
@@ -52,7 +57,6 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	_normal += 1;
 	_normal *= 0.5;
 
-	GBuffer output;
 	output = (GBuffer)0;
 	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * AOTexture.Sample(linear_Wrap, input.uv);
 	output.Normal = float4(_normal.rgb, MetalnessTexture.Sample(linear_Wrap, input.uv).r);

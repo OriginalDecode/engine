@@ -22,11 +22,11 @@ namespace Hex
 
 		void CreateSpotlightBuffers();
 		void CreatePointlightBuffers();
-		struct SPointlightConstantBuffer : public SVertexBaseStruct
+		struct SPointlightConstantBuffer : public VertexBaseStruct
 		{
 		} myPointlightVertexConstantData; //Longest name.
 
-		struct SSpotlightConstantBuffer : public SVertexBaseStruct
+		struct SSpotlightConstantBuffer : public VertexBaseStruct
 		{
 		} mySpotlightVertexConstantData;
 

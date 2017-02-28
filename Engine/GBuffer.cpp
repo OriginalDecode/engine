@@ -12,7 +12,10 @@ namespace Hex
 		const SWindowSize windowSize = Engine::GetInstance()->GetWindowSize();
 
 		myAlbedo = new Texture;
-		myAlbedo->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "GBuffer : Albedo");
+		myAlbedo->Initiate(windowSize.myWidth, windowSize.myHeight
+			, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+			, DXGI_FORMAT_R16G16B16A16_FLOAT
+			, "GBuffer : Albedo");
 
 		myEmissive = new Texture;
 		myEmissive->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM, "GBuffer : Emissive");

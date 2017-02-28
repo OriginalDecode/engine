@@ -2,8 +2,9 @@
 #include "BaseSystem.h"
 #include <Subscriber.h>
 #include <Math/Vector/Vector.h>
-
+#include <Math/Matrix/Matrix.h>
 struct OnLeftClick;
+struct DebugComponent;
 namespace Hex
 {
 	class Synchronizer;
@@ -19,10 +20,12 @@ private:
 	void ReceiveMessage(const OnLeftClick& message) override;
 	Hex::Synchronizer* m_Synchronizer = nullptr;
 	double m_AccumulatedTime = 0.0f;
+	void RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation);
 	struct entity_collisions
 	{
 		Entity m_ID;
 		CU::Vector3f m_Position;
 	};
+
 	Entity m_PrevID;
 };

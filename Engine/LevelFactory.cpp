@@ -36,14 +36,11 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 	const JSONElement& el = m_LevelReader.GetElement("root");
 
 
-	m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
+	//m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
 		CreateEntitiy(it->value["entity"].GetString(), it);
 	}
-
-
-
 
 	return true;
 }
@@ -109,9 +106,70 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	CreateDebugComponent(e, hasLight, debug_flags);
 
-	
+
 	m_DwellerList.GetLast()->Initiate(e);
 
+	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
+
+	if (sponza)
+	{
+		for (int i = 0; i < 80; i++)
+		{
+			Entity entity = m_EntityManager->CreateEntity();
+			m_DwellerList.Add(new TreeDweller);
+			CU::Vector3f random_position;
+
+			CU::Vector3f position = translation.myOrientation.GetPosition();
+			random_position.x = RANDOM(position.x - 128.f, position.x + 128.f);
+			random_position.y = RANDOM(position.y, position.y + 64.f);
+			random_position.z = RANDOM(position.z - 64.f, position.z + 64.f);
+			CreateTranslationComponent(entity, random_position);
+
+			m_EntityManager->AddComponent<LightComponent>(entity);
+			LightComponent& light = m_EntityManager->GetComponent<LightComponent>(entity);
+			m_DwellerList.GetLast()->AddComponent<LightComponent>(&light, TreeDweller::LIGHT);
+
+
+
+			light.color.x = RANDOM(0.f, 1.f);
+			light.color.y = RANDOM(0.f, 1.f);
+			light.color.z = RANDOM(0.f, 1.f);
+
+			light.myType = eLightType::ePOINTLIGHT;
+			light.range = 25.f;
+			m_DwellerList.GetLast()->Initiate(entity);
+			CreateDebugComponent(entity, true, EditObject::LIGHT);
+
+		}
+	}
+
+
+}
+
+TreeDweller* LevelFactory::CreateEntitiy(const std::string& entity_filepath, const CU::Vector3f& position)
+{
+	Entity e = m_EntityManager->CreateEntity();
+	JSONReader entity_reader(entity_filepath);
+	s32 debug_flags = 0;
+
+	TreeDweller* dweller = new TreeDweller;
+
+	CreateTranslationComponent(e, position);
+
+	if (entity_reader.DocumentHasMember("graphics"))
+	{
+		CreateGraphicsComponent(entity_reader, e);
+		debug_flags |= EditObject::GRAPHICS;
+	}
+
+	if (entity_reader.DocumentHasMember("physics"))
+	{
+		CreatePhysicsComponent(entity_reader, e);
+		debug_flags |= EditObject::PHYSICS;
+	}
+
+	dweller->Initiate(e);
+	return dweller;
 }
 
 void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position)
@@ -135,6 +193,10 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 		el["shader"].GetString());
 
 
+	if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
+		sponza = true;
+
+
 	CU::Vector3f scale;
 	m_LevelReader.ReadElement(it->value["scale"], scale);
 	CU::Vector3f rotation;
@@ -150,9 +212,26 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.scale = scale;
 	component.scale.w = 1.f;
 
-
+	CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
 	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
-	m_DwellerList.GetLast()->SetWHD(m_Engine->GetModel(component.myModelID)->GetWHD());
+	m_DwellerList.GetLast()->SetWHD(whd);
+}
+
+void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id)
+{
+	m_EntityManager->AddComponent<RenderComponent>(entity_id);
+
+	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+	const JSONElement& el = entity_reader.GetElement("graphics");
+	component.myModelID = m_Engine->LoadModel(
+		el["model"].GetString(),
+		el["shader"].GetString());
+
+	component.scale = CU::Vector4f(1,1,1,1);
+
+	//CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
+	//m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
+	//m_DwellerList.GetLast()->SetWHD(whd);
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)
@@ -168,10 +247,18 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	component.myBody = m_PhysicsManager->CreateBody();
 	btRigidBody* phys_body = nullptr;
 
+	TranslationComponent& translation_component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+	
+
+
 	std::string shape = el["shape"].GetString();
 	if (shape == "mesh")
 	{
-		phys_body = component.myBody->InitAsBox(1, 1, 1, { 0,0,0 });
+		RenderComponent& render_component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+		Hex::CModel* model = m_Engine->GetModel(render_component.myModelID);
+		
+		phys_body = component.myBody->InitAsBox(200, 100, 100, translation_component.myOrientation.GetPosition());// ->GetVertices(), model->GetIndices()); //InitAsBox(1, 1, 1, { 0,0,0 });
+
 	}
 	else if (shape == "box")
 	{
@@ -179,7 +266,13 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	}
 	else if (shape == "sphere")
 	{
-		phys_body = component.myBody->InitAsSphere(1, object_mass, m_PhysicsManager->GetGravityForce(), scientific_constants::pressure::air_pressure, { 0,0,0 });
+		phys_body = component.myBody->InitAsSphere(
+			1, //Radius
+			object_mass, //Mass
+			m_PhysicsManager->GetGravityForce(), //Gravity
+			scientific_constants::pressure::air_pressure, //Air pressure / resistance
+			translation_component.myOrientation.GetPosition()); //Start position
+		
 	}
 	component.myBody->SetEntity(entity_id);
 	m_PhysicsManager->Add(phys_body);
@@ -350,7 +443,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	Hex::CTerrain* terrain = Hex::Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+	Hex::CTerrain* terrain = Hex::Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 2, 0), CU::Vector2f(512, 512));
 	//terrain->AddNormalMap("Data/Textures/t1_n.dds");
 	/*
 	Work([&](std::string texture) {

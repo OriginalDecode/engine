@@ -35,7 +35,7 @@ namespace Hex
 			myParticles.Add(toAdd);
 		}
 
-		CreateVertexBuffer();
+		CreateBuffer();
 		CreateInputLayout();
 		CreateConstantBuffer();
 
@@ -66,7 +66,7 @@ namespace Hex
 		UpdateParticle(aDeltaTime);
 	}
 
-	void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, CU::Matrix44f& aProjection)
+	void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, const CU::Matrix44f& aProjection)
 	{
 		if (!myConstantBuffer)
 			return;
@@ -107,7 +107,7 @@ namespace Hex
 		myOrientation.SetPosition(position);
 	}
 
-	void CEmitterInstance::CreateVertexBuffer()
+	void CEmitterInstance::CreateBuffer()
 	{
 		myVertexBuffer = new VertexBufferWrapper();
 		myVertexBuffer->myStride = sizeof(SParticleObject);
@@ -147,10 +147,10 @@ namespace Hex
 
 	void CEmitterInstance::CreateConstantBuffer()
 	{
-		Engine::GetAPI()->CreateConstantBuffer(myConstantBuffer, sizeof(cbParticleVertex));
+		myConstantBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbParticleVertex));
 		Engine::GetAPI()->SetDebugName(myConstantBuffer, "EmitterInstance : Vertex Constant Buffer");
 
-		Engine::GetAPI()->CreateConstantBuffer(m_GeometryBuffer, sizeof(cbParticleGeometry));
+		m_GeometryBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbParticleGeometry));
 		Engine::GetAPI()->SetDebugName(m_GeometryBuffer, "EmitterInstance : Geometry Constant Buffer");
 	}
 
@@ -173,7 +173,7 @@ namespace Hex
 		Engine::GetAPI()->SetDebugName(myInputLayout, "Particle Input Layout");
 	}
 
-	void CEmitterInstance::SetMatrices(CU::Matrix44f& aCameraOrientation, CU::Matrix44f& aCameraProjection)
+	void CEmitterInstance::SetMatrices(CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 	{
 		m_VertexCB.m_World = CU::Matrix44f();
 		m_VertexCB.m_View = CU::Math::Inverse(aCameraOrientation);

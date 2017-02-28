@@ -334,6 +334,10 @@
     <ClInclude Include="LinearAllocator.h">
       <Filter>Allocators</Filter>
     </ClInclude>
+    <ClInclude Include="PostProcessManager.h" />
+    <ClInclude Include="HDRPass.h" />
+    <ClInclude Include="BloomPass.h" />
+    <ClInclude Include="MotionBlurPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -528,5 +532,9 @@
     <ClCompile Include="LinearAllocator.cpp">
       <Filter>Allocators</Filter>
     </ClCompile>
+    <ClCompile Include="PostProcessManager.cpp" />
+    <ClCompile Include="HDRPass.cpp" />
+    <ClCompile Include="BloomPass.cpp" />
+    <ClCompile Include="MotionBlurPass.cpp" />
   </ItemGroup>
 </Project>

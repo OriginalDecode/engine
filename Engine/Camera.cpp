@@ -1,51 +1,52 @@
 #include "stdafx.h"
 #include "Camera.h"
-#include <SimpleMath.h>
+//#include <SimpleMath.h>
 #include "../Input/ControllerInput.h"
 namespace Hex
 {
-	Camera::Camera(float aWidth, float aHeight)
-	{
+	static constexpr float s_pi = 3.1415926535f;
 
-		myFOV *= 3.1415926535f / 180.f;
-		myProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(0.01f, 1000.f, aHeight / aWidth, myFOV);
+	void Camera::CreatePerspectiveProjection(float width, float height, float near_plane, float far_plane, float fov)
+	{
+		DL_ASSERT_EXP(!m_ProjectionCreated, "Projection already created. Can't have two 3D projection matrices on same camera!");
+		m_CurrentFoV = fov;
+		m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, CL::DegreeToRad(m_CurrentFoV));
 	}
 
-	Camera::Camera(float aWidth, float aHeight, const CU::Vector3f& aPosition)
+	void Camera::CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane)
 	{
-		my2DOrientation.myMatrix[3] = aPosition.x;
-		my2DOrientation.myMatrix[7] = aPosition.y;
-		my2DOrientation.myMatrix[11] = aPosition.z;
-
-		myOrthogonalMatrix = CU::Matrix44f::CreateOrthogonalMatrixLH(aWidth, aHeight, 0.01f, 100.f);
-
+		m_OrthogonalMatrix = CU::Matrix44f::CreateOrthogonalMatrixLH(width, height, near_plane, far_plane);
 	}
 
-	Camera::Camera(float aWidth, float aHeight, float far_plane, float near_plane)
+	void Camera::CreateOrthographicProjection(float width, float height, float near_plane, float far_plane)
 	{
-		myFOV *= 3.1415926535f / 180.f;
-		myProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, aHeight / aWidth, myFOV);
+		DL_ASSERT_EXP(!m_ProjectionCreated, "Projection already created. Can't have two 3D projection matrices on same camera!");
+		m_ProjectionMatrix = CU::Matrix44f::CreateOrthographicMatrixLH(width, height, near_plane, far_plane);
 	}
 
-	Camera::Camera(float aWidth, float aHeight, float far_plane, float near_plane, float fov)
+	CU::Vector3f Camera::RotateAroundPoint(const CU::Vector3f& position)
 	{
-		myFOV = fov * (3.1415926535f / 180.f);
-		myProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, aHeight / aWidth, myFOV);
-	}
+		CU::Vector3f original_pos = GetPosition();
+		SetPosition(original_pos - position);
+		m_Orientation = m_Orientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(5.f) * (Hex::Engine::GetInstance()->GetDeltaTime()));
+		SetPosition(GetPosition() + position);
 
-	CU::Matrix44f& Camera::GetOrthogonalMatrix()
-	{
-		return myOrthogonalMatrix;
+
+		CU::Vector4f new_forward = position - original_pos;
+		CU::Math::Normalize(new_forward);
+		m_Orientation.SetForward(new_forward);
+
+		return CU::Vector3f(position - original_pos);
 	}
 
 	void Camera::SetPosition(const CU::Vector3f& position)
 	{
-		myOrientation.SetPosition(position);
+		m_Orientation.SetPosition(position);
 	}
 
 	void Camera::SetTranslation(const CU::Vector4f& translation)
 	{
-		myOrientation.SetTranslation(translation);
+		m_Orientation.SetTranslation(translation);
 	}
 
 	void Camera::Update(const ControllerState& controller_state)
@@ -85,26 +86,7 @@ namespace Hex
 		m_CenterPoint.y -= (y_value / SHRT_MAX) * m_LookSpeedModifier;
 		m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
 
-		myPitch = CU::Quaternion(CU::Vector3f(1.f, 0, 0), m_CenterPoint.y);
-		myYaw = CU::Quaternion(CU::Vector3f(0, 1.f, 0), m_CenterPoint.x);
-
-		CU::Vector3f axisX(1.f, 0, 0);
-		CU::Vector3f axisY(0, 1.f, 0);
-		CU::Vector3f axisZ(0, 0, 1.f);
-
-		axisX = myYaw * myPitch * axisX;
-		axisY = myYaw * myPitch * axisY;
-		axisZ = myYaw * myPitch * axisZ;
-
-		myOrientation.myMatrix[0] = axisX.x;
-		myOrientation.myMatrix[1] = axisX.y;
-		myOrientation.myMatrix[2] = axisX.z;
-		myOrientation.myMatrix[4] = axisY.x;
-		myOrientation.myMatrix[5] = axisY.y;
-		myOrientation.myMatrix[6] = axisY.z;
-		myOrientation.myMatrix[8] = axisZ.x;
-		myOrientation.myMatrix[9] = axisZ.y;
-		myOrientation.myMatrix[10] = axisZ.z;
+		OrientCamera();
 	}
 
 	void Camera::Update(const CU::Vector2f& cursor_pos)
@@ -116,95 +98,110 @@ namespace Hex
 		m_CenterPoint.y += y_value * m_LookSpeedModifier;
 		m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
 
-		myPitch = CU::Quaternion(CU::Vector3f(1.f, 0, 0), m_CenterPoint.y);
-		myYaw = CU::Quaternion(CU::Vector3f(0, 1.f, 0), m_CenterPoint.x);
+		OrientCamera();
+	}
+
+	void Camera::SetOrientation(const CU::Matrix44f& matrix)
+	{
+		m_Orientation = matrix;
+	}
+
+	void Camera::RotateAroundX(float rad)
+	{
+		m_Orientation = CU::Matrix44f::CreateRotateAroundX(rad) * m_Orientation;
+	}
+
+	void Camera::RotateAroundY(float rad)
+	{
+		m_Orientation = CU::Matrix44f::CreateRotateAroundY(rad) * m_Orientation;
+	}
+
+	void Camera::RotateAroundZ(float rad)
+	{
+		m_Orientation = CU::Matrix44f::CreateRotateAroundZ(rad) * m_Orientation;
+	}
+
+	void Camera::SetFOV(float field_of_view)
+	{
+		const SWindowSize& window_size = Engine::GetInstance()->GetWindowSize();
+		if(field_of_view >= 60.f && field_of_view <= 120.f)
+			m_CurrentFoV = field_of_view;
+
+
+		m_ProjectionMatrix.SetPerspectiveFOV(CL::DegreeToRad(m_CurrentFoV), window_size.myHeight / window_size.myWidth);
+	}
+
+	void Camera::Move(eDirection aDirection, float aSpeed)
+	{
+		CU::Math::Vector4<float> position;
+		position = m_Orientation.GetTranslation();
+		switch (aDirection)
+		{
+			case eDirection::FORWARD:
+			MoveForwardAndBack(position, aSpeed);
+			break;
+			case eDirection::BACK:
+			MoveForwardAndBack(position, aSpeed);
+			break;
+			case eDirection::UP:
+			MoveUpAndDown(position, aSpeed);
+			break;
+			case eDirection::DOWN:
+			MoveUpAndDown(position, aSpeed);
+			break;
+			case eDirection::LEFT:
+			MoveLeftAndRight(position, aSpeed);
+			break;
+			case eDirection::RIGHT:
+			MoveLeftAndRight(position, aSpeed);
+			break;
+		}
+		m_Orientation.SetTranslation(position);
+	}
+
+	void Camera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetForward();
+		aPosition += forward * aSpeed;
+	}
+
+	void Camera::MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed)
+	{
+		CU::Math::Vector4<float> up = m_Orientation.GetUp();
+		aPosition += up * aSpeed;
+	}
+
+	void Camera::MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed)
+	{
+		CU::Math::Vector4<float> right = m_Orientation.GetRight();
+		aPosition += right * aSpeed;
+	}
+
+
+	void Camera::OrientCamera()
+	{
+		m_Pitch = CU::Quaternion(CU::Vector3f(1.f, 0, 0), m_CenterPoint.y);
+		m_Yaw = CU::Quaternion(CU::Vector3f(0, 1.f, 0), m_CenterPoint.x);
 
 		CU::Vector3f axisX(1.f, 0, 0);
 		CU::Vector3f axisY(0, 1.f, 0);
 		CU::Vector3f axisZ(0, 0, 1.f);
 
-		axisX = myYaw * myPitch * axisX;
-		axisY = myYaw * myPitch * axisY;
-		axisZ = myYaw * myPitch * axisZ;
+		axisX = m_Yaw * m_Pitch * axisX;
+		axisY = m_Yaw * m_Pitch * axisY;
+		axisZ = m_Yaw * m_Pitch * axisZ;
 
-		myOrientation.myMatrix[0] = axisX.x;
-		myOrientation.myMatrix[1] = axisX.y;
-		myOrientation.myMatrix[2] = axisX.z;
+		m_Orientation.myMatrix[0] = axisX.x;
+		m_Orientation.myMatrix[1] = axisX.y;
+		m_Orientation.myMatrix[2] = axisX.z;
 
-		myOrientation.myMatrix[4] = axisY.x;
-		myOrientation.myMatrix[5] = axisY.y;
-		myOrientation.myMatrix[6] = axisY.z;
+		m_Orientation.myMatrix[4] = axisY.x;
+		m_Orientation.myMatrix[5] = axisY.y;
+		m_Orientation.myMatrix[6] = axisY.z;
 
-		myOrientation.myMatrix[8] = axisZ.x;
-		myOrientation.myMatrix[9] = axisZ.y;
-		myOrientation.myMatrix[10] = axisZ.z;
+		m_Orientation.myMatrix[8] = axisZ.x;
+		m_Orientation.myMatrix[9] = axisZ.y;
+		m_Orientation.myMatrix[10] = axisZ.z;
 	}
-
-	void Camera::SetOrientation(const CU::Matrix44f& matrix)
-	{
-		myOrientation = matrix;
-	}
-
-	void Camera::RotateAroundX(float rad)
-	{
-		myOrientation = CU::Matrix44f::CreateRotateAroundX(rad) * myOrientation;
-	}
-
-	void Camera::RotateAroundY(float rad)
-	{
-		myOrientation = CU::Matrix44f::CreateRotateAroundY(rad) * myOrientation;
-	}
-
-	void Camera::RotateAroundZ(float rad)
-	{
-		myOrientation = CU::Matrix44f::CreateRotateAroundZ(rad) * myOrientation;
-	}
-
-	void Camera::Move(eDirection aDirection, float aSpeed)
-	{
-	CU::Math::Vector4<float> position;
-	position = myOrientation.GetTranslation();
-	switch (aDirection)
-	{
-	case eDirection::FORWARD:
-		MoveForwardAndBack(position, aSpeed);
-	break;
-	case eDirection::BACK:
-		MoveForwardAndBack(position, aSpeed);
-	break;
-	case eDirection::UP:
-		MoveUpAndDown(position, aSpeed);
-	break;
-	case eDirection::DOWN:
-		MoveUpAndDown(position, aSpeed);
-	break;
-	case eDirection::LEFT:
-		MoveLeftAndRight(position, aSpeed);
-	break;
-	case eDirection::RIGHT:
-		MoveLeftAndRight(position, aSpeed);
-	break;
-	}
-	myOrientation.SetTranslation(position);
-	}
-
-	void Camera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)
-	{
-	CU::Math::Vector4<float> forward = myOrientation.GetForward();
-	aPosition += forward * aSpeed;
-	}
-
-	void Camera::MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed)
-	{
-	CU::Math::Vector4<float> up = myOrientation.GetUp();
-	aPosition += up * aSpeed;
-	}
-
-	void Camera::MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed)
-	{
-	CU::Math::Vector4<float> right = myOrientation.GetRight();
-	aPosition += right * aSpeed;
-	}
-
 
 }

@@ -43,20 +43,12 @@ namespace Hex
 		myIndexes.clear();
 		myVertices.clear();
 
-		SAFE_RELEASE(myVertexLayout);
-		if (myVertexLayout)
+		SAFE_RELEASE(m_VertexLayout);
+		if (m_VertexLayout)
 			return false;
 
 		SAFE_DELETE(mySurface);
-
-		SAFE_DELETE(myVertexBuffer);
-		if (myVertexBuffer)
-			return false;
-
-		SAFE_DELETE(myIndexBuffer);
-		if (myIndexBuffer)
-			return false;
-
+		
 		SAFE_RELEASE(myConstantBuffer);
 		if (myConstantBuffer)
 			return false;
@@ -65,13 +57,6 @@ namespace Hex
 		if (m_PSConstantBuffer)
 			return false;
 
-		SAFE_DELETE(myIndexData);
-		if (myIndexData)
-			return false;
-
-		SAFE_DELETE(myVertexData);
-		if (myVertexData)
-			return false;
 
 		return true;
 	}
@@ -86,7 +71,7 @@ namespace Hex
 			myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 			if (!render_shadows)
 				mySurface->Activate();
-			myContext->DrawIndexed(myIndexData->myIndexCount, 0, 0);
+			myContext->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 			if (!render_shadows)
 				mySurface->Deactivate();
 		}
@@ -187,22 +172,22 @@ namespace Hex
 		}
 
 
-		myVertexData = new VertexDataWrapper;
+		//myVertexData = new VertexDataWrapper;
 
-		myVertexData->myNrOfVertexes = vertices.Size();
-		myVertexData->myStride = sizeof(SVertexPosNormUVBiTang);
-		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
-		myVertexData->myVertexData = new  char[myVertexData->mySize]();
-		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
+		m_VertexData.myNrOfVertexes = vertices.Size();
+		m_VertexData.myStride = sizeof(SVertexPosNormUVBiTang);
+		m_VertexData.mySize = m_VertexData.myNrOfVertexes * m_VertexData.myStride;
+		m_VertexData.myVertexData = new char[m_VertexData.mySize]();
+		memcpy(m_VertexData.myVertexData, &vertices[0], m_VertexData.mySize);
 
 
-		myIndexData = new VertexIndexWrapper;
-		myIndexData->myFormat = DXGI_FORMAT_R32_UINT;
-		myIndexData->myIndexCount = indexes.Size();
-		myIndexData->mySize = myIndexData->myIndexCount * 4;
+		//myIndexData = new VertexIndexWrapper;
+		m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
+		m_IndexData.myIndexCount = indexes.Size();
+		m_IndexData.mySize = m_IndexData.myIndexCount * 4;
 
-		myIndexData->myIndexData = new char[myIndexData->mySize];
-		memcpy(myIndexData->myIndexData, &indexes[0], myIndexData->mySize);
+		m_IndexData.myIndexData = new char[m_IndexData.mySize];
+		memcpy(m_IndexData.myIndexData, &indexes[0], m_IndexData.mySize);
 
 		InitVertexBuffer();
 		InitIndexBuffer();
@@ -323,7 +308,6 @@ namespace Hex
 		height_map.myDepth = depth;
 		height_map.myData = data;
 
-		//		return SHeightMap(width, depth, data);
 		return height_map;
 	}
 

@@ -39,6 +39,8 @@ namespace CommonUtilities
 		inline void DeleteAll();
 		inline int Capacity();
 
+		bool Empty() { return (mySize <= 0); }
+
 		void Optimize();
 
 		__forceinline int Size() const;

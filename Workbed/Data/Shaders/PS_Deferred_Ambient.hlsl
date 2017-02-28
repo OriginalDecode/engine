@@ -1,11 +1,13 @@
 //---------------------------------
 //	Deferred Ambient Pixel Shaders
 //---------------------------------
-cbuffer CameraPosition : register(b0)
+cbuffer Ambient : register(b0)
 {
 	float4 camera_position;
 	row_major float4x4 InvertedProjection;
 	row_major float4x4 InvertedView;
+	row_major float4x4 ShadowMVP;
+	float4 light_direction;
 };
 //---------------------------------
 //	Samplers & Textures
@@ -15,7 +17,8 @@ SamplerState point_Clamp 	: register ( s0 );
 Texture2D AlbedoTexture  	: register ( t0 );
 Texture2D NormalTexture  	: register ( t1 );
 Texture2D DepthTexture	 	: register ( t2 );
-TextureCube CubeMap		 	: register ( t3 );
+Texture2D ShadowTexture		: register ( t3 );
+TextureCube CubeMap		 	: register ( t4 );
 
 //---------------------------------
 //	Deferred Ambient Pixel Structs
@@ -99,7 +102,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	normal *= 2;
 	normal -= 1;
 
-	float roughness = 1;//depth.y;
+	float roughness = depth.y;
 	
 	float roughnessOffsetted = pow(8192, roughness);
 
@@ -116,26 +119,38 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, InvertedView);	
 
-	float3 toEye = normalize(worldPosition.xyz - camera_position.xyz);
+	float3 toEye = normalize(camera_position.xyz - worldPosition.xyz);
 	float3 reflection_fresnel = ReflectionFresnel(substance, normal, -toEye, 1 - roughnessOffsetted);
 	float3 reflectionVector = reflect(toEye, normal.xyz);
 	float3	ambientDiffuse = CubeMap.SampleLevel(point_Clamp, reflectionVector, 9).rgb * 
-	(metalness * 0.2) + albedo * (1 - reflection_fresnel) * ao;
+	(metalness * 0.2) + metalnessAlbedo * (1 - reflection_fresnel) * ao;
   
 	float fakeLysSpecularPower = RoughToSPow(roughness);
 	float lysMipMap = GetSpecPowToMip(fakeLysSpecularPower, 12);
     
 	float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector,lysMipMap).xyz * ao * reflection_fresnel;
 	
-	float3 finalColor = (ambientDiffuse + ambientSpec);
+	float3 final_color = (ambientDiffuse + ambientSpec) *2;
 
-	float3 light_dir = float3(-1,1,0);
-	float NdotL = dot(normal.xyz, light_dir);
+	float NdotL = dot(normal.xyz, -light_direction);
 	// float3 directColor = float3(1, 0.5, 1) * NdotL;
 	
+	float4 newPos = worldPosition + (normal * 0.4);
+	newPos.w = 1;
+	float4 shadowVec = mul(newPos, ShadowMVP);
+	shadowVec.xyz /= shadowVec.w;
+	shadowVec.y = -shadowVec.y;
+	shadowVec.x = shadowVec.x;
+	shadowVec.xy += 1;
+	shadowVec.xy *= 0.5;
 
+	float compareValue = shadowVec.z;
+	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
+	if(sampleValue < compareValue)
+ 		final_color *= 0.42;
 
-	float3 output = (finalColor * NdotL) * 0.42;
+ 	float3 dir_color = float3(1,0.8,0.8);
+	float3 output = final_color * NdotL * dir_color ;
 	
 	return float4(output, 1.f);
 };

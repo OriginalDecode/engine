@@ -39,7 +39,7 @@ void RenderSystem::Update(float dt)
 
 		//if (e == 0)
 		{
-			/**/
+			/**
 			CU::Vector3f pos = { 256.f, 5.f, 256.f };
 			CU::Vector3f original_pos = translation.myOrientation.GetPosition();
 			translation.myOrientation.SetPosition(original_pos - pos);
@@ -47,12 +47,13 @@ void RenderSystem::Update(float dt)
 			translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(25.f) * dt);
 			translation.myOrientation.SetPosition(translation.myOrientation.GetPosition() + pos);
 			/**/
+
 		}
 
 		mySynchronizer->AddRenderCommand(RenderCommand(
 			eType::MODEL,
 			render.myModelID,
-			translation.myOrientation,
+			t,
 			render.scale));
 
 

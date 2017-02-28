@@ -2,8 +2,8 @@
 #include "VertexStructs.h"
 #include <Math/Matrix/Matrix44.h>
 #include <DataStructures/GrowingArray.h>
-
-
+#include "VertexWrapper.h"
+#include "IndexWrapper.h"
 struct D3D11_INPUT_ELEMENT_DESC;
 typedef struct ID3D11InputLayout IInputLayout;
 typedef struct ID3D11Buffer IBuffer;
@@ -46,17 +46,25 @@ namespace Hex
 #else
 		Vulkan* myAPI = nullptr;
 #endif
-		IInputLayout* myVertexLayout = nullptr;
+		IInputLayout* m_VertexLayout = nullptr;
 		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 
-		VertexIndexWrapper* myIndexData = nullptr;
-		VertexDataWrapper* myVertexData = nullptr;
 
-		VertexBufferWrapper* myVertexBuffer = nullptr;
-		IndexBufferWrapper* myIndexBuffer = nullptr;
+		VertexIndexWrapper m_IndexData;
+		VertexDataWrapper m_VertexData;
+
+		VertexBufferWrapper m_VertexBuffer;
+		IndexBufferWrapper m_IndexBuffer;
 
 		IBuffer* myConstantBuffer = nullptr;
-		SVertexBaseStruct* myConstantStruct = nullptr;
+		
+		struct cbVertex
+		{
+			CU::Matrix44f m_World;
+			CU::Matrix44f m_InvertedView;
+			CU::Matrix44f m_Projection;
+			CU::Vector4f m_Scale;
+		} m_ConstantStruct;
 
 
 		bool myIsNULLObject = true;

@@ -10,8 +10,14 @@ namespace Hex
 		m_Context = Engine::GetInstance()->GetAPI()->GetContext();
 		m_Viewport = Engine::GetInstance()->GetAPI()->CreateViewport(m_BufferSize, m_BufferSize, 0.f, 1.f, 0, 0);
 
-		m_Camera = new Camera(m_BufferSize, m_BufferSize, 50.f, 1.f, 90.f);
+		//m_Camera = new Camera(m_BufferSize, m_BufferSize, 256.f, 1.f, 90.f);
+		m_Camera = new Camera;
+		m_Camera->CreatePerspectiveProjection(m_BufferSize, m_BufferSize, 1.f, 256.f, 90.f);
+		//m_Camera->CreateOrthographicProjection(200.f, 200.f, 0.01f, 1024.f);
+
+
 		m_Camera->SetPosition(position);
+
 		m_Camera->RotateAroundY(CL::DegreeToRad(90.f) * direction.x);
 		m_Camera->RotateAroundZ(CL::DegreeToRad(90.f) * direction.y);
 		m_Camera->RotateAroundX(CL::DegreeToRad(90.f) * direction.z);
@@ -45,16 +51,6 @@ namespace Hex
 
 		m_ShadowEffect = Engine::GetInstance()->GetEffect("Data/Shaders/T_Render_Depth.json");
 		m_ShadowEffect->AddShaderResource(m_Holder->GetDepthStencilView());
-
-		m_Bias[0] = 0.5f;
-		m_Bias[5] = 0.5f;
-		m_Bias[10] = 0.5f;
-
-		m_Bias[12] = 0.5f;
-		m_Bias[13] = 0.5f;
-		m_Bias[14] = 0.5f;
-		m_Bias[15] = 1.f;
-
 
 		return true;
 	}
@@ -124,7 +120,7 @@ namespace Hex
 
 	CU::Matrix44f ShadowSpotlight::GetMVP()
 	{
-		return (CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetProjection());
+		return (CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetPerspective());
 	}
 
 	void ShadowSpotlight::Copy()

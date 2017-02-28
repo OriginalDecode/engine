@@ -9,6 +9,7 @@
 SamplerState linear_Clamp : register ( s0 );
 Texture2D DiffuseTexture : register ( t0 );
 
+
 //---------------------------------
 //	Font Pixel Structs
 //---------------------------------
@@ -25,9 +26,15 @@ struct VS_OUTPUT
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 sprite =  DiffuseTexture.Sample(linear_Clamp, input.uv);
-	float miZ = 0.8;
+	if(sprite.a <= 0)
+		sprite.a = 1;
+	
+	return sprite;
+	float miZ = 0.9;
 	float maZ = 1;
-	float newX = (sprite.x - minZ) / (maxZ - minZ);	
+	float newX = (sprite.x - miZ) / (maZ - miZ);	
 	sprite.x = newX;
+	sprite.y = newX;
+	sprite.z = newX;
 	return sprite;
 };

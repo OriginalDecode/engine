@@ -9,6 +9,8 @@ namespace Hex
 	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, const std::string& debug_name)
 	{
 
+		myWidth = width;
+		myHeight = height;
 		DirectX11* api = static_cast<DirectX11*>(Engine::GetGraphicsAPI());
 		ID3D11Device* device = api->GetDevice();
 
@@ -51,6 +53,9 @@ namespace Hex
 
 	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name)
 	{
+
+		myWidth = width;
+		myHeight = height;
 #ifdef SNOWBLIND_DX11
 		DirectX11* api = Engine::GetAPI();
 #else
@@ -112,6 +117,8 @@ namespace Hex
 	void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat render_target_format, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name)
 	{
 
+		myWidth = width;
+		myHeight = height;
 #ifdef SNOWBLIND_DX11
 		DirectX11* api = Engine::GetAPI();
 #else
@@ -190,6 +197,24 @@ namespace Hex
 
 	}
 
+	void Texture::InitiateAsDepthStencil(float width, float height, const std::string& debug_name)
+	{
+		Initiate(width, height
+			, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+			, DXGI_FORMAT_R32_TYPELESS
+			, DXGI_FORMAT_R32_FLOAT
+			, DXGI_FORMAT_D32_FLOAT
+			, debug_name);
+	}
+
+	void Texture::InitiateAsRenderTarget(float width, float height, const std::string& debug_name)
+	{
+		Initiate(width, height,
+			DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+			, DXGI_FORMAT_R16G16B16A16_FLOAT
+			, debug_name);
+	}
+
 	bool Texture::CleanUp()
 	{
 		SAFE_RELEASE(m_ShaderResource);
@@ -241,7 +266,7 @@ namespace Hex
 #endif
 		std::string debugname = CL::substr(filepath, "/", false, 0);
 		Engine::GetAPI()->SetDebugName(m_ShaderResource, debugname);
-		DL_MESSAGE_EXP(FAILED(hr), "[Texture](Load) : Failed to load texture %s", filepath);
+		DL_MESSAGE_EXP(FAILED(hr), "[Texture](Load) : Failed to load texture %s", filepath.c_str());
 		if (FAILED(hr))
 			return false;
 

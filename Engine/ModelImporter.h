@@ -94,7 +94,7 @@ private:
 	Hex::Engine* myEngine;
 	std::string myCurrentLoadingFile;
 	CommonUtilities::TimeManager* myTimeManager;
-
+	
 	Hex::CModel* CreateModel(FBXModelData* someData, Hex::Effect* anEffect);
 	Hex::CModel* LoadModel(const std::string& aFilePath, Hex::Effect* anEffect);
 	void FillData(FBXModelData* someData, Hex::CModel* out, Hex::Effect* anEffect);

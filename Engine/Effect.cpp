@@ -25,11 +25,13 @@ namespace Hex
 
 	void Effect::Deactivate()
 	{
-		m_Context->PSSetShaderResources(0, myShaderResources.Size(), &myNULLList[0]);
+		if (myNULLList.Size() > 0)
+			m_Context->PSSetShaderResources(0, myNULLList.Size(), &myNULLList[0]);
 	}
 
 	void Effect::AddShaderResource(IShaderResourceView* aShaderResource)
 	{
+		DL_ASSERT_EXP(aShaderResource, "Shader Resource was null. Check if initiated correctly.");
 		myShaderResources.Add(aShaderResource);
 		myNULLList.Add(nullptr);
 	}

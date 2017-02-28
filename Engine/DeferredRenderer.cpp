@@ -6,7 +6,7 @@
 #define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
 namespace Hex
 {
-	bool DeferredRenderer::Initiate(/*Texture* shadow_texture*/)
+	bool DeferredRenderer::Initiate(Texture* shadow_texture)
 	{
 #ifdef SNOWBLIND_DX11
 		m_API = Engine::GetAPI();
@@ -18,7 +18,7 @@ namespace Hex
 
 		myFinishedSceneTexture = new Texture;
 		myFinishedSceneTexture->Initiate(windowSize.myWidth, windowSize.myHeight
-			, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM
+			, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM
 			, "Texture : FinishedScene");
 
 		myDepthStencil = new Texture;
@@ -40,7 +40,7 @@ namespace Hex
 		myAmbientPassShader->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
 		myAmbientPassShader->AddShaderResource(myGBuffer->myNormal->GetShaderView());
 		myAmbientPassShader->AddShaderResource(myGBuffer->myDepth->GetShaderView());
-		//myAmbientPassShader->AddShaderResource(shadow_texture->GetDepthStencilView());
+		myAmbientPassShader->AddShaderResource(shadow_texture->GetDepthStencilView());
 		myAmbientPassShader->AddShaderResource(myCubeMap->GetShaderView());
 		CreateFullscreenQuad();
 		InitConstantBuffer();
@@ -56,8 +56,8 @@ namespace Hex
 		myDepthStencil->CleanUp();
 		SAFE_DELETE(myDepthStencil);
 		SAFE_DELETE(myGBuffer);
-
-		SAFE_DELETE(myConstantStruct);
+		
+		//SAFE_DELETE(myConstantStruct);
 		SAFE_RELEASE(myConstantBuffer);
 
 		SAFE_DELETE(m_VertexBuffer);
@@ -100,19 +100,19 @@ namespace Hex
 #endif
 	}
 
-	void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
+	void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
 	{
 #ifdef SNOWBLIND_DX11
-		UpdateConstantBuffer(previousOrientation, aProjection);
+		UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);
 		SetBuffers();
 
 		m_API->ResetViewport();
 
-		ID3D11RenderTargetView* backbuffer = myFinishedSceneTexture->GetRenderTargetView();
+		ID3D11RenderTargetView* render_target = myFinishedSceneTexture->GetRenderTargetView();
 		ID3D11DepthStencilView* depth = m_API->GetDepthView();
 
-		myContext->ClearRenderTargetView(backbuffer, myClearColor);
-		myContext->OMSetRenderTargets(1, &backbuffer, depth);
+		myContext->ClearRenderTargetView(render_target, myClearColor);
+		myContext->OMSetRenderTargets(1, &render_target, depth);
 
 		myAmbientPassShader->Activate();
 		myContext->PSSetConstantBuffers(0, 1, &myConstantBuffer);
@@ -127,14 +127,14 @@ namespace Hex
 
 
 		depth = myDepthStencil->GetDepthView();
-		myContext->OMSetRenderTargets(1, &backbuffer, depth);
+		myContext->OMSetRenderTargets(1, &render_target, depth);
 #endif
 	}
 
-	void DeferredRenderer::Finalize()
+	void DeferredRenderer::Finalize(Texture* light_texture)
 	{
 #ifdef SNOWBLIND_DX11
-		m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
+		m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
 		m_API->SetBlendState(eBlendStates::NO_BLEND);
 		m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 
@@ -143,25 +143,39 @@ namespace Hex
 		m_API->SetVertexShader(myScreenPassShader->GetVertexShader()->m_Shader);
 		m_API->SetPixelShader(myScreenPassShader->GetPixelShader()->m_Shader);
 
-		ID3D11ShaderResourceView* srv[2];
-		srv[0] = myFinishedSceneTexture->GetShaderView();
-		srv[1] = myDepthStencil->GetShaderView();
-		myContext->PSSetShaderResources(0, 2, &srv[0]);
+		ID3D11ShaderResourceView* srv[] =
+		{
+			myFinishedSceneTexture->GetShaderView(),
+			myDepthStencil->GetShaderView(),
+			//light_texture->GetShaderView(),
+		};
+
+		s32 num_srv = ARRAYSIZE(srv);
+
+		myContext->PSSetShaderResources(0, num_srv, &srv[0]);
 		m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
 		myContext->DrawIndexed(6, 0, 0);
-		srv[0] = nullptr;
-		srv[1] = nullptr;
-		myContext->PSSetShaderResources(0, 2, &srv[0]);
+
+		for (s32 i = 0; i < num_srv; i++)
+		{
+			srv[i] = nullptr;
+		}
+
+		myContext->PSSetShaderResources(0, num_srv, &srv[0]);
 
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 #endif
 	}
 
+	Texture* DeferredRenderer::GetFinalTexture()
+	{
+		return myFinishedSceneTexture;
+	}
+
 	void DeferredRenderer::InitConstantBuffer()
 	{
 #ifdef SNOWBLIND_DX11
-		myConstantStruct = new SConstantStruct;
 
 		D3D11_BUFFER_DESC cbDesc;
 		ZeroMemory(&cbDesc, sizeof(cbDesc));
@@ -178,24 +192,28 @@ namespace Hex
 #endif
 	}
 
-	void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection)
+	void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
 	{
 #ifdef SNOWBLIND_DX11
-		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
-		myConstantStruct->camPosition = previousOrientation.GetPosition();
-		myConstantStruct->invertedProjection = CU::Math::InverseReal(aProjection);
-		myConstantStruct->view = previousOrientation;
+		m_ConstantStruct.camPosition = previousOrientation.GetPosition();
+		m_ConstantStruct.invertedProjection = CU::Math::InverseReal(aProjection);
+		m_ConstantStruct.view = previousOrientation;
+		m_ConstantStruct.m_ShadowMVP = shadow_mvp;
+		m_ConstantStruct.m_Direction = light_dir;
 		//myConstantStruct->m_ShadowMVP = shadow_matrix;// CU::Math::Inverse(light_orientation) * light_projection;
 
-		D3D11_MAPPED_SUBRESOURCE msr;
+
+		m_API->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
+
+		/*D3D11_MAPPED_SUBRESOURCE msr;
 		m_API->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		if (msr.pData != nullptr)
 		{
 			SConstantStruct* ptr = (SConstantStruct*)msr.pData;
-			memcpy(ptr, &myConstantStruct->camPosition, sizeof(SConstantStruct));
+			memcpy(ptr, &m_ConstantStruct->camPosition, sizeof(SConstantStruct));
 		}
 
-		m_API->GetContext()->Unmap(myConstantBuffer, 0);
+		m_API->GetContext()->Unmap(myConstantBuffer, 0);*/
 #endif
 	}
 
@@ -258,12 +276,12 @@ namespace Hex
 		myIndexData->myIndexData = new char[myIndexData->mySize];
 		memcpy(myIndexData->myIndexData, &indices[0], myIndexData->mySize);
 
-		CreateVertexBuffer();
+		CreateBuffer();
 		CreateIndexBuffer();
 #endif
 	}
 
-	void DeferredRenderer::CreateVertexBuffer()
+	void DeferredRenderer::CreateBuffer()
 	{
 #ifdef SNOWBLIND_DX11
 		void* shader = myScreenPassShader->GetVertexShader()->compiledShader;

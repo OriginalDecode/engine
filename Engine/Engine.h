@@ -175,8 +175,20 @@ namespace Hex
 			_COUNT
 		};
 
+#ifdef _DEBUG
+		void OutputDebugString(std::string debug_str);
+#endif
 	private:
+#ifdef _DEBUG
 
+		struct debug_string
+		{
+			std::string m_String;
+			CU::Vector3f m_Color;
+		};
+
+		CU::StaticArray<std::string, 8> m_DebugStrings;
+#endif
 		void UpdateDebugUI();
 
 		bool m_EditLight = false;

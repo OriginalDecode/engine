@@ -57,8 +57,8 @@ void HDRPass::Process(Hex::Texture* scene_texture)
 	FillViewportData(viewport);
 	m_API->SetViewport(&viewport);
 
-	y_height = 128.f;
-	x_width = 128.f;
+	y_height = 64.f;
+	x_width = 64.f;
 	const s32 downsamples = m_Downsamples.Size() - 1;
 	Downsample(m_Downsamples[downsamples]->GetRenderTargetView(), scene_texture->GetShaderView());
 
@@ -109,17 +109,18 @@ void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* 
 
 	m_DownsampleEffect->Deactivate();
 
+#ifdef _DEBUG
 	if (toggle_debug)
 	{
 		m_Engine->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::SPRITE, source, CU::Vector2f(x_width, y_height)));
 	}
-	y_height += 256.f;
+	y_height += 128.f;
 	if (y_height > 1080.f)
 	{
-		x_width += 256.f;
-		y_height = 128.f;
+		x_width += 128.f;
+		y_height = 64.f;
 	}
-
+#endif
 }
 
 void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source[2], s32 resource_count)

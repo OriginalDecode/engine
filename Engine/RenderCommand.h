@@ -27,6 +27,7 @@ struct RenderCommand
 	RenderCommand(const eType& aType);
 
 	RenderCommand(const eType& type, const std::string& sprite_key, const CU::Vector2f& position);
+	RenderCommand(const eType& type, const std::string& text, const CU::Vector4f& color, const CU::Vector2f& position);
 	RenderCommand(const eType& type, IShaderResourceView* shader_resource, const CU::Vector2f& position);
 
 	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range);

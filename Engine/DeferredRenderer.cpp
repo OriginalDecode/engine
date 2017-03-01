@@ -18,7 +18,8 @@ namespace Hex
 
 		myFinishedSceneTexture = new Texture;
 		myFinishedSceneTexture->Initiate(windowSize.myWidth, windowSize.myHeight
-			, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM
+			, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+			, DXGI_FORMAT_R16G16B16A16_FLOAT
 			, "Texture : FinishedScene");
 
 		myDepthStencil = new Texture;
@@ -102,7 +103,6 @@ namespace Hex
 
 	void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
 	{
-#ifdef SNOWBLIND_DX11
 		UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);
 		SetBuffers();
 
@@ -128,7 +128,6 @@ namespace Hex
 
 		depth = myDepthStencil->GetDepthView();
 		myContext->OMSetRenderTargets(1, &render_target, depth);
-#endif
 	}
 
 	void DeferredRenderer::Finalize(Texture* light_texture)

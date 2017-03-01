@@ -53,7 +53,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float attenuation = CalculateTotalAttenuation(ln, input.range.x);
 	float3 directSpec = (F * D * V);
 	float intensity = 4;
-	float3 final_color = directSpec * ( attenuation * color ) * intensity;
+	float3 final_color = saturate(directSpec * ( attenuation * color ) * intensity);
 
 	return float4(final_color, 1);
 };

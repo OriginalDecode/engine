@@ -114,10 +114,10 @@ namespace Hex
 			return false;
 
 		mySprite = new Sprite;
-		mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
+		mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(128.f, 128.f), CU::Vector2f(0.f, 0.f));
 
 		myClearColor = new Sprite;
-		myClearColor->Initiate("Data/Textures/blank.dds", CU::Vector2f(256.f, 256.f), CU::Vector2f(0.f, 0.f));
+		myClearColor->Initiate("Data/Textures/blank.dds", CU::Vector2f(128.f, 128.f), CU::Vector2f(0.f, 0.f));
 
 
 

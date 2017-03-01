@@ -574,6 +574,12 @@ namespace Hex
 		return m_Threadpool;
 	}
 
+#ifdef _DEBUG
+	void Engine::OutputDebugString(std::string debug_str)
+	{
+	}
+#endif
+
 	void Engine::UpdateDebugUI()
 	{
 

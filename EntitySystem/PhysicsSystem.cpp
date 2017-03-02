@@ -14,7 +14,7 @@
 PhysicsSystem::PhysicsSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, PhysicsComponent>>())
 {
-	myPhysicsManager = Hex::Engine::GetInstance()->GetPhysicsManager();
+	myPhysicsManager = Engine::GetInstance()->GetPhysicsManager();
 }
 
 void PhysicsSystem::Update(float aDeltaTime)

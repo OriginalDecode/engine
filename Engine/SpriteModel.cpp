@@ -10,328 +10,326 @@
 #include "EngineDefines.h"
 #include "AssetsContainer.h"
 
-namespace Hex
+
+CSpriteModel::CSpriteModel()
 {
-	CSpriteModel::CSpriteModel()
-	{
-	}
+}
 
 
-	CSpriteModel::~CSpriteModel()
-	{
-		SAFE_DELETE(myIndexBuffer);
-		SAFE_DELETE(myVertexBuffer);
-		SAFE_DELETE(myIndexData);
-		SAFE_DELETE(myVertexData);
-		SAFE_DELETE(myConstantStruct);
+CSpriteModel::~CSpriteModel()
+{
+	SAFE_DELETE(myIndexBuffer);
+	SAFE_DELETE(myVertexBuffer);
+	SAFE_DELETE(myIndexData);
+	SAFE_DELETE(myVertexData);
+	SAFE_DELETE(myConstantStruct);
 
 #ifdef SNOWBLIND_DX11
-		SAFE_RELEASE(myVertexLayout);
-		SAFE_RELEASE(myConstantBuffer);
+	SAFE_RELEASE(myVertexLayout);
+	SAFE_RELEASE(myConstantBuffer);
 #endif
-	}
+}
 
-	void CSpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
-	{
+void CSpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+{
 #ifdef SNOWBLIND_DX11
-		myWindowSize = Engine::GetInstance()->GetWindowSize();
+	myWindowSize = Engine::GetInstance()->GetWindowSize();
 
-		myTexturePath = aTexturePath;
-		mySize = aSize;
-		myPosition = aPosition;
-		Texture* text = Engine::GetInstance()->GetTexture(myTexturePath);
-		myTexture = text->GetShaderView();
-		myEffect = Engine::GetInstance()->GetEffect("Data/Shaders/T_Sprite.json");
+	myTexturePath = aTexturePath;
+	mySize = aSize;
+	myPosition = aPosition;
+	Texture* text = Engine::GetInstance()->GetTexture(myTexturePath);
+	myTexture = text->GetShaderView();
+	myEffect = Engine::GetInstance()->GetEffect("Data/Shaders/T_Sprite.json");
 
-		myVertexFormat.Add(VertexLayoutPosUV[0]);
-		myVertexFormat.Add(VertexLayoutPosUV[1]);
+	myVertexFormat.Add(VertexLayoutPosUV[0]);
+	myVertexFormat.Add(VertexLayoutPosUV[1]);
 
-		CU::GrowingArray<VertexTypePosUV> vertices;
-		CU::GrowingArray<int> indices;
-		float halfWidth = mySize.x * 0.5f;
-		float halfHeight = mySize.y * 0.5f;
-		VertexTypePosUV v;
-		v.myPosition = { -halfWidth, -halfHeight, 0 };
-		v.myUV = { 0, 1 };
-		vertices.Add(v);
+	CU::GrowingArray<VertexTypePosUV> vertices;
+	CU::GrowingArray<int> indices;
+	float halfWidth = mySize.x * 0.5f;
+	float halfHeight = mySize.y * 0.5f;
+	VertexTypePosUV v;
+	v.myPosition = { -halfWidth, -halfHeight, 0 };
+	v.myUV = { 0, 1 };
+	vertices.Add(v);
 
-		v.myPosition = { -halfWidth, halfHeight, 0 };
-		v.myUV = { 0, 0 };
-		vertices.Add(v);
+	v.myPosition = { -halfWidth, halfHeight, 0 };
+	v.myUV = { 0, 0 };
+	vertices.Add(v);
 
-		v.myPosition = { halfWidth, -halfHeight, 0 };
-		v.myUV = { 1, 1 };
-		vertices.Add(v);
+	v.myPosition = { halfWidth, -halfHeight, 0 };
+	v.myUV = { 1, 1 };
+	vertices.Add(v);
 
-		v.myPosition = { halfWidth, halfHeight, 0 };
-		v.myUV = { 1, 0 };
-		vertices.Add(v);
+	v.myPosition = { halfWidth, halfHeight, 0 };
+	v.myUV = { 1, 0 };
+	vertices.Add(v);
 
 
-		indices.Add(0);
-		indices.Add(1);
-		indices.Add(2);
+	indices.Add(0);
+	indices.Add(1);
+	indices.Add(2);
 
-		indices.Add(3);
-		indices.Add(2);
-		indices.Add(1);
+	indices.Add(3);
+	indices.Add(2);
+	indices.Add(1);
 
-		myVertexBuffer = new VertexBufferWrapper;
-		myVertexData = new VertexDataWrapper;
-		myIndexBuffer = new IndexBufferWrapper;
-		myIndexData = new VertexIndexWrapper;
+	myVertexBuffer = new VertexBufferWrapper;
+	myVertexData = new VertexDataWrapper;
+	myIndexBuffer = new IndexBufferWrapper;
+	myIndexData = new VertexIndexWrapper;
 
-		myVertexData->myNrOfVertexes = vertices.Size();
-		myVertexData->myStride = sizeof(VertexTypePosUV);
-		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
-		myVertexData->myVertexData = new char[myVertexData->mySize]();
-		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
+	myVertexData->myNrOfVertexes = vertices.Size();
+	myVertexData->myStride = sizeof(VertexTypePosUV);
+	myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
+	myVertexData->myVertexData = new char[myVertexData->mySize]();
+	memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
 
-		myIndexData->myFormat = DXGI_FORMAT_R32_UINT;
-		myIndexData->myIndexCount = 6;
-		myIndexData->mySize = myIndexData->myIndexCount * 4;
+	myIndexData->myFormat = DXGI_FORMAT_R32_UINT;
+	myIndexData->myIndexCount = 6;
+	myIndexData->mySize = myIndexData->myIndexCount * 4;
 
-		myIndexData->myIndexData = new char[myIndexData->mySize];
-		memcpy(myIndexData->myIndexData, &indices[0], myIndexData->mySize);
+	myIndexData->myIndexData = new char[myIndexData->mySize];
+	memcpy(myIndexData->myIndexData, &indices[0], myIndexData->mySize);
 
-		InitiateVertexBuffer();
-		InitiateIndexBuffer();
-		InitConstantBuffer();
-		//InitiateBlendState();
+	InitiateVertexBuffer();
+	InitiateIndexBuffer();
+	InitConstantBuffer();
+	//InitiateBlendState();
 #endif
-	}
+}
 
-	void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
-	{
+void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+{
 #ifdef SNOWBLIND_DX11
-		myWindowSize = Engine::GetInstance()->GetWindowSize();
+	myWindowSize = Engine::GetInstance()->GetWindowSize();
 
-		mySize = aSize;
-		myPosition = aPosition;
-		myEffect = Engine::GetInstance()->GetEffect("Data/Shaders/T_Sprite.json");
-		myTexture = aShaderResource;
-		//myEffect->SetAlbedo(aShaderResource);
+	mySize = aSize;
+	myPosition = aPosition;
+	myEffect = Engine::GetInstance()->GetEffect("Data/Shaders/T_Sprite.json");
+	myTexture = aShaderResource;
+	//myEffect->SetAlbedo(aShaderResource);
 
-		myVertexFormat.Init(2);
-		myVertexFormat.Add(VertexLayoutPosUV[0]);
-		myVertexFormat.Add(VertexLayoutPosUV[1]);
+	myVertexFormat.Init(2);
+	myVertexFormat.Add(VertexLayoutPosUV[0]);
+	myVertexFormat.Add(VertexLayoutPosUV[1]);
 
-		CU::GrowingArray<VertexTypePosUV> vertices;
-		CU::GrowingArray<int> indices;
-		float halfWidth = mySize.x * 0.5f;
-		float halfHeight = mySize.y * 0.5f;
-		VertexTypePosUV v;
-		v.myPosition = { -halfWidth, -halfHeight, 1 };
-		v.myUV = { 0, 1 };
-		vertices.Add(v);
+	CU::GrowingArray<VertexTypePosUV> vertices;
+	CU::GrowingArray<int> indices;
+	float halfWidth = mySize.x * 0.5f;
+	float halfHeight = mySize.y * 0.5f;
+	VertexTypePosUV v;
+	v.myPosition = { -halfWidth, -halfHeight, 1 };
+	v.myUV = { 0, 1 };
+	vertices.Add(v);
 
-		v.myPosition = { -halfWidth, halfHeight, 1 };
-		v.myUV = { 0, 0 };
-		vertices.Add(v);
+	v.myPosition = { -halfWidth, halfHeight, 1 };
+	v.myUV = { 0, 0 };
+	vertices.Add(v);
 
-		v.myPosition = { halfWidth, -halfHeight, 1 };
-		v.myUV = { 1, 1 };
-		vertices.Add(v);
+	v.myPosition = { halfWidth, -halfHeight, 1 };
+	v.myUV = { 1, 1 };
+	vertices.Add(v);
 
-		v.myPosition = { halfWidth, halfHeight, 1 };
-		v.myUV = { 1, 0 };
-		vertices.Add(v);
+	v.myPosition = { halfWidth, halfHeight, 1 };
+	v.myUV = { 1, 0 };
+	vertices.Add(v);
 
 
-		indices.Add(0);
-		indices.Add(1);
-		indices.Add(2);
+	indices.Add(0);
+	indices.Add(1);
+	indices.Add(2);
 
-		indices.Add(3);
-		indices.Add(2);
-		indices.Add(1);
+	indices.Add(3);
+	indices.Add(2);
+	indices.Add(1);
 
-		myVertexBuffer = new VertexBufferWrapper;
-		myVertexData = new VertexDataWrapper;
-		myIndexBuffer = new IndexBufferWrapper;
-		myIndexData = new VertexIndexWrapper;
+	myVertexBuffer = new VertexBufferWrapper;
+	myVertexData = new VertexDataWrapper;
+	myIndexBuffer = new IndexBufferWrapper;
+	myIndexData = new VertexIndexWrapper;
 
-		myVertexData->myNrOfVertexes = vertices.Size();
-		myVertexData->myStride = sizeof(VertexTypePosUV);
-		myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
-		myVertexData->myVertexData = new char[myVertexData->mySize]();
-		memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
+	myVertexData->myNrOfVertexes = vertices.Size();
+	myVertexData->myStride = sizeof(VertexTypePosUV);
+	myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
+	myVertexData->myVertexData = new char[myVertexData->mySize]();
+	memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
 
-		myIndexData->myFormat = DXGI_FORMAT_R32_UINT;
-		myIndexData->myIndexCount = 6;
-		myIndexData->mySize = myIndexData->myIndexCount * 4;
+	myIndexData->myFormat = DXGI_FORMAT_R32_UINT;
+	myIndexData->myIndexCount = 6;
+	myIndexData->mySize = myIndexData->myIndexCount * 4;
 
-		myIndexData->myIndexData = new char[myIndexData->mySize];
-		memcpy(myIndexData->myIndexData, &indices[0], myIndexData->mySize);
+	myIndexData->myIndexData = new char[myIndexData->mySize];
+	memcpy(myIndexData->myIndexData, &indices[0], myIndexData->mySize);
 
-		InitiateVertexBuffer();
-		InitiateIndexBuffer();
-		InitConstantBuffer();
-		//InitiateBlendState();
+	InitiateVertexBuffer();
+	InitiateIndexBuffer();
+	InitConstantBuffer();
+	//InitiateBlendState();
 #endif
-	}
+}
 
-	void CSpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
-	{
+void CSpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
+{
 #ifdef SNOWBLIND_DX11
-		Engine::GetAPI()->SetBlendState(eBlendStates::ALPHA_BLEND);
-		if (!myEffect)
-			return;
-		Engine::GetAPI()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
+	Engine::GetAPI()->SetBlendState(eBlendStates::ALPHA_BLEND);
+	if (!myEffect)
+		return;
+	Engine::GetAPI()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
 
-		SetMatrices(anOrientation, a2DCameraOrientation, anOrthogonalProjectionMatrix);
+	SetMatrices(anOrientation, a2DCameraOrientation, anOrthogonalProjectionMatrix);
 
-		ID3D11DeviceContext& context = *Engine::GetAPI()->GetContext();
-		context.IASetInputLayout(myVertexLayout);
-		context.IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-		context.IASetIndexBuffer(myIndexBuffer->myIndexBuffer, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
-		context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	ID3D11DeviceContext& context = *Engine::GetAPI()->GetContext();
+	context.IASetInputLayout(myVertexLayout);
+	context.IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
+	context.IASetIndexBuffer(myIndexBuffer->myIndexBuffer, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
+	context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		UpdateConstantBuffer();
+	UpdateConstantBuffer();
 
-		Engine::GetAPI()->SetVertexShader(myEffect->GetVertexShader()->m_Shader);
-		context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
-		Engine::GetAPI()->SetPixelShader(myEffect->GetPixelShader()->m_Shader);
-		ID3D11ShaderResourceView* srv = myTexture;
-		context.PSSetShaderResources(0, 1, &srv);
+	Engine::GetAPI()->SetVertexShader(myEffect->GetVertexShader()->m_Shader);
+	context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	Engine::GetAPI()->SetPixelShader(myEffect->GetPixelShader()->m_Shader);
+	ID3D11ShaderResourceView* srv = myTexture;
+	context.PSSetShaderResources(0, 1, &srv);
 
-		context.DrawIndexed(6, 0, 0);
+	context.DrawIndexed(6, 0, 0);
 
-		srv = nullptr;
-		context.PSSetShaderResources(0, 1, &srv);
+	srv = nullptr;
+	context.PSSetShaderResources(0, 1, &srv);
 
-		Engine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
+	Engine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
 #endif
-	}
+}
 
-	Hex::Effect* CSpriteModel::GetEffect()
-	{
-		return myEffect;
-	}
+Effect* CSpriteModel::GetEffect()
+{
+	return myEffect;
+}
 
-	CU::Math::Vector2<float> CSpriteModel::GetSize()
-	{
-		return mySize;
-	}
+CU::Math::Vector2<float> CSpriteModel::GetSize()
+{
+	return mySize;
+}
 
-	const CU::Math::Vector2<float>& CSpriteModel::GetPosition()
-	{
-		return myPosition;
-	}
+const CU::Math::Vector2<float>& CSpriteModel::GetPosition()
+{
+	return myPosition;
+}
 
-	void CSpriteModel::SetTexture(ID3D11ShaderResourceView* srv)
-	{
-		myTexture = srv;
-	}
+void CSpriteModel::SetTexture(ID3D11ShaderResourceView* srv)
+{
+	myTexture = srv;
+}
 
-	void CSpriteModel::UpdateConstantBuffer()
-	{
+void CSpriteModel::UpdateConstantBuffer()
+{
 #ifdef SNOWBLIND_DX11
-		myConstantStruct->scale = mySize;
+	myConstantStruct->scale = mySize;
 
 
-		DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
+	DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 
-		D3D11_MAPPED_SUBRESOURCE msr;
-		Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		if (msr.pData != nullptr)
-		{
-			SSpriteConstantBuffer* ptr = (SSpriteConstantBuffer*)msr.pData;
-			memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SSpriteConstantBuffer));
-		}
-
-		Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
-#endif
+	D3D11_MAPPED_SUBRESOURCE msr;
+	Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	if (msr.pData != nullptr)
+	{
+		SSpriteConstantBuffer* ptr = (SSpriteConstantBuffer*)msr.pData;
+		memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SSpriteConstantBuffer));
 	}
 
-	void CSpriteModel::InitiateVertexBuffer()
-	{
+	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
+#endif
+}
+
+void CSpriteModel::InitiateVertexBuffer()
+{
 #ifdef SNOWBLIND_DX11
-		HRESULT hr;
+	HRESULT hr;
 
-		hr = Engine::GetAPI()->GetDevice()->
-			CreateInputLayout(&myVertexFormat[0]
-				, myVertexFormat.Size()
-				, myEffect->GetVertexShader()->compiledShader
-				, myEffect->GetVertexShader()->shaderSize
-				, &myVertexLayout);
-		Engine::GetAPI()->SetDebugName(myVertexLayout, "SpriteModel Vertex Layout");
-		Engine::GetAPI()->HandleErrors(hr, "Failed to create VertexLayout");
+	hr = Engine::GetAPI()->GetDevice()->
+		CreateInputLayout(&myVertexFormat[0]
+			, myVertexFormat.Size()
+			, myEffect->GetVertexShader()->compiledShader
+			, myEffect->GetVertexShader()->shaderSize
+			, &myVertexLayout);
+	Engine::GetAPI()->SetDebugName(myVertexLayout, "SpriteModel Vertex Layout");
+	Engine::GetAPI()->HandleErrors(hr, "Failed to create VertexLayout");
 
-		D3D11_BUFFER_DESC vertexBufferDesc;
-		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-		vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-		vertexBufferDesc.ByteWidth = myVertexData->mySize;
-		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		vertexBufferDesc.MiscFlags = 0;
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
+	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	vertexBufferDesc.ByteWidth = myVertexData->mySize;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vertexBufferDesc.MiscFlags = 0;
 
-		D3D11_SUBRESOURCE_DATA vertexData;
-		vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
+	D3D11_SUBRESOURCE_DATA vertexData;
+	vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
 
-		hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
-		Engine::GetAPI()->HandleErrors(hr, "Failed to Create VertexBuffer!");
+	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer);
+	Engine::GetAPI()->HandleErrors(hr, "Failed to Create VertexBuffer!");
 
-		myVertexBuffer->myStride = myVertexData->myStride;
-		myVertexBuffer->myByteOffset = 0;
-		myVertexBuffer->myStartSlot = 0;
-		myVertexBuffer->myNrOfBuffers = 1;
+	myVertexBuffer->myStride = myVertexData->myStride;
+	myVertexBuffer->myByteOffset = 0;
+	myVertexBuffer->myStartSlot = 0;
+	myVertexBuffer->myNrOfBuffers = 1;
 #endif
-	}
+}
 
-	void CSpriteModel::InitiateIndexBuffer()
-	{
+void CSpriteModel::InitiateIndexBuffer()
+{
 #ifdef SNOWBLIND_DX11
-		D3D11_BUFFER_DESC indexDesc;
-		ZeroMemory(&indexDesc, sizeof(indexDesc));
-		indexDesc.Usage = D3D11_USAGE_DEFAULT;
-		indexDesc.ByteWidth = myIndexData->mySize;
-		indexDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		indexDesc.CPUAccessFlags = 0;
-		indexDesc.MiscFlags = 0;
-		indexDesc.StructureByteStride = 0;
+	D3D11_BUFFER_DESC indexDesc;
+	ZeroMemory(&indexDesc, sizeof(indexDesc));
+	indexDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexDesc.ByteWidth = myIndexData->mySize;
+	indexDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexDesc.CPUAccessFlags = 0;
+	indexDesc.MiscFlags = 0;
+	indexDesc.StructureByteStride = 0;
 
-		D3D11_SUBRESOURCE_DATA indexData;
-		ZeroMemory(&indexData, sizeof(indexData)), indexData.pSysMem = myIndexData->myIndexData;
-		HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
-		Engine::GetAPI()->HandleErrors(hr, "Failed to Create IndexBuffer");
+	D3D11_SUBRESOURCE_DATA indexData;
+	ZeroMemory(&indexData, sizeof(indexData)), indexData.pSysMem = myIndexData->myIndexData;
+	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&indexDesc, &indexData, &myIndexBuffer->myIndexBuffer);
+	Engine::GetAPI()->HandleErrors(hr, "Failed to Create IndexBuffer");
 
-		myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
-		myIndexBuffer->myByteOffset = 0;
+	myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
+	myIndexBuffer->myByteOffset = 0;
 #endif
-	}
+}
 
-	void CSpriteModel::InitConstantBuffer()
-	{
+void CSpriteModel::InitConstantBuffer()
+{
 #ifdef SNOWBLIND_DX11
-		myConstantStruct = new SSpriteConstantBuffer;
+	myConstantStruct = new SSpriteConstantBuffer;
 
-		D3D11_BUFFER_DESC cbDesc;
-		ZeroMemory(&cbDesc, sizeof(cbDesc));
-		cbDesc.ByteWidth = sizeof(SSpriteConstantBuffer);
-		cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-		cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		cbDesc.MiscFlags = 0;
-		cbDesc.StructureByteStride = 0;
+	D3D11_BUFFER_DESC cbDesc;
+	ZeroMemory(&cbDesc, sizeof(cbDesc));
+	cbDesc.ByteWidth = sizeof(SSpriteConstantBuffer);
+	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbDesc.MiscFlags = 0;
+	cbDesc.StructureByteStride = 0;
 
-		HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-		Engine::GetAPI()->SetDebugName(myConstantBuffer, "Font Constant Buffer");
-		Engine::GetAPI()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
+	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Font Constant Buffer");
+	Engine::GetAPI()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
 #endif
-	}
+}
 
-	void CSpriteModel::ConvertToNormalSpace()
-	{
-		myPosition.x /= myWindowSize.myWidth;
-		myPosition.y /= myWindowSize.myHeight;
-	}
+void CSpriteModel::ConvertToNormalSpace()
+{
+	myPosition.x /= myWindowSize.myWidth;
+	myPosition.y /= myWindowSize.myHeight;
+}
 
-	void CSpriteModel::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
-	{
-		myConstantStruct->world = anOrientation;
-		myConstantStruct->invertedView = a2DCameraOrientation;
-		myConstantStruct->projection = anOrthogonalProjectionMatrix;
-	}
+void CSpriteModel::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
+{
+	myConstantStruct->world = anOrientation;
+	myConstantStruct->invertedView = a2DCameraOrientation;
+	myConstantStruct->projection = anOrthogonalProjectionMatrix;
+}
 
-};

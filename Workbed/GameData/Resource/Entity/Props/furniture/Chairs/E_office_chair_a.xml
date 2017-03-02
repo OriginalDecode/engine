@@ -1,0 +1,11 @@
+<root>
+	<Entity type="Prop" subType="SM_office_chair_a" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Prop/Office/Furniture/Chairs/SM_office_chair_a.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+		</GraphicsComponent>
+		<PhysicsComponent>
+			<type value="static"/>
+			</PhysicsComponent>
+	</Entity>
+	
+</root>

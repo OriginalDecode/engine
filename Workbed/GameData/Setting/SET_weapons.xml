@@ -1,0 +1,31 @@
+<root>
+	<pistol>
+		<clipsize value="12"/>
+		<damage value="10"/>
+		<shoottime value="0.42"/>
+		<forceStrength value="25"/>
+		
+		<minspreadrotation value="-0.025"/>
+		<maxspreadrotation value="0.025"/>
+	</pistol>
+	<shotgun>
+		<clipsize value="4"/>
+		<damage value="20"/>
+		<shoottime value="0.9"/>
+		<forceStrength value="5"/>
+		
+		<startammo value="64"/>
+		<minspreadrotation value="0.01"/>
+		<maxspreadrotation value="0.15"/>
+	</shotgun>
+	<grenadelauncher>
+		<clipsize value="3"/>
+		<damage value="1000"/>
+		<shoottime value="1"/>
+		<forceStrength value="25"/>
+		
+		<startammo value="6"/>
+		<timetoexplode value="0"/>
+		<maxAmountOfGrenades value="18"/>
+	</grenadelauncher>
+</root>

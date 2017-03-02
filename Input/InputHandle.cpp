@@ -8,7 +8,7 @@
 bool InputHandle::Initiate(HWND window_handle, HINSTANCE window_instance)
 {
 
-	Hex::Engine* engine = Hex::Engine::GetInstance();
+	Engine* engine = Engine::GetInstance();
 	if (!engine)
 		return false;
 
@@ -43,7 +43,7 @@ void InputHandle::CleanUp()
 
 void InputHandle::Update(float dt)
 {
-	if (!Hex::Engine::GetInstance()->IsWindowActive())
+	if (!Engine::GetInstance()->IsWindowActive())
 		return;
 	
 	for (s32 i = 0; i < m_ControllerID; i++)

@@ -1,0 +1,15 @@
+<root>
+	<Entity type="Spawnpoint" subType ="E_spawn_mediumDroidMoveNotMove_1">
+		<SpawnpointComponent>
+			<SpawnUnitType type="mediumDroidNotMove"/>
+<!--		<SpawnUnitType type="otherType"/>
+			<SpawnUnitType type="thirdType"/>-->
+
+			<SpawnpointLifetime value="0.6"/>
+			<SpawnInterval value="2"/>
+			<SpawnPerInterval value="1"/>
+			<SpawnCount value="1"/>
+		</SpawnpointComponent> 
+		
+	</Entity>
+</root>

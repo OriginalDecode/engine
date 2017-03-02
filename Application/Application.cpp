@@ -11,9 +11,11 @@
 #include "../Input/InputHandle.h"
 #include "../Input/InputWrapper.h"
 #include "../CommonLib/Utilities.h"
+#include <imgui.h>
+#include <imgui_impl_dx11.h>
 bool Application::Initiate()
 {
-	myEngine = Hex::Engine::GetInstance();
+	myEngine = Engine::GetInstance();
 	mySynchronizer = myEngine->GetSynchronizer();
 
 	/*myGame = new Game;

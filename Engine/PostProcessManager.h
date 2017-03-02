@@ -4,12 +4,10 @@
 #include "MotionBlurPass.h"
 #include "BloomPass.h"
 
-namespace Hex
-{
-	class Texture;
-	class Effect;
-	class Engine;
-};
+
+class Texture;
+class Effect;
+class Engine;
 
 #define BITFLAG(x) (1 << x)
 
@@ -23,12 +21,12 @@ public:
 		HDR = BITFLAG(2),
 	};
 
-
+	s32 GetFlags() const { return m_PassFlags; }
 	PostProcessManager() = default;
 	void Initiate();
 	void CleanUp();
 
-	void Process(Hex::Texture* current_frame_texture);
+	void Process(Texture* current_frame_texture);
 
 	void SetPassesToProcess(s32 pass_flags);
 	void RemovePassToProcess(s32 pass_flag);
@@ -41,6 +39,6 @@ private:
 	MotionBlurPass	m_MotionBlurPass;
 	BloomPass		m_BloomPass;
 
-	Hex::Engine* m_Engine = nullptr;
+	Engine* m_Engine = nullptr;
 };
 

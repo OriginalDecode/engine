@@ -3,8 +3,7 @@
 #include "../CommonLib/Math/Quaternion/Quaternion.h"
 
 struct ControllerState;
-namespace Hex
-{
+
 	enum class eDirection
 	{
 		FORWARD,
@@ -95,4 +94,3 @@ namespace Hex
 		CU::Quaternion m_Roll;
 
 	};
-}

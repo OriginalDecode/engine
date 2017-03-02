@@ -1,0 +1,12 @@
+<root>
+	<Entity type="Prop" subType="SM_walkway_trim_b_50" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Modular_set/Dev_set_server_room/Walkways/SM_walkway_trim_b_50.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+			<RoomType value="static"/>
+		</GraphicsComponent>
+		
+		<PhysicsComponent>
+			<type value="static"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

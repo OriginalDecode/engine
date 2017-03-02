@@ -1,0 +1,12 @@
+<root>
+	<Entity type="Prop" subType="SM_stair_half" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Modular_set/Dev_set_server_room/Stairs/SM_stair_half.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+			<RoomType value="static"/>
+		</GraphicsComponent>
+		
+		<PhysicsComponent>
+			<type value="static"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

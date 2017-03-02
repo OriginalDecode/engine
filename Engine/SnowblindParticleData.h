@@ -1,13 +1,8 @@
 #pragma once
 #include <Math/Vector/Vector.h>
 
-
-
-namespace Hex
-{
-	class Texture;
-	class Effect;
-};
+class Texture;
+class Effect;
 
 struct SParticleData
 {
@@ -49,8 +44,8 @@ struct SAnimatedParticleObject
 
 struct SEmitterData
 {
-	Hex::Texture* diffuseTexture = nullptr;
-	Hex::Effect* shader = nullptr;
+	Texture* diffuseTexture = nullptr;
+	Effect* shader = nullptr;
 
 	SParticleData particleData;
 

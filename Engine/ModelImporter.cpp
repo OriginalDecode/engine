@@ -21,7 +21,7 @@
 
 
 CModelImporter::CModelImporter()
-	: myEngine(Hex::Engine::GetInstance())
+	: myEngine(Engine::GetInstance())
 	, myTimeManager(new CommonUtilities::TimeManager())
 {
 	myTimeManager->CreateTimer();
@@ -33,10 +33,10 @@ CModelImporter::~CModelImporter()
 	SAFE_DELETE(myTimeManager);
 }
 
-Hex::CModel* CModelImporter::CreateModel(FBXModelData* someData, Hex::Effect* anEffect)
+CModel* CModelImporter::CreateModel(FBXModelData* someData, Effect* anEffect)
 {
 
-	Hex::CModel* newModel = new Hex::CModel();
+	CModel* newModel = new CModel();
 	newModel->SetEffect(anEffect);
 
 	if (someData->myData)
@@ -52,14 +52,14 @@ Hex::CModel* CModelImporter::CreateModel(FBXModelData* someData, Hex::Effect* an
 	return newModel;
 }
 
-Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, const std::string& aEffectPath)
+CModel* CModelImporter::LoadModel(const std::string& aFilePath, const std::string& aEffectPath)
 {
 	myCurrentLoadingFile = aFilePath;
-	Hex::CModel* model = LoadModel(aFilePath, myEngine->GetEffect(aEffectPath))->CreateModel(aFilePath);
+	CModel* model = LoadModel(aFilePath, myEngine->GetEffect(aEffectPath))->CreateModel(aFilePath);
 	return model;
 }
 
-Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect* anEffect)
+CModel* CModelImporter::LoadModel(const std::string& aFilePath, Effect* anEffect)
 {
 	myTimeManager->Update();
 	float loadTime = myTimeManager->GetTimer(0).GetTotalTime().GetMilliseconds();
@@ -94,7 +94,7 @@ Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect
 
 	ProcessNode(rootNode, scene, data);
 
-	Hex::CModel* toReturn = CreateModel(data, anEffect);
+	CModel* toReturn = CreateModel(data, anEffect);
 
 
 	if (data->myTextureData)
@@ -119,7 +119,7 @@ Hex::CModel* CModelImporter::LoadModel(const std::string& aFilePath, Hex::Effect
 	return toReturn;
 }
 
-void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Effect* /*anEffect*/)
+void CModelImporter::FillData(FBXModelData* someData, CModel* out, Effect* /*anEffect*/)
 {
 #ifdef SNOWBLIND_DX11
 	ModelData* data = someData->myData;
@@ -132,7 +132,7 @@ void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Eff
 		data->m_WHD.z += 0.1f;
 
 	out->SetWHD(data->m_WHD);
-	//Hex::VertexIndexWrapper* indexWrapper = new Hex::VertexIndexWrapper();
+	//VertexIndexWrapper* indexWrapper = new VertexIndexWrapper();
 	out->m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
 	u32* indexData = new u32[data->myIndexCount];
 	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
@@ -148,7 +148,7 @@ void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Eff
 
 
 	/* BUG HERE. CRASH. */
-	//Hex::VertexDataWrapper* vertexData = new Hex::VertexDataWrapper();
+	//VertexDataWrapper* vertexData = new VertexDataWrapper();
 	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float); //is this wrong?
 	u32* vertexRawData = new u32[sizeOfBuffer];
 	memcpy(vertexRawData, data->myVertexBuffer, sizeOfBuffer); // This crashes?
@@ -158,7 +158,7 @@ void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Eff
 	out->m_VertexData.myStride = data->myVertexStride * sizeof(float);
 	//out->myVertexData = vertexData;
 
-	Hex::CSurface* newSurface = new Hex::CSurface(0, data->myVertexCount, 0
+	CSurface* newSurface = new CSurface(0, data->myVertexCount, 0
 		, data->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	out->myIsNULLObject = false;
@@ -219,7 +219,7 @@ void CModelImporter::FillData(FBXModelData* someData, Hex::CModel* out, Hex::Eff
 
 	for (s32 i = 0; i < info.Size(); i++)
 	{
-		newSurface->AddTexture(info[i].myFilename, (Hex::TextureType)info[i].myType);
+		newSurface->AddTexture(info[i].myFilename, (TextureType)info[i].myType);
 	}
 
 
@@ -532,57 +532,57 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 			{
 				case aiTextureType_DIFFUSE:
 				{
-					newInfo.myType = Hex::TextureType::_ALBEDO;
+					newInfo.myType = TextureType::_ALBEDO;
 				}break;
 
 				case aiTextureType_SPECULAR:
 				{
-					newInfo.myType = Hex::TextureType::_ROUGHNESS;
+					newInfo.myType = TextureType::_ROUGHNESS;
 				}break;
 
 				case aiTextureType_AMBIENT:
 				{
-					newInfo.myType = Hex::TextureType::_AO;
+					newInfo.myType = TextureType::_AO;
 				}break;
 
 				case aiTextureType_EMISSIVE:
 				{
-					newInfo.myType = Hex::TextureType::_EMISSIVE;
+					newInfo.myType = TextureType::_EMISSIVE;
 				}break;
 
 				case aiTextureType_HEIGHT:
 				{
-					newInfo.myType = Hex::TextureType::_HEIGHT;
+					newInfo.myType = TextureType::_HEIGHT;
 				}break;
 
 				case aiTextureType_NORMALS:
 				{
-					newInfo.myType = Hex::TextureType::_NORMAL;
+					newInfo.myType = TextureType::_NORMAL;
 				}break;
 
 				case aiTextureType_SHININESS:
 				{
-					newInfo.myType = Hex::TextureType::_SHININESS;
+					newInfo.myType = TextureType::_SHININESS;
 				}break;
 
 				case aiTextureType_OPACITY:
 				{
-					newInfo.myType = Hex::TextureType::_OPACITY;
+					newInfo.myType = TextureType::_OPACITY;
 				}break;
 
 				case aiTextureType_DISPLACEMENT:
 				{
-					newInfo.myType = Hex::TextureType::_DISPLACEMENT;
+					newInfo.myType = TextureType::_DISPLACEMENT;
 				}break;
 
 				case aiTextureType_LIGHTMAP:
 				{
-					newInfo.myType = Hex::TextureType::_LIGHTMAP;
+					newInfo.myType = TextureType::_LIGHTMAP;
 				}break;
 
 				case aiTextureType_REFLECTION:
 				{
-					newInfo.myType = Hex::TextureType::_METALNESS;
+					newInfo.myType = TextureType::_METALNESS;
 				}break;
 
 				case aiTextureType_UNKNOWN:

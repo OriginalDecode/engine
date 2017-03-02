@@ -47,12 +47,12 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 diffuse = DiffuseTexture.Sample(linear_Clamp, input.uv);
 
 	float4 LumPixel = LuminanceTexture.Sample(linear_Clamp, input.uv);
-	float luminance = AverageLumTexture.Sample(linear_Clamp, input.uv);
+	float luminance = AverageLumTexture.Sample(linear_Clamp, input.uv).r;
 
 	//luminance = min(max(luminance, lumMin), lumMax);
-	float exposure = 0.18;//(1.03 - (2 / (2 + log10(luminance + 1 ) ) ) ) ;
+	float exposure = (1.03 - (2 / (2 + log10(luminance + 1 ) ) ) ) ;
 
-	float4 color1 = (LumPixel * (exposure * 2)) / luminance;
+	float4 color1 = (diffuse * (0.5)) / luminance;
 	float4 curr = Tonemap( 2 * diffuse);
 	float4 white_scale = 1 / Tonemap(WhitePoint);
 	float4 color = curr * white_scale;
@@ -61,24 +61,21 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float4 output = saturate(pow( color, 1 / 2.2 ));
 
-	//output = diffuse * ( color1 / ( 1 + color1  ));
-	//output = diffuse * ( color1 / ( 1 + color1 / (lumMax * lumMax))) / ( 1 + color1);
-	output.rgb = (output.rgb - 0.5) * (1.0 + 0.3) + 0.5;
-	return saturate(diffuse  * color1);
+	//output.rgb = (output.rgb - 0.5) * (1.0 + 0.3) + 0.5;
+	return saturate(output  * color1);
 }
+
 /*
+float4 PS(VS_OUTPUT input) : SV_Target
+{	
 	float4 diffuse = DiffuseTexture.Sample(linear_Clamp, input.uv);
-	float luminance = LuminanceTexture.Sample(linear_Clamp, input.uv);
-
-	luminance = min(max(luminance.x, lumMin), lumMax);
+	float luminance = AverageLumTexture.Sample(linear_Clamp, input.uv).r;
+	luminance = min(max(luminance, lumMin), lumMax);
 	float exposure = 0.18;
-
-	float3 color = (diffuse * exposure) / luminance.r;
-	
-	float3 curr = 2 * Tonemap(color);
-
-	float3 white_scale = 1 / Tonemap(WhitePoint);
-	float3 color2 = curr * white_scale;
-
-	return float4(color2, diffuse.a);
+	float4 texColor = diffuse * (exposure) / (luminance); 
+	float4 curr = 2 * Tonemap(texColor);
+	float4 white_scale = 1 / Tonemap(WhitePoint);
+	float4 color = curr * white_scale;
+	return float4(color.rgb,diffuse.a);
+}
 */

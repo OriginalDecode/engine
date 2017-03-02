@@ -23,20 +23,21 @@
 #include <Math/Vector/Vector.h>
 #include "../Physics/PhysicsManager.h"
 #include "../EntitySystem/EntityManager.h"
-
+#include <imgui.h>
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
 
-	m_Engine = Hex::Engine::GetInstance();
+	m_Engine = Engine::GetInstance();
 	m_Synchronizer = m_Engine->GetSynchronizer();
 
 
-	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
-	m_World.AddDwellers(m_Engine->LoadLevel("Data/Levels/level_01.json"));
+	//m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
+	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel("Data/Levels/level_01.json");
+	//m_World.AddDwellers(dwellers);
 
 
-	m_Picker = new Hex::CMousePicker;
+	m_Picker = new CMousePicker;
 
 	//m_Engine->ToggleVsync(); //settings
 	m_Camera = m_Engine->GetCamera();
@@ -44,7 +45,7 @@ void Game::InitState(StateStack* state_stack)
 	
 	m_PauseState.InitState(m_StateStack);
 
-	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
+	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 }
 
 void Game::EndState()
@@ -83,7 +84,7 @@ void Game::Update(float dt)
 
 		//component->myOrientation.SetPosition(pointHit);
 	}
-
+	Engine::GetInstance()->GetEntityManager().Update(dt);
 	if (input_wrapper->OnDown(KButton::ESCAPE))
 	{
 		m_StateStack->PopCurrentMainState();
@@ -106,19 +107,19 @@ void Game::Update(float dt)
 	}
 
 	if (input_wrapper->IsDown(KButton::W))
-		m_Camera->Move(Hex::eDirection::FORWARD, 50.f * dt);
+		m_Camera->Move(eDirection::FORWARD, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::S))
-		m_Camera->Move(Hex::eDirection::BACK, -50.f * dt);
+		m_Camera->Move(eDirection::BACK, -50.f * dt);
 	if (input_wrapper->IsDown(KButton::A))
-		m_Camera->Move(Hex::eDirection::LEFT, -50.f * dt);
+		m_Camera->Move(eDirection::LEFT, -50.f * dt);
 	if (input_wrapper->IsDown(KButton::D))
-		m_Camera->Move(Hex::eDirection::RIGHT, 50.f * dt);
+		m_Camera->Move(eDirection::RIGHT, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::SPACE))
-		m_Camera->Move(Hex::eDirection::UP, 50.f * dt);
+		m_Camera->Move(eDirection::UP, 50.f * dt);
 	if (input_wrapper->IsDown(KButton::X))
-		m_Camera->Move(Hex::eDirection::DOWN, -50.f * dt);
+		m_Camera->Move(eDirection::DOWN, -50.f * dt);
 
 
 
-	m_World.Update(dt);
+	//m_World.Update(dt);
 }

@@ -1,7 +1,6 @@
 #pragma once
 #include "snowblind_shared.h"
-namespace Hex
-{
+
 	class Texture;
 	class Camera;
 	class Effect;
@@ -46,4 +45,3 @@ namespace Hex
 		float m_BufferSize = 0.f;
 
 	};
-};

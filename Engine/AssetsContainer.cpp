@@ -29,7 +29,7 @@ CAssetsContainer::~CAssetsContainer()
 
 void CAssetsContainer::Initiate()
 {
-	myShaderFactory = new Hex::ShaderFactory;
+	myShaderFactory = new ShaderFactory;
 	myModelLoader = new CModelImporter;
 	myTextures.empty();
 	myEffects.empty();
@@ -37,7 +37,7 @@ void CAssetsContainer::Initiate()
 	mySprites.empty();
 }
 
-Hex::Texture* CAssetsContainer::GetTexture(const std::string& aFilePath)
+Texture* CAssetsContainer::GetTexture(const std::string& aFilePath)
 {
 	if (CL::substr(aFilePath, ".dds") == false)
 	{
@@ -55,7 +55,7 @@ Hex::Texture* CAssetsContainer::GetTexture(const std::string& aFilePath)
 	return myTextures[aFilePath];
 }
 
-Hex::Effect* CAssetsContainer::GetEffect(const std::string& aFilePath)
+Effect* CAssetsContainer::GetEffect(const std::string& aFilePath)
 {
 	if (myEffects.find(aFilePath) == myEffects.end())
 	{
@@ -64,7 +64,7 @@ Hex::Effect* CAssetsContainer::GetEffect(const std::string& aFilePath)
 	return myEffects[aFilePath];
 }
 
-Hex::CModel* CAssetsContainer::GetModel(const std::string& aFilePath)
+CModel* CAssetsContainer::GetModel(const std::string& aFilePath)
 {
 	if (myModels.find(aFilePath) == myModels.end())
 	{
@@ -79,7 +79,7 @@ void CAssetsContainer::Update()
 	myShaderFactory->Update();
 }
 
-void CAssetsContainer::ReloadTexture(Hex::Texture* texture)
+void CAssetsContainer::ReloadTexture(Texture* texture)
 {
 	texture->OnReload();
 }
@@ -88,7 +88,7 @@ bool CAssetsContainer::LoadTexture(const std::string& aFilePath)
 {
 	if (myTextures.find(aFilePath) == myTextures.end())
 	{
-		Hex::Texture* texture = new Hex::Texture;
+		Texture* texture = new Texture;
 		if (texture->Load(aFilePath.c_str()) == false)
 		{
 			DL_ASSERT_EXP(texture->CleanUp(), "Failed to cleanup texture!");
@@ -102,7 +102,7 @@ bool CAssetsContainer::LoadTexture(const std::string& aFilePath)
 
 void CAssetsContainer::LoadEffect(const std::string& aFilePath)
 {
-	Hex::Effect* effect = new Hex::Effect(aFilePath);
+	Effect* effect = new Effect(aFilePath);
 	myShaderFactory->LoadShader(effect);
 	myEffects[aFilePath] = effect;
 }

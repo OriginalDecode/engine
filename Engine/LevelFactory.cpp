@@ -22,7 +22,7 @@
 
 void LevelFactory::Initiate()
 {
-	m_Engine = Hex::Engine::GetInstance();
+	m_Engine = Engine::GetInstance();
 	m_EntityManager = &m_Engine->GetEntityManager();
 	m_PhysicsManager = m_Engine->GetPhysicsManager();
 }
@@ -36,7 +36,7 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 	const JSONElement& el = m_LevelReader.GetElement("root");
 
 
-	//m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
+	m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
 		CreateEntitiy(it->value["entity"].GetString(), it);
@@ -111,7 +111,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
 
-	if (sponza)
+	/*if (sponza)
 	{
 		for (int i = 0; i < 80; i++)
 		{
@@ -141,8 +141,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 			CreateDebugComponent(entity, true, EditObject::LIGHT);
 
 		}
-	}
-
+	}*/
 
 }
 
@@ -255,7 +254,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	if (shape == "mesh")
 	{
 		RenderComponent& render_component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
-		Hex::CModel* model = m_Engine->GetModel(render_component.myModelID);
+		CModel* model = m_Engine->GetModel(render_component.myModelID);
 		
 		phys_body = component.myBody->InitAsBox(200, 100, 100, translation_component.myOrientation.GetPosition());// ->GetVertices(), model->GetIndices()); //InitAsBox(1, 1, 1, { 0,0,0 });
 
@@ -284,7 +283,7 @@ void LevelFactory::CreateCameraComponent(JSONReader& /*entity_reader*/, Entity e
 	CameraComponent& component = m_EntityManager->GetComponent<CameraComponent>(entity_id);
 	m_DwellerList.GetLast()->AddComponent<CameraComponent>(&component, TreeDweller::CAMERA);
 
-	component.m_Camera = Hex::Engine::GetInstance()->GetCamera();
+	component.m_Camera = Engine::GetInstance()->GetCamera();
 }
 
 void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
@@ -443,11 +442,11 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	Hex::CTerrain* terrain = Hex::Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 2, 0), CU::Vector2f(512, 512));
+	CTerrain* terrain = Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 2, 0), CU::Vector2f(512, 512));
 	//terrain->AddNormalMap("Data/Textures/t1_n.dds");
 	/*
 	Work([&](std::string texture) {
-		Hex::CTerrain* terrain = m_Engine->CreateTerrain(texture, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+		CTerrain* terrain = m_Engine->CreateTerrain(texture, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
 		terrain->AddNormalMap("Data/Textures/normal.dds");
 	});
 	*/

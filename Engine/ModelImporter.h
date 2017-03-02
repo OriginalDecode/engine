@@ -5,12 +5,10 @@
 #include <assimp/postprocess.h>
 #include "snowblind_shared.h"
 #include "Surface.h"
-namespace Hex
-{
-	class CModel;
-	class Effect;
-	class Engine;
-};
+
+class CModel;
+class Effect;
+class Engine;
 
 namespace CommonUtilities
 {
@@ -19,7 +17,7 @@ namespace CommonUtilities
 
 struct TextureInfo
 {
-	Hex::TextureType myType;
+	TextureType myType;
 	std::string myFilename;
 };
 
@@ -86,18 +84,18 @@ public:
 	CModelImporter();
 	~CModelImporter();
 
-	Hex::CModel* LoadModel(const std::string& aFilePath, const std::string& aEffectPath);
+	CModel* LoadModel(const std::string& aFilePath, const std::string& aEffectPath);
 
 private:
 	Ticket_Mutex m_LoaderMutex;
 	Assimp::Importer importer;
-	Hex::Engine* myEngine;
+	Engine* myEngine;
 	std::string myCurrentLoadingFile;
 	CommonUtilities::TimeManager* myTimeManager;
-	
-	Hex::CModel* CreateModel(FBXModelData* someData, Hex::Effect* anEffect);
-	Hex::CModel* LoadModel(const std::string& aFilePath, Hex::Effect* anEffect);
-	void FillData(FBXModelData* someData, Hex::CModel* out, Hex::Effect* anEffect);
+
+	CModel* CreateModel(FBXModelData* someData, Effect* anEffect);
+	CModel* LoadModel(const std::string& aFilePath, Effect* anEffect);
+	void FillData(FBXModelData* someData, CModel* out, Effect* anEffect);
 	void ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData);
 	void ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelData* fbx);
 };

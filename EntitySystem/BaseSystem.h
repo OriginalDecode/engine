@@ -2,12 +2,9 @@
 #include "ComponentFilter.h"
 #include "EntityManager.h"
 #include <Utilities.h>
-namespace Hex
-{
-	class Synchronizer;
-	class Engine;
-}
 
+class Synchronizer;
+class Engine;
 class BaseSystem
 {
 public:
@@ -33,7 +30,7 @@ protected:
 	EntityManager& myEntityManager;
 	Ticket_Mutex m_Mutex;
 	s32 m_CurrentFrame = 0;
-	Hex::Engine* m_Engine = nullptr;
+	Engine* m_Engine = nullptr;
 	
 };
 

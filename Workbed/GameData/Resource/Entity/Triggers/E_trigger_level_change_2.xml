@@ -1,0 +1,17 @@
+<root>
+	<Entity type="Trigger" subType="level_change_2" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Prop/SM_dev_box.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+		</GraphicsComponent>
+		
+		<TriggerComponent>
+			<Trigger type="changeLevel" value="2" oneTimeTrigger="true"/>
+		</TriggerComponent>
+		
+		<PhysicsComponent>
+			<min x="0" y="0" z="0"/>
+			<max x="1" y="1" z="1"/>
+			<type value="trigger"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

@@ -1,0 +1,11 @@
+<root>
+	<Entity type="Prop" subType="SM_printer_a_big" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Prop/Office/Electronics/SM_printer_a_big.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+		</GraphicsComponent>
+		
+		<PhysicsComponent>
+			<type value="static"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

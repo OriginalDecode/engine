@@ -1,0 +1,17 @@
+<root>
+	<Entity type="bullet" subType="bulletServer">
+		<BulletComponent>
+			<Speed value="9"/>
+			<Damage value="1"/>
+			<Lifetime value="3"/>
+			<minspreadrotation value="-0.1"/>
+			<maxspreadrotation value="0.1"/>
+		</BulletComponent>
+		
+		<PhysicsComponent>
+			<min x="0" y="0" z="0"/>
+			<max x="0.2" y="0.2" z="0.2"/>
+			<type value="phantom"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

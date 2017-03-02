@@ -1,0 +1,10 @@
+<root>
+	<Entity type="Prop" subType="SM_file_cabinet_A_A_large" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Prop/Office/Furniture/Storage/SM_file_cabinet_A_A_large.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+		</GraphicsComponent>
+		<PhysicsComponent>
+			<type value="static"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

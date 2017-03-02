@@ -17,8 +17,8 @@ public:
 	CU::GrowingArray<TreeDweller*> GetDwellers() { return m_DwellerList; }
 	TreeDweller* CreateEntitiy(const std::string& entity_filepath, const CU::Vector3f& position);
 
-private:
 
+private:
 	void CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it);
 	void CreateTerrain(std::string terrain_path);
 
@@ -39,7 +39,7 @@ private:
 
 	JSONReader m_LevelReader;
 
-	Hex::Engine* m_Engine			= nullptr;
+	Engine* m_Engine			= nullptr;
 	EntityManager* m_EntityManager;
 	PhysicsManager* m_PhysicsManager	= nullptr;
 	bool sponza = false;

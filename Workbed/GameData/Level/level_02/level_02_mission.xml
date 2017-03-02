@@ -1,0 +1,142 @@
+<root>
+	<Mission id="5" type="killx" value="8" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="add" gid="208" timeBeforeStarting="0" />
+			<Event type="marker" show="false" timeBeforeStarting="0" />
+		</StartEvent>
+		<MissionEvent >
+			<Event type="spawn" gid="534" timeBeforeStarting="0" />
+			<Event type="spawn" gid="535" timeBeforeStarting="5" />
+			<Event type="spawn" gid="537" timeBeforeStarting="2" />
+			<Event type="spawn" gid="538" timeBeforeStarting="4" />
+			<Event type="spawn" gid="540" timeBeforeStarting="2" />
+			<Event type="spawn" gid="541" timeBeforeStarting="4" />
+			<Event type="spawn" gid="543" timeBeforeStarting="2" />
+			<Event type="spawn" gid="544" timeBeforeStarting="2" />
+		</MissionEvent>
+		<EndEvent >
+			<Event type="remove" gid="209" timeBeforeStarting="0" />
+			<Event type="remove" gid="210" timeBeforeStarting="0" />
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="1.5" positiony="1" positionz="147" />
+		</EndEvent>
+	</Mission>
+	<Mission id="7" type="killx" value="10" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="marker" show="false" timeBeforeStarting="0" />
+		</StartEvent>
+		<MissionEvent >
+			<Event type="spawn" gid="551" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="552" timeBeforeStarting="0.25" />
+			<Event type="spawn" gid="553" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="554" timeBeforeStarting="6" />
+			<Event type="spawn" gid="555" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="556" timeBeforeStarting="5" />
+			<Event type="spawn" gid="557" timeBeforeStarting="0.25" />
+			<Event type="spawn" gid="558" timeBeforeStarting="5" />
+			<Event type="spawn" gid="559" timeBeforeStarting="0.25" />
+			<Event type="spawn" gid="560" timeBeforeStarting="6" />
+			<Event type="spawn" gid="561" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="562" timeBeforeStarting="4" />
+			<Event type="spawn" gid="563" timeBeforeStarting="0.5" />
+		</MissionEvent>
+		<EndEvent >
+			<Event type="remove" gid="211" timeBeforeStarting="0" />
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="12" positiony="1" positionz="158" />
+			<Event type="text" text="Main frame located #Take the service elevator #to the server room." timeBeforeStarting="0" timeForText="7" />
+		</EndEvent>
+	</Mission>
+	<Mission id="6" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="marker" show="false" timeBeforeStarting="0" />
+			<Event type="text" text="You'll need to hack a #terminal to get through" timeBeforeStarting="0" timeForText="3" />
+			<Event type="text" text="It should be around #here somewhere." timeBeforeStarting="3" timeForText="3" />
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="-27" positiony="7" positionz="147.5" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+			<Event type="add" gid="1007" timeBeforeStarting="0" />
+		</EndEvent>
+	</Mission>
+	<Mission id="1" type="killx" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="add" gid="202" timeBeforeStarting="0" />
+			<Event type="add" gid="203" timeBeforeStarting="0" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="-36.5" positiony="1" positionz="90" />
+			<Event type="add" gid="1002" timeBeforeStarting="0" />
+			<Event type="text" text="Open the door through the computer" timeBeforeStarting="0" timeForText="3" />
+		</EndEvent>
+	</Mission>
+	<Mission id="2" type="killx" value="5" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="marker" show="false" timeBeforeStarting="0" />
+			<Event type="remove" gid="202" timeBeforeStarting="0" />
+		</StartEvent>
+		<MissionEvent >
+			<Event type="spawn" gid="503" timeBeforeStarting="3" />
+			<Event type="spawn" gid="524" timeBeforeStarting="4" />
+			<Event type="spawn" gid="525" timeBeforeStarting="3" />
+			<Event type="spawn" gid="526" timeBeforeStarting="2" />
+			<Event type="spawn" gid="527" timeBeforeStarting="3" />
+			<Event type="spawn" gid="528" timeBeforeStarting="2" />
+		</MissionEvent>
+		<EndEvent >
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="9" positiony="1" positionz="52" />
+		</EndEvent>
+	</Mission>
+	<Mission id="3" type="killx" value="6" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="add" gid="205" timeBeforeStarting="0" />
+			<Event type="marker" show="false" timeBeforeStarting="0" />
+		</StartEvent>
+		<MissionEvent >
+			<Event type="spawn" gid="504" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="508" timeBeforeStarting="7" />
+			<Event type="spawn" gid="507" timeBeforeStarting="2" />
+			<Event type="spawn" gid="505" timeBeforeStarting="3" />
+			<Event type="spawn" gid="506" timeBeforeStarting="1.5" />
+		</MissionEvent>
+		<EndEvent >
+			<Event type="remove" gid="206" timeBeforeStarting="0" />
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="8" positiony="1" positionz="84" />
+		</EndEvent>
+	</Mission>
+	<Mission id="0" type="killx" value="4" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="add" gid="201" timeBeforeStarting="0.5" />
+		</StartEvent>
+		<MissionEvent >
+			<Event type="spawn" gid="533" timeBeforeStarting="0.7" />
+			<Event type="spawn" gid="500" timeBeforeStarting="1" />
+			<Event type="spawn" gid="532" timeBeforeStarting="3" />
+			<Event type="spawn" gid="530" timeBeforeStarting="1" />
+			<Event type="spawn" gid="531" timeBeforeStarting="3" />
+		</MissionEvent>
+		<EndEvent >
+			<Event type="remove" gid="200" timeBeforeStarting="2" />
+			<Event type="remove" gid="203" timeBeforeStarting="1" />
+			<Event type="remove" gid="202" timeBeforeStarting="0" />
+		</EndEvent>
+	</Mission>
+	<Mission id="4" type="killx" value="5" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="marker" show="false" timeBeforeStarting="0" />
+		</StartEvent>
+		<MissionEvent >
+			<Event type="spawn" gid="512" timeBeforeStarting="0" />
+			<Event type="spawn" gid="513" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="518" timeBeforeStarting="1" />
+			<Event type="spawn" gid="514" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="516" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="517" timeBeforeStarting="0.7" />
+		</MissionEvent>
+		<EndEvent >
+			<Event type="remove" gid="207" timeBeforeStarting="0" />
+			<Event type="remove" gid="208" timeBeforeStarting="0" />
+		</EndEvent>
+	</Mission>
+</root>

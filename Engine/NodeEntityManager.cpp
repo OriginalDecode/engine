@@ -6,7 +6,7 @@
 
 void NodeEntityManager::Initiate()
 {
-	m_Systems = Hex::Engine::GetInstance()->GetEntityManager().GetSystems();
+	m_Systems = Engine::GetInstance()->GetEntityManager().GetSystems();
 }
 
 void NodeEntityManager::AddEntity(TreeDweller* entity)

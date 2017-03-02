@@ -10,7 +10,7 @@
 LightSystem::LightSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, LightComponent>>())
 {
-	mySynchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
+	mySynchronizer = Engine::GetInstance()->GetSynchronizer();
 }
 
 void LightSystem::Update(float /*aDeltaTime*/)

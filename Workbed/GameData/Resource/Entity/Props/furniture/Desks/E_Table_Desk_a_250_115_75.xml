@@ -1,0 +1,10 @@
+<root>
+	<Entity type="Prop" subType="SM_Table_Desk_a_250_115_75" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Prop/Office/Furniture/Desks/SM_Table_Desk_a_250_115_75.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+		</GraphicsComponent>
+		<PhysicsComponent>
+			<type value="static"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

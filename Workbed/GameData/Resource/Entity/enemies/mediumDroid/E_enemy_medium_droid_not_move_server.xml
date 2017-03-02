@@ -1,0 +1,28 @@
+<root>
+	<Entity type="Unit" subType="mediumDroidNotMoveServer" >
+		<AIComponent>
+			<VisionRange value="30"/>
+			<ArriveStopRange value="30"/>
+			<Speed value="0.00001"/>
+			<AttackAnimationTime value="1.5"/>
+		</AIComponent>
+
+		<BulletComponent>
+			<Speed value="75"/>
+			<Damage value="9"/>
+			<Lifetime value="5"/>
+			<minspreadrotation value="-0.02"/>
+			<maxspreadrotation value="0.02"/>
+		</BulletComponent>
+
+		<HealthComponent>
+			<MaxHealth value="50"/>
+		</HealthComponent>
+			
+		<PhysicsComponent>
+			<min x="0" y="0" z="0"/>
+			<max x="0.8" y="2" z="0.5"/>
+			<type value="capsule"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

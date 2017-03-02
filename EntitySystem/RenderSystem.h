@@ -1,11 +1,8 @@
 #pragma once
 #include "BaseSystem.h"
 
-namespace Hex
-{
-	class Synchronizer;
-}
 
+class Synchronizer;
 class EntityManager;
 class RenderSystem : public BaseSystem
 {
@@ -15,7 +12,7 @@ public:
 	void Update(float dt) override;
 
 private:
-	Hex::Synchronizer* mySynchronizer;
+	Synchronizer* mySynchronizer;
 
 };
 

@@ -12,8 +12,8 @@ void CPauseState::InitState(StateStack* state_stack)
 
 void CPauseState::Update(float aDeltaTime)
 {
-	Hex::Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::TEXT, "Hello World!", CU::Vector2f(0.5f, 0.5f)));
-	InputWrapper* input_wrapper = Hex::Engine::GetInstance()->GetInputHandle()->GetInputWrapper();
+	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::TEXT, "Hello World!", CU::Vector2f(0.5f, 0.5f)));
+	InputWrapper* input_wrapper = Engine::GetInstance()->GetInputHandle()->GetInputWrapper();
 	if (input_wrapper->OnDown(KButton::ESCAPE))
 	{
 		m_StateStack->PopCurrentSubState();

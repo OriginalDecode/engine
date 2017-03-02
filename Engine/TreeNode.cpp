@@ -21,7 +21,7 @@ TreeNode::~TreeNode()
 void TreeNode::Initiate(float halfwidth, Octree* octree)
 {
 	m_HalfWidth = halfwidth;
-	m_Synchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
+	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	m_NodeEntityManager.Initiate();
 	m_Octree = octree;
 	for (s32 i = 0; i < 8; i++)
@@ -75,7 +75,7 @@ void TreeNode::Update(float dt)
 
 	RenderBox();
 
-	Hex::Engine::GetInstance()->GetEntityManager().SetActiveNodeManager(&m_NodeEntityManager);
+	Engine::GetInstance()->GetEntityManager().SetActiveNodeManager(&m_NodeEntityManager);
 	m_NodeEntityManager.Update(dt);
 
 	const EntityList& entities = m_NodeEntityManager.GetEntities(CreateFilter<Requires<TranslationComponent>>());
@@ -127,7 +127,7 @@ void TreeNode::Update(float dt)
 		/*
 		if (m_Parent && !m_Parent->GetParent())
 		{
-			Hex::Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
+			Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
 				node->Update(dt); }));
 		}
 		else/**/

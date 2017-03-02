@@ -1,0 +1,18 @@
+<root>
+	<Entity type="Trigger" subType="unlock_door_1_level01" >
+		<!---<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Prop/SM_dev_box_small.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+			<RoomType value="dynamic"/>
+		</GraphicsComponent>-->
+		
+		<TriggerComponent>
+			<Trigger type="unlock" value="100" oneTimeTrigger="true" isClientSide="false" activeFromStart="false" isPressable="true"/>
+		</TriggerComponent>
+		
+		<PhysicsComponent>
+			<min x="0" y="0" z="0"/>
+			<max x="1.829262" y="4.170817" z="2.432302"/>
+			<type value="trigger"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

@@ -1,0 +1,6 @@
+<root>
+	<level ID="0" path="Data/Level/level_01/level_01.xml"/>
+	<level ID="1" path="Data/Level/level_02/level_02.xml"/>
+	<level ID="2" path="Data/Level/level_03/level_03.xml"/>
+	<level ID="3" path="Data/Level/level_04/level_04.xml"/>
+</root>

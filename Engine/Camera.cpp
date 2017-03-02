@@ -2,8 +2,7 @@
 #include "Camera.h"
 //#include <SimpleMath.h>
 #include "../Input/ControllerInput.h"
-namespace Hex
-{
+
 	static constexpr float s_pi = 3.1415926535f;
 
 	void Camera::CreatePerspectiveProjection(float width, float height, float near_plane, float far_plane, float fov)
@@ -28,7 +27,7 @@ namespace Hex
 	{
 		CU::Vector3f original_pos = GetPosition();
 		SetPosition(original_pos - position);
-		m_Orientation = m_Orientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(5.f) * (Hex::Engine::GetInstance()->GetDeltaTime()));
+		m_Orientation = m_Orientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(5.f) * (Engine::GetInstance()->GetDeltaTime()));
 		SetPosition(GetPosition() + position);
 
 
@@ -203,5 +202,3 @@ namespace Hex
 		m_Orientation.myMatrix[9] = axisZ.y;
 		m_Orientation.myMatrix[10] = axisZ.z;
 	}
-
-}

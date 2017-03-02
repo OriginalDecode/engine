@@ -146,11 +146,11 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float compareValue = shadowVec.z;
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
-	if(sampleValue < compareValue)
- 		final_color *= 0.42;
+	if(sampleValue > compareValue)
+ 		final_color *= 2;
 
- 	float3 dir_color = float3(1,0.8,0.8);
-	float3 output = saturate(final_color * NdotL * dir_color);
+ 	float3 dir_color = float3(1,1,1);
+	float3 output = saturate(final_color * dir_color);
 	
-	return float4(output, 1.f);
+	return float4(output + (ambientDiffuse * 0.42), 1.f);
 };

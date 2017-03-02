@@ -1,0 +1,12 @@
+<root>
+	<Entity type="Prop" subType="SM_double_doors_a_400_300_laser" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Modular_set/Dev_set/Doors/SM_double_doors_a_400_300_laser.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+			<RoomType value="dynamic"/>
+		</GraphicsComponent>
+		<PhysicsComponent>
+			<type value="static"/>
+		</PhysicsComponent>
+		<SoundComponent/>
+	</Entity>
+</root>

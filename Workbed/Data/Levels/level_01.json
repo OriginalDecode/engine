@@ -8,10 +8,22 @@
 			"rotation" : [0,0,1]
 		},
 		"object" : 	{ 
-			"entity":"Data/Levels/entity2.json",
-			"position" : [ 256, 0, 256 ],
-			"scale" : [1,1,1],
+			"entity":"Data/Levels/entity3.json", 
+			"position" : [ 0, 5, 0 ],
+			"scale" : [5,5,5],
 			"rotation" : [0,0,0]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/entity3.json", 
+			"position" : [ 0, 5, 0 ],
+			"scale" : [5,5,5],
+			"rotation" : [0,0,-1]
+		},
+		"object" : 	{ 
+			"entity":"Data/Levels/entity3.json", 
+			"position" : [ 0, 5, 0 ],
+			"scale" : [5,5,5],
+			"rotation" : [1,0,0]
 		},
 		"object" : {
 			"entity":"Data/Levels/spotlight.json",

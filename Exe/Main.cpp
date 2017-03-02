@@ -40,8 +40,8 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	float h = 1080;
 	newApplication = new Application();
 
-	Hex::Engine::Create();
-	Hex::Engine::GetInstance()->Initiate(w, h, anInstance, WindowProc);
+	Engine::Create();
+	Engine::GetInstance()->Initiate(w, h, anInstance, WindowProc);
 	DL_ASSERT_EXP(newApplication->Initiate(), "Failed to initiate game");
 
 	PRAWINPUTDEVICELIST device_list = 0;
@@ -62,7 +62,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	//rid[0].usUsagePage = (USHORT)EUsagePage::DEFAULT;
 	//rid[0].usUsage = MOUSE;
 	//rid[0].dwFlags = 0;
-	//rid[0].hwndTarget = Hex::Engine::GetInstance()->GetHWND();
+	//rid[0].hwndTarget = Engine::GetInstance()->GetHWND();
 
 	//if (RegisterRawInputDevices(rid, 1, sizeof(rid[0])) == FALSE)
 	//{
@@ -99,7 +99,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 			applicationIsRunning = false;
 			break;
 		}
-		Hex::Engine::GetInstance()->Update();
+		Engine::GetInstance()->Update();
 		/*if (g_windowactive)
 		{
 			SetCursorPos(w / 2.f, h / 2.f);
@@ -113,7 +113,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	newApplication = nullptr;
 
 	DL_Debug::Debug::Destroy();
-	Hex::Engine::Destroy();
+	Engine::Destroy();
 	return 0;
 }
 

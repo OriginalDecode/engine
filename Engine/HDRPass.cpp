@@ -9,12 +9,12 @@
 
 void HDRPass::Initiate()
 {
-	m_Engine = Hex::Engine::GetInstance();
+	m_Engine = Engine::GetInstance();
 	m_WindowSize = m_Engine->GetWindowSize();
 	m_API = m_Engine->GetAPI();
 
 
-	m_HDRTexture = new Hex::Texture;
+	m_HDRTexture = new Texture;
 	m_HDRTexture->Initiate(
 		m_WindowSize.myWidth,
 		m_WindowSize.myHeight,
@@ -27,7 +27,7 @@ void HDRPass::Initiate()
 	{
 		std::stringstream debug_name;
 		debug_name << "HDRPass Downsample : "<< sample_size << "x" << sample_size;
-		m_Downsamples.Add(new Hex::Texture);
+		m_Downsamples.Add(new Texture);
 		m_Downsamples.GetLast()->Initiate(
 			sample_size,
 			sample_size,
@@ -45,11 +45,18 @@ void HDRPass::Initiate()
 
 void HDRPass::CleanUp()
 {
+	m_HDRTexture->CleanUp();
 	SAFE_DELETE(m_HDRTexture);
-	m_Downsamples.DeleteAll();
+
+	for (Texture* texture : m_Downsamples)
+	{
+		texture->CleanUp();
+		delete texture;
+		texture = nullptr;
+	}
 }
 
-void HDRPass::Process(Hex::Texture* scene_texture)
+void HDRPass::Process(Texture* scene_texture)
 {
 	//set buffers
 

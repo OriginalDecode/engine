@@ -1,0 +1,369 @@
+<root>
+
+  <!----TEMP---->
+	<path src="Data/Resource/Entity/character_scale/E_temp_character_scale_a.xml"/>
+	<path src="Data/Resource/Entity/Props/E_prop_dev_box_small.xml"/>
+	<path src="Data/Resource/Entity/Props/E_prop_dev_box.xml"/>
+	<path src="Data/Resource/Entity/Props/E_debug_cube_100_100.xml"/>
+	
+	<path src="Data/Resource/Entity/Props/E_test_room_rgbg_1000_1000_400.xml"/>
+	<path src="Data/Resource/Entity/test/multiMaterialStuff.xml"/>
+	
+	
+	<!----if you are lazy put stuff here : D---->
+		<path src="Data/Resource/Entity/doors/E_double_doors_a_400_300_closed.xml"/>
+		<path src="Data/Resource/Entity/doors/E_double_doors_a_400_300_open.xml"/>
+		
+		
+	  <!----dynamic revomable objects---->
+		<path src="Data/Resource/Entity/dynamic_removable_entites/E_door_400x400.xml"/>
+		<path src="Data/Resource/Entity/doors/E_double_doors_a_400_300_laser.xml"/>
+		
+		
+		
+ <!---------------SERVER ROOM -------->
+ 
+	  <!----Covers---->
+		<path src="Data/Resource/Entity/Props/Covers/E_crate_cover_b.xml"/>
+		<path src="Data/Resource/Entity/Props/Covers/E_crate_cover_a.xml"/>
+		<path src="Data/Resource/Entity/Props/Covers/E_crate_cover_c.xml"/>
+		<path src="Data/Resource/Entity/Props/Covers/E_railing_cover_a.xml"/>
+  
+ 	  <!----Floors---->
+		<path src="Data/Resource/Entity/dev_set_server_room/Floors/E_steel_floor_200_200.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Floors/E_steel_floor_400_400.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Floors/E_steel_floor_diagonal_200_200.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Floors/E_grate_floor_200_200.xml"/>
+		
+	  <!----Ceilings---->
+		<path src="Data/Resource/Entity/dev_set_server_room/Ceilings/E_steel_ceiling_400_400.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Ceilings/E_steel_ceiling_200_200.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Ceilings/E_steel_ceiling_diagonal_200_200.xml"/>
+				
+	  <!----PILLARS---->
+		<path src="Data/Resource/Entity/dev_set_server_room/Pillars/E_steel_pillar_50_x_400.xml"/>
+						
+	  <!----STAIRS---->
+		<path src="Data/Resource/Entity/dev_set_server_room/stairs/E_stair_200.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/stairs/E_stair_corner_inner.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/stairs/E_stair_corner_outer.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/stairs/E_stair_half.xml"/>
+		
+		
+		 <!----WALLS---->
+		<path src="Data/Resource/Entity/dev_set_server_room/Walls/E_wall_100_400.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Walls/E_wall_400_400.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Walls/E_wall_200_400.xml"/>
+		
+		
+	  <!----RAILINGS---->
+		<path src="Data/Resource/Entity/dev_set_server_room/Rails/E_railing_b_200.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Rails/E_railing_b_diagonal_200.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Rails/E_railing_b_200_horizontal_diagonal.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Rails/E_railing_b_100.xml"/>
+		
+	  <!----WALKWAYS---->
+	  	<path src="Data/Resource/Entity/dev_set_server_room/Walkways/E_walkway_trim_b_50.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Walkways/E_walkway_trim_b_600.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Walkways/E_walkway_trim_b_100.xml"/>
+		
+		<path src="Data/Resource/Entity/dev_set_server_room/Walkways/E_walkway_trim_diagonal_a_100.xml"/>
+		<path src="Data/Resource/Entity/dev_set_server_room/Walkways/E_walkway_trim_diagonal_b_100.xml"/>
+		
+		
+	  <!----ELECTRONICS---->
+		<path src="Data/Resource/Entity/Props/Server_room/electronics/E_server_a.xml"/>
+		<path src="Data/Resource/Entity/Props/Server_room/electronics/E_megaserver.xml"/>
+		<path src="Data/Resource/Entity/Props/Server_room/electronics/E_hackingUnit.xml"/>
+		
+	
+ <!---------------OFFICE------------->
+	  <!----Floors---->
+		<path src="Data/Resource/Entity/dev_set/Floors/E_dev_floor_200_x_200.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Floors/E_dev_floor_400_400.xml"/>
+		
+	  <!----Glass---->
+	  <path src="Data/Resource/Entity/dev_set/Glass/E_glass_Wall_a_200_300.xml"/>
+	  
+	  <!----Walls---->
+		<path src="Data/Resource/Entity/dev_set/Walls/E_dev_wall_200_x_300.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Walls/E_dev_wall_200_x_400.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Walls/E_dev_wall_corner_in_200_x_300.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Walls/E_dev_wall_corner_out_200_x_300.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Walls/E_dev_wall_offset_200_x_300.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Walls/E_dev_wall_offset_corner_in_200_x_300.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Walls/E_dev_wall_offset_corner_out_200_x_300.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Walls/E_dev_wall_400_x_400.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Walls/E_dev_wall_100_x_400_R.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Walls/E_dev_wall_100_x_400_L.xml"/>
+		
+			  <!----Work_glass_rooms---->
+				<path src="Data/Resource/Entity/dev_set/Walls/Work_glass_rooms/E_dev_wall_glass_holder_200_x_400_c.xml"/>
+				<path src="Data/Resource/Entity/dev_set/Walls/Work_glass_rooms/E_dev_wall_glass_holder_200_x_400_l.xml"/>
+				<path src="Data/Resource/Entity/dev_set/Walls/Work_glass_rooms/E_dev_wall_glass_holder_200_x_400_r.xml"/>
+				
+			  <!----Windows---->
+				<path src="Data/Resource/Entity/dev_set/Windows/E_Window_a_300.xml"/>
+			  
+	  <!----Rails---->
+		<path src="Data/Resource/Entity/dev_set/Rails/E_railing_a_200.xml"/>
+
+		
+	  
+	  <!----Ceilings---->
+		<path src="Data/Resource/Entity/dev_set/Ceilings/E_dev_ceiling_200_x_200.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Ceilings/E_dev_ceiling_400_400.xml"/>
+		
+		<path src="Data/Resource/Entity/dev_set/Ceilings/E_dev_ceiling_100_200_b_.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Ceilings/E_dev_ceiling_100_200_l_.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Ceilings/E_dev_ceiling_100_200_t_.xml"/>
+		
+		<path src="Data/Resource/Entity/dev_set/Ceilings/E_dev_ceiling_stair_100_b.xml"/>
+		
+		<path src="Data/Resource/Entity/dev_set/Ceilings/E_dev_ceiling_stair_100_l_.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Ceilings/E_dev_ceiling_stair_100_r_.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Ceilings/E_dev_ceiling_stair_100_t_.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Ceilings/E_dev_ceiling_stair_200_x_100_t.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Ceilings/E_dev_ceiling_100_200_r_.xml"/>
+	  
+	  <!----Stairs---->
+		<path src="Data/Resource/Entity/dev_set/Stairs/E_dev_stairs_200_100_50.xml"/>
+	  
+	  <!----Pillars---->
+		<path src="Data/Resource/Entity/dev_set/Pillars/E_dev_pillar_50_x_300.xml"/>	
+		<path src="Data/Resource/Entity/dev_set/Pillars/E_dev_pillar_50_x_400.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Pillars/E_dev_pillar_100_x_400.xml"/>
+		
+	  <!----Electronics---->
+		<path src="Data/Resource/Entity/Props/Office/electronics/E_printer_a_small.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/electronics/E_printer_a_medium.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/electronics/E_printer_a_big.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/electronics/E_computer_monitor_a.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/electronics/E_computer_a.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/electronics/E_computer_mouse_a.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/electronics/E_keyboard_a.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/electronics/E_coridor_lamp_400.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/electronics/E_wall_lamp.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/electronics/E_hanging_lamp.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/electronics/E_hanging_lamp_short.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/electronics/E_hanging_lamp_NoLightVersion.xml"/>
+
+	  <!----Furniture--->
+		<path src="Data/Resource/Entity/Props/Office/furniture/Chairs/E_office_chair_a.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/furniture/Chairs/E_conference_chair_a.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/furniture/Cubicle dividers/E_cubicle_divider_200.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/furniture/Cubicle dividers/E_cubicle_divider_250.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/furniture/Cubicle dividers/E_cubicle_divider_300.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/furniture/Desks/E_desk_a_corner_250_250.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/furniture/Desks/E_desk_a_corner_asymmetric_250_200_l.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/furniture/Desks/E_desk_a_corner_asymmetric_250_200_r.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/furniture/Desks/E_Table_Desk_a_250_115_75.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/furniture/Storage/E_file_cabinet_A_A_large.xml"/>
+		
+	  <!----Supplies--->
+		<path src="Data/Resource/Entity/Props/Office/Supplies/E_papper_box_a.xml"/>
+		<path src="Data/Resource/Entity/Props/Office/Supplies/E_whiteboard_a.xml"/>
+		
+	  <!----Vegetation--->	
+		<path src="Data/Resource/Entity/Props/Office/Vegetation/E_plant_pot_a_big.xml"/>
+			<path src="Data/Resource/Entity/Props/Office/Vegetation/E_painting_2.xml"/>
+			<path src="Data/Resource/Entity/Props/Office/Vegetation/E_painting_1.xml"/>
+		
+	  <!----Walkways--->
+		<path src="Data/Resource/Entity/dev_set/Walkways/E_walkway_trim_a_100.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Walkways/E_walkway_trim_a_600.xml"/>
+		
+	  <!----Doorways--->
+		<path src="Data/Resource/Entity/dev_set/Doorways/E_dev_doorway_a_200_400.xml"/>
+		
+	  <!----Elevator--->
+		<path src="Data/Resource/Entity/dev_set/Elevator/E_elevator_a_open.xml"/>
+		<path src="Data/Resource/Entity/dev_set/Elevator/E_elevator_a_wall_400_400.xml"/>
+
+  <!----MISC---->
+	<path src="Data/Resource/Entity/E_explosion.xml"/>
+	<path src="Data/Resource/Entity/E_visual_explosion.xml"/>
+
+	
+	<!----bullets_projectiles---->
+	<path src="Data/Resource/Entity/bullets_projectiles/E_enemy_bullet.xml"/>
+	<path src="Data/Resource/Entity/bullets_projectiles/E_enemy_bullet_server.xml"/>
+	<path src="Data/Resource/Entity/bullets_projectiles/E_prop_bullet.xml"/>
+	<path src="Data/Resource/Entity/bullets_projectiles/E_grenade_server.xml"/>
+	<path src="Data/Resource/Entity/bullets_projectiles/E_grenade_local.xml"/>
+	
+	 <!----Player---->
+	<path src="Data/Resource/Entity/player/E_unit_player_local.xml"/>
+	<path src="Data/Resource/Entity/player/E_unit_player_server.xml"/>
+	<path src="Data/Resource/Entity/player/E_unit_player.xml"/>
+	
+
+	  <!----NEW---->
+	  <path src="Data/Resource/Entity/enemies/hackerDroids/E_enemy_easy_droid_hacker.xml"/>
+	  <path src="Data/Resource/Entity/enemies/hackerDroids/E_enemy_easy_droid_hacker_server.xml"/>
+	  
+	  <path src="Data/Resource/Entity/enemies/hackerDroids/E_enemy_swarm_droid_hacker.xml"/>
+	  <path src="Data/Resource/Entity/enemies/hackerDroids/E_enemy_swarm_droid_hacker_server.xml"/>
+	  
+	  <path src="Data/Resource/Entity/enemies/easyDroid/E_enemy_easy_droid_move.xml"/>
+	  <path src="Data/Resource/Entity/enemies/easyDroid/E_enemy_easy_droid_move_server.xml"/>
+	  <path src="Data/Resource/Entity/enemies/easyDroid/E_enemy_easy_droid_not_move.xml"/>
+	  <path src="Data/Resource/Entity/enemies/easyDroid/E_enemy_easy_droid_not_move_server.xml"/>
+	  
+	  <path src="Data/Resource/Entity/enemies/mediumDroid/E_enemy_medium_droid_move.xml"/>
+	  <path src="Data/Resource/Entity/enemies/mediumDroid/E_enemy_medium_droid_move_server.xml"/>
+	  <path src="Data/Resource/Entity/enemies/mediumDroid/E_enemy_medium_droid_not_move.xml"/>
+	  <path src="Data/Resource/Entity/enemies/mediumDroid/E_enemy_medium_droid_not_move_server.xml"/>
+	  
+	  <path src="Data/Resource/Entity/enemies/hardDroid/E_enemy_hard_droid_move.xml"/>
+	  <path src="Data/Resource/Entity/enemies/hardDroid/E_enemy_hard_droid_move_server.xml"/>
+	  <path src="Data/Resource/Entity/enemies/hardDroid/E_enemy_hard_droid_not_move.xml"/>
+	  <path src="Data/Resource/Entity/enemies/hardDroid/E_enemy_hard_droid_not_move_server.xml"/>
+	
+	
+	
+	<!------SPAWNPOINTS--------->
+		<!------level01--------->
+		<path src="Data/Resource/Entity/spawnPoints/level01/E_spawnpoint_server.xml"/>
+		
+		<path src="Data/Resource/Entity/spawnPoints/level01/hackerDroids/E_spawn_easy_hackerDroid_one.xml"/>
+		
+		<path src="Data/Resource/Entity/spawnPoints/level01/easyDroid/E_spawn_easyDroidMove_one.xml"/>
+		<path src="Data/Resource/Entity/spawnPoints/level01/easyDroid/E_spawn_easyDroidMoveNotMove_one.xml"/>
+		
+		<path src="Data/Resource/Entity/spawnPoints/level01/mediumDroid/E_spawn_mediumDroidMove_one.xml"/>
+		<path src="Data/Resource/Entity/spawnPoints/level01/mediumDroid/E_spawn_mediumDroidMoveNotMove_one.xml"/>
+		
+		<path src="Data/Resource/Entity/spawnPoints/level01/hardDroid/E_spawn_hardDroidMove_one.xml"/>
+		<path src="Data/Resource/Entity/spawnPoints/level01/hardDroid/E_spawn_hardDroidMoveNotMove_one.xml"/>
+		
+		
+		<path src="Data/Resource/Entity/spawnPoints/level01/hackerDroids/E_spawn_swarm_hackerDroid_one.xml"/>
+		<!------level02--------->
+		<path src="Data/Resource/Entity/spawnPoints/level02/easyDroid/E_spawn_easyDroidMove_1.xml"/>
+		<path src="Data/Resource/Entity/spawnPoints/level02/easyDroid/E_spawn_easyDroidMove_3.xml"/>
+		<path src="Data/Resource/Entity/spawnPoints/level02/easyDroid/E_spawn_easyDroidMoveNotMove_1.xml"/>
+		
+		<path src="Data/Resource/Entity/spawnPoints/level02/mediumDroid/E_spawn_mediumDroidMove_1.xml"/>
+		<path src="Data/Resource/Entity/spawnPoints/level02/mediumDroid/E_spawn_mediumDroidMove_3.xml"/>
+		<path src="Data/Resource/Entity/spawnPoints/level02/mediumDroid/E_spawn_mediumDroidMoveNotMove_1.xml"/>
+		
+		<path src="Data/Resource/Entity/spawnPoints/level02/hardDroid/E_spawn_hardDroidMove_1.xml"/>
+		<path src="Data/Resource/Entity/spawnPoints/level02/hardDroid/E_spawn_hardDroidMoveNotMove_1.xml"/>
+
+		
+	
+	<!----Triggers---->
+		<!----Level change triggers---->
+	<path src="Data/Resource/Entity/Triggers/level_change_triggers/E_trigger_level_change_0.xml"/>
+	<path src="Data/Resource/Entity/Triggers/level_change_triggers/E_trigger_level_change_1.xml"/>
+	<path src="Data/Resource/Entity/Triggers/level_change_triggers/E_trigger_level_change_2.xml"/>
+	
+		<!----Spawn triggers---->
+		
+			<!----Level01---->
+			
+			
+			<!----Level02---->
+				<path src="Data/Resource/Entity/Triggers/spawn_triggers/Level02/E_trigger_spawnpoint_1.xml"/>
+				<path src="Data/Resource/Entity/Triggers/spawn_triggers/Level02/E_trigger_spawnpoint_2.xml"/>
+				<path src="Data/Resource/Entity/Triggers/spawn_triggers/Level02/E_trigger_spawnpoint_3.xml"/>
+				<path src="Data/Resource/Entity/Triggers/spawn_triggers/Level02/E_trigger_spawnpoint_4.xml"/>
+				<path src="Data/Resource/Entity/Triggers/spawn_triggers/Level02/E_trigger_spawnpoint_5.xml"/>
+				<path src="Data/Resource/Entity/Triggers/spawn_triggers/Level02/E_trigger_spawnpoint_6.xml"/>
+				<path src="Data/Resource/Entity/Triggers/spawn_triggers/Level02/E_trigger_spawnpoint_7.xml"/>
+				<path src="Data/Resource/Entity/Triggers/spawn_triggers/Level02/E_trigger_spawnpoint_8.xml"/>
+			
+		<!----Pick up triggers---->
+			<!----shotgun---->
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/shotgun/E_trigger_upgrade_shotgun_ammo_1.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/shotgun/E_trigger_upgrade_shotgun_ammo_2.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/shotgun/E_trigger_upgrade_shotgun_ammo_3.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/shotgun/E_trigger_upgrade_shotgun_ammo_cap_1.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/shotgun/E_trigger_upgrade_shotgun_ammo_cap_2.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/shotgun/E_trigger_upgrade_shotgun_fire_1.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/shotgun/E_trigger_upgrade_shotgun_fire_2.xml"/>
+			<!----pistol---->
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/pistol/E_trigger_upgrade_pistol_ammo_cap_1.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/pistol/E_trigger_upgrade_pistol_ammo_cap_2.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/pistol/E_trigger_upgrade_pistol_fire_1.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/pistol/E_trigger_upgrade_pistol_fire_2.xml"/>
+			<!----grenade---->
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/grenade/E_trigger_upgrade_grenade_ammo_1.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/grenade/E_trigger_upgrade_grenade_ammo_2.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/grenade/E_trigger_upgrade_grenade_ammo_cap_1.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/grenade/E_trigger_upgrade_grenade_ammo_cap_2.xml"/>
+			<!----healthpacks---->
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/healthpacks/E_trigger_health_pack_small.xml"/>
+				<path src="Data/Resource/Entity/Triggers/pickup_triggers/healthpacks/E_trigger_health_pack_big.xml"/>
+	
+			<path src="Data/Resource/Entity/Triggers/pickup_triggers/E_trigger_respawn.xml"/>
+	<!----Door triggers---->
+		<!----Level01---->
+			<path src="Data/Resource/Entity/Triggers/door_triggers/E_trigger_unlock_door_0.xml"/>
+	
+			<path src="Data/Resource/Entity/Triggers/door_triggers/level01/E_trigger_unlock_door_level01.xml"/>
+			<path src="Data/Resource/Entity/Triggers/door_triggers/level01/E_trigger_unlock_door_level01_01.xml"/>
+	
+		<!----Level02---->
+			<path src="Data/Resource/Entity/Triggers/door_triggers/level02/E_trigger_unlock_door_00.xml"/>
+			<path src="Data/Resource/Entity/Triggers/door_triggers/level02/E_trigger_unlock_door_01.xml"/>
+			<path src="Data/Resource/Entity/Triggers/door_triggers/level02/E_trigger_unlock_door_02.xml"/>
+			<path src="Data/Resource/Entity/Triggers/door_triggers/level02/E_trigger_unlock_door_03.xml"/>
+			<path src="Data/Resource/Entity/Triggers/door_triggers/level02/E_trigger_unlock_door_04.xml"/>
+			<path src="Data/Resource/Entity/Triggers/door_triggers/level02/E_trigger_unlock_door_05.xml"/>
+	
+	<!----Marker triggers---->
+		<!----Level01---->
+			<path src="Data/Resource/Entity/Triggers/marker_triggers/level01/E_marker_not_show_press.xml"/>
+			<path src="Data/Resource/Entity/Triggers/marker_triggers/level01/E_marker_show_01.xml"/>
+		<!----Level02---->
+		
+		
+		
+		<!----Mission Triggers---->
+			<!----Level01---->
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level01/E_trigger_level01_start_mission_0.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level01/E_trigger_level01_start_mission_1.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level01/E_trigger_level01_start_mission_2_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level01/E_trigger_level01_start_mission_3_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level01/E_trigger_level01_start_mission_4_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level01/E_trigger_level01_start_mission_5.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level01/E_trigger_level01_start_mission_6_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level01/E_trigger_level01_start_mission_7_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level01/E_trigger_level01_start_mission_8_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level01/E_trigger_level01_start_mission_9_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level01/E_trigger_level01_start_mission_10_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level01/E_trigger_level01_start_mission_11_empty.xml"/>
+			<!----Level02---->
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level02/E_trigger_level02_start_mission_0.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level02/E_trigger_level02_start_mission_1.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level02/E_trigger_level02_start_mission_2.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level02/E_trigger_level02_start_mission_3.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level02/E_trigger_level02_start_mission_4.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level02/E_trigger_level02_start_mission_5.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level02/E_trigger_level02_start_mission_6.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level02/E_trigger_level02_start_mission_7.xml"/>
+			
+			<!----Level04---->
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_00.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_01_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_02_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_03.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_04_last.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_05_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_06_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_07_defend.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_08_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_09_defend.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_10_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_11_empty.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_12_empty.xml"/>
+			
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_13_def_fix.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_14_def_fix.xml"/>
+			<path src="Data/Resource/Entity/Triggers/mission_triggers/level04/E_trigger_level01_start_mission_15_def_fix.xml"/>
+			
+	
+	<path src="Data/Resource/Entity/Triggers/spawn_triggers/E_trigger_spawnpoint.xml"/>
+</root>

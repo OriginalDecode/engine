@@ -1,11 +1,9 @@
 #pragma once
 #include "Octree.h"
-namespace Hex
-{
-	class Synchronizer;
-};
 #include <TimeManager.h>
 
+
+class Synchronizer;
 class World
 {
 public:
@@ -17,7 +15,7 @@ public:
 	void AddDweller(TreeDweller* dweller);
 private:
 	CU::Vector3f m_WorldPos;
-	Hex::Synchronizer* m_Synchronizer;
+	Synchronizer* m_Synchronizer;
 	Octree m_Octree;
 };
 

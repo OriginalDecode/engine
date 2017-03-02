@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BloomPass.h"
 
-void BloomPass::Process(Hex::Texture* finished_texture)
+void BloomPass::Process(Texture* finished_texture)
 {
 
 }

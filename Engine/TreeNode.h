@@ -3,10 +3,8 @@
 #include <DataStructures/GrowingArray.h>
 #include <Math/Vector/Vector.h>
 #include "NodeEntityManager.h"
-namespace Hex
-{
-	class Synchronizer;
-};
+
+class Synchronizer;
 class Octree;
 class TreeDweller;
 typedef CU::GrowingArray<Entity> EntityList;
@@ -56,6 +54,6 @@ private:
 	CU::GrowingArray<TreeDweller*> m_Dwellers;
 	CU::Vector3f m_CenterPosition;
 
-	Hex::Synchronizer* m_Synchronizer = nullptr;
+	Synchronizer* m_Synchronizer = nullptr;
 	s32 m_Depth = 0;
 };

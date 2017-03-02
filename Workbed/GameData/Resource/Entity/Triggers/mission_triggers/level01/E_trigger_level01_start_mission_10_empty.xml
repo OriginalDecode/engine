@@ -1,0 +1,18 @@
+<root>
+	<Entity type="Trigger" subType="start_level01_mission_10_empty" >
+		<!--<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Prop/SM_dev_box.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+			<RoomType value="static"/>
+		</GraphicsComponent>-->
+		
+		<TriggerComponent>
+			<Trigger type="startMission" value="10" oneTimeTrigger="true" isClientSide="false"  activeFromStart="true" isPressable="false"/>
+		</TriggerComponent>
+		
+		<PhysicsComponent>
+			<min x="0" y="0" z="0"/>
+			<max x="0.7976224" y="4.170817" z="4.545424"/>
+			<type value="trigger"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

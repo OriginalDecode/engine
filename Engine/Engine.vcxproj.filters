@@ -334,10 +334,19 @@
     <ClInclude Include="LinearAllocator.h">
       <Filter>Allocators</Filter>
     </ClInclude>
-    <ClInclude Include="PostProcessManager.h" />
-    <ClInclude Include="HDRPass.h" />
-    <ClInclude Include="BloomPass.h" />
-    <ClInclude Include="MotionBlurPass.h" />
+    <ClInclude Include="PostProcessManager.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="HDRPass.h">
+      <Filter>Rendering\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionBlurPass.h">
+      <Filter>Rendering\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="BloomPass.h">
+      <Filter>Rendering\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveArrowModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -532,9 +541,18 @@
     <ClCompile Include="LinearAllocator.cpp">
       <Filter>Allocators</Filter>
     </ClCompile>
-    <ClCompile Include="PostProcessManager.cpp" />
-    <ClCompile Include="HDRPass.cpp" />
-    <ClCompile Include="BloomPass.cpp" />
-    <ClCompile Include="MotionBlurPass.cpp" />
+    <ClCompile Include="PostProcessManager.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="HDRPass.cpp">
+      <Filter>Rendering\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionBlurPass.cpp">
+      <Filter>Rendering\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="BloomPass.cpp">
+      <Filter>Rendering\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveArrowModel.cpp" />
   </ItemGroup>
 </Project>

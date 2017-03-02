@@ -1,0 +1,10 @@
+<root>
+	<Path src="Data/Resource/Particle/LI_emitters_onhit.xml" ID="OnHit"/>
+	<Path src="Data/Resource/Particle/LI_emitters_atmosphere.xml" ID="Atmosphere"/>
+	<Path src="Data/Resource/Particle/LI_emitters_explosion.xml" ID="Explosion"/>
+	<Path src="Data/Resource/Particle/LI_emitters_spawn_enemy.xml" ID="SpawnEnemy"/>
+	<Path src="Data/Resource/Particle/LI_emitters_on_env_hit.xml" ID="OnEnvHit"/>
+	<Path src="Data/Resource/Particle/LI_emitters_on_env_hit_2.xml" ID="OnEnvHit_2"/>
+	<Path src="Data/Resource/Particle/LI_emitters_upgrade.xml" ID="Upgrade"/>
+	<Path src="Data/Resource/Particle/LI_emitters_health_pack.xml" ID="Healthpack"/>
+</root>

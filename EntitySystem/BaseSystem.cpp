@@ -4,7 +4,7 @@
 #include "../Engine/Engine.h"
 BaseSystem::BaseSystem(EntityManager& anEntityManager)
 	: myEntityManager(anEntityManager)
-	, m_Engine(Hex::Engine::GetInstance())
+	, m_Engine(Engine::GetInstance())
 {
 }
 
@@ -12,7 +12,7 @@ BaseSystem::BaseSystem(EntityManager& anEntityManager)
 BaseSystem::BaseSystem(EntityManager& anEntityManager, const SComponentFilter& aFilter)
 	: myEntityManager(anEntityManager)
 	, myFilter(aFilter)
-	, m_Engine(Hex::Engine::GetInstance())
+	, m_Engine(Engine::GetInstance())
 {
 }
 
@@ -25,7 +25,7 @@ bool BaseSystem::HasFinished()
 
 const CU::GrowingArray<Entity>& BaseSystem::GetEntities()
 {
-	//return myEntityManager.GetEntities(myFilter);
+	return myEntityManager.GetEntities(myFilter);
 
 
 	return myEntityManager.GetNodeManager()->GetEntities(myFilter);

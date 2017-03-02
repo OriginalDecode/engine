@@ -8,10 +8,8 @@
 
 typedef CU::GrowingArray<Entity> EntityArray;
 class NodeEntityManager;
-namespace Hex
-{
-	class Synchronizer;
-}
+
+class Synchronizer;
 class PhysicsManager;
 class BaseSystem;
 class EntityManager

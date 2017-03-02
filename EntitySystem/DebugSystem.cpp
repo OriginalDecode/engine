@@ -12,7 +12,7 @@
 DebugSystem::DebugSystem(EntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
-	m_Synchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
+	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	PostMaster::GetInstance()->Subscribe(eMessageType::ON_LEFT_CLICK, this);
 }
 
@@ -82,14 +82,14 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		DebugComponent& debug = GetComponent<DebugComponent>(closest.m_ID);
 		debug.debugColor = { 255.f,0.f,0.f,255.f };
 		//bool has_render = myEntityManager.HasComponent(closest.m_ID, CreateFilter<Requires<RenderComponent>>());
-		Hex::Engine::GetInstance()->SelectEntity(closest.m_ID);
+		Engine::GetInstance()->SelectEntity(closest.m_ID);
 		m_PrevID = prev_entity;
 	}
 	else
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(m_PrevID);
 		debug.debugColor = { 255.f,0.f,0.f,255.f };
-		//Hex::Engine::GetInstance()->SelectEntity(closest.m_ID);
+		//Engine::GetInstance()->SelectEntity(closest.m_ID);
 		//m_PrevID = prev_entity;
 	}
 }

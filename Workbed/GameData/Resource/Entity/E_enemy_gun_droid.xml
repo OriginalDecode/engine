@@ -1,0 +1,27 @@
+<root>
+	<Entity type="Unit" subType="gunDroid" >
+		<!--<AnimationComponent>
+			<Model modelPath="Data/Resource/Model/Enemy/SM_cyborg_static.fbx" shaderPath="Data/Resource/Shader/S_effect_pbldebug.fx" />
+			<Animation path="Data/Resource/Model/Grunt/SK_grunt_idle.fbx" state="0" loop="true" resetTime="false"/>
+			<Animation path="Data/Resource/Model/Grunt/SK_grunt_walk.fbx" state="1" loop="true" resetTime="false"/>
+			<Animation path="Data/Resource/Model/Grunt/SK_grunt_attack.fbx" state="2" loop="false" resetTime="true"/>
+			<Animation path="Data/Resource/Model/Grunt/SK_grunt_death.fbx" state="3" loop="false" resetTime="true"/>
+			<Animation path="Data/Resource/Model/Grunt/SK_grunt_throw.fbx" state="4" loop="false" resetTime="true"/>
+		</AnimationComponent>-->
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Enemy/SM_cyborg_static.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+		</GraphicsComponent>
+		
+		<HealthComponent>
+			<MaxHealth value="10"/>
+		</HealthComponent>
+			
+		<PhysicsComponent>
+			<min x="0" y="0" z="0"/>
+			<max x="1" y="1" z="1"/>
+			<type value="kinematic"/>
+		</PhysicsComponent>
+		
+		<NetworkComponent/>
+	</Entity>
+</root>

@@ -11,7 +11,7 @@
 void World::Initiate(CU::Vector3f position)
 {
 	m_WorldPos = position;
-	m_Synchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
+	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	m_Octree.Initiate(position, 256.f);
 
 }
@@ -28,5 +28,5 @@ void World::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
 
 void World::AddDweller(TreeDweller* dweller)
 {
-	m_Octree.AddDweller(dweller);
+	//m_Octree.AddDweller(dweller);
 }

@@ -1,14 +1,12 @@
 #pragma once
 
-namespace Hex
-{
-	class Texture;
-}
+
+class Texture;
 
 class MotionBlurPass
 {
 public:
 	MotionBlurPass() = default;
-	void Process(Hex::Texture* finished_texture);
+	void Process(Texture* finished_texture);
 };
 

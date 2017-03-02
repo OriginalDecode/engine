@@ -1,0 +1,20 @@
+<root>
+	<Entity type="Spawnpoint" subType = "singleSpawn">
+		<SpawnpointComponent>
+			<SpawnUnitType type="gunDroid"/>
+<!--		<SpawnUnitType type="otherType"/>
+			<SpawnUnitType type="thirdType"/>-->
+
+			<SpawnpointLifetime value="2"/>
+			<SpawnInterval value="1"/>
+			<SpawnPerInterval value="1"/>
+			<SpawnCount value="1"/>
+		</SpawnpointComponent>
+		<PhysicsComponent>
+			<min x="0" y="0" z="0"/>
+			<max x="1" y="1" z="1"/>
+			<type value="kinematic"/>
+		</PhysicsComponent> 
+		
+	</Entity>
+</root>

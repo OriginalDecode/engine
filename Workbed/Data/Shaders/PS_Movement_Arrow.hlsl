@@ -6,15 +6,11 @@
 //---------------------------------
 
 SamplerState linear_Wrap 	: register ( s0 );
+Texture2D DiffuseTexture : register ( t0 );
 
 //---------------------------------
 //	Deferred Base Pixel Structs
 //---------------------------------
-
-cbuffer input_buffer : register ( b0 )
-{
-	float4 color;
-}
 
 struct VS_OUTPUT
 {
@@ -31,5 +27,7 @@ struct VS_OUTPUT
 //---------------------------------
 float4 PS(VS_OUTPUT input) : SV_Target
 {
+	float4 color = DiffuseTexture.Sample(linear_Wrap, input.uv);
 	return color;
 }
+

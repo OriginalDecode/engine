@@ -214,6 +214,36 @@ void Texture::InitiateAsRenderTarget(float width, float height, const std::strin
 		, debug_name);
 }
 
+void Texture::InitiateWithColor(CL::SColor color)
+{
+	//Initiate(64.f, 64.f, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM, "Colored_Texture");
+
+	
+
+	D3D11_SUBRESOURCE_DATA data;
+	data.pSysMem = &color._color;
+	data.SysMemPitch = 64.f * 4;
+
+	D3D11_TEXTURE2D_DESC info;
+	info.Width = 64.f;
+	info.Height = 64.f;
+	info.MipLevels = 1;
+	info.ArraySize = 1;
+	info.SampleDesc.Count = 1;
+	info.SampleDesc.Quality = 0;
+	info.MiscFlags = 0;
+	info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	info.Usage = D3D11_USAGE_DYNAMIC;
+	info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	ID3D11Texture2D* texture;
+	Engine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
+	DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
+	Engine::GetAPI()->GetDevice()->CreateShaderResourceView(texture, nullptr, &m_ShaderResource);
+	texture->Release();
+}
+
 bool Texture::CleanUp()
 {
 	SAFE_RELEASE(m_ShaderResource);

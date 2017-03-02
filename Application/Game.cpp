@@ -24,6 +24,7 @@
 #include "../Physics/PhysicsManager.h"
 #include "../EntitySystem/EntityManager.h"
 #include <imgui.h>
+#include <MoveArrowModel.h>
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
@@ -44,23 +45,25 @@ void Game::InitState(StateStack* state_stack)
 
 	
 	m_PauseState.InitState(m_StateStack);
-
+	m_Arrow = new MoveArrowModel;
+	m_Arrow->Initiate();
 	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 }
 
 void Game::EndState()
 {
 	SAFE_DELETE(m_Picker);
+	SAFE_DELETE(m_Arrow);
 }
 
 void Game::Render(bool render_through)
 {
-	render_through;
-	//what do?
+	//m_Arrow->Render();
 }
 
 void Game::Update(float dt)
 {
+	Render(true);
 	if (m_Paused)
 		return;
 	
@@ -79,7 +82,7 @@ void Game::Update(float dt)
 	if (input_wrapper->IsDown(MouseInput::LEFT))
 	{
 		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
-		//PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z));
+		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z));
 		//pointHit = m_Engine->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), ray_dir);
 
 		//component->myOrientation.SetPosition(pointHit);

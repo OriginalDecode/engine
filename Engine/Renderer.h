@@ -39,8 +39,7 @@ public:
 	void AddTerrain(CTerrain* someTerrain);
 	void ToggleWireframe();
 private:
-
-
+	void RenderNonDeferred3DCommands();
 	void Render3DCommands();
 	void Render2DCommands();
 

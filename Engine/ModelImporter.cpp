@@ -49,11 +49,14 @@ CModel* CModelImporter::CreateModel(FBXModelData* someData, Effect* anEffect)
 		newModel->AddChild(CreateModel(child, anEffect));
 	}
 
+	newModel->SetWHD(m_WHD);
+
 	return newModel;
 }
 
 CModel* CModelImporter::LoadModel(const std::string& aFilePath, const std::string& aEffectPath)
 {
+	m_WHD = { 0.f,0.f,0.f };
 	myCurrentLoadingFile = aFilePath;
 	CModel* model = LoadModel(aFilePath, myEngine->GetEffect(aEffectPath))->CreateModel(aFilePath);
 	return model;
@@ -124,14 +127,16 @@ void CModelImporter::FillData(FBXModelData* someData, CModel* out, Effect* /*anE
 #ifdef SNOWBLIND_DX11
 	ModelData* data = someData->myData;
 
-	if (data->m_WHD.x <= 0.f + FLT_EPSILON)
-		data->m_WHD.x += 0.1f;
-	if (data->m_WHD.y <= 0.f + FLT_EPSILON)
-		data->m_WHD.y += 0.1f;
-	if (data->m_WHD.z <= 0.f + FLT_EPSILON)
-		data->m_WHD.z += 0.1f;
+	if (m_WHD.x <= 0.f + FLT_EPSILON)
+		m_WHD.x += 0.1f;
+	if (m_WHD.y <= 0.f + FLT_EPSILON)
+		m_WHD.y += 0.1f;
+	if (m_WHD.z <= 0.f + FLT_EPSILON)
+		m_WHD.z += 0.1f;
 
-	out->SetWHD(data->m_WHD);
+
+	
+	out->SetWHD(m_WHD);
 	//VertexIndexWrapper* indexWrapper = new VertexIndexWrapper();
 	out->m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
 	u32* indexData = new u32[data->myIndexCount];
@@ -413,6 +418,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 				}
 				else
 				{
+					
 					w = position.x;
 					h = position.y;
 					d = position.z;
@@ -482,9 +488,26 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 			vertCount++;
 		}
 	}
-	data->myData->m_WHD.x = w;
-	data->myData->m_WHD.y = h;
-	data->myData->m_WHD.z = d;
+
+	if (w > m_WHD.x)
+	{
+		m_WHD.x = w;
+	}
+
+	if (h > m_WHD.y)
+	{
+		m_WHD.y = h;
+	}
+
+	if (d > m_WHD.z)
+	{
+		m_WHD.z = d;
+	}
+
+
+	//data->myData->m_WHD.x = w;
+	//data->myData->m_WHD.y = h;
+	//data->myData->m_WHD.z = d;
 
 	//Flips it to make it correct.
 	CU::GrowingArray<u32> indiceFix;

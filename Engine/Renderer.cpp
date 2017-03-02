@@ -28,6 +28,7 @@
 
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
+#include "MoveArrowModel.h"
 
 //#define AMBIENT_PASS_ONLY
 
@@ -139,7 +140,6 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_PostProcessManager.Initiate();
 	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
 
-
 	return true;
 }
 
@@ -213,6 +213,7 @@ void Renderer::Render()
 void Renderer::Render()
 {
 	BROFILER_FRAME("Render");
+
 	m_Engine->Clear();
 	m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
 	myDeferredRenderer->SetTargets();
@@ -267,7 +268,6 @@ void Renderer::Render()
 		toggle_point = !toggle_point;
 	}
 
-
 	if (toggle_point)
 		RenderPointlight();
 	RenderSpotlight();
@@ -287,7 +287,7 @@ void Renderer::Render()
 
 
 	//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
-	//mySkysphere->Render(myPrevFrame, myDepthTexture);
+	mySkysphere->Render(myPrevFrame, myDepthTexture);
 	//RenderParticles();
 
 
@@ -297,8 +297,8 @@ void Renderer::Render()
 
 
 
-	//RenderLines();
-
+	RenderNonDeferred3DCommands();
+	RenderLines();
 	Render2DCommands();
 
 	ImGui::Render();
@@ -330,6 +330,35 @@ void Renderer::Render()
 void Renderer::AddTerrain(CTerrain* someTerrain)
 {
 	myTerrainArray.Add(someTerrain);
+}
+
+void Renderer::RenderNonDeferred3DCommands()
+{
+	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
+
+	for (const RenderCommand& command : commands)
+	{
+		switch (command.myType)
+		{
+			case eType::MODEL_NO_DEFERRED:
+			{
+				if (command.m_KeyOrText.empty())
+				{
+					TRACE_LOG("Key was empty");
+					continue;
+				}
+
+
+				m_API->SetRasterizer(eRasterizer::CULL_NONE);
+				m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+
+				CModel* model = m_Engine->GetModel(command.m_KeyOrText);
+				model->SetOrientation(command.m_Orientation);
+				model->Render(myPrevFrame, m_Camera->GetPerspective(), command.m_Scale, false);
+			}break;
+		}
+	}
+
 }
 
 void Renderer::Render3DCommands()
@@ -386,17 +415,14 @@ void Renderer::Render3DCommands()
 				if (m_ProcessDirectionalShadows)
 				{
 					model->Render(m_DirectionalFrame, m_Camera->GetPerspective(), command.m_Scale, true);
-
 				}
 				else if (m_ProcessShadows)
 				{
 					model->Render(myPrevShadowFrame, m_Camera->GetPerspective(), command.m_Scale, true);
-
 				}
 				else
 				{
 					model->Render(myPrevFrame, m_Camera->GetPerspective(), command.m_Scale, false);
-
 				}
 			}break;
 		}

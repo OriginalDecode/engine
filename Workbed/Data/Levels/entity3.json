@@ -1,6 +1,6 @@
 {
 	"graphics": {
-		"model":"Data/Model/movement_arrow.fbx", 
+		"model":"Data/Model/blue_arrow.fbx", 
 		"shader":"Data/Shaders/T_Deferred_Base.json"
 	}
 }

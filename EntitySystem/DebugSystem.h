@@ -26,4 +26,5 @@ private:
 	};
 
 	Entity m_PrevID;
+	Entity m_CurrentEntity;
 };

@@ -33,6 +33,8 @@ public:
 
 	~CSurface();
 
+	void ClearTextures();
+	void AddTexture(IShaderResourceView* texture);
 	void Activate();
 	void Deactivate();
 	void AddTexture(const std::string& file_path, TextureType type);

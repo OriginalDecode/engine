@@ -10,7 +10,7 @@ enum TextureUsageFlags
 	STAGING_USAGE = 16384
 };
 
-
+#include <Utilities.h>
 class Texture
 {
 public:
@@ -22,6 +22,8 @@ public:
 
 	void InitiateAsDepthStencil(float width, float height, const std::string& debug_name);
 	void InitiateAsRenderTarget(float width, float height, const std::string& debug_name);
+
+	void InitiateWithColor(CL::SColor color);
 
 
 	bool CleanUp();

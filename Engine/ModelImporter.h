@@ -92,7 +92,7 @@ private:
 	Engine* myEngine;
 	std::string myCurrentLoadingFile;
 	CommonUtilities::TimeManager* myTimeManager;
-
+	CU::Vector3f m_WHD;
 	CModel* CreateModel(FBXModelData* someData, Effect* anEffect);
 	CModel* LoadModel(const std::string& aFilePath, Effect* anEffect);
 	void FillData(FBXModelData* someData, CModel* out, Effect* anEffect);

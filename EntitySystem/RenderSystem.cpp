@@ -37,6 +37,12 @@ void RenderSystem::Update(float dt)
 		CU::Matrix44f t = translation.myOrientation;
 		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
 
+		mySynchronizer->AddRenderCommand(RenderCommand(
+			eType::MODEL,
+			render.myModelID,
+			t,
+			render.scale));
+
 		//if (e == 0)
 		{
 			/**
@@ -50,11 +56,6 @@ void RenderSystem::Update(float dt)
 
 		}
 
-		mySynchronizer->AddRenderCommand(RenderCommand(
-			eType::MODEL,
-			render.myModelID,
-			t,
-			render.scale));
 
 
 	}

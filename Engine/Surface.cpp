@@ -46,7 +46,12 @@ CSurface::CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIn
 CSurface::~CSurface()
 {
 	myFileNames.RemoveAll();
-	//Can cause heap corruption?
+}
+
+void CSurface::ClearTextures()
+{
+	m_Null.RemoveAll();
+	myShaderViews.RemoveAll();
 }
 
 void CSurface::Activate()
@@ -61,7 +66,7 @@ void CSurface::Activate()
 
 void CSurface::Deactivate()
 {
-	if (m_Null.Size() > 0)
+	if(m_Null.Size() > 0)
 		myContext->PSSetShaderResources(0, m_Null.Size(), &m_Null[0]);
 }
 
@@ -137,6 +142,12 @@ void CSurface::AddTexture(const std::string& file_path, TextureType type)
 		myShaderViews.Add(myTextures[i].texture);
 		m_Null.Add(nullptr);
 	}
+}
+
+void CSurface::AddTexture(IShaderResourceView* texture)
+{
+	myShaderViews.Add(texture);
+	m_Null.Add(nullptr);
 }
 
 void CSurface::SetEffect(Effect* anEffect)

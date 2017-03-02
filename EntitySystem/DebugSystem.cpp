@@ -14,6 +14,7 @@ DebugSystem::DebugSystem(EntityManager& entity_manager)
 {
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	PostMaster::GetInstance()->Subscribe(eMessageType::ON_LEFT_CLICK, this);
+	m_CurrentEntity = -1;
 }
 
 DebugSystem::~DebugSystem()
@@ -30,7 +31,14 @@ void DebugSystem::Update(float dt)
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderBox(debug, translation.myOrientation);
+		
 	
+	}
+	if (m_CurrentEntity > -1)
+	{
+		DebugComponent& debug = GetComponent<DebugComponent>(m_CurrentEntity);
+		debug.m_MovementArrow.Render();
+		debug.m_MovementArrow.Update();
 	}
 	EndTicketMutex(&m_Mutex);
 }
@@ -84,14 +92,16 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		//bool has_render = myEntityManager.HasComponent(closest.m_ID, CreateFilter<Requires<RenderComponent>>());
 		Engine::GetInstance()->SelectEntity(closest.m_ID);
 		m_PrevID = prev_entity;
+		m_CurrentEntity = m_PrevID;
 	}
-	else
-	{
-		DebugComponent& debug = GetComponent<DebugComponent>(m_PrevID);
-		debug.debugColor = { 255.f,0.f,0.f,255.f };
-		//Engine::GetInstance()->SelectEntity(closest.m_ID);
-		//m_PrevID = prev_entity;
-	}
+	//else
+	//{
+	//	DebugComponent& debug = GetComponent<DebugComponent>(m_PrevID);
+	//	debug.debugColor = { 255.f,0.f,0.f,255.f };
+	//	m_CurrentEntity = m_PrevID;
+	//	//Engine::GetInstance()->SelectEntity(closest.m_ID);
+	//	//m_PrevID = prev_entity;
+	//}
 }
 
 void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation)

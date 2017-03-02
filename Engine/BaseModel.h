@@ -28,6 +28,7 @@ public:
 	virtual bool CleanUp() = 0;
 	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows = false);
 	void SetEffect(Effect* anEffect);
+	Effect* GetEffect() { return myEffect; }
 protected:
 	std::string m_Filename;
 	void InitVertexBuffer();

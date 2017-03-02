@@ -33,6 +33,9 @@ public:
 	std::vector<float> GetVertices();
 	std::vector<s32> GetIndices();
 
+	CU::GrowingArray<CSurface*>& GetSurfaces() { return mySurfaces; }
+	CU::GrowingArray<CModel*> GetChildModels() { return myChildren; }
+
 private:
 	void InitConstantBuffer();
 	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale) override;

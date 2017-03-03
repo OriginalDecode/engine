@@ -7,7 +7,7 @@ struct OnLeftClick;
 struct DebugComponent;
 
 class Synchronizer;
-
+struct DirectionalArrow;
 class DebugSystem : public BaseSystem, public Subscriber
 {
 public:
@@ -27,4 +27,6 @@ private:
 
 	Entity m_PrevID;
 	Entity m_CurrentEntity;
+	bool m_Holding = false;
+	DirectionalArrow* m_Direction = nullptr;
 };

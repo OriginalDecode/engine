@@ -334,6 +334,7 @@ void Renderer::AddTerrain(CTerrain* someTerrain)
 
 void Renderer::RenderNonDeferred3DCommands()
 {
+	m_API->EnableZBuffer();
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 
 	for (const RenderCommand& command : commands)
@@ -358,7 +359,6 @@ void Renderer::RenderNonDeferred3DCommands()
 			}break;
 		}
 	}
-
 }
 
 void Renderer::Render3DCommands()

@@ -9,6 +9,10 @@
 #include "TypeID.h"
 #include "RenderComponent.h"
 #include "EntityManager.h"
+#include <Input/InputHandle.h>
+#include <Input/InputWrapper.h>
+#include <MoveArrowModel.h>
+
 DebugSystem::DebugSystem(EntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
@@ -34,12 +38,40 @@ void DebugSystem::Update(float dt)
 		
 	
 	}
+
+	if (m_Engine->GetInputHandle()->GetInputWrapper()->OnRelease(MouseInput::LEFT))
+	{
+		m_Holding = false;
+	}
+
 	if (m_CurrentEntity > -1)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(m_CurrentEntity);
 		debug.m_MovementArrow.Render();
 		debug.m_MovementArrow.Update();
+
+		if (m_Holding)
+		{
+			const CU::Vector2f& delta_pos = m_Engine->GetInputHandle()->GetDeltaCursorPos();
+
+			TranslationComponent& translation = GetComponent<TranslationComponent>(m_CurrentEntity);
+			CU::Vector4f position = translation.myOrientation.GetTranslation();
+			CU::Vector4f dir = m_Direction->m_Orientation.GetUp();
+
+			if (m_Direction->direction == DirectionalArrow::eDirection::RIGHT || m_Direction->direction == DirectionalArrow::eDirection::FORWARD)
+			{
+				position += dir * delta_pos.x;
+			}
+			else if (m_Direction->direction == DirectionalArrow::eDirection::UP)
+			{
+				position += dir * delta_pos.y;
+			}
+
+			translation.myOrientation.SetTranslation(position);
+		}
+
 	}
+	
 	EndTicketMutex(&m_Mutex);
 }
 
@@ -59,6 +91,23 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		{
 			CU::Vector3f step = (CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z) * i);
 			CU::Vector3f new_post = cam_pos + step;
+
+			if (debug.m_MovementArrow.GetForward().Inside(new_post))
+			{
+				m_Holding = true;
+				m_Direction = &debug.m_MovementArrow.GetForward();
+			}
+			else if (debug.m_MovementArrow.GetRight().Inside(new_post))
+			{
+				m_Holding = true;
+				m_Direction = &debug.m_MovementArrow.GetRight();
+			}
+			else if (debug.m_MovementArrow.GetUp().Inside(new_post))
+			{
+				m_Holding = true;
+				m_Direction = &debug.m_MovementArrow.GetUp();
+			}
+
 
 			if (debug.m_OBB.Inside(new_post))
 			{

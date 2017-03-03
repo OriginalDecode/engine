@@ -75,6 +75,24 @@ void MoveArrowModel::Initiate()
 	m_Forward.m_Arrow->SetOrientation(m_Forward.m_Orientation);
 	m_Up.m_Arrow->SetOrientation(m_Up.m_Orientation);
 
+	//__________________________
+	m_Up.m_MaxPos = m_Up.m_Arrow->GetWHD();
+	m_Up.m_MinPos = { -m_Up.m_MaxPos.x, -m_Up.m_MaxPos.y, -m_Up.m_MaxPos.z };
+
+	//__________________________
+	m_Right.m_MaxPos = m_Right.m_Arrow->GetWHD();
+	m_Right.m_MinPos = { -m_Right.m_MaxPos.x, -m_Right.m_MaxPos.y, -m_Right.m_MaxPos.z };
+
+	//__________________________
+	m_Forward.m_MaxPos = m_Forward.m_Arrow->GetWHD();
+	m_Forward.m_MinPos = { -m_Forward.m_MaxPos.x, -m_Forward.m_MaxPos.y, -m_Forward.m_MaxPos.z };
+
+
+
+	m_Forward.direction = DirectionalArrow::eDirection::FORWARD;
+	m_Right.direction = DirectionalArrow::eDirection::RIGHT;
+	m_Up.direction = DirectionalArrow::eDirection::UP;
+
 
 }
 
@@ -96,15 +114,28 @@ void MoveArrowModel::Render()
 
 	//__________________________
 	
+	t = m_Forward.m_Orientation;
+	t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
+	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::MODEL_NO_DEFERRED, m_Forward.m_Key, t));
+
+	//__________________________
+
 	t = m_Up.m_Orientation;
 	t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
 	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::MODEL_NO_DEFERRED, m_Up.m_Key, t));
 
+
 	//__________________________
-	
-	t = m_Forward.m_Orientation;
-	t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::MODEL_NO_DEFERRED, m_Forward.m_Key, t));
+	m_Up.m_MaxPos = m_Up.m_Arrow->GetWHD() * distance;
+	m_Up.m_MinPos = { -m_Up.m_MaxPos.x, -m_Up.m_MaxPos.y, -m_Up.m_MaxPos.z };
+
+	//__________________________
+	m_Right.m_MaxPos = m_Right.m_Arrow->GetWHD() * distance;
+	m_Right.m_MinPos = { -m_Right.m_MaxPos.x, -m_Right.m_MaxPos.y, -m_Right.m_MaxPos.z };
+
+	//__________________________
+	m_Forward.m_MaxPos = m_Forward.m_Arrow->GetWHD() * distance;
+	m_Forward.m_MinPos = { -m_Forward.m_MaxPos.x, -m_Forward.m_MaxPos.y, -m_Forward.m_MaxPos.z };
 
 }
 
@@ -126,4 +157,12 @@ void MoveArrowModel::SetPosition(const CU::Vector3f& pos)
 
 DirectionalArrow::~DirectionalArrow()
 {
+}
+
+bool DirectionalArrow::Inside(const CU::Vector3f& position)
+{
+	if (position < m_Orientation.GetPosition() + m_MaxPos && position > m_Orientation.GetPosition() - m_MinPos)
+		return true;
+
+	return false;
 }

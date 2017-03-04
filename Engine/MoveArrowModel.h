@@ -1,10 +1,9 @@
 #pragma once
 #include <Math/Matrix/Matrix.h>
+#include <Math/Plane/PlaneVolume.h>
+
 class CModel;
 class Texture;
-
-
-
 struct DirectionalArrow
 {
 	enum class eDirection
@@ -15,6 +14,8 @@ struct DirectionalArrow
 	};
 	eDirection direction;
 
+	void Initiate();
+
 	~DirectionalArrow();
 	std::string m_Key;
 
@@ -24,7 +25,11 @@ struct DirectionalArrow
 
 	CU::Vector3f m_MinPos;
 	CU::Vector3f m_MaxPos;
+
+	CU::PlaneVolume<float> m_OBB;
 	bool Inside(const CU::Vector3f& position);
+	void RenderBox();
+	void Update();
 };
 
 class MoveArrowModel
@@ -42,6 +47,7 @@ public:
 	DirectionalArrow& GetRight() { return m_Right; }
 	DirectionalArrow& GetUp() { return m_Up; }
 	DirectionalArrow& GetForward() { return m_Forward; }
+	void RenderBoxes();
 
 
 private:

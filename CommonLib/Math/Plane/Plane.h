@@ -75,8 +75,8 @@ namespace CommonUtilities
 	{
 		if (Math::Dot<float>(aPosition - myPoint, myNorm) > 0.f)
 			return false;
-		else
-			return true;
+
+		return true;
 	}
 
 	template<typename TYPE>

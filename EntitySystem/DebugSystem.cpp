@@ -47,8 +47,8 @@ void DebugSystem::Update(float dt)
 	if (m_CurrentEntity > -1)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(m_CurrentEntity);
+		debug.m_MovementArrow.RenderBoxes();
 		debug.m_MovementArrow.Render();
-		debug.m_MovementArrow.Update();
 
 		if (m_Holding)
 		{
@@ -69,7 +69,6 @@ void DebugSystem::Update(float dt)
 
 			translation.myOrientation.SetTranslation(position);
 		}
-
 	}
 	
 	EndTicketMutex(&m_Mutex);
@@ -91,22 +90,26 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		{
 			CU::Vector3f step = (CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z) * i);
 			CU::Vector3f new_post = cam_pos + step;
+			//debug.m_MovementArrow.Update();
 
 			if (debug.m_MovementArrow.GetForward().Inside(new_post))
 			{
 				m_Holding = true;
 				m_Direction = &debug.m_MovementArrow.GetForward();
+				break;
 			}
-			else if (debug.m_MovementArrow.GetRight().Inside(new_post))
-			{
-				m_Holding = true;
-				m_Direction = &debug.m_MovementArrow.GetRight();
-			}
-			else if (debug.m_MovementArrow.GetUp().Inside(new_post))
-			{
-				m_Holding = true;
-				m_Direction = &debug.m_MovementArrow.GetUp();
-			}
+			//if (debug.m_MovementArrow.GetRight().Inside(new_post))
+			//{
+			//	m_Holding = true;
+			//	m_Direction = &debug.m_MovementArrow.GetRight();
+			//	break;
+			//}
+			//if (debug.m_MovementArrow.GetUp().Inside(new_post))
+			//{
+			//	m_Holding = true;
+			//	m_Direction = &debug.m_MovementArrow.GetUp();
+			//	break;
+			//}
 
 
 			if (debug.m_OBB.Inside(new_post))

@@ -18,7 +18,6 @@ namespace CommonUtilities
 			bool Inside(Math::Vector3<TYPE> aPosition);
 			//bool Inside(Intersection::Sphere aSphere);
 
-		private:
 			CU::StaticArray<Plane<TYPE>, 6> m_Planes;
 		};
 

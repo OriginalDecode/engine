@@ -437,8 +437,9 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 
 	component.m_EditObject.Initiate(e, flags);
-	component.m_MovementArrow.Initiate();
+
 	component.m_MovementArrow.SetPosition(pos);
+	component.m_MovementArrow.Initiate();
 }
 
 void LevelFactory::CreateTerrain(std::string terrain_path)

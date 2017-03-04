@@ -81,7 +81,7 @@ void Game::Update(float dt)
 	}
 
 	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
-	if (input_wrapper->IsDown(MouseInput::LEFT))
+	if (input_wrapper->OnClick(MouseInput::LEFT))
 	{
 		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
 		

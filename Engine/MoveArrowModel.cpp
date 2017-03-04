@@ -148,14 +148,11 @@ void MoveArrowModel::SetPosition(const CU::Vector3f& pos)
 {
 	m_Orientation.SetPosition(pos);
 
-	CU::Vector3f position = pos + (m_Forward.m_MaxPos / 2.f);
-	m_Forward.m_Orientation.SetPosition(position);
+	m_Forward.m_Orientation.SetPosition(pos);
 
-	position = pos + (m_Up.m_MaxPos / 2.f);
-	m_Up.m_Orientation.SetPosition(position);
+	m_Up.m_Orientation.SetPosition(pos);
 
-	position = pos + (m_Right.m_MaxPos / 2.f);
-	m_Right.m_Orientation.SetPosition(position);
+	m_Right.m_Orientation.SetPosition(pos);
 
 }
 

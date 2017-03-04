@@ -56,7 +56,7 @@ void DebugSystem::Update(float dt)
 
 			TranslationComponent& translation = GetComponent<TranslationComponent>(m_CurrentEntity);
 			CU::Vector4f position = translation.myOrientation.GetTranslation();
-			CU::Vector4f dir = m_Direction->m_Orientation.GetUp();
+			CU::Vector4f dir = m_Direction->m_Orientation.GetRight();
 
 			if (m_Direction->direction == DirectionalArrow::eDirection::RIGHT || m_Direction->direction == DirectionalArrow::eDirection::FORWARD)
 			{

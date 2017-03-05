@@ -217,7 +217,6 @@ void Renderer::Render()
 	m_Engine->Clear();
 	m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
 	myDeferredRenderer->SetTargets();
-
 	Render3DCommands();
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 	ProcessShadows();
@@ -272,6 +271,7 @@ void Renderer::Render()
 		RenderPointlight();
 	RenderSpotlight();
 
+	mySkysphere->Render(myPrevFrame, myDepthTexture);
 
 	m_Engine->ResetRenderTargetAndDepth();
 
@@ -287,7 +287,6 @@ void Renderer::Render()
 
 
 	//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
-	mySkysphere->Render(myPrevFrame, myDepthTexture);
 	//RenderParticles();
 
 
@@ -366,6 +365,7 @@ void Renderer::Render3DCommands()
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 
 	//m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 	//m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	for (CTerrain* terrain : myTerrainArray)

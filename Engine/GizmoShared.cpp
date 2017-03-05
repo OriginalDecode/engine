@@ -1,169 +1,15 @@
 #include "stdafx.h"
-#include "MoveArrowModel.h"
-#include "Texture.h"
+#include "GizmoShared.h"
+
 #include "Engine.h"
 #include "Synchronizer.h"
 #include "RenderCommand.h"
-#include "Surface.h"
-#include "Model.h"
 
-MoveArrowModel::MoveArrowModel()
+GizmoHandle::~GizmoHandle()
 {
 }
 
-void MoveArrowModel::Initiate()
-{
-
-
-
-	m_Forward.m_Key = Engine::GetInstance()->LoadModel("Data/Model/blue_arrow.fbx", "Data/Shaders/T_Movement_Arrow.json");
-
-	m_Forward.m_DirColor = Engine::GetInstance()->GetTexture("Data/Textures/blue.dds");
-
-	m_Forward.m_Arrow = Engine::GetInstance()->GetModel(m_Forward.m_Key);
-	CU::GrowingArray<CModel*> children = m_Forward.m_Arrow->GetChildModels();
-	for (CModel* child : children)
-	{
-		CU::GrowingArray<CSurface*>& surfaces = child->GetSurfaces();
-		for (CSurface* surface : surfaces)
-		{
-			surface->ClearTextures();
-			surface->AddTexture(m_Forward.m_DirColor->GetShaderView());
-		}
-
-	}
-
-
-	m_Forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(90.f) * -1) * m_Forward.m_Orientation;
-
-
-	m_Up.m_Key = Engine::GetInstance()->LoadModel("Data/Model/green_arrow.fbx", "Data/Shaders/T_Movement_Arrow.json");
-
-	m_Up.m_DirColor = Engine::GetInstance()->GetTexture("Data/Textures/green.dds");
-
-	m_Up.m_Arrow = Engine::GetInstance()->GetModel(m_Up.m_Key);
-
-	children = m_Up.m_Arrow->GetChildModels();
-	for (CModel* child : children)
-	{
-		CU::GrowingArray<CSurface*>& surfaces = child->GetSurfaces();
-		for (CSurface* surface : surfaces)
-		{
-			surface->ClearTextures();
-			surface->AddTexture(m_Up.m_DirColor->GetShaderView());
-		}
-
-	}
-	m_Up.m_Orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(90.f) * 1) * m_Up.m_Orientation;
-
-	m_Right.m_Key = Engine::GetInstance()->LoadModel("Data/Model/red_arrow.fbx", "Data/Shaders/T_Movement_Arrow.json");
-
-	m_Right.m_DirColor = Engine::GetInstance()->GetTexture("Data/Textures/red.dds");
-
-	m_Right.m_Arrow = Engine::GetInstance()->GetModel(m_Right.m_Key);
-	children = m_Right.m_Arrow->GetChildModels();
-	for (CModel* child : children)
-	{
-		CU::GrowingArray<CSurface*>& surfaces = child->GetSurfaces();
-		for (CSurface* surface : surfaces)
-		{
-			surface->ClearTextures();
-			surface->AddTexture(m_Right.m_DirColor->GetShaderView());
-		}
-
-	}
-	//m_Right.m_Orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(90.f) * 1) * m_Right.m_Orientation;
-
-	m_Up.Initiate();
-	m_Right.Initiate();
-	m_Forward.Initiate();
-
-	//__________________________
-	m_Up.m_MaxPos = m_Up.m_Arrow->GetWHD();
-	m_Up.m_MinPos = { -m_Up.m_MaxPos.x, -m_Up.m_MaxPos.y, -m_Up.m_MaxPos.z };
-
-	//__________________________
-	m_Right.m_MaxPos = m_Right.m_Arrow->GetWHD();
-	m_Right.m_MinPos = { -m_Right.m_MaxPos.x, -m_Right.m_MaxPos.y, -m_Right.m_MaxPos.z };
-
-	//__________________________
-	m_Forward.m_MaxPos = m_Forward.m_Arrow->GetWHD();
-	m_Forward.m_MinPos = { -m_Forward.m_MaxPos.x, -m_Forward.m_MaxPos.y, -m_Forward.m_MaxPos.z };
-
-
-
-	m_Forward.direction = DirectionalArrow::eDirection::FORWARD;
-	m_Right.direction = DirectionalArrow::eDirection::RIGHT;
-	m_Up.direction = DirectionalArrow::eDirection::UP;
-
-
-}
-
-void MoveArrowModel::CleanUp()
-{
-
-}
-
-void MoveArrowModel::Render()
-{
-	
-	CU::Vector4f camera_position = Engine::GetInstance()->GetCamera()->GetPosition();
-	float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
-	CU::Vector4f scale = CU::Vector4f(distance, distance, distance, 1);
-	//CU::Matrix44f scale_matrix = CU::Matrix44f::CreateScaleMatrix(scale);
-	CU::Matrix44f t = m_Right.m_Orientation;
-	//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::MODEL_NO_DEFERRED, m_Right.m_Key, t));
-
-	//__________________________
-	
-	t = m_Forward.m_Orientation;
-	//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::MODEL_NO_DEFERRED, m_Forward.m_Key, t));
-
-	//__________________________
-
-	t = m_Up.m_Orientation;
-	//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::MODEL_NO_DEFERRED, m_Up.m_Key, t));
-
-
-	
-	
-	//Update();
-}
-
-void MoveArrowModel::Update()
-{
-	m_Forward.Update();
-	m_Up.Update();
-	m_Right.Update();
-
-	/**m_Forward.m_Orientation.SetPosition(m_Orientation.GetPosition());
-	m_Up.m_Orientation.SetPosition(m_Orientation.GetPosition());
-	m_Right.m_Orientation.SetPosition(m_Orientation.GetPosition());/**/
-}
-
-void MoveArrowModel::SetPosition(const CU::Vector3f& pos)
-{
-	m_Orientation.SetPosition(pos);
-
-	m_Forward.m_Orientation.SetPosition(pos);
-
-	m_Up.m_Orientation.SetPosition(pos);
-
-	m_Right.m_Orientation.SetPosition(pos);
-
-}
-
-void MoveArrowModel::RenderBoxes()
-{
-	m_Forward.RenderBox();
-	m_Up.RenderBox();
-	m_Right.RenderBox();
-}
-
-void DirectionalArrow::Initiate()
+void GizmoHandle::Initiate()
 {
 	CU::Plane<float> plane0;
 
@@ -173,7 +19,7 @@ void DirectionalArrow::Initiate()
 
 
 	CU::Vector4f position;
-	CU::Vector3f whd = m_Arrow->GetWHD();
+	CU::Vector3f whd = m_Model->GetWHD();
 	//x
 
 	position = m_Orientation.GetTranslation();
@@ -213,24 +59,13 @@ void DirectionalArrow::Initiate()
 	m_OBB.AddPlane(plane0);
 }
 
-DirectionalArrow::~DirectionalArrow()
+
+bool GizmoHandle::Inside(const CU::Vector3f& position)
 {
-}
-
-bool DirectionalArrow::Inside(const CU::Vector3f& position)
-{
-	/*
-		CU::Vector3f max = m_Orientation.GetPosition() + m_MaxPos;
-		CU::Vector3f min = m_Orientation.GetPosition() + m_MinPos;
-
-
-		if (position < max && position > min)
-			return true;*/
 	return m_OBB.Inside(position);
-	//return false;
 }
 
-void DirectionalArrow::RenderBox()
+void GizmoHandle::RenderBox()
 {
 	CU::Vector4f camera_position = Engine::GetInstance()->GetCamera()->GetPosition();
 	float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
@@ -252,7 +87,7 @@ void DirectionalArrow::RenderBox()
 	p6.position = p1.position;
 	p7.position = p1.position;
 	p8.position = p1.position;
-	CU::Vector3f whd = m_Arrow->GetWHD() /** distance*/;
+	CU::Vector3f whd = m_Model->GetWHD() /** distance*/;
 	p1.position -= m_Orientation.GetRight() * whd.x;
 	p1.position -= m_Orientation.GetUp() * whd.y;
 	p1.position -= m_Orientation.GetForward() * whd.z;
@@ -301,7 +136,7 @@ void DirectionalArrow::RenderBox()
 	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p8, p3));
 }
 
-void DirectionalArrow::Update()
+void GizmoHandle::Update()
 {
 	CU::Vector4f camera_position = Engine::GetInstance()->GetCamera()->GetPosition();
 	float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
@@ -311,7 +146,7 @@ void DirectionalArrow::Update()
 
 
 	CU::Vector4f position;
-	CU::Vector3f whd = m_Arrow->GetWHD() /** distance*/;
+	CU::Vector3f whd = m_Model->GetWHD() /** distance*/;
 	//x
 
 	position = m_Orientation.GetTranslation();

@@ -346,7 +346,11 @@
     <ClInclude Include="BloomPass.h">
       <Filter>Rendering\Passes</Filter>
     </ClInclude>
-    <ClInclude Include="MoveArrowModel.h" />
+    <ClInclude Include="ScaleGizmo.h" />
+    <ClInclude Include="PositionGizmo.h" />
+    <ClInclude Include="RotationGizmo.h" />
+    <ClInclude Include="GizmoShared.h" />
+    <ClInclude Include="GizmoBase.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -553,6 +557,10 @@
     <ClCompile Include="BloomPass.cpp">
       <Filter>Rendering\Passes</Filter>
     </ClCompile>
-    <ClCompile Include="MoveArrowModel.cpp" />
+    <ClCompile Include="ScaleGizmo.cpp" />
+    <ClCompile Include="PositionGizmo.cpp" />
+    <ClCompile Include="RotationGizmo.cpp" />
+    <ClCompile Include="GizmoShared.cpp" />
+    <ClCompile Include="GizmoBase.cpp" />
   </ItemGroup>
 </Project>

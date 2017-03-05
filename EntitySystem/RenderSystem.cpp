@@ -43,6 +43,7 @@ void RenderSystem::Update(float dt)
 			t,
 			render.scale));
 
+
 		//if (e == 0)
 		{
 			/**

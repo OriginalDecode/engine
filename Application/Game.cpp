@@ -24,7 +24,6 @@
 #include "../Physics/PhysicsManager.h"
 #include "../EntitySystem/EntityManager.h"
 #include <imgui.h>
-#include <MoveArrowModel.h>
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
@@ -45,22 +44,16 @@ void Game::InitState(StateStack* state_stack)
 
 	
 	m_PauseState.InitState(m_StateStack);
-	m_Arrow = new MoveArrowModel;
-	m_Arrow->SetPosition({ 10,5,10 });
-	m_Arrow->Initiate();
 	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 }
 
 void Game::EndState()
 {
 	SAFE_DELETE(m_Picker);
-	SAFE_DELETE(m_Arrow);
 }
 
 void Game::Render(bool render_through)
 {
-	m_Arrow->RenderBoxes();
-	m_Arrow->Render();
 }
 
 void Game::Update(float dt)
@@ -84,35 +77,7 @@ void Game::Update(float dt)
 	if (input_wrapper->OnClick(MouseInput::LEFT))
 	{
 		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
-		
-		for (float i = 0; i < 25.f; i += 0.2f)
-		{
-			CU::Vector3f step = (ray_dir * i);
-			CU::Vector3f new_post = m_Camera->GetPosition() + step;
-			if (m_Arrow->GetForward().Inside(new_post))
-			{
-				int apa; 
-				apa = 5;
-			}
-
-			if (m_Arrow->GetRight().Inside(new_post))
-			{
-				int apa;
-				apa = 5;
-			}
-
-			if (m_Arrow->GetUp().Inside(new_post))
-			{
-				int apa;
-				apa = 5;
-			}
-
-		}
-
 		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z));
-		//pointHit = m_Engine->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), ray_dir);
-
-		//component->myOrientation.SetPosition(pointHit);
 	}
 	Engine::GetInstance()->GetEntityManager().Update(dt);
 	if (input_wrapper->OnDown(KButton::ESCAPE))

@@ -30,6 +30,10 @@ namespace CommonUtilities
 			static Matrix44<TYPE> CreateOrthogonalMatrixLH(TYPE aWidth, TYPE aHeight, TYPE aNearZ, TYPE aFarZ);
 			static Matrix44<TYPE> CreateOrthographicMatrixLH(float width, float height, float near_plane, float far_plane);
 			static Matrix44<TYPE> CreateScaleMatrix(const Vector4<TYPE>& scale);
+			void RotateAroundPointX(const CU::Vector3f& point, float radian, float dt);
+			void RotateAroundPointY(const CU::Vector3f& point, float radian, float dt);
+			void RotateAroundPointZ(const CU::Vector3f& point, float radian, float dt);
+
 
 			void SetPerspectiveFOV(float fov, float aspect_ratio);
 
@@ -96,6 +100,36 @@ namespace CommonUtilities
 			};
 			const Matrix44<TYPE> Calculate(const RotationType& rotation, const TYPE& cos, const TYPE& sin);
 		};
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointZ(const CU::Vector3f& point, float radian, float dt)
+		{
+			CU::Vector3f original_pos = GetPosition();
+			SetPosition(original_pos - point);
+
+			*this = *this * CU::Matrix44f::CreateRotateAroundZ(radian * dt);
+			SetPosition(GetPosition() + point);
+		}
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointY(const CU::Vector3f& point, float radian, float dt)
+		{
+			CU::Vector3f original_pos = GetPosition();
+			SetPosition(original_pos - point);
+
+			*this = *this * CU::Matrix44f::CreateRotateAroundY(radian * dt);
+			SetPosition(GetPosition() + point);
+		}
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointX(const CU::Vector3f& point, float radian, float dt)
+		{
+			CU::Vector3f original_pos = GetPosition();
+			SetPosition(original_pos - point);
+
+			*this = *this * CU::Matrix44f::CreateRotateAroundX(radian * dt);
+			SetPosition(GetPosition() + point);
+		}
 
 		template<typename TYPE>
 		Matrix44<TYPE> CommonUtilities::Math::Matrix44<TYPE>::CreateOrthographicMatrixLH(float width, float height, float near_plane, float far_plane)

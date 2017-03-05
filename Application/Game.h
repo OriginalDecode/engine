@@ -23,7 +23,6 @@ public:
 
 
 private:
-	class MoveArrowModel* m_Arrow = nullptr;
 	World m_World;
 	CPauseState m_PauseState;
 	CU::Vector3f pointHit;

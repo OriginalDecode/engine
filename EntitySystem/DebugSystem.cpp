@@ -11,7 +11,12 @@
 #include "EntityManager.h"
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
-#include <MoveArrowModel.h>
+
+#include <Camera.h>
+
+#include <PositionGizmo.h>
+#include <ScaleGizmo.h>
+#include <RotationGizmo.h>
 
 DebugSystem::DebugSystem(EntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
@@ -19,6 +24,7 @@ DebugSystem::DebugSystem(EntityManager& entity_manager)
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	PostMaster::GetInstance()->Subscribe(eMessageType::ON_LEFT_CLICK, this);
 	m_CurrentEntity = -1;
+	m_MouseDeltaModifier = 100.f;
 }
 
 DebugSystem::~DebugSystem()
@@ -47,8 +53,8 @@ void DebugSystem::Update(float dt)
 	if (m_CurrentEntity > -1)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(m_CurrentEntity);
-		debug.m_MovementArrow.RenderBoxes();
-		debug.m_MovementArrow.Render();
+		debug.m_PositionGizmo.RenderBoxes();
+		debug.m_PositionGizmo.Render();
 
 		if (m_Holding)
 		{
@@ -58,27 +64,132 @@ void DebugSystem::Update(float dt)
 			CU::Vector4f position = translation.myOrientation.GetTranslation();
 			CU::Vector4f dir = m_Direction->m_Orientation.GetRight();
 
-			if (m_Direction->direction == DirectionalArrow::eDirection::RIGHT || m_Direction->direction == DirectionalArrow::eDirection::FORWARD)
+			CU::Vector4f cam_pos = m_Engine->GetCamera()->GetPosition();
+
+
+			if (m_Direction->direction == GizmoHandle::eDirection::FORWARD)
 			{
-				position += dir * delta_pos.x;
+				CU::Vector4f horizontal_modifier = cam_pos - position;
+				CU::Math::Normalize(horizontal_modifier);
+				position += (dir * ( delta_pos.x * horizontal_modifier.x )) / m_MouseDeltaModifier;
+
 			}
-			else if (m_Direction->direction == DirectionalArrow::eDirection::UP)
+			else if(m_Direction->direction == GizmoHandle::eDirection::RIGHT)
 			{
-				position += dir * delta_pos.y;
+				CU::Vector4f horizontal_modifier = cam_pos - position;
+				CU::Math::Normalize(horizontal_modifier);
+				position += (dir * (delta_pos.x * -horizontal_modifier.z)) / m_MouseDeltaModifier;
+			}
+			else if (m_Direction->direction == GizmoHandle::eDirection::UP)
+			{
+				position += (dir * -delta_pos.y) / m_MouseDeltaModifier;
 			}
 
 			translation.myOrientation.SetTranslation(position);
+			debug.m_DirtyFlag = true;
 		}
 	}
 	
+	UpdateOBBs();
+
 	EndTicketMutex(&m_Mutex);
+}
+
+bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vector3f& ray_dir)
+{
+	if (m_CurrentEntity < 0)
+		return false;
+
+	DebugComponent& debug = GetComponent<DebugComponent>(m_CurrentEntity);
+	for (float i = 0; i < 25.f; i += 0.2f)
+	{
+		CU::Vector3f step = (ray_dir * i);
+		CU::Vector3f new_post = cam_pos + step;
+
+		if (debug.m_PositionGizmo.GetForward().Inside(new_post))
+		{
+			m_Holding = true;
+			m_Direction = &debug.m_PositionGizmo.GetForward();
+			return true;
+		}
+		if (debug.m_PositionGizmo.GetRight().Inside(new_post))
+		{
+			m_Holding = true;
+			m_Direction = &debug.m_PositionGizmo.GetRight();
+			return true;
+		}
+		if (debug.m_PositionGizmo.GetUp().Inside(new_post))
+		{
+			m_Holding = true;
+			m_Direction = &debug.m_PositionGizmo.GetUp();
+			return true;
+		}
+	}
+	return false;
+}
+
+void DebugSystem::UpdateOBBs()
+{
+	const CU::GrowingArray<Entity>& entities = GetEntities();
+	for (Entity e : entities)
+	{
+		DebugComponent& debug = GetComponent<DebugComponent>(e);
+		if (!debug.m_DirtyFlag)
+			continue;
+
+		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
+		CU::Vector4f up = translation.myOrientation.GetUp();
+		CU::Vector4f right = translation.myOrientation.GetRight();
+		CU::Vector4f forward = translation.myOrientation.GetForward();
+
+
+		CU::Vector4f position;
+
+		//x
+		position = translation.myOrientation.GetTranslation();
+		position += right * debug.m_WHD.x;
+		debug.m_OBB.m_Planes[0].InitWithPointAndNormal(position, right);
+
+		position = translation.myOrientation.GetTranslation();
+		position -= right * debug.m_WHD.x;
+		right -= (right * 2.f);
+		debug.m_OBB.m_Planes[1].InitWithPointAndNormal(position, right);
+
+		//y
+		position = translation.myOrientation.GetTranslation();
+		position += up * debug.m_WHD.y;
+		debug.m_OBB.m_Planes[2].InitWithPointAndNormal(position, up);
+
+		position = translation.myOrientation.GetTranslation();
+		position -= up * debug.m_WHD.y;
+		up -= (up * 2.f);
+		debug.m_OBB.m_Planes[3].InitWithPointAndNormal(position, up);
+
+		//z
+		position = translation.myOrientation.GetTranslation();
+		position += forward * debug.m_WHD.z;
+		debug.m_OBB.m_Planes[4].InitWithPointAndNormal(position, forward);
+
+
+		position = translation.myOrientation.GetTranslation();
+		position -= forward * debug.m_WHD.z;
+		forward -= (forward * 2.f);
+		debug.m_OBB.m_Planes[5].InitWithPointAndNormal(position, forward);
+
+		debug.m_PositionGizmo.SetPosition(translation.myOrientation.GetPosition());
+		debug.m_PositionGizmo.Update();
+	}
+
 }
 
 //This needs to be optimized as hell.
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
 	CU::Vector3f cam_pos = CU::Vector3f(message.camera_pos_x, message.camera_pos_y, message.camera_pos_z);
+	CU::Vector3f ray_dir = CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z);
 	//Should be optimized for a quad/oct -tree solution to only retrieve the entities in THIS part
+	
+
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	CU::GrowingArray<entity_collisions> collisions;
 	for (Entity i = entities.Size() - 1; i >= 0; i--)
@@ -86,31 +197,13 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		Entity e = entities[i];
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
 		debug.debugColor = { 255.f,255.f,255.f,255.f };
+
+
+
 		for (float i = 0; i < 25.f; i += 0.2f)
 		{
-			CU::Vector3f step = (CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z) * i);
+			CU::Vector3f step = (ray_dir * i);
 			CU::Vector3f new_post = cam_pos + step;
-			//debug.m_MovementArrow.Update();
-
-			if (debug.m_MovementArrow.GetForward().Inside(new_post))
-			{
-				m_Holding = true;
-				m_Direction = &debug.m_MovementArrow.GetForward();
-				break;
-			}
-			//if (debug.m_MovementArrow.GetRight().Inside(new_post))
-			//{
-			//	m_Holding = true;
-			//	m_Direction = &debug.m_MovementArrow.GetRight();
-			//	break;
-			//}
-			//if (debug.m_MovementArrow.GetUp().Inside(new_post))
-			//{
-			//	m_Holding = true;
-			//	m_Direction = &debug.m_MovementArrow.GetUp();
-			//	break;
-			//}
-
 
 			if (debug.m_OBB.Inside(new_post))
 			{
@@ -119,7 +212,6 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 				collision.m_Position = new_post;
 				collisions.Add(collision);
 				break;
-				//debug.debugColor = { 255.f,0.f,0.f,255.f };
 			}
 		}
 	}
@@ -146,14 +238,10 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		m_PrevID = prev_entity;
 		m_CurrentEntity = m_PrevID;
 	}
-	//else
-	//{
-	//	DebugComponent& debug = GetComponent<DebugComponent>(m_PrevID);
-	//	debug.debugColor = { 255.f,0.f,0.f,255.f };
-	//	m_CurrentEntity = m_PrevID;
-	//	//Engine::GetInstance()->SelectEntity(closest.m_ID);
-	//	//m_PrevID = prev_entity;
-	//}
+
+	if (CheckGizmoCollision(cam_pos, ray_dir))
+		return;
+
 }
 
 void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation)

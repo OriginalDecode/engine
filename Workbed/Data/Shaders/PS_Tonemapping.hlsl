@@ -49,7 +49,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 LumPixel = LuminanceTexture.Sample(linear_Clamp, input.uv);
 	float luminance = AverageLumTexture.Sample(linear_Clamp, input.uv).r;
 
-	//luminance = min(max(luminance, lumMin), lumMax);
+	luminance = min(max(luminance, lumMin), lumMax);
 	float exposure = (1.03 - (2 / (2 + log10(luminance + 1 ) ) ) ) ;
 
 	float4 color1 = (diffuse * (0.5)) / luminance;

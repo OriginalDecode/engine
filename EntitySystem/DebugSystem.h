@@ -7,7 +7,9 @@ struct OnLeftClick;
 struct DebugComponent;
 
 class Synchronizer;
-struct DirectionalArrow;
+
+struct GizmoHandle;
+
 class DebugSystem : public BaseSystem, public Subscriber
 {
 public:
@@ -15,6 +17,8 @@ public:
 	~DebugSystem();
 	void Update(float dt) override;
 private:
+	bool CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vector3f& ray_dir);
+	void UpdateOBBs();
 	void ReceiveMessage(const OnLeftClick& message) override;
 	Synchronizer* m_Synchronizer = nullptr;
 	double m_AccumulatedTime = 0.0f;
@@ -24,9 +28,9 @@ private:
 		Entity m_ID;
 		CU::Vector3f m_Position;
 	};
-
+	float m_MouseDeltaModifier = 1.f;
 	Entity m_PrevID;
 	Entity m_CurrentEntity;
 	bool m_Holding = false;
-	DirectionalArrow* m_Direction = nullptr;
+	GizmoHandle* m_Direction = nullptr;
 };

@@ -142,7 +142,7 @@ bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vec
 		return false;
 
 	DebugComponent& debug = GetComponent<DebugComponent>(m_CurrentEntity);
-	for (float i = 0; i < 25.f; i += 0.2f)
+	for (float i = 0; i < 25.f; i += 0.001f)
 	{
 		CU::Vector3f step = (ray_dir * i);
 		CU::Vector3f new_pos = cam_pos + step;
@@ -174,7 +174,6 @@ bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vec
 		}
 		else if (rot_gizmo.IsActive())
 		{
-			//m_Holding = rot_gizmo.Inside(new_pos, m_Direction);
 			if (rot_gizmo.GetForward().Inside(new_pos))
 			{
 				m_Holding = true;
@@ -216,9 +215,6 @@ bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vec
 				return true;
 			}
 		}
-
-
-
 	}
 	return false;
 }
@@ -274,6 +270,13 @@ void DebugSystem::UpdateOBBs()
 		debug.m_PositionGizmo.SetPosition(translation.myOrientation.GetPosition());
 		debug.m_PositionGizmo.Update();
 		debug.m_RotationGizmo.SetPosition(translation.myOrientation.GetPosition());
+
+		CU::Vector3f up_pos = translation.myOrientation.GetPosition();
+		up_pos.x += 0.5f;
+		up_pos.y -= 0.5f;
+		up_pos.z += 0.5f;
+		debug.m_RotationGizmo.GetUp().SetPosition(up_pos);
+
 		debug.m_RotationGizmo.Update();
 	}
 

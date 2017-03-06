@@ -65,6 +65,11 @@ bool GizmoHandle::Inside(const CU::Vector3f& position)
 	return m_OBB.Inside(position);
 }
 
+void GizmoHandle::SetPosition(const CU::Vector3f& position)
+{
+	m_Orientation.SetPosition(position);
+}
+
 void GizmoHandle::RenderBox()
 {
 	CU::Vector4f camera_position = Engine::GetInstance()->GetCamera()->GetPosition();

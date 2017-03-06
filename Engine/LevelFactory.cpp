@@ -465,16 +465,26 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 		GizmoHandle& gizmo_right = rotation_gizmo.GetRight();
 		GizmoHandle& gizmo_forward = rotation_gizmo.GetForward();
 
-		rotation_gizmo.CreateGizmoHandle(gizmo_up, "Data/Model/rotate_y.fbx", "Data/Textures/green.dds", GizmoHandle::eDirection::Y);
+		gizmo_right.m_Offset = 0.5f;
+		gizmo_forward.m_Offset = 0.5f;
 		rotation_gizmo.SetPosition(pos);
-		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(90.f) * -1) * gizmo_up.m_Orientation;
+
+		CU::Vector3f up_pos = pos;
+		up_pos.x += 0.5f;
+		up_pos.y -= 0.5f;
+		up_pos.z += 0.5f;
+		gizmo_up.SetPosition(up_pos);
+
+		rotation_gizmo.CreateGizmoHandle(gizmo_up, "Data/Model/rotate_y.fbx", "Data/Textures/green.dds", GizmoHandle::eDirection::Y);
 		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(90.f) * -1) * gizmo_up.m_Orientation;
+		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(90.f) * -1) * gizmo_up.m_Orientation;
 
 		rotation_gizmo.CreateGizmoHandle(gizmo_right, "Data/Model/rotate_x.fbx", "Data/Textures/red.dds", GizmoHandle::eDirection::X);
 
 		rotation_gizmo.CreateGizmoHandle(gizmo_forward, "Data/Model/rotate_z.fbx", "Data/Textures/blue.dds", GizmoHandle::eDirection::Z);
 		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
 		rotation_gizmo.ToggleActive();
+
 
 	}
 

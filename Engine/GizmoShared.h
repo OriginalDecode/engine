@@ -28,10 +28,11 @@ struct GizmoHandle
 	CModel* m_Model = nullptr;
 	Texture* m_DirColor = nullptr;
 	CU::Matrix44f m_Orientation;
-	float m_Offset = 1.f;
+	float m_Offset = 0.f;
 	
 	CU::PlaneVolume<float> m_OBB;
 	bool Inside(const CU::Vector3f& position);
+	void SetPosition(const CU::Vector3f& position);
 	void RenderBox();
 	void Update();
 };

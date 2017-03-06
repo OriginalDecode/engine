@@ -407,7 +407,6 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="PositionGizmo.h" />
     <ClInclude Include="NodeEntityManager.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="PointLight.h" />
@@ -416,8 +415,6 @@
     <ClInclude Include="RenderCommand.h" />
     <ClInclude Include="RenderCommand_Shared.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="RotationGizmo.h" />
-    <ClInclude Include="ScaleGizmo.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderFactory.h" />
     <ClInclude Include="ShaderWarningHandler.h" />
@@ -501,7 +498,6 @@
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="PositionGizmo.cpp" />
     <ClCompile Include="NodeEntityManager.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="PointLight.cpp" />
@@ -509,8 +505,6 @@
     <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="RenderCommand.cpp" />
     <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="RotationGizmo.cpp" />
-    <ClCompile Include="ScaleGizmo.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderFactory.cpp" />
     <ClCompile Include="ShaderWarningHandler.cpp" />

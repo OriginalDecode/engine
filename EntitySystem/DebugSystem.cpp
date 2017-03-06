@@ -112,13 +112,13 @@ bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vec
 			m_Direction = &debug.m_PositionGizmo.GetForward();
 			return true;
 		}
-		if (debug.m_PositionGizmo.GetRight().Inside(new_post))
+		else if (debug.m_PositionGizmo.GetRight().Inside(new_post))
 		{
 			m_Holding = true;
 			m_Direction = &debug.m_PositionGizmo.GetRight();
 			return true;
 		}
-		if (debug.m_PositionGizmo.GetUp().Inside(new_post))
+		else if (debug.m_PositionGizmo.GetUp().Inside(new_post))
 		{
 			m_Holding = true;
 			m_Direction = &debug.m_PositionGizmo.GetUp();
@@ -176,8 +176,7 @@ void DebugSystem::UpdateOBBs()
 		forward -= (forward * 2.f);
 		debug.m_OBB.m_Planes[5].InitWithPointAndNormal(position, forward);
 
-		debug.m_PositionGizmo.SetPosition(translation.myOrientation.GetPosition());
-		debug.m_PositionGizmo.Update();
+
 	}
 
 }

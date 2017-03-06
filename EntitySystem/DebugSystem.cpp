@@ -145,7 +145,7 @@ bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vec
 	for (float i = 0; i < 25.f; i += 0.2f)
 	{
 		CU::Vector3f step = (ray_dir * i);
-		CU::Vector3f new_post = cam_pos + step;
+		CU::Vector3f new_pos = cam_pos + step;
 
 		PositionGizmo& pos_gizmo = debug.m_PositionGizmo;
 		RotationGizmo& rot_gizmo = debug.m_RotationGizmo;
@@ -153,19 +153,19 @@ bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vec
 
 		if (pos_gizmo.IsActive())
 		{
-			if (debug.m_PositionGizmo.GetForward().Inside(new_post))
+			if (debug.m_PositionGizmo.GetForward().Inside(new_pos))
 			{
 				m_Holding = true;
 				m_Direction = &debug.m_PositionGizmo.GetForward();
 				return true;
 			}
-			else if (debug.m_PositionGizmo.GetRight().Inside(new_post))
+			else if (debug.m_PositionGizmo.GetRight().Inside(new_pos))
 			{
 				m_Holding = true;
 				m_Direction = &debug.m_PositionGizmo.GetRight();
 				return true;
 			}
-			else if (debug.m_PositionGizmo.GetUp().Inside(new_post))
+			else if (debug.m_PositionGizmo.GetUp().Inside(new_pos))
 			{
 				m_Holding = true;
 				m_Direction = &debug.m_PositionGizmo.GetUp();
@@ -174,20 +174,20 @@ bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vec
 		}
 		else if (rot_gizmo.IsActive())
 		{
-			m_Holding = rot_gizmo.Inside(new_post, m_Direction);
-			if (rot_gizmo.GetForward().Inside(new_post))
+			//m_Holding = rot_gizmo.Inside(new_pos, m_Direction);
+			if (rot_gizmo.GetForward().Inside(new_pos))
 			{
 				m_Holding = true;
 				m_Direction = &rot_gizmo.GetForward();
 				return true;
 			}
-			else if (rot_gizmo.GetRight().Inside(new_post))
+			else if (rot_gizmo.GetRight().Inside(new_pos))
 			{
 				m_Holding = true;
 				m_Direction = &rot_gizmo.GetRight();
 				return true;
 			}
-			else if (rot_gizmo.GetUp().Inside(new_post))
+			else if (rot_gizmo.GetUp().Inside(new_pos))
 			{
 				m_Holding = true;
 				m_Direction = &rot_gizmo.GetUp();
@@ -197,19 +197,19 @@ bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vec
 		else if(scale_gizmo.IsActive())
 		{
 			
-			if (debug.m_ScaleGizmo.GetForward().Inside(new_post))
+			if (debug.m_ScaleGizmo.GetForward().Inside(new_pos))
 			{
 				m_Holding = true;
 				m_Direction = &debug.m_ScaleGizmo.GetForward();
 				return true;
 			}
-			else if (debug.m_ScaleGizmo.GetRight().Inside(new_post))
+			else if (debug.m_ScaleGizmo.GetRight().Inside(new_pos))
 			{
 				m_Holding = true;
 				m_Direction = &debug.m_ScaleGizmo.GetRight();
 				return true;
 			}
-			else if (debug.m_ScaleGizmo.GetUp().Inside(new_post))
+			else if (debug.m_ScaleGizmo.GetUp().Inside(new_pos))
 			{
 				m_Holding = true;
 				m_Direction = &debug.m_ScaleGizmo.GetUp();
@@ -300,13 +300,13 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		for (float i = 0; i < 25.f; i += 0.2f)
 		{
 			CU::Vector3f step = (ray_dir * i);
-			CU::Vector3f new_post = cam_pos + step;
+			CU::Vector3f new_pos = cam_pos + step;
 
-			if (debug.m_OBB.Inside(new_post))
+			if (debug.m_OBB.Inside(new_pos))
 			{
 				entity_collisions collision;
 				collision.m_ID = e;
-				collision.m_Position = new_post;
+				collision.m_Position = new_pos;
 				collisions.Add(collision);
 				break;
 			}

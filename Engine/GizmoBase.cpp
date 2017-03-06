@@ -25,6 +25,11 @@ void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, const std::string& 
 
 void GizmoBase::Render()
 {
+	if (!m_Active)
+		return;
+
+	RenderBoxes();
+
 	Engine* engine = Engine::GetInstance();
 	CU::Vector4f camera_position = engine->GetCamera()->GetPosition();
 	float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
@@ -55,4 +60,55 @@ void GizmoBase::RenderBoxes()
 	m_Up.RenderBox();
 	m_Right.RenderBox();
 	m_Forward.RenderBox();
+}
+
+void GizmoBase::Update()
+{
+	m_Up.Update();
+	m_Right.Update();
+	m_Forward.Update();
+}
+
+void GizmoBase::SetPosition(const CU::Vector3f& position)
+{
+	m_Orientation.SetPosition(position);
+
+	m_Forward.m_Orientation.SetPosition(position);
+	OffsetGizmoHandle(m_Forward);
+
+	m_Up.m_Orientation.SetPosition(position);
+	OffsetGizmoHandle(m_Up);
+
+	m_Right.m_Orientation.SetPosition(position);
+	OffsetGizmoHandle(m_Right);
+}
+
+bool GizmoBase::Inside(const CU::Vector3f& position, GizmoHandle* result)
+{
+	if (m_Forward.Inside(position))
+	{
+		result = &m_Forward;
+		return true;
+	}
+	else if (m_Up.Inside(position))
+	{
+		result = &m_Up;
+		return true;
+	}
+	else if (m_Right.Inside(position))
+	{
+		result = &m_Right; 
+		return true;
+	}
+
+	result = nullptr;
+	return false;
+}
+
+void GizmoBase::OffsetGizmoHandle(GizmoHandle& gizmo_handle)
+{
+	CU::Vector4f right = gizmo_handle.m_Orientation.GetRight();
+	CU::Vector4f position = gizmo_handle.m_Orientation.GetTranslation();
+	position = position + right * gizmo_handle.m_Offset;
+	gizmo_handle.m_Orientation.SetPosition(position);
 }

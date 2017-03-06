@@ -3,9 +3,10 @@
 #include "BaseComponent.h"
 #include <Math/Plane/PlaneVolume.h>
 #include "../Engine/EditObject.h"
-#include "PositionGizmo.h"
-#include "ScaleGizmo.h"
-#include "RotationGizmo.h"
+//#include "PositionGizmo.h"
+//#include "ScaleGizmo.h"
+//#include "RotationGizmo.h"
+#include "GizmoBase.h"
 struct DebugComponent final : public BaseComponent
 {
 	~DebugComponent() { }
@@ -18,7 +19,6 @@ struct DebugComponent final : public BaseComponent
 	PositionGizmo m_PositionGizmo;
 	RotationGizmo m_RotationGizmo;
 	ScaleGizmo m_ScaleGizmo;
-
 
 	bool m_DirtyFlag = false;
 

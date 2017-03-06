@@ -2,7 +2,9 @@
 class RotationGizmo
 {
 public:
-	RotationGizmo();
-	~RotationGizmo();
+	RotationGizmo() = default;
+
+private:
+
 };
 

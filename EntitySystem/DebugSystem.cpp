@@ -14,9 +14,10 @@
 
 #include <Camera.h>
 
-#include <PositionGizmo.h>
-#include <ScaleGizmo.h>
-#include <RotationGizmo.h>
+//#include <PositionGizmo.h>
+//#include <ScaleGizmo.h>
+//#include <RotationGizmo.h>
+#include <GizmoBase.h>
 
 DebugSystem::DebugSystem(EntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
@@ -53,10 +54,10 @@ void DebugSystem::Update(float dt)
 	if (m_CurrentEntity > -1)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(m_CurrentEntity);
-		debug.m_PositionGizmo.RenderBoxes();
 		debug.m_PositionGizmo.Render();
-
-		if (m_Holding)
+		debug.m_RotationGizmo.Render();
+		//debug.m_ScaleGizmo.Render();
+		if (m_Holding && m_Direction)
 		{
 			const CU::Vector2f& delta_pos = m_Engine->GetInputHandle()->GetDeltaCursorPos();
 
@@ -66,26 +67,42 @@ void DebugSystem::Update(float dt)
 
 			CU::Vector4f cam_pos = m_Engine->GetCamera()->GetPosition();
 
-
-			if (m_Direction->direction == GizmoHandle::eDirection::FORWARD)
+			if (m_Engine->GetInputHandle()->GetInputWrapper()->OnDown(KButton::M))
 			{
-				CU::Vector4f horizontal_modifier = cam_pos - position;
-				CU::Math::Normalize(horizontal_modifier);
-				position += (dir * ( delta_pos.x * horizontal_modifier.x )) / m_MouseDeltaModifier;
-
+				if (debug.m_PositionGizmo.IsActive() || debug.m_RotationGizmo.IsActive())
+				{
+					debug.m_PositionGizmo.ToggleActive();
+					debug.m_RotationGizmo.ToggleActive();
+				}
 			}
-			else if(m_Direction->direction == GizmoHandle::eDirection::RIGHT)
+
+			if (debug.m_PositionGizmo.IsActive())
 			{
-				CU::Vector4f horizontal_modifier = cam_pos - position;
-				CU::Math::Normalize(horizontal_modifier);
-				position += (dir * (delta_pos.x * -horizontal_modifier.z)) / m_MouseDeltaModifier;
+				if (m_Direction->direction == GizmoHandle::eDirection::FORWARD)
+				{
+					CU::Vector4f horizontal_modifier = cam_pos - position;
+					CU::Math::Normalize(horizontal_modifier);
+					position += (dir * (delta_pos.x * horizontal_modifier.x)) / m_MouseDeltaModifier;
+
+				}
+				else if (m_Direction->direction == GizmoHandle::eDirection::RIGHT)
+				{
+					CU::Vector4f horizontal_modifier = cam_pos - position;
+					CU::Math::Normalize(horizontal_modifier);
+					position += (dir * (delta_pos.x * -horizontal_modifier.z)) / m_MouseDeltaModifier;
+				}
+				else if (m_Direction->direction == GizmoHandle::eDirection::UP)
+				{
+					position += (dir * -delta_pos.y) / m_MouseDeltaModifier;
+				}
 			}
-			else if (m_Direction->direction == GizmoHandle::eDirection::UP)
+			else if(debug.m_RotationGizmo.IsActive())
 			{
-				position += (dir * -delta_pos.y) / m_MouseDeltaModifier;
+
 			}
 
 			translation.myOrientation.SetTranslation(position);
+
 			debug.m_DirtyFlag = true;
 		}
 	}
@@ -106,24 +123,78 @@ bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vec
 		CU::Vector3f step = (ray_dir * i);
 		CU::Vector3f new_post = cam_pos + step;
 
-		if (debug.m_PositionGizmo.GetForward().Inside(new_post))
+		PositionGizmo& pos_gizmo = debug.m_PositionGizmo;
+		RotationGizmo& rot_gizmo = debug.m_RotationGizmo;
+		RotationGizmo& scale_gizmo = debug.m_ScaleGizmo;
+
+		if (pos_gizmo.IsActive())
 		{
-			m_Holding = true;
-			m_Direction = &debug.m_PositionGizmo.GetForward();
-			return true;
+			if (debug.m_PositionGizmo.GetForward().Inside(new_post))
+			{
+				m_Holding = true;
+				m_Direction = &debug.m_PositionGizmo.GetForward();
+				return true;
+			}
+			else if (debug.m_PositionGizmo.GetRight().Inside(new_post))
+			{
+				m_Holding = true;
+				m_Direction = &debug.m_PositionGizmo.GetRight();
+				return true;
+			}
+			else if (debug.m_PositionGizmo.GetUp().Inside(new_post))
+			{
+				m_Holding = true;
+				m_Direction = &debug.m_PositionGizmo.GetUp();
+				return true;
+			}
 		}
-		else if (debug.m_PositionGizmo.GetRight().Inside(new_post))
+		else if (rot_gizmo.IsActive())
 		{
-			m_Holding = true;
-			m_Direction = &debug.m_PositionGizmo.GetRight();
-			return true;
+			m_Holding = rot_gizmo.Inside(new_post, m_Direction);
+			if (rot_gizmo.GetForward().Inside(new_post))
+			{
+				m_Holding = true;
+				m_Direction = &rot_gizmo.GetForward();
+				return true;
+			}
+			else if (rot_gizmo.GetRight().Inside(new_post))
+			{
+				m_Holding = true;
+				m_Direction = &rot_gizmo.GetRight();
+				return true;
+			}
+			else if (rot_gizmo.GetUp().Inside(new_post))
+			{
+				m_Holding = true;
+				m_Direction = &rot_gizmo.GetUp();
+				return true;
+			}
 		}
-		else if (debug.m_PositionGizmo.GetUp().Inside(new_post))
+		else if(scale_gizmo.IsActive())
 		{
-			m_Holding = true;
-			m_Direction = &debug.m_PositionGizmo.GetUp();
-			return true;
+			
+			if (debug.m_ScaleGizmo.GetForward().Inside(new_post))
+			{
+				m_Holding = true;
+				m_Direction = &debug.m_ScaleGizmo.GetForward();
+				return true;
+			}
+			else if (debug.m_ScaleGizmo.GetRight().Inside(new_post))
+			{
+				m_Holding = true;
+				m_Direction = &debug.m_ScaleGizmo.GetRight();
+				return true;
+			}
+			else if (debug.m_ScaleGizmo.GetUp().Inside(new_post))
+			{
+				m_Holding = true;
+				m_Direction = &debug.m_ScaleGizmo.GetUp();
+				return true;
+			}
 		}
+
+
+
 	}
 	return false;
 }
@@ -176,7 +247,8 @@ void DebugSystem::UpdateOBBs()
 		forward -= (forward * 2.f);
 		debug.m_OBB.m_Planes[5].InitWithPointAndNormal(position, forward);
 
-
+		debug.m_PositionGizmo.SetPosition(translation.myOrientation.GetPosition());
+		debug.m_PositionGizmo.Update();
 	}
 
 }

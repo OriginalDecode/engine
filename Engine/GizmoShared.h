@@ -9,9 +9,14 @@ struct GizmoHandle
 {
 	enum class eDirection
 	{
+		//POSITION & SCALE
 		RIGHT,
 		UP,
 		FORWARD,
+		//ROTATION
+		X,
+		Y,
+		Z,
 	};
 	eDirection direction;
 
@@ -23,10 +28,8 @@ struct GizmoHandle
 	CModel* m_Model = nullptr;
 	Texture* m_DirColor = nullptr;
 	CU::Matrix44f m_Orientation;
-
-	CU::Vector3f m_MinPos;
-	CU::Vector3f m_MaxPos;
-
+	float m_Offset = 1.f;
+	
 	CU::PlaneVolume<float> m_OBB;
 	bool Inside(const CU::Vector3f& position);
 	void RenderBox();

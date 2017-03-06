@@ -28,7 +28,6 @@
 
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
-#include "MoveArrowModel.h"
 
 //#define AMBIENT_PASS_ONLY
 

@@ -67,14 +67,14 @@ void DebugSystem::Update(float dt)
 
 			CU::Vector4f cam_pos = m_Engine->GetCamera()->GetPosition();
 
-			if (m_Engine->GetInputHandle()->GetInputWrapper()->OnDown(KButton::M))
+			/*if (m_Engine->GetInputHandle()->GetInputWrapper()->OnDown(KButton::M))
 			{
 				if (debug.m_PositionGizmo.IsActive() || debug.m_RotationGizmo.IsActive())
 				{
 					debug.m_PositionGizmo.ToggleActive();
 					debug.m_RotationGizmo.ToggleActive();
 				}
-			}
+			}*/
 
 			if (debug.m_PositionGizmo.IsActive())
 			{
@@ -98,7 +98,31 @@ void DebugSystem::Update(float dt)
 			}
 			else if(debug.m_RotationGizmo.IsActive())
 			{
+				if (m_Direction->direction == GizmoHandle::eDirection::X)
+				{
+					CU::Vector4f horizontal_modifier = cam_pos - position;
+					CU::Math::Normalize(horizontal_modifier);
+					float angle = 0.f;
+					angle += ((delta_pos.x * horizontal_modifier.x)) / m_MouseDeltaModifier;
+					translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(angle) * translation.myOrientation;
+				}
+				else if (m_Direction->direction == GizmoHandle::eDirection::Y)
+				{
+					CU::Vector4f horizontal_modifier = cam_pos - position;
+					CU::Math::Normalize(horizontal_modifier);
+					float angle = 0.f;
+					angle += ((delta_pos.x * horizontal_modifier.x)) / m_MouseDeltaModifier;
+					translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(angle) * translation.myOrientation;
 
+				}
+				else if (m_Direction->direction == GizmoHandle::eDirection::Z)
+				{
+					CU::Vector4f horizontal_modifier = cam_pos - position;
+					CU::Math::Normalize(horizontal_modifier);
+					float angle = 0.f;
+					angle += ((delta_pos.x * horizontal_modifier.x)) / m_MouseDeltaModifier;
+					translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(angle) * translation.myOrientation;
+				}
 			}
 
 			translation.myOrientation.SetTranslation(position);
@@ -249,6 +273,8 @@ void DebugSystem::UpdateOBBs()
 
 		debug.m_PositionGizmo.SetPosition(translation.myOrientation.GetPosition());
 		debug.m_PositionGizmo.Update();
+		debug.m_RotationGizmo.SetPosition(translation.myOrientation.GetPosition());
+		debug.m_RotationGizmo.Update();
 	}
 
 }

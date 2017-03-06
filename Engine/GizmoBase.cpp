@@ -21,6 +21,7 @@ void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, const std::string& 
 		}
 	}
 	gizmo_handle.direction = direction;
+	gizmo_handle.Initiate();
 }
 
 void GizmoBase::Render()

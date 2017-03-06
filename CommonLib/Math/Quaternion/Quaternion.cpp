@@ -59,6 +59,44 @@ namespace CommonUtilities
 		return ((other * Inverted()) ^ aT) * (*this);
 	}
 
+	CU::Matrix44f Quaternion::ConvertToRotationMatrix()
+	{
+		float qx = v.x;
+		float qy = v.y;
+		float qz = v.z;
+		float qw = w;
+
+		const float n = 1.f / sqrt(
+			(qx*qx) +
+			(qy*qy) +
+			(qz*qz) +
+			(qw*qw));
+
+		qx *= n;
+		qy *= n;
+		qz *= n;
+		qw *= n;
+
+		CU::Matrix44f matrix;
+		matrix[0] = 1.0f - 2.0f*qy*qy - 2.0f*qz*qz;
+		matrix[1] = 2.0f*qx*qy - 2.0f*qz*qw;
+		matrix[2] = 2.0f*qx*qz + 2.0f*qy*qw, 0.0f;
+		matrix[3] = 2.0f*qx*qy + 2.0f*qz*qw;
+
+		matrix[4] = 1.0f - 2.0f*qx*qx - 2.0f*qz*qz;
+		matrix[5] = 2.0f*qy*qz - 2.0f*qx*qw;
+		matrix[6] = 0.0f;
+		matrix[7] = 2.0f*qx*qz - 2.0f*qy*qw;
+
+		matrix[8] = 2.0f*qy*qz + 2.0f*qx*qw;
+		matrix[9] = 1.0f - 2.0f*qx*qx - 2.0f*qy*qy;
+		matrix[10] = 0.0f;
+
+		matrix.rows[3] = CU::Vector4f(0.f, 0.f, 0.f, 1.0f);
+				
+		return matrix;
+	}
+
 	void Quaternion::ToAxisAngle(CU::Vector3f& aVectorAxisOut, float& anAngleOut) const
 	{
 		if (Length2(v) < 0.0001f)

@@ -3,9 +3,6 @@
 #include "BaseComponent.h"
 #include <Math/Plane/PlaneVolume.h>
 #include "../Engine/EditObject.h"
-//#include "PositionGizmo.h"
-//#include "ScaleGizmo.h"
-//#include "RotationGizmo.h"
 #include "GizmoBase.h"
 struct DebugComponent final : public BaseComponent
 {

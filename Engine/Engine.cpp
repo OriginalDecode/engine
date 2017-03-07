@@ -266,7 +266,8 @@ void Engine::Update()
 
 void Engine::UpdateInput()
 {
-	m_InputHandle->Update(m_DeltaTime);
+	if (!m_PauseInput)
+		m_InputHandle->Update(m_DeltaTime);
 }
 
 IGraphicsAPI* Engine::GetGraphicsAPI()
@@ -568,6 +569,39 @@ CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepa
 	return m_LevelFactory->GetDwellers();
 }
 
+bool Engine::SaveLevel()
+{
+	//Should write the entire file
+	//Prompt dialogue to give it a file name
+	static char file_name[512];
+	if (ImGui::Begin("Filename"))
+	{
+
+		ImGui::InputText("filename", file_name, 512);
+		if (ImGui::Button("Save", ImVec2(100, 30)))
+		{
+			if (!CL::substr(file_name, ".level"))
+			{
+				DL_WARNINGBOX("Incorrect filetype, no file created!");
+			}
+			else
+			{
+				std::ofstream f(file_name);
+				f << "Hello World!";
+				f.flush();
+				f.close();
+				m_PauseInput = false;
+				ImGui::End();
+				return true;
+			}
+		}
+
+	}
+	ImGui::End();
+
+	return false;
+}
+
 Threadpool& Engine::GetThreadpool()
 {
 	return m_Threadpool;
@@ -593,10 +627,10 @@ void Engine::UpdateDebugUI()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	static bool pOpen = false;
 	static bool new_window = false;
+	static bool save = false;
 	if (ImGui::Begin("Information", &pOpen, flags))
 	{
 		ImGui::Text("Delta Time : %.3f", GetDeltaTime());
-
 
 		ImGui::Separator();
 
@@ -604,6 +638,17 @@ void Engine::UpdateDebugUI()
 		{
 			new_window = !new_window;
 		}
+
+		if (ImGui::Button("Save Level", ImVec2(100.f, 25.f)))
+		{
+			save = !save;
+			m_PauseInput = true;
+		}
+
+		if (save)
+			if (SaveLevel())
+				save = !save;
+
 
 		ImGui::Checkbox("Use mouse movement for Camera", &m_CameraUseMouse);
 
@@ -622,7 +667,6 @@ void Engine::UpdateDebugUI()
 		{
 			ImGui::Text("Entity Creation");
 			ImGui::Separator();
-
 			static bool new_bp = false;
 			if (ImGui::Button("New Blueprint", ImVec2(100.f, 25.f)))
 			{

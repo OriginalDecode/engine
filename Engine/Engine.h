@@ -146,7 +146,9 @@ public:
 	// Level Creation, Loading, Saving
 	CTerrain* CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize);
 	CU::GrowingArray<TreeDweller*> LoadLevel(const std::string& level_filepath);
-	void SaveLevel();
+
+
+	bool SaveLevel();
 
 	//_________________________________________
 	// Shader Creation
@@ -237,7 +239,7 @@ private:
 
 	std::bitset<(u16)eEngineStates::_COUNT> m_States;
 
-
+	bool m_PauseInput = false;
 	float m_DeltaTime = 0.f;
 	s32	m_Frame = 0;
 };

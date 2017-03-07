@@ -29,6 +29,13 @@ void LevelFactory::Initiate()
 
 bool LevelFactory::CreateLevel(const std::string& level_path)
 {
+	/*if (!CL::substr(level_path, ".level"))
+	{
+		DL_ASSERT("Incorrect filetype. Has to be .level");
+		return false;
+	}*/
+
+
 	//m_Engine->GetEntityManager()->CleanUp();
 	//m_Engine->GetEntityManager()->Initiate();
 	m_LevelReader.OpenDocument(level_path);
@@ -47,6 +54,8 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 
 void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it)
 {
+
+
 	JSONReader entity_reader(entity_filepath);
 	Entity e = m_EntityManager->CreateEntity();
 

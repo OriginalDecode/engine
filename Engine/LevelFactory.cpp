@@ -113,6 +113,9 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 			DL_ASSERT("Failed to find correct input controller tag!");
 	}
 
+	if (sponza)
+		sponza = false;
+	else
 	CreateDebugComponent(e, hasLight, debug_flags);
 
 

@@ -57,7 +57,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float4 col = float4(1,0.47,0.03,1);
 	float3 directSpec = (D * F * V);
-	float3 final_color = saturate( directSpec * ((attenuation * angularAttenuation)));
+	float3 final_color = saturate( directSpec * ((attenuation * angularAttenuation))) * 1000;
 
 	float4 newPos = data.world_pos + (data.normal * 0.4);
 	newPos.w = 1;

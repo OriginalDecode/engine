@@ -48,6 +48,9 @@ namespace CommonUtilities
 			void ConvertFromCol(const TYPE aColMatrix[16]);
 			void InitWithArray(const TYPE aColMatrix[16]);
 
+			Vector3<TYPE> GetRadRotations();
+			Vector3<TYPE> GetGradRotations();
+
 
 			void SetRotation3dX(const TYPE& aRadian);
 			void SetRotation3dY(const TYPE& aRadian);
@@ -100,6 +103,26 @@ namespace CommonUtilities
 			};
 			const Matrix44<TYPE> Calculate(const RotationType& rotation, const TYPE& cos, const TYPE& sin);
 		};
+
+		template<typename TYPE>
+		Vector3<TYPE> Matrix44<TYPE>::GetGradRotations()
+		{
+			Vector3<TYPE> output;
+			output.x = (-atan2(myMatrix[9], myMatrix[10]))  * (180.f / 3.1415926535f);
+			output.y = (atan2(myMatrix[8], sqrt((myMatrix[9] * myMatrix[9]) + (myMatrix[10] * myMatrix[10]))))  * (180.f / 3.1415926535f);
+			output.z = (-atan2(myMatrix[4], myMatrix[0])) * (180.f / 3.1415926535f);
+			return output;
+		}
+
+		template<typename TYPE>
+		Vector3<TYPE> Matrix44<TYPE>::GetRadRotations()
+		{
+			Vector3<TYPE> output;
+			output.x = -atan2(myMatrix[9], myMatrix[10]);
+			output.y = atan2(myMatrix[8], myMatrix[0]);
+			output.z = -atan2(myMatrix[4], myMatrix[0]);
+			return output;
+		}
 
 		template<typename TYPE>
 		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointZ(const CU::Vector3f& point, float radian, float dt)

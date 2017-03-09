@@ -112,6 +112,11 @@ void ShadowSpotlight::ToggleShader(bool on_or_off)
 		m_ShadowEffect->Deactivate();
 }
 
+void ShadowSpotlight::SetOrientation(const CU::Matrix44f& orientation)
+{
+	m_Camera->SetOrientation(orientation);
+}
+
 CU::Matrix44f ShadowSpotlight::GetOrientation()
 {
 	return m_Camera->GetOrientation();

@@ -22,7 +22,7 @@ SSpotlightData& CSpotLight::GetData()
 
 void CSpotLight::DoTranslation(const CU::Matrix44f& translationMatrix)
 {
-	myData.myOrientation = translationMatrix * myBaseMatrix;
+	myData.myOrientation = translationMatrix;
 	SetDirection(myData.myOrientation.GetForward());
 }
 
@@ -48,8 +48,6 @@ void CSpotLight::SetDirection(const CU::Vector4f& aDirection)
 
 
 	m_Model->GetOrientation().SetForward(myData.myDirection);
-
-	//myData.myOrientation.SetForward(myData.myDirection);
 }
 
 void CSpotLight::SetAngle(float anAngle)

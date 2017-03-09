@@ -348,6 +348,7 @@
     </ClInclude>
     <ClInclude Include="GizmoShared.h" />
     <ClInclude Include="GizmoBase.h" />
+    <ClInclude Include="EntityFormat.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">

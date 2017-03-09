@@ -71,11 +71,6 @@ public:
 	void Render();
 	void UpdateInput();
 
-	/*
-		Both of the APIs should be available at all time.
-		and you should not get the api but you should get
-		whatever is selected
-	*/
 	static IGraphicsAPI* GetGraphicsAPI();
 #ifdef SNOWBLIND_DX11
 	static DirectX11* GetAPI();
@@ -195,7 +190,6 @@ private:
 	bool m_EditLight = false;
 	//void EditLightComponent();
 	bool m_EditRender = false;
-	void EditGraphicsComponent();
 
 
 	Engine() = default;

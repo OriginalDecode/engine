@@ -25,6 +25,9 @@
 
 		void ToggleShader(bool on_or_off);
 
+		void SetOrientation(const CU::Matrix44f& orientation);
+
+
 		CU::Matrix44f GetOrientation();
 		CU::Matrix44f GetMVP();
 		void Copy();

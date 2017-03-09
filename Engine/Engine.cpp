@@ -668,10 +668,20 @@ void Engine::UpdateDebugUI()
 			ImGui::Text("Entity Creation");
 			ImGui::Separator();
 			static bool new_bp = false;
+			static bool new_entity = false;
 			if (ImGui::Button("New Blueprint", ImVec2(100.f, 25.f)))
 			{
-				new_bp = true;
+				new_bp = !new_bp;
 			}
+			ImGui::SameLine();
+			if (ImGui::Button("New Entity", ImVec2(100.f, 25.f)))
+			{
+				new_entity = !new_entity;
+			}
+
+
+
+
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::BeginTooltip();
@@ -727,23 +737,6 @@ void Engine::UpdateDebugUI()
 					ImGui::Separator();
 				}
 
-				if (edit_t)
-				{
-					ImGui::Begin("Hello World");
-
-					static float x_value = 0.f;
-					static float y_value = 0.f;
-					static float z_value = 0.f;
-
-					ImGui::SliderFloat("X", &x_value, 0, 1);
-					ImGui::SliderFloat("Y", &y_value, 0, 1);
-					ImGui::SliderFloat("Z", &z_value, 0, 1);
-
-
-
-					ImGui::End();
-				}
-
 				if (components < item_count)
 				{
 					if (ImGui::Button("Add Component"))
@@ -766,6 +759,18 @@ void Engine::UpdateDebugUI()
 					new_bp = false;
 				}
 			}
+
+			if (new_entity)
+			{
+
+
+
+
+			}
+
+
+
+
 		}
 		ImGui::End();
 		ImGui::PopStyleVar();

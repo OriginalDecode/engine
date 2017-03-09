@@ -303,7 +303,7 @@ void Renderer::Render()
 
 	m_Engine->Present();
 
-	//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 64.f, 64.f)));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 64.f, 64.f)));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
 #ifdef _DEBUG
@@ -478,7 +478,7 @@ void Renderer::RenderSpotlight()
 		mySpotlight->SetAngle(command.myAngle);
 		//mySpotlight->set
 		mySpotlight->DoTranslation(command.m_Orientation);
-
+		m_Shadowlight->SetOrientation(command.m_Orientation);
 		m_LightPass.RenderSpotlight(mySpotlight, m_Camera, myPrevFrame, m_Shadowlight->GetMVP());
 	}
 	effect->Deactivate();

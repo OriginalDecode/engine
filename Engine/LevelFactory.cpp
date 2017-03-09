@@ -116,7 +116,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	if (sponza)
 		sponza = false;
 	else
-	CreateDebugComponent(e, hasLight, debug_flags);
+		CreateDebugComponent(e, hasLight, debug_flags);
 
 
 	m_DwellerList.GetLast()->Initiate(e);
@@ -238,7 +238,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 		el["model"].GetString(),
 		el["shader"].GetString());
 
-	component.scale = CU::Vector4f(1,1,1,1);
+	component.scale = CU::Vector4f(1, 1, 1, 1);
 
 	//CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
 	//m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
@@ -259,7 +259,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	btRigidBody* phys_body = nullptr;
 
 	TranslationComponent& translation_component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
-	
+
 
 
 	std::string shape = el["shape"].GetString();
@@ -267,7 +267,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	{
 		RenderComponent& render_component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 		CModel* model = m_Engine->GetModel(render_component.myModelID);
-		
+
 		phys_body = component.myBody->InitAsBox(200, 100, 100, translation_component.myOrientation.GetPosition());// ->GetVertices(), model->GetIndices()); //InitAsBox(1, 1, 1, { 0,0,0 });
 
 	}
@@ -283,7 +283,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 			m_PhysicsManager->GetGravityForce(), //Gravity
 			scientific_constants::pressure::air_pressure, //Air pressure / resistance
 			translation_component.myOrientation.GetPosition()); //Start position
-		
+
 	}
 	component.myBody->SetEntity(entity_id);
 	m_PhysicsManager->Add(phys_body);
@@ -303,6 +303,7 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 	m_EntityManager->AddComponent<LightComponent>(entity_id);
 	LightComponent& component = m_EntityManager->GetComponent<LightComponent>(entity_id);
 	m_DwellerList.GetLast()->AddComponent<LightComponent>(&component, TreeDweller::LIGHT);
+	TranslationComponent& translation_component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
 
 	std::string type;
 
@@ -334,9 +335,9 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 
 		m_LevelReader.ReadElement(it->value["direction"], component.direction);
 
-		component.orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * component.orientation;
-		component.orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(component.direction.y)) * component.orientation;
-		component.orientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(component.direction.x)) * component.orientation;
+		translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * translation_component.myOrientation;
+		translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(component.direction.y)) * translation_component.myOrientation;
+		translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(component.direction.x)) * translation_component.myOrientation;
 
 		m_LevelReader.ReadElement(it->value["angle"], component.angle);
 		component.angle = CL::DegreeToRad(component.angle);

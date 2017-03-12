@@ -36,13 +36,13 @@ DebugSystem::~DebugSystem()
 void DebugSystem::Update(float dt)
 {
 	BeginTicketMutex(&m_Mutex);
+	m_Synchronizer->AddRenderCommand(RenderCommand(eType::TEXT, current_model, CU::Vector2f(0.75, 0)));
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (Entity e : entities)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-		RenderBox(debug, translation.myOrientation);
-		
+		//RenderBox(debug, translation.myOrientation);
 	
 	}
 
@@ -337,6 +337,8 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		Engine::GetInstance()->SelectEntity(closest.m_ID);
 		m_PrevID = prev_entity;
 		m_CurrentEntity = m_PrevID;
+		RenderComponent& r = myEntityManager.GetComponent<RenderComponent>(m_CurrentEntity);
+		current_model = r.myModelID;
 	}
 
 	if (CheckGizmoCollision(cam_pos, ray_dir))

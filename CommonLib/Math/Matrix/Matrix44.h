@@ -402,7 +402,8 @@ namespace CommonUtilities
 		const Matrix44<TYPE> operator*(const Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
 		{
 			Matrix44<TYPE> tempMatrix(aFirstMatrix);
-			return tempMatrix *= aSecondMatrix;
+			tempMatrix *= aSecondMatrix;
+			return tempMatrix;
 		}
 
 		template<typename TYPE>
@@ -471,7 +472,7 @@ namespace CommonUtilities
 		template<typename TYPE>
 		const Matrix44<TYPE> operator*=(Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
 		{
-			Vector4<TYPE> myFirstRow(aFirstMatrix.myMatrix[0], aFirstMatrix.myMatrix[1], aFirstMatrix.myMatrix[2], aFirstMatrix.myMatrix[3]);
+			/*Vector4<TYPE> myFirstRow(aFirstMatrix.myMatrix[0], aFirstMatrix.myMatrix[1], aFirstMatrix.myMatrix[2], aFirstMatrix.myMatrix[3]);
 			Vector4<TYPE> mySecondRow(aFirstMatrix.myMatrix[4], aFirstMatrix.myMatrix[5], aFirstMatrix.myMatrix[6], aFirstMatrix.myMatrix[7]);
 			Vector4<TYPE> myThirdRow(aFirstMatrix.myMatrix[8], aFirstMatrix.myMatrix[9], aFirstMatrix.myMatrix[10], aFirstMatrix.myMatrix[11]);
 			Vector4<TYPE> myFourthRow(aFirstMatrix.myMatrix[12], aFirstMatrix.myMatrix[13], aFirstMatrix.myMatrix[14], aFirstMatrix.myMatrix[15]);
@@ -501,7 +502,96 @@ namespace CommonUtilities
 			aFirstMatrix.myMatrix[14] = Dot(myFourthRow, myThirdCollumn);
 			aFirstMatrix.myMatrix[15] = Dot(myFourthRow, myFourthCollumn);
 
+			return aFirstMatrix;*/
+
+			Matrix44<TYPE> originalFirst(aFirstMatrix);
+
+			aFirstMatrix.myMatrix[0] =
+				originalFirst.myMatrix[0] * aSecondMatrix.myMatrix[0] +
+				originalFirst.myMatrix[1] * aSecondMatrix.myMatrix[4] +
+				originalFirst.myMatrix[2] * aSecondMatrix.myMatrix[8] +
+				originalFirst.myMatrix[3] * aSecondMatrix.myMatrix[12];
+			aFirstMatrix.myMatrix[1] =
+				originalFirst.myMatrix[0] * aSecondMatrix.myMatrix[1] +
+				originalFirst.myMatrix[1] * aSecondMatrix.myMatrix[5] +
+				originalFirst.myMatrix[2] * aSecondMatrix.myMatrix[9] +
+				originalFirst.myMatrix[3] * aSecondMatrix.myMatrix[13];
+			aFirstMatrix.myMatrix[2] =
+				originalFirst.myMatrix[0] * aSecondMatrix.myMatrix[2] +
+				originalFirst.myMatrix[1] * aSecondMatrix.myMatrix[6] +
+				originalFirst.myMatrix[2] * aSecondMatrix.myMatrix[10] +
+				originalFirst.myMatrix[3] * aSecondMatrix.myMatrix[14];
+			aFirstMatrix.myMatrix[3] =
+				originalFirst.myMatrix[0] * aSecondMatrix.myMatrix[3] +
+				originalFirst.myMatrix[1] * aSecondMatrix.myMatrix[7] +
+				originalFirst.myMatrix[2] * aSecondMatrix.myMatrix[11] +
+				originalFirst.myMatrix[3] * aSecondMatrix.myMatrix[15];
+
+			aFirstMatrix.myMatrix[4] =
+				originalFirst.myMatrix[4] * aSecondMatrix.myMatrix[0] +
+				originalFirst.myMatrix[5] * aSecondMatrix.myMatrix[4] +
+				originalFirst.myMatrix[6] * aSecondMatrix.myMatrix[8] +
+				originalFirst.myMatrix[7] * aSecondMatrix.myMatrix[12];
+			aFirstMatrix.myMatrix[5] =
+				originalFirst.myMatrix[4] * aSecondMatrix.myMatrix[1] +
+				originalFirst.myMatrix[5] * aSecondMatrix.myMatrix[5] +
+				originalFirst.myMatrix[6] * aSecondMatrix.myMatrix[9] +
+				originalFirst.myMatrix[7] * aSecondMatrix.myMatrix[13];
+			aFirstMatrix.myMatrix[6] =
+				originalFirst.myMatrix[4] * aSecondMatrix.myMatrix[2] +
+				originalFirst.myMatrix[5] * aSecondMatrix.myMatrix[6] +
+				originalFirst.myMatrix[6] * aSecondMatrix.myMatrix[10] +
+				originalFirst.myMatrix[7] * aSecondMatrix.myMatrix[14];
+			aFirstMatrix.myMatrix[7] =
+				originalFirst.myMatrix[4] * aSecondMatrix.myMatrix[3] +
+				originalFirst.myMatrix[5] * aSecondMatrix.myMatrix[7] +
+				originalFirst.myMatrix[6] * aSecondMatrix.myMatrix[11] +
+				originalFirst.myMatrix[7] * aSecondMatrix.myMatrix[15];
+
+			aFirstMatrix.myMatrix[8] =
+				originalFirst.myMatrix[8] * aSecondMatrix.myMatrix[0] +
+				originalFirst.myMatrix[9] * aSecondMatrix.myMatrix[4] +
+				originalFirst.myMatrix[10] * aSecondMatrix.myMatrix[8] +
+				originalFirst.myMatrix[11] * aSecondMatrix.myMatrix[12];
+			aFirstMatrix.myMatrix[9] =
+				originalFirst.myMatrix[8] * aSecondMatrix.myMatrix[1] +
+				originalFirst.myMatrix[9] * aSecondMatrix.myMatrix[5] +
+				originalFirst.myMatrix[10] * aSecondMatrix.myMatrix[9] +
+				originalFirst.myMatrix[11] * aSecondMatrix.myMatrix[13];
+			aFirstMatrix.myMatrix[10] =
+				originalFirst.myMatrix[8] * aSecondMatrix.myMatrix[2] +
+				originalFirst.myMatrix[9] * aSecondMatrix.myMatrix[6] +
+				originalFirst.myMatrix[10] * aSecondMatrix.myMatrix[10] +
+				originalFirst.myMatrix[11] * aSecondMatrix.myMatrix[14];
+			aFirstMatrix.myMatrix[11] =
+				originalFirst.myMatrix[8] * aSecondMatrix.myMatrix[3] +
+				originalFirst.myMatrix[9] * aSecondMatrix.myMatrix[7] +
+				originalFirst.myMatrix[10] * aSecondMatrix.myMatrix[11] +
+				originalFirst.myMatrix[11] * aSecondMatrix.myMatrix[15];
+
+			aFirstMatrix.myMatrix[12] =
+				originalFirst.myMatrix[12] * aSecondMatrix.myMatrix[0] +
+				originalFirst.myMatrix[13] * aSecondMatrix.myMatrix[4] +
+				originalFirst.myMatrix[14] * aSecondMatrix.myMatrix[8] +
+				originalFirst.myMatrix[15] * aSecondMatrix.myMatrix[12];
+			aFirstMatrix.myMatrix[13] =
+				originalFirst.myMatrix[12] * aSecondMatrix.myMatrix[1] +
+				originalFirst.myMatrix[13] * aSecondMatrix.myMatrix[5] +
+				originalFirst.myMatrix[14] * aSecondMatrix.myMatrix[9] +
+				originalFirst.myMatrix[15] * aSecondMatrix.myMatrix[13];
+			aFirstMatrix.myMatrix[14] =
+				originalFirst.myMatrix[12] * aSecondMatrix.myMatrix[2] +
+				originalFirst.myMatrix[13] * aSecondMatrix.myMatrix[6] +
+				originalFirst.myMatrix[14] * aSecondMatrix.myMatrix[10] +
+				originalFirst.myMatrix[15] * aSecondMatrix.myMatrix[14];
+			aFirstMatrix.myMatrix[15] =
+				originalFirst.myMatrix[12] * aSecondMatrix.myMatrix[3] +
+				originalFirst.myMatrix[13] * aSecondMatrix.myMatrix[7] +
+				originalFirst.myMatrix[14] * aSecondMatrix.myMatrix[11] +
+				originalFirst.myMatrix[15] * aSecondMatrix.myMatrix[15];
+
 			return aFirstMatrix;
+
 		}
 
 		template<typename TYPE>

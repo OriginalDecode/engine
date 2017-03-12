@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Game_Models/SM_printer_a_medium.fbx",
+		"shader" : "Data/Shaders/T_Deferred_Base.json"
+	} 
+}

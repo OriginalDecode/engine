@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Game_Models/UI_plane_cm.fbx",
+		"shader" : "Data/Shaders/T_Deferred_Base.json"
+	} 
+}

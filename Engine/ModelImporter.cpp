@@ -526,6 +526,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 	data->myTextureData = new TextureData;
 
 	aiMaterial* material = aScene->mMaterials[aMesh->mMaterialIndex];
+	s32 tex_count = aScene->mNumTextures;
 	for (u32 i = 0; i < material->mNumProperties; i++)
 	{
 		aiMaterialProperty* prop = material->mProperties[i];
@@ -536,6 +537,8 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 		std::string newPath = CL::substr(myCurrentLoadingFile, "/", true, 0);
 
 		std::string fileName = CL::substr(str.C_Str(), "\\", false, 0);
+		if (fileName.empty())
+			fileName = CL::substr(str.C_Str(), "/", false, 0);
 		if (CL::substr(str.C_Str(), "\\"))
 		{
 			fileName.erase(0, 1);

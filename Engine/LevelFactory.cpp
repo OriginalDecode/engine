@@ -54,9 +54,9 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 
 void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it)
 {
+	std::string data_path = "Data/Levels/";
 
-
-	JSONReader entity_reader(entity_filepath);
+	JSONReader entity_reader(data_path + entity_filepath);
 	Entity e = m_EntityManager->CreateEntity();
 
 	s32 debug_flags = 0;
@@ -115,8 +115,16 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	if (sponza)
 		sponza = false;
+#ifdef _DEBUG
 	else
 		CreateDebugComponent(e, hasLight, debug_flags);
+#endif
+
+	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
+	
+	CU::Vector3f new_pos = pos;
+	new_pos.y += 5.f;
+	component.myOrientation.SetPosition(new_pos);
 
 
 	m_DwellerList.GetLast()->Initiate(e);
@@ -190,7 +198,7 @@ void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
 	m_DwellerList.GetLast()->AddComponent<TranslationComponent>(&component, TreeDweller::TRANSLATION);
 
-	component.myOrientation.SetPosition(position);
+
 }
 
 void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
@@ -216,9 +224,12 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.m_Rotation = rotation;
 
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
-	translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(90.f) * rotation.y) * translation.myOrientation;
-	translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(90.f) * rotation.z) * translation.myOrientation;
-	translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(90.f) * rotation.x) * translation.myOrientation;
+	translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z)) * translation.myOrientation;
+	translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x)) * translation.myOrientation;
+	translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y)) * translation.myOrientation;
+	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x));
+	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z));
+	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y));
 
 	component.scale = scale;
 	component.scale.w = 1.f;
@@ -333,11 +344,17 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 	{
 		component.myType = eLightType::eSPOTLIGHT;
 
-		m_LevelReader.ReadElement(it->value["direction"], component.direction);
+		TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+		CU::Vector3f rotation;
+		m_LevelReader.ReadElement(it->value["rotation"], rotation);
 
-		translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * translation_component.myOrientation;
-		translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(component.direction.y)) * translation_component.myOrientation;
-		translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(component.direction.x)) * translation_component.myOrientation;
+		translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z)) * translation.myOrientation;
+		translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x)) * translation.myOrientation;
+		translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y)) * translation.myOrientation;
+
+		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * translation_component.myOrientation;
+		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(component.direction.y)) * translation_component.myOrientation;
+		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(component.direction.x)) * translation_component.myOrientation;
 
 		m_LevelReader.ReadElement(it->value["angle"], component.angle);
 		component.angle = CL::DegreeToRad(component.angle);

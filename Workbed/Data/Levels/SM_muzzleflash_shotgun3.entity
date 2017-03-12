@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Game_Models/SM_muzzleflash_shotgun3.fbx",
+		"shader" : "Data/Shaders/T_Deferred_Base.json"
+	} 
+}

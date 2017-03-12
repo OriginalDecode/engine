@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Game_Models/multi_m_test.fbx",
+		"shader" : "Data/Shaders/T_Deferred_Base.json"
+	} 
+}

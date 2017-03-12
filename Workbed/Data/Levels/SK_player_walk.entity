@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Game_Models/SK_player_walk.fbx",
+		"shader" : "Data/Shaders/T_Deferred_Base.json"
+	} 
+}

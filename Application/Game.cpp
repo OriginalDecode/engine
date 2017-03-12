@@ -33,7 +33,9 @@ void Game::InitState(StateStack* state_stack)
 
 
 	//m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
-	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel("Data/Levels/level_01.json");
+#ifndef _DEBUG
+	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel("Data/Levels/level_01.level");
+#endif
 	//m_World.AddDwellers(dwellers);
 
 
@@ -101,18 +103,20 @@ void Game::Update(float dt)
 			m_Camera->RotateAroundY(-0.5f * dt);
 	}
 
+	float cam_speed = 5.f;
+
 	if (input_wrapper->IsDown(KButton::W))
-		m_Camera->Move(eDirection::FORWARD, 50.f * dt);
+		m_Camera->Move(eDirection::FORWARD, cam_speed * dt);
 	if (input_wrapper->IsDown(KButton::S))
-		m_Camera->Move(eDirection::BACK, -50.f * dt);
+		m_Camera->Move(eDirection::BACK, -cam_speed * dt);
 	if (input_wrapper->IsDown(KButton::A))
-		m_Camera->Move(eDirection::LEFT, -50.f * dt);
+		m_Camera->Move(eDirection::LEFT, -cam_speed * dt);
 	if (input_wrapper->IsDown(KButton::D))
-		m_Camera->Move(eDirection::RIGHT, 50.f * dt);
+		m_Camera->Move(eDirection::RIGHT, cam_speed * dt);
 	if (input_wrapper->IsDown(KButton::SPACE))
-		m_Camera->Move(eDirection::UP, 50.f * dt);
+		m_Camera->Move(eDirection::UP, cam_speed * dt);
 	if (input_wrapper->IsDown(KButton::X))
-		m_Camera->Move(eDirection::DOWN, -50.f * dt);
+		m_Camera->Move(eDirection::DOWN, -cam_speed * dt);
 
 
 

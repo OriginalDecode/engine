@@ -130,7 +130,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     
 	float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector,lysMipMap).xyz * ao * reflection_fresnel;
 	
-	float3 final_color = saturate(ambientDiffuse * ambientSpec) ;
+	float3 final_color = saturate(ambientDiffuse + ambientSpec) ;
 	float NdotL = dot(normal.xyz, -light_direction);
 	
 	float4 newPos = worldPosition + (normal * 0.4);
@@ -147,7 +147,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	if(sampleValue < compareValue)
  		final_color *= 0.42;
 
- 	float3 dir_color = float3(1,0.8,0.8);
+ 	float3 dir_color = float3(1,0.9,0.6);
 	float3 output = saturate(final_color * dir_color * NdotL);
 	
 	return float4(output + (ambientDiffuse * 0.42), 1.f);

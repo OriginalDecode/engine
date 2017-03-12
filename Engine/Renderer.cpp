@@ -24,7 +24,9 @@
 
 #include "imgui_impl_dx11.h"
 
+#ifdef PROFILE
 #include <Brofiler.h>
+#endif 
 
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
@@ -211,8 +213,9 @@ void Renderer::Render()
 #else
 void Renderer::Render()
 {
+#ifdef PROFILE
 	BROFILER_FRAME("Render");
-
+#endif
 	m_Engine->Clear();
 	m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
 	myDeferredRenderer->SetTargets();
@@ -404,7 +407,6 @@ void Renderer::Render3DCommands()
 				}
 
 
-				m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 				m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
 				CModel* model = m_Engine->GetModel(command.m_KeyOrText);
@@ -413,14 +415,19 @@ void Renderer::Render3DCommands()
 
 				if (m_ProcessDirectionalShadows)
 				{
+
+					m_API->SetRasterizer(eRasterizer::CULL_NONE);
 					model->Render(m_DirectionalFrame, m_Camera->GetPerspective(), command.m_Scale, true);
 				}
 				else if (m_ProcessShadows)
 				{
+
+					m_API->SetRasterizer(eRasterizer::CULL_NONE);
 					model->Render(myPrevShadowFrame, m_Camera->GetPerspective(), command.m_Scale, true);
 				}
 				else
 				{
+					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 					model->Render(myPrevFrame, m_Camera->GetPerspective(), command.m_Scale, false);
 				}
 			}break;

@@ -33,6 +33,9 @@ public:
 	void OpenDocument(const std::string& aFilePath);
 	void CloseDocument();
 
+
+	std::string GetCurrentFile() { return myCurrentDocumentPath; }
+
 private:
 
 	FRESULT OpenFile();

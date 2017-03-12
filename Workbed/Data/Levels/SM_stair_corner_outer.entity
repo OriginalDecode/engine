@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Game_Models/SM_stair_corner_outer.fbx",
+		"shader" : "Data/Shaders/T_Deferred_Base.json"
+	} 
+}

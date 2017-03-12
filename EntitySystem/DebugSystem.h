@@ -33,4 +33,6 @@ private:
 	Entity m_CurrentEntity;
 	bool m_Holding = false;
 	GizmoHandle* m_Direction = nullptr;
+	std::string current_model;
+
 };

@@ -61,7 +61,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float4 output = saturate(pow( color, 1 / 2.2 ));
 
-	//output.rgb = (output.rgb - 0.5) * (1.0 + 0.3) + 0.5;
+	output.rgb = (output.rgb - 0.5) * (1.0 + 0.3) + 0.5;
 	return saturate(output  * color1);
 }
 

@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Game_Models/SM_double_doors_a_400_300_laser.fbx",
+		"shader" : "Data/Shaders/T_Deferred_Base.json"
+	} 
+}

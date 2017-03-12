@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Game_Models/SK_arm_pistol_draw.fbx",
+		"shader" : "Data/Shaders/T_Deferred_Base.json"
+	} 
+}

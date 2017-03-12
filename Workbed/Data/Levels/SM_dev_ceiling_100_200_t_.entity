@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Game_Models/SM_dev_ceiling_100_200_t_.fbx",
+		"shader" : "Data/Shaders/T_Deferred_Base.json"
+	} 
+}

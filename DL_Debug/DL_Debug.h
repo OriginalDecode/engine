@@ -88,7 +88,7 @@ enum eDEBUGLOG
 #define FONT_LOG(...)
 #define ALGORITHM_LOG(...)
 #define MODEL_LOG(...)
-
+#define TRACE_LOG(...)
 //expressions
 #define ENGINE_LOG_EXP(expression, ...)		
 #define ALGORITHM_LOG_EXP(expression, ...)

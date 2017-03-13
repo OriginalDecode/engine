@@ -13,6 +13,7 @@
 #include <Input/InputWrapper.h>
 
 #include <Camera.h>
+#include "../Application/CameraHandle.h"
 
 //#include <PositionGizmo.h>
 //#include <ScaleGizmo.h>
@@ -42,8 +43,13 @@ void DebugSystem::Update(float dt)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-		//RenderBox(debug, translation.myOrientation);
-	
+
+		if(!CameraHandle::GetInstance()->GetFrustum().Inside(translation.myOrientation.GetPosition(),0.f))
+			continue;
+
+#ifdef _DEBUG
+		RenderBox(debug, translation.myOrientation);
+#endif
 	}
 
 	if (m_Engine->GetInputHandle()->GetInputWrapper()->OnRelease(MouseInput::LEFT))

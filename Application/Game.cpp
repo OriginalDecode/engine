@@ -24,6 +24,8 @@
 #include "../Physics/PhysicsManager.h"
 #include "../EntitySystem/EntityManager.h"
 #include <imgui.h>
+#include "CameraHandle.h"
+
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
@@ -31,11 +33,10 @@ void Game::InitState(StateStack* state_stack)
 	m_Engine = Engine::GetInstance();
 	m_Synchronizer = m_Engine->GetSynchronizer();
 
-
 	//m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
-#ifndef _DEBUG
+
 	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel("Data/Levels/level_01.level");
-#endif
+
 	//m_World.AddDwellers(dwellers);
 
 
@@ -44,13 +45,15 @@ void Game::InitState(StateStack* state_stack)
 	//m_Engine->ToggleVsync(); //settings
 	m_Camera = m_Engine->GetCamera();
 
-	
+	CameraHandle::Create();
+	CameraHandle::GetInstance()->Initiate();
 	m_PauseState.InitState(m_StateStack);
 	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 }
 
 void Game::EndState()
 {
+	CameraHandle::Destroy();
 	SAFE_DELETE(m_Picker);
 }
 
@@ -63,7 +66,7 @@ void Game::Update(float dt)
 	Render(true);
 	if (m_Paused)
 		return;
-	
+	CameraHandle::GetInstance()->Update();
 	m_FrameCount++;
 	m_AverageFPS += m_Engine->GetFPS();
 	m_Time -= dt;

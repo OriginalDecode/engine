@@ -15,11 +15,23 @@ namespace CommonUtilities
 			void AddPlane(Plane<TYPE> aPlane);
 			void RemovePlane(Plane<TYPE> aPlane);
 
-			bool Inside(Math::Vector3<TYPE> aPosition);
+			bool Inside(const Math::Vector3<TYPE>& position) const;
+
 			//bool Inside(Intersection::Sphere aSphere);
 
 			CU::StaticArray<Plane<TYPE>, 6> m_Planes;
 		};
+
+		template<typename TYPE>
+		bool PlaneVolume<TYPE>::Inside(const Math::Vector3<TYPE>& position) const
+		{
+			for ( const Plane<TYPE>& plane : m_Planes )
+			{
+				if ( !plane.Inside(position) )
+					return false;
+			}
+			return true;
+		}
 
 		template<typename TYPE>
 		PlaneVolume<TYPE>::PlaneVolume(CU::StaticArray<Plane<TYPE>, 6> plane_list)
@@ -37,18 +49,6 @@ namespace CommonUtilities
 		void PlaneVolume<TYPE>::RemovePlane(Plane<TYPE> aPlane)
 		{
 			//myPlanes.RemoveCyclic(aPlane);
-		}
-
-		template<typename TYPE>
-		bool PlaneVolume<TYPE>::Inside(Math::Vector3<TYPE> aPosition)
-		{
-			for (Plane<TYPE>& plane : m_Planes )
-			{
-				if (!plane.Inside(aPosition))
-					return false;
-			}
-
-			return true;
 		}
 
 		//template <typename TYPE>

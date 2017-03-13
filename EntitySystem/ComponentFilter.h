@@ -39,6 +39,14 @@ public:
 	{
 	}
 
+	bool operator==(const SComponentFilter& other)
+	{
+		if ( this->myRequires == other.myRequires )
+			return true;
+
+		return false;
+	}
+
 	bool Compare(const EntityComponentArray& someComponents)
 	{
 		for (int i = 0; i < MAX_COMPONENTS_COUNT; i++)

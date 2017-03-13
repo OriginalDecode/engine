@@ -69,6 +69,11 @@ BaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int a
 	return TranslationComponent();
 }
 
+void CComponentContainer::SetUpdateFlag(Entity entity, bool flag)
+{
+	myEntityComponents[entity].m_UpdateFlag = flag;
+}
+
 void CComponentContainer::RemoveComponent(Entity entity, BaseComponent* component, u32 component_id)
 {
 	for (EntityComponent& ec : myEntityComponents)
@@ -104,11 +109,15 @@ const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(SComponentFilte
 			myEntitiesToReturn.Add(i);
 		}
 	}*/
+	SComponentFilter filter = CreateFilter<Requires<STranslationComponent>>();
 	for (const EntityComponent& ec : myEntityComponents)
 	{
-		if (aFilter.Compare(ec.m_EntityArray))
+		if ( ec.m_UpdateFlag || aFilter == filter )
 		{
-			myEntitiesToReturn.Add(ec.m_Entity);
+			if ( aFilter.Compare(ec.m_EntityArray) )
+			{
+				myEntitiesToReturn.Add(ec.m_Entity);
+			}
 		}
 	}
 	return myEntitiesToReturn;

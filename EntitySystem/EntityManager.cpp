@@ -2,6 +2,7 @@
 #include "BaseSystem.h"
 #include <EngineDefines.h>
 #include "TranslationComponent.h"
+#include "../Application/CameraHandle.h"
 #define TRUE 1
 #define FALSE 0
 
@@ -9,7 +10,7 @@ void EntityManager::Initiate()
 {
 	mySystems.ReInit(16);
 	myFinishedSystems.reset();
-	for (int i = 0; i < MAX_COMPONENTS_COUNT; i++)
+	for ( int i = 0; i < MAX_COMPONENTS_COUNT; i++ )
 	{
 		myFinishedSystems[i] = TRUE;
 	}
@@ -19,7 +20,7 @@ void EntityManager::Initiate()
 
 void EntityManager::CleanUp()
 {
-	for (BaseSystem* system : mySystems)
+	for ( BaseSystem* system : mySystems )
 	{
 		SAFE_DELETE(system);
 	}
@@ -44,8 +45,23 @@ void EntityManager::Clear()
 void EntityManager::Update(float aDelta)
 {
 	myDeltaTime = aDelta;
-	
-	for (BaseSystem* system : mySystems)
+
+	const CU::GrowingArray<Entity>& entities = GetEntities();
+	for ( Entity e : entities )
+	{
+		if ( CameraHandle::GetInstance() )
+		{
+			TranslationComponent& t = GetComponent<TranslationComponent>(e);
+
+			if ( CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.myOrientation.GetPosition()) )
+				myComponents->SetUpdateFlag(e, true);
+			else
+				myComponents->SetUpdateFlag(e, false);
+		}
+	}
+
+
+	for ( BaseSystem* system : mySystems )
 	{
 		system->Update(myDeltaTime);
 	}
@@ -74,15 +90,15 @@ bool EntityManager::HasComponent(Entity e, SComponentFilter& filter)
 bool EntityManager::IsSystemsFinished()
 {
 	int count = 0;
-	for (int i = 0; i < mySystems.Size(); i++)
+	for ( int i = 0; i < mySystems.Size(); i++ )
 	{
-		if (mySystems[i]->HasFinished() == true)
+		if ( mySystems[i]->HasFinished() == true )
 		{
 			count++;
 		}
 	}
 
-	if (count < mySystems.Size())
+	if ( count < mySystems.Size() )
 		return false;
 
 	return true;

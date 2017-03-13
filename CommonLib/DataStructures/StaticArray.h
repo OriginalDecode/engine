@@ -31,11 +31,27 @@ namespace CommonUtilities
 		const_iterator begin() const { return &myData[0]; }
 		iterator end() { return &myData[T2]; }
 		const_iterator end() const { return &myData[T2]; }
+
+		bool operator==(const StaticArray<Type>& other);
+
 	private:
 		Type myData[T2];
 		int m_Capacity = 0;
 		int m_LastIndex = 0;
 	};
+
+	template<typename Type, int T2>
+	bool StaticArray<Type, T2>::operator==(const StaticArray<Type>& other)
+	{
+
+		for (int i = 0; i < T2; i++)
+		{
+			if ( myData[i] != other[i] )
+				return false;
+		}
+
+		return true;
+	}
 
 	SA_TEMPLATE
 		SA_TYPE::StaticArray()

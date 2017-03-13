@@ -71,7 +71,14 @@ BaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int a
 
 void CComponentContainer::SetUpdateFlag(Entity entity, bool flag)
 {
-	myEntityComponents[entity].m_UpdateFlag = flag;
+	//myEntityComponents[entity].m_UpdateFlag = flag;
+
+	for (EntityComponent& ec : myEntityComponents)
+	{
+		if(ec.m_Entity == entity )
+			ec.m_UpdateFlag = flag;
+	}
+
 }
 
 void CComponentContainer::RemoveComponent(Entity entity, BaseComponent* component, u32 component_id)

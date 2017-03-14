@@ -1,16 +1,5 @@
 Engine Tasks:
-  General:
-    ☐ Remove Hex namespace inside the engine project. Namespace hex is used too sporadically right now.
-    ☐ Placeholder
-  Input Handling: 
-    ☐ Create an input system that supports rebindable keys from the user 
-    ☐ Placeholder
   Level / World:
-    ☐ Rework the loading to handle patches instead of loading the entire world in 1 go. @low
-    ☐ Load patches with entities @low 
-    ☐ Load patches around the player position @low
-    ☐ Distance LOD from player @low
-    ☐ Distance Fog or other fancy solution @low
     ✔ Quadtree / Octree @done (17-01-29 23:57)
     ✔ Treenode updates entities by themselves. @done (17-01-29 23:57)
     ✔ Remove / Add Nodes dynamically @started @done (17-02-07 14:26)
@@ -46,8 +35,6 @@ Engine Tasks:
     ☐ The level / world needs/Should be verified by the server with some kind of hash 
        (network_version + map_name + user_name) or something like that
     ☐ FlatBuffers <https://google.github.io/flatbuffers/>
-    ☐ Make the Engine run in the Terminal without any graphics or rendercommands. @low
-      This is to make sure that I can run the game on Linux.
     ☐ Handshake message
       ☐ Check MTU size of Client
     ☐ Reliability filter
@@ -74,16 +61,18 @@ Engine Tasks:
       ☐ HDR @started
         ☐ Tonemapping
         ☐ Good fade between dark and bright areas.
+        ☐ Artist / Designer controlled exposure boxes
       ☐ Bloom
       ☐ Motion Blur
       ☐ Color Correction
+      ☐ Contrast
       ☐ Saturate
   StateStack:
     ✔ Move to engine @done (17-01-29 23:57)
     ☐ Debug State?
     ☐ Keep Rendering through the state, copy current render buffer and just add new commands to it?
   Memory:
-    ☐ Investigate Memory Allocators @started
+    ☐ Investigate Memory Allocators
     ☐ Implement custom memory allocators @high 
       ☐ Linear Allocator
       ☐ Stack Allocator

@@ -32,5 +32,8 @@ private:
 	CU::Vector3f m_Position;
 	float m_HalfWidth = 0.f;
 	TreeNode m_Root;
+
+
+	int node_count = 0;
 };
 

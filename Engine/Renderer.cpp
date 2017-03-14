@@ -311,9 +311,9 @@ void Renderer::Render()
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
 #ifdef _DEBUG
 
-	std::stringstream ss;
-	ss << "DeltaTime : " << m_Engine->GetDeltaTime() << "\nFPS:" << m_Engine->GetFPS() << "\nPress U to toggle downsamples\n\nControls :\nW - Forward \nS - Backward\nA - Left\nD - Right\nSpace - Up\nX - Down\nHold Right Mouse button and\ndrag the mouse to rotate the camera";
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::TEXT, ss.str(), CU::Vector2f(0.75, 0)));
+	//std::stringstream ss;
+	//ss << "DeltaTime : " << m_Engine->GetDeltaTime() << "\nFPS:" << m_Engine->GetFPS() << "\nPress U to toggle downsamples\n\nControls :\nW - Forward \nS - Backward\nA - Left\nD - Right\nSpace - Up\nX - Down\nHold Right Mouse button and\ndrag the mouse to rotate the camera";
+	//mySynchronizer->AddRenderCommand(RenderCommand(eType::TEXT, ss.str(), CU::Vector2f(0.75, 0)));
 	if (input_handle->GetInputWrapper()->OnDown(KButton::U))
 	{
 		m_PostProcessManager.GetHDRPass().toggle_debug = !m_PostProcessManager.GetHDRPass().toggle_debug;

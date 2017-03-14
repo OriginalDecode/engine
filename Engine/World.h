@@ -14,8 +14,13 @@ public:
 	void AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers);
 	void AddDweller(TreeDweller* dweller);
 private:
+	float gettime(int index);
 	CU::Vector3f m_WorldPos;
 	Synchronizer* m_Synchronizer;
 	Octree m_Octree;
+	CU::TimeManager m_Timer;
+	int timer_index = 0;
+	float update_time = 1.f;
+	float highest = 0.f;
 };
 

@@ -277,10 +277,11 @@ bool TreeNode::InsideNode(TreeDweller* dweller)
 	const float cBack = dweller_position.z + dweller_bounds.z;
 	const float cFront = dweller_position.z - dweller_bounds.z;
 
-	return (cLeft > bLeft
-		&& cRight < bRight
-		&& cBottom > bBottom
-		&& cTop < bTop
-		&& cFront > bFront
-		&& cBack < bBack);
+	bool left = cLeft >= bLeft;
+	bool right = cRight <= bRight;
+	bool bottom = cBottom >= bBottom;
+	bool top = cTop <= bTop;
+	bool front = cFront >= bFront;
+	bool back = cBack <= bBack;
+	return (left && right && bottom && top && front && back);
 }

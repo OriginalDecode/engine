@@ -28,5 +28,5 @@ void World::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
 
 void World::AddDweller(TreeDweller* dweller)
 {
-	//m_Octree.AddDweller(dweller);
+	m_Octree.AddDweller(dweller);
 }

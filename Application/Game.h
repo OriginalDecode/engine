@@ -1,4 +1,5 @@
 #pragma once
+#include <Frustum.h>
 #include <State.h>
 #include <World.h>
 #include "../EntitySystem/TranslationComponent.h"
@@ -21,13 +22,15 @@ public:
 
 
 
-
 private:
 	World m_World;
 	CPauseState m_PauseState;
 	CU::Vector3f pointHit;
 	TranslationComponent* component;
+
 	Camera* m_Camera = nullptr;
+	Frustum m_Frustum;
+
 	Engine* m_Engine = nullptr;
 	CMousePicker* m_Picker = nullptr;
 	Synchronizer* m_Synchronizer = nullptr;

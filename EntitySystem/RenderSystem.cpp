@@ -14,6 +14,8 @@
 
 #include "../Engine/Engine.h"
 
+#include "../Application/CameraHandle.h"
+
 RenderSystem::RenderSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, RenderComponent>>())
 {
@@ -30,7 +32,8 @@ void RenderSystem::Update(float dt)
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
-
+		if ( !CameraHandle::GetInstance()->GetFrustum().Inside(translation.myOrientation.GetPosition(), 5.f) )
+			continue;
 		
 
 		//#LINUS This needs to be profiled.

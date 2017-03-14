@@ -349,6 +349,7 @@
     <ClInclude Include="GizmoShared.h" />
     <ClInclude Include="GizmoBase.h" />
     <ClInclude Include="EntityFormat.h" />
+    <ClInclude Include="Frustum.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -557,5 +558,6 @@
     </ClCompile>
     <ClCompile Include="GizmoShared.cpp" />
     <ClCompile Include="GizmoBase.cpp" />
+    <ClCompile Include="Frustum.cpp" />
   </ItemGroup>
 </Project>

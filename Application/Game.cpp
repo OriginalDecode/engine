@@ -24,6 +24,8 @@
 #include "../Physics/PhysicsManager.h"
 #include "../EntitySystem/EntityManager.h"
 #include <imgui.h>
+#include "CameraHandle.h"
+
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
@@ -31,12 +33,11 @@ void Game::InitState(StateStack* state_stack)
 	m_Engine = Engine::GetInstance();
 	m_Synchronizer = m_Engine->GetSynchronizer();
 
+	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
 
-	//m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
-#ifndef _DEBUG
 	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel("Data/Levels/level_01.level");
-#endif
-	//m_World.AddDwellers(dwellers);
+
+	m_World.AddDwellers(dwellers);
 
 
 	m_Picker = new CMousePicker;
@@ -44,13 +45,15 @@ void Game::InitState(StateStack* state_stack)
 	//m_Engine->ToggleVsync(); //settings
 	m_Camera = m_Engine->GetCamera();
 
-	
+	CameraHandle::Create();
+	CameraHandle::GetInstance()->Initiate();
 	m_PauseState.InitState(m_StateStack);
 	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 }
 
 void Game::EndState()
 {
+	CameraHandle::Destroy();
 	SAFE_DELETE(m_Picker);
 }
 
@@ -63,7 +66,7 @@ void Game::Update(float dt)
 	Render(true);
 	if (m_Paused)
 		return;
-	
+	CameraHandle::GetInstance()->Update();
 	m_FrameCount++;
 	m_AverageFPS += m_Engine->GetFPS();
 	m_Time -= dt;
@@ -81,7 +84,7 @@ void Game::Update(float dt)
 		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
 		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z));
 	}
-	Engine::GetInstance()->GetEntityManager().Update(dt);
+	//Engine::GetInstance()->GetEntityManager().Update(dt);
 	if (input_wrapper->OnDown(KButton::ESCAPE))
 	{
 		m_StateStack->PopCurrentMainState();
@@ -103,7 +106,7 @@ void Game::Update(float dt)
 			m_Camera->RotateAroundY(-0.5f * dt);
 	}
 
-	float cam_speed = 5.f;
+	float cam_speed = 50.f;
 
 	if (input_wrapper->IsDown(KButton::W))
 		m_Camera->Move(eDirection::FORWARD, cam_speed * dt);
@@ -120,5 +123,5 @@ void Game::Update(float dt)
 
 
 
-	//m_World.Update(dt);
+	m_World.Update(dt);
 }

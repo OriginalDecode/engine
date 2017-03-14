@@ -10,6 +10,7 @@ struct EntityComponent
 {
 	Entity m_Entity;
 	EntityComponentArray m_EntityArray;
+	bool m_UpdateFlag = false;
 };
 
 
@@ -22,7 +23,7 @@ public:
 	void AddEntity(Entity id);
 	void AddComponent(Entity anEntity, BaseComponent* aComponent, unsigned int aComponentID);
 	BaseComponent& GetComponent(Entity anEntity, unsigned int aComponentID);
-
+	void SetUpdateFlag(Entity entity, bool flag);
 	//have filter with only 1 to check plz
 	bool HasComponent(Entity e, SComponentFilter& filter);
 

@@ -280,11 +280,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="CameraHandle.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="PauseState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="CameraHandle.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="PauseState.cpp" />
   </ItemGroup>

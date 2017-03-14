@@ -1,8 +1,10 @@
 #include "stdafx.h"
+#include "../Application/CameraHandle.h"
 #include "NodeEntityManager.h"
 #include <BaseSystem.h>
 #include "Engine.h"
 #include <EntityManager.h>
+#include <TranslationComponent.h>
 
 void NodeEntityManager::Initiate()
 {
@@ -34,6 +36,20 @@ void NodeEntityManager::RemoveEntity(TreeDweller* entity)
 
 void NodeEntityManager::Update(float dt)
 {
+	const CU::GrowingArray<Entity>& entities = GetEntities(CreateFilter<Requires<TranslationComponent>>());
+	for ( Entity e : entities )
+	{
+		if ( CameraHandle::GetInstance() )
+		{
+			TranslationComponent& t = GetComponent<TranslationComponent>(e);
+
+			if ( CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.myOrientation.GetPosition()) )
+				m_Components.SetUpdateFlag(e, true);
+			else
+				m_Components.SetUpdateFlag(e, false);
+		}
+	}
+
 	for (BaseSystem* system : m_Systems)
 	{
 		system->Update(dt);

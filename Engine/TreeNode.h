@@ -40,7 +40,7 @@ public:
 	void ToggleNodeVisibility() { m_RenderBox = !m_RenderBox; }
 private:
 	void RenderBox();
-	bool m_RenderBox = false;
+	bool m_RenderBox = true;
 
 	Octree* m_Octree = nullptr;
 	bool m_Paused = false;

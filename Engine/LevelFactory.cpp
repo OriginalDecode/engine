@@ -124,6 +124,9 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	
 	CU::Vector3f new_pos = pos;
 	new_pos.y += 5.f;
+	new_pos.x += 400.f;
+	new_pos.z += 400.f;
+
 	component.myOrientation.SetPosition(new_pos);
 
 

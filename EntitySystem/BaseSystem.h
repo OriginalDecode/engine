@@ -23,10 +23,11 @@ public:
 
 private:
 	void operator=(BaseSystem&) = delete;
+
+protected:
 	bool myHasFinished = false;
 	SComponentFilter myFilter;
 
-protected:
 	EntityManager& myEntityManager;
 	Ticket_Mutex m_Mutex;
 	s32 m_CurrentFrame = 0;

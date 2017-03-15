@@ -66,3 +66,8 @@ NodeEntityManager::~NodeEntityManager()
 	m_Entities.RemoveAll();
 	m_Systems.RemoveAll();
 }
+
+bool NodeEntityManager::HasComponent(Entity e, SComponentFilter& filter)
+{
+	return m_Components.HasComponent(e, filter);
+}

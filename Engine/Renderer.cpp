@@ -24,8 +24,10 @@
 
 #include "imgui_impl_dx11.h"
 
-#ifdef PROFILE
+#ifdef _PROFILE
 #include <Brofiler.h>
+#else
+#define BROFILER_FRAME(...)
 #endif 
 
 #include <Input/InputHandle.h>
@@ -213,9 +215,7 @@ void Renderer::Render()
 #else
 void Renderer::Render()
 {
-#ifdef PROFILE
-	BROFILER_FRAME("Render");
-#endif
+	BROFILER_FRAME("Renderer::Render");
 	m_Engine->Clear();
 	m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
 	myDeferredRenderer->SetTargets();
@@ -283,15 +283,8 @@ void Renderer::Render()
 
 	if (m_PostProcessManager.GetFlags() == 0)
 		myDeferredRenderer->Finalize(0);
-
-
-
-
-
 	//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
 	//RenderParticles();
-
-
 
 	// POST PROCESSING
 
@@ -335,6 +328,7 @@ void Renderer::AddTerrain(CTerrain* someTerrain)
 
 void Renderer::RenderNonDeferred3DCommands()
 {
+	BROFILER_FRAME("Renderer::RenderNonDeferred3DCommands");
 	m_API->EnableZBuffer();
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 
@@ -364,6 +358,7 @@ void Renderer::RenderNonDeferred3DCommands()
 
 void Renderer::Render3DCommands()
 {
+	BROFILER_FRAME("Renderer::Render3DCommands");
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 
 	//m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
@@ -437,6 +432,7 @@ void Renderer::Render3DCommands()
 
 void Renderer::Render2DCommands()
 {
+	BROFILER_FRAME("Renderer::Render2DCommands");
 	const CU::GrowingArray<RenderCommand>& commands2D = mySynchronizer->GetRenderCommands(eCommandBuffer::e2D);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
@@ -468,6 +464,7 @@ void Renderer::Render2DCommands()
 
 void Renderer::RenderSpotlight()
 {
+	BROFILER_FRAME("Renderer::RenderSpotlight");
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eSpotlight);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
@@ -495,6 +492,7 @@ void Renderer::RenderSpotlight()
 
 void Renderer::RenderPointlight()
 {
+	BROFILER_FRAME("Renderer::RenderPointlight");
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::ePointlight);
 
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
@@ -521,6 +519,7 @@ void Renderer::RenderPointlight()
 
 void Renderer::RenderParticles()
 {
+	BROFILER_FRAME("Renderer::RenderParticles");
 	m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
@@ -550,6 +549,7 @@ void Renderer::RenderParticles()
 
 void Renderer::RenderLines()
 {
+	BROFILER_FRAME("Renderer::RenderLines");
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
@@ -584,6 +584,8 @@ void Renderer::RenderLines()
 
 void Renderer::ProcessShadows()
 {
+	BROFILER_FRAME("Renderer::ProcessShadows");
+
 	m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
 	m_ProcessShadows = true;
 
@@ -609,6 +611,8 @@ void Renderer::ProcessShadows()
 
 void Renderer::ProcessShadows(Camera* camera)
 {
+	BROFILER_FRAME("Renderer::ProcessShadows");
+
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	IDevContext* ctx = m_API->GetContext();
 	Camera* old_camera = m_Camera;

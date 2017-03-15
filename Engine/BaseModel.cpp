@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "BaseModel.h"
-
+#ifdef _PROFILE
+#include "../Brofiler.h"
+#include <stdio.h>
+#else
+#define BROFILER_FRAME(...)
+#endif
 CBaseModel::CBaseModel()
 {
 	myEngine = Engine::GetInstance();
@@ -12,6 +17,12 @@ CBaseModel::~CBaseModel() = default;
 
 void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows)
 {
+#ifdef _PROFILE
+	char buf[512];
+	sprintf_s(buf, "%s::Render", m_Filename.c_str());
+	BROFILER_CATEGORY("Graphics", Profiler::Color::Violet);
+	BROFILER_EVENT(buf);
+#endif
 #ifdef SNOWBLIND_DX11
 	myContext->IASetInputLayout(m_VertexLayout);
 	myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

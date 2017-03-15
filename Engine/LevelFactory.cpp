@@ -130,7 +130,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	component.myOrientation.SetPosition(new_pos);
 
 
-	m_DwellerList.GetLast()->Initiate(e);
+	m_DwellerList.GetLast()->Initiate(e, TreeDweller::eType::STATIC);
 
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
 
@@ -190,7 +190,7 @@ TreeDweller* LevelFactory::CreateEntitiy(const std::string& entity_filepath, con
 		debug_flags |= EditObject::PHYSICS;
 	}
 
-	dweller->Initiate(e);
+	dweller->Initiate(e, TreeDweller::eType::STATIC);
 	return dweller;
 }
 
@@ -408,12 +408,20 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	if (!isLight)
 	{
 		RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
-		whd = m_Engine->GetModel(render.myModelID)->GetWHD();
+		CModel* model = m_Engine->GetModel(render.myModelID);
+		whd = model->GetWHD();
 		component.m_Rotation = render.m_Rotation;
+		component.m_MinPoint = model->GetMinPoint();
+		component.m_MaxPoint = model->GetMaxPoint();
+
+
 	}
 	else
 	{
 		whd = { 0.25f,0.25f, 0.25f };
+		component.m_MinPoint = { -0.25,-0.25,-0.25 };
+		component.m_MaxPoint = { 0.25,0.25,0.25 };
+
 	}
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
 	CU::Vector3f pos = translation.myOrientation.GetPosition();

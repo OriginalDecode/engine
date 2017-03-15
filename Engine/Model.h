@@ -30,6 +30,14 @@ public:
 	void SetOrientation(CU::Matrix44f orientation);
 	CU::Vector3f GetWHD() const { return m_WHD; }
 	void SetWHD(CU::Vector3f whd);
+	void SetMaxPoint(CU::Vector3f max_point);
+	void SetMinPoint(CU::Vector3f min_point);
+
+	CU::Vector3f GetMinPoint() const { return m_MinPoint; }
+	CU::Vector3f GetMaxPoint() const { return m_MaxPoint; }
+
+
+
 	std::vector<float> GetVertices();
 	std::vector<s32> GetIndices();
 

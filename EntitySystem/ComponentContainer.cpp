@@ -98,9 +98,12 @@ bool CComponentContainer::HasComponent(Entity e, SComponentFilter& filter)
 {
 	for (const EntityComponent& ec : myEntityComponents)
 	{
-		if (filter.Compare(ec.m_EntityArray))
+		if ( ec.m_Entity == e )
 		{
-			return true;
+			if ( filter.Compare(ec.m_EntityArray) )
+			{
+				return true;
+			}
 		}
 	}
 	return false;

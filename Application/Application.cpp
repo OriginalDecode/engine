@@ -13,6 +13,10 @@
 #include "../CommonLib/Utilities.h"
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
+
+#ifdef _PROFILE
+#include "../Brofiler.h"
+#endif
 bool Application::Initiate()
 {
 	myEngine = Engine::GetInstance();
@@ -35,6 +39,10 @@ void Application::Update()
 {
 	while (mySynchronizer->HasQuit() == false)
 	{
+
+#ifdef _PROFILE
+		BROFILER_FRAME("Application::Update");
+#endif
 		float deltaTime = myEngine->GetDeltaTime();
 
 		myEngine->UpdateInput();

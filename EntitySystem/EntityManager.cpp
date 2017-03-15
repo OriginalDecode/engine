@@ -3,6 +3,7 @@
 #include <EngineDefines.h>
 #include "TranslationComponent.h"
 #include "../Application/CameraHandle.h"
+#include "NodeEntityManager.h"
 #define TRUE 1
 #define FALSE 0
 
@@ -85,6 +86,29 @@ float EntityManager::GetDeltaTime()
 bool EntityManager::HasComponent(Entity e, SComponentFilter& filter)
 {
 	return myComponents->HasComponent(e, filter);
+}
+
+void EntityManager::RegisterManager(NodeEntityManager* manager)
+{
+	m_RegisteredManagers.Add(manager);
+}
+
+void EntityManager::UnRegisterManager(NodeEntityManager* manager)
+{
+	m_RegisteredManagers.RemoveCyclic(manager);
+}
+
+NodeEntityManager* EntityManager::GetManager(s32 index)
+{
+	for (s32 i = 0; i < m_RegisteredManagers.Size(); i++)
+	{
+		if ( m_RegisteredManagers[i]->GetId() == index )
+		{
+			return m_RegisteredManagers[i];
+		}
+	}
+	//emit warning
+	return nullptr;
 }
 
 bool EntityManager::IsSystemsFinished()

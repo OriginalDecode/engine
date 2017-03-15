@@ -132,6 +132,16 @@ void CModel::SetWHD(CU::Vector3f whd)
 	m_WHD = whd;
 }
 
+void CModel::SetMaxPoint(CU::Vector3f max_point)
+{
+	m_MaxPoint = max_point;
+}
+
+void CModel::SetMinPoint(CU::Vector3f min_point)
+{
+	m_MinPoint = min_point;
+}
+
 std::vector<float> CModel::GetVertices()
 {
 	std::vector<float> to_return;

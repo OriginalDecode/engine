@@ -35,9 +35,10 @@ public:
 	TreeNode* GetParent() { return m_Parent; }
 	bool SubNodeContainsDwellers();
 	bool InsideNode(TreeDweller* dweller);
-
-
 	void ToggleNodeVisibility() { m_RenderBox = !m_RenderBox; }
+	
+	
+	NodeEntityManager& GetManager() { return m_NodeEntityManager; }
 private:
 	void RenderBox();
 	bool m_RenderBox = true;

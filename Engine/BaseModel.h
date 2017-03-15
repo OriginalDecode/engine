@@ -29,6 +29,8 @@ public:
 	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows = false);
 	void SetEffect(Effect* anEffect);
 	Effect* GetEffect() { return myEffect; }
+
+
 protected:
 	std::string m_Filename;
 	void InitVertexBuffer();
@@ -37,6 +39,10 @@ protected:
 	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale) = 0;
 	Engine* myEngine = nullptr;
 	CU::Vector3f m_WHD;
+
+	CU::Vector3f m_MaxPoint;
+	CU::Vector3f m_MinPoint;
+
 
 	Effect* myEffect = nullptr;
 	IDevContext* myContext = nullptr;

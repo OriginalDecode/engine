@@ -1,5 +1,5 @@
 #include "DebugSystem.h"
-#include "Engine.h"
+#include <Engine.h>
 #include "DebugComponent.h"
 #include "TranslationComponent.h"
 #include <RenderCommand.h>
@@ -11,13 +11,12 @@
 #include "EntityManager.h"
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
-
 #include <Camera.h>
 #include "../Application/CameraHandle.h"
+#include "NodeEntityManager.h"
 
-//#include <PositionGizmo.h>
-//#include <ScaleGizmo.h>
-//#include <RotationGizmo.h>
+#include <TreeNode.h>
+#include <TreeDweller.h>
 #include <GizmoBase.h>
 
 DebugSystem::DebugSystem(EntityManager& entity_manager)
@@ -69,6 +68,7 @@ void DebugSystem::Update(float dt)
 
 			TranslationComponent& translation = GetComponent<TranslationComponent>(m_CurrentEntity);
 			CU::Vector4f position = translation.myOrientation.GetTranslation();
+			CU::Vector3f position3 = translation.myOrientation.GetPosition();
 			CU::Vector4f dir = m_Direction->m_Orientation.GetRight();
 
 			CU::Vector4f cam_pos = m_Engine->GetCamera()->GetPosition();
@@ -110,15 +110,17 @@ void DebugSystem::Update(float dt)
 					CU::Math::Normalize(horizontal_modifier);
 					float angle = 0.f;
 					angle += ((delta_pos.x * horizontal_modifier.x)) / m_MouseDeltaModifier;
-					translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(angle) * translation.myOrientation;
+
+					translation.myOrientation.RotateAroundPointX(position3, angle);
+					//translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(angle) * translation.myOrientation;
 				}
 				else if (m_Direction->direction == GizmoHandle::eDirection::Y)
 				{
 					CU::Vector4f horizontal_modifier = cam_pos - position;
 					CU::Math::Normalize(horizontal_modifier);
 					float angle = 0.f;
-					angle += ((delta_pos.x * horizontal_modifier.x)) / m_MouseDeltaModifier;
-					translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(angle) * translation.myOrientation;
+					angle += ( ( delta_pos.x * horizontal_modifier.x ) ) / m_MouseDeltaModifier;
+					translation.myOrientation.RotateAroundPointY(position3, angle);
 
 				}
 				else if (m_Direction->direction == GizmoHandle::eDirection::Z)
@@ -126,8 +128,8 @@ void DebugSystem::Update(float dt)
 					CU::Vector4f horizontal_modifier = cam_pos - position;
 					CU::Math::Normalize(horizontal_modifier);
 					float angle = 0.f;
-					angle += ((delta_pos.x * horizontal_modifier.x)) / m_MouseDeltaModifier;
-					translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(angle) * translation.myOrientation;
+					angle += ( ( delta_pos.x * horizontal_modifier.x ) ) / m_MouseDeltaModifier;
+					translation.myOrientation.RotateAroundPointZ(position3, angle);
 				}
 			}
 
@@ -231,8 +233,7 @@ void DebugSystem::UpdateOBBs()
 	for (Entity e : entities)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
-		if (!debug.m_DirtyFlag)
-			continue;
+	
 
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		CU::Vector4f up = translation.myOrientation.GetUp();
@@ -244,32 +245,32 @@ void DebugSystem::UpdateOBBs()
 
 		//x
 		position = translation.myOrientation.GetTranslation();
-		position += right * debug.m_WHD.x;
+		position += right * debug.m_MaxPoint.x;
 		debug.m_OBB.m_Planes[0].InitWithPointAndNormal(position, right);
 
 		position = translation.myOrientation.GetTranslation();
-		position -= right * debug.m_WHD.x;
+		position += right * debug.m_MinPoint.x;
 		right -= (right * 2.f);
 		debug.m_OBB.m_Planes[1].InitWithPointAndNormal(position, right);
 
 		//y
 		position = translation.myOrientation.GetTranslation();
-		position += up * debug.m_WHD.y;
+		position += up * debug.m_MaxPoint.y;
 		debug.m_OBB.m_Planes[2].InitWithPointAndNormal(position, up);
 
 		position = translation.myOrientation.GetTranslation();
-		position -= up * debug.m_WHD.y;
+		position += up * debug.m_MinPoint.y;
 		up -= (up * 2.f);
 		debug.m_OBB.m_Planes[3].InitWithPointAndNormal(position, up);
 
 		//z
 		position = translation.myOrientation.GetTranslation();
-		position += forward * debug.m_WHD.z;
+		position += forward * debug.m_MaxPoint.z;
 		debug.m_OBB.m_Planes[4].InitWithPointAndNormal(position, forward);
 
 
 		position = translation.myOrientation.GetTranslation();
-		position -= forward * debug.m_WHD.z;
+		position += forward * debug.m_MinPoint.z;
 		forward -= (forward * 2.f);
 		debug.m_OBB.m_Planes[5].InitWithPointAndNormal(position, forward);
 
@@ -291,12 +292,15 @@ void DebugSystem::UpdateOBBs()
 //This needs to be optimized as hell.
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
+	UpdateOBBs();
 	CU::Vector3f cam_pos = CU::Vector3f(message.camera_pos_x, message.camera_pos_y, message.camera_pos_z);
 	CU::Vector3f ray_dir = CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z);
 	//Should be optimized for a quad/oct -tree solution to only retrieve the entities in THIS part
-	
+	NodeEntityManager& node_manager = message.m_Player->GetFirstNode()->GetManager();
+	const EntityArray& entities = node_manager.GetEntities(myFilter);
 
-	const CU::GrowingArray<Entity>& entities = GetEntities();
+
+	//const CU::GrowingArray<Entity>& entities = GetEntities();
 	CU::GrowingArray<entity_collisions> collisions;
 	for (Entity i = entities.Size() - 1; i >= 0; i--)
 	{
@@ -306,7 +310,7 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 
 
 
-		for (float i = 0; i < 25.f; i += 0.2f)
+		for (float i = 0; i < 25.f; i += 0.05f)
 		{
 			CU::Vector3f step = (ray_dir * i);
 			CU::Vector3f new_pos = cam_pos + step;
@@ -339,12 +343,15 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(closest.m_ID);
 		debug.debugColor = { 255.f,0.f,0.f,255.f };
-		//bool has_render = myEntityManager.HasComponent(closest.m_ID, CreateFilter<Requires<RenderComponent>>());
 		Engine::GetInstance()->SelectEntity(closest.m_ID);
 		m_PrevID = prev_entity;
 		m_CurrentEntity = m_PrevID;
-		RenderComponent& r = myEntityManager.GetComponent<RenderComponent>(m_CurrentEntity);
-		current_model = r.myModelID;
+		bool has_render = node_manager.HasComponent(m_CurrentEntity, CreateFilter<Requires<RenderComponent>>());
+		if ( has_render )
+		{
+			RenderComponent& r = node_manager.GetComponent<RenderComponent>(m_CurrentEntity);
+			current_model = r.myModelID;
+		}
 	}
 
 	if (CheckGizmoCollision(cam_pos, ray_dir))
@@ -373,37 +380,37 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p7.position = p1.position;
 	p8.position = p1.position;
 
-	p1.position -= orientation.GetRight() * component.m_WHD.x;
-	p1.position -= orientation.GetUp() * component.m_WHD.y;
-	p1.position -= orientation.GetForward() * component.m_WHD.z;
+	p1.position += orientation.GetRight() * component.m_MinPoint.x;
+	p1.position += orientation.GetUp() * component.m_MinPoint.y;
+	p1.position += orientation.GetForward() * component.m_MinPoint.z;
 
-	p2.position += orientation.GetRight() * component.m_WHD.x;
-	p2.position -= orientation.GetUp() * component.m_WHD.y;
-	p2.position -= orientation.GetForward() * component.m_WHD.z;
+	p2.position += orientation.GetRight() * component.m_MaxPoint.x;
+	p2.position += orientation.GetUp() * component.m_MinPoint.y;
+	p2.position += orientation.GetForward() * component.m_MinPoint.z;
 
-	p3.position += orientation.GetRight() * component.m_WHD.x;
-	p3.position -= orientation.GetUp() * component.m_WHD.y;
-	p3.position += orientation.GetForward() * component.m_WHD.z;
+	p3.position += orientation.GetRight() * component.m_MaxPoint.x;
+	p3.position += orientation.GetUp() * component.m_MinPoint.y;
+	p3.position += orientation.GetForward() * component.m_MaxPoint.z;
 
-	p4.position -= orientation.GetRight() * component.m_WHD.x;
-	p4.position -= orientation.GetUp() * component.m_WHD.y;
-	p4.position += orientation.GetForward() * component.m_WHD.z;
+	p4.position += orientation.GetRight() * component.m_MinPoint.x;
+	p4.position += orientation.GetUp() * component.m_MinPoint.y;
+	p4.position += orientation.GetForward() * component.m_MaxPoint.z;
 
-	p5.position -= orientation.GetRight() * component.m_WHD.x;
-	p5.position += orientation.GetUp() * component.m_WHD.y;
-	p5.position -= orientation.GetForward() * component.m_WHD.z;
+	p5.position += orientation.GetRight() * component.m_MinPoint.x;
+	p5.position += orientation.GetUp() * component.m_MaxPoint.y;
+	p5.position += orientation.GetForward() * component.m_MinPoint.z;
 
-	p6.position -= orientation.GetRight() * component.m_WHD.x;
-	p6.position += orientation.GetUp() * component.m_WHD.y;
-	p6.position += orientation.GetForward() * component.m_WHD.z;
+	p6.position += orientation.GetRight() * component.m_MinPoint.x;
+	p6.position += orientation.GetUp() * component.m_MaxPoint.y;
+	p6.position += orientation.GetForward() * component.m_MaxPoint.z;
 
-	p7.position += orientation.GetRight() * component.m_WHD.x;
-	p7.position += orientation.GetUp() * component.m_WHD.y;
-	p7.position -= orientation.GetForward() * component.m_WHD.z;
+	p7.position += orientation.GetRight() * component.m_MaxPoint.x;
+	p7.position += orientation.GetUp() * component.m_MaxPoint.y;
+	p7.position += orientation.GetForward() * component.m_MinPoint.z;
 
-	p8.position += orientation.GetRight() * component.m_WHD.x;
-	p8.position += orientation.GetUp() * component.m_WHD.y;
-	p8.position += orientation.GetForward() * component.m_WHD.z;
+	p8.position += orientation.GetRight() * component.m_MaxPoint.x;
+	p8.position += orientation.GetUp() * component.m_MaxPoint.y;
+	p8.position += orientation.GetForward() * component.m_MaxPoint.z;
 
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));

@@ -33,7 +33,9 @@ namespace CommonUtilities
 			void RotateAroundPointX(const CU::Vector3f& point, float radian, float dt);
 			void RotateAroundPointY(const CU::Vector3f& point, float radian, float dt);
 			void RotateAroundPointZ(const CU::Vector3f& point, float radian, float dt);
-
+			void RotateAroundPointX(const CU::Vector3f& point, float radian);
+			void RotateAroundPointY(const CU::Vector3f& point, float radian);
+			void RotateAroundPointZ(const CU::Vector3f& point, float radian);
 
 			void SetPerspectiveFOV(float fov, float aspect_ratio);
 
@@ -151,6 +153,37 @@ namespace CommonUtilities
 			SetPosition(original_pos - point);
 
 			*this = *this * CU::Matrix44f::CreateRotateAroundX(radian * dt);
+			SetPosition(GetPosition() + point);
+		}
+
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointZ(const CU::Vector3f& point, float radian)
+		{
+			CU::Vector3f original_pos = GetPosition();
+			SetPosition(original_pos - point);
+
+			*this = *this * CU::Matrix44f::CreateRotateAroundZ(radian);
+			SetPosition(GetPosition() + point);
+		}
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointY(const CU::Vector3f& point, float radian)
+		{
+			CU::Vector3f original_pos = GetPosition();
+			SetPosition(original_pos - point);
+
+			*this = *this * CU::Matrix44f::CreateRotateAroundY(radian);
+			SetPosition(GetPosition() + point);
+		}
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointX(const CU::Vector3f& point, float radian)
+		{
+			CU::Vector3f original_pos = GetPosition();
+			SetPosition(original_pos - point);
+
+			*this = *this * CU::Matrix44f::CreateRotateAroundX(radian);
 			SetPosition(GetPosition() + point);
 		}
 

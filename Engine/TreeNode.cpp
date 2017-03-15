@@ -10,19 +10,24 @@
 
 TreeNode::~TreeNode()
 {
+
 	for (s32 i = 0; i < 8; i++)
 	{
 		delete m_Children[i];
 		m_Children[i] = nullptr;
-
 	}
+	Engine::GetInstance()->GetEntityManager().UnRegisterManager(&m_NodeEntityManager);
+
 }
 
 void TreeNode::Initiate(float halfwidth, Octree* octree)
 {
 	m_HalfWidth = halfwidth;
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
+
 	m_NodeEntityManager.Initiate();
+	Engine::GetInstance()->GetEntityManager().RegisterManager(&m_NodeEntityManager);
+
 	m_Octree = octree;
 	for (s32 i = 0; i < 8; i++)
 	{
@@ -82,6 +87,9 @@ void TreeNode::Update(float dt)
 
 	for (TreeDweller* dweller : m_Dwellers)
 	{
+		if ( dweller->GetType() == TreeDweller::eType::STATIC )
+			continue;
+
 		bool found = false;
 		const ComponentList& list = dweller->GetComponentPairList();
 		for (const ComponentPair& pair : list)

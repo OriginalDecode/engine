@@ -36,9 +36,14 @@ void Game::InitState(StateStack* state_stack)
 	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
 
 	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel("Data/Levels/level_01.level");
-
 	m_World.AddDwellers(dwellers);
 
+	m_Player = new TreeDweller;
+	m_Player->Initiate(m_Engine->GetEntityManager().CreateEntity(), TreeDweller::eType::DYNAMIC);
+	m_Engine->GetEntityManager().AddComponent<TranslationComponent>(m_Player->GetEntity());
+	TranslationComponent& translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
+	m_Player->AddComponent(&translation, TreeDweller::TRANSLATION | TreeDweller::DEBUG);
+	m_World.AddDweller(m_Player);
 
 	m_Picker = new CMousePicker;
 
@@ -82,7 +87,7 @@ void Game::Update(float dt)
 	if (input_wrapper->OnClick(MouseInput::LEFT))
 	{
 		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
-		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z));
+		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, m_Player));
 	}
 	//Engine::GetInstance()->GetEntityManager().Update(dt);
 	if (input_wrapper->OnDown(KButton::ESCAPE))
@@ -121,7 +126,8 @@ void Game::Update(float dt)
 	if (input_wrapper->IsDown(KButton::X))
 		m_Camera->Move(eDirection::DOWN, -cam_speed * dt);
 
-
+	TranslationComponent& translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
+	translation.myOrientation = m_Camera->GetOrientation();
 
 	m_World.Update(dt);
 }

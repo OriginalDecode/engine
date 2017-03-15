@@ -27,7 +27,7 @@ private:
 	CPauseState m_PauseState;
 	CU::Vector3f pointHit;
 	TranslationComponent* component;
-
+	TreeDweller* m_Player = nullptr;
 	Camera* m_Camera = nullptr;
 	Frustum m_Frustum;
 

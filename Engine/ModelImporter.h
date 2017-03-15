@@ -62,6 +62,11 @@ struct ModelData
 	CU::GrowingArray<Layout> myLayout;
 
 	CU::Vector3f m_WHD;
+
+	CU::Vector3f m_MinPoint;
+	CU::Vector3f m_MaxPoint;
+
+
 };
 
 struct TextureData
@@ -93,6 +98,8 @@ private:
 	std::string myCurrentLoadingFile;
 	CommonUtilities::TimeManager* myTimeManager;
 	CU::Vector3f m_WHD;
+	CU::Vector3f m_MinPoint;
+	CU::Vector3f m_MaxPoint;
 	CModel* CreateModel(FBXModelData* someData, Effect* anEffect);
 	CModel* LoadModel(const std::string& aFilePath, Effect* anEffect);
 	void FillData(FBXModelData* someData, CModel* out, Effect* anEffect);

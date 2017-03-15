@@ -10,7 +10,7 @@ struct EntityComponent
 {
 	Entity m_Entity;
 	EntityComponentArray m_EntityArray;
-	bool m_UpdateFlag = false;
+	bool m_UpdateFlag = true;
 };
 
 

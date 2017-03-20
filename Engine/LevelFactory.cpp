@@ -115,7 +115,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	if (sponza)
 		sponza = false;
-#ifdef _DEBUG
+#ifdef _EDITOR
 	else
 		CreateDebugComponent(e, hasLight, debug_flags);
 #endif
@@ -217,7 +217,8 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
 		sponza = true;
-
+	component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
+	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 
 	CU::Vector3f scale;
 	m_LevelReader.ReadElement(it->value["scale"], scale);
@@ -251,6 +252,8 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
 		el["shader"].GetString());
+	component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
+	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 
 	component.scale = CU::Vector4f(1, 1, 1, 1);
 

@@ -31,6 +31,9 @@ private:
 	Camera* m_Camera = nullptr;
 	Frustum m_Frustum;
 
+	CU::Matrix44f m_Orientation;
+
+
 	Engine* m_Engine = nullptr;
 	CMousePicker* m_Picker = nullptr;
 	Synchronizer* m_Synchronizer = nullptr;

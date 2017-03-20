@@ -414,7 +414,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>LinearMath_$(Configuration).lib;Bullet3Dynamics_$(Configuration).lib;Bullet3Collision_$(Configuration).lib;BulletDynamics_$(Configuration).lib;BulletCollision_$(Configuration).lib;Bullet3Common_$(Configuration).lib;Bullet3Geometry_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>LinearMath_Release.lib;Bullet3Dynamics_Release.lib;Bullet3Collision_Release.lib;BulletDynamics_Release.lib;BulletCollision_Release.lib;Bullet3Common_Release.lib;Bullet3Geometry_Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">

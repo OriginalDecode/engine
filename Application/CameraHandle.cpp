@@ -20,10 +20,17 @@ void CameraHandle::Destroy()
 	m_Instance = nullptr;
 }
 
-void CameraHandle::Initiate()
+void CameraHandle::Initiate(CU::Matrix44f* orientation)
 {
-	m_Camera = Engine::GetInstance()->GetCamera();
-	m_Frustum.Initiate(0.001f, 25.f, 90.f, &m_Camera->GetOrientation());
+	if ( !orientation )
+	{
+		m_Camera = Engine::GetInstance()->GetCamera();
+		m_Frustum.Initiate(0.f, 50.f, m_Camera->GetFOV(), &m_Camera->GetOrientation());
+	}
+	else
+	{
+		m_Frustum.Initiate(0.f, 50.f, 90.f, orientation);
+	}
 }
 
 void CameraHandle::Update()

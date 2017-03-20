@@ -15,6 +15,8 @@ public:
 	bool InsideAABB(const CU::Vector3f& position) const;
 	void OnResize(float new_fov);
 private:
+	void DrawFrustum();
+	void UpdateOBB();
 	const CU::Matrix44f* m_Orientation;
 	CU::Matrix44f m_InvertedOrientation;
 
@@ -28,7 +30,7 @@ private:
 
 	CU::PlaneVolume<float> m_Volume;
 
-
+	float m_FOV = 0.f;
 	float m_NearPlane = 0.f;
 	float m_FarPlane = 0.f;
 

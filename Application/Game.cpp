@@ -51,7 +51,7 @@ void Game::InitState(StateStack* state_stack)
 	m_Camera = m_Engine->GetCamera();
 
 	CameraHandle::Create();
-	CameraHandle::GetInstance()->Initiate();
+	CameraHandle::GetInstance()->Initiate(&m_Orientation);
 	m_PauseState.InitState(m_StateStack);
 	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 }
@@ -100,7 +100,7 @@ void Game::Update(float dt)
 		m_Camera->Update(m_Engine->GetInputHandle()->GetDeltaCursorPos());
 	}
 
-	{
+	/*{
 		if (input_wrapper->IsDown(KButton::UP_ARROW))
 			m_Camera->RotateAroundX(0.5f * dt);
 		if (input_wrapper->IsDown(KButton::DOWN_ARROW))
@@ -109,7 +109,7 @@ void Game::Update(float dt)
 			m_Camera->RotateAroundY(0.5f * dt);
 		if (input_wrapper->IsDown(KButton::LEFT_ARROW))
 			m_Camera->RotateAroundY(-0.5f * dt);
-	}
+	}*/
 
 	float cam_speed = 50.f;
 
@@ -126,8 +126,97 @@ void Game::Update(float dt)
 	if (input_wrapper->IsDown(KButton::X))
 		m_Camera->Move(eDirection::DOWN, -cam_speed * dt);
 
-	TranslationComponent& translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
-	translation.myOrientation = m_Camera->GetOrientation();
+
+	static float entity_speed = 0.2f;
+
+	if ( input_wrapper->IsDown(KButton::H) )
+	{
+		entity_speed += 1.f * dt;
+	}
+	if ( input_wrapper->IsDown(KButton::G) )
+	{
+		entity_speed -= 1.f * dt;
+	}
+
+	std::stringstream ss;
+	ss << "Entity Speed : " << entity_speed;
+	m_Synchronizer->AddRenderCommand(RenderCommand(eType::TEXT, ss.str(), CU::Vector2f(0.5, 0.5f)));
+
+	CU::Vector4f translation = m_Orientation.GetTranslation();
+	if ( input_wrapper->IsDown(KButton::UP_ARROW) )
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetForward();
+		translation += forward * entity_speed;
+	}
+	if ( input_wrapper->IsDown(KButton::DOWN_ARROW) )
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetForward();
+		translation += forward * -entity_speed;
+	}
+
+	if ( input_wrapper->IsDown(KButton::LEFT_ARROW) )
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetRight();
+		translation += forward * -entity_speed;
+	}
+
+	if ( input_wrapper->IsDown(KButton::RIGHT_ARROW) )
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetRight();
+		translation += forward * entity_speed;
+	}
+
+	if ( input_wrapper->IsDown(KButton::M) )
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetUp();
+		translation += forward * entity_speed;
+	}
+	
+	if ( input_wrapper->IsDown(KButton::N) ) 
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetUp();
+		translation += forward * -entity_speed;
+	}
+
+	if ( input_wrapper->IsDown(KButton::M) )
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetUp();
+		translation += forward * entity_speed;
+	}
+
+	if ( input_wrapper->IsDown(KButton::NUMPAD8) )
+	{
+		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), CL::DegreeToRad(90.f) * dt);
+	}
+	if ( input_wrapper->IsDown(KButton::NUMPAD2) )
+	{
+		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), -CL::DegreeToRad(90.f) * dt);
+	}
+	if ( input_wrapper->IsDown(KButton::NUMPAD4) )
+	{
+		m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), -CL::DegreeToRad(90.f) * dt);
+	}
+	if ( input_wrapper->IsDown(KButton::NUMPAD6) )
+	{
+		m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), CL::DegreeToRad(90.f) * dt);
+	}
+	if ( input_wrapper->IsDown(KButton::NUMPAD7) )
+	{
+		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), -CL::DegreeToRad(90.f) * dt);
+	}
+	if ( input_wrapper->IsDown(KButton::NUMPAD9) )
+	{
+		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), CL::DegreeToRad(90.f) * dt);
+	}
+
+
+	m_Orientation.SetTranslation(translation);
+
+
+
+
+	TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
+	entity_translation.myOrientation = m_Orientation;/*m_Camera->GetOrientation();*/
 
 	m_World.Update(dt);
 }

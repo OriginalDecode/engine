@@ -46,7 +46,7 @@ void DebugSystem::Update(float dt)
 		if(!CameraHandle::GetInstance()->GetFrustum().Inside(translation.myOrientation.GetPosition(),0.f))
 			continue;
 
-#ifdef _DEBUG
+#ifdef _EDITOR
 		RenderBox(debug, translation.myOrientation);
 #endif
 	}
@@ -293,8 +293,15 @@ void DebugSystem::UpdateOBBs()
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
 	UpdateOBBs();
+
+
+
 	CU::Vector3f cam_pos = CU::Vector3f(message.camera_pos_x, message.camera_pos_y, message.camera_pos_z);
 	CU::Vector3f ray_dir = CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z);
+	
+	
+	if ( CheckGizmoCollision(cam_pos, ray_dir) )
+		return;
 	//Should be optimized for a quad/oct -tree solution to only retrieve the entities in THIS part
 	NodeEntityManager& node_manager = message.m_Player->GetFirstNode()->GetManager();
 	const EntityArray& entities = node_manager.GetEntities(myFilter);
@@ -354,8 +361,7 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		}
 	}
 
-	if (CheckGizmoCollision(cam_pos, ray_dir))
-		return;
+
 
 }
 

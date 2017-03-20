@@ -45,13 +45,13 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	LightVectors vectors = CalculateLightVectors(data, camPosition, position);
 	float4 substance_replace = float4(1,1,1,1);
 	float3 F = saturate(Fresnel(data.substance, -vectors.light_dir, vectors.halfVec));
-	float D = saturate(D_GGX(vectors.HdotN,(data.roughness ) / 2.f));
-	float V = saturate(V_SchlickForGGX((data.roughness  ) / 2.f, vectors.NdotV, vectors.NdotL));
+	float D = saturate(D_GGX(vectors.HdotN,(data.roughness + 1 ) / 2.f));
+	float V = saturate(V_SchlickForGGX((data.roughness + 1 ) / 2.f, vectors.NdotV, vectors.NdotL));
 
 
 	float ln = length(vectors.toLight);
 	float attenuation = CalculateTotalAttenuation(ln, input.range.x );
-	float3 directSpec = float3(1,1,1) + (F * D * V);
+	float3 directSpec =  (F * D * V);
 	float intensity = 100;
 	float3 final_color = saturate(directSpec * color * attenuation) * intensity;
 

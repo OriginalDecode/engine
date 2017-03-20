@@ -32,7 +32,8 @@ void RenderSystem::Update(float dt)
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
-		if ( !CameraHandle::GetInstance()->GetFrustum().Inside(translation.myOrientation.GetPosition(), 5.f) )
+		CU::Vector3f point = translation.myOrientation.GetPosition() + (render.m_MinPos + render.m_MaxPos);
+		if ( !CameraHandle::GetInstance()->GetFrustum().Inside(point, 5.f) )
 			continue;
 		
 

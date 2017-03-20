@@ -9,7 +9,7 @@ public:
 	static void Create();
 	static void Destroy();
 
-	void Initiate();
+	void Initiate(CU::Matrix44f* orientation);
 	void Update();
 	Camera* GetCamera();
 	const Frustum& GetFrustum();

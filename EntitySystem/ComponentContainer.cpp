@@ -9,7 +9,7 @@ CComponentContainer::CComponentContainer(bool owner)
 	, myEntitiesToReturn(128)
 	, m_Owner(owner)
 {
-	for (int i = 0; i < MAX_COMPONENTS_COUNT; i++)
+	for ( int i = 0; i < MAX_COMPONENTS_COUNT; i++ )
 	{
 		myComponents.Add(ComponentArray());
 		myComponents[i].ReInit(128);
@@ -18,10 +18,10 @@ CComponentContainer::CComponentContainer(bool owner)
 
 CComponentContainer::~CComponentContainer()
 {
-	if (!m_Owner)
+	if ( !m_Owner )
 		return;
 
-	for (int i = 0; i < myComponents.Size(); i++)
+	for ( int i = 0; i < myComponents.Size(); i++ )
 	{
 		myComponents[i].DeleteAll();
 	}
@@ -35,7 +35,7 @@ void CComponentContainer::AddEntity(Entity id)
 
 	myEntityComponents.Add(ec);
 	EntityComponentArray& components = myEntityComponents.GetLast().m_EntityArray;
-	for (int i = 0; i < MAX_COMPONENTS_COUNT; i++)
+	for ( int i = 0; i < MAX_COMPONENTS_COUNT; i++ )
 	{
 		components[i] = -1;
 	}
@@ -44,9 +44,9 @@ void CComponentContainer::AddEntity(Entity id)
 void CComponentContainer::AddComponent(Entity anEntity, BaseComponent* aComponent, unsigned int aComponentID)
 {
 	myComponents[aComponentID].Add(aComponent);
-	for (EntityComponent& ec : myEntityComponents)
+	for ( EntityComponent& ec : myEntityComponents )
 	{
-		if (ec.m_Entity == anEntity)
+		if ( ec.m_Entity == anEntity )
 		{
 			ec.m_EntityArray[aComponentID] = myComponents[aComponentID].Size() - 1;
 			break;
@@ -57,9 +57,9 @@ void CComponentContainer::AddComponent(Entity anEntity, BaseComponent* aComponen
 BaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int aComponentID)
 {
 	/*Error Handling*/
-	for (EntityComponent& ec : myEntityComponents)
+	for ( EntityComponent& ec : myEntityComponents )
 	{
-		if (ec.m_Entity == anEntity)
+		if ( ec.m_Entity == anEntity )
 		{
 			int componentIndex = ec.m_EntityArray[aComponentID];
 			return *myComponents[aComponentID][componentIndex];
@@ -73,9 +73,9 @@ void CComponentContainer::SetUpdateFlag(Entity entity, bool flag)
 {
 	//myEntityComponents[entity].m_UpdateFlag = flag;
 
-	for (EntityComponent& ec : myEntityComponents)
+	for ( EntityComponent& ec : myEntityComponents )
 	{
-		if(ec.m_Entity == entity )
+		if ( ec.m_Entity == entity )
 			ec.m_UpdateFlag = flag;
 	}
 
@@ -83,9 +83,9 @@ void CComponentContainer::SetUpdateFlag(Entity entity, bool flag)
 
 void CComponentContainer::RemoveComponent(Entity entity, BaseComponent* component, u32 component_id)
 {
-	for (EntityComponent& ec : myEntityComponents)
+	for ( EntityComponent& ec : myEntityComponents )
 	{
-		if (ec.m_Entity == entity)
+		if ( ec.m_Entity == entity )
 		{
 			ec.m_EntityArray[component_id]--;
 			myComponents[component_id].RemoveCyclic(component);
@@ -96,7 +96,7 @@ void CComponentContainer::RemoveComponent(Entity entity, BaseComponent* componen
 
 bool CComponentContainer::HasComponent(Entity e, SComponentFilter& filter)
 {
-	for (const EntityComponent& ec : myEntityComponents)
+	for ( const EntityComponent& ec : myEntityComponents )
 	{
 		if ( ec.m_Entity == e )
 		{
@@ -120,7 +120,7 @@ const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(SComponentFilte
 		}
 	}*/
 	SComponentFilter filter = CreateFilter<Requires<STranslationComponent>>();
-	for (const EntityComponent& ec : myEntityComponents)
+	for ( const EntityComponent& ec : myEntityComponents )
 	{
 		if ( ec.m_UpdateFlag || aFilter == filter )
 		{

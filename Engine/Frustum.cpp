@@ -35,7 +35,7 @@ void Frustum::Update()
 	DrawFrustum();
 }
 
-bool Frustum::Inside(const CU::Vector3f& position, float ) const
+bool Frustum::Inside(const CU::Vector3f& position, float) const
 {
 	const CU::Vector3f collision_check_position = CU::Vector3f(position) * m_InvertedOrientation;
 	return m_Volume.Inside(collision_check_position);
@@ -43,7 +43,7 @@ bool Frustum::Inside(const CU::Vector3f& position, float ) const
 
 bool Frustum::InsideAABB(const CU::Vector3f& position) const
 {
-	if ( position > m_Orientation->GetPosition() - m_FarPlane && position < m_Orientation->GetPosition() + m_FarPlane )
+	if (position > m_Orientation->GetPosition() - m_FarPlane && position < m_Orientation->GetPosition() + m_FarPlane)
 		return true;
 
 	return false;
@@ -53,12 +53,12 @@ void Frustum::OnResize(float new_fov)
 {
 	const float rotation = sin(new_fov / 2.f);
 
-	m_Volume.m_Planes[0] = ( CU::Plane<float>(CU::Vector3f(0, 0, m_NearPlane), CU::Vector3f(0, 0, -1)) ); //near
-	m_Volume.m_Planes[1] = ( CU::Plane<float>(CU::Vector3f(0, 0, m_FarPlane), CU::Vector3f(0, 0, 1)) ); //far
-	m_Volume.m_Planes[2] = ( CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(rotation, 0, -rotation)) ); //right
-	m_Volume.m_Planes[3] = ( CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(-rotation, 0, -rotation)) ); //left
-	m_Volume.m_Planes[4] = ( CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, rotation, -rotation)) ); //up
-	m_Volume.m_Planes[5] = ( CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, -rotation, -rotation)) ); //down
+	m_Volume.m_Planes[0] = (CU::Plane<float>(CU::Vector3f(0, 0, m_NearPlane), CU::Vector3f(0, 0, -1))); //near
+	m_Volume.m_Planes[1] = (CU::Plane<float>(CU::Vector3f(0, 0, m_FarPlane), CU::Vector3f(0, 0, 1))); //far
+	m_Volume.m_Planes[2] = (CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(rotation, 0, -rotation))); //right
+	m_Volume.m_Planes[3] = (CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(-rotation, 0, -rotation))); //left
+	m_Volume.m_Planes[4] = (CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, rotation, -rotation))); //up
+	m_Volume.m_Planes[5] = (CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, -rotation, -rotation))); //down
 
 	m_UpLeft = CU::Vector4f(-m_FarPlane, +m_FarPlane, +m_FarPlane, 1.f);
 	m_UpRight = CU::Vector4f(+m_FarPlane, +m_FarPlane, +m_FarPlane, 1.f);
@@ -69,7 +69,7 @@ void Frustum::OnResize(float new_fov)
 void Frustum::DrawFrustum()
 {
 	SLinePoint p1, p2, p3, p4, p5, p6, p7, p8;
-	p1.color = CU::Vector4f(0,1,0,1);
+	p1.color = CU::Vector4f(0, 1, 0, 1);
 	p2.color = p1.color;
 	p3.color = p1.color;
 	p4.color = p1.color;
@@ -89,22 +89,48 @@ void Frustum::DrawFrustum()
 
 
 
-	CU::Vector4f target;
-	CU::Vector4f position = m_Orientation->GetPosition();
-	CU::Vector4f far_plane = position + m_Orientation->GetForward() * m_FarPlane;
+	const CU::Vector4f position = m_Orientation->GetPosition();
+	const CU::Vector4f far_plane = position + m_Orientation->GetForward() * m_FarPlane;
+
 	const float angle = atan2f(far_plane.z, far_plane.x);
 
-	target = far_plane * angle;
+	const CU::Vector4f target = far_plane * angle;
 
+	const float halfWidth = CU::Math::Length(target - far_plane);
+	//const float width = halfWidth * 2.f;
 
-	const float halfWidth = position.x - target.x;
-	const float width = halfWidth * 2.f;
-
+	const CU::Vector4f up = m_Orientation->GetUp();
+	CU::Vector4f down = (up - (up * 2.f));
+	//CU::Vector4f new_pos = far_plane + right * halfWidth;
+	const CU::Vector4f right = m_Orientation->GetRight();
+	CU::Vector4f left = (right - (right * 2.f));
+	p5.position = far_plane;
 	
-	p5.position = CU::Vector4f(-halfWidth, -halfWidth, m_FarPlane, 1);
-	p6.position = CU::Vector4f(-halfWidth, halfWidth, m_FarPlane, 1);
-	p7.position = CU::Vector4f(halfWidth, -halfWidth, m_FarPlane, 1);
-	p8.position = CU::Vector4f(halfWidth, halfWidth, m_FarPlane, 1);
+	p5.position += (left * halfWidth);
+	p5.position += (down * halfWidth);
+
+
+	p6.position = far_plane;
+	p6.position += (left * halfWidth);
+	p6.position += (up * halfWidth);
+
+	p7.position = far_plane;
+	p7.position += (right * halfWidth);
+	p7.position += (down * halfWidth);
+
+
+	p8.position = far_plane;
+	p8.position += (right * halfWidth);
+	p8.position += (up * halfWidth);
+
+
+
+
+
+	//p5.position = CU::Vector4f(-halfWidth, -halfWidth, m_FarPlane, 1);
+	//p6.position = CU::Vector4f(-halfWidth, halfWidth, m_FarPlane, 1);
+	//p7.position = CU::Vector4f(halfWidth, -halfWidth, m_FarPlane, 1);
+	//p8.position = CU::Vector4f(halfWidth, halfWidth, m_FarPlane, 1);
 
 	//p5.position = m_MaxPos;
 	//p5.position.x = m_MinPos.x;
@@ -210,7 +236,7 @@ void Frustum::UpdateOBB()
 	//z
 	position = m_Orientation->GetTranslation();
 	position += forward * m_NearPlane;
-	forward -= ( forward * 2.f );
+	forward -= (forward * 2.f);
 	m_Volume.m_Planes[0].InitWithPointAndNormal(position, forward);
 
 	position = m_Orientation->GetTranslation();
@@ -224,7 +250,7 @@ void Frustum::UpdateOBB()
 
 	position = m_Orientation->GetTranslation();
 	position += right * m_MinPos.x;
-	right -= ( right * 2.f );
+	right -= (right * 2.f);
 	m_Volume.m_Planes[3].InitWithPointAndNormal(position, CU::Vector3f(-rotation, 0, -rotation));
 
 	//y
@@ -234,10 +260,10 @@ void Frustum::UpdateOBB()
 
 	position = m_Orientation->GetTranslation();
 	position += up * m_MinPos.y;
-	up -= ( up * 2.f );
+	up -= (up * 2.f);
 	m_Volume.m_Planes[5].InitWithPointAndNormal(position, CU::Vector3f(0, -rotation, -rotation));
 
-	
+
 
 }
 
@@ -245,41 +271,41 @@ void Frustum::CalcCorners()
 {
 	CU::Vector4f result = m_Orientation->GetTranslation();
 
-	result.x = fminf(result.x, ( m_UpLeft * *m_Orientation ).x);
-	result.y = fminf(result.y, ( m_UpLeft * *m_Orientation ).y);
-	result.z = fminf(result.z, ( m_UpLeft * *m_Orientation ).z);
+	result.x = fminf(result.x, (m_UpLeft * *m_Orientation).x);
+	result.y = fminf(result.y, (m_UpLeft * *m_Orientation).y);
+	result.z = fminf(result.z, (m_UpLeft * *m_Orientation).z);
 
-	result.x = fminf(result.x, ( m_UpRight * *m_Orientation ).x);
-	result.y = fminf(result.y, ( m_UpRight * *m_Orientation ).y);
-	result.z = fminf(result.z, ( m_UpRight * *m_Orientation ).z);
+	result.x = fminf(result.x, (m_UpRight * *m_Orientation).x);
+	result.y = fminf(result.y, (m_UpRight * *m_Orientation).y);
+	result.z = fminf(result.z, (m_UpRight * *m_Orientation).z);
 
-	result.x = fminf(result.x, ( m_DownLeft * *m_Orientation ).x);
-	result.y = fminf(result.y, ( m_DownLeft * *m_Orientation ).y);
-	result.z = fminf(result.z, ( m_DownLeft * *m_Orientation ).z);
+	result.x = fminf(result.x, (m_DownLeft * *m_Orientation).x);
+	result.y = fminf(result.y, (m_DownLeft * *m_Orientation).y);
+	result.z = fminf(result.z, (m_DownLeft * *m_Orientation).z);
 
-	result.x = fminf(result.x, ( m_DownRight * *m_Orientation ).x);
-	result.y = fminf(result.y, ( m_DownRight * *m_Orientation ).y);
-	result.z = fminf(result.z, ( m_DownRight * *m_Orientation ).z);
+	result.x = fminf(result.x, (m_DownRight * *m_Orientation).x);
+	result.y = fminf(result.y, (m_DownRight * *m_Orientation).y);
+	result.z = fminf(result.z, (m_DownRight * *m_Orientation).z);
 
 	m_MinPos.x = result.x;
 	m_MinPos.y = result.y;
 	m_MinPos.z = result.z;
 	result = CU::Vector4f();
-	result.x = fmaxf(result.x, ( m_UpLeft * *m_Orientation ).x);
-	result.y = fmaxf(result.y, ( m_UpLeft * *m_Orientation ).y);
-	result.z = fmaxf(result.z, ( m_UpLeft * *m_Orientation ).z);
+	result.x = fmaxf(result.x, (m_UpLeft * *m_Orientation).x);
+	result.y = fmaxf(result.y, (m_UpLeft * *m_Orientation).y);
+	result.z = fmaxf(result.z, (m_UpLeft * *m_Orientation).z);
 
-	result.x = fmaxf(result.x, ( m_UpRight * *m_Orientation ).x);
-	result.y = fmaxf(result.y, ( m_UpRight * *m_Orientation ).y);
-	result.z = fmaxf(result.z, ( m_UpRight * *m_Orientation ).z);
+	result.x = fmaxf(result.x, (m_UpRight * *m_Orientation).x);
+	result.y = fmaxf(result.y, (m_UpRight * *m_Orientation).y);
+	result.z = fmaxf(result.z, (m_UpRight * *m_Orientation).z);
 
-	result.x = fmaxf(result.x, ( m_DownLeft * *m_Orientation ).x);
-	result.y = fmaxf(result.y, ( m_DownLeft * *m_Orientation ).y);
-	result.z = fmaxf(result.z, ( m_DownLeft * *m_Orientation ).z);
+	result.x = fmaxf(result.x, (m_DownLeft * *m_Orientation).x);
+	result.y = fmaxf(result.y, (m_DownLeft * *m_Orientation).y);
+	result.z = fmaxf(result.z, (m_DownLeft * *m_Orientation).z);
 
-	result.x = fmaxf(result.x, ( m_DownRight * *m_Orientation ).x);
-	result.y = fmaxf(result.y, ( m_DownRight * *m_Orientation ).y);
-	result.z = fmaxf(result.z, ( m_DownRight * *m_Orientation ).z);
+	result.x = fmaxf(result.x, (m_DownRight * *m_Orientation).x);
+	result.y = fmaxf(result.y, (m_DownRight * *m_Orientation).y);
+	result.z = fmaxf(result.z, (m_DownRight * *m_Orientation).z);
 
 	m_MaxPos.x = result.x;
 	m_MaxPos.y = result.y;

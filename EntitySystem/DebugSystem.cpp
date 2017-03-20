@@ -46,9 +46,9 @@ void DebugSystem::Update(float dt)
 		if(!CameraHandle::GetInstance()->GetFrustum().Inside(translation.myOrientation.GetPosition(),0.f))
 			continue;
 
-#ifdef _EDITOR
+//#ifdef _EDITOR
 		RenderBox(debug, translation.myOrientation);
-#endif
+//#endif
 	}
 
 	if (m_Engine->GetInputHandle()->GetInputWrapper()->OnRelease(MouseInput::LEFT))
@@ -360,9 +360,6 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 			current_model = r.myModelID;
 		}
 	}
-
-
-
 }
 
 void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation)
@@ -386,37 +383,41 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p7.position = p1.position;
 	p8.position = p1.position;
 
-	p1.position += orientation.GetRight() * component.m_MinPoint.x;
-	p1.position += orientation.GetUp() * component.m_MinPoint.y;
-	p1.position += orientation.GetForward() * component.m_MinPoint.z;
+	const CU::Vector4f right = orientation.GetRight();
+	const CU::Vector4f up = orientation.GetRight();
+	const CU::Vector4f forward = orientation.GetRight();
 
-	p2.position += orientation.GetRight() * component.m_MaxPoint.x;
-	p2.position += orientation.GetUp() * component.m_MinPoint.y;
-	p2.position += orientation.GetForward() * component.m_MinPoint.z;
+	p1.position += right * component.m_MinPoint.x;
+	p1.position += up * component.m_MinPoint.y;
+	p1.position += forward * component.m_MinPoint.z;
 
-	p3.position += orientation.GetRight() * component.m_MaxPoint.x;
-	p3.position += orientation.GetUp() * component.m_MinPoint.y;
-	p3.position += orientation.GetForward() * component.m_MaxPoint.z;
+	p2.position += right * component.m_MaxPoint.x;
+	p2.position += up * component.m_MinPoint.y;
+	p2.position += forward * component.m_MinPoint.z;
 
-	p4.position += orientation.GetRight() * component.m_MinPoint.x;
-	p4.position += orientation.GetUp() * component.m_MinPoint.y;
-	p4.position += orientation.GetForward() * component.m_MaxPoint.z;
+	p3.position += right * component.m_MaxPoint.x;
+	p3.position += up * component.m_MinPoint.y;
+	p3.position += forward * component.m_MaxPoint.z;
 
-	p5.position += orientation.GetRight() * component.m_MinPoint.x;
-	p5.position += orientation.GetUp() * component.m_MaxPoint.y;
-	p5.position += orientation.GetForward() * component.m_MinPoint.z;
+	p4.position += right * component.m_MinPoint.x;
+	p4.position += up * component.m_MinPoint.y;
+	p4.position += forward * component.m_MaxPoint.z;
 
-	p6.position += orientation.GetRight() * component.m_MinPoint.x;
-	p6.position += orientation.GetUp() * component.m_MaxPoint.y;
-	p6.position += orientation.GetForward() * component.m_MaxPoint.z;
+	p5.position += right * component.m_MinPoint.x;
+	p5.position += up * component.m_MaxPoint.y;
+	p5.position += forward * component.m_MinPoint.z;
 
-	p7.position += orientation.GetRight() * component.m_MaxPoint.x;
-	p7.position += orientation.GetUp() * component.m_MaxPoint.y;
-	p7.position += orientation.GetForward() * component.m_MinPoint.z;
+	p6.position += right * component.m_MinPoint.x;
+	p6.position += up * component.m_MaxPoint.y;
+	p6.position += forward * component.m_MaxPoint.z;
 
-	p8.position += orientation.GetRight() * component.m_MaxPoint.x;
-	p8.position += orientation.GetUp() * component.m_MaxPoint.y;
-	p8.position += orientation.GetForward() * component.m_MaxPoint.z;
+	p7.position += right * component.m_MaxPoint.x;
+	p7.position += up * component.m_MaxPoint.y;
+	p7.position += forward * component.m_MinPoint.z;
+
+	p8.position += right * component.m_MaxPoint.x;
+	p8.position += up * component.m_MaxPoint.y;
+	p8.position += forward * component.m_MaxPoint.z;
 
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));
@@ -430,5 +431,19 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p4));
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p2));
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));
+
+
+
+	p1.position = orientation.GetTranslation();
+	p1.position.y += 2.f;
+	p1.color = { 255.f, 0.f, 255.f, 255.f };
+
+	p2.position = orientation.GetTranslation();
+	p2.position.y -= 2.f;
+	p2.color = { 0.f, 255.f, 255.f, 255.f };
+
+	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
+
+
 }
 

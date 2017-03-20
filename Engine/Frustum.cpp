@@ -88,68 +88,33 @@ void Frustum::DrawFrustum()
 	p8.position = p1.position;
 
 	const CU::Vector4f up = m_Orientation->GetUp();
-	CU::Vector4f down = ( up - ( up * 2.f ) );
-
+	const CU::Vector4f down = ( up - ( up * 2.f ) );
 	const CU::Vector4f right = m_Orientation->GetRight();
-	CU::Vector4f left = ( right - ( right * 2.f ) );
-
+	const CU::Vector4f left = ( right - ( right * 2.f ) );
 	const CU::Vector4f forward = m_Orientation->GetForward();
-
 	const CU::Vector4f position = m_Orientation->GetPosition();
-	const CU::Vector4f far_plane = position + m_Orientation->GetForward() * m_FarPlane;
-
-	CU::Vector4f cross = CU::Math::Cross(forward, right);
-	const float angle = acos(CU::Math::Dot(CU::Math::GetNormalized(forward), CU::Math::GetNormalized(right)));
-
-
-
-	//const float angle = atan2f(CU::Math::GetNormalized(cross), CU::Math::Dot(right, forward));
-
-	const CU::Vector4f target = far_plane * angle;
-
-	const float halfWidth = CU::Math::Length(target - far_plane);
-	//const float width = halfWidth * 2.f;
-
-
+	const CU::Vector4f far_plane = position + forward * m_FarPlane;
+	const float half_width = m_FarPlane ;
 	p5.position = far_plane;
 
-	p5.position += ( left * halfWidth );
-	p5.position += ( down * halfWidth );
+	p5.position += ( left * half_width );
+	p5.position += ( down * half_width );
 
 
 	p6.position = far_plane;
-	p6.position += ( left * halfWidth );
-	p6.position += ( up * halfWidth );
+	p6.position += ( left * half_width );
+	p6.position += ( up * half_width );
 
 	p7.position = far_plane;
-	p7.position += ( right * halfWidth );
-	p7.position += ( down * halfWidth );
+	p7.position += ( right * half_width );
+	p7.position += ( down * half_width );
 
 
 	p8.position = far_plane;
-	p8.position += ( right * halfWidth );
-	p8.position += ( up * halfWidth );
+	p8.position += ( right * half_width );
+	p8.position += ( up * half_width );
 
 
-
-
-
-	//p5.position = CU::Vector4f(-halfWidth, -halfWidth, m_FarPlane, 1);
-	//p6.position = CU::Vector4f(-halfWidth, halfWidth, m_FarPlane, 1);
-	//p7.position = CU::Vector4f(halfWidth, -halfWidth, m_FarPlane, 1);
-	//p8.position = CU::Vector4f(halfWidth, halfWidth, m_FarPlane, 1);
-
-	//p5.position = m_MaxPos;
-	//p5.position.x = m_MinPos.x;
-	//p5.position.y = m_MinPos.y;
-
-	//p6.position = m_MaxPos;
-	//p6.position.x = m_MinPos.x;
-
-	//p7.position = m_MaxPos;
-	//p7.position.y = m_MinPos.y;
-
-	//p8.position = m_MaxPos;
 
 	Synchronizer* sync = Engine::GetInstance()->GetSynchronizer();
 

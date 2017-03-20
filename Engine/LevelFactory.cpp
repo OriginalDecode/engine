@@ -115,10 +115,10 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	if (sponza)
 		sponza = false;
-#ifdef _EDITOR
+//#ifdef _EDITOR
 	else
 		CreateDebugComponent(e, hasLight, debug_flags);
-#endif
+//#endif
 
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
 	

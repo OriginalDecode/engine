@@ -41,7 +41,7 @@ public:
 	NodeEntityManager& GetManager() { return m_NodeEntityManager; }
 private:
 	void RenderBox();
-	bool m_RenderBox = true;
+	bool m_RenderBox = false;
 
 	Octree* m_Octree = nullptr;
 	bool m_Paused = false;

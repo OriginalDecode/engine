@@ -15,7 +15,7 @@
 #include "../Engine/Engine.h"
 
 #include "../Application/CameraHandle.h"
-
+#include "DebugComponent.h"
 RenderSystem::RenderSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, RenderComponent>>())
 {
@@ -29,13 +29,36 @@ void RenderSystem::Update(float dt)
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (int i = 0; i < entities.Size(); i++)
 	{
+		bool visible = false;
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
-		CU::Vector3f point = translation.myOrientation.GetPosition() + (render.m_MinPos + render.m_MaxPos);
-		if ( !CameraHandle::GetInstance()->GetFrustum().Inside(point, 5.f) )
-			continue;
+
+		if (myEntityManager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
+		{
+			DebugComponent& debug = GetComponent<DebugComponent>(e);
+			for (const CU::Plane<float>& plane : debug.m_OBB.m_Planes)
+			{
+				CU::Vector4f temp = plane.GetPoint();
+				CU::Vector3f point = { temp.x,temp.y,temp.z };
+				if (CameraHandle::GetInstance()->GetFrustum().Inside(point, 5.f))
+				{
+					visible = true;
+					break;
+				}
+			}
+			
+		}
+		else
+		{
+			CU::Vector3f point = translation.myOrientation.GetPosition() + (render.m_MinPos + render.m_MaxPos);
+			if (!CameraHandle::GetInstance()->GetFrustum().Inside(point, 5.f))
+				continue;
+		}
+
 		
+		if(!visible)
+			continue;
 
 		//#LINUS This needs to be profiled.
 		CU::Matrix44f t = translation.myOrientation;

@@ -374,6 +374,19 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p7.color = p1.color;
 	p8.color = p1.color;
 
+
+	p1.position = orientation.GetTranslation();
+	p1.position.y += 2.f;
+	p1.color = { 255.f, 0.f, 255.f, 255.f };
+
+	p2.position = orientation.GetTranslation();
+	p2.position.y -= 2.f;
+	p2.color = { 0.f, 255.f, 255.f, 255.f };
+
+	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
+
+	return;
+
 	p1.position = orientation.GetTranslation(); // translation.myOrientation.GetTranslation();
 	p2.position = p1.position;
 	p3.position = p1.position;
@@ -433,16 +446,6 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));
 
 
-
-	p1.position = orientation.GetTranslation();
-	p1.position.y += 2.f;
-	p1.color = { 255.f, 0.f, 255.f, 255.f };
-
-	p2.position = orientation.GetTranslation();
-	p2.position.y -= 2.f;
-	p2.color = { 0.f, 255.f, 255.f, 255.f };
-
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
 
 
 }

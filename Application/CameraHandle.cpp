@@ -25,11 +25,11 @@ void CameraHandle::Initiate(CU::Matrix44f* orientation)
 	if ( !orientation )
 	{
 		m_Camera = Engine::GetInstance()->GetCamera();
-		m_Frustum.Initiate(0.f, 10.f, m_Camera->GetFOV(), &m_Camera->GetOrientation());
+		m_Frustum.Initiate(1.f, 50.f, 105.f, &m_Camera->GetOrientation());
 	}
 	else
 	{
-		m_Frustum.Initiate(0.f, 10.f, 90.f, orientation);
+		m_Frustum.Initiate(0.f, 50.f, 90.f, orientation);
 	}
 }
 

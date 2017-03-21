@@ -51,7 +51,8 @@ void Game::InitState(StateStack* state_stack)
 	m_Camera = m_Engine->GetCamera();
 
 	CameraHandle::Create();
-	CameraHandle::GetInstance()->Initiate(&m_Orientation);
+	//CameraHandle::GetInstance()->Initiate(&m_Orientation);
+	CameraHandle::GetInstance()->Initiate(nullptr);
 	m_PauseState.InitState(m_StateStack);
 	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 }

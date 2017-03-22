@@ -89,19 +89,24 @@ public:
 	CModelImporter();
 	~CModelImporter();
 
-	CModel* LoadModel(const std::string& aFilePath, const std::string& aEffectPath);
+	CModel* LoadModel(std::string aFilePath, CModel* model, std::string aEffectPath);
 
 private:
+	Engine* m_Engine = nullptr;
 	Ticket_Mutex m_LoaderMutex;
-	Assimp::Importer importer;
-	Engine* myEngine;
-	std::string myCurrentLoadingFile;
-	CommonUtilities::TimeManager* myTimeManager;
+
+
+	std::string m_CurrentFile;
+	CommonUtilities::TimeManager* m_TimeManager;
+	
+	//Should be removed from loader
 	CU::Vector3f m_WHD;
 	CU::Vector3f m_MinPoint;
 	CU::Vector3f m_MaxPoint;
-	CModel* CreateModel(FBXModelData* someData, Effect* anEffect);
-	CModel* LoadModel(const std::string& aFilePath, Effect* anEffect);
+	//Assimp::Importer m_Importer; //If we move this as well then we might be able to load several models at the same time?
+
+	CModel* CreateModel(FBXModelData* someData, CModel* model, Effect* anEffect);
+	CModel* LoadModel(std::string aFilePath, CModel* model, Effect* anEffect);
 	void FillData(FBXModelData* someData, CModel* out, Effect* anEffect);
 	void ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData);
 	void ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelData* fbx);

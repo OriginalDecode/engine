@@ -1,7 +1,7 @@
 #pragma once
 #include <map>
 #include <unordered_map>
-
+#include "snowblind_shared.h"
 class CModelImporter;
 class FileWatcher;
 class ShaderFactory;
@@ -10,11 +10,11 @@ class Effect;
 class Texture;
 class Sprite;
 struct CompiledShader;
-
-class CAssetsContainer
+class Engine;
+class AssetsContainer
 {
 public:
-	~CAssetsContainer();
+	~AssetsContainer();
 
 	void Initiate();
 
@@ -25,11 +25,12 @@ public:
 
 	Effect* GetEffect(const std::string& aFilePath);
 	CModel* GetModel(const std::string& aFilePath);
-	const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
+	std::string LoadModel(std::string aFilePath, std::string effect);
 
 private:
+	Engine* m_Engine = nullptr;
 	FileWatcher* m_TextureWatcher = nullptr;
-
+	Ticket_Mutex m_Mutex;
 	std::unordered_map<std::string, Texture*> myTextures;
 	std::unordered_map<std::string, Effect*> myEffects;
 	std::unordered_map<std::string, CModel*> myModels;

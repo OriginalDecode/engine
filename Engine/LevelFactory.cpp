@@ -539,7 +539,9 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	CTerrain* terrain = Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 2, 0), CU::Vector2f(512, 512));
+	m_Engine->GetThreadpool().AddWork(Work([=] {
+		m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, -2, 0), CU::Vector2f(512, 512));
+	}));
 	//terrain->AddNormalMap("Data/Textures/t1_n.dds");
 	/*
 	Work([&](std::string texture) {

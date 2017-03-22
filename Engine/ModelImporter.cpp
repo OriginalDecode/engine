@@ -21,19 +21,19 @@
 
 
 CModelImporter::CModelImporter()
-	: myEngine(Engine::GetInstance())
-	, myTimeManager(new CommonUtilities::TimeManager())
+	: m_Engine(Engine::GetInstance())
+	, m_TimeManager(new CommonUtilities::TimeManager())
 {
-	myTimeManager->CreateTimer();
+	m_TimeManager->CreateTimer();
 }
 
 
 CModelImporter::~CModelImporter()
 {
-	SAFE_DELETE(myTimeManager);
+	SAFE_DELETE(m_TimeManager);
 }
 
-CModel* CModelImporter::CreateModel(FBXModelData* someData, Effect* anEffect)
+CModel* CModelImporter::CreateModel(FBXModelData* someData, CModel* model, Effect* anEffect)
 {
 
 	CModel* newModel = new CModel();
@@ -46,7 +46,7 @@ CModel* CModelImporter::CreateModel(FBXModelData* someData, Effect* anEffect)
 	}
 	for ( FBXModelData* child : someData->myChildren )
 	{
-		newModel->AddChild(CreateModel(child, anEffect));
+		newModel->AddChild(CreateModel(child, model, anEffect));
 	}
 
 	newModel->SetWHD(m_WHD);
@@ -57,20 +57,23 @@ CModel* CModelImporter::CreateModel(FBXModelData* someData, Effect* anEffect)
 	return newModel;
 }
 
-CModel* CModelImporter::LoadModel(const std::string& aFilePath, const std::string& aEffectPath)
+CModel* CModelImporter::LoadModel(std::string aFilePath, CModel* model, std::string aEffectPath)
 {
-	m_WHD = { 0.f,0.f,0.f };
+	//BeginTicketMutex(&m_LoaderMutex);
+	m_WHD = { 0.f, 0.f, 0.f };
 	m_MinPoint = { 0.f, 0.f, 0.f };
 	m_MaxPoint = { 0.f, 0.f, 0.f };
-	myCurrentLoadingFile = aFilePath;
-	CModel* model = LoadModel(aFilePath, myEngine->GetEffect(aEffectPath))->CreateModel(aFilePath);
+	m_CurrentFile = aFilePath;
+	model = LoadModel(aFilePath, model, m_Engine->GetEffect(aEffectPath))->CreateModel(aFilePath);
+	//EndTicketMutex(&m_LoaderMutex);
+
 	return model;
 }
 
-CModel* CModelImporter::LoadModel(const std::string& aFilePath, Effect* anEffect)
+CModel* CModelImporter::LoadModel(std::string aFilePath, CModel* model, Effect* anEffect)
 {
-	myTimeManager->Update();
-	float loadTime = myTimeManager->GetTimer(0).GetTotalTime().GetMilliseconds();
+	m_TimeManager->Update();
+	float loadTime = m_TimeManager->GetTimer(0).GetTotalTime().GetMilliseconds();
 
 	unsigned int processFlags =
 		aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
@@ -91,7 +94,7 @@ CModel* CModelImporter::LoadModel(const std::string& aFilePath, Effect* anEffect
 		//aiProcess_OptimizeGraph |
 								   //aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
 		0;
-
+	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(aFilePath, processFlags);
 
 	DL_MESSAGE_EXP(!scene, "%s", importer.GetErrorString());
@@ -102,7 +105,7 @@ CModel* CModelImporter::LoadModel(const std::string& aFilePath, Effect* anEffect
 
 	ProcessNode(rootNode, scene, data);
 
-	CModel* toReturn = CreateModel(data, anEffect);
+	CModel* toReturn = CreateModel(data, model, anEffect);
 
 
 	if ( data->myTextureData )
@@ -120,8 +123,8 @@ CModel* CModelImporter::LoadModel(const std::string& aFilePath, Effect* anEffect
 	}
 	delete data;
 
-	myTimeManager->Update();
-	loadTime = myTimeManager->GetTimer(0).GetTotalTime().GetMilliseconds() - loadTime;
+	m_TimeManager->Update();
+	loadTime = m_TimeManager->GetTimer(0).GetTotalTime().GetMilliseconds() - loadTime;
 	MODEL_LOG("%s took %fms to load. %s", aFilePath.c_str(), loadTime, ( loadTime > 7000.f ) ? "Check if it's saved as binary." : 0);
 
 	return toReturn;
@@ -235,7 +238,7 @@ void CModelImporter::FillData(FBXModelData* someData, CModel* out, Effect* /*anE
 	}
 
 
-	if ( !CL::substr(myCurrentLoadingFile, "Skysphere") )
+	if ( !CL::substr(m_CurrentFile, "Skysphere") )
 		newSurface->ValidateTextures();
 
 	//newSurface->ValidateTextures();
@@ -583,7 +586,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 		aiString str;
 		material->GetTexture(static_cast< aiTextureType >( type ), 0, &str);
 
-		std::string newPath = CL::substr(myCurrentLoadingFile, "/", true, 0);
+		std::string newPath = CL::substr(m_CurrentFile, "/", true, 0);
 
 		std::string fileName = CL::substr(str.C_Str(), "\\", false, 0);
 		if ( fileName.empty() )

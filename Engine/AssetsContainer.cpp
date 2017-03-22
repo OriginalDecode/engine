@@ -8,7 +8,7 @@
 #include "Texture.h"
 
 
-CAssetsContainer::~CAssetsContainer()
+AssetsContainer::~AssetsContainer()
 {
 	SAFE_DELETE(myShaderFactory);
 	SAFE_DELETE(myModelLoader);
@@ -27,8 +27,9 @@ CAssetsContainer::~CAssetsContainer()
 	DELETE_MAP(myEffects);
 }
 
-void CAssetsContainer::Initiate()
+void AssetsContainer::Initiate()
 {
+	m_Engine = Engine::GetInstance();
 	myShaderFactory = new ShaderFactory;
 	myModelLoader = new CModelImporter;
 	myTextures.empty();
@@ -37,7 +38,7 @@ void CAssetsContainer::Initiate()
 	mySprites.empty();
 }
 
-Texture* CAssetsContainer::GetTexture(const std::string& aFilePath)
+Texture* AssetsContainer::GetTexture(const std::string& aFilePath)
 {
 	if (CL::substr(aFilePath, ".dds") == false)
 	{
@@ -55,7 +56,7 @@ Texture* CAssetsContainer::GetTexture(const std::string& aFilePath)
 	return myTextures[aFilePath];
 }
 
-Effect* CAssetsContainer::GetEffect(const std::string& aFilePath)
+Effect* AssetsContainer::GetEffect(const std::string& aFilePath)
 {
 	if (myEffects.find(aFilePath) == myEffects.end())
 	{
@@ -64,7 +65,7 @@ Effect* CAssetsContainer::GetEffect(const std::string& aFilePath)
 	return myEffects[aFilePath];
 }
 
-CModel* CAssetsContainer::GetModel(const std::string& aFilePath)
+CModel* AssetsContainer::GetModel(const std::string& aFilePath)
 {
 	if (myModels.find(aFilePath) == myModels.end())
 	{
@@ -74,17 +75,17 @@ CModel* CAssetsContainer::GetModel(const std::string& aFilePath)
 	return myModels[aFilePath];
 }
 
-void CAssetsContainer::Update()
+void AssetsContainer::Update()
 {
 	myShaderFactory->Update();
 }
 
-void CAssetsContainer::ReloadTexture(Texture* texture)
+void AssetsContainer::ReloadTexture(Texture* texture)
 {
 	texture->OnReload();
 }
 
-bool CAssetsContainer::LoadTexture(const std::string& aFilePath)
+bool AssetsContainer::LoadTexture(const std::string& aFilePath)
 {
 	if (myTextures.find(aFilePath) == myTextures.end())
 	{
@@ -100,19 +101,36 @@ bool CAssetsContainer::LoadTexture(const std::string& aFilePath)
 	return true;
 }
 
-void CAssetsContainer::LoadEffect(const std::string& aFilePath)
+void AssetsContainer::LoadEffect(const std::string& aFilePath)
 {
 	Effect* effect = new Effect(aFilePath);
 	myShaderFactory->LoadShader(effect);
 	myEffects[aFilePath] = effect;
 }
 
-const std::string& CAssetsContainer::LoadModel(const std::string& aFilePath, const std::string& effect)
+#define THREAD_LOADING
+
+std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect)
 {
 	if (myModels.find(aFilePath) == myModels.end())
 	{
-		myModels[aFilePath] = myModelLoader->LoadModel(aFilePath, effect);
-	}
+		ENGINE_LOG("Loading model : %s", aFilePath.c_str());
+		CModel* model = new CModel;
+		myModels.emplace(aFilePath, model);
+		std::string file_path;
+		//for (auto it = myModels.begin(); it != myModels.end(); it++)
+		//{
+		//	file_path
+		//}
 
+#ifdef THREAD_LOADING
+		m_Engine->GetThreadpool().AddWork(Work( [=] () {
+			myModels[aFilePath] = myModelLoader->LoadModel(aFilePath, model, effect);
+		}));
+#else
+		myModels[aFilePath] = myModelLoader->LoadModel(aFilePath, model, effect);
+#endif
+		//myModels[aFilePath] = myModelLoader->LoadModel(aFilePath, effect);
+	}
 	return aFilePath;
 }

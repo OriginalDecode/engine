@@ -9,6 +9,11 @@ Work::Work()
 {
 }
 
+Work::Work(std::function<void(std::string)> aFunction)
+{
+
+}
+
 Work::~Work()
 {
 }

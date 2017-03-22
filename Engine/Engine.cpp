@@ -137,7 +137,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	DL_ASSERT_EXP(myAPI->Initiate(create_info), "Engine : Failed to initiate graphicsAPI");
 
-	myAssetsContainer = new CAssetsContainer;
+	myAssetsContainer = new AssetsContainer;
 	myAssetsContainer->Initiate();
 
 	m_TerrainManager = new TerrainManager;
@@ -465,10 +465,11 @@ CModel* Engine::GetModel(const std::string& aFilePath)
 	return myAssetsContainer->GetModel(aFilePath);
 }
 
-const std::string& Engine::LoadModel(const std::string& aFilePath, const std::string& effect)
+std::string Engine::LoadModel(std::string aFilePath, std::string effect)
 {
 	//m_Threadpool.AddWork(Work([&]() {
-	return myAssetsContainer->LoadModel(aFilePath, effect);
+	myAssetsContainer->LoadModel(aFilePath, effect);
+	return aFilePath;
 	/*	}));
 		return aFilePath;*/
 }

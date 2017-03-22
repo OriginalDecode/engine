@@ -5,7 +5,7 @@ class GizmoBase
 {
 public:
 	GizmoBase() = default;
-	void CreateGizmoHandle(GizmoHandle& gizmo_handle, const std::string& model_key, const std::string& texture_path, GizmoHandle::eDirection direction);
+	void CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction);
 	void Render();
 	void RenderBoxes();
 

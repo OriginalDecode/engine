@@ -26,7 +26,7 @@ struct SLocalTime
 	u16 second;
 };
 
-class CAssetsContainer;
+class AssetsContainer;
 class TerrainManager;
 
 typedef struct ID3D10Blob IBlob;
@@ -105,7 +105,7 @@ public:
 	Effect* GetEffect(const std::string& aFilePath);
 	CModel* GetModel(const std::string& aFilePath);
 
-	const std::string& LoadModel(const std::string& aFilePath, const std::string& effect);
+	std::string LoadModel(std::string aFilePath, std::string effect);
 
 	void ResetRenderTargetAndDepth();
 
@@ -227,7 +227,7 @@ private:
 
 
 	CConsole* myConsole = nullptr;
-	CAssetsContainer* myAssetsContainer = nullptr;
+	AssetsContainer* myAssetsContainer = nullptr;
 	TerrainManager* m_TerrainManager = nullptr;
 	LevelFactory* m_LevelFactory = nullptr;
 

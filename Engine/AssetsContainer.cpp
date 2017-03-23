@@ -46,14 +46,16 @@ Texture* AssetsContainer::GetTexture(const std::string& aFilePath)
 		DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
 	}
 
-	AddLoadRequest(aFilePath, eRequestType::TEXTURE);
 
-	//if (myTextures.find(aFilePath) == myTextures.end())
-	//{
-	//	if (!LoadTexture(aFilePath))
-	//		return nullptr;
-	//	DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
-	//}
+	if (myTextures.find(aFilePath) == myTextures.end())
+	{
+		if ( !LoadTexture(aFilePath) )
+		{
+			DL_ASSERT("Failed to load %s, an unexpected error occured. Concurrency issue.", aFilePath.c_str());
+			return nullptr;
+		}
+		DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
+	}
 
 	return myTextures[aFilePath];
 }
@@ -91,15 +93,16 @@ bool AssetsContainer::LoadTexture(const std::string& aFilePath)
 {
 	if (myTextures.find(aFilePath) == myTextures.end())
 	{
-		Texture* texture = new Texture;
+		myTextures.emplace(aFilePath, new Texture);
+		Texture* texture = myTextures.find(aFilePath)->second;
 		if (texture->Load(aFilePath.c_str()) == false)
 		{
 			DL_ASSERT_EXP(texture->CleanUp(), "Failed to cleanup texture!");
 			SAFE_DELETE(texture);
 			return false;
 		}
-		myTextures[aFilePath] = texture;
 	}
+
 	return true;
 }
 

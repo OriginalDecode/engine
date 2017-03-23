@@ -38,9 +38,11 @@ private:
 	IBlob* CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level);
 	void LoadShader(const std::string& file_path, Effect* effect);
 	CompiledShader* CreateShader(const std::string& file_path, const std::string& feature_level = "_5_0");
-	void OnReload(const std::string& file_path);
 	std::map<u64, CompiledShader*> m_Shaders;
+#ifndef FINAL 
 	CU::StaticArray<FileWatcher*, static_cast<u32>(eShaderType::_COUNT)> myFileWatchers;
+	void OnReload(const std::string& file_path);
+#endif
 	ShaderWarningHandler myShaderWarningHandler;
 
 };

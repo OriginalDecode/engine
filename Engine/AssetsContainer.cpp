@@ -10,8 +10,8 @@
 
 AssetsContainer::~AssetsContainer()
 {
-	SAFE_DELETE(myShaderFactory);
-	SAFE_DELETE(myModelLoader);
+	SAFE_DELETE(m_ShaderFactory);
+	SAFE_DELETE(m_ModelLoader);
 	for (auto it = myModels.begin(); it != myModels.end(); it++)
 	{
 		DL_ASSERT_EXP(it->second->CleanUp(), "Failed to cleanup a model.");
@@ -30,8 +30,8 @@ AssetsContainer::~AssetsContainer()
 void AssetsContainer::Initiate()
 {
 	m_Engine = Engine::GetInstance();
-	myShaderFactory = new ShaderFactory;
-	myModelLoader = new CModelImporter;
+	m_ShaderFactory = new ShaderFactory;
+	m_ModelLoader = new CModelImporter;
 	myTextures.empty();
 	myEffects.empty();
 	myModels.empty();
@@ -46,12 +46,14 @@ Texture* AssetsContainer::GetTexture(const std::string& aFilePath)
 		DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
 	}
 
-	if (myTextures.find(aFilePath) == myTextures.end())
-	{
-		if (!LoadTexture(aFilePath))
-			return nullptr;
-		DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
-	}
+	AddLoadRequest(aFilePath, eRequestType::TEXTURE);
+
+	//if (myTextures.find(aFilePath) == myTextures.end())
+	//{
+	//	if (!LoadTexture(aFilePath))
+	//		return nullptr;
+	//	DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
+	//}
 
 	return myTextures[aFilePath];
 }
@@ -77,7 +79,7 @@ CModel* AssetsContainer::GetModel(const std::string& aFilePath)
 
 void AssetsContainer::Update()
 {
-	myShaderFactory->Update();
+	m_ShaderFactory->Update();
 }
 
 void AssetsContainer::ReloadTexture(Texture* texture)
@@ -104,7 +106,7 @@ bool AssetsContainer::LoadTexture(const std::string& aFilePath)
 void AssetsContainer::LoadEffect(const std::string& aFilePath)
 {
 	Effect* effect = new Effect(aFilePath);
-	myShaderFactory->LoadShader(effect);
+	m_ShaderFactory->LoadShader(effect);
 	myEffects[aFilePath] = effect;
 }
 
@@ -118,19 +120,37 @@ std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect
 		CModel* model = new CModel;
 		myModels.emplace(aFilePath, model);
 		std::string file_path;
-		//for (auto it = myModels.begin(); it != myModels.end(); it++)
-		//{
-		//	file_path
-		//}
 
 #ifdef THREAD_LOADING
 		m_Engine->GetThreadpool().AddWork(Work( [=] () {
-			myModels[aFilePath] = myModelLoader->LoadModel(aFilePath, model, effect);
+			myModels[aFilePath] = m_ModelLoader->LoadModel(aFilePath, model, effect);
 		}));
 #else
-		myModels[aFilePath] = myModelLoader->LoadModel(aFilePath, model, effect);
+		myModels[aFilePath] = m_ModelLoader->LoadModel(aFilePath, model, effect);
 #endif
-		//myModels[aFilePath] = myModelLoader->LoadModel(aFilePath, effect);
 	}
 	return aFilePath;
+}
+
+void AssetsContainer::AddLoadRequest(std::string file, eRequestType request_type)
+{
+	BeginTicketMutex(&m_Mutex);
+
+	bool already_exist = false;
+	for (const LoadRequest& request : m_RequestList)
+	{
+		if (request.m_File == file)
+		{
+			already_exist = true;
+		}
+	}
+
+
+	if (!already_exist)
+	{
+		LoadRequest request(request_type, file);
+		m_RequestList.Add(request);
+	}
+
+	EndTicketMutex(&m_Mutex);
 }

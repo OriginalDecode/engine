@@ -30,7 +30,7 @@ public:
 	bool Load(const std::string& filepath);
 	void OnReload();
 #ifdef SNOWBLIND_DX11
-
+	Ticket_Mutex m_Mutex;
 	ITexture2D* GetDepthTexture() const { return m_DepthTexture; }
 	ITexture2D* GetTexture() const { return m_DepthTexture; }
 	IShaderResourceView* GetShaderView() { return m_ShaderResource; }

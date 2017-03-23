@@ -17,16 +17,20 @@ static constexpr char* compute_shader = "CS";
 
 ShaderFactory::ShaderFactory()
 {
+#ifndef FINAL 
 	for (int i = 0; i < 6; i++)
 	{
 		FileWatcher* watcher = new FileWatcher();
 		myFileWatchers.Insert(i, watcher);
 	}
+#endif
 }
 
 ShaderFactory::~ShaderFactory()
 {
+#ifndef FINAL 
 	myFileWatchers.DeleteAll();
+#endif
 	DELETE_MAP(m_Shaders);
 }
 
@@ -85,7 +89,8 @@ void ShaderFactory::LoadShader(const std::string& file_path, Effect* effect)
 
 	if (m_Shaders.find(hash_key) == m_Shaders.end())
 	{
-		m_Shaders[hash_key] = CreateShader(file_path);
+		m_Shaders.emplace(hash_key, CreateShader(file_path));
+		//m_Shaders[hash_key] = CreateShader(file_path);
 	}
 
 	std::string shader_type = CheckType(file_path);
@@ -93,40 +98,55 @@ void ShaderFactory::LoadShader(const std::string& file_path, Effect* effect)
 	if (shader_type == vertex_shader)
 	{
 		effect->m_VertexShader = m_Shaders[hash_key];
+#ifndef FINAL 
 		myFileWatchers[u32(eShaderType::VERTEX)]->WatchFileChangeWithDependencies(file_path
 			, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1));
+#endif
 	}
 	else if (shader_type == pixel_shader)
 	{
 		effect->m_PixelShader = m_Shaders[hash_key];
+#ifndef FINAL 
 		myFileWatchers[u32(eShaderType::PIXEL)]->WatchFileChangeWithDependencies(file_path
 			, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1));
+#endif
 	}
 	else if (shader_type == geometry_shader)
 	{
 		effect->m_GeometryShader = m_Shaders[hash_key];
+#ifndef FINAL 
 		myFileWatchers[u32(eShaderType::GEOMETRY)]->WatchFileChangeWithDependencies(file_path
 			, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1));
+#endif
 	}
 	else if (shader_type == hull_shader)
 	{
 		effect->m_HullShader = m_Shaders[hash_key];
+#ifndef FINAL 
 		myFileWatchers[u32(eShaderType::HULL)]->WatchFileChangeWithDependencies(file_path
 			, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1));
+#endif
 	}
 	else if (shader_type == domain_shader)
 	{
 		effect->m_DomainShader = m_Shaders[hash_key];
+#ifndef FINAL 
 		myFileWatchers[u32(eShaderType::DOMAINS)]->WatchFileChangeWithDependencies(file_path
 			, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1));
+#endif
 	}
 	else if (shader_type == compute_shader)
 	{
 		effect->m_ComputeShader = m_Shaders[hash_key];
+#ifndef FINAL 
 		myFileWatchers[u32(eShaderType::COMPUTE)]->WatchFileChangeWithDependencies(file_path
 			, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1));
+#endif
 	}
 
+
+	DL_ASSERT_EXP(effect, "Effect pointer was null");
+	DL_ASSERT_EXP(m_Shaders[hash_key]->effectPointers.Capacity() > 0, "capacity is bad?");
 	m_Shaders[hash_key]->effectPointers.Add(effect);
 }
 
@@ -148,6 +168,7 @@ CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const 
 	return new_shader;
 }
 
+#ifndef FINAL 
 void ShaderFactory::OnReload(const std::string& file_path)
 {
 	Sleep(SLEEP_TIME);
@@ -207,7 +228,7 @@ void ShaderFactory::OnReload(const std::string& file_path)
 		m_Shaders[hash_key]->effectPointers.Add(effect);
 	}
 }
-
+#endif
 IBlob* ShaderFactory::CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level)
 {
 	unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;

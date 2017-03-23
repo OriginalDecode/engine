@@ -2,6 +2,7 @@
 #include <map>
 #include <unordered_map>
 #include "snowblind_shared.h"
+#include <DataStructures/GrowingArray.h>
 class CModelImporter;
 class FileWatcher;
 class ShaderFactory;
@@ -14,6 +15,17 @@ class Engine;
 class AssetsContainer
 {
 public:
+
+	enum eRequestType
+	{
+		MODEL,
+		TEXTURE,
+		SHADER,
+		SPRITE,
+	};
+
+
+	AssetsContainer() = default;
 	~AssetsContainer();
 
 	void Initiate();
@@ -27,6 +39,8 @@ public:
 	CModel* GetModel(const std::string& aFilePath);
 	std::string LoadModel(std::string aFilePath, std::string effect);
 
+	void AddLoadRequest(std::string file, eRequestType request_type);
+
 private:
 	Engine* m_Engine = nullptr;
 	FileWatcher* m_TextureWatcher = nullptr;
@@ -39,6 +53,20 @@ private:
 	bool LoadTexture(const std::string& aFilePath);
 	void LoadEffect(const std::string& aFilePath);
 
-	ShaderFactory* myShaderFactory;
-	CModelImporter* myModelLoader;
+	ShaderFactory* m_ShaderFactory;
+	CModelImporter* m_ModelLoader;
+
+	struct LoadRequest
+	{
+		LoadRequest() = default;
+		LoadRequest(eRequestType request_type, std::string file) 
+			: m_Type(request_type)
+			, m_File(file)
+		{}
+		eRequestType m_Type;
+		std::string m_File;
+	};
+
+	CU::GrowingArray<LoadRequest> m_RequestList;
+
 };

@@ -322,8 +322,8 @@ void CSpriteModel::InitConstantBuffer()
 
 void CSpriteModel::ConvertToNormalSpace()
 {
-	myPosition.x /= myWindowSize.myWidth;
-	myPosition.y /= myWindowSize.myHeight;
+	myPosition.x /= myWindowSize.m_Width;
+	myPosition.y /= myWindowSize.m_Height;
 }
 
 void CSpriteModel::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)

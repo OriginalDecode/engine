@@ -34,6 +34,15 @@ bool Window::Initiate(WindowCreateInfo window_create_info)
 		, GetModuleHandle(NULL), NULL);
 #endif
 
+	m_WindowSize.m_Height = window_create_info.window_height;
+	m_WindowSize.m_Width = window_create_info.window_width;
+
+	RECT inner_size;
+	GetClientRect(m_HWND, &inner_size);
+	m_InnerSize.m_Height = (float)inner_size.bottom;
+	m_InnerSize.m_Width = ( float ) inner_size.right;
+
+
 	return true;
 }
 
@@ -42,6 +51,16 @@ void Window::ShowWindow()
 	::ShowWindow(m_HWND, true);
 }
 
+
+const WindowSize& Window::GetWindowSize() const
+{
+	return m_WindowSize;
+}
+
+const WindowSize& Window::GetInnerSize() const
+{
+	return m_InnerSize;
+}
 
 void Window::OnInactive()
 {

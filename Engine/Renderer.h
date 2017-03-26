@@ -38,6 +38,11 @@ public:
 	void Render();
 	void AddTerrain(CTerrain* someTerrain);
 	void ToggleWireframe();
+
+#ifdef _DEBUG
+	PostProcessManager& GetPostprocessManager();
+#endif
+
 private:
 	void RenderNonDeferred3DCommands();
 	void Render3DCommands();

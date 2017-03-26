@@ -39,7 +39,7 @@ private:
 	void ConvertToNormalSpace();
 
 	std::string myTexturePath;
-	SWindowSize myWindowSize;
+	WindowSize myWindowSize;
 	Camera* myCamera = nullptr;
 	Effect* myEffect = nullptr;
 

@@ -105,8 +105,8 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 {
 	Randomizer::Create();
 	PostMaster::Create();
-	myWindowSize.myHeight = window_height;
-	myWindowSize.myWidth = window_width;
+	//myWindowSize.m_Height = window_height;
+	//myWindowSize.m_Width = window_width;
 
 	WindowCreateInfo window_create_info;
 	window_create_info.window_height = window_height;
@@ -158,8 +158,8 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	//myCamera = new Camera(myWindowSize.myWidth, myWindowSize.myHeight);
 
 	m_Camera = new Camera;
-	m_Camera->CreatePerspectiveProjection(myWindowSize.myWidth, myWindowSize.myHeight, 0.01f, 10000.f, 90.f);
-	m_Camera->CreateOrthogonalProjection(myWindowSize.myWidth, myWindowSize.myHeight, 0.01f, 100.f);
+	m_Camera->CreatePerspectiveProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 10000.f, 90.f);
+	m_Camera->CreateOrthogonalProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 100.f);
 
 	//my2DCamera = new Camera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
 
@@ -420,9 +420,14 @@ void Engine::ToggleWireframe()
 	myInstance->myRenderer->ToggleWireframe();
 }
 
-SWindowSize Engine::GetWindowSize() const
+const WindowSize& Engine::GetWindowSize() const
 {
-	return myWindowSize;
+	return m_Window.GetInnerSize();
+}
+
+const WindowSize& Engine::GetInnerSize() const
+{
+	return m_Window.GetInnerSize();
 }
 
 CFont* Engine::LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth)
@@ -621,9 +626,8 @@ void Engine::OutputDebugString(std::string debug_str)
 
 void Engine::UpdateDebugUI()
 {
-
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(300, GetWindowSize().myHeight));
+	ImGui::SetNextWindowSize(ImVec2(300, GetWindowSize().m_Height));
 
 	ImGuiWindowFlags flags = 0;
 
@@ -655,8 +659,21 @@ void Engine::UpdateDebugUI()
 			if (SaveLevel())
 				save = !save;
 
+		
+		static bool tonemapping_hdr = true;
+		ImGui::Checkbox("Tonemapping/HDR", &tonemapping_hdr);
+		if ( tonemapping_hdr )
+			myRenderer->GetPostprocessManager().SetPassesToProcess(PostProcessManager::HDR);
+		else
+			myRenderer->GetPostprocessManager().RemovePassToProcess(PostProcessManager::HDR);
+		ImGui::SameLine();
+		ImGui::Checkbox("Debug Textures", &myRenderer->GetPostprocessManager().GetHDRPass().toggle_debug);
 
-		ImGui::Checkbox("Use mouse movement for Camera", &m_CameraUseMouse);
+		float fov_value = m_Camera->GetFOV();
+		ImGui::SliderFloat("FOV", &fov_value, 60.f, 120.f,"%.f");
+		m_Camera->SetFOV(fov_value);
+
+
 
 		ImGui::End();
 	}
@@ -768,15 +785,7 @@ void Engine::UpdateDebugUI()
 
 			if (new_entity)
 			{
-
-
-
-
 			}
-
-
-
-
 		}
 		ImGui::End();
 		ImGui::PopStyleVar();

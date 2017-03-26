@@ -46,14 +46,13 @@ Texture* AssetsContainer::GetTexture(const std::string& aFilePath)
 		DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
 	}
 
-	AddLoadRequest(aFilePath, eRequestType::TEXTURE);
 
-	//if (myTextures.find(aFilePath) == myTextures.end())
-	//{
-	//	if (!LoadTexture(aFilePath))
-	//		return nullptr;
-	//	DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
-	//}
+	if (myTextures.find(aFilePath) == myTextures.end())
+	{
+		if (!LoadTexture(aFilePath))
+			return nullptr;
+		DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
+	}
 
 	return myTextures[aFilePath];
 }
@@ -110,7 +109,7 @@ void AssetsContainer::LoadEffect(const std::string& aFilePath)
 	myEffects[aFilePath] = effect;
 }
 
-#define THREAD_LOADING
+//#define THREAD_LOADING
 
 std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect)
 {

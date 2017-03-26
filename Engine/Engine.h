@@ -34,13 +34,7 @@ class TreeDweller;
 class LevelFactory;
 
 enum eDeferredType;
-struct SWindowSize
-{
-	SWindowSize() {};
-	SWindowSize(float aWidth, float aHeight) : myWidth(aWidth), myHeight(aHeight) {};
-	float myWidth;
-	float myHeight;
-};
+
 
 class DirectX11;
 class Vulkan;
@@ -92,7 +86,9 @@ public:
 
 	static void ToggleWireframe();
 
-	SWindowSize GetWindowSize() const;
+	const WindowSize& GetWindowSize() const;
+	const WindowSize& GetInnerSize() const;
+
 	CFont* LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth);
 	float GetDeltaTime();
 	float GetFPS();
@@ -206,7 +202,6 @@ private:
 
 	Threadpool m_Threadpool;
 
-	SWindowSize myWindowSize;
 	SLocalTime myLocalTime;
 	HWND myHWND;
 	Window m_Window;

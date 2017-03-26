@@ -13,16 +13,16 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 	myEngine = Engine::GetInstance();
 	BLACK_CLEAR(myClearColor);
 
-	SWindowSize windowSize = myEngine->GetWindowSize();
+	WindowSize windowSize = myEngine->GetWindowSize();
 
 	myFinishedSceneTexture = new Texture;
-	myFinishedSceneTexture->Initiate(windowSize.myWidth, windowSize.myHeight
+	myFinishedSceneTexture->Initiate(windowSize.m_Width, windowSize.m_Height
 		, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 		, DXGI_FORMAT_R16G16B16A16_FLOAT
 		, "Texture : FinishedScene");
 
 	myDepthStencil = new Texture;
-	myDepthStencil->Initiate(windowSize.myWidth, windowSize.myHeight
+	myDepthStencil->Initiate(windowSize.m_Width, windowSize.m_Height
 		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
 		, DXGI_FORMAT_R16G16B16A16_FLOAT
 		, DXGI_FORMAT_R32_TYPELESS

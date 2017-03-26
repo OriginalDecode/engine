@@ -57,7 +57,7 @@ CU::Vector3f CMousePicker::ToWorldCoords(const CU::Vector4f& eyeCoords)
 
 CU::Vector2f CMousePicker::NormalizedSpace(float x, float y)
 {
-	x = x * 2.f / myEngine->GetWindowSize().myWidth - 1.f;
-	y = 1.f - (y * 2.f) / myEngine->GetWindowSize().myHeight;
+	x = x * 2.f / myEngine->GetWindowSize().m_Width - 1.f;
+	y = 1.f - (y * 2.f) / myEngine->GetWindowSize().m_Height;
 	return CU::Vector2f(x, y);
 }

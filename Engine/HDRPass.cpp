@@ -16,12 +16,12 @@ void HDRPass::Initiate()
 
 	m_HDRTexture = new Texture;
 	m_HDRTexture->Initiate(
-		m_WindowSize.myWidth,
-		m_WindowSize.myHeight,
+		m_WindowSize.m_Width,
+		m_WindowSize.m_Height,
 		D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, 
 		DXGI_FORMAT_R8G8B8A8_UNORM, 
 		"HDRPass | HDRTexture");
-	s32 downsample_amount = s32(log(__min(m_WindowSize.myWidth, m_WindowSize.myHeight)) / log(2.f)) + 1;
+	s32 downsample_amount = s32(log(__min(m_WindowSize.m_Width, m_WindowSize.m_Height)) / log(2.f)) + 1;
 	s32 sample_size = 1;
 	for (s32 i = 0; i < downsample_amount; i++)
 	{
@@ -65,7 +65,7 @@ void HDRPass::Process(Texture* scene_texture)
 	m_API->SetViewport(&viewport);
 
 	y_height = 64.f;
-	x_width = 64.f;
+	x_width = 364.f;
 	const s32 downsamples = m_Downsamples.Size() - 1;
 	Downsample(m_Downsamples[downsamples]->GetRenderTargetView(), scene_texture->GetShaderView());
 
@@ -147,10 +147,10 @@ void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source
 
 void HDRPass::FillViewportData(Viewport& viewport)
 {
-	s32 pow2 = CL::nearest_Pow_Under(m_WindowSize.myHeight);
+	s32 pow2 = CL::nearest_Pow_Under(m_WindowSize.m_Height);
 
-	s32 width_diff = m_WindowSize.myWidth - pow2;
-	s32 height_diff = m_WindowSize.myHeight - pow2;
+	s32 width_diff = m_WindowSize.m_Width - pow2;
+	s32 height_diff = m_WindowSize.m_Height - pow2;
 
 
 	viewport.TopLeftX = 0;

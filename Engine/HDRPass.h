@@ -29,7 +29,7 @@ private:
 	CU::GrowingArray<Texture*> m_Downsamples;
 
 
-	SWindowSize	m_WindowSize;
+	WindowSize	m_WindowSize;
 	Effect*		m_HDREffect = nullptr;
 	Texture*		m_HDRTexture = nullptr;
 	Effect*		m_DownsampleEffect = nullptr;

@@ -8,6 +8,14 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
+struct WindowSize
+{
+	WindowSize() {};
+	WindowSize(float aWidth, float aHeight) : m_Width(aWidth), m_Height(aHeight) {};
+	float m_Width;
+	float m_Height;
+};
+
 struct WindowCreateInfo
 {
 	u16 window_width = 0;
@@ -26,7 +34,8 @@ public:
 	HINSTANCE GetWindowInstance() { return m_CreateInfo.instance; }
 	bool IsWindowActive() { return m_WindowIsActive; }
 
-
+	const WindowSize& GetWindowSize() const;
+	const WindowSize& GetInnerSize() const;
 public:
 	//________________
 
@@ -43,4 +52,8 @@ private:
 	WindowCreateInfo m_CreateInfo;
 	HWND m_HWND;
 	bool m_WindowIsActive = false;
+
+	WindowSize m_WindowSize;
+	WindowSize m_InnerSize;
+
 };

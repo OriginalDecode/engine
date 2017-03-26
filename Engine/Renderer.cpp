@@ -97,10 +97,10 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	myDepthTexture = new Texture; //Where should this live?
 	DL_ASSERT_EXP(myDepthTexture, "DepthTexture in Renderer was null?");
 
-	SWindowSize window_size;
+	WindowSize window_size;
 	window_size = Engine::GetInstance()->GetWindowSize();
 
-	myDepthTexture->Initiate(window_size.myWidth, window_size.myHeight
+	myDepthTexture->Initiate(window_size.m_Width, window_size.m_Height
 		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
 		, DXGI_FORMAT_R32_TYPELESS
 		, DXGI_FORMAT_R32_FLOAT
@@ -252,16 +252,6 @@ void Renderer::Render()
 		m_Camera->SetFOV(current_fov);
 	}
 
-	if (input_handle->GetInputWrapper()->OnDown(KButton::T))
-	{
-		m_PostProcessManager.RemovePassToProcess(PostProcessManager::HDR);
-	}
-
-	if (input_handle->GetInputWrapper()->OnDown(KButton::K))
-	{
-		m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
-	}
-
 	static bool toggle_point = false;
 
 	if (input_handle->GetInputWrapper()->OnDown(KButton::L))
@@ -295,6 +285,7 @@ void Renderer::Render()
 	RenderLines();
 	Render2DCommands();
 
+
 	ImGui::Render();
 
 	m_Engine->Present();
@@ -302,16 +293,7 @@ void Renderer::Render()
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 64.f, 64.f)));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
-#ifdef _DEBUG
 
-	//std::stringstream ss;
-	//ss << "DeltaTime : " << m_Engine->GetDeltaTime() << "\nFPS:" << m_Engine->GetFPS() << "\nPress U to toggle downsamples\n\nControls :\nW - Forward \nS - Backward\nA - Left\nD - Right\nSpace - Up\nX - Down\nHold Right Mouse button and\ndrag the mouse to rotate the camera";
-	//mySynchronizer->AddRenderCommand(RenderCommand(eType::TEXT, ss.str(), CU::Vector2f(0.75, 0)));
-	if (input_handle->GetInputWrapper()->OnDown(KButton::U))
-	{
-		m_PostProcessManager.GetHDRPass().toggle_debug = !m_PostProcessManager.GetHDRPass().toggle_debug;
-	}
-#endif
 
 	mySynchronizer->WaitForLogic();
 	mySynchronizer->SwapBuffer();
@@ -648,4 +630,9 @@ void Renderer::ProcessShadows(Camera* camera)
 void Renderer::ToggleWireframe()
 {
 	m_RenderWireframe = !m_RenderWireframe;
+}
+
+PostProcessManager& Renderer::GetPostprocessManager()
+{
+	return m_PostProcessManager;
 }

@@ -8,22 +8,22 @@ GBuffer::GBuffer()
 	, myContext(myDirectX->GetContext())
 #endif
 {
-	const SWindowSize windowSize = Engine::GetInstance()->GetWindowSize();
+	const WindowSize windowSize = Engine::GetInstance()->GetWindowSize();
 
 	myAlbedo = new Texture;
-	myAlbedo->Initiate(windowSize.myWidth, windowSize.myHeight
+	myAlbedo->Initiate(windowSize.m_Width, windowSize.m_Height
 		, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 		, DXGI_FORMAT_R16G16B16A16_FLOAT
 		, "GBuffer : Albedo");
 
 	myEmissive = new Texture;
-	myEmissive->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM, "GBuffer : Emissive");
+	myEmissive->Initiate(windowSize.m_Width, windowSize.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM, "GBuffer : Emissive");
 
 	myNormal = new Texture;
-	myNormal->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "GBuffer : Normal");
+	myNormal->Initiate(windowSize.m_Width, windowSize.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "GBuffer : Normal");
 
 	myDepth = new Texture;
-	myDepth->Initiate(windowSize.myWidth, windowSize.myHeight, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R32G32B32A32_FLOAT, "GBuffer : Depth");
+	myDepth->Initiate(windowSize.m_Width, windowSize.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R32G32B32A32_FLOAT, "GBuffer : Depth");
 
 
 }

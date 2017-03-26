@@ -37,12 +37,14 @@ bool CModel::CleanUp()
 CModel* CModel::CreateModel(const std::string& filename)
 {
 	m_Filename = CL::substr(filename, "/", false, 0);
+	BeginTicketMutex(&g_ModelMutex);
 	if (myIsNULLObject == false)
 	{
 		InitVertexBuffer();
 		InitIndexBuffer();
 		InitConstantBuffer();
 	}
+	EndTicketMutex(&g_ModelMutex);
 
 	for (CModel* child : myChildren)
 	{

@@ -21,8 +21,8 @@ enum eDEBUGLOG
 	Model_Filter = 64,
 	Warning_Filter = 128,
 };
-#define _DEBUG
-#if defined _DEBUG
+
+#ifdef _DEBUG
 #define RETURN(...) DL_Debug::Debug::GetInstance()->HandleVAArgs(__VA_ARGS__)
 
 #define DL_ASSERT(string) DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__,string);
@@ -93,7 +93,7 @@ enum eDEBUGLOG
 #define ENGINE_LOG_EXP(expression, ...)		
 #define ALGORITHM_LOG_EXP(expression, ...)
 #endif
-#undef _DEBUG
+
 
 namespace DL_Debug
 {

@@ -296,8 +296,15 @@ bool Texture::Load(const std::string& filepath)
 	std::string debugname = CL::substr(filepath, "/", false, 0);
 	Engine::GetAPI()->SetDebugName(m_ShaderResource, debugname);
 	DL_MESSAGE_EXP(FAILED(hr), "[Texture](Load) : Failed to load texture %s", filepath.c_str());
-	if (FAILED(hr))
+	if ( FAILED(hr) )
+	{
+		//DL_ASSERT("Failed to load texture!");
+		int apa;
+		apa = 5;
 		return false;
+	}
+
+
 
 	return true;
 }

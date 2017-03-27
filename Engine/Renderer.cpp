@@ -109,7 +109,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	mySkysphere = new SkySphere;
 	mySkysphere->Initiate("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", m_Camera);
-	mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Data/Shaders/T_Skysphere_Layer.json");
+	//mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Data/Shaders/T_Skysphere_Layer.json");
 	if (!mySkysphere)
 		return false;
 

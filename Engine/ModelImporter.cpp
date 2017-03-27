@@ -33,30 +33,6 @@ CModelImporter::~CModelImporter()
 	SAFE_DELETE(m_TimeManager);
 }
 
-CModel* CModelImporter::CreateModel(FBXModelData* someData, CModel* model, Effect* anEffect)
-{
-
-	CModel* newModel = new CModel();
-	newModel->SetEffect(anEffect);
-
-	if ( someData->myData )
-	{
-		FillData(someData, newModel, anEffect);
-		newModel->myOrientation = someData->myOrientation;
-	}
-	for ( FBXModelData* child : someData->myChildren )
-	{
-		newModel->AddChild(CreateModel(child, model, anEffect));
-	}
-
-	newModel->SetWHD(m_WHD);
-
-	newModel->SetMinPoint(m_MinPoint);
-	newModel->SetMaxPoint(m_MaxPoint);
-
-	return newModel;
-}
-
 CModel* CModelImporter::LoadModel(std::string aFilePath, CModel* model, std::string aEffectPath)
 {
 	//BeginTicketMutex(&m_LoaderMutex);
@@ -64,8 +40,59 @@ CModel* CModelImporter::LoadModel(std::string aFilePath, CModel* model, std::str
 	m_MinPoint = { 0.f, 0.f, 0.f };
 	m_MaxPoint = { 0.f, 0.f, 0.f };
 	m_CurrentFile = aFilePath;
-	model = LoadModel(aFilePath, model, m_Engine->GetEffect(aEffectPath))->CreateModel(aFilePath);
+	/*model = */
+	LoadModel(aFilePath, model, m_Engine->GetEffect(aEffectPath));
+	model->CreateModel(aFilePath);
 	//EndTicketMutex(&m_LoaderMutex);
+
+	return model;
+}
+
+CModel* CModelImporter::CreateModel(FBXModelData* someData, CModel* model, Effect* anEffect)
+{
+	model->SetEffect(anEffect);
+
+	if ( someData->myData )
+	{
+		FillData(someData, model, anEffect);
+		model->myOrientation = someData->myOrientation;
+	}
+
+	for ( FBXModelData* child : someData->myChildren )
+	{
+		model->AddChild(CreateChild(child, anEffect));
+	}
+
+	model->SetWHD(m_WHD);
+
+	model->SetMinPoint(m_MinPoint);
+	model->SetMaxPoint(m_MaxPoint);
+
+	return 0;
+}
+
+
+
+CModel* CModelImporter::CreateChild(FBXModelData* data, Effect* effect)
+{
+	CModel* model = new CModel();
+	model->SetEffect(effect);
+
+	if ( data->myData )
+	{
+		FillData(data, model, effect);
+		model->myOrientation = data->myOrientation;
+	}
+
+	for ( FBXModelData* child : data->myChildren )
+	{
+		model->AddChild(CreateChild(child, effect));
+	}
+
+	model->SetWHD(m_WHD);
+
+	model->SetMinPoint(m_MinPoint);
+	model->SetMaxPoint(m_MaxPoint);
 
 	return model;
 }

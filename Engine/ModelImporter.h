@@ -106,6 +106,9 @@ private:
 	//Assimp::Importer m_Importer; //If we move this as well then we might be able to load several models at the same time?
 
 	CModel* CreateModel(FBXModelData* someData, CModel* model, Effect* anEffect);
+	CModel* CreateChild(FBXModelData* data, Effect* effect);
+
+
 	CModel* LoadModel(std::string aFilePath, CModel* model, Effect* anEffect);
 	void FillData(FBXModelData* someData, CModel* out, Effect* anEffect);
 	void ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData);

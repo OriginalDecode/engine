@@ -48,21 +48,21 @@ Texture* AssetsContainer::GetTexture(const std::string& aFilePath)
 	}
 
 	//mutex?
-	if (myTextures.find(aFilePath) == myTextures.end())
-	{
-		myTextures.emplace(aFilePath, new Texture);
-
+	/*if (myTextures.find(aFilePath) == myTextures.end())
+	{*/
+		//myTextures.emplace(aFilePath, new Texture);
+/*
 		m_Engine->GetInstance()->GetThreadpool().AddWork(Work([=]() {
 
 			LoadTexture(aFilePath);
 
-		}));
+		}));*/
 
 
 		if (!LoadTexture(aFilePath))
 			return nullptr;
-		DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
-	}
+		//DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
+	//}
 
 	return myTextures[aFilePath];
 }
@@ -98,6 +98,7 @@ void AssetsContainer::ReloadTexture(Texture* texture)
 
 bool AssetsContainer::LoadTexture(const std::string& aFilePath)
 {
+	BeginTicketMutex(&m_Mutex);
 	if (myTextures.find(aFilePath) == myTextures.end())
 	{
 		Texture* texture = new Texture;
@@ -105,10 +106,12 @@ bool AssetsContainer::LoadTexture(const std::string& aFilePath)
 		{
 			DL_ASSERT_EXP(texture->CleanUp(), "Failed to cleanup texture!");
 			SAFE_DELETE(texture);
+			EndTicketMutex(&m_Mutex);
 			return false;
 		}
 		myTextures[aFilePath] = texture;
 	}
+	EndTicketMutex(&m_Mutex);
 	return true;
 }
 
@@ -119,7 +122,7 @@ void AssetsContainer::LoadEffect(const std::string& aFilePath)
 	myEffects[aFilePath] = effect;
 }
 
-//#define THREAD_LOADING
+#define THREAD_LOADING
 
 std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect)
 {

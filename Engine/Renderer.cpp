@@ -631,8 +631,9 @@ void Renderer::ToggleWireframe()
 {
 	m_RenderWireframe = !m_RenderWireframe;
 }
-
+#ifdef _DEBUG
 PostProcessManager& Renderer::GetPostprocessManager()
 {
 	return m_PostProcessManager;
 }
+#endif

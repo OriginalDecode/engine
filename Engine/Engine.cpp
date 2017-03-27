@@ -422,7 +422,7 @@ void Engine::ToggleWireframe()
 
 const WindowSize& Engine::GetWindowSize() const
 {
-	return m_Window.GetInnerSize();
+	return m_Window.GetWindowSize();
 }
 
 const WindowSize& Engine::GetInnerSize() const
@@ -626,6 +626,7 @@ void Engine::OutputDebugString(std::string debug_str)
 
 void Engine::UpdateDebugUI()
 {
+#ifdef _DEBUG
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImVec2(300, GetWindowSize().m_Height));
 
@@ -792,4 +793,5 @@ void Engine::UpdateDebugUI()
 
 	}
 	EditEntity();
+#endif
 }

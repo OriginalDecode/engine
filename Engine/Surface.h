@@ -70,6 +70,8 @@ private:
 
 	CU::GrowingArray<STexture> myTextures;
 
+	CU::GrowingArray<Texture*> m_Textures;
+
 	CU::GrowingArray<IShaderResourceView*> myShaderViews;
 	CU::GrowingArray<IShaderResourceView*> m_Null;
 

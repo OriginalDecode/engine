@@ -44,11 +44,21 @@ Texture* AssetsContainer::GetTexture(const std::string& aFilePath)
 	{
 		DL_MESSAGE("Failed to load %s, due to incorrect fileformat. Has to be .dds", aFilePath.c_str());
 		DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
+		return nullptr;
 	}
 
-
+	//mutex?
 	if (myTextures.find(aFilePath) == myTextures.end())
 	{
+		myTextures.emplace(aFilePath, new Texture);
+
+		m_Engine->GetInstance()->GetThreadpool().AddWork(Work([=]() {
+
+			LoadTexture(aFilePath);
+
+		}));
+
+
 		if (!LoadTexture(aFilePath))
 			return nullptr;
 		DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());

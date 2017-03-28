@@ -15,7 +15,7 @@
 #include <imgui_impl_dx11.h>
 
 #ifdef _PROFILE
-#include "../Brofiler.h"
+#include <easy/profiler.h>
 #endif
 bool Application::Initiate()
 {
@@ -41,7 +41,7 @@ void Application::Update()
 	{
 
 #ifdef _PROFILE
-		BROFILER_FRAME("Application::Update");
+		//BROFILER_FRAME("Application::Update");
 #endif
 		float deltaTime = myEngine->GetDeltaTime();
 

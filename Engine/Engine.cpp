@@ -34,6 +34,11 @@
 #include "imgui_impl_dx11.h"
 #include "LevelFactory.h"
 
+#ifdef _PROFILE
+#include <easy/profiler.h>
+#include <easy/reader.h>
+#endif
+
 static constexpr char* vertex_shader = "VS";
 static constexpr char* pixel_shader = "PS";
 static constexpr char* geometry_shader = "GS";
@@ -67,12 +72,16 @@ IGraphicsAPI* Engine::myAPI = nullptr;
 
 void Engine::Create()
 {
+	EASY_PROFILER_ENABLE;
+	profiler::startListen();
 	DL_ASSERT_EXP(myInstance == nullptr, "Instance already created!");
 	myInstance = new Engine;
 }
 
 void Engine::Destroy()
 {
+	profiler::stopListen();
+	EASY_PROFILER_DISABLE;
 	DL_ASSERT_EXP(myInstance != nullptr, "Can't destroy the instance before it's created. Did you call Destroy twice?");
 	SAFE_DELETE(myInstance);
 }

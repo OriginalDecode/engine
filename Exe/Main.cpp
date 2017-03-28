@@ -4,7 +4,11 @@
 #include "../Application/Application.h"
 #include "../DL_Debug/DL_Debug.h"
 #include "../Engine/imgui_impl_dx11.h"
-#include "../Brofiler.h"
+#ifdef _PROFILE
+#include <easy/profiler.h>
+#else
+
+#endif
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 enum ERawInputType

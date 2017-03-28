@@ -188,6 +188,11 @@ void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const
 {
 	if (myIsNULLObject == false)
 	{
+		if (!myConstantBuffer)
+		{
+			InitConstantBuffer();
+		}
+
 		m_ConstantStruct.m_World = myOrientation;
 		m_ConstantStruct.m_InvertedView = CU::Math::Inverse(aCameraOrientation);
 		m_ConstantStruct.m_Projection = aCameraProjection;

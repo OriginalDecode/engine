@@ -47,6 +47,13 @@ void DebugSystem::Update(float dt)
 			continue;
 
 //#ifdef _EDITOR
+		if (myEntityManager.HasComponent(e, CreateFilter<Requires<RenderComponent>>()))
+		{
+			RenderComponent& r = GetComponent<RenderComponent>(e);
+			debug.m_MinPoint = r.m_MinPos;
+			debug.m_MaxPoint = r.m_MaxPos;
+
+		}
 		RenderBox(debug, translation.myOrientation);
 //#endif
 	}
@@ -375,17 +382,17 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p8.color = p1.color;
 
 
-	p1.position = orientation.GetTranslation();
-	p1.position.y += 2.f;
-	p1.color = { 255.f, 0.f, 255.f, 255.f };
+	//p1.position = orientation.GetTranslation();
+	//p1.position.y += 2.f;
+	//p1.color = { 255.f, 0.f, 255.f, 255.f };
 
-	p2.position = orientation.GetTranslation();
-	p2.position.y -= 2.f;
-	p2.color = { 0.f, 255.f, 255.f, 255.f };
+	//p2.position = orientation.GetTranslation();
+	//p2.position.y -= 2.f;
+	//p2.color = { 0.f, 255.f, 255.f, 255.f };
 
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
+	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
 
-	return;
+	//return;
 
 	p1.position = orientation.GetTranslation(); // translation.myOrientation.GetTranslation();
 	p2.position = p1.position;

@@ -38,7 +38,7 @@ void AssetsContainer::Initiate()
 	mySprites.empty();
 }
 
-Texture* AssetsContainer::GetTexture(const std::string& aFilePath)
+Texture* AssetsContainer::GetTexture(std::string aFilePath)
 {
 	if (CL::substr(aFilePath, ".dds") == false)
 	{
@@ -96,7 +96,7 @@ void AssetsContainer::ReloadTexture(Texture* texture)
 	texture->OnReload();
 }
 
-bool AssetsContainer::LoadTexture(const std::string& aFilePath)
+bool AssetsContainer::LoadTexture(std::string aFilePath)
 {
 	BeginTicketMutex(&m_Mutex);
 	if (myTextures.find(aFilePath) == myTextures.end())
@@ -128,7 +128,7 @@ std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect
 {
 	if (myModels.find(aFilePath) == myModels.end())
 	{
-		ENGINE_LOG("Loading model : %s", aFilePath.c_str());
+		DL_MESSAGE("Loading model : %s", aFilePath.c_str());
 		CModel* model = new CModel;
 		myModels.emplace(aFilePath, model);
 		std::string file_path;

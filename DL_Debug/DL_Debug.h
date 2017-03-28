@@ -61,7 +61,7 @@ enum eDEBUGLOG
 //expressions
 #define ENGINE_LOG_EXP(expression, ...)		if(expression) { DL_WRITELOG("Engine",__VA_ARGS__)}
 #else
-#define RETURN(...) 
+#define RETURN(...) DL_Debug::Debug::GetInstance()->HandleVAArgs(__VA_ARGS__)
 
 #define DL_ASSERT(string)
 
@@ -72,7 +72,7 @@ enum eDEBUGLOG
 
 #define DL_WRITELOG(log, ...) 
 
-#define DL_MESSAGE(...) 
+#define DL_MESSAGE(...) DL_Debug::Debug::GetInstance()->WriteLog(0, RETURN(__VA_ARGS__));
 #define DL_MESSAGE_EXP(expression, ...) expression
 
 #define DL_WARNINGBOX(msg) 

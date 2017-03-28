@@ -148,22 +148,18 @@ namespace DL_Debug
 		}
 		std::string str(aString.begin(), aString.end());
 
-		BeginTicketMutex(&dlDebug_Mutex);
 
 		myOutputFile << "[" << filter_tag << "]" << " : " << str << "\n";
 		myOutputFile.flush();
 
-		EndTicketMutex(&dlDebug_Mutex);
 
 	}
 
 	void Debug::WriteLogNoTimeStamp(const std::string& string)
 	{
-		BeginTicketMutex(&dlDebug_Mutex);
 		std::string str(string.begin(), string.end());
 		myOutputFile << str << "\n";
 		myOutputFile.flush();
-		EndTicketMutex(&dlDebug_Mutex);
 	}
 
 	void Debug::DisableFilters(int flags)

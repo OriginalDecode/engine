@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <standard_datatype.hpp>
 #include "EngineDefines.h"
+#include <DL_Debug/DL_Debug.h>
 typedef s32 Entity;
 
 #ifdef SNOWBLIND_DX11
@@ -61,10 +62,12 @@ inline void BeginTicketMutex(Ticket_Mutex* mutex)
 	{
 	
 	}
+	DL_MESSAGE("Locked : Ticket %d", ticket);
 }
 
 inline void EndTicketMutex(Ticket_Mutex* mutex)
 {
+	DL_MESSAGE("Unlock : Ticket %d", mutex->serving);
 	mutex->serving++;
 }
 

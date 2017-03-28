@@ -122,7 +122,10 @@ void CSurface::AddTexture(const std::string& file_path, TextureType type)
 	if (Engine::GetInstance()->GetTexture(sub))
 		new_texture.texture = Engine::GetInstance()->GetTexture(sub)->GetShaderView();
 	else
+	{
+		DL_MESSAGE("Failed to load %s", sub.c_str());
 		new_texture.texture = Engine::GetInstance()->GetTexture("Data/Textures/default_textures/no-texture-bw.dds")->GetShaderView();
+	}
 
 
 	myTextures.Add(new_texture);

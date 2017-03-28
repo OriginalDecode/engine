@@ -27,7 +27,7 @@ public:
 
 
 	bool CleanUp();
-	bool Load(const std::string& filepath);
+	bool Load(std::string filepath);
 	void OnReload();
 #ifdef SNOWBLIND_DX11
 	Ticket_Mutex m_Mutex;

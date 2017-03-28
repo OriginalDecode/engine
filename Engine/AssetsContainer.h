@@ -33,7 +33,7 @@ public:
 	void Update();
 
 	void ReloadTexture(Texture* texture);
-	Texture* GetTexture(const std::string& aFilePath);
+	Texture* GetTexture(std::string aFilePath);
 
 	Effect* GetEffect(const std::string& aFilePath);
 	CModel* GetModel(const std::string& aFilePath);
@@ -50,7 +50,7 @@ private:
 	std::unordered_map<std::string, CModel*> myModels;
 	std::unordered_map<std::string, Sprite*> mySprites;
 
-	bool LoadTexture(const std::string& aFilePath);
+	bool LoadTexture(std::string aFilePath);
 	void LoadEffect(const std::string& aFilePath);
 
 	ShaderFactory* m_ShaderFactory;

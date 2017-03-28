@@ -282,8 +282,9 @@ UsageType Texture::GetUsage(int flags) const
 	return D3D11_USAGE_DEFAULT;
 }
 
-bool Texture::Load(const std::string& filepath)
+bool Texture::Load(std::string filepath)
 {
+	DL_MESSAGE("Loading texture : %s", filepath.c_str());
 	myFileName = filepath;
 #ifdef SNOWBLIND_DX11
 	ID3D11Device* device = Engine::GetAPI()->GetDevice();

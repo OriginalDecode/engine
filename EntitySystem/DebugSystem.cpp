@@ -47,13 +47,13 @@ void DebugSystem::Update(float dt)
 			continue;
 
 //#ifdef _EDITOR
-		if (myEntityManager.HasComponent(e, CreateFilter<Requires<RenderComponent>>()))
-		{
-			RenderComponent& r = GetComponent<RenderComponent>(e);
-			debug.m_MinPoint = r.m_MinPos;
-			debug.m_MaxPoint = r.m_MaxPos;
+		//if (myEntityManager.HasComponent(e, CreateFilter<Requires<RenderComponent>>()))
+		//{
+		//	RenderComponent& r = GetComponent<RenderComponent>(e);
+		//	//debug.m_MinPoint = r.m_MinPos;
+		//	//debug.m_MaxPoint = r.m_MaxPos;
 
-		}
+		//}
 		RenderBox(debug, translation.myOrientation);
 //#endif
 	}
@@ -407,37 +407,83 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	const CU::Vector4f up = orientation.GetRight();
 	const CU::Vector4f forward = orientation.GetRight();
 
-	p1.position += right * component.m_MinPoint.x;
-	p1.position += up * component.m_MinPoint.y;
-	p1.position += forward * component.m_MinPoint.z;
 
-	p2.position += right * component.m_MaxPoint.x;
-	p2.position += up * component.m_MinPoint.y;
-	p2.position += forward * component.m_MinPoint.z;
+	if ( component.m_MinPoint.x < -0.f )
+	{
+		bool iAmHere = false;
+		iAmHere = true;
+		p1.color = CU::Vector4f(255.f,0.f,0.f,255.f);
+		p2.color = p1.color;
+		p3.color = p1.color;
+		p4.color = p1.color;
+		p5.color = p1.color;
+		p6.color = p1.color;
+		p7.color = p1.color;
+		p8.color = p1.color;
+	}
 
-	p3.position += right * component.m_MaxPoint.x;
-	p3.position += up * component.m_MinPoint.y;
-	p3.position += forward * component.m_MaxPoint.z;
+	//p1.position += right * component.m_MinPoint.x;
+	//p1.position += up * component.m_MinPoint.y;
+	//p1.position += forward * component.m_MinPoint.z;
 
-	p4.position += right * component.m_MinPoint.x;
-	p4.position += up * component.m_MinPoint.y;
-	p4.position += forward * component.m_MaxPoint.z;
+	//p2.position += right * component.m_MaxPoint.x;
+	//p2.position += up * component.m_MinPoint.y;
+	//p2.position += forward * component.m_MinPoint.z;
 
-	p5.position += right * component.m_MinPoint.x;
-	p5.position += up * component.m_MaxPoint.y;
-	p5.position += forward * component.m_MinPoint.z;
+	//p3.position += right * component.m_MaxPoint.x;
+	//p3.position += up * component.m_MinPoint.y;
+	//p3.position += forward * component.m_MaxPoint.z;
 
-	p6.position += right * component.m_MinPoint.x;
-	p6.position += up * component.m_MaxPoint.y;
-	p6.position += forward * component.m_MaxPoint.z;
+	//p4.position += right * component.m_MinPoint.x;
+	//p4.position += up * component.m_MinPoint.y;
+	//p4.position += forward * component.m_MaxPoint.z;
 
-	p7.position += right * component.m_MaxPoint.x;
-	p7.position += up * component.m_MaxPoint.y;
-	p7.position += forward * component.m_MinPoint.z;
+	//p5.position += right * component.m_MinPoint.x;
+	//p5.position += up * component.m_MaxPoint.y;
+	//p5.position += forward * component.m_MinPoint.z;
 
-	p8.position += right * component.m_MaxPoint.x;
-	p8.position += up * component.m_MaxPoint.y;
-	p8.position += forward * component.m_MaxPoint.z;
+	//p6.position += right * component.m_MinPoint.x;
+	//p6.position += up * component.m_MaxPoint.y;
+	//p6.position += forward * component.m_MaxPoint.z;
+	//p7.position += right * component.m_MaxPoint.x;
+	//p7.position += up * component.m_MaxPoint.y;
+	//p7.position += forward * component.m_MinPoint.z;
+	//p8.position += right * component.m_MaxPoint.x;
+	//p8.position += up * component.m_MaxPoint.y;
+	//p8.position += forward * component.m_MaxPoint.z;
+
+	p1.position -= orientation.GetRight() * component.m_WHD.x;
+	p1.position -= orientation.GetUp() * component.m_WHD.y;
+	p1.position -= orientation.GetForward() * component.m_WHD.z;
+
+	p2.position += orientation.GetRight() * component.m_WHD.x;
+	p2.position -= orientation.GetUp() * component.m_WHD.y;
+	p2.position -= orientation.GetForward() * component.m_WHD.z;
+
+	p3.position += orientation.GetRight() * component.m_WHD.x;
+	p3.position -= orientation.GetUp() * component.m_WHD.y;
+	p3.position += orientation.GetForward() * component.m_WHD.z;
+
+	p4.position -= orientation.GetRight() * component.m_WHD.x;
+	p4.position -= orientation.GetUp() * component.m_WHD.y;
+	p4.position += orientation.GetForward() * component.m_WHD.z;
+
+	p5.position -= orientation.GetRight() * component.m_WHD.x;
+	p5.position += orientation.GetUp() * component.m_WHD.y;
+	p5.position -= orientation.GetForward() * component.m_WHD.z;
+
+	p6.position -= orientation.GetRight() * component.m_WHD.x;
+	p6.position += orientation.GetUp() * component.m_WHD.y;
+	p6.position += orientation.GetForward() * component.m_WHD.z;
+
+	p7.position += orientation.GetRight() * component.m_WHD.x;
+	p7.position += orientation.GetUp() * component.m_WHD.y;
+	p7.position -= orientation.GetForward() * component.m_WHD.z;
+
+	p8.position += orientation.GetRight() * component.m_WHD.x;
+	p8.position += orientation.GetUp() * component.m_WHD.y;
+	p8.position += orientation.GetForward() * component.m_WHD.z;
+
 
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));

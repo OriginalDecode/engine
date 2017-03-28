@@ -116,7 +116,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	if (sponza)
 		sponza = false;
 //#ifdef _EDITOR
-	else
+	if(hasLight)
 		CreateDebugComponent(e, hasLight, debug_flags);
 //#endif
 
@@ -212,7 +212,8 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	const JSONElement& el = entity_reader.GetElement("graphics");
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
-		el["shader"].GetString());
+		el["shader"].GetString(),
+		true);
 
 
 	if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
@@ -251,7 +252,8 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	const JSONElement& el = entity_reader.GetElement("graphics");
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
-		el["shader"].GetString());
+		el["shader"].GetString(),
+		true);
 	component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
 	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 

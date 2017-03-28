@@ -200,6 +200,9 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();
 
+	LoadModel("Data/Model/lightMeshes/cone.fbx", "Data/Shaders/T_Deferred_Spotlight.json", false);
+	LoadModel("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/T_Deferred_Lightmesh.json", false);
+
 	return true;
 }
 
@@ -468,10 +471,10 @@ CModel* Engine::GetModel(const std::string& aFilePath)
 	return myAssetsContainer->GetModel(aFilePath);
 }
 
-std::string Engine::LoadModel(std::string aFilePath, std::string effect)
+std::string Engine::LoadModel(std::string aFilePath, std::string effect, bool thread)
 {
 	//m_Threadpool.AddWork(Work([&]() {
-	myAssetsContainer->LoadModel(aFilePath, effect);
+	myAssetsContainer->LoadModel(aFilePath, effect, thread);
 	return aFilePath;
 	/*	}));
 		return aFilePath;*/
@@ -624,7 +627,6 @@ void Engine::OutputDebugString(std::string debug_str)
 
 void Engine::UpdateDebugUI()
 {
-#ifdef _DEBUG
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImVec2(300, GetWindowSize().m_Height));
 
@@ -791,5 +793,4 @@ void Engine::UpdateDebugUI()
 
 	}
 	EditEntity();
-#endif
 }

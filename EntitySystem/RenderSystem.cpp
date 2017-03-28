@@ -34,7 +34,7 @@ void RenderSystem::Update(float dt)
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
 
-		if (myEntityManager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
+		/*if (myEntityManager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
 		{
 			DebugComponent& debug = GetComponent<DebugComponent>(e);
 			for (const CU::Plane<float>& plane : debug.m_OBB.m_Planes)
@@ -58,7 +58,7 @@ void RenderSystem::Update(float dt)
 
 		
 		if(!visible)
-			continue;
+			continue;*/
 
 		//#LINUS This needs to be profiled.
 		CU::Matrix44f t = translation.myOrientation;

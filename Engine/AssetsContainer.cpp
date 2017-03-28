@@ -69,10 +69,13 @@ Texture* AssetsContainer::GetTexture(std::string aFilePath)
 
 Effect* AssetsContainer::GetEffect(const std::string& aFilePath)
 {
+	static Ticket_Mutex shader_mutex;
+	BeginTicketMutex(&shader_mutex);
 	if (myEffects.find(aFilePath) == myEffects.end())
 	{
 		LoadEffect(aFilePath);
 	}
+	EndTicketMutex(&shader_mutex);
 	return myEffects[aFilePath];
 }
 
@@ -124,22 +127,26 @@ void AssetsContainer::LoadEffect(const std::string& aFilePath)
 
 #define THREAD_LOADING
 
-std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect)
+std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect, bool thread)
 {
 	if (myModels.find(aFilePath) == myModels.end())
 	{
 		DL_MESSAGE("Loading model : %s", aFilePath.c_str());
 		CModel* model = new CModel;
 		myModels.emplace(aFilePath, model);
-		std::string file_path;
 
-#ifdef THREAD_LOADING
-		m_Engine->GetThreadpool().AddWork(Work( [=] () {
+		if ( thread )
+		{
+			m_Engine->GetThreadpool().AddWork(Work([=]() {
+				myModels[aFilePath] = m_ModelLoader->LoadModel(aFilePath, model, effect);
+			}));
+			return aFilePath;
+		}
+		else
+		{
 			myModels[aFilePath] = m_ModelLoader->LoadModel(aFilePath, model, effect);
-		}));
-#else
-		myModels[aFilePath] = m_ModelLoader->LoadModel(aFilePath, model, effect);
-#endif
+			return aFilePath;
+		}
 	}
 	return aFilePath;
 }

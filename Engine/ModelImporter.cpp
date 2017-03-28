@@ -35,7 +35,7 @@ CModelImporter::~CModelImporter()
 
 CModel* CModelImporter::LoadModel(std::string aFilePath, CModel* model, std::string aEffectPath)
 {
-	//BeginTicketMutex(&m_LoaderMutex);
+	BeginTicketMutex(&m_LoaderMutex);
 	m_WHD = { 0.f, 0.f, 0.f };
 	m_MinPoint = { 0.f, 0.f, 0.f };
 	m_MaxPoint = { 0.f, 0.f, 0.f };
@@ -43,7 +43,7 @@ CModel* CModelImporter::LoadModel(std::string aFilePath, CModel* model, std::str
 	/*model = */
 	LoadModel(aFilePath, model, m_Engine->GetEffect(aEffectPath));
 	model->CreateModel(aFilePath);
-	//EndTicketMutex(&m_LoaderMutex);
+	EndTicketMutex(&m_LoaderMutex);
 
 	return model;
 }
@@ -130,7 +130,7 @@ CModel* CModelImporter::LoadModel(std::string aFilePath, CModel* model, Effect* 
 	aiNode* rootNode = scene->mRootNode;
 	FBXModelData* data = new FBXModelData;
 
-	ProcessNode(rootNode, scene, data);
+	ProcessNode(rootNode, scene, data, aFilePath);
 
 	CModel* toReturn = CreateModel(data, model, anEffect);
 
@@ -274,7 +274,7 @@ void CModelImporter::FillData(FBXModelData* someData, CModel* out, Effect* /*anE
 #endif
 }
 
-void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData)
+void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData, std::string file)
 {
 #ifdef SNOWBLIND_DX11
 	DL_ASSERT_EXP(someData, "Failed to process node. FBXModelData someData was null");
@@ -282,18 +282,18 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 	for ( u32 i = 0; i < aNode->mNumMeshes; i++ )
 	{
 		aiMesh* mesh = aScene->mMeshes[aNode->mMeshes[i]];
-		ProcessMesh(mesh, aScene, someData);
+		ProcessMesh(mesh, aScene, someData, file);
 	}
 
 	for ( u32 i = 0; i < aNode->mNumChildren; i++ )
 	{
 		someData->myChildren.Add(new FBXModelData);
-		ProcessNode(aNode->mChildren[i], aScene, someData->myChildren.GetLast());
+		ProcessNode(aNode->mChildren[i], aScene, someData->myChildren.GetLast(), file);
 	}
 #endif
 }
 
-void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelData* fbx)
+void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelData* fbx, std::string file)
 {
 #ifdef SNOWBLIND_DX11
 	FBXModelData* data = fbx;
@@ -613,7 +613,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 		aiString str;
 		material->GetTexture(static_cast< aiTextureType >( type ), 0, &str);
 
-		std::string newPath = CL::substr(m_CurrentFile, "/", true, 0);
+		std::string newPath = CL::substr(file, "/", true, 0);
 
 		std::string fileName = CL::substr(str.C_Str(), "\\", false, 0);
 		if ( fileName.empty() )

@@ -101,7 +101,7 @@ public:
 	Effect* GetEffect(const std::string& aFilePath);
 	CModel* GetModel(const std::string& aFilePath);
 
-	std::string LoadModel(std::string aFilePath, std::string effect);
+	std::string LoadModel(std::string aFilePath, std::string effect, bool thread);
 
 	void ResetRenderTargetAndDepth();
 

@@ -138,7 +138,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_ShadowEffect = m_Engine->GetEffect("Data/Shaders/T_Render_Depth.json");
 
 
-	m_Engine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json");
+	m_Engine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json", true);
 
 	m_PostProcessManager.Initiate();
 	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
@@ -631,9 +631,8 @@ void Renderer::ToggleWireframe()
 {
 	m_RenderWireframe = !m_RenderWireframe;
 }
-#ifdef _DEBUG
+
 PostProcessManager& Renderer::GetPostprocessManager()
 {
 	return m_PostProcessManager;
 }
-#endif

@@ -111,6 +111,6 @@ private:
 
 	CModel* LoadModel(std::string aFilePath, CModel* model, Effect* anEffect);
 	void FillData(FBXModelData* someData, CModel* out, Effect* anEffect);
-	void ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData);
-	void ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelData* fbx);
+	void ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData, std::string file);
+	void ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelData* fbx, std::string file);
 };

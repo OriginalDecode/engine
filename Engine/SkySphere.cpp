@@ -13,7 +13,7 @@ bool SkySphere::Initiate(const std::string& model_filepath, const std::string& s
 	if (!myCamera)
 		return false;
 
-	Engine::GetInstance()->LoadModel(model_filepath, skysphere_shader);
+	Engine::GetInstance()->LoadModel(model_filepath, skysphere_shader, false);
 
 	SkysphereLayer layer;
 	layer.m_Model = Engine::GetInstance()->GetModel(model_filepath);
@@ -34,7 +34,7 @@ bool SkySphere::Initiate(const std::string& model_filepath, const std::string& s
 
 bool SkySphere::AddLayer(const std::string& layer_filepath, const std::string& layer_shader)
 {
-	Engine::GetInstance()->LoadModel(layer_filepath, layer_shader);
+	Engine::GetInstance()->LoadModel(layer_filepath, layer_shader, false);
 
 	SkysphereLayer layer;
 	layer.m_Model = Engine::GetInstance()->GetModel(layer_filepath);

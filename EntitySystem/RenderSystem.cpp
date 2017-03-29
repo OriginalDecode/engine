@@ -23,13 +23,13 @@ RenderSystem::RenderSystem(EntityManager& anEntityManager)
 }
 
 
-void RenderSystem::Update(float dt)
+void RenderSystem::Update(float /*dt*/)
 {
 	
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (int i = 0; i < entities.Size(); i++)
 	{
-		bool visible = false;
+		//bool visible = false;
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);

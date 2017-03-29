@@ -73,7 +73,7 @@ void GizmoHandle::SetPosition(const CU::Vector3f& position)
 void GizmoHandle::RenderBox()
 {
 	CU::Vector4f camera_position = Engine::GetInstance()->GetCamera()->GetPosition();
-	float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
+	//float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
 	SLinePoint p1, p2, p3, p4, p5, p6, p7, p8;
 	p1.color = CU::Vector4f(1, 1, 1, 1);
 	p2.color = p1.color;
@@ -144,7 +144,7 @@ void GizmoHandle::RenderBox()
 void GizmoHandle::Update()
 {
 	CU::Vector4f camera_position = Engine::GetInstance()->GetCamera()->GetPosition();
-	float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
+//	float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
 	CU::Vector4f up = m_Orientation.GetUp();
 	CU::Vector4f right = m_Orientation.GetRight();
 	CU::Vector4f forward = m_Orientation.GetForward();

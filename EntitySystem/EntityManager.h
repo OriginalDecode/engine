@@ -24,7 +24,7 @@ public:
 	Entity CreateEntity();
 	void Clear();
 	void Update(float aDelta);
-	const EntityArray& GetEntities(SComponentFilter& aFilter);
+	const EntityArray& GetEntities(SComponentFilter aFilter);
 
 	const EntityArray& GetEntities();
 

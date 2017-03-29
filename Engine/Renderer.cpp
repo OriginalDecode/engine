@@ -214,8 +214,9 @@ void Renderer::Render()
 #else
 void Renderer::Render()
 {
+#ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Magenta);
-	//BROFILER_FRAME("Renderer::Render");
+#endif
 	m_Engine->Clear();
 	m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
 	myDeferredRenderer->SetTargets();
@@ -310,8 +311,10 @@ void Renderer::AddTerrain(CTerrain* someTerrain)
 
 void Renderer::RenderNonDeferred3DCommands()
 {
+#ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Amber);
-	//BROFILER_FRAME("Renderer::RenderNonDeferred3DCommands");
+#endif
+	
 	m_API->EnableZBuffer();
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 

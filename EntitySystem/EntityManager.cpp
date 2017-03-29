@@ -68,7 +68,7 @@ void EntityManager::Update(float aDelta)
 	}
 }
 
-const CU::GrowingArray<Entity>& EntityManager::GetEntities(SComponentFilter& aFilter)
+const CU::GrowingArray<Entity>& EntityManager::GetEntities(SComponentFilter aFilter)
 {
 	return myComponents->GetEntities(aFilter);
 }

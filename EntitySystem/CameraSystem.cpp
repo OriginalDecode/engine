@@ -10,12 +10,12 @@ CameraSystem::CameraSystem(EntityManager& entitymanager)
 
 void CameraSystem::Update(float /*delta_time*/)
 {
-	const CU::GrowingArray<Entity>& entities = GetEntities();
-	for (const Entity& e : entities)
-	{
-		STranslationComponent& translation = GetComponent<STranslationComponent>(e);
-		CameraComponent& camera = GetComponent<CameraComponent>(e);
-	/*	if(!camera.m_Camera->GetCanFreeFly())
-			camera.m_Camera->SetOrientation(translation.myOrientation);*/
-	}
+	//const CU::GrowingArray<Entity>& entities = GetEntities();
+	//for (const Entity& e : entities)
+	//{
+	//	//STranslationComponent& translation = GetComponent<STranslationComponent>(e);
+	//	//CameraComponent& camera = GetComponent<CameraComponent>(e);
+	///*	if(!camera.m_Camera->GetCanFreeFly())
+	//		camera.m_Camera->SetOrientation(translation.myOrientation);*/
+	//}
 }

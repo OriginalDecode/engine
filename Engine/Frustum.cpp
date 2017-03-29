@@ -37,7 +37,7 @@ void Frustum::Update()
 
 bool Frustum::Inside(const CU::Vector3f& position, float) const
 {
-	const CU::Vector3f collision_check_position = CU::Vector3f(position) * m_InvertedOrientation;
+	const CU::Vector3f collision_check_position = position * m_InvertedOrientation;
 	return m_Volume.Inside(collision_check_position);
 }
 

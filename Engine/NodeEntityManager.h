@@ -14,11 +14,11 @@ public:
 
 	void Update(float dt);
 
-	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter& filter);
+	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter filter);
 	~NodeEntityManager();
 	s32 GetId() { return m_Identifier; }
 
-	bool HasComponent(Entity e, SComponentFilter& filter);
+	bool HasComponent(Entity e, SComponentFilter filter);
 
 	template<typename T>
 	T& GetComponent(Entity aEntity);

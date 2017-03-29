@@ -83,7 +83,7 @@ void TreeNode::Update(float dt)
 	Engine::GetInstance()->GetEntityManager().SetActiveNodeManager(&m_NodeEntityManager);
 	m_NodeEntityManager.Update(dt);
 
-	const EntityList& entities = m_NodeEntityManager.GetEntities(CreateFilter<Requires<TranslationComponent>>());
+	//const EntityList& entities = m_NodeEntityManager.GetEntities(CreateFilter<Requires<TranslationComponent>>());
 
 	for (TreeDweller* dweller : m_Dwellers)
 	{

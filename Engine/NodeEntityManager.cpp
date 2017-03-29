@@ -56,7 +56,7 @@ void NodeEntityManager::Update(float dt)
 	}
 }
 
-const CU::GrowingArray<Entity>& NodeEntityManager::GetEntities(SComponentFilter& filter)
+const CU::GrowingArray<Entity>& NodeEntityManager::GetEntities(SComponentFilter filter)
 {
 	return m_Components.GetEntities(filter);
 }
@@ -67,7 +67,7 @@ NodeEntityManager::~NodeEntityManager()
 	m_Systems.RemoveAll();
 }
 
-bool NodeEntityManager::HasComponent(Entity e, SComponentFilter& filter)
+bool NodeEntityManager::HasComponent(Entity e, SComponentFilter filter)
 {
 	return m_Components.HasComponent(e, filter);
 }

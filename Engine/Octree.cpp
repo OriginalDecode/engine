@@ -134,7 +134,7 @@ void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 	
 }
 
-void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
+void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 /*depth*/)
 {
 	assert(!dweller->GetFirstNode() && "You fucked up!");
 	node->AddEntity(dweller);

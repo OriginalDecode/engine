@@ -21,9 +21,9 @@ bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f&
 	m_Camera->RotateAroundZ(CL::DegreeToRad(90.f) * direction.y);
 	m_Camera->RotateAroundX(CL::DegreeToRad(90.f) * direction.z);
 
-	float x = m_Camera->GetOrientation().GetXRotation();
-	float y = m_Camera->GetOrientation().GetYRotation();
-	float z = m_Camera->GetOrientation().GetZRotation();
+	//float x = m_Camera->GetOrientation().GetXRotation();
+	//float y = m_Camera->GetOrientation().GetYRotation();
+	//float z = m_Camera->GetOrientation().GetZRotation();
 
 
 	m_Depth = new Texture;

@@ -47,6 +47,7 @@ public:
 		return false;
 	}
 
+	
 	bool Compare(const EntityComponentArray& someComponents)
 	{
 		for (int i = 0; i < MAX_COMPONENTS_COUNT; i++)

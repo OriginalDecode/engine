@@ -132,7 +132,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	m_DwellerList.GetLast()->Initiate(e, TreeDweller::eType::STATIC);
 
-	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
+	//TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
 
 	/*if (sponza)
 	{
@@ -194,7 +194,7 @@ TreeDweller* LevelFactory::CreateEntitiy(const std::string& entity_filepath, con
 	return dweller;
 }
 
-void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position)
+void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& /*position*/)
 {
 	m_EntityManager->AddComponent<TranslationComponent>(entity_id);
 
@@ -284,8 +284,8 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	std::string shape = el["shape"].GetString();
 	if (shape == "mesh")
 	{
-		RenderComponent& render_component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
-		CModel* model = m_Engine->GetModel(render_component.myModelID);
+		//RenderComponent& render_component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+		//CModel* model = m_Engine->GetModel(render_component.myModelID);
 
 		phys_body = component.myBody->InitAsBox(200, 100, 100, translation_component.myOrientation.GetPosition());// ->GetVertices(), model->GetIndices()); //InitAsBox(1, 1, 1, { 0,0,0 });
 
@@ -322,7 +322,7 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 	m_EntityManager->AddComponent<LightComponent>(entity_id);
 	LightComponent& component = m_EntityManager->GetComponent<LightComponent>(entity_id);
 	m_DwellerList.GetLast()->AddComponent<LightComponent>(&component, TreeDweller::LIGHT);
-	TranslationComponent& translation_component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+	//TranslationComponent& translation_component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
 
 	std::string type;
 

@@ -33,9 +33,8 @@ DebugSystem::~DebugSystem()
 	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_LEFT_CLICK, this);
 }
 
-void DebugSystem::Update(float dt)
+void DebugSystem::Update(float /*dt*/)
 {
-	BeginTicketMutex(&m_Mutex);
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::TEXT, current_model, CU::Vector2f(0.75, 0)));
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (Entity e : entities)
@@ -148,7 +147,6 @@ void DebugSystem::Update(float dt)
 	
 	UpdateOBBs();
 
-	EndTicketMutex(&m_Mutex);
 }
 
 bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vector3f& ray_dir)
@@ -324,9 +322,9 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 
 
 
-		for (float i = 0; i < 25.f; i += 0.05f)
+		for (float j = 0; j < 25.f; j += 0.05f)
 		{
-			CU::Vector3f step = (ray_dir * i);
+			CU::Vector3f step = (ray_dir * j);
 			CU::Vector3f new_pos = cam_pos + step;
 
 			if (debug.m_OBB.Inside(new_pos))

@@ -153,7 +153,6 @@ void ShaderFactory::LoadShader(const std::string& file_path, Effect* effect)
 CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const std::string& feature_level /*= "_5_0"*/)
 {
 	CompiledShader* new_shader = new CompiledShader;
-	IDevice* device = Engine::GetAPI()->GetDevice();
 
 	ENGINE_LOG("Creating %s", file_path.c_str());
 

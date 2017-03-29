@@ -437,7 +437,7 @@ namespace CommonUtilities
 
 
 		template<typename TYPE>
-		Vector3<TYPE> operator*(Vector3<TYPE>& aVector, const Matrix44<TYPE>& aMatrix)
+		const Vector3<TYPE> operator*(const Vector3<TYPE>& aVector, const Matrix44<TYPE>& aMatrix)
 		{
 			Vector4<TYPE> vector4(aVector.x, aVector.y, aVector.z, 1);
 			vector4 = vector4*aMatrix;

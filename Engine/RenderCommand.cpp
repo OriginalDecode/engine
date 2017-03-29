@@ -79,7 +79,7 @@ RenderCommand::RenderCommand(const eType& aType, const std::string& modelKey, co
 	m_Orientation.SetPosition(position);
 }
 
-RenderCommand::RenderCommand(const eType& type, const std::string& text, const CU::Vector4f& color, const CU::Vector2f& position)
+RenderCommand::RenderCommand(const eType& type, const std::string& text, const CU::Vector4f& /*color*/, const CU::Vector2f& position)
 	: myType(type)
 	, myPosition(position)
 	, m_KeyOrText(text)

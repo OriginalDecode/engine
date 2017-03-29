@@ -605,7 +605,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 	data->myTextureData = new TextureData;
 
 	aiMaterial* material = aScene->mMaterials[aMesh->mMaterialIndex];
-	s32 tex_count = aScene->mNumTextures;
+	//s32 tex_count = aScene->mNumTextures;
 	for ( u32 i = 0; i < material->mNumProperties; i++ )
 	{
 		aiMaterialProperty* prop = material->mProperties[i];

@@ -27,8 +27,7 @@ enum eDEBUGLOG
 
 #define DL_ASSERT(string) DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__,string);
 
-#define DL_ASSERT_EXP(expression, string)if(expression == false){DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__,string);};
-#define DL_ASSERT_EXP_L(expression, string)if(expression == false){DL_Debug::Debug::GetInstance()->AssertMessageL(__FILE__,__LINE__,__FUNCTION__,string);};
+#define DL_ASSERT_EXP(expression, string)if(expression == false){DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__, string); }
 
 #define DL_PRINT(string)  DL_Debug::Debug::GetInstance()->PrintMessage(string);
 //#define DL_DEBUG( ... )  DL_Debug::Debug::GetInstance()->DebugMessage(__LINE__,__FUNCTION__, RETURN(__VA_ARGS__));

@@ -40,7 +40,7 @@ namespace CL
 
 	unsigned long long nearest_Pow_Under(unsigned long long aNum)
 	{
-		return nearest_Pow(aNum)* 0.5f;
+		return nearest_Pow(aNum) / 2;
 	}
 
 	// AA RR GG BB

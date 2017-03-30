@@ -72,20 +72,12 @@ IGraphicsAPI* Engine::myAPI = nullptr;
 
 void Engine::Create()
 {
-#ifdef _PROFILE
-	EASY_PROFILER_ENABLE;
-	profiler::startListen();
-#endif
 	DL_ASSERT_EXP(myInstance == nullptr, "Instance already created!");
 	myInstance = new Engine;
 }
 
 void Engine::Destroy()
 {
-#ifdef _PROFILE
-	profiler::stopListen();
-	EASY_PROFILER_DISABLE;
-#endif
 	DL_ASSERT_EXP(myInstance != nullptr, "Can't destroy the instance before it's created. Did you call Destroy twice?");
 	SAFE_DELETE(myInstance);
 }

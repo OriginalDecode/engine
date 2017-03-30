@@ -4,11 +4,8 @@
 #include "../Application/Application.h"
 #include "../DL_Debug/DL_Debug.h"
 #include "../Engine/imgui_impl_dx11.h"
-#ifdef _PROFILE
 #include <easy/profiler.h>
-#else
 
-#endif
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 enum ERawInputType
@@ -34,6 +31,10 @@ static bool g_windowactive = false;
 
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
+#ifdef _PROFILE
+	EASY_PROFILER_ENABLE;
+	profiler::startListen();
+#endif
 	DL_Debug::Debug::Create();
 	//do/uble res16x9 = 1.777777777777777777777777777777778; best
 	const char* inputString = someCommandLines;
@@ -118,6 +119,12 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	DL_Debug::Debug::Destroy();
 	Engine::Destroy();
+
+#ifdef _PROFILE
+	EASY_PROFILER_DISABLE;
+	profiler::stopListen();
+	profiler::dumpBlocksToFile("file.prof");
+#endif
 	return 0;
 }
 

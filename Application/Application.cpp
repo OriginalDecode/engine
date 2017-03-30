@@ -30,19 +30,20 @@ bool Application::Initiate()
 	//Keep at the end of initiate...
 
 	myLogicThread = new std::thread([&] { Application::Update(); });
+#ifdef _DEBUG
 	CL::SetThreadName(myLogicThread->get_id(), "Logic Thread");
-
+#endif
 	return true;
 }
 
 void Application::Update()
 {
+#ifdef _PROFILE
+	EASY_THREAD_SCOPE("LogicThread");
+#endif
 	while (mySynchronizer->HasQuit() == false)
 	{
 
-#ifdef _PROFILE
-		//BROFILER_FRAME("Application::Update");
-#endif
 		float deltaTime = myEngine->GetDeltaTime();
 
 		myEngine->UpdateInput();

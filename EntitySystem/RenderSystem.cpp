@@ -28,12 +28,11 @@ RenderSystem::RenderSystem(EntityManager& anEntityManager)
 
 void RenderSystem::Update(float /*dt*/)
 {
-#ifdef _PROFILER
+#ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Blue);
-	
 #endif
 	const CU::GrowingArray<Entity>& entities = GetEntities();
-#ifdef _PROFILER
+#ifdef _PROFILE
 	EASY_BLOCK("Entity Loop");
 #endif
 	for (int i = 0; i < entities.Size(); i++)
@@ -70,7 +69,7 @@ void RenderSystem::Update(float /*dt*/)
 			continue;*/
 
 		//#LINUS This needs to be profiled.
-#ifdef _PROFILER
+#ifdef _PROFILE
 		EASY_BLOCK("RenderSystem : Entity Scale multiplication");
 #endif
 		CU::Matrix44f t = translation.myOrientation;
@@ -81,7 +80,7 @@ void RenderSystem::Update(float /*dt*/)
 			render.myModelID,
 			t,
 			render.scale));
-#ifdef _PROFILER
+#ifdef _PROFILE
 		EASY_END_BLOCK;
 #endif
 
@@ -101,7 +100,7 @@ void RenderSystem::Update(float /*dt*/)
 
 
 	}
-#ifdef _PROFILER
+#ifdef _PROFILE
 	EASY_END_BLOCK;
 #endif
 }

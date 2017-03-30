@@ -25,7 +25,6 @@ struct VertexIndexWrapper;
 struct VertexBufferWrapper;
 struct VertexDataWrapper;
 struct IndexBufferWrapper;
-
 class DeferredRenderer
 {
 public:
@@ -45,6 +44,8 @@ public:
 	Texture* GetDepthStencil();
 	GBuffer* GetGBuffer();
 	void ToggleWireframe() { m_Wireframe = !m_Wireframe; }
+
+
 private:
 	bool m_Wireframe = false;
 	void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir);

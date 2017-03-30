@@ -60,9 +60,9 @@ void DirectX11::CreateReadDepthStencilState()
 
 	stencilDesc.DepthEnable = TRUE;
 	stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	stencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
+	stencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 
-	stencilDesc.StencilEnable = TRUE;
+	stencilDesc.StencilEnable = FALSE;
 	stencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
 	stencilDesc.StencilWriteMask = 0x0;
 
@@ -79,6 +79,7 @@ void DirectX11::CreateReadDepthStencilState()
 	HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencilState::READ_NO_WRITE)]);
 	SetDebugName(myDepthStates[u16(eDepthStencilState::READ_NO_WRITE)], "eDepthStencilState::READ_NO_WRITE");
 	HandleErrors(hr, "Failed to setup depth buffer!");
+
 }
 
 void DirectX11::CreateDepthStencilStates()

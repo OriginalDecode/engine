@@ -20,15 +20,18 @@ void World::Initiate(CU::Vector3f position)
 	m_Timer.CreateTimer();
 	m_Timer.CreateTimer();
 }
-
+#undef _DEBUG
 void World::Update(float dt)
 {
+#ifdef _DEBUG
 	CU::Timer& timer = m_Timer.GetTimer(timer_index);
 	timer.ClearTime();
 	timer.Start();
+#endif
 
 	m_Octree.Update(dt);
 
+#ifdef _DEBUG
 	timer.Update();
 	timer.Pause();
 	timer_index++;
@@ -49,7 +52,6 @@ void World::Update(float dt)
 		update_time = 1.f;
 	}
 
-
 	std::stringstream ss;
 	ss << "0 : " << m_Timer.GetTimer(0).GetTotalTime().GetMilliseconds() << "\n"
 		<< "1 : " << m_Timer.GetTimer(1).GetTotalTime().GetMilliseconds() << "\n"
@@ -59,8 +61,9 @@ void World::Update(float dt)
 		<< "Highest : " << highest;
 
 	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::TEXT, ss.str().c_str(), CU::Vector2f(0.75f, 0.0f)));
-	//m_Octree.Update(dt);
+#endif
 }
+#define _DEBUG
 
 void World::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
 {

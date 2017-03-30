@@ -17,6 +17,7 @@ public:
 	void Process(Texture* scene_texture);
 	void OnResize();
 	bool toggle_debug = false;
+	void Render();
 private:
 	void Downsample(IRenderTargetView* render_target, IShaderResourceView* source);
 	void Tonemapping(IRenderTargetView* target, IShaderResourceView* source[2], s32 resource_count);

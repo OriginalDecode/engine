@@ -95,6 +95,7 @@ public:
 
 	ID3D11RenderTargetView* GetBackbuffer();
 	const ID3D11RenderTargetView* GetBackbuffer() const;
+	ID3D11RenderTargetView** GetBackbufferRef() { return &myRenderTarget; }
 
 	ID3D11DepthStencilView* GetDepthView();
 	const ID3D11DepthStencilView* GetDepthView() const;

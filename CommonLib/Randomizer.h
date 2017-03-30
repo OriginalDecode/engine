@@ -2,7 +2,14 @@
 
 #include <random>
 //if you input a higher value in min than max, it will crash. The following must be true. min <= max. Otherwise you will crash.
-#define RANDOM(min,max) Randomizer::GetInstance()->Rand(min,max)
+
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+
+#define RANDOM(a,b) Randomizer::GetInstance()->Rand(MIN(a,b) ,MAX(a,b))
+
+#undef MIN
+#undef MAX
 class Randomizer
 {
 public:

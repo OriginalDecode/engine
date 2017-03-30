@@ -129,8 +129,8 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil());
 	DL_ASSERT_EXP(success, "failed to initiate lightpass!");
 
-	/*	m_ParticleEmitter = new CEmitterInstance;
-		m_ParticleEmitter->Initiate(mySynchronizer, myDepthTexture);*/
+	m_ParticleEmitter = new CEmitterInstance;
+	m_ParticleEmitter->Initiate(mySynchronizer, myDepthTexture);
 
 
 
@@ -178,7 +178,7 @@ bool Renderer::CleanUp()
 	SAFE_DELETE(myPointLight);
 	SAFE_DELETE(mySpotlight);
 
-	//m_ParticleEmitter->CleanUp();
+	m_ParticleEmitter->CleanUp();
 	SAFE_DELETE(m_ParticleEmitter);
 
 	return true;
@@ -219,8 +219,11 @@ void Renderer::Render()
 #endif
 	m_Engine->Clear();
 	m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
+
 	myDeferredRenderer->SetTargets();
+
 	Render3DCommands();
+
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 	ProcessShadows();
 	ProcessShadows(m_DirectionalCamera);
@@ -237,34 +240,13 @@ void Renderer::Render()
 		CU::Math::Normalize(m_Direction);
 	}
 
-	/* Should be moved into settings */
+	//m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), myDeferredRenderer->GetDepthStencil()->GetDepthView());
 
-	if (input_handle->GetInputWrapper()->OnDown(KButton::NUMMINUS))
-	{
-		float current_fov = m_Camera->GetFOV();
-		current_fov -= 1.f;
-		m_Camera->SetFOV(current_fov);
-	}
-
-	if (input_handle->GetInputWrapper()->OnDown(KButton::NUMADD))
-	{
-		float current_fov = m_Camera->GetFOV();
-		current_fov += 1.f;
-		m_Camera->SetFOV(current_fov);
-	}
-
-	static bool toggle_point = false;
-
-	if (input_handle->GetInputWrapper()->OnDown(KButton::L))
-	{
-		toggle_point = !toggle_point;
-	}
-
-	if (toggle_point)
-		RenderPointlight();
+	RenderPointlight();
 	RenderSpotlight();
 
 	mySkysphere->Render(myPrevFrame, myDepthTexture);
+	RenderParticles();
 
 	m_Engine->ResetRenderTargetAndDepth();
 
@@ -274,11 +256,9 @@ void Renderer::Render()
 
 	if (m_PostProcessManager.GetFlags() == 0)
 		myDeferredRenderer->Finalize(0);
-	//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime());
-	//RenderParticles();
 
-	// POST PROCESSING
 
+	//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime())
 
 
 
@@ -293,7 +273,7 @@ void Renderer::Render()
 
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 64.f, 64.f)));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
-	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
 
 
 	mySynchronizer->WaitForLogic();
@@ -505,11 +485,10 @@ void Renderer::RenderPointlight()
 
 void Renderer::RenderParticles()
 {
-	//BROFILER_FRAME("Renderer::RenderParticles");
 	m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
-	if (m_ProcessShadows)
+	if ( m_ProcessDirectionalShadows )
 		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	else
 		m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
@@ -521,13 +500,19 @@ void Renderer::RenderParticles()
 		{
 			case eType::PARTICLE:
 			{
-				if (!m_ProcessShadows)
+				if (!m_ProcessDirectionalShadows )
 				{
-					m_ParticleEmitter->SetPosition(CU::Vector3f(100.f, 0.f, 31.f));
+					m_ParticleEmitter->SetPosition(CU::Vector3f(256.f, 0.f, 256.f));
 					m_ParticleEmitter->Update(m_Engine->GetDeltaTime());
 				}
-				m_ParticleEmitter->Render(m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, m_Camera->GetPerspective());
-			}break;
+				else
+				{
+					m_API->GetContext()->PSSetShaderResources(1, 1, m_Engine->GetTexture("Data/Textures/hp.dds")->GetShaderViewRef());
+				}
+				m_ParticleEmitter->Render(m_ProcessDirectionalShadows ? m_DirectionalFrame : myPrevFrame, m_Camera->GetPerspective());
+
+
+			} break;
 		}
 	}
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
@@ -535,7 +520,6 @@ void Renderer::RenderParticles()
 
 void Renderer::RenderLines()
 {
-	//BROFILER_FRAME("Renderer::RenderLines");
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
@@ -597,7 +581,6 @@ void Renderer::ProcessShadows()
 
 void Renderer::ProcessShadows(Camera* camera)
 {
-	//BROFILER_FRAME("Renderer::ProcessShadows");
 
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	IDevContext* ctx = m_API->GetContext();
@@ -618,6 +601,7 @@ void Renderer::ProcessShadows(Camera* camera)
 
 	m_ProcessDirectionalShadows = true;
 	Render3DCommands();
+	RenderParticles();
 	m_ProcessDirectionalShadows = false;
 
 	m_Engine->ResetRenderTargetAndDepth();

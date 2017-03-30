@@ -1,5 +1,26 @@
 #include "stdafx.h"
 
+#include "AssetsContainer.h"
+
+#include "Renderer.h"
+#include "Synchronizer.h"
+
+#include "Terrain.h"
+#include "TerrainManager.h"
+
+#include "IGraphicsAPI.h"
+#include <d3dcompiler.h>
+
+#include "EditObject.h"
+
+#include "imgui_impl_dx11.h"
+#include "LevelFactory.h"
+
+#include <Input/InputHandle.h>
+#include <PostMaster.h>
+#include <PhysicsManager.h>
+
+#include <DebugComponent.h>
 
 #include <DebugSystem.h>
 #include <PhysicsSystem.h>
@@ -9,30 +30,6 @@
 #include <AISystem.h>
 #include <NetworkSystem.h>
 #include <CameraSystem.h>
-
-#include "AssetsContainer.h"
-
-#include "Renderer.h"
-#include "Synchronizer.h"
-
-#include "Terrain.h"
-#include "TerrainManager.h"
-
-//#include <EntityManager.h>
-#include <PhysicsManager.h>
-
-
-#include "IGraphicsAPI.h"
-#include <d3dcompiler.h>
-
-#include <Input/InputHandle.h>
-#include <PostMaster.h>
-
-#include "EditObject.h"
-#include <DebugComponent.h>
-
-#include "imgui_impl_dx11.h"
-#include "LevelFactory.h"
 
 #ifdef _PROFILE
 #include <easy/profiler.h>
@@ -242,7 +239,7 @@ bool Engine::CleanUp()
 	SAFE_DELETE(m_LevelFactory);
 	PostMaster::Destroy();
 	Randomizer::Destroy();
-
+	m_States[( u16 ) eEngineStates::INITIATED] = FALSE;
 	return true;
 }
 

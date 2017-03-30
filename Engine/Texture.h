@@ -43,6 +43,7 @@ public:
 
 	IDepthStencilView* GetDepthView() const { return m_DepthStencilView; }
 
+
 	void SetTexture(IShaderResourceView* aShaderResource);
 	static HRESULT SaveToFile(ITexture2D*& texture_resource, const std::string& file_name);
 	static void CopyData(ITexture2D* dest, ITexture2D* source);

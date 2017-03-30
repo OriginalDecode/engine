@@ -39,7 +39,7 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	CreateConstantBuffer();
 
 	myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView());
-	myData.shader->AddShaderResource(depth_texture->GetShaderView());
+	myData.shader->AddShaderResource(depth_texture->GetDepthStencilView());
 
 	myTimeToEmit = 0.f;
 }
@@ -85,7 +85,6 @@ void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, const C
 	dx->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->m_Shader : nullptr);
 	dx->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->m_Shader : nullptr);
 	dx->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->m_Shader : nullptr);
-
 	SetMatrices(aPreviousCameraOrientation, aProjection);
 
 	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
@@ -202,24 +201,22 @@ void CEmitterInstance::Emit()
 	SParticleObject temp; //Replace with preallocated particles
 
 	temp.position = myOrientation.GetPosition();
-	float x0 = myData.size.x;
-	float y0 = myData.size.y;
-	float z0 = myData.size.z;
+	float x0 = temp.position.x + myData.size.x;
+	float y0 = temp.position.y + myData.size.y;
+	float z0 = temp.position.z + myData.size.z;
 
-	float x1 = temp.position.x;
-	float y1 = temp.position.y;
-	float z1 = temp.position.z;
-
-
+	float x1 = temp.position.x - myData.size.x;
+	float y1 = temp.position.y - myData.size.y;
+	float z1 = temp.position.z - myData.size.z;
 
 	temp.position.x = RANDOM(x0, x1);
 	temp.position.y = RANDOM(y0, y1);
 	temp.position.z = RANDOM(z0, z1);
 
-	temp.size = RANDOM(5.0f, 10.0f);
-	temp.direction.x = RANDOM(-0.1f, 0.1f);
+	temp.size = RANDOM(1.0f, 1.0f);
+	temp.direction.x = RANDOM(-1.0f, 1.0f);
 	temp.direction.y = RANDOM(0.f, 1.f);
-	temp.direction.z = RANDOM(-0.1f, 0.1f);
+	temp.direction.z = RANDOM(-1.0f, 1.0f);
 	temp.lifeTime = 7.f;
 	temp.alpha = 1;// myData.particleData.startAlpha;
 	temp.speed = 8.f;

@@ -117,6 +117,9 @@ bool Application::HasQuit()
 
 bool Application::CleanUp()
 {
+	if ( !myLogicThread )
+		return true;
+
 	myLogicThread->join();
 
 	SAFE_DELETE(myLogicThread);

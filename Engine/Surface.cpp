@@ -101,7 +101,7 @@ std::string CheckTextureType(TextureType type)
 	return "failed";
 }
 
-void CSurface::AddTexture(const std::string& file_path, TextureType type)
+void CSurface::AddTexture(const std::string& file_path, TextureType type) 
 {
 	m_ContainingTextures |= type;
 
@@ -112,7 +112,6 @@ void CSurface::AddTexture(const std::string& file_path, TextureType type)
 		DL_WARNING("Incorrect filetype! %s", file_path.c_str());
 	}
 
-	std::string debugName = sub;
 	if (CL::substr(sub, ".dds") == false)
 		sub += ".dds";
 

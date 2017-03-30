@@ -16,6 +16,9 @@
 
 #include "../Application/CameraHandle.h"
 #include "DebugComponent.h"
+#ifdef _PROFILE
+#include <easy/profiler.h>
+#endif
 RenderSystem::RenderSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, RenderComponent>>())
 {
@@ -25,8 +28,14 @@ RenderSystem::RenderSystem(EntityManager& anEntityManager)
 
 void RenderSystem::Update(float /*dt*/)
 {
+#ifdef _PROFILER
+	EASY_FUNCTION(profiler::colors::Blue);
 	
+#endif
 	const CU::GrowingArray<Entity>& entities = GetEntities();
+#ifdef _PROFILER
+	EASY_BLOCK("Entity Loop");
+#endif
 	for (int i = 0; i < entities.Size(); i++)
 	{
 		//bool visible = false;
@@ -61,6 +70,9 @@ void RenderSystem::Update(float /*dt*/)
 			continue;*/
 
 		//#LINUS This needs to be profiled.
+#ifdef _PROFILER
+		EASY_BLOCK("RenderSystem : Entity Scale multiplication");
+#endif
 		CU::Matrix44f t = translation.myOrientation;
 		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
 
@@ -69,7 +81,9 @@ void RenderSystem::Update(float /*dt*/)
 			render.myModelID,
 			t,
 			render.scale));
-
+#ifdef _PROFILER
+		EASY_END_BLOCK;
+#endif
 
 		//if (e == 0)
 		{
@@ -87,4 +101,7 @@ void RenderSystem::Update(float /*dt*/)
 
 
 	}
+#ifdef _PROFILER
+	EASY_END_BLOCK;
+#endif
 }

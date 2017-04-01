@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Window.h"
+#include "VirtualFileSystem.h"
 
 #include <CommonLib/Math/Vector/Vector.h>
 #include <CommonLib/Threadpool.h>
 #include <TimeManager.h>
 #include "snowblind_shared.h"
 #include <string>
-
 #include "../EntitySystem/EntityManager.h"
 #ifndef _WINDEF_
 struct HINSTANCE__;
@@ -94,6 +94,8 @@ public:
 	float GetFPS();
 	float GetFrameTime();
 	std::string GetAPIName();
+
+	VirtualFileSystem& GetVFS();
 
 	//_________________________________________
 	// Get Resources
@@ -201,6 +203,7 @@ private:
 	static IGraphicsAPI* myAPI;
 
 	Threadpool m_Threadpool;
+	VirtualFileSystem m_VirtualFileSystem;
 
 	SLocalTime myLocalTime;
 	HWND myHWND;

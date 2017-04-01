@@ -36,7 +36,7 @@ void Game::InitState(StateStack* state_stack)
 	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
 
 	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel("Data/Levels/level_01.level");
-	//m_World.AddDwellers(dwellers);
+	m_World.AddDwellers(dwellers);
 
 	m_Player = new TreeDweller;
 	m_Player->Initiate(m_Engine->GetEntityManager().CreateEntity(), TreeDweller::eType::DYNAMIC);
@@ -59,6 +59,7 @@ void Game::InitState(StateStack* state_stack)
 
 void Game::EndState()
 {
+	m_World.CleanUp();
 	CameraHandle::Destroy();
 	SAFE_DELETE(m_Picker);
 }

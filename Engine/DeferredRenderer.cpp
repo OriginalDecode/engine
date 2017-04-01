@@ -32,11 +32,11 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 
 	myCubeMap = myEngine->GetTexture("Data/Textures/T_cubemap_level01.dds");
 
-	myScreenPassShader = myEngine->GetEffect("Data/Shaders/T_Render_To_Texture.json");
+	myScreenPassShader = myEngine->GetEffect("Shaders/T_Render_To_Texture.json");
 
 	myGBuffer = new GBuffer;
 
-	myAmbientPassShader = myEngine->GetEffect("Data/Shaders/T_Deferred_Ambient.json");
+	myAmbientPassShader = myEngine->GetEffect("Shaders/T_Deferred_Ambient.json");
 	myAmbientPassShader->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
 	myAmbientPassShader->AddShaderResource(myGBuffer->myNormal->GetShaderView());
 	myAmbientPassShader->AddShaderResource(myGBuffer->myDepth->GetShaderView());

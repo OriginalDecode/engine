@@ -1,6 +1,6 @@
 {
 	"graphics" : { 
 		"model" : "Data/Game_Models/SM_dev_pillar_50_x_400.fbx",
-		"shader" : "Data/Shaders/T_Deferred_Base.json"
+		"shader" : "Shaders/T_Deferred_Base.json"
 	} 
 }

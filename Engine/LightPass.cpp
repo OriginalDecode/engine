@@ -10,8 +10,8 @@ bool LightPass::Initiate(GBuffer* aGBuffer, Texture* shadow_texture)
 	myContext = myEngine->GetAPI()->GetContext();
 	myGBuffer = aGBuffer;
 #ifdef SNOWBLIND_DX11
-	myEffect[u32(eLight::POINT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_Lightmesh.json");
-	myEffect[u32(eLight::SPOT_LIGHT)] = myEngine->GetEffect("Data/Shaders/T_Deferred_Spotlight.json");
+	myEffect[u32(eLight::POINT_LIGHT)] = myEngine->GetEffect("Shaders/T_Deferred_Lightmesh.json");
+	myEffect[u32(eLight::SPOT_LIGHT)] = myEngine->GetEffect("Shaders/T_Deferred_Spotlight.json");
 
 	myEffect[u32(eLight::POINT_LIGHT)]->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
 	myEffect[u32(eLight::POINT_LIGHT)]->AddShaderResource(myGBuffer->myNormal->GetShaderView());

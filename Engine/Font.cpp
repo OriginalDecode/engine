@@ -21,8 +21,8 @@ CFont::CFont(SFontData* aFontData)
 
 	myData = aFontData;
 	myText = " ";
-	myEffect[0] = myEngine->GetEffect("Data/Shaders/T_Font_Outline.json");
-	myEffect[1] = myEngine->GetEffect("Data/Shaders/T_Font.json");
+	myEffect[0] = myEngine->GetEffect("Shaders/T_Font_Outline.json");
+	myEffect[1] = myEngine->GetEffect("Shaders/T_Font.json");
 
 #ifdef SNOWBLIND_DX11
 	myVertexBufferDesc = new D3D11_BUFFER_DESC();

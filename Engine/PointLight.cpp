@@ -14,8 +14,8 @@ CPointLight::CPointLight()
 
 void CPointLight::Initiate()
 {
-	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/T_Deferred_Lightmesh.json", false);
-	m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx"); //Initiate("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/T_Deferred_Lightmesh.json");
+	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", false);
+	m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx"); //Initiate("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json");
 	m_Model->SetIsLightmesh();
 }
 

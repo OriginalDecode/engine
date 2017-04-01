@@ -16,11 +16,14 @@ bool SkySphere::Initiate(const std::string& model_filepath, const std::string& s
 	Engine::GetInstance()->LoadModel(model_filepath, skysphere_shader, false);
 
 	SkysphereLayer layer;
-	layer.m_Model = Engine::GetInstance()->GetModel(model_filepath);
-	layer.m_Texture = nullptr;
+	layer.m_Model = Engine::GetInstance()->GetModel(model_filepath); 
+	layer.m_Model->SetIsSkysphere(true);
+
+	JSONReader reader("Data/Config/game.json");
+	layer.m_Texture = Engine::GetInstance()->GetTexture("Data/Textures/Skysphere/T_skybox_level04 - Copy.dds");
 
 	m_Layers.Add(layer);
-	if (m_Layers.Size() <= 0)
+	if ( m_Layers.Size() <= 0 )
 		return false;
 
 	myAPI = Engine::GetAPI();
@@ -34,6 +37,7 @@ bool SkySphere::Initiate(const std::string& model_filepath, const std::string& s
 
 bool SkySphere::AddLayer(const std::string& layer_filepath, const std::string& layer_shader)
 {
+	return true;
 	Engine::GetInstance()->LoadModel(layer_filepath, layer_shader, false);
 
 	SkysphereLayer layer;

@@ -62,12 +62,10 @@ inline void BeginTicketMutex(Ticket_Mutex* mutex)
 	{
 	
 	}
-	DL_MESSAGE("Locked : Ticket %d", ticket);
 }
 
 inline void EndTicketMutex(Ticket_Mutex* mutex)
 {
-	DL_MESSAGE("Unlock : Ticket %d", mutex->serving);
 	mutex->serving++;
 }
 

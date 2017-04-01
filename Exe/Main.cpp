@@ -1,6 +1,7 @@
 
 #include <Engine/Engine.h>
 #include <Engine/imgui_impl_dx11.h>
+#include <Engine/VirtualFileSystem.h>
 
 #include <DL_Debug/DL_Debug.h>
 
@@ -58,6 +59,11 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	newApplication = new Application;
 
 	Engine::Create();
+	
+	Engine::GetInstance()->GetVFS().Register("Data/Shaders", "Shaders");
+	Engine::GetInstance()->GetVFS().Register("Data/Textures", "Textures");
+	Engine::GetInstance()->GetVFS().Register("Data/Model", "Models");
+
 	Engine::GetInstance()->Initiate(w, h, anInstance, WindowProc);
 	DL_ASSERT_EXP(newApplication->Initiate(), "Failed to initiate game");
 

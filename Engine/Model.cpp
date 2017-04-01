@@ -68,7 +68,7 @@ void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f
 				myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 				if (!myIsLightMesh)
 				{
-					if (!render_shadows && !myIsLightMesh)
+					if (!render_shadows && !myIsLightMesh && !m_IsSkysphere)
 						mySurfaces[i]->Activate(); //Gets a ton of junk data. What???
 
 					myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
@@ -78,11 +78,12 @@ void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f
 					myContext->Draw(mySurfaces[i]->GetVertexCount(), 0);
 				}
 
-				if (!render_shadows && !myIsLightMesh)
+				if (!render_shadows && !myIsLightMesh && !m_IsSkysphere )
 					mySurfaces[i]->Deactivate();
 			}
 		}
 	}
+
 	for (CModel* child : myChildren)
 	{
 		child->SetPosition(myOrientation.GetPosition());

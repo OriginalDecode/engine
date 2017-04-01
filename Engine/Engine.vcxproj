@@ -726,6 +726,7 @@
     <ClInclude Include="VertexStructs.h" />
     <ClInclude Include="VertexTypes.h" />
     <ClInclude Include="VertexWrapper.h" />
+    <ClInclude Include="VirtualFileSystem.h" />
     <ClInclude Include="Vulkan.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="World.h" />
@@ -830,6 +831,7 @@
     <ClCompile Include="TGA32.cpp" />
     <ClCompile Include="TreeDweller.cpp" />
     <ClCompile Include="TreeNode.cpp" />
+    <ClCompile Include="VirtualFileSystem.cpp" />
     <ClCompile Include="Vulkan.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />

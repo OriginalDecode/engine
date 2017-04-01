@@ -44,7 +44,6 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 
 
 	m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
-	return true;
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
 		CreateEntitiy(it->value["entity"].GetString(), it);
@@ -543,7 +542,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
 	m_Engine->GetThreadpool().AddWork(Work([=] {
-		m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, -2, 0), CU::Vector2f(512, 512));
+		m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, -2, 0), CU::Vector2f(1024, 1024));
 	}));
 	//terrain->AddNormalMap("Data/Textures/t1_n.dds");
 	/*

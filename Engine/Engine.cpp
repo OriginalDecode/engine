@@ -202,8 +202,9 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();
 
-	LoadModel("Data/Model/lightMeshes/cone.fbx", "Data/Shaders/T_Deferred_Spotlight.json", false);
-	LoadModel("Data/Model/lightMeshes/sphere.fbx", "Data/Shaders/T_Deferred_Lightmesh.json", false);
+	LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", false);
+	LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", false);
+
 
 	return true;
 }
@@ -458,6 +459,11 @@ std::string Engine::GetAPIName()
 	return myAPI->GetAPIName();
 }
 
+VirtualFileSystem& Engine::GetVFS()
+{
+	return m_VirtualFileSystem;
+}
+
 Texture* Engine::GetTexture(const std::string& aFilePath)
 {
 	return myAssetsContainer->GetTexture(aFilePath);
@@ -465,7 +471,8 @@ Texture* Engine::GetTexture(const std::string& aFilePath)
 
 Effect* Engine::GetEffect(const std::string& aFilePath)
 {
-	return myAssetsContainer->GetEffect(aFilePath);
+	std::string temp = m_VirtualFileSystem.GetDirectory(aFilePath);
+	return myAssetsContainer->GetEffect(temp);
 }
 
 CModel* Engine::GetModel(const std::string& aFilePath)
@@ -475,11 +482,8 @@ CModel* Engine::GetModel(const std::string& aFilePath)
 
 std::string Engine::LoadModel(std::string aFilePath, std::string effect, bool thread)
 {
-	//m_Threadpool.AddWork(Work([&]() {
 	myAssetsContainer->LoadModel(aFilePath, effect, thread);
 	return aFilePath;
-	/*	}));
-		return aFilePath;*/
 }
 
 std::string string_together(u16 time, u16 to_compare)

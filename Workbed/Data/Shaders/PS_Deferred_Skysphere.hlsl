@@ -24,6 +24,7 @@ struct VS_OUTPUT
 //---------------------------------
 float4 PS(VS_OUTPUT input) : SV_Target
 {
+	return float4(1,1,0,1);
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);
 	float4 normal = NormalTexture.Sample(point_Clamp, input.uv);
 

@@ -13,7 +13,7 @@ bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, c
 #ifdef SNOWBLIND_DX11
 	m_Filename = "Terrain";
 	myIsNULLObject = false;
-	myEffect = myEngine->GetEffect("Data/Shaders/T_Terrain_Base.json");
+	myEffect = myEngine->GetEffect("Shaders/T_Terrain_Base.json");
 
 	TGA32::Image* image = TGA32::Load(aFile.c_str());
 	/*u8* data;*/

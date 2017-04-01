@@ -74,4 +74,5 @@ protected:
 
 	bool myIsNULLObject = true;
 	bool myIsLightMesh = false;
+	bool m_IsSkysphere = false;
 };

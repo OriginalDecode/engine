@@ -8,12 +8,19 @@ class World
 {
 public:
 	World() = default;
+
 	void Initiate(CU::Vector3f position);
+	void CleanUp();
+	
 	void Update(float dt);
 
 	void AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers);
 	void AddDweller(TreeDweller* dweller);
 private:
+
+	CU::GrowingArray<TreeDweller*> m_WorldDwellers;
+
+
 	float gettime(int index);
 	CU::Vector3f m_WorldPos;
 	Synchronizer* m_Synchronizer;

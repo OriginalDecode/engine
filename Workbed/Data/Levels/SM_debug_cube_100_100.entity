@@ -1,6 +1,6 @@
 {
 	"graphics" : { 
 		"model" : "Data/Game_Models/SM_debug_cube_100_100.fbx",
-		"shader" : "Data/Shaders/T_Deferred_Base.json"
+		"shader" : "Shaders/T_Deferred_Base.json"
 	} 
 }

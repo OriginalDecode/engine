@@ -22,7 +22,7 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	myData.diffuseTexture = myEngine->GetTexture("Data/Textures/hp.dds");
 	//myData.diffuseTexture->SetDebugName("ParticleDiffuseTexture");
 	myData.lifeTime = -1.f;
-	myData.shader = myEngine->GetEffect("Data/Shaders/T_Particle.json");
+	myData.shader = myEngine->GetEffect("Shaders/T_Particle.json");
 	myData.particleData = data;
 	myData.size = { 0.f, 0.f, 0.f };
 

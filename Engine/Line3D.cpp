@@ -24,7 +24,7 @@ void CLine3D::Initiate(int aLineAmount /*= 256*/)
 #ifdef SNOWBLIND_DX11
 	myLineAmount = aLineAmount;
 	myAPI = Engine::GetAPI();
-	myEffect =  Engine::GetInstance()->GetEffect("Data/Shaders/T_Line3D.json");
+	myEffect =  Engine::GetInstance()->GetEffect("Shaders/T_Line3D.json");
 	CreateBuffer();
 	CreateConstantBuffer();
 #endif

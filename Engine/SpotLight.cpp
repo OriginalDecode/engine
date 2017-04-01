@@ -5,7 +5,7 @@
 
 CSpotLight::CSpotLight()
 {
-	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/cone.fbx", "Data/Shaders/T_Deferred_Spotlight.json", false);
+	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", false);
 	m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/cone.fbx");
 	m_Model->SetIsLightmesh();
 }

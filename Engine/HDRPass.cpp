@@ -38,9 +38,9 @@ void HDRPass::Initiate()
 		sample_size *= 2.f;
 	}
 
-	m_HDREffect = m_Engine->GetEffect("Data/Shaders/T_Tonemapping.json");
-	m_DownsampleEffect = m_Engine->GetEffect("Data/Shaders/T_Tonemapping_Downsample.json");
-	m_RenderToScreenEffect = m_Engine->GetEffect("Data/Shaders/T_Render_To_Texture.json");
+	m_HDREffect = m_Engine->GetEffect("Shaders/T_Tonemapping.json");
+	m_DownsampleEffect = m_Engine->GetEffect("Shaders/T_Tonemapping_Downsample.json");
+	m_RenderToScreenEffect = m_Engine->GetEffect("Shaders/T_Render_To_Texture.json");
 }
 
 void HDRPass::CleanUp()

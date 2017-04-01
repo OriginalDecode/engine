@@ -43,6 +43,7 @@ public:
 
 	CU::GrowingArray<CSurface*>& GetSurfaces() { return mySurfaces; }
 	CU::GrowingArray<CModel*> GetChildModels() { return myChildren; }
+	void SetIsSkysphere(bool isSkysphere) { m_IsSkysphere = isSkysphere; for ( CModel* child : myChildren ) child->SetIsSkysphere(m_IsSkysphere); }
 
 private:
 	void InitConstantBuffer();

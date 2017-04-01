@@ -20,6 +20,12 @@ void World::Initiate(CU::Vector3f position)
 	m_Timer.CreateTimer();
 	m_Timer.CreateTimer();
 }
+
+void World::CleanUp()
+{
+	m_WorldDwellers.DeleteAll();
+}
+
 #undef _DEBUG
 void World::Update(float dt)
 {
@@ -68,12 +74,20 @@ void World::Update(float dt)
 void World::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
 {
 	m_Octree.AddDwellers(dwellers);
+
+
+	for (TreeDweller* dweller : dwellers)
+	{
+		m_WorldDwellers.Add(dweller);
+	}
 }
 
 void World::AddDweller(TreeDweller* dweller)
 {
 	m_Octree.AddDweller(dweller);
+	m_WorldDwellers.Add(dweller);
 }
+
 
 float World::gettime(int index)
 {

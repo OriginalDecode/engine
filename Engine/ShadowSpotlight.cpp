@@ -48,7 +48,7 @@ bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f&
 		, DXGI_FORMAT_D32_FLOAT
 		, "Shadowlight : DepthStencil ");
 
-	m_ShadowEffect = Engine::GetInstance()->GetEffect("Data/Shaders/T_Render_Depth.json");
+	m_ShadowEffect = Engine::GetInstance()->GetEffect("Shaders/T_Render_Depth.json");
 	m_ShadowEffect->AddShaderResource(m_Holder->GetDepthStencilView());
 
 	return true;

@@ -107,8 +107,9 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 		, "Renderer : Depth");
 
 	mySkysphere = new SkySphere;
-	mySkysphere->Initiate("Data/Model/Skysphere/SM_Skysphere.fbx", "Data/Shaders/T_Skysphere.json", m_Camera);
-	//mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Data/Shaders/T_Skysphere_Layer.json");
+	mySkysphere->Initiate("Data/Model/sky_dome.fbx", "Shaders/T_Skysphere.json"
+		, m_Camera);
+	//mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Shaders/T_Skysphere_Layer.json");
 	if (!mySkysphere)
 		return false;
 
@@ -134,10 +135,10 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 
 
-	m_ShadowEffect = m_Engine->GetEffect("Data/Shaders/T_Render_Depth.json");
+	m_ShadowEffect = m_Engine->GetEffect("Shaders/T_Render_Depth.json");
 
 
-	m_Engine->LoadModel("Data/Model/cube.fbx", "Data/Shaders/T_Deferred_Base.json", true);
+	m_Engine->LoadModel("Data/Model/cube.fbx", "Shaders/T_Deferred_Base.json", true);
 
 	m_PostProcessManager.Initiate();
 	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
@@ -245,6 +246,7 @@ void Renderer::Render()
 	RenderPointlight();
 	RenderSpotlight();
 
+
 	mySkysphere->Render(myPrevFrame, myDepthTexture);
 	RenderParticles();
 
@@ -257,6 +259,8 @@ void Renderer::Render()
 	if (m_PostProcessManager.GetFlags() == 0)
 		myDeferredRenderer->Finalize(0);
 
+	mySkysphere->Render(myPrevFrame, myDepthTexture);
+	RenderParticles();
 
 	//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime())
 

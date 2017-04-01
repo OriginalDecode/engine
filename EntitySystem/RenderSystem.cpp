@@ -14,6 +14,11 @@
 
 #include "../Engine/Engine.h"
 
+#include "../Application/CameraHandle.h"
+#include "DebugComponent.h"
+#ifdef _PROFILE
+#include <easy/profiler.h>
+#endif
 RenderSystem::RenderSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, RenderComponent>>())
 {
@@ -21,21 +26,63 @@ RenderSystem::RenderSystem(EntityManager& anEntityManager)
 }
 
 
-void RenderSystem::Update(float dt)
+void RenderSystem::Update(float /*dt*/)
 {
-	
+#ifdef _PROFILE
+	EASY_FUNCTION(profiler::colors::Blue);
+#endif
 	const CU::GrowingArray<Entity>& entities = GetEntities();
+#ifdef _PROFILE
+	EASY_BLOCK("Entity Loop");
+#endif
 	for (int i = 0; i < entities.Size(); i++)
 	{
+		//bool visible = false;
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
 
+		/*if (myEntityManager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
+		{
+			DebugComponent& debug = GetComponent<DebugComponent>(e);
+			for (const CU::Plane<float>& plane : debug.m_OBB.m_Planes)
+			{
+				CU::Vector4f temp = plane.GetPoint();
+				CU::Vector3f point = { temp.x,temp.y,temp.z };
+				if (CameraHandle::GetInstance()->GetFrustum().Inside(point, 5.f))
+				{
+					visible = true;
+					break;
+				}
+			}
+			
+		}
+		else
+		{
+			CU::Vector3f point = translation.myOrientation.GetPosition() + (render.m_MinPos + render.m_MaxPos);
+			if (!CameraHandle::GetInstance()->GetFrustum().Inside(point, 5.f))
+				continue;
+		}
+
 		
+		if(!visible)
+			continue;*/
 
 		//#LINUS This needs to be profiled.
+#ifdef _PROFILE
+		EASY_BLOCK("RenderSystem : Entity Scale multiplication");
+#endif
 		CU::Matrix44f t = translation.myOrientation;
 		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
+
+		mySynchronizer->AddRenderCommand(RenderCommand(
+			eType::MODEL,
+			render.myModelID,
+			t,
+			render.scale));
+#ifdef _PROFILE
+		EASY_END_BLOCK;
+#endif
 
 		//if (e == 0)
 		{
@@ -50,12 +97,10 @@ void RenderSystem::Update(float dt)
 
 		}
 
-		mySynchronizer->AddRenderCommand(RenderCommand(
-			eType::MODEL,
-			render.myModelID,
-			t,
-			render.scale));
 
 
 	}
+#ifdef _PROFILE
+	EASY_END_BLOCK;
+#endif
 }

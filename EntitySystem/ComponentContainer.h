@@ -10,6 +10,7 @@ struct EntityComponent
 {
 	Entity m_Entity;
 	EntityComponentArray m_EntityArray;
+	bool m_UpdateFlag = true;
 };
 
 
@@ -22,11 +23,11 @@ public:
 	void AddEntity(Entity id);
 	void AddComponent(Entity anEntity, BaseComponent* aComponent, unsigned int aComponentID);
 	BaseComponent& GetComponent(Entity anEntity, unsigned int aComponentID);
-
+	void SetUpdateFlag(Entity entity, bool flag);
 	//have filter with only 1 to check plz
-	bool HasComponent(Entity e, SComponentFilter& filter);
+	bool HasComponent(Entity e, SComponentFilter filter);
 
-	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter& aFilter);
+	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter aFilter);
 
 	void RemoveComponent(Entity entity, BaseComponent* component, u32 component_id);
 

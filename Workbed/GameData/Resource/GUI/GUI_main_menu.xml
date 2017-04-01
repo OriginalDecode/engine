@@ -1,0 +1,68 @@
+<root>
+	
+	<container>
+		<backgroundsprite path="Data/Resource/Texture/Menu/MainMenu/T_background.dds"/> 
+		<vignettesprite path="Data/Resource/Texture/Menu/MainMenu/T_background_vignette.dds"/> 
+		<backgroundsize x="1920" y="1080"/>
+		<isfullscreen value="true"/>
+		<isscrolling value="true"/>
+		
+		<size x="1920" y="1080"/>
+		<position x="0" y="0"/>
+		
+		<widget type="button">
+			<size x="512" y="64"/>
+			<position x="260" y="460"/>
+			<spritenormal path="Data/Resource/Texture/Menu/MainMenu/T_start_singleplayer_button_normal.dds"/>
+			<spritehover path="Data/Resource/Texture/Menu/MainMenu/T_start_singleplayer_button_hover.dds"/>
+			<spritepressed path="Data/Resource/Texture/Menu/MainMenu/T_start_singleplayer_button_pressed.dds"/>
+			<onclick event="start_singleplayer"/>
+		</widget>
+		
+		<widget type="button">
+			<size x="512" y="64"/>
+			<position x="280" y="390"/>
+			<spritenormal path="Data/Resource/Texture/Menu/MainMenu/T_host_multiplayer_button_normal.dds"/>
+			<spritehover path="Data/Resource/Texture/Menu/MainMenu/T_host_multiplayer_button_hover.dds"/>
+			<spritepressed path="Data/Resource/Texture/Menu/MainMenu/T_host_multiplayer_button_pressed.dds"/>
+			<onclick event="host_multiplayer"/>
+		</widget>
+		
+		<widget type="button">
+			<size x="512" y="64"/>
+			<position x="300" y="320"/>
+			<spritenormal path="Data/Resource/Texture/Menu/MainMenu/T_credit_button_normal.dds"/>
+			<spritehover path="Data/Resource/Texture/Menu/MainMenu/T_credit_button_hover.dds"/>
+			<spritepressed path="Data/Resource/Texture/Menu/MainMenu/T_credit_button_pressed.dds"/>
+			<onclick event="credits"/>
+		</widget>
+		
+		<widget type="button">
+			<size x="512" y="64"/>
+			<position x="320" y="250"/>
+			<spritenormal path="Data/Resource/Texture/Menu/MainMenu/T_help_button_normal.dds"/>
+			<spritehover path="Data/Resource/Texture/Menu/MainMenu/T_help_button_hover.dds"/>
+			<spritepressed path="Data/Resource/Texture/Menu/MainMenu/T_help_button_pressed.dds"/>
+			<onclick event="help"/>
+		</widget>
+
+		<widget type="button">
+			<size x="512" y="64"/>
+			<position x="340" y="180"/>
+			<spritenormal path="Data/Resource/Texture/Menu/MainMenu/T_options_button_normal.dds"/>
+			<spritehover path="Data/Resource/Texture/Menu/MainMenu/T_options_button_hover.dds"/>
+			<spritepressed path="Data/Resource/Texture/Menu/MainMenu/T_options_button_pressed.dds"/>
+			<onclick event="options_menu"/>
+		</widget>
+
+		<widget type="button">
+			<size x="512" y="64"/>
+			<position x="360" y="110"/>
+			<spritenormal path="Data/Resource/Texture/Menu/MainMenu/T_quit_button_normal.dds"/>
+			<spritehover path="Data/Resource/Texture/Menu/MainMenu/T_quit_button_hover.dds"/>
+			<spritepressed path="Data/Resource/Texture/Menu/MainMenu/T_quit_button_pressed.dds"/>
+			<onclick event="quit"/>
+		</widget>
+
+	</container>
+</root>

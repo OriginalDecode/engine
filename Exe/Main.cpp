@@ -1,9 +1,19 @@
-#include "../Engine/Engine.h"
+
+#include <Engine/Engine.h>
+#include <Engine/imgui_impl_dx11.h>
+#include <Engine/VirtualFileSystem.h>
+
+#include <DL_Debug/DL_Debug.h>
+
+#include <Application/Application.h>
+
 #include <Windows.h>
 #include <string>
-#include "../Application/Application.h"
-#include "../DL_Debug/DL_Debug.h"
-#include "../Engine/imgui_impl_dx11.h"
+
+#ifdef _PROFILE
+#include <easy/profiler.h>
+#endif
+
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 enum ERawInputType
@@ -27,8 +37,16 @@ enum class EUsagePage
 Application* newApplication = nullptr;
 static bool g_windowactive = false;
 
+//#define _REMOTE_PROFILE
+
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
+#ifdef _PROFILE
+	EASY_PROFILER_ENABLE;
+#ifdef _REMOTE_PROFILE
+	profiler::startListen();
+#endif
+#endif
 	DL_Debug::Debug::Create();
 	//do/uble res16x9 = 1.777777777777777777777777777777778; best
 	const char* inputString = someCommandLines;
@@ -38,10 +56,15 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	float w = 1920;
 	float h = 1080;
-	newApplication = new Application();
+	newApplication = new Application;
 
-	Hex::Engine::Create();
-	Hex::Engine::GetInstance()->Initiate(w, h, anInstance, WindowProc);
+	Engine::Create();
+	
+	Engine::GetInstance()->GetVFS().Register("Data/Shaders", "Shaders");
+	Engine::GetInstance()->GetVFS().Register("Data/Textures", "Textures");
+	Engine::GetInstance()->GetVFS().Register("Data/Model", "Models");
+
+	Engine::GetInstance()->Initiate(w, h, anInstance, WindowProc);
 	DL_ASSERT_EXP(newApplication->Initiate(), "Failed to initiate game");
 
 	PRAWINPUTDEVICELIST device_list = 0;
@@ -62,7 +85,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	//rid[0].usUsagePage = (USHORT)EUsagePage::DEFAULT;
 	//rid[0].usUsage = MOUSE;
 	//rid[0].dwFlags = 0;
-	//rid[0].hwndTarget = Hex::Engine::GetInstance()->GetHWND();
+	//rid[0].hwndTarget = Engine::GetInstance()->GetHWND();
 
 	//if (RegisterRawInputDevices(rid, 1, sizeof(rid[0])) == FALSE)
 	//{
@@ -80,7 +103,6 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	bool applicationIsRunning = true;
 	do
 	{
-
 		ImGui_ImplDX11_NewFrame();
 		while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{
@@ -88,7 +110,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 			DispatchMessage(&msg);
 		}
 
-		if (msg.message == WM_QUIT)
+		if (msg.message == WM_QUIT || msg.message == WM_CLOSE)
 		{
 			applicationIsRunning = false;
 			break;
@@ -99,7 +121,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 			applicationIsRunning = false;
 			break;
 		}
-		Hex::Engine::GetInstance()->Update();
+		Engine::GetInstance()->Update();
 		/*if (g_windowactive)
 		{
 			SetCursorPos(w / 2.f, h / 2.f);
@@ -113,7 +135,15 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	newApplication = nullptr;
 
 	DL_Debug::Debug::Destroy();
-	Hex::Engine::Destroy();
+	Engine::Destroy();
+
+#ifdef _PROFILE
+#ifdef _REMOTE_PROFILE
+	profiler::stopListen();
+#endif
+	profiler::dumpBlocksToFile("file.prof");
+	EASY_PROFILER_DISABLE;
+#endif
 	return 0;
 }
 
@@ -158,7 +188,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		newApplication->OnResume();
 		break;
 	case WM_CLOSE:
-		//newApplication->OnExit();
+		newApplication->OnExit();
 		/* Unsure that this is needed since I can cleanup when the loop cancel */
 		break;
 	case WM_SYSCOMMAND:

@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Game_Models/SM_walkway_trim_a_600.fbx",
+		"shader" : "Shaders/T_Deferred_Base.json"
+	} 
+}

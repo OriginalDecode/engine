@@ -1,0 +1,4 @@
+<root>
+	<Path src = "Data/Resource/Particle/P_emitter_spawn_enemy_1.xml" />
+	<Path src = "Data/Resource/Particle/P_emitter_spawn_enemy_2.xml" />
+</root>

@@ -1,0 +1,11 @@
+<root>
+	<Entity type="Prop" subType="SM_dev_stairs_200_100_50" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Modular_set/Dev_set/SM_dev_stairs_200_100_50.fbx" shaderPath="Data/Resource/Shader/S_effect_pbldebug.fx" />
+		</GraphicsComponent>
+	</Entity>
+	
+	<Physics>
+		<type value="static"/>
+	</Physics>
+</root>

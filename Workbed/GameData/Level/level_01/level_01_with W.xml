@@ -1,0 +1,763 @@
+<root>
+	<scene>
+		<cubemap source="a" />
+		<terrain heightmap="a" texture="a" normalmap="a" />
+		<ice texture="a" />
+		<tutorial source="a" />
+		<lua source="a" />
+		<ai source="a" />
+		<camera x="a" z="a" />
+		<directionallight >
+			<rotation X="50" Y="330" Z="0" />
+			<color R="1" G="0.9568627" B="0.8392157" A="1" />
+		</directionallight>
+		<particle type="smoke" >
+			<position X="3.1" Y="1.157" Z="3.25" />
+		</particle>
+		<prop propType="SM_dev_wall_corner_in_200_x_300" >
+			<position X="3.99" Y="0" Z="12" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="4" Y="4" Z="4" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_stairs_200_100_50" >
+			<position X="13.4" Y="0" Z="-24.23" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_300" >
+			<position X="-4" Y="0" Z="-0.5" />
+			<rotation X="0" Y="0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_corner_in_200_x_300" >
+			<position X="14.94" Y="0" Z="-34.55" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_corner_out_200_x_300" >
+			<position X="16.74" Y="0" Z="-27.64" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_doorway_a_200_x_300" >
+			<position X="-4.25" Y="0" Z="2" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_offset_200_x_300" >
+			<position X="17.01" Y="0" Z="-31.8" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_offset_corner_in_200_x_300" >
+			<position X="17.86" Y="0" Z="-21.39" />
+			<rotation X="0" Y="0.8995641" Z="0" W="0.4367888" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_offset_corner_out_200_x_300" >
+			<position X="19.67" Y="0" Z="-24.73" />
+			<rotation X="0" Y="0.8779762" Z="0" W="0.4787043" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="0" Y="0" Z="0" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="0" Y="0" Z="4" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="4" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-4" Y="0" Z="2" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_doorway_a_200_x_300" >
+			<position X="-4.25" Y="0" Z="-2" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-4" Y="0" Z="-6" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="-6" />
+			<rotation X="0" Y="0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="2" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="0" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-2" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-4" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-6" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="-4" Y="0" Z="3" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="-4" Y="0" Z="-1" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-4" Y="0" Z="4" />
+			<rotation X="0" Y="0.7071066" Z="0" W="-0.7071069" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-4" Y="3" Z="-4" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-4" Y="3" Z="0" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-4" Y="0" Z="-2" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="4" Y="4" Z="0" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="-4" Y="3" Z="2.5" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="-4" Y="3" Z="-0.5" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="-8" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="-10" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-8" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="2" Y="0" Z="4" />
+			<rotation X="0" Y="0.7071066" Z="0" W="-0.7071069" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="0" Y="3" Z="4" />
+			<rotation X="0" Y="0.7071066" Z="0" W="-0.7071069" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="2" Y="0" Z="8" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="2" Y="0" Z="6" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="2" Y="0" Z="8" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="4" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="6" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="8" />
+			<rotation X="0" Y="0.7071066" Z="0" W="-0.7071069" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="0" Y="0" Z="8" />
+			<rotation X="0" Y="0.7071066" Z="0" W="-0.7071069" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="2" Y="4" Z="8" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="4" Y="0" Z="-8" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-10" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-12" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="-12" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="-14" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_300" >
+			<position X="-6" Y="0" Z="-0.5" />
+			<rotation X="0" Y="0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_300" >
+			<position X="-7.5" Y="0" Z="-1" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_300" >
+			<position X="-7.5" Y="0" Z="1" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_300" >
+			<position X="-8" Y="0" Z="2.5" />
+			<rotation X="0" Y="-0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_300" >
+			<position X="-6" Y="0" Z="2.5" />
+			<rotation X="0" Y="-0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_300" >
+			<position X="-7.5" Y="0" Z="-3" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_300" >
+			<position X="-7.5" Y="0" Z="-5" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_300" >
+			<position X="-8" Y="0" Z="-1.5" />
+			<rotation X="0" Y="-0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_300" >
+			<position X="-6" Y="0" Z="-1.5" />
+			<rotation X="0" Y="-0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_300" >
+			<position X="-6" Y="0" Z="-4.5" />
+			<rotation X="0" Y="-0.7071066" Z="0" W="-0.7071069" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_300" >
+			<position X="-4" Y="0" Z="-4.5" />
+			<rotation X="0" Y="-0.7071066" Z="0" W="-0.7071069" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-4" Y="0" Z="-14" />
+			<rotation X="0" Y="-0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="-20" />
+			<rotation X="0" Y="-0.7071066" Z="0" W="-0.7071069" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-4" Y="0" Z="-21" />
+			<rotation X="0" Y="-1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-4" Y="0" Z="-15" />
+			<rotation X="0" Y="-1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-4" Y="3" Z="-17" />
+			<rotation X="0" Y="-1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-4" Y="3" Z="-19" />
+			<rotation X="0" Y="-1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="0" Y="4" Z="-4" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="4" Y="4" Z="-8" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="4" Y="0" Z="-4" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="4" Y="0" Z="4" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="4" Y="0" Z="0" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="3" Z="4" />
+			<rotation X="0" Y="0.7071066" Z="0" W="-0.7071069" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="0" Y="4" Z="0" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="0" Y="4" Z="4" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="4" Y="4" Z="-4" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="0" Y="0" Z="-4" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="0" Y="0" Z="-8" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-14" />
+			<rotation X="0" Y="-0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="4" Y="0" Z="-16" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="0" Y="0" Z="-16" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="8" Y="0" Z="-16" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="8" Y="0" Z="-12" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="6" Y="0" Z="-20" />
+			<rotation X="0" Y="-0.7071066" Z="0" W="-0.7071069" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="0" Y="0" Z="-20" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="6" Y="0" Z="-13" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="6" Y="0" Z="-19" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="6" Y="3" Z="-17" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="6" Y="3" Z="-15" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="0" Y="4" Z="-8" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="4" Y="4" Z="-12" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="0" Y="4" Z="-12" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="0" Y="4" Z="-16" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="4" Y="4" Z="-16" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="4" Y="4" Z="-20" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="0" Y="4" Z="-20" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="8" Y="4" Z="-16" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="8" Y="4" Z="-12" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="12" Y="4" Z="-16" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="12" Y="4" Z="-12" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="12" Y="0" Z="-16" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="6" Y="0" Z="-15" />
+			<rotation X="0" Y="-0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="8" Y="0" Z="-15" />
+			<rotation X="0" Y="-0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="8" Y="0" Z="-19" />
+			<rotation X="0" Y="-0.7071066" Z="0" W="-0.7071069" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="10" Y="0" Z="-19" />
+			<rotation X="0" Y="-0.7071066" Z="0" W="-0.7071069" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="10" Y="0" Z="-17" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="10" Y="0" Z="-15" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="12" Y="0" Z="-12" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-4" Y="0" Z="-19" />
+			<rotation X="0" Y="0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-8" Y="0" Z="-17" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-8" Y="0" Z="-19" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-6" Y="0" Z="-19" />
+			<rotation X="0" Y="0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-6" Y="0" Z="-15" />
+			<rotation X="0" Y="-0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-8" Y="0" Z="-15" />
+			<rotation X="0" Y="-0.7071068" Z="0" W="0.7071067" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="-4" Y="0" Z="-15" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-20" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-22" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="-22" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="-24" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="4" Y="0" Z="-20" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="0" Y="0" Z="-24" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="4" Y="0" Z="-24" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="4" Y="0" Z="-28" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="0" Y="0" Z="-28" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="-28" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="-26" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="-30" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="-2" Y="0" Z="-32" />
+			<rotation X="0" Y="1" Z="0" W="-1.629207E-07" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-24" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-28" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-26" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_wall_200_x_400" >
+			<position X="4" Y="0" Z="-30" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="0" Y="4" Z="-24" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="4" Y="4" Z="-24" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="4" Y="4" Z="-28" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_ceiling_400_400" >
+			<position X="0" Y="4" Z="-28" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="0" Y="0" Z="-12" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="4" Y="0" Z="-12" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_pillar_50_x_300" >
+			<position X="14.159" Y="-0.342" Z="-27.663" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_pillar_50_x_300" >
+			<position X="19.37013" Y="0.8601446" Z="-3.16" />
+			<rotation X="0" Y="0" Z="-0.6330211" W="-0.7741346" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="18.79" Y="0" Z="7.54" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="18.79" Y="0" Z="-0.46" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="22.79" Y="0" Z="-0.46" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="22.79" Y="0" Z="3.54" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="22.79" Y="0" Z="7.54" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_floor_400_400" >
+			<position X="18.79" Y="0" Z="3.54" />
+			<rotation X="0" Y="0" Z="0" W="1" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_pillar_50_x_300" >
+			<position X="18.20777" Y="2.332221" Z="-0.502819" />
+			<rotation X="-0.9396547" Y="0.0778423" Z="0.09195979" W="0.320208" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_pillar_50_x_300" >
+			<position X="17.00051" Y="1.203273" Z="1.66" />
+			<rotation X="-0.4793211" Y="0.1356517" Z="-0.5341753" W="0.683013" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_pillar_50_x_300" >
+			<position X="17.38764" Y="2.309598" Z="1.87" />
+			<rotation X="-0.8093217" Y="-0.3030978" Z="-0.478399" W="-0.1557712" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+		<prop propType="SM_dev_pillar_50_x_300" >
+			<position X="18.92815" Y="1.187363" Z="4.451411" />
+			<rotation X="0.6163858" Y="-0.6716377" Z="-0.3603578" W="0.1977724" />
+			<scale X="1" Y="1" Z="1" />
+		</prop>
+	</scene>
+</root>

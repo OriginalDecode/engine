@@ -1,0 +1,25 @@
+<root>
+	<Entity type="Trigger" subType="upgrade_grenade_launcher_1" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Prop/SM_dev_box.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+		</GraphicsComponent>
+		
+		<TriggerComponent>
+			<Trigger type="upgrade" oneTimeTrigger="true"/>
+		</TriggerComponent>
+		
+		<UpgradeComponent>
+			<Weapon type ="grenade_launcher"/>
+			<ClipSizeModifier value="5" />
+			<AmmoTotalModifier value="13" />
+			<DamageModifier value="2" />
+			<ShootTimeModifier value="-0.1" />
+		</UpgradeComponent>
+		
+		<PhysicsComponent>
+			<min x="0" y="0" z="0"/>
+			<max x="1" y="1" z="1"/>
+			<type value="trigger"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

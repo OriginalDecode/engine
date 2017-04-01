@@ -10,19 +10,24 @@
 
 TreeNode::~TreeNode()
 {
+
 	for (s32 i = 0; i < 8; i++)
 	{
 		delete m_Children[i];
 		m_Children[i] = nullptr;
-
 	}
+	Engine::GetInstance()->GetEntityManager().UnRegisterManager(&m_NodeEntityManager);
+
 }
 
 void TreeNode::Initiate(float halfwidth, Octree* octree)
 {
 	m_HalfWidth = halfwidth;
-	m_Synchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
+	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
+
 	m_NodeEntityManager.Initiate();
+	Engine::GetInstance()->GetEntityManager().RegisterManager(&m_NodeEntityManager);
+
 	m_Octree = octree;
 	for (s32 i = 0; i < 8; i++)
 	{
@@ -75,13 +80,16 @@ void TreeNode::Update(float dt)
 
 	RenderBox();
 
-	Hex::Engine::GetInstance()->GetEntityManager().SetActiveNodeManager(&m_NodeEntityManager);
+	Engine::GetInstance()->GetEntityManager().SetActiveNodeManager(&m_NodeEntityManager);
 	m_NodeEntityManager.Update(dt);
 
-	const EntityList& entities = m_NodeEntityManager.GetEntities(CreateFilter<Requires<TranslationComponent>>());
+	//const EntityList& entities = m_NodeEntityManager.GetEntities(CreateFilter<Requires<TranslationComponent>>());
 
 	for (TreeDweller* dweller : m_Dwellers)
 	{
+		if ( dweller->GetType() == TreeDweller::eType::STATIC )
+			continue;
+
 		bool found = false;
 		const ComponentList& list = dweller->GetComponentPairList();
 		for (const ComponentPair& pair : list)
@@ -127,7 +135,7 @@ void TreeNode::Update(float dt)
 		/*
 		if (m_Parent && !m_Parent->GetParent())
 		{
-			Hex::Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
+			Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
 				node->Update(dt); }));
 		}
 		else/**/
@@ -277,10 +285,11 @@ bool TreeNode::InsideNode(TreeDweller* dweller)
 	const float cBack = dweller_position.z + dweller_bounds.z;
 	const float cFront = dweller_position.z - dweller_bounds.z;
 
-	return (cLeft > bLeft
-		&& cRight < bRight
-		&& cBottom > bBottom
-		&& cTop < bTop
-		&& cFront > bFront
-		&& cBack < bBack);
+	bool left = cLeft >= bLeft;
+	bool right = cRight <= bRight;
+	bool bottom = cBottom >= bBottom;
+	bool top = cTop <= bTop;
+	bool front = cFront >= bFront;
+	bool back = cBack <= bBack;
+	return (left && right && bottom && top && front && back);
 }

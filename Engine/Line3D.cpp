@@ -23,8 +23,8 @@ void CLine3D::Initiate(int aLineAmount /*= 256*/)
 {
 #ifdef SNOWBLIND_DX11
 	myLineAmount = aLineAmount;
-	myAPI = Hex::Engine::GetAPI();
-	myEffect =  Hex::Engine::GetInstance()->GetEffect("Data/Shaders/T_Line3D.json");
+	myAPI = Engine::GetAPI();
+	myEffect =  Engine::GetInstance()->GetEffect("Shaders/T_Line3D.json");
 	CreateBuffer();
 	CreateConstantBuffer();
 #endif
@@ -202,7 +202,7 @@ void CLine3D::CreateBuffer()
 	myAPI->SetDebugName(myVertexLayout, "Line3D Vertex Layout");
 	myAPI->HandleErrors(hr, "Failed to create VertexLayout");
 
-	myVertexBuffer = new Hex::VertexBufferWrapper();
+	myVertexBuffer = new VertexBufferWrapper();
 	myVertexBuffer->myStride = sizeof(SLinePoint);
 	myVertexBuffer->myByteOffset = 0;
 	myVertexBuffer->myStartSlot = 0;
@@ -240,14 +240,14 @@ void CLine3D::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Mat
 	myConstantStruct->projection = aCameraProjection;
 
 	D3D11_MAPPED_SUBRESOURCE msr;
-	Hex::Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	if (msr.pData != nullptr)
 	{
 		VertexBaseStruct* ptr = (VertexBaseStruct*)msr.pData;
 		memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(VertexBaseStruct));
 	}
 
-	Hex::Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
+	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
 #endif
 }
 

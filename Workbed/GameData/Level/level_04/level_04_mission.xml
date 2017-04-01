@@ -1,0 +1,317 @@
+<root>
+	<Mission id="0" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="remove" gid="102" timeBeforeStarting="0" />
+			<Event type="text" text="Force field removed#Shut down the main frame" timeBeforeStarting="0" timeForText="10" />
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="-1.02" positiony="1.25" positionz="65.71" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+			<Event type="text" text="" timeBeforeStarting="0" timeForText="0" soundevent="Compromised"/>
+		</EndEvent>
+	</Mission>
+	<Mission id="1" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="text" text="Remove the force field to#the server room" timeBeforeStarting="0" timeForText="5" />
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="1.933" positiony="1.125" positionz="27.607" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+			<Event type="text" text="" timeBeforeStarting="0" timeForText="0" soundevent="IntruderAlert"/>
+		</EndEvent>
+	</Mission>
+	<Mission id="2" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="text" text="Shut down in:" timeBeforeStarting="0" timeForText="15" soundevent="ShutDownInitiated"/>
+			<Event type="text" text="5" timeBeforeStarting="0.9" timeForText="15" soundevent="Five"/>
+			<Event type="text" text="4" timeBeforeStarting="0.9" timeForText="15" soundevent="Four"/>
+			<Event type="text" text="3" timeBeforeStarting="0.9" timeForText="15" soundevent="Three"/>
+			<Event type="text" text="2" timeBeforeStarting="0.9" timeForText="2" soundevent="Two"/>
+			<Event type="text" text="Main frame shut down interrupted.#Hack the first access point" timeBeforeStarting="2" timeForText="11" soundevent="ShutdownAborted"/>
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+			<Event type="text" text="" timeBeforeStarting="2" timeForText="0" soundevent="ProtectMachina"/>
+			<Event type="marker" show="true" timeBeforeStarting="2.7" positionx="-24.19" positiony="1" positionz="46.72" />
+			<Event type="add" gid="669" timeBeforeStarting="0" />
+			<Event type="spawn" gid="501" timeBeforeStarting="0" />
+			<Event type="spawn" gid="502" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="500" timeBeforeStarting="2.5" />
+			<Event type="spawn" gid="503" timeBeforeStarting="1.5" />
+			<Event type="spawn" gid="504" timeBeforeStarting="1.5" />
+			<Event type="spawn" gid="505" timeBeforeStarting="1" />
+		</EndEvent>
+	</Mission>
+	<Mission id="3" type="defend" value="50" shouldLoopMissionEvents="true" >
+		<StartEvent >
+			<Event type="text" text="Defend the access point" timeBeforeStarting="0" timeForText="6" />
+		</StartEvent>
+		<MissionEvent >
+			<Event type="text" text="" timeBeforeStarting="0" timeForText="0" soundevent="IntruderAlert2"/>
+			<Event type="spawn" gid="506" timeBeforeStarting="5" />
+			<Event type="spawn" gid="507" timeBeforeStarting="2" />
+			<Event type="spawn" gid="508" timeBeforeStarting="2.5" />
+			<Event type="spawn" gid="506" timeBeforeStarting="2" />
+			<Event type="spawn" gid="507" timeBeforeStarting="1.5" />
+			<Event type="spawn" gid="508" timeBeforeStarting="2" />
+			<Event type="spawn" gid="507" timeBeforeStarting="1.5" />
+			<Event type="spawn" gid="508" timeBeforeStarting="1.5" />
+			<Event type="spawn" gid="506" timeBeforeStarting="1.5" />
+			<Event type="spawn" gid="508" timeBeforeStarting="1.5" />
+			<Event type="spawn" gid="509" timeBeforeStarting="8" />
+			<Event type="spawn" gid="510" timeBeforeStarting="2.5" />
+			<Event type="spawn" gid="511" timeBeforeStarting="2.5" />
+			<Event type="spawn" gid="510" timeBeforeStarting="2" />
+			<Event type="spawn" gid="511" timeBeforeStarting="2" />
+			<Event type="spawn" gid="509" timeBeforeStarting="2" />
+			<Event type="spawn" gid="508" timeBeforeStarting="5" />
+			<Event type="spawn" gid="506" timeBeforeStarting="1.25" />
+			<Event type="text" text="" timeBeforeStarting="4" timeForText="0" soundevent="IntruderAlert2"/>
+			<Event type="spawn" gid="508" timeBeforeStarting="5" />
+		</MissionEvent>
+		<EndEvent >
+			<Event type="text" text="" timeBeforeStarting="0" timeForText="0" soundevent="Play_Positive"/>
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="-1" positiony="8.1" positionz="74.163" />
+			<Event type="add" gid="55" timeBeforeStarting="0" />
+			<Event type="text" text="First virus successfully uploaded#The main frame has set up#several defence measures#Find and interrupt them all" timeBeforeStarting="2" timeForText="20" />
+			<Event type="spawn" gid="512" timeBeforeStarting="1" />
+			<Event type="spawn" gid="516" timeBeforeStarting="0" />
+			<Event type="spawn" gid="513" timeBeforeStarting="2" />
+			<Event type="spawn" gid="517" timeBeforeStarting="0.2" />
+			<Event type="spawn" gid="514" timeBeforeStarting="2" />
+			<Event type="spawn" gid="515" timeBeforeStarting="3" />
+			<Event type="remove" gid="53" timeBeforeStarting="0" />
+		</EndEvent>
+	</Mission>
+	<Mission id="4" type="defend" value="15" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="text" text="Shut down in:" timeBeforeStarting="0" timeForText="15" soundevent="ShutdownResumed"/>
+			<Event type="text" text="5" timeBeforeStarting="0.6" timeForText="15" soundevent="Five"/>
+			<Event type="text" text="4" timeBeforeStarting="0.9" timeForText="15" soundevent="Four"/>
+			<Event type="text" text="3" timeBeforeStarting="0.9" timeForText="15" soundevent="Three"/>
+			<Event type="text" text="2" timeBeforeStarting="0.9" timeForText="2" soundevent="Two"/>
+			<Event type="text" text="1" timeBeforeStarting="0.9" timeForText="2" soundevent="One"/>
+			<Event type="text" text="Main frame successfully shut down" timeBeforeStarting="2" timeForText="15" soundevent="ShutdownComplete"/>
+			<Event type="add" gid="98" timeBeforeStarting="5" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+		</EndEvent>
+	</Mission>
+	<Mission id="5" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="text" text="First console override#complete" timeBeforeStarting="0" timeForText="6" />
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="-1" positiony="7.1" positionz="44.113" />
+			<Event type="add" gid="56" timeBeforeStarting="0" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+			<Event type="text" text="" timeBeforeStarting="0" timeForText="0" soundevent="Play_Positive"/>
+			<Event type="spawn" gid="518" timeBeforeStarting="1" />
+			<Event type="text" text="Override the second#console" timeBeforeStarting="1.5" timeForText="6" />
+			<Event type="spawn" gid="522" timeBeforeStarting="0" />
+			<Event type="spawn" gid="523" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="519" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="520" timeBeforeStarting="1.5" />
+			<Event type="spawn" gid="521" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="526" timeBeforeStarting="0.35" />
+			<Event type="spawn" gid="524" timeBeforeStarting="5" />
+			<Event type="spawn" gid="525" timeBeforeStarting="0.35" />
+			<Event type="text" text="" timeBeforeStarting="1" timeForText="0" soundevent="IntruderAlert2"/>
+		</EndEvent>
+	</Mission>
+	<Mission id="6" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="text" text="Second console override#complete" timeBeforeStarting="0" timeForText="6" />
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="23" positiony="7.25" positionz="70.69" />
+			<Event type="add" gid="670" timeBeforeStarting="0" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+			<Event type="spawn" gid="527" timeBeforeStarting="1" />
+			<Event type="spawn" gid="530" timeBeforeStarting="0.3" />
+			<Event type="text" text="Hack the second access#point" timeBeforeStarting="3.5" timeForText="6" />
+			<Event type="spawn" gid="528" timeBeforeStarting="0" />
+			<Event type="spawn" gid="529" timeBeforeStarting="0.2" />
+		</EndEvent>
+	</Mission>
+	<Mission id="7" type="defend" value="60" shouldLoopMissionEvents="true" >
+		<StartEvent >
+			<Event type="text" text="Defend the access point" timeBeforeStarting="0" timeForText="6" />
+		</StartEvent>
+		<MissionEvent >
+			<Event type="text" text="" timeBeforeStarting="0" timeForText="0" soundevent="IntruderAlert"/>
+			<Event type="spawn" gid="533" timeBeforeStarting="5" />
+			<Event type="spawn" gid="531" timeBeforeStarting="2" />
+			<Event type="spawn" gid="532" timeBeforeStarting="2.5" />
+			<Event type="spawn" gid="531" timeBeforeStarting="1.5" />
+			<Event type="spawn" gid="532" timeBeforeStarting="2" />
+			<Event type="spawn" gid="534" timeBeforeStarting="4.5" />
+			<Event type="spawn" gid="535" timeBeforeStarting="2" />
+			<Event type="spawn" gid="531" timeBeforeStarting="2.75" />
+			<Event type="spawn" gid="532" timeBeforeStarting="2" />
+			<Event type="spawn" gid="537" timeBeforeStarting="3" />
+			<Event type="spawn" gid="538" timeBeforeStarting="2.5" />
+			<Event type="spawn" gid="537" timeBeforeStarting="2" />
+			<Event type="spawn" gid="536" timeBeforeStarting="4" />
+			<Event type="spawn" gid="534" timeBeforeStarting="4" />
+			<Event type="spawn" gid="535" timeBeforeStarting="3" />
+			<Event type="spawn" gid="536" timeBeforeStarting="2" />
+			<Event type="text" text="" timeBeforeStarting="3" timeForText="0" soundevent="IntruderAlert2"/>
+		</MissionEvent>
+		<EndEvent >
+			<Event type="text" text="" timeBeforeStarting="0" timeForText="0" soundevent="Play_Positive"/>
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="-1" positiony="0.25" positionz="106.867" />
+			<Event type="add" gid="58" timeBeforeStarting="0" />
+			<Event type="text" text="Second virus successfully#uploaded.#Override the third#console" timeBeforeStarting="2" timeForText="10" />
+			<Event type="spawn" gid="540" timeBeforeStarting="3" />
+			<Event type="spawn" gid="541" timeBeforeStarting="2" />
+			<Event type="spawn" gid="542" timeBeforeStarting="2" />
+			<Event type="spawn" gid="539" timeBeforeStarting="4" />
+			<Event type="remove" gid="57" timeBeforeStarting="0" />
+		</EndEvent>
+	</Mission>
+	<Mission id="8" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="-1" positiony="6.25" positionz="97.13" />
+			<Event type="text" text="Third console override#complete" timeBeforeStarting="0" timeForText="6" />
+			<Event type="text" text="Hack the third access#point on the#second floor" timeBeforeStarting="4" timeForText="6" />
+			<Event type="add" gid="671" timeBeforeStarting="0" />
+			<Event type="text" text="" timeBeforeStarting="0" timeForText="0" soundevent="ProtectMachina"/>
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+		</EndEvent>
+	</Mission>
+	<Mission id="9" type="defend" value="80" shouldLoopMissionEvents="true" >
+		<StartEvent >
+			<Event type="text" text="Defend the access point" timeBeforeStarting="0" timeForText="6" />
+		</StartEvent>
+		<MissionEvent >
+			<Event type="text" text="" timeBeforeStarting="0" timeForText="0" soundevent="IntruderAlert"/>
+			<Event type="spawn" gid="543" timeBeforeStarting="6" />
+			<Event type="spawn" gid="548" timeBeforeStarting="0.2" />
+			<Event type="spawn" gid="546" timeBeforeStarting="0" />
+			<Event type="spawn" gid="544" timeBeforeStarting="0.3" />
+			<Event type="spawn" gid="547" timeBeforeStarting="0" />
+			<Event type="spawn" gid="545" timeBeforeStarting="0.1" />
+			<Event type="spawn" gid="556" timeBeforeStarting="6" />
+			<Event type="spawn" gid="555" timeBeforeStarting="2" />
+			<Event type="spawn" gid="553" timeBeforeStarting="2" />
+			<Event type="spawn" gid="557" timeBeforeStarting="3" />
+			<Event type="spawn" gid="558" timeBeforeStarting="4" />
+			<Event type="spawn" gid="543" timeBeforeStarting="6" />
+			<Event type="spawn" gid="548" timeBeforeStarting="0.2" />
+			<Event type="spawn" gid="546" timeBeforeStarting="0" />
+			<Event type="spawn" gid="543" timeBeforeStarting="6" />
+			<Event type="spawn" gid="549" timeBeforeStarting="7" />
+			<Event type="spawn" gid="550" timeBeforeStarting="0" />
+			<Event type="spawn" gid="551" timeBeforeStarting="7" />
+			<Event type="spawn" gid="552" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="553" timeBeforeStarting="0.1" />
+			<Event type="spawn" gid="554" timeBeforeStarting="0.2" />
+			<Event type="spawn" gid="555" timeBeforeStarting="0.1" />
+			<Event type="spawn" gid="556" timeBeforeStarting="0.1" />
+			<Event type="spawn" gid="551" timeBeforeStarting="7" />
+			<Event type="spawn" gid="553" timeBeforeStarting="0.1" />
+			<Event type="spawn" gid="555" timeBeforeStarting="0.1" />
+			<Event type="spawn" gid="553" timeBeforeStarting="0.1" />
+			<Event type="spawn" gid="543" timeBeforeStarting="7" />
+			<Event type="spawn" gid="548" timeBeforeStarting="2" />
+			<Event type="spawn" gid="546" timeBeforeStarting="2" />
+			<Event type="spawn" gid="543" timeBeforeStarting="1.5" />
+			<Event type="spawn" gid="549" timeBeforeStarting="3" />
+			<Event type="text" text="" timeBeforeStarting="3.5" timeForText="0" soundevent="ProtectMachina"/>
+			<Event type="text" text="" timeBeforeStarting="7" timeForText="0" soundevent="IntruderAlert2"/>
+		</MissionEvent>
+		<EndEvent >
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="-1" positiony="6.1" positionz="87.082" />
+			<Event type="add" gid="60" timeBeforeStarting="0" />
+			<Event type="text" text="Last virus successfully uploaded.#Override the fourth#console" timeBeforeStarting="0" timeForText="10" soundevent="Play_Positive"/>
+			<Event type="remove" gid="59" timeBeforeStarting="0" />
+			<Event type="text" text="" timeBeforeStarting="0" timeForText="0" soundevent="Compromised"/>
+		</EndEvent>
+	</Mission>
+	<Mission id="10" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="-12.916" positiony="-3.25" positionz="71" />
+			<Event type="text" text="Fourth console override#complete" timeBeforeStarting="0" timeForText="6" />
+			<Event type="add" gid="61" timeBeforeStarting="0" />
+			<Event type="text" text="Override the fifth#console" timeBeforeStarting="3.5" timeForText="6" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+			<Event type="spawn" gid="450" timeBeforeStarting="2" />
+			<Event type="spawn" gid="451" timeBeforeStarting="0.2" />
+			<Event type="spawn" gid="453" timeBeforeStarting="3" />
+			<Event type="spawn" gid="452" timeBeforeStarting="1" />
+			<Event type="text" text="" timeBeforeStarting="0" timeForText="0" soundevent="ProtectMachina"/>
+		</EndEvent>
+	</Mission>
+	<Mission id="11" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="text" text="Fifth console override#complete" timeBeforeStarting="0" timeForText="6" />
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="10.827" positiony="-3.25" positionz="71" />
+			<Event type="add" gid="63" timeBeforeStarting="0" />
+			<Event type="text" text="Override the Sixth#console" timeBeforeStarting="2.8" timeForText="6" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+			<Event type="spawn" gid="419" timeBeforeStarting="0" />
+			<Event type="spawn" gid="416" timeBeforeStarting="0" />
+			<Event type="spawn" gid="418" timeBeforeStarting="1" />
+			<Event type="spawn" gid="415" timeBeforeStarting="0.1" />
+			<Event type="spawn" gid="417" timeBeforeStarting="1" />
+			<Event type="spawn" gid="414" timeBeforeStarting="0.5" />
+			<Event type="spawn" gid="413" timeBeforeStarting="1.5" />
+		</EndEvent>
+	</Mission>
+	<Mission id="12" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="marker" show="true" timeBeforeStarting="0" positionx="-1.02" positiony="1.25" positionz="65.71" />
+			<Event type="text" text="Sixth console override#complete" timeBeforeStarting="0" timeForText="6" />
+			<Event type="add" gid="54" timeBeforeStarting="0" />
+			<Event type="text" text="Shut down the main frame#for good" timeBeforeStarting="3.5" timeForText="6" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+		</EndEvent>
+	</Mission>
+	<Mission id="13" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="add" gid="53" timeBeforeStarting="0" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+		</EndEvent>
+	</Mission>
+	<Mission id="14" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="add" gid="57" timeBeforeStarting="0" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+		</EndEvent>
+	</Mission>
+	<Mission id="15" type="event" value="0" shouldLoopMissionEvents="false" >
+		<StartEvent >
+			<Event type="add" gid="59" timeBeforeStarting="0" />
+		</StartEvent>
+		<MissionEvent >
+		</MissionEvent>
+		<EndEvent >
+		</EndEvent>
+	</Mission>
+</root>

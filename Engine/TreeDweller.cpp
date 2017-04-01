@@ -2,8 +2,9 @@
 #include "TreeDweller.h"
 #include "TranslationComponent.h"
 
-void TreeDweller::Initiate(Entity entity)
+void TreeDweller::Initiate(Entity entity, eType type)
 {
+	m_Type = type;
 	m_Entity = entity;
 }
 

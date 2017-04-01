@@ -1,0 +1,12 @@
+<root>
+	<Entity type="Prop" subType="SM_coridor_lamp_400" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Lamps/SM_coridor_lamp_400.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+			<RoomType value="static"/>
+		</GraphicsComponent>
+		<PhysicsComponent>
+			<type value="static"/>
+		</PhysicsComponent>
+	</Entity>
+	
+</root>

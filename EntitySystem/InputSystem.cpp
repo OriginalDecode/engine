@@ -16,7 +16,7 @@ InputSystem::InputSystem(EntityManager& anEntityManager)
 
 void InputSystem::Update(float /*delta_time*/)
 {
-	//if (Hex::Engine::GetInstance()->IsDebugMenuActive())
+	//if (Engine::GetInstance()->IsDebugMenuActive())
 	//	return;
 
 	const CU::GrowingArray<Entity>& entities = GetEntities();

@@ -8,10 +8,8 @@
 
 typedef CU::GrowingArray<Entity> EntityArray;
 class NodeEntityManager;
-namespace Hex
-{
-	class Synchronizer;
-}
+
+class Synchronizer;
 class PhysicsManager;
 class BaseSystem;
 class EntityManager
@@ -26,7 +24,7 @@ public:
 	Entity CreateEntity();
 	void Clear();
 	void Update(float aDelta);
-	const EntityArray& GetEntities(SComponentFilter& aFilter);
+	const EntityArray& GetEntities(SComponentFilter aFilter);
 
 	const EntityArray& GetEntities();
 
@@ -49,8 +47,16 @@ public:
 
 	void SetActiveNodeManager(NodeEntityManager* manager) { m_ActiveNode = manager; }
 	NodeEntityManager* GetNodeManager() { return m_ActiveNode; }
+	
+	void RegisterManager(NodeEntityManager* manager);
+	void UnRegisterManager(NodeEntityManager* manager);
+	NodeEntityManager* GetManager(s32 index);
+
 private:
 	NodeEntityManager* m_ActiveNode = nullptr;
+
+	CU::GrowingArray<NodeEntityManager*> m_RegisteredManagers;
+
 
 	Entity myNextEntity = 0;
 	CComponentContainer* myComponents = nullptr;

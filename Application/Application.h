@@ -1,11 +1,9 @@
 #pragma once
 #include <StateStack.h>
 #include "Game.h"
-namespace Hex
-{
-	class Engine;
-	class Synchronizer;
-};
+
+class Engine;
+class Synchronizer;
 
 namespace std
 {
@@ -15,7 +13,7 @@ class Application
 {
 public:
 	Application() = default;
-	
+
 	bool Initiate();
 
 	void Update();
@@ -35,11 +33,10 @@ private:
 	volatile bool myQuitFlag = false;
 
 	Game m_Game;
-	Hex::Engine* myEngine;
-	Hex::Synchronizer* mySynchronizer;
+	Engine* myEngine;
+	Synchronizer* mySynchronizer;
 
 	StateStack m_States;
-
 
 };
 

@@ -34,9 +34,15 @@ void Octree::Update(float dt)
 	for (TreeNode* node : m_GarbageNodes)
 	{
 		delete node;
+		node_count--;
 	}
 	m_GarbageNodes.RemoveAll();
 	
+
+
+	std::stringstream ss;
+	ss << "node count : " << node_count << " + Root";
+	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::TEXT, ss.str(), CU::Vector2f(0.85f, 0.f)));
 
 	m_Root.Update(dt);
 }
@@ -128,7 +134,7 @@ void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 	
 }
 
-void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
+void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 /*depth*/)
 {
 	assert(!dweller->GetFirstNode() && "You fucked up!");
 	node->AddEntity(dweller);
@@ -138,6 +144,7 @@ void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
 
 TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 index)
 {
+	node_count++;
 	CU::Vector3i dir;
 	switch (index)
 	{

@@ -5,10 +5,10 @@
 #include <Math/Matrix/Matrix.h>
 struct OnLeftClick;
 struct DebugComponent;
-namespace Hex
-{
-	class Synchronizer;
-};
+
+class Synchronizer;
+
+struct GizmoHandle;
 
 class DebugSystem : public BaseSystem, public Subscriber
 {
@@ -17,8 +17,10 @@ public:
 	~DebugSystem();
 	void Update(float dt) override;
 private:
+	bool CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vector3f& ray_dir);
+	void UpdateOBBs();
 	void ReceiveMessage(const OnLeftClick& message) override;
-	Hex::Synchronizer* m_Synchronizer = nullptr;
+	Synchronizer* m_Synchronizer = nullptr;
 	double m_AccumulatedTime = 0.0f;
 	void RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation);
 	struct entity_collisions
@@ -26,6 +28,11 @@ private:
 		Entity m_ID;
 		CU::Vector3f m_Position;
 	};
-
+	float m_MouseDeltaModifier = 1.f;
 	Entity m_PrevID;
+	Entity m_CurrentEntity;
+	bool m_Holding = false;
+	GizmoHandle* m_Direction = nullptr;
+	std::string current_model;
+
 };

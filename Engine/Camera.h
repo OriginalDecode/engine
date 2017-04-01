@@ -3,8 +3,7 @@
 #include "../CommonLib/Math/Quaternion/Quaternion.h"
 
 struct ControllerState;
-namespace Hex
-{
+
 	enum class eDirection
 	{
 		FORWARD,
@@ -71,6 +70,7 @@ namespace Hex
 		//void ToggleFreefly() { m_Controller = !m_Controller; }
 		//bool GetCanFreeFly() { return m_Controller; }
 		float GetFOV() { return m_CurrentFoV; }
+		float* GetFOVRef() { return &m_CurrentFoV; }
 	private:
 		float m_LookSpeedModifier = 0.005f;
 		void operator=(Camera&) = delete;
@@ -95,4 +95,3 @@ namespace Hex
 		CU::Quaternion m_Roll;
 
 	};
-}

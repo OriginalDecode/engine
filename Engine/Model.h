@@ -12,39 +12,49 @@ enum eModelStates : int
 	LIGHT_MESH,
 	_COUNT
 };
-namespace Hex
-{
+
 static Ticket_Mutex g_ModelMutex;
-	class CModel : public CBaseModel
-	{
-		friend class CModelImporter;
-	public:
-		CModel();
-		bool CleanUp() override;
-		CModel* CreateModel(const std::string& filename);
-		void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows = false) override;
+class CModel : public CBaseModel
+{
+	friend class CModelImporter;
+public:
+	CModel();
+	bool CleanUp() override;
+	CModel* CreateModel(const std::string& filename);
+	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows = false) override;
 
-		void AddChild(CModel* aChild);
-		void SetIsLightmesh();
-		void SetPosition(const CU::Vector3f& aPosition);
-		CU::Matrix44f& GetOrientation();
-		void SetOrientation(CU::Matrix44f orientation);
-		CU::Vector3f GetWHD() const { return m_WHD; }
-		void SetWHD(CU::Vector3f whd);
-		std::vector<float> GetVertices();
-		std::vector<s32> GetIndices();
+	void AddChild(CModel* aChild);
+	void SetIsLightmesh();
+	void SetPosition(const CU::Vector3f& aPosition);
+	CU::Matrix44f& GetOrientation();
+	void SetOrientation(CU::Matrix44f orientation);
+	CU::Vector3f GetWHD() const { return m_WHD; }
+	void SetWHD(CU::Vector3f whd);
+	void SetMaxPoint(CU::Vector3f max_point);
+	void SetMinPoint(CU::Vector3f min_point);
 
-	private:
-		void InitConstantBuffer();
-		void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale) override;
+	CU::Vector3f GetMinPoint() const { return m_MinPoint; }
+	CU::Vector3f GetMaxPoint() const { return m_MaxPoint; }
 
-		CU::GrowingArray<SVertexTypePosCol> myVertices;
-		CU::GrowingArray<s32> m_Indices;
 
-		CU::GrowingArray<CSurface*> mySurfaces;
-		CU::GrowingArray<CModel*> myChildren;
 
-		CU::Matrix44f myOrientation;
-		std::bitset<eModelStates::_COUNT> myModelStates;
-	};
-}
+	std::vector<float> GetVertices();
+	std::vector<s32> GetIndices();
+
+	CU::GrowingArray<CSurface*>& GetSurfaces() { return mySurfaces; }
+	CU::GrowingArray<CModel*> GetChildModels() { return myChildren; }
+	void SetIsSkysphere(bool isSkysphere) { m_IsSkysphere = isSkysphere; for ( CModel* child : myChildren ) child->SetIsSkysphere(m_IsSkysphere); }
+
+private:
+	void InitConstantBuffer();
+	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale) override;
+
+	CU::GrowingArray<SVertexTypePosCol> myVertices;
+	CU::GrowingArray<s32> m_Indices;
+
+	CU::GrowingArray<CSurface*> mySurfaces;
+	CU::GrowingArray<CModel*> myChildren;
+
+	CU::Matrix44f myOrientation;
+	std::bitset<eModelStates::_COUNT> myModelStates;
+};

@@ -1,0 +1,15 @@
+<root>
+	<Entity type="Explosion">
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Prop/SM_dev_box.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+			<RoomType value="static"/>
+		</GraphicsComponent>
+		
+		<PhysicsComponent>
+			<min x="0" y="0" z="0"/>
+			<max x="5" y="5" z="5"/>
+			<type value="trigger"/>
+		</PhysicsComponent>
+		
+	</Entity>
+</root>

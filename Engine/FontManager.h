@@ -13,83 +13,79 @@ struct FT_GlyphRec_;
 struct FT_GlyphSlotRec_;
 
 
-namespace Hex
+
+struct SCharData
 {
+	CU::Math::Vector2<float> myTopLeftUV;
+	CU::Math::Vector2<float> myBottomRightUV;
 
-	struct SCharData
-	{
-		CU::Math::Vector2<float> myTopLeftUV;
-		CU::Math::Vector2<float> myBottomRightUV;
-
-		short myWidth;
-		short myHeight;
-		short myAdvanceX; //Distance to next character.
-		short myBearingX;
-		short myBearingY;
-		char myChar;
-	};
-
-	struct SFontData
-	{
-		~SFontData();
-		std::unordered_map<char, SCharData> myCharData;
-		short myAtlasWidth; 
-		short myAtlasHeight;
-		float myLineSpacing;
-		short myWordSpacing;
-		short myFontHeightWidth;
-		int* myAtlas;
-
-#ifdef SNOWBLIND_DX11
-		ID3D11ShaderResourceView* myAtlasView;
-#endif
-	};
-
-	
-	class Texture;
-	class CFont;
-
-	class CFontManager
-	{
-	public:
-		CFontManager();
-		~CFontManager();
-		void Initiate();
-		CFont* LoadFont(const char* aFontPath, short aFontWidth, int aBorderWidth);
-	private:
-		void LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
-			, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderWidth = 0);
-
-		void LoadOutline(const int index, const int atlasX, const int atlasY
-			, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderWidth);
-
-		void DumpAtlas(SFontData* fontData, int atlasSize);
-		void DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline = false);
-
-		FT_LibraryRec_* myLibrary;
-		const char* myFontPath;
-		std::unordered_map<std::string, SFontData*> myFontData;
-
-		void CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, int aBorderWidth);
-		void CalculateGlyphOffsets(const int index, FT_GlyphSlotRec_* glyph);
-
-		struct SCountData
-		{
-			int xNCount = 0;
-			int xPCount = 0;
-			int yNCount = 0;
-			int yPCount = 0;
-		};
-
-		void CountOffsets(const int& x, const int& y, const int& width, const int& height, SCountData& countData);
-		void CountDeltas(const int& width, const int& height, int& deltaX, int& deltaY, SCountData& countData);
-		struct SOutlineOffset
-		{
-			int xDelta = 0;
-			int yDelta = 0;
-
-		} myOffset;
-	
-	};
+	short myWidth;
+	short myHeight;
+	short myAdvanceX; //Distance to next character.
+	short myBearingX;
+	short myBearingY;
+	char myChar;
 };
 
+struct SFontData
+{
+	~SFontData();
+	std::unordered_map<char, SCharData> myCharData;
+	short myAtlasWidth;
+	short myAtlasHeight;
+	float myLineSpacing;
+	short myWordSpacing;
+	short myFontHeightWidth;
+	int* myAtlas;
+
+#ifdef SNOWBLIND_DX11
+	ID3D11ShaderResourceView* myAtlasView;
+#endif
+};
+
+
+class Texture;
+class CFont;
+
+class CFontManager
+{
+public:
+	CFontManager();
+	~CFontManager();
+	void Initiate();
+	CFont* LoadFont(const char* aFontPath, short aFontWidth, int aBorderWidth);
+private:
+	void LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
+		, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderWidth = 0);
+
+	void LoadOutline(const int index, const int atlasX, const int atlasY
+		, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderWidth);
+
+	void DumpAtlas(SFontData* fontData, int atlasSize);
+	void DumpGlyph(int* source, int index, int width, int height, int pitch, bool isOutline = false);
+
+	FT_LibraryRec_* myLibrary;
+	const char* myFontPath;
+	std::unordered_map<std::string, SFontData*> myFontData;
+
+	void CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, int aBorderWidth);
+	void CalculateGlyphOffsets(const int index, FT_GlyphSlotRec_* glyph);
+
+	struct SCountData
+	{
+		int xNCount = 0;
+		int xPCount = 0;
+		int yNCount = 0;
+		int yPCount = 0;
+	};
+
+	void CountOffsets(const int& x, const int& y, const int& width, const int& height, SCountData& countData);
+	void CountDeltas(const int& width, const int& height, int& deltaX, int& deltaY, SCountData& countData);
+	struct SOutlineOffset
+	{
+		int xDelta = 0;
+		int yDelta = 0;
+
+	} myOffset;
+
+};

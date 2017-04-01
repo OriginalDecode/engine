@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Game_Models/SK_pistol_holster.fbx",
+		"shader" : "Shaders/T_Deferred_Base.json"
+	} 
+}

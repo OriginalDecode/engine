@@ -29,9 +29,15 @@ public:
 		CAMERA = 256,
 	};
 
+	enum eType
+	{
+		STATIC,
+		DYNAMIC,
+	};
+
 
 	TreeDweller() = default;
-	void Initiate(Entity entity);
+	void Initiate(Entity entity, eType type);
 
 	template <typename T>
 	void AddComponent(T* component, s32 component_flag);
@@ -53,8 +59,9 @@ public:
 
 	void SetWHD(const CU::Vector3f& whd) { m_WHD = whd; }
 	const CU::Vector3f& GetWHD() const { return m_WHD; }
-
+	const eType& GetType() const { return m_Type; }
 private:
+	eType m_Type;
 	Entity m_Entity;
 	ComponentList m_ComponentList;
 	s32 m_Depth = 0;

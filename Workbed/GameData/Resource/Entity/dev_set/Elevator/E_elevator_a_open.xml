@@ -1,0 +1,13 @@
+<root>
+	<Entity type="Prop" subType="SM_elevator_a_open" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Modular_set/Dev_set/Elevator/SM_elevator_a_open.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+			<RoomType value="static"/>
+		</GraphicsComponent>
+		
+		<PhysicsComponent>
+			<type value="static"/>
+		</PhysicsComponent>
+		<SoundComponent/>
+	</Entity>
+</root>

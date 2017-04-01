@@ -1,131 +1,133 @@
 #include "stdafx.h"
 #include "ShadowSpotlight.h"
 #include <Utilities.h>
-namespace Hex
+
+bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f& direction, float buffer_size)
 {
-	bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f& direction, float buffer_size)
-	{
-		m_BufferSize = buffer_size;
-		m_Device = Engine::GetInstance()->GetAPI()->GetDevice();
-		m_Context = Engine::GetInstance()->GetAPI()->GetContext();
-		m_Viewport = Engine::GetInstance()->GetAPI()->CreateViewport(m_BufferSize, m_BufferSize, 0.f, 1.f, 0, 0);
+	m_BufferSize = buffer_size;
+	m_Device = Engine::GetInstance()->GetAPI()->GetDevice();
+	m_Context = Engine::GetInstance()->GetAPI()->GetContext();
+	m_Viewport = Engine::GetInstance()->GetAPI()->CreateViewport(m_BufferSize, m_BufferSize, 0.f, 1.f, 0, 0);
 
-		//m_Camera = new Camera(m_BufferSize, m_BufferSize, 256.f, 1.f, 90.f);
-		m_Camera = new Camera;
-		m_Camera->CreatePerspectiveProjection(m_BufferSize, m_BufferSize, 1.f, 256.f, 90.f);
-		//m_Camera->CreateOrthographicProjection(200.f, 200.f, 0.01f, 1024.f);
+	//m_Camera = new Camera(m_BufferSize, m_BufferSize, 256.f, 1.f, 90.f);
+	m_Camera = new Camera;
+	m_Camera->CreatePerspectiveProjection(m_BufferSize, m_BufferSize, 1.f, 256.f, 90.f);
+	//m_Camera->CreateOrthographicProjection(200.f, 200.f, 0.01f, 1024.f);
 
 
-		m_Camera->SetPosition(position);
+	m_Camera->SetPosition(position);
 
-		m_Camera->RotateAroundY(CL::DegreeToRad(90.f) * direction.x);
-		m_Camera->RotateAroundZ(CL::DegreeToRad(90.f) * direction.y);
-		m_Camera->RotateAroundX(CL::DegreeToRad(90.f) * direction.z);
+	m_Camera->RotateAroundY(CL::DegreeToRad(90.f) * direction.x);
+	m_Camera->RotateAroundZ(CL::DegreeToRad(90.f) * direction.y);
+	m_Camera->RotateAroundX(CL::DegreeToRad(90.f) * direction.z);
 
-		float x = m_Camera->GetOrientation().GetXRotation();
-		float y = m_Camera->GetOrientation().GetYRotation();
-		float z = m_Camera->GetOrientation().GetZRotation();
+	//float x = m_Camera->GetOrientation().GetXRotation();
+	//float y = m_Camera->GetOrientation().GetYRotation();
+	//float z = m_Camera->GetOrientation().GetZRotation();
 
 
-		m_Depth = new Texture;
-		m_Depth->Initiate(m_BufferSize, m_BufferSize,
-			DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R16G16B16A16_FLOAT
-			, "Shadowlight : Depth ");
+	m_Depth = new Texture;
+	m_Depth->Initiate(m_BufferSize, m_BufferSize,
+		DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+		, DXGI_FORMAT_R16G16B16A16_FLOAT
+		, "Shadowlight : Depth ");
 
-		m_Holder = new Texture;
-		m_Holder->Initiate(m_BufferSize, m_BufferSize
-			, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-			, DXGI_FORMAT_R32_TYPELESS
-			, DXGI_FORMAT_R32_FLOAT
-			, DXGI_FORMAT_D32_FLOAT
-			, "Shadowlight : DepthStencil ");
+	m_Holder = new Texture;
+	m_Holder->Initiate(m_BufferSize, m_BufferSize
+		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+		, DXGI_FORMAT_R32_TYPELESS
+		, DXGI_FORMAT_R32_FLOAT
+		, DXGI_FORMAT_D32_FLOAT
+		, "Shadowlight : DepthStencil ");
 
-		m_DepthStencil = new Texture;
-		m_DepthStencil->Initiate(m_BufferSize, m_BufferSize
-			, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-			, DXGI_FORMAT_R32_TYPELESS
-			, DXGI_FORMAT_R32_FLOAT
-			, DXGI_FORMAT_D32_FLOAT
-			, "Shadowlight : DepthStencil ");
+	m_DepthStencil = new Texture;
+	m_DepthStencil->Initiate(m_BufferSize, m_BufferSize
+		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+		, DXGI_FORMAT_R32_TYPELESS
+		, DXGI_FORMAT_R32_FLOAT
+		, DXGI_FORMAT_D32_FLOAT
+		, "Shadowlight : DepthStencil ");
 
-		m_ShadowEffect = Engine::GetInstance()->GetEffect("Data/Shaders/T_Render_Depth.json");
-		m_ShadowEffect->AddShaderResource(m_Holder->GetDepthStencilView());
+	m_ShadowEffect = Engine::GetInstance()->GetEffect("Shaders/T_Render_Depth.json");
+	m_ShadowEffect->AddShaderResource(m_Holder->GetDepthStencilView());
 
-		return true;
-	}
+	return true;
+}
 
-	bool ShadowSpotlight::CleanUp()
-	{
-		SAFE_DELETE(m_Viewport);
-		if (m_Viewport)
-			return false;
+bool ShadowSpotlight::CleanUp()
+{
+	SAFE_DELETE(m_Viewport);
+	if (m_Viewport)
+		return false;
 
-		SAFE_DELETE(m_Camera);
-		if (m_Camera)
-			return false;
+	SAFE_DELETE(m_Camera);
+	if (m_Camera)
+		return false;
 
-		m_Depth->CleanUp();
-		SAFE_DELETE(m_Depth);
-		if (m_Depth)
-			return false;
+	m_Depth->CleanUp();
+	SAFE_DELETE(m_Depth);
+	if (m_Depth)
+		return false;
 
-		m_DepthStencil->CleanUp();
-		SAFE_DELETE(m_DepthStencil);
-		if (m_DepthStencil)
-			return false;
+	m_DepthStencil->CleanUp();
+	SAFE_DELETE(m_DepthStencil);
+	if (m_DepthStencil)
+		return false;
 
-		m_Holder->CleanUp();
-		SAFE_DELETE(m_Holder);
-		if (m_Holder)
-			return false;
+	m_Holder->CleanUp();
+	SAFE_DELETE(m_Holder);
+	if (m_Holder)
+		return false;
 
-		return true;
-	}
+	return true;
+}
 
-	void ShadowSpotlight::SetViewport()
-	{
-		Engine::GetInstance()->GetAPI()->SetViewport(m_Viewport);
-	}
+void ShadowSpotlight::SetViewport()
+{
+	Engine::GetInstance()->GetAPI()->SetViewport(m_Viewport);
+}
 
-	void ShadowSpotlight::ClearTexture()
-	{
-		float clear[4] = { 0.f, 0.f, 0.f, 0.f };
-		m_Context->ClearRenderTargetView(m_Depth->GetRenderTargetView(), clear);
-		m_Context->ClearDepthStencilView(m_DepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	}
+void ShadowSpotlight::ClearTexture()
+{
+	float clear[4] = { 0.f, 0.f, 0.f, 0.f };
+	m_Context->ClearRenderTargetView(m_Depth->GetRenderTargetView(), clear);
+	m_Context->ClearDepthStencilView(m_DepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+}
 
-	void ShadowSpotlight::SetTargets()
-	{
-		ID3D11RenderTargetView* target = m_Depth->GetRenderTargetView();
-		m_Context->OMSetRenderTargets(1, &target, m_DepthStencil->GetDepthView());
+void ShadowSpotlight::SetTargets()
+{
+	ID3D11RenderTargetView* target = m_Depth->GetRenderTargetView();
+	m_Context->OMSetRenderTargets(1, &target, m_DepthStencil->GetDepthView());
 
-		DirectX11* api = Engine::GetInstance()->GetAPI();
-		api->SetVertexShader(m_ShadowEffect->GetVertexShader()->m_Shader);
-		api->SetPixelShader(m_ShadowEffect->GetPixelShader()->m_Shader);
-	}
+	DirectX11* api = Engine::GetInstance()->GetAPI();
+	api->SetVertexShader(m_ShadowEffect->GetVertexShader()->m_Shader);
+	api->SetPixelShader(m_ShadowEffect->GetPixelShader()->m_Shader);
+}
 
-	void ShadowSpotlight::ToggleShader(bool on_or_off)
-	{
-		if (on_or_off)
-			m_ShadowEffect->Activate();
-		else
-			m_ShadowEffect->Deactivate();
-	}
+void ShadowSpotlight::ToggleShader(bool on_or_off)
+{
+	if (on_or_off)
+		m_ShadowEffect->Activate();
+	else
+		m_ShadowEffect->Deactivate();
+}
 
-	CU::Matrix44f ShadowSpotlight::GetOrientation()
-	{
-		return m_Camera->GetOrientation();
-	}
+void ShadowSpotlight::SetOrientation(const CU::Matrix44f& orientation)
+{
+	m_Camera->SetOrientation(orientation);
+}
 
-	CU::Matrix44f ShadowSpotlight::GetMVP()
-	{
-		return (CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetPerspective());
-	}
+CU::Matrix44f ShadowSpotlight::GetOrientation()
+{
+	return m_Camera->GetOrientation();
+}
 
-	void ShadowSpotlight::Copy()
-	{
-		Texture::CopyData(m_Holder->GetDepthTexture(), m_DepthStencil->GetDepthTexture());
-	}
+CU::Matrix44f ShadowSpotlight::GetMVP()
+{
+	return (CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetPerspective());
+}
 
-};
+void ShadowSpotlight::Copy()
+{
+	Texture::CopyData(m_Holder->GetDepthTexture(), m_DepthStencil->GetDepthTexture());
+}

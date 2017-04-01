@@ -1,0 +1,11 @@
+<root>
+	<Entity type="Prop" subType="SM_door_400x400" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Modular_set/Dev_set/Walls/SM_dev_wall_400_x_400.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+			<RoomType value="dynamic"/>
+		</GraphicsComponent>
+		<PhysicsComponent>
+			<type value="static"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

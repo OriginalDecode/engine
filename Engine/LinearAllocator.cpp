@@ -34,7 +34,7 @@ void* LinearAllocator::alloc(s32 size_in_bytes, u8 alignment)
 	return (void*)aligned_address;
 }
 
-void LinearAllocator::dealloc(void* pointer)
+void LinearAllocator::dealloc(void* /*pointer*/)
 {
 	assert(false && "Use clear()");
 }

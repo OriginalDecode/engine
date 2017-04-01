@@ -30,6 +30,12 @@ namespace CommonUtilities
 			static Matrix44<TYPE> CreateOrthogonalMatrixLH(TYPE aWidth, TYPE aHeight, TYPE aNearZ, TYPE aFarZ);
 			static Matrix44<TYPE> CreateOrthographicMatrixLH(float width, float height, float near_plane, float far_plane);
 			static Matrix44<TYPE> CreateScaleMatrix(const Vector4<TYPE>& scale);
+			void RotateAroundPointX(const CU::Vector3f& point, float radian, float dt);
+			void RotateAroundPointY(const CU::Vector3f& point, float radian, float dt);
+			void RotateAroundPointZ(const CU::Vector3f& point, float radian, float dt);
+			void RotateAroundPointX(const CU::Vector3f& point, float radian);
+			void RotateAroundPointY(const CU::Vector3f& point, float radian);
+			void RotateAroundPointZ(const CU::Vector3f& point, float radian);
 
 			void SetPerspectiveFOV(float fov, float aspect_ratio);
 
@@ -43,6 +49,9 @@ namespace CommonUtilities
 
 			void ConvertFromCol(const TYPE aColMatrix[16]);
 			void InitWithArray(const TYPE aColMatrix[16]);
+
+			Vector3<TYPE> GetRadRotations();
+			Vector3<TYPE> GetGradRotations();
 
 
 			void SetRotation3dX(const TYPE& aRadian);
@@ -96,6 +105,87 @@ namespace CommonUtilities
 			};
 			const Matrix44<TYPE> Calculate(const RotationType& rotation, const TYPE& cos, const TYPE& sin);
 		};
+
+		template<typename TYPE>
+		Vector3<TYPE> Matrix44<TYPE>::GetGradRotations()
+		{
+			Vector3<TYPE> output;
+			output.x = (-atan2(myMatrix[9], myMatrix[10]))  * (180.f / 3.1415926535f);
+			output.y = (atan2(myMatrix[8], sqrt((myMatrix[9] * myMatrix[9]) + (myMatrix[10] * myMatrix[10]))))  * (180.f / 3.1415926535f);
+			output.z = (-atan2(myMatrix[4], myMatrix[0])) * (180.f / 3.1415926535f);
+			return output;
+		}
+
+		template<typename TYPE>
+		Vector3<TYPE> Matrix44<TYPE>::GetRadRotations()
+		{
+			Vector3<TYPE> output;
+			output.x = -atan2(myMatrix[9], myMatrix[10]);
+			output.y = atan2(myMatrix[8], myMatrix[0]);
+			output.z = -atan2(myMatrix[4], myMatrix[0]);
+			return output;
+		}
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointZ(const CU::Vector3f& point, float radian, float dt)
+		{
+			CU::Vector3f original_pos = GetPosition();
+			SetPosition(original_pos - point);
+
+			*this = *this * CU::Matrix44f::CreateRotateAroundZ(radian * dt);
+			SetPosition(GetPosition() + point);
+		}
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointY(const CU::Vector3f& point, float radian, float dt)
+		{
+			CU::Vector3f original_pos = GetPosition();
+			SetPosition(original_pos - point);
+
+			*this = *this * CU::Matrix44f::CreateRotateAroundY(radian * dt);
+			SetPosition(GetPosition() + point);
+		}
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointX(const CU::Vector3f& point, float radian, float dt)
+		{
+			CU::Vector3f original_pos = GetPosition();
+			SetPosition(original_pos - point);
+
+			*this = *this * CU::Matrix44f::CreateRotateAroundX(radian * dt);
+			SetPosition(GetPosition() + point);
+		}
+
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointZ(const CU::Vector3f& point, float radian)
+		{
+			CU::Vector3f original_pos = GetPosition();
+			SetPosition(original_pos - point);
+
+			*this = *this * CU::Matrix44f::CreateRotateAroundZ(radian);
+			SetPosition(GetPosition() + point);
+		}
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointY(const CU::Vector3f& point, float radian)
+		{
+			CU::Vector3f original_pos = GetPosition();
+			SetPosition(original_pos - point);
+
+			*this = *this * CU::Matrix44f::CreateRotateAroundY(radian);
+			SetPosition(GetPosition() + point);
+		}
+
+		template<typename TYPE>
+		void CommonUtilities::Math::Matrix44<TYPE>::RotateAroundPointX(const CU::Vector3f& point, float radian)
+		{
+			CU::Vector3f original_pos = GetPosition();
+			SetPosition(original_pos - point);
+
+			*this = *this * CU::Matrix44f::CreateRotateAroundX(radian);
+			SetPosition(GetPosition() + point);
+		}
 
 		template<typename TYPE>
 		Matrix44<TYPE> CommonUtilities::Math::Matrix44<TYPE>::CreateOrthographicMatrixLH(float width, float height, float near_plane, float far_plane)

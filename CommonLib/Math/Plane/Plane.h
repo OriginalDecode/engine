@@ -14,7 +14,7 @@ namespace CommonUtilities
 		void InitWith3Points(Math::Vector4 <TYPE> aFirstPoint, Math::Vector4 <TYPE> aSecondPoint, Math::Vector4 <TYPE> aThirdPoint);
 		void InitWithPointAndNormal(Math::Vector4 <TYPE> aPoint, Math::Vector4 <TYPE> aNormal);
 
-		bool Inside(Math::Vector4 <TYPE> aPosition);
+		bool Inside(Math::Vector4 <TYPE> aPosition) const;
 
 		Math::Vector4 <TYPE> GetNormal() const;
 		Math::Vector4 <TYPE> GetPoint() const;
@@ -71,12 +71,12 @@ namespace CommonUtilities
 	}
 
 	template<typename TYPE>
-	bool Plane<TYPE>::Inside(Math::Vector4 <TYPE> aPosition)
+	bool Plane<TYPE>::Inside(Math::Vector4 <TYPE> aPosition) const
 	{
 		if (Math::Dot<float>(aPosition - myPoint, myNorm) > 0.f)
 			return false;
-		else
-			return true;
+
+		return true;
 	}
 
 	template<typename TYPE>
@@ -90,4 +90,6 @@ namespace CommonUtilities
 	{
 		return myNorm;
 	}
+	
+
 };

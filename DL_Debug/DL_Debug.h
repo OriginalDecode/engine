@@ -27,8 +27,7 @@ enum eDEBUGLOG
 
 #define DL_ASSERT(string) DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__,string);
 
-#define DL_ASSERT_EXP(expression, string)if(expression == false){DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__,string);};
-#define DL_ASSERT_EXP_L(expression, string)if(expression == false){DL_Debug::Debug::GetInstance()->AssertMessageL(__FILE__,__LINE__,__FUNCTION__,string);};
+#define DL_ASSERT_EXP(expression, string)if(expression == false){DL_Debug::Debug::GetInstance()->AssertMessage(__FILE__,__LINE__,__FUNCTION__, string); }
 
 #define DL_PRINT(string)  DL_Debug::Debug::GetInstance()->PrintMessage(string);
 //#define DL_DEBUG( ... )  DL_Debug::Debug::GetInstance()->DebugMessage(__LINE__,__FUNCTION__, RETURN(__VA_ARGS__));
@@ -61,7 +60,7 @@ enum eDEBUGLOG
 //expressions
 #define ENGINE_LOG_EXP(expression, ...)		if(expression) { DL_WRITELOG("Engine",__VA_ARGS__)}
 #else
-#define RETURN(...) 
+#define RETURN(...) DL_Debug::Debug::GetInstance()->HandleVAArgs(__VA_ARGS__)
 
 #define DL_ASSERT(string)
 
@@ -72,7 +71,7 @@ enum eDEBUGLOG
 
 #define DL_WRITELOG(log, ...) 
 
-#define DL_MESSAGE(...) 
+#define DL_MESSAGE(...) DL_Debug::Debug::GetInstance()->WriteLog(0, RETURN(__VA_ARGS__));
 #define DL_MESSAGE_EXP(expression, ...) expression
 
 #define DL_WARNINGBOX(msg) 
@@ -88,7 +87,7 @@ enum eDEBUGLOG
 #define FONT_LOG(...)
 #define ALGORITHM_LOG(...)
 #define MODEL_LOG(...)
-
+#define TRACE_LOG(...)
 //expressions
 #define ENGINE_LOG_EXP(expression, ...)		
 #define ALGORITHM_LOG_EXP(expression, ...)

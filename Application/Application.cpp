@@ -11,9 +11,15 @@
 #include "../Input/InputHandle.h"
 #include "../Input/InputWrapper.h"
 #include "../CommonLib/Utilities.h"
+#include <imgui.h>
+#include <imgui_impl_dx11.h>
+
+#ifdef _PROFILE
+#include <easy/profiler.h>
+#endif
 bool Application::Initiate()
 {
-	myEngine = Hex::Engine::GetInstance();
+	myEngine = Engine::GetInstance();
 	mySynchronizer = myEngine->GetSynchronizer();
 
 	/*myGame = new Game;
@@ -24,15 +30,20 @@ bool Application::Initiate()
 	//Keep at the end of initiate...
 
 	myLogicThread = new std::thread([&] { Application::Update(); });
+#ifdef _DEBUG
 	CL::SetThreadName(myLogicThread->get_id(), "Logic Thread");
-
+#endif
 	return true;
 }
 
 void Application::Update()
 {
+#ifdef _PROFILE
+	EASY_THREAD_SCOPE("LogicThread");
+#endif
 	while (mySynchronizer->HasQuit() == false)
 	{
+
 		float deltaTime = myEngine->GetDeltaTime();
 
 		myEngine->UpdateInput();
@@ -106,6 +117,9 @@ bool Application::HasQuit()
 
 bool Application::CleanUp()
 {
+	if ( !myLogicThread )
+		return true;
+
 	myLogicThread->join();
 
 	SAFE_DELETE(myLogicThread);

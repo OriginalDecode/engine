@@ -1,6 +1,6 @@
 #pragma once
 #include "../Vector/Vector.h"
-
+#include "../Matrix/Matrix.h"
 namespace CommonUtilities
 {
 	class Quaternion
@@ -18,6 +18,7 @@ namespace CommonUtilities
 
 		Quaternion Slerp(const Quaternion& other, float aT) const;
 
+		CU::Matrix44f ConvertToRotationMatrix();
 
 	private:
 		void ToAxisAngle(CU::Vector3f& aVectorAxisOut, float& anAngleOut) const;

@@ -4,7 +4,7 @@
 
 void PostProcessManager::Initiate()
 {
-	m_Engine = Hex::Engine::GetInstance();
+	m_Engine = Engine::GetInstance();
 	m_HDRPass.Initiate();
 }
 
@@ -13,7 +13,7 @@ void PostProcessManager::CleanUp()
 	m_HDRPass.CleanUp();
 }
 
-void PostProcessManager::Process(Hex::Texture*  current_frame_texture)
+void PostProcessManager::Process(Texture*  current_frame_texture)
 {
 	m_Engine->DisableZ();
 

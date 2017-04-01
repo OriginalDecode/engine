@@ -2,33 +2,31 @@
 #include <Math/Matrix/Matrix.h>
 struct ID3D11ShaderResourceView;
 
-namespace Hex
+
+class Camera;
+class CSpriteModel;
+
+class Sprite
 {
-	class Camera;
-	class CSpriteModel;
+public:
+	Sprite();
+	~Sprite();
+	void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+	void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 
-	class Sprite
-	{
-	public:
-		Sprite();
-		~Sprite();
-		void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
-		void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+	void Render(Camera* aCamera);
+	const CU::Math::Vector2<float>& GetPosition();
+	CU::Math::Vector2<float> GetSize();
 
-		void Render(Camera* aCamera);
-		const CU::Math::Vector2<float>& GetPosition();
-		CU::Math::Vector2<float> GetSize();
+	void SetPosition(const CU::Math::Vector2<float>& aPosition);
+	void SetHotspot(const CU::Math::Vector2<float>& aHotspot);
+	void SetSize(const CU::Math::Vector2<float>& aSize);
+	void SetScale(const CU::Math::Vector2<float>& aScale);
+	void SetShaderView(ID3D11ShaderResourceView* srv);
+private:
 
-		void SetPosition(const CU::Math::Vector2<float>& aPosition);
-		void SetHotspot(const CU::Math::Vector2<float>& aHotspot);
-		void SetSize(const CU::Math::Vector2<float>& aSize);
-		void SetScale(const CU::Math::Vector2<float>& aScale);
-		void SetShaderView(ID3D11ShaderResourceView* srv);
-	private:
-
-		CSpriteModel* mySprite;
-		CU::Math::Matrix44<float> myOrientation;
-		CU::Math::Vector2<float> myHotspot;
-		CU::Math::Vector2<float> myPosition;
-	};
+	CSpriteModel* mySprite;
+	CU::Math::Matrix44<float> myOrientation;
+	CU::Math::Vector2<float> myHotspot;
+	CU::Math::Vector2<float> myPosition;
 };

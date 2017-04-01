@@ -3,23 +3,9 @@
 	{
 		"object" : 	{ 
 			"entity":"Data/Levels/entity.json", 
-			"position" : [ 200, 5, 200 ],
-			"scale" : [1,1,1],
-			"rotation" : [0,0,1]
-		},
-		"object" : 	{ 
-			"entity":"Data/Levels/entity2.json",
-			"position" : [ 256, 0, 256 ],
+			"position" : [ 10, 5, 10 ],
 			"scale" : [1,1,1],
 			"rotation" : [0,0,0]
-		},
-		"object" : {
-			"entity":"Data/Levels/spotlight.json",
-			"position":[256,128,253],
-			"range":256,
-			"angle":89,
-			"color":[255,255,255],
-			"direction":[90,0,0]
 		}
 	}	
 }

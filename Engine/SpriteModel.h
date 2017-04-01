@@ -4,69 +4,67 @@
 #ifdef SNOWBLIND_DX11
 struct D3D11_INPUT_ELEMENT_DESC;
 #endif
-namespace Hex
+
+class Texture;
+class Camera;
+class Effect;
+
+struct VertexIndexWrapper;
+struct VertexBufferWrapper;
+struct VertexDataWrapper;
+struct IndexBufferWrapper;
+
+class CSpriteModel
 {
-	class Texture;
-	class Camera;
-	class Effect;
+public:
+	CSpriteModel();
+	~CSpriteModel();
 
-	struct VertexIndexWrapper;
-	struct VertexBufferWrapper;
-	struct VertexDataWrapper;
-	struct IndexBufferWrapper;
+	void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+	void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 
-	class CSpriteModel
-	{
-	public:
-		CSpriteModel();
-		~CSpriteModel();
+	void Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
+	Effect* GetEffect();
+	CU::Math::Vector2<float> GetSize();
+	const CU::Math::Vector2<float>& GetPosition();
+	void SetTexture(ID3D11ShaderResourceView* srv);
+private:
+	ID3D11ShaderResourceView* myTexture;
 
-		void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
-		void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+	void UpdateConstantBuffer();
 
-		void Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
-		Effect* GetEffect();
-		CU::Math::Vector2<float> GetSize();
-		const CU::Math::Vector2<float>& GetPosition();
-		void SetTexture(ID3D11ShaderResourceView* srv);
-	private:
-		ID3D11ShaderResourceView* myTexture;
+	void InitiateVertexBuffer();
+	void InitiateIndexBuffer();
+	void InitConstantBuffer();
+	void ConvertToNormalSpace();
 
-		void UpdateConstantBuffer();
+	std::string myTexturePath;
+	WindowSize myWindowSize;
+	Camera* myCamera = nullptr;
+	Effect* myEffect = nullptr;
 
-		void InitiateVertexBuffer();
-		void InitiateIndexBuffer();
-		void InitConstantBuffer();
-		void ConvertToNormalSpace();
+	CU::Math::Vector2<float> myPosition;
+	CU::Math::Vector2<float> mySize;
 
-		std::string myTexturePath;
-		SWindowSize myWindowSize;
-		Camera* myCamera = nullptr;
-		Effect* myEffect = nullptr;
+	VertexIndexWrapper* myIndexData;
+	VertexDataWrapper* myVertexData;
 
-		CU::Math::Vector2<float> myPosition;
-		CU::Math::Vector2<float> mySize;
-
-		VertexIndexWrapper* myIndexData;
-		VertexDataWrapper* myVertexData;
-
-		VertexBufferWrapper* myVertexBuffer;
-		IndexBufferWrapper* myIndexBuffer;
+	VertexBufferWrapper* myVertexBuffer;
+	IndexBufferWrapper* myIndexBuffer;
 
 #ifdef SNOWBLIND_DX11
-		ID3D11Buffer* myConstantBuffer = nullptr;
-		CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
-		IInputLayout* myVertexLayout;
+	ID3D11Buffer* myConstantBuffer = nullptr;
+	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
+	IInputLayout* myVertexLayout;
 #endif
-		CU::GrowingArray<VertexTypePosUV> myVertices;
+	CU::GrowingArray<VertexTypePosUV> myVertices;
 
-		struct SSpriteConstantBuffer : public VertexBaseStruct
-		{
-			CU::Vector2f position = CU::Vector2f(0.f, 0.f);
-			CU::Vector2f scale = CU::Vector2f(1.f, 1.f);
-		} *myConstantStruct;
+	struct SSpriteConstantBuffer : public VertexBaseStruct
+	{
+		CU::Vector2f position = CU::Vector2f(0.f, 0.f);
+		CU::Vector2f scale = CU::Vector2f(1.f, 1.f);
+	} *myConstantStruct;
 
 
-		void SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
-	};
+	void SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
 };

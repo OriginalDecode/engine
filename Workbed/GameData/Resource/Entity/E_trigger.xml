@@ -1,0 +1,17 @@
+<root>
+	<Entity type="Trigger" subType="test_trigger" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Prop/SM_dev_box.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+		</GraphicsComponent>
+		
+		<TriggerComponent>
+			<Trigger type="healthPack" value="10" />
+		</TriggerComponent>
+		
+		<Physics>
+			<min x="0" y="0" z="0"/>
+			<max x="1" y="1" z="1"/>
+		<type value="phantom"/>
+	</Physics>
+	</Entity>
+</root>

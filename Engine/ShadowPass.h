@@ -1,20 +1,18 @@
 #pragma once
-namespace Hex
+
+class ShadowPass
 {
-	class ShadowPass
-	{
-	public:
-		ShadowPass() = default;
+public:
+	ShadowPass() = default;
 
-		bool Initiate();
-		bool CleanUp();
+	bool Initiate();
+	bool CleanUp();
 
 
-	private:
+private:
 
-		Texture* m_DepthTexture = nullptr;
+	Texture* m_DepthTexture = nullptr;
 
 
 
-	};
 };

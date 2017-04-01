@@ -255,6 +255,17 @@ namespace CommonUtilities
 		}
 
 		template<typename T>
+		const Vector4<T> Cross(const Vector4<T>& aFirstVector, const Vector4<T>& aSecondVector)
+		{
+			return Vector4<T>(
+				( aFirstVector.y*aSecondVector.z ) - ( aFirstVector.z*aSecondVector.y ),
+				( aFirstVector.z*aSecondVector.x ) - ( aFirstVector.x*aSecondVector.z ),
+				( aFirstVector.x*aSecondVector.y ) - ( aFirstVector.y*aSecondVector.x ),
+				1);
+		}
+
+
+		template<typename T>
 		bool operator==(const Vector4<T>& aFirst, const Vector4<T>& aSecond)
 		{
 			if (aFirst.x != aSecond.x)

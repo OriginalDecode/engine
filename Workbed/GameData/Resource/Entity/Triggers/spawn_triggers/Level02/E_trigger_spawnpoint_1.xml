@@ -1,0 +1,18 @@
+<root>
+	<Entity type="Trigger" subType="E_trigger_spawnpoint_01" >
+		<!-- <GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Prop/SM_dev_box.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+			<RoomType value="static"/>
+		</GraphicsComponent> -->
+		
+		<TriggerComponent>
+			<Trigger type="spawntrigger" value="805" oneTimeTrigger="true" isClientSide="false" activeFromStart="true"/>
+		</TriggerComponent>
+		
+		<PhysicsComponent>
+			<min x="0" y="0" z="0"/>
+			<max x="5" y="4" z="3"/>
+			<type value="trigger"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

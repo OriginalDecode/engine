@@ -1,0 +1,12 @@
+<root>
+	<Entity type="Prop" subType="SM_temp_character_scale_a" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Temp_character_scale/SM_temp_character_scale_a.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+			<RoomType value="static"/>
+		</GraphicsComponent>
+		
+		<PhysicsComponent>
+			<type value="static"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

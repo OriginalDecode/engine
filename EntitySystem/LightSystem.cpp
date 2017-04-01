@@ -10,7 +10,7 @@
 LightSystem::LightSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, LightComponent>>())
 {
-	mySynchronizer = Hex::Engine::GetInstance()->GetSynchronizer();
+	mySynchronizer = Engine::GetInstance()->GetSynchronizer();
 }
 
 void LightSystem::Update(float /*aDeltaTime*/)
@@ -28,7 +28,7 @@ void LightSystem::Update(float /*aDeltaTime*/)
 			mySynchronizer->AddRenderCommand(RenderCommand(eType::POINTLIGHT, translation.myOrientation.GetPosition(), light.color, light.intensity, light.range));
 
 		if (light.myType == eLightType::eSPOTLIGHT)
-			mySynchronizer->AddRenderCommand(RenderCommand(eType::SPOTLIGHT, translation.myOrientation.GetPosition(), light.color, light.angle, light.range, light.direction, light.orientation));
+			mySynchronizer->AddRenderCommand(RenderCommand(eType::SPOTLIGHT, translation.myOrientation.GetPosition(), light.color, light.angle, light.range, light.direction, translation.myOrientation));
 
 	}
 }

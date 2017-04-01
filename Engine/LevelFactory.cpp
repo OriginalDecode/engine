@@ -22,13 +22,20 @@
 
 void LevelFactory::Initiate()
 {
-	m_Engine = Hex::Engine::GetInstance();
+	m_Engine = Engine::GetInstance();
 	m_EntityManager = &m_Engine->GetEntityManager();
 	m_PhysicsManager = m_Engine->GetPhysicsManager();
 }
 
 bool LevelFactory::CreateLevel(const std::string& level_path)
 {
+	/*if (!CL::substr(level_path, ".level"))
+	{
+		DL_ASSERT("Incorrect filetype. Has to be .level");
+		return false;
+	}*/
+
+
 	//m_Engine->GetEntityManager()->CleanUp();
 	//m_Engine->GetEntityManager()->Initiate();
 	m_LevelReader.OpenDocument(level_path);
@@ -36,7 +43,7 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 	const JSONElement& el = m_LevelReader.GetElement("root");
 
 
-	//m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
+	m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
 		CreateEntitiy(it->value["entity"].GetString(), it);
@@ -47,7 +54,9 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 
 void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it)
 {
-	JSONReader entity_reader(entity_filepath);
+	std::string data_path = "Data/Levels/";
+
+	JSONReader entity_reader(data_path + entity_filepath);
 	Entity e = m_EntityManager->CreateEntity();
 
 	s32 debug_flags = 0;
@@ -104,14 +113,28 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 			DL_ASSERT("Failed to find correct input controller tag!");
 	}
 
-	CreateDebugComponent(e, hasLight, debug_flags);
-
-
-	m_DwellerList.GetLast()->Initiate(e);
-
-	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
-
 	if (sponza)
+		sponza = false;
+//#ifdef _EDITOR
+	if(hasLight)
+		CreateDebugComponent(e, hasLight, debug_flags);
+//#endif
+
+	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
+	
+	CU::Vector3f new_pos = pos;
+	new_pos.y += 5.f;
+	new_pos.x += 400.f;
+	new_pos.z += 400.f;
+
+	component.myOrientation.SetPosition(new_pos);
+
+
+	m_DwellerList.GetLast()->Initiate(e, TreeDweller::eType::STATIC);
+
+	//TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
+
+	/*if (sponza)
 	{
 		for (int i = 0; i < 80; i++)
 		{
@@ -141,8 +164,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 			CreateDebugComponent(entity, true, EditObject::LIGHT);
 
 		}
-	}
-
+	}*/
 
 }
 
@@ -168,18 +190,18 @@ TreeDweller* LevelFactory::CreateEntitiy(const std::string& entity_filepath, con
 		debug_flags |= EditObject::PHYSICS;
 	}
 
-	dweller->Initiate(e);
+	dweller->Initiate(e, TreeDweller::eType::STATIC);
 	return dweller;
 }
 
-void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position)
+void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& /*position*/)
 {
 	m_EntityManager->AddComponent<TranslationComponent>(entity_id);
 
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
 	m_DwellerList.GetLast()->AddComponent<TranslationComponent>(&component, TreeDweller::TRANSLATION);
 
-	component.myOrientation.SetPosition(position);
+
 }
 
 void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
@@ -190,12 +212,14 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	const JSONElement& el = entity_reader.GetElement("graphics");
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
-		el["shader"].GetString());
+		el["shader"].GetString(),
+		true);
 
 
 	if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
 		sponza = true;
-
+	component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
+	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 
 	CU::Vector3f scale;
 	m_LevelReader.ReadElement(it->value["scale"], scale);
@@ -205,9 +229,12 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.m_Rotation = rotation;
 
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
-	translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(90.f) * rotation.y) * translation.myOrientation;
-	translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(90.f) * rotation.z) * translation.myOrientation;
-	translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(90.f) * rotation.x) * translation.myOrientation;
+	translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z)) * translation.myOrientation;
+	translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x)) * translation.myOrientation;
+	translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y)) * translation.myOrientation;
+	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x));
+	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z));
+	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y));
 
 	component.scale = scale;
 	component.scale.w = 1.f;
@@ -225,9 +252,12 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	const JSONElement& el = entity_reader.GetElement("graphics");
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
-		el["shader"].GetString());
+		el["shader"].GetString(),
+		true);
+	component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
+	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 
-	component.scale = CU::Vector4f(1,1,1,1);
+	component.scale = CU::Vector4f(1, 1, 1, 1);
 
 	//CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
 	//m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
@@ -248,15 +278,15 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	btRigidBody* phys_body = nullptr;
 
 	TranslationComponent& translation_component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
-	
+
 
 
 	std::string shape = el["shape"].GetString();
 	if (shape == "mesh")
 	{
-		RenderComponent& render_component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
-		Hex::CModel* model = m_Engine->GetModel(render_component.myModelID);
-		
+		//RenderComponent& render_component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+		//CModel* model = m_Engine->GetModel(render_component.myModelID);
+
 		phys_body = component.myBody->InitAsBox(200, 100, 100, translation_component.myOrientation.GetPosition());// ->GetVertices(), model->GetIndices()); //InitAsBox(1, 1, 1, { 0,0,0 });
 
 	}
@@ -272,7 +302,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 			m_PhysicsManager->GetGravityForce(), //Gravity
 			scientific_constants::pressure::air_pressure, //Air pressure / resistance
 			translation_component.myOrientation.GetPosition()); //Start position
-		
+
 	}
 	component.myBody->SetEntity(entity_id);
 	m_PhysicsManager->Add(phys_body);
@@ -284,7 +314,7 @@ void LevelFactory::CreateCameraComponent(JSONReader& /*entity_reader*/, Entity e
 	CameraComponent& component = m_EntityManager->GetComponent<CameraComponent>(entity_id);
 	m_DwellerList.GetLast()->AddComponent<CameraComponent>(&component, TreeDweller::CAMERA);
 
-	component.m_Camera = Hex::Engine::GetInstance()->GetCamera();
+	component.m_Camera = Engine::GetInstance()->GetCamera();
 }
 
 void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
@@ -292,6 +322,7 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 	m_EntityManager->AddComponent<LightComponent>(entity_id);
 	LightComponent& component = m_EntityManager->GetComponent<LightComponent>(entity_id);
 	m_DwellerList.GetLast()->AddComponent<LightComponent>(&component, TreeDweller::LIGHT);
+	//TranslationComponent& translation_component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
 
 	std::string type;
 
@@ -321,11 +352,17 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 	{
 		component.myType = eLightType::eSPOTLIGHT;
 
-		m_LevelReader.ReadElement(it->value["direction"], component.direction);
+		TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+		CU::Vector3f rotation;
+		m_LevelReader.ReadElement(it->value["rotation"], rotation);
 
-		component.orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * component.orientation;
-		component.orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(component.direction.y)) * component.orientation;
-		component.orientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(component.direction.x)) * component.orientation;
+		translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z)) * translation.myOrientation;
+		translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x)) * translation.myOrientation;
+		translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y)) * translation.myOrientation;
+
+		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * translation_component.myOrientation;
+		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(component.direction.y)) * translation_component.myOrientation;
+		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(component.direction.x)) * translation_component.myOrientation;
 
 		m_LevelReader.ReadElement(it->value["angle"], component.angle);
 		component.angle = CL::DegreeToRad(component.angle);
@@ -376,12 +413,20 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	if (!isLight)
 	{
 		RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
-		whd = m_Engine->GetModel(render.myModelID)->GetWHD();
+		CModel* model = m_Engine->GetModel(render.myModelID);
+		whd = model->GetWHD();
 		component.m_Rotation = render.m_Rotation;
+		component.m_MinPoint = model->GetMinPoint();
+		component.m_MaxPoint = model->GetMaxPoint();
+
+
 	}
 	else
 	{
 		whd = { 0.25f,0.25f, 0.25f };
+		component.m_MinPoint = { -0.25,-0.25,-0.25 };
+		component.m_MaxPoint = { 0.25,0.25,0.25 };
+
 	}
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
 	CU::Vector3f pos = translation.myOrientation.GetPosition();
@@ -439,15 +484,70 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 	component.m_EditObject.Initiate(e, flags);
 
+	{
+		PositionGizmo& position_gizmo = component.m_PositionGizmo;
+		GizmoHandle& gizmo_up = position_gizmo.GetUp();
+		GizmoHandle& gizmo_right = position_gizmo.GetRight();
+		GizmoHandle& gizmo_forward = position_gizmo.GetForward();
+
+		gizmo_up.m_Offset = 1.5f;
+		gizmo_right.m_Offset = 1.5f;
+		gizmo_forward.m_Offset = 1.5f;
+
+		position_gizmo.SetPosition(pos);
+		position_gizmo.CreateGizmoHandle(gizmo_up, "Data/Model/green_arrow.fbx", "Data/Textures/green.dds", GizmoHandle::eDirection::UP);
+		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(90.f) * 1) * gizmo_up.m_Orientation;
+
+		position_gizmo.CreateGizmoHandle(gizmo_right, "Data/Model/red_arrow.fbx", "Data/Textures/red.dds", GizmoHandle::eDirection::RIGHT);
+
+		position_gizmo.CreateGizmoHandle(gizmo_forward, "Data/Model/blue_arrow.fbx", "Data/Textures/blue.dds", GizmoHandle::eDirection::FORWARD);
+		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
+	}
+
+
+	{
+		RotationGizmo& rotation_gizmo = component.m_RotationGizmo;
+		GizmoHandle& gizmo_up = rotation_gizmo.GetUp();
+		GizmoHandle& gizmo_right = rotation_gizmo.GetRight();
+		GizmoHandle& gizmo_forward = rotation_gizmo.GetForward();
+
+		gizmo_right.m_Offset = 0.5f;
+		gizmo_forward.m_Offset = 0.5f;
+		rotation_gizmo.SetPosition(pos);
+
+		CU::Vector3f up_pos = pos;
+		up_pos.x += 0.5f;
+		up_pos.y -= 0.5f;
+		up_pos.z += 0.5f;
+		gizmo_up.SetPosition(up_pos);
+
+		rotation_gizmo.CreateGizmoHandle(gizmo_up, "Data/Model/rotate_y.fbx", "Data/Textures/green.dds", GizmoHandle::eDirection::Y);
+		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(90.f) * -1) * gizmo_up.m_Orientation;
+		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(90.f) * -1) * gizmo_up.m_Orientation;
+
+		rotation_gizmo.CreateGizmoHandle(gizmo_right, "Data/Model/rotate_x.fbx", "Data/Textures/red.dds", GizmoHandle::eDirection::X);
+
+		rotation_gizmo.CreateGizmoHandle(gizmo_forward, "Data/Model/rotate_z.fbx", "Data/Textures/blue.dds", GizmoHandle::eDirection::Z);
+		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
+		rotation_gizmo.ToggleActive();
+
+
+	}
+
+
+
+	//component.m_PositionGizmo.Initiate();
 }
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	Hex::CTerrain* terrain = Hex::Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 2, 0), CU::Vector2f(512, 512));
+	m_Engine->GetThreadpool().AddWork(Work([=] {
+		m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, -2, 0), CU::Vector2f(1024, 1024));
+	}));
 	//terrain->AddNormalMap("Data/Textures/t1_n.dds");
 	/*
 	Work([&](std::string texture) {
-		Hex::CTerrain* terrain = m_Engine->CreateTerrain(texture, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+		CTerrain* terrain = m_Engine->CreateTerrain(texture, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
 		terrain->AddNormalMap("Data/Textures/normal.dds");
 	});
 	*/

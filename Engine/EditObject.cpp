@@ -14,7 +14,7 @@ void EditObject::Initiate(Entity entity_id, s32 component_flags)
 {
 	m_ID = entity_id;
 	m_Components = component_flags;
-	m_EntityManager = &Hex::Engine::GetInstance()->GetEntityManager();
+	m_EntityManager = &Engine::GetInstance()->GetEntityManager();
 }
 
 void EditObject::Update()

@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Game_Models/SM_dev_wall_stair_down_100_400_r.fbx",
+		"shader" : "Shaders/T_Deferred_Base.json"
+	} 
+}

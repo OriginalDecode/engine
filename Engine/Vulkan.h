@@ -4,7 +4,7 @@
 #ifdef SNOWBLIND_VULKAN
 #include <vulkan/vulkan.h>
 
-namespace Hex
+
 {
 	class Vulkan : public IGraphicsAPI
 	{

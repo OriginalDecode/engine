@@ -1,0 +1,15 @@
+<root>
+	<Entity type="Spawnpoint" subType = "E_spawnpoint_m00_spawn_3">
+		<SpawnpointComponent>
+			<SpawnUnitType type="gunDroid"/>
+<!--		<SpawnUnitType type="otherType"/>
+			<SpawnUnitType type="thirdType"/>-->
+
+			<SpawnpointLifetime value="7.4"/>
+			<SpawnInterval value="2.5"/>
+			<SpawnPerInterval value="1"/>
+			<SpawnCount value="3"/>
+		</SpawnpointComponent>
+		
+	</Entity>
+</root>

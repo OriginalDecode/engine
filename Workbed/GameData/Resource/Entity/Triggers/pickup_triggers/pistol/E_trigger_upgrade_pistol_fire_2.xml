@@ -1,0 +1,30 @@
+<root>
+	<Entity type="Trigger" subType="E_trigger_upgrade_pistol_fire_2" >
+		<GraphicsComponent>
+			<Model modelPath="Data/Resource/Model/Pickups/Upgrade/SM_upgrade.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
+			<RoomType value="dynamic"/>
+		</GraphicsComponent>
+
+		<RotationComponent>
+			<Speed value="2"/>
+		</RotationComponent>
+		
+		<TriggerComponent>
+			<Trigger type="upgrade" oneTimeTrigger="true" isClientSide="true" pickupText="Pistol upgrade:#Fire rate" pickupTextTime="5.f"/>
+		</TriggerComponent>
+		
+		<UpgradeComponent>
+			<Weapon type ="pistol"/>
+			<ClipSizeModifier value="0" />
+			<AmmoTotalModifier value="0" />
+			<DamageModifier value="0" />
+			<ShootTimeModifier value="-0.1" />
+		</UpgradeComponent>
+		
+		<PhysicsComponent>
+			<min x="0" y="0" z="0"/>
+			<max x="1" y="1" z="1"/>
+			<type value="trigger"/>
+		</PhysicsComponent>
+	</Entity>
+</root>

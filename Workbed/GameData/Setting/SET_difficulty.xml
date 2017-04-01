@@ -1,0 +1,4 @@
+<root>
+	<Damage easy="0.85" normal="1.65" hard="4.5"/>
+	<Spawninterval easy="1" normal="1" hard="1"/>
+</root>

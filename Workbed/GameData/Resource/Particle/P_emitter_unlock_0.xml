@@ -1,0 +1,44 @@
+<Emitter>
+	<Shader filepath = "Data/Resource/Shader/S_effect_particle.fx" />
+	<Texture filepath = "Data/Resource/Texture/Particle/T_particle_white_hard.dds" />
+	
+	<ActiveAtStart value="false" />
+	<CircleEmitter value="false" />
+	<HollowEmitter value="false"/>
+
+	<EmitterSize x="0.1" y="0.1" z="0.1" /> <!-- This is fine -->
+	<ParticleRotationDelta value="0"/>
+
+	<ParticleRotation min = "-1.5" max = "1.8" />
+	
+	<ParticleMaxVelocity x="5" y="5" z="5" />
+	<ParticleMinVelocity x="-5" y="-5" z="-5" />
+
+	<ParticleSpeedMultiplier value = "1" />
+
+	<!-- From 0 to 255 -->
+	<ParticleStartColor r="255" g="0" b="0" />		
+	<ParticleEndColor r="0" g="255" b="0" />
+
+	<!-- In seconds! -->
+	<ParticleLifeTime value = "5" />
+	<EmitterLifeTime value="0.9" /> <!-- when this reaches 0 the emitter will stop emitting, and when the last particle dies it will set the emitter to inactive. If the value is below 0 ( -1 ) it will loop infinitely) -->
+
+	<!-- How often should a particle emitt? -->
+	<EmittsPerSecond value = "5" /> 
+	
+	<!-- How many particles do you want to release per emitt? -->
+	<ParticlesPerEmitt value = "100" /> 
+	
+	<!-- Scale particles, base size is 1 -->
+	<ParticleScale min = "0.1" max = "0.1" />
+
+	<!-- How fast should it fade out / in and how quick should it shrink / grow -->
+	<ParticleAlphaDelta value = "0.2" />
+	<ParticleSizeDelta value = "-0.2" />
+	
+	<!-- Why would you even concider anything else than 1? -->
+	<ParticleAlphaStart value = "1" />
+		<!-- Imma calculate this shit with code and shit -->
+	<UseAlphaDelta value = "true" />
+</Emitter>

@@ -4,227 +4,222 @@
 #include "AssetsContainer.h"
 #include <Randomizer.h>
 #include "VertexStructs.h"
-namespace Hex
+
+void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_texture)
 {
-	void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_texture)
+	myEngine = Engine::GetInstance();
+	mySynchronizer = aSynchronizer;
+	SParticleData data;
+	data.affectedByGravity = false;
+	data.lifeTime = 3.f;
+	data.minStartSize = 1.f;
+	data.maxStartSize = 1.f;
+	data.speed = 1.f;
+	data.startAlpha = 0.2f;
+	data.sizeDelta = 0.f;
+	data.alphaDelta = 0.f;
+
+	myData.diffuseTexture = myEngine->GetTexture("Data/Textures/hp.dds");
+	//myData.diffuseTexture->SetDebugName("ParticleDiffuseTexture");
+	myData.lifeTime = -1.f;
+	myData.shader = myEngine->GetEffect("Shaders/T_Particle.json");
+	myData.particleData = data;
+	myData.size = { 0.f, 0.f, 0.f };
+
+	myParticles.Init(256);
+
+	for (int i = 0; i < myParticles.Capacity(); i++)
 	{
-		myEngine = Engine::GetInstance();
-		mySynchronizer = aSynchronizer;
-		SParticleData data;
-		data.affectedByGravity = false;
-		data.lifeTime = 3.f;
-		data.minStartSize = 1.f;
-		data.maxStartSize = 1.f;
-		data.speed = 1.f;
-		data.startAlpha = 0.2f;
-		data.sizeDelta = 0.f;
-		data.alphaDelta = 0.f;
+		SParticleObject toAdd;
+		myParticles.Add(toAdd);
+	}
 
-		myData.diffuseTexture = myEngine->GetTexture("Data/Textures/hp.dds");
-		//myData.diffuseTexture->SetDebugName("ParticleDiffuseTexture");
-		myData.lifeTime = -1.f;
-		myData.shader = myEngine->GetEffect("Data/Shaders/T_Particle.json");
-		myData.particleData = data;
-		myData.size = { 0.f, 0.f, 0.f };
+	CreateBuffer();
+	CreateInputLayout();
+	CreateConstantBuffer();
 
-		myParticles.Init(256);
+	myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView());
+	myData.shader->AddShaderResource(depth_texture->GetDepthStencilView());
 
-		for (int i = 0; i < myParticles.Capacity(); i++)
+	myTimeToEmit = 0.f;
+}
+
+void CEmitterInstance::CleanUp()
+{
+	SAFE_RELEASE(myInputLayout);
+	SAFE_DELETE(myVertexBuffer);
+	SAFE_RELEASE(myConstantBuffer);
+	SAFE_DELETE(myConstantStruct);
+	SAFE_RELEASE(m_GeometryBuffer);
+}
+
+void CEmitterInstance::Update(float aDeltaTime)
+{
+	myTimeToEmit -= aDeltaTime;
+	if (myTimeToEmit < 0.f)
+	{
+		Emit();
+		myTimeToEmit = 0.1f;
+	}
+
+	UpdateParticle(aDeltaTime);
+}
+
+void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, const CU::Matrix44f& aProjection)
+{
+	if (!myConstantBuffer)
+		return;
+
+	UpdateVertexBuffer();
+
+	DirectX11* dx = Engine::GetAPI();
+	ID3D11DeviceContext* context = Engine::GetAPI()->GetContext();
+	context->IASetInputLayout(myInputLayout);
+
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	context->IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
+
+	if (!myData.shader->GetVertexShader())
+		return;
+
+	dx->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->m_Shader : nullptr);
+	dx->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->m_Shader : nullptr);
+	dx->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->m_Shader : nullptr);
+	SetMatrices(aPreviousCameraOrientation, aProjection);
+
+	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	context->GSSetConstantBuffers(0, 1, &m_GeometryBuffer);
+
+	myData.shader->Activate();
+	context->Draw(myParticles.Size(), 0);
+	myData.shader->Deactivate();
+
+	dx->SetVertexShader(nullptr);
+	dx->SetGeometryShader(nullptr);
+	dx->SetPixelShader(nullptr);
+
+}
+
+void CEmitterInstance::SetPosition(const CU::Vector3f& position)
+{
+	myOrientation.SetPosition(position);
+}
+
+void CEmitterInstance::CreateBuffer()
+{
+	myVertexBuffer = new VertexBufferWrapper();
+	myVertexBuffer->myStride = sizeof(SParticleObject);
+	myVertexBuffer->myByteOffset = 0;
+	myVertexBuffer->myStartSlot = 0;
+	myVertexBuffer->myNrOfBuffers = 1;
+
+	HRESULT hr;
+
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
+	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
+
+	if (myVertexBuffer->myVertexBuffer != nullptr)
+		myVertexBuffer->myVertexBuffer->Release();
+
+	vertexBufferDesc.ByteWidth = sizeof(SParticleObject) * myParticles.Capacity();
+
+	D3D11_SUBRESOURCE_DATA vertexData;
+	ZeroMemory(&vertexData, sizeof(vertexData));
+	vertexData.pSysMem = reinterpret_cast<char*>(&myParticles[0]);
+	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer); //Added vertexData to this
+	Engine::GetAPI()->HandleErrors(hr, "Failed to Create Particle Vertex Buffer");
+}
+
+void CEmitterInstance::UpdateVertexBuffer()
+{
+	if (myParticles.Size() > 0)
+	{
+		Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles[0], sizeof(SParticleObject) * myParticles.Size());
+	}
+}
+
+void CEmitterInstance::CreateConstantBuffer()
+{
+	myConstantBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbParticleVertex));
+	Engine::GetAPI()->SetDebugName(myConstantBuffer, "EmitterInstance : Vertex Constant Buffer");
+
+	m_GeometryBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbParticleGeometry));
+	Engine::GetAPI()->SetDebugName(m_GeometryBuffer, "EmitterInstance : Geometry Constant Buffer");
+}
+
+void CEmitterInstance::CreateInputLayout()
+{
+	HRESULT hr = S_OK;
+
+	void* shader = myData.shader->GetVertexShader()->compiledShader;
+	int size = myData.shader->GetVertexShader()->shaderSize;
+
+	const D3D11_INPUT_ELEMENT_DESC layout[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "ALPHA", 0, DXGI_FORMAT_R32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "SIZE", 0, DXGI_FORMAT_R32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+
+	hr = Engine::GetAPI()->GetDevice()->CreateInputLayout(layout, ARRAYSIZE(layout), shader, size, &myInputLayout);
+	Engine::GetAPI()->HandleErrors(hr, "Failed to create InputLayout!");
+	Engine::GetAPI()->SetDebugName(myInputLayout, "Particle Input Layout");
+}
+
+void CEmitterInstance::SetMatrices(CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+{
+	m_VertexCB.m_World = CU::Matrix44f();
+	m_VertexCB.m_View = CU::Math::Inverse(aCameraOrientation);
+	Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, &m_VertexCB);
+
+	m_GeometryCB.m_Projection = aCameraProjection;
+	Engine::GetAPI()->UpdateConstantBuffer(m_GeometryBuffer, &m_GeometryCB);
+}
+
+void CEmitterInstance::UpdateParticle(float aDeltaTime)
+{
+	for (int i = 0; i < myParticles.Size(); i++)
+	{
+		if (myParticles[i].lifeTime < 0.f || myParticles[i].alpha < 0.f)
 		{
-			SParticleObject toAdd;
-			myParticles.Add(toAdd);
+			myParticles.RemoveCyclicAtIndex(i);
+			continue;
 		}
-
-		CreateBuffer();
-		CreateInputLayout();
-		CreateConstantBuffer();
-
-		myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView());
-		myData.shader->AddShaderResource(depth_texture->GetShaderView());
-
-		myTimeToEmit = 0.f;
+		myParticles[i].position += (myParticles[i].direction * myParticles[i].speed) * aDeltaTime;
+		myParticles[i].lifeTime -= aDeltaTime;
+		myParticles[i].alpha = myParticles[i].lifeTime / 7.f;
 	}
+}
 
-	void CEmitterInstance::CleanUp()
-	{
-		SAFE_RELEASE(myInputLayout);
-		SAFE_DELETE(myVertexBuffer);
-		SAFE_RELEASE(myConstantBuffer);
-		SAFE_DELETE(myConstantStruct);
-		SAFE_RELEASE(m_GeometryBuffer);
-	}
+void CEmitterInstance::Emit()
+{
+	SParticleObject temp; //Replace with preallocated particles
 
-	void CEmitterInstance::Update(float aDeltaTime)
-	{
-		myTimeToEmit -= aDeltaTime;
-		if (myTimeToEmit < 0.f)
-		{
-			Emit();
-			myTimeToEmit = 0.1f;
-		}
+	temp.position = myOrientation.GetPosition();
+	float x0 = temp.position.x + myData.size.x;
+	float y0 = temp.position.y + myData.size.y;
+	float z0 = temp.position.z + myData.size.z;
 
-		UpdateParticle(aDeltaTime);
-	}
+	float x1 = temp.position.x - myData.size.x;
+	float y1 = temp.position.y - myData.size.y;
+	float z1 = temp.position.z - myData.size.z;
 
-	void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, const CU::Matrix44f& aProjection)
-	{
-		if (!myConstantBuffer)
-			return;
+	temp.position.x = RANDOM(x0, x1);
+	temp.position.y = RANDOM(y0, y1);
+	temp.position.z = RANDOM(z0, z1);
 
-		UpdateVertexBuffer();
-
-		DirectX11* dx = Engine::GetAPI();
-		ID3D11DeviceContext* context = Engine::GetAPI()->GetContext();
-		context->IASetInputLayout(myInputLayout);
-
-		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-		context->IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-
-		if (!myData.shader->GetVertexShader())
-			return;
-
-		dx->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->m_Shader : nullptr);
-		dx->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->m_Shader : nullptr);
-		dx->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->m_Shader : nullptr);
-
-		SetMatrices(aPreviousCameraOrientation, aProjection);
-
-		context->VSSetConstantBuffers(0, 1, &myConstantBuffer);  
-		context->GSSetConstantBuffers(0, 1, &m_GeometryBuffer);
-
-		myData.shader->Activate();
-		context->Draw(myParticles.Size(), 0);
-		myData.shader->Deactivate();
-
-		dx->SetVertexShader(nullptr);
-		dx->SetGeometryShader(nullptr);
-		dx->SetPixelShader(nullptr);
-
-	}
-
-	void CEmitterInstance::SetPosition(const CU::Vector3f& position)
-	{
-		myOrientation.SetPosition(position);
-	}
-
-	void CEmitterInstance::CreateBuffer()
-	{
-		myVertexBuffer = new VertexBufferWrapper();
-		myVertexBuffer->myStride = sizeof(SParticleObject);
-		myVertexBuffer->myByteOffset = 0;
-		myVertexBuffer->myStartSlot = 0;
-		myVertexBuffer->myNrOfBuffers = 1;
-
-		HRESULT hr;
-
-		D3D11_BUFFER_DESC vertexBufferDesc;
-		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-		vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		vertexBufferDesc.MiscFlags = 0;
-		vertexBufferDesc.StructureByteStride = 0;
-
-		if (myVertexBuffer->myVertexBuffer != nullptr)
-			myVertexBuffer->myVertexBuffer->Release();
-
-		vertexBufferDesc.ByteWidth = sizeof(SParticleObject) * myParticles.Capacity();
-
-		D3D11_SUBRESOURCE_DATA vertexData;
-		ZeroMemory(&vertexData, sizeof(vertexData));
-		vertexData.pSysMem = reinterpret_cast<char*>(&myParticles[0]);
-		hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer); //Added vertexData to this
-		Engine::GetAPI()->HandleErrors(hr, "Failed to Create Particle Vertex Buffer");
-	}
-
-	void CEmitterInstance::UpdateVertexBuffer()
-	{
-		if (myParticles.Size() > 0)
-		{
-			Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles[0], sizeof(SParticleObject) * myParticles.Size());
-		}
-	}
-
-	void CEmitterInstance::CreateConstantBuffer()
-	{
-		myConstantBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbParticleVertex));
-		Engine::GetAPI()->SetDebugName(myConstantBuffer, "EmitterInstance : Vertex Constant Buffer");
-
-		m_GeometryBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbParticleGeometry));
-		Engine::GetAPI()->SetDebugName(m_GeometryBuffer, "EmitterInstance : Geometry Constant Buffer");
-	}
-
-	void CEmitterInstance::CreateInputLayout()
-	{
-		HRESULT hr = S_OK;
-
-		void* shader = myData.shader->GetVertexShader()->compiledShader;
-		int size = myData.shader->GetVertexShader()->shaderSize;
-
-		const D3D11_INPUT_ELEMENT_DESC layout[] =
-		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-			{ "ALPHA", 0, DXGI_FORMAT_R32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "SIZE", 0, DXGI_FORMAT_R32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		};
-
-		hr = Engine::GetAPI()->GetDevice()->CreateInputLayout(layout, ARRAYSIZE(layout), shader, size, &myInputLayout);
-		Engine::GetAPI()->HandleErrors(hr, "Failed to create InputLayout!");
-		Engine::GetAPI()->SetDebugName(myInputLayout, "Particle Input Layout");
-	}
-
-	void CEmitterInstance::SetMatrices(CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
-	{
-		m_VertexCB.m_World = CU::Matrix44f();
-		m_VertexCB.m_View = CU::Math::Inverse(aCameraOrientation);
-		Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, &m_VertexCB);
-
-		m_GeometryCB.m_Projection = aCameraProjection;
-		Engine::GetAPI()->UpdateConstantBuffer(m_GeometryBuffer, &m_GeometryCB);
-	}
-
-	void CEmitterInstance::UpdateParticle(float aDeltaTime)
-	{
-		for (int i = 0; i < myParticles.Size(); i++)
-		{
-			if (myParticles[i].lifeTime < 0.f || myParticles[i].alpha < 0.f)
-			{
-				myParticles.RemoveCyclicAtIndex(i);
-				continue;
-			}
-			myParticles[i].position += (myParticles[i].direction * myParticles[i].speed) * aDeltaTime;
-			myParticles[i].lifeTime -= aDeltaTime;
-			myParticles[i].alpha = myParticles[i].lifeTime / 7.f;
-		}
-	}
-
-	void CEmitterInstance::Emit()
-	{
-		SParticleObject temp; //Replace with preallocated particles
-
-		temp.position = myOrientation.GetPosition();
-		float x0 = myData.size.x;
-		float y0 = myData.size.y;
-		float z0 = myData.size.z;
-
-		float x1 = temp.position.x;
-		float y1 = temp.position.y;
-		float z1 = temp.position.z;
-
-
-
-		temp.position.x = RANDOM(x0,x1);
-		temp.position.y = RANDOM(y0,y1);
-		temp.position.z = RANDOM(z0,z1);
-
-		temp.size = RANDOM(5.0f, 10.0f);
-		temp.direction.x = RANDOM(-0.1f, 0.1f);
-		temp.direction.y = RANDOM(0.f, 1.f);
-		temp.direction.z = RANDOM(-0.1f, 0.1f);
-		temp.lifeTime = 7.f;
-		temp.alpha = 1;// myData.particleData.startAlpha;
-		temp.speed = 8.f;
-		myParticles.Add(temp);
-	}
-};
+	temp.size = RANDOM(1.0f, 1.0f);
+	temp.direction.x = RANDOM(-1.0f, 1.0f);
+	temp.direction.y = RANDOM(0.f, 1.f);
+	temp.direction.z = RANDOM(-1.0f, 1.0f);
+	temp.lifeTime = 7.f;
+	temp.alpha = 1;// myData.particleData.startAlpha;
+	temp.speed = 8.f;
+	myParticles.Add(temp);
+}
 #endif

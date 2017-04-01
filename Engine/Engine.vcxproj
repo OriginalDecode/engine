@@ -13,6 +13,30 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Editor|Win32">
+      <Configuration>Editor</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Editor|x64">
+      <Configuration>Editor</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Final|Win32">
+      <Configuration>Final</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Final|x64">
+      <Configuration>Final</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|Win32">
+      <Configuration>Profile</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|x64">
+      <Configuration>Profile</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release_Vulkan|Win32">
       <Configuration>Release_Vulkan</Configuration>
       <Platform>Win32</Platform>
@@ -59,6 +83,27 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Editor|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -79,6 +124,27 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Editor|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
@@ -106,6 +172,15 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Final|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Editor|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -116,6 +191,15 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Editor|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|x64'" Label="PropertySheets">
@@ -137,6 +221,27 @@
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(SolutionDir)Include\fbx\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)lib\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">
+    <IncludePath>$(SolutionDir)Include\fbx\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)lib\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Editor|Win32'">
+    <IncludePath>$(SolutionDir)Include\fbx\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)lib\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
     <IncludePath>$(SolutionDir)Include\fbx\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)lib\</OutDir>
@@ -165,6 +270,27 @@
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)lib\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
+    <OutDir>$(SolutionDir)lib\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Editor|x64'">
+    <OutDir>$(SolutionDir)lib\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)Temp\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
@@ -235,7 +361,7 @@
       <UndefinePreprocessorDefinitions>__WIN32;WIN32;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>freetype_$(Configuration)_x64.lib;DirectXTK_$(Configuration)_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_$(Configuration).lib;ProfilerCore64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_$(Configuration)_x64.lib;DirectXTK_$(Configuration)_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -259,6 +385,87 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)Input\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4005</DisableSpecificWarnings>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>freetype_$(Configuration)_x86.lib;libfbxsdk-md_$(Configuration)_x86.lib;DirectXTK_$(Configuration)_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)Input\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4005</DisableSpecificWarnings>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>freetype_$(Configuration)_x86.lib;libfbxsdk-md_$(Configuration)_x86.lib;DirectXTK_$(Configuration)_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Editor|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)Input\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4005</DisableSpecificWarnings>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>freetype_$(Configuration)_x86.lib;libfbxsdk-md_$(Configuration)_x86.lib;DirectXTK_$(Configuration)_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
@@ -319,7 +526,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Matrix\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\Math\Matrix\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
       <PreprocessorDefinitions>__WIN64;COBJMACROS;SNOWBLIND_DX11; _CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -332,6 +539,75 @@
     </Link>
     <Lib>
       <AdditionalDependencies>freetype_$(Configuration)_x64.lib;DirectXTK_$(Configuration)_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\Math\Matrix\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <PreprocessorDefinitions>__WIN64;COBJMACROS;SNOWBLIND_DX11; _CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <UndefinePreprocessorDefinitions>__WIN32;WIN32;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>freetype_$(Configuration)_x64.lib;DirectXTK_$(Configuration)_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Editor|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\Math\Matrix\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <PreprocessorDefinitions>__WIN64;COBJMACROS;SNOWBLIND_DX11;_CRT_SECURE_NO_WARNINGS;_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <UndefinePreprocessorDefinitions>__WIN32;WIN32;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>freetype_Release_x64.lib;DirectXTK_Release_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_Release.lib;ProfilerCore64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\Math\Matrix\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <PreprocessorDefinitions>__WIN64;COBJMACROS;_CRT_SECURE_NO_WARNINGS;_PROFILE;SNOWBLIND_DX11;BUILD_WITH_EASY_PROFILER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <UndefinePreprocessorDefinitions>__WIN32;WIN32;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>freetype_Release_x64.lib;DirectXTK_Release_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_Release.lib;easy_profiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -376,13 +652,17 @@
     <ClInclude Include="EmitterInstance.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineDefines.h" />
+    <ClInclude Include="EntityFormat.h" />
     <ClInclude Include="FileWatcher.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontManager.h" />
+    <ClInclude Include="Frustum.h" />
     <ClInclude Include="GBuffer.h">
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="GizmoBase.h" />
+    <ClInclude Include="GizmoShared.h" />
     <ClInclude Include="HDRPass.h" />
     <ClInclude Include="IGraphicsAPI.h" />
     <ClInclude Include="imconfig.h" />
@@ -446,6 +726,7 @@
     <ClInclude Include="VertexStructs.h" />
     <ClInclude Include="VertexTypes.h" />
     <ClInclude Include="VertexWrapper.h" />
+    <ClInclude Include="VirtualFileSystem.h" />
     <ClInclude Include="Vulkan.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="World.h" />
@@ -472,10 +753,13 @@
     <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontManager.cpp" />
+    <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="GBuffer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="GizmoBase.cpp" />
+    <ClCompile Include="GizmoShared.cpp" />
     <ClCompile Include="HDRPass.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
@@ -518,14 +802,23 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Editor|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Final|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Editor|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|x64'">Create</PrecompiledHeader>
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</MultiProcessorCompilation>
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|x64'">false</MultiProcessorCompilation>
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Final|x64'">false</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Editor|x64'">false</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">false</MultiProcessorCompilation>
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|x64'">false</MultiProcessorCompilation>
     </ClCompile>
     <ClCompile Include="Surface.cpp" />
@@ -538,6 +831,7 @@
     <ClCompile Include="TGA32.cpp" />
     <ClCompile Include="TreeDweller.cpp" />
     <ClCompile Include="TreeNode.cpp" />
+    <ClCompile Include="VirtualFileSystem.cpp" />
     <ClCompile Include="Vulkan.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />

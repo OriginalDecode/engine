@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <standard_datatype.hpp>
 #include "EngineDefines.h"
+#include <DL_Debug/DL_Debug.h>
 typedef s32 Entity;
 
 #ifdef SNOWBLIND_DX11

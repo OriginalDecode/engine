@@ -1,7 +1,6 @@
 #pragma once
 #include "snowblind_shared.h"
-namespace Hex
-{
+
 	class Texture;
 	class Camera;
 	class Effect;
@@ -26,6 +25,9 @@ namespace Hex
 
 		void ToggleShader(bool on_or_off);
 
+		void SetOrientation(const CU::Matrix44f& orientation);
+
+
 		CU::Matrix44f GetOrientation();
 		CU::Matrix44f GetMVP();
 		void Copy();
@@ -46,4 +48,3 @@ namespace Hex
 		float m_BufferSize = 0.f;
 
 	};
-};

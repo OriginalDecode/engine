@@ -20,13 +20,11 @@ struct SLine
 
 
 
-namespace Hex
-{
-	class DirectX11;
-	class Effect;
-	struct VertexBufferWrapper;
 
-}
+class DirectX11;
+class Effect;
+struct VertexBufferWrapper;
+
 
 struct VertexBaseStruct;
 
@@ -56,9 +54,9 @@ private:
 	SLinePoint mySecondPoint;
 
 	CU::Matrix44f myOrientation;
-	Hex::DirectX11* myAPI = nullptr;
-	Hex::Effect* myEffect = nullptr;
-	Hex::VertexBufferWrapper* myVertexBuffer = nullptr;
+	DirectX11* myAPI = nullptr;
+	Effect* myEffect = nullptr;
+	VertexBufferWrapper* myVertexBuffer = nullptr;
 
 	VertexBaseStruct* myConstantStruct = nullptr;
 

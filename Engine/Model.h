@@ -20,7 +20,7 @@ class CModel : public CBaseModel
 public:
 	CModel();
 	bool CleanUp() override;
-	CModel* CreateModel(const std::string& filename);
+	CModel* Initiate(const std::string& filename);
 	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows = false) override;
 
 	void AddChild(CModel* aChild);

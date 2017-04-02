@@ -102,17 +102,6 @@ void Game::Update(float dt)
 		m_Camera->Update(m_Engine->GetInputHandle()->GetDeltaCursorPos());
 	}
 
-	/*{
-		if (input_wrapper->IsDown(KButton::UP_ARROW))
-			m_Camera->RotateAroundX(0.5f * dt);
-		if (input_wrapper->IsDown(KButton::DOWN_ARROW))
-			m_Camera->RotateAroundX(-0.5f * dt);
-		if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
-			m_Camera->RotateAroundY(0.5f * dt);
-		if (input_wrapper->IsDown(KButton::LEFT_ARROW))
-			m_Camera->RotateAroundY(-0.5f * dt);
-	}*/
-
 	float cam_speed = 50.f;
 
 	if (input_wrapper->IsDown(KButton::W))

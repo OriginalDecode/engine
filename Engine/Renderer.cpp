@@ -248,7 +248,7 @@ void Renderer::Render()
 
 
 	mySkysphere->Render(myPrevFrame, myDepthTexture);
-	RenderParticles();
+	//RenderParticles();
 
 	m_Engine->ResetRenderTargetAndDepth();
 
@@ -260,8 +260,10 @@ void Renderer::Render()
 		myDeferredRenderer->Finalize(0);
 
 	mySkysphere->Render(myPrevFrame, myDepthTexture);
+	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), myDeferredRenderer->GetDepthStencil()->GetDepthView());
 	RenderParticles();
 
+	m_Engine->ResetRenderTargetAndDepth();
 	//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime())
 
 
@@ -495,7 +497,7 @@ void Renderer::RenderParticles()
 	if ( m_ProcessDirectionalShadows )
 		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	else
-		m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
+		m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE_PARTICLE, 0);
 
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 	for (const RenderCommand& command : commands)

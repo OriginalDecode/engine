@@ -89,6 +89,9 @@ struct ControllerState;
 		CU::Matrix44f m_OrthogonalMatrix;
 		float m_CurrentFoV = 90.f;
 
+		float m_CameraSpeed = 50.f;
+
+
 		CU::Vector2f m_CenterPoint;
 		CU::Quaternion m_Pitch;
 		CU::Quaternion m_Yaw;

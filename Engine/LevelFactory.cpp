@@ -116,7 +116,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	if (sponza)
 		sponza = false;
 //#ifdef _EDITOR
-	if(hasLight)
+	//if(hasLight)
 		CreateDebugComponent(e, hasLight, debug_flags);
 //#endif
 

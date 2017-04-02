@@ -60,9 +60,9 @@ void DirectX11::CreateReadDepthStencilState()
 
 	stencilDesc.DepthEnable = TRUE;
 	stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	stencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	stencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
 
-	stencilDesc.StencilEnable = FALSE;
+	stencilDesc.StencilEnable = TRUE;
 	stencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
 	stencilDesc.StencilWriteMask = 0x0;
 
@@ -78,6 +78,31 @@ void DirectX11::CreateReadDepthStencilState()
 
 	HRESULT hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencilState::READ_NO_WRITE)]);
 	SetDebugName(myDepthStates[u16(eDepthStencilState::READ_NO_WRITE)], "eDepthStencilState::READ_NO_WRITE");
+	HandleErrors(hr, "Failed to setup depth buffer!");
+
+
+	ZeroMemory(&stencilDesc, sizeof(stencilDesc));
+	stencilDesc.DepthEnable = TRUE;
+	stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	stencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+
+	stencilDesc.StencilEnable = FALSE;
+	stencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+	stencilDesc.StencilWriteMask = 0x0;
+
+	stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
+	stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
+	stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
+	stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
+	stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_ZERO;
+	stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
+
+	hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStates[u16(eDepthStencilState::READ_NO_WRITE_PARTICLE)]);
+	SetDebugName(myDepthStates[u16(eDepthStencilState::READ_NO_WRITE_PARTICLE)], "eDepthStencilState::READ_NO_WRITE_PARTICLE");
 	HandleErrors(hr, "Failed to setup depth buffer!");
 
 }

@@ -37,7 +37,9 @@ ShaderFactory::~ShaderFactory()
 void ShaderFactory::LoadShader(Effect* anEffect)
 {
 	std::string path = anEffect->myFileName;
-	std::string sub = CL::substr(path, "/", true, 0) + "/";
+	s32 pos = path.rfind("/");
+	std::string sub = path.substr(0, pos + 1);
+	//std::string sub = CL::substr(path, "/", true, 0) + "/";
 
 	JSONReader reader(path);
 

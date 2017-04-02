@@ -46,13 +46,13 @@ void DebugSystem::Update(float /*dt*/)
 			continue;
 
 //#ifdef _EDITOR
-		//if (myEntityManager.HasComponent(e, CreateFilter<Requires<RenderComponent>>()))
-		//{
-		//	RenderComponent& r = GetComponent<RenderComponent>(e);
-		//	//debug.m_MinPoint = r.m_MinPos;
-		//	//debug.m_MaxPoint = r.m_MaxPos;
+		if (myEntityManager.HasComponent(e, CreateFilter<Requires<RenderComponent>>()))
+		{
+			RenderComponent& r = GetComponent<RenderComponent>(e);
+			debug.m_MinPoint = r.m_MinPos;
+			debug.m_MaxPoint = r.m_MaxPos;
 
-		//}
+		}
 		RenderBox(debug, translation.myOrientation);
 //#endif
 	}

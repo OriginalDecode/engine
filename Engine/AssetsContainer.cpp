@@ -138,13 +138,13 @@ std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect
 		if ( thread )
 		{
 			m_Engine->GetThreadpool().AddWork(Work([=]() {
-				myModels[aFilePath] = m_ModelLoader->LoadModel(aFilePath, model, effect);
+				m_ModelLoader->LoadModel(aFilePath, model, effect);
 			}));
 			return aFilePath;
 		}
 		else
 		{
-			myModels[aFilePath] = m_ModelLoader->LoadModel(aFilePath, model, effect);
+			m_ModelLoader->LoadModel(aFilePath, model, effect);
 			return aFilePath;
 		}
 	}

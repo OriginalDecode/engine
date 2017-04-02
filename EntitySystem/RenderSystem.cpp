@@ -37,25 +37,27 @@ void RenderSystem::Update(float /*dt*/)
 #endif
 	for (int i = 0; i < entities.Size(); i++)
 	{
-		//bool visible = false;
+		bool visible = false;
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
 
-		/*if (myEntityManager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
+#ifdef _PROFILE
+		EASY_BLOCK("Frustum collision check", profiler::colors::Green);
+#endif
+	/*	if (myEntityManager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
 		{
 			DebugComponent& debug = GetComponent<DebugComponent>(e);
 			for (const CU::Plane<float>& plane : debug.m_OBB.m_Planes)
 			{
 				CU::Vector4f temp = plane.GetPoint();
 				CU::Vector3f point = { temp.x,temp.y,temp.z };
-				if (CameraHandle::GetInstance()->GetFrustum().Inside(point, 5.f))
+				if (CameraHandle::GetInstance()->GetFrustum().Inside(point, 25.f))
 				{
 					visible = true;
 					break;
 				}
 			}
-			
 		}
 		else
 		{
@@ -68,6 +70,9 @@ void RenderSystem::Update(float /*dt*/)
 		if(!visible)
 			continue;*/
 
+#ifdef _PROFILE
+		EASY_END_BLOCK;
+#endif
 		//#LINUS This needs to be profiled.
 #ifdef _PROFILE
 		EASY_BLOCK("RenderSystem : Entity Scale multiplication");

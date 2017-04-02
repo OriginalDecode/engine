@@ -649,6 +649,10 @@ void Engine::UpdateDebugUI()
 	{
 		ImGui::Text("Delta Time : %.3f", GetDeltaTime());
 
+		if ( m_Threadpool.HasWork() )
+			ImGui::Text("Is Loading");
+		else
+			ImGui::Text("Done Loading");
 		ImGui::Separator();
 
 		if (ImGui::Button("New Entity", ImVec2(100.f, 25.f)))

@@ -34,7 +34,7 @@ bool CModel::CleanUp()
 	return true;
 }
 
-CModel* CModel::CreateModel(const std::string& filename)
+CModel* CModel::Initiate(const std::string& filename)
 {
 	m_Filename = CL::substr(filename, "/", false, 0);
 	if (myIsNULLObject == false)
@@ -46,7 +46,7 @@ CModel* CModel::CreateModel(const std::string& filename)
 
 	for (CModel* child : myChildren)
 	{
-		child->CreateModel(filename);
+		child->Initiate(filename);
 	}
 
 	return this;

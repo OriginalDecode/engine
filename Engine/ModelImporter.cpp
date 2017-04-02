@@ -22,85 +22,24 @@
 
 CModelImporter::CModelImporter()
 	: m_Engine(Engine::GetInstance())
-	, m_TimeManager(new CommonUtilities::TimeManager())
 {
-	m_TimeManager->CreateTimer();
+	m_TimeManager.CreateTimer();
 }
 
-
-CModelImporter::~CModelImporter()
-{
-	SAFE_DELETE(m_TimeManager);
-}
-
-CModel* CModelImporter::LoadModel(std::string aFilePath, CModel* model, std::string aEffectPath)
+void CModelImporter::LoadModel(std::string aFilePath, CModel* model, std::string effect)
 {
 	BeginTicketMutex(&m_LoaderMutex);
-	m_WHD = { 0.f, 0.f, 0.f };
-	m_MinPoint = { 0.f, 0.f, 0.f };
-	m_MaxPoint = { 0.f, 0.f, 0.f };
-	m_CurrentFile = aFilePath;
-	/*model = */
-	LoadModel(aFilePath, model, m_Engine->GetEffect(aEffectPath));
-	model->CreateModel(aFilePath);
+
+	LoadModel(aFilePath, model, m_Engine->GetEffect(effect));
+	model->Initiate(aFilePath);
+
 	EndTicketMutex(&m_LoaderMutex);
-
-	return model;
 }
 
-CModel* CModelImporter::CreateModel(FBXModelData* someData, CModel* model, Effect* anEffect)
+CModel* CModelImporter::LoadModel(std::string filepath, CModel* model, Effect* anEffect)
 {
-	model->SetEffect(anEffect);
-
-	if ( someData->myData )
-	{
-		FillData(someData, model, anEffect);
-		model->myOrientation = someData->myOrientation;
-	}
-
-	for ( FBXModelData* child : someData->myChildren )
-	{
-		model->AddChild(CreateChild(child, anEffect));
-	}
-
-	model->SetWHD(m_WHD);
-
-	model->SetMinPoint(m_MinPoint);
-	model->SetMaxPoint(m_MaxPoint);
-
-	return 0;
-}
-
-
-
-CModel* CModelImporter::CreateChild(FBXModelData* data, Effect* effect)
-{
-	CModel* model = new CModel();
-	model->SetEffect(effect);
-
-	if ( data->myData )
-	{
-		FillData(data, model, effect);
-		model->myOrientation = data->myOrientation;
-	}
-
-	for ( FBXModelData* child : data->myChildren )
-	{
-		model->AddChild(CreateChild(child, effect));
-	}
-
-	model->SetWHD(m_WHD);
-
-	model->SetMinPoint(m_MinPoint);
-	model->SetMaxPoint(m_MaxPoint);
-
-	return model;
-}
-
-CModel* CModelImporter::LoadModel(std::string aFilePath, CModel* model, Effect* anEffect)
-{
-	m_TimeManager->Update();
-	float loadTime = m_TimeManager->GetTimer(0).GetTotalTime().GetMilliseconds();
+	m_TimeManager.Update();
+	float loadTime = m_TimeManager.GetTimer(0).GetTotalTime().GetMilliseconds();
 
 	unsigned int processFlags =
 		aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
@@ -119,10 +58,11 @@ CModel* CModelImporter::LoadModel(std::string aFilePath, CModel* model, Effect* 
 		//aiProcess_LimitBoneWeights | // limit bone weights to 4 per vertex
 		aiProcess_OptimizeMeshes | // join small meshes, if possible;
 		//aiProcess_OptimizeGraph |
-								   //aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
+		//aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
 		0;
+
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(aFilePath, processFlags);
+	const aiScene* scene = importer.ReadFile(filepath, processFlags);
 
 	DL_MESSAGE_EXP(!scene, "%s", importer.GetErrorString());
 	DL_ASSERT_EXP(scene, "ImportModel Failed. Could not read the requested file.");
@@ -130,9 +70,9 @@ CModel* CModelImporter::LoadModel(std::string aFilePath, CModel* model, Effect* 
 	aiNode* rootNode = scene->mRootNode;
 	FBXModelData* data = new FBXModelData;
 
-	ProcessNode(rootNode, scene, data, aFilePath);
+	ProcessNode(rootNode, scene, data, filepath);
 
-	CModel* toReturn = CreateModel(data, model, anEffect);
+	CModel* toReturn = CreateModel(data, model, filepath, anEffect);
 
 
 	if ( data->myTextureData )
@@ -150,37 +90,61 @@ CModel* CModelImporter::LoadModel(std::string aFilePath, CModel* model, Effect* 
 	}
 	delete data;
 
-	m_TimeManager->Update();
-	loadTime = m_TimeManager->GetTimer(0).GetTotalTime().GetMilliseconds() - loadTime;
-	MODEL_LOG("%s took %fms to load. %s", aFilePath.c_str(), loadTime, ( loadTime > 7000.f ) ? "Check if it's saved as binary." : 0);
+	m_TimeManager.Update();
+	loadTime = m_TimeManager.GetTimer(0).GetTotalTime().GetMilliseconds() - loadTime;
+	MODEL_LOG("%s took %fms to load. %s", filepath.c_str(), loadTime, ( loadTime > 7000.f ) ? "Check if it's saved as binary." : 0);
 
 	return toReturn;
 }
 
-void CModelImporter::FillData(FBXModelData* someData, CModel* out, Effect* /*anEffect*/)
+
+CModel* CModelImporter::CreateModel(FBXModelData* someData, CModel* model, std::string filepath, Effect* effect)
+{
+	model->SetEffect(effect);
+
+	if ( someData->myData )
+	{
+		FillData(someData, model, filepath);
+		model->myOrientation = someData->myOrientation;
+	}
+
+	for ( FBXModelData* child : someData->myChildren )
+	{
+		model->AddChild(CreateChild(child, filepath, effect));
+	}
+
+	return 0;
+}
+
+CModel* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect* effect)
+{
+	CModel* model = new CModel();
+	model->SetEffect(effect);
+
+	if ( data->myData )
+	{
+		FillData(data, model, filepath);
+		model->myOrientation = data->myOrientation;
+	}
+
+	for ( FBXModelData* child : data->myChildren )
+	{
+		model->AddChild(CreateChild(child, filepath, effect));
+	}
+
+	return model;
+}
+
+void CModelImporter::FillData(FBXModelData* someData, CModel* out, std::string filepath)
 {
 #ifdef SNOWBLIND_DX11
 	ModelData* data = someData->myData;
 
-	if ( m_WHD.x <= 0.f + FLT_EPSILON )
-		m_WHD.x += 0.1f;
-	if ( m_WHD.y <= 0.f + FLT_EPSILON )
-		m_WHD.y += 0.1f;
-	if ( m_WHD.z <= 0.f + FLT_EPSILON )
-		m_WHD.z += 0.1f;
-
-
-
-	out->SetWHD(m_WHD);
-	out->SetMinPoint(m_MinPoint);
-	out->SetMaxPoint(m_MaxPoint);
-	//VertexIndexWrapper* indexWrapper = new VertexIndexWrapper();
 	out->m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
 	u32* indexData = new u32[data->myIndexCount];
 	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
 	out->m_IndexData.myIndexData = ( s8* ) indexData;
 	out->m_IndexData.mySize = data->myIndexCount * sizeof(u32);
-	//out->m_IndexData = indexWrapper;
 
 	for ( u32 i = 0; i < data->myIndexCount; i++ )
 	{
@@ -189,8 +153,6 @@ void CModelImporter::FillData(FBXModelData* someData, CModel* out, Effect* /*anE
 
 
 
-	/* BUG HERE. CRASH. */
-	//VertexDataWrapper* vertexData = new VertexDataWrapper();
 	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float); //is this wrong?
 	u32* vertexRawData = new u32[sizeOfBuffer];
 	memcpy(vertexRawData, data->myVertexBuffer, sizeOfBuffer); // This crashes?
@@ -198,12 +160,32 @@ void CModelImporter::FillData(FBXModelData* someData, CModel* out, Effect* /*anE
 	out->m_VertexData.myNrOfVertexes = data->myVertexCount;
 	out->m_VertexData.mySize = sizeOfBuffer;
 	out->m_VertexData.myStride = data->myVertexStride * sizeof(float);
-	//out->myVertexData = vertexData;
 
 	CSurface* newSurface = new CSurface(0, data->myVertexCount, 0
 		, data->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	out->myIsNULLObject = false;
+	SetupInputLayout(data, out);
+
+
+	const CU::GrowingArray<TextureInfo>& info = someData->myTextureData->myTextures;
+
+	for ( s32 i = 0; i < info.Size(); i++ )
+	{
+		newSurface->AddTexture(info[i].myFilename, ( TextureType ) info[i].myType);
+	}
+
+	if( filepath.find("Skysphere") == filepath.npos	)
+		newSurface->ValidateTextures();
+
+	//newSurface->ValidateTextures();
+
+	out->mySurfaces.Add(newSurface);
+#endif
+}
+
+void CModelImporter::SetupInputLayout(ModelData* data, CModel* out)
+{
 	for ( int i = 0; i < data->myLayout.Size(); ++i )
 	{
 		auto currentLayout = data->myLayout[i];
@@ -255,23 +237,6 @@ void CModelImporter::FillData(FBXModelData* someData, CModel* out, Effect* /*anE
 		out->myVertexFormat.Add(desc);
 
 	}
-
-
-	const CU::GrowingArray<TextureInfo>& info = someData->myTextureData->myTextures;
-
-	for ( s32 i = 0; i < info.Size(); i++ )
-	{
-		newSurface->AddTexture(info[i].myFilename, ( TextureType ) info[i].myType);
-	}
-
-
-	if ( !CL::substr(m_CurrentFile, "Skysphere") )
-		newSurface->ValidateTextures();
-
-	//newSurface->ValidateTextures();
-
-	out->mySurfaces.Add(newSurface);
-#endif
 }
 
 void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData, std::string file)
@@ -293,18 +258,17 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 #endif
 }
 
-void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelData* fbx, std::string file)
+void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* fbx, std::string file)
 {
-#ifdef SNOWBLIND_DX11
 	FBXModelData* data = fbx;
-	data->myData = new ModelData();
+	data->myData = new ModelData;
 
-
-	u32 polygonCount = aMesh->mNumFaces;
+	u32 polygonCount = mesh->mNumFaces;
 	u32 size = polygonCount * VERTEX_STRIDE;
 	u32 polygonVertexCount = polygonCount * 4;
 
-	if ( aMesh->HasPositions() )
+	u32 stride = 0;
+	if ( mesh->HasPositions() )
 	{
 		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_POS;
@@ -312,11 +276,10 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 		newLayout.myOffset = 0;
 		data->myData->myLayout.Add(newLayout);
 		size += polygonVertexCount * VERTEX_STRIDE;
+		stride += VERTEX_STRIDE;
 	}
-	u32 stride = VERTEX_STRIDE;
 
-
-	if ( aMesh->HasNormals() )
+	if ( mesh->HasNormals() )
 	{
 		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_NORMAL;
@@ -328,7 +291,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 		size += polygonVertexCount * NORMAL_STRIDE;
 	}
 
-	if ( aMesh->HasTextureCoords(0) )
+	if ( mesh->HasTextureCoords(0) )
 	{
 		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_UV;
@@ -340,7 +303,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 		size += polygonVertexCount * UV_STRIDE;
 	}
 
-	if ( aMesh->HasTangentsAndBitangents() )
+	if ( mesh->HasTangentsAndBitangents() )
 	{
 		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_BINORMAL;
@@ -360,7 +323,7 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 		size += polygonVertexCount * TANGENT_STRIDE;
 	}
 
-	if ( aMesh->HasBones() )
+	if ( mesh->HasBones() )
 	{
 		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_SKINWEIGHTS;
@@ -384,23 +347,18 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 	data->myData->myVertexBuffer = new float[size];
 	ZeroMemory(data->myData->myVertexBuffer, sizeof(float)*size);
 
-	DL_ASSERT_EXP(aMesh->mNumVertices < size, "the amount of vertices was MORE!? than size");
+	DL_ASSERT_EXP(mesh->mNumVertices < size, "the amount of vertices was MORE!? than size");
 	data->myData->myIndicies = new u32[polygonCount * 3];
 	ZeroMemory(data->myData->myIndicies, sizeof(u32) * polygonCount * 3);
 
 	CU::GrowingArray<u32> indices;
 	u32 vertCount = 0;
 
-	float w = 0.f;
-	float h = 0.f;
-	float d = 0.f;
+	CU::Vector3f min_point, max_point;
 
-
-
-
-	for ( u32 i = 0; i < aMesh->mNumFaces; i++ )
+	for ( u32 i = 0; i < mesh->mNumFaces; i++ )
 	{
-		const aiFace* face = &aMesh->mFaces[i];
+		const aiFace* face = &mesh->mFaces[i];
 
 		for ( s32 j = 2; j >= 0; j-- )
 		{
@@ -409,11 +367,9 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 			DL_ASSERT_EXP(addedSize <= size, "addedSize was larger than the size of the array.");
 			u32 verticeIndex = face->mIndices[j];
 
-			Vertex vert;
-
-			if ( aMesh->HasPositions() )
+			if ( mesh->HasPositions() )
 			{
-				CU::Vector4f position(aMesh->mVertices[verticeIndex].x, aMesh->mVertices[verticeIndex].y, aMesh->mVertices[verticeIndex].z, 1);
+				CU::Vector4f position(mesh->mVertices[verticeIndex].x, mesh->mVertices[verticeIndex].y, mesh->mVertices[verticeIndex].z, 1);
 				CU::Matrix44f fixMatrix = CU::Math::CreateReflectionMatrixAboutAxis44(CU::Vector3f(1, 0, 0));
 				position = position * fixMatrix;
 
@@ -424,195 +380,124 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 				if ( i != 0 )
 				{
-					if ( position.x <= m_MinPoint.x )
-					{
-						m_MinPoint.x = position.x;
-					}
+					if ( position.x <= min_point.x )
+						min_point.x = position.x;
 
-					if ( position.x > m_MaxPoint.x )
-					{
-						m_MaxPoint.x = position.x;
-					}
+					if ( position.x > max_point.x )
+						max_point.x = position.x;
 
+					if ( position.y <= min_point.y )
+						min_point.y = position.y;
 
-					if ( position.y <= m_MinPoint.y )
-					{
-						m_MinPoint.y = position.y;
-					}
+					if ( position.y > max_point.y )
+						max_point.y = position.y;
 
-					if ( position.y > m_MaxPoint.y )
-					{
-						m_MaxPoint.y = position.y;
-					}
+					if ( position.z <= min_point.z )
+						min_point.z = position.z;
 
-
-					if ( position.z <= m_MinPoint.z )
-					{
-						m_MinPoint.z = position.z;
-					}
-
-					if ( position.z > m_MaxPoint.z )
-					{
-						m_MaxPoint.z = position.z;
-					}
-
-
-
-
-					float temp_x, temp_y, temp_z;
-					{
-						temp_x = -position.x;
-
-						if ( w < temp_x )
-							w = temp_x;
-					}
-
-					if ( position.y < 0.f )
-					{
-						temp_y = -position.y;
-
-						if ( w < temp_y )
-							w = temp_y;
-					}
-
-					if ( position.z < 0.f )
-					{
-						temp_z = -position.z;
-
-						if ( d < temp_z )
-							d = temp_z;
-					}
-
-					if ( w < position.x )
-						w = position.x;
-					if ( h < position.y )
-						h = position.y;
-					if ( d < position.z )
-						d = position.z;
+					if ( position.z > max_point.z )
+						max_point.z = position.z;
 				}
-				/*else
+
+				if ( mesh->HasNormals() )
 				{
 
-					w = position.x;
-					h = position.y;
-					d = position.z;
-				}*/
+					CU::Vector3f normal(
+						mesh->mNormals[verticeIndex].x,
+						mesh->mNormals[verticeIndex].y,
+						mesh->mNormals[verticeIndex].z);
+					normal = normal * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
+					CU::Math::Normalize(normal);
+
+
+					data->myData->myVertexBuffer[currIndex + addedSize] = normal.x;
+					data->myData->myVertexBuffer[currIndex + addedSize + 1] = normal.y;
+					data->myData->myVertexBuffer[currIndex + addedSize + 2] = normal.z;
+					data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
+					addedSize += NORMAL_STRIDE;
+				}
+
+				if ( mesh->HasTextureCoords(0) )
+				{
+					CU::Vector2f uv(mesh->mTextureCoords[0][verticeIndex].x, mesh->mTextureCoords[0][verticeIndex].y * -1.f);
+
+
+					data->myData->myVertexBuffer[currIndex + addedSize] = uv.x;
+					data->myData->myVertexBuffer[currIndex + addedSize + 1] = uv.y;
+					addedSize += UV_STRIDE;
+				}
+
+				if ( mesh->HasTangentsAndBitangents() )
+				{
+
+					CU::Vector3f binorm(
+						mesh->mBitangents[verticeIndex].x,
+						mesh->mBitangents[verticeIndex].y,
+						mesh->mBitangents[verticeIndex].z);
+					binorm = binorm * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
+					CU::Math::Normalize(binorm);
+
+					data->myData->myVertexBuffer[currIndex + addedSize] = binorm.x;
+					data->myData->myVertexBuffer[currIndex + addedSize + 1] = binorm.y;
+					data->myData->myVertexBuffer[currIndex + addedSize + 2] = binorm.z;
+					data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
+					addedSize += BINORMAL_STRIDE;
+
+					CU::Vector3f tangent(
+						mesh->mTangents[verticeIndex].x,
+						mesh->mTangents[verticeIndex].y,
+						mesh->mTangents[verticeIndex].z);
+					tangent = tangent * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(-1, 0, 0));
+					CU::Math::Normalize(tangent);
+
+
+					data->myData->myVertexBuffer[currIndex + addedSize] = tangent.x;
+					data->myData->myVertexBuffer[currIndex + addedSize + 1] = tangent.y;
+					data->myData->myVertexBuffer[currIndex + addedSize + 2] = tangent.z;
+					data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
+					addedSize += TANGENT_STRIDE;
+				}
+
+				indices.Add(verticeIndex);
+				vertCount++;
 			}
-
-			if ( aMesh->HasNormals() )
-			{
-
-				CU::Vector3f normal(
-					aMesh->mNormals[verticeIndex].x,
-					aMesh->mNormals[verticeIndex].y,
-					aMesh->mNormals[verticeIndex].z);
-				normal = normal * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
-				CU::Math::Normalize(normal);
-
-
-				data->myData->myVertexBuffer[currIndex + addedSize] = normal.x;
-				data->myData->myVertexBuffer[currIndex + addedSize + 1] = normal.y;
-				data->myData->myVertexBuffer[currIndex + addedSize + 2] = normal.z;
-				data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
-				addedSize += NORMAL_STRIDE;
-			}
-
-			if ( aMesh->HasTextureCoords(0) )
-			{
-				CU::Vector2f uv(aMesh->mTextureCoords[0][verticeIndex].x, aMesh->mTextureCoords[0][verticeIndex].y * -1.f);
-
-
-				data->myData->myVertexBuffer[currIndex + addedSize] = uv.x;
-				data->myData->myVertexBuffer[currIndex + addedSize + 1] = uv.y;
-				addedSize += UV_STRIDE;
-			}
-
-			if ( aMesh->HasTangentsAndBitangents() )
-			{
-
-				CU::Vector3f binorm(
-					aMesh->mBitangents[verticeIndex].x,
-					aMesh->mBitangents[verticeIndex].y,
-					aMesh->mBitangents[verticeIndex].z);
-				binorm = binorm * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
-				CU::Math::Normalize(binorm);
-
-				data->myData->myVertexBuffer[currIndex + addedSize] = binorm.x;
-				data->myData->myVertexBuffer[currIndex + addedSize + 1] = binorm.y;
-				data->myData->myVertexBuffer[currIndex + addedSize + 2] = binorm.z;
-				data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
-				addedSize += BINORMAL_STRIDE;
-
-				CU::Vector3f tangent(
-					aMesh->mTangents[verticeIndex].x,
-					aMesh->mTangents[verticeIndex].y,
-					aMesh->mTangents[verticeIndex].z);
-				tangent = tangent * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(-1, 0, 0));
-				CU::Math::Normalize(tangent);
-
-
-				data->myData->myVertexBuffer[currIndex + addedSize] = tangent.x;
-				data->myData->myVertexBuffer[currIndex + addedSize + 1] = tangent.y;
-				data->myData->myVertexBuffer[currIndex + addedSize + 2] = tangent.z;
-				data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
-				addedSize += TANGENT_STRIDE;
-			}
-
-			indices.Add(verticeIndex);
-			vertCount++;
 		}
+
+		data->myData->m_MinPoint = min_point;
+		data->myData->m_MaxPoint = max_point;
+
+
+		//Flips it to make it correct.
+		CU::GrowingArray<u32> indiceFix;
+		for ( s32 i = indices.Size() - 1; i >= 0; i-- )
+		{
+			indiceFix.Add(indices[i]);
+		}
+
+		memcpy(data->myData->myIndicies, &indiceFix[0], sizeof(u32) * indiceFix.Size());
+
+		data->myData->myVertexStride = stride;
+		data->myData->myVertexCount = vertCount;
+		data->myData->myIndexCount =  indiceFix.Size();
+		
 	}
+	
+	ExtractMaterials(mesh, scene, data, file);
 
-	if ( w > m_WHD.x )
-	{
-		m_WHD.x = w;
-	}
-
-	if ( h > m_WHD.y )
-	{
-		m_WHD.y = h;
-	}
-
-	if ( d > m_WHD.z )
-	{
-		m_WHD.z = d;
-	}
+}
 
 
-
-
-	data->myData->m_MinPoint = m_MinPoint;
-	data->myData->m_MaxPoint = m_MaxPoint;
-
-	//data->myData->m_WHD.x = w;
-	//data->myData->m_WHD.y = h;
-	//data->myData->m_WHD.z = d;
-
-	//Flips it to make it correct.
-	CU::GrowingArray<u32> indiceFix;
-	for ( s32 i = indices.Size() - 1; i >= 0; i-- )
-	{
-		indiceFix.Add(indices[i]);
-	}
-
-	memcpy(data->myData->myIndicies, &indiceFix[0], sizeof(u32) * indiceFix.Size());
-	data->myData->myVertexStride = stride;
-
-	data->myData->myVertexCount = vertCount;
-	data->myData->myIndexCount = indiceFix.Size();
-
-
+void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file)
+{
 	data->myTextureData = new TextureData;
 
-	aiMaterial* material = aScene->mMaterials[aMesh->mMaterialIndex];
-	//s32 tex_count = aScene->mNumTextures;
+	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 	for ( u32 i = 0; i < material->mNumProperties; i++ )
 	{
 		aiMaterialProperty* prop = material->mProperties[i];
 		u32 type = prop->mSemantic;
 		aiString str;
 		material->GetTexture(static_cast< aiTextureType >( type ), 0, &str);
-
 		std::string newPath = CL::substr(file, "/", true, 0);
 
 		std::string fileName = CL::substr(str.C_Str(), "\\", false, 0);
@@ -716,32 +601,4 @@ void CModelImporter::ProcessMesh(aiMesh* aMesh, const aiScene* aScene, FBXModelD
 
 		}
 	}
-#endif
-}
-
-bool operator==(const Vertex& aVertice, const Vertex& aSecond)
-{
-
-	if ( aVertice.position != aSecond.position )
-		return false;
-
-	if ( aVertice.normal != aSecond.normal )
-		return false;
-
-	if ( aVertice.uv != aSecond.uv )
-		return false;
-
-	if ( aVertice.binormal != aSecond.binormal )
-		return false;
-
-	if ( aVertice.tangent != aSecond.tangent )
-		return false;
-
-
-	return true;
-}
-
-bool operator!=(const Vertex& aVertice, const Vertex& aSecond)
-{
-	return !( aVertice == aSecond );
 }

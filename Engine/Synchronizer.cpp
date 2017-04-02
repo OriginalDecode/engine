@@ -2,9 +2,14 @@
 #include "Synchronizer.h"
 #include <thread>
 
-
 bool Synchronizer::Initiate()
 {
+	for (s32 i = 0; i < (s32)eCommandBuffer::_COUNT; i++)
+	{
+		myCommandBuffers[i][0].Init(0xffff);
+		myCommandBuffers[i][1].Init(0xffff);
+	}
+
 	m_CurrentBuffer = 0;
 	myLogicIsDone = false;
 	myRenderIsDone = false;

@@ -1,9 +1,0 @@
-<root>
-	<Entity type="bullet" subType="bulletClient">
-		<GraphicsComponent>
-			<Model modelPath="Data/Resource/Model/Test_temp/Test_arrow_01.fbx" shaderPath="Data/Resource/Shader/S_effect_pbl_deferred.fx" />
-			<RoomType value="dynamic"/>
-		</GraphicsComponent>
-		<NetworkComponent/>
-	</Entity>
-</root>

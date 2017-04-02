@@ -63,6 +63,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	Engine::GetInstance()->GetVFS().Register("Data/Shaders", "Shaders");
 	Engine::GetInstance()->GetVFS().Register("Data/Textures", "Textures");
 	Engine::GetInstance()->GetVFS().Register("Data/Model", "Models");
+	Engine::GetInstance()->GetVFS().Register("Data/Texture", "Texture");
 
 	Engine::GetInstance()->Initiate(w, h, anInstance, WindowProc);
 	DL_ASSERT_EXP(newApplication->Initiate(), "Failed to initiate game");

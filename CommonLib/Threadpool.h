@@ -12,6 +12,8 @@ public:
 	void Update();
 	void AddWork(Work aWorkOrder);
 	void CleanUp();
+	
+	bool HasWork() { return !myWorkOrders.empty(); }
 
 private:
 	std::queue<Work> myWorkOrders;

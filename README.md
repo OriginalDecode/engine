@@ -1,1 +1,0 @@
-The Snowblind Engine is a Project by Linus Sköld.

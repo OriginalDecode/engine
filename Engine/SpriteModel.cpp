@@ -173,7 +173,7 @@ void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU:
 void CSpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 {
 #ifdef SNOWBLIND_DX11
-	Engine::GetAPI()->SetBlendState(eBlendStates::ALPHA_BLEND);
+	Engine::GetAPI()->SetBlendState(eBlendStates::BLEND_FALSE);
 	if (!myEffect)
 		return;
 	Engine::GetAPI()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);

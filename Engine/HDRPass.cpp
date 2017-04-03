@@ -111,7 +111,6 @@ void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* 
 
 	m_DownsampleEffect->Activate();
 	ctx->PSSetShaderResources(0, 1, &source);
-
 	ctx->DrawIndexed(6, 0, 0);
 
 	m_DownsampleEffect->Deactivate();

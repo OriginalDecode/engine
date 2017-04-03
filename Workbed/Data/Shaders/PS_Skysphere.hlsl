@@ -28,8 +28,8 @@ struct VS_OUTPUT
 //	Deferred Base Pixel Shader
 //---------------------------------
 
-static const float4 sun_position = float4(2000,700,100,0);
-static const float g = -0.75;
+static const float4 sun_position = float4(500,500,500,0);
+static const float g = -0.95;
 static const float4 br = float4(5.5e-6, 13.0e-6, 22.4e-6, 0);
 static const float4 bm = float4(21e-6,21e-6,21e-6,0);
 static const float pi = 3.14;
@@ -68,12 +68,12 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	if(depth < 1.f)
 		discard;
 
-	float4 ldir = lpos - input.worldpos;
+	float4 ldir = sun_position - input.worldpos;
 	float s = length(input.worldpos - cpos);
 	float theta = acos(dot(normalize(ldir - input.worldpos), normalize(input.worldpos - cpos) * float4(1,0,0,0)));
 
-	float4 output = atmospheric(theta,s) * 100000;
-
+	float4 output = atmospheric(theta,s) * 100000 * 5;
+	return output;
 
 	//height = (height - height) * 2.f - 1.f;
 	

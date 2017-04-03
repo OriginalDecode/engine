@@ -107,7 +107,11 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 		, "Renderer : Depth");
 
 	mySkysphere = new SkySphere;
-	mySkysphere->Initiate("Data/Model/sky_dome.fbx", "Shaders/T_Skysphere.json"
+	static std::string SKY_DOME = "Data/Model/sky_dome.fbx";
+	static std::string SKY_SPHERE = "Data/Model/Skysphere/SM_Skysphere.fbx";
+
+
+	mySkysphere->Initiate(SKY_SPHERE, "Shaders/T_Skysphere.json"
 		, m_Camera);
 	//mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Shaders/T_Skysphere_Layer.json");
 	if (!mySkysphere)
@@ -277,9 +281,9 @@ void Renderer::Render()
 
 	m_Engine->Present();
 
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 64.f, 64.f)));
+	//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 64.f, 64.f)));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
+	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
 
 
 	mySynchronizer->WaitForLogic();
@@ -409,6 +413,7 @@ void Renderer::Render2DCommands()
 	const CU::GrowingArray<RenderCommand>& commands2D = mySynchronizer->GetRenderCommands(eCommandBuffer::e2D);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
+	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	for each(const RenderCommand& command in commands2D)
 	{
 		switch (command.myType)
@@ -422,9 +427,7 @@ void Renderer::Render2DCommands()
 			case eType::SPRITE:
 			{
 
-				myClearColor->SetPosition({ command.myPosition.x, command.myPosition.y });
-				myClearColor->Render(m_Camera);
-
+				
 				mySprite->SetPosition({ command.myPosition.x, command.myPosition.y });
 				mySprite->SetShaderView(command.m_ShaderResource);
 				mySprite->Render(m_Camera);

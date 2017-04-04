@@ -221,12 +221,10 @@ ModelManifest.xml
 /lib
 /Workbed/Data/Model/dev/.mayaSwatches
 /Workbed/Glyphs
-/Workbed/Snowblind_Release.ipdb
-/Workbed/Snowblind_Release.iobj
 /Workbed/Data/Model/Tree
 /Temp/
-/HashGen.iobj
-/HashGen.ipdb
 /Workbed/Snowblind_Debug.pdb
 /Workbed/Snowblind_Release.pdb
 /Workbed/Data/Model/sponza/.mayaSwatches
+*.iobj
+*.ipdb

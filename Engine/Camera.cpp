@@ -29,7 +29,10 @@ CU::Vector3f Camera::RotateAroundPoint(const CU::Vector3f& position)
 {
 	CU::Vector3f original_pos = GetPosition();
 	SetPosition(original_pos - position);
-	m_Orientation = m_Orientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(5.f) * ( Engine::GetInstance()->GetDeltaTime() ));
+	float dt = Engine::GetInstance()->GetDeltaTime();
+	m_Orientation = m_Orientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(45.f) * dt);
+	m_Orientation = m_Orientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(45.f) * dt);
+
 	SetPosition(GetPosition() + position);
 
 

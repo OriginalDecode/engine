@@ -684,8 +684,6 @@ void Engine::UpdateDebugUI()
 		ImGui::SliderFloat("FOV", &fov_value, 60.f, 120.f,"%.f");
 		m_Camera->SetFOV(fov_value);
 
-
-
 		ImGui::End();
 	}
 	ImGui::PopStyleVar();

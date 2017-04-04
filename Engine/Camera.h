@@ -71,8 +71,10 @@ struct ControllerState;
 		//bool GetCanFreeFly() { return m_Controller; }
 		float GetFOV() { return m_CurrentFoV; }
 		float* GetFOVRef() { return &m_CurrentFoV; }
+
 	private:
 		float m_LookSpeedModifier = 0.005f;
+		float m_RotationDegree = 0.f;
 		void operator=(Camera&) = delete;
 		void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);
 		void MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed);

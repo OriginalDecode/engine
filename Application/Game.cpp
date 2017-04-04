@@ -36,7 +36,7 @@ void Game::InitState(StateStack* state_stack)
 	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
 
 	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel("Data/Levels/level_01.level");
-	m_World.AddDwellers(dwellers);
+	//m_World.AddDwellers(dwellers);
 
 	m_Player = new TreeDweller;
 	m_Player->Initiate(m_Engine->GetEntityManager().CreateEntity(), TreeDweller::eType::DYNAMIC);
@@ -49,7 +49,7 @@ void Game::InitState(StateStack* state_stack)
 
 	//m_Engine->ToggleVsync(); //settings
 	m_Camera = m_Engine->GetCamera();
-
+	m_Camera->SetPosition(CU::Vector3f(256.f, 5.f, 256.f));
 	CameraHandle::Create();
 	//CameraHandle::GetInstance()->Initiate(&m_Orientation);
 	CameraHandle::GetInstance()->Initiate(nullptr);
@@ -204,7 +204,7 @@ void Game::Update(float dt)
 
 	m_Orientation.SetTranslation(translation);
 
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::PARTICLE, CU::Vector3f(5, 5, 5)));
+	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::PARTICLE, CU::Vector3f(5, 5, 5)));
 
 
 	TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());

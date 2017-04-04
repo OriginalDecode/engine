@@ -1,4 +1,10 @@
 Engine Tasks:
+  <https://www.shadertoy.com/view/4sXcRS>
+  <https://www.gamedev.net/topic/686513-oneil-atmospheric-scattering/?hl=%2Batmosphere#entry5334595>
+  <https://www.gamedev.net/topic/602369-strange-issue-with-sean-oneils-atmospheric-scattering-ground/?hl=%2Batomspheric+%2Bscattering>
+  <https://github.com/wwwtyro/glsl-atmosphere/blob/master/example/index.js>
+  <https://www.shadertoy.com/view/lslXDr>
+  <http://developer.amd.com/wordpress/media/2012/10/GDC_02_HoffmanPreetham.pdf>
   Level / World:
     ✔ Quadtree / Octree @done (17-01-29 23:57)
     ✔ Treenode updates entities by themselves. @done (17-01-29 23:57)

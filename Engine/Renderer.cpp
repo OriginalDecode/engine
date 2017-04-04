@@ -71,7 +71,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_DirectionalCamera = new Camera;
 	m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
 
-	m_DirectionalCamera->SetPosition({ 256.f, 1024.f, 256.f });
+	m_DirectionalCamera->SetPosition({ 512.f + 256, 512.f, 512.f + 128 });
 	m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
 
 
@@ -238,7 +238,7 @@ void Renderer::Render()
 	InputHandle* input_handle = Engine::GetInstance()->GetInputHandle();
 	if (input_handle->GetInputWrapper()->IsDown(KButton::Y))
 	{
-		CU::Vector3f target_position(256.f, 64.f, 256.f);
+		CU::Vector3f target_position(1024.f, 0.f, 512.f);
 		m_DirectionalCamera->RotateAroundPoint(target_position);
 
 		m_Direction = target_position - m_DirectionalCamera->GetPosition();
@@ -284,8 +284,15 @@ void Renderer::Render()
 
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 64.f, 64.f)));
 	//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
-	//mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
 
+	SLinePoint points[2];
+	points[0].position = CU::Vector4f(m_DirectionalCamera->GetPosition());
+	points[0].color = CU::Vector4f(255.f, 0.f, 0.f, 255.f);
+	points[1].position = CU::Vector4f(512.f, 0.f, 512.f, 1.f);
+	points[1].color = CU::Vector4f(255.f, 0.f, 0.f, 255.f);
+
+	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[0], points[1]));
 
 	mySynchronizer->WaitForLogic();
 	mySynchronizer->SwapBuffer();

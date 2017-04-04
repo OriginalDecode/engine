@@ -29,8 +29,7 @@ bool SkySphere::Initiate(const std::string& model_filepath, const std::string& s
 	myAPI = Engine::GetAPI();
 	if (!myAPI)
 		return false;
-
-
+	m_cbPixelShader = myAPI->CreateConstantBuffer(sizeof(cbPixelShader));
 
 	return true;
 }
@@ -53,6 +52,7 @@ bool SkySphere::AddLayer(const std::string& layer_filepath, const std::string& l
 	if (!myAPI)
 		return false;
 
+
 	return true;
 }
 
@@ -69,11 +69,13 @@ bool SkySphere::CleanUp()
 void SkySphere::Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture)
 {
 	SetPosition(anOrientation.GetPosition());
-
+	m_PixelShaderStruct.m_CameraPos = myCamera->GetPosition();
 	myAPI->SetBlendState(eBlendStates::LIGHT_BLEND);
 	myAPI->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
 	myAPI->SetRasterizer(eRasterizer::CULL_NONE);
 
+	myAPI->UpdateConstantBuffer(m_cbPixelShader, &m_PixelShaderStruct);
+	myAPI->GetContext()->PSSetConstantBuffers(0, 1, &m_cbPixelShader);
 	for (const SkysphereLayer& layer : m_Layers)
 	{
 		ID3D11ShaderResourceView* srv[2];
@@ -95,6 +97,11 @@ void SkySphere::SetPosition(const CU::Vector3f& aPosition)
 	{
 		layer.m_Model->SetPosition(aPosition);
 	}
+}
+
+void SkySphere::SetLightPos(const CU::Vector4f& light_position)
+{
+	m_PixelShaderStruct.m_LightPos = light_position;
 }
 
 /*void SkySphere::Update(float dt)

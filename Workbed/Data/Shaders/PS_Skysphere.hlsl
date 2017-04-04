@@ -5,6 +5,13 @@
 //	Samplers & Textures
 //---------------------------------
 
+
+cbuffer Positions : register(b0)
+{
+	float4 camera_position;
+	float4 light_position;
+};
+
 SamplerState linear_Wrap : register ( s0 );
 Texture2D AlbedoTexture  : register ( t0 );
 Texture2D DepthTexture   : register ( t1 );
@@ -23,6 +30,7 @@ struct VS_OUTPUT
 	float4 worldpos : POSITION;
 	float4 tex 		: TEX;
 };
+
 
 //---------------------------------
 //	Deferred Base Pixel Shader
@@ -52,12 +60,6 @@ float4 atmospheric(float theta, float s)
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	
-	float4 lpos = float4(100,0,0,0);
-	float4 cpos = float4(0,0,0,0);
-
-
-
 	float height = input.worldpos.y;
 	float4 tex = input.tex;
 	input.tex /= input.tex.w;
@@ -68,11 +70,11 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	if(depth < 1.f)
 		discard;
 
-	float4 ldir = sun_position - input.worldpos;
-	float s = length(input.worldpos - cpos);
-	float theta = acos(dot(normalize(ldir - input.worldpos), normalize(input.worldpos - cpos) * float4(1,0,0,0)));
-
-	float4 output = atmospheric(theta,s) * 100000 * 5;
+	float4 light_dir = light_position - input.worldpos;
+	float s = length(input.worldpos - camera_position);
+	float theta = acos(dot(normalize(light_dir - input.worldpos), normalize(input.worldpos - camera_position) * float4(0,1,0,0)));
+	float4 output = atmospheric(theta, s) * 1000000 * 5;
+	output = pow( clamp ( output / ( output + 1.0), 0, 1),  2.2);
 	return output;
 
 	//height = (height - height) * 2.f - 1.f;

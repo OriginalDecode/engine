@@ -1,5 +1,5 @@
 #pragma once
-
+#include "snowblind_shared.h"
 class CModel;
 class Effect;
 class Camera;
@@ -21,6 +21,7 @@ public:
 	bool CleanUp();
 	void Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture);
 	void SetPosition(const CU::Vector3f& aPosition);
+	void SetLightPos(const CU::Vector4f& light_position);
 	//void Update(float dt);
 private:
 	Camera* myCamera;
@@ -31,5 +32,13 @@ private:
 #endif
 	CU::Matrix44f myOrientation;
 	CU::GrowingArray<SkysphereLayer> m_Layers;
+
+	struct cbPixelShader
+	{
+		CU::Vector4f m_CameraPos;
+		CU::Vector4f m_LightPos;
+	} m_PixelShaderStruct;
+
+	IBuffer* m_cbPixelShader;
 
 };

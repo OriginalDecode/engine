@@ -69,9 +69,9 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_DirectionalLightBuffer = m_API->CreateBuffer(sizeof(m_DirectionalLightStruct), nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE);
 	m_DirectionalCamera = new Camera;
-	m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 128.f);
+	m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
 
-	m_DirectionalCamera->SetPosition({ 256.f, 128.f, 256.f });
+	m_DirectionalCamera->SetPosition({ 256.f, 1024.f, 256.f });
 	m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
 
 
@@ -251,6 +251,7 @@ void Renderer::Render()
 	RenderSpotlight();
 
 
+	mySkysphere->SetLightPos(m_DirectionalCamera->GetPosition());
 	mySkysphere->Render(myPrevFrame, myDepthTexture);
 	//RenderParticles();
 

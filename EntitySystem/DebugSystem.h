@@ -17,9 +17,10 @@ public:
 	~DebugSystem();
 	void Update(float dt) override;
 private:
-	bool CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vector3f& ray_dir);
-	void UpdateOBBs();
 	void ReceiveMessage(const OnLeftClick& message) override;
+
+	void UpdateOBBs();
+	bool CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vector3f& ray_dir);
 	Synchronizer* m_Synchronizer = nullptr;
 	double m_AccumulatedTime = 0.0f;
 	void RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation);

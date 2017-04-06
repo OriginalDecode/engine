@@ -15,6 +15,8 @@ cbuffer Matrices : register(b0)
 cbuffer Positions : register(b1)
 {
 	float4 camera_position;
+	float4 light_dir;
+	float4 light_pos;
 };
 
 //---------------------------------

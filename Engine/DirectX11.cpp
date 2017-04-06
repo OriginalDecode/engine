@@ -41,27 +41,28 @@ bool DirectX11::CleanUp()
 	SAFE_DELETE(myViewport);
 
 	{
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::Z_ENABLED)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::Z_DISABLED)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::READ_NO_WRITE)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::MASK_TEST)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::LIGHT_MASK)]);
 		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::DEPTH_TEST)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::LIGHT_MASK)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::MASK_TEST)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::READ_NO_WRITE_PARTICLE)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::READ_NO_WRITE)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::Z_DISABLED)]);
+		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::Z_ENABLED)]);
 	}
 
 	{
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::WIREFRAME)]);
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_FRONT)]);
 		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::MSAA)]);
+		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_FRONT)]);
+		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
+		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
+		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::WIREFRAME)]);
 	}
 
 	{
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::NO_BLEND)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::LIGHT_BLEND)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::ALPHA_BLEND)]);
 		SAFE_RELEASE(myBlendStates[u16(eBlendStates::BLEND_FALSE)]);
+		SAFE_RELEASE(myBlendStates[u16(eBlendStates::ALPHA_BLEND)]);
+		SAFE_RELEASE(myBlendStates[u16(eBlendStates::LIGHT_BLEND)]);
+		SAFE_RELEASE(myBlendStates[u16(eBlendStates::NO_BLEND)]);
 	}
 
 	{

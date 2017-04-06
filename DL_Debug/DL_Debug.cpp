@@ -67,6 +67,10 @@ namespace DL_Debug
 		myOutputFile << "\nCallStack:\n";
 		std::stringstream sstream;
 
+		std::string output(aString);
+		output += "\n";
+		OutputDebugString(output.c_str());
+
 		sstream << "\nAssert at : " <<
 			"\nFile: " << aFileName <<
 			"\nLine: " << aLine <<
@@ -148,6 +152,9 @@ namespace DL_Debug
 		}
 		std::string str(aString.begin(), aString.end());
 
+		std::string output(str);
+		output += "\n";
+		OutputDebugString(output.c_str());
 
 		myOutputFile << "[" << filter_tag << "]" << " : " << str << "\n";
 		myOutputFile.flush();

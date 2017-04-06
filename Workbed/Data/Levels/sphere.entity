@@ -1,0 +1,6 @@
+{
+	"graphics" : { 
+		"model" : "Data/Model/sphere.fbx",
+		"shader" : "Shaders/T_Sphere.json"
+	} 
+}

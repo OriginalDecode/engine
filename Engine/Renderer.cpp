@@ -67,7 +67,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 		, CU::Vector3f(0.f, 0.f, 1.f)
 		, 2048.f);
 
-	m_DirectionalLightBuffer = m_API->CreateBuffer(sizeof(m_DirectionalLightStruct), nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE);
+	//m_DirectionalLightBuffer = m_API->CreateBuffer(sizeof(m_DirectionalLightStruct), nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE);
 	m_DirectionalCamera = new Camera;
 	m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
 

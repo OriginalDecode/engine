@@ -21,6 +21,7 @@ public:
 	bool CleanUp();
 	void Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture);
 	void SetPosition(const CU::Vector3f& aPosition);
+	void SetLightDir(const CU::Vector3f& dir);
 	void SetLightPos(const CU::Vector4f& light_position);
 	//void Update(float dt);
 private:
@@ -42,6 +43,8 @@ private:
 	struct cbVertexShader
 	{
 		CU::Vector4f m_CameraPos;
+		CU::Vector4f m_LightDir;
+		CU::Vector4f m_LightPos;
 	} m_VertexShaderStruct;
 
 

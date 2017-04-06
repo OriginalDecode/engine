@@ -97,7 +97,7 @@ private:
 	ShadowPass			m_ShadowPass;
 
 
-	IBuffer* m_DirectionalLightBuffer = nullptr;
+	//IBuffer* m_DirectionalLightBuffer = nullptr;
 
 	CU::Vector3f m_Direction;
 	CU::Vector3f m_OriginalDirection;

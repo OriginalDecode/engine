@@ -1,0 +1,12 @@
+{
+    "root" : 
+    {
+    	"object":
+    	{
+    		"entity" : "sphere.entity",
+         	"position": [ 5, 5, 5 ],
+         	"rotation": [ 0,0,0 ],
+          	"scale": [ 1,1,1 ]
+  		}
+	}
+}

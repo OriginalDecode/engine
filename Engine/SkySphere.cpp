@@ -72,12 +72,15 @@ void SkySphere::Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture)
 {
 	SetPosition(anOrientation.GetPosition());
 	m_PixelShaderStruct.m_CameraPos = myCamera->GetPosition();
+	m_VertexShaderStruct.m_CameraPos = myCamera->GetPosition();
 	myAPI->SetBlendState(eBlendStates::LIGHT_BLEND);
 	myAPI->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
 	myAPI->SetRasterizer(eRasterizer::CULL_NONE);
 
 	myAPI->UpdateConstantBuffer(m_cbPixelShader, &m_PixelShaderStruct);
-	myAPI->GetContext()->VSSetConstantBuffers()
+	myAPI->UpdateConstantBuffer(m_cbVertexShader, &m_VertexShaderStruct);
+
+	myAPI->GetContext()->VSSetConstantBuffers(1, 1, &m_cbVertexShader);
 	myAPI->GetContext()->PSSetConstantBuffers(0, 1, &m_cbPixelShader);
 	for (const SkysphereLayer& layer : m_Layers)
 	{
@@ -102,9 +105,16 @@ void SkySphere::SetPosition(const CU::Vector3f& aPosition)
 	}
 }
 
+void SkySphere::SetLightDir(const CU::Vector3f& dir)
+{
+	m_VertexShaderStruct.m_LightDir = dir;
+
+}
+
 void SkySphere::SetLightPos(const CU::Vector4f& light_position)
 {
 	m_PixelShaderStruct.m_LightPos = light_position;
+	m_VertexShaderStruct.m_LightPos = light_position;
 }
 
 /*void SkySphere::Update(float dt)

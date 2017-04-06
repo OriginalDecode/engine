@@ -5,6 +5,7 @@ Engine Tasks:
   <https://github.com/wwwtyro/glsl-atmosphere/blob/master/example/index.js>
   <https://www.shadertoy.com/view/lslXDr>
   <http://developer.amd.com/wordpress/media/2012/10/GDC_02_HoffmanPreetham.pdf>
+  <http://mathworld.wolfram.com/TrigonometricPowerFormulas.html>
   Level / World:
     ✔ Quadtree / Octree @done (17-01-29 23:57)
     ✔ Treenode updates entities by themselves. @done (17-01-29 23:57)
@@ -36,6 +37,7 @@ Engine Tasks:
     ☐ Emitter System
   Network:
     <http://stackoverflow.com/questions/366257/everything-a-c-developer-should-know-about-network-programming/>
+    <https://developers.google.com/protocol-buffers/docs/cpptutorial>
     ☐ Add the network API to the engine and make the engine able to run without Graphics.
     ☐ NetworkComponent for Entities should be setting positions of the other entities.
     ☐ The level / world needs/Should be verified by the server with some kind of hash 

@@ -39,6 +39,15 @@ private:
 		CU::Vector4f m_LightPos;
 	} m_PixelShaderStruct;
 
-	IBuffer* m_cbPixelShader;
+	struct cbVertexShader
+	{
+		CU::Vector4f m_CameraPos;
+	} m_VertexShaderStruct;
+
+
+
+	IBuffer* m_cbPixelShader = nullptr;
+	IBuffer* m_cbVertexShader = nullptr;
+
 
 };

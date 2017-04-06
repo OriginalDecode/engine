@@ -30,7 +30,7 @@ bool SkySphere::Initiate(const std::string& model_filepath, const std::string& s
 	if (!myAPI)
 		return false;
 	m_cbPixelShader = myAPI->CreateConstantBuffer(sizeof(cbPixelShader));
-
+	m_cbVertexShader = myAPI->CreateConstantBuffer(sizeof(cbVertexShader));
 	return true;
 }
 
@@ -63,6 +63,8 @@ bool SkySphere::CleanUp()
 	if (m_Layers.Size() > 0)
 		return false;
 
+	SAFE_RELEASE(m_cbPixelShader);
+	SAFE_RELEASE(m_cbVertexShader);
 	return true;
 }
 
@@ -75,6 +77,7 @@ void SkySphere::Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture)
 	myAPI->SetRasterizer(eRasterizer::CULL_NONE);
 
 	myAPI->UpdateConstantBuffer(m_cbPixelShader, &m_PixelShaderStruct);
+	myAPI->GetContext()->VSSetConstantBuffers()
 	myAPI->GetContext()->PSSetConstantBuffers(0, 1, &m_cbPixelShader);
 	for (const SkysphereLayer& layer : m_Layers)
 	{

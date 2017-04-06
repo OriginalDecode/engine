@@ -38,9 +38,16 @@ struct VS_OUTPUT
 
 static const float4 ESun = float4(500,250,250,0);
 static const float g = -0.75;
-static const float4 br = float4(5.5e-6, 13.0e-6, 22.4e-6, 1);
-static const float bm = 21e-6;
+static const float4 rayleigh_scatter_coef = float4(5.5e-6, 13.0e-6, 22.4e-6, 1);
+static const float mie_scatter_coef = 21e-6;
 static const float pi = 3.14;
+
+
+
+float rayleigh_phase(float theta)
+{
+    return ( 3 / (16 * pi) * (1+  ( 0.5 * (1 - cos(2*theta)) )) );
+}
 
 float4 rayleigh(float theta) //rayleigh
 {
@@ -52,9 +59,18 @@ float4 mie(float theta) //mie
 	return 1 / ( 4 * pi ) * bm * (( 1 - g ) * ( 1 - g )) / ( pow( 1 + g * g - 2 * g * cos(theta), 3 / 2) ); 
 }
 
-float henyeygreenstein(float theta)
+float henyeygreenstein(float theta, float g_in)
 {
-	return ( ( 1 - g ) * ( 1 - g )) / 4 * pi * pow(( ( 1 + g ) * ( 1 + g ) ) - ( 2 * g * cos(theta)), 3/2);
+    float neg_gg = ( 1 - g_in ) * ( 1 - g_in );
+    float pos_gg = ( 1 + g_in ) * ( 1 + g_in );
+    float g2 = 2 * g_in;
+
+	return ( neg_gg ) / 4 * pi * pow(( pos_gg ) - ( g2 * cos(theta)), 3/2);
+}
+
+float4 atmospheric(float theta, float s)
+{
+	return (rayleigh(theta) * mie(theta)) / (br + bm) * light_position * (1 - exp( -(br+bm) * s ));
 }
 
 float2 RayVsSphere(float3 ray0, float3 ray_direction, float sphere_radius) 
@@ -74,10 +90,6 @@ float2 RayVsSphere(float3 ray0, float3 ray_direction, float sphere_radius)
 }
 
 
-float4 atmospheric(float theta, float s)
-{
-	return (rayleigh(theta) * mie(theta)) / (br + bm) * light_position * (1 - exp( -(br+bm) * s ));
-}
 
 static const int iSteps = 32;
 static const int jSteps = 8;
@@ -210,7 +222,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
  	//float theta = acos(dot(normalize(light_dir - input.worldpos), normalize(input.worldpos - camera_position) * float4(-1,0,0,0)));
 
-	float4 output = atmospheric(n_theta, length_of) * 10000 * 5 ; 
-	output = pow( clamp ( output / ( output + 1.0), 0, 1),  1 /2.2);
+	//float4 output = atmospheric(n_theta, length_of) * 10000 * 5 ; 
+	//output = pow( clamp ( output / ( output + 1.0), 0, 1),  1 /2.2);
 	return output;
 }

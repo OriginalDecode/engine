@@ -6,6 +6,7 @@ Engine Tasks:
   <https://www.shadertoy.com/view/lslXDr>
   <http://developer.amd.com/wordpress/media/2012/10/GDC_02_HoffmanPreetham.pdf>
   <http://mathworld.wolfram.com/TrigonometricPowerFormulas.html>
+  <http://http.download.nvidia.com/developer/GPU_Gems_2/CD/Index.html> //Demos
   Level / World:
     ✔ Quadtree / Octree @done (17-01-29 23:57)
     ✔ Treenode updates entities by themselves. @done (17-01-29 23:57)

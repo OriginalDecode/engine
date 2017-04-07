@@ -37,7 +37,10 @@ private:
 	struct cbPixelShader
 	{
 		CU::Vector4f m_CameraPos;
+		CU::Vector4f m_CameraDir;
 		CU::Vector4f m_LightPos;
+		CU::Vector4f m_LightDir;
+
 	} m_PixelShaderStruct;
 
 	struct cbVertexShader

@@ -49,7 +49,7 @@ void Game::InitState(StateStack* state_stack)
 
 	//m_Engine->ToggleVsync(); //settings
 	m_Camera = m_Engine->GetCamera();
-	m_Camera->SetPosition(CU::Vector3f(256.f, 5.f, 256.f));
+	m_Camera->SetPosition(CU::Vector3f(0, 0, 0));
 	CameraHandle::Create();
 	//CameraHandle::GetInstance()->Initiate(&m_Orientation);
 	CameraHandle::GetInstance()->Initiate(nullptr);

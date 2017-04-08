@@ -71,7 +71,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_DirectionalCamera = new Camera;
 	m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
 
-	m_DirectionalCamera->SetPosition({ 512.f + 256, 512.f, 512.f + 128 });
+	m_DirectionalCamera->SetPosition({ 1024.f, 512.f, 512.f });
 	m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
 
 
@@ -88,7 +88,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	if (!myDeferredRenderer->Initiate(m_ShadowDepthStencil))
 		return false;
 
-	m_Direction = { 0.f, -1.f, 0.f };
+	m_Direction = { 1.f, 0.f, 0.f };
 
 
 
@@ -108,10 +108,12 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	mySkysphere = new SkySphere;
 	static std::string SKY_DOME = "Data/Model/sky_dome.fbx";
+	static std::string SKY_BOX = "Data/Model/skybox.fbx";
 	static std::string SKY_SPHERE = "Data/Model/Skysphere/SM_Skysphere.fbx";
+	static std::string SKYSPHERE = "Data/Model/sphere.fbx";
+	static std::string SKYSPHERE2 = "Data/Model/sphere_2.fbx";
 
-
-	mySkysphere->Initiate(SKY_SPHERE, "Shaders/T_Skysphere.json"
+	mySkysphere->Initiate(SKYSPHERE2, "Shaders/T_Skysphere.json"
 		, m_Camera);
 	//mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Shaders/T_Skysphere_Layer.json");
 	if (!mySkysphere)
@@ -238,7 +240,7 @@ void Renderer::Render()
 	InputHandle* input_handle = Engine::GetInstance()->GetInputHandle();
 	if (input_handle->GetInputWrapper()->IsDown(KButton::Y))
 	{
-		CU::Vector3f target_position(1024.f, 0.f, 512.f);
+		CU::Vector3f target_position(512, 512.f, 512.f);
 		m_DirectionalCamera->RotateAroundPoint(target_position);
 
 		m_Direction = target_position - m_DirectionalCamera->GetPosition();
@@ -251,8 +253,7 @@ void Renderer::Render()
 	RenderSpotlight();
 
 
-	mySkysphere->SetLightPos(m_DirectionalCamera->GetPosition());
-	mySkysphere->Render(myPrevFrame, myDepthTexture);
+	//mySkysphere->Render(myPrevFrame, myDepthTexture);
 	//RenderParticles();
 
 	m_Engine->ResetRenderTargetAndDepth();
@@ -263,6 +264,12 @@ void Renderer::Render()
 
 	if (m_PostProcessManager.GetFlags() == 0)
 		myDeferredRenderer->Finalize(0);
+
+	
+	
+	
+	mySkysphere->SetLightPos(m_DirectionalCamera->GetPosition());
+	mySkysphere->SetLightDir(m_DirectionalCamera->GetPosition() / CU::Math::Length(m_DirectionalCamera->GetPosition()));
 
 	mySkysphere->Render(myPrevFrame, myDepthTexture);
 	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), myDeferredRenderer->GetDepthStencil()->GetDepthView());

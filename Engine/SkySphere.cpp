@@ -31,6 +31,7 @@ bool SkySphere::Initiate(const std::string& model_filepath, const std::string& s
 		return false;
 	m_cbPixelShader = myAPI->CreateConstantBuffer(sizeof(cbPixelShader));
 	m_cbVertexShader = myAPI->CreateConstantBuffer(sizeof(cbVertexShader));
+	SetPosition(CU::Vector3f(0,0,0));
 	return true;
 }
 
@@ -70,15 +71,18 @@ bool SkySphere::CleanUp()
 
 void SkySphere::Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture)
 {
-	SetPosition(anOrientation.GetPosition());
+	
 	m_PixelShaderStruct.m_CameraPos = myCamera->GetPosition();
 	m_VertexShaderStruct.m_CameraPos = myCamera->GetPosition();
 
+	m_VertexShaderStruct.m_CameraMagnitude2 = CU::Math::Length2(myCamera->GetPosition());
+	m_VertexShaderStruct.m_CameraMagnitude = CU::Math::Length(myCamera->GetPosition());
+
 	m_PixelShaderStruct.m_CameraDir = myCamera->GetAt();
 	
-	myAPI->SetBlendState(eBlendStates::LIGHT_BLEND);
+	myAPI->SetBlendState(eBlendStates::NO_BLEND);
 	myAPI->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
-	myAPI->SetRasterizer(eRasterizer::CULL_NONE);
+	myAPI->SetRasterizer(eRasterizer::CULL_BACK);
 
 	myAPI->UpdateConstantBuffer(m_cbPixelShader, &m_PixelShaderStruct);
 	myAPI->UpdateConstantBuffer(m_cbVertexShader, &m_VertexShaderStruct);

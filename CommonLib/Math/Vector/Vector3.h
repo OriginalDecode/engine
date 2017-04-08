@@ -182,7 +182,7 @@ namespace CommonUtilities
 		template <typename T>
 		const T Length(const Vector3<T>& aVector)
 		{
-			return sqrt((aVector.x * aVector.x) +
+			return sqrtf((aVector.x * aVector.x) +
 				(aVector.y*aVector.y) +
 				(aVector.z*aVector.z));
 		};

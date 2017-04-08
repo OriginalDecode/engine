@@ -17,6 +17,10 @@ cbuffer Positions : register(b1)
 	float4 camera_position;
 	float4 light_dir;
 	float4 light_pos;
+	float camera_magnitude2;
+	float camera_magnitude;
+	float pad;
+	float pad2;
 };
 
 //_________________________________
@@ -49,63 +53,55 @@ struct VS_OUTPUT
 //	Atmospheric Scattering Vertex Shader
 //_________________________________
 
-static const float fScaleDepth = 0.25;
 // The scale equation calculated by Vernier's Graphical Analysis
+
+
+static const float ESun = 20;
+static const float red_wavelength = 0.650;
+static const float green_wavelength = 0.570;
+static const float blue_wavelength = 0.475;
+static const float3 v3InvWavelength = float3(
+		1 / pow(red_wavelength, 4), 
+		1 / pow(green_wavelength, 4), 
+		1 / pow(blue_wavelength, 4));
+static const float PI = 3.14159265;
+static const float Kr = 0.0025f;// float3(5.5e-6, 13.0e-6, 22.4e-6);
+static const float fKrESun = Kr * ESun; //0.05
+static const float Km = 0.0010f;
+static const float fKmESun = Km * ESun;
+static const float fKr4PI = Kr * 4 * PI;
+static const float fKm4PI = Km * 4 * PI;
+//Atmosphere radiuses
+static const float fOuterRadius = 10.25;
+static const float fOuterRadius2 = fOuterRadius*fOuterRadius;
+static const float fInnerRadius = 10; 
+static const float fInnerRadius2 = fInnerRadius*fInnerRadius;	
+//Depth stuff
+static const float fScaleDepth = 0.25;
+static const float fInvScaleDepth = 1 / fScaleDepth;
+static const float fScale = 1 / (fOuterRadius - fInnerRadius);
+static const float fScaleOverScaleDepth = fScale / fScaleDepth;
+
 float scale(float fCos)
 {
 	float x = 1.0 - fCos;
-	return fScaleDepth * exp(-0.00287 + x*(0.459 + x*(3.83 + x*(-6.80 + x*5.25))));
+	return fScaleDepth * exp(-0.00287 + x*( 0.459 + x*( 3.83 + x*( -6.80 + x*5.25 ) ) ));
 }
-
-static const float ESun = 20;
-
 
 VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-
-	float PI = 3.14159265;
-	int nSamples = 1;
-	float fSamples = (float)nSamples;
-
-	float red_wavelength = 0.650;
-	float green_wavelength = 0.570;
-	float blue_wavelength = 0.475;
-
-	//wavelengths
-	float3 v3InvWavelength = float3(1 / pow(red_wavelength, 4), 1 / pow(green_wavelength, 4), 1 / pow(blue_wavelength, 4));
-
-	//positions
-	float3 v3CameraPos = camera_position;
-	float3 v3LightPos = light_pos;
-	float fCameraHeight = v3CameraPos.y;
-	float fCameraHeight2 = fCameraHeight*fCameraHeight;
 	
-	//Atmosphere radiuses
-	float fOuterRadius = 10.25;
-	float fOuterRadius2 = fOuterRadius*fOuterRadius;
-	float fInnerRadius = 10; 
-	float fInnerRadius2 = fInnerRadius*fInnerRadius;
-
-	//Coefs
-	float Kr = 0.0025f;// float3(5.5e-6, 13.0e-6, 22.4e-6);
-	float fKrESun = Kr * ESun; //0.05
-	float Km = 0.0010f;
-	float fKmESun = Km * ESun;
-	float fKr4PI = Kr * 4 * PI;
-	float fKm4PI = Km * 4 * PI;
-
-	//Depth stuff
-	float fScaleDepth = 0.25;
-	float fInvScaleDepth = 1 / fScaleDepth;
-	float fScale = 1 / (fOuterRadius - fInnerRadius);
-	float fScaleOverScaleDepth = fScale / fScaleDepth;
+	//positions
+	float3 v3CameraPos = camera_position.xyz;
+	float3 v3LightPos = light_dir;
+	float fCameraHeight = camera_magnitude;// > fOuterRadius ?  fOuterRadius : camera_magnitude ;
+	float fCameraHeight2 = camera_magnitude2;
 
 	float3 v3Pos = input.pos.xyz;
-	float3 v3Ray = v3CameraPos - v3Pos;
+	float3 v3Ray = (v3Pos - v3CameraPos);
 	float fFar = length(v3Ray);
 	v3Ray /= fFar;
-
 	// Calculate the ray's starting position, then calculate its scattering offset
 	float3 v3Start = v3CameraPos;
 	float fHeight = length(v3Start);
@@ -113,25 +109,25 @@ VS_OUTPUT VS(VS_INPUT input)
 	float fStartAngle = dot(v3Ray, v3Start) / fHeight;
 	float fStartOffset = fDepth*scale(fStartAngle);
 	
+
+	int nSamples = 4;
+	float fSamples = (float)nSamples;
 	// Initialize the scattering loop variables
 	//gl_FrontColor = vec4(0.0, 0.0, 0.0, 0.0);
 	float fSampleLength = fFar / fSamples;
 	float fScaledLength = fSampleLength * fScale;
-	float3 v3SampleRay = v3Ray * fSampleLength;
-	float3 v3SamplePoint = v3Start + v3SampleRay * 0.5;
-	output.c0 = v3SampleRay;//float3(fScaledLength,fScaledLength,fScaledLength);
-
+	float3 v3SampleRay = (v3Ray * fSampleLength);
+	float3 v3SamplePoint = (v3Start + v3SampleRay) * 0.5;
 	// Now loop through the sample rays
 	float3 v3FrontColor = float3(0.0, 0.0, 0.0);
 	for(int i=0; i<nSamples; i++)
 	{
-		float fHeight2 = sqrt(length(v3SamplePoint));
+		float fHeight2 = length(v3SamplePoint);
 
 		float fDepth2 = exp(fScaleOverScaleDepth * (fInnerRadius - fHeight2));
-		output.c0 = float3(fDepth2,fDepth2,fDepth2);
 
 		float fLightAngle = dot(v3LightPos, v3SamplePoint) / fHeight2;
-		float fCameraAngle = dot(v3Ray, v3SamplePoint) / fHeight2;
+		float fCameraAngle = dot(v3Ray, v3SamplePoint) / length(v3Pos);
 		float fScatter = (fStartOffset + fDepth2*(scale(fLightAngle) - scale(fCameraAngle)));
 		float3 v3Attenuate = exp(-fScatter * (v3InvWavelength * fKr4PI + fKm4PI));
 		v3FrontColor += v3Attenuate * (fDepth2 * fScaledLength);
@@ -148,7 +144,7 @@ VS_OUTPUT VS(VS_INPUT input)
 	output.binorm = input.binorm;
 	output.tang  = mul(input.tang , World);
 	
-	//output.c0 = v3FrontColor * (v3InvWavelength * fKrESun); //rayleigh
+	output.c0 = v3FrontColor * (v3InvWavelength * fKrESun); //rayleigh
 	output.c1 = v3FrontColor * fKmESun; //mie
 	
 

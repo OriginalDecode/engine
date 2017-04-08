@@ -59,18 +59,19 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float2 texCoord = input.tex.xy;	
 	float depth = DepthTexture.Sample(linear_Wrap, texCoord).x;
 
-	if(depth < 1)
-		discard;
+	
 
-	float g = -0.99;
+	float g = -0.990;
 	float g2 = g * g;
 	
 
 	float fCos = dot(light_dir, input.v3Dir) / length(input.v3Dir);
 
 	float fCos2 = fCos * fCos;
-	return float4(input.c0,1);
-	float3 color = getRayleighPhase(fCos2) * input.c0 + getMiePhase(fCos, fCos2, g, g2) * input.c1;
+	float3 color = (getRayleighPhase(fCos2) * input.c0 
+	+ getMiePhase(fCos, fCos2, g, g2) * input.c1);
+
+
 
 
 	return float4(color,1);

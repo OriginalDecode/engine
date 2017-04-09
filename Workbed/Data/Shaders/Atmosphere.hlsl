@@ -1,32 +1,4 @@
-static const int TRANSMITTANCE_TEXTURE_WIDTH = 256;
-static const int TRANSMITTANCE_TEXTURE_HEIGHT = 64;
-static const int SCATTERING_TEXTURE_R_SIZE = 32;
-static const int SCATTERING_TEXTURE_MU_SIZE = 128;
-static const int SCATTERING_TEXTURE_MU_S_SIZE = 32;
-static const int SCATTERING_TEXTURE_NU_SIZE = 8;
-static const int IRRADIANCE_TEXTURE_WIDTH = 64;
-static const int IRRADIANCE_TEXTURE_HEIGHT = 16;
-static const int kLambdaMin = 360;
-static const int kLambdaMax = 830;
-static const float kSunAngularRadius = 0.00935f / 2.f;
-static const float kSunSolidAngle = 3.1415926f * kSunAngularRadius * kSunAngularRadius;
-static const float kUnitLengthInMeters = 1000.f;
-static const float kPi = 3.141593;
-static const float kConstantSolarIrradiance = 1.5;
-static const float kBottomRadius = 6360000.0;
-static const float kTopRadius = 6420000.0;
-static const float kRayleigh = 1.24062e-6;
-static const float kRayleighScaleHeight = 8000.0;
-static const float kMieScaleHeight = 1200.0;
-static const float kMieAngstromAlpha = 0.0;
-static const float kMieAngstromBeta = 5.328e-3;
-static const float kMieSingleScatteringAlbedo = 0.9;
-static const float kMiePhaseFunctionG = 0.8;
-static const float kGroundAlbedo = 0.1;
-static const float kMaxSunZenithAngle = 102.0 / 180.0 * kPi;
-static const float kLambdaR = 680.0;
-static const float kLambdaG = 550.0;
-static const float kLambdaB = 440.0;
+#include "AtmosphereDefinitions.hlsl"
 
 cbuffer DefaultBuffer : register( b0 )
 {

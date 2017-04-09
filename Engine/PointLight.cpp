@@ -8,12 +8,6 @@
 
 CPointLight::CPointLight()
 {
-	int apa;
-	apa = 5;
-}
-
-void CPointLight::Initiate()
-{
 	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", false);
 	m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx"); //Initiate("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json");
 	m_Model->SetIsLightmesh();
@@ -60,7 +54,7 @@ void CPointLight::Update()
 
 void CPointLight::Render(const CU::Matrix44f& previousOrientation, Camera* camera)
 {
-	m_Model->Render(previousOrientation, camera->GetPerspective(), CU::Vector4f(1, 1, 1, 1));
+	m_Model->Render(previousOrientation, camera->GetPerspective());
 }
 
 const SPointlightData& CPointLight::GetData() const

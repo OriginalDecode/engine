@@ -103,6 +103,9 @@
     <Filter Include="Allocators">
       <UniqueIdentifier>{cb1b4330-5634-491b-97a7-c23bb22f263b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utilities\Gizmo">
+      <UniqueIdentifier>{66e4d076-68b2-458d-aaa6-bae7bf610d69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -225,7 +228,6 @@
     <ClInclude Include="SystemMonitor.h">
       <Filter>Utilities\SystemMonitor</Filter>
     </ClInclude>
-    <ClInclude Include="snowblind_shared.h" />
     <ClInclude Include="LightPass.h">
       <Filter>Rendering\Passes</Filter>
     </ClInclude>
@@ -346,11 +348,23 @@
     <ClInclude Include="BloomPass.h">
       <Filter>Rendering\Passes</Filter>
     </ClInclude>
-    <ClInclude Include="GizmoShared.h" />
-    <ClInclude Include="GizmoBase.h" />
-    <ClInclude Include="EntityFormat.h" />
-    <ClInclude Include="Frustum.h" />
-    <ClInclude Include="VirtualFileSystem.h" />
+    <ClInclude Include="GizmoShared.h">
+      <Filter>Utilities\Gizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="GizmoBase.h">
+      <Filter>Utilities\Gizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="VirtualFileSystem.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="snowblind_shared.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Atmosphere.h" />
+    <ClInclude Include="AtmosphereConstants.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -557,9 +571,18 @@
     <ClCompile Include="BloomPass.cpp">
       <Filter>Rendering\Passes</Filter>
     </ClCompile>
-    <ClCompile Include="GizmoShared.cpp" />
-    <ClCompile Include="GizmoBase.cpp" />
-    <ClCompile Include="Frustum.cpp" />
-    <ClCompile Include="VirtualFileSystem.cpp" />
+    <ClCompile Include="GizmoShared.cpp">
+      <Filter>Utilities\Gizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="GizmoBase.cpp">
+      <Filter>Utilities\Gizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="VirtualFileSystem.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Frustum.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Atmosphere.cpp" />
   </ItemGroup>
 </Project>

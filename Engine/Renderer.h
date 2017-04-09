@@ -5,6 +5,8 @@
 #include "RenderCommand.h"
 #include <Math/Matrix/Matrix.h>
 #include "PostProcessManager.h"
+#include <Engine/Atmosphere.h>
+
 namespace CommonUtilities
 {
 	class TimeManager;
@@ -18,7 +20,6 @@ class DirectionalLight;
 class CEmitterInstance;
 class CModel;
 class CPointLight;
-class SkySphere;
 class Synchronizer;
 class Texture;
 class CText;
@@ -40,7 +41,7 @@ public:
 	void ToggleWireframe();
 
 	PostProcessManager& GetPostprocessManager();
-
+	void ActiveSkyModel(const std::string& key);
 private:
 	void RenderNonDeferred3DCommands();
 	void Render3DCommands();
@@ -85,7 +86,6 @@ private:
 	Synchronizer*		mySynchronizer = nullptr;
 	CText*				myText = nullptr;
 	Texture*			myDepthTexture = nullptr;
-	SkySphere*			mySkysphere = nullptr;
 	Sprite*				mySprite = nullptr;
 	Sprite*				myClearColor = nullptr;
 
@@ -95,7 +95,7 @@ private:
 
 	LightPass			m_LightPass;
 	ShadowPass			m_ShadowPass;
-
+	Atmosphere			m_Atmosphere;
 
 	//IBuffer* m_DirectionalLightBuffer = nullptr;
 

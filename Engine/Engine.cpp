@@ -471,8 +471,7 @@ Texture* Engine::GetTexture(const std::string& aFilePath)
 
 Effect* Engine::GetEffect(const std::string& aFilePath)
 {
-	std::string temp = m_VirtualFileSystem.GetDirectory(aFilePath);
-	return myAssetsContainer->GetEffect(temp);
+	return myAssetsContainer->GetEffect(m_VirtualFileSystem.GetFile(aFilePath));
 }
 
 CModel* Engine::GetModel(const std::string& aFilePath)

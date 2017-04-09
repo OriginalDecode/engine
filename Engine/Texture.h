@@ -38,6 +38,7 @@ public:
 
 
 	IShaderResourceView* GetDepthStencilView() const { return m_DepthStencilShaderView; }
+	IShaderResourceView** GetDSVResourceRef() { return &m_DepthStencilShaderView; }
 	IRenderTargetView*	GetRenderTargetView() const { return m_RenderTargetView; }
 	IRenderTargetView** GetRenderTargetRef() { return &m_RenderTargetView; }
 

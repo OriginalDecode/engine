@@ -32,50 +32,35 @@
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
 
+
 //#define AMBIENT_PASS_ONLY
 
 bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 {
 	m_Engine = Engine::GetInstance();
-	if (!m_Engine)
-		return false;
-
 	m_API = m_Engine->GetAPI();
-
 	mySynchronizer = synchronizer;
-	if (!mySynchronizer)
-		return false;
 	m_Camera = camera;
-	if (!m_Camera)
-		return false;
 
+	WindowSize window_size;
+	window_size = Engine::GetInstance()->GetWindowSize();
+	
 	myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
-	if (!myText)
-		return false;
-
+	
 	myPointLight = new CPointLight; //Where should this live?
-	myPointLight->Initiate();
-	if (!myPointLight)
-		return false;
 	mySpotlight = new CSpotLight; // Where should this live?
-	if (!mySpotlight)
-		return false;
-
+	
 	m_Shadowlight = new ShadowSpotlight;
 	m_Shadowlight->Initiate(
 		CU::Vector3f(256.f, 128.f, 256.f)
 		, CU::Vector3f(0.f, 0.f, 1.f)
 		, 2048.f);
 
-	//m_DirectionalLightBuffer = m_API->CreateBuffer(sizeof(m_DirectionalLightStruct), nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE);
 	m_DirectionalCamera = new Camera;
 	m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
 
 	m_DirectionalCamera->SetPosition({ 1024.f, 512.f, 512.f });
 	m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
-
-
-
 
 	m_ShadowDepth = new Texture;
 	m_ShadowDepth->InitiateAsRenderTarget(2048.f, 2048.f, "DirectionalLight : Depth Render Target");
@@ -88,16 +73,8 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	if (!myDeferredRenderer->Initiate(m_ShadowDepthStencil))
 		return false;
 
-	m_Direction = { 1.f, 0.f, 0.f };
-
-
-
-
 	myDepthTexture = new Texture; //Where should this live?
 	DL_ASSERT_EXP(myDepthTexture, "DepthTexture in Renderer was null?");
-
-	WindowSize window_size;
-	window_size = Engine::GetInstance()->GetWindowSize();
 
 	myDepthTexture->Initiate(window_size.m_Width, window_size.m_Height
 		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
@@ -106,31 +83,13 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 		, DXGI_FORMAT_D32_FLOAT
 		, "Renderer : Depth");
 
-	mySkysphere = new SkySphere;
-	static std::string SKY_DOME = "Data/Model/sky_dome.fbx";
-	static std::string SKY_BOX = "Data/Model/skybox.fbx";
-	static std::string SKY_SPHERE = "Data/Model/Skysphere/SM_Skysphere.fbx";
-	static std::string SKYSPHERE = "Data/Model/sphere.fbx";
-	static std::string SKYSPHERE2 = "Data/Model/sphere_2.fbx";
-
-	mySkysphere->Initiate(SKYSPHERE2, "Shaders/T_Skysphere.json"
-		, m_Camera);
-	//mySkysphere->AddLayer("Data/Model/Skysphere/SM_Skysphere_Layer.fbx", "Shaders/T_Skysphere_Layer.json");
-	if (!mySkysphere)
-		return false;
-
 	mySprite = new Sprite;
 	mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(128.f, 128.f), CU::Vector2f(0.f, 0.f));
 
 	myClearColor = new Sprite;
 	myClearColor->Initiate("Data/Textures/blank.dds", CU::Vector2f(128.f, 128.f), CU::Vector2f(0.f, 0.f));
 
-
-
 	my3DLine = new CLine3D; //Where should this live?
-	if (!my3DLine)
-		return false;
-
 	my3DLine->Initiate();
 
 	bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil());
@@ -139,15 +98,13 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_ParticleEmitter = new CEmitterInstance;
 	m_ParticleEmitter->Initiate(mySynchronizer, myDepthTexture);
 
-
+	m_Atmosphere.Initiate(724.f, 728.f, { 512.f, 0.f, 512.f });
 
 	m_ShadowEffect = m_Engine->GetEffect("Shaders/T_Render_Depth.json");
 
-
-	m_Engine->LoadModel("Data/Model/cube.fbx", "Shaders/T_Deferred_Base.json", true);
-
 	m_PostProcessManager.Initiate();
 	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
+
 
 	return true;
 }
@@ -171,9 +128,6 @@ bool Renderer::CleanUp()
 	SAFE_DELETE(mySprite);
 	SAFE_DELETE(myClearColor);
 
-	mySkysphere->CleanUp();
-	SAFE_DELETE(mySkysphere);
-
 	myDepthTexture->CleanUp();
 	SAFE_DELETE(myDepthTexture);
 
@@ -188,37 +142,11 @@ bool Renderer::CleanUp()
 	m_ParticleEmitter->CleanUp();
 	SAFE_DELETE(m_ParticleEmitter);
 
+	m_Atmosphere.CleanUp();
+
 	return true;
 }
 
-#if defined (AMBIENT_PASS_ONLY)
-void Renderer::Render()
-{
-	m_Engine->Clear();
-	//myEngine->GetAPI()->ResetViewport();
-
-	m_API->SetDepthBufferState(eDepthStencil::MASK_TEST);
-	myDeferredRenderer->SetTargets();
-
-	Render3DCommands();
-	Texture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
-
-	myDeferredRenderer->DeferredRender(myPrevFrame, m_Camera->GetPerspective());
-
-	m_Engine->ResetRenderTargetAndDepth();
-	myDeferredRenderer->Finalize();
-
-	RenderLines();
-
-	Render2DCommands();
-	m_Engine->Present();
-
-	mySynchronizer->WaitForLogic();
-	mySynchronizer->SwapBuffer();
-	mySynchronizer->RenderIsDone();
-	myPrevFrame = m_Camera->GetOrientation();
-}
-#else
 void Renderer::Render()
 {
 #ifdef _PROFILE
@@ -247,14 +175,8 @@ void Renderer::Render()
 		CU::Math::Normalize(m_Direction);
 	}
 
-	//m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), myDeferredRenderer->GetDepthStencil()->GetDepthView());
-
 	RenderPointlight();
 	RenderSpotlight();
-
-
-	//mySkysphere->Render(myPrevFrame, myDepthTexture);
-	//RenderParticles();
 
 	m_Engine->ResetRenderTargetAndDepth();
 
@@ -266,20 +188,13 @@ void Renderer::Render()
 		myDeferredRenderer->Finalize(0);
 
 	
+	m_Atmosphere.SetLightData(m_Direction, m_DirectionalCamera->GetPosition());
+	m_Atmosphere.Render(myPrevFrame, myDepthTexture);
 	
-	
-	mySkysphere->SetLightPos(m_DirectionalCamera->GetPosition());
-	mySkysphere->SetLightDir(m_DirectionalCamera->GetPosition() / CU::Math::Length(m_DirectionalCamera->GetPosition()));
-
-	mySkysphere->Render(myPrevFrame, myDepthTexture);
 	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), myDeferredRenderer->GetDepthStencil()->GetDepthView());
 	RenderParticles();
 
 	m_Engine->ResetRenderTargetAndDepth();
-	//mySkysphere->Update(Engine::GetInstance()->GetDeltaTime())
-
-
-
 	RenderNonDeferred3DCommands();
 	RenderLines();
 	Render2DCommands();
@@ -288,10 +203,6 @@ void Renderer::Render()
 	ImGui::Render();
 
 	m_Engine->Present();
-
-	//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_Shadowlight->GetDepthStencil()->GetDepthStencilView(), CU::Vector2f(1920.f - 64.f, 64.f)));
-	//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, m_ShadowDepthStencil->GetDepthStencilView(), CU::Vector2f(1920.f - 128.f, 128.f + 256.f)));
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::MODEL, "Data/Model/cube.fbx", m_DirectionalCamera->GetOrientation(), CU::Vector4f(1, 1, 1, 1)));
 
 	SLinePoint points[2];
 	points[0].position = CU::Vector4f(m_DirectionalCamera->GetPosition());
@@ -307,7 +218,6 @@ void Renderer::Render()
 	myPrevFrame = m_Camera->GetOrientation();
 	m_Engine->ToggleFrame();
 }
-#endif
 
 void Renderer::AddTerrain(CTerrain* someTerrain)
 {
@@ -341,7 +251,7 @@ void Renderer::RenderNonDeferred3DCommands()
 
 				CModel* model = m_Engine->GetModel(command.m_KeyOrText);
 				model->SetOrientation(command.m_Orientation);
-				model->Render(myPrevFrame, m_Camera->GetPerspective(), command.m_Scale, false);
+				model->Render(myPrevFrame, m_Camera->GetPerspective(), false);
 			}break;
 		}
 	}
@@ -365,17 +275,17 @@ void Renderer::Render3DCommands()
 
 		if (m_ProcessDirectionalShadows)
 		{
-			terrain->Render(m_DirectionalFrame, m_Camera->GetPerspective(), CU::Vector4f(1, 1, 1, 1), true);
+			terrain->Render(m_DirectionalFrame, m_Camera->GetPerspective(), true);
 
 		}
 		else if (m_ProcessShadows)
 		{
-			terrain->Render(myPrevShadowFrame, m_Camera->GetPerspective(), CU::Vector4f(1, 1, 1, 1), true);
+			terrain->Render(myPrevShadowFrame, m_Camera->GetPerspective(), true);
 
 		}
 		else
 		{
-			terrain->Render(myPrevFrame, m_Camera->GetPerspective(), CU::Vector4f(1, 1, 1, 1), false);
+			terrain->Render(myPrevFrame, m_Camera->GetPerspective(), false);
 
 		}
 
@@ -405,18 +315,18 @@ void Renderer::Render3DCommands()
 				{
 
 					m_API->SetRasterizer(eRasterizer::CULL_NONE);
-					model->Render(m_DirectionalFrame, m_Camera->GetPerspective(), command.m_Scale, true);
+					model->Render(m_DirectionalFrame, m_Camera->GetPerspective(), true);
 				}
 				else if (m_ProcessShadows)
 				{
 
 					m_API->SetRasterizer(eRasterizer::CULL_NONE);
-					model->Render(myPrevShadowFrame, m_Camera->GetPerspective(), command.m_Scale, true);
+					model->Render(myPrevShadowFrame, m_Camera->GetPerspective(), true);
 				}
 				else
 				{
 					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-					model->Render(myPrevFrame, m_Camera->GetPerspective(), command.m_Scale, false);
+					model->Render(myPrevFrame, m_Camera->GetPerspective(), false);
 				}
 			}break;
 		}

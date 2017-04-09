@@ -60,12 +60,12 @@ bool CTerrain::CleanUp()
 	return true;
 }
 
-void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows)
+void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
 {
 #ifdef SNOWBLIND_DX11
 	if (!myIsNULLObject)
 	{
-		__super::Render(aCameraOrientation, aCameraProjection, scale, render_shadows);
+		__super::Render(aCameraOrientation, aCameraProjection, render_shadows);
 		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 		myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 		if (!render_shadows)
@@ -194,7 +194,7 @@ void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& positio
 #endif
 }
 
-void CTerrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale)
+void CTerrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
 #ifdef SNOWBLIND_DX11
 	if (myIsNULLObject == false)
@@ -204,7 +204,6 @@ void CTerrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, con
 		myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);
 		myConstantStruct.projection = aCameraProjection;
 		myConstantStruct.time.x = myEngine->GetDeltaTime();
-		myConstantStruct.scale = scale;
 		myAPI->UpdateConstantBuffer((myConstantBuffer), &myConstantStruct);
 
 		m_PSConstantStruct.camPos = myOrientation.GetTranslation();

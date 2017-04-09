@@ -71,7 +71,7 @@ bool SkySphere::CleanUp()
 
 void SkySphere::Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture)
 {
-	
+	SetPosition(myCamera->GetPosition());
 	m_PixelShaderStruct.m_CameraPos = myCamera->GetPosition();
 	m_VertexShaderStruct.m_CameraPos = myCamera->GetPosition();
 
@@ -79,10 +79,11 @@ void SkySphere::Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture)
 	m_VertexShaderStruct.m_CameraMagnitude = CU::Math::Length(myCamera->GetPosition());
 
 	m_PixelShaderStruct.m_CameraDir = myCamera->GetAt();
+	m_VertexShaderStruct.m_CameraDir = myCamera->GetAt();
 	
 	myAPI->SetBlendState(eBlendStates::NO_BLEND);
 	myAPI->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
-	myAPI->SetRasterizer(eRasterizer::CULL_BACK);
+	myAPI->SetRasterizer(eRasterizer::CULL_FRONT);
 
 	myAPI->UpdateConstantBuffer(m_cbPixelShader, &m_PixelShaderStruct);
 	myAPI->UpdateConstantBuffer(m_cbVertexShader, &m_VertexShaderStruct);
@@ -96,7 +97,7 @@ void SkySphere::Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture)
 		srv[1] = aDepthTexture->GetDepthStencilView();
 		myAPI->GetContext()->PSSetShaderResources(0, 2, &srv[0]);
 		//(#LINUS) Fix scale.
-		layer.m_Model->Render(anOrientation, myCamera->GetPerspective(), CU::Vector4f(1, 1, 1, 1));
+		layer.m_Model->Render(anOrientation, myCamera->GetPerspective());
 
 		srv[0] = nullptr;
 		srv[1] = nullptr;

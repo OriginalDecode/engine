@@ -52,11 +52,11 @@ CModel* CModel::Initiate(const std::string& filename)
 	return this;
 }
 
-void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows)
+void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
 {
 	if (!myIsNULLObject)
 	{
-		__super::Render(aCameraOrientation, aCameraProjection, scale, render_shadows);
+		__super::Render(aCameraOrientation, aCameraProjection, render_shadows);
 
 		if (!myIsLightMesh)
 			myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
@@ -87,7 +87,7 @@ void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f
 	for (CModel* child : myChildren)
 	{
 		child->SetPosition(myOrientation.GetPosition());
-		child->Render(aCameraOrientation, aCameraProjection, scale, render_shadows);
+		child->Render(aCameraOrientation, aCameraProjection, render_shadows);
 	}
 }
 
@@ -185,7 +185,7 @@ std::vector<s32> CModel::GetIndices()
 }
 
 
-void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale)
+void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
 	if (myIsNULLObject == false)
 	{
@@ -197,7 +197,6 @@ void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const
 		m_ConstantStruct.m_World = myOrientation;
 		m_ConstantStruct.m_InvertedView = CU::Math::Inverse(aCameraOrientation);
 		m_ConstantStruct.m_Projection = aCameraProjection;
-		m_ConstantStruct.m_Scale = scale;
 
 		myAPI->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
 

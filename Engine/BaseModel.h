@@ -26,7 +26,7 @@ public:
 	CBaseModel();
 	virtual ~CBaseModel() = 0;
 	virtual bool CleanUp() = 0;
-	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows = false);
+	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false);
 	void SetEffect(Effect* anEffect);
 	Effect* GetEffect() { return myEffect; }
 
@@ -36,7 +36,7 @@ protected:
 	void InitVertexBuffer();
 	void InitIndexBuffer();
 	virtual void InitConstantBuffer() = 0;
-	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale) = 0;
+	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
 	Engine* myEngine = nullptr;
 	CU::Vector3f m_WHD;
 
@@ -68,7 +68,6 @@ protected:
 		CU::Matrix44f m_World;
 		CU::Matrix44f m_InvertedView;
 		CU::Matrix44f m_Projection;
-		CU::Vector4f m_Scale;
 	} m_ConstantStruct;
 
 

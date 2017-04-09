@@ -11,7 +11,6 @@ class CPointLight
 public:
 	CPointLight();
 
-	void Initiate();
 
 	void SetPosition(const CU::Vector3f& aPosition);
 	CU::Vector3f GetPosition();

@@ -21,7 +21,7 @@ public:
 	CModel();
 	bool CleanUp() override;
 	CModel* Initiate(const std::string& filename);
-	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows = false) override;
+	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false) override;
 
 	void AddChild(CModel* aChild);
 	void SetIsLightmesh();
@@ -47,7 +47,7 @@ public:
 
 private:
 	void InitConstantBuffer();
-	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale) override;
+	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
 
 	CU::GrowingArray<SVertexTypePosCol> myVertices;
 	CU::GrowingArray<s32> m_Indices;

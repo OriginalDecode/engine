@@ -46,6 +46,7 @@ private:
 	struct cbVertexShader
 	{
 		CU::Vector4f m_CameraPos;
+		CU::Vector4f m_CameraDir;
 		CU::Vector4f m_LightDir;
 		CU::Vector4f m_LightPos;
 		float m_CameraMagnitude2;

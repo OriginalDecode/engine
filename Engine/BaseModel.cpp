@@ -3,8 +3,6 @@
 #include <stdio.h>
 #ifdef _PROFILE
 #include <easy/profiler.h>
-#else
-#define BROFILER_FRAME(...)
 #endif
 CBaseModel::CBaseModel()
 {
@@ -15,7 +13,7 @@ CBaseModel::CBaseModel()
 
 CBaseModel::~CBaseModel() = default;
 
-void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const CU::Vector4f& scale, bool render_shadows)
+void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
 {
 #ifdef _PROFILE
 	//char buf[512];
@@ -34,7 +32,7 @@ void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matri
 		myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->m_Shader : nullptr);
 		myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->m_Shader : nullptr);
 	}
-	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, scale);
+	UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
 #endif
 }
 
@@ -68,7 +66,7 @@ void CBaseModel::InitIndexBuffer()
 {
 	m_IndexBuffer.myIndexBuffer = myAPI->CreateBuffer(m_IndexData.mySize, m_IndexData.myIndexData, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER);
 
-	myAPI->SetDebugName(m_IndexBuffer.myIndexBuffer, "Mode§l Index Buffer " + m_Filename);
+	myAPI->SetDebugName(m_IndexBuffer.myIndexBuffer, "Model Index Buffer " + m_Filename);
 	m_IndexBuffer.myIndexBufferFormat = m_IndexData.myFormat;
 	m_IndexBuffer.myByteOffset = 0;
 }

@@ -6,9 +6,9 @@ void VirtualFileSystem::Register(const std::string& path, const std::string& ali
 	m_RegisteredFolders.emplace(alias, path);
 }
 
-std::string VirtualFileSystem::GetDirectory(const std::string& path) const
+std::string VirtualFileSystem::GetFile(const std::string& path) const
 {
-	s32 pos = path.find("/");
+	size_t pos = path.find("/");
 	std::string alias = path.substr(0, pos);
 	std::string file = path.substr(pos, path.npos);
 

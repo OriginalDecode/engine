@@ -13,15 +13,17 @@ public:
 
 	void Initiate();
 
+	void SetBuffers();
+	void Render();
 
 private:
 
 	IInputLayout* m_InputLayout = nullptr;
 	CU::GrowingArray<VertexTypePosUV> m_Vertices;
-	D3D11_INPUT_ELEMENT_DESC m_VertexFormat[2];
 	VertexBufferWrapper m_VertexBuffer;
 	VertexDataWrapper m_VertexData;
 	IndexBufferWrapper m_IndexBuffer;
 	IndexDataWrapper m_IndexData;
+	Effect* m_ScreenpassShader = nullptr;
 };
 

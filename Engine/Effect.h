@@ -9,7 +9,7 @@ class Effect
 	friend class ShaderFactory;
 public:
 	Effect(const std::string& aFilePath);
-
+	Effect() = default;
 	CompiledShader* GetVertexShader() { return m_VertexShader; }
 	CompiledShader* GetPixelShader() { return m_PixelShader; }
 	CompiledShader* GetGeometryShader() { return m_GeometryShader; }
@@ -24,12 +24,12 @@ private:
 	std::string myFileName;
 	IDevContext* m_Context;
 
-	CompiledShader* m_VertexShader = nullptr;
-	CompiledShader* m_PixelShader = nullptr;
-	CompiledShader* m_GeometryShader = nullptr;
-	CompiledShader* m_HullShader = nullptr;
-	CompiledShader* m_DomainShader = nullptr;
-	CompiledShader* m_ComputeShader = nullptr;
+	CompiledShader* m_VertexShader		= nullptr;
+	CompiledShader* m_PixelShader		= nullptr;
+	CompiledShader* m_GeometryShader	= nullptr;
+	CompiledShader* m_HullShader		= nullptr;
+	CompiledShader* m_DomainShader		= nullptr;
+	CompiledShader* m_ComputeShader		= nullptr;
 
 	CU::GrowingArray<IShaderResourceView*> myShaderResources;
 	CU::GrowingArray<IShaderResourceView*> myNULLList;

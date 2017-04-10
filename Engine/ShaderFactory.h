@@ -33,9 +33,9 @@ public:
 	void Update();
 
 	std::map<u64, CompiledShader*> GetCompiledShaders() { return m_Shaders; }
+	IBlob* CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level);
 private:
 
-	IBlob* CompileShader(const std::string& file_path, const std::string& shader_type, const std::string& feature_level);
 	void LoadShader(const std::string& file_path, Effect* effect);
 	CompiledShader* CreateShader(const std::string& file_path, const std::string& feature_level = "_5_0");
 	std::map<u64, CompiledShader*> m_Shaders;

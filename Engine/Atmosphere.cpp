@@ -4,36 +4,135 @@
 #include <Engine/DirectX11.h>
 #include <Engine/Model.h>
 #include <Engine/AtmosphereConstants.h>
+#include <Engine/Effect.h>
 
+#include <string.h>
 
-constexpr s32 kLambdaMin = 360;
-constexpr s32 kLambdaMax = 830;
-constexpr float kSunAngularRadius = 0.00935f / 2.f;
-constexpr float kSunSolidAngle = 3.1415926f * kSunAngularRadius * kSunAngularRadius;
-constexpr float kUnitLengthInMeters = 1000.f;
-constexpr double kPi = 3.141593;
-constexpr double kConstantSolarIrradiance = 1.5;
-constexpr double kBottomRadius = 6360000.0;
-constexpr double kTopRadius = 6420000.0;
-constexpr double kRayleigh = 1.24062e-6;
-constexpr double kRayleighScaleHeight = 8000.0;
-constexpr double kMieScaleHeight = 1200.0;
-constexpr double kMieAngstromAlpha = 0.0;
-constexpr double kMieAngstromBeta = 5.328e-3;
-constexpr double kMieSingleScatteringAlbedo = 0.9;
-constexpr double kMiePhaseFunctionG = 0.8;
-constexpr double kGroundAlbedo = 0.1;
-constexpr double kMaxSunZenithAngle = 102.0 / 180.0 * kPi;
-static constexpr double kLambdaR = 680.0;
-static constexpr double kLambdaG = 550.0;
-static constexpr double kLambdaB = 440.0;
+const char* kComputeTransmittanceShader = R"(
+	layout(location = 0) out float3 transmittance;
+	void main() {
+	  transmittance = ComputeTransmittanceToTopAtmosphereBoundaryTexture(
+		  atmosphere_parameters, gl_FragCoord.xy);
+	})";
+
+const char* kComputeDirectIrradianceShader = R"(
+	layout(location = 0) out float3 delta_irradiance;
+	layout(location = 1) out float3 irradiance;
+	texture2D transmittance_texture;
+	void main() {
+	  delta_irradiance = ComputeDirectIrradianceTexture(
+		  atmosphere_parameters, transmittance_texture, gl_FragCoord.xy);
+	  irradiance = float3(0.0);
+	})";
+
+const char* kComputeSingleScatteringShader = R"(
+	layout(location = 0) out float3 delta_rayleigh;
+	layout(location = 1) out float3 delta_mie;
+	layout(location = 2) out float4 scattering;
+	texture2D  transmittance_texture;
+	int layer;
+	void main() {
+	  ComputeSingleScatteringTexture(
+		  atmosphere_parameters, transmittance_texture, float3(gl_FragCoord.xy, layer + 0.5),
+		  delta_rayleigh, delta_mie);
+	  scattering = float4(delta_rayleigh.rgb, delta_mie.r);
+	})";
+
+const char* kComputeScatteringDensityShader = R"(
+	layout(location = 0) out float3 scattering_density;
+	texture2D  transmittance_texture;
+	texture3D single_rayleigh_scattering_texture;
+	texture3D single_mie_scattering_texture;
+	texture3D multiple_scattering_texture;
+	texture2D  irradiance_texture;
+	int scattering_order;
+	int layer;
+	void main() {
+	  scattering_density = ComputeScatteringDensityTexture(
+		  atmosphere_parameters, transmittance_texture, single_rayleigh_scattering_texture,
+		  single_mie_scattering_texture, multiple_scattering_texture,
+		  irradiance_texture, float3(gl_FragCoord.xy, layer + 0.5),
+		  scattering_order);
+	})";
+
+const char* kComputeIndirectIrradianceShader = R"(
+	layout(location = 0) out float3 delta_irradiance;
+	layout(location = 1) out float3 irradiance;
+	texture3D single_rayleigh_scattering_texture;
+	texture3D single_mie_scattering_texture;
+	texture3D multiple_scattering_texture;
+	int scattering_order;
+	void main() {
+	  delta_irradiance = ComputeIndirectIrradianceTexture(
+		  atmosphere_parameters, single_rayleigh_scattering_texture,
+		  single_mie_scattering_texture, multiple_scattering_texture,
+		  gl_FragCoord.xy, scattering_order - 1);
+	  irradiance = delta_irradiance;
+	})";
+
+const char* kComputeMultipleScatteringShader = R"(
+	layout(location = 0) out float3 delta_multiple_scattering;
+	layout(location = 1) out float4 scattering;
+	texture2D transmittance_texture;
+	texture3D scattering_density_texture;
+	int layer;
+	void main() {
+	  float nu;
+	  delta_multiple_scattering = ComputeMultipleScatteringTexture(
+		  atmosphere_parameters, transmittance_texture, scattering_density_texture,
+		  float3(gl_FragCoord.xy, layer + 0.5), nu);
+	  scattering = float4(
+		  delta_multiple_scattering.rgb / RayleighPhaseFunction(nu), 0.0);
+	})";
+
+const char* kAtmosphereShader = R"(
+	texture2D transmittance_texture;\r\n
+	texture3D scattering_texture;\r\n
+	texture3D single_mie_scattering_texture;\r\n
+	texture2D irradiance_texture;\r\n
+	RadianceSpectrum GetSkyRadiance(Position camera, Direction view_ray, Length shadow_length,Direction sun_direction, out DimensionlessSpectrum transmittance)\n
+{\n
+	return GetSkyRadiance(atmosphere_parameters, transmittance_texture, scattering_texture, single_mie_scattering_texture,camera, view_ray, shadow_length, sun_direction, transmittance);\n
+}\n
+	RadianceSpectrum GetSkyRadianceToPoint(
+		Position camera, Position point, Length shadow_length,
+		Direction sun_direction, out DimensionlessSpectrum transmittance)\r\n {
+	  return GetSkyRadianceToPoint(atmosphere_parameters, transmittance_texture,
+		  scattering_texture, single_mie_scattering_texture,
+		  camera, point, shadow_length, sun_direction, transmittance);\r\n
+	}\r\n
+	IrradianceSpectrum GetSunAndSkyIrradiance(
+	   Position p, Direction normal, Direction sun_direction,
+	   out IrradianceSpectrum sky_irradiance)\r\n {
+	  return GetSunAndSkyIrradiance(atmosphere_parameters, transmittance_texture,
+		  irradiance_texture, p, normal, sun_direction, sky_irradiance);\r\n
+	}\r\n
+	Luminance3 GetSkyLuminance(
+		Position camera, Direction view_ray, Length shadow_length,
+		Direction sun_direction, out DimensionlessSpectrum transmittance)\r\n {
+	  return GetSkyRadiance(camera, view_ray, shadow_length, sun_direction,
+		  transmittance) * SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;\r\n
+	}\r\n
+	Luminance3 GetSkyLuminanceToPoint(
+		Position camera, Position point, Length shadow_length,
+		Direction sun_direction, out DimensionlessSpectrum transmittance)\r\n {
+	  return GetSkyRadianceToPoint(camera, point, shadow_length, sun_direction,
+		  transmittance) * SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;\r\n
+	}\r\n
+	Illuminance3 GetSunAndSkyIlluminance(
+	   Position p, Direction normal, Direction sun_direction,
+	   out IrradianceSpectrum sky_irradiance)\r\n {
+	  IrradianceSpectrum sun_irradiance =
+		  GetSunAndSkyIrradiance(p, normal, sun_direction, sky_irradiance);\r\n
+	  sky_irradiance *= SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;\r\n
+	  return sun_irradiance * SUN_SPECTRAL_RADIANCE_TO_LUMINANCE;\r\n
+	})";
 
 void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position)
 {
 	m_Engine = Engine::GetInstance();
 	m_API = m_Engine->GetAPI();
 	m_Camera = m_Engine->GetCamera();
-
 
 	m_OuterRadius = outer_radius;
 	m_OuterOrientation.SetPosition(position);
@@ -43,8 +142,6 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 
 	m_VertexBuffer = m_API->CreateConstantBuffer(sizeof(cbVertex));
 	m_PixelBuffer = m_API->CreateConstantBuffer(sizeof(cbPixel));
-
-	
 
 	m_OuterOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_OuterRadius, m_OuterRadius, m_OuterRadius, 1)) * m_OuterOrientation;
 	m_InnerOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_InnerRadius, m_InnerRadius, m_InnerRadius, 1)) * m_InnerOrientation;
@@ -66,11 +163,6 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 
 	m_InnerSphere->SetOrientation(m_InnerOrientation);
 	m_OuterSphere->SetOrientation(m_OuterOrientation);
-
-
-	//_________________________
-	// Things
-
 
 
 	constexpr double kSolarIrradiance[] = {
@@ -107,24 +199,167 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 		}
 
 		rayleigh_scattering.Add(kRayleigh * pow(lambda, -4));
-		mie_scattering.Add( mie * kMieSingleScatteringAlbedo );
+		mie_scattering.Add(mie * kMieSingleScatteringAlbedo);
 		mie_extinction.Add(mie);
 		ground_albedo.Add(kGroundAlbedo);
 	}
-	
+
+	auto to_string = [=, &wavelengths](const CU::GrowingArray<double>& v, double scale)
+	{
+		double r = Interpolate(wavelengths, v, kLambdaR) * scale;
+		double g = Interpolate(wavelengths, v, kLambdaG) * scale;
+		double b = Interpolate(wavelengths, v, kLambdaB) * scale;
+		return "float3(" + std::to_string(r) + "," + std::to_string(g) + "," + std::to_string(b) + ")";
+	};
+
 	double sky_red, sky_green, sky_blue;
 	ComputeScattering(wavelengths, solar_irradiance, -3, &sky_red, &sky_green, &sky_blue);
 
 	double sun_red, sun_green, sun_blue;
 	ComputeScattering(wavelengths, solar_irradiance, 0, &sun_red, &sun_green, &sun_blue);
 
+	using namespace atmosphere;
 
+	m_ShaderHeader =
+		"#define IN(x) const x\n"
+		"#define OUT(x) x\n"
+		"#define TEMPLATE(x)\n"
+		"#define TEMPLATE_ARGUMENT(x)\n"
+		"#define assert(x)\n"
+		"static const int TRANSMITTANCE_TEXTURE_WIDTH = " +
+		std::to_string(TRANSMITTANCE_TEXTURE_WIDTH) + ";\n" +
+		"static const int TRANSMITTANCE_TEXTURE_HEIGHT = " +
+		std::to_string(TRANSMITTANCE_TEXTURE_HEIGHT) + ";\n" +
+		"static const int SCATTERING_TEXTURE_R_SIZE = " +
+		std::to_string(SCATTERING_TEXTURE_R_SIZE) + ";\n" +
+		"static const int SCATTERING_TEXTURE_MU_SIZE = " +
+		std::to_string(SCATTERING_TEXTURE_MU_SIZE) + ";\n" +
+		"static const int SCATTERING_TEXTURE_MU_S_SIZE = " +
+		std::to_string(SCATTERING_TEXTURE_MU_S_SIZE) + ";\n" +
+		"static const int SCATTERING_TEXTURE_NU_SIZE = " +
+		std::to_string(SCATTERING_TEXTURE_NU_SIZE) + ";\n" +
+		"static const int IRRADIANCE_TEXTURE_WIDTH = " +
+		std::to_string(IRRADIANCE_TEXTURE_WIDTH) + ";\n" +
+		"static const int IRRADIANCE_TEXTURE_HEIGHT = " +
+		std::to_string(IRRADIANCE_TEXTURE_HEIGHT) + ";\n" +
+		"#define COMBINED_SCATTERING_TEXTURES\n" +
+		shader_definitions +
+		//"static AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;\n" +
+		"atmosphere_parameters.solar_irradiance = " + to_string(solar_irradiance, 1.0) + ";\n" +
+		"atmosphere_parameters.sun_angular_radius = " + std::to_string(kSunAngularRadius) + ";\n" +
+		"atmosphere_parameters.bottom_radius = " + std::to_string(kBottomRadius / kUnitLengthInMeters) + ";\n" +
+		"atmosphere_parameters.top_radius = " + std::to_string(kTopRadius / kUnitLengthInMeters) + ";\n" +
+		"atmosphere_parameters.rayleigh_scale_height = " + std::to_string(kRayleighScaleHeight / kUnitLengthInMeters) + ";\n" +
+		"atmosphere_parameters.rayleigh_scattering = " + to_string(rayleigh_scattering, kUnitLengthInMeters) + ";\n" +
+		"atmosphere_parameters.mie_scale_height = " + std::to_string(kMieScaleHeight / kUnitLengthInMeters) + ";\n" +
+		"atmosphere_parameters.mie_scattering = " + to_string(mie_scattering, kUnitLengthInMeters) + ";\n" +
+		"atmosphere_parameters.mie_extinction = " + to_string(mie_extinction, kUnitLengthInMeters) + ";\n" +
+		"atmosphere_parameters.mie_phase_function_g = " + std::to_string(kMiePhaseFunctionG) + ";\n" +
+		"atmosphere_parameters.ground_albedo = " + to_string(ground_albedo, 1.0) + ";\n" +
+		"atmosphere_parameters.mu_s_min = " + std::to_string(kMaxSunZenithAngle) + ";\n" +
+		"static const float3 SKY_SPECTRAL_RADIANCE_TO_LUMINANCE = float3(" +
+		std::to_string(sky_red) + "," +
+		std::to_string(sky_green) + "," +
+		std::to_string(sky_blue) + ");\n" +
+		"static const float3 SUN_SPECTRAL_RADIANCE_TO_LUMINANCE = float3(" +
+		std::to_string(sun_red) + "," +
+		std::to_string(sun_green) + "," +
+		std::to_string(sun_blue) + ");\n" +
+		shader_functions;
+
+	m_TransmittanceTexture = new Texture;
+	m_TransmittanceTexture->Initiate(TRANSMITTANCE_TEXTURE_WIDTH, TRANSMITTANCE_TEXTURE_HEIGHT,
+		DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "Atmosphere : TransmittanceTexture");
+
+	m_ScatteringTexture = new Texture;
+	m_ScatteringTexture->Initiate3DTexture(SCATTERING_TEXTURE_WIDTH, SCATTERING_TEXTURE_HEIGHT, SCATTERING_TEXTURE_DEPTH,
+		DXGI_FORMAT_R16G16B16A16_FLOAT, "Atmosphere : ScatteringTexture");
+	/*
+		m_OptionalSingleMieScatteringTexture = new Texture;
+		m_ScatteringTexture->Initiate3DTexture(SCATTERING_TEXTURE_WIDTH, SCATTERING_TEXTURE_HEIGHT, SCATTERING_TEXTURE_DEPTH,
+			DXGI_FORMAT_R16G16B16A16_FLOAT, "Atmosphere : ScatteringTexture");
+	*/
+
+	m_IrradianceTexture = new Texture;
+	m_IrradianceTexture->Initiate(IRRADIANCE_TEXTURE_WIDTH, IRRADIANCE_TEXTURE_HEIGHT,
+		DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "Atmosphere : IrradianceTexture");
+
+
+	std::string shader = m_ShaderHeader + kAtmosphereShader;
+
+	std::stringstream shader_name;
+	shader_name << "kAtmosphereShader" << ".out";
+	std::ofstream out(shader_name.str());
+
+	out << shader;
+	out.flush();
+	out.close();
+
+	const s8* source = shader.c_str();
+	const s32 shader_length = shader.length();
+	const s32 size =  shader_length * 8;
+	IBlob* compiled = nullptr;
+	IBlob* message = nullptr;
+	//HRESULT hr = D3DCompile(source,size, "plebcity",nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,	"main", "ps_5_0",	0,	0, &compiled, &message);
+	HRESULT hr = m_Engine->CompileShaderFromFile(shader_name.str(), "main", "ps_5_0", 0, compiled, message);
+	//HRESULT hr = m_Engine->CompileShaderFromMemory(source, size, "atmosphere_initiate", "main", "ps_5_0", 0, compiled, message);
+
+	if ( message )
+	{
+		DL_WARNING("%s", ( char* ) message->GetBufferPointer());
+		DL_WARNINGBOX("%s", ( char* ) message->GetBufferPointer());
+	}
+
+	IPixelShader* pixelshader = nullptr;
+	hr = m_API->GetDevice()->CreatePixelShader(compiled->GetBufferPointer(), compiled->GetBufferSize(), nullptr, &pixelshader);
+	m_AtmosphereShader.compiledShader = pixelshader;
+
+
+
+	//_________
+	// .Init(4)
+
+	Texture* deltaIrradiance = nullptr;
+	Texture* deltaRayleighScattering = nullptr;
+	Texture* deltaMieScattering = nullptr;
+	Texture* deltaScatteringDensity = nullptr;
+	Texture* deltaMultipleScattering = nullptr;
+
+
+	deltaIrradiance = new Texture;
+	deltaIrradiance->Initiate(IRRADIANCE_TEXTURE_WIDTH, IRRADIANCE_TEXTURE_HEIGHT,
+		DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "deltaIrradiance");
+
+	deltaRayleighScattering = new Texture;
+	deltaRayleighScattering->Initiate3DTexture(SCATTERING_TEXTURE_WIDTH, SCATTERING_TEXTURE_HEIGHT, SCATTERING_TEXTURE_DEPTH,
+		DXGI_FORMAT_R16G16B16A16_FLOAT, "rayleightScatteringTexture");
+
+	deltaMieScattering = new Texture;
+	deltaMieScattering->Initiate3DTexture(SCATTERING_TEXTURE_WIDTH, SCATTERING_TEXTURE_HEIGHT, SCATTERING_TEXTURE_DEPTH,
+		DXGI_FORMAT_R16G16B16A16_FLOAT, "mieScatteringTexture");
+
+	deltaScatteringDensity = new Texture;
+	deltaScatteringDensity->Initiate3DTexture(SCATTERING_TEXTURE_WIDTH, SCATTERING_TEXTURE_HEIGHT, SCATTERING_TEXTURE_DEPTH,
+		DXGI_FORMAT_R16G16B16A16_FLOAT, "densityScatteringTexture");
+
+	deltaMultipleScattering = deltaRayleighScattering; //same memory address?
+
+
+	SAFE_DELETE(deltaIrradiance);
+	SAFE_DELETE(deltaRayleighScattering);
+	SAFE_DELETE(deltaMieScattering);
+	SAFE_DELETE(deltaScatteringDensity);
+	SAFE_DELETE(deltaMultipleScattering);
 }
 
 void Atmosphere::CleanUp()
 {
 	SAFE_RELEASE(m_PixelBuffer);
 	SAFE_RELEASE(m_VertexBuffer);
+	SAFE_DELETE(m_TransmittanceTexture);
+	SAFE_DELETE(m_ScatteringTexture);
+	SAFE_DELETE(m_OptionalSingleMieScatteringTexture);
+	SAFE_DELETE(m_IrradianceTexture);
 }
 
 void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth)
@@ -166,38 +401,33 @@ void Atmosphere::UseConstantSolarSpectrum(bool useconstantspec)
 
 void Atmosphere::UpdateCameraData()
 {
-	m_VertexStruct.m_CameraDir			= m_Camera->GetAt();
-	m_VertexStruct.m_CameraPos			= m_Camera->GetPosition();
-	m_VertexStruct.m_CameraMagnitude	= CU::Math::Length(m_Camera->GetPosition());
-	m_VertexStruct.m_CameraMagnitude2	= CU::Math::Length2(m_Camera->GetPosition());
+	m_VertexStruct.m_CameraDir = m_Camera->GetAt();
+	m_VertexStruct.m_CameraPos = m_Camera->GetPosition();
+	m_VertexStruct.m_CameraMagnitude = CU::Math::Length(m_Camera->GetPosition());
+	m_VertexStruct.m_CameraMagnitude2 = CU::Math::Length2(m_Camera->GetPosition());
 
 
-	m_PixelStruct.m_CameraDir			= m_VertexStruct.m_CameraDir;
-	m_PixelStruct.m_CameraPos			= m_VertexStruct.m_CameraPos;
-	m_PixelStruct.m_CameraMagnitude		= m_VertexStruct.m_CameraMagnitude;
-	m_PixelStruct.m_CameraMagnitude2	= m_VertexStruct.m_CameraMagnitude2;
-
-
+	m_PixelStruct.m_CameraDir = m_VertexStruct.m_CameraDir;
+	m_PixelStruct.m_CameraPos = m_VertexStruct.m_CameraPos;
+	m_PixelStruct.m_CameraMagnitude = m_VertexStruct.m_CameraMagnitude;
+	m_PixelStruct.m_CameraMagnitude2 = m_VertexStruct.m_CameraMagnitude2;
 }
 
 //__________________________________
 //
-
-
-	
 void Atmosphere::ComputeScattering(const CU::GrowingArray<double>& wavelengths, const CU::GrowingArray<double>& wavelengths_function, double lambda_power, double* red, double* green, double* blue)
 {
 	*red = 0.0;
 	*green = 0.0;
 	*blue = 0.0;
 
-	double solar_r = Interpolate(wavelengths,wavelengths_function, kLambdaR);
+	double solar_r = Interpolate(wavelengths, wavelengths_function, kLambdaR);
 	double solar_g = Interpolate(wavelengths, wavelengths_function, kLambdaG);
 	double solar_b = Interpolate(wavelengths, wavelengths_function, kLambdaB);
 
 	s32 dlambda = 1;
 	const double* xyz2srgb = atmosphere::XYZ_TO_SRGB;
-	for (s32 lambda = kLambdaMin; lambda < kLambdaMax; lambda += dlambda)
+	for ( s32 lambda = kLambdaMin; lambda < kLambdaMax; lambda += dlambda )
 	{
 		double x_bar = CieColorMatchingFunctionTableValue(lambda, 1);
 		double y_bar = CieColorMatchingFunctionTableValue(lambda, 2);
@@ -218,36 +448,18 @@ void Atmosphere::ComputeScattering(const CU::GrowingArray<double>& wavelengths, 
 	*red *= atmosphere::MAX_LUMINOUS_EFFICACY * dlambda;
 	*green *= atmosphere::MAX_LUMINOUS_EFFICACY * dlambda;
 	*blue *= atmosphere::MAX_LUMINOUS_EFFICACY * dlambda;
-
-
-
-	/*
-	
-		Create Shader( Compile and stuff )
-		SetRenderTarget( texture ) ;
-		SetViewport( new_viewport )
-		ActivateShader();
-		DrawQuad();
-		Deactivate();
-	*/
-
-
-	//Create shaders ? 
-	//Run shaders
-
-
 }
 
 double Atmosphere::Interpolate(const CU::GrowingArray<double>& wavelengths, const CU::GrowingArray<double>& wavelengths_function, double wavelength)
 {
 	DL_ASSERT_EXP(wavelengths_function.Size() == wavelengths.Size(), "Size of wavelengths does not match wavelengths_function");
-	if ( wavelength < wavelengths[0] ) 
+	if ( wavelength < wavelengths[0] )
 	{
 		return wavelengths_function[0];
 	}
-	for ( u32 i = 0; i < wavelengths.Size() - 1; ++i ) 
+	for ( u32 i = 0; i < wavelengths.Size() - 1; ++i )
 	{
-		if ( wavelength < wavelengths[i + 1] ) 
+		if ( wavelength < wavelengths[i + 1] )
 		{
 			double u = ( wavelength - wavelengths[i] ) / ( wavelengths[i + 1] - wavelengths[i] );
 			return wavelengths_function[i] * ( 1.0 - u ) + wavelengths_function[i + 1] * u;

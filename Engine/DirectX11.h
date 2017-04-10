@@ -115,6 +115,8 @@ public:
 	Viewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y);
 
 	IBuffer* CreateConstantBuffer(s32 size);
+	IBuffer* CreateVertexBuffer(s32 size, void* pData);
+	IBuffer* CreateIndexBuffer(s32 size, void* pData);
 
 	template<typename T>
 	void UpdateConstantBuffer(IBuffer*& dest, T* src, s32 size);
@@ -124,7 +126,7 @@ public:
 
 	//void BindConstantBuffer(s32 bound_buffer_flag, IBuffer*& constant_buffer);
 
-	IBuffer* CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag = D3D11_USAGE_IMMUTABLE, u32 bind_flag = D3D11_BIND_VERTEX_BUFFER, u32 cpu_access_flag = 0, u32 misc_flag = 0);
+	IBuffer* CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag = D3D11_USAGE_IMMUTABLE, u32 bind_flag = D3D11_BIND_VERTEX_BUFFER, u32 cpu_access_flag = 0, u32 misc_flag = 0, u32 structured_byte_width = 0);
 
 	IInputLayout* CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements);
 

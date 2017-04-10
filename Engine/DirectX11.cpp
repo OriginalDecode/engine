@@ -324,10 +324,20 @@ D3D11_VIEWPORT* DirectX11::CreateViewport(u16 width, u16 height, float min_depth
 
 IBuffer* DirectX11::CreateConstantBuffer(s32 size)
 {
-	return CreateBuffer(size, nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE);
+	return CreateBuffer(size, nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, 0 , 0);
 }
 
-IBuffer* DirectX11::CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag /*= D3D11_USAGE_IMMUTABLE*/, u32 bind_flag /*= D3D11_BIND_VERTEX_BUFFER*/, u32 cpu_access_flag /*= 0*/, u32 misc_flag /*= 0*/)
+IBuffer* DirectX11::CreateVertexBuffer(s32 size, void* pData)
+{
+	return CreateBuffer(size, pData, D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, 0 );
+}
+
+IBuffer* DirectX11::CreateIndexBuffer(s32 size, void* pData)
+{
+	return CreateBuffer(size, pData, D3D11_USAGE_DEFAULT, D3D11_BIND_INDEX_BUFFER, 0, 0, 0);
+}
+
+IBuffer* DirectX11::CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag /*= D3D11_USAGE_IMMUTABLE*/, u32 bind_flag /*= D3D11_BIND_VERTEX_BUFFER*/, u32 cpu_access_flag /*= 0*/, u32 misc_flag /*= 0*/, u32 structured_byte_width /*= 0*/)
 {
 
 	D3D11_BUFFER_DESC buffer_desc;
@@ -337,6 +347,7 @@ IBuffer* DirectX11::CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag /
 	buffer_desc.BindFlags = bind_flag;
 	buffer_desc.CPUAccessFlags = cpu_access_flag;
 	buffer_desc.MiscFlags = misc_flag;
+	buffer_desc.StructureByteStride = structured_byte_width; //investigate future use
 
 	IBuffer* return_value = nullptr;
 	HRESULT hr = S_OK;

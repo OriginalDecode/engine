@@ -60,12 +60,14 @@ private:
 
 	bool m_UseConstantSolarSpectrum				= false;
 
-	Texture* m_DeltaIrradiance					= nullptr;
-	Texture* m_DeltaRayleighScattering			= nullptr;
-	Texture* m_DeltaMieScattering				= nullptr;
-	Texture* m_DeltaScatteringDensity			= nullptr;
-	Texture* m_DeltaMultipleScatteringDensity	= nullptr;
-	Texture* m_DeltaMultipleScattering			= nullptr;
+	Texture* m_TransmittanceTexture					= nullptr;
+	Texture* m_ScatteringTexture					= nullptr;
+	Texture* m_OptionalSingleMieScatteringTexture	= nullptr;
+	Texture* m_IrradianceTexture					= nullptr;
+
+	std::string m_ShaderHeader;
+
+	CompiledShader m_AtmosphereShader;
 
 
 	void UpdateCameraData();

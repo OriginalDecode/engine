@@ -25,6 +25,8 @@ public:
 
 	void InitiateWithColor(CL::SColor color);
 
+	void Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat texture_format, const std::string& debug_name);
+
 
 	bool CleanUp();
 	bool Load(std::string filepath);
@@ -59,8 +61,12 @@ private:
 
 	ITexture2D* m_DepthTexture = nullptr;
 
-	IShaderResourceView* m_ShaderResource = nullptr;
-	IShaderResourceView* m_DepthStencilShaderView = nullptr;
+
+	union
+	{
+		IShaderResourceView* m_ShaderResource;
+		IShaderResourceView* m_DepthStencilShaderView;
+	};
 
 	IDepthStencilView* m_DepthStencilView = nullptr;
 	IRenderTargetView* m_RenderTargetView = nullptr;

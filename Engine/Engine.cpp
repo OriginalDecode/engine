@@ -300,6 +300,23 @@ HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::s
 	return hr;
 }
 
+HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entry_point, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message)
+{
+	HRESULT hr = D3DCompile(
+		pData, 
+		size, 
+		source_name.c_str(), 
+		nullptr, 
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		entry_point.c_str(),
+		feature_level.c_str(),
+		0,
+		0,
+		&out_shader,
+		&out_message);
+	return hr;
+}
+
 void* Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name)
 {
 

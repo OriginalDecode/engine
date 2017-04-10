@@ -245,12 +245,8 @@ IBlob* ShaderFactory::CompileShader(const std::string& file_path, const std::str
 	//DL_ASSERT_EXP(compiledShader, "Shader was null?");
 	if (compilationMessage != nullptr)
 	{
-		//std::string msg = myShaderWarningHandler.CheckWarning((char*)compilationMessage->GetBufferPointer(), file_path);
-		//DL_WARNING("%s", msg.c_str());
 		DL_WARNING("%s has generated warnings!", file_path.c_str())
-			DL_WARNING("%s", (char*)compilationMessage->GetBufferPointer());
-		// (#LINUS) Should be output to a warninglist in engine debug tools.
-		//DL_WARNINGBOX((char*)compilationMessage->GetBufferPointer());
+		DL_WARNING("\n%s", (char*)compilationMessage->GetBufferPointer());
 	}
 	Engine::GetInstance()->GetAPI()->HandleErrors(hr, "Failed to compile shader!");
 	return compiledShader;

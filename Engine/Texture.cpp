@@ -25,7 +25,6 @@ void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_f
 	text_desc.CPUAccessFlags = 0;
 	text_desc.MiscFlags = 0;
 	text_desc.ArraySize = 1;
-
 	HRESULT hr = device->CreateTexture2D(&text_desc, NULL, &m_DepthTexture);
 	api->HandleErrors(hr, "[Texture](Initiate) : Failed to initiate texture.");
 
@@ -217,9 +216,6 @@ void Texture::InitiateAsRenderTarget(float width, float height, const std::strin
 void Texture::InitiateWithColor(CL::SColor color)
 {
 	//Initiate(64.f, 64.f, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM, "Colored_Texture");
-
-	
-
 	D3D11_SUBRESOURCE_DATA data;
 	data.pSysMem = &color._color;
 	data.SysMemPitch = 64.f * 4;
@@ -242,6 +238,64 @@ void Texture::InitiateWithColor(CL::SColor color)
 	DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 	Engine::GetAPI()->GetDevice()->CreateShaderResourceView(texture, nullptr, &m_ShaderResource);
 	texture->Release();
+}
+
+void Texture::Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat texture_format, const std::string& debug_name)
+{
+	DirectX11* api = Engine::GetInstance()->GetAPI();
+	ID3D11Texture3D* texture;
+	D3D11_TEXTURE3D_DESC desc;
+	desc.Width = width;
+	desc.Height = height;
+	desc.MipLevels = 1;
+	desc.Depth = depth;
+	desc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE ;
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	desc.Usage = D3D11_USAGE_DYNAMIC;
+	desc.MiscFlags = 0;
+	
+	api->GetDevice()->CreateTexture3D(&desc, nullptr , &texture);
+	api->SetDebugName(texture, debug_name);
+
+
+	{
+		D3D11_TEXTURE3D_DESC rtdesc;
+		rtdesc.Width = ( UINT ) width;
+		rtdesc.Height = ( UINT ) height;
+		rtdesc.Depth = ( UINT )depth;
+		rtdesc.MipLevels = 1;
+		rtdesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		rtdesc.Usage = D3D11_USAGE_DEFAULT;
+		rtdesc.BindFlags = D3D11_BIND_RENDER_TARGET;
+		rtdesc.CPUAccessFlags = 0;
+		rtdesc.MiscFlags = 0;
+
+		ID3D11Texture3D* _texture = nullptr;
+		HRESULT hr = api->GetDevice()->CreateTexture3D(&rtdesc, NULL, &_texture);
+		api->HandleErrors(hr, "[Texture](Initiate) : Failed to initiate texture.");
+
+		hr = api->GetDevice()->CreateRenderTargetView(_texture, NULL, &m_RenderTargetView);
+		api->HandleErrors(hr, "[Texture](Initiate) : Failed to create RenderTargetView.");
+		api->SetDebugName(m_RenderTargetView, debug_name + "RenderTargetView");
+		SAFE_RELEASE(_texture);
+	}
+
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC view_desc;
+		ZeroMemory(&view_desc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+		view_desc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		view_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
+		view_desc.Texture3D.MipLevels = 1;
+		view_desc.Texture3D.MostDetailedMip = 0;
+
+		HRESULT hr = api->GetDevice()->CreateShaderResourceView(texture, &view_desc, &m_ShaderResource);
+		api->HandleErrors(hr, "[Texture](Initiate) : Failed to create DepthStencil-ShaderResourceView.");
+		api->SetDebugName(m_ShaderResource, debug_name + "DepthStencil-ShaderResourceView");
+	}
+
+	SAFE_RELEASE(texture);
+
 }
 
 bool Texture::CleanUp()

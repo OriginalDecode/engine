@@ -78,7 +78,7 @@ void CSpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vec
 	myVertexBuffer = new VertexBufferWrapper;
 	myVertexData = new VertexDataWrapper;
 	myIndexBuffer = new IndexBufferWrapper;
-	myIndexData = new VertexIndexWrapper;
+	myIndexData = new IndexDataWrapper;
 
 	myVertexData->myNrOfVertexes = vertices.Size();
 	myVertexData->myStride = sizeof(VertexTypePosUV);
@@ -148,7 +148,7 @@ void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU:
 	myVertexBuffer = new VertexBufferWrapper;
 	myVertexData = new VertexDataWrapper;
 	myIndexBuffer = new IndexBufferWrapper;
-	myIndexData = new VertexIndexWrapper;
+	myIndexData = new IndexDataWrapper;
 
 	myVertexData->myNrOfVertexes = vertices.Size();
 	myVertexData->myStride = sizeof(VertexTypePosUV);

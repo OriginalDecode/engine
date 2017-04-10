@@ -21,7 +21,7 @@ class LightPass;
 class CPointLight;
 class Texture;
 
-struct VertexIndexWrapper;
+struct IndexDataWrapper;
 struct VertexBufferWrapper;
 struct VertexDataWrapper;
 struct IndexBufferWrapper;
@@ -78,7 +78,7 @@ private:
 	VertexDataWrapper* myVertexData = nullptr;
 	VertexBufferWrapper* m_VertexBuffer = nullptr;
 
-	VertexIndexWrapper* myIndexData = nullptr;
+	IndexDataWrapper* myIndexData = nullptr;
 	IndexBufferWrapper* m_IndexBuffer = nullptr;
 
 	IInputLayout* myInputLayout = nullptr;

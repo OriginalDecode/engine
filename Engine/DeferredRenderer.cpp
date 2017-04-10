@@ -219,6 +219,8 @@ GBuffer* DeferredRenderer::GetGBuffer()
 	return myGBuffer;
 }
 
+
+//This could be in the engine and return a quad object?
 void DeferredRenderer::CreateFullscreenQuad()
 {
 
@@ -258,7 +260,7 @@ void DeferredRenderer::CreateFullscreenQuad()
 	m_VertexBuffer = new VertexBufferWrapper;
 	myVertexData = new VertexDataWrapper;
 	m_IndexBuffer = new IndexBufferWrapper;
-	myIndexData = new VertexIndexWrapper;
+	myIndexData = new IndexDataWrapper;
 
 	myVertexData->myNrOfVertexes = vertices.Size();
 	myVertexData->myStride = sizeof(VertexTypePosUV);

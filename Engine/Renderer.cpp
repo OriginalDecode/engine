@@ -181,7 +181,7 @@ void Renderer::Render()
 	m_Engine->ResetRenderTargetAndDepth();
 
 
-	myDeferredRenderer->SetBuffers();
+	myDeferredRenderer->SetBuffers(); //This is just the quad
 	m_PostProcessManager.Process(myDeferredRenderer->GetFinalTexture());
 
 	if (m_PostProcessManager.GetFlags() == 0)

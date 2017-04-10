@@ -219,6 +219,20 @@ void Atmosphere::ComputeScattering(const CU::GrowingArray<double>& wavelengths, 
 	*green *= atmosphere::MAX_LUMINOUS_EFFICACY * dlambda;
 	*blue *= atmosphere::MAX_LUMINOUS_EFFICACY * dlambda;
 
+
+
+	/*
+	
+		Create Shader( Compile and stuff )
+		SetRenderTarget( texture ) ;
+		SetViewport( new_viewport )
+		ActivateShader();
+		DrawQuad();
+		Deactivate();
+	*/
+
+
+	//Create shaders ? 
 	//Run shaders
 
 

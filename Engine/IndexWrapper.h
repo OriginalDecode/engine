@@ -5,9 +5,9 @@
 enum DXGI_FORMAT;
 struct ID3D11Buffer;
 
-struct VertexIndexWrapper
+struct IndexDataWrapper
 {
-	~VertexIndexWrapper() { SAFE_DELETE(myIndexData); };
+	~IndexDataWrapper() { SAFE_DELETE(myIndexData); };
 	s8* myIndexData = nullptr;
 	s32 myIndexCount = 0;
 	s32 mySize = 0;

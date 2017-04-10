@@ -9,7 +9,7 @@ class Texture;
 class Camera;
 class Effect;
 
-struct VertexIndexWrapper;
+struct IndexDataWrapper;
 struct VertexBufferWrapper;
 struct VertexDataWrapper;
 struct IndexBufferWrapper;
@@ -46,7 +46,7 @@ private:
 	CU::Math::Vector2<float> myPosition;
 	CU::Math::Vector2<float> mySize;
 
-	VertexIndexWrapper* myIndexData;
+	IndexDataWrapper* myIndexData;
 	VertexDataWrapper* myVertexData;
 
 	VertexBufferWrapper* myVertexBuffer;

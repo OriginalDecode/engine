@@ -690,6 +690,7 @@
     <ClInclude Include="Octree.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PostProcessManager.h" />
+    <ClInclude Include="Quad.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />
     <ClInclude Include="RenderCommand_Shared.h" />
@@ -784,6 +785,7 @@
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PostProcessManager.cpp" />
+    <ClCompile Include="Quad.cpp" />
     <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="RenderCommand.cpp" />
     <ClCompile Include="Renderer.cpp" />

@@ -1,8 +1,12 @@
 #pragma once
+
+
 #include <DataStructures/GrowingArray.h>
-class Engine;
-class DirectX11;
+
 class Camera;
+class DirectX11;
+class Engine;
+class Texture;
 
 class Atmosphere
 {
@@ -17,11 +21,11 @@ public:
 	void SetLightData(const CU::Vector4f& direction, const CU::Vector4f& position);
 	void UseConstantSolarSpectrum(bool useconstantspec);
 private:
-	Engine* m_Engine = nullptr;
-	DirectX11* m_API = nullptr;
-	Camera* m_Camera = nullptr;
-	CModel* m_InnerSphere = nullptr;
-	CModel* m_OuterSphere = nullptr;
+	Engine* m_Engine							= nullptr;
+	DirectX11* m_API							= nullptr;
+	Camera* m_Camera							= nullptr;
+	CModel* m_InnerSphere						= nullptr;
+	CModel* m_OuterSphere						= nullptr;
 
 	float m_InnerRadius = 0.f;
 	float m_OuterRadius = 0.f;
@@ -39,7 +43,7 @@ private:
 		float m_CameraMagnitude;
 		float m_CameraMagnitude2;
 	} m_PixelStruct;
-	IBuffer* m_PixelBuffer = nullptr;
+	IBuffer* m_PixelBuffer						= nullptr;
 
 	struct cbVertex
 	{
@@ -52,16 +56,16 @@ private:
 		float m_CameraMagnitude;
 		float m_CameraMagnitude2;
 	} m_VertexStruct;
-	IBuffer* m_VertexBuffer = nullptr;
+	IBuffer* m_VertexBuffer						= nullptr;
 
+	bool m_UseConstantSolarSpectrum				= false;
 
-
-	bool m_UseConstantSolarSpectrum = false;
-
-	//__________________________________________
-	// Base Values
-
-	
+	Texture* m_DeltaIrradiance					= nullptr;
+	Texture* m_DeltaRayleighScattering			= nullptr;
+	Texture* m_DeltaMieScattering				= nullptr;
+	Texture* m_DeltaScatteringDensity			= nullptr;
+	Texture* m_DeltaMultipleScatteringDensity	= nullptr;
+	Texture* m_DeltaMultipleScattering			= nullptr;
 
 
 	void UpdateCameraData();

@@ -15,7 +15,7 @@ class Effect;
 class Engine;
 class CSurface;
 
-struct VertexIndexWrapper;
+struct IndexDataWrapper;
 struct VertexBufferWrapper;
 struct VertexDataWrapper;
 struct IndexBufferWrapper;
@@ -55,7 +55,7 @@ protected:
 	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 
 
-	VertexIndexWrapper m_IndexData;
+	IndexDataWrapper m_IndexData;
 	VertexDataWrapper m_VertexData;
 
 	VertexBufferWrapper m_VertexBuffer;

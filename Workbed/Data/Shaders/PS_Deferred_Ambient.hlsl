@@ -30,6 +30,7 @@ struct VS_OUTPUT
 	float2 uv	: TEXCOORD;
 };
 
+
 //---------------------------------
 //	Deferred Ambient Pixel Shader
 //---------------------------------

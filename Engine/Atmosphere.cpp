@@ -85,48 +85,37 @@ const char* kComputeMultipleScatteringShader = R"(
 		  delta_multiple_scattering.rgb / RayleighPhaseFunction(nu), 0.0);
 	})";
 
-const char* kAtmosphereShader = R"(
-	texture2D transmittance_texture;\r\n
-	texture3D scattering_texture;\r\n
-	texture3D single_mie_scattering_texture;\r\n
-	texture2D irradiance_texture;\r\n
-	RadianceSpectrum GetSkyRadiance(Position camera, Direction view_ray, Length shadow_length,Direction sun_direction, out DimensionlessSpectrum transmittance)\n
-{\n
-	return GetSkyRadiance(atmosphere_parameters, transmittance_texture, scattering_texture, single_mie_scattering_texture,camera, view_ray, shadow_length, sun_direction, transmittance);\n
-}\n
-	RadianceSpectrum GetSkyRadianceToPoint(
-		Position camera, Position point, Length shadow_length,
-		Direction sun_direction, out DimensionlessSpectrum transmittance)\r\n {
-	  return GetSkyRadianceToPoint(atmosphere_parameters, transmittance_texture,
-		  scattering_texture, single_mie_scattering_texture,
-		  camera, point, shadow_length, sun_direction, transmittance);\r\n
-	}\r\n
-	IrradianceSpectrum GetSunAndSkyIrradiance(
-	   Position p, Direction normal, Direction sun_direction,
-	   out IrradianceSpectrum sky_irradiance)\r\n {
-	  return GetSunAndSkyIrradiance(atmosphere_parameters, transmittance_texture,
-		  irradiance_texture, p, normal, sun_direction, sky_irradiance);\r\n
-	}\r\n
-	Luminance3 GetSkyLuminance(
-		Position camera, Direction view_ray, Length shadow_length,
-		Direction sun_direction, out DimensionlessSpectrum transmittance)\r\n {
-	  return GetSkyRadiance(camera, view_ray, shadow_length, sun_direction,
-		  transmittance) * SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;\r\n
-	}\r\n
-	Luminance3 GetSkyLuminanceToPoint(
-		Position camera, Position point, Length shadow_length,
-		Direction sun_direction, out DimensionlessSpectrum transmittance)\r\n {
-	  return GetSkyRadianceToPoint(camera, point, shadow_length, sun_direction,
-		  transmittance) * SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;\r\n
-	}\r\n
-	Illuminance3 GetSunAndSkyIlluminance(
-	   Position p, Direction normal, Direction sun_direction,
-	   out IrradianceSpectrum sky_irradiance)\r\n {
-	  IrradianceSpectrum sun_irradiance =
-		  GetSunAndSkyIrradiance(p, normal, sun_direction, sky_irradiance);\r\n
-	  sky_irradiance *= SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;\r\n
-	  return sun_irradiance * SUN_SPECTRAL_RADIANCE_TO_LUMINANCE;\r\n
-	})";
+const char* kAtmosphereShader = "\
+texture2D transmittance_texture;\n\
+texture3D scattering_texture;\n \
+texture3D single_mie_scattering_texture;\n\
+texture2D irradiance_texture;\n\n\
+RadianceSpectrum GetSkyRadiance(Position camera, Direction view_ray, Length shadow_length,Direction sun_direction, out DimensionlessSpectrum transmittance)\n\
+{\n\
+	return GetSkyRadiance(atmosphere_parameters, transmittance_texture, scattering_texture, single_mie_scattering_texture,camera, view_ray, shadow_length, sun_direction, transmittance);\n\
+}\n\n\
+RadianceSpectrum GetSkyRadianceToPoint(Position camera, Position point, Length shadow_length, Direction sun_direction, out DimensionlessSpectrum transmittance)\n\
+{\n\
+	return GetSkyRadianceToPoint(atmosphere_parameters, transmittance_texture, scattering_texture, single_mie_scattering_texture, camera, point, shadow_length, sun_direction, transmittance);\n\
+}\n\n\
+IrradianceSpectrum GetSunAndSkyIrradiance(Position p, Direction normal, Direction sun_direction, out IrradianceSpectrum sky_irradiance)\n\
+{\n\
+	return GetSunAndSkyIrradiance(atmosphere_parameters, transmittance_texture, irradiance_texture, p, normal, sun_direction, sky_irradiance);\n\
+}\n\n\
+Luminance3 GetSkyLuminance(Position camera, Direction view_ray, Length shadow_length,Direction sun_direction, out DimensionlessSpectrum transmittance)\n\
+{\n\
+	return GetSkyRadiance(camera, view_ray, shadow_length, sun_direction, transmittance) * SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;\n\
+}\n\n\
+Luminance3 GetSkyLuminanceToPoint(Position camera, Position point, Length shadow_length, Direction sun_direction, out DimensionlessSpectrum transmittance)\n\
+{\n\
+  return GetSkyRadianceToPoint(camera, point, shadow_length, sun_direction, transmittance) * SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;\n\
+}\n\n\
+Illuminance3 GetSunAndSkyIlluminance(Position p, Direction normal, Direction sun_direction, out IrradianceSpectrum sky_irradiance)\n\
+{\n\
+	IrradianceSpectrum sun_irradiance = GetSunAndSkyIrradiance(p, normal, sun_direction, sky_irradiance);\n\
+	sky_irradiance *= SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;\n\
+	return sun_irradiance * SUN_SPECTRAL_RADIANCE_TO_LUMINANCE;\n\
+}";
 
 void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position)
 {
@@ -244,7 +233,7 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 		std::to_string(IRRADIANCE_TEXTURE_HEIGHT) + ";\n" +
 		"#define COMBINED_SCATTERING_TEXTURES\n" +
 		shader_definitions +
-		//"static AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;\n" +
+		"static AtmosphereParameters atmosphere_parameters;\n" +
 		"atmosphere_parameters.solar_irradiance = " + to_string(solar_irradiance, 1.0) + ";\n" +
 		"atmosphere_parameters.sun_angular_radius = " + std::to_string(kSunAngularRadius) + ";\n" +
 		"atmosphere_parameters.bottom_radius = " + std::to_string(kBottomRadius / kUnitLengthInMeters) + ";\n" +

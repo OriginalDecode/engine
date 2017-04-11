@@ -198,6 +198,7 @@ namespace atmosphere {
 
 
 const char* shader_definitions = \
+"SamplerState _sampler : register ( s0 );\n"\
 "#define Length float\n"\
 "#define Wavelength float\n"\
 "#define Angle float\n"\
@@ -383,7 +384,8 @@ const char* shader_functions = \
 "{\n"\
 "	assert(r >= atmosphere.bottom_radius && r <= atmosphere.top_radius);\n"\
 "	float2 uv = GetTransmittanceTextureUvFromRMu(atmosphere, r, mu);\n"\
-"	return DimensionlessSpectrum(texture(transmittance_texture, uv));\n"\
+"	DimensionlessSpectrum dSpec = transmittance_texture.Sample(_sampler, uv);"
+"	return dSpec;\n"\
 "}\n\n"\
 "DimensionlessSpectrum GetTransmittance(IN(AtmosphereParameters) atmosphere, IN(TransmittanceTexture) transmittance_texture, Length r, Number mu, Length d, bool ray_r_mu_intersects_ground)\n"\
 "{\n"\
@@ -394,11 +396,11 @@ const char* shader_functions = \
 "	Number mu_d = ClampCosine((r * mu + d) / r_d);\n"\
 "	if (ray_r_mu_intersects_ground)\n"\
 "	{\n"\
-"		return min(GetTransmittanceToTopAtmosphereBoundary( atmosphere, transmittance_texture, r_d, -mu_d) / GetTransmittanceToTopAtmosphereBoundary(atmosphere, transmittance_texture, r, -mu), DimensionlessSpectrum(1.0));\n"\
+"		return min(GetTransmittanceToTopAtmosphereBoundary( atmosphere, transmittance_texture, r_d, -mu_d) / GetTransmittanceToTopAtmosphereBoundary(atmosphere, transmittance_texture, r, -mu), DimensionlessSpectrum(1,1,1));\n"\
 "	}\n"\
 "	else \n"\
 "	{\n"\
-"		return min(GetTransmittanceToTopAtmosphereBoundary(atmosphere, transmittance_texture, r, mu) / GetTransmittanceToTopAtmosphereBoundary(atmosphere, transmittance_texture, r_d, mu_d), DimensionlessSpectrum(1.0));\n"\
+"		return min(GetTransmittanceToTopAtmosphereBoundary(atmosphere, transmittance_texture, r, mu) / GetTransmittanceToTopAtmosphereBoundary(atmosphere, transmittance_texture, r_d, mu_d), DimensionlessSpectrum(1,1,1));\n"\
 "	}\n"\
 "}\n\n"\
 "void ComputeSingleScatteringIntegrand(IN(AtmosphereParameters) atmosphere, IN(TransmittanceTexture) transmittance_texture, Length r, Number mu, Number mu_s, Number nu, Length d, bool ray_r_mu_intersects_ground, OUT(DimensionlessSpectrum) rayleigh, OUT(DimensionlessSpectrum) mie)\n"\
@@ -407,8 +409,8 @@ const char* shader_functions = \
 "	Number mu_s_d = ClampCosine((r * mu_s + d * nu) / r_d);\n"\
 "	if (RayIntersectsGround(atmosphere, r_d, mu_s_d))\n"\
 "	{\n"\
-"		rayleigh = DimensionlessSpectrum(0.0);\n"\
-"		mie = DimensionlessSpectrum(0.0);\n"\
+"		rayleigh = DimensionlessSpectrum(0,0,0);\n"\
+"		mie = DimensionlessSpectrum(0,0,0);\n"\
 "	} "\
 "	else\n"\
 "	{\n"\
@@ -436,8 +438,8 @@ const char* shader_functions = \
 "	assert(nu >= -1.0 && nu <= 1.0);\n"\
 "	static const int SAMPLE_COUNT = 50;\n"\
 "	Length dx = DistanceToNearestAtmosphereBoundary(atmosphere, r, mu, ray_r_mu_intersects_ground) / Number(SAMPLE_COUNT);\n"\
-"	DimensionlessSpectrum rayleigh_sum = DimensionlessSpectrum(0.0);\n"\
-"	DimensionlessSpectrum mie_sum = DimensionlessSpectrum(0.0);\n"\
+"	DimensionlessSpectrum rayleigh_sum = DimensionlessSpectrum(0,0,0);\n"\
+"	DimensionlessSpectrum mie_sum = DimensionlessSpectrum(0,0,0);\n"\
 "	for (int i = 0; i <= SAMPLE_COUNT; ++i)\n"\
 "	{\n"\
 "		Length d_i = Number(i) * dx;\n"\
@@ -487,7 +489,7 @@ const char* shader_functions = \
 "		Length d_max = rho + H;\n"\
 "		u_mu = 0.5 + 0.5 * GetTextureCoordFromUnitRange((d - d_min) / (d_max - d_min), SCATTERING_TEXTURE_MU_SIZE / 2);\n"\
 "	}\n"\
-"	Length d = DistanceToTopAtmosphereBoundaryatmosphere, atmosphere.bottom_radius, mu_s);\n"\
+"	Length d = DistanceToTopAtmosphereBoundary(atmosphere, atmosphere.bottom_radius, mu_s);\n"\
 "	Length d_min = atmosphere.top_radius - atmosphere.bottom_radius;\n"\
 "	Length d_max = H;\n"\
 "	Number a = (d - d_min) / (d_max - d_min);\n"\
@@ -534,7 +536,7 @@ const char* shader_functions = \
 "{\n"\
 "	static const float4 SCATTERING_TEXTURE_SIZE = float4(SCATTERING_TEXTURE_NU_SIZE - 1, SCATTERING_TEXTURE_MU_S_SIZE, SCATTERING_TEXTURE_MU_SIZE, SCATTERING_TEXTURE_R_SIZE);\n"\
 "	Number frag_coord_nu = floor(gl_frag_coord.x / Number(SCATTERING_TEXTURE_MU_S_SIZE));\n"\
-"	Number frag_coord_mu_s = mod(gl_frag_coord.x, Number(SCATTERING_TEXTURE_MU_S_SIZE));\n"\
+"	Number frag_coord_mu_s = fmod(gl_frag_coord.x, Number(SCATTERING_TEXTURE_MU_S_SIZE));\n"\
 "	float4 uvwz = float4(frag_coord_nu, frag_coord_mu_s, gl_frag_coord.y, gl_frag_coord.z) / SCATTERING_TEXTURE_SIZE;\n"\
 "	GetRMuMuSNuFromScatteringTextureUvwz(atmosphere, uvwz, r, mu, mu_s, nu, ray_r_mu_intersects_ground);\n"\
 "	nu = clamp(nu, mu * mu_s - sqrt((1.0 - mu * mu) * (1.0 - mu_s * mu_s)), mu * mu_s + sqrt((1.0 - mu * mu) * (1.0 - mu_s * mu_s)));\n"\
@@ -557,10 +559,15 @@ const char* shader_functions = \
 "	Number lerp = tex_coord_x - tex_x;\n"\
 "	float3 uvw0 = float3((tex_x + uvwz.y) / Number(SCATTERING_TEXTURE_NU_SIZE), uvwz.z, uvwz.w);\n"\
 "	float3 uvw1 = float3((tex_x + 1.0 + uvwz.y) / Number(SCATTERING_TEXTURE_NU_SIZE), uvwz.z, uvwz.w);\n"\
-"	return AbstractSpectrum(texture(scattering_texture, uvw0) * (1.0 - lerp) + texture(scattering_texture, uvw1) * lerp);\n"\
+"	AbstractSpectrum aSpec0 = scattering_texture.Sample(_sampler, uvw0);\n"\
+"	AbstractSpectrum aSpec1 = scattering_texture.Sample(_sampler, uvw1);\n"\
+"	return (aSpec0 * (1.0 - lerp) + aSpec1 * lerp);\n"\
 "}\n\n"\
-"RadianceSpectrum GetScattering(IN(AtmosphereParameters) atmosphere, IN(ReducedScatteringTexture) single_rayleigh_scattering_texture, IN(ReducedScatteringTexture) single_mie_scattering_texture,"\
-"	IN(ScatteringTexture) multiple_scattering_texture, Length r, Number mu, Number mu_s, Number nu, bool ray_r_mu_intersects_ground, int scattering_order)\n"\
+"RadianceSpectrum GetScattering(IN(AtmosphereParameters) atmosphere,\n"\
+"IN(ReducedScatteringTexture) single_rayleigh_scattering_texture,\n"\
+"IN(ReducedScatteringTexture) single_mie_scattering_texture,\n"\
+"IN(ScatteringTexture) multiple_scattering_texture,\n"\
+"Length r, Number mu, Number mu_s, Number nu, bool ray_r_mu_intersects_ground, int scattering_order)\n"\
 "{\n"\
 "	if (scattering_order == 1)\n"\
 "	{\n"\
@@ -593,10 +600,10 @@ const char* shader_functions = \
 "	Number sun_dir_x = omega.x == 0.0 ? 0.0 : (nu - mu * mu_s) / omega.x;\n"\
 "	Number sun_dir_y = sqrt(max(1.0 - sun_dir_x * sun_dir_x - mu_s * mu_s, 0.0));\n"\
 "	float3 omega_s = float3(sun_dir_x, sun_dir_y, mu_s);\n"\
-"	static static const int SAMPLE_COUNT = 16;\n"\
+"	static const int SAMPLE_COUNT = 16;\n"\
 "	static const Angle dphi = pi / Number(SAMPLE_COUNT);\n"\
 "	static const Angle dtheta = pi / Number(SAMPLE_COUNT);\n"\
-"	RadianceDensitySpectrum rayleigh_mie = RadianceDensitySpectrum(0.0 * watt_per_cubic_meter_per_sr_per_nm);\n"\
+"	RadianceDensitySpectrum rayleigh_mie = RadianceDensitySpectrum(0,0,0) * watt_per_cubic_meter_per_sr_per_nm;\n"\
 "	for (int l = 0; l < SAMPLE_COUNT; ++l)\n"\
 "	{\n"\
 "		Angle theta = (Number(l) + 0.5) * dtheta;\n"\
@@ -604,8 +611,8 @@ const char* shader_functions = \
 "		Number sin_theta = sin(theta);\n"\
 "		bool ray_r_theta_intersects_ground = RayIntersectsGround(atmosphere, r, cos_theta);\n"\
 "		Length distance_to_ground = 0.0 * m;\n"\
-"		DimensionlessSpectrum transmittance_to_ground = DimensionlessSpectrum(0.0);\n"\
-"		DimensionlessSpectrum ground_albedo = DimensionlessSpectrum(0.0);\n"\
+"		DimensionlessSpectrum transmittance_to_ground = DimensionlessSpectrum(0,0,0);\n"\
+"		DimensionlessSpectrum ground_albedo = DimensionlessSpectrum(0,0,0);\n"\
 "		if (ray_r_theta_intersects_ground)\n"\
 "		{\n"\
 "			distance_to_ground = DistanceToBottomAtmosphereBoundary(atmosphere, r, cos_theta);\n"\
@@ -618,7 +625,7 @@ const char* shader_functions = \
 "			float3 omega_i = float3(cos(phi) * sin_theta, sin(phi) * sin_theta, cos_theta);\n"\
 "			SolidAngle domega_i = (dtheta / rad) * (dphi / rad) * sin(theta) * sr;\n"\
 "			Number nu1 = dot(omega_s, omega_i);\n"\
-"			RadianceSpectrum incident_radiance = GetScattering(atmosphere, single_rayleigh_scattering_texture, single_mie_scattering_texture multiple_scattering_texture, r, omega_i.z, mu_s, nu1, ray_r_theta_intersects_ground, scattering_order - 1);\n"\
+"			RadianceSpectrum incident_radiance = GetScattering(atmosphere, single_rayleigh_scattering_texture, single_mie_scattering_texture, multiple_scattering_texture, r, omega_i.z, mu_s, nu1, ray_r_theta_intersects_ground, scattering_order - 1);\n"\
 "			float3 ground_normal = normalize(zenith_direction * r + omega_i * distance_to_ground);\n"\
 "			IrradianceSpectrum ground_irradiance = GetIrradiance(atmosphere, irradiance_texture, atmosphere.bottom_radius, dot(ground_normal, omega_s));\n"\
 "			incident_radiance += transmittance_to_ground * ground_albedo * (1.0 / (PI * sr)) * ground_irradiance;\n"\
@@ -638,7 +645,7 @@ const char* shader_functions = \
 "	assert(nu >= -1.0 && nu <= 1.0);\n"\
 "	static const int SAMPLE_COUNT = 50;\n"\
 "	Length dx = DistanceToNearestAtmosphereBoundary( atmosphere, r, mu, ray_r_mu_intersects_ground) / Number(SAMPLE_COUNT);\n"\
-"	RadianceSpectrum rayleigh_mie_sum = RadianceSpectrum(0.0 * watt_per_square_meter_per_sr_per_nm);\n"\
+"	RadianceSpectrum rayleigh_mie_sum = RadianceSpectrum(0,0,0) * watt_per_square_meter_per_sr_per_nm;\n"\
 "	for (int i = 0; i <= SAMPLE_COUNT; ++i)\n"
 "	{\n"\
 "		Length d_i = Number(i) * dx;\n"\
@@ -699,7 +706,7 @@ const char* shader_functions = \
 "	static const int SAMPLE_COUNT = 32;\n"\
 "	const Angle dphi = pi / Number(SAMPLE_COUNT);\n"\
 "	const Angle dtheta = pi / Number(SAMPLE_COUNT);\n"\
-"	IrradianceSpectrum result = IrradianceSpectrum(0.0 * watt_per_square_meter_per_nm);\n"\
+"	IrradianceSpectrum result = IrradianceSpectrum(0,0,0) * watt_per_square_meter_per_nm;\n"\
 "	float3 omega_s = float3(sqrt(1.0 - mu_s * mu_s), 0.0, mu_s);\n"\
 "	for (int j = 0; j < SAMPLE_COUNT / 2; ++j)\n"\
 "	{\n"\
@@ -756,15 +763,16 @@ const char* shader_functions = \
 "IrradianceSpectrum GetIrradiance(IN(AtmosphereParameters) atmosphere, IN(IrradianceTexture) irradiance_texture, Length r, Number mu_s)\n"\
 "{\n"\
 "	float2 uv = GetIrradianceTextureUvFromRMuS(atmosphere, r, mu_s);\n"\
-"	return IrradianceSpectrum(texture(irradiance_texture, uv));\n"\
+"	IrradianceSpectrum iSpec = irradiance_texture.Sample(_sampler, uv);\n"\
+"	return iSpec;\n"\
 "}\n\n"\
 
 "#ifdef COMBINED_SCATTERING_TEXTURES\n"\
-"float3 GetExtrapolatedSingleMieScattering(IN(AtmosphereParameters) atmosphere, IN(float4) scattering)\n"\
+"float3 GetExtrapolatedSingleMieScattering(IN(AtmosphereParameters) atmosphere, float4 scattering)\n"\
 "{\n"\
 "	if (scattering.r == 0.0)\n"\
 "	{\n"\
-"		return float3(0.0);\n"\
+"		return float3(0,0,0);\n"\
 "	}\n"\
 "	return scattering.rgb * scattering.a / scattering.r * (atmosphere.rayleigh_scattering.r / atmosphere.mie_scattering.r) * (atmosphere.mie_scattering / atmosphere.rayleigh_scattering);\n"\
 "}\n\n"\
@@ -785,12 +793,18 @@ const char* shader_functions = \
 "	float3 uvw0 = float3((tex_x + uvwz.y) / Number(SCATTERING_TEXTURE_NU_SIZE), uvwz.z, uvwz.w);\n"\
 "	float3 uvw1 = float3((tex_x + 1.0 + uvwz.y) / Number(SCATTERING_TEXTURE_NU_SIZE), uvwz.z, uvwz.w);\n"\
 "#ifdef COMBINED_SCATTERING_TEXTURES\n"\
-"	float4 combined_scattering = texture(scattering_texture, uvw0) * (1.0 - lerp) + texture(scattering_texture, uvw1) * lerp;\n"\
-"	IrradianceSpectrum scattering = IrradianceSpectrum(combined_scattering);\n"\
+"	float4 scatterTex0 = scattering_texture.Sample(_sampler, uvw0);\n"\
+"	float4 scatterTex1 = scattering_texture.Sample(_sampler, uvw1);\n"\
+"	float4 combined_scattering = scatterTex0 * (1.0 - lerp) + scatterTex1 * lerp;\n"\
+"	IrradianceSpectrum scattering = IrradianceSpectrum(combined_scattering.rgb);\n"\
 "	single_mie_scattering = GetExtrapolatedSingleMieScattering(atmosphere, combined_scattering);\n"\
 "#else\n"\
-"	IrradianceSpectrum scattering = IrradianceSpectrum(texture(scattering_texture, uvw0) * (1.0 - lerp) + texture(scattering_texture, uvw1) * lerp);\n"\
-"	single_mie_scattering = IrradianceSpectrum(texture(single_mie_scattering_texture, uvw0) * (1.0 - lerp) + texture(single_mie_scattering_texture, uvw1) * lerp);\n"\
+"	IrradianceSpectrum iSpec0 = scattering_texture.Sample(_sampler, uvw0);\n"\
+"	IrradianceSpectrum iSpec1 = scattering_texture.Sample(_sampler, uvw1);\n"\
+"	IrradianceSpectrum scattering = iSpec0 * (1.0 - lerp) + iSpec1 * lerp);\n"\
+"	IrradianceSpectrum iSpec2 = single_mie_scattering_texture.Sample(_sampler, uvw0);\n"\
+"	IrradianceSpectrum iSpec3 = single_mie_scattering_texture.Sample(_sampler, uvw1);\n"\
+"	single_mie_scattering = iSpec2 * (1.0 - lerp) + iSpec3 * lerp);\n"\
 "#endif\n"\
 "	return scattering;\n"\
 "}\n\n"\
@@ -814,14 +828,14 @@ const char* shader_functions = \
 "	}\n"\
 "	if (r > atmosphere.top_radius)\n"\
 "	{\n"\
-"		transmittance = DimensionlessSpectrum(1.0);\n"\
-"		return RadianceSpectrum(0.0 * watt_per_square_meter_per_sr_per_nm);\n"\
+"		transmittance = DimensionlessSpectrum(1,1,1);\n"\
+"		return RadianceSpectrum(0,0,0) * watt_per_square_meter_per_sr_per_nm;\n"\
 "	}\n"\
 "	Number mu = rmu / r;\n"\
 "	Number mu_s = dot(camera, sun_direction) / r;\n"\
 "	Number nu = dot(view_ray, sun_direction);\n"\
 "	bool ray_r_mu_intersects_ground = RayIntersectsGround(atmosphere, r, mu);\n"\
-"	transmittance = ray_r_mu_intersects_ground ? DimensionlessSpectrum(0.0) :\n"\
+"	transmittance = ray_r_mu_intersects_ground ? DimensionlessSpectrum(0,0,0) :\n"\
 "	    GetTransmittanceToTopAtmosphereBoundary(\n"\
 "	        atmosphere, transmittance_texture, r, mu);\n"\
 "	IrradianceSpectrum single_mie_scattering;\n"\
@@ -851,10 +865,10 @@ const char* shader_functions = \
 "    IN(TransmittanceTexture) transmittance_texture,\n"\
 "    IN(ReducedScatteringTexture) scattering_texture,\n"\
 "    IN(ReducedScatteringTexture) single_mie_scattering_texture,\n"\
-"    Position camera, IN(Position) point, Length shadow_length,\n"\
+"    Position camera, IN(Position) _point, Length shadow_length,\n"\
 "    IN(Direction) sun_direction, OUT(DimensionlessSpectrum) transmittance)\n"
 "{\n"\
-"	Direction view_ray = normalize(point - camera);\n"\
+"	Direction view_ray = normalize(_point - camera);\n"\
 "	Length r = length(camera);\n"\
 "	Length rmu = dot(camera, view_ray);\n"\
 "	Length distance_to_top_atmosphere_boundary = -rmu - sqrt(rmu * rmu - r * r + atmosphere.top_radius * atmosphere.top_radius);\n"\
@@ -867,7 +881,7 @@ const char* shader_functions = \
 "	Number mu = rmu / r;\n"\
 "	Number mu_s = dot(camera, sun_direction) / r;\n"\
 "	Number nu = dot(view_ray, sun_direction);\n"\
-"	Length d = length(point - camera);\n"\
+"	Length d = length(_point - camera);\n"\
 "	bool ray_r_mu_intersects_ground = RayIntersectsGround(atmosphere, r, mu);\n"\
 "	transmittance = GetTransmittance(atmosphere, transmittance_texture, r, mu, d, ray_r_mu_intersects_ground);\n"\
 "	IrradianceSpectrum single_mie_scattering;\n"\
@@ -891,11 +905,335 @@ const char* shader_functions = \
 "	single_mie_scattering = single_mie_scattering * smoothstep(Number(0.0), Number(0.01), mu_s);\n"\
 "	return scattering * RayleighPhaseFunction(nu) + single_mie_scattering * MiePhaseFunction(atmosphere.mie_phase_function_g, nu);\n"\
 "}\n\n"\
-"IrradianceSpectrum GetSunAndSkyIrradiance(IN(AtmosphereParameters) atmosphere, IN(TransmittanceTexture) transmittance_texture, IN(IrradianceTexture) irradiance_texture,IN(Position) point, IN(Direction) normal, IN(Direction) sun_direction, OUT(IrradianceSpectrum) sky_irradiance)\n"\
+"IrradianceSpectrum GetSunAndSkyIrradiance(IN(AtmosphereParameters) atmosphere, IN(TransmittanceTexture) transmittance_texture, IN(IrradianceTexture) irradiance_texture,IN(Position) _point, IN(Direction) normal, IN(Direction) sun_direction, OUT(IrradianceSpectrum) sky_irradiance)\n"\
 "{\n"\
-"	Length r = length(point);\n"\
-"	Number mu_s = dot(point, sun_direction) / r;\n"\
-"	sky_irradiance = GetIrradiance(atmosphere, irradiance_texture, r, mu_s) * (1.0 + dot(normal, point) / r) * 0.5;\n"\
+"	Length r = length(_point);\n"\
+"	Number mu_s = dot(_point, sun_direction) / r;\n"\
+"	sky_irradiance = GetIrradiance(atmosphere, irradiance_texture, r, mu_s) * (1.0 + dot(normal, _point) / r) * 0.5;\n"\
 "	return atmosphere.solar_irradiance * GetTransmittanceToTopAtmosphereBoundary(atmosphere, transmittance_texture, r, mu_s) * smoothstep(-atmosphere.sun_angular_radius / rad, atmosphere.sun_angular_radius / rad, mu_s) * max(dot(normal, sun_direction), 0.0);\n"\
 "}\n\n"\
 "";
+
+
+const char* kComputeTransmittanceShader = R"(
+	layout(location = 0) out float3 transmittance;
+	void main() {
+	  transmittance = ComputeTransmittanceToTopAtmosphereBoundaryTexture(
+		  atmosphere_parameters, gl_FragCoord.xy);
+	})";
+
+const char* kComputeDirectIrradianceShader = R"(
+	layout(location = 0) out float3 delta_irradiance;
+	layout(location = 1) out float3 irradiance;
+	texture2D transmittance_texture;
+	void main() {
+	  delta_irradiance = ComputeDirectIrradianceTexture(
+		  atmosphere_parameters, transmittance_texture, gl_FragCoord.xy);
+	  irradiance = float3(0,0,0);
+	})";
+
+const char* kComputeSingleScatteringShader = R"(
+	layout(location = 0) out float3 delta_rayleigh;
+	layout(location = 1) out float3 delta_mie;
+	layout(location = 2) out float4 scattering;
+	texture2D  transmittance_texture;
+	int layer;
+	void main() {
+	  ComputeSingleScatteringTexture(
+		  atmosphere_parameters, transmittance_texture, float3(gl_FragCoord.xy, layer + 0.5),
+		  delta_rayleigh, delta_mie);
+	  scattering = float4(delta_rayleigh.rgb, delta_mie.r);
+	})";
+
+const char* kComputeScatteringDensityShader = R"(
+	layout(location = 0) out float3 scattering_density;
+	texture2D  transmittance_texture;
+	texture3D single_rayleigh_scattering_texture;
+	texture3D single_mie_scattering_texture;
+	texture3D multiple_scattering_texture;
+	texture2D  irradiance_texture;
+	int scattering_order;
+	int layer;
+	void main()\n\
+	{\n\
+		AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;\n\
+		atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;\n\
+		atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;\n\
+		atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;\n\
+		atmosphere_parameters.top_radius = TOP_RADIUS;\n\
+		atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;\n\
+		atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;\n\
+		atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;\n\
+		atmosphere_parameters.mie_scattering = MIE_SCATTERING;\n\
+		atmosphere_parameters.mie_extinction = MIE_EXTINCTION;\n\
+		atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;\n\
+		atmosphere_parameters.ground_albedo = GROUND_ALBEDO;\n\
+		atmosphere_parameters.mu_s_min = MU_S_MIN;\n\
+		scattering_density = ComputeScatteringDensityTexture(atmosphere_parameters, transmittance_texture, single_rayleigh_scattering_texture,single_mie_scattering_texture, multiple_scattering_texture,irradiance_texture, float3(gl_FragCoord.xy, layer + 0.5),scattering_order);
+	})";
+
+const char* kComputeIndirectIrradianceShader = R"(
+	layout(location = 0) out float3 delta_irradiance;
+	layout(location = 1) out float3 irradiance;
+	texture3D single_rayleigh_scattering_texture;
+	texture3D single_mie_scattering_texture;
+	texture3D multiple_scattering_texture;
+	int scattering_order;
+	void main()\n\
+	{\n\
+		AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;\n\
+		atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;\n\
+		atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;\n\
+		atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;\n\
+		atmosphere_parameters.top_radius = TOP_RADIUS;\n\
+		atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;\n\
+		atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;\n\
+		atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;\n\
+		atmosphere_parameters.mie_scattering = MIE_SCATTERING;\n\
+		atmosphere_parameters.mie_extinction = MIE_EXTINCTION;\n\
+		atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;\n\
+		atmosphere_parameters.ground_albedo = GROUND_ALBEDO;\n\
+		atmosphere_parameters.mu_s_min = MU_S_MIN;\n\		
+		delta_irradiance = ComputeIndirectIrradianceTexture(atmosphere_parameters, single_rayleigh_scattering_texture,single_mie_scattering_texture, multiple_scattering_texture,gl_FragCoord.xy, scattering_order - 1);
+		irradiance = delta_irradiance;
+	})";
+
+const char* kComputeMultipleScatteringShader = R"(
+	layout(location = 0) out float3 delta_multiple_scattering;
+	layout(location = 1) out float4 scattering;
+	texture2D transmittance_texture;
+	texture3D scattering_density_texture;
+	int layer;
+	void main()\n\
+	{\n\
+		AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;\n\
+		atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;\n\
+		atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;\n\
+		atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;\n\
+		atmosphere_parameters.top_radius = TOP_RADIUS;\n\
+		atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;\n\
+		atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;\n\
+		atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;\n\
+		atmosphere_parameters.mie_scattering = MIE_SCATTERING;\n\
+		atmosphere_parameters.mie_extinction = MIE_EXTINCTION;\n\
+		atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;\n\
+		atmosphere_parameters.ground_albedo = GROUND_ALBEDO;\n\
+		atmosphere_parameters.mu_s_min = MU_S_MIN;\n\	
+		float nu;
+		delta_multiple_scattering = ComputeMultipleScatteringTexture(atmosphere_parameters, transmittance_texture, scattering_density_texture, float3(gl_FragCoord.xy, layer + 0.5), nu);
+		scattering = float4(delta_multiple_scattering.rgb / RayleighPhaseFunction(nu), 0.0);
+	})";
+
+const char* kAtmosphereShader = "\
+texture2D transmittance_texture;\n\
+texture3D scattering_texture;\n \
+texture3D single_mie_scattering_texture;\n\
+texture2D irradiance_texture;\n\n\
+RadianceSpectrum GetSkyRadiance(Position camera, Direction view_ray, Length shadow_length,Direction sun_direction, out DimensionlessSpectrum transmittance)\n\
+{\n\
+	AtmosphereParameters atmosphere_parameters;\n\
+	atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;\n\
+	atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;\n\
+	atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;\n\
+	atmosphere_parameters.top_radius = TOP_RADIUS;\n\
+	atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;\n\
+	atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;\n\
+	atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;\n\
+	atmosphere_parameters.mie_scattering = MIE_SCATTERING;\n\
+	atmosphere_parameters.mie_extinction = MIE_EXTINCTION;\n\
+	atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;\n\
+	atmosphere_parameters.ground_albedo = GROUND_ALBEDO;\n\
+	atmosphere_parameters.mu_s_min = MU_S_MIN;\n\
+	return GetSkyRadiance(atmosphere_parameters, transmittance_texture, scattering_texture, single_mie_scattering_texture,camera, view_ray, shadow_length, sun_direction, transmittance);\n\
+}\n\n\
+RadianceSpectrum GetSkyRadianceToPoint(Position camera, Position _point, Length shadow_length, Direction sun_direction, out DimensionlessSpectrum transmittance)\n\
+{\n\
+	AtmosphereParameters atmosphere_parameters;\n\
+	atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;\n\
+	atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;\n\
+	atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;\n\
+	atmosphere_parameters.top_radius = TOP_RADIUS;\n\
+	atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;\n\
+	atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;\n\
+	atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;\n\
+	atmosphere_parameters.mie_scattering = MIE_SCATTERING;\n\
+	atmosphere_parameters.mie_extinction = MIE_EXTINCTION;\n\
+	atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;\n\
+	atmosphere_parameters.ground_albedo = GROUND_ALBEDO;\n\
+	atmosphere_parameters.mu_s_min = MU_S_MIN;\n\
+	return GetSkyRadianceToPoint(atmosphere_parameters, transmittance_texture, scattering_texture, single_mie_scattering_texture, camera, _point, shadow_length, sun_direction, transmittance);\n\
+}\n\n\
+IrradianceSpectrum GetSunAndSkyIrradiance(Position p, Direction normal, Direction sun_direction, out IrradianceSpectrum sky_irradiance)\n\
+{\n\
+	AtmosphereParameters atmosphere_parameters;\n\
+	atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;\n\
+	atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;\n\
+	atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;\n\
+	atmosphere_parameters.top_radius = TOP_RADIUS;\n\
+	atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;\n\
+	atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;\n\
+	atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;\n\
+	atmosphere_parameters.mie_scattering = MIE_SCATTERING;\n\
+	atmosphere_parameters.mie_extinction = MIE_EXTINCTION;\n\
+	atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;\n\
+	atmosphere_parameters.ground_albedo = GROUND_ALBEDO;\n\
+	atmosphere_parameters.mu_s_min = MU_S_MIN;\n\
+	return GetSunAndSkyIrradiance(atmosphere_parameters, transmittance_texture, irradiance_texture, p, normal, sun_direction, sky_irradiance);\n\
+}\n\n\
+Luminance3 GetSkyLuminance(Position camera, Direction view_ray, Length shadow_length,Direction sun_direction, out DimensionlessSpectrum transmittance)\n\
+{\n\
+	return GetSkyRadiance(camera, view_ray, shadow_length, sun_direction, transmittance) * SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;\n\
+}\n\n\
+Luminance3 GetSkyLuminanceToPoint(Position camera, Position _point, Length shadow_length, Direction sun_direction, out DimensionlessSpectrum transmittance)\n\
+{\n\
+  return GetSkyRadianceToPoint(camera, _point, shadow_length, sun_direction, transmittance) * SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;\n\
+}\n\n\
+Illuminance3 GetSunAndSkyIlluminance(Position p, Direction normal, Direction sun_direction, out IrradianceSpectrum sky_irradiance)\n\
+{\n\
+	IrradianceSpectrum sun_irradiance = GetSunAndSkyIrradiance(p, normal, sun_direction, sky_irradiance);\n\
+	sky_irradiance *= SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;\n\
+	return sun_irradiance * SUN_SPECTRAL_RADIANCE_TO_LUMINANCE;\n\
+}";
+
+
+const char* shader_main = \
+"cbuffer Variables : register ( b0 )\n"\
+"{\n"\
+"	float3 camera;\n"\
+"	float exposure;\n"\
+"	float3 white_point;\n"\
+"	float3 earth_center;\n"\
+"	float3 sun_direction;\n"\
+"	float3 sun_radiance;\n"\
+"	float2 sun_size;\n"\
+"	float3 view_ray;\n"\
+"};\n"\
+"static const float3 kSphereCenter = float3(0.0, 0.0, 1.0);\n"\
+"static const float kSphereRadius = 1.0;\n"\
+"static const float3 kSphereAlbedo = float3(0.8, 0.8, 0.8);\n"\
+"static const float3 kGroundAlbedo = float3(0.0, 0.0, 0.04);\n"\
+"#ifdef USE_LUMINANCE\n"\
+"#define GetSkyRadiance GetSkyLuminance\n"\
+"#define GetSkyRadianceToPoint GetSkyLuminanceToPoint\n"\
+"#define GetSunAndSkyIrradiance GetSunAndSkyIlluminance\n"\
+"#endif\n"\
+"float3 GetSkyRadiance(float3 camera, float3 view_ray, float shadow_length,\n"\
+"    float3 sun_direction, out float3 transmittance);\n"\
+"float3 GetSkyRadianceToPoint(float3 camera, float3 _point , float shadow_length,\n"\
+"    float3 sun_direction, out float3 transmittance);\n"\
+"float3 GetSunAndSkyIrradiance(\n"\
+"    float3 p, float3 normal, float3 sun_direction, out float3 sky_irradiance);\n"\
+"float GetSunVisibility(float3 _point , float3 sun_direction) {\n"\
+"  float3 p = _point  - kSphereCenter;\n"\
+"  float p_dot_v = dot(p, sun_direction);\n"\
+"  float p_dot_p = dot(p, p);\n"\
+"  float ray_sphere_center_squared_distance = p_dot_p - p_dot_v * p_dot_v;\n"\
+"  float distance_to_intersection = -p_dot_v - sqrt(\n"\
+"      kSphereRadius * kSphereRadius - ray_sphere_center_squared_distance);\n"\
+"  if (distance_to_intersection > 0.0) {\n"\
+"    float ray_sphere_distance =\n"\
+"        kSphereRadius - sqrt(ray_sphere_center_squared_distance);\n"\
+"    float ray_sphere_angular_distance = -ray_sphere_distance / p_dot_v;\n"\
+"    return smoothstep(1.0, 0.0, ray_sphere_angular_distance / sun_size.x);\n"\
+"  }\n"\
+"  return 1.0;\n"\
+"}\n"\
+"float GetSkyVisibility(float3 _point ) {\n"\
+"  float3 p = _point  - kSphereCenter;\n"\
+"  float p_dot_p = dot(p, p);\n"\
+"  return\n"\
+"      1.0 + p.z / sqrt(p_dot_p) * kSphereRadius * kSphereRadius / p_dot_p;\n"\
+"}\n"\
+"void GetSphereShadowInOut(float3 view_direction, float3 sun_direction,\n"\
+"    out float d_in, out float d_out) {\n"\
+"  float3 pos = camera - kSphereCenter;\n"\
+"  float pos_dot_sun = dot(pos, sun_direction);\n"\
+"  float view_dot_sun = dot(view_direction, sun_direction);\n"\
+"  float k = sun_size.x;\n"\
+"  float l = 1.0 + k * k;\n"\
+"  float a = 1.0 - l * view_dot_sun * view_dot_sun;\n"\
+"  float b = dot(pos, view_direction) - l * pos_dot_sun * view_dot_sun -\n"\
+"      k * kSphereRadius * view_dot_sun;\n"\
+"  float c = dot(pos, pos) - l * pos_dot_sun * pos_dot_sun -\n"\
+"      2.0 * k * kSphereRadius * pos_dot_sun - kSphereRadius * kSphereRadius;\n"\
+"  float discriminant = b * b - a * c;\n"\
+"  if (discriminant > 0.0) {\n"\
+"    d_in = max(0.0, (-b - sqrt(discriminant)) / a);\n"\
+"    d_out = (-b + sqrt(discriminant)) / a;\n"\
+"    float d_base = -pos_dot_sun / view_dot_sun;\n"\
+"    float d_apex = -(pos_dot_sun + kSphereRadius / k) / view_dot_sun;\n"\
+"    if (view_dot_sun > 0.0) {\n"\
+"      d_in = max(d_in, d_apex);\n"\
+"      d_out = a > 0.0 ? min(d_out, d_base) : d_base;\n"\
+"    } else {\n"\
+"      d_in = a > 0.0 ? max(d_in, d_base) : d_base;\n"\
+"      d_out = min(d_out, d_apex);\n"\
+"    }\n"\
+"  } else {\n"\
+"    d_in = 0.0;\n"\
+"    d_out = 0.0;\n"\
+"  }\n"\
+"}\n"\
+"float4 main() : SV_Target\n"\
+"{\n"\
+"	float3 view_direction = normalize(view_ray);\n"\
+"	float fragment_angular_size = length(ddx(view_ray) + ddy(view_ray)) / length(view_ray);\n"\
+"	float shadow_in;\n"\
+"	float shadow_out;\n"\
+"	GetSphereShadowInOut(view_direction, sun_direction, shadow_in, shadow_out);\n"\
+"	float lightshaft_fadein_hack = smoothstep(0.02, 0.04, dot(normalize(camera - earth_center), sun_direction));\n"\
+"	float3 p = camera - kSphereCenter;\n"\
+"	float p_dot_v = dot(p, view_direction);\n"\
+"	float p_dot_p = dot(p, p);\n"\
+"	float ray_sphere_center_squared_distance = p_dot_p - p_dot_v * p_dot_v;\n"\
+"	float distance_to_intersection = -p_dot_v - sqrt(kSphereRadius * kSphereRadius - ray_sphere_center_squared_distance);\n"\
+"	float sphere_alpha = 0.0;\n"\
+"	float3 sphere_radiance = float3(0,0,0);\n"\
+"	if (distance_to_intersection > 0.0)\n"\
+"	{\n"\
+"		float ray_sphere_distance = kSphereRadius - sqrt(ray_sphere_center_squared_distance);\n"\
+"		float ray_sphere_angular_distance = -ray_sphere_distance / p_dot_v;\n"\
+"		sphere_alpha = min(ray_sphere_angular_distance / fragment_angular_size, 1.0);\n"\
+"		float3 _point = camera + view_direction * distance_to_intersection;\n"\
+"		float3 normal = normalize(_point  - kSphereCenter);\n"\
+"		float3 sky_irradiance;\n"\
+"		float3 sun_irradiance = GetSunAndSkyIrradiance(_point  - earth_center, normal, sun_direction, sky_irradiance);\n"\
+"		sphere_radiance = kSphereAlbedo * (1.0 / PI) * (sun_irradiance + sky_irradiance);\n"\
+"		float shadow_length = max(0.0, min(shadow_out, distance_to_intersection) - shadow_in) * lightshaft_fadein_hack;\n"\
+"		float3 transmittance;\n"\
+"		float3 in_scatter = GetSkyRadianceToPoint(camera - earth_center, _point  - earth_center, shadow_length, sun_direction, transmittance);\n"\
+"		sphere_radiance = sphere_radiance * transmittance + in_scatter;\n"\
+"	}\n"\
+"	p = camera - earth_center;\n"\
+"	p_dot_v = dot(p, view_direction);\n"\
+"	p_dot_p = dot(p, p);\n"\
+"	float ray_earth_center_squared_distance = p_dot_p - p_dot_v * p_dot_v;\n"\
+"	distance_to_intersection = -p_dot_v - sqrt(\n"\
+"	    earth_center.z * earth_center.z - ray_earth_center_squared_distance);\n"\
+"	float ground_alpha = 0.0;\n"\
+"	float3 ground_radiance = float3(0,0,0);\n"\
+"	if (distance_to_intersection > 0.0)\n"\
+"	{\n"\
+"		float3 _point  = camera + view_direction * distance_to_intersection;\n"\
+"		float3 normal = normalize(_point  - earth_center);\n"\
+"		float3 sky_irradiance;\n"\
+"		float3 sun_irradiance = GetSunAndSkyIrradiance(_point  - earth_center, normal, sun_direction, sky_irradiance);\n"\
+"		ground_radiance = kGroundAlbedo * (1.0 / PI) * (sun_irradiance * GetSunVisibility(_point , sun_direction) + sky_irradiance * GetSkyVisibility(_point ));\n"\
+"		float shadow_length = max(0.0, min(shadow_out, distance_to_intersection) - shadow_in) * lightshaft_fadein_hack;\n"\
+"		float3 transmittance;\n"\
+"		float3 in_scatter = GetSkyRadianceToPoint(camera - earth_center, _point  - earth_center, shadow_length, sun_direction, transmittance);\n"\
+"		ground_radiance = ground_radiance * transmittance + in_scatter;\n"\
+"		ground_alpha = 1.0;\n"\
+"	}\n"\
+"	float shadow_length = max(0.0, shadow_out - shadow_in) * lightshaft_fadein_hack;\n"\
+"	float3 transmittance;\n"\
+"	float3 radiance = GetSkyRadiance(camera - earth_center, view_direction, shadow_length, sun_direction, transmittance);\n"\
+"	if (dot(view_direction, sun_direction) > sun_size.y)\n"\
+"	{\n"\
+"		radiance = radiance + transmittance * sun_radiance;\n"\
+"	}\n"\
+"	radiance = lerp(radiance, ground_radiance, ground_alpha);\n"\
+"	radiance = lerp(radiance, sphere_radiance, sphere_alpha);\n"\
+"	float3 color = pow(float3(1,1,1) - exp(-radiance / white_point * exposure), 1.0 / 2.2);\n"\
+"	return float4(color, 1);\n"\
+"}";

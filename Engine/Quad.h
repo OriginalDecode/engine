@@ -12,10 +12,10 @@ public:
 	Quad() = default;
 
 	void Initiate();
-
+	void CleanUp();
 	void SetBuffers();
 	void Render();
-
+	Effect* GetShader() { return m_ScreenpassShader; }
 private:
 
 	IInputLayout* m_InputLayout = nullptr;

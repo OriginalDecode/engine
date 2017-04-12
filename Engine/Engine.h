@@ -150,6 +150,7 @@ public:
 	HRESULT CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entry_point, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message);
 
 	void* CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name);
+	CompiledShader CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name, bool use);
 
 
 	bool UseMouse() { return m_CameraUseMouse; }

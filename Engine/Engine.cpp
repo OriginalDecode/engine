@@ -319,7 +319,6 @@ HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::st
 
 void* Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name)
 {
-
 	IDevice* device = myAPI->GetDevice();
 	if (shader_type.find(vertex_shader) != shader_type.npos)
 	{
@@ -378,6 +377,18 @@ void* Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shade
 	TRACE_LOG("FAILED TO CREATE ANY SHADER! TYPE NOT FOUND!");
 	DL_ASSERT("FAILED TO CREATE ANY SHADER! TYPE NOT FOUND!");
 	return nullptr;
+}
+
+CompiledShader Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name, bool use)
+{
+	CompiledShader compiled_shader;
+
+	compiled_shader.m_Shader = CreateShader(compiled_shader_blob, shader_type, debug_name);
+	compiled_shader.blob = compiled_shader_blob;
+	compiled_shader.shaderSize = compiled_shader_blob->GetBufferSize();
+	compiled_shader.compiledShader = compiled_shader_blob->GetBufferPointer();
+
+	return compiled_shader;
 }
 
 void Engine::EditEntity()

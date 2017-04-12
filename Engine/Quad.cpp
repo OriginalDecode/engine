@@ -87,6 +87,12 @@ void Quad::Initiate()
 
 }
 
+void Quad::CleanUp()
+{
+	SAFE_RELEASE(m_InputLayout);
+	m_ScreenpassShader = nullptr;
+}
+
 void Quad::SetBuffers()
 {
 	IDevContext* ctx = Engine::GetInstance()->GetAPI()->GetContext();

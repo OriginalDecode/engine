@@ -3,7 +3,7 @@
 #include "IGraphicsAPI.h"
 #include "snowblind_shared.h"
 #include <vector>
-
+#include <Engine/ShaderFactory.h>
 typedef long HRESULT;
 
 struct IDXGISwapChain;
@@ -129,7 +129,6 @@ public:
 	IBuffer* CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag = D3D11_USAGE_IMMUTABLE, u32 bind_flag = D3D11_BIND_VERTEX_BUFFER, u32 cpu_access_flag = 0, u32 misc_flag = 0, u32 structured_byte_width = 0);
 
 	IInputLayout* CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements);
-
 
 
 private:

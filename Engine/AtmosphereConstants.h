@@ -1237,3 +1237,19 @@ const char* shader_main = \
 "	float3 color = pow(float3(1,1,1) - exp(-radiance / white_point * exposure), 1.0 / 2.2);\n"\
 "	return float4(color, 1);\n"\
 "}";
+
+//const char* kVertexShader = R"(
+//struct VS_INPUT\n
+//{\n
+//	float2 vertex : POS;
+//};\n
+//struct VS_OUTPUT\n
+//{\n
+//	float2 vertex : POS;
+//};\n
+//
+//layout(location = 0) in vec2 vertex;
+//void main()\n
+//{\n
+//	gl_Position = vec4(vertex, 0.0, 1.0);
+//})";

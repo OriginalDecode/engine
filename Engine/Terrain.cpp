@@ -60,12 +60,12 @@ bool CTerrain::CleanUp()
 	return true;
 }
 
-void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
+void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows, bool override_shader)
 {
 #ifdef SNOWBLIND_DX11
 	if (!myIsNULLObject)
 	{
-		__super::Render(aCameraOrientation, aCameraProjection, render_shadows);
+		__super::Render(aCameraOrientation, aCameraProjection, render_shadows, override_shader);
 		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 		myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 		if (!render_shadows)

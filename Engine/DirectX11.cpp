@@ -519,7 +519,7 @@ void DirectX11::SetSamplerState(const eSamplerStates& samplerState)
 
 void DirectX11::SetVertexShader(void* vertex_shader)
 {
-	myContext->VSSetShader(vertex_shader ? static_cast<IVertexShader*>(vertex_shader) : nullptr, nullptr, 0);
+	myContext->VSSetShader(vertex_shader ? static_cast< IVertexShader* >( vertex_shader ) : nullptr, nullptr, 0);
 }
 
 void DirectX11::SetPixelShader(void* pixel_shader)

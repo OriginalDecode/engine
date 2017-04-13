@@ -9,6 +9,11 @@ Effect::Effect(const std::string& aFilePath)
 	m_Context = Engine::GetAPI()->GetContext();
 }
 
+void Effect::SetPixelShader(CompiledShader* shader)
+{
+	m_PixelShader = shader;
+}
+
 void Effect::Activate()
 {
 	//The set vertex & pixel ... should be API agnostic.

@@ -13,7 +13,7 @@ CBaseModel::CBaseModel()
 
 CBaseModel::~CBaseModel() = default;
 
-void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
+void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows, bool override_shaders)
 {
 #ifdef _PROFILE
 	//char buf[512];
@@ -27,7 +27,7 @@ void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matri
 	myContext->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);
 	myContext->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
 
-	if (!render_shadows)
+	if (!render_shadows && !override_shaders)
 	{
 		myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->m_Shader : nullptr);
 		myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->m_Shader : nullptr);

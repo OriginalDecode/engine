@@ -769,153 +769,33 @@ IrradianceSpectrum GetSunAndSkyIrradiance(IN(AtmosphereParameters) atmosphere, I
 	return atmosphere.solar_irradiance * GetTransmittanceToTopAtmosphereBoundary(atmosphere, transmittance_texture, r, mu_s) * smoothstep(-atmosphere.sun_angular_radius / rad, atmosphere.sun_angular_radius / rad, mu_s) * max(dot(normal, sun_direction), 0.0);
 }
 
-cbuffer Variables : register ( b0 )
+
+struct VS_OUTPUT
 {
-	float3 camera;
-	float exposure;
-	float3 white_point;
-	float3 earth_center;
-	float3 sun_direction;
-	float3 sun_radiance;
-	float2 sun_size;
-	float3 view_ray;
+	float4 pos : SV_POSITION0;
+	float2 uv : TEXCOORD;
 };
-static const float3 kSphereCenter = float3(0.0, 0.0, 1.0);
-static const float kSphereRadius = 1.0;
-static const float3 kSphereAlbedo = float3(0.8, 0.8, 0.8);
-static const float3 kGroundAlbedo = float3(0.0, 0.0, 0.04);
-#ifdef USE_LUMINANCE
-#define GetSkyRadiance GetSkyLuminance
-#define GetSkyRadianceToPoint GetSkyLuminanceToPoint
-#define GetSunAndSkyIrradiance GetSunAndSkyIlluminance
-#endif
-float3 GetSkyRadiance(float3 camera, float3 view_ray, float shadow_length,
-    float3 sun_direction, out float3 transmittance);
-float3 GetSkyRadianceToPoint(float3 camera, float3 _point , float shadow_length,
-    float3 sun_direction, out float3 transmittance);
-float3 GetSunAndSkyIrradiance(
-    float3 p, float3 normal, float3 sun_direction, out float3 sky_irradiance);
-float GetSunVisibility(float3 _point , float3 sun_direction) {
-  float3 p = _point  - kSphereCenter;
-  float p_dot_v = dot(p, sun_direction);
-  float p_dot_p = dot(p, p);
-  float ray_sphere_center_squared_distance = p_dot_p - p_dot_v * p_dot_v;
-  float distance_to_intersection = -p_dot_v - sqrt(
-      kSphereRadius * kSphereRadius - ray_sphere_center_squared_distance);
-  if (distance_to_intersection > 0.0) {
-    float ray_sphere_distance =
-        kSphereRadius - sqrt(ray_sphere_center_squared_distance);
-    float ray_sphere_angular_distance = -ray_sphere_distance / p_dot_v;
-    return smoothstep(1.0, 0.0, ray_sphere_angular_distance / sun_size.x);
-  }
-  return 1.0;
-}
-float GetSkyVisibility(float3 _point ) {
-  float3 p = _point  - kSphereCenter;
-  float p_dot_p = dot(p, p);
-  return
-      1.0 + p.z / sqrt(p_dot_p) * kSphereRadius * kSphereRadius / p_dot_p;
-}
-void GetSphereShadowInOut(float3 view_direction, float3 sun_direction,
-    out float d_in, out float d_out) {
-  float3 pos = camera - kSphereCenter;
-  float pos_dot_sun = dot(pos, sun_direction);
-  float view_dot_sun = dot(view_direction, sun_direction);
-  float k = sun_size.x;
-  float l = 1.0 + k * k;
-  float a = 1.0 - l * view_dot_sun * view_dot_sun;
-  float b = dot(pos, view_direction) - l * pos_dot_sun * view_dot_sun -
-      k * kSphereRadius * view_dot_sun;
-  float c = dot(pos, pos) - l * pos_dot_sun * pos_dot_sun -
-      2.0 * k * kSphereRadius * pos_dot_sun - kSphereRadius * kSphereRadius;
-  float discriminant = b * b - a * c;
-  if (discriminant > 0.0) {
-    d_in = max(0.0, (-b - sqrt(discriminant)) / a);
-    d_out = (-b + sqrt(discriminant)) / a;
-    float d_base = -pos_dot_sun / view_dot_sun;
-    float d_apex = -(pos_dot_sun + kSphereRadius / k) / view_dot_sun;
-    if (view_dot_sun > 0.0) {
-      d_in = max(d_in, d_apex);
-      d_out = a > 0.0 ? min(d_out, d_base) : d_base;
-    } else {
-      d_in = a > 0.0 ? max(d_in, d_base) : d_base;
-      d_out = min(d_out, d_apex);
-    }
-  } else {
-    d_in = 0.0;
-    d_out = 0.0;
-  }
-}
-float4 main() : SV_Target
+struct IndirectIrradiance
 {
-	float3 view_direction = normalize(view_ray);
-	float fragment_angular_size = length(ddx(view_ray) + ddy(view_ray)) / length(view_ray);
-	float shadow_in;
-	float shadow_out;
-	GetSphereShadowInOut(view_direction, sun_direction, shadow_in, shadow_out);
-	float lightshaft_fadein_hack = smoothstep(0.02, 0.04, dot(normalize(camera - earth_center), sun_direction));
-	float3 p = camera - kSphereCenter;
-	float p_dot_v = dot(p, view_direction);
-	float p_dot_p = dot(p, p);
-	float ray_sphere_center_squared_distance = p_dot_p - p_dot_v * p_dot_v;
-	float distance_to_intersection = -p_dot_v - sqrt(kSphereRadius * kSphereRadius - ray_sphere_center_squared_distance);
-	float sphere_alpha = 0.0;
-	float3 sphere_radiance = float3(0,0,0);
-	if (distance_to_intersection > 0.0)
-	{
-		float ray_sphere_distance = kSphereRadius - sqrt(ray_sphere_center_squared_distance);
-		float ray_sphere_angular_distance = -ray_sphere_distance / p_dot_v;
-		sphere_alpha = min(ray_sphere_angular_distance / fragment_angular_size, 1.0);
-		float3 _point = camera + view_direction * distance_to_intersection;
-		float3 normal = normalize(_point  - kSphereCenter);
-		float3 sky_irradiance;
-		float3 sun_irradiance = GetSunAndSkyIrradiance(_point  - earth_center, normal, sun_direction, sky_irradiance);
-		sphere_radiance = kSphereAlbedo * (1.0 / PI) * (sun_irradiance + sky_irradiance);
-		float shadow_length = max(0.0, min(shadow_out, distance_to_intersection) - shadow_in) * lightshaft_fadein_hack;
-		float3 transmittance;
-		float3 in_scatter = GetSkyRadianceToPoint(camera - earth_center, _point  - earth_center, shadow_length, sun_direction, transmittance);
-		sphere_radiance = sphere_radiance * transmittance + in_scatter;
-	}
-	p = camera - earth_center;
-	p_dot_v = dot(p, view_direction);
-	p_dot_p = dot(p, p);
-	float ray_earth_center_squared_distance = p_dot_p - p_dot_v * p_dot_v;
-	distance_to_intersection = -p_dot_v - sqrt(
-	    earth_center.z * earth_center.z - ray_earth_center_squared_distance);
-	float ground_alpha = 0.0;
-	float3 ground_radiance = float3(0,0,0);
-	if (distance_to_intersection > 0.0)
-	{
-		float3 _point  = camera + view_direction * distance_to_intersection;
-		float3 normal = normalize(_point  - earth_center);
-		float3 sky_irradiance;
-		float3 sun_irradiance = GetSunAndSkyIrradiance(_point  - earth_center, normal, sun_direction, sky_irradiance);
-		ground_radiance = kGroundAlbedo * (1.0 / PI) * (sun_irradiance * GetSunVisibility(_point , sun_direction) + sky_irradiance * GetSkyVisibility(_point ));
-		float shadow_length = max(0.0, min(shadow_out, distance_to_intersection) - shadow_in) * lightshaft_fadein_hack;
-		float3 transmittance;
-		float3 in_scatter = GetSkyRadianceToPoint(camera - earth_center, _point  - earth_center, shadow_length, sun_direction, transmittance);
-		ground_radiance = ground_radiance * transmittance + in_scatter;
-		ground_alpha = 1.0;
-	}
-	float shadow_length = max(0.0, shadow_out - shadow_in) * lightshaft_fadein_hack;
-	float3 transmittance;
-	float3 radiance = GetSkyRadiance(camera - earth_center, view_direction, shadow_length, sun_direction, transmittance);
-	if (dot(view_direction, sun_direction) > sun_size.y)
-	{
-		radiance = radiance + transmittance * sun_radiance;
-	}
-	radiance = lerp(radiance, ground_radiance, ground_alpha);
-	radiance = lerp(radiance, sphere_radiance, sphere_alpha);
-	float3 color = pow(float3(1,1,1) - exp(-radiance / white_point * exposure), 1.0 / 2.2);
-	return float4(color, 1);
-}texture2D transmittance_texture: register ( t0 );
-texture3D scattering_texture: register ( t1 );
- texture3D single_mie_scattering_texture: register ( t2 );
-texture2D irradiance_texture: register ( t3 );
+	float4 delta_irradiance;
+	float4 irradiance;
+};
+texture3D single_rayleigh_scattering_texture : register ( t0 );
+texture3D single_mie_scattering_texture : register ( t1 );
+texture3D multiple_scattering_texture : register ( t2 );
 
-RadianceSpectrum GetSkyRadiance(Position camera, Direction view_ray, Length shadow_length,Direction sun_direction, out DimensionlessSpectrum transmittance)
+cbuffer scattering : register ( b0 )
 {
-	AtmosphereParameters atmosphere_parameters;
+	int scattering_order;
+	int layer;
+	int a;
+	int b;
+};
+
+IndirectIrradiance main(VS_OUTPUT input): SV_Target
+{
+	IndirectIrradiance output = (IndirectIrradiance)0;
+	AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;
 	atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;
 	atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;
 	atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;
@@ -927,59 +807,8 @@ RadianceSpectrum GetSkyRadiance(Position camera, Direction view_ray, Length shad
 	atmosphere_parameters.mie_extinction = MIE_EXTINCTION;
 	atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;
 	atmosphere_parameters.ground_albedo = GROUND_ALBEDO;
-	atmosphere_parameters.mu_s_min = MU_S_MIN;
-	return GetSkyRadiance(atmosphere_parameters, transmittance_texture, scattering_texture, single_mie_scattering_texture,camera, view_ray, shadow_length, sun_direction, transmittance);
-}
-
-RadianceSpectrum GetSkyRadianceToPoint(Position camera, Position _point, Length shadow_length, Direction sun_direction, out DimensionlessSpectrum transmittance)
-{
-	AtmosphereParameters atmosphere_parameters;
-	atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;
-	atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;
-	atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;
-	atmosphere_parameters.top_radius = TOP_RADIUS;
-	atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;
-	atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;
-	atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;
-	atmosphere_parameters.mie_scattering = MIE_SCATTERING;
-	atmosphere_parameters.mie_extinction = MIE_EXTINCTION;
-	atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;
-	atmosphere_parameters.ground_albedo = GROUND_ALBEDO;
-	atmosphere_parameters.mu_s_min = MU_S_MIN;
-	return GetSkyRadianceToPoint(atmosphere_parameters, transmittance_texture, scattering_texture, single_mie_scattering_texture, camera, _point, shadow_length, sun_direction, transmittance);
-}
-
-IrradianceSpectrum GetSunAndSkyIrradiance(Position p, Direction normal, Direction sun_direction, out IrradianceSpectrum sky_irradiance)
-{
-	AtmosphereParameters atmosphere_parameters;
-	atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;
-	atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;
-	atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;
-	atmosphere_parameters.top_radius = TOP_RADIUS;
-	atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;
-	atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;
-	atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;
-	atmosphere_parameters.mie_scattering = MIE_SCATTERING;
-	atmosphere_parameters.mie_extinction = MIE_EXTINCTION;
-	atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;
-	atmosphere_parameters.ground_albedo = GROUND_ALBEDO;
-	atmosphere_parameters.mu_s_min = MU_S_MIN;
-	return GetSunAndSkyIrradiance(atmosphere_parameters, transmittance_texture, irradiance_texture, p, normal, sun_direction, sky_irradiance);
-}
-
-Luminance3 GetSkyLuminance(Position camera, Direction view_ray, Length shadow_length,Direction sun_direction, out DimensionlessSpectrum transmittance)
-{
-	return GetSkyRadiance(camera, view_ray, shadow_length, sun_direction, transmittance) * SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;
-}
-
-Luminance3 GetSkyLuminanceToPoint(Position camera, Position _point, Length shadow_length, Direction sun_direction, out DimensionlessSpectrum transmittance)
-{
-  return GetSkyRadianceToPoint(camera, _point, shadow_length, sun_direction, transmittance) * SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;
-}
-
-Illuminance3 GetSunAndSkyIlluminance(Position p, Direction normal, Direction sun_direction, out IrradianceSpectrum sky_irradiance)
-{
-	IrradianceSpectrum sun_irradiance = GetSunAndSkyIrradiance(p, normal, sun_direction, sky_irradiance);
-	sky_irradiance *= SKY_SPECTRAL_RADIANCE_TO_LUMINANCE;
-	return sun_irradiance * SUN_SPECTRAL_RADIANCE_TO_LUMINANCE;
+	atmosphere_parameters.mu_s_min = MU_S_MIN;	
+	output.delta_irradiance = float4(ComputeIndirectIrradianceTexture(atmosphere_parameters, single_rayleigh_scattering_texture,single_mie_scattering_texture, multiple_scattering_texture, input.uv, scattering_order - 1), 1);
+	output.irradiance = output.delta_irradiance;
+	return output;
 }

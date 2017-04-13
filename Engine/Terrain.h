@@ -20,7 +20,7 @@ public:
 
 	bool Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
 	bool CleanUp() override;
-	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false) override;
+	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false, bool override_shaders = false) override;
 
 	void Save(const std::string& aFilename);
 	void Load(const std::string& aFilePath);

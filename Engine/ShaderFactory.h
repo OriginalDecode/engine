@@ -1,27 +1,27 @@
 #pragma once
-#include "ShaderWarningHandler.h"
+
+#include "../CommonLib/DataStructures/GrowingArray.h"
+#include "../CommonLib/DataStructures/StaticArray.h"
+#include "snowblind_shared.h"
 
 #include <map>
 
-#include "snowblind_shared.h"
-
 class ShaderWarningHandler;
 class FileWatcher;
+class Effect;
 
-
+struct ID3D10Blob;
 struct CompiledShader
 {
 	CompiledShader() = default;
 	~CompiledShader();
-	IBlob* blob = nullptr;
+	ID3D10Blob* blob = nullptr;
 	void* compiledShader = nullptr;
 	void* m_Shader = nullptr;
 	int shaderSize = 0;
 	CU::GrowingArray<Effect*> effectPointers;
 };
 
-
-class Effect;
 class ShaderFactory
 {
 
@@ -33,7 +33,7 @@ public:
 	void Update();
 
 	std::map<u64, CompiledShader*> GetCompiledShaders() { return m_Shaders; }
-	IBlob* CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level);
+	ID3D10Blob* CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level);
 private:
 
 	void LoadShader(const std::string& file_path, Effect* effect);
@@ -43,6 +43,6 @@ private:
 	CU::StaticArray<FileWatcher*, static_cast<u32>(eShaderType::_COUNT)> myFileWatchers;
 	void OnReload(const std::string& file_path);
 #endif
-	ShaderWarningHandler myShaderWarningHandler;
+	//ShaderWarningHandler myShaderWarningHandler;
 
 };

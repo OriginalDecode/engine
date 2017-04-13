@@ -69,13 +69,10 @@ Texture* AssetsContainer::GetTexture(std::string aFilePath)
 
 Effect* AssetsContainer::GetEffect(const std::string& aFilePath)
 {
-	static Ticket_Mutex shader_mutex;
-	BeginTicketMutex(&shader_mutex);
 	if (myEffects.find(aFilePath) == myEffects.end())
 	{
 		LoadEffect(aFilePath);
 	}
-	EndTicketMutex(&shader_mutex);
 	return myEffects[aFilePath];
 }
 

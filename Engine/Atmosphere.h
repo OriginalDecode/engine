@@ -15,6 +15,9 @@ public:
 
 
 	void Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position );
+
+	IBlob* CreateShaderFile(const std::string& file_name, const std::string& entry_point, const std::string& shader_type, const std::string& shader);
+
 	void CleanUp();
 
 	void Render(const CU::Matrix44f& orientation, Texture* depth);
@@ -34,14 +37,15 @@ private:
 
 	struct cbPixel
 	{
-		CU::Vector4f m_CameraDir;
-		CU::Vector4f m_CameraPos;
-		CU::Vector4f m_LightDir;
-		CU::Vector4f m_LightPos;
-		float m_InnerRadius;
-		float m_OuterRadius;
-		float m_CameraMagnitude;
-		float m_CameraMagnitude2;
+		CU::Vector3f m_CameraPos;
+		float exposure;
+		CU::Vector3f white_point;
+		CU::Vector3f earth_center;
+		CU::Vector3f sun_direction;
+		CU::Vector3f sun_radiance;
+		CU::Vector2f sun_size;
+		CU::Vector3f view_ray;
+		float c[3];
 	} m_PixelStruct;
 	IBuffer* m_PixelBuffer						= nullptr;
 
@@ -68,7 +72,8 @@ private:
 	std::string m_ShaderHeader;
 
 	CompiledShader m_AtmosphereShader;
-
+	void* atmosphere_shader = nullptr;
+	Effect* m_AtmosphereTotal;
 
 	void UpdateCameraData();
 

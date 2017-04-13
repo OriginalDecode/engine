@@ -26,8 +26,10 @@ public:
 	void InitiateWithColor(CL::SColor color);
 
 	void Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat texture_format, const std::string& debug_name);
+	void Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat texture_format, s32 layer_count, const std::string& debug_name);
 
-
+	void Save2DResource(const std::string& filename);
+	void Save3DResource(const std::string& filename);
 	bool CleanUp();
 	bool Load(std::string filepath);
 	void OnReload();

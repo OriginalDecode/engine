@@ -26,7 +26,7 @@ public:
 	CBaseModel();
 	virtual ~CBaseModel() = 0;
 	virtual bool CleanUp() = 0;
-	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false);
+	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false, bool override_shaders = false);
 	void SetEffect(Effect* anEffect);
 	Effect* GetEffect() { return myEffect; }
 

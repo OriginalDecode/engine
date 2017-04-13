@@ -5,10 +5,14 @@
 
 #include <CommonLib/Math/Vector/Vector.h>
 #include <CommonLib/Threadpool.h>
+
 #include <TimeManager.h>
+
 #include "snowblind_shared.h"
 #include <string>
 #include "../EntitySystem/EntityManager.h"
+#include "ShaderFactory.h"
+
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;

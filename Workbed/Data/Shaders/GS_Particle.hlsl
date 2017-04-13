@@ -44,16 +44,8 @@ void GS(point VS_OUTPUT input[1], inout TriangleStream<VS_OUTPUT> triStream)
 		output.pos.z = output.pos.z / output.pos.w; 
 		output.pos = mul(output.pos, Projection);
 
-		// output.WorldViewProj = output.pos;
 		output.uv.x = quadUV[i].x;
 		output.uv.y = quadUV[i].y;
-		// output.Alpha = input[0].Alpha;
-
-		// float x = output.Pos.x;
-		// float y = output.Pos.y;
-		// float w = output.Pos.w;
-
-		// output.Tex = float4((float2(x + w, w - y)) / 2, output.Pos.zw);
 
 		triStream.Append(output);
 	}

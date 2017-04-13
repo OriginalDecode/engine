@@ -4,6 +4,12 @@
 #include "snowblind_shared.h"
 #include <vector>
 #include <Engine/ShaderFactory.h>
+
+#define SAFE_RELEASE_UNKNOWN(x) \
+IUnknown* unknown_pointer = static_cast< IUnknown* >( x ); \
+unknown_pointer->Release(); \
+unknown_pointer = nullptr; 
+
 typedef long HRESULT;
 
 struct IDXGISwapChain;

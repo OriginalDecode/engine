@@ -916,119 +916,241 @@ const char* shader_functions = \
 
 
 const char* kComputeTransmittanceShader = R"(
-	layout(location = 0) out float3 transmittance;
-	void main() {
-	  transmittance = ComputeTransmittanceToTopAtmosphereBoundaryTexture(
-		  atmosphere_parameters, gl_FragCoord.xy);
-	})";
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION0;
+	float2 uv : TEXCOORD;
+};
+float4 main(VS_OUTPUT input) : SV_Target 
+{
+	AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;
+	atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;
+	atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;
+	atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;
+	atmosphere_parameters.top_radius = TOP_RADIUS;
+	atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;
+	atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;
+	atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;
+	atmosphere_parameters.mie_scattering = MIE_SCATTERING;
+	atmosphere_parameters.mie_extinction = MIE_EXTINCTION;
+	atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;
+	atmosphere_parameters.ground_albedo = GROUND_ALBEDO;
+	atmosphere_parameters.mu_s_min = MU_S_MIN;
+	float3 transmittance = ComputeTransmittanceToTopAtmosphereBoundaryTexture(atmosphere_parameters, input.uv);
+	return float4(transmittance, 1);
+})";
 
 const char* kComputeDirectIrradianceShader = R"(
-	layout(location = 0) out float3 delta_irradiance;
-	layout(location = 1) out float3 irradiance;
-	texture2D transmittance_texture;
-	void main() {
-	  delta_irradiance = ComputeDirectIrradianceTexture(
-		  atmosphere_parameters, transmittance_texture, gl_FragCoord.xy);
-	  irradiance = float3(0,0,0);
-	})";
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION0;
+	float2 uv : TEXCOORD;
+};
+struct DirectIrradiance
+{
+	float4 delta_irradiance;
+	float4 irradiance;
+};
+texture2D transmittance_texture : register ( t0 );
+DirectIrradiance main(VS_OUTPUT input) : SV_Target
+{
+	AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;
+	atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;
+	atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;
+	atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;
+	atmosphere_parameters.top_radius = TOP_RADIUS;
+	atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;
+	atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;
+	atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;
+	atmosphere_parameters.mie_scattering = MIE_SCATTERING;
+	atmosphere_parameters.mie_extinction = MIE_EXTINCTION;
+	atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;
+	atmosphere_parameters.ground_albedo = GROUND_ALBEDO;
+	atmosphere_parameters.mu_s_min = MU_S_MIN;
+	DirectIrradiance output = (DirectIrradiance)0;
+	output.delta_irradiance.rgb = ComputeDirectIrradianceTexture(atmosphere_parameters, transmittance_texture, input.uv);
+	output.irradiance = float4(0,0,0,1);
+	return output;
+})";
 
 const char* kComputeSingleScatteringShader = R"(
-	layout(location = 0) out float3 delta_rayleigh;
-	layout(location = 1) out float3 delta_mie;
-	layout(location = 2) out float4 scattering;
-	texture2D  transmittance_texture;
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION0;
+	float2 uv : TEXCOORD;
+};
+struct Scattering
+{
+	float4 delta_rayleigh;
+	float4 delta_mie;
+	float4 scattering;
+};
+texture2D  transmittance_texture : register ( t0 );
+cbuffer layer_ : register ( b0 )
+{
+	int scattering_order;
 	int layer;
-	void main() {
-	  ComputeSingleScatteringTexture(
-		  atmosphere_parameters, transmittance_texture, float3(gl_FragCoord.xy, layer + 0.5),
-		  delta_rayleigh, delta_mie);
-	  scattering = float4(delta_rayleigh.rgb, delta_mie.r);
-	})";
+	int a;
+	int b;
+};
+Scattering main(VS_OUTPUT input) : SV_Target
+{
+	AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;
+	atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;
+	atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;
+	atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;
+	atmosphere_parameters.top_radius = TOP_RADIUS;
+	atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;
+	atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;
+	atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;
+	atmosphere_parameters.mie_scattering = MIE_SCATTERING;
+	atmosphere_parameters.mie_extinction = MIE_EXTINCTION;
+	atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;
+	atmosphere_parameters.ground_albedo = GROUND_ALBEDO;
+	atmosphere_parameters.mu_s_min = MU_S_MIN;
+	Scattering output = (Scattering)0;
+	float3 out_delta_rayleigh;
+	float3 out_delta_mie;
+	ComputeSingleScatteringTexture(atmosphere_parameters, transmittance_texture, float3(input.uv, layer + 0.5), out_delta_rayleigh, out_delta_mie);
+	output.delta_rayleigh = float4(out_delta_rayleigh, 1);
+	output.delta_mie = float4(out_delta_mie, 1);
+	output.scattering = float4(output.delta_rayleigh.rgb, output.delta_mie.r);
+	return output;
+})";
 
 const char* kComputeScatteringDensityShader = R"(
-	layout(location = 0) out float3 scattering_density;
-	texture2D  transmittance_texture;
-	texture3D single_rayleigh_scattering_texture;
-	texture3D single_mie_scattering_texture;
-	texture3D multiple_scattering_texture;
-	texture2D  irradiance_texture;
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION0;
+	float2 uv : TEXCOORD;
+};
+texture2D  transmittance_texture : register ( t0 );
+texture3D single_rayleigh_scattering_texture : register ( t1 );
+texture3D single_mie_scattering_texture : register ( t2 );
+texture3D multiple_scattering_texture : register ( t3 );
+texture2D  irradiance_texture : register ( t4 );
+
+cbuffer scattering_layer : register ( b0 )
+{
 	int scattering_order;
 	int layer;
-	void main()\n\
-	{\n\
-		AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;\n\
-		atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;\n\
-		atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;\n\
-		atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;\n\
-		atmosphere_parameters.top_radius = TOP_RADIUS;\n\
-		atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;\n\
-		atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;\n\
-		atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;\n\
-		atmosphere_parameters.mie_scattering = MIE_SCATTERING;\n\
-		atmosphere_parameters.mie_extinction = MIE_EXTINCTION;\n\
-		atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;\n\
-		atmosphere_parameters.ground_albedo = GROUND_ALBEDO;\n\
-		atmosphere_parameters.mu_s_min = MU_S_MIN;\n\
-		scattering_density = ComputeScatteringDensityTexture(atmosphere_parameters, transmittance_texture, single_rayleigh_scattering_texture,single_mie_scattering_texture, multiple_scattering_texture,irradiance_texture, float3(gl_FragCoord.xy, layer + 0.5),scattering_order);
-	})";
+	int a;
+	int b;
+};
+float4 main(VS_OUTPUT input): SV_Target
+{
+	AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;
+	atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;
+	atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;
+	atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;
+	atmosphere_parameters.top_radius = TOP_RADIUS;
+	atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;
+	atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;
+	atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;
+	atmosphere_parameters.mie_scattering = MIE_SCATTERING;
+	atmosphere_parameters.mie_extinction = MIE_EXTINCTION;
+	atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;
+	atmosphere_parameters.ground_albedo = GROUND_ALBEDO;
+	atmosphere_parameters.mu_s_min = MU_S_MIN;
+	float3 scattering_density = ComputeScatteringDensityTexture(atmosphere_parameters, transmittance_texture, single_rayleigh_scattering_texture,single_mie_scattering_texture, multiple_scattering_texture,irradiance_texture, float3(input.uv, layer + 0.5),scattering_order);
+	return float4(scattering_density, 1);
+})";
 
 const char* kComputeIndirectIrradianceShader = R"(
-	layout(location = 0) out float3 delta_irradiance;
-	layout(location = 1) out float3 irradiance;
-	texture3D single_rayleigh_scattering_texture;
-	texture3D single_mie_scattering_texture;
-	texture3D multiple_scattering_texture;
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION0;
+	float2 uv : TEXCOORD;
+};
+struct IndirectIrradiance
+{
+	float4 delta_irradiance;
+	float4 irradiance;
+};
+texture3D single_rayleigh_scattering_texture : register ( t0 );
+texture3D single_mie_scattering_texture : register ( t1 );
+texture3D multiple_scattering_texture : register ( t2 );
+
+cbuffer scattering : register ( b0 )
+{
 	int scattering_order;
-	void main()\n\
-	{\n\
-		AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;\n\
-		atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;\n\
-		atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;\n\
-		atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;\n\
-		atmosphere_parameters.top_radius = TOP_RADIUS;\n\
-		atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;\n\
-		atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;\n\
-		atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;\n\
-		atmosphere_parameters.mie_scattering = MIE_SCATTERING;\n\
-		atmosphere_parameters.mie_extinction = MIE_EXTINCTION;\n\
-		atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;\n\
-		atmosphere_parameters.ground_albedo = GROUND_ALBEDO;\n\
-		atmosphere_parameters.mu_s_min = MU_S_MIN;\n\		
-		delta_irradiance = ComputeIndirectIrradianceTexture(atmosphere_parameters, single_rayleigh_scattering_texture,single_mie_scattering_texture, multiple_scattering_texture,gl_FragCoord.xy, scattering_order - 1);
-		irradiance = delta_irradiance;
-	})";
+	int layer;
+	int a;
+	int b;
+};
+
+IndirectIrradiance main(VS_OUTPUT input): SV_Target
+{
+	IndirectIrradiance output = (IndirectIrradiance)0;
+	AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;
+	atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;
+	atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;
+	atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;
+	atmosphere_parameters.top_radius = TOP_RADIUS;
+	atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;
+	atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;
+	atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;
+	atmosphere_parameters.mie_scattering = MIE_SCATTERING;
+	atmosphere_parameters.mie_extinction = MIE_EXTINCTION;
+	atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;
+	atmosphere_parameters.ground_albedo = GROUND_ALBEDO;
+	atmosphere_parameters.mu_s_min = MU_S_MIN;	
+	output.delta_irradiance = float4(ComputeIndirectIrradianceTexture(atmosphere_parameters, single_rayleigh_scattering_texture,single_mie_scattering_texture, multiple_scattering_texture, input.uv, scattering_order - 1), 1);
+	output.irradiance = output.delta_irradiance;
+	return output;
+})";
 
 const char* kComputeMultipleScatteringShader = R"(
-	layout(location = 0) out float3 delta_multiple_scattering;
-	layout(location = 1) out float4 scattering;
-	texture2D transmittance_texture;
-	texture3D scattering_density_texture;
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION0;
+	float2 uv : TEXCOORD;
+};
+struct MultipleScattering
+{
+	float4 delta_multiple_scattering;
+	float4 scattering;
+};
+
+texture2D transmittance_texture : register ( t0 );
+texture3D scattering_density_texture: register ( t1 );
+
+cbuffer scatter_layer : register ( b0 )
+{
+	int scattering_order;
 	int layer;
-	void main()\n\
-	{\n\
-		AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;\n\
-		atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;\n\
-		atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;\n\
-		atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;\n\
-		atmosphere_parameters.top_radius = TOP_RADIUS;\n\
-		atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;\n\
-		atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;\n\
-		atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;\n\
-		atmosphere_parameters.mie_scattering = MIE_SCATTERING;\n\
-		atmosphere_parameters.mie_extinction = MIE_EXTINCTION;\n\
-		atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;\n\
-		atmosphere_parameters.ground_albedo = GROUND_ALBEDO;\n\
-		atmosphere_parameters.mu_s_min = MU_S_MIN;\n\	
-		float nu;
-		delta_multiple_scattering = ComputeMultipleScatteringTexture(atmosphere_parameters, transmittance_texture, scattering_density_texture, float3(gl_FragCoord.xy, layer + 0.5), nu);
-		scattering = float4(delta_multiple_scattering.rgb / RayleighPhaseFunction(nu), 0.0);
-	})";
+	int a;
+	int b;
+};
+
+MultipleScattering main(VS_OUTPUT input): SV_Target
+{
+	MultipleScattering output = (MultipleScattering)0;
+
+	AtmosphereParameters atmosphere_parameters = (AtmosphereParameters)0;
+	atmosphere_parameters.solar_irradiance = SOLAR_IRRADIANCE;
+	atmosphere_parameters.sun_angular_radius = SUN_ANGULAR_RADIUS;
+	atmosphere_parameters.bottom_radius = BOTTOM_RADIUS;
+	atmosphere_parameters.top_radius = TOP_RADIUS;
+	atmosphere_parameters.rayleigh_scale_height = RAYLEIGH_SCALE_HEIGHT;
+	atmosphere_parameters.rayleigh_scattering = RAYLEIGH_SCATTERING;
+	atmosphere_parameters.mie_scale_height = MIE_SCALE_HEIGHT;
+	atmosphere_parameters.mie_scattering = MIE_SCATTERING;
+	atmosphere_parameters.mie_extinction = MIE_EXTINCTION;
+	atmosphere_parameters.mie_phase_function_g = MIE_PHASE_FUNCTION_G;
+	atmosphere_parameters.ground_albedo = GROUND_ALBEDO;
+	atmosphere_parameters.mu_s_min = MU_S_MIN;
+	float nu;
+	output.delta_multiple_scattering = float4(ComputeMultipleScatteringTexture(atmosphere_parameters, transmittance_texture, scattering_density_texture, float3(input.uv, layer + 0.5), nu), 1);
+	output.scattering = float4(output.delta_multiple_scattering.rgb / RayleighPhaseFunction(nu), 0.0);
+	return output;
+})";
 
 const char* kAtmosphereShader = "\
-texture2D transmittance_texture;\n\
-texture3D scattering_texture;\n \
-texture3D single_mie_scattering_texture;\n\
-texture2D irradiance_texture;\n\n\
+texture2D transmittance_texture: register ( t0 );\n\
+texture3D scattering_texture: register ( t1 );\n \
+texture3D single_mie_scattering_texture: register ( t2 );\n\
+texture2D irradiance_texture: register ( t3 );\n\n\
 RadianceSpectrum GetSkyRadiance(Position camera, Direction view_ray, Length shadow_length,Direction sun_direction, out DimensionlessSpectrum transmittance)\n\
 {\n\
 	AtmosphereParameters atmosphere_parameters;\n\
@@ -1174,7 +1296,17 @@ const char* shader_main = \
 "    d_out = 0.0;\n"\
 "  }\n"\
 "}\n"\
-"float4 main() : SV_Target\n"\
+"struct VS_OUTPUT\n"\
+"{\n"\
+"	float4 pos : SV_POSITION;\n"\
+"	float3 normal : NORMAL;\n"\
+"	float2 uv : TEXCOORD;\n"\
+"	float3 binorm : BINORMAL;\n"\
+"	float3 tang : TANGENT;\n"\
+"	float4 worldpos : POSITION;\n"\
+"	float4 tex : TEX;\n"\
+"};\n"\
+"float4 main(VS_OUTPUT input) : SV_Target\n"\
 "{\n"\
 "	float3 view_direction = normalize(view_ray);\n"\
 "	float fragment_angular_size = length(ddx(view_ray) + ddy(view_ray)) / length(view_ray);\n"\
@@ -1253,3 +1385,44 @@ const char* shader_main = \
 //{\n
 //	gl_Position = vec4(vertex, 0.0, 1.0);
 //})";
+
+const char* kGeometryShader = R"(
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION0;
+	float2 uv : TEXCOORD;
+};
+
+#define VERTEX_COUNT 3
+
+static const float4 quadPos[VERTEX_COUNT] =
+{
+	float4(-1,-1,0,0),
+	float4(-1,1,0,0),
+	float4(1,-1,0,0),
+};
+
+static const float2 quadUV[VERTEX_COUNT] =
+{
+	float2(0,1),
+	float2(0,0),
+	float2(1,1),
+};
+
+[maxvertexcount(VERTEX_COUNT)]
+VS_OUTPUT main(point VS_OUTPUT input[VERTEX_COUNT], inout TriangleStream<VS_OUTPUT> triStream) 
+{
+	VS_OUTPUT output = (VS_OUTPUT)0;
+
+
+	output.pos = input[0].pos;
+	triStream.Append(output);
+
+	output.pos = input[1].pos;
+	triStream.Append(output);
+		
+	output.pos = input[2].pos;
+	triStream.Append(output);
+
+	triStream.RestartStrip();
+})";

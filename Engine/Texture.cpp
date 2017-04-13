@@ -298,6 +298,58 @@ void Texture::Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat 
 
 }
 
+void Texture::Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat texture_format, s32 layer_count, const std::string& debug_name)
+{
+	DirectX11* api = Engine::GetInstance()->GetAPI();
+
+	D3D11_TEXTURE2D_DESC desc3d;
+	desc3d.Width = ( UINT ) width;
+	desc3d.Height = ( UINT ) height;
+	//desc3d.Depth = ( UINT ) depth;
+	desc3d.ArraySize = layer_count;
+	desc3d.MipLevels = 1;
+	desc3d.Format = texture_format;
+	desc3d.Usage = D3D11_USAGE_DEFAULT;
+	desc3d.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	desc3d.CPUAccessFlags = 0;
+	desc3d.SampleDesc.Count = 1;
+	desc3d.SampleDesc.Quality = 0;
+	desc3d.MiscFlags = 0;
+
+	ID3D11Texture2D* _texture = nullptr;
+	HRESULT hr = api->GetDevice()->CreateTexture2D(&desc3d, NULL, &_texture);
+	api->HandleErrors(hr, "[Texture](Initiate) : Failed to initiate texture.");
+	{
+		D3D11_RENDER_TARGET_VIEW_DESC rtdesc;
+		rtdesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		rtdesc.Format = texture_format;
+		rtdesc.Texture2DArray.ArraySize = depth;
+		rtdesc.Texture2DArray.FirstArraySlice = 1;
+		rtdesc.Texture2DArray.MipSlice = 0;
+
+		hr = api->GetDevice()->CreateRenderTargetView(_texture, &rtdesc, &m_RenderTargetView);
+		api->HandleErrors(hr, "[Texture](Initiate) : Failed to create RenderTargetView.");
+		api->SetDebugName(m_RenderTargetView, debug_name + "RenderTargetView");
+	}
+
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC view_desc;
+		ZeroMemory(&view_desc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+		view_desc.Format = texture_format;
+		view_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		view_desc.Texture2D.MipLevels = 1;
+		view_desc.Texture2D.MostDetailedMip = 0;
+
+		HRESULT hr = api->GetDevice()->CreateShaderResourceView(_texture, &view_desc, &m_ShaderResource);
+		api->HandleErrors(hr, "[Texture](Initiate) : Failed to create DepthStencil-ShaderResourceView.");
+		api->SetDebugName(m_ShaderResource, debug_name + "DepthStencil-ShaderResourceView");
+		
+	}
+	SAFE_RELEASE(_texture);
+}
+
+
+
 bool Texture::CleanUp()
 {
 	SAFE_RELEASE(m_ShaderResource);
@@ -386,6 +438,31 @@ HRESULT Texture::SaveToFile(ITexture2D*& texture_resource, const std::string& fi
 	resource->Release();
 	resource = nullptr;
 	return S_OK;
+}
+
+void Texture::Save2DResource(const std::string& filename)
+{
+	ID3D11Resource* resource = nullptr;
+	HRESULT hr = m_ShaderResource->QueryInterface(IID_ID3D11Texture2D, ( void** ) & resource);
+	Engine::GetAPI()->HandleErrors(hr, "failed to query interface of 3dtexture");
+	std::wstring mid(filename.begin(), filename.end());
+	LPCWSTR new_name(mid.c_str());
+	DirectX::SaveDDSTextureToFile(Engine::GetAPI()->GetContext(), resource, new_name);
+	resource->Release();
+	resource = nullptr;
+}
+
+void Texture::Save3DResource(const std::string& filename)
+{
+	return;
+	ID3D11Resource* resource = nullptr;
+	HRESULT hr = m_ShaderResource->QueryInterface(IID_ID3D11Texture3D, ( void** ) & resource);
+	Engine::GetAPI()->HandleErrors(hr, "failed to query interface of 3dtexture");
+	std::wstring mid(filename.begin(), filename.end());
+	LPCWSTR new_name(mid.c_str());
+	DirectX::SaveDDSTextureToFile(Engine::GetAPI()->GetContext(), resource, new_name);
+	resource->Release();
+	resource = nullptr;
 }
 
 void Texture::CopyData(ITexture2D* dest, ITexture2D* source)

@@ -17,6 +17,8 @@ public:
 	CompiledShader* GetDomainShader() { return m_DomainShader; }
 	CompiledShader* GetComputeShader() { return m_ComputeShader; }
 
+	void SetPixelShader(CompiledShader* shader);
+
 	void Activate();
 	void Deactivate();
 	void AddShaderResource(IShaderResourceView* aShaderResource);

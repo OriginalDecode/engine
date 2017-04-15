@@ -263,6 +263,8 @@ void ShaderFactory::Update()
 CompiledShader::~CompiledShader()
 {
 	SAFE_RELEASE(blob);
+	if (!m_Shader)
+		return;
 
 	IUnknown* unknown_pointer = static_cast<IUnknown*>(m_Shader);
 	unknown_pointer->Release();

@@ -1,6 +1,4 @@
 #pragma once
-
-
 #include <DataStructures/GrowingArray.h>
 
 class Camera;
@@ -13,16 +11,11 @@ class Atmosphere
 public:
 	Atmosphere() = default;
 
-
 	void Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position );
-
-	IBlob* CreateShaderFile(const std::string& file_name, const std::string& entry_point, const std::string& shader_type, const std::string& shader);
-
 	void CleanUp();
 
 	void Render(const CU::Matrix44f& orientation, Texture* depth);
 	void SetLightData(const CU::Vector4f& direction, const CU::Vector4f& position);
-	void UseConstantSolarSpectrum(bool useconstantspec);
 private:
 	Engine* m_Engine							= nullptr;
 	DirectX11* m_API							= nullptr;
@@ -37,22 +30,21 @@ private:
 
 	struct cbPixel
 	{
-		CU::Vector3f m_CameraPos;
-		float exposure;
-		CU::Vector3f white_point;
-		CU::Vector3f earth_center;
-		CU::Vector3f sun_direction;
-		CU::Vector3f sun_radiance;
-		CU::Vector2f sun_size;
-		CU::Vector3f view_ray;
-		float c[3];
+		CU::Vector4f m_CameraPos;
+		CU::Vector4f m_CameraDir;
+		CU::Vector4f m_LightDir;
+		CU::Vector4f m_LightPos;
+		float m_InnerRadius;
+		float m_OuterRadius;
+		float m_CameraMagnitude;
+		float m_CameraMagnitude2;
 	} m_PixelStruct;
 	IBuffer* m_PixelBuffer						= nullptr;
 
 	struct cbVertex
 	{
-		CU::Vector4f m_CameraDir;
 		CU::Vector4f m_CameraPos;
+		CU::Vector4f m_CameraDir;
 		CU::Vector4f m_LightDir;
 		CU::Vector4f m_LightPos;
 		float m_InnerRadius;
@@ -62,23 +54,6 @@ private:
 	} m_VertexStruct;
 	IBuffer* m_VertexBuffer						= nullptr;
 
-	bool m_UseConstantSolarSpectrum				= false;
-
-	Texture* m_TransmittanceTexture					= nullptr;
-	Texture* m_ScatteringTexture					= nullptr;
-	Texture* m_OptionalSingleMieScatteringTexture	= nullptr;
-	Texture* m_IrradianceTexture					= nullptr;
-
-	std::string m_ShaderHeader;
-
-	CompiledShader m_AtmosphereShader;
-	void* atmosphere_shader = nullptr;
-	Effect* m_AtmosphereTotal;
-
 	void UpdateCameraData();
-
-	void ComputeScattering(const CU::GrowingArray<double>& wavelengths, const CU::GrowingArray<double>& wavelengths_function, double lambda_power, double* red, double* green, double* blue);
-	double Interpolate(const CU::GrowingArray<double>& wavelengths, const CU::GrowingArray<double>& wavelengths_function, double wavelength);
-	double CieColorMatchingFunctionTableValue(double wavelength, int column);
 };
 

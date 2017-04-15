@@ -41,6 +41,7 @@ static bool g_windowactive = false;
 
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
+	_set_error_mode(_OUT_TO_MSGBOX);
 #ifdef _PROFILE
 	EASY_PROFILER_ENABLE;
 #ifdef _REMOTE_PROFILE

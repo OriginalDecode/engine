@@ -846,7 +846,17 @@ void GetSphereShadowInOut(float3 view_direction, float3 sun_direction,
     d_out = 0.0;
   }
 }
-float4 main() : SV_Target
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION;
+	float3 normal : NORMAL;
+	float2 uv : TEXCOORD;
+	float3 binorm : BINORMAL;
+	float3 tang : TANGENT;
+	float4 worldpos : POSITION;
+	float4 tex : TEX;
+};
+float4 main(VS_OUTPUT input) : SV_Target
 {
 	float3 view_direction = normalize(view_ray);
 	float fragment_angular_size = length(ddx(view_ray) + ddy(view_ray)) / length(view_ray);

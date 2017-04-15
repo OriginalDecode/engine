@@ -61,7 +61,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F6BFC4A9-1A8D-4564-B2A7-71A1ECBD78E7}</ProjectGuid>
     <RootNamespace>Engine</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -114,47 +114,47 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Editor|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -364,6 +364,9 @@
       <AdditionalDependencies>freetype_$(Configuration)_x64.lib;DirectXTK_$(Configuration)_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|x64'">
     <ClCompile>
@@ -383,6 +386,9 @@
       <AdditionalDependencies>freetype_Debug_x64.lib;assimp_Debug.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -541,6 +547,9 @@
       <AdditionalDependencies>freetype_$(Configuration)_x64.lib;DirectXTK_$(Configuration)_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
     <ClCompile>
@@ -564,6 +573,9 @@
       <AdditionalDependencies>freetype_$(Configuration)_x64.lib;DirectXTK_$(Configuration)_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Editor|x64'">
     <ClCompile>
@@ -587,6 +599,9 @@
       <AdditionalDependencies>freetype_Release_x64.lib;DirectXTK_Release_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_Release.lib;ProfilerCore64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
     <ClCompile>
@@ -610,6 +625,9 @@
       <AdditionalDependencies>freetype_Release_x64.lib;DirectXTK_Release_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_Release.lib;easy_profiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|x64'">
     <ClCompile>
@@ -633,6 +651,9 @@
       <AdditionalDependencies>freetype_Release_x64.lib;assimp_Release.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />

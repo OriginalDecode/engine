@@ -27,8 +27,8 @@ bool Application::Initiate()
 		return false;*/
 
 	m_States.PushState(&m_Game, StateStack::MAIN);
-	//Keep at the end of initiate...
 
+	//Keep at the end of initwiate...
 	myLogicThread = new std::thread([&] { Application::Update(); });
 #ifdef _DEBUG
 	CL::SetThreadName(myLogicThread->get_id(), "Logic Thread");

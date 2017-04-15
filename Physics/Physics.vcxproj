@@ -61,7 +61,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0EB04AF7-D7CA-4D95-AC81-A62D84292A93}</ProjectGuid>
     <RootNamespace>Physics</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -114,47 +114,47 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Editor|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -276,6 +276,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>LinearMath_$(Configuration).lib;Bullet3Dynamics_$(Configuration).lib;Bullet3Collision_$(Configuration).lib;BulletDynamics_$(Configuration).lib;BulletCollision_$(Configuration).lib;Bullet3Common_$(Configuration).lib;Bullet3Geometry_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|x64'">
     <ClCompile>
@@ -291,6 +294,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>LinearMath_Debug.lib;Bullet3Dynamics_Debug.lib;Bullet3Collision_Debug.lib;BulletDynamics_Debug.lib;BulletCollision_Debug.lib;Bullet3Common_Debug.lib;Bullet3Geometry_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -376,6 +382,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>LinearMath_$(Configuration).lib;Bullet3Dynamics_$(Configuration).lib;Bullet3Collision_$(Configuration).lib;BulletDynamics_$(Configuration).lib;BulletCollision_$(Configuration).lib;Bullet3Common_$(Configuration).lib;Bullet3Geometry_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
     <ClCompile>
@@ -396,6 +405,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>LinearMath_$(Configuration).lib;Bullet3Dynamics_$(Configuration).lib;Bullet3Collision_$(Configuration).lib;BulletDynamics_$(Configuration).lib;BulletCollision_$(Configuration).lib;Bullet3Common_$(Configuration).lib;Bullet3Geometry_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Editor|x64'">
     <ClCompile>
@@ -416,6 +428,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>LinearMath_Release.lib;Bullet3Dynamics_Release.lib;Bullet3Collision_Release.lib;BulletDynamics_Release.lib;BulletCollision_Release.lib;Bullet3Common_Release.lib;Bullet3Geometry_Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
     <ClCompile>
@@ -437,6 +452,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>LinearMath_Release.lib;Bullet3Dynamics_Release.lib;Bullet3Collision_Release.lib;BulletDynamics_Release.lib;BulletCollision_Release.lib;Bullet3Common_Release.lib;Bullet3Geometry_Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|x64'">
     <ClCompile>
@@ -457,6 +475,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>LinearMath_Release.lib;Bullet3Dynamics_Release.lib;Bullet3Collision_Release.lib;BulletDynamics_Release.lib;BulletCollision_Release.lib;Bullet3Common_Release.lib;Bullet3Geometry_Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BulletUtilities.h" />

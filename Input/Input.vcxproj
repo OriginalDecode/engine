@@ -61,7 +61,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BD22FF31-48A5-4061-AB37-17E68E058912}</ProjectGuid>
     <RootNamespace>Input</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -112,31 +112,31 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|x64'" Label="Configuration">
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'" Label="Configuration">
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Editor|x64'" Label="Configuration">
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="Configuration">
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|x64'" Label="Configuration">
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -384,8 +384,10 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildStep>
-      <Message>Generating Hashes...</Message>
-      <Command>$(SolutionDir)GenHashes.exe</Command>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
     </CustomBuildStep>
     <ClCompile>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -395,7 +397,8 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\TimeManager\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <PreBuildEvent>
-      <Command>call "$(SolutionDir)HashGen.exe"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Vulkan|x64'">
@@ -407,8 +410,12 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\TimeManager\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <PreBuildEvent>
-      <Command>call "$(SolutionDir)HashGen.exe"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -416,8 +423,12 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\TimeManager\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <PreBuildEvent>
-      <Command>call "$(SolutionDir)HashGen.exe"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
     <ClCompile>
@@ -425,8 +436,12 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\TimeManager\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <PreBuildEvent>
-      <Command>call "$(SolutionDir)HashGen.exe"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Editor|x64'">
     <ClCompile>
@@ -434,8 +449,12 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\TimeManager\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <PreBuildEvent>
-      <Command>call "$(SolutionDir)HashGen.exe"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
     <ClCompile>
@@ -444,8 +463,12 @@
       <PreprocessorDefinitions>_PROFILE;BUILD_WITH_EASY_PROFILER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <PreBuildEvent>
-      <Command>call "$(SolutionDir)HashGen.exe"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Vulkan|x64'">
     <ClCompile>
@@ -453,8 +476,12 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\TimeManager\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <PreBuildEvent>
-      <Command>call "$(SolutionDir)HashGen.exe"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\hashlist.h" />

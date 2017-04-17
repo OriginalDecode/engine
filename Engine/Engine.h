@@ -2,7 +2,6 @@
 
 #include "Window.h"
 #include "VirtualFileSystem.h"
-
 #include <CommonLib/Math/Vector/Vector.h>
 #include <CommonLib/Threadpool.h>
 

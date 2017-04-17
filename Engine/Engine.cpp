@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#include <Engine/Vulkan.h>
 #include "AssetsContainer.h"
 
 #include "Renderer.h"
@@ -150,20 +150,9 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	mySynchronizer = new Synchronizer;
 	DL_ASSERT_EXP(mySynchronizer->Initiate(), "Engine : Failed to Initiate Synchronizer!");
 
-	/*m_DebugSystem.Initiate(m_InputHandle);
-
-	m_DebugSystem.AddDebugMenuItem("Toggle VSync", [&]()
-	{
-		ToggleVsync();
-	});*/
-
-	//myCamera = new Camera(myWindowSize.myWidth, myWindowSize.myHeight);
-
 	m_Camera = new Camera;
 	m_Camera->CreatePerspectiveProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 10000.f, 90.f);
 	m_Camera->CreateOrthogonalProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 100.f);
-
-	//my2DCamera = new Camera(myWindowSize.myWidth, myWindowSize.myHeight, CU::Vector3f(0, 0, 0.f));
 
 	myRenderer = new Renderer;
 	DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, m_Camera), "Engine : Failed to initiate Renderer!");
@@ -194,8 +183,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	m_EntityManager.AddSystem<CameraSystem>();
 
-
-	//ImGui_ImplDX11_Init(void* hwnd, ID3D11Device* device, ID3D11DeviceContext* device_context);
 	ImGui_ImplDX11_Init(myHWND, GetAPI()->GetDevice(), GetAPI()->GetContext());
 
 	m_States[(u16)eEngineStates::INITIATED] = TRUE;
@@ -204,7 +191,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", false);
 	LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", false);
-
 
 	return true;
 }
@@ -259,8 +245,9 @@ void Engine::Update()
 	if (!HasInitiated())
 		return;
 
+#ifndef FINAL || PROFILE
 	UpdateDebugUI();
-
+#endif
 	m_DeltaTime = myTimeManager.GetDeltaTime();
 	if (m_States[(u16)eEngineStates::LOADING] == FALSE)
 	{

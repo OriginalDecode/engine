@@ -54,40 +54,39 @@ CModel* CModel::Initiate(const std::string& filename)
 
 void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows, bool override_shaders)
 {
-	if (!myIsNULLObject)
-	{
-		__super::Render(aCameraOrientation, aCameraProjection, render_shadows, override_shaders);
-
-		if (!myIsLightMesh)
-			myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-
-		if (mySurfaces.Size() > 0)
-		{
-			for (s32 i = 0; i < mySurfaces.Size(); i++)
-			{
-				myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-				if (!myIsLightMesh)
-				{
-					if (!render_shadows && !myIsLightMesh && !m_IsSkysphere)
-						mySurfaces[i]->Activate(); //Gets a ton of junk data. What???
-
-					myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
-				}
-				else
-				{
-					myContext->Draw(mySurfaces[i]->GetVertexCount(), 0);
-				}
-
-				if (!render_shadows && !myIsLightMesh && !m_IsSkysphere )
-					mySurfaces[i]->Deactivate();
-			}
-		}
-	}
-
 	for (CModel* child : myChildren)
 	{
-		child->SetPosition(myOrientation.GetPosition());
 		child->Render(aCameraOrientation, aCameraProjection, render_shadows, override_shaders);
+	}
+
+	if (myIsNULLObject)
+		return;
+
+	__super::Render(aCameraOrientation, aCameraProjection, render_shadows, override_shaders);
+
+	if (!myIsLightMesh)
+		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+
+	if (mySurfaces.Size() > 0)
+	{
+		for (s32 i = 0; i < mySurfaces.Size(); i++)
+		{
+			myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+			if (!myIsLightMesh)
+			{
+				if (!render_shadows && !myIsLightMesh && !m_IsSkysphere)
+					mySurfaces[i]->Activate(); //Gets a ton of junk data. What???
+
+				myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
+			}
+			else
+			{
+				myContext->Draw(mySurfaces[i]->GetVertexCount(), 0);
+			}
+
+			if (!render_shadows && !myIsLightMesh && !m_IsSkysphere )
+				mySurfaces[i]->Deactivate();
+		}
 	}
 }
 

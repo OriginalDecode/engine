@@ -309,9 +309,6 @@
     <ClInclude Include="Components.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="Level.h">
-      <Filter>World</Filter>
-    </ClInclude>
     <ClInclude Include="LevelFactory.h">
       <Filter>World</Filter>
     </ClInclude>
@@ -532,9 +529,6 @@
     </ClCompile>
     <ClCompile Include="EditObject.cpp">
       <Filter>Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="Level.cpp">
-      <Filter>World</Filter>
     </ClCompile>
     <ClCompile Include="LevelFactory.cpp">
       <Filter>World</Filter>

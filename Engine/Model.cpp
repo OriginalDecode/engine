@@ -67,27 +67,28 @@ void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f
 	if (!myIsLightMesh)
 		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-	if (mySurfaces.Size() > 0)
+	if ( mySurfaces.Empty() )
+		return;
+
+	for (s32 i = 0; i < mySurfaces.Size(); i++)
 	{
-		for (s32 i = 0; i < mySurfaces.Size(); i++)
+		myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+		if (!myIsLightMesh)
 		{
-			myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-			if (!myIsLightMesh)
-			{
-				if (!render_shadows && !myIsLightMesh && !m_IsSkysphere)
-					mySurfaces[i]->Activate(); //Gets a ton of junk data. What???
+			if (!render_shadows && !myIsLightMesh && !m_IsSkysphere)
+				mySurfaces[i]->Activate(); 
 
-				myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
-			}
-			else
-			{
-				myContext->Draw(mySurfaces[i]->GetVertexCount(), 0);
-			}
-
-			if (!render_shadows && !myIsLightMesh && !m_IsSkysphere )
-				mySurfaces[i]->Deactivate();
+			myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
 		}
+		else
+		{
+			myContext->Draw(mySurfaces[i]->GetVertexCount(), 0);
+		}
+
+		if (!render_shadows && !myIsLightMesh && !m_IsSkysphere )
+			mySurfaces[i]->Deactivate();
 	}
+
 }
 
 void CModel::SetIsLightmesh()

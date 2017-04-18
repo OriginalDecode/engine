@@ -1,14 +1,10 @@
 #include "stdafx.h"
 #include "ModelImporter.h"
-#include <DL_Debug.h>
-#include "Model.h"
 
-#include "VertexWrapper.h"
-#include "IndexWrapper.h"
-#include "Surface.h"
-#include "Model.h"
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
-#include <unordered_map>
+#include <Engine/Model.h>
 
 #define TRIANGLE_VERTEX_COUNT 3
 #define VERTEX_STRIDE 4
@@ -23,7 +19,9 @@
 CModelImporter::CModelImporter()
 	: m_Engine(Engine::GetInstance())
 {
+#ifdef _DEBUG
 	m_TimeManager.CreateTimer();
+#endif
 }
 
 void CModelImporter::LoadModel(std::string aFilePath, CModel* model, std::string effect)
@@ -38,9 +36,10 @@ void CModelImporter::LoadModel(std::string aFilePath, CModel* model, std::string
 
 CModel* CModelImporter::LoadModel(std::string filepath, CModel* model, Effect* anEffect)
 {
+#ifdef _DEBUG
 	m_TimeManager.Update();
 	float loadTime = m_TimeManager.GetTimer(0).GetTotalTime().GetMilliseconds();
-
+#endif
 	unsigned int processFlags =
 		aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
 		//aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
@@ -90,10 +89,11 @@ CModel* CModelImporter::LoadModel(std::string filepath, CModel* model, Effect* a
 	}
 	delete data;
 
+#ifdef _DEBUG
 	m_TimeManager.Update();
 	loadTime = m_TimeManager.GetTimer(0).GetTotalTime().GetMilliseconds() - loadTime;
 	MODEL_LOG("%s took %fms to load. %s", filepath.c_str(), loadTime, ( loadTime > 7000.f ) ? "Check if it's saved as binary." : 0);
-
+#endif
 	return toReturn;
 }
 
@@ -179,7 +179,7 @@ void CModelImporter::FillData(FBXModelData* someData, CModel* out, std::string f
 		newSurface->ValidateTextures();
 
 	//newSurface->ValidateTextures();
-
+	newSurface->Optimize();
 	out->mySurfaces.Add(newSurface);
 #endif
 }
@@ -469,9 +469,9 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 
 		//Flips it to make it correct.
 		CU::GrowingArray<u32> indiceFix;
-		for ( s32 i = indices.Size() - 1; i >= 0; i-- )
+		for ( s32 indice = indices.Size() - 1; indice >= 0; indice-- )
 		{
-			indiceFix.Add(indices[i]);
+			indiceFix.Add(indices[indice]);
 		}
 
 		memcpy(data->myData->myIndicies, &indiceFix[0], sizeof(u32) * indiceFix.Size());
@@ -485,7 +485,6 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 	ExtractMaterials(mesh, scene, data, file);
 
 }
-
 
 void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file)
 {

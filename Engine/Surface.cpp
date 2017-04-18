@@ -56,12 +56,12 @@ void CSurface::ClearTextures()
 
 void CSurface::Activate()
 {
-	if (!myShaderViews.Empty())
-	{
-		myShaderViews.Optimize();
-		myContext->IASetPrimitiveTopology(myPrimologyType);
-		myContext->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
-	}
+	if ( myShaderViews.Empty() )
+		return;
+
+	myContext->IASetPrimitiveTopology(myPrimologyType);
+	myContext->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
+
 }
 
 void CSurface::Deactivate()
@@ -209,12 +209,7 @@ void CSurface::ValidateTextures()
 	AddMissingTexture(_DISPLACEMENT, s_file_path + "black.dds");
 	AddMissingTexture(_LIGHTMAP, s_file_path + "black.dds");
 	AddMissingTexture(_SHININESS, s_file_path + "black.dds");
-	/*
-			for (s32 i = 0; i < myTextures.Size(); i++)
-			{
-				TRACE_LOG("Index : %d | Pointer : %d | Type : %s", i, (u64)myTextures[i].texture, CheckTextureType(myTextures[i].m_Type).c_str());
-			}
-	*/
+
 }
 
 void CSurface::RemoveTextureByIndex(s32 index)

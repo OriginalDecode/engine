@@ -56,6 +56,8 @@ public:
 
 	void ValidateTextures();
 	void RemoveTextureByIndex(s32 index);
+
+	void Optimize() { myShaderViews.Optimize(); }
 private:
 	void AddMissingTexture(TextureType type, const std::string& file_path);
 

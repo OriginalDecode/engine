@@ -1,12 +1,11 @@
 #pragma once
-#include <standard_datatype.hpp>
 #include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include "snowblind_shared.h"
-#include "Surface.h"
-#include <TimeManager.h>
 
+#include <Engine/Surface.h>
+#include "snowblind_shared.h"
+#ifdef _DEBUG
+#include <TimeManager.h>
+#endif
 class CModel;
 class Effect;
 class Engine;
@@ -16,6 +15,10 @@ struct TextureInfo
 	TextureType myType;
 	std::string myFilename;
 };
+
+class aiNode;
+class aiMesh;
+class aiScene;
 
 
 struct ModelData
@@ -67,7 +70,6 @@ struct FBXModelData
 	CU::GrowingArray<FBXModelData*> myChildren;
 };
 
-
 class CModelImporter
 {
 public:
@@ -79,8 +81,9 @@ private:
 	Engine* m_Engine = nullptr;
 	Ticket_Mutex m_LoaderMutex;
 
+#ifdef _DEBUG
 	CU::TimeManager m_TimeManager;
-
+#endif
 
 	CModel* CreateModel(FBXModelData* data, CModel* model, std::string filepath, Effect* effect);
 	CModel* CreateChild(FBXModelData* data, std::string filepath, Effect* effect);

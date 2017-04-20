@@ -62,13 +62,21 @@ void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f
 	if (myIsNULLObject)
 		return;
 
-	__super::Render(aCameraOrientation, aCameraProjection, render_shadows, override_shaders);
+	SetupLayoutsAndBuffers();
 
+	if ( !render_shadows )
+	{
+		myEffect->Activate();
+	}
+
+	UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
 	if (!myIsLightMesh)
 		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 	if ( mySurfaces.Empty() )
 		return;
+
+
 
 	for (s32 i = 0; i < mySurfaces.Size(); i++)
 	{

@@ -1,15 +1,11 @@
 #include "stdafx.h"
 #include "PointLight.h"
 #include "Model.h"
-#include "Instance.h"
-#include "AssetsContainer.h"
-
-
 
 CPointLight::CPointLight()
 {
 	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", false);
-	m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx"); //Initiate("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json");
+	m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx");
 	m_Model->SetIsLightmesh();
 }
 
@@ -54,7 +50,15 @@ void CPointLight::Update()
 
 void CPointLight::Render(const CU::Matrix44f& previousOrientation, Camera* camera)
 {
+
+
+	
+
 	m_Model->Render(previousOrientation, camera->GetPerspective());
+
+
+
+
 }
 
 const SPointlightData& CPointLight::GetData() const

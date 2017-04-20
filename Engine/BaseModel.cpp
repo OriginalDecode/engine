@@ -15,25 +15,22 @@ CBaseModel::~CBaseModel() = default;
 
 void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows, bool override_shaders)
 {
-#ifdef _PROFILE
-	//char buf[512];
-	//sprintf_s(buf, "%s::Render", m_Filename.c_str());
-	//BROFILER_CATEGORY("Graphics", Profiler::Color::Violet);
-	//BROFILER_EVENT(buf);
-#endif
-#ifdef SNOWBLIND_DX11
+	SetupLayoutsAndBuffers();
+
+	/*if (!render_shadows && !override_shaders)
+	{
+		myAPI->SetVertexShader(myEffect->GetVertexShader()->m_Shader);
+		myAPI->SetPixelShader(myEffect->GetPixelShader()->m_Shader);
+	}*/
+
+}
+
+void CBaseModel::SetupLayoutsAndBuffers()
+{
 	myContext->IASetInputLayout(m_VertexLayout);
 	myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	myContext->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);
 	myContext->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
-
-	if (!render_shadows && !override_shaders)
-	{
-		myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->m_Shader : nullptr);
-		myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->m_Shader : nullptr);
-	}
-	UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
-#endif
 }
 
 void CBaseModel::SetEffect(Effect* anEffect)

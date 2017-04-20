@@ -13,7 +13,6 @@
 
 #include "EmitterInstance.h"
 
-#include "SkySphere.h"
 #include "Terrain.h"
 
 #include "Line3D.h"

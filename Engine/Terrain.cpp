@@ -62,10 +62,12 @@ bool CTerrain::CleanUp()
 
 void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows, bool override_shader)
 {
-#ifdef SNOWBLIND_DX11
-	if (!myIsNULLObject)
-	{
-		__super::Render(aCameraOrientation, aCameraProjection, render_shadows, override_shader);
+	if ( myIsNULLObject )
+		return;
+
+		SetupLayoutsAndBuffers();
+		UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
+		myEffect->Activate();
 		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 		myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 		if (!render_shadows)
@@ -73,8 +75,6 @@ void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix4
 		myContext->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 		if (!render_shadows)
 			mySurface->Deactivate();
-	}
-#endif
 }
 
 void CTerrain::Save(const std::string& /*aFilename*/)

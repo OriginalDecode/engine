@@ -9,27 +9,29 @@ class LightPass
 public:
 	LightPass() = default;
 
-	bool Initiate(GBuffer* aGBuffer, Texture* shadow_texture);
+	bool Initiate(const GBuffer* aGBuffer, Texture* shadow_texture);
 	bool CleanUp();
 	void RenderPointlight(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
 	void RenderSpotlight(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
 	Effect* GetPointlightEffect();
 	Effect* GetSpotlightEffect();
+	bool HasInitiated();
+
 private:
 	void UpdatePointlightBuffers(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
 	void UpdateSpotlightBuffers(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
 
 	void CreateSpotlightBuffers();
 	void CreatePointlightBuffers();
-	struct SPointlightConstantBuffer : public VertexBaseStruct
+	struct PointlightConstantBuffer : public VertexBaseStruct
 	{
 	} myPointlightVertexConstantData; //Longest name.
 
-	struct SSpotlightConstantBuffer : public VertexBaseStruct
+	struct SpotlightConstantBuffer : public VertexBaseStruct
 	{
 	} mySpotlightVertexConstantData;
 
-	struct SPixelConstantBuffer
+	struct PixelConstantBuffer
 	{
 		CU::Matrix44f myInvertedProjection;
 		CU::Matrix44f myView;
@@ -40,44 +42,28 @@ private:
 
 	} myPixelConstantStruct;
 
-	struct SSpotPixelConstantBuffer : public SPixelConstantBuffer
+	struct SpotPixelConstantBuffer : public PixelConstantBuffer
 	{
 		CU::Vector4f myDirection;
 	} mySpotPixelConstantStruct;
 
 
-	enum class eBuffer
+	enum eBuffer
 	{
-		POINT_LIGHT_VERTEX,
-		POINT_LIGHT_PIXEL,
-		SPOT_LIGHT_VERTEX,
-		SPOT_LIGHT_PIXEL,
-		_COUNT
+		POINTLIGHT_VERTEX,
+		POINTLIGHT_PIXEL,
+		SPOTLIGHT_VERTEX,
+		SPOTLIGHT_PIXEL,
+		NOF_BUFFERS
 	};
-	ID3D11Buffer* myConstantBuffers[u32(eBuffer::_COUNT)];
-	ID3D11DeviceContext* myContext;
+	ID3D11Buffer* myConstantBuffers[NOF_BUFFERS];
 
-	enum class eLight
+	enum eLight
 	{
-		POINT_LIGHT,
-		SPOT_LIGHT,
-		_COUNT
+		POINTLIGHT,
+		SPOTLIGHT,
+		NOF_LIGHT_TYPES
 	};
 
-	Effect* myEffect[u32(eLight::_COUNT)];
-	Engine* myEngine;
-	const GBuffer* myGBuffer;
-
-public:
-	bool HasInitiated() {
-		return (myGBuffer
-			&& myEngine
-			&& myEffect[u32(eLight::POINT_LIGHT)]
-			&& myEffect[u32(eLight::SPOT_LIGHT)]
-			&& myConstantBuffers[u32(eBuffer::POINT_LIGHT_VERTEX)]
-			&& myConstantBuffers[u32(eBuffer::POINT_LIGHT_PIXEL)]
-			&& myConstantBuffers[u32(eBuffer::SPOT_LIGHT_VERTEX)]
-			&& myConstantBuffers[u32(eBuffer::SPOT_LIGHT_PIXEL)]);
-	}
-
+	Effect* myEffect[NOF_LIGHT_TYPES];
 };

@@ -1,10 +1,6 @@
 #pragma once
 #include "LightStructs.h"
 
-
-
-
-
 class CModel;
 class CPointLight
 {

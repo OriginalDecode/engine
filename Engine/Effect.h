@@ -24,7 +24,6 @@ public:
 	void AddShaderResource(IShaderResourceView* aShaderResource);
 private:
 	std::string myFileName;
-	IDevContext* m_Context;
 
 	CompiledShader* m_VertexShader		= nullptr;
 	CompiledShader* m_PixelShader		= nullptr;

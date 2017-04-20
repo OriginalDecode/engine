@@ -4,9 +4,6 @@
 Effect::Effect(const std::string& aFilePath)
 	: myFileName(aFilePath)
 {
-
-	//This should be API agnostic
-	m_Context = Engine::GetAPI()->GetContext();
 }
 
 void Effect::SetPixelShader(CompiledShader* shader)
@@ -16,21 +13,21 @@ void Effect::SetPixelShader(CompiledShader* shader)
 
 void Effect::Activate()
 {
-	//The set vertex & pixel ... should be API agnostic.
-	Engine::GetAPI()->SetVertexShader(m_VertexShader->m_Shader);
-	Engine::GetAPI()->SetPixelShader(m_PixelShader->m_Shader);
+	DirectX11* api = Engine::GetAPI();
+	api->SetVertexShader(m_VertexShader->m_Shader);
+	api->SetPixelShader(m_PixelShader->m_Shader);
 
-	if (myShaderResources.Size() > 0)
-	{
-		myShaderResources.Optimize();
-		m_Context->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
-	}
+	if ( myShaderResources.Empty() )
+		return;
+	
+	myShaderResources.Optimize();
+	api->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
 }
 
 void Effect::Deactivate()
 {
 	if (myNULLList.Size() > 0)
-		m_Context->PSSetShaderResources(0, myNULLList.Size(), &myNULLList[0]);
+		Engine::GetAPI()->GetContext()->PSSetShaderResources(0, myNULLList.Size(), &myNULLList[0]);
 }
 
 void Effect::AddShaderResource(IShaderResourceView* aShaderResource)

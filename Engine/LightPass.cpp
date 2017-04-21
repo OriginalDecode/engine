@@ -4,7 +4,7 @@
 #include "SpotLight.h"
 #include "GBuffer.h"
 
-bool LightPass::Initiate(const GBuffer* aGBuffer, Texture* shadow_texture)
+bool LightPass::Initiate(GBuffer* aGBuffer, Texture* shadow_texture)
 {
 #ifdef SNOWBLIND_DX11
 	myEffect[u32(eLight::POINTLIGHT)] = Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Lightmesh.json");

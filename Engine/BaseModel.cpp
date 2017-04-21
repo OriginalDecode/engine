@@ -15,7 +15,7 @@ CBaseModel::~CBaseModel() = default;
 
 void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows, bool override_shaders)
 {
-	SetupLayoutsAndBuffers();
+	//SetupLayoutsAndBuffers();
 
 	/*if (!render_shadows && !override_shaders)
 	{

@@ -9,7 +9,7 @@ class LightPass
 public:
 	LightPass() = default;
 
-	bool Initiate(const GBuffer* aGBuffer, Texture* shadow_texture);
+	bool Initiate(GBuffer* aGBuffer, Texture* shadow_texture);
 	bool CleanUp();
 	void RenderPointlight(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
 	void RenderSpotlight(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);

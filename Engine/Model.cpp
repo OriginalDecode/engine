@@ -52,11 +52,11 @@ CModel* CModel::Initiate(const std::string& filename)
 	return this;
 }
 
-void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows, bool override_shaders)
+void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
 {
 	for (CModel* child : myChildren)
 	{
-		child->Render(aCameraOrientation, aCameraProjection, render_shadows, override_shaders);
+		child->Render(aCameraOrientation, aCameraProjection, render_shadows);
 	}
 
 	if (myIsNULLObject)

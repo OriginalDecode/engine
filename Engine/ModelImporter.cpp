@@ -118,7 +118,7 @@ CModel* CModelImporter::CreateModel(FBXModelData* someData, CModel* model, std::
 
 CModel* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect* effect)
 {
-	CModel* model = new CModel();
+	CModel* model = new CModel;
 	model->SetEffect(effect);
 
 	if ( data->myData )

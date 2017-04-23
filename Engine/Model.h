@@ -21,7 +21,7 @@ public:
 	CModel();
 	bool CleanUp() override;
 	CModel* Initiate(const std::string& filename);
-	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false, bool override_shaders = false) override;
+	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false) override;
 	void AddChild(CModel* aChild);
 	void SetIsLightmesh();
 	void SetPosition(const CU::Vector3f& aPosition);

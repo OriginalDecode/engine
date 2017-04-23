@@ -26,13 +26,11 @@ public:
 	CBaseModel();
 	virtual ~CBaseModel() = 0;
 	virtual bool CleanUp() = 0;
-	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false, bool override_shaders = false);
+	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false) = 0;
 
 	void SetupLayoutsAndBuffers();
 
 	void SetEffect(Effect* anEffect);
-	Effect* GetEffect() { return myEffect; }
-
 
 protected:
 	std::string m_Filename;
@@ -40,8 +38,9 @@ protected:
 	void InitIndexBuffer();
 	virtual void InitConstantBuffer() = 0;
 	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
+
 	Engine* myEngine = nullptr;
-	CU::Vector3f m_WHD;
+	CU::Vector3f m_WHD; //to be removed
 
 	CU::Vector3f m_MaxPoint;
 	CU::Vector3f m_MinPoint;
@@ -49,11 +48,7 @@ protected:
 
 	Effect* myEffect = nullptr;
 	IDevContext* myContext = nullptr;
-#ifdef SNOWBLIND_DX11
 	DirectX11* myAPI = nullptr;
-#else
-	Vulkan* myAPI = nullptr;
-#endif
 	IInputLayout* m_VertexLayout = nullptr;
 	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 
@@ -73,7 +68,7 @@ protected:
 		CU::Matrix44f m_Projection;
 	} m_ConstantStruct;
 
-
+	/* Three different model types ( ? ) */
 	bool myIsNULLObject = true;
 	bool myIsLightMesh = false;
 	bool m_IsSkysphere = false;

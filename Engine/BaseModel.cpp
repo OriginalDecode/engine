@@ -13,18 +13,6 @@ CBaseModel::CBaseModel()
 
 CBaseModel::~CBaseModel() = default;
 
-void CBaseModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows, bool override_shaders)
-{
-	//SetupLayoutsAndBuffers();
-
-	/*if (!render_shadows && !override_shaders)
-	{
-		myAPI->SetVertexShader(myEffect->GetVertexShader()->m_Shader);
-		myAPI->SetPixelShader(myEffect->GetPixelShader()->m_Shader);
-	}*/
-
-}
-
 void CBaseModel::SetupLayoutsAndBuffers()
 {
 	myContext->IASetInputLayout(m_VertexLayout);

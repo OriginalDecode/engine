@@ -59,7 +59,7 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 
 	output = (GBuffer)0;
 	output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv) * AOTexture.Sample(linear_Wrap, input.uv);
-	output.Albedo = pow(output.Albedo,  2.2);
+	//output.Albedo = pow(output.Albedo,  2.2);
 
 
 	output.Normal = float4(_normal.rgb, MetalnessTexture.Sample(linear_Wrap, input.uv).r);

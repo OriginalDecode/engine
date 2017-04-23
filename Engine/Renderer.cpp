@@ -269,6 +269,7 @@ void Renderer::Render3DCommands()
 	//m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	for (CTerrain* terrain : myTerrainArray)
 	{
+
 		if (!terrain->HasLoaded())
 			continue;
 

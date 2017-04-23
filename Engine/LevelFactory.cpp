@@ -44,7 +44,7 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 
 
 	m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
-	return true;
+	
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
 		CreateEntitiy(it->value["entity"].GetString(), it);
@@ -55,9 +55,9 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 
 void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it)
 {
-	std::string data_path = "Data/Levels/";
+	//std::string data_path = "Data/Levels/";
 
-	JSONReader entity_reader(data_path + entity_filepath);
+	JSONReader entity_reader(/*data_path +*/ entity_filepath);
 	Entity e = m_EntityManager->CreateEntity();
 
 	s32 debug_flags = 0;
@@ -121,17 +121,17 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 		CreateDebugComponent(e, hasLight, debug_flags);
 //#endif
 
-	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
-	
-	CU::Vector3f new_pos = pos;
-	new_pos.y += 5.f;
-	new_pos.x += 400.f;
-	new_pos.z += 400.f;
+	//TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
+	//
+	//CU::Vector3f new_pos = pos;
+	//new_pos.y += 5.f;
+	//new_pos.x += 400.f;
+	//new_pos.z += 400.f;
 
-	component.myOrientation.SetPosition(new_pos);
+	//component.myOrientation.SetPosition(new_pos);
 
 
-	m_DwellerList.GetLast()->Initiate(e, TreeDweller::eType::STATIC);
+	m_DwellerList.GetLast()->Initiate(e, TreeDweller::STATIC);
 
 	//TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
 
@@ -195,11 +195,12 @@ TreeDweller* LevelFactory::CreateEntitiy(const std::string& entity_filepath, con
 	return dweller;
 }
 
-void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& /*position*/)
+void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position)
 {
 	m_EntityManager->AddComponent<TranslationComponent>(entity_id);
 
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+	component.myOrientation.SetPosition(position);
 	m_DwellerList.GetLast()->AddComponent<TranslationComponent>(&component, TreeDweller::TRANSLATION);
 
 

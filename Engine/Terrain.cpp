@@ -10,7 +10,6 @@ bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, c
 {
 	myWidth = aSize.x;
 	myDepth = aSize.y;
-#ifdef SNOWBLIND_DX11
 	m_Filename = "Terrain";
 	myIsNULLObject = false;
 	myEffect = myEngine->GetEffect("Shaders/T_Terrain_Base.json");
@@ -32,7 +31,6 @@ bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, c
 	mySurface = new CSurface(myEffect);
 	mySurface->AddTexture("Data/Textures/terrain.dds", _ALBEDO);
 	mySurface->AddTexture("Data/Textures/default_textures/no-texture-bw.dds", _ROUGHNESS);
-#endif
 	m_HasLoaded = true;
 	return true;
 }
@@ -60,21 +58,31 @@ bool CTerrain::CleanUp()
 	return true;
 }
 
-void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows, bool override_shader)
+void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
 {
 	if ( myIsNULLObject )
 		return;
 
-		SetupLayoutsAndBuffers();
-		UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
+	SetupLayoutsAndBuffers();
+
+	if( !render_shadows )
 		myEffect->Activate();
-		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-		myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-		if (!render_shadows)
-			mySurface->Activate();
+
+	UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
+	myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+
+	if ( !render_shadows )
+	{
+		mySurface->Activate();
 		myContext->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
-		if (!render_shadows)
-			mySurface->Deactivate();
+		mySurface->Deactivate();
+	}
+	else
+	{
+		myContext->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+	}
+
 }
 
 void CTerrain::Save(const std::string& /*aFilename*/)

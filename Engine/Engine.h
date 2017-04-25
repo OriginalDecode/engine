@@ -11,7 +11,7 @@
 #include <string>
 #include "../EntitySystem/EntityManager.h"
 #include "ShaderFactory.h"
-
+#include <Engine/SystemMonitor.h>
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -236,7 +236,7 @@ private:
 	LevelFactory* m_LevelFactory = nullptr;
 
 	std::bitset<(u16)eEngineStates::_COUNT> m_States;
-
+	CSystemMonitor m_SystemMonitor;
 	bool m_PauseInput = false;
 	float m_DeltaTime = 0.f;
 	s32	m_Frame = 0;

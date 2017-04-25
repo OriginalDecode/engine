@@ -37,6 +37,7 @@ void CBaseModel::InitVertexBuffer()
 #endif
 	m_VertexBuffer.myVertexBuffer = myAPI->CreateBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
 #ifdef _DEBUG
+
 	myAPI->SetDebugName(m_VertexBuffer.myVertexBuffer, "Model Vertex Buffer " + m_Filename);
 #endif
 

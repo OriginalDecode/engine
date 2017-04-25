@@ -30,7 +30,7 @@ bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, c
 	CreateVertices(aSize.x, aSize.y, position);
 	mySurface = new CSurface(myEffect);
 	mySurface->AddTexture("Data/Textures/terrain.dds", _ALBEDO);
-	mySurface->AddTexture("Data/Textures/default_textures/no-texture-bw.dds", _ROUGHNESS);
+	//mySurface->AddTexture("Data/Textures/default_textures/no-texture-bw.dds", _ROUGHNESS);
 	m_HasLoaded = true;
 	return true;
 }

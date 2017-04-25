@@ -24,7 +24,7 @@ int CSystemMonitor::GetMemoryUsage(bool inKB)
 	GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof(memCounter));
 	int toReturn = 0;
 
-	toReturn = memCounter.WorkingSetSize / 1024 / 1024;
+	toReturn = (memCounter.WorkingSetSize / 1024) / 1024;
 
 	if (inKB)
 		toReturn = memCounter.WorkingSetSize / 1024;
@@ -72,7 +72,8 @@ float CSystemMonitor::GetCPUUsage()
 	ULONGLONG sysTotal = sysKernelDiff + sysUserDiff;
 	ULONGLONG procTotal = procKernelDiff + procUserDiff;
 
-	return (float)((100.0 * procTotal) / sysTotal);
+
+	return (float) 100.f * (float(procTotal) / float(sysTotal));
 }
 
 ULONGLONG CSystemMonitor::FixCPUTimings(const FILETIME &a, const FILETIME &b)

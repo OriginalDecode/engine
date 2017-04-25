@@ -551,7 +551,7 @@ void DirectX11::ReportLiveObjects()
 {
 	myContext->ClearState();
 	myContext->Flush();
-	myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL /*| D3D11_RLDO_IGNORE_INTERNAL*/);
+	myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | (D3D11_RLDO_FLAGS)0x4);
 }
 
 void DirectX11::SetViewport(Viewport* viewport)

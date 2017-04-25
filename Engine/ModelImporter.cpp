@@ -119,6 +119,10 @@ CModel* CModelImporter::CreateModel(FBXModelData* someData, CModel* model, std::
 CModel* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect* effect)
 {
 	CModel* model = new CModel;
+
+	size_t pos = filepath.rfind('/');
+	
+	model->m_Filename = filepath.substr(pos);
 	model->SetEffect(effect);
 
 	if ( data->myData )

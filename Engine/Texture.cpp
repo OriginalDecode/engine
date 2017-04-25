@@ -392,14 +392,28 @@ bool Texture::Load(std::string filepath)
 {
 	DL_MESSAGE("Loading texture : %s", filepath.c_str());
 	myFileName = filepath;
-#ifdef SNOWBLIND_DX11
 	ID3D11Device* device = Engine::GetAPI()->GetDevice();
+
+/*	HRESULT hr = DirectX::CreateDDSTextureFromFileEx(
+		device, 
+		std::wstring(filepath.begin(), filepath.end()).c_str(), 
+		0, 
+		D3D11_USAGE_DEFAULT, 
+		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET, 
+		D3D11_CPU_ACCESS_READ, 
+		D3D11_RESOURCE_MISC_GENERATE_MIPS, 
+		false, 
+		nullptr, 
+		&m_ShaderResource);*/
+
+
+
+
 	HRESULT hr = DirectX::CreateDDSTextureFromFile(device
 		, nullptr
 		, std::wstring(filepath.begin(), filepath.end()).c_str()
 		, nullptr
 		, &m_ShaderResource);
-#endif
 	std::string debugname = CL::substr(filepath, "/", false, 0);
 	Engine::GetAPI()->SetDebugName(m_ShaderResource, debugname);
 	DL_MESSAGE_EXP(FAILED(hr), "[Texture](Load) : Failed to load texture %s", filepath.c_str());

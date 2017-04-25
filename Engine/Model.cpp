@@ -24,8 +24,8 @@ bool CModel::CleanUp()
 	myChildren.DeleteAll();
 
 	SAFE_RELEASE(myConstantBuffer);
-	if (myConstantBuffer)
-		return false;
+	DL_ASSERT_EXP(!myConstantBuffer, "Failed to release constant buffer!");
+		
 	SAFE_RELEASE(m_VertexLayout);
 	if (m_VertexLayout)
 		return false;

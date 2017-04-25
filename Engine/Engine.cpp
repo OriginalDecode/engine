@@ -662,7 +662,9 @@ void Engine::UpdateDebugUI()
 	if (ImGui::Begin("Information", &pOpen, flags))
 	{
 		ImGui::Text("Delta Time : %.3f", GetDeltaTime());
-
+		ImGui::Text("FPS : %.1f", GetFPS());
+		ImGui::Text("CPU Usage : %.1f\%", m_SystemMonitor.GetCPUUsage());
+		ImGui::Text("Memory Usage : %dmb", m_SystemMonitor.GetMemoryUsage());
 		if ( m_Threadpool.HasWork() )
 			ImGui::Text("Is Loading");
 		else

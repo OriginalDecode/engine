@@ -260,7 +260,6 @@ void Renderer::RenderNonDeferred3DCommands()
 
 void Renderer::Render3DCommands()
 {
-
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 
 	//m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
@@ -313,22 +312,22 @@ void Renderer::Render3DCommands()
 
 				if (m_ProcessDirectionalShadows)
 				{
-
 					m_API->SetRasterizer(eRasterizer::CULL_NONE);
-					model->Render(m_DirectionalFrame, m_Camera->GetPerspective(), true);
+					model->ShadowRender(m_DirectionalFrame, m_Camera->GetPerspective());
+
 				}
 				else if (m_ProcessShadows)
 				{
 
 					m_API->SetRasterizer(eRasterizer::CULL_NONE);
-					model->Render(myPrevShadowFrame, m_Camera->GetPerspective(), true);
+					model->ShadowRender(myPrevShadowFrame, m_Camera->GetPerspective());
 				}
 				else
 				{
 					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 					model->Render(myPrevFrame, m_Camera->GetPerspective(), false);
 				}
-			}break;
+			} break;
 		}
 	}
 }

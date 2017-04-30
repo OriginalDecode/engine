@@ -11,8 +11,8 @@ bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, c
 	myWidth = aSize.x;
 	myDepth = aSize.y;
 	m_Filename = "Terrain";
-	myIsNULLObject = false;
-	myEffect = myEngine->GetEffect("Shaders/T_Terrain_Base.json");
+	m_IsRoot = false;
+	myEffect = Engine::GetInstance()->GetEffect("Shaders/T_Terrain_Base.json");
 
 	TGA32::Image* image = TGA32::Load(aFile.c_str());
 	/*u8* data;*/
@@ -35,52 +35,43 @@ bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, c
 	return true;
 }
 
-bool CTerrain::CleanUp()
+void CTerrain::CleanUp()
 {
 	myIndexes.clear();
 	myVertices.clear();
 
-	SAFE_RELEASE(m_VertexLayout);
-	if (m_VertexLayout)
-		return false;
-
 	SAFE_DELETE(mySurface);
-
+	SAFE_RELEASE(m_VertexLayout);
 	SAFE_RELEASE(myConstantBuffer);
-	if (myConstantBuffer)
-		return false;
-
 	SAFE_RELEASE(m_PSConstantBuffer);
-	if (m_PSConstantBuffer)
-		return false;
 
 
-	return true;
 }
 
 void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
 {
-	if ( myIsNULLObject )
+	if ( m_IsRoot )
 		return;
 
+	DirectX11* api = Engine::GetAPI();
 	SetupLayoutsAndBuffers();
 
 	if( !render_shadows )
 		myEffect->Activate();
 
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
-	myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-	myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+	api->GetContext()->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	api->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 
 	if ( !render_shadows )
 	{
 		mySurface->Activate();
-		myContext->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+		api->GetContext()->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 		mySurface->Deactivate();
 	}
 	else
 	{
-		myContext->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+		api->GetContext()->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 	}
 
 }
@@ -205,17 +196,17 @@ void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& positio
 void CTerrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
 #ifdef SNOWBLIND_DX11
-	if (myIsNULLObject == false)
+	if (m_IsRoot == false)
 	{
-
+		DirectX11* api = Engine::GetAPI();
 		myConstantStruct.world = myOrientation;
 		myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);
 		myConstantStruct.projection = aCameraProjection;
-		myConstantStruct.time.x = myEngine->GetDeltaTime();
-		myAPI->UpdateConstantBuffer((myConstantBuffer), &myConstantStruct);
+		//myConstantStruct.time.x = Engein->GetDeltaTime();
+		api->UpdateConstantBuffer((myConstantBuffer), &myConstantStruct);
 
 		m_PSConstantStruct.camPos = myOrientation.GetTranslation();
-		myAPI->UpdateConstantBuffer((m_PSConstantBuffer), &m_PSConstantStruct);
+		api->UpdateConstantBuffer((m_PSConstantBuffer), &m_PSConstantStruct);
 	}
 #endif
 }
@@ -231,10 +222,10 @@ void CTerrain::InitConstantBuffer()
 	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
-
-	HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-	myAPI->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
-	myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+	DirectX11* api = Engine::GetAPI();
+	HRESULT hr = api->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+	api->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
+	api->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 
 	ZeroMemory(&cbDesc, sizeof(cbDesc));
 	cbDesc.ByteWidth = sizeof(TerrainCameraPos);
@@ -244,9 +235,9 @@ void CTerrain::InitConstantBuffer()
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
 
-	hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &m_PSConstantBuffer);
-	myAPI->SetDebugName(m_PSConstantBuffer, "Model Pixel Constant Buffer : " + m_Filename);
-	myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+	hr = api->GetDevice()->CreateBuffer(&cbDesc, 0, &m_PSConstantBuffer);
+	api->SetDebugName(m_PSConstantBuffer, "Model Pixel Constant Buffer : " + m_Filename);
+	api->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 
 #endif
 }

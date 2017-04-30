@@ -107,7 +107,7 @@ public:
 	CModel* GetModel(const std::string& aFilePath);
 
 	std::string LoadModel(std::string aFilePath, std::string effect, bool thread);
-
+	std::string LoadModel(std::string filepath, std::string effect, CModel* pModel, bool thread);
 	void ResetRenderTargetAndDepth();
 
 	//_________________________________________

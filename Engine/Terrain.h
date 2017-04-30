@@ -1,5 +1,5 @@
 #pragma once
-#include "BaseModel.h"
+#include <Engine/Model.h>
 #include <standard_datatype.hpp>
 
 class CSurface;
@@ -13,13 +13,13 @@ struct SHeightMap
 
 SHeightMap Create(const char* aFilePath);
 
-class CTerrain : public CBaseModel
+class CTerrain : public CModel
 {
 public:
 	CTerrain() = default;
 
 	bool Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
-	bool CleanUp() override;
+	void CleanUp() override;
 	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false) override;
 
 	void Save(const std::string& aFilename);

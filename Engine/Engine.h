@@ -107,6 +107,8 @@ public:
 	Model* GetModel(const std::string& aFilePath);
 
 	std::string LoadModel(std::string aFilePath, std::string effect, bool thread);
+	template<typename T>
+	std::string LoadModel(std::string filepath, std::string effect, T* pModel, bool thread);
 
 	void ResetRenderTargetAndDepth();
 
@@ -241,4 +243,10 @@ private:
 	float m_DeltaTime = 0.f;
 	s32	m_Frame = 0;
 };
+
+template<typename T>
+std::string Engine::LoadModel(std::string filepath, std::string effect, T* pModel, bool thread)
+{
+	myAssetsContainer->LoadModel(filepath, effect, pModel, thread);
+}
 

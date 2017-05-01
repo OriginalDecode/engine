@@ -38,6 +38,8 @@ public:
 	Effect* GetEffect(const std::string& aFilePath);
 	Model* GetModel(const std::string& aFilePath);
 	std::string LoadModel(std::string aFilePath, std::string effect, bool thread = true);
+	template<typename T>
+	std::string LoadModel(std::string filepath, std::string effect_filepath, T* pModel, bool thread = true);
 
 	void AddLoadRequest(std::string file, eRequestType request_type);
 
@@ -70,3 +72,27 @@ private:
 	CU::GrowingArray<LoadRequest> m_RequestList;
 
 };
+
+template<typename T>
+std::string AssetsContainer::LoadModel(std::string filepath, std::string effect_filepath, T* pModel, bool thread /*= true*/)
+{
+	if (myModels.find(filepath) != myModels.end())
+		return filepath;
+	DL_MESSAGE("Loading model : %s", filepath.c_str());
+
+	myModels.emplace(filepath, pModel);
+
+	if (thread)
+	{
+		m_Engine->GetThreadpool().AddWork(Work([=]() {
+			m_ModelLoader->LoadModel(filepath, effect_filepath, pModel);
+		}));
+	}
+	else
+	{
+		m_ModelLoader->LoadModel(filepath, effect_filepath, pModel);
+	}
+
+	return filepath;
+
+}

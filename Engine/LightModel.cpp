@@ -4,7 +4,7 @@
 
 bool LightModel::CleanUp()
 {
-
+	__super::CleanUp();
 	return true;
 }
 
@@ -12,7 +12,8 @@ void LightModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matri
 {
 	for (Model* child : myChildren)
 	{
-		child->Render(aCameraOrientation, aCameraProjection, render_context);
+		LightModel* light_model = static_cast<LightModel*>(child);
+		light_model->Render(aCameraOrientation, aCameraProjection, render_context);
 	}
 
 	if (m_IsRoot)

@@ -31,6 +31,7 @@
 #include <NetworkSystem.h>
 #include <CameraSystem.h>
 
+#include <Engine/LightModel.h>
 #ifdef _PROFILE
 #include <easy/profiler.h>
 #include <easy/reader.h>
@@ -189,7 +190,8 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();
 
-	LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", false);
+	LightModel* light_model = new LightModel;
+	LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", light_model, false);
 	LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", false);
 
 	return true;

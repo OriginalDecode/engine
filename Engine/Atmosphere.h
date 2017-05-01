@@ -14,7 +14,7 @@ public:
 	void Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position );
 	void CleanUp();
 
-	void Render(const CU::Matrix44f& orientation, Texture* depth);
+	void Render(const CU::Matrix44f& orientation, Texture* depth, const RenderContext& render_context);
 	void SetLightData(const CU::Vector4f& direction, const CU::Vector4f& position);
 private:
 	Engine* m_Engine							= nullptr;

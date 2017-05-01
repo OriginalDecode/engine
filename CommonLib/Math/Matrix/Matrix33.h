@@ -3,9 +3,9 @@
 #include "Matrix33Decl.h"
 
 
-typedef CU::Math::Matrix33<float> Matrix33f;
 namespace CommonUtilities
 {
+	typedef Math::Matrix33<float> Matrix33f;
 	namespace Math
 	{
 #pragma region Constructors

@@ -436,11 +436,6 @@ void Engine::DisableZ()
 	myAPI->DisableZBuffer();
 }
 
-void Engine::ToggleWireframe()
-{
-	myInstance->myRenderer->ToggleWireframe();
-}
-
 const WindowSize& Engine::GetWindowSize() const
 {
 	return m_Window.GetWindowSize();

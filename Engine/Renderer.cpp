@@ -25,14 +25,10 @@
 
 #ifdef _PROFILE
 #include <easy/profiler.h>
-#else
 #endif 
 
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
-
-
-//#define AMBIENT_PASS_ONLY
 
 bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 {
@@ -195,7 +191,7 @@ void Renderer::Render()
 
 	
 	m_Atmosphere.SetLightData(m_Direction, m_DirectionalCamera->GetPosition());
-	m_Atmosphere.Render(myPrevFrame, myDepthTexture);
+	m_Atmosphere.Render(myPrevFrame, myDepthTexture, m_RenderContext);
 	
 	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), myDeferredRenderer->GetDepthStencil()->GetDepthView());
 	RenderParticles();
@@ -252,7 +248,7 @@ void Renderer::RenderNonDeferred3DCommands()
 				}
 
 
-				m_API->SetRasterizer(eRasterizer::CULL_NONE);
+				m_API->SetRasterizer(command.m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 				m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
 				Model* model = m_Engine->GetModel(command.m_KeyOrText);
@@ -390,7 +386,6 @@ void Renderer::RenderSpotlight()
 
 void Renderer::RenderPointlight()
 {
-	//BROFILER_FRAME("Renderer::RenderPointlight");
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::ePointlight);
 
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
@@ -545,11 +540,6 @@ void Renderer::ProcessShadows(Camera* camera)
 	m_ShadowEffect->Deactivate();
 
 	myDeferredRenderer->SetBuffers();
-}
-
-void Renderer::ToggleWireframe()
-{
-	m_RenderWireframe = !m_RenderWireframe;
 }
 
 PostProcessManager& Renderer::GetPostprocessManager()

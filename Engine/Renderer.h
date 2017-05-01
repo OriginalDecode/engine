@@ -7,7 +7,7 @@
 #include <Math/Matrix/Matrix.h>
 #include "PostProcessManager.h"
 #include <Engine/Atmosphere.h>
-
+#include <CommonLib/Math/Matrix/Matrix33.h>
 namespace CommonUtilities
 {
 	class TimeManager;
@@ -39,10 +39,8 @@ public:
 
 	void Render();
 	void AddTerrain(CTerrain* someTerrain);
-	void ToggleWireframe();
 
 	PostProcessManager& GetPostprocessManager();
-	void ActiveSkyModel(const std::string& key);
 private:
 	void RenderNonDeferred3DCommands();
 	void Render3DCommands();
@@ -50,77 +48,71 @@ private:
 
 	void RenderPointlight();
 	void RenderSpotlight();
-	void RenderDirectionalLight();
 
 	void RenderParticles();
 	void RenderLines();
+
 	//Only works for the spotlight
 	void ProcessShadows();
-
 	void ProcessShadows(Camera* camera);
 
 	CU::GrowingArray<CTerrain*> myTerrainArray;
 
-	bool				m_RenderWireframe = false;
 	bool				m_ProcessShadows = false;
+	bool				m_ProcessDirectionalShadows = false;
 
-	Engine*				m_Engine = nullptr;
-#ifdef SNOWBLIND_DX11
-	DirectX11*			m_API = nullptr;
-#else
-	Vulkan*				m_API = nullptr;
-#endif
-	Camera*				m_Camera = nullptr;
 	CU::Matrix44f		myPrevFrame;
 	CU::Matrix44f		myPrevShadowFrame;
 	CU::Matrix44f		m_DirectionalFrame;
-	bool m_ProcessDirectionalShadows = false;
-	CU::TimeManager*	myTimeManager = nullptr;
 
-	DeferredRenderer*	myDeferredRenderer = nullptr;
+	CU::Vector3f		m_Direction;
+	CU::Vector3f		m_OriginalDirection;
+	CU::Matrix33f		m_Orientation;
 
-	DirectionalLight*	myDirectionalLight = nullptr;
-	CPointLight*		myPointLight = nullptr;
-	CSpotLight*			mySpotlight = nullptr;
-	ShadowSpotlight*	m_Shadowlight = nullptr;
-
-	Synchronizer*		mySynchronizer = nullptr;
-	CText*				myText = nullptr;
-	Texture*			myDepthTexture = nullptr;
-	Sprite*				mySprite = nullptr;
-	Sprite*				myClearColor = nullptr;
-
-	CLine3D*			my3DLine = nullptr;
-
-	CEmitterInstance*	m_ParticleEmitter = nullptr;
-
+	PostProcessManager	m_PostProcessManager;
 	LightPass			m_LightPass;
 	ShadowPass			m_ShadowPass;
 	Atmosphere			m_Atmosphere;
 
-	//IBuffer* m_DirectionalLightBuffer = nullptr;
+	RenderCommand		m_CubeCommand;
+	RenderContext		m_RenderContext;
 
-	CU::Vector3f m_Direction;
-	CU::Vector3f m_OriginalDirection;
-	CU::Math::Matrix33<float> m_Orientation;
+	Engine*				m_Engine				= nullptr;
+	DirectX11*			m_API					= nullptr;
+	Camera*				m_Camera				= nullptr;
+	CU::TimeManager*	myTimeManager			= nullptr;
 
-	Camera* m_DirectionalCamera = nullptr;
-	Effect* m_ShadowEffect = nullptr;
-	Texture* m_ShadowDepth = nullptr;
-	Texture* m_ShadowDepthStencil = nullptr;
+	DeferredRenderer*	myDeferredRenderer		= nullptr;
+
+	DirectionalLight*	myDirectionalLight		= nullptr;
+	CPointLight*		myPointLight			= nullptr;
+	CSpotLight*			mySpotlight				= nullptr;
+	ShadowSpotlight*	m_Shadowlight			= nullptr;
+
+	Synchronizer*		mySynchronizer			= nullptr;
+	CText*				myText					= nullptr;
+	Texture*			myDepthTexture			= nullptr;
+	Sprite*				mySprite				= nullptr;
+	Sprite*				myClearColor			= nullptr;
+
+	CLine3D*			my3DLine				= nullptr;
+
+	CEmitterInstance*	m_ParticleEmitter		= nullptr;
+
+	Camera*				m_DirectionalCamera		= nullptr;
+	Effect*				m_ShadowEffect			= nullptr;
+	Texture*			m_ShadowDepth			= nullptr;
+	Texture*			m_ShadowDepthStencil	= nullptr;
 
 	struct cbDirectionalLightPS
 	{
-		CU::Matrix44f m_InvertedProjection;
-		CU::Matrix44f m_View;
-		CU::Vector4f m_Color;
-		CU::Vector4f m_CameraPosition;
-		CU::Matrix44f m_ShadowMVP;
-		CU::Vector4f m_Direction;
+		CU::Matrix44f	m_InvertedProjection;
+		CU::Matrix44f	m_View;
+		CU::Vector4f	m_Color;
+		CU::Vector4f	m_CameraPosition;
+		CU::Matrix44f	m_ShadowMVP;
+		CU::Vector4f	m_Direction;
 	} m_DirectionalLightStruct;
 
-	PostProcessManager m_PostProcessManager;
 
-	RenderCommand		m_CubeCommand;
-	RenderContext		m_RenderContext;
 };

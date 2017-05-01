@@ -49,7 +49,7 @@ void Atmosphere::CleanUp()
 	SAFE_RELEASE(m_VertexBuffer);
 }
 
-void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth)
+void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth, const RenderContext& render_context)
 {
 
 	m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
@@ -67,8 +67,8 @@ void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth)
 	ctx->VSSetConstantBuffers(1, 1, &m_VertexBuffer);
 	ctx->PSSetConstantBuffers(0, 1, &m_PixelBuffer);
 
-	//m_OuterSphere->Render(orientation, m_Camera->GetPerspective());
-	//m_InnerSphere->Render(orientation, m_Camera->GetPerspective());
+	m_OuterSphere->Render(orientation, m_Camera->GetPerspective(), render_context);
+	m_InnerSphere->Render(orientation, m_Camera->GetPerspective(), render_context);
 
 }
 

@@ -87,8 +87,6 @@ public:
 	static void EnableZ();
 	static void DisableZ();
 
-	static void ToggleWireframe();
-
 	const WindowSize& GetWindowSize() const;
 	const WindowSize& GetInnerSize() const;
 

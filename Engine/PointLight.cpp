@@ -50,15 +50,7 @@ void CPointLight::Update()
 
 void CPointLight::Render(const CU::Matrix44f& previousOrientation, Camera* camera)
 {
-
-
-	
-
-	m_Model->Render(previousOrientation, camera->GetPerspective());
-
-
-
-
+	//m_Model->Render(previousOrientation, camera->GetPerspective());
 }
 
 const SPointlightData& CPointLight::GetData() const

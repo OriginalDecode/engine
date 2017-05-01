@@ -168,7 +168,7 @@ void CModelImporter::FillData(FBXModelData* someData, CModel* out, std::string f
 	CSurface* newSurface = new CSurface(0, data->myVertexCount, 0
 		, data->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	out->myIsNULLObject = false;
+	out->m_IsRoot = false;
 	SetupInputLayout(data, out);
 
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <Engine/snowblind_shared.h>
 #include "LightStructs.h"
 #include "ShadowPass.h"
 #include "LightPass.h"
@@ -121,5 +122,5 @@ private:
 	PostProcessManager m_PostProcessManager;
 
 	RenderCommand		m_CubeCommand;
-
+	RenderContext		m_RenderContext;
 };

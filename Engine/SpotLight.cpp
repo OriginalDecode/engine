@@ -12,7 +12,7 @@ CSpotLight::CSpotLight()
 
 void CSpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera)
 {
-	m_Model->Render(previousOrientation, aCamera->GetPerspective());
+	//m_Model->Render(previousOrientation, aCamera->GetPerspective());
 }
 
 SSpotlightData& CSpotLight::GetData()

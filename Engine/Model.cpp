@@ -7,13 +7,6 @@
 #include "Engine.h"
 #include "Surface.h"
 
-
-CModel::CModel()
-{
-	m_WHD = { 0.f,0.f,0.f };
-	myModelStates.reset();
-}
-
 bool CModel::CleanUp()
 {
 	mySurfaces.DeleteAll();
@@ -34,10 +27,10 @@ bool CModel::CleanUp()
 	return true;
 }
 
-CModel* CModel::Initiate(const std::string& filename)
+void CModel::Initiate(const std::string& filename)
 {
 	m_Filename = CL::substr(filename, "/", false, 0);
-	if (myIsNULLObject == false)
+	if (m_IsRoot == false)
 	{
 		InitVertexBuffer();
 		InitIndexBuffer();
@@ -48,55 +41,65 @@ CModel* CModel::Initiate(const std::string& filename)
 	{
 		child->Initiate(filename);
 	}
-
-	return this;
 }
 
-void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
+void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
 	for (CModel* child : myChildren)
 	{
-		child->Render(aCameraOrientation, aCameraProjection, render_shadows);
+		child->Render(aCameraOrientation, aCameraProjection, render_context);
 	}
 
-	if (myIsNULLObject)
+	if (m_IsRoot)
+		return;
+
+
+	if (mySurfaces.Empty())
 		return;
 
 	SetupLayoutsAndBuffers();
 
-	if ( !render_shadows )
-	{
-		myEffect->Activate();
-	}
+	
+	myEffect->Activate();
 
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
-	if (!myIsLightMesh)
-		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-	if ( mySurfaces.Empty() )
-		return;
-
-
-
-	for (s32 i = 0; i < mySurfaces.Size(); i++)
+	for (CSurface* surface : mySurfaces)
 	{
-		myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-		if (!myIsLightMesh)
-		{
-			if (!render_shadows && !myIsLightMesh && !m_IsSkysphere)
-				mySurfaces[i]->Activate(); 
+		render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 
-			myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
-		}
-		else
-		{
-			myContext->Draw(mySurfaces[i]->GetVertexCount(), 0);
-		}
+		surface->Activate();
 
-		if (!render_shadows && !myIsLightMesh && !m_IsSkysphere )
-			mySurfaces[i]->Deactivate();
+		render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0);
+
+		surface->Deactivate();
 	}
 
+}
+
+void CModel::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+{
+	for (CModel* child : myChildren)
+	{
+		child->ShadowRender(camera_orientation, camera_projection,render_context);
+	}
+
+	if (m_IsRoot)
+		return;
+
+	if (mySurfaces.Empty())
+		return;
+
+	SetupLayoutsAndBuffers();
+
+
+	UpdateConstantBuffer(camera_orientation, camera_projection);
+
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+	
+	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 }
 
 void CModel::SetIsLightmesh()
@@ -195,7 +198,7 @@ std::vector<s32> CModel::GetIndices()
 
 void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
-	if (myIsNULLObject == false)
+	if (m_IsRoot == false)
 	{
 		if (!myConstantBuffer)
 		{
@@ -206,7 +209,7 @@ void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const
 		m_ConstantStruct.m_InvertedView = CU::Math::Inverse(aCameraOrientation);
 		m_ConstantStruct.m_Projection = aCameraProjection;
 
-		myAPI->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
+		Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
 
 	}
 }
@@ -227,8 +230,8 @@ void CModel::InitConstantBuffer()
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
 
-	HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 
-	myAPI->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
-	myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
+	Engine::GetAPI()->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 }

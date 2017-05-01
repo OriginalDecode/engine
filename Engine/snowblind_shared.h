@@ -69,3 +69,10 @@ inline void EndTicketMutex(Ticket_Mutex* mutex)
 	mutex->serving++;
 }
 
+struct RenderContext
+{
+	class Engine* m_Engine = nullptr;
+	struct ID3D11Device* m_Device = nullptr;
+	struct ID3D11DeviceContext* m_Context = nullptr;
+	class DirectX11* m_API = nullptr;
+};

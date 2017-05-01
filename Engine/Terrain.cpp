@@ -11,8 +11,8 @@ bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, c
 	myWidth = aSize.x;
 	myDepth = aSize.y;
 	m_Filename = "Terrain";
-	myIsNULLObject = false;
-	myEffect = myEngine->GetEffect("Shaders/T_Terrain_Base.json");
+	m_IsRoot = false;
+	myEffect = Engine::GetInstance()->GetEffect("Shaders/T_Terrain_Base.json");
 
 	TGA32::Image* image = TGA32::Load(aFile.c_str());
 	/*u8* data;*/
@@ -58,31 +58,36 @@ bool CTerrain::CleanUp()
 	return true;
 }
 
-void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
+void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
-	if ( myIsNULLObject )
-		return;
+// 	if ( m_IsRoot )
+// 		return;
+// 
+// 	SetupLayoutsAndBuffers();
+// 
+// 	if( !render_shadows )
+// 		myEffect->Activate();
+// 
+// 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
+// 	myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+// 	myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+// 
+// 	if ( !render_shadows )
+// 	{
+// 		mySurface->Activate();
+// 		myContext->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+// 		mySurface->Deactivate();
+// 	}
+// 	else
+// 	{
+// 		myContext->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+// 	}
 
-	SetupLayoutsAndBuffers();
+}
 
-	if( !render_shadows )
-		myEffect->Activate();
-
-	UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
-	myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-	myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-
-	if ( !render_shadows )
-	{
-		mySurface->Activate();
-		myContext->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
-		mySurface->Deactivate();
-	}
-	else
-	{
-		myContext->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
-	}
-
+void CTerrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+{
+	DL_ASSERT("Not implemented!");
 }
 
 void CTerrain::Save(const std::string& /*aFilename*/)
@@ -205,17 +210,17 @@ void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& positio
 void CTerrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
 #ifdef SNOWBLIND_DX11
-	if (myIsNULLObject == false)
+	if (m_IsRoot == false)
 	{
 
 		myConstantStruct.world = myOrientation;
 		myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);
 		myConstantStruct.projection = aCameraProjection;
-		myConstantStruct.time.x = myEngine->GetDeltaTime();
-		myAPI->UpdateConstantBuffer((myConstantBuffer), &myConstantStruct);
+		//myConstantStruct.time.x = myEngine->GetDeltaTime();
+		Engine::GetAPI()->UpdateConstantBuffer((myConstantBuffer), &myConstantStruct);
 
 		m_PSConstantStruct.camPos = myOrientation.GetTranslation();
-		myAPI->UpdateConstantBuffer((m_PSConstantBuffer), &m_PSConstantStruct);
+		Engine::GetAPI()->UpdateConstantBuffer((m_PSConstantBuffer), &m_PSConstantStruct);
 	}
 #endif
 }
@@ -232,9 +237,9 @@ void CTerrain::InitConstantBuffer()
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
 
-	HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-	myAPI->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
-	myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
+	Engine::GetAPI()->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 
 	ZeroMemory(&cbDesc, sizeof(cbDesc));
 	cbDesc.ByteWidth = sizeof(TerrainCameraPos);
@@ -244,9 +249,9 @@ void CTerrain::InitConstantBuffer()
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
 
-	hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &m_PSConstantBuffer);
-	myAPI->SetDebugName(m_PSConstantBuffer, "Model Pixel Constant Buffer : " + m_Filename);
-	myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &m_PSConstantBuffer);
+	Engine::GetAPI()->SetDebugName(m_PSConstantBuffer, "Model Pixel Constant Buffer : " + m_Filename);
+	Engine::GetAPI()->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 
 #endif
 }

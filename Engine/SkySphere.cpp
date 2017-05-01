@@ -97,7 +97,7 @@ void SkySphere::Render(CU::Matrix44f& anOrientation, Texture* aDepthTexture)
 		srv[1] = aDepthTexture->GetDepthStencilView();
 		myAPI->GetContext()->PSSetShaderResources(0, 2, &srv[0]);
 		//(#LINUS) Fix scale.
-		layer.m_Model->Render(anOrientation, myCamera->GetPerspective());
+		//layer.m_Model->Render(anOrientation, myCamera->GetPerspective());
 
 		srv[0] = nullptr;
 		srv[1] = nullptr;

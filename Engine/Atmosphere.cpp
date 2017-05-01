@@ -67,8 +67,8 @@ void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth)
 	ctx->VSSetConstantBuffers(1, 1, &m_VertexBuffer);
 	ctx->PSSetConstantBuffers(0, 1, &m_PixelBuffer);
 
-	m_OuterSphere->Render(orientation, m_Camera->GetPerspective());
-	m_InnerSphere->Render(orientation, m_Camera->GetPerspective());
+	//m_OuterSphere->Render(orientation, m_Camera->GetPerspective());
+	//m_InnerSphere->Render(orientation, m_Camera->GetPerspective());
 
 }
 

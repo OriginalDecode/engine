@@ -23,40 +23,34 @@ struct IndexBufferWrapper;
 class CBaseModel
 {
 public:
-	CBaseModel();
+	CBaseModel() = default;
 	virtual ~CBaseModel() = 0;
 	virtual bool CleanUp() = 0;
-	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false) = 0;
+	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) = 0;
+	virtual void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) = 0;
 
 	void SetupLayoutsAndBuffers();
 
 	void SetEffect(Effect* anEffect);
 
 protected:
-	std::string m_Filename;
 	void InitVertexBuffer();
 	void InitIndexBuffer();
 	virtual void InitConstantBuffer() = 0;
 	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
 
-	Engine* myEngine = nullptr;
+	std::string m_Filename;
 	CU::Vector3f m_WHD; //to be removed
-
 	CU::Vector3f m_MaxPoint;
 	CU::Vector3f m_MinPoint;
 
-
 	Effect* myEffect = nullptr;
-	IDevContext* myContext = nullptr;
-	DirectX11* myAPI = nullptr;
 	IInputLayout* m_VertexLayout = nullptr;
 	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 
-
-	IndexDataWrapper m_IndexData;
 	VertexDataWrapper m_VertexData;
-
 	VertexBufferWrapper m_VertexBuffer;
+	IndexDataWrapper m_IndexData;
 	IndexBufferWrapper m_IndexBuffer;
 
 	IBuffer* myConstantBuffer = nullptr;
@@ -68,8 +62,7 @@ protected:
 		CU::Matrix44f m_Projection;
 	} m_ConstantStruct;
 
-	/* Three different model types ( ? ) */
-	bool myIsNULLObject = true;
+	bool m_IsRoot = true;
 	bool myIsLightMesh = false;
 	bool m_IsSkysphere = false;
 };

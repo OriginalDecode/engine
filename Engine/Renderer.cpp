@@ -105,6 +105,13 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
 
 
+
+	m_RenderContext.m_API = Engine::GetAPI();
+	m_RenderContext.m_Device = Engine::GetAPI()->GetDevice();
+	m_RenderContext.m_Context = Engine::GetAPI()->GetContext();
+	m_RenderContext.m_Engine = Engine::GetInstance();
+
+
 	return true;
 }
 
@@ -250,7 +257,7 @@ void Renderer::RenderNonDeferred3DCommands()
 
 				CModel* model = m_Engine->GetModel(command.m_KeyOrText);
 				model->SetOrientation(command.m_Orientation);
-				model->Render(myPrevFrame, m_Camera->GetPerspective(), false);
+				model->Render(myPrevFrame, m_Camera->GetPerspective(), m_RenderContext);
 			}break;
 		}
 	}
@@ -273,19 +280,13 @@ void Renderer::Render3DCommands()
 		if (!terrain->HasLoaded())
 			continue;
 
-		if (m_ProcessDirectionalShadows)
+		if (m_ProcessDirectionalShadows || m_ProcessShadows)
 		{
-			terrain->Render(m_DirectionalFrame, m_Camera->GetPerspective(), true);
-
-		}
-		else if (m_ProcessShadows)
-		{
-			terrain->Render(myPrevShadowFrame, m_Camera->GetPerspective(), true);
-
+			terrain->ShadowRender(m_ProcessShadows ? myPrevShadowFrame : m_DirectionalFrame, m_Camera->GetPerspective(), m_RenderContext);
 		}
 		else
 		{
-			terrain->Render(myPrevFrame, m_Camera->GetPerspective(), false);
+			terrain->Render(myPrevFrame, m_Camera->GetPerspective(), m_RenderContext);
 
 		}
 
@@ -315,18 +316,18 @@ void Renderer::Render3DCommands()
 				{
 
 					m_API->SetRasterizer(eRasterizer::CULL_NONE);
-					model->Render(m_DirectionalFrame, m_Camera->GetPerspective(), true);
+					model->ShadowRender(m_DirectionalFrame, m_Camera->GetPerspective(), m_RenderContext);
 				}
 				else if (m_ProcessShadows)
 				{
 
 					m_API->SetRasterizer(eRasterizer::CULL_NONE);
-					model->Render(myPrevShadowFrame, m_Camera->GetPerspective(), true);
+					model->ShadowRender(myPrevShadowFrame, m_Camera->GetPerspective(), m_RenderContext);
 				}
 				else
 				{
 					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-					model->Render(myPrevFrame, m_Camera->GetPerspective(), false);
+					model->Render(myPrevFrame, m_Camera->GetPerspective(), m_RenderContext);
 				}
 			}break;
 		}

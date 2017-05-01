@@ -18,10 +18,13 @@ class CModel : public CBaseModel
 {
 	friend class CModelImporter;
 public:
-	CModel();
+	CModel() = default;
 	bool CleanUp() override;
-	CModel* Initiate(const std::string& filename);
-	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows = false) override;
+	void Initiate(const std::string& filename);
+
+	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
+	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
+
 	void AddChild(CModel* aChild);
 	void SetIsLightmesh();
 	void SetPosition(const CU::Vector3f& aPosition);
@@ -44,7 +47,7 @@ public:
 	CU::GrowingArray<CModel*> GetChildModels() { return myChildren; }
 	void SetIsSkysphere(bool isSkysphere) { m_IsSkysphere = isSkysphere; for ( CModel* child : myChildren ) child->SetIsSkysphere(m_IsSkysphere); }
 
-private:
+protected:
 	void InitConstantBuffer();
 	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
 

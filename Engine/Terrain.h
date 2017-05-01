@@ -37,7 +37,7 @@ public:
 private:
 	bool m_HasLoaded = false;
 
-	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
+	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
 
 	void CreateVertices(u32 width, u32 height, const CU::Vector3f& position);
 	void InitConstantBuffer();
@@ -59,16 +59,5 @@ private:
 
 	CSurface* mySurface = nullptr;
 
-	struct TerrainConstantStruct : public VertexBaseStruct
-	{
-		CU::Vector4f time;
-	} myConstantStruct;
-
-
-	ID3D11Buffer* m_PSConstantBuffer;
-	struct TerrainCameraPos
-	{
-		CU::Vector4f camPos;
-	} m_PSConstantStruct;
-
+	VertexBaseStruct myConstantStruct;
 };

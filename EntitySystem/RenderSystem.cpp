@@ -84,7 +84,8 @@ void RenderSystem::Update(float /*dt*/)
 			eType::MODEL,
 			render.myModelID,
 			t,
-			render.scale));
+			render.scale,
+			render.m_RenderWireframe));
 #ifdef _PROFILE
 		EASY_END_BLOCK;
 #endif

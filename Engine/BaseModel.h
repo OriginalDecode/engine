@@ -37,7 +37,7 @@ protected:
 	void InitVertexBuffer();
 	void InitIndexBuffer();
 	virtual void InitConstantBuffer() = 0;
-	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
+	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) = 0;
 
 	std::string m_Filename;
 	CU::Vector3f m_WHD; //to be removed

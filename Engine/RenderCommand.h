@@ -38,7 +38,7 @@ struct RenderCommand
 
 
 	//Should all of this data be copied instead of const ref since the memory is going to get lost the next frame anyway?
-	RenderCommand(const eType& aType, const std::string& modelKey, const CU::Matrix44f& orientation, const CU::Vector4f& scale = CU::Vector4f(1,1,1,1));
+	RenderCommand(const eType& aType, const std::string& modelKey, const CU::Matrix44f& orientation, const CU::Vector4f& scale = CU::Vector4f(1,1,1,1), bool wireframe = false);
 	RenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& position);
 
 	RenderCommand(const eType& aType, const CU::Vector3f& aPosition);
@@ -63,6 +63,7 @@ struct RenderCommand
 	};
 
 	float myRange;
+	bool m_Wireframe = false;
 
 	SLinePoint firstPoint;
 	SLinePoint secondPoint;

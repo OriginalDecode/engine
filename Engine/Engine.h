@@ -247,6 +247,6 @@ private:
 template<typename T>
 std::string Engine::LoadModel(std::string filepath, std::string effect, T* pModel, bool thread)
 {
-	myAssetsContainer->LoadModel(filepath, effect, pModel, thread);
+	return myAssetsContainer->LoadModel(filepath, effect, pModel, thread);
 }
 

@@ -62,7 +62,7 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 	
 	myEffect->Activate();
 
-	UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
+	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 	for (CSurface* surface : mySurfaces)
@@ -94,7 +94,7 @@ void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matr
 	SetupLayoutsAndBuffers();
 
 
-	UpdateConstantBuffer(camera_orientation, camera_projection);
+	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
@@ -196,22 +196,20 @@ std::vector<s32> Model::GetIndices()
 }
 
 
-void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
-	if (m_IsRoot == false)
+	if ( m_IsRoot )
+		return;
+	if (!myConstantBuffer)
 	{
-		if (!myConstantBuffer)
-		{
-			InitConstantBuffer();
-		}
-
-		m_ConstantStruct.m_World = myOrientation;
-		m_ConstantStruct.m_InvertedView = CU::Math::Inverse(aCameraOrientation);
-		m_ConstantStruct.m_Projection = aCameraProjection;
-
-		Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
-
+		InitConstantBuffer();
 	}
+
+	m_ConstantStruct.m_World = myOrientation;
+	m_ConstantStruct.m_InvertedView = CU::Math::Inverse(aCameraOrientation);
+	m_ConstantStruct.m_Projection = aCameraProjection;
+
+	render_context.m_API->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
 }
 
 void Model::AddChild(Model* aChild)

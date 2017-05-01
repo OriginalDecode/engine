@@ -190,9 +190,9 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();
 
-	LightModel* light_model = new LightModel;
-	LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", light_model, false);
-	LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", false);
+	//LightModel* light_model = new LightModel;
+	//LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", light_model, false);
+	//LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", false);
 
 	return true;
 }
@@ -665,7 +665,7 @@ void Engine::UpdateDebugUI()
 	{
 		ImGui::Text("Delta Time : %.3f", GetDeltaTime());
 		ImGui::Text("FPS : %.1f", GetFPS());
-		ImGui::Text("CPU Usage : %.1f\%", m_SystemMonitor.GetCPUUsage());
+		ImGui::Text("CPU Usage : %.1f", m_SystemMonitor.GetCPUUsage());
 		ImGui::Text("Memory Usage : %dmb", m_SystemMonitor.GetMemoryUsage());
 		if ( m_Threadpool.HasWork() )
 			ImGui::Text("Is Loading");

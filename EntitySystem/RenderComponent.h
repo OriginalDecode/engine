@@ -10,5 +10,6 @@ struct RenderComponent : public BaseComponent
 	CU::Vector4f m_Rotation;
 	CU::Vector3f m_MinPos;
 	CU::Vector3f m_MaxPos;
+	bool m_RenderWireframe = false;
 
 };

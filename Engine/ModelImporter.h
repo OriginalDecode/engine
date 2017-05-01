@@ -13,6 +13,7 @@ class Engine;
 class aiNode;
 class aiMesh;
 class aiScene;
+class LightModel;
 
 class CModelImporter
 {
@@ -22,12 +23,12 @@ public:
 	void LoadModel(std::string filepath, Model* model, std::string aEffectPath);
 	
 	template<typename T>
-	void LoadModel(std::string model_filepath, std::string effect_filepath, T* pModel);
+	void LoadModel(T* pModel, std::string model_filepath, std::string effect_filepath);
 
 private:
 	Engine* m_Engine = nullptr;
 	Ticket_Mutex m_LoaderMutex;
-
+#pragma region Structs
 	struct TextureInfo //Anyway to remove this?
 	{
 		TextureType myType;
@@ -82,6 +83,7 @@ private:
 		TextureData* myTextureData = nullptr;
 		CU::GrowingArray<FBXModelData*> myChildren;
 	};
+#pragma endregion
 
 #ifdef _DEBUG
 	CU::TimeManager m_TimeManager;
@@ -105,12 +107,12 @@ private:
 };
 
 template<typename T>
-void CModelImporter::LoadModel(std::string model_filepath, std::string effect_filepath, T* pModel)
+void CModelImporter::LoadModel(T* pModel, std::string model_filepath, std::string effect_filepath)
 {
-	BeginTicketMutex(&m_LoaderMutex);
+	/*BeginTicketMutex(&m_LoaderMutex);
 
 	LoadModel(model_filepath, pModel, m_Engine->GetEffect(effect_filepath));
 	pModel->Initiate(); 
 
-	EndTicketMutex(&m_LoaderMutex);
+	EndTicketMutex(&m_LoaderMutex);*/
 }

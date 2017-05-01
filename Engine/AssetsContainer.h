@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include "snowblind_shared.h"
 #include <DataStructures/GrowingArray.h>
-class CModelImporter;
+#include <Engine/ModelImporter.h>
 class FileWatcher;
 class ShaderFactory;
 class Model;
@@ -12,6 +12,7 @@ class Texture;
 class Sprite;
 struct CompiledShader;
 class Engine;
+
 class AssetsContainer
 {
 public:
@@ -85,12 +86,12 @@ std::string AssetsContainer::LoadModel(std::string filepath, std::string effect_
 	if (thread)
 	{
 		m_Engine->GetThreadpool().AddWork(Work([=]() {
-			m_ModelLoader->LoadModel(filepath, effect_filepath, pModel);
+			m_ModelLoader->LoadModel(pModel, filepath, effect_filepath);
 		}));
 	}
 	else
 	{
-		m_ModelLoader->LoadModel(filepath, effect_filepath, pModel);
+		m_ModelLoader->LoadModel(pModel, filepath, effect_filepath);
 	}
 
 	return filepath;

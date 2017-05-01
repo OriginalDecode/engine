@@ -49,7 +49,7 @@ public:
 
 protected:
 	void InitConstantBuffer();
-	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
+	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
 
 	CU::GrowingArray<SVertexTypePosCol> myVertices;
 	CU::GrowingArray<s32> m_Indices;

@@ -4,7 +4,6 @@
 #include "Texture.h"
 #include "Effect.h"
 #include "ShaderFactory.h"
-#include "ModelImporter.h"
 #include "Texture.h"
 
 

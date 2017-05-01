@@ -267,7 +267,6 @@ void Renderer::RenderNonDeferred3DCommands()
 
 void Renderer::Render3DCommands()
 {
-
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 
 	//m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
@@ -289,8 +288,6 @@ void Renderer::Render3DCommands()
 			terrain->Render(myPrevFrame, m_Camera->GetPerspective(), m_RenderContext);
 
 		}
-
-		//terrain->Render(m_ProcessShadows ? myPrevShadowFrame : myPrevFrame, m_Camera->GetPerspective(), CU::Vector4f(1,1,1,1), m_ProcessShadows);
 	}
 
 	for (const RenderCommand& command : commands)
@@ -326,7 +323,7 @@ void Renderer::Render3DCommands()
 				}
 				else
 				{
-					m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+					m_API->SetRasterizer(command.m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 					model->Render(myPrevFrame, m_Camera->GetPerspective(), m_RenderContext);
 				}
 			}break;

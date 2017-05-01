@@ -50,44 +50,34 @@ bool CTerrain::CleanUp()
 	if (myConstantBuffer)
 		return false;
 
-	SAFE_RELEASE(m_PSConstantBuffer);
-	if (m_PSConstantBuffer)
-		return false;
-
-
 	return true;
 }
 
 void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
-// 	if ( m_IsRoot )
-// 		return;
-// 
-// 	SetupLayoutsAndBuffers();
-// 
-// 	if( !render_shadows )
-// 		myEffect->Activate();
-// 
-// 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
-// 	myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-// 	myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-// 
-// 	if ( !render_shadows )
-// 	{
-// 		mySurface->Activate();
-// 		myContext->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
-// 		mySurface->Deactivate();
-// 	}
-// 	else
-// 	{
-// 		myContext->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
-// 	}
+  	SetupLayoutsAndBuffers();
+ 
+	myEffect->Activate();
+ 
+ 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
+ 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+ 
+ 	mySurface->Activate();
+ 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+ 	mySurface->Deactivate();
 
 }
 
 void CTerrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
 {
-	DL_ASSERT("Not implemented!");
+	SetupLayoutsAndBuffers();
+
+	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+
+	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 }
 
 void CTerrain::Save(const std::string& /*aFilename*/)
@@ -207,22 +197,12 @@ void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& positio
 #endif
 }
 
-void CTerrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+void CTerrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
-#ifdef SNOWBLIND_DX11
-	if (m_IsRoot == false)
-	{
-
-		myConstantStruct.world = myOrientation;
-		myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);
-		myConstantStruct.projection = aCameraProjection;
-		//myConstantStruct.time.x = myEngine->GetDeltaTime();
-		Engine::GetAPI()->UpdateConstantBuffer((myConstantBuffer), &myConstantStruct);
-
-		m_PSConstantStruct.camPos = myOrientation.GetTranslation();
-		Engine::GetAPI()->UpdateConstantBuffer((m_PSConstantBuffer), &m_PSConstantStruct);
-	}
-#endif
+	myConstantStruct.world = myOrientation;
+	myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);
+	myConstantStruct.projection = aCameraProjection;
+	render_context.m_API->UpdateConstantBuffer((myConstantBuffer), &myConstantStruct);
 }
 
 void CTerrain::InitConstantBuffer()
@@ -230,7 +210,7 @@ void CTerrain::InitConstantBuffer()
 #ifdef SNOWBLIND_DX11
 	D3D11_BUFFER_DESC cbDesc;
 	ZeroMemory(&cbDesc, sizeof(cbDesc));
-	cbDesc.ByteWidth = sizeof(TerrainConstantStruct);
+	cbDesc.ByteWidth = sizeof(VertexBaseStruct);
 	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
 	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -238,20 +218,10 @@ void CTerrain::InitConstantBuffer()
 	cbDesc.StructureByteStride = 0;
 
 	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
-	Engine::GetAPI()->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Model Constantbuffer : " + m_Filename);
+	Engine::GetAPI()->HandleErrors(hr, "[Terrain] : Failed to Create Constantbuffer, ");
 
-	ZeroMemory(&cbDesc, sizeof(cbDesc));
-	cbDesc.ByteWidth = sizeof(TerrainCameraPos);
-	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.MiscFlags = 0;
-	cbDesc.StructureByteStride = 0;
-
-	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &m_PSConstantBuffer);
-	Engine::GetAPI()->SetDebugName(m_PSConstantBuffer, "Model Pixel Constant Buffer : " + m_Filename);
-	Engine::GetAPI()->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+	
 
 #endif
 }

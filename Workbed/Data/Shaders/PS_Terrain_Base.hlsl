@@ -33,7 +33,7 @@ struct VS_OUTPUT
 	float4 pos 		: SV_POSITION;
 	float3 normal 	: NORMAL;
 	float2 uv 		: TEXCOORD;
-	float2 uv2 : TEXCOORD2;
+	float2 uv2 		: TEXCOORD2;
 	float3 binorm 	: BINORMAL;
 	float3 tang 	: TANGENT;
 	float4 worldpos : POSITION;

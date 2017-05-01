@@ -3,6 +3,7 @@
 #include <standard_datatype.hpp>
 #include "EngineDefines.h"
 #include <DL_Debug/DL_Debug.h>
+#include <string>
 typedef s32 Entity;
 
 #ifdef SNOWBLIND_DX11
@@ -76,3 +77,15 @@ struct RenderContext
 	struct ID3D11DeviceContext* m_Context = nullptr;
 	class DirectX11* m_API = nullptr;
 };
+//namespace CL
+//{
+//
+//	bool find(const std::string& string, const std::string& to_find)
+//	{
+//		if ( string.find(to_find) != string.npos )
+//			return true;
+//
+//		return false;
+//	}
+//
+//};

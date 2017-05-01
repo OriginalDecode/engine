@@ -24,7 +24,7 @@ CModelImporter::CModelImporter()
 #endif
 }
 
-void CModelImporter::LoadModel(std::string aFilePath, CModel* model, std::string effect)
+void CModelImporter::LoadModel(std::string aFilePath, Model* model, std::string effect)
 {
 	BeginTicketMutex(&m_LoaderMutex);
 
@@ -34,7 +34,7 @@ void CModelImporter::LoadModel(std::string aFilePath, CModel* model, std::string
 	EndTicketMutex(&m_LoaderMutex);
 }
 
-CModel* CModelImporter::LoadModel(std::string filepath, CModel* model, Effect* anEffect)
+Model* CModelImporter::LoadModel(std::string filepath, Model* model, Effect* anEffect)
 {
 #ifdef _DEBUG
 	m_TimeManager.Update();
@@ -71,7 +71,7 @@ CModel* CModelImporter::LoadModel(std::string filepath, CModel* model, Effect* a
 
 	ProcessNode(rootNode, scene, data, filepath);
 
-	CModel* toReturn = CreateModel(data, model, filepath, anEffect);
+	Model* toReturn = CreateModel(data, model, filepath, anEffect);
 
 
 	if ( data->myTextureData )
@@ -98,7 +98,7 @@ CModel* CModelImporter::LoadModel(std::string filepath, CModel* model, Effect* a
 }
 
 
-CModel* CModelImporter::CreateModel(FBXModelData* someData, CModel* model, std::string filepath, Effect* effect)
+Model* CModelImporter::CreateModel(FBXModelData* someData, Model* model, std::string filepath, Effect* effect)
 {
 	model->SetEffect(effect);
 
@@ -116,9 +116,9 @@ CModel* CModelImporter::CreateModel(FBXModelData* someData, CModel* model, std::
 	return 0;
 }
 
-CModel* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect* effect)
+Model* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect* effect)
 {
-	CModel* model = new CModel;
+	Model* model = new Model;
 
 	size_t pos = filepath.rfind('/');
 	
@@ -139,7 +139,7 @@ CModel* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Ef
 	return model;
 }
 
-void CModelImporter::FillData(FBXModelData* someData, CModel* out, std::string filepath)
+void CModelImporter::FillData(FBXModelData* someData, Model* out, std::string filepath)
 {
 #ifdef SNOWBLIND_DX11
 	ModelData* data = someData->myData;
@@ -188,7 +188,7 @@ void CModelImporter::FillData(FBXModelData* someData, CModel* out, std::string f
 #endif
 }
 
-void CModelImporter::SetupInputLayout(ModelData* data, CModel* out)
+void CModelImporter::SetupInputLayout(ModelData* data, Model* out)
 {
 	for ( int i = 0; i < data->myLayout.Size(); ++i )
 	{

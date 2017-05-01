@@ -2,7 +2,7 @@
 #include <Math/Matrix/Matrix44.h>
 #include <Math/Plane/PlaneVolume.h>
 #include <string>
-class CModel;
+class Model;
 class Texture;
 
 struct GizmoHandle
@@ -25,7 +25,7 @@ struct GizmoHandle
 	~GizmoHandle();
 	std::string m_Key;
 
-	CModel* m_Model = nullptr;
+	Model* m_Model = nullptr;
 	Texture* m_DirColor = nullptr;
 	CU::Matrix44f m_Orientation;
 	float m_Offset = 0.f;

@@ -6,7 +6,7 @@
 class CModelImporter;
 class FileWatcher;
 class ShaderFactory;
-class CModel;
+class Model;
 class Effect;
 class Texture;
 class Sprite;
@@ -36,7 +36,7 @@ public:
 	Texture* GetTexture(std::string aFilePath);
 
 	Effect* GetEffect(const std::string& aFilePath);
-	CModel* GetModel(const std::string& aFilePath);
+	Model* GetModel(const std::string& aFilePath);
 	std::string LoadModel(std::string aFilePath, std::string effect, bool thread = true);
 
 	void AddLoadRequest(std::string file, eRequestType request_type);
@@ -47,7 +47,7 @@ private:
 	Ticket_Mutex m_Mutex;
 	std::unordered_map<std::string, Texture*> myTextures;
 	std::unordered_map<std::string, Effect*> myEffects;
-	std::unordered_map<std::string, CModel*> myModels;
+	std::unordered_map<std::string, Model*> myModels;
 	std::unordered_map<std::string, Sprite*> mySprites;
 
 	bool LoadTexture(std::string aFilePath);

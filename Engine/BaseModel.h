@@ -20,11 +20,11 @@ struct VertexBufferWrapper;
 struct VertexDataWrapper;
 struct IndexBufferWrapper;
 
-class CBaseModel
+class BaseModel
 {
 public:
-	CBaseModel() = default;
-	virtual ~CBaseModel() = 0;
+	BaseModel() = default;
+	virtual ~BaseModel() = 0;
 	virtual bool CleanUp() = 0;
 	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) = 0;
 	virtual void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) = 0;

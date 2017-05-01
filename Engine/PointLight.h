@@ -1,7 +1,7 @@
 #pragma once
 #include "LightStructs.h"
 
-class CModel;
+class Model;
 class CPointLight
 {
 public:
@@ -23,7 +23,7 @@ public:
 
 	CU::Matrix44f GetOrientation();
 private:
-	CModel* m_Model;
+	Model* m_Model;
 	CU::Matrix44f myOrientation;
 	CU::Vector3f myOriginalPosition;
 	CU::Vector4f myColor;

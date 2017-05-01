@@ -7,10 +7,10 @@
 #include "Engine.h"
 #include "Surface.h"
 
-bool CModel::CleanUp()
+bool Model::CleanUp()
 {
 	mySurfaces.DeleteAll();
-	for (CModel* children : myChildren)
+	for (Model* children : myChildren)
 	{
 		children->CleanUp();
 	}
@@ -27,7 +27,7 @@ bool CModel::CleanUp()
 	return true;
 }
 
-void CModel::Initiate(const std::string& filename)
+void Model::Initiate(const std::string& filename)
 {
 	m_Filename = CL::substr(filename, "/", false, 0);
 	if (m_IsRoot == false)
@@ -37,15 +37,15 @@ void CModel::Initiate(const std::string& filename)
 		InitConstantBuffer();
 	}
 
-	for (CModel* child : myChildren)
+	for (Model* child : myChildren)
 	{
 		child->Initiate(filename);
 	}
 }
 
-void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
+void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
-	for (CModel* child : myChildren)
+	for (Model* child : myChildren)
 	{
 		child->Render(aCameraOrientation, aCameraProjection, render_context);
 	}
@@ -78,9 +78,9 @@ void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f
 
 }
 
-void CModel::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
 {
-	for (CModel* child : myChildren)
+	for (Model* child : myChildren)
 	{
 		child->ShadowRender(camera_orientation, camera_projection,render_context);
 	}
@@ -102,7 +102,7 @@ void CModel::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Mat
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 }
 
-void CModel::SetIsLightmesh()
+void Model::SetIsLightmesh()
 {
 	if (this)
 	{
@@ -114,49 +114,49 @@ void CModel::SetIsLightmesh()
 	}
 }
 
-void CModel::SetPosition(const CU::Vector3f& aPosition)
+void Model::SetPosition(const CU::Vector3f& aPosition)
 {
 	myOrientation.SetPosition(aPosition);
-	for each (CModel* child in myChildren)
+	for each (Model* child in myChildren)
 	{
 		child->SetPosition(aPosition);
 	}
 }
 
-CU::Matrix44f& CModel::GetOrientation()
+CU::Matrix44f& Model::GetOrientation()
 {
 	return myOrientation;
 }
 
-void CModel::SetOrientation(CU::Matrix44f orientation)
+void Model::SetOrientation(CU::Matrix44f orientation)
 {
 	myOrientation = orientation;
-	for (CModel* child : myChildren)
+	for (Model* child : myChildren)
 	{
 		child->SetOrientation(myOrientation);
 	}
 }
 
-void CModel::SetWHD(CU::Vector3f whd)
+void Model::SetWHD(CU::Vector3f whd)
 {
 	m_WHD = whd;
 }
 
-void CModel::SetMaxPoint(CU::Vector3f max_point)
+void Model::SetMaxPoint(CU::Vector3f max_point)
 {
 	m_MaxPoint = max_point;
 }
 
-void CModel::SetMinPoint(CU::Vector3f min_point)
+void Model::SetMinPoint(CU::Vector3f min_point)
 {
 	m_MinPoint = min_point;
 }
 
-std::vector<float> CModel::GetVertices()
+std::vector<float> Model::GetVertices()
 {
 	std::vector<float> to_return;
 
-	for (CModel* child : myChildren)
+	for (Model* child : myChildren)
 	{
 		std::vector<float> child_verts = child->GetVertices();
 		for (const float& vert : child_verts)
@@ -174,11 +174,11 @@ std::vector<float> CModel::GetVertices()
 	return to_return;
 }
 
-std::vector<s32> CModel::GetIndices()
+std::vector<s32> Model::GetIndices()
 {
 	std::vector<s32> to_return;
 
-	for (CModel* child : myChildren)
+	for (Model* child : myChildren)
 	{
 		std::vector<s32> child_verts = child->GetIndices();
 		for (const s32& indice : child_verts)
@@ -196,7 +196,7 @@ std::vector<s32> CModel::GetIndices()
 }
 
 
-void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
 	if (m_IsRoot == false)
 	{
@@ -214,12 +214,12 @@ void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const
 	}
 }
 
-void CModel::AddChild(CModel* aChild)
+void Model::AddChild(Model* aChild)
 {
 	myChildren.Add(aChild);
 }
 
-void CModel::InitConstantBuffer()
+void Model::InitConstantBuffer()
 {
 	D3D11_BUFFER_DESC cbDesc;
 	ZeroMemory(&cbDesc, sizeof(cbDesc));

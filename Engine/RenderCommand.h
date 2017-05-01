@@ -22,7 +22,7 @@ enum class eType
 	WIREFRAME,
 };
 
-class CModel;
+class Model;
 
 struct RenderCommand
 {

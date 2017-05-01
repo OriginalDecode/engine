@@ -13,7 +13,7 @@ struct SHeightMap
 
 SHeightMap Create(const char* aFilePath);
 
-class CTerrain : public CBaseModel
+class CTerrain : public BaseModel
 {
 public:
 	CTerrain() = default;

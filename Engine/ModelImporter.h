@@ -6,7 +6,7 @@
 #ifdef _DEBUG
 #include <TimeManager.h>
 #endif
-class CModel;
+class Model;
 class Effect;
 class Engine;
 
@@ -75,7 +75,7 @@ class CModelImporter
 public:
 	CModelImporter();
 
-	void LoadModel(std::string filepath, CModel* model, std::string aEffectPath);
+	void LoadModel(std::string filepath, Model* model, std::string aEffectPath);
 
 private:
 	Engine* m_Engine = nullptr;
@@ -85,15 +85,15 @@ private:
 	CU::TimeManager m_TimeManager;
 #endif
 
-	CModel* CreateModel(FBXModelData* data, CModel* model, std::string filepath, Effect* effect);
-	CModel* CreateChild(FBXModelData* data, std::string filepath, Effect* effect);
+	Model* CreateModel(FBXModelData* data, Model* model, std::string filepath, Effect* effect);
+	Model* CreateChild(FBXModelData* data, std::string filepath, Effect* effect);
 
 
-	CModel* LoadModel(std::string filepath, CModel* model, Effect* effect);
+	Model* LoadModel(std::string filepath, Model* model, Effect* effect);
 
-	void FillData(FBXModelData* data, CModel* model, std::string filepath);
+	void FillData(FBXModelData* data, Model* model, std::string filepath);
 
-	void SetupInputLayout(ModelData* data, CModel* model);
+	void SetupInputLayout(ModelData* data, Model* model);
 
 	void ProcessNode(aiNode* node, const aiScene* scene, FBXModelData* data, std::string file);
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file);

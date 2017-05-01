@@ -415,7 +415,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	if (!isLight)
 	{
 		RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
-		CModel* model = m_Engine->GetModel(render.myModelID);
+		Model* model = m_Engine->GetModel(render.myModelID);
 		whd = model->GetWHD();
 		component.m_Rotation = render.m_Rotation;
 		component.m_MinPoint = model->GetMinPoint();

@@ -23,7 +23,7 @@ void CInstance::Initiate(const char* aFilePath, const std::string& effect, const
 	}
 }
 
-void CInstance::Initiate(CModel* aModel)
+void CInstance::Initiate(Model* aModel)
 {
 	myModel = aModel;
 }

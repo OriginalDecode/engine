@@ -1,13 +1,13 @@
 #pragma once
 #include "snowblind_shared.h"
-class CModel;
+class Model;
 class Effect;
 class Camera;
 class DirectX11;
 
 struct SkysphereLayer
 {
-	CModel* m_Model;
+	Model* m_Model;
 	Texture* m_Texture;
 	bool m_ShouldRotate = false;
 };

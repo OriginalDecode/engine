@@ -10,8 +10,8 @@ void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_k
 	gizmo_handle.m_DirColor = Engine::GetInstance()->GetTexture(texture_path);
 	gizmo_handle.m_Model = Engine::GetInstance()->GetModel(gizmo_handle.m_Key);
 
-	CU::GrowingArray<CModel*> children = gizmo_handle.m_Model->GetChildModels();
-	for (CModel* child : children)
+	CU::GrowingArray<Model*> children = gizmo_handle.m_Model->GetChildModels();
+	for (Model* child : children)
 	{
 		CU::GrowingArray<CSurface*>& surfaces = child->GetSurfaces();
 		for (CSurface* surface : surfaces)

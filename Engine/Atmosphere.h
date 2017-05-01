@@ -20,8 +20,8 @@ private:
 	Engine* m_Engine							= nullptr;
 	DirectX11* m_API							= nullptr;
 	Camera* m_Camera							= nullptr;
-	CModel* m_InnerSphere						= nullptr;
-	CModel* m_OuterSphere						= nullptr;
+	Model* m_InnerSphere						= nullptr;
+	Model* m_OuterSphere						= nullptr;
 
 	float m_InnerRadius = 0.f;
 	float m_OuterRadius = 0.f;

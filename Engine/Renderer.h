@@ -19,7 +19,7 @@ class Camera;
 class DeferredRenderer;
 class DirectionalLight;
 class CEmitterInstance;
-class CModel;
+class Model;
 class CPointLight;
 class Synchronizer;
 class Texture;

@@ -76,7 +76,7 @@ Effect* AssetsContainer::GetEffect(const std::string& aFilePath)
 	return myEffects[aFilePath];
 }
 
-CModel* AssetsContainer::GetModel(const std::string& aFilePath)
+Model* AssetsContainer::GetModel(const std::string& aFilePath)
 {
 	if (myModels.find(aFilePath) == myModels.end())
 	{
@@ -129,7 +129,7 @@ std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect
 	if (myModels.find(aFilePath) == myModels.end())
 	{
 		DL_MESSAGE("Loading model : %s", aFilePath.c_str());
-		CModel* model = new CModel;
+		Model* model = new Model;
 		myModels.emplace(aFilePath, model);
 
 		if ( thread )

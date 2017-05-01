@@ -46,7 +46,7 @@ class Camera;
 class CConsole;
 class CFont;
 class CFontManager;
-class CModel;
+class Model;
 class Renderer;
 class Synchronizer;
 class Texture;
@@ -104,7 +104,7 @@ public:
 	// Get Resources
 	Texture* GetTexture(const std::string& aFilePath);
 	Effect* GetEffect(const std::string& aFilePath);
-	CModel* GetModel(const std::string& aFilePath);
+	Model* GetModel(const std::string& aFilePath);
 
 	std::string LoadModel(std::string aFilePath, std::string effect, bool thread);
 

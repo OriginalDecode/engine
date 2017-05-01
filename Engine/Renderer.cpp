@@ -255,7 +255,7 @@ void Renderer::RenderNonDeferred3DCommands()
 				m_API->SetRasterizer(eRasterizer::CULL_NONE);
 				m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
-				CModel* model = m_Engine->GetModel(command.m_KeyOrText);
+				Model* model = m_Engine->GetModel(command.m_KeyOrText);
 				model->SetOrientation(command.m_Orientation);
 				model->Render(myPrevFrame, m_Camera->GetPerspective(), m_RenderContext);
 			}break;
@@ -308,7 +308,7 @@ void Renderer::Render3DCommands()
 
 				m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
-				CModel* model = m_Engine->GetModel(command.m_KeyOrText);
+				Model* model = m_Engine->GetModel(command.m_KeyOrText);
 				model->SetOrientation(command.m_Orientation);
 
 

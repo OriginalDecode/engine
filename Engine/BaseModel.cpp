@@ -5,9 +5,9 @@
 #include <easy/profiler.h>
 #endif
 
-CBaseModel::~CBaseModel() = default;
+BaseModel::~BaseModel() = default;
 
-void CBaseModel::SetupLayoutsAndBuffers()
+void BaseModel::SetupLayoutsAndBuffers()
 {
 	Engine::GetAPI()->GetContext()->IASetInputLayout(m_VertexLayout);
 	Engine::GetAPI()->GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -15,12 +15,12 @@ void CBaseModel::SetupLayoutsAndBuffers()
 	Engine::GetAPI()->GetContext()->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
 }
 
-void CBaseModel::SetEffect(Effect* anEffect)
+void BaseModel::SetEffect(Effect* anEffect)
 {
 	myEffect = anEffect;
 }
 
-void CBaseModel::InitVertexBuffer()
+void BaseModel::InitVertexBuffer()
 {
 	void* shader = myEffect->GetVertexShader()->compiledShader;
 	s32 size = myEffect->GetVertexShader()->shaderSize;
@@ -42,7 +42,7 @@ void CBaseModel::InitVertexBuffer()
 
 }
 
-void CBaseModel::InitIndexBuffer()
+void BaseModel::InitIndexBuffer()
 {
 	m_IndexBuffer.myIndexBuffer = Engine::GetAPI()->CreateBuffer(m_IndexData.mySize, m_IndexData.myIndexData, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER);
 

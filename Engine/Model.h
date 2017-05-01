@@ -14,18 +14,18 @@ enum eModelStates : int
 };
 
 static Ticket_Mutex g_ModelMutex;
-class CModel : public CBaseModel
+class Model : public BaseModel
 {
 	friend class CModelImporter;
 public:
-	CModel() = default;
+	Model() = default;
 	bool CleanUp() override;
 	void Initiate(const std::string& filename);
 
 	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
 	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
 
-	void AddChild(CModel* aChild);
+	void AddChild(Model* aChild);
 	void SetIsLightmesh();
 	void SetPosition(const CU::Vector3f& aPosition);
 	CU::Matrix44f& GetOrientation();
@@ -44,8 +44,8 @@ public:
 	std::vector<s32> GetIndices();
 
 	CU::GrowingArray<CSurface*>& GetSurfaces() { return mySurfaces; }
-	CU::GrowingArray<CModel*> GetChildModels() { return myChildren; }
-	void SetIsSkysphere(bool isSkysphere) { m_IsSkysphere = isSkysphere; for ( CModel* child : myChildren ) child->SetIsSkysphere(m_IsSkysphere); }
+	CU::GrowingArray<Model*> GetChildModels() { return myChildren; }
+	void SetIsSkysphere(bool isSkysphere) { m_IsSkysphere = isSkysphere; for ( Model* child : myChildren ) child->SetIsSkysphere(m_IsSkysphere); }
 
 protected:
 	void InitConstantBuffer();
@@ -55,7 +55,7 @@ protected:
 	CU::GrowingArray<s32> m_Indices;
 
 	CU::GrowingArray<CSurface*> mySurfaces;
-	CU::GrowingArray<CModel*> myChildren;
+	CU::GrowingArray<Model*> myChildren;
 
 	CU::Matrix44f myOrientation;
 	std::bitset<eModelStates::_COUNT> myModelStates;

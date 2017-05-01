@@ -489,7 +489,7 @@ Effect* Engine::GetEffect(const std::string& aFilePath)
 	return myAssetsContainer->GetEffect(m_VirtualFileSystem.GetFile(aFilePath));
 }
 
-CModel* Engine::GetModel(const std::string& aFilePath)
+Model* Engine::GetModel(const std::string& aFilePath)
 {
 	return myAssetsContainer->GetModel(aFilePath);
 }

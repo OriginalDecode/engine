@@ -10,7 +10,7 @@ bool LightModel::CleanUp()
 
 void LightModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
-	for (CModel* child : myChildren)
+	for (Model* child : myChildren)
 	{
 		child->Render(aCameraOrientation, aCameraProjection, render_context);
 	}

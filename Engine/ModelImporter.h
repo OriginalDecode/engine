@@ -101,4 +101,3 @@ private:
 	void ExtractMaterials(aiMesh* mesh,const aiScene* scene, FBXModelData* data, std::string file);
 
 };
-//The CModel* should be able to be a template pointer instead, easier understanding of what you are doing. Does not matter too much.

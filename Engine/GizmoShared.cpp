@@ -19,8 +19,9 @@ void GizmoHandle::Initiate()
 
 
 	CU::Vector4f position;
+	CU::Vector3f whd = m_Model->GetWHD();
 	//x
-	CU::Vector3f whd;
+
 	position = m_Orientation.GetTranslation();
 	position += right * whd.x;
 	plane0.InitWithPointAndNormal(position, right);
@@ -91,7 +92,7 @@ void GizmoHandle::RenderBox()
 	p6.position = p1.position;
 	p7.position = p1.position;
 	p8.position = p1.position;
-	CU::Vector3f whd = { 0.25f,0.25f,0.25f }; /** distance*/;
+	CU::Vector3f whd = m_Model->GetWHD() /** distance*/;
 	p1.position -= m_Orientation.GetRight() * whd.x;
 	p1.position -= m_Orientation.GetUp() * whd.y;
 	p1.position -= m_Orientation.GetForward() * whd.z;
@@ -150,7 +151,7 @@ void GizmoHandle::Update()
 
 
 	CU::Vector4f position;
-	CU::Vector3f whd = { 0.25f, 0.25f, 0.25f };
+	CU::Vector3f whd = m_Model->GetWHD() /** distance*/;
 	//x
 
 	position = m_Orientation.GetTranslation();

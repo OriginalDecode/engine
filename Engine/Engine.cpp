@@ -189,10 +189,8 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();
 
-	CModel* cone = new CModel; // replace cmodel with lightmodel? This should not be the most difficult thing to do. We just need to override the render function. Probably more code.
-	CModel* spot = new CModel;
-	LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", cone, false);
-	LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", spot, false);
+	LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", false);
+	LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", false);
 
 	return true;
 }
@@ -500,11 +498,6 @@ std::string Engine::LoadModel(std::string aFilePath, std::string effect, bool th
 {
 	myAssetsContainer->LoadModel(aFilePath, effect, thread);
 	return aFilePath;
-}
-
-std::string Engine::LoadModel(std::string filepath, std::string effect, CModel* pModel, bool thread)
-{
-	return myAssetsContainer->LoadModel(filepath, effect, pModel, thread);
 }
 
 std::string string_together(u16 time, u16 to_compare)

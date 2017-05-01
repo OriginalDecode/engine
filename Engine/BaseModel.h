@@ -34,8 +34,8 @@ public:
 
 protected:
 	std::string m_Filename;
-	virtual void InitVertexBuffer();
-	virtual void InitIndexBuffer();
+	void InitVertexBuffer();
+	void InitIndexBuffer();
 	virtual void InitConstantBuffer() = 0;
 	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
 
@@ -68,8 +68,8 @@ protected:
 		CU::Matrix44f m_Projection;
 	} m_ConstantStruct;
 
-	bool m_IsRoot = true;
-
+	/* Three different model types ( ? ) */
+	bool myIsNULLObject = true;
 	bool myIsLightMesh = false;
 	bool m_IsSkysphere = false;
 };

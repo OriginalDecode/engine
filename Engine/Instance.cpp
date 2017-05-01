@@ -39,3 +39,7 @@ void CInstance::SetPosition(CU::Math::Vector3<float> aPosition)
 	myModel->SetPosition(aPosition);
 }
 
+void CInstance::SetIsLightmesh()
+{
+	myModel->SetIsLightmesh();
+}

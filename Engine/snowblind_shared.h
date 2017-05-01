@@ -31,13 +31,6 @@ typedef struct ID3D11InputLayout			IInputLayout;
 #else
 
 #endif
-//Without m_ in the name plz
-#define GET_SET(variable_type, variable_name) \
-private:\
-variable_type m_##variable_name;\
-public:\
-variable_type Get##variable_name() { return m_##variable_name; } \
-void Set##variable_name(variable_type variable_name) { m_##variable_name = variable_name; }
 
 enum class eShaderType
 {

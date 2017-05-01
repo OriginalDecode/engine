@@ -6,6 +6,7 @@ CPointLight::CPointLight()
 {
 	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", false);
 	m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx");
+	m_Model->SetIsLightmesh();
 }
 
 void CPointLight::SetPosition(const CU::Vector3f& aPosition)

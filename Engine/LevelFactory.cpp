@@ -241,7 +241,9 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.scale = scale;
 	component.scale.w = 1.f;
 
+	CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
 	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
+	m_DwellerList.GetLast()->SetWHD(whd);
 }
 
 void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id)
@@ -409,10 +411,12 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
 	m_DwellerList.GetLast()->AddComponent<DebugComponent>(&component, TreeDweller::DEBUG);
 
+	CU::Vector3f whd;
 	if (!isLight)
 	{
 		RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
 		CModel* model = m_Engine->GetModel(render.myModelID);
+		whd = model->GetWHD();
 		component.m_Rotation = render.m_Rotation;
 		component.m_MinPoint = model->GetMinPoint();
 		component.m_MaxPoint = model->GetMaxPoint();
@@ -421,6 +425,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	}
 	else
 	{
+		whd = { 0.25f,0.25f, 0.25f };
 		component.m_MinPoint = { -0.25,-0.25,-0.25 };
 		component.m_MaxPoint = { 0.25,0.25,0.25 };
 
@@ -428,6 +433,10 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
 	CU::Vector3f pos = translation.myOrientation.GetPosition();
 
+	float x = whd.x;
+	float y = whd.y;
+	float z = whd.z;
+	component.m_WHD = whd;
 	CU::Plane<float> plane0;
 
 	CU::Vector4f up = translation.myOrientation.GetUp();
@@ -437,9 +446,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 	CU::Vector4f position;
 	//x
-	float x = 0.f;
-	float y = 0.f;
-	float z = 0.f;
+
 	position = translation.myOrientation.GetTranslation();
 	position += right * x;
 	plane0.InitWithPointAndNormal(position, right);

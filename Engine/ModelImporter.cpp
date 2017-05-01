@@ -100,8 +100,7 @@ CModel* CModelImporter::LoadModel(std::string filepath, CModel* model, Effect* a
 
 CModel* CModelImporter::CreateModel(FBXModelData* someData, CModel* model, std::string filepath, Effect* effect)
 {
-	model->myEffect = effect;
-	//model->SetEffect(effect);
+	model->SetEffect(effect);
 
 	if ( someData->myData )
 	{
@@ -124,8 +123,7 @@ CModel* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Ef
 	size_t pos = filepath.rfind('/');
 	
 	model->m_Filename = filepath.substr(pos);
-	model->myEffect = effect;
-	//model->SetEffect(effect);
+	model->SetEffect(effect);
 
 	if ( data->myData )
 	{
@@ -170,7 +168,7 @@ void CModelImporter::FillData(FBXModelData* someData, CModel* out, std::string f
 	CSurface* newSurface = new CSurface(0, data->myVertexCount, 0
 		, data->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	out->m_IsRoot = false;
+	out->myIsNULLObject = false;
 	SetupInputLayout(data, out);
 
 

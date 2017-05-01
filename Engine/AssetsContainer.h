@@ -38,7 +38,7 @@ public:
 	Effect* GetEffect(const std::string& aFilePath);
 	CModel* GetModel(const std::string& aFilePath);
 	std::string LoadModel(std::string aFilePath, std::string effect, bool thread = true);
-	std::string LoadModel(std::string filepath, std::string effect, CModel* pModel, bool thread = true);
+
 	void AddLoadRequest(std::string file, eRequestType request_type);
 
 private:

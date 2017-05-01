@@ -7,28 +7,37 @@
 #include "Engine.h"
 #include "Surface.h"
 
-void CModel::CleanUp()
+
+CModel::CModel()
+{
+	m_WHD = { 0.f,0.f,0.f };
+	myModelStates.reset();
+}
+
+bool CModel::CleanUp()
 {
 	mySurfaces.DeleteAll();
-	
 	for (CModel* children : myChildren)
 	{
 		children->CleanUp();
 	}
-
 	myChildren.DeleteAll();
 
 	SAFE_RELEASE(myConstantBuffer);
 	DL_ASSERT_EXP(!myConstantBuffer, "Failed to release constant buffer!");
 		
 	SAFE_RELEASE(m_VertexLayout);
-	DL_ASSERT_EXP(!m_VertexLayout, "Failed to release vertex layout");
+	if (m_VertexLayout)
+		return false;
+
+
+	return true;
 }
 
-void CModel::Initiate(const std::string& filename)
+CModel* CModel::Initiate(const std::string& filename)
 {
 	m_Filename = CL::substr(filename, "/", false, 0);
-	if (m_IsRoot == false)
+	if (myIsNULLObject == false)
 	{
 		InitVertexBuffer();
 		InitIndexBuffer();
@@ -40,6 +49,7 @@ void CModel::Initiate(const std::string& filename)
 		child->Initiate(filename);
 	}
 
+	return this;
 }
 
 void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool render_shadows)
@@ -49,43 +59,56 @@ void CModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f
 		child->Render(aCameraOrientation, aCameraProjection, render_shadows);
 	}
 
-	if (m_IsRoot)
+	if (myIsNULLObject)
 		return;
-	if (mySurfaces.Empty())
-		return;
+
 	SetupLayoutsAndBuffers();
 
-	IDevContext* ctx = Engine::GetAPI()->GetContext();
+	if ( !render_shadows )
+	{
+		myEffect->Activate();
+	}
+
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection);
-	ctx->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	if (!myIsLightMesh)
+		myContext->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+
+	if ( mySurfaces.Empty() )
+		return;
+
+
 
 	for (s32 i = 0; i < mySurfaces.Size(); i++)
 	{
-		Engine::GetAPI()->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+		myAPI->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+		if (!myIsLightMesh)
+		{
+			if (!render_shadows && !myIsLightMesh && !m_IsSkysphere)
+				mySurfaces[i]->Activate(); 
 
-		myEffect->Activate();
-		mySurfaces[i]->Activate(); 
-		ctx->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
-		mySurfaces[i]->Deactivate();
+			myContext->DrawIndexed(mySurfaces[i]->GetIndexCount(), 0, 0);
+		}
+		else
+		{
+			myContext->Draw(mySurfaces[i]->GetVertexCount(), 0);
+		}
+
+		if (!render_shadows && !myIsLightMesh && !m_IsSkysphere )
+			mySurfaces[i]->Deactivate();
 	}
+
 }
 
-void CModel::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
+void CModel::SetIsLightmesh()
 {
-	for (CModel* child : myChildren)
+	if (this)
 	{
-		child->ShadowRender(camera_orientation, camera_orientation);
+		myIsLightMesh = true;
+		for (int i = 0; i < myChildren.Size(); i++)
+		{
+			myChildren[i]->SetIsLightmesh();
+		}
 	}
-
-	if (m_IsRoot)
-		return;
-
-	SetupLayoutsAndBuffers();
-	IDevContext* ctx = Engine::GetAPI()->GetContext();
-	UpdateConstantBuffer(camera_orientation, camera_projection);
-	ctx->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-	ctx->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
-
 }
 
 void CModel::SetPosition(const CU::Vector3f& aPosition)
@@ -109,6 +132,11 @@ void CModel::SetOrientation(CU::Matrix44f orientation)
 	{
 		child->SetOrientation(myOrientation);
 	}
+}
+
+void CModel::SetWHD(CU::Vector3f whd)
+{
+	m_WHD = whd;
 }
 
 void CModel::SetMaxPoint(CU::Vector3f max_point)
@@ -165,18 +193,9 @@ std::vector<s32> CModel::GetIndices()
 }
 
 
-void CModel::SetupLayoutsAndBuffers()
-{
-	IDevContext* ctx = Engine::GetAPI()->GetContext();
-	ctx->IASetInputLayout(m_VertexLayout);
-	ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	ctx->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);
-	ctx->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
-}
-
 void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
-	if (m_IsRoot == false)
+	if (myIsNULLObject == false)
 	{
 		if (!myConstantBuffer)
 		{
@@ -187,41 +206,9 @@ void CModel::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const
 		m_ConstantStruct.m_InvertedView = CU::Math::Inverse(aCameraOrientation);
 		m_ConstantStruct.m_Projection = aCameraProjection;
 
-		Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
+		myAPI->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
 
 	}
-}
-
-void CModel::InitVertexBuffer()
-{
-	DirectX11* api = Engine::GetAPI();
-	void* shader = myEffect->GetVertexShader()->compiledShader;
-	s32 size = myEffect->GetVertexShader()->shaderSize;
-	m_VertexLayout = api->CreateInputLayout(shader, size, &myVertexFormat[0], myVertexFormat.Size());
-
-#ifdef _DEBUG
-	api->SetDebugName(m_VertexLayout, "Model Vertex Layout : " + m_Filename);
-#endif
-	m_VertexBuffer.myVertexBuffer = api->CreateBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
-#ifdef _DEBUG
-
-	api->SetDebugName(m_VertexBuffer.myVertexBuffer, "Model Vertex Buffer " + m_Filename);
-#endif
-
-	m_VertexBuffer.myStride = m_VertexData.myStride;
-	m_VertexBuffer.myByteOffset = 0;
-	m_VertexBuffer.myStartSlot = 0;
-	m_VertexBuffer.myNrOfBuffers = 1;
-}
-
-void CModel::InitIndexBuffer()
-{
-	DirectX11* api = Engine::GetAPI();
-	m_IndexBuffer.myIndexBuffer = api->CreateBuffer(m_IndexData.mySize, m_IndexData.myIndexData, D3D11_USAGE_IMMUTABLE, D3D11_BIND_INDEX_BUFFER);
-
-	api->SetDebugName(m_IndexBuffer.myIndexBuffer, "Model Index Buffer " + m_Filename);
-	m_IndexBuffer.myIndexBufferFormat = m_IndexData.myFormat;
-	m_IndexBuffer.myByteOffset = 0;
 }
 
 void CModel::AddChild(CModel* aChild)
@@ -239,9 +226,9 @@ void CModel::InitConstantBuffer()
 	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
-	DirectX11* api = Engine::GetAPI();
-	HRESULT hr = api->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 
-	api->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
-	api->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+	HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+
+	myAPI->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
+	myAPI->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 }

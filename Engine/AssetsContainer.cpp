@@ -14,7 +14,7 @@ AssetsContainer::~AssetsContainer()
 	SAFE_DELETE(m_ModelLoader);
 	for (auto it = myModels.begin(); it != myModels.end(); it++)
 	{
-		it->second->CleanUp();
+		DL_ASSERT_EXP(it->second->CleanUp(), "Failed to cleanup a model.");
 		SAFE_DELETE(it->second);
 	}
 
@@ -40,7 +40,7 @@ void AssetsContainer::Initiate()
 
 Texture* AssetsContainer::GetTexture(std::string aFilePath)
 {
-	if(aFilePath.find(".dds") == aFilePath.npos)
+	if (CL::substr(aFilePath, ".dds") == false)
 	{
 		DL_MESSAGE("Failed to load %s, due to incorrect fileformat. Has to be .dds", aFilePath.c_str());
 		DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
@@ -129,7 +129,7 @@ std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect
 	if (myModels.find(aFilePath) == myModels.end())
 	{
 		DL_MESSAGE("Loading model : %s", aFilePath.c_str());
-		CModel* model = new CModel; // this should not be created here. This should be sent in from whereever we load models.
+		CModel* model = new CModel;
 		myModels.emplace(aFilePath, model);
 
 		if ( thread )
@@ -146,31 +146,6 @@ std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect
 		}
 	}
 	return aFilePath;
-}
-
-std::string AssetsContainer::LoadModel(std::string filepath, std::string effect, CModel* pModel, bool thread /*= true*/)
-{
-	if (myModels.find(filepath) != myModels.end())
-		return filepath;
-
-	DL_MESSAGE("Loading model : %s", filepath.c_str());
-	//CModel* model = new CModel;
-	myModels.emplace(filepath, pModel);
-
-	if (thread)
-	{
-		m_Engine->GetThreadpool().AddWork(Work([=]() {
-			m_ModelLoader->LoadModel(filepath, pModel, effect);
-		}));
-		return filepath;
-	}
-	else
-	{
-		m_ModelLoader->LoadModel(filepath, pModel, effect);
-		return filepath;
-	}
-
-	return filepath;
 }
 
 void AssetsContainer::AddLoadRequest(std::string file, eRequestType request_type)

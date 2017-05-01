@@ -7,7 +7,7 @@ CSpotLight::CSpotLight()
 {
 	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", false);
 	m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/cone.fbx");
-	//m_Model->SetIsLightmesh();
+	m_Model->SetIsLightmesh();
 }
 
 void CSpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera)

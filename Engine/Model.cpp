@@ -103,18 +103,6 @@ void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matr
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 }
 
-void Model::SetIsLightmesh()
-{
-	if (this)
-	{
-		myIsLightMesh = true;
-		for (int i = 0; i < myChildren.Size(); i++)
-		{
-			myChildren[i]->SetIsLightmesh();
-		}
-	}
-}
-
 void Model::SetPosition(const CU::Vector3f& aPosition)
 {
 	myOrientation.SetPosition(aPosition);

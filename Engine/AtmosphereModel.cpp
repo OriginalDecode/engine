@@ -2,6 +2,22 @@
 #include "AtmosphereModel.h"
 
 
+void AtmosphereModel::Initiate(const std::string& filename)
+{
+	m_Filename = CL::substr(filename, "/", false, 0);
+	if ( m_IsRoot == false )
+	{
+		InitVertexBuffer();
+		InitIndexBuffer();
+		InitConstantBuffer();
+	}
+
+	for ( AtmosphereModel* child : myChildren )
+	{
+		child->Initiate(filename);
+	}
+}
+
 bool AtmosphereModel::CleanUp()
 {
 	__super::CleanUp();
@@ -33,6 +49,18 @@ void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 
+}
 
+void AtmosphereModel::AddChild(AtmosphereModel* child)
+{
+	myChildren.Add(child);
+}
 
+void AtmosphereModel::SetOrientation(const CU::Matrix44f& orientation)
+{
+	myOrientation = orientation;
+	for ( AtmosphereModel* child : myChildren )
+	{
+		child->SetOrientation(myOrientation);
+	}
 }

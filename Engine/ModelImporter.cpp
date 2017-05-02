@@ -112,7 +112,7 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 		ProcessNode(aNode->mChildren[i], aScene, someData->myChildren.GetLast(), file);
 	}
 #endif
-	DL_ASSERT_EXP(someData->myData, "Failed to Process mesh!");
+
 }
 
 void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* fbx, std::string file)
@@ -322,23 +322,22 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 
 		data->myData->m_MinPoint = min_point;
 		data->myData->m_MaxPoint = max_point;
-
-
-		//Flips it to make it correct.
-		CU::GrowingArray<u32> indiceFix;
-		for ( s32 indice = indices.Size() - 1; indice >= 0; indice-- )
-		{
-			indiceFix.Add(indices[indice]);
-		}
-
-		memcpy(data->myData->myIndicies, &indiceFix[0], sizeof(u32) * indiceFix.Size());
-
-		data->myData->myVertexStride = stride;
-		data->myData->myVertexCount = vertCount;
-		data->myData->myIndexCount =  indiceFix.Size();
-		
 	}
-	
+
+	//Flips it to make it correct.
+	CU::GrowingArray<u32> indiceFix;
+	for ( s32 indice = indices.Size() - 1; indice >= 0; indice-- )
+	{
+		indiceFix.Add(indices[indice]);
+	}
+
+	memcpy(data->myData->myIndicies, &indiceFix[0], sizeof(u32) * indiceFix.Size());
+
+	data->myData->myVertexStride = stride;
+	data->myData->myVertexCount = vertCount;
+	data->myData->myIndexCount = indiceFix.Size();
+
+
 	ExtractMaterials(mesh, scene, data, file);
 
 }
@@ -456,5 +455,15 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 			}
 
 		}
+	}
+}
+
+void CModelImporter::FBXModelData::DeleteChildren()
+{
+	for (FBXModelData* child : myChildren)
+	{
+		child->DeleteChildren();
+		delete child->myData;
+		delete child->myTextureData;
 	}
 }

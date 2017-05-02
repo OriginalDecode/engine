@@ -28,7 +28,7 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 
 	const VirtualFileSystem& vfs = m_Engine->GetVFS();
 	m_OuterSphere = new AtmosphereModel;
-	std::string atmosphere = m_Engine->LoadModel(vfs.GetFile("Models/atmosphere.fbx"), "Shaders/T_Skysphere.json", m_OuterSphere);
+	std::string atmosphere = m_Engine->LoadModel(vfs.GetFile("Models/atmosphere.fbx"), "Shaders/T_Skysphere.json", m_OuterSphere, false);
 	m_OuterSphere->Initiate("Models/atmosphere.fbx");
 	//m_InnerSphere = m_Engine->GetModel(atmosphere);
 	//m_OuterSphere = m_Engine->GetModel(atmosphere);

@@ -63,6 +63,4 @@ protected:
 	} m_ConstantStruct;
 
 	bool m_IsRoot = true;
-	bool myIsLightMesh = false;
-	bool m_IsSkysphere = false;
 };

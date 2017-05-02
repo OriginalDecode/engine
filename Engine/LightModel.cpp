@@ -27,3 +27,17 @@ void LightModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matri
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 	render_context.m_Context->Draw(m_VertexData.myNrOfVertexes, 0);
 }
+
+void LightModel::AddChild(LightModel* aChild)
+{
+	myChildren.Add(aChild);
+}
+
+void LightModel::SetOrientation(const CU::Matrix44f& orientation)
+{
+	myOrientation = orientation;
+	for ( LightModel* child : myChildren )
+	{
+		child->SetOrientation(orientation);
+	}
+}

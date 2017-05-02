@@ -17,7 +17,6 @@ bool SkySphere::Initiate(const std::string& model_filepath, const std::string& s
 
 	SkysphereLayer layer;
 	layer.m_Model = Engine::GetInstance()->GetModel(model_filepath); 
-	layer.m_Model->SetIsSkysphere(true);
 
 	JSONReader reader("Data/Config/game.json");
 	layer.m_Texture = Engine::GetInstance()->GetTexture("Data/Textures/Skysphere/T_skybox_level04 - Copy.dds");

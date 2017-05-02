@@ -12,6 +12,9 @@
 #include <Engine/Model.h>
 #include <Engine/LightModel.h>
 
+#include <Engine/VertexWrapper.h>
+#include <Engine/IndexWrapper.h>
+
 class Effect;
 class Engine;
 class aiNode;
@@ -53,8 +56,8 @@ private:
 
 		struct Layout
 		{
-			int mySize;
-			int myOffset;
+			s32 mySize;
+			s32 myOffset;
 			LayoutType myType;
 		};
 
@@ -85,6 +88,8 @@ private:
 		ModelData* myData = nullptr;
 		TextureData* myTextureData = nullptr;
 		CU::GrowingArray<FBXModelData*> myChildren;
+		void DeleteChildren();
+
 	};
 #pragma endregion
 
@@ -110,7 +115,6 @@ private:
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file);
 
 	void ExtractMaterials(aiMesh* mesh,const aiScene* scene, FBXModelData* data, std::string file);
-
 };
 
 template<typename T>
@@ -178,6 +182,11 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	{
 		delete data->myData;
 	}
+
+	for (FBXModelData* child : data->myChildren)
+	{
+	}
+
 	delete data;
 
 #ifdef _DEBUG
@@ -186,8 +195,6 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	MODEL_LOG("%s took %fms to load. %s", filepath.c_str(), loadTime, (loadTime > 7000.f) ? "Check if it's saved as binary." : 0);
 #endif
 }
-
-
 
 template<typename T>
 void CModelImporter::CreateModel(FBXModelData* someData, T* model, std::string filepath, Effect* effect)
@@ -202,7 +209,7 @@ void CModelImporter::CreateModel(FBXModelData* someData, T* model, std::string f
 
 	for (FBXModelData* child : someData->myChildren)
 	{
-		model->myChildren.Add(CreateChild<T>(child, filepath, effect));
+		model->AddChild(CreateChild<T>(child, filepath, effect));
 	}
 
 }
@@ -242,13 +249,11 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
 	out->m_IndexData.myIndexData = (s8*)indexData;
 	out->m_IndexData.mySize = data->myIndexCount * sizeof(u32);
-
+	out->m_IndexData.myIndexCount = data->myIndexCount;
 	for (u32 i = 0; i < data->myIndexCount; i++)
 	{
 		out->m_Indices.Add(data->myIndicies[i]);
 	}
-
-
 
 	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float); //is this wrong?
 	u32* vertexRawData = new u32[sizeOfBuffer];
@@ -335,3 +340,4 @@ void CModelImporter::SetupInputLayout(ModelData* data, T* out)
 		out->myVertexFormat.Add(desc);
 	}
 }
+

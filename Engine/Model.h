@@ -47,6 +47,8 @@ public:
 	CU::GrowingArray<Model*> GetChildModels() { return myChildren; }
 	void SetIsSkysphere(bool isSkysphere) { m_IsSkysphere = isSkysphere; for ( Model* child : myChildren ) child->SetIsSkysphere(m_IsSkysphere); }
 
+private:
+	CU::GrowingArray<Model*> myChildren;
 protected:
 	void InitConstantBuffer();
 	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
@@ -55,7 +57,6 @@ protected:
 	CU::GrowingArray<s32> m_Indices;
 
 	CU::GrowingArray<CSurface*> mySurfaces;
-	CU::GrowingArray<Model*> myChildren;
 
 	CU::Matrix44f myOrientation;
 	std::bitset<eModelStates::_COUNT> myModelStates;

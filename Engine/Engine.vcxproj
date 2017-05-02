@@ -667,6 +667,7 @@
     <ClInclude Include="AssetsContainer.h" />
     <ClInclude Include="Atmosphere.h" />
     <ClInclude Include="AtmosphereConstants.h" />
+    <ClInclude Include="AtmosphereModel.h" />
     <ClInclude Include="BaseAllocator.h" />
     <ClInclude Include="BaseModel.h" />
     <ClInclude Include="BloomPass.h" />
@@ -765,6 +766,7 @@
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="AssetsContainer.cpp" />
     <ClCompile Include="Atmosphere.cpp" />
+    <ClCompile Include="AtmosphereModel.cpp" />
     <ClCompile Include="BaseAllocator.cpp" />
     <ClCompile Include="BaseModel.cpp" />
     <ClCompile Include="BloomPass.cpp" />

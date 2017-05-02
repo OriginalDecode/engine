@@ -4,11 +4,14 @@
 
 class LightModel : public Model
 {
+	friend class CModelImporter;
 public:
 	LightModel() = default;
 	bool CleanUp() override;
 	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
+private:
 
-
+	CU::GrowingArray<LightModel*> myChildren;
+			
 };
 

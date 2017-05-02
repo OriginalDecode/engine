@@ -57,6 +57,7 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 	if (mySurfaces.Empty())
 		return;
 
+
 	SetupLayoutsAndBuffers();
 
 	

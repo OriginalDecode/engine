@@ -5,7 +5,7 @@ class Camera;
 class DirectX11;
 class Engine;
 class Texture;
-
+class AtmosphereModel;
 class Atmosphere
 {
 public:
@@ -20,8 +20,8 @@ private:
 	Engine* m_Engine							= nullptr;
 	DirectX11* m_API							= nullptr;
 	Camera* m_Camera							= nullptr;
-	Model* m_InnerSphere						= nullptr;
-	Model* m_OuterSphere						= nullptr;
+	//AtmosphereModel* m_InnerSphere				= nullptr;
+	AtmosphereModel* m_OuterSphere				= nullptr;
 
 	float m_InnerRadius = 0.f;
 	float m_OuterRadius = 0.f;

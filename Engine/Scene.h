@@ -8,7 +8,7 @@ class CInstance;
 class Sprite;
 class CText;
 class DirectionalLight;
-class CPointLight;
+class PointLight;
 
 class CScene
 {
@@ -25,7 +25,7 @@ public:
 	void AddToScene(CText* aText);
 
 	void AddLight(DirectionalLight* aDirectionalLight);
-	void AddLight(CPointLight* aPointLight);
+	void AddLight(PointLight* aPointLight);
 
 
 private:
@@ -41,7 +41,7 @@ private:
 	CU::GrowingArray<DirectionalLight*> myDirectionalLights;
 	CU::StaticArray<SDirectionallightData, DIRECTIONAL_SIZE> myDirectionalLightData;
 
-	CU::GrowingArray<CPointLight*> myPointLights;
+	CU::GrowingArray<PointLight*> myPointLights;
 	CU::StaticArray<SPointlightData, POINTLIGHT_SIZE> myPointLightData;
 
 

@@ -1,16 +1,14 @@
 #pragma once
 #include "LightStructs.h"
-#include "Model.h"
 
-class CInstance;
 class Camera;
-
-class CSpotLight
+class LightModel;
+class SpotLight
 {
 public:
-	CSpotLight();
+	SpotLight();
 
-	void Render(const CU::Matrix44f& previousOrientation, Camera* aCamera);
+	void Render(const CU::Matrix44f& previousOrientation, Camera* aCamera, const RenderContext& render_context);
 	void SetColor(const CU::Vector4f& aColor);
 	void SetRange(float aRange);
 	void SetAngle(float anAngle);
@@ -21,9 +19,8 @@ public:
 	void DoTranslation(const CU::Matrix44f& translationMatrix);
 	CU::Matrix44f GetOrientatino();
 private:
-	Model* m_Model;
+	LightModel* m_Model = nullptr;
 	CU::Matrix44f myBaseMatrix;
 	SSpotlightData myData;
-	CInstance* myLightMesh = nullptr;
 };
 

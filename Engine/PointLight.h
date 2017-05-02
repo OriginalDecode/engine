@@ -1,12 +1,10 @@
 #pragma once
 #include "LightStructs.h"
-
-class Model;
-class CPointLight
+#include <Engine/LightModel.h>
+class PointLight
 {
 public:
-	CPointLight();
-
+	PointLight();
 
 	void SetPosition(const CU::Vector3f& aPosition);
 	CU::Vector3f GetPosition();
@@ -18,12 +16,13 @@ public:
 	const float& GetRange();
 
 	void Update();
-	void Render(const CU::Matrix44f& previousOrientation, Camera* camera);
+	void Render(const CU::Matrix44f& previousOrientation, Camera* camera, const RenderContext& render_context);
 	const SPointlightData& GetData() const;
 
 	CU::Matrix44f GetOrientation();
 private:
-	Model* m_Model;
+	LightModel* m_Model = nullptr;
+
 	CU::Matrix44f myOrientation;
 	CU::Vector3f myOriginalPosition;
 	CU::Vector4f myColor;

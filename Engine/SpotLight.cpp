@@ -1,36 +1,38 @@
 #include "stdafx.h"
+#include <Engine/snowblind_shared.h>
 #include "SpotLight.h"
 #include "Instance.h"
 #include "Camera.h"
-
-CSpotLight::CSpotLight()
+SpotLight::SpotLight()
 {
-	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", false);
-	m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/cone.fbx");
+	m_Model = new LightModel;
+	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", m_Model, false);
+	m_Model->Initiate("cone.fbx");
+	//m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/cone.fbx");
 }
 
-void CSpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera)
+void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera, const RenderContext& render_context)
 {
-	//m_Model->Render(previousOrientation, aCamera->GetPerspective());
+	m_Model->Render(previousOrientation, aCamera->GetPerspective(), render_context);
 }
 
-SSpotlightData& CSpotLight::GetData()
+SSpotlightData& SpotLight::GetData()
 {
 	return myData;
 }
 
-void CSpotLight::DoTranslation(const CU::Matrix44f& translationMatrix)
+void SpotLight::DoTranslation(const CU::Matrix44f& translationMatrix)
 {
 	myData.myOrientation = translationMatrix;
 	SetDirection(myData.myOrientation.GetForward());
 }
 
-CU::Matrix44f CSpotLight::GetOrientatino()
+CU::Matrix44f SpotLight::GetOrientatino()
 {
 	return m_Model->GetOrientation();
 }
 
-void CSpotLight::SetPosition(const CU::Vector3f& aPosition)
+void SpotLight::SetPosition(const CU::Vector3f& aPosition)
 {
 	m_Model->GetOrientation().SetPosition(aPosition);
 	//myLightMesh->SetPosition(aPosition);
@@ -39,7 +41,7 @@ void CSpotLight::SetPosition(const CU::Vector3f& aPosition)
 	myData.myOrientation.SetPosition(aPosition);
 }
 
-void CSpotLight::SetDirection(const CU::Vector4f& aDirection)
+void SpotLight::SetDirection(const CU::Vector4f& aDirection)
 {
 	myData.myDirection.x = aDirection.x;
 	myData.myDirection.y = aDirection.y;
@@ -49,17 +51,17 @@ void CSpotLight::SetDirection(const CU::Vector4f& aDirection)
 	m_Model->GetOrientation().SetForward(myData.myDirection);
 }
 
-void CSpotLight::SetAngle(float anAngle)
+void SpotLight::SetAngle(float anAngle)
 {
 	myData.myAngle = anAngle;
 }
 
-void CSpotLight::SetRange(float aRange)
+void SpotLight::SetRange(float aRange)
 {
 	myData.myRange = aRange;
 }
 
-void CSpotLight::SetColor(const CU::Vector4f& aColor)
+void SpotLight::SetColor(const CU::Vector4f& aColor)
 {
 	myData.myLightColor = aColor;
 }

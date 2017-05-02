@@ -20,13 +20,13 @@ class DeferredRenderer;
 class DirectionalLight;
 class CEmitterInstance;
 class Model;
-class CPointLight;
+class PointLight;
 class Synchronizer;
 class Texture;
 class CText;
 class CTerrain;
 class LightPass;
-class CSpotLight;
+class SpotLight;
 class ShadowSpotlight;
 
 class Renderer
@@ -85,8 +85,8 @@ private:
 	DeferredRenderer*	myDeferredRenderer		= nullptr;
 
 	DirectionalLight*	myDirectionalLight		= nullptr;
-	CPointLight*		myPointLight			= nullptr;
-	CSpotLight*			mySpotlight				= nullptr;
+	PointLight*			myPointLight			= nullptr;
+	SpotLight*			mySpotlight				= nullptr;
 	ShadowSpotlight*	m_Shadowlight			= nullptr;
 
 	Synchronizer*		mySynchronizer			= nullptr;

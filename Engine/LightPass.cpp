@@ -3,7 +3,7 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "GBuffer.h"
-
+#include <Engine/snowblind_shared.h>
 bool LightPass::Initiate(GBuffer* aGBuffer, Texture* shadow_texture)
 {
 #ifdef SNOWBLIND_DX11
@@ -37,29 +37,27 @@ bool LightPass::CleanUp()
 	return true;
 }
 
-void LightPass::RenderPointlight(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
+void LightPass::RenderPointlight(PointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context)
 {
 	if (HasInitiated())
 	{
-		ID3D11DeviceContext* ctx = Engine::GetAPI()->GetContext();
-
 		UpdatePointlightBuffers(pointlight, aCamera, previousOrientation, shadow_matrix);
-		ctx->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINTLIGHT_VERTEX)]);
-		ctx->PSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINTLIGHT_PIXEL)]);
-		pointlight->Render(previousOrientation, aCamera);
+		render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINTLIGHT_VERTEX)]);
+		render_context.m_Context->PSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINTLIGHT_PIXEL)]);
+		pointlight->Render(previousOrientation, aCamera, render_context);
 	}
 }
 
-void LightPass::RenderSpotlight(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
+void LightPass::RenderSpotlight(SpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context)
 {
 	if ( HasInitiated() )
 	{
-		ID3D11DeviceContext* ctx = Engine::GetAPI()->GetContext();
+		//ID3D11DeviceContext* ctx = Engine::GetAPI()->GetContext();
 
 		UpdateSpotlightBuffers(spotlight, aCamera, previousOrientation, shadow_matrix);
-		ctx->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::SPOTLIGHT_VERTEX)]);
-		ctx->PSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::SPOTLIGHT_PIXEL)]);
-		spotlight->Render(previousOrientation, aCamera);
+		render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::SPOTLIGHT_VERTEX)]);
+		render_context.m_Context->PSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::SPOTLIGHT_PIXEL)]);
+		spotlight->Render(previousOrientation, aCamera, render_context);
 	}
 }
 
@@ -73,7 +71,7 @@ Effect* LightPass::GetSpotlightEffect()
 	return myEffect[u32(eLight::SPOTLIGHT)];
 }
 
-void LightPass::UpdatePointlightBuffers(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
+void LightPass::UpdatePointlightBuffers(PointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
 {
 #ifdef SNOWBLIND_DX11
 	//----------------------------------------
@@ -120,7 +118,7 @@ void LightPass::UpdatePointlightBuffers(CPointLight* pointlight, Camera* aCamera
 #endif
 }
 
-void LightPass::UpdateSpotlightBuffers(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
+void LightPass::UpdateSpotlightBuffers(SpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
 {
 #ifdef SNOWBLIND_DX11
 	//----------------------------------------

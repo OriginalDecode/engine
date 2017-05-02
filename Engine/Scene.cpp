@@ -89,7 +89,7 @@ void CScene::AddLight(DirectionalLight* aDirectionalLight)
 	myDirectionalLights.Add(aDirectionalLight);
 }
 
-void CScene::AddLight(CPointLight* aPointLight)
+void CScene::AddLight(PointLight* aPointLight)
 {
 	myPointLights.Add(aPointLight);
 }
@@ -106,7 +106,7 @@ void CScene::RenderLight()
 
 	for (int i = 0; i < myPointLights.Size(); i++)
 	{
-		CPointLight* pointLight = myPointLights[i];
+		PointLight* pointLight = myPointLights[i];
 
 		myPointLightData[i].myRange = pointLight->GetRange();
 		myPointLightData[i].myLightColor = pointLight->GetColor();

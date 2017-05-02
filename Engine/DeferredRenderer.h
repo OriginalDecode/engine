@@ -18,7 +18,7 @@ class Effect;
 class Engine;
 class GBuffer;
 class LightPass;
-class CPointLight;
+class PointLight;
 class Texture;
 
 struct IndexDataWrapper;

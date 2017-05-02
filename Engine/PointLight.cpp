@@ -2,62 +2,64 @@
 #include "PointLight.h"
 #include "Model.h"
 
-CPointLight::CPointLight()
+PointLight::PointLight()
 {
-	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", false);
-	m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx");
+	m_Model = new LightModel;
+	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", m_Model, false);
+	m_Model->Initiate("sphere.fbx");
+	//m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx");
 }
 
-void CPointLight::SetPosition(const CU::Vector3f& aPosition)
+void PointLight::SetPosition(const CU::Vector3f& aPosition)
 {
 	myOriginalPosition = aPosition;
 	myOrientation.SetPosition(myOriginalPosition);
 	m_Model->SetPosition(aPosition);
 }
 
-CU::Vector3f CPointLight::GetPosition()
+CU::Vector3f PointLight::GetPosition()
 {
 	return myOrientation.GetPosition();
 }
 
-void CPointLight::SetColor(const CU::Vector4f& aColor)
+void PointLight::SetColor(const CU::Vector4f& aColor)
 {
 	myColor = aColor;
 }
 
-const CU::Vector4f& CPointLight::GetColor()
+const CU::Vector4f& PointLight::GetColor() 
 {
 	return myColor;
 }
 
-void CPointLight::SetRange(float aRange)
+void PointLight::SetRange(float aRange)
 {
 	myRange = aRange;
 }
 
-const float& CPointLight::GetRange()
+const float& PointLight::GetRange()
 {
 	return myRange;
 }
 
-void CPointLight::Update()
+void PointLight::Update()
 {
 	myData.myLightColor = GetColor();
 	myData.myLightPosition = GetPosition();
 	myData.myRange = GetRange();
 }
 
-void CPointLight::Render(const CU::Matrix44f& previousOrientation, Camera* camera)
+void PointLight::Render(const CU::Matrix44f& camera_orientation, Camera* camera, const RenderContext& render_context)
 {
-	//m_Model->Render(previousOrientation, camera->GetPerspective());
+	m_Model->Render(camera_orientation, camera->GetPerspective(), render_context);
 }
 
-const SPointlightData& CPointLight::GetData() const
+const SPointlightData& PointLight::GetData() const
 {
 	return myData;
 }
 
-CU::Matrix44f CPointLight::GetOrientation()
+CU::Matrix44f PointLight::GetOrientation()
 {
 	return myOrientation;
 }

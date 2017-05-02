@@ -42,8 +42,8 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	
 	myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 	
-	myPointLight = new CPointLight; //Where should this live?
-	mySpotlight = new CSpotLight; // Where should this live?
+	myPointLight = new PointLight; //Where should this live?
+	mySpotlight = new SpotLight; // Where should this live?
 	
 	m_Shadowlight = new ShadowSpotlight;
 	m_Shadowlight->Initiate(
@@ -377,7 +377,7 @@ void Renderer::RenderSpotlight()
 		//mySpotlight->set
 		mySpotlight->DoTranslation(command.m_Orientation);
 		m_Shadowlight->SetOrientation(command.m_Orientation);
-		m_LightPass.RenderSpotlight(mySpotlight, m_Camera, myPrevFrame, m_Shadowlight->GetMVP());
+		m_LightPass.RenderSpotlight(mySpotlight, m_Camera, myPrevFrame, m_Shadowlight->GetMVP(), m_RenderContext);
 	}
 	effect->Deactivate();
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
@@ -393,7 +393,7 @@ void Renderer::RenderPointlight()
 	Effect* effect = m_LightPass.GetPointlightEffect();
 	effect->Activate();
 
-	for each(const RenderCommand& command in commands)
+	for (const RenderCommand& command : commands)
 	{
 		DL_ASSERT_EXP(command.myType == eType::POINTLIGHT, "Wrong command type in pointlight buffer.");
 		m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
@@ -401,7 +401,7 @@ void Renderer::RenderPointlight()
 		myPointLight->SetRange(command.myRange);
 		myPointLight->SetColor(CU::Vector4f(command.myColor.x, command.myColor.y, command.myColor.z, 1));
 		myPointLight->Update();
-		m_LightPass.RenderPointlight(myPointLight, m_Camera, myPrevFrame, m_Shadowlight->GetMVP());
+		m_LightPass.RenderPointlight(myPointLight, m_Camera, myPrevFrame, m_Shadowlight->GetMVP(), m_RenderContext);
 	}
 
 	effect->Deactivate();

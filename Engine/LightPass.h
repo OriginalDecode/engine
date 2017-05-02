@@ -3,7 +3,7 @@
 #include "snowblind_shared.h"
 
 class GBuffer;
-class CSpotLight;
+class SpotLight;
 class LightPass
 {
 public:
@@ -11,15 +11,15 @@ public:
 
 	bool Initiate(GBuffer* aGBuffer, Texture* shadow_texture);
 	bool CleanUp();
-	void RenderPointlight(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
-	void RenderSpotlight(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
+	void RenderPointlight(PointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
+	void RenderSpotlight(SpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
 	Effect* GetPointlightEffect();
 	Effect* GetSpotlightEffect();
 	bool HasInitiated();
 
 private:
-	void UpdatePointlightBuffers(CPointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
-	void UpdateSpotlightBuffers(CSpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
+	void UpdatePointlightBuffers(PointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
+	void UpdateSpotlightBuffers(SpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
 
 	void CreateSpotlightBuffers();
 	void CreatePointlightBuffers();

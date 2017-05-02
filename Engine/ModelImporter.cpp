@@ -112,6 +112,7 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 		ProcessNode(aNode->mChildren[i], aScene, someData->myChildren.GetLast(), file);
 	}
 #endif
+	DL_ASSERT_EXP(someData->myData, "Failed to Process mesh!");
 }
 
 void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* fbx, std::string file)

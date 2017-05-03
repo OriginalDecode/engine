@@ -3,6 +3,7 @@
 #include <Engine/snowblind_shared.h>
 
 #include <Engine/Camera.h>
+#include <Engine/ShadowSpotlight.h>
 
 #include <functional>
 
@@ -16,10 +17,12 @@ public:
 	
 	void ProcessShadows(Camera* camera, const RenderContext& render_context);
 	void RegisterFunction(std::function<void()> pFunction);
+	ShadowSpotlight* GetShadowSpotlight() const { return m_ShadowSpotlight; }
 private:
 
 	Texture* m_DepthTexture = nullptr;
-	CU::GrowingArray<std::function<void()>> m_FuncPtrs;
+	ShadowSpotlight* m_ShadowSpotlight = nullptr;
 
+	CU::GrowingArray<std::function<void()>> m_FuncPtrs;
 
 };

@@ -4,6 +4,12 @@
 
 bool ShadowPass::Initiate()
 {
+	m_ShadowSpotlight = new ShadowSpotlight;
+
+	m_ShadowSpotlight->Initiate(
+		CU::Vector3f(256.f, 128.f, 256.f) //Position
+		, CU::Vector3f(0.f, 0.f, 1.f) //Direction
+		, 2048.f); // Buffer Size
 
 	return true;
 }
@@ -13,6 +19,8 @@ bool ShadowPass::CleanUp()
 	m_DepthTexture->CleanUp();
 	SAFE_DELETE(m_DepthTexture);
 
+	m_ShadowSpotlight->CleanUp();
+	SAFE_DELETE(m_ShadowSpotlight);
 	return true;
 }
 

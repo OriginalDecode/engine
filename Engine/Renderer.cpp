@@ -51,6 +51,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 		, CU::Vector3f(0.f, 0.f, 1.f)
 		, 2048.f);
 
+	/* Directional Shadows */
 	m_DirectionalCamera = new Camera;
 	m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
 
@@ -62,7 +63,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_ShadowDepthStencil = new Texture;
 	m_ShadowDepthStencil->InitiateAsDepthStencil(2048.f, 2048.f, "DirectionalLight : Depthstencil View");
-
+	/* End of Directional Shadows */
 
 	myDeferredRenderer = new DeferredRenderer; // Where should this live?
 	if (!myDeferredRenderer->Initiate(m_ShadowDepthStencil))
@@ -87,7 +88,8 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	my3DLine = new CLine3D; //Where should this live?
 	my3DLine->Initiate();
 
-	bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil());
+	//bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil());
+	bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_ShadowPass.GetShadowSpotlight()->GetDepthStencil());
 	DL_ASSERT_EXP(success, "failed to initiate lightpass!");
 
 	m_ParticleEmitter = new CEmitterInstance;

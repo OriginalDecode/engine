@@ -87,7 +87,7 @@ private:
 	DirectionalLight*	myDirectionalLight		= nullptr;
 	PointLight*			myPointLight			= nullptr;
 	SpotLight*			mySpotlight				= nullptr;
-	ShadowSpotlight*	m_Shadowlight			= nullptr;
+
 
 	Synchronizer*		mySynchronizer			= nullptr;
 	CText*				myText					= nullptr;
@@ -99,6 +99,7 @@ private:
 
 	CEmitterInstance*	m_ParticleEmitter		= nullptr;
 
+	ShadowSpotlight*	m_Shadowlight			= nullptr;
 	Camera*				m_DirectionalCamera		= nullptr;
 	Effect*				m_ShadowEffect			= nullptr;
 	Texture*			m_ShadowDepth			= nullptr;

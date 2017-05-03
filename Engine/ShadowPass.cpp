@@ -26,7 +26,18 @@ bool ShadowPass::CleanUp()
 
 void ShadowPass::ProcessShadows(Camera* camera, const RenderContext& render_context)
 {
+
+	/*
 	
+		This will have to check if the entity is within range as well.
+		Or maybe the Render3DCommands function can do this instead?
+		This function should probably be responsible for this. 
+		They might use camerahandles instead that bundles the camera with a frustum & 
+		bounding box.
+	
+	*/
+
+
 	//render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	//Camera* old_camera = m_Camera;
 	//m_Camera = camera;

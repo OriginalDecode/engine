@@ -26,10 +26,8 @@ struct ControllerState;
 	{
 	public:
 		Camera() = default;
-		/*Camera(float aWidth, float aHeight);
-		Camera(float aWidth, float aHeight, const CU::Vector3f& aPosition);
-		Camera(float aWidth, float aHeight, float far_plane, float near_plane);
-		Camera(float aWidth, float aHeight, float near_plane, float far_plane, float fov);*/
+		void SetIsShadowCamera(bool is_shadow_camera) { m_IsShadowCamera = is_shadow_camera; }
+		bool IsShadowCamera() const { return m_IsShadowCamera; }
 
 		void CreatePerspectiveProjection(float width, float height, float near_plane, float far_plane, float fov);
 		const CU::Matrix44f& GetPerspective() const { return m_ProjectionMatrix; }
@@ -72,6 +70,8 @@ struct ControllerState;
 		float GetFOV() { return m_CurrentFoV; }
 		float* GetFOVRef() { return &m_CurrentFoV; }
 
+		void RecalculatePerspective(float width, float height, float near_plane, float far_plane);
+
 	private:
 		float m_LookSpeedModifier = 0.005f;
 		float m_RotationDegree = 0.f;
@@ -92,7 +92,7 @@ struct ControllerState;
 		float m_CurrentFoV = 90.f;
 
 		float m_CameraSpeed = 50.f;
-
+		bool m_IsShadowCamera = false;
 
 		CU::Vector2f m_CenterPoint;
 		CU::Quaternion m_Pitch;

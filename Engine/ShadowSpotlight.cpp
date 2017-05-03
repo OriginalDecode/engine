@@ -9,22 +9,15 @@ bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f&
 	m_Context = Engine::GetInstance()->GetAPI()->GetContext();
 	m_Viewport = Engine::GetInstance()->GetAPI()->CreateViewport(m_BufferSize, m_BufferSize, 0.f, 1.f, 0, 0);
 
-	//m_Camera = new Camera(m_BufferSize, m_BufferSize, 256.f, 1.f, 90.f);
 	m_Camera = new Camera;
 	m_Camera->CreatePerspectiveProjection(m_BufferSize, m_BufferSize, 1.f, 256.f, 90.f);
-	//m_Camera->CreateOrthographicProjection(200.f, 200.f, 0.01f, 1024.f);
-
+	m_Camera->SetIsShadowCamera(true);
 
 	m_Camera->SetPosition(position);
 
 	m_Camera->RotateAroundY(CL::DegreeToRad(90.f) * direction.x);
 	m_Camera->RotateAroundZ(CL::DegreeToRad(90.f) * direction.y);
 	m_Camera->RotateAroundX(CL::DegreeToRad(90.f) * direction.z);
-
-	//float x = m_Camera->GetOrientation().GetXRotation();
-	//float y = m_Camera->GetOrientation().GetYRotation();
-	//float z = m_Camera->GetOrientation().GetZRotation();
-
 
 	m_Depth = new Texture;
 	m_Depth->Initiate(m_BufferSize, m_BufferSize,
@@ -54,6 +47,11 @@ bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f&
 	return true;
 }
 
+void ShadowSpotlight::Initiate(float buffer_size)
+{
+	Initiate(CU::Vector3f(0.f, 0.f, 0.f), CU::Vector3f(0.f, 0.f, 0.f), buffer_size);
+}
+
 bool ShadowSpotlight::CleanUp()
 {
 	SAFE_DELETE(m_Viewport);
@@ -72,11 +70,6 @@ bool ShadowSpotlight::CleanUp()
 	m_DepthStencil->CleanUp();
 	SAFE_DELETE(m_DepthStencil);
 	if (m_DepthStencil)
-		return false;
-
-	m_Holder->CleanUp();
-	SAFE_DELETE(m_Holder);
-	if (m_Holder)
 		return false;
 
 	return true;
@@ -104,17 +97,14 @@ void ShadowSpotlight::SetTargets()
 	api->SetPixelShader(m_ShadowEffect->GetPixelShader()->m_Shader);
 }
 
-void ShadowSpotlight::ToggleShader(bool on_or_off)
-{
-	if (on_or_off)
-		m_ShadowEffect->Activate();
-	else
-		m_ShadowEffect->Deactivate();
-}
-
 void ShadowSpotlight::SetOrientation(const CU::Matrix44f& orientation)
 {
 	m_Camera->SetOrientation(orientation);
+}
+
+void ShadowSpotlight::SetAngle(float angle)
+{
+	m_Camera->SetFOV(angle);
 }
 
 CU::Matrix44f ShadowSpotlight::GetOrientation()
@@ -127,7 +117,12 @@ CU::Matrix44f ShadowSpotlight::GetMVP()
 	return (CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetPerspective());
 }
 
-void ShadowSpotlight::Copy()
+void ShadowSpotlight::ActivateShader()
 {
-	Texture::CopyData(m_Holder->GetDepthTexture(), m_DepthStencil->GetDepthTexture());
+	m_ShadowEffect->Activate();
+}
+
+void ShadowSpotlight::InactivateShader()
+{
+	m_ShadowEffect->Deactivate();
 }

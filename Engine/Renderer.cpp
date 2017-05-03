@@ -45,11 +45,11 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	myPointLight = new PointLight; //Where should this live?
 	mySpotlight = new SpotLight; // Where should this live?
 	
-	m_Shadowlight = new ShadowSpotlight;
-	m_Shadowlight->Initiate(
-		CU::Vector3f(256.f, 128.f, 256.f)
-		, CU::Vector3f(0.f, 0.f, 1.f)
-		, 2048.f);
+// 	m_Shadowlight = new ShadowSpotlight;
+// 	m_Shadowlight->Initiate(
+// 		CU::Vector3f(256.f, 128.f, 256.f)
+// 		, CU::Vector3f(0.f, 0.f, 1.f)
+// 		, 2048.f);
 
 	/* Directional Shadows */
 	m_DirectionalCamera = new Camera;
@@ -89,7 +89,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	my3DLine->Initiate();
 
 	//bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil());
-	bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_ShadowPass.GetShadowSpotlight()->GetDepthStencil());
+	bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), mySpotlight->GetShadowSpotlight()->GetDepthStencil());
 	DL_ASSERT_EXP(success, "failed to initiate lightpass!");
 
 	m_ParticleEmitter = new CEmitterInstance;
@@ -130,8 +130,6 @@ bool Renderer::CleanUp()
 	m_ShadowDepth->CleanUp();
 	SAFE_DELETE(m_ShadowDepth);
 
-	m_Shadowlight->CleanUp();
-	SAFE_DELETE(m_Shadowlight);
 	SAFE_DELETE(my3DLine);
 	SAFE_DELETE(mySprite);
 	SAFE_DELETE(myClearColor);
@@ -374,20 +372,22 @@ void Renderer::RenderSpotlight()
 	Effect* effect = m_LightPass.GetSpotlightEffect();
 	effect->Activate();
 
+	SpotlightData data;
 	for (const RenderCommand& command : commands)
 	{
 		DL_ASSERT_EXP(command.myType == eType::SPOTLIGHT, "Wrong command type in spotlight buffer.");
-		m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
 
-		mySpotlight->SetPosition(command.myPosition);
-		mySpotlight->SetRange(command.myRange);
-		mySpotlight->SetColor(CU::Vector4f(command.myColor.x, command.myColor.y, command.myColor.z, 1));
-		mySpotlight->SetAngle(command.myAngle);
+		data.myAngle = command.myAngle;
+		data.myRange = command.myRange;
+		data.myLightColor = command.myColor;
+		data.myLightPosition = command.myPosition;
+		data.myOrientation = command.m_Orientation;
 
-		mySpotlight->DoTranslation(command.m_Orientation);
-		m_Shadowlight->SetOrientation(command.m_Orientation);
+		mySpotlight->SetData(data);
 
-		m_LightPass.RenderSpotlight(mySpotlight, m_Camera, myPrevFrame, m_Shadowlight->GetMVP(), m_RenderContext);
+		ShadowSpotlight* shadow = mySpotlight->GetShadowSpotlight();
+		m_ShadowPass.ProcessShadows(shadow->GetCamera(), m_RenderContext);
+		m_LightPass.RenderSpotlight(mySpotlight, m_Camera, myPrevFrame, shadow->GetMVP(), m_RenderContext);
 	}
 
 	effect->Deactivate();
@@ -412,7 +412,7 @@ void Renderer::RenderPointlight()
 		myPointLight->SetRange(command.myRange);
 		myPointLight->SetColor(CU::Vector4f(command.myColor.x, command.myColor.y, command.myColor.z, 1));
 		myPointLight->Update();
-		m_LightPass.RenderPointlight(myPointLight, m_Camera, myPrevFrame, m_Shadowlight->GetMVP(), m_RenderContext);
+		//m_LightPass.RenderPointlight(myPointLight, m_Camera, myPrevFrame, m_Shadowlight->GetMVP(), m_RenderContext);
 	}
 
 	effect->Deactivate();
@@ -503,10 +503,10 @@ void Renderer::ProcessShadows()
 
 	m_Shadowlight->ClearTexture();
 	m_Shadowlight->SetTargets();
-	m_Shadowlight->ToggleShader(m_ProcessShadows);
+	//m_Shadowlight->ToggleShader(m_ProcessShadows);
 	Render3DCommands();
 	//RenderParticles();
-	m_Shadowlight->Copy();
+
 	m_Engine->ResetRenderTargetAndDepth();
 	m_API->ResetViewport();
 
@@ -514,7 +514,7 @@ void Renderer::ProcessShadows()
 	m_Camera = camera;
 
 	m_ProcessShadows = false;
-	m_Shadowlight->ToggleShader(m_ProcessShadows);
+	//m_Shadowlight->ToggleShader(m_ProcessShadows);
 }
 
 void Renderer::ProcessShadows(Camera* camera)

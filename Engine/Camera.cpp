@@ -128,11 +128,16 @@ void Camera::RotateAroundZ(float rad)
 void Camera::SetFOV(float field_of_view)
 {
 	const WindowSize& window_size = Engine::GetInstance()->GetWindowSize();
-	if ( field_of_view >= 60.f && field_of_view <= 120.f )
+	if ( field_of_view >= 60.f && field_of_view <= 120.f || m_IsShadowCamera)
 		m_CurrentFoV = field_of_view;
 
 
 	m_ProjectionMatrix.SetPerspectiveFOV(CL::DegreeToRad(m_CurrentFoV), window_size.m_Height / window_size.m_Width);
+}
+
+void Camera::RecalculatePerspective(float width, float height, float near_plane, float far_plane)
+{
+	m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, CL::DegreeToRad(m_CurrentFoV));
 }
 
 void Camera::Move(eDirection aDirection, float aSpeed)

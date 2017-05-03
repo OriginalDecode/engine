@@ -124,7 +124,7 @@ void LightPass::UpdateSpotlightBuffers(SpotLight* spotlight, Camera* aCamera, co
 	//----------------------------------------
 	// VertexShader Constant Buffer
 	//----------------------------------------
-	const SSpotlightData& data = spotlight->GetData();
+	const SpotlightData& data = spotlight->GetData();
 
 	mySpotlightVertexConstantData.world = data.myOrientation;
 	mySpotlightVertexConstantData.invertedView = CU::Math::Inverse(previousOrientation);

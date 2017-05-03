@@ -14,7 +14,7 @@ enum class eLightAxis
 };
 
 
-struct SSpotlightData
+struct SpotlightData
 {
 	CU::Matrix44f myOrientation;
 	CU::Vector4f myLightColor;

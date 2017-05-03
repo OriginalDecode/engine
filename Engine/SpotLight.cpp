@@ -16,7 +16,12 @@ void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera
 	m_Model->Render(previousOrientation, aCamera->GetPerspective(), render_context);
 }
 
-SSpotlightData& SpotLight::GetData()
+void SpotLight::SetData(const SpotlightData& data)
+{
+	myData = data;
+}
+
+SpotlightData& SpotLight::GetData()
 {
 	return myData;
 }

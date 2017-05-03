@@ -108,6 +108,10 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_RenderContext.m_Engine = Engine::GetInstance();
 
 
+	m_ShadowPass.RegisterFunction([&] { Render3DCommands(); });
+	m_ShadowPass.RegisterFunction([&] { RenderNonDeferred3DCommands(); });
+	m_ShadowPass.RegisterFunction([&] { RenderParticles(); });
+
 	return true;
 }
 
@@ -182,7 +186,6 @@ void Renderer::Render()
 
 	m_Engine->ResetRenderTargetAndDepth();
 
-
 	myDeferredRenderer->SetBuffers(); //This is just the quad
 	m_PostProcessManager.Process(myDeferredRenderer->GetFinalTexture());
 
@@ -201,11 +204,13 @@ void Renderer::Render()
 	RenderLines();
 	Render2DCommands();
 
+	//m_ShadowPass.ProcessShadows(m_DirectionalCamera, m_RenderContext);
 
 	ImGui::Render();
 
 	m_Engine->Present();
 
+#ifdef _DEBUG
 	SLinePoint points[2];
 	points[0].position = CU::Vector4f(m_DirectionalCamera->GetPosition());
 	points[0].color = CU::Vector4f(255.f, 0.f, 0.f, 255.f);
@@ -213,12 +218,14 @@ void Renderer::Render()
 	points[1].color = CU::Vector4f(255.f, 0.f, 0.f, 255.f);
 
 	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[0], points[1]));
+#endif
 
 	mySynchronizer->WaitForLogic();
 	mySynchronizer->SwapBuffer();
 	mySynchronizer->RenderIsDone();
+
 	myPrevFrame = m_Camera->GetOrientation();
-	m_Engine->ToggleFrame();
+
 }
 
 void Renderer::AddTerrain(CTerrain* someTerrain)
@@ -333,7 +340,7 @@ void Renderer::Render2DCommands()
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
-	for each(const RenderCommand& command in commands2D)
+	for (const RenderCommand& command : commands2D)
 	{
 		switch (command.myType)
 		{
@@ -365,7 +372,7 @@ void Renderer::RenderSpotlight()
 	Effect* effect = m_LightPass.GetSpotlightEffect();
 	effect->Activate();
 
-	for each(const RenderCommand& command in commands)
+	for (const RenderCommand& command : commands)
 	{
 		DL_ASSERT_EXP(command.myType == eType::SPOTLIGHT, "Wrong command type in spotlight buffer.");
 		m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
@@ -374,11 +381,13 @@ void Renderer::RenderSpotlight()
 		mySpotlight->SetRange(command.myRange);
 		mySpotlight->SetColor(CU::Vector4f(command.myColor.x, command.myColor.y, command.myColor.z, 1));
 		mySpotlight->SetAngle(command.myAngle);
-		//mySpotlight->set
+
 		mySpotlight->DoTranslation(command.m_Orientation);
 		m_Shadowlight->SetOrientation(command.m_Orientation);
+
 		m_LightPass.RenderSpotlight(mySpotlight, m_Camera, myPrevFrame, m_Shadowlight->GetMVP(), m_RenderContext);
 	}
+
 	effect->Deactivate();
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
@@ -455,7 +464,7 @@ void Renderer::RenderLines()
 	m_API->GetContext()->OMSetRenderTargets(1, &backbuffer, depth);
 
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eLine);
-	for each(const RenderCommand& command in commands)
+	for (const RenderCommand& command : commands)
 	{
 		switch (command.myType)
 		{

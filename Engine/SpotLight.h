@@ -8,7 +8,7 @@ class ShadowSpotlight;
 class SpotLight
 {
 public:
-	SpotLight();
+	SpotLight() = default;
 
 	void Initiate();
 	void CleanUp();
@@ -17,6 +17,7 @@ public:
 
 	void SetData(const SpotlightData& data);
 	const SpotlightData& GetData() const;
+
 	ShadowSpotlight* GetShadowSpotlight() { return m_ShadowSpotlight; }
 
 private:

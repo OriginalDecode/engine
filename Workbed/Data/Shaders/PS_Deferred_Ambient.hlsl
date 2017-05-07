@@ -134,6 +134,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float3 final_color = saturate(ambientDiffuse + ambientSpec) ;
 	float NdotL = dot(normal.xyz, -light_direction);
 	
+	/* Shadow */
+	
 	float4 newPos = worldPosition + (normal * 0.4);
 	newPos.w = 1;
 	float4 shadowVec = mul(newPos, ShadowMVP);
@@ -147,6 +149,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
 	if(sampleValue < compareValue)
  		final_color *= 0.42;
+
+ 	/* Shadow end */
 
  	float3 dir_color = float3(1,0.9,0.6);
 	float3 output = saturate(final_color * dir_color * NdotL);

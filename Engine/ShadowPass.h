@@ -7,22 +7,30 @@
 
 #include <functional>
 
+class Renderer;
+class Effect;
 class ShadowPass
 {
 public:
-	ShadowPass() = default;
 
-	bool Initiate();
+	bool Initiate(Renderer* renderer);
 	bool CleanUp();
 	
 	void ProcessShadows(Camera* camera, const RenderContext& render_context);
-	void RegisterFunction(std::function<void()> pFunction);
 	ShadowSpotlight* GetShadowSpotlight() const { return m_ShadowSpotlight; }
+
+	const CU::Matrix44f& GetOrientation() const;
+	const CU::Matrix44f& GetOrientation();
+
+
 private:
 
+	CU::Matrix44f m_Orientation;
+
+	Renderer* m_Renderer = nullptr;
+	Effect* m_RenderToDepthTechnique = nullptr;
 	Texture* m_DepthTexture = nullptr;
 	ShadowSpotlight* m_ShadowSpotlight = nullptr;
 
-	CU::GrowingArray<std::function<void()>> m_FuncPtrs;
 
 };

@@ -41,6 +41,9 @@ public:
 	void AddTerrain(CTerrain* someTerrain);
 
 	PostProcessManager& GetPostprocessManager();
+
+	void Render3DShadows(const CU::Matrix44f& orientation, Camera* camera);
+
 private:
 	void RenderNonDeferred3DCommands();
 	void Render3DCommands();

@@ -7,7 +7,6 @@
 
 bool DeferredRenderer::Initiate(Texture* shadow_texture)
 {
-#ifdef SNOWBLIND_DX11
 	m_API = Engine::GetAPI();
 	myContext = m_API->GetContext();
 	myEngine = Engine::GetInstance();
@@ -44,13 +43,11 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 	myAmbientPassShader->AddShaderResource(myCubeMap->GetShaderView());
 	CreateFullscreenQuad();
 	InitConstantBuffer();
-#endif
 	return true;
 }
 
 bool DeferredRenderer::CleanUp()
 {
-#ifdef SNOWBLIND_DX11
 	myFinishedSceneTexture->CleanUp();
 	SAFE_DELETE(myFinishedSceneTexture);
 	myDepthStencil->CleanUp();
@@ -68,22 +65,18 @@ bool DeferredRenderer::CleanUp()
 
 	SAFE_RELEASE(myInputLayout);
 
-#endif
 	return true;
 }
 
 void DeferredRenderer::SetTargets()
 {
-#ifdef SNOWBLIND_DX11
 	myGBuffer->Clear(myClearColor);
 	myContext->ClearDepthStencilView(myDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	myGBuffer->SetAsRenderTarget(myDepthStencil);
-#endif
 }
 
 void DeferredRenderer::SetBuffers()
 {
-#ifdef SNOWBLIND_DX11
 	myContext->IASetInputLayout(myInputLayout);
 
 	myContext->IASetVertexBuffers(m_VertexBuffer->myStartSlot
@@ -97,7 +90,6 @@ void DeferredRenderer::SetBuffers()
 		, m_IndexBuffer->myByteOffset);
 
 	myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-#endif
 }
 
 void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
@@ -131,7 +123,6 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 
 void DeferredRenderer::Finalize(Texture*)
 {
-#ifdef SNOWBLIND_DX11
 	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
@@ -162,7 +153,6 @@ void DeferredRenderer::Finalize(Texture*)
 
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-#endif
 }
 
 Texture* DeferredRenderer::GetFinalTexture()
@@ -172,7 +162,6 @@ Texture* DeferredRenderer::GetFinalTexture()
 
 void DeferredRenderer::InitConstantBuffer()
 {
-#ifdef SNOWBLIND_DX11
 
 	D3D11_BUFFER_DESC cbDesc;
 	ZeroMemory(&cbDesc, sizeof(cbDesc));
@@ -186,32 +175,17 @@ void DeferredRenderer::InitConstantBuffer()
 	HRESULT hr = m_API->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 	m_API->SetDebugName(myConstantBuffer, "Deferred Ambient Constant Buffer");
 	m_API->HandleErrors(hr, "[DeferredRenderer] : Failed to Create Constant Buffer, ");
-#endif
 }
 
 void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
 {
-#ifdef SNOWBLIND_DX11
 	m_ConstantStruct.camPosition = previousOrientation.GetPosition();
 	m_ConstantStruct.invertedProjection = CU::Math::InverseReal(aProjection);
 	m_ConstantStruct.view = previousOrientation;
 	m_ConstantStruct.m_ShadowMVP = shadow_mvp;
 	m_ConstantStruct.m_Direction = light_dir;
-	//myConstantStruct->m_ShadowMVP = shadow_matrix;// CU::Math::Inverse(light_orientation) * light_projection;
-
 
 	m_API->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
-
-	/*D3D11_MAPPED_SUBRESOURCE msr;
-	m_API->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-	if (msr.pData != nullptr)
-	{
-		SConstantStruct* ptr = (SConstantStruct*)msr.pData;
-		memcpy(ptr, &m_ConstantStruct->camPosition, sizeof(SConstantStruct));
-	}
-
-	m_API->GetContext()->Unmap(myConstantBuffer, 0);*/
-#endif
 }
 
 GBuffer* DeferredRenderer::GetGBuffer()
@@ -219,12 +193,10 @@ GBuffer* DeferredRenderer::GetGBuffer()
 	return myGBuffer;
 }
 
-
 //This could be in the engine and return a quad object?
 void DeferredRenderer::CreateFullscreenQuad()
 {
 
-#ifdef SNOWBLIND_DX11
 	myVertexFormat.ReInit(2);
 	myVertexFormat.Add(VertexLayoutPosUV[0]);
 	myVertexFormat.Add(VertexLayoutPosUV[1]);
@@ -277,12 +249,10 @@ void DeferredRenderer::CreateFullscreenQuad()
 
 	CreateBuffer();
 	CreateIndexBuffer();
-#endif
 }
 
 void DeferredRenderer::CreateBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	void* shader = myScreenPassShader->GetVertexShader()->compiledShader;
 	int size = myScreenPassShader->GetVertexShader()->shaderSize;
 
@@ -307,12 +277,10 @@ void DeferredRenderer::CreateBuffer()
 	m_VertexBuffer->myByteOffset = 0;
 	m_VertexBuffer->myStartSlot = 0;
 	m_VertexBuffer->myNrOfBuffers = 1;
-#endif
 }
 
 void DeferredRenderer::CreateIndexBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	D3D11_BUFFER_DESC indexDesc;
 	ZeroMemory(&indexDesc, sizeof(indexDesc));
 	indexDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -329,5 +297,4 @@ void DeferredRenderer::CreateIndexBuffer()
 
 	m_IndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 	m_IndexBuffer->myByteOffset = 0;
-#endif
 }

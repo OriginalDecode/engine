@@ -39,14 +39,15 @@ private:
 	Effect* m_ShadowEffect	= nullptr;
 	Camera* m_Camera		= nullptr;
 	Viewport* m_Viewport	= nullptr;
-	IDevice* m_Device		= nullptr;
+
 	IDevContext* m_Context	= nullptr;
+
 	Texture* m_Depth		= nullptr;
 	Texture* m_DepthStencil = nullptr;
 	Texture* m_Holder		= nullptr;
 
+	float m_BufferSize		= 0.f;
 	CU::Vector3f m_Position;
 	CU::Vector3f m_Direction;
-	float m_BufferSize = 0.f;
 
 };

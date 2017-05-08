@@ -107,6 +107,7 @@ void Camera::Update(const CU::Vector2f& cursor_pos)
 
 void Camera::SetOrientation(const CU::Matrix44f& matrix)
 {
+	m_Orientation2 = m_Orientation;
 	m_Orientation = matrix;
 }
 
@@ -200,15 +201,17 @@ void Camera::OrientCamera()
 	axisY = m_Yaw * m_Pitch * axisY;
 	axisZ = m_Yaw * m_Pitch * axisZ;
 
-	m_Orientation.myMatrix[0] = axisX.x;
-	m_Orientation.myMatrix[1] = axisX.y;
-	m_Orientation.myMatrix[2] = axisX.z;
+	m_Orientation2 = m_Orientation;
 
-	m_Orientation.myMatrix[4] = axisY.x;
-	m_Orientation.myMatrix[5] = axisY.y;
-	m_Orientation.myMatrix[6] = axisY.z;
+	m_Orientation[0] = axisX.x;
+	m_Orientation[1] = axisX.y;
+	m_Orientation[2] = axisX.z;
 
-	m_Orientation.myMatrix[8] = axisZ.x;
-	m_Orientation.myMatrix[9] = axisZ.y;
-	m_Orientation.myMatrix[10] = axisZ.z;
+	m_Orientation[4] = axisY.x;
+	m_Orientation[5] = axisY.y;
+	m_Orientation[6] = axisY.z;
+
+	m_Orientation[8] = axisZ.x;
+	m_Orientation[9] = axisZ.y;
+	m_Orientation[10] = axisZ.z;
 }

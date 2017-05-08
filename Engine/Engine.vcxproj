@@ -732,6 +732,7 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="ShadowSpotlight.h" />
+    <ClInclude Include="Shadow_Directional.h" />
     <ClInclude Include="SkySphere.h" />
     <ClInclude Include="SnowblindParticleData.h" />
     <ClInclude Include="snowblind_shared.h" />
@@ -827,6 +828,7 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="ShadowSpotlight.cpp" />
+    <ClCompile Include="Shadow_Directional.cpp" />
     <ClCompile Include="SkySphere.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Sprite.cpp" />

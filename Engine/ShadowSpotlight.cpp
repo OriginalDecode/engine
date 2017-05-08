@@ -5,7 +5,6 @@
 bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f& direction, float buffer_size)
 {
 	m_BufferSize = buffer_size;
-	m_Device = Engine::GetInstance()->GetAPI()->GetDevice();
 	m_Context = Engine::GetInstance()->GetAPI()->GetContext();
 	m_Viewport = Engine::GetInstance()->GetAPI()->CreateViewport(m_BufferSize, m_BufferSize, 0.f, 1.f, 0, 0);
 
@@ -25,13 +24,13 @@ bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f&
 		, DXGI_FORMAT_R16G16B16A16_FLOAT
 		, "Shadowlight : Depth ");
 
-	m_Holder = new Texture;
-	m_Holder->Initiate(m_BufferSize, m_BufferSize
-		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-		, DXGI_FORMAT_R32_TYPELESS
-		, DXGI_FORMAT_R32_FLOAT
-		, DXGI_FORMAT_D32_FLOAT
-		, "Shadowlight : DepthStencil ");
+	//m_Holder = new Texture;
+	//m_Holder->Initiate(m_BufferSize, m_BufferSize
+	//	, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+	//	, DXGI_FORMAT_R32_TYPELESS
+	//	, DXGI_FORMAT_R32_FLOAT
+	//	, DXGI_FORMAT_D32_FLOAT
+	//	, "Shadowlight : DepthStencil ");
 
 	m_DepthStencil = new Texture;
 	m_DepthStencil->Initiate(m_BufferSize, m_BufferSize
@@ -42,7 +41,7 @@ bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f&
 		, "Shadowlight : DepthStencil ");
 
 	m_ShadowEffect = Engine::GetInstance()->GetEffect("Shaders/T_Render_Depth.json");
-	m_ShadowEffect->AddShaderResource(m_Holder->GetDepthStencilView());
+	//m_ShadowEffect->AddShaderResource(m_Holder->GetDepthStencilView());
 
 	return true;
 }

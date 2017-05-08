@@ -20,11 +20,13 @@ public:
 
 	ShadowSpotlight* GetShadowSpotlight() { return m_ShadowSpotlight; }
 
+	bool ShadowCasting() { return ( m_ShadowSpotlight ? true : false ); }
+
 private:
 
 	void SetPosition(const CU::Vector3f& aPosition);
 	void SetDirection(const CU::Vector4f& aDirection);
-
+	
 	LightModel* m_Model = nullptr;
 	ShadowSpotlight* m_ShadowSpotlight = nullptr;
 	SpotlightData myData;

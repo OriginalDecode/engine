@@ -40,11 +40,11 @@ struct ControllerState;
 
 		CU::Vector3f RotateAroundPoint(const CU::Vector3f& position);
 
-		CU::Matrix44f& GetOrientation() { return m_Orientation; }
-		CU::Vector3f GetPosition() const { return m_Orientation.GetPosition(); }
+		CU::Matrix44f& GetOrientation() { return m_Orientation2; }
+		CU::Vector3f GetPosition() const { return m_Orientation2.GetPosition(); }
 		CU::Matrix44f& Get2DOrientation() { return my2DOrientation; }
 
-		const CU::Vector4f& GetAt() const { return m_Orientation.GetForward(); }
+		const CU::Vector4f& GetAt() const { return m_Orientation2.GetForward(); }
 
 		void Move(eDirection aDirection, float aSpeed);
 		void SetPosition(const CU::Vector3f& position);
@@ -84,6 +84,7 @@ struct ControllerState;
 		void OrientCamera();
 
 		CU::Matrix44f m_Orientation;
+		CU::Matrix44f m_Orientation2;
 		CU::Matrix44f my2DOrientation;
 
 		bool m_ProjectionCreated = false;

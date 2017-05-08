@@ -164,7 +164,7 @@ void Renderer::Render()
 	//ProcessShadows(m_DirectionalCamera);
 
 	myDeferredRenderer->DeferredRender( 
-		myPrevFrame, 
+		m_Camera->GetOrientation(), 
 		m_Camera->GetPerspective(), 
 		CU::Math::Inverse(m_DirectionalCamera->GetOrientation()) * m_DirectionalCamera->GetPerspective(), 
 		m_Direction);
@@ -193,7 +193,7 @@ void Renderer::Render()
 
 
 	m_Atmosphere.SetLightData(m_Direction, m_DirectionalCamera->GetPosition());
-	m_Atmosphere.Render(myPrevFrame, myDeferredRenderer->GetDepthStencil(), m_RenderContext);
+	m_Atmosphere.Render(m_Camera->GetOrientation(), myDeferredRenderer->GetDepthStencil(), m_RenderContext);
 
 	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), myDeferredRenderer->GetDepthStencil()->GetDepthView());
 	RenderParticles();
@@ -205,7 +205,7 @@ void Renderer::Render()
 	RenderLines();
 	Render2DCommands();
 
-	m_ShadowPass.ProcessShadows(m_DirectionalCamera, m_RenderContext);
+	//m_ShadowPass.ProcessShadows(m_DirectionalCamera, m_RenderContext);
 
 	ImGui::Render();
 
@@ -224,8 +224,6 @@ void Renderer::Render()
 	mySynchronizer->WaitForLogic();
 	mySynchronizer->SwapBuffer();
 	mySynchronizer->RenderIsDone();
-
-	myPrevFrame = m_Camera->GetOrientation();
 
 }
 
@@ -261,7 +259,7 @@ void Renderer::RenderNonDeferred3DCommands()
 
 				Model* model = m_Engine->GetModel(command.m_KeyOrText);
 				model->SetOrientation(command.m_Orientation);
-				model->Render(myPrevFrame, m_Camera->GetPerspective(), m_RenderContext);
+				model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 			}break;
 		}
 	}
@@ -316,24 +314,24 @@ void Renderer::Render3DCommands()
 
 
 
-				if ( m_ProcessDirectionalShadows )
-				{
+				//if ( m_ProcessDirectionalShadows )
+				//{
 
-					m_API->SetRasterizer(eRasterizer::CULL_NONE);
-					model->ShadowRender(m_DirectionalFrame, m_Camera->GetPerspective(), m_RenderContext);
-				}
-				else if ( m_ProcessShadows )
-				{
+				//	m_API->SetRasterizer(eRasterizer::CULL_NONE);
+				//	model->ShadowRender(m_DirectionalFrame, m_Camera->GetPerspective(), m_RenderContext);
+				//}
+				//else if ( m_ProcessShadows )
+				//{
 
-					m_API->SetRasterizer(eRasterizer::CULL_NONE);
-					model->ShadowRender(myPrevShadowFrame, m_Camera->GetPerspective(), m_RenderContext);
-				}
-				else
-				{
+				//	m_API->SetRasterizer(eRasterizer::CULL_NONE);
+				//	model->ShadowRender(myPrevShadowFrame, m_Camera->GetPerspective(), m_RenderContext);
+				//}
+				//else
+				//{
 					m_API->SetRasterizer(command.m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-					model->Render(myPrevFrame, m_Camera->GetPerspective(), m_RenderContext);
-				}
-			}break;
+					model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
+				//}
+			} break;
 		}
 	}
 }
@@ -349,8 +347,9 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	{
 		Model* model = m_Engine->GetModel(command.m_KeyOrText);
 		model->SetOrientation(command.m_Orientation);
-		model->Render(orientation, camera->GetPerspective(), m_RenderContext);
+		model->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
 	}
+
 }
 
 void Renderer::Render2DCommands()
@@ -403,10 +402,16 @@ void Renderer::RenderSpotlight()
 		data.myOrientation = command.m_Orientation;
 
 		mySpotlight->SetData(data);
+		CU::Matrix44f shadow_mvp;
+		if ( command.m_ShadowCasting )
+		{
+			ShadowSpotlight* shadow = mySpotlight->GetShadowSpotlight();
+			m_ShadowPass.ProcessShadows(shadow, m_RenderContext);
+			shadow_mvp = shadow->GetMVP();
+		}
 
-		ShadowSpotlight* shadow = mySpotlight->GetShadowSpotlight();
-		m_ShadowPass.ProcessShadows(shadow->GetCamera(), m_RenderContext);
-		m_LightPass.RenderSpotlight(mySpotlight, m_Camera, myPrevFrame, shadow->GetMVP(), m_RenderContext);
+		m_LightPass.RenderSpotlight(mySpotlight, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
+
 	}
 
 	effect->Deactivate();

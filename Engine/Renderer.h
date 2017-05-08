@@ -64,9 +64,9 @@ private:
 	bool				m_ProcessShadows = false;
 	bool				m_ProcessDirectionalShadows = false;
 
-	CU::Matrix44f		myPrevFrame;
-	CU::Matrix44f		myPrevShadowFrame;
-	CU::Matrix44f		m_DirectionalFrame;
+	//CU::Matrix44f		myPrevFrame;
+	//CU::Matrix44f		myPrevShadowFrame;
+	//CU::Matrix44f		m_DirectionalFrame;
 
 	CU::Vector3f		m_Direction;
 	CU::Vector3f		m_OriginalDirection;
@@ -107,16 +107,5 @@ private:
 	Effect*				m_ShadowEffect			= nullptr;
 	Texture*			m_ShadowDepth			= nullptr;
 	Texture*			m_ShadowDepthStencil	= nullptr;
-
-	struct cbDirectionalLightPS
-	{
-		CU::Matrix44f	m_InvertedProjection;
-		CU::Matrix44f	m_View;
-		CU::Vector4f	m_Color;
-		CU::Vector4f	m_CameraPosition;
-		CU::Matrix44f	m_ShadowMVP;
-		CU::Vector4f	m_Direction;
-	} m_DirectionalLightStruct;
-
 
 };

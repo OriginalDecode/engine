@@ -1,17 +1,18 @@
 #include "stdafx.h"
 #include "RenderCommand.h"
 #include <DataStructures/Hashmap/Hash.h>
-RenderCommand::RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range)
+RenderCommand::RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range, bool shadow_casting)
 	: myType(aType)
 	, myPosition(position)
 	, myColor(color)
 	, myIntensity(intensity)
 	, myRange(range)
 	, myCommandType(eCommandBuffer::ePointlight)
+	, m_ShadowCasting(shadow_casting)
 {
 }
 
-RenderCommand::RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& angle, const float& range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix)
+RenderCommand::RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& angle, const float& range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix, bool shadow_casting)
 	: myType(aType)
 	, myPosition(position)
 	, myColor(color)
@@ -20,6 +21,7 @@ RenderCommand::RenderCommand(const eType& aType, const CU::Vector3f& position, c
 	, myDirection(direction)
 	, m_Orientation(rotationMatrix)
 	, myCommandType(eCommandBuffer::eSpotlight)
+	, m_ShadowCasting(shadow_casting)
 {
 }
 

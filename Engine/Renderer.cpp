@@ -514,9 +514,7 @@ void Renderer::RenderLines()
 
 void Renderer::ProcessShadows()
 {
-	//BROFILER_FRAME("Renderer::ProcessShadows");
-
-	m_API->SetDepthStencilState(eDepthStencilState::MASK_TEST, 0);
+	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_ProcessShadows = true;
 
 	Camera* camera = m_Camera;

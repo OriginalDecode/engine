@@ -7,25 +7,12 @@
 
 bool ShadowPass::Initiate(Renderer* renderer)
 {
-	m_ShadowSpotlight = new ShadowSpotlight;
-
-	//m_ShadowSpotlight->Initiate(
-	//	CU::Vector3f(256.f, 128.f, 256.f) //Position
-	//	, CU::Vector3f(0.f, 0.f, 1.f) //Direction
-	//	, 2048.f); // Buffer Size
-
 	m_RenderToDepthTechnique = Engine::GetInstance()->GetEffect("Shaders/T_Render_Depth.json");
-	
 	return true;
 }
 
 bool ShadowPass::CleanUp()
 {
-	m_DepthTexture->CleanUp();
-	SAFE_DELETE(m_DepthTexture);
-
-	m_ShadowSpotlight->CleanUp();
-	SAFE_DELETE(m_ShadowSpotlight);
 	return true;
 }
 
@@ -40,6 +27,8 @@ void ShadowPass::ProcessShadows(Camera* camera, const RenderContext& render_cont
 void ShadowPass::ProcessShadows(ShadowSpotlight* shadow_spotlight, const RenderContext& render_context)
 {
 	shadow_spotlight->SetViewport();
+	shadow_spotlight->ClearTexture();
+	shadow_spotlight->SetTargets();
 	ProcessShadows(shadow_spotlight->GetCamera(), render_context);
 }
 

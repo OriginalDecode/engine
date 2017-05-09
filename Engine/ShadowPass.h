@@ -33,6 +33,8 @@ private:
 
 	Renderer* m_Renderer = nullptr;
 	Effect* m_RenderToDepthTechnique = nullptr;
+	Camera* m_Camera = nullptr;
+
 	Texture* m_DepthTexture = nullptr;
 
 

@@ -8,10 +8,8 @@
 #include "PostProcessManager.h"
 #include <Engine/Atmosphere.h>
 #include <CommonLib/Math/Matrix/Matrix33.h>
-namespace CommonUtilities
-{
-	class TimeManager;
-}
+#include <Engine/Shadow_Directional.h>
+
 
 class CLine3D;
 
@@ -83,7 +81,6 @@ private:
 	Engine*				m_Engine				= nullptr;
 	DirectX11*			m_API					= nullptr;
 	Camera*				m_Camera				= nullptr;
-	CU::TimeManager*	myTimeManager			= nullptr;
 
 	DeferredRenderer*	myDeferredRenderer		= nullptr;
 
@@ -107,5 +104,7 @@ private:
 	Effect*				m_ShadowEffect			= nullptr;
 	Texture*			m_ShadowDepth			= nullptr;
 	Texture*			m_ShadowDepthStencil	= nullptr;
+
+	ShadowDirectional	m_DirectionalShadow;
 
 };

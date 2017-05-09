@@ -205,7 +205,7 @@ void Renderer::Render()
 	RenderLines();
 	Render2DCommands();
 
-	//m_ShadowPass.ProcessShadows(m_DirectionalCamera, m_RenderContext);
+	//m_ShadowPass.ProcessShadows(m_DirectionalCamera, m_RenderContext); //Directional Light Shadow 
 
 	ImGui::Render();
 
@@ -263,8 +263,6 @@ void Renderer::RenderNonDeferred3DCommands()
 			}break;
 		}
 	}
-	//EASY_END_BLOCK;
-	//profiler::dumpBlocksToFile("test_profile.prof");
 }
 
 void Renderer::Render3DCommands()

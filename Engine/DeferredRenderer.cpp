@@ -36,11 +36,17 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 	myGBuffer = new GBuffer;
 
 	myAmbientPassShader = myEngine->GetEffect("Shaders/T_Deferred_Ambient.json");
-	myAmbientPassShader->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
+	myAmbientPassShader->AddShaderResource(myGBuffer->myAlbedo->GetShaderView(), Effect::DIFFUSE);
+	myAmbientPassShader->AddShaderResource(myGBuffer->myNormal->GetShaderView(), Effect::NORMAL);
+	myAmbientPassShader->AddShaderResource(myGBuffer->myDepth->GetShaderView(), Effect::DEPTH);
+
+	/*myAmbientPassShader->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
 	myAmbientPassShader->AddShaderResource(myGBuffer->myNormal->GetShaderView());
-	myAmbientPassShader->AddShaderResource(myGBuffer->myDepth->GetShaderView());
-	myAmbientPassShader->AddShaderResource(shadow_texture->GetDepthStencilView());
-	myAmbientPassShader->AddShaderResource(myCubeMap->GetShaderView());
+	myAmbientPassShader->AddShaderResource(myGBuffer->myDepth->GetShaderView());*/
+	//myAmbientPassShader->AddShaderResource(shadow_texture->GetDepthStencilView());
+
+	myAmbientPassShader->AddShaderResource(myCubeMap->GetShaderView(), Effect::CUBE);
+
 	CreateFullscreenQuad();
 	InitConstantBuffer();
 	return true;
@@ -105,7 +111,7 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 	myContext->ClearRenderTargetView(render_target, myClearColor);
 	myContext->OMSetRenderTargets(1, &render_target, depth);
 
-	myAmbientPassShader->Activate();
+	myAmbientPassShader->Use();
 	myContext->PSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 	m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
@@ -114,7 +120,7 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 	myContext->DrawIndexed(6, 0, 0);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 
-	myAmbientPassShader->Deactivate();
+	myAmbientPassShader->Clear();
 
 
 	depth = myDepthStencil->GetDepthView();

@@ -32,7 +32,7 @@ private:
 	CU::Matrix44f m_Orientation;
 
 	Renderer* m_Renderer = nullptr;
-	Effect* m_RenderToDepthTechnique = nullptr;
+	Effect* m_RenderToDepth = nullptr;
 	Camera* m_Camera = nullptr;
 
 	Texture* m_DepthTexture = nullptr;

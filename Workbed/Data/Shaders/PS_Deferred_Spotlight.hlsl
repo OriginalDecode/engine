@@ -18,7 +18,7 @@ cbuffer Spotlight : register( b0 )
 //	Samplers & Textures
 //---------------------------------
 
-Texture2D ShadowTexture	 : register ( t3 );
+Texture2D ShadowTexture	 : register ( t12 );
 
 //---------------------------------
 //	Deferred Lightmesh Pixel Structs

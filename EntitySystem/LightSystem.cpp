@@ -25,10 +25,10 @@ void LightSystem::Update(float /*aDeltaTime*/)
 		LightComponent& light = GetComponent<LightComponent>(e);
 
 		if (light.myType == eLightType::ePOINTLIGHT)
-			mySynchronizer->AddRenderCommand(RenderCommand(eType::POINTLIGHT, translation.myOrientation.GetPosition(), light.color, light.intensity, light.range));
+			mySynchronizer->AddRenderCommand(RenderCommand(eType::POINTLIGHT, translation.myOrientation.GetPosition(), light.color, light.intensity, light.range, false));
 
 		if (light.myType == eLightType::eSPOTLIGHT)
-			mySynchronizer->AddRenderCommand(RenderCommand(eType::SPOTLIGHT, translation.myOrientation.GetPosition(), light.color, light.angle, light.range, light.direction, translation.myOrientation));
+			mySynchronizer->AddRenderCommand(RenderCommand(eType::SPOTLIGHT, translation.myOrientation.GetPosition(), light.color, light.angle, light.range, light.direction, translation.myOrientation, true));
 
 	}
 }

@@ -4,6 +4,14 @@
 
 struct CompiledShader;
 class Texture;
+
+struct ResourceBinding
+{
+
+};
+
+
+
 class Effect
 {
 	friend class ShaderFactory;
@@ -22,6 +30,33 @@ public:
 	void Activate();
 	void Deactivate();
 	void AddShaderResource(IShaderResourceView* aShaderResource);
+
+	enum TextureSlot
+	{
+		DIFFUSE,
+		NORMAL,
+		ROUGHNESS,
+		METALNESS,
+		EMISSIVE,
+		OPACITY,
+		AO,
+		HEIGHT,//what
+		DISPLACEMENT,//what
+		LIGHTMAP,//what
+		SHININESS,//what
+		DEPTH,
+		SHADOWMAP,
+		CUBE,
+		_COUNT
+	};
+
+
+	void AddShaderResource(IShaderResourceView* pResource, TextureSlot slot);
+	void AddShaderResource(Texture* pResource, TextureSlot slot);
+	void Use();
+	void Clear();
+
+
 private:
 	std::string myFileName;
 
@@ -32,7 +67,10 @@ private:
 	CompiledShader* m_DomainShader		= nullptr;
 	CompiledShader* m_ComputeShader		= nullptr;
 
+	IShaderResourceView* m_Resources[_COUNT];
+
 	CU::GrowingArray<IShaderResourceView*> myShaderResources;
 	CU::GrowingArray<IShaderResourceView*> myNULLList;
 	bool firstOptimize = false;
 };
+

@@ -7,7 +7,8 @@
 
 bool ShadowPass::Initiate(Renderer* renderer)
 {
-	m_RenderToDepthTechnique = Engine::GetInstance()->GetEffect("Shaders/T_Render_Depth.json");
+	m_RenderToDepth = Engine::GetInstance()->GetEffect("Shaders/T_Render_Depth.json");
+	m_Renderer = renderer;
 	return true;
 }
 
@@ -20,8 +21,6 @@ void ShadowPass::ProcessShadows(Camera* camera, const RenderContext& render_cont
 {
 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_Renderer->Render3DShadows(camera->GetOrientation(), camera);
-	myDeferredRenderer->SetBuffers();
-
 }
 
 void ShadowPass::ProcessShadows(ShadowSpotlight* shadow_spotlight, const RenderContext& render_context)
@@ -29,23 +28,29 @@ void ShadowPass::ProcessShadows(ShadowSpotlight* shadow_spotlight, const RenderC
 	shadow_spotlight->SetViewport();
 	shadow_spotlight->ClearTexture();
 	shadow_spotlight->SetTargets();
+	m_RenderToDepth->Use();
 	ProcessShadows(shadow_spotlight->GetCamera(), render_context);
+	m_RenderToDepth->Clear();
 }
 
 void ShadowPass::ProcessShadows(ShadowDirectional* shadow_directional, const RenderContext& render_context)
 {
 	shadow_directional->SetViewport();
+	shadow_directional->ClearTexture(render_context);
+	shadow_directional->SetTargets(render_context);
+	m_RenderToDepth->Use();
 	ProcessShadows(shadow_directional->GetCamera(), render_context);
+	m_RenderToDepth->Clear();
 }
 
 void ShadowPass::Activate()
 {
-	m_RenderToDepthTechnique->Activate();
+	m_RenderToDepth->Activate();
 }
 
 void ShadowPass::DeActivate()
 {
-	m_RenderToDepthTechnique->Deactivate();
+	m_RenderToDepth->Deactivate();
 }
 
 const CU::Matrix44f& ShadowPass::GetOrientation()

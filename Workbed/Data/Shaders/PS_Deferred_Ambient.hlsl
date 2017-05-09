@@ -16,9 +16,9 @@ cbuffer Ambient : register(b0)
 SamplerState point_Clamp 	: register ( s0 );
 Texture2D AlbedoTexture  	: register ( t0 );
 Texture2D NormalTexture  	: register ( t1 );
-Texture2D DepthTexture	 	: register ( t2 );
-Texture2D ShadowTexture		: register ( t3 );
-TextureCube CubeMap		 	: register ( t4 );
+Texture2D DepthTexture	 	: register ( t11 );
+Texture2D ShadowTexture		: register ( t12 );
+TextureCube CubeMap		 	: register ( t13 );
 
 //---------------------------------
 //	Deferred Ambient Pixel Structs

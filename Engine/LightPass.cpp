@@ -7,33 +7,32 @@
 bool LightPass::Initiate(GBuffer* aGBuffer, Texture* shadow_texture)
 {
 #ifdef SNOWBLIND_DX11
-	myEffect[u32(eLight::POINTLIGHT)] = Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Lightmesh.json");
-	myEffect[u32(eLight::SPOTLIGHT)] = Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json");
+	myEffect[eLight::POINTLIGHT] = Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Lightmesh.json");
+	myEffect[eLight::SPOTLIGHT] =	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json");
 
-	myEffect[u32(eLight::POINTLIGHT)]->AddShaderResource(aGBuffer->myAlbedo->GetShaderView());
-	myEffect[u32(eLight::POINTLIGHT)]->AddShaderResource(aGBuffer->myNormal->GetShaderView());
-	myEffect[u32(eLight::POINTLIGHT)]->AddShaderResource(aGBuffer->myDepth->GetShaderView());
+	myEffect[eLight::POINTLIGHT]->AddShaderResource(aGBuffer->myAlbedo, Effect::DIFFUSE);
+	myEffect[eLight::POINTLIGHT]->AddShaderResource(aGBuffer->myNormal, Effect::NORMAL);
+	myEffect[eLight::POINTLIGHT]->AddShaderResource(aGBuffer->myDepth, Effect::DEPTH);
 
-
-	myEffect[u32(eLight::SPOTLIGHT)]->AddShaderResource(aGBuffer->myAlbedo->GetShaderView());
-	myEffect[u32(eLight::SPOTLIGHT)]->AddShaderResource(aGBuffer->myNormal->GetShaderView());
-	myEffect[u32(eLight::SPOTLIGHT)]->AddShaderResource(aGBuffer->myDepth->GetShaderView());
+	myEffect[eLight::SPOTLIGHT]->AddShaderResource(aGBuffer->myAlbedo, Effect::DIFFUSE);
+	myEffect[eLight::SPOTLIGHT]->AddShaderResource(aGBuffer->myNormal, Effect::NORMAL);
+	myEffect[eLight::SPOTLIGHT]->AddShaderResource(aGBuffer->myDepth , Effect::DEPTH);
 #endif
 
 	CreatePointlightBuffers();
 	CreateSpotlightBuffers();
 
-	myEffect[u32(eLight::POINTLIGHT)]->AddShaderResource(shadow_texture->GetDepthStencilView());
-	myEffect[u32(eLight::SPOTLIGHT)]->AddShaderResource(shadow_texture->GetDepthStencilView());
+	//myEffect[u32(eLight::POINTLIGHT)]->AddShaderResource(shadow_texture->GetDepthStencilView());
+	//myEffect[u32(eLight::SPOTLIGHT)]->AddShaderResource(shadow_texture->GetDepthStencilView());
 	return true;
 }
 
 bool LightPass::CleanUp()
 {
-	SAFE_RELEASE(myConstantBuffers[u32(eBuffer::POINTLIGHT_VERTEX)]);
-	SAFE_RELEASE(myConstantBuffers[u32(eBuffer::POINTLIGHT_PIXEL)]);
-	SAFE_RELEASE(myConstantBuffers[u32(eBuffer::SPOTLIGHT_VERTEX)]);
-	SAFE_RELEASE(myConstantBuffers[u32(eBuffer::SPOTLIGHT_PIXEL)]);
+	SAFE_RELEASE(myConstantBuffers[eBuffer::POINTLIGHT_VERTEX]);
+	SAFE_RELEASE(myConstantBuffers[eBuffer::POINTLIGHT_PIXEL]);
+	SAFE_RELEASE(myConstantBuffers[eBuffer::SPOTLIGHT_VERTEX]);
+	SAFE_RELEASE(myConstantBuffers[eBuffer::SPOTLIGHT_PIXEL]);
 	return true;
 }
 
@@ -42,8 +41,8 @@ void LightPass::RenderPointlight(PointLight* pointlight, Camera* aCamera, const 
 	if (HasInitiated())
 	{
 		UpdatePointlightBuffers(pointlight, aCamera, previousOrientation, shadow_matrix);
-		render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINTLIGHT_VERTEX)]);
-		render_context.m_Context->PSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::POINTLIGHT_PIXEL)]);
+		render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffers[eBuffer::POINTLIGHT_VERTEX]);
+		render_context.m_Context->PSSetConstantBuffers(0, 1, &myConstantBuffers[eBuffer::POINTLIGHT_PIXEL]);
 		pointlight->Render(previousOrientation, aCamera, render_context);
 	}
 }
@@ -55,8 +54,8 @@ void LightPass::RenderSpotlight(SpotLight* spotlight, Camera* aCamera, const CU:
 		//ID3D11DeviceContext* ctx = Engine::GetAPI()->GetContext();
 
 		UpdateSpotlightBuffers(spotlight, aCamera, previousOrientation, shadow_matrix);
-		render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::SPOTLIGHT_VERTEX)]);
-		render_context.m_Context->PSSetConstantBuffers(0, 1, &myConstantBuffers[u32(eBuffer::SPOTLIGHT_PIXEL)]);
+		render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffers[eBuffer::SPOTLIGHT_VERTEX]);
+		render_context.m_Context->PSSetConstantBuffers(0, 1, &myConstantBuffers[eBuffer::SPOTLIGHT_PIXEL]);
 		spotlight->Render(previousOrientation, aCamera, render_context);
 	}
 }
@@ -87,14 +86,14 @@ void LightPass::UpdatePointlightBuffers(PointLight* pointlight, Camera* aCamera,
 
 	D3D11_MAPPED_SUBRESOURCE msr;
 	ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-	Engine::GetAPI()->GetContext()->Map(myConstantBuffers[u32(eBuffer::POINTLIGHT_VERTEX)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	Engine::GetAPI()->GetContext()->Map(myConstantBuffers[eBuffer::POINTLIGHT_VERTEX], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	if (msr.pData != nullptr)
 	{
 		PointlightConstantBuffer* ptr = (PointlightConstantBuffer*)msr.pData;
 		memcpy(ptr, &myPointlightVertexConstantData.world.myMatrix[0], sizeof(PointlightConstantBuffer));
 	}
 
-	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::POINTLIGHT_VERTEX)], 0);
+	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffers[eBuffer::POINTLIGHT_VERTEX], 0);
 
 	//----------------------------------------
 	// PixelShader Constant Buffer
@@ -107,14 +106,14 @@ void LightPass::UpdatePointlightBuffers(PointLight* pointlight, Camera* aCamera,
 	myPixelConstantStruct.m_ShadowMVP = shadow_matrix;
 
 	ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-	Engine::GetAPI()->GetContext()->Map(myConstantBuffers[u32(eBuffer::POINTLIGHT_PIXEL)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	Engine::GetAPI()->GetContext()->Map(myConstantBuffers[eBuffer::POINTLIGHT_PIXEL], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	if (msr.pData != nullptr)
 	{
 		PixelConstantBuffer* ptr = (PixelConstantBuffer*)msr.pData;
 		memcpy(ptr, &myPixelConstantStruct.myInvertedProjection.myMatrix[0], sizeof(PixelConstantBuffer));
 	}
 
-	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::POINTLIGHT_PIXEL)], 0);
+	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffers[eBuffer::POINTLIGHT_PIXEL], 0);
 #endif
 }
 
@@ -138,14 +137,14 @@ void LightPass::UpdateSpotlightBuffers(SpotLight* spotlight, Camera* aCamera, co
 
 	D3D11_MAPPED_SUBRESOURCE msr;
 	ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-	Engine::GetAPI()->GetContext()->Map(myConstantBuffers[u32(eBuffer::SPOTLIGHT_VERTEX)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	Engine::GetAPI()->GetContext()->Map(myConstantBuffers[eBuffer::SPOTLIGHT_VERTEX], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	if (msr.pData != nullptr)
 	{
 		SpotlightConstantBuffer* ptr = (SpotlightConstantBuffer*)msr.pData;
 		memcpy(ptr, &mySpotlightVertexConstantData.world.myMatrix[0], sizeof(SpotlightConstantBuffer));
 	}
 
-	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::SPOTLIGHT_VERTEX)], 0);
+	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffers[eBuffer::SPOTLIGHT_VERTEX], 0);
 
 	//----------------------------------------
 	// PixelShader Constant Buffer
@@ -159,14 +158,14 @@ void LightPass::UpdateSpotlightBuffers(SpotLight* spotlight, Camera* aCamera, co
 	mySpotPixelConstantStruct.m_ShadowMVP = shadow_matrix;
 
 	ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-	Engine::GetAPI()->GetContext()->Map(myConstantBuffers[u32(eBuffer::SPOTLIGHT_PIXEL)], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	Engine::GetAPI()->GetContext()->Map(myConstantBuffers[eBuffer::SPOTLIGHT_PIXEL], 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	if (msr.pData != nullptr)
 	{
 		SpotPixelConstantBuffer* ptr = (SpotPixelConstantBuffer*)msr.pData;
 		memcpy(ptr, &mySpotPixelConstantStruct.myInvertedProjection.myMatrix[0], sizeof(SpotPixelConstantBuffer));
 	}
 
-	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffers[u32(eBuffer::SPOTLIGHT_PIXEL)], 0);
+	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffers[eBuffer::SPOTLIGHT_PIXEL], 0);
 #endif
 }
 
@@ -185,8 +184,8 @@ void LightPass::CreateSpotlightBuffers()
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
 
-	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::SPOTLIGHT_VERTEX)]);
-	Engine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOTLIGHT_VERTEX)], "LightPass : Spotlight Vertex Constant Buffer");
+	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[eBuffer::SPOTLIGHT_VERTEX]);
+	Engine::GetAPI()->SetDebugName(myConstantBuffers[eBuffer::SPOTLIGHT_VERTEX], "LightPass : Spotlight Vertex Constant Buffer");
 	Engine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Spotlight Vertex Constant Buffer, ");
 
 
@@ -201,7 +200,7 @@ void LightPass::CreateSpotlightBuffers()
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
 
-	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::SPOTLIGHT_PIXEL)]);
+	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[eBuffer::SPOTLIGHT_PIXEL]);
 	Engine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOTLIGHT_PIXEL)], "LightPass : Spotlight Pixel Constant Buffer");
 	Engine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Spotlight Pixel Constant Buffer, ");
 #endif
@@ -222,8 +221,8 @@ void LightPass::CreatePointlightBuffers()
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
 
-	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::POINTLIGHT_VERTEX)]);
-	Engine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::POINTLIGHT_VERTEX)], "LightPass : Pointlight Vertex Constant Buffer");
+	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[eBuffer::POINTLIGHT_VERTEX]);
+	Engine::GetAPI()->SetDebugName(myConstantBuffers[eBuffer::POINTLIGHT_VERTEX], "LightPass : Pointlight Vertex Constant Buffer");
 	Engine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Pointlight Vertex Constant Buffer, ");
 
 
@@ -238,8 +237,8 @@ void LightPass::CreatePointlightBuffers()
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
 
-	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[u32(eBuffer::POINTLIGHT_PIXEL)]);
-	Engine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::POINTLIGHT_PIXEL)], "LightPass : Pointlight Pixel Constant Buffer");
+	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[eBuffer::POINTLIGHT_PIXEL]);
+	Engine::GetAPI()->SetDebugName(myConstantBuffers[eBuffer::POINTLIGHT_PIXEL], "LightPass : Pointlight Pixel Constant Buffer");
 	Engine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Pointlight Pixel Constant Buffer, ");
 #endif
 }

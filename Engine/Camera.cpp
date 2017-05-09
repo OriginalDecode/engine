@@ -144,6 +144,8 @@ void Camera::RecalculatePerspective(float width, float height, float near_plane,
 void Camera::Move(eDirection aDirection, float aSpeed)
 {
 	CU::Math::Vector4<float> position;
+	m_Orientation2 = m_Orientation;
+
 	position = m_Orientation.GetTranslation();
 	switch ( aDirection )
 	{

@@ -16,7 +16,7 @@ struct DeferredPixelData
 SamplerState point_Clamp : register (ps, s0 );
 Texture2D AlbedoTexture  : register (ps, t0 );
 Texture2D NormalTexture  : register (ps, t1 );
-Texture2D DepthTexture	 : register (ps, t2 );
+Texture2D DepthTexture	 : register (ps, t11 );
 
 DeferredPixelData CalculateDeferredPixelData(float2 tex_coord)
 {

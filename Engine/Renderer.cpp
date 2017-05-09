@@ -45,28 +45,28 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	myPointLight = new PointLight; //Where should this live?
 	mySpotlight = new SpotLight; // Where should this live?
 
-	m_Shadowlight = new ShadowSpotlight;
-	m_Shadowlight->Initiate(
-		CU::Vector3f(256.f, 128.f, 256.f)
-		, CU::Vector3f(0.f, 0.f, 1.f)
-		, 2048.f);
+	//m_Shadowlight = new ShadowSpotlight;
+	//m_Shadowlight->Initiate(
+	//	CU::Vector3f(256.f, 128.f, 256.f)
+	//	, CU::Vector3f(0.f, 0.f, 1.f)
+	//	, 2048.f);
 
-	/* Directional Shadows */
-	m_DirectionalCamera = new Camera;
-	m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
+	///* Directional Shadows */
+	//m_DirectionalCamera = new Camera;
+	//m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
 
-	m_DirectionalCamera->SetPosition({ 1024.f, 512.f, 512.f });
-	m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
+	//m_DirectionalCamera->SetPosition({ 1024.f, 512.f, 512.f });
+	//m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
 
-	m_ShadowDepth = new Texture;
-	m_ShadowDepth->InitiateAsRenderTarget(2048.f, 2048.f, "DirectionalLight : Depth Render Target");
+	//m_ShadowDepth = new Texture;
+	//m_ShadowDepth->InitiateAsRenderTarget(2048.f, 2048.f, "DirectionalLight : Depth Render Target");
 
-	m_ShadowDepthStencil = new Texture;
-	m_ShadowDepthStencil->InitiateAsDepthStencil(2048.f, 2048.f, "DirectionalLight : Depthstencil View");
-	/* End of Directional Shadows */
+	//m_ShadowDepthStencil = new Texture;
+	//m_ShadowDepthStencil->InitiateAsDepthStencil(2048.f, 2048.f, "DirectionalLight : Depthstencil View");
+	///* End of Directional Shadows */
 
 	myDeferredRenderer = new DeferredRenderer; // Where should this live?
-	if ( !myDeferredRenderer->Initiate(m_ShadowDepthStencil) )
+	if ( !myDeferredRenderer->Initiate(0) )
 		return false;
 
 	myDepthTexture = new Texture; //Where should this live?
@@ -89,7 +89,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	my3DLine->Initiate();
 
 	//bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil());
-	bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil());
+	bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), 0);
 	DL_ASSERT_EXP(success, "failed to initiate lightpass!");
 
 	m_ParticleEmitter = new CEmitterInstance;
@@ -97,7 +97,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_Atmosphere.Initiate(724.f, 728.f, { 512.f, 0.f, 512.f });
 
-	m_ShadowEffect = m_Engine->GetEffect("Shaders/T_Render_Depth.json");
+	//m_ShadowEffect = m_Engine->GetEffect("Shaders/T_Render_Depth.json");
 
 	m_PostProcessManager.Initiate();
 	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
@@ -109,21 +109,16 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_ShadowPass.Initiate(this);
 
+	m_DirectionalShadow.Initiate(2048.f);
+
 	return true;
 }
 
 bool Renderer::CleanUp()
 {
-	SAFE_DELETE(m_DirectionalCamera);
-
 	m_LightPass.CleanUp();
+	m_ShadowPass.CleanUp();
 	m_PostProcessManager.CleanUp();
-
-	m_ShadowDepthStencil->CleanUp();
-	SAFE_DELETE(m_ShadowDepthStencil);
-
-	m_ShadowDepth->CleanUp();
-	SAFE_DELETE(m_ShadowDepth);
 
 	SAFE_DELETE(my3DLine);
 	SAFE_DELETE(mySprite);
@@ -160,25 +155,26 @@ void Renderer::Render()
 
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
+	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 	//ProcessShadows();
 	//ProcessShadows(m_DirectionalCamera);
 
 	myDeferredRenderer->DeferredRender( 
 		m_Camera->GetOrientation(), 
 		m_Camera->GetPerspective(), 
-		CU::Math::Inverse(m_DirectionalCamera->GetOrientation()) * m_DirectionalCamera->GetPerspective(), 
+		m_DirectionalShadow.GetMVP(),
 		m_Direction);
 
 	/* This has to be moved or removed */
-	InputHandle* input_handle = Engine::GetInstance()->GetInputHandle();
-	if ( input_handle->GetInputWrapper()->IsDown(KButton::Y) )
-	{
-		CU::Vector3f target_position(512, 512.f, 512.f);
-		m_DirectionalCamera->RotateAroundPoint(target_position);
+	//InputHandle* input_handle = Engine::GetInstance()->GetInputHandle();
+	//if ( input_handle->GetInputWrapper()->IsDown(KButton::Y) )
+	//{
+	//	CU::Vector3f target_position(512, 512.f, 512.f);
+	//	m_DirectionalCamera->RotateAroundPoint(target_position);
 
-		m_Direction = target_position - m_DirectionalCamera->GetPosition();
-		CU::Math::Normalize(m_Direction);
-	}
+	//	m_Direction = target_position - m_DirectionalCamera->GetPosition();
+	//	CU::Math::Normalize(m_Direction);
+	//}
 
 	RenderPointlight();
 	RenderSpotlight();
@@ -192,9 +188,8 @@ void Renderer::Render()
 		myDeferredRenderer->Finalize(0);
 
 
-	m_Atmosphere.SetLightData(m_Direction, m_DirectionalCamera->GetPosition());
-	m_Atmosphere.Render(m_Camera->GetOrientation(), myDeferredRenderer->GetDepthStencil(), m_RenderContext);
-
+	/*m_Atmosphere.SetLightData(m_Direction, m_DirectionalCamera->GetPosition());
+	m_Atmosphere.Render(m_Camera->GetOrientation(), myDeferredRenderer->GetDepthStencil(), m_RenderContext);*/
 	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), myDeferredRenderer->GetDepthStencil()->GetDepthView());
 	RenderParticles();
 
@@ -211,15 +206,15 @@ void Renderer::Render()
 
 	m_Engine->Present();
 
-#ifdef _DEBUG
-	SLinePoint points[2];
-	points[0].position = CU::Vector4f(m_DirectionalCamera->GetPosition());
-	points[0].color = CU::Vector4f(255.f, 0.f, 0.f, 255.f);
-	points[1].position = CU::Vector4f(512.f, 0.f, 512.f, 1.f);
-	points[1].color = CU::Vector4f(255.f, 0.f, 0.f, 255.f);
-
-	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[0], points[1]));
-#endif
+//#ifdef _DEBUG
+//	SLinePoint points[2];
+//	points[0].position = CU::Vector4f(m_DirectionalCamera->GetPosition());
+//	points[0].color = CU::Vector4f(255.f, 0.f, 0.f, 255.f);
+//	points[1].position = CU::Vector4f(512.f, 0.f, 512.f, 1.f);
+//	points[1].color = CU::Vector4f(255.f, 0.f, 0.f, 255.f);
+//
+//	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[0], points[1]));
+//#endif
 
 	mySynchronizer->WaitForLogic();
 	mySynchronizer->SwapBuffer();
@@ -269,26 +264,16 @@ void Renderer::Render3DCommands()
 {
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
 
-	//m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-	//m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	/*for (CTerrain* terrain : myTerrainArray)
-	{
 
+	for (CTerrain* terrain : myTerrainArray)
+	{
 		if (!terrain->HasLoaded())
 			continue;
-
-		if (m_ProcessDirectionalShadows || m_ProcessShadows)
-		{
-			terrain->ShadowRender(m_ProcessShadows ? myPrevShadowFrame : m_DirectionalFrame, m_Camera->GetPerspective(), m_RenderContext);
-		}
-		else
-		{
-			terrain->Render(myPrevFrame, m_Camera->GetPerspective(), m_RenderContext);
-
-		}
-	}*/
+	
+		terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
+	}
 
 	for ( const RenderCommand& command : commands )
 	{
@@ -302,33 +287,12 @@ void Renderer::Render3DCommands()
 					continue;
 				}
 
-
 				m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-
 				Model* model = m_Engine->GetModel(command.m_KeyOrText);
 				model->SetOrientation(command.m_Orientation);
+				m_API->SetRasterizer(command.m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+				model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 
-
-
-
-
-				//if ( m_ProcessDirectionalShadows )
-				//{
-
-				//	m_API->SetRasterizer(eRasterizer::CULL_NONE);
-				//	model->ShadowRender(m_DirectionalFrame, m_Camera->GetPerspective(), m_RenderContext);
-				//}
-				//else if ( m_ProcessShadows )
-				//{
-
-				//	m_API->SetRasterizer(eRasterizer::CULL_NONE);
-				//	model->ShadowRender(myPrevShadowFrame, m_Camera->GetPerspective(), m_RenderContext);
-				//}
-				//else
-				//{
-					m_API->SetRasterizer(command.m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-					model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
-				//}
 			} break;
 		}
 	}
@@ -347,7 +311,6 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 		model->SetOrientation(command.m_Orientation);
 		model->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
 	}
-
 }
 
 void Renderer::Render2DCommands()
@@ -365,15 +328,13 @@ void Renderer::Render2DCommands()
 				myText->SetText(command.m_KeyOrText);
 				myText->SetPosition({ command.myPosition.x, command.myPosition.y });
 				myText->Render(m_Camera);
-			}break;
+			} break;
 			case eType::SPRITE:
 			{
-
-
 				mySprite->SetPosition({ command.myPosition.x, command.myPosition.y });
 				mySprite->SetShaderView(command.m_ShaderResource);
 				mySprite->Render(m_Camera);
-			}break;
+			} break;
 		};
 	}
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
@@ -386,7 +347,7 @@ void Renderer::RenderSpotlight()
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
 	Effect* effect = m_LightPass.GetSpotlightEffect();
-	effect->Activate();
+	//effect->Activate();
 
 	SpotlightData data;
 	for ( const RenderCommand& command : commands )
@@ -406,13 +367,17 @@ void Renderer::RenderSpotlight()
 			ShadowSpotlight* shadow = mySpotlight->GetShadowSpotlight();
 			m_ShadowPass.ProcessShadows(shadow, m_RenderContext);
 			shadow_mvp = shadow->GetMVP();
+			Effect* effect = Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json");
+			effect->AddShaderResource(shadow->GetDepthStencil(), Effect::SHADOWMAP);
 		}
 
+		effect->Use();
 		m_LightPass.RenderSpotlight(mySpotlight, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
 
 	}
+	effect->Clear();
 
-	effect->Deactivate();
+	//effect->Deactivate();
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
@@ -469,7 +434,7 @@ void Renderer::RenderParticles()
 				{
 					m_API->GetContext()->PSSetShaderResources(1, 1, m_Engine->GetTexture("Data/Textures/hp.dds")->GetShaderViewRef());
 				}
-				m_ParticleEmitter->Render(m_ProcessDirectionalShadows ? m_DirectionalFrame : myPrevFrame, m_Camera->GetPerspective());
+			//	m_ParticleEmitter->Render(m_ProcessDirectionalShadows ? m_DirectionalFrame : myPrevFrame, m_Camera->GetPerspective());
 
 
 			} break;
@@ -496,13 +461,13 @@ void Renderer::RenderLines()
 			{
 				m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 				my3DLine->Update(command.firstPoint, command.secondPoint);
-				my3DLine->Render(myPrevFrame, m_Camera->GetPerspective());
+				my3DLine->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
 			}break;
 			case eType::LINE_Z_DISABLE:
 			{
 				m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
 				my3DLine->Update(command.firstPoint, command.secondPoint);
-				my3DLine->Render(myPrevFrame, m_Camera->GetPerspective());
+				my3DLine->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
 			}break;
 		}
 	}
@@ -511,67 +476,67 @@ void Renderer::RenderLines()
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
-
-void Renderer::ProcessShadows()
-{
-	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	m_ProcessShadows = true;
-
-	Camera* camera = m_Camera;
-	m_Camera = m_Shadowlight->GetCamera();
-	m_Shadowlight->SetViewport();
-
-	m_Shadowlight->ClearTexture();
-	m_Shadowlight->SetTargets();
-	//m_Shadowlight->ToggleShader(m_ProcessShadows);
-	Render3DCommands();
-	//RenderParticles();
-
-	m_Engine->ResetRenderTargetAndDepth();
-	m_API->ResetViewport();
-
-	myPrevShadowFrame = m_Camera->GetOrientation();
-	m_Camera = camera;
-
-	m_ProcessShadows = false;
-	//m_Shadowlight->ToggleShader(m_ProcessShadows);
-}
-
-void Renderer::ProcessShadows(Camera* camera)
-{
-
-	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	IDevContext* ctx = m_API->GetContext();
-	Camera* old_camera = m_Camera;
-	m_Camera = camera;
-	m_Shadowlight->SetViewport();
-
-	float clear[4] = { 0.f, 0.f, 0.f, 0.f };
-	ctx->ClearRenderTargetView(m_ShadowDepth->GetRenderTargetView(), clear);
-	ctx->ClearDepthStencilView(m_ShadowDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-	ctx->OMSetRenderTargets(1, m_ShadowDepth->GetRenderTargetRef(), m_ShadowDepthStencil->GetDepthView());
-
-	m_API->SetVertexShader(m_ShadowEffect->GetVertexShader()->m_Shader);
-	m_API->SetPixelShader(m_ShadowEffect->GetPixelShader()->m_Shader);
-
-	m_ShadowEffect->Activate();
-
-	m_ProcessDirectionalShadows = true;
-	Render3DCommands();
-	//RenderParticles();
-	m_ProcessDirectionalShadows = false;
-
-	m_Engine->ResetRenderTargetAndDepth();
-	m_API->ResetViewport();
-
-	m_DirectionalFrame = m_Camera->GetOrientation();
-	m_Camera = old_camera;
-
-	m_ShadowEffect->Deactivate();
-
-	myDeferredRenderer->SetBuffers();
-}
+//
+//void Renderer::ProcessShadows()
+//{
+//	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+//	m_ProcessShadows = true;
+//
+//	Camera* camera = m_Camera;
+//	m_Camera = m_Shadowlight->GetCamera();
+//	m_Shadowlight->SetViewport();
+//
+//	m_Shadowlight->ClearTexture();
+//	m_Shadowlight->SetTargets();
+//	//m_Shadowlight->ToggleShader(m_ProcessShadows);
+//	Render3DCommands();
+//	//RenderParticles();
+//
+//	m_Engine->ResetRenderTargetAndDepth();
+//	m_API->ResetViewport();
+//
+//	myPrevShadowFrame = m_Camera->GetOrientation();
+//	m_Camera = camera;
+//
+//	m_ProcessShadows = false;
+//	//m_Shadowlight->ToggleShader(m_ProcessShadows);
+//}
+//
+//void Renderer::ProcessShadows(Camera* camera)
+//{
+//
+//	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+//	IDevContext* ctx = m_API->GetContext();
+//	Camera* old_camera = m_Camera;
+//	m_Camera = camera;
+//	m_Shadowlight->SetViewport();
+//
+//	float clear[4] = { 0.f, 0.f, 0.f, 0.f };
+//	ctx->ClearRenderTargetView(m_ShadowDepth->GetRenderTargetView(), clear);
+//	ctx->ClearDepthStencilView(m_ShadowDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+//
+//	ctx->OMSetRenderTargets(1, m_ShadowDepth->GetRenderTargetRef(), m_ShadowDepthStencil->GetDepthView());
+//
+//	m_API->SetVertexShader(m_ShadowEffect->GetVertexShader()->m_Shader);
+//	m_API->SetPixelShader(m_ShadowEffect->GetPixelShader()->m_Shader);
+//
+//	m_ShadowEffect->Activate();
+//
+//	m_ProcessDirectionalShadows = true;
+//	Render3DCommands();
+//	//RenderParticles();
+//	m_ProcessDirectionalShadows = false;
+//
+//	m_Engine->ResetRenderTargetAndDepth();
+//	m_API->ResetViewport();
+//
+//	m_DirectionalFrame = m_Camera->GetOrientation();
+//	m_Camera = old_camera;
+//
+//	m_ShadowEffect->Deactivate();
+//
+//	myDeferredRenderer->SetBuffers();
+//}
 
 PostProcessManager& Renderer::GetPostprocessManager()
 {

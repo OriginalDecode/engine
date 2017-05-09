@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Shadow_Directional.h"
-
+#include <Engine/Effect.h>
+#include <Engine/Engine.h>
 void ShadowDirectional::Initiate(float buffer_size)
 {
 	m_Camera = new Camera;
@@ -17,6 +18,9 @@ void ShadowDirectional::Initiate(float buffer_size)
 
 
 	m_Viewport = Engine::GetAPI()->CreateViewport(buffer_size, buffer_size, 0.f, 1.f, 0, 0);
+
+
+	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Ambient.json")->AddShaderResource(m_ShadowDepthStencil->GetShaderView(), Effect::SHADOWMAP);
 
 }
 

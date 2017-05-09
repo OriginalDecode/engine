@@ -9,17 +9,17 @@ class Effect;
 
 enum TextureType
 {
-	_ALBEDO = (1 << 0),
-	_NORMAL = (1 << 1),
-	_ROUGHNESS = (1 << 2),
-	_METALNESS = (1 << 3),
-	_EMISSIVE = (1 << 4),
-	_OPACITY = (1 << 5),
-	_AO = (1 << 6),
-	_HEIGHT = (1 << 7),
-	_DISPLACEMENT = (1 << 8),
-	_LIGHTMAP = (1 << 9),
-	_SHININESS = (1 << 10),
+	_ALBEDO			= (1 << 0),
+	_NORMAL			= (1 << 1),
+	_ROUGHNESS		= (1 << 2),
+	_METALNESS		= (1 << 3),
+	_EMISSIVE		= (1 << 4),
+	_OPACITY		= (1 << 5),
+	_AO				= (1 << 6),
+	_HEIGHT			= (1 << 7),
+	_DISPLACEMENT	= (1 << 8),
+	_LIGHTMAP		= (1 << 9),
+	_SHININESS		= (1 << 10),
 };
 
 
@@ -69,17 +69,18 @@ private:
 		IShaderResourceView* texture;
 		TextureType m_Type;
 	};
+	CU::GrowingArray<IShaderResourceView*> m_Null;
 
 	CU::GrowingArray<STexture> myTextures;
 
 	CU::GrowingArray<Texture*> m_Textures;
 
-	CU::GrowingArray<IShaderResourceView*> myShaderViews;
-	CU::GrowingArray<IShaderResourceView*> m_Null;
 
 	CU::GrowingArray<std::string> myFileNames;
 
+	CU::GrowingArray<IShaderResourceView*> myShaderViews;
 	Effect* myEffect;
+
 	ID3D11DeviceContext* myContext;
 	u32 myIndexStart;
 	u32 myIndexCount;

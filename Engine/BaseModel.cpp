@@ -9,10 +9,11 @@ BaseModel::~BaseModel() = default;
 
 void BaseModel::SetupLayoutsAndBuffers()
 {
-	Engine::GetAPI()->GetContext()->IASetInputLayout(m_VertexLayout);
-	Engine::GetAPI()->GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	Engine::GetAPI()->GetContext()->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);
-	Engine::GetAPI()->GetContext()->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
+	IDevContext* ctx = Engine::GetAPI()->GetContext();
+	ctx->IASetInputLayout(m_VertexLayout);
+	ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	ctx->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);
+	ctx->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
 }
 
 void BaseModel::SetEffect(Effect* anEffect)

@@ -33,19 +33,12 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 
 	myScreenPassShader = myEngine->GetEffect("Shaders/T_Render_To_Texture.json");
 
-	myGBuffer = new GBuffer;
-
 	myAmbientPassShader = myEngine->GetEffect("Shaders/T_Deferred_Ambient.json");
-	myAmbientPassShader->AddShaderResource(myGBuffer->myAlbedo->GetShaderView(), Effect::DIFFUSE);
-	myAmbientPassShader->AddShaderResource(myGBuffer->myNormal->GetShaderView(), Effect::NORMAL);
-	myAmbientPassShader->AddShaderResource(myGBuffer->myDepth->GetShaderView(), Effect::DEPTH);
-
-	/*myAmbientPassShader->AddShaderResource(myGBuffer->myAlbedo->GetShaderView());
-	myAmbientPassShader->AddShaderResource(myGBuffer->myNormal->GetShaderView());
-	myAmbientPassShader->AddShaderResource(myGBuffer->myDepth->GetShaderView());*/
-	//myAmbientPassShader->AddShaderResource(shadow_texture->GetDepthStencilView());
-
-	myAmbientPassShader->AddShaderResource(myCubeMap->GetShaderView(), Effect::CUBE);
+	myAmbientPassShader->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
+	myAmbientPassShader->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
+	myAmbientPassShader->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
+	myAmbientPassShader->AddShaderResource(m_GBuffer.GetEmissive(), Effect::EMISSIVE);
+	myAmbientPassShader->AddShaderResource(myCubeMap, Effect::CUBE);
 
 	CreateFullscreenQuad();
 	InitConstantBuffer();
@@ -58,7 +51,7 @@ bool DeferredRenderer::CleanUp()
 	SAFE_DELETE(myFinishedSceneTexture);
 	myDepthStencil->CleanUp();
 	SAFE_DELETE(myDepthStencil);
-	SAFE_DELETE(myGBuffer);
+	//SAFE_DELETE(myGBuffer);
 
 	//SAFE_DELETE(myConstantStruct);
 	SAFE_RELEASE(myConstantBuffer);
@@ -74,34 +67,34 @@ bool DeferredRenderer::CleanUp()
 	return true;
 }
 
-void DeferredRenderer::SetTargets()
+void DeferredRenderer::SetTargets(const RenderContext& render_context)
 {
-	myGBuffer->Clear(myClearColor);
-	myContext->ClearDepthStencilView(myDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	myGBuffer->SetAsRenderTarget(myDepthStencil);
+	m_GBuffer.Clear(myClearColor);
+	render_context.m_Context->ClearDepthStencilView(myDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_GBuffer.SetAsRenderTarget(myDepthStencil);
 }
 
-void DeferredRenderer::SetBuffers()
+void DeferredRenderer::SetBuffers(const RenderContext& render_context)
 {
-	myContext->IASetInputLayout(myInputLayout);
+	render_context.m_Context->IASetInputLayout(myInputLayout);
 
-	myContext->IASetVertexBuffers(m_VertexBuffer->myStartSlot
+	render_context.m_Context->IASetVertexBuffers(m_VertexBuffer->myStartSlot
 		, m_VertexBuffer->myNrOfBuffers
 		, &m_VertexBuffer->myVertexBuffer
 		, &m_VertexBuffer->myStride
 		, &m_VertexBuffer->myByteOffset);
 
-	myContext->IASetIndexBuffer(m_IndexBuffer->myIndexBuffer
+	render_context.m_Context->IASetIndexBuffer(m_IndexBuffer->myIndexBuffer
 		, m_IndexBuffer->myIndexBufferFormat
 		, m_IndexBuffer->myByteOffset);
 
-	myContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
+void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const RenderContext& render_context)
 {
 	UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);
-	SetBuffers();
+	SetBuffers(render_context);
 
 	m_API->ResetViewport();
 
@@ -194,9 +187,9 @@ void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrienta
 	m_API->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
 }
 
-GBuffer* DeferredRenderer::GetGBuffer()
+GBuffer& DeferredRenderer::GetGBuffer()
 {
-	return myGBuffer;
+	return m_GBuffer;
 }
 
 //This could be in the engine and return a quad object?

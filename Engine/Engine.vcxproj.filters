@@ -366,6 +366,7 @@
     <ClInclude Include="LightModel.h" />
     <ClInclude Include="AtmosphereModel.h" />
     <ClInclude Include="Shadow_Directional.h" />
+    <ClInclude Include="Materials.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -586,5 +587,6 @@
     <ClCompile Include="LightModel.cpp" />
     <ClCompile Include="AtmosphereModel.cpp" />
     <ClCompile Include="Shadow_Directional.cpp" />
+    <ClCompile Include="Materials.cpp" />
   </ItemGroup>
 </Project>

@@ -45,13 +45,10 @@ CSurface::CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIn
 
 CSurface::~CSurface()
 {
-	myFileNames.RemoveAll();
 }
 
 void CSurface::ClearTextures()
 {
-	m_Null.RemoveAll();
-	myShaderViews.RemoveAll();
 }
 
 void CSurface::Activate()
@@ -70,51 +67,30 @@ void CSurface::Deactivate()
 		myContext->PSSetShaderResources(0, m_Null.Size(), &m_Null[0]);
 }
 
-std::string CheckTextureType(TextureType type)
+void CSurface::AddTexture(const std::string& file_path) 
 {
-	switch (type)
-	{
-		case _ALBEDO:
-		return "ALBEDO";
-		case _NORMAL:
-		return "NORMAL";
-		case _METALNESS:
-		return "METALNESS";
-		case _ROUGHNESS:
-		return "ROUGHNESS";
-		case _AO:
-		return "AO";
-		case _EMISSIVE:
-		return "EMISSIVE";
-		case _DISPLACEMENT:
-		return "DISPLACEMENT";
-		case _HEIGHT:
-		return "HEIGHT";
-		case _LIGHTMAP:
-		return "LIGHTMAP";
-		case _OPACITY:
-		return "OPACITY";
-		case _SHININESS:
-		return "SHININESS";
-		default:return"NO_STRING";
-	}
-	return "failed";
-}
-
-void CSurface::AddTexture(const std::string& file_path, TextureType type) 
-{
-	m_ContainingTextures |= type;
+	//m_ContainingTextures |= type;
 
 	std::string sub = file_path;
-	if (!CL::substr(file_path, ".dds"))
+	if (file_path.find(".dds") == file_path.npos)
 	{
-		sub = CL::substr(file_path, ".", true, 0);
 		DL_WARNING("Incorrect filetype! %s", file_path.c_str());
-	}
 
-	if (CL::substr(sub, ".dds") == false)
+		size_t pos = file_path.find(".");
+		sub = file_path.substr(0, pos);
 		sub += ".dds";
+	}
+	
+	//myShaderViews.Add(Engine::GetInstance()->GetTexture(sub)->GetShaderView());
 
+
+
+
+
+
+
+
+	/**
 	STexture new_texture;
 	new_texture.m_Type = type;
 
@@ -131,7 +107,6 @@ void CSurface::AddTexture(const std::string& file_path, TextureType type)
 
 	myFileNames.Add(sub);
 
-	//myTextures.Add(new_texture);
 
 	std::sort(myTextures.begin(), myTextures.end(), [&](STexture& first, STexture& second) {
 		return first.m_Type < second.m_Type;
@@ -144,6 +119,8 @@ void CSurface::AddTexture(const std::string& file_path, TextureType type)
 		myShaderViews.Add(myTextures[i].texture);
 		m_Null.Add(nullptr);
 	}
+
+	/**/
 }
 
 void CSurface::AddTexture(IShaderResourceView* texture)
@@ -182,38 +159,28 @@ void CSurface::SetPrimology(D3D_PRIMITIVE_TOPOLOGY aPrimology)
 	myPrimologyType = aPrimology;
 }
 
-void CSurface::AddMissingTexture(TextureType type, const std::string& file_path)
+void Material::AddResource(IShaderResourceView* pResource, Effect::TextureSlot slot)
 {
-	if (!(m_ContainingTextures & type))
+	ResourceBinding binding;
+	binding.m_Resource = pResource;
+	binding.m_Slot = slot;
+}
+
+void Material::AddResource(Texture* pResource, Effect::TextureSlot slot)
+{
+	AddResource(pResource->GetShaderView(), slot);
+}
+
+void Material::Use(Effect* pEffect, const RenderContext& render_context)
+{
+	for (const ResourceBinding& binding : m_Resources)
 	{
-		AddTexture(file_path, type);
-		return;
+		pEffect->AddShaderResource(binding.m_Resource, binding.m_Slot);
 	}
-	//MODEL_LOG("Already contained texture");
+	pEffect->Use();
 }
 
-std::string s_file_path = "Data/Textures/default_textures/";
-
-void CSurface::ValidateTextures()
+void Material::Clear()
 {
-	MODEL_LOG("Validating Textures of surface.");
-
-	AddMissingTexture(_ALBEDO, s_file_path + "white.dds");
-	AddMissingTexture(_NORMAL, s_file_path + "black.dds");
-	AddMissingTexture(_ROUGHNESS, s_file_path + "no-roughness.dds");
-	AddMissingTexture(_METALNESS, s_file_path + "no-metalness.dds");
-	AddMissingTexture(_EMISSIVE, s_file_path + "black.dds");
-	AddMissingTexture(_OPACITY, s_file_path + "black.dds");
-	AddMissingTexture(_AO, s_file_path + "black.dds");
-	AddMissingTexture(_HEIGHT, s_file_path + "black.dds");
-	AddMissingTexture(_DISPLACEMENT, s_file_path + "black.dds");
-	AddMissingTexture(_LIGHTMAP, s_file_path + "black.dds");
-	AddMissingTexture(_SHININESS, s_file_path + "black.dds");
 
 }
-
-void CSurface::RemoveTextureByIndex(s32 index)
-{
-	myShaderViews.RemoveCyclicAtIndex(index);
-}
-

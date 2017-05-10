@@ -707,6 +707,7 @@
     <ClInclude Include="LightStructs.h" />
     <ClInclude Include="Line3D.h" />
     <ClInclude Include="LinearAllocator.h" />
+    <ClInclude Include="Materials.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelCommand.h" />
     <ClInclude Include="ModelImporter.h" />
@@ -805,6 +806,7 @@
     <ClCompile Include="LightPass.cpp" />
     <ClCompile Include="Line3D.cpp" />
     <ClCompile Include="LinearAllocator.cpp" />
+    <ClCompile Include="Materials.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelImporter.cpp" />
     <ClCompile Include="MotionBlurPass.cpp" />

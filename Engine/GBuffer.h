@@ -5,20 +5,24 @@ class Texture;
 class GBuffer
 {
 public:
-	GBuffer();
-	~GBuffer();
+	GBuffer() = default;
 
+	void Initiate();
+	void CleanUp();
 	void Clear(float* aClearColor);
 
 	void SetAsRenderTarget(Texture* aDepthTexture);
 
+	Texture* GetDiffuse();
+	Texture* GetNormal();
+	Texture* GetEmissive();
+	Texture* GetDepth();
+
+private:
 	Texture* myAlbedo = nullptr;
 	Texture* myNormal = nullptr;
 	Texture* myEmissive = nullptr;
 	Texture* myDepth = nullptr;
-
-
-private:
 	Engine* myEngine = nullptr;
 #ifdef SNOWBLIND_DX11
 	DirectX11* myDirectX = nullptr;

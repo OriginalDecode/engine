@@ -1,12 +1,7 @@
 #include "stdafx.h"
 #include "GBuffer.h"
 
-GBuffer::GBuffer()
-	: myEngine(Engine::GetInstance())
-#ifdef SNOWBLIND_DX11
-	, myDirectX(myEngine->GetAPI())
-	, myContext(myDirectX->GetContext())
-#endif
+void GBuffer::Initiate()
 {
 	const WindowSize windowSize = Engine::GetInstance()->GetWindowSize();
 
@@ -25,10 +20,9 @@ GBuffer::GBuffer()
 	myDepth = new Texture;
 	myDepth->Initiate(windowSize.m_Width, windowSize.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R32G32B32A32_FLOAT, "GBuffer : Depth");
 
-
 }
 
-GBuffer::~GBuffer()
+void GBuffer::CleanUp()
 {
 	myAlbedo->CleanUp();
 	SAFE_DELETE(myAlbedo);
@@ -45,23 +39,39 @@ GBuffer::~GBuffer()
 
 void GBuffer::Clear(float* aClearColor)
 {
-#ifdef SNOWBLIND_DX11
 	myContext->ClearRenderTargetView(myAlbedo->GetRenderTargetView(), aClearColor);
 	myContext->ClearRenderTargetView(myNormal->GetRenderTargetView(), aClearColor);
 	myContext->ClearRenderTargetView(myDepth->GetRenderTargetView(), aClearColor);
 	myContext->ClearRenderTargetView(myEmissive->GetRenderTargetView(), aClearColor);
-#endif
 }
 
 void GBuffer::SetAsRenderTarget(Texture* aDepthTexture)
 {
-#ifdef SNOWBLIND_DX11
 	ID3D11RenderTargetView* target[4];
 	target[0] = myAlbedo->GetRenderTargetView();
 	target[1] = myNormal->GetRenderTargetView();
 	target[2] = myDepth->GetRenderTargetView();
 	target[3] = myEmissive->GetRenderTargetView();
 	myContext->OMSetRenderTargets(4, target, aDepthTexture->GetDepthView());
-#endif
+}
+
+Texture* GBuffer::GetDiffuse()
+{
+	return myAlbedo;
+}
+
+Texture* GBuffer::GetNormal()
+{
+	return myNormal;
+}
+
+Texture* GBuffer::GetEmissive()
+{
+	return myEmissive;
+}
+
+Texture* GBuffer::GetDepth()
+{
+	return myDepth;
 }
 

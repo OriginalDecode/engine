@@ -2,7 +2,7 @@
 #include "snowblind_shared.h"
 #include <DL_Debug.h>
 #include "VertexStructs.h"
-
+#include <Engine/GBuffer.h>
 
 enum eDeferredType
 {
@@ -16,7 +16,6 @@ class Camera;
 class DirectX11;
 class Effect;
 class Engine;
-class GBuffer;
 class LightPass;
 class PointLight;
 class Texture;
@@ -31,9 +30,9 @@ public:
 	DeferredRenderer() = default;
 	bool Initiate(Texture* shadow_texture);
 	bool CleanUp();
-	void SetTargets();
-	void SetBuffers();
-	void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir);
+	void SetTargets(const RenderContext& render_context);
+	void SetBuffers(const RenderContext& render_context);
+	void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const RenderContext& render_context);
 
 
 	void Finalize(Texture* light_texture);
@@ -42,7 +41,7 @@ public:
 
 	//void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 	Texture* GetDepthStencil();
-	GBuffer* GetGBuffer();
+	GBuffer& GetGBuffer();
 	void ToggleWireframe() { m_Wireframe = !m_Wireframe; }
 
 
@@ -58,7 +57,7 @@ private:
 	float myClearColor[4];
 	Engine* myEngine = nullptr;
 
-	GBuffer* myGBuffer = nullptr;
+	GBuffer m_GBuffer;
 
 #ifdef SNOWBLIND_DX11
 	DirectX11* m_API = nullptr;

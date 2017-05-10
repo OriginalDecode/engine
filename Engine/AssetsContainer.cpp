@@ -121,8 +121,6 @@ void AssetsContainer::LoadEffect(const std::string& aFilePath)
 	myEffects[aFilePath] = effect;
 }
 
-#define THREAD_LOADING
-
 std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect, bool thread)
 {
 	if (myModels.find(aFilePath) == myModels.end())

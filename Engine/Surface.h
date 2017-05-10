@@ -1,26 +1,34 @@
 #pragma once
 #include <DataStructures/GrowingArray.h>
 #include <string>
+#include <Engine/Effect.h>
+#include <Engine/snowblind_shared.h>
 struct ID3D11DeviceContext;
 enum D3D_PRIMITIVE_TOPOLOGY;
 
 class Texture;
-class Effect;
 
-enum TextureType
+class Material
 {
-	_ALBEDO			= (1 << 0),
-	_NORMAL			= (1 << 1),
-	_ROUGHNESS		= (1 << 2),
-	_METALNESS		= (1 << 3),
-	_EMISSIVE		= (1 << 4),
-	_OPACITY		= (1 << 5),
-	_AO				= (1 << 6),
-	_HEIGHT			= (1 << 7),
-	_DISPLACEMENT	= (1 << 8),
-	_LIGHTMAP		= (1 << 9),
-	_SHININESS		= (1 << 10),
+public:
+	Material() = default;
+
+	void AddResource(IShaderResourceView* pResource, Effect::TextureSlot slot);
+	void AddResource(Texture* pResource, Effect::TextureSlot slot);
+
+	void Use(Effect* pEffect, const RenderContext& render_context);
+	void Clear();
+
+private:
+	struct ResourceBinding
+	{
+		IShaderResourceView* m_Resource;
+		Effect::TextureSlot m_Slot;
+	};
+
+	CU::GrowingArray<ResourceBinding> m_Resources;
 };
+
 
 
 class CSurface
@@ -35,9 +43,10 @@ public:
 
 	void ClearTextures();
 	void AddTexture(IShaderResourceView* texture);
+	void AddTexture(const std::string& file_path);
+
 	void Activate();
 	void Deactivate();
-	void AddTexture(const std::string& file_path, TextureType type);
 
 	void SetEffect(Effect* anEffect);
 
@@ -54,33 +63,17 @@ public:
 	int GetStartVertex() const;
 	int GetStartIndex() const;
 
-	void ValidateTextures();
-	void RemoveTextureByIndex(s32 index);
+	//void ValidateTextures();
+	//void RemoveTextureByIndex(s32 index);
 
-	void Optimize() { myShaderViews.Optimize(); }
 private:
-	void AddMissingTexture(TextureType type, const std::string& file_path);
+	//void AddMissingTexture(TextureType type, const std::string& file_path);
 
 	D3D_PRIMITIVE_TOPOLOGY myPrimologyType;
-	s32 m_ContainingTextures = 0;
+	
+	Material m_Material;
 
-	struct STexture
-	{
-		IShaderResourceView* texture;
-		TextureType m_Type;
-	};
-	CU::GrowingArray<IShaderResourceView*> m_Null;
-
-	CU::GrowingArray<STexture> myTextures;
-
-	CU::GrowingArray<Texture*> m_Textures;
-
-
-	CU::GrowingArray<std::string> myFileNames;
-
-	CU::GrowingArray<IShaderResourceView*> myShaderViews;
 	Effect* myEffect;
-
 	ID3D11DeviceContext* myContext;
 	u32 myIndexStart;
 	u32 myIndexCount;

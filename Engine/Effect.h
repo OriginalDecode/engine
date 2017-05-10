@@ -5,13 +5,6 @@
 struct CompiledShader;
 class Texture;
 
-struct ResourceBinding
-{
-
-};
-
-
-
 class Effect
 {
 	friend class ShaderFactory;
@@ -40,10 +33,6 @@ public:
 		EMISSIVE,
 		OPACITY,
 		AO,
-		HEIGHT,//what
-		DISPLACEMENT,//what
-		LIGHTMAP,//what
-		SHININESS,//what
 		DEPTH,
 		SHADOWMAP,
 		CUBE,

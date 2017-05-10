@@ -4,19 +4,19 @@
 #include "SpotLight.h"
 #include "GBuffer.h"
 #include <Engine/snowblind_shared.h>
-bool LightPass::Initiate(GBuffer* aGBuffer, Texture* shadow_texture)
+bool LightPass::Initiate(const GBuffer& gbuffer, Texture* shadow_texture)
 {
 #ifdef SNOWBLIND_DX11
 	myEffect[eLight::POINTLIGHT] = Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Lightmesh.json");
 	myEffect[eLight::SPOTLIGHT] =	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json");
 
-	myEffect[eLight::POINTLIGHT]->AddShaderResource(aGBuffer->myAlbedo, Effect::DIFFUSE);
-	myEffect[eLight::POINTLIGHT]->AddShaderResource(aGBuffer->myNormal, Effect::NORMAL);
-	myEffect[eLight::POINTLIGHT]->AddShaderResource(aGBuffer->myDepth, Effect::DEPTH);
+	myEffect[eLight::POINTLIGHT]->AddShaderResource(gbuffer.GetDiffuse(), Effect::DIFFUSE);
+	myEffect[eLight::POINTLIGHT]->AddShaderResource(gbuffer.GetNormal(), Effect::NORMAL);
+	myEffect[eLight::POINTLIGHT]->AddShaderResource(gbuffer.GetDepth(), Effect::DEPTH);
 
-	myEffect[eLight::SPOTLIGHT]->AddShaderResource(aGBuffer->myAlbedo, Effect::DIFFUSE);
-	myEffect[eLight::SPOTLIGHT]->AddShaderResource(aGBuffer->myNormal, Effect::NORMAL);
-	myEffect[eLight::SPOTLIGHT]->AddShaderResource(aGBuffer->myDepth , Effect::DEPTH);
+	myEffect[eLight::SPOTLIGHT]->AddShaderResource(gbuffer.GetDiffuse(), Effect::DIFFUSE);
+	myEffect[eLight::SPOTLIGHT]->AddShaderResource(gbuffer.GetNormal(), Effect::NORMAL);
+	myEffect[eLight::SPOTLIGHT]->AddShaderResource(gbuffer.GetDepth(), Effect::DEPTH);
 #endif
 
 	CreatePointlightBuffers();

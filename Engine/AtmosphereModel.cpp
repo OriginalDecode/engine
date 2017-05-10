@@ -12,16 +12,27 @@ void AtmosphereModel::Initiate(const std::string& filename)
 		InitConstantBuffer();
 	}
 
+	myChildren.ReInit(8);
+
 	for ( AtmosphereModel* child : myChildren )
 	{
 		child->Initiate(filename);
 	}
 }
 
-bool AtmosphereModel::CleanUp()
+void AtmosphereModel::CleanUp()
 {
-	__super::CleanUp();
-	return true;
+	mySurfaces.DeleteAll();
+	for ( AtmosphereModel* children : myChildren )
+	{
+		children->CleanUp();
+	}
+	myChildren.DeleteAll();
+
+	SAFE_RELEASE(myConstantBuffer);
+	DL_ASSERT_EXP(!myConstantBuffer, "Failed to release constant buffer!");
+
+	SAFE_RELEASE(m_VertexLayout);
 }
 
 void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)

@@ -44,7 +44,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	myPointLight = new PointLight; //Where should this live?
 	mySpotlight = new SpotLight; // Where should this live?
-
+	mySpotlight->Initiate();
 	//m_Shadowlight = new ShadowSpotlight;
 	//m_Shadowlight->Initiate(
 	//	CU::Vector3f(256.f, 128.f, 256.f)
@@ -118,6 +118,7 @@ bool Renderer::CleanUp()
 {
 	m_LightPass.CleanUp();
 	m_ShadowPass.CleanUp();
+	m_DirectionalShadow.CleanUp();
 	m_PostProcessManager.CleanUp();
 
 	SAFE_DELETE(my3DLine);
@@ -133,6 +134,8 @@ bool Renderer::CleanUp()
 	SAFE_DELETE(myText);
 
 	SAFE_DELETE(myPointLight);
+
+	mySpotlight->CleanUp();
 	SAFE_DELETE(mySpotlight);
 
 	m_ParticleEmitter->CleanUp();
@@ -149,7 +152,7 @@ void Renderer::Render()
 	EASY_FUNCTION(profiler::colors::Magenta);
 #endif
 	m_Engine->Clear();
-	myDeferredRenderer->SetTargets();
+	myDeferredRenderer->SetTargets(m_RenderContext);
 
 	Render3DCommands();
 
@@ -163,7 +166,8 @@ void Renderer::Render()
 		m_Camera->GetOrientation(), 
 		m_Camera->GetPerspective(), 
 		m_DirectionalShadow.GetMVP(),
-		m_Direction);
+		m_Direction,
+		m_RenderContext);
 
 	/* This has to be moved or removed */
 	//InputHandle* input_handle = Engine::GetInstance()->GetInputHandle();
@@ -181,11 +185,11 @@ void Renderer::Render()
 
 	m_Engine->ResetRenderTargetAndDepth();
 
-	myDeferredRenderer->SetBuffers(); //This is just the quad
+	myDeferredRenderer->SetBuffers(m_RenderContext); //This is just the quad
 	m_PostProcessManager.Process(myDeferredRenderer->GetFinalTexture());
 
 	if ( m_PostProcessManager.GetFlags() == 0 )
-		myDeferredRenderer->Finalize(0);
+		myDeferredRenderer->Finalize(m_RenderContext);
 
 
 	/*m_Atmosphere.SetLightData(m_Direction, m_DirectionalCamera->GetPosition());

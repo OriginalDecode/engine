@@ -11,11 +11,15 @@
 
 #include <Engine/Model.h>
 #include <Engine/LightModel.h>
+#include <Engine/AtmosphereModel.h>
+
 
 #include <Engine/VertexWrapper.h>
 #include <Engine/IndexWrapper.h>
 
-class Effect;
+#include <Engine/Effect.h>
+
+
 class Engine;
 class aiNode;
 class aiMesh;
@@ -37,8 +41,8 @@ private:
 #pragma region Structs
 	struct TextureInfo //Anyway to remove this?
 	{
-		TextureType myType;
-		std::string myFilename;
+		Effect::TextureSlot m_Slot;
+		std::string m_File;
 	};
 
 	struct ModelData
@@ -106,7 +110,7 @@ private:
 	void LoadModel(std::string filepath, T* pModel, Effect* effect);
 
 	template<typename T>
-	void FillData(FBXModelData* data, T* model, std::string filepath);
+	void FillData(FBXModelData* data, T* model, std::string filepath, Effect* effect);
 
 	template<typename T>
 	void SetupInputLayout(ModelData* data, T* model);
@@ -203,7 +207,7 @@ void CModelImporter::CreateModel(FBXModelData* someData, T* model, std::string f
 
 	if (someData->myData)
 	{
-		FillData(someData, model, filepath);
+		FillData(someData, model, filepath, effect);
 		model->myOrientation = someData->myOrientation;
 	}
 
@@ -226,7 +230,7 @@ T* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect*
 
 	if (data->myData)
 	{
-		FillData(data, model, filepath);
+		FillData(data, model, filepath, effect);
 		model->myOrientation = data->myOrientation;
 	}
 
@@ -239,9 +243,8 @@ T* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect*
 }
 
 template<typename T>
-void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepath)
+void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepath, Effect* effect)
 {
-#ifdef SNOWBLIND_DX11
 	ModelData* data = someData->myData;
 
 	out->m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
@@ -268,22 +271,18 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 
 	out->m_IsRoot = false;
 	SetupInputLayout(data, out);
-
+	newSurface->SetEffect(effect);
 
 	const CU::GrowingArray<TextureInfo>& info = someData->myTextureData->myTextures;
 
 	for (s32 i = 0; i < info.Size(); i++)
 	{
-		newSurface->AddTexture(info[i].myFilename, (TextureType)info[i].myType);
+		newSurface->AddTexture(info[i].m_File, info[i].m_Slot);
 	}
 
-	if (filepath.find("Skysphere") == filepath.npos)
-		newSurface->ValidateTextures();
 
-	//newSurface->ValidateTextures();
-	newSurface->Optimize();
 	out->mySurfaces.Add(newSurface);
-#endif
+
 }
 
 template<typename T>

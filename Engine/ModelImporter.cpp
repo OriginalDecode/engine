@@ -21,79 +21,6 @@ CModelImporter::CModelImporter()
 	m_TimeManager.CreateTimer();
 #endif
 }
-//
-//void CModelImporter::LoadModel(std::string aFilePath, Model* model, std::string effect)
-//{
-//	BeginTicketMutex(&m_LoaderMutex);
-//
-//	LoadModel(aFilePath, model, m_Engine->GetEffect(effect));
-//	model->Initiate(aFilePath);
-//
-//	EndTicketMutex(&m_LoaderMutex);
-//}
-//
-//void CModelImporter::LoadModel(std::string filepath, Model* model, Effect* anEffect)
-//{
-//#ifdef _DEBUG
-//	m_TimeManager.Update();
-//	float loadTime = m_TimeManager.GetTimer(0).GetTotalTime().GetMilliseconds();
-//#endif
-//	unsigned int processFlags =
-//		aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
-//		//aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
-//		//aiProcess_ValidateDataStructure  | // perform a full validation of the loader's output
-//		//aiProcess_Triangulate | // Ensure all verticies are triangulated (each 3 vertices are triangle)
-//		//aiProcess_ConvertToLeftHanded | // convert everything to D3D left handed space (by default right-handed, for OpenGL)
-//		//aiProcess_SortByPType | // ?
-//		//aiProcess_ImproveCacheLocality | // improve the cache locality of the output vertices
-//		//aiProcess_RemoveRedundantMaterials | // remove redundant materials
-//		//aiProcess_FindDegenerates | // remove degenerated polygons from the import
-//		//aiProcess_FindInvalidData | // detect invalid model data, such as invalid normal vectors
-//		//aiProcess_GenUVCoords | // convert spherical, cylindrical, box and planar mapping to proper UVs
-//		////aiProcess_TransformUVCoords | // preprocess UV transformations (scaling, translation ...)
-//		//aiProcess_FindInstances | // search for instanced meshes and remove them by references to one master
-//		//aiProcess_LimitBoneWeights | // limit bone weights to 4 per vertex
-//		aiProcess_OptimizeMeshes | // join small meshes, if possible;
-//		//aiProcess_OptimizeGraph |
-//		//aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
-//		0;
-//
-//	Assimp::Importer importer;
-//	const aiScene* scene = importer.ReadFile(filepath, processFlags);
-//
-//	DL_MESSAGE_EXP(!scene, "%s", importer.GetErrorString());
-//	DL_ASSERT_EXP(scene, "ImportModel Failed. Could not read the requested file.");
-//
-//	aiNode* rootNode = scene->mRootNode;
-//	FBXModelData* data = new FBXModelData;
-//
-//	ProcessNode(rootNode, scene, data, filepath);
-//
-//	Model* toReturn = CreateModel(data, model, filepath, anEffect);
-//
-//
-//	if ( data->myTextureData )
-//	{
-//		delete data->myTextureData;
-//	}
-//	if ( data->myData )
-//	{
-//		delete[] data->myData->myIndicies;
-//		delete[] data->myData->myVertexBuffer;
-//	}
-//	if ( data )
-//	{
-//		delete data->myData;
-//	}
-//	delete data;
-//
-//#ifdef _DEBUG
-//	m_TimeManager.Update();
-//	loadTime = m_TimeManager.GetTimer(0).GetTotalTime().GetMilliseconds() - loadTime;
-//	MODEL_LOG("%s took %fms to load. %s", filepath.c_str(), loadTime, ( loadTime > 7000.f ) ? "Check if it's saved as binary." : 0);
-//#endif
-//	return toReturn;
-//}
 
 void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData, std::string file)
 {
@@ -353,7 +280,7 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 		u32 type = prop->mSemantic;
 		aiString str;
 		material->GetTexture(static_cast< aiTextureType >( type ), 0, &str);
-		std::string newPath = CL::substr(file, "/", true, 0);
+		std::string path = CL::substr(file, "/", true, 0);
 
 		std::string fileName = CL::substr(str.C_Str(), "\\", false, 0);
 		if ( fileName.empty() )
@@ -362,13 +289,13 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 		{
 			fileName.erase(0, 1);
 		}
-		newPath += "/";
-		newPath += fileName;
+		path += "/";
+		path += fileName;
 		if ( fileName != "" )
 		{
 			//myEngine->GetTexture(newPath); //All textures now get properly loaded.
 			TextureInfo newInfo;
-			newInfo.myFilename = newPath;
+			newInfo.m_File = path;
 
 
 			aiTextureType lType = static_cast< aiTextureType >( type );
@@ -377,57 +304,62 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 			{
 				case aiTextureType_DIFFUSE:
 				{
-					newInfo.myType = TextureType::_ALBEDO;
-				}break;
-
-				case aiTextureType_SPECULAR:
-				{
-					newInfo.myType = TextureType::_ROUGHNESS;
-				}break;
-
-				case aiTextureType_AMBIENT:
-				{
-					newInfo.myType = TextureType::_AO;
-				}break;
-
-				case aiTextureType_EMISSIVE:
-				{
-					newInfo.myType = TextureType::_EMISSIVE;
-				}break;
-
-				case aiTextureType_HEIGHT:
-				{
-					newInfo.myType = TextureType::_HEIGHT;
+					newInfo.m_Slot = Effect::DIFFUSE;
 				}break;
 
 				case aiTextureType_NORMALS:
 				{
-					newInfo.myType = TextureType::_NORMAL;
+					newInfo.m_Slot = Effect::NORMAL;
 				}break;
 
-				case aiTextureType_SHININESS:
+				case aiTextureType_EMISSIVE:
 				{
-					newInfo.myType = TextureType::_SHININESS;
+					newInfo.m_Slot = Effect::EMISSIVE;
+				}break;
+
+				case aiTextureType_AMBIENT:
+				{
+					newInfo.m_Slot = Effect::AO;
 				}break;
 
 				case aiTextureType_OPACITY:
 				{
-					newInfo.myType = TextureType::_OPACITY;
+					newInfo.m_Slot = Effect::OPACITY;
+				}break;
+
+				case aiTextureType_REFLECTION: /* Misleading name, amirite? */
+				{
+					newInfo.m_Slot = Effect::METALNESS;
+				}break;
+
+				case aiTextureType_SPECULAR:
+				{
+					newInfo.m_Slot = Effect::ROUGHNESS;
+				}break;
+
+				case aiTextureType_HEIGHT:
+				{
+					DL_ASSERT("No height support!");
+					//newInfo.m_Slot = Effect::HEI;
+				}break;
+
+				case aiTextureType_SHININESS:
+				{
+
+					DL_ASSERT("No support for Shininess! What the fuck is Shininess? Specular?");
+					//newInfo.m_Slot = TextureType::_SHININESS;
 				}break;
 
 				case aiTextureType_DISPLACEMENT:
 				{
-					newInfo.myType = TextureType::_DISPLACEMENT;
+					DL_ASSERT("No displacement support");
+					//newInfo.m_Slot = TextureType::_DISPLACEMENT;
 				}break;
 
 				case aiTextureType_LIGHTMAP:
 				{
-					newInfo.myType = TextureType::_LIGHTMAP;
-				}break;
-
-				case aiTextureType_REFLECTION:
-				{
-					newInfo.myType = TextureType::_METALNESS;
+					DL_ASSERT("No lightmap support");
+					//newInfo.m_Slot =Effect;
 				}break;
 
 				case aiTextureType_UNKNOWN:
@@ -442,7 +374,7 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 			const CU::GrowingArray<TextureInfo> texInfo = data->myTextureData->myTextures;
 			for ( const TextureInfo& info : texInfo )
 			{
-				if ( info.myFilename == newInfo.myFilename && info.myType == newInfo.myType )
+				if ( info.m_File == newInfo.m_File && info.m_File == newInfo.m_File )
 				{
 					found = true;
 					break;

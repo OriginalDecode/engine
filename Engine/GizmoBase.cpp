@@ -16,8 +16,8 @@ void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_k
 		CU::GrowingArray<CSurface*>& surfaces = child->GetSurfaces();
 		for (CSurface* surface : surfaces)
 		{
-			surface->ClearTextures();
-			surface->AddTexture(gizmo_handle.m_DirColor->GetShaderView());
+			//surface->ClearTextures();
+			surface->AddTexture(gizmo_handle.m_DirColor->GetShaderView(), Effect::DIFFUSE);
 		}
 	}
 	gizmo_handle.direction = direction;

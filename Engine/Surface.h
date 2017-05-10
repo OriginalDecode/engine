@@ -39,13 +39,12 @@ public:
 		u32 aStartIndex, u32 aIndexCount);
 	CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology);
 
-	~CSurface();
 
-	void ClearTextures();
-	void AddTexture(IShaderResourceView* texture);
-	void AddTexture(const std::string& file_path);
+	void AddTexture(IShaderResourceView* texture, Effect::TextureSlot slot);
+	void AddTexture(Texture* texture, Effect::TextureSlot slot);
+	void AddTexture(const std::string& file_path, Effect::TextureSlot slot);
 
-	void Activate();
+	void Activate(const RenderContext& render_context);
 	void Deactivate();
 
 	void SetEffect(Effect* anEffect);
@@ -63,18 +62,14 @@ public:
 	int GetStartVertex() const;
 	int GetStartIndex() const;
 
-	//void ValidateTextures();
-	//void RemoveTextureByIndex(s32 index);
 
 private:
-	//void AddMissingTexture(TextureType type, const std::string& file_path);
 
 	D3D_PRIMITIVE_TOPOLOGY myPrimologyType;
 	
 	Material m_Material;
-
 	Effect* myEffect;
-	ID3D11DeviceContext* myContext;
+
 	u32 myIndexStart;
 	u32 myIndexCount;
 	u32 myVertexStart;

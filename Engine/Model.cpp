@@ -7,7 +7,7 @@
 #include "Engine.h"
 #include "Surface.h"
 
-bool Model::CleanUp()
+void Model::CleanUp()
 {
 	mySurfaces.DeleteAll();
 	for (Model* children : myChildren)
@@ -20,11 +20,6 @@ bool Model::CleanUp()
 	DL_ASSERT_EXP(!myConstantBuffer, "Failed to release constant buffer!");
 		
 	SAFE_RELEASE(m_VertexLayout);
-	if (m_VertexLayout)
-		return false;
-
-
-	return true;
 }
 
 void Model::Initiate(const std::string& filename)
@@ -60,9 +55,6 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 
 	SetupLayoutsAndBuffers();
 
-	
-	myEffect->Activate();
-
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
@@ -70,7 +62,7 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 	{
 		render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 
-		surface->Activate();
+		surface->Activate(render_context);
 
 		render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0);
 

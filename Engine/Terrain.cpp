@@ -29,28 +29,23 @@ bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, c
 	SAFE_DELETE(image);
 	CreateVertices(aSize.x, aSize.y, position);
 	mySurface = new CSurface(myEffect);
-	mySurface->AddTexture("Data/Textures/terrain.dds", _ALBEDO);
+	mySurface->AddTexture("Data/Textures/terrain.dds", Effect::DIFFUSE);
 	//mySurface->AddTexture("Data/Textures/default_textures/no-texture-bw.dds", _ROUGHNESS);
 	m_HasLoaded = true;
 	return true;
 }
 
-bool CTerrain::CleanUp()
+void CTerrain::CleanUp()
 {
 	myIndexes.clear();
 	myVertices.clear();
 
 	SAFE_RELEASE(m_VertexLayout);
-	if (m_VertexLayout)
-		return false;
 
 	SAFE_DELETE(mySurface);
 
 	SAFE_RELEASE(myConstantBuffer);
-	if (myConstantBuffer)
-		return false;
 
-	return true;
 }
 
 void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
@@ -63,7 +58,7 @@ void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix4
  	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
  
- 	mySurface->Activate();
+ 	mySurface->Activate(render_context);
  	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
  	mySurface->Deactivate();
 
@@ -92,7 +87,7 @@ void CTerrain::Load(const std::string& /*aFilePath*/)
 
 void CTerrain::AddNormalMap(const std::string& filepath)
 {
-	mySurface->AddTexture(filepath, _NORMAL);
+	mySurface->AddTexture(filepath, Effect::NORMAL);
 }
 
 std::vector<float> CTerrain::GetVerticeArrayCopy()

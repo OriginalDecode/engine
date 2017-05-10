@@ -2,10 +2,8 @@
 #include "LightModel.h"
 
 
-bool LightModel::CleanUp()
+void LightModel::CleanUp()
 {
-	__super::CleanUp();
-	return true;
 }
 
 void LightModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)

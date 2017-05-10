@@ -13,7 +13,6 @@
 
 CSurface::CSurface(Effect* anEffect)
 {
-	myContext = Engine::GetAPI()->GetContext();
 	SetVertexCount(0);
 	SetVertexStart(0);
 	SetIndexCount(0);
@@ -24,7 +23,6 @@ CSurface::CSurface(Effect* anEffect)
 
 CSurface::CSurface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount)
 {
-	myContext = Engine::GetAPI()->GetContext();
 	SetVertexCount(aVertexCount);
 	SetVertexStart(aStartVertex);
 	SetIndexCount(aIndexCount);
@@ -35,7 +33,6 @@ CSurface::CSurface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aSt
 
 CSurface::CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
 {
-	myContext = Engine::GetAPI()->GetContext();
 	SetVertexCount(aVertexCount);
 	SetVertexStart(aStartVertex);
 	SetIndexCount(anIndexCount);
@@ -43,34 +40,24 @@ CSurface::CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIn
 	SetPrimology(aPrimology);
 }
 
-CSurface::~CSurface()
+void CSurface::Activate(const RenderContext& render_context)
 {
-}
-
-void CSurface::ClearTextures()
-{
-}
-
-void CSurface::Activate()
-{
-	if ( myShaderViews.Empty() )
+	if ( !myEffect )
 		return;
 
-	myContext->IASetPrimitiveTopology(myPrimologyType);
-	myContext->PSSetShaderResources(0, myShaderViews.Size(), &myShaderViews[0]);
-
+	render_context.m_Context->IASetPrimitiveTopology(myPrimologyType);
+	m_Material.Use(myEffect, render_context);
 }
 
 void CSurface::Deactivate()
 {
-	if(m_Null.Size() > 0)
-		myContext->PSSetShaderResources(0, m_Null.Size(), &m_Null[0]);
+	if ( !myEffect )
+		return;
+	myEffect->Clear();
 }
 
-void CSurface::AddTexture(const std::string& file_path) 
+void CSurface::AddTexture(const std::string& file_path, Effect::TextureSlot slot)
 {
-	//m_ContainingTextures |= type;
-
 	std::string sub = file_path;
 	if (file_path.find(".dds") == file_path.npos)
 	{
@@ -80,53 +67,19 @@ void CSurface::AddTexture(const std::string& file_path)
 		sub = file_path.substr(0, pos);
 		sub += ".dds";
 	}
+
+	m_Material.AddResource(Engine::GetInstance()->GetTexture(sub), slot);
 	
-	//myShaderViews.Add(Engine::GetInstance()->GetTexture(sub)->GetShaderView());
-
-
-
-
-
-
-
-
-	/**
-	STexture new_texture;
-	new_texture.m_Type = type;
-
-	if (Engine::GetInstance()->GetTexture(sub))
-		new_texture.texture = Engine::GetInstance()->GetTexture(sub)->GetShaderView();
-	else
-	{
-		DL_MESSAGE("Failed to load %s", sub.c_str());
-		new_texture.texture = Engine::GetInstance()->GetTexture("Data/Textures/default_textures/no-texture-bw.dds")->GetShaderView();
-	}
-
-
-	myTextures.Add(new_texture);
-
-	myFileNames.Add(sub);
-
-
-	std::sort(myTextures.begin(), myTextures.end(), [&](STexture& first, STexture& second) {
-		return first.m_Type < second.m_Type;
-	});
-
-	myShaderViews.RemoveAll();
-	m_Null.RemoveAll();
-	for (s32 i = 0; i < myTextures.Size(); i++)
-	{
-		myShaderViews.Add(myTextures[i].texture);
-		m_Null.Add(nullptr);
-	}
-
-	/**/
 }
 
-void CSurface::AddTexture(IShaderResourceView* texture)
+void CSurface::AddTexture(IShaderResourceView* texture, Effect::TextureSlot slot)
 {
-	myShaderViews.Add(texture);
-	m_Null.Add(nullptr);
+	m_Material.AddResource(texture, slot);
+}
+
+void CSurface::AddTexture(Texture* texture, Effect::TextureSlot slot)
+{
+	m_Material.AddResource(texture, slot);
 }
 
 void CSurface::SetEffect(Effect* anEffect)
@@ -159,11 +112,13 @@ void CSurface::SetPrimology(D3D_PRIMITIVE_TOPOLOGY aPrimology)
 	myPrimologyType = aPrimology;
 }
 
+
 void Material::AddResource(IShaderResourceView* pResource, Effect::TextureSlot slot)
 {
 	ResourceBinding binding;
 	binding.m_Resource = pResource;
 	binding.m_Slot = slot;
+	m_Resources.Add(binding);
 }
 
 void Material::AddResource(Texture* pResource, Effect::TextureSlot slot)
@@ -178,9 +133,4 @@ void Material::Use(Effect* pEffect, const RenderContext& render_context)
 		pEffect->AddShaderResource(binding.m_Resource, binding.m_Slot);
 	}
 	pEffect->Use();
-}
-
-void Material::Clear()
-{
-
 }

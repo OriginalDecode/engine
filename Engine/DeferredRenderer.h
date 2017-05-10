@@ -35,7 +35,7 @@ public:
 	void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const RenderContext& render_context);
 
 
-	void Finalize(Texture* light_texture);
+	void Finalize(const RenderContext& render_context);
 
 	Texture* GetFinalTexture();
 

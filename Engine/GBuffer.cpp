@@ -37,40 +37,43 @@ void GBuffer::CleanUp()
 	SAFE_DELETE(myDepth);
 }
 
-void GBuffer::Clear(float* aClearColor)
+void GBuffer::Clear(float* aClearColor, const RenderContext& render_context)
 {
-	myContext->ClearRenderTargetView(myAlbedo->GetRenderTargetView(), aClearColor);
-	myContext->ClearRenderTargetView(myNormal->GetRenderTargetView(), aClearColor);
-	myContext->ClearRenderTargetView(myDepth->GetRenderTargetView(), aClearColor);
-	myContext->ClearRenderTargetView(myEmissive->GetRenderTargetView(), aClearColor);
+	render_context.m_Context->ClearRenderTargetView(myAlbedo->GetRenderTargetView(), aClearColor);
+	render_context.m_Context->ClearRenderTargetView(myNormal->GetRenderTargetView(), aClearColor);
+	render_context.m_Context->ClearRenderTargetView(myDepth->GetRenderTargetView(), aClearColor);
+	render_context.m_Context->ClearRenderTargetView(myEmissive->GetRenderTargetView(), aClearColor);
 }
 
-void GBuffer::SetAsRenderTarget(Texture* aDepthTexture)
+void GBuffer::SetAsRenderTarget(Texture* aDepthTexture, const RenderContext& render_context)
 {
-	ID3D11RenderTargetView* target[4];
-	target[0] = myAlbedo->GetRenderTargetView();
-	target[1] = myNormal->GetRenderTargetView();
-	target[2] = myDepth->GetRenderTargetView();
-	target[3] = myEmissive->GetRenderTargetView();
-	myContext->OMSetRenderTargets(4, target, aDepthTexture->GetDepthView());
+	ID3D11RenderTargetView* target[] = 
+	{
+		myAlbedo->GetRenderTargetView(),
+		myNormal->GetRenderTargetView(),
+		myDepth->GetRenderTargetView(),
+		myEmissive->GetRenderTargetView(),
+	};
+
+	render_context.m_Context->OMSetRenderTargets(ARRAYSIZE(target), target, aDepthTexture->GetDepthView());
 }
 
-Texture* GBuffer::GetDiffuse()
+Texture* GBuffer::GetDiffuse() const
 {
 	return myAlbedo;
 }
 
-Texture* GBuffer::GetNormal()
+Texture* GBuffer::GetNormal() const
 {
 	return myNormal;
 }
 
-Texture* GBuffer::GetEmissive()
+Texture* GBuffer::GetEmissive() const
 {
 	return myEmissive;
 }
 
-Texture* GBuffer::GetDepth()
+Texture* GBuffer::GetDepth() const
 {
 	return myDepth;
 }

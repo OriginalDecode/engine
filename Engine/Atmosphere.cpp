@@ -49,6 +49,8 @@ void Atmosphere::CleanUp()
 {
 	SAFE_RELEASE(m_PixelBuffer);
 	SAFE_RELEASE(m_VertexBuffer);
+
+
 }
 
 void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth, const RenderContext& render_context)

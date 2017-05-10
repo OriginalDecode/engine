@@ -13,7 +13,7 @@ class Model : public BaseModel
 	friend class CModelImporter;
 public:
 	Model() = default;
-	bool CleanUp() override;
+	void CleanUp();
 	virtual void Initiate(const std::string& filename);
 
 	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;

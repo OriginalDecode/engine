@@ -33,6 +33,7 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 
 	myScreenPassShader = myEngine->GetEffect("Shaders/T_Render_To_Texture.json");
 
+	m_GBuffer.Initiate();
 	myAmbientPassShader = myEngine->GetEffect("Shaders/T_Deferred_Ambient.json");
 	myAmbientPassShader->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
 	myAmbientPassShader->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
@@ -47,6 +48,7 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 
 bool DeferredRenderer::CleanUp()
 {
+	m_GBuffer.CleanUp();
 	myFinishedSceneTexture->CleanUp();
 	SAFE_DELETE(myFinishedSceneTexture);
 	myDepthStencil->CleanUp();
@@ -69,9 +71,9 @@ bool DeferredRenderer::CleanUp()
 
 void DeferredRenderer::SetTargets(const RenderContext& render_context)
 {
-	m_GBuffer.Clear(myClearColor);
+	m_GBuffer.Clear(myClearColor, render_context);
 	render_context.m_Context->ClearDepthStencilView(myDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	m_GBuffer.SetAsRenderTarget(myDepthStencil);
+	m_GBuffer.SetAsRenderTarget(myDepthStencil, render_context);
 }
 
 void DeferredRenderer::SetBuffers(const RenderContext& render_context)
@@ -120,13 +122,13 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 	myContext->OMSetRenderTargets(1, &render_target, depth);
 }
 
-void DeferredRenderer::Finalize(Texture*)
+void DeferredRenderer::Finalize(const RenderContext& render_contexts)
 {
 	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 
-	SetBuffers();
+	SetBuffers(render_contexts);
 
 	m_API->SetVertexShader(myScreenPassShader->GetVertexShader()->m_Shader);
 	m_API->SetPixelShader(myScreenPassShader->GetPixelShader()->m_Shader);

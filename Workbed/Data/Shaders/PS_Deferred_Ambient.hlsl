@@ -16,9 +16,9 @@ cbuffer Ambient : register(b0)
 SamplerState point_Clamp 	: register ( s0 );
 Texture2D AlbedoTexture  	: register ( t0 );
 Texture2D NormalTexture  	: register ( t1 );
-Texture2D DepthTexture	 	: register ( t11 );
-Texture2D ShadowTexture		: register ( t12 );
-TextureCube CubeMap		 	: register ( t13 );
+Texture2D DepthTexture	 	: register ( t7 );
+Texture2D ShadowTexture		: register ( t8 );
+TextureCube CubeMap		 	: register ( t9 );
 
 //---------------------------------
 //	Deferred Ambient Pixel Structs
@@ -92,11 +92,10 @@ float3 Fresnel(const float3 aSubstance, const float3 aLightDir, const float3 aHa
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 depth = DepthTexture.Sample(point_Clamp, input.uv);
-	if(depth.x <= 0.f)
-		discard;
 
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);	
 	float4 normal = NormalTexture.Sample(point_Clamp, input.uv);
+
 	
 	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
 	normal *= 2;

@@ -13,7 +13,7 @@ AssetsContainer::~AssetsContainer()
 	SAFE_DELETE(m_ModelLoader);
 	for (auto it = myModels.begin(); it != myModels.end(); it++)
 	{
-		DL_ASSERT_EXP(it->second->CleanUp(), "Failed to cleanup a model.");
+		it->second->CleanUp();
 		SAFE_DELETE(it->second);
 	}
 

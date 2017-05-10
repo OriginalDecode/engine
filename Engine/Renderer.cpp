@@ -45,25 +45,6 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	myPointLight = new PointLight; //Where should this live?
 	mySpotlight = new SpotLight; // Where should this live?
 	mySpotlight->Initiate();
-	//m_Shadowlight = new ShadowSpotlight;
-	//m_Shadowlight->Initiate(
-	//	CU::Vector3f(256.f, 128.f, 256.f)
-	//	, CU::Vector3f(0.f, 0.f, 1.f)
-	//	, 2048.f);
-
-	///* Directional Shadows */
-	//m_DirectionalCamera = new Camera;
-	//m_DirectionalCamera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
-
-	//m_DirectionalCamera->SetPosition({ 1024.f, 512.f, 512.f });
-	//m_DirectionalCamera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
-
-	//m_ShadowDepth = new Texture;
-	//m_ShadowDepth->InitiateAsRenderTarget(2048.f, 2048.f, "DirectionalLight : Depth Render Target");
-
-	//m_ShadowDepthStencil = new Texture;
-	//m_ShadowDepthStencil->InitiateAsDepthStencil(2048.f, 2048.f, "DirectionalLight : Depthstencil View");
-	///* End of Directional Shadows */
 
 	myDeferredRenderer = new DeferredRenderer; // Where should this live?
 	if ( !myDeferredRenderer->Initiate(0) )
@@ -88,7 +69,6 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	my3DLine = new CLine3D; //Where should this live?
 	my3DLine->Initiate();
 
-	//bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), m_Shadowlight->GetDepthStencil());
 	bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), 0);
 	DL_ASSERT_EXP(success, "failed to initiate lightpass!");
 
@@ -97,7 +77,6 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_Atmosphere.Initiate(724.f, 728.f, { 512.f, 0.f, 512.f });
 
-	//m_ShadowEffect = m_Engine->GetEffect("Shaders/T_Render_Depth.json");
 
 	m_PostProcessManager.Initiate();
 	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
@@ -159,8 +138,6 @@ void Renderer::Render()
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
-	//ProcessShadows();
-	//ProcessShadows(m_DirectionalCamera);
 
 	myDeferredRenderer->DeferredRender( 
 		m_Camera->GetOrientation(), 
@@ -183,6 +160,7 @@ void Renderer::Render()
 	RenderPointlight();
 	RenderSpotlight();
 
+
 	m_Engine->ResetRenderTargetAndDepth();
 
 	myDeferredRenderer->SetBuffers(m_RenderContext); //This is just the quad
@@ -192,8 +170,9 @@ void Renderer::Render()
 		myDeferredRenderer->Finalize(m_RenderContext);
 
 
-	/*m_Atmosphere.SetLightData(m_Direction, m_DirectionalCamera->GetPosition());
-	m_Atmosphere.Render(m_Camera->GetOrientation(), myDeferredRenderer->GetDepthStencil(), m_RenderContext);*/
+	//m_Atmosphere.SetLightData(m_Direction, m_DirectionalCamera->GetPosition());
+	m_Atmosphere.Render(m_Camera->GetOrientation(), myDeferredRenderer->GetDepthStencil(), m_RenderContext);
+
 	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), myDeferredRenderer->GetDepthStencil()->GetDepthView());
 	RenderParticles();
 

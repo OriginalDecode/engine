@@ -27,7 +27,7 @@ cbuffer Positions : register(b0)
 };
 
 SamplerState linear_Wrap : register ( s0 );
-Texture2D DepthTexture : register ( t0 );
+Texture2D DepthTexture : register ( t7 );
 
 //---------------------------------
 //	Deferred Base Pixel Structs
@@ -57,6 +57,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float2 texCoord = input.tex.xy;	
 	float depth = DepthTexture.Sample(linear_Wrap, texCoord).r;
 
+	float4 output = input.worldpos;
 
-	return float4(1,1,1,1);
+	return output;
 }

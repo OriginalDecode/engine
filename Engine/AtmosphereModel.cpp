@@ -12,7 +12,6 @@ void AtmosphereModel::Initiate(const std::string& filename)
 		InitConstantBuffer();
 	}
 
-	myChildren.ReInit(8);
 
 	for ( AtmosphereModel* child : myChildren )
 	{

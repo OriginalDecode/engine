@@ -345,6 +345,7 @@ void Renderer::RenderSpotlight()
 
 		mySpotlight->SetData(data);
 		CU::Matrix44f shadow_mvp;
+		/*
 		if ( command.m_ShadowCasting )
 		{
 			ShadowSpotlight* shadow = mySpotlight->GetShadowSpotlight();
@@ -352,7 +353,7 @@ void Renderer::RenderSpotlight()
 			shadow_mvp = shadow->GetMVP();
 			Effect* effect = Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json");
 			effect->AddShaderResource(shadow->GetDepthStencil(), Effect::SHADOWMAP);
-		}
+		}*/
 
 		effect->Use();
 		m_LightPass.RenderSpotlight(mySpotlight, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);

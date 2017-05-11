@@ -9,10 +9,8 @@ void SpotLight::Initiate()
 	m_Model = new LightModel;
 	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", m_Model, false);
 	m_Model->Initiate("cone.fbx");
-
 	m_ShadowSpotlight = new ShadowSpotlight;
 	m_ShadowSpotlight->Initiate(2048.f);
-
 }
 
 void SpotLight::CleanUp()

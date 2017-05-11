@@ -2,6 +2,22 @@
 #include "LightModel.h"
 
 
+void LightModel::Initiate(const std::string& filename)
+{
+	m_Filename = CL::substr(filename, "/", false, 0);
+	if ( m_IsRoot == false )
+	{
+		InitVertexBuffer();
+		InitIndexBuffer();
+		InitConstantBuffer();
+	}
+
+	for ( LightModel* child : myChildren )
+	{
+		child->Initiate(filename);
+	}
+}
+
 void LightModel::CleanUp()
 {
 }
@@ -18,7 +34,7 @@ void LightModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matri
 
 	SetupLayoutsAndBuffers();
 
-	myEffect->Activate();
+	//myEffect->Activate();
 	
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
 	

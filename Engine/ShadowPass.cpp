@@ -31,6 +31,7 @@ void ShadowPass::ProcessShadows(ShadowSpotlight* shadow_spotlight, const RenderC
 	m_RenderToDepth->Use();
 	ProcessShadows(shadow_spotlight->GetCamera(), render_context);
 	m_RenderToDepth->Clear();
+	Engine::GetAPI()->ResetViewport();
 }
 
 void ShadowPass::ProcessShadows(ShadowDirectional* shadow_directional, const RenderContext& render_context)
@@ -41,6 +42,7 @@ void ShadowPass::ProcessShadows(ShadowDirectional* shadow_directional, const Ren
 	m_RenderToDepth->Use();
 	ProcessShadows(shadow_directional->GetCamera(), render_context);
 	m_RenderToDepth->Clear();
+	Engine::GetAPI()->ResetViewport();
 }
 
 void ShadowPass::Activate()

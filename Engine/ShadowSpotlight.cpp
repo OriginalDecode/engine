@@ -24,13 +24,13 @@ bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f&
 		, DXGI_FORMAT_R16G16B16A16_FLOAT
 		, "Shadowlight : Depth ");
 
-	//m_Holder = new Texture;
-	//m_Holder->Initiate(m_BufferSize, m_BufferSize
-	//	, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-	//	, DXGI_FORMAT_R32_TYPELESS
-	//	, DXGI_FORMAT_R32_FLOAT
-	//	, DXGI_FORMAT_D32_FLOAT
-	//	, "Shadowlight : DepthStencil ");
+	m_Holder = new Texture;
+	m_Holder->Initiate(m_BufferSize, m_BufferSize
+		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+		, DXGI_FORMAT_R32_TYPELESS
+		, DXGI_FORMAT_R32_FLOAT
+		, DXGI_FORMAT_D32_FLOAT
+		, "Shadowlight : DepthStencil ");
 
 	m_DepthStencil = new Texture;
 	m_DepthStencil->Initiate(m_BufferSize, m_BufferSize
@@ -41,7 +41,6 @@ bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f&
 		, "Shadowlight : DepthStencil ");
 
 	m_ShadowEffect = Engine::GetInstance()->GetEffect("Shaders/T_Render_Depth.json");
-	//m_ShadowEffect->AddShaderResource(m_Holder->GetDepthStencilView());
 
 	return true;
 }
@@ -81,6 +80,7 @@ void ShadowSpotlight::SetViewport()
 
 void ShadowSpotlight::ClearTexture()
 {
+	Texture::CopyData(m_Holder->GetDepthTexture(), m_DepthStencil->GetDepthTexture());
 	float clear[4] = { 0.f, 0.f, 0.f, 0.f };
 	m_Context->ClearRenderTargetView(m_Depth->GetRenderTargetView(), clear);
 	m_Context->ClearDepthStencilView(m_DepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -94,6 +94,7 @@ void ShadowSpotlight::SetTargets()
 	DirectX11* api = Engine::GetInstance()->GetAPI();
 	api->SetVertexShader(m_ShadowEffect->GetVertexShader()->m_Shader);
 	api->SetPixelShader(m_ShadowEffect->GetPixelShader()->m_Shader);
+	m_ShadowEffect->AddShaderResource(m_Holder->GetDepthStencilView(), Effect::DIFFUSE);
 }
 
 void ShadowSpotlight::SetOrientation(const CU::Matrix44f& orientation)

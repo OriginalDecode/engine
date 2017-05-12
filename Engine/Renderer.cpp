@@ -131,7 +131,7 @@ void Renderer::Render()
 	EASY_FUNCTION(profiler::colors::Magenta);
 #endif
 	m_Engine->Clear();
-	myDeferredRenderer->SetTargets(m_RenderContext);
+	myDeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
 	Render3DCommands();
 
@@ -345,7 +345,7 @@ void Renderer::RenderSpotlight()
 
 		mySpotlight->SetData(data);
 		CU::Matrix44f shadow_mvp;
-		/*
+		
 		if ( command.m_ShadowCasting )
 		{
 			ShadowSpotlight* shadow = mySpotlight->GetShadowSpotlight();
@@ -353,7 +353,8 @@ void Renderer::RenderSpotlight()
 			shadow_mvp = shadow->GetMVP();
 			Effect* effect = Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json");
 			effect->AddShaderResource(shadow->GetDepthStencil(), Effect::SHADOWMAP);
-		}*/
+			myDeferredRenderer->SetRenderTarget(m_RenderContext);
+		}
 
 		effect->Use();
 		m_LightPass.RenderSpotlight(mySpotlight, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);

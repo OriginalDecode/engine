@@ -69,7 +69,7 @@ bool DeferredRenderer::CleanUp()
 	return true;
 }
 
-void DeferredRenderer::SetTargets(const RenderContext& render_context)
+void DeferredRenderer::SetGBufferAsTarget(const RenderContext& render_context)
 {
 	m_GBuffer.Clear(myClearColor, render_context);
 	render_context.m_Context->ClearDepthStencilView(myDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -120,6 +120,12 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 
 	depth = myDepthStencil->GetDepthView();
 	myContext->OMSetRenderTargets(1, &render_target, depth);
+}
+
+void DeferredRenderer::SetRenderTarget(const RenderContext& render_context)
+{
+	ID3D11DepthStencilView* depth = m_API->GetDepthView();
+	myContext->OMSetRenderTargets(1, myFinishedSceneTexture->GetRenderTargetRef(), depth);
 }
 
 void DeferredRenderer::Finalize(const RenderContext& render_contexts)

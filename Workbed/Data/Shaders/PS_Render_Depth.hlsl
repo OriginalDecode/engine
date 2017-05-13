@@ -13,5 +13,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 depth = DepthBuffer.Sample(Sampler, input.uv);
 	float4 output = float4(depth.r,depth.r,depth.r,depth.r);
 	
-	return output;
+	float z = input.worldpos.z;
+	return float4(z,z,z,z);
+
 }

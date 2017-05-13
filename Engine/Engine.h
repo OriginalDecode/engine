@@ -103,6 +103,7 @@ public:
 	Texture* GetTexture(const std::string& aFilePath);
 	Effect* GetEffect(const std::string& aFilePath);
 	Model* GetModel(const std::string& aFilePath);
+	
 
 	std::string LoadModel(std::string aFilePath, std::string effect, bool thread);
 	template<typename T>

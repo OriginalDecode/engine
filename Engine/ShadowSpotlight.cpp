@@ -40,8 +40,6 @@ bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f&
 		, DXGI_FORMAT_D32_FLOAT
 		, "Shadowlight : DepthStencil ");
 
-	m_ShadowEffect = Engine::GetInstance()->GetEffect("Shaders/T_Render_Depth.json");
-
 	return true;
 }
 
@@ -80,7 +78,6 @@ void ShadowSpotlight::SetViewport()
 
 void ShadowSpotlight::ClearTexture()
 {
-	Texture::CopyData(m_Holder->GetDepthTexture(), m_DepthStencil->GetDepthTexture());
 	float clear[4] = { 0.f, 0.f, 0.f, 0.f };
 	m_Context->ClearRenderTargetView(m_Depth->GetRenderTargetView(), clear);
 	m_Context->ClearDepthStencilView(m_DepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -90,11 +87,6 @@ void ShadowSpotlight::SetTargets()
 {
 	ID3D11RenderTargetView* target = m_Depth->GetRenderTargetView();
 	m_Context->OMSetRenderTargets(1, &target, m_DepthStencil->GetDepthView());
-
-	DirectX11* api = Engine::GetInstance()->GetAPI();
-	api->SetVertexShader(m_ShadowEffect->GetVertexShader()->m_Shader);
-	api->SetPixelShader(m_ShadowEffect->GetPixelShader()->m_Shader);
-	m_ShadowEffect->AddShaderResource(m_Holder->GetDepthStencilView(), Effect::DIFFUSE);
 }
 
 void ShadowSpotlight::SetOrientation(const CU::Matrix44f& orientation)
@@ -104,25 +96,21 @@ void ShadowSpotlight::SetOrientation(const CU::Matrix44f& orientation)
 
 void ShadowSpotlight::SetAngle(float angle)
 {
-	m_Camera->SetFOV(angle);
+	//m_Camera->SetFOV(angle);
 }
 
-CU::Matrix44f ShadowSpotlight::GetOrientation()
+const CU::Matrix44f& ShadowSpotlight::GetOrientation()
 {
 	return m_Camera->GetOrientation();
 }
 
-CU::Matrix44f ShadowSpotlight::GetMVP()
+const CU::Matrix44f& ShadowSpotlight::GetMVP()
 {
 	return (CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetPerspective());
 }
 
-void ShadowSpotlight::ActivateShader()
+void ShadowSpotlight::Copy()
 {
-	m_ShadowEffect->Activate();
+	Texture::CopyData(m_Holder->GetTexture(), m_DepthStencil->GetDepthTexture());
 }
 
-void ShadowSpotlight::InactivateShader()
-{
-	m_ShadowEffect->Deactivate();
-}

@@ -27,6 +27,9 @@ public:
 
 	void AddRenderCommand(const RenderCommand& aRenderCommand);
 
+
+
+
 	const CU::GrowingArray<RenderCommand>& GetRenderCommands(const eCommandBuffer& commandType) const;
 private:
 	CommandBuffers myCommandBuffers;

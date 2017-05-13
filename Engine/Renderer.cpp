@@ -90,6 +90,13 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_DirectionalShadow.Initiate(2048.f);
 
+
+	m_Spotlights[0] = new SpotLight;
+	m_Spotlights[0]->Initiate();
+		
+	m_Spotlights[1] = new SpotLight;
+	m_Spotlights[1]->Initiate();
+
 	return true;
 }
 
@@ -99,6 +106,12 @@ bool Renderer::CleanUp()
 	m_ShadowPass.CleanUp();
 	m_DirectionalShadow.CleanUp();
 	m_PostProcessManager.CleanUp();
+
+	m_Spotlights[0]->CleanUp();
+	SAFE_DELETE(m_Spotlights[0]);
+
+	m_Spotlights[1]->CleanUp();
+	SAFE_DELETE(m_Spotlights[1]);
 
 	SAFE_DELETE(my3DLine);
 	SAFE_DELETE(mySprite);
@@ -146,9 +159,7 @@ void Renderer::Render()
 		m_Direction,
 		m_RenderContext);
 
-	/* This has to be moved or removed */
-	//InputHandle* input_handle = Engine::GetInstance()->GetInputHandle();
-	//if ( input_handle->GetInputWrapper()->IsDown(KButton::Y) )
+
 	//{
 	//	CU::Vector3f target_position(512, 512.f, 512.f);
 	//	m_DirectionalCamera->RotateAroundPoint(target_position);
@@ -288,6 +299,15 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
+
+	//for ( CTerrain* terrain : myTerrainArray )
+	//{
+	//	if ( !terrain->HasLoaded() )
+	//		continue;
+
+	//	terrain->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
+	//}
+
 	for ( const RenderCommand& command : commands )
 	{
 		Model* model = m_Engine->GetModel(command.m_KeyOrText);
@@ -327,42 +347,42 @@ void Renderer::Render2DCommands()
 void Renderer::RenderSpotlight()
 {
 	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eSpotlight);
-	m_API->SetRasterizer(eRasterizer::CULL_NONE);
-	m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
+
 	Effect* effect = m_LightPass.GetSpotlightEffect();
-	//effect->Activate();
 
 	SpotlightData data;
 	for ( const RenderCommand& command : commands )
 	{
 		DL_ASSERT_EXP(command.myType == eType::SPOTLIGHT, "Wrong command type in spotlight buffer.");
 
-		data.myAngle = command.myAngle;
-		data.myRange = command.myRange;
-		data.myLightColor = command.myColor;
+		data.myAngle		 = command.myAngle;
+		data.myRange		 = command.myRange;
+		data.myLightColor	 = command.myColor;
 		data.myLightPosition = command.myPosition;
-		data.myOrientation = command.m_Orientation;
+		data.myOrientation	 = command.m_Orientation;
 
-		mySpotlight->SetData(data);
-		CU::Matrix44f shadow_mvp;
+		SpotLight* light = m_Spotlights[command.m_LightID];
+		light->SetData(data);
 		
+		CU::Matrix44f shadow_mvp;
 		if ( command.m_ShadowCasting )
 		{
-			ShadowSpotlight* shadow = mySpotlight->GetShadowSpotlight();
+			ShadowSpotlight* shadow = light->GetShadowSpotlight();
 			m_ShadowPass.ProcessShadows(shadow, m_RenderContext);
+			shadow->Copy();
+			mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, shadow->GetHolder()->GetShaderView(), CU::Vector2f(1700, 180)));
 			shadow_mvp = shadow->GetMVP();
-			Effect* effect = Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json");
 			effect->AddShaderResource(shadow->GetDepthStencil(), Effect::SHADOWMAP);
 			myDeferredRenderer->SetRenderTarget(m_RenderContext);
 		}
 
+		m_API->SetRasterizer(eRasterizer::CULL_NONE);
+		m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
 		effect->Use();
-		m_LightPass.RenderSpotlight(mySpotlight, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
-
+		m_LightPass.RenderSpotlight(light, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
+		effect->Clear();
 	}
-	effect->Clear();
 
-	//effect->Deactivate();
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }

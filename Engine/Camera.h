@@ -45,6 +45,8 @@ struct ControllerState;
 		CU::Matrix44f& Get2DOrientation() { return my2DOrientation; }
 
 		const CU::Vector4f& GetAt() const { return m_Orientation2.GetForward(); }
+		void SetAt(const CU::Vector4f& at);
+
 
 		void Move(eDirection aDirection, float aSpeed);
 		void SetPosition(const CU::Vector3f& position);

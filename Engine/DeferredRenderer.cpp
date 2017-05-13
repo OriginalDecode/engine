@@ -124,7 +124,7 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 
 void DeferredRenderer::SetRenderTarget(const RenderContext& render_context)
 {
-	ID3D11DepthStencilView* depth = m_API->GetDepthView();
+	ID3D11DepthStencilView* depth = myDepthStencil->GetDepthView();
 	myContext->OMSetRenderTargets(1, myFinishedSceneTexture->GetRenderTargetRef(), depth);
 }
 

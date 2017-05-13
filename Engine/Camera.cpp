@@ -45,11 +45,13 @@ CU::Vector3f Camera::RotateAroundPoint(const CU::Vector3f& position)
 
 void Camera::SetPosition(const CU::Vector3f& position)
 {
+	m_Orientation2 = m_Orientation;
 	m_Orientation.SetPosition(position);
 }
 
 void Camera::SetTranslation(const CU::Vector4f& translation)
 {
+	m_Orientation2 = m_Orientation;
 	m_Orientation.SetTranslation(translation);
 }
 
@@ -139,6 +141,12 @@ void Camera::SetFOV(float field_of_view)
 void Camera::RecalculatePerspective(float width, float height, float near_plane, float far_plane)
 {
 	m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, CL::DegreeToRad(m_CurrentFoV));
+}
+
+void Camera::SetAt(const CU::Vector4f& at)
+{
+	m_Orientation2 = m_Orientation;
+	m_Orientation.SetForward(at);
 }
 
 void Camera::Move(eDirection aDirection, float aSpeed)

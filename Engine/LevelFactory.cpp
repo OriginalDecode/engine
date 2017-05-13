@@ -361,14 +361,15 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 		translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z)) * translation.myOrientation;
 		translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x)) * translation.myOrientation;
 		translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y)) * translation.myOrientation;
-
+		
 		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * translation_component.myOrientation;
 		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(component.direction.y)) * translation_component.myOrientation;
 		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(component.direction.x)) * translation_component.myOrientation;
 
 		m_LevelReader.ReadElement(it->value["angle"], component.angle);
 		component.angle = CL::DegreeToRad(component.angle);
-
+		static int light_id = 0;
+		component.m_LightID = light_id++;
 	}
 
 }

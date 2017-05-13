@@ -50,17 +50,17 @@ void CTerrain::CleanUp()
 
 void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
-  	SetupLayoutsAndBuffers();
+	SetupLayoutsAndBuffers();
  
 	myEffect->Activate();
  
- 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
- 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
  
- 	mySurface->Activate(render_context);
- 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
- 	mySurface->Deactivate();
+	mySurface->Activate(render_context);
+	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+	mySurface->Deactivate();
 
 }
 

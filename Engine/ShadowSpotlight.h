@@ -4,7 +4,7 @@
 class Texture;
 class Camera;
 class Effect;
-
+#include <Engine/GizmoBase.h>
 class ShadowSpotlight
 {
 public:
@@ -28,13 +28,16 @@ public:
 
 	void SetAngle(float angle);
 
-	CU::Matrix44f GetOrientation();
-	CU::Matrix44f GetMVP();
+	const CU::Matrix44f& GetOrientation();
+	const CU::Matrix44f& GetMVP();
 
 	float GetBufferSize() const { return m_BufferSize; }
 
-	void ActivateShader();
-	void InactivateShader();
+	void Copy();
+	Texture* GetHolder() { return m_Holder; }
+
+
+
 private:
 	Effect* m_ShadowEffect	= nullptr;
 	Camera* m_Camera		= nullptr;
@@ -49,5 +52,6 @@ private:
 	float m_BufferSize		= 0.f;
 	CU::Vector3f m_Position;
 	CU::Vector3f m_Direction;
+
 
 };

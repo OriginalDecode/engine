@@ -10,7 +10,6 @@
 #include <CommonLib/Math/Matrix/Matrix33.h>
 #include <Engine/Shadow_Directional.h>
 
-
 class CLine3D;
 
 class Camera;
@@ -69,6 +68,8 @@ private:
 	CU::Vector3f		m_Direction;
 	CU::Vector3f		m_OriginalDirection;
 	CU::Matrix33f		m_Orientation;
+
+	SpotLight* m_Spotlights[2];
 
 	PostProcessManager	m_PostProcessManager;
 	LightPass			m_LightPass;

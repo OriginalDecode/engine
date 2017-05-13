@@ -80,18 +80,18 @@ std::string AssetsContainer::LoadModel(std::string filepath, std::string effect_
 	if (myModels.find(filepath) != myModels.end())
 		return filepath;
 	DL_MESSAGE("Loading model : %s", filepath.c_str());
-
-	myModels.emplace(filepath, pModel);
+	T* model = new T;
+	myModels.emplace(filepath, model);
 
 	if (thread)
 	{
 		m_Engine->GetThreadpool().AddWork(Work([=]() {
-			m_ModelLoader->LoadModel(pModel, filepath, effect_filepath);
+			m_ModelLoader->LoadModel(model, filepath, effect_filepath);
 		}));
 	}
 	else
 	{
-		m_ModelLoader->LoadModel(pModel, filepath, effect_filepath);
+		m_ModelLoader->LoadModel(model, filepath, effect_filepath);
 	}
 
 	return filepath;

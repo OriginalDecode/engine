@@ -33,8 +33,9 @@ struct RenderCommand
 	RenderCommand(const eType& type, const std::string& text, const CU::Vector4f& color, const CU::Vector2f& position);
 	RenderCommand(const eType& type, IShaderResourceView* shader_resource, const CU::Vector2f& position);
 
-	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& intensity, const float& range, bool shadow_casting);
-	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, const float& angle, const float& range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix, bool shadow_casting);
+	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, float intensity, float range, bool shadow_casting);
+	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, float angle
+		, float range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix, int light_id, bool shadow_casting);
 
 
 	//Should all of this data be copied instead of const ref since the memory is going to get lost the next frame anyway?
@@ -72,4 +73,5 @@ struct RenderCommand
 
 	eCommandBuffer myCommandType;
 	eType myType;
+	int m_LightID;
 };

@@ -6,11 +6,13 @@
 
 void SpotLight::Initiate()
 {
-	m_Model = new LightModel;
-	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", m_Model, false);
+	std::string key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", 0, false);
+	m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
+
 	m_Model->Initiate("cone.fbx");
 	m_ShadowSpotlight = new ShadowSpotlight;
 	m_ShadowSpotlight->Initiate(2048.f);
+	m_ShadowSpotlight->GetCamera()->RotateAroundX(CL::DegreeToRad(90.f));
 }
 
 void SpotLight::CleanUp()
@@ -30,9 +32,9 @@ void SpotLight::SetData(const SpotlightData& data)
 	myData = data;
 	SetDirection(myData.myOrientation.GetForward());
 	SetPosition(myData.myLightPosition);
-	m_ShadowSpotlight->SetAngle(myData.myAngle);
+	//m_ShadowSpotlight->SetAngle(myData.myAngle);
 	const float buffer_size = m_ShadowSpotlight->GetBufferSize();
-	m_ShadowSpotlight->GetCamera()->RecalculatePerspective(buffer_size, buffer_size, 0.1f, myData.myRange);
+	//m_ShadowSpotlight->GetCamera()->RecalculatePerspective(buffer_size, buffer_size, 0.1f, myData.myRange);
 }
 
 const SpotlightData& SpotLight::GetData() const
@@ -45,6 +47,7 @@ void SpotLight::SetPosition(const CU::Vector3f& aPosition)
 	m_Model->GetOrientation().SetPosition(aPosition);
 	myData.myLightPosition = aPosition;
 	myData.myOrientation.SetPosition(aPosition);
+	m_ShadowSpotlight->GetCamera()->SetPosition(aPosition);
 }
 
 void SpotLight::SetDirection(const CU::Vector4f& aDirection)
@@ -53,5 +56,5 @@ void SpotLight::SetDirection(const CU::Vector4f& aDirection)
 	myData.myDirection.y = aDirection.y;
 	myData.myDirection.z = aDirection.z;
 	m_Model->GetOrientation().SetForward(aDirection);
-	m_ShadowSpotlight->SetOrientation(m_Model->GetOrientation());
+	//m_ShadowSpotlight->GetCamera()->SetAt(aDirection);
 }

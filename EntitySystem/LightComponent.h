@@ -4,13 +4,14 @@
 #include "Math/Vector/Vector.h"
 #include "Math/Matrix/Matrix.h"
 
+
 enum class eLightType
 {
 	ePOINTLIGHT,
 	eSPOTLIGHT,
 };
 
-struct SLightComponent : public BaseComponent
+struct LightComponent : public BaseComponent
 {
 
 	eLightType myType;
@@ -25,5 +26,5 @@ struct SLightComponent : public BaseComponent
 	float range = 0.f;
 	CU::Vector3f direction;
 	CU::Matrix44f orientation;
-
-} typedef LightComponent;
+	int m_LightID = 0;
+};

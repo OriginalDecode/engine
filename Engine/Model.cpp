@@ -45,6 +45,10 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 		child->Render(aCameraOrientation, aCameraProjection, render_context);
 	}
 
+	if ( !m_VertexLayout )
+		return;
+
+
 	if (m_IsRoot)
 		return;
 
@@ -81,11 +85,13 @@ void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matr
 	if (m_IsRoot)
 		return;
 
+	if ( !m_VertexLayout )
+		return;
+
 	if (mySurfaces.Empty())
 		return;
 
 	SetupLayoutsAndBuffers();
-
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 
@@ -181,6 +187,7 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const 
 {
 	if ( m_IsRoot )
 		return;
+
 	if (!myConstantBuffer)
 	{
 		InitConstantBuffer();

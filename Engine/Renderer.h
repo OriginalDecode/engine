@@ -52,10 +52,6 @@ private:
 	void RenderParticles();
 	void RenderLines();
 
-	//Only works for the spotlight
-	void ProcessShadows();
-	void ProcessShadows(Camera* camera);
-
 	CU::GrowingArray<CTerrain*> myTerrainArray;
 
 	bool				m_ProcessShadows = false;

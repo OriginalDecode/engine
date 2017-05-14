@@ -159,15 +159,6 @@ void Renderer::Render()
 		m_Direction,
 		m_RenderContext);
 
-
-	//{
-	//	CU::Vector3f target_position(512, 512.f, 512.f);
-	//	m_DirectionalCamera->RotateAroundPoint(target_position);
-
-	//	m_Direction = target_position - m_DirectionalCamera->GetPosition();
-	//	CU::Math::Normalize(m_Direction);
-	//}
-
 	RenderPointlight();
 	RenderSpotlight();
 
@@ -194,21 +185,9 @@ void Renderer::Render()
 	RenderLines();
 	Render2DCommands();
 
-	//m_ShadowPass.ProcessShadows(m_DirectionalCamera, m_RenderContext); //Directional Light Shadow 
-
 	ImGui::Render();
 
 	m_Engine->Present();
-
-//#ifdef _DEBUG
-//	SLinePoint points[2];
-//	points[0].position = CU::Vector4f(m_DirectionalCamera->GetPosition());
-//	points[0].color = CU::Vector4f(255.f, 0.f, 0.f, 255.f);
-//	points[1].position = CU::Vector4f(512.f, 0.f, 512.f, 1.f);
-//	points[1].color = CU::Vector4f(255.f, 0.f, 0.f, 255.f);
-//
-//	mySynchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[0], points[1]));
-//#endif
 
 	mySynchronizer->WaitForLogic();
 	mySynchronizer->SwapBuffer();
@@ -300,13 +279,13 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
 
-	//for ( CTerrain* terrain : myTerrainArray )
-	//{
-	//	if ( !terrain->HasLoaded() )
-	//		continue;
+	for ( CTerrain* terrain : myTerrainArray )
+	{
+		if ( !terrain->HasLoaded() )
+			continue;
 
-	//	terrain->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
-	//}
+		terrain->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
+	}
 
 	for ( const RenderCommand& command : commands )
 	{
@@ -481,67 +460,6 @@ void Renderer::RenderLines()
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
-//
-//void Renderer::ProcessShadows()
-//{
-//	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-//	m_ProcessShadows = true;
-//
-//	Camera* camera = m_Camera;
-//	m_Camera = m_Shadowlight->GetCamera();
-//	m_Shadowlight->SetViewport();
-//
-//	m_Shadowlight->ClearTexture();
-//	m_Shadowlight->SetTargets();
-//	//m_Shadowlight->ToggleShader(m_ProcessShadows);
-//	Render3DCommands();
-//	//RenderParticles();
-//
-//	m_Engine->ResetRenderTargetAndDepth();
-//	m_API->ResetViewport();
-//
-//	myPrevShadowFrame = m_Camera->GetOrientation();
-//	m_Camera = camera;
-//
-//	m_ProcessShadows = false;
-//	//m_Shadowlight->ToggleShader(m_ProcessShadows);
-//}
-//
-//void Renderer::ProcessShadows(Camera* camera)
-//{
-//
-//	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-//	IDevContext* ctx = m_API->GetContext();
-//	Camera* old_camera = m_Camera;
-//	m_Camera = camera;
-//	m_Shadowlight->SetViewport();
-//
-//	float clear[4] = { 0.f, 0.f, 0.f, 0.f };
-//	ctx->ClearRenderTargetView(m_ShadowDepth->GetRenderTargetView(), clear);
-//	ctx->ClearDepthStencilView(m_ShadowDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-//
-//	ctx->OMSetRenderTargets(1, m_ShadowDepth->GetRenderTargetRef(), m_ShadowDepthStencil->GetDepthView());
-//
-//	m_API->SetVertexShader(m_ShadowEffect->GetVertexShader()->m_Shader);
-//	m_API->SetPixelShader(m_ShadowEffect->GetPixelShader()->m_Shader);
-//
-//	m_ShadowEffect->Activate();
-//
-//	m_ProcessDirectionalShadows = true;
-//	Render3DCommands();
-//	//RenderParticles();
-//	m_ProcessDirectionalShadows = false;
-//
-//	m_Engine->ResetRenderTargetAndDepth();
-//	m_API->ResetViewport();
-//
-//	m_DirectionalFrame = m_Camera->GetOrientation();
-//	m_Camera = old_camera;
-//
-//	m_ShadowEffect->Deactivate();
-//
-//	myDeferredRenderer->SetBuffers();
-//}
 
 PostProcessManager& Renderer::GetPostprocessManager()
 {

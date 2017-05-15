@@ -2,6 +2,21 @@
 #include "LightModel.h"
 
 
+LightModel::~LightModel()
+{
+	mySurfaces.DeleteAll();
+	for (LightModel* children : myChildren)
+	{
+		children->CleanUp();
+	}
+	myChildren.DeleteAll();
+
+	SAFE_RELEASE(myConstantBuffer);
+	DL_ASSERT_EXP(!myConstantBuffer, "Failed to release constant buffer!");
+
+	SAFE_RELEASE(m_VertexLayout);
+}
+
 void LightModel::Initiate(const std::string& filename)
 {
 	m_Filename = CL::substr(filename, "/", false, 0);
@@ -20,6 +35,7 @@ void LightModel::Initiate(const std::string& filename)
 
 void LightModel::CleanUp()
 {
+
 }
 
 void LightModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)

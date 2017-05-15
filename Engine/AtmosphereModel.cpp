@@ -2,6 +2,21 @@
 #include "AtmosphereModel.h"
 
 
+AtmosphereModel::~AtmosphereModel()
+{
+	mySurfaces.DeleteAll();
+	for (AtmosphereModel* children : myChildren)
+	{
+		children->CleanUp();
+	}
+	myChildren.DeleteAll();
+
+	SAFE_RELEASE(myConstantBuffer);
+	DL_ASSERT_EXP(!myConstantBuffer, "Failed to release constant buffer!");
+
+	SAFE_RELEASE(m_VertexLayout);
+}
+
 void AtmosphereModel::Initiate(const std::string& filename)
 {
 	m_Filename = CL::substr(filename, "/", false, 0);
@@ -21,17 +36,7 @@ void AtmosphereModel::Initiate(const std::string& filename)
 
 void AtmosphereModel::CleanUp()
 {
-	mySurfaces.DeleteAll();
-	for ( AtmosphereModel* children : myChildren )
-	{
-		children->CleanUp();
-	}
-	myChildren.DeleteAll();
-
-	SAFE_RELEASE(myConstantBuffer);
-	DL_ASSERT_EXP(!myConstantBuffer, "Failed to release constant buffer!");
-
-	SAFE_RELEASE(m_VertexLayout);
+		
 }
 
 void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)

@@ -47,7 +47,10 @@ private:
 
 	Texture* m_Depth		= nullptr;
 	Texture* m_DepthStencil = nullptr;
+
+#ifdef _DEBUG
 	Texture* m_Holder		= nullptr;
+#endif
 
 	float m_BufferSize		= 0.f;
 	CU::Vector3f m_Position;

@@ -279,14 +279,14 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
 
-	for ( CTerrain* terrain : myTerrainArray )
+	/*for ( CTerrain* terrain : myTerrainArray )
 	{
 		if ( !terrain->HasLoaded() )
 			continue;
 
 		terrain->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
 	}
-
+*/
 	for ( const RenderCommand& command : commands )
 	{
 		Model* model = m_Engine->GetModel(command.m_KeyOrText);

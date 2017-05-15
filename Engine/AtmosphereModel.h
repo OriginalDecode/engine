@@ -8,6 +8,7 @@ class AtmosphereModel : public Model
 	friend class CModelImporter;
 public:
 	AtmosphereModel() = default;
+	~AtmosphereModel();
 	void Initiate(const std::string& filename) override;
 	void CleanUp();
 

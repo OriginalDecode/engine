@@ -35,7 +35,7 @@ public:
 		AO,
 		DEPTH,
 		SHADOWMAP,
-		CUBE,
+		CUBEMAP,
 		_COUNT
 	};
 

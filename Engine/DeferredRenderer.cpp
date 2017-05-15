@@ -39,7 +39,7 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 	myAmbientPassShader->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
 	myAmbientPassShader->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
 	myAmbientPassShader->AddShaderResource(m_GBuffer.GetEmissive(), Effect::EMISSIVE);
-	myAmbientPassShader->AddShaderResource(myCubeMap, Effect::CUBE);
+	myAmbientPassShader->AddShaderResource(myCubeMap, Effect::CUBEMAP);
 
 	CreateFullscreenQuad();
 	InitConstantBuffer();

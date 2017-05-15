@@ -22,23 +22,24 @@ bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f&
 	m_Depth->Initiate(m_BufferSize, m_BufferSize,
 		DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 		, DXGI_FORMAT_R16G16B16A16_FLOAT
-		, "Shadowlight : Depth ");
+		, "ShadowSpotlight : Depth ");
 
+#ifdef _DEBUG
 	m_Holder = new Texture;
 	m_Holder->Initiate(m_BufferSize, m_BufferSize
 		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
 		, DXGI_FORMAT_R32_TYPELESS
 		, DXGI_FORMAT_R32_FLOAT
 		, DXGI_FORMAT_D32_FLOAT
-		, "Shadowlight : DepthStencil ");
-
+		, "ShadowSpotlight : DepthStencil ");
+#endif
 	m_DepthStencil = new Texture;
 	m_DepthStencil->Initiate(m_BufferSize, m_BufferSize
 		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
 		, DXGI_FORMAT_R32_TYPELESS
 		, DXGI_FORMAT_R32_FLOAT
 		, DXGI_FORMAT_D32_FLOAT
-		, "Shadowlight : DepthStencil ");
+		, "ShadowSpotlight : DepthStencil ");
 
 	return true;
 }
@@ -51,23 +52,18 @@ void ShadowSpotlight::Initiate(float buffer_size)
 bool ShadowSpotlight::CleanUp()
 {
 	SAFE_DELETE(m_Viewport);
-	if (m_Viewport)
-		return false;
-
 	SAFE_DELETE(m_Camera);
-	if (m_Camera)
-		return false;
 
 	m_Depth->CleanUp();
 	SAFE_DELETE(m_Depth);
-	if (m_Depth)
-		return false;
 
 	m_DepthStencil->CleanUp();
 	SAFE_DELETE(m_DepthStencil);
-	if (m_DepthStencil)
-		return false;
 
+#ifdef _DEBUG
+	m_Holder->CleanUp();
+	SAFE_DELETE(m_Holder);
+#endif
 	return true;
 }
 
@@ -111,6 +107,8 @@ const CU::Matrix44f& ShadowSpotlight::GetMVP()
 
 void ShadowSpotlight::Copy()
 {
+#ifdef _DEBUG
 	Texture::CopyData(m_Holder->GetTexture(), m_DepthStencil->GetDepthTexture());
+#endif
 }
 

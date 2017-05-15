@@ -145,10 +145,6 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	}
 
-
-
-	
-
 	//if ( RegisterRawInputDevices(rid, 1, sizeof(rid[0])) == FALSE )
 	//{
 	//	DL_MESSAGE("Failed to Register input device!");

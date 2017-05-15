@@ -41,6 +41,7 @@ public:
 
 	void Render3DShadows(const CU::Matrix44f& orientation, Camera* camera);
 
+	int RegisterLight();
 private:
 	void RenderNonDeferred3DCommands();
 	void Render3DCommands();
@@ -65,7 +66,7 @@ private:
 	CU::Vector3f		m_OriginalDirection;
 	CU::Matrix33f		m_Orientation;
 
-	SpotLight* m_Spotlights[2];
+	CU::GrowingArray<SpotLight*> m_Spotlights;
 
 	PostProcessManager	m_PostProcessManager;
 	LightPass			m_LightPass;

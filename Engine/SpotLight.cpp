@@ -17,8 +17,10 @@ void SpotLight::Initiate()
 
 void SpotLight::CleanUp()
 {
+	m_Model = nullptr;
 	m_ShadowSpotlight->CleanUp();
 	SAFE_DELETE(m_ShadowSpotlight);
+	
 }
 
 void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera, const RenderContext& render_context)

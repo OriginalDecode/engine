@@ -4,10 +4,10 @@
 
 PointLight::PointLight()
 {
-	m_Model = new LightModel;
+	/*m_Model = new LightModel;
 	Engine::GetInstance()->LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", m_Model, false);
 	m_Model->Initiate("sphere.fbx");
-	//m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx");
+	*///m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx");
 }
 
 void PointLight::SetPosition(const CU::Vector3f& aPosition)

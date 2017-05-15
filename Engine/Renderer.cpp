@@ -43,8 +43,8 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 
 	myPointLight = new PointLight; //Where should this live?
-	mySpotlight = new SpotLight; // Where should this live?
-	mySpotlight->Initiate();
+	//mySpotlight = new SpotLight; // Where should this live?
+	//mySpotlight->Initiate();
 
 	myDeferredRenderer = new DeferredRenderer; // Where should this live?
 	if ( !myDeferredRenderer->Initiate(0) )
@@ -90,13 +90,6 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_DirectionalShadow.Initiate(2048.f);
 
-
-	m_Spotlights[0] = new SpotLight;
-	m_Spotlights[0]->Initiate();
-		
-	m_Spotlights[1] = new SpotLight;
-	m_Spotlights[1]->Initiate();
-
 	return true;
 }
 
@@ -106,12 +99,6 @@ bool Renderer::CleanUp()
 	m_ShadowPass.CleanUp();
 	m_DirectionalShadow.CleanUp();
 	m_PostProcessManager.CleanUp();
-
-	m_Spotlights[0]->CleanUp();
-	SAFE_DELETE(m_Spotlights[0]);
-
-	m_Spotlights[1]->CleanUp();
-	SAFE_DELETE(m_Spotlights[1]);
 
 	SAFE_DELETE(my3DLine);
 	SAFE_DELETE(mySprite);
@@ -127,12 +114,19 @@ bool Renderer::CleanUp()
 
 	SAFE_DELETE(myPointLight);
 
-	mySpotlight->CleanUp();
-	SAFE_DELETE(mySpotlight);
+	//mySpotlight->CleanUp();
+	//SAFE_DELETE(mySpotlight);
 
 	m_ParticleEmitter->CleanUp();
 	SAFE_DELETE(m_ParticleEmitter);
 
+
+	for (SpotLight* s : m_Spotlights)
+	{
+		s->CleanUp();
+		SAFE_DELETE(s);
+	}
+	
 	m_Atmosphere.CleanUp();
 
 	return true;
@@ -293,6 +287,14 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 		model->SetOrientation(command.m_Orientation);
 		model->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
 	}
+}
+
+int Renderer::RegisterLight()
+{
+	SpotLight* s = new SpotLight;
+	s->Initiate();
+	m_Spotlights.Add(s);
+	return (m_Spotlights.Size() - 1);
 }
 
 void Renderer::Render2DCommands()

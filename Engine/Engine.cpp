@@ -190,10 +190,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();
 
-	//LightModel* light_model = new LightModel;
-	//LoadModel("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", light_model, false);
-	//LoadModel("Data/Model/lightMeshes/sphere.fbx", "Shaders/T_Deferred_Lightmesh.json", false);
-
 	return true;
 }
 
@@ -208,8 +204,6 @@ bool Engine::CleanUp()
 		return false;
 
 	m_Threadpool.CleanUp();
-	SAFE_DELETE(myAssetsContainer);
-	SAFE_DELETE(mySynchronizer);
 
 	m_TerrainManager->CleanUp();
 	SAFE_DELETE(m_TerrainManager);
@@ -223,9 +217,11 @@ bool Engine::CleanUp()
 
 	SAFE_DELETE(m_PhysicsManager);
 
+	SAFE_DELETE(m_LevelFactory);
+	SAFE_DELETE(myAssetsContainer);
+	SAFE_DELETE(mySynchronizer);
 	DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
 	SAFE_DELETE(myAPI);
-	SAFE_DELETE(m_LevelFactory);
 	PostMaster::Destroy();
 	Randomizer::Destroy();
 	m_States[( u16 ) eEngineStates::INITIATED] = FALSE;
@@ -266,6 +262,11 @@ void Engine::UpdateInput()
 {
 	if (!m_PauseInput)
 		m_InputHandle->Update(m_DeltaTime);
+}
+
+int Engine::RegisterLight()
+{
+	return myRenderer->RegisterLight();
 }
 
 IGraphicsAPI* Engine::GetGraphicsAPI()

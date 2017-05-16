@@ -9,7 +9,7 @@ void SpotLight::Initiate()
 	std::string key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", 0, false);
 	m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
 
-	m_Model->Initiate("cone.fbx");
+	//m_Model->Initiate("cone.fbx");
 	m_ShadowSpotlight = new ShadowSpotlight;
 	m_ShadowSpotlight->Initiate(2048.f);
 	m_ShadowSpotlight->GetCamera()->RotateAroundX(CL::DegreeToRad(90.f));

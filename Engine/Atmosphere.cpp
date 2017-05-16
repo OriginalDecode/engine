@@ -30,10 +30,6 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 	//m_OuterSphere = new AtmosphereModel;
 	std::string atmosphere = m_Engine->LoadModel(vfs.GetFile("Models/atmosphere.fbx"), "Shaders/T_Skysphere.json", m_OuterSphere, false);
 	m_OuterSphere = static_cast<AtmosphereModel*>(Engine::GetInstance()->GetModel(atmosphere));
-	m_OuterSphere->Initiate("Models/atmosphere.fbx");
-	//m_InnerSphere = m_Engine->GetModel(atmosphere);
-	//m_InnerSphere->SetIsSkysphere(true);
-	//m_OuterSphere->SetIsSkysphere(true);
 
 	m_VertexStruct.m_InnerRadius = m_InnerRadius;
 	m_VertexStruct.m_OuterRadius = m_OuterRadius;

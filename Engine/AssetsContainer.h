@@ -87,11 +87,13 @@ std::string AssetsContainer::LoadModel(std::string filepath, std::string effect_
 	{
 		m_Engine->GetThreadpool().AddWork(Work([=]() {
 			m_ModelLoader->LoadModel(model, filepath, effect_filepath);
+			model->Initiate(filepath);
 		}));
 	}
 	else
 	{
 		m_ModelLoader->LoadModel(model, filepath, effect_filepath);
+		model->Initiate(filepath);
 	}
 
 	return filepath;

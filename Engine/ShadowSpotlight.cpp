@@ -92,7 +92,7 @@ void ShadowSpotlight::SetOrientation(const CU::Matrix44f& orientation)
 
 void ShadowSpotlight::SetAngle(float angle)
 {
-	//m_Camera->SetFOV(angle);
+	m_Camera->SetFOV(angle);
 }
 
 const CU::Matrix44f& ShadowSpotlight::GetOrientation()

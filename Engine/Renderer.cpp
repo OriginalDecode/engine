@@ -38,7 +38,8 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_Camera = camera;
 
 	WindowSize window_size;
-	window_size = Engine::GetInstance()->GetWindowSize();
+	window_size.m_Height = m_API->GetInfo().m_WindowHeight;
+	window_size.m_Width = m_API->GetInfo().m_WindowWidth;
 
 	myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 
@@ -113,9 +114,6 @@ bool Renderer::CleanUp()
 	SAFE_DELETE(myText);
 
 	SAFE_DELETE(myPointLight);
-
-	//mySpotlight->CleanUp();
-	//SAFE_DELETE(mySpotlight);
 
 	m_ParticleEmitter->CleanUp();
 	SAFE_DELETE(m_ParticleEmitter);
@@ -272,15 +270,6 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
-
-	/*for ( CTerrain* terrain : myTerrainArray )
-	{
-		if ( !terrain->HasLoaded() )
-			continue;
-
-		terrain->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
-	}
-*/
 	for ( const RenderCommand& command : commands )
 	{
 		Model* model = m_Engine->GetModel(command.m_KeyOrText);

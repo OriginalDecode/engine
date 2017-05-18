@@ -97,12 +97,6 @@ private:
 
 	CEmitterInstance*	m_ParticleEmitter		= nullptr;
 
-	//ShadowSpotlight*	m_Shadowlight			= nullptr;
-	//Camera*				m_DirectionalCamera		= nullptr;
-	//Effect*				m_ShadowEffect			= nullptr;
-	//Texture*			m_ShadowDepth			= nullptr;
-	//Texture*			m_ShadowDepthStencil	= nullptr;
-
 	ShadowDirectional	m_DirectionalShadow;
 
 };

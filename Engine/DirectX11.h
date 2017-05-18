@@ -81,6 +81,8 @@ public:
 	//__________________________
 	// DirectX Functions
 
+	const CreateInfo& GetInfo() const { return m_CreateInfo; }
+
 	IDevice* GetDevice() override;
 	ID3D11DeviceContext* GetContext();
 

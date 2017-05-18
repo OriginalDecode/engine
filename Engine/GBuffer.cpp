@@ -3,7 +3,7 @@
 
 void GBuffer::Initiate()
 {
-	const WindowSize windowSize = Engine::GetInstance()->GetWindowSize();
+	const WindowSize windowSize = Engine::GetInstance()->GetInnerSize();
 
 	myAlbedo = new Texture;
 	myAlbedo->Initiate(windowSize.m_Width, windowSize.m_Height

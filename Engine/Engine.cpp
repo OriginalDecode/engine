@@ -134,8 +134,8 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	CreateInfo create_info;
 	create_info.m_HWND = myHWND;
 	create_info.m_Instance = instance_handle;
-	create_info.m_WindowWidth = window_width;
-	create_info.m_WindowHeight = window_height;
+	create_info.m_WindowWidth = m_Window.GetInnerSize().m_Width;
+	create_info.m_WindowHeight = m_Window.GetInnerSize().m_Height;
 	create_info.m_APIName = api_name;
 
 	DL_ASSERT_EXP(myAPI->Initiate(create_info), "Engine : Failed to initiate graphicsAPI");

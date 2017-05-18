@@ -345,28 +345,10 @@ namespace CommonUtilities
 		template<typename TYPE>
 		Matrix44<TYPE> Inverse(const Matrix44<TYPE>& aMatrix)
 		{
-			/*Vector4<TYPE> theTranslation;
+			Matrix44<TYPE> inverse(aMatrix);
 
-			theTranslation = aMatrix.GetTranslation();
-			theTranslation.x *= -1;
-			theTranslation.y *= -1;
-			theTranslation.z *= -1;
-			theTranslation.w = 1;
-
-			Matrix44<TYPE> theMatrix(aMatrix);
-
-			theMatrix.SetTranslation(0.0f, 0.0f, 0.0f, 1.0f);
-			theMatrix = Transpose(theMatrix);
-
-			theTranslation = theTranslation*theMatrix;
-			theMatrix.SetTranslation(theTranslation.x, theTranslation.y, theTranslation.z, theTranslation.w);
-
-			return theMatrix;*/
-
-			Matrix44<float> inverse(aMatrix);
-
-			Vector4<float> translation = inverse.GetTranslation();
-			inverse.SetPosition(Vector4<float>(0, 0, 0, 1.f));
+			Vector4<TYPE> translation = inverse.GetTranslation();
+			inverse.SetPosition(Vector4<TYPE>(0, 0, 0, 1.f));
 			translation *= -1.f;
 			translation.w = 1.f;
 			inverse = Transpose(inverse);
@@ -472,38 +454,7 @@ namespace CommonUtilities
 		template<typename TYPE>
 		const Matrix44<TYPE> operator*=(Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
 		{
-			/*Vector4<TYPE> myFirstRow(aFirstMatrix.myMatrix[0], aFirstMatrix.myMatrix[1], aFirstMatrix.myMatrix[2], aFirstMatrix.myMatrix[3]);
-			Vector4<TYPE> mySecondRow(aFirstMatrix.myMatrix[4], aFirstMatrix.myMatrix[5], aFirstMatrix.myMatrix[6], aFirstMatrix.myMatrix[7]);
-			Vector4<TYPE> myThirdRow(aFirstMatrix.myMatrix[8], aFirstMatrix.myMatrix[9], aFirstMatrix.myMatrix[10], aFirstMatrix.myMatrix[11]);
-			Vector4<TYPE> myFourthRow(aFirstMatrix.myMatrix[12], aFirstMatrix.myMatrix[13], aFirstMatrix.myMatrix[14], aFirstMatrix.myMatrix[15]);
-
-			Vector4<TYPE> myFirstCollumn(aSecondMatrix.myMatrix[0], aSecondMatrix.myMatrix[4], aSecondMatrix.myMatrix[8], aSecondMatrix.myMatrix[12]);
-			Vector4<TYPE> mySecondCollumn(aSecondMatrix.myMatrix[1], aSecondMatrix.myMatrix[5], aSecondMatrix.myMatrix[9], aSecondMatrix.myMatrix[13]);
-			Vector4<TYPE> myThirdCollumn(aSecondMatrix.myMatrix[2], aSecondMatrix.myMatrix[6], aSecondMatrix.myMatrix[10], aSecondMatrix.myMatrix[14]);
-			Vector4<TYPE> myFourthCollumn(aSecondMatrix.myMatrix[3], aSecondMatrix.myMatrix[7], aSecondMatrix.myMatrix[11], aSecondMatrix.myMatrix[15]);
-
-			aFirstMatrix.myMatrix[0] = Dot(myFirstRow, myFirstCollumn);
-			aFirstMatrix.myMatrix[1] = Dot(myFirstRow, mySecondCollumn);
-			aFirstMatrix.myMatrix[2] = Dot(myFirstRow, myThirdCollumn);
-			aFirstMatrix.myMatrix[3] = Dot(myFirstRow, myFourthCollumn);
-
-			aFirstMatrix.myMatrix[4] = Dot(mySecondRow, myFirstCollumn);
-			aFirstMatrix.myMatrix[5] = Dot(mySecondRow, mySecondCollumn);
-			aFirstMatrix.myMatrix[6] = Dot(mySecondRow, myThirdCollumn);
-			aFirstMatrix.myMatrix[7] = Dot(mySecondRow, myFourthCollumn);
-
-			aFirstMatrix.myMatrix[8] = Dot(myThirdRow, myFirstCollumn);
-			aFirstMatrix.myMatrix[9] = Dot(myThirdRow, mySecondCollumn);
-			aFirstMatrix.myMatrix[10] = Dot(myThirdRow, myThirdCollumn);
-			aFirstMatrix.myMatrix[11] = Dot(myThirdRow, myFourthCollumn);
-
-			aFirstMatrix.myMatrix[12] = Dot(myFourthRow, myFirstCollumn);
-			aFirstMatrix.myMatrix[13] = Dot(myFourthRow, mySecondCollumn);
-			aFirstMatrix.myMatrix[14] = Dot(myFourthRow, myThirdCollumn);
-			aFirstMatrix.myMatrix[15] = Dot(myFourthRow, myFourthCollumn);
-
-			return aFirstMatrix;*/
-
+		
 			Matrix44<TYPE> originalFirst(aFirstMatrix);
 
 			aFirstMatrix.myMatrix[0] =

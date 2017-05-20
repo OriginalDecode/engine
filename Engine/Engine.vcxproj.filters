@@ -360,13 +360,24 @@
     <ClInclude Include="Frustum.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Atmosphere.h" />
-    <ClInclude Include="AtmosphereConstants.h" />
-    <ClInclude Include="Quad.h" />
-    <ClInclude Include="LightModel.h" />
-    <ClInclude Include="AtmosphereModel.h" />
-    <ClInclude Include="Shadow_Directional.h" />
-    <ClInclude Include="Materials.h" />
+    <ClInclude Include="Shadow_Directional.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Atmosphere.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="AtmosphereConstants.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="AtmosphereModel.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="LightModel.h">
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Quad.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -582,11 +593,20 @@
     <ClCompile Include="Frustum.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Atmosphere.cpp" />
-    <ClCompile Include="Quad.cpp" />
-    <ClCompile Include="LightModel.cpp" />
-    <ClCompile Include="AtmosphereModel.cpp" />
-    <ClCompile Include="Shadow_Directional.cpp" />
-    <ClCompile Include="Materials.cpp" />
+    <ClCompile Include="Shadow_Directional.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Atmosphere.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="AtmosphereModel.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="LightModel.cpp">
+      <Filter>Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Quad.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

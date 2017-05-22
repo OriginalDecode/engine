@@ -2,13 +2,15 @@
 #include "Synchronizer.h"
 #include <thread>
 
+#define REGISTER_COMMAND_BUFFER(objBuffer, objType, objCount)\
+myCommandBuffers[(u32)objBuffer][0] = MemoryBlock(objCount, sizeof(objType)); \
+myCommandBuffers[(u32)objBuffer][1] = MemoryBlock(objCount, sizeof(objType));
+
+
 bool Synchronizer::Initiate()
 {
-	for (s32 i = 0; i < (s32)eCommandBuffer::_COUNT; i++)
-	{
-		myCommandBuffers[i][0].Init(0xffff);
-		myCommandBuffers[i][1].Init(0xffff);
-	}
+	REGISTER_COMMAND_BUFFER(eCommandBuffer::e3D, ModelCommand, 0x80000);
+	REGISTER_COMMAND_BUFFER(eCommandBuffer::eSpotlight, SpotlightCommand, 0x80000);
 
 	m_CurrentBuffer = 0;
 	myLogicIsDone = false;
@@ -22,18 +24,9 @@ void Synchronizer::SwapBuffer()
 {
 	for (CommandBuffer& buffer : myCommandBuffers)
 	{
-		buffer[m_CurrentBuffer].RemoveAll();
+		buffer[m_CurrentBuffer].Clear();
 	}
 	m_CurrentBuffer ^= 1;
-}
-
-void Synchronizer::Clear()
-{
-	for (CommandBuffer& buffer : myCommandBuffers)
-	{
-		buffer[m_CurrentBuffer].RemoveAll();
-		buffer[m_CurrentBuffer ^ 1].RemoveAll();
-	}
 }
 
 void Synchronizer::Quit()
@@ -73,12 +66,11 @@ void Synchronizer::LogicIsDone()
 
 void Synchronizer::AddRenderCommand(const RenderCommand& aRenderCommand)
 {
+	return;
 	CommandBuffer& buffer = myCommandBuffers[u32(aRenderCommand.myCommandType)];
-	buffer[m_CurrentBuffer ^ 1].Add(aRenderCommand);
-
 }
 
-const CU::GrowingArray<RenderCommand>& Synchronizer::GetRenderCommands(const eCommandBuffer& commandType) const
+const MemoryBlock& Synchronizer::GetRenderCommands(const eCommandBuffer& buffer_type) const
 {
-	return myCommandBuffers[u32(commandType)][m_CurrentBuffer];
+	return myCommandBuffers[( u32 ) buffer_type][m_CurrentBuffer];
 }

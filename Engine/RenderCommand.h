@@ -3,8 +3,90 @@
 #include <Math/Vector/Vector.h>
 #include "Line3D.h"
 #include "RenderCommand_Shared.h"
+#include "LightStructs.h"
 
 typedef struct ID3D11ShaderResourceView IShaderResourceView;
+
+struct RenderCommand2
+{
+	enum eCommandType
+	{
+		NONE = -1,
+		MODEL,
+		SPOTLIGHT,
+		POINTLIGHT,
+		NOF_TYPES
+	};
+	
+	RenderCommand2(eCommandType command_type)
+		: m_CommandType(command_type)
+	{
+	}
+
+	eCommandType m_CommandType = NONE;
+};
+
+struct ModelCommand : public RenderCommand2
+{
+	ModelCommand(const std::string& key, const CU::Matrix44f& orientation, bool wireframe)
+		: RenderCommand2(eCommandType::MODEL)
+		, m_Orientation(orientation)
+		, m_Wireframe(wireframe)
+	{
+		strcpy_s(m_Key, key.c_str());
+	}
+	
+	char m_Key[128] = { '\0' };
+	CU::Matrix44f m_Orientation;
+	bool m_Wireframe = false;
+
+};
+
+struct SpotlightCommand : public RenderCommand2
+{
+	SpotlightCommand(s32 light_id, float angle, float range, float intensity, const CU::Vector4f& color, const CU::Matrix44f& orientation, bool shadow_casting)
+		: RenderCommand2(eCommandType::SPOTLIGHT)
+		, m_LightID(light_id)
+		, m_Angle(angle)
+		, m_Range(range)
+		, m_Intensity(intensity)
+		, m_Color(color)
+		, m_Orientation(orientation)
+		, m_ShadowCasting(shadow_casting)
+	{
+	}
+
+	float m_Angle = 0.f;
+	float m_Range = 0.f;
+	float m_Intensity = 0.f;
+	CU::Vector4f m_Color;
+	CU::Matrix44f m_Orientation;
+	s32 m_LightID = 0;
+	bool m_ShadowCasting = false;
+};
+
+struct PointlightCommand : public RenderCommand2
+{
+	PointlightCommand(s32 light_id, float range, float intensity, const CU::Vector4f& color, const CU::Matrix44f& orientation)
+		: RenderCommand2(eCommandType::POINTLIGHT)
+		, m_LightID(light_id)
+		, m_Range(range)
+		, m_Intensity(intensity)
+		, m_Color(color)
+		, m_Orientation(orientation)
+	{
+	}
+
+	float m_Range = 0.f;
+	float m_Intensity = 0.f;
+	CU::Vector4f m_Color;
+	CU::Matrix44f m_Orientation;
+	s32 m_LightID = 0;
+};
+
+
+
+
 
 enum class eType
 {
@@ -21,6 +103,8 @@ enum class eType
 	TERRAIN,
 	WIREFRAME,
 };
+
+
 
 class Model;
 

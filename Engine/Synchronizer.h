@@ -2,12 +2,76 @@
 #include <DataStructures/StaticArray.h>
 #include <DataStructures/GrowingArray.h>
 #include "RenderCommand.h"
-#include <standard_datatype.hpp>
 #include "snowblind_shared.h"
-typedef CU::StaticArray<CU::GrowingArray<RenderCommand>, 2> CommandBuffer;
-typedef CU::StaticArray<CommandBuffer, static_cast<u32>(eCommandBuffer::_COUNT)> CommandBuffers;
+
+class MemoryBlock
+{
+public:
+	MemoryBlock() = default;
+	MemoryBlock(s32 size_in_bytes, s32 alignment)
+		: m_Alignment(alignment)
+		, m_Size(size_in_bytes)
+	{
+		m_Start = malloc(size_in_bytes);
+		m_CurrentPos = m_Start;
+	}
+
+	~MemoryBlock()
+	{
+		free(m_Start);
+		m_Start = nullptr;
+		m_CurrentPos = nullptr;
+	}
 
 
+	void* GetCurrentPos() { return m_CurrentPos; }
+	void* GetStart() { return m_Start; }
+
+	void* operator[](s32 index)
+	{
+		return ( void* ) ( ( u64 ) m_Start + ( m_Alignment * index ) );
+	}
+
+	void* operator[](s32 index) const
+	{
+		return ( void* ) ( ( u64 ) m_Start + ( m_Alignment * index ) );
+	}
+
+	void Add()
+	{
+		m_CurrentPos = ( void* ) ( ( u64 ) m_CurrentPos + m_Alignment );
+		m_CurrentSize++;
+	}
+
+	void Clear()
+	{
+		m_CurrentPos = m_Start;
+		m_CurrentSize = 0;
+	}
+
+	s32 Size() const { return m_CurrentSize; }
+
+
+	typedef void* iterator;
+	typedef const void* const_iterator;
+
+	iterator begin() { return m_Start; }
+	const_iterator begin() const { return m_Start; }
+
+	iterator end() { return ( void* ) ( ( u64 ) m_Start + m_CurrentSize ); }
+	const_iterator end() const { return ( void* ) ( ( u64 ) m_Start + m_CurrentSize ); }
+
+private:
+	void* m_Start = nullptr;
+	void* m_CurrentPos = nullptr;
+	s32 m_Size = 0;
+	s32 m_CurrentSize = 0;
+	s32 m_Alignment = 0;
+
+};
+
+typedef CU::StaticArray<MemoryBlock, 2> CommandBuffer;
+typedef CU::StaticArray<CommandBuffer, static_cast< u32 >( eCommandBuffer::_COUNT )> CommandBuffers;
 
 class Synchronizer
 {
@@ -27,10 +91,17 @@ public:
 
 	void AddRenderCommand(const RenderCommand& aRenderCommand);
 
+	template<typename T>
+	void AddRenderCommand(T& command, eCommandBuffer buffer_type)
+	{
+		CommandBuffer& buffer = myCommandBuffers[( u32 ) buffer_type];
+		void* current = ( buffer[m_CurrentBuffer ^ 1].GetCurrentPos() );
+		memcpy(current, &command, sizeof(T));
+		buffer[m_CurrentBuffer ^ 1].Add();
+	}
 
-
-
-	const CU::GrowingArray<RenderCommand>& GetRenderCommands(const eCommandBuffer& commandType) const;
+	const MemoryBlock& GetRenderCommands(const eCommandBuffer& buffer_type) const;
+	//const CU::GrowingArray<RenderCommand>& GetRenderCommands(const eCommandBuffer& commandType) const;
 private:
 	CommandBuffers myCommandBuffers;
 	volatile bool myLogicIsDone;

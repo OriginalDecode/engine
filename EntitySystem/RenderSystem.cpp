@@ -80,12 +80,14 @@ void RenderSystem::Update(float /*dt*/)
 		CU::Matrix44f t = translation.myOrientation;
 		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
 
-		mySynchronizer->AddRenderCommand(RenderCommand(
-			eType::MODEL,
-			render.myModelID,
-			t,
-			render.scale,
-			render.m_RenderWireframe));
+		mySynchronizer->AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe), eCommandBuffer::e3D);
+
+		//mySynchronizer->AddRenderCommand(RenderCommand(
+		//	eType::MODEL,
+		//	render.myModelID,
+		//	t,
+		//	render.scale,
+		//	render.m_RenderWireframe));
 #ifdef _PROFILE
 		EASY_END_BLOCK;
 #endif

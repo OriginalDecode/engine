@@ -118,7 +118,7 @@ void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* 
 #ifdef _DEBUG
 	if (toggle_debug)
 	{
-		m_Engine->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::SPRITE, source, CU::Vector2f(x_width, y_height)));
+		//m_Engine->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::SPRITE, source, CU::Vector2f(x_width, y_height)));
 	}
 	y_height += 128.f;
 	if (y_height > 1080.f)

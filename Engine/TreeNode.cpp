@@ -237,6 +237,7 @@ void TreeNode::RenderBox()
 	points[7].position.y = m_CenterPosition.y + m_HalfWidth;
 
 
+	/*
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[0], points[1]));
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[0], points[2]));
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[0], points[6]));
@@ -255,7 +256,7 @@ void TreeNode::RenderBox()
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[2], points[3]));
 
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[6], points[7]));
-
+	*/
 }
 
 bool TreeNode::InsideNode(TreeDweller* dweller)

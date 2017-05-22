@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RenderCommand.h"
-#include <DataStructures/Hashmap/Hash.h>
+#include <DataStructures/Hashmap/Hash.h>/**
 RenderCommand::RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, float intensity, float range, bool shadow_casting)
 	: myType(aType)
 	, myPosition(position)
@@ -83,7 +83,7 @@ RenderCommand::RenderCommand(const eType& aType, const std::string& modelKey, co
 	m_Orientation.SetPosition(position);
 }
 
-RenderCommand::RenderCommand(const eType& type, const std::string& text, const CU::Vector4f& /*color*/, const CU::Vector2f& position)
+RenderCommand::RenderCommand(const eType& type, const std::string& text, const CU::Vector4f& /*color, const CU::Vector2f& position)
 	: myType(type)
 	, myPosition(position)
 	, m_KeyOrText(text)
@@ -91,3 +91,4 @@ RenderCommand::RenderCommand(const eType& type, const std::string& text, const C
 {
 }
 
+*/

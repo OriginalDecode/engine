@@ -340,7 +340,7 @@ void Renderer::RenderSpotlight()
 			ShadowSpotlight* shadow = light->GetShadowSpotlight();
 			m_ShadowPass.ProcessShadows(shadow, m_RenderContext);
 			shadow->Copy();
-			mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, shadow->GetHolder()->GetShaderView(), CU::Vector2f(1700, 180)));
+			//mySynchronizer->AddRenderCommand(RenderCommand(eType::SPRITE, shadow->GetHolder()->GetShaderView(), CU::Vector2f(1700, 180)));
 			shadow_mvp = shadow->GetMVP();
 			effect->AddShaderResource(shadow->GetDepthStencil(), Effect::SHADOWMAP);
 			myDeferredRenderer->SetRenderTarget(m_RenderContext);

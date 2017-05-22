@@ -35,7 +35,7 @@ DebugSystem::~DebugSystem()
 
 void DebugSystem::Update(float /*dt*/)
 {
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::TEXT, current_model, CU::Vector2f(0.75, 0)));
+	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::TEXT, current_model, CU::Vector2f(0.75, 0)));
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (Entity e : entities)
 	{
@@ -483,6 +483,7 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p8.position += orientation.GetForward() * component.m_WHD.z;
 
 
+	/*
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p3, p4));
@@ -495,7 +496,7 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p4));
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p2));
 	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));
-
+	*/
 
 
 

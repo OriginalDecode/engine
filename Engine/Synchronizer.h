@@ -71,7 +71,12 @@ private:
 };
 
 typedef CU::StaticArray<MemoryBlock, 2> CommandBuffer;
-typedef CU::StaticArray<CommandBuffer, static_cast< u32 >( eCommandBuffer::_COUNT )> CommandBuffers;
+typedef CU::StaticArray<CommandBuffer, (u32)eCommandBuffer::_COUNT> CommandBuffers;
+
+
+
+
+
 
 class Synchronizer
 {
@@ -89,11 +94,33 @@ public:
 
 	bool LogicHasFinished() { return myLogicIsDone; }
 
-	void AddRenderCommand(const RenderCommand& aRenderCommand);
+	//void AddRenderCommand(const RenderCommand& aRenderCommand);
+	bool ValidateBuffer(eCommandBuffer buffer_type, RenderCommand2::eCommandType command_type)
+	{
+		if ( command_type == RenderCommand2::MODEL )
+		{
+			if ( buffer_type == eCommandBuffer::e3D )
+				return true;
 
+			return false;
+		}
+
+		if ( command_type == RenderCommand2::SPOTLIGHT )
+		{
+			if ( buffer_type == eCommandBuffer::eSpotlight )
+				return true;
+			return false;
+		}
+
+		return false;
+	}
 	template<typename T>
 	void AddRenderCommand(T& command, eCommandBuffer buffer_type)
 	{
+		RenderCommand2& c = command;
+		const bool result = ValidateBuffer(buffer_type, c.m_CommandType);
+		DL_ASSERT_EXP(result, "Incorrect Buffer used for this CommandType");
+
 		CommandBuffer& buffer = myCommandBuffers[( u32 ) buffer_type];
 		void* current = ( buffer[m_CurrentBuffer ^ 1].GetCurrentPos() );
 		memcpy(current, &command, sizeof(T));

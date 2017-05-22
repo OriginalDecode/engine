@@ -64,11 +64,11 @@ void Synchronizer::LogicIsDone()
 	myLogicIsDone = true;
 }
 
-void Synchronizer::AddRenderCommand(const RenderCommand& aRenderCommand)
-{
-	return;
-	CommandBuffer& buffer = myCommandBuffers[u32(aRenderCommand.myCommandType)];
-}
+//void Synchronizer::AddRenderCommand(const RenderCommand& aRenderCommand)
+//{
+//	return;
+//	CommandBuffer& buffer = myCommandBuffers[u32(aRenderCommand.myCommandType)];
+//}
 
 const MemoryBlock& Synchronizer::GetRenderCommands(const eCommandBuffer& buffer_type) const
 {

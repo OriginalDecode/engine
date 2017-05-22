@@ -118,7 +118,7 @@ void Frustum::DrawFrustum()
 
 	Synchronizer* sync = Engine::GetInstance()->GetSynchronizer();
 
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
+	/*sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
 	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));
 	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p3, p4));
 	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p4, p1));
@@ -129,7 +129,7 @@ void Frustum::DrawFrustum()
 	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p5));
 	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p4));
 	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p2));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));
+	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));*/
 
 	p1.color = CU::Vector4f(0, 1, 1, 1);
 	p2.color = p1.color;
@@ -173,7 +173,7 @@ void Frustum::DrawFrustum()
 
 
 
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
+	/*sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
 	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));
 	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p3, p4));
 	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p4, p1));
@@ -184,7 +184,7 @@ void Frustum::DrawFrustum()
 	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p5));
 	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p4));
 	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p2));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));
+	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));*/
 
 }
 

@@ -127,18 +127,18 @@ void GizmoHandle::RenderBox()
 
 	Engine* engine = Engine::GetInstance();
 	Synchronizer* synch = engine->GetSynchronizer();
-	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p1, p2));
-	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p2, p3));
-	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p3, p4));
-	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p4, p1));
-	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p1, p5));
-	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p5, p6));
-	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p6, p8));
-	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p8, p7));
-	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p7, p5));
-	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p6, p4));
-	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p7, p2));
-	synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p8, p3));
+	//synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p1, p2));
+	//synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p2, p3));
+	//synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p3, p4));
+	//synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p4, p1));
+	//synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p1, p5));
+	//synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p5, p6));
+	//synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p6, p8));
+	//synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p8, p7));
+	//synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p7, p5));
+	//synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p6, p4));
+	//synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p7, p2));
+	//synch->AddRenderCommand(RenderCommand(eType::LINE_Z_DISABLE, p8, p3));
 }
 
 void GizmoHandle::Update()

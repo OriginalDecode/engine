@@ -287,30 +287,30 @@ int Renderer::RegisterLight()
 
 void Renderer::Render2DCommands()
 {
-	/*const CU::GrowingArray<RenderCommand>& commands2D = mySynchronizer->GetRenderCommands(eCommandBuffer::e2D);
+	const MemoryBlock& commands0 = mySynchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER);
+	//const CU::GrowingArray<RenderCommand>& commands2D = mySynchronizer->GetRenderCommands(eCommandBuffer::e2D);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
-	for ( const RenderCommand& command : commands2D )
+	for ( s32 i = 0; i < commands0.Size(); i++ )
 	{
-		switch ( command.myType )
-		{
-			case eType::TEXT:
-			{
-				myText->SetText(command.m_KeyOrText);
-				myText->SetPosition({ command.myPosition.x, command.myPosition.y });
-				myText->Render(m_Camera);
-			} break;
-			case eType::SPRITE:
-			{
-				mySprite->SetPosition({ command.myPosition.x, command.myPosition.y });
-				mySprite->SetShaderView(command.m_ShaderResource);
-				mySprite->Render(m_Camera);
-			} break;
-		};
+		SpriteCommand* command = reinterpret_cast< SpriteCommand* >( commands0[i] );
+		mySprite->SetPosition(command->m_Position);
+		mySprite->SetShaderView(command->m_Resource);
+		mySprite->Render(m_Camera);
 	}
+
+	const MemoryBlock& commands1 = mySynchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER);
+	for ( s32 i = 0; i < commands1.Size(); i++ )
+	{
+		TextCommand* command = reinterpret_cast< TextCommand* >( commands1[i] );
+		myText->SetText(command->m_TextBuffer);
+		myText->SetPosition(command->m_Position);
+		myText->Render(m_Camera);
+	}
+
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	m_API->SetRasterizer(eRasterizer::CULL_BACK);*/
+	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
 
 void Renderer::RenderSpotlight()

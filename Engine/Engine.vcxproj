@@ -708,7 +708,6 @@
     <ClInclude Include="Line3D.h" />
     <ClInclude Include="LinearAllocator.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="ModelCommand.h" />
     <ClInclude Include="ModelImporter.h" />
     <ClInclude Include="MotionBlurPass.h" />
     <ClInclude Include="MousePicker.h">
@@ -722,7 +721,6 @@
     <ClInclude Include="Quad.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />
-    <ClInclude Include="RenderCommand_Shared.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderFactory.h" />

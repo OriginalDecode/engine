@@ -24,7 +24,6 @@ public:
 	{
 	}
 
-
 	~MemoryBlock()
 	{
 		m_Start = nullptr;
@@ -90,6 +89,19 @@ private:
 
 };
 
+enum eBufferType
+{
+	MODEL_BUFFER,
+	SPOTLIGHT_BUFFER,
+	PARTICLE_BUFFER,
+	LINE_BUFFER,
+	POINTLIGHT_BUFFER,
+	SPRITE_BUFFER,
+	TEXT_BUFFER,
+	BUFFER_COUNT
+};
+
+
 typedef CU::StaticArray<MemoryBlock, 2> CommandBuffer;
 typedef CU::StaticArray<CommandBuffer, eBufferType::BUFFER_COUNT> CommandBuffers;
 
@@ -108,8 +120,6 @@ public:
 
 	bool LogicHasFinished() { return myLogicIsDone; }
 
-	//void AddRenderCommand(const RenderCommand& aRenderCommand);
-	
 	template<typename T>
 	void AddRenderCommand(T& command, eBufferType buffer_type)
 	{
@@ -120,7 +130,6 @@ public:
 	}
 
 	const MemoryBlock& GetRenderCommands(const eBufferType& buffer_type) const;
-	//const CU::GrowingArray<RenderCommand>& GetRenderCommands(const eCommandBuffer& commandType) const;
 private:
 	CommandBuffers myCommandBuffers;
 	volatile bool myLogicIsDone;

@@ -37,7 +37,6 @@ void Synchronizer::SwapBuffer()
 void Synchronizer::Quit()
 {
 	m_MainBlock.CleanUp();
-	//free(m_MainMemory);
 	myLogicIsDone = true;
 	myRenderIsDone = true;
 	myQuitFlag = true;
@@ -70,12 +69,6 @@ void Synchronizer::LogicIsDone()
 {
 	myLogicIsDone = true;
 }
-
-//void Synchronizer::AddRenderCommand(const RenderCommand& aRenderCommand)
-//{
-//	return;
-//	CommandBuffer& buffer = myCommandBuffers[u32(aRenderCommand.myCommandType)];
-//}
 
 const MemoryBlock& Synchronizer::GetRenderCommands(const eBufferType& buffer_type) const
 {

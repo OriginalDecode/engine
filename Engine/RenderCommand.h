@@ -1,10 +1,8 @@
 #pragma once
 #include <string>
-#include <Math/Vector/Vector.h>
-#include "Line3D.h"
-#include "RenderCommand_Shared.h"
-#include "LightStructs.h"
-
+#include <CommonLib/Math/Matrix/Matrix.h>
+#include <Engine/Line3D.h>
+struct ID3D11ShaderResourceView;
 struct RenderCommand
 {
 	enum eCommandType
@@ -114,6 +112,15 @@ struct TextCommand : public RenderCommand
 		, m_Position(position)
 		, m_Color(color)
 	{
+		strcpy_s(m_TextBuffer, text.c_str());
+	}
+
+	TextCommand(const std::string& text, const CU::Vector2f& position)
+		: RenderCommand(RenderCommand::TEXT)
+		, m_Position(position)
+	{
+		strcpy_s(m_TextBuffer, text.c_str());
+		m_Color = { 1.f, 1.f, 1.f, 1.f };
 	}
 
 	char m_TextBuffer[255] = { '\0' };

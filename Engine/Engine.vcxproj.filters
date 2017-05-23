@@ -79,9 +79,6 @@
     <Filter Include="Rendering\Passes">
       <UniqueIdentifier>{786b558d-0cd4-4d15-be8b-5d347c39f501}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Rendering\Commands">
-      <UniqueIdentifier>{d05875fe-cb18-4368-96b8-8a9d74d2a75d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Effect">
       <UniqueIdentifier>{743f2b4d-cfb7-4112-8568-38beb8c6d0d1}</UniqueIdentifier>
     </Filter>
@@ -234,12 +231,6 @@
     <ClInclude Include="ShadowPass.h">
       <Filter>Rendering\Passes</Filter>
     </ClInclude>
-    <ClInclude Include="RenderCommand_Shared.h">
-      <Filter>Rendering\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderCommand.h">
-      <Filter>Rendering\Commands</Filter>
-    </ClInclude>
     <ClInclude Include="GBuffer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -269,9 +260,6 @@
     </ClInclude>
     <ClInclude Include="Line3D.h">
       <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelCommand.h">
-      <Filter>Rendering\Commands</Filter>
     </ClInclude>
     <ClInclude Include="AABB.h">
       <Filter>Utilities</Filter>
@@ -376,6 +364,9 @@
       <Filter>Light</Filter>
     </ClInclude>
     <ClInclude Include="Quad.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCommand.h">
       <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>
@@ -484,9 +475,6 @@
     </ClCompile>
     <ClCompile Include="ShadowPass.cpp">
       <Filter>Rendering\Passes</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderCommand.cpp">
-      <Filter>Rendering\Commands</Filter>
     </ClCompile>
     <ClCompile Include="GBuffer.cpp">
       <Filter>Rendering</Filter>
@@ -606,6 +594,9 @@
       <Filter>Light</Filter>
     </ClCompile>
     <ClCompile Include="Quad.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderCommand.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
   </ItemGroup>

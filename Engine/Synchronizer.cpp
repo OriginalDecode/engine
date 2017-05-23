@@ -2,15 +2,20 @@
 #include "Synchronizer.h"
 #include <thread>
 
-#define REGISTER_COMMAND_BUFFER(objBuffer, objType, objCount)\
-myCommandBuffers[(u32)objBuffer][0] = MemoryBlock(objCount, sizeof(objType)); \
-myCommandBuffers[(u32)objBuffer][1] = MemoryBlock(objCount, sizeof(objType));
-
-
 bool Synchronizer::Initiate()
 {
-	REGISTER_COMMAND_BUFFER(eCommandBuffer::e3D, ModelCommand, 0x80000);
-	REGISTER_COMMAND_BUFFER(eCommandBuffer::eSpotlight, SpotlightCommand, 0x80000);
+	m_AllocationAmt = 0x80000;
+	m_MemorySize = m_AllocationAmt * (eBufferType::BUFFER_COUNT * 2);
+	
+	m_MainBlock = MemoryBlock(m_AllocationAmt * (eBufferType::BUFFER_COUNT * 2), m_AllocationAmt);
+
+	RegisterBuffer<ModelCommand>(MODEL_BUFFER);
+	RegisterBuffer<SpotlightCommand>(SPOTLIGHT_BUFFER);
+	RegisterBuffer<ParticleCommand>(PARTICLE_BUFFER);
+	RegisterBuffer<LineCommand>(LINE_BUFFER);
+	RegisterBuffer<PointlightCommand>(POINTLIGHT_BUFFER);
+	RegisterBuffer<SpriteCommand>(SPRITE_BUFFER);
+	RegisterBuffer<TextCommand>(TEXT_BUFFER);
 
 	m_CurrentBuffer = 0;
 	myLogicIsDone = false;
@@ -31,6 +36,8 @@ void Synchronizer::SwapBuffer()
 
 void Synchronizer::Quit()
 {
+	m_MainBlock.CleanUp();
+	//free(m_MainMemory);
 	myLogicIsDone = true;
 	myRenderIsDone = true;
 	myQuitFlag = true;
@@ -70,7 +77,7 @@ void Synchronizer::LogicIsDone()
 //	CommandBuffer& buffer = myCommandBuffers[u32(aRenderCommand.myCommandType)];
 //}
 
-const MemoryBlock& Synchronizer::GetRenderCommands(const eCommandBuffer& buffer_type) const
+const MemoryBlock& Synchronizer::GetRenderCommands(const eBufferType& buffer_type) const
 {
-	return myCommandBuffers[( u32 ) buffer_type][m_CurrentBuffer];
+	return myCommandBuffers[buffer_type][m_CurrentBuffer];
 }

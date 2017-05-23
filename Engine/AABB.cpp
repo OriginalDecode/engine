@@ -56,7 +56,7 @@ namespace cl
 		}
 
 		m_Commands.RemoveAll();
-		m_Commands.Add(RenderCommand(eType::LINE_Z_ENABLE, m_Points[0], m_Points[1]));
+		/*m_Commands.Add(RenderCommand(eType::LINE_Z_ENABLE, m_Points[0], m_Points[1]));
 		m_Commands.Add(RenderCommand(eType::LINE_Z_ENABLE, m_Points[1], m_Points[2]));
 		m_Commands.Add(RenderCommand(eType::LINE_Z_ENABLE, m_Points[2], m_Points[3]));
 		m_Commands.Add(RenderCommand(eType::LINE_Z_ENABLE, m_Points[3], m_Points[4]));
@@ -67,7 +67,7 @@ namespace cl
 		m_Commands.Add(RenderCommand(eType::LINE_Z_ENABLE, m_Points[7], m_Points[0]));
 		m_Commands.Add(RenderCommand(eType::LINE_Z_ENABLE, m_Points[0], m_Points[3]));
 		m_Commands.Add(RenderCommand(eType::LINE_Z_ENABLE, m_Points[1], m_Points[6]));
-		m_Commands.Add(RenderCommand(eType::LINE_Z_ENABLE, m_Points[2], m_Points[5]));
+		m_Commands.Add(RenderCommand(eType::LINE_Z_ENABLE, m_Points[2], m_Points[5]));*/
 
 	}
 

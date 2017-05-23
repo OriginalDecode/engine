@@ -80,7 +80,7 @@ void RenderSystem::Update(float /*dt*/)
 		CU::Matrix44f t = translation.myOrientation;
 		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
 
-		mySynchronizer->AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe), eCommandBuffer::e3D);
+		mySynchronizer->AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe), eBufferType::MODEL_BUFFER);
 
 		//mySynchronizer->AddRenderCommand(RenderCommand(
 		//	eType::MODEL,

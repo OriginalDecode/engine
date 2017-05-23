@@ -73,7 +73,6 @@ private:
 	ShadowPass			m_ShadowPass;
 	Atmosphere			m_Atmosphere;
 
-	RenderCommand		m_CubeCommand;
 	RenderContext		m_RenderContext;
 
 	Engine*				m_Engine				= nullptr;

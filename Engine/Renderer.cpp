@@ -242,12 +242,12 @@ void Renderer::Render3DCommands()
 		terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 	}
 
-	const MemoryBlock& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
+	const MemoryBlock& commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		ModelCommand* command = reinterpret_cast< ModelCommand* >( commands[i] );
 
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand2::MODEL, "Incorrect command type! Expected MODEL");
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
 		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 		Model* model = m_Engine->GetModel(command->m_Key);
@@ -261,7 +261,7 @@ void Renderer::Render3DCommands()
 
 void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 {
-	const MemoryBlock& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
+	const MemoryBlock& commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
@@ -269,7 +269,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	for ( s32 i = 0; i < commands.Size(); i++ )
 	{
 		ModelCommand* command = reinterpret_cast< ModelCommand* >( commands[i] );
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand2::MODEL, "Incorrect command type! Expected MODEL");
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 			
 		Model* model = m_Engine->GetModel(command->m_Key);
 		model->SetOrientation(command->m_Orientation);
@@ -316,7 +316,7 @@ void Renderer::Render2DCommands()
 void Renderer::RenderSpotlight()
 {
 	//const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eSpotlight);
-	const MemoryBlock& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eSpotlight);
+	const MemoryBlock& commands = mySynchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER);
 
 	Effect* effect = m_LightPass.GetSpotlightEffect();
 

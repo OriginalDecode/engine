@@ -1,12 +1,12 @@
 #pragma once
-enum class eCommandBuffer
+enum eBufferType
 {
-	e3D,
-	eSpotlight,
-	_COUNT
+	MODEL_BUFFER,
+	SPOTLIGHT_BUFFER,
+	PARTICLE_BUFFER,
+	LINE_BUFFER,
+	POINTLIGHT_BUFFER,
+	SPRITE_BUFFER,
+	TEXT_BUFFER,
+	BUFFER_COUNT
 };
-
-//e2D,
-//eParticle,
-//eLine,
-//ePointlight,

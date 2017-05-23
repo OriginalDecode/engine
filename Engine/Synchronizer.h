@@ -16,15 +16,35 @@ public:
 		m_CurrentPos = m_Start;
 	}
 
+	MemoryBlock(void* pStart, s32 size_in_bytes, s32 alignment)
+		: m_Start(pStart)
+		, m_CurrentPos(pStart)
+		, m_Size(size_in_bytes)
+		, m_Alignment(alignment)
+	{
+	}
+
+
 	~MemoryBlock()
 	{
-		free(m_Start);
 		m_Start = nullptr;
 		m_CurrentPos = nullptr;
 	}
 
+	void CleanUp()
+	{
+		free(m_Start);
+	}
 
 	void* GetCurrentPos() { return m_CurrentPos; }
+
+	void* Alloc()
+	{
+		m_CurrentPos = (void*)((u64)m_Start + (m_Alignment * m_CurrentSize));
+		m_CurrentSize++;
+		return m_CurrentPos;
+	}
+
 	void* GetStart() { return m_Start; }
 
 	void* operator[](s32 index)
@@ -71,12 +91,7 @@ private:
 };
 
 typedef CU::StaticArray<MemoryBlock, 2> CommandBuffer;
-typedef CU::StaticArray<CommandBuffer, (u32)eCommandBuffer::_COUNT> CommandBuffers;
-
-
-
-
-
+typedef CU::StaticArray<CommandBuffer, eBufferType::BUFFER_COUNT> CommandBuffers;
 
 class Synchronizer
 {
@@ -84,7 +99,6 @@ public:
 	Synchronizer() = default;
 	bool Initiate();
 	void SwapBuffer();
-	void Clear();
 	void Quit();
 	bool HasQuit();
 	void WaitForRender();
@@ -95,39 +109,17 @@ public:
 	bool LogicHasFinished() { return myLogicIsDone; }
 
 	//void AddRenderCommand(const RenderCommand& aRenderCommand);
-	bool ValidateBuffer(eCommandBuffer buffer_type, RenderCommand2::eCommandType command_type)
-	{
-		if ( command_type == RenderCommand2::MODEL )
-		{
-			if ( buffer_type == eCommandBuffer::e3D )
-				return true;
-
-			return false;
-		}
-
-		if ( command_type == RenderCommand2::SPOTLIGHT )
-		{
-			if ( buffer_type == eCommandBuffer::eSpotlight )
-				return true;
-			return false;
-		}
-
-		return false;
-	}
+	
 	template<typename T>
-	void AddRenderCommand(T& command, eCommandBuffer buffer_type)
+	void AddRenderCommand(T& command, eBufferType buffer_type)
 	{
-		RenderCommand2& c = command;
-		const bool result = ValidateBuffer(buffer_type, c.m_CommandType);
-		DL_ASSERT_EXP(result, "Incorrect Buffer used for this CommandType");
-
 		CommandBuffer& buffer = myCommandBuffers[( u32 ) buffer_type];
 		void* current = ( buffer[m_CurrentBuffer ^ 1].GetCurrentPos() );
 		memcpy(current, &command, sizeof(T));
 		buffer[m_CurrentBuffer ^ 1].Add();
 	}
 
-	const MemoryBlock& GetRenderCommands(const eCommandBuffer& buffer_type) const;
+	const MemoryBlock& GetRenderCommands(const eBufferType& buffer_type) const;
 	//const CU::GrowingArray<RenderCommand>& GetRenderCommands(const eCommandBuffer& commandType) const;
 private:
 	CommandBuffers myCommandBuffers;
@@ -136,10 +128,27 @@ private:
 	volatile bool myQuitFlag;
 	u16 m_CurrentBuffer;
 
+	void* m_MainMemory = nullptr;
+	s32 m_MemorySize = 0;
+	s32 m_AllocationAmt = 0;
+
+	MemoryBlock m_MainBlock;
+
+
+	template<typename T>
+	void RegisterBuffer(eBufferType buffer_type);
+
 };
 
 __forceinline bool Synchronizer::HasQuit()
 {
 	return myQuitFlag;
+}
+
+template<typename T>
+void Synchronizer::RegisterBuffer(eBufferType buffer_type)
+{
+	myCommandBuffers[buffer_type][0] = MemoryBlock(m_MainBlock.Alloc(), m_AllocationAmt, sizeof(T));
+	myCommandBuffers[buffer_type][1] = MemoryBlock(m_MainBlock.Alloc(), m_AllocationAmt, sizeof(T));
 }
 

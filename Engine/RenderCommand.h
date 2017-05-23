@@ -5,9 +5,7 @@
 #include "RenderCommand_Shared.h"
 #include "LightStructs.h"
 
-typedef struct ID3D11ShaderResourceView IShaderResourceView;
-
-struct RenderCommand2
+struct RenderCommand
 {
 	enum eCommandType
 	{
@@ -15,10 +13,14 @@ struct RenderCommand2
 		MODEL,
 		SPOTLIGHT,
 		POINTLIGHT,
+		SPRITE,
+		TEXT,
+		LINE,
+		PARTICLE,
 		NOF_TYPES
 	};
 	
-	RenderCommand2(eCommandType command_type)
+	RenderCommand(eCommandType command_type)
 		: m_CommandType(command_type)
 	{
 	}
@@ -26,10 +28,10 @@ struct RenderCommand2
 	eCommandType m_CommandType = NONE;
 };
 
-struct ModelCommand : public RenderCommand2
+struct ModelCommand : public RenderCommand
 {
 	ModelCommand(const std::string& key, const CU::Matrix44f& orientation, bool wireframe)
-		: RenderCommand2(eCommandType::MODEL)
+		: RenderCommand(eCommandType::MODEL)
 		, m_Orientation(orientation)
 		, m_Wireframe(wireframe)
 	{
@@ -42,10 +44,10 @@ struct ModelCommand : public RenderCommand2
 
 };
 
-struct SpotlightCommand : public RenderCommand2
+struct SpotlightCommand : public RenderCommand
 {
 	SpotlightCommand(s32 light_id, float angle, float range, float intensity, const CU::Vector4f& color, const CU::Matrix44f& orientation, bool shadow_casting)
-		: RenderCommand2(eCommandType::SPOTLIGHT)
+		: RenderCommand(eCommandType::SPOTLIGHT)
 		, m_LightID(light_id)
 		, m_Angle(angle)
 		, m_Range(range)
@@ -65,10 +67,10 @@ struct SpotlightCommand : public RenderCommand2
 	bool m_ShadowCasting = false;
 };
 
-struct PointlightCommand : public RenderCommand2
+struct PointlightCommand : public RenderCommand
 {
 	PointlightCommand(s32 light_id, float range, float intensity, const CU::Vector4f& color, const CU::Matrix44f& orientation)
-		: RenderCommand2(eCommandType::POINTLIGHT)
+		: RenderCommand(eCommandType::POINTLIGHT)
 		, m_LightID(light_id)
 		, m_Range(range)
 		, m_Intensity(intensity)
@@ -84,78 +86,65 @@ struct PointlightCommand : public RenderCommand2
 	s32 m_LightID = 0;
 };
 
-
-
-
-
-enum class eType
-{
-	TEXT,
-	SPRITE,
-	MODEL,
-	MODEL_NO_DEFERRED,
-	LINE_Z_DISABLE,
-	LINE_Z_ENABLE,
-	SKYSPHERE,
-	POINTLIGHT,
-	SPOTLIGHT,
-	PARTICLE,
-	TERRAIN,
-	WIREFRAME,
-};
-
-
-
-class Model;
-
-struct RenderCommand
-{
-	RenderCommand() = default;
-	RenderCommand(const eType& aType);
-
-	RenderCommand(const eType& type, const std::string& sprite_key, const CU::Vector2f& position);
-	RenderCommand(const eType& type, const std::string& text, const CU::Vector4f& color, const CU::Vector2f& position);
-	RenderCommand(const eType& type, IShaderResourceView* shader_resource, const CU::Vector2f& position);
-
-	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, float intensity, float range, bool shadow_casting);
-	RenderCommand(const eType& aType, const CU::Vector3f& position, const CU::Vector3f& color, float angle
-		, float range, const CU::Vector3f& direction, const CU::Matrix44f& rotationMatrix, int light_id, bool shadow_casting);
-
-
-	//Should all of this data be copied instead of const ref since the memory is going to get lost the next frame anyway?
-	RenderCommand(const eType& aType, const std::string& modelKey, const CU::Matrix44f& orientation, const CU::Vector4f& scale = CU::Vector4f(1,1,1,1), bool wireframe = false);
-	RenderCommand(const eType& aType, const std::string& modelKey, const CU::Vector3f& position);
-
-	RenderCommand(const eType& aType, const CU::Vector3f& aPosition);
-	RenderCommand(const eType& aType, const SLinePoint& aFirstPoint, const SLinePoint& aSecondPoint);
-
-	IShaderResourceView* m_ShaderResource = nullptr;
-
-	std::string m_KeyOrText;
-	u64 m_HashKey;
-
-	CU::Vector3f myPosition;
-	CU::Vector3f myColor;
-	CU::Vector3f myDirection;
-	CU::Vector4f m_Scale;
-
-	CU::Matrix44f m_Orientation;
-
-	union
+struct SpriteCommand : public RenderCommand
+{	
+	SpriteCommand(ID3D11ShaderResourceView* pResource, const CU::Vector2f& position)
+		: RenderCommand(eCommandType::SPRITE)
+		, m_Resource(pResource)
+		, m_Position(position)
 	{
-		float myAngle;
-		float myIntensity;
-	};
+	}
 
-	float myRange;
+	SpriteCommand(const std::string& key, const CU::Vector2f& position)
+		: RenderCommand(eCommandType::SPRITE)
+		, m_Position(position)
+	{
+		strcpy_s(m_Key, key.c_str());
+	}
 
-	bool m_Wireframe = false;
-	bool m_ShadowCasting = false;
-
-	SLinePoint firstPoint;
-	SLinePoint secondPoint;
-
-	eCommandBuffer myCommandType;
-	eType myType;
-	int m_LightID;
+	char m_Key[128] = { '\0' };
+	ID3D11ShaderResourceView* m_Resource = nullptr;
+	CU::Vector2f m_Position;
 };
+
+struct TextCommand : public RenderCommand
+{
+	TextCommand(const std::string& text, const CU::Vector2f& position, const CU::Vector4f& color)
+		: RenderCommand(RenderCommand::TEXT)
+		, m_Position(position)
+		, m_Color(color)
+	{
+	}
+
+	char m_TextBuffer[255] = { '\0' };
+	CU::Vector2f m_Position;
+	CU::Vector4f m_Color;
+
+};
+
+
+struct LineCommand : public RenderCommand
+{
+	LineCommand(const SLinePoint& first, const SLinePoint& second, bool z_enabled)
+		: RenderCommand(RenderCommand::LINE)
+		, m_Points{ first, second }
+		, m_ZEnabled(z_enabled)
+	{
+	}
+
+	bool m_ZEnabled = false;
+	SLinePoint m_Points[2];
+};
+
+struct ParticleCommand : public RenderCommand
+{
+	ParticleCommand(const CU::Vector3f& position)
+		: RenderCommand(RenderCommand::PARTICLE)
+		, m_Position(position)
+	{
+	}
+
+	CU::Vector3f m_Position;
+
+};
+

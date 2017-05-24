@@ -76,7 +76,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_ParticleEmitter = new CEmitterInstance;
 	m_ParticleEmitter->Initiate(mySynchronizer, myDepthTexture);
 
-	m_Atmosphere.Initiate(724.f, 728.f, { 512.f, 0.f, 512.f });
+	m_Atmosphere.Initiate(1024.f, 1024.f, { 512.f, 0.f, 512.f });
 
 
 	m_PostProcessManager.Initiate();
@@ -261,6 +261,7 @@ void Renderer::Render3DCommands()
 
 void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 {
+	return;
 	const MemoryBlock& commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
@@ -385,7 +386,7 @@ void Renderer::RenderPointlight()
 
 void Renderer::RenderParticles()
 {
-/*	m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
+	m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
 	if ( m_ProcessDirectionalShadows )
@@ -393,29 +394,29 @@ void Renderer::RenderParticles()
 	else
 		m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE_PARTICLE, 0);
 
-	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
-	for ( const RenderCommand& command : commands )
+
+
+	const MemoryBlock& commands = mySynchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER);
+
+	//const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
+
+	for(s32 i = 0; i < commands.Size(); i++)
 	{
-		switch ( command.myType )
+		ParticleCommand* command = reinterpret_cast<ParticleCommand*>(commands[i]);
+
+
+		if ( !m_ProcessDirectionalShadows )
 		{
-			case eType::PARTICLE:
-			{
-				if ( !m_ProcessDirectionalShadows )
-				{
-					m_ParticleEmitter->SetPosition(CU::Vector3f(256.f, 0.f, 256.f));
-					m_ParticleEmitter->Update(m_Engine->GetDeltaTime());
-				}
-				else
-				{
-					m_API->GetContext()->PSSetShaderResources(1, 1, m_Engine->GetTexture("Data/Textures/hp.dds")->GetShaderViewRef());
-				}
-				//	m_ParticleEmitter->Render(m_ProcessDirectionalShadows ? m_DirectionalFrame : myPrevFrame, m_Camera->GetPerspective());
-
-
-			} break;
+			m_ParticleEmitter->SetPosition(command->m_Position);
+			m_ParticleEmitter->Update(m_Engine->GetDeltaTime());
 		}
+		else
+		{
+			m_API->GetContext()->PSSetShaderResources(1, 1, m_Engine->GetTexture("Data/Textures/hp.dds")->GetShaderViewRef());
+		}
+		//	m_ParticleEmitter->Render(m_ProcessDirectionalShadows ? m_DirectionalFrame : myPrevFrame, m_Camera->GetPerspective());
 	}
-	m_API->SetRasterizer(eRasterizer::CULL_BACK);*/
+	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
 
 void Renderer::RenderLines()

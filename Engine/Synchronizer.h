@@ -101,6 +101,21 @@ enum eBufferType
 	BUFFER_COUNT
 };
 
+#define ADD_COMMAND_FUNC(buffer_type, command_type)\
+void AddRenderCommand(const command_type& command)\
+{\
+	DL_PRINT("Adding %s to %s", #command_type, #buffer_type);\
+	CommandBuffer& buffer = myCommandBuffers[buffer_type];\
+	DL_PRINT("Buffer %s received", #buffer_type);\
+	void* current = buffer[m_CurrentBuffer ^ 1].GetCurrentPos();\
+	DL_PRINT("starting memcpy from command to CurrentPos()");\
+	memcpy(current, &command, sizeof(command_type));\
+	DL_PRINT("memcpy successfully ended");\
+	buffer[m_CurrentBuffer ^ 1].Add();\
+	DL_PRINT("moving pointer to next portion");\
+};
+
+
 
 typedef CU::StaticArray<MemoryBlock, 2> CommandBuffer;
 typedef CU::StaticArray<CommandBuffer, eBufferType::BUFFER_COUNT> CommandBuffers;
@@ -128,6 +143,14 @@ public:
 		memcpy(current, &command, sizeof(T));
 		buffer[m_CurrentBuffer ^ 1].Add();
 	}
+
+	ADD_COMMAND_FUNC(eBufferType::MODEL_BUFFER,			ModelCommand);
+	ADD_COMMAND_FUNC(eBufferType::SPOTLIGHT_BUFFER,		SpotlightCommand);
+	ADD_COMMAND_FUNC(eBufferType::PARTICLE_BUFFER,		ParticleCommand);
+	ADD_COMMAND_FUNC(eBufferType::LINE_BUFFER,			LineCommand);
+	ADD_COMMAND_FUNC(eBufferType::POINTLIGHT_BUFFER,	PointlightCommand);
+	ADD_COMMAND_FUNC(eBufferType::SPRITE_BUFFER,		SpriteCommand);
+	ADD_COMMAND_FUNC(eBufferType::TEXT_BUFFER,			TextCommand);
 
 	const MemoryBlock& GetRenderCommands(const eBufferType& buffer_type) const;
 private:

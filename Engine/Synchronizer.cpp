@@ -4,7 +4,7 @@
 
 bool Synchronizer::Initiate()
 {
-	m_AllocationAmt = 0x80000;
+	m_AllocationAmt = (0x80000 * 2);
 	m_MemorySize = m_AllocationAmt * (eBufferType::BUFFER_COUNT * 2);
 	
 	m_MainBlock = MemoryBlock(m_AllocationAmt * (eBufferType::BUFFER_COUNT * 2), m_AllocationAmt);

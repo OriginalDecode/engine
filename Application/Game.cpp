@@ -131,7 +131,7 @@ void Game::Update(float dt)
 	std::stringstream ss;
 	//ss << "Entity Speed : " << entity_speed;
 	ss << "\nx:" << m_Camera->GetOrientation().GetPosition().x << "\ny:" << m_Camera->GetOrientation().GetPosition().y << "\nz:" << m_Camera->GetOrientation().GetPosition().z;
-	m_Synchronizer->AddRenderCommand(TextCommand(ss.str(), CU::Vector2f(0.75f, 0.1f)), eBufferType::TEXT_BUFFER);
+	m_Synchronizer->AddRenderCommand(TextCommand(ss.str(), CU::Vector2f(0.75f, 0.1f)));
 
 	CU::Vector4f translation = m_Orientation.GetTranslation();
 	if ( input_wrapper->IsDown(KButton::UP_ARROW) )
@@ -206,8 +206,8 @@ void Game::Update(float dt)
 	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::PARTICLE, CU::Vector3f(5, 5, 5)));
 	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 
-	TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
-	entity_translation.myOrientation = m_Orientation;/*m_Camera->GetOrientation();*/
+	//TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
+	//entity_translation.myOrientation = m_Orientation;/*m_Camera->GetOrientation();*/
 
 	m_World.Update(dt);
 }

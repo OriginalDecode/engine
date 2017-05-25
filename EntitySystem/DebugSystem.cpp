@@ -145,7 +145,7 @@ void DebugSystem::Update(float /*dt*/)
 		}
 	}
 	
-	UpdateOBBs();
+	//UpdateOBBs();
 
 }
 

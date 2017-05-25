@@ -12,12 +12,12 @@ typedef u64 uptr;
 
 namespace
 {
-	inline void* alignForward(void* address, u8 alignment)
+	inline void* AlignForward(void* address, u8 alignment)
 	{
 		return (void*)((reinterpret_cast<uptr>(address) + static_cast<uptr>(alignment - 1)) & ~(alignment - 1));
 	}
 
-	inline u8 alignForwardAdjustment(const void* address, u8 alignment)
+	inline u8 AlignForwardAdjustment(const void* address, u8 alignment)
 	{
 		u8 adjustment = alignment - (reinterpret_cast<u64>(address)
 			& static_cast<uptr>(alignment - 1));
@@ -27,9 +27,9 @@ namespace
 		return adjustment;
 	}
 
-	inline u8 alignForwardAdjustmentWithHeader(const void* address, u8 alignment, u8 headerSize)
+	inline u8 AlignForwardAdjustmentWithHeader(const void* address, u8 alignment, u8 headerSize)
 	{
-		u8 adjustment = alignForwardAdjustment(address, alignment);
+		u8 adjustment = AlignForwardAdjustment(address, alignment);
 
 		u8 neededSpace = headerSize;
 
@@ -51,17 +51,18 @@ namespace
 class BaseAllocator
 {
 public:
+	BaseAllocator() = default;
 	BaseAllocator(s32 size_in_bytes, void* pStart);
-	virtual bool CleanUp();
+	virtual void CleanUp();
 
-	virtual void* alloc(s32 size_in_bytes, u8 alignmnet = sizeof(void*)) = 0;
-	virtual void dealloc(void* p) = 0;
+	virtual void* Alloc(s32 size_in_bytes, u8 alignmnet = sizeof(void*)) = 0;
+	virtual void Dealloc(void* p) = 0;
 
 	void* GetStart() const { return m_Start; }
 	void* GetCurrentPos() const { return m_CurrentPos; }
 	s32 GetMemoryUsed() const { return m_UsedMemory; }
 	s32 GetAllocationSize() const { return m_AllocatedMemory; }
-	s32 GetNumberOfAllocations() const { return m_NumberOfAllocations; }
+	s32 Size() const { return m_NumberOfAllocations; }
 
 protected:
 	void* m_Start = nullptr;

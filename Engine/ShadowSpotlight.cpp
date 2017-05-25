@@ -105,10 +105,10 @@ const CU::Matrix44f& ShadowSpotlight::GetMVP()
 	return (CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetPerspective());
 }
 
+#ifdef _DEBUG
 void ShadowSpotlight::Copy()
 {
-#ifdef _DEBUG
 	Texture::CopyData(m_Holder->GetTexture(), m_DepthStencil->GetDepthTexture());
-#endif
 }
+#endif
 

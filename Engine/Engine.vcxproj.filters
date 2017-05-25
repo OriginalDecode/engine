@@ -369,6 +369,7 @@
     <ClInclude Include="RenderCommand.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="CommandAllocator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -599,5 +600,6 @@
     <ClCompile Include="RenderCommand.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="CommandAllocator.cpp" />
   </ItemGroup>
 </Project>

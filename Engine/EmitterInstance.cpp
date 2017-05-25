@@ -38,8 +38,8 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	CreateInputLayout();
 	CreateConstantBuffer();
 
-	myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView());
-	myData.shader->AddShaderResource(depth_texture->GetDepthStencilView());
+	myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);
+	//myData.shader->AddShaderResource(depth_texture->GetDepthStencilView());
 
 	myTimeToEmit = 0.f;
 }

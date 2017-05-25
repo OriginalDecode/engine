@@ -45,30 +45,30 @@ void RenderSystem::Update(float /*dt*/)
 #ifdef _PROFILE
 		EASY_BLOCK("Frustum collision check", profiler::colors::Green);
 #endif
-	/*	if (myEntityManager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
-		{
-			DebugComponent& debug = GetComponent<DebugComponent>(e);
-			for (const CU::Plane<float>& plane : debug.m_OBB.m_Planes)
-			{
-				CU::Vector4f temp = plane.GetPoint();
-				CU::Vector3f point = { temp.x,temp.y,temp.z };
-				if (CameraHandle::GetInstance()->GetFrustum().Inside(point, 25.f))
-				{
-					visible = true;
-					break;
-				}
-			}
-		}
-		else
-		{
-			CU::Vector3f point = translation.myOrientation.GetPosition() + (render.m_MinPos + render.m_MaxPos);
-			if (!CameraHandle::GetInstance()->GetFrustum().Inside(point, 5.f))
-				continue;
-		}
+		//if (myEntityManager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
+		//{
+		//	DebugComponent& debug = GetComponent<DebugComponent>(e);
+		//	for (const CU::Plane<float>& plane : debug.m_OBB.m_Planes)
+		//	{
+		//		CU::Vector4f temp = plane.GetPoint();
+		//		CU::Vector3f point = { temp.x,temp.y,temp.z };
+		//		if (CameraHandle::GetInstance()->GetFrustum().Inside(point, 25.f))
+		//		{
+		//			visible = true;
+		//			break;
+		//		}
+		//	}
+		//}
+		//else
+		//{
+		//	CU::Vector3f point = translation.myOrientation.GetPosition() + (render.m_MinPos + render.m_MaxPos);
+		//	if (!CameraHandle::GetInstance()->GetFrustum().Inside(point, 5.f))
+		//		continue;
+		//}
 
-		
-		if(!visible)
-			continue;*/
+		//
+		//if(!visible)
+		//	continue;
 
 #ifdef _PROFILE
 		EASY_END_BLOCK;
@@ -79,7 +79,6 @@ void RenderSystem::Update(float /*dt*/)
 #endif
 		CU::Matrix44f t = translation.myOrientation;
 		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
-
 		mySynchronizer->AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
 
 		//mySynchronizer->AddRenderCommand(RenderCommand(
@@ -104,9 +103,6 @@ void RenderSystem::Update(float /*dt*/)
 			/**/
 
 		}
-
-
-
 	}
 #ifdef _PROFILE
 	EASY_END_BLOCK;

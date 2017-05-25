@@ -33,9 +33,10 @@ public:
 
 	float GetBufferSize() const { return m_BufferSize; }
 
+#ifdef _DEBUG
 	void Copy();
 	Texture* GetHolder() { return m_Holder; }
-
+#endif
 
 
 private:

@@ -126,7 +126,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -672,6 +672,7 @@
     <ClInclude Include="BaseModel.h" />
     <ClInclude Include="BloomPass.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CommandAllocator.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="DebugSystem.h" />
@@ -770,6 +771,7 @@
     <ClCompile Include="BaseModel.cpp" />
     <ClCompile Include="BloomPass.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CommandAllocator.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="DebugSystem.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />

@@ -182,7 +182,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_EntityManager.AddSystem<AISystem>();
 #endif 
 
-	m_EntityManager.AddSystem<CameraSystem>();
+	//m_EntityManager.AddSystem<CameraSystem>();
 
 	ImGui_ImplDX11_Init(myHWND, GetAPI()->GetDevice(), GetAPI()->GetContext());
 

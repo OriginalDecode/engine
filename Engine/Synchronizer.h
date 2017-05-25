@@ -4,6 +4,8 @@
 #include "RenderCommand.h"
 #include "snowblind_shared.h"
 
+#include <Engine/CommandAllocator.h>
+
 class MemoryBlock
 {
 public:
@@ -22,6 +24,9 @@ public:
 		, m_Size(size_in_bytes)
 		, m_Alignment(alignment)
 	{
+
+		m_MaxAmount = m_Size / m_Alignment;
+
 	}
 
 	~MemoryBlock()
@@ -58,6 +63,8 @@ public:
 
 	void Add()
 	{
+		assert(m_CurrentSize < m_MaxAmount && "Tried to add too many commands to list!");
+
 		m_CurrentPos = ( void* ) ( ( u64 ) m_CurrentPos + m_Alignment );
 		m_CurrentSize++;
 	}
@@ -83,9 +90,10 @@ public:
 private:
 	void* m_Start = nullptr;
 	void* m_CurrentPos = nullptr;
-	s32 m_Size = 0;
-	s32 m_CurrentSize = 0;
-	s32 m_Alignment = 0;
+	s32 m_Size = 0; //Allocated Memory
+	s32 m_CurrentSize = 0; //Number of Allocations
+	s32 m_MaxAmount = 0;
+	s32 m_Alignment = 0; //
 
 };
 
@@ -105,19 +113,17 @@ enum eBufferType
 void AddRenderCommand(const command_type& command)\
 {\
 	DL_PRINT("Adding %s to %s", #command_type, #buffer_type);\
-	CommandBuffer& buffer = myCommandBuffers[buffer_type];\
+	CommandBuffer& buffer = m_CommandBuffers[buffer_type];\
 	DL_PRINT("Buffer %s received", #buffer_type);\
-	void* current = buffer[m_CurrentBuffer ^ 1].GetCurrentPos();\
+	void* current = buffer[m_CurrentBuffer ^ 1].Alloc(sizeof(command_type));\
 	DL_PRINT("starting memcpy from command to CurrentPos()");\
 	memcpy(current, &command, sizeof(command_type));\
 	DL_PRINT("memcpy successfully ended");\
-	buffer[m_CurrentBuffer ^ 1].Add();\
-	DL_PRINT("moving pointer to next portion");\
 };
 
 
 
-typedef CU::StaticArray<MemoryBlock, 2> CommandBuffer;
+typedef CU::StaticArray<CommandAllocator, 2> CommandBuffer;
 typedef CU::StaticArray<CommandBuffer, eBufferType::BUFFER_COUNT> CommandBuffers;
 
 class Synchronizer
@@ -133,17 +139,9 @@ public:
 	void RenderIsDone();
 	void LogicIsDone();
 
-	bool LogicHasFinished() { return myLogicIsDone; }
+	bool LogicHasFinished() { return m_LogicDone; }
 
-	template<typename T>
-	void AddRenderCommand(T& command, eBufferType buffer_type)
-	{
-		CommandBuffer& buffer = myCommandBuffers[( u32 ) buffer_type];
-		void* current = ( buffer[m_CurrentBuffer ^ 1].GetCurrentPos() );
-		memcpy(current, &command, sizeof(T));
-		buffer[m_CurrentBuffer ^ 1].Add();
-	}
-
+	
 	ADD_COMMAND_FUNC(eBufferType::MODEL_BUFFER,			ModelCommand);
 	ADD_COMMAND_FUNC(eBufferType::SPOTLIGHT_BUFFER,		SpotlightCommand);
 	ADD_COMMAND_FUNC(eBufferType::PARTICLE_BUFFER,		ParticleCommand);
@@ -152,19 +150,20 @@ public:
 	ADD_COMMAND_FUNC(eBufferType::SPRITE_BUFFER,		SpriteCommand);
 	ADD_COMMAND_FUNC(eBufferType::TEXT_BUFFER,			TextCommand);
 
-	const MemoryBlock& GetRenderCommands(const eBufferType& buffer_type) const;
+	const CommandAllocator& GetRenderCommands(const eBufferType& buffer_type) const;
 private:
-	CommandBuffers myCommandBuffers;
-	volatile bool myLogicIsDone;
-	volatile bool myRenderIsDone;
-	volatile bool myQuitFlag;
-	u16 m_CurrentBuffer;
+	CommandBuffers m_CommandBuffers;
+	volatile bool m_LogicDone = false;
+	volatile bool m_RenderDone = false;
+	volatile bool m_QuitFlag = false;
+	u16 m_CurrentBuffer = 0;
 
 	void* m_MainMemory = nullptr;
-	s32 m_MemorySize = 0;
-	s32 m_AllocationAmt = 0;
+	CommandAllocator m_Allocator; 
 
-	MemoryBlock m_MainBlock;
+
+	//MemoryBlock m_MainBlock;
+
 
 
 	template<typename T>
@@ -174,13 +173,13 @@ private:
 
 __forceinline bool Synchronizer::HasQuit()
 {
-	return myQuitFlag;
+	return m_QuitFlag;
 }
 
 template<typename T>
 void Synchronizer::RegisterBuffer(eBufferType buffer_type)
 {
-	myCommandBuffers[buffer_type][0] = MemoryBlock(m_MainBlock.Alloc(), m_AllocationAmt, sizeof(T));
-	myCommandBuffers[buffer_type][1] = MemoryBlock(m_MainBlock.Alloc(), m_AllocationAmt, sizeof(T));
+	//myCommandBuffers[buffer_type][0] = MemoryBlock(m_MainBlock.Alloc(), m_AllocationAmt, sizeof(T));
+	//myCommandBuffers[buffer_type][1] = MemoryBlock(m_MainBlock.Alloc(), m_AllocationAmt, sizeof(T));
 }
 

@@ -41,7 +41,6 @@ void* CommandAllocator::operator[](s32 index) const
 
 void CommandAllocator::CleanUp()
 {
-	m_CurrentPos = nullptr;
 	BaseAllocator::CleanUp();
 }
 

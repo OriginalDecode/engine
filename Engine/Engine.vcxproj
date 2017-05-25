@@ -873,6 +873,9 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Audio\Audio.vcxproj">
+      <Project>{9efd2184-3951-4091-a3c5-f93b261c6b8e}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\CommonLib\CommonLib.vcxproj">
       <Project>{dbc8372d-e04f-4bbb-8964-12022adca9f6}</Project>
     </ProjectReference>

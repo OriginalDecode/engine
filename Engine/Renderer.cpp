@@ -144,6 +144,7 @@ void Renderer::Render()
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 
+	//Do SSAO
 
 	myDeferredRenderer->DeferredRender(
 		m_Camera->GetOrientation(),

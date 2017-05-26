@@ -13,8 +13,8 @@ void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_k
 	CU::GrowingArray<Model*> children = gizmo_handle.m_Model->GetChildModels();
 	for (Model* child : children)
 	{
-		CU::GrowingArray<CSurface*>& surfaces = child->GetSurfaces();
-		for (CSurface* surface : surfaces)
+		CU::GrowingArray<Surface*>& surfaces = child->GetSurfaces();
+		for (Surface* surface : surfaces)
 		{
 			//surface->ClearTextures();
 			surface->AddTexture(gizmo_handle.m_DirColor->GetShaderView(), Effect::DIFFUSE);

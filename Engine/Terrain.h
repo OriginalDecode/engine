@@ -2,7 +2,7 @@
 #include "BaseModel.h"
 #include <standard_datatype.hpp>
 
-class CSurface;
+class Surface;
 
 struct SHeightMap
 {
@@ -57,7 +57,7 @@ private:
 	u32 myWidth;
 	u32 myDepth;
 
-	CSurface* mySurface = nullptr;
+	Surface* mySurface = nullptr;
 
 	VertexBaseStruct myConstantStruct;
 };

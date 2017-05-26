@@ -547,6 +547,78 @@ void DirectX11::SetComputeShader(void* compute_shader)
 	myContext->CSSetShader(compute_shader ? static_cast<IComputeShader*>(compute_shader) : nullptr, nullptr, 0);
 }
 
+void* DirectX11::CreateVertexShader(void* pBuffer, float buffer_size)
+{
+	ID3D11VertexShader* vShader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
+	HRESULT hr = myDevice->CreateVertexShader(pBuffer, buffer_size, nullptr, &vShader);
+	if ( hr != S_OK )
+	{
+		DL_ASSERT("Failed to create vertex shader!");
+	}
+
+	return vShader;
+}
+
+void* DirectX11::CreatePixelShader(void* pBuffer, float buffer_size)
+{
+	ID3D11PixelShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
+	HRESULT hr = myDevice->CreatePixelShader(pBuffer, buffer_size, nullptr, &shader);
+	if ( hr != S_OK )
+	{
+		DL_ASSERT("Failed to create vertex shader!");
+	}
+
+	return shader;
+}
+
+void* DirectX11::CreateGeometryShader(void* pBuffer, float buffer_size)
+{
+	ID3D11GeometryShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
+	HRESULT hr = myDevice->CreateGeometryShader(pBuffer, buffer_size, nullptr, &shader);
+	if ( hr != S_OK )
+	{
+		DL_ASSERT("Failed to create vertex shader!");
+	}
+
+	return shader;
+}
+
+void* DirectX11::CreateHullShader(void* pBuffer, float buffer_size)
+{
+	ID3D11HullShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
+	HRESULT hr = myDevice->CreateHullShader(pBuffer, buffer_size, nullptr, &shader);
+	if ( hr != S_OK )
+	{
+		DL_ASSERT("Failed to create vertex shader!");
+	}
+
+	return shader;
+}
+
+void* DirectX11::CreateDomainShader(void* pBuffer, float buffer_size)
+{
+	ID3D11DomainShader* shader = nullptr;
+	HRESULT hr = myDevice->CreateDomainShader(pBuffer, buffer_size, nullptr, &shader);
+	if ( hr != S_OK )
+	{
+		DL_ASSERT("Failed to create vertex shader!");
+	}
+
+	return shader;
+}
+
+void* DirectX11::CreateComputeShader(void* pBuffer, float buffer_size)
+{
+	ID3D11ComputeShader* shader = nullptr;
+	HRESULT hr = myDevice->CreateComputeShader(pBuffer, buffer_size, nullptr, &shader);
+	if ( hr != S_OK )
+	{
+		DL_ASSERT("Failed to create vertex shader!");
+	}
+
+	return shader;
+}
+
 void DirectX11::ReportLiveObjects()
 {
 	myContext->ClearState();

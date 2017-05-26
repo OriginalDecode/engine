@@ -13,7 +13,7 @@ typedef struct ID3D11DeviceContext IDevContext;
 class DirectX11;
 class Effect;
 class Engine;
-class CSurface;
+class Surface;
 
 struct IndexDataWrapper;
 struct VertexBufferWrapper;

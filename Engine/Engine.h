@@ -177,6 +177,8 @@ public:
 		LOADING,
 		_COUNT
 	};
+	
+
 
 #ifdef _DEBUG
 	void OutputDebugString(std::string debug_str);

@@ -19,7 +19,7 @@ struct CompiledShader
 	void* compiledShader = nullptr;
 	void* m_Shader = nullptr;
 	int shaderSize = 0;
-	CU::GrowingArray<Effect*> effectPointers;
+	CU::GrowingArray<Effect*> effectPointers; //used to rebuild shaders in runtime.
 };
 
 class ShaderFactory

@@ -28,7 +28,7 @@ bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, c
 
 	SAFE_DELETE(image);
 	CreateVertices(aSize.x, aSize.y, position);
-	mySurface = new CSurface(myEffect);
+	mySurface = new Surface(myEffect);
 	mySurface->AddTexture("Data/Textures/terrain.dds", Effect::DIFFUSE);
 	//mySurface->AddTexture("Data/Textures/default_textures/no-texture-bw.dds", _ROUGHNESS);
 	m_HasLoaded = true;

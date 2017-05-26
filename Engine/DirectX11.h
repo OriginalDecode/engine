@@ -12,6 +12,8 @@ unknown_pointer = nullptr;
 
 typedef long HRESULT;
 
+//A ton of forward declarations. Maybe I should rewrite these things to something else
+
 struct IDXGISwapChain;
 struct ID3D11Device;
 struct ID3D11DeviceContext;
@@ -78,6 +80,15 @@ public:
 	void SetDomainShader(void* domain_shader) override;
 	void SetComputeShader(void* compute_shader) override;
 
+
+	void* CreateVertexShader(void* pBuffer, float buffer_size) override;
+	void* CreatePixelShader(void* pBuffer, float buffer_size) override;
+	void* CreateGeometryShader(void* pBuffer, float buffer_size) override;
+	void* CreateHullShader(void* pBuffer, float buffer_size) override;
+	void* CreateDomainShader(void* pBuffer, float buffer_size) override;
+	void* CreateComputeShader(void* pBuffer, float buffer_size) override;
+
+
 	//__________________________
 	// DirectX Functions
 
@@ -115,6 +126,7 @@ public:
 	void SetRasterizer(const eRasterizer& aRasterizer);
 	void SetBlendState(const eBlendStates& blendState);
 	void SetSamplerState(const eSamplerStates& samplerState);
+
 
 
 	void ReportLiveObjects();

@@ -31,13 +31,13 @@ private:
 
 
 
-class CSurface
+class Surface
 {
 public:
-	CSurface(Effect* anEffect);
-	CSurface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount,
+	Surface(Effect* anEffect);
+	Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount,
 		u32 aStartIndex, u32 aIndexCount);
-	CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology);
+	Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology);
 
 
 	void AddTexture(IShaderResourceView* texture, Effect::TextureSlot slot);
@@ -77,22 +77,22 @@ private:
 
 };
 
-__forceinline int CSurface::GetIndexCount() const
+__forceinline int Surface::GetIndexCount() const
 {
 	return myIndexCount;
 }
 
-__forceinline int CSurface::GetVertexCount() const
+__forceinline int Surface::GetVertexCount() const
 {
 	return myVertexCount;
 }
 
-__forceinline int CSurface::GetStartVertex() const
+__forceinline int Surface::GetStartVertex() const
 {
 	return myVertexStart;
 }
 
-__forceinline int CSurface::GetStartIndex() const
+__forceinline int Surface::GetStartIndex() const
 {
 	return myIndexStart;
 }

@@ -7,6 +7,12 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
+typedef void** GDevice;
+typedef void** GContext;
+typedef void** GRenderTargetView;
+typedef void** GShaderResourceView;
+
+
 struct CreateInfo
 {
 	HWND m_HWND;
@@ -65,6 +71,7 @@ enum class eSamplerStates
 
 enum class eGraphicsAPI
 {
+	NONE = -1,
 	D3D11,
 	VULKAN,
 };
@@ -85,14 +92,16 @@ public:
 
 	std::string GetAPIName() { return m_CreateInfo.m_APIName; }
 
-	virtual void EnableZBuffer() = 0;
-	virtual void DisableZBuffer() = 0;
 	virtual IDevice* GetDevice() = 0;
 
 	virtual void CopyResource(void * pDestination, void * pSource) = 0;
 
 	virtual void SetDebugName(void * pResource, std::string debug_name) = 0;
 	eGraphicsAPI GetActiveAPI() const { return m_ActiveAPI; }
+
+	virtual void EnableZBuffer() = 0;
+	virtual void DisableZBuffer() = 0;
+
 
 	/*
 	vulkan has
@@ -110,6 +119,13 @@ public:
 	virtual void SetDomainShader(void * vertex_shader) = 0;
 	virtual void SetComputeShader(void * vertex_shader) = 0;
 
+	virtual void* CreateVertexShader(void* pBuffer, float buffer_size) = 0;
+	virtual void* CreatePixelShader(void* pBuffer, float buffer_size) = 0;
+	virtual void* CreateGeometryShader(void* pBuffer, float buffer_size) = 0;
+	virtual void* CreateHullShader(void* pBuffer, float buffer_size) = 0;
+	virtual void* CreateDomainShader(void* pBuffer, float buffer_size) = 0;
+	virtual void* CreateComputeShader(void* pBuffer, float buffer_size) = 0;
+
 	/*
 		The depth_value variable is what the depth buffer is testing against in that state. 0.0 - 1.0
 	*/
@@ -118,7 +134,6 @@ public:
 protected:
 	CreateInfo m_CreateInfo;
 	eGraphicsAPI m_ActiveAPI;
-
 
 	std::bitset<int(eEngineFlags::_COUNT)> myEngineFlags;
 };

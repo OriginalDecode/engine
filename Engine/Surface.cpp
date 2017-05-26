@@ -11,7 +11,7 @@
 #include <DL_Debug.h>
 
 
-CSurface::CSurface(Effect* anEffect)
+Surface::Surface(Effect* anEffect)
 {
 	SetVertexCount(0);
 	SetVertexStart(0);
@@ -21,7 +21,7 @@ CSurface::CSurface(Effect* anEffect)
 	SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-CSurface::CSurface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount)
+Surface::Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount)
 {
 	SetVertexCount(aVertexCount);
 	SetVertexStart(aStartVertex);
@@ -31,7 +31,7 @@ CSurface::CSurface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aSt
 	SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-CSurface::CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
+Surface::Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
 {
 	SetVertexCount(aVertexCount);
 	SetVertexStart(aStartVertex);
@@ -40,7 +40,7 @@ CSurface::CSurface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIn
 	SetPrimology(aPrimology);
 }
 
-void CSurface::Activate(const RenderContext& render_context)
+void Surface::Activate(const RenderContext& render_context)
 {
 	if ( !myEffect )
 		return;
@@ -49,14 +49,14 @@ void CSurface::Activate(const RenderContext& render_context)
 	m_Material.Use(myEffect, render_context);
 }
 
-void CSurface::Deactivate()
+void Surface::Deactivate()
 {
 	if ( !myEffect )
 		return;
 	myEffect->Clear();
 }
 
-void CSurface::AddTexture(const std::string& file_path, Effect::TextureSlot slot)
+void Surface::AddTexture(const std::string& file_path, Effect::TextureSlot slot)
 {
 	std::string sub = file_path;
 	if (file_path.find(".dds") == file_path.npos)
@@ -72,42 +72,42 @@ void CSurface::AddTexture(const std::string& file_path, Effect::TextureSlot slot
 	
 }
 
-void CSurface::AddTexture(IShaderResourceView* texture, Effect::TextureSlot slot)
+void Surface::AddTexture(IShaderResourceView* texture, Effect::TextureSlot slot)
 {
 	m_Material.AddResource(texture, slot);
 }
 
-void CSurface::AddTexture(Texture* texture, Effect::TextureSlot slot)
+void Surface::AddTexture(Texture* texture, Effect::TextureSlot slot)
 {
 	m_Material.AddResource(texture, slot);
 }
 
-void CSurface::SetEffect(Effect* anEffect)
+void Surface::SetEffect(Effect* anEffect)
 {
 	myEffect = anEffect;
 }
 
-void CSurface::SetVertexStart(u32 aStartVertex)
+void Surface::SetVertexStart(u32 aStartVertex)
 {
 	myVertexStart = aStartVertex;
 }
 
-void CSurface::SetVertexCount(u32 aVertexCount)
+void Surface::SetVertexCount(u32 aVertexCount)
 {
 	myVertexCount = aVertexCount;
 }
 
-void CSurface::SetIndexStart(u32 aStartIndex)
+void Surface::SetIndexStart(u32 aStartIndex)
 {
 	myIndexStart = aStartIndex;
 }
 
-void CSurface::SetIndexCount(u32 aIndexCount)
+void Surface::SetIndexCount(u32 aIndexCount)
 {
 	myIndexCount = aIndexCount;
 }
 
-void CSurface::SetPrimology(D3D_PRIMITIVE_TOPOLOGY aPrimology)
+void Surface::SetPrimology(D3D_PRIMITIVE_TOPOLOGY aPrimology)
 {
 	myPrimologyType = aPrimology;
 }

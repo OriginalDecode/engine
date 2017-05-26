@@ -123,6 +123,7 @@ void AssetsContainer::LoadEffect(const std::string& aFilePath)
 
 std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect, bool thread)
 {
+	
 	if (myModels.find(aFilePath) == myModels.end())
 	{
 		DL_MESSAGE("Loading model : %s", aFilePath.c_str());
@@ -140,6 +141,7 @@ std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect
 		else
 		{
 			m_ModelLoader->LoadModel(model, aFilePath, effect);
+			model->Initiate(aFilePath);
 			return aFilePath;
 		}
 	}

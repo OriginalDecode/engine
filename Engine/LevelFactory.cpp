@@ -215,7 +215,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
 		el["shader"].GetString(),
-		true);
+		false);
 
 
 	if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
@@ -255,7 +255,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
 		el["shader"].GetString(),
-		true);
+		false);
 	component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
 	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 
@@ -543,9 +543,9 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	m_Engine->GetThreadpool().AddWork(Work([=] {
 		m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, -2, 0), CU::Vector2f(1024, 1024));
-	}));
+	//m_Engine->GetThreadpool().AddWork(Work([=] {
+	//}));
 	//terrain->AddNormalMap("Data/Textures/t1_n.dds");
 	/*
 	Work([&](std::string texture) {

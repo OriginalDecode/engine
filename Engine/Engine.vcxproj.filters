@@ -370,6 +370,7 @@
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="CommandAllocator.h" />
+    <ClInclude Include="ShaderState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -601,5 +602,6 @@
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="CommandAllocator.cpp" />
+    <ClCompile Include="ShaderState.cpp" />
   </ItemGroup>
 </Project>

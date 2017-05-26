@@ -37,7 +37,7 @@ public:
 	std::vector<float> GetVertices();
 	std::vector<s32> GetIndices();
 
-	CU::GrowingArray<CSurface*>& GetSurfaces() { return mySurfaces; }
+	CU::GrowingArray<Surface*>& GetSurfaces() { return mySurfaces; }
 	CU::GrowingArray<Model*> GetChildModels() { return myChildren; }
 
 private:
@@ -49,7 +49,7 @@ protected:
 	CU::GrowingArray<SVertexTypePosCol> myVertices;
 	CU::GrowingArray<s32> m_Indices;
 
-	CU::GrowingArray<CSurface*> mySurfaces;
+	CU::GrowingArray<Surface*> mySurfaces;
 
 	CU::Matrix44f myOrientation;
 };

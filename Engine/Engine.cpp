@@ -309,60 +309,29 @@ HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::st
 
 void* Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name)
 {
-	IDevice* device = myAPI->GetDevice();
 	if (shader_type.find(vertex_shader) != shader_type.npos)
 	{
-		IVertexShader* shader = nullptr;
-		HRESULT hr = device->CreateVertexShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
-		GetAPI()->HandleErrors(hr, "Failed to create Vertex Shader!");
-		GetAPI()->SetDebugName(shader, debug_name);
-		void* to_return = shader;
-		return to_return;
+		return myAPI->CreateVertexShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
 	}
 	else if (shader_type.find(pixel_shader) != shader_type.npos)
 	{
-		IPixelShader* shader = nullptr;
-		HRESULT hr = device->CreatePixelShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
-		GetAPI()->HandleErrors(hr, "Failed to create Pixel Shader!");
-		GetAPI()->SetDebugName(shader, debug_name);
-		void* to_return = shader;
-		return to_return;
+		return myAPI->CreatePixelShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
 	}
 	else if (shader_type.find(geometry_shader) != shader_type.npos)
 	{
-		IGeometryShader* shader = nullptr;
-		HRESULT hr = device->CreateGeometryShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
-		GetAPI()->HandleErrors(hr, "Failed to create Geometry Shader!");
-		GetAPI()->SetDebugName(shader, debug_name);
-		void* to_return = shader;
-		return to_return;
+		return myAPI->CreateGeometryShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
 	}
 	else if (shader_type.find(hull_shader) != shader_type.npos)
 	{
-		IHullShader* shader = nullptr;
-		HRESULT hr = device->CreateHullShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
-		GetAPI()->HandleErrors(hr, "Failed to create Hull Shader!");
-		GetAPI()->SetDebugName(shader, debug_name);
-		void* to_return = shader;
-		return to_return;
+		return myAPI->CreateHullShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
 	}
 	else if (shader_type.find(domain_shader) != shader_type.npos)
 	{
-		IDomainShader* shader = nullptr;
-		HRESULT hr = device->CreateDomainShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
-		GetAPI()->HandleErrors(hr, "Failed to create Domain Shader!");
-		GetAPI()->SetDebugName(shader, debug_name);
-		void* to_return = shader;
-		return to_return;
+		return myAPI->CreateDomainShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
 	}
 	else if (shader_type.find(compute_shader) != shader_type.npos)
 	{
-		IComputeShader* shader = nullptr;
-		HRESULT hr = device->CreateComputeShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), nullptr, &shader);
-		GetAPI()->HandleErrors(hr, "Failed to create Compute Shader!");
-		GetAPI()->SetDebugName(shader, debug_name);
-		void* to_return = shader;
-		return to_return;
+		return myAPI->CreateComputeShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
 	}
 	TRACE_LOG("FAILED TO CREATE ANY SHADER! TYPE NOT FOUND!");
 	DL_ASSERT("FAILED TO CREATE ANY SHADER! TYPE NOT FOUND!");

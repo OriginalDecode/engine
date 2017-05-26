@@ -57,18 +57,18 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 		return;
 
 
-	SetupLayoutsAndBuffers();
+	SetupLayoutsAndBuffers(); //depending
 
-	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context); //depending
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); //depending
 
-	for (CSurface* surface : mySurfaces)
+	for (Surface* surface : mySurfaces)
 	{
-		render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+		render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
 
 		surface->Activate(render_context);
 
-		render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0);
+		render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
 
 		surface->Deactivate();
 	}

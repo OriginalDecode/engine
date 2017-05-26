@@ -266,7 +266,7 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 	out->m_VertexData.mySize = sizeOfBuffer;
 	out->m_VertexData.myStride = data->myVertexStride * sizeof(float);
 
-	CSurface* newSurface = new CSurface(0, data->myVertexCount, 0
+	Surface* newSurface = new Surface(0, data->myVertexCount, 0
 		, data->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	out->m_IsRoot = false;

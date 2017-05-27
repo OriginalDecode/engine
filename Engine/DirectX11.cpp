@@ -619,6 +619,33 @@ void* DirectX11::CreateComputeShader(void* pBuffer, float buffer_size)
 	return shader;
 }
 
+void* DirectX11::CreateBlendState(s32 render_target_write_mask
+	, s32 enable_blend_flags
+	, BlendState::BlendOp blend_op, BlendState::BlendFlag src_blend, BlendState::BlendFlag dest_blend
+	, BlendState::BlendOp alpha_blend_op, BlendState::BlendFlag src_blend_alpha, BlendState::BlendFlag dest_blend_alpha)
+{
+	D3D11_BLEND_DESC blend_desc;
+	
+	blend_desc.AlphaToCoverageEnable = ( enable_blend_flags & BlendState::ALPHA_TO_COVERAGE);
+	blend_desc.IndependentBlendEnable = ( enable_blend_flags & BlendState::INDEPENDANT_BLEND_ENABLED );;
+	blend_desc.RenderTarget[0].BlendEnable = ( enable_blend_flags & BlendState::BLEND_ENABLED);
+
+	blend_desc.RenderTarget[0].SrcBlend = static_cast<D3D11_BLEND>(src_blend);
+	blend_desc.RenderTarget[0].DestBlend = static_cast<D3D11_BLEND>(dest_blend);
+	blend_desc.RenderTarget[0].BlendOp = static_cast<D3D11_BLEND_OP>(blend_op);
+
+	blend_desc.RenderTarget[0].SrcBlendAlpha = static_cast<D3D11_BLEND>(src_blend_alpha);
+	blend_desc.RenderTarget[0].DestBlendAlpha = static_cast<D3D11_BLEND>(dest_blend_alpha);
+	blend_desc.RenderTarget[0].BlendOpAlpha = static_cast<D3D11_BLEND_OP>(alpha_blend_op);
+
+	blend_desc.RenderTarget[0].RenderTargetWriteMask = render_target_write_mask;
+
+	ID3D11BlendState* blend_state = nullptr;
+	myDevice->CreateBlendState(&blend_desc, &blend_state);
+		
+	return blend_state;
+}
+
 void DirectX11::ReportLiveObjects()
 {
 	myContext->ClearState();

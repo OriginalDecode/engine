@@ -1,5 +1,6 @@
 #pragma once
 #include "snowblind_shared.h"
+#include <Engine/ShaderState.h>
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -101,6 +102,15 @@ public:
 
 	virtual void EnableZBuffer() = 0;
 	virtual void DisableZBuffer() = 0;
+
+
+	virtual void* CreateBlendState(s32 render_target_write_mask
+		, s32 enable_blend_flags
+		, BlendState::BlendOp blend_op, BlendState::BlendFlag src_blend, BlendState::BlendFlag dest_blend
+		, BlendState::BlendOp alpha_blend_op, BlendState::BlendFlag src_blend_alpha, BlendState::BlendFlag dest_blend_alpha) = 0;
+	virtual void* CreateRasterizerState() = 0;
+	virtual void* CreateDepthstencilState() = 0;
+	virtual void* CreateSamplerState() = 0;
 
 
 	/*

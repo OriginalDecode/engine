@@ -101,22 +101,27 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 	UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);
 	SetBuffers(render_context);
 
-	m_API->ResetViewport();
+	render_context.m_API->ResetViewport();
 
 	ID3D11RenderTargetView* render_target = myFinishedSceneTexture->GetRenderTargetView();
-	ID3D11DepthStencilView* depth = m_API->GetDepthView();
+	ID3D11DepthStencilView* depth = render_context.m_API->GetDepthView();
 
-	myContext->ClearRenderTargetView(render_target, myClearColor);
-	myContext->OMSetRenderTargets(1, &render_target, depth);
+	render_context.m_Context->ClearRenderTargetView(render_target, myClearColor);
+	render_context.m_Context->OMSetRenderTargets(1, &render_target, depth);
 
 	myAmbientPassShader->Use();
-	myContext->PSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_Context->PSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-	m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
-	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
-	m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
-	myContext->DrawIndexed(6, 0, 0);
-	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+	/*if ( m_Wireframe )
+		m_WireframeState.Use();
+	else
+		m_SamplerState.Use();*/
+
+	render_context.m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
+	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
+	render_context.m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
+	render_context.m_Context->DrawIndexed(6, 0, 0);
+	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 
 	myAmbientPassShader->Clear();
 

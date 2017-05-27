@@ -23,6 +23,7 @@
 
 #include "imgui_impl_dx11.h"
 
+
 #ifdef _PROFILE
 #include <easy/profiler.h>
 #endif 
@@ -90,6 +91,14 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_ShadowPass.Initiate(this);
 
 	m_DirectionalShadow.Initiate(2048.f);
+
+
+	BlendState blend_state(0x0F
+		, BlendState::BLEND_ENABLED
+		, BlendState::BLEND_OP_ADD, BlendState::BLEND_ONE, BlendState::BLEND_ONE
+		, BlendState::BLEND_OP_ADD, BlendState::BLEND_ZERO, BlendState::BLEND_ONE);
+
+	m_LightState = ShaderState(blend_state, SamplerState(), DepthstencilState());
 
 	return true;
 }
@@ -328,6 +337,7 @@ void Renderer::RenderSpotlight()
 	const CommandAllocator& commands = mySynchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER);
 	Effect* effect = m_LightPass.GetSpotlightEffect();
 	SpotlightData data;
+
 	for ( s32 i = 0; i < commands.Size(); i++ )
 	{
 		SpotlightCommand* command = reinterpret_cast< SpotlightCommand* >( commands[i] );
@@ -353,6 +363,7 @@ void Renderer::RenderSpotlight()
 
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
 		m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
+		m_LightState.Use(m_RenderContext);
 		effect->Use();
 		m_LightPass.RenderSpotlight(light, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
 		effect->Clear();

@@ -88,6 +88,14 @@ public:
 	void* CreateDomainShader(void* pBuffer, float buffer_size) override;
 	void* CreateComputeShader(void* pBuffer, float buffer_size) override;
 
+	void* CreateBlendState(s32 render_target_write_mask
+		, s32 enable_blend_flags
+		, BlendState::BlendOp blend_op, BlendState::BlendFlag src_blend, BlendState::BlendFlag dest_blend
+		, BlendState::BlendOp alpha_blend_op, BlendState::BlendFlag src_blend_alpha, BlendState::BlendFlag dest_blend_alpha) override;
+	void* CreateRasterizerState() override { return nullptr; };
+	void* CreateDepthstencilState() override { return nullptr; };
+	void* CreateSamplerState() override { return nullptr; };
+
 
 	//__________________________
 	// DirectX Functions

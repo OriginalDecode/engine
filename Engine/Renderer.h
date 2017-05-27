@@ -9,6 +9,7 @@
 #include <Engine/Atmosphere.h>
 #include <CommonLib/Math/Matrix/Matrix33.h>
 #include <Engine/Shadow_Directional.h>
+#include <Engine/ShaderState.h>
 
 class CLine3D;
 
@@ -97,5 +98,8 @@ private:
 	CEmitterInstance*	m_ParticleEmitter		= nullptr;
 
 	ShadowDirectional	m_DirectionalShadow;
+
+	ShaderState m_LightState;
+
 
 };

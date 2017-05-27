@@ -25,7 +25,7 @@ void SpotLight::CleanUp()
 
 void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera, const RenderContext& render_context)
 {
-	render_context.m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
+	//render_context.m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
 	m_Model->Render(previousOrientation, aCamera->GetPerspective(), render_context);
 }
 

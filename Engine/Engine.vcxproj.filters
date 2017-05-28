@@ -369,8 +369,10 @@
     <ClInclude Include="RenderCommand.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="CommandAllocator.h" />
     <ClInclude Include="ShaderState.h" />
+    <ClInclude Include="CommandAllocator.h">
+      <Filter>Allocators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -601,7 +603,9 @@
     <ClCompile Include="RenderCommand.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="CommandAllocator.cpp" />
     <ClCompile Include="ShaderState.cpp" />
+    <ClCompile Include="CommandAllocator.cpp">
+      <Filter>Allocators</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

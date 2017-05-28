@@ -39,7 +39,8 @@ void NodeEntityManager::Update(float dt)
 	const CU::GrowingArray<Entity>& entities = GetEntities(CreateFilter<Requires<TranslationComponent>>());
 	for ( Entity e : entities )
 	{
-		if ( CameraHandle::GetInstance() )
+		CameraHandle* handle = CameraHandle::GetInstance();
+		if ( handle)
 		{
 			TranslationComponent& t = GetComponent<TranslationComponent>(e);
 

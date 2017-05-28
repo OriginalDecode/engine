@@ -9,6 +9,7 @@
 
 constexpr float clear[4] = { 0.f, 0.f, 0.f, 0.f };
 
+
 bool DirectX11::Initiate(CreateInfo create_info)
 {
 	m_CreateInfo = create_info;
@@ -80,6 +81,23 @@ bool DirectX11::CleanUp()
 		SAFE_RELEASE(myRenderTarget);
 		SAFE_RELEASE(mySwapchain);
 	}
+
+
+
+
+	for ( ID3D11DepthStencilState* state : m_RegisteredDepthStates) 
+		SAFE_RELEASE(state);
+
+
+	for ( ID3D11SamplerState* state : m_RegisteredSamplerStates)
+		SAFE_RELEASE(state);
+
+	for ( ID3D11RasterizerState* state : m_RegisteredRasterStates)
+		SAFE_RELEASE(state);
+
+	for ( ID3D11BlendState* state : m_RegisteredBlendStates)
+		SAFE_RELEASE(state);
+
 
 	myContext->ClearState();
 	myContext->Flush();
@@ -643,7 +661,7 @@ void* DirectX11::CreateBlendState(s32 render_target_write_mask
 
 	ID3D11BlendState* blend_state = nullptr;
 	myDevice->CreateBlendState(&blend_desc, &blend_state);
-
+	m_RegisteredBlendStates.Add(blend_state);
 	return blend_state;
 }
 
@@ -665,6 +683,7 @@ void* DirectX11::CreateSamplerState(SamplerState::FilterMode filter_mode, Sample
 
 	ID3D11SamplerState* sampler_state;
 	myDevice->CreateSamplerState(&sampler_desc, &sampler_state);
+	m_RegisteredSamplerStates.Add(sampler_state);
 	return sampler_state;
 }
 

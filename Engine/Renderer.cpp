@@ -101,7 +101,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	float color[4] = { 0.f,0.f,0.f,0.f};
 	SamplerState sampler_state0(0, 
-		SamplerState::FILTER_MAXIMUM_ANISOTROPIC, SamplerState::PIXEL_SHADER, SamplerState::WRAP, 
+		SamplerState::FILTER_MIN_MAG_MIP_LINEAR, SamplerState::PIXEL_SHADER, SamplerState::WRAP, 
 		16, 0.f, 0.f, 0.f, color, 
 		SamplerState::COMPARISON_ALWAYS);
 

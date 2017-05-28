@@ -202,6 +202,13 @@ private:
 	s32 m_BoundConstantBuffers;
 
 
+	CU::GrowingArray<ID3D11SamplerState*> m_RegisteredSamplerStates;
+	CU::GrowingArray<ID3D11DepthStencilState*> m_RegisteredDepthStates;
+	CU::GrowingArray<ID3D11BlendState*> m_RegisteredBlendStates;
+	CU::GrowingArray<ID3D11RasterizerState*> m_RegisteredRasterStates;
+
+
+
 	void SetSamplerState(std::function<void(UINT,UINT,ID3D11SamplerState*const*)> function, ShaderState& shader_state, s32 shader_type);
 
 

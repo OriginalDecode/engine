@@ -55,7 +55,7 @@ void LightModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matri
 	
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
 	
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+	//render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 	render_context.m_Context->Draw(m_VertexData.myNrOfVertexes, 0);
 }
 

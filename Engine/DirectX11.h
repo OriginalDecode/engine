@@ -1,10 +1,11 @@
 #pragma once
 #ifdef SNOWBLIND_DX11
+#include <d3d11.h>
 #include "IGraphicsAPI.h"
 #include "snowblind_shared.h"
 #include <vector>
 #include <Engine/ShaderFactory.h>
-
+#include <functional>
 #define SAFE_RELEASE_UNKNOWN(x) \
 IUnknown* unknown_pointer = static_cast< IUnknown* >( x ); \
 unknown_pointer->Release(); \
@@ -94,7 +95,10 @@ public:
 		, BlendState::BlendOp alpha_blend_op, BlendState::BlendFlag src_blend_alpha, BlendState::BlendFlag dest_blend_alpha) override;
 	void* CreateRasterizerState() override { return nullptr; };
 	void* CreateDepthstencilState() override { return nullptr; };
-	void* CreateSamplerState() override { return nullptr; };
+	void* CreateSamplerState(SamplerState::FilterMode filter_mode, SamplerState::UVAddressMode address_mode, u32 max_anisotropy, float mip_lod_bias, float min_lod, float max_lod, float border_color[4], SamplerState::ComparisonFunc comparison_function) override;
+
+	void SetShaderState(ShaderState& shader_state) override;
+
 
 
 	//__________________________
@@ -196,6 +200,10 @@ private:
 	std::string myActiveAdapter;
 
 	s32 m_BoundConstantBuffers;
+
+
+	void SetSamplerState(std::function<void(UINT,UINT,ID3D11SamplerState*const*)> function, ShaderState& shader_state, s32 shader_type);
+
 
 };
 

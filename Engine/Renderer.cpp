@@ -98,7 +98,19 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 		, BlendState::BLEND_OP_ADD, BlendState::BLEND_ONE, BlendState::BLEND_ONE
 		, BlendState::BLEND_OP_ADD, BlendState::BLEND_ZERO, BlendState::BLEND_ONE);
 
-	m_LightState = ShaderState(blend_state, SamplerState(), DepthstencilState());
+
+	float color[4] = { 0.f,0.f,0.f,0.f};
+	SamplerState sampler_state0(0, 
+		SamplerState::FILTER_MAXIMUM_ANISOTROPIC, SamplerState::PIXEL_SHADER, SamplerState::WRAP, 
+		16, 0.f, 0.f, 0.f, color, 
+		SamplerState::COMPARISON_ALWAYS);
+
+
+	SamplerState states[] = {
+		sampler_state0,
+	};
+
+	m_LightState = ShaderState(blend_state, states, ARRAYSIZE(states), DepthstencilState(), RasterizerState());
 
 	return true;
 }

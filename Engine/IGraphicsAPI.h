@@ -108,9 +108,10 @@ public:
 		, s32 enable_blend_flags
 		, BlendState::BlendOp blend_op, BlendState::BlendFlag src_blend, BlendState::BlendFlag dest_blend
 		, BlendState::BlendOp alpha_blend_op, BlendState::BlendFlag src_blend_alpha, BlendState::BlendFlag dest_blend_alpha) = 0;
+	virtual void* CreateSamplerState(SamplerState::FilterMode filter_mode, SamplerState::UVAddressMode address_mode, u32 max_anisotropy, float mip_lod_bias, float min_lod, float max_lod, float border_color[4], SamplerState::ComparisonFunc comparison_function) = 0;
+
 	virtual void* CreateRasterizerState() = 0;
 	virtual void* CreateDepthstencilState() = 0;
-	virtual void* CreateSamplerState() = 0;
 
 
 	/*
@@ -135,6 +136,10 @@ public:
 	virtual void* CreateHullShader(void* pBuffer, float buffer_size) = 0;
 	virtual void* CreateDomainShader(void* pBuffer, float buffer_size) = 0;
 	virtual void* CreateComputeShader(void* pBuffer, float buffer_size) = 0;
+
+	virtual void SetShaderState(ShaderState& shader_state) = 0;
+
+
 
 	/*
 		The depth_value variable is what the depth buffer is testing against in that state. 0.0 - 1.0

@@ -81,7 +81,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 
 	m_PostProcessManager.Initiate();
-	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
+	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR | PostProcessManager::SSAO);
 
 	m_RenderContext.m_API = Engine::GetAPI();
 	m_RenderContext.m_Device = Engine::GetAPI()->GetDevice();
@@ -93,7 +93,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_DirectionalShadow.Initiate(2048.f);
 
 
-	BlendState blend_state(0x0F
+	/*BlendState blend_state(0x0F
 		, BlendState::BLEND_ENABLED
 		, BlendState::BLEND_OP_ADD, BlendState::BLEND_ONE, BlendState::BLEND_ONE
 		, BlendState::BLEND_OP_ADD, BlendState::BLEND_ZERO, BlendState::BLEND_ONE);
@@ -110,7 +110,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 		sampler_state0,
 	};
 
-	m_LightState = ShaderState(blend_state, states, ARRAYSIZE(states), DepthstencilState(), RasterizerState());
+	m_LightState = ShaderState(blend_state, states, ARRAYSIZE(states), DepthstencilState(), RasterizerState());*/
 
 	return true;
 }

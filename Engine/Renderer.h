@@ -43,6 +43,7 @@ public:
 	void Render3DShadows(const CU::Matrix44f& orientation, Camera* camera);
 
 	int RegisterLight();
+
 private:
 	void RenderNonDeferred3DCommands();
 	void Render3DCommands();

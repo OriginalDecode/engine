@@ -39,6 +39,8 @@ public:
 	void Finalize(const RenderContext& render_context);
 
 	Texture* GetFinalTexture();
+	Texture* GetSampleTexture();
+
 
 	//void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
 	Texture* GetDepthStencil();
@@ -72,6 +74,7 @@ private:
 	Effect* myScreenPassShader = nullptr;
 
 	Texture* myDepthStencil = nullptr;
+	Texture* m_SampleTexture = nullptr;
 	Texture* myFinishedSceneTexture = nullptr;
 	Texture* myCubeMap = nullptr;
 

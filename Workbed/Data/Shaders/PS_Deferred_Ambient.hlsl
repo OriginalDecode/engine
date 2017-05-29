@@ -91,7 +91,15 @@ float3 Fresnel(const float3 aSubstance, const float3 aLightDir, const float3 aHa
 }
 
 
-float4 PS(VS_OUTPUT input) : SV_Target
+struct AmbientReturnTextures
+{
+	float4 m_SampleTexture;
+	float4 m_FinishedTexture;
+};
+
+
+
+AmbientReturnTextures PS(VS_OUTPUT input) : SV_Target
 {
 	float4 depth = DepthTexture.Sample(point_Clamp, input.uv);
 	if(depth.x <= 0.f)
@@ -122,7 +130,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 ssao = SSAOTexture.Sample(point_Clamp, input.uv);
 	
 	float ao = 1.f;
-	
 	float3 toEye = normalize(camera_position.xyz - worldPosition.xyz);
 	float3 reflection_fresnel = ReflectionFresnel(substance, normal, -toEye, 1 - roughnessOffsetted);
 	float3 reflectionVector = reflect(toEye, normal.xyz);
@@ -158,5 +165,10 @@ float4 PS(VS_OUTPUT input) : SV_Target
  	float3 dir_color = float3(1,0.9,0.6);
 	float3 output = saturate(final_color * dir_color * NdotL);
 	
-	return float4(output + (ambientDiffuse * 0.42), 1.f);
+
+	AmbientReturnTextures return_textures;
+	return_textures.m_SampleTexture = float4(output + (ambientDiffuse * 0.42), 1.f);
+	return_textures.m_FinishedTexture = return_textures.m_SampleTexture;
+
+	return return_textures;
 };

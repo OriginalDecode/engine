@@ -23,6 +23,14 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 		, DXGI_FORMAT_R16G16B16A16_FLOAT
 		, "Texture : FinishedScene");
 
+
+	m_SampleTexture = new Texture;
+	m_SampleTexture->Initiate(window_size.m_Width, window_size.m_Height
+		, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+		, DXGI_FORMAT_R16G16B16A16_FLOAT
+		, "DeferredRenderer : SampleTexture");
+
+
 	myDepthStencil = new Texture;
 	myDepthStencil->Initiate(window_size.m_Width, window_size.m_Height
 		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
@@ -30,7 +38,7 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 		, DXGI_FORMAT_R32_TYPELESS
 		, DXGI_FORMAT_R32_FLOAT
 		, DXGI_FORMAT_D32_FLOAT
-		, "DeferredRenderer : ");
+		, "DeferredRenderer : DSV");
 
 	myCubeMap = myEngine->GetTexture("Data/Textures/T_cubemap_level01.dds");
 
@@ -45,8 +53,10 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 	myAmbientPassShader->AddShaderResource(myCubeMap, Effect::CUBEMAP);
 
 
-	Engine::GetInstance()->GetEffect("Shaders/T_SSAO.json")->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
-	Engine::GetInstance()->GetEffect("Shaders/T_SSAO.json")->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
+	Effect* ssao_effect = Engine::GetInstance()->GetEffect("Shaders/T_SSAO.json");
+	ssao_effect->AddShaderResource(m_SampleTexture, Effect::DIFFUSE);
+	ssao_effect->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
+	ssao_effect->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
 
 
 
@@ -110,31 +120,30 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 
 	render_context.m_API->ResetViewport();
 
-	ID3D11RenderTargetView* render_target = myFinishedSceneTexture->GetRenderTargetView();
+	ID3D11RenderTargetView* rtv[] = {
+		m_SampleTexture->GetRenderTargetView(),
+		myFinishedSceneTexture->GetRenderTargetView(),
+	};
 	ID3D11DepthStencilView* depth = render_context.m_API->GetDepthView();
 
-	render_context.m_Context->ClearRenderTargetView(render_target, myClearColor);
-	render_context.m_Context->OMSetRenderTargets(1, &render_target, depth);
+	render_context.m_Context->ClearRenderTargetView(rtv[0], myClearColor);
+	render_context.m_Context->ClearRenderTargetView(rtv[1], myClearColor);
+	render_context.m_Context->OMSetRenderTargets(ARRAYSIZE(rtv), rtv, depth);
 
 	myAmbientPassShader->Use();
 	render_context.m_Context->PSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-	/*if ( m_Wireframe )
-		m_WireframeState.Use();
-	else
-		m_SamplerState.Use();*/
-
 	render_context.m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
-	render_context.m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
+	render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	render_context.m_Context->DrawIndexed(6, 0, 0);
 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 
 	myAmbientPassShader->Clear();
 
-
 	depth = myDepthStencil->GetDepthView();
-	myContext->OMSetRenderTargets(1, &render_target, depth);
+
+	myContext->OMSetRenderTargets(1, &rtv[1], depth);
 }
 
 void DeferredRenderer::SetRenderTarget(const RenderContext& render_context)
@@ -180,6 +189,11 @@ void DeferredRenderer::Finalize(const RenderContext& render_contexts)
 Texture* DeferredRenderer::GetFinalTexture()
 {
 	return myFinishedSceneTexture;
+}
+
+Texture* DeferredRenderer::GetSampleTexture()
+{
+	return m_SampleTexture;
 }
 
 void DeferredRenderer::InitConstantBuffer()

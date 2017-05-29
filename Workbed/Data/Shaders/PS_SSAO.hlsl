@@ -1,5 +1,10 @@
+cbuffer SSAO : register(b0)
+{
+	row_major float4x4 InvertedProjection;
+	row_major float4x4 InvertedView;
+}
 
-
+Texture2D DiffuseTexture		: register ( t0 );
 Texture2D NormalTexture 	: register ( t1 );
 Texture2D DepthTexture 		: register ( t7 );
 SamplerState SSAOSampler 	: register ( s0 );
@@ -10,14 +15,14 @@ struct VS_OUTPUT
 	float2 uv : TEXCOORD;
 };
 
-static const float SSAO_Sample_Size = 0.05f; //Size of the SSAO
-static const float SSAO_Intensity = 0.3f; //The intensity of the SSAO
-static const float SSAO_Scale = 0.05f;
-static const float SSAO_Bias = 0.25f;
+static const float SSAO_Sample_Size = 0.1f; //Size of the SSAO
+static const float SSAO_Intensity = 0.75f; //The intensity of the SSAO
+static const float SSAO_Scale = 0.1f;
+static const float SSAO_Bias = 0.15f;
 
 float3 SSAOGetViewPosition(float2 uv)
 {
-	float depth = DepthTexture.Sample(point_Clamp, uv).x;
+	float depth = DepthTexture.Sample(SSAOSampler, uv).x;
 
 	float x = uv.x * 2.f - 1.f;
 	float y = (1.f - uv.y) * 2.f - 1.f;
@@ -81,17 +86,26 @@ float CalculateSSAO(float2 aUV, float3 aNormal)
  	 	ao += DoAmbientOcclusion(aUV, coord1*0.75, p, n);
  	 	ao += DoAmbientOcclusion(aUV, coord2, p, n);
 	}
-	ao /= (float)2*4.0;
+	ao /= (float)4*4.0;
 	ao = 1.f- ao;
 
 	return ao;
 }
 
+struct ReturnTextures
+{
+	float4 m_Diffuse;
+	float4 m_SSAODebug;
+};
 
-float4 PS(VS_OUTPUT input)
+ReturnTextures PS(VS_OUTPUT input) : SV_Target
 {
 	float4 normal = NormalTexture.Sample(SSAOSampler, input.uv);
 	float ao = CalculateSSAO(input.uv,normal);
 
-	return float4(ao, ao, ao, 1);
+	ReturnTextures return_textures;
+	return_textures.m_Diffuse  = DiffuseTexture.Sample(SSAOSampler, input.uv);
+	return_textures.m_SSAODebug = float4(ao,ao,ao,1);
+
+	return return_textures;
 }

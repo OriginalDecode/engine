@@ -6,6 +6,7 @@ void PostProcessManager::Initiate()
 {
 	m_Engine = Engine::GetInstance();
 	m_HDRPass.Initiate();
+	m_SSAOPass.Initiate();
 }
 
 void PostProcessManager::CleanUp()
@@ -16,6 +17,9 @@ void PostProcessManager::CleanUp()
 void PostProcessManager::Process(Texture*  current_frame_texture)
 {
 	m_Engine->DisableZ();
+
+	if(m_PassFlags & SSAO )
+		m_SSAOPass.Process(current_frame_texture);
 
 	if (m_PassFlags & HDR)
 		m_HDRPass.Process(current_frame_texture);

@@ -3,7 +3,7 @@
 #include "HDRPass.h"
 #include "MotionBlurPass.h"
 #include "BloomPass.h"
-
+#include "SSAOPass.h"
 
 class Texture;
 class Effect;
@@ -39,6 +39,7 @@ private:
 	HDRPass			m_HDRPass;
 	MotionBlurPass	m_MotionBlurPass;
 	BloomPass		m_BloomPass;
+	SSAOPass		m_SSAOPass;
 
 	Engine* m_Engine = nullptr;
 };

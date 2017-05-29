@@ -41,6 +41,7 @@ struct ControllerState;
 		CU::Vector3f RotateAroundPoint(const CU::Vector3f& position);
 
 		CU::Matrix44f& GetOrientation() { return m_Orientation2; }
+		CU::Matrix44f& GetCurrentOrientation() { return m_Orientation; }
 		CU::Vector3f GetPosition() const { return m_Orientation2.GetPosition(); }
 		CU::Matrix44f& Get2DOrientation() { return my2DOrientation; }
 

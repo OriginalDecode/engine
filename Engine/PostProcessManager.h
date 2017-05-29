@@ -19,6 +19,7 @@ public:
 		BLOOM = BITFLAG(0),
 		MOTIONBLUR = BITFLAG(1),
 		HDR = BITFLAG(2),
+		SSAO = BITFLAG(3),
 	};
 
 	s32 GetFlags() const { return m_PassFlags; }

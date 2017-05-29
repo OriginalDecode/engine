@@ -39,6 +39,7 @@ public:
 		DEPTH,
 		SHADOWMAP,
 		CUBEMAP,
+		SSAO,
 		_COUNT
 	};
 

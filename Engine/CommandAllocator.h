@@ -16,7 +16,7 @@ public:
 	void Clear();
 
 private:
-	void Dealloc(void* pMemory) override { assert(false && "Use Clear()"); }
+	void Dealloc(void*) override { assert(false && "Use Clear()"); }
 	s32 m_Offset = 0;
 };
 

@@ -83,7 +83,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	}
 
 
-	for (s32 i = 0; i < device_count; i++)
+	for (u32 i = 0; i < device_count; i++)
 	{
 		UINT size = 256;
 		TCHAR tbuffer[256];

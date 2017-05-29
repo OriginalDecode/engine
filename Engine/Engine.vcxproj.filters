@@ -373,6 +373,9 @@
     <ClInclude Include="CommandAllocator.h">
       <Filter>Allocators</Filter>
     </ClInclude>
+    <ClInclude Include="SSAOPass.h">
+      <Filter>Rendering\Passes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -606,6 +609,9 @@
     <ClCompile Include="ShaderState.cpp" />
     <ClCompile Include="CommandAllocator.cpp">
       <Filter>Allocators</Filter>
+    </ClCompile>
+    <ClCompile Include="SSAOPass.cpp">
+      <Filter>Rendering\Passes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

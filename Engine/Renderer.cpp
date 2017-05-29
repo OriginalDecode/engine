@@ -103,7 +103,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	SamplerState sampler_state0(0, 
 		SamplerState::FILTER_MIN_MAG_MIP_LINEAR, SamplerState::PIXEL_SHADER, SamplerState::WRAP, 
 		16, 0.f, 0.f, 0.f, color, 
-		SamplerState::COMPARISON_ALWAYS);
+		SamplerState::COMPARISON_NEVER);
 
 
 	SamplerState states[] = {
@@ -375,7 +375,7 @@ void Renderer::RenderSpotlight()
 
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
 		m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
-		m_LightState.Use(m_RenderContext);
+		//m_LightState.Use(m_RenderContext);
 		effect->Use();
 		m_LightPass.RenderSpotlight(light, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
 		effect->Clear();

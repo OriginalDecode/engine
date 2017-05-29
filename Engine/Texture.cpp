@@ -340,7 +340,7 @@ void Texture::Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat 
 		view_desc.Texture2D.MipLevels = 1;
 		view_desc.Texture2D.MostDetailedMip = 0;
 
-		HRESULT hr = api->GetDevice()->CreateShaderResourceView(_texture, &view_desc, &m_ShaderResource);
+		hr = api->GetDevice()->CreateShaderResourceView(_texture, &view_desc, &m_ShaderResource);
 		api->HandleErrors(hr, "[Texture](Initiate) : Failed to create DepthStencil-ShaderResourceView.");
 		api->SetDebugName(m_ShaderResource, debug_name + "DepthStencil-ShaderResourceView");
 		

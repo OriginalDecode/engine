@@ -112,13 +112,15 @@ enum eBufferType
 #define ADD_COMMAND_FUNC(buffer_type, command_type)\
 void AddRenderCommand(const command_type& command)\
 {\
-	DL_PRINT("Adding %s to %s", #command_type, #buffer_type);\
+	if(m_QuitFlag)\
+		return;\
+	TRACE_LOG("Adding %s to %s", #command_type, #buffer_type);\
 	CommandBuffer& buffer = m_CommandBuffers[buffer_type];\
-	DL_PRINT("Buffer %s received", #buffer_type);\
+	TRACE_LOG("Buffer %s received", #buffer_type);\
 	void* current = buffer[m_CurrentBuffer ^ 1].Alloc(sizeof(command_type));\
-	DL_PRINT("starting memcpy from command to CurrentPos()");\
+	TRACE_LOG("starting memcpy from command to CurrentPos()");\
 	memcpy(current, &command, sizeof(command_type));\
-	DL_PRINT("memcpy successfully ended");\
+	TRACE_LOG("memcpy successfully ended");\
 };
 
 

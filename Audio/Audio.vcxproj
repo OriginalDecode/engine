@@ -93,6 +93,8 @@
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\Math\Matrix\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PreprocessorDefinitions>_WINSOCKAPI_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\SteamAudio\Windows\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -123,6 +125,8 @@
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)CommonLib\Math\Vector\;$(SolutionDir)CommonLib\Math\Matrix\;$(SolutionDir)PostMaster\;$(SolutionDir)Physics\;$(SolutionDir)Include\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)DL_Debug\;$(SolutionDir)Include\DXTK\;$(SolutionDir)Include\inc\;$(SolutionDir)EntitySystem\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>_WINSOCKAPI_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -130,7 +134,8 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\SteamAudio\Windows\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>phonon.lib;phonons.lib</AdditionalDependencies>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

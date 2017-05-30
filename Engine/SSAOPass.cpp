@@ -74,6 +74,7 @@ void SSAOPass::Process(Texture* scene_texture)
 	float clear[4] = { 0.f, 0.f, 0.f, 0.f };
 	ctx->ClearRenderTargetView(m_SSAOTexture->GetRenderTargetView(), clear);
 	ctx->ClearRenderTargetView(m_DebugTexture->GetRenderTargetView(), clear);
+	float clear2[4] = { 0.f, 0.f, 0.f, 0.f };
 	ctx->ClearRenderTargetView(m_Test->GetRenderTargetView(), clear);
 
 	ID3D11RenderTargetView* rtv[] = {
@@ -112,7 +113,7 @@ void SSAOPass::Process(Texture* scene_texture)
 	m_ScreenQuad.Render();
 	m_BlurShader[1]->Clear();
 
-	float x_pos = m_WindowSize.m_Width - 64.f;
-	engine->GetSynchronizer()->AddRenderCommand(SpriteCommand(m_Test->GetShaderView(), {x_pos, 64.f + 512.f}));
+	float x_pos = m_WindowSize.m_Width - (480.f * 1.5f);
+	engine->GetSynchronizer()->AddRenderCommand(SpriteCommand(m_Test->GetShaderView(), {x_pos, (270.f / 2.f)}));
 
 }

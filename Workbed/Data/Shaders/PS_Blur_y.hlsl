@@ -54,7 +54,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	{
 		uv.y = input.uv.y + (PixelKernel[i] * TexelHeight.x);
 		float4 ssao_tex =  SSAOTexture.Sample(SSAOSampler, uv);
-		color += ssao_tex * BlurWeights[i];
+		color += ssao_tex * (BlurWeights[i]);
 	}
 
 	return color;

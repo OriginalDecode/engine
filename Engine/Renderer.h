@@ -102,5 +102,7 @@ private:
 
 	ShaderState m_LightState;
 
+	float m_SpriteWidth = 0.f;
+	float m_SpriteHeight = 0.f;
 
 };

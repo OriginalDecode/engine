@@ -6,8 +6,6 @@
 #include <DL_Debug/DL_Debug.h>
 
 #include <Application/Application.h>
-
-#include <Windows.h>
 #include <string>
 
 #ifdef _PROFILE

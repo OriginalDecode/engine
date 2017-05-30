@@ -62,8 +62,12 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 		, DXGI_FORMAT_D32_FLOAT
 		, "Renderer : Depth");
 
+
+	m_SpriteHeight = 270.f;
+	m_SpriteWidth = 480.f;
+
 	mySprite = new Sprite;
-	mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(128.f, 128.f), CU::Vector2f(0.f, 0.f));
+	mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(m_SpriteWidth, m_SpriteHeight), CU::Vector2f(0.f, 0.f));
 
 	myClearColor = new Sprite;
 	myClearColor->Initiate("Data/Textures/blank.dds", CU::Vector2f(128.f, 128.f), CU::Vector2f(0.f, 0.f));
@@ -176,11 +180,12 @@ void Renderer::Render()
 
 	const WindowSize& ws = Engine::GetInstance()->GetWindow().GetInnerSize();
 	const GBuffer& gbuffer = myDeferredRenderer->GetGBuffer();
-	float x_pos = ws.m_Width - 64.f;
-	mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetDiffuse()->GetShaderView(), { x_pos, 64.f }));
-	mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetNormal()->GetShaderView(), { x_pos, 64.f + 128.f}));
-	mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetDepth()->GetShaderView(), { x_pos, 64.f + 256.f }));
-	mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetEmissive()->GetShaderView(), { x_pos, 64.f + 384.f }));
+	float x_pos = ws.m_Width - m_SpriteWidth / 2.f;
+	float y_pos = 270.f / 2.f;
+	mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetDiffuse()->GetShaderView(), { x_pos, y_pos}));
+	mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetNormal()->GetShaderView(), { x_pos, y_pos + m_SpriteHeight}));
+	mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetDepth()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 2.f)}));
+	mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetEmissive()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 3)}));
 
 	RenderPointlight();
 	RenderSpotlight();

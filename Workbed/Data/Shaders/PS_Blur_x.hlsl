@@ -49,13 +49,13 @@ static const float BlurWeights[kernelSize] =
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 color = { 0, 0, 0, 1 };
-	float3 uv = { 0, input.uv.y, 0};
+	float2 uv = { 0, input.uv.y};
 
 	for (int i = 0; i < kernelSize; ++i)
 	{
 		uv.x = input.uv.x + (PixelKernel[i] * TexelWidth.x);
 		float4 ssao_tex = SSAOTexture.Sample(SSAOSampler, uv);
-		color += ssao_tex * BlurWeights[i];
+		color += ssao_tex * (BlurWeights[i] * 1.1);
 	}
 
 	return color;

@@ -1,4 +1,6 @@
 #pragma once
+#define _WINSOCKAPI_
+#include <network/network_api.h>
 
 #include "Window.h"
 #include "VirtualFileSystem.h"
@@ -247,6 +249,8 @@ private:
 	bool m_PauseInput = false;
 	float m_DeltaTime = 0.f;
 	s32	m_Frame = 0;
+
+
 };
 
 template<typename T>

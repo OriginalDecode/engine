@@ -15,8 +15,8 @@ struct VS_OUTPUT
 	float2 uv : TEXCOORD;
 };
 
-static const float SSAO_Sample_Size = 0.1f; //Size of the SSAO
-static const float SSAO_Intensity = 0.75f; //The intensity of the SSAO
+static const float SSAO_Sample_Size = 0.5f; //Size of the SSAO
+static const float SSAO_Intensity = 0.7f; //The intensity of the SSAO
 static const float SSAO_Scale = 0.1f;
 static const float SSAO_Bias = 0.15f;
 
@@ -100,7 +100,7 @@ struct ReturnTextures
 
 ReturnTextures PS(VS_OUTPUT input) : SV_Target
 {
-	float4 normal = NormalTexture.Sample(SSAOSampler, input.uv);
+	float4 normal = NormalTexture.Sample(SSAOSampler, input.uv) * 2 - 1;
 	float ao = CalculateSSAO(input.uv,normal);
 
 	ReturnTextures return_textures;

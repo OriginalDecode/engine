@@ -8,9 +8,10 @@ public:
 	ModelInstance() = default;
 	ModelInstance(Model* model);
 
-
 	const CU::Matrix44f& GetOrientation() const { return m_Orientation; }
+	void SetOrientation(const CU::Matrix44f& orientation) { m_Orientation = orientation; }
 
+	const Model& GetModel() { return  m_ModelRef; }
 
 	const ModelInstance& operator=(const ModelInstance& instance)
 	{

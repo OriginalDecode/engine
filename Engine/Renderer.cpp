@@ -286,10 +286,14 @@ void Renderer::Render3DCommands()
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
 		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-		Model* model = m_Engine->GetModel(command->m_Key);
-		model->SetOrientation(command->m_Orientation);
+		ModelInstance& instance = command->m_ModelInstance;
+		instance.SetOrientation(command->m_Orientation);
+
+		//Model& model = command->m_ModelInstance.GetModel();//m_Engine->GetModel(command->m_Key);
+		//model.SetOrientation(command->m_Orientation);
 		m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-		model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
+		command->m_ModelInstance.GetOrientation();
+		//model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 
 
 	}

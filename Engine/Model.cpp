@@ -73,6 +73,17 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 		surface->Deactivate();
 	}
 
+	int instance_count = 0;
+	render_context.m_Context->DrawIndexedInstanced(m_IndexData.myIndexCount
+			, instance_count
+			, 0 //index start pos
+			, m_VertexData.myNrOfVertexes
+			, 0);
+
+
+
+
+
 }
 
 void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)

@@ -2,6 +2,7 @@
 #include <string>
 #include <CommonLib/Math/Matrix/Matrix.h>
 #include <Engine/Line3D.h>
+#include <Engine/ModelInstance.h>
 struct ID3D11ShaderResourceView;
 
 struct RenderCommand
@@ -29,15 +30,15 @@ struct RenderCommand
 
 struct ModelCommand : public RenderCommand
 {
-	ModelCommand(const std::string& key, const CU::Matrix44f& orientation, bool wireframe)
+	ModelCommand(const ModelInstance& model_instance, const CU::Matrix44f& orientation, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Orientation(orientation)
 		, m_Wireframe(wireframe)
+		, m_ModelInstance(model_instance)
 	{
-		strcpy_s(m_Key, key.c_str());
 	}
 	
-	char m_Key[128] = { '\0' };
+	const ModelInstance& m_ModelInstance;
 	CU::Matrix44f m_Orientation;
 	bool m_Wireframe = false;
 

@@ -2,11 +2,11 @@
 #include <string>
 #include "BaseComponent.h"
 #include <Math/Vector/Vector.h>
-
+#include <Engine/ModelInstance.h>
 struct RenderComponent : public BaseComponent
 {
-	std::string myModelID;
-	CU::Vector4f scale;
+	ModelInstance m_ModelInstance;
+	CU::Vector4f m_Scale;
 	CU::Vector4f m_Rotation;
 	CU::Vector3f m_MinPos;
 	CU::Vector3f m_MaxPos;

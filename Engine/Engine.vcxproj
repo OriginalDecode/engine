@@ -703,7 +703,6 @@
     <ClInclude Include="imgui_impl_dx11.h" />
     <ClInclude Include="imgui_internal.h" />
     <ClInclude Include="IndexWrapper.h" />
-    <ClInclude Include="Instance.h" />
     <ClInclude Include="LevelFactory.h" />
     <ClInclude Include="LightModel.h" />
     <ClInclude Include="LightPass.h" />
@@ -712,6 +711,7 @@
     <ClInclude Include="LinearAllocator.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelImporter.h" />
+    <ClInclude Include="ModelInstance.h" />
     <ClInclude Include="MotionBlurPass.h" />
     <ClInclude Include="MousePicker.h">
       <SubType>
@@ -803,7 +803,6 @@
     <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
     <ClCompile Include="imgui_impl_dx11.cpp" />
-    <ClCompile Include="Instance.cpp" />
     <ClCompile Include="LevelFactory.cpp" />
     <ClCompile Include="LightModel.cpp" />
     <ClCompile Include="LightPass.cpp" />
@@ -811,6 +810,7 @@
     <ClCompile Include="LinearAllocator.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelImporter.cpp" />
+    <ClCompile Include="ModelInstance.cpp" />
     <ClCompile Include="MotionBlurPass.cpp" />
     <ClCompile Include="MousePicker.cpp">
       <SubType>

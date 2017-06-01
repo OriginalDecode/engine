@@ -57,7 +57,14 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 		return;
 
 
-	SetupLayoutsAndBuffers(); //depending
+	//SetupLayoutsAndBuffers(); //depending
+	//IDevContext* ctx = Engine::GetAPI()->GetContext();
+	render_context.m_Context->IASetInputLayout(m_VertexLayout);
+	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render_context.m_Context->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);
+	render_context.m_Context->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
+
+
 
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context); //depending
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); //depending
@@ -209,6 +216,11 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const 
 	m_ConstantStruct.m_Projection = aCameraProjection;
 
 	render_context.m_API->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
+
+	render_context.m_API->UpdateConstantBuffer(m_InstanceBuffer, &m_Orientations);
+
+
+
 }
 
 void Model::AddChild(Model* aChild)
@@ -230,21 +242,9 @@ void Model::InitConstantBuffer()
 	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 
 	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
-	Engine::GetAPI()->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+	Engine::GetAPI()->HandleErrors(hr, "[Model] : Failed to Create Constant Buffer, ");
 
-
-	m_Orientations.ReInit(250);
-	D3D11_BUFFER_DESC instance_desc;
-	ZeroMemory(&instance_desc, sizeof(instance_desc));
-	instance_desc.ByteWidth = sizeof(CU::Matrix44f) * 250;
-
-
-
-
-
-
-
-
+	m_InstanceBuffer = Engine::GetAPI()->CreateVertexBuffer(sizeof(CU::Matrix44f) * 250, &m_InstanceBufferWrapper.myVertexBuffer);
 
 
 }

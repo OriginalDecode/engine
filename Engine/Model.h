@@ -50,7 +50,9 @@ protected:
 	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
 
 
-	CU::StaticArray<CU::Matrix44f, 250> m_Orientations;
+	CU::GrowingArray<CU::Matrix44f> m_Orientations;
+	IBuffer* m_InstanceBuffer = nullptr;
+	VertexBufferWrapper m_InstanceBufferWrapper;
 
 	CU::GrowingArray<SVertexTypePosCol> myVertices;
 	CU::GrowingArray<s32> m_Indices;

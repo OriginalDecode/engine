@@ -61,29 +61,24 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context); //depending
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); //depending
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
 
 	for (Surface* surface : mySurfaces)
 	{
-		render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
 
 		surface->Activate(render_context);
 
-		render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
+		render_context.m_Context->DrawIndexedInstanced(m_IndexData.myIndexCount
+			, m_Orientations.Size()
+			, 0
+			, m_VertexData.myNrOfVertexes
+			, 0);
+		//render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
 
 		surface->Deactivate();
 	}
 
-	int instance_count = 0;
-	render_context.m_Context->DrawIndexedInstanced(m_IndexData.myIndexCount
-			, instance_count
-			, 0 //index start pos
-			, m_VertexData.myNrOfVertexes
-			, 0);
-
-
-
-
-
+	m_Orientations.RemoveAll();
 }
 
 void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
@@ -196,7 +191,7 @@ std::vector<s32> Model::GetIndices()
 
 void Model::AddOrientation(const CU::Matrix44f& orientation)
 {
-	m_Orientations.InsertLast(orientation);
+	m_Orientations.Add(orientation);
 }
 
 void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
@@ -236,4 +231,20 @@ void Model::InitConstantBuffer()
 
 	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
 	Engine::GetAPI()->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+
+
+	m_Orientations.ReInit(250);
+	D3D11_BUFFER_DESC instance_desc;
+	ZeroMemory(&instance_desc, sizeof(instance_desc));
+	instance_desc.ByteWidth = sizeof(CU::Matrix44f) * 250;
+
+
+
+
+
+
+
+
+
+
 }

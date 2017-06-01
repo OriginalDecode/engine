@@ -97,9 +97,7 @@ void TreeNode::Update(float dt)
 			if (pair.m_Type & TreeDweller::TRANSLATION)
 			{
 				if (m_Parent && !InsideNode(dweller))
-				{
-					m_Octree->MoveUp(this, dweller, m_Depth);
-					found = true;
+				{zzzzz
 					break;
 				}
 			}

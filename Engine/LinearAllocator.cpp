@@ -14,7 +14,7 @@ void* LinearAllocator::Alloc(s32 size_in_bytes, u8 alignment)
 	u8 adjustment = AlignForwardAdjustment(m_CurrentPos, alignment);
 	assert(m_UsedMemory + adjustment + size_in_bytes <= m_AllocatedMemory && "Out of memory!");
 
-	u64 aligned_address = (u64)m_CurrentPos + adjustment;
+	uptr aligned_address = (uptr)m_CurrentPos + adjustment;
 	m_CurrentPos = (void*)(aligned_address + size_in_bytes);
 	m_UsedMemory += size_in_bytes + adjustment;
 	m_NumberOfAllocations++;

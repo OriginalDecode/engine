@@ -279,6 +279,7 @@ void Renderer::Render3DCommands()
 	}
 
 	const CommandAllocator& commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
+
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		ModelCommand* command = reinterpret_cast< ModelCommand* >( commands[i] );
@@ -287,16 +288,27 @@ void Renderer::Render3DCommands()
 
 		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 		ModelInstance& instance = command->m_ModelInstance;
-		instance.SetOrientation(command->m_Orientation);
+		Model& model = instance.GetModel();
+		model.AddOrientation(command->m_Orientation);
+
 
 		//Model& model = command->m_ModelInstance.GetModel();//m_Engine->GetModel(command->m_Key);
 		//model.SetOrientation(command->m_Orientation);
-		m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-		command->m_ModelInstance.GetOrientation();
+
+		//command->m_ModelInstance.GetOrientation();
+
 		//model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
-
-
 	}
+
+	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
+	{
+		m_API->SetRasterizer(eRasterizer::CULL_BACK);
+		it->second->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
+	}
+
+
+
+
 }
 
 void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
@@ -308,12 +320,12 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 
 	for ( s32 i = 0; i < commands.Size(); i++ )
 	{
-		ModelCommand* command = reinterpret_cast< ModelCommand* >( commands[i] );
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
-			
-		Model* model = m_Engine->GetModel(command->m_Key);
-		model->SetOrientation(command->m_Orientation);
-		model->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
+		/*	ModelCommand* command = reinterpret_cast< ModelCommand* >( commands[i] );
+			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
+
+			Model* model = m_Engine->GetModel(command->m_Key);
+			model->SetOrientation(command->m_Orientation);
+			model->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);*/
 	}
 }
 

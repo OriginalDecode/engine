@@ -247,7 +247,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 
 
-	component.m_ModelInstance = ModelInstance(m_Engine->GetModel(model_id));
+//	component.m_ModelInstance = ModelInstance(m_Engine->GetModel(model_id));
 
 
 
@@ -276,7 +276,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	//CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
 	//m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
-	//m_DwellerList.GetLast()->SetWHD(whd);
+	//m_DwellerList.GetLast()->SetWHD(whd);*/
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)
@@ -320,7 +320,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 
 	}
 	component.myBody->SetEntity(entity_id);
-	m_PhysicsManager->Add(phys_body);*/
+	m_PhysicsManager->Add(phys_body); /**/
 }
 
 void LevelFactory::CreateCameraComponent(JSONReader& /*entity_reader*/, Entity entity_id)
@@ -427,12 +427,12 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	CU::Vector3f whd;
 	if (!isLight)
 	{
-		RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
+		/*RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
 		Model* model = m_Engine->GetModel(render.myModelID);
 		whd = model->GetWHD();
 		component.m_Rotation = render.m_Rotation;
 		component.m_MinPoint = model->GetMinPoint();
-		component.m_MaxPoint = model->GetMaxPoint();
+		component.m_MaxPoint = model->GetMaxPoint();*/
 
 
 	}

@@ -24,6 +24,7 @@ namespace CommonUtilities
 		inline void Insert(int aIndex, Type& aObject);
 		inline void DeleteAll();
 		inline void InsertLast(Type& object);
+		inline void InsertLast(const Type& object);
 
 		typedef Type* iterator;
 		typedef const Type* const_iterator;
@@ -33,6 +34,9 @@ namespace CommonUtilities
 		const_iterator end() const { return &myData[T2]; }
 
 		bool operator==(const StaticArray<Type>& other);
+		
+		void Clear() { m_LastIndex = 0; }
+
 
 	private:
 		Type myData[T2];
@@ -111,6 +115,14 @@ namespace CommonUtilities
 
 	SA_TEMPLATE
 		inline void SA_TYPE::InsertLast(Type& object)
+	{
+		assert(m_LastIndex < m_Capacity && "Can't add to last if container is full.");
+		myData[m_LastIndex] = object;
+		m_LastIndex++;
+	}
+
+	SA_TEMPLATE
+		inline void SA_TYPE::InsertLast(const Type& object)
 	{
 		assert(m_LastIndex < m_Capacity && "Can't add to last if container is full.");
 		myData[m_LastIndex] = object;

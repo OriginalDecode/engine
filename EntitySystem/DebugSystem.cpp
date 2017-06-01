@@ -361,8 +361,8 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		bool has_render = node_manager.HasComponent(m_CurrentEntity, CreateFilter<Requires<RenderComponent>>());
 		if ( has_render )
 		{
-			RenderComponent& r = node_manager.GetComponent<RenderComponent>(m_CurrentEntity);
-			current_model = r.myModelID;
+			//RenderComponent& r = node_manager.GetComponent<RenderComponent>(m_CurrentEntity);
+			//current_model = r.myModelID;
 		}
 	}
 }

@@ -4,6 +4,7 @@
 
 #include "BaseModel.h"
 #include "snowblind_shared.h"
+#include <CommonLib/DataStructures/StaticArray.h>
 
 struct D3D11_INPUT_ELEMENT_DESC;
 
@@ -40,11 +41,16 @@ public:
 	CU::GrowingArray<Surface*>& GetSurfaces() { return mySurfaces; }
 	CU::GrowingArray<Model*> GetChildModels() { return myChildren; }
 
+	void AddOrientation(const CU::Matrix44f& orientation);
+
 private:
 	CU::GrowingArray<Model*> myChildren;
 protected:
 	void InitConstantBuffer();
 	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
+
+
+	CU::StaticArray<CU::Matrix44f, 250> m_Orientations;
 
 	CU::GrowingArray<SVertexTypePosCol> myVertices;
 	CU::GrowingArray<s32> m_Indices;

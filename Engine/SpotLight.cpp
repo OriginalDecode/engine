@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "SpotLight.h"
-#include "Instance.h"
 #include "Camera.h"
 #include <Engine/ShadowSpotlight.h>
 

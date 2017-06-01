@@ -194,6 +194,11 @@ std::vector<s32> Model::GetIndices()
 }
 
 
+void Model::AddOrientation(const CU::Matrix44f& orientation)
+{
+	m_Orientations.InsertLast(orientation);
+}
+
 void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
 	if ( m_IsRoot )

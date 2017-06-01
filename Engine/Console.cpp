@@ -4,7 +4,6 @@
 #include "Sprite.h"
 #include "Engine.h"
 #include "EngineDefines.h"
-#include "Instance.h"
 #include "Model.h"
 #include "Scene.h"
 #include "AssetsContainer.h"

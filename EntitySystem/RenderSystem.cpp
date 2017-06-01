@@ -78,8 +78,8 @@ void RenderSystem::Update(float /*dt*/)
 		EASY_BLOCK("RenderSystem : Entity Scale multiplication");
 #endif
 		CU::Matrix44f t = translation.myOrientation;
-		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
-		mySynchronizer->AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
+		t = CU::Matrix44f::CreateScaleMatrix(render.m_Scale) * t;
+//		mySynchronizer->AddRenderCommand(ModelCommand(render.m_ModelInstance, t, render.m_RenderWireframe));
 
 		//mySynchronizer->AddRenderCommand(RenderCommand(
 		//	eType::MODEL,

@@ -247,7 +247,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 
 
-//	component.m_ModelInstance = ModelInstance(m_Engine->GetModel(model_id));
+	component.m_ModelInstance = ModelInstance(m_Engine->GetModel(model_id));
 
 
 

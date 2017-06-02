@@ -97,7 +97,7 @@ void TreeNode::Update(float dt)
 			if (pair.m_Type & TreeDweller::TRANSLATION)
 			{
 				if (m_Parent && !InsideNode(dweller))
-				{zzzzz
+				{
 					break;
 				}
 			}

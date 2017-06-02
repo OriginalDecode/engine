@@ -6,7 +6,7 @@
 #include <DL_Debug.h>
 #include "Engine.h"
 #include "Surface.h"
-
+#include <CommonLib/DataStructures/Hashmap/Hash.h>
 void Model::CleanUp()
 {
 	mySurfaces.DeleteAll();
@@ -25,12 +25,14 @@ void Model::CleanUp()
 void Model::Initiate(const std::string& filename)
 {
 	m_Filename = CL::substr(filename, "/", false, 0);
+	m_FileHash = Hash(filename.c_str());
 	if (m_IsRoot == false)
 	{
 		InitVertexBuffer();
 		InitIndexBuffer();
 		InitConstantBuffer();
 	}
+
 
 	for (Model* child : myChildren)
 	{
@@ -61,12 +63,40 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 	//IDevContext* ctx = Engine::GetAPI()->GetContext();
 	render_context.m_Context->IASetInputLayout(m_VertexLayout);
 	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	render_context.m_Context->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);
+	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context); //depending
+	
+	ID3D11Buffer* vbs[] = {
+		m_VertexBuffer.myVertexBuffer,
+		m_InstanceBufferWrapper.myVertexBuffer
+	};
+	/*
+	
+	float4 pos 		: SV_POSITION; 
+	float3 normal 	: NORMAL;
+	float2 uv 		: TEXCOORD;
+	float3 binorm 	: BINORMAL;
+	float3 tang 	: TANGENT;
+	float4 worldpos : POSITION;
+
+
+	*/
+	u32 strides[] = {
+		//sizeof(cbVertex),
+		sizeof(CU::Matrix44f)
+	};
+
+	u32 offsets[] = {
+		0,
+		0
+	};
+
+
+	render_context.m_Context->IASetVertexBuffers(0, ARRAYSIZE(vbs), vbs, strides, offsets);
+
+	//render_context.m_Context->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);
 	render_context.m_Context->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
 
 
-
-	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context); //depending
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); //depending
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
 
@@ -75,10 +105,10 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 
 		surface->Activate(render_context);
 
-		render_context.m_Context->DrawIndexedInstanced(m_IndexData.myIndexCount
+		render_context.m_Context->DrawIndexedInstanced(surface->GetIndexCount()
 			, m_Orientations.Size()
 			, 0
-			, m_VertexData.myNrOfVertexes
+			, surface->GetStartVertex()
 			, 0);
 		//render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
 

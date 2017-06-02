@@ -193,33 +193,33 @@ void Renderer::Render()
 
 	m_Engine->ResetRenderTargetAndDepth();
 
-	myDeferredRenderer->SetBuffers(m_RenderContext); //This is just the quad
-	m_PostProcessManager.Process(myDeferredRenderer->GetFinalTexture());
+myDeferredRenderer->SetBuffers(m_RenderContext); //This is just the quad
+m_PostProcessManager.Process(myDeferredRenderer->GetFinalTexture());
 
-	if ( m_PostProcessManager.GetFlags() == 0 )
-		myDeferredRenderer->Finalize(m_RenderContext);
+if (m_PostProcessManager.GetFlags() == 0)
+myDeferredRenderer->Finalize(m_RenderContext);
 
 
-	//m_Atmosphere.SetLightData(m_Direction, m_DirectionalCamera->GetPosition());
+//m_Atmosphere.SetLightData(m_Direction, m_DirectionalCamera->GetPosition());
 
-	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), myDeferredRenderer->GetDepthStencil()->GetDepthView());
-	m_Atmosphere.Render(m_Camera->GetOrientation(), myDeferredRenderer->GetDepthStencil(), m_RenderContext);
+m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), myDeferredRenderer->GetDepthStencil()->GetDepthView());
+m_Atmosphere.Render(m_Camera->GetOrientation(), myDeferredRenderer->GetDepthStencil(), m_RenderContext);
 
-	m_Engine->ResetRenderTargetAndDepth();
+m_Engine->ResetRenderTargetAndDepth();
 
-	RenderNonDeferred3DCommands();
+RenderNonDeferred3DCommands();
 
-	RenderParticles();
-	RenderLines();
-	Render2DCommands();
+RenderParticles();
+RenderLines();
+Render2DCommands();
 
-	ImGui::Render();
+ImGui::Render();
 
-	m_Engine->Present();
+m_Engine->Present();
 
-	mySynchronizer->WaitForLogic();
-	mySynchronizer->SwapBuffer();
-	mySynchronizer->RenderIsDone();
+mySynchronizer->WaitForLogic();
+mySynchronizer->SwapBuffer();
+mySynchronizer->RenderIsDone();
 
 }
 
@@ -270,9 +270,9 @@ void Renderer::Render3DCommands()
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
-	for ( CTerrain* terrain : myTerrainArray )
+	for (CTerrain* terrain : myTerrainArray)
 	{
-		if ( !terrain->HasLoaded() )
+		if (!terrain->HasLoaded())
 			continue;
 
 		terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
@@ -282,22 +282,21 @@ void Renderer::Render3DCommands()
 
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
-		ModelCommand* command = reinterpret_cast< ModelCommand* >( commands[i] );
+		ModelCommand* command = reinterpret_cast<ModelCommand*>(commands[i]);
 
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
 		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-		ModelInstance& instance = command->m_ModelInstance;
-		Model& model = instance.GetModel();
+		ModelInstance* instance = command->m_ModelInstance;
+		Model& model = *instance->GetModel();
 		model.AddOrientation(command->m_Orientation);
 
 
-		//Model& model = command->m_ModelInstance.GetModel();//m_Engine->GetModel(command->m_Key);
-		//model.SetOrientation(command->m_Orientation);
-
-		//command->m_ModelInstance.GetOrientation();
-
-		//model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
+		//profile when lots of commands
+		if (m_ModelsToRender.find(model.GetHash()) == m_ModelsToRender.end())
+		{
+			m_ModelsToRender[model.GetHash()] = &model;
+		}
 	}
 
 	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
@@ -305,9 +304,6 @@ void Renderer::Render3DCommands()
 		m_API->SetRasterizer(eRasterizer::CULL_BACK);
 		it->second->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 	}
-
-
-
 
 }
 

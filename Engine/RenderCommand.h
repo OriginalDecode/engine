@@ -5,6 +5,8 @@
 #include <Engine/ModelInstance.h>
 struct ID3D11ShaderResourceView;
 
+class ModelInstance;
+
 struct RenderCommand
 {
 	enum eCommandType
@@ -30,7 +32,7 @@ struct RenderCommand
 
 struct ModelCommand : public RenderCommand
 {
-	ModelCommand(ModelInstance& model_instance, const CU::Matrix44f& orientation, bool wireframe)
+	ModelCommand(ModelInstance* model_instance, const CU::Matrix44f& orientation, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Orientation(orientation)
 		, m_Wireframe(wireframe)
@@ -38,7 +40,7 @@ struct ModelCommand : public RenderCommand
 	{
 	}
 	
-	ModelInstance& m_ModelInstance;
+	ModelInstance* m_ModelInstance;
 	CU::Matrix44f m_Orientation;
 	bool m_Wireframe = false;
 

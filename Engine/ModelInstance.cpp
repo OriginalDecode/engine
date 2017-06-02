@@ -4,7 +4,7 @@
 
 
 ModelInstance::ModelInstance(Model* model)
-	: m_ModelRef(*model)
+	: m_ModelRef(model)
 {
 }
 

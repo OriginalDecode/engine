@@ -80,8 +80,14 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 
 
 	*/
+
+	const s32 v4Size = sizeof(CU::Vector4f);
+	const s32 v3Size = sizeof(CU::Vector3f);
+	const s32 v2Size = sizeof(CU::Vector2f);
+	const s32 total_size = (v4Size * 2) + (v3Size * 3) + v2Size;
+
 	u32 strides[] = {
-		//sizeof(cbVertex),
+		sizeof(total_size),
 		sizeof(CU::Matrix44f)
 	};
 

@@ -19,7 +19,7 @@
 #include <GhostObject.h>
 #include "../hashlist.h"
 #include "TreeDweller.h"
-#include <Engine/ModelInstance.h>
+
 void LevelFactory::Initiate()
 {
 	m_Engine = Engine::GetInstance();
@@ -212,7 +212,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 	const JSONElement& el = entity_reader.GetElement("graphics");
-	std::string model_id = m_Engine->LoadModel(
+	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
 		el["shader"].GetString(),
 		true);
@@ -220,15 +220,15 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
 		sponza = true;
-	//component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
-	//component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
+	component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
+	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 
 	CU::Vector3f scale;
 	m_LevelReader.ReadElement(it->value["scale"], scale);
 	CU::Vector3f rotation;
 	m_LevelReader.ReadElement(it->value["rotation"], rotation);
 
-	//component.m_Rotation = rotation;
+	component.m_Rotation = rotation;
 
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
 	translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z)) * translation.myOrientation;
@@ -238,37 +238,24 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z));
 	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y));
 
-	//component.scale = scale;
-	//component.scale.w = 1.f;
+	component.scale = scale;
+	component.scale.w = 1.f;
 
-	const CU::Vector3f& whd = m_Engine->GetModel(model_id)->GetWHD();
+	CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
 	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
 	m_DwellerList.GetLast()->SetWHD(whd);
-
-
-
-	component.m_ModelInstance = ModelInstance(m_Engine->GetModel(model_id));
-
-
-
 }
 
 void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id)
 {
-	/*m_EntityManager->AddComponent<RenderComponent>(entity_id);
+	m_EntityManager->AddComponent<RenderComponent>(entity_id);
 
 	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 	const JSONElement& el = entity_reader.GetElement("graphics");
-	component.m_ModelInstance = ModelInstance(
-		m_Engine->GetModel
-		(
-			m_Engine->LoadModel
-			(
-				el["model"].GetString(),
-				el["shader"].GetString(),
-				true
-			)
-		));
+	component.myModelID = m_Engine->LoadModel(
+		el["model"].GetString(),
+		el["shader"].GetString(),
+		true);
 	component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
 	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 
@@ -276,7 +263,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	//CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
 	//m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
-	//m_DwellerList.GetLast()->SetWHD(whd);*/
+	//m_DwellerList.GetLast()->SetWHD(whd);
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)
@@ -320,7 +307,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 
 	}
 	component.myBody->SetEntity(entity_id);
-	m_PhysicsManager->Add(phys_body); /**/
+	m_PhysicsManager->Add(phys_body);
 }
 
 void LevelFactory::CreateCameraComponent(JSONReader& /*entity_reader*/, Entity entity_id)
@@ -427,12 +414,12 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	CU::Vector3f whd;
 	if (!isLight)
 	{
-		/*RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
+		RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
 		Model* model = m_Engine->GetModel(render.myModelID);
 		whd = model->GetWHD();
 		component.m_Rotation = render.m_Rotation;
 		component.m_MinPoint = model->GetMinPoint();
-		component.m_MaxPoint = model->GetMaxPoint();*/
+		component.m_MaxPoint = model->GetMaxPoint();
 
 
 	}

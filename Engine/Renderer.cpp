@@ -291,7 +291,7 @@ void Renderer::Render3DCommands()
 		m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 		model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 
-		//Hello, World!
+
 	}
 }
 

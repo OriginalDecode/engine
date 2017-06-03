@@ -105,6 +105,4 @@ private:
 	float m_SpriteWidth = 0.f;
 	float m_SpriteHeight = 0.f;
 
-	std::map<u64, Model*> m_ModelsToRender;
-
 };

@@ -6,7 +6,7 @@
 #include <DL_Debug.h>
 #include "Engine.h"
 #include "Surface.h"
-#include <CommonLib/DataStructures/Hashmap/Hash.h>
+
 void Model::CleanUp()
 {
 	mySurfaces.DeleteAll();
@@ -25,14 +25,12 @@ void Model::CleanUp()
 void Model::Initiate(const std::string& filename)
 {
 	m_Filename = CL::substr(filename, "/", false, 0);
-	m_FileHash = Hash(filename.c_str());
 	if (m_IsRoot == false)
 	{
 		InitVertexBuffer();
 		InitIndexBuffer();
 		InitConstantBuffer();
 	}
-
 
 	for (Model* child : myChildren)
 	{
@@ -59,69 +57,22 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 		return;
 
 
-	//SetupLayoutsAndBuffers(); //depending
-	//IDevContext* ctx = Engine::GetAPI()->GetContext();
-	render_context.m_Context->IASetInputLayout(m_VertexLayout);
-	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	SetupLayoutsAndBuffers(); //depending
+
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context); //depending
-	
-	ID3D11Buffer* vbs[] = {
-		m_VertexBuffer.myVertexBuffer,
-		m_InstanceBufferWrapper.myVertexBuffer
-	};
-	/*
-	
-	float4 pos 		: SV_POSITION; 
-	float3 normal 	: NORMAL;
-	float2 uv 		: TEXCOORD;
-	float3 binorm 	: BINORMAL;
-	float3 tang 	: TANGENT;
-	float4 worldpos : POSITION;
-
-
-	*/
-
-	const s32 v4Size = sizeof(CU::Vector4f);
-	const s32 v3Size = sizeof(CU::Vector3f);
-	const s32 v2Size = sizeof(CU::Vector2f);
-	const s32 total_size = (v4Size * 2) + (v3Size * 3) + v2Size;
-
-	u32 strides[] = {
-		sizeof(total_size),
-		sizeof(CU::Matrix44f)
-	};
-
-	u32 offsets[] = {
-		0,
-		0
-	};
-
-
-	render_context.m_Context->IASetVertexBuffers(0, ARRAYSIZE(vbs), vbs, strides, offsets);
-
-	//render_context.m_Context->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);
-	render_context.m_Context->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
-
-
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); //depending
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
 
 	for (Surface* surface : mySurfaces)
 	{
+		render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
 
 		surface->Activate(render_context);
 
-		render_context.m_Context->DrawIndexedInstanced(surface->GetIndexCount()
-			, m_Orientations.Size()
-			, 0
-			, surface->GetStartVertex()
-			, 0);
-		//render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
+		render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
 
 		surface->Deactivate();
 	}
 
-	m_Orientations.RemoveAll();
 }
 
 void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
@@ -232,11 +183,6 @@ std::vector<s32> Model::GetIndices()
 }
 
 
-void Model::AddOrientation(const CU::Matrix44f& orientation)
-{
-	m_Orientations.Add(orientation);
-}
-
 void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
 	if ( m_IsRoot )
@@ -252,11 +198,6 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const 
 	m_ConstantStruct.m_Projection = aCameraProjection;
 
 	render_context.m_API->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
-
-	render_context.m_API->UpdateConstantBuffer(m_InstanceBuffer, &m_Orientations);
-
-
-
 }
 
 void Model::AddChild(Model* aChild)
@@ -278,9 +219,5 @@ void Model::InitConstantBuffer()
 	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 
 	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
-	Engine::GetAPI()->HandleErrors(hr, "[Model] : Failed to Create Constant Buffer, ");
-
-	m_InstanceBuffer = Engine::GetAPI()->CreateVertexBuffer(sizeof(CU::Matrix44f) * 250, &m_InstanceBufferWrapper.myVertexBuffer);
-
-
+	Engine::GetAPI()->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 }

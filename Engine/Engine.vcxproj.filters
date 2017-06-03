@@ -114,6 +114,9 @@
     <ClInclude Include="Camera.h">
       <Filter>Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Instance.h">
+      <Filter>Model</Filter>
+    </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>Model</Filter>
     </ClInclude>
@@ -373,7 +376,6 @@
     <ClInclude Include="SSAOPass.h">
       <Filter>Rendering\Passes</Filter>
     </ClInclude>
-    <ClInclude Include="ModelInstance.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -384,6 +386,9 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Instance.cpp">
+      <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Model</Filter>
@@ -608,6 +613,5 @@
     <ClCompile Include="SSAOPass.cpp">
       <Filter>Rendering\Passes</Filter>
     </ClCompile>
-    <ClCompile Include="ModelInstance.cpp" />
   </ItemGroup>
 </Project>

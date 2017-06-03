@@ -122,7 +122,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	if (!m_Window.IsWindowActive())
 		m_Window.OnActive();
-	SetWindowText(myHWND, "Bulwark Engine");
+	SetWindowText(myHWND, "Snowblind Engine");
 #ifdef SNOWBLIND_DX11
 	myAPI = new DirectX11;
 	const char* api_name = "DirectX11";

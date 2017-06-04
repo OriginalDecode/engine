@@ -105,4 +105,11 @@ private:
 	float m_SpriteWidth = 0.f;
 	float m_SpriteHeight = 0.f;
 
+#ifdef _DEBUG
+public:
+	DeferredRenderer* GetDeferredRenderer() {	return myDeferredRenderer; };
+
+
+
+#endif
 };

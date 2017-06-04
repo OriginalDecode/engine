@@ -17,6 +17,7 @@ public:
 	virtual void Initiate(const std::string& filename);
 
 	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
+	void RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context);
 	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
 
 	void AddChild(Model* aChild);
@@ -40,8 +41,11 @@ public:
 	CU::GrowingArray<Surface*>& GetSurfaces() { return mySurfaces; }
 	CU::GrowingArray<Model*> GetChildModels() { return myChildren; }
 
+	void AddOrientation(CU::Matrix44f orientation);
+
 private:
 	CU::GrowingArray<Model*> myChildren;
+	CU::GrowingArray<CU::Matrix44f> m_Orientations;
 protected:
 	void InitConstantBuffer();
 	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;

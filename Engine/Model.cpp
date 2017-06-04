@@ -45,34 +45,50 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 		child->Render(aCameraOrientation, aCameraProjection, render_context);
 	}
 
-	if ( !m_VertexLayout )
+	if (!m_VertexLayout || m_IsRoot || mySurfaces.Empty())
 		return;
-
-
-	if (m_IsRoot)
-		return;
-
-
-	if (mySurfaces.Empty())
-		return;
-
 
 	SetupLayoutsAndBuffers(); //depending
 
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context); //depending
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); //depending
 
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
 	for (Surface* surface : mySurfaces)
 	{
-		render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
-
 		surface->Activate(render_context);
-
 		render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
-
 		surface->Deactivate();
 	}
 
+}
+
+void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+{
+	for (Model* child : myChildren)
+	{
+		child->Render(camera_orientation, camera_projection, render_context);
+	}
+
+	if (!m_VertexLayout || m_IsRoot || mySurfaces.Empty())
+		return;
+
+	render_context.m_Context->IASetInputLayout(m_VertexLayout);
+	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render_context.m_Context->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);// change this
+	render_context.m_Context->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
+
+	UpdateConstantBuffer(camera_orientation, camera_projection, render_context); 
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); 
+
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); 
+	for (Surface* surface : mySurfaces)
+	{
+		surface->Activate(render_context);
+		//render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
+		render_context.m_Context->DrawIndexedInstanced(surface->GetIndexCount(), 250, 0, surface->GetStartVertex(), 0);
+		surface->Deactivate();
+	}
 }
 
 void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
@@ -182,6 +198,11 @@ std::vector<s32> Model::GetIndices()
 	return to_return;
 }
 
+
+void Model::AddOrientation(CU::Matrix44f orientation)
+{
+	m_Orientations.Add(orientation);
+}
 
 void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {

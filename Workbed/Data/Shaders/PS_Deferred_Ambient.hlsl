@@ -108,7 +108,11 @@ AmbientReturnTextures PS(VS_OUTPUT input) : SV_Target
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);	
 	float4 normal = NormalTexture.Sample(point_Clamp, input.uv);
 	
-	float4 metalness = float4(normal.w, normal.w, normal.w, normal.w);
+	float metal_fix = normal.w - 1;
+
+	normal.w -= 1;
+
+	float4 metalness = float4(metal_fix, metal_fix, metal_fix, metal_fix);
 	normal *= 2;
 	normal -= 1;
 

@@ -116,6 +116,20 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_LightState = ShaderState(blend_state, states, ARRAYSIZE(states), DepthstencilState(), RasterizerState());*/
 
+
+	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetDiffuse()->GetShaderView(), { x_pos, y_pos }));
+	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetNormal()->GetShaderView(), { x_pos, y_pos + m_SpriteHeight }));
+	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetDepth()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 2.f) }));
+	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetEmissive()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 3) }));
+
+	const GBuffer& gbuffer = myDeferredRenderer->GetGBuffer();
+	m_Engine->AddTexture(gbuffer.GetDiffuse(), "Scene Diffuse Texture");
+	m_Engine->AddTexture(gbuffer.GetNormal(), "Scene Normal Texture");
+	m_Engine->AddTexture(gbuffer.GetDepth(), "Scene Depth Texture");
+	m_Engine->AddTexture(gbuffer.GetEmissive(), "Scene Emissive Texture");
+
+
+
 	return true;
 }
 
@@ -178,14 +192,7 @@ void Renderer::Render()
 		m_Direction,
 		m_RenderContext);
 
-	const WindowSize& ws = Engine::GetInstance()->GetWindow().GetInnerSize();
-	const GBuffer& gbuffer = myDeferredRenderer->GetGBuffer();
-	float x_pos = ws.m_Width - m_SpriteWidth / 2.f;
-	float y_pos = 270.f / 2.f;
-	mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetDiffuse()->GetShaderView(), { x_pos, y_pos}));
-	mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetNormal()->GetShaderView(), { x_pos, y_pos + m_SpriteHeight}));
-	mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetDepth()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 2.f)}));
-	mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetEmissive()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 3)}));
+
 
 	RenderPointlight();
 	RenderSpotlight();
@@ -207,7 +214,7 @@ void Renderer::Render()
 
 	m_Engine->ResetRenderTargetAndDepth();
 
-	RenderNonDeferred3DCommands();
+	//RenderNonDeferred3DCommands();
 
 	RenderParticles();
 	RenderLines();
@@ -230,6 +237,7 @@ void Renderer::AddTerrain(CTerrain* someTerrain)
 
 void Renderer::RenderNonDeferred3DCommands()
 {
+	DL_ASSERT("not implemented");
 	/**
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Amber);

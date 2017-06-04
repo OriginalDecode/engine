@@ -186,10 +186,13 @@ public:
 
 #ifdef _DEBUG
 	void OutputDebugString(std::string debug_str);
-#endif
+	void DebugTextures();
+	struct ID3D11ShaderResourceView;
+	void AddTexture(Texture* texture, const std::string& debug_name);
+	void AddTexture(void* srv, const std::string& debug_name);
 private:
-#ifdef _DEBUG
-
+	CU::GrowingArray<ID3D11ShaderResourceView*> m_DebugTextures;
+	std::vector<std::string> m_Labels;
 	struct debug_string
 	{
 		std::string m_String;
@@ -198,6 +201,8 @@ private:
 
 	CU::StaticArray<std::string, 8> m_DebugStrings;
 #endif
+private:
+
 	void UpdateDebugUI();
 
 	bool m_EditLight = false;

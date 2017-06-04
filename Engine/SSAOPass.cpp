@@ -113,7 +113,5 @@ void SSAOPass::Process(Texture* scene_texture)
 	m_ScreenQuad.Render();
 	m_BlurShader[1]->Clear();
 
-	float x_pos = m_WindowSize.m_Width - (480.f * 1.5f);
-	engine->GetSynchronizer()->AddRenderCommand(SpriteCommand(m_Test->GetShaderView(), {x_pos, (270.f / 2.f)}));
 
 }

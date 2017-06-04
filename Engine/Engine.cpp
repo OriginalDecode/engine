@@ -224,7 +224,7 @@ bool Engine::CleanUp()
 	SAFE_DELETE(myAPI);
 	PostMaster::Destroy();
 	Randomizer::Destroy();
-	m_States[( u16 ) eEngineStates::INITIATED] = FALSE;
+	m_States[(u16)eEngineStates::INITIATED] = FALSE;
 	return true;
 }
 
@@ -293,10 +293,10 @@ HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::s
 HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entry_point, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message)
 {
 	HRESULT hr = D3DCompile(
-		pData, 
-		size, 
-		source_name.c_str(), 
-		nullptr, 
+		pData,
+		size,
+		source_name.c_str(),
+		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		entry_point.c_str(),
 		feature_level.c_str(),
@@ -610,6 +610,57 @@ Threadpool& Engine::GetThreadpool()
 void Engine::OutputDebugString(std::string debug_str)
 {
 }
+
+
+
+static auto GetVector = [](void* vec, int index, const char** out_text)
+{
+	auto& vector = *static_cast<std::vector<std::string>*>(vec);
+	if (index < 0 || index >= static_cast<int>(vector.size()))
+		return false;
+	*out_text = vector.at(index).c_str();
+
+	return true;
+};
+
+bool ListBox(const char* label, int* current_index, std::vector<std::string>& values)
+{
+	if (values.empty())
+		return false;
+
+	return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size());
+}
+
+
+
+void Engine::DebugTextures()
+{
+	static bool pOpen = false;
+	if (ImGui::Begin("textures", &pOpen, 0))
+	{
+		static s32 index = 0;
+		ListBox("Textures", &index, m_Labels);
+		ImTextureID tex_id = m_DebugTextures[index];
+		ImVec2 w_size = ImGui::GetWindowSize();
+		w_size.x -= 50.f;
+		w_size.y -= 50.f;
+		ImGui::Image(tex_id, w_size);/**/
+	}
+	ImGui::End();
+
+}
+
+void Engine::AddTexture(Texture* texture, const std::string& debug_name)
+{
+	AddTexture(texture->GetShaderView(), debug_name);
+}
+
+void Engine::AddTexture(void* srv, const std::string& debug_name)
+{
+	m_DebugTextures.Add(static_cast<ID3D11ShaderResourceView*>(srv));
+	m_Labels.push_back(debug_name);
+}
+
 #endif
 
 void Engine::UpdateDebugUI()
@@ -626,13 +677,14 @@ void Engine::UpdateDebugUI()
 	static bool pOpen = false;
 	static bool new_window = false;
 	static bool save = false;
+	static bool debug_textures = false;
 	if (ImGui::Begin("Information", &pOpen, flags))
 	{
 		ImGui::Text("Delta Time : %.3f", GetDeltaTime());
 		ImGui::Text("FPS : %.1f", GetFPS());
 		ImGui::Text("CPU Usage : %.1f", m_SystemMonitor.GetCPUUsage());
 		ImGui::Text("Memory Usage : %dmb", m_SystemMonitor.GetMemoryUsage());
-		if ( m_Threadpool.HasWork() )
+		if (m_Threadpool.HasWork())
 			ImGui::Text("Is Loading");
 		else
 			ImGui::Text("Done Loading");
@@ -653,24 +705,33 @@ void Engine::UpdateDebugUI()
 			if (SaveLevel())
 				save = !save;
 
-		
+
+
+
 		static bool tonemapping_hdr = true;
 		ImGui::Checkbox("Tonemapping/HDR", &tonemapping_hdr);
-		if ( tonemapping_hdr )
+		if (tonemapping_hdr)
 			myRenderer->GetPostprocessManager().SetPassesToProcess(PostProcessManager::HDR);
 		else
 			myRenderer->GetPostprocessManager().RemovePassToProcess(PostProcessManager::HDR);
 		ImGui::SameLine();
-		ImGui::Checkbox("Debug Textures", &myRenderer->GetPostprocessManager().GetHDRPass().toggle_debug);
+		ImGui::Checkbox("Debug Textures", &debug_textures);
+		//ImGui::Checkbox("Debug Textures", &myRenderer->GetPostprocessManager().GetHDRPass().toggle_debug);
+		if (debug_textures)
+			DebugTextures();
+
 
 		float fov_value = m_Camera->GetFOV();
-		ImGui::SliderFloat("FOV", &fov_value, 60.f, 120.f,"%.f");
+		ImGui::SliderFloat("FOV", &fov_value, 60.f, 120.f, "%.f");
 		m_Camera->SetFOV(fov_value);
+
 
 		ImGui::End();
 	}
 	ImGui::PopStyleVar();
 
+
+	
 
 	if (new_window)
 	{
@@ -741,10 +802,10 @@ void Engine::UpdateDebugUI()
 						{
 							switch (selected[i])
 							{
-								case RegisteredComponents::translation:
-								{
-									edit_t = !edit_t;
-								}break;
+							case RegisteredComponents::translation:
+							{
+								edit_t = !edit_t;
+							}break;
 							}
 						}
 					}

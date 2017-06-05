@@ -39,14 +39,14 @@ void SSAOPass::Initiate()
 	m_cbSSAO = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbSSAO));
 	m_cbBlur = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbBlur));
 	
-	m_BlurShader[0] = Engine::GetInstance()->GetEffect("Shaders/T_Blur_x.json");
-	m_BlurShader[0]->AddShaderResource(m_SSAOTexture, Effect::DIFFUSE);
+// 	m_BlurShader[0] = Engine::GetInstance()->GetEffect("Shaders/T_Blur_x.json");
+// 	m_BlurShader[0]->AddShaderResource(m_SSAOTexture, Effect::DIFFUSE);
+// 
+// 	m_BlurShader[1] = Engine::GetInstance()->GetEffect("Shaders/T_Blur_y.json");
+// 	m_BlurShader[1]->AddShaderResource(m_DebugTexture, Effect::DIFFUSE);
 
-	m_BlurShader[1] = Engine::GetInstance()->GetEffect("Shaders/T_Blur_y.json");
-	m_BlurShader[1]->AddShaderResource(m_DebugTexture, Effect::DIFFUSE);
-
-
-	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Ambient.json")->AddShaderResource(m_Test, Effect::SSAO);
+	Engine::GetInstance()->AddTexture(m_SSAOTexture, "SSAO");
+	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Ambient.json")->AddShaderResource(m_SSAOTexture, Effect::SSAO);
 }
 
 void SSAOPass::CleanUp()
@@ -71,11 +71,10 @@ void SSAOPass::Process(Texture* scene_texture)
 	m_ScreenQuad.SetBuffers();
 
 	IDevContext* ctx = api->GetContext();
-	float clear[4] = { 0.f, 0.f, 0.f, 0.f };
+	float clear[4] = { 0.f, 0.f, 0.f, 1.f };
 	ctx->ClearRenderTargetView(m_SSAOTexture->GetRenderTargetView(), clear);
 	ctx->ClearRenderTargetView(m_DebugTexture->GetRenderTargetView(), clear);
-	float clear2[4] = { 0.f, 0.f, 0.f, 0.f };
-	ctx->ClearRenderTargetView(m_Test->GetRenderTargetView(), clear);
+	//ctx->ClearRenderTargetView(m_Test->GetRenderTargetView(), clear);
 
 	ID3D11RenderTargetView* rtv[] = {
 		scene_texture->GetRenderTargetView(),
@@ -95,7 +94,7 @@ void SSAOPass::Process(Texture* scene_texture)
 	ctx->OMSetRenderTargets(ARRAYSIZE(rtv0), rtv0, api->GetDepthView());
 
 
-	m_BlurStruct.m_Size = 1.f / m_WindowSize.m_Width * 0.25f;
+	/*m_BlurStruct.m_Size = 1.f / m_WindowSize.m_Width * 0.25f;
 	api->UpdateConstantBuffer(m_cbBlur, &m_BlurStruct);
 
 
@@ -111,7 +110,7 @@ void SSAOPass::Process(Texture* scene_texture)
 
 	m_BlurShader[1]->Use();
 	m_ScreenQuad.Render();
-	m_BlurShader[1]->Clear();
+	m_BlurShader[1]->Clear();*/
 
 
 }

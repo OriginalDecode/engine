@@ -184,7 +184,6 @@ public:
 	
 
 
-#ifdef _DEBUG
 	void OutputDebugString(std::string debug_str);
 	void DebugTextures();
 	struct ID3D11ShaderResourceView;
@@ -200,7 +199,6 @@ private:
 	};
 
 	CU::StaticArray<std::string, 8> m_DebugStrings;
-#endif
 private:
 
 	void UpdateDebugUI();

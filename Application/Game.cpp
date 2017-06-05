@@ -53,7 +53,7 @@ void Game::InitState(StateStack* state_stack)
 	//CameraHandle::GetInstance()->Initiate(&m_Orientation);
 	CameraHandle::GetInstance()->Initiate(nullptr);
 	m_PauseState.InitState(m_StateStack);
-	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
+	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 }
 
 void Game::EndState()
@@ -203,7 +203,6 @@ void Game::Update(float dt)
 
 	m_Orientation.SetTranslation(translation);
 
-	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::PARTICLE, CU::Vector3f(5, 5, 5)));
 	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 
 	//TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());

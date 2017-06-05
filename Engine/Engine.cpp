@@ -594,12 +594,9 @@ Threadpool& Engine::GetThreadpool()
 	return m_Threadpool;
 }
 
-#ifdef _DEBUG
 void Engine::OutputDebugString(std::string debug_str)
 {
 }
-
-
 
 static auto GetVector = [](void* vec, int index, const char** out_text)
 {
@@ -618,8 +615,6 @@ bool ListBox(const char* label, int* current_index, std::vector<std::string>& va
 
 	return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size());
 }
-
-
 
 void Engine::DebugTextures()
 {
@@ -649,7 +644,6 @@ void Engine::AddTexture(void* srv, const std::string& debug_name)
 	m_Labels.push_back(debug_name);
 }
 
-#endif
 
 void Engine::UpdateDebugUI()
 {

@@ -52,7 +52,7 @@ void DebugSystem::Update(float /*dt*/)
 			debug.m_MaxPoint = m->GetMaxPoint();//r.m_MaxPos;
 
 		}
-		RenderBox(debug, translation.myOrientation);
+		//RenderBox(debug, translation.myOrientation);
 //#endif
 	}
 
@@ -401,14 +401,12 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p8.position = p1.position;
 
 	const CU::Vector4f right = orientation.GetRight();
-	const CU::Vector4f up = orientation.GetRight();
-	const CU::Vector4f forward = orientation.GetRight();
+	const CU::Vector4f up = orientation.GetUp();
+	const CU::Vector4f forward = orientation.GetForward();
 
 
-	if ( component.m_MinPoint.x < -0.f )
+	/*if ( component.m_MinPoint.x < -0.f )
 	{
-		bool iAmHere = false;
-		iAmHere = true;
 		p1.color = CU::Vector4f(255.f,0.f,0.f,255.f);
 		p2.color = p1.color;
 		p3.color = p1.color;
@@ -417,7 +415,7 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 		p6.color = p1.color;
 		p7.color = p1.color;
 		p8.color = p1.color;
-	}
+	}*/
 
 	p1.position += right * component.m_MinPoint.x;
 	p1.position += up * component.m_MinPoint.y;

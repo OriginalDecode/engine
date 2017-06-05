@@ -73,7 +73,8 @@ namespace CommonUtilities
 	template<typename TYPE>
 	bool Plane<TYPE>::Inside(Math::Vector4 <TYPE> aPosition) const
 	{
-		if (Math::Dot<float>(aPosition - myPoint, myNorm) > 0.f)
+		const float result = Math::Dot<TYPE>(aPosition - myPoint, myNorm);
+		if (result > 0.f)
 			return false;
 
 		return true;

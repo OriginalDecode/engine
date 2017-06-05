@@ -127,9 +127,9 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	new_pos.y += 5.f;
 	new_pos.x += 400.f;
 	new_pos.z += 400.f;
-
+ 
 	component.myOrientation.SetPosition(new_pos);
-
+ 
 
 	m_DwellerList.GetLast()->Initiate(e, TreeDweller::STATIC);
 

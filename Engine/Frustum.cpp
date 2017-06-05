@@ -32,12 +32,12 @@ void Frustum::Update()
 	m_InvertedOrientation = CU::Math::Inverse(*m_Orientation);
 	CalcCorners();
 	//UpdateOBB();
-	//DrawFrustum();
+	DrawFrustum();
 }
 
 bool Frustum::Inside(const CU::Vector3f& position, float radius) const
 {
-	const CU::Vector3f collision_check_position = (position + radius) * m_InvertedOrientation;
+	const CU::Vector3f collision_check_position = (position) * m_InvertedOrientation;
 	return m_Volume.Inside(collision_check_position);
 }
 
@@ -118,18 +118,18 @@ void Frustum::DrawFrustum()
 
 	Synchronizer* sync = Engine::GetInstance()->GetSynchronizer();
 
-	/*sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p3, p4));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p4, p1));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p5));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p5, p6));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p8));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p7));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p5));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p4));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p2));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));*/
+	sync->AddRenderCommand(LineCommand(p1, p2, true));
+	sync->AddRenderCommand(LineCommand(p2, p3, true));
+	sync->AddRenderCommand(LineCommand(p3, p4, true));
+	sync->AddRenderCommand(LineCommand(p4, p1, true));
+	sync->AddRenderCommand(LineCommand(p1, p5, true));
+	sync->AddRenderCommand(LineCommand(p5, p6, true));
+	sync->AddRenderCommand(LineCommand(p6, p8, true));
+	sync->AddRenderCommand(LineCommand(p8, p7, true));
+	sync->AddRenderCommand(LineCommand(p7, p5, true));
+	sync->AddRenderCommand(LineCommand(p6, p4, true));
+	sync->AddRenderCommand(LineCommand(p7, p2, true));
+	sync->AddRenderCommand(LineCommand(p8, p3, true));
 
 	p1.color = CU::Vector4f(0, 1, 1, 1);
 	p2.color = p1.color;
@@ -173,18 +173,18 @@ void Frustum::DrawFrustum()
 
 
 
-	/*sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p3, p4));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p4, p1));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p5));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p5, p6));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p8));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p7));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p5));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p4));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p2));
-	sync->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));*/
+	sync->AddRenderCommand(LineCommand(p1, p2, true));
+	sync->AddRenderCommand(LineCommand(p2, p3, true));
+	sync->AddRenderCommand(LineCommand(p3, p4, true));
+	sync->AddRenderCommand(LineCommand(p4, p1, true));
+	sync->AddRenderCommand(LineCommand(p1, p5, true));
+	sync->AddRenderCommand(LineCommand(p5, p6, true));
+	sync->AddRenderCommand(LineCommand(p6, p8, true));
+	sync->AddRenderCommand(LineCommand(p8, p7, true));
+	sync->AddRenderCommand(LineCommand(p7, p5, true));
+	sync->AddRenderCommand(LineCommand(p6, p4, true));
+	sync->AddRenderCommand(LineCommand(p7, p2, true));
+	sync->AddRenderCommand(LineCommand(p8, p3, true));
 
 }
 
@@ -262,6 +262,7 @@ void Frustum::CalcCorners()
 	m_MinPos.x = result.x;
 	m_MinPos.y = result.y;
 	m_MinPos.z = result.z;
+
 	result = CU::Vector4f();
 	result.x = fmaxf(result.x, ( m_UpLeft * *m_Orientation ).x);
 	result.y = fmaxf(result.y, ( m_UpLeft * *m_Orientation ).y);

@@ -48,25 +48,39 @@ void RenderSystem::Update(float /*dt*/)
 		if (myEntityManager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
 		{
 			DebugComponent& debug = GetComponent<DebugComponent>(e);
-			for (const CU::Plane<float>& plane : debug.m_OBB.m_Planes)
+			CU::Vector3f position = translation.myOrientation.GetPosition();
+			if (CameraHandle::GetInstance()->GetFrustum().Inside(position, 25.f))
+					visible = true;
+
+			position.z += render.m_MaxPos.z;
+			if (CameraHandle::GetInstance()->GetFrustum().Inside(position, 25.f))
+				visible = true;
+
+			position.x += render.m_MaxPos.x;
+			if (CameraHandle::GetInstance()->GetFrustum().Inside(position, 25.f))
+				visible = true;
+
+			position = translation.myOrientation.GetPosition();
+			position.x += render.m_MaxPos.x;
+			if (CameraHandle::GetInstance()->GetFrustum().Inside(position, 25.f))
+				visible = true;
+
+			/*for (const CU::Plane<float>& plane : debug.m_OBB.m_Planes)
 			{
 				CU::Vector4f temp = plane.GetPoint();
 				CU::Vector3f point = { temp.x,temp.y,temp.z };
-				if (CameraHandle::GetInstance()->GetFrustum().Inside(point, 25.f))
 				{
-					visible = true;
 					break;
 				}
-			}
+			}*/
 		}
-		else
+		/*else
 		{
 			CU::Vector3f point = translation.myOrientation.GetPosition() + (render.m_MinPos + render.m_MaxPos);
 			if (!CameraHandle::GetInstance()->GetFrustum().Inside(point, 5.f))
 				continue;
-		}
+		}*/
 
-		//
 		if(!visible)
 			continue;
 
@@ -81,12 +95,7 @@ void RenderSystem::Update(float /*dt*/)
 		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
 		mySynchronizer->AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
 
-		//mySynchronizer->AddRenderCommand(RenderCommand(
-		//	eType::MODEL,
-		//	render.myModelID,
-		//	t,
-		//	render.scale,
-		//	render.m_RenderWireframe));
+	
 #ifdef _PROFILE
 		EASY_END_BLOCK;
 #endif

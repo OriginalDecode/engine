@@ -19,23 +19,23 @@ void* CommandAllocator::Alloc(s32 size_in_bytes, u8 alignment /*= sizeof(void*)*
 	u8 adjustment = AlignForwardAdjustment(m_CurrentPos, alignment);
 	assert(m_UsedMemory + adjustment + size_in_bytes <= m_AllocatedMemory && "Out of memory!");
 
-	u64 aligned_address = ( u64 ) m_CurrentPos + adjustment;
-	m_CurrentPos = ( void* ) ( aligned_address + size_in_bytes );
+	u64 aligned_address = (u64)m_CurrentPos + adjustment;
+	m_CurrentPos = (void*)(aligned_address + size_in_bytes);
 	m_UsedMemory += size_in_bytes + adjustment;
 	m_NumberOfAllocations++;
 
-	return ( void* ) aligned_address;
+	return (void*)aligned_address;
 
 }
 
 void* CommandAllocator::operator[](s32 index)
 {
-	return ( void* ) ( ( u64 ) m_Start + ( m_Offset * index ) );
+	return (void*)((u64)m_Start + (m_Offset * index));
 }
 
 void* CommandAllocator::operator[](s32 index) const
 {
-	return ( void* ) ( ( u64 ) m_Start + ( m_Offset * index ) );
+	return (void*)((u64)m_Start + (m_Offset * index));
 }
 
 

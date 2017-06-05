@@ -10,39 +10,47 @@ bool Synchronizer::Initiate()
 	//m_MainBlock = MemoryBlock(m_AllocationAmt * (eBufferType::BUFFER_COUNT * 2), m_AllocationAmt);
 
 
+
+	const s32 model_buffer_size = 30000 * sizeof(ModelCommand);
+	const s32 spotlight_buffer_size = 30000 * sizeof(SpotlightCommand);
+	const s32 particle_buffer_size = 30000 * sizeof(ParticleCommand);
+	const s32 line_buffer_size = 30000 * sizeof(LineCommand);
+	const s32 pointlight_buffer_size = 30000 * sizeof(PointlightCommand);
+	const s32 sprite_buffer_size = 30000 * sizeof(SpriteCommand);
+	const s32 text_buffer_size = 30000 * sizeof(TextCommand);
+
+	const s32 total_size =
+		model_buffer_size +
+		spotlight_buffer_size +
+		particle_buffer_size +
+		line_buffer_size +
+		pointlight_buffer_size +
+		sprite_buffer_size +
+		text_buffer_size;
+
+	const s32 allocation_size = total_size * 2;
+
 	const s32 allocation_amt = 0x80000 * 2;
-	const s32 alloc_size = allocation_amt * ( eBufferType::BUFFER_COUNT * 2 );
-	m_MainMemory = malloc(alloc_size);
-	m_Allocator = CommandAllocator(alloc_size, m_MainMemory);
+	const s32 alloc_size = allocation_amt * (eBufferType::BUFFER_COUNT * 2);
 
+	m_MainMemory = malloc(allocation_size);
+	m_Allocator = CommandAllocator(allocation_size, m_MainMemory);
 
+	m_CommandBuffers[MODEL_BUFFER][0] = CommandAllocator(model_buffer_size, sizeof(ModelCommand), m_Allocator.Alloc(model_buffer_size));
+	m_CommandBuffers[SPOTLIGHT_BUFFER][0] = CommandAllocator(spotlight_buffer_size, sizeof(SpotlightCommand), m_Allocator.Alloc(spotlight_buffer_size));
+	m_CommandBuffers[PARTICLE_BUFFER][0] = CommandAllocator(particle_buffer_size, sizeof(ParticleCommand), m_Allocator.Alloc(particle_buffer_size));
+	m_CommandBuffers[LINE_BUFFER][0] = CommandAllocator(line_buffer_size, sizeof(LineCommand), m_Allocator.Alloc(line_buffer_size));
+	m_CommandBuffers[POINTLIGHT_BUFFER][0] = CommandAllocator(pointlight_buffer_size, sizeof(PointlightCommand), m_Allocator.Alloc(pointlight_buffer_size));
+	m_CommandBuffers[SPRITE_BUFFER][0] = CommandAllocator(sprite_buffer_size, sizeof(SpriteCommand), m_Allocator.Alloc(sprite_buffer_size));
+	m_CommandBuffers[TEXT_BUFFER][0] = CommandAllocator(text_buffer_size, sizeof(TextCommand), m_Allocator.Alloc(text_buffer_size));
 
-
-
-
-	/*RegisterBuffer<ModelCommand>(MODEL_BUFFER);
-	RegisterBuffer<SpotlightCommand>(SPOTLIGHT_BUFFER);
-	RegisterBuffer<ParticleCommand>(PARTICLE_BUFFER);
-	RegisterBuffer<LineCommand>(LINE_BUFFER);
-	RegisterBuffer<PointlightCommand>(POINTLIGHT_BUFFER);
-	RegisterBuffer<SpriteCommand>(SPRITE_BUFFER);
-	RegisterBuffer<TextCommand>(TEXT_BUFFER);*/
-
-
-	m_CommandBuffers[MODEL_BUFFER][0]		=	CommandAllocator(allocation_amt, sizeof(ModelCommand)		, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[SPOTLIGHT_BUFFER][0]	=	CommandAllocator(allocation_amt, sizeof(SpotlightCommand)	, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[PARTICLE_BUFFER][0]	=	CommandAllocator(allocation_amt, sizeof(ParticleCommand)	, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[LINE_BUFFER][0]		=	CommandAllocator(allocation_amt, sizeof(LineCommand)		, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[POINTLIGHT_BUFFER][0]	=	CommandAllocator(allocation_amt, sizeof(PointlightCommand)	, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[SPRITE_BUFFER][0]		=	CommandAllocator(allocation_amt, sizeof(SpriteCommand)		, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[TEXT_BUFFER][0]		=	CommandAllocator(allocation_amt, sizeof(TextCommand)		, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[MODEL_BUFFER][1]		=	CommandAllocator(allocation_amt, sizeof(ModelCommand)		, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[SPOTLIGHT_BUFFER][1]	=	CommandAllocator(allocation_amt, sizeof(SpotlightCommand)	, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[PARTICLE_BUFFER][1]	=	CommandAllocator(allocation_amt, sizeof(ParticleCommand)	, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[LINE_BUFFER][1]		=	CommandAllocator(allocation_amt, sizeof(LineCommand)		, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[POINTLIGHT_BUFFER][1]	=	CommandAllocator(allocation_amt, sizeof(PointlightCommand)	, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[SPRITE_BUFFER][1]		=	CommandAllocator(allocation_amt, sizeof(SpriteCommand)		, m_Allocator.Alloc(allocation_amt));
-	m_CommandBuffers[TEXT_BUFFER][1]		=	CommandAllocator(allocation_amt, sizeof(TextCommand)		, m_Allocator.Alloc(allocation_amt));
+	m_CommandBuffers[MODEL_BUFFER][1] = CommandAllocator(model_buffer_size, sizeof(ModelCommand), m_Allocator.Alloc(model_buffer_size));
+	m_CommandBuffers[SPOTLIGHT_BUFFER][1] = CommandAllocator(spotlight_buffer_size, sizeof(SpotlightCommand), m_Allocator.Alloc(spotlight_buffer_size));
+	m_CommandBuffers[PARTICLE_BUFFER][1] = CommandAllocator(particle_buffer_size, sizeof(ParticleCommand), m_Allocator.Alloc(particle_buffer_size));
+	m_CommandBuffers[LINE_BUFFER][1] = CommandAllocator(line_buffer_size, sizeof(LineCommand), m_Allocator.Alloc(line_buffer_size));
+	m_CommandBuffers[POINTLIGHT_BUFFER][1] = CommandAllocator(pointlight_buffer_size, sizeof(PointlightCommand), m_Allocator.Alloc(pointlight_buffer_size));
+	m_CommandBuffers[SPRITE_BUFFER][1] = CommandAllocator(sprite_buffer_size, sizeof(SpriteCommand), m_Allocator.Alloc(sprite_buffer_size));
+	m_CommandBuffers[TEXT_BUFFER][1] = CommandAllocator(text_buffer_size, sizeof(TextCommand), m_Allocator.Alloc(text_buffer_size));
 
 
 
@@ -52,7 +60,7 @@ bool Synchronizer::Initiate()
 
 void Synchronizer::SwapBuffer()
 {
-	for ( CommandBuffer& buffer : m_CommandBuffers )
+	for (CommandBuffer& buffer : m_CommandBuffers)
 	{
 		buffer[m_CurrentBuffer].Clear();
 	}
@@ -71,7 +79,7 @@ void Synchronizer::Quit()
 
 void Synchronizer::WaitForRender()
 {
-	while ( !m_RenderDone )
+	while (!m_RenderDone)
 	{
 		std::this_thread::yield();
 	}
@@ -80,7 +88,7 @@ void Synchronizer::WaitForRender()
 
 void Synchronizer::WaitForLogic()
 {
-	while ( !m_LogicDone )
+	while (!m_LogicDone)
 	{
 		std::this_thread::yield();
 	}

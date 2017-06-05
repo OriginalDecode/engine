@@ -73,7 +73,6 @@ private:
 		CU::GrowingArray<TextureInfo> myTextures;
 		CU::GrowingArray<Layout> myLayout;
 
-		CU::Vector3f m_WHD;
 
 		CU::Vector3f m_MinPoint;
 		CU::Vector3f m_MaxPoint;
@@ -115,8 +114,8 @@ private:
 	template<typename T>
 	void SetupInputLayout(ModelData* data, T* model);
 
-	void ProcessNode(aiNode* node, const aiScene* scene, FBXModelData* data, std::string file);
-	void ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file);
+	void ProcessNode(aiNode* node, const aiScene* scene, FBXModelData* data, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point);
+	void ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point);
 
 	void ExtractMaterials(aiMesh* mesh,const aiScene* scene, FBXModelData* data, std::string file);
 };
@@ -134,6 +133,7 @@ void CModelImporter::LoadModel(T* pModel, std::string model_filepath, std::strin
 template<typename T>
 void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 {
+
 
 #ifdef _DEBUG
 	m_TimeManager.Update();
@@ -168,10 +168,13 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	aiNode* rootNode = scene->mRootNode;
 	FBXModelData* data = new FBXModelData;
 
-	ProcessNode(rootNode, scene, data, filepath);
+	CU::Vector3f max_point, min_point;
+	ProcessNode(rootNode, scene, data, filepath, min_point, max_point);
 
 	CreateModel(data, pModel, filepath, effect);
 
+	pModel->SetMaxPoint(max_point);
+	pModel->SetMinPoint(min_point);
 
 	if (data->myTextureData)
 	{
@@ -186,12 +189,9 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	{
 		delete data->myData;
 	}
-
-	for (FBXModelData* child : data->myChildren)
-	{
-	}
-
 	delete data;
+
+
 
 #ifdef _DEBUG
 	m_TimeManager.Update();
@@ -227,6 +227,7 @@ T* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect*
 
 	model->m_Filename = filepath.substr(pos);
 	model->SetEffect(effect);
+
 
 	if (data->myData)
 	{
@@ -266,8 +267,7 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 	out->m_VertexData.mySize = sizeOfBuffer;
 	out->m_VertexData.myStride = data->myVertexStride * sizeof(float);
 
-	Surface* newSurface = new Surface(0, data->myVertexCount, 0
-		, data->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	Surface* newSurface = new Surface(0, data->myVertexCount, 0, data->myIndexCount, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	out->m_IsRoot = false;
 	SetupInputLayout(data, out);
@@ -282,6 +282,10 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 
 
 	out->mySurfaces.Add(newSurface);
+
+
+	out->SetMinPoint(data->m_MinPoint);
+	out->SetMaxPoint(data->m_MaxPoint);
 
 }
 

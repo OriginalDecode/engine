@@ -86,17 +86,10 @@ Engine* Engine::GetInstance()
 	return myInstance;
 }
 
-#ifdef SNOWBLIND_DX11
 DirectX11* Engine::GetAPI()
 {
 	return static_cast<DirectX11*>(myAPI);
 }
-#else
-Vulkan* Engine::GetAPI()
-{
-	return static_cast<Vulkan*>(myAPI);
-}
-#endif
 
 /*bool Engine::InitiateDebugSystem(InputHandle* input_handle)
 {
@@ -122,14 +115,11 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	if (!m_Window.IsWindowActive())
 		m_Window.OnActive();
-	SetWindowText(myHWND, "Snowblind Engine");
-#ifdef SNOWBLIND_DX11
+	SetWindowText(myHWND, "engine");
+
 	myAPI = new DirectX11;
 	const char* api_name = "DirectX11";
-#else
-	myAPI = new Vulkan;
-	const char* api_name = "Vulkan";
-#endif
+
 
 	CreateInfo create_info;
 	create_info.m_HWND = myHWND;
@@ -486,9 +476,7 @@ std::string Engine::GetLocalTimeAsString()
 
 void Engine::ResetRenderTargetAndDepth()
 {
-#ifdef SNOWBLIND_DX11
 	GetAPI()->ResetRenderTargetAndDepth();
-#endif
 }
 
 void Engine::ToggleVsync()

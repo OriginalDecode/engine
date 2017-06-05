@@ -291,6 +291,8 @@ void Renderer::Render3DCommands()
 	{
 		ModelCommand* command = reinterpret_cast< ModelCommand* >( commands[i] );
 
+		commands[i] != commands[i + 1];
+
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
 		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
@@ -455,38 +457,32 @@ void Renderer::RenderParticles()
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
 
+
+
+
 void Renderer::RenderLines()
 {
-	/*m_API->SetBlendState(eBlendStates::NO_BLEND);
+	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
 	ID3D11RenderTargetView* backbuffer = m_API->GetBackbuffer();
 	ID3D11DepthStencilView* depth = myDeferredRenderer->GetDepthStencil()->GetDepthView();
 	m_API->GetContext()->OMSetRenderTargets(1, &backbuffer, depth);
 
-	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::eLine);
-	for ( const RenderCommand& command : commands )
+	const auto& commands = mySynchronizer->GetRenderCommands(eBufferType::LINE_BUFFER);
+
+	for (s32 i = 0; i < commands.Size(); i++)
 	{
-		switch ( command.myType )
-		{
-			case eType::LINE_Z_ENABLE:
-			{
-				m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-				my3DLine->Update(command.firstPoint, command.secondPoint);
-				my3DLine->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
-			}break;
-			case eType::LINE_Z_DISABLE:
-			{
-				m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
-				my3DLine->Update(command.firstPoint, command.secondPoint);
-				my3DLine->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
-			}break;
-		}
+		LineCommand* command = reinterpret_cast<LineCommand*>(commands[i]);
+
+		m_API->SetDepthStencilState(command->m_ZEnabled ? eDepthStencilState::Z_ENABLED : eDepthStencilState::Z_DISABLED, 1);
+		my3DLine->Update(command->m_Points[0], command->m_Points[1]);
+		my3DLine->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
 	}
 
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	m_API->SetRasterizer(eRasterizer::CULL_BACK);*/
+	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
 
 PostProcessManager& Renderer::GetPostprocessManager()

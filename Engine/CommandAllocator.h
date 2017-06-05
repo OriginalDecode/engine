@@ -15,6 +15,14 @@ public:
 	void* Alloc(s32 size_in_bytes, u8 alignment = sizeof(void*)) override;
 	void Clear();
 
+
+	typedef void* iterator;
+	typedef const void* const_iterator;
+	iterator begin() { return m_Start; }
+	const_iterator begin() const { return m_Start; }
+	iterator end() { return m_CurrentPos; }
+	const_iterator end() const { return m_CurrentPos; }
+
 private:
 	void Dealloc(void*) override { assert(false && "Use Clear()"); }
 	s32 m_Offset = 0;

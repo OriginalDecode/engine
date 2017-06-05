@@ -12,7 +12,7 @@
 #include "../Engine/RenderCommand.h"
 
 PhysicsSystem::PhysicsSystem(EntityManager& anEntityManager)
-	: BaseSystem(anEntityManager, CreateFilter<Requires<STranslationComponent, PhysicsComponent>>())
+	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, PhysicsComponent>>())
 {
 	myPhysicsManager = Engine::GetInstance()->GetPhysicsManager();
 }
@@ -26,7 +26,7 @@ void PhysicsSystem::Update(float aDeltaTime)
 		for (int i = 0; i < entities.Size(); i++)
 		{
 			Entity e = entities[i];
-			STranslationComponent& translation = GetComponent<STranslationComponent>(e);
+			TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 			
 			PhysicsComponent& physics = GetComponent<SPhysicsComponent>(e);
 			

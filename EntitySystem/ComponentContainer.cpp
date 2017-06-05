@@ -118,7 +118,7 @@ const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(SComponentFilte
 			myEntitiesToReturn.Add(i);
 		}
 	}*/
-	SComponentFilter filter = CreateFilter<Requires<STranslationComponent>>();
+	SComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
 	for ( const EntityComponent& ec : myEntityComponents )
 	{
 		if ( ec.m_UpdateFlag || filter == aFilter)

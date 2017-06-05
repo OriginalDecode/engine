@@ -18,7 +18,7 @@
 #include <TreeNode.h>
 #include <TreeDweller.h>
 #include <GizmoBase.h>
-
+#include <Engine/Model.h>
 DebugSystem::DebugSystem(EntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
@@ -42,15 +42,14 @@ void DebugSystem::Update(float /*dt*/)
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 
-		if(!CameraHandle::GetInstance()->GetFrustum().Inside(translation.myOrientation.GetPosition(),0.f))
-			continue;
 
 //#ifdef _EDITOR
 		if (myEntityManager.HasComponent(e, CreateFilter<Requires<RenderComponent>>()))
 		{
 			RenderComponent& r = GetComponent<RenderComponent>(e);
-			debug.m_MinPoint = r.m_MinPos;
-			debug.m_MaxPoint = r.m_MaxPos;
+			Model* m = Engine::GetInstance()->GetModel(r.myModelID);
+			debug.m_MinPoint = m->GetMinPoint();//r.m_MinPos;
+			debug.m_MaxPoint = m->GetMaxPoint();//r.m_MaxPos;
 
 		}
 		RenderBox(debug, translation.myOrientation);
@@ -420,37 +419,39 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 		p8.color = p1.color;
 	}
 
-	//p1.position += right * component.m_MinPoint.x;
-	//p1.position += up * component.m_MinPoint.y;
-	//p1.position += forward * component.m_MinPoint.z;
+	p1.position += right * component.m_MinPoint.x;
+	p1.position += up * component.m_MinPoint.y;
+	p1.position += forward * component.m_MinPoint.z;
 
-	//p2.position += right * component.m_MaxPoint.x;
-	//p2.position += up * component.m_MinPoint.y;
-	//p2.position += forward * component.m_MinPoint.z;
+	p2.position += right * component.m_MaxPoint.x;
+	p2.position += up * component.m_MinPoint.y;
+	p2.position += forward * component.m_MinPoint.z;
 
-	//p3.position += right * component.m_MaxPoint.x;
-	//p3.position += up * component.m_MinPoint.y;
-	//p3.position += forward * component.m_MaxPoint.z;
+	p3.position += right * component.m_MaxPoint.x;
+	p3.position += up * component.m_MinPoint.y;
+	p3.position += forward * component.m_MaxPoint.z;
 
-	//p4.position += right * component.m_MinPoint.x;
-	//p4.position += up * component.m_MinPoint.y;
-	//p4.position += forward * component.m_MaxPoint.z;
+	p4.position += right * component.m_MinPoint.x;
+	p4.position += up * component.m_MinPoint.y;
+	p4.position += forward * component.m_MaxPoint.z;
 
-	//p5.position += right * component.m_MinPoint.x;
-	//p5.position += up * component.m_MaxPoint.y;
-	//p5.position += forward * component.m_MinPoint.z;
+	p5.position += right * component.m_MinPoint.x;
+	p5.position += up * component.m_MaxPoint.y;
+	p5.position += forward * component.m_MinPoint.z;
 
-	//p6.position += right * component.m_MinPoint.x;
-	//p6.position += up * component.m_MaxPoint.y;
-	//p6.position += forward * component.m_MaxPoint.z;
-	//p7.position += right * component.m_MaxPoint.x;
-	//p7.position += up * component.m_MaxPoint.y;
-	//p7.position += forward * component.m_MinPoint.z;
-	//p8.position += right * component.m_MaxPoint.x;
-	//p8.position += up * component.m_MaxPoint.y;
-	//p8.position += forward * component.m_MaxPoint.z;
+	p6.position += right * component.m_MinPoint.x;
+	p6.position += up * component.m_MaxPoint.y;
+	p6.position += forward * component.m_MaxPoint.z;
 
-	p1.position -= orientation.GetRight() * component.m_WHD.x;
+	p7.position += right * component.m_MaxPoint.x;
+	p7.position += up * component.m_MaxPoint.y;
+	p7.position += forward * component.m_MinPoint.z;
+
+	p8.position += right * component.m_MaxPoint.x;
+	p8.position += up * component.m_MaxPoint.y;
+	p8.position += forward * component.m_MaxPoint.z;
+
+	/*p1.position -= orientation.GetRight() * component.m_WHD.x;
 	p1.position -= orientation.GetUp() * component.m_WHD.y;
 	p1.position -= orientation.GetForward() * component.m_WHD.z;
 
@@ -480,23 +481,23 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 
 	p8.position += orientation.GetRight() * component.m_WHD.x;
 	p8.position += orientation.GetUp() * component.m_WHD.y;
-	p8.position += orientation.GetForward() * component.m_WHD.z;
+	p8.position += orientation.GetForward() * component.m_WHD.z;*/
 
 
-	/*
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p2, p3));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p3, p4));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p4, p1));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p5));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p5, p6));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p8));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p7));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p5));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p6, p4));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p7, p2));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p8, p3));
-	*/
+	
+	m_Synchronizer->AddRenderCommand(LineCommand(p1, p2, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p2, p3, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p3, p4, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p4, p1, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p1, p5, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p5, p6, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p6, p8, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p8, p7, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p7, p5, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p6, p4, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p7, p2, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p8, p3, true));
+	
 
 
 

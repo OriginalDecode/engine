@@ -133,7 +133,7 @@ AmbientReturnTextures PS(VS_OUTPUT input) : SV_Target
 
 	float4 ssao = SSAOTexture.Sample(point_Clamp, input.uv);
 	
-	float ao = ssao.x;
+	float ao = 1.f + ssao.x;
 	float3 toEye = normalize(camera_position.xyz - worldPosition.xyz);
 	float3 reflection_fresnel = ReflectionFresnel(substance, normal, -toEye, 1 - roughnessOffsetted);
 	float3 reflectionVector = reflect(toEye, normal.xyz);

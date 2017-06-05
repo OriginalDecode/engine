@@ -22,7 +22,7 @@ CModelImporter::CModelImporter()
 #endif
 }
 
-void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData, std::string file)
+void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point)
 {
 #ifdef SNOWBLIND_DX11
 	DL_ASSERT_EXP(someData, "Failed to process node. FBXModelData someData was null");
@@ -30,19 +30,20 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 	for ( u32 i = 0; i < aNode->mNumMeshes; i++ )
 	{
 		aiMesh* mesh = aScene->mMeshes[aNode->mMeshes[i]];
-		ProcessMesh(mesh, aScene, someData, file);
+		ProcessMesh(mesh, aScene, someData, file, min_point, max_point);
 	}
 
 	for ( u32 i = 0; i < aNode->mNumChildren; i++ )
 	{
 		someData->myChildren.Add(new FBXModelData);
-		ProcessNode(aNode->mChildren[i], aScene, someData->myChildren.GetLast(), file);
+		ProcessNode(aNode->mChildren[i], aScene, someData->myChildren.GetLast(), file, min_point, max_point);
 	}
 #endif
 
 }
 
-void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* fbx, std::string file)
+
+void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* fbx, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point)
 {
 	FBXModelData* data = fbx;
 	data->myData = new ModelData;
@@ -138,7 +139,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 	CU::GrowingArray<u32> indices;
 	u32 vertCount = 0;
 
-	CU::Vector3f min_point, max_point;
+	//CU::Vector3f min_point, max_point;
 
 	for ( u32 i = 0; i < mesh->mNumFaces; i++ )
 	{
@@ -162,25 +163,35 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 				data->myData->myVertexBuffer[currIndex + 2] = position.z;
 				data->myData->myVertexBuffer[currIndex + 3] = 0;
 
+
 				if ( i != 0 )
 				{
-					if ( position.x <= min_point.x )
+
+					min_point.x = min(position.x, min_point.x);
+					min_point.y = min(position.y, min_point.y);
+					min_point.z = min(position.z, min_point.z);
+
+					max_point.x = max(position.x, max_point.x);
+					max_point.y = max(position.y, max_point.y);
+					max_point.z = max(position.z, max_point.z);
+
+					/*if ( position.x <= min_point.x )
 						min_point.x = position.x;
 
 					if ( position.x > max_point.x )
-						max_point.x = position.x;
+						data->myData->m_MaxPoint.x = position.x;
 
-					if ( position.y <= min_point.y )
-						min_point.y = position.y;
+					if ( position.y <= data->myData->m_MinPoint.y )
+						data->myData->m_MinPoint.y = position.y;
 
-					if ( position.y > max_point.y )
-						max_point.y = position.y;
+					if ( position.y > data->myData->m_MaxPoint.y )
+						data->myData->m_MaxPoint.y = position.y;
 
-					if ( position.z <= min_point.z )
-						min_point.z = position.z;
+					if ( position.z <= data->myData->m_MinPoint.z )
+						data->myData->m_MinPoint.z = position.z;
 
-					if ( position.z > max_point.z )
-						max_point.z = position.z;
+					if ( position.z > data->myData->m_MaxPoint.z )
+						data->myData->m_MaxPoint.z = position.z;*/
 				}
 
 				if ( mesh->HasNormals() )

@@ -26,7 +26,5 @@ bool BaseSystem::HasFinished()
 const CU::GrowingArray<Entity>& BaseSystem::GetEntities()
 {
 	//return myEntityManager.GetEntities(myFilter);
-
-
 	return myEntityManager.GetNodeManager()->GetEntities(myFilter);
 }

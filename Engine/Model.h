@@ -29,11 +29,11 @@ public:
 	void SetWHD(CU::Vector3f whd);
 
 
-	void SetMaxPoint(CU::Vector3f max_point);
-	CU::Vector3f GetMaxPoint() const { return m_MaxPoint; }
+	virtual void SetMaxPoint(CU::Vector3f max_point);
+	virtual CU::Vector3f GetMaxPoint() const { return m_MaxPoint; }
 
-	void SetMinPoint(CU::Vector3f min_point);
-	CU::Vector3f GetMinPoint() const { return m_MinPoint; }
+	virtual void SetMinPoint(CU::Vector3f min_point);
+	virtual CU::Vector3f GetMinPoint() const { return m_MinPoint; }
 
 	std::vector<float> GetVertices();
 	std::vector<s32> GetIndices();

@@ -163,25 +163,10 @@ private:
 	void* m_MainMemory = nullptr;
 	CommandAllocator m_Allocator; 
 
-
-	//MemoryBlock m_MainBlock;
-
-
-
-	template<typename T>
-	void RegisterBuffer(eBufferType buffer_type);
-
 };
 
 __forceinline bool Synchronizer::HasQuit()
 {
 	return m_QuitFlag;
-}
-
-template<typename T>
-void Synchronizer::RegisterBuffer(eBufferType buffer_type)
-{
-	//myCommandBuffers[buffer_type][0] = MemoryBlock(m_MainBlock.Alloc(), m_AllocationAmt, sizeof(T));
-	//myCommandBuffers[buffer_type][1] = MemoryBlock(m_MainBlock.Alloc(), m_AllocationAmt, sizeof(T));
 }
 

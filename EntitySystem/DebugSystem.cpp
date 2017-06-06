@@ -52,7 +52,7 @@ void DebugSystem::Update(float /*dt*/)
 			debug.m_MaxPoint = m->GetMaxPoint();//r.m_MaxPos;
 
 		}
-		//RenderBox(debug, translation.myOrientation);
+		RenderBox(debug, translation.myOrientation);
 //#endif
 	}
 

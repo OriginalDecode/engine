@@ -228,3 +228,4 @@ ModelManifest.xml
 /Workbed/Data/Model/sponza/.mayaSwatches
 *.iobj
 *.ipdb
+/EasyProfiler

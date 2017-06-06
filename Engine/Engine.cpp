@@ -13,7 +13,6 @@
 
 #include "EditObject.h"
 
-#include "imgui_impl_dx11.h"
 #include "LevelFactory.h"
 
 #include <Input/InputHandle.h>
@@ -32,6 +31,8 @@
 #include <CameraSystem.h>
 
 #include <Engine/LightModel.h>
+
+#include "imgui_impl_dx11.h"
 #ifdef _PROFILE
 #include <easy/profiler.h>
 #include <easy/reader.h>

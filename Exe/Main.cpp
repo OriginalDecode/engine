@@ -42,9 +42,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	_set_error_mode(_OUT_TO_MSGBOX);
 #ifdef _PROFILE
 	EASY_PROFILER_ENABLE;
-#ifdef _REMOTE_PROFILE
 	profiler::startListen();
-#endif
 #endif
 	DL_Debug::Debug::Create();
 	//do/uble res16x9 = 1.777777777777777777777777777777778; best
@@ -195,9 +193,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	Engine::Destroy();
 
 #ifdef _PROFILE
-#ifdef _REMOTE_PROFILE
 	profiler::stopListen();
-#endif
 	profiler::dumpBlocksToFile("file.prof");
 	EASY_PROFILER_DISABLE;
 #endif

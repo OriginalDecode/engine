@@ -123,10 +123,10 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetEmissive()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 3) }));
 
 	const GBuffer& gbuffer = myDeferredRenderer->GetGBuffer();
-	m_Engine->AddTexture(gbuffer.GetDiffuse(), "Scene Diffuse Texture");
-	m_Engine->AddTexture(gbuffer.GetNormal(), "Scene Normal Texture");
-	m_Engine->AddTexture(gbuffer.GetDepth(), "Scene Depth Texture");
-	m_Engine->AddTexture(gbuffer.GetEmissive(), "Scene Emissive Texture");
+	m_Engine->AddTexture(gbuffer.GetDiffuse(), "Scene Diffuse");
+	m_Engine->AddTexture(gbuffer.GetNormal(), "Scene Normal");
+	m_Engine->AddTexture(gbuffer.GetDepth(), "Scene Depth");
+	m_Engine->AddTexture(gbuffer.GetEmissive(), "Scene Emissive");
 
 
 
@@ -457,11 +457,13 @@ void Renderer::RenderParticles()
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
 
-
-
-
 void Renderer::RenderLines()
 {
+#ifdef _PROFILE
+	EASY_FUNCTION(profiler::colors::Amber);
+#endif
+
+
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
@@ -471,18 +473,39 @@ void Renderer::RenderLines()
 
 	const auto& commands = mySynchronizer->GetRenderCommands(eBufferType::LINE_BUFFER);
 
+#ifdef _PROFILE
+	EASY_BLOCK("LineCommand");
+#endif
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		LineCommand* command = reinterpret_cast<LineCommand*>(commands[i]);
 
 		m_API->SetDepthStencilState(command->m_ZEnabled ? eDepthStencilState::Z_ENABLED : eDepthStencilState::Z_DISABLED, 1);
+
+#ifdef _PROFILE
+		EASY_BLOCK("Update Lines");
+#endif
 		my3DLine->Update(command->m_Points[0], command->m_Points[1]);
+
+#ifdef _PROFILE
+		EASY_END_BLOCK;
+		EASY_BLOCK("Render Lines");
+#endif
 		my3DLine->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
+#ifdef _PROFILE
+		EASY_END_BLOCK;
+#endif
+
 	}
+#ifdef _PROFILE
+	EASY_END_BLOCK;
+#endif
 
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
+
+
 }
 
 PostProcessManager& Renderer::GetPostprocessManager()

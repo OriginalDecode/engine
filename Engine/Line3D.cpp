@@ -32,7 +32,6 @@ void CLine3D::Initiate(int aLineAmount /*= 256*/)
 
 void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint)
 {
-#ifdef SNOWBLIND_DX11
 	myFirstPoint = firstPoint;
 	mySecondPoint = secondPoint;
 	myVertices.RemoveAll();
@@ -51,7 +50,6 @@ void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint
 		memcpy(data, &myVertices[0], sizeof(SLinePoint) * myVertices.Size());
 	}
 	myAPI->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
-#endif
 }
 
 void CLine3D::Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& projection)

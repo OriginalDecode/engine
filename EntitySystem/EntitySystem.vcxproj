@@ -130,7 +130,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MinimalRebuild>false</MinimalRebuild>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)PostMaster\;$(SolutionDir)Timer\TimeManager\;$(SolutionDir)Engine\;$(SolutionDir)CommonLib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINSOCKAPI_;%(PreprocessorDefinitions);_PROFILE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINSOCKAPI_;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <CustomBuildStep>

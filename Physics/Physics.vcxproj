@@ -130,7 +130,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)CommonLib\;$(SolutionDir)Engine\;$(SolutionDir)Include\Bullet_Physics\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PreprocessorDefinitions>_WINSOCKAPI_;%(PreprocessorDefinitions);_PROFILE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINSOCKAPI_;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Lib>

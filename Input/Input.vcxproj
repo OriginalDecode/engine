@@ -183,7 +183,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\TimeManager\;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINSOCKAPI_;%(PreprocessorDefinitions);_PROFILE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINSOCKAPI_;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <PreBuildEvent>

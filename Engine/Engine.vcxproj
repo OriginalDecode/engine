@@ -168,7 +168,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PreprocessorDefinitions>_WINSOCKAPI_;__WIN64;COBJMACROS;SNOWBLIND_DX11;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);_PROFILE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINSOCKAPI_;__WIN64;COBJMACROS;SNOWBLIND_DX11;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <UndefinePreprocessorDefinitions>__WIN32;WIN32;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>

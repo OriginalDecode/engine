@@ -3,7 +3,7 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "GBuffer.h"
-#include <Engine/snowblind_shared.h>
+#include <Engine/engine_shared.h>
 bool LightPass::Initiate(const GBuffer& gbuffer, Texture* shadow_texture)
 {
 #ifdef SNOWBLIND_DX11

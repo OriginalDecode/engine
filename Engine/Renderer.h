@@ -1,5 +1,5 @@
 #pragma once
-#include <Engine/snowblind_shared.h>
+#include <Engine/engine_shared.h>
 #include "LightStructs.h"
 #include "ShadowPass.h"
 #include "LightPass.h"

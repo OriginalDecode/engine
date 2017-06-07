@@ -1,6 +1,6 @@
 #pragma once
 #include "VertexStructs.h"
-#include "snowblind_shared.h"
+#include "engine_shared.h"
 
 class GBuffer;
 class SpotLight;

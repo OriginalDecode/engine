@@ -4,7 +4,7 @@
 #include <assimp/postprocess.h>
 
 #include <Engine/Surface.h>
-#include "snowblind_shared.h"
+#include "engine_shared.h"
 #ifdef _DEBUG
 #include <TimeManager.h>
 #endif

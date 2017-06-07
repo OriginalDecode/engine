@@ -1,10 +1,8 @@
 #include "stdafx.h"
-#ifdef SNOWBLIND_DX11
 #include "EmitterInstance.h"
 #include "AssetsContainer.h"
 #include <Randomizer.h>
 #include "VertexStructs.h"
-
 void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_texture)
 {
 	myEngine = Engine::GetInstance();
@@ -222,4 +220,3 @@ void CEmitterInstance::Emit()
 	temp.speed = 8.f;
 	myParticles.Add(temp);
 }
-#endif

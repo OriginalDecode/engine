@@ -4,7 +4,7 @@
 #include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
 
 #include <Utilities.h>
-#include "snowblind_shared.h"
+#include "engine_shared.h"
 RigidBody::~RigidBody()
 {
 	SAFE_DELETE(myVertexArray);

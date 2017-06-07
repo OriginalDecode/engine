@@ -1,8 +1,4 @@
-#define Snowblind_VERSION_MAJOR 
-#define Snowblind_VERSION_MINOR
-#ifndef STANDARD_DATATYPES_H
-#define STANDARD_DATATYPES_H
-
+#pragma once
 #if defined(_MSC_VER)
 typedef unsigned __int8 u8;
 typedef __int8 s8;
@@ -34,5 +30,4 @@ typedef __int64 s64;
 #else
 typedef unsigned long long u64;
 typedef long long s64;
-#endif
 #endif

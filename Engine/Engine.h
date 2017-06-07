@@ -9,7 +9,7 @@
 
 #include <TimeManager.h>
 
-#include "snowblind_shared.h"
+#include "engine_shared.h"
 #include <string>
 #include "../EntitySystem/EntityManager.h"
 #include "ShaderFactory.h"

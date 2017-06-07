@@ -1,7 +1,4 @@
-#define Snowblind_VERSION_MAJOR 
-#define Snowblind_VERSION_MINOR
-#ifndef STANDARD_DEFINES_H
-#define STANDARD_DEFINES_H
+#pragma once
 
 #define TL template<typename T>
 
@@ -16,4 +13,3 @@
 
 #define POW(a) a * a
 
-#endif

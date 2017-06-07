@@ -1,6 +1,6 @@
 #pragma once
 #include "VertexStructs.h"
-#include "snowblind_shared.h"
+#include "engine_shared.h"
 #ifdef SNOWBLIND_DX11
 struct D3D11_INPUT_ELEMENT_DESC;
 #endif

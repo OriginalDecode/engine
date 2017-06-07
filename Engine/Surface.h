@@ -2,7 +2,7 @@
 #include <DataStructures/GrowingArray.h>
 #include <string>
 #include <Engine/Effect.h>
-#include <Engine/snowblind_shared.h>
+#include <Engine/engine_shared.h>
 struct ID3D11DeviceContext;
 enum D3D_PRIMITIVE_TOPOLOGY;
 

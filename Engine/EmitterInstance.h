@@ -1,6 +1,5 @@
 #pragma once
-#ifdef SNOWBLIND_DX11
-#include "SnowblindParticleData.h"
+#include "ParticleData.h"
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
 
@@ -57,4 +56,3 @@ private:
 		CU::Matrix44f m_Projection;
 	} m_GeometryCB;
 };
-#endif

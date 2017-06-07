@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "BaseModel.h"
-#include "snowblind_shared.h"
+#include "engine_shared.h"
 
 struct D3D11_INPUT_ELEMENT_DESC;
 

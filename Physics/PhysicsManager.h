@@ -1,7 +1,7 @@
 #pragma once
 #include "../CommonLib/DataStructures/GrowingArray.h"
 #include "../CommonLib/Math/Vector/Vector.h"
-#include "../Engine/snowblind_shared.h"
+#include "../Engine/engine_shared.h"
 
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;

@@ -1,5 +1,5 @@
 #pragma once
-#include <Engine/snowblind_shared.h>
+#include <Engine/engine_shared.h>
 #include <Engine/Model.h>
 
 class LightModel : public Model

@@ -2,7 +2,7 @@
 #ifdef SNOWBLIND_DX11
 #include <d3d11.h>
 #include "IGraphicsAPI.h"
-#include "snowblind_shared.h"
+#include "engine_shared.h"
 #include <vector>
 #include <Engine/ShaderFactory.h>
 #include <functional>

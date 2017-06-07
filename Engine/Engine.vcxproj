@@ -349,6 +349,7 @@
     </ClInclude>
     <ClInclude Include="NodeEntityManager.h" />
     <ClInclude Include="Octree.h" />
+    <ClInclude Include="ParticleData.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PostProcessManager.h" />
     <ClInclude Include="Quad.h" />
@@ -366,8 +367,7 @@
     <ClInclude Include="ShadowSpotlight.h" />
     <ClInclude Include="Shadow_Directional.h" />
     <ClInclude Include="SkySphere.h" />
-    <ClInclude Include="SnowblindParticleData.h" />
-    <ClInclude Include="snowblind_shared.h" />
+    <ClInclude Include="engine_shared.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteModel.h" />

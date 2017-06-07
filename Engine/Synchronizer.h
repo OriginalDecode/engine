@@ -2,7 +2,7 @@
 #include <DataStructures/StaticArray.h>
 #include <DataStructures/GrowingArray.h>
 #include "RenderCommand.h"
-#include "snowblind_shared.h"
+#include "engine_shared.h"
 
 #include <Engine/CommandAllocator.h>
 

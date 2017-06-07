@@ -1,6 +1,6 @@
 #pragma once
 
-#include "snowblind_shared.h"
+#include "engine_shared.h"
 #include <DataStructures/GrowingArray.h>
 #include <Engine/VertexWrapper.h>
 #include <Engine/IndexWrapper.h>

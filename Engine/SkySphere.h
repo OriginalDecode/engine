@@ -26,11 +26,7 @@ public:
 	//void Update(float dt);
 private:
 	Camera* myCamera;
-#ifdef SNOWBLIND_DX11
 	DirectX11* myAPI;
-#else
-	Vulkan* myAPI;
-#endif
 	CU::Matrix44f myOrientation;
 	CU::GrowingArray<SkysphereLayer> m_Layers;
 

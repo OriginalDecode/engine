@@ -24,7 +24,6 @@ CFont::CFont(SFontData* aFontData)
 	myEffect[0] = myEngine->GetEffect("Shaders/T_Font_Outline.json");
 	myEffect[1] = myEngine->GetEffect("Shaders/T_Font.json");
 
-#ifdef SNOWBLIND_DX11
 	myVertexBufferDesc = new D3D11_BUFFER_DESC();
 	myIndexBufferDesc = new D3D11_BUFFER_DESC();
 	myInitData = new D3D11_SUBRESOURCE_DATA();
@@ -38,13 +37,11 @@ CFont::CFont(SFontData* aFontData)
 
 	myRenderTime = 0.f;
 	myUpdateTime = 0.f;
-#endif
 
 }
 
 CFont::~CFont()
 {
-#ifdef SNOWBLIND_DX11
 	SAFE_DELETE(myIndexBuffer);
 	SAFE_DELETE(myVertexBuffer);
 
@@ -57,7 +54,6 @@ CFont::~CFont()
 
 	SAFE_DELETE(myConstantStruct);
 	SAFE_RELEASE(myConstantBuffer);
-#endif
 }
 
 void CFont::SetText(const std::string& aText)
@@ -82,7 +78,6 @@ const std::string& CFont::GetText() const
 
 void CFont::Render()
 {
-#ifdef SNOWBLIND_DX11
 	myTimeManager->GetTimer(myRenderTimer).Update();
 	myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds();
 
@@ -119,17 +114,11 @@ void CFont::Render()
 	myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds() - myRenderTime;
 
 	Engine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
-#endif
 }
 
 ID3D11ShaderResourceView* CFont::GetAtlas()
 {
-#ifdef SNOWBLIND_DX11
 	return myData->myAtlasView;
-#else
-	return nullptr;
-#endif
-
 }
 
 const CU::Math::Vector2<float>& CFont::GetSize()
@@ -164,16 +153,13 @@ void CFont::SetScale(const CU::Vector2f& aScale)
 
 void CFont::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 {
-#ifdef SNOWBLIND_DX11
 	myConstantStruct->world = anOrientation;
 	myConstantStruct->invertedView = CU::Math::Inverse(a2DCameraOrientation);
 	myConstantStruct->projection = anOrthogonalProjectionMatrix;
-#endif
 }
 
 void CFont::CreateInputLayout()
 {
-#ifdef SNOWBLIND_DX11
 	myVertexFormat.ReInit(3);
 	myVertexFormat.Add(VertexLayoutPosColUV[0]);
 	myVertexFormat.Add(VertexLayoutPosColUV[1]);
@@ -185,12 +171,10 @@ void CFont::CreateInputLayout()
 		, &myVertexLayout);
 	Engine::GetAPI()->HandleErrors(hr, " [Font] : Input Layout.");
 	Engine::GetAPI()->SetDebugName(myVertexLayout, "Font Input Layout");
-#endif
 }
 
 void CFont::CreateBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	myVertexBuffer = new VertexBufferWrapper;
 	myVertexBuffer->myStride = sizeof(SVertexTypePosColUv);
 	myVertexBuffer->myByteOffset = 0;
@@ -204,12 +188,10 @@ void CFont::CreateBuffer()
 	myVertexBufferDesc->CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	myVertexBufferDesc->MiscFlags = 0;
 	myVertexBufferDesc->StructureByteStride = 0;
-#endif
 }
 
 void CFont::CreateIndexBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	myIndexBuffer = new IndexBufferWrapper;
 	myIndexBuffer->myIndexBufferFormat = DXGI_FORMAT_R32_UINT;
 	myIndexBuffer->myByteOffset = 0;
@@ -221,12 +203,10 @@ void CFont::CreateIndexBuffer()
 	myIndexBufferDesc->CPUAccessFlags = 0;
 	myIndexBufferDesc->MiscFlags = 0;
 	myIndexBufferDesc->StructureByteStride = 0;
-#endif
 }
 
 void CFont::CreateConstantBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	myConstantStruct = new SFontConstantBuffer;
 
 	D3D11_BUFFER_DESC cbDesc;
@@ -241,12 +221,10 @@ void CFont::CreateConstantBuffer()
 	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Font Constant Buffer");
 	Engine::GetAPI()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
-#endif
 }
 
 void CFont::UpdateBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
 	SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 
@@ -336,12 +314,10 @@ void CFont::UpdateBuffer()
 
 	Engine::GetAPI()->SetDebugName(myIndexBuffer->myIndexBuffer, "Font Index Buffer");
 
-#endif
 }
 
 void CFont::UpdateConstantBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 
 	D3D11_MAPPED_SUBRESOURCE msr;
@@ -353,6 +329,5 @@ void CFont::UpdateConstantBuffer()
 	}
 
 	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
-#endif
 }
 

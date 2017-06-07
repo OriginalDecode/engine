@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#ifdef SNOWBLIND_DX11
 #include "Console.h"
 #include "Sprite.h"
 #include "Engine.h"
@@ -262,4 +261,3 @@ void CConsole::ReadInput()
 	}*/
 }
 
-#endif

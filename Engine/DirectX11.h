@@ -1,5 +1,4 @@
 #pragma once
-#ifdef SNOWBLIND_DX11
 #include <d3d11.h>
 #include "IGraphicsAPI.h"
 #include "engine_shared.h"
@@ -271,4 +270,3 @@ void DirectX11::UpdateConstantBuffer(IBuffer*& dest, T* src)
 }
 
 
-#endif

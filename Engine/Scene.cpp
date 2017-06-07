@@ -30,7 +30,6 @@ void CScene::Initiate(Camera* aCamera, bool aIs2DScene)
 
 void CScene::Render()
 {
-#ifdef SNOWBLIND_DX11
 	if (!myIs2DScene)
 	{
 		RenderLight();
@@ -54,7 +53,6 @@ void CScene::Render()
 		}
 		Engine::EnableZ();
 	}
-#endif
 }
 
 void CScene::Update(float aDeltaTime)

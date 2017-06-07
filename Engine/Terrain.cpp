@@ -107,7 +107,6 @@ void CTerrain::SetPosition(CU::Vector2f position)
 
 void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)
 {
-#ifdef SNOWBLIND_DX11
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -189,7 +188,6 @@ void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& positio
 	InitVertexBuffer();
 	InitIndexBuffer();
 	InitConstantBuffer();
-#endif
 }
 
 void CTerrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
@@ -202,7 +200,6 @@ void CTerrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, con
 
 void CTerrain::InitConstantBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	D3D11_BUFFER_DESC cbDesc;
 	ZeroMemory(&cbDesc, sizeof(cbDesc));
 	cbDesc.ByteWidth = sizeof(VertexBaseStruct);
@@ -215,10 +212,6 @@ void CTerrain::InitConstantBuffer()
 	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Model Constantbuffer : " + m_Filename);
 	Engine::GetAPI()->HandleErrors(hr, "[Terrain] : Failed to Create Constantbuffer, ");
-
-	
-
-#endif
 }
 
 void CTerrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray)

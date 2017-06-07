@@ -48,8 +48,8 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	//mySpotlight = new SpotLight; // Where should this live?
 	//mySpotlight->Initiate();
 
-	myDeferredRenderer = new DeferredRenderer; // Where should this live?
-	if ( !myDeferredRenderer->Initiate(0) )
+	m_DeferredRenderer = new DeferredRenderer; // Where should this live?
+	if (!m_DeferredRenderer->Initiate(0))
 		return false;
 
 	myDepthTexture = new Texture; //Where should this live?
@@ -72,10 +72,10 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	myClearColor = new Sprite;
 	myClearColor->Initiate("Data/Textures/blank.dds", CU::Vector2f(128.f, 128.f), CU::Vector2f(0.f, 0.f));
 
-	my3DLine = new CLine3D; //Where should this live?
-	my3DLine->Initiate();
+	m_Line = new CLine3D; //Where should this live?
+	m_Line->Initiate();
 
-	bool success = m_LightPass.Initiate(myDeferredRenderer->GetGBuffer(), 0);
+	bool success = m_LightPass.Initiate(m_DeferredRenderer->GetGBuffer(), 0);
 	DL_ASSERT_EXP(success, "failed to initiate lightpass!");
 
 	m_ParticleEmitter = new CEmitterInstance;
@@ -104,9 +104,9 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 
 	float color[4] = { 0.f,0.f,0.f,0.f};
-	SamplerState sampler_state0(0, 
-		SamplerState::FILTER_MIN_MAG_MIP_LINEAR, SamplerState::PIXEL_SHADER, SamplerState::WRAP, 
-		16, 0.f, 0.f, 0.f, color, 
+	SamplerState sampler_state0(0,
+		SamplerState::FILTER_MIN_MAG_MIP_LINEAR, SamplerState::PIXEL_SHADER, SamplerState::WRAP,
+		16, 0.f, 0.f, 0.f, color,
 		SamplerState::COMPARISON_NEVER);
 
 
@@ -122,7 +122,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetDepth()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 2.f) }));
 	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetEmissive()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 3) }));
 
-	const GBuffer& gbuffer = myDeferredRenderer->GetGBuffer();
+	const GBuffer& gbuffer = m_DeferredRenderer->GetGBuffer();
 	m_Engine->AddTexture(gbuffer.GetDiffuse(), "Scene Diffuse");
 	m_Engine->AddTexture(gbuffer.GetNormal(), "Scene Normal");
 	m_Engine->AddTexture(gbuffer.GetDepth(), "Scene Depth");
@@ -140,15 +140,15 @@ bool Renderer::CleanUp()
 	m_DirectionalShadow.CleanUp();
 	m_PostProcessManager.CleanUp();
 
-	SAFE_DELETE(my3DLine);
+	SAFE_DELETE(m_Line);
 	SAFE_DELETE(mySprite);
 	SAFE_DELETE(myClearColor);
 
 	myDepthTexture->CleanUp();
 	SAFE_DELETE(myDepthTexture);
 
-	myDeferredRenderer->CleanUp();
-	SAFE_DELETE(myDeferredRenderer);
+	m_DeferredRenderer->CleanUp();
+	SAFE_DELETE(m_DeferredRenderer);
 
 	SAFE_DELETE(myText);
 
@@ -158,7 +158,7 @@ bool Renderer::CleanUp()
 	SAFE_DELETE(m_ParticleEmitter);
 
 
-	for ( SpotLight* s : m_Spotlights )
+	for (SpotLight* s : m_Spotlights)
 	{
 		s->CleanUp();
 		SAFE_DELETE(s);
@@ -172,20 +172,20 @@ bool Renderer::CleanUp()
 void Renderer::Render()
 {
 #ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Magenta);
+	//EASY_FUNCTION(profiler::colors::Magenta);
 #endif
 	m_Engine->Clear();
-	myDeferredRenderer->SetGBufferAsTarget(m_RenderContext);
+	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
 	Render3DCommands();
 
-	Texture::CopyData(myDepthTexture->GetDepthTexture(), myDeferredRenderer->GetDepthStencil()->GetDepthTexture());
+	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 
 	//Do SSAO
 
-	myDeferredRenderer->DeferredRender(
+	m_DeferredRenderer->DeferredRender(
 		m_Camera->GetOrientation(),
 		m_Camera->GetPerspective(),
 		m_DirectionalShadow.GetMVP(),
@@ -200,17 +200,17 @@ void Renderer::Render()
 
 	m_Engine->ResetRenderTargetAndDepth();
 
-	myDeferredRenderer->SetBuffers(m_RenderContext); //This is just the quad
-	m_PostProcessManager.Process(myDeferredRenderer->GetFinalTexture());
+	m_DeferredRenderer->SetBuffers(m_RenderContext); //This is just the quad
+	m_PostProcessManager.Process(m_DeferredRenderer->GetFinalTexture());
 
-	if ( m_PostProcessManager.GetFlags() == 0 )
-		myDeferredRenderer->Finalize(m_RenderContext);
+	if (m_PostProcessManager.GetFlags() == 0)
+		m_DeferredRenderer->Finalize(m_RenderContext);
 
 
 	//m_Atmosphere.SetLightData(m_Direction, m_DirectionalCamera->GetPosition());
 
-	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), myDeferredRenderer->GetDepthStencil()->GetDepthView());
-	m_Atmosphere.Render(m_Camera->GetOrientation(), myDeferredRenderer->GetDepthStencil(), m_RenderContext);
+	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), m_DeferredRenderer->GetDepthStencil()->GetDepthView());
+	m_Atmosphere.Render(m_Camera->GetOrientation(), m_DeferredRenderer->GetDepthStencil(), m_RenderContext);
 
 	m_Engine->ResetRenderTargetAndDepth();
 
@@ -273,23 +273,21 @@ void Renderer::RenderNonDeferred3DCommands()
 
 void Renderer::Render3DCommands()
 {
-	//const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
-
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
-	for ( CTerrain* terrain : myTerrainArray )
+	for (CTerrain* terrain : myTerrainArray)
 	{
-		if ( !terrain->HasLoaded() )
+		if (!terrain->HasLoaded())
 			continue;
 
 		terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 	}
 
-	const CommandAllocator& commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
+	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
-		ModelCommand* command = reinterpret_cast< ModelCommand* >( commands[i] );
+		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 
 		commands[i] != commands[i + 1];
 
@@ -300,23 +298,21 @@ void Renderer::Render3DCommands()
 		model->SetOrientation(command->m_Orientation);
 		m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 		model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
-
-
 	}
 }
 
 void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 {
-	const CommandAllocator& commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
+	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
-	for ( s32 i = 0; i < commands.Size(); i++ )
+	for (s32 i = 0; i < commands.Size(); i++)
 	{
-		ModelCommand* command = reinterpret_cast< ModelCommand* >( commands[i] );
+		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
-			
+
 		Model* model = m_Engine->GetModel(command->m_Key);
 		model->SetOrientation(command->m_Orientation);
 		model->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
@@ -328,28 +324,28 @@ int Renderer::RegisterLight()
 	SpotLight* s = new SpotLight;
 	s->Initiate();
 	m_Spotlights.Add(s);
-	return ( m_Spotlights.Size() - 1 );
+	return (m_Spotlights.Size() - 1);
 }
 
 void Renderer::Render2DCommands()
 {
-	const CommandAllocator& commands0 = mySynchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER);
+	const auto commands0 = mySynchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER);
 	//const CU::GrowingArray<RenderCommand>& commands2D = mySynchronizer->GetRenderCommands(eCommandBuffer::e2D);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
-	for ( s32 i = 0; i < commands0.Size(); i++ )
+	for (s32 i = 0; i < commands0.Size(); i++)
 	{
-		SpriteCommand* command = reinterpret_cast< SpriteCommand* >( commands0[i] );
+		auto command = reinterpret_cast<SpriteCommand*>(commands0[i]);
 		mySprite->SetPosition(command->m_Position);
 		mySprite->SetShaderView(command->m_Resource);
 		mySprite->Render(m_Camera);
 	}
 
-	const CommandAllocator& commands1 = mySynchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER);
-	for ( s32 i = 0; i < commands1.Size(); i++ )
+	const auto commands1 = mySynchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER);
+	for (s32 i = 0; i < commands1.Size(); i++)
 	{
-		TextCommand* command = reinterpret_cast< TextCommand* >( commands1[i] );
+		auto command = reinterpret_cast<TextCommand*>(commands1[i]);
 		myText->SetText(command->m_TextBuffer);
 		myText->SetPosition(command->m_Position);
 		myText->Render(m_Camera);
@@ -361,13 +357,13 @@ void Renderer::Render2DCommands()
 
 void Renderer::RenderSpotlight()
 {
-	const CommandAllocator& commands = mySynchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER);
 	Effect* effect = m_LightPass.GetSpotlightEffect();
-	SpotlightData data;
 
-	for ( s32 i = 0; i < commands.Size(); i++ )
+	SpotlightData data;
+	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER);
+	for (s32 i = 0; i < commands.Size(); i++)
 	{
-		SpotlightCommand* command = reinterpret_cast< SpotlightCommand* >( commands[i] );
+		auto command = reinterpret_cast<SpotlightCommand*>(commands[i]);
 
 		data.myAngle = command->m_Angle;
 		data.myRange = command->m_Range;
@@ -379,13 +375,13 @@ void Renderer::RenderSpotlight()
 		light->SetData(data);
 
 		CU::Matrix44f shadow_mvp;
-		if ( command->m_ShadowCasting )
+		if (command->m_ShadowCasting)
 		{
 			ShadowSpotlight* shadow = light->GetShadowSpotlight();
 			m_ShadowPass.ProcessShadows(shadow, m_RenderContext);
 			shadow_mvp = shadow->GetMVP();
 			effect->AddShaderResource(shadow->GetDepthStencil(), Effect::SHADOWMAP);
-			myDeferredRenderer->SetRenderTarget(m_RenderContext);
+			m_DeferredRenderer->SetRenderTarget(m_RenderContext);
 		}
 
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
@@ -432,15 +428,10 @@ void Renderer::RenderParticles()
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE_PARTICLE, 0);
 
-
-
-	const CommandAllocator& commands = mySynchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER);
-
-	//const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
-
-	for(s32 i = 0; i < commands.Size(); i++)
+	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER);
+	for (s32 i = 0; i < commands.Size(); i++)
 	{
-		ParticleCommand* command = reinterpret_cast<ParticleCommand*>(commands[i]);
+		auto command = reinterpret_cast<ParticleCommand*>(commands[i]);
 
 		m_ParticleEmitter->SetPosition(command->m_Position);
 		m_ParticleEmitter->Update(m_Engine->GetDeltaTime());
@@ -452,7 +443,7 @@ void Renderer::RenderParticles()
 		//{
 		//	m_API->GetContext()->PSSetShaderResources(1, 1, m_Engine->GetTexture("Data/Textures/hp.dds")->GetShaderViewRef());
 		//}
-			m_ParticleEmitter->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
+		m_ParticleEmitter->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
 	}
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
@@ -463,49 +454,32 @@ void Renderer::RenderLines()
 	EASY_FUNCTION(profiler::colors::Amber);
 #endif
 
-
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
 	ID3D11RenderTargetView* backbuffer = m_API->GetBackbuffer();
-	ID3D11DepthStencilView* depth = myDeferredRenderer->GetDepthStencil()->GetDepthView();
+	ID3D11DepthStencilView* depth = m_DeferredRenderer->GetDepthStencil()->GetDepthView();
 	m_API->GetContext()->OMSetRenderTargets(1, &backbuffer, depth);
 
-	const auto& commands = mySynchronizer->GetRenderCommands(eBufferType::LINE_BUFFER);
-
+	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::LINE_BUFFER);
 #ifdef _PROFILE
-	EASY_BLOCK("LineCommand");
+	EASY_BLOCK("LineCommand", profiler::colors::Red);
 #endif
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
-		LineCommand* command = reinterpret_cast<LineCommand*>(commands[i]);
-
+		auto command = reinterpret_cast<LineCommand*>(commands[i]);
 		m_API->SetDepthStencilState(command->m_ZEnabled ? eDepthStencilState::Z_ENABLED : eDepthStencilState::Z_DISABLED, 1);
-
-#ifdef _PROFILE
-		EASY_BLOCK("Update Lines");
-#endif
-		my3DLine->Update(command->m_Points[0], command->m_Points[1]);
-
-#ifdef _PROFILE
-		EASY_END_BLOCK;
-		EASY_BLOCK("Render Lines");
-#endif
-		my3DLine->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
-#ifdef _PROFILE
-		EASY_END_BLOCK;
-#endif
-
+		m_Line->Update(command->m_Points[0], command->m_Points[1]);
+		m_Line->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
 	}
 #ifdef _PROFILE
 	EASY_END_BLOCK;
 #endif
 
+
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
-
-
 }
 
 PostProcessManager& Renderer::GetPostprocessManager()

@@ -18,9 +18,6 @@ struct SLine
 	SLinePoint second;
 };
 
-
-
-
 class DirectX11;
 class Effect;
 struct VertexBufferWrapper;
@@ -60,10 +57,8 @@ private:
 
 	VertexBaseStruct* myConstantStruct = nullptr;
 
-#ifdef SNOWBLIND_DX11
 	IInputLayout* myVertexLayout = nullptr;
 	ID3D11Buffer* myConstantBuffer = nullptr;
-#endif
 	CU::GrowingArray<SLinePoint> myVertices;
 	int myLineAmount = 0;
 };

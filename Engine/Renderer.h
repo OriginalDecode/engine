@@ -81,7 +81,7 @@ private:
 	DirectX11*			m_API					= nullptr;
 	Camera*				m_Camera				= nullptr;
 
-	DeferredRenderer*	myDeferredRenderer		= nullptr;
+	DeferredRenderer*	m_DeferredRenderer		= nullptr;
 
 	DirectionalLight*	myDirectionalLight		= nullptr;
 	PointLight*			myPointLight			= nullptr;
@@ -94,7 +94,7 @@ private:
 	Sprite*				mySprite				= nullptr;
 	Sprite*				myClearColor			= nullptr;
 
-	CLine3D*			my3DLine				= nullptr;
+	CLine3D*			m_Line				= nullptr;
 
 	CEmitterInstance*	m_ParticleEmitter		= nullptr;
 
@@ -107,7 +107,7 @@ private:
 
 #ifdef _DEBUG
 public:
-	DeferredRenderer* GetDeferredRenderer() {	return myDeferredRenderer; };
+	DeferredRenderer* GetDeferredRenderer() {	return m_DeferredRenderer; };
 
 
 

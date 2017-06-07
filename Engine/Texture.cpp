@@ -54,11 +54,7 @@ void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_f
 
 	myWidth = width;
 	myHeight = height;
-#ifdef SNOWBLIND_DX11
 	DirectX11* api = Engine::GetAPI();
-#else
-	Vulkan* api = Engine::GetAPI();
-#endif
 	ID3D11Device* device = Engine::GetAPI()->GetDevice();
 
 	D3D11_TEXTURE2D_DESC text_desc;
@@ -117,11 +113,7 @@ void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat render_ta
 
 	myWidth = width;
 	myHeight = height;
-#ifdef SNOWBLIND_DX11
 	DirectX11* api = Engine::GetAPI();
-#else
-	Vulkan* api = Engine::GetAPI();
-#endif
 	ID3D11Device* device = Engine::GetAPI()->GetDevice();
 
 	D3D11_TEXTURE2D_DESC text_desc;

@@ -4,12 +4,6 @@
 #include <assert.h>
 #include <memory.h>
 
-#ifndef _WIN64
-typedef u32 uptr;
-#else
-typedef u64 uptr;
-#endif
-
 namespace
 {
 	inline void* AlignForward(void* address, u8 alignment)

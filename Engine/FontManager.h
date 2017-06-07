@@ -1,12 +1,10 @@
 #pragma once
 #include <DataStructures/StaticArray.h>
 #include <unordered_map>
-#ifdef SNOWBLIND_DX11
 struct ID3D11Device;
 struct ID3D11ShaderResourceView;
 struct ID3D11RenderTargetView;
 struct ID3D11Texture2D;
-#endif
 struct FT_LibraryRec_;
 struct FT_FaceRec_;
 struct FT_GlyphRec_;
@@ -38,9 +36,7 @@ struct SFontData
 	short myFontHeightWidth;
 	int* myAtlas;
 
-#ifdef SNOWBLIND_DX11
 	ID3D11ShaderResourceView* myAtlasView;
-#endif
 };
 
 

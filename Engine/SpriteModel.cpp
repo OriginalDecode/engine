@@ -24,15 +24,12 @@ CSpriteModel::~CSpriteModel()
 	SAFE_DELETE(myVertexData);
 	SAFE_DELETE(myConstantStruct);
 
-#ifdef SNOWBLIND_DX11
 	SAFE_RELEASE(myVertexLayout);
 	SAFE_RELEASE(myConstantBuffer);
-#endif
 }
 
 void CSpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 {
-#ifdef SNOWBLIND_DX11
 	myWindowSize = Engine::GetInstance()->GetWindowSize();
 
 	myTexturePath = aTexturePath;
@@ -97,12 +94,10 @@ void CSpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vec
 	InitiateIndexBuffer();
 	InitConstantBuffer();
 	//InitiateBlendState();
-#endif
 }
 
 void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 {
-#ifdef SNOWBLIND_DX11
 	myWindowSize = Engine::GetInstance()->GetWindowSize();
 
 	mySize = aSize;
@@ -167,12 +162,10 @@ void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU:
 	InitiateIndexBuffer();
 	InitConstantBuffer();
 	//InitiateBlendState();
-#endif
 }
 
 void CSpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 {
-#ifdef SNOWBLIND_DX11
 	Engine::GetAPI()->SetBlendState(eBlendStates::BLEND_FALSE);
 	if (!myEffect)
 		return;
@@ -200,7 +193,6 @@ void CSpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2D
 	context.PSSetShaderResources(0, 1, &srv);
 
 	Engine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
-#endif
 }
 
 Effect* CSpriteModel::GetEffect()
@@ -225,7 +217,6 @@ void CSpriteModel::SetTexture(ID3D11ShaderResourceView* srv)
 
 void CSpriteModel::UpdateConstantBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	myConstantStruct->scale = mySize;
 
 
@@ -240,12 +231,10 @@ void CSpriteModel::UpdateConstantBuffer()
 	}
 
 	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
-#endif
 }
 
 void CSpriteModel::InitiateVertexBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	HRESULT hr;
 
 	hr = Engine::GetAPI()->GetDevice()->
@@ -275,12 +264,10 @@ void CSpriteModel::InitiateVertexBuffer()
 	myVertexBuffer->myByteOffset = 0;
 	myVertexBuffer->myStartSlot = 0;
 	myVertexBuffer->myNrOfBuffers = 1;
-#endif
 }
 
 void CSpriteModel::InitiateIndexBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	D3D11_BUFFER_DESC indexDesc;
 	ZeroMemory(&indexDesc, sizeof(indexDesc));
 	indexDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -297,12 +284,10 @@ void CSpriteModel::InitiateIndexBuffer()
 
 	myIndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
 	myIndexBuffer->myByteOffset = 0;
-#endif
 }
 
 void CSpriteModel::InitConstantBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	myConstantStruct = new SSpriteConstantBuffer;
 
 	D3D11_BUFFER_DESC cbDesc;
@@ -317,7 +302,6 @@ void CSpriteModel::InitConstantBuffer()
 	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Font Constant Buffer");
 	Engine::GetAPI()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
-#endif
 }
 
 void CSpriteModel::ConvertToNormalSpace()

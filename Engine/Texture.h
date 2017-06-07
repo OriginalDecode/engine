@@ -33,7 +33,6 @@ public:
 	bool CleanUp();
 	bool Load(std::string filepath);
 	void OnReload();
-#ifdef SNOWBLIND_DX11
 	Ticket_Mutex m_Mutex;
 	ITexture2D* GetDepthTexture() const { return m_DepthTexture; }
 	ITexture2D* GetTexture() const { return m_DepthTexture; }
@@ -52,7 +51,6 @@ public:
 	void SetTexture(IShaderResourceView* aShaderResource);
 	static HRESULT SaveToFile(ITexture2D*& texture_resource, const std::string& file_name);
 	static void CopyData(ITexture2D* dest, ITexture2D* source);
-#endif
 
 	s32 GetWidth() const { return myWidth; }
 	s32 GetHeight() const { return myHeight; }

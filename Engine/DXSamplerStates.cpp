@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DirectX11.h"
 
-#ifdef SNOWBLIND_DX11
 
 void DirectX11::CreateSamplerStates()
 {
@@ -34,4 +33,3 @@ void DirectX11::CreateSamplerStates()
 	myDevice->CreateSamplerState(&samplerDesc, &mySamplerStates[u16(eSamplerStates::POINT_WRAP)]);
 	SetDebugName(mySamplerStates[u16(eSamplerStates::POINT_WRAP)], "POINT_WRAP SamplerState");
 }
-#endif

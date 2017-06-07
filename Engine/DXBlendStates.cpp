@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DirectX11.h"
-#ifdef SNOWBLIND_DX11
 
 void DirectX11::CreateBlendStates()
 {
@@ -58,4 +57,3 @@ void DirectX11::CreateBlendStates()
 
 
 }
-#endif

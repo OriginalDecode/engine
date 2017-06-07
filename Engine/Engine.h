@@ -72,14 +72,8 @@ public:
 
 	int RegisterLight();
 
-
-
 	static IGraphicsAPI* GetGraphicsAPI();
-#ifdef SNOWBLIND_DX11
 	static DirectX11* GetAPI();
-#else
-	static Vulkan* GetAPI();
-#endif
 	//_________________________________________
 	// Settings
 	void ToggleVsync();

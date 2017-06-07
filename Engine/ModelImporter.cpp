@@ -24,7 +24,6 @@ CModelImporter::CModelImporter()
 
 void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point)
 {
-#ifdef SNOWBLIND_DX11
 	DL_ASSERT_EXP(someData, "Failed to process node. FBXModelData someData was null");
 
 	for ( u32 i = 0; i < aNode->mNumMeshes; i++ )
@@ -38,8 +37,6 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 		someData->myChildren.Add(new FBXModelData);
 		ProcessNode(aNode->mChildren[i], aScene, someData->myChildren.GetLast(), file, min_point, max_point);
 	}
-#endif
-
 }
 
 

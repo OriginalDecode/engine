@@ -11,23 +11,19 @@ CLine3D::CLine3D()
 
 CLine3D::~CLine3D()
 {
-#ifdef SNOWBLIND_DX11
 	SAFE_RELEASE(myVertexLayout);
 	SAFE_RELEASE(myConstantBuffer);
 	SAFE_DELETE(myConstantStruct);
 	SAFE_DELETE(myVertexBuffer);
-#endif
 }
 
 void CLine3D::Initiate(int aLineAmount /*= 256*/)
 {
-#ifdef SNOWBLIND_DX11
 	myLineAmount = aLineAmount;
 	myAPI = Engine::GetAPI();
 	myEffect =  Engine::GetInstance()->GetEffect("Shaders/T_Line3D.json");
 	CreateBuffer();
 	CreateConstantBuffer();
-#endif
 }
 
 void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint)
@@ -54,7 +50,9 @@ void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint
 
 void CLine3D::Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& projection)
 {
-#ifdef SNOWBLIND_DX11
+#ifdef _PROFILE
+	//EASY_FUNCTION(profiler::colors::Green);
+#endif
 	ID3D11DeviceContext* context = myAPI->GetContext();
 
 	context->IASetInputLayout(myVertexLayout);
@@ -73,6 +71,8 @@ void CLine3D::Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& 
 	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 	context->Draw(myVertices.Size(), 0);
+#ifdef _PROFILE
+
 #endif
 }
 
@@ -158,7 +158,6 @@ void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
 
 void CLine3D::CreateConstantBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	myConstantStruct = new VertexBaseStruct;
 
 	D3D11_BUFFER_DESC cbDesc;
@@ -173,12 +172,10 @@ void CLine3D::CreateConstantBuffer()
 	HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 	myAPI->SetDebugName(myConstantBuffer, "Line3D Constant Buffer");
 	myAPI->HandleErrors(hr, "[Line3D] : Failed to Create Constant Buffer, ");
-#endif
 }
 
 void CLine3D::CreateBuffer()
 {
-#ifdef SNOWBLIND_DX11
 	HRESULT hr;
 	void* shader = myEffect->GetVertexShader()->compiledShader;
 	int size = myEffect->GetVertexShader()->shaderSize;
@@ -226,12 +223,10 @@ void CLine3D::CreateBuffer()
 	hr = myAPI->GetDevice()->CreateBuffer(&vertexBufferDesc, nullptr, &myVertexBuffer->myVertexBuffer);
 	myAPI->SetDebugName(myVertexBuffer->myVertexBuffer, "Line3D : Vertex Buffer");
 	myAPI->HandleErrors(hr, "Failed to Create VertexBuffer!");
-#endif
 }
 
 void CLine3D::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
-#ifdef SNOWBLIND_DX11
 	DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
 	myConstantStruct->world = myOrientation;
 	myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
@@ -246,7 +241,6 @@ void CLine3D::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Mat
 	}
 
 	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
-#endif
 }
 
 SLinePoint::SLinePoint(const CU::Vector4f& pos, const CU::Vector4f& col)

@@ -2,11 +2,9 @@
 #include "VertexStructs.h"
 #include "Utilities.h"
 
-#ifdef SNOWBLIND_DX11
 struct D3D11_BUFFER_DESC;
 struct D3D11_INPUT_ELEMENT_DESC;
 struct D3D11_SUBRESOURCE_DATA;
-#endif
 namespace CommonUtilities
 {
 	class TimeManager;
@@ -55,14 +53,12 @@ private:
 	SFontData* myData = nullptr;
 	Effect* myEffect[2];
 
-#ifdef SNOWBLIND_DX11
 	IInputLayout* myVertexLayout = nullptr;
 	D3D11_BUFFER_DESC* myVertexBufferDesc = nullptr;
 	D3D11_BUFFER_DESC* myIndexBufferDesc = nullptr;
 
 	D3D11_SUBRESOURCE_DATA* myInitData = nullptr;
 	ID3D11Buffer* myConstantBuffer = nullptr;
-#endif
 
 	VertexBufferWrapper* myVertexBuffer = nullptr;
 	IndexBufferWrapper* myIndexBuffer = nullptr;
@@ -70,9 +66,7 @@ private:
 
 	CU::Math::Vector2<float> mySize;
 	CU::GrowingArray<SVertexTypePosColUv> myVertices;
-#ifdef SNOWBLIND_DX11
 	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
-#endif
 	CU::GrowingArray<int> myIndices;
 
 	CU::TimeManager* myTimeManager = nullptr;

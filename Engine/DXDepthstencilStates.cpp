@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DirectX11.h"
-#ifdef SNOWBLIND_DX11
 
 void DirectX11::CreateEnabledDepthStencilState()
 {
@@ -189,4 +188,3 @@ void DirectX11::CreateDepthStencilStates()
 	HandleErrors(hr, "Failed to setup depth buffer!");
 
 }
-#endif

@@ -1,9 +1,7 @@
 #pragma once
 #include "VertexStructs.h"
 #include "engine_shared.h"
-#ifdef SNOWBLIND_DX11
 struct D3D11_INPUT_ELEMENT_DESC;
-#endif
 
 class Texture;
 class Camera;
@@ -52,11 +50,9 @@ private:
 	VertexBufferWrapper* myVertexBuffer;
 	IndexBufferWrapper* myIndexBuffer;
 
-#ifdef SNOWBLIND_DX11
 	ID3D11Buffer* myConstantBuffer = nullptr;
 	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 	IInputLayout* myVertexLayout;
-#endif
 	CU::GrowingArray<VertexTypePosUV> myVertices;
 
 	struct SSpriteConstantBuffer : public VertexBaseStruct

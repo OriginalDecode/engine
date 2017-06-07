@@ -1,6 +1,5 @@
 #pragma once
 
-#ifdef SNOWBLIND_DX11
 
 namespace CommonUtilities
 {
@@ -62,4 +61,3 @@ __forceinline bool CConsole::GetIsActive()
 {
 	return myIsActive;
 }
-#endif

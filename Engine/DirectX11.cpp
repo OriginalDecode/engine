@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#ifdef SNOWBLIND_DX11
 #include "DirectX11.h"
 
 #include <sstream>
@@ -877,4 +876,3 @@ void DirectX11::GetRefreshRate(u32& aNumerator, u32& aDenominator)
 	SAFE_RELEASE(factory);
 }
 
-#endif

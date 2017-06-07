@@ -331,7 +331,6 @@ void CFontManager::LoadOutline(const int index, const int atlasX, const int atla
 
 void CFontManager::DumpAtlas(SFontData* fontData, int atlasSize)
 {
-#ifdef SNOWBLIND_DX11
 	D3D11_SUBRESOURCE_DATA data;
 	data.pSysMem = fontData->myAtlas;
 	data.SysMemPitch = atlasSize * 4;
@@ -370,13 +369,11 @@ void CFontManager::DumpAtlas(SFontData* fontData, int atlasSize)
 	hr = Texture::SaveToFile(texture, "Glyphs/Atlas_" + name + "dds");
 	Engine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
 	SAFE_RELEASE(texture);
-#endif
 }
 
 
 void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch, bool /*isOutline*/)
 {
-#ifdef SNOWBLIND_DX11
 	D3D11_SUBRESOURCE_DATA data;
 	data.pSysMem = source;
 	data.SysMemPitch = pitch * 4;
@@ -416,7 +413,6 @@ void CFontManager::DumpGlyph(int* source, int index, int width, int height, int 
 	hr = Texture::SaveToFile(texture, "Glyphs/Glpyh_" + name + std::to_string(index) + ".dds");
 	Engine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
 	SAFE_RELEASE(texture);
-#endif
 }
 
 void CFontManager::CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, int aBorderOffset)
@@ -549,8 +545,6 @@ void CFontManager::CountDeltas(const int& width, const int& height, int& deltaX,
 SFontData::~SFontData()
 {
 	SAFE_DELETE(myAtlas);
-#ifdef SNOWBLIND_DX11
 	SAFE_RELEASE(myAtlasView);
-#endif
 }
 

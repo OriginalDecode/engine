@@ -6,7 +6,6 @@
 #include <Engine/engine_shared.h>
 bool LightPass::Initiate(const GBuffer& gbuffer, Texture* shadow_texture)
 {
-#ifdef SNOWBLIND_DX11
 	myEffect[eLight::POINTLIGHT] = Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Lightmesh.json");
 	myEffect[eLight::SPOTLIGHT] =	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json");
 
@@ -17,7 +16,6 @@ bool LightPass::Initiate(const GBuffer& gbuffer, Texture* shadow_texture)
 	myEffect[eLight::SPOTLIGHT]->AddShaderResource(gbuffer.GetDiffuse(), Effect::DIFFUSE);
 	myEffect[eLight::SPOTLIGHT]->AddShaderResource(gbuffer.GetNormal(), Effect::NORMAL);
 	myEffect[eLight::SPOTLIGHT]->AddShaderResource(gbuffer.GetDepth(), Effect::DEPTH);
-#endif
 
 	CreatePointlightBuffers();
 	CreateSpotlightBuffers();
@@ -72,7 +70,6 @@ Effect* LightPass::GetSpotlightEffect()
 
 void LightPass::UpdatePointlightBuffers(PointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
 {
-#ifdef SNOWBLIND_DX11
 	//----------------------------------------
 	// VertexShader Constant Buffer
 	//----------------------------------------
@@ -114,12 +111,10 @@ void LightPass::UpdatePointlightBuffers(PointLight* pointlight, Camera* aCamera,
 	}
 
 	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffers[eBuffer::POINTLIGHT_PIXEL], 0);
-#endif
 }
 
 void LightPass::UpdateSpotlightBuffers(SpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
 {
-#ifdef SNOWBLIND_DX11
 	//----------------------------------------
 	// VertexShader Constant Buffer
 	//----------------------------------------
@@ -166,12 +161,10 @@ void LightPass::UpdateSpotlightBuffers(SpotLight* spotlight, Camera* aCamera, co
 	}
 
 	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffers[eBuffer::SPOTLIGHT_PIXEL], 0);
-#endif
 }
 
 void LightPass::CreateSpotlightBuffers()
 {
-#ifdef SNOWBLIND_DX11
 	//----------------------------------------
 	// Spotlight Vertex Constant Buffer
 	//----------------------------------------
@@ -203,12 +196,10 @@ void LightPass::CreateSpotlightBuffers()
 	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[eBuffer::SPOTLIGHT_PIXEL]);
 	Engine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOTLIGHT_PIXEL)], "LightPass : Spotlight Pixel Constant Buffer");
 	Engine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Spotlight Pixel Constant Buffer, ");
-#endif
 }
 
 void LightPass::CreatePointlightBuffers()
 {
-#ifdef SNOWBLIND_DX11
 	//----------------------------------------
 	// Pointlight Vertex Constant Buffer
 	//----------------------------------------
@@ -240,7 +231,6 @@ void LightPass::CreatePointlightBuffers()
 	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[eBuffer::POINTLIGHT_PIXEL]);
 	Engine::GetAPI()->SetDebugName(myConstantBuffers[eBuffer::POINTLIGHT_PIXEL], "LightPass : Pointlight Pixel Constant Buffer");
 	Engine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Pointlight Pixel Constant Buffer, ");
-#endif
 }
 
 bool LightPass::HasInitiated()

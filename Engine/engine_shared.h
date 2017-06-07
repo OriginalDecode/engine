@@ -4,17 +4,24 @@
 #include "EngineDefines.h"
 #include <DL_Debug/DL_Debug.h>
 #include <string>
+
+#ifdef _PROFILE
+#include <easy/profiler.h>
+#include <easy/reader.h>
+#endif
+
+
+
 typedef s32 Entity;
 
-#ifdef SNOWBLIND_DX11
 typedef struct ID3D11Texture2D				ITexture2D;
 typedef struct ID3D11ShaderResourceView		IShaderResourceView;
 typedef struct ID3D11DepthStencilView		IDepthStencilView;
 typedef struct ID3D11RenderTargetView		IRenderTargetView;
 
-typedef DXGI_FORMAT							TextureFormat;
-typedef D3D11_USAGE							UsageType;
-typedef D3D11_VIEWPORT						Viewport;
+typedef enum DXGI_FORMAT					TextureFormat;
+typedef enum D3D11_USAGE					UsageType;
+typedef struct D3D11_VIEWPORT				Viewport;
 typedef struct ID3D11VertexShader			IVertexShader;
 typedef struct ID3D11PixelShader			IPixelShader;
 typedef struct ID3D11GeometryShader			IGeometryShader;
@@ -29,8 +36,11 @@ typedef struct ID3D11DeviceContext			IDevContext;
 typedef struct ID3D11Buffer					IBuffer;
 typedef struct ID3D11InputLayout			IInputLayout;
 
-#else
 
+#if (UINTPTR_MAX == 0xffffffffffffffff)
+typedef u64 uptr;
+#else
+typedef u32 uptr;
 #endif
 
 enum class eShaderType

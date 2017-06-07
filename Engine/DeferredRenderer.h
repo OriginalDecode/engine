@@ -62,11 +62,7 @@ private:
 
 	GBuffer m_GBuffer;
 
-#ifdef SNOWBLIND_DX11
 	DirectX11* m_API = nullptr;
-#else
-	Vulkan* m_API = nullptr;
-#endif
 
 	IDevContext* myContext = nullptr;
 

@@ -30,9 +30,9 @@ bool Vulkan::CreateVKInstance()
 	memset(&app_info, 0, sizeof(VkApplicationInfo));
 	app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	app_info.pNext = NULL;
-	app_info.pApplicationName = "Snowblind";
+	app_info.pApplicationName = "engine";
 	app_info.applicationVersion = 1;
-	app_info.pEngineName = "Snowblind - Engine";
+	app_info.pEngineName = "engine";
 	app_info.engineVersion = 1;
 	app_info.apiVersion = VK_API_VERSION_1_0;
 

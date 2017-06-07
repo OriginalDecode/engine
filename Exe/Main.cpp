@@ -39,11 +39,10 @@ static bool g_windowactive = false;
 
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
-	_set_error_mode(_OUT_TO_MSGBOX);
-#ifdef _PROFILE
+
 	EASY_PROFILER_ENABLE;
 	profiler::startListen();
-#endif
+
 	DL_Debug::Debug::Create();
 	//do/uble res16x9 = 1.777777777777777777777777777777778; best
 	const char* inputString = someCommandLines;
@@ -192,11 +191,10 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	DL_Debug::Debug::Destroy();
 	Engine::Destroy();
 
-#ifdef _PROFILE
 	profiler::stopListen();
 	profiler::dumpBlocksToFile("file.prof");
 	EASY_PROFILER_DISABLE;
-#endif
+
 	return 0;
 }
 

@@ -33,7 +33,7 @@ void RenderSystem::Update(float /*dt*/)
 #endif
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 #ifdef _PROFILE
-	EASY_BLOCK("Entity Loop");
+	EASY_BLOCK("Render : Entity Loop");
 #endif
 	for (int i = 0; i < entities.Size(); i++)
 	{
@@ -64,41 +64,21 @@ void RenderSystem::Update(float /*dt*/)
 			position.x += render.m_MaxPos.x;
 			if (CameraHandle::GetInstance()->GetFrustum().Inside(position, 25.f))
 				visible = true;
-
-			/*for (const CU::Plane<float>& plane : debug.m_OBB.m_Planes)
-			{
-				CU::Vector4f temp = plane.GetPoint();
-				CU::Vector3f point = { temp.x,temp.y,temp.z };
-				{
-					break;
-				}
-			}*/
 		}
-		/*else
-		{
-			CU::Vector3f point = translation.myOrientation.GetPosition() + (render.m_MinPos + render.m_MaxPos);
-			if (!CameraHandle::GetInstance()->GetFrustum().Inside(point, 5.f))
-				continue;
-		}*/
 
 		if(!visible)
 			continue;
 
 #ifdef _PROFILE
 		EASY_END_BLOCK;
-#endif
-		//#LINUS This needs to be profiled.
-#ifdef _PROFILE
 		EASY_BLOCK("RenderSystem : Entity Scale multiplication");
 #endif
 		CU::Matrix44f t = translation.myOrientation;
 		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
-		mySynchronizer->AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
-
-	
 #ifdef _PROFILE
 		EASY_END_BLOCK;
 #endif
+		mySynchronizer->AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
 
 		//if (e == 0)
 		{

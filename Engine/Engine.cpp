@@ -92,10 +92,18 @@ DirectX11* Engine::GetAPI()
 	return static_cast<DirectX11*>(myAPI);
 }
 
+/*bool Engine::InitiateDebugSystem(InputHandle* input_handle)
+{
+	m_DebugSystem.Initiate(input_handle);
+	return true;
+}*/
+
 bool Engine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 {
 	Randomizer::Create();
 	PostMaster::Create();
+	//myWindowSize.m_Height = window_height;
+	//myWindowSize.m_Width = window_width;
 
 	WindowCreateInfo window_create_info;
 	window_create_info.window_height = window_height;
@@ -226,10 +234,8 @@ void Engine::Update()
 	if (!HasInitiated())
 		return;
 
-#if !defined(_PROFILE)
-#if !defined(_FINAL)
+#ifndef FINAL || PROFILE
 	UpdateDebugUI();
-#endif
 #endif
 	m_DeltaTime = myTimeManager.GetDeltaTime();
 	if (m_States[(u16)eEngineStates::LOADING] == FALSE)
@@ -335,6 +341,26 @@ CompiledShader Engine::CreateShader(IBlob* compiled_shader_blob, const std::stri
 	return compiled_shader;
 }
 
+void Engine::EditEntity()
+{
+	if (!m_IsEditingEntity)
+		return;
+
+	DebugComponent& debug = m_EntityManager.GetComponent<DebugComponent>(m_EntityToEdit);
+	EditObject& to_edit = debug.m_EditObject;
+
+	std::stringstream ss;
+	ss << "Entity : " << m_EntityToEdit;
+	ImGui::SetNextWindowPos(ImVec2(300.f, 0));
+	ImGui::SetNextWindowSize(ImVec2(300.f, 600.f));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	if (ImGui::Begin(ss.str().c_str(), &m_IsEditingEntity, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
+	{
+		to_edit.Update();
+		ImGui::End();
+	}
+	ImGui::PopStyleVar();
+}
 
 void Engine::SelectEntity(u32 e)
 {
@@ -459,46 +485,6 @@ void Engine::ToggleVsync()
 	m_States[(u16)eEngineStates::USE_VSYNC] = !m_States[(u16)eEngineStates::USE_VSYNC];
 }
 
-
-
-const SLocalTime& Engine::GetLocalTime()
-{
-	SYSTEMTIME time;
-	::GetLocalTime(&time);
-	myLocalTime.hour = time.wHour;
-	myLocalTime.minute = time.wMinute;
-	myLocalTime.second = time.wSecond;
-
-	return myLocalTime;
-}
-
-CTerrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize)
-{
-	CTerrain* newTerrain = m_TerrainManager->GetTerrain(aFile);
-	newTerrain->Initiate(aFile, position, aSize);
-	myRenderer->AddTerrain(newTerrain);
-	return newTerrain;
-}
-
-CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepath)
-{
-	m_States[(u16)eEngineStates::LOADING] = TRUE;
-	m_LevelFactory->CreateLevel(level_filepath);
-
-	m_States[(u16)eEngineStates::LOADING] = FALSE;
-	return m_LevelFactory->GetDwellers();
-}
-
-
-
-Threadpool& Engine::GetThreadpool()
-{
-	return m_Threadpool;
-}
-
-
-//Window Functions
-
 void Engine::OnAltEnter()
 {
 	if (myAPI)
@@ -542,9 +528,72 @@ void Engine::OnResize()
 		myAPI->OnResize();
 }
 
+const SLocalTime& Engine::GetLocalTime()
+{
+	SYSTEMTIME time;
+	::GetLocalTime(&time);
+	myLocalTime.hour = time.wHour;
+	myLocalTime.minute = time.wMinute;
+	myLocalTime.second = time.wSecond;
 
-#if !defined(_PROFILE)
-#if !defined(_FINAL)
+	return myLocalTime;
+}
+
+CTerrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize)
+{
+	CTerrain* newTerrain = m_TerrainManager->GetTerrain(aFile);
+	newTerrain->Initiate(aFile, position, aSize);
+	myRenderer->AddTerrain(newTerrain);
+	return newTerrain;
+}
+
+CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepath)
+{
+	m_States[(u16)eEngineStates::LOADING] = TRUE;
+	//m_IsLoadingLevel = true;
+	m_LevelFactory->CreateLevel(level_filepath);
+
+	m_States[(u16)eEngineStates::LOADING] = FALSE;
+	return m_LevelFactory->GetDwellers();
+}
+
+bool Engine::SaveLevel()
+{
+	//Should write the entire file
+	//Prompt dialogue to give it a file name
+	static char file_name[512];
+	if (ImGui::Begin("Filename"))
+	{
+
+		ImGui::InputText("filename", file_name, 512);
+		if (ImGui::Button("Save", ImVec2(100, 30)))
+		{
+			if (!CL::substr(file_name, ".level"))
+			{
+				DL_WARNINGBOX("Incorrect filetype, no file created!");
+			}
+			else
+			{
+				std::ofstream f(file_name);
+				f << "Hello World!";
+				f.flush();
+				f.close();
+				m_PauseInput = false;
+				ImGui::End();
+				return true;
+			}
+		}
+
+	}
+	ImGui::End();
+
+	return false;
+}
+
+Threadpool& Engine::GetThreadpool()
+{
+	return m_Threadpool;
+}
 
 void Engine::OutputDebugString(std::string debug_str)
 {
@@ -780,60 +829,3 @@ void Engine::UpdateDebugUI()
 	}
 	EditEntity();
 }
-
-void Engine::EditEntity()
-{
-	if (!m_IsEditingEntity)
-		return;
-
-	DebugComponent& debug = m_EntityManager.GetComponent<DebugComponent>(m_EntityToEdit);
-	EditObject& to_edit = debug.m_EditObject;
-
-	std::stringstream ss;
-	ss << "Entity : " << m_EntityToEdit;
-	ImGui::SetNextWindowPos(ImVec2(300.f, 0));
-	ImGui::SetNextWindowSize(ImVec2(300.f, 600.f));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-	if (ImGui::Begin(ss.str().c_str(), &m_IsEditingEntity, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
-	{
-		to_edit.Update();
-		ImGui::End();
-	}
-	ImGui::PopStyleVar();
-}
-
-bool Engine::SaveLevel()
-{
-	//Should write the entire file
-	//Prompt dialogue to give it a file name
-	static char file_name[512];
-	if (ImGui::Begin("Filename"))
-	{
-
-		ImGui::InputText("filename", file_name, 512);
-		if (ImGui::Button("Save", ImVec2(100, 30)))
-		{
-			if (!CL::substr(file_name, ".level"))
-			{
-				DL_WARNINGBOX("Incorrect filetype, no file created!");
-			}
-			else
-			{
-				std::ofstream f(file_name);
-				f << "Hello World!";
-				f.flush();
-				f.close();
-				m_PauseInput = false;
-				ImGui::End();
-				return true;
-			}
-		}
-
-	}
-	ImGui::End();
-
-	return false;
-}
-
-#endif
-#endif

@@ -14,7 +14,7 @@ void PostProcessManager::CleanUp()
 	m_HDRPass.CleanUp();
 }
 
-void PostProcessManager::Process(Texture* current_frame_texture)
+void PostProcessManager::Process(Texture*  current_frame_texture)
 {
 	m_Engine->DisableZ();
 

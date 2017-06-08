@@ -10,22 +10,14 @@ bool Synchronizer::Initiate()
 	//m_MainBlock = MemoryBlock(m_AllocationAmt * (eBufferType::BUFFER_COUNT * 2), m_AllocationAmt);
 
 
-	const s32 model_budget = 30000;
-	const s32 spotlight_budget = 30000;
-	const s32 particle_budget = 30000;
-	const s32 line_budget = 30000;
-	const s32 pointlight_budget = 30000;
-	const s32 sprite_budget = 30000;
-	const s32 text_budget = 30000;
 
-
-	const s32 model_buffer_size = model_budget * sizeof(ModelCommand);
-	const s32 spotlight_buffer_size = spotlight_budget * sizeof(SpotlightCommand);
-	const s32 particle_buffer_size = particle_budget * sizeof(ParticleCommand);
-	const s32 line_buffer_size = line_budget * sizeof(LineCommand);
-	const s32 pointlight_buffer_size = pointlight_budget * sizeof(PointlightCommand);
-	const s32 sprite_buffer_size = sprite_budget * sizeof(SpriteCommand);
-	const s32 text_buffer_size = text_budget * sizeof(TextCommand);
+	const s32 model_buffer_size = 30000 * sizeof(ModelCommand);
+	const s32 spotlight_buffer_size = 30000 * sizeof(SpotlightCommand);
+	const s32 particle_buffer_size = 30000 * sizeof(ParticleCommand);
+	const s32 line_buffer_size = 30000 * sizeof(LineCommand);
+	const s32 pointlight_buffer_size = 30000 * sizeof(PointlightCommand);
+	const s32 sprite_buffer_size = 30000 * sizeof(SpriteCommand);
+	const s32 text_buffer_size = 30000 * sizeof(TextCommand);
 
 	const s32 total_size =
 		model_buffer_size +

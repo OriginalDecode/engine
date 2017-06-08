@@ -172,7 +172,7 @@ bool Renderer::CleanUp()
 void Renderer::Render()
 {
 #ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Magenta);
+	//EASY_FUNCTION(profiler::colors::Magenta);
 #endif
 	m_Engine->Clear();
 	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);

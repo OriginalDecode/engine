@@ -108,33 +108,34 @@ struct SpriteCommand : public RenderCommand
 
 struct TextCommand : public RenderCommand
 {
-	TextCommand(const std::string& text, const CU::Vector2f& position, const CU::Vector4f& color)
-		: RenderCommand(RenderCommand::TEXT)
+	TextCommand(std::string text, const CU::Vector2f& position, const CU::Vector4f& color)
+		: RenderCommand(eCommandType::TEXT)
 		, m_Position(position)
 		, m_Color(color)
 	{
 		strcpy_s(m_TextBuffer, text.c_str());
 	}
 
-	TextCommand(const std::string& text, const CU::Vector2f& position)
-		: RenderCommand(RenderCommand::TEXT)
+	TextCommand(std::string text, const CU::Vector2f& position)
+		: RenderCommand(eCommandType::TEXT)
 		, m_Position(position)
+		, m_Color({ 1.f, 1.f, 1.f, 1.f })
 	{
 		strcpy_s(m_TextBuffer, text.c_str());
-		m_Color = { 1.f, 1.f, 1.f, 1.f };
 	}
 
 	char m_TextBuffer[255] = { '\0' };
 	CU::Vector2f m_Position;
 	CU::Vector4f m_Color;
-
+private:
+	float m_Padding; //Until I find a way to deal with the alignment with the offsets.
 };
 
 
 struct LineCommand : public RenderCommand
 {
 	LineCommand(const SLinePoint& first, const SLinePoint& second, bool z_enabled)
-		: RenderCommand(RenderCommand::LINE)
+		: RenderCommand(eCommandType::LINE)
 		, m_Points{ first, second }
 		, m_ZEnabled(z_enabled)
 	{
@@ -147,7 +148,7 @@ struct LineCommand : public RenderCommand
 struct ParticleCommand : public RenderCommand
 {
 	ParticleCommand(const CU::Vector3f& position)
-		: RenderCommand(RenderCommand::PARTICLE)
+		: RenderCommand(eCommandType::PARTICLE)
 		, m_Position(position)
 	{
 	}

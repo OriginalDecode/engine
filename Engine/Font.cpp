@@ -56,7 +56,7 @@ CFont::~CFont()
 	SAFE_RELEASE(myConstantBuffer);
 }
 
-void CFont::SetText(const std::string& aText)
+void CFont::SetText(std::string aText)
 {
 	myTimeManager->GetTimer(myUpdateTimer).Update();
 	myUpdateTime = myTimeManager->GetTimer(myUpdateTimer).GetTotalTime().GetMilliseconds();

@@ -177,7 +177,6 @@ public:
 	};
 	
 
-
 	void OutputDebugString(std::string debug_str);
 	void DebugTextures();
 	struct ID3D11ShaderResourceView;

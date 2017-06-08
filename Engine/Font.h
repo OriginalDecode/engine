@@ -28,7 +28,7 @@ public:
 	CFont(SFontData* aFontData);
 	~CFont();
 
-	void SetText(const std::string& aText);
+	void SetText(std::string aText);
 	const std::string& GetText() const;
 	void Render();
 	ID3D11ShaderResourceView* GetAtlas();

@@ -23,7 +23,7 @@ void CText::Render(Camera* aCamera)
 	myFont->Render();
 }
 
-void CText::SetText(const std::string& aString)
+void CText::SetText(std::string aString)
 {
 	myFont->SetText(aString);
 }

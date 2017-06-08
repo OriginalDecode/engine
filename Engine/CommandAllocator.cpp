@@ -49,4 +49,5 @@ void CommandAllocator::Clear()
 	m_CurrentPos = m_Start;
 	m_UsedMemory = 0;
 	m_NumberOfAllocations = 0;
+
 }

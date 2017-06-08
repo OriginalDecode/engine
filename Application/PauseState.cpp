@@ -11,7 +11,7 @@ void CPauseState::InitState(StateStack* state_stack)
 
 void CPauseState::Update(float aDeltaTime)
 {
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(TextCommand("Hello World!", CU::Vector2f(0.5f, 0.5f)));
+	//Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(TextCommand("Hello World!", CU::Vector2f(0.5f, 0.5f)));
 	InputWrapper* input_wrapper = Engine::GetInstance()->GetInputHandle()->GetInputWrapper();
 	if (input_wrapper->OnDown(KButton::ESCAPE))
 	{

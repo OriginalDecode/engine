@@ -28,6 +28,9 @@ void CLine3D::Initiate(int aLineAmount /*= 256*/)
 
 void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint)
 {
+#ifdef _PROFILE
+	EASY_FUNCTION(profiler::colors::Purple);
+#endif
 	myFirstPoint = firstPoint;
 	mySecondPoint = secondPoint;
 	myVertices.RemoveAll();
@@ -51,7 +54,7 @@ void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint
 void CLine3D::Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& projection)
 {
 #ifdef _PROFILE
-	//EASY_FUNCTION(profiler::colors::Green);
+	EASY_FUNCTION(profiler::colors::Green);
 #endif
 	ID3D11DeviceContext* context = myAPI->GetContext();
 
@@ -71,9 +74,6 @@ void CLine3D::Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& 
 	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 	context->Draw(myVertices.Size(), 0);
-#ifdef _PROFILE
-
-#endif
 }
 
 void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)

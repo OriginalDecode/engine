@@ -175,6 +175,14 @@ void Renderer::Render()
 	//EASY_FUNCTION(profiler::colors::Magenta);
 #endif
 	m_Engine->Clear();
+	
+	
+	
+
+
+	
+	
+	
 	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
 	Render3DCommands();
@@ -218,15 +226,53 @@ void Renderer::Render()
 
 	RenderParticles();
 	RenderLines();
+
+
+	const auto model_list = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER).Size();
+	const auto spotlight_list = mySynchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER).Size();
+	const auto particle_list = mySynchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER).Size();
+	const auto line_list = mySynchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size();
+	const auto pointlight_list = mySynchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER).Size();
+	const auto sprite_list = mySynchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER).Size();
+	const auto text_list = mySynchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER).Size();
+
+	std::stringstream ss0; ss0 << "Model Commands : " << model_list << "\n";
+	mySynchronizer->AddRenderCommand(TextCommand(ss0.str(), { 0.75f, 0.5f }));
+
+	std::stringstream ss1; ss1 << "Spotlight Commands : " << spotlight_list << "\n";
+	mySynchronizer->AddRenderCommand(TextCommand(ss1.str(), { 0.75f, 0.55f }));
+
+	std::stringstream ss2; ss2 << "Particle Commands : " << particle_list << "\n";
+	mySynchronizer->AddRenderCommand(TextCommand(ss2.str().c_str(), { 0.75f, 0.6f }));
+
+	std::stringstream ss3; ss3 << "Line Commands : " << line_list << "\n";
+	mySynchronizer->AddRenderCommand(TextCommand(ss3.str().c_str(), { 0.75f, 0.65f }));
+
+	std::stringstream ss4; ss4 << "Pointlight Commands : " << pointlight_list << "\n";
+	mySynchronizer->AddRenderCommand(TextCommand(ss4.str().c_str(), { 0.75f, 0.7f }));
+
+	std::stringstream ss5; ss5 << "Sprite Commands : " << sprite_list << "\n";
+	mySynchronizer->AddRenderCommand(TextCommand(ss5.str().c_str(), { 0.75f, 0.75f }));
+
+	std::stringstream ss6; ss6 << "Text Commands : " << text_list << "\n";
+	mySynchronizer->AddRenderCommand(TextCommand(ss6.str().c_str(), { 0.75f, 0.8f }));
+
+
 	Render2DCommands();
 
 	ImGui::Render();
 
 	m_Engine->Present();
 
+	
+
 	mySynchronizer->WaitForLogic();
 	mySynchronizer->SwapBuffer();
 	mySynchronizer->RenderIsDone();
+
+	
+
+
 
 }
 
@@ -330,13 +376,14 @@ int Renderer::RegisterLight()
 void Renderer::Render2DCommands()
 {
 	const auto commands0 = mySynchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER);
-	//const CU::GrowingArray<RenderCommand>& commands2D = mySynchronizer->GetRenderCommands(eCommandBuffer::e2D);
+
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	for (s32 i = 0; i < commands0.Size(); i++)
 	{
 		auto command = reinterpret_cast<SpriteCommand*>(commands0[i]);
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::SPRITE, "Expected Sprite command type");
 		mySprite->SetPosition(command->m_Position);
 		mySprite->SetShaderView(command->m_Resource);
 		mySprite->Render(m_Camera);
@@ -346,6 +393,7 @@ void Renderer::Render2DCommands()
 	for (s32 i = 0; i < commands1.Size(); i++)
 	{
 		auto command = reinterpret_cast<TextCommand*>(commands1[i]);
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::TEXT, "Expected Text command type");
 		myText->SetText(command->m_TextBuffer);
 		myText->SetPosition(command->m_Position);
 		myText->Render(m_Camera);
@@ -364,6 +412,7 @@ void Renderer::RenderSpotlight()
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<SpotlightCommand*>(commands[i]);
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::SPOTLIGHT, "Expected Spotlight command type");
 
 		data.myAngle = command->m_Angle;
 		data.myRange = command->m_Range;
@@ -432,7 +481,7 @@ void Renderer::RenderParticles()
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<ParticleCommand*>(commands[i]);
-
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::PARTICLE, "Expected particle command type");
 		m_ParticleEmitter->SetPosition(command->m_Position);
 		m_ParticleEmitter->Update(m_Engine->GetDeltaTime());
 
@@ -463,11 +512,12 @@ void Renderer::RenderLines()
 
 	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::LINE_BUFFER);
 #ifdef _PROFILE
-	EASY_BLOCK("LineCommand", profiler::colors::Red);
+	EASY_BLOCK("Line Command Loop", profiler::colors::Red);
 #endif
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<LineCommand*>(commands[i]);
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::LINE, "Expected Line command type");
 		m_API->SetDepthStencilState(command->m_ZEnabled ? eDepthStencilState::Z_ENABLED : eDepthStencilState::Z_DISABLED, 1);
 		m_Line->Update(command->m_Points[0], command->m_Points[1]);
 		m_Line->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());

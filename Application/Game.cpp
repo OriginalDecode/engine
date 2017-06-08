@@ -130,8 +130,8 @@ void Game::Update(float dt)
 
 	std::stringstream ss;
 	//ss << "Entity Speed : " << entity_speed;
-	ss << "\nx:" << m_Camera->GetOrientation().GetPosition().x << "\ny:" << m_Camera->GetOrientation().GetPosition().y << "\nz:" << m_Camera->GetOrientation().GetPosition().z;
-	m_Synchronizer->AddRenderCommand(TextCommand(ss.str(), CU::Vector2f(0.75f, 0.1f)));
+	//ss << "\nx:" << m_Camera->GetOrientation().GetPosition().x << "\ny:" << m_Camera->GetOrientation().GetPosition().y << "\nz:" << m_Camera->GetOrientation().GetPosition().z;
+	//m_Synchronizer->AddRenderCommand(TextCommand(ss.str(), CU::Vector2f(0.75f, 0.1f)));
 
 	CU::Vector4f translation = m_Orientation.GetTranslation();
 	if ( input_wrapper->IsDown(KButton::UP_ARROW) )

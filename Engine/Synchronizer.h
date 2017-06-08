@@ -110,7 +110,7 @@ enum eBufferType
 };
 
 #define ADD_COMMAND_FUNC(buffer_type, command_type)\
-void AddRenderCommand(const command_type& command)\
+void AddRenderCommand(const command_type command)\
 {\
 	if(m_QuitFlag)\
 		return;\
@@ -150,7 +150,18 @@ public:
 	ADD_COMMAND_FUNC(eBufferType::LINE_BUFFER,			LineCommand);
 	ADD_COMMAND_FUNC(eBufferType::POINTLIGHT_BUFFER,	PointlightCommand);
 	ADD_COMMAND_FUNC(eBufferType::SPRITE_BUFFER,		SpriteCommand);
-	ADD_COMMAND_FUNC(eBufferType::TEXT_BUFFER,			TextCommand);
+	//ADD_COMMAND_FUNC(eBufferType::TEXT_BUFFER,			TextCommand);
+
+	void AddRenderCommand(const TextCommand& command)
+	{
+		if (m_QuitFlag)
+			return; 
+		CommandBuffer& buffer = m_CommandBuffers[TEXT_BUFFER];
+		void* current = buffer[m_CurrentBuffer ^ 1].Alloc(sizeof(TextCommand));
+		memcpy(current, &command, sizeof(TextCommand));
+	}
+
+
 
 	const CommandAllocator& GetRenderCommands(const eBufferType& buffer_type) const;
 private:

@@ -10,7 +10,7 @@ public:
 	~CText();
 
 	void Render(Camera* aCamera);
-	void SetText(const std::string& aString);
+	void SetText(std::string aString);
 	void SetPosition(const CU::Math::Vector2<float>& aPosition);
 	void SetScale(const CU::Math::Vector2<float>& aScale);
 	const CU::Math::Vector2<float>& GetScale();

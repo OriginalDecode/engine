@@ -689,6 +689,10 @@ void Engine::UpdateDebugUI()
 				save = !save;
 
 
+	
+
+
+
 
 
 		static bool tonemapping_hdr = true;
@@ -707,6 +711,14 @@ void Engine::UpdateDebugUI()
 		float fov_value = m_Camera->GetFOV();
 		ImGui::SliderFloat("FOV", &fov_value, 60.f, 120.f, "%.f");
 		m_Camera->SetFOV(fov_value);
+
+		ImGui::Text("Model Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER).Size());
+		ImGui::Text("Spotlight Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER).Size());
+		ImGui::Text("Pointlight Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER).Size());
+		ImGui::Text("Particle Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER).Size());
+		ImGui::Text("Sprite Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER).Size());
+		ImGui::Text("Text Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER).Size());
+		ImGui::Text("Line Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size());
 
 
 		ImGui::End();

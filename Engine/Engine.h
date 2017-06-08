@@ -175,14 +175,16 @@ public:
 		LOADING,
 		_COUNT
 	};
-	
 
 
+#if !defined(_PROFILE)
+#if !defined(_FINAL)
 	void OutputDebugString(std::string debug_str);
 	void DebugTextures();
 	struct ID3D11ShaderResourceView;
 	void AddTexture(Texture* texture, const std::string& debug_name);
 	void AddTexture(void* srv, const std::string& debug_name);
+
 private:
 	CU::GrowingArray<ID3D11ShaderResourceView*> m_DebugTextures;
 	std::vector<std::string> m_Labels;
@@ -193,6 +195,8 @@ private:
 	};
 
 	CU::StaticArray<std::string, 8> m_DebugStrings;
+#endif
+#endif
 private:
 
 	void UpdateDebugUI();

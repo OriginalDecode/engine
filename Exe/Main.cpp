@@ -1,6 +1,8 @@
 
 #include <Engine/Engine.h>
+#if !defined(_PROFILE) && !defined(_FINAL)
 #include <Engine/imgui_impl_dx11.h>
+#endif
 #include <Engine/VirtualFileSystem.h>
 
 #include <DL_Debug/DL_Debug.h>
@@ -159,7 +161,9 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	bool applicationIsRunning = true;
 	do
 	{
+#if !defined(_PROFILE) && !defined(_FINAL)
 		ImGui_ImplDX11_NewFrame();
+#endif
 		while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
@@ -204,11 +208,15 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	return 0;
 }
 
+#if !defined(_PROFILE) && !defined(_FINAL)
 extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+#if !defined(_PROFILE) && !defined(_FINAL)
 	if (ImGui_ImplDX11_WndProcHandler(hWnd, message, wParam, lParam))
 		return true;
+#endif
 
 	switch (message)
 	{

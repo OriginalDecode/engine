@@ -13,8 +13,7 @@ namespace
 
 	inline u8 AlignForwardAdjustment(const void* address, u8 alignment)
 	{
-		u8 adjustment = alignment - (reinterpret_cast<u64>(address)
-			& static_cast<uptr>(alignment - 1));
+		u8 adjustment = alignment - (reinterpret_cast<u64>(address) & static_cast<uptr>(alignment - 1));
 		if (adjustment == alignment)
 			return 0;
 

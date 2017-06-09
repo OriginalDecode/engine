@@ -122,12 +122,13 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetDepth()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 2.f) }));
 	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetEmissive()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 3) }));
 
+#if !defined(_PROFILE) && !defined(_FINAL)
 	const GBuffer& gbuffer = m_DeferredRenderer->GetGBuffer();
 	m_Engine->AddTexture(gbuffer.GetDiffuse(), "Scene Diffuse");
 	m_Engine->AddTexture(gbuffer.GetNormal(), "Scene Normal");
 	m_Engine->AddTexture(gbuffer.GetDepth(), "Scene Depth");
 	m_Engine->AddTexture(gbuffer.GetEmissive(), "Scene Emissive");
-
+#endif
 
 
 	return true;
@@ -172,16 +173,9 @@ bool Renderer::CleanUp()
 void Renderer::Render()
 {
 #ifdef _PROFILE
-	//EASY_FUNCTION(profiler::colors::Magenta);
+	EASY_FUNCTION(profiler::colors::Magenta);
 #endif
 	m_Engine->Clear();
-	
-	
-	
-
-
-	
-	
 	
 	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
@@ -226,53 +220,16 @@ void Renderer::Render()
 
 	RenderParticles();
 	RenderLines();
-
-
-	const auto model_list = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER).Size();
-	const auto spotlight_list = mySynchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER).Size();
-	const auto particle_list = mySynchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER).Size();
-	const auto line_list = mySynchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size();
-	const auto pointlight_list = mySynchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER).Size();
-	const auto sprite_list = mySynchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER).Size();
-	const auto text_list = mySynchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER).Size();
-
-	//std::stringstream ss0; ss0 << "Model Commands : " << model_list << "\n";
-	//mySynchronizer->AddRenderCommand(TextCommand(ss0.str(), { 0.75f, 0.5f }));
-
-	//std::stringstream ss1; ss1 << "Spotlight Commands : " << spotlight_list << "\n";
-	//mySynchronizer->AddRenderCommand(TextCommand(ss1.str(), { 0.75f, 0.53f }));
-
-	//std::stringstream ss2; ss2 << "Particle Commands : " << particle_list << "\n";
-	//mySynchronizer->AddRenderCommand(TextCommand(ss2.str().c_str(), { 0.75f, 0.56f }));
-
-	//std::stringstream ss3; ss3 << "Line Commands : " << line_list << "\n";
-	//mySynchronizer->AddRenderCommand(TextCommand(ss3.str().c_str(), { 0.75f, 0.59f }));
-
-	//std::stringstream ss4; ss4 << "Pointlight Commands : " << pointlight_list << "\n";
-	//mySynchronizer->AddRenderCommand(TextCommand(ss4.str().c_str(), { 0.75f, 0.7f }));
-
-	//std::stringstream ss5; ss5 << "Sprite Commands : " << sprite_list << "\n";
-	//mySynchronizer->AddRenderCommand(TextCommand(ss5.str().c_str(), { 0.75f, 0.75f }));
-
-	//std::stringstream ss6; ss6 << "Text Commands : " << text_list << "\n";
-	//mySynchronizer->AddRenderCommand(TextCommand(ss6.str().c_str(), { 0.75f, 0.8f }));
-
-
 	Render2DCommands();
 
+#if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();
-
+#endif
 	m_Engine->Present();
-
-	
 
 	mySynchronizer->WaitForLogic();
 	mySynchronizer->SwapBuffer();
 	mySynchronizer->RenderIsDone();
-
-	
-
-
 
 }
 
@@ -499,6 +456,9 @@ void Renderer::RenderParticles()
 
 void Renderer::RenderLines()
 {
+	if (!m_RenderLines)
+		return;
+
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Amber);
 #endif

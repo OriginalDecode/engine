@@ -129,7 +129,7 @@ public:
 	Synchronizer* GetSynchronizer() { return mySynchronizer; }
 	EntityManager& GetEntityManager() { return m_EntityManager; }
 	PhysicsManager* GetPhysicsManager() { return m_PhysicsManager; }
-	Threadpool& GetThreadpool();
+	Threadpool& GetThreadpool() { return m_Threadpool; }
 
 
 	//_________________________________________

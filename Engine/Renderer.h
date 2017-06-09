@@ -60,9 +60,6 @@ private:
 	bool				m_ProcessShadows = false;
 	bool				m_ProcessDirectionalShadows = false;
 
-	//CU::Matrix44f		myPrevFrame;
-	//CU::Matrix44f		myPrevShadowFrame;
-	//CU::Matrix44f		m_DirectionalFrame;
 
 	CU::Vector3f		m_Direction;
 	CU::Vector3f		m_OriginalDirection;
@@ -106,7 +103,9 @@ private:
 	float m_SpriteHeight = 0.f;
 
 #ifdef _DEBUG
+	bool m_RenderLines = false;
 public:
+	void SetRenderLines(bool render_lines) { m_RenderLines = render_lines; }
 	DeferredRenderer* GetDeferredRenderer() {	return m_DeferredRenderer; };
 
 

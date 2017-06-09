@@ -127,8 +127,6 @@ struct TextCommand : public RenderCommand
 	char m_TextBuffer[255] = { '\0' };
 	CU::Vector2f m_Position;
 	CU::Vector4f m_Color;
-private:
-	float m_Padding; //Until I find a way to deal with the alignment with the offsets.
 };
 
 

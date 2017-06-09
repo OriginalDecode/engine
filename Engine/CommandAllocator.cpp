@@ -3,8 +3,14 @@
 
 CommandAllocator::CommandAllocator(s32 size_in_bytes, s32 offset_in_bytes, void* pStart)
 	: BaseAllocator(size_in_bytes, pStart)
-	, m_Offset(offset_in_bytes)
 {
+	/* Adjust the offset to concider memory alignment */
+	u64 aligned_address = (u64)m_CurrentPos + offset_in_bytes;
+	void* adjust_to = (void*)aligned_address;
+	u8 adjustment = AlignForwardAdjustment(adjust_to, sizeof(void*));
+	m_Offset = offset_in_bytes + adjustment;
+
+
 }
 
 CommandAllocator::CommandAllocator(s32 size_in_bytes, void* pStart)

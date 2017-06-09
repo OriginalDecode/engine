@@ -45,7 +45,9 @@ void SSAOPass::Initiate()
 // 	m_BlurShader[1] = Engine::GetInstance()->GetEffect("Shaders/T_Blur_y.json");
 // 	m_BlurShader[1]->AddShaderResource(m_DebugTexture, Effect::DIFFUSE);
 
+#if !defined(_PROFILE) && !defined(_FINAL)
 	Engine::GetInstance()->AddTexture(m_SSAOTexture, "SSAO");
+#endif
 	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Ambient.json")->AddShaderResource(m_SSAOTexture, Effect::SSAO);
 }
 

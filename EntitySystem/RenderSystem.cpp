@@ -50,7 +50,7 @@ void RenderSystem::Update(float /*dt*/)
 			DebugComponent& debug = GetComponent<DebugComponent>(e);
 			CU::Vector3f position = translation.myOrientation.GetPosition();
 			if (CameraHandle::GetInstance()->GetFrustum().Inside(position, 25.f))
-					visible = true;
+				visible = true;
 
 			position.z += render.m_MaxPos.z;
 			if (CameraHandle::GetInstance()->GetFrustum().Inside(position, 25.f))

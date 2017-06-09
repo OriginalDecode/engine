@@ -32,7 +32,9 @@
 
 #include <Engine/LightModel.h>
 
+#if !defined(_PROFILE) && !defined(_FINAL)
 #include "imgui_impl_dx11.h"
+#endif
 #ifdef _PROFILE
 #include <easy/profiler.h>
 #include <easy/reader.h>
@@ -175,7 +177,9 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	//m_EntityManager.AddSystem<CameraSystem>();
 
+#if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui_ImplDX11_Init(myHWND, GetAPI()->GetDevice(), GetAPI()->GetContext());
+#endif
 
 	m_States[(u16)eEngineStates::INITIATED] = TRUE;
 	m_LevelFactory = new LevelFactory;
@@ -186,7 +190,10 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 bool Engine::CleanUp()
 {
+
+#if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui_ImplDX11_Shutdown();
+#endif
 	m_EntityManager.CleanUp();
 
 	m_InputHandle->CleanUp();
@@ -234,7 +241,7 @@ void Engine::Update()
 	if (!HasInitiated())
 		return;
 
-#ifndef FINAL || PROFILE
+#if !defined(_PROFILE) && !defined(_FINAL)
 	UpdateDebugUI();
 #endif
 	m_DeltaTime = myTimeManager.GetDeltaTime();
@@ -341,26 +348,6 @@ CompiledShader Engine::CreateShader(IBlob* compiled_shader_blob, const std::stri
 	return compiled_shader;
 }
 
-void Engine::EditEntity()
-{
-	if (!m_IsEditingEntity)
-		return;
-
-	DebugComponent& debug = m_EntityManager.GetComponent<DebugComponent>(m_EntityToEdit);
-	EditObject& to_edit = debug.m_EditObject;
-
-	std::stringstream ss;
-	ss << "Entity : " << m_EntityToEdit;
-	ImGui::SetNextWindowPos(ImVec2(300.f, 0));
-	ImGui::SetNextWindowSize(ImVec2(300.f, 600.f));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-	if (ImGui::Begin(ss.str().c_str(), &m_IsEditingEntity, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
-	{
-		to_edit.Update();
-		ImGui::End();
-	}
-	ImGui::PopStyleVar();
-}
 
 void Engine::SelectEntity(u32 e)
 {
@@ -557,6 +544,8 @@ CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepa
 	return m_LevelFactory->GetDwellers();
 }
 
+#if !defined(_PROFILE) && !defined(_FINAL)
+
 bool Engine::SaveLevel()
 {
 	//Should write the entire file
@@ -588,11 +577,6 @@ bool Engine::SaveLevel()
 	ImGui::End();
 
 	return false;
-}
-
-Threadpool& Engine::GetThreadpool()
-{
-	return m_Threadpool;
 }
 
 void Engine::OutputDebugString(std::string debug_str)
@@ -645,7 +629,6 @@ void Engine::AddTexture(void* srv, const std::string& debug_name)
 	m_Labels.push_back(debug_name);
 }
 
-
 void Engine::UpdateDebugUI()
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -684,16 +667,7 @@ void Engine::UpdateDebugUI()
 			m_PauseInput = true;
 		}
 
-		if (save)
-			if (SaveLevel())
-				save = !save;
-
-
-	
-
-
-
-
+		if (save) if (SaveLevel()) save = !save;
 
 		static bool tonemapping_hdr = true;
 		ImGui::Checkbox("Tonemapping/HDR", &tonemapping_hdr);
@@ -706,6 +680,10 @@ void Engine::UpdateDebugUI()
 		//ImGui::Checkbox("Debug Textures", &myRenderer->GetPostprocessManager().GetHDRPass().toggle_debug);
 		if (debug_textures)
 			DebugTextures();
+
+		static bool render_lines = false;
+		ImGui::Checkbox("Render Lines", &render_lines);
+		myRenderer->SetRenderLines(render_lines);
 
 
 		float fov_value = m_Camera->GetFOV();
@@ -841,3 +819,25 @@ void Engine::UpdateDebugUI()
 	}
 	EditEntity();
 }
+
+void Engine::EditEntity()
+{
+	if (!m_IsEditingEntity)
+		return;
+
+	DebugComponent& debug = m_EntityManager.GetComponent<DebugComponent>(m_EntityToEdit);
+	EditObject& to_edit = debug.m_EditObject;
+
+	std::stringstream ss;
+	ss << "Entity : " << m_EntityToEdit;
+	ImGui::SetNextWindowPos(ImVec2(300.f, 0));
+	ImGui::SetNextWindowSize(ImVec2(300.f, 600.f));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	if (ImGui::Begin(ss.str().c_str(), &m_IsEditingEntity, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
+	{
+		to_edit.Update();
+		ImGui::End();
+	}
+	ImGui::PopStyleVar();
+}
+#endif

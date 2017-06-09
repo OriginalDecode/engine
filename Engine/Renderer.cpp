@@ -240,38 +240,25 @@ void Renderer::AddTerrain(CTerrain* someTerrain)
 
 void Renderer::RenderNonDeferred3DCommands()
 {
-	DL_ASSERT("not implemented");
-	/**
+
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Amber);
 #endif
 
 	m_API->EnableZBuffer();
-	const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::e3D);
-
-	for ( const RenderCommand& command : commands )
+	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::NO_DEFERRED_BUFFER);
+	for ( s32 i = 0; i < commands.Size(); i++)
 	{
-		switch ( command.myType )
-		{
-			case eType::MODEL_NO_DEFERRED:
-			{
-				if ( command.m_KeyOrText.empty() )
-				{
-					TRACE_LOG("Key was empty");
-					continue;
-				}
+		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
+		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+		Model* model = m_Engine->GetModel(command->m_Key);
+		model->SetOrientation(command->m_Orientation);
+		m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+		model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 
-				m_API->SetRasterizer(command.m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-				m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-
-				Model* model = m_Engine->GetModel(command.m_KeyOrText);
-				model->SetOrientation(command.m_Orientation);
-				model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
-			}break;
-		}
 	}
-	*/
 }
 
 void Renderer::Render3DCommands()
@@ -291,9 +278,6 @@ void Renderer::Render3DCommands()
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-
-		commands[i] != commands[i + 1];
-
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
 		m_API->SetBlendState(eBlendStates::BLEND_FALSE);

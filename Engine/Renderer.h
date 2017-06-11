@@ -57,10 +57,6 @@ private:
 
 	CU::GrowingArray<CTerrain*> myTerrainArray;
 
-	bool				m_ProcessShadows = false;
-	bool				m_ProcessDirectionalShadows = false;
-
-
 	CU::Vector3f		m_Direction;
 	CU::Vector3f		m_OriginalDirection;
 	CU::Matrix33f		m_Orientation;
@@ -91,7 +87,7 @@ private:
 	Sprite*				mySprite				= nullptr;
 	Sprite*				myClearColor			= nullptr;
 
-	CLine3D*			m_Line				= nullptr;
+	CLine3D*			m_Line					= nullptr;
 
 	CEmitterInstance*	m_ParticleEmitter		= nullptr;
 
@@ -102,13 +98,14 @@ private:
 	float m_SpriteWidth = 0.f;
 	float m_SpriteHeight = 0.f;
 
-#ifdef _DEBUG
+
+#if !defined(_PROFILE) && !defined(_FINAL)
 	bool m_RenderLines = false;
+
 public:
 	void SetRenderLines(bool render_lines) { m_RenderLines = render_lines; }
+	bool GetRenderLines() { return m_RenderLines; }
 	DeferredRenderer* GetDeferredRenderer() {	return m_DeferredRenderer; };
-
-
 
 #endif
 };

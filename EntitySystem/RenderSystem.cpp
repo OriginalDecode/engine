@@ -19,6 +19,7 @@
 #ifdef _PROFILE
 #include <easy/profiler.h>
 #endif
+#include <Engine/Engine.h>
 RenderSystem::RenderSystem(EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, RenderComponent>>())
 {
@@ -48,22 +49,68 @@ void RenderSystem::Update(float /*dt*/)
 		if (myEntityManager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
 		{
 			DebugComponent& debug = GetComponent<DebugComponent>(e);
-			CU::Vector3f position = translation.myOrientation.GetPosition();
-			if (CameraHandle::GetInstance()->GetFrustum().Inside(position, 25.f))
+			const CU::Matrix44f& matrix = translation.myOrientation;
+			const CU::Vector4f forward = matrix.GetForward();
+			const CU::Vector4f right = matrix.GetRight();
+			const CU::Vector4f up = matrix.GetUp();
+			CU::Vector4f position = matrix.GetTranslation() + (forward * CU::Vector4f(render.m_MaxPos));
+
+			if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
 				visible = true;
 
-			position.z += render.m_MaxPos.z;
-			if (CameraHandle::GetInstance()->GetFrustum().Inside(position, 25.f))
+			if (e == 50)
+			{
+				SLinePoint p[2];
+				p[0].position = matrix.GetTranslation();
+				p[0].position.y += 1.f;
+
+				p[1].position = matrix.GetTranslation();
+				p[1].position.y -= 1.f;
+				mySynchronizer->AddRenderCommand(LineCommand(p[0], p[1], true));
+
+			}
+
+
+			
+
+
+			position = matrix.GetTranslation() + (right * CU::Vector4f(render.m_MaxPos));
+			if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
 				visible = true;
 
-			position.x += render.m_MaxPos.x;
-			if (CameraHandle::GetInstance()->GetFrustum().Inside(position, 25.f))
+			if (e == 3333)
+			{
+				SLinePoint p[2];
+				p[0].position = matrix.GetTranslation();
+				p[0].position.y += 1.f;
+
+				p[1].position = matrix.GetTranslation();
+				p[1].position.y -= 1.f;
+				mySynchronizer->AddRenderCommand(LineCommand(p[0], p[1], true));
+
+			}
+
+
+
+
+			position = matrix.GetTranslation() + (up * CU::Vector4f(render.m_MaxPos));
+			if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
 				visible = true;
 
-			position = translation.myOrientation.GetPosition();
-			position.x += render.m_MaxPos.x;
-			if (CameraHandle::GetInstance()->GetFrustum().Inside(position, 25.f))
-				visible = true;
+			if (e == 50)
+			{
+				SLinePoint p[2];
+				p[0].position = matrix.GetTranslation();
+				p[0].position.y += 1.f;
+
+				p[1].position = matrix.GetTranslation();
+				p[1].position.y -= 1.f;
+				mySynchronizer->AddRenderCommand(LineCommand(p[0], p[1], true));
+
+			}
+
+
+
 		}
 
 		if(!visible)

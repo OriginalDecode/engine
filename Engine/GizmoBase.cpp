@@ -39,19 +39,19 @@ void GizmoBase::Render()
 	CU::Matrix44f t = m_Right.m_Orientation;
 	//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
 	Synchronizer* sync = engine->GetSynchronizer();
-	//sync->AddRenderCommand(RenderCommand(eType::MODEL_NO_DEFERRED, m_Right.m_Key, t));
+	sync->AddRenderCommand(ModelCommandNonDeferred(m_Right.m_Key, t, false));
 
 	//__________________________
 
 	t = m_Forward.m_Orientation;
 	//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
-	//sync->AddRenderCommand(RenderCommand(eType::MODEL_NO_DEFERRED, m_Forward.m_Key, t));
+	sync->AddRenderCommand(ModelCommandNonDeferred(m_Forward.m_Key, t, false));
 
 	//__________________________
 
 	t = m_Up.m_Orientation;
 	//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
-	//sync->AddRenderCommand(RenderCommand(eType::MODEL_NO_DEFERRED, m_Up.m_Key, t));
+	sync->AddRenderCommand(ModelCommandNonDeferred(m_Up.m_Key, t, false));
 
 	//Update();
 }

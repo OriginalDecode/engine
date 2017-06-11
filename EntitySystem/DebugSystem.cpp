@@ -307,8 +307,9 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 	if ( CheckGizmoCollision(cam_pos, ray_dir) )
 		return;
 	//Should be optimized for a quad/oct -tree solution to only retrieve the entities in THIS part
-	NodeEntityManager& node_manager = message.m_Player->GetFirstNode()->GetManager();
-	const EntityArray& entities = node_manager.GetEntities(myFilter);
+	//NodeEntityManager& node_manager = message.m_Player->GetFirstNode()->GetManager();
+	const auto& entities = Engine::GetInstance()->GetEntityManager().GetEntities(myFilter);
+	//const EntityArray& entities = node_manager.GetEntities(myFilter);
 
 
 	//const CU::GrowingArray<Entity>& entities = GetEntities();
@@ -357,17 +358,20 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		Engine::GetInstance()->SelectEntity(closest.m_ID);
 		m_PrevID = prev_entity;
 		m_CurrentEntity = m_PrevID;
-		bool has_render = node_manager.HasComponent(m_CurrentEntity, CreateFilter<Requires<RenderComponent>>());
-		if ( has_render )
-		{
-			RenderComponent& r = node_manager.GetComponent<RenderComponent>(m_CurrentEntity);
-			current_model = r.myModelID;
-		}
+		//bool has_render = node_manager.HasComponent(m_CurrentEntity, CreateFilter<Requires<RenderComponent>>());
+		//if ( has_render )
+		//{
+			//RenderComponent& r = node_manager.GetComponent<RenderComponent>(m_CurrentEntity);
+			//current_model = r.myModelID;
+		//}
 	}
 }
 
 void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation)
 {
+	if (!m_Engine->GetLineRendering())
+		return;
+
 	SLinePoint p1, p2, p3, p4, p5, p6, p7, p8;
 	p1.color = component.debugColor;
 	p2.color = p1.color;

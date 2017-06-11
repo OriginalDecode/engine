@@ -172,7 +172,7 @@ private:
 	volatile bool m_QuitFlag = false;
 	u16 m_CurrentBuffer = 0;
 
-	void* m_MainMemory = nullptr;
+	char* m_MainMemory = nullptr;
 	CommandAllocator m_Allocator; 
 
 };

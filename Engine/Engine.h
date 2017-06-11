@@ -121,7 +121,6 @@ public:
 	void OnActive();
 	void OnResize();
 
-
 	bool IsWindowActive() { return m_Window.IsWindowActive(); }
 
 	//_________________________________________
@@ -130,7 +129,6 @@ public:
 	EntityManager& GetEntityManager() { return m_EntityManager; }
 	PhysicsManager* GetPhysicsManager() { return m_PhysicsManager; }
 	Threadpool& GetThreadpool() { return m_Threadpool; }
-
 
 	//_________________________________________
 	// Gets
@@ -143,10 +141,7 @@ public:
 	// Level Creation, Loading, Saving
 	CTerrain* CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize);
 	CU::GrowingArray<TreeDweller*> LoadLevel(const std::string& level_filepath);
-
-
-	bool SaveLevel();
-
+	
 	//_________________________________________
 	// Shader Creation
 	//This should probably be moved to the graphics API instead.
@@ -162,12 +157,6 @@ public:
 
 	const HWND& GetHWND() const { return myHWND; }
 
-	void SelectEntity(u32 e);
-	void DeselectEntity();
-	void EditEntity();
-	void ToggleFrame() { m_Frame ^= 1; }
-	s32 GetFrame() { return m_Frame; }
-
 	enum class eEngineStates
 	{
 		USE_VSYNC,
@@ -176,8 +165,13 @@ public:
 		_COUNT
 	};
 	
-
+	void SelectEntity(u32 e);
+	void DeselectEntity();
+#if !defined(_PROFILE) && !defined(_FINAL)
+	bool GetLineRendering();
+	void EditEntity();
 	void OutputDebugString(std::string debug_str);
+	bool SaveLevel();
 	void DebugTextures();
 	struct ID3D11ShaderResourceView;
 	void AddTexture(Texture* texture, const std::string& debug_name);
@@ -192,9 +186,10 @@ private:
 	};
 
 	CU::StaticArray<std::string, 8> m_DebugStrings;
+	void UpdateDebugUI();
+#endif
 private:
 
-	void UpdateDebugUI();
 
 	bool m_EditLight = false;
 	//void EditLightComponent();
@@ -231,7 +226,6 @@ private:
 	Synchronizer* mySynchronizer = nullptr;
 	Renderer* myRenderer = nullptr;
 
-	//Shouldn't need 2 cameras?
 	Camera* m_Camera = nullptr;
 
 
@@ -244,8 +238,7 @@ private:
 	CSystemMonitor m_SystemMonitor;
 	bool m_PauseInput = false;
 	float m_DeltaTime = 0.f;
-	s32	m_Frame = 0;
-
+	
 
 };
 

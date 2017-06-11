@@ -43,6 +43,15 @@ struct ModelCommand : public RenderCommand
 
 };
 
+struct ModelCommandNonDeferred : public ModelCommand
+{
+	ModelCommandNonDeferred(const std::string& key, const CU::Matrix44f& orientation, bool wireframe)
+		: ModelCommand(key, orientation, wireframe)
+	{
+	}
+};
+
+
 struct SpotlightCommand : public RenderCommand
 {
 	SpotlightCommand(s32 light_id, float angle, float range, float intensity, const CU::Vector4f& color, const CU::Matrix44f& orientation, bool shadow_casting)

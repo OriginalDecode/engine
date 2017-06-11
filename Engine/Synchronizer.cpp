@@ -21,6 +21,7 @@ bool Synchronizer::Initiate()
 
 	const s32 total_size =
 		model_buffer_size +
+		model_buffer_size +
 		spotlight_buffer_size +
 		particle_buffer_size +
 		line_buffer_size +
@@ -33,11 +34,11 @@ bool Synchronizer::Initiate()
 	const s32 allocation_amt = 0x80000 * 2;
 	const s32 alloc_size = allocation_amt * (eBufferType::BUFFER_COUNT * 2);
 
-	m_MainMemory = malloc(allocation_size);
+	m_MainMemory = (char*)malloc(allocation_size);
 	m_Allocator = CommandAllocator(allocation_size, m_MainMemory);
 
 	m_CommandBuffers[MODEL_BUFFER][0] = CommandAllocator(model_buffer_size, sizeof(ModelCommand), m_Allocator.Alloc(model_buffer_size));
-	m_CommandBuffers[NO_DEFERRED_BUFFER][0] = CommandAllocator(model_buffer_size, sizeof(ModelCommand), m_Allocator.Alloc(model_buffer_size));
+	m_CommandBuffers[NO_DEFERRED_BUFFER][0] = CommandAllocator(model_buffer_size, sizeof(ModelCommandNonDeferred), m_Allocator.Alloc(model_buffer_size));
 	m_CommandBuffers[SPOTLIGHT_BUFFER][0] = CommandAllocator(spotlight_buffer_size, sizeof(SpotlightCommand), m_Allocator.Alloc(spotlight_buffer_size));
 	m_CommandBuffers[PARTICLE_BUFFER][0] = CommandAllocator(particle_buffer_size, sizeof(ParticleCommand), m_Allocator.Alloc(particle_buffer_size));
 	m_CommandBuffers[LINE_BUFFER][0] = CommandAllocator(line_buffer_size, sizeof(LineCommand), m_Allocator.Alloc(line_buffer_size));
@@ -46,7 +47,7 @@ bool Synchronizer::Initiate()
 	m_CommandBuffers[TEXT_BUFFER][0] = CommandAllocator(text_buffer_size, sizeof(TextCommand), m_Allocator.Alloc(text_buffer_size));
 
 	m_CommandBuffers[MODEL_BUFFER][1] = CommandAllocator(model_buffer_size, sizeof(ModelCommand), m_Allocator.Alloc(model_buffer_size));
-	m_CommandBuffers[NO_DEFERRED_BUFFER][1] = CommandAllocator(model_buffer_size, sizeof(ModelCommand), m_Allocator.Alloc(model_buffer_size));
+	m_CommandBuffers[NO_DEFERRED_BUFFER][1] = CommandAllocator(model_buffer_size, sizeof(ModelCommandNonDeferred), m_Allocator.Alloc(model_buffer_size));
 	m_CommandBuffers[SPOTLIGHT_BUFFER][1] = CommandAllocator(spotlight_buffer_size, sizeof(SpotlightCommand), m_Allocator.Alloc(spotlight_buffer_size));
 	m_CommandBuffers[PARTICLE_BUFFER][1] = CommandAllocator(particle_buffer_size, sizeof(ParticleCommand), m_Allocator.Alloc(particle_buffer_size));
 	m_CommandBuffers[LINE_BUFFER][1] = CommandAllocator(line_buffer_size, sizeof(LineCommand), m_Allocator.Alloc(line_buffer_size));

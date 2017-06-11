@@ -820,6 +820,11 @@ void Engine::UpdateDebugUI()
 	EditEntity();
 }
 
+bool Engine::GetLineRendering()
+{
+	return myRenderer->GetRenderLines();
+}
+
 void Engine::EditEntity()
 {
 	if (!m_IsEditingEntity)

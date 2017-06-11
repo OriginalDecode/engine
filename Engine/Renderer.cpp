@@ -216,7 +216,7 @@ void Renderer::Render()
 
 	m_Engine->ResetRenderTargetAndDepth();
 
-	//RenderNonDeferred3DCommands();
+	RenderNonDeferred3DCommands();
 
 	RenderParticles();
 	RenderLines();
@@ -249,7 +249,7 @@ void Renderer::RenderNonDeferred3DCommands()
 	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::NO_DEFERRED_BUFFER);
 	for ( s32 i = 0; i < commands.Size(); i++)
 	{
-		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
+		auto command = reinterpret_cast<ModelCommandNonDeferred*>(commands[i]);
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
 		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
@@ -440,9 +440,6 @@ void Renderer::RenderParticles()
 
 void Renderer::RenderLines()
 {
-	if (!m_RenderLines)
-		return;
-
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Amber);
 #endif

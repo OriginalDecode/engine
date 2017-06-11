@@ -108,7 +108,7 @@ void TreeNode::Update(float dt)
 			break;
 	}
 
-	if (m_Dwellers.Size() <= 0)
+	if (m_Dwellers.Empty())
 	{
 		if (!SubNodeContainsDwellers())
 		{
@@ -132,21 +132,9 @@ void TreeNode::Update(float dt)
 		if (!node)
 			continue;
 
-		/*
-		if (m_Parent && !m_Parent->GetParent())
-		{
-			Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
-				node->Update(dt); }));
-		}
-		else/**/
-		{
-			node->Update(dt);
-		}
+		node->Update(dt);
 	}
 }
-
-
-
 
 TreeNode* TreeNode::GetChildByIndex(s32 index)
 {
@@ -169,10 +157,8 @@ bool TreeNode::SubNodeContainsDwellers()
 		}
 	}
 
-	if (m_Dwellers.Size() > 0)
-	{
+	if (!m_Dwellers.Empty())
 		return true;
-	}
 
 	return false;
 }

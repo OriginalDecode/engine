@@ -263,9 +263,17 @@ void Renderer::RenderNonDeferred3DCommands()
 
 void Renderer::Render3DCommands()
 {
+#ifdef _PROFILE
+	EASY_FUNCTION(profiler::colors::Green);
+#endif
+
+
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
+#ifdef _PROFILE
+	EASY_BLOCK("RenderTerrain", profiler::colors::Olive);
+#endif
 	for (CTerrain* terrain : myTerrainArray)
 	{
 		if (!terrain->HasLoaded())
@@ -273,8 +281,14 @@ void Renderer::Render3DCommands()
 
 		terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 	}
+#ifdef _PROFILE
+	EASY_END_BLOCK;
+#endif
 
 	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
+#ifdef _PROFILE
+	EASY_BLOCK("RenderModels", profiler::colors::Amber);
+#endif
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
@@ -286,6 +300,10 @@ void Renderer::Render3DCommands()
 		m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 		model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 	}
+#ifdef _PROFILE
+	EASY_END_BLOCK;
+#endif
+
 }
 
 void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
@@ -388,28 +406,34 @@ void Renderer::RenderSpotlight()
 
 void Renderer::RenderPointlight()
 {
-	/*const CU::GrowingArray<RenderCommand>& commands = mySynchronizer->GetRenderCommands(eCommandBuffer::ePointlight);
+
+	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER);
 
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
 	Effect* effect = m_LightPass.GetPointlightEffect();
 	effect->Activate();
 
-	for ( const RenderCommand& command : commands )
+	for (s32 i = 0; i < commands.Size(); i++)
 	{
-		DL_ASSERT_EXP(command.myType == eType::POINTLIGHT, "Wrong command type in pointlight buffer.");
+		auto command = reinterpret_cast<PointlightCommand*>(commands[i]);
+
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::POINTLIGHT, "Wrong command type in pointlight buffer.");
 		m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
-		myPointLight->SetPosition(command.myPosition);
-		myPointLight->SetRange(command.myRange);
-		myPointLight->SetColor(CU::Vector4f(command.myColor.x, command.myColor.y, command.myColor.z, 1));
+		myPointLight->SetPosition(command->m_Orientation.GetPosition());
+		myPointLight->SetRange(command->m_Range);
+		myPointLight->SetColor(CU::Vector4f(command->m_Color.x, command->m_Color.y, command->m_Color.z, 1));
 		myPointLight->Update();
-		//m_LightPass.RenderPointlight(myPointLight, m_Camera, myPrevFrame, m_Shadowlight->GetMVP(), m_RenderContext);
+		CU::Matrix44f shadow_mvp;
+		m_LightPass.RenderPointlight(myPointLight, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
 	}
 
 	effect->Deactivate();
 
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	m_API->SetRasterizer(eRasterizer::CULL_BACK);*/
+	m_API->SetRasterizer(eRasterizer::CULL_BACK); 
+
+
 }
 
 void Renderer::RenderParticles()

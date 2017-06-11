@@ -37,14 +37,6 @@ void Octree::Update(float dt)
 		node_count--;
 	}
 	m_GarbageNodes.RemoveAll();
-	
-
-
-	//std::stringstream ss;
-	//ss << "node count : " << node_count << " + Root";
-	//Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(TextCommand(ss.str(), { 0.75f, 0.05f }));
-	//Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(RenderCommand(eType::TEXT, ss.str(), CU::Vector2f(0.85f, 0.f)));
-
 	m_Root.Update(dt);
 }
 

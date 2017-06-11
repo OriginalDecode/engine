@@ -40,6 +40,9 @@ void Model::Initiate(const std::string& filename)
 
 void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
+#ifdef _PROFILE
+	EASY_FUNCTION(profiler::colors::Blue);
+#endif
 	for (Model* child : myChildren)
 	{
 		child->Render(aCameraOrientation, aCameraProjection, render_context);
@@ -54,10 +57,17 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); //depending
 
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
+
 	for (Surface* surface : mySurfaces)
 	{
 		surface->Activate(render_context);
+#ifdef _PROFILE
+		EASY_BLOCK("Model : DrawIndexed", profiler::colors::Blue100);
+#endif
 		render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
+#ifdef _PROFILE
+		EASY_END_BLOCK;
+#endif
 		surface->Deactivate();
 	}
 
@@ -65,6 +75,9 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 
 void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
 {
+#ifdef _PROFILE
+	EASY_FUNCTION(profiler::colors::Green);
+#endif
 	for (Model* child : myChildren)
 	{
 		child->Render(camera_orientation, camera_projection, render_context);
@@ -86,7 +99,13 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 	{
 		surface->Activate(render_context);
 		//render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
+#ifdef _PROFILE
+		EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Green100);
+#endif
 		render_context.m_Context->DrawIndexedInstanced(surface->GetIndexCount(), 250, 0, surface->GetStartVertex(), 0);
+#ifdef _PROFILE
+		EASY_END_BLOCK;
+#endif
 		surface->Deactivate();
 	}
 }

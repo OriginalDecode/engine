@@ -44,9 +44,11 @@ public:
 	void AddOrientation(CU::Matrix44f orientation);
 
 private:
+	void RemoveOrientation();
 	CU::GrowingArray<Model*> myChildren;
 	CU::GrowingArray<CU::Matrix44f> m_Orientations;
 protected:
+	void InitInstanceBuffer();
 	void InitConstantBuffer();
 	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
 
@@ -56,4 +58,8 @@ protected:
 	CU::GrowingArray<Surface*> mySurfaces;
 
 	CU::Matrix44f myOrientation;
+
+	IBuffer* m_InstanceBuffer = nullptr;
+	D3D11_SUBRESOURCE_DATA m_InstanceData;
+	const s32 m_InstanceCount = 250;
 };

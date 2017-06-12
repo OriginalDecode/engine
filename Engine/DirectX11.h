@@ -268,5 +268,3 @@ void DirectX11::UpdateConstantBuffer(IBuffer*& dest, T* src)
 {
 	UpdateConstantBuffer(dest, src, sizeof(T));
 }
-
-

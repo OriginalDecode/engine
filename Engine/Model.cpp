@@ -18,18 +18,20 @@ void Model::CleanUp()
 
 	SAFE_RELEASE(myConstantBuffer);
 	DL_ASSERT_EXP(!myConstantBuffer, "Failed to release constant buffer!");
-		
+
 	SAFE_RELEASE(m_VertexLayout);
 }
 
 void Model::Initiate(const std::string& filename)
 {
 	m_Filename = CL::substr(filename, "/", false, 0);
+	m_Orientations.Init(250);
 	if (m_IsRoot == false)
 	{
 		InitVertexBuffer();
 		InitIndexBuffer();
 		InitConstantBuffer();
+		InitInstanceBuffer();
 	}
 
 	for (Model* child : myChildren)
@@ -76,11 +78,11 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
 {
 #ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Green);
+	EASY_FUNCTION(profiler::colors::Amber);
 #endif
 	for (Model* child : myChildren)
 	{
-		child->Render(camera_orientation, camera_projection, render_context);
+		child->RenderInstanced(camera_orientation, camera_projection, render_context);
 	}
 
 	if (!m_VertexLayout || m_IsRoot || mySurfaces.Empty())
@@ -88,19 +90,38 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 
 	render_context.m_Context->IASetInputLayout(m_VertexLayout);
 	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	render_context.m_Context->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);// change this
+
+	render_context.m_API->UpdateConstantBuffer(m_InstanceBuffer, &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
+
+	u32 offsets[] = {
+		m_VertexBuffer.myByteOffset,
+		0
+	};
+
+	u32 strides[] = {
+		m_VertexBuffer.myStride,
+		sizeof(CU::Matrix44f)
+	};
+
+
+	IBuffer* buffers[] = {
+		m_VertexBuffer.myVertexBuffer,
+		m_InstanceBuffer
+	};
+
+	render_context.m_Context->IASetVertexBuffers(0, ARRAYSIZE(buffers), buffers, strides, offsets);
 	render_context.m_Context->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
 
-	UpdateConstantBuffer(camera_orientation, camera_projection, render_context); 
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); 
+	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); 
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 	for (Surface* surface : mySurfaces)
 	{
 		surface->Activate(render_context);
 		//render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
 #ifdef _PROFILE
-		EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Green100);
+		EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 #endif
 		render_context.m_Context->DrawIndexedInstanced(surface->GetIndexCount(), m_Orientations.Size(), 0, surface->GetStartVertex(), 0);
 #ifdef _PROFILE
@@ -108,19 +129,22 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 #endif
 		surface->Deactivate();
 	}
+
+	RemoveOrientation();
+
 }
 
 void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
 {
 	for (Model* child : myChildren)
 	{
-		child->ShadowRender(camera_orientation, camera_projection,render_context);
+		child->ShadowRender(camera_orientation, camera_projection, render_context);
 	}
 
 	if (m_IsRoot)
 		return;
 
-	if ( !m_VertexLayout )
+	if (!m_VertexLayout)
 		return;
 
 	if (mySurfaces.Empty())
@@ -132,7 +156,7 @@ void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matr
 
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-	
+
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 }
 
@@ -220,12 +244,29 @@ std::vector<s32> Model::GetIndices()
 
 void Model::AddOrientation(CU::Matrix44f orientation)
 {
+	if (m_Orientations.Size() >= m_InstanceCount)
+		DL_ASSERT("Too many instances");
+	for (Model* child : myChildren)
+	{
+		child->AddOrientation(orientation);
+	}
+
 	m_Orientations.Add(orientation);
+
+}
+
+void Model::RemoveOrientation()
+{
+	for (Model* child : myChildren)
+	{
+		child->RemoveOrientation();
+	}
+	m_Orientations.RemoveAll();
 }
 
 void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
-	if ( m_IsRoot )
+	if (m_IsRoot)
 		return;
 
 	if (!myConstantBuffer)
@@ -243,6 +284,32 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const 
 void Model::AddChild(Model* aChild)
 {
 	myChildren.Add(aChild);
+}
+
+void Model::InitInstanceBuffer()
+{
+	D3D11_BUFFER_DESC ibdesc;
+	ZeroMemory(&ibdesc, sizeof(ibdesc));
+	ibdesc.ByteWidth = sizeof(CU::Vector4f) * m_InstanceCount;
+	ibdesc.Usage = D3D11_USAGE_DEFAULT;
+	ibdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	ibdesc.CPUAccessFlags = 0;
+	ibdesc.MiscFlags = 0;
+	ibdesc.StructureByteStride = 0;
+
+
+	ZeroMemory(&m_InstanceData, sizeof(m_InstanceData));
+	m_InstanceData.pSysMem = &m_Orientations;
+	m_InstanceData.SysMemPitch = 0;
+	m_InstanceData.SysMemSlicePitch = 0;
+
+	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&ibdesc, &m_InstanceData, &m_InstanceBuffer);
+	if (FAILED(hr))
+		DL_ASSERT("Failed to create instance buffer!");
+
+
+
+
 }
 
 void Model::InitConstantBuffer()

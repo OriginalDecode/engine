@@ -680,13 +680,13 @@ void Engine::UpdateDebugUI()
 		//ImGui::Checkbox("Debug Textures", &myRenderer->GetPostprocessManager().GetHDRPass().toggle_debug);
 		if (debug_textures)
 			DebugTextures();
-		ImGui::SameLine();
-		ImGui::Checkbox("Instance Models", &m_RenderInstanced);
 
 
 		static bool render_lines = false;
 		ImGui::Checkbox("Render Lines", &render_lines);
 		myRenderer->SetRenderLines(render_lines);
+		ImGui::SameLine();
+		ImGui::Checkbox("Instance Models", &m_RenderInstanced);
 
 
 		float fov_value = m_Camera->GetFOV();

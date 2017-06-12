@@ -102,7 +102,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 #ifdef _PROFILE
 		EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Green100);
 #endif
-		render_context.m_Context->DrawIndexedInstanced(surface->GetIndexCount(), 250, 0, surface->GetStartVertex(), 0);
+		render_context.m_Context->DrawIndexedInstanced(surface->GetIndexCount(), m_Orientations.Size(), 0, surface->GetStartVertex(), 0);
 #ifdef _PROFILE
 		EASY_END_BLOCK;
 #endif

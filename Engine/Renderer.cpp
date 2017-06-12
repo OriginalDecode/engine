@@ -289,16 +289,47 @@ void Renderer::Render3DCommands()
 #ifdef _PROFILE
 	EASY_BLOCK("RenderModels", profiler::colors::Amber);
 #endif
-	for (s32 i = 0; i < commands.Size(); i++)
+	if (!m_Engine->GetRenderInstanced())
 	{
-		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
+		const CU::Matrix44f orientation = m_Camera->GetOrientation();
+		const CU::Matrix44f perspective = m_Camera->GetPerspective();
+		for (s32 i = 0; i < commands.Size(); i++)
+		{
+			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
+			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
-		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-		Model* model = m_Engine->GetModel(command->m_Key);
-		model->SetOrientation(command->m_Orientation);
-		m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-		model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
+			m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+			Model* model = m_Engine->GetModel(command->m_Key);
+			model->SetOrientation(command->m_Orientation);
+			m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+			model->Render(orientation, perspective, m_RenderContext);
+		}
+	}
+	else
+	{
+		for (s32 i = 0; i < commands.Size(); i++)
+		{
+			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
+			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
+			m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+			Model* model = m_Engine->GetModel(command->m_Key);
+			model->AddOrientation(command->m_Orientation);
+
+			if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
+				m_ModelsToRender[command->m_Key] = model;
+
+		}
+		const CU::Matrix44f orientation = m_Camera->GetOrientation();
+		const CU::Matrix44f perspective = m_Camera->GetPerspective();
+
+		for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
+		{
+			m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+			m_API->SetRasterizer(eRasterizer::CULL_BACK);//set per model instance? Array with bools / byte to see if it is wireframe or not?
+			it->second->RenderInstanced(orientation, perspective, m_RenderContext);
+		}
+
+
 	}
 #ifdef _PROFILE
 	EASY_END_BLOCK;

@@ -55,6 +55,8 @@ private:
 	void RenderParticles();
 	void RenderLines();
 
+	CU::GrowingArray<Model*> m_Models;
+	std::map<std::string, Model*> m_ModelsToRender;
 	CU::GrowingArray<CTerrain*> myTerrainArray;
 
 	CU::Vector3f		m_Direction;

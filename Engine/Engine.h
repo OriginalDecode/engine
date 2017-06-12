@@ -190,9 +190,13 @@ private:
 #endif
 private:
 
+	bool m_RenderInstanced = false;
+public:
+	bool GetRenderInstanced() { return m_RenderInstanced; }
+private:
+
 
 	bool m_EditLight = false;
-	//void EditLightComponent();
 	bool m_EditRender = false;
 
 

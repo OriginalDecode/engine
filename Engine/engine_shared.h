@@ -87,15 +87,3 @@ struct RenderContext
 	struct ID3D11DeviceContext* m_Context = nullptr;
 	class DirectX11* m_API = nullptr;
 };
-//namespace CL
-//{
-//
-//	bool find(const std::string& string, const std::string& to_find)
-//	{
-//		if ( string.find(to_find) != string.npos )
-//			return true;
-//
-//		return false;
-//	}
-//
-//};

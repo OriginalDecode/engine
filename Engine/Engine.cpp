@@ -680,6 +680,9 @@ void Engine::UpdateDebugUI()
 		//ImGui::Checkbox("Debug Textures", &myRenderer->GetPostprocessManager().GetHDRPass().toggle_debug);
 		if (debug_textures)
 			DebugTextures();
+		ImGui::SameLine();
+		ImGui::Checkbox("Instance Models", &m_RenderInstanced);
+
 
 		static bool render_lines = false;
 		ImGui::Checkbox("Render Lines", &render_lines);
@@ -697,6 +700,8 @@ void Engine::UpdateDebugUI()
 		ImGui::Text("Sprite Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER).Size());
 		ImGui::Text("Text Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER).Size());
 		ImGui::Text("Line Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size());
+
+
 
 
 		ImGui::End();

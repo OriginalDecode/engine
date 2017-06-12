@@ -86,10 +86,13 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 	}
 
 	if (!m_VertexLayout || m_IsRoot || mySurfaces.Empty())
+	{
+		RemoveOrientation();
 		return;
-
+	}
 	render_context.m_Context->IASetInputLayout(m_VertexLayout);
 	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 
 	render_context.m_API->UpdateConstantBuffer(m_InstanceBuffer, &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
 
@@ -116,20 +119,19 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-	for (Surface* surface : mySurfaces)
-	{
-		surface->Activate(render_context);
+	//for (Surface* surface : mySurfaces)
+	//{
+		mySurfaces[0]->Activate(render_context);
 		//render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
 #ifdef _PROFILE
 		EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 #endif
-		render_context.m_Context->DrawIndexedInstanced(surface->GetIndexCount(), m_Orientations.Size(), 0, surface->GetStartVertex(), 0);
+		render_context.m_Context->DrawIndexedInstanced(mySurfaces[0]->GetIndexCount(), m_Orientations.Size(), 0, mySurfaces[0]->GetStartVertex(), 0);
 #ifdef _PROFILE
 		EASY_END_BLOCK;
 #endif
-		surface->Deactivate();
-	}
-
+		mySurfaces[0]->Deactivate();
+	//}
 	RemoveOrientation();
 
 }
@@ -290,25 +292,16 @@ void Model::InitInstanceBuffer()
 {
 	D3D11_BUFFER_DESC ibdesc;
 	ZeroMemory(&ibdesc, sizeof(ibdesc));
-	ibdesc.ByteWidth = sizeof(CU::Vector4f) * m_InstanceCount;
-	ibdesc.Usage = D3D11_USAGE_DEFAULT;
+	ibdesc.ByteWidth = sizeof(CU::Matrix44f) * m_InstanceCount;
+	ibdesc.Usage = D3D11_USAGE_DYNAMIC;
 	ibdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	ibdesc.CPUAccessFlags = 0;
+	ibdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	ibdesc.MiscFlags = 0;
 	ibdesc.StructureByteStride = 0;
 
-
-	ZeroMemory(&m_InstanceData, sizeof(m_InstanceData));
-	m_InstanceData.pSysMem = &m_Orientations;
-	m_InstanceData.SysMemPitch = 0;
-	m_InstanceData.SysMemSlicePitch = 0;
-
-	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&ibdesc, &m_InstanceData, &m_InstanceBuffer);
+	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&ibdesc, nullptr, &m_InstanceBuffer);
 	if (FAILED(hr))
 		DL_ASSERT("Failed to create instance buffer!");
-
-
-
 
 }
 

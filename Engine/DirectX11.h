@@ -155,7 +155,9 @@ public:
 	template<typename T>
 	void UpdateConstantBuffer(IBuffer*& dest, T* src);
 
-	//void BindConstantBuffer(s32 bound_buffer_flag, IBuffer*& constant_buffer);
+	template<typename T>
+	void UpdateBuffer(IBuffer*& dest, T* src, s32 size, D3D11_MAP map_type);
+
 
 	IBuffer* CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag = D3D11_USAGE_IMMUTABLE, u32 bind_flag = D3D11_BIND_VERTEX_BUFFER, u32 cpu_access_flag = 0, u32 misc_flag = 0, u32 structured_byte_width = 0);
 
@@ -267,4 +269,18 @@ template<typename T>
 void DirectX11::UpdateConstantBuffer(IBuffer*& dest, T* src)
 {
 	UpdateConstantBuffer(dest, src, sizeof(T));
+}
+
+template<typename T>
+void DirectX11::UpdateBuffer(IBuffer*& dest, T* src, s32 size, D3D11_MAP map_type)
+{
+	D3D11_MAPPED_SUBRESOURCE msr;
+	myContext->Map(dest, 0, map_type, 0, &msr);
+
+	if (msr.pData)
+	{
+		T* data = (T*)msr.pData;
+		memcpy(data, &src[0], size);
+	}
+	myContext->Unmap(dest, 0);
 }

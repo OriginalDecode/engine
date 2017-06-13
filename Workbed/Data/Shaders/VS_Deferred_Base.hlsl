@@ -21,6 +21,10 @@ struct VS_INPUT
 	float2 uv : TEXCOORD;
 	float3 binorm : BINORMAL;
 	float3 tang : TANGENT;
+	float4 world0 : model_instance0;
+	float4 world1 : model_instance1;
+	float4 world2 : model_instance2;
+	float4 world3 : model_instance3;
 };
 
 struct VS_OUTPUT

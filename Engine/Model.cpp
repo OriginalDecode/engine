@@ -26,6 +26,35 @@ void Model::Initiate(const std::string& filename)
 {
 	m_Filename = CL::substr(filename, "/", false, 0);
 	m_Orientations.Init(250);
+
+// 	LPCSTR SemanticName;
+// 	UINT SemanticIndex;
+// 	DXGI_FORMAT Format;
+// 	UINT InputSlot;
+// 	UINT AlignedByteOffset;
+// 	D3D11_INPUT_CLASSIFICATION InputSlotClass;
+// 	UINT InstanceDataStepRate;
+
+	for (const D3D11_INPUT_ELEMENT_DESC& el : myVertexFormat)
+	{
+		m_InputLayoutDesc.Add(el);
+	}
+	D3D11_INPUT_ELEMENT_DESC instance_info[4] = {
+		
+		{ "model_instance", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0 , D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "model_instance", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "model_instance", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "model_instance", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
+	};	
+
+	
+
+	m_InputLayoutDesc.Add(instance_info[0]);
+	m_InputLayoutDesc.Add(instance_info[1]);
+	m_InputLayoutDesc.Add(instance_info[2]);
+	m_InputLayoutDesc.Add(instance_info[3]);
+
+
 	if (m_IsRoot == false)
 	{
 		InitVertexBuffer();
@@ -37,7 +66,7 @@ void Model::Initiate(const std::string& filename)
 	for (Model* child : myChildren)
 	{
 		child->Initiate(filename);
-	}
+}
 }
 
 void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
@@ -90,7 +119,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 		RemoveOrientation();
 		return;
 	}
-	render_context.m_Context->IASetInputLayout(m_VertexLayout);
+	render_context.m_Context->IASetInputLayout(m_InstanceInputLayout);
 	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 
@@ -121,16 +150,16 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 	//for (Surface* surface : mySurfaces)
 	//{
-		mySurfaces[0]->Activate(render_context);
-		//render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
+	mySurfaces[0]->Activate(render_context);
+	//render_context.m_Context->DrawIndexed(surface->GetIndexCount(), 0, 0); //depending on dx
 #ifdef _PROFILE
-		EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
+	EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 #endif
-		render_context.m_Context->DrawIndexedInstanced(mySurfaces[0]->GetIndexCount(), m_Orientations.Size(), 0, mySurfaces[0]->GetStartVertex(), 0);
+	render_context.m_Context->DrawIndexedInstanced(m_IndexData.myIndexCount, m_Orientations.Size(), 0, 0, 0);
 #ifdef _PROFILE
-		EASY_END_BLOCK;
+	EASY_END_BLOCK;
 #endif
-		mySurfaces[0]->Deactivate();
+	mySurfaces[0]->Deactivate();
 	//}
 	RemoveOrientation();
 
@@ -302,6 +331,13 @@ void Model::InitInstanceBuffer()
 	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&ibdesc, nullptr, &m_InstanceBuffer);
 	if (FAILED(hr))
 		DL_ASSERT("Failed to create instance buffer!");
+
+	void* shader = myEffect->GetVertexShader()->compiledShader;
+	s32 size = myEffect->GetVertexShader()->shaderSize;
+	m_InstanceInputLayout = Engine::GetAPI()->CreateInputLayout(shader, size, &m_InputLayoutDesc[0], m_InputLayoutDesc.Size());
+	//m_InstanceInputLayout
+
+
 
 }
 

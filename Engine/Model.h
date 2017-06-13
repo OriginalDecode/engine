@@ -47,6 +47,10 @@ private:
 	void RemoveOrientation();
 	CU::GrowingArray<Model*> myChildren;
 	CU::GrowingArray<CU::Matrix44f> m_Orientations;
+	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> m_InputLayoutDesc;
+	IInputLayout* m_InstanceInputLayout = nullptr;
+
+
 protected:
 	void InitInstanceBuffer();
 	void InitConstantBuffer();

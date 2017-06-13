@@ -33,6 +33,8 @@ bool Application::Initiate()
 #ifdef _DEBUG
 	CL::SetThreadName(myLogicThread->get_id(), "Logic Thread");
 #endif
+
+
 	return true;
 }
 

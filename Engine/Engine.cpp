@@ -115,6 +115,8 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_Window.Initiate(window_create_info);
 	m_Window.ShowWindow();
 	myHWND = m_Window.GetHWND();
+	DL_ASSERT_EXP(myHWND, "Window Handle was null!");
+
 
 	if (!m_Window.IsWindowActive())
 		m_Window.OnActive();
@@ -130,8 +132,12 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	create_info.m_WindowWidth = m_Window.GetInnerSize().m_Width;
 	create_info.m_WindowHeight = m_Window.GetInnerSize().m_Height;
 	create_info.m_APIName = api_name;
-
 	DL_ASSERT_EXP(myAPI->Initiate(create_info), "Engine : Failed to initiate graphicsAPI");
+
+	m_InputHandle = new InputHandle;
+	m_InputHandle->Initiate(myHWND, instance_handle);
+	//m_InputHandle->AddController(0);
+
 
 	myAssetsContainer = new AssetsContainer;
 	myAssetsContainer->Initiate();
@@ -156,9 +162,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	m_Threadpool.Initiate();
 
-	m_InputHandle = new InputHandle;
-	m_InputHandle->Initiate(myHWND, instance_handle);
-	m_InputHandle->AddController(0);
+
 
 	m_EntityManager.Initiate();
 
@@ -548,8 +552,6 @@ CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepa
 
 bool Engine::SaveLevel()
 {
-	//Should write the entire file
-	//Prompt dialogue to give it a file name
 	static char file_name[512];
 	if (ImGui::Begin("Filename"))
 	{
@@ -577,10 +579,6 @@ bool Engine::SaveLevel()
 	ImGui::End();
 
 	return false;
-}
-
-void Engine::OutputDebugString(std::string debug_str)
-{
 }
 
 static auto GetVector = [](void* vec, int index, const char** out_text)
@@ -709,7 +707,7 @@ void Engine::UpdateDebugUI()
 	ImGui::PopStyleVar();
 
 
-	
+
 
 	if (new_window)
 	{

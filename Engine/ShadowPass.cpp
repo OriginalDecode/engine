@@ -36,6 +36,9 @@ void ShadowPass::ProcessShadows(ShadowSpotlight* shadow_spotlight, const RenderC
 
 void ShadowPass::ProcessShadows(ShadowDirectional* shadow_directional, const RenderContext& render_context)
 {
+#ifdef _PROFILE
+	EASY_FUNCTION(profiler::colors::DarkBlue);
+#endif
 	shadow_directional->SetViewport();
 	shadow_directional->ClearTexture(render_context);
 	shadow_directional->SetTargets(render_context);

@@ -37,14 +37,9 @@ enum class EUsagePage
 Application* newApplication = nullptr;
 static bool g_windowactive = false;
 
-//#define _REMOTE_PROFILE
-
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
-
-
 #ifdef _PROFILE
-	//EASY_PROFILER_ENABLE;
 	profiler::startListen();
 #endif
 	DL_Debug::Debug::Create();
@@ -199,10 +194,6 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 #ifdef _PROFILE
 	profiler::stopListen();
-	/*
-	profiler::dumpBlocksToFile("file.prof");
-	EASY_PROFILER_DISABLE;
-	*/
 #endif
 
 	return 0;

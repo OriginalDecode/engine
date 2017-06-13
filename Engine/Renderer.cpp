@@ -209,7 +209,6 @@ void Renderer::Render()
 		m_DeferredRenderer->Finalize(m_RenderContext);
 
 
-	//m_Atmosphere.SetLightData(m_Direction, m_DirectionalCamera->GetPosition());
 
 	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), m_DeferredRenderer->GetDepthStencil()->GetDepthView());
 	m_Atmosphere.Render(m_Camera->GetOrientation(), m_DeferredRenderer->GetDepthStencil(), m_RenderContext);
@@ -223,11 +222,17 @@ void Renderer::Render()
 	Render2DCommands();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	//ImGui::Render();
+	ImGui::Render();
 #endif
 	m_Engine->Present();
 
+#ifdef _PROFILE
+	EASY_BLOCK("Waiting for Logic!");
+#endif
 	mySynchronizer->WaitForLogic();
+#ifdef _PROFILE
+	EASY_END_BLOCK;
+#endif
 	mySynchronizer->SwapBuffer();
 	mySynchronizer->RenderIsDone();
 
@@ -395,12 +400,21 @@ void Renderer::Render2DCommands()
 
 void Renderer::RenderSpotlight()
 {
+#ifdef _PROFILE
+	EASY_FUNCTION(profiler::colors::Purple);
+#endif
 	Effect* effect = m_LightPass.GetSpotlightEffect();
 
 	SpotlightData data;
 	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER);
+#ifdef _PROFILE
+	EASY_BLOCK("Spotlight Command Loop", profiler::colors::Red);
+#endif
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
+#ifdef _PROFILE
+		EASY_BLOCK("Spotlight Command", profiler::colors::Red);
+#endif
 		auto command = reinterpret_cast<SpotlightCommand*>(commands[i]);
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::SPOTLIGHT, "Expected Spotlight command type");
 
@@ -429,7 +443,14 @@ void Renderer::RenderSpotlight()
 		effect->Use();
 		m_LightPass.RenderSpotlight(light, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
 		effect->Clear();
+
+#ifdef _PROFILE
+		EASY_END_BLOCK;
+#endif
 	}
+#ifdef _PROFILE
+	EASY_END_BLOCK;
+#endif
 
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
@@ -437,14 +458,19 @@ void Renderer::RenderSpotlight()
 
 void Renderer::RenderPointlight()
 {
-
+#ifdef _PROFILE
+	EASY_FUNCTION(profiler::colors::Purple);
+#endif
 	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER);
+
 
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
 	Effect* effect = m_LightPass.GetPointlightEffect();
 	effect->Activate();
-
+#ifdef _PROFILE
+	EASY_BLOCK("Pointlight Command Loop", profiler::colors::Red);
+#endif
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<PointlightCommand*>(commands[i]);
@@ -458,7 +484,9 @@ void Renderer::RenderPointlight()
 		CU::Matrix44f shadow_mvp;
 		m_LightPass.RenderPointlight(myPointLight, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
 	}
-
+#ifdef _PROFILE
+	EASY_END_BLOCK;
+#endif
 	effect->Deactivate();
 
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);

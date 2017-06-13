@@ -36,6 +36,9 @@ DebugSystem::~DebugSystem()
 void DebugSystem::Update(float /*dt*/)
 {
 	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::TEXT, current_model, CU::Vector2f(0.75, 0)));
+#ifdef _PROFILE
+	EASY_FUNCTION(profiler::colors::Red);
+#endif
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (Entity e : entities)
 	{

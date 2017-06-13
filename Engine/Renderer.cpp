@@ -223,7 +223,7 @@ void Renderer::Render()
 	Render2DCommands();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	ImGui::Render();
+	//ImGui::Render();
 #endif
 	m_Engine->Present();
 

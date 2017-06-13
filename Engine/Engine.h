@@ -190,7 +190,7 @@ private:
 #endif
 private:
 
-	bool m_RenderInstanced = false;
+	bool m_RenderInstanced = true;
 public:
 	bool GetRenderInstanced() { return m_RenderInstanced; }
 private:

@@ -186,6 +186,7 @@ void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& positio
 	memcpy(m_IndexData.myIndexData, &indexes[0], m_IndexData.mySize);
 
 	InitVertexBuffer();
+	InitInputLayout();
 	InitIndexBuffer();
 	InitConstantBuffer();
 }

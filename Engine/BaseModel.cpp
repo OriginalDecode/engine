@@ -23,9 +23,7 @@ void BaseModel::SetEffect(Effect* anEffect)
 
 void BaseModel::InitVertexBuffer()
 {
-	void* shader = myEffect->GetVertexShader()->compiledShader;
-	s32 size = myEffect->GetVertexShader()->shaderSize;
-	m_VertexLayout = Engine::GetAPI()->CreateInputLayout(shader, size, &myVertexFormat[0], myVertexFormat.Size());
+	
 
 	m_VertexBuffer.myVertexBuffer = Engine::GetAPI()->CreateBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
 	m_VertexBuffer.myStride = m_VertexData.myStride;
@@ -35,8 +33,16 @@ void BaseModel::InitVertexBuffer()
 
 #ifdef _DEBUG
 	Engine::GetAPI()->SetDebugName(m_VertexBuffer.myVertexBuffer, "Model Vertex Buffer " + m_Filename);
-	Engine::GetAPI()->SetDebugName(m_VertexLayout, "Model Vertex Layout : " + m_Filename);
 #endif
+
+}
+
+void BaseModel::InitInputLayout()
+{
+	void* shader = myEffect->GetVertexShader()->compiledShader;
+	s32 size = myEffect->GetVertexShader()->shaderSize;
+	m_VertexLayout = Engine::GetAPI()->CreateInputLayout(shader, size, &myVertexFormat[0], myVertexFormat.Size());
+	Engine::GetAPI()->SetDebugName(m_VertexLayout, "Model Vertex Layout : " + m_Filename);
 
 }
 

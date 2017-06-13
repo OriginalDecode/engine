@@ -34,6 +34,7 @@ public:
 
 protected:
 	void InitVertexBuffer();
+	void InitInputLayout();
 	void InitIndexBuffer();
 	virtual void InitConstantBuffer() = 0;
 	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) = 0;

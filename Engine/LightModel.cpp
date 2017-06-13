@@ -24,6 +24,7 @@ void LightModel::Initiate(const std::string& filename)
 	if ( m_IsRoot == false )
 	{
 		InitVertexBuffer();
+		InitInputLayout();
 		InitIndexBuffer();
 		InitConstantBuffer();
 	}

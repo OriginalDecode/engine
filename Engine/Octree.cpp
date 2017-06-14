@@ -115,6 +115,9 @@ void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 			TreeNode* child = CreateNode(node->GetPosition(), node->GetHalfWidth(), index);
 			node->AddChild(child, index);
 			child->SetDepth(depth);
+			float new_halfwidth = node->GetHalfWidth() / 2.f;
+			child->Initiate(new_halfwidth, this);
+
 		}
 
 		MoveDown(node->GetChildByIndex(index), dweller, depth + 1);
@@ -177,7 +180,6 @@ TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 in
 	pos.z += dir.z * new_halfwidth;
 
 	TreeNode* node = new TreeNode;
-	node->Initiate(new_halfwidth, this);
 	node->SetPosition(pos);
 
 	return node;

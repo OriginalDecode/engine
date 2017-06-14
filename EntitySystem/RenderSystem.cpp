@@ -21,7 +21,7 @@
 #endif
 #include <Engine/Engine.h>
 RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
-	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, RenderComponent>>())
+	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, RenderComponent, DebugComponent>>())
 {
 	mySynchronizer = m_Engine->GetSynchronizer();
 }
@@ -46,8 +46,7 @@ void RenderSystem::Update(float /*dt*/)
 #ifdef _PROFILE
 		EASY_BLOCK("Frustum collision check", profiler::colors::Green);
 #endif
-		if (m_Manager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
-		{
+		
 			DebugComponent& debug = GetComponent<DebugComponent>(e);
 			const CU::Matrix44f& matrix = translation.myOrientation;
 			const CU::Vector4f forward = matrix.GetForward();
@@ -65,7 +64,6 @@ void RenderSystem::Update(float /*dt*/)
 			position = matrix.GetTranslation() + (up * CU::Vector4f(render.m_MaxPos));
 			if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
 				visible = true;
-		}
 
 #ifdef _PROFILE
 		EASY_END_BLOCK;

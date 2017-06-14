@@ -111,6 +111,9 @@ enum eBufferType
 };
 
 #define ADD_COMMAND_FUNC(buffer_type, command_type)\
+private:\
+	Ticket_Mutex m_##command_type##Mutex;\
+public:\
 void AddRenderCommand(const command_type command)\
 {\
 	if(m_QuitFlag)\
@@ -120,11 +123,11 @@ void AddRenderCommand(const command_type command)\
 	TRACE_LOG("Buffer %s received", #buffer_type);\
 	void* current = buffer[m_CurrentBuffer ^ 1].Alloc(sizeof(command_type));\
 	TRACE_LOG("starting memcpy from command to CurrentPos()");\
+	BeginTicketMutex(&m_##command_type##Mutex);\
 	memcpy(current, &command, sizeof(command_type));\
+	EndTicketMutex(&m_##command_type##Mutex);\
 	TRACE_LOG("memcpy successfully ended");\
 };
-
-
 
 typedef CU::StaticArray<CommandAllocator, 2> CommandBuffer;
 typedef CU::StaticArray<CommandBuffer, eBufferType::BUFFER_COUNT> CommandBuffers;

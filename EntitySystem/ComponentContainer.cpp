@@ -5,14 +5,14 @@
 #include "../DL_Debug/DL_Debug.h"
 CComponentContainer::CComponentContainer(bool owner)
 	: myComponents(MAX_COMPONENTS_COUNT)
-	, myEntityComponents(128)
-	, myEntitiesToReturn(128)
+	, myEntityComponents(512)
+	, myEntitiesToReturn(512)
 	, m_Owner(owner)
 {
 	for ( int i = 0; i < MAX_COMPONENTS_COUNT; i++ )
 	{
 		myComponents.Add(ComponentArray());
-		myComponents[i].ReInit(128);
+		myComponents[i].ReInit(512);
 	}
 }
 

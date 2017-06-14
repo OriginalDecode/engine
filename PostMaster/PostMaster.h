@@ -71,6 +71,6 @@ void PostMaster::SendMessage(const Message& aMessage)
 	}
 	else 
 	{
-		DL_ASSERT("Message sent without subscriber.");
+		//DL_ASSERT("Message sent without subscriber.");
 	}
 }

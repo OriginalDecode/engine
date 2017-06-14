@@ -312,7 +312,7 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		return;
 	//Should be optimized for a quad/oct -tree solution to only retrieve the entities in THIS part
 	//NodeEntityManager& node_manager = message.m_Player->GetFirstNode()->GetManager();
-	const auto& entities = Engine::GetInstance()->GetEntityManager().GetEntities(myFilter);
+	const auto& entities = m_Manager.GetEntities(myFilter);
 	//const EntityArray& entities = node_manager.GetEntities(myFilter);
 
 

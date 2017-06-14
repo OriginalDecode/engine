@@ -42,20 +42,22 @@ void NodeEntityManager::RemoveEntity(TreeDweller* entity)
 void NodeEntityManager::Update(float dt)
 {
 	const CU::GrowingArray<Entity>& entities = GetEntities(CreateFilter<Requires<TranslationComponent>>());
-	for ( Entity e : entities )
+	if (entities.Size() > 0)
 	{
-		CameraHandle* handle = CameraHandle::GetInstance();
-		if ( handle)
+		for (Entity e : entities)
 		{
-			TranslationComponent& t = GetComponent<TranslationComponent>(e);
+			CameraHandle* handle = CameraHandle::GetInstance();
+			if (handle)
+			{
+				TranslationComponent& t = GetComponent<TranslationComponent>(e);
 
-			if ( CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.myOrientation.GetPosition()) )
-				m_Components.SetUpdateFlag(e, true);
-			else
-				m_Components.SetUpdateFlag(e, false);
+				if (CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.myOrientation.GetPosition()))
+					m_Components.SetUpdateFlag(e, true);
+				else
+					m_Components.SetUpdateFlag(e, false);
+			}
 		}
 	}
-
 	for (BaseSystem* system : m_Systems)
 	{
 		system->Update(dt);

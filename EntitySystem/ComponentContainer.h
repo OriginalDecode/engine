@@ -3,7 +3,7 @@
 #include "../CommonLib/DataStructures/GrowingArray.h"
 #include "../CommonLib/DataStructures/StaticArray.h"
 
-struct SComponentFilter;
+struct ComponentFilter;
 struct BaseComponent;
 
 struct EntityComponent
@@ -25,9 +25,9 @@ public:
 	BaseComponent& GetComponent(Entity anEntity, unsigned int aComponentID);
 	void SetUpdateFlag(Entity entity, bool flag);
 	//have filter with only 1 to check plz
-	bool HasComponent(Entity e, SComponentFilter filter);
+	bool HasComponent(Entity e, ComponentFilter filter);
 
-	const CU::GrowingArray<Entity>& GetEntities(SComponentFilter aFilter);
+	const CU::GrowingArray<Entity>& GetEntities(ComponentFilter aFilter);
 
 	void RemoveComponent(Entity entity, BaseComponent* component, u32 component_id);
 

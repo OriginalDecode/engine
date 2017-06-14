@@ -2,10 +2,10 @@
 #include "ComponentContainer.h"
 #include "TypeID.h"
 #include "EntityTypes.h"
-#include "../CommonLib/DataStructures/GrowingArray.h"
 #include <atomic>
+#include <Engine/Octree.h>
 #include "BaseComponent.h"
-
+#include "../CommonLib/DataStructures/GrowingArray.h"
 typedef CU::GrowingArray<Entity> EntityArray;
 class NodeEntityManager;
 
@@ -24,7 +24,7 @@ public:
 	Entity CreateEntity();
 	void Clear();
 	void Update(float aDelta);
-	const EntityArray& GetEntities(SComponentFilter aFilter);
+	const EntityArray& GetEntities(ComponentFilter aFilter);
 
 	const EntityArray& GetEntities();
 
@@ -42,31 +42,32 @@ public:
 	template <typename T>
 	void AddSystem();
 
-	bool HasComponent(Entity e, SComponentFilter& filter);
-	CU::GrowingArray<BaseSystem*> GetSystems() { return mySystems; }
+	bool HasComponent(Entity e, ComponentFilter& filter);
 
-	void SetActiveNodeManager(NodeEntityManager* manager) { m_ActiveNode = manager; }
-	NodeEntityManager* GetNodeManager() { return m_ActiveNode; }
+	NodeEntityManager* RequestManager();
+	void ReleaseManager(NodeEntityManager* manager);
+
+
+	//CU::GrowingArray<BaseSystem*> GetSystems() { return mySystems; }
+
+	//void SetActiveNodeManager(NodeEntityManager* manager) { m_ActiveNode = manager; }
+	//NodeEntityManager* GetNodeManager() { return m_ActiveNode; }
 	
-	void RegisterManager(NodeEntityManager* manager);
+	/*void RegisterManager(NodeEntityManager* manager);
 	void UnRegisterManager(NodeEntityManager* manager);
-	NodeEntityManager* GetManager(s32 index);
+	NodeEntityManager* GetManager(s32 index);*/
 
 private:
 	NodeEntityManager* m_ActiveNode = nullptr;
 
-	CU::GrowingArray<NodeEntityManager*> m_RegisteredManagers;
-
+	CU::GrowingArray<NodeEntityManager*> m_NodeManagers;
 
 	Entity myNextEntity = 0;
 	CComponentContainer* myComponents = nullptr;
-	CU::GrowingArray<BaseSystem*> mySystems;
+	//CU::GrowingArray<BaseSystem*> mySystems;
 	std::atomic<float> myDeltaTime = 0.f;
-	std::atomic<bool> mySystemsFinished = false;
-
-	std::bitset<MAX_COMPONENTS_COUNT> myFinishedSystems;
-	short myNextFinish = 0;
-	bool IsSystemsFinished();
+	static const s32 m_MaxNodeCount = (8 * 8) * MAX_DEPTH + 1;
+	s32 m_Systems[m_MaxNodeCount];
 
 };
 
@@ -80,7 +81,7 @@ void EntityManager::AddComponent(Entity aEntity)
 template<typename T>
 void EntityManager::RemoveComponent(Entity aEntity, int aComponentID)
 {
-
+	myComponents->RemoveComponent(aEntity, CTypeID<BaseComponent>::GetID<T>(), aComponentID);
 }
 
 template<typename T>
@@ -92,5 +93,8 @@ T& EntityManager::GetComponent(Entity aEntity)
 template <typename T>
 void EntityManager::AddSystem()
 {
-	mySystems.Add(new T(*this));
+	for (NodeEntityManager* manager : m_NodeManagers)
+	{
+		manager->AddSystem<T>();
+	}
 } 

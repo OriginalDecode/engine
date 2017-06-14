@@ -8,7 +8,12 @@
 
 void NodeEntityManager::Initiate()
 {
-	m_Systems = Engine::GetInstance()->GetEntityManager().GetSystems();
+
+}
+
+void NodeEntityManager::CleanUp()
+{
+	m_Systems.DeleteAll();
 }
 
 void NodeEntityManager::AddEntity(TreeDweller* entity)
@@ -57,7 +62,7 @@ void NodeEntityManager::Update(float dt)
 	}
 }
 
-const CU::GrowingArray<Entity>& NodeEntityManager::GetEntities(SComponentFilter filter)
+const CU::GrowingArray<Entity>& NodeEntityManager::GetEntities(ComponentFilter filter)
 {
 	return m_Components.GetEntities(filter);
 }
@@ -68,7 +73,7 @@ NodeEntityManager::~NodeEntityManager()
 	m_Systems.RemoveAll();
 }
 
-bool NodeEntityManager::HasComponent(Entity e, SComponentFilter filter)
+bool NodeEntityManager::HasComponent(Entity e, ComponentFilter filter)
 {
 	return m_Components.HasComponent(e, filter);
 }

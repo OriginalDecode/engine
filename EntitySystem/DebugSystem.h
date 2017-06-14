@@ -13,7 +13,7 @@ struct GizmoHandle;
 class DebugSystem : public BaseSystem, public Subscriber
 {
 public:
-	DebugSystem(EntityManager& entity_manager);
+	DebugSystem(NodeEntityManager& entity_manager);
 	~DebugSystem();
 	void Update(float dt) override;
 private:

@@ -7,7 +7,7 @@
 #include "Synchronizer.h"
 #include "RenderCommand.h"
 #include "../Engine/Engine.h"
-LightSystem::LightSystem(EntityManager& anEntityManager)
+LightSystem::LightSystem(NodeEntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, LightComponent>>())
 {
 	mySynchronizer = Engine::GetInstance()->GetSynchronizer();

@@ -23,8 +23,6 @@ void BaseModel::SetEffect(Effect* anEffect)
 
 void BaseModel::InitVertexBuffer()
 {
-	
-
 	m_VertexBuffer.myVertexBuffer = Engine::GetAPI()->CreateBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
 	m_VertexBuffer.myStride = m_VertexData.myStride;
 	m_VertexBuffer.myByteOffset = 0;

@@ -10,3 +10,4 @@ typedef int Entity;
 
 typedef CU::GrowingArray<BaseComponent*> ComponentArray;
 typedef CU::StaticArray<int, MAX_COMPONENTS_COUNT> EntityComponentArray;
+//constexpr int a = sizeof(int);

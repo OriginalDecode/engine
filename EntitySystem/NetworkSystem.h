@@ -1,10 +1,9 @@
 #pragma once
 #include "BaseSystem.h"
-class NetworkSystem :
-	public BaseSystem
+class NetworkSystem : public BaseSystem
 {
 public:
-	NetworkSystem(EntityManager& anEntityManager);
+	NetworkSystem(NodeEntityManager& anEntityManager);
 	void Update(float delta_time) override;
 };
 

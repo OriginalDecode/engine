@@ -57,6 +57,7 @@ void CComponentContainer::AddComponent(Entity anEntity, BaseComponent* aComponen
 BaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int aComponentID)
 {
 	/*Error Handling*/
+	
 	for ( EntityComponent& ec : myEntityComponents )
 	{
 		if ( ec.m_Entity == anEntity )
@@ -93,7 +94,7 @@ void CComponentContainer::RemoveComponent(Entity entity, BaseComponent* componen
 	}
 }
 
-bool CComponentContainer::HasComponent(Entity e, SComponentFilter filter)
+bool CComponentContainer::HasComponent(Entity e, ComponentFilter filter)
 {
 	for ( const EntityComponent& ec : myEntityComponents )
 	{
@@ -108,7 +109,7 @@ bool CComponentContainer::HasComponent(Entity e, SComponentFilter filter)
 	return false;
 }
 
-const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(SComponentFilter aFilter)
+const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(ComponentFilter aFilter)
 {
 	myEntitiesToReturn.RemoveAll();
 	/*for (int i = 0; i < myEntityComponents.Size(); i++)
@@ -118,7 +119,7 @@ const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(SComponentFilte
 			myEntitiesToReturn.Add(i);
 		}
 	}*/
-	SComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
+	ComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
 	for ( const EntityComponent& ec : myEntityComponents )
 	{
 		if ( ec.m_UpdateFlag || filter == aFilter)

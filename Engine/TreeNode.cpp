@@ -10,14 +10,14 @@
 
 TreeNode::~TreeNode()
 {
-
+	Engine::GetInstance()->GetEntityManager().ReleaseManager(m_NodeEntityManager);
 	for (s32 i = 0; i < 8; i++)
 	{
 		delete m_Children[i];
 		m_Children[i] = nullptr;
 	}
-	Engine::GetInstance()->GetEntityManager().UnRegisterManager(&m_NodeEntityManager);
 
+	//Engine::GetInstance()->GetEntityManager().UnRegisterManager(&m_NodeEntityManager);
 }
 
 void TreeNode::Initiate(float halfwidth, Octree* octree)
@@ -25,8 +25,11 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 	m_HalfWidth = halfwidth;
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 
-	m_NodeEntityManager.Initiate();
-	Engine::GetInstance()->GetEntityManager().RegisterManager(&m_NodeEntityManager);
+	m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
+	
+	
+	//m_NodeEntityManager.Initiate();
+	//Engine::GetInstance()->GetEntityManager().RegisterManager(&m_NodeEntityManager);
 
 	m_Octree = octree;
 	for (s32 i = 0; i < 8; i++)
@@ -52,7 +55,7 @@ void TreeNode::AddParent(TreeNode* parent_node)
 void TreeNode::AddEntity(TreeDweller* dweller)
 {
 	m_Dwellers.Add(dweller);
-	m_NodeEntityManager.AddEntity(dweller);
+	m_NodeEntityManager->AddEntity(dweller);
 }
 
 void TreeNode::AddEntity(TreeDweller* dweller, s32 node)
@@ -64,7 +67,7 @@ void TreeNode::RemoveEntity(TreeDweller* dweller)
 {
 	dweller->SetFirstNode(nullptr);
 
-	m_NodeEntityManager.RemoveEntity(dweller);
+	//m_NodeEntityManager.RemoveEntity(dweller);
 	m_Dwellers.RemoveCyclic(dweller);
 }
 
@@ -80,10 +83,7 @@ void TreeNode::Update(float dt)
 
 	RenderBox();
 
-	Engine::GetInstance()->GetEntityManager().SetActiveNodeManager(&m_NodeEntityManager);
-	m_NodeEntityManager.Update(dt);
-
-	//const EntityList& entities = m_NodeEntityManager.GetEntities(CreateFilter<Requires<TranslationComponent>>());
+	m_NodeEntityManager->Update(dt);
 
 	for (TreeDweller* dweller : m_Dwellers)
 	{

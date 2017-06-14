@@ -1,13 +1,11 @@
 #pragma once
 #include "BaseSystem.h"
 
-
 class Synchronizer;
-class EntityManager;
 class RenderSystem : public BaseSystem
 {
 public:
-	RenderSystem(EntityManager& anEntityManager);
+	RenderSystem(NodeEntityManager& anEntityManager);
 
 	void Update(float dt) override;
 

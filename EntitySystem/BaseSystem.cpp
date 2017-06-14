@@ -1,16 +1,14 @@
 #include "BaseSystem.h"
-
-#include "../Engine/NodeEntityManager.h"
 #include "../Engine/Engine.h"
-BaseSystem::BaseSystem(EntityManager& anEntityManager)
-	: myEntityManager(anEntityManager)
+
+BaseSystem::BaseSystem(NodeEntityManager& anEntityManager)
+	: m_Manager(anEntityManager)
 	, m_Engine(Engine::GetInstance())
 {
 }
 
-
-BaseSystem::BaseSystem(EntityManager& anEntityManager, const SComponentFilter& aFilter)
-	: myEntityManager(anEntityManager)
+BaseSystem::BaseSystem(NodeEntityManager& anEntityManager, const ComponentFilter& aFilter)
+	: m_Manager(anEntityManager)
 	, myFilter(aFilter)
 	, m_Engine(Engine::GetInstance())
 {
@@ -18,13 +16,9 @@ BaseSystem::BaseSystem(EntityManager& anEntityManager, const SComponentFilter& a
 
 BaseSystem::~BaseSystem() = default;
 
-bool BaseSystem::HasFinished()
-{
-	return myHasFinished;
-}
-
 const CU::GrowingArray<Entity>& BaseSystem::GetEntities()
 {
+	return m_Manager.GetEntities(myFilter);
 	//return myEntityManager.GetEntities(myFilter);
-	return myEntityManager.GetNodeManager()->GetEntities(myFilter);
+	//myEntityManager.GetNodeManager()->GetEntities(myFilter);
 }

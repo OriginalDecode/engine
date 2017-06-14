@@ -40,7 +40,6 @@ void Octree::Update(float dt)
 	m_Root.Update(dt);
 }
 
-#define MAX_DEPTH 5
 void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 {
 	TreeNode* remve_from = dweller->GetFirstNode();

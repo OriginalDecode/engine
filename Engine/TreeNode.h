@@ -1,7 +1,7 @@
 #pragma once
 #include "engine_shared.h"
-#include <DataStructures/GrowingArray.h>
-#include <Math/Vector/Vector.h>
+#include "../CommonLib/DataStructures/GrowingArray.h"
+#include "../CommonLib/Math/Vector/Vector.h"
 #include "NodeEntityManager.h"
 
 class Synchronizer;
@@ -38,7 +38,7 @@ public:
 	void ToggleNodeVisibility() { m_RenderBox = !m_RenderBox; }
 	
 	
-	NodeEntityManager& GetManager() { return m_NodeEntityManager; }
+	NodeEntityManager* GetManager() { return m_NodeEntityManager; }
 private:
 	void RenderBox();
 	bool m_RenderBox = false;
@@ -51,7 +51,7 @@ private:
 	TreeNode* m_Parent = nullptr;
 	TreeNode* m_Children[8];
 
-	NodeEntityManager m_NodeEntityManager;
+	NodeEntityManager* m_NodeEntityManager;
 	CU::GrowingArray<TreeDweller*> m_Dwellers;
 	CU::Vector3f m_CenterPosition;
 

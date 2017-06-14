@@ -7,24 +7,34 @@
 #define TRUE 1
 #define FALSE 0
 
+
 void EntityManager::Initiate()
 {
-	mySystems.ReInit(16);
-	myFinishedSystems.reset();
-	for ( int i = 0; i < MAX_COMPONENTS_COUNT; i++ )
+	//mySystems.ReInit(16);
+	myComponents = new CComponentContainer(true);
+	
+	
+	m_NodeManagers.Init(m_MaxNodeCount); //should be a continous block of memory?
+	for (s32 i = 0; i < m_MaxNodeCount; i++)
 	{
-		myFinishedSystems[i] = TRUE;
+		m_NodeManagers.Add(new NodeEntityManager);
 	}
 
-	myComponents = new CComponentContainer(true);
 }
 
 void EntityManager::CleanUp()
 {
-	for ( BaseSystem* system : mySystems )
+	//for ( BaseSystem* system : mySystems )
+	//{
+	//	SAFE_DELETE(system);
+	//}
+
+	for (NodeEntityManager* manager : m_NodeManagers)
 	{
-		SAFE_DELETE(system);
+		manager->CleanUp();
+		SAFE_DELETE(manager);
 	}
+
 	SAFE_DELETE(myComponents);
 }
 
@@ -45,7 +55,7 @@ void EntityManager::Clear()
 
 void EntityManager::Update(float aDelta)
 {
-	myDeltaTime = aDelta;
+	/*myDeltaTime = aDelta;
 
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for ( Entity e : entities )
@@ -62,13 +72,13 @@ void EntityManager::Update(float aDelta)
 	}
 
 
-	for ( BaseSystem* system : mySystems )
+	for ( BaseSystem* system :  )
 	{
 		system->Update(myDeltaTime);
-	}
+	}*/
 }
 
-const CU::GrowingArray<Entity>& EntityManager::GetEntities(SComponentFilter aFilter)
+const CU::GrowingArray<Entity>& EntityManager::GetEntities(ComponentFilter aFilter)
 {
 	return myComponents->GetEntities(aFilter);
 }
@@ -83,47 +93,51 @@ float EntityManager::GetDeltaTime()
 	return myDeltaTime;
 }
 
-bool EntityManager::HasComponent(Entity e, SComponentFilter& filter)
+bool EntityManager::HasComponent(Entity e, ComponentFilter& filter)
 {
 	return myComponents->HasComponent(e, filter);
 }
 
-void EntityManager::RegisterManager(NodeEntityManager* manager)
+NodeEntityManager* EntityManager::RequestManager()
 {
-	m_RegisteredManagers.Add(manager);
-}
-
-void EntityManager::UnRegisterManager(NodeEntityManager* manager)
-{
-	m_RegisteredManagers.RemoveCyclic(manager);
-}
-
-NodeEntityManager* EntityManager::GetManager(s32 index)
-{
-	for (s32 i = 0; i < m_RegisteredManagers.Size(); i++)
+	for (s32 i = 0; i < m_MaxNodeCount; i++)
 	{
-		if ( m_RegisteredManagers[i]->GetId() == index )
+		if (m_Systems[i] == 0)
 		{
-			return m_RegisteredManagers[i];
+			m_Systems[i] = 1;
+			return m_NodeManagers[i];
 		}
 	}
-	//emit warning
+	DL_ASSERT("No free managers found, error!");
 	return nullptr;
 }
 
-bool EntityManager::IsSystemsFinished()
+void EntityManager::ReleaseManager(NodeEntityManager* manager)
 {
-	int count = 0;
-	for ( int i = 0; i < mySystems.Size(); i++ )
-	{
-		if ( mySystems[i]->HasFinished() == true )
-		{
-			count++;
-		}
-	}
+	const s32 index = m_NodeManagers.Find(manager);
+	m_Systems[index] = 0;
 
-	if ( count < mySystems.Size() )
-		return false;
-
-	return true;
 }
+
+//void EntityManager::RegisterManager(NodeEntityManager* manager)
+//{
+//	m_RegisteredManagers.Add(manager);
+//}
+//
+//void EntityManager::UnRegisterManager(NodeEntityManager* manager)
+//{
+//	m_RegisteredManagers.RemoveCyclic(manager);
+//}
+//
+//NodeEntityManager* EntityManager::GetManager(s32 index)
+//{
+//	for (s32 i = 0; i < m_RegisteredManagers.Size(); i++)
+//	{
+//		if ( m_RegisteredManagers[i]->GetId() == index )
+//		{
+//			return m_RegisteredManagers[i];
+//		}
+//	}
+//	//emit warning
+//	return nullptr;
+//}

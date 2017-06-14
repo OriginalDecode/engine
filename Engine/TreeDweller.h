@@ -1,8 +1,8 @@
 #pragma once
 #include "engine_shared.h"
 #include "../EntitySystem/BaseComponent.h"
-#include <DataStructures/GrowingArray.h>
-#include <Math/Vector/Vector.h>
+#include "../CommonLib/DataStructures/GrowingArray.h"
+#include "../CommonLib/Math/Vector/Vector.h"
 class TreeNode;
 struct ComponentPair
 {

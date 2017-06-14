@@ -11,7 +11,7 @@
 #include "../Engine/Synchronizer.h"
 #include "../Engine/RenderCommand.h"
 
-PhysicsSystem::PhysicsSystem(EntityManager& anEntityManager)
+PhysicsSystem::PhysicsSystem(NodeEntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, PhysicsComponent>>())
 {
 	myPhysicsManager = Engine::GetInstance()->GetPhysicsManager();

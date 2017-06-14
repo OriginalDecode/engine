@@ -3,28 +3,28 @@
 #include "TypeID.h"
 
 template<typename... Args>
-struct STypeList { };
+struct TypeList { };
 
 template<typename... Args>
-struct Requires : STypeList<Args...> { };
+struct Requires : TypeList<Args...> { };
 
 template<typename... Args>
-struct Excludes : STypeList<Args...> { };
+struct Excludes : TypeList<Args...> { };
 
 template<typename... Args>
-static void Types(EntityComponentArray&, STypeList<Args...>) { };
+static void Types(EntityComponentArray&, TypeList<Args...>) { };
 
 template<typename T, typename... Args>
-static void Types(EntityComponentArray& someComponents, STypeList<T, Args...>)
+static void Types(EntityComponentArray& someComponents, TypeList<T, Args...>)
 {
 	someComponents[CTypeID<BaseComponent>::GetID<T>()] = 1;
-	Types(someComponents, STypeList<Args...>());
+	Types(someComponents, TypeList<Args...>());
 };
 
-struct SComponentFilter
+struct ComponentFilter
 {
 public:
-	SComponentFilter()
+	ComponentFilter()
 	{
 		for (int i = 0; i < MAX_COMPONENTS_COUNT; i++)
 		{
@@ -33,18 +33,15 @@ public:
 		}
 	}
 
-	SComponentFilter(const EntityComponentArray& requiredComponents, const EntityComponentArray& excludedComponents)
+	ComponentFilter(const EntityComponentArray& requiredComponents, const EntityComponentArray& excludedComponents)
 		: myRequires(requiredComponents)
 		, myExcludes(excludedComponents)
 	{
 	}
 
-	bool operator==(const SComponentFilter& other)
+	bool operator==(const ComponentFilter& other)
 	{
-		if ( this->myRequires == other.myRequires )
-			return true;
-
-		return false;
+		return ((*this).myRequires == other.myRequires);
 	}
 
 	
@@ -70,7 +67,7 @@ private:
 };
 
 template<typename RequireList, typename ExcludeList = Excludes<>>
-SComponentFilter CreateFilter()
+ComponentFilter CreateFilter()
 {
 	EntityComponentArray requires;
 	EntityComponentArray excludes;
@@ -84,6 +81,6 @@ SComponentFilter CreateFilter()
 	Types(requires, RequireList{});
 	Types(excludes, ExcludeList{});
 
-	return SComponentFilter(requires, excludes);
+	return ComponentFilter(requires, excludes);
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "ComponentFilter.h"
+#include "NodeEntityManager.h"
 #include "EntityManager.h"
 #include <Utilities.h>
 
@@ -8,14 +9,11 @@ class Engine;
 class BaseSystem
 {
 public:
-	BaseSystem(EntityManager& anEntityManager);
-	BaseSystem(EntityManager& anEntityManager, const SComponentFilter& aFilter);
+	BaseSystem(NodeEntityManager& anEntityManager);
+	BaseSystem(NodeEntityManager& anEntityManager, const ComponentFilter& aFilter);
 	virtual ~BaseSystem() = 0;
 
 	virtual void Update(float aDeltaTime) = 0;
-
-	bool HasFinished();
-
 	const CU::GrowingArray<Entity>& GetEntities();
 
 	template<typename T>
@@ -25,12 +23,8 @@ private:
 	void operator=(BaseSystem&) = delete;
 
 protected:
-	bool myHasFinished = false;
-	SComponentFilter myFilter;
-
-	EntityManager& myEntityManager;
-	Ticket_Mutex m_Mutex;
-	s32 m_CurrentFrame = 0;
+	ComponentFilter myFilter;
+	NodeEntityManager& m_Manager;
 	Engine* m_Engine = nullptr;
 	
 };
@@ -38,6 +32,6 @@ protected:
 template<typename T>
 T& BaseSystem::GetComponent(Entity anEntity)
 {
-	return myEntityManager.GetComponent<T>(anEntity);
+	return m_Manager.GetComponent<T>(anEntity);
 }
 

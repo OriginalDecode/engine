@@ -19,7 +19,7 @@
 #include <TreeDweller.h>
 #include <GizmoBase.h>
 #include <Engine/Model.h>
-DebugSystem::DebugSystem(EntityManager& entity_manager)
+DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
@@ -47,7 +47,7 @@ void DebugSystem::Update(float /*dt*/)
 
 
 //#ifdef _EDITOR
-		if (myEntityManager.HasComponent(e, CreateFilter<Requires<RenderComponent>>()))
+		if (m_Manager.HasComponent(e, CreateFilter<Requires<RenderComponent>>()))
 		{
 			RenderComponent& r = GetComponent<RenderComponent>(e);
 			Model* m = Engine::GetInstance()->GetModel(r.myModelID);

@@ -36,13 +36,13 @@ void Game::InitState(StateStack* state_stack)
 
 	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel("Data/Levels/level_01.level");
 	m_World.AddDwellers(dwellers);
-
-	m_Player = new TreeDweller;
-	m_Player->Initiate(m_Engine->GetEntityManager().CreateEntity(), TreeDweller::eType::DYNAMIC);
-	m_Engine->GetEntityManager().AddComponent<TranslationComponent>(m_Player->GetEntity());
-	TranslationComponent& translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
-	m_Player->AddComponent(&translation, TreeDweller::TRANSLATION | TreeDweller::DEBUG);
-	m_World.AddDweller(m_Player);
+// 
+// 	m_Player = new TreeDweller;
+// 	m_Player->Initiate(m_Engine->GetEntityManager().CreateEntity(), TreeDweller::eType::DYNAMIC);
+// 	m_Engine->GetEntityManager().AddComponent<TranslationComponent>(m_Player->GetEntity());
+// 	TranslationComponent& translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
+// 	m_Player->AddComponent(&translation, TreeDweller::TRANSLATION | TreeDweller::DEBUG);
+// 	m_World.AddDweller(m_Player);
 
 	m_Picker = new CMousePicker;
 

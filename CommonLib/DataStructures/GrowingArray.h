@@ -39,7 +39,7 @@ namespace CommonUtilities
 		inline void DeleteAll();
 		inline int Capacity();
 
-		bool Empty() { return (mySize <= 0); }
+		bool Empty() const { return (mySize <= 0); }
 
 		void Optimize();
 

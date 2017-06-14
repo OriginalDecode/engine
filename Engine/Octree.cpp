@@ -23,7 +23,6 @@ void Octree::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
 	}
 }
 
-
 void Octree::AddDweller(TreeDweller* dweller)
 {
 	MoveDown(&m_Root, dweller, m_Root.GetDepth() + 1);
@@ -117,9 +116,7 @@ void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 			child->SetDepth(depth);
 			float new_halfwidth = node->GetHalfWidth() / 2.f;
 			child->Initiate(new_halfwidth, this);
-
 		}
-
 		MoveDown(node->GetChildByIndex(index), dweller, depth + 1);
 	}
 	else
@@ -129,12 +126,22 @@ void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 	
 }
 
-void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 /*depth*/)
+void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth)
 {
 	assert(!dweller->GetFirstNode() && "You fucked up!");
+
 	node->AddEntity(dweller);
 	dweller->SetFirstNode(node);
-	dweller->SetDepth(node->GetDepth());
+	dweller->SetDepth(depth);
+}
+
+void Octree::RemoveDweller(TreeNode* node, TreeDweller* dweller)
+{
+	TreeNode* parent = node->GetParent();
+	if (parent)
+		RemoveDweller(parent, dweller);
+
+	node->RemoveEntity(dweller);
 }
 
 TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 index)
@@ -188,8 +195,8 @@ TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 in
 void Octree::MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth)
 {
 	assert(depth >= 0 && "MoveUp : Depth was lower than 0?");
-	TreeNode* parent = node->GetParent();
 	node->RemoveEntity(dweller);
+	TreeNode* parent = node->GetParent();
 	if (parent && !node->InsideNode(dweller))
 	{
 		MoveUp(parent, dweller, depth - 1);

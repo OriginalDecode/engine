@@ -18,6 +18,7 @@ void NodeEntityManager::CleanUp()
 
 void NodeEntityManager::AddEntity(TreeDweller* entity)
 {
+	assert(entity->GetEntity() >= 0 && "entity was less than 0");
 	m_Entities.Add(entity);
 	ComponentList& list = entity->GetComponentPairList();
 	Entity id = entity->GetEntity();
@@ -41,7 +42,7 @@ void NodeEntityManager::RemoveEntity(TreeDweller* entity)
 
 void NodeEntityManager::Update(float dt)
 {
-	const CU::GrowingArray<Entity>& entities = GetEntities(CreateFilter<Requires<TranslationComponent>>());
+	/*const CU::GrowingArray<Entity>& entities = GetEntities(myFilter);
 	if (entities.Size() > 0)
 	{
 		for (Entity e : entities)
@@ -57,7 +58,7 @@ void NodeEntityManager::Update(float dt)
 					m_Components.SetUpdateFlag(e, false);
 			}
 		}
-	}
+	}*/
 	for (BaseSystem* system : m_Systems)
 	{
 		system->Update(dt);

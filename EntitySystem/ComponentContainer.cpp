@@ -57,12 +57,12 @@ void CComponentContainer::AddComponent(Entity anEntity, BaseComponent* aComponen
 BaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int aComponentID)
 {
 	/*Error Handling*/
-	
 	for ( EntityComponent& ec : myEntityComponents )
 	{
 		if ( ec.m_Entity == anEntity )
 		{
-			int componentIndex = ec.m_EntityArray[aComponentID];
+			s32 componentIndex = ec.m_EntityArray[aComponentID];
+			DL_ASSERT_EXP(myComponents[aComponentID][componentIndex], "Component is null!");
 			return *myComponents[aComponentID][componentIndex];
 		}
 	}
@@ -83,15 +83,25 @@ void CComponentContainer::SetUpdateFlag(Entity entity, bool flag)
 
 void CComponentContainer::RemoveComponent(Entity entity, BaseComponent* component, u32 component_id)
 {
-	for ( EntityComponent& ec : myEntityComponents )
+	if (myEntityComponents.Empty())
+		return;
+
+	s32 to_remove = -1;
+	for ( s32 i = 0; i < myEntityComponents.Size(); i++)
 	{
+		EntityComponent& ec = myEntityComponents[i];
 		if ( ec.m_Entity == entity )
 		{
 			ec.m_EntityArray[component_id]--;
 			myComponents[component_id].RemoveCyclic(component);
+			to_remove = i;
 			break;
 		}
 	}
+
+	myEntityComponents.RemoveCyclicAtIndex(to_remove);
+
+
 }
 
 bool CComponentContainer::HasComponent(Entity e, ComponentFilter filter)
@@ -112,14 +122,14 @@ bool CComponentContainer::HasComponent(Entity e, ComponentFilter filter)
 const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(ComponentFilter aFilter)
 {
 	myEntitiesToReturn.RemoveAll();
-	/*for (int i = 0; i < myEntityComponents.Size(); i++)
+	for (int i = 0; i < myEntityComponents.Size(); i++)
 	{
-		if (aFilter.Compare(myEntityComponents[i]) == true)
+		if (aFilter.Compare(myEntityComponents[i].m_EntityArray) == true)
 		{
 			myEntitiesToReturn.Add(i);
 		}
-	}*/
-	ComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
+	}
+	/*ComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
 	for ( const EntityComponent& ec : myEntityComponents )
 	{
 		if ( ec.m_UpdateFlag || filter == aFilter)
@@ -129,7 +139,7 @@ const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(ComponentFilter
 				myEntitiesToReturn.Add(ec.m_Entity);
 			}
 		}
-	}
+	}*/
 	return myEntitiesToReturn;
 }
 

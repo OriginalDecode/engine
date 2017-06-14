@@ -33,6 +33,8 @@ void RenderSystem::Update(float /*dt*/)
 	EASY_FUNCTION(profiler::colors::Blue);
 #endif
 	const CU::GrowingArray<Entity>& entities = GetEntities();
+	if (entities.Empty())
+		return;
 #ifdef _PROFILE
 	EASY_BLOCK("Render : Entity Loop");
 #endif

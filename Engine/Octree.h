@@ -3,7 +3,7 @@
 #include "TreeNode.h"
 #include "TreeDweller.h"
 #include <TimeManager.h>
-#define MAX_DEPTH 5
+#define MAX_DEPTH 2
 class Octree
 {
 	friend TreeNode;
@@ -20,6 +20,9 @@ private:
 
 	void MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth);
 	void InsertDweller(TreeNode* node, TreeDweller* dweller, s32 depth);
+
+	void RemoveDweller(TreeNode* node, TreeDweller* dweller);
+
 
 	TreeNode* CreateNode(const CU::Vector3f& center, float halfwidth, s32 index);
 	void MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth);

@@ -299,6 +299,7 @@ void DebugSystem::UpdateOBBs()
 //This needs to be optimized as hell.
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
+	return;
 	UpdateOBBs();
 
 

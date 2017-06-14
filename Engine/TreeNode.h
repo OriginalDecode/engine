@@ -39,13 +39,14 @@ public:
 	
 	
 	NodeEntityManager* GetManager() { return m_NodeEntityManager; }
+	
 private:
 	void RenderBox();
 	bool m_RenderBox = false;
 
 	Octree* m_Octree = nullptr;
 	bool m_Paused = false;
-
+	volatile bool m_IsDone = false;
 	float m_HalfWidth = 0.f;
 
 	TreeNode* m_Parent = nullptr;

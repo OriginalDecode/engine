@@ -78,6 +78,7 @@ void TreeNode::SetPosition(CU::Vector3f position)
 
 void TreeNode::Update(float dt)
 {
+	m_IsDone = false;
 	if (m_Paused)
 		return;
 
@@ -132,8 +133,43 @@ void TreeNode::Update(float dt)
 		if (!node)
 			continue;
 
-		node->Update(dt);
+		if (m_Depth == 0)
+		{
+			Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
+				node->Update(dt); }));
+		}
+		else
+		{
+			node->Update(dt);
+		}
 	}
+
+
+
+	if (m_Depth == 0)
+	{
+		while (!m_IsDone)
+		{
+			m_IsDone = false;
+			for (s32 i = 0; i < 8; i++)
+			{
+				TreeNode* child = m_Children[i];
+				if (child)
+				{
+					if (!child->m_IsDone)
+						break;
+					else
+						m_IsDone = true;
+				}
+					
+			}
+		}
+	}
+	else
+	{
+		m_IsDone = true;
+	}
+
 }
 
 TreeNode* TreeNode::GetChildByIndex(s32 index)

@@ -123,12 +123,12 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
 	
-	CU::Vector3f new_pos = pos;
-	new_pos.y += 5.f;
-	new_pos.x += 400.f;
-	new_pos.z += 400.f;
+ 	CU::Vector3f new_pos = pos;
+ 	new_pos.y += 5.f;
+ 	new_pos.x += 400.f;
+ 	new_pos.z += 400.f;
   
-	component.myOrientation.SetPosition(new_pos);
+ 	component.myOrientation.SetPosition(new_pos);
  
 
 	m_DwellerList.GetLast()->Initiate(e, TreeDweller::STATIC);
@@ -215,7 +215,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
 		el["shader"].GetString(),
-		true);
+		false);
 
 
 	if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
@@ -255,7 +255,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
 		el["shader"].GetString(),
-		true);
+		false);
 	component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
 	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 

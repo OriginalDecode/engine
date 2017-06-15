@@ -83,10 +83,11 @@ void TreeNode::Update(float dt)
 
 	RenderBox();
 
+	m_NodeEntityManager->Update(dt);
 
 	for (TreeDweller* dweller : m_Dwellers)
 	{
-		if (dweller->GetType() == TreeDweller::eType::STATIC)
+		if ( dweller->GetType() == TreeDweller::eType::STATIC )
 			continue;
 
 		bool found = false;
@@ -109,18 +110,19 @@ void TreeNode::Update(float dt)
 
 	if (m_Dwellers.Empty())
 	{
-		if (!SubNodeContainsDwellers() && m_Parent)
+		if (!SubNodeContainsDwellers())
 		{
-
-			for (s32 i = 0; i < 8; i++)
+			if (m_Parent)
 			{
-				if (m_Parent->GetChildByIndex(i) == this)
+				for (s32 i = 0; i < 8; i++)
 				{
-					m_Parent->AddChild(nullptr, i);
-					m_Octree->ToDelete(this);
-					return;
+					if (m_Parent->GetChildByIndex(i) == this)
+					{
+						m_Parent->AddChild(nullptr, i);
+						m_Octree->ToDelete(this);
+						return;
+					}
 				}
-
 			}
 		}
 	}
@@ -130,20 +132,19 @@ void TreeNode::Update(float dt)
 		if (!node)
 			continue;
 
-		/*if (m_Depth == 0)
+		if (m_Depth == 0)
 		{
 			m_Pool.AddWork(Work([=]() { node->Update(dt); }));
 		}
 		else
-		{*/
+		{
 			node->Update(dt);
-		//}
+		}
 	}
 
-	m_NodeEntityManager->Update(dt);
 
-	//IsDone();
-
+	IsDone();
+	
 
 }
 
@@ -188,16 +189,16 @@ void TreeNode::RenderBox()
 
 	switch (m_Depth)
 	{
-	case 0:
+		case 0:
 		points[0].color = RED;
 		break;
-	case 1:
+		case 1:
 		points[0].color = GREEN;
 		break;
-	case 2:
+		case 2:
 		points[0].color = BLUE;
 		break;
-	case 3:
+		case 3:
 		points[0].color = YELLOW;
 		break;
 	}

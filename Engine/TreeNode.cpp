@@ -27,9 +27,10 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 
 	m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
 	
-	if(m_Depth == 0)
-		m_Pool.Initiate();
-
+	if (m_Depth == 0)
+	{
+		m_Pool.Initiate("RootNode - Worker");
+	}
 	//m_NodeEntityManager.Initiate();
 	//Engine::GetInstance()->GetEntityManager().RegisterManager(&m_NodeEntityManager);
 
@@ -272,26 +273,26 @@ void TreeNode::RenderBox()
 	points[7].position.y = m_CenterPosition.y + m_HalfWidth;
 
 
-	/*
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[0], points[1]));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[0], points[2]));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[0], points[6]));
+	
+	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[1], true));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[2], true));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[6], true));
 
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[1], points[3]));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[1], points[7]));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[1], points[3], true));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[1], points[7], true));
 
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[3], points[5]));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[5], points[7]));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[3], points[5], true));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[5], points[7], true));
 
 
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[6], points[4]));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[2], points[4]));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[4], true));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[4], true));
 
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[4], points[5]));
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[2], points[3]));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[4], points[5], true));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[3], true));
 
-	m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, points[6], points[7]));
-	*/
+	m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[7], true));
+	
 }
 
 bool TreeNode::InsideNode(TreeDweller* dweller)

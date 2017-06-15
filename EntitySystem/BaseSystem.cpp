@@ -19,6 +19,4 @@ BaseSystem::~BaseSystem() = default;
 const CU::GrowingArray<Entity>& BaseSystem::GetEntities()
 {
 	return m_Manager.GetEntities(myFilter);
-	//return myEntityManager.GetEntities(myFilter);
-	//myEntityManager.GetNodeManager()->GetEntities(myFilter);
 }

@@ -15,10 +15,12 @@ Worker::~Worker()
 	myIsRunning = false;
 }
 
-void Worker::Initiate()
+void Worker::Initiate(const std::string& debug_name)
 {
 	myWorkThread = new std::thread([&] {Run(); });
-	CL::SetThreadName(myWorkThread->get_id(), "Worker Thread");
+#ifdef _DEBUG
+	CL::SetThreadName(myWorkThread->get_id(), debug_name.c_str());
+#endif
 }
 
 bool Worker::IsDone()

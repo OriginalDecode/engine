@@ -12,7 +12,7 @@ public:
 	Worker();
 	~Worker();
 
-	void Initiate();
+	void Initiate(const std::string& debug_name );
 
 	bool IsDone();
 	void AddWork(const Work& aWorkOrder);

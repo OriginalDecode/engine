@@ -2,9 +2,10 @@
 #include <thread>
 #define FOR_EACH(_array) for (int i = 0; i < _array; i++)
 
-void Threadpool::Initiate()
+void Threadpool::Initiate(const std::string& debug_name)
 {
 	myWorkers.ReInit(1);
+
 	for (unsigned int i = 0; i < std::thread::hardware_concurrency(); i++)
 	{
 		Worker worker;
@@ -14,7 +15,9 @@ void Threadpool::Initiate()
 
 	for (unsigned int i = 0; i < std::thread::hardware_concurrency(); i++)
 	{
-		myWorkers[i].Initiate();
+		std::stringstream ss;
+		ss << debug_name << i;
+		myWorkers[i].Initiate(ss.str());
 	}
 }
 

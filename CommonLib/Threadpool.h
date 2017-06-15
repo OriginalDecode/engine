@@ -8,7 +8,7 @@ class Threadpool
 public:
 	Threadpool() = default;
 
-	void Initiate();
+	void Initiate(const std::string& debug_name);
 	void Update();
 	void AddWork(Work aWorkOrder);
 	void CleanUp();

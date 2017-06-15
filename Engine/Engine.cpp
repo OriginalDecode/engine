@@ -160,7 +160,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	m_PhysicsManager = new PhysicsManager;
 
-	m_Threadpool.Initiate();
+	m_Threadpool.Initiate("Engine - Worker");
 
 
 
@@ -173,10 +173,10 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 #endif
 	m_EntityManager.AddSystem<RenderSystem>();
 	m_EntityManager.AddSystem<LightSystem>();
-	m_EntityManager.AddSystem<InputSystem>();
-	m_EntityManager.AddSystem<NetworkSystem>();
+	//m_EntityManager.AddSystem<InputSystem>();
+	//m_EntityManager.AddSystem<NetworkSystem>();
 #ifndef _EDITOR
-	m_EntityManager.AddSystem<AISystem>();
+	//m_EntityManager.AddSystem<AISystem>();
 #endif 
 
 	//m_EntityManager.AddSystem<CameraSystem>();

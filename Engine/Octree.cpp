@@ -34,6 +34,7 @@ void Octree::Update(float dt)
 	for (TreeNode* node : m_GarbageNodes)
 	{
 		delete node;
+		node = nullptr;
 		node_count--;
 	}
 	m_GarbageNodes.RemoveAll();
@@ -112,9 +113,8 @@ void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 	{
 		if (!node->GetChildByIndex(index))
 		{
-			TreeNode* child = CreateNode(node->GetPosition(), node->GetHalfWidth(), index);
+			TreeNode* child = CreateNode(node->GetPosition(), node->GetHalfWidth(), index, depth);
 			node->AddChild(child, index);
-			child->SetDepth(depth);
 		}
 
 		MoveDown(node->GetChildByIndex(index), dweller, depth + 1);
@@ -134,7 +134,7 @@ void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 /*depth*/)
 	dweller->SetDepth(node->GetDepth());
 }
 
-TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 index)
+TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 index, s32 depth)
 {
 	node_count++;
 	CU::Vector3i dir;
@@ -177,6 +177,7 @@ TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 in
 	pos.z += dir.z * new_halfwidth;
 
 	TreeNode* node = new TreeNode;
+	node->SetDepth(depth);
 	node->Initiate(new_halfwidth, this);
 	node->SetPosition(pos);
 

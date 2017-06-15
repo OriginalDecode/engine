@@ -3,7 +3,6 @@
 #include "../CommonLib/DataStructures/GrowingArray.h"
 #include "../CommonLib/Math/Vector/Vector.h"
 #include "NodeEntityManager.h"
-#include <CommonLib/Threadpool.h>
 
 class Synchronizer;
 class Octree;
@@ -40,9 +39,8 @@ public:
 	
 	
 	NodeEntityManager* GetManager() { return m_NodeEntityManager; }
-	void IsDone();
+	
 private:
-	Threadpool m_Pool;
 	void RenderBox();
 	bool m_RenderBox = false;
 

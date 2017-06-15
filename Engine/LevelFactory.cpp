@@ -215,7 +215,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
 		el["shader"].GetString(),
-		false);
+		true);
 
 
 	if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
@@ -255,7 +255,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.myModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
 		el["shader"].GetString(),
-		false);
+		true);
 	component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
 	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 

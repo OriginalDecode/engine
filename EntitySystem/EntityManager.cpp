@@ -17,8 +17,7 @@ void EntityManager::Initiate()
 	m_NodeManagers.Init(m_MaxNodeCount); //should be a continous block of memory?
 	for (s32 i = 0; i < m_MaxNodeCount; i++)
 	{
-		NodeEntityManager * nem = new NodeEntityManager;
-		m_NodeManagers.Add(nem);
+		m_NodeManagers.Add(new NodeEntityManager);
 	}
 
 }

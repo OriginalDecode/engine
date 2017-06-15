@@ -16,21 +16,22 @@ TreeNode::~TreeNode()
 		delete m_Children[i];
 		m_Children[i] = nullptr;
 	}
-	if (m_Depth == 0)
-		m_Pool.CleanUp();
+
 	//Engine::GetInstance()->GetEntityManager().UnRegisterManager(&m_NodeEntityManager);
 }
 
 void TreeNode::Initiate(float halfwidth, Octree* octree)
 {
-	m_Octree = octree;
-	if (m_Depth == 0)
-		m_Pool.Initiate();
 	m_HalfWidth = halfwidth;
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 
 	m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
+	
+	
+	//m_NodeEntityManager.Initiate();
+	//Engine::GetInstance()->GetEntityManager().RegisterManager(&m_NodeEntityManager);
 
+	m_Octree = octree;
 	for (s32 i = 0; i < 8; i++)
 	{
 		m_Children[i] = nullptr;
@@ -66,7 +67,7 @@ void TreeNode::RemoveEntity(TreeDweller* dweller)
 {
 	dweller->SetFirstNode(nullptr);
 
-	m_NodeEntityManager->RemoveEntity(dweller);
+	//m_NodeEntityManager.RemoveEntity(dweller);
 	m_Dwellers.RemoveCyclic(dweller);
 }
 
@@ -134,7 +135,8 @@ void TreeNode::Update(float dt)
 
 		if (m_Depth == 0)
 		{
-			m_Pool.AddWork(Work([=]() { node->Update(dt); }));
+			Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
+				node->Update(dt); }));
 		}
 		else
 		{
@@ -143,8 +145,30 @@ void TreeNode::Update(float dt)
 	}
 
 
-	IsDone();
-	
+
+	if (m_Depth == 0)
+	{
+		while (!m_IsDone)
+		{
+			m_IsDone = false;
+			for (s32 i = 0; i < 8; i++)
+			{
+				TreeNode* child = m_Children[i];
+				if (child)
+				{
+					if (!child->m_IsDone)
+						break;
+					else
+						m_IsDone = true;
+				}
+					
+			}
+		}
+	}
+	else
+	{
+		m_IsDone = true;
+	}
 
 }
 
@@ -291,34 +315,4 @@ bool TreeNode::InsideNode(TreeDweller* dweller)
 	bool front = cFront >= bFront;
 	bool back = cBack <= bBack;
 	return (left && right && bottom && top && front && back);
-}
-
-void TreeNode::IsDone()
-{
-	if (m_Depth == 0)
-	{
-		while (!m_IsDone)
-		{
-			m_Pool.Update();
-			m_IsDone = false;
-			for (s32 i = 0; i < 8; i++)
-			{
-				TreeNode* child = m_Children[i];
-				if (child)
-				{
-					if (!child->m_IsDone)
-						break;
-					else
-						m_IsDone = true;
-				}
-				else
-					m_IsDone = true;
-
-			}
-		}
-	}
-	else
-	{
-		m_IsDone = true;
-	}
 }

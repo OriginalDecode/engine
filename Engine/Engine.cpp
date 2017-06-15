@@ -166,17 +166,17 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	m_EntityManager.Initiate();
 
-	//m_EntityManager.AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
+	m_EntityManager.AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
 
 #ifndef _EDITOR
-	//m_EntityManager.AddSystem<PhysicsSystem>();
+	m_EntityManager.AddSystem<PhysicsSystem>();
 #endif
 	m_EntityManager.AddSystem<RenderSystem>();
-	//m_EntityManager.AddSystem<LightSystem>();
-	//m_EntityManager.AddSystem<InputSystem>();
-	//m_EntityManager.AddSystem<NetworkSystem>();
+	m_EntityManager.AddSystem<LightSystem>();
+	m_EntityManager.AddSystem<InputSystem>();
+	m_EntityManager.AddSystem<NetworkSystem>();
 #ifndef _EDITOR
-	//m_EntityManager.AddSystem<AISystem>();
+	m_EntityManager.AddSystem<AISystem>();
 #endif 
 
 	//m_EntityManager.AddSystem<CameraSystem>();
@@ -254,8 +254,10 @@ void Engine::Update()
 		myTimeManager.Update();
 		myAssetsContainer->Update();
 	}
-	m_Threadpool.Update();
 	myRenderer->Render();
+
+	m_Threadpool.Update();
+
 }
 
 void Engine::UpdateInput()

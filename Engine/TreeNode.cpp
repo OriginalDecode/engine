@@ -27,7 +27,9 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 
 	m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
 	
-	
+	if(m_Depth == 0)
+		m_Pool.Initiate();
+
 	//m_NodeEntityManager.Initiate();
 	//Engine::GetInstance()->GetEntityManager().RegisterManager(&m_NodeEntityManager);
 
@@ -121,6 +123,7 @@ void TreeNode::Update(float dt)
 					{
 						m_Parent->AddChild(nullptr, i);
 						m_Octree->ToDelete(this);
+						m_IsDone = true;
 						return;
 					}
 				}
@@ -133,12 +136,19 @@ void TreeNode::Update(float dt)
 		if (!node)
 			continue;
 
-// 		if (m_Depth == 0)
-// 		{
-// 			Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
-// 				node->Update(dt); }));
-// 		}
-// 		else
+		if (m_Depth == 0)
+		{
+			m_Pool.AddWork(Work([&]() {
+#ifdef _PROFILE
+				EASY_BLOCK("Node Update");
+#endif
+				node->Update(dt); 
+#ifdef _PROFILE
+				EASY_END_BLOCK;
+#endif
+			}));
+		}
+		else
 		{
 			node->Update(dt);
 		}
@@ -146,10 +156,11 @@ void TreeNode::Update(float dt)
 
 
 
-	/*if (m_Depth == 0)
+	if (m_Depth == 0)
 	{
 		while (!m_IsDone)
 		{
+			m_Pool.Update();
 			m_IsDone = false;
 			for (s32 i = 0; i < 8; i++)
 			{
@@ -161,6 +172,8 @@ void TreeNode::Update(float dt)
 					else
 						m_IsDone = true;
 				}
+				else
+					m_IsDone = true;
 					
 			}
 		}
@@ -168,7 +181,7 @@ void TreeNode::Update(float dt)
 	else
 	{
 		m_IsDone = true;
-	}*/
+	}
 
 }
 
@@ -205,8 +218,8 @@ bool TreeNode::SubNodeContainsDwellers()
 #define YELLOW CU::Vector4f(255.f,255.f,0.f,255.f)
 void TreeNode::RenderBox()
 {
-	if (!m_RenderBox)
-		return;
+	//if (!m_RenderBox)
+		//return;
 
 	SLinePoint points[8];
 

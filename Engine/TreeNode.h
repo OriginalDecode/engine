@@ -3,7 +3,7 @@
 #include "../CommonLib/DataStructures/GrowingArray.h"
 #include "../CommonLib/Math/Vector/Vector.h"
 #include "NodeEntityManager.h"
-
+#include <CommonLib/Threadpool.h>
 class Synchronizer;
 class Octree;
 class TreeDweller;
@@ -43,6 +43,9 @@ public:
 private:
 	void RenderBox();
 	bool m_RenderBox = false;
+
+	Threadpool m_Pool;
+
 
 	Octree* m_Octree = nullptr;
 	bool m_Paused = false;

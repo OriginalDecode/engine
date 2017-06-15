@@ -3,7 +3,7 @@
 #include "TreeNode.h"
 #include "TreeDweller.h"
 #include <TimeManager.h>
-#define MAX_DEPTH 5
+#define MAX_DEPTH 1
 class Octree
 {
 	friend TreeNode;

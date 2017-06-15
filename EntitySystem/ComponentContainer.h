@@ -34,6 +34,7 @@ public:
 private:
 	CU::GrowingArray<ComponentArray> myComponents;
 	CU::GrowingArray<EntityComponent> myEntityComponents;
+
 	CU::GrowingArray<Entity> myEntitiesToReturn;
 	bool m_Owner = false;
 

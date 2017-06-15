@@ -133,12 +133,12 @@ void TreeNode::Update(float dt)
 		if (!node)
 			continue;
 
-		if (m_Depth == 0)
-		{
-			Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
-				node->Update(dt); }));
-		}
-		else
+// 		if (m_Depth == 0)
+// 		{
+// 			Engine::GetInstance()->GetThreadpool().AddWork(Work([&]() {
+// 				node->Update(dt); }));
+// 		}
+// 		else
 		{
 			node->Update(dt);
 		}
@@ -146,7 +146,7 @@ void TreeNode::Update(float dt)
 
 
 
-	if (m_Depth == 0)
+	/*if (m_Depth == 0)
 	{
 		while (!m_IsDone)
 		{
@@ -168,7 +168,7 @@ void TreeNode::Update(float dt)
 	else
 	{
 		m_IsDone = true;
-	}
+	}*/
 
 }
 

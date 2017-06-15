@@ -65,5 +65,5 @@ protected:
 
 	IBuffer* m_InstanceBuffer = nullptr;
 	D3D11_SUBRESOURCE_DATA m_InstanceData;
-	const s32 m_InstanceCount = 250;
+	const s32 m_InstanceCount = 500;
 };

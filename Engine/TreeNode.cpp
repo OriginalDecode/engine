@@ -27,7 +27,7 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 
 	m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
 	
-	if (m_Depth == 0)
+	//if (m_Depth == 0)
 	{
 		m_Pool.Initiate("RootNode - Worker");
 	}
@@ -70,7 +70,7 @@ void TreeNode::RemoveEntity(TreeDweller* dweller)
 {
 	dweller->SetFirstNode(nullptr);
 
-	//m_NodeEntityManager.RemoveEntity(dweller);
+	m_NodeEntityManager->RemoveEntity(dweller);
 	m_Dwellers.RemoveCyclic(dweller);
 }
 
@@ -136,9 +136,9 @@ void TreeNode::Update(float dt)
 		if (!node)
 			continue;
 
-		if (m_Depth == 0)
+		//if (m_Depth == 0)
 		{
-			m_Pool.AddWork(Work([&]() {
+			m_Pool.AddWork(Work([=]() {
 #ifdef _PROFILE
 				EASY_BLOCK("Node Update");
 #endif
@@ -148,17 +148,17 @@ void TreeNode::Update(float dt)
 #endif
 			}));
 		}
-		else
+		/*else
 		{
 			node->Update(dt);
-		}
+		}*/
 	}
 
 
-	while (!m_Pool.CurrentWorkFinished()) //This cannot work if we start work and pop at the same time
+	do
 	{
 		m_Pool.Update();
-	}
+	} while (!m_Pool.CurrentWorkFinished()); //This cannot work if we start work and pop at the same time
 }
 
 TreeNode* TreeNode::GetChildByIndex(s32 index)

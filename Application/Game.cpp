@@ -34,7 +34,7 @@ void Game::InitState(StateStack* state_stack)
 
 	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
 
-	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel("Data/Levels/level_01.json");
+	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel("Data/Levels/level_01.level");
 	m_World.AddDwellers(dwellers);
 
 	m_Player = new TreeDweller;

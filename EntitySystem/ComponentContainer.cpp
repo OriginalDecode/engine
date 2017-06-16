@@ -121,10 +121,10 @@ const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(ComponentFilter
 			myEntitiesToReturn.Add(i);
 		}
 	}*/
-	//ComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
+	ComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
 	for ( const EntityComponent& ec : myEntityComponents )
 	{
-		//if (/* ec.m_UpdateFlag ||*/ filter == aFilter)
+		if ( ec.m_UpdateFlag || filter == aFilter)
 		{
 			if ( aFilter.Compare(ec.m_EntityArray) )
 			{

@@ -519,6 +519,11 @@ void Engine::OnResize()
 		myAPI->OnResize();
 }
 
+Synchronizer* Engine::GetSynchronizer()
+{
+	return mySynchronizer;
+}
+
 const SLocalTime& Engine::GetLocalTime()
 {
 	SYSTEMTIME time;

@@ -40,8 +40,9 @@ void DebugSystem::Update(float /*dt*/)
 	EASY_FUNCTION(profiler::colors::Red);
 #endif
 	const CU::GrowingArray<Entity>& entities = GetEntities();
-	for (Entity e : entities)
+	for (s32 i = 0; i < entities.Size(); i++)
 	{
+		Entity e = entities[i];
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 

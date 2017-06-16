@@ -125,7 +125,7 @@ public:
 
 	//_________________________________________
 	// Get Systems
-	Synchronizer* GetSynchronizer() { return mySynchronizer; }
+	Synchronizer* GetSynchronizer();
 	EntityManager& GetEntityManager() { return m_EntityManager; }
 	PhysicsManager* GetPhysicsManager() { return m_PhysicsManager; }
 	Threadpool& GetThreadpool() { return m_Threadpool; }

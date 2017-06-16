@@ -14,7 +14,7 @@ public:
 
 	void Initiate(const std::string& debug_name );
 
-	bool IsDone();
+	bool IsDone() const;
 	void AddWork(const Work& aWorkOrder);
 	void Stop();
 	void CleanUp();

@@ -50,3 +50,13 @@ void Threadpool::CleanUp()
 		myWorkers[i].CleanUp();
 	}
 }
+
+bool Threadpool::CurrentWorkFinished() const
+{
+	FOR_EACH(myWorkers.Size())
+	{
+		if (!myWorkers[i].IsDone())
+			return false;
+	}
+	return true;
+}

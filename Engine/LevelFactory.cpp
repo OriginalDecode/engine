@@ -57,7 +57,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 {
 	std::string data_path = "Data/Levels/";
 
-	JSONReader entity_reader(data_path + entity_filepath);
+	JSONReader entity_reader(/*data_path + */entity_filepath);
 	Entity e = m_EntityManager->CreateEntity();
 
 	s32 debug_flags = 0;
@@ -128,7 +128,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
  	new_pos.x += 400.f;
  	new_pos.z += 400.f;
   
- 	component.myOrientation.SetPosition(new_pos);
+ 	//component.myOrientation.SetPosition(new_pos);
  
 
 	m_DwellerList.GetLast()->Initiate(e, TreeDweller::STATIC);

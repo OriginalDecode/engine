@@ -36,7 +36,7 @@ void PhysicsSystem::Update(float aDeltaTime)
 			
 			
 		}
-		//myPhysicsManager->Update(myAccumulatedTime); //ASync Physics?
+		//myPhysicsManager->Update(myAccumulatedTime); //ASync Physics? needs to be moved into separete sim thread or something
 		myAccumulatedTime -= 1.f / 60.f;
 	}
 }

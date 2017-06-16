@@ -6,6 +6,8 @@
 #include <EntityManager.h>
 #include <TranslationComponent.h>
 
+s32 NodeEntityManager::m_Identifier = 0;
+
 void NodeEntityManager::Initiate()
 {
 
@@ -42,8 +44,9 @@ void NodeEntityManager::RemoveEntity(TreeDweller* entity)
 void NodeEntityManager::Update(float dt)
 {
 	const CU::GrowingArray<Entity>& entities = GetEntities(CreateFilter<Requires<TranslationComponent>>());
-	for ( Entity e : entities )
+	for (s32 i = 0; i < entities.Size(); i++)
 	{
+		Entity e = entities[i];
 		CameraHandle* handle = CameraHandle::GetInstance();
 		if ( handle)
 		{

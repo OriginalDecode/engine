@@ -5,14 +5,14 @@
 #include "../DL_Debug/DL_Debug.h"
 CComponentContainer::CComponentContainer(bool owner)
 	: myComponents(MAX_COMPONENTS_COUNT)
-	, myEntityComponents(128)
-	, myEntitiesToReturn(128)
+	, myEntityComponents(2048)
+	, myEntitiesToReturn(2048)
 	, m_Owner(owner)
 {
 	for ( int i = 0; i < MAX_COMPONENTS_COUNT; i++ )
 	{
 		myComponents.Add(ComponentArray());
-		myComponents[i].ReInit(128);
+		myComponents[i].ReInit(2048);
 	}
 }
 
@@ -62,7 +62,9 @@ BaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int a
 	{
 		if ( ec.m_Entity == anEntity )
 		{
+			
 			int componentIndex = ec.m_EntityArray[aComponentID];
+			DL_ASSERT_EXP(componentIndex >= 0, "invalid component index!");
 			return *myComponents[aComponentID][componentIndex];
 		}
 	}
@@ -119,10 +121,10 @@ const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(ComponentFilter
 			myEntitiesToReturn.Add(i);
 		}
 	}*/
-	ComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
+	//ComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
 	for ( const EntityComponent& ec : myEntityComponents )
 	{
-		if ( ec.m_UpdateFlag || filter == aFilter)
+		//if (/* ec.m_UpdateFlag ||*/ filter == aFilter)
 		{
 			if ( aFilter.Compare(ec.m_EntityArray) )
 			{

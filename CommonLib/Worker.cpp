@@ -2,6 +2,10 @@
 #include "Work.h"
 #include <thread>
 #include "Utilities.h"
+
+#ifdef _PROFILE
+#include <easy/profiler.h>
+#endif
 Worker::Worker()
 	: myIsDone(true)
 	, myIsRunning(true)
@@ -23,7 +27,7 @@ void Worker::Initiate(const std::string& debug_name)
 #endif
 }
 
-bool Worker::IsDone()
+bool Worker::IsDone() const
 {
 	return myIsDone;
 }
@@ -53,6 +57,9 @@ void Worker::CleanUp()
 
 void Worker::Run()
 {
+#ifdef _PROFILE
+	EASY_THREAD_SCOPE("Worker Thread");
+#endif
 	while (myIsRunning)
 	{
 		while (myIsDone)

@@ -14,7 +14,8 @@ public:
 	void CleanUp();
 	
 	bool HasWork() { return !myWorkOrders.empty(); }
-
+	int GetWorkSize() const { return myWorkOrders.size(); }
+	bool CurrentWorkFinished() const;
 private:
 	std::queue<Work> myWorkOrders;
 	CU::GrowingArray<Worker> myWorkers;

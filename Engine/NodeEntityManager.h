@@ -5,7 +5,10 @@ class BaseSystem;
 class NodeEntityManager
 {
 public:
-	NodeEntityManager() = default;
+	NodeEntityManager()
+	{
+		m_ID = m_Identifier++;
+	}
 	void Initiate();
 	void CleanUp();
 	void AddEntity(TreeDweller* entity);
@@ -26,7 +29,8 @@ public:
 	template<typename T>
 	void AddSystem();
 private:
-	s32 m_Identifier = 0;
+	static s32 m_Identifier;
+	s32 m_ID = 0;
 	CU::GrowingArray<TreeDweller*> m_Entities;
 	CU::GrowingArray<BaseSystem*> m_Systems;
 	CComponentContainer m_Components;

@@ -48,6 +48,7 @@ private:
 	Engine* m_Engine = nullptr;
 	FileWatcher* m_TextureWatcher = nullptr;
 	Ticket_Mutex m_Mutex;
+	Ticket_Mutex m_GetModelMutex;
 	std::unordered_map<std::string, Texture*> myTextures;
 	std::unordered_map<std::string, Effect*> myEffects;
 	std::unordered_map<std::string, Model*> myModels;

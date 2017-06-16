@@ -77,6 +77,7 @@ Effect* AssetsContainer::GetEffect(const std::string& aFilePath)
 
 Model* AssetsContainer::GetModel(const std::string& aFilePath)
 {
+	
 	if (myModels.find(aFilePath) == myModels.end())
 	{
 		DL_MESSAGE("Requested Model : %s", aFilePath.c_str());

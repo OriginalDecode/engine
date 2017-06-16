@@ -27,7 +27,7 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 
 	m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
 	
-	if (m_Depth == 0)
+	if (m_Depth == 0 || m_Depth == 1)
 	{
 		m_Pool.Initiate("RootNode - Worker");
 	}
@@ -136,7 +136,7 @@ void TreeNode::Update(float dt)
 		if (!node)
 			continue;
 
-		if (m_Depth == 0)
+		if (m_Depth == 0 || m_Depth == 1)
 		{
 			m_Pool.AddWork(Work([=]() {
 #ifdef _PROFILE

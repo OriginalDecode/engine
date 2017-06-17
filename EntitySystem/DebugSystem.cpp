@@ -55,6 +55,10 @@ void DebugSystem::Update(float /*dt*/)
 			debug.m_MinPoint = m->GetMinPoint();//r.m_MinPos;
 			debug.m_MaxPoint = m->GetMaxPoint();//r.m_MaxPos;
 
+
+			r.m_MaxPos = CU::Vector3f(debug.m_MaxPoint.x, debug.m_MaxPoint.y, debug.m_MaxPoint.z); 
+			r.m_MinPos = CU::Vector3f(debug.m_MinPoint.x, debug.m_MinPoint.y, debug.m_MinPoint.z);
+
 		}
 		RenderBox(debug, translation.myOrientation);
 //#endif

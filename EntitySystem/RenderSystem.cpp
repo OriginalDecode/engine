@@ -53,18 +53,28 @@ void RenderSystem::Update(float /*dt*/)
 			const CU::Vector4f forward = matrix.GetForward();
 			const CU::Vector4f right = matrix.GetRight();
 			const CU::Vector4f up = matrix.GetUp();
-			CU::Vector4f position = matrix.GetTranslation() + (forward * CU::Vector4f(render.m_MaxPos));
+			const CU::Vector4f translation = matrix.GetTranslation();
 
-			if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
+
+			/* could be improved still, take a matrice instead? */
+			if (Inside(translation, up, render.m_MaxPos))
 				visible = true;
-			
-			position = matrix.GetTranslation() + (right * CU::Vector4f(render.m_MaxPos));
-			if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
+
+			if (Inside(translation, right, render.m_MaxPos))
 				visible = true;
-	
-			position = matrix.GetTranslation() + (up * CU::Vector4f(render.m_MaxPos));
-			if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
+
+			if (Inside(translation, forward, render.m_MaxPos))
 				visible = true;
+
+			if (Inside(translation, up, render.m_MinPos))
+				visible = true;
+
+			if (Inside(translation, right, render.m_MinPos))
+				visible = true;
+
+			if (Inside(translation, forward, render.m_MinPos))
+				visible = true;
+
 		}
 
 #ifdef _PROFILE
@@ -77,9 +87,20 @@ void RenderSystem::Update(float /*dt*/)
 		CU::Matrix44f t = translation.myOrientation;
 		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
 
+		if (render.myModelID.empty())
+			DL_ASSERT("Empty key!");
+
 		mySynchronizer->AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
 	}
 #ifdef _PROFILE
 	EASY_END_BLOCK;
 #endif
+}
+
+bool RenderSystem::Inside(const CU::Vector4f& translation, const CU::Vector4f& direction, const CU::Vector4f& pos)
+{
+	CU::Vector4f position = translation + (direction * pos);
+	if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
+		return true;
+	return false;
 }

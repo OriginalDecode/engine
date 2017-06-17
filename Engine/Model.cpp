@@ -191,6 +191,46 @@ void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matr
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 }
 
+void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+{
+	for (Model* child : myChildren)
+	{
+		child->ShadowRender(camera_orientation, camera_projection, render_context);
+	}
+
+	if (!m_InstanceInputLayout || m_IsRoot || mySurfaces.Empty() || m_Orientations.Empty())
+	{
+		RemoveOrientation();
+		return;
+	}
+
+	u32 offsets[] = {
+		m_VertexBuffer.myByteOffset,
+		0
+	};
+
+	u32 strides[] = {
+		m_VertexBuffer.myStride,
+		sizeof(CU::Matrix44f)
+	};
+
+
+	IBuffer* buffers[] = {
+		m_VertexBuffer.myVertexBuffer,
+		m_InstanceBuffer
+	};
+
+	render_context.m_Context->IASetVertexBuffers(0, ARRAYSIZE(buffers), buffers, strides, offsets);
+	render_context.m_Context->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
+
+	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
+
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+
+	render_context.m_Context->DrawIndexedInstanced(m_IndexData.myIndexCount, m_Orientations.Size(), 0, 0, 0);
+}
+
 void Model::SetPosition(const CU::Vector3f& aPosition)
 {
 	myOrientation.SetPosition(aPosition);

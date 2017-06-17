@@ -16,24 +16,26 @@ TreeNode::~TreeNode()
 		delete m_Children[i];
 		m_Children[i] = nullptr;
 	}
-
-	//Engine::GetInstance()->GetEntityManager().UnRegisterManager(&m_NodeEntityManager);
 }
 
 void TreeNode::Initiate(float halfwidth, Octree* octree)
 {
 	m_HalfWidth = halfwidth;
-	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 
+	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
-	
-	if (m_Depth == 0 || m_Depth == 1)
+
+	CommandAllocator& allocator0 = m_Synchronizer->GetAllocator(eBufferType::MODEL_BUFFER, 0);
+	CommandAllocator& allocator1 = m_Synchronizer->GetAllocator(eBufferType::MODEL_BUFFER, 1);
+	const s32 to_alloc = allocator0.GetAllocationSize() / 8;
+
+	//m_Allocator[0] = CommandAllocator(to_alloc, sizeof(ModelCommand), allocator0.Alloc(to_alloc));
+	//m_Allocator[1] = CommandAllocator(to_alloc, sizeof(ModelCommand), allocator1.Alloc(to_alloc));
+	if (m_Depth == 0 )
 	{
 		m_Pool.Initiate("RootNode - Worker");
 	}
-	//m_NodeEntityManager.Initiate();
-	//Engine::GetInstance()->GetEntityManager().RegisterManager(&m_NodeEntityManager);
-
+	
 	m_Octree = octree;
 	for (s32 i = 0; i < 8; i++)
 	{
@@ -136,7 +138,7 @@ void TreeNode::Update(float dt)
 		if (!node)
 			continue;
 
-		if (m_Depth == 0 || m_Depth == 1)
+		if (m_Depth == 0)
 		{
 			m_Pool.AddWork(Work([=]() {
 #ifdef _PROFILE

@@ -9,6 +9,7 @@ struct RenderCommand
 	enum eCommandType
 	{
 		NONE = -1,
+		USED,
 		MODEL,
 		SPOTLIGHT,
 		POINTLIGHT,

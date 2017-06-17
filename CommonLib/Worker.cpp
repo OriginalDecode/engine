@@ -64,7 +64,8 @@ void Worker::Run()
 	{
 		while (myIsDone)
 		{
-			std::this_thread::sleep_for(std::chrono::microseconds(1));
+			std::this_thread::yield();
+			//std::this_thread::sleep_for(std::chrono::microseconds(1));
 			if (myIsStopping)
 				break;
 		}

@@ -56,8 +56,9 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it)
 {
 	std::string data_path = "Data/Levels/";
+#define DATA_PATH data_path +
 
-	JSONReader entity_reader(data_path + entity_filepath);
+	JSONReader entity_reader(DATA_PATH entity_filepath);
 	Entity e = m_EntityManager->CreateEntity();
 
 	s32 debug_flags = 0;

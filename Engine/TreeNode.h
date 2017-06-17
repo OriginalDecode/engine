@@ -47,6 +47,7 @@ private:
 	Threadpool m_Pool;
 
 
+
 	Octree* m_Octree = nullptr;
 	bool m_Paused = false;
 	volatile bool m_IsDone = false;

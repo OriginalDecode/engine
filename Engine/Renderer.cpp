@@ -176,7 +176,7 @@ void Renderer::Render()
 	EASY_FUNCTION(profiler::colors::Magenta);
 #endif
 	m_Engine->Clear();
-	
+
 	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
 	Render3DCommands();
@@ -252,7 +252,7 @@ void Renderer::RenderNonDeferred3DCommands()
 
 	m_API->EnableZBuffer();
 	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::NO_DEFERRED_BUFFER);
-	for ( s32 i = 0; i < commands.Size(); i++)
+	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<ModelCommandNonDeferred*>(commands[i]);
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
@@ -316,14 +316,23 @@ void Renderer::Render3DCommands()
 		{
 			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
+
+
 			m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+			
 			Model* model = m_Engine->GetModel(command->m_Key);
+
+			if(!model) 
+				continue;
+
 			model->AddOrientation(command->m_Orientation);
 
+			std::map<std::string, Model*>::iterator it;
 			if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
-				m_ModelsToRender[command->m_Key] = model;
+				m_ModelsToRender.emplace(command->m_Key, model);
 
 		}
+
 		const CU::Matrix44f orientation = m_Camera->GetOrientation();
 		const CU::Matrix44f perspective = m_Camera->GetPerspective();
 
@@ -355,6 +364,9 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
 		Model* model = m_Engine->GetModel(command->m_Key);
+		if (!model)
+			continue;
+
 		model->SetOrientation(command->m_Orientation);
 		model->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
 	}
@@ -490,7 +502,7 @@ void Renderer::RenderPointlight()
 	effect->Deactivate();
 
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	m_API->SetRasterizer(eRasterizer::CULL_BACK); 
+	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 
 
 }

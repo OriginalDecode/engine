@@ -77,13 +77,15 @@ Effect* AssetsContainer::GetEffect(const std::string& aFilePath)
 
 Model* AssetsContainer::GetModel(const std::string& aFilePath)
 {
-	
-	if (myModels.find(aFilePath) == myModels.end())
+	std::unordered_map<std::string, Model*>::iterator it;
+	it = myModels.find(aFilePath);
+
+	if (it == myModels.end())
 	{
 		DL_MESSAGE("Requested Model : %s", aFilePath.c_str());
 		DL_ASSERT("Failed to find requested model. Did you enter the correct path?");
 	}
-	return myModels[aFilePath];
+	return it->second;
 }
 
 void AssetsContainer::Update()

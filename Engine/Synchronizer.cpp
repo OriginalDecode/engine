@@ -108,6 +108,12 @@ void Synchronizer::LogicIsDone()
 	m_LogicDone = true;
 }
 
+CommandAllocator& Synchronizer::GetAllocator(eBufferType buffer_type, s32 index)
+{
+	assert(index < 2 && "Double buffer, there isn't more than 2 buffers!");
+	return m_CommandBuffers[buffer_type][index];
+}
+
 const CommandAllocator& Synchronizer::GetRenderCommands(const eBufferType& buffer_type) const
 {
 	return m_CommandBuffers[buffer_type][m_CurrentBuffer];

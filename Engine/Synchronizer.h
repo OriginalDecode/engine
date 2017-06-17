@@ -115,13 +115,9 @@ void AddRenderCommand(const command_type command)\
 {\
 	if(m_QuitFlag)\
 		return;\
-	TRACE_LOG("Adding %s to %s", #command_type, #buffer_type);\
 	CommandBuffer& buffer = m_CommandBuffers[buffer_type];\
-	TRACE_LOG("Buffer %s received", #buffer_type);\
 	void* current = buffer[m_CurrentBuffer ^ 1].Alloc(sizeof(command_type));\
-	TRACE_LOG("starting memcpy from command to CurrentPos()");\
 	memcpy(current, &command, sizeof(command_type));\
-	TRACE_LOG("memcpy successfully ended");\
 };
 
 
@@ -143,7 +139,7 @@ public:
 	void LogicIsDone();
 
 	bool LogicHasFinished() { return m_LogicDone; }
-
+	CommandAllocator& GetAllocator(eBufferType buffer_type, s32 index);
 	
 	ADD_COMMAND_FUNC(eBufferType::MODEL_BUFFER,			ModelCommand);
 	ADD_COMMAND_FUNC(eBufferType::SPOTLIGHT_BUFFER,		SpotlightCommand);
@@ -151,18 +147,8 @@ public:
 	ADD_COMMAND_FUNC(eBufferType::LINE_BUFFER,			LineCommand);
 	ADD_COMMAND_FUNC(eBufferType::POINTLIGHT_BUFFER,	PointlightCommand);
 	ADD_COMMAND_FUNC(eBufferType::SPRITE_BUFFER,		SpriteCommand);
-	//ADD_COMMAND_FUNC(eBufferType::TEXT_BUFFER,			TextCommand);
-
-	void AddRenderCommand(const TextCommand& command)
-	{
-		if (m_QuitFlag)
-			return; 
-		CommandBuffer& buffer = m_CommandBuffers[TEXT_BUFFER];
-		void* current = buffer[m_CurrentBuffer ^ 1].Alloc(sizeof(TextCommand));
-		memcpy(current, &command, sizeof(TextCommand));
-	}
-
-
+	ADD_COMMAND_FUNC(eBufferType::TEXT_BUFFER,			TextCommand);
+	
 
 	const CommandAllocator& GetRenderCommands(const eBufferType& buffer_type) const;
 private:

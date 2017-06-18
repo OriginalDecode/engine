@@ -133,6 +133,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	return true;
 }
+//_________________________________
 
 bool Renderer::CleanUp()
 {
@@ -179,7 +180,11 @@ void Renderer::Render()
 
 	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
-	Render3DCommands();
+	RenderTerrain();
+	if (m_Engine->GetRenderInstanced())
+		Render3DCommandsInstanced();
+	else
+		Render3DCommands();
 
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
@@ -237,11 +242,13 @@ void Renderer::Render()
 	mySynchronizer->RenderIsDone();
 
 }
+//_________________________________
 
 void Renderer::AddTerrain(CTerrain* someTerrain)
 {
 	myTerrainArray.Add(someTerrain);
 }
+//_________________________________
 
 void Renderer::RenderNonDeferred3DCommands()
 {
@@ -265,19 +272,96 @@ void Renderer::RenderNonDeferred3DCommands()
 
 	}
 }
+//_________________________________
 
 void Renderer::Render3DCommands()
 {
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Green);
 #endif
-
-
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
+	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
 #ifdef _PROFILE
-	EASY_BLOCK("RenderTerrain", profiler::colors::Olive);
+	EASY_BLOCK("RenderModels", profiler::colors::Amber);
+#endif
+
+	const CU::Matrix44f& orientation = m_Camera->GetOrientation();
+	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
+	for (s32 i = 0; i < commands.Size(); i++)
+	{
+		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
+
+		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+		Model* model = m_Engine->GetModel(command->m_Key);
+		model->SetOrientation(command->m_Orientation);
+		m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+		model->Render(orientation, perspective, m_RenderContext);
+	}
+
+#ifdef _PROFILE
+	EASY_END_BLOCK;
+#endif
+
+}
+//_________________________________
+
+void Renderer::Render3DCommandsInstanced()
+{
+#ifdef _PROFILE
+	EASY_FUNCTION(profiler::colors::Green);
+#endif
+	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+
+	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
+#ifdef _PROFILE
+	EASY_BLOCK("RenderModels", profiler::colors::Amber);
+#endif
+	for (s32 i = 0; i < commands.Size(); i++)
+	{
+		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
+
+		if(command->m_CommandType == RenderCommand::USED)
+			continue;
+
+		const bool result = (command->m_CommandType == RenderCommand::MODEL) || (command->m_CommandType == RenderCommand::SHADOW);
+		DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
+
+		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+
+		Model* model = m_Engine->GetModel(command->m_Key);
+
+		if (!model)
+			continue;
+
+		model->AddOrientation(command->m_Orientation);
+
+		if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
+			m_ModelsToRender.emplace(command->m_Key, model);
+
+	}
+
+	const CU::Matrix44f& orientation = m_Camera->GetOrientation();
+	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
+
+	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
+	{
+		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+		m_API->SetRasterizer(eRasterizer::CULL_BACK);//set per model instance? Array with bools / byte to see if it is wireframe or not?
+		it->second->RenderInstanced(orientation, perspective, m_RenderContext);
+	}
+}
+//_________________________________
+
+void Renderer::RenderTerrain()
+{
+	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+#ifdef _PROFILE
+	EASY_FUNCTION();
 #endif
 	for (CTerrain* terrain : myTerrainArray)
 	{
@@ -286,69 +370,6 @@ void Renderer::Render3DCommands()
 
 		terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 	}
-#ifdef _PROFILE
-	EASY_END_BLOCK;
-#endif
-
-	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
-#ifdef _PROFILE
-	EASY_BLOCK("RenderModels", profiler::colors::Amber);
-#endif
-	if (!m_Engine->GetRenderInstanced())
-	{
-		const CU::Matrix44f orientation = m_Camera->GetOrientation();
-		const CU::Matrix44f perspective = m_Camera->GetPerspective();
-		for (s32 i = 0; i < commands.Size(); i++)
-		{
-			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
-
-			m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-			Model* model = m_Engine->GetModel(command->m_Key);
-			model->SetOrientation(command->m_Orientation);
-			m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-			model->Render(orientation, perspective, m_RenderContext);
-		}
-	}
-	else
-	{
-		for (s32 i = 0; i < commands.Size(); i++)
-		{
-			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
-
-
-			m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-			
-			Model* model = m_Engine->GetModel(command->m_Key);
-
-			if(!model) 
-				continue;
-
-			model->AddOrientation(command->m_Orientation);
-
-			std::map<std::string, Model*>::iterator it;
-			if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
-				m_ModelsToRender.emplace(command->m_Key, model);
-
-		}
-
-		const CU::Matrix44f orientation = m_Camera->GetOrientation();
-		const CU::Matrix44f perspective = m_Camera->GetPerspective();
-
-		for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
-		{
-			m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-			m_API->SetRasterizer(eRasterizer::CULL_BACK);//set per model instance? Array with bools / byte to see if it is wireframe or not?
-			it->second->RenderInstanced(orientation, perspective, m_RenderContext);
-		}
-
-
-	}
-#ifdef _PROFILE
-	EASY_END_BLOCK;
-#endif
-
 }
 
 void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
@@ -361,7 +382,11 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
+
+		if (command->m_CommandType == RenderCommand::USED)
+			continue;
+
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::SHADOW, "Incorrect command type! Expected MODEL");
 
 		Model* model = m_Engine->GetModel(command->m_Key);
 		if (!model)
@@ -371,6 +396,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 		model->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
 	}
 }
+//_________________________________
 
 int Renderer::RegisterLight()
 {
@@ -379,6 +405,7 @@ int Renderer::RegisterLight()
 	m_Spotlights.Add(s);
 	return (m_Spotlights.Size() - 1);
 }
+//_________________________________
 
 void Renderer::Render2DCommands()
 {
@@ -409,6 +436,7 @@ void Renderer::Render2DCommands()
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
+//_________________________________
 
 void Renderer::RenderSpotlight()
 {
@@ -467,6 +495,7 @@ void Renderer::RenderSpotlight()
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
+//_________________________________
 
 void Renderer::RenderPointlight()
 {
@@ -506,6 +535,7 @@ void Renderer::RenderPointlight()
 
 
 }
+//_________________________________
 
 void Renderer::RenderParticles()
 {
@@ -532,6 +562,7 @@ void Renderer::RenderParticles()
 	}
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
+//_________________________________
 
 void Renderer::RenderLines()
 {
@@ -567,6 +598,7 @@ void Renderer::RenderLines()
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
+//_________________________________
 
 PostProcessManager& Renderer::GetPostprocessManager()
 {

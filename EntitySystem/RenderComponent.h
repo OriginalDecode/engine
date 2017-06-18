@@ -11,5 +11,5 @@ struct RenderComponent : public BaseComponent
 	CU::Vector3f m_MinPos;
 	CU::Vector3f m_MaxPos;
 	bool m_RenderWireframe = false;
-
+	bool m_Shadowed = true;
 };

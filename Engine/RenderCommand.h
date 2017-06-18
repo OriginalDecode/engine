@@ -10,6 +10,7 @@ struct RenderCommand
 	{
 		NONE = -1,
 		USED,
+		SHADOW,
 		MODEL,
 		SPOTLIGHT,
 		POINTLIGHT,
@@ -52,6 +53,20 @@ struct ModelCommandNonDeferred : public ModelCommand
 	}
 };
 
+struct ShadowCommand : public RenderCommand
+{
+	ShadowCommand(const std::string& key, const CU::Matrix44f& orientation, bool wireframe)
+		: RenderCommand(eCommandType::SHADOW)
+		, m_Orientation(orientation)
+		, m_Wireframe(wireframe)
+	{
+		strcpy_s(m_Key, key.c_str());
+	}
+
+	char m_Key[128] = { '\0' };
+	CU::Matrix44f m_Orientation;
+	bool m_Wireframe = false;
+};
 
 struct SpotlightCommand : public RenderCommand
 {

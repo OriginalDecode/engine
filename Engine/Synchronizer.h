@@ -142,6 +142,8 @@ public:
 	CommandAllocator& GetAllocator(eBufferType buffer_type, s32 index);
 	
 	ADD_COMMAND_FUNC(eBufferType::MODEL_BUFFER,			ModelCommand);
+	ADD_COMMAND_FUNC(eBufferType::MODEL_BUFFER,			ShadowCommand);
+	ADD_COMMAND_FUNC(eBufferType::NO_DEFERRED_BUFFER,	ModelCommandNonDeferred);
 	ADD_COMMAND_FUNC(eBufferType::SPOTLIGHT_BUFFER,		SpotlightCommand);
 	ADD_COMMAND_FUNC(eBufferType::PARTICLE_BUFFER,		ParticleCommand);
 	ADD_COMMAND_FUNC(eBufferType::LINE_BUFFER,			LineCommand);

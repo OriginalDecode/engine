@@ -47,6 +47,11 @@ public:
 private:
 	void RenderNonDeferred3DCommands();
 	void Render3DCommands();
+
+	void Render3DCommandsInstanced();
+
+	void RenderTerrain();
+
 	void Render2DCommands();
 
 	void RenderPointlight();

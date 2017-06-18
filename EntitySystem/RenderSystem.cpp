@@ -90,7 +90,10 @@ void RenderSystem::Update(float /*dt*/)
 		if (render.myModelID.empty())
 			DL_ASSERT("Empty key!");
 
-		mySynchronizer->AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
+		if(render.m_Shadowed)
+			mySynchronizer->AddRenderCommand(ShadowCommand(render.myModelID, t, render.m_RenderWireframe));
+		else
+			mySynchronizer->AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
 	}
 #ifdef _PROFILE
 	EASY_END_BLOCK;

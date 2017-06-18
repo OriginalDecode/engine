@@ -144,7 +144,7 @@ void TreeNode::Update(float dt)
 #ifdef _PROFILE
 				EASY_BLOCK("Node Update");
 #endif
-				node->Update(dt); 
+				node->Update(dt);
 #ifdef _PROFILE
 				EASY_END_BLOCK;
 #endif

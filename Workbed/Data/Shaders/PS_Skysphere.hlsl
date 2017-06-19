@@ -57,7 +57,21 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float2 texCoord = input.tex.xy;	
 	float depth = DepthTexture.Sample(linear_Wrap, texCoord).r;
 
-	float4 output = input.worldpos;
+
+	float height = input.worldpos.y;
+
+	if(height < 0.f)
+		height = 0.f;
+
+
+	float4 center_color = float4(0,0.7,1,1);
+	float4 apex_color = float4(0,0,0.2,1);
+	float4 output;
+
+	if(height < 1)
+		output = lerp(float4(1,1,1,1), center_color, height * 4);
+
+	output = lerp(output, apex_color, height);
 
 	return output;
 }

@@ -261,7 +261,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 
 	component.scale = CU::Vector4f(1, 1, 1, 1);
-	component.m_Shadowed = true;
+	component.m_Shadowed = false;
 
 	//CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
 	//m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);

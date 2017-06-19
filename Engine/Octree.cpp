@@ -4,6 +4,9 @@
 #include "Engine.h"
 #include "Synchronizer.h"
 
+#include <Engine/TreeNode.h>
+
+
 void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 {
 	m_Position = world_position;
@@ -31,7 +34,7 @@ void Octree::AddDweller(TreeDweller* dweller)
 
 void Octree::Update(float dt)
 {
-	for (TreeNode* node : m_GarbageNodes)
+	for (TreeNodeBase* node : m_GarbageNodes)
 	{
 		delete node;
 		node = nullptr;
@@ -41,13 +44,13 @@ void Octree::Update(float dt)
 	m_Root.Update(dt);
 }
 
-void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
+void Octree::MoveDown(TreeNodeBase* node, TreeDweller* dweller, s32 depth)
 {
-	TreeNode* remve_from = dweller->GetFirstNode();
-	if (remve_from)
+	//TreeNodeBase* remve_from = dweller->GetFirstNode();
+	/*if (remve_from)
 	{
 		assert(false && "should be removed already!");
-	}
+	}*/
 	// Potentially this function is very very slow
 	assert(depth >= 0 && "Depth was lower than 0?");
 
@@ -113,8 +116,17 @@ void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 	{
 		if (!node->GetChildByIndex(index))
 		{
-			TreeNode* child = CreateNode(node->GetPosition(), node->GetHalfWidth(), index, depth);
+			TreeNodeBase* child = CreateNode(node->GetPosition(), node->GetHalfWidth(), index, depth);
 			node->AddChild(child, index);
+
+			if (node->GetDepth() > 0)
+			{
+				child->SetMemoryBlockIndex(node->GetMemoryBlockIndex());
+			}
+			else
+			{
+				child->SetMemoryBlockIndex(index);
+			}
 		}
 
 		MoveDown(node->GetChildByIndex(index), dweller, depth + 1);
@@ -126,7 +138,7 @@ void Octree::MoveDown(TreeNode* node, TreeDweller* dweller, s32 depth)
 	
 }
 
-void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 /*depth*/)
+void Octree::InsertDweller(TreeNodeBase* node, TreeDweller* dweller, s32 /*depth*/)
 {
 	assert(!dweller->GetFirstNode() && "You fucked up!");
 	node->AddEntity(dweller);
@@ -134,7 +146,7 @@ void Octree::InsertDweller(TreeNode* node, TreeDweller* dweller, s32 /*depth*/)
 	dweller->SetDepth(node->GetDepth());
 }
 
-TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 index, s32 depth)
+TreeNodeBase* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 index, s32 depth)
 {
 	node_count++;
 	CU::Vector3i dir;
@@ -184,10 +196,10 @@ TreeNode* Octree::CreateNode(const CU::Vector3f& center, float halfwidth, s32 in
 	return node;
 }
 
-void Octree::MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth)
+void Octree::MoveUp(TreeNodeBase* node, TreeDweller* dweller, s32 depth)
 {
 	assert(depth >= 0 && "MoveUp : Depth was lower than 0?");
-	TreeNode* parent = node->GetParent();
+	TreeNodeBase* parent = node->GetParent();
 	node->RemoveEntity(dweller);
 	if (parent && !node->InsideNode(dweller))
 	{
@@ -198,7 +210,7 @@ void Octree::MoveUp(TreeNode* node, TreeDweller* dweller, s32 depth)
 	MoveDown(node, dweller, depth + 1);
 }
 
-void Octree::ToDelete(TreeNode* node)
+void Octree::ToDelete(TreeNodeBase* node)
 {
 	m_GarbageNodes.Add(node);
 }

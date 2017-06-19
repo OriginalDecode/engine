@@ -238,6 +238,7 @@ void Renderer::Render()
 #ifdef _PROFILE
 	EASY_END_BLOCK;
 #endif
+	Engine::GetInstance()->GetMemorySegmentHandle().Clear((s32)mySynchronizer->GetCurrentBufferIndex());
 	mySynchronizer->SwapBuffer();
 	mySynchronizer->RenderIsDone();
 
@@ -316,34 +317,21 @@ void Renderer::Render3DCommandsInstanced()
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
-	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
+	//const s32 offset = (commands.GetAllocationSize() / sizeof(ModelCommand)) / 8;
 #ifdef _PROFILE
 	EASY_BLOCK("RenderModels", profiler::colors::Amber);
 #endif
-	for (s32 i = 0; i < commands.Size(); i++)
+	//const auto& commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
+
+	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
+	for (s32 j = 0; j < 8; j++)
 	{
-		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-
-		if(command->m_CommandType == RenderCommand::USED)
-			continue;
-
-		const bool result = (command->m_CommandType == RenderCommand::MODEL) || (command->m_CommandType == RenderCommand::SHADOW);
-		DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
-
-		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-
-		Model* model = m_Engine->GetModel(command->m_Key);
-
-		if (!model)
-			continue;
-
-		model->AddOrientation(command->m_Orientation);
-
-		if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
-			m_ModelsToRender.emplace(command->m_Key, model);
-
+		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
+		for (s32 i = 0; i < commands.Size(); i++)
+		{
+			ProcessCommand(commands, i);
+		}
 	}
-
 	const CU::Matrix44f& orientation = m_Camera->GetOrientation();
 	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
 
@@ -354,6 +342,18 @@ void Renderer::Render3DCommandsInstanced()
 		it->second->RenderInstanced(orientation, perspective, m_RenderContext);
 	}
 }
+
+void Renderer::ProcessCommand(const CommandAllocator& commands, s32 i)
+{
+	auto command = reinterpret_cast<ModelCommand*>(commands[i]);
+	const bool result = (command->m_CommandType == RenderCommand::MODEL);
+	DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
+	Model* model = m_Engine->GetModel(command->m_Key);
+	model->AddOrientation(command->m_Orientation);
+	if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
+		m_ModelsToRender.emplace(command->m_Key, model);
+}
+
 //_________________________________
 
 void Renderer::RenderTerrain()
@@ -383,10 +383,8 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	{
 		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 
-		if (command->m_CommandType == RenderCommand::USED)
-			continue;
 
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::SHADOW, "Incorrect command type! Expected MODEL");
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
 		Model* model = m_Engine->GetModel(command->m_Key);
 		if (!model)

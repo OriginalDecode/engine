@@ -340,6 +340,7 @@
     <ClInclude Include="LightStructs.h" />
     <ClInclude Include="Line3D.h" />
     <ClInclude Include="LinearAllocator.h" />
+    <ClInclude Include="MemorySegmentHandle.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelImporter.h" />
     <ClInclude Include="MotionBlurPass.h" />
@@ -356,6 +357,7 @@
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RootTreeNode.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderFactory.h" />
     <ClInclude Include="ShaderState.h" />
@@ -388,6 +390,7 @@
     <ClInclude Include="TGA32.h" />
     <ClInclude Include="TreeDweller.h" />
     <ClInclude Include="TreeNode.h" />
+    <ClInclude Include="TreeNodeBase.h" />
     <ClInclude Include="VertexStructs.h" />
     <ClInclude Include="VertexTypes.h" />
     <ClInclude Include="VertexWrapper.h" />
@@ -439,6 +442,7 @@
     <ClCompile Include="LightPass.cpp" />
     <ClCompile Include="Line3D.cpp" />
     <ClCompile Include="LinearAllocator.cpp" />
+    <ClCompile Include="MemorySegmentHandle.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelImporter.cpp" />
     <ClCompile Include="MotionBlurPass.cpp" />
@@ -454,6 +458,7 @@
     <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="RenderCommand.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RootTreeNode.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderFactory.cpp" />
     <ClCompile Include="ShaderState.cpp" />
@@ -491,6 +496,7 @@
     <ClCompile Include="TGA32.cpp" />
     <ClCompile Include="TreeDweller.cpp" />
     <ClCompile Include="TreeNode.cpp" />
+    <ClCompile Include="TreeNodeBase.cpp" />
     <ClCompile Include="VirtualFileSystem.cpp" />
     <ClCompile Include="Vulkan.cpp" />
     <ClCompile Include="Window.cpp" />

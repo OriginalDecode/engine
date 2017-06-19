@@ -44,13 +44,14 @@ public:
 	void WaitForLogic();
 	void RenderIsDone();
 	void LogicIsDone();
-	u16 GetCurrentBuffer() const { return m_CurrentBuffer; }
+	u16 GetCurrentBufferIndex() const { return m_CurrentBuffer; }
 
 	bool LogicHasFinished() { return m_LogicDone; }
-	CommandAllocator& GetAllocator(eBufferType buffer_type, s32 index);
-	
+
+	void* GetMemoryBlock(eBufferType buffer_type, s32 index, s32& size_of_block_out);
+
+
 	ADD_COMMAND_FUNC(eBufferType::MODEL_BUFFER,			ModelCommand);
-	ADD_COMMAND_FUNC(eBufferType::MODEL_BUFFER,			ShadowCommand);
 	ADD_COMMAND_FUNC(eBufferType::NO_DEFERRED_BUFFER,	ModelCommandNonDeferred);
 	ADD_COMMAND_FUNC(eBufferType::SPOTLIGHT_BUFFER,		SpotlightCommand);
 	ADD_COMMAND_FUNC(eBufferType::PARTICLE_BUFFER,		ParticleCommand);

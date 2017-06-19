@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseSystem.h"
-
+struct ModelCommand;
 class Synchronizer;
 class RenderSystem : public BaseSystem
 {
@@ -13,9 +13,6 @@ private:
 	Synchronizer* mySynchronizer;
 
 	void AddRenderCommand(const ModelCommand& command);
-
-
-
 
 };
 

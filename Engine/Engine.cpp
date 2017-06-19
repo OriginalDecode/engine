@@ -150,6 +150,10 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	mySynchronizer = new Synchronizer;
 	DL_ASSERT_EXP(mySynchronizer->Initiate(), "Engine : Failed to Initiate Synchronizer!");
 
+	//m_SegmentHandle.Initiate(mySynchronizer->Get)
+	m_SegmentHandle.Initiate();
+
+
 	m_Camera = new Camera;
 	m_Camera->CreatePerspectiveProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 10000.f, 90.f);
 	m_Camera->CreateOrthogonalProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 100.f);

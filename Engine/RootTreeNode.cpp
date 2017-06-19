@@ -1,14 +1,7 @@
 #include "stdafx.h"
-#include "TreeNode.h"
-#include "Synchronizer.h"
-#include "RenderCommand.h"
-#include "Octree.h"
-#include <ComponentFilter.h>
-#include <TranslationComponent.h>
-#include "Engine.h"
-#include <Engine/NodeEntityManager.h>
-
-void TreeNode::Initiate(float halfwidth, Octree* octree)
+#include "RootTreeNode.h"
+#include <Engine/Synchronizer.h>
+void RootTreeNode::Initiate(float halfwidth, Octree* octree)
 {
 	m_HalfWidth = halfwidth;
 	m_Octree = octree;
@@ -16,15 +9,20 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
 
-	
+	m_Pool.Initiate("RootNode - Worker");
+
 	for (TreeNodeBase* child : m_Children)
 	{
 		child = nullptr;
 	}
 }
 
-void TreeNode::Update(float dt)
+void RootTreeNode::Update(float dt)
 {
+#ifdef _PROFILE
+	EASY_FUNCTION();
+#endif
+
 	TreeNodeBase::Update(dt);
 
 	for (TreeNodeBase* node : m_Children)
@@ -32,14 +30,19 @@ void TreeNode::Update(float dt)
 		if (!node)
 			continue;
 
+		m_Pool.AddWork(Work([=]() {
 #ifdef _PROFILE
-			EASY_BLOCK("Child Node Update");
+			EASY_BLOCK("Node Update Thread");
 #endif
 			node->Update(dt);
 #ifdef _PROFILE
 			EASY_END_BLOCK;
 #endif
-		
-	}
+	}));
+}
 
+	do
+	{
+		m_Pool.Update();
+	} while (!m_Pool.CurrentWorkFinished()); //This cannot work if we start work and pop at the same time
 }

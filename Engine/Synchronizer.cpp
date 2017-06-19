@@ -108,10 +108,12 @@ void Synchronizer::LogicIsDone()
 	m_LogicDone = true;
 }
 
-CommandAllocator& Synchronizer::GetAllocator(eBufferType buffer_type, s32 index)
+
+void* Synchronizer::GetMemoryBlock(eBufferType buffer_type, s32 index, s32& size_of_block_out)
 {
-	assert(index < 2 && "Double buffer, there isn't more than 2 buffers!");
-	return m_CommandBuffers[buffer_type][index];
+	CommandAllocator& allocator = m_CommandBuffers[buffer_type][index];
+	size_of_block_out = allocator.GetAllocationSize();
+	return allocator.GetStart();
 }
 
 const CommandAllocator& Synchronizer::GetRenderCommands(const eBufferType& buffer_type) const

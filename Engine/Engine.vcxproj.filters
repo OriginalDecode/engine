@@ -376,6 +376,11 @@
     <ClInclude Include="ParticleData.h">
       <Filter>Particles</Filter>
     </ClInclude>
+    <ClInclude Include="RootTreeNode.h" />
+    <ClInclude Include="TreeNodeBase.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="MemorySegmentHandle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -613,5 +618,10 @@
     <ClCompile Include="SSAOPass.cpp">
       <Filter>Rendering\Passes</Filter>
     </ClCompile>
+    <ClCompile Include="RootTreeNode.cpp" />
+    <ClCompile Include="TreeNodeBase.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="MemorySegmentHandle.cpp" />
   </ItemGroup>
 </Project>

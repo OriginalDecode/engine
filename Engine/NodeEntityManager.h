@@ -29,17 +29,20 @@ public:
 	template<typename T>
 	void AddSystem();
 
-	void* GetModelCommandBlock();
-	void SetModelCommandBlock(void* block0, void* block1);
+	
 
-
+	void SetMemoryBlockIndex(s32 index);
+	s32 GetMemoryBlockIndex() { return m_MemoryBlockIndex; }
 private:
 	static s32 m_Identifier;
+
+	s32 m_MemoryBlockIndex = 0;
+
 	s32 m_ID = 0;
+
 	CU::GrowingArray<TreeDweller*> m_Entities;
 	CU::GrowingArray<BaseSystem*> m_Systems;
 	CComponentContainer m_Components;
-	void* m_ModelCommandBlock[2];
 	
 };
 

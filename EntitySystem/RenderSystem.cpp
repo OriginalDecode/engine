@@ -33,6 +33,7 @@ void RenderSystem::Update(float /*dt*/)
 	EASY_FUNCTION(profiler::colors::Blue);
 #endif
 	const CU::GrowingArray<Entity>& entities = GetEntities();
+
 #ifdef _PROFILE
 	EASY_BLOCK("Render : Entity Loop");
 #endif
@@ -90,10 +91,10 @@ void RenderSystem::Update(float /*dt*/)
 		if (render.myModelID.empty())
 			DL_ASSERT("Empty key!");
 
-		if(render.m_Shadowed)
-			mySynchronizer->AddRenderCommand(ShadowCommand(render.myModelID, t, render.m_RenderWireframe));
-		else
-			mySynchronizer->AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
+
+		AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
+
+
 	}
 #ifdef _PROFILE
 	EASY_END_BLOCK;
@@ -102,6 +103,7 @@ void RenderSystem::Update(float /*dt*/)
 
 bool RenderSystem::Inside(const CU::Vector4f& translation, const CU::Vector4f& direction, const CU::Vector4f& pos)
 {
+	return true;
 	CU::Vector4f position = translation + (direction * pos);
 	if (CameraHandle::GetInstance()->GetFrustum().Inside({ position.x, position.y, position.z }, 25.f))
 		return true;
@@ -110,10 +112,8 @@ bool RenderSystem::Inside(const CU::Vector4f& translation, const CU::Vector4f& d
 
 void RenderSystem::AddRenderCommand(const ModelCommand& command)
 {
-	void* current = m_Manager.GetModelCommandBlock();
-	//alloc on this
-
-
-	//void* current = buffer[m_CurrentBuffer ^ 1].Alloc(sizeof(command_type)); 
-	memcpy(current, &command, sizeof(ModelCommand)); 
+	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
+	CommandAllocator& allocator = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, m_Manager.GetMemoryBlockIndex());
+	void * current = allocator.Alloc(sizeof(ModelCommand));
+	memcpy(current, &command, sizeof(ModelCommand));
 }

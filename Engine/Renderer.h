@@ -26,7 +26,7 @@ class CTerrain;
 class LightPass;
 class SpotLight;
 class ShadowSpotlight;
-
+class CommandAllocator;
 class Renderer
 {
 public:
@@ -49,6 +49,8 @@ private:
 	void Render3DCommands();
 
 	void Render3DCommandsInstanced();
+
+	void ProcessCommand(const  CommandAllocator& commands, s32 i);
 
 	void RenderTerrain();
 

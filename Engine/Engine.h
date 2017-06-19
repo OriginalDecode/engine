@@ -14,6 +14,7 @@
 #include "../EntitySystem/EntityManager.h"
 #include "ShaderFactory.h"
 #include <Engine/SystemMonitor.h>
+#include <Engine/MemorySegmentHandle.h>
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -167,6 +168,7 @@ public:
 	
 	void SelectEntity(u32 e);
 	void DeselectEntity();
+	MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
 	struct ID3D11ShaderResourceView;
 #if !defined(_PROFILE) && !defined(_FINAL)
 	bool SaveLevel();
@@ -185,8 +187,9 @@ private:
 	bool m_RenderInstanced = true;
 public:
 	bool GetRenderInstanced() { return m_RenderInstanced; }
-private:
 
+private:
+	MemorySegmentHandle m_SegmentHandle; 
 
 	bool m_EditLight = false;
 	bool m_EditRender = false;

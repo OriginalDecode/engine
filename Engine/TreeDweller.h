@@ -3,7 +3,7 @@
 #include "../EntitySystem/BaseComponent.h"
 #include "../CommonLib/DataStructures/GrowingArray.h"
 #include "../CommonLib/Math/Vector/Vector.h"
-class TreeNode;
+class TreeNodeBase;
 struct ComponentPair
 {
 	BaseComponent* m_Component = nullptr;
@@ -46,8 +46,8 @@ public:
 	Entity GetEntity() const;
 	ComponentList& GetComponentPairList();
 
-	void SetFirstNode(TreeNode* node) { m_First = node; }
-	TreeNode* GetFirstNode() { return m_First; }
+	void SetFirstNode(TreeNodeBase* node) { m_First = node; }
+	TreeNodeBase* GetFirstNode() { return m_First; }
 
 	/*void SetSecondNode(TreeNode* node) { m_Second = node; }
 	TreeNode* GetSecondNode() { return m_Second; }*/
@@ -69,7 +69,7 @@ private:
 
 	CU::Vector3f m_WHD;
 
-	TreeNode* m_First = nullptr;
+	TreeNodeBase* m_First = nullptr;
 	//TreeNode* m_Second = nullptr;
 };
 

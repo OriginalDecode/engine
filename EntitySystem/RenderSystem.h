@@ -12,5 +12,10 @@ public:
 private:
 	Synchronizer* mySynchronizer;
 
+	void AddRenderCommand(const ModelCommand& command);
+
+
+
+
 };
 

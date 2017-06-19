@@ -107,3 +107,13 @@ bool RenderSystem::Inside(const CU::Vector4f& translation, const CU::Vector4f& d
 		return true;
 	return false;
 }
+
+void RenderSystem::AddRenderCommand(const ModelCommand& command)
+{
+	void* current = m_Manager.GetModelCommandBlock();
+	//alloc on this
+
+
+	//void* current = buffer[m_CurrentBuffer ^ 1].Alloc(sizeof(command_type)); 
+	memcpy(current, &command, sizeof(ModelCommand)); 
+}

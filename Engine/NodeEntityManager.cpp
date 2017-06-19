@@ -5,7 +5,7 @@
 #include "Engine.h"
 #include <EntityManager.h>
 #include <TranslationComponent.h>
-
+#include <Engine/Synchronizer.h>
 s32 NodeEntityManager::m_Identifier = 0;
 
 void NodeEntityManager::Initiate()
@@ -79,4 +79,16 @@ NodeEntityManager::~NodeEntityManager()
 bool NodeEntityManager::HasComponent(Entity e, ComponentFilter filter)
 {
 	return m_Components.HasComponent(e, filter);
+}
+
+void* NodeEntityManager::GetModelCommandBlock()
+{
+	u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBuffer();
+	return m_ModelCommandBlock[current_buffer];
+}
+
+void NodeEntityManager::SetModelCommandBlock(void* block0, void* block1)
+{
+	m_ModelCommandBlock[0] = block0;
+	m_ModelCommandBlock[1] = block1;
 }

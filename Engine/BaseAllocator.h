@@ -57,6 +57,9 @@ public:
 	s32 GetAllocationSize() const { return m_AllocatedMemory; }
 	s32 Size() const { return m_NumberOfAllocations; }
 
+
+	static void* Alloc(s32 size_in_bytes, void* block, u8 alignment = sizeof(void*));
+
 protected:
 	void* m_Start = nullptr;
 	void* m_CurrentPos = nullptr;

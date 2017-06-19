@@ -28,12 +28,18 @@ public:
 
 	template<typename T>
 	void AddSystem();
+
+	void* GetModelCommandBlock();
+	void SetModelCommandBlock(void* block0, void* block1);
+
+
 private:
 	static s32 m_Identifier;
 	s32 m_ID = 0;
 	CU::GrowingArray<TreeDweller*> m_Entities;
 	CU::GrowingArray<BaseSystem*> m_Systems;
 	CComponentContainer m_Components;
+	void* m_ModelCommandBlock[2];
 	
 };
 

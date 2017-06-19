@@ -25,9 +25,9 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
 
-	CommandAllocator& allocator0 = m_Synchronizer->GetAllocator(eBufferType::MODEL_BUFFER, 0);
-	CommandAllocator& allocator1 = m_Synchronizer->GetAllocator(eBufferType::MODEL_BUFFER, 1);
-	const s32 to_alloc = allocator0.GetAllocationSize() / 8;
+// 	CommandAllocator& allocator0 = m_Synchronizer->GetAllocator(eBufferType::MODEL_BUFFER, 0);
+// 	CommandAllocator& allocator1 = m_Synchronizer->GetAllocator(eBufferType::MODEL_BUFFER, 1);
+// 	const s32 to_alloc = allocator0.GetAllocationSize() / 8;
 
 	//m_Allocator[0] = CommandAllocator(to_alloc, sizeof(ModelCommand), allocator0.Alloc(to_alloc));
 	//m_Allocator[1] = CommandAllocator(to_alloc, sizeof(ModelCommand), allocator1.Alloc(to_alloc));
@@ -142,7 +142,7 @@ void TreeNode::Update(float dt)
 		{
 			m_Pool.AddWork(Work([=]() {
 #ifdef _PROFILE
-				EASY_BLOCK("Node Update");
+				EASY_BLOCK("Node Update Thread");
 #endif
 				node->Update(dt);
 #ifdef _PROFILE
@@ -152,7 +152,13 @@ void TreeNode::Update(float dt)
 		}
 		else
 		{
+#ifdef _PROFILE
+			EASY_BLOCK("Node Update");
+#endif
 			node->Update(dt);
+#ifdef _PROFILE
+			EASY_END_BLOCK;
+#endif
 		}
 	}
 
@@ -196,8 +202,8 @@ bool TreeNode::SubNodeContainsDwellers()
 #define YELLOW CU::Vector4f(255.f,255.f,0.f,255.f)
 void TreeNode::RenderBox()
 {
-	//if (!m_RenderBox)
-		//return;
+	if (!m_RenderBox)
+		return;
 
 	SLinePoint points[8];
 

@@ -3,7 +3,7 @@
 #include "PointLight.h"
 #include <DL_Debug.h>
 #include "GBuffer.h"
-#define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 1.f;
+#define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
 
 bool DeferredRenderer::Initiate(Texture* shadow_texture)
 {

@@ -72,7 +72,7 @@ void SSAOPass::Process(Texture* scene_texture)
 	m_ScreenQuad.SetBuffers();
 
 	IDevContext* ctx = api->GetContext();
-	float clear[4] = { 0.f, 0.f, 0.f, 1.f };
+	float clear[4] = { 0.f, 0.f, 0.f, 0.f };
 	ctx->ClearRenderTargetView(m_SSAOTexture->GetRenderTargetView(), clear);
 	ctx->ClearRenderTargetView(m_DebugTexture->GetRenderTargetView(), clear);
 	//ctx->ClearRenderTargetView(m_Test->GetRenderTargetView(), clear);

@@ -45,8 +45,6 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 
 	myPointLight = new PointLight; //Where should this live?
-	//mySpotlight = new SpotLight; // Where should this live?
-	//mySpotlight->Initiate();
 
 	m_DeferredRenderer = new DeferredRenderer; // Where should this live?
 	if (!m_DeferredRenderer->Initiate(0))
@@ -95,32 +93,6 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_ShadowPass.Initiate(this);
 
 	m_DirectionalShadow.Initiate(2048.f);
-
-
-	/*BlendState blend_state(0x0F
-		, BlendState::BLEND_ENABLED
-		, BlendState::BLEND_OP_ADD, BlendState::BLEND_ONE, BlendState::BLEND_ONE
-		, BlendState::BLEND_OP_ADD, BlendState::BLEND_ZERO, BlendState::BLEND_ONE);
-
-
-	float color[4] = { 0.f,0.f,0.f,0.f};
-	SamplerState sampler_state0(0,
-		SamplerState::FILTER_MIN_MAG_MIP_LINEAR, SamplerState::PIXEL_SHADER, SamplerState::WRAP,
-		16, 0.f, 0.f, 0.f, color,
-		SamplerState::COMPARISON_NEVER);
-
-
-	SamplerState states[] = {
-		sampler_state0,
-	};
-
-	m_LightState = ShaderState(blend_state, states, ARRAYSIZE(states), DepthstencilState(), RasterizerState());*/
-
-
-	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetDiffuse()->GetShaderView(), { x_pos, y_pos }));
-	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetNormal()->GetShaderView(), { x_pos, y_pos + m_SpriteHeight }));
-	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetDepth()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 2.f) }));
-	//mySynchronizer->AddRenderCommand(SpriteCommand(gbuffer.GetEmissive()->GetShaderView(), { x_pos, y_pos + (m_SpriteHeight * 3) }));
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	const GBuffer& gbuffer = m_DeferredRenderer->GetGBuffer();
@@ -186,14 +158,12 @@ void Renderer::Render()
 	else
 		Render3DCommands();
 
-
-
+	//m_Atmosphere.Render(m_Camera->GetOrientation(), m_DeferredRenderer->GetDepthStencil(), m_RenderContext);
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
 
-	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 
-	//Do SSAO
+	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 
 	m_DeferredRenderer->DeferredRender(
 		m_Camera->GetOrientation(),
@@ -202,11 +172,8 @@ void Renderer::Render()
 		m_Direction,
 		m_RenderContext);
 
-
-
 	RenderPointlight();
 	RenderSpotlight();
-
 
 	m_Engine->ResetRenderTargetAndDepth();
 
@@ -215,8 +182,6 @@ void Renderer::Render()
 
 	if (m_PostProcessManager.GetFlags() == 0)
 		m_DeferredRenderer->Finalize(m_RenderContext);
-
-
 
 	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), m_DeferredRenderer->GetDepthStencil()->GetDepthView());
 	m_Atmosphere.Render(m_Camera->GetOrientation(), m_DeferredRenderer->GetDepthStencil(), m_RenderContext);

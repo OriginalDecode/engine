@@ -24,7 +24,7 @@ struct VS_OUTPUT
 //---------------------------------
 float4 PS(VS_OUTPUT input) : SV_Target
 {	
-	float4 diffuse = DiffuseTexture.Sample(linear_Clamp, input.uv) *8;
+	float4 diffuse = DiffuseTexture.Sample(linear_Clamp, input.uv);
 
 	return diffuse;  
 }

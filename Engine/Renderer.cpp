@@ -85,7 +85,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 
 	m_PostProcessManager.Initiate();
-	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR );
+	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
 
 	m_RenderContext.m_API = Engine::GetAPI();
 	m_RenderContext.m_Device = Engine::GetAPI()->GetDevice();
@@ -286,23 +286,29 @@ void Renderer::Render3DCommands()
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
-	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
 #ifdef _PROFILE
 	EASY_BLOCK("RenderModels", profiler::colors::Amber);
 #endif
 
 	const CU::Matrix44f& orientation = m_Camera->GetOrientation();
 	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
-	for (s32 i = 0; i < commands.Size(); i++)
-	{
-		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
-		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-		Model* model = m_Engine->GetModel(command->m_Key);
-		model->SetOrientation(command->m_Orientation);
-		m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-		model->Render(orientation, perspective, m_RenderContext);
+	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
+	for (s32 j = 0; j < 8; j++)
+	{
+		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
+
+		for (s32 i = 0; i < commands.Size(); i++)
+		{
+			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
+			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
+
+			m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+			Model* model = m_Engine->GetModel(command->m_Key);
+			model->SetOrientation(command->m_Orientation);
+			m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
+			model->Render(orientation, perspective, m_RenderContext);
+		}
 	}
 
 #ifdef _PROFILE
@@ -320,11 +326,9 @@ void Renderer::Render3DCommandsInstanced()
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
-	//const s32 offset = (commands.GetAllocationSize() / sizeof(ModelCommand)) / 8;
 #ifdef _PROFILE
 	EASY_BLOCK("RenderModels", profiler::colors::Amber);
 #endif
-	//const auto& commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
 
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	for (s32 j = 0; j < 8; j++)
@@ -341,7 +345,7 @@ void Renderer::Render3DCommandsInstanced()
 	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
 	{
 		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-		m_API->SetRasterizer(eRasterizer::CULL_BACK);//set per model instance? Array with bools / byte to see if it is wireframe or not?
+		m_API->SetRasterizer(eRasterizer::CULL_BACK); //set per model instance? Array with bools / byte to see if it is wireframe or not?
 		it->second->RenderInstanced(orientation, perspective, m_RenderContext);
 	}
 }

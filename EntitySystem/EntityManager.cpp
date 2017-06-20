@@ -10,10 +10,7 @@
 
 void EntityManager::Initiate()
 {
-	//mySystems.ReInit(16);
 	myComponents = new CComponentContainer(true);
-	
-	
 	m_NodeManagers.Init(m_MaxNodeCount); //should be a continous block of memory?
 	for (s32 i = 0; i < m_MaxNodeCount; i++)
 	{
@@ -24,11 +21,6 @@ void EntityManager::Initiate()
 
 void EntityManager::CleanUp()
 {
-	//for ( BaseSystem* system : mySystems )
-	//{
-	//	SAFE_DELETE(system);
-	//}
-
 	for (NodeEntityManager* manager : m_NodeManagers)
 	{
 		manager->CleanUp();
@@ -118,26 +110,3 @@ void EntityManager::ReleaseManager(NodeEntityManager* manager)
 	m_Systems[index] = 0;
 
 }
-
-//void EntityManager::RegisterManager(NodeEntityManager* manager)
-//{
-//	m_RegisteredManagers.Add(manager);
-//}
-//
-//void EntityManager::UnRegisterManager(NodeEntityManager* manager)
-//{
-//	m_RegisteredManagers.RemoveCyclic(manager);
-//}
-//
-//NodeEntityManager* EntityManager::GetManager(s32 index)
-//{
-//	for (s32 i = 0; i < m_RegisteredManagers.Size(); i++)
-//	{
-//		if ( m_RegisteredManagers[i]->GetId() == index )
-//		{
-//			return m_RegisteredManagers[i];
-//		}
-//	}
-//	//emit warning
-//	return nullptr;
-//}

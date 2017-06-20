@@ -121,13 +121,11 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 	render_context.m_API->ResetViewport();
 
 	ID3D11RenderTargetView* rtv[] = {
-		m_SampleTexture->GetRenderTargetView(),
-		myFinishedSceneTexture->GetRenderTargetView(),
+		myFinishedSceneTexture->GetRenderTargetView()
 	};
 	ID3D11DepthStencilView* depth = render_context.m_API->GetDepthView();
 
 	render_context.m_Context->ClearRenderTargetView(rtv[0], myClearColor);
-	render_context.m_Context->ClearRenderTargetView(rtv[1], myClearColor);
 	render_context.m_Context->OMSetRenderTargets(ARRAYSIZE(rtv), rtv, depth);
 
 	myAmbientPassShader->Use();
@@ -143,7 +141,7 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 
 	depth = myDepthStencil->GetDepthView();
 
-	myContext->OMSetRenderTargets(1, &rtv[1], depth);
+	myContext->OMSetRenderTargets(1, &rtv[0], depth);
 }
 
 void DeferredRenderer::SetRenderTarget(const RenderContext& render_context)

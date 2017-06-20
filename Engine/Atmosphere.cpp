@@ -61,7 +61,7 @@ void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth, const 
 	m_API->UpdateConstantBuffer(m_PixelBuffer, &m_PixelStruct);
 
 	IDevContext* ctx = m_API->GetContext();
-	ctx->OMSetRenderTargets(1, m_API->GetBackbufferRef(), depth->GetDepthView());
+	//ctx->OMSetRenderTargets(1, m_API->GetBackbufferRef(), depth->GetDepthView());
 
 	ctx->VSSetConstantBuffers(1, 1, &m_VertexBuffer);
 	ctx->PSSetConstantBuffers(0, 1, &m_PixelBuffer);

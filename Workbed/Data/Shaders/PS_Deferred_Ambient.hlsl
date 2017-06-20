@@ -99,7 +99,7 @@ struct AmbientReturnTextures
 
 
 
-AmbientReturnTextures PS(VS_OUTPUT input) : SV_Target
+float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 depth = DepthTexture.Sample(point_Clamp, input.uv);
 	if(depth.x <= 0.f)
@@ -107,10 +107,8 @@ AmbientReturnTextures PS(VS_OUTPUT input) : SV_Target
 
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);	
 	float4 normal = NormalTexture.Sample(point_Clamp, input.uv);
-	
-	float metal_fix = normal.w - 1;
+	float metal_fix = 1;//normal.w - 1;
 
-	normal.w -= 1;
 
 	float4 metalness = float4(metal_fix, metal_fix, metal_fix, metal_fix);
 	normal *= 2;
@@ -168,11 +166,6 @@ AmbientReturnTextures PS(VS_OUTPUT input) : SV_Target
 
  	float3 dir_color = float3(1,0.9,0.6);
 	float3 output = saturate(final_color * dir_color * NdotL);
-	
-
-	AmbientReturnTextures return_textures;
-	return_textures.m_SampleTexture = float4(output + (ambientDiffuse * 0.42), 1.f);
-	return_textures.m_FinishedTexture = return_textures.m_SampleTexture;
-
-	return return_textures;
+	// return float4(final_color, 1);
+	return float4(output + (ambientDiffuse * 0.42), 1.f);
 };

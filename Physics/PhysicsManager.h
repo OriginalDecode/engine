@@ -40,7 +40,7 @@ public:
 
 	RigidBody* CreateBody();
 	float GetGravityForce();
-	void Update(double& additionalTime);
+	void Update();
 	CU::Vector3f RayCast(const CU::Vector3f& cameraPosition, const CU::Vector3f& target) const;
 
 
@@ -56,6 +56,6 @@ private:
 	RigidBody* myZeroPlane;
 	CU::GrowingArray<btCollisionObject*> myBodies;
 
-	float myGravity = 0.f;
+	float m_Gravity = 0.f;
 };
 

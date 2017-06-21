@@ -164,6 +164,7 @@ public:
 	IInputLayout* CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements);
 
 
+
 private:
 	void CreateDeviceAndSwapchain();
 	void CreateDepthBuffer();

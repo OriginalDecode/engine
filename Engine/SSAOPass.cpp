@@ -78,12 +78,11 @@ void SSAOPass::Process(Texture* scene_texture)
 	//ctx->ClearRenderTargetView(m_Test->GetRenderTargetView(), clear);
 
 	ID3D11RenderTargetView* rtv[] = {
-		scene_texture->GetRenderTargetView(),
 		m_SSAOTexture->GetRenderTargetView(),
 	};
 
 	ctx->PSSetConstantBuffers(0, 1, &m_cbSSAO);
-	ctx->OMSetRenderTargets(2, rtv, api->GetDepthView());
+	ctx->OMSetRenderTargets(ARRAYSIZE(rtv), rtv, api->GetDepthView());
 
 	api->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 

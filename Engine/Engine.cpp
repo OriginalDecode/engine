@@ -259,14 +259,14 @@ void Engine::Update()
 		myAssetsContainer->Update();
 	}
 	myRenderer->Render();
-
+	m_PhysicsManager->Update();
 	m_Threadpool.Update();
 
 }
 
 void Engine::UpdateInput()
 {
-	if (!m_PauseInput)
+	if (!m_PauseInput || m_Window.IsWindowActive())
 		m_InputHandle->Update(m_DeltaTime);
 }
 

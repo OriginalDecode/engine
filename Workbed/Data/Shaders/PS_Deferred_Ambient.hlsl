@@ -131,12 +131,12 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float4 ssao = SSAOTexture.Sample(point_Clamp, input.uv);
 	
-	float ao =  1;//ssao.x;
+	float ao =  ssao.x;
 	float3 toEye = normalize(camera_position.xyz - worldPosition.xyz);
 	float3 reflection_fresnel = ReflectionFresnel(substance, normal, -toEye, 1 - roughnessOffsetted);
 	float3 reflectionVector = reflect(toEye, normal.xyz);
 	float3	ambientDiffuse = CubeMap.SampleLevel(point_Clamp, reflectionVector, 9).rgb * 
-	(metalness * 0.2) + metalnessAlbedo * (1 - reflection_fresnel) * 1;
+	(metalness * 0.2) + metalnessAlbedo * (1 - reflection_fresnel) * ao;
   
 	float fakeLysSpecularPower = RoughToSPow(roughness);
 	float lysMipMap = GetSpecPowToMip(fakeLysSpecularPower, 12);

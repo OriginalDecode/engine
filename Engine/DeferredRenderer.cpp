@@ -54,7 +54,7 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 
 
 	Effect* ssao_effect = Engine::GetInstance()->GetEffect("Shaders/T_SSAO.json");
-	ssao_effect->AddShaderResource(m_SampleTexture, Effect::DIFFUSE);
+	ssao_effect->AddShaderResource(myFinishedSceneTexture, Effect::DIFFUSE);
 	ssao_effect->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
 	ssao_effect->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
 

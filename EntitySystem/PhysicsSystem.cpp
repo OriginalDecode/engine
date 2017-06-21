@@ -3,13 +3,10 @@
 #include "PhysicsComponent.h"
 #include "DebugComponent.h"
 
-#include "../Physics/RigidBody.h"
-#include "../Physics/PhysicsManager.h"
-#include "AABBComponent.h"
+#include <Physics/RigidBody.h>
+#include <Physics/PhysicsManager.h>
 
-#include "../Engine/Engine.h"
-#include "../Engine/Synchronizer.h"
-#include "../Engine/RenderCommand.h"
+#include <Engine/Engine.h>
 
 PhysicsSystem::PhysicsSystem(NodeEntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, PhysicsComponent>>())
@@ -19,24 +16,18 @@ PhysicsSystem::PhysicsSystem(NodeEntityManager& anEntityManager)
 
 void PhysicsSystem::Update(float aDeltaTime)
 {
-	myAccumulatedTime += aDeltaTime;
-	while (myAccumulatedTime >= 1.f / 60.f)
+	const CU::GrowingArray<Entity>& entities = GetEntities();
+	for (int i = 0; i < entities.Size(); i++)
 	{
-		const CU::GrowingArray<Entity>& entities = GetEntities();
-		for (int i = 0; i < entities.Size(); i++)
-		{
-			Entity e = entities[i];
-			TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-			
-			PhysicsComponent& physics = GetComponent<SPhysicsComponent>(e);
-			
+		Entity e = entities[i];
+		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 
-			translation.myOrientation = physics.myBody->GetOrientation();
-			physics.myBody->Update(aDeltaTime);
-			
-			
-		}
-		//myPhysicsManager->Update(myAccumulatedTime); //ASync Physics? needs to be moved into separete sim thread or something
-		myAccumulatedTime -= 1.f / 60.f;
+		PhysicsComponent& physics = GetComponent<PhysicsComponent>(e);
+
+
+		translation.myOrientation = physics.myBody->GetOrientation();
+		physics.myBody->Update(aDeltaTime);
+
+
 	}
 }

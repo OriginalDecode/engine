@@ -6,7 +6,13 @@ class Subscriber
 {
 public:
 	Subscriber() = default;
-	virtual void ReceiveMessage(const OnLeftClick& message);
+
+
+
+	virtual void ReceiveMessage(const OnLeftClick& message) { }
+
+
+
 
 };
 

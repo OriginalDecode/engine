@@ -83,7 +83,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 
 	m_PostProcessManager.Initiate();
-	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
+	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR | PostProcessManager::SSAO);
 
 	m_RenderContext.m_API = Engine::GetAPI();
 	m_RenderContext.m_Device = Engine::GetAPI()->GetDevice();
@@ -158,10 +158,7 @@ void Renderer::Render()
 	else
 		Render3DCommands();
 
-	//m_Atmosphere.Render(m_Camera->GetOrientation(), m_DeferredRenderer->GetDepthStencil(), m_RenderContext);
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
-
-
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 
@@ -176,8 +173,8 @@ void Renderer::Render()
 	RenderSpotlight();
 
 	m_Engine->ResetRenderTargetAndDepth();
-
 	m_DeferredRenderer->SetBuffers(m_RenderContext); //This is just the quad
+
 	m_PostProcessManager.Process(m_DeferredRenderer->GetFinalTexture());
 
 	if (m_PostProcessManager.GetFlags() == 0)

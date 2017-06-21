@@ -2,11 +2,11 @@
 #include "BaseComponent.h"
 
 class RigidBody;
-struct SPhysicsComponent : public BaseComponent
+struct PhysicsComponent : public BaseComponent
 {
-	~SPhysicsComponent();
+	~PhysicsComponent();
 	RigidBody* myBody = nullptr;
 	/* Data goes here */
 	bool m_IsPlayer = false;
-} typedef PhysicsComponent;
+};
 

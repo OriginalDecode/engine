@@ -98,7 +98,7 @@ struct ReturnTextures
 	float4 m_SSAODebug;
 };
 
-ReturnTextures PS(VS_OUTPUT input) : SV_Target
+float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 normal = NormalTexture.Sample(SSAOSampler, input.uv) * 2 - 1;
 	float ao = CalculateSSAO(input.uv,normal);
@@ -107,5 +107,5 @@ ReturnTextures PS(VS_OUTPUT input) : SV_Target
 	return_textures.m_Diffuse  = DiffuseTexture.Sample(SSAOSampler, input.uv);
 	return_textures.m_SSAODebug = float4(ao,ao,ao,1);
 
-	return return_textures;
+	return float4(ao,ao,ao,1);;
 }

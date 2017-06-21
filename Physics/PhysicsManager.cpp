@@ -3,13 +3,12 @@
 #include "PhysicsDefines.h"
 #include "../CommonLib/Math/Matrix/Matrix.h"
 #include "RigidBody.h"
-#include <Windows.h>
-
+#include <Engine/Engine.h>
 //Had to be included to add to phys world?
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 PhysicsManager::PhysicsManager()
-	: myGravity(9.82f)
+	: m_Gravity(9.82f)
 {
 	myDefaultCollisionConfiguration = new btDefaultCollisionConfiguration();
 	myCollisionDispatcher = new btCollisionDispatcher(myDefaultCollisionConfiguration);
@@ -23,7 +22,7 @@ PhysicsManager::PhysicsManager()
 		myImpulseSolver,
 		myDefaultCollisionConfiguration);
 
-	myDynamicsWorld->setGravity(btVector3(0, -myGravity, 0));
+	myDynamicsWorld->setGravity(btVector3(0, -m_Gravity, 0));
 	myZeroPlane = new RigidBody();
 	Add(myZeroPlane->InitAsPlane(btVector3(0, 1, 0)));
 }
@@ -86,12 +85,17 @@ RigidBody* PhysicsManager::CreateBody()
 
 float PhysicsManager::GetGravityForce()
 {
-	return myGravity;
+	return m_Gravity;
 }
 
-void PhysicsManager::Update(double& additionalTime)
+void PhysicsManager::Update()
 {
-	myDynamicsWorld->stepSimulation(1.f / 60.f, 8);
+	float frame_time = Engine::GetInstance()->GetDeltaTime();
+	while (frame_time >= (1.f / 60.f))
+	{
+		myDynamicsWorld->stepSimulation(1.f / 60.f, 8);
+		frame_time -= (1.f / 60.f);
+	}
 }
 
 CU::Vector3f PhysicsManager::RayCast(const CU::Vector3f& cameraPosition, const CU::Vector3f& target) const

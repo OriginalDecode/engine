@@ -85,6 +85,8 @@ bool DeferredRenderer::CleanUp()
 	SAFE_DELETE(myIndexData);
 
 	SAFE_RELEASE(myInputLayout);
+	m_SampleTexture->CleanUp();
+	SAFE_DELETE(m_SampleTexture);
 
 	return true;
 }

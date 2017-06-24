@@ -76,12 +76,8 @@ void Synchronizer::WaitForRender()
 void Synchronizer::WaitForLogic()
 {
 	while (!m_LogicDone)
-	{
-		std::this_thread::yield(); //this shoild be wait? std
-		//check if windows has an internal wait command for threads. 
-		//check how threads can be slept until woken. Shouldn't be that hard, but shouldn't yield do that? ´Since these are our two "main" threads
+		std::this_thread::yield();
 
-	}
 	m_LogicDone = false;
 }
 

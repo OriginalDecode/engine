@@ -11,6 +11,7 @@ void PostProcessManager::Initiate()
 
 void PostProcessManager::CleanUp()
 {
+	m_SSAOPass.CleanUp();
 	m_HDRPass.CleanUp();
 }
 

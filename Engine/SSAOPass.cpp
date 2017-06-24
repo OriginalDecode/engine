@@ -52,7 +52,19 @@ void SSAOPass::Initiate()
 
 void SSAOPass::CleanUp()
 {
+	m_ScreenQuad.CleanUp();
+
+	SAFE_RELEASE(m_cbBlur);
+	SAFE_RELEASE(m_cbSSAO);
+
+	m_SSAOTexture->CleanUp();
 	SAFE_DELETE(m_SSAOTexture);
+
+	m_DebugTexture->CleanUp();
+	SAFE_DELETE(m_DebugTexture);
+
+	m_Test->CleanUp();
+	SAFE_DELETE(m_Test);
 }
 
 void SSAOPass::Process(Texture* scene_texture)

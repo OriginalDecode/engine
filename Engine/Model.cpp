@@ -20,6 +20,8 @@ void Model::CleanUp()
 	DL_ASSERT_EXP(!myConstantBuffer, "Failed to release constant buffer!");
 
 	SAFE_RELEASE(m_VertexLayout);
+	SAFE_RELEASE(m_InstanceInputLayout);
+	SAFE_RELEASE(m_InstanceBuffer);
 }
 
 void Model::Initiate(const std::string& filename)

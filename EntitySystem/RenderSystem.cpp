@@ -113,7 +113,7 @@ bool RenderSystem::Inside(const CU::Vector4f& translation, const CU::Vector4f& d
 void RenderSystem::AddRenderCommand(const ModelCommand& command)
 {
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
-	CommandAllocator& allocator = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, m_Manager.GetMemoryBlockIndex());
+	memory::CommandAllocator& allocator = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, m_Manager.GetMemoryBlockIndex());
 	void * current = allocator.Alloc(sizeof(ModelCommand));
 	memcpy(current, &command, sizeof(ModelCommand));
 }

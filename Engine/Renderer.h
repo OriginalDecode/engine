@@ -50,7 +50,7 @@ private:
 
 	void Render3DCommandsInstanced();
 
-	void ProcessCommand(const  CommandAllocator& commands, s32 i);
+	void ProcessCommand(const memory::CommandAllocator& commands, s32 i);
 
 	void RenderTerrain();
 

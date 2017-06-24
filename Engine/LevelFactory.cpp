@@ -203,8 +203,6 @@ void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
 	component.myOrientation.SetPosition(position);
 	m_DwellerList.GetLast()->AddComponent<TranslationComponent>(&component, TreeDweller::TRANSLATION);
-
-
 }
 
 void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)

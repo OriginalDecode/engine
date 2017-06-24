@@ -41,31 +41,33 @@ namespace
 	}
 };
 
-class BaseAllocator
+namespace memory
 {
-public:
-	BaseAllocator() = default;
-	BaseAllocator(s32 size_in_bytes, void* pStart);
-	virtual void CleanUp();
+	class BaseAllocator
+	{
+	public:
+		BaseAllocator() = default;
+		BaseAllocator(s32 size_in_bytes, void* pStart);
+		virtual void CleanUp();
 
-	virtual void* Alloc(s32 size_in_bytes, u8 alignmnet = sizeof(void*)) = 0;
-	virtual void Dealloc(void* p) = 0;
+		virtual void* Alloc(s32 size_in_bytes, u8 alignmnet = sizeof(void*)) = 0;
+		virtual void Dealloc(void* p) = 0;
 
-	void* GetStart() const { return m_Start; }
-	void* GetCurrentPos() const { return m_CurrentPos; }
-	s32 GetMemoryUsed() const { return m_UsedMemory; }
-	s32 GetAllocationSize() const { return m_AllocatedMemory; }
-	s32 Size() const { return m_NumberOfAllocations; }
+		void* GetStart() const { return m_Start; }
+		void* GetCurrentPos() const { return m_CurrentPos; }
+		s32 GetMemoryUsed() const { return m_UsedMemory; }
+		s32 GetAllocationSize() const { return m_AllocatedMemory; }
+		s32 Size() const { return m_NumberOfAllocations; }
 
 
-	static void* Alloc(s32 size_in_bytes, void* block, u8 alignment = sizeof(void*));
+		static void* Alloc(s32 size_in_bytes, void* block, u8 alignment = sizeof(void*));
 
-protected:
-	void* m_Start = nullptr;
-	void* m_CurrentPos = nullptr;
-	s32 m_AllocatedMemory = 0;
-	s32 m_UsedMemory = 0;
-	s32 m_NumberOfAllocations = 0;
+	protected:
+		void* m_Start = nullptr;
+		void* m_CurrentPos = nullptr;
+		s32 m_AllocatedMemory = 0;
+		s32 m_UsedMemory = 0;
+		s32 m_NumberOfAllocations = 0;
 
+	};
 };
-

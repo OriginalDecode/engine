@@ -29,7 +29,7 @@ void AddRenderCommand(const command_type command)\
 	memcpy(current, &command, sizeof(command_type));\
 };
 
-typedef CU::StaticArray<CommandAllocator, 2> CommandBuffer;
+typedef CU::StaticArray<memory::CommandAllocator, 2> CommandBuffer;
 typedef CU::StaticArray<CommandBuffer, eBufferType::BUFFER_COUNT> CommandBuffers;
 
 class Synchronizer
@@ -61,7 +61,7 @@ public:
 	ADD_COMMAND_FUNC(eBufferType::TEXT_BUFFER,			TextCommand);
 	
 
-	const CommandAllocator& GetRenderCommands(const eBufferType& buffer_type) const;
+	const memory::CommandAllocator& GetRenderCommands(const eBufferType& buffer_type) const;
 private:
 	CommandBuffers m_CommandBuffers;
 	volatile bool m_LogicDone = false;
@@ -69,8 +69,7 @@ private:
 	volatile bool m_QuitFlag = false;
 	u16 m_CurrentBuffer = 0;
 
-	char* m_MainMemory = nullptr;
-	CommandAllocator m_Allocator; 
+	void* m_MainMemory = nullptr;
 
 };
 

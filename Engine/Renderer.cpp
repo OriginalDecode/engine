@@ -312,7 +312,7 @@ void Renderer::Render3DCommandsInstanced()
 	}
 }
 
-void Renderer::ProcessCommand(const CommandAllocator& commands, s32 i)
+void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i)
 {
 	auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 	const bool result = (command->m_CommandType == RenderCommand::MODEL);

@@ -170,7 +170,7 @@ public:
 	
 	void SelectEntity(u32 e);
 	void DeselectEntity();
-	MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
+	memory::MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
 	struct ID3D11ShaderResourceView;
 #if !defined(_PROFILE) && !defined(_FINAL)
 	bool SaveLevel();
@@ -191,7 +191,7 @@ public:
 	bool GetRenderInstanced() { return m_RenderInstanced; }
 
 private:
-	MemorySegmentHandle m_SegmentHandle; 
+	memory::MemorySegmentHandle m_SegmentHandle; 
 
 	bool m_EditLight = false;
 	bool m_EditRender = false;

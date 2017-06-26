@@ -1,5 +1,6 @@
 #include "PostMaster.h"
 #include <DL_Debug.h>
+#include "../CommonLib/DataStructures/Hashmap/Hash.h"
 
 PostMaster* PostMaster::myInstance = nullptr;
 PostMaster::PostMaster()
@@ -70,6 +71,27 @@ void PostMaster::Subscribe(const eMessageType aMessageType, Subscriber* aSubscri
 	}
 }
 
+void PostMaster::Subscribe(const std::string& event, Subscriber* subscriber)
+{
+	u64 hash = Hash(event.c_str());
+	Subscribe(hash, subscriber);
+}
+
+void PostMaster::Subscribe(const u64& event, Subscriber* subscriber)
+{
+	SubscriberInfo newSubscriber;
+	newSubscriber.mySubscriber = subscriber;
+	newSubscriber.myPriority = ePriorityLayer::NORMAL;
+	newSubscriber.myLetThrough = true;
+
+
+
+	if(m_EventSubscribers.find(event) == m_EventSubscribers.end())
+		m_EventSubscribers.emplace(event, CU::GrowingArray<SubscriberInfo>());
+
+	m_EventSubscribers.at(event).Add(newSubscriber);
+}
+
 void PostMaster::UnSubscribe(const eMessageType aMessageType, Subscriber* aSubscriber)
 {
 	CU::GrowingArray<SubscriberInfo>& subscribers
@@ -119,6 +141,25 @@ bool PostMaster::IsSubscribed(const eMessageType aMessageType, Subscriber* aSubs
 	}
 
 	return false;
+}
+
+void PostMaster::SendMessage(const std::string& event, void* data)
+{
+	u64 hash = Hash(event.c_str());
+	SendMessage(hash, data);
+}
+
+void PostMaster::SendMessage(const u64& event, void* data)
+{
+	CU::GrowingArray<SubscriberInfo>& subscribers = m_EventSubscribers.at(event);
+
+	if (subscribers.Size() > 0)
+	{
+		for (int i = 0; i < subscribers.Size(); ++i)
+		{
+			subscribers[i].mySubscriber->HandleEvent(event, data);
+		}
+	}
 }
 
 void PostMaster::SortSubscribers(CU::GrowingArray<SubscriberInfo> &aBuffer)

@@ -5,11 +5,10 @@
 #include "BloomPass.h"
 #include "SSAOPass.h"
 
-class Texture;
-class Effect;
-class Engine;
+#include <Engine/engine_shared.h>
 
-#define BITFLAG(x) (1 << x)
+class Texture;
+class Engine;
 
 class PostProcessManager
 {

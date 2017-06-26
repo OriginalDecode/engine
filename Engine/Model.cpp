@@ -354,6 +354,7 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const 
 	render_context.m_API->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
 }
 
+
 void Model::AddChild(Model* aChild)
 {
 	myChildren.Add(aChild);
@@ -377,8 +378,7 @@ void Model::InitInstanceBuffer()
 	void* shader = myEffect->GetVertexShader()->compiledShader;
 	s32 size = myEffect->GetVertexShader()->shaderSize;
 	m_InstanceInputLayout = Engine::GetAPI()->CreateInputLayout(shader, size, &m_InputLayoutDesc[0], m_InputLayoutDesc.Size());
-	//m_InstanceInputLayout
-
+	Engine::GetAPI()->SetDebugName(m_InstanceInputLayout, "Model Instancing InputLayout");
 
 
 }
@@ -394,8 +394,10 @@ void Model::InitConstantBuffer()
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
 
-	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-
+	myConstantBuffer = Engine::GetAPI()->CreateBuffer(cbDesc);
 	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Model Constant Buffer : " + m_Filename);
-	Engine::GetAPI()->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
+
+	//HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
+
+	//Engine::GetAPI()->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 }

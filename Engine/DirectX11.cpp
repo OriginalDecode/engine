@@ -385,6 +385,16 @@ IBuffer* DirectX11::CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag /
 	return return_value;
 }
 
+IBuffer* DirectX11::CreateBuffer(D3D11_BUFFER_DESC buffer_desc)
+{
+	HRESULT hr = S_OK;
+	IBuffer* buffer = nullptr;
+	hr = myDevice->CreateBuffer(&buffer_desc, nullptr, &buffer);
+	HandleErrors(hr, "Failed to create buffer!");
+	return buffer;
+
+}
+
 IInputLayout* DirectX11::CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements)
 {
 	IInputLayout* return_value = nullptr;

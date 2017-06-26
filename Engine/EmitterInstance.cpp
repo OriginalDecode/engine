@@ -80,17 +80,17 @@ void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, const C
 	if (!myData.shader->GetVertexShader())
 		return;
 
-	dx->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->m_Shader : nullptr);
-	dx->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->m_Shader : nullptr);
-	dx->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->m_Shader : nullptr);
+	//dx->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->m_Shader : nullptr);
+	//dx->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->m_Shader : nullptr);
+	//dx->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->m_Shader : nullptr);
 	SetMatrices(aPreviousCameraOrientation, aProjection);
 
 	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 	context->GSSetConstantBuffers(0, 1, &m_GeometryBuffer);
 
-	myData.shader->Activate();
+	myData.shader->Use();
 	context->Draw(myParticles.Size(), 0);
-	myData.shader->Deactivate();
+	myData.shader->Clear();
 
 	dx->SetVertexShader(nullptr);
 	dx->SetGeometryShader(nullptr);

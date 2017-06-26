@@ -63,8 +63,10 @@ void CLine3D::Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& 
 	context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
 	context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
 
-	myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->m_Shader: nullptr);
-	myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->m_Shader : nullptr);
+	//myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->m_Shader: nullptr);
+	//myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->m_Shader : nullptr);
+
+	myEffect->Use();
 
 	ID3D11ShaderResourceView* srv[1];
 	srv[0] = nullptr;
@@ -74,6 +76,7 @@ void CLine3D::Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& 
 	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 	context->Draw(myVertices.Size(), 0);
+	myEffect->Clear();
 }
 
 void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)

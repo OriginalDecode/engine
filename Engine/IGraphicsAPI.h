@@ -124,12 +124,12 @@ public:
 	Tesselation Control = Hull
 	Tesselation Evaluation = Domain
 	*/
-	virtual void SetVertexShader(void * vertex_shader) = 0;
-	virtual void SetPixelShader(void * vertex_shader) = 0;
-	virtual void SetGeometryShader(void * vertex_shader) = 0;
-	virtual void SetHullShader(void * vertex_shader) = 0;
-	virtual void SetDomainShader(void * vertex_shader) = 0;
-	virtual void SetComputeShader(void * vertex_shader) = 0;
+	virtual void SetVertexShader(CompiledShader* vertex_shader) = 0;
+	virtual void SetPixelShader(CompiledShader* vertex_shader) = 0;
+	virtual void SetGeometryShader(CompiledShader* vertex_shader) = 0;
+	virtual void SetHullShader(CompiledShader* vertex_shader) = 0;
+	virtual void SetDomainShader(CompiledShader* vertex_shader) = 0;
+	virtual void SetComputeShader(CompiledShader* vertex_shader) = 0;
 
 	virtual void* CreateVertexShader(void* pBuffer, float buffer_size) = 0;
 	virtual void* CreatePixelShader(void* pBuffer, float buffer_size) = 0;

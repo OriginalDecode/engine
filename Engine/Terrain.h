@@ -13,10 +13,10 @@ struct SHeightMap
 
 SHeightMap Create(const char* aFilePath);
 
-class CTerrain : public BaseModel
+class Terrain : public BaseModel
 {
 public:
-	CTerrain() = default;
+	Terrain() = default;
 
 	bool Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
 	void CleanUp();

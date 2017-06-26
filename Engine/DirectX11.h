@@ -73,12 +73,12 @@ public:
 
 	void SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value) override;
 
-	void SetVertexShader(void* vertex_shader) override;
-	void SetPixelShader(void* pixel_shader) override;
-	void SetGeometryShader(void* geometry_shader) override;
-	void SetHullShader(void* hull_shader) override;
-	void SetDomainShader(void* domain_shader) override;
-	void SetComputeShader(void* compute_shader) override;
+	void SetVertexShader(CompiledShader* vertex_shader) override;
+	void SetPixelShader(CompiledShader* pixel_shader) override;
+	void SetGeometryShader(CompiledShader* geometry_shader) override;
+	void SetHullShader(CompiledShader* hull_shader) override;
+	void SetDomainShader(CompiledShader* domain_shader) override;
+	void SetComputeShader(CompiledShader* compute_shader) override;
 
 
 	void* CreateVertexShader(void* pBuffer, float buffer_size) override;

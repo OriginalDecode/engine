@@ -22,7 +22,7 @@ class PointLight;
 class Synchronizer;
 class Texture;
 class CText;
-class CTerrain;
+class Terrain;
 class LightPass;
 class SpotLight;
 class ShadowSpotlight;
@@ -36,7 +36,7 @@ public:
 	bool CleanUp();
 
 	void Render();
-	void AddTerrain(CTerrain* someTerrain);
+	void AddTerrain(Terrain* someTerrain);
 
 	PostProcessManager& GetPostprocessManager();
 
@@ -64,7 +64,7 @@ private:
 
 	CU::GrowingArray<Model*> m_Models;
 	std::map<std::string, Model*> m_ModelsToRender;
-	CU::GrowingArray<CTerrain*> myTerrainArray;
+	CU::GrowingArray<Terrain*> myTerrainArray;
 
 	CU::Vector3f		m_Direction;
 	CU::Vector3f		m_OriginalDirection;
@@ -101,6 +101,8 @@ private:
 	CEmitterInstance*	m_ParticleEmitter		= nullptr;
 
 	ShadowDirectional	m_DirectionalShadow;
+
+	class WaterPlane* m_WaterPlane = nullptr;
 
 	ShaderState m_LightState;
 

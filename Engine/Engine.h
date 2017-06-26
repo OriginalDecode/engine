@@ -56,7 +56,7 @@ class Renderer;
 class Synchronizer;
 class Texture;
 class Effect;
-class CTerrain;
+class Terrain;
 class IGraphicsAPI;
 
 class Engine
@@ -142,7 +142,7 @@ public:
 
 	//_________________________________________
 	// Level Creation, Loading, Saving
-	CTerrain* CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize);
+	Terrain* CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize);
 	CU::GrowingArray<TreeDweller*> LoadLevel(const std::string& level_filepath);
 	
 	//_________________________________________

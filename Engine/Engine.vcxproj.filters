@@ -381,6 +381,7 @@
       <Filter>World</Filter>
     </ClInclude>
     <ClInclude Include="MemorySegmentHandle.h" />
+    <ClInclude Include="WaterPlane.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -623,5 +624,6 @@
       <Filter>World</Filter>
     </ClCompile>
     <ClCompile Include="MemorySegmentHandle.cpp" />
+    <ClCompile Include="WaterPlane.cpp" />
   </ItemGroup>
 </Project>

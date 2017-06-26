@@ -20,8 +20,6 @@ public:
 
 	void SetPixelShader(CompiledShader* shader);
 
-	void Activate();
-	void Deactivate();
 	void AddShaderResource(IShaderResourceView* aShaderResource);
 
 	enum TextureSlot

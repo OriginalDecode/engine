@@ -50,12 +50,12 @@ void ShadowPass::ProcessShadows(ShadowDirectional* shadow_directional, const Ren
 
 void ShadowPass::Activate()
 {
-	m_RenderToDepth->Activate();
+	m_RenderToDepth->Use();
 }
 
 void ShadowPass::DeActivate()
 {
-	m_RenderToDepth->Deactivate();
+	m_RenderToDepth->Clear();
 }
 
 const CU::Matrix44f& ShadowPass::GetOrientation()

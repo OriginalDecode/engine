@@ -545,34 +545,34 @@ void DirectX11::SetSamplerState(const eSamplerStates& samplerState)
 	myContext->PSSetSamplers(0, 1, &mySamplerStates[u16(samplerState)]);
 }
 
-void DirectX11::SetVertexShader(void* vertex_shader)
+void DirectX11::SetVertexShader(CompiledShader* vertex_shader)
 {
-	myContext->VSSetShader(vertex_shader ? static_cast<IVertexShader*>(vertex_shader) : nullptr, nullptr, 0);
+	myContext->VSSetShader(vertex_shader ? static_cast<IVertexShader*>(vertex_shader->m_Shader) : nullptr, nullptr, 0);
 }
 
-void DirectX11::SetPixelShader(void* pixel_shader)
+void DirectX11::SetPixelShader(CompiledShader* pixel_shader)
 {
-	myContext->PSSetShader(pixel_shader ? static_cast<IPixelShader*>(pixel_shader) : nullptr, nullptr, 0);
+	myContext->PSSetShader(pixel_shader ? static_cast<IPixelShader*>(pixel_shader->m_Shader) : nullptr, nullptr, 0);
 }
 
-void DirectX11::SetGeometryShader(void* geomtery_shader)
+void DirectX11::SetGeometryShader(CompiledShader* geomtery_shader)
 {
-	myContext->GSSetShader(geomtery_shader ? static_cast<IGeometryShader*>(geomtery_shader) : nullptr, nullptr, 0);
+	myContext->GSSetShader(geomtery_shader ? static_cast<IGeometryShader*>(geomtery_shader->m_Shader) : nullptr, nullptr, 0);
 }
 
-void DirectX11::SetHullShader(void* hull_shader)
+void DirectX11::SetHullShader(CompiledShader* hull_shader)
 {
-	myContext->HSSetShader(hull_shader ? static_cast<IHullShader*>(hull_shader) : nullptr, nullptr, 0);
+	myContext->HSSetShader(hull_shader ? static_cast<IHullShader*>(hull_shader->m_Shader) : nullptr, nullptr, 0);
 }
 
-void DirectX11::SetDomainShader(void* domain_shader)
+void DirectX11::SetDomainShader(CompiledShader* domain_shader)
 {
-	myContext->DSSetShader(domain_shader ? static_cast<IDomainShader*>(domain_shader) : nullptr, nullptr, 0);
+	myContext->DSSetShader(domain_shader ? static_cast<IDomainShader*>(domain_shader->m_Shader) : nullptr, nullptr, 0);
 }
 
-void DirectX11::SetComputeShader(void* compute_shader)
+void DirectX11::SetComputeShader(CompiledShader* compute_shader)
 {
-	myContext->CSSetShader(compute_shader ? static_cast<IComputeShader*>(compute_shader) : nullptr, nullptr, 0);
+	myContext->CSSetShader(compute_shader ? static_cast<IComputeShader*>(compute_shader->m_Shader) : nullptr, nullptr, 0);
 }
 
 void* DirectX11::CreateVertexShader(void* pBuffer, float buffer_size)

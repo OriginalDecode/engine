@@ -6,7 +6,7 @@
 #define DIVIDE 255.f
 
 
-bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
+bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
 {
 	myWidth = aSize.x;
 	myDepth = aSize.y;
@@ -35,7 +35,7 @@ bool CTerrain::Initiate(const std::string& aFile, const CU::Vector3f position, c
 	return true;
 }
 
-void CTerrain::CleanUp()
+void Terrain::CleanUp()
 {
 	myIndexes.clear();
 	myVertices.clear();
@@ -48,11 +48,11 @@ void CTerrain::CleanUp()
 
 }
 
-void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
+void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
 	SetupLayoutsAndBuffers();
  
-	myEffect->Activate();
+	myEffect->Use();
  
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
@@ -62,9 +62,10 @@ void CTerrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix4
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 	mySurface->Deactivate();
 
+	myEffect->Clear();
 }
 
-void CTerrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+void Terrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
 {
 	SetupLayoutsAndBuffers();
 
@@ -75,37 +76,37 @@ void CTerrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::M
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 }
 
-void CTerrain::Save(const std::string& /*aFilename*/)
+void Terrain::Save(const std::string& /*aFilename*/)
 {
 	DL_ASSERT("Not implemented.");
 }
 
-void CTerrain::Load(const std::string& /*aFilePath*/)
+void Terrain::Load(const std::string& /*aFilePath*/)
 {
 	DL_ASSERT("Not implemented.");
 }
 
-void CTerrain::AddNormalMap(const std::string& filepath)
+void Terrain::AddNormalMap(const std::string& filepath)
 {
 	mySurface->AddTexture(filepath, Effect::NORMAL);
 }
 
-std::vector<float> CTerrain::GetVerticeArrayCopy()
+std::vector<float> Terrain::GetVerticeArrayCopy()
 {
 	return myVertices;
 }
 
-std::vector<s32> CTerrain::GetIndexArrayCopy()
+std::vector<s32> Terrain::GetIndexArrayCopy()
 {
 	return myIndexes;
 }
 
-void CTerrain::SetPosition(CU::Vector2f position)
+void Terrain::SetPosition(CU::Vector2f position)
 {
 
 }
 
-void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)
+void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)
 {
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 	{
@@ -191,7 +192,7 @@ void CTerrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& positio
 	InitConstantBuffer();
 }
 
-void CTerrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
+void Terrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
 	myConstantStruct.world = myOrientation;
 	myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);
@@ -199,7 +200,7 @@ void CTerrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, con
 	render_context.m_API->UpdateConstantBuffer((myConstantBuffer), &myConstantStruct);
 }
 
-void CTerrain::InitConstantBuffer()
+void Terrain::InitConstantBuffer()
 {
 	D3D11_BUFFER_DESC cbDesc;
 	ZeroMemory(&cbDesc, sizeof(cbDesc));
@@ -215,7 +216,7 @@ void CTerrain::InitConstantBuffer()
 	Engine::GetAPI()->HandleErrors(hr, "[Terrain] : Failed to Create Constantbuffer, ");
 }
 
-void CTerrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray)
+void Terrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray)
 {
 
 	unsigned int height = myHeightmap.myDepth;
@@ -247,12 +248,12 @@ void CTerrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertAr
 	}
 }
 
-float CTerrain::GetHeight(unsigned int aX, unsigned int aY) const
+float Terrain::GetHeight(unsigned int aX, unsigned int aY) const
 {
 	return myHeightmap.myData[(myHeightmap.myDepth - (1 + aY)) * myHeightmap.myWidth + aX] / DIVIDE;
 }
 
-float CTerrain::GetHeight(unsigned int aIndex) const
+float Terrain::GetHeight(unsigned int aIndex) const
 {
 	return myHeightmap.myData[aIndex] / DIVIDE;
 }

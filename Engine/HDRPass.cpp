@@ -92,12 +92,12 @@ void HDRPass::Process(Texture* scene_texture)
 
 	m_API->ResetRendertarget();
 
-	m_RenderToScreenEffect->Activate();
+	m_RenderToScreenEffect->Use();
 	IDevContext* ctx = m_API->GetContext();
 	ctx->PSSetShaderResources(0, 1, m_HDRTexture->GetShaderViewRef());
 	ctx->DrawIndexed(6, 0, 0);
 
-	m_RenderToScreenEffect->Deactivate();
+	m_RenderToScreenEffect->Clear();
 
 }
 
@@ -109,11 +109,11 @@ void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* 
 	const float clear[4] = { 0,0,0,0 };
 	ctx->ClearRenderTargetView(render_target, clear);
 
-	m_DownsampleEffect->Activate();
+	m_DownsampleEffect->Use();
 	ctx->PSSetShaderResources(0, 1, &source);
 	ctx->DrawIndexed(6, 0, 0);
 
-	m_DownsampleEffect->Deactivate();
+	m_DownsampleEffect->Clear();
 
 #ifdef _DEBUG
 	if (toggle_debug)
@@ -136,11 +136,11 @@ void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source
 	ctx->ClearRenderTargetView(target, clear);
 	ctx->OMSetRenderTargets(1, &target, m_API->GetDepthView());
 	
-	m_HDREffect->Activate();
+	m_HDREffect->Use();
 	ctx->PSSetShaderResources(0, resource_count, source);
 
 	ctx->DrawIndexed(6, 0, 0);
-	m_HDREffect->Deactivate();
+	m_HDREffect->Clear();
 
 }
 

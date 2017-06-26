@@ -97,17 +97,18 @@ void CFont::Render()
 
 	UpdateConstantBuffer();
 
-	Engine::GetAPI()->SetVertexShader(myEffect[0]->GetVertexShader()->m_Shader);
+	//Engine::GetAPI()->SetVertexShader(myEffect[0]->GetVertexShader()->m_Shader);
 	context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 	for (int i = 0; i < 2; i++)
 	{
-		Engine::GetAPI()->SetPixelShader(myEffect[i]->GetPixelShader()->m_Shader);
+		myEffect[i]->Use();
+		//Engine::GetAPI()->SetPixelShader(myEffect[i]->GetPixelShader()->m_Shader);
 		ID3D11ShaderResourceView* srv = myData->myAtlasView;
 		context.PSSetShaderResources(0, 1, &srv);
 		context.DrawIndexed(myIndices.Size(), 0, 0);
-		srv = nullptr;
-		context.PSSetShaderResources(0, 1, &srv);
+		myEffect[i]->Clear();
+
 	}
 
 	myTimeManager->GetTimer(myRenderTimer).Update();

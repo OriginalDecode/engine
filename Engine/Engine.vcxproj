@@ -396,6 +396,7 @@
     <ClInclude Include="VertexWrapper.h" />
     <ClInclude Include="VirtualFileSystem.h" />
     <ClInclude Include="Vulkan.h" />
+    <ClInclude Include="WaterPlane.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
@@ -499,6 +500,7 @@
     <ClCompile Include="TreeNodeBase.cpp" />
     <ClCompile Include="VirtualFileSystem.cpp" />
     <ClCompile Include="Vulkan.cpp" />
+    <ClCompile Include="WaterPlane.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>

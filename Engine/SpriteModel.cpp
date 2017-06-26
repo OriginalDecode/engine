@@ -181,16 +181,15 @@ void CSpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2D
 
 	UpdateConstantBuffer();
 
-	Engine::GetAPI()->SetVertexShader(myEffect->GetVertexShader()->m_Shader);
+	myEffect->Use();
+
 	context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
-	Engine::GetAPI()->SetPixelShader(myEffect->GetPixelShader()->m_Shader);
 	ID3D11ShaderResourceView* srv = myTexture;
 	context.PSSetShaderResources(0, 1, &srv);
 
 	context.DrawIndexed(6, 0, 0);
 
-	srv = nullptr;
-	context.PSSetShaderResources(0, 1, &srv);
+	myEffect->Clear();
 
 	Engine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
 }

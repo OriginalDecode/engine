@@ -11,25 +11,6 @@ void Effect::SetPixelShader(CompiledShader* shader)
 	m_PixelShader = shader;
 }
 
-void Effect::Activate()
-{
-	DirectX11* api = Engine::GetAPI();
-	api->SetVertexShader(m_VertexShader->m_Shader);
-	api->SetPixelShader(m_PixelShader->m_Shader);
-
-	if ( myShaderResources.Empty() )
-		return;
-	
-	myShaderResources.Optimize();
-	api->GetContext()->PSSetShaderResources(0, myShaderResources.Size(), &myShaderResources[0]);
-}
-
-void Effect::Deactivate()
-{
-	if (myNULLList.Size() > 0)
-		Engine::GetAPI()->GetContext()->PSSetShaderResources(0, myNULLList.Size(), &myNULLList[0]);
-}
-
 void Effect::AddShaderResource(IShaderResourceView* aShaderResource)
 {
 	DL_ASSERT_EXP(aShaderResource, "Shader Resource was null. Check if initiated correctly.");
@@ -50,11 +31,13 @@ void Effect::AddShaderResource(Texture* pResource, TextureSlot slot)
 void Effect::Use()
 {
 	DirectX11* api = Engine::GetAPI();
-	api->SetVertexShader(m_VertexShader->m_Shader);
-	api->SetPixelShader(m_PixelShader->m_Shader);
-
+	api->SetVertexShader(m_VertexShader);
+	api->SetPixelShader(m_PixelShader);
+	api->SetGeometryShader(m_GeometryShader);
+	api->SetHullShader(m_HullShader);
+	api->SetDomainShader(m_DomainShader);
+	api->SetComputeShader(m_ComputeShader);
 	api->GetContext()->PSSetShaderResources(0, _COUNT, m_Resources);
-
 }
 
 void Effect::Clear()

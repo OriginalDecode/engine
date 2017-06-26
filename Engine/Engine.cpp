@@ -539,9 +539,9 @@ const SLocalTime& Engine::GetLocalTime()
 	return myLocalTime;
 }
 
-CTerrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize)
+Terrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize)
 {
-	CTerrain* newTerrain = m_TerrainManager->GetTerrain(aFile);
+	Terrain* newTerrain = m_TerrainManager->GetTerrain(aFile);
 	newTerrain->Initiate(aFile, position, aSize);
 	myRenderer->AddTerrain(newTerrain);
 	return newTerrain;

@@ -54,17 +54,14 @@ void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::
 		return;
 
 	SetupLayoutsAndBuffers();
-	myEffect->Activate();
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 
+	myEffect->Use();
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-
-
-
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
-
+	myEffect->Clear();
 }
 
 void AtmosphereModel::AddChild(AtmosphereModel* child)

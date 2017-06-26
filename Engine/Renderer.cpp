@@ -22,7 +22,7 @@
 #include "Texture.h"
 
 #include "imgui_impl_dx11.h"
-
+#include <Engine/WaterPlane.h>
 
 #ifdef _PROFILE
 #include <easy/profiler.h>
@@ -102,7 +102,8 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_Engine->AddTexture(gbuffer.GetEmissive(), "Scene Emissive");
 #endif
 
-
+	m_WaterPlane = new WaterPlane;
+	m_WaterPlane->Initiate({ 512,0,512 });
 	return true;
 }
 //_________________________________
@@ -123,6 +124,7 @@ bool Renderer::CleanUp()
 
 	m_DeferredRenderer->CleanUp();
 	SAFE_DELETE(m_DeferredRenderer);
+	SAFE_DELETE(m_WaterPlane);
 
 	SAFE_DELETE(myText);
 
@@ -153,6 +155,8 @@ void Renderer::Render()
 	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
 	RenderTerrain();
+	m_WaterPlane->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
+
 	if (m_Engine->GetRenderInstanced())
 		Render3DCommandsInstanced();
 	else
@@ -210,7 +214,7 @@ void Renderer::Render()
 }
 //_________________________________
 
-void Renderer::AddTerrain(CTerrain* someTerrain)
+void Renderer::AddTerrain(Terrain* someTerrain)
 {
 	myTerrainArray.Add(someTerrain);
 }
@@ -327,12 +331,13 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i)
 
 void Renderer::RenderTerrain()
 {
+	return;
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 #ifdef _PROFILE
 	EASY_FUNCTION();
 #endif
-	for (CTerrain* terrain : myTerrainArray)
+	for (Terrain* terrain : myTerrainArray)
 	{
 		if (!terrain->HasLoaded())
 			continue;
@@ -475,7 +480,7 @@ void Renderer::RenderPointlight()
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
 	Effect* effect = m_LightPass.GetPointlightEffect();
-	effect->Activate();
+	effect->Use();
 #ifdef _PROFILE
 	EASY_BLOCK("Pointlight Command Loop", profiler::colors::Red);
 #endif
@@ -495,7 +500,7 @@ void Renderer::RenderPointlight()
 #ifdef _PROFILE
 	EASY_END_BLOCK;
 #endif
-	effect->Deactivate();
+	effect->Clear();
 
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);

@@ -2,17 +2,17 @@
 #include <map>
 #include "engine_shared.h"
 
-class CTerrain;
+class Terrain;
 class TerrainManager
 {
 public:
 	TerrainManager() = default;
 	bool CleanUp();
-	CTerrain* GetTerrain(u32 terrain_hash);
-	CTerrain* GetTerrain(const std::string& terrain_name);
+	Terrain* GetTerrain(u32 terrain_hash);
+	Terrain* GetTerrain(const std::string& terrain_name);
 private:
 	bool m_FinishedLoading = false;
-	std::map<u32, CTerrain*> m_Terrain;
+	std::map<u32, Terrain*> m_Terrain;
 	void LoadTerrain(u32 terrain_hash);
 	void LoadTerrain(const std::string& terrain_name);
 };

@@ -113,7 +113,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 metalness = float4(metal_fix, metal_fix, metal_fix, metal_fix);
 	normal *= 2;
 	normal -= 1;
-
 	float roughness = depth.y;
 	float roughnessOffsetted = pow(8192, roughness);
 

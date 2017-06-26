@@ -1,4 +1,6 @@
 #pragma once
+#include "../standard_datatype.hpp"
+
 #include <DataStructures/GrowingArray.h>
 #include <DataStructures/StaticArray.h>
 #include <Math/Vector/Vector.h>
@@ -8,7 +10,7 @@
 #include "MessageEnum.h"
 #include "Subscriber.h"
 #include <unordered_map>
-
+#include <map>
 #undef SendMessage
 
 enum class ePriorityLayer
@@ -20,6 +22,7 @@ enum class ePriorityLayer
 
 struct SubscriberInfo
 {
+	SubscriberInfo() = default;
 	Subscriber* mySubscriber;
 	ePriorityLayer myPriority = ePriorityLayer::NO_PRIO;
 	bool myLetThrough = true;
@@ -33,12 +36,18 @@ public:
 	static void Destroy();
 
 	void Subscribe(const eMessageType aMessageType, Subscriber* aSubscriber, ePriorityLayer aPriority = ePriorityLayer::NO_PRIO, bool aLetThrough = true);
+	void Subscribe(const std::string& event, Subscriber* subscriber);
+	void Subscribe(const u64& event, Subscriber* subscriber);
+
 	void UnSubscribe(const eMessageType aMessageType, Subscriber* aSubscriber);
 	void UnSubscribe(Subscriber* aSubscriber);
 	bool IsSubscribed(const eMessageType aMessageType, Subscriber* aSubscriber);
 
 	template<typename Message>
 	void SendMessage(const Message& aMessage);
+
+	void SendMessage(const std::string& event, void* data);
+	void SendMessage(const u64& event, void* data);
 
 private:
 	PostMaster();
@@ -49,13 +58,13 @@ private:
 	void QuickSort(CU::GrowingArray<SubscriberInfo>& aBuffer, const int aStart, const int aEnd);
 
 	CU::StaticArray<CU::GrowingArray<SubscriberInfo>, static_cast<int>(eMessageType::COUNT)> mySubscribers;
+	std::map<u64, CU::GrowingArray<SubscriberInfo>> m_EventSubscribers;
 };
 
 template<typename Message>
 void PostMaster::SendMessage(const Message& aMessage)
 {
-	CU::GrowingArray<SubscriberInfo>& subscribers
-		= mySubscribers[static_cast<int>(aMessage.myMessageType)];
+	CU::GrowingArray<SubscriberInfo>& subscribers = mySubscribers[static_cast<int>(aMessage.myMessageType)];
 
 	if (subscribers.Size() > 0)
 	{

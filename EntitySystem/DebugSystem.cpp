@@ -19,11 +19,13 @@
 #include <TreeDweller.h>
 #include <GizmoBase.h>
 #include <Engine/Model.h>
+#include <CommonLib/DataStructures/Hashmap/Hash.h>
 DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	PostMaster::GetInstance()->Subscribe(eMessageType::ON_LEFT_CLICK, this);
+	PostMaster::GetInstance()->Subscribe("left_click", this);
 	m_CurrentEntity = -1;
 	m_MouseDeltaModifier = 100.f;
 }
@@ -301,7 +303,16 @@ void DebugSystem::UpdateOBBs()
 
 }
 
-//This needs to be optimized as hell.
+void DebugSystem::HandleEvent(u64 event, void* data)
+{
+	if (event == Hash("left_click")) 
+	{
+		int apa;
+		apa = 5;
+	}
+}
+
+//This needs to be optimized as hell./*
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
 	return;

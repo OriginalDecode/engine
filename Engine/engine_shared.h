@@ -11,6 +11,7 @@
 #endif
 
 
+#define BITFLAG(x) (1 << x)
 
 typedef s32 Entity;
 

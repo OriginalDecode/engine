@@ -9,10 +9,10 @@ public:
 
 	virtual void HandleEvent(u64 event, void* data) { };
 
+
 	virtual void ReceiveMessage(const OnLeftClick& message) { }
 
 
 
 
 };
-

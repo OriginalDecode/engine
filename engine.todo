@@ -28,21 +28,24 @@ Engine Tasks:
     ☐ When entities save, their rotation is stored as euler angles
     ☐ When entities are edited in the engine, they will change with quaternions 
     ☐ Clickable entities in octree
+      ☐ Resolve problem with clicking thin OBBs 
   Debug UI:
     ✔ Hook up some kind of debug/edit-mode UI (imgui) @done (17-01-19 22:32)
     ✔ Configure imgui @done (17-01-22 00:59)
     ✔ Hook up some relevant variables @done (17-01-22 00:59)
     ☐ Entity Editing @low
+    ☐ Editor viewport should be a ImGUI widget. Resolve alpha issues. Different runtime & editor shaders?
   Particles:
     ☐ Custom particle shapes 
     ☐ Emitter System
+    ☐ Particles using a mesh
   Network:
     <http://stackoverflow.com/questions/366257/everything-a-c-developer-should-know-about-network-programming/>
     <https://developers.google.com/protocol-buffers/docs/cpptutorial>
     ☐ Add the network API to the engine and make the engine able to run without Graphics.
     ☐ NetworkComponent for Entities should be setting positions of the other entities.
     ☐ The level / world needs/Should be verified by the server with some kind of hash 
-       (network_version + map_name + user_name) or something like that
+       (network_version + map_name) or something like that
     ☐ FlatBuffers <https://google.github.io/flatbuffers/>
     ☐ Handshake message
       ☐ Check MTU size of Client
@@ -52,6 +55,10 @@ Engine Tasks:
        ☐ Experiment with compute shaders
          ☐ Send a buffer of work to the shader
          ☐ read the data on the CPU
+    Hull Shaders:
+      ☐ Implement
+    Domain Shaders:
+      ☐ Implement
   Rendering:
     Resources
     <https://github.com/Basez/Agnostik-Engine/>
@@ -62,7 +69,6 @@ Engine Tasks:
     ☐ Finish the current render frame before initiating / removing a main/sub state.
     ☐ Add Vulkan to regular build instead of having its separate build
     ☐ Check if the compile platform is windows for DirectX
-    ☐ Post Processing Effects (HDR, Blur, Bloom, ...)
     ☐ Soft Shadows
     ✘ Separate light pass to its own texture @cancelled (17-02-20 13:15)
     ☐ Move directional light to its own shader pass & not when the ambient runs.
@@ -76,16 +82,19 @@ Engine Tasks:
       ☐ Color Correction
       ☐ Contrast
       ☐ Saturate
+      ☐ Depth of Field
   StateStack:
     ✔ Move to engine @done (17-01-29 23:57)
     ☐ Debug State?
     ☐ Keep Rendering through the state, copy current render buffer and just add new commands to it?
   Memory:
-    ☐ Investigate Memory Allocators
+    ☐ Investigate Memory Allocators 
+      This task will never really be done.
     ☐ Implement custom memory allocators @high 
       ☐ Linear Allocator
-      ☐ Stack Allocator
-      ☐ Circle Allocator
+      ✔ Command Allocator @done (2017-06-26 14:31:21)
+        This is an allocator used to place RenderCommands in, so that it is simpler to use different types of RenderCommands 
+
     ☐ Rewrite the CommonLib containers 
   Physics:
     ☐ Physics Bodies
@@ -103,10 +112,9 @@ Engine Tasks:
     ☐ Investigate grouping up vertex buffers & index buffers
       ☐ CommandBuffers / RenderCommands
       ☐ A big drawcall instead of several small ones. Context swaps are expensive and can be solved by having a lot of vertices & indices in a single call. 
-    ☐ TreeNodes to be threaded?
+    ✔ TreeNodes to be threaded? @done (2017-06-26 14:31:55)
   I/O:
-    ☐ Thread loading of models.
-      ☐ Placeholder
+    ✔ Thread loading of models. @done (2017-06-26 14:31:58)
 CommonLib:
   Math:
     ☐ Quaternion -> Matrix

@@ -90,10 +90,6 @@ void PostMaster::Subscribe(const u64& event, Subscriber* subscriber)
 		m_EventSubscribers.emplace(event, CU::GrowingArray<SubscriberInfo>());
 
 	m_EventSubscribers.at(event).Add(newSubscriber);
-
-
-	//m_EventSubscribers.emplace(event, newSubscriber);
-
 }
 
 void PostMaster::UnSubscribe(const eMessageType aMessageType, Subscriber* aSubscriber)
@@ -155,13 +151,13 @@ void PostMaster::SendMessage(const std::string& event, void* data)
 
 void PostMaster::SendMessage(const u64& event, void* data)
 {
-	CU::GrowingArray<SubscriberInfo>& subscribers = m_EventSubscribers.at(event); //mySubscribers[static_cast<int>(aMessage.myMessageType)];
+	CU::GrowingArray<SubscriberInfo>& subscribers = m_EventSubscribers.at(event);
 
 	if (subscribers.Size() > 0)
 	{
 		for (int i = 0; i < subscribers.Size(); ++i)
 		{
-			subscribers[i].mySubscriber->HandleEvent(event, nullptr);
+			subscribers[i].mySubscriber->HandleEvent(event, data);
 		}
 	}
 }

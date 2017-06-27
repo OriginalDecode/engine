@@ -103,7 +103,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 #endif
 
 	m_WaterPlane = new WaterPlane;
-	m_WaterPlane->Initiate({ 512,0,512 });
+	m_WaterPlane->Initiate({ 0,0,0 });
 	return true;
 }
 //_________________________________

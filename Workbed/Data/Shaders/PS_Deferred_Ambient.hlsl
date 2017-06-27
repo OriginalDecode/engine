@@ -102,17 +102,16 @@ struct AmbientReturnTextures
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 depth = DepthTexture.Sample(point_Clamp, input.uv);
-	if(depth.x <= 0.f)
-		discard;
 
 	float4 albedo = AlbedoTexture.Sample(point_Clamp, input.uv);	
 	float4 normal = NormalTexture.Sample(point_Clamp, input.uv);
 	float metal_fix = normal.w;
 
-	
+
 	float4 metalness = float4(metal_fix, metal_fix, metal_fix, metal_fix);
 	normal *= 2;
 	normal -= 1;
+
 	float roughness = depth.y;
 	float roughnessOffsetted = pow(8192, roughness);
 

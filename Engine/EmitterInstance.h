@@ -16,7 +16,9 @@ public:
 	void Initiate(Synchronizer* aSynchronizer, Texture* depth_texture);
 	void CleanUp();
 	void Update(float aDeltaTime);
-	void Render(CU::Matrix44f& aPreviousCameraOrientation, const CU::Matrix44f& aProjection);
+
+	void Render(CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection);
+	void RenderShadowed(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection);
 
 	void SetPosition(const CU::Vector3f& position);
 

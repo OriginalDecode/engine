@@ -63,7 +63,7 @@ void CEmitterInstance::Update(float aDeltaTime)
 	UpdateParticle(aDeltaTime);
 }
 
-void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, const CU::Matrix44f& aProjection)
+void CEmitterInstance::Render(CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
 	if (!myConstantBuffer)
 		return;
@@ -80,10 +80,7 @@ void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, const C
 	if (!myData.shader->GetVertexShader())
 		return;
 
-	//dx->SetVertexShader(myData.shader->GetVertexShader() ? myData.shader->GetVertexShader()->m_Shader : nullptr);
-	//dx->SetGeometryShader(myData.shader->GetGeometryShader() ? myData.shader->GetGeometryShader()->m_Shader : nullptr);
-	//dx->SetPixelShader(myData.shader->GetPixelShader() ? myData.shader->GetPixelShader()->m_Shader : nullptr);
-	SetMatrices(aPreviousCameraOrientation, aProjection);
+	SetMatrices(camera_orientation, camera_projection);
 
 	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 	context->GSSetConstantBuffers(0, 1, &m_GeometryBuffer);
@@ -91,10 +88,10 @@ void CEmitterInstance::Render(CU::Matrix44f& aPreviousCameraOrientation, const C
 	myData.shader->Use();
 	context->Draw(myParticles.Size(), 0);
 	myData.shader->Clear();
+}
 
-	dx->SetVertexShader(nullptr);
-	dx->SetGeometryShader(nullptr);
-	dx->SetPixelShader(nullptr);
+void CEmitterInstance::RenderShadowed(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
+{
 
 }
 

@@ -13,6 +13,8 @@ public:
 	void Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
 	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
 
+	const CU::Vector3f& GetPosition() { return m_Orientation.GetPosition(); }
+
 private:
 	void CreatePlane();
 	void InitConstantBuffer() override;
@@ -34,6 +36,7 @@ private:
 		CU::Matrix44f m_World;
 		CU::Matrix44f m_InvertedView;
 		CU::Matrix44f m_Projection;
+		CU::Vector4f m_Time;
 	} m_VertexMatrices;
 
 	CU::Matrix44f m_Orientation;

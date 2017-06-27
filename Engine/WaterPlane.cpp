@@ -21,6 +21,7 @@ void WaterPlane::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, c
 	m_VertexMatrices.m_World = m_Orientation;
 	m_VertexMatrices.m_InvertedView = CU::Math::Inverse(camera_orientation);
 	m_VertexMatrices.m_Projection = camera_projection;
+	m_VertexMatrices.m_Time = Engine::GetInstance()->GetTotalTime();
 	render_context.m_API->UpdateConstantBuffer((myConstantBuffer), &m_VertexMatrices);
 }
 
@@ -28,7 +29,7 @@ void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matri
 {
 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	render_context.m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-	render_context.m_API->SetRasterizer(eRasterizer::WIREFRAME);
+	render_context.m_API->SetRasterizer(eRasterizer::CULL_FRONT);
 	SetupLayoutsAndBuffers();
 	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
 	//render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -64,23 +65,23 @@ void WaterPlane::CreatePlane()
 	myVertexFormat.Add(vertexDesc[3]);
 	myVertexFormat.Add(vertexDesc[4]);
 	
-	const float half_width = 5.f;
+	const float half_width = 2048.f;
 
 	SVertexPosNormUVBiTang vert;
 	vert.position = { -half_width, 0, -half_width };
-	vert.normal = { 0,1,0 };
+	vert.normal = { 0, 1, 0 };
 	m_Vertices.Add(vert);
 
 	vert.position = { -half_width, 0, half_width };
-	vert.normal = { 0,1,0 };
+	vert.normal = { 0, 1, 0 };
 	m_Vertices.Add(vert);
 
 	vert.position = { half_width, 0, -half_width };
-	vert.normal = { 0,1,0 };
+	vert.normal = { 0, 1, 0 };
 	m_Vertices.Add(vert);
 
 	vert.position = { half_width, 0, half_width };
-	vert.normal = { 0,1,0 };
+	vert.normal = { 0, 1, 0 };
 	m_Vertices.Add(vert);
 
 	m_Indices.Add(0);

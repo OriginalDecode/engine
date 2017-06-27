@@ -127,7 +127,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	worldPosition = worldPosition / worldPosition.w;
 	worldPosition = mul(worldPosition, InvertedView);	
 
-	float4 ssao = SSAOTexture.Sample(point_Clamp, input.uv);
+	float4 ssao = 1;//SSAOTexture.Sample(point_Clamp, input.uv);
 	
 	float ao =  ssao.x;
 	float3 toEye = normalize(camera_position.xyz - worldPosition.xyz);

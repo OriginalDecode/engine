@@ -130,7 +130,7 @@ void Game::Update(float dt)
 
 	std::stringstream ss;
 	//ss << "Entity Speed : " << entity_speed;
-	//ss << "\nx:" << m_Camera->GetOrientation().GetPosition().x << "\ny:" << m_Camera->GetOrientation().GetPosition().y << "\nz:" << m_Camera->GetOrientation().GetPosition().z;
+	ss << "\nx:" << m_Camera->GetOrientation().GetPosition().x << "\ny:" << m_Camera->GetOrientation().GetPosition().y << "\nz:" << m_Camera->GetOrientation().GetPosition().z <<"\n";
 	ss << m_FPSToPrint;
 	m_Synchronizer->AddRenderCommand(TextCommand(ss.str(), CU::Vector2f(0.75f, 0.1f)));
 

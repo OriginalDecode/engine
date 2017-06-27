@@ -83,7 +83,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 
 	m_PostProcessManager.Initiate();
-	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR | PostProcessManager::SSAO);
+	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR );
 
 	m_RenderContext.m_API = Engine::GetAPI();
 	m_RenderContext.m_Device = Engine::GetAPI()->GetDevice();
@@ -103,7 +103,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 #endif
 
 	m_WaterPlane = new WaterPlane;
-	m_WaterPlane->Initiate({ 0,0,0 });
+	m_WaterPlane->Initiate({ -512, 0, -512});
 	return true;
 }
 //_________________________________
@@ -331,7 +331,6 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i)
 
 void Renderer::RenderTerrain()
 {
-	return;
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 #ifdef _PROFILE

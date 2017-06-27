@@ -95,6 +95,7 @@ public:
 
 	CFont* LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth);
 	float GetDeltaTime();
+	float GetTotalTime();
 	float GetFPS();
 	float GetFrameTime();
 	std::string GetAPIName();

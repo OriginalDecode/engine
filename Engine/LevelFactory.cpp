@@ -124,12 +124,12 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
 	
- 	CU::Vector3f new_pos = pos;
- 	new_pos.y += 5.f;
- 	new_pos.x += 400.f;
- 	new_pos.z += 400.f;
+	CU::Vector3f new_pos = pos;
+	new_pos.y += 5.f;
+	new_pos.x += 400.f;
+	new_pos.z += 400.f;
   
- 	component.myOrientation.SetPosition(new_pos);
+	component.myOrientation.SetPosition(new_pos);
  
 
 	m_DwellerList.GetLast()->Initiate(e, TreeDweller::STATIC);
@@ -543,7 +543,14 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-		m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, -2, 0), CU::Vector2f(512, 512));
+	Terrain* terrain = m_Engine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, -2, 0), CU::Vector2f(512, 512));
+	terrain->AddNormalMap("Data/Textures/t0_n.dds");
+	terrain=m_Engine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, -2, 510), CU::Vector2f(512, 512));
+	terrain->AddNormalMap("Data/Textures/t1_n.dds");
+	terrain=m_Engine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, -2, 0), CU::Vector2f(512, 512));
+	terrain->AddNormalMap("Data/Textures/t2_n.dds");
+	terrain=m_Engine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, -2, 510), CU::Vector2f(512, 512));
+	terrain->AddNormalMap("Data/Textures/t3_n.dds");
 	//m_Engine->GetThreadpool().AddWork(Work([=] {
 	//}));
 	//terrain->AddNormalMap("Data/Textures/t1_n.dds");

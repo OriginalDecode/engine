@@ -38,10 +38,20 @@ struct VS_OUTPUT
 	float4 worldpos : POSITION;
 };
 
+struct DS_OUTPUT
+{
+	float4 pos : SV_POSITION;
+	float3 normal : NORMAL;
+	float2 uv : TEXCOORD;
+	float3 binorm : BINORMAL;
+	float3 tang : TANGENT;
+	float4 worldpos : POSITION0;	
+};
+
 //---------------------------------
 //	Water Base Pixel Shader
 //---------------------------------
-GBuffer PS(VS_OUTPUT input) : SV_Target
+GBuffer PS(DS_OUTPUT input) : SV_Target
 {
 	float3 _normal = float3(0,1,0); //NormalTexture.Sample(linear_Wrap, input.uv).rgb * 2 - 1;
 	float3 normal = input.normal;
@@ -58,7 +68,9 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 
 	GBuffer output;
 	output = (GBuffer)0;
-	output.Albedo = float4(1,1,1,1) * normalize(input.worldpos);//AlbedoTexture.Sample(linear_Wrap, input.uv);
+	output.Albedo = float4(0.0,0.0,1,1); //float4(0.0, 0.8, 1, 1);//AlbedoTexture.Sample(linear_Wrap, input.uv);
+	
+
 	output.Normal = float4(_normal.rgb, 0);//MetalnessTexture.Sample(linear_Wrap, input.uv).r);
 	output.Depth.y = 1; //RoughnessTexture.Sample(linear_Wrap, input.uv).r;
 	output.Emissive = float4(1,1,1,1);

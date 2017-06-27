@@ -412,6 +412,11 @@ float Engine::GetDeltaTime()
 	return m_DeltaTime;
 }
 
+float Engine::GetTotalTime()
+{
+	return myTimeManager.GetMasterTimer().GetTotalTime().GetSeconds();
+}
+
 float Engine::GetFPS()
 {
 	return myTimeManager.GetFPS();

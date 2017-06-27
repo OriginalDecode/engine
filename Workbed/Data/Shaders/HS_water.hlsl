@@ -27,7 +27,7 @@ struct ConstantOutputType
 ConstantOutputType ColorPatchConstantFunction(InputPatch<VS_OUTPUT, 4> inputPatch, uint patchId : SV_PrimitiveID)
 {    
     ConstantOutputType output;
-    int  tessellationAmount = 2; 
+    int  tessellationAmount = 64; 
     // Set the tessellation factors for the three edges of the triangle.
     output.edges[0] = tessellationAmount;
     output.edges[1] = tessellationAmount;

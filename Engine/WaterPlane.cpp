@@ -30,7 +30,7 @@ void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matri
 	render_context.m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 	render_context.m_API->SetRasterizer(eRasterizer::WIREFRAME);
 	SetupLayoutsAndBuffers();
-	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
 	//render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);

@@ -17,8 +17,8 @@ struct HS_OUTPUT
 
 struct ConstantOutputType
 {
-    float edges[3] : SV_TessFactor;
-    float inside : SV_InsideTessFactor;
+    float edges[4] : SV_TessFactor;
+    float inside[2] : SV_InsideTessFactor;
 };
 
 struct DS_OUTPUT
@@ -31,13 +31,13 @@ struct DS_OUTPUT
 	float4 worldpos : POSITION0;	
 };
 
-[domain("tri")]
-DS_OUTPUT DS(ConstantOutputType input, float3 uvwCoord : SV_DomainLocation, const OutputPatch<HS_OUTPUT, 3> patch)
+[domain("quad")]
+DS_OUTPUT DS(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, const OutputPatch<HS_OUTPUT, 4> patch)
 {
 	float3 vertex_pos;
 	DS_OUTPUT output = (DS_OUTPUT)0;
 
-	vertex_pos = uvwCoord.x * patch[0].pos + uvwCoord.y * patch[1].pos + uvwCoord.z * patch[2].pos;
+	vertex_pos = uvwCoord.x * patch[0].pos + uvwCoord.y * patch[2].pos;
 
 	output.pos = mul(float4(vertex_pos,1), World);
 	output.pos = mul(output.pos, View);

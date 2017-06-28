@@ -3,7 +3,8 @@ cbuffer Matrices : register(b0)
 	row_major float4x4 World;
 	row_major float4x4 View;
 	row_major float4x4 Projection;
-	float4 Time;
+	float3 CameraPos;
+	float Time;
 };
 
 struct HS_OUTPUT
@@ -31,6 +32,7 @@ struct DS_OUTPUT
 	float3 tang : TANGENT;
 	float4 worldpos : POSITION0;	
 	float4 clip : TEXCOORD1;
+	float4 camerapos : POSITION1;
 };
 
 [domain("quad")]
@@ -47,15 +49,16 @@ DS_OUTPUT DS(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, cons
 
 	output.pos = mul(float4(vertex_pos, 1), World);
 	output.worldpos = output.pos ;
+
 	output.pos = mul(output.pos, View);
 	output.pos = mul(output.pos, Projection);
-
 
 	output.clip = output.pos;
 
 	output.normal = patch[0].normal;
 	output.binorm = patch[0].binorm;
 	output.tang = patch[0].tang;
+	output.camerapos = float4(CameraPos.xyz, 1);
 	//output.worldpos = patch[0].worldpos;
 
 	return output;

@@ -187,7 +187,7 @@ void Renderer::Render()
 
 
 	m_WaterPlane->SetupRefractionRender(m_RenderContext);
-	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 0.f }, m_RenderContext);
+	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 0.f }, m_RenderContext, old_camera);
 	RenderTerrain(true);
 
 	Render3DCommandsInstanced();
@@ -200,7 +200,7 @@ void Renderer::Render()
 	m_Camera->SetPosition2(position0);
 	m_Camera->InvertAll();
 	m_WaterPlane->SetupReflectionRender(m_RenderContext);
-	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, 0.f }, m_RenderContext);
+	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, -1.f }, m_RenderContext, old_camera);
 	RenderTerrain(true);
 
 	Render3DCommandsInstanced();
@@ -374,7 +374,8 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i)
 void Renderer::RenderTerrain(bool override_effect)
 {
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+	m_API->SetBlendState(eBlendStates::BLEND_FALSE); 
+	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 #ifdef _PROFILE
 	EASY_FUNCTION();
 #endif

@@ -9,7 +9,8 @@ cbuffer Matrices : register(b0)
 	row_major float4x4 World;
 	row_major float4x4 View;
 	row_major float4x4 Projection;
-	float4 Time;
+	float3 CameraPos;
+	float Time;
 };
 
 //---------------------------------

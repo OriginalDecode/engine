@@ -48,6 +48,19 @@ struct DS_OUTPUT
 	float3 tang : TANGENT;
 	float4 worldpos : POSITION0;		
 	float4 clip : TEXCOORD1;
+	float4 camerapos : POSITION1;
+};
+
+float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const float3 half_vector, float roughness)
+{
+	float LdotH = dot(light_dir, half_vector);
+	LdotH = saturate(LdotH);
+	LdotH = 1 - LdotH;
+	LdotH = pow(LdotH, 5);
+	float3 fresnel = LdotH * (1-substance);
+	fresnel = fresnel / (6 - 5 * roughness);
+	fresnel = substance + fresnel;
+	return fresnel;
 };
 
 //---------------------------------
@@ -74,16 +87,21 @@ GBuffer PS(DS_OUTPUT input) : SV_Target
 	_normal *= 0.5;
 
 
+
+	float3 to_eye = normalize(input.camerapos.xyz - input.worldpos.xyz);
+	float blend_value = dot(to_eye, float3(0,1,0));
+
 	float2 reflectionUV = float2(ndc.x, -ndc.y);
 	float2 refractionUV = float2(ndc.x, ndc.y);
 	GBuffer output;
 	output = (GBuffer)0;
 
 	float4 reflection = ReflectionTexture.Sample(linear_Wrap, reflectionUV);
-	float4 refraction = RefractionTexture.Sample(linear_Wrap, refractionUV); 
-	float4 out_color = lerp(reflection, refraction, 0.2);
-	output.Albedo = out_color;
+	float4 refraction = RefractionTexture.Sample(linear_Wrap, refractionUV);
+	blend_value = pow(blend_value, 0.4);
 
+	float4 out_color = lerp(reflection, refraction, blend_value);
+	output.Albedo = out_color;
 			//output = lerp(float4(1,1,1,1), center_color, height * 4);
 
 	output.Normal = float4(_normal.rgb, 0);//MetalnessTexture.Sample(linear_Wrap, input.uv).r);

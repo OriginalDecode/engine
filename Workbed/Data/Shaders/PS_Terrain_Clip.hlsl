@@ -8,6 +8,7 @@
 cbuffer clipvalue : register(b0)
 {
 	float4 clip_value;
+	float4 camera_position;
 };
 
 SamplerState linear_Wrap 	: register ( s0 );
@@ -50,7 +51,7 @@ struct VS_OUTPUT
 GBuffer PS(VS_OUTPUT input) : SV_Target
 {
 	float value = dot(input.worldpos, clip_value);
-	if(value < 1)
+	if(value <= -1)
 		discard;
 	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv2).rgb * 2 - 1;
 	float3 nnormal = normalize(input.normal.xyz);

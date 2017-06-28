@@ -19,7 +19,7 @@ public:
 
 	void SetupRefractionRender(const RenderContext& render_context);
 	void SetupReflectionRender(const RenderContext& render_context);
-	void SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context);
+	void SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context, const Camera* camera);
 
 private:
 	void CreatePlane();
@@ -42,7 +42,8 @@ private:
 		CU::Matrix44f m_World;
 		CU::Matrix44f m_InvertedView;
 		CU::Matrix44f m_Projection;
-		CU::Vector4f m_Time;
+		CU::Vector3f m_CameraPos;
+		float m_Time;
 	} m_VertexMatrices;
 
 	CU::Matrix44f m_Orientation;

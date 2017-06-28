@@ -51,6 +51,7 @@ void WaterPlane::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, c
 	m_VertexMatrices.m_World = m_Orientation;
 	m_VertexMatrices.m_InvertedView = CU::Math::Inverse(camera_orientation);
 	m_VertexMatrices.m_Projection = camera_projection;
+	m_VertexMatrices.m_CameraPos = camera_orientation.GetPosition();
 	m_VertexMatrices.m_Time = Engine::GetInstance()->GetTotalTime();
 	render_context.m_API->UpdateConstantBuffer((myConstantBuffer), &m_VertexMatrices);
 
@@ -93,7 +94,7 @@ void WaterPlane::SetupReflectionRender(const RenderContext& render_context)
 	m_ReflectionG.SetAsRenderTarget(m_Reflection, render_context);
 }
 
-void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context)
+void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context, const Camera* camera)
 {
 	m_PixelStruct.m_CompareValue = plane;
 	render_context.m_API->UpdateConstantBuffer(m_cbPixel, &m_PixelStruct);

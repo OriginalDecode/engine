@@ -19,7 +19,11 @@ namespace CommonUtilities
 		Quaternion Slerp(const Quaternion& other, float aT) const;
 
 		CU::Matrix44f ConvertToRotationMatrix();
-
+		void operator-=(const CU::Quaternion& quat)
+		{
+			v -= quat.v;
+			w -= w;
+		}
 	private:
 		void ToAxisAngle(CU::Vector3f& aVectorAxisOut, float& anAngleOut) const;
 		CU::Vector3f v;

@@ -49,6 +49,12 @@ void Camera::SetPosition(const CU::Vector3f& position)
 	m_Orientation.SetPosition(position);
 }
 
+void Camera::SetPosition2(const CU::Vector3f& position)
+{
+	m_Orientation.SetPosition(position);
+	m_Orientation2.SetPosition(position);
+}
+
 void Camera::SetTranslation(const CU::Vector4f& translation)
 {
 	m_Orientation2 = m_Orientation;
@@ -143,6 +149,31 @@ void Camera::RecalculatePerspective(float width, float height, float near_plane,
 	m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, CL::DegreeToRad(m_CurrentFoV));
 }
 
+void Camera::InvertPitch()
+{
+	m_Pitch = m_Pitch.Inverted();
+	UpdateOrientation();
+}
+
+void Camera::InvertRoll()
+{
+	m_Roll = m_Roll.Inverted();
+	UpdateOrientation();
+}
+
+void Camera::InvertYaw()
+{
+	m_Yaw = m_Yaw.Inverted();
+	UpdateOrientation();
+}
+
+void Camera::InvertAll()
+{
+	InvertPitch();
+	InvertRoll();
+	InvertYaw();
+}
+
 void Camera::SetAt(const CU::Vector4f& at)
 {
 	m_Orientation2 = m_Orientation;
@@ -177,6 +208,31 @@ void Camera::Move(eDirection aDirection, float aSpeed)
 		break;
 	}
 	m_Orientation.SetTranslation(position);
+}
+
+void Camera::UpdateOrientation()
+{
+	CU::Vector3f axisX(1.f, 0, 0);
+	CU::Vector3f axisY(0, 1.f, 0);
+	CU::Vector3f axisZ(0, 0, 1.f);
+
+	axisX = m_Yaw * m_Pitch * axisX;
+	axisY = m_Yaw * m_Pitch * axisY;
+	axisZ = m_Yaw * m_Pitch * axisZ;
+
+	m_Orientation2 = m_Orientation;
+
+	m_Orientation[0] = axisX.x;
+	m_Orientation[1] = axisX.y;
+	m_Orientation[2] = axisX.z;
+
+	m_Orientation[4] = axisY.x;
+	m_Orientation[5] = axisY.y;
+	m_Orientation[6] = axisY.z;
+
+	m_Orientation[8] = axisZ.x;
+	m_Orientation[9] = axisZ.y;
+	m_Orientation[10] = axisZ.z;
 }
 
 void Camera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)

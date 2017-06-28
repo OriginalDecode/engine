@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "WaterPlane.h"
+#include <Engine/Texture.h>
 
 void WaterPlane::Initiate(const CU::Vector3f& position)
 {
@@ -7,7 +8,36 @@ void WaterPlane::Initiate(const CU::Vector3f& position)
 
 	myEffect = Engine::GetInstance()->GetEffect("Shaders/T_water.json");
 
+	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
+
+	m_Refraction = new Texture;
+	m_Refraction->Initiate(window_size.m_Width, window_size.m_Height
+		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
+		, DXGI_FORMAT_R16G16B16A16_FLOAT
+		, DXGI_FORMAT_R32_TYPELESS
+		, DXGI_FORMAT_R32_FLOAT
+		, DXGI_FORMAT_D32_FLOAT
+		, "Water : m_RefractionDepth");
+
+	m_Reflection = new Texture;
+	m_Reflection-> Initiate(window_size.m_Width, window_size.m_Height
+		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
+		, DXGI_FORMAT_R16G16B16A16_FLOAT
+		, DXGI_FORMAT_R32_TYPELESS
+		, DXGI_FORMAT_R32_FLOAT
+		, DXGI_FORMAT_D32_FLOAT
+		, "Water : m_ReflectionDepth");
+
+	m_RefractionG.Initiate();
+	m_ReflectionG.Initiate();
+
+	myEffect->AddShaderResource(m_RefractionG.GetDiffuse(), Effect::REFRACTION);
+	myEffect->AddShaderResource(m_ReflectionG.GetDiffuse(), Effect::REFLECTION);
+	myEffect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/T_cubemap_level01.dds"), Effect::CUBEMAP);
+	Engine::GetInstance()->AddTexture(m_RefractionG.GetDiffuse(), "Refraction");
+	Engine::GetInstance()->AddTexture(m_ReflectionG.GetDiffuse(), "Reflection");
 	CreatePlane();
+	m_cbPixel = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbPixel));
 
 }
 
@@ -23,13 +53,15 @@ void WaterPlane::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, c
 	m_VertexMatrices.m_Projection = camera_projection;
 	m_VertexMatrices.m_Time = Engine::GetInstance()->GetTotalTime();
 	render_context.m_API->UpdateConstantBuffer((myConstantBuffer), &m_VertexMatrices);
+
+
 }
 
 void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
 {
 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	render_context.m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-	render_context.m_API->SetRasterizer(eRasterizer::CULL_FRONT);
+	render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	SetupLayoutsAndBuffers();
 	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
 	//render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -45,6 +77,27 @@ void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matri
 void WaterPlane::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
 {
 	DL_ASSERT("water shadow?");
+}
+
+void WaterPlane::SetupRefractionRender(const RenderContext& render_context)
+{
+	m_RefractionG.Clear(m_ClearColor, render_context);
+	render_context.m_Context->ClearDepthStencilView(m_Refraction->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_RefractionG.SetAsRenderTarget(m_Refraction, render_context);
+}
+
+void WaterPlane::SetupReflectionRender(const RenderContext& render_context)
+{
+	m_ReflectionG.Clear(m_ClearColor, render_context);
+	render_context.m_Context->ClearDepthStencilView(m_Reflection->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_ReflectionG.SetAsRenderTarget(m_Reflection, render_context);
+}
+
+void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context)
+{
+	m_PixelStruct.m_CompareValue = plane;
+	render_context.m_API->UpdateConstantBuffer(m_cbPixel, &m_PixelStruct);
+	render_context.m_Context->PSSetConstantBuffers(0, 1, &m_cbPixel);
 }
 
 void WaterPlane::CreatePlane()
@@ -70,18 +123,23 @@ void WaterPlane::CreatePlane()
 	SVertexPosNormUVBiTang vert;
 	vert.position = { -half_width, 0, -half_width };
 	vert.normal = { 0, 1, 0 };
+	vert.uv = { 0, 0 };
 	m_Vertices.Add(vert);
 
 	vert.position = { -half_width, 0, half_width };
 	vert.normal = { 0, 1, 0 };
+	vert.uv = { 0, 1 };
+
 	m_Vertices.Add(vert);
 
 	vert.position = { half_width, 0, -half_width };
 	vert.normal = { 0, 1, 0 };
+	vert.uv = { 1, 0 };
 	m_Vertices.Add(vert);
 
 	vert.position = { half_width, 0, half_width };
 	vert.normal = { 0, 1, 0 };
+	vert.uv = { 1, 1 };
 	m_Vertices.Add(vert);
 
 	m_Indices.Add(0);

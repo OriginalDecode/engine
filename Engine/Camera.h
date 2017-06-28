@@ -51,6 +51,7 @@ struct ControllerState;
 
 		void Move(eDirection aDirection, float aSpeed);
 		void SetPosition(const CU::Vector3f& position);
+		void SetPosition2(const CU::Vector3f& position);
 		void SetTranslation(const CU::Vector4f& translation);
 
 		void Update(const ControllerState& controller_state);
@@ -75,7 +76,12 @@ struct ControllerState;
 
 		void RecalculatePerspective(float width, float height, float near_plane, float far_plane);
 
+		void InvertPitch();
+		void InvertRoll();
+		void InvertYaw();
+		void InvertAll();
 	private:
+		void UpdateOrientation();
 		float m_LookSpeedModifier = 0.005f;
 		float m_RotationDegree = 0.f;
 		void operator=(Camera&) = delete;

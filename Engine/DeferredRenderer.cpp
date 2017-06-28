@@ -23,13 +23,11 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 		, DXGI_FORMAT_R16G16B16A16_FLOAT
 		, "Texture : FinishedScene");
 
-
 	m_SampleTexture = new Texture;
 	m_SampleTexture->Initiate(window_size.m_Width, window_size.m_Height
 		, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
 		, DXGI_FORMAT_R16G16B16A16_FLOAT
 		, "DeferredRenderer : SampleTexture");
-
 
 	myDepthStencil = new Texture;
 	myDepthStencil->Initiate(window_size.m_Width, window_size.m_Height

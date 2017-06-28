@@ -31,6 +31,10 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 	mySurface = new Surface(myEffect);
 	mySurface->AddTexture("Data/Textures/terrain.dds", Effect::DIFFUSE);
 	//mySurface->AddTexture("Data/Textures/default_textures/no-texture-bw.dds", _ROUGHNESS);
+
+	m_ClipEffect = Engine::GetInstance()->GetEffect("Shaders/T_Terrain_Clip.json");
+	m_ClipEffect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain.dds"), Effect::DIFFUSE);
+
 	m_HasLoaded = true;
 	return true;
 }
@@ -63,6 +67,29 @@ void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44
 	mySurface->Deactivate();
 
 	myEffect->Clear();
+}
+
+void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context, bool override_shader)
+{
+	SetupLayoutsAndBuffers();
+
+	m_ClipEffect->Use();
+
+	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+
+	if (!override_shader)
+	{
+		mySurface->Activate(render_context);
+		render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+		mySurface->Deactivate();
+	}
+	else
+	{
+		render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+	}
+	m_ClipEffect->Clear();
 }
 
 void Terrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
@@ -198,6 +225,8 @@ void Terrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, cons
 	myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);
 	myConstantStruct.projection = aCameraProjection;
 	render_context.m_API->UpdateConstantBuffer((myConstantBuffer), &myConstantStruct);
+
+
 }
 
 void Terrain::InitConstantBuffer()

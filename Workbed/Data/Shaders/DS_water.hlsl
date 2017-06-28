@@ -26,10 +26,11 @@ struct DS_OUTPUT
 {
 	float4 pos : SV_POSITION;
 	float3 normal : NORMAL;
-	float2 uv : TEXCOORD;
+	float2 uv : TEXCOORD0;
 	float3 binorm : BINORMAL;
 	float3 tang : TANGENT;
 	float4 worldpos : POSITION0;	
+	float4 clip : TEXCOORD1;
 };
 
 [domain("quad")]
@@ -45,13 +46,14 @@ DS_OUTPUT DS(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, cons
 	
 
 	output.pos = mul(float4(vertex_pos, 1), World);
-	output.worldpos =	output.pos ;
+	output.worldpos = output.pos ;
 	output.pos = mul(output.pos, View);
 	output.pos = mul(output.pos, Projection);
 
 
+	output.clip = output.pos;
+
 	output.normal = patch[0].normal;
-	output.uv = patch[0].uv;
 	output.binorm = patch[0].binorm;
 	output.tang = patch[0].tang;
 	//output.worldpos = patch[0].worldpos;

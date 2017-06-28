@@ -104,6 +104,10 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_WaterPlane = new WaterPlane;
 	m_WaterPlane->Initiate({ -512, 0, -512});
+
+	m_WaterCamera = new Camera;
+	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.1f, 10000.f, 90.f);
+
 	return true;
 }
 //_________________________________
@@ -154,7 +158,7 @@ void Renderer::Render()
 
 	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
-	RenderTerrain();
+	RenderTerrain(false);
 	m_WaterPlane->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 
 	if (m_Engine->GetRenderInstanced())
@@ -162,9 +166,12 @@ void Renderer::Render()
 	else
 		Render3DCommands();
 
-	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
+	
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
+	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
+
+
 
 	m_DeferredRenderer->DeferredRender(
 		m_Camera->GetOrientation(),
@@ -172,6 +179,41 @@ void Renderer::Render()
 		m_DirectionalShadow.GetMVP(),
 		m_Direction,
 		m_RenderContext);
+
+	
+	memcpy(m_WaterCamera, m_Camera, sizeof(Camera));
+	Camera* old_camera = m_Camera;
+	m_Camera = m_WaterCamera;
+
+
+	m_WaterPlane->SetupRefractionRender(m_RenderContext);
+	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 0.f }, m_RenderContext);
+	RenderTerrain(true);
+
+	Render3DCommandsInstanced();
+
+	CU::Vector3f position0 = old_camera->GetPosition();
+	m_Camera->SetPosition2(position0);
+
+	float distance = 2 * (position0.y - m_WaterPlane->GetPosition().y);
+	position0.y -= distance;
+	m_Camera->SetPosition2(position0);
+	m_Camera->InvertAll();
+	m_WaterPlane->SetupReflectionRender(m_RenderContext);
+	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, 0.f }, m_RenderContext);
+	RenderTerrain(true);
+
+	Render3DCommandsInstanced();
+	m_Atmosphere.Render(m_Camera->GetOrientation(), myDepthTexture, m_RenderContext);
+
+	position0.y += distance;
+	m_Camera->SetPosition2(position0);
+
+
+	m_Camera = old_camera;
+	
+
+
 
 	RenderPointlight();
 	RenderSpotlight();
@@ -329,7 +371,7 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i)
 
 //_________________________________
 
-void Renderer::RenderTerrain()
+void Renderer::RenderTerrain(bool override_effect)
 {
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
@@ -340,8 +382,11 @@ void Renderer::RenderTerrain()
 	{
 		if (!terrain->HasLoaded())
 			continue;
+		if(!override_effect)
+			terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
+		else
+			terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext, true);
 
-		terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 	}
 }
 

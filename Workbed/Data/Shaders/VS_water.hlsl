@@ -32,6 +32,7 @@ struct VS_OUTPUT
 	float3 binorm : BINORMAL;
 	float3 tang : TANGENT;
 	float4 worldpos : POSITION1;
+	float4 clip : TEXCOORD1;
 };
 
 //---------------------------------
@@ -42,8 +43,8 @@ VS_OUTPUT VS(VS_INPUT input)
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	
 	output.pos = input.pos;
-
 	output.uv = input.uv;
+	output.clip = output.pos;
 
 	output.normal = mul(input.normal, World);
 	output.binorm = input.binorm;

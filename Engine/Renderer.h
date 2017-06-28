@@ -52,7 +52,7 @@ private:
 
 	void ProcessCommand(const memory::CommandAllocator& commands, s32 i);
 
-	void RenderTerrain();
+	void RenderTerrain(bool override_effect);
 
 	void Render2DCommands();
 
@@ -82,6 +82,7 @@ private:
 	Engine*				m_Engine				= nullptr;
 	DirectX11*			m_API					= nullptr;
 	Camera*				m_Camera				= nullptr;
+	Camera*				m_WaterCamera			= nullptr;
 
 	DeferredRenderer*	m_DeferredRenderer		= nullptr;
 

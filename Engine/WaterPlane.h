@@ -1,5 +1,7 @@
 #pragma once
 #include <Engine/BaseModel.h>
+#include <Engine/GBuffer.h>
+class Texture;
 class WaterPlane : public BaseModel
 {
 public:
@@ -14,6 +16,10 @@ public:
 	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
 
 	const CU::Vector3f& GetPosition() { return m_Orientation.GetPosition(); }
+
+	void SetupRefractionRender(const RenderContext& render_context);
+	void SetupReflectionRender(const RenderContext& render_context);
+	void SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context);
 
 private:
 	void CreatePlane();
@@ -42,6 +48,19 @@ private:
 	CU::Matrix44f m_Orientation;
 	CU::GrowingArray<SVertexPosNormUVBiTang> m_Vertices;
 	CU::GrowingArray<int> m_Indices;
+
+	float m_ClearColor[4] = { 0, 0, 0, 0 };
+	Texture* m_Refraction = nullptr;
+	Texture* m_Reflection = nullptr;
+
+	GBuffer m_RefractionG;
+	GBuffer m_ReflectionG;
+
+	IBuffer* m_cbPixel = nullptr;
+	struct cbPixel
+	{
+		CU::Vector4f m_CompareValue;
+	} m_PixelStruct;
 
 };
 

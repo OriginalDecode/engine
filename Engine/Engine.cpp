@@ -136,7 +136,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	m_InputHandle = new InputHandle;
 	m_InputHandle->Initiate(myHWND, instance_handle);
-	//m_InputHandle->AddController(0);
+	m_InputHandle->AddController(0);
 
 
 	myAssetsContainer = new AssetsContainer;

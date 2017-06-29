@@ -163,7 +163,7 @@ public:
 	IBuffer* CreateBuffer(D3D11_BUFFER_DESC buffer_desc);
 	IInputLayout* CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements);
 
-
+	ID3D11SamplerState* GetSampler(s32 index);
 
 private:
 	void CreateDeviceAndSwapchain();

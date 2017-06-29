@@ -6,6 +6,7 @@
 //---------------------------------
 
 SamplerState linear_Wrap 	: register ( s0 );
+SamplerState linear_clamp 	: register ( s1 );
 Texture2D RefractionTexture	: register ( t0 );
 Texture2D NormalTexture  	: register ( t1 );
 Texture2D RoughnessTexture 	: register ( t2 );
@@ -16,6 +17,7 @@ Texture2D AOTexture			: register ( t6 );
 Texture2D HeightTexture		: register ( t7 );
 Texture2D Displacement		: register ( t8 );
 Texture2D ShininessTexture	: register ( t10 );
+Texture2D DUDVTexture		: register ( t11 );
 TextureCube CubeMap		 	: register ( t9 );
 //---------------------------------
 //	Water Base Pixel Structs
@@ -63,33 +65,6 @@ float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const f
 	return fresnel;
 };
 
-bool less_than(float4 vec, float4 comp)
-{
-	if(vec.x > comp.x)
-		return false;
-	if(vec.y > comp.y)
-		return false;
-	if(vec.z > comp.z)
-		return false;
-	if(vec.w > comp.w)
-		return false;
-		
-	return true;	
-}
-
-bool less_than(float3 vec, float3 comp)
-{
-	if(vec.x > comp.x)
-		return false;
-	if(vec.y > comp.y)
-		return false;
-	if(vec.z > comp.z)
-		return false;
-		
-	return true;	
-}
-
-
 //---------------------------------
 //	Water Base Pixel Shader
 //---------------------------------
@@ -124,10 +99,17 @@ GBuffer PS(DS_OUTPUT input) : SV_Target
 
 	float4 reflection = ReflectionTexture.Sample(linear_Wrap, reflectionUV);
 	float4 refraction = RefractionTexture.Sample(linear_Wrap, refractionUV);
-	blend_value = pow(blend_value, 0.2);
+
+	float4 distortion_texture = DUDVTexture.Sample(linear_Wrap, input.uv);
+	float4 normal_texture = NormalTexture.Sample(linear_clamp, input.uv);
+
+	float NdotL = dot(normal_texture, float4(0.2, 0.6, 0, 1));
+
+	blend_value = pow(blend_value, 0.4);
 
 	float4 out_color = lerp(reflection, refraction, blend_value);
-	output.Albedo = out_color;
+	output.Albedo =  normal_texture;
+
 
 	output.Normal = float4(_normal.rgb, 0);
 	output.Depth.y = 1; 

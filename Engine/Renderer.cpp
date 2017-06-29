@@ -156,6 +156,38 @@ void Renderer::Render()
 #endif
 	m_Engine->Clear();
 
+
+	memcpy(m_WaterCamera, m_Camera, sizeof(Camera));
+	Camera* old_camera = m_Camera;
+	m_Camera = m_WaterCamera;
+
+
+	m_WaterPlane->SetupRefractionRender(m_RenderContext);
+	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 2.f }, m_RenderContext, old_camera);
+	RenderTerrain(true);
+
+	Render3DCommandsInstanced();
+
+	CU::Vector3f position0 = old_camera->GetPosition();
+	m_Camera->SetPosition(position0);
+
+	float distance = 2 * (position0.y - m_WaterPlane->GetPosition().y);
+	position0.y -= distance;
+	m_Camera->SetPosition(position0);
+	m_Camera->InvertAll();
+	m_WaterPlane->SetupReflectionRender(m_RenderContext);
+	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, 2.f }, m_RenderContext, old_camera);
+	RenderTerrain(true);
+
+	Render3DCommandsInstanced();
+	m_Atmosphere.Render(m_Camera->GetOrientation(), myDepthTexture, m_RenderContext);
+
+	position0.y += distance;
+	m_Camera->SetPosition(position0);
+
+
+	m_Camera = old_camera;
+
 	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
 	RenderTerrain(false);
@@ -181,36 +213,7 @@ void Renderer::Render()
 		m_RenderContext);
 
 	
-	memcpy(m_WaterCamera, m_Camera, sizeof(Camera));
-	Camera* old_camera = m_Camera;
-	m_Camera = m_WaterCamera;
 
-
-	m_WaterPlane->SetupRefractionRender(m_RenderContext);
-	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 2.f }, m_RenderContext, old_camera);
-	RenderTerrain(true);
-
-	Render3DCommandsInstanced();
-
-	CU::Vector3f position0 = old_camera->GetPosition();
-	m_Camera->SetPosition2(position0);
-
-	float distance = 2 * (position0.y - m_WaterPlane->GetPosition().y);
-	position0.y -= distance;
-	m_Camera->SetPosition2(position0);
-	m_Camera->InvertAll();
-	m_WaterPlane->SetupReflectionRender(m_RenderContext);
-	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, 2.f }, m_RenderContext, old_camera);
-	RenderTerrain(true);
-
-	Render3DCommandsInstanced();
-	m_Atmosphere.Render(m_Camera->GetOrientation(), myDepthTexture, m_RenderContext);
-
-	position0.y += distance;
-	m_Camera->SetPosition2(position0);
-
-
-	m_Camera = old_camera;
 	
 
 

@@ -40,6 +40,7 @@ public:
 		SHADOWMAP,
 		CUBEMAP,
 		SSAO,
+		DUDV,
 		_COUNT
 	};
 

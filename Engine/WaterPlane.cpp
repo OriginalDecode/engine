@@ -33,9 +33,16 @@ void WaterPlane::Initiate(const CU::Vector3f& position)
 
 	myEffect->AddShaderResource(m_RefractionG.GetDiffuse(), Effect::REFRACTION);
 	myEffect->AddShaderResource(m_ReflectionG.GetDiffuse(), Effect::REFLECTION);
-	myEffect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/T_cubemap_level01.dds"), Effect::CUBEMAP);
-	Engine::GetInstance()->AddTexture(m_RefractionG.GetDiffuse(), "Refraction");
-	Engine::GetInstance()->AddTexture(m_ReflectionG.GetDiffuse(), "Reflection");
+
+	Engine* engine = Engine::GetInstance();
+
+	myEffect->AddShaderResource(engine->GetTexture("Data/Textures/T_cubemap_level01.dds"), Effect::CUBEMAP);
+	myEffect->AddShaderResource(engine->GetTexture("Data/Textures/water_normal.dds"), Effect::NORMAL);
+	myEffect->AddShaderResource(engine->GetTexture("Data/Textures/water_dudv.dds"), Effect::DUDV);
+
+
+	engine->AddTexture(m_RefractionG.GetDiffuse(), "Refraction");
+	engine->AddTexture(m_ReflectionG.GetDiffuse(), "Reflection");
 	CreatePlane();
 	m_cbPixel = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbPixel));
 
@@ -63,6 +70,9 @@ void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matri
 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	render_context.m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 	render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
+	ID3D11SamplerState* sampler = render_context.m_API->GetSampler((s32)eSamplerStates::LINEAR_CLAMP);
+	render_context.m_Context->PSSetSamplers(1, 1, &sampler);
+
 	SetupLayoutsAndBuffers();
 	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
 	//render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

@@ -407,6 +407,11 @@ IInputLayout* DirectX11::CreateInputLayout(const void* pShader, s32 shader_byte_
 	return return_value;
 }
 
+ID3D11SamplerState* DirectX11::GetSampler(s32 index)
+{
+	return mySamplerStates[index];
+}
+
 void DirectX11::CreateAdapterList()
 {
 	std::vector<IDXGIAdapter*> enumAdapter;

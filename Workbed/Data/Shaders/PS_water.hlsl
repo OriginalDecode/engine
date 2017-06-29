@@ -127,17 +127,7 @@ GBuffer PS(DS_OUTPUT input) : SV_Target
 	blend_value = pow(blend_value, 0.2);
 
 	float4 out_color = lerp(reflection, refraction, blend_value);
-
-	float3 less = out_color.xyz;
-
-
-	bool result = less_than(less, float3(0.3h, 0.3h, 0.3h));
-	if (result == true)
-	{
-		out_color = float4(1, 1, 1, 1) * 2;
-	}
 	output.Albedo = out_color;
-			//output = lerp(float4(1,1,1,1), center_color, height * 4);
 
 	output.Normal = float4(_normal.rgb, 0);
 	output.Depth.y = 1; 

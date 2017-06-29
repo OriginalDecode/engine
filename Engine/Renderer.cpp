@@ -187,7 +187,7 @@ void Renderer::Render()
 
 
 	m_WaterPlane->SetupRefractionRender(m_RenderContext);
-	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 0.f }, m_RenderContext, old_camera);
+	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 2.f }, m_RenderContext, old_camera);
 	RenderTerrain(true);
 
 	Render3DCommandsInstanced();
@@ -200,7 +200,7 @@ void Renderer::Render()
 	m_Camera->SetPosition2(position0);
 	m_Camera->InvertAll();
 	m_WaterPlane->SetupReflectionRender(m_RenderContext);
-	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, -1.f }, m_RenderContext, old_camera);
+	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, 2.f }, m_RenderContext, old_camera);
 	RenderTerrain(true);
 
 	Render3DCommandsInstanced();

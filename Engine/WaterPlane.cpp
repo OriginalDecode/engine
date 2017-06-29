@@ -17,7 +17,7 @@ void WaterPlane::Initiate(const CU::Vector3f& position)
 		, DXGI_FORMAT_R32_TYPELESS
 		, DXGI_FORMAT_R32_FLOAT
 		, DXGI_FORMAT_D32_FLOAT
-		, "Water : m_RefractionDepth");
+		, "Water : RefractionDepth");
 
 	m_Reflection = new Texture;
 	m_Reflection-> Initiate(window_size.m_Width, window_size.m_Height
@@ -26,7 +26,7 @@ void WaterPlane::Initiate(const CU::Vector3f& position)
 		, DXGI_FORMAT_R32_TYPELESS
 		, DXGI_FORMAT_R32_FLOAT
 		, DXGI_FORMAT_D32_FLOAT
-		, "Water : m_ReflectionDepth");
+		, "Water : ReflectionDepth");
 
 	m_RefractionG.Initiate();
 	m_ReflectionG.Initiate();

@@ -63,6 +63,33 @@ float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const f
 	return fresnel;
 };
 
+bool less_than(float4 vec, float4 comp)
+{
+	if(vec.x > comp.x)
+		return false;
+	if(vec.y > comp.y)
+		return false;
+	if(vec.z > comp.z)
+		return false;
+	if(vec.w > comp.w)
+		return false;
+		
+	return true;	
+}
+
+bool less_than(float3 vec, float3 comp)
+{
+	if(vec.x > comp.x)
+		return false;
+	if(vec.y > comp.y)
+		return false;
+	if(vec.z > comp.z)
+		return false;
+		
+	return true;	
+}
+
+
 //---------------------------------
 //	Water Base Pixel Shader
 //---------------------------------
@@ -93,19 +120,27 @@ GBuffer PS(DS_OUTPUT input) : SV_Target
 
 	float2 reflectionUV = float2(ndc.x, -ndc.y);
 	float2 refractionUV = float2(ndc.x, ndc.y);
-	GBuffer output;
-	output = (GBuffer)0;
+	GBuffer output = (GBuffer)0;
 
 	float4 reflection = ReflectionTexture.Sample(linear_Wrap, reflectionUV);
 	float4 refraction = RefractionTexture.Sample(linear_Wrap, refractionUV);
-	blend_value = pow(blend_value, 0.4);
+	blend_value = pow(blend_value, 0.2);
 
 	float4 out_color = lerp(reflection, refraction, blend_value);
+
+	float3 less = out_color.xyz;
+
+
+	bool result = less_than(less, float3(0.3h, 0.3h, 0.3h));
+	if (result == true)
+	{
+		out_color = float4(1, 1, 1, 1) * 2;
+	}
 	output.Albedo = out_color;
 			//output = lerp(float4(1,1,1,1), center_color, height * 4);
 
-	output.Normal = float4(_normal.rgb, 0);//MetalnessTexture.Sample(linear_Wrap, input.uv).r);
-	output.Depth.y = 1; //RoughnessTexture.Sample(linear_Wrap, input.uv).r;
+	output.Normal = float4(_normal.rgb, 0);
+	output.Depth.y = 1; 
 	output.Emissive = float4(1,1,1,1);
 	return output;
 

@@ -619,7 +619,7 @@ void Engine::DebugTextures()
 	if (ImGui::Begin("textures", &pOpen, 0))
 	{
 		static s32 index = 0;
-		ListBox("Textures", &index, m_Labels);
+		ListBox("", &index, m_Labels);
 		ImTextureID tex_id = m_DebugTextures[index];
 		ImVec2 w_size = ImGui::GetWindowSize();
 		w_size.x -= 50.f;

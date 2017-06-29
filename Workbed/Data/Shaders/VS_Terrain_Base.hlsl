@@ -47,7 +47,7 @@ VS_OUTPUT VS(VS_INPUT input)
 	output.pos = mul(output.pos, Projection);
 
 	output.uv2 = input.uv;
-	output.uv = input.uv * 100;
+	output.uv = input.uv * 10;
 
 	output.normal = mul(input.normal, World);
 	output.binorm = input.binorm;

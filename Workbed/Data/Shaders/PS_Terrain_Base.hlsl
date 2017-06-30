@@ -63,6 +63,7 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	output.Normal = float4(_normal.rgb, 0);//MetalnessTexture.Sample(linear_Wrap, input.uv).r);
 	output.Depth.x = input.pos.z;
 	output.Depth.y = RoughnessTexture.Sample(linear_Wrap, input.uv / 32).r;
+	output.Depth.a = 1;
 	output.Emissive = float4(1,1,1,1);
 	return output;
 

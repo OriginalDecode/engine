@@ -180,7 +180,24 @@ public:
 	void DebugTextures();
 	void AddTexture(Texture* texture, const std::string& debug_name);
 	void AddTexture(void* srv, const std::string& debug_name);
+
+	void RegisterCheckBox(bool* pBool, const std::string& box_name)
+	{
+		CheckBox box;
+		box.m_Name = box_name;
+		box.m_Toggle = pBool;
+		m_Checkboxes.Add(box);
+	}
+
 private:
+	struct CheckBox
+	{
+		std::string m_Name;
+		bool* m_Toggle = false;
+	};
+	CU::GrowingArray<CheckBox> m_Checkboxes;
+
+
 	void UpdateDebugUI();
 	CU::GrowingArray<ID3D11ShaderResourceView*> m_DebugTextures;
 	std::vector<std::string> m_Labels;

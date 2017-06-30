@@ -20,6 +20,7 @@ struct HS_OUTPUT
 struct ConstantOutputType
 {
     float edges[4] : SV_TessFactor;
+    float2 uv[4] : TEXCOORD;
     float inside[2] : SV_InsideTessFactor;
 };
 
@@ -58,9 +59,13 @@ DS_OUTPUT DS(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, cons
 	output.normal = patch[0].normal;
 	output.binorm = patch[0].binorm;
 	output.tang = patch[0].tang;
-	output.uv = patch[0].uv;
 	output.camerapos = float4(CameraPos.xyz, 1);
 	//output.worldpos = patch[0].worldpos;
+
+
+	output.uv =  uvwCoord.x * patch[1].uv + uvwCoord.y * patch[2].uv;
+	output.uv *= 64;
+	output.uv = output.uv * cos((Time / 256) * 2 - ( output.worldpos.x - output.worldpos.z));
 
 	return output;
 }

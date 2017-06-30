@@ -713,6 +713,12 @@ void Engine::UpdateDebugUI()
 		ImGui::Text("Text Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER).Size());
 		ImGui::Text("Line Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size());
 
+		for (CheckBox& box : m_Checkboxes)
+		{
+			ImGui::Checkbox(box.m_Name.c_str(), box.m_Toggle);
+		}
+
+
 
 
 

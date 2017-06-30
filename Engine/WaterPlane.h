@@ -51,5 +51,10 @@ private:
 		CU::Vector4f m_CompareValue;
 	} m_PixelStruct;
 
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+
+	bool m_RenderWireframe = false;
+#endif
 };
 

@@ -20,22 +20,10 @@ public:
 	void SetupRefractionRender(const RenderContext& render_context);
 	void SetupReflectionRender(const RenderContext& render_context);
 	void SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context, const Camera* camera);
-
+	Effect* GetEffect() { return myEffect; }
 private:
 	void CreatePlane();
 	void InitConstantBuffer() override;
-
-	struct Vertice
-	{
-		Vertice() = default;
-		Vertice(const CU::Vector4f& pos, const CU::Vector3f& normal)
-			: m_Position(pos)
-			, m_Normal(normal)
-		{
-		}
-		CU::Vector4f m_Position;
-		CU::Vector3f m_Normal;
-	};
 
 	struct cbMatrices
 	{

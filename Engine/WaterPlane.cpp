@@ -6,7 +6,7 @@ void WaterPlane::Initiate(const CU::Vector3f& position)
 {
 	m_Orientation.SetPosition(position);
 
-	myEffect = Engine::GetInstance()->GetEffect("Shaders/T_water.json");
+	myEffect = Engine::GetInstance()->GetEffect("Shaders/T_water_no_tess.json");
 
 	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
 
@@ -69,12 +69,12 @@ void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matri
 {
 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	render_context.m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-	render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
-	ID3D11SamplerState* sampler = render_context.m_API->GetSampler((s32)eSamplerStates::LINEAR_CLAMP);
+	//render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
+	ID3D11SamplerState* sampler = render_context.m_API->GetSampler((s32)eSamplerStates::LINEAR_WRAP);
 	render_context.m_Context->PSSetSamplers(1, 1, &sampler);
 
 	SetupLayoutsAndBuffers();
-	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+	//render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
 	//render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);

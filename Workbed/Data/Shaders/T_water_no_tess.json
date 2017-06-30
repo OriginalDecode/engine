@@ -1,0 +1,4 @@
+{
+	"VertexShader" : "VS_water_no_tess.hlsl",
+	"PixelShader" : "PS_water_no_tess.hlsl"
+}

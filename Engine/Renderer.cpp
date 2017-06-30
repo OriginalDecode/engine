@@ -106,7 +106,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_WaterPlane->Initiate({ -512, 0, -512});
 
 	m_WaterCamera = new Camera;
-	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.1f, 10000.f, 90.f);
+	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.01f, 10000.f, 90.f);
 
 	return true;
 }
@@ -157,7 +157,7 @@ void Renderer::Render()
 	m_Engine->Clear();
 
 
-	memcpy(m_WaterCamera, m_Camera, sizeof(Camera));
+	memcpy(m_WaterCamera, m_Camera, sizeof(Camera)); //This seem extremely unsafe!
 	Camera* old_camera = m_Camera;
 	m_Camera = m_WaterCamera;
 

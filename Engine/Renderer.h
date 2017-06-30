@@ -36,6 +36,9 @@ public:
 	bool CleanUp();
 
 	void Render();
+
+	void ProcessWater();
+
 	void AddTerrain(Terrain* someTerrain);
 
 	PostProcessManager& GetPostprocessManager();

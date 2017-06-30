@@ -19,7 +19,7 @@ public:
 
 	void SetupRefractionRender(const RenderContext& render_context);
 	void SetupReflectionRender(const RenderContext& render_context);
-	void SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context, const Camera* camera);
+	void SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context);
 	Effect* GetEffect() { return myEffect; }
 private:
 	void CreatePlane();

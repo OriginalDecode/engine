@@ -102,7 +102,7 @@ void WaterPlane::SetupReflectionRender(const RenderContext& render_context)
 	m_ReflectionG.SetAsRenderTarget(m_Reflection, render_context);
 }
 
-void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context, const Camera* camera)
+void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context)
 {
 	m_PixelStruct.m_CompareValue = plane;
 	render_context.m_API->UpdateConstantBuffer(m_cbPixel, &m_PixelStruct);

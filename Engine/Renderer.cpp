@@ -106,7 +106,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_WaterPlane->Initiate({ -512, 0, -512});
 
 	m_WaterCamera = new Camera;
-	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.01f, 10000.f, 90.f);
+	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.01f, 100.f, 90.f);
 
 	return true;
 }
@@ -157,36 +157,8 @@ void Renderer::Render()
 	m_Engine->Clear();
 
 
-	memcpy(m_WaterCamera, m_Camera, sizeof(Camera)); //This seem extremely unsafe!
-	Camera* old_camera = m_Camera;
-	m_Camera = m_WaterCamera;
+	ProcessWater();
 
-
-	m_WaterPlane->SetupRefractionRender(m_RenderContext);
-	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 2.f }, m_RenderContext, old_camera);
-	RenderTerrain(true);
-
-	Render3DCommandsInstanced();
-
-	CU::Vector3f position0 = old_camera->GetPosition();
-	m_Camera->SetPosition(position0);
-
-	float distance = 2 * (position0.y - m_WaterPlane->GetPosition().y);
-	position0.y -= distance;
-	m_Camera->SetPosition(position0);
-	m_Camera->InvertAll();
-	m_WaterPlane->SetupReflectionRender(m_RenderContext);
-	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, 2.f }, m_RenderContext, old_camera);
-	RenderTerrain(true);
-
-	Render3DCommandsInstanced();
-	m_Atmosphere.Render(m_Camera->GetOrientation(), myDepthTexture, m_RenderContext);
-
-	position0.y += distance;
-	m_Camera->SetPosition(position0);
-
-
-	m_Camera = old_camera;
 
 	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
@@ -257,6 +229,41 @@ void Renderer::Render()
 	mySynchronizer->RenderIsDone();
 
 }
+
+void Renderer::ProcessWater()
+{
+	memcpy(m_WaterCamera, m_Camera, sizeof(Camera)); //This seem extremely unsafe!
+	Camera* old_camera = m_Camera;
+	m_Camera = m_WaterCamera;
+
+
+	m_WaterPlane->SetupRefractionRender(m_RenderContext);
+	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 2.f }, m_RenderContext);
+	RenderTerrain(true);
+
+	Render3DCommandsInstanced();
+
+	CU::Vector3f position0 = old_camera->GetPosition();
+	m_Camera->SetPosition(position0);
+
+	float distance = 2 * (position0.y - m_WaterPlane->GetPosition().y);
+	position0.y -= distance;
+	m_Camera->SetPosition(position0);
+	m_Camera->InvertAll();
+	m_WaterPlane->SetupReflectionRender(m_RenderContext);
+	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, 2.f }, m_RenderContext);
+	RenderTerrain(true);
+
+	Render3DCommandsInstanced();
+	m_Atmosphere.Render(m_Camera->GetOrientation(), myDepthTexture, m_RenderContext);
+
+	position0.y += distance;
+	m_Camera->SetPosition(position0);
+
+
+	m_Camera = old_camera;
+}
+
 //_________________________________
 
 void Renderer::AddTerrain(Terrain* someTerrain)

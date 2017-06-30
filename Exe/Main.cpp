@@ -43,14 +43,14 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	profiler::startListen();
 #endif
 	DL_Debug::Debug::Create();
-	//do/uble res16x9 = 1.777777777777777777777777777777778; best
+	//double res16x9 = 1.777777777777777777777777777777778; best
 	const char* inputString = someCommandLines;
 	std::string input(inputString);
 
 	DL_Debug::Debug::GetInstance()->ActivateFilters(Update_Filter | Render_Filter | Physics_Filter | Resource_Filter | Engine_Filter | Font_Filter | Model_Filter);
 
-	float w = 1920;
-	float h = 1080;
+	float w = 1280;
+	float h = 720;
 	newApplication = new Application;
 
 	Engine::Create();

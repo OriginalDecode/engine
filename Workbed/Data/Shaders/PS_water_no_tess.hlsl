@@ -125,9 +125,10 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	float4 out_color = lerp(reflection, refraction, blend_value);
 	output.Albedo =  out_color * NdotL;
 
-
-	output.Normal = float4(_normal.rgb, 0);
-	output.Depth.y = 1; 
+	float metalness = 0.f;
+	float roughness = 0.f;
+	output.Normal = float4(_normal.rgb, metalness);
+	output.Depth.y = roughness; 
 	output.Emissive = float4(1,1,1,1);
 	return output;
 

@@ -61,8 +61,6 @@ void WaterPlane::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, c
 	m_VertexMatrices.m_CameraPos = camera_orientation.GetPosition();
 	m_VertexMatrices.m_Time = Engine::GetInstance()->GetTotalTime();
 	render_context.m_API->UpdateConstantBuffer((myConstantBuffer), &m_VertexMatrices);
-
-
 }
 
 void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)

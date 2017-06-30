@@ -26,6 +26,7 @@ struct ConstantOutputType
 
 ConstantOutputType ColorPatchConstantFunction(InputPatch<VS_OUTPUT, 4> inputPatch, uint patchId : SV_PrimitiveID)
 {    
+	/* This will be rewritten to account the distance to camera too */
     ConstantOutputType output;
     int  tessellationAmount = 64; 
     // Set the tessellation factors for the three edges of the triangle.

@@ -88,8 +88,6 @@ GBuffer PS(DS_OUTPUT input) : SV_Target
 	_normal += 1;
 	_normal *= 0.5;
 
-
-
 	float3 to_eye = normalize(input.camerapos.xyz - input.worldpos.xyz);
 	float blend_value = dot(to_eye, float3(0,1,0));
 
@@ -109,10 +107,10 @@ GBuffer PS(DS_OUTPUT input) : SV_Target
 
 	float4 out_color = lerp(reflection, refraction, blend_value);
 	output.Albedo =  normal_texture;
-
-
-	output.Normal = float4(_normal.rgb, 0);
-	output.Depth.y = 1; 
+	float metalness = 1.f;
+	float roughness = 0.f;
+	output.Normal = float4(normal_texture.rgb, metalness);
+	output.Depth.y = roughness; //Roughness 
 	output.Emissive = float4(1,1,1,1);
 	return output;
 

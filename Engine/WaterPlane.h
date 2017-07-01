@@ -8,6 +8,7 @@ public:
 	WaterPlane() = default;
 
 	void Initiate(const CU::Vector3f& position);
+	void CleanUp();
 
 	void SetPosition(const CU::Vector3f& position);
 

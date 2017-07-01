@@ -50,6 +50,17 @@ void WaterPlane::Initiate(const CU::Vector3f& position)
 
 }
 
+void WaterPlane::CleanUp()
+{
+	m_Reflection->CleanUp();
+	SAFE_DELETE(m_Reflection);
+	m_Refraction->CleanUp(); //Should really remove most of the clean up functions and replace them with proper destructors again.
+	SAFE_DELETE(m_Refraction);
+	m_RefractionG.CleanUp();
+	m_ReflectionG.CleanUp();
+	SAFE_RELEASE(m_cbPixel);
+}
+
 void WaterPlane::SetPosition(const CU::Vector3f& position)
 {
 	m_Orientation.SetPosition(position);

@@ -189,10 +189,15 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	ImGui_ImplDX11_Init(myHWND, GetAPI()->GetDevice(), GetAPI()->GetContext());
 #endif
 
-	m_States[(u16)eEngineStates::INITIATED] = TRUE;
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();
 
+
+	m_Levels.push_back("Data/Levels/level_01.level");
+	m_Levels.push_back("Data/Levels/level_02.level");
+	m_Levels.push_back("Data/Levels/level_03.level");
+
+	m_States[(u16)eEngineStates::INITIATED] = TRUE;
 	return true;
 }
 
@@ -554,11 +559,13 @@ Terrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vec
 
 CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepath)
 {
+	
 	m_States[(u16)eEngineStates::LOADING] = TRUE;
-	//m_IsLoadingLevel = true;
+
 	m_LevelFactory->CreateLevel(level_filepath);
 
 	m_States[(u16)eEngineStates::LOADING] = FALSE;
+
 	return m_LevelFactory->GetDwellers();
 }
 
@@ -624,7 +631,10 @@ void Engine::DebugTextures()
 		ImVec2 w_size = ImGui::GetWindowSize();
 		w_size.x -= 50.f;
 		w_size.y -= 50.f;
-		ImGui::Image(tex_id, w_size);/**/
+		ImGui::Image(tex_id, w_size);
+		//ImDrawList* draw_list = ImGui::GetWindowDrawList();
+		//draw_list->AddCallback(draw_texture, nullptr);
+
 	}
 	ImGui::End();
 
@@ -640,6 +650,12 @@ void Engine::AddTexture(void* srv, const std::string& debug_name)
 	m_DebugTextures.Add(static_cast<ID3D11ShaderResourceView*>(srv));
 	m_Labels.push_back(debug_name);
 }
+
+void Engine::AddFunction(const std::string& label, std::function<void()> function)
+{
+	m_Functions.push_back(std::make_pair(label, function));
+}
+
 
 void Engine::UpdateDebugUI()
 {
@@ -718,16 +734,21 @@ void Engine::UpdateDebugUI()
 			ImGui::Checkbox(box.m_Name.c_str(), box.m_Toggle);
 		}
 
+		static s32 index = 0;
+		s32 prev = index;
+		ListBox("", &index, m_Levels);
+		if (prev != index)
+		{
+			m_Functions[index].second();
+		}
 
 
+		
 
 
 		ImGui::End();
 	}
 	ImGui::PopStyleVar();
-
-
-
 
 	if (new_window)
 	{

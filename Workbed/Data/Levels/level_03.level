@@ -1,0 +1,11 @@
+{
+	"root" :
+	{
+		"object" : 	{ 
+			"entity":"Data/Levels/sponza_house.entity", 
+			"position" : [ 10, 5, 10 ],
+			"scale" : [1, 1, 1],
+			"rotation" : [0, 0, 0]
+		}
+	}	
+}

@@ -19,30 +19,41 @@ TreeNodeBase::~TreeNodeBase()
 void TreeNodeBase::Update(float dt)
 {
 	RenderBox();
-
 	m_NodeEntityManager->Update(dt);
 
-	for (TreeDweller* dweller : m_Dwellers)
+	try
 	{
-		if (dweller->GetType() == TreeDweller::eType::STATIC)
-			continue;
-
-		bool found = false;
-		const ComponentList& list = dweller->GetComponentPairList();
-		for (const ComponentPair& pair : list)
+		for (TreeDweller* dweller : m_Dwellers)
 		{
-			if (pair.m_Type & TreeDweller::TRANSLATION)
+			if (!dweller)
+				continue;
+
+			if (dweller->GetType() == TreeDweller::eType::STATIC)
+				continue;
+
+			bool found = false;
+			const ComponentList& list = dweller->GetComponentPairList();
+			for (const ComponentPair pair : list)
 			{
-				if (m_Parent && !InsideNode(dweller))
+				if(!pair.m_Component)
+					continue;
+				if (pair.m_Type & TreeDweller::TRANSLATION)
 				{
-					m_Octree->MoveUp(this, dweller, m_Depth);
-					found = true;
-					break;
+					if (m_Parent && !InsideNode(dweller))
+					{
+						m_Octree->MoveUp(this, dweller, m_Depth);
+						found = true;
+						break;
+					}
 				}
 			}
+			if (found)
+				break;
 		}
-		if (found)
-			break;
+	}
+	catch (...)
+	{
+		printf("exception occured!");
 	}
 
 	if (m_Dwellers.Empty())

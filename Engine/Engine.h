@@ -107,7 +107,7 @@ public:
 	Texture* GetTexture(const std::string& aFilePath);
 	Effect* GetEffect(const std::string& aFilePath);
 	Model* GetModel(const std::string& aFilePath);
-	
+
 
 	std::string LoadModel(std::string aFilePath, std::string effect, bool thread);
 	template<typename T>
@@ -145,7 +145,7 @@ public:
 	// Level Creation, Loading, Saving
 	Terrain* CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize);
 	CU::GrowingArray<TreeDweller*> LoadLevel(const std::string& level_filepath);
-	
+
 	//_________________________________________
 	// Shader Creation
 	//This should probably be moved to the graphics API instead.
@@ -168,7 +168,7 @@ public:
 		LOADING,
 		_COUNT
 	};
-	
+
 	void SelectEntity(u32 e);
 	void DeselectEntity();
 	memory::MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
@@ -189,6 +189,8 @@ public:
 		m_Checkboxes.Add(box);
 	}
 
+	void AddFunction(const std::string& label, std::function<void()> function);
+	void CheckFolder(const std::string& path);
 private:
 	struct CheckBox
 	{
@@ -197,10 +199,11 @@ private:
 	};
 	CU::GrowingArray<CheckBox> m_Checkboxes;
 
-
 	void UpdateDebugUI();
 	CU::GrowingArray<ID3D11ShaderResourceView*> m_DebugTextures;
 	std::vector<std::string> m_Labels;
+	std::vector<std::string> m_Levels;
+	std::vector<std::pair<std::string, std::function<void()>>> m_Functions;
 #endif
 private:
 
@@ -209,7 +212,7 @@ public:
 	bool GetRenderInstanced() { return m_RenderInstanced; }
 
 private:
-	memory::MemorySegmentHandle m_SegmentHandle; 
+	memory::MemorySegmentHandle m_SegmentHandle;
 
 	bool m_EditLight = false;
 	bool m_EditRender = false;
@@ -257,7 +260,9 @@ private:
 	CSystemMonitor m_SystemMonitor;
 	bool m_PauseInput = false;
 	float m_DeltaTime = 0.f;
-	
+
+
+
 
 };
 

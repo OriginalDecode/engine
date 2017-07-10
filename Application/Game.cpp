@@ -28,13 +28,25 @@
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
-
 	m_Engine = Engine::GetInstance();
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+	m_Engine->AddFunction("Data/Levels/level_01.level", [&]() { Initiate("Data/Levels/level_01.level"); });
+	m_Engine->AddFunction("Data/Levels/level_02.level", [&]() { Initiate("Data/Levels/level_02.level"); });
+	m_Engine->AddFunction("Data/Levels/level_03.level", [&]() { Initiate("Data/Levels/level_03.level"); });
+#endif
+	Initiate("Data/Levels/level_01.level");
+
+}
+
+void Game::Initiate(const std::string& level)
+{
+	EndState();
 	m_Synchronizer = m_Engine->GetSynchronizer();
 
 	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
 
-	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel("Data/Levels/level_01.level");
+	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel(level);
 	m_World.AddDwellers(dwellers);
 
 	m_Player = new TreeDweller;
@@ -119,84 +131,84 @@ void Game::Update(float dt)
 
 	static float entity_speed = 0.2f;
 
-	if ( input_wrapper->IsDown(KButton::H) )
+	if (input_wrapper->IsDown(KButton::H))
 	{
 		entity_speed += 1.f * dt;
 	}
-	if ( input_wrapper->IsDown(KButton::G) )
+	if (input_wrapper->IsDown(KButton::G))
 	{
 		entity_speed -= 1.f * dt;
 	}
 
 	std::stringstream ss;
 	//ss << "Entity Speed : " << entity_speed;
-	ss << "\nx:" << m_Camera->GetOrientation().GetPosition().x << "\ny:" << m_Camera->GetOrientation().GetPosition().y << "\nz:" << m_Camera->GetOrientation().GetPosition().z <<"\n";
+	ss << "\nx:" << m_Camera->GetOrientation().GetPosition().x << "\ny:" << m_Camera->GetOrientation().GetPosition().y << "\nz:" << m_Camera->GetOrientation().GetPosition().z << "\n";
 	ss << m_FPSToPrint;
 	m_Synchronizer->AddRenderCommand(TextCommand(ss.str(), CU::Vector2f(0.75f, 0.1f)));
 
 	CU::Vector4f translation = m_Orientation.GetTranslation();
-	if ( input_wrapper->IsDown(KButton::UP_ARROW) )
+	if (input_wrapper->IsDown(KButton::UP_ARROW))
 	{
 		CU::Math::Vector4<float> forward = m_Orientation.GetForward();
 		translation += forward * entity_speed;
 	}
-	if ( input_wrapper->IsDown(KButton::DOWN_ARROW) )
+	if (input_wrapper->IsDown(KButton::DOWN_ARROW))
 	{
 		CU::Math::Vector4<float> forward = m_Orientation.GetForward();
 		translation += forward * -entity_speed;
 	}
 
-	if ( input_wrapper->IsDown(KButton::LEFT_ARROW) )
+	if (input_wrapper->IsDown(KButton::LEFT_ARROW))
 	{
 		CU::Math::Vector4<float> forward = m_Orientation.GetRight();
 		translation += forward * -entity_speed;
 	}
 
-	if ( input_wrapper->IsDown(KButton::RIGHT_ARROW) )
+	if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
 	{
 		CU::Math::Vector4<float> forward = m_Orientation.GetRight();
 		translation += forward * entity_speed;
 	}
 
-	if ( input_wrapper->IsDown(KButton::M) )
+	if (input_wrapper->IsDown(KButton::M))
 	{
 		CU::Math::Vector4<float> forward = m_Orientation.GetUp();
 		translation += forward * entity_speed;
 	}
-	
-	if ( input_wrapper->IsDown(KButton::N) ) 
+
+	if (input_wrapper->IsDown(KButton::N))
 	{
 		CU::Math::Vector4<float> forward = m_Orientation.GetUp();
 		translation += forward * -entity_speed;
 	}
 
-	if ( input_wrapper->IsDown(KButton::M) )
+	if (input_wrapper->IsDown(KButton::M))
 	{
 		CU::Math::Vector4<float> forward = m_Orientation.GetUp();
 		translation += forward * entity_speed;
 	}
 
-	if ( input_wrapper->IsDown(KButton::NUMPAD8) )
+	if (input_wrapper->IsDown(KButton::NUMPAD8))
 	{
 		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), CL::DegreeToRad(90.f) * dt);
 	}
-	if ( input_wrapper->IsDown(KButton::NUMPAD2) )
+	if (input_wrapper->IsDown(KButton::NUMPAD2))
 	{
 		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), -CL::DegreeToRad(90.f) * dt);
 	}
-	if ( input_wrapper->IsDown(KButton::NUMPAD4) )
+	if (input_wrapper->IsDown(KButton::NUMPAD4))
 	{
 		m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), -CL::DegreeToRad(90.f) * dt);
 	}
-	if ( input_wrapper->IsDown(KButton::NUMPAD6) )
+	if (input_wrapper->IsDown(KButton::NUMPAD6))
 	{
 		m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), CL::DegreeToRad(90.f) * dt);
 	}
-	if ( input_wrapper->IsDown(KButton::NUMPAD7) )
+	if (input_wrapper->IsDown(KButton::NUMPAD7))
 	{
 		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), -CL::DegreeToRad(90.f) * dt);
 	}
-	if ( input_wrapper->IsDown(KButton::NUMPAD9) )
+	if (input_wrapper->IsDown(KButton::NUMPAD9))
 	{
 		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), CL::DegreeToRad(90.f) * dt);
 	}

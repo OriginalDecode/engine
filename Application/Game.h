@@ -16,6 +16,9 @@ public:
 	Game() = default;
 
 	void InitState(StateStack* state_stack) override;
+
+	void Initiate(const std::string& level);
+
 	void Update(float aDeltaTime) override;
 
 	void EndState() override;

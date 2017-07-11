@@ -11,7 +11,7 @@ class Effect
 public:
 	Effect(const std::string& aFilePath);
 	Effect() = default;
-	CompiledShader* GetVertexShader() { return m_VertexShader; }
+ 	CompiledShader* GetVertexShader() { return m_VertexShader; }
 	CompiledShader* GetPixelShader() { return m_PixelShader; }
 	CompiledShader* GetGeometryShader() { return m_GeometryShader; }
 	CompiledShader* GetHullShader() { return m_HullShader; }

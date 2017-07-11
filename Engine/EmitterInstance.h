@@ -17,7 +17,7 @@ public:
 	void CleanUp();
 	void Update(float aDeltaTime);
 
-	void Render(CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection);
+	void Render(CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, Effect* effect);
 	void RenderShadowed(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection);
 
 	void SetPosition(const CU::Vector3f& position);

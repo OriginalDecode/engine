@@ -1,0 +1,5 @@
+{
+	"VertexShader" : "VS_particle_offscreen.hlsl",
+	"PixelShader" : "PS_particle_offscreen.hlsl",
+	"GeometryShader" : "GS_particle_offscreen.hlsl"
+}

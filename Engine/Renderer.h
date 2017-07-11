@@ -62,7 +62,7 @@ private:
 	void RenderPointlight();
 	void RenderSpotlight();
 
-	void RenderParticles();
+	void RenderParticles(Effect* effect);
 	void RenderLines();
 
 	CU::GrowingArray<Model*> m_Models;

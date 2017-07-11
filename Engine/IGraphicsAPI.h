@@ -57,6 +57,7 @@ enum class eBlendStates
 	LIGHT_BLEND,
 	ALPHA_BLEND,
 	BLEND_FALSE,
+	PARTICLE_BLEND,
 	_COUNT
 };
 

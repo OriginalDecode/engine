@@ -38,6 +38,9 @@ void Game::InitState(StateStack* state_stack)
 #endif*/
 	Initiate("Data/Levels/level_03.level");
 	m_Engine->LoadModel(key, "Shaders/T_Deferred_Base.json", true);
+
+	light = m_Engine->RegisterLight();
+
 }
 
 
@@ -220,7 +223,11 @@ void Game::Update(float dt)
 
 	m_Orientation.SetTranslation(translation);
 
-	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
+	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(10, 2, 10)));
+
+	CU::Matrix44f orientation;
+	orientation.SetPosition(CU::Vector3f(10, 2, 10));
+	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 10.f, 1.f, CU::Vector4f(1.f, 0.f, 0.f, 1.f), orientation));
 
 	//TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
 	//entity_translation.myOrientation = m_Orientation;/*m_Camera->GetOrientation();*/

@@ -170,21 +170,23 @@ void Renderer::Render()
 	m_Engine->Clear();
 
 
-	ProcessWater();
+	//ProcessWater();
 
 
 	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
 	RenderTerrain(false);
-	m_WaterPlane->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
+	//m_WaterPlane->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 
 	if (m_Engine->GetRenderInstanced())
 		Render3DCommandsInstanced();
 	else
 		Render3DCommands();
 
+	const float clear[4] = { 0.f,0.f,0.f,0.f }; 
+	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleBuffer->GetRenderTargetView(), clear);
 	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleBuffer->GetRenderTargetRef(), myDepthTexture->GetDepthView());
-	RenderParticles();
+	RenderParticles(m_Engine->GetEffect("Shaders/T_particle_offscreen.json"));
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
@@ -214,7 +216,7 @@ void Renderer::Render()
 
 	RenderNonDeferred3DCommands();
 
-	RenderParticles();
+	RenderParticles(m_Engine->GetEffect("Shaders/T_Particle.json"));
 	RenderLines();
 	Render2DCommands();
 
@@ -571,13 +573,10 @@ void Renderer::RenderPointlight()
 }
 //_________________________________
 
-void Renderer::RenderParticles()
+void Renderer::RenderParticles(Effect* effect)
 {
 
-
-
-	
-	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+	m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE_PARTICLE, 0);
 
@@ -596,7 +595,7 @@ void Renderer::RenderParticles()
 		//{
 		//	m_API->GetContext()->PSSetShaderResources(1, 1, m_Engine->GetTexture("Data/Textures/hp.dds")->GetShaderViewRef());
 		//}
-		m_ParticleEmitter->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
+		m_ParticleEmitter->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), effect);
 	}
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 

@@ -29,10 +29,6 @@ struct GBuffer
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	float4 diffuse = ParticleTexture.Sample(point_sample, input.uv);
 	float4 normal = NormalTexture.Sample(point_sample, input.uv);
-	float4 light_dir = float4(0,1,0,1);
-	float4 color = float4(1,0,0,1);
-
-	return diffuse;
+	return normal;
 };

@@ -31,6 +31,7 @@ struct SParticleObject
 	CU::Vector3f direction;
 	float speed;
 	float lifeTime;
+	float currLifeTime = 0.f;
 };
 
 struct SAnimatedParticleObject

@@ -49,4 +49,7 @@ private:
 	float m_Time = 0.f;
 
 	const char* m_ModelKey;
+
+	int light = 0;
+
 };

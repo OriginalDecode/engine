@@ -37,8 +37,15 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	CreateInputLayout();
 	CreateConstantBuffer();
 
+	Effect* shader = myEngine->GetEffect("Shaders/T_particle_offscreen.json");
+
+
 	myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);
 	myData.shader->AddShaderResource(myData.normalTexture->GetShaderView(), Effect::NORMAL);
+
+	shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);
+	shader->AddShaderResource(myData.normalTexture->GetShaderView(), Effect::NORMAL);
+
 
 	myTimeToEmit = 0.f;
 }
@@ -55,16 +62,22 @@ void CEmitterInstance::CleanUp()
 void CEmitterInstance::Update(float aDeltaTime)
 {
 	myTimeToEmit -= aDeltaTime;
-	if (myTimeToEmit < 0.f)
+	/*if (myTimeToEmit < 0.f)
 	{
 		Emit();
-		myTimeToEmit = 0.1f;
+		myTimeToEmit = 0.2f;
+	}*/
+
+	static int i = 0;
+	for (; i < 4; i++ )
+	{
+		Emit();
 	}
 
 	UpdateParticle(aDeltaTime);
 }
 
-void CEmitterInstance::Render(CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
+void CEmitterInstance::Render(CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, Effect* effect)
 {
 	if (!myConstantBuffer)
 		return;
@@ -86,9 +99,11 @@ void CEmitterInstance::Render(CU::Matrix44f& camera_orientation, const CU::Matri
 	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 	context->GSSetConstantBuffers(0, 1, &m_GeometryBuffer);
 
-	myData.shader->Use();
+	//myData.shader->Use();
+	effect->Use();
 	context->Draw(myParticles.Size(), 0);
-	myData.shader->Clear();
+	effect->Clear();
+	//myData.shader->Clear();
 }
 
 void CEmitterInstance::RenderShadowed(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
@@ -181,14 +196,15 @@ void CEmitterInstance::UpdateParticle(float aDeltaTime)
 {
 	for (int i = 0; i < myParticles.Size(); i++)
 	{
-		if (myParticles[i].lifeTime < 0.f || myParticles[i].alpha < 0.f)
+		if (myParticles[i].currLifeTime < 0.f || myParticles[i].alpha < 0.f)
 		{
 			myParticles.RemoveCyclicAtIndex(i);
 			continue;
 		}
-		myParticles[i].position += (myParticles[i].direction * myParticles[i].speed) * aDeltaTime;
-		myParticles[i].lifeTime -= aDeltaTime;
-		myParticles[i].alpha = myParticles[i].lifeTime / 7.f;
+		//myParticles[i].position += (myParticles[i].direction * myParticles[i].speed) * aDeltaTime;
+		//myParticles[i].currLifeTime -= aDeltaTime;
+		//myParticles[i].size += (1 * aDeltaTime);
+		myParticles[i].alpha = myParticles[i].currLifeTime / myParticles[i].lifeTime;
 	}
 }
 
@@ -197,24 +213,26 @@ void CEmitterInstance::Emit()
 	SParticleObject temp; //Replace with preallocated particles
 
 	temp.position = myOrientation.GetPosition();
-	float x0 = temp.position.x + myData.size.x;
-	float y0 = temp.position.y + myData.size.y;
-	float z0 = temp.position.z + myData.size.z;
+	float x0 = temp.position.x;// + myData.size.x;
+	float y0 = temp.position.y;// + myData.size.y;
+	float z0 = temp.position.z;// + myData.size.z;
 
-	float x1 = temp.position.x - myData.size.x;
-	float y1 = temp.position.y - myData.size.y;
-	float z1 = temp.position.z - myData.size.z;
+	float x1 = temp.position.x;// - myData.size.x;
+	float y1 = temp.position.y;// - myData.size.y;
+	float z1 = temp.position.z;// - myData.size.z;
 
-	temp.position.x = RANDOM(x0, x1);
-	temp.position.y = RANDOM(y0, y1);
-	temp.position.z = RANDOM(z0, z1);
+	temp.position.x = RANDOM(x0 + -1.5f, x1 + 1.5f);
+	temp.position.y = RANDOM(y0 + -1.5f, y1);
+	temp.position.z = RANDOM(z0 + -1.5f, z1 + 1.5f);
 
-	temp.size = RANDOM(1.0f, 1.0f);
-	temp.direction.x = RANDOM(-1.0f, 1.0f);
+	temp.size = RANDOM(1.f, 1.f);
+	temp.direction.x = RANDOM(-0.15f, 0.15f);
 	temp.direction.y = RANDOM(0.f, 1.f);
-	temp.direction.z = RANDOM(-1.0f, 1.0f);
-	temp.lifeTime = 7.f;
+	temp.direction.z = RANDOM(-0.15f, 0.15f);
+	const float time = 20.f;
+	temp.lifeTime = time;
+	temp.currLifeTime = time;
 	temp.alpha = 1;// myData.particleData.startAlpha;
-	temp.speed = 8.f;
+	temp.speed = 0.75f;
 	myParticles.Add(temp);
 }

@@ -21,57 +21,45 @@ void TreeNodeBase::Update(float dt)
 	RenderBox();
 	m_NodeEntityManager->Update(dt);
 
-	try
+	for (TreeDweller* dweller : m_Dwellers)
 	{
-		for (TreeDweller* dweller : m_Dwellers)
+		if (!dweller)
+			continue;
+
+		if (dweller->GetType() == TreeDweller::eType::STATIC)
+			continue;
+
+		bool found = false;
+		const ComponentList& list = dweller->GetComponentPairList();
+		for (const ComponentPair pair : list)
 		{
-			if (!dweller)
+			if (!pair.m_Component)
 				continue;
-
-			if (dweller->GetType() == TreeDweller::eType::STATIC)
-				continue;
-
-			bool found = false;
-			const ComponentList& list = dweller->GetComponentPairList();
-			for (const ComponentPair pair : list)
+			if (pair.m_Type & TreeDweller::TRANSLATION)
 			{
-				if(!pair.m_Component)
-					continue;
-				if (pair.m_Type & TreeDweller::TRANSLATION)
+				if (m_Parent && !InsideNode(dweller))
 				{
-					if (m_Parent && !InsideNode(dweller))
-					{
-						m_Octree->MoveUp(this, dweller, m_Depth);
-						found = true;
-						break;
-					}
+					m_Octree->MoveUp(this, dweller, m_Depth);
+					found = true;
+					break;
 				}
 			}
-			if (found)
-				break;
 		}
-	}
-	catch (...)
-	{
-		printf("exception occured!");
+		if (found)
+			break;
 	}
 
-	if (m_Dwellers.Empty())
+	if (!m_Dwellers.Empty() || HasEntities() || !m_Parent)
+		return;
+
+
+	for (s32 i = 0; i < 8; i++)
 	{
-		if (!HasEntities())
+		if (m_Parent->GetChildByIndex(i) == this)
 		{
-			if (m_Parent)
-			{
-				for (s32 i = 0; i < 8; i++)
-				{
-					if (m_Parent->GetChildByIndex(i) == this)
-					{
-						m_Parent->AddChild(nullptr, i);
-						m_Octree->ToDelete(this);
-						return;
-					}
-				}
-			}
+			m_Parent->AddChild(nullptr, i);
+			m_Octree->ToDelete(this);
+			return;
 		}
 	}
 }
@@ -218,18 +206,18 @@ void TreeNodeBase::RenderBox()
 
 	switch (m_Depth)
 	{
-	case 0:
-		points[0].color = RED;
-		break;
-	case 1:
-		points[0].color = GREEN;
-		break;
-	case 2:
-		points[0].color = BLUE;
-		break;
-	case 3:
-		points[0].color = YELLOW;
-		break;
+		case 0:
+			points[0].color = RED;
+			break;
+		case 1:
+			points[0].color = GREEN;
+			break;
+		case 2:
+			points[0].color = BLUE;
+			break;
+		case 3:
+			points[0].color = YELLOW;
+			break;
 	}
 
 	points[1].color = points[0].color;

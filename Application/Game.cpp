@@ -204,7 +204,7 @@ void Game::Update(float dt)
 
 	m_Orientation.SetTranslation(translation);
 
-	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
+	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 
 	//TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
 	//entity_translation.myOrientation = m_Orientation;/*m_Camera->GetOrientation();*/

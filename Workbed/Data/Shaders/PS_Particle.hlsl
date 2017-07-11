@@ -4,6 +4,7 @@
 
 SamplerState point_sample : register ( s0 );
 Texture2D ParticleTexture : register ( t0 );
+Texture2D NormalTexture : register ( t1 );
 //---------------------------------
 //	Line3D Pixel Structs
 //---------------------------------
@@ -19,8 +20,23 @@ struct VS_OUTPUT
 //	Line3D Pixel Shader
 //---------------------------------
 
-float4 PS(VS_OUTPUT input) : SV_Target
+struct GBuffer
 {
-	float4 color = ParticleTexture.Sample(point_sample, input.uv);	
-	return float4(1,1,1,1);
+	float4 Diffuse;
+	float4 Normal;
+	float4 Depth;
+};
+
+GBuffer PS(VS_OUTPUT input) : SV_Target
+{
+	GBuffer output = (GBuffer)0;
+	float4 diffuse = ParticleTexture.Sample(point_sample, input.uv);
+	if(diffuse.a <= 0)
+		discard;
+	output.Diffuse = diffuse;
+	
+	// float4 color = ParticleTexture.Sample(point_sample, input.uv);	
+	output.Normal = NormalTexture.Sample(point_sample, input.uv);
+	output.Depth = float4(0, 0, 0, 0);
+	return output;
 };

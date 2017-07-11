@@ -45,6 +45,7 @@ struct SAnimatedParticleObject
 struct SEmitterData
 {
 	Texture* diffuseTexture = nullptr;
+	Texture* normalTexture = nullptr;
 	Effect* shader = nullptr;
 
 	SParticleData particleData;

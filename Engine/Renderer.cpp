@@ -170,12 +170,10 @@ void Renderer::Render()
 	else
 		Render3DCommands();
 
-	
+	RenderParticles();
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
-
-
 
 	m_DeferredRenderer->DeferredRender(
 		m_Camera->GetOrientation(),
@@ -183,12 +181,6 @@ void Renderer::Render()
 		m_DirectionalShadow.GetMVP(),
 		m_Direction,
 		m_RenderContext);
-
-	
-
-	
-
-
 
 	RenderPointlight();
 	RenderSpotlight();
@@ -208,7 +200,6 @@ void Renderer::Render()
 
 	RenderNonDeferred3DCommands();
 
-	RenderParticles();
 	RenderLines();
 	Render2DCommands();
 

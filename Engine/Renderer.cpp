@@ -108,12 +108,23 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_WaterCamera = new Camera;
 	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.01f, 100.f, 90.f);
 
+
+	m_ParticleBuffer = new Texture;
+	m_ParticleBuffer->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
+
+
+	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Lightmesh.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
+	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
+
+
 	return true;
 }
 //_________________________________
 
 bool Renderer::CleanUp()
 {
+	m_ParticleBuffer->CleanUp();
+	SAFE_DELETE(m_ParticleBuffer);
 	m_LightPass.CleanUp();
 	m_ShadowPass.CleanUp();
 	m_DirectionalShadow.CleanUp();
@@ -172,6 +183,7 @@ void Renderer::Render()
 	else
 		Render3DCommands();
 
+	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleBuffer->GetRenderTargetRef(), myDepthTexture->GetDepthView());
 	RenderParticles();
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
@@ -202,6 +214,7 @@ void Renderer::Render()
 
 	RenderNonDeferred3DCommands();
 
+	RenderParticles();
 	RenderLines();
 	Render2DCommands();
 
@@ -560,6 +573,10 @@ void Renderer::RenderPointlight()
 
 void Renderer::RenderParticles()
 {
+
+
+
+	
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE_PARTICLE, 0);
@@ -582,6 +599,9 @@ void Renderer::RenderParticles()
 		m_ParticleEmitter->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
 	}
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
+
+	//reset
+
 }
 //_________________________________
 

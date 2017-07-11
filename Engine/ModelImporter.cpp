@@ -308,6 +308,9 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 
 			aiTextureType lType = static_cast< aiTextureType >( type );
 			//DL_MESSAGE("Type : %d, Name : %s", u32(lType), newPath.c_str());
+			
+
+
 			switch ( lType )
 			{
 				case aiTextureType_DIFFUSE:
@@ -348,7 +351,7 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 				case aiTextureType_HEIGHT:
 				{
 					DL_ASSERT("No height support!");
-					//newInfo.m_Slot = Effect::HEI;
+					//newInfo.m_Slot = Effect::HEIGHT;
 				}break;
 
 				case aiTextureType_SHININESS:

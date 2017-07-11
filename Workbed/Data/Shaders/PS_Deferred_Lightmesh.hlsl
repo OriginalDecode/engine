@@ -20,7 +20,9 @@ cbuffer Pointlight : register(b0)
 //	Samplers & Textures
 //---------------------------------
 
-Texture2D ShadowTexture  : register ( t3 );
+Texture2D ParticleTexture : register ( t5 );
+Texture2D ShadowTexture  : register ( t8 );
+
 //---------------------------------
 //	Deferred Lightmesh Pixel Structs
 //---------------------------------

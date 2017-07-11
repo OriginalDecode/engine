@@ -97,6 +97,7 @@ private:
 	Synchronizer*		mySynchronizer			= nullptr;
 	CText*				myText					= nullptr;
 	Texture*			myDepthTexture			= nullptr;
+	Texture*			m_ParticleBuffer		= nullptr;
 	Sprite*				mySprite				= nullptr;
 	Sprite*				myClearColor			= nullptr;
 
@@ -106,7 +107,7 @@ private:
 
 	ShadowDirectional	m_DirectionalShadow;
 
-	class WaterPlane* m_WaterPlane = nullptr;
+	class WaterPlane* m_WaterPlane				= nullptr; //Shouldn't be in here
 
 	ShaderState m_LightState;
 

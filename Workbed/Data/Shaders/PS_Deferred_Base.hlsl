@@ -47,9 +47,6 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	GBuffer output;
 
 	float4 opacity = OpacityTexture.Sample(linear_Wrap, input.uv);
-	if(opacity.b < 1)
-	discard;
-
 
 	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv).rgb * 2 - 1;
 	float3 nnormal = normalize(input.normal.xyz);

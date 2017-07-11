@@ -19,6 +19,7 @@ cbuffer Spotlight : register( b0 )
 //---------------------------------
 
 Texture2D ShadowTexture	 : register ( t8 );
+Texture2D ParticleTexture : register ( t5 );
 
 //---------------------------------
 //	Deferred Lightmesh Pixel Structs

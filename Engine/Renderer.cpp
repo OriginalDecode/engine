@@ -350,6 +350,7 @@ void Renderer::Render3DCommandsInstanced()
 			ProcessCommand(commands, i);
 		}
 	}
+
 	const CU::Matrix44f& orientation = m_Camera->GetOrientation();
 	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
 

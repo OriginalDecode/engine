@@ -8,7 +8,7 @@ public:
 	
 	void Initiate(float halfwidth, Octree* octree) override;
 	void Update(float dt) override;
-
+	bool IsWorking() { return m_Pool.CurrentWorkFinished(); }
 private:
 	Threadpool m_Pool;
 

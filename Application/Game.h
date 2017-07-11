@@ -21,6 +21,8 @@ public:
 
 	void Update(float aDeltaTime) override;
 
+	void AddRenderCommand(const struct ModelCommand& command);
+
 	void EndState() override;
 	void Render(bool render_through) override;
 

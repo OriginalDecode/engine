@@ -17,6 +17,7 @@ public:
 	virtual ~TreeNodeBase();
 
 	virtual void Initiate(float halfwidth, Octree* octree) = 0;
+
 	virtual void Update(float dt);
 
 	virtual void SetDepth(s32 depth);

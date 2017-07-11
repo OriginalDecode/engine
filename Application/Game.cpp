@@ -25,23 +25,24 @@
 #include <imgui.h>
 #include "CameraHandle.h"
 
+static std::string key = "Data/Model/sponza/Sponza_2.fbx";
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
 	m_Engine = Engine::GetInstance();
-
+/*
 #if !defined(_PROFILE) && !defined(_FINAL)
 	m_Engine->AddFunction("Data/Levels/level_01.level", [&]() { Initiate("Data/Levels/level_01.level"); });
 	m_Engine->AddFunction("Data/Levels/level_02.level", [&]() { Initiate("Data/Levels/level_02.level"); });
 	m_Engine->AddFunction("Data/Levels/level_03.level", [&]() { Initiate("Data/Levels/level_03.level"); });
-#endif
-	Initiate("Data/Levels/level_01.level");
-
+#endif*/
+	Initiate("Data/Levels/level_03.level");
+	m_Engine->LoadModel(key, "Shaders/T_Deferred_Base.json", true);
 }
+
 
 void Game::Initiate(const std::string& level)
 {
-	EndState();
 	m_Synchronizer = m_Engine->GetSynchronizer();
 
 	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
@@ -66,6 +67,9 @@ void Game::Initiate(const std::string& level)
 	CameraHandle::GetInstance()->Initiate(nullptr);
 	m_PauseState.InitState(m_StateStack);
 	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
+
+
+
 }
 
 void Game::EndState()
@@ -216,10 +220,21 @@ void Game::Update(float dt)
 
 	m_Orientation.SetTranslation(translation);
 
-	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
+	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 
 	//TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
 	//entity_translation.myOrientation = m_Orientation;/*m_Camera->GetOrientation();*/
 
+
+	AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
+
 	m_World.Update(dt);
+}
+
+void Game::AddRenderCommand(const ModelCommand& command)
+{
+	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
+	memory::CommandAllocator& allocator = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, 0);
+	void * current = allocator.Alloc(sizeof(ModelCommand));
+	memcpy(current, &command, sizeof(ModelCommand));
 }

@@ -21,6 +21,7 @@ struct HS_OUTPUT
 struct ConstantOutputType
 {
     float edges[4] : SV_TessFactor;
+    float2 uv[4] : TEXCOORD;
     float inside[2] : SV_InsideTessFactor;
 };
 
@@ -28,12 +29,18 @@ ConstantOutputType ColorPatchConstantFunction(InputPatch<VS_OUTPUT, 4> inputPatc
 {    
 	/* This will be rewritten to account the distance to camera too */
     ConstantOutputType output;
-    int  tessellationAmount = 64; 
+    int  tessellationAmount = 1; 
     // Set the tessellation factors for the three edges of the triangle.
     output.edges[0] = tessellationAmount;
     output.edges[1] = tessellationAmount;
     output.edges[2] = tessellationAmount;
 	output.edges[3] = tessellationAmount;
+
+	output.uv[0] = tessellationAmount; 
+	output.uv[1] = tessellationAmount; 
+	output.uv[2] = tessellationAmount;
+	output.uv[3] = tessellationAmount;
+
 
     // Set the tessellation factor for tessallating inside the triangle.
 	output.inside[0] = tessellationAmount;

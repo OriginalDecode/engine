@@ -70,7 +70,7 @@ float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const f
 //---------------------------------
 GBuffer PS(DS_OUTPUT input) : SV_Target
 {
-	float2 ndc = (input.clip.xy / input.clip.w) / 2 + 0.5;
+		float2 ndc = (input.clip.xy / input.clip.w) / 2 + 0.5;
 	ndc.x = (input.clip.x / input.clip.w) / 2.0h + 0.5h;
 	ndc.y = (-input.clip.y / input.clip.w) / 2.0h + 0.5h;
 
@@ -88,6 +88,8 @@ GBuffer PS(DS_OUTPUT input) : SV_Target
 	_normal += 1;
 	_normal *= 0.5;
 
+
+
 	float3 to_eye = normalize(input.camerapos.xyz - input.worldpos.xyz);
 	float blend_value = dot(to_eye, float3(0,1,0));
 
@@ -95,22 +97,38 @@ GBuffer PS(DS_OUTPUT input) : SV_Target
 	float2 refractionUV = float2(ndc.x, ndc.y);
 	GBuffer output = (GBuffer)0;
 
+	const float wave_strength = 0.02h;
+	const float move_factor = 0.0h;
+	float2 distortion_uv = DUDVTexture.Sample(linear_Wrap, float2(input.uv.x + move_factor, input.uv.y)).rg * 0.1h;
+	distortion_uv = input.uv + float2(distortion_uv.x, distortion_uv.y + move_factor);
+	float2 total_distortion = (DUDVTexture.Sample(linear_Wrap, distortion_uv).rg * 2.0 - 1.0) * wave_strength;
+	
+	refractionUV += total_distortion;
+	refractionUV = clamp(refractionUV, 0.001h, 0.999h);
+	
+	reflectionUV += total_distortion;
+	reflectionUV.x = clamp(reflectionUV.x, 0.001h, 0.999h);
+	reflectionUV.y = clamp(reflectionUV.y, -0.999h, -0.001h);	
+	
 	float4 reflection = ReflectionTexture.Sample(linear_Wrap, reflectionUV);
 	float4 refraction = RefractionTexture.Sample(linear_Wrap, refractionUV);
-
 	float4 distortion_texture = DUDVTexture.Sample(linear_Wrap, input.uv);
-	float4 normal_texture = NormalTexture.Sample(linear_clamp, input.uv);
+	float4 normal_texture = NormalTexture.Sample(linear_clamp, total_distortion);
 
-	float NdotL = dot(normal_texture, float4(0.2, 0.6, 0, 1));
+	float4 normal_col = float4(normal_texture.r * 2.0h - 1.0h, normal_texture.b, normal_texture.g * 2.0h - 1.0h, 1);
+	
+	float NdotL = dot(normal_col, float4(0, 1, 0, 1));
 
 	blend_value = pow(blend_value, 0.4);
 
 	float4 out_color = lerp(reflection, refraction, blend_value);
-	output.Albedo =  normal_texture;
-	float metalness = 1.f;
+	output.Albedo =  out_color * NdotL;
+
+	float metalness = 0.0f;
 	float roughness = 0.f;
-	output.Normal = float4(normal_texture.rgb, metalness);
-	output.Depth.y = roughness; //Roughness 
+	output.Normal = float4(_normal.rgb, metalness);
+	output.Depth.y = roughness; 
+	output.Depth.w = 1;
 	output.Emissive = float4(1,1,1,1);
 	return output;
 

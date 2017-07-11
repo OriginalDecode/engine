@@ -68,6 +68,6 @@ GBuffer PS(VS_OUTPUT input) : SV_Target
 	output.Depth.y = RoughnessTexture.Sample(linear_Wrap, input.uv).r;
 	output.Depth.w = 1;
 	
-	output.Emissive = float4(1,1,1,0);
+	output.Emissive = float4(1,1,1,1);
 	return output;
 }

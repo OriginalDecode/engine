@@ -6,7 +6,7 @@ void WaterPlane::Initiate(const CU::Vector3f& position)
 {
 	m_Orientation.SetPosition(position);
 
-	myEffect = Engine::GetInstance()->GetEffect("Shaders/T_water_no_tess.json");
+	myEffect = Engine::GetInstance()->GetEffect("Shaders/T_water.json");
 
 	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
 
@@ -45,7 +45,20 @@ void WaterPlane::Initiate(const CU::Vector3f& position)
 	engine->AddTexture(m_ReflectionG.GetDiffuse(), "Reflection");
 	CreatePlane();
 	m_cbPixel = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbPixel));
+	
+	engine->RegisterCheckBox(&m_RenderWireframe, "Waterplane : Wireframe");
 
+}
+
+void WaterPlane::CleanUp()
+{
+	m_Reflection->CleanUp();
+	SAFE_DELETE(m_Reflection);
+	m_Refraction->CleanUp(); //Should really remove most of the clean up functions and replace them with proper destructors again.
+	SAFE_DELETE(m_Refraction);
+	m_RefractionG.CleanUp();
+	m_ReflectionG.CleanUp();
+	SAFE_RELEASE(m_cbPixel);
 }
 
 void WaterPlane::SetPosition(const CU::Vector3f& position)
@@ -67,12 +80,13 @@ void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matri
 {
 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	render_context.m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-	//render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
+
+	render_context.m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 	ID3D11SamplerState* sampler = render_context.m_API->GetSampler((s32)eSamplerStates::LINEAR_WRAP);
 	render_context.m_Context->PSSetSamplers(1, 1, &sampler);
 
 	SetupLayoutsAndBuffers();
-	//render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
 	//render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);

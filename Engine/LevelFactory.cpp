@@ -543,13 +543,15 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	Terrain* terrain = m_Engine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, -2, 0), CU::Vector2f(512, 512));
+
+	float uniform_height = -4;
+	Terrain* terrain = m_Engine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, uniform_height, 0), CU::Vector2f(512, 512));
 	terrain->AddNormalMap("Data/Textures/t0_n.dds");
-	terrain=m_Engine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, -2, 510), CU::Vector2f(512, 512));
+	terrain=m_Engine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, uniform_height, 510), CU::Vector2f(512, 512));
 	terrain->AddNormalMap("Data/Textures/t1_n.dds");
-	terrain=m_Engine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, -2, 0), CU::Vector2f(512, 512));
+	terrain=m_Engine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, uniform_height, 0), CU::Vector2f(512, 512));
 	terrain->AddNormalMap("Data/Textures/t2_n.dds");
-	terrain=m_Engine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, -2, 510), CU::Vector2f(512, 512));
+	terrain=m_Engine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, uniform_height, 510), CU::Vector2f(512, 512));
 	terrain->AddNormalMap("Data/Textures/t3_n.dds");
 	//m_Engine->GetThreadpool().AddWork(Work([=] {
 	//}));

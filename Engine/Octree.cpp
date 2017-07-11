@@ -41,6 +41,7 @@ void Octree::Update(float dt)
 		node_count--;
 	}
 	m_GarbageNodes.RemoveAll();
+
 	m_Root.Update(dt);
 }
 

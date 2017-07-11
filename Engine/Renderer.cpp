@@ -118,7 +118,9 @@ bool Renderer::CleanUp()
 	m_ShadowPass.CleanUp();
 	m_DirectionalShadow.CleanUp();
 	m_PostProcessManager.CleanUp();
-
+	m_WaterPlane->CleanUp();
+	SAFE_DELETE(m_WaterCamera);
+	SAFE_DELETE(m_WaterPlane);
 	SAFE_DELETE(m_Line);
 	SAFE_DELETE(mySprite);
 	SAFE_DELETE(myClearColor);

@@ -54,6 +54,6 @@ VS_OUTPUT VS(VS_INPUT input)
 	output.tang  = mul(input.tang , World);
 	output.camerapos = float4(CameraPos.xyz, 1);
 	output.worldpos = mul(input.pos, World);
-	output.uv = (input.uv) * Time / 8; //cos(((Time / 256)* 2 - (output.worldpos.x - output.worldpos.z)))  * 32;
+	output.uv = (input.uv) * cos(((Time / 512)* 2 - (output.worldpos.x - output.worldpos.z)))  * 32;
 	return output;
 };

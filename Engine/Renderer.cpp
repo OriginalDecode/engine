@@ -112,9 +112,18 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_ParticleBuffer = new Texture;
 	m_ParticleBuffer->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
 
+	m_ParticleDiff = new Texture;
+	m_ParticleDiff->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
 
+
+	Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->AddShaderResource(m_ParticleBuffer, Effect::NORMAL);
 	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Lightmesh.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
 	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
+	m_Engine->AddTexture(m_ParticleBuffer, "Particle Normal Accumulation");
+	m_Engine->AddTexture(m_ParticleDiff, "Particle Diffuse");
+
+	m_Quad = new Quad;
+	m_Quad->Initiate();
 
 
 	return true;
@@ -123,6 +132,9 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 bool Renderer::CleanUp()
 {
+	m_Quad->CleanUp();
+	delete m_Quad;
+	
 	m_ParticleBuffer->CleanUp();
 	SAFE_DELETE(m_ParticleBuffer);
 	m_LightPass.CleanUp();
@@ -185,7 +197,13 @@ void Renderer::Render()
 
 	const float clear[4] = { 0.f,0.f,0.f,0.f }; 
 	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleBuffer->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleBuffer->GetRenderTargetRef(), myDepthTexture->GetDepthView());
+	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleDiff->GetRenderTargetView(), clear);
+
+	ID3D11RenderTargetView* view[] = {
+		m_ParticleDiff->GetRenderTargetView(),
+		m_ParticleBuffer->GetRenderTargetView()
+	};
+	m_RenderContext.m_Context->OMSetRenderTargets(ARRAYSIZE(view), &view[0], myDepthTexture->GetDepthView());
 	RenderParticles(m_Engine->GetEffect("Shaders/T_particle_offscreen.json"));
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
@@ -216,7 +234,24 @@ void Renderer::Render()
 
 	RenderNonDeferred3DCommands();
 
-	RenderParticles(m_Engine->GetEffect("Shaders/T_Particle.json"));
+
+
+	m_Quad->SetBuffers();
+
+
+	ID3D11ShaderResourceView* srv[] = {
+		m_ParticleDiff->GetShaderView(),
+		m_ParticleBuffer->GetShaderView(),
+	};
+
+	m_RenderContext.m_API->SetVertexShader(m_Quad->GetShader()->GetVertexShader());
+	m_RenderContext.m_API->SetPixelShader(Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->GetPixelShader());
+	m_RenderContext.m_Context->PSSetShaderResources(0, ARRAYSIZE(srv), &srv[0]);
+
+	m_Quad->Render();
+
+
+	//RenderParticles(m_Engine->GetEffect("Shaders/T_Particle.json"));
 	RenderLines();
 	Render2DCommands();
 

@@ -5,34 +5,53 @@
 SamplerState point_sample : register ( s0 );
 Texture2D ParticleTexture : register ( t0 );
 Texture2D NormalTexture : register ( t1 );
+Texture2D DepthTexture : register ( t8 );
 //---------------------------------
 //	Line3D Pixel Structs
 //---------------------------------
 struct VS_OUTPUT
 {
 	float4 pos : SV_POSITION;
-	float2 size : SIZE;
-	float2 alpha : ALPHA;
 	float2 uv : TEXCOORD;
 };
+
+cbuffer Matrices : register (b0)
+{
+	row_major float4x4 InvertedProjection; 
+	row_major float4x4 InvertedView; 
+}
 
 //---------------------------------
 //	Line3D Pixel Shader
 //---------------------------------
 
-struct GBuffer
-{
-	float4 Diffuse;
-	float4 Normal;
-	float4 Depth;
-};
-
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	float4 diffuse = ParticleTexture.Sample(point_sample, input.uv);
-	float4 normal = NormalTexture.Sample(point_sample, input.uv);
-	float4 light_dir = float4(0,1,0,1);
-	float4 color = float4(1,0,0,1);
+    /*float x = input.uv.x * 2.f - 1.f;
+	float y = (1.f - input.uv.y) * 2 - 1;
+	float z = depth.x;
+	float4 worldpos = float4(x, y, z, 1.f);
+	
+	worldpos = mul(worldpos, InvertedProjection);
+	worldpos = worldpos / worldpos.w;
+	worldpos = mul(worldpos, InvertedView);*/
 
-	return diffuse;
+	float3 tang = float3(0,1,0);
+	float3 normal = NormalTexture.Sample(point_sample, input.uv).rgb * 2 - 1;
+	float3 nnormal = normalize(normal.rgb);
+
+	float3 binorm = normalize(cross(float3(normal.rgb), tang));
+	float3x3 tangSpaceMatrix = float3x3(tang, binorm, nnormal);
+	normal = normalize(mul(normal.rgb, tangSpaceMatrix));
+
+	normal += 1;
+	normal *= 0.5;
+	
+	float4 diffuse = ParticleTexture.Sample(point_sample, input.uv);
+	float3 light_dir = float3(0,1,0);
+	float4 color = float4(1,0,0,1);
+	float NdotL = dot(normal, light_dir);
+	float3 output = float3(diffuse.rgb) * NdotL;
+	float intensity = 1;
+	return float4(output.rgb, diffuse.a) * float4(1,0,0,1) * intensity ;
 };

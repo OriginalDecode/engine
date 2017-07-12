@@ -18,7 +18,7 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	data.alphaDelta = 0.f;
 
 	myData.diffuseTexture = myEngine->GetTexture("Data/Textures/particles/smoke.dds");
-	myData.normalTexture = myEngine->GetTexture("Data/Textures/particles/smoke_normal.dds");
+	myData.normalTexture = myEngine->GetTexture("Data/Textures/particles/test_normal.dds");
 
 	myData.lifeTime = -1.f;
 	myData.shader = myEngine->GetEffect("Shaders/T_Particle.json");
@@ -41,10 +41,11 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 
 
 	myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);
-	myData.shader->AddShaderResource(myData.normalTexture->GetShaderView(), Effect::NORMAL);
+	//myData.shader->AddShaderResource(myData.normalTexture->GetShaderView(), Effect::NORMAL);
 
 	shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);
 	shader->AddShaderResource(myData.normalTexture->GetShaderView(), Effect::NORMAL);
+
 
 
 	myTimeToEmit = 0.f;
@@ -62,18 +63,18 @@ void CEmitterInstance::CleanUp()
 void CEmitterInstance::Update(float aDeltaTime)
 {
 	myTimeToEmit -= aDeltaTime;
-	/*if (myTimeToEmit < 0.f)
+	if (myTimeToEmit < 0.f)
 	{
 		Emit();
 		myTimeToEmit = 0.2f;
-	}*/
+	}
 
-	static int i = 0;
+	/*static int i = 0;
 	for (; i < 4; i++ )
 	{
 		Emit();
 	}
-
+*/
 	UpdateParticle(aDeltaTime);
 }
 
@@ -201,8 +202,8 @@ void CEmitterInstance::UpdateParticle(float aDeltaTime)
 			myParticles.RemoveCyclicAtIndex(i);
 			continue;
 		}
-		//myParticles[i].position += (myParticles[i].direction * myParticles[i].speed) * aDeltaTime;
-		//myParticles[i].currLifeTime -= aDeltaTime;
+		myParticles[i].position += (myParticles[i].direction * myParticles[i].speed) * aDeltaTime;
+		myParticles[i].currLifeTime -= aDeltaTime;
 		//myParticles[i].size += (1 * aDeltaTime);
 		myParticles[i].alpha = myParticles[i].currLifeTime / myParticles[i].lifeTime;
 	}

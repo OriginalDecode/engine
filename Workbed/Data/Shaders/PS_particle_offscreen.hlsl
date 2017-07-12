@@ -20,15 +20,20 @@ struct VS_OUTPUT
 //	Line3D Pixel Shader
 //---------------------------------
 
-struct GBuffer
+struct PBuffer
 {
 	float4 Diffuse;
 	float4 Normal;
-	float4 Depth;
 };
 
-float4 PS(VS_OUTPUT input) : SV_Target
+PBuffer PS(VS_OUTPUT input) : SV_Target
 {
+	float4 diff = ParticleTexture.Sample(point_sample, input.uv);
 	float4 normal = NormalTexture.Sample(point_sample, input.uv);
-	return normal;
+
+	PBuffer output = (PBuffer)0;
+
+	output.Diffuse = diff;
+	output.Normal = float4(normal.rgb, diff.a);
+	return output;
 };

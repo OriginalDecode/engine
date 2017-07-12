@@ -98,6 +98,8 @@ private:
 	CText*				myText					= nullptr;
 	Texture*			myDepthTexture			= nullptr;
 	Texture*			m_ParticleBuffer		= nullptr;
+	Texture*			m_ParticleDiff			= nullptr;
+	class Quad*			m_Quad = nullptr;
 	Sprite*				mySprite				= nullptr;
 	Sprite*				myClearColor			= nullptr;
 

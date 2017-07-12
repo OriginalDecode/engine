@@ -126,4 +126,12 @@ public:
 	DeferredRenderer* GetDeferredRenderer() {	return m_DeferredRenderer; };
 
 #endif
+
+	struct cbParticle
+	{
+		CU::Matrix44f view;
+		CU::Matrix44f invProjection;
+		CU::Vector4f m_ViewDir;
+	} m_cbParticles;
+	IBuffer* m_cbParticleBuf;
 };

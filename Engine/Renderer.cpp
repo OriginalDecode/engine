@@ -117,6 +117,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 
 	Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->AddShaderResource(m_ParticleBuffer, Effect::NORMAL);
+	Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->AddShaderResource(myDepthTexture, Effect::DEPTH);
 	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Lightmesh.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
 	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
 	m_Engine->AddTexture(m_ParticleBuffer, "Particle Normal Accumulation");
@@ -124,6 +125,9 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_Quad = new Quad;
 	m_Quad->Initiate();
+
+
+	m_cbParticleBuf = m_RenderContext.m_API->CreateConstantBuffer(sizeof(m_cbParticles));
 
 
 	return true;
@@ -134,7 +138,7 @@ bool Renderer::CleanUp()
 {
 	m_Quad->CleanUp();
 	delete m_Quad;
-	
+	SAFE_RELEASE(m_cbParticleBuf);
 	m_ParticleBuffer->CleanUp();
 	SAFE_DELETE(m_ParticleBuffer);
 	m_LightPass.CleanUp();
@@ -247,6 +251,14 @@ void Renderer::Render()
 	m_RenderContext.m_API->SetVertexShader(m_Quad->GetShader()->GetVertexShader());
 	m_RenderContext.m_API->SetPixelShader(Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->GetPixelShader());
 	m_RenderContext.m_Context->PSSetShaderResources(0, ARRAYSIZE(srv), &srv[0]);
+
+	m_cbParticles.m_ViewDir = m_Camera->GetAt();
+	m_cbParticles.invProjection = CU::Math::InverseReal(m_Camera->GetPerspective());
+	m_cbParticles.view = m_Camera->GetOrientation();
+
+	m_RenderContext.m_API->UpdateConstantBuffer(m_cbParticleBuf, &m_cbParticles);
+
+	m_RenderContext.m_Context->PSSetConstantBuffers(0, 1, &m_cbParticleBuf);
 
 	m_Quad->Render();
 

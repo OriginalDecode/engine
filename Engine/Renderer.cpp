@@ -112,6 +112,9 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_ParticleBuffer = new Texture;
 	m_ParticleBuffer->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
 
+	m_ParticleDepth = new Texture;
+	m_ParticleDepth->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Depth Render Target");
+
 	m_ParticleDiff = new Texture;
 	m_ParticleDiff->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
 
@@ -130,6 +133,14 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_cbParticleBuf = m_RenderContext.m_API->CreateConstantBuffer(sizeof(m_cbParticles));
 
 
+	m_CalcSSNormal.m_TexelSize.x = window_size.m_Width;
+	m_CalcSSNormal.m_TexelSize.y = window_size.m_Height;
+	m_cbCalcSSNormal = m_RenderContext.m_API->CreateConstantBuffer(sizeof(m_CalcSSNormal));
+
+
+	Effect* fx = m_Engine->GetEffect("Shaders/T_Particles_Normal.json");
+	fx->AddShaderResource(m_ParticleDepth, Effect::DEPTH); //Create a bindings file
+	
 	return true;
 }
 //_________________________________
@@ -199,7 +210,39 @@ void Renderer::Render()
 	else
 		Render3DCommands();
 
+	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
+
+	
+	
+	
+	
 	const float clear[4] = { 0.f,0.f,0.f,0.f }; 
+	
+	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleDepth->GetRenderTargetView(), clear);
+	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleDepth->GetRenderTargetRef(), myDepthTexture->GetDepthView());
+	
+	RenderParticles(m_Engine->GetEffect("Shaders/T_particle_offscreen.json")); //Should be a depth shader
+
+	/*m_Quad->SetBuffers();
+	Effect* fx = m_Engine->GetEffect("Shaders/T_Particles_Normal.json");
+
+
+	m_RenderContext.m_API->UpdateConstantBuffer(m_cbCalcSSNormal, &m_CalcSSNormal);
+	m_RenderContext.m_Context->PSSetConstantBuffers(0, 1, &m_cbCalcSSNormal);
+
+	fx->Use();
+	m_Quad->Render();
+	fx->Clear();*/
+
+	
+	mySynchronizer->AddRenderCommand(SpriteCommand(m_ParticleDepth->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 2)));
+	/*
+		Render Particles to depth
+		Calculate normals based on neighboring texel of the depth map
+		Render to screen
+	*/
+	/**
+	
 	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleBuffer->GetRenderTargetView(), clear);
 	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleDiff->GetRenderTargetView(), clear);
 
@@ -209,9 +252,8 @@ void Renderer::Render()
 	};
 	m_RenderContext.m_Context->OMSetRenderTargets(ARRAYSIZE(view), &view[0], myDepthTexture->GetDepthView());
 	RenderParticles(m_Engine->GetEffect("Shaders/T_particle_offscreen.json"));
-
-	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
-	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
+	*/
+	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 
 	m_DeferredRenderer->DeferredRender(
 		m_Camera->GetOrientation(),
@@ -240,27 +282,27 @@ void Renderer::Render()
 
 
 
-	m_Quad->SetBuffers();
+	//m_Quad->SetBuffers();
 
 
-	ID3D11ShaderResourceView* srv[] = {
-		m_ParticleDiff->GetShaderView(),
-		m_ParticleBuffer->GetShaderView(),
-	};
+	//ID3D11ShaderResourceView* srv[] = {
+	//	m_ParticleDiff->GetShaderView(),
+	//	m_ParticleBuffer->GetShaderView(),
+	//};
 
-	m_RenderContext.m_API->SetVertexShader(m_Quad->GetShader()->GetVertexShader());
-	m_RenderContext.m_API->SetPixelShader(Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->GetPixelShader());
-	m_RenderContext.m_Context->PSSetShaderResources(0, ARRAYSIZE(srv), &srv[0]);
+	//m_RenderContext.m_API->SetVertexShader(m_Quad->GetShader()->GetVertexShader());
+	//m_RenderContext.m_API->SetPixelShader(Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->GetPixelShader());
+	//m_RenderContext.m_Context->PSSetShaderResources(0, ARRAYSIZE(srv), &srv[0]);
 
-	m_cbParticles.m_ViewDir = m_Camera->GetAt();
-	m_cbParticles.invProjection = CU::Math::InverseReal(m_Camera->GetPerspective());
-	m_cbParticles.view = m_Camera->GetOrientation();
+	//m_cbParticles.m_ViewDir = m_Camera->GetAt();
+	//m_cbParticles.invProjection = CU::Math::InverseReal(m_Camera->GetPerspective());
+	//m_cbParticles.view = m_Camera->GetOrientation();
 
-	m_RenderContext.m_API->UpdateConstantBuffer(m_cbParticleBuf, &m_cbParticles);
+	//m_RenderContext.m_API->UpdateConstantBuffer(m_cbParticleBuf, &m_cbParticles);
 
-	m_RenderContext.m_Context->PSSetConstantBuffers(0, 1, &m_cbParticleBuf);
+	//m_RenderContext.m_Context->PSSetConstantBuffers(0, 1, &m_cbParticleBuf);
 
-	m_Quad->Render();
+	//m_Quad->Render();
 
 
 	//RenderParticles(m_Engine->GetEffect("Shaders/T_Particle.json"));
@@ -625,7 +667,7 @@ void Renderer::RenderParticles(Effect* effect)
 
 	m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
-	m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE_PARTICLE, 0);
+	//m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE_PARTICLE, 0);
 
 	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER);
 	for (s32 i = 0; i < commands.Size(); i++)

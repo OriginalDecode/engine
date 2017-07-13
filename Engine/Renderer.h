@@ -99,6 +99,7 @@ private:
 	Texture*			myDepthTexture			= nullptr;
 	Texture*			m_ParticleBuffer		= nullptr;
 	Texture*			m_ParticleDiff			= nullptr;
+	Texture*			m_ParticleDepth			= nullptr;
 	class Quad*			m_Quad = nullptr;
 	Sprite*				mySprite				= nullptr;
 	Sprite*				myClearColor			= nullptr;
@@ -134,4 +135,15 @@ public:
 		CU::Vector4f m_ViewDir;
 	} m_cbParticles;
 	IBuffer* m_cbParticleBuf;
+
+
+	struct cbCalcSSNormal
+	{
+		CU::Vector4f m_TexelSize;
+	} m_CalcSSNormal;
+	IBuffer* m_cbCalcSSNormal;
+
+
+
+
 };

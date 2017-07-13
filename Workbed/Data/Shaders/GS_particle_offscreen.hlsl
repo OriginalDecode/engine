@@ -15,6 +15,7 @@ struct VS_OUTPUT
 	float2 size : SIZE;
 	float2 alpha : ALPHA;
 	float2 uv : TEXCOORD;
+	float2 depth : DEPTH;
 };
 
 static const float4 quadPos[4] =
@@ -45,6 +46,7 @@ void GS(point VS_OUTPUT input[1], inout TriangleStream<VS_OUTPUT> triStream)
 		output.pos = mul(output.pos, Projection);
 		output.uv.x = quadUV[i].x;
 		output.uv.y = quadUV[i].y;
+		output.depth = input[0].depth;
 
 		output.alpha = input[0].alpha;
 		triStream.Append(output);

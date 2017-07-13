@@ -26,8 +26,7 @@ struct VS_OUTPUT
 	float2 size : SIZE;
 	float2 alpha : ALPHA;
 	float2 uv : TEXCOORD;
-	// float4 worldviewproj : WVP;
-	// float4 Tex : TEXCOORD1;
+	float2 depth : DEPTH;
 };
 
 
@@ -38,12 +37,11 @@ struct VS_OUTPUT
 VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-	output.pos = mul(input.pos, 1);
+	output.pos = mul(input.pos, World);
+	output.depth.x = output.pos.z;
+
 	output.pos = mul(output.pos, View);
 	output.size = input.size;
 	output.alpha = input.alpha;
-	// output.pos = mul(output.pos, Projection);
-	// output.color = input.color;
-	
 	return output;
 };

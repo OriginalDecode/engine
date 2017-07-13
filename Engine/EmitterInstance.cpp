@@ -23,7 +23,7 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	myData.lifeTime = -1.f;
 	myData.shader = myEngine->GetEffect("Shaders/T_Particle.json");
 	myData.particleData = data;
-	myData.size = { 0.f, 0.f, 0.f };
+	myData.size = { 5.f, 0.f, 5.f };
 
 	myParticles.Init(256);
 
@@ -214,13 +214,13 @@ void CEmitterInstance::Emit()
 	SParticleObject temp; //Replace with preallocated particles
 
 	temp.position = myOrientation.GetPosition();
-	float x0 = temp.position.x;// + myData.size.x;
-	float y0 = temp.position.y;// + myData.size.y;
-	float z0 = temp.position.z;// + myData.size.z;
+	float x0 = temp.position.x + myData.size.x;
+	float y0 = temp.position.y + myData.size.y;
+	float z0 = temp.position.z + myData.size.z;
 
-	float x1 = temp.position.x;// - myData.size.x;
-	float y1 = temp.position.y;// - myData.size.y;
-	float z1 = temp.position.z;// - myData.size.z;
+	float x1 = temp.position.x - myData.size.x;
+	float y1 = temp.position.y - myData.size.y;
+	float z1 = temp.position.z - myData.size.z;
 
 	temp.position.x = RANDOM(x0 + -1.5f, x1 + 1.5f);
 	temp.position.y = RANDOM(y0 + -1.5f, y1);
@@ -234,6 +234,6 @@ void CEmitterInstance::Emit()
 	temp.lifeTime = time;
 	temp.currLifeTime = time;
 	temp.alpha = 1;// myData.particleData.startAlpha;
-	temp.speed = 0.75f;
+	temp.speed = 3.f;
 	myParticles.Add(temp);
 }

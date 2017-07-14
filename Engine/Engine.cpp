@@ -617,7 +617,7 @@ bool ListBox(const char* label, int* current_index, std::vector<std::string>& va
 	if (values.empty())
 		return false;
 
-	return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size());
+	return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size(), 10);
 }
 
 void Engine::DebugTextures()
@@ -626,11 +626,15 @@ void Engine::DebugTextures()
 	if (ImGui::Begin("textures", &pOpen, 0))
 	{
 		static s32 index = 0;
+		ImGui::PushItemWidth(250.f);
 		ListBox("", &index, m_Labels);
+		ImGui::PopItemWidth();
+
 		ImTextureID tex_id = m_DebugTextures[index];
 		ImVec2 w_size = ImGui::GetWindowSize();
-		w_size.x -= 50.f;
-		w_size.y -= 50.f;
+		w_size.x *= 0.65f;
+		w_size.y = w_size.x / 1.777777777777777777777777777777778;
+		ImGui::SameLine();
 		ImGui::Image(tex_id, w_size);
 		//ImDrawList* draw_list = ImGui::GetWindowDrawList();
 		//draw_list->AddCallback(draw_texture, nullptr);
@@ -741,11 +745,6 @@ void Engine::UpdateDebugUI()
 		{
 			m_Functions[index].second();
 		}
-
-
-		
-
-
 		ImGui::End();
 	}
 	ImGui::PopStyleVar();

@@ -12,7 +12,7 @@ struct VS_OUTPUT
 };
 
 SamplerState sampler0 : register ( s0 );
-Texture2D DepthTexture : register ( t8 );
+Texture2D DepthTexture : register ( t7 );
 
 cbuffer CalcSSNormal
 {
@@ -41,7 +41,8 @@ float projectZ(float z, float near, float far)
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float depth = DepthTexture.Sample(sampler0, input.uv).x;
-	
+	if(depth > 1)
+		discard;
 
 	float3 posEye = uvToEye(input.uv, depth);
 	

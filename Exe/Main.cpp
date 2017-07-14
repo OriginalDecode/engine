@@ -41,7 +41,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
 #ifdef _PROFILE
 	profiler::startListen();
-#endif
+#endif/* 1,777777777777777777777777777777778*/
 	DL_Debug::Debug::Create();
 	//double res16x9 = 1.777777777777777777777777777777778; best
 	const char* inputString = someCommandLines;

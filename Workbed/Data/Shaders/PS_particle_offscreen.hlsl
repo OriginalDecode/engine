@@ -3,7 +3,7 @@
 //---------------------------------
 
 SamplerState sampler0 : register ( s0 );
-Texture2D DepthTexture : register ( t8 );
+Texture2D DepthTexture : register ( t7 );
 //---------------------------------
 //	Line3D Pixel Structs
 //---------------------------------

@@ -141,7 +141,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     
 	float3 ambientSpec = CubeMap.SampleLevel(point_Clamp, reflectionVector,lysMipMap).xyz * ao * reflection_fresnel;
 	float3 final_color = saturate(ambientDiffuse + ambientSpec) ;
-	float NdotL = dot(normal.xyz, -light_direction);
+	float NdotL = dot(normal.xyz, light_direction);
 	
 	/* Shadow */
 	
@@ -157,7 +157,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float compareValue = shadowVec.z;
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
 	if(sampleValue < compareValue)
- 		final_color *= 0.42;
+ 		final_color = 0;
 
  	/* Shadow end */
 

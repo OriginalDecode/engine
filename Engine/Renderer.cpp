@@ -123,8 +123,9 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->AddShaderResource(myDepthTexture, Effect::DEPTH);
 	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Lightmesh.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
 	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
-	m_Engine->AddTexture(m_ParticleBuffer, "Particle Normal Accumulation");
+	m_Engine->AddTexture(m_ParticleBuffer, "Particle");
 	m_Engine->AddTexture(m_ParticleDiff, "Particle Diffuse");
+	m_Engine->AddTexture(m_ParticleDepth, "Particle Depth");
 
 	m_Quad = new Quad;
 	m_Quad->Initiate();
@@ -143,6 +144,20 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	
 
 	m_Engine->GetEffect("Shaders/T_particle_offscreen.json")->AddShaderResource(myDepthTexture, Effect::DEPTH);
+
+	m_Direction = CU::Vector3f(0.42f, 0.73f, 0.24f);
+
+
+	//10,5,10
+
+	Camera* c = m_DirectionalShadow.GetCamera();
+
+
+	c->SetPosition(CU::Vector3f(0, 25, 0));
+	c->RotateAroundY(CL::DegreeToRad(90.f) * 0.42f);
+	c->RotateAroundZ(CL::DegreeToRad(90.f) * 0.73f);
+	c->RotateAroundX(CL::DegreeToRad(90.f) * 0.24f);
+
 
 	return true;
 }
@@ -244,8 +259,8 @@ void Renderer::Render()
 	fx->Clear();
 
 	
-	mySynchronizer->AddRenderCommand(SpriteCommand(m_ParticleDepth->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 2)));
-	mySynchronizer->AddRenderCommand(SpriteCommand(myDepthTexture->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 4)));
+	//mySynchronizer->AddRenderCommand(SpriteCommand(m_ParticleDepth->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 2)));
+	//mySynchronizer->AddRenderCommand(SpriteCommand(myDepthTexture->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 4)));
 
 	/*
 		Render Particles to depth
@@ -264,7 +279,7 @@ void Renderer::Render()
 	m_RenderContext.m_Context->OMSetRenderTargets(ARRAYSIZE(view), &view[0], myDepthTexture->GetDepthView());
 	RenderParticles(m_Engine->GetEffect("Shaders/T_particle_offscreen.json"));
 	*/
-	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
+	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 
 	m_DeferredRenderer->DeferredRender(
 		m_Camera->GetOrientation(),

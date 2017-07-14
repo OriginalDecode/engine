@@ -139,6 +139,7 @@ public:
 
 	struct cbCalcSSNormal
 	{
+		CU::Matrix44f m_Projection;
 		CU::Matrix44f m_InvProjection;
 		CU::Vector4f m_TexelSize;
 	} m_CalcSSNormal;

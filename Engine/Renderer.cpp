@@ -113,7 +113,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_ParticleBuffer->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
 
 	m_ParticleDepth = new Texture;
-	m_ParticleDepth->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "Particle Depth Render Target");
+	m_ParticleDepth->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R32G32B32A32_FLOAT, "Particle Depth Render Target");
 
 	m_ParticleDiff = new Texture;
 	m_ParticleDiff->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
@@ -245,6 +245,7 @@ void Renderer::Render()
 	Effect* fx = m_Engine->GetEffect("Shaders/T_Particles_Normal.json");
 
 	m_CalcSSNormal.m_InvProjection = CU::Math::InverseReal(m_Camera->GetPerspective());
+	m_CalcSSNormal.m_Projection = m_Camera->GetPerspective();
 
 	m_RenderContext.m_API->UpdateConstantBuffer(m_cbCalcSSNormal, &m_CalcSSNormal);
 	m_RenderContext.m_Context->PSSetConstantBuffers(0, 1, &m_cbCalcSSNormal);

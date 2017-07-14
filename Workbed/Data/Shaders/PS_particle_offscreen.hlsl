@@ -35,11 +35,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 		discard;
 
 	normal.z = -sqrt(1.0 - r2);	
-
-	float4 pixel = float4(input.eyePos + normal * r, 1.0);
+	float4 pixel = float4((float3(input.eyePos.xyz) + normal) * r, 1.0);
 	float4 clip = mul(pixel, Projection);
 	float depth = clip.z / clip.w;
-
-	float diffuse = max(0.0, dot(normal, float3(0,1,0)));
-	return float4(depth,depth,depth,depth);
+	return float4(depth,depth,depth,1);
 };

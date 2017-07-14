@@ -203,8 +203,8 @@ void CEmitterInstance::UpdateParticle(float aDeltaTime)
 			myParticles.RemoveCyclicAtIndex(i);
 			continue;
 		}
-		myParticles[i].position += (myParticles[i].direction * myParticles[i].speed) * aDeltaTime;
-		myParticles[i].currLifeTime -= aDeltaTime;
+		//myParticles[i].position += (myParticles[i].direction * myParticles[i].speed) * aDeltaTime;
+		//myParticles[i].currLifeTime -= aDeltaTime;
 		//myParticles[i].size += (1 * aDeltaTime);
 		myParticles[i].alpha = myParticles[i].currLifeTime / myParticles[i].lifeTime;
 	}

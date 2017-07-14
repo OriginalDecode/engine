@@ -99,6 +99,7 @@ void CEmitterInstance::Render(CU::Matrix44f& camera_orientation, const CU::Matri
 
 	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 	context->GSSetConstantBuffers(0, 1, &m_GeometryBuffer);
+	context->PSSetConstantBuffers(0, 1, &m_GeometryBuffer);
 
 	//myData.shader->Use();
 	effect->Use();

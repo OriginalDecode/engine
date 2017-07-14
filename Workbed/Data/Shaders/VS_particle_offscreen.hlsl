@@ -27,8 +27,9 @@ struct VS_OUTPUT
 	float2 alpha : ALPHA;
 	float2 uv : TEXCOORD;
 	float2 depth : DEPTH;
+	float4 eyePos : POSITION0;
+	float4x4 projection : MATRIX0;
 };
-
 
 //---------------------------------
 //	Line3D Vertex Shader
@@ -38,9 +39,8 @@ VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	output.pos = mul(input.pos, World);
-	output.depth.x = output.pos.z;
-
 	output.pos = mul(output.pos, View);
+	output.eyePos = output.pos;
 	output.size = input.size;
 	output.alpha = input.alpha;
 	return output;

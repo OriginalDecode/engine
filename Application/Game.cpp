@@ -36,7 +36,7 @@ void Game::InitState(StateStack* state_stack)
 	m_Engine->AddFunction("Data/Levels/level_02.level", [&]() { Initiate("Data/Levels/level_02.level"); });
 	m_Engine->AddFunction("Data/Levels/level_03.level", [&]() { Initiate("Data/Levels/level_03.level"); });
 #endif*/
-	Initiate("Data/Levels/level_03.level");
+	Initiate("Data/Levels/level_01.level");
 	m_Engine->LoadModel(key, "Shaders/T_Deferred_Base.json", true);
 
 	light = m_Engine->RegisterLight();

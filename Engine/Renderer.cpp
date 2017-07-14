@@ -113,7 +113,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_ParticleBuffer->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
 
 	m_ParticleDepth = new Texture;
-	m_ParticleDepth->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Depth Render Target");
+	m_ParticleDepth->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "Particle Depth Render Target");
 
 	m_ParticleDiff = new Texture;
 	m_ParticleDiff->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
@@ -133,14 +133,17 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_cbParticleBuf = m_RenderContext.m_API->CreateConstantBuffer(sizeof(m_cbParticles));
 
 
-	m_CalcSSNormal.m_TexelSize.x = window_size.m_Width;
-	m_CalcSSNormal.m_TexelSize.y = window_size.m_Height;
+	m_CalcSSNormal.m_TexelSize.x = 1.f / window_size.m_Width;
+	m_CalcSSNormal.m_TexelSize.y = 1.f / window_size.m_Height;
 	m_cbCalcSSNormal = m_RenderContext.m_API->CreateConstantBuffer(sizeof(m_CalcSSNormal));
 
 
 	Effect* fx = m_Engine->GetEffect("Shaders/T_Particles_Normal.json");
 	fx->AddShaderResource(m_ParticleDepth, Effect::DEPTH); //Create a bindings file
 	
+
+	m_Engine->GetEffect("Shaders/T_particle_offscreen.json")->AddShaderResource(myDepthTexture, Effect::DEPTH);
+
 	return true;
 }
 //_________________________________
@@ -219,23 +222,31 @@ void Renderer::Render()
 	const float clear[4] = { 0.f,0.f,0.f,0.f }; 
 	
 	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleDepth->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleDepth->GetRenderTargetRef(), myDepthTexture->GetDepthView());
+	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleDepth->GetRenderTargetRef(), nullptr);
 	
 	RenderParticles(m_Engine->GetEffect("Shaders/T_particle_offscreen.json")); //Should be a depth shader
 
-	/*m_Quad->SetBuffers();
+	m_Quad->SetBuffers();
 	Effect* fx = m_Engine->GetEffect("Shaders/T_Particles_Normal.json");
 
+	m_CalcSSNormal.m_InvProjection = CU::Math::InverseReal(m_Camera->GetPerspective());
 
 	m_RenderContext.m_API->UpdateConstantBuffer(m_cbCalcSSNormal, &m_CalcSSNormal);
 	m_RenderContext.m_Context->PSSetConstantBuffers(0, 1, &m_cbCalcSSNormal);
-
+	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleBuffer->GetRenderTargetView(), clear); 
+	ID3D11RenderTargetView* view[] = {
+		m_ParticleBuffer->GetRenderTargetView()
+	};
+	m_RenderContext.m_Context->OMSetRenderTargets(ARRAYSIZE(view), &view[0], myDepthTexture->GetDepthView());
 	fx->Use();
+	m_RenderContext.m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_Quad->Render();
-	fx->Clear();*/
+	fx->Clear();
 
 	
 	mySynchronizer->AddRenderCommand(SpriteCommand(m_ParticleDepth->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 2)));
+	mySynchronizer->AddRenderCommand(SpriteCommand(myDepthTexture->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 4)));
+
 	/*
 		Render Particles to depth
 		Calculate normals based on neighboring texel of the depth map

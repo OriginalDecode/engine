@@ -38,7 +38,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float depth = DepthTexture.Sample(sampler0, input.uv).x;
 	float maxDepth = 0.999;
-
+	if(depth > maxDepth)
+		discard;
 
 	float3 posEye = uvToEye(input.uv, depth);
 
@@ -65,7 +66,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	float3 n = normalize(cross(ddx0, ddy0));
 
+
 	float4 normal = float4(n, depth);
+	
 
 	return normal;
 };

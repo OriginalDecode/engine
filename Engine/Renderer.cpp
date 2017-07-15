@@ -701,9 +701,9 @@ void Renderer::RenderPointlight()
 void Renderer::RenderParticles(Effect* effect)
 {
 
-	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+	m_API->SetBlendState(eBlendStates::PARTICLE_BLEND);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
-	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 0);
 
 	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER);
 	for (s32 i = 0; i < commands.Size(); i++)

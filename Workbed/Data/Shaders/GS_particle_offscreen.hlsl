@@ -17,7 +17,7 @@ struct VS_OUTPUT
 	float2 uv : TEXCOORD;
 	float2 depth : DEPTH;
 	float4 eyePos : POSITION0;
-	float4x4 projection : MATRIX0;
+	float4 center_radius : POSITION1;
 };
 
 static const float4 quadPos[4] =
@@ -41,12 +41,15 @@ void GS(point VS_OUTPUT input[1], inout TriangleStream<VS_OUTPUT> triStream)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 
+		
 	for(int i = 0; i < 4; ++i)
 	{
-		output.pos = (quadPos[i] * input[0].size.x * 2) + input[0].pos;
-		output.eyePos = output.pos;
+		output.pos = (quadPos[i] * input[0].size.x) + input[0].pos;
 		output.pos = mul(output.pos, Projection);
 
+		output.eyePos = input[0].pos;
+		output.center_radius.xy = (output.pos.xy / output.pos.w) * float2(1920,1080);
+		output.center_radius.z = (1080 * Projection[1][1] * ( 1 / output.pos.w) ) / 2.0;
 		output.pos.z /= output.pos.w;
 
 		output.uv.x = quadUV[i].x;

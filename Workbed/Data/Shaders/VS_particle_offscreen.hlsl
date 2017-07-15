@@ -28,7 +28,7 @@ struct VS_OUTPUT
 	float2 uv : TEXCOORD;
 	float2 depth : DEPTH;
 	float4 eyePos : POSITION0;
-	float4x4 projection : MATRIX0;
+	float4 center_radius : POSITION1;
 };
 
 //---------------------------------
@@ -43,5 +43,10 @@ VS_OUTPUT VS(VS_INPUT input)
 	output.eyePos = output.pos;
 	output.size = input.size;
 	output.alpha = input.alpha;
+	
+	
+
+	
+	
 	return output;
 };

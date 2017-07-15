@@ -68,6 +68,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 
 	float4 normal = float4(n, depth);
+
 	
 
 	return normal;

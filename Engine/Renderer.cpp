@@ -83,7 +83,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 
 	m_PostProcessManager.Initiate();
-	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR );
+	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
 
 	m_RenderContext.m_API = Engine::GetAPI();
 	m_RenderContext.m_Device = Engine::GetAPI()->GetDevice();
@@ -103,7 +103,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 #endif
 
 	m_WaterPlane = new WaterPlane;
-	m_WaterPlane->Initiate({ -512, 0, -512});
+	m_WaterPlane->Initiate({ -512, 0, -512 });
 
 	m_WaterCamera = new Camera;
 	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.01f, 100.f, 90.f);
@@ -114,7 +114,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 
 	m_ParticleDiff = new Texture;
-	m_ParticleDiff->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "Particle Depth RTV"); 
+	m_ParticleDiff->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "Particle Depth RTV");
 	//, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
 
 	m_ParticleDepth = new Texture;
@@ -149,7 +149,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	Effect* fx = m_Engine->GetEffect("Shaders/T_Particles_Normal.json");
 	fx->AddShaderResource(m_ParticleDiff, Effect::DEPTH);
-	
+
 
 	//m_Engine->GetEffect("Shaders/T_particle_offscreen.json")->AddShaderResource(myDepthTexture, Effect::DEPTH);
 
@@ -159,12 +159,10 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	//10,5,10
 
 	Camera* c = m_DirectionalShadow.GetCamera();
-
-
-	c->SetPosition(CU::Vector3f(0, 0, 0));
-// 	c->RotateAroundY(CL::DegreeToRad(90.f) * 0.42f);
-// 	c->RotateAroundZ(CL::DegreeToRad(90.f) * 0.73f);
-// 	c->RotateAroundX(CL::DegreeToRad(90.f) * 0.24f);
+	c->SetPosition(CU::Vector3f(5, 25, 5));
+	c->RotateAroundX(CL::DegreeToRad(90.f) * 1.0f);
+	//c->RotateAroundY(CL::DegreeToRad(90.f) * 0.42f);
+	//c->RotateAroundZ(CL::DegreeToRad(90.f) * 0.73f);
 
 
 	return true;
@@ -238,16 +236,16 @@ void Renderer::Render()
 
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
-	
-	
-	
-	
-	const float clear[4] = { 0.f,0.f,0.f,0.f }; 
-	
+
+
+
+
+	const float clear[4] = { 0.f,0.f,0.f,0.f };
+
 	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleDiff->GetRenderTargetView(), clear);
 	m_RenderContext.m_Context->ClearDepthStencilView(m_ParticleDepth->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0.f);
 	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleDiff->GetRenderTargetRef(), m_ParticleDepth->GetDepthView());
-	
+
 	RenderParticles(m_Engine->GetEffect("Shaders/T_particle_offscreen.json")); //Should be a depth shader
 
 	m_Quad->SetBuffers();
@@ -258,7 +256,7 @@ void Renderer::Render()
 
 	m_RenderContext.m_API->UpdateConstantBuffer(m_cbCalcSSNormal, &m_CalcSSNormal);
 	m_RenderContext.m_Context->PSSetConstantBuffers(0, 1, &m_cbCalcSSNormal);
-	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleBuffer->GetRenderTargetView(), clear); 
+	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleBuffer->GetRenderTargetView(), clear);
 	ID3D11RenderTargetView* view[] = {
 		m_ParticleBuffer->GetRenderTargetView()
 	};
@@ -268,8 +266,8 @@ void Renderer::Render()
 	m_Quad->Render();
 	fx->Clear();
 
-	
-	mySynchronizer->AddRenderCommand(SpriteCommand(m_ParticleDepth->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 2)));
+
+	//mySynchronizer->AddRenderCommand(SpriteCommand(m_ParticleDepth->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 2)));
 	//mySynchronizer->AddRenderCommand(SpriteCommand(myDepthTexture->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 4)));
 
 	/*
@@ -278,7 +276,7 @@ void Renderer::Render()
 		Render to screen
 	*/
 	/**
-	
+
 	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleBuffer->GetRenderTargetView(), clear);
 	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleDiff->GetRenderTargetView(), clear);
 
@@ -481,6 +479,7 @@ void Renderer::Render3DCommandsInstanced()
 	EASY_BLOCK("RenderModels", profiler::colors::Amber);
 #endif
 
+
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	for (s32 j = 0; j < 8; j++)
 	{
@@ -518,7 +517,7 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i)
 void Renderer::RenderTerrain(bool override_effect)
 {
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	m_API->SetBlendState(eBlendStates::BLEND_FALSE); 
+	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 #ifdef _PROFILE
 	EASY_FUNCTION();
@@ -527,7 +526,7 @@ void Renderer::RenderTerrain(bool override_effect)
 	{
 		if (!terrain->HasLoaded())
 			continue;
-		if(!override_effect)
+		if (!override_effect)
 			terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 		else
 			terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext, true);
@@ -556,6 +555,23 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 		model->SetOrientation(command->m_Orientation);
 		model->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
 	}
+
+	/*const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
+	for (s32 j = 0; j < 8; j++)
+	{
+		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
+		for (s32 i = 0; i < commands.Size(); i++)
+		{
+			ProcessCommand(commands, i);
+		}
+	}
+
+	const CU::Matrix44f& perspective = camera->GetPerspective();
+	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
+	{
+		it->second->ShadowRenderInstanced(orientation, perspective, m_RenderContext);
+	}*/
+
 }
 //_________________________________
 

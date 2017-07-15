@@ -223,7 +223,7 @@ void Game::Update(float dt)
 
 	m_Orientation.SetTranslation(translation);
 
-	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(10, 2, 10)));
+	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(10, 2, 10)));
 
 	CU::Matrix44f orientation;
 	//orientation.SetPosition(CU::Vector3f(10, 2, 10));
@@ -245,7 +245,7 @@ void Game::Update(float dt)
 	//entity_translation.myOrientation = m_Orientation;/*m_Camera->GetOrientation();*/
 
 
-	//AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
+	AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
 
 	m_World.Update(dt);
 }

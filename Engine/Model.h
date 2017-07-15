@@ -43,7 +43,7 @@ public:
 	CU::GrowingArray<Model*> GetChildModels() { return myChildren; }
 
 	void AddOrientation(CU::Matrix44f orientation);
-
+	void ClearOrientation();
 private:
 	void RemoveOrientation();
 	CU::GrowingArray<Model*> myChildren;

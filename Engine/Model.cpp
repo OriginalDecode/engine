@@ -60,7 +60,7 @@ void Model::Initiate(const std::string& filename)
 	if (m_IsRoot == false)
 	{
 		InitVertexBuffer();
-		//InitInputLayout();
+		InitInputLayout();
 		InitIndexBuffer();
 		InitConstantBuffer();
 		InitInstanceBuffer();
@@ -174,13 +174,7 @@ void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matr
 		child->ShadowRender(camera_orientation, camera_projection, render_context);
 	}
 
-	if (m_IsRoot)
-		return;
-
-	if (!m_VertexLayout)
-		return;
-
-	if (mySurfaces.Empty())
+	if (m_IsRoot || !m_VertexLayout || mySurfaces.Empty())
 		return;
 
 	SetupLayoutsAndBuffers();
@@ -197,7 +191,7 @@ void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const
 {
 	for (Model* child : myChildren)
 	{
-		child->ShadowRender(camera_orientation, camera_projection, render_context);
+		child->ShadowRenderInstanced(camera_orientation, camera_projection, render_context);
 	}
 
 	if (!m_InstanceInputLayout || m_IsRoot || mySurfaces.Empty() || m_Orientations.Empty())
@@ -326,6 +320,11 @@ void Model::AddOrientation(CU::Matrix44f orientation)
 
 	m_Orientations.Add(orientation);
 
+}
+
+void Model::ClearOrientation()
+{
+	RemoveOrientation();
 }
 
 void Model::RemoveOrientation()

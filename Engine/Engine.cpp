@@ -155,7 +155,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 
 	m_Camera = new Camera;
-	m_Camera->CreatePerspectiveProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 10000.f, 90.f);
+	m_Camera->CreatePerspectiveProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 100.f, 90.f);
 	m_Camera->CreateOrthogonalProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 100.f);
 
 	myRenderer = new Renderer;
@@ -617,13 +617,14 @@ bool ListBox(const char* label, int* current_index, std::vector<std::string>& va
 	if (values.empty())
 		return false;
 
-	return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size(), 10);
+	return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size(), values.size());
 }
 
 void Engine::DebugTextures()
 {
 	static bool pOpen = false;
-	if (ImGui::Begin("textures", &pOpen, 0))
+	//ImGui::PushStyleVar(AutoSize)
+	if (ImGui::Begin("textures", &pOpen, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		static s32 index = 0;
 		ImGui::PushItemWidth(250.f);
@@ -635,7 +636,7 @@ void Engine::DebugTextures()
 		w_size.x *= 0.65f;
 		w_size.y = w_size.x / 1.777777777777777777777777777777778;
 		ImGui::SameLine();
-		ImGui::Image(tex_id, w_size);
+		ImGui::Image(tex_id, w_size, ImVec2(0,0),ImVec2(1,1),ImVec4(1,1,1,1),ImVec4(1,1,1,1));
 		//ImDrawList* draw_list = ImGui::GetWindowDrawList();
 		//draw_list->AddCallback(draw_texture, nullptr);
 

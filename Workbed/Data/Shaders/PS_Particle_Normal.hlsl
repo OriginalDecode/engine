@@ -34,52 +34,38 @@ float3 uvToEye(float2 texCoord, float depth)
 	return viewPos.xyz / viewPos.w;
 }
 
-
-float projectZ(float z, float near, float far) 
-{
-	return far*(z+near)/(z*(far-near));
-}
-
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float depth = DepthTexture.Sample(sampler0, input.uv).x;
+	float maxDepth = 0.999;
 
-
-	if(depth < 1)
-		discard;
 
 	float3 posEye = uvToEye(input.uv, depth);
-		
+
+
 	float3 dx0 = DepthTexture.Sample(sampler0, input.uv + float2(texel_size.x, 0)).rgb;
 	float3 dx1 = DepthTexture.Sample(sampler0, input.uv + float2(-texel_size.x, 0)).rgb;
 	
+
 	half3 ddx0 = uvToEye(input.uv + float2(texel_size.x, 0), dx0) - posEye;
-	half3 ddx1 = posEye - uvToEye(input.uv + float2(-texel_size.x, 0), dx1); // uvToEye(input.uv + float2(0, texel_size.y), depth);
+	half3 ddx1 = posEye - uvToEye(input.uv + float2(-texel_size.x, 0), dx1);
 	if(abs(ddx0.z) > abs(ddx1.z))
 		ddx0 = ddx1;
+
 
 	float3 dy0 = DepthTexture.Sample(sampler0, input.uv + float2(0, texel_size.y)).rgb;
 	float3 dy1 = DepthTexture.Sample(sampler0, input.uv + float2(0, -texel_size.y)).rgb;
 
-	half3 ddy0 = uvToEye(input.uv + float2(0,texel_size.y), dy0) - posEye; //uvToEye(input.uv + float2(-texel_size.x, 0), depth) - posEye;
-	half3 ddy1 = posEye - uvToEye(input.uv + float2(0, -texel_size.y), dy1); //DepthTexture.Sample(sampler0, input.uv + float2(0, -texel_size.y)).rgb; //uvToEye(input.uv + float2(0, -texel_size.y), depth);
+	half3 ddy0 = uvToEye(input.uv + float2(0, texel_size.y), dy0) - posEye; 
+	half3 ddy1 = posEye - uvToEye(input.uv + float2(0, -texel_size.y), dy1);
 
 	if(abs(ddy0.z) > abs(ddy1.z))
 		ddy0 = ddy1;
 
-	/*half3 ddx0 = uvToEye(input.uv + float2(texel_size.x, 0), depth) - posEye;
-	half3 ddx1 = posEye - uvToEye(input.uv + float2(-texel_size.x,0), depth);
-	if(abs(ddx0.z) > abs(ddx1.z))
-		ddx0 = ddx1;
-
-	half3 ddy0 = uvToEye(input.uv + float2(0, texel_size.y), depth) - posEye;
-	half3 ddy1 = posEye - uvToEye(input.uv + float2(0, -texel_size.y), depth);
-
-	if(abs(ddy0.z) > abs(ddy1.z))
-		ddy0 = ddy1;*/
 
 	float3 n = normalize(cross(ddx0, ddy0));
-	float4 normal = float4(n, 1);
 
-	return float4(normal.xyz, 1);
+	float4 normal = float4(n, depth);
+
+	return normal;
 };

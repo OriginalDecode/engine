@@ -25,13 +25,18 @@ struct VS_OUTPUT
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	float4 sprite =  DiffuseTexture.Sample(linear_Clamp, input.uv);
-	return sprite;
-	float miZ = 0.9;
+	float4 sprite = DiffuseTexture.Sample(linear_Clamp, input.uv);
+	/*float miZ = 0.01;
 	float maZ = 1;
 	float newX = (sprite.x - miZ) / (maZ - miZ);	
 	sprite.x = newX;
 	sprite.y = newX;
 	sprite.z = newX;
-	return sprite;
+*/
+	float far = 1.;
+	float near = 0.01;
+	
+	float depth = (((far - near) / 2.f) * sprite.x) + ((far + near) / 2);
+
+	return float4(depth,depth,depth,depth);
 };

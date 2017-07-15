@@ -229,7 +229,7 @@ void Game::Update(float dt)
 	//orientation.SetPosition(CU::Vector3f(10, 2, 10));
 	//m_Synchronizer->AddRenderCommand(PointlightCommand(light, 10.f, 1.f, CU::Vector4f(1.f, 0.f, 0.f, 1.f), orientation));
 
-	orientation.SetPosition(CU::Vector3f(-55, 25, -12));
+	/*orientation.SetPosition(CU::Vector3f(-55, 25, -12));
 	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(1.f, 0.f, 0.f, 1.f), orientation));
 
 	orientation.SetPosition(CU::Vector3f(-55, 25, 24));
@@ -240,12 +240,12 @@ void Game::Update(float dt)
 
 	orientation.SetPosition(CU::Vector3f(55, 25, 24));
 	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(1.f, 0.f, 1.f, 1.f), orientation));
-
+*/
 	//TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
 	//entity_translation.myOrientation = m_Orientation;/*m_Camera->GetOrientation();*/
 
 
-	AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
+	//AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
 
 	m_World.Update(dt);
 }

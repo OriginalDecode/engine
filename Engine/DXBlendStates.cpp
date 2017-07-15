@@ -26,7 +26,6 @@ void DirectX11::CreateBlendStates()
 	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
 	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE; // dest blend makes it go bonkers?
 	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-
 	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
 	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE; //no difference between zero & one
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
@@ -76,7 +75,10 @@ void DirectX11::CreateBlendStates()
 
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
 	myDevice->CreateBlendState(&blendDesc, &myBlendStates[u16(eBlendStates::PARTICLE_BLEND)]);
-	SetDebugName(myBlendStates[u16(eBlendStates::PARTICLE_BLEND)], "ALPHA_BLEND BlendState");
+	SetDebugName(myBlendStates[u16(eBlendStates::PARTICLE_BLEND)], "PARTICLE_BLEND BlendState");
+
+
+
 
 
 

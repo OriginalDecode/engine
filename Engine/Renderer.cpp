@@ -112,20 +112,28 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_ParticleBuffer = new Texture;
 	m_ParticleBuffer->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
 
-	m_ParticleDepth = new Texture;
-	m_ParticleDepth->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R32G32B32A32_FLOAT, "Particle Depth Render Target");
 
 	m_ParticleDiff = new Texture;
-	m_ParticleDiff->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
+	m_ParticleDiff->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "Particle Depth RTV"); 
+	//, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
+
+	m_ParticleDepth = new Texture;
+	//m_ParticleDepth->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R32G32B32A32_FLOAT, "Particle Depth Render Target");
+	m_ParticleDepth->Initiate(window_size.m_Width, window_size.m_Height
+		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+		, DXGI_FORMAT_R32_TYPELESS
+		, DXGI_FORMAT_R32_FLOAT
+		, DXGI_FORMAT_D32_FLOAT
+		, "Particle : DepthStencil ");
 
 
 	Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->AddShaderResource(m_ParticleBuffer, Effect::NORMAL);
 	Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->AddShaderResource(myDepthTexture, Effect::DEPTH);
 	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Lightmesh.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
 	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
-	m_Engine->AddTexture(m_ParticleBuffer, "Particle");
-	m_Engine->AddTexture(m_ParticleDiff, "Particle Diffuse");
-	m_Engine->AddTexture(m_ParticleDepth, "Particle Depth");
+	m_Engine->AddTexture(m_ParticleBuffer, "Particle Normal");
+	m_Engine->AddTexture(m_ParticleDepth, "Particle Depth pass Stencil");
+	m_Engine->AddTexture(m_ParticleDiff, "Particle Depth pass RTV");
 
 	m_Quad = new Quad;
 	m_Quad->Initiate();
@@ -140,10 +148,10 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 
 	Effect* fx = m_Engine->GetEffect("Shaders/T_Particles_Normal.json");
-	fx->AddShaderResource(m_ParticleDepth, Effect::DEPTH); //Create a bindings file
+	fx->AddShaderResource(m_ParticleDiff, Effect::DEPTH);
 	
 
-	m_Engine->GetEffect("Shaders/T_particle_offscreen.json")->AddShaderResource(myDepthTexture, Effect::DEPTH);
+	//m_Engine->GetEffect("Shaders/T_particle_offscreen.json")->AddShaderResource(myDepthTexture, Effect::DEPTH);
 
 	m_Direction = CU::Vector3f(0.42f, 0.73f, 0.24f);
 
@@ -153,10 +161,10 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	Camera* c = m_DirectionalShadow.GetCamera();
 
 
-	c->SetPosition(CU::Vector3f(0, 25, 0));
-	c->RotateAroundY(CL::DegreeToRad(90.f) * 0.42f);
-	c->RotateAroundZ(CL::DegreeToRad(90.f) * 0.73f);
-	c->RotateAroundX(CL::DegreeToRad(90.f) * 0.24f);
+	c->SetPosition(CU::Vector3f(0, 0, 0));
+// 	c->RotateAroundY(CL::DegreeToRad(90.f) * 0.42f);
+// 	c->RotateAroundZ(CL::DegreeToRad(90.f) * 0.73f);
+// 	c->RotateAroundX(CL::DegreeToRad(90.f) * 0.24f);
 
 
 	return true;
@@ -236,8 +244,9 @@ void Renderer::Render()
 	
 	const float clear[4] = { 0.f,0.f,0.f,0.f }; 
 	
-	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleDepth->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleDepth->GetRenderTargetRef(), nullptr);
+	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleDiff->GetRenderTargetView(), clear);
+	m_RenderContext.m_Context->ClearDepthStencilView(m_ParticleDepth->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0.f);
+	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleDiff->GetRenderTargetRef(), m_ParticleDepth->GetDepthView());
 	
 	RenderParticles(m_Engine->GetEffect("Shaders/T_particle_offscreen.json")); //Should be a depth shader
 
@@ -260,7 +269,7 @@ void Renderer::Render()
 	fx->Clear();
 
 	
-	//mySynchronizer->AddRenderCommand(SpriteCommand(m_ParticleDepth->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 2)));
+	mySynchronizer->AddRenderCommand(SpriteCommand(m_ParticleDepth->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 2)));
 	//mySynchronizer->AddRenderCommand(SpriteCommand(myDepthTexture->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 4)));
 
 	/*
@@ -692,9 +701,9 @@ void Renderer::RenderPointlight()
 void Renderer::RenderParticles(Effect* effect)
 {
 
-	m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
+	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
-	//m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE_PARTICLE, 0);
+	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 
 	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER);
 	for (s32 i = 0; i < commands.Size(); i++)
@@ -702,6 +711,7 @@ void Renderer::RenderParticles(Effect* effect)
 		auto command = reinterpret_cast<ParticleCommand*>(commands[i]);
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::PARTICLE, "Expected particle command type");
 		m_ParticleEmitter->SetPosition(command->m_Position);
+
 		m_ParticleEmitter->Update(m_Engine->GetDeltaTime());
 
 		//if ( !m_ProcessDirectionalShadows )

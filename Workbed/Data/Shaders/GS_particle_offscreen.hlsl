@@ -43,9 +43,8 @@ void GS(point VS_OUTPUT input[1], inout TriangleStream<VS_OUTPUT> triStream)
 
 	for(int i = 0; i < 4; ++i)
 	{
-		output.eyePos = (quadPos[i] * input[0].size.x * 2) + input[0].pos;
 		output.pos = (quadPos[i] * input[0].size.x * 2) + input[0].pos;
-
+		output.eyePos = output.pos;
 		output.pos = mul(output.pos, Projection);
 
 		output.pos.z /= output.pos.w;

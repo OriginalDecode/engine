@@ -320,6 +320,7 @@ HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::st
 
 void* Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name)
 {
+	/* This is a stupid way of checking the shader type */
 	if (shader_type.find(vertex_shader) != shader_type.npos)
 	{
 		return myAPI->CreateVertexShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());

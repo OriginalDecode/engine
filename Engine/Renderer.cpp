@@ -159,8 +159,8 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	//10,5,10
 
 	Camera* c = m_DirectionalShadow.GetCamera();
-	c->SetPosition(CU::Vector3f(5, 25, 5));
-	c->RotateAroundX(CL::DegreeToRad(90.f) * 1.0f);
+	//c->SetPosition(CU::Vector3f(0, 0, -5));
+	//c->RotateAroundX(CL::DegreeToRad(90.f) * -1.0f);
 	//c->RotateAroundY(CL::DegreeToRad(90.f) * 0.42f);
 	//c->RotateAroundZ(CL::DegreeToRad(90.f) * 0.73f);
 
@@ -236,10 +236,6 @@ void Renderer::Render()
 
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
-
-
-
-
 	const float clear[4] = { 0.f,0.f,0.f,0.f };
 
 	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleDiff->GetRenderTargetView(), clear);
@@ -287,8 +283,8 @@ void Renderer::Render()
 	m_RenderContext.m_Context->OMSetRenderTargets(ARRAYSIZE(view), &view[0], myDepthTexture->GetDepthView());
 	RenderParticles(m_Engine->GetEffect("Shaders/T_particle_offscreen.json"));
 	*/
-	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 
+	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 	m_DeferredRenderer->DeferredRender(
 		m_Camera->GetOrientation(),
 		m_Camera->GetPerspective(),
@@ -541,7 +537,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
-	for (s32 i = 0; i < commands.Size(); i++)
+	/*for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 
@@ -554,9 +550,9 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 
 		model->SetOrientation(command->m_Orientation);
 		model->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
-	}
+	}*/
 
-	/*const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
+	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	for (s32 j = 0; j < 8; j++)
 	{
 		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
@@ -570,7 +566,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
 	{
 		it->second->ShadowRenderInstanced(orientation, perspective, m_RenderContext);
-	}*/
+	}
 
 }
 //_________________________________

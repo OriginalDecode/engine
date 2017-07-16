@@ -60,7 +60,7 @@ void Model::Initiate(const std::string& filename)
 	if (m_IsRoot == false)
 	{
 		InitVertexBuffer();
-		InitInputLayout();
+		//InitInputLayout();
 		InitIndexBuffer();
 		InitConstantBuffer();
 		InitInstanceBuffer();
@@ -199,6 +199,9 @@ void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const
 		RemoveOrientation();
 		return;
 	}
+
+	render_context.m_Context->IASetInputLayout(m_InstanceInputLayout);
+	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	u32 offsets[] = {
 		m_VertexBuffer.myByteOffset,

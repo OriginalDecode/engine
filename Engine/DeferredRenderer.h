@@ -47,6 +47,7 @@ public:
 	GBuffer& GetGBuffer();
 	void ToggleWireframe() { m_Wireframe = !m_Wireframe; }
 
+	void SetColor(const CU::Vector4f& dir_color) { m_ConstantStruct.m_LightColor = dir_color; }
 
 private:
 	bool m_Wireframe = false;
@@ -93,6 +94,7 @@ private:
 		CU::Matrix44f view;
 		CU::Matrix44f m_ShadowMVP;
 		CU::Vector4f m_Direction;
+		CU::Vector4f m_LightColor;
 	} m_ConstantStruct;
 };
 

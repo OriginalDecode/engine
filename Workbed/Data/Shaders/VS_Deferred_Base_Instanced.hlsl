@@ -54,8 +54,6 @@ VS_OUTPUT VS(VS_INPUT input)
 	out_matrix = mul(out_matrix, Projection);
 	
 	output.pos = mul(input.pos, out_matrix);
-	//output.pos = mul(output.pos, View);
-	//output.pos = mul(output.pos, Projection);
 	output.uv = input.uv;
 	
 	output.normal = mul(input.normal, world_matrices);
@@ -63,7 +61,6 @@ VS_OUTPUT VS(VS_INPUT input)
 	output.tang  = mul(input.tang , world_matrices);
 	
 	output.worldpos = mul(input.pos, world_matrices);
-	//output.worldpos = mul(output.worldpos, View);
 	
 	return output;
 };

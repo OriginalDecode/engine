@@ -46,4 +46,15 @@ namespace memory
 			m_Segments[index][i].Clear();
 		}
 	}
+
+	s32 MemorySegmentHandle::CommandSize(s32 index)
+	{
+		s32 total = 0;
+		for (s32 i = 0; i < 8; i++)
+		{
+			total += m_Segments[index][i].Size();
+		}
+		return total;
+	}
+
 };

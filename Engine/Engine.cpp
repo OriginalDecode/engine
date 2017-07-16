@@ -559,7 +559,7 @@ Terrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vec
 
 CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepath)
 {
-	
+
 	m_States[(u16)eEngineStates::LOADING] = TRUE;
 
 	m_LevelFactory->CreateLevel(level_filepath);
@@ -636,7 +636,7 @@ void Engine::DebugTextures()
 		w_size.x *= 0.65f;
 		w_size.y = w_size.x / 1.777777777777777777777777777777778;
 		ImGui::SameLine();
-		ImGui::Image(tex_id, w_size, ImVec2(0,0),ImVec2(1,1),ImVec4(1,1,1,1),ImVec4(1,1,1,1));
+		ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
 		//ImDrawList* draw_list = ImGui::GetWindowDrawList();
 		//draw_list->AddCallback(draw_texture, nullptr);
 
@@ -677,56 +677,19 @@ void Engine::UpdateDebugUI()
 	static bool new_window = false;
 	static bool save = false;
 	static bool debug_textures = false;
+
+	static bool entity_options = false;
+
 	if (ImGui::Begin("Information", &pOpen, flags))
 	{
 		ImGui::Text("Delta Time : %.3f", GetDeltaTime());
 		ImGui::Text("FPS : %.1f", GetFPS());
 		ImGui::Text("CPU Usage : %.1f", m_SystemMonitor.GetCPUUsage());
 		ImGui::Text("Memory Usage : %dmb", m_SystemMonitor.GetMemoryUsage());
-		if (m_Threadpool.HasWork())
-			ImGui::Text("Is Loading");
-		else
-			ImGui::Text("Done Loading");
-		ImGui::Separator();
 
-		if (ImGui::Button("New Entity", ImVec2(100.f, 25.f)))
-		{
-			new_window = !new_window;
-		}
+		//ImGui::Text("Model Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER).Size());
+		ImGui::Text("Model Commands : %d", m_SegmentHandle.CommandSize((s32)mySynchronizer->GetCurrentBufferIndex()));
 
-		if (ImGui::Button("Save Level", ImVec2(100.f, 25.f)))
-		{
-			save = !save;
-			m_PauseInput = true;
-		}
-
-		if (save) if (SaveLevel()) save = !save;
-
-		static bool tonemapping_hdr = true;
-		ImGui::Checkbox("Tonemapping/HDR", &tonemapping_hdr);
-		if (tonemapping_hdr)
-			myRenderer->GetPostprocessManager().SetPassesToProcess(PostProcessManager::HDR);
-		else
-			myRenderer->GetPostprocessManager().RemovePassToProcess(PostProcessManager::HDR);
-		ImGui::SameLine();
-		ImGui::Checkbox("Debug Textures", &debug_textures);
-		//ImGui::Checkbox("Debug Textures", &myRenderer->GetPostprocessManager().GetHDRPass().toggle_debug);
-		if (debug_textures)
-			DebugTextures();
-
-
-		static bool render_lines = false;
-		ImGui::Checkbox("Render Lines", &render_lines);
-		myRenderer->SetRenderLines(render_lines);
-		ImGui::SameLine();
-		ImGui::Checkbox("Instance Models", &m_RenderInstanced);
-
-
-		float fov_value = m_Camera->GetFOV();
-		ImGui::SliderFloat("FOV", &fov_value, 60.f, 120.f, "%.f");
-		m_Camera->SetFOV(fov_value);
-
-		ImGui::Text("Model Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER).Size());
 		ImGui::Text("Spotlight Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER).Size());
 		ImGui::Text("Pointlight Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER).Size());
 		ImGui::Text("Particle Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER).Size());
@@ -734,18 +697,177 @@ void Engine::UpdateDebugUI()
 		ImGui::Text("Text Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER).Size());
 		ImGui::Text("Line Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size());
 
-		for (CheckBox& box : m_Checkboxes)
+		ImGui::Separator();
+
+
+		if (ImGui::TreeNodeEx("Entity", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_NoTreePushOnOpen))
 		{
-			ImGui::Checkbox(box.m_Name.c_str(), box.m_Toggle);
+			if (ImGui::Button("New Entity", ImVec2(100.f, 25.f)))
+			{
+				new_window = !new_window;
+			}
+			ImGui::Separator();
 		}
 
-		static s32 index = 0;
+		if (ImGui::TreeNodeEx("Post-Processing", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+		{
+			static bool tonemapping_hdr = true;
+			static bool bloom = true;
+			static bool ssao = true;
+			static bool motion_blur = true;
+			static bool depth_of_field = true;
+
+			ImGui::Columns(2, "", true);
+			ImGui::Checkbox("Tonemapping/HDR", &tonemapping_hdr);
+			ImGui::Checkbox("Motion Blur", &motion_blur);
+			ImGui::Checkbox("Depth of Field", &depth_of_field);
+			ImGui::NextColumn();
+			ImGui::Checkbox("Bloom", &bloom);
+			ImGui::Checkbox("SSAO", &ssao);
+
+
+			ImGui::Columns(1);
+
+			if (tonemapping_hdr)
+				myRenderer->GetPostprocessManager().SetPassesToProcess(PostProcessManager::HDR);
+			else
+				myRenderer->GetPostprocessManager().RemovePassToProcess(PostProcessManager::HDR);
+
+			if (depth_of_field)
+			{
+				ImGui::Text("Depth of Field settings");
+				float fov_value = 0.f;
+				ImGui::SliderFloat("Strength", &fov_value, 0.f, 9999.f, "%.f");
+
+			}
+
+
+			ImGui::Separator();
+		}
+
+
+
+
+		/*if (ImGui::Button("Save Level", ImVec2(100.f, 25.f)))
+		{
+			save = !save;
+			m_PauseInput = true;
+		}*/
+
+		if (save) if (SaveLevel()) save = !save;
+
+
+		ImGui::Checkbox("Debug Textures", &debug_textures);
+		//ImGui::Checkbox("Debug Textures", &myRenderer->GetPostprocessManager().GetHDRPass().toggle_debug);
+		if (debug_textures)
+			DebugTextures();
+
+
+		/*static bool render_lines = false;
+		ImGui::Checkbox("Render Lines", &render_lines);
+		myRenderer->SetRenderLines(render_lines);
+		ImGui::SameLine();
+		ImGui::Checkbox("Instance Models", &m_RenderInstanced);*/
+
+
+		float fov_value = m_Camera->GetFOV();
+		ImGui::SliderFloat("FOV", &fov_value, 60.f, 120.f, "%.f");
+		m_Camera->SetFOV(fov_value);
+
+		
+
+		if (ImGui::TreeNodeEx("Directional Light", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+		{
+			/*
+				Need some kind of color picker / wheel instead
+				
+			*/
+
+			/* Should be read from the level file */
+			static int r = 255;
+			static int g = 255;
+			static int b = 255;
+			static int a = 255;
+
+			static ImVec4 r_color;
+			static ImVec4 g_color;
+			static ImVec4 b_color;
+			static ImVec4 a_color;
+			static ImVec4 tot_color;
+
+
+			ImGui::Text("Directional Light Color");
+			ImGui::SliderInt("R", &r, 0, 255);
+			r_color = ImVec4((float)r/255.f, 0, 0, 1);
+			ImGui::SameLine();
+			ImGui::ColorButton(r_color);
+
+
+			ImGui::SliderInt("G", &g, 0, 255);
+			g_color = ImVec4(0, (float)g/255.f, 0, 1);
+			ImGui::SameLine();
+			ImGui::ColorButton(g_color);
+
+
+			ImGui::SliderInt("B", &b, 0, 255);
+			b_color = ImVec4(0, 0, (float)b/255.f, 1);
+			ImGui::SameLine();
+			ImGui::ColorButton(b_color);
+
+			ImGui::SliderInt("Intensity", &a, 0, 255);
+			a_color = ImVec4((float)a / 255.f, (float)a / 255.f, (float)a / 255.f, 1);
+			ImGui::SameLine();
+			ImGui::ColorButton(a_color);
+
+
+			tot_color = ImVec4((float)r/255.f, (float)g / 255.f, (float)b / 255.f, (float)a / 255.f);
+			ImGui::ColorButton(tot_color);
+
+
+			myRenderer->GetDeferredRenderer()->SetColor(CU::Vector4f((float)r / 255.f, (float)g / 255.f, (float)b / 255.f, (float)a / 255.f));
+
+
+			ImGui::Text("Directional Light Direction");
+			static int x = 0;
+			static int y = 0;
+			static int z = 0;
+			ImGui::SliderInt("X", &x, 0, 360);
+			ImGui::SliderInt("Y", &y, 0, 360);
+			ImGui::SliderInt("Z", &z, 0, 360);
+
+			myRenderer->SetDirection(CU::Vector3f((float)x / 360.f, (float)y / 360.f, (float)z / 360.f));
+
+
+			/*ImGui::Text("Directional Shadow Position");
+			static float sx = 0;
+			static float sy = 0;
+			static float sz = 0;
+			ImGui::SliderFloat("sX", &sx, -30.f, 360.f);
+			ImGui::SliderFloat("sY", &sy, -30.f, 360.f);
+			ImGui::SliderFloat("sZ", &sz, -30.f, 360.f);
+
+			myRenderer->GetDirectionalCamera()->SetPosition(CU::Vector3f(sx, sy, sz));*/
+
+
+
+
+
+		}
+
+
+
+		/*for (CheckBox& box : m_Checkboxes)
+		{
+			ImGui::Checkbox(box.m_Name.c_str(), box.m_Toggle);
+		}*/
+
+		/*static s32 index = 0;
 		s32 prev = index;
 		ListBox("", &index, m_Levels);
 		if (prev != index)
 		{
 			m_Functions[index].second();
-		}
+		}*/
 		ImGui::End();
 	}
 	ImGui::PopStyleVar();

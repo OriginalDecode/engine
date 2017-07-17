@@ -830,7 +830,7 @@ void Engine::UpdateDebugUI()
 			myRenderer->SetDirection(CU::Vector3f((float)x / 360.f, (float)y / 360.f, (float)z / 360.f));
 
 
-			/*ImGui::Text("Directional Shadow Position");
+			ImGui::Text("Directional Shadow Position");
 			static float sx = 0;
 			static float sy = 0;
 			static float sz = 0;
@@ -838,7 +838,7 @@ void Engine::UpdateDebugUI()
 			ImGui::SliderFloat("sY", &sy, -30.f, 360.f);
 			ImGui::SliderFloat("sZ", &sz, -30.f, 360.f);
 
-			myRenderer->GetDirectionalCamera()->SetPosition(CU::Vector3f(sx, sy, sz));*/
+			myRenderer->GetDirectionalCamera()->SetPosition(CU::Vector3f(sx, sy, sz));
 
 
 

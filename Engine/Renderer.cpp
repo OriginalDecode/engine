@@ -263,7 +263,7 @@ void Renderer::Render()
 	fx->Clear();
 
 
-	//mySynchronizer->AddRenderCommand(SpriteCommand(m_ParticleDepth->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 2)));
+	mySynchronizer->AddRenderCommand(SpriteCommand(m_DirectionalShadow.GetDepthTexture()->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 2)));
 	//mySynchronizer->AddRenderCommand(SpriteCommand(myDepthTexture->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 4)));
 
 	/*

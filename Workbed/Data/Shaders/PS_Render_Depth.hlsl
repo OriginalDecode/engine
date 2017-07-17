@@ -11,5 +11,5 @@ struct VS_OUTPUT
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float z = input.worldpos.z;
-	return float4(z,z,z,z);
+	return float4(z,z,z,1);
 }

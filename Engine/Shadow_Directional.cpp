@@ -7,8 +7,8 @@ void ShadowDirectional::Initiate(float buffer_size)
 	m_Camera = new Camera;
 	m_Camera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
 
-	m_Camera->SetPosition({ 1024.f, 512.f, 512.f });
-	m_Camera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
+	//m_Camera->SetPosition({ 1024.f, 512.f, 512.f });
+	//m_Camera->RotateAroundX(CL::DegreeToRad(90.f) * 1.f);
 
 	m_ShadowDepth = new Texture;
 	m_ShadowDepth->InitiateAsRenderTarget(buffer_size, buffer_size, "DirectionalShadows : RTV");

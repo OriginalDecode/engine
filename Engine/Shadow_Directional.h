@@ -25,6 +25,9 @@ public:
 	const CU::Matrix44f& GetMVP();
 	
 
+	Texture* GetDepthTexture() { return m_ShadowDepth; }
+	Texture* GetDepthStencilTexture() { return m_ShadowDepthStencil; }
+
 private:
 	const float m_Clear[4] = { 0.f, 0.f, 0.f, 0.f };
 

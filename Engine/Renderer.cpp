@@ -127,10 +127,10 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 		, "Particle : DepthStencil ");
 
 
-	Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->AddShaderResource(m_ParticleBuffer, Effect::NORMAL);
-	Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->AddShaderResource(myDepthTexture, Effect::DEPTH);
-	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Lightmesh.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
-	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
+	Engine::GetInstance()->GetEffect("Shaders/particle.json")->AddShaderResource(m_ParticleBuffer, Effect::NORMAL);
+	Engine::GetInstance()->GetEffect("Shaders/particle.json")->AddShaderResource(myDepthTexture, Effect::DEPTH);
+	Engine::GetInstance()->GetEffect("Shaders/deferred_pointlight.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
+	Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
 	m_Engine->AddTexture(m_ParticleBuffer, "Particle Normal");
 	m_Engine->AddTexture(m_ParticleDepth, "Particle Depth pass Stencil");
 	m_Engine->AddTexture(m_ParticleDiff, "Particle Depth pass RTV");
@@ -147,7 +147,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_cbCalcSSNormal = m_RenderContext.m_API->CreateConstantBuffer(sizeof(m_CalcSSNormal));
 
 
-	Effect* fx = m_Engine->GetEffect("Shaders/T_Particles_Normal.json");
+	Effect* fx = m_Engine->GetEffect("Shaders/particle_normal.json");
 	fx->AddShaderResource(m_ParticleDiff, Effect::DEPTH);
 
 
@@ -242,10 +242,10 @@ void Renderer::Render()
 	m_RenderContext.m_Context->ClearDepthStencilView(m_ParticleDepth->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0.f);
 	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleDiff->GetRenderTargetRef(), m_ParticleDepth->GetDepthView());
 
-	RenderParticles(m_Engine->GetEffect("Shaders/T_particle_offscreen.json")); //Should be a depth shader
+	RenderParticles(m_Engine->GetEffect("Shaders/particle_offscreen.json")); //Should be a depth shader
 
 	m_Quad->SetBuffers();
-	Effect* fx = m_Engine->GetEffect("Shaders/T_Particles_Normal.json");
+	Effect* fx = m_Engine->GetEffect("Shaders/particle_normal.json");
 
 	m_CalcSSNormal.m_InvProjection = CU::Math::InverseReal(m_Camera->GetPerspective());
 	m_CalcSSNormal.m_Projection = m_Camera->GetPerspective();

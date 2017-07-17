@@ -20,7 +20,7 @@ void ShadowDirectional::Initiate(float buffer_size)
 	m_Viewport = Engine::GetAPI()->CreateViewport(buffer_size, buffer_size, 0.f, 1.f, 0, 0);
 
 
-	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Ambient.json")->AddShaderResource(m_ShadowDepthStencil->GetShaderView(), Effect::SHADOWMAP);
+	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_ShadowDepthStencil->GetShaderView(), Effect::SHADOWMAP);
 
 	Engine::GetInstance()->AddTexture(m_ShadowDepth, "Directional Shadow");
 	Engine::GetInstance()->AddTexture(m_ShadowDepthStencil, "Directional Shadow Stencil");

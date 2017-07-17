@@ -1,4 +1,0 @@
-{
-	"VertexShader" : "VS_Terrain_Base.hlsl",
-	"PixelShader" : "PS_Terrain_Base.hlsl"
-}

@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "skysphere.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "skysphere.ps",
+        "entrypoint": "main"
+    }
+}

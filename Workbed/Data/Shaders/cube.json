@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "cube.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "cube.ps",
+        "entrypoint": "main"
+    }
+}

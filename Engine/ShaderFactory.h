@@ -19,6 +19,8 @@ struct CompiledShader
 	void* compiledShader = nullptr;
 	void* m_Shader = nullptr;
 	int shaderSize = 0;
+	eShaderType type;
+	std::string entrypoint;
 	CU::GrowingArray<Effect*> effectPointers; //used to rebuild shaders in runtime.
 };
 
@@ -36,12 +38,12 @@ public:
 	ID3D10Blob* CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level);
 private:
 
-	void LoadShader(const std::string& file_path, Effect* effect);
-	CompiledShader* CreateShader(const std::string& file_path, const std::string& feature_level = "_5_0");
+	void LoadShader(const std::string& filepath, const std::string& entrypoint, eShaderType type, Effect* effect);
+	CompiledShader* CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type, const std::string& feature_level = "_5_0");
 	std::map<u64, CompiledShader*> m_Shaders;
 #ifndef FINAL 
-	CU::StaticArray<FileWatcher*, static_cast<u32>(eShaderType::_COUNT)> myFileWatchers;
-	void OnReload(const std::string& file_path);
+	CU::StaticArray<FileWatcher*, (s32)eShaderType::_COUNT> myFileWatchers;
+	void OnReload(const std::string& file_path, const std::string& entrypoint);
 #endif
 	//ShaderWarningHandler myShaderWarningHandler;
 

@@ -1,0 +1,14 @@
+{
+    "VertexShader": {
+        "file": "particle_offscreen.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "particle_offscreen.ps",
+        "entrypoint": "main"
+    },
+    "GeometryShader": {
+        "file": "particle_offscreen.gs",
+        "entrypoint": "main"
+    }
+}

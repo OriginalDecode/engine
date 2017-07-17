@@ -1,4 +1,0 @@
-{
-	"VertexShader" : "VS_Render_Depth.hlsl",
-	"PixelShader" : "PS_Render_Depth.hlsl"
-}

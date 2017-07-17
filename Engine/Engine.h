@@ -149,11 +149,11 @@ public:
 	//_________________________________________
 	// Shader Creation
 	//This should probably be moved to the graphics API instead.
-	HRESULT CompileShaderFromFile(const std::string& file_path, const std::string& entry_point, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
-	HRESULT CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entry_point, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message);
+	HRESULT CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
+	HRESULT CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message);
 
-	void* CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name);
-	CompiledShader CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name, bool use);
+	void* CreateShader(IBlob* compiled_shader_blob, eShaderType type, const std::string& debug_name);
+	//CompiledShader CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name, bool use);
 
 
 	bool UseMouse() { return m_CameraUseMouse; }

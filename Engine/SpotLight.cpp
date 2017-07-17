@@ -6,7 +6,7 @@
 
 void SpotLight::Initiate()
 {
-	std::string key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/T_Deferred_Spotlight.json", 0, false);
+	std::string key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/deferred_spotlight.json", 0, false);
 	m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
 
 	//m_Model->Initiate("cone.fbx");

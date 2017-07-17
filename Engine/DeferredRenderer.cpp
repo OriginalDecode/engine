@@ -40,10 +40,10 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 
 	myCubeMap = myEngine->GetTexture("Data/Textures/T_cubemap_level01.dds");
 
-	myScreenPassShader = myEngine->GetEffect("Shaders/T_Render_To_Texture.json");
+	myScreenPassShader = myEngine->GetEffect("Shaders/render_to_texture.json");
 
 	m_GBuffer.Initiate();
-	myAmbientPassShader = myEngine->GetEffect("Shaders/T_Deferred_Ambient.json");
+	myAmbientPassShader = myEngine->GetEffect("Shaders/deferred_ambient.json");
 	myAmbientPassShader->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
 	myAmbientPassShader->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
 	myAmbientPassShader->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
@@ -51,7 +51,7 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 	myAmbientPassShader->AddShaderResource(myCubeMap, Effect::CUBEMAP);
 
 
-	Effect* ssao_effect = Engine::GetInstance()->GetEffect("Shaders/T_SSAO.json");
+	Effect* ssao_effect = Engine::GetInstance()->GetEffect("Shaders/ssao.json");
 	ssao_effect->AddShaderResource(myFinishedSceneTexture, Effect::DIFFUSE);
 	ssao_effect->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
 	ssao_effect->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);

@@ -1,0 +1,18 @@
+{
+    "VertexShader": {
+        "file": "water.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "water.ps",
+        "entrypoint": "main"
+    },
+    "HullShader": {
+        "file": "water.hs",
+        "entrypoint": "main"
+    },
+    "DomainShader": {
+        "file": "water.ds",
+        "entrypoint": "main"
+    }
+}

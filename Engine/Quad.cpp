@@ -53,7 +53,7 @@ void Quad::Initiate()
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,		0, 12,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	m_ScreenpassShader = Engine::GetInstance()->GetEffect("Shaders/T_Render_To_Texture.json");
+	m_ScreenpassShader = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
 
 
 	void* shader = m_ScreenpassShader->GetVertexShader()->compiledShader;

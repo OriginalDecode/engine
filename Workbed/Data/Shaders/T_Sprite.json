@@ -1,4 +1,0 @@
-{
-	"VertexShader" : "VS_Sprite.hlsl",
-	"PixelShader" : "PS_Sprite.hlsl"
-}

@@ -285,14 +285,14 @@ IGraphicsAPI* Engine::GetGraphicsAPI()
 	return myAPI;
 }
 
-HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::string& shader_type, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
+HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
 {
 	std::wstring w_file_path(file_path.begin(), file_path.end());
 	HRESULT hr = D3DCompileFromFile(
 		w_file_path.c_str(),
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-		shader_type.c_str(),
+		entrypoint.c_str(),
 		feature_level.c_str(),
 		shader_flags,
 		0,
@@ -301,7 +301,7 @@ HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::s
 	return hr;
 }
 
-HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entry_point, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message)
+HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message)
 {
 	HRESULT hr = D3DCompile(
 		pData,
@@ -309,7 +309,7 @@ HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::st
 		source_name.c_str(),
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-		entry_point.c_str(),
+		entrypoint.c_str(),
 		feature_level.c_str(),
 		0,
 		0,
@@ -318,49 +318,40 @@ HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::st
 	return hr;
 }
 
-void* Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name)
+void* Engine::CreateShader(IBlob* compiled_shader_blob, eShaderType type, const std::string& debug_name)
 {
-	/* This is a stupid way of checking the shader type */
-	if (shader_type.find(vertex_shader) != shader_type.npos)
+	switch (type)
 	{
-		return myAPI->CreateVertexShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+		case eShaderType::VERTEX:
+			return myAPI->CreateVertexShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+		case eShaderType::PIXEL:
+			return myAPI->CreatePixelShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+		case eShaderType::GEOMETRY:
+			return myAPI->CreateGeometryShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+		case eShaderType::HULL:
+			return myAPI->CreateHullShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+		case eShaderType::DOMAINS:
+			return myAPI->CreateDomainShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+		case eShaderType::COMPUTE:
+			return myAPI->CreateComputeShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+		default:
+			DL_ASSERT("No valid shader type!");
 	}
-	else if (shader_type.find(pixel_shader) != shader_type.npos)
-	{
-		return myAPI->CreatePixelShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
-	}
-	else if (shader_type.find(geometry_shader) != shader_type.npos)
-	{
-		return myAPI->CreateGeometryShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
-	}
-	else if (shader_type.find(hull_shader) != shader_type.npos)
-	{
-		return myAPI->CreateHullShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
-	}
-	else if (shader_type.find(domain_shader) != shader_type.npos)
-	{
-		return myAPI->CreateDomainShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
-	}
-	else if (shader_type.find(compute_shader) != shader_type.npos)
-	{
-		return myAPI->CreateComputeShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
-	}
-	TRACE_LOG("FAILED TO CREATE ANY SHADER! TYPE NOT FOUND!");
-	DL_ASSERT("FAILED TO CREATE ANY SHADER! TYPE NOT FOUND!");
+
 	return nullptr;
 }
 
-CompiledShader Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name, bool use)
-{
-	CompiledShader compiled_shader;
-
-	compiled_shader.m_Shader = CreateShader(compiled_shader_blob, shader_type, debug_name);
-	compiled_shader.blob = compiled_shader_blob;
-	compiled_shader.shaderSize = compiled_shader_blob->GetBufferSize();
-	compiled_shader.compiledShader = compiled_shader_blob->GetBufferPointer();
-
-	return compiled_shader;
-}
+//CompiledShader Engine::CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name, bool use)
+//{
+//	CompiledShader compiled_shader;
+//
+//	compiled_shader.m_Shader = CreateShader(compiled_shader_blob, shader_type, debug_name);
+//	compiled_shader.blob = compiled_shader_blob;
+//	compiled_shader.shaderSize = compiled_shader_blob->GetBufferSize();
+//	compiled_shader.compiledShader = compiled_shader_blob->GetBufferPointer();
+//
+//	return compiled_shader;
+//}
 
 
 void Engine::SelectEntity(u32 e)
@@ -775,13 +766,13 @@ void Engine::UpdateDebugUI()
 		ImGui::SliderFloat("FOV", &fov_value, 60.f, 120.f, "%.f");
 		m_Camera->SetFOV(fov_value);
 
-		
+
 
 		if (ImGui::TreeNodeEx("Directional Light", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_NoTreePushOnOpen))
 		{
 			/*
 				Need some kind of color picker / wheel instead
-				
+
 			*/
 
 			/* Should be read from the level file */
@@ -799,19 +790,19 @@ void Engine::UpdateDebugUI()
 
 			ImGui::Text("Directional Light Color");
 			ImGui::SliderInt("R", &r, 0, 255);
-			r_color = ImVec4((float)r/255.f, 0, 0, 1);
+			r_color = ImVec4((float)r / 255.f, 0, 0, 1);
 			ImGui::SameLine();
 			ImGui::ColorButton(r_color);
 
 
 			ImGui::SliderInt("G", &g, 0, 255);
-			g_color = ImVec4(0, (float)g/255.f, 0, 1);
+			g_color = ImVec4(0, (float)g / 255.f, 0, 1);
 			ImGui::SameLine();
 			ImGui::ColorButton(g_color);
 
 
 			ImGui::SliderInt("B", &b, 0, 255);
-			b_color = ImVec4(0, 0, (float)b/255.f, 1);
+			b_color = ImVec4(0, 0, (float)b / 255.f, 1);
 			ImGui::SameLine();
 			ImGui::ColorButton(b_color);
 
@@ -821,7 +812,7 @@ void Engine::UpdateDebugUI()
 			ImGui::ColorButton(a_color);
 
 
-			tot_color = ImVec4((float)r/255.f, (float)g / 255.f, (float)b / 255.f, (float)a / 255.f);
+			tot_color = ImVec4((float)r / 255.f, (float)g / 255.f, (float)b / 255.f, (float)a / 255.f);
 			ImGui::ColorButton(tot_color);
 
 
@@ -942,10 +933,10 @@ void Engine::UpdateDebugUI()
 						{
 							switch (selected[i])
 							{
-							case RegisteredComponents::translation:
-							{
-								edit_t = !edit_t;
-							}break;
+								case RegisteredComponents::translation:
+								{
+									edit_t = !edit_t;
+								}break;
 							}
 						}
 					}

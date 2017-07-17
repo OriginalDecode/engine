@@ -4,7 +4,6 @@
 
 struct CompiledShader;
 class Texture;
-
 class Effect
 {
 	friend class ShaderFactory;

@@ -21,7 +21,7 @@ void CLine3D::Initiate(int aLineAmount /*= 256*/)
 {
 	myLineAmount = aLineAmount;
 	myAPI = Engine::GetAPI();
-	myEffect =  Engine::GetInstance()->GetEffect("Shaders/T_Line3D.json");
+	myEffect =  Engine::GetInstance()->GetEffect("Shaders/line.json");
 	CreateBuffer();
 	CreateConstantBuffer();
 }

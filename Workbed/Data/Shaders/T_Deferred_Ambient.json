@@ -1,4 +1,0 @@
-{
-	"VertexShader" : "VS_Deferred_Ambient.hlsl",
-	"PixelShader" : "PS_Deferred_Ambient.hlsl"
-}

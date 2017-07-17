@@ -6,8 +6,8 @@
 #include <Engine/engine_shared.h>
 bool LightPass::Initiate(const GBuffer& gbuffer, Texture* shadow_texture)
 {
-	myEffect[eLight::POINTLIGHT] = Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Lightmesh.json");
-	myEffect[eLight::SPOTLIGHT] =	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Spotlight.json");
+	myEffect[eLight::POINTLIGHT] = Engine::GetInstance()->GetEffect("Shaders/deferred_pointlight.json");
+	myEffect[eLight::SPOTLIGHT] =	Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json");
 
 	myEffect[eLight::POINTLIGHT]->AddShaderResource(gbuffer.GetDiffuse(), Effect::DIFFUSE);
 	myEffect[eLight::POINTLIGHT]->AddShaderResource(gbuffer.GetNormal(), Effect::NORMAL);

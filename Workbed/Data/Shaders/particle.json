@@ -1,0 +1,14 @@
+{
+    "VertexShader": {
+        "file": "particle.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "particle.ps",
+        "entrypoint": "main"
+    },
+    "GeometryShader": {
+        "file": "particle.gs",
+        "entrypoint": "main"
+    }
+}

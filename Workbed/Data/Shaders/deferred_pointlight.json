@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "deferred_pointlight.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "deferred_pointlight.ps",
+        "entrypoint": "main"
+    }
+}

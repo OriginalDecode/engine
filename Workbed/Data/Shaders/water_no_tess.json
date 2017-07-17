@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "water_no_tess.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "water_no_tess.ps",
+        "entrypoint": "main"
+    }
+}

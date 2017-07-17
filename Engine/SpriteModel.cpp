@@ -37,7 +37,7 @@ void CSpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vec
 	myPosition = aPosition;
 	Texture* text = Engine::GetInstance()->GetTexture(myTexturePath);
 	myTexture = text->GetShaderView();
-	myEffect = Engine::GetInstance()->GetEffect("Shaders/T_Sprite.json");
+	myEffect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");
 
 	myVertexFormat.Add(VertexLayoutPosUV[0]);
 	myVertexFormat.Add(VertexLayoutPosUV[1]);
@@ -102,7 +102,7 @@ void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU:
 
 	mySize = aSize;
 	myPosition = aPosition;
-	myEffect = Engine::GetInstance()->GetEffect("Shaders/T_Sprite.json");
+	myEffect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");
 	myTexture = aShaderResource;
 	//myEffect->SetAlbedo(aShaderResource);
 

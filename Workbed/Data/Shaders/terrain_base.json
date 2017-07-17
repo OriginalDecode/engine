@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "terrain_base.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "terrain_base.ps",
+        "entrypoint": "main"
+    }
+}

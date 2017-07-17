@@ -1,7 +1,3 @@
-
-
-
-
 float3 SSAOGetViewPosition(float2 uv)
 {
 	float depth = DepthTexture.Sample(pointSample, uv).x;

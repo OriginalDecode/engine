@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "line.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "line.ps",
+        "entrypoint": "main"
+    }
+}

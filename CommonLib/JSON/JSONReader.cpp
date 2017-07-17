@@ -121,6 +121,53 @@ void JSONReader::ReadElement(const rapidjson::Value& element, float& out)
 	out = (float)element.GetDouble();
 }
 
+void JSONReader::ReadElement(const JSONElement& el, const std::string& tag, bool& out)
+{
+	if (ElementHasMember(el, tag))
+		out = el[tag.c_str()].GetBool();
+}
+
+void JSONReader::ReadElement(const JSONElement& el, const std::string& tag, int& out)
+{
+	if (ElementHasMember(el, tag))
+		out = el[tag.c_str()].GetInt();
+
+}
+
+void JSONReader::ReadElement(const JSONElement& el, const std::string& tag, unsigned int& out)
+{
+	if (ElementHasMember(el, tag))
+		out = el[tag.c_str()].GetUint();
+
+}
+
+void JSONReader::ReadElement(const JSONElement& el, const std::string& tag, float& out)
+{
+	if (ElementHasMember(el, tag))
+		out = (float)el[tag.c_str()].GetDouble();
+
+}
+
+void JSONReader::ReadElement(const JSONElement& el, const std::string& tag, double& out)
+{
+	if (ElementHasMember(el, tag))
+		out = el[tag.c_str()].GetDouble();
+
+}
+
+void JSONReader::ReadElement(const JSONElement& el, const std::string& tag, std::string& out)
+{
+	if (ElementHasMember(el, tag))
+		out = el[tag.c_str()].GetString();
+
+}
+
+std::string JSONReader::ReadElement(const JSONElement& el, const std::string& tag)
+{
+	assert(el.HasMember(tag.c_str()) && "Failed to find tag!");
+	return el[tag.c_str()].GetString();
+}
+
 const JSONElement& JSONReader::GetElement(const std::string& element_name)
 {
 	assert(DocumentHasMember(element_name) && "failed to find element!");

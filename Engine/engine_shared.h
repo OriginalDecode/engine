@@ -44,7 +44,7 @@ typedef u64 uptr;
 typedef u32 uptr;
 #endif
 
-enum class eShaderType
+enum class eShaderType : s32
 {
 	VERTEX,
 	PIXEL,

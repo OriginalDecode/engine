@@ -23,7 +23,18 @@ public:
 	void ReadElement(const std::string& tag, float& out);
 	void ReadElement(const std::string& tag, double& out);
 	void ReadElement(const std::string& tag, std::string& out);
+	
+	void ReadElement(const JSONElement& el, const std::string& tag, bool& out);
+	void ReadElement(const JSONElement& el, const std::string& tag, int& out);
+	void ReadElement(const JSONElement& el, const std::string& tag, unsigned int& out);
+	void ReadElement(const JSONElement& el, const std::string& tag, float& out);
+	void ReadElement(const JSONElement& el, const std::string& tag, double& out);
+	void ReadElement(const JSONElement& el, const std::string& tag, std::string& out);
+
+	
+	
 	std::string ReadElement(const std::string& tag);
+	std::string ReadElement(const JSONElement& el, const std::string& tag);
 
 	
 	void ReadElement(const rapidjson::Value& element, CU::Vector3f& out);
@@ -35,6 +46,10 @@ public:
 
 
 	std::string GetCurrentFile() { return myCurrentDocumentPath; }
+
+
+
+
 
 private:
 

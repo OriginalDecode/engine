@@ -7,7 +7,7 @@ public:
 	VirtualFileSystem() = default;
 	void Register(const std::string& path, const std::string& alias);
 	std::string GetFile(const std::string& path) const;
-
+	std::string GetFolder(const std::string& alias) const;
 private:
 	std::map<std::string, std::string> m_RegisteredFolders;
 

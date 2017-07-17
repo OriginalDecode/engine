@@ -1,4 +1,0 @@
-{
-	"VertexShader" : "VS_Cube.hlsl",
-	"PixelShader" : "PS_Cube.hlsl"
-}

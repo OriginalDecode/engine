@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "deferred_spotlight.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "deferred_spotlight.ps",
+        "entrypoint": "main"
+    }
+}

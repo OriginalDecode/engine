@@ -1,4 +1,0 @@
-{
-	"VertexShader" : "VS_Deferred_Spotlight.hlsl",
-	"PixelShader" : "PS_Deferred_Spotlight.hlsl"
-}

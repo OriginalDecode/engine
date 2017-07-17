@@ -1,6 +1,0 @@
-{
-	"VertexShader" : "VS_water.hlsl",
-	"PixelShader" : "PS_water.hlsl",
-	"HullShader" : "HS_water.hlsl",
-	"DomainShader" : "DS_water.hlsl"
-}

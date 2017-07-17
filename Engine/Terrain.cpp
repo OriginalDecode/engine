@@ -12,7 +12,7 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 	myDepth = aSize.y;
 	m_Filename = "Terrain";
 	m_IsRoot = false;
-	myEffect = Engine::GetInstance()->GetEffect("Shaders/T_Terrain_Base.json");
+	myEffect = Engine::GetInstance()->GetEffect("Shaders/terrain_base.json");
 
 	TGA32::Image* image = TGA32::Load(aFile.c_str());
 	/*u8* data;*/
@@ -32,7 +32,7 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 	mySurface->AddTexture("Data/Textures/terrain.dds", Effect::DIFFUSE);
 	//mySurface->AddTexture("Data/Textures/default_textures/no-texture-bw.dds", _ROUGHNESS);
 
-	m_ClipEffect = Engine::GetInstance()->GetEffect("Shaders/T_Terrain_Clip.json");
+	m_ClipEffect = Engine::GetInstance()->GetEffect("Shaders/terrain_clip.json");
 	m_ClipEffect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain.dds"), Effect::DIFFUSE);
 
 	m_HasLoaded = true;

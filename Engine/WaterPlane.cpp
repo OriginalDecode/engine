@@ -6,7 +6,7 @@ void WaterPlane::Initiate(const CU::Vector3f& position)
 {
 	m_Orientation.SetPosition(position);
 
-	myEffect = Engine::GetInstance()->GetEffect("Shaders/T_water.json");
+	myEffect = Engine::GetInstance()->GetEffect("Shaders/water.json");
 
 	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
 

@@ -55,12 +55,15 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	Engine::Create();
 	
-	Engine::GetInstance()->GetVFS().Register("Data/Shaders", "Shaders");
-	Engine::GetInstance()->GetVFS().Register("Data/Textures", "Textures");
-	Engine::GetInstance()->GetVFS().Register("Data/Model", "Models");
-	Engine::GetInstance()->GetVFS().Register("Data/Texture", "Texture");
+	Engine* engine = Engine::GetInstance();
 
-	Engine::GetInstance()->Initiate(w, h, anInstance, WindowProc);
+
+	engine->GetVFS().Register("Data/Shaders", "Shaders");
+	engine->GetVFS().Register("Data/Textures", "Textures");
+	engine->GetVFS().Register("Data/Model", "Models");
+	engine->GetVFS().Register("Data/Texture", "Texture");
+
+	engine->Initiate(w, h, anInstance, WindowProc);
 	DL_ASSERT_EXP(newApplication->Initiate(), "Failed to initiate game");
 
 	PRAWINPUTDEVICELIST device_list = 0;
@@ -130,7 +133,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 		rid[0].usUsagePage = ( USHORT ) EUsagePage::DEFAULT;
 		rid[0].usUsage = GAMEPAD;
 		rid[0].dwFlags = 0;
-		rid[0].hwndTarget = Engine::GetInstance()->GetHWND();
+		rid[0].hwndTarget = engine->GetHWND();
 		if ( RegisterRawInputDevices(rid, 1, sizeof(rid[0])) == FALSE )
 		{
 			DL_MESSAGE("Failed to Register input device!");
@@ -176,7 +179,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 			applicationIsRunning = false;
 			break;
 		}
-		Engine::GetInstance()->Update();
+		engine->Update();
 		/*if (g_windowactive)
 		{
 			SetCursorPos(w / 2.f, h / 2.f);

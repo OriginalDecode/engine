@@ -7,7 +7,7 @@
 
 bool ShadowPass::Initiate(Renderer* renderer)
 {
-	m_RenderToDepth = Engine::GetInstance()->GetEffect("Shaders/T_Render_Depth.json");
+	m_RenderToDepth = Engine::GetInstance()->GetEffect("Shaders/render_depth.json");
 	m_Renderer = renderer;
 	return true;
 }

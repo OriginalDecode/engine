@@ -1,4 +1,0 @@
-{
-	"VertexShader" : "VS_Line3D.hlsl",
-	"PixelShader" : "PS_Line3D.hlsl"
-}

@@ -21,8 +21,8 @@ CFont::CFont(SFontData* aFontData)
 
 	myData = aFontData;
 	myText = " ";
-	myEffect[0] = myEngine->GetEffect("Shaders/T_Font_Outline.json");
-	myEffect[1] = myEngine->GetEffect("Shaders/T_Font.json");
+	myEffect[0] = myEngine->GetEffect("Shaders/font_outline.json");
+	myEffect[1] = myEngine->GetEffect("Shaders/font.json");
 
 	myVertexBufferDesc = new D3D11_BUFFER_DESC();
 	myIndexBufferDesc = new D3D11_BUFFER_DESC();

@@ -16,7 +16,7 @@ void SSAOPass::Initiate()
 		"SSAOPass | SSAOTexture");
 
 	m_ScreenQuad.Initiate();
-	m_SSAOShader = Engine::GetInstance()->GetEffect("Shaders/T_SSAO.json");
+	m_SSAOShader = Engine::GetInstance()->GetEffect("Shaders/ssao.json");
 
 	m_cbSSAO = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbSSAO));
 	m_cbBlur = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbBlur));
@@ -24,7 +24,7 @@ void SSAOPass::Initiate()
 #if !defined(_PROFILE) && !defined(_FINAL)
 	Engine::GetInstance()->AddTexture(m_SSAOTexture, "SSAO");
 #endif
-	Engine::GetInstance()->GetEffect("Shaders/T_Deferred_Ambient.json")->AddShaderResource(m_SSAOTexture, Effect::SSAO);
+	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_SSAOTexture, Effect::SSAO);
 }
 
 void SSAOPass::CleanUp()

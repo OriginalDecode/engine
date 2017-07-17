@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "render_to_texture.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "render_to_texture.ps",
+        "entrypoint": "main"
+    }
+}

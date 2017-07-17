@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "sprite.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "sprite.ps",
+        "entrypoint": "main"
+    }
+}

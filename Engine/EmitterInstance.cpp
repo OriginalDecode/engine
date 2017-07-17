@@ -21,7 +21,7 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	myData.normalTexture = myEngine->GetTexture("Data/Textures/particles/test_normal.dds");
 
 	myData.lifeTime = -1.f;
-	myData.shader = myEngine->GetEffect("Shaders/T_Particle.json");
+	myData.shader = myEngine->GetEffect("Shaders/particle.json");
 	myData.particleData = data;
 	myData.size = { 100.f, 10.f, 0.f };
 
@@ -37,7 +37,7 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	CreateInputLayout();
 	CreateConstantBuffer();
 
-	Effect* shader = myEngine->GetEffect("Shaders/T_particle_offscreen.json");
+	Effect* shader = myEngine->GetEffect("Shaders/particle_offscreen.json");
 
 
 	myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);

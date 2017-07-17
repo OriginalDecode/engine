@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "font.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "font.ps",
+        "entrypoint": "main"
+    }
+}

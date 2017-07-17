@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "deferred_base.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "gizmo.ps",
+        "entrypoint": "main"
+    }
+}

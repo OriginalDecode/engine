@@ -191,6 +191,7 @@ public:
 
 	void AddFunction(const std::string& label, std::function<void()> function);
 	void CheckFolder(const std::string& path);
+	CU::GrowingArray<ID3D11ShaderResourceView*>& GetDebugTextures() { return m_DebugTextures;}
 private:
 	struct CheckBox
 	{
@@ -204,6 +205,7 @@ private:
 	std::vector<std::string> m_Labels;
 	std::vector<std::string> m_Levels;
 	std::vector<std::pair<std::string, std::function<void()>>> m_Functions;
+
 #endif
 private:
 

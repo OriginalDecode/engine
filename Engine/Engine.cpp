@@ -612,6 +612,20 @@ bool ListBox(const char* label, int* current_index, std::vector<std::string>& va
 	return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size(), values.size());
 }
 
+
+static void DrawTexture(const ImDrawList* list, const ImDrawCmd* cmd)
+{
+	ImVec2 w_size = ImGui::GetWindowSize();
+	w_size.x *= 0.65f;
+	w_size.y = w_size.x / 1.777777777777777777777777777777778;
+
+
+	list->PushTextureID(0);
+
+
+	//Draw a quad that is adapted to the window.
+}
+
 void Engine::DebugTextures()
 {
 	static bool pOpen = false;
@@ -629,8 +643,8 @@ void Engine::DebugTextures()
 		w_size.y = w_size.x / 1.777777777777777777777777777777778;
 		ImGui::SameLine();
 		ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-		//ImDrawList* draw_list = ImGui::GetWindowDrawList();
-		//draw_list->AddCallback(draw_texture, nullptr);
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+		draw_list->AddCallback(DrawTexture, nullptr);
 
 	}
 	ImGui::End();

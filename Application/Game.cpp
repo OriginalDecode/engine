@@ -25,7 +25,7 @@
 #include <imgui.h>
 #include "CameraHandle.h"
 
-static std::string key = "Data/Model/sponza/Sponza_2.fbx";
+static std::string key = "Data/Model/sponza/madScience.fbx";
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;

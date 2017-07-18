@@ -2,6 +2,7 @@
 #include <string>
 #include <CommonLib/Math/Matrix/Matrix.h>
 #include <Engine/Line3D.h>
+#include <Engine/Texture.h>
 struct ID3D11ShaderResourceView;
 
 struct RenderCommand
@@ -128,14 +129,13 @@ struct SpriteCommand : public RenderCommand
 	{
 	}
 
-	SpriteCommand(const std::string& key, const CU::Vector2f& position)
+	SpriteCommand(Texture* pResource, const CU::Vector2f& position)
 		: RenderCommand(eCommandType::SPRITE)
+		, m_Resource(pResource->GetShaderView())
 		, m_Position(position)
 	{
-		strcpy_s(m_Key, key.c_str());
 	}
 
-	char m_Key[128] = { '\0' };
 	ID3D11ShaderResourceView* m_Resource = nullptr;
 	CU::Vector2f m_Position;
 };

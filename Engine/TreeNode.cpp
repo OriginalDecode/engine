@@ -14,9 +14,14 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 	m_Octree = octree;
 
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
-	m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
+	if (m_Depth > 0)
+	{
+		if (m_Depth == 1)
+			m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
+		else if (m_Parent)
+			m_NodeEntityManager = static_cast<TreeNode*>(m_Parent)->GetManager();
+	}
 
-	
 	for (TreeNodeBase* child : m_Children)
 	{
 		child = nullptr;
@@ -33,13 +38,18 @@ void TreeNode::Update(float dt)
 			continue;
 
 #ifdef _PROFILE
-			EASY_BLOCK("Child Node Update");
+		EASY_BLOCK("Child Node Update");
 #endif
-			node->Update(dt);
+		node->Update(dt);
 #ifdef _PROFILE
-			EASY_END_BLOCK;
+		EASY_END_BLOCK;
 #endif
-		
+
 	}
 
+}
+
+void TreeNode::SetManager(NodeEntityManager* manager)
+{
+	m_NodeEntityManager = manager;
 }

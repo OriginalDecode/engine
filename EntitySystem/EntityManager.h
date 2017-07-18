@@ -66,7 +66,7 @@ private:
 	CComponentContainer* myComponents = nullptr;
 	//CU::GrowingArray<BaseSystem*> mySystems;
 	std::atomic<float> myDeltaTime = 0.f;
-	static const s32 m_MaxNodeCount = (8 * 8) * MAX_DEPTH + 1;
+	static const s32 m_MaxNodeCount = 9;
 	s32 m_Systems[m_MaxNodeCount];
 
 };

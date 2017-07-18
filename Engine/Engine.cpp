@@ -620,7 +620,7 @@ static void DrawTexture(const ImDrawList* list, const ImDrawCmd* cmd)
 	w_size.y = w_size.x / 1.777777777777777777777777777777778;
 
 
-	list->PushTextureID(0);
+	//list->PushTextureID(0);
 
 
 	//Draw a quad that is adapted to the window.
@@ -837,11 +837,11 @@ void Engine::UpdateDebugUI()
 			static int x = 0;
 			static int y = 0;
 			static int z = 0;
-			ImGui::SliderInt("X", &x, 0, 360);
-			ImGui::SliderInt("Y", &y, 0, 360);
-			ImGui::SliderInt("Z", &z, 0, 360);
+			ImGui::SliderInt("X", &x, -180, 180);
+			ImGui::SliderInt("Y", &y, -180, 180);
+			ImGui::SliderInt("Z", &z, -180, 180);
 
-			myRenderer->SetDirection(CU::Vector3f((float)x / 360.f, (float)y / 360.f, (float)z / 360.f));
+			myRenderer->SetDirection(CU::Vector3f((float)x / 180.f, (float)y / 180.f, (float)z / 180.f));
 
 
 			ImGui::Text("Directional Shadow Position");

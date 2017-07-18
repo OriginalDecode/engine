@@ -122,6 +122,7 @@ void Octree::MoveDown(TreeNodeBase* node, TreeDweller* dweller, s32 depth)
 
 			if (node->GetDepth() > 0)
 			{
+				static_cast<TreeNode*>(child)->SetManager(static_cast<TreeNode*>(node)->GetManager());
 				child->SetMemoryBlockIndex(node->GetMemoryBlockIndex());
 			}
 			else

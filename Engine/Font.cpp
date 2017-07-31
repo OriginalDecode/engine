@@ -33,6 +33,8 @@ CFont::CFont(SFontData* aFontData)
 	CreateIndexBuffer();
 	CreateConstantBuffer();
 
+	myDefaultColor.SetRGB(255, 255, 255);
+	myDefaultColor.SetA(255);
 	myColor = myDefaultColor;
 
 	myRenderTime = 0.f;
@@ -226,6 +228,7 @@ void CFont::CreateConstantBuffer()
 
 void CFont::UpdateBuffer()
 {
+	myColor = myDefaultColor;
 	SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
 	SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 
@@ -238,15 +241,15 @@ void CFont::UpdateBuffer()
 	myIndices.RemoveAll();
 
 	SVertexTypePosColUv v;
+	u32 skips = 0;
 	for (u32 i = 0, row = 0; i < count; i++)
 	{
 		SCharData& charData = myData->myCharData[myText[i]];
-
+		
 		if (maxDrawY < charData.myHeight)
 		{
 			maxDrawY = charData.myHeight;
 		}
-
 
 		if (myText[i] == '\n')
 		{
@@ -256,11 +259,45 @@ void CFont::UpdateBuffer()
 			continue;
 		}
 
-
-		if (myText[i] == ' ')
+		if (myText[i] == '#')
 		{
-			drawX += myData->myWordSpacing;
+			skips = 0;
+			if (myText[i + 2] != 'x')
+			{
+				std::string hex_code = "0x" + myText.substr(i + 1, 6) + "FF";
+				unsigned int _color = (unsigned int)strtoul(hex_code.c_str(), nullptr, 16);
+				myColor.Convert(_color);
+				i+=7;
+				skips = 8;
+				if (myText[i] != '(')
+					myColor = myDefaultColor;
+				continue;
+			}
+			else
+			{ 
+				std::string hex_code = myText.substr(i + 3, 6) + "FF"; //might extend this with a lerp alpha in the future?
+				unsigned int _color = (unsigned int)strtoul(hex_code.c_str(), nullptr, 16);
+				myColor.Convert(_color);
+				i += 9;
+				skips = 10;
+				continue;
+			}
+
+			
 		}
+
+		if (myText[i - 1] == '#')
+		{
+			int apa;
+			apa = 5;
+		}
+
+		if (myText[i] == ')') 
+		{
+			myColor = myDefaultColor;
+			continue;
+		}
+			
 
 		float left = drawX;
 		float right = left + charData.myWidth;
@@ -268,26 +305,26 @@ void CFont::UpdateBuffer()
 		float bottom = top + charData.myHeight;
 
 		v.myPosition = { left, bottom, z };
-		v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
+		v.myColor = myColor.ToVec4(); //{ float(myColor.m_re / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 		v.myUV = charData.myTopLeftUV;
 		myVertices.Add(v);
 
 		v.myPosition = { left, top, z };
-		v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
+		v.myColor = myColor.ToVec4();// { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 		v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
 		myVertices.Add(v);
 
 		v.myPosition = { right, bottom, z };
-		v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
+		v.myColor = myColor.ToVec4(); //{ float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 		v.myUV = { charData.myBottomRightUV.x, charData.myTopLeftUV.y };
 		myVertices.Add(v);
 
 		v.myPosition = { right, top, z };
-		v.myColor = { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
+		v.myColor = myColor.ToVec4(); // { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 		v.myUV = charData.myBottomRightUV;
 		myVertices.Add(v);
 
-		u32 startIndex = (i - row) * 4.f;
+		u32 startIndex = (i - skips - row) * 4.f;
 
 		myIndices.Add(startIndex + 1);
 		myIndices.Add(startIndex + 0);
@@ -298,6 +335,8 @@ void CFont::UpdateBuffer()
 		myIndices.Add(startIndex + 1);
 
 		drawX += charData.myBearingX;
+
+
 	}
 
 	if (myVertices.Size() <= 0)

@@ -23,7 +23,11 @@ public:
 
 	void Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
 	Effect* GetEffect();
-	CU::Math::Vector2<float> GetSize();
+	const CU::Vector2f& GetSize();
+	
+	void Resize(const CU::Vector2f& new_size);
+
+
 	const CU::Math::Vector2<float>& GetPosition();
 	void SetTexture(ID3D11ShaderResourceView* srv);
 private:
@@ -38,7 +42,6 @@ private:
 
 	std::string myTexturePath;
 	WindowSize myWindowSize;
-	Camera* myCamera = nullptr;
 	Effect* myEffect = nullptr;
 
 	CU::Math::Vector2<float> myPosition;
@@ -59,7 +62,7 @@ private:
 	{
 		CU::Vector2f position = CU::Vector2f(0.f, 0.f);
 		CU::Vector2f scale = CU::Vector2f(1.f, 1.f);
-	} *myConstantStruct;
+	} m_cbStruct;
 
 
 	void SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);

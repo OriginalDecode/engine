@@ -582,11 +582,14 @@ int Renderer::RegisterLight()
 
 void Renderer::Render2DCommands()
 {
-	const auto commands0 = mySynchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER);
 
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
+
+	//_________________________
+	// RenderSpriteCommands function?
+	const auto commands0 = mySynchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER);
 	for (s32 i = 0; i < commands0.Size(); i++)
 	{
 		auto command = reinterpret_cast<SpriteCommand*>(commands0[i]);
@@ -596,6 +599,8 @@ void Renderer::Render2DCommands()
 		mySprite->Render(m_Camera);
 	}
 
+	//_________________________
+	// RenderTextCommands function?
 	const auto commands1 = mySynchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER);
 	for (s32 i = 0; i < commands1.Size(); i++)
 	{

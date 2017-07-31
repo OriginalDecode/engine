@@ -25,7 +25,7 @@
 #include <imgui.h>
 #include "CameraHandle.h"
 
-static std::string key = "Data/Model/sponza/madScience.fbx";
+static std::string key = "Data/Model/sponza/sponza_2.fbx";
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
@@ -150,7 +150,16 @@ void Game::Update(float dt)
 	std::stringstream ss;
 	//ss << "Entity Speed : " << entity_speed;
 	ss << "\nx:" << m_Camera->GetOrientation().GetPosition().x << "\ny:" << m_Camera->GetOrientation().GetPosition().y << "\nz:" << m_Camera->GetOrientation().GetPosition().z << "\n";
-	ss << m_FPSToPrint;
+	if (m_FPSToPrint < 25)
+		ss << "#FF0000(";
+	else if (m_FPSToPrint < 60)
+		ss << "#FFFF00(";
+	else if (m_FPSToPrint >= 60)
+		ss << "#00FF00(";
+
+	ss << m_FPSToPrint << ")";
+
+
 	m_Synchronizer->AddRenderCommand(TextCommand(ss.str(), CU::Vector2f(0.75f, 0.1f)));
 
 	CU::Vector4f translation = m_Orientation.GetTranslation();

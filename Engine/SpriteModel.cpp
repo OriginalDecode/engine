@@ -22,7 +22,6 @@ CSpriteModel::~CSpriteModel()
 	SAFE_DELETE(myVertexBuffer);
 	SAFE_DELETE(myIndexData);
 	SAFE_DELETE(myVertexData);
-	SAFE_DELETE(myConstantStruct);
 
 	SAFE_RELEASE(myVertexLayout);
 	SAFE_RELEASE(myConstantBuffer);
@@ -180,15 +179,12 @@ void CSpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2D
 	context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	UpdateConstantBuffer();
+	context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
+
+	myEffect->AddShaderResource(myTexture, Effect::DIFFUSE);
 
 	myEffect->Use();
-
-	context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
-	ID3D11ShaderResourceView* srv = myTexture;
-	context.PSSetShaderResources(0, 1, &srv);
-
 	context.DrawIndexed(6, 0, 0);
-
 	myEffect->Clear();
 
 	Engine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
@@ -199,9 +195,14 @@ Effect* CSpriteModel::GetEffect()
 	return myEffect;
 }
 
-CU::Math::Vector2<float> CSpriteModel::GetSize()
+const CU::Vector2f& CSpriteModel::GetSize()
 {
 	return mySize;
+}
+
+void CSpriteModel::Resize(const CU::Vector2f& new_size)
+{
+
 }
 
 const CU::Math::Vector2<float>& CSpriteModel::GetPosition()
@@ -216,20 +217,21 @@ void CSpriteModel::SetTexture(ID3D11ShaderResourceView* srv)
 
 void CSpriteModel::UpdateConstantBuffer()
 {
-	myConstantStruct->scale = mySize;
+	m_cbStruct.scale = mySize;
 
 
-	DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
+	Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, &m_cbStruct);
 
+/*
 	D3D11_MAPPED_SUBRESOURCE msr;
 	Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 	if (msr.pData != nullptr)
 	{
 		SSpriteConstantBuffer* ptr = (SSpriteConstantBuffer*)msr.pData;
-		memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SSpriteConstantBuffer));
+		memcpy(ptr, &m_cbStruct.world.myMatrix[0], sizeof(SSpriteConstantBuffer));
 	}
 
-	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
+	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);*/
 }
 
 void CSpriteModel::InitiateVertexBuffer()
@@ -287,7 +289,7 @@ void CSpriteModel::InitiateIndexBuffer()
 
 void CSpriteModel::InitConstantBuffer()
 {
-	myConstantStruct = new SSpriteConstantBuffer;
+	//m_cbStruct = new SSpriteConstantBuffer;
 
 	D3D11_BUFFER_DESC cbDesc;
 	ZeroMemory(&cbDesc, sizeof(cbDesc));
@@ -311,8 +313,8 @@ void CSpriteModel::ConvertToNormalSpace()
 
 void CSpriteModel::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 {
-	myConstantStruct->world = anOrientation;
-	myConstantStruct->invertedView = a2DCameraOrientation;
-	myConstantStruct->projection = anOrthogonalProjectionMatrix;
+	m_cbStruct.world = anOrientation;
+	m_cbStruct.invertedView = a2DCameraOrientation;
+	m_cbStruct.projection = anOrthogonalProjectionMatrix;
 }
 

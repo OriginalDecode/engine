@@ -17,6 +17,9 @@ public:
 	void Render();
 	Effect* GetShader() { return m_ScreenpassShader; }
 
+
+
+
 private:
 
 	IInputLayout* m_InputLayout = nullptr;

@@ -72,16 +72,16 @@ namespace CL
 	}
 
 	SColor::SColor(unsigned int color)
-		: r(0)
-		, g(0)
-		, b(0)
-		, a(0)
+		: m_Red(0)
+		, m_Green(0)
+		, m_Blue(0)
+		, m_Alpha(0)
 		, _color(0)
 	{
-		a = (color) & 0xFF;
-		r = (color >> 8) & 0xFF;
-		g = (color >> 16) & 0xFF;
-		b = (color >> 24) & 0xFF;
+		m_Alpha = (color) & 0xFF;
+		m_Red = (color >> 8) & 0xFF;
+		m_Green = (color >> 16) & 0xFF;
+		m_Blue = (color >> 24) & 0xFF;
 		_color = color;
 	}
 
@@ -91,21 +91,21 @@ namespace CL
 	}
 
 	SColor::SColor()
-		: r(255)
-		, g(255)
-		, b(255)
-		, a(255)
+		: m_Red(255)
+		, m_Green(255)
+		, m_Blue(255)
+		, m_Alpha(255)
 		, _color(0)
 	{
-		_color = (r << 24) + (g << 16) + (b << 8) + (a);
+		_color = (m_Red << 24) + (m_Green << 16) + (m_Blue << 8) + (m_Alpha);
 	}
 
 	void SColor::Convert(unsigned int aColor)
 	{
-		a = (aColor) & 0xFF;
-		r = (aColor >> 8) & 0xFF;
-		g = (aColor >> 16) & 0xFF;
-		b = (aColor >> 24) & 0xFF;
+		m_Alpha = (aColor) & 0xFF;
+		m_Blue = (aColor >> 8) & 0xFF;
+		m_Green = (aColor >> 16) & 0xFF;
+		m_Red = (aColor >> 24) & 0xFF;
 		_color = aColor;
 	}
 

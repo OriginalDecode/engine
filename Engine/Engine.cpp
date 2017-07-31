@@ -619,7 +619,6 @@ static void DrawTexture(const ImDrawList* list, const ImDrawCmd* cmd)
 	w_size.x *= 0.65f;
 	w_size.y = w_size.x / 1.777777777777777777777777777777778;
 
-
 	//list->PushTextureID(0);
 
 

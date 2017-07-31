@@ -50,15 +50,34 @@ namespace CL
 		SColor();
 		SColor(unsigned int color);
 		SColor(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha);
-		unsigned int r;
-		unsigned int g;
-		unsigned int b;
-		unsigned int a;
+		unsigned int m_Red;
+		unsigned int m_Green;
+		unsigned int m_Blue;
+		unsigned int m_Alpha;
 		int _color;
+		void SetRGB(unsigned int r, unsigned int g, unsigned int b)
+		{
+			m_Red = r;
+			m_Green = g;
+			m_Blue = b;
+		}
+		void SetA(unsigned int a)
+		{
+			m_Alpha = a;
+		}
 		void Convert(unsigned int aColor);
 		void Convert(unsigned int aRed, unsigned int aGreen, unsigned int aBlue, unsigned int anAlpha);
 
 
+
+		CU::Vector4f ToVec4()
+		{
+			return CU::Vector4f(
+				(float)m_Red / 255.f, 
+				(float)m_Green / 255.f, 
+				(float)m_Blue / 255.f, 
+				(float)m_Alpha / 255.f);
+		}
 	};
 
 	float RadToDegree(float aRadian);

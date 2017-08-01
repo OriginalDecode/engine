@@ -642,8 +642,8 @@ void Engine::DebugTextures()
 		w_size.y = w_size.x / 1.777777777777777777777777777777778;
 		ImGui::SameLine();
 		ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-		ImDrawList* draw_list = ImGui::GetWindowDrawList();
-		draw_list->AddCallback(DrawTexture, nullptr);
+		//ImDrawList* draw_list = ImGui::GetWindowDrawList();
+		//draw_list->AddCallback(DrawTexture, nullptr);
 
 	}
 	ImGui::End();
@@ -841,6 +841,7 @@ void Engine::UpdateDebugUI()
 			ImGui::SliderInt("Z", &z, -180, 180);
 
 			myRenderer->SetDirection(CU::Vector3f((float)x / 180.f, (float)y / 180.f, (float)z / 180.f));
+			//myRenderer->GetDirectionalCamera()->SetAt(CU::Vector3f((float)x / 180.f, (float)y / 180.f, (float)z / 180.f));
 
 
 			ImGui::Text("Directional Shadow Position");
@@ -850,7 +851,6 @@ void Engine::UpdateDebugUI()
 			ImGui::SliderFloat("sX", &sx, -30.f, 360.f);
 			ImGui::SliderFloat("sY", &sy, -30.f, 360.f);
 			ImGui::SliderFloat("sZ", &sz, -30.f, 360.f);
-
 			myRenderer->GetDirectionalCamera()->SetPosition(CU::Vector3f(sx, sy, sz));
 
 

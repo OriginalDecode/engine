@@ -22,7 +22,7 @@ public:
 
 
 
-	const CU::Matrix44f& GetMVP();
+	CU::Matrix44f GetMVP();
 	
 
 	Texture* GetDepthTexture() { return m_ShadowDepth; }

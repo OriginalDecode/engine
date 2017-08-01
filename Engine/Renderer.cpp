@@ -285,10 +285,14 @@ void Renderer::Render()
 	*/
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
+
+	CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
+
+
 	m_DeferredRenderer->DeferredRender(
 		m_Camera->GetOrientation(),
 		m_Camera->GetPerspective(),
-		m_DirectionalShadow.GetMVP(),
+		shadow_mvp,
 		m_Direction,
 		m_RenderContext);
 

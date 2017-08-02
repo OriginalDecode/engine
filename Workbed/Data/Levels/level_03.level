@@ -1,5 +1,82 @@
 {
-	"root" :
-	{
-	}	
+	"root": {
+		"object": {
+			"entity": "pointlight.json",
+			"position": [
+				-55,
+				25,
+				-12
+			],
+			"color": [
+				1,
+				0,
+				0,
+				1
+			],
+			"range": 5
+		},
+		"object": {
+			"entity": "pointlight.json",
+			"position": [
+				-55,
+				25,
+				24
+			],
+			"color": [
+				0,
+				1,
+				0,
+				1
+			],
+			"range": 5
+		},
+		"object": {
+			"entity": "pointlight.json",
+			"position": [
+				55,
+				25,
+				24
+			],
+			"color": [
+				0,
+				0,
+				1,
+				1
+			],
+			"range": 5
+		},
+		"object": {
+			"entity": "pointlight.json",
+			"position": [
+				55,
+				25,
+				-24
+			],
+			"color": [
+				1,
+				0,
+				1,
+				1
+			],
+			"range": 5
+		},
+		"object": {
+			"entity": "SM_dev_box.entity",
+			"position": [
+				0,
+				0,
+				0
+			],
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"scale": [
+				1,
+				1,
+				1
+			]
+		}
+	}
 }

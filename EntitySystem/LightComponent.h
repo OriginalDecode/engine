@@ -16,13 +16,8 @@ struct LightComponent : public BaseComponent
 
 	eLightType myType;
 	CU::Vector3f color;
-
-	union
-	{
-		float intensity;
-		float angle;
-	};
-
+	float intensity = 1.f;
+	float angle = 0.f;
 	float range = 0.f;
 	CU::Vector3f direction;
 	CU::Matrix44f orientation;

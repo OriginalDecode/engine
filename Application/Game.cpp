@@ -106,8 +106,8 @@ void Game::Update(float dt)
 	if (input_wrapper->OnClick(MouseInput::LEFT))
 	{
 		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
-		PostMaster::GetInstance()->SendMessage("left_click", nullptr);
-		//PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, m_Player));
+		//PostMaster::GetInstance()->SendMessage("left_click", nullptr);
+		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, m_Player));
 	}
 	//Engine::GetInstance()->GetEntityManager().Update(dt);
 	if (input_wrapper->OnDown(KButton::ESCAPE))

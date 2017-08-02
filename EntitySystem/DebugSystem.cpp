@@ -25,7 +25,7 @@ DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 {
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	PostMaster::GetInstance()->Subscribe(eMessageType::ON_LEFT_CLICK, this);
-	PostMaster::GetInstance()->Subscribe("left_click", this);
+	//PostMaster::GetInstance()->Subscribe("left_click", this);
 	m_CurrentEntity = -1;
 	m_MouseDeltaModifier = 100.f;
 }
@@ -303,22 +303,10 @@ void DebugSystem::UpdateOBBs()
 
 }
 
-void DebugSystem::HandleEvent(u64 event, void* data)
-{
-	if (event == Hash("left_click")) 
-	{
-		int apa;
-		apa = 5;
-	}
-}
-
 //This needs to be optimized as hell./*
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
-	return;
 	UpdateOBBs();
-
-
 
 	CU::Vector3f cam_pos = CU::Vector3f(message.camera_pos_x, message.camera_pos_y, message.camera_pos_z);
 	CU::Vector3f ray_dir = CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z);
@@ -328,7 +316,7 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		return;
 	//Should be optimized for a quad/oct -tree solution to only retrieve the entities in THIS part
 	//NodeEntityManager& node_manager = message.m_Player->GetFirstNode()->GetManager();
-	const auto& entities = Engine::GetInstance()->GetEntityManager().GetEntities(myFilter);
+	const auto& entities = GetEntities();
 	//const EntityArray& entities = node_manager.GetEntities(myFilter);
 
 

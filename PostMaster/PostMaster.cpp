@@ -151,13 +151,19 @@ void PostMaster::SendMessage(const std::string& event, void* data)
 
 void PostMaster::SendMessage(const u64& event, void* data)
 {
-	CU::GrowingArray<SubscriberInfo>& subscribers = m_EventSubscribers.at(event);
 
-	if (subscribers.Size() > 0)
+	auto item = m_EventSubscribers.find(event);
+
+	if (item != m_EventSubscribers.end())
 	{
-		for (int i = 0; i < subscribers.Size(); ++i)
+		CU::GrowingArray<SubscriberInfo>& subscribers = item->second;//m_EventSubscribers.at(event);
+
+		if (subscribers.Size() > 0)
 		{
-			subscribers[i].mySubscriber->HandleEvent(event, data);
+			for (int i = 0; i < subscribers.Size(); ++i)
+			{
+				subscribers[i].mySubscriber->HandleEvent(event, data);
+			}
 		}
 	}
 }

@@ -2,62 +2,26 @@
 	"root": {
 		"object": {
 			"entity": "pointlight.json",
-			"position": [
-				-55,
-				25,
-				-12
-			],
-			"color": [
-				1,
-				0,
-				0,
-				1
-			],
+			"position": [ -55, 25, -12 ],
+			"color": [ 255, 0, 0, 255 ],
 			"range": 5
 		},
 		"object": {
 			"entity": "pointlight.json",
-			"position": [
-				-55,
-				25,
-				24
-			],
-			"color": [
-				0,
-				1,
-				0,
-				1
-			],
+			"position": [ -55, 25, 24 ],
+			"color": [ 0, 0, 255, 255 ],
 			"range": 5
 		},
 		"object": {
 			"entity": "pointlight.json",
-			"position": [
-				55,
-				25,
-				24
-			],
-			"color": [
-				0,
-				0,
-				1,
-				1
-			],
+			"position": [ 55, 25, 24 ],
+			"color": [ 255, 0, 255, 255 ],
 			"range": 5
 		},
 		"object": {
 			"entity": "pointlight.json",
-			"position": [
-				55,
-				25,
-				-24
-			],
-			"color": [
-				1,
-				0,
-				1,
-				1
-			],
+			"position": [ 55, 25, -12 ],
+			"color": [ 0, 255, 0, 255 ],
 			"range": 5
 		},
 		"object": {

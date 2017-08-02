@@ -23,7 +23,7 @@ public:
 	void InitiateAsDepthStencil(float width, float height, const std::string& debug_name);
 	void InitiateAsRenderTarget(float width, float height, const std::string& debug_name);
 
-	void InitiateWithColor(CL::SColor color);
+	void InitiateWithColor(cl::SColor color);
 
 	void Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat texture_format, const std::string& debug_name);
 	void Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat texture_format, s32 layer_count, const std::string& debug_name);

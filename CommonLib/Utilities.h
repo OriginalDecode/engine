@@ -4,7 +4,7 @@
 #include "Math/Vector/Vector.h"
 #include "DataStructures/GrowingArray.h"
 #include <thread>
-namespace CL
+namespace cl
 {
 	unsigned long long nearest_Pow(unsigned long long aNum);
 	unsigned long long nearest_Pow_Under(unsigned long long aNum);
@@ -92,4 +92,7 @@ namespace CL
 
 	void SetThreadName(const std::thread::id& id, const char* name);
 
-}
+	
+
+	std::string HandleVAArgs(const char* formatted_string, ...);
+};

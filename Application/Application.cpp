@@ -31,7 +31,7 @@ bool Application::Initiate()
 	//Keep at the end of initiate...
 	myLogicThread = new std::thread([&] { Application::Update(); });
 #ifdef _DEBUG
-	CL::SetThreadName(myLogicThread->get_id(), "Logic Thread");
+	cl::SetThreadName(myLogicThread->get_id(), "Logic Thread");
 #endif
 
 

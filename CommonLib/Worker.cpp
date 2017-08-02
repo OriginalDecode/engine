@@ -23,7 +23,7 @@ void Worker::Initiate(const std::string& debug_name)
 {
 	myWorkThread = new std::thread([&] { Run(); });
 #ifdef _DEBUG
-	CL::SetThreadName(myWorkThread->get_id(), debug_name.c_str());
+	cl::SetThreadName(myWorkThread->get_id(), debug_name.c_str());
 #endif
 }
 

@@ -230,9 +230,9 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.m_Rotation = rotation;
 
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
-	translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z)) * translation.myOrientation;
-	translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x)) * translation.myOrientation;
-	translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y)) * translation.myOrientation;
+	translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * translation.myOrientation;
+	translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rotation.x)) * translation.myOrientation;
+	translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rotation.y)) * translation.myOrientation;
 	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x));
 	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z));
 	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y));
@@ -357,16 +357,16 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 		CU::Vector3f rotation;
 		m_LevelReader.ReadElement(it->value["rotation"], rotation);
 
-		translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z)) * translation.myOrientation;
-		translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x)) * translation.myOrientation;
-		translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y)) * translation.myOrientation;
+		translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * translation.myOrientation;
+		translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rotation.x)) * translation.myOrientation;
+		translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rotation.y)) * translation.myOrientation;
 		
 		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * translation_component.myOrientation;
 		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(component.direction.y)) * translation_component.myOrientation;
 		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(component.direction.x)) * translation_component.myOrientation;
 
 		m_LevelReader.ReadElement(it->value["angle"], component.angle);
-		component.angle = CL::DegreeToRad(component.angle);
+		component.angle = cl::DegreeToRad(component.angle);
 		component.m_LightID = Engine::GetInstance()->RegisterLight();
 	}
 
@@ -497,12 +497,12 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 		position_gizmo.SetPosition(pos);
 		position_gizmo.CreateGizmoHandle(gizmo_up, "Data/Model/green_arrow.fbx", "Data/Textures/green.dds", GizmoHandle::eDirection::UP);
-		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(90.f) * 1) * gizmo_up.m_Orientation;
+		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(90.f) * 1) * gizmo_up.m_Orientation;
 
 		position_gizmo.CreateGizmoHandle(gizmo_right, "Data/Model/red_arrow.fbx", "Data/Textures/red.dds", GizmoHandle::eDirection::RIGHT);
 
 		position_gizmo.CreateGizmoHandle(gizmo_forward, "Data/Model/blue_arrow.fbx", "Data/Textures/blue.dds", GizmoHandle::eDirection::FORWARD);
-		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
+		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
 	}
 
 
@@ -523,13 +523,13 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 		gizmo_up.SetPosition(up_pos);
 
 		rotation_gizmo.CreateGizmoHandle(gizmo_up, "Data/Model/rotate_y.fbx", "Data/Textures/green.dds", GizmoHandle::eDirection::Y);
-		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(90.f) * -1) * gizmo_up.m_Orientation;
-		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(90.f) * -1) * gizmo_up.m_Orientation;
+		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(90.f) * -1) * gizmo_up.m_Orientation;
+		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f) * -1) * gizmo_up.m_Orientation;
 
 		rotation_gizmo.CreateGizmoHandle(gizmo_right, "Data/Model/rotate_x.fbx", "Data/Textures/red.dds", GizmoHandle::eDirection::X);
 
 		rotation_gizmo.CreateGizmoHandle(gizmo_forward, "Data/Model/rotate_z.fbx", "Data/Textures/blue.dds", GizmoHandle::eDirection::Z);
-		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
+		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
 		rotation_gizmo.ToggleActive();
 
 

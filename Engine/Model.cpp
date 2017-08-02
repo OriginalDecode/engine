@@ -26,7 +26,7 @@ void Model::CleanUp()
 
 void Model::Initiate(const std::string& filename)
 {
-	m_Filename = CL::substr(filename, "/", false, 0);
+	m_Filename = cl::substr(filename, "/", false, 0);
 	m_Orientations.Init(250);
 
 	// 	LPCSTR SemanticName;

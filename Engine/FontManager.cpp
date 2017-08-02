@@ -50,13 +50,13 @@ void CFontManager::Initiate()
 CFont* CFontManager::LoadFont(const char* aFontPath, short aSize, int aBorderWidth)
 {
 	std::string fontFolder = aFontPath;
-	if (!CL::substr(aFontPath, "/"))
+	if (!cl::substr(aFontPath, "/"))
 	{
 		fontFolder = "";
 		TCHAR dir[32];
 		GetSystemDirectory(dir, 32);
 		fontFolder += dir;
-		fontFolder = CL::substr(fontFolder, "\\", true, 0);
+		fontFolder = cl::substr(fontFolder, "\\", true, 0);
 		fontFolder += "\\Fonts\\";
 		fontFolder += aFontPath;
 	}
@@ -64,7 +64,7 @@ CFont* CFontManager::LoadFont(const char* aFontPath, short aSize, int aBorderWid
 	int atlasSize = (aFontWidth * aFontWidth); //This is correct
 	atlasSize *= 2;
 	atlasSize += 2;
-	atlasSize = int(CL::nearest_Pow(atlasSize));
+	atlasSize = int(cl::nearest_Pow(atlasSize));
 	FONT_LOG("Font Size W/H: %d", atlasSize);
 	float atlasWidth = static_cast<float>(atlasSize); //have to be replaced.
 	float atlasHeight = static_cast<float>(atlasSize); //have to be replaced
@@ -228,7 +228,7 @@ void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 			int& toSave = gData[y * bitmap.width + x];
 			toSave = 0;
 			toSave |= bitmap.buffer[y * bitmap.width + x];
-			toSave = CL::Color32Reverse(toSave);
+			toSave = cl::Color32Reverse(toSave);
 #endif
 		}
 	}
@@ -301,13 +301,13 @@ void CFontManager::LoadOutline(const int index, const int atlasX, const int atla
 			int& data = aFontData->myAtlas[((atlasY + myOffset.yDelta) + y) * int(atlasWidth) + ((atlasX + myOffset.xDelta) + x)];
 			data = 0;
 			data |= bitmapGlyph->bitmap.buffer[y * width + x];
-			data = CL::Color32Reverse(data);
+			data = cl::Color32Reverse(data);
 
 #ifdef SAVE
 			int& toSave = gData[y * width + x];
 			toSave = 0;
 			toSave |= bitmapGlyph->bitmap.buffer[y * width + x];
-			toSave = CL::Color32Reverse(toSave);
+			toSave = cl::Color32Reverse(toSave);
 #endif
 
 		}
@@ -355,13 +355,13 @@ void CFontManager::DumpAtlas(SFontData* fontData, int atlasSize)
 	Engine::GetAPI()->SetDebugName(fontData->myAtlasView, "FontAtlas");
 
 	std::string name = "";
-	name = CL::substr(myFontPath, "\\", false, 1);
-	name = CL::substr(name, ".", true, 1);
+	name = cl::substr(myFontPath, "\\", false, 1);
+	name = cl::substr(name, ".", true, 1);
 
-	if (CL::substr(myFontPath, "/"))
+	if (cl::substr(myFontPath, "/"))
 	{
-		name = CL::substr(myFontPath, "/", false, 1);
-		name = CL::substr(name, ".", true, 1);
+		name = cl::substr(myFontPath, "/", false, 1);
+		name = cl::substr(name, ".", true, 1);
 	}
 
 
@@ -399,13 +399,13 @@ void CFontManager::DumpGlyph(int* source, int index, int width, int height, int 
 	//CEngine::GetAPI()->SetDebugName(fontData->myAtlasView, "FontAtlas");
 
 	std::string name = "";
-	name = CL::substr(myFontPath, "\\", false, 1);
-	name = CL::substr(name, ".", true, 1);
+	name = cl::substr(myFontPath, "\\", false, 1);
+	name = cl::substr(name, ".", true, 1);
 
-	if (CL::substr(myFontPath, "/"))
+	if (cl::substr(myFontPath, "/"))
 	{
-		name = CL::substr(myFontPath, "/", false, 1);
-		name = CL::substr(name, ".", true, 1);
+		name = cl::substr(myFontPath, "/", false, 1);
+		name = cl::substr(name, ".", true, 1);
 	}
 
 

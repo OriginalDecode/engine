@@ -71,7 +71,7 @@ btRigidBody* RigidBody::InitAsSphere(float aRadius, float aMass, float aGravityF
 	myBody->setActivationState(DISABLE_DEACTIVATION);
 	myBody->setMassProps(myMass, btVector3(0, 0, 0));
 	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
-	myTerminalVelocity.y = CL::CalcTerminalVelocity(myMass, myGravity, myDragCoeff, myCrossSectionArea, myResistanceDensity);
+	myTerminalVelocity.y = cl::CalcTerminalVelocity(myMass, myGravity, myDragCoeff, myCrossSectionArea, myResistanceDensity);
 	
 	return myBody;
 }

@@ -572,7 +572,7 @@ bool Engine::SaveLevel()
 		ImGui::InputText("filename", file_name, 512);
 		if (ImGui::Button("Save", ImVec2(100, 30)))
 		{
-			if (!CL::substr(file_name, ".level"))
+			if (!cl::substr(file_name, ".level"))
 			{
 				DL_WARNINGBOX("Incorrect filetype, no file created!");
 			}

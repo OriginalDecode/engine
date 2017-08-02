@@ -1,6 +1,6 @@
 #include "Utilities.h"
 
-namespace CL
+namespace cl
 {
 	//if readCharacterBeforeToFind == true it will read everything BEFORE the character/word you entered but if it is false it will read the word you entered and everything after.
 	std::string substr(const std::string& aStringToReadFrom, const std::string& toFind, bool readCharactersBeforeToFind, int charsToSkip)
@@ -207,35 +207,37 @@ namespace CL
 #include <thread>
 
 #pragma region ThreadNaming
-	const DWORD MS_VC_EXCEPTION = 0x406D1388;
+const DWORD MS_VC_EXCEPTION = 0x406D1388;
 #pragma pack(push,8)
-	typedef struct tagTHREADNAME_INFO
-	{
-		DWORD dwType; // Must be 0x1000.
-		LPCSTR szName; // Pointer to name (in user addr space).
-		DWORD dwThreadID; // Thread ID (-1=caller thread).
-		DWORD dwFlags; // Reserved for future use, must be zero.
-	} THREADNAME_INFO;
+typedef struct tagTHREADNAME_INFO
+{
+	DWORD dwType; // Must be 0x1000.
+	LPCSTR szName; // Pointer to name (in user addr space).
+	DWORD dwThreadID; // Thread ID (-1=caller thread).
+	DWORD dwFlags; // Reserved for future use, must be zero.
+} THREADNAME_INFO;
 #pragma pack(pop)
-	void SetThreadName(DWORD dwThreadID, const char* threadName)
-	{
-		THREADNAME_INFO info;
-		info.dwType = 0x1000;
-		info.szName = threadName;
-		info.dwThreadID = dwThreadID;
-		info.dwFlags = 0;
+void SetThreadName(DWORD dwThreadID, const char* threadName)
+{
+	THREADNAME_INFO info;
+	info.dwType = 0x1000;
+	info.szName = threadName;
+	info.dwThreadID = dwThreadID;
+	info.dwFlags = 0;
 #pragma warning(push)
 #pragma warning(disable: 6320 6322)
-		__try {
-			RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR*)&info);
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER) {
-		}
-#pragma warning(pop)
+	__try {
+		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR*)&info);
 	}
+	__except (EXCEPTION_EXECUTE_HANDLER) {
+	}
+#pragma warning(pop)
+}
 
+#include <vadefs.h>
+#include <stdarg.h>
 
-namespace CL
+namespace cl
 {
 	void SetThreadName(const std::thread::id& id, const char* name)
 	{
@@ -245,6 +247,16 @@ namespace CL
 		DWORD word_id;
 		ss >> word_id;
 		::SetThreadName(word_id, name);
+	}
+
+	std::string HandleVAArgs(const char* formatted_string, ...)
+	{
+		char buffer[SHRT_MAX];
+		va_list args;
+		va_start(args, formatted_string);
+		vsprintf_s(buffer, formatted_string, args);
+		va_end(args);
+		return buffer;
 	}
 
 }

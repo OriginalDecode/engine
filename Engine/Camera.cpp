@@ -10,7 +10,7 @@ void Camera::CreatePerspectiveProjection(float width, float height, float near_p
 	DL_ASSERT_EXP(!m_ProjectionCreated, "Projection already created. Can't have two 3D projection matrices on same camera!");
 	m_ProjectionCreated = true;
 	m_CurrentFoV = fov;
-	m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, CL::DegreeToRad(m_CurrentFoV));
+	m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, cl::DegreeToRad(m_CurrentFoV));
 }
 
 void Camera::CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane)
@@ -30,7 +30,7 @@ CU::Vector3f Camera::RotateAroundPoint(const CU::Vector3f& position)
 	CU::Vector3f original_pos = GetPosition();
 	SetPosition(original_pos - position);
 	float dt = Engine::GetInstance()->GetDeltaTime();
-	m_Orientation = m_Orientation * CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(45.f) * dt);
+	m_Orientation = m_Orientation * CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(45.f) * dt);
 	//m_Orientation = m_Orientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(45.f) * dt);
 
 	SetPosition(GetPosition() + position);
@@ -141,12 +141,12 @@ void Camera::SetFOV(float field_of_view)
 		m_CurrentFoV = field_of_view;
 
 
-	m_ProjectionMatrix.SetPerspectiveFOV(CL::DegreeToRad(m_CurrentFoV), window_size.m_Height / window_size.m_Width);
+	m_ProjectionMatrix.SetPerspectiveFOV(cl::DegreeToRad(m_CurrentFoV), window_size.m_Height / window_size.m_Width);
 }
 
 void Camera::RecalculatePerspective(float width, float height, float near_plane, float far_plane)
 {
-	m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, CL::DegreeToRad(m_CurrentFoV));
+	m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, cl::DegreeToRad(m_CurrentFoV));
 }
 
 void Camera::InvertPitch()

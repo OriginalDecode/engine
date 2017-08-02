@@ -11,7 +11,7 @@ void Frustum::Initiate(float near_plane, float far_plane, float fov, const CU::M
 	m_FarPlane = far_plane;
 	m_NearPlane = near_plane;
 
-	const float rotation = CL::DegreeToRad(fov / 2.f) ;
+	const float rotation = cl::DegreeToRad(fov / 2.f) ;
 
 	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, near_plane), CU::Vector3f(0, 0, -1))); //near
 	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, far_plane), CU::Vector3f(0, 0, 1))); //far

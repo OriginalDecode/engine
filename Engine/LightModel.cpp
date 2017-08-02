@@ -20,7 +20,7 @@ LightModel::~LightModel()
 
 void LightModel::Initiate(const std::string& filename)
 {
-	m_Filename = CL::substr(filename, "/", false, 0);
+	m_Filename = cl::substr(filename, "/", false, 0);
 	if ( m_IsRoot == false )
 	{
 		InitVertexBuffer();

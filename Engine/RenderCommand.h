@@ -21,7 +21,7 @@ struct RenderCommand
 		PARTICLE,
 		NOF_TYPES
 	};
-	
+
 	RenderCommand(eCommandType command_type)
 		: m_CommandType(command_type)
 	{
@@ -48,7 +48,7 @@ struct ModelCommand : public RenderCommand
 		m_Orientation.SetPosition(position);
 	}
 
-	
+
 	char m_Key[128] = { '\0' };
 	CU::Matrix44f m_Orientation;
 	bool m_Wireframe = false;
@@ -121,7 +121,7 @@ struct PointlightCommand : public RenderCommand
 };
 
 struct SpriteCommand : public RenderCommand
-{	
+{
 	SpriteCommand(ID3D11ShaderResourceView* pResource, const CU::Vector2f& position)
 		: RenderCommand(eCommandType::SPRITE)
 		, m_Resource(pResource)
@@ -140,28 +140,20 @@ struct SpriteCommand : public RenderCommand
 	CU::Vector2f m_Position;
 };
 
+
 struct TextCommand : public RenderCommand
 {
-	TextCommand(std::string text, const CU::Vector2f& position, const CU::Vector4f& color)
+	TextCommand(const CU::Vector2f& position, std::string text)
 		: RenderCommand(eCommandType::TEXT)
 		, m_Position(position)
-		, m_Color(color)
-	{
-		strcpy_s(m_TextBuffer, text.c_str());
-	}
-
-	TextCommand(std::string text, const CU::Vector2f& position)
-		: RenderCommand(eCommandType::TEXT)
-		, m_Position(position)
-		, m_Color({ 1.f, 1.f, 1.f, 1.f })
 	{
 		strcpy_s(m_TextBuffer, text.c_str());
 	}
 
 	char m_TextBuffer[255] = { '\0' };
 	CU::Vector2f m_Position;
-	CU::Vector4f m_Color;
 };
+#define TextCommandA(position, ...) TextCommand(position, cl::HandleVAArgs(__VA_ARGS__))
 
 
 struct LineCommand : public RenderCommand

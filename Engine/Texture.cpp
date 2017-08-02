@@ -205,7 +205,7 @@ void Texture::InitiateAsRenderTarget(float width, float height, const std::strin
 		, debug_name);
 }
 
-void Texture::InitiateWithColor(CL::SColor color)
+void Texture::InitiateWithColor(cl::SColor color)
 {
 	//Initiate(64.f, 64.f, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM, "Colored_Texture");
 	D3D11_SUBRESOURCE_DATA data;
@@ -406,7 +406,7 @@ bool Texture::Load(std::string filepath)
 		, std::wstring(filepath.begin(), filepath.end()).c_str()
 		, nullptr
 		, &m_ShaderResource);
-	std::string debugname = CL::substr(filepath, "/", false, 0);
+	std::string debugname = cl::substr(filepath, "/", false, 0);
 	Engine::GetAPI()->SetDebugName(m_ShaderResource, debugname);
 	DL_MESSAGE_EXP(FAILED(hr), "[Texture](Load) : Failed to load texture %s", filepath.c_str());
 	if ( FAILED(hr) )

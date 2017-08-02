@@ -146,7 +146,7 @@ void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source
 
 void HDRPass::FillViewportData(Viewport& viewport)
 {
-	s32 pow2 = CL::nearest_Pow_Under(m_WindowSize.m_Height);
+	s32 pow2 = cl::nearest_Pow_Under(m_WindowSize.m_Height);
 
 	//s32 width_diff = m_WindowSize.m_Width - pow2;
 	//s32 height_diff = m_WindowSize.m_Height - pow2;

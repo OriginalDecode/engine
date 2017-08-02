@@ -74,7 +74,6 @@ public:
 	ADD_COMMAND_FUNC(eBufferType::SPRITE_BUFFER, SpriteCommand);
 	ADD_COMMAND_FUNC(eBufferType::TEXT_BUFFER, TextCommand);
 
-
 	const memory::CommandAllocator& GetRenderCommands(const eBufferType& buffer_type) const;
 private:
 	CommandBuffers m_CommandBuffers;

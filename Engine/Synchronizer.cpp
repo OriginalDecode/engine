@@ -99,6 +99,7 @@ void* Synchronizer::GetMemoryBlock(eBufferType buffer_type, s32 index, s32& size
 	return allocator.GetStart();
 }
 
+
 const memory::CommandAllocator& Synchronizer::GetRenderCommands(const eBufferType& buffer_type) const
 {
 	return m_CommandBuffers[buffer_type][m_CurrentBuffer];

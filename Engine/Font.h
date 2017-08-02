@@ -71,8 +71,8 @@ private:
 
 	CU::TimeManager* myTimeManager = nullptr;
 
-	CL::SColor myDefaultColor;
-	CL::SColor myColor;
+	cl::SColor myDefaultColor;
+	cl::SColor myColor;
 
 	float myUpdateTime = 0.f;
 	float myRenderTime = 0.f;

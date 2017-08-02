@@ -288,12 +288,12 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 		u32 type = prop->mSemantic;
 		aiString str;
 		material->GetTexture(static_cast< aiTextureType >( type ), 0, &str);
-		std::string path = CL::substr(file, "/", true, 0);
+		std::string path = cl::substr(file, "/", true, 0);
 
-		std::string fileName = CL::substr(str.C_Str(), "\\", false, 0);
+		std::string fileName = cl::substr(str.C_Str(), "\\", false, 0);
 		if ( fileName.empty() )
-			fileName = CL::substr(str.C_Str(), "/", false, 0);
-		if ( CL::substr(str.C_Str(), "\\") )
+			fileName = cl::substr(str.C_Str(), "/", false, 0);
+		if ( cl::substr(str.C_Str(), "\\") )
 		{
 			fileName.erase(0, 1);
 		}

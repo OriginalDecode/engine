@@ -118,7 +118,7 @@ void CScene::UpdateLight(float aDeltaTime)
 	for (int i = 0; i < myDirectionalLights.Size(); i++)
 	{
 		DirectionalLight* dirLight = myDirectionalLights[i];
-		dirLight->Rotate(eLightAxis::ZAxis, CL::DegreeToRad(45.f) * aDeltaTime);
+		dirLight->Rotate(eLightAxis::ZAxis, cl::DegreeToRad(45.f) * aDeltaTime);
 		dirLight->Update();
 	}
 }

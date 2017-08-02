@@ -65,6 +65,7 @@ public:
 	static void Create();
 	static void Destroy();
 	static Engine* GetInstance();
+	static Engine& GetRef() { return *myInstance; }
 
 	bool Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc);
 	bool CleanUp();

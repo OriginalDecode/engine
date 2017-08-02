@@ -29,6 +29,9 @@ void AddRenderCommand(const command_type command)\
 	memcpy(current, &command, sizeof(command_type));\
 };
 
+
+
+
 typedef CU::StaticArray<memory::CommandAllocator, 2> CommandBuffer;
 typedef CU::StaticArray<CommandBuffer, eBufferType::BUFFER_COUNT> CommandBuffers;
 

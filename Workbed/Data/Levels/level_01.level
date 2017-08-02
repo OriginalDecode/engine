@@ -1,10 +1,11 @@
 {
     "root" : {
     "object":{
-    "entity" : "pointlight.json",
+          "entity" : "pointlight.json",
           "position": [ -152.000000, 6.700000, -186.750000 ],
-            "color": [ 1.000000, 0.610294, 0.610294, 6.500000 ],
-  "range" : 1.500000  },
+          "color": [ 1.000000, 0.610294, 0.610294, 6.500000 ],
+          "range" : 1.500000  
+        },
   "object":{
     "entity" : "pointlight.json",
           "position": [ -152.000000, 4.900000, -186.750000 ],

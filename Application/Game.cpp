@@ -238,7 +238,7 @@ void Game::Update(float dt)
 	//orientation.SetPosition(CU::Vector3f(10, 2, 10));
 	//m_Synchronizer->AddRenderCommand(PointlightCommand(light, 10.f, 1.f, CU::Vector4f(1.f, 0.f, 0.f, 1.f), orientation));
 
-	orientation.SetPosition(CU::Vector3f(-55, 25, -12));
+	/*orientation.SetPosition(CU::Vector3f(-55, 25, -12));
 	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(1.f, 0.f, 0.f, 1.f), orientation));
 
 	orientation.SetPosition(CU::Vector3f(-55, 25, 24));
@@ -248,11 +248,13 @@ void Game::Update(float dt)
 	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(0.f, 0.f, 1.f, 1.f), orientation));
 
 	orientation.SetPosition(CU::Vector3f(55, 25, 24));
-	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(1.f, 0.f, 1.f, 1.f), orientation));
+	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(1.f, 0.f, 1.f, 1.f), orientation));*/
 
 	//TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
 	//entity_translation.myOrientation = m_Orientation;/*m_Camera->GetOrientation();*/
 
+
+	//m_Synchronizer->AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
 
 	AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
 
@@ -261,8 +263,9 @@ void Game::Update(float dt)
 
 void Game::AddRenderCommand(const ModelCommand& command)
 {
-	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
-	memory::CommandAllocator& allocator = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, 0);
+	Engine& engine = Engine::GetRef();
+	const u16 current_buffer = engine.GetSynchronizer()->GetCurrentBufferIndex();
+	memory::CommandAllocator& allocator = engine.GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, 0);
 	void * current = allocator.Alloc(sizeof(ModelCommand));
 	memcpy(current, &command, sizeof(ModelCommand));
 }

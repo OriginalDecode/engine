@@ -340,7 +340,6 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 
 	m_LevelReader.ReadElement(it->value["color"], component.color);
 	m_LevelReader.ReadElement(it->value["range"], component.range);
-
 	component.color.x /= 255;
 	component.color.y /= 255;
 	component.color.z /= 255;

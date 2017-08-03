@@ -2,7 +2,7 @@
 #include <string>
 #include "BaseComponent.h"
 #include <Math/Vector/Vector.h>
-
+#include <Engine/engine_shared.h>
 struct RenderComponent : public BaseComponent
 {
 	std::string myModelID;

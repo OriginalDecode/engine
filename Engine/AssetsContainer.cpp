@@ -151,25 +151,25 @@ std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect
 	return aFilePath;
 }
 
-void AssetsContainer::AddLoadRequest(std::string file, eRequestType request_type)
-{
-	BeginTicketMutex(&m_Mutex);
-
-	bool already_exist = false;
-	for (const LoadRequest& request : m_RequestList)
-	{
-		if (request.m_File == file)
-		{
-			already_exist = true;
-		}
-	}
-
-
-	if (!already_exist)
-	{
-		LoadRequest request(request_type, file);
-		m_RequestList.Add(request);
-	}
-
-	EndTicketMutex(&m_Mutex);
-}
+//void AssetsContainer::AddLoadRequest(std::string file, eRequestType request_type)
+//{
+//	BeginTicketMutex(&m_Mutex);
+//
+//	bool already_exist = false;
+//	for (const LoadRequest& request : m_RequestList)
+//	{
+//		if (request.m_File == file)
+//		{
+//			already_exist = true;
+//		}
+//	}
+//
+//
+//	if (!already_exist)
+//	{
+//		LoadRequest request(request_type, file);
+//		m_RequestList.Add(request);
+//	}
+//
+//	EndTicketMutex(&m_Mutex);
+//}

@@ -211,38 +211,77 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 	const JSONElement& el = entity_reader.GetElement("graphics");
-	component.myModelID = m_Engine->LoadModel(
-		el["model"].GetString(),
-		el["shader"].GetString(),
-		true);
+	
+	
+	if ( !el.IsArray())
+	{
+		component.myModelID = m_Engine->LoadModel(
+			el["model"].GetString(),
+			el["shader"].GetString(),
+			true);
 
 
-	if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
-		sponza = true;
-	component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
-	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
+		if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
+			sponza = true;
+		component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
+		component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 
-	CU::Vector3f scale;
-	m_LevelReader.ReadElement(it->value["scale"], scale);
-	CU::Vector3f rotation;
-	m_LevelReader.ReadElement(it->value["rotation"], rotation);
+		CU::Vector3f scale;
+		m_LevelReader.ReadElement(it->value["scale"], scale);
+		CU::Vector3f rotation;
+		m_LevelReader.ReadElement(it->value["rotation"], rotation);
 
-	component.m_Rotation = rotation;
+		component.m_Rotation = rotation;
 
-	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
-	translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * translation.myOrientation;
-	translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rotation.x)) * translation.myOrientation;
-	translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rotation.y)) * translation.myOrientation;
-	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x));
-	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z));
-	//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y));
+		TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+		translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * translation.myOrientation;
+		translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rotation.x)) * translation.myOrientation;
+		translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rotation.y)) * translation.myOrientation;
+		//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x));
+		//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z));
+		//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y));
 
-	component.scale = scale;
-	component.scale.w = 1.f;
+		component.scale = scale;
+		component.scale.w = 1.f;
 
-	CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
-	m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
-	m_DwellerList.GetLast()->SetWHD(whd);
+		CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
+		m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
+		m_DwellerList.GetLast()->SetWHD(whd);
+	}
+	else
+	{
+		for (rapidjson::SizeType i = 0; i < el.Size(); i++)
+		{
+			const auto& obj = el[i];
+			auto key_value = obj["key"].GetString();
+			auto shader = obj["shader"].GetString();
+
+			CU::Vector3f rel_pos;
+			entity_reader.ReadElement(obj["relative_position"], rel_pos);
+
+			CU::Vector3f rel_scale;
+			entity_reader.ReadElement(obj["relative_scale"], rel_scale);
+
+			CU::Vector3f rel_rot;
+			entity_reader.ReadElement(obj["relative_rotation"], rel_rot);
+
+
+			int apa;
+			apa = 5;
+
+		}
+
+
+/*		for (auto it = el.Begin(); it != el.End(); it++)
+		{
+
+			//auto key_value = it->value["key"].GetString();
+			int apa;
+			apa = 5;
+			//std::string m = it[0].GetString();
+
+		}*/
+	}
 }
 
 void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id)

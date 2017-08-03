@@ -2,30 +2,66 @@
 	"root": {
 		"object": {
 			"entity": "pointlight.json",
-			"position": [ -55, 25, -12 ],
-			"color": [ 255, 0, 0, 255 ],
+			"position": [
+				-55,
+				25,
+				-12
+			],
+			"color": [
+				255,
+				0,
+				0,
+				255
+			],
 			"range": 5
 		},
 		"object": {
 			"entity": "pointlight.json",
-			"position": [ -55, 25, 24 ],
-			"color": [ 0, 0, 255, 255 ],
+			"position": [
+				-55,
+				25,
+				24
+			],
+			"color": [
+				0,
+				0,
+				255,
+				255
+			],
 			"range": 5
 		},
 		"object": {
 			"entity": "pointlight.json",
-			"position": [ 55, 25, 24 ],
-			"color": [ 255, 0, 255, 255 ],
+			"position": [
+				55,
+				25,
+				24
+			],
+			"color": [
+				255,
+				0,
+				255,
+				255
+			],
 			"range": 5
 		},
 		"object": {
 			"entity": "pointlight.json",
-			"position": [ 55, 25, -12 ],
-			"color": [ 0, 255, 0, 255 ],
+			"position": [
+				55,
+				25,
+				-12
+			],
+			"color": [
+				0,
+				255,
+				0,
+				255
+			],
 			"range": 5
 		},
 		"object": {
-			"entity": "SM_dev_box.entity",
+			"entity": "table.entity",
 			"position": [
 				0,
 				0,

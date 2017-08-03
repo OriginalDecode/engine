@@ -60,19 +60,6 @@ private:
 	ShaderFactory* m_ShaderFactory;
 	CModelImporter* m_ModelLoader;
 
-	struct LoadRequest
-	{
-		LoadRequest() = default;
-		LoadRequest(eRequestType request_type, std::string file) 
-			: m_Type(request_type)
-			, m_File(file)
-		{}
-		eRequestType m_Type;
-		std::string m_File;
-	};
-
-	CU::GrowingArray<LoadRequest> m_RequestList;
-
 };
 
 template<typename T>

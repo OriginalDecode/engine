@@ -152,7 +152,7 @@ struct TextCommand : public RenderCommand
 
 	char m_TextBuffer[255] = { '\0' };
 	CU::Vector2f m_Position;
-};
+;}
 #define TextCommandA(position, ...) TextCommand(position, cl::HandleVAArgs(__VA_ARGS__))
 
 

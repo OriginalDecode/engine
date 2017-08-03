@@ -119,7 +119,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 		sponza = false;
 //#ifdef _EDITOR
 	//if(hasLight)
-		CreateDebugComponent(e, hasLight, debug_flags);
+		//CreateDebugComponent(e, hasLight, debug_flags);
 //#endif
 
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
@@ -207,6 +207,8 @@ void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector
 
 void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
 {
+	m_EntityManager->AddComponent<RenderComponent>(entity_id);
+	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 
 	const JSONElement& el = entity_reader.GetElement("graphics");
 	CU::Vector3f scale;
@@ -216,8 +218,6 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	
 	if ( !el.IsArray())
 	{
-		m_EntityManager->AddComponent<RenderComponent>(entity_id);
-		RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 		component.myModelID = m_Engine->LoadModel(
 			el["model"].GetString(),
 			el["shader"].GetString(),
@@ -252,8 +252,8 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	{
 		for (rapidjson::SizeType i = 0; i < el.Size(); i++)
 		{
-			m_EntityManager->AddComponent<RenderComponent>(entity_id);
-			RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+			ModelInstance instance;
+
 
 			const auto& obj = el[i];
 			auto key_value = obj["key"].GetString();
@@ -268,13 +268,23 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 			CU::Vector3f rel_rot;
 			entity_reader.ReadElement(obj["relative_rotation"], rel_rot);
 
-			component.myModelID = m_Engine->LoadModel(key_value, shader, true);
-			component.m_Rotation = rel_rot;
+			instance.m_ModelID = m_Engine->LoadModel(key_value, shader, true);
+			
+			instance.m_Orientation.SetPosition(rel_pos);
+			CU::Matrix44f t = instance.m_Orientation;
+			instance.m_Orientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(rel_scale, 1.f)) * t;
+
+			instance.m_Orientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * instance.m_Orientation;
+			instance.m_Orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rotation.x)) * instance.m_Orientation;
+			instance.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rotation.y)) * instance.m_Orientation;
+
+			component.m_Instances.Add(instance);
+
 
 			component.scale = scale;
 			component.scale.w = 1.f;
 
-			CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
+			CU::Vector3f whd = m_Engine->GetModel(instance.m_ModelID)->GetWHD();
 			m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
 			m_DwellerList.GetLast()->SetWHD(whd);
 		}

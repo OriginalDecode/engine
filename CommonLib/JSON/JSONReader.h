@@ -38,6 +38,7 @@ public:
 
 	
 	void ReadElement(const rapidjson::Value& element, CU::Vector3f& out);
+	void ReadElement(const rapidjson::Value& element, CU::Vector4f& out);
 	void ReadElement(const rapidjson::Value& element, float& out);
 
 

@@ -24,13 +24,13 @@
             "shader": "Shaders/deferred_base.json",
             "relative_position": [
                 0,
-                10,
+                0.75,
                 0
             ],
             "relative_scale": [
-                1,
-                1,
-                1
+                2,
+                2,
+                2
             ],
             "relative_rotation": [
                 0,

@@ -116,6 +116,14 @@ void JSONReader::ReadElement(const rapidjson::Value& element, CU::Vector3f& out)
 	out.z = (float)element[2].GetDouble();
 }
 
+void JSONReader::ReadElement(const rapidjson::Value& element, CU::Vector4f& out)
+{
+	out.x = (float)element[0].GetDouble();
+	out.y = (float)element[1].GetDouble();
+	out.z = (float)element[2].GetDouble();
+	out.w = (float)element[3].GetDouble();
+}
+
 void JSONReader::ReadElement(const rapidjson::Value& element, float& out)
 {
 	out = (float)element.GetDouble();
@@ -167,6 +175,8 @@ std::string JSONReader::ReadElement(const JSONElement& el, const std::string& ta
 	assert(el.HasMember(tag.c_str()) && "Failed to find tag!");
 	return el[tag.c_str()].GetString();
 }
+
+
 
 const JSONElement& JSONReader::GetElement(const std::string& element_name)
 {

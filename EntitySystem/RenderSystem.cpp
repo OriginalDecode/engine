@@ -20,6 +20,9 @@
 #include <easy/profiler.h>
 #endif
 #include <Engine/Engine.h>
+
+//#define VISIBLE_CHECK
+
 RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, RenderComponent>>())
 {
@@ -39,7 +42,6 @@ void RenderSystem::Update(float /*dt*/)
 #endif
 	for (int i = 0; i < entities.Size(); i++)
 	{
-		bool visible = false;
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
@@ -47,6 +49,8 @@ void RenderSystem::Update(float /*dt*/)
 #ifdef _PROFILE
 		EASY_BLOCK("Frustum collision check", profiler::colors::Green);
 #endif
+#ifdef VISIBLE_CHECK
+		bool visible = false;
 		if (m_Manager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
 		{
 			DebugComponent& debug = GetComponent<DebugComponent>(e);
@@ -77,22 +81,28 @@ void RenderSystem::Update(float /*dt*/)
 				visible = true;
 
 		}
-
+		if(!visible)
+			continue;
+#endif
 #ifdef _PROFILE
 		EASY_END_BLOCK;
 #endif
 
-		if(!visible)
-			continue;
-
 		CU::Matrix44f t = translation.myOrientation;
 		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
 
-		if (render.myModelID.empty())
-			DL_ASSERT("Empty key!");
+		/*if (render.myModelID.empty())
+			DL_ASSERT("Empty key!");*/
 
 
-		AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
+		for (const ModelInstance& i : render.m_Instances)
+		{
+			CU::Matrix44f txi = t * i.m_Orientation;
+			AddRenderCommand(ModelCommand(i.m_ModelID, txi, i.m_RenderWireframe));
+		}
+
+
+		//AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
 
 
 	}

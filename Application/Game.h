@@ -10,6 +10,7 @@ class Synchronizer;
 class Engine;
 class CMousePicker;
 class Camera;
+class InputWrapper;
 class Game : public State
 {
 public:
@@ -20,6 +21,8 @@ public:
 	void Initiate(const std::string& level);
 
 	void Update(float aDeltaTime) override;
+
+	void HandleMovement(InputWrapper* input_wrapper, float entity_speed, float dt);
 
 	void AddRenderCommand(const struct ModelCommand& command);
 

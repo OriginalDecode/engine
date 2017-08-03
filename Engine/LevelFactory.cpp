@@ -207,14 +207,17 @@ void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector
 
 void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
 {
-	m_EntityManager->AddComponent<RenderComponent>(entity_id);
 
-	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 	const JSONElement& el = entity_reader.GetElement("graphics");
-	
+	CU::Vector3f scale;
+	m_LevelReader.ReadElement(it->value["scale"], scale);
+	CU::Vector3f rotation;
+	m_LevelReader.ReadElement(it->value["rotation"], rotation);
 	
 	if ( !el.IsArray())
 	{
+		m_EntityManager->AddComponent<RenderComponent>(entity_id);
+		RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 		component.myModelID = m_Engine->LoadModel(
 			el["model"].GetString(),
 			el["shader"].GetString(),
@@ -226,10 +229,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 		component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
 		component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 
-		CU::Vector3f scale;
-		m_LevelReader.ReadElement(it->value["scale"], scale);
-		CU::Vector3f rotation;
-		m_LevelReader.ReadElement(it->value["rotation"], rotation);
+		
 
 		component.m_Rotation = rotation;
 
@@ -252,6 +252,9 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	{
 		for (rapidjson::SizeType i = 0; i < el.Size(); i++)
 		{
+			m_EntityManager->AddComponent<RenderComponent>(entity_id);
+			RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+
 			const auto& obj = el[i];
 			auto key_value = obj["key"].GetString();
 			auto shader = obj["shader"].GetString();
@@ -265,10 +268,15 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 			CU::Vector3f rel_rot;
 			entity_reader.ReadElement(obj["relative_rotation"], rel_rot);
 
+			component.myModelID = m_Engine->LoadModel(key_value, shader, true);
+			component.m_Rotation = rel_rot;
 
-			int apa;
-			apa = 5;
+			component.scale = scale;
+			component.scale.w = 1.f;
 
+			CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
+			m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
+			m_DwellerList.GetLast()->SetWHD(whd);
 		}
 
 

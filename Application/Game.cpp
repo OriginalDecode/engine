@@ -163,6 +163,40 @@ void Game::Update(float dt)
 	//ss.str()
 	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75f, 0.1f), "\nx:%.3f\ny:%.3f\nz:%.3f\n%d", pos.x, pos.y, pos.z, m_FPSToPrint));
 
+	HandleMovement(input_wrapper, entity_speed, dt);
+
+
+	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(10, 2, 10)));
+
+	CU::Matrix44f orientation;
+	//orientation.SetPosition(CU::Vector3f(10, 2, 10));
+	//m_Synchronizer->AddRenderCommand(PointlightCommand(light, 10.f, 1.f, CU::Vector4f(1.f, 0.f, 0.f, 1.f), orientation));
+
+	/*orientation.SetPosition(CU::Vector3f(-55, 25, -12));
+	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(1.f, 0.f, 0.f, 1.f), orientation));
+
+	orientation.SetPosition(CU::Vector3f(-55, 25, 24));
+	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(0.f, 1.f, 0.f, 1.f), orientation));
+
+	orientation.SetPosition(CU::Vector3f(55, 25, -12));
+	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(0.f, 0.f, 1.f, 1.f), orientation));
+
+	orientation.SetPosition(CU::Vector3f(55, 25, 24));
+	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(1.f, 0.f, 1.f, 1.f), orientation));*/
+
+	//TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
+	//entity_translation.myOrientation = m_Orientation;/*m_Camera->GetOrientation();*/
+
+
+	//m_Synchronizer->AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
+
+	//AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
+
+	m_World.Update(dt);
+}
+
+void Game::HandleMovement(InputWrapper* input_wrapper, float entity_speed, float dt)
+{
 	CU::Vector4f translation = m_Orientation.GetTranslation();
 	if (input_wrapper->IsDown(KButton::UP_ARROW))
 	{
@@ -232,34 +266,6 @@ void Game::Update(float dt)
 
 
 	m_Orientation.SetTranslation(translation);
-
-	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(10, 2, 10)));
-
-	CU::Matrix44f orientation;
-	//orientation.SetPosition(CU::Vector3f(10, 2, 10));
-	//m_Synchronizer->AddRenderCommand(PointlightCommand(light, 10.f, 1.f, CU::Vector4f(1.f, 0.f, 0.f, 1.f), orientation));
-
-	/*orientation.SetPosition(CU::Vector3f(-55, 25, -12));
-	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(1.f, 0.f, 0.f, 1.f), orientation));
-
-	orientation.SetPosition(CU::Vector3f(-55, 25, 24));
-	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(0.f, 1.f, 0.f, 1.f), orientation));
-
-	orientation.SetPosition(CU::Vector3f(55, 25, -12));
-	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(0.f, 0.f, 1.f, 1.f), orientation));
-
-	orientation.SetPosition(CU::Vector3f(55, 25, 24));
-	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(1.f, 0.f, 1.f, 1.f), orientation));*/
-
-	//TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
-	//entity_translation.myOrientation = m_Orientation;/*m_Camera->GetOrientation();*/
-
-
-	//m_Synchronizer->AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
-
-	AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
-
-	m_World.Update(dt);
 }
 
 void Game::AddRenderCommand(const ModelCommand& command)

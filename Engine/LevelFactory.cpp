@@ -288,17 +288,6 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 			m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
 			m_DwellerList.GetLast()->SetWHD(whd);
 		}
-
-
-/*		for (auto it = el.Begin(); it != el.End(); it++)
-		{
-
-			//auto key_value = it->value["key"].GetString();
-			int apa;
-			apa = 5;
-			//std::string m = it[0].GetString();
-
-		}*/
 	}
 }
 

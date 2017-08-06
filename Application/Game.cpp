@@ -142,8 +142,10 @@ void Game::Update(float dt)
 		entity_speed -= 1.f * dt;
 	}
 
+
 	CU::Vector3f pos = m_Camera->GetOrientation().GetPosition();
-	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75f, 0.1f), "\nx:%.3f\ny:%.3f\nz:%.3f\n%d", pos.x, pos.y, pos.z, m_FPSToPrint));
+	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75f, 0.1f), "\nx:%.3f\ny:%.3f\nz:%.3f\n#%s(%d)", pos.x, pos.y, pos.z,
+												  ((m_FPSToPrint >= 50.f) ? "00FF00" : (m_FPSToPrint < 25.f) ? "FF0000" : "FFFF00"), m_FPSToPrint));
 
 	HandleMovement(input_wrapper, entity_speed, dt);
 

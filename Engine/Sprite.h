@@ -4,12 +4,12 @@ struct ID3D11ShaderResourceView;
 
 
 class Camera;
-class CSpriteModel;
+class SpriteModel;
 
 class Sprite
 {
 public:
-	Sprite();
+	Sprite() = default;
 	~Sprite();
 	void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 	void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
@@ -25,8 +25,8 @@ public:
 	void SetShaderView(ID3D11ShaderResourceView* srv);
 private:
 
-	CSpriteModel* mySprite;
-	CU::Math::Matrix44<float> myOrientation;
-	CU::Math::Vector2<float> myHotspot;
-	CU::Math::Vector2<float> myPosition;
+	SpriteModel* mySprite = nullptr;
+	CU::Matrix44f myOrientation;
+	CU::Vector2f myHotspot;
+	CU::Vector2f myPosition;
 };

@@ -35,8 +35,10 @@ DebugSystem::~DebugSystem()
 	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_LEFT_CLICK, this);
 }
 
-void DebugSystem::Update(float /*dt*/)
+void DebugSystem::Update(float /*dt*/, bool paused)
 {
+	if (paused)
+		return;
 	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::TEXT, current_model, CU::Vector2f(0.75, 0)));
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Red);

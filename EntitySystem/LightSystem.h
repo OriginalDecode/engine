@@ -9,7 +9,7 @@ class LightSystem : public BaseSystem
 {
 public:
 	LightSystem(NodeEntityManager& anEntityManager);
-	void Update(float aDeltaTime) override;
+	void Update(float aDeltaTime, bool paused) override;
 private:
 	Synchronizer* mySynchronizer;
 };

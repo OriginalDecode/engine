@@ -3,11 +3,6 @@
 #include "Effect.h"
 #include "SpriteModel.h"
 
-
-Sprite::Sprite()
-{
-}
-
 Sprite::~Sprite()
 {
 	delete mySprite;
@@ -16,7 +11,7 @@ Sprite::~Sprite()
 
 void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 {
-	mySprite = new CSpriteModel();
+	mySprite = new SpriteModel();
 	mySprite->Initiate(aTexturePath, aSize, aPosition);
 	myHotspot.x = 0;
 	myHotspot.y = 0;
@@ -25,7 +20,7 @@ void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<f
 
 void Sprite::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 {
-	mySprite = new CSpriteModel();
+	mySprite = new SpriteModel();
 	mySprite->Initiate(aShaderResource, aSize, aPosition);
 }
 
@@ -37,12 +32,12 @@ void Sprite::Render(Camera* aCamera)
 	mySprite->Render(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonal());
 }
 
-const CU::Math::Vector2<float>& Sprite::GetPosition()
+const CU::Vector2f& Sprite::GetPosition()
 {
 	return mySprite->GetPosition();
 }
 
-CU::Math::Vector2<float> Sprite::GetSize()
+CU::Vector2f Sprite::GetSize()
 {
 	return mySprite->GetSize();
 }

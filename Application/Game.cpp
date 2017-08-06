@@ -71,8 +71,6 @@ void Game::Initiate(const std::string& level)
 	m_PauseState.InitState(m_StateStack);
 	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 
-
-
 }
 
 void Game::EndState()
@@ -84,8 +82,6 @@ void Game::EndState()
 
 void Game::Render(bool render_through)
 {
-
-
 }
 
 void Game::Update(float dt)
@@ -106,10 +102,9 @@ void Game::Update(float dt)
 	if (input_wrapper->OnClick(MouseInput::LEFT))
 	{
 		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
-		//PostMaster::GetInstance()->SendMessage("left_click", nullptr);
 		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, m_Player));
 	}
-	//Engine::GetInstance()->GetEntityManager().Update(dt);
+
 	if (input_wrapper->OnDown(KButton::ESCAPE))
 	{
 		m_StateStack->PopCurrentMainState();
@@ -147,52 +142,12 @@ void Game::Update(float dt)
 		entity_speed -= 1.f * dt;
 	}
 
-	std::stringstream ss;
-	//ss << "Entity Speed : " << entity_speed;
 	CU::Vector3f pos = m_Camera->GetOrientation().GetPosition();
-	ss << "\nx:" << m_Camera->GetOrientation().GetPosition().x << "\ny:" << m_Camera->GetOrientation().GetPosition().y << "\nz:" << m_Camera->GetOrientation().GetPosition().z << "\n";
-	if (m_FPSToPrint < 25)
-		ss << "#FF0000(";
-	else if (m_FPSToPrint < 60)
-		ss << "#FFFF00(";
-	else if (m_FPSToPrint >= 60)
-		ss << "#00FF00(";
-
-	ss << m_FPSToPrint << ")";
-
-	//ss.str()
 	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75f, 0.1f), "\nx:%.3f\ny:%.3f\nz:%.3f\n%d", pos.x, pos.y, pos.z, m_FPSToPrint));
 
 	HandleMovement(input_wrapper, entity_speed, dt);
 
-
-	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(10, 2, 10)));
-
-	CU::Matrix44f orientation;
-	//orientation.SetPosition(CU::Vector3f(10, 2, 10));
-	//m_Synchronizer->AddRenderCommand(PointlightCommand(light, 10.f, 1.f, CU::Vector4f(1.f, 0.f, 0.f, 1.f), orientation));
-
-	/*orientation.SetPosition(CU::Vector3f(-55, 25, -12));
-	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(1.f, 0.f, 0.f, 1.f), orientation));
-
-	orientation.SetPosition(CU::Vector3f(-55, 25, 24));
-	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(0.f, 1.f, 0.f, 1.f), orientation));
-
-	orientation.SetPosition(CU::Vector3f(55, 25, -12));
-	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(0.f, 0.f, 1.f, 1.f), orientation));
-
-	orientation.SetPosition(CU::Vector3f(55, 25, 24));
-	m_Synchronizer->AddRenderCommand(PointlightCommand(light, 5.f, 1.f, CU::Vector4f(1.f, 0.f, 1.f, 1.f), orientation));*/
-
-	//TranslationComponent& entity_translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
-	//entity_translation.myOrientation = m_Orientation;/*m_Camera->GetOrientation();*/
-
-
-	//m_Synchronizer->AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
-
-	//AddRenderCommand(ModelCommand(key, CU::Vector3f(5, 10, 5), false));
-
-	m_World.Update(dt);
+	m_World.Update(dt, m_Paused);
 }
 
 void Game::HandleMovement(InputWrapper* input_wrapper, float entity_speed, float dt)

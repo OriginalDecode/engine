@@ -15,7 +15,7 @@ class DebugSystem : public BaseSystem, public Subscriber
 public:
 	DebugSystem(NodeEntityManager& entity_manager);
 	~DebugSystem();
-	void Update(float dt) override;
+	void Update(float dt, bool paused) override;
 private:
 	//void HandleEvent(u64 event, void* data) override;
 	void ReceiveMessage(const OnLeftClick& message) override;

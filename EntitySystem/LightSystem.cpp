@@ -13,7 +13,7 @@ LightSystem::LightSystem(NodeEntityManager& anEntityManager)
 	mySynchronizer = Engine::GetInstance()->GetSynchronizer();
 }
 
-void LightSystem::Update(float /*aDeltaTime*/)
+void LightSystem::Update(float /*aDeltaTime*/, bool paused)
 {
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 

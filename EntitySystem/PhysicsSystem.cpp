@@ -14,8 +14,11 @@ PhysicsSystem::PhysicsSystem(NodeEntityManager& anEntityManager)
 	myPhysicsManager = Engine::GetInstance()->GetPhysicsManager();
 }
 
-void PhysicsSystem::Update(float aDeltaTime)
+void PhysicsSystem::Update(float dt, bool paused)
 {
+	if (paused)
+		return;
+
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (int i = 0; i < entities.Size(); i++)
 	{
@@ -26,7 +29,7 @@ void PhysicsSystem::Update(float aDeltaTime)
 
 
 		translation.myOrientation = physics.myBody->GetOrientation();
-		physics.myBody->Update(aDeltaTime);
+		physics.myBody->Update(dt);
 
 
 	}

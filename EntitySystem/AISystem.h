@@ -4,6 +4,6 @@ class AISystem final : public BaseSystem
 {
 public:
 	AISystem(NodeEntityManager& anEntityManager);
-	void Update(float delta_time) override;
+	void Update(float delta_time, bool paused) override;
 };
 

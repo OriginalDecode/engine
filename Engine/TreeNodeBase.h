@@ -18,7 +18,7 @@ public:
 
 	virtual void Initiate(float halfwidth, Octree* octree) = 0;
 
-	virtual void Update(float dt);
+	virtual void Update(float dt, bool paused);
 
 	virtual void SetDepth(s32 depth);
 	virtual s32 GetDepth() const;

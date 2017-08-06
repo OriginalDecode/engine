@@ -12,11 +12,11 @@ struct VertexBufferWrapper;
 struct VertexDataWrapper;
 struct IndexBufferWrapper;
 
-class CSpriteModel
+class SpriteModel
 {
 public:
-	CSpriteModel();
-	~CSpriteModel();
+	SpriteModel() = default;
+	~SpriteModel();
 
 	void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 	void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);

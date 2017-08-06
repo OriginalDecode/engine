@@ -7,7 +7,7 @@ NetworkSystem::NetworkSystem(NodeEntityManager& anEntityManager)
 {
 }
 
-void NetworkSystem::Update(float /*delta_time*/)
+void NetworkSystem::Update(float /*delta_time*/, bool paused)
 {
 
 }

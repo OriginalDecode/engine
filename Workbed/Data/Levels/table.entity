@@ -24,7 +24,7 @@
             "shader": "Shaders/deferred_base.json",
             "relative_position": [
                 0,
-                0.75,
+                1.5,
                 0
             ],
             "relative_scale": [

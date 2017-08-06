@@ -14,8 +14,10 @@ InputSystem::InputSystem(NodeEntityManager& anEntityManager)
 {
 }
 
-void InputSystem::Update(float /*delta_time*/)
+void InputSystem::Update(float /*delta_time*/, bool paused)
 {
+	if (paused)
+		return;
 	//if (Engine::GetInstance()->IsDebugMenuActive())
 	//	return;
 

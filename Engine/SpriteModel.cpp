@@ -10,13 +10,7 @@
 #include "EngineDefines.h"
 #include "AssetsContainer.h"
 
-
-CSpriteModel::CSpriteModel()
-{
-}
-
-
-CSpriteModel::~CSpriteModel()
+SpriteModel::~SpriteModel()
 {
 	SAFE_DELETE(myIndexBuffer);
 	SAFE_DELETE(myVertexBuffer);
@@ -27,7 +21,7 @@ CSpriteModel::~CSpriteModel()
 	SAFE_RELEASE(myConstantBuffer);
 }
 
-void CSpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+void SpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 {
 	myWindowSize = Engine::GetInstance()->GetWindowSize();
 
@@ -95,7 +89,7 @@ void CSpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vec
 	//InitiateBlendState();
 }
 
-void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+void SpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 {
 	myWindowSize = Engine::GetInstance()->GetWindowSize();
 
@@ -163,7 +157,7 @@ void CSpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU:
 	//InitiateBlendState();
 }
 
-void CSpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
+void SpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 {
 	Engine::GetAPI()->SetBlendState(eBlendStates::BLEND_FALSE);
 	if (!myEffect)
@@ -190,32 +184,32 @@ void CSpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2D
 	Engine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
 }
 
-Effect* CSpriteModel::GetEffect()
+Effect* SpriteModel::GetEffect()
 {
 	return myEffect;
 }
 
-const CU::Vector2f& CSpriteModel::GetSize()
+const CU::Vector2f& SpriteModel::GetSize()
 {
 	return mySize;
 }
 
-void CSpriteModel::Resize(const CU::Vector2f& new_size)
+void SpriteModel::Resize(const CU::Vector2f& new_size)
 {
 
 }
 
-const CU::Math::Vector2<float>& CSpriteModel::GetPosition()
+const CU::Math::Vector2<float>& SpriteModel::GetPosition()
 {
 	return myPosition;
 }
 
-void CSpriteModel::SetTexture(ID3D11ShaderResourceView* srv)
+void SpriteModel::SetTexture(ID3D11ShaderResourceView* srv)
 {
 	myTexture = srv;
 }
 
-void CSpriteModel::UpdateConstantBuffer()
+void SpriteModel::UpdateConstantBuffer()
 {
 	m_cbStruct.scale = mySize;
 
@@ -234,7 +228,7 @@ void CSpriteModel::UpdateConstantBuffer()
 	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);*/
 }
 
-void CSpriteModel::InitiateVertexBuffer()
+void SpriteModel::InitiateVertexBuffer()
 {
 	HRESULT hr;
 
@@ -267,7 +261,7 @@ void CSpriteModel::InitiateVertexBuffer()
 	myVertexBuffer->myNrOfBuffers = 1;
 }
 
-void CSpriteModel::InitiateIndexBuffer()
+void SpriteModel::InitiateIndexBuffer()
 {
 	D3D11_BUFFER_DESC indexDesc;
 	ZeroMemory(&indexDesc, sizeof(indexDesc));
@@ -287,7 +281,7 @@ void CSpriteModel::InitiateIndexBuffer()
 	myIndexBuffer->myByteOffset = 0;
 }
 
-void CSpriteModel::InitConstantBuffer()
+void SpriteModel::InitConstantBuffer()
 {
 	//m_cbStruct = new SSpriteConstantBuffer;
 
@@ -305,13 +299,13 @@ void CSpriteModel::InitConstantBuffer()
 	Engine::GetAPI()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
 }
 
-void CSpriteModel::ConvertToNormalSpace()
+void SpriteModel::ConvertToNormalSpace()
 {
 	myPosition.x /= myWindowSize.m_Width;
 	myPosition.y /= myWindowSize.m_Height;
 }
 
-void CSpriteModel::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
+void SpriteModel::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 {
 	m_cbStruct.world = anOrientation;
 	m_cbStruct.invertedView = a2DCameraOrientation;

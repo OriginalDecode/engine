@@ -15,7 +15,7 @@ public:
 
 	void AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers);
 	void AddDweller(TreeDweller* dweller);
-	void Update(float dt);
+	void Update(float dt, bool paused);
 private:
 	CU::TimeManager m_Timer;
 

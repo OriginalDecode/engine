@@ -46,7 +46,7 @@ void NodeEntityManager::RemoveEntity(TreeDweller* entity)
 	m_Entities.RemoveCyclic(entity);
 }
 
-void NodeEntityManager::Update(float dt)
+void NodeEntityManager::Update(float dt, bool paused)
 {
 	const CU::GrowingArray<Entity>& entities = GetEntities(CreateFilter<Requires<TranslationComponent>>());
 	for (s32 i = 0; i < entities.Size(); i++)
@@ -66,7 +66,7 @@ void NodeEntityManager::Update(float dt)
 
 	for (BaseSystem* system : m_Systems)
 	{
-		system->Update(dt);
+		system->Update(dt, paused);
 	}
 }
 

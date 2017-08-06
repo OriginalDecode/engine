@@ -16,10 +16,10 @@ TreeNodeBase::~TreeNodeBase()
 	}
 }
 
-void TreeNodeBase::Update(float dt)
+void TreeNodeBase::Update(float dt, bool paused)
 {
 	RenderBox();
-	m_NodeEntityManager->Update(dt);
+	m_NodeEntityManager->Update(dt, paused);
 
 	for (TreeDweller* dweller : m_Dwellers)
 	{

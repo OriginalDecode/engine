@@ -17,13 +17,13 @@ void RootTreeNode::Initiate(float halfwidth, Octree* octree)
 	}
 }
 
-void RootTreeNode::Update(float dt)
+void RootTreeNode::Update(float dt, bool paused)
 {
 #ifdef _PROFILE
 	EASY_FUNCTION();
 #endif
 
-	TreeNodeBase::Update(dt);
+	TreeNodeBase::Update(dt, paused);
 
 	for (TreeNodeBase* node : m_Children)
 	{
@@ -34,7 +34,7 @@ void RootTreeNode::Update(float dt)
 #ifdef _PROFILE
 			EASY_BLOCK("Node Update Thread");
 #endif
-			node->Update(dt);
+			node->Update(dt, paused);
 #ifdef _PROFILE
 			EASY_END_BLOCK;
 #endif

@@ -13,7 +13,7 @@ public:
 	BaseSystem(NodeEntityManager& anEntityManager, const ComponentFilter& aFilter);
 	virtual ~BaseSystem() = 0;
 
-	virtual void Update(float aDeltaTime) = 0;
+	virtual void Update(float dt, bool paused) = 0;
 	const CU::GrowingArray<Entity>& GetEntities();
 
 	template<typename T>

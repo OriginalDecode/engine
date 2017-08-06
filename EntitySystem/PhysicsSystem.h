@@ -8,7 +8,7 @@ class PhysicsSystem : public BaseSystem
 public:
 	PhysicsSystem(NodeEntityManager& anEntityManager);
 
-	void Update(float aDeltaTime) override;
+	void Update(float dt, bool paused) override;
 
 private:
 	PhysicsManager* myPhysicsManager;

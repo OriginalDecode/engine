@@ -30,7 +30,7 @@ RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
 }
 
 
-void RenderSystem::Update(float /*dt*/)
+void RenderSystem::Update(float /*dt*/, bool paused)
 {
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Blue);

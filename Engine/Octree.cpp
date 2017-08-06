@@ -32,7 +32,7 @@ void Octree::AddDweller(TreeDweller* dweller)
 	MoveDown(&m_Root, dweller, m_Root.GetDepth() + 1);
 }
 
-void Octree::Update(float dt)
+void Octree::Update(float dt, bool paused)
 {
 	for (TreeNodeBase* node : m_GarbageNodes)
 	{
@@ -42,7 +42,7 @@ void Octree::Update(float dt)
 	}
 	m_GarbageNodes.RemoveAll();
 
-	m_Root.Update(dt);
+	m_Root.Update(dt, paused);
 }
 
 void Octree::MoveDown(TreeNodeBase* node, TreeDweller* dweller, s32 depth)

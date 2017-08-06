@@ -6,8 +6,10 @@ AISystem::AISystem(NodeEntityManager& anEntityManager)
 {
 }
 
-void AISystem::Update(float /*delta_time*/)
+void AISystem::Update(float /*delta_time*/, bool paused)
 {
+	if (paused)
+		return;
 
 }
 

@@ -587,7 +587,6 @@ bool Engine::SaveLevel()
 				return true;
 			}
 		}
-
 	}
 	ImGui::End();
 

@@ -7,7 +7,7 @@ class RootTreeNode : public TreeNodeBase
 public:
 	
 	void Initiate(float halfwidth, Octree* octree) override;
-	void Update(float dt) override;
+	void Update(float dt, bool paused) override;
 	bool IsWorking() { return m_Pool.CurrentWorkFinished(); }
 private:
 	Threadpool m_Pool;

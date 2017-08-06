@@ -1,7 +1,9 @@
 #pragma once
 #include "../EntitySystem/ComponentContainer.h"
 #include "TreeDweller.h"
+
 class BaseSystem;
+
 class NodeEntityManager
 {
 public:
@@ -15,7 +17,7 @@ public:
 	void RemoveEntity(TreeDweller* entity);
 	//void AddSystem(BaseSystem* system);
 
-	void Update(float dt);
+	void Update(float dt, bool paused);
 
 	const CU::GrowingArray<Entity>& GetEntities(ComponentFilter filter);
 	~NodeEntityManager();

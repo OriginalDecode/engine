@@ -24,8 +24,13 @@
 #include "../EntitySystem/EntityManager.h"
 #include <imgui.h>
 #include "CameraHandle.h"
-
+#include <Engine/Effect.h>
+#include <Engine/Texture.h>
 static std::string key = "Data/Model/sponza/sponza_2.fbx";
+static std::string cube = "Data/Model/cube.fbx";
+static std::string wall = "Data/Model/wall.fbx";
+static std::string default_cube = "default_cube";
+#define KEY_USED default_cube
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
@@ -37,12 +42,19 @@ void Game::InitState(StateStack* state_stack)
 		m_Engine->AddFunction("Data/Levels/level_03.level", [&]() { Initiate("Data/Levels/level_03.level"); });
 	#endif*/
 	Initiate("Data/Levels/level_03.level");
-	m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
+	//m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
+
+	m_Engine->LoadModel(KEY_USED, "Shaders/volume.json", true);
+	Effect* volume_shader = m_Engine->GetEffect("Shaders/volume.json");
+
+	m_VolumeTexture = new Texture;
+	m_VolumeTexture->Initiate3DTexture(128, 128, 128, TextureFormat(2), 18, "Volume Texture");
+	m_VolumeTexture->Load("Data/Model/box_v3.dds");
+	volume_shader->AddShaderResource(m_VolumeTexture, Effect::_3DTEX);
 
 	light = m_Engine->RegisterLight();
 
 }
-
 
 void Game::Initiate(const std::string& level)
 {
@@ -75,6 +87,10 @@ void Game::Initiate(const std::string& level)
 
 void Game::EndState()
 {
+	m_VolumeTexture->CleanUp();
+	delete m_VolumeTexture;
+	m_VolumeTexture = nullptr;
+
 	m_World.CleanUp();
 	CameraHandle::Destroy();
 	SAFE_DELETE(m_Picker);
@@ -146,6 +162,9 @@ void Game::Update(float dt)
 	CU::Vector3f pos = m_Camera->GetOrientation().GetPosition();
 	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75f, 0.1f), "\nx:%.3f\ny:%.3f\nz:%.3f\n#%s(%d)", pos.x, pos.y, pos.z,
 												  ((m_FPSToPrint >= 50.f) ? "00FF00" : (m_FPSToPrint < 25.f) ? "FF0000" : "FFFF00"), m_FPSToPrint));
+
+	AddRenderCommand(ModelCommand(KEY_USED, CU::Vector3f(0.f, 10.f, 0.f), false));
+
 
 	HandleMovement(input_wrapper, entity_speed, dt);
 

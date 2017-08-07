@@ -117,16 +117,27 @@ bool AssetsContainer::LoadTexture(std::string aFilePath)
 	return true;
 }
 
-void AssetsContainer::LoadEffect(const std::string& aFilePath)
+Effect* AssetsContainer::LoadEffect(const std::string& aFilePath)
 {
 	Effect* effect = new Effect(aFilePath);
 	m_ShaderFactory->LoadShader(effect);
 	myEffects[aFilePath] = effect;
+	return myEffects[aFilePath];
 }
 
 std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect, bool thread)
 {
-	
+	if (aFilePath.find("default_cube") != aFilePath.npos)
+	{
+		Model* model = new Model;
+		model->SetEffect(LoadEffect(m_Engine->GetVFS().GetFile(effect)));
+		model->CreateCube();
+		myModels.emplace("default_cube", model);
+
+	}
+
+
+
 	if (myModels.find(aFilePath) == myModels.end())
 	{
 		DL_MESSAGE("Loading model : %s", aFilePath.c_str());

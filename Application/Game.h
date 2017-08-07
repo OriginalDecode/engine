@@ -11,6 +11,7 @@ class Engine;
 class CMousePicker;
 class Camera;
 class InputWrapper;
+class Texture;
 class Game : public State
 {
 public:
@@ -32,6 +33,8 @@ public:
 
 
 private:
+	Texture* m_VolumeTexture = nullptr;
+
 	World m_World;
 	CPauseState m_PauseState;
 	CU::Vector3f pointHit;
@@ -54,5 +57,6 @@ private:
 	const char* m_ModelKey;
 
 	int light = 0;
+
 
 };

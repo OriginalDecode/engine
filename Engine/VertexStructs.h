@@ -29,7 +29,7 @@ struct SVertexTypePosColUv2
 };
 
 
-struct SVertexTypePosNormUV
+struct VertexTypePosNormUV
 {
 	CU::Math::Vector3<float> myPosition;
 	CU::Math::Vector3<float> myNormal;

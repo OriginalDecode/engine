@@ -55,7 +55,7 @@ private:
 	std::unordered_map<std::string, Sprite*> mySprites;
 
 	bool LoadTexture(std::string aFilePath);
-	void LoadEffect(const std::string& aFilePath);
+	Effect* LoadEffect(const std::string& aFilePath);
 
 	ShaderFactory* m_ShaderFactory;
 	CModelImporter* m_ModelLoader;

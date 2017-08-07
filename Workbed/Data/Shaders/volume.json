@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "deferred_base_instanced.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "volume.ps",
+        "entrypoint": "main"
+    }
+}

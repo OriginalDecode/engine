@@ -29,13 +29,6 @@ void Model::Initiate(const std::string& filename)
 	m_Filename = cl::substr(filename, "/", false, 0);
 	m_Orientations.Init(250);
 
-	// 	LPCSTR SemanticName;
-	// 	UINT SemanticIndex;
-	// 	DXGI_FORMAT Format;
-	// 	UINT InputSlot;
-	// 	UINT AlignedByteOffset;
-	// 	D3D11_INPUT_CLASSIFICATION InputSlotClass;
-	// 	UINT InstanceDataStepRate;
 
 	for (const D3D11_INPUT_ELEMENT_DESC& el : myVertexFormat)
 	{
@@ -90,7 +83,7 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context); //depending
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); //depending
 
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_CLAMP); //depending on dx
 
 	for (Surface* surface : mySurfaces)
 	{
@@ -107,21 +100,73 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 
 }
 
+void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+{
+	render_context.m_Context->IASetInputLayout(m_InstanceInputLayout);
+	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	render_context.m_API->UpdateConstantBuffer(m_InstanceBuffer, &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
+
+	u32 offsets[] = {
+		m_VertexBuffer.myByteOffset,
+		0
+	};
+
+	u32 strides[] = {
+		m_VertexBuffer.myStride,
+		sizeof(CU::Matrix44f)
+	};
+
+
+	IBuffer* buffers[] = {
+		m_VertexBuffer.myVertexBuffer,
+		m_InstanceBuffer
+	};
+
+	render_context.m_Context->IASetVertexBuffers(0, ARRAYSIZE(buffers), buffers, strides, offsets);
+	render_context.m_Context->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
+
+	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+
+	myEffect->Use();
+#ifdef _PROFILE
+	EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
+#endif
+	render_context.m_Context->DrawIndexedInstanced(m_IndexData.myIndexCount, m_Orientations.Size(), 0, 0, 0);
+#ifdef _PROFILE
+	EASY_END_BLOCK;
+#endif
+	myEffect->Clear();
+	RemoveOrientation();
+}
+
 void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
 {
+
+	if (m_Filename.find("default_cube") != m_Filename.npos)
+	{
+		RenderCube(camera_orientation, camera_projection, render_context);
+		RemoveOrientation();
+		return;
+	}
+
+
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Amber);
 #endif
 	for (Model* child : myChildren)
 	{
 		child->RenderInstanced(camera_orientation, camera_projection, render_context);
-	}
+}
 
 	if (!m_InstanceInputLayout || m_IsRoot || mySurfaces.Empty() || m_Orientations.Empty())
 	{
 		RemoveOrientation();
 		return;
 	}
+
 	render_context.m_Context->IASetInputLayout(m_InstanceInputLayout);
 	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -165,7 +210,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 	}
 	RemoveOrientation();
 
-}
+	}
 
 void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
 {
@@ -330,6 +375,9 @@ void Model::ClearOrientation()
 	RemoveOrientation();
 }
 
+
+
+
 void Model::RemoveOrientation()
 {
 	for (Model* child : myChildren)
@@ -403,3 +451,238 @@ void Model::InitConstantBuffer()
 
 	//Engine::GetAPI()->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
 }
+
+void Model::CreateCube()
+{
+
+	myVertexFormat.Init(ARRAYSIZE(DeferredBaseLayout));
+	for (s32 i = 0; i < ARRAYSIZE(DeferredBaseLayout); i++)
+	{
+		myVertexFormat.Add(DeferredBaseLayout[i]);
+	}
+
+	CU::GrowingArray<VertexTypePosNormUV> vertices;
+	vertices.Init(16);
+
+#pragma region Vertex
+	VertexTypePosNormUV temp;
+	temp.myPosition = { -1.0f, 1.0f, -1.0f };
+	temp.myNormal = { 0.0f, 1.0f, 0.0f };
+	temp.myUV = { 0.0f, 0.0f };
+	vertices.Add(temp);
+
+	temp.myPosition = { 1.0f, 1.0f, -1.0f };
+	temp.myNormal = { 0.0f, 1.0f, 0.0f };
+	temp.myUV = { 1.0f, 0.0f };
+	vertices.Add(temp);
+
+	temp.myPosition = { 1.0f, 1.0f, 1.0f };
+	temp.myNormal = { 0.0f, 1.0f, 0.0f };
+	temp.myUV = { 1.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { -1.0f, 1.0f, 1.0f };
+	temp.myNormal = { 0.0f, 1.0f, 0.0f };
+	temp.myUV = { 0.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { -1.0f, -1.0f, -1.0f };
+	temp.myNormal = { 0.0f, -1.0f, 0.0f };
+	temp.myUV = { 0.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { 1.0f, -1.0f, -1.0f };
+	temp.myNormal = { 0.0f, -1.0f, 0.0f };
+	temp.myUV = { 1.0f, 0.0f };
+	vertices.Add(temp);
+
+	temp.myPosition = { 1.0f, -1.0f, 1.0f };
+	temp.myNormal = { 0.0f, -1.0f, 0.0f };
+	temp.myUV = { 1.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { -1.0f, -1.0f, 1.0f };
+	temp.myNormal = { 0.0f, -1.0f, 0.0f };
+	temp.myUV = { 0.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { -1.0f, -1.0f, 1.0f };
+	temp.myNormal = { -1.0f, 0.0f, 0.0f };
+	temp.myUV = { 0.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { -1.0f, -1.0f, -1.0f };
+	temp.myNormal = { -1.0f, 0.0f, 0.0f };
+	temp.myUV = { 1.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { -1.0f, 1.0f, -1.0f };
+	temp.myNormal = { -1.0f, 0.0f, 0.0f };
+	temp.myUV = { 1.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { -1.0f, 1.0f, 1.0f };
+	temp.myNormal = { -1.0f, 0.0f, 0.0f };
+	temp.myUV = { 0.0f, 1.0f };
+
+	vertices.Add(temp);
+
+
+	temp.myPosition = { 1.0f, -1.0f, 1.0f };
+	temp.myNormal = { 1.0f, 0.0f, 0.0f };
+	temp.myUV = { 0.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { 1.0f, -1.0f, -1.0f };
+	temp.myNormal = { 1.0f, 0.0f, 0.0f };
+	temp.myUV = { 1.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { 1.0f, 1.0f, -1.0f };
+	temp.myNormal = { 1.0f, 0.0f, 0.0f };
+	temp.myUV = { 1.0f, 1.0f };
+	vertices.Add(temp);
+
+	temp.myPosition = { 1.0f, 1.0f, 1.0f };
+	temp.myNormal = { 1.0f, 0.0f, 0.0f };
+	temp.myUV = { 0.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { -1.0f, -1.0f, -1.0f };
+	temp.myNormal = { 0.0f, 0.0f, -1.0f };
+	temp.myUV = { 0.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { 1.0f, -1.0f, -1.0f };
+	temp.myNormal = { 0.0f, 0.0f, -1.0f };
+	temp.myUV = { 1.0f, 0.0f };
+	vertices.Add(temp);
+
+	temp.myPosition = { 1.0f, 1.0f, -1.0f };
+	temp.myNormal = { 0.0f, 0.0f, -1.0f };
+	temp.myUV = { 1.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { -1.0f, 1.0f, -1.0f };
+	temp.myNormal = { 0.0f, 0.0f, -1.0f };
+	temp.myUV = { 0.0f, 1.0f };
+
+	vertices.Add(temp);
+
+
+	temp.myPosition = { -1.0f, -1.0f, 1.0f };
+	temp.myNormal = { 0.0f, 0.0f, 1.0f };
+	temp.myUV = { 0.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { 1.0f, -1.0f, 1.0f };
+	temp.myNormal = { 0.0f, 0.0f, 1.0f };
+	temp.myUV = { 1.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { 1.0f, 1.0f, 1.0f };
+	temp.myNormal = { 0.0f, 0.0f, 1.0f };
+	temp.myUV = { 1.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.myPosition = { -1.0f, 1.0f, 1.0f };
+	temp.myNormal = { 0.0f, 0.0f, 1.0f };
+	temp.myUV = { 0.0f, 1.0f };
+
+	vertices.Add(temp);
+
+#pragma endregion
+
+	m_VertexData.myNrOfVertexes = vertices.Size();
+	m_VertexData.myStride = sizeof(VertexTypePosNormUV);
+	m_VertexData.mySize = m_VertexData.myNrOfVertexes*m_VertexData.myStride;
+	//m_VertexData.myType = VertexTypePosNormUV;
+	m_VertexData.myVertexData = new char[m_VertexData.mySize]();
+	memcpy(m_VertexData.myVertexData, &vertices[0], m_VertexData.mySize);
+
+	m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
+	m_IndexData.myIndexCount = 6 * 6;
+	m_IndexData.mySize = m_IndexData.myIndexCount * 4;
+
+
+	CU::GrowingArray<int> indices;
+	indices.Init(32);
+
+#pragma region Indices
+
+	indices.Add(3);
+	indices.Add(1);
+	indices.Add(0);
+
+	indices.Add(2);
+	indices.Add(1);
+	indices.Add(3);
+
+	indices.Add(6);
+	indices.Add(4);
+	indices.Add(5);
+
+	indices.Add(6);
+	indices.Add(7);
+	indices.Add(4);
+
+	indices.Add(11);
+	indices.Add(9);
+	indices.Add(8);
+
+	indices.Add(10);
+	indices.Add(9);
+	indices.Add(11);
+
+	indices.Add(14);
+	indices.Add(12);
+	indices.Add(13);
+
+	indices.Add(15);
+	indices.Add(12);
+	indices.Add(14);
+
+	indices.Add(19);
+	indices.Add(17);
+	indices.Add(16);
+
+	indices.Add(18);
+	indices.Add(17);
+	indices.Add(19);
+
+	indices.Add(22);
+	indices.Add(20);
+	indices.Add(21);
+
+	indices.Add(23);
+	indices.Add(20);
+	indices.Add(22);
+
+#pragma endregion
+
+	m_IndexData.myIndexData = new char[m_IndexData.mySize]();
+	memcpy(m_IndexData.myIndexData, &indices[0], m_IndexData.mySize);
+	m_IsRoot = false;
+
+	Initiate("default_cube");
+
+	//InitVertexBuffer();
+	//InitIndexBuffer();
+}
+

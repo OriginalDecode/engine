@@ -308,7 +308,7 @@ void Renderer::Render()
 		m_DeferredRenderer->Finalize(m_RenderContext);
 
 	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), m_DeferredRenderer->GetDepthStencil()->GetDepthView());
-	m_Atmosphere.Render(m_Camera->GetOrientation(), m_DeferredRenderer->GetDepthStencil(), m_RenderContext);
+	//m_Atmosphere.Render(m_Camera->GetOrientation(), m_DeferredRenderer->GetDepthStencil(), m_RenderContext);
 
 	m_Engine->ResetRenderTargetAndDepth();
 
@@ -496,7 +496,7 @@ void Renderer::Render3DCommandsInstanced()
 	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
 	{
 		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-		m_API->SetRasterizer(eRasterizer::CULL_BACK); //set per model instance? Array with bools / byte to see if it is wireframe or not?
+		m_API->SetRasterizer(eRasterizer::CULL_NONE); //set per model instance? Array with bools / byte to see if it is wireframe or not?
 		it->second->RenderInstanced(orientation, perspective, m_RenderContext);
 	}
 }

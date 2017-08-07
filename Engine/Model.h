@@ -44,7 +44,10 @@ public:
 
 	void AddOrientation(CU::Matrix44f orientation);
 	void ClearOrientation();
+	void CreateCube();
 private:
+	void RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context);
+
 	void RemoveOrientation();
 	CU::GrowingArray<Model*> myChildren;
 	CU::GrowingArray<CU::Matrix44f> m_Orientations;

@@ -340,8 +340,6 @@ void Texture::Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat 
 	SAFE_RELEASE(_texture);
 }
 
-
-
 bool Texture::CleanUp()
 {
 	SAFE_RELEASE(m_ShaderResource);
@@ -411,9 +409,7 @@ bool Texture::Load(std::string filepath)
 	DL_MESSAGE_EXP(FAILED(hr), "[Texture](Load) : Failed to load texture %s", filepath.c_str());
 	if ( FAILED(hr) )
 	{
-		//DL_ASSERT("Failed to load texture!");
-		int apa;
-		apa = 5;
+		DL_ASSERT("Failed to load texture!");
 		return false;
 	}
 

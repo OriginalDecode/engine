@@ -165,6 +165,10 @@ void Game::Update(float dt)
 
 	AddRenderCommand(ModelCommand(KEY_USED, CU::Vector3f(0.f, 10.f, 0.f), false));
 
+	CU::Matrix44f orientation;
+	orientation.SetPosition(CU::Vector3f(0, 25, 0));
+
+	m_Synchronizer->AddRenderCommand(SpotlightCommand(0, 53, 5, 1, CU::Vector4f(255,0,0,255), orientation, false));
 
 	HandleMovement(input_wrapper, entity_speed, dt);
 

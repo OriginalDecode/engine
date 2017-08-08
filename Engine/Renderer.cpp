@@ -234,17 +234,19 @@ void Renderer::Render()
 	else
 		Render3DCommands();
 
+	m_Atmosphere.Render(m_Camera->GetOrientation(), m_DeferredRenderer->GetDepthStencil(), m_RenderContext);
+
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
-	const float clear[4] = { 0.f,0.f,0.f,0.f };
+	/*const float clear[4] = { 0.f,0.f,0.f,0.f };
 
 	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleDiff->GetRenderTargetView(), clear);
 	m_RenderContext.m_Context->ClearDepthStencilView(m_ParticleDepth->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0.f);
-	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleDiff->GetRenderTargetRef(), m_ParticleDepth->GetDepthView());
+	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleDiff->GetRenderTargetRef(), m_ParticleDepth->GetDepthView());*/
 
-	RenderParticles(m_Engine->GetEffect("Shaders/particle_offscreen.json")); //Should be a depth shader
+	//RenderParticles(m_Engine->GetEffect("Shaders/particle_offscreen.json")); //Should be a depth shader
 
-	m_Quad->SetBuffers();
+	/*m_Quad->SetBuffers();
 	Effect* fx = m_Engine->GetEffect("Shaders/particle_normal.json");
 
 	m_CalcSSNormal.m_InvProjection = CU::Math::InverseReal(m_Camera->GetPerspective());
@@ -260,7 +262,7 @@ void Renderer::Render()
 	fx->Use();
 	m_RenderContext.m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_Quad->Render();
-	fx->Clear();
+	fx->Clear();*/
 
 
 	//mySynchronizer->AddRenderCommand(SpriteCommand(m_DirectionalShadow.GetDepthTexture()->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 2)));
@@ -308,7 +310,6 @@ void Renderer::Render()
 		m_DeferredRenderer->Finalize(m_RenderContext);
 
 	m_API->GetContext()->OMSetRenderTargets(1, m_API->GetBackbufferRef(), m_DeferredRenderer->GetDepthStencil()->GetDepthView());
-	//m_Atmosphere.Render(m_Camera->GetOrientation(), m_DeferredRenderer->GetDepthStencil(), m_RenderContext);
 
 	m_Engine->ResetRenderTargetAndDepth();
 
@@ -660,7 +661,7 @@ void Renderer::RenderSpotlight()
 		}
 
 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
-		m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
+		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 0);
 		//m_LightState.Use(m_RenderContext);
 		effect->Use();
 		m_LightPass.RenderSpotlight(light, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);

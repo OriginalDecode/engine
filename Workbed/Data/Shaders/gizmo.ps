@@ -1,16 +1,5 @@
-//---------------------------------
-//	Deferred Base Pixel Shader
-//---------------------------------
-//---------------------------------
-//	Samplers & Textures
-//---------------------------------
-
-SamplerState linear_Wrap 	: register ( s0 );
+SamplerState sampler0    : register ( s0 );
 Texture2D DiffuseTexture : register ( t0 );
-
-//---------------------------------
-//	Deferred Base Pixel Structs
-//---------------------------------
 
 struct VS_OUTPUT
 {
@@ -22,12 +11,9 @@ struct VS_OUTPUT
 	float4 worldpos : POSITION;
 };
 
-//---------------------------------
-//	Deferred Base Pixel Shader
-//---------------------------------
 float4 main(VS_OUTPUT input) : SV_Target
 {
-	float4 color = DiffuseTexture.Sample(linear_Wrap, input.uv);
+	float4 color = DiffuseTexture.Sample(sampler0, input.uv);
 	return color;
 }
 

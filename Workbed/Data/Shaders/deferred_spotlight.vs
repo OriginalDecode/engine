@@ -1,9 +1,3 @@
-//---------------------------------
-//	Deferred Spotlight Vertex Shaders
-//---------------------------------
-//---------------------------------
-//	Constant Buffers
-//---------------------------------
 cbuffer Matrices : register(b0) 
 {
 	row_major float4x4 World;
@@ -12,9 +6,6 @@ cbuffer Matrices : register(b0)
 	float2 range;
     float2 angle;
 };
-//---------------------------------
-//	Deferred Spotlight Vertex Structs
-//---------------------------------
 
 struct VS_INPUT
 {
@@ -29,9 +20,8 @@ struct VS_OUTPUT
     float2 range : RANGE;
 };
 
-//---------------------------------
-//	Deferred Spotlight Vertex Shader
-//---------------------------------
+
+
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;

@@ -1,9 +1,4 @@
-//---------------------------------
-//	Deferred Lightmesh Pixel Shaders
-//---------------------------------
-//---------------------------------
-//	Constant Buffers
-//---------------------------------
+
 cbuffer Spotlight : register( b0 )
 {
 	row_major float4x4 InvertedProjection; 
@@ -14,16 +9,10 @@ cbuffer Spotlight : register( b0 )
 	row_major float4x4 shadowMVP;
     float4 direction;
 };
-//---------------------------------
-//	Samplers & Textures
-//---------------------------------
 
 Texture2D ShadowTexture	 : register ( t8 );
 Texture2D ParticleTexture : register ( t5 );
 
-//---------------------------------
-//	Deferred Lightmesh Pixel Structs
-//---------------------------------
 struct VS_OUTPUT
 {
 	float4 pos	: SV_POSITION;
@@ -32,9 +21,17 @@ struct VS_OUTPUT
     float2 range : RANGE;
 };
 
-//---------------------------------
-//	Deferred Lightmesh Pixel Shader
-//---------------------------------
+float DegreeToRad(float aDegree)
+{
+	return aDegree = aDegree * (3.1415926535f / 180);
+};
+
+float RadToDegree(float aRadian)
+{
+	return aRadian = aRadian * (180 / 3.1415926535f);
+};
+
+
 #include "PBL_Functions.hlsl"
 float4 main(VS_OUTPUT input) : SV_Target
 {
@@ -49,10 +46,11 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 D = saturate(D_GGX(vectors.HdotN,(data.roughness ) / 2.f));
 	float3 V = saturate(V_SchlickForGGX((data.roughness ) / 2.f, vectors.NdotV, vectors.NdotL));
 
+	float cosCone = input.cosAngle.x;
     float3 lightToPixel = normalize(-vectors.toLight);
     float spotFactor = max(0, dot(lightToPixel, normalize(direction)));
 
-	float angularAttenuation = (1 - (1 - spotFactor) * ( 1 / ( 1 - input.cosAngle.x))) / 2;
+	float angularAttenuation = (1 - (1 - spotFactor) * ( 1 / ( 1 - cosCone))) / 2;
 
 	float ln = length(vectors.toLight);
 	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range.x));
@@ -73,5 +71,12 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float compareValue = shadowVec.z;
 
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
-	return float4(final_color, 1);
+	float4 output = float4(final_color, 1);
+	float4 lighToEye = normalize(camPosition - position);
+	float lightToSurfaceAngle = dot(lighToEye, direction);
+	if(lightToSurfaceAngle > cosCone)
+		output += float4(color.rgb, 1) * attenuation * angularAttenuation;
+
+
+	return output;
 };

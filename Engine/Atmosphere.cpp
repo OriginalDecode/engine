@@ -51,7 +51,7 @@ void Atmosphere::CleanUp()
 void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth, const RenderContext& render_context)
 {
 
-	m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
+	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 

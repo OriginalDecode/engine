@@ -1,7 +1,7 @@
 #pragma once
 #include <Engine/engine_shared.h>
 #include "LightStructs.h"
-
+#include "VertexWrapper.h"
 class Camera;
 class LightModel;
 class ShadowSpotlight;
@@ -27,6 +27,17 @@ private:
 	void SetPosition(const CU::Vector3f& aPosition);
 	void SetDirection(const CU::Vector4f& aDirection);
 	
+	IInputLayout* m_InputLayout = nullptr;
+
+	VertexDataWrapper m_VertexData;
+	VertexBufferWrapper m_VertexBuffer;
+
+	struct spotlight
+	{
+		CU::Vector4f m_Position;
+		CU::Vector4f m_Range;
+	} m_Data;
+
 	LightModel* m_Model = nullptr;
 	ShadowSpotlight* m_ShadowSpotlight = nullptr;
 	SpotlightData myData;

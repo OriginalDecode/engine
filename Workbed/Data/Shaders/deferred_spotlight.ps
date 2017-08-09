@@ -21,6 +21,14 @@ struct VS_OUTPUT
     float2 range : RANGE;
 };
 
+struct gsOut
+{
+    float4 m_Position : SV_POSITION;
+	float4 uv : TEXCOORD;
+    float m_InterpolDist : DISTANCE;
+	float range : RANGE;
+};
+
 float DegreeToRad(float aDegree)
 {
 	return aDegree = aDegree * (3.1415926535f / 180);
@@ -31,9 +39,8 @@ float RadToDegree(float aRadian)
 	return aRadian = aRadian * (180 / 3.1415926535f);
 };
 
-
 #include "PBL_Functions.hlsl"
-float4 main(VS_OUTPUT input) : SV_Target
+float4 main(gsOut input) : SV_Target
 {
 	float4 col = color;
 	input.uv /= input.uv.w;
@@ -46,14 +53,14 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 D = saturate(D_GGX(vectors.HdotN,(data.roughness ) / 2.f));
 	float3 V = saturate(V_SchlickForGGX((data.roughness ) / 2.f, vectors.NdotV, vectors.NdotL));
 
-	float cosCone = input.cosAngle.x;
+	float cosCone = cos(DegreeToRad(53.f)) / 2;//input.cosAngle.x;
     float3 lightToPixel = normalize(-vectors.toLight);
     float spotFactor = max(0, dot(lightToPixel, normalize(direction)));
 
 	float angularAttenuation = (1 - (1 - spotFactor) * ( 1 / ( 1 - cosCone))) / 2;
 
 	float ln = length(vectors.toLight);
-	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range.x));
+	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
 
 	col.a = 1;
 	float3 directSpec = float3(1,1,1) + (D * F * V);

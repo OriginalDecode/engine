@@ -31,7 +31,7 @@ gsInput main(VS_INPUT input)
 {
 	gsInput output = (gsInput)0;
 	output.pos = input.pos;
-	output.range = input.range;
+	output.range.x = range.x;
 	return output;
 
     /*float xyScale = tan(angle.x) * range.x;

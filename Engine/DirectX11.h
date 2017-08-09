@@ -99,7 +99,6 @@ public:
 	void SetShaderState(ShaderState& shader_state) override;
 
 
-
 	//__________________________
 	// DirectX Functions
 

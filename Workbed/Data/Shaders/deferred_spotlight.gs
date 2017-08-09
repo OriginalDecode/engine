@@ -14,13 +14,17 @@ struct gsInput
 struct gsOut
 {
     float4 m_Position : SV_POSITION;
+	float4 uv : TEXCOORD;
     float m_InterpolDist : DISTANCE;
+	float range : RANGE;
 };
 
 
-void main(point VS_OUTPUT input[1], inout TriangleStream<gsOut> triStream) 
+[maxvertexcount(7)]
+void main(point gsInput anInput[1], inout TriangleStream<gsOut> triStream) 
 {	
-	float spotlength = input.range;
+	gsInput input = anInput[0];
+	float spotlength = input.range.x;
 	float halfwidth = 1; //attenuation?
 	
 	float3 spot_normal = Direction * spotlength;
@@ -29,13 +33,14 @@ void main(point VS_OUTPUT input[1], inout TriangleStream<gsOut> triStream)
 
     gsOut output = (gsOut)0;
 
-    output.m_Position = ViewProjection * float4(float3(m_Position.xyz) - down - right + spot_normal, 1);
-    output.interpolDist = 0.f;
+    output.m_Position = float4(input.pos.xyz - down - right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
 
     triStream.Append(output);
 
 
-	
+	/*
 	
 	//0
 	gl_Position = ViewProjMatrix * vec4(spot_pos - down - right + spot_normal, 1);
@@ -67,6 +72,6 @@ void main(point VS_OUTPUT input[1], inout TriangleStream<gsOut> triStream)
 	interpolDist = 0.0f;
 	EmitVertex();
 	
-	EndPrimitive();
+	EndPrimitive();*/
 	
 }

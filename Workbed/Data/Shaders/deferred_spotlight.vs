@@ -20,13 +20,21 @@ struct VS_OUTPUT
     float2 range : RANGE;
 };
 
-
-
-VS_OUTPUT main(VS_INPUT input)
+struct gsInput
 {
-	VS_OUTPUT output = (VS_OUTPUT)0;
-	
-    float xyScale = tan(angle.x) * range.x;
+	float4 pos : SV_POSITION;
+	float2 range : RANGE;
+	float2 dummy : DUMMY;
+};
+
+gsInput main(VS_INPUT input)
+{
+	gsInput output = (gsInput)0;
+	output.pos = input.pos;
+	output.range = input.range;
+	return output;
+
+    /*float xyScale = tan(angle.x) * range.x;
 	
 	input.pos.x *= xyScale; // scale
     input.pos.y *= xyScale;
@@ -45,7 +53,7 @@ VS_OUTPUT main(VS_INPUT input)
 	float y = output.pos.y;
 	float w = output.pos.w;
 
-	output.uv = float4((float2(x + w, w - y)) * 0.5f, output.pos.zw);
+	output.uv = float4((float2(x + w, w - y)) * 0.5f, output.pos.zw);*/
 		
 	return output;
 };

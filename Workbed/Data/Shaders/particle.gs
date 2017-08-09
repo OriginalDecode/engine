@@ -1,9 +1,3 @@
-//---------------------------------
-//	Particle Geometry Shaders
-//---------------------------------
-//---------------------------------
-//	Constant Buffers
-//---------------------------------
 cbuffer Matrices : register(b0)
 {
 	row_major float4x4 Projection;

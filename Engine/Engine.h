@@ -192,6 +192,7 @@ public:
 
 	void AddFunction(const std::string& label, std::function<void()> function);
 	void CheckFolder(const std::string& path);
+	void AddCheckBox(bool* toggle, std::string label);
 	CU::GrowingArray<ID3D11ShaderResourceView*>& GetDebugTextures() { return m_DebugTextures;}
 private:
 	struct CheckBox

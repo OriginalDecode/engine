@@ -17,10 +17,11 @@ struct gsOut
 	float4 uv : TEXCOORD;
     float m_InterpolDist : DISTANCE;
 	float range : RANGE;
+	float4 normal : NORMAL;
 };
 
 
-[maxvertexcount(7)]
+[maxvertexcount(9)]
 void main(point gsInput anInput[1], inout TriangleStream<gsOut> triStream) 
 {	
 	gsInput input = anInput[0];
@@ -32,46 +33,74 @@ void main(point gsInput anInput[1], inout TriangleStream<gsOut> triStream)
 	float3 down = normalize(cross(spot_normal, right)) * halfwidth;
 
     gsOut output = (gsOut)0;
-
+//0
     output.m_Position = float4(input.pos.xyz - down - right + spot_normal, 1);
 	output.m_Position = mul(output.m_Position, ViewProjection);
     output.m_InterpolDist = 0.f;
+	output.normal = float4(spot_normal,1);
+    triStream.Append(output);
 
+	output.m_Position = float4(input.pos.xyz, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 1.f;
+    triStream.Append(output);
+
+	output.m_Position = float4(input.pos.xyz - down + right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);
+
+	output.m_Position = float4(input.pos.xyz + down + right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);
+	
+	triStream.RestartStrip();
+
+
+ 	output.m_Position = float4(input.pos.xyz + down + right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);
+
+	output.m_Position = float4(input.pos.xyz, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 1.f;
+    triStream.Append(output);
+
+	output.m_Position = float4(input.pos.xyz + down - right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);
+
+	output.m_Position = float4(input.pos.xyz - down - right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
     triStream.Append(output);
 
 
-	/*
+/*	output.m_Position = float4(input.pos.xyz + down - right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);
+
+	output.m_Position = float4(input.pos.xyz, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);
+
+	output.m_Position = float4(input.pos.xyz - down - right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);
+
+	output.m_Position = float4(input.pos.xyz - down + right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);
 	
-	//0
-	gl_Position = ViewProjMatrix * vec4(spot_pos - down - right + spot_normal, 1);
-	interpolDist = 0.0f;
-	EmitVertex();
-	//1
-	gl_Position = ViewProjMatrix * vec4(spot_pos, 1);
-	interpolDist = 1.0f;
-	EmitVertex();
-	//2
-	gl_Position = ViewProjMatrix * vec4(spot_pos - down + right + spot_normal, 1);
-	interpolDist = 0.0f;
-	EmitVertex();
-	//3
-	gl_Position = ViewProjMatrix * vec4(spot_pos + down + right + spot_normal, 1);
-	EmitVertex();
-	//4
-	gl_Position = ViewProjMatrix * vec4(spot_pos - down - right + spot_normal, 1);
-	EmitVertex();
-	//5
-	gl_Position = ViewProjMatrix * vec4(spot_pos + down - right + spot_normal, 1);
-	EmitVertex();
-	//6
-	gl_Position = ViewProjMatrix * vec4(spot_pos, 1);
-	interpolDist = 1.0f;
-	EmitVertex();	
-	//7
-	gl_Position = ViewProjMatrix * vec4(spot_pos + down + right + spot_normal, 1);
-	interpolDist = 0.0f;
-	EmitVertex();
-	
-	EndPrimitive();*/
-	
+	output.m_Position = float4(input.pos.xyz + down - right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);*/
 }

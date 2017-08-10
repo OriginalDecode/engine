@@ -27,6 +27,7 @@ struct gsOut
 	float4 uv : TEXCOORD;
     float m_InterpolDist : DISTANCE;
 	float range : RANGE;
+	float4 normal : NORMAL;
 };
 
 float DegreeToRad(float aDegree)
@@ -78,11 +79,10 @@ float4 main(gsOut input) : SV_Target
 	float compareValue = shadowVec.z;
 
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
-	float4 output = float4(final_color, 1);
-	float4 lighToEye = normalize(camPosition - position);
+	float4 output = float4(0,0,0, 0);
+	float4 lighToEye = normalize(camPosition - input.m_Position);
 	float lightToSurfaceAngle = dot(lighToEye, direction);
-	if(lightToSurfaceAngle > cosCone)
-		output += float4(color.rgb, 1) * attenuation * angularAttenuation;
+	output += float4(color.rgb, 1) * pow(input.m_InterpolDist, 5);
 
 
 	return output;

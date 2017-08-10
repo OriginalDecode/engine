@@ -637,6 +637,14 @@ void Engine::AddFunction(const std::string& label, std::function<void()> functio
 }
 
 
+void Engine::AddCheckBox(bool* toggle, std::string label)
+{
+	CheckBox box;
+	box.m_Name = label;
+	box.m_Toggle = toggle;
+	m_Checkboxes.Add(box);
+}
+
 void Engine::UpdateDebugUI()
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -822,19 +830,12 @@ void Engine::UpdateDebugUI()
 			ImGui::SliderFloat("sY", &sy, -30.f, 360.f);
 			ImGui::SliderFloat("sZ", &sz, -30.f, 360.f);
 			myRenderer->GetDirectionalCamera()->SetPosition(CU::Vector3f(sx, sy, sz));
-
-
-
-
-
 		}
 
-
-
-		/*for (CheckBox& box : m_Checkboxes)
+		for (CheckBox& box : m_Checkboxes)
 		{
 			ImGui::Checkbox(box.m_Name.c_str(), box.m_Toggle);
-		}*/
+		}
 
 		/*static s32 index = 0;
 		s32 prev = index;

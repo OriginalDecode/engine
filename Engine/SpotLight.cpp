@@ -6,7 +6,7 @@
 
 
 
-
+static bool s_Wireframe = false;
 void SpotLight::Initiate()
 {
 
@@ -42,10 +42,10 @@ void SpotLight::Initiate()
 	m_VertexData.mySize = m_VertexData.myNrOfVertexes * m_VertexData.myStride;
 	m_VertexData.myVertexData = new s8[m_VertexData.mySize];
 	m_VertexBuffer.myVertexBuffer = Engine::GetAPI()->CreateVertexBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
+
+	Engine::GetInstance()->AddCheckBox(&s_Wireframe, "Wireframe Spotlight");
+
 }
-
-
-
 
 
 void SpotLight::CleanUp()
@@ -72,6 +72,9 @@ void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera
 								, &m_VertexBuffer.myByteOffset);
 
 	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json");
+
+	render_context.m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
+	render_context.m_API->SetRasterizer( s_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 	effect->Use();
 	context->Draw(1, 0);
 	effect->Clear();

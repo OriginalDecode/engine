@@ -21,12 +21,12 @@ struct gsOut
 };
 
 
-[maxvertexcount(9)]
+[maxvertexcount(12)]
 void main(point gsInput anInput[1], inout TriangleStream<gsOut> triStream) 
 {	
 	gsInput input = anInput[0];
-	float spotlength = input.range.x;
-	float halfwidth = 1; //attenuation?
+	float spotlength = 12;
+	float halfwidth = 5; //attenuation?
 	
 	float3 spot_normal = Direction * spotlength;
 	float3 right = normalize(cross(spot_normal, float3(0,1,0))) * halfwidth;
@@ -77,6 +77,33 @@ void main(point gsInput anInput[1], inout TriangleStream<gsOut> triStream)
 	output.m_Position = mul(output.m_Position, ViewProjection);
     output.m_InterpolDist = 0.f;
     triStream.Append(output);
+
+
+	triStream.RestartStrip();
+
+
+ 	output.m_Position = float4(input.pos.xyz - down - right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);
+
+	output.m_Position = float4(input.pos.xyz - down + right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);
+
+	output.m_Position = float4(input.pos.xyz + down - right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);
+
+	output.m_Position = float4(input.pos.xyz + down + right + spot_normal, 1);
+	output.m_Position = mul(output.m_Position, ViewProjection);
+    output.m_InterpolDist = 0.f;
+    triStream.Append(output);
+
+
+
 
 
 /*	output.m_Position = float4(input.pos.xyz + down - right + spot_normal, 1);

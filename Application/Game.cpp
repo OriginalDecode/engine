@@ -44,6 +44,7 @@ void Game::InitState(StateStack* state_stack)
 	Initiate("Data/Levels/level_03.level");
 	//m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
 
+	m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
 	m_Engine->LoadModel(KEY_USED, "Shaders/volume.json", true);
 	Effect* volume_shader = m_Engine->GetEffect("Shaders/volume.json");
 
@@ -164,11 +165,14 @@ void Game::Update(float dt)
 												  ((m_FPSToPrint >= 50.f) ? "00FF00" : (m_FPSToPrint < 25.f) ? "FF0000" : "FFFF00"), m_FPSToPrint));
 
 	AddRenderCommand(ModelCommand(KEY_USED, CU::Vector3f(0.f, 10.f, 0.f), false));
+	AddRenderCommand(ModelCommand(key, CU::Vector3f(50, 0, 50), false));
+
 
 	CU::Matrix44f orientation;
-	orientation.SetPosition(CU::Vector3f(0, 25, 0));
-
+	orientation.SetPosition(CU::Vector3f(50, 10, 50));
+	orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * orientation;
 	m_Synchronizer->AddRenderCommand(SpotlightCommand(0, 53, 5, 1, CU::Vector4f(255,0,0,255), orientation, false));
+
 
 	HandleMovement(input_wrapper, entity_speed, dt);
 

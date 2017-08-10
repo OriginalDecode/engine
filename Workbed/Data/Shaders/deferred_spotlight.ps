@@ -54,7 +54,7 @@ float4 main(gsOut input) : SV_Target
 	float3 D = saturate(D_GGX(vectors.HdotN,(data.roughness ) / 2.f));
 	float3 V = saturate(V_SchlickForGGX((data.roughness ) / 2.f, vectors.NdotV, vectors.NdotL));
 
-	float cosCone = cos(DegreeToRad(53.f)) / 2;//input.cosAngle.x;
+	float cosCone = cos(53.f);//input.cosAngle.x;
     float3 lightToPixel = normalize(-vectors.toLight);
     float spotFactor = max(0, dot(lightToPixel, normalize(direction)));
 
@@ -66,7 +66,6 @@ float4 main(gsOut input) : SV_Target
 	col.a = 1;
 	float3 directSpec = float3(1,1,1) + (D * F * V);
 	float3 final_color = saturate( directSpec * ((attenuation * angularAttenuation) * col)) * 100;
-
 	float4 newPos = data.world_pos + (data.normal * 0.4);
 	newPos.w = 1;
 	float4 shadowVec = mul(newPos, shadowMVP);
@@ -79,11 +78,11 @@ float4 main(gsOut input) : SV_Target
 	float compareValue = shadowVec.z;
 
 	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
-	float4 output = float4(0,0,0, 0);
+	float4 output = float4(1,1,1, 1);
 	float4 lighToEye = normalize(camPosition - input.m_Position);
 	float lightToSurfaceAngle = dot(lighToEye, direction);
-	output += float4(color.rgb, 1) * pow(input.m_InterpolDist, 5);
-
+	if(lightToSurfaceAngle > cosCone)
+		output *= float4(color.rgb, 1) * pow(input.m_InterpolDist, 5);// * pow(lightToSurfaceAngle, 10);
 
 	return output;
 };

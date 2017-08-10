@@ -32,6 +32,15 @@ private:
 	VertexDataWrapper m_VertexData;
 	VertexBufferWrapper m_VertexBuffer;
 
+
+	struct gsbuffer
+	{
+		CU::Matrix44f view_projection;
+		CU::Vector4f direction;
+	} m_gsBuffer;
+	IBuffer* m_gsCBuffer = nullptr;
+
+
 	struct spotlight
 	{
 		CU::Vector4f m_Position;

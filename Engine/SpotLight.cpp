@@ -44,9 +44,8 @@ void SpotLight::Initiate()
 	m_VertexBuffer.myVertexBuffer = Engine::GetAPI()->CreateVertexBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
 
 	Engine::GetInstance()->AddCheckBox(&s_Wireframe, "Wireframe Spotlight");
-
+	m_gsCBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(m_gsBuffer));
 }
-
 
 void SpotLight::CleanUp()
 {
@@ -73,6 +72,8 @@ void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera
 
 	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json");
 
+
+
 	render_context.m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 	render_context.m_API->SetRasterizer( s_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 	effect->Use();
@@ -89,6 +90,7 @@ void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera
 void SpotLight::SetData(const SpotlightData& data)
 {
 	myData = data;
+	m_Data.m_Range = myData.myRange;
 	SetDirection(myData.myOrientation.GetForward());
 	SetPosition(myData.myLightPosition);
 	//m_ShadowSpotlight->SetAngle(myData.myAngle);
@@ -105,6 +107,7 @@ void SpotLight::SetPosition(const CU::Vector3f& aPosition)
 {
 	//m_Model->GetOrientation().SetPosition(aPosition);
 	myData.myLightPosition = aPosition;
+	m_Data.m_Position = aPosition;
 	myData.myOrientation.SetPosition(aPosition);
 	m_ShadowSpotlight->GetCamera()->SetPosition(aPosition);
 }

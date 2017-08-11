@@ -722,6 +722,39 @@ void DirectX11::SetShaderState(ShaderState& shader_state)
 
 }
 
+void DirectX11::VSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources)
+{
+	const GShaderResourceView* ptr = nullptr;
+
+
+	myContext->VSSetShaderResources(start_slot, count, ptr);
+}
+
+void DirectX11::PSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources)
+{
+
+}
+
+void DirectX11::GSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources)
+{
+
+}
+
+void DirectX11::DSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources)
+{
+
+}
+
+void DirectX11::HSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources)
+{
+
+}
+
+void DirectX11::CSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources)
+{
+
+}
+
 void DirectX11::SetSamplerState(std::function<void(UINT, UINT, ID3D11SamplerState*const*)> function, ShaderState& shader_state, s32 shader_type)
 {
 	CU::GrowingArray<SamplerState>& samplers = shader_state.GetSamplerState(shader_type);

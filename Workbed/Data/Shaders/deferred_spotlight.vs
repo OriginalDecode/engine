@@ -7,12 +7,12 @@ cbuffer Matrices : register(b0)
     float2 angle;
 };
 
-struct VS_INPUT
+struct vsInput
 {
 	float4 pos	: POSITION;
 };
 
-struct VS_OUTPUT
+struct psInput
 {
 	float4 pos	: SV_POSITION;
 	float4 uv	: POSITION;
@@ -20,21 +20,11 @@ struct VS_OUTPUT
     float2 range : RANGE;
 };
 
-struct gsInput
+psInput main(vsInput input)
 {
-	float4 pos : SV_POSITION;
-	float2 range : RANGE;
-	float2 dummy : DUMMY;
-};
+	psInput output = (psInput)0;
 
-gsInput main(VS_INPUT input)
-{
-	gsInput output = (gsInput)0;
-	output.pos = input.pos;
-	output.range.x = range.x;
-	return output;
-
-    /*float xyScale = tan(angle.x) * range.x;
+    float xyScale = tan(angle.x) * range.x;
 	
 	input.pos.x *= xyScale; // scale
     input.pos.y *= xyScale;
@@ -53,7 +43,7 @@ gsInput main(VS_INPUT input)
 	float y = output.pos.y;
 	float w = output.pos.w;
 
-	output.uv = float4((float2(x + w, w - y)) * 0.5f, output.pos.zw);*/
+	output.uv = float4((float2(x + w, w - y)) * 0.5f, output.pos.zw);
 		
 	return output;
 };

@@ -1,0 +1,14 @@
+{
+    "VertexShader": {
+        "file": "lightvolume.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "lightvolume.ps",
+        "entrypoint": "main"
+    },
+    "GeometryShader": {
+        "file": "lightvolume.gs",
+        "entrypoint": "spotlight"
+    }
+}

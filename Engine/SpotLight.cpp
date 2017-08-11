@@ -4,25 +4,28 @@
 #include "Camera.h"
 #include <Engine/ShadowSpotlight.h>
 
+#include <d3d11shader.h>
 
 
 static bool s_Wireframe = false;
+
+SpotLight::~SpotLight()
+{
+	m_Model = nullptr;
+	SAFE_DELETE(m_ShadowSpotlight);
+}
+
 void SpotLight::Initiate()
 {
-
-
-
-
 	std::string key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/deferred_spotlight.json", 0, false);
-	//m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
+	m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
+	m_Model->Initiate("cone.fbx");
 
-	//m_Model->Initiate("cone.fbx");
 	m_ShadowSpotlight = new ShadowSpotlight;
 	m_ShadowSpotlight->Initiate(2048.f);
 	m_ShadowSpotlight->GetCamera()->RotateAroundX(cl::DegreeToRad(90.f));
 
-
-	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json");
+	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/lightvolume.json");
 	CompiledShader* shader = effect->GetVertexShader();
 
 	D3D11_INPUT_ELEMENT_DESC layout[] =
@@ -45,14 +48,13 @@ void SpotLight::Initiate()
 
 	Engine::GetInstance()->AddCheckBox(&s_Wireframe, "Wireframe Spotlight");
 	m_gsCBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(m_gsBuffer));
-}
 
-void SpotLight::CleanUp()
-{
-	m_Model = nullptr;
-	m_ShadowSpotlight->CleanUp();
-	SAFE_DELETE(m_ShadowSpotlight);
-	
+
+	/*ID3D11ShaderReflection* pReflector = nullptr;
+	HRESULT hr = D3DReflect(shader->compiledShader, shader->shaderSize, IID_ID3D11ShaderReflection, (void**)&pReflector);
+	ID3D11ShaderReflectionVariable* ref = pReflector->GetVariableByName("Direction");
+	ID3D11ShaderReflectionConstantBuffer* b = ref->GetBuffer();*/
+
 }
 
 void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera, const RenderContext& render_context)
@@ -80,11 +82,7 @@ void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera
 	context->Draw(1, 0);
 	effect->Clear();
 
-
-	//render_context.m_Context->Draw(v, 0);
-
-	//render_context.m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
-	//m_Model->Render(previousOrientation, aCamera->GetPerspective(), render_context);
+	m_Model->Render(previousOrientation, aCamera->GetPerspective(), render_context);
 }
 
 void SpotLight::SetData(const SpotlightData& data)
@@ -105,7 +103,7 @@ const SpotlightData& SpotLight::GetData() const
 
 void SpotLight::SetPosition(const CU::Vector3f& aPosition)
 {
-	//m_Model->GetOrientation().SetPosition(aPosition);
+	m_Model->GetOrientation().SetPosition(aPosition);
 	myData.myLightPosition = aPosition;
 	m_Data.m_Position = aPosition;
 	myData.myOrientation.SetPosition(aPosition);
@@ -117,6 +115,6 @@ void SpotLight::SetDirection(const CU::Vector4f& aDirection)
 	myData.myDirection.x = aDirection.x;
 	myData.myDirection.y = aDirection.y;
 	myData.myDirection.z = aDirection.z;
-	//m_Model->GetOrientation().SetForward(aDirection);
+	m_Model->GetOrientation().SetForward(aDirection);
 	//m_ShadowSpotlight->GetCamera()->SetAt(aDirection);
 }

@@ -204,7 +204,6 @@ bool Renderer::CleanUp()
 
 	for (SpotLight* s : m_Spotlights)
 	{
-		s->CleanUp();
 		SAFE_DELETE(s);
 	}
 

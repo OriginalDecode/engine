@@ -9,9 +9,8 @@ class SpotLight
 {
 public:
 	SpotLight() = default;
-
+	~SpotLight();
 	void Initiate();
-	void CleanUp();
 
 	void Render(const CU::Matrix44f& previousOrientation, Camera* aCamera, const RenderContext& render_context);
 

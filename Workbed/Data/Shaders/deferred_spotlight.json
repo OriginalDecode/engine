@@ -6,9 +6,5 @@
     "PixelShader": {
         "file": "deferred_spotlight.ps",
         "entrypoint": "main"
-    },
-    "GeometryShader": {
-        "file": "deferred_spotlight.gs",
-        "entrypoint": "main"
     }
 }

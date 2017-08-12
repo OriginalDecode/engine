@@ -35,11 +35,6 @@ void LightModel::Initiate(const std::string& filename)
 	}
 }
 
-void LightModel::CleanUp()
-{
-	
-}
-
 void LightModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
 	for (LightModel* child : myChildren)

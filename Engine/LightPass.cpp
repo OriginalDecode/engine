@@ -49,12 +49,9 @@ void LightPass::RenderSpotlight(SpotLight* spotlight, Camera* aCamera, const CU:
 {
 	if ( HasInitiated() )
 	{
-		//ID3D11DeviceContext* ctx = Engine::GetAPI()->GetContext();
-
 		UpdateSpotlightBuffers(spotlight, aCamera, previousOrientation, shadow_matrix);
 		render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffers[eBuffer::SPOTLIGHT_VERTEX]);
 		render_context.m_Context->PSSetConstantBuffers(0, 1, &myConstantBuffers[eBuffer::SPOTLIGHT_PIXEL]);
-		render_context.m_Context->GSSetConstantBuffers(0, 1, &myConstantBuffers[eBuffer::SPOTLIGHT_GEO]);
 		spotlight->Render(previousOrientation, aCamera, render_context);
 	}
 }
@@ -162,14 +159,6 @@ void LightPass::UpdateSpotlightBuffers(SpotLight* spotlight, Camera* aCamera, co
 	}
 
 	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffers[eBuffer::SPOTLIGHT_PIXEL], 0);
-
-
-
-	m_cbSpotlightGeo.m_ViewProjection = CU::Math::Inverse(previousOrientation) * aCamera->GetPerspective();
-	m_cbSpotlightGeo.m_Direction = data.myDirection;
-	Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffers[eBuffer::SPOTLIGHT_GEO], &m_cbSpotlightGeo);
-
-	
 }
 
 void LightPass::CreateSpotlightBuffers()
@@ -205,12 +194,6 @@ void LightPass::CreateSpotlightBuffers()
 	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffers[eBuffer::SPOTLIGHT_PIXEL]);
 	Engine::GetAPI()->SetDebugName(myConstantBuffers[u32(eBuffer::SPOTLIGHT_PIXEL)], "LightPass : Spotlight Pixel Constant Buffer");
 	Engine::GetAPI()->HandleErrors(hr, "[LightPass] : Failed to Create Spotlight Pixel Constant Buffer, ");
-
-
-
-
-	myConstantBuffers[eBuffer::SPOTLIGHT_GEO] = Engine::GetAPI()->CreateConstantBuffer(sizeof(m_cbSpotlightGeo));
-
 }
 
 void LightPass::CreatePointlightBuffers()

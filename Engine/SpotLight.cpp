@@ -25,12 +25,15 @@ void SpotLight::Initiate()
 	m_ShadowSpotlight->Initiate(2048.f);
 	m_ShadowSpotlight->GetCamera()->RotateAroundX(cl::DegreeToRad(90.f));
 
-	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/lightvolume.json");
+	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/lightvolume_spot.json");
 	CompiledShader* shader = effect->GetVertexShader();
 
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "ANGLE", 0, DXGI_FORMAT_R32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "RANGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "DIRECTION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	m_InputLayout = Engine::GetAPI()->CreateInputLayout(shader->compiledShader, shader->shaderSize, layout, ARRAYSIZE(layout));
@@ -47,20 +50,24 @@ void SpotLight::Initiate()
 	m_VertexBuffer.myVertexBuffer = Engine::GetAPI()->CreateVertexBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
 
 	Engine::GetInstance()->AddCheckBox(&s_Wireframe, "Wireframe Spotlight");
-	m_gsCBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(m_gsBuffer));
-
-
-	/*ID3D11ShaderReflection* pReflector = nullptr;
-	HRESULT hr = D3DReflect(shader->compiledShader, shader->shaderSize, IID_ID3D11ShaderReflection, (void**)&pReflector);
-	ID3D11ShaderReflectionVariable* ref = pReflector->GetVariableByName("Direction");
-	ID3D11ShaderReflectionConstantBuffer* b = ref->GetBuffer();*/
+	m_gsCBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(gsbuffer));
+	m_psCBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(psbuffer));
 
 }
 
 void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera, const RenderContext& render_context)
 {
+	render_context.m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
+	render_context.m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE,1);
+	m_Model->Render(previousOrientation, aCamera->GetPerspective(), render_context);
 
 	render_context.m_API->UpdateConstantBuffer(m_VertexBuffer.myVertexBuffer, &m_Data, sizeof(spotlight));
+	
+	m_gsBuffer.view_projection = CU::Math::Inverse(previousOrientation) * aCamera->GetPerspective();
+
+	m_psBuffer.color = myData.myLightColor;
+	m_psBuffer.eye_pos = aCamera->GetOrientation().GetPosition();
+	m_psBuffer.light_pos = myData.myOrientation.GetPosition();
 
 	ID3D11DeviceContext* context = render_context.m_Context;
 	context->IASetInputLayout(m_InputLayout);
@@ -72,23 +79,28 @@ void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera
 								, &m_VertexBuffer.myStride
 								, &m_VertexBuffer.myByteOffset);
 
-	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json");
+	render_context.m_API->UpdateConstantBuffer(m_gsCBuffer, &m_gsBuffer);
+	render_context.m_API->UpdateConstantBuffer(m_psCBuffer, &m_psBuffer);
 
+	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/lightvolume_spot.json");
 
+	render_context.m_Context->GSSetConstantBuffers(0, 1, &m_gsCBuffer);
+	render_context.m_Context->PSSetConstantBuffers(0, 1, &m_psCBuffer);
 
+	render_context.m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE_PARTICLE, 1);
 	render_context.m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 	render_context.m_API->SetRasterizer( s_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 	effect->Use();
 	context->Draw(1, 0);
 	effect->Clear();
 
-	m_Model->Render(previousOrientation, aCamera->GetPerspective(), render_context);
 }
 
 void SpotLight::SetData(const SpotlightData& data)
 {
 	myData = data;
 	m_Data.m_Range = myData.myRange;
+	m_Data.m_Angle = myData.myAngle;
 	SetDirection(myData.myOrientation.GetForward());
 	SetPosition(myData.myLightPosition);
 	//m_ShadowSpotlight->SetAngle(myData.myAngle);
@@ -116,5 +128,6 @@ void SpotLight::SetDirection(const CU::Vector4f& aDirection)
 	myData.myDirection.y = aDirection.y;
 	myData.myDirection.z = aDirection.z;
 	m_Model->GetOrientation().SetForward(aDirection);
+	m_Data.m_Direction = myData.myDirection;
 	//m_ShadowSpotlight->GetCamera()->SetAt(aDirection);
 }

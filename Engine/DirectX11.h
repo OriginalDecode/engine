@@ -101,12 +101,12 @@ public:
 
 
 
-	void VSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources) override;
-	void PSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources) override;
-	void GSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources) override;
-	void DSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources) override;
-	void HSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources) override;
-	void CSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources) override;
+	void VSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
+	void PSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
+	void GSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
+	void DSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
+	void HSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
+	void CSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
 
 	//__________________________
 	// DirectX Functions

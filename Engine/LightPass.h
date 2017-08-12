@@ -47,20 +47,12 @@ private:
 		CU::Vector4f myDirection;
 	} mySpotPixelConstantStruct;
 
-	struct cbSpotlightGeo
-	{
-		CU::Matrix44f m_ViewProjection;
-		CU::Vector4f m_Direction;
-	} m_cbSpotlightGeo;
-
-
 	enum eBuffer
 	{
 		POINTLIGHT_VERTEX,
 		POINTLIGHT_PIXEL,
 		SPOTLIGHT_VERTEX,
 		SPOTLIGHT_PIXEL,
-		SPOTLIGHT_GEO,
 		NOF_BUFFERS
 	};
 	ID3D11Buffer* myConstantBuffers[NOF_BUFFERS];

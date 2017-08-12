@@ -8,23 +8,23 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
-typedef void** GTexture2D;
-typedef void** GTexture3D;
-typedef void** GShaderResourceView;
-typedef void** GDepthStencilView;
-typedef void** GRenderTargetView;
-typedef void** GViewport;
-typedef void** GVertexShader;
-typedef void** GPixelShader;
-typedef void** GGeometryShader;
-typedef void** GHullShader;
-typedef void** GDomainShader;
-typedef void** GComputeShader;
-typedef void** GShaderBlob;
-typedef void** GDevice;
-typedef void** GContext;
-typedef void** GBuffer;
-typedef void** GInputLayout;
+// typedef void** GTexture2D;
+// typedef void** GTexture3D;
+// typedef void** GShaderResourceView;
+// typedef void** GDepthStencilView;
+// typedef void** GRenderTargetView;
+// typedef void** GViewport;
+// typedef void** GVertexShader;
+// typedef void** GPixelShader;
+// typedef void** GGeometryShader;
+// typedef void** GHullShader;
+// typedef void** GDomainShader;
+// typedef void** GComputeShader;
+// typedef void** GShaderBlob;
+// typedef void** GDevice;
+// typedef void** GContext;
+// typedef void** GBuffer;
+// typedef void** GInputLayout;
 
 
 struct CreateInfo
@@ -156,12 +156,12 @@ public:
 	virtual void SetShaderState(ShaderState& shader_state) = 0;
 
 
-	virtual void VSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources) = 0;
-	virtual void PSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources) = 0;
-	virtual void GSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources) = 0;
-	virtual void DSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources) = 0;
-	virtual void HSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources) = 0;
-	virtual void CSSetShaderResource(s32 start_slot, s32 count, GShaderResourceView* resources) = 0;
+	virtual void VSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
+	virtual void PSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
+	virtual void GSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
+	virtual void DSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
+	virtual void HSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
+	virtual void CSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 
 
 

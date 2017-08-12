@@ -36,7 +36,7 @@ ShaderFactory::~ShaderFactory()
 
 void ShaderFactory::LoadShader(Effect* anEffect)
 {
-	std::string path = anEffect->myFileName;
+	std::string path = anEffect->m_FileName;
 	s32 pos = path.rfind("/");
 	std::string sub = path.substr(0, pos + 1);
 

@@ -1,32 +1,31 @@
 cbuffer Spotlight : register( b0 )
 {
-	row_major float4x4 InvertedProjection; 
-	row_major float4x4 InvertedView; 
 	float4 color;
-	float4 position;
-	float4 camPosition;
-	row_major float4x4 shadowMVP;
-    float4 direction;
+	float4 eye_pos;
+	float4 light_pos;
 };
 
 struct gsOut
 {
     float4 m_Position : SV_POSITION;
-	float4 uv : TEXCOORD;
     float m_InterpolDist : DISTANCE;
 	float range : RANGE;
+	float cosAngle : ANGLE;
 	float4 normal : NORMAL;
+	float4 direction : DIRECTION;
 };
 
 
-float4 main(gsOut input)
+float4 main(gsOut input) : SV_Target
 {
     float4 output = float4(0, 0, 0, 0);
-	float4 lighToEye = normalize(camPosition - input.m_Position);
-	float lightToSurfaceAngle = dot(lighToEye, direction);
-	if(lightToSurfaceAngle > cosCone)
-		output += float4(color.rgb, 1) * pow(input.m_InterpolDist, 5);// * pow(lightToSurfaceAngle, 10);
+	float4 lighToEye = normalize(eye_pos - light_pos);
+	float lightToSurfaceAngle = dot(lighToEye, input.direction); //wait what
 
-    return output;
+	float v0 = pow(input.m_InterpolDist, 3);
+	float v1 = lerp(0.f,1.f,8.f);
+	output += float4(color.rgb, 1) * v0 ;//* pow(lightToSurfaceAngle, 10);
+
+    return saturate(output);
 };
 

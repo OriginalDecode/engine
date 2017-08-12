@@ -34,7 +34,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 D = saturate(D_GGX(vectors.HdotN,(data.roughness ) / 2.f));
 	float3 V = saturate(V_SchlickForGGX((data.roughness ) / 2.f, vectors.NdotV, vectors.NdotL));
 
-	float cosCone = cos(53.f);//input.cosAngle.x;
+	float cosCone = input.cosAngle.x;
     float3 lightToPixel = normalize(-vectors.toLight);
     float spotFactor = max(0, dot(lightToPixel, normalize(direction)));
 
@@ -44,8 +44,12 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
 
 	col.a = 1;
-	float3 directSpec = float3(1,1,1) + (D * F * V);
+	float3 directSpec = float3(1,1,1) + (D  * F * V);
 	float3 final_color = saturate( directSpec * ((attenuation * angularAttenuation) * col)) * 100;
+
+
+
+
 	float4 newPos = data.world_pos + (data.normal * 0.4);
 	newPos.w = 1;
 	float4 shadowVec = mul(newPos, shadowMVP);

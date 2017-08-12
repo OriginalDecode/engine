@@ -171,7 +171,7 @@ void Game::Update(float dt)
 	CU::Matrix44f orientation;
 	orientation.SetPosition(CU::Vector3f(50, 10, 50));
 	orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * orientation;
-	m_Synchronizer->AddRenderCommand(SpotlightCommand(0, 53, 5, 1, CU::Vector4f(255,0,0,255), orientation, false));
+	m_Synchronizer->AddRenderCommand(SpotlightCommand(0, 53, 8, 1, CU::Vector4f(255,0,0,255), orientation, false));
 
 
 	HandleMovement(input_wrapper, entity_speed, dt);

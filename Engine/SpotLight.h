@@ -35,15 +35,28 @@ private:
 	struct gsbuffer
 	{
 		CU::Matrix44f view_projection;
-		CU::Vector4f direction;
 	} m_gsBuffer;
 	IBuffer* m_gsCBuffer = nullptr;
 
+	struct psbuffer
+	{
+		CU::Vector4f color;
+		CU::Vector4f eye_pos;
+		CU::Vector4f light_pos;
+	} m_psBuffer;
+	IBuffer* m_psCBuffer = nullptr;
+
+	struct vsbuffer
+	{
+		CU::Matrix44f world;
+	} m_vsBuffer;
 
 	struct spotlight
 	{
-		CU::Vector4f m_Position;
-		CU::Vector4f m_Range;
+		CU::Vector3f m_Position;
+		float m_Angle = 0.f;
+		float m_Range = 0.f;
+		CU::Vector3f m_Direction;
 	} m_Data;
 
 	LightModel* m_Model = nullptr;

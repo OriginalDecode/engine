@@ -146,12 +146,12 @@ public:
 	virtual void SetDomainShader(CompiledShader* vertex_shader) = 0;
 	virtual void SetComputeShader(CompiledShader* vertex_shader) = 0;
 
-	virtual void* CreateVertexShader(void* pBuffer, float buffer_size) = 0;
-	virtual void* CreatePixelShader(void* pBuffer, float buffer_size) = 0;
-	virtual void* CreateGeometryShader(void* pBuffer, float buffer_size) = 0;
-	virtual void* CreateHullShader(void* pBuffer, float buffer_size) = 0;
-	virtual void* CreateDomainShader(void* pBuffer, float buffer_size) = 0;
-	virtual void* CreateComputeShader(void* pBuffer, float buffer_size) = 0;
+	virtual void* CreateVertexShader(void* pBuffer, float buffer_size, const std::string& debug_name ) = 0;
+	virtual void* CreatePixelShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
+	virtual void* CreateGeometryShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
+	virtual void* CreateHullShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
+	virtual void* CreateDomainShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
+	virtual void* CreateComputeShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
 
 	virtual void SetShaderState(ShaderState& shader_state) = 0;
 

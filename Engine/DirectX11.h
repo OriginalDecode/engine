@@ -81,12 +81,12 @@ public:
 	void SetComputeShader(CompiledShader* compute_shader) override;
 
 
-	void* CreateVertexShader(void* pBuffer, float buffer_size) override;
-	void* CreatePixelShader(void* pBuffer, float buffer_size) override;
-	void* CreateGeometryShader(void* pBuffer, float buffer_size) override;
-	void* CreateHullShader(void* pBuffer, float buffer_size) override;
-	void* CreateDomainShader(void* pBuffer, float buffer_size) override;
-	void* CreateComputeShader(void* pBuffer, float buffer_size) override;
+	void* CreateVertexShader(void* pBuffer, float buffer_size, const std::string& debug_name) override;
+	void* CreatePixelShader(void* pBuffer, float buffer_size, const std::string& debug_name) override;
+	void* CreateGeometryShader(void* pBuffer, float buffer_size, const std::string& debug_name) override;
+	void* CreateHullShader(void* pBuffer, float buffer_size, const std::string& debug_name) override;
+	void* CreateDomainShader(void* pBuffer, float buffer_size, const std::string& debug_name) override;
+	void* CreateComputeShader(void* pBuffer, float buffer_size, const std::string& debug_name) override;
 
 	void* CreateBlendState(s32 render_target_write_mask
 		, s32 enable_blend_flags

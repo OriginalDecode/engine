@@ -581,75 +581,62 @@ void DirectX11::SetComputeShader(CompiledShader* compute_shader)
 	myContext->CSSetShader(compute_shader ? static_cast<IComputeShader*>(compute_shader->m_Shader) : nullptr, nullptr, 0);
 }
 
-void* DirectX11::CreateVertexShader(void* pBuffer, float buffer_size)
+void* DirectX11::CreateVertexShader(void* pBuffer, float buffer_size, const std::string& debug_name)
 {
-	ID3D11VertexShader* vShader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
-	HRESULT hr = myDevice->CreateVertexShader(pBuffer, buffer_size, nullptr, &vShader);
-	if ( hr != S_OK )
-	{
-		DL_ASSERT("Failed to create vertex shader!");
-	}
-
-	return vShader;
+	ID3D11VertexShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
+	HRESULT hr = myDevice->CreateVertexShader(pBuffer, buffer_size, nullptr, &shader);
+	DL_ASSERT_EXP(hr == S_OK, "Failed to create vertex shader!");
+	SetDebugName(shader, debug_name);
+	return shader;
 }
 
-void* DirectX11::CreatePixelShader(void* pBuffer, float buffer_size)
+void* DirectX11::CreatePixelShader(void* pBuffer, float buffer_size, const std::string& debug_name)
 {
 	ID3D11PixelShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
 	HRESULT hr = myDevice->CreatePixelShader(pBuffer, buffer_size, nullptr, &shader);
-	if ( hr != S_OK )
-	{
-		DL_ASSERT("Failed to create vertex shader!");
-	}
+	DL_ASSERT_EXP(hr == S_OK, "Failed to create pixel shader!");
+	SetDebugName(shader, debug_name);
 
 	return shader;
 }
 
-void* DirectX11::CreateGeometryShader(void* pBuffer, float buffer_size)
+void* DirectX11::CreateGeometryShader(void* pBuffer, float buffer_size, const std::string& debug_name)
 {
 	ID3D11GeometryShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
 	HRESULT hr = myDevice->CreateGeometryShader(pBuffer, buffer_size, nullptr, &shader);
-	if ( hr != S_OK )
-	{
-		DL_ASSERT("Failed to create vertex shader!");
-	}
+	DL_ASSERT_EXP(hr == S_OK, "Failed to create geometry shader!");
+	SetDebugName(shader, debug_name);
 
 	return shader;
 }
 
-void* DirectX11::CreateHullShader(void* pBuffer, float buffer_size)
+void* DirectX11::CreateHullShader(void* pBuffer, float buffer_size, const std::string& debug_name)
 {
 	ID3D11HullShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
 	HRESULT hr = myDevice->CreateHullShader(pBuffer, buffer_size, nullptr, &shader);
-	if ( hr != S_OK )
-	{
-		DL_ASSERT("Failed to create vertex shader!");
-	}
+	DL_ASSERT_EXP(hr == S_OK, "Failed to create hull shader!");
+	SetDebugName(shader, debug_name);
 
 	return shader;
 }
 
-void* DirectX11::CreateDomainShader(void* pBuffer, float buffer_size)
+void* DirectX11::CreateDomainShader(void* pBuffer, float buffer_size, const std::string& debug_name)
 {
 	ID3D11DomainShader* shader = nullptr;
 	HRESULT hr = myDevice->CreateDomainShader(pBuffer, buffer_size, nullptr, &shader);
-	if ( hr != S_OK )
-	{
-		DL_ASSERT("Failed to create vertex shader!");
-	}
+	DL_ASSERT_EXP(hr == S_OK, "Failed to create domain shader!");
+	SetDebugName(shader, debug_name);
+
 
 	return shader;
 }
 
-void* DirectX11::CreateComputeShader(void* pBuffer, float buffer_size)
+void* DirectX11::CreateComputeShader(void* pBuffer, float buffer_size, const std::string& debug_name)
 {
 	ID3D11ComputeShader* shader = nullptr;
 	HRESULT hr = myDevice->CreateComputeShader(pBuffer, buffer_size, nullptr, &shader);
-	if ( hr != S_OK )
-	{
-		DL_ASSERT("Failed to create vertex shader!");
-	}
-
+	DL_ASSERT_EXP(hr == S_OK, "Failed to create compute shader!");
+	SetDebugName(shader, debug_name);
 	return shader;
 }
 

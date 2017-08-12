@@ -307,17 +307,17 @@ void* Engine::CreateShader(IBlob* compiled_shader_blob, eShaderType type, const 
 	switch (type)
 	{
 		case eShaderType::VERTEX:
-			return myAPI->CreateVertexShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+			return myAPI->CreateVertexShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), debug_name);
 		case eShaderType::PIXEL:
-			return myAPI->CreatePixelShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+			return myAPI->CreatePixelShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), debug_name);
 		case eShaderType::GEOMETRY:
-			return myAPI->CreateGeometryShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+			return myAPI->CreateGeometryShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), debug_name);
 		case eShaderType::HULL:
-			return myAPI->CreateHullShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+			return myAPI->CreateHullShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), debug_name);
 		case eShaderType::DOMAINS:
-			return myAPI->CreateDomainShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+			return myAPI->CreateDomainShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), debug_name);
 		case eShaderType::COMPUTE:
-			return myAPI->CreateComputeShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize());
+			return myAPI->CreateComputeShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), debug_name);
 		default:
 			DL_ASSERT("No valid shader type!");
 	}

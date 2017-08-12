@@ -38,7 +38,6 @@ psInput main(vsInput input)
 	output.range.x = range.x;
 	output.range.y = angle.x;
 
-
 	float x = output.pos.x;
 	float y = output.pos.y;
 	float w = output.pos.w;

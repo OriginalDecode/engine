@@ -22,10 +22,8 @@ float4 main(gsOut input) : SV_Target
 	float4 lighToEye = normalize(eye_pos - light_pos);
 	float lightToSurfaceAngle = dot(lighToEye, input.direction); //wait what
 
-	float v0 = pow(input.m_InterpolDist, 3);
-	float v1 = lerp(0.f,1.f,8.f);
+	float v0 = pow(input.m_InterpolDist, 5);
 	output += float4(color.rgb, 1) * v0 ;//* pow(lightToSurfaceAngle, 10);
-
     return saturate(output);
 };
 

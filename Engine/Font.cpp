@@ -286,12 +286,6 @@ void CFont::UpdateBuffer()
 			
 		}
 
-		if (myText[i - 1] == '#')
-		{
-			int apa;
-			apa = 5;
-		}
-
 		if (myText[i] == ')') 
 		{
 			myColor = myDefaultColor;

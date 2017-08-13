@@ -52,7 +52,7 @@ private:
 	std::unordered_map<std::string, Texture*> myTextures;
 	std::unordered_map<std::string, Effect*> myEffects;
 	std::unordered_map<std::string, Model*> myModels;
-	std::map<cl::CHashString<128>, Sprite*> m_Sprites;
+	std::map<u64, Sprite*> m_Sprites;
 
 	bool LoadTexture(std::string aFilePath);
 	Effect* LoadEffect(const std::string& aFilePath);

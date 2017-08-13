@@ -26,6 +26,8 @@
 #include "CameraHandle.h"
 #include <Engine/Effect.h>
 #include <Engine/Texture.h>
+#include <Input/ControllerInput.h>
+
 static std::string key = "Data/Model/sponza/sponza_2.fbx";
 static std::string cube = "Data/Model/cube.fbx";
 static std::string wall = "Data/Model/wall.fbx";
@@ -62,7 +64,9 @@ void Game::InitState(StateStack* state_stack)
 	//m_MainCharacter->Load("Data/Textures/main_character.dds");
 
 	//m_MainCharacter = m_Engine->GetSprite("Data/Textures/particles/test_normal.dds");
-	m_MainKey = "Data/Textures/particles/test_normal.dds";
+	m_MainKey = "Data/Textures/main_character.dds";
+	m_Engine->GetInputHandle()->AddController(0);
+	m_Position = { 1920.f / 2.f, 1080.f / 2.f };
 }
 
 void Game::Initiate(const std::string& level)
@@ -113,12 +117,66 @@ void Game::Update(float dt)
 {
 	CameraHandle::GetInstance()->Update();
 
-	m_Synchronizer->AddRenderCommand(SpriteCommand(m_MainKey, { 1920 / 2, 1080/2}));
+	m_Synchronizer->AddRenderCommand(SpriteCommand(m_MainKey, m_Position));
+
+	ControllerInput * controller = m_Engine->GetInputHandle()->GetController(0);
+
+	const ControllerState& state = controller->GetState();
+	const ControllerState& prev = controller->GetPrevState();
+	if (state.m_Buttons & eA)
+	{
+		m_Position.y -= 100.f * dt;
+	}
+
+
+
+	float x_value = (float)state.m_ThumbLX;
+	float y_value = -(float)state.m_ThumbLY;
+
+	float magnitude = sqrt(x_value * x_value + y_value * y_value); //Do something to skip the sqrt?
+	float normalized = 0.f;
+	const float r_thumb_deadzone = 8689.f;
+
+	if (magnitude > r_thumb_deadzone)
+	{
+		if (magnitude > SHRT_MAX)
+			magnitude = SHRT_MAX;
+
+		magnitude -= r_thumb_deadzone;
+
+		normalized = magnitude / (SHRT_MAX - r_thumb_deadzone);
+
+	}
+	else
+	{
+		x_value = 0.f;
+		y_value = 0.f;
+	}
+
+
+	if (normalized < -0.5f || normalized > 0.5f)
+	{
+		x_value /= 2.f;
+		y_value /= 2.f;
+	}
+
+	m_Position.x += (x_value / 100.f * dt);
+	m_Position.y += (y_value / 100.f * dt);
 
 
 
 
-	//OldUpdate(dt);
+	/*else
+	{
+		if (m_Position.y < (1080.f - 64.f))
+		{
+			m_Position.y += 100.f * dt;
+		}
+	}*/
+
+	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5f, 0.5f), "x: %.3f\ny: %.3f", m_Position.x, m_Position.y));
+
+
 
 }
 

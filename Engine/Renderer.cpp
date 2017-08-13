@@ -600,6 +600,7 @@ void Renderer::Render2DCommands()
 		auto command = reinterpret_cast<SpriteCommand*>(commands0[i]);
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::SPRITE, "Expected Sprite command type");
 		Sprite* sprite = m_Engine->GetSprite(command->m_Key);
+		sprite->SetPosition(command->m_Position);
 		sprite->Render(m_Camera);
 		//mySprite->SetPosition(command->m_Position);
 		//mySprite->SetShaderView(command->m_Resource);

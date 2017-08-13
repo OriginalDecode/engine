@@ -39,6 +39,10 @@ private:
 	Texture* m_VolumeTexture = nullptr;
 	Sprite* m_MainCharacter = nullptr;
 	cl::CHashString<128> m_MainKey;
+
+	CU::Vector2f m_Position;
+
+
 	World m_World;
 	CPauseState m_PauseState;
 	CU::Vector3f pointHit;

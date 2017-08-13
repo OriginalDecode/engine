@@ -131,6 +131,7 @@ Effect* AssetsContainer::LoadEffect(const std::string& aFilePath)
 Sprite* AssetsContainer::LoadSprite(const cl::CHashString<128>& path)
 {
 	Sprite* sprite = new Sprite;
+	m_Sprites.emplace(path.GetHash(), sprite);
 	sprite->Initiate(path);
 	return sprite;
 }
@@ -139,7 +140,7 @@ Sprite* AssetsContainer::GetSprite(const cl::CHashString<128>& path)
 {
 	for (auto it = m_Sprites.begin(); it != m_Sprites.end(); it++)
 	{
-		if (it->first.GetHash() != path.GetHash())
+		if (it->first != path.GetHash())
 			continue;
 
 		return it->second;

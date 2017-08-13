@@ -165,6 +165,5 @@
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp">
       <Filter>DataStructures\Hashmap</Filter>
     </ClCompile>
-    <ClCompile Include="HashString.cpp" />
   </ItemGroup>
 </Project>

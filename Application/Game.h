@@ -12,6 +12,7 @@ class CMousePicker;
 class Camera;
 class InputWrapper;
 class Texture;
+class Sprite;
 class Game : public State
 {
 public:
@@ -22,6 +23,8 @@ public:
 	void Initiate(const std::string& level);
 
 	void Update(float aDeltaTime) override;
+
+	void OldUpdate(float dt);
 
 	void HandleMovement(InputWrapper* input_wrapper, float entity_speed, float dt);
 
@@ -34,7 +37,8 @@ public:
 
 private:
 	Texture* m_VolumeTexture = nullptr;
-
+	Sprite* m_MainCharacter = nullptr;
+	cl::CHashString<128> m_MainKey;
 	World m_World;
 	CPauseState m_PauseState;
 	CU::Vector3f pointHit;

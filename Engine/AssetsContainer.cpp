@@ -5,6 +5,7 @@
 #include "Effect.h"
 #include "ShaderFactory.h"
 #include "Texture.h"
+#include <Engine/Sprite.h>
 
 
 AssetsContainer::~AssetsContainer()
@@ -34,7 +35,7 @@ void AssetsContainer::Initiate()
 	myTextures.empty();
 	myEffects.empty();
 	myModels.empty();
-	mySprites.empty();
+	m_Sprites.empty();
 }
 
 Texture* AssetsContainer::GetTexture(std::string aFilePath)
@@ -65,6 +66,8 @@ Texture* AssetsContainer::GetTexture(std::string aFilePath)
 
 	return myTextures[aFilePath];
 }
+
+
 
 Effect* AssetsContainer::GetEffect(const std::string& aFilePath)
 {
@@ -124,6 +127,26 @@ Effect* AssetsContainer::LoadEffect(const std::string& aFilePath)
 	myEffects[aFilePath] = effect;
 	return myEffects[aFilePath];
 }
+
+Sprite* AssetsContainer::LoadSprite(const cl::CHashString<128>& path)
+{
+	Sprite* sprite = new Sprite;
+	sprite->Initiate(path);
+	return sprite;
+}
+
+Sprite* AssetsContainer::GetSprite(const cl::CHashString<128>& path)
+{
+	for (auto it = m_Sprites.begin(); it != m_Sprites.end(); it++)
+	{
+		if (it->first.GetHash() != path.GetHash())
+			continue;
+
+		return it->second;
+	}
+	return LoadSprite(path);
+}
+
 
 std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect, bool thread)
 {

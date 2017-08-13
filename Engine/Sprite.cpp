@@ -18,10 +18,18 @@ void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<f
 
 }
 
-void Sprite::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+//void Sprite::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+//{
+//	mySprite = new SpriteModel();
+//	mySprite->Initiate(aShaderResource, aSize, aPosition);
+//}
+
+void Sprite::Initiate(const cl::CHashString<128>& path)
 {
-	mySprite = new SpriteModel();
-	mySprite->Initiate(aShaderResource, aSize, aPosition);
+	mySprite = new SpriteModel;
+	mySprite->Initiate(path);
+	
+
 }
 
 void Sprite::Render(Camera* aCamera)
@@ -82,8 +90,8 @@ void Sprite::SetScale(const CU::Math::Vector2<float>& aScale)
 	//mySprite->GetEffect()->SetScale(aScale);
 }
 
-void Sprite::SetShaderView(ID3D11ShaderResourceView* srv)
-{
-	mySprite->SetTexture(srv);
-}
-
+//void Sprite::SetShaderView(ID3D11ShaderResourceView* srv)
+//{
+//	mySprite->SetTexture(srv);
+//}
+//

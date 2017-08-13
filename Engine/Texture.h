@@ -59,7 +59,11 @@ private:
 
 	UsageType GetUsage(int flags) const;
 
-	ITexture2D* m_DepthTexture = nullptr;
+	union 
+	{
+		ITexture2D* m_DepthTexture = nullptr;
+		ITexture2D* m_Texture;
+	};
 
 
 	union

@@ -1,15 +1,15 @@
 #pragma once
-#include <Windows.h>
 #include <standard_datatype.hpp>
+#include <CommonLib/HashString.h>
+
 #include "EngineDefines.h"
-#include <DL_Debug/DL_Debug.h>
-#include <string>
 
 #ifdef _PROFILE
 #include <easy/profiler.h>
 #include <easy/reader.h>
 #endif
 
+#include <Windows.h>
 
 #define BITFLAG(x) (1 << x)
 

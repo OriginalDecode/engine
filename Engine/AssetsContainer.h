@@ -36,13 +36,13 @@ public:
 	void ReloadTexture(Texture* texture);
 	Texture* GetTexture(std::string aFilePath);
 
+	Sprite* GetSprite(const cl::CHashString<128>& path);
 	Effect* GetEffect(const std::string& aFilePath);
 	Model* GetModel(const std::string& aFilePath);
 	std::string LoadModel(std::string aFilePath, std::string effect, bool thread = true);
 	template<typename T>
 	std::string LoadModel(std::string filepath, std::string effect_filepath, T* pModel, bool thread = true);
 
-	void AddLoadRequest(std::string file, eRequestType request_type);
 
 private:
 	Engine* m_Engine = nullptr;
@@ -52,10 +52,12 @@ private:
 	std::unordered_map<std::string, Texture*> myTextures;
 	std::unordered_map<std::string, Effect*> myEffects;
 	std::unordered_map<std::string, Model*> myModels;
-	std::unordered_map<std::string, Sprite*> mySprites;
+	std::map<cl::CHashString<128>, Sprite*> m_Sprites;
 
 	bool LoadTexture(std::string aFilePath);
 	Effect* LoadEffect(const std::string& aFilePath);
+
+	Sprite* LoadSprite(const cl::CHashString<128>& path);
 
 	ShaderFactory* m_ShaderFactory;
 	CModelImporter* m_ModelLoader;

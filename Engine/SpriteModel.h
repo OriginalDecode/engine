@@ -19,7 +19,11 @@ public:
 	~SpriteModel();
 
 	void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
-	void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+	void Initiate(Texture* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+	void Initiate(const cl::CHashString<128>& path);
+
+	void CreateVertices();
+
 
 	void Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
 	Effect* GetEffect();
@@ -29,9 +33,9 @@ public:
 
 
 	const CU::Math::Vector2<float>& GetPosition();
-	void SetTexture(ID3D11ShaderResourceView* srv);
+	void SetTexture(Texture* srv);
 private:
-	ID3D11ShaderResourceView* myTexture;
+	Texture* myTexture;
 
 	void UpdateConstantBuffer();
 

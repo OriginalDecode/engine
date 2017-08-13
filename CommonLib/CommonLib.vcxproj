@@ -62,7 +62,6 @@
   <ItemGroup>
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp" />
     <ClCompile Include="FileWatcher.cpp" />
-    <ClCompile Include="HashString.cpp" />
     <ClCompile Include="JSON\JSONReader.cpp" />
     <ClCompile Include="Math\Quaternion\Quaternion.cpp" />
     <ClCompile Include="Randomizer.cpp" />

@@ -31,6 +31,9 @@ static std::string cube = "Data/Model/cube.fbx";
 static std::string wall = "Data/Model/wall.fbx";
 static std::string default_cube = "default_cube";
 #define KEY_USED default_cube
+
+#include <CommonLib/HashString.h>
+
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
@@ -44,7 +47,7 @@ void Game::InitState(StateStack* state_stack)
 	Initiate("Data/Levels/level_03.level");
 	//m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
 
-	m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
+	//m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
 	m_Engine->LoadModel(KEY_USED, "Shaders/volume.json", true);
 	Effect* volume_shader = m_Engine->GetEffect("Shaders/volume.json");
 
@@ -55,6 +58,11 @@ void Game::InitState(StateStack* state_stack)
 
 	light = m_Engine->RegisterLight();
 
+	//m_MainCharacter = new Texture;
+	//m_MainCharacter->Load("Data/Textures/main_character.dds");
+
+	//m_MainCharacter = m_Engine->GetSprite("Data/Textures/particles/test_normal.dds");
+	m_MainKey = "Data/Textures/particles/test_normal.dds";
 }
 
 void Game::Initiate(const std::string& level)
@@ -104,6 +112,18 @@ void Game::Render(bool render_through)
 void Game::Update(float dt)
 {
 	CameraHandle::GetInstance()->Update();
+
+	m_Synchronizer->AddRenderCommand(SpriteCommand(m_MainKey, { 1920 / 2, 1080/2}));
+
+
+
+
+	//OldUpdate(dt);
+
+}
+
+void Game::OldUpdate(float dt)
+{
 	m_FrameCount++;
 	m_AverageFPS += m_Engine->GetFPS();
 	m_Time -= dt;
@@ -162,7 +182,7 @@ void Game::Update(float dt)
 
 	CU::Vector3f pos = m_Camera->GetOrientation().GetPosition();
 	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75f, 0.1f), "\nx:%.3f\ny:%.3f\nz:%.3f\n#%s(%d)", pos.x, pos.y, pos.z,
-												  ((m_FPSToPrint >= 50.f) ? "00FF00" : (m_FPSToPrint < 25.f) ? "FF0000" : "FFFF00"), m_FPSToPrint));
+		((m_FPSToPrint >= 50.f) ? "00FF00" : (m_FPSToPrint < 25.f) ? "FF0000" : "FFFF00"), m_FPSToPrint));
 
 	AddRenderCommand(ModelCommand(KEY_USED, CU::Vector3f(0.f, 10.f, 0.f), false));
 	AddRenderCommand(ModelCommand(key, CU::Vector3f(50, 0, 50), false));
@@ -171,7 +191,7 @@ void Game::Update(float dt)
 	CU::Matrix44f orientation;
 	orientation.SetPosition(CU::Vector3f(50, 10, 50));
 	orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * orientation;
-	m_Synchronizer->AddRenderCommand(SpotlightCommand(0, 53, 12, 1, CU::Vector4f(255,0,0,255), orientation, false));
+	m_Synchronizer->AddRenderCommand(SpotlightCommand(0, 53, 12, 1, CU::Vector4f(255, 0, 0, 255), orientation, false));
 
 
 	HandleMovement(input_wrapper, entity_speed, dt);

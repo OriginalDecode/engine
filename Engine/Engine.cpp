@@ -420,6 +420,11 @@ Model* Engine::GetModel(const std::string& aFilePath)
 	return myAssetsContainer->GetModel(aFilePath);
 }
 
+Sprite* Engine::GetSprite(const cl::CHashString<128>& path)
+{
+	return myAssetsContainer->GetSprite(path);
+}
+
 std::string Engine::LoadModel(std::string aFilePath, std::string effect, bool thread)
 {
 	myAssetsContainer->LoadModel(aFilePath, effect, thread);
@@ -580,19 +585,6 @@ bool ListBox(const char* label, int* current_index, std::vector<std::string>& va
 		return false;
 
 	return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size(), values.size());
-}
-
-
-static void DrawTexture(const ImDrawList* list, const ImDrawCmd* cmd)
-{
-	ImVec2 w_size = ImGui::GetWindowSize();
-	w_size.x *= 0.65f;
-	w_size.y = w_size.x / 1.777777777777777777777777777777778;
-
-	//list->PushTextureID(0);
-
-
-	//Draw a quad that is adapted to the window.
 }
 
 void Engine::DebugTextures()

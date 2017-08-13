@@ -28,10 +28,37 @@ void SpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vect
 	myTexturePath = aTexturePath;
 	mySize = aSize;
 	myPosition = aPosition;
-	Texture* text = Engine::GetInstance()->GetTexture(myTexturePath);
-	myTexture = text->GetShaderView();
+	myTexture = Engine::GetInstance()->GetTexture(myTexturePath);
 	myEffect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");
+	CreateVertices();
+}
 
+void SpriteModel::Initiate(Texture* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+{
+	myWindowSize = Engine::GetInstance()->GetWindowSize();
+
+	mySize = aSize;
+	myPosition = aPosition;
+	myEffect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");
+	myTexture = aShaderResource;
+	CreateVertices();
+}
+
+void SpriteModel::Initiate(const cl::CHashString<128>& path)
+{
+	myWindowSize = Engine::GetInstance()->GetWindowSize();
+	myEffect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");
+	myTexture = Engine::GetInstance()->GetTexture(path.c_str());
+
+	mySize.x = myTexture->GetWidth();
+	mySize.y = myTexture->GetHeight();
+
+	CreateVertices();
+}
+
+
+void SpriteModel::CreateVertices()
+{
 	myVertexFormat.Add(VertexLayoutPosUV[0]);
 	myVertexFormat.Add(VertexLayoutPosUV[1]);
 
@@ -86,80 +113,10 @@ void SpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vect
 	InitiateVertexBuffer();
 	InitiateIndexBuffer();
 	InitConstantBuffer();
-	//InitiateBlendState();
-}
-
-void SpriteModel::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
-{
-	myWindowSize = Engine::GetInstance()->GetWindowSize();
-
-	mySize = aSize;
-	myPosition = aPosition;
-	myEffect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");
-	myTexture = aShaderResource;
-	//myEffect->SetAlbedo(aShaderResource);
-
-	myVertexFormat.Init(2);
-	myVertexFormat.Add(VertexLayoutPosUV[0]);
-	myVertexFormat.Add(VertexLayoutPosUV[1]);
-
-	CU::GrowingArray<VertexTypePosUV> vertices;
-	CU::GrowingArray<int> indices;
-	float halfWidth = mySize.x * 0.5f;
-	float halfHeight = mySize.y * 0.5f;
-	VertexTypePosUV v;
-	v.myPosition = { -halfWidth, -halfHeight, 1 };
-	v.myUV = { 0, 1 };
-	vertices.Add(v);
-
-	v.myPosition = { -halfWidth, halfHeight, 1 };
-	v.myUV = { 0, 0 };
-	vertices.Add(v);
-
-	v.myPosition = { halfWidth, -halfHeight, 1 };
-	v.myUV = { 1, 1 };
-	vertices.Add(v);
-
-	v.myPosition = { halfWidth, halfHeight, 1 };
-	v.myUV = { 1, 0 };
-	vertices.Add(v);
-
-
-	indices.Add(0);
-	indices.Add(1);
-	indices.Add(2);
-
-	indices.Add(3);
-	indices.Add(2);
-	indices.Add(1);
-
-	myVertexBuffer = new VertexBufferWrapper;
-	myVertexData = new VertexDataWrapper;
-	myIndexBuffer = new IndexBufferWrapper;
-	myIndexData = new IndexDataWrapper;
-
-	myVertexData->myNrOfVertexes = vertices.Size();
-	myVertexData->myStride = sizeof(VertexTypePosUV);
-	myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
-	myVertexData->myVertexData = new char[myVertexData->mySize]();
-	memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
-
-	myIndexData->myFormat = DXGI_FORMAT_R32_UINT;
-	myIndexData->myIndexCount = 6;
-	myIndexData->mySize = myIndexData->myIndexCount * 4;
-
-	myIndexData->myIndexData = new char[myIndexData->mySize];
-	memcpy(myIndexData->myIndexData, &indices[0], myIndexData->mySize);
-
-	InitiateVertexBuffer();
-	InitiateIndexBuffer();
-	InitConstantBuffer();
-	//InitiateBlendState();
 }
 
 void SpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 {
-	Engine::GetAPI()->SetBlendState(eBlendStates::BLEND_FALSE);
 	if (!myEffect)
 		return;
 	Engine::GetAPI()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
@@ -181,7 +138,6 @@ void SpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DC
 	context.DrawIndexed(6, 0, 0);
 	myEffect->Clear();
 
-	Engine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
 }
 
 Effect* SpriteModel::GetEffect()
@@ -204,7 +160,7 @@ const CU::Math::Vector2<float>& SpriteModel::GetPosition()
 	return myPosition;
 }
 
-void SpriteModel::SetTexture(ID3D11ShaderResourceView* srv)
+void SpriteModel::SetTexture(Texture* srv)
 {
 	myTexture = srv;
 }

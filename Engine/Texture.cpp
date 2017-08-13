@@ -412,8 +412,20 @@ bool Texture::Load(std::string filepath)
 		DL_ASSERT("Failed to load texture!");
 		return false;
 	}
-
-
+	ID3D11Resource* pResource = nullptr;
+	m_ShaderResource->GetResource(&pResource);
+	pResource->QueryInterface<ID3D11Texture2D>(&m_Texture);
+	if (m_Texture)
+	{
+		D3D11_TEXTURE2D_DESC desc;
+		m_Texture->GetDesc(&desc);
+		myHeight = desc.Height;
+		myWidth = desc.Width;
+	}
+	else
+		DL_MESSAGE("m_Texture was null while loading, this is fine for volume textures");
+	//m_ShaderResource->GetResource(&desc);
+	
 
 	return true;
 }

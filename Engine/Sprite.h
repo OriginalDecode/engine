@@ -1,5 +1,7 @@
 #pragma once
+#include "engine_shared.h"
 #include <Math/Matrix/Matrix.h>
+
 struct ID3D11ShaderResourceView;
 
 
@@ -10,9 +12,12 @@ class Sprite
 {
 public:
 	Sprite() = default;
+
 	~Sprite();
 	void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
-	void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+	//void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
+	void Initiate(const cl::CHashString<128>& path);
+
 
 	void Render(Camera* aCamera);
 	const CU::Math::Vector2<float>& GetPosition();
@@ -22,7 +27,7 @@ public:
 	void SetHotspot(const CU::Math::Vector2<float>& aHotspot);
 	void SetSize(const CU::Math::Vector2<float>& aSize);
 	void SetScale(const CU::Math::Vector2<float>& aScale);
-	void SetShaderView(ID3D11ShaderResourceView* srv);
+	//void SetShaderView(ID3D11ShaderResourceView* srv);
 private:
 
 	SpriteModel* mySprite = nullptr;

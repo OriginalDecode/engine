@@ -593,14 +593,17 @@ void Renderer::Render2DCommands()
 
 	//_________________________
 	// RenderSpriteCommands function?
+	m_API->SetBlendState(eBlendStates::ALPHA_BLEND);
 	const auto commands0 = mySynchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER);
 	for (s32 i = 0; i < commands0.Size(); i++)
 	{
 		auto command = reinterpret_cast<SpriteCommand*>(commands0[i]);
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::SPRITE, "Expected Sprite command type");
-		mySprite->SetPosition(command->m_Position);
-		mySprite->SetShaderView(command->m_Resource);
-		mySprite->Render(m_Camera);
+		Sprite* sprite = m_Engine->GetSprite(command->m_Key);
+		sprite->Render(m_Camera);
+		//mySprite->SetPosition(command->m_Position);
+		//mySprite->SetShaderView(command->m_Resource);
+		//mySprite->Render(m_Camera);
 	}
 
 	//_________________________

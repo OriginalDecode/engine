@@ -1,7 +1,6 @@
 #pragma once
 #define _WINSOCKAPI_
 #include <network/network_api.h>
-
 #include "Window.h"
 #include "VirtualFileSystem.h"
 #include <CommonLib/Math/Vector/Vector.h>
@@ -58,6 +57,7 @@ class Texture;
 class Effect;
 class Terrain;
 class IGraphicsAPI;
+class Sprite;
 
 class Engine
 {
@@ -108,7 +108,7 @@ public:
 	Texture* GetTexture(const std::string& aFilePath);
 	Effect* GetEffect(const std::string& aFilePath);
 	Model* GetModel(const std::string& aFilePath);
-
+	Sprite* GetSprite(const cl::CHashString<128>& path);
 
 	std::string LoadModel(std::string aFilePath, std::string effect, bool thread);
 	template<typename T>

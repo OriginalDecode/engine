@@ -1,4 +1,5 @@
 #pragma once
+#include <Engine/engine_shared.h>
 #include <string>
 #include <CommonLib/Math/Matrix/Matrix.h>
 #include <Engine/Line3D.h>
@@ -20,6 +21,7 @@ struct RenderCommand
 		PARTICLE,
 		NOF_TYPES
 	};
+
 
 	RenderCommand(eCommandType command_type)
 		: m_CommandType(command_type)
@@ -121,21 +123,30 @@ struct PointlightCommand : public RenderCommand
 
 struct SpriteCommand : public RenderCommand
 {
-	SpriteCommand(ID3D11ShaderResourceView* pResource, const CU::Vector2f& position)
+	/*SpriteCommand(ID3D11ShaderResourceView* pResource, const CU::Vector2f& position)
 		: RenderCommand(eCommandType::SPRITE)
 		, m_Resource(pResource)
 		, m_Position(position)
 	{
-	}
+	}*/
 
-	SpriteCommand(Texture* pResource, const CU::Vector2f& position)
+	/*SpriteCommand(Texture* pResource, const CU::Vector2f& position)
 		: RenderCommand(eCommandType::SPRITE)
 		, m_Resource(pResource->GetShaderView())
 		, m_Position(position)
 	{
+	}*/
+
+	SpriteCommand(const cl::CHashString<128>& key, const CU::Vector2f& position)
+		: RenderCommand(eCommandType::SPRITE)
+		, m_Key ( key )
+		, m_Position ( position ) 
+	{
 	}
 
-	ID3D11ShaderResourceView* m_Resource = nullptr;
+
+	//ID3D11ShaderResourceView* m_Resource = nullptr;
+	cl::CHashString<128> m_Key;
 	CU::Vector2f m_Position;
 };
 

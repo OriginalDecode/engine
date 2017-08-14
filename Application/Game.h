@@ -24,6 +24,8 @@ public:
 
 	void Update(float aDeltaTime) override;
 
+	void _2DGame(float dt);
+
 	void OldUpdate(float dt);
 
 	void HandleMovement(InputWrapper* input_wrapper, float entity_speed, float dt);

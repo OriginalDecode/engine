@@ -39,6 +39,7 @@ class Synchronizer
 {
 public:
 	Synchronizer() = default;
+	~Synchronizer();
 	bool Initiate();
 	void SwapBuffer();
 	void Quit();

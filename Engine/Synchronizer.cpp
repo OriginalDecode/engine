@@ -2,6 +2,11 @@
 #include "Synchronizer.h"
 #include <thread>
 
+Synchronizer::~Synchronizer()
+{
+	free(m_MainMemory);
+}
+
 bool Synchronizer::Initiate()
 {
 	const s32 model_buffer_size = 30000 * sizeof(ModelCommand);
@@ -23,7 +28,8 @@ bool Synchronizer::Initiate()
 		text_buffer_size;
 
 	const s32 chunk_size = half_chunk_size * 2;
-	m_MainMemory = malloc(chunk_size);
+	void* ptr = malloc(chunk_size);
+	m_MainMemory = ptr;
 	memory::LinearAllocator allocator = memory::LinearAllocator(chunk_size, m_MainMemory);
 
 	m_CommandBuffers[MODEL_BUFFER][0] =			memory::CommandAllocator(model_buffer_size, sizeof(ModelCommand), allocator.Alloc(model_buffer_size));
@@ -58,7 +64,6 @@ void Synchronizer::SwapBuffer()
 
 void Synchronizer::Quit()
 {
-	free(m_MainMemory);
 	m_LogicDone = true;
 	m_RenderDone = true;
 	m_QuitFlag = true;

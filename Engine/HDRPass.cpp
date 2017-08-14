@@ -45,12 +45,10 @@ void HDRPass::Initiate()
 
 void HDRPass::CleanUp()
 {
-	m_HDRTexture->CleanUp();
 	SAFE_DELETE(m_HDRTexture);
 
 	for (Texture* texture : m_Downsamples)
 	{
-		texture->CleanUp();
 		delete texture;
 		texture = nullptr;
 	}

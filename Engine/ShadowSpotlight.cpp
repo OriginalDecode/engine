@@ -54,14 +54,11 @@ bool ShadowSpotlight::CleanUp()
 	SAFE_DELETE(m_Viewport);
 	SAFE_DELETE(m_Camera);
 
-	m_Depth->CleanUp();
 	SAFE_DELETE(m_Depth);
 
-	m_DepthStencil->CleanUp();
 	SAFE_DELETE(m_DepthStencil);
 
 #ifdef _DEBUG
-	m_Holder->CleanUp();
 	SAFE_DELETE(m_Holder);
 #endif
 	return true;

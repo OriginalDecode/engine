@@ -100,10 +100,6 @@ void Game::Initiate(const std::string& level)
 
 void Game::EndState()
 {
-	m_VolumeTexture->CleanUp();
-	delete m_VolumeTexture;
-	m_VolumeTexture = nullptr;
-
 	m_World.CleanUp();
 	CameraHandle::Destroy();
 	SAFE_DELETE(m_Picker);

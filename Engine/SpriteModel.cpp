@@ -67,19 +67,19 @@ void SpriteModel::CreateVertices()
 	float halfWidth = mySize.x * 0.5f;
 	float halfHeight = mySize.y * 0.5f;
 	VertexTypePosUV v;
-	v.myPosition = { -halfWidth, -halfHeight, 0 };
+	v.myPosition = { -halfWidth, -halfHeight, 0 , 1 };
 	v.myUV = { 0, 1 };
 	vertices.Add(v);
 
-	v.myPosition = { -halfWidth, halfHeight, 0 };
+	v.myPosition = { -halfWidth, halfHeight, 0, 1 };
 	v.myUV = { 0, 0 };
 	vertices.Add(v);
 
-	v.myPosition = { halfWidth, -halfHeight, 0 };
+	v.myPosition = { halfWidth, -halfHeight, 0 , 1 };
 	v.myUV = { 1, 1 };
 	vertices.Add(v);
 
-	v.myPosition = { halfWidth, halfHeight, 0 };
+	v.myPosition = { halfWidth, halfHeight, 0 , 1 };
 	v.myUV = { 1, 0 };
 	vertices.Add(v);
 

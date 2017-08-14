@@ -8,6 +8,13 @@
 #include <d3dcompiler.h>
 #include <string.h>
 #include <Engine/AtmosphereModel.h>
+
+Atmosphere::~Atmosphere()
+{
+	SAFE_RELEASE(m_PixelBuffer);
+	SAFE_RELEASE(m_VertexBuffer);
+}
+
 void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position)
 {
 	m_Engine = Engine::GetInstance();
@@ -40,17 +47,8 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 	m_OuterSphere->SetOrientation(m_OuterOrientation);
 }
 
-void Atmosphere::CleanUp()
-{
-	SAFE_RELEASE(m_PixelBuffer);
-	SAFE_RELEASE(m_VertexBuffer);
-
-
-}
-
 void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth, const RenderContext& render_context)
 {
-
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);

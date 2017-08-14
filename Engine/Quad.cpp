@@ -2,6 +2,12 @@
 #include "Quad.h"
 
 
+Quad::~Quad()
+{
+	SAFE_RELEASE(m_InputLayout);
+	m_ScreenpassShader = nullptr;
+}
+
 void Quad::Initiate()
 {
 	m_VertexData.myNrOfVertexes = 4;
@@ -13,23 +19,21 @@ void Quad::Initiate()
 	CU::GrowingArray<s32> indices;
 
 	VertexTypePosUV vertex;
-	vertex.myPosition = { -1, -1, 0 };
+	vertex.myPosition = { -1, -1, 0, 1 };
 	vertex.myUV = { 0, 1 };
 	vertices.Add(vertex);
 
-	vertex.myPosition = { -1, 1, 0 };
+	vertex.myPosition = { -1, 1, 0 , 1 };
 	vertex.myUV = { 0, 0 };
 	vertices.Add(vertex);
 
-	vertex.myPosition = { 1, -1, 0 };
+	vertex.myPosition = { 1, -1, 0 , 1 };
 	vertex.myUV = { 1, 1 };
 	vertices.Add(vertex);
 
-	vertex.myPosition = { 1, 1, 0 };
+	vertex.myPosition = { 1, 1, 0 , 1 };
 	vertex.myUV = { 1, 0 };
 	vertices.Add(vertex);
-
-
 
 	memcpy(m_VertexData.myVertexData, &vertices[0], m_VertexData.mySize);
 
@@ -85,12 +89,6 @@ void Quad::Initiate()
 	m_IndexBuffer.myIndexBufferFormat = m_IndexData.myFormat;
 	m_IndexBuffer.myByteOffset = 0;
 
-}
-
-void Quad::CleanUp()
-{
-	SAFE_RELEASE(m_InputLayout);
-	m_ScreenpassShader = nullptr;
 }
 
 void Quad::SetBuffers()

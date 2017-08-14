@@ -235,7 +235,7 @@ TreeDweller* Engine::CreateEntity(const std::string& filepath, CU::Vector3f& pos
 
 void Engine::Update()
 {
-	if (!HasInitiated())
+	if (!HasInitiated() && mySynchronizer->HasQuit()) 
 		return;
 
 #if !defined(_PROFILE) && !defined(_FINAL)

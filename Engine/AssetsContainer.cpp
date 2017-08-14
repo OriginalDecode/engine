@@ -20,7 +20,6 @@ AssetsContainer::~AssetsContainer()
 
 	for (auto it = myTextures.begin(); it != myTextures.end(); it++)
 	{
-		DL_ASSERT_EXP(it->second->CleanUp(), "Failed to cleanup a model.");
 		SAFE_DELETE(it->second);
 	}
 
@@ -109,7 +108,6 @@ bool AssetsContainer::LoadTexture(std::string aFilePath)
 		Texture* texture = new Texture;
 		if (texture->Load(aFilePath.c_str()) == false)
 		{
-			DL_ASSERT_EXP(texture->CleanUp(), "Failed to cleanup texture!");
 			SAFE_DELETE(texture);
 			EndTicketMutex(&m_Mutex);
 			return false;

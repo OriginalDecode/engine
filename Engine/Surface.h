@@ -17,8 +17,6 @@ public:
 	void AddResource(Texture* pResource, Effect::TextureSlot slot);
 
 	void Use(Effect* pEffect, const RenderContext& render_context);
-	void Clear();
-
 private:
 	struct ResourceBinding
 	{
@@ -35,10 +33,8 @@ class Surface
 {
 public:
 	Surface(Effect* anEffect);
-	Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount,
-		u32 aStartIndex, u32 aIndexCount);
+	Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount);
 	Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology);
-
 
 	void AddTexture(IShaderResourceView* texture, Effect::TextureSlot slot);
 	void AddTexture(Texture* texture, Effect::TextureSlot slot);

@@ -10,9 +10,10 @@ class Quad
 {
 public:
 	Quad() = default;
+	~Quad();
+
 
 	void Initiate();
-	void CleanUp();
 	void SetBuffers();
 	void Render();
 	Effect* GetShader() { return m_ScreenpassShader; }

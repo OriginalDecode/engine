@@ -28,9 +28,8 @@ Output main(VS_OUTPUT input) : SV_Target
 
 
 	output.Albedo = float4(AlbedoTexture.Sample(sampler0, input.uv).rgb, 1);
-	output.Albedo = float4(input.uv,0,1);
-	output.Normal = float4(NormalTexture.Sample(sampler0, input.uv).rgb, 1);
-	output.Depth = float4(DepthTexture.Sample(sampler0, input.uv).xxx, 1);
+	output.Normal = float4(NormalTexture.Sample(sampler0, input.uv).rgb, 1) * 2 - 1;
+	output.Depth = float4(DepthTexture.Sample(sampler0, input.uv).xxx, 1) ;
 	output.Metalness = float4(NormalTexture.Sample(sampler0, input.uv).aaa, 1);
 	output.Roughness = float4(DepthTexture.Sample(sampler0, input.uv).yyy, 1);
 	output.Emissive = float4(EmissiveTexture.Sample(sampler0, input.uv).rgb, 1);

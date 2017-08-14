@@ -28,8 +28,8 @@ class DeferredRenderer
 {
 public:
 	DeferredRenderer() = default;
+	~DeferredRenderer();
 	bool Initiate(Texture* shadow_texture);
-	bool CleanUp();
 	void SetGBufferAsTarget(const RenderContext& render_context);
 	void SetBuffers(const RenderContext& render_context);
 	void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const RenderContext& render_context);

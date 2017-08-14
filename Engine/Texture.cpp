@@ -5,6 +5,15 @@
 #include <ScreenGrab.h>
 
 
+Texture::~Texture()
+{
+	SAFE_RELEASE(m_ShaderResource);
+	SAFE_RELEASE(m_DepthTexture);
+	SAFE_RELEASE(m_DepthStencilView);
+	SAFE_RELEASE(m_DepthStencilShaderView);
+	SAFE_RELEASE(m_RenderTargetView);
+}
+
 void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, const std::string& debug_name)
 {
 
@@ -340,27 +349,6 @@ void Texture::Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat 
 	SAFE_RELEASE(_texture);
 }
 
-bool Texture::CleanUp()
-{
-	SAFE_RELEASE(m_ShaderResource);
-	if (m_ShaderResource)
-		return false;
-	SAFE_RELEASE(m_DepthTexture);
-	if (m_DepthTexture)
-		return false;
-	SAFE_RELEASE(m_DepthStencilView);
-	if (m_DepthStencilView)
-		return false;
-	SAFE_RELEASE(m_DepthStencilShaderView);
-	if (m_DepthStencilShaderView)
-		return false;
-	SAFE_RELEASE(m_RenderTargetView);
-	if (m_RenderTargetView)
-		return false;
-
-	return true;
-}
-
 UsageType Texture::GetUsage(int flags) const
 {
 	if (flags & IMMUTABLE_USAGE)
@@ -432,7 +420,7 @@ bool Texture::Load(std::string filepath)
 
 void Texture::OnReload()
 {
-	CleanUp();
+	this->~Texture();
 	Load(myFileName);
 }
 

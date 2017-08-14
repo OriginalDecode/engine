@@ -15,7 +15,7 @@ class Texture
 {
 public:
 	Texture() = default;
-
+	~Texture();
 	void Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, const std::string& debug_name);
 	void Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name);
 	void Initiate(u16 width, u16 height, s32 flags, TextureFormat render_target_format, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name);
@@ -30,7 +30,6 @@ public:
 
 	void Save2DResource(const std::string& filename);
 	void Save3DResource(const std::string& filename);
-	bool CleanUp();
 	bool Load(std::string filepath);
 	void OnReload();
 	Ticket_Mutex m_Mutex;

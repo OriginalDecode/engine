@@ -32,11 +32,7 @@ void ShadowDirectional::CleanUp()
 {
 	SAFE_DELETE(m_Viewport);
 	SAFE_DELETE(m_Camera);
-
-	m_ShadowDepth->CleanUp();
 	SAFE_DELETE(m_ShadowDepth);
-
-	m_ShadowDepthStencil->CleanUp();
 	SAFE_DELETE(m_ShadowDepthStencil);
 }
 

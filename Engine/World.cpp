@@ -17,6 +17,7 @@ void World::Initiate(CU::Vector3f position)
 
 void World::CleanUp()
 {
+	m_Octree.OnExit();
 	m_WorldDwellers.DeleteAll();
 }
 

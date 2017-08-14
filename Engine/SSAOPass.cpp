@@ -29,12 +29,10 @@ void SSAOPass::Initiate()
 
 void SSAOPass::CleanUp()
 {
-	m_ScreenQuad.CleanUp();
 
 	SAFE_RELEASE(m_cbBlur);
 	SAFE_RELEASE(m_cbSSAO);
 
-	m_SSAOTexture->CleanUp();
 	SAFE_DELETE(m_SSAOTexture);
 
 

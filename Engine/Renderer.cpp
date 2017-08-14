@@ -94,13 +94,6 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_DirectionalShadow.Initiate(2048.f);
 
-#if !defined(_PROFILE) && !defined(_FINAL)
-	const GBuffer& gbuffer = m_DeferredRenderer->GetGBuffer();
-	m_Engine->AddTexture(gbuffer.GetDiffuse(), "Scene Diffuse");
-	m_Engine->AddTexture(gbuffer.GetNormal(), "Scene Normal");
-	m_Engine->AddTexture(gbuffer.GetDepth(), "Scene Depth");
-	m_Engine->AddTexture(gbuffer.GetEmissive(), "Scene Emissive");
-#endif
 
 	m_WaterPlane = new WaterPlane;
 	m_WaterPlane->Initiate({ -512, 0, -512 });
@@ -150,24 +143,9 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	Effect* fx = m_Engine->GetEffect("Shaders/particle_normal.json");
 	fx->AddShaderResource(m_ParticleDiff, Effect::DEPTH);
 
-
-	//m_Engine->GetEffect("Shaders/T_particle_offscreen.json")->AddShaderResource(myDepthTexture, Effect::DEPTH);
-
 	m_Direction = CU::Vector3f(0.42f, 0.73f, 0.24f);
 
-
-	//10,5,10
-
-	Camera* c = m_DirectionalShadow.GetCamera();
-	//c->SetPosition(CU::Vector3f(0, 0, -5));
-	//c->RotateAroundX(CL::DegreeToRad(90.f) * -1.0f);
-	//c->RotateAroundY(CL::DegreeToRad(90.f) * 0.42f);
-	//c->RotateAroundZ(CL::DegreeToRad(90.f) * 0.73f);
-
-
-
-
-
+#if !defined(_PROFILE) && !defined(_FINAL)
 	m_DebugTexture0 = new Texture;
 	m_DebugTexture0->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
 
@@ -190,6 +168,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_Engine->AddTexture(m_DebugTexture3, "Scene Metalness");
 	m_Engine->AddTexture(m_DebugTexture4, "Scene Roughness"); 
 
+	const GBuffer& gbuffer = m_DeferredRenderer->GetGBuffer();
 	Effect* debug_textures = m_Engine->GetEffect("Shaders/debug_textures.json");
 	debug_textures->AddShaderResource(gbuffer.GetDiffuse(), Effect::DIFFUSE);
 	debug_textures->AddShaderResource(gbuffer.GetNormal(), Effect::NORMAL);
@@ -198,20 +177,20 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_DebugQuad = new Quad;
 	m_DebugQuad->Initiate();
-
+#endif
 	return true;
 }
 //_________________________________
 
 bool Renderer::CleanUp()
 {
-	m_DebugQuad->CleanUp();
-	SAFE_DELETE(m_DebugQuad);
 
-	m_Quad->CleanUp();
-	delete m_Quad;
+#if !defined(_PROFILE) && !defined(_FINAL)
+	SAFE_DELETE(m_DebugQuad);
+#endif
+
+	SAFE_DELETE(m_Quad);
 	SAFE_RELEASE(m_cbParticleBuf);
-	m_ParticleBuffer->CleanUp();
 	SAFE_DELETE(m_ParticleBuffer);
 	m_LightPass.CleanUp();
 	m_ShadowPass.CleanUp();
@@ -224,10 +203,8 @@ bool Renderer::CleanUp()
 	SAFE_DELETE(mySprite);
 	SAFE_DELETE(myClearColor);
 
-	myDepthTexture->CleanUp();
 	SAFE_DELETE(myDepthTexture);
 
-	m_DeferredRenderer->CleanUp();
 	SAFE_DELETE(m_DeferredRenderer);
 	SAFE_DELETE(m_WaterPlane);
 
@@ -244,13 +221,18 @@ bool Renderer::CleanUp()
 		SAFE_DELETE(s);
 	}
 
-	m_Atmosphere.CleanUp();
-
 	return true;
 }
 
 void Renderer::Render()
 {
+
+	if (mySynchronizer->HasQuit())
+	{
+		mySynchronizer->RenderIsDone();
+		return;
+	}
+
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Magenta);
 #endif
@@ -274,29 +256,9 @@ void Renderer::Render()
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
 
-
-	float clear[4] = { 0,0,0,0 };
-	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture0->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture1->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture2->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture3->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture4->GetRenderTargetView(), clear);
-
-	ID3D11RenderTargetView* rtv[]=
-	{
-		m_DebugTexture0->GetRenderTargetView(),
-		m_DebugTexture1->GetRenderTargetView(),
-		m_DebugTexture2->GetRenderTargetView(),
-		m_DebugTexture3->GetRenderTargetView(),
-		m_DebugTexture4->GetRenderTargetView(),
-	};
-
-
-	m_RenderContext.m_Context->OMSetRenderTargets(ARRAYSIZE(rtv), rtv, nullptr);
-	Effect* debug_textures = m_Engine->GetEffect("Shaders/debug_textures.json");
-	debug_textures->Use();
-	m_DebugQuad->Render();
-
+#if !defined(_PROFILE) && !defined(_FINAL)
+	WriteDebugTextures();
+#endif
 
 
 	VolumeParticles();
@@ -381,16 +343,32 @@ void Renderer::Render()
 
 }
 
+#if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::WriteDebugTextures()
 {
+	float clear[4] = { 0,0,0,0 };
+	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture0->GetRenderTargetView(), clear);
+	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture1->GetRenderTargetView(), clear);
+	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture2->GetRenderTargetView(), clear);
+	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture3->GetRenderTargetView(), clear);
+	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture4->GetRenderTargetView(), clear);
 
+	ID3D11RenderTargetView* rtv[] =
+	{
+		m_DebugTexture0->GetRenderTargetView(),
+		m_DebugTexture1->GetRenderTargetView(),
+		m_DebugTexture2->GetRenderTargetView(),
+		m_DebugTexture3->GetRenderTargetView(),
+		m_DebugTexture4->GetRenderTargetView(),
+	};
 
-
-
-
-
-
+	m_RenderContext.m_Context->OMSetRenderTargets(ARRAYSIZE(rtv), rtv, nullptr);
+	Effect* debug_textures = m_Engine->GetEffect("Shaders/debug_textures.json");
+	debug_textures->Use();
+	m_DebugQuad->Render();
 }
+#endif
+
 
 void Renderer::VolumeParticles()
 {

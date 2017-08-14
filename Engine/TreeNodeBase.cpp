@@ -21,6 +21,9 @@ void TreeNodeBase::Update(float dt, bool paused)
 	RenderBox();
 	m_NodeEntityManager->Update(dt, paused);
 
+	if (paused)
+		return;
+
 	for (TreeDweller* dweller : m_Dwellers)
 	{
 		if (!dweller)

@@ -5,6 +5,20 @@
 #include "GBuffer.h"
 #define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
 
+DeferredRenderer::~DeferredRenderer()
+{
+	SAFE_DELETE(myFinishedSceneTexture);
+	SAFE_DELETE(myDepthStencil);
+	SAFE_DELETE(m_VertexBuffer);
+	SAFE_DELETE(myVertexData);
+	SAFE_DELETE(m_IndexBuffer);
+	SAFE_DELETE(myIndexData);
+	SAFE_DELETE(m_SampleTexture);
+
+	SAFE_RELEASE(myInputLayout);
+	SAFE_RELEASE(myConstantBuffer);
+}
+
 bool DeferredRenderer::Initiate(Texture* shadow_texture)
 {
 	m_API = Engine::GetAPI();
@@ -61,31 +75,6 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 
 	CreateFullscreenQuad();
 	InitConstantBuffer();
-	return true;
-}
-
-bool DeferredRenderer::CleanUp()
-{
-	m_GBuffer.CleanUp();
-	myFinishedSceneTexture->CleanUp();
-	SAFE_DELETE(myFinishedSceneTexture);
-	myDepthStencil->CleanUp();
-	SAFE_DELETE(myDepthStencil);
-	//SAFE_DELETE(myGBuffer);
-
-	//SAFE_DELETE(myConstantStruct);
-	SAFE_RELEASE(myConstantBuffer);
-
-	SAFE_DELETE(m_VertexBuffer);
-	SAFE_DELETE(myVertexData);
-
-	SAFE_DELETE(m_IndexBuffer);
-	SAFE_DELETE(myIndexData);
-
-	SAFE_RELEASE(myInputLayout);
-	m_SampleTexture->CleanUp();
-	SAFE_DELETE(m_SampleTexture);
-
 	return true;
 }
 
@@ -241,19 +230,19 @@ void DeferredRenderer::CreateFullscreenQuad()
 	CU::GrowingArray<VertexTypePosUV> vertices;
 	CU::GrowingArray<int> indices;
 	VertexTypePosUV v;
-	v.myPosition = { -1, -1, 0 };
+	v.myPosition = { -1, -1, 0, 1 };
 	v.myUV = { 0, 1 };
 	vertices.Add(v);
 
-	v.myPosition = { -1, 1, 0 };
+	v.myPosition = { -1, 1, 0, 1 };
 	v.myUV = { 0, 0 };
 	vertices.Add(v);
 
-	v.myPosition = { 1, -1, 0 };
+	v.myPosition = { 1, -1, 0, 1 };
 	v.myUV = { 1, 1 };
 	vertices.Add(v);
 
-	v.myPosition = { 1, 1, 0 };
+	v.myPosition = { 1, 1, 0, 1 };
 	v.myUV = { 1, 0 };
 	vertices.Add(v);
 

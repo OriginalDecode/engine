@@ -6,9 +6,8 @@ class GBuffer
 {
 public:
 	GBuffer() = default;
-
+	~GBuffer();
 	void Initiate();
-	void CleanUp();
 	void Clear(float* aClearColor, const RenderContext& render_context);
 
 	void SetAsRenderTarget(Texture* aDepthTexture, const RenderContext& render_context);

@@ -1,6 +1,0 @@
-{
-    "PixelShader": {
-        "file": "debug_ui.ps",
-        "entrypoint": "main"
-    }
-}

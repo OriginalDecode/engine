@@ -21,24 +21,24 @@ void Quad::Initiate()
 	vertex.myUV = { 0, 0 };
 	vertices.Add(vertex);
 
+
 	vertex.myPosition = { 1, -1, 0 };
 	vertex.myUV = { 1, 1 };
 	vertices.Add(vertex);
+
 
 	vertex.myPosition = { 1, 1, 0 };
 	vertex.myUV = { 1, 0 };
 	vertices.Add(vertex);
 
-
-
 	memcpy(m_VertexData.myVertexData, &vertices[0], m_VertexData.mySize);
 
-	indices.Add(1);
 	indices.Add(0);
+	indices.Add(1);
 	indices.Add(2);
 
-	indices.Add(2);
 	indices.Add(3);
+	indices.Add(2);
 	indices.Add(1);
 
 	m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
@@ -49,8 +49,8 @@ void Quad::Initiate()
 
 
 	D3D11_INPUT_ELEMENT_DESC desc[] = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,		0, 16,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,		0, 12,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	m_ScreenpassShader = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
@@ -114,8 +114,5 @@ void Quad::SetBuffers()
 void Quad::Render()
 {
 	IDevContext* ctx = Engine::GetInstance()->GetAPI()->GetContext();
-	SetBuffers();
-	Engine::GetAPI()->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
 	ctx->DrawIndexed(6, 0, 0);
-	Engine::GetAPI()->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 }

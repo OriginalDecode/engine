@@ -37,8 +37,6 @@ public:
 
 	void Render();
 
-	void VolumeParticles();
-
 	void ProcessWater();
 
 	void AddTerrain(Terrain* someTerrain);
@@ -123,14 +121,6 @@ private:
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	bool m_RenderLines = false;
-
-	Texture* m_DebugTexture0 = nullptr; // Albedo / Diffuse
-	Texture* m_DebugTexture1 = nullptr; // Normal
-	Texture* m_DebugTexture2 = nullptr; // Depth
-	Texture* m_DebugTexture3 = nullptr; // Roughness
-	Texture* m_DebugTexture4 = nullptr; // Metalness
-	Quad* m_DebugQuad = nullptr;
-	void WriteDebugTextures();
 
 public:
 	void SetRenderLines(bool render_lines) { m_RenderLines = render_lines; }

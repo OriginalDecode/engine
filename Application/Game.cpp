@@ -47,7 +47,7 @@ void Game::InitState(StateStack* state_stack)
 		m_Engine->AddFunction("Data/Levels/level_03.level", [&]() { Initiate("Data/Levels/level_03.level"); });
 	#endif*/
 	Initiate("Data/Levels/level_03.level");
-	m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
+	//m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
 
 	//m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
 	m_Engine->LoadModel(KEY_USED, "Shaders/volume.json", true);
@@ -116,13 +116,7 @@ void Game::Render(bool render_through)
 void Game::Update(float dt)
 {
 	CameraHandle::GetInstance()->Update();
-	//_2DGame(dt);
-	OldUpdate(dt);
 
-}
-
-void Game::_2DGame(float dt)
-{
 	m_Synchronizer->AddRenderCommand(SpriteCommand(m_MainKey, m_Position));
 
 	ControllerInput * controller = m_Engine->GetInputHandle()->GetController(0);
@@ -169,7 +163,21 @@ void Game::_2DGame(float dt)
 	m_Position.x += (x_value / 100.f * dt);
 	m_Position.y += (y_value / 100.f * dt);
 
+
+
+
+	/*else
+	{
+		if (m_Position.y < (1080.f - 64.f))
+		{
+			m_Position.y += 100.f * dt;
+		}
+	}*/
+
 	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5f, 0.5f), "x: %.3f\ny: %.3f", m_Position.x, m_Position.y));
+
+
+
 }
 
 void Game::OldUpdate(float dt)

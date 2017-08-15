@@ -20,8 +20,8 @@ public:
 		}
 		
 	}
-	void AddResource(IShaderResourceView* pResource, Effect::TextureSlot slot);
-	void AddResource(Texture* pResource, Effect::TextureSlot slot);
+	void AddResource(IShaderResourceView* pResource, const std::string& filename, Effect::TextureSlot slot);
+	void AddResource(Texture* pResource, const std::string& filename, Effect::TextureSlot slot);
 
 	void Use(Effect* pEffect, const RenderContext& render_context);
 private:
@@ -29,6 +29,7 @@ private:
 	{
 		IShaderResourceView* m_Resource;
 		Effect::TextureSlot m_Slot;
+		std::string m_ResourceName;
 	};
 
 	CU::GrowingArray<ResourceBinding> m_Resources;
@@ -43,8 +44,8 @@ public:
 	Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount);
 	Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology);
 
-	void AddTexture(IShaderResourceView* texture, Effect::TextureSlot slot);
-	void AddTexture(Texture* texture, Effect::TextureSlot slot);
+	void AddTexture(IShaderResourceView* texture, const std::string& filepath, Effect::TextureSlot slot);
+	void AddTexture(Texture* texture, const std::string& filepath, Effect::TextureSlot slot);
 	void AddTexture(const std::string& file_path, Effect::TextureSlot slot);
 
 	void Activate(const RenderContext& render_context);

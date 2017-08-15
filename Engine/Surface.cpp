@@ -68,18 +68,18 @@ void Surface::AddTexture(const std::string& file_path, Effect::TextureSlot slot)
 		sub += ".dds";
 	}
 
-	m_Material.AddResource(Engine::GetInstance()->GetTexture(sub), slot);
+	m_Material.AddResource(Engine::GetInstance()->GetTexture(sub), sub, slot);
 	
 }
 
-void Surface::AddTexture(IShaderResourceView* texture, Effect::TextureSlot slot)
+void Surface::AddTexture(IShaderResourceView* texture, const std::string& filepath, Effect::TextureSlot slot)
 {
-	m_Material.AddResource(texture, slot);
+	m_Material.AddResource(texture, filepath, slot);
 }
 
-void Surface::AddTexture(Texture* texture, Effect::TextureSlot slot)
+void Surface::AddTexture(Texture* texture, const std::string& filepath, Effect::TextureSlot slot)
 {
-	m_Material.AddResource(texture, slot);
+	m_Material.AddResource(texture, filepath, slot);
 }
 
 void Surface::SetEffect(Effect* anEffect)
@@ -113,17 +113,18 @@ void Surface::SetPrimology(D3D_PRIMITIVE_TOPOLOGY aPrimology)
 }
 
 
-void Material::AddResource(IShaderResourceView* pResource, Effect::TextureSlot slot)
+void Material::AddResource(IShaderResourceView* pResource, const std::string& filename, Effect::TextureSlot slot)
 {
 	ResourceBinding binding;
 	binding.m_Resource = pResource;
 	binding.m_Slot = slot;
+	binding.m_ResourceName = filename;
 	m_Resources.Add(binding);
 }
 
-void Material::AddResource(Texture* pResource, Effect::TextureSlot slot)
+void Material::AddResource(Texture* pResource, const std::string& filename, Effect::TextureSlot slot)
 {
-	AddResource(pResource->GetShaderView(), slot);
+	AddResource(pResource->GetShaderView(), filename, slot);
 }
 
 void Material::Use(Effect* pEffect, const RenderContext& render_context)

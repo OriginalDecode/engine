@@ -305,12 +305,15 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 			TextureInfo newInfo;
 			newInfo.m_File = path;
 
+			if (path.find("metallic") != path.npos)
+			{
+				int apa;
+				apa = 5;
+			}
+
 
 			aiTextureType lType = static_cast< aiTextureType >( type );
 			//DL_MESSAGE("Type : %d, Name : %s", u32(lType), newPath.c_str());
-			
-
-
 			switch ( lType )
 			{
 				case aiTextureType_DIFFUSE:
@@ -340,25 +343,22 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 
 				case aiTextureType_REFLECTION: /* Misleading name, amirite? */
 				{
-					newInfo.m_Slot = Effect::METALNESS;
+					newInfo.m_Slot = Effect::METALNESS; // specular intensity (blender)
 				}break;
 
 				case aiTextureType_SPECULAR:
 				{
-					newInfo.m_Slot = Effect::ROUGHNESS;
+					newInfo.m_Slot = Effect::METALNESS; // specular intensity (blender)
 				}break;
 
 				case aiTextureType_HEIGHT:
 				{
 					DL_ASSERT("No height support!");
-					//newInfo.m_Slot = Effect::HEIGHT;
 				}break;
 
 				case aiTextureType_SHININESS:
 				{
-
-					DL_ASSERT("No support for Shininess! What the fuck is Shininess? Specular?");
-					//newInfo.m_Slot = TextureType::_SHININESS;
+					newInfo.m_Slot = Effect::ROUGHNESS; // specular hardness (blender)
 				}break;
 
 				case aiTextureType_DISPLACEMENT:

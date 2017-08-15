@@ -28,7 +28,7 @@
 #include <Engine/Texture.h>
 #include <Input/ControllerInput.h>
 
-static std::string key = "Data/Model/sponza/sponza_2.fbx";
+static std::string key = "Data/Model/sponza_pbr/sponza.fbx";
 static std::string cube = "Data/Model/cube.fbx";
 static std::string wall = "Data/Model/wall.fbx";
 static std::string default_cube = "default_cube";

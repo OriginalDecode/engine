@@ -7,7 +7,6 @@
 #include "Texture.h"
 #include <Engine/Sprite.h>
 
-
 AssetsContainer::~AssetsContainer()
 {
 	SAFE_DELETE(m_ShaderFactory);
@@ -19,6 +18,11 @@ AssetsContainer::~AssetsContainer()
 	}
 
 	for (auto it = myTextures.begin(); it != myTextures.end(); it++)
+	{
+		SAFE_DELETE(it->second);
+	}
+
+	for (auto it = m_Sprites.begin(); it != m_Sprites.end(); it++)
 	{
 		SAFE_DELETE(it->second);
 	}

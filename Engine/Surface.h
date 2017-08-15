@@ -12,7 +12,14 @@ class Material
 {
 public:
 	Material() = default;
-
+	~Material()
+	{
+		for (ResourceBinding& r : m_Resources )
+		{
+			SAFE_RELEASE(r.m_Resource);
+		}
+		
+	}
 	void AddResource(IShaderResourceView* pResource, Effect::TextureSlot slot);
 	void AddResource(Texture* pResource, Effect::TextureSlot slot);
 
@@ -62,7 +69,7 @@ public:
 private:
 
 	D3D_PRIMITIVE_TOPOLOGY myPrimologyType;
-	
+
 	Material m_Material;
 	Effect* myEffect;
 

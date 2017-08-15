@@ -187,7 +187,15 @@ bool Renderer::CleanUp()
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	SAFE_DELETE(m_DebugQuad);
+	SAFE_DELETE(m_DebugTexture0);
+	SAFE_DELETE(m_DebugTexture1);
+	SAFE_DELETE(m_DebugTexture2);
+	SAFE_DELETE(m_DebugTexture3);
+	SAFE_DELETE(m_DebugTexture4);
 #endif
+	SAFE_DELETE(m_ParticleBuffer);
+	SAFE_DELETE(m_ParticleDiff);
+	SAFE_DELETE(m_ParticleDepth);
 
 	SAFE_DELETE(m_Quad);
 	SAFE_RELEASE(m_cbParticleBuf);

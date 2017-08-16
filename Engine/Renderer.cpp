@@ -177,7 +177,12 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_DebugQuad = new Quad;
 	m_DebugQuad->Initiate();
+
+
 #endif
+
+	m_PBLValues = m_Engine->GetAPI()->CreateConstantBuffer(sizeof(m_values));
+
 	return true;
 }
 //_________________________________
@@ -252,7 +257,6 @@ void Renderer::Render()
 
 	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
-	RenderTerrain(false);
 	//m_WaterPlane->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 
 	if (m_Engine->GetRenderInstanced())
@@ -284,6 +288,7 @@ void Renderer::Render()
 		m_Direction,
 		m_RenderContext);
 
+	RenderTerrain(false);
 	m_Atmosphere.Render(m_Camera->GetOrientation(), m_DeferredRenderer->GetDepthStencil(), m_RenderContext);
 
 	RenderPointlight();
@@ -547,37 +552,47 @@ void Renderer::Render3DCommandsInstanced()
 	EASY_BLOCK("RenderModels", profiler::colors::Amber);
 #endif
 
-
+	const CU::Matrix44f& orientation = m_Camera->GetOrientation();
+	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	for (s32 j = 0; j < 8; j++)
 	{
 		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
 		for (s32 i = 0; i < commands.Size(); i++)
 		{
-			ProcessCommand(commands, i);
+			m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+			m_API->SetRasterizer(eRasterizer::CULL_NONE); 
+			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
+			const bool result = (command->m_CommandType == RenderCommand::MODEL);
+			DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
+			Model* model = m_Engine->GetModel(command->m_Key);
+			model->SetPosition(command->m_Orientation.GetPosition());
+
+			m_values.metal = command->m;
+			m_values.rough = command->r;
+
+			m_Engine->GetAPI()->UpdateConstantBuffer(m_PBLValues, &m_values);
+			m_RenderContext.m_Context->PSSetConstantBuffers(0, 1, &m_PBLValues);
+			model->Render(orientation, perspective, m_RenderContext);
 		}
 	}
 
-	const CU::Matrix44f& orientation = m_Camera->GetOrientation();
-	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
-
-	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
-	{
-		m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-		m_API->SetRasterizer(eRasterizer::CULL_NONE); //set per model instance? Array with bools / byte to see if it is wireframe or not?
-		it->second->RenderInstanced(orientation, perspective, m_RenderContext);
-	}
+	
+// 
+// 	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
+// 	{
+// 		
+// 		t per model instance? Array with bools / byte to see if it is wireframe or not?
+// 		it->second->RenderInstanced(orientation, perspective, m_RenderContext);
+// 	}
 }
 
 void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i)
 {
-	auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-	const bool result = (command->m_CommandType == RenderCommand::MODEL);
-	DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
-	Model* model = m_Engine->GetModel(command->m_Key);
-	model->AddOrientation(command->m_Orientation);
+	
+	/*model->AddOrientation(command->m_Orientation);
 	if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
-		m_ModelsToRender.emplace(command->m_Key, model);
+		m_ModelsToRender.emplace(command->m_Key, model);*/
 }
 
 //_________________________________

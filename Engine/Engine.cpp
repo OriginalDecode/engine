@@ -804,14 +804,14 @@ void Engine::UpdateDebugUI()
 
 
 			ImGui::Text("Directional Light Direction");
-			static int x = 0;
-			static int y = 0;
-			static int z = 0;
-			ImGui::SliderInt("X", &x, -180, 180);
-			ImGui::SliderInt("Y", &y, -180, 180);
-			ImGui::SliderInt("Z", &z, -180, 180);
+			static float x = 0;
+			static float y = 0;
+			static float z = 0;
+			ImGui::SliderFloat("X", &x, -1.f, 1.f);
+			ImGui::SliderFloat("Y", &y, -1.f, 1.f);
+			ImGui::SliderFloat("Z", &z, -1.f, 1.f);
 
-			myRenderer->SetDirection(CU::Vector3f((float)x / 180.f, (float)y / 180.f, (float)z / 180.f));
+			myRenderer->SetDirection(CU::Vector3f(x,y,z));
 			//myRenderer->GetDirectionalCamera()->SetAt(CU::Vector3f((float)x / 180.f, (float)y / 180.f, (float)z / 180.f));
 
 

@@ -104,7 +104,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		if (m_Manager.HasComponent(e, CreateFilter<Requires<PBLComponent>>()))
 		{
 			auto& pbl = m_Manager.GetComponent<PBLComponent>(e);
-			AddRenderCommand(ModelCommand(render.myModelID, translation.myOrientation.GetPosition(), render.m_RenderWireframe, pbl.m_Buffer));
+			AddRenderCommand(ModelCommand(render.myModelID, translation.myOrientation.GetPosition(), render.m_RenderWireframe, pbl.m_PBLValues.m_Roughness, pbl.m_PBLValues.m_Metalness));
 		}
 
 

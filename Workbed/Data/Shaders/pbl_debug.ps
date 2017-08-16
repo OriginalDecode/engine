@@ -11,6 +11,14 @@ Texture2D Displacement		: register ( t8 );
 Texture2D LightmapTexture	: register ( t9 );
 Texture2D ShininessTexture	: register ( t10 );
 
+cbuffer pbl_values : register (b0)
+{
+	float roughness;
+	float metalness;
+	float dummy0;
+	float dummy1;
+}
+
 struct GBuffer
 {
 	float4 Albedo;
@@ -33,9 +41,10 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 {
 	GBuffer output;
 
-    output.Albedo = float4(1,0,1,1);
-    output.Normal = float4(input.normal, 1);
+    output.Albedo = float4(0,1,1,1);
+    output.Normal = float4(input.normal * 2 - 1, metalness);
     output.Depth.x = input.pos.z;
+	output.Depth.y = 1 - roughness;
     
     return output;
 

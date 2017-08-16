@@ -43,20 +43,20 @@ void Model::Initiate(const std::string& filename)
 	};
 
 
-
-	m_InputLayoutDesc.Add(instance_info[0]);
-	m_InputLayoutDesc.Add(instance_info[1]);
-	m_InputLayoutDesc.Add(instance_info[2]);
-	m_InputLayoutDesc.Add(instance_info[3]);
+// 
+// 	m_InputLayoutDesc.Add(instance_info[0]);
+// 	m_InputLayoutDesc.Add(instance_info[1]);
+// 	m_InputLayoutDesc.Add(instance_info[2]);
+// 	m_InputLayoutDesc.Add(instance_info[3]);
 
 
 	if (m_IsRoot == false)
 	{
 		InitVertexBuffer();
-		//InitInputLayout();
+		InitInputLayout();
 		InitIndexBuffer();
 		InitConstantBuffer();
-		InitInstanceBuffer();
+		//InitInstanceBuffer();
 	}
 
 	for (Model* child : myChildren)
@@ -67,6 +67,12 @@ void Model::Initiate(const std::string& filename)
 
 void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
 {
+	if (m_Filename.find("default_cube") != m_Filename.npos)
+	{
+		RenderCube(aCameraOrientation, aCameraProjection, render_context);
+		return;
+}
+
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Blue);
 #endif
@@ -102,55 +108,29 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 
 void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
 {
-	render_context.m_Context->IASetInputLayout(m_InstanceInputLayout);
-	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	render_context.m_API->UpdateConstantBuffer(m_InstanceBuffer, &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
 
-	u32 offsets[] = {
-		m_VertexBuffer.myByteOffset,
-		0
-	};
-
-	u32 strides[] = {
-		m_VertexBuffer.myStride,
-		sizeof(CU::Matrix44f)
-	};
-
-
-	IBuffer* buffers[] = {
-		m_VertexBuffer.myVertexBuffer,
-		m_InstanceBuffer
-	};
-
-	render_context.m_Context->IASetVertexBuffers(0, ARRAYSIZE(buffers), buffers, strides, offsets);
-	render_context.m_Context->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
+	SetupLayoutsAndBuffers();
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 
 	myEffect->Use();
 #ifdef _PROFILE
 	EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 #endif
-	render_context.m_Context->DrawIndexedInstanced(m_IndexData.myIndexCount, m_Orientations.Size(), 0, 0, 0);
+	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0,0);
 #ifdef _PROFILE
 	EASY_END_BLOCK;
 #endif
 	myEffect->Clear();
-	RemoveOrientation();
+	//RemoveOrientation();
 }
 
 void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
 {
 
-	if (m_Filename.find("default_cube") != m_Filename.npos)
-	{
-		RenderCube(camera_orientation, camera_projection, render_context);
-		RemoveOrientation();
-		return;
-	}
+	
 
 
 #ifdef _PROFILE

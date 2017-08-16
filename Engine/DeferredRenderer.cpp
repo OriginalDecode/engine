@@ -52,7 +52,7 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 		, DXGI_FORMAT_D32_FLOAT
 		, "DeferredRenderer : DSV");
 
-	myCubeMap = myEngine->GetTexture("Data/Textures/T_cubemap_level01.dds");
+	myCubeMap = myEngine->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
 
 	myScreenPassShader = myEngine->GetEffect("Shaders/render_to_texture.json");
 

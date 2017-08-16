@@ -138,6 +138,14 @@ public:
 	DeferredRenderer* GetDeferredRenderer() {	return m_DeferredRenderer; };
 
 #endif
+	IBuffer* m_PBLValues = nullptr;
+	struct 
+	{
+		float rough;
+		float metal;
+		float d;
+		float d0;
+	} m_values;
 
 	struct cbParticle
 	{

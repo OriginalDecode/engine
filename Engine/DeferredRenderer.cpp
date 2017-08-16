@@ -147,9 +147,6 @@ void DeferredRenderer::Finalize(const RenderContext& render_contexts)
 
 	SetBuffers(render_contexts);
 
-	//m_API->SetVertexShader(myScreenPassShader->GetVertexShader()->m_Shader);
-	//m_API->SetPixelShader(myScreenPassShader->GetPixelShader()->m_Shader);
-	myScreenPassShader->Use();
 	ID3D11ShaderResourceView* srv[] =
 	{
 		myFinishedSceneTexture->GetShaderView(),
@@ -160,17 +157,10 @@ void DeferredRenderer::Finalize(const RenderContext& render_contexts)
 
 	myContext->PSSetShaderResources(0, num_srv, &srv[0]);
 	m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
+
+	myScreenPassShader->Use();
 	myContext->DrawIndexed(6, 0, 0);
-
 	myScreenPassShader->Clear();
-
-
-	/*for (s32 i = 0; i < num_srv; i++)
-	{
-		srv[i] = nullptr;
-	}
-*/
-	//myContext->PSSetShaderResources(0, num_srv, &srv[0]);
 
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);

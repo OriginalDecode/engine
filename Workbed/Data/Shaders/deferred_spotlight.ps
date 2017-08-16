@@ -57,7 +57,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	shadowVec.xy += 1;
 	shadowVec.xy *= 0.5;
 	float compareValue = shadowVec.z;
-	float sampleValue = ShadowTexture.Sample(point_Clamp, shadowVec.xy).x;
+	float sampleValue = ShadowTexture.Sample(sampler0, shadowVec.xy).x;
 
 	return float4(final_color,1);
 };

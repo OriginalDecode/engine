@@ -83,21 +83,23 @@ float4 main(VS_OUTPUT input) : SV_Target
 	shadowVec.xy *= 0.5;
 
 	float3 F = saturate(Fresnel(pData.substance, -lData.light_dir, lData.halfVec));
-	float D = saturate(D_GGX(lData.HdotN,(pData.roughness) / 2.f));
-	float V = saturate(V_SchlickForGGX((pData.roughness) / 2.f, lData.NdotV, lData.NdotL));
+	float D = saturate(D_GGX(lData.HdotN,(pData.roughness - 1) / 2.f));
+	float V = saturate(V_SchlickForGGX((pData.roughness - 1) / 2.f, lData.NdotV, lData.NdotL));
 
-	final_color *= (F * D * V) * light_color;
 
 
 
 	float compareValue = shadowVec.z;
 	float sampleValue = ShadowTexture.Sample(sampler0, shadowVec.xy).x;
 	if(sampleValue < compareValue)
- 		final_color = 0.0f;
+ 		final_color *= 0.42f;
+	else
+		final_color += (F * D * V);
+
 
  	/* Shadow end */
 
 	float3 output = saturate(final_color);
 	// return float4(final_color, 1);
-	return float4(output + (ambientDiffuse * 0.42f), 1.f);
+	return float4(output, 1.f);
 };

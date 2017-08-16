@@ -11,9 +11,7 @@ public:
 		static const unsigned int id = myNextID++;
 		return id;
 	}
-
-
-
+	
 private:
 	static unsigned int myNextID;
 };

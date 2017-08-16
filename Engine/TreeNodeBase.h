@@ -44,6 +44,8 @@ public:
 
 	virtual void SetMemoryBlockIndex(s32 index);
 	virtual s32 GetMemoryBlockIndex();
+
+	void ToggleRenderBox(bool v);
 protected:
 	virtual void RenderBox();
 

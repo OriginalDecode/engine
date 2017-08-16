@@ -19,6 +19,7 @@
 #include <GhostObject.h>
 #include "../hashlist.h"
 #include "TreeDweller.h"
+#include <PBLComponent.h>
 
 void LevelFactory::Initiate()
 {
@@ -42,9 +43,9 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 
 	const JSONElement& el = m_LevelReader.GetElement("root");
 
-	//CreateTerrain("Data/Textures/flat_height.tga");
+	CreateTerrain("Data/Textures/flat_height.tga");
 	//m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
-	
+
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
 		CreateEntitiy(it->value["entity"].GetString(), it);
@@ -117,20 +118,20 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	if (sponza)
 		sponza = false;
-//#ifdef _EDITOR
-	//if(hasLight)
-		//CreateDebugComponent(e, hasLight, debug_flags);
-//#endif
+	//#ifdef _EDITOR
+		//if(hasLight)
+			//CreateDebugComponent(e, hasLight, debug_flags);
+	//#endif
 
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
-	
+
 	/*CU::Vector3f new_pos = pos;
 	new_pos.y += 5.f;
 	new_pos.x += 400.f;
 	new_pos.z += 400.f;*/
-  
+
 	//component.myOrientation.SetPosition(new_pos);
- 
+
 
 	m_DwellerList.GetLast()->Initiate(e, TreeDweller::STATIC);
 
@@ -196,6 +197,7 @@ TreeDweller* LevelFactory::CreateEntitiy(const std::string& entity_filepath, con
 	return dweller;
 }
 
+
 void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position)
 {
 	m_EntityManager->AddComponent<TranslationComponent>(entity_id);
@@ -215,8 +217,8 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	m_LevelReader.ReadElement(it->value["scale"], scale);
 	CU::Vector3f rotation;
 	m_LevelReader.ReadElement(it->value["rotation"], rotation);
-	
-	if ( !el.IsArray())
+
+	if (!el.IsArray())
 	{
 		component.myModelID = m_Engine->LoadModel(
 			el["model"].GetString(),
@@ -229,7 +231,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 		component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
 		component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
 
-		
+
 
 		component.m_Rotation = rotation;
 
@@ -269,7 +271,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 			entity_reader.ReadElement(obj["relative_rotation"], rel_rot);
 
 			instance.m_ModelID = m_Engine->LoadModel(key_value, shader, true);
-			
+
 			instance.m_Orientation.SetPosition(rel_pos);
 			CU::Matrix44f t = instance.m_Orientation;
 			instance.m_Orientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(rel_scale, 1.f)) * t;
@@ -358,11 +360,11 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 
 void LevelFactory::CreateCameraComponent(JSONReader& /*entity_reader*/, Entity entity_id)
 {
-	m_EntityManager->AddComponent<CameraComponent>(entity_id);
-	CameraComponent& component = m_EntityManager->GetComponent<CameraComponent>(entity_id);
-	m_DwellerList.GetLast()->AddComponent<CameraComponent>(&component, TreeDweller::CAMERA);
-
-	component.m_Camera = Engine::GetInstance()->GetCamera();
+	// 	m_EntityManager->AddComponent<CameraComponent>(entity_id);
+	// 	CameraComponent& component = m_EntityManager->GetComponent<CameraComponent>(entity_id);
+	// 	m_DwellerList.GetLast()->AddComponent<CameraComponent>(&component, TreeDweller::CAMERA);
+	// 
+	// 	component.m_Camera = Engine::GetInstance()->GetCamera();
 }
 
 void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
@@ -406,7 +408,7 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 		translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * translation.myOrientation;
 		translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rotation.x)) * translation.myOrientation;
 		translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rotation.y)) * translation.myOrientation;
-		
+
 		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(component.direction.z)) * translation_component.myOrientation;
 		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(component.direction.y)) * translation_component.myOrientation;
 		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(component.direction.x)) * translation_component.myOrientation;
@@ -588,15 +590,16 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-
+	/*Terrain* terrain = */m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+	return;
 	float uniform_height = -4;
 	Terrain* terrain = m_Engine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, uniform_height, 0), CU::Vector2f(512, 512));
 	terrain->AddNormalMap("Data/Textures/t0_n.dds");
-	terrain=m_Engine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, uniform_height, 510), CU::Vector2f(512, 512));
+	terrain = m_Engine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, uniform_height, 510), CU::Vector2f(512, 512));
 	terrain->AddNormalMap("Data/Textures/t1_n.dds");
-	terrain=m_Engine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, uniform_height, 0), CU::Vector2f(512, 512));
+	terrain = m_Engine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, uniform_height, 0), CU::Vector2f(512, 512));
 	terrain->AddNormalMap("Data/Textures/t2_n.dds");
-	terrain=m_Engine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, uniform_height, 510), CU::Vector2f(512, 512));
+	terrain = m_Engine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, uniform_height, 510), CU::Vector2f(512, 512));
 	terrain->AddNormalMap("Data/Textures/t3_n.dds");
 	//m_Engine->GetThreadpool().AddWork(Work([=] {
 	//}));
@@ -634,3 +637,47 @@ void LevelFactory::CreateTerrain(std::string terrain_path)
 }
 
 
+void LevelFactory::CreatePBLLevel(s32 steps)
+{
+	CreateTerrain("Data/Textures/flat_height.tga");
+	float height = 1.f;
+	float x_start = 5.f;
+	float z_start = 5.f;
+	for (s32 i = 0; i < steps; i++)
+	{
+		for (s32 j = 0; j < steps; j++)
+		{
+			Entity e = m_EntityManager->CreateEntity();
+			auto& pbl = m_EntityManager->AddComponent<PBLComponent>(e);
+
+			pbl.m_PBLValues.m_Metalness = (float)i / steps;
+			pbl.m_PBLValues.m_Roughness = (float)i / steps;
+
+			pbl.m_Buffer = m_Engine->GetAPI()->CreateConstantBuffer(sizeof(pbl.m_PBLValues));
+
+
+			auto& t = m_EntityManager->AddComponent<TranslationComponent>(e);
+			auto& r = m_EntityManager->AddComponent<RenderComponent>(e);
+
+			CU::Vector4f translation;
+			translation.x = x_start + i * 5.f;
+			translation.y = height;
+			translation.z = z_start + j * 5.f;
+			translation.w = 1.f;
+
+			t.myOrientation.SetTranslation(translation);
+
+
+			r.myModelID = "default_cube";
+			r.scale = CU::Vector4f(1, 1, 1, 1);
+
+			m_DwellerList.Add(new TreeDweller);
+			m_DwellerList.GetLast()->AddComponent(&t, TreeDweller::TRANSLATION);
+			m_DwellerList.GetLast()->AddComponent(&r, TreeDweller::GRAPHICS);
+			m_DwellerList.GetLast()->AddComponent(&pbl, TreeDweller::PBL);
+			m_DwellerList.GetLast()->Initiate(e, TreeDweller::STATIC);
+		}
+
+	}
+
+}

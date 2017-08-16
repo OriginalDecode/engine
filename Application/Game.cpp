@@ -47,12 +47,12 @@ void Game::InitState(StateStack* state_stack)
 		m_Engine->AddFunction("Data/Levels/level_03.level", [&]() { Initiate("Data/Levels/level_03.level"); });
 	#endif*/
 	Initiate("Data/Levels/level_03.level");
-	m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
+	//m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
 
 	//m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
-	m_Engine->LoadModel(KEY_USED, "Shaders/volume.json", true);
-	Effect* volume_shader = m_Engine->GetEffect("Shaders/volume.json");
+	m_Engine->LoadModel(KEY_USED, "Shaders/debug_pbl.json", true);
 
+	Effect* volume_shader = m_Engine->GetEffect("Shaders/volume.json");
 	m_VolumeTexture = new Texture;
 	m_VolumeTexture->Initiate3DTexture(128, 128, 128, TextureFormat(2), 18, "Volume Texture");
 	m_VolumeTexture->Load("Data/Model/box_v3.dds");
@@ -230,14 +230,13 @@ void Game::OldUpdate(float dt)
 	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75f, 0.1f), "\nx:%.3f\ny:%.3f\nz:%.3f\n#%s(%d)", pos.x, pos.y, pos.z,
 		((m_FPSToPrint >= 50.f) ? "00FF00" : (m_FPSToPrint < 25.f) ? "FF0000" : "FFFF00"), m_FPSToPrint));
 
-	AddRenderCommand(ModelCommand(KEY_USED, CU::Vector3f(0.f, 10.f, 0.f), false));
-	AddRenderCommand(ModelCommand(key, CU::Vector3f(50, 0, 50), false));
+	AddRenderCommand(ModelCommand(KEY_USED, CU::Vector3f(5.f, 0.f, 5.f), false));
 
-
-	CU::Matrix44f orientation;
+	//AddRenderCommand(ModelCommand(key, CU::Vector3f(50, 0, 50), false));
+	/*CU::Matrix44f orientation;
 	orientation.SetPosition(CU::Vector3f(50, 10, 50));
 	orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * orientation;
-	m_Synchronizer->AddRenderCommand(SpotlightCommand(0, 53, 12, 1, CU::Vector4f(255, 0, 0, 255), orientation, false));
+	m_Synchronizer->AddRenderCommand(SpotlightCommand(0, 53, 12, 1, CU::Vector4f(255, 0, 0, 255), orientation, false));*/
 
 
 	HandleMovement(input_wrapper, entity_speed, dt);

@@ -49,10 +49,21 @@ struct ModelCommand : public RenderCommand
 		m_Orientation.SetPosition(position);
 	}
 
+	ModelCommand(const std::string& key, const CU::Vector3f& position, bool wireframe, void* data)
+		: RenderCommand(eCommandType::MODEL)
+		, m_Wireframe(wireframe)
+		, m_Data(data)
+	{
+		strcpy_s(m_Key, key.c_str());
+		m_Orientation.SetPosition(position);
+	}
+
+
 
 	char m_Key[128] = { '\0' };
 	CU::Matrix44f m_Orientation;
 	bool m_Wireframe = false;
+	void* m_Data = nullptr;
 
 };
 

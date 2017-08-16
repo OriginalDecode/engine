@@ -88,6 +88,7 @@
     <ClInclude Include="DebugSystem.h">
       <Filter>Systems</Filter>
     </ClInclude>
+    <ClInclude Include="PBLComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseSystem.cpp">

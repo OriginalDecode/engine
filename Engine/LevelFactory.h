@@ -16,6 +16,8 @@ public:
 	bool CreateLevel(const std::string& level_path);
 	CU::GrowingArray<TreeDweller*> GetDwellers() { return m_DwellerList; }
 	TreeDweller* CreateEntitiy(const std::string& entity_filepath, const CU::Vector3f& position);
+	
+	void CreatePBLLevel(s32 steps);
 
 
 private:

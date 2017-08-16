@@ -227,6 +227,7 @@
     <ClInclude Include="LightSystem.h" />
     <ClInclude Include="NetworkComponent.h" />
     <ClInclude Include="NetworkSystem.h" />
+    <ClInclude Include="PBLComponent.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="RenderComponent.h" />

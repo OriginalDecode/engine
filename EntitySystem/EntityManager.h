@@ -29,7 +29,7 @@ public:
 	const EntityArray& GetEntities();
 
 	template<typename T>
-	void AddComponent(Entity aEntity);
+	T& AddComponent(Entity aEntity);
 
 	template<typename T>
 	void RemoveComponent(Entity aEntity, int aComponentID);
@@ -72,10 +72,11 @@ private:
 };
 
 template<typename T>
-void EntityManager::AddComponent(Entity aEntity)
+T& EntityManager::AddComponent(Entity aEntity)
 {
 	T* component = new T();
 	myComponents->AddComponent(aEntity, component, CTypeID<BaseComponent>::GetID<T>());
+	return *component;
 }
 
 template<typename T>

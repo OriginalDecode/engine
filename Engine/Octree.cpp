@@ -6,7 +6,7 @@
 
 #include <Engine/TreeNode.h>
 
-
+static bool s_RenderTree = false;
 void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 {
 	m_Position = world_position;
@@ -16,6 +16,9 @@ void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 	m_Root.SetPosition(m_Position);
 	m_Root.SetDepth(0);
 	m_Timer.CreateTimer();
+
+	Engine::GetInstance()->AddCheckBox(&s_RenderTree, "Render Octree");
+
 }
 
 void Octree::OnExit()
@@ -46,7 +49,7 @@ void Octree::Update(float dt, bool paused)
 		node_count--;
 	}
 	m_GarbageNodes.RemoveAll();
-
+	m_Root.ToggleRenderBox(s_RenderTree);
 	m_Root.Update(dt, paused ? paused : m_Paused);
 }
 

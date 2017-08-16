@@ -114,24 +114,25 @@ bool CComponentContainer::HasComponent(Entity e, ComponentFilter filter)
 const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(ComponentFilter aFilter)
 {
 	myEntitiesToReturn.RemoveAll();
-	/*for (int i = 0; i < myEntityComponents.Size(); i++)
+	for (int i = 0; i < myEntityComponents.Size(); i++)
 	{
-		if (aFilter.Compare(myEntityComponents[i]) == true)
+		const auto& ec = myEntityComponents[i];
+		if (aFilter.Compare(ec.m_EntityArray) == true)
 		{
 			myEntitiesToReturn.Add(i);
 		}
-	}*/
-	ComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
-	for ( const EntityComponent& ec : myEntityComponents )
-	{
-		if ( ec.m_UpdateFlag || filter == aFilter)
-		{
-			if ( aFilter.Compare(ec.m_EntityArray) )
-			{
-				myEntitiesToReturn.Add(ec.m_Entity);
-			}
-		}
 	}
+	//ComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
+	//for ( const EntityComponent& ec : myEntityComponents )
+	//{
+	//	if ( /*ec.m_UpdateFlag || */filter == aFilter)
+	//	{
+	//		if ( aFilter.Compare(ec.m_EntityArray) )
+	//		{
+	//			myEntitiesToReturn.Add(ec.m_Entity);
+	//		}
+	//	}
+	//}
 	return myEntitiesToReturn;
 }
 

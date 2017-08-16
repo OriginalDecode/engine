@@ -58,16 +58,20 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float ao =  ssao.x;
 	float3 toEye = normalize(camera_position.xyz - worldPosition.xyz);
-	float3 reflection_fresnel = ReflectionFresnel(pData.substance, pData.normal, toEye, 1 - pData.roughness);
+	float3 reflection_fresnel = ReflectionFresnel
+	(pData.substance, pData.normal, toEye, 1 - pData.roughnessOffset);
 	float3 reflectionVector = reflect(toEye, pData.normal.xyz);
 
+
 	float3	ambientDiffuse = CubeMap.SampleLevel(sampler0, reflectionVector, 9).rgb * 
-							(pData.metalness) + pData.metalnessAlbedo * (1 - reflection_fresnel) * ao;
-  
+							 pData.metalnessAlbedo * (1 - reflection_fresnel);
+			
+
 	float fakeLysSpecularPower = RoughToSPow(pData.roughness);
 	float lysMipMap = GetSpecPowToMip(fakeLysSpecularPower, 12);
     
-	float3 ambientSpec = CubeMap.SampleLevel(sampler0, reflectionVector,lysMipMap).xyz * ao * reflection_fresnel;
+	float3 ambientSpec = CubeMap.SampleLevel(sampler0, reflectionVector,lysMipMap).xyz
+	 * ao * reflection_fresnel;
 	float3 final_color = saturate(ambientDiffuse + ambientSpec);
 	//float NdotL = dot(pData.normal.xyz, light_direction);
 	
@@ -82,9 +86,9 @@ float4 main(VS_OUTPUT input) : SV_Target
 	shadowVec.xy += 1;
 	shadowVec.xy *= 0.5;
 
-	float3 F = saturate(Fresnel(pData.substance, -lData.light_dir, lData.halfVec));
-	float D = saturate(D_GGX(lData.HdotN,(pData.roughness - 1) / 2.f));
-	float V = saturate(V_SchlickForGGX((pData.roughness - 1) / 2.f, lData.NdotV, lData.NdotL));
+	float3 F = saturate(Fresnel(pData.substance, lData.light_dir, lData.halfVec));
+	float D = saturate(D_GGX(lData.HdotN,(pData.roughness) ));
+	float V = saturate(V_SchlickForGGX((pData.roughness) , lData.NdotV, lData.NdotL));
 
 
 
@@ -94,7 +98,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	if(sampleValue < compareValue)
  		final_color *= 0.42f;
 	else
-		final_color += (F * D * V);
+		final_color += (F * D * V)*light_color;
 
 
  	/* Shadow end */

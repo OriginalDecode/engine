@@ -316,8 +316,4 @@ namespace cl
 	{
 		return m_String;
 	}
-
-
-
-
 };

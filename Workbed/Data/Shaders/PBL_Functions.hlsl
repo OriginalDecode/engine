@@ -128,11 +128,11 @@ float GetSpecPowToMip(float fSpecPow, int nMips)
 float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const float3 half_vector, float roughness)
 {
 	float LdotH = dot(light_dir, half_vector);
-	LdotH = saturate(LdotH);
+	LdotH = normalize(LdotH);
 	LdotH = 1 - LdotH;
 	LdotH = pow(LdotH, 5);
 	float3 fresnel = LdotH * (1-substance);
-	fresnel = fresnel / (6 - 5 * roughness);
+	fresnel = fresnel / (6 - (5 * roughness));
 	fresnel = substance + fresnel;
 	return fresnel;
 };

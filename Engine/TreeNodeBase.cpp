@@ -281,3 +281,17 @@ s32 TreeNodeBase::GetMemoryBlockIndex()
 {
 	return m_MemoryBlockIndex;
 }
+
+void TreeNodeBase::ToggleRenderBox(bool v)
+{
+	if (v == m_RenderBox)
+		return;
+
+	for (TreeNodeBase* c : m_Children)
+	{
+		if(c) c->ToggleRenderBox(v);
+	}
+
+	m_RenderBox = v;
+
+}

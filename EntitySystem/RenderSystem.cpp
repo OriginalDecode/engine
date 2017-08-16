@@ -5,6 +5,7 @@
 #include "TranslationComponent.h"
 #include "RenderComponent.h"
 #include "LightComponent.h"
+#include "PBLComponent.h"
 
 /* Engine Includes */
 #include "Synchronizer.h"
@@ -94,15 +95,17 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		/*if (render.myModelID.empty())
 			DL_ASSERT("Empty key!");*/
 
-
-		for (const ModelInstance& i : render.m_Instances)
+		/*for (const ModelInstance& i : render.m_Instances)
 		{
 			CU::Matrix44f txi = t * i.m_Orientation;
 			AddRenderCommand(ModelCommand(i.m_ModelID, txi, i.m_RenderWireframe));
 		}
-
-
-		//AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
+*/
+		if (m_Manager.HasComponent(e, CreateFilter<Requires<PBLComponent>>()))
+		{
+			auto& pbl = m_Manager.GetComponent<PBLComponent>(e);
+			AddRenderCommand(ModelCommand(render.myModelID, translation.myOrientation.GetPosition(), render.m_RenderWireframe, pbl.m_Buffer));
+		}
 
 
 	}

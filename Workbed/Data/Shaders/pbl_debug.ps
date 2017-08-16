@@ -33,9 +33,16 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 {
 	GBuffer output;
 
+    output.Albedo = float4(1,0,1,1);
+    output.Normal = float4(input.normal, 1);
+    output.Depth.x = input.pos.z;
+    
+    return output;
+
+
 	float4 opacity = OpacityTexture.Sample(linear_Wrap, input.uv);
 
-	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv).rgb * 2 - 1;
+	float3 _normal = float4(input.normal, 1);//NormalTexture.Sample(linear_Wrap, input.uv).rgb * 2 - 1;
 	float3 nnormal = normalize(input.normal.xyz);
 
 	float3 binorm = normalize(cross(input.normal, input.tang));

@@ -276,7 +276,7 @@ void Renderer::Render()
 	VolumeParticles();
 
 
-	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
+	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 
 	CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
 

@@ -662,15 +662,31 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 			auto& r = m_EntityManager->AddComponent<RenderComponent>(e);
 
 			CU::Vector4f translation;
-			translation.x = x_start + i * 5.f;
+			translation.x = x_start + i * 10.f;
 			translation.y = height;
-			translation.z = z_start + j * 5.f;
+			translation.z = z_start + j * 10.f;
 			translation.w = 1.f;
 
 			t.myOrientation.SetTranslation(translation);
 
 
-			r.myModelID = "default_cube";
+			std::string key = Engine::GetInstance()->LoadModel("Data/Model/sphere_3.fbx", "Shaders/debug_pbl.json", false);
+			Model* m = m_Engine->GetModel(key);
+			m->AddTexture("Data/Textures/test_map.dds", Effect::NORMAL);
+
+			/*
+			auto& c = m->GetChildModels();
+			for (Model* child : c)
+			{
+				auto& s = child->GetSurfaces();
+
+				for (Surface* surface : s)
+				{
+					surface->AddTexture("Data/Textures/brickwall_normal.dds", Effect::NORMAL);
+				}
+			}*/
+
+			r.myModelID = key;
 			r.scale = CU::Vector4f(1, 1, 1, 1);
 
 			m_DwellerList.Add(new TreeDweller);

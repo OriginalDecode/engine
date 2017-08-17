@@ -250,7 +250,7 @@ void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
 
 	render_context.m_Context->DrawIndexedInstanced(m_IndexData.myIndexCount, m_Orientations.Size(), 0, 0, 0);
 }
@@ -336,6 +336,19 @@ std::vector<s32> Model::GetIndices()
 	return to_return;
 }
 
+
+void Model::AddTexture(const std::string& path, Effect::TextureSlot slot)
+{
+	for (Model* pChild : myChildren)
+	{
+		pChild->AddTexture(path, slot);
+	}
+
+	for (Surface* pSurface : mySurfaces)
+	{
+		pSurface->AddTexture(path, slot); 
+	}
+}
 
 void Model::AddOrientation(CU::Matrix44f orientation)
 {

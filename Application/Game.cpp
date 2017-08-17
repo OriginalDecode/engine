@@ -52,11 +52,11 @@ void Game::InitState(StateStack* state_stack)
 	//m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
 	m_Engine->LoadModel(KEY_USED, "Shaders/debug_pbl.json", true);
 
-	Effect* volume_shader = m_Engine->GetEffect("Shaders/volume.json");
-	m_VolumeTexture = new Texture;
-	m_VolumeTexture->Initiate3DTexture(128, 128, 128, TextureFormat(2), 18, "Volume Texture");
-	m_VolumeTexture->Load("Data/Model/box_v3.dds");
-	volume_shader->AddShaderResource(m_VolumeTexture, Effect::_3DTEX);
+// 	Effect* volume_shader = m_Engine->GetEffect("Shaders/volume.json");
+// 	m_VolumeTexture = new Texture;
+// 	m_VolumeTexture->Initiate3DTexture(128, 128, 128, TextureFormat(2), 18, "Volume Texture");
+// 	m_VolumeTexture->Load("Data/Model/box_v3.dds");
+// 	volume_shader->AddShaderResource(m_VolumeTexture, Effect::_3DTEX);
 
 	light = m_Engine->RegisterLight();
 

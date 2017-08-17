@@ -4,7 +4,7 @@
 
 #include "BaseModel.h"
 #include "engine_shared.h"
-
+#include "Effect.h"
 struct D3D11_INPUT_ELEMENT_DESC;
 
 static Ticket_Mutex g_ModelMutex;
@@ -41,6 +41,9 @@ public:
 
 	CU::GrowingArray<Surface*>& GetSurfaces() { return mySurfaces; }
 	CU::GrowingArray<Model*> GetChildModels() { return myChildren; }
+
+	void AddTexture(const std::string& path, Effect::TextureSlot slot);
+
 
 	void AddOrientation(CU::Matrix44f orientation);
 	void ClearOrientation();

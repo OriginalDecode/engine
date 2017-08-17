@@ -89,7 +89,7 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context); //depending
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); //depending
 
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_CLAMP); //depending on dx
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
 
 	for (Surface* surface : mySurfaces)
 	{

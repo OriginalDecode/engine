@@ -33,13 +33,15 @@ DeferredPixelData CalculateDeferredPixelData(float2 tex_coord)
     data.metalness = float4(data.normal.w, data.normal.w, data.normal.w, data.normal.w);
 	data.normal *= 2.f;
 	data.normal -= 1.f;
-	data.depth = depth;
+	data.depth = depth.x;
 	data.roughness = depth.y;
 	float ao = 1.0f;
 	float4 substance = (0.04f - 0.04f * data.metalness) + data.albedo * data.metalness;
 	data.substance = substance;
-	data.metalnessAlbedo = data.albedo - (data.albedo * data.metalness);
+
+	data.metalnessAlbedo = data.albedo - (data.albedo * data.metalness); // "realalbedo"
 	data.roughnessOffset = pow(8192, data.roughness);
+
     float x = tex_coord.x * 2.f - 1.f;
 	float y = (1.f - tex_coord.y) * 2 - 1;
 	float z = depth.x;

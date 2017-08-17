@@ -670,12 +670,12 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 			t.myOrientation.SetTranslation(translation);
 
 
-			std::string key = Engine::GetInstance()->LoadModel("Data/Model/sphere_3.fbx", "Shaders/debug_pbl.json", false);
-			Model* m = m_Engine->GetModel(key);
-			m->AddTexture("Data/Textures/test_map.dds", Effect::NORMAL);
+			std::string key = Engine::GetInstance()->LoadModel("Data/Model/ballen.fbx", "Shaders/debug_pbl.json", false);
+ 			Model* m = m_Engine->GetModel(key);
+ 			m->AddTexture("Data/Textures/brickwall_normal.dds", Effect::NORMAL);
 
 			/*
-			auto& c = m->GetChildModels();
+			auto& c = m->GetChildModels(); 
 			for (Model* child : c)
 			{
 				auto& s = child->GetSurfaces();

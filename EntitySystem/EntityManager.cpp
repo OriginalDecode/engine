@@ -30,6 +30,12 @@ void EntityManager::CleanUp()
 	SAFE_DELETE(myComponents);
 }
 
+void EntityManager::Reset()
+{
+	myNextEntity = 0;
+	SAFE_DELETE(myComponents);
+}
+
 Entity EntityManager::CreateEntity()
 {
 	Entity newEntity = myNextEntity++;

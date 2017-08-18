@@ -638,6 +638,16 @@ void Engine::AddCheckBox(bool* toggle, std::string label)
 	m_Checkboxes.Add(box);
 }
 
+void Engine::RegisterFloatSider(float* v, const char* label, float min, float max)
+{
+	slider _slider;
+	_slider.current_value = v;
+	_slider.label = label;
+	_slider.max = max;
+	_slider.min = min;
+	m_Sliders.Add(_slider);
+}
+
 void Engine::UpdateDebugUI()
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -829,6 +839,21 @@ void Engine::UpdateDebugUI()
 		{
 			ImGui::Checkbox(box.m_Name.c_str(), box.m_Toggle);
 		}
+
+
+		for (auto pair : m_Functions)
+		{
+			if (ImGui::Button(pair.first.c_str(), ImVec2(150, 15)))
+			{
+				pair.second();
+			}
+		}
+
+		for (slider& s : m_Sliders)
+		{
+			ImGui::SliderFloat(s.label, s.current_value, s.min, s.max);
+		}
+
 
 		/*static s32 index = 0;
 		s32 prev = index;

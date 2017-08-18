@@ -35,6 +35,7 @@ static std::string default_cube = "default_cube";
 #define KEY_USED default_cube
 
 #include <CommonLib/HashString.h>
+static float s_CamSpeed = 50.f;
 
 void Game::InitState(StateStack* state_stack)
 {
@@ -67,6 +68,8 @@ void Game::InitState(StateStack* state_stack)
 	m_MainKey = "Data/Textures/main_character.dds";
 	m_Engine->GetInputHandle()->AddController(0);
 	m_Position = { 1920.f / 2.f, 1080.f / 2.f };
+	m_Engine->RegisterFloatSider(&s_CamSpeed, "Camera Move Speed", 0.f, 100.f);
+	//m_Engine->AddFunction("Reload", [&] { Reload(); });
 }
 
 void Game::Initiate(const std::string& level)
@@ -107,6 +110,14 @@ void Game::EndState()
 
 void Game::Render(bool render_through)
 {
+}
+
+void Game::Reload()
+{
+	m_Paused = true;
+	m_World.CleanUp();
+	m_Engine->GetEntityManager().Reset();
+	//Initiate("Data/Levels/level_03.json");
 }
 
 void Game::Update(float dt)
@@ -198,20 +209,19 @@ void Game::OldUpdate(float dt)
 		m_Camera->Update(m_Engine->GetInputHandle()->GetDeltaCursorPos());
 	}
 
-	float cam_speed = 50.f;
 
 	if (input_wrapper->IsDown(KButton::W))
-		m_Camera->Move(eDirection::FORWARD, cam_speed * dt);
+		m_Camera->Move(eDirection::FORWARD, s_CamSpeed * dt);
 	if (input_wrapper->IsDown(KButton::S))
-		m_Camera->Move(eDirection::BACK, -cam_speed * dt);
+		m_Camera->Move(eDirection::BACK, -s_CamSpeed * dt);
 	if (input_wrapper->IsDown(KButton::A))
-		m_Camera->Move(eDirection::LEFT, -cam_speed * dt);
+		m_Camera->Move(eDirection::LEFT, -s_CamSpeed * dt);
 	if (input_wrapper->IsDown(KButton::D))
-		m_Camera->Move(eDirection::RIGHT, cam_speed * dt);
+		m_Camera->Move(eDirection::RIGHT, s_CamSpeed * dt);
 	if (input_wrapper->IsDown(KButton::SPACE))
-		m_Camera->Move(eDirection::UP, cam_speed * dt);
+		m_Camera->Move(eDirection::UP, s_CamSpeed * dt);
 	if (input_wrapper->IsDown(KButton::X))
-		m_Camera->Move(eDirection::DOWN, -cam_speed * dt);
+		m_Camera->Move(eDirection::DOWN, -s_CamSpeed * dt);
 
 
 	static float entity_speed = 0.2f;

@@ -22,7 +22,8 @@ void RootTreeNode::Update(float dt, bool paused)
 #ifdef _PROFILE
 	EASY_FUNCTION();
 #endif
-
+	if (paused)
+		return;
 	TreeNodeBase::Update(dt, paused);
 
 	for (TreeNodeBase* node : m_Children)

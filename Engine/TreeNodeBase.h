@@ -46,6 +46,9 @@ public:
 	virtual s32 GetMemoryBlockIndex();
 
 	void ToggleRenderBox(bool v);
+
+	void RemoveAllDwellers();
+
 protected:
 	virtual void RenderBox();
 

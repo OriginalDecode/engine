@@ -24,6 +24,7 @@ void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 void Octree::OnExit()
 {
 	m_Paused = true;
+	m_Root.RemoveAllDwellers();
 }
 
 void Octree::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
@@ -50,7 +51,7 @@ void Octree::Update(float dt, bool paused)
 	}
 	m_GarbageNodes.RemoveAll();
 	m_Root.ToggleRenderBox(s_RenderTree);
-	m_Root.Update(dt, paused ? paused : m_Paused);
+	m_Root.Update(dt, m_Paused);
 }
 
 void Octree::MoveDown(TreeNodeBase* node, TreeDweller* dweller, s32 depth)

@@ -191,8 +191,8 @@ public:
 	}
 
 	void AddFunction(const std::string& label, std::function<void()> function);
-	void CheckFolder(const std::string& path);
 	void AddCheckBox(bool* toggle, std::string label);
+	void RegisterFloatSider(float* v, const char* label, float min, float max);
 	CU::GrowingArray<ID3D11ShaderResourceView*>& GetDebugTextures() { return m_DebugTextures;}
 private:
 	struct CheckBox
@@ -201,12 +201,20 @@ private:
 		bool* m_Toggle = false;
 	};
 	CU::GrowingArray<CheckBox> m_Checkboxes;
-
+	struct slider
+	{
+		float* current_value;
+		const char* label;
+		float min = 0.f;
+		float max = 1.f;
+	};
+	CU::GrowingArray<slider> m_Sliders;
 	void UpdateDebugUI();
 	CU::GrowingArray<ID3D11ShaderResourceView*> m_DebugTextures;
 	std::vector<std::string> m_Labels;
 	std::vector<std::string> m_Levels;
-	std::vector<std::pair<std::string, std::function<void()>>> m_Functions;
+	typedef std::function<void()> callback;
+	std::vector<std::pair<std::string, callback>> m_Functions;
 
 #endif
 private:

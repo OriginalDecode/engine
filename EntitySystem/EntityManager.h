@@ -20,6 +20,7 @@ public:
 	void Initiate();
 	void CleanUp();
 
+	void Reset();
 
 	Entity CreateEntity();
 	void Clear();

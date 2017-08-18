@@ -295,3 +295,12 @@ void TreeNodeBase::ToggleRenderBox(bool v)
 	m_RenderBox = v;
 
 }
+
+void TreeNodeBase::RemoveAllDwellers()
+{
+	for (TreeNodeBase* c : m_Children)
+	{
+		if(c) c->RemoveAllDwellers();
+	}
+	m_Dwellers.RemoveAll();
+}

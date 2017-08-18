@@ -38,6 +38,9 @@ public:
 
 
 private:
+	void Reload();
+
+
 	Texture* m_VolumeTexture = nullptr;
 	Sprite* m_MainCharacter = nullptr;
 	cl::CHashString<128> m_MainKey;

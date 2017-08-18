@@ -646,7 +646,7 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 	float metal = 0.f;
 	for (s32 i = 0; i < steps; i++)
 	{
-		for (s32 j = 0; j < steps; j++)
+		for (s32 j = steps, s = 0; j >= 0; j--, s++)
 		{
 			metal = (float)i / steps;
 			Entity e = m_EntityManager->CreateEntity();
@@ -662,9 +662,9 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 			auto& r = m_EntityManager->AddComponent<RenderComponent>(e);
 
 			CU::Vector4f translation;
-			translation.x = x_start + i * 10.f;
+			translation.x = x_start + i * 15.f;
 			translation.y = height;
-			translation.z = z_start + j * 10.f;
+			translation.z = z_start + s * 15.f;
 			translation.w = 1.f;
 
 			t.myOrientation.SetTranslation(translation);

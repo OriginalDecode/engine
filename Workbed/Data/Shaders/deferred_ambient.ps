@@ -63,17 +63,17 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 ambientSpec = CubeMap.SampleLevel(sampler0, reflectionVector,lysMipMap).xyz * ao * reflection_fresnel;
 	float3 final_color = (ambientDiffuse + ambientSpec) ;
 	
-	float3 output = (final_color);// * light_color.rgb * NdotL) * light_color.a;
+	float3 output = (final_color) * light_color.rgb;// * NdotL) * light_color.a;
 	
 	DeferredPixelData pData = CalculateDeferredPixelData(input.uv);
-	LightVectors lData = CalculateLightVectorsDirectional(pData, camera_position, -light_direction);
+	LightVectors lData = CalculateLightVectorsDirectional(pData, camera_position, light_direction);
 	
-	float3 F = saturate(Fresnel(pData.substance, lData.light_dir, lData.halfVec));
+	float3 F = saturate(Fresnel(pData.substance, -lData.light_dir, lData.halfVec));
 	float D = saturate(D_GGX(lData.HdotN,(pData.roughness) ));
 	float V = 1 - saturate(V_SchlickForGGX((pData.roughness) , lData.NdotV, lData.NdotL));
 
 	// return float4(final_color, 1);
-	return float4(output *  V , 1.f);
+	return float4(output *  (F * D * V) , 1.f);
 
 
 

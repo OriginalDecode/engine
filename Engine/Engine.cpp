@@ -648,6 +648,8 @@ void Engine::RegisterFloatSider(float* v, const char* label, float min, float ma
 	m_Sliders.Add(_slider);
 }
 
+
+
 void Engine::UpdateDebugUI()
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -770,10 +772,6 @@ void Engine::UpdateDebugUI()
 			*/
 
 			/* Should be read from the level file */
-			static int r = 255;
-			static int g = 255;
-			static int b = 255;
-			static int a = 255;
 
 			static ImVec4 r_color;
 			static ImVec4 g_color;
@@ -781,37 +779,44 @@ void Engine::UpdateDebugUI()
 			static ImVec4 a_color;
 			static ImVec4 tot_color;
 
+			static float colors[4];
+
+			if (ImGui::ColorEdit4("colors", colors, true))
+			{
+
+			}
 
 			ImGui::Text("Directional Light Color");
-			ImGui::SliderInt("R", &r, 0, 255);
-			r_color = ImVec4((float)r / 255.f, 0, 0, 1);
-			ImGui::SameLine();
-			ImGui::ColorButton(r_color);
+			//ImGui::SliderInt("R", &r, 0, 255);
+			//r_color = ImVec4((float)col / 255.f, 0, 0, 1);
+			//ImGui::SameLine();
+			//ImGui::ColorButton(r_color);
 
 
-			ImGui::SliderInt("G", &g, 0, 255);
-			g_color = ImVec4(0, (float)g / 255.f, 0, 1);
-			ImGui::SameLine();
-			ImGui::ColorButton(g_color);
+			//ImGui::SliderInt("G", &g, 0, 255);
+			//g_color = ImVec4(0, (float)g / 255.f, 0, 1);
+			//ImGui::SameLine();
+			//ImGui::ColorButton(g_color);
 
 
-			ImGui::SliderInt("B", &b, 0, 255);
-			b_color = ImVec4(0, 0, (float)b / 255.f, 1);
-			ImGui::SameLine();
-			ImGui::ColorButton(b_color);
+			//ImGui::SliderInt("B", &b, 0, 255);
+			//b_color = ImVec4(0, 0, (float)b / 255.f, 1);
+			//ImGui::SameLine();
+			//ImGui::ColorButton(b_color);
 
-			ImGui::SliderInt("Intensity", &a, 0, 255);
-			a_color = ImVec4((float)a / 255.f, (float)a / 255.f, (float)a / 255.f, 1);
-			ImGui::SameLine();
-			ImGui::ColorButton(a_color);
-
-
-			tot_color = ImVec4((float)r / 255.f, (float)g / 255.f, (float)b / 255.f, (float)a / 255.f);
-			ImGui::ColorButton(tot_color);
+			//ImGui::SliderInt("Intensity", &a, 0, 255);
+			//a_color = ImVec4((float)a / 255.f, (float)a / 255.f, (float)a / 255.f, 1);
+			//ImGui::SameLine(); 
+			//ImGui::ColorButton(a_color);
 
 
-			myRenderer->GetDeferredRenderer()->SetColor(CU::Vector4f((float)r / 255.f, (float)g / 255.f, (float)b / 255.f, (float)a / 255.f));
+			//tot_color = ImVec4((float)r / 255.f, (float)g / 255.f, (float)b / 255.f, (float)a / 255.f);
+			//ImGui::ColorButton(tot_color);
 
+
+			myRenderer->GetDeferredRenderer()->SetColor(CU::Vector4f(colors[0],colors[1],colors[2],colors[3]));
+
+			
 
 			ImGui::Text("Directional Light Direction");
 			static float x = 0;
@@ -821,18 +826,20 @@ void Engine::UpdateDebugUI()
 			ImGui::SliderFloat("Y", &y, -1.f, 1.f);
 			ImGui::SliderFloat("Z", &z, -1.f, 1.f);
 
+
+
 			myRenderer->SetDirection(CU::Vector3f(x,y,z));
 			//myRenderer->GetDirectionalCamera()->SetAt(CU::Vector3f((float)x / 180.f, (float)y / 180.f, (float)z / 180.f));
 
 
-			ImGui::Text("Directional Shadow Position");
+			/*ImGui::Text("Directional Shadow Position");
 			static float sx = 0;
 			static float sy = 0;
 			static float sz = 0;
 			ImGui::SliderFloat("sX", &sx, -30.f, 360.f);
 			ImGui::SliderFloat("sY", &sy, -30.f, 360.f);
 			ImGui::SliderFloat("sZ", &sz, -30.f, 360.f);
-			myRenderer->GetDirectionalCamera()->SetPosition(CU::Vector3f(sx, sy, sz));
+			myRenderer->GetDirectionalCamera()->SetPosition(CU::Vector3f(sx, sy, sz));*/
 		}
 
 		for (CheckBox& box : m_Checkboxes)

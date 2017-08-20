@@ -639,6 +639,7 @@ void LevelFactory::CreateTerrain(std::string terrain_path)
 
 void LevelFactory::CreatePBLLevel(s32 steps)
 {
+	
 	CreateTerrain("Data/Textures/flat_height.tga");
 	float height = 1.f;
 	float x_start = 5.f;
@@ -671,8 +672,8 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 
 
 			std::string key = Engine::GetInstance()->LoadModel("Data/Model/ballen.fbx", "Shaders/debug_pbl.json", false);
- 			Model* m = m_Engine->GetModel(key);
- 			m->AddTexture("Data/Textures/brickwall_normal.dds", Effect::NORMAL);
+			Model* m = m_Engine->GetModel(key);
+			m->AddTexture("Data/Textures/brickwall_normal.dds", Effect::NORMAL);
 
 			/*
 			auto& c = m->GetChildModels(); 
@@ -684,7 +685,8 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 				{
 					surface->AddTexture("Data/Textures/brickwall_normal.dds", Effect::NORMAL);
 				}
-			}*/
+			}
+			*/
 
 			r.myModelID = key;
 			r.scale = CU::Vector4f(1, 1, 1, 1);

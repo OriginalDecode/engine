@@ -36,6 +36,8 @@ void JSONReader::OpenDocument(const std::string & aFilePath)
 
 void JSONReader::CloseDocument()
 {
+	if (!myFile)
+		return;
 	assert(myFile != nullptr && "File were not open. Did you forget to OpenDocument()?");
 	delete myFileReaderStream;
 	myFileReaderStream = nullptr;

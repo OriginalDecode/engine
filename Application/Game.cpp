@@ -242,7 +242,7 @@ void Game::OldUpdate(float dt)
 
 	//AddRenderCommand(ModelCommand(KEY_USED, CU::Vector3f(5.f, 0.f, 5.f), false));
 
-	AddRenderCommand(ModelCommand(key, CU::Vector3f(256, 0, 256), false));
+	//AddRenderCommand(ModelCommand(key, CU::Vector3f(256, 0, 256), false));
 	/*CU::Matrix44f orientation;
 	orientation.SetPosition(CU::Vector3f(50, 10, 50));
 	orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * orientation;

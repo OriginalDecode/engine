@@ -56,9 +56,9 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	float roughness_override = RoughnessTexture.Sample(linear_Wrap, input.uv); 
 
     output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);//float4(t,1);
-    output.Normal = float4(_normal, metalness_override);
+    output.Normal = float4(_normal, metalness);
     output.Depth.x = input.pos.z;
-	output.Depth.y = roughness_override;
+	output.Depth.y = roughness;
     
     return output;
 

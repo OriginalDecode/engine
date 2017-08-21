@@ -6,6 +6,7 @@ namespace debug
 	template<typename T>
 	struct ImGuiSlider
 	{
+		ImGuiSlider() = default;
 		ImGuiSlider(T min, T max, T* pValue, const std::string& label)
 			: m_Min(min)
 			, m_Max(max)

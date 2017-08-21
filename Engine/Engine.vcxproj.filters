@@ -240,9 +240,6 @@
     <ClInclude Include="MousePicker.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="DebugSystem.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="TerrainManager.h">
       <Filter>Terrain</Filter>
     </ClInclude>
@@ -382,6 +379,8 @@
     </ClInclude>
     <ClInclude Include="MemorySegmentHandle.h" />
     <ClInclude Include="WaterPlane.h" />
+    <ClInclude Include="DebugHandle.h" />
+    <ClInclude Include="ImGuiRegisterStructs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -507,9 +506,6 @@
     <ClCompile Include="DXSamplerStates.cpp">
       <Filter>APIs\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="DebugSystem.cpp">
-      <Filter>Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="TerrainManager.cpp">
       <Filter>Terrain</Filter>
     </ClCompile>
@@ -625,5 +621,6 @@
     </ClCompile>
     <ClCompile Include="MemorySegmentHandle.cpp" />
     <ClCompile Include="WaterPlane.cpp" />
+    <ClCompile Include="DebugHandle.cpp" />
   </ItemGroup>
 </Project>

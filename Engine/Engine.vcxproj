@@ -307,7 +307,7 @@
     <ClInclude Include="CommandAllocator.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Console.h" />
-    <ClInclude Include="DebugSystem.h" />
+    <ClInclude Include="DebugHandle.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX11.h" />
@@ -330,6 +330,7 @@
     <ClInclude Include="IGraphicsAPI.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
+    <ClInclude Include="ImGuiRegisterStructs.h" />
     <ClInclude Include="imgui_impl_dx11.h" />
     <ClInclude Include="imgui_internal.h" />
     <ClInclude Include="IndexWrapper.h" />
@@ -411,7 +412,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommandAllocator.cpp" />
     <ClCompile Include="Console.cpp" />
-    <ClCompile Include="DebugSystem.cpp" />
+    <ClCompile Include="DebugHandle.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectX11.cpp" />

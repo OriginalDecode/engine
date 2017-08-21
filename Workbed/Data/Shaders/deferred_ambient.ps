@@ -62,7 +62,7 @@ float4 getWorldPos(float2 tex_coord, float depth)
     return world_pos;
 }
 
-
+// Source: https://github.com/godotengine/godot/blob/df573f5c3a76155842e43ea0dbab594e3944b114/drivers/gles3/shaders/scene.glsl
 float4 main(VS_OUTPUT input) : SV_Target
 {
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	

@@ -21,7 +21,7 @@ namespace debug
 
 	void DebugHandle::RegisterFloatSlider(float min, float max, float* pValue, const std::string& label)
 	{
-		m_FloatSliders.Add(ImGuiSlider<float>(min, max, pValue, label));
+		m_FloatSliders.Add(DebugSlider<float>(min, max, pValue, label));
 	}
 
 	void DebugHandle::HandleFloatSliders()
@@ -35,7 +35,7 @@ namespace debug
 
 	void DebugHandle::RegisterIntSlider(int min, int max, int* pValue, const std::string& label)
 	{
-		m_IntSliders.Add(ImGuiSlider<int>(min, max, pValue, label));
+		m_IntSliders.Add(DebugSlider<int>(min, max, pValue, label));
 	}
 
 	void DebugHandle::HandleIntSliders()

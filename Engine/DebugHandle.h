@@ -1,6 +1,7 @@
 #pragma once
 #include "ImGuiRegisterStructs.h"
 
+
 namespace debug
 {
 	class DebugHandle
@@ -25,8 +26,9 @@ namespace debug
 		void HandleFloatSliders();
 
 
-		CU::GrowingArray<ImGuiSlider<float>> m_FloatSliders;
-		CU::GrowingArray<ImGuiSlider<int>> m_IntSliders;
-
+		CU::GrowingArray<DebugSlider<float>> m_FloatSliders;
+		CU::GrowingArray<DebugSlider<int>> m_IntSliders;
+		CU::GrowingArray<DebugButton<bool>> m_BoolButtons;
+		CU::GrowingArray<DebugButton<std::function<void()>>> m_BoolButtons;
 	};
 };

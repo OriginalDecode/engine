@@ -4,10 +4,10 @@ namespace debug
 {
 
 	template<typename T>
-	struct ImGuiSlider
+	struct DebugSlider
 	{
-		ImGuiSlider() = default;
-		ImGuiSlider(T min, T max, T* pValue, const std::string& label)
+		DebugSlider() = default;
+		DebugSlider(T min, T max, T* pValue, const std::string& label)
 			: m_Min(min)
 			, m_Max(max)
 			, m_Value(pValue)
@@ -21,19 +21,23 @@ namespace debug
 		std::string m_Label; 
 	};
 
+	template<typename T>
+	struct DebugButton
+	{
+		DebugButton() = default;
+		DebugButton(float width, float height, T* pValue, const std::string& label)
+			: m_Width(width)
+			, m_Height(height)
+			, m_Bool(pBool)
+			, m_Label(label)
+		{
+		}
 
-// 	struct ImGuiFloatSlider
-// 	{
-// 		ImGuiFloatSlider(float min, float max, float* pValue)
-// 			: m_Min(min)
-// 			, m_Max(max)
-// 			, m_Value(pValue)
-// 		{
-// 		}
-// 		float m_Min = 0.f;
-// 		float m_Max = 1.f;
-// 		float* m_Value = nullptr;
-// 	};
+		float m_Width;
+		float m_Height;
+		T* m_Value;
+		std::string m_Label;
+	};
 
-
+	
 };

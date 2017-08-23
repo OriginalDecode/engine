@@ -120,7 +120,7 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 	myAmbientPassShader->Use();
 	render_context.m_Context->PSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-	render_context.m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
+	render_context.m_API->SetSamplerState(eSamplerStates::MIP_SAMPLE);
 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
 	render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	render_context.m_Context->DrawIndexed(6, 0, 0);

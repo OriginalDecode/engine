@@ -62,7 +62,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 reflectionVector = reflect(toEye, pData.normal.xyz);
 
 	float3	ambientDiffuse = CubeMap.SampleLevel(sampler0, reflectionVector, 9).rgb * 
-							(pData.metalness) + pData.metalnessAlbedo * (1 - reflection_fresnel) * ao;
+							(pData.metalness * 0.2) + pData.metalnessAlbedo * (1 - reflection_fresnel) * ao;
   
 	float fakeLysSpecularPower = RoughToSPow(pData.roughness);
 	float lysMipMap = GetSpecPowToMip(fakeLysSpecularPower, 12);
@@ -91,9 +91,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float compareValue = shadowVec.z;
 	float sampleValue = ShadowTexture.Sample(sampler0, shadowVec.xy).x;
-	if(sampleValue < compareValue)
- 		final_color *= 0.42f;
-	else
+	
 		final_color += (F * D * V);
 
 

@@ -80,6 +80,7 @@ enum class eSamplerStates
 	LINEAR_WRAP,
 	POINT_CLAMP,
 	POINT_WRAP,
+	MIP_SAMPLE,
 	NONE,
 	_COUNT
 };

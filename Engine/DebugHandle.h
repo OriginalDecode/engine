@@ -15,11 +15,17 @@ namespace debug
 
 
 		//ImGui registers
-		void RegisterFloatSlider(float min, float max, float* pValue, const std::string& label);
-		void RegisterIntSlider(int min, int max, int* pValue, const std::string& label);
+		void RegisterFloatSlider(s32 window_id, float min, float max, float* pValue, const std::string& label);
+		void RegisterIntSlider(s32 window_id, int min, int max, int* pValue, const std::string& label);
 
-		void RegisterBoolButton(float width, float height, bool* pBool, const std::string& label);
-		void RegisterFunctionButton(float width, float height, std::function<void()> pFunc, const std::string& label);
+		void RegisterBoolButton(s32 window_id, float width, float height, bool* pBool, const std::string& label);
+		void RegisterFunctionButton(s32 window_id, float width, float height, std::function<void()> pFunc, const std::string& label);
+
+		s32 RegisterMainWindow(DebugMainWindow window);
+		s32 RegisterMainWindow(float width, float height, float x_pos, float y_pos, const std::string& label);
+
+		s32 RegisterMainWindow(DebugMainWindow window);
+		s32 RegisterMainWindow(float width, float height, float x_pos, float y_pos, const std::string& label);
 
 
 	private:
@@ -30,6 +36,8 @@ namespace debug
 
 		void HandleFunctionButtons();
 		void HandleBoolButtons();
+
+		CU::GrowingArray<DebugMainWindow> m_MainWindows;
 
 
 		CU::GrowingArray<DebugSlider<float>> m_FloatSliders;

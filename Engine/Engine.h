@@ -16,6 +16,8 @@
 #include "ShaderFactory.h"
 #include <Engine/SystemMonitor.h>
 #include <Engine/MemorySegmentHandle.h>
+#include <Engine/DebugHandle.h>
+
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -40,14 +42,11 @@ typedef struct ID3D10Blob IBlob;
 class TreeDweller;
 class LevelFactory;
 
-enum eDeferredType;
-
 
 class DirectX11;
-class Vulkan;
+class IGraphicsAPI;
 
 class Camera;
-class CConsole;
 class CFont;
 class CFontManager;
 class Model;
@@ -56,7 +55,6 @@ class Synchronizer;
 class Texture;
 class Effect;
 class Terrain;
-class IGraphicsAPI;
 class Sprite;
 
 class Engine
@@ -263,7 +261,8 @@ private:
 	Camera* m_Camera = nullptr;
 
 
-	CConsole* myConsole = nullptr;
+	debug::DebugHandle m_DebugHandle;
+
 	AssetsContainer* myAssetsContainer = nullptr;
 	TerrainManager* m_TerrainManager = nullptr;
 	LevelFactory* m_LevelFactory = nullptr;

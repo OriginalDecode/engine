@@ -182,6 +182,10 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_Levels.push_back("Data/Levels/level_03.level");
 
 	m_States[(u16)eEngineStates::INITIATED] = TRUE;
+
+	m_DebugHandle.RegisterFunctionButton(250, 100, [&]() { PostMaster::GetInstance()->SendMessage("hello_world", nullptr); }, "debug button");
+
+
 	return true;
 }
 
@@ -239,7 +243,8 @@ void Engine::Update()
 		return;
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	UpdateDebugUI();
+	//UpdateDebugUI();
+	m_DebugHandle.Update();
 #endif
 	m_DeltaTime = myTimeManager.GetDeltaTime();
 	if (m_States[(u16)eEngineStates::LOADING] == FALSE)

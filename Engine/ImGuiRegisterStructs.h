@@ -28,7 +28,7 @@ namespace debug
 		DebugButton(float width, float height, T* pValue, const std::string& label)
 			: m_Width(width)
 			, m_Height(height)
-			, m_Bool(pBool)
+			, m_Value(pValue)
 			, m_Label(label)
 		{
 		}
@@ -38,6 +38,24 @@ namespace debug
 		T* m_Value;
 		std::string m_Label;
 	};
+
+	struct DebugFunctionButton
+	{
+		DebugFunctionButton() = default;
+		DebugFunctionButton(float width, float height, std::function<void()> pValue, const std::string& label)
+			: m_Width(width)
+			, m_Height(height)
+			, m_Value(pValue)
+			, m_Label(label)
+		{
+		}
+
+		float m_Width;
+		float m_Height;
+		std::function<void()> m_Value;
+		std::string m_Label;
+	};
+
 
 	
 };

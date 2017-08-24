@@ -17,7 +17,7 @@ void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 	m_Root.SetDepth(0);
 	m_Timer.CreateTimer();
 
-	Engine::GetInstance()->AddCheckBox(&s_RenderTree, "Render Octree");
+//	Engine::GetInstance()->AddCheckBox(&s_RenderTree, "Render Octree");
 
 }
 

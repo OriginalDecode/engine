@@ -41,12 +41,12 @@ void WaterPlane::Initiate(const CU::Vector3f& position)
 	myEffect->AddShaderResource(engine->GetTexture("Data/Textures/water_dudv.dds"), Effect::DUDV);
 
 
-	engine->AddTexture(m_RefractionG.GetDiffuse(), "Refraction");
-	engine->AddTexture(m_ReflectionG.GetDiffuse(), "Reflection");
+//	engine->AddTexture(m_RefractionG.GetDiffuse(), "Refraction");
+//	engine->AddTexture(m_ReflectionG.GetDiffuse(), "Reflection");
 	CreatePlane();
 	m_cbPixel = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbPixel));
 	
-	engine->RegisterCheckBox(&m_RenderWireframe, "Waterplane : Wireframe");
+	//engine->RegisterCheckBox(&m_RenderWireframe, "Waterplane : Wireframe");
 
 }
 

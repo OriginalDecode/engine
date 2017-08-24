@@ -68,7 +68,7 @@ void Game::InitState(StateStack* state_stack)
 	m_MainKey = "Data/Textures/main_character.dds";
 	m_Engine->GetInputHandle()->AddController(0);
 	m_Position = { 1920.f / 2.f, 1080.f / 2.f };
-	m_Engine->RegisterFloatSider(&s_CamSpeed, "Camera Move Speed", 0.f, 100.f);
+	//m_Engine->RegisterFloatSider(&s_CamSpeed, "Camera Move Speed", 0.f, 100.f);
 	//m_Engine->AddFunction("Reload", [&] { Reload(); });
 }
 

@@ -1,10 +1,13 @@
 #include "stdafx.h"
 #include "DirectX11.h"
 
+#if !defined(_PROFILE) && !defined(_FINAL)
+#include "imgui_impl_dx11.h"
+#endif
+
 #include <sstream>
 
 #define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
-#define PINK_CLEAR(v) v[0] = 1.f; v[1] = 0.07f; v[2] = 255.f; v[3] = 0.f;
 
 constexpr float clear[4] = { 0.f, 0.f, 0.f, 0.f };
 
@@ -22,11 +25,17 @@ bool DirectX11::Initiate(CreateInfo create_info)
 	CreateBlendStates();
 	CreateSamplerStates();
 
+#if !defined(_PROFILE) && !defined(_FINAL)
+	ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, myDevice, myContext);
+#endif
 	return true;
 }
 
 bool DirectX11::CleanUp()
 {
+#if !defined(_PROFILE) && !defined(_FINAL)
+	ImGui_ImplDX11_Shutdown();
+#endif
 	for ( auto it = myAdapters.begin(); it != myAdapters.end(); ++it )
 	{
 		SAFE_RELEASE(it->second);

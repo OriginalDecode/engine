@@ -162,11 +162,11 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_DebugTexture4->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "roughness");
 
 
-	m_Engine->AddTexture(m_DebugTexture0, "Scene Albedo");
-	m_Engine->AddTexture(m_DebugTexture1, "Scene Normal");
-	m_Engine->AddTexture(m_DebugTexture2, "Scene Depth");
-	m_Engine->AddTexture(m_DebugTexture3, "Scene Metalness");
-	m_Engine->AddTexture(m_DebugTexture4, "Scene Roughness"); 
+	//m_Engine->AddTexture(m_DebugTexture0, "Scene Albedo");
+	//m_Engine->AddTexture(m_DebugTexture1, "Scene Normal");
+	//m_Engine->AddTexture(m_DebugTexture2, "Scene Depth");
+	//m_Engine->AddTexture(m_DebugTexture3, "Scene Metalness");
+	//m_Engine->AddTexture(m_DebugTexture4, "Scene Roughness"); 
 
 	const GBuffer& gbuffer = m_DeferredRenderer->GetGBuffer();
 	Effect* debug_textures = m_Engine->GetEffect("Shaders/debug_textures.json");
@@ -259,11 +259,10 @@ void Renderer::Render()
 
 	//m_WaterPlane->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 
-	if (m_Engine->GetRenderInstanced())
-		Render3DCommandsInstanced();
-	else
+	Render3DCommandsInstanced();
+	/*else
 		Render3DCommands();
-
+*/
 
 	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
 

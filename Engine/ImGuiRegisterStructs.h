@@ -3,7 +3,7 @@
 namespace debug
 {
 
-	template<typename T>
+	/*template<typename T>
 	struct DebugSlider
 	{
 		DebugSlider() = default;
@@ -110,7 +110,7 @@ namespace debug
 
 
 		CU::GrowingArray<DebugWindow> m_Windows;
-	};
+	};*/
 
 
 };

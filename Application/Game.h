@@ -5,7 +5,7 @@
 #include <World.h>
 #include "../EntitySystem/TranslationComponent.h"
 #include "PauseState.h"
-
+#include <PostMaster/Subscriber.h>
 class Synchronizer;
 class Engine;
 class CMousePicker;
@@ -13,7 +13,7 @@ class Camera;
 class InputWrapper;
 class Texture;
 class Sprite;
-class Game : public State
+class Game : public State, public Subscriber
 {
 public:
 	Game() = default;
@@ -39,6 +39,8 @@ public:
 
 private:
 	void Reload();
+	void HandleEvent(u64 event, void* data) override;
+	bool event_happen = false;
 
 
 	Texture* m_VolumeTexture = nullptr;

@@ -22,7 +22,7 @@ void SSAOPass::Initiate()
 	m_cbBlur = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbBlur));
 	
 #if !defined(_PROFILE) && !defined(_FINAL)
-	Engine::GetInstance()->AddTexture(m_SSAOTexture, "SSAO");
+	//Engine::GetInstance()->AddTexture(m_SSAOTexture, "SSAO");
 #endif
 	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_SSAOTexture, Effect::SSAO);
 }

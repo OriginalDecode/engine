@@ -49,7 +49,7 @@ void SpotLight::Initiate()
 	m_VertexData.myVertexData = new s8[m_VertexData.mySize];
 	m_VertexBuffer.myVertexBuffer = Engine::GetAPI()->CreateVertexBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
 
-	Engine::GetInstance()->AddCheckBox(&s_Wireframe, "Wireframe Spotlight");
+	//Engine::GetInstance()->AddCheckBox(&s_Wireframe, "Wireframe Spotlight");
 	m_gsCBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(gsbuffer));
 	m_psCBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(psbuffer));
 

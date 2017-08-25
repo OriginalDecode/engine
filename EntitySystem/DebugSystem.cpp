@@ -379,12 +379,7 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 
 void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation)
 {
-#if !defined(_PROFILE) && !defined(_FINAL)
-	if (!m_Engine->GetLineRendering())
-		return;
-#else
 	return;
-#endif
 	SLinePoint p1, p2, p3, p4, p5, p6, p7, p8;
 	p1.color = component.debugColor;
 	p2.color = p1.color;

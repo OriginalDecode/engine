@@ -258,11 +258,6 @@ int Engine::RegisterLight()
 	return myRenderer->RegisterLight();
 }
 
-IGraphicsAPI* Engine::GetGraphicsAPI()
-{
-	return myAPI;
-}
-
 HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
 {
 	std::wstring w_file_path(file_path.begin(), file_path.end());

@@ -6,6 +6,9 @@
 bool Window::Initiate(WindowCreateInfo window_create_info)
 {
 	m_CreateInfo = window_create_info;
+	m_WindowSize.m_Height = window_create_info.window_height;
+	m_WindowSize.m_Width = window_create_info.window_width;
+
 #ifdef _WINDEF_
 
 	WNDCLASSEX wc;
@@ -24,7 +27,7 @@ bool Window::Initiate(WindowCreateInfo window_create_info)
 	m_HWND = CreateWindow(
 		"WindowsClass"
 		, NULL
-		, WS_OVERLAPPEDWINDOW   //WS_POPUP //Borderless windowed
+		, WS_OVERLAPPEDWINDOW   //WS_POPUP, Borderless windowed
 		, s32(width) // start x
 		, s32(height) // start y
 		, s32(m_CreateInfo.window_width)
@@ -32,16 +35,14 @@ bool Window::Initiate(WindowCreateInfo window_create_info)
 		, NULL
 		, NULL
 		, GetModuleHandle(NULL), NULL);
-#endif
-
-	m_WindowSize.m_Height = window_create_info.window_height;
-	m_WindowSize.m_Width = window_create_info.window_width;
 
 	RECT inner_size;
 	GetClientRect(m_HWND, &inner_size);
 	m_InnerSize.m_Height = (float)inner_size.bottom;
 	m_InnerSize.m_Width = ( float ) inner_size.right;
 
+
+#endif
 
 	return true;
 }

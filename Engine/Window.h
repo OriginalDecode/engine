@@ -30,7 +30,7 @@ public:
 	Window() = default;
 	bool Initiate(WindowCreateInfo window_create_info);
 	void ShowWindow();
-	HWND GetHWND() { return m_HWND; }
+	HWND GetHWND() const { return m_HWND; }
 	HINSTANCE GetWindowInstance() { return m_CreateInfo.instance; }
 	bool IsWindowActive() { return m_WindowIsActive; }
 

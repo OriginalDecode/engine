@@ -1,22 +1,25 @@
 #pragma once
+
+
 #define _WINSOCKAPI_
 #include <network/network_api.h>
-#include "Window.h"
-#include "VirtualFileSystem.h"
+
 #include <CommonLib/Math/Vector/Vector.h>
 #include <CommonLib/Threadpool.h>
 
 #include <Timer/TimeManager/TimeManager.h>
-//#include <TimeManager/TimeManager.h>
-//#include <TimeManager.h>
 
-#include "engine_shared.h"
-#include <string>
-#include "../EntitySystem/EntityManager.h"
-#include "ShaderFactory.h"
+#include <EntitySystem/EntityManager.h>
+
+#include <Engine/VirtualFileSystem.h>
+#include <Engine/engine_shared.h>
+#include <Engine/Window.h>
+#include <Engine/ShaderFactory.h>
 #include <Engine/SystemMonitor.h>
 #include <Engine/MemorySegmentHandle.h>
 #include <Engine/DebugHandle.h>
+
+#include <string>
 
 #ifndef _WINDEF_
 struct HINSTANCE__;
@@ -25,8 +28,6 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
-class InputHandle;
-class PhysicsManager;
 
 struct SLocalTime
 {
@@ -35,18 +36,12 @@ struct SLocalTime
 	u16 second;
 };
 
-class AssetsContainer;
-class TerrainManager;
+//typedef struct ID3D10Blob IBlob;
 
-typedef struct ID3D10Blob IBlob;
+class TerrainManager;
+class AssetsContainer;
 class TreeDweller;
 class LevelFactory;
-
-
-
-class DirectX11;
-class Vulkan;
-
 class Camera;
 class CFont;
 class CFontManager;
@@ -56,8 +51,10 @@ class Synchronizer;
 class Texture;
 class Effect;
 class Terrain;
-class IGraphicsInterface;
 class Sprite;
+class InputHandle;
+class PhysicsManager;
+class IGraphicsInterface;
 
 class Engine
 {
@@ -71,7 +68,6 @@ public:
 	bool CleanUp();
 
 	void Update();
-	void Render();
 	void UpdateInput();
 
 	int RegisterLight();
@@ -81,9 +77,9 @@ public:
 	// Settings
 	void ToggleVsync();
 
-	Camera* GetCamera();
+	//Camera* GetCamera();
 
-	TreeDweller* CreateEntity(const std::string& filepath, CU::Vector3f& position);
+	//TreeDweller* CreateEntity(const std::string& filepath, CU::Vector3f& position);
 
 	static void Present();
 	static void Clear();
@@ -136,30 +132,36 @@ public:
 
 	//_________________________________________
 	// Gets
+	const Window& GetWindow() { return m_Window; }
+	const Window& GetWindow() const { return m_Window; }
+
 	const SLocalTime& GetLocalTime();
-	Window& GetWindow() { return m_Window; }
-	std::string GetLocalTimeAsString();
+	std::string GetLocalTimeAsString(); // should probably return a static buffered string instead that doesn't get newed all the time
 	InputHandle* GetInputHandle() { return m_InputHandle; }
+	// This can probably stay
+
 
 	//_________________________________________
 	// Level Creation, Loading, Saving
 	Terrain* CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize);
 	CU::GrowingArray<TreeDweller*> LoadLevel(const std::string& level_filepath);
+	// Should be refactored out of the engine stuff.
+
 
 	//_________________________________________
 	// Shader Creation
 	//This should probably be moved to the graphics API instead.
+	/* These 3 functions are very API specific */
 	HRESULT CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
 	HRESULT CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message);
-
-	void* CreateShader(IBlob* compiled_shader_blob, eShaderType type, const std::string& debug_name);
-	//CompiledShader CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name, bool use);
+	void* CreateShader(void* compiled_shader_blob, eShaderType type, const std::string& debug_name);
+	/* END */
 
 
 	bool UseMouse() { return m_CameraUseMouse; }
 	void ToggleUseMouse() { m_CameraUseMouse = !m_CameraUseMouse; }
 
-	const HWND& GetHWND() const { return myHWND; }
+	HWND GetHWND() const { return m_Window.GetHWND(); }
 
 	enum class eEngineStates
 	{
@@ -169,25 +171,19 @@ public:
 		_COUNT
 	};
 
-	void SelectEntity(u32 e);
-	void DeselectEntity();
+// 	void SelectEntity(u32 e);
+// 	void DeselectEntity();
 	memory::MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
 
 private:
-
-
-
-
 	Engine() = default;
-	//void AddEntitySystems();
-	u32 m_EntityToEdit = 0;
+	static Engine* myInstance;
+	static IGraphicsInterface* m_GraphicsInterface;
+	memory::MemorySegmentHandle m_SegmentHandle;
 
 
 	bool HasInitiated();
 
-	static Engine* myInstance;
-	static IGraphicsInterface* m_GraphicsInterface;
-	memory::MemorySegmentHandle m_SegmentHandle;
 
 
 	SLocalTime myLocalTime;

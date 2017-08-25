@@ -42,9 +42,10 @@ class LevelFactory;
 
 enum eDeferredType;
 
-
+////////// REMOVE ///////////
 class DirectX11;
 class Vulkan;
+////////// REMOVE ///////////
 
 class Camera;
 class CConsole;
@@ -56,7 +57,7 @@ class Synchronizer;
 class Texture;
 class Effect;
 class Terrain;
-class IGraphicsAPI;
+class IGraphicsInterface;
 class Sprite;
 
 class Engine
@@ -76,8 +77,7 @@ public:
 
 	int RegisterLight();
 
-	static IGraphicsAPI* GetGraphicsAPI();
-	static DirectX11* GetAPI();
+	static IGraphicsInterface* GetGraphicsInterface() { return m_GraphicsInterface; }
 	//_________________________________________
 	// Settings
 	void ToggleVsync();
@@ -217,65 +217,58 @@ private:
 	std::vector<std::pair<std::string, callback>> m_Functions;
 
 #endif
-private:
-
-	bool m_RenderInstanced = true;
-public:
 	bool GetRenderInstanced() { return m_RenderInstanced; }
 
 private:
-	memory::MemorySegmentHandle m_SegmentHandle;
 
-	bool m_EditLight = false;
-	bool m_EditRender = false;
+
 
 
 	Engine() = default;
 	//void AddEntitySystems();
 	u32 m_EntityToEdit = 0;
-	bool m_IsEditingEntity;
 
 
 	bool HasInitiated();
-	bool m_CameraUseMouse = false;
 
 	static Engine* myInstance;
-	static IGraphicsAPI* myAPI;
+	static IGraphicsInterface* m_GraphicsInterface;
+	memory::MemorySegmentHandle m_SegmentHandle;
 
-	Threadpool m_Threadpool;
-	VirtualFileSystem m_VirtualFileSystem;
 
 	SLocalTime myLocalTime;
-	HWND myHWND;
+
+
+	VirtualFileSystem m_VirtualFileSystem;
+	Threadpool m_Threadpool;
 	Window m_Window;
-	//DebugSystem m_DebugSystem;
 	EntityManager m_EntityManager;
 
 	InputHandle* m_InputHandle = nullptr;
-
 	PhysicsManager* m_PhysicsManager = nullptr;
-
 	CFontManager* myFontManager = nullptr;
 	CU::TimeManager myTimeManager;
 	Synchronizer* mySynchronizer = nullptr;
 	Renderer* myRenderer = nullptr;
-
 	Camera* m_Camera = nullptr;
-
-
 	CConsole* myConsole = nullptr;
 	AssetsContainer* myAssetsContainer = nullptr;
 	TerrainManager* m_TerrainManager = nullptr;
 	LevelFactory* m_LevelFactory = nullptr;
+	CSystemMonitor m_SystemMonitor;
 
 	std::bitset<(u16)eEngineStates::_COUNT> m_States;
-	CSystemMonitor m_SystemMonitor;
-	bool m_PauseInput = false;
+
+
+
 	float m_DeltaTime = 0.f;
 
-
-
-
+	bool m_PauseInput = false;
+	bool m_CameraUseMouse = false;
+	bool m_IsEditingEntity;
+	bool m_EditLight = false;
+	bool m_RenderInstanced = true;
+	bool m_EditRender = false;
 };
 
 template<typename T>

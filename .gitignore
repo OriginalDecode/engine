@@ -230,3 +230,12 @@ ModelManifest.xml
 *.ipdb
 /EasyProfiler
 *.prof
+/Workbed/Data/Model/log_test/Aset_wood_log_M_qdtdP_LOD0.fbx
+/Workbed/Data/Model/log_test/Aset_wood_log_M_qdtdP_256_Roughness.dds
+/Workbed/Data/Model/log_test/Aset_wood_log_M_qdtdP_256_Normal_LOD1.dds
+/Workbed/Data/Model/log_test/Aset_wood_log_M_qdtdP_256_Normal_LOD0.dds
+/Workbed/Data/Model/log_test/Aset_wood_log_M_qdtdP_256_NormalBump.dds
+/Workbed/Data/Model/log_test/Aset_wood_log_M_qdtdP_256_Displacement.dds
+/Workbed/Data/Model/log_test/Aset_wood_log_M_qdtdP_256_Cavity.dds
+/Workbed/Data/Model/log_test/Aset_wood_log_M_qdtdP_256_Bump.dds
+/Workbed/Data/Model/log_test/Aset_wood_log_M_qdtdP_256_Albedo.dds

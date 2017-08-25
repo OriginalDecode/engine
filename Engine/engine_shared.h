@@ -15,32 +15,6 @@
 
 typedef s32 Entity;
 
-
-
-
-typedef struct ID3D11Texture2D				ITexture2D;
-typedef struct ID3D11ShaderResourceView		IShaderResourceView;
-typedef struct ID3D11DepthStencilView		IDepthStencilView;
-typedef struct ID3D11RenderTargetView		IRenderTargetView;
-
-typedef enum DXGI_FORMAT					TextureFormat;
-typedef enum D3D11_USAGE					UsageType;
-typedef struct D3D11_VIEWPORT				Viewport;
-typedef struct ID3D11VertexShader			IVertexShader;
-typedef struct ID3D11PixelShader			IPixelShader;
-typedef struct ID3D11GeometryShader			IGeometryShader;
-typedef struct ID3D11HullShader				IHullShader;
-typedef struct ID3D11DomainShader			IDomainShader;
-typedef struct ID3D11ComputeShader			IComputeShader;
-typedef struct ID3D10Blob					IBlob;
-
-typedef struct ID3D11Device					IDevice;
-typedef struct ID3D11DeviceContext			IDevContext;
-
-typedef struct ID3D11Buffer					IBuffer;
-typedef struct ID3D11InputLayout			IInputLayout;
-
-
 #if (UINTPTR_MAX == 0xffffffffffffffff)
 typedef u64 uptr;
 #else
@@ -77,17 +51,9 @@ inline void BeginTicketMutex(Ticket_Mutex* mutex)
 	{
 	
 	}
-}
+};
 
 inline void EndTicketMutex(Ticket_Mutex* mutex)
 {
 	mutex->serving++;
-}
-
-struct RenderContext
-{
-	class Engine* m_Engine = nullptr;
-	struct ID3D11Device* m_Device = nullptr;
-	struct ID3D11DeviceContext* m_Context = nullptr;
-	class DirectX11* m_API = nullptr;
 };

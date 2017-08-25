@@ -314,18 +314,6 @@ void* Engine::CreateShader(IBlob* compiled_shader_blob, eShaderType type, const 
 	return nullptr;
 }
 
-void Engine::SelectEntity(u32 e)
-{
-	m_EntityToEdit = e;
-	m_IsEditingEntity = true;
-}
-
-void Engine::DeselectEntity()
-{
-	m_EntityToEdit = 0;
-	m_IsEditingEntity = false;
-}
-
 void Engine::Present()
 {
 	if (myInstance->m_States[(u16)eEngineStates::USE_VSYNC] == TRUE)

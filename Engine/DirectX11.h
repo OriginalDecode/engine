@@ -85,6 +85,9 @@ namespace graphics
 		void HSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
 		void CSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
 
+		void* GetDevice() override { return m_Device; }
+
+		void CreateTexture2D(void* pTexDesc, void* pInitialData, void** ppTexture2D) override; //How would I actually do this?
 
 
 
@@ -94,11 +97,10 @@ namespace graphics
 
 		const CreateInfo& GetInfo() const { return m_CreateInfo; }
 
-		IDevice* GetDevice() override { return m_Device; }
 		IDevContext* GetContext() { return m_Context; }
 
 		const std::string& GetAdapterName(u16 anIndex);
-		const std::string& GetActiveAdapterName();
+		const std::string& GetActiveAdapterName() { return myActiveAdapter; }
 
 		void EnableZBuffer() override;
 		void DisableZBuffer() override;
@@ -134,25 +136,26 @@ namespace graphics
 		void SetViewport(IViewport* viewport);
 		IViewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y);
 
-		IBuffer* CreateConstantBuffer(s32 size);
-		IBuffer* CreateVertexBuffer(s32 size, void* pData);
-		IBuffer* CreateIndexBuffer(s32 size, void* pData);
+		ID3D11Buffer* CreateConstantBuffer(s32 size);
+		ID3D11Buffer* CreateVertexBuffer(s32 size, void* pData);
+		ID3D11Buffer* CreateIndexBuffer(s32 size, void* pData);
 
 		template<typename T>
-		void UpdateConstantBuffer(IBuffer*& dest, T* src, s32 size);
+		void UpdateConstantBuffer(ID3D11Buffer*& dest, T* src, s32 size);
 
 		template<typename T>
-		void UpdateConstantBuffer(IBuffer*& dest, T* src);
+		void UpdateConstantBuffer(ID3D11Buffer*& dest, T* src);
 
 		template<typename T>
-		void UpdateBuffer(IBuffer*& dest, T* src, s32 size, D3D11_MAP map_type);
+		void UpdateBuffer(ID3D11Buffer*& dest, T* src, s32 size, D3D11_MAP map_type);
 
 
-		IBuffer* CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag = D3D11_USAGE_IMMUTABLE, u32 bind_flag = D3D11_BIND_VERTEX_BUFFER, u32 cpu_access_flag = 0, u32 misc_flag = 0, u32 structured_byte_width = 0);
-		IBuffer* CreateBuffer(D3D11_BUFFER_DESC buffer_desc);
+		ID3D11Buffer* CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag = D3D11_USAGE_IMMUTABLE, u32 bind_flag = D3D11_BIND_VERTEX_BUFFER, u32 cpu_access_flag = 0, u32 misc_flag = 0, u32 structured_byte_width = 0);
+		ID3D11Buffer* CreateBuffer(D3D11_BUFFER_DESC buffer_desc);
 		IInputLayout* CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements);
 
 		ID3D11SamplerState* GetSampler(s32 index);
+
 
 	private:
 		void CreateDeviceAndSwapchain();
@@ -172,35 +175,29 @@ namespace graphics
 
 		IDXGISwapChain* m_Swapchain = nullptr;
 
-		IDevice* m_Device = nullptr;
-		IViewport* m_Viewport = nullptr;
-		ITexture2D* m_DepthBuffer = nullptr;
-		IDevContext* m_Context = nullptr;
-		IRenderTargetView* m_RenderTarget = nullptr;
-		IDepthStencilView* m_DepthView = nullptr;
+		ID3D11Device* m_Device = nullptr;
+		D3D11_VIEWPORT* m_Viewport = nullptr;
+		ID3D11DeviceContext* m_Context = nullptr;
+		ID3D11RenderTargetView* m_RenderTarget = nullptr;
 
-		ID3D11Debug* m_Debug = nullptr; //Can't change this one. DX11 Specific
+		ID3D11DepthStencilView* m_DepthView = nullptr;
+		ID3D11Texture2D* m_DepthBuffer = nullptr;
 
-		//______________________
-		// GrowingArray / Map?
-		ID3D11DepthStencilState* myDepthStates[eDepthStencilState::NOF_DSS];
-		ID3D11RasterizerState* myRasterizerStates[eRasterizer::NOF_RS];
-		ID3D11BlendState* myBlendStates[eBlendStates::NOF_BS];
-		ID3D11SamplerState* mySamplerStates[eSamplerStates::NOF_SS];
+		ID3D11Debug* m_Debug = nullptr;
+
+		ID3D11DepthStencilState*	myDepthStates[eDepthStencilState::NOF_DSS];
+		ID3D11RasterizerState*		myRasterizerStates[eRasterizer::NOF_RS];
+		ID3D11BlendState*			myBlendStates[eBlendStates::NOF_BS];
+		ID3D11SamplerState*			mySamplerStates[eSamplerStates::NOF_SS];
+
 		std::unordered_map<std::string, IDXGIAdapter*> myAdapters;
-
 		std::vector<std::string> myAdaptersName;
 		std::string myActiveAdapter;
 
 	};
 
-	__forceinline const std::string& DirectX11::GetActiveAdapterName()
-	{
-		return myActiveAdapter;
-	}
-
 	template<typename T>
-	void DirectX11::UpdateConstantBuffer(IBuffer*& dest, T* src, s32 size)
+	void DirectX11::UpdateConstantBuffer(ID3D11Buffer*& dest, T* src, s32 size)
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		m_Context->Map(dest, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
@@ -215,13 +212,13 @@ namespace graphics
 	}
 
 	template<typename T>
-	void DirectX11::UpdateConstantBuffer(IBuffer*& dest, T* src)
+	void DirectX11::UpdateConstantBuffer(ID3D11Buffer*& dest, T* src)
 	{
 		UpdateConstantBuffer(dest, src, sizeof(T));
 	}
 
 	template<typename T>
-	void DirectX11::UpdateBuffer(IBuffer*& dest, T* src, s32 size, D3D11_MAP map_type)
+	void DirectX11::UpdateBuffer(ID3D11Buffer*& dest, T* src, s32 size, D3D11_MAP map_type)
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		m_Context->Map(dest, 0, map_type, 0, &msr);

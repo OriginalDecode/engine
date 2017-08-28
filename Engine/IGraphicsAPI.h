@@ -10,7 +10,7 @@ typedef HWND__* HWND;
 
 namespace graphics
 {
-	typedef void** ITexture2D;
+	/*typedef void** ITexture2D;
 	typedef void** ITexture3D;
 	typedef void** IShaderResourceView;
 	typedef void** IDepthStencilView;
@@ -26,7 +26,7 @@ namespace graphics
 	typedef void** IDevice;
 	typedef void** IContext;
 	typedef void** IBuffer;
-	typedef void** IInputLayout;
+	typedef void** IInputLayout;*/
 
 
 	struct CreateInfo
@@ -102,7 +102,7 @@ namespace graphics
 
 		std::string GetAPIName() { return m_CreateInfo.m_APIName; }
 
-		virtual IDevice* GetDevice() = 0;
+		virtual void* GetDevice() = 0;
 
 		virtual void CopyResource(void * pDestination, void * pSource) = 0;
 
@@ -111,19 +111,6 @@ namespace graphics
 
 		virtual void EnableZBuffer() = 0;
 		virtual void DisableZBuffer() = 0;
-
-
-		virtual void* CreateBlendState(s32 render_target_write_mask
-									   , s32 enable_blend_flags
-									   , BlendState::BlendOp blend_op, BlendState::BlendFlag src_blend, BlendState::BlendFlag dest_blend
-									   , BlendState::BlendOp alpha_blend_op, BlendState::BlendFlag src_blend_alpha, BlendState::BlendFlag dest_blend_alpha) = 0;
-		virtual void* CreateSamplerState(SamplerState::FilterMode filter_mode, SamplerState::UVAddressMode address_mode, u32 max_anisotropy, float mip_lod_bias, float min_lod, float max_lod, float border_color[4], SamplerState::ComparisonFunc comparison_function) = 0;
-
-		virtual void* CreateRasterizerState() = 0;
-		virtual void* CreateDepthstencilState() = 0;
-
-
-
 
 		/*
 		vulkan has
@@ -156,7 +143,7 @@ namespace graphics
 		virtual void CSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 
 
-		virtual void CreateTexture2D(void* pTexDesc, void* pInitialData, ITexture2D ppTexture2D);
+		virtual void CreateTexture2D(void* pTexDesc, void* pInitialData, void** ppTexture2D) = 0;
 
 
 

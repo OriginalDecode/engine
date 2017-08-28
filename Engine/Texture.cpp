@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "Texture.h"
 
-#include <DDSTextureLoader.h>
-#include <ScreenGrab.h>
+
 
 
 Texture::~Texture()

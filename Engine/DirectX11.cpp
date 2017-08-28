@@ -1,5 +1,8 @@
 #include "stdafx.h"
+
 #include "DirectX11.h"
+#include <DDSTextureLoader.h>
+#include <ScreenGrab.h>
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include "imgui_impl_dx11.h"
@@ -27,7 +30,7 @@ namespace graphics
 		CreateSamplerStates();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-		ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, myDevice, m_Context);
+		ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, static_cast<ID3D11Device*>(m_Device), static_cast<ID3D11DeviceContext*>(m_Context));
 #endif
 		return true;
 	}
@@ -41,15 +44,15 @@ namespace graphics
 		{
 			SAFE_RELEASE(it->second);
 		}
-		mySwapchain->SetFullscreenState(FALSE, nullptr);
-		myEngineFlags[static_cast<u16>(eEngineFlags::FULLSCREEN)] = FALSE;
+		m_Swapchain->SetFullscreenState(FALSE, nullptr);
+		//myEngineFlags[static_cast<u16>(eEngineFlags::FULLSCREEN)] = FALSE;
 
 		float blend[4];
 		BLACK_CLEAR(blend);
 		m_Context->OMSetBlendState(nullptr, blend, 0xFFFFFFFF);
 
 
-		SAFE_DELETE(myViewport);
+		SAFE_DELETE(m_Viewport);
 
 		{
 			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::DEPTH_TEST)]);
@@ -85,27 +88,14 @@ namespace graphics
 		}
 
 		{
-			SAFE_RELEASE(myDepthView);
-			SAFE_RELEASE(myDepthBuffer);
-			SAFE_RELEASE(myRenderTarget);
-			SAFE_RELEASE(mySwapchain);
+			SAFE_RELEASE(m_DepthView);
+			SAFE_RELEASE(m_DepthBuffer);
+			SAFE_RELEASE(m_RenderTarget);
+			SAFE_RELEASE(m_Swapchain);
 		}
 
 
 
-
-		for (ID3D11DepthStencilState* state : m_RegisteredDepthStates)
-			SAFE_RELEASE(state);
-
-
-		for (ID3D11SamplerState* state : m_RegisteredSamplerStates)
-			SAFE_RELEASE(state);
-
-		for (ID3D11RasterizerState* state : m_RegisteredRasterStates)
-			SAFE_RELEASE(state);
-
-		for (ID3D11BlendState* state : m_RegisteredBlendStates)
-			SAFE_RELEASE(state);
 
 
 		m_Context->ClearState();
@@ -113,14 +103,14 @@ namespace graphics
 		//Swap the full screen flags correctly if swapping between.
 		SAFE_RELEASE(m_Context);
 		SAFE_RELEASE(myDevice);
-		if (myDebug != nullptr)
+		if (m_Debug != nullptr)
 		{
 			std::stringstream ss;
-			ss << "\nDebug is released last. Will report as Live Object! 0x" << myDebug << "\nWatch out for false reports. \n====\n";
+			ss << "\nDebug is released last. Will report as Live Object! 0x" << m_Debug << "\nWatch out for false reports. \n====\n";
 			OutputDebugString(ss.str().c_str());
 
-			myDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL /*| D3D11_RLDO_IGNORE_INTERNAL*/);
-			SAFE_RELEASE(myDebug);
+			m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL /*| D3D11_RLDO_IGNORE_INTERNAL*/);
+			SAFE_RELEASE(m_Debug);
 		}
 
 #if defined (_DEBUG)
@@ -132,15 +122,15 @@ namespace graphics
 
 	void DirectX11::Present(u8 anInterval, u8 flags)
 	{
-		mySwapchain->Present(anInterval, flags);
+		m_Swapchain->Present(anInterval, flags);
 	}
 
 	void DirectX11::Clear()
 	{
 		float color[4];
 		BLACK_CLEAR(color);
-		m_Context->ClearRenderTargetView(myRenderTarget, color);
-		m_Context->ClearDepthStencilView(myDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+		m_Context->ClearRenderTargetView(m_RenderTarget, color);
+		m_Context->ClearDepthStencilView(m_DepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 	}
 
 	const std::string& DirectX11::GetAdapterName(u16 anIndex)
@@ -350,22 +340,22 @@ namespace graphics
 		return new_viewport;
 	}
 
-	IBuffer* DirectX11::CreateConstantBuffer(s32 size)
+	ID3D11Buffer* DirectX11::CreateConstantBuffer(s32 size)
 	{
 		return CreateBuffer(size, nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, 0);
 	}
 
-	IBuffer* DirectX11::CreateVertexBuffer(s32 size, void* pData)
+	ID3D11Buffer* DirectX11::CreateVertexBuffer(s32 size, void* pData)
 	{
 		return CreateBuffer(size, pData, D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, 0);
 	}
 
-	IBuffer* DirectX11::CreateIndexBuffer(s32 size, void* pData)
+	ID3D11Buffer* DirectX11::CreateIndexBuffer(s32 size, void* pData)
 	{
 		return CreateBuffer(size, pData, D3D11_USAGE_DEFAULT, D3D11_BIND_INDEX_BUFFER, 0, 0, 0);
 	}
 
-	IBuffer* DirectX11::CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag /*= D3D11_USAGE_IMMUTABLE*/, u32 bind_flag /*= D3D11_BIND_VERTEX_BUFFER*/, u32 cpu_access_flag /*= 0*/, u32 misc_flag /*= 0*/, u32 structured_byte_width /*= 0*/)
+	ID3D11Buffer* DirectX11::CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag /*= D3D11_USAGE_IMMUTABLE*/, u32 bind_flag /*= D3D11_BIND_VERTEX_BUFFER*/, u32 cpu_access_flag /*= 0*/, u32 misc_flag /*= 0*/, u32 structured_byte_width /*= 0*/)
 	{
 
 		D3D11_BUFFER_DESC buffer_desc;
@@ -377,7 +367,7 @@ namespace graphics
 		buffer_desc.MiscFlags = misc_flag;
 		buffer_desc.StructureByteStride = structured_byte_width; //investigate future use
 
-		IBuffer* return_value = nullptr;
+		ID3D11Buffer* return_value = nullptr;
 		HRESULT hr = S_OK;
 
 		D3D11_SUBRESOURCE_DATA srd;
@@ -395,10 +385,10 @@ namespace graphics
 		return return_value;
 	}
 
-	IBuffer* DirectX11::CreateBuffer(D3D11_BUFFER_DESC buffer_desc)
+	ID3D11Buffer* DirectX11::CreateBuffer(D3D11_BUFFER_DESC buffer_desc)
 	{
 		HRESULT hr = S_OK;
-		IBuffer* buffer = nullptr;
+		ID3D11Buffer* buffer = nullptr;
 		hr = myDevice->CreateBuffer(&buffer_desc, nullptr, &buffer);
 		HandleErrors(hr, "Failed to create buffer!");
 		return buffer;

@@ -64,22 +64,6 @@ namespace graphics
 
 		void SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value) override;
 
-
-
-		void* CreateBlendState(s32 render_target_write_mask
-							   , s32 enable_blend_flags
-							   , BlendState::BlendOp blend_op, BlendState::BlendFlag src_blend, BlendState::BlendFlag dest_blend
-							   , BlendState::BlendOp alpha_blend_op, BlendState::BlendFlag src_blend_alpha, BlendState::BlendFlag dest_blend_alpha) override;
-		void* CreateRasterizerState() override { return nullptr; };
-		void* CreateDepthstencilState() override { return nullptr; };
-		void* CreateSamplerState(SamplerState::FilterMode filter_mode, SamplerState::UVAddressMode address_mode, u32 max_anisotropy, float mip_lod_bias, float min_lod, float max_lod, float border_color[4], SamplerState::ComparisonFunc comparison_function) override;
-
-		void SetShaderState(ShaderState& shader_state) override;
-
-
-
-
-
 		void SetVertexShader(CompiledShader* vertex_shader) override;
 		void SetPixelShader(CompiledShader* pixel_shader) override;
 		void SetGeometryShader(CompiledShader* geometry_shader) override;
@@ -111,7 +95,7 @@ namespace graphics
 		const CreateInfo& GetInfo() const { return m_CreateInfo; }
 
 		IDevice* GetDevice() override { return m_Device; }
-		ID3D11DeviceContext* GetContext();
+		IDevContext* GetContext() { return m_Context; }
 
 		const std::string& GetAdapterName(u16 anIndex);
 		const std::string& GetActiveAdapterName();
@@ -147,8 +131,8 @@ namespace graphics
 
 		void ReportLiveObjects();
 
-		void SetViewport(Viewport* viewport);
-		Viewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y);
+		void SetViewport(IViewport* viewport);
+		IViewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y);
 
 		IBuffer* CreateConstantBuffer(s32 size);
 		IBuffer* CreateVertexBuffer(s32 size, void* pData);
@@ -186,18 +170,16 @@ namespace graphics
 
 		void GetRefreshRate(u32& aNumerator, u32& aDenominator);
 
-		IDevice* m_Device = nullptr;
-		IViewport* m_Viewport = nullptr;
-
 		IDXGISwapChain* m_Swapchain = nullptr;
 
-		ID3D11Debug* m_Debug = nullptr; //Can't change this one. DX11 Specific
-
-
-		ID3D11Texture2D* m_DepthBuffer = nullptr;
+		IDevice* m_Device = nullptr;
+		IViewport* m_Viewport = nullptr;
+		ITexture2D* m_DepthBuffer = nullptr;
 		IDevContext* m_Context = nullptr;
 		IRenderTargetView* m_RenderTarget = nullptr;
 		IDepthStencilView* m_DepthView = nullptr;
+
+		ID3D11Debug* m_Debug = nullptr; //Can't change this one. DX11 Specific
 
 		//______________________
 		// GrowingArray / Map?
@@ -215,11 +197,6 @@ namespace graphics
 	__forceinline const std::string& DirectX11::GetActiveAdapterName()
 	{
 		return myActiveAdapter;
-	}
-
-	__forceinline ID3D11DeviceContext* DirectX11::GetContext()
-	{
-		return m_Context;
 	}
 
 	template<typename T>

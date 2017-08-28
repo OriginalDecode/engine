@@ -148,15 +148,15 @@ namespace graphics
 		virtual void* CreateDomainShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
 		virtual void* CreateComputeShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
 
-		virtual void SetShaderState(ShaderState& shader_state) = 0;
-
-
 		virtual void VSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void PSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void GSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void DSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void HSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void CSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
+
+
+		virtual void CreateTexture2D(void* pTexDesc, void* pInitialData, ITexture2D ppTexture2D);
 
 
 

@@ -18,7 +18,7 @@ void Effect::AddShaderResource(Texture* pResource, TextureSlot slot)
 
 void Effect::Use()
 {
-	IGraphicsAPI* api = Engine::GetAPI();
+	graphics::IGraphicsAPI* api = Engine::GetAPI();
 	api->SetVertexShader(m_VertexShader);
 	api->SetPixelShader(m_PixelShader);
 	api->SetGeometryShader(m_GeometryShader);
@@ -30,7 +30,7 @@ void Effect::Use()
 
 void Effect::Clear()
 {
-	IShaderResourceView* resources[_COUNT] = {};
-	IGraphicsAPI* api = Engine::GetGraphicsAPI();
+	graphics::IShaderResourceView* resources[_COUNT] = {};
+	graphics::IGraphicsAPI* api = Engine::GetAPI();
 	api->PSSetShaderResource(0, _COUNT, m_Resources);
 }

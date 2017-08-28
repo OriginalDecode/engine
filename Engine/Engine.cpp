@@ -77,11 +77,6 @@ Engine* Engine::GetInstance()
 	return myInstance;
 }
 
-DirectX11* Engine::GetAPI()
-{
-	return static_cast<DirectX11*>(myAPI);
-}
-
 bool Engine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 {
 	Randomizer::Create();

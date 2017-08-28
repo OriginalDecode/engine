@@ -41,7 +41,7 @@ public:
 	CompiledShader* GetDomainShader() { return m_DomainShader; }
 	CompiledShader* GetComputeShader() { return m_ComputeShader; }
 
-	void AddShaderResource(IShaderResourceView* pResource, TextureSlot slot);
+	void AddShaderResource(graphics::IShaderResourceView* pResource, TextureSlot slot);
 	void AddShaderResource(Texture* pResource, TextureSlot slot);
 
 	void Use();
@@ -57,6 +57,6 @@ private:
 	CompiledShader* m_DomainShader		= nullptr;
 	CompiledShader* m_ComputeShader		= nullptr;
 
-	IShaderResourceView* m_Resources[_COUNT];
+	graphics::IShaderResourceView* m_Resources[_COUNT];
 };
 

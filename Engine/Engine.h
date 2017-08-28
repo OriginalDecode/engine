@@ -54,7 +54,12 @@ class Terrain;
 class Sprite;
 class InputHandle;
 class PhysicsManager;
-class IGraphicsInterface;
+
+namespace graphics
+{
+	class IGraphicsAPI;
+};
+
 
 class Engine
 {
@@ -72,7 +77,7 @@ public:
 
 	int RegisterLight();
 
-	static IGraphicsInterface* GetGraphicsInterface() { return m_GraphicsInterface; }
+	static graphics::IGraphicsAPI* GetAPI() { return m_API; }
 	//_________________________________________
 	// Settings
 	void ToggleVsync();
@@ -178,7 +183,7 @@ public:
 private:
 	Engine() = default;
 	static Engine* myInstance;
-	static IGraphicsInterface* m_GraphicsInterface;
+	static graphics::IGraphicsAPI* m_API;
 	memory::MemorySegmentHandle m_SegmentHandle;
 
 

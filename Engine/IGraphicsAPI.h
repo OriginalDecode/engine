@@ -10,7 +10,7 @@ typedef HWND__* HWND;
 
 namespace graphics
 {
-	/*typedef void** ITexture2D;
+	typedef void** ITexture2D;
 	typedef void** ITexture3D;
 	typedef void** IShaderResourceView;
 	typedef void** IDepthStencilView;
@@ -26,7 +26,7 @@ namespace graphics
 	typedef void** IDevice;
 	typedef void** IContext;
 	typedef void** IBuffer;
-	typedef void** IInputLayout;*/
+	typedef void** IInputLayout;
 
 
 	struct CreateInfo
@@ -146,7 +146,8 @@ namespace graphics
 		virtual void CreateTexture2D(void* pTexDesc, void* pInitialData, void** ppTexture2D) = 0;
 
 
-
+		virtual void SetViewport(void* viewport) = 0;
+		virtual void* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y) = 0;
 		/*
 			The depth_value variable is what the depth buffer is testing against in that state. 0.0 - 1.0
 		*/
@@ -155,6 +156,9 @@ namespace graphics
 	protected:
 		CreateInfo m_CreateInfo;
 		eGraphicsAPI m_ActiveAPI;
+
+		IDevice* m_Device = nullptr;
+
 
 	};
 };

@@ -90,6 +90,9 @@ namespace graphics
 		void CreateTexture2D(void* pTexDesc, void* pInitialData, void** ppTexture2D) override; //How would I actually do this?
 
 
+		void SetViewport(void* viewport) override;
+		void* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y) override;
+
 
 
 		//__________________________
@@ -130,11 +133,11 @@ namespace graphics
 		void SetSamplerState(const eSamplerStates& samplerState);
 
 
-
+#ifdef _DEBUG
 		void ReportLiveObjects();
+#endif
 
-		void SetViewport(IViewport* viewport);
-		IViewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y);
+		
 
 		ID3D11Buffer* CreateConstantBuffer(s32 size);
 		ID3D11Buffer* CreateVertexBuffer(s32 size, void* pData);
@@ -152,7 +155,7 @@ namespace graphics
 
 		ID3D11Buffer* CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag = D3D11_USAGE_IMMUTABLE, u32 bind_flag = D3D11_BIND_VERTEX_BUFFER, u32 cpu_access_flag = 0, u32 misc_flag = 0, u32 structured_byte_width = 0);
 		ID3D11Buffer* CreateBuffer(D3D11_BUFFER_DESC buffer_desc);
-		IInputLayout* CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements);
+		void* CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements);
 
 		ID3D11SamplerState* GetSampler(s32 index);
 
@@ -175,7 +178,7 @@ namespace graphics
 
 		IDXGISwapChain* m_Swapchain = nullptr;
 
-		ID3D11Device* m_Device = nullptr;
+		//ID3D11Device* m_Device = nullptr;
 		D3D11_VIEWPORT* m_Viewport = nullptr;
 		ID3D11DeviceContext* m_Context = nullptr;
 		ID3D11RenderTargetView* m_RenderTarget = nullptr;

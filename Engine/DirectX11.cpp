@@ -30,7 +30,7 @@ namespace graphics
 		CreateSamplerStates();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-		ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, static_cast<ID3D11Device*>(m_Device), static_cast<ID3D11DeviceContext*>(m_Context));
+		ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, static_cast<ID3D11Device*>(**m_Device), static_cast<ID3D11DeviceContext*>(m_Context));
 #endif
 		return true;
 	}
@@ -84,7 +84,6 @@ namespace graphics
 			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_WRAP)]);
 			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_CLAMP)]);
 			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_WRAP)]);
-			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::NONE)]);
 		}
 
 		{
@@ -102,7 +101,8 @@ namespace graphics
 		m_Context->Flush();
 		//Swap the full screen flags correctly if swapping between.
 		SAFE_RELEASE(m_Context);
-		SAFE_RELEASE(myDevice);
+		ID3D11Device* pDevice = static_cast<ID3D11Device*>(**m_Device);
+		SAFE_RELEASE(pDevice);
 		if (m_Debug != nullptr)
 		{
 			std::stringstream ss;
@@ -154,7 +154,7 @@ namespace graphics
 
 	void DirectX11::ResetRenderTargetAndDepth()
 	{
-		m_Context->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
+		m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthView);
 	}
 
 	void DirectX11::CreateDeviceAndSwapchain()
@@ -170,10 +170,9 @@ namespace graphics
 		scDesc.OutputWindow = m_CreateInfo.m_HWND;
 		scDesc.SampleDesc.Count = 1;
 		scDesc.SampleDesc.Quality = 0;
-		if (myEngineFlags[u16(eEngineFlags::FULLSCREEN)] == FALSE)
-			scDesc.Windowed = true;
-		else
-			scDesc.Windowed = false;
+		scDesc.Windowed = true;
+		//if (myEngineFlags[u16(eEngineFlags::FULLSCREEN)] == FALSE)
+		//scDesc.Windowed = false;
 
 		scDesc.Flags = 0;
 		scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
@@ -222,6 +221,8 @@ namespace graphics
 			type = D3D_DRIVER_TYPE_UNKNOWN;
 		}
 
+		ID3D11Device* pDevice = nullptr; // static_cast<ID3D11Device*>(**m_Device);
+
 		HRESULT hr = D3D11CreateDeviceAndSwapChain(
 			myAdapters[adapterString],
 			type,
@@ -231,12 +232,12 @@ namespace graphics
 			featureCount,
 			D3D11_SDK_VERSION,
 			&scDesc,
-			&mySwapchain,
-			&myDevice,
+			&m_Swapchain,
+			&pDevice,
 			nullptr,
 			&m_Context);
 
-		if (myDevice == nullptr)
+		if (pDevice == nullptr)
 		{
 			hr = D3D11CreateDeviceAndSwapChain(
 				myAdapters[adapterString],
@@ -247,16 +248,19 @@ namespace graphics
 				featureCount,
 				D3D11_SDK_VERSION,
 				&scDesc,
-				&mySwapchain,
-				&myDevice,
+				&m_Swapchain,
+				&pDevice,
 				nullptr,
 				&m_Context);
 		}
 
 		DL_ASSERT_EXP(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");
 
+
+
+
 #ifdef _DEBUG
-		hr = myDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&myDebug);
+		hr = pDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_Debug);
 		if (hr != S_OK)
 		{
 			OutputDebugStringA("Failed to Query Debug Interface. myDebug is NULL.");
@@ -265,8 +269,12 @@ namespace graphics
 		SetDebugName(m_Context, "DirectX11 Context Object");
 		const std::string deviceName = "DirectX11 Device Object";
 		const std::string swapchainName = "DirectX11 Swapchain Object";
-		mySwapchain->SetPrivateData(WKPDID_D3DDebugObjectName, u32(swapchainName.size()), swapchainName.c_str());
-		myDevice->SetPrivateData(WKPDID_D3DDebugObjectName, u32(deviceName.size()), deviceName.c_str());
+		m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, u32(swapchainName.size()), swapchainName.c_str());
+		pDevice->SetPrivateData(WKPDID_D3DDebugObjectName, u32(deviceName.size()), deviceName.c_str());
+		m_Device = reinterpret_cast<graphics::IDevice*>(pDevice);
+
+		m_Device = static_cast<graphics::IDevice*>(static_cast<void*>(pDevice));
+
 
 	}
 
@@ -286,7 +294,7 @@ namespace graphics
 		depthDesc.SampleDesc.Quality = 0; //quality pattern
 		depthDesc.Usage = D3D11_USAGE_DEFAULT;
 		depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-		hr = myDevice->CreateTexture2D(&depthDesc, NULL, &myDepthBuffer);
+		hr = static_cast<ID3D11Device*>(**m_Device)->CreateTexture2D(&depthDesc, NULL, &m_DepthBuffer);
 		assert(!FAILED(hr) && "Failed to create texture for depthbuffer");
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC stencilDesc;
@@ -295,38 +303,41 @@ namespace graphics
 		stencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		stencilDesc.Texture2D.MipSlice = 0;
 
-		hr = myDevice->CreateDepthStencilView(myDepthBuffer, &stencilDesc, &myDepthView);
+		hr = static_cast<ID3D11Device*>(**m_Device)->CreateDepthStencilView(m_DepthBuffer, &stencilDesc, &m_DepthView);
 		DL_ASSERT_EXP(hr == S_OK, "Failed to create depth stenci");
 
-
-		SetDebugName(myDepthBuffer, "DirectX11 DepthBuffer Object");
-		SetDebugName(myDepthView, "DirectX11 DepthView Object");
+#ifdef _DEBUG
+		SetDebugName(m_DepthBuffer, "DirectX11 DepthBuffer Object");
+		SetDebugName(m_DepthView, "DirectX11 DepthView Object");
+#endif
 	}
 
 	void DirectX11::CreateBackBuffer()
 	{
 		HRESULT hr;
 		ID3D11Texture2D* backbuffer;
-		hr = mySwapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backbuffer);
+		hr = m_Swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backbuffer);
 		HandleErrors(hr, "Failed to get Buffer!");
 
-		hr = mySwapchain->SetFullscreenState(FALSE, nullptr);
+		hr = m_Swapchain->SetFullscreenState(FALSE, nullptr);
 		HandleErrors(hr, "Failed to set Fullscreen/Borderless");
 
-		hr = myDevice->CreateRenderTargetView(backbuffer, NULL, &myRenderTarget);
+		hr = static_cast<ID3D11Device*>(**m_Device)->CreateRenderTargetView(backbuffer, NULL, &m_RenderTarget);
 		HandleErrors(hr, "Failed to create RenderTarget.");
 
 		SAFE_RELEASE(backbuffer);
-		m_Context->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
-		SetDebugName(myRenderTarget, "DirectX11 RenderTarget(Back Buffer) object");
+		m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthView);
+#ifdef _DEBUG
+		SetDebugName(m_RenderTarget, "DirectX11 RenderTarget(Back Buffer) object");
+#endif
 	}
 
 	void DirectX11::CreateViewport()
 	{
-		myViewport = CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
+		m_Viewport = static_cast<D3D11_VIEWPORT*>(CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0));
 	}
 
-	D3D11_VIEWPORT* DirectX11::CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y)
+	void* DirectX11::CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y)
 	{
 		D3D11_VIEWPORT* new_viewport = new D3D11_VIEWPORT;
 
@@ -374,11 +385,11 @@ namespace graphics
 		if (pData)
 		{
 			srd.pSysMem = pData;
-			hr = myDevice->CreateBuffer(&buffer_desc, &srd, &return_value);
+			hr = static_cast<ID3D11Device*>(**m_Device)->CreateBuffer(&buffer_desc, &srd, &return_value);
 		}
 		else
 		{
-			hr = myDevice->CreateBuffer(&buffer_desc, nullptr, &return_value);
+			hr = static_cast<ID3D11Device*>(**m_Device)->CreateBuffer(&buffer_desc, nullptr, &return_value);
 		}
 		HandleErrors(hr, "Failed to create buffer!");
 
@@ -389,16 +400,16 @@ namespace graphics
 	{
 		HRESULT hr = S_OK;
 		ID3D11Buffer* buffer = nullptr;
-		hr = myDevice->CreateBuffer(&buffer_desc, nullptr, &buffer);
+		hr = static_cast<ID3D11Device*>(**m_Device)->CreateBuffer(&buffer_desc, nullptr, &buffer);
 		HandleErrors(hr, "Failed to create buffer!");
 		return buffer;
 
 	}
 
-	IInputLayout* DirectX11::CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements)
+	void* DirectX11::CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements)
 	{
-		IInputLayout* return_value = nullptr;
-		HRESULT hr = myDevice->CreateInputLayout(pLayout, num_layout_elements, pShader, shader_byte_size, &return_value);
+		ID3D11InputLayout* return_value = nullptr;
+		HRESULT hr = static_cast<ID3D11Device*>(**m_Device)->CreateInputLayout(pLayout, num_layout_elements, pShader, shader_byte_size, &return_value);
 
 #ifdef _DEBUG
 		HandleErrors(hr, "CreateInputLayout : Failed to create input layout.");
@@ -673,6 +684,11 @@ namespace graphics
 		m_Context->CSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
 	}
 
+	void DirectX11::CreateTexture2D(void* pTexDesc, void* pInitialData, void** ppTexture2D)
+	{
+
+	}
+
 #ifdef _DEBUG
 	void DirectX11::ReportLiveObjects()
 	{
@@ -682,9 +698,9 @@ namespace graphics
 	}
 #endif
 
-	void DirectX11::SetViewport(IViewport* viewport)
+	void DirectX11::SetViewport(void* viewport)
 	{
-		m_Context->RSSetViewports(1, static_cast<D3D11_VIEWPORT*>(**viewport));
+		m_Context->RSSetViewports(1, static_cast<D3D11_VIEWPORT*>(viewport));
 	}
 
 	void DirectX11::OnAltEnter()

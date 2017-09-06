@@ -53,6 +53,11 @@ void Window::ShowWindow()
 }
 
 
+void Window::SetWindowText(const char* text)
+{
+	::SetWindowText(m_HWND, text);
+}
+
 const WindowSize& Window::GetWindowSize() const
 {
 	return m_WindowSize;

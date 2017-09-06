@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "Texture.h"
 
-
-
-
 Texture::~Texture()
 {
 	SAFE_RELEASE(m_ShaderResource);
@@ -18,7 +15,7 @@ void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_f
 
 	myWidth = width;
 	myHeight = height;
-	DirectX11* api = static_cast<DirectX11*>(Engine::GetGraphicsAPI());
+	graphics::DirectX11* api = static_cast<graphics::DirectX11*>(Engine::GetAPI());
 	ID3D11Device* device = api->GetDevice();
 
 	D3D11_TEXTURE2D_DESC text_desc;
@@ -371,7 +368,8 @@ bool Texture::Load(std::string filepath)
 	myFileName = filepath;
 	ID3D11Device* device = Engine::GetAPI()->GetDevice();
 
-/*	HRESULT hr = DirectX::CreateDDSTextureFromFileEx(
+		/*	
+		HRESULT hr = DirectX::CreateDDSTextureFromFileEx(
 		device, 
 		std::wstring(filepath.begin(), filepath.end()).c_str(), 
 		0, 
@@ -381,10 +379,8 @@ bool Texture::Load(std::string filepath)
 		D3D11_RESOURCE_MISC_GENERATE_MIPS, 
 		false, 
 		nullptr, 
-		&m_ShaderResource);*/
-
-
-
+		&m_ShaderResource);
+		*/
 
 	HRESULT hr = DirectX::CreateDDSTextureFromFile(device
 		, nullptr

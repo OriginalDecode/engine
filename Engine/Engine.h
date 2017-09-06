@@ -82,9 +82,9 @@ public:
 	// Settings
 	void ToggleVsync();
 
-	//Camera* GetCamera();
+	Camera* GetCamera();
 
-	//TreeDweller* CreateEntity(const std::string& filepath, CU::Vector3f& position);
+	TreeDweller* CreateEntity(const std::string& filepath, CU::Vector3f& position);
 
 	static void Present();
 	static void Clear();
@@ -105,9 +105,9 @@ public:
 
 	//_________________________________________
 	// Get Resources
-	Texture* GetTexture(const std::string& aFilePath);
-	Effect* GetEffect(const std::string& aFilePath);
-	Model* GetModel(const std::string& aFilePath);
+	Texture* GetTexture(const cl::CHashString<128>& aFilePath);
+	Effect* GetEffect(const cl::CHashString<128>& aFilePath);
+	Model* GetModel(const cl::CHashString<128>& aFilePath);
 	Sprite* GetSprite(const cl::CHashString<128>& path);
 
 	std::string LoadModel(std::string aFilePath, std::string effect, bool thread);
@@ -159,7 +159,7 @@ public:
 	/* These 3 functions are very API specific */
 	HRESULT CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
 	HRESULT CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message);
-	void* CreateShader(void* compiled_shader_blob, eShaderType type, const std::string& debug_name);
+	void* CreateShader(void* pShader, eShaderType type, const cl::CHashString<128>& debug_name);
 	/* END */
 
 

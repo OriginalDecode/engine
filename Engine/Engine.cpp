@@ -57,7 +57,7 @@ bool Engine::HasInitiated()
 }
 
 Engine* Engine::myInstance = nullptr;
-IGraphicsAPI* Engine::myAPI = nullptr;
+graphics::IGraphicsAPI* Engine::m_API = nullptr;
 
 void Engine::Create()
 {
@@ -90,29 +90,24 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	window_create_info.window_process = window_proc;
 	window_create_info.instance = instance_handle;
 	m_Window.Initiate(window_create_info);
+	m_Window.SetWindowText("engine");
 	m_Window.ShowWindow();
-	myHWND = m_Window.GetHWND();
-	DL_ASSERT_EXP(myHWND, "Window Handle was null!");
 
 
 	if (!m_Window.IsWindowActive())
 		m_Window.OnActive();
-	SetWindowText(myHWND, "engine");
-
-	myAPI = new DirectX11;
-	const char* api_name = "DirectX11";
 
 
-	CreateInfo create_info;
-	create_info.m_HWND = myHWND;
+	graphics::CreateInfo create_info;
+	create_info.m_HWND = m_Window.GetHWND();
 	create_info.m_Instance = instance_handle;
 	create_info.m_WindowWidth = m_Window.GetInnerSize().m_Width;
 	create_info.m_WindowHeight = m_Window.GetInnerSize().m_Height;
-	create_info.m_APIName = api_name;
-	DL_ASSERT_EXP(myAPI->Initiate(create_info), "Engine : Failed to initiate graphicsAPI");
+	create_info.m_APIName = "DirectX11";
+	m_API = new graphics::DirectX11(create_info);
 
 	m_InputHandle = new InputHandle;
-	m_InputHandle->Initiate(myHWND, instance_handle);
+	m_InputHandle->Initiate(m_Window.GetHWND(), instance_handle);
 
 	myAssetsContainer = new AssetsContainer;
 	myAssetsContainer->Initiate();
@@ -123,24 +118,20 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	myFontManager->Initiate();
 
 	mySynchronizer = new Synchronizer;
-	DL_ASSERT_EXP(mySynchronizer->Initiate(), "Engine : Failed to Initiate Synchronizer!");
+	mySynchronizer->Initiate();
 
 	m_SegmentHandle.Initiate();
-
 
 	m_Camera = new Camera;
 	m_Camera->CreatePerspectiveProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 10000.f, 90.f);
 	m_Camera->CreateOrthogonalProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 100.f);
 
 	myRenderer = new Renderer;
-	DL_ASSERT_EXP(myRenderer->Initiate(mySynchronizer, m_Camera), "Engine : Failed to initiate Renderer!");
-
+	myRenderer->Initiate(mySynchronizer, m_Camera);
 
 	m_PhysicsManager = new PhysicsManager;
 
 	m_Threadpool.Initiate("Engine - Worker");
-
-
 
 	m_EntityManager.Initiate();
 
@@ -156,24 +147,10 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 #ifndef _EDITOR
 	//m_EntityManager.AddSystem<AISystem>();
 #endif 
-
 	//m_EntityManager.AddSystem<CameraSystem>();
-
-
 
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();
-
-
-// 	m_Levels.push_back("Data/Levels/level_01.level");
-// 	m_Levels.push_back("Data/Levels/level_02.level");
-// 	m_Levels.push_back("Data/Levels/level_03.level");
-
-	m_States[(u16)eEngineStates::INITIATED] = TRUE;
-
-//	m_DebugHandle.RegisterFunctionButton(250, 100, [&]() { PostMaster::GetInstance()->SendMessage("hello_world", nullptr); }, "debug button");
-
-
 	return true;
 }
 
@@ -203,11 +180,10 @@ bool Engine::CleanUp()
 	SAFE_DELETE(m_LevelFactory);
 	SAFE_DELETE(myAssetsContainer);
 	SAFE_DELETE(mySynchronizer);
-	DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
-	SAFE_DELETE(myAPI);
+	//DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
+	//SAFE_DELETE(myAPI);
 	PostMaster::Destroy();
 	Randomizer::Destroy();
-	m_States[(u16)eEngineStates::INITIATED] = FALSE;
 	return true;
 }
 
@@ -286,24 +262,25 @@ HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::st
 	return hr;
 }
 
-void* Engine::CreateShader(IBlob* compiled_shader_blob, eShaderType type, const std::string& debug_name)
+void* Engine::CreateShader(void* pShader, eShaderType type, const cl::CHashString<128>& debug_name)
 {
+	graphics::IGraphicsDevice* device = m_API->GetDevice();
 	switch (type)
 	{
 		case eShaderType::VERTEX:
-			return myAPI->CreateVertexShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), debug_name);
+			return device->CreateVertexShader(pShader, debug_name);
 		case eShaderType::PIXEL:
-			return myAPI->CreatePixelShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), debug_name);
+			return device->CreatePixelShader(pShader, debug_name);
 		case eShaderType::GEOMETRY:
-			return myAPI->CreateGeometryShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), debug_name);
+			return device->CreateGeometryShader(pShader, debug_name);
 		case eShaderType::HULL:
-			return myAPI->CreateHullShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), debug_name);
+			return device->CreateHullShader(pShader, debug_name);
 		case eShaderType::DOMAINS:
-			return myAPI->CreateDomainShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), debug_name);
+			return device->CreateDomainShader(pShader, debug_name);
 		case eShaderType::COMPUTE:
-			return myAPI->CreateComputeShader(compiled_shader_blob->GetBufferPointer(), compiled_shader_blob->GetBufferSize(), debug_name);
+			return device->CreateComputeShader(pShader, debug_name);
 		default:
-			DL_ASSERT("No valid shader type!");
+			DL_ASSERT("Invalid shader type");
 	}
 
 	return nullptr;
@@ -311,25 +288,25 @@ void* Engine::CreateShader(IBlob* compiled_shader_blob, eShaderType type, const 
 
 void Engine::Present()
 {
-	if (myInstance->m_States[(u16)eEngineStates::USE_VSYNC] == TRUE)
+	/*if (myInstance->m_States[(u16)eEngineStates::USE_VSYNC] == TRUE)
 		myAPI->Present(1, 0);
 	else
-		myAPI->Present(0, 0);
+		myAPI->Present(0, 0);*/
 }
 
 void Engine::Clear()
 {
-	myAPI->Clear();
+	//myAPI->Clear();
 }
 
 void Engine::EnableZ()
 {
-	myAPI->EnableZBuffer();
+	//myAPI->EnableZBuffer();
 }
 
 void Engine::DisableZ()
 {
-	myAPI->DisableZBuffer();
+	//myAPI->DisableZBuffer();
 }
 
 const WindowSize& Engine::GetWindowSize() const

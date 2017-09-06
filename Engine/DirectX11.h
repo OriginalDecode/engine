@@ -45,7 +45,8 @@ namespace graphics
 	class DirectX11 : public IGraphicsAPI
 	{
 	public:
-		DirectX11() = default;
+		DirectX11(CreateInfo info);
+		static void SetDebugName(void * pResource, cl::CHashString<128> debug_name);
 
 		//__________________________
 		// Virtual Functions
@@ -60,34 +61,10 @@ namespace graphics
 		void OnResize() override;
 
 		void CopyResource(void * pDestination, void * pSource) override;
-		void SetDebugName(void * pResource, std::string debug_name) override;
 
 		void SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value) override;
 
-		void SetVertexShader(CompiledShader* vertex_shader) override;
-		void SetPixelShader(CompiledShader* pixel_shader) override;
-		void SetGeometryShader(CompiledShader* geometry_shader) override;
-		void SetHullShader(CompiledShader* hull_shader) override;
-		void SetDomainShader(CompiledShader* domain_shader) override;
-		void SetComputeShader(CompiledShader* compute_shader) override;
-
-		void* CreateVertexShader(void* pBuffer, float buffer_size, const std::string& debug_name) override;
-		void* CreatePixelShader(void* pBuffer, float buffer_size, const std::string& debug_name) override;
-		void* CreateGeometryShader(void* pBuffer, float buffer_size, const std::string& debug_name) override;
-		void* CreateHullShader(void* pBuffer, float buffer_size, const std::string& debug_name) override;
-		void* CreateDomainShader(void* pBuffer, float buffer_size, const std::string& debug_name) override;
-		void* CreateComputeShader(void* pBuffer, float buffer_size, const std::string& debug_name) override;
-
-		void VSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
-		void PSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
-		void GSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
-		void DSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
-		void HSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
-		void CSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
-
-		void* GetDevice() override { return m_Device; }
-
-		void CreateTexture2D(void* pTexDesc, void* pInitialData, void** ppTexture2D) override; //How would I actually do this?
+		//void CreateTexture2D(void* pTexDesc, void* pInitialData, void** ppTexture2D) override; //How would I actually do this?
 
 
 		void SetViewport(void* viewport) override;
@@ -99,8 +76,6 @@ namespace graphics
 		// DirectX Functions
 
 		const CreateInfo& GetInfo() const { return m_CreateInfo; }
-
-		IDevContext* GetContext() { return m_Context; }
 
 		const std::string& GetAdapterName(u16 anIndex);
 		const std::string& GetActiveAdapterName() { return myActiveAdapter; }

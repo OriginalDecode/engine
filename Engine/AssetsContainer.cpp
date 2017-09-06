@@ -32,13 +32,19 @@ AssetsContainer::~AssetsContainer()
 
 void AssetsContainer::Initiate()
 {
-	m_Engine = Engine::GetInstance();
 	m_ShaderFactory = new ShaderFactory;
 	m_ModelLoader = new CModelImporter;
 	myTextures.empty();
 	myEffects.empty();
 	myModels.empty();
 	m_Sprites.empty();
+
+#ifndef FINAL
+	for (s32 i = 0; i < m_Watchers.Capacity(); i++)
+	{
+		m_Watchers[i] = new FileWatcher;
+	}
+#endif
 }
 
 Texture* AssetsContainer::GetTexture(std::string aFilePath)
@@ -97,6 +103,10 @@ Model* AssetsContainer::GetModel(const std::string& aFilePath)
 void AssetsContainer::Update()
 {
 	m_ShaderFactory->Update();
+	for (FileWatcher* watcher : m_Watchers)
+	{
+		watcher->FlushChanges();
+	}
 }
 
 void AssetsContainer::ReloadTexture(Texture* texture)
@@ -156,7 +166,7 @@ std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect
 	if (aFilePath.find("default_cube") != aFilePath.npos)
 	{
 		Model* model = new Model;
-		model->SetEffect(LoadEffect(m_Engine->GetVFS().GetFile(effect)));
+		model->SetEffect(LoadEffect(Engine::GetInstance()->GetVFS().GetFile(effect)));
 		model->CreateCube();
 		myModels.emplace("default_cube", model);
 
@@ -172,7 +182,7 @@ std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect
 
 		if ( thread )
 		{
-			m_Engine->GetThreadpool().AddWork(Work([=]() {
+			Engine::GetInstance()->GetThreadpool().AddWork(Work([=]() {
 				m_ModelLoader->LoadModel(model, aFilePath, effect);
 				model->Initiate(aFilePath);
 			}));

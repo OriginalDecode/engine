@@ -328,6 +328,7 @@
     <ClInclude Include="GizmoShared.h" />
     <ClInclude Include="HDRPass.h" />
     <ClInclude Include="IGraphicsAPI.h" />
+    <ClInclude Include="IGraphicsDevice.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
     <ClInclude Include="ImGuiRegisterStructs.h" />

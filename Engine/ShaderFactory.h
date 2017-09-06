@@ -2,6 +2,7 @@
 
 #include "../CommonLib/DataStructures/GrowingArray.h"
 #include "../CommonLib/DataStructures/StaticArray.h"
+
 #include "engine_shared.h"
 
 #include <map>
@@ -10,18 +11,19 @@ class ShaderWarningHandler;
 class FileWatcher;
 class Effect;
 
-struct ID3D10Blob;
 struct CompiledShader
 {
 	CompiledShader() = default;
 	~CompiledShader();
-	ID3D10Blob* blob = nullptr;
-	void* compiledShader = nullptr;
+	void* m_Blob = nullptr;
+	void* m_CompiledShader = nullptr;
 	void* m_Shader = nullptr;
-	int shaderSize = 0;
-	eShaderType type;
-	std::string entrypoint;
-	CU::GrowingArray<Effect*> effectPointers; //used to rebuild shaders in runtime.
+	s32 shaderSize = 0;
+	eShaderType m_Type;
+	std::string m_Entrypoint;
+#ifndef FINAL
+	CU::GrowingArray<Effect*> m_EffectPointers; //used to rebuild shaders in runtime.
+#endif
 };
 
 class ShaderFactory
@@ -35,7 +37,7 @@ public:
 	void Update();
 
 	std::map<u64, CompiledShader*> GetCompiledShaders() { return m_Shaders; }
-	ID3D10Blob* CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level);
+	void* CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level);
 private:
 
 	void LoadShader(const std::string& filepath, const std::string& entrypoint, eShaderType type, Effect* effect);
@@ -45,6 +47,5 @@ private:
 	CU::StaticArray<FileWatcher*, (s32)eShaderType::_COUNT> myFileWatchers;
 	void OnReload(const std::string& file_path, const std::string& entrypoint);
 #endif
-	//ShaderWarningHandler myShaderWarningHandler;
 
 };

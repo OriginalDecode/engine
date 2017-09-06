@@ -16,6 +16,11 @@ constexpr float clear[4] = { 0.f, 0.f, 0.f, 0.f };
 
 namespace graphics
 {
+	DirectX11::DirectX11(CreateInfo info)
+		: IGraphicsAPI(info)
+	{
+	}
+
 	bool DirectX11::Initiate(CreateInfo create_info)
 	{
 		m_CreateInfo = create_info;
@@ -138,13 +143,13 @@ namespace graphics
 		return myAdaptersName[anIndex];
 	}
 
-	void DirectX11::SetDebugName(void * pResource, std::string debug_name)
+	void DirectX11::SetDebugName(void * pResource, cl::CHashString<128> debug_name)
 	{
-		if (pResource)
-		{
-			ID3D11DeviceChild* resource = static_cast<ID3D11DeviceChild*>(pResource);
-			resource->SetPrivateData(WKPDID_D3DDebugObjectName, (u32)debug_name.size(), debug_name.c_str());
-		}
+		if (!pResource)
+			return;
+
+		ID3D11DeviceChild* resource = static_cast<ID3D11DeviceChild*>(pResource);
+		resource->SetPrivateData(WKPDID_D3DDebugObjectName, debug_name.length(), debug_name.c_str());
 	}
 
 	void DirectX11::SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value)
@@ -555,133 +560,6 @@ namespace graphics
 	void DirectX11::SetSamplerState(const eSamplerStates& samplerState)
 	{
 		m_Context->PSSetSamplers(0, 1, &mySamplerStates[samplerState]);
-	}
-
-	void DirectX11::SetVertexShader(CompiledShader* vertex_shader)
-	{
-		m_Context->VSSetShader(vertex_shader ? static_cast<ID3D11VertexShader*>(vertex_shader->m_Shader) : nullptr, nullptr, 0);
-	}
-
-	void DirectX11::SetPixelShader(CompiledShader* pixel_shader)
-	{
-		m_Context->PSSetShader(pixel_shader ? static_cast<ID3D11PixelShader*>(pixel_shader->m_Shader) : nullptr, nullptr, 0);
-	}
-
-	void DirectX11::SetGeometryShader(CompiledShader* geomtery_shader)
-	{
-		m_Context->GSSetShader(geomtery_shader ? static_cast<ID3D11GeometryShader*>(geomtery_shader->m_Shader) : nullptr, nullptr, 0);
-	}
-
-	void DirectX11::SetHullShader(CompiledShader* hull_shader)
-	{
-		m_Context->HSSetShader(hull_shader ? static_cast<ID3D11HullShader*>(hull_shader->m_Shader) : nullptr, nullptr, 0);
-	}
-
-	void DirectX11::SetDomainShader(CompiledShader* domain_shader)
-	{
-		m_Context->DSSetShader(domain_shader ? static_cast<ID3D11DomainShader*>(domain_shader->m_Shader) : nullptr, nullptr, 0);
-	}
-
-	void DirectX11::SetComputeShader(CompiledShader* compute_shader)
-	{
-		m_Context->CSSetShader(compute_shader ? static_cast<ID3D11ComputeShader*>(compute_shader->m_Shader) : nullptr, nullptr, 0);
-	}
-
-	void* DirectX11::CreateVertexShader(void* pBuffer, float buffer_size, const std::string& debug_name)
-	{
-		ID3D11VertexShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
-		HRESULT hr = static_cast<ID3D11Device*>(**m_Device)->CreateVertexShader(pBuffer, buffer_size, nullptr, &shader);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create vertex shader!");
-#ifdef _DEBUG
-		SetDebugName(shader, debug_name);
-#endif
-		return shader;
-	}
-
-	void* DirectX11::CreatePixelShader(void* pBuffer, float buffer_size, const std::string& debug_name)
-	{
-		ID3D11PixelShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
-		HRESULT hr = static_cast<ID3D11Device*>(**m_Device)->CreatePixelShader(pBuffer, buffer_size, nullptr, &shader);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create pixel shader!");
-#ifdef _DEBUG
-		SetDebugName(shader, debug_name);
-#endif
-		return shader;
-	}
-
-	void* DirectX11::CreateGeometryShader(void* pBuffer, float buffer_size, const std::string& debug_name)
-	{
-		ID3D11GeometryShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
-		HRESULT hr = static_cast<ID3D11Device*>(**m_Device)->CreateGeometryShader(pBuffer, buffer_size, nullptr, &shader);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create geometry shader!");
-#ifdef _DEBUG
-		SetDebugName(shader, debug_name);
-#endif
-		return shader;
-	}
-
-	void* DirectX11::CreateHullShader(void* pBuffer, float buffer_size, const std::string& debug_name)
-	{
-		ID3D11HullShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
-		HRESULT hr = static_cast<ID3D11Device*>(**m_Device)->CreateHullShader(pBuffer, buffer_size, nullptr, &shader);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create hull shader!");
-#ifdef _DEBUG
-		SetDebugName(shader, debug_name);
-#endif
-		return shader;
-	}
-
-	void* DirectX11::CreateDomainShader(void* pBuffer, float buffer_size, const std::string& debug_name)
-	{
-		ID3D11DomainShader* shader = nullptr;
-		HRESULT hr = static_cast<ID3D11Device*>(**m_Device)->CreateDomainShader(pBuffer, buffer_size, nullptr, &shader);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create domain shader!");
-#ifdef _DEBUG
-		SetDebugName(shader, debug_name);
-#endif
-		return shader;
-	}
-
-	void* DirectX11::CreateComputeShader(void* pBuffer, float buffer_size, const std::string& debug_name)
-	{
-		ID3D11ComputeShader* shader = nullptr;
-
-		HRESULT hr = static_cast<ID3D11Device*>(**m_Device)->CreateComputeShader(pBuffer, buffer_size, nullptr, &shader);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create compute shader!");
-#ifdef _DEBUG
-		SetDebugName(shader, debug_name);
-#endif
-		return shader;
-	}
-
-	void DirectX11::VSSetShaderResource(s32 start_slot, s32 count, void* resources)
-	{
-		m_Context->VSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
-	}
-
-	void DirectX11::PSSetShaderResource(s32 start_slot, s32 count, void* resources)
-	{
-		m_Context->PSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
-	}
-
-	void DirectX11::GSSetShaderResource(s32 start_slot, s32 count, void* resources)
-	{
-		m_Context->GSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
-	}
-
-	void DirectX11::DSSetShaderResource(s32 start_slot, s32 count, void* resources)
-	{
-		m_Context->DSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
-	}
-
-	void DirectX11::HSSetShaderResource(s32 start_slot, s32 count, void* resources)
-	{
-		m_Context->HSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
-	}
-
-	void DirectX11::CSSetShaderResource(s32 start_slot, s32 count, void* resources)
-	{
-		m_Context->CSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
 	}
 
 	void DirectX11::CreateTexture2D(void* pTexDesc, void* pInitialData, void** ppTexture2D)

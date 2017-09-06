@@ -1,16 +1,19 @@
 #pragma once
-#include "engine_shared.h"
+#include <Engine/engine_shared.h>
 #include <Engine/ShaderState.h>
+#include <CommonLib/HashString.h>
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
 struct HWND__;
 typedef HWND__* HWND;
 #endif
+#include <Engine/IGraphicsContext.h>
+#include <Engine/IGraphicsDevice.h>
 
 namespace graphics
 {
-	typedef void** ITexture2D;
+	/*typedef void** ITexture2D;
 	typedef void** ITexture3D;
 	typedef void** IShaderResourceView;
 	typedef void** IDepthStencilView;
@@ -26,7 +29,7 @@ namespace graphics
 	typedef void** IDevice;
 	typedef void** IContext;
 	typedef void** IBuffer;
-	typedef void** IInputLayout;
+	typedef void** IInputLayout;*/
 
 
 	struct CreateInfo
@@ -89,7 +92,10 @@ namespace graphics
 
 	class IGraphicsAPI
 	{
+		friend class IGraphicsDevice;
+		friend class IGraphicsContext;
 	public:
+		IGraphicsAPI(CreateInfo info);
 		virtual bool Initiate(CreateInfo create_info) = 0;
 		virtual bool CleanUp() = 0;
 
@@ -102,48 +108,19 @@ namespace graphics
 
 		std::string GetAPIName() { return m_CreateInfo.m_APIName; }
 
-		virtual void* GetDevice() = 0;
 
 		virtual void CopyResource(void * pDestination, void * pSource) = 0;
 
-		virtual void SetDebugName(void * pResource, std::string debug_name) = 0;
 		eGraphicsAPI GetActiveAPI() const { return m_ActiveAPI; }
 
 		virtual void EnableZBuffer() = 0;
 		virtual void DisableZBuffer() = 0;
 
-		/*
-		vulkan has
-		Vertex = Vertex
-		Fragment = Pixel
-		Geometry = Geometry
-		Compute = Compute
-		Tesselation Control = Hull
-		Tesselation Evaluation = Domain
-		*/
-		virtual void SetVertexShader(CompiledShader* vertex_shader) = 0;
-		virtual void SetPixelShader(CompiledShader* vertex_shader) = 0;
-		virtual void SetGeometryShader(CompiledShader* vertex_shader) = 0;
-		virtual void SetHullShader(CompiledShader* vertex_shader) = 0;
-		virtual void SetDomainShader(CompiledShader* vertex_shader) = 0;
-		virtual void SetComputeShader(CompiledShader* vertex_shader) = 0;
 
-		virtual void* CreateVertexShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
-		virtual void* CreatePixelShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
-		virtual void* CreateGeometryShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
-		virtual void* CreateHullShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
-		virtual void* CreateDomainShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
-		virtual void* CreateComputeShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
-
-		virtual void VSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-		virtual void PSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-		virtual void GSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-		virtual void DSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-		virtual void HSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-		virtual void CSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-
-
-		virtual void CreateTexture2D(void* pTexDesc, void* pInitialData, void** ppTexture2D) = 0;
+// 		virtual void CreateTextureFromFile(const cl::HashString& str) = 0;
+// 
+// 		virtual void CreateTexture2D() = 0;
+// 		virtual void CreateTexture3D() = 0;
 
 
 		virtual void SetViewport(void* viewport) = 0;
@@ -151,14 +128,26 @@ namespace graphics
 		/*
 			The depth_value variable is what the depth buffer is testing against in that state. 0.0 - 1.0
 		*/
-		virtual void SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value) = 0;
+		//virtual void SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value) = 0;
+
+		virtual IGraphicsDevice* GetDevice() { return m_Device; }
+		virtual IGraphicsContext* GetContext() { return m_Context; }
 
 	protected:
 		CreateInfo m_CreateInfo;
 		eGraphicsAPI m_ActiveAPI;
 
-		IDevice* m_Device = nullptr;
+		IGraphicsDevice* m_Device = nullptr;
+		IGraphicsContext* m_Context = nullptr;
+
+		//IDevice* m_Device = nullptr;
 
 
 	};
+
+	IGraphicsAPI::IGraphicsAPI(CreateInfo info)
+		: m_CreateInfo(info)
+	{
+	}
+
 };

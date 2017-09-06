@@ -34,6 +34,8 @@ public:
 	HINSTANCE GetWindowInstance() { return m_CreateInfo.instance; }
 	bool IsWindowActive() { return m_WindowIsActive; }
 
+	void SetWindowText(const char* text);
+
 	const WindowSize& GetWindowSize() const;
 	const WindowSize& GetInnerSize() const;
 public:

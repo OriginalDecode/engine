@@ -7,14 +7,6 @@
 #include <DataStructures/GrowingArray.h>
 #define SLEEP_TIME 1000
 
-static constexpr char* vertex_shader = "VS";
-static constexpr char* pixel_shader = "PS";
-static constexpr char* geometry_shader = "GS";
-static constexpr char* hull_shader = "HS";
-static constexpr char* domain_shader = "DS";
-static constexpr char* compute_shader = "CS";
-
-
 ShaderFactory::ShaderFactory()
 {
 #ifndef FINAL 
@@ -79,23 +71,23 @@ void ShaderFactory::LoadShader(Effect* anEffect)
 }
 
 
-std::string CheckType(const std::string& file_path)
-{
-	if (file_path.find(vertex_shader) != file_path.npos)
-		return vertex_shader;
-	else if (file_path.find(pixel_shader) != file_path.npos)
-		return pixel_shader;
-	else if (file_path.find(geometry_shader) != file_path.npos)
-		return geometry_shader;
-	else if (file_path.find(hull_shader) != file_path.npos)
-		return hull_shader;
-	else if (file_path.find(domain_shader) != file_path.npos)
-		return domain_shader;
-	else if (file_path.find(compute_shader) != file_path.npos)
-		return compute_shader;
-
-	return "NO_TYPE";
-}
+// std::string CheckType(const std::string& file_path)
+// {
+// 	if (file_path.find(vertex_shader) != file_path.npos)
+// 		return vertex_shader;
+// 	else if (file_path.find(pixel_shader) != file_path.npos)
+// 		return pixel_shader;
+// 	else if (file_path.find(geometry_shader) != file_path.npos)
+// 		return geometry_shader;
+// 	else if (file_path.find(hull_shader) != file_path.npos)
+// 		return hull_shader;
+// 	else if (file_path.find(domain_shader) != file_path.npos)
+// 		return domain_shader;
+// 	else if (file_path.find(compute_shader) != file_path.npos)
+// 		return compute_shader;
+// 
+// 	return "NO_TYPE";
+// }
 
 char* CheckType(eShaderType type)
 {
@@ -175,26 +167,25 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 #endif
 
 	DL_ASSERT_EXP(effect, "Effect pointer was null");
-	m_Shaders[hash_key]->effectPointers.Add(effect);
+	m_Shaders[hash_key]->m_EffectPointers.Add(effect);
 }
 
 CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type, const std::string& feature_level /*= "_5_0"*/)
 {
-
 	ENGINE_LOG("Creating %s", file_path.c_str());
 
 	std::string shader_type(CheckType(type));
-	IBlob* compiled_shader = CompileShader(file_path, entrypoint, shader_type + feature_level);
+	ID3D10Blob* compiled_shader = CompileShader(file_path, entrypoint, shader_type + feature_level);
 	if (!compiled_shader)
 		return nullptr;
 
 	CompiledShader* new_shader = new CompiledShader;
 	new_shader->m_Shader = Engine::GetInstance()->CreateShader(compiled_shader, type, file_path);
-	new_shader->blob = compiled_shader;
-	new_shader->compiledShader = compiled_shader->GetBufferPointer();
-	new_shader->shaderSize = compiled_shader->GetBufferSize();
-	new_shader->entrypoint = entrypoint;
-	new_shader->type = type;
+	new_shader->m_Blob = compiled_shader;
+	new_shader->m_CompiledShader = compiled_shader->GetBufferPointer();
+	//new_shader->m_haderSize = compiled_shader->GetBufferSize();
+	new_shader->m_Entrypoint = entrypoint;
+	new_shader->m_Type = type;
 	return new_shader;
 }
 
@@ -210,10 +201,10 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 	if (m_Shaders.find(hash_key) != m_Shaders.end())
 	{
 		CompiledShader* shader = m_Shaders[hash_key];
-		new_shader = CreateShader(file_path, shader->entrypoint, shader->type);
+		new_shader = CreateShader(file_path, shader->m_Entrypoint, shader->m_Type);
 		if (new_shader != nullptr)
 		{
-			const CU::GrowingArray<Effect*>& effects = m_Shaders[hash_key]->effectPointers;
+			const CU::GrowingArray<Effect*>& effects = m_Shaders[hash_key]->m_EffectPointers;
 			for (Effect* effect : effects)
 			{
 				effect_container.Add(effect);
@@ -260,19 +251,20 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 				DL_ASSERT("No valid shader type");
 				break;
 		}
-		m_Shaders[hash_key]->effectPointers.Add(effect);
+		m_Shaders[hash_key]->m_EffectPointers.Add(effect);
 	}
 }
 #endif
-IBlob* ShaderFactory::CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level)
+void* ShaderFactory::CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level)
 {
 	unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
 #ifdef _DEBUG 
 	shaderFlag |= D3D10_SHADER_DEBUG;
 	shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
 #endif
-	IBlob* compiledShader = nullptr;
-	IBlob* compilationMessage = nullptr;
+
+	ID3D10Blob* compiledShader = nullptr;
+	ID3D10Blob* compilationMessage = nullptr;
 
 
 	HRESULT hr = Engine::GetInstance()->CompileShaderFromFile(file_path, entrypoint, feature_level, shaderFlag, compiledShader, compilationMessage);
@@ -281,7 +273,7 @@ IBlob* ShaderFactory::CompileShader(const std::string& file_path, const std::str
 		DL_WARNING("%s has generated warnings!", file_path.c_str());
 		DL_WARNING("\n%s", (char*)compilationMessage->GetBufferPointer());
 	}
-	Engine::GetInstance()->GetAPI()->HandleErrors(hr, "Failed to compile shader!");
+	//Engine::GetInstance()->GetAPI()->HandleErrors(hr, "Failed to compile shader!");
 	return compiledShader;
 }
 
@@ -295,13 +287,14 @@ void ShaderFactory::Update()
 
 CompiledShader::~CompiledShader()
 {
+	ID3D10Blob* blob = static_cast<ID3D10Blob*>(m_Blob);
 	SAFE_RELEASE(blob);
+	
 	if (!m_Shader)
-		return;
-
+		return; 
 	IUnknown* unknown_pointer = static_cast<IUnknown*>(m_Shader);
 	unknown_pointer->Release();
 	unknown_pointer = nullptr;
 	m_Shader = nullptr;
-	compiledShader = nullptr;
+	m_CompiledShader = nullptr;
 }

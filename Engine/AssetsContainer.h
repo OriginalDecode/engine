@@ -4,31 +4,22 @@
 #include "engine_shared.h"
 #include <DataStructures/GrowingArray.h>
 #include <Engine/ModelImporter.h>
+#include <CommonLib/DataStructures/StaticArray.h>s
+
 class FileWatcher;
 class ShaderFactory;
 class Model;
 class Effect;
 class Texture;
 class Sprite;
+
 struct CompiledShader;
-class Engine;
 
 class AssetsContainer
 {
 public:
-
-	enum eRequestType
-	{
-		MODEL,
-		TEXTURE,
-		SHADER,
-		SPRITE,
-	};
-
-
 	AssetsContainer() = default;
 	~AssetsContainer();
-
 	void Initiate();
 
 	void Update();
@@ -45,8 +36,11 @@ public:
 
 
 private:
-	Engine* m_Engine = nullptr;
-	FileWatcher* m_TextureWatcher = nullptr;
+#ifndef FINAL
+	CU::StaticArray<FileWatcher*, 4> m_Watchers;
+#endif
+
+
 	Ticket_Mutex m_Mutex;
 	Ticket_Mutex m_GetModelMutex;
 	std::unordered_map<std::string, Texture*> myTextures;
@@ -75,7 +69,7 @@ std::string AssetsContainer::LoadModel(std::string filepath, std::string effect_
 
 	if (thread)
 	{
-		m_Engine->GetThreadpool().AddWork(Work([=]() {
+		Engine::GetInstance()->GetThreadpool().AddWork(Work([=]() {
 			m_ModelLoader->LoadModel(model, filepath, effect_filepath);
 			model->Initiate(filepath);
 		}));

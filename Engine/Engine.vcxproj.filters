@@ -381,6 +381,7 @@
     <ClInclude Include="WaterPlane.h" />
     <ClInclude Include="DebugHandle.h" />
     <ClInclude Include="ImGuiRegisterStructs.h" />
+    <ClInclude Include="IGraphicsDevice.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">

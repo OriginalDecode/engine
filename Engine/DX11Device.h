@@ -16,7 +16,8 @@ namespace graphics
 		void* CreateHullShader(void* pShader, const cl::CHashString<128>& debug_name) override;
 		void* CreateDomainShader(void* pShader, const cl::CHashString<128>& debug_name) override;
 		void* CreateComputeShader(void* pShader, const cl::CHashString<128>& debug_name) override;
-
+		
+		void* CreateTextureFromFile(const cl::CHashString<128>& filepath) override;
 
 	private:
 		ID3D11Device* m_Device = nullptr;

@@ -16,8 +16,8 @@ public:
 	bool Initiate(Renderer* renderer);
 	bool CleanUp();
 	
-	void ProcessShadows(ShadowSpotlight* shadow_spotlight, const RenderContext& render_context);
-	void ProcessShadows(ShadowDirectional* shadow_directional, const RenderContext& render_context);
+	void ProcessShadows(ShadowSpotlight* shadow_spotlight);
+	void ProcessShadows(ShadowDirectional* shadow_directional);
 
 	void Activate();
 	void DeActivate();
@@ -27,7 +27,7 @@ public:
 
 
 private:
-	void ProcessShadows(Camera* camera, const RenderContext& render_context);
+	void ProcessShadows(Camera* camera);
 
 	CU::Matrix44f m_Orientation;
 

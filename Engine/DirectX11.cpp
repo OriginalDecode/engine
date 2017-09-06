@@ -429,6 +429,11 @@ namespace graphics
 		return mySamplerStates[index];
 	}
 
+	void* DirectX11::CreateTextureFromFile(const cl::CHashString<128>& path)
+	{
+		
+	}
+
 	void DirectX11::CreateAdapterList()
 	{
 		std::vector<IDXGIAdapter*> enumAdapter;

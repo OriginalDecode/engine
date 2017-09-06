@@ -35,7 +35,7 @@ void LightModel::Initiate(const std::string& filename)
 	}
 }
 
-void LightModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
+void LightModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
 	for (LightModel* child : myChildren)
 	{

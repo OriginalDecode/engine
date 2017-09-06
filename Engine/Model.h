@@ -16,10 +16,10 @@ public:
 	void CleanUp();
 	virtual void Initiate(const std::string& filename);
 
-	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
-	void RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context);
-	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
-	void ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context);
+	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
+	void RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection);
+	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection) override;
+	void ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection);
 
 	void AddChild(Model* aChild);
 
@@ -49,7 +49,7 @@ public:
 	void ClearOrientation();
 	void CreateCube();
 private:
-	void RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context);
+	void RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection);
 
 	void RemoveOrientation();
 	CU::GrowingArray<Model*> myChildren;
@@ -61,7 +61,7 @@ private:
 protected:
 	void InitInstanceBuffer();
 	void InitConstantBuffer();
-	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
+	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection) override;
 
 	CU::GrowingArray<SVertexTypePosCol> myVertices;
 	CU::GrowingArray<s32> m_Indices;

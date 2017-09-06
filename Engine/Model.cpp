@@ -65,7 +65,7 @@ void Model::Initiate(const std::string& filename)
 	}
 }
 
-void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
+void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
 	if (m_Filename.find("default_cube") != m_Filename.npos)
 	{
@@ -106,7 +106,7 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 
 }
 
-void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
 
 	SetupLayoutsAndBuffers();
@@ -127,7 +127,7 @@ void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix
 	//RemoveOrientation();
 }
 
-void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
 
 	
@@ -192,7 +192,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 
 	}
 
-void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
 	for (Model* child : myChildren)
 	{
@@ -212,7 +212,7 @@ void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matr
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 }
 
-void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
 	for (Model* child : myChildren)
 	{
@@ -380,7 +380,7 @@ void Model::RemoveOrientation()
 	m_Orientations.RemoveAll();
 }
 
-void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
+void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
 	if (m_IsRoot)
 		return;

@@ -13,7 +13,7 @@ public:
 	~Atmosphere();
 	void Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position );
 
-	void Render(const CU::Matrix44f& orientation, Texture* depth, const RenderContext& render_context);
+	void Render(const CU::Matrix44f& orientation, Texture* depth);
 	void SetLightData(const CU::Vector4f& direction, const CU::Vector4f& position);
 private:
 	Engine* m_Engine							= nullptr;

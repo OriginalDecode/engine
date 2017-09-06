@@ -30,13 +30,13 @@ public:
 	DeferredRenderer() = default;
 	~DeferredRenderer();
 	bool Initiate(Texture* shadow_texture);
-	void SetGBufferAsTarget(const RenderContext& render_context);
-	void SetBuffers(const RenderContext& render_context);
-	void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const RenderContext& render_context);
-	void SetRenderTarget(const RenderContext& render_context);
+	void SetGBufferAsTarget();
+	void SetBuffers();
+	void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir);
+	void SetRenderTarget();
 
 
-	void Finalize(const RenderContext& render_context);
+	void Finalize();
 
 	Texture* GetFinalTexture();
 	Texture* GetSampleTexture();

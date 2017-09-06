@@ -17,13 +17,13 @@ bool ShadowPass::CleanUp()
 	return true;
 }
 
-void ShadowPass::ProcessShadows(Camera* camera, const RenderContext& render_context)
+void ShadowPass::ProcessShadows(Camera* camera)
 {
 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_Renderer->Render3DShadows(camera->GetOrientation(), camera);
 }
 
-void ShadowPass::ProcessShadows(ShadowSpotlight* shadow_spotlight, const RenderContext& render_context)
+void ShadowPass::ProcessShadows(ShadowSpotlight* shadow_spotlight)
 {
 	shadow_spotlight->SetViewport();
 	shadow_spotlight->ClearTexture();
@@ -34,7 +34,7 @@ void ShadowPass::ProcessShadows(ShadowSpotlight* shadow_spotlight, const RenderC
 	Engine::GetAPI()->ResetViewport();
 }
 
-void ShadowPass::ProcessShadows(ShadowDirectional* shadow_directional, const RenderContext& render_context)
+void ShadowPass::ProcessShadows(ShadowDirectional* shadow_directional)
 {
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::DarkBlue);

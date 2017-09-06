@@ -55,7 +55,7 @@ void SpotLight::Initiate()
 
 }
 
-void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera, const RenderContext& render_context)
+void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera)
 {
 	render_context.m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
 	render_context.m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE,1);

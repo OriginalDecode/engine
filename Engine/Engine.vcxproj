@@ -311,6 +311,8 @@
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX11.h" />
+    <ClInclude Include="DX11Context.h" />
+    <ClInclude Include="DX11Device.h" />
     <ClInclude Include="EditObject.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EmitterInstance.h" />
@@ -328,6 +330,7 @@
     <ClInclude Include="GizmoShared.h" />
     <ClInclude Include="HDRPass.h" />
     <ClInclude Include="IGraphicsAPI.h" />
+    <ClInclude Include="IGraphicsContext.h" />
     <ClInclude Include="IGraphicsDevice.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
@@ -417,6 +420,8 @@
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectX11.cpp" />
+    <ClCompile Include="DX11Context.cpp" />
+    <ClCompile Include="DX11Device.cpp" />
     <ClCompile Include="DXBlendStates.cpp" />
     <ClCompile Include="DXDepthstencilStates.cpp" />
     <ClCompile Include="DXSamplerStates.cpp" />

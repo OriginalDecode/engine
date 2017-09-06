@@ -35,7 +35,7 @@ public:
 	Ticket_Mutex m_Mutex;
 	ITexture2D* GetDepthTexture() const { return m_DepthTexture; }
 	ITexture2D* GetTexture() const { return m_DepthTexture; }
-	IShaderResourceView* GetShaderView() { return m_ShaderResource; }
+	void* GetShaderView() { return m_ShaderResource; }
 	IShaderResourceView** GetShaderViewRef() { return &m_ShaderResource; }
 
 

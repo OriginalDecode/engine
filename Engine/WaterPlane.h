@@ -12,15 +12,15 @@ public:
 
 	void SetPosition(const CU::Vector3f& position);
 
-	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context);
-	void Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
-	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
+	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection);
+	void Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection) override;
+	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection) override;
 
 	const CU::Vector3f& GetPosition() { return m_Orientation.GetPosition(); }
 
-	void SetupRefractionRender(const RenderContext& render_context);
-	void SetupReflectionRender(const RenderContext& render_context);
-	void SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context);
+	void SetupRefractionRender();
+	void SetupReflectionRender();
+	void SetClipPlane(const CU::Vector4f& plane);
 	Effect* GetEffect() { return myEffect; }
 private:
 	void CreatePlane();

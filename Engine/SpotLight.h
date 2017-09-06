@@ -12,7 +12,7 @@ public:
 	~SpotLight();
 	void Initiate();
 
-	void Render(const CU::Matrix44f& previousOrientation, Camera* aCamera, const RenderContext& render_context);
+	void Render(const CU::Matrix44f& previousOrientation, Camera* aCamera);
 
 	void SetData(const SpotlightData& data);
 	const SpotlightData& GetData() const;

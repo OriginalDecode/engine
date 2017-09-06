@@ -24,7 +24,7 @@ namespace graphics
 		virtual void* CreateDomainShader(void* pShader, const cl::CHashString<128>& debug_name) = 0;
 		virtual void* CreateComputeShader(void* pShader, const cl::CHashString<128>& debug_name) = 0;
 
-	
+		virtual void* CreateTextureFromFile(const cl::CHashString<128>& filepath) = 0;
 
 	private:
 	};

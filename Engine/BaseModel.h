@@ -25,8 +25,8 @@ class BaseModel
 public:
 	BaseModel() = default;
 	virtual ~BaseModel() = 0;
-	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) = 0;
-	virtual void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) = 0;
+	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
+	virtual void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection) = 0;
 
 	void SetupLayoutsAndBuffers();
 
@@ -37,7 +37,7 @@ protected:
 	void InitInputLayout();
 	void InitIndexBuffer();
 	virtual void InitConstantBuffer() = 0;
-	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) = 0;
+	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
 
 	std::string m_Filename;
 	CU::Vector3f m_WHD; //to be removed

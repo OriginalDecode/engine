@@ -6,7 +6,7 @@ Effect::Effect(const std::string& aFilePath)
 {
 }
 
-void Effect::AddShaderResource(IShaderResourceView* pResource, TextureSlot slot)
+void Effect::AddShaderResource(void* pResource, TextureSlot slot)
 {
 	m_Resources[slot] = pResource;
 }
@@ -18,19 +18,19 @@ void Effect::AddShaderResource(Texture* pResource, TextureSlot slot)
 
 void Effect::Use()
 {
-	graphics::IGraphicsAPI* api = Engine::GetAPI();
-	api->SetVertexShader(m_VertexShader);
-	api->SetPixelShader(m_PixelShader);
-	api->SetGeometryShader(m_GeometryShader);
-	api->SetHullShader(m_HullShader);
-	api->SetDomainShader(m_DomainShader);
-	api->SetComputeShader(m_ComputeShader);
-	api->PSSetShaderResource(0, _COUNT, m_Resources);
+	graphics::IGraphicsContext& context = Engine::GetAPI()->GetContext();
+	context.SetVertexShader(m_VertexShader);
+	context.SetPixelShader(m_PixelShader);
+	context.SetGeometryShader(m_GeometryShader);
+	context.SetHullShader(m_HullShader);
+	context.SetDomainShader(m_DomainShader);
+	context.SetComputeShader(m_ComputeShader);
+	context.PSSetShaderResource(0, _COUNT, m_Resources);
 }
 
 void Effect::Clear()
 {
-	graphics::IShaderResourceView* resources[_COUNT] = {};
-	graphics::IGraphicsAPI* api = Engine::GetAPI();
-	api->PSSetShaderResource(0, _COUNT, m_Resources);
+	void* resources[_COUNT] = {};
+	graphics::IGraphicsContext& context = Engine::GetAPI()->GetContext();
+	context.PSSetShaderResource(0, _COUNT, m_Resources);
 }

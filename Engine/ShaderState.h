@@ -185,7 +185,7 @@ class ShaderState
 public:
 	ShaderState() = default;
 	ShaderState(const BlendState& blend_state, SamplerState sampler_state[], u32 sampler_state_count, const DepthstencilState& depthstencil_state, const RasterizerState& rasterizer_state);
-	void Use(const RenderContext& render_context);
+	void Use();
 
 
 	BlendState& GetBlendState();

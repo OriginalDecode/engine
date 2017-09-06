@@ -381,7 +381,16 @@
     <ClInclude Include="WaterPlane.h" />
     <ClInclude Include="DebugHandle.h" />
     <ClInclude Include="ImGuiRegisterStructs.h" />
-    <ClInclude Include="IGraphicsDevice.h" />
+    <ClInclude Include="IGraphicsContext.h">
+      <Filter>APIs</Filter>
+    </ClInclude>
+    <ClInclude Include="IGraphicsDevice.h">
+      <Filter>APIs</Filter>
+    </ClInclude>
+    <ClInclude Include="DX11Device.h">
+      <Filter>APIs</Filter>
+    </ClInclude>
+    <ClInclude Include="DX11Context.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -623,5 +632,9 @@
     <ClCompile Include="MemorySegmentHandle.cpp" />
     <ClCompile Include="WaterPlane.cpp" />
     <ClCompile Include="DebugHandle.cpp" />
+    <ClCompile Include="DX11Device.cpp">
+      <Filter>APIs</Filter>
+    </ClCompile>
+    <ClCompile Include="DX11Context.cpp" />
   </ItemGroup>
 </Project>

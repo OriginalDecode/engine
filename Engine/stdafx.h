@@ -3,7 +3,6 @@
 #pragma warning(disable : 4006)
 #pragma warning(disable : 4099)
 #include <d3dcompiler.h>
-#include <DDSTextureLoader.h>
 
 //----------------------------------------
 // Common Utilities / Common Library

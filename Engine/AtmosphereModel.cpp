@@ -40,7 +40,7 @@ void AtmosphereModel::CleanUp()
 		
 }
 
-void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
 	for (AtmosphereModel* child : myChildren)
 	{

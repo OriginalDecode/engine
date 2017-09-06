@@ -11,8 +11,8 @@ public:
 
 	bool Initiate(const GBuffer& gbuffer, Texture* shadow_texture);
 	bool CleanUp();
-	void RenderPointlight(PointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
-	void RenderSpotlight(SpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
+	void RenderPointlight(PointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
+	void RenderSpotlight(SpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
 	Effect* GetPointlightEffect();
 	Effect* GetSpotlightEffect();
 	bool HasInitiated();

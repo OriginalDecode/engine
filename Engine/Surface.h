@@ -23,7 +23,7 @@ public:
 	void AddResource(IShaderResourceView* pResource, const std::string& filename, Effect::TextureSlot slot);
 	void AddResource(Texture* pResource, const std::string& filename, Effect::TextureSlot slot);
 
-	void Use(Effect* pEffect, const RenderContext& render_context);
+	void Use(Effect* pEffect);
 private:
 	struct ResourceBinding
 	{
@@ -48,7 +48,7 @@ public:
 	void AddTexture(Texture* texture, const std::string& filepath, Effect::TextureSlot slot);
 	void AddTexture(const std::string& file_path, Effect::TextureSlot slot);
 
-	void Activate(const RenderContext& render_context);
+	void Activate();
 	void Deactivate();
 
 	void SetEffect(Effect* anEffect);

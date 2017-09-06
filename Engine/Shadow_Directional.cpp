@@ -41,13 +41,13 @@ void ShadowDirectional::SetViewport()
 	Engine::GetAPI()->SetViewport(m_Viewport);
 }
 
-void ShadowDirectional::ClearTexture(const RenderContext& render_context)
+void ShadowDirectional::ClearTexture()
 {
 	render_context.m_Context->ClearRenderTargetView(m_ShadowDepth->GetRenderTargetView(), m_Clear);
 	render_context.m_Context->ClearDepthStencilView(m_ShadowDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
-void ShadowDirectional::SetTargets(const RenderContext& render_context)
+void ShadowDirectional::SetTargets()
 {
 	render_context.m_Context->OMSetRenderTargets(1, m_ShadowDepth->GetRenderTargetRef(), m_ShadowDepthStencil->GetDepthView());
 }

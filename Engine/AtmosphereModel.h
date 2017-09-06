@@ -13,7 +13,7 @@ public:
 	void CleanUp();
 
 
-	void Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
+	void Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection) override;
 	void AddChild(AtmosphereModel* child);
 	void SetOrientation(const CU::Matrix44f& orientation);
 private:

@@ -47,7 +47,7 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 	m_OuterSphere->SetOrientation(m_OuterOrientation);
 }
 
-void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth, const RenderContext& render_context)
+void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth)
 {
 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);

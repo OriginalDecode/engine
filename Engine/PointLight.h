@@ -16,7 +16,7 @@ public:
 	const float& GetRange();
 
 	void Update();
-	void Render(const CU::Matrix44f& previousOrientation, Camera* camera, const RenderContext& render_context);
+	void Render(const CU::Matrix44f& previousOrientation, Camera* camera);
 	const SPointlightData& GetData() const;
 
 	CU::Matrix44f GetOrientation();

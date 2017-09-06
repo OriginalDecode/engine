@@ -40,7 +40,7 @@ Surface::Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anInde
 	SetPrimology(aPrimology);
 }
 
-void Surface::Activate(const RenderContext& render_context)
+void Surface::Activate()
 {
 	if ( !myEffect )
 		return;
@@ -127,7 +127,7 @@ void Material::AddResource(Texture* pResource, const std::string& filename, Effe
 	AddResource(pResource->GetShaderView(), filename, slot);
 }
 
-void Material::Use(Effect* pEffect, const RenderContext& render_context)
+void Material::Use(Effect* pEffect)
 {
 	for (const ResourceBinding& binding : m_Resources)
 	{

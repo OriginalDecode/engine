@@ -14,8 +14,8 @@ public:
 	Camera* GetCamera() const { return m_Camera; }
 
 	void SetViewport();
-	void ClearTexture(const RenderContext& render_context);
-	void SetTargets(const RenderContext& render_context);
+	void ClearTexture();
+	void SetTargets();
 
 	void SetOrientation(const CU::Matrix44f& orientation);
 	const CU::Matrix44f& GetOrientation() { return m_Camera->GetOrientation(); }

@@ -117,7 +117,7 @@ namespace graphics
 		virtual void DisableZBuffer() = 0;
 
 
-// 		virtual void CreateTextureFromFile(const cl::HashString& str) = 0;
+		virtual void* CreateTextureFromFile(const cl::CHashString<128>& str) = 0;
 // 
 // 		virtual void CreateTexture2D() = 0;
 // 		virtual void CreateTexture3D() = 0;
@@ -130,8 +130,8 @@ namespace graphics
 		*/
 		//virtual void SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value) = 0;
 
-		virtual IGraphicsDevice* GetDevice() { return m_Device; }
-		virtual IGraphicsContext* GetContext() { return m_Context; }
+		virtual IGraphicsDevice& GetDevice() { return *m_Device; }
+		virtual IGraphicsContext& GetContext() { return *m_Context; }
 
 	protected:
 		CreateInfo m_CreateInfo;

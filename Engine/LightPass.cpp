@@ -34,7 +34,7 @@ bool LightPass::CleanUp()
 	return true;
 }
 
-void LightPass::RenderPointlight(PointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context)
+void LightPass::RenderPointlight(PointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
 {
 	if (HasInitiated())
 	{
@@ -45,7 +45,7 @@ void LightPass::RenderPointlight(PointLight* pointlight, Camera* aCamera, const 
 	}
 }
 
-void LightPass::RenderSpotlight(SpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context)
+void LightPass::RenderSpotlight(SpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix)
 {
 	if ( HasInitiated() )
 	{

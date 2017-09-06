@@ -8,9 +8,9 @@ public:
 	GBuffer() = default;
 	~GBuffer();
 	void Initiate();
-	void Clear(float* aClearColor, const RenderContext& render_context);
+	void Clear(float* aClearColor);
 
-	void SetAsRenderTarget(Texture* aDepthTexture, const RenderContext& render_context);
+	void SetAsRenderTarget(Texture* aDepthTexture);
 
 	Texture* GetDiffuse() const;
 	Texture* GetNormal() const;

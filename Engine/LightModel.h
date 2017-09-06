@@ -9,7 +9,7 @@ public:
 	LightModel() = default;
 	~LightModel();
 	void Initiate(const std::string& filename) override;
-	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
+	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) override;
 	void AddChild(LightModel* aChild);
 	void SetOrientation(const CU::Matrix44f& orientation);
 private:

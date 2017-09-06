@@ -52,7 +52,7 @@ void Terrain::CleanUp()
 
 }
 
-void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
+void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
 	SetupLayoutsAndBuffers();
  
@@ -69,7 +69,7 @@ void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44
 	myEffect->Clear();
 }
 
-void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context, bool override_shader)
+void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool override_shader)
 {
 	SetupLayoutsAndBuffers();
 
@@ -92,7 +92,7 @@ void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44
 	m_ClipEffect->Clear();
 }
 
-void Terrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+void Terrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
 	SetupLayoutsAndBuffers();
 
@@ -219,7 +219,7 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	InitConstantBuffer();
 }
 
-void Terrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context)
+void Terrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
 	myConstantStruct.world = myOrientation;
 	myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);

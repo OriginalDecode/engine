@@ -31,7 +31,7 @@ void GBuffer::Initiate()
 
 }
 
-void GBuffer::Clear(float* aClearColor, const RenderContext& render_context)
+void GBuffer::Clear(float* aClearColor)
 {
 	render_context.m_Context->ClearRenderTargetView(myAlbedo->GetRenderTargetView(), aClearColor);
 	render_context.m_Context->ClearRenderTargetView(myNormal->GetRenderTargetView(), aClearColor);
@@ -39,7 +39,7 @@ void GBuffer::Clear(float* aClearColor, const RenderContext& render_context)
 	render_context.m_Context->ClearRenderTargetView(myEmissive->GetRenderTargetView(), aClearColor);
 }
 
-void GBuffer::SetAsRenderTarget(Texture* aDepthTexture, const RenderContext& render_context)
+void GBuffer::SetAsRenderTarget(Texture* aDepthTexture)
 {
 	ID3D11RenderTargetView* target[] = 
 	{

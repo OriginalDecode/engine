@@ -19,7 +19,7 @@ ShaderState::ShaderState(const BlendState& blend_state
 	}
 }
 
-void ShaderState::Use(const RenderContext& render_context)
+void ShaderState::Use()
 {
 	render_context.m_API->SetShaderState(*this);
 }

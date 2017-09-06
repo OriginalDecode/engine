@@ -62,7 +62,7 @@ namespace graphics
 
 		void CopyResource(void * pDestination, void * pSource) override;
 
-		void SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value) override;
+		//void SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value) override;
 
 		//void CreateTexture2D(void* pTexDesc, void* pInitialData, void** ppTexture2D) override; //How would I actually do this?
 
@@ -134,7 +134,7 @@ namespace graphics
 
 		ID3D11SamplerState* GetSampler(s32 index);
 
-
+		void* CreateTextureFromFile(const cl::CHashString<128>& path) override;
 	private:
 		void CreateDeviceAndSwapchain();
 		void CreateDepthBuffer();
@@ -155,7 +155,6 @@ namespace graphics
 
 		//ID3D11Device* m_Device = nullptr;
 		D3D11_VIEWPORT* m_Viewport = nullptr;
-		ID3D11DeviceContext* m_Context = nullptr;
 		ID3D11RenderTargetView* m_RenderTarget = nullptr;
 
 		ID3D11DepthStencilView* m_DepthView = nullptr;

@@ -62,7 +62,7 @@ void WaterPlane::SetPosition(const CU::Vector3f& position)
 	m_Orientation.SetPosition(position);
 }
 
-void WaterPlane::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+void WaterPlane::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
 	m_VertexMatrices.m_World = m_Orientation;
 	m_VertexMatrices.m_InvertedView = CU::Math::Inverse(camera_orientation);
@@ -72,7 +72,7 @@ void WaterPlane::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, c
 	render_context.m_API->UpdateConstantBuffer((myConstantBuffer), &m_VertexMatrices);
 }
 
-void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	render_context.m_API->SetBlendState(eBlendStates::BLEND_FALSE);
@@ -93,26 +93,26 @@ void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matri
 	myEffect->Clear();
 }
 
-void WaterPlane::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context)
+void WaterPlane::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
 	DL_ASSERT("water shadow?");
 }
 
-void WaterPlane::SetupRefractionRender(const RenderContext& render_context)
+void WaterPlane::SetupRefractionRender()
 {
 	m_RefractionG.Clear(m_ClearColor, render_context);
 	render_context.m_Context->ClearDepthStencilView(m_Refraction->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	m_RefractionG.SetAsRenderTarget(m_Refraction, render_context);
 }
 
-void WaterPlane::SetupReflectionRender(const RenderContext& render_context)
+void WaterPlane::SetupReflectionRender()
 {
 	m_ReflectionG.Clear(m_ClearColor, render_context);
 	render_context.m_Context->ClearDepthStencilView(m_Reflection->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	m_ReflectionG.SetAsRenderTarget(m_Reflection, render_context);
 }
 
-void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const RenderContext& render_context)
+void WaterPlane::SetClipPlane(const CU::Vector4f& plane)
 {
 	m_PixelStruct.m_CompareValue = plane;
 	render_context.m_API->UpdateConstantBuffer(m_cbPixel, &m_PixelStruct);

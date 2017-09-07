@@ -185,34 +185,19 @@ namespace graphics
 
 		virtual void EnableZBuffer() = 0;
 		virtual void DisableZBuffer() = 0;
-
-
-		virtual void* CreateTextureFromFile(const cl::CHashString<128>& str) = 0;
-// 
-// 		virtual void CreateTexture2D() = 0;
-// 		virtual void CreateTexture3D() = 0;
-
-
+		
 		virtual void SetViewport(void* viewport) = 0;
 		virtual void* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y) = 0;
-		/*
-			The depth_value variable is what the depth buffer is testing against in that state. 0.0 - 1.0
-		*/
-		//virtual void SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value) = 0;
 
 		virtual IGraphicsDevice& GetDevice() { return *m_Device; }
 		virtual IGraphicsContext& GetContext() { return *m_Context; }
 
+
 	protected:
 		CreateInfo m_CreateInfo;
 		eGraphicsAPI m_ActiveAPI;
-
 		IGraphicsDevice* m_Device = nullptr;
 		IGraphicsContext* m_Context = nullptr;
-
-		//IDevice* m_Device = nullptr;
-
-
 	};
 
 	IGraphicsAPI::IGraphicsAPI(CreateInfo info)

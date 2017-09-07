@@ -394,6 +394,9 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const 
 	m_ConstantStruct.m_InvertedView = CU::Math::Inverse(aCameraOrientation);
 	m_ConstantStruct.m_Projection = aCameraProjection;
 
+	Engine::GetAPI();
+
+
 	render_context.m_API->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
 }
 

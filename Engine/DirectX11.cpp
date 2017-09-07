@@ -228,35 +228,33 @@ namespace graphics
 
 		ID3D11Device* pDevice = nullptr; // static_cast<ID3D11Device*>(**m_Device);
 
-		HRESULT hr = D3D11CreateDeviceAndSwapChain(
-			myAdapters[adapterString],
-			type,
-			nullptr,
-			createDeviceFlags,
-			requested_feature_levels,
-			featureCount,
-			D3D11_SDK_VERSION,
-			&scDesc,
-			&m_Swapchain,
-			&pDevice,
-			nullptr,
-			&m_Context);
+		HRESULT hr = D3D11CreateDeviceAndSwapChain(myAdapters[adapterString],
+												   type,
+												   nullptr,
+												   createDeviceFlags,
+												   requested_feature_levels,
+												   featureCount,
+												   D3D11_SDK_VERSION,
+												   &scDesc,
+												   &m_Swapchain,
+												   &pDevice,
+												   nullptr,
+												   &m_Context);
 
 		if (pDevice == nullptr)
 		{
-			hr = D3D11CreateDeviceAndSwapChain(
-				myAdapters[adapterString],
-				type,
-				nullptr,
-				0,
-				requested_feature_levels,
-				featureCount,
-				D3D11_SDK_VERSION,
-				&scDesc,
-				&m_Swapchain,
-				&pDevice,
-				nullptr,
-				&m_Context);
+			hr = D3D11CreateDeviceAndSwapChain(myAdapters[adapterString],
+											   type,
+											   nullptr,
+											   0,
+											   requested_feature_levels,
+											   featureCount,
+											   D3D11_SDK_VERSION,
+											   &scDesc,
+											   &m_Swapchain,
+											   &pDevice,
+											   nullptr,
+											   &m_Context);
 		}
 
 		DL_ASSERT_EXP(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");

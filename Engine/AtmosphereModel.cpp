@@ -44,7 +44,7 @@ void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::
 {
 	for (AtmosphereModel* child : myChildren)
 	{
-		child->Render(camera_orientation, camera_projection, render_context);
+		child->Render(camera_orientation, camera_projection);
 	}
 
 	if (m_IsRoot)
@@ -55,7 +55,7 @@ void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::
 
 	SetupLayoutsAndBuffers();
 
-	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
+	UpdateConstantBuffer(camera_orientation, camera_projection);
 
 	myEffect->Use();
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);

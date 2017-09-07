@@ -17,7 +17,6 @@ Atmosphere::~Atmosphere()
 
 void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position)
 {
-	m_Engine = Engine::GetInstance();
 	m_API = m_Engine->GetAPI();
 	m_Camera = m_Engine->GetCamera();
 
@@ -33,9 +32,9 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 	m_OuterOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_OuterRadius, m_OuterRadius, m_OuterRadius, 1)) * m_OuterOrientation;
 	m_InnerOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_InnerRadius, m_InnerRadius, m_InnerRadius, 1)) * m_InnerOrientation;
 
-	const VirtualFileSystem& vfs = m_Engine->GetVFS();
-	std::string atmosphere = m_Engine->LoadModel(vfs.GetFile("Models/atmosphere.fbx"), "Shaders/skysphere.json", m_OuterSphere, false);
-	m_OuterSphere = static_cast<AtmosphereModel*>(Engine::GetInstance()->GetModel(atmosphere));
+	const VirtualFileSystem& vfs = Engine::GetInstance()->GetVFS();
+	std::string atmosphere = Engine::GetInstance()->LoadModel(vfs.GetFile("Models/atmosphere.fbx"), "Shaders/skysphere.json", m_OuterSphere, false);
+	m_OuterSphere = static_cast<AtmosphereModel*>(Engine::GetInstance()->GetModel(atmosphere.c_str()));
 
 	m_VertexStruct.m_InnerRadius = m_InnerRadius;
 	m_VertexStruct.m_OuterRadius = m_OuterRadius;

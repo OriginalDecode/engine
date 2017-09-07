@@ -24,7 +24,13 @@ namespace graphics
 		void SetDomainShader(CompiledShader* shader) override;
 		void SetComputeShader(CompiledShader* shader) override;
 
-		void* GetContext() { return m_Context; }
+
+		void VSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer);
+		void PSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer);
+		void GSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer);
+		void HSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer);
+		void DSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer);
+		void CSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer);
 
 	private:
 		ID3D11DeviceContext* m_Context;

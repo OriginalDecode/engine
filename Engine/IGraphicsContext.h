@@ -21,6 +21,16 @@ namespace graphics
 		virtual void SetHullShader(CompiledShader* vertex_shader) = 0;
 		virtual void SetDomainShader(CompiledShader* vertex_shader) = 0;
 		virtual void SetComputeShader(CompiledShader* vertex_shader) = 0;
+
+		virtual void VSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer) = 0;
+		virtual void PSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer) = 0;
+		virtual void GSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer) = 0;
+		virtual void HSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer) = 0;
+		virtual void DSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer) = 0;
+		virtual void CSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer) = 0;
+
+
+
 	private:
 
 

@@ -6,6 +6,8 @@ namespace graphics
 	class IGraphicsContext
 	{
 	public:
+		virtual void* GetContext() = 0;
+
 		virtual void VSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void PSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void GSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;

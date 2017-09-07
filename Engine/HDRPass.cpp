@@ -18,8 +18,8 @@ void HDRPass::Initiate()
 	m_HDRTexture->Initiate(
 		m_WindowSize.m_Width,
 		m_WindowSize.m_Height,
-		D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, 
-		DXGI_FORMAT_R8G8B8A8_UNORM, 
+		D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,  //flags 
+		DXGI_FORMAT_R8G8B8A8_UNORM, //format
 		"HDRPass | HDRTexture");
 	s32 downsample_amount = s32(log(__min(m_WindowSize.m_Width, m_WindowSize.m_Height)) / log(2.f)) + 1;
 	s32 sample_size = 1;

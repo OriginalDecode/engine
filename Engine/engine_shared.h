@@ -15,6 +15,22 @@
 
 typedef s32 Entity;
 
+typedef void** ITexture2D;
+typedef void** ITexture3D;
+typedef void** IShaderResourceView;
+typedef void** IDepthStencilView;
+typedef void** IRenderTargetView;
+typedef void** IViewport;
+typedef void** IVertexShader;
+typedef void** IPixelShader;
+typedef void** IGeometryShader;
+typedef void** IHullShader;
+typedef void** IDomainShader;
+typedef void** IComputeShader;
+typedef void** IShaderBlob;
+typedef void** IBuffer;
+typedef void** IInputLayout;
+
 #if (UINTPTR_MAX == 0xffffffffffffffff)
 typedef u64 uptr;
 #else

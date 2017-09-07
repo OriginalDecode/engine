@@ -47,6 +47,7 @@ namespace graphics
 	public:
 		DirectX11(CreateInfo info);
 		static void SetDebugName(void * pResource, cl::CHashString<128> debug_name);
+		static void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
 
 		//__________________________
 		// Virtual Functions
@@ -83,7 +84,6 @@ namespace graphics
 		void EnableZBuffer() override;
 		void DisableZBuffer() override;
 
-		void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
 		std::string GetAPIName();
 
 		void ResetViewport();
@@ -134,7 +134,7 @@ namespace graphics
 
 		ID3D11SamplerState* GetSampler(s32 index);
 
-		void* CreateTextureFromFile(const cl::CHashString<128>& path) override;
+		//void* CreateTextureFromFile(const cl::CHashString<128>& path, bool generate_mips) override;
 	private:
 		void CreateDeviceAndSwapchain();
 		void CreateDepthBuffer();

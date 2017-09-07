@@ -23,6 +23,9 @@ namespace graphics
 		void SetHullShader(CompiledShader* shader) override;
 		void SetDomainShader(CompiledShader* shader) override;
 		void SetComputeShader(CompiledShader* shader) override;
+
+		void* GetContext() { return m_Context; }
+
 	private:
 		ID3D11DeviceContext* m_Context;
 	};

@@ -13,25 +13,6 @@ typedef HWND__* HWND;
 
 namespace graphics
 {
-	/*typedef void** ITexture2D;
-	typedef void** ITexture3D;
-	typedef void** IShaderResourceView;
-	typedef void** IDepthStencilView;
-	typedef void** IRenderTargetView;
-	typedef void** IViewport;
-	typedef void** IVertexShader;
-	typedef void** IPixelShader;
-	typedef void** IGeometryShader;
-	typedef void** IHullShader;
-	typedef void** IDomainShader;
-	typedef void** IComputeShader;
-	typedef void** IShaderBlob;
-	typedef void** IDevice;
-	typedef void** IContext;
-	typedef void** IBuffer;
-	typedef void** IInputLayout;*/
-
-
 	struct CreateInfo
 	{
 		HWND m_HWND;
@@ -89,6 +70,76 @@ namespace graphics
 		VULKAN,
 	};
 
+	enum eTextureFormat
+	{
+		RGBA32_FLOAT,
+		RGBA32_UINT,
+		RGBA32_SINT,
+
+		RGB32_FLOAT,
+		RGB32_UINT,
+		RGB32_SINT,
+
+		RGBA16_FLOAT,
+		RGBA16_UINT,
+		RGBA16_SINT,
+
+		RGB16_FLOAT,
+		RGB16_UINT,
+		RGB16_SINT,
+
+
+		RGBA8_FLOAT,
+		RGBA8_UINT,
+		RGBA8_SINT,
+
+		RGB8_FLOAT,
+		RGB8_UINT,
+		RGB8_SINT,
+
+		R32_TYPELESS, 
+		R32_FLOAT,
+		DEPTH_32_FLOAT, 
+
+
+	};
+
+	enum eTextureUsage
+	{
+		DEFAULT_USAGE = 0,
+		IMMUTABLE_USAGE = 1,
+		DYNAMIC_USAGE = 2,
+		STAGING_USAGE = 4,
+	};
+
+	enum eTextureBind
+	{
+		RENDERTARGET = 0,
+		DEPTHSTENCIL = 1,
+		SHADERRESOURCE = 2,
+	};
+
+	enum eCPUAccessFlag
+	{
+		NO_ACCESS_FLAG = 0,
+		READ = 1,
+		WRITE = 2,
+	};
+
+	struct Texture2DDesc
+	{
+		u32 m_Width = 0;
+		u32 m_Height = 0;
+		u32 m_MipLevels = 0;
+		eTextureFormat m_Format = RGBA32_FLOAT;
+		s32 m_Usage = DEFAULT_USAGE;
+		s32 m_Binding = SHADERRESOURCE;
+		s32 m_CPUAccessFlag = 0;
+		s32 m_MiscFlags = 0;
+		s32 m_ArraySize = 0;
+		s32 m_SampleCount = 0;
+		s32 m_SampleQuality = 0;
+	};
 
 	class IGraphicsAPI
 	{

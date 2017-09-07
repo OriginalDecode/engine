@@ -1,64 +1,87 @@
 #include "stdafx.h"
 #include "Texture.h"
+#include <Engine/IGraphicsDevice.h>
 
 Texture::~Texture()
 {
-	SAFE_RELEASE(m_ShaderResource);
-	SAFE_RELEASE(m_DepthTexture);
-	SAFE_RELEASE(m_DepthStencilView);
-	SAFE_RELEASE(m_DepthStencilShaderView);
-	SAFE_RELEASE(m_RenderTargetView);
+	graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
+	device.ReleasePtr(m_ShaderResource);
+	device.ReleasePtr(m_DepthTexture);
+	device.ReleasePtr(m_DepthStencilView);
+	device.ReleasePtr(m_DepthStencilShaderView);
+	device.ReleasePtr(m_RenderTargetView);
 }
 
-void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, const std::string& debug_name)
+void Texture::Initiate(u16 width, u16 height, s32 usage, s32 binding, graphics::eTextureFormat texture_format, const std::string& debug_name)
 {
 
-	myWidth = width;
-	myHeight = height;
-	graphics::DirectX11* api = static_cast<graphics::DirectX11*>(Engine::GetAPI());
-	ID3D11Device* device = api->GetDevice();
+	m_Width = width;
+	m_Height = height;
 
-	D3D11_TEXTURE2D_DESC text_desc;
-	text_desc.Width = (UINT)width;
-	text_desc.Height = (UINT)height;
-	text_desc.MipLevels = 1;
-	text_desc.Format = texture_format;
-	text_desc.SampleDesc.Count = 1;
-	text_desc.SampleDesc.Quality = 0;
-	text_desc.Usage = GetUsage(flags);
-	text_desc.BindFlags = (flags & ~(DEFAULT_USAGE | IMMUTABLE_USAGE | DYNAMIC_USAGE | STAGING_USAGE));
-	text_desc.CPUAccessFlags = 0;
-	text_desc.MiscFlags = 0;
-	text_desc.ArraySize = 1;
-	HRESULT hr = device->CreateTexture2D(&text_desc, NULL, &m_DepthTexture);
-	api->HandleErrors(hr, "[Texture](Initiate) : Failed to initiate texture.");
+	graphics::Texture2DDesc desc;
+	desc.m_Height = m_Height;
+	desc.m_Width = m_Width;
+	desc.m_Format = texture_format;
+	desc.m_MipLevels = 0;
+	desc.m_ArraySize = 0;
+	desc.m_Usage = usage;
+	desc.m_MiscFlags = 0;
+	desc.m_SampleCount = 1;
+	desc.m_SampleQuality = 0;
+	desc.m_AccessCPU = false;
+	desc.m_Binding = binding;
 
-	if (flags & D3D11_BIND_RENDER_TARGET)
-	{
-		hr = device->CreateRenderTargetView(m_DepthTexture, NULL, &m_RenderTargetView);
-		api->HandleErrors(hr, "[Texture](Initiate) : Failed to create RenderTargetView.");
-		api->SetDebugName(m_RenderTargetView, debug_name + "RenderTargetView");
-	}
+	graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
+	void* output = device.CreateTexture2D(m_DepthTexture, desc, debug_name.c_str());
 
-	if (flags & D3D11_BIND_SHADER_RESOURCE)
-	{
-		hr = device->CreateShaderResourceView(m_DepthTexture, NULL, &m_ShaderResource);
-		api->HandleErrors(hr, "[Texture](Initiate) : Failed to create ShaderResourceView.");
-		api->SetDebugName(m_ShaderResource, debug_name + "ShaderResourceView");
-	}
 
-	if (flags & D3D11_BIND_DEPTH_STENCIL)
-	{
-		DL_ASSERT("Invalid flag D3D11_BIND_DEPTH_STENCIL for cr'eating regular texture!");
-	}
+
+
+
+// 	graphics::DirectX11* api = static_cast<graphics::DirectX11*>(Engine::GetAPI());
+// 	ID3D11Device* device = api->GetDevice();
+// 
+// 	D3D11_TEXTURE2D_DESC text_desc;
+// 	text_desc.Width = (UINT)width;
+// 	text_desc.Height = (UINT)height;
+// 	text_desc.MipLevels = 1;
+// 	text_desc.Format = texture_format;
+// 	text_desc.SampleDesc.Count = 1;
+// 	text_desc.SampleDesc.Quality = 0;
+// 	text_desc.Usage = GetUsage(flags);
+// 	text_desc.BindFlags = (flags & ~(DEFAULT_USAGE | IMMUTABLE_USAGE | DYNAMIC_USAGE | STAGING_USAGE));
+// 	text_desc.CPUAccessFlags = 0;
+// 	text_desc.MiscFlags = 0;
+// 	text_desc.ArraySize = 1;
+// 	HRESULT hr = device->CreateTexture2D(&text_desc, NULL, &m_DepthTexture);
+// 	api->HandleErrors(hr, "[Texture](Initiate) : Failed to initiate texture.");
+// 
+// 	if (flags & D3D11_BIND_RENDER_TARGET)
+// 	{
+// 		hr = device->CreateRenderTargetView(m_DepthTexture, NULL, &m_RenderTargetView);
+// 		api->HandleErrors(hr, "[Texture](Initiate) : Failed to create RenderTargetView.");
+// 		api->SetDebugName(m_RenderTargetView, debug_name + "RenderTargetView");
+// 	}
+// 
+// 	if (flags & D3D11_BIND_SHADER_RESOURCE)
+// 	{
+// 		hr = device->CreateShaderResourceView(m_DepthTexture, NULL, &m_ShaderResource);
+// 		api->HandleErrors(hr, "[Texture](Initiate) : Failed to create ShaderResourceView.");
+// 		api->SetDebugName(m_ShaderResource, debug_name + "ShaderResourceView");
+// 	}
+// 
+// 	if (flags & D3D11_BIND_DEPTH_STENCIL)
+// 	{
+// 		DL_ASSERT("Invalid flag D3D11_BIND_DEPTH_STENCIL for cr'eating regular texture!");
+// 	}
 
 }
 
-void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name)
+void Texture::Initiate(u16 width, u16 height, s32 flags, graphics::eTextureFormat texture_format, graphics::eTextureFormat shader_resource_view_format, graphics::eTextureFormat depth_stencil_format, const std::string& debug_name)
 {
 
-	myWidth = width;
-	myHeight = height;
+	m_Width = width;
+	m_Height = height;
 	DirectX11* api = Engine::GetAPI();
 	ID3D11Device* device = Engine::GetAPI()->GetDevice();
 
@@ -113,7 +136,7 @@ void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat texture_f
 
 }
 
-void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat render_target_format, TextureFormat texture_format, TextureFormat shader_resource_view_format, TextureFormat depth_stencil_format, const std::string& debug_name)
+void Texture::Initiate(u16 width, u16 height, s32 flags, graphics::eTextureFormat render_target_format, graphics::eTextureFormat texture_format, graphics::eTextureFormat shader_resource_view_format, graphics::eTextureFormat depth_stencil_format, const std::string& debug_name)
 {
 
 	myWidth = width;
@@ -195,10 +218,10 @@ void Texture::Initiate(u16 width, u16 height, s32 flags, TextureFormat render_ta
 void Texture::InitiateAsDepthStencil(float width, float height, const std::string& debug_name)
 {
 	Initiate(width, height
-		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-		, DXGI_FORMAT_R32_TYPELESS
-		, DXGI_FORMAT_R32_FLOAT
-		, DXGI_FORMAT_D32_FLOAT
+		, 0//DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL// flags
+		, graphics::R32_TYPELESS
+		, graphics::R32_FLOAT
+		, graphics::DEPTH_32_FLOAT
 		, debug_name);
 }
 
@@ -237,7 +260,7 @@ void Texture::InitiateWithColor(cl::SColor color)
 	texture->Release();
 }
 
-void Texture::Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat texture_format, const std::string& debug_name)
+void Texture::Initiate3DTexture(u16 width, u16 height, u16 depth, graphics::eTextureFormat texture_format, const std::string& debug_name)
 {
 	DirectX11* api = Engine::GetInstance()->GetAPI();
 	ID3D11Texture3D* texture;
@@ -295,7 +318,7 @@ void Texture::Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat 
 
 }
 
-void Texture::Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat texture_format, s32 layer_count, const std::string& debug_name)
+void Texture::Initiate3DTexture(u16 width, u16 height, u16 depth, graphics::eTextureFormat texture_format, s32 layer_count, const std::string& debug_name)
 {
 	DirectX11* api = Engine::GetInstance()->GetAPI();
 
@@ -345,75 +368,75 @@ void Texture::Initiate3DTexture(u16 width, u16 height, u16 depth, TextureFormat 
 	SAFE_RELEASE(_texture);
 }
 
-UsageType Texture::GetUsage(int flags) const
-{
-	if (flags & IMMUTABLE_USAGE)
-	{
-		return D3D11_USAGE_IMMUTABLE;
-	}
-	else if (flags & STAGING_USAGE)
-	{
-		return D3D11_USAGE_STAGING;
-	}
-	else if (flags & DYNAMIC_USAGE)
-	{
-		return D3D11_USAGE_DYNAMIC;
-	}
-	return D3D11_USAGE_DEFAULT;
-}
+// UsageType Texture::GetUsage(int flags) const
+// {
+// 	if (flags & IMMUTABLE_USAGE)
+// 	{
+// 		return D3D11_USAGE_IMMUTABLE;
+// 	}
+// 	else if (flags & STAGING_USAGE)
+// 	{
+// 		return D3D11_USAGE_STAGING;
+// 	}
+// 	else if (flags & DYNAMIC_USAGE)
+// 	{
+// 		return D3D11_USAGE_DYNAMIC;
+// 	}
+// 	return D3D11_USAGE_DEFAULT;
+// }
 
-bool Texture::Load(std::string filepath)
-{
-	DL_MESSAGE("Loading texture : %s", filepath.c_str());
-	myFileName = filepath;
-	ID3D11Device* device = Engine::GetAPI()->GetDevice();
-
-		/*	
-		HRESULT hr = DirectX::CreateDDSTextureFromFileEx(
-		device, 
-		std::wstring(filepath.begin(), filepath.end()).c_str(), 
-		0, 
-		D3D11_USAGE_DEFAULT, 
-		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET, 
-		D3D11_CPU_ACCESS_READ, 
-		D3D11_RESOURCE_MISC_GENERATE_MIPS, 
-		false, 
-		nullptr, 
-		&m_ShaderResource);
-		*/
-
-	HRESULT hr = DirectX::CreateDDSTextureFromFile(device
-		, nullptr
-		, std::wstring(filepath.begin(), filepath.end()).c_str()
-		, nullptr
-		, &m_ShaderResource);
-
-
-	std::string debugname = cl::substr(filepath, "/", false, 0);
-	Engine::GetAPI()->SetDebugName(m_ShaderResource, debugname);
-	DL_MESSAGE_EXP(FAILED(hr), "[Texture](Load) : Failed to load texture %s", filepath.c_str());
-	if ( FAILED(hr) )
-	{
-		DL_ASSERT("Failed to load texture!");
-		return false;
-	}
-	ID3D11Resource* pResource = nullptr;
-	m_ShaderResource->GetResource(&pResource);
-	pResource->QueryInterface<ID3D11Texture2D>(&m_Texture);
-	if (m_Texture)
-	{
-		D3D11_TEXTURE2D_DESC desc;
-		m_Texture->GetDesc(&desc);
-		myHeight = desc.Height;
-		myWidth = desc.Width;
-	}
-	else
-		DL_MESSAGE("m_Texture was null while loading, this is fine for volume textures");
-	//m_ShaderResource->GetResource(&desc);
-	
-
-	return true;
-}
+// bool Texture::Load(std::string filepath)
+// {
+// 	DL_MESSAGE("Loading texture : %s", filepath.c_str());
+// 	myFileName = filepath;
+// 	ID3D11Device* device = Engine::GetAPI()->GetDevice();
+// 
+// 		/*	
+// 		HRESULT hr = DirectX::CreateDDSTextureFromFileEx(
+// 		device, 
+// 		std::wstring(filepath.begin(), filepath.end()).c_str(), 
+// 		0, 
+// 		D3D11_USAGE_DEFAULT, 
+// 		D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET, 
+// 		D3D11_CPU_ACCESS_READ, 
+// 		D3D11_RESOURCE_MISC_GENERATE_MIPS, 
+// 		false, 
+// 		nullptr, 
+// 		&m_ShaderResource);
+// 		*/
+// 
+// 	HRESULT hr = DirectX::CreateDDSTextureFromFile(device
+// 		, nullptr
+// 		, std::wstring(filepath.begin(), filepath.end()).c_str()
+// 		, nullptr
+// 		, &m_ShaderResource);
+// 
+// 
+// 	std::string debugname = cl::substr(filepath, "/", false, 0);
+// 	Engine::GetAPI()->SetDebugName(m_ShaderResource, debugname);
+// 	DL_MESSAGE_EXP(FAILED(hr), "[Texture](Load) : Failed to load texture %s", filepath.c_str());
+// 	if ( FAILED(hr) )
+// 	{
+// 		DL_ASSERT("Failed to load texture!");
+// 		return false;
+// 	}
+// 	ID3D11Resource* pResource = nullptr;
+// 	m_ShaderResource->GetResource(&pResource);
+// 	pResource->QueryInterface<ID3D11Texture2D>(&m_Texture);
+// 	if (m_Texture)
+// 	{
+// 		D3D11_TEXTURE2D_DESC desc;
+// 		m_Texture->GetDesc(&desc);
+// 		myHeight = desc.Height;
+// 		myWidth = desc.Width;
+// 	}
+// 	else
+// 		DL_MESSAGE("m_Texture was null while loading, this is fine for volume textures");
+// 	//m_ShaderResource->GetResource(&desc);
+// 	
+// 
+// 	return true;
+// }
 
 void Texture::OnReload()
 {
@@ -426,45 +449,45 @@ void Texture::SetTexture(IShaderResourceView* aShaderResource)
 	m_ShaderResource = aShaderResource;
 }
 
-HRESULT Texture::SaveToFile(ITexture2D*& texture_resource, const std::string& file_name)
-{
-	ID3D11Resource* resource = nullptr;
-	HRESULT hr = texture_resource->QueryInterface(IID_ID3D11Texture2D, (void**)&resource);
-	Engine::GetAPI()->HandleErrors(hr, "Failed to query interface of texture_resource");
-	std::wstring middle_hand(file_name.begin(), file_name.end());
-	LPCWSTR new_name(middle_hand.c_str());
-	hr = DirectX::SaveDDSTextureToFile(Engine::GetAPI()->GetContext(), resource, new_name);
-	resource->Release();
-	resource = nullptr;
-	return S_OK;
-}
+// HRESULT Texture::SaveToFile(ITexture2D*& texture_resource, const std::string& file_name)
+// {
+// 	ID3D11Resource* resource = nullptr;
+// 	HRESULT hr = texture_resource->QueryInterface(IID_ID3D11Texture2D, (void**)&resource);
+// 	Engine::GetAPI()->HandleErrors(hr, "Failed to query interface of texture_resource");
+// 	std::wstring middle_hand(file_name.begin(), file_name.end());
+// 	LPCWSTR new_name(middle_hand.c_str());
+// 	hr = DirectX::SaveDDSTextureToFile(Engine::GetAPI()->GetContext(), resource, new_name);
+// 	resource->Release();
+// 	resource = nullptr;
+// 	return S_OK;
+// }
+// 
+// void Texture::Save2DResource(const std::string& filename)
+// {
+// 	ID3D11Resource* resource = nullptr;
+// 	HRESULT hr = m_ShaderResource->QueryInterface(IID_ID3D11Texture2D, ( void** ) & resource);
+// 	Engine::GetAPI()->HandleErrors(hr, "failed to query interface of 3dtexture");
+// 	std::wstring mid(filename.begin(), filename.end());
+// 	LPCWSTR new_name(mid.c_str());
+// 	DirectX::SaveDDSTextureToFile(Engine::GetAPI()->GetContext(), resource, new_name);
+// 	resource->Release();
+// 	resource = nullptr;
+// }
+// 
+// void Texture::Save3DResource(const std::string& filename)
+// {
+// 	return;
+// 	ID3D11Resource* resource = nullptr;
+// 	HRESULT hr = m_ShaderResource->QueryInterface(IID_ID3D11Texture3D, ( void** ) & resource);
+// 	Engine::GetAPI()->HandleErrors(hr, "failed to query interface of 3dtexture");
+// 	std::wstring mid(filename.begin(), filename.end());
+// 	LPCWSTR new_name(mid.c_str());
+// 	DirectX::SaveDDSTextureToFile(Engine::GetAPI()->GetContext(), resource, new_name);
+// 	resource->Release();
+// 	resource = nullptr;
+// }
 
-void Texture::Save2DResource(const std::string& filename)
-{
-	ID3D11Resource* resource = nullptr;
-	HRESULT hr = m_ShaderResource->QueryInterface(IID_ID3D11Texture2D, ( void** ) & resource);
-	Engine::GetAPI()->HandleErrors(hr, "failed to query interface of 3dtexture");
-	std::wstring mid(filename.begin(), filename.end());
-	LPCWSTR new_name(mid.c_str());
-	DirectX::SaveDDSTextureToFile(Engine::GetAPI()->GetContext(), resource, new_name);
-	resource->Release();
-	resource = nullptr;
-}
-
-void Texture::Save3DResource(const std::string& filename)
-{
-	return;
-	ID3D11Resource* resource = nullptr;
-	HRESULT hr = m_ShaderResource->QueryInterface(IID_ID3D11Texture3D, ( void** ) & resource);
-	Engine::GetAPI()->HandleErrors(hr, "failed to query interface of 3dtexture");
-	std::wstring mid(filename.begin(), filename.end());
-	LPCWSTR new_name(mid.c_str());
-	DirectX::SaveDDSTextureToFile(Engine::GetAPI()->GetContext(), resource, new_name);
-	resource->Release();
-	resource = nullptr;
-}
-
-void Texture::CopyData(ITexture2D* dest, ITexture2D* source)
-{
-	Engine::GetGraphicsAPI()->CopyResource(dest, source);
-}
+// void Texture::CopyData(ITexture2D* dest, ITexture2D* source)
+// {
+// 	Engine::GetGraphicsAPI()->CopyResource(dest, source);
+// }

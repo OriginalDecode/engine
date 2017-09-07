@@ -33,39 +33,37 @@ struct RenderCommand
 
 struct ModelCommand : public RenderCommand
 {
-	ModelCommand(const std::string& key, const CU::Matrix44f& orientation, bool wireframe)
+	ModelCommand(const cl::CHashString<128>& key, const CU::Matrix44f& orientation, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Orientation(orientation)
 		, m_Wireframe(wireframe)
+		, m_Key(key)
 	{
-		strcpy_s(m_Key, key.c_str());
 	}
 
-	ModelCommand(const std::string& key, const CU::Vector3f& position, bool wireframe)
+	ModelCommand(const cl::CHashString<128>& key, const CU::Vector3f& position, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Wireframe(wireframe)
+		, m_Key(key)
 	{
-		strcpy_s(m_Key, key.c_str());
 		m_Orientation.SetPosition(position);
 	}
 
-	ModelCommand(const std::string& key, const CU::Vector3f& position, bool wireframe, float _r, float _m)
+	ModelCommand(const cl::CHashString<128>& key, const CU::Vector3f& position, bool wireframe, float roughness, float metalness) 
 		: RenderCommand(eCommandType::MODEL)
 		, m_Wireframe(wireframe)
-		, r(_r)
-		, m(_m)
+		, m_Key(key)
+		, m_Roughness(roughness)
+		, m_Metalness(metalness)
 	{
-		strcpy_s(m_Key, key.c_str());
 		m_Orientation.SetPosition(position);
 	}
 
-
-
-	char m_Key[128] = { '\0' };
+	cl::CHashString<128> m_Key;
 	CU::Matrix44f m_Orientation;
 	bool m_Wireframe = false;
-	float r;
-	float m;
+	float m_Roughness;
+	float m_Metalness;
 
 };
 

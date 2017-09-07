@@ -8,8 +8,23 @@ typedef HINSTANCE__* HINSTANCE;
 struct HWND__;
 typedef HWND__* HWND;
 #endif
-#include <Engine/IGraphicsContext.h>
-#include <Engine/IGraphicsDevice.h>
+
+
+typedef void** ITexture2D;
+typedef void** ITexture3D;
+typedef void** IShaderResourceView;
+typedef void** IDepthStencilView;
+typedef void** IRenderTargetView;
+typedef void** IViewport;
+typedef void** IVertexShader;
+typedef void** IPixelShader;
+typedef void** IGeometryShader;
+typedef void** IHullShader;
+typedef void** IDomainShader;
+typedef void** IComputeShader;
+typedef void** IShaderBlob;
+typedef void** IBuffer;
+typedef void** IInputLayout;
 
 namespace graphics
 {
@@ -72,6 +87,7 @@ namespace graphics
 
 	enum eTextureFormat
 	{
+		NO_FORMAT,
 		RGBA32_FLOAT,
 		RGBA32_UINT,
 		RGBA32_SINT,
@@ -84,24 +100,12 @@ namespace graphics
 		RGBA16_UINT,
 		RGBA16_SINT,
 
-		RGB16_FLOAT,
-		RGB16_UINT,
-		RGB16_SINT,
-
-
-		RGBA8_FLOAT,
 		RGBA8_UINT,
 		RGBA8_SINT,
-
-		RGB8_FLOAT,
-		RGB8_UINT,
-		RGB8_SINT,
 
 		R32_TYPELESS, 
 		R32_FLOAT,
 		DEPTH_32_FLOAT, 
-
-
 	};
 
 	enum eTextureUsage
@@ -141,10 +145,25 @@ namespace graphics
 		s32 m_SampleQuality = 0;
 	};
 
+	struct RenderTargetDesc
+	{
+		eTextureFormat m_Format = NO_FORMAT;
+	};
+
+	struct ShaderResourceDesc 
+	{
+		eTextureFormat m_Format = NO_FORMAT;
+	};
+
+	struct DepthDesc
+	{
+		eTextureFormat m_Format = NO_FORMAT;
+	};
+
+	class IGraphicsDevice;
+	class IGraphicsContext;
 	class IGraphicsAPI
 	{
-		friend class IGraphicsDevice;
-		friend class IGraphicsContext;
 	public:
 		IGraphicsAPI(CreateInfo info);
 		virtual bool Initiate(CreateInfo create_info) = 0;

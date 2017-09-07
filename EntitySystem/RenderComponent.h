@@ -16,8 +16,7 @@ struct ModelInstance
 
 struct RenderComponent : public BaseComponent
 {
-	std::string myModelID;
-
+	cl::CHashString<128> myModelID;
 	CU::GrowingArray<ModelInstance> m_Instances;
 
 	CU::Vector4f scale;

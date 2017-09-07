@@ -5,10 +5,6 @@
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
 struct D3D11_INPUT_ELEMENT_DESC;
-typedef struct ID3D11InputLayout IInputLayout;
-typedef struct ID3D11Buffer IBuffer;
-typedef struct ID3D11DeviceContext IDevContext;
-
 
 class DirectX11;
 class Effect;
@@ -45,7 +41,7 @@ protected:
 	CU::Vector3f m_MinPoint;
 
 	Effect* myEffect = nullptr;
-	IInputLayout* m_VertexLayout = nullptr;
+	ID3D11InputLayout* m_VertexLayout = nullptr;
 	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 
 	VertexDataWrapper m_VertexData;
@@ -53,7 +49,7 @@ protected:
 	IndexDataWrapper m_IndexData;
 	IndexBufferWrapper m_IndexBuffer;
 
-	IBuffer* myConstantBuffer = nullptr;
+	ID3D11Buffer* myConstantBuffer = nullptr;
 
 	struct cbVertex
 	{

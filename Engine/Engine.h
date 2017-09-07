@@ -157,8 +157,8 @@ public:
 	// Shader Creation
 	//This should probably be moved to the graphics API instead.
 	/* These 3 functions are very API specific */
-	HRESULT CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
-	HRESULT CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message);
+	//HRESULT CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
+	//HRESULT CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message);
 	void* CreateShader(void* pShader, eShaderType type, const cl::CHashString<128>& debug_name);
 	/* END */
 

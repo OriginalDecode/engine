@@ -2,7 +2,7 @@
 #include <CommonLib/HashString.h>
 
 #include <Engine/engine_shared.h>
-#include <Engine/IGraphicsAPI.h>
+#include "IGraphicsAPI.h"
 namespace graphics
 {
 	class IGraphicsContext;
@@ -17,8 +17,10 @@ namespace graphics
 		virtual void* CreateComputeShader(void* pShader, const cl::CHashString<128>& debug_name) = 0;
 
 		virtual void* CreateTextureFromFile(const cl::CHashString<128>& filepath, bool generate_mips, IGraphicsContext* ctx) = 0;
-		virtual void* CreateTexture2D(void* pOutTexture, Texture2DDesc desc, const cl::CHashString<128>& debug_name) = 0; //Needs to take in a description of how to setup the texture as well.
-
+		virtual ITexture2D* CreateTexture2D(const Texture2DDesc& desc, const cl::CHashString<128>& debug_name) = 0;
+		virtual IRenderTargetView* CreateRenderTarget(const RenderTargetDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name) = 0;
+		virtual IShaderResourceView* CreateShaderResource(const ShaderResourceDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name) = 0;
+		virtual IDepthStencilView* CreateDepthStencilView(const DepthDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name) = 0;
 
 
 		virtual void ReleasePtr(void* ptr) = 0;

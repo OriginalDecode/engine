@@ -51,7 +51,7 @@ void EntityManager::Clear()
 	myNextEntity = 0;
 }
 
-void EntityManager::Update(float aDelta)
+void EntityManager::Update(float)
 {
 	/*myDeltaTime = aDelta;
 

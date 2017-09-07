@@ -65,7 +65,7 @@ private:
 
 	DirectX11* m_API = nullptr;
 
-	IDevContext* myContext = nullptr;
+	ID3D11DeviceContext* myContext = nullptr;
 
 	Effect* myAmbientPassShader = nullptr;
 	Effect* myScreenPassShader = nullptr;

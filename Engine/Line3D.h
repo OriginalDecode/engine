@@ -24,7 +24,8 @@ struct VertexBufferWrapper;
 
 
 struct VertexBaseStruct;
-
+struct ID3D11InputLayout;
+struct ID3D11Buffer;
 class CLine3D
 {
 public:
@@ -57,7 +58,7 @@ private:
 
 	VertexBaseStruct* myConstantStruct = nullptr;
 
-	IInputLayout* myVertexLayout = nullptr;
+	ID3D11InputLayout* myVertexLayout = nullptr;
 	ID3D11Buffer* myConstantBuffer = nullptr;
 	CU::GrowingArray<SLinePoint> myVertices;
 	int myLineAmount = 0;

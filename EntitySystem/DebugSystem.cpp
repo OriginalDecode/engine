@@ -365,7 +365,7 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(closest.m_ID);
 		debug.debugColor = { 255.f,0.f,0.f,255.f };
-		Engine::GetInstance()->SelectEntity(closest.m_ID);
+//		Engine::GetInstance()->SelectEntity(closest.m_ID);
 		m_PrevID = prev_entity;
 		m_CurrentEntity = m_PrevID;
 		//bool has_render = node_manager.HasComponent(m_CurrentEntity, CreateFilter<Requires<RenderComponent>>());

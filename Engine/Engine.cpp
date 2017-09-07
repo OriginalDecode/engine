@@ -32,11 +32,13 @@
 
 #include <Engine/LightModel.h>
 
-
 #ifdef _PROFILE
 #include <easy/profiler.h>
 #include <easy/reader.h>
 #endif
+
+#include <Engine/IGraphicsDevice.h>
+
 
 #define REGISTERCOMPONENT(x) x,
 enum RegisteredComponents
@@ -228,61 +230,60 @@ int Engine::RegisterLight()
 {
 	return myRenderer->RegisterLight();
 }
-
-HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
-{
-	std::wstring w_file_path(file_path.begin(), file_path.end());
-	HRESULT hr = D3DCompileFromFile(
-		w_file_path.c_str(),
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-		entrypoint.c_str(),
-		feature_level.c_str(),
-		shader_flags,
-		0,
-		&out_compiled_shader,
-		&out_compile_message);
-	return hr;
-}
-
-HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message)
-{
-	HRESULT hr = D3DCompile(
-		pData,
-		size,
-		source_name.c_str(),
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-		entrypoint.c_str(),
-		feature_level.c_str(),
-		0,
-		0,
-		&out_shader,
-		&out_message);
-	return hr;
-}
+// 
+// HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
+// {
+// 	std::wstring w_file_path(file_path.begin(), file_path.end());
+// 	HRESULT hr = D3DCompileFromFile(
+// 		w_file_path.c_str(),
+// 		nullptr,
+// 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+// 		entrypoint.c_str(),
+// 		feature_level.c_str(),
+// 		shader_flags,
+// 		0,
+// 		&out_compiled_shader,
+// 		&out_compile_message);
+// 	return hr;
+// }
+// 
+// HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message)
+// {
+// 	HRESULT hr = D3DCompile(
+// 		pData,
+// 		size,
+// 		source_name.c_str(),
+// 		nullptr,
+// 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+// 		entrypoint.c_str(),
+// 		feature_level.c_str(),
+// 		0,
+// 		0,
+// 		&out_shader,
+// 		&out_message);
+// 	return hr;
+// }
 
 void* Engine::CreateShader(void* pShader, eShaderType type, const cl::CHashString<128>& debug_name)
 {
-	graphics::IGraphicsDevice* device = m_API->GetDevice();
+	graphics::IGraphicsDevice& device = m_API->GetDevice();
 	switch (type)
 	{
 		case eShaderType::VERTEX:
-			return device->CreateVertexShader(pShader, debug_name);
+			return device.CreateVertexShader(pShader, debug_name);
 		case eShaderType::PIXEL:
-			return device->CreatePixelShader(pShader, debug_name);
+			return device.CreatePixelShader(pShader, debug_name);
 		case eShaderType::GEOMETRY:
-			return device->CreateGeometryShader(pShader, debug_name);
+			return device.CreateGeometryShader(pShader, debug_name);
 		case eShaderType::HULL:
-			return device->CreateHullShader(pShader, debug_name);
+			return device.CreateHullShader(pShader, debug_name);
 		case eShaderType::DOMAINS:
-			return device->CreateDomainShader(pShader, debug_name);
+			return device.CreateDomainShader(pShader, debug_name);
 		case eShaderType::COMPUTE:
-			return device->CreateComputeShader(pShader, debug_name);
+			return device.CreateComputeShader(pShader, debug_name);
 		default:
 			DL_ASSERT("Invalid shader type");
 	}
-
 	return nullptr;
 }
 

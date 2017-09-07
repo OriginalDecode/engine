@@ -14,10 +14,10 @@ public:
 	Material() = default;
 	~Material()
 	{
-		for (ResourceBinding& r : m_Resources )
-		{
-			SAFE_RELEASE(r.m_Resource);
-		}
+// 		for (ResourceBinding& r : m_Resources )
+// 		{
+// 			//SAFE_RELEASE(r.m_Resource);
+// 		}
 		
 	}
 	void AddResource(IShaderResourceView* pResource, const std::string& filename, Effect::TextureSlot slot);

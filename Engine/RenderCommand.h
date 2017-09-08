@@ -69,7 +69,7 @@ struct ModelCommand : public RenderCommand
 
 struct ModelCommandNonDeferred : public ModelCommand
 {
-	ModelCommandNonDeferred(const std::string& key, const CU::Matrix44f& orientation, bool wireframe)
+	ModelCommandNonDeferred(const cl::CHashString<128>& key, const CU::Matrix44f& orientation, bool wireframe)
 		: ModelCommand(key, orientation, wireframe)
 	{
 	}

@@ -22,8 +22,9 @@ namespace graphics
 		virtual IShaderResourceView* CreateShaderResource(const ShaderResourceDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name) = 0;
 		virtual IDepthStencilView* CreateDepthStencilView(const DepthDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name) = 0;
 
+		virtual IInputLayout* CreateInputLayout(CompiledShader* pShader, void* pLayout, s32 element_count) = 0;
+		virtual IBuffer* CreateBuffer(void* pBufferDesc) = 0;
 
-		virtual void ReleasePtr(void* ptr) = 0;
 
 	private:
 	};

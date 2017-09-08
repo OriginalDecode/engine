@@ -25,12 +25,19 @@ namespace graphics
 		void SetComputeShader(CompiledShader* shader) override;
 
 
-		void VSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer);
-		void PSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer);
-		void GSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer);
-		void HSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer);
-		void DSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer);
-		void CSSetConstantBuffer(s32 start_index, s32 buffer_count, void* pBuffer);
+		void VSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
+		void PSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
+		void GSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
+		void HSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
+		void DSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
+		void CSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
+
+		void VSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
+		void PSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
+		void GSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
+		void HSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
+		void DSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
+		void CSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 
 	private:
 		ID3D11DeviceContext* m_Context;

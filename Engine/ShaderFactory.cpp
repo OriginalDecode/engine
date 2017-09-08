@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "ShaderFactory.h"
-#include <d3dcompiler.h>
 #include <Utilities.h>
 #include <JSON/JSONReader.h>
 #include <DataStructures/Hashmap/Hash.h>
 #include <DataStructures/GrowingArray.h>
-#define SLEEP_TIME 1000
+#include <Engine/Engine.h>
+#include <Engine/IGraphicsDevice.h>
 
+#define SLEEP_TIME 1000
 ShaderFactory::ShaderFactory()
 {
 #ifndef FINAL 
@@ -69,25 +70,6 @@ void ShaderFactory::LoadShader(Effect* anEffect)
 		LoadShader(reader.ReadElement(el5, "file"), reader.ReadElement(el5, "entrypoint"), eShaderType::COMPUTE, anEffect);
 	}
 }
-
-
-// std::string CheckType(const std::string& file_path)
-// {
-// 	if (file_path.find(vertex_shader) != file_path.npos)
-// 		return vertex_shader;
-// 	else if (file_path.find(pixel_shader) != file_path.npos)
-// 		return pixel_shader;
-// 	else if (file_path.find(geometry_shader) != file_path.npos)
-// 		return geometry_shader;
-// 	else if (file_path.find(hull_shader) != file_path.npos)
-// 		return hull_shader;
-// 	else if (file_path.find(domain_shader) != file_path.npos)
-// 		return domain_shader;
-// 	else if (file_path.find(compute_shader) != file_path.npos)
-// 		return compute_shader;
-// 
-// 	return "NO_TYPE";
-// }
 
 char* CheckType(eShaderType type)
 {
@@ -172,21 +154,21 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 
 CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type, const std::string& feature_level /*= "_5_0"*/)
 {
-	ENGINE_LOG("Creating %s", file_path.c_str());
-
-	std::string shader_type(CheckType(type));
-	ID3D10Blob* compiled_shader = CompileShader(file_path, entrypoint, shader_type + feature_level);
-	if (!compiled_shader)
-		return nullptr;
-
-	CompiledShader* new_shader = new CompiledShader;
-	new_shader->m_Shader = Engine::GetInstance()->CreateShader(compiled_shader, type, file_path);
-	new_shader->m_Blob = compiled_shader;
-	new_shader->m_CompiledShader = compiled_shader->GetBufferPointer();
-	//new_shader->m_haderSize = compiled_shader->GetBufferSize();
-	new_shader->m_Entrypoint = entrypoint;
-	new_shader->m_Type = type;
-	return new_shader;
+// 	ENGINE_LOG("Creating %s", file_path.c_str());
+// 
+// 	std::string shader_type(CheckType(type));
+// 	ID3D10Blob* compiled_shader = CompileShader(file_path, entrypoint, shader_type + feature_level);
+// 	if (!compiled_shader)
+// 		return nullptr;
+// 
+// 	CompiledShader* new_shader = new CompiledShader;
+// 	new_shader->m_Shader = Engine::GetInstance()->CreateShader(compiled_shader, type, file_path);
+// 	new_shader->m_Blob = compiled_shader;
+// 	new_shader->m_CompiledShader = compiled_shader->GetBufferPointer();
+// 	//new_shader->m_haderSize = compiled_shader->GetBufferSize();
+// 	new_shader->m_Entrypoint = entrypoint;
+// 	new_shader->m_Type = type;
+// 	return new_shader;
 }
 
 #ifndef FINAL 
@@ -220,7 +202,7 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 
 	for (Effect* effect : effect_container)
 	{
-		switch (new_shader->type)
+		switch (new_shader->m_Type)
 		{
 			case eShaderType::VERTEX:
 			{
@@ -263,18 +245,19 @@ void* ShaderFactory::CompileShader(const std::string& file_path, const std::stri
 	shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
 #endif
 
-	ID3D10Blob* compiledShader = nullptr;
-	ID3D10Blob* compilationMessage = nullptr;
+	//ID3D10Blob* compiledShader = nullptr;
+	//ID3D10Blob* compilationMessage = nullptr;
 
 
-	HRESULT hr = Engine::GetInstance()->CompileShaderFromFile(file_path, entrypoint, feature_level, shaderFlag, compiledShader, compilationMessage);
-	if (compilationMessage != nullptr)
-	{
-		DL_WARNING("%s has generated warnings!", file_path.c_str());
-		DL_WARNING("\n%s", (char*)compilationMessage->GetBufferPointer());
-	}
+	//HRESULT hr = Engine::GetInstance()->CompileShaderFromFile(file_path, entrypoint, feature_level, shaderFlag, compiledShader, compilationMessage);
+	//if (compilationMessage != nullptr)
+	//{
+	//	DL_WARNING("%s has generated warnings!", file_path.c_str());
+	//	DL_WARNING("\n%s", (char*)compilationMessage->GetBufferPointer());
+	//}
 	//Engine::GetInstance()->GetAPI()->HandleErrors(hr, "Failed to compile shader!");
-	return compiledShader;
+	void* pObj;
+	return pObj;
 }
 
 void ShaderFactory::Update()
@@ -287,14 +270,8 @@ void ShaderFactory::Update()
 
 CompiledShader::~CompiledShader()
 {
-	ID3D10Blob* blob = static_cast<ID3D10Blob*>(m_Blob);
-	SAFE_RELEASE(blob);
-	
-	if (!m_Shader)
-		return; 
-	IUnknown* unknown_pointer = static_cast<IUnknown*>(m_Shader);
-	unknown_pointer->Release();
-	unknown_pointer = nullptr;
+	Engine::GetAPI()->ReleasePtr(m_Blob);
+	Engine::GetAPI()->ReleasePtr(m_Shader);
 	m_Shader = nullptr;
 	m_CompiledShader = nullptr;
 }

@@ -4,12 +4,17 @@
 #ifdef _PROFILE
 #include <easy/profiler.h>
 #endif
+#include <Engine/IGraphicsContext.h>
 
 BaseModel::~BaseModel() = default;
 
 void BaseModel::SetupLayoutsAndBuffers()
 {
-	IDevContext* ctx = Engine::GetAPI()->GetContext();
+	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
+
+
+	ctx.IASetInputLayout(m_VertexLayout);
+
 	ctx->IASetInputLayout(m_VertexLayout);
 	ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	ctx->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);

@@ -49,6 +49,9 @@ namespace graphics
 		static void SetDebugName(void * pResource, cl::CHashString<128> debug_name);
 		static void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
 
+		void ReleasePtr(void* ptr) override;
+
+
 		//__________________________
 		// Virtual Functions
 
@@ -130,7 +133,8 @@ namespace graphics
 
 		ID3D11Buffer* CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag = D3D11_USAGE_IMMUTABLE, u32 bind_flag = D3D11_BIND_VERTEX_BUFFER, u32 cpu_access_flag = 0, u32 misc_flag = 0, u32 structured_byte_width = 0);
 		ID3D11Buffer* CreateBuffer(D3D11_BUFFER_DESC buffer_desc);
-		void* CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements);
+		//void* CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements);
+		IInputLayout* CreateInputLayout(void* pShader, void* pLayout, s32 element_count);
 
 		ID3D11SamplerState* GetSampler(s32 index);
 

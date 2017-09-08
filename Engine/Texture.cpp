@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "Texture.h"
 #include <Engine/IGraphicsDevice.h>
-
+#include <Engine/Engine.h>
 Texture::~Texture()
 {
-	graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
-	device.ReleasePtr(m_ShaderResource);
-	device.ReleasePtr(m_DepthTexture);
-	device.ReleasePtr(m_DepthStencilView);
-	device.ReleasePtr(m_DepthStencilShaderView);
-	device.ReleasePtr(m_RenderTargetView);
+	graphics::IGraphicsAPI* api = Engine::GetAPI();
+	api->ReleasePtr(m_ShaderResource);
+	api->ReleasePtr(m_DepthTexture);
+	api->ReleasePtr(m_DepthStencilView);
+	api->ReleasePtr(m_DepthStencilShaderView);
+	api->ReleasePtr(m_RenderTargetView);
 }
 
 void Texture::Initiate(const TextureDesc& desc, const cl::CHashString<128>& debug_name)

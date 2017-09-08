@@ -9,23 +9,6 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
-
-typedef void** ITexture2D;
-typedef void** ITexture3D;
-typedef void** IShaderResourceView;
-typedef void** IDepthStencilView;
-typedef void** IRenderTargetView;
-typedef void** IViewport;
-typedef void** IVertexShader;
-typedef void** IPixelShader;
-typedef void** IGeometryShader;
-typedef void** IHullShader;
-typedef void** IDomainShader;
-typedef void** IComputeShader;
-typedef void** IShaderBlob;
-typedef void** IBuffer;
-typedef void** IInputLayout;
-
 namespace graphics
 {
 	struct CreateInfo
@@ -108,6 +91,8 @@ namespace graphics
 		DEPTH_32_FLOAT, 
 	};
 
+	typedef eTextureFormat VertexFormat;
+
 	enum eTextureUsage
 	{
 		DEFAULT_USAGE = 0,
@@ -129,6 +114,13 @@ namespace graphics
 		READ = 1,
 		WRITE = 2,
 	};
+
+	enum eTopology
+	{
+		TRIANGLE_LIST,
+		POINT_LIST,
+	};
+
 
 	struct Texture2DDesc
 	{
@@ -191,6 +183,13 @@ namespace graphics
 
 		virtual IGraphicsDevice& GetDevice() { return *m_Device; }
 		virtual IGraphicsContext& GetContext() { return *m_Context; }
+
+		virtual void ReleasePtr(void* ptr) = 0;
+		
+
+		
+		//virtual void UpdateBuffer(void* pDest, void* pData, s32 size) = 0;
+
 
 
 	protected:

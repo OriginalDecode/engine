@@ -5,6 +5,7 @@
 
 #include <DDSTextureLoader.h>
 
+
 namespace graphics
 {
 
@@ -18,8 +19,8 @@ namespace graphics
 		ID3D11VertexShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
 		HRESULT hr = m_Device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &shader);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create vertex shader!");
 #ifdef _DEBUG
+		DL_ASSERT_EXP(hr == S_OK, "Failed to create vertex shader!");
 		DirectX11::SetDebugName(shader, debug_name);
 #endif
 		return shader;
@@ -30,8 +31,8 @@ namespace graphics
 		ID3D11PixelShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
 		HRESULT hr = m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &shader);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create pixel shader!");
 #ifdef _DEBUG
+		DL_ASSERT_EXP(hr == S_OK, "Failed to create pixel shader!");
 		DirectX11::SetDebugName(shader, debug_name);
 #endif
 		return shader;
@@ -42,8 +43,8 @@ namespace graphics
 		ID3D11GeometryShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
 		HRESULT hr = m_Device->CreateGeometryShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &shader);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create geometry shader!");
 #ifdef _DEBUG
+		DL_ASSERT_EXP(hr == S_OK, "Failed to create geometry shader!");
 		DirectX11::SetDebugName(shader, debug_name);
 #endif
 		return shader;
@@ -54,8 +55,8 @@ namespace graphics
 		ID3D11HullShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
 		HRESULT hr = m_Device->CreateHullShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &shader);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create hull shader!");
 #ifdef _DEBUG
+		DL_ASSERT_EXP(hr == S_OK, "Failed to create hull shader!");
 		DirectX11::SetDebugName(shader, debug_name);
 #endif
 		return shader;
@@ -66,8 +67,8 @@ namespace graphics
 		ID3D11DomainShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
 		HRESULT hr = m_Device->CreateDomainShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &shader);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create domain shader!");
 #ifdef _DEBUG
+		DL_ASSERT_EXP(hr == S_OK, "Failed to create domain shader!");
 		DirectX11::SetDebugName(shader, debug_name);
 #endif
 		return shader;
@@ -78,8 +79,8 @@ namespace graphics
 		ID3D11ComputeShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
 		HRESULT hr = m_Device->CreateComputeShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &shader);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create compute shader!");
 #ifdef _DEBUG
+		DL_ASSERT_EXP(hr == S_OK, "Failed to create compute shader!");
 		DirectX11::SetDebugName(shader, debug_name);
 #endif
 		return shader;
@@ -104,7 +105,9 @@ namespace graphics
 															 , nullptr //might want to output to a texture2d object?
 															 , &srv);
 
+#ifndef FINAL
 			DL_ASSERT_EXP(hr != S_OK, "Failed to load texture");
+#endif
 		}
 		else
 		{
@@ -113,7 +116,9 @@ namespace graphics
 														   , widepath
 														   , nullptr //might want to output to a texture2d object?
 														   , &srv);
+#ifndef FINAL
 			DL_ASSERT_EXP(hr != S_OK, "Failed to load texture");
+#endif
 		}
 
 		return srv;
@@ -136,23 +141,23 @@ namespace graphics
 
 		ID3D11Texture2D* texture = nullptr;
 		HRESULT hr = m_Device->CreateTexture2D(&text_desc, NULL, &texture);
-		DirectX11::HandleErrors(hr, "Failed to create Texture!");
 #ifndef FINAL
+		DirectX11::HandleErrors(hr, "Failed to create Texture!");
 		DirectX11::SetDebugName(texture, debug_name);
 #endif
-		return (ITexture2D*)texture;
+		return static_cast<ITexture2D*>(texture);
 	}
 
 	IRenderTargetView* DX11Device::CreateRenderTarget(const RenderTargetDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name)
 	{
 		ID3D11RenderTargetView* rtv = nullptr;
-		ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(**pTexture);
+		ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(pTexture);
 		HRESULT hr = m_Device->CreateRenderTargetView(tex, nullptr, &rtv);
-		DirectX11::HandleErrors(hr, "Failed to create RenderTargetView");
 #ifndef FINAL
+		DirectX11::HandleErrors(hr, "Failed to create RenderTargetView");
 		DirectX11::SetDebugName(rtv, debug_name);
 #endif
-		return (IRenderTargetView*)rtv;
+		return static_cast<IRenderTargetView*>(rtv);
 	}
 
 	IShaderResourceView* DX11Device::CreateShaderResource(const ShaderResourceDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name)
@@ -164,13 +169,13 @@ namespace graphics
 		view_desc.Texture2D.MostDetailedMip = 0;
 
 		ID3D11ShaderResourceView* srv = nullptr;
-		ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(**pTexture);
+		ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(pTexture);
 		HRESULT hr = m_Device->CreateShaderResourceView(tex, &view_desc, &srv);
-		DirectX11::HandleErrors(hr, "Failed to create ShaderResourceView");
 #ifndef FINAL
+		DirectX11::HandleErrors(hr, "Failed to create ShaderResourceView");
 		DirectX11::SetDebugName(srv, debug_name);
 #endif
-		return (IShaderResourceView*)srv;
+		return static_cast<IShaderResourceView*>(srv);
 	}
 
 	IDepthStencilView* DX11Device::CreateDepthStencilView(const DepthDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name)
@@ -181,20 +186,14 @@ namespace graphics
 		depth_desc.Texture2D.MipSlice = 0;
 
 		ID3D11DepthStencilView* dsv = nullptr;
-		ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(**pTexture);
+		ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(pTexture);
 		HRESULT hr = m_Device->CreateDepthStencilView(tex, &depth_desc, &dsv);
-		DirectX11::HandleErrors(hr, "Failed to create DepthStencilView");
 #ifndef FINAL
+		DirectX11::HandleErrors(hr, "Failed to create DepthStencilView");
 		DirectX11::SetDebugName(dsv, debug_name);
-		return (IDepthStencilView*)dsv;
+		return static_cast<IDepthStencilView*>(dsv);
 #endif
 
-	}
-
-	void DX11Device::ReleasePtr(void* ptr)
-	{
-		IUnknown* pUnknown = static_cast<IUnknown*>(ptr);
-		pUnknown->Release();
 	}
 
 	D3D11_USAGE DX11Device::GetUsage(s32 usage)
@@ -290,6 +289,25 @@ namespace graphics
 			output |= D3D11_CPU_ACCESS_WRITE;
 
 		return output;
+	}
+
+	IInputLayout* DX11Device::CreateInputLayout(CompiledShader* pShader, void* pLayout, s32 element_count)
+	{
+		ID3D11InputLayout* layout = nullptr;
+
+		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader->m_Blob);
+
+		HRESULT hr = m_Device->CreateInputLayout(static_cast<D3D11_INPUT_ELEMENT_DESC*>(pLayout), element_count, blob->GetBufferPointer(), blob->GetBufferSize(), &layout);
+#ifndef FINAL
+		DirectX11::HandleErrors(hr, "Failed to create InputLayout");
+		DirectX11::SetDebugName(layout, "InputLayout");
+#endif
+		return static_cast<IInputLayout*>(layout);
+	}
+
+	IBuffer* DX11Device::CreateBuffer(void* pBufferDesc)
+	{
+
 	}
 
 };

@@ -46,7 +46,7 @@ void Surface::Activate()
 		return;
 
 	render_context.m_Context->IASetPrimitiveTopology(myPrimologyType);
-	m_Material.Use(myEffect, render_context);
+	m_Material.Use(myEffect);
 }
 
 void Surface::Deactivate()

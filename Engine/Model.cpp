@@ -34,6 +34,7 @@ void Model::Initiate(const std::string& filename)
 	{
 		m_InputLayoutDesc.Add(el);
 	}
+
 	D3D11_INPUT_ELEMENT_DESC instance_info[4] = {
 
 		{ "INSTANCE", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0 , D3D11_INPUT_PER_INSTANCE_DATA, 1 },
@@ -69,7 +70,7 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 {
 	if (m_Filename.find("default_cube") != m_Filename.npos)
 	{
-		RenderCube(aCameraOrientation, aCameraProjection, render_context);
+		RenderCube(aCameraOrientation, aCameraProjection);
 		return;
 }
 
@@ -78,7 +79,7 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 #endif
 	for (Model* child : myChildren)
 	{
-		child->Render(aCameraOrientation, aCameraProjection, render_context);
+		child->Render(aCameraOrientation, aCameraProjection);
 	}
 
 	if (!m_VertexLayout || m_IsRoot || mySurfaces.Empty())
@@ -86,7 +87,7 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 
 	SetupLayoutsAndBuffers(); //depending
 
-	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context); //depending
+	UpdateConstantBuffer(aCameraOrientation, aCameraProjection); //depending
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); //depending
 
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
@@ -178,7 +179,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 	for (Surface* surface : mySurfaces)
 	{
-		surface->Activate(render_context);
+		surface->Activate();
 #ifdef _PROFILE
 		EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 #endif

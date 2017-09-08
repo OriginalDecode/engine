@@ -417,10 +417,18 @@ namespace graphics
 #ifdef _DEBUG
 		HandleErrors(hr, "CreateInputLayout : Failed to create input layout.");
 #endif
-
 		return return_value;
 	}
 
+
+	/*IInputLayout* DirectX11::CreateInputLayout(void* pShader, void* pLayout, s32 element_count)
+	{
+		ID3D11InputLayout* layout = nullptr;
+		HRESULT hr = 
+
+
+
+	}*/
 
 	ID3D11SamplerState* DirectX11::GetSampler(s32 index)
 	{
@@ -466,63 +474,11 @@ namespace graphics
 		m_Context->OMSetDepthStencilState(myDepthStates[int(eDepthStencilState::Z_DISABLED)], 1);
 	}
 
-	void DirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
+	
+	void DirectX11::ReleasePtr(void* ptr)
 	{
-		std::string toError;
-		switch (aResult)
-		{
-			case D3D11_ERROR_FILE_NOT_FOUND:
-			{
-				toError = (anErrorString + " File not found!");
-			}break;
-			case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
-			{
-				toError = (anErrorString + " Too many unique state objects!");
-			}break;
-			case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
-			{
-				toError = (anErrorString + " Too many view objects!");
-			}break;
-			case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
-			{
-				toError = (anErrorString + " Deferred Context Map Without Initial Discard!");
-			}break;
-			case DXGI_ERROR_INVALID_CALL:
-			{
-				toError = (anErrorString + " Invalid call!");
-			}break;
-			case DXGI_ERROR_WAS_STILL_DRAWING:
-			{
-				toError = (anErrorString + " Were still drawing!");
-			}break;
-			case E_FAIL:
-			{
-				toError = (anErrorString + " Failed!");
-			}break;
-			case E_INVALIDARG:
-			{
-				toError = (anErrorString + " One or more arguments were invalid!");
-			}break;
-			case E_OUTOFMEMORY:
-			{
-				toError = (anErrorString + " Out of Memory!");
-			}break;
-			case E_NOTIMPL:
-			{
-				toError = (anErrorString + " The method call isn't implemented with the passed parameter combination.");
-			}break;
-			case S_FALSE:
-			{
-				toError = (anErrorString + " Something went wrong. Returned false!");
-
-			}break;
-		}
-
-		if (!toError.empty())
-		{
-			DL_MESSAGE("%s", toError.c_str());
-			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-		}
+		IUnknown* pUnknown = static_cast<IUnknown*>(ptr);
+		pUnknown->Release();
 	}
 
 	std::string DirectX11::GetAPIName()
@@ -561,11 +517,7 @@ namespace graphics
 		m_Context->PSSetSamplers(0, 1, &mySamplerStates[samplerState]);
 	}
 
-	void DirectX11::CreateTexture2D(void* pTexDesc, void* pInitialData, void** ppTexture2D)
-	{
-
-	}
-
+	
 #ifdef _DEBUG
 	void DirectX11::ReportLiveObjects()
 	{
@@ -730,4 +682,71 @@ namespace graphics
 		SAFE_RELEASE(adapter);
 		SAFE_RELEASE(factory);
 	}
+
+
+
+
+	void DirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
+	{
+		std::string toError;
+		switch (aResult)
+		{
+			case D3D11_ERROR_FILE_NOT_FOUND:
+			{
+				toError = (anErrorString + " File not found!");
+			}break;
+			case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
+			{
+				toError = (anErrorString + " Too many unique state objects!");
+			}break;
+			case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
+			{
+				toError = (anErrorString + " Too many view objects!");
+			}break;
+			case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
+			{
+				toError = (anErrorString + " Deferred Context Map Without Initial Discard!");
+			}break;
+			case DXGI_ERROR_INVALID_CALL:
+			{
+				toError = (anErrorString + " Invalid call!");
+			}break;
+			case DXGI_ERROR_WAS_STILL_DRAWING:
+			{
+				toError = (anErrorString + " Were still drawing!");
+			}break;
+			case E_FAIL:
+			{
+				toError = (anErrorString + " Failed!");
+			}break;
+			case E_INVALIDARG:
+			{
+				toError = (anErrorString + " One or more arguments were invalid!");
+			}break;
+			case E_OUTOFMEMORY:
+			{
+				toError = (anErrorString + " Out of Memory!");
+			}break;
+			case E_NOTIMPL:
+			{
+				toError = (anErrorString + " The method call isn't implemented with the passed parameter combination.");
+			}break;
+			case S_FALSE:
+			{
+				toError = (anErrorString + " Something went wrong. Returned false!");
+
+			}break;
+		}
+
+		if (!toError.empty())
+		{
+			DL_MESSAGE("%s", toError.c_str());
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+		}
+	}
+
+
+
 };
+
+

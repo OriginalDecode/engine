@@ -35,21 +35,21 @@ protected:
 	virtual void InitConstantBuffer() = 0;
 	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
 
-	std::string m_Filename;
-	CU::Vector3f m_WHD; //to be removed
+	CU::Vector3f m_WHD; 
 	CU::Vector3f m_MaxPoint;
 	CU::Vector3f m_MinPoint;
 
-	Effect* myEffect = nullptr;
-	ID3D11InputLayout* m_VertexLayout = nullptr;
-	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
+	Effect* m_Effect = nullptr;
+
+// 	ID3D11InputLayout* m_VertexLayout = nullptr;
+// 	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
 
 	VertexDataWrapper m_VertexData;
 	VertexBufferWrapper m_VertexBuffer;
 	IndexDataWrapper m_IndexData;
 	IndexBufferWrapper m_IndexBuffer;
 
-	ID3D11Buffer* myConstantBuffer = nullptr;
+	IBuffer* myConstantBuffer = nullptr;
 
 	struct cbVertex
 	{

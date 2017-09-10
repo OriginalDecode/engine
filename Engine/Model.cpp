@@ -44,11 +44,11 @@ void Model::Initiate(const std::string& filename)
 	};
 
 
-// 
-// 	m_InputLayoutDesc.Add(instance_info[0]);
-// 	m_InputLayoutDesc.Add(instance_info[1]);
-// 	m_InputLayoutDesc.Add(instance_info[2]);
-// 	m_InputLayoutDesc.Add(instance_info[3]);
+	// 
+	// 	m_InputLayoutDesc.Add(instance_info[0]);
+	// 	m_InputLayoutDesc.Add(instance_info[1]);
+	// 	m_InputLayoutDesc.Add(instance_info[2]);
+	// 	m_InputLayoutDesc.Add(instance_info[3]);
 
 
 	if (m_IsRoot == false)
@@ -72,7 +72,7 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 	{
 		RenderCube(aCameraOrientation, aCameraProjection);
 		return;
-}
+	}
 
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Blue);
@@ -120,7 +120,7 @@ void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix
 #ifdef _PROFILE
 	EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 #endif
-	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0,0);
+	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 #ifdef _PROFILE
 	EASY_END_BLOCK;
 #endif
@@ -130,17 +130,13 @@ void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix
 
 void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
-
-	
-
-
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Amber);
 #endif
 	for (Model* child : myChildren)
 	{
 		child->RenderInstanced(camera_orientation, camera_projection, render_context);
-}
+	}
 
 	if (!m_InstanceInputLayout || m_IsRoot || mySurfaces.Empty() || m_Orientations.Empty())
 	{
@@ -191,7 +187,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 	}
 	RemoveOrientation();
 
-	}
+}
 
 void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
@@ -347,7 +343,7 @@ void Model::AddTexture(const std::string& path, Effect::TextureSlot slot)
 
 	for (Surface* pSurface : mySurfaces)
 	{
-		pSurface->AddTexture(path, slot); 
+		pSurface->AddTexture(path, slot);
 	}
 }
 

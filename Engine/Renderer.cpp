@@ -30,11 +30,15 @@
 
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
+#include <Engine/IGraphicsContext.h>
 
 bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 {
-	m_Engine = Engine::GetInstance();
-	m_API = m_Engine->GetAPI();
+
+	m_RenderContext = graphics::RenderContext(Engine::GetInstance(), Engine::GetAPI()->GetDevice(), Engine::GetAPI()->GetContext(), Engine::GetAPI());
+
+	m_RenderContext.GetContext().Draw(0, 0);
+
 	mySynchronizer = synchronizer;
 	m_Camera = camera;
 
@@ -50,10 +54,10 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	if (!m_DeferredRenderer->Initiate(0))
 		return false;
 
-	myDepthTexture = new Texture; //Where should this live?
-	DL_ASSERT_EXP(myDepthTexture, "DepthTexture in Renderer was null?");
+	m_DepthTexture = new Texture; //Where should this live?
 
-	myDepthTexture->Initiate(window_size.m_Width, window_size.m_Height
+	
+	m_DepthTexture->Initiate(window_size.m_Width, window_size.m_Height
 		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
 		, DXGI_FORMAT_R32_TYPELESS
 		, DXGI_FORMAT_R32_FLOAT
@@ -77,7 +81,7 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	DL_ASSERT_EXP(success, "failed to initiate lightpass!");
 
 	m_ParticleEmitter = new CEmitterInstance;
-	m_ParticleEmitter->Initiate(mySynchronizer, myDepthTexture);
+	m_ParticleEmitter->Initiate(mySynchronizer, m_DepthTexture);
 
 	m_Atmosphere.Initiate(1024.f, 1024.f, { 512.f, 0.f, 512.f });
 
@@ -216,7 +220,7 @@ bool Renderer::CleanUp()
 	SAFE_DELETE(mySprite);
 	SAFE_DELETE(myClearColor);
 
-	SAFE_DELETE(myDepthTexture);
+	SAFE_DELETE(m_DepthTexture);
 
 	SAFE_DELETE(m_DeferredRenderer);
 	SAFE_DELETE(m_WaterPlane);
@@ -264,7 +268,7 @@ void Renderer::Render()
 		Render3DCommands();
 */
 
-	Texture::CopyData(myDepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
+	Texture::CopyData(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -458,7 +462,7 @@ void Renderer::ProcessWater()
 	RenderTerrain(true);
 
 	Render3DCommandsInstanced();
-	m_Atmosphere.Render(m_Camera->GetOrientation(), myDepthTexture, m_RenderContext);
+	m_Atmosphere.Render(m_Camera->GetOrientation(), m_DepthTexture, m_RenderContext);
 
 	position0.y += distance;
 	m_Camera->SetPosition(position0);

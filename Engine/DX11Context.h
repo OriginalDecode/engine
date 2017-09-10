@@ -24,7 +24,6 @@ namespace graphics
 		void SetDomainShader(CompiledShader* shader) override;
 		void SetComputeShader(CompiledShader* shader) override;
 
-
 		void VSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
 		void PSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
 		void GSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
@@ -38,6 +37,11 @@ namespace graphics
 		void HSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 		void DSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 		void CSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
+
+		void Draw(s32 vertex_start, s32 vertex_count) override;
+		void Draw(s32 index_start, s32 index_count, s32 vertex_start) override;
+		void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) override;
+		void Draw(Model* model) override;
 
 	private:
 		ID3D11DeviceContext* m_Context;

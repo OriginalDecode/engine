@@ -1,6 +1,7 @@
 #pragma once
 
 class CompiledShader;
+class Model;
 namespace graphics
 {
 	class IGraphicsContext
@@ -46,7 +47,7 @@ namespace graphics
 		virtual void Draw(s32 vertex_start, s32 vertex_count) = 0;
 		virtual void Draw(s32 index_start, s32 index_count, s32 vertex_start) = 0;
 		virtual void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) = 0;
-
+		virtual void Draw(Model* model) = 0;
 
 	private:
 

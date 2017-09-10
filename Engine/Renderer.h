@@ -78,42 +78,40 @@ private:
 
 	CU::GrowingArray<SpotLight*> m_Spotlights;
 
-	PostProcessManager	m_PostProcessManager;
-	LightPass			m_LightPass;
-	ShadowPass			m_ShadowPass;
-	Atmosphere			m_Atmosphere;
+	PostProcessManager			m_PostProcessManager;
+	LightPass					m_LightPass;
+	ShadowPass					m_ShadowPass;
+	Atmosphere					m_Atmosphere;
 
-	RenderContext		m_RenderContext;
+	graphics::RenderContext		m_RenderContext;
 
-	Engine*				m_Engine				= nullptr;
-	DirectX11*			m_API					= nullptr;
-	Camera*				m_Camera				= nullptr;
-	Camera*				m_WaterCamera			= nullptr;
+	Camera*						m_Camera				= nullptr;
+	Camera*						m_WaterCamera			= nullptr;
 
-	DeferredRenderer*	m_DeferredRenderer		= nullptr;
+	DeferredRenderer*			m_DeferredRenderer		= nullptr;
 
-	DirectionalLight*	myDirectionalLight		= nullptr;
-	PointLight*			myPointLight			= nullptr;
-	SpotLight*			mySpotlight				= nullptr;
+	DirectionalLight*			myDirectionalLight		= nullptr;
+	PointLight*					myPointLight			= nullptr;
+	SpotLight*					mySpotlight				= nullptr;
 
 
-	Synchronizer*		mySynchronizer			= nullptr;
-	CText*				myText					= nullptr;
-	Texture*			myDepthTexture			= nullptr;
-	Texture*			m_ParticleBuffer		= nullptr;
-	Texture*			m_ParticleDiff			= nullptr;
-	Texture*			m_ParticleDepth			= nullptr;
-	class Quad*			m_Quad = nullptr;
-	Sprite*				mySprite				= nullptr;
-	Sprite*				myClearColor			= nullptr;
+	Synchronizer*				mySynchronizer			= nullptr;
+	CText*						myText					= nullptr;
+	Texture*					m_DepthTexture			= nullptr;
+	Texture*					m_ParticleBuffer		= nullptr;
+	Texture*					m_ParticleDiff			= nullptr;
+	Texture*					m_ParticleDepth			= nullptr;
+	class Quad*					m_Quad = nullptr;
+	Sprite*						mySprite				= nullptr;
+	Sprite*						myClearColor			= nullptr;
 
-	CLine3D*			m_Line					= nullptr;
+	CLine3D*					m_Line					= nullptr;
 
-	CEmitterInstance*	m_ParticleEmitter		= nullptr;
+	CEmitterInstance*			m_ParticleEmitter		= nullptr;
 
-	ShadowDirectional	m_DirectionalShadow;
+	ShadowDirectional			m_DirectionalShadow;
 
-	class WaterPlane* m_WaterPlane				= nullptr; //Shouldn't be in here
+	class WaterPlane*			m_WaterPlane				= nullptr; //Shouldn't be in here
 
 	ShaderState m_LightState;
 

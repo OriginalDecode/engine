@@ -3,6 +3,7 @@
 #include <CommonLib/HashString.h>
 
 #include "EngineDefines.h"
+#include <Engine/RenderContext.h>
 
 #ifdef _PROFILE
 #include <easy/profiler.h>

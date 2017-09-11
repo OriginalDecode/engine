@@ -7,6 +7,10 @@
 #include "Engine.h"
 #include "Surface.h"
 
+#include <Engine/RenderContext.h>
+#include <Engine/IGraphicsContext.h>
+
+
 void Model::CleanUp()
 {
 	mySurfaces.DeleteAll();
@@ -66,7 +70,7 @@ void Model::Initiate(const std::string& filename)
 	}
 }
 
-void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context)
 {
 	if (m_Filename.find("default_cube") != m_Filename.npos)
 	{
@@ -107,7 +111,7 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 
 }
 
-void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
+void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
 
 	SetupLayoutsAndBuffers();
@@ -128,8 +132,12 @@ void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix
 	//RemoveOrientation();
 }
 
-void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
+void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
+
+	render_context.GetContext().DrawIndexedInstanced(this);
+
+
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Amber);
 #endif
@@ -173,6 +181,8 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+
+
 	for (Surface* surface : mySurfaces)
 	{
 		surface->Activate();
@@ -185,11 +195,12 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 #endif
 		surface->Deactivate();
 	}
+
 	RemoveOrientation();
 
 }
 
-void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
+void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
 	for (Model* child : myChildren)
 	{
@@ -209,7 +220,7 @@ void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matr
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 }
 
-void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
+void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
 	for (Model* child : myChildren)
 	{
@@ -333,7 +344,6 @@ std::vector<s32> Model::GetIndices()
 	return to_return;
 }
 
-
 void Model::AddTexture(const std::string& path, Effect::TextureSlot slot)
 {
 	for (Model* pChild : myChildren)
@@ -365,9 +375,6 @@ void Model::ClearOrientation()
 	RemoveOrientation();
 }
 
-
-
-
 void Model::RemoveOrientation()
 {
 	for (Model* child : myChildren)
@@ -396,7 +403,6 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const 
 
 	render_context.m_API->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
 }
-
 
 void Model::AddChild(Model* aChild)
 {

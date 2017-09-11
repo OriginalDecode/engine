@@ -129,4 +129,32 @@ namespace graphics
 		m_Context->CSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
 
+	void DX11Context::Draw(Model* model)
+	{
+		const auto& vtx = model->GetVertexWrapper();
+		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
+	}
+
+	void DX11Context::DrawIndexed(Model* model)
+	{
+		const auto& vtx = model->GetVertexWrapper();
+		const auto& idx = model->GetIndexWrapper();
+		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
+	}
+
+	void DX11Context::DrawInstanced(Model* model)
+	{
+		const auto& vtx = model->GetVertexWrapper();
+		const auto& ins = model->GetInstanceWrapper();
+		m_Context->DrawInstanced(ins.GetVertCountPerInstance(), ins.GetInstanceCount(), vtx.GetStart(), ins.GetStart());
+	}
+
+	void DX11Context::DrawIndexedInstanced(Model* model)
+	{
+		const auto& vtx = model->GetVertexWrapper();
+		const auto& idx = model->GetIndexWrapper();
+		const auto& ins = model->GetInstanceWrapper();
+		m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), ins.GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
+	}
+
 };

@@ -41,7 +41,13 @@ namespace graphics
 		void Draw(s32 vertex_start, s32 vertex_count) override;
 		void Draw(s32 index_start, s32 index_count, s32 vertex_start) override;
 		void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) override;
+
 		void Draw(Model* model) override;
+		void DrawIndexed(Model* model) override;
+		void DrawInstanced(Model* model) override;
+		void DrawIndexedInstanced(Model* model) override;
+
+
 
 	private:
 		ID3D11DeviceContext* m_Context;

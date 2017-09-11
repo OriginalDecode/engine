@@ -5,6 +5,7 @@
     },
     "PixelShader": {
         "file": "pbl_debug.ps",
-        "entrypoint": "main"
+        "entrypoint": "main",
+        "sampler": "ModelSampler"
     }
 }

@@ -37,37 +37,38 @@ void ShaderFactory::LoadShader(Effect* anEffect)
 
 	if (reader.DocumentHasMember("VertexShader"))
 	{
-		const JSONElement& el0 = reader.GetElement("VertexShader");
-		LoadShader(reader.ReadElement(el0, "file"), reader.ReadElement(el0, "entrypoint"), eShaderType::VERTEX, anEffect);
+		const JSONElement& el = reader.GetElement("VertexShader");
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), reader.ReadElement(el, "sampler"), eShaderType::VERTEX, anEffect);
 	}
+
 	if (reader.DocumentHasMember("PixelShader"))
 	{
-		const JSONElement& el1 = reader.GetElement("PixelShader");
-		LoadShader(reader.ReadElement(el1, "file"), reader.ReadElement(el1, "entrypoint"), eShaderType::PIXEL, anEffect);
+		const JSONElement& el = reader.GetElement("PixelShader");
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), reader.ReadElement(el, "sampler"), eShaderType::PIXEL, anEffect);
 	}
 
 	if (reader.DocumentHasMember("GeometryShader"))
 	{
-		const JSONElement& el2 = reader.GetElement("GeometryShader");
-		LoadShader(reader.ReadElement(el2, "file"), reader.ReadElement(el2, "entrypoint"), eShaderType::GEOMETRY, anEffect);
+		const JSONElement& el = reader.GetElement("GeometryShader");
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), reader.ReadElement(el, "sampler"), eShaderType::GEOMETRY, anEffect);
 	}
 
 	if (reader.DocumentHasMember("HullShader"))
 	{
-		const JSONElement& el3 = reader.GetElement("HullShader");
-		LoadShader(reader.ReadElement(el3, "file"), reader.ReadElement(el3, "entrypoint"), eShaderType::HULL, anEffect);
+		const JSONElement& el = reader.GetElement("HullShader");
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), reader.ReadElement(el, "sampler"), eShaderType::HULL, anEffect);
 	}
 
 	if (reader.DocumentHasMember("DomainShader"))
 	{
-		const JSONElement& el4 = reader.GetElement("DomainShader");
-		LoadShader(reader.ReadElement(el4, "file"), reader.ReadElement(el4, "entrypoint"), eShaderType::DOMAINS, anEffect);
+		const JSONElement& el = reader.GetElement("DomainShader");
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), reader.ReadElement(el, "sampler"), eShaderType::DOMAINS, anEffect);
 	}
 
 	if (reader.DocumentHasMember("ComputeShader"))
 	{
-		const JSONElement& el5 = reader.GetElement("ComputeShader");
-		LoadShader(reader.ReadElement(el5, "file"), reader.ReadElement(el5, "entrypoint"), eShaderType::COMPUTE, anEffect);
+		const JSONElement& el = reader.GetElement("ComputeShader");
+		LoadShader(reader.ReadElement(el, "file"), reader.ReadElement(el, "entrypoint"), reader.ReadElement(el, "sampler"), eShaderType::COMPUTE, anEffect);
 	}
 }
 
@@ -103,11 +104,14 @@ std::string ToLower(const std::string& str)
 	return to_return;
 }
 
-void ShaderFactory::LoadShader(const std::string& filepath, const std::string& entrypoint, eShaderType type, Effect* effect)
+void ShaderFactory::LoadShader(const std::string& filepath, const std::string& entrypoint, const std::string& sampler, eShaderType type, Effect* effect)
 {
 	std::string full_path = Engine::GetInstance()->GetVFS().GetFolder("Shaders") + filepath;
 	std::string to_hash(full_path + entrypoint);
 	u64 hash_key = Hash(to_hash.c_str());
+
+	sampler; //get a sampler from the graphics API. the graphics API holds void* as samplers 
+
 
 	if (m_Shaders.find(hash_key) == m_Shaders.end())
 		m_Shaders.emplace(hash_key, CreateShader(full_path, entrypoint, type));

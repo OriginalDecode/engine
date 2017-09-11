@@ -1,10 +1,6 @@
 #pragma once
 #include "VertexTypes.h"
-#include "EngineDefines.h"
-#include <standard_datatype.hpp>
-struct ID3D11Buffer;
-
-
+#include <Engine/engine_shared.h>
 
 struct VertexDataWrapper
 {
@@ -23,4 +19,47 @@ struct VertexBufferWrapper
 	s32 myNrOfBuffers = 0;
 	u32 myStride = 0;
 	u32 myByteOffset = 0;
+};
+
+class VertexWrapper
+{
+public:
+	VertexWrapper(s8* data, s32 vertex_start, s32 buffer_count, s32 stride, s32 byte_offset, s32 vertex_count, s32 size, IBuffer* vertex_buffer)
+		: m_Data(data)
+		, m_Start(vertex_start)
+		, m_BufferCount(buffer_count)
+		, m_Stride(stride)
+		, m_ByteOffset(byte_offset)
+		, m_VertexCount(vertex_count)
+		, m_Size(size)
+		, m_VertexBuffer(vertex_buffer)
+	{
+	}
+
+	~VertexWrapper()
+	{
+		Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
+		SAFE_DELETE(m_Data);
+	}
+
+	s8* GetData() const { return m_Data; }
+	s32 GetStart() const { return m_Start; }
+	s32 GetStride() const { return m_Stride; }
+	s32 GetByteOffset() const { return m_ByteOffset; }
+	s32 GetVertexCount() const { return m_VertexCount; }
+	s32 GetBufferCount() const { return m_BufferCount; }
+	s32 GetSize() const { return m_Size; }
+	IBuffer* GetVertexBuffer() const { return m_VertexBuffer; }
+
+private:
+
+	s8* m_Data = nullptr;
+	s32 m_Start = 0;
+	s32 m_BufferCount = 0;
+	s32 m_Stride = 0;
+	s32 m_ByteOffset = 0;
+	s32 m_VertexCount = 0;
+	s32 m_Size = 0;
+	IBuffer* m_VertexBuffer = nullptr;
+
 };

@@ -4,29 +4,32 @@
 #include <DataStructures/GrowingArray.h>
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
-struct D3D11_INPUT_ELEMENT_DESC;
+#include "InstanceWrapper.h"
 
 class DirectX11;
 class Effect;
 class Engine;
 class Surface;
 
-struct IndexDataWrapper;
-struct VertexBufferWrapper;
-struct VertexDataWrapper;
-struct IndexBufferWrapper;
-
+namespace graphics
+{
+	class RenderContext;
+};
 class BaseModel
 {
 public:
 	BaseModel() = default;
 	virtual ~BaseModel() = 0;
-	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection) = 0;
-	virtual void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection) = 0;
+	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context) = 0;
+	virtual void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) = 0;
 
 	void SetupLayoutsAndBuffers();
 
 	void SetEffect(Effect* anEffect);
+
+	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
+	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }
+	const InstanceWrapper& GetInstanceWrapper() const { return m_InstanceWrapper; }
 
 protected:
 	void InitVertexBuffer();
@@ -38,16 +41,11 @@ protected:
 	CU::Vector3f m_WHD; 
 	CU::Vector3f m_MaxPoint;
 	CU::Vector3f m_MinPoint;
-
 	Effect* m_Effect = nullptr;
 
-// 	ID3D11InputLayout* m_VertexLayout = nullptr;
-// 	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
-
-	VertexDataWrapper m_VertexData;
-	VertexBufferWrapper m_VertexBuffer;
-	IndexDataWrapper m_IndexData;
-	IndexBufferWrapper m_IndexBuffer;
+	VertexWrapper m_VertexWrapper;
+	IndexWrapper m_IndexWrapper;
+	InstanceWrapper m_InstanceWrapper;
 
 	IBuffer* myConstantBuffer = nullptr;
 

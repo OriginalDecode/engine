@@ -54,10 +54,15 @@ namespace graphics
 
 	enum eSamplerStates
 	{
-		LINEAR_CLAMP,
-		LINEAR_WRAP,
-		POINT_CLAMP,
-		POINT_WRAP,
+		MSAA_x1,
+		MSAA_x2,
+		MSAA_x4,
+		MSAA_x8,
+		MSAA_x16,
+		TRILINEAR,
+		BILINEAR,
+		LINEAR,
+		CLAMP,
 		NOF_SS
 	};
 
@@ -197,6 +202,10 @@ namespace graphics
 		eGraphicsAPI m_ActiveAPI;
 		IGraphicsDevice* m_Device = nullptr;
 		IGraphicsContext* m_Context = nullptr;
+
+		ISamplerState* m_SamplerStates[NOF_SS];
+
+
 	};
 
 	IGraphicsAPI::IGraphicsAPI(CreateInfo info)

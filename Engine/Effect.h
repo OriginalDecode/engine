@@ -57,6 +57,7 @@ private:
 	CompiledShader* m_DomainShader		= nullptr;
 	CompiledShader* m_ComputeShader		= nullptr;
 
+
 	void* m_Resources[_COUNT];
 };
 

@@ -37,7 +37,6 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_RenderContext = graphics::RenderContext(Engine::GetInstance(), Engine::GetAPI()->GetDevice(), Engine::GetAPI()->GetContext(), Engine::GetAPI());
 
-	m_RenderContext.GetContext().Draw(0, 0);
 
 	mySynchronizer = synchronizer;
 	m_Camera = camera;

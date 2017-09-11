@@ -49,6 +49,7 @@ public:
 	std::string GetCurrentFile() { return myCurrentDocumentPath; }
 
 
+	std::string OptionalReadElement(const JSONElement& el, const std::string& tag);
 
 
 

@@ -178,6 +178,15 @@ std::string JSONReader::ReadElement(const JSONElement& el, const std::string& ta
 	return el[tag.c_str()].GetString();
 }
 
+std::string JSONReader::OptionalReadElement(const JSONElement& el, const std::string& tag)
+{
+	//assert(el.HasMember(tag.c_str()) && "Failed to find tag!");
+	if(el.HasMember(tag.c_str()))
+		return el[tag.c_str()].GetString();
+
+	return std::string();
+}
+
 
 
 const JSONElement& JSONReader::GetElement(const std::string& element_name)

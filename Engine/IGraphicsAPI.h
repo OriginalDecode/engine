@@ -96,7 +96,14 @@ namespace graphics
 		DEPTH_32_FLOAT, 
 	};
 
-	typedef eTextureFormat VertexFormat;
+	enum eVertexFormat
+	{
+		_4BYTE_R,
+		_8BYTE_RG,
+		_12BYTE_RGB,
+		_16BYTE_RGBA,
+	};
+
 
 	enum eTextureUsage
 	{
@@ -190,12 +197,8 @@ namespace graphics
 		virtual IGraphicsContext& GetContext() { return *m_Context; }
 
 		virtual void ReleasePtr(void* ptr) = 0;
-		
 
-		
-		//virtual void UpdateBuffer(void* pDest, void* pData, s32 size) = 0;
-
-
+		ISamplerState* GetSamplerState(eSamplerStates sampler_state) { return m_SamplerStates[sampler_state]; }
 
 	protected:
 		CreateInfo m_CreateInfo;
@@ -204,7 +207,6 @@ namespace graphics
 		IGraphicsContext* m_Context = nullptr;
 
 		ISamplerState* m_SamplerStates[NOF_SS];
-
 
 	};
 

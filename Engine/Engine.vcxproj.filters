@@ -392,6 +392,7 @@
     </ClInclude>
     <ClInclude Include="DX11Context.h" />
     <ClInclude Include="InstanceWrapper.h" />
+    <ClInclude Include="RenderContext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -637,5 +638,6 @@
       <Filter>APIs</Filter>
     </ClCompile>
     <ClCompile Include="DX11Context.cpp" />
+    <ClCompile Include="RenderContext.cpp" />
   </ItemGroup>
 </Project>

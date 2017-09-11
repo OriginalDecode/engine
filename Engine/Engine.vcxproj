@@ -339,6 +339,7 @@
     <ClInclude Include="imgui_internal.h" />
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
+    <ClInclude Include="InstanceWrapper.h" />
     <ClInclude Include="LevelFactory.h" />
     <ClInclude Include="LightModel.h" />
     <ClInclude Include="LightPass.h" />

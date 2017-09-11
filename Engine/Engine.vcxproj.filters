@@ -391,6 +391,7 @@
       <Filter>APIs</Filter>
     </ClInclude>
     <ClInclude Include="DX11Context.h" />
+    <ClInclude Include="InstanceWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">

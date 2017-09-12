@@ -48,7 +48,7 @@ void Terrain::CleanUp()
 
 	SAFE_DELETE(mySurface);
 
-	SAFE_RELEASE(myConstantBuffer);
+	SAFE_RELEASE(m_ConstantBuffer);
 
 }
 
@@ -59,7 +59,7 @@ void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44
 	myEffect->Use();
  
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
  
 	mySurface->Activate(render_context);
@@ -76,7 +76,7 @@ void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44
 	m_ClipEffect->Use();
 
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 
 	if (!override_shader)
@@ -97,7 +97,7 @@ void Terrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Ma
 	SetupLayoutsAndBuffers();
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
@@ -224,7 +224,7 @@ void Terrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, cons
 	myConstantStruct.world = myOrientation;
 	myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);
 	myConstantStruct.projection = aCameraProjection;
-	render_context.m_API->UpdateConstantBuffer((myConstantBuffer), &myConstantStruct);
+	render_context.m_API->UpdateConstantBuffer((m_ConstantBuffer), &myConstantStruct);
 
 
 }
@@ -240,8 +240,8 @@ void Terrain::InitConstantBuffer()
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
 
-	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Model Constantbuffer : " + m_Filename);
+	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &m_ConstantBuffer);
+	Engine::GetAPI()->SetDebugName(m_ConstantBuffer, "Model Constantbuffer : " + m_Filename);
 	Engine::GetAPI()->HandleErrors(hr, "[Terrain] : Failed to Create Constantbuffer, ");
 }
 

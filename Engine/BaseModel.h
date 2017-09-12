@@ -47,7 +47,7 @@ protected:
 	IndexWrapper m_IndexWrapper;
 	InstanceWrapper m_InstanceWrapper;
 
-	IBuffer* myConstantBuffer = nullptr;
+	IBuffer* m_ConstantBuffer = nullptr;
 	
 	
 

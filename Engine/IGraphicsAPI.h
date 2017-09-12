@@ -132,6 +132,15 @@ namespace graphics
 		POINT_LIST,
 	};
 
+	enum eMapping
+	{
+		MAP_READ,
+		MAP_WRITE,
+		MAP_READ_WRITE,
+		MAP_WRITE_DISCARD,
+		MAP_WRITE_NO_OVERWRITE
+	};
+
 	struct Texture2DDesc
 	{
 		u32 m_Width = 0;

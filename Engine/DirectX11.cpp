@@ -848,6 +848,11 @@ namespace graphics
 			return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	}
 
+	D3D11_MAP DirectX11::GetMapping(eMapping mapping)
+	{
+		return static_cast<D3D11_MAP>(mapping);
+	}
+
 };
 
 

@@ -1,18 +1,18 @@
 #include "stdafx.h"
 #include "AtmosphereModel.h"
+#include <Engine/IGraphicsContext.h>
 
 
 AtmosphereModel::~AtmosphereModel()
 {
-	mySurfaces.DeleteAll();
-	for (AtmosphereModel* children : myChildren)
-	{
+	m_Surfaces.DeleteAll();
+	for (AtmosphereModel* children : m_Children)
 		children->CleanUp();
-	}
-	myChildren.DeleteAll();
 
-	Engine::GetAPI()->ReleasePtr(myConstantBuffer);
-	Engine::GetAPI()->ReleasePtr(m_VertexLayout);
+	m_Children.DeleteAll();
+
+	//Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
+	//Engine::GetAPI()->ReleasePtr(m_VertexLayout);
 }
 
 void AtmosphereModel::Initiate(const std::string& filename)
@@ -26,53 +26,43 @@ void AtmosphereModel::Initiate(const std::string& filename)
 		InitConstantBuffer();
 	}
 
-	for ( AtmosphereModel* child : myChildren )
+	for ( AtmosphereModel* child : m_Children )
 	{
 		child->Initiate(filename);
 	}
 }
 
-void AtmosphereModel::CleanUp()
+void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-		
-}
-
-void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
-{
-	for (AtmosphereModel* child : myChildren)
+	for (AtmosphereModel* child : m_Children)
 	{
 		child->Render(camera_orientation, camera_projection);
 	}
 
-	if (m_IsRoot)
+	if (m_IsRoot || m_Surfaces.Empty())
 		return;
 
-	if (mySurfaces.Empty())
-		return;
-
-	SetupLayoutsAndBuffers();
-
-	UpdateConstantBuffer(camera_orientation, camera_projection);
+	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
+	auto& ctx = render_context.GetContext();
+	ctx.VSSetConstantBuffer(0, 1, m_ConstantBuffer);
+	ctx.PSSetSamplerState(0, 1, render_context.GetAPI().GetSamplerState(graphics::eSamplerStates::LINEAR));
 
 	m_Effect->Use();
-
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
-
+	ctx.DrawIndexed(this);
 	m_Effect->Clear();
+
 }
 
 void AtmosphereModel::AddChild(AtmosphereModel* child)
 {
-	myChildren.Add(child);
+	m_Children.Add(child);
 }
 
 void AtmosphereModel::SetOrientation(const CU::Matrix44f& orientation)
 {
-	myOrientation = orientation;
-	for ( AtmosphereModel* child : myChildren )
+	m_Orientations[0] = orientation;
+	for ( AtmosphereModel* child : m_Children )
 	{
-		child->SetOrientation(myOrientation);
+		child->SetOrientation(m_Orientations[0]);
 	}
 }

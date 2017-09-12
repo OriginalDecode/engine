@@ -10,25 +10,21 @@ class Quad
 {
 public:
 	Quad() = default;
-	~Quad();
 
 
 	void Initiate();
-	void SetBuffers();
 	void Render();
 	Effect* GetShader() { return m_ScreenpassShader; }
 
-
-
+	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
+	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }
 
 private:
-
-	IInputLayout* m_InputLayout = nullptr;
 	CU::GrowingArray<VertexTypePosUV> m_Vertices;
-	VertexBufferWrapper m_VertexBuffer;
-	VertexDataWrapper m_VertexData;
-	IndexBufferWrapper m_IndexBuffer;
-	IndexDataWrapper m_IndexData;
+
+	VertexWrapper m_VertexWrapper;
+	IndexWrapper m_IndexWrapper;
+
 	Effect* m_ScreenpassShader = nullptr;
 };
 

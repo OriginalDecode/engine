@@ -2,6 +2,7 @@
 
 class CompiledShader;
 class Model;
+class Quad;
 namespace graphics
 {
 	class IGraphicsContext
@@ -54,8 +55,14 @@ namespace graphics
 		virtual void DrawInstanced(Model* model) = 0;
 		virtual void DrawIndexedInstanced(Model* model) = 0;
 
+		virtual void DrawIndexed(Quad* quad) = 0;
+
 		template<typename T>
 		virtual void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size) = 0;
+		
+		template<typename T>
+		virtual void UpdateBuffer(IBuffer* dest, T* src, s32 size, eMapping mapping) = 0;
+
 
 	private:
 

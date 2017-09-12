@@ -8,16 +8,6 @@
 
 BaseModel::~BaseModel() = default;
 
-// void BaseModel::SetupLayoutsAndBuffers()
-// {
-// 	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
-// 	ctx.IASetInputLayout(m_VertexLayout);
-// 
-// 	ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-// 	ctx->IASetVertexBuffers(0, 1, &m_VertexBuffer.myVertexBuffer, &m_VertexBuffer.myStride, &m_VertexBuffer.myByteOffset);
-// 	ctx->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
-// }
-
 void BaseModel::SetEffect(Effect* anEffect)
 {
 	m_Effect = anEffect;

@@ -16,8 +16,6 @@ public:
 	void Render(const CU::Matrix44f& orientation, Texture* depth);
 	void SetLightData(const CU::Vector4f& direction, const CU::Vector4f& position);
 private:
-	Engine* m_Engine							= nullptr;
-	DirectX11* m_API							= nullptr;
 	Camera* m_Camera							= nullptr;
 	//AtmosphereModel* m_InnerSphere				= nullptr;
 	AtmosphereModel* m_OuterSphere				= nullptr;

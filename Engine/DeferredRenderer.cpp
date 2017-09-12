@@ -212,7 +212,6 @@ GBuffer& DeferredRenderer::GetGBuffer()
 //This could be in the engine and return a quad object?
 void DeferredRenderer::CreateFullscreenQuad()
 {
-
 	myVertexFormat.ReInit(2);
 	myVertexFormat.Add(VertexLayoutPosUV[0]);
 	myVertexFormat.Add(VertexLayoutPosUV[1]);

@@ -53,6 +53,7 @@ namespace graphics
 		static u32 GetBindFlag(s32 binding);
 		static u32 GetCPUAccessFlag(s32 flags);
 		static D3D11_PRIMITIVE_TOPOLOGY GetTopology(eTopology topology);
+		static D3D11_MAP GetMapping(eMapping mapping);
 
 		void ReleasePtr(void* ptr) override;
 

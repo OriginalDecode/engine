@@ -44,8 +44,8 @@ public:
 	std::vector<float> GetVertices();
 	std::vector<s32> GetIndices();
 
-	CU::GrowingArray<Surface*>& GetSurfaces() { return mySurfaces; }
-	CU::GrowingArray<Model*> GetChildModels() { return myChildren; }
+	CU::GrowingArray<Surface*>& GetSurfaces() { return m_Surfaces; }
+	CU::GrowingArray<Model*> GetChildModels() { return m_Children; }
 
 	void AddTexture(const std::string& path, Effect::TextureSlot slot);
 
@@ -56,25 +56,24 @@ public:
 private:
 	void RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
 	void RemoveOrientation();
+	CU::GrowingArray<Model*> m_Children;
 
-	//CU::GrowingArray<Model*> myChildren;
-	//CU::GrowingArray<CU::Matrix44f> m_Orientations;
 	//CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> m_InputLayoutDesc;
-	//IInputLayout* m_InstanceInputLayout = nullptr;
-
+	
 
 protected:
 	void InitInstanceBuffer();
 	void InitConstantBuffer();
 	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc) override;
+	
+	CU::GrowingArray<Surface*> m_Surfaces;
+	CU::GrowingArray<CU::Matrix44f> m_Orientations;
+
+
 
 	//CU::GrowingArray<SVertexTypePosCol> myVertices;
 	//CU::GrowingArray<s32> m_Indices;
-
-	//CU::GrowingArray<Surface*> mySurfaces;
-
 	//CU::Matrix44f myOrientation;
-
 	//IBuffer* m_InstanceBuffer = nullptr;
 	//D3D11_SUBRESOURCE_DATA m_InstanceData;
 	//const s32 m_InstanceCount = 5000;

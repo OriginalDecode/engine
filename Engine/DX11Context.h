@@ -54,16 +54,34 @@ namespace graphics
 		void DrawInstanced(Model* model) override;
 		void DrawIndexedInstanced(Model* model) override;
 
+		void DrawIndexed(Quad* quad);
 
 		template<typename T>
 		void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size);
+
+		template<typename T>
+		void UpdateBuffer(IBuffer* dest, T* src, s32 size, eMapping mapping);
 
 	private:
 		ID3D11DeviceContext* m_Context;
 	};
 
 	template<typename T>
-	void graphics::DX11Context::UpdateConstantBuffer(IBuffer* dest, T* src, s32 size)
+	void DX11Context::UpdateBuffer(IBuffer* dest, T* src, s32 size, eMapping mapping)
+	{
+		D3D11_MAPPED_SUBRESOURCE msr;
+		m_Context->Map(dest, 0, DirectX11::GetMapping(mapping), 0, &msr);
+
+		if (msr.pData)
+		{
+			T* data = (T*)msr.pData;
+			memcpy(data, &src[0], size);
+		}
+		m_Context->Unmap(dest, 0);
+	}
+
+	template<typename T>
+	void DX11Context::UpdateConstantBuffer(IBuffer* dest, T* src, s32 size)
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		m_Context->Map(dest, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);

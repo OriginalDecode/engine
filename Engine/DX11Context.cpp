@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "DX11Context.h"
 
+#include <Engine/Model.h>
+#include <Engine/Quad.h>
 
 namespace graphics
 {
@@ -140,10 +142,45 @@ namespace graphics
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
 	}
 
+	void DX11Context::DrawIndexed(Quad* quad)
+	{
+		const auto& vtx = quad->GetVertexWrapper();
+		const auto& idx = quad->GetIndexWrapper();
+
+		m_Context->IASetInputLayout(static_cast<ID3D11InputLayout*>(vtx.GetInputLayout()));
+		m_Context->IASetPrimitiveTopology(DirectX11::GetTopology(vtx.GetTopology()));
+
+		m_Context->IASetVertexBuffers(vtx.GetStart(), 
+									  vtx.GetBufferCount(), 
+									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()), 
+									  &vtx.GetStride(), 
+									  &vtx.GetByteOffset());
+
+		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
+									DirectX11::GetFormat(idx.GetFormat()), 
+									idx.GetByteOffset());
+
+		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
+	}
+
 	void DX11Context::DrawIndexed(Model* model)
 	{
 		const auto& vtx = model->GetVertexWrapper();
 		const auto& idx = model->GetIndexWrapper();
+
+		m_Context->IASetInputLayout(static_cast<ID3D11InputLayout*>(vtx.GetInputLayout()));
+		m_Context->IASetPrimitiveTopology(DirectX11::GetTopology(vtx.GetTopology()));
+
+		m_Context->IASetVertexBuffers(vtx.GetStart(), 
+									  vtx.GetBufferCount(), 
+									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()), 
+									  &vtx.GetStride(), 
+									  &vtx.GetByteOffset());
+
+		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
+									DirectX11::GetFormat(idx.GetFormat()),
+									idx.GetByteOffset());
+
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 	}
 

@@ -69,7 +69,7 @@ void WaterPlane::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, c
 	m_VertexMatrices.m_Projection = camera_projection;
 	m_VertexMatrices.m_CameraPos = camera_orientation.GetPosition();
 	m_VertexMatrices.m_Time = Engine::GetInstance()->GetTotalTime();
-	render_context.m_API->UpdateConstantBuffer((myConstantBuffer), &m_VertexMatrices);
+	render_context.m_API->UpdateConstantBuffer((m_ConstantBuffer), &m_VertexMatrices);
 }
 
 void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
@@ -86,8 +86,8 @@ void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matri
 	//render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-	render_context.m_Context->DSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
+	render_context.m_Context->DSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 	myEffect->Use();
 	render_context.m_Context->DrawIndexed(m_Indices.Size(),0,0);
 	myEffect->Clear();
@@ -198,5 +198,5 @@ void WaterPlane::InitConstantBuffer()
 	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
-	myConstantBuffer = Engine::GetAPI()->CreateBuffer(cbDesc);
+	m_ConstantBuffer = Engine::GetAPI()->CreateBuffer(cbDesc);
 }

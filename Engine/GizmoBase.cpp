@@ -7,8 +7,8 @@
 
 void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction)
 {
-	gizmo_handle.m_Key = Engine::GetInstance()->LoadModel(model_key, "Shaders/gizmo.json", true);
-	gizmo_handle.m_DirColor = Engine::GetInstance()->GetTexture(texture_path);
+	gizmo_handle.m_Key = Engine::GetInstance()->LoadModel(model_key, "Shaders/gizmo.json", true).c_str();
+	gizmo_handle.m_DirColor = Engine::GetInstance()->GetTexture(texture_path.c_str());
 	gizmo_handle.m_Model = Engine::GetInstance()->GetModel(gizmo_handle.m_Key);
 
 	CU::GrowingArray<Model*> children = gizmo_handle.m_Model->GetChildModels();
@@ -17,6 +17,7 @@ void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_k
 		CU::GrowingArray<Surface*>& surfaces = child->GetSurfaces();
 		for (Surface* surface : surfaces)
 		{
+			//I should be able to set a color instead of using a texture??????????
 			//surface->ClearTextures();
 			//surface->AddTexture(gizmo_handle.m_DirColor->GetShaderView(), Effect::DIFFUSE);
 		}

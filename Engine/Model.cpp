@@ -12,15 +12,15 @@
 
 Model::~Model()
 {
-	mySurfaces.DeleteAll();
-	for (Model* children : myChildren)
+	m_Surfaces.DeleteAll();
+	for (Model* children : m_Children)
 	{
 		children->CleanUp();
 	}
-	myChildren.DeleteAll();
+	m_Children.DeleteAll();
 
-	SAFE_RELEASE(myConstantBuffer);
-	DL_ASSERT_EXP(!myConstantBuffer, "Failed to release constant buffer!");
+	SAFE_RELEASE(m_ConstantBuffer);
+	DL_ASSERT_EXP(!m_ConstantBuffer, "Failed to release constant buffer!");
 
 	SAFE_RELEASE(m_VertexLayout);
 	SAFE_RELEASE(m_InstanceInputLayout);
@@ -30,15 +30,15 @@ Model::~Model()
 
 void Model::CleanUp()
 {
-	mySurfaces.DeleteAll();
-	for (Model* children : myChildren)
+	m_Surfaces.DeleteAll();
+	for (Model* children : m_Children)
 	{
 		children->CleanUp();
 	}
-	myChildren.DeleteAll();
+	m_Children.DeleteAll();
 
-	SAFE_RELEASE(myConstantBuffer);
-	DL_ASSERT_EXP(!myConstantBuffer, "Failed to release constant buffer!");
+	SAFE_RELEASE(m_ConstantBuffer);
+	DL_ASSERT_EXP(!m_ConstantBuffer, "Failed to release constant buffer!");
 
 	SAFE_RELEASE(m_VertexLayout);
 	SAFE_RELEASE(m_InstanceInputLayout);
@@ -81,7 +81,7 @@ void Model::Initiate(const std::string& filename)
 		//InitInstanceBuffer();
 	}
 
-	for (Model* child : myChildren)
+	for (Model* child : m_Children)
 	{
 		child->Initiate(filename);
 	}
@@ -98,22 +98,22 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Blue);
 #endif
-	for (Model* child : myChildren)
+	for (Model* child : m_Children)
 	{
 		child->Render(aCameraOrientation, aCameraProjection);
 	}
 
-	if (!m_VertexLayout || m_IsRoot || mySurfaces.Empty())
+	if (!m_VertexLayout || m_IsRoot || m_Surfaces.Empty())
 		return;
 
 	SetupLayoutsAndBuffers(); //depending
 
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection); //depending
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer); //depending
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer); //depending
 
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //depending on dx
 
-	for (Surface* surface : mySurfaces)
+	for (Surface* surface : m_Surfaces)
 	{
 		surface->Activate(render_context);
 #ifdef _PROFILE
@@ -134,7 +134,7 @@ void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix
 	SetupLayoutsAndBuffers();
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 
 	myEffect->Use();
@@ -154,12 +154,12 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Amber);
 #endif
-	for (Model* child : myChildren)
+	for (Model* child : m_Children)
 	{
 		child->RenderInstanced(camera_orientation, camera_projection, render_context);
 	}
 
-	if (m_IsRoot || mySurfaces.Empty() || m_Orientations.Empty())
+	if (m_IsRoot || m_Surfaces.Empty() || m_Orientations.Empty())
 	{
 		RemoveOrientation();
 		return;
@@ -177,7 +177,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 #ifdef _PROFILE
 	EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 #endif
-	for (Surface* surface : mySurfaces)
+	for (Surface* surface : m_Surfaces)
 	{
 		surface->Activate(render_context);
 		render_context.GetContext().DrawIndexedInstanced(this);
@@ -193,19 +193,19 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 
 void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-	for (Model* child : myChildren)
+	for (Model* child : m_Children)
 	{
 		child->ShadowRender(camera_orientation, camera_projection, render_context);
 	}
 
-	if (m_IsRoot || !m_VertexLayout || mySurfaces.Empty())
+	if (m_IsRoot || !m_VertexLayout || m_Surfaces.Empty())
 		return;
 
 	SetupLayoutsAndBuffers();
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
@@ -213,12 +213,12 @@ void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matr
 
 void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-	for (Model* child : myChildren)
+	for (Model* child : m_Children)
 	{
 		child->ShadowRenderInstanced(camera_orientation, camera_projection, render_context);
 	}
 
-	if (!m_InstanceInputLayout || m_IsRoot || mySurfaces.Empty() || m_Orientations.Empty())
+	if (!m_InstanceInputLayout || m_IsRoot || m_Surfaces.Empty() || m_Orientations.Empty())
 	{
 		RemoveOrientation();
 		return;
@@ -248,7 +248,7 @@ void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
 
 	render_context.m_Context->DrawIndexedInstanced(m_IndexData.myIndexCount, m_Orientations.Size(), 0, 0, 0);
@@ -257,7 +257,7 @@ void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const
 void Model::SetPosition(const CU::Vector3f& aPosition)
 {
 	myOrientation.SetPosition(aPosition);
-	for each (Model* child in myChildren)
+	for each (Model* child in m_Children)
 	{
 		child->SetPosition(aPosition);
 	}
@@ -271,7 +271,7 @@ CU::Matrix44f& Model::GetOrientation()
 void Model::SetOrientation(CU::Matrix44f orientation)
 {
 	myOrientation = orientation;
-	for (Model* child : myChildren)
+	for (Model* child : m_Children)
 	{
 		child->SetOrientation(myOrientation);
 	}
@@ -296,7 +296,7 @@ std::vector<float> Model::GetVertices()
 {
 	std::vector<float> to_return;
 
-	for (Model* child : myChildren)
+	for (Model* child : m_Children)
 	{
 		std::vector<float> child_verts = child->GetVertices();
 		for (const float& vert : child_verts)
@@ -318,7 +318,7 @@ std::vector<s32> Model::GetIndices()
 {
 	std::vector<s32> to_return;
 
-	for (Model* child : myChildren)
+	for (Model* child : m_Children)
 	{
 		std::vector<s32> child_verts = child->GetIndices();
 		for (const s32& indice : child_verts)
@@ -337,12 +337,12 @@ std::vector<s32> Model::GetIndices()
 
 void Model::AddTexture(const std::string& path, Effect::TextureSlot slot)
 {
-	for (Model* pChild : myChildren)
+	for (Model* pChild : m_Children)
 	{
 		pChild->AddTexture(path, slot);
 	}
 
-	for (Surface* pSurface : mySurfaces)
+	for (Surface* pSurface : m_Surfaces)
 	{
 		pSurface->AddTexture(path, slot);
 	}
@@ -350,20 +350,17 @@ void Model::AddTexture(const std::string& path, Effect::TextureSlot slot)
 
 void Model::AddOrientation(CU::Matrix44f orientation)
 {
-	if (m_Orientations.Size() >= m_InstanceCount)
-		DL_ASSERT("Too many instances");
-	for (Model* child : myChildren)
+	DL_ASSERT_EXP(m_Orientations.Size() >= m_InstanceWrapper.GetInstanceCount(), "Too many instances");
+	for (Model* child : m_Children)
 	{
 		child->AddOrientation(orientation);
 	}
-
 	m_Orientations.Add(orientation);
-
 }
 
 void Model::RemoveOrientation()
 {
-	for (Model* child : myChildren)
+	for (Model* child : m_Children)
 	{
 		child->RemoveOrientation();
 	}
@@ -375,24 +372,25 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const 
 	if (m_IsRoot)
 		return;
 
-	if (!myConstantBuffer)
+	if (!m_ConstantBuffer)
 		InitConstantBuffer();
 
-	m_ConstantStruct.m_World = myOrientation;
+	m_ConstantStruct.m_World = m_Orientations[0];
 	m_ConstantStruct.m_InvertedView = CU::Math::Inverse(camera_orientation);
 	m_ConstantStruct.m_Projection = camera_projection;
 
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 
-	ctx.UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct, sizeof(m_ConstantStruct));
-	ctx.UpdateConstantBuffer(m_InstanceBuffer, &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
-	ctx.VSSetConstantBuffer(0, 1, myConstantBuffer);
+	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ConstantStruct, sizeof(m_ConstantStruct));
+	ctx.UpdateConstantBuffer(m_InstanceWrapper.GetInstanceBuffer(), &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
+
+	ctx.VSSetConstantBuffer(0, 1, m_ConstantBuffer);
 
 }
 
 void Model::AddChild(Model* aChild)
 {
-	myChildren.Add(aChild);
+	m_Children.Add(aChild);
 }
 
 /*

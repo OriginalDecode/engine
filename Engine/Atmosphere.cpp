@@ -17,8 +17,6 @@ Atmosphere::~Atmosphere()
 
 void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position)
 {
-	m_API = m_Engine->GetAPI();
-	m_Camera = m_Engine->GetCamera();
 
 	m_OuterRadius = outer_radius;
 	m_OuterOrientation.SetPosition(position);
@@ -26,8 +24,8 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 	m_InnerRadius = inner_radius;
 	m_InnerOrientation.SetPosition(position);
 
-	m_VertexBuffer = m_API->CreateConstantBuffer(sizeof(cbVertex));
-	m_PixelBuffer = m_API->CreateConstantBuffer(sizeof(cbPixel));
+	//m_VertexBuffer = m_API->CreateConstantBuffer(sizeof(cbVertex));
+	//m_PixelBuffer = m_API->CreateConstantBuffer(sizeof(cbPixel));
 
 	m_OuterOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_OuterRadius, m_OuterRadius, m_OuterRadius, 1)) * m_OuterOrientation;
 	m_InnerOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_InnerRadius, m_InnerRadius, m_InnerRadius, 1)) * m_InnerOrientation;
@@ -48,23 +46,23 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 
 void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth)
 {
-	m_API->SetBlendState(eBlendStates::NO_BLEND);
-	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	m_API->SetRasterizer(eRasterizer::CULL_NONE);
+	//m_API->SetBlendState(eBlendStates::NO_BLEND);
+	//m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+	//m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
-	UpdateCameraData();
+	//UpdateCameraData();
 
-	m_API->UpdateConstantBuffer(m_VertexBuffer, &m_VertexStruct);
-	m_API->UpdateConstantBuffer(m_PixelBuffer, &m_PixelStruct);
+	//m_API->UpdateConstantBuffer(m_VertexBuffer, &m_VertexStruct);
+	//m_API->UpdateConstantBuffer(m_PixelBuffer, &m_PixelStruct);
 
-	IDevContext* ctx = m_API->GetContext();
-	//ctx->OMSetRenderTargets(1, m_API->GetBackbufferRef(), depth->GetDepthView());
+	//IDevContext* ctx = m_API->GetContext();
+	////ctx->OMSetRenderTargets(1, m_API->GetBackbufferRef(), depth->GetDepthView());
 
-	ctx->VSSetConstantBuffers(1, 1, &m_VertexBuffer);
-	ctx->PSSetConstantBuffers(0, 1, &m_PixelBuffer);
+	//ctx->VSSetConstantBuffers(1, 1, &m_VertexBuffer);
+	//ctx->PSSetConstantBuffers(0, 1, &m_PixelBuffer);
 
-	m_OuterSphere->Render(orientation, m_Camera->GetPerspective(), render_context);
-	//m_InnerSphere->Render(orientation, m_Camera->GetPerspective(), render_context);
+	//m_OuterSphere->Render(orientation, m_Camera->GetPerspective(), render_context);
+	////m_InnerSphere->Render(orientation, m_Camera->GetPerspective(), render_context);
 
 }
 

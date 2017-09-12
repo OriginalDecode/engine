@@ -12,6 +12,8 @@
 
 #include <Windows.h>
 
+#define ARRSIZE(x) sizeof(x) / sizeof(x[0])
+
 #define BITFLAG(x) (1 << x)
 
 typedef s32 Entity;
@@ -76,3 +78,4 @@ inline void EndTicketMutex(Ticket_Mutex* mutex)
 {
 	mutex->serving++;
 };
+

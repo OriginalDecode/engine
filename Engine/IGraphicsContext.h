@@ -39,6 +39,7 @@ namespace graphics
 		virtual void CSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
 
 
+
 		virtual void IASetInputLayout(IInputLayout* input_layout) = 0;
 		virtual void IASetTopology(eTopology topology) = 0;
 		virtual void IASetVertexBuffer() = 0;
@@ -52,6 +53,9 @@ namespace graphics
 		virtual void DrawIndexed(Model* model) = 0;
 		virtual void DrawInstanced(Model* model) = 0;
 		virtual void DrawIndexedInstanced(Model* model) = 0;
+
+		template<typename T>
+		virtual void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size) = 0;
 
 	private:
 

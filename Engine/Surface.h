@@ -48,7 +48,7 @@ public:
 	void AddTexture(Texture* texture, const std::string& filepath, Effect::TextureSlot slot);
 	void AddTexture(const std::string& file_path, Effect::TextureSlot slot);
 
-	void Activate();
+	void Activate(const graphics::RenderContext& render_context);
 	void Deactivate();
 
 	void SetEffect(Effect* anEffect);

@@ -9,12 +9,12 @@ namespace graphics
 	class IGraphicsDevice
 	{
 	public:
-		virtual void* CreateVertexShader(void* pShader, const cl::CHashString<128>& debug_name) = 0;
-		virtual void* CreatePixelShader(void* pShader, const cl::CHashString<128>& debug_name) = 0;
-		virtual void* CreateGeometryShader(void* pShader, const cl::CHashString<128>& debug_name) = 0;
-		virtual void* CreateHullShader(void* pShader, const cl::CHashString<128>& debug_name) = 0;
-		virtual void* CreateDomainShader(void* pShader, const cl::CHashString<128>& debug_name) = 0;
-		virtual void* CreateComputeShader(void* pShader, const cl::CHashString<128>& debug_name) = 0;
+		virtual void* CreateVertexShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) = 0;
+		virtual void* CreatePixelShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) = 0;
+		virtual void* CreateGeometryShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) = 0;
+		virtual void* CreateHullShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) = 0;
+		virtual void* CreateDomainShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) = 0;
+		virtual void* CreateComputeShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) = 0;
 
 		virtual void* CreateTextureFromFile(const cl::CHashString<128>& filepath, bool generate_mips, IGraphicsContext* ctx) = 0;
 		virtual ITexture2D* CreateTexture2D(const Texture2DDesc& desc, const cl::CHashString<128>& debug_name) = 0;

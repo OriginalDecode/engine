@@ -104,7 +104,6 @@ namespace graphics
 		_16BYTE_RGBA,
 	};
 
-
 	enum eTextureUsage
 	{
 		DEFAULT_USAGE = 0,
@@ -132,7 +131,6 @@ namespace graphics
 		TRIANGLE_LIST,
 		POINT_LIST,
 	};
-
 
 	struct Texture2DDesc
 	{

@@ -129,6 +129,11 @@ namespace graphics
 		m_Context->CSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
 
+	void DX11Context::IASetTopology(eTopology topology)
+	{
+		D3D_PRIMITIVE_TOPOLOGY topology = DirectX11::GetTopology(topology);
+	}
+
 	void DX11Context::Draw(Model* model)
 	{
 		const auto& vtx = model->GetVertexWrapper();
@@ -156,18 +161,32 @@ namespace graphics
 		const auto& ins = model->GetInstanceWrapper();
 
 		m_Context->IASetInputLayout(static_cast<ID3D11InputLayout*>(ins.GetInputLayout()));
+
+		ID3D11Buffer* buffers[] = {
+			static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer()),
+			static_cast<ID3D11Buffer*>(ins.GetInstanceBuffer())
+		};
+
+		u32 strides[] = {
+			vtx.GetStride(),
+			ins.GetStride()
+		};
+
+		u32 byte_offsets[] = {
+			vtx.GetByteOffset(),
+			ins.GetByteOffset()
+		};
+
 		m_Context->IASetVertexBuffers(ins.GetStart(), 
 									  ins.GetBufferCount(), 
-									  static_cast<ID3D11Buffer*const*>(ins.GetInstanceBuffers()), 
-									  ins.GetStrides(), 
-									  ins.GetByteOffsets());
+									  buffers, 
+									  strides, 
+									  byte_offsets);
 
 		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()), 
 									DirectX11::GetFormat(idx.GetFormat()),
 									idx.GetByteOffset());
-
-		m_Context->IASetPrimitiveTopology(DirectX11::GetTopology(vtx.GetTopology()));
-
+		
 		m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), ins.GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
 	}
 };

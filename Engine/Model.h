@@ -13,13 +13,18 @@ class Model : public BaseModel
 	friend class CModelImporter;
 public:
 	Model() = default;
-	void CleanUp();
+	~Model();
 	virtual void Initiate(const std::string& filename);
+	void CleanUp();
 
 	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context) override;
 	void RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
 	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) override;
 	void ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
+
+
+
+
 
 	void AddChild(Model* aChild);
 
@@ -46,32 +51,31 @@ public:
 
 
 	void AddOrientation(CU::Matrix44f orientation);
-	void ClearOrientation();
 	void CreateCube();
 
 private:
 	void RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
-
 	void RemoveOrientation();
-	CU::GrowingArray<Model*> myChildren;
-	CU::GrowingArray<CU::Matrix44f> m_Orientations;
-	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> m_InputLayoutDesc;
-	IInputLayout* m_InstanceInputLayout = nullptr;
+
+	//CU::GrowingArray<Model*> myChildren;
+	//CU::GrowingArray<CU::Matrix44f> m_Orientations;
+	//CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> m_InputLayoutDesc;
+	//IInputLayout* m_InstanceInputLayout = nullptr;
 
 
 protected:
 	void InitInstanceBuffer();
 	void InitConstantBuffer();
-	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection) override;
+	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc) override;
 
-	CU::GrowingArray<SVertexTypePosCol> myVertices;
-	CU::GrowingArray<s32> m_Indices;
+	//CU::GrowingArray<SVertexTypePosCol> myVertices;
+	//CU::GrowingArray<s32> m_Indices;
 
-	CU::GrowingArray<Surface*> mySurfaces;
+	//CU::GrowingArray<Surface*> mySurfaces;
 
-	CU::Matrix44f myOrientation;
+	//CU::Matrix44f myOrientation;
 
-	IBuffer* m_InstanceBuffer = nullptr;
-	D3D11_SUBRESOURCE_DATA m_InstanceData;
-	const s32 m_InstanceCount = 5000;
+	//IBuffer* m_InstanceBuffer = nullptr;
+	//D3D11_SUBRESOURCE_DATA m_InstanceData;
+	//const s32 m_InstanceCount = 5000;
 };

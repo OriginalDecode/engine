@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Surface.h"
 
-#include "DirectX11.h"
 #include "Engine.h"
 
 #include "Texture.h"
@@ -9,6 +8,7 @@
 
 #include "AssetsContainer.h"
 #include <DL_Debug.h>
+#include <Engine/IGraphicsContext.h>
 
 
 Surface::Surface(Effect* anEffect)
@@ -40,12 +40,12 @@ Surface::Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anInde
 	SetPrimology(aPrimology);
 }
 
-void Surface::Activate()
+void Surface::Activate(const graphics::RenderContext& render_context)
 {
 	if ( !myEffect )
 		return;
 
-	render_context.m_Context->IASetPrimitiveTopology(myPrimologyType);
+	render_context.GetContext().IASetTopology(graphics::eTopology::TRIANGLE_LIST);
 	m_Material.Use(myEffect);
 }
 

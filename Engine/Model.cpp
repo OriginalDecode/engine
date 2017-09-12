@@ -10,6 +10,23 @@
 #include <Engine/RenderContext.h>
 #include <Engine/IGraphicsContext.h>
 
+Model::~Model()
+{
+	mySurfaces.DeleteAll();
+	for (Model* children : myChildren)
+	{
+		children->CleanUp();
+	}
+	myChildren.DeleteAll();
+
+	SAFE_RELEASE(myConstantBuffer);
+	DL_ASSERT_EXP(!myConstantBuffer, "Failed to release constant buffer!");
+
+	SAFE_RELEASE(m_VertexLayout);
+	SAFE_RELEASE(m_InstanceInputLayout);
+	SAFE_RELEASE(m_InstanceBuffer);
+}
+
 
 void Model::CleanUp()
 {
@@ -30,22 +47,22 @@ void Model::CleanUp()
 
 void Model::Initiate(const std::string& filename)
 {
-	m_Filename = cl::substr(filename, "/", false, 0);
+	//m_Filename = cl::substr(filename, "/", false, 0);
 	m_Orientations.Init(250);
 
 
-	for (const D3D11_INPUT_ELEMENT_DESC& el : myVertexFormat)
+	for (const D3D11_INPUT_ELEMENT_DESC& el : myVertexFormat) //This is the next thing to go
 	{
 		m_InputLayoutDesc.Add(el);
 	}
-
-	D3D11_INPUT_ELEMENT_DESC instance_info[4] = {
-
-		{ "INSTANCE", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0 , D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-		{ "INSTANCE", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-		{ "INSTANCE", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-		{ "INSTANCE", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
-	};
+ 
+// 	D3D11_INPUT_ELEMENT_DESC instance_info[4] = {
+// 
+// 		{ "INSTANCE", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0 , D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+// 		{ "INSTANCE", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+// 		{ "INSTANCE", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+// 		{ "INSTANCE", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
+// 	};
 
 
 	// 
@@ -148,49 +165,29 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 		return;
 	}
 
-	
-//	render_context.m_API->UpdateConstantBuffer(m_InstanceBuffer, &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
-
-// 	u32 offsets[] = {
-// 		m_VertexBuffer.myByteOffset,
-// 		0
-// 	};
-// 
-// 	u32 strides[] = {
-// 		m_VertexBuffer.myStride,
-// 		sizeof(CU::Matrix44f)
-// 	};
-// 
-// 
-// 	IBuffer* buffers[] = {
-// 		m_VertexBuffer.myVertexBuffer,
-// 		m_InstanceBuffer
-// 	};
-
-	//render_context.m_Context->IASetVertexBuffers(0, ARRAYSIZE(buffers), buffers, strides, offsets);
-
-
-	//render_context.m_Context->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
-
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //this should be a get function to the current sampler
+	
+	//Try to define this list before hand? Pass it to the activate of the surface?
+	ISamplerState* samplers[] = {
+		render_context.GetAPI().GetSamplerState(graphics::MSAA_x16),
+	};
 
-
+	render_context.GetContext().PSSetSamplerState(0, ARRSIZE(samplers), samplers);
+	
+#ifdef _PROFILE
+	EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
+#endif
 	for (Surface* surface : mySurfaces)
 	{
-		surface->Activate();
-#ifdef _PROFILE
-		EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
-#endif
+		surface->Activate(render_context);
 		render_context.GetContext().DrawIndexedInstanced(this);
-#ifdef _PROFILE
-		EASY_END_BLOCK;
-#endif
 		surface->Deactivate();
 	}
+#ifdef _PROFILE
+	EASY_END_BLOCK;
+#endif
 
-	RemoveOrientation();
+	RemoveOrientation(); 
 
 }
 
@@ -364,11 +361,6 @@ void Model::AddOrientation(CU::Matrix44f orientation)
 
 }
 
-void Model::ClearOrientation()
-{
-	RemoveOrientation();
-}
-
 void Model::RemoveOrientation()
 {
 	for (Model* child : myChildren)
@@ -378,24 +370,24 @@ void Model::RemoveOrientation()
 	m_Orientations.RemoveAll();
 }
 
-void Model::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc)
 {
 	if (m_IsRoot)
 		return;
 
 	if (!myConstantBuffer)
-	{
 		InitConstantBuffer();
-	}
 
 	m_ConstantStruct.m_World = myOrientation;
-	m_ConstantStruct.m_InvertedView = CU::Math::Inverse(aCameraOrientation);
-	m_ConstantStruct.m_Projection = aCameraProjection;
+	m_ConstantStruct.m_InvertedView = CU::Math::Inverse(camera_orientation);
+	m_ConstantStruct.m_Projection = camera_projection;
 
-	Engine::GetAPI();
+	graphics::IGraphicsContext& ctx = rc.GetContext();
 
+	ctx.UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct, sizeof(m_ConstantStruct));
+	ctx.UpdateConstantBuffer(m_InstanceBuffer, &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
+	ctx.VSSetConstantBuffer(0, 1, myConstantBuffer);
 
-	render_context.m_API->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
 }
 
 void Model::AddChild(Model* aChild)
@@ -403,6 +395,7 @@ void Model::AddChild(Model* aChild)
 	myChildren.Add(aChild);
 }
 
+/*
 void Model::InitInstanceBuffer()
 {
 	D3D11_BUFFER_DESC ibdesc;
@@ -443,7 +436,7 @@ void Model::InitConstantBuffer()
 	//HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
 
 	//Engine::GetAPI()->HandleErrors(hr, "[BaseModel] : Failed to Create Constant Buffer, ");
-}
+}*/
 
 void Model::CreateCube()
 {

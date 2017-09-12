@@ -38,6 +38,13 @@ namespace graphics
 		void DSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 		void CSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 
+
+		void IASetInputLayout(IInputLayout* input_layout);
+		void IASetTopology(eTopology topology);
+		//virtual void IASetVertexBuffer() = 0;
+		//virtual void IASetIndexBuffer() = 0;
+
+
 		void Draw(s32 vertex_start, s32 vertex_count) override;
 		void Draw(s32 index_start, s32 index_count, s32 vertex_start) override;
 		void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) override;
@@ -48,11 +55,26 @@ namespace graphics
 		void DrawIndexedInstanced(Model* model) override;
 
 
+		template<typename T>
+		void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size);
 
 	private:
 		ID3D11DeviceContext* m_Context;
-
-		D3D_PRIMITIVE_TOPOLOGY GetTopology(graphics::eTopology topology);
-
 	};
+
+	template<typename T>
+	void graphics::DX11Context::UpdateConstantBuffer(IBuffer* dest, T* src, s32 size)
+	{
+		D3D11_MAPPED_SUBRESOURCE msr;
+		m_Context->Map(dest, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+		if (msr.pData)
+		{
+			T* data = (T*)msr.pData;
+			memcpy(data, &src[0], size);
+		}
+		m_Context->Unmap(dest, 0);
+
+	}
+
 };

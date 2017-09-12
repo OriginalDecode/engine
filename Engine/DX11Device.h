@@ -28,12 +28,6 @@ namespace graphics
 
 	private:
 		ID3D11Device* m_Device = nullptr;
-		
-		D3D11_USAGE GetUsage(s32 usage);
-		u32 GetBindFlag(s32 binding);
-		DXGI_FORMAT GetFormat(s32 format);
-		u32 GetCPUAccessFlag(s32 flags);
-
 
 
 	};

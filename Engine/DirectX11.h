@@ -48,6 +48,11 @@ namespace graphics
 		DirectX11(CreateInfo info);
 		static void SetDebugName(void * pResource, cl::CHashString<128> debug_name);
 		static void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
+		static DXGI_FORMAT GetFormat(s32 format);
+		static D3D11_USAGE GetUsage(s32 usage);
+		static u32 GetBindFlag(s32 binding);
+		static u32 GetCPUAccessFlag(s32 flags);
+		static D3D11_PRIMITIVE_TOPOLOGY GetTopology(eTopology topology);
 
 		void ReleasePtr(void* ptr) override;
 

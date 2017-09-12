@@ -424,7 +424,7 @@ namespace graphics
 	/*IInputLayout* DirectX11::CreateInputLayout(void* pShader, void* pLayout, s32 element_count)
 	{
 		ID3D11InputLayout* layout = nullptr;
-		HRESULT hr = 
+		HRESULT hr =
 
 
 
@@ -474,7 +474,7 @@ namespace graphics
 		m_Context->OMSetDepthStencilState(myDepthStates[int(eDepthStencilState::Z_DISABLED)], 1);
 	}
 
-	
+
 	void DirectX11::ReleasePtr(void* ptr)
 	{
 		IUnknown* pUnknown = static_cast<IUnknown*>(ptr);
@@ -517,7 +517,7 @@ namespace graphics
 		m_Context->PSSetSamplers(0, 1, &mySamplerStates[samplerState]);
 	}
 
-	
+
 #ifdef _DEBUG
 	void DirectX11::ReportLiveObjects()
 	{
@@ -746,6 +746,107 @@ namespace graphics
 	}
 
 
+
+	DXGI_FORMAT DirectX11::GetFormat(s32 format)
+	{
+
+		//___________________________________________________
+		if (format & graphics::eTextureFormat::RGBA32_FLOAT)
+			return DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		if (format & graphics::eTextureFormat::RGBA32_UINT)
+			return DXGI_FORMAT_R32G32B32A32_UINT;
+
+		if (format & graphics::eTextureFormat::RGBA32_SINT)
+			return DXGI_FORMAT_R32G32B32A32_SINT;
+
+
+		//___________________________________________________
+		if (format & graphics::eTextureFormat::RGB32_FLOAT)
+			return DXGI_FORMAT_R32G32B32_FLOAT;
+
+		if (format & graphics::eTextureFormat::RGB32_UINT)
+			return DXGI_FORMAT_R32G32B32_UINT;
+
+		if (format & graphics::eTextureFormat::RGB32_SINT)
+			return DXGI_FORMAT_R32G32B32_SINT;
+
+
+		//___________________________________________________
+		if (format & graphics::eTextureFormat::RGBA16_FLOAT)
+			return DXGI_FORMAT_R16G16B16A16_FLOAT;
+
+		if (format & graphics::eTextureFormat::RGBA16_UINT)
+			return DXGI_FORMAT_R16G16B16A16_UINT;
+
+		if (format & graphics::eTextureFormat::RGBA16_SINT)
+			return DXGI_FORMAT_R16G16B16A16_SINT;
+
+		//___________________________________________________
+
+		if (format & graphics::eTextureFormat::RGBA8_UINT)
+			return DXGI_FORMAT_R8G8B8A8_UINT;
+
+		if (format & graphics::eTextureFormat::RGBA8_SINT)
+			return DXGI_FORMAT_R8G8B8A8_SINT;
+
+		//___________________________________________________
+		if (format & graphics::eTextureFormat::R32_TYPELESS)
+			return DXGI_FORMAT_R32_TYPELESS;
+
+		if (format & graphics::eTextureFormat::R32_FLOAT)
+			return DXGI_FORMAT_R32_FLOAT;
+
+		if (format & graphics::eTextureFormat::DEPTH_32_FLOAT)
+			return DXGI_FORMAT_D32_FLOAT;
+
+
+		return DXGI_FORMAT_R32G32B32A32_FLOAT;
+	}
+
+	D3D11_USAGE DirectX11::GetUsage(s32 usage)
+	{
+		if (usage == DEFAULT_USAGE)
+			return D3D11_USAGE_DEFAULT;
+		if (usage == IMMUTABLE_USAGE)
+			return D3D11_USAGE_IMMUTABLE;
+		if (usage == DYNAMIC_USAGE)
+			return D3D11_USAGE_DYNAMIC;
+		if (usage == STAGING_USAGE)
+			return D3D11_USAGE_STAGING;
+	}
+
+	u32 DirectX11::GetBindFlag(s32 binding)
+	{
+		u32 output = 0;
+
+		if (binding & graphics::eTextureBind::SHADERRESOURCE)
+			output |= D3D11_BIND_SHADER_RESOURCE;
+		if (binding & graphics::eTextureBind::RENDERTARGET)
+			output |= D3D11_BIND_RENDER_TARGET;
+		if (binding& graphics::eTextureBind::DEPTHSTENCIL)
+			output |= D3D11_BIND_DEPTH_STENCIL;
+
+		return output;
+	}
+
+	u32 DirectX11::GetCPUAccessFlag(s32 flags)
+	{
+		u32 output = 0;
+
+		if (flags & eCPUAccessFlag::READ)
+			output |= D3D11_CPU_ACCESS_READ;
+		if (flags& eCPUAccessFlag::WRITE)
+			output |= D3D11_CPU_ACCESS_WRITE;
+
+		return output;
+	}
+
+	D3D11_PRIMITIVE_TOPOLOGY DirectX11::GetTopology(eTopology topology)
+	{
+		if (topology == eTopology::TRIANGLE_LIST)
+			return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	}
 
 };
 

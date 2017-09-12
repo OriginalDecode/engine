@@ -48,6 +48,8 @@ protected:
 	InstanceWrapper m_InstanceWrapper;
 
 	IBuffer* myConstantBuffer = nullptr;
+	
+	
 
 	struct cbVertex
 	{

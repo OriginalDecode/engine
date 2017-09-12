@@ -154,7 +154,20 @@ namespace graphics
 		const auto& vtx = model->GetVertexWrapper();
 		const auto& idx = model->GetIndexWrapper();
 		const auto& ins = model->GetInstanceWrapper();
+
+		m_Context->IASetInputLayout(static_cast<ID3D11InputLayout*>(ins.GetInputLayout()));
+		m_Context->IASetVertexBuffers(ins.GetStart(), 
+									  ins.GetBufferCount(), 
+									  static_cast<ID3D11Buffer*const*>(ins.GetInstanceBuffers()), 
+									  ins.GetStrides(), 
+									  ins.GetByteOffsets());
+
+		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()), 
+									DirectX11::GetFormat(idx.GetFormat()),
+									idx.GetByteOffset());
+
+		m_Context->IASetPrimitiveTopology(DirectX11::GetTopology(vtx.GetTopology()));
+
 		m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), ins.GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
 	}
-
 };

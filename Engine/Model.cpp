@@ -134,10 +134,6 @@ void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix
 
 void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-
-	render_context.GetContext().DrawIndexedInstanced(this);
-
-
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Amber);
 #endif
@@ -146,41 +142,39 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 		child->RenderInstanced(camera_orientation, camera_projection, render_context);
 	}
 
-	if (!m_InstanceInputLayout || m_IsRoot || mySurfaces.Empty() || m_Orientations.Empty())
+	if (m_IsRoot || mySurfaces.Empty() || m_Orientations.Empty())
 	{
 		RemoveOrientation();
 		return;
 	}
 
-	render_context.m_Context->IASetInputLayout(m_InstanceInputLayout);
-	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
+//	render_context.m_API->UpdateConstantBuffer(m_InstanceBuffer, &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
+
+// 	u32 offsets[] = {
+// 		m_VertexBuffer.myByteOffset,
+// 		0
+// 	};
+// 
+// 	u32 strides[] = {
+// 		m_VertexBuffer.myStride,
+// 		sizeof(CU::Matrix44f)
+// 	};
+// 
+// 
+// 	IBuffer* buffers[] = {
+// 		m_VertexBuffer.myVertexBuffer,
+// 		m_InstanceBuffer
+// 	};
+
+	//render_context.m_Context->IASetVertexBuffers(0, ARRAYSIZE(buffers), buffers, strides, offsets);
 
 
-	render_context.m_API->UpdateConstantBuffer(m_InstanceBuffer, &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
-
-	u32 offsets[] = {
-		m_VertexBuffer.myByteOffset,
-		0
-	};
-
-	u32 strides[] = {
-		m_VertexBuffer.myStride,
-		sizeof(CU::Matrix44f)
-	};
-
-
-	IBuffer* buffers[] = {
-		m_VertexBuffer.myVertexBuffer,
-		m_InstanceBuffer
-	};
-
-	render_context.m_Context->IASetVertexBuffers(0, ARRAYSIZE(buffers), buffers, strides, offsets);
-	render_context.m_Context->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
+	//render_context.m_Context->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer, DXGI_FORMAT_R32_UINT, m_IndexBuffer.myByteOffset);
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP); //this should be a get function to the current sampler
 
 
 	for (Surface* surface : mySurfaces)
@@ -189,7 +183,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 #ifdef _PROFILE
 		EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 #endif
-		render_context.m_Context->DrawIndexedInstanced(m_IndexData.myIndexCount, m_Orientations.Size(), 0, 0, 0);
+		render_context.GetContext().DrawIndexedInstanced(this);
 #ifdef _PROFILE
 		EASY_END_BLOCK;
 #endif

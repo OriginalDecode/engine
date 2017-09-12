@@ -51,5 +51,8 @@ namespace graphics
 
 	private:
 		ID3D11DeviceContext* m_Context;
+
+		D3D_PRIMITIVE_TOPOLOGY GetTopology(graphics::eTopology topology);
+
 	};
 };

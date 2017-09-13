@@ -4,17 +4,14 @@
 #include "VertexStructs.h"
 #include <Engine/GBuffer.h>
 
-enum eDeferredType
-{
-	NONE,
-	ALBEDO,
-	NORMAL,
-	DEPTH,
-};
-
 class Effect;
 class Texture;
 class Quad;
+
+namespace graphics
+{
+	class RenderContext;
+}
 
 class DeferredRenderer
 {
@@ -22,16 +19,13 @@ public:
 	DeferredRenderer() = default;
 	~DeferredRenderer();
 	bool Initiate(Texture* shadow_texture);
-	void SetGBufferAsTarget();
-	void SetBuffers();
-	void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir);
+	void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context);
 	void SetRenderTarget();
 
 	Texture* GetFinalTexture() { return m_FinishedSceneTexture; }
 	Texture* GetSampleTexture() { return m_SampleTexture; }
-	Texture* GetDepthStencil() { return m_DepthStencil; }
+	Texture* GetDepthStencil() { return m_DepthStencilTexture; }
 
-	GBuffer& GetGBuffer() { return m_GBuffer; }
 
 	void SetColor(const CU::Vector4f& dir_color) { m_ConstantStruct.m_LightColor = dir_color; }//this is for the dir light only
 
@@ -40,7 +34,6 @@ public:
 private:
 	void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir);
 	void InitConstantBuffer();
-	GBuffer m_GBuffer;
 
 	Quad* m_RenderQuad = nullptr;
 
@@ -48,7 +41,7 @@ private:
 	Effect* m_AmbientPassShader = nullptr;
 	Effect* m_ScreenPassShader = nullptr;
 
-	Texture* m_DepthStencil = nullptr;
+	Texture* m_DepthStencilTexture = nullptr;
 	Texture* m_SampleTexture = nullptr; //what is even the sample texture?
 	Texture* m_FinishedSceneTexture = nullptr;
 

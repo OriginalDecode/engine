@@ -1,25 +1,28 @@
 #pragma once
 
-
 class Texture;
-class GBuffer
+namespace graphics
 {
-public:
-	GBuffer() = default;
-	~GBuffer();
-	void Initiate();
-	void Clear(float* aClearColor);
+	class RenderContext;
+	class GBuffer
+	{
+	public:
+		GBuffer() = default;
+		~GBuffer();
+		void Initiate();
 
-	void SetAsRenderTarget(Texture* aDepthTexture);
+		void Clear(float clear_color[4], const RenderContext& render_context);
+		void SetAsRenderTarget(Texture* depth, const RenderContext& render_context);
 
-	Texture* GetDiffuse() const;
-	Texture* GetNormal() const;
-	Texture* GetEmissive() const;
-	Texture* GetDepth() const;
+		Texture* GetAlbedo() const { return m_Albedo; }
+		Texture* GetNormal() const { return m_Normal; }
+		Texture* GetEmissive() const { return m_Emissive; }
+		Texture* GetDepth() const { return m_Depth; }
 
-private:
-	Texture* myAlbedo = nullptr;
-	Texture* myNormal = nullptr;
-	Texture* myEmissive = nullptr;
-	Texture* myDepth = nullptr;
+	private:
+		Texture* m_Albedo = nullptr;
+		Texture* m_Normal = nullptr;
+		Texture* m_Emissive = nullptr;
+		Texture* m_Depth = nullptr;
+	};
 };

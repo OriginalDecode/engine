@@ -48,9 +48,15 @@ Quad::Quad(Effect* effect) : m_Effect(effect)
 	};
 	IInputLayout* layout = device.CreateInputLayout(m_Effect->GetVertexShader(), desc, ARRSIZE(desc));
 
-	m_VertexWrapper = VertexWrapper(data, vtx_start, vtx_buffer_count, stride, vtx_byte_offset, vtx_count, size, vertex_buffer, layout, graphics::TRIANGLE_LIST);
-
-
+	m_VertexWrapper = VertexWrapper(data, 
+									vtx_start, 
+									vtx_buffer_count,
+									stride, vtx_byte_offset,
+									vtx_count, 
+									size, 
+									vertex_buffer, 
+									layout, 
+									graphics::TRIANGLE_LIST);
 
 	// Index
 	const graphics::eVertexFormat format = graphics::_4BYTE_R;
@@ -78,13 +84,21 @@ Quad::Quad(Effect* effect) : m_Effect(effect)
 
 	IBuffer* index_buffer = device.CreateBuffer(idx_desc);
 
-	m_IndexWrapper = IndexWrapper(index_data, index_count, index_start, index_size, format, index_byte_offset, index_buffer);
+	m_IndexWrapper = IndexWrapper(index_data, 
+								  index_count, 
+								  index_start, 
+								  index_size, 
+								  format, 
+								  index_byte_offset, 
+								  index_buffer);
 }
 
 void Quad::Render()
 {
 	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
 	//Engine::GetAPI()->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
+	m_Effect->Use();
 	ctx.DrawIndexed(this);
+	m_Effect->Clear();
 	//Engine::GetAPI()->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 }

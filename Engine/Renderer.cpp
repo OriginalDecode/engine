@@ -178,13 +178,13 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	debug_textures->AddShaderResource(gbuffer.GetDepth(), Effect::DEPTH);
 	debug_textures->AddShaderResource(gbuffer.GetEmissive(), Effect::EMISSIVE);
 
-	m_DebugQuad = new Quad;
-	m_DebugQuad->Initiate();
-
-
+	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 #endif
 
 	m_PBLValues = m_Engine->GetAPI()->CreateConstantBuffer(sizeof(m_values));
+
+
+	m_GBuffer.Initiate();
 
 	return true;
 }
@@ -192,7 +192,6 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 bool Renderer::CleanUp()
 {
-
 #if !defined(_PROFILE) && !defined(_FINAL)
 	SAFE_DELETE(m_DebugQuad);
 	SAFE_DELETE(m_DebugTexture0);
@@ -252,7 +251,7 @@ void Renderer::Render()
 #ifdef _PROFILE
 	EASY_FUNCTION(profiler::colors::Magenta);
 #endif
-	m_Engine->Clear();
+	//m_Engine->Clear();
 
 
 	//ProcessWater();
@@ -267,40 +266,38 @@ void Renderer::Render()
 		Render3DCommands();
 */
 
-	Texture::CopyData(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
+
+	//memcpy(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture(), sizeof(ITexture2D*));
+	//Texture::CopyData(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
 
-#if !defined(_PROFILE) && !defined(_FINAL)
-	WriteDebugTextures();
-#endif
+// #if !defined(_PROFILE) && !defined(_FINAL)
+// 	WriteDebugTextures();
+// #endif
 
 
-	VolumeParticles();
+	//VolumeParticles();
 
 
 	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 
-	CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
+	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
+	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
+	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
 
-
-	m_DeferredRenderer->DeferredRender(
-		m_Camera->GetOrientation(),
-		m_Camera->GetPerspective(),
-		shadow_mvp,
-		m_Direction,
-		m_RenderContext);
+	m_DeferredRenderer->DeferredRender(camera_orientation, camera_projection, shadow_mvp, m_Direction, m_RenderContext);
 
 	RenderTerrain(false);
-	m_Atmosphere.Render(m_Camera->GetOrientation(), m_DeferredRenderer->GetDepthStencil(), m_RenderContext);
+	//m_Atmosphere.Render(m_Camera->GetOrientation(), m_DeferredRenderer->GetDepthStencil(), m_RenderContext);
 
 	RenderPointlight();
 	RenderSpotlight();
 
-	m_Engine->ResetRenderTargetAndDepth();
-	m_DeferredRenderer->SetBuffers(m_RenderContext); //This is just the quad
+	//m_Engine->ResetRenderTargetAndDepth();
+	//m_DeferredRenderer->SetBuffers(m_RenderContext); //This is just the quad
 
-	m_PostProcessManager.Process(m_DeferredRenderer->GetFinalTexture());
-
+	//m_PostProcessManager.Process(m_DeferredRenderer->GetFinalTexture());
+/*
 	if (m_PostProcessManager.GetFlags() == 0)
 		m_DeferredRenderer->Finalize(m_RenderContext);
 
@@ -309,7 +306,7 @@ void Renderer::Render()
 	m_Engine->ResetRenderTargetAndDepth();
 
 	RenderNonDeferred3DCommands();
-
+*/
 
 
 	//m_Quad->SetBuffers();
@@ -336,14 +333,14 @@ void Renderer::Render()
 
 
 	//RenderParticles(m_Engine->GetEffect("Shaders/T_Particle.json"));
-	RenderLines();
-	Render2DCommands();
-
-#if !defined(_PROFILE) && !defined(_FINAL)
-	m_Engine->GetEffect("Shaders/debug_ui.json")->Use();
+// 	RenderLines();
+// 	Render2DCommands();
+// 
+// #if !defined(_PROFILE) && !defined(_FINAL)
+// 	m_Engine->GetEffect("Shaders/debug_ui.json")->Use();
 	ImGui::Render();
-#endif
-	m_Engine->Present();
+// #endif
+// 	m_Engine->Present();
 
 #ifdef _PROFILE
 	EASY_BLOCK("Waiting for Logic!");
@@ -357,18 +354,18 @@ void Renderer::Render()
 	mySynchronizer->RenderIsDone();
 
 }
-
 #if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::WriteDebugTextures()
 {
 	float clear[4] = { 0,0,0,0 };
-	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture0->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture1->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture2->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture3->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->ClearRenderTargetView(m_DebugTexture4->GetRenderTargetView(), clear);
+	auto& ctx = m_RenderContext.GetContext();
+	ctx.ClearRenderTarget(m_DebugTexture0->GetRenderTargetView(), clear);
+	ctx.ClearRenderTarget(m_DebugTexture1->GetRenderTargetView(), clear);
+	ctx.ClearRenderTarget(m_DebugTexture2->GetRenderTargetView(), clear);
+	ctx.ClearRenderTarget(m_DebugTexture3->GetRenderTargetView(), clear);
+	ctx.ClearRenderTarget(m_DebugTexture4->GetRenderTargetView(), clear);
 
-	ID3D11RenderTargetView* rtv[] =
+	IRenderTargetView* rtv[] =
 	{
 		m_DebugTexture0->GetRenderTargetView(),
 		m_DebugTexture1->GetRenderTargetView(),
@@ -376,65 +373,10 @@ void Renderer::WriteDebugTextures()
 		m_DebugTexture3->GetRenderTargetView(),
 		m_DebugTexture4->GetRenderTargetView(),
 	};
-
-	m_RenderContext.m_Context->OMSetRenderTargets(ARRAYSIZE(rtv), rtv, nullptr);
-	Effect* debug_textures = m_Engine->GetEffect("Shaders/debug_textures.json");
-	debug_textures->Use();
+	ctx.OMSetRenderTargets(ARRSIZE(rtv), rtv, nullptr);
 	m_DebugQuad->Render();
 }
 #endif
-
-
-void Renderer::VolumeParticles()
-{
-	/*const float clear[4] = { 0.f,0.f,0.f,0.f };
-
-	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleDiff->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->ClearDepthStencilView(m_ParticleDepth->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0.f);
-	m_RenderContext.m_Context->OMSetRenderTargets(1, m_ParticleDiff->GetRenderTargetRef(), m_ParticleDepth->GetDepthView());*/
-
-	//RenderParticles(m_Engine->GetEffect("Shaders/particle_offscreen.json")); //Should be a depth shader
-
-	/*m_Quad->SetBuffers();
-	Effect* fx = m_Engine->GetEffect("Shaders/particle_normal.json");
-
-	m_CalcSSNormal.m_InvProjection = CU::Math::InverseReal(m_Camera->GetPerspective());
-	m_CalcSSNormal.m_Projection = m_Camera->GetPerspective();
-
-	m_RenderContext.m_API->UpdateConstantBuffer(m_cbCalcSSNormal, &m_CalcSSNormal);
-	m_RenderContext.m_Context->PSSetConstantBuffers(0, 1, &m_cbCalcSSNormal);
-	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleBuffer->GetRenderTargetView(), clear);
-	ID3D11RenderTargetView* view[] = {
-		m_ParticleBuffer->GetRenderTargetView()
-	};
-	m_RenderContext.m_Context->OMSetRenderTargets(ARRAYSIZE(view), &view[0], myDepthTexture->GetDepthView());
-	fx->Use();
-	m_RenderContext.m_API->SetBlendState(eBlendStates::NO_BLEND);
-	m_Quad->Render();
-	fx->Clear();*/
-
-
-	//mySynchronizer->AddRenderCommand(SpriteCommand(m_DirectionalShadow.GetDepthTexture()->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 2)));
-	//mySynchronizer->AddRenderCommand(SpriteCommand(myDepthTexture->GetShaderView(), CU::Vector2f(1920 / 2, 1080 / 4)));
-
-	/*
-		Render Particles to depth
-		Calculate normals based on neighboring texel of the depth map
-		Render to screen
-	*/
-	/**
-
-	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleBuffer->GetRenderTargetView(), clear);
-	m_RenderContext.m_Context->ClearRenderTargetView(m_ParticleDiff->GetRenderTargetView(), clear);
-
-	ID3D11RenderTargetView* view[] = {
-		m_ParticleDiff->GetRenderTargetView(),
-		m_ParticleBuffer->GetRenderTargetView()
-	};
-	m_RenderContext.m_Context->OMSetRenderTargets(ARRAYSIZE(view), &view[0], myDepthTexture->GetDepthView());
-	RenderParticles(m_Engine->GetEffect("Shaders/T_particle_offscreen.json"));
-	*/
-}
 
 void Renderer::ProcessWater()
 {
@@ -470,13 +412,7 @@ void Renderer::ProcessWater()
 	m_Camera = old_camera;
 }
 
-//_________________________________
 
-void Renderer::AddTerrain(Terrain* someTerrain)
-{
-	myTerrainArray.Add(someTerrain);
-}
-//_________________________________
 
 void Renderer::RenderNonDeferred3DCommands()
 {
@@ -500,7 +436,6 @@ void Renderer::RenderNonDeferred3DCommands()
 
 	}
 }
-//_________________________________
 
 void Renderer::Render3DCommands()
 {
@@ -540,7 +475,6 @@ void Renderer::Render3DCommands()
 #endif
 
 }
-//_________________________________
 
 void Renderer::Render3DCommandsInstanced()
 {
@@ -589,16 +523,6 @@ void Renderer::Render3DCommandsInstanced()
 // 	}
 }
 
-void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i)
-{
-	
-	/*model->AddOrientation(command->m_Orientation);
-	if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
-		m_ModelsToRender.emplace(command->m_Key, model);*/
-}
-
-//_________________________________
-
 void Renderer::RenderTerrain(bool override_effect)
 {
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
@@ -621,7 +545,7 @@ void Renderer::RenderTerrain(bool override_effect)
 
 void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 {
-	const auto commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
+	const auto& commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
@@ -658,16 +582,6 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	}
 
 }
-//_________________________________
-
-int Renderer::RegisterLight()
-{
-	SpotLight* s = new SpotLight;
-	s->Initiate();
-	m_Spotlights.Add(s);
-	return (m_Spotlights.Size() - 1);
-}
-//_________________________________
 
 void Renderer::Render2DCommands()
 {
@@ -707,7 +621,6 @@ void Renderer::Render2DCommands()
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
-//_________________________________
 
 void Renderer::RenderSpotlight()
 {
@@ -766,7 +679,6 @@ void Renderer::RenderSpotlight()
 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
-//_________________________________
 
 void Renderer::RenderPointlight()
 {
@@ -806,7 +718,6 @@ void Renderer::RenderPointlight()
 
 
 }
-//_________________________________
 
 void Renderer::RenderParticles(Effect* effect)
 {
@@ -838,7 +749,6 @@ void Renderer::RenderParticles(Effect* effect)
 	//reset
 
 }
-//_________________________________
 
 void Renderer::RenderLines()
 {
@@ -875,10 +785,24 @@ void Renderer::RenderLines()
 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
 }
 
-
-//_________________________________
-
-PostProcessManager& Renderer::GetPostprocessManager()
+void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i)
 {
-	return m_PostProcessManager;
+	/*model->AddOrientation(command->m_Orientation);
+	if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
+	m_ModelsToRender.emplace(command->m_Key, model);*/
+}
+
+//Move this to some kind of light manager
+int Renderer::RegisterLight()
+{
+	SpotLight* s = new SpotLight;
+	s->Initiate();
+	m_Spotlights.Add(s);
+	return (m_Spotlights.Size() - 1);
+}
+
+//Terrain Manager not good enough to just loop through?
+void Renderer::AddTerrain(Terrain* someTerrain)
+{
+	myTerrainArray.Add(someTerrain);
 }

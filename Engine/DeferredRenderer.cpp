@@ -3,7 +3,10 @@
 #include "PointLight.h"
 #include <DL_Debug.h>
 #include "GBuffer.h"
+
 #include <Engine/Quad.h>
+#include <Engine/IGraphicsContext.h>
+
 
 DeferredRenderer::~DeferredRenderer()
 {
@@ -24,110 +27,89 @@ bool DeferredRenderer::Initiate(Texture* shadow_texture)
 {
 
 	const graphics::IGraphicsAPI* api = Engine::GetAPI();
- 	WindowSize window_size;
- 	window_size.m_Height = api->GetInfo().m_WindowHeight;
- 	window_size.m_Width = api->GetInfo().m_WindowWidth;
+	WindowSize window_size;
+	window_size.m_Height = api->GetInfo().m_WindowHeight;
+	window_size.m_Width = api->GetInfo().m_WindowWidth;
 
 	m_FinishedSceneTexture = new Texture;
-	m_FinishedSceneTexture->Initiate(window_size.m_Width, window_size.m_Height
-		, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-		, DXGI_FORMAT_R16G16B16A16_FLOAT
-		, "Texture : FinishedScene");
+// 	m_FinishedSceneTexture->Initiate(window_size.m_Width, window_size.m_Height
+// 		, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+// 		, DXGI_FORMAT_R16G16B16A16_FLOAT
+// 		, "Texture : FinishedScene");
 
 	m_SampleTexture = new Texture;
-	m_SampleTexture->Initiate(window_size.m_Width, window_size.m_Height
-		, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-		, DXGI_FORMAT_R16G16B16A16_FLOAT
-		, "DeferredRenderer : SampleTexture");
+// 	m_SampleTexture->Initiate(window_size.m_Width, window_size.m_Height
+// 		, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+// 		, DXGI_FORMAT_R16G16B16A16_FLOAT
+// 		, "DeferredRenderer : SampleTexture");
 
-	m_DepthStencil = new Texture;
-	m_DepthStencil->Initiate(window_size.m_Width, window_size.m_Height
-		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
-		, DXGI_FORMAT_R16G16B16A16_FLOAT
-		, DXGI_FORMAT_R32_TYPELESS
-		, DXGI_FORMAT_R32_FLOAT
-		, DXGI_FORMAT_D32_FLOAT
-		, "DeferredRenderer : DSV");
+	TextureDesc depth_desc;
+	depth_desc.m_Usage = graphics::DEFAULT_USAGE;
+	depth_desc.m_ResourceTypeBinding = graphics::SHADERRESOURCE | graphics::DEPTHSTENCIL | graphics::RENDERTARGET;
+	depth_desc.m_TextureFormat = graphics::RGBA16_FLOAT;
+	depth_desc.m_DepthTextureFormat = graphics::DEPTH_32_FLOAT;
+	depth_desc.m_RenderTargetFormat = graphics::R32_FLOAT;
+	depth_desc.m_Width = window_size.m_Width;
+	depth_desc.m_Height = window_size.m_Height;
+
+	m_DepthStencilTexture = new Texture;
+	m_DepthStencilTexture->Initiate(depth_desc, "DeferredRenderer - DSV");
+
 
 	m_CubeMap = Engine::GetInstance()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
 
 	m_ScreenPassShader = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
 
-	m_GBuffer.Initiate();
-	m_AmbientPassShader = myEngine->GetEffect("Shaders/deferred_ambient.json");
-	m_AmbientPassShader->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
-	m_AmbientPassShader->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
-	m_AmbientPassShader->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
-	m_AmbientPassShader->AddShaderResource(m_GBuffer.GetEmissive(), Effect::EMISSIVE);
+	m_AmbientPassShader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
 	m_AmbientPassShader->AddShaderResource(m_CubeMap, Effect::CUBEMAP);
 
 
-	Effect* ssao_effect = Engine::GetInstance()->GetEffect("Shaders/ssao.json");
-	ssao_effect->AddShaderResource(m_FinishedSceneTexture, Effect::DIFFUSE);
-	ssao_effect->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
-	ssao_effect->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
-
-	m_RenderQuad = new Quad;
-	m_RenderQuad->Initiate();
-
+	m_RenderQuad = new Quad(m_AmbientPassShader);
 
 	InitConstantBuffer();
 	return true;
 }
 
-void DeferredRenderer::SetGBufferAsTarget()
-{
-// 	m_GBuffer.Clear(myClearColor, render_context);
-// 	render_context.m_Context->ClearDepthStencilView(myDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-// 	m_GBuffer.SetAsRenderTarget(myDepthStencil, render_context);
-}
+// void DeferredRenderer::SetGBufferAsTarget()
+// {
+//  	m_GBuffer.Clear(clearcolor::black, render_context);
+//  	render_context.m_Context->ClearDepthStencilView(myDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f 0);
+//  	m_GBuffer.SetAsRenderTarget(myDepthStencil, render_context);
+// }
 
-void DeferredRenderer::SetBuffers()
+void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context)
 {
-// 	render_context.m_Context->IASetInputLayout(myInputLayout);
-// 
-// 	render_context.m_Context->IASetVertexBuffers(m_VertexBuffer->myStartSlot
-// 		, m_VertexBuffer->myNrOfBuffers
-// 		, &m_VertexBuffer->myVertexBuffer
-// 		, &m_VertexBuffer->myStride
-// 		, &m_VertexBuffer->myByteOffset);
-// 
-// 	render_context.m_Context->IASetIndexBuffer(m_IndexBuffer->myIndexBuffer
-// 		, m_IndexBuffer->myIndexBufferFormat
-// 		, m_IndexBuffer->myByteOffset);
-// 
-// 	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-}
+	//UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);
+ 
+	//render_context.m_API->ResetViewport();
+ 
+	IRenderTargetView* rtv[] = {
+		m_FinishedSceneTexture->GetRenderTargetView()
+	};
+	//ID3D11DepthStencilView* depth = render_context.m_API->GetDepthView(); 
+	//Replace above depth thing
+ 
+	auto& ctx = render_context.GetContext();
 
-void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
-{
-// 	UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);
-// 	SetBuffers(render_context);
-// 
-// 	render_context.m_API->ResetViewport();
-// 
-// 	ID3D11RenderTargetView* rtv[] = {
-// 		myFinishedSceneTexture->GetRenderTargetView()
-// 	};
-// 	ID3D11DepthStencilView* depth = render_context.m_API->GetDepthView();
-// 
-// 	render_context.m_Context->ClearRenderTargetView(rtv[0], myClearColor);
-// 	render_context.m_Context->OMSetRenderTargets(ARRAYSIZE(rtv), rtv, depth);
-// 
-// 	myAmbientPassShader->Use();
-// 	render_context.m_Context->PSSetConstantBuffers(0, 1, &myConstantBuffer);
-// 
-// 	render_context.m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
-// 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
-// 	render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
-// 	render_context.m_Context->DrawIndexed(6, 0, 0);
-// 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-// 
-// 	myAmbientPassShader->Clear();
-// 
-// 	depth = myDepthStencil->GetDepthView();
-// 
-// 	myContext->OMSetRenderTargets(1, &rtv[0], depth);
+	ctx.ClearRenderTarget(rtv, clearcolor::black);
+	ctx.OMSetRenderTargets(ARRSIZE(rtv), rtv, nullptr);
+
+	ctx.PSSetConstantBuffer(0, 1, m_ConstantBuffer);
+	ctx.PSSetSamplerState(0, 1, render_context.GetAPI().GetSamplerState(graphics::LINEAR));
+
+	render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
+
+	//render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
+	m_AmbientPassShader->Use();
+	render_context.GetContext().DrawIndexed(m_RenderQuad);
+	m_AmbientPassShader->Clear();
+	//render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+ 
+
+
+	/*depth = myDepthStencil->GetDepthView();
+ 
+	myContext->OMSetRenderTargets(1, &rtv[0], depth);*/
 }
 
 void DeferredRenderer::SetRenderTarget()

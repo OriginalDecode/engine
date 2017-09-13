@@ -70,7 +70,7 @@ inline void BeginTicketMutex(Ticket_Mutex* mutex)
 	u64 ticket = AtmoicAddU64(&mutex->ticket, 1); //AtomicAdd?
 	while (ticket != mutex->serving)
 	{
-	
+
 	}
 };
 
@@ -79,3 +79,7 @@ inline void EndTicketMutex(Ticket_Mutex* mutex)
 	mutex->serving++;
 };
 
+namespace clearcolor
+{
+	constexpr float black[4] = { 0.f, 0.f, 0.f, 0.f };
+};

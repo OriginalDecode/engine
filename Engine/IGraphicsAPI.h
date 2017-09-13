@@ -114,9 +114,10 @@ namespace graphics
 
 	enum eTextureBind
 	{
-		RENDERTARGET = 0,
-		DEPTHSTENCIL = 1,
-		SHADERRESOURCE = 2,
+		NONE = 0,
+		RENDERTARGET = 1,
+		DEPTHSTENCIL = 2,
+		SHADERRESOURCE = 4,
 	};
 
 	enum eCPUAccessFlag
@@ -176,7 +177,7 @@ namespace graphics
 		s32 m_SampleQuality = 0;
 	};
 
-	struct RenderTargetDesc
+	struct RenderTargetDesc : public Texture2DDesc
 	{
 		eTextureFormat m_Format = NO_FORMAT;
 	};

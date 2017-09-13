@@ -1,15 +1,20 @@
 #pragma once
 #include <Engine/engine_shared.h>
+#include <CommonLib/Math/Matrix/Matrix33.h>
+#include <Math/Matrix/Matrix.h>
+
+
 #include "LightStructs.h"
 #include "ShadowPass.h"
 #include "LightPass.h"
 #include "RenderCommand.h"
-#include <Math/Matrix/Matrix.h>
 #include "PostProcessManager.h"
+
 #include <Engine/Atmosphere.h>
-#include <CommonLib/Math/Matrix/Matrix33.h>
 #include <Engine/Shadow_Directional.h>
 #include <Engine/ShaderState.h>
+#include <Engine/GBuffer.h>
+
 
 class CLine3D;
 
@@ -37,13 +42,9 @@ public:
 
 	void Render();
 
-	void VolumeParticles();
-
 	void ProcessWater();
 
 	void AddTerrain(Terrain* someTerrain);
-
-	PostProcessManager& GetPostprocessManager();
 
 	void Render3DShadows(const CU::Matrix44f& orientation, Camera* camera);
 
@@ -67,6 +68,9 @@ private:
 
 	void RenderParticles(Effect* effect);
 	void RenderLines();
+
+	GBuffer m_GBuffer;
+
 
 	CU::GrowingArray<Model*> m_Models;
 	std::map<std::string, Model*> m_ModelsToRender;

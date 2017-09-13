@@ -39,11 +39,13 @@ namespace graphics
 		void CSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 
 
-		void IASetInputLayout(IInputLayout* input_layout);
-		void IASetTopology(eTopology topology);
-		//virtual void IASetVertexBuffer() = 0;
-		//virtual void IASetIndexBuffer() = 0;
+		void IASetInputLayout(IInputLayout* input_layout) override;
+		void IASetTopology(eTopology topology) override;
 
+		void OMSetRenderTargets(s32 num_views, IRenderTargetView* render_targets, IDepthStencilView* dsv) override;
+		void ClearRenderTarget(IRenderTargetView* render_target, const float clear_color[4]) override;
+
+		void ClearDepthStencilView(IDepthStencilView* dsv, s32 clear_flag, s32 max_depth) override;
 
 		void Draw(s32 vertex_start, s32 vertex_count) override;
 		void Draw(s32 index_start, s32 index_count, s32 vertex_start) override;
@@ -54,13 +56,13 @@ namespace graphics
 		void DrawInstanced(Model* model) override;
 		void DrawIndexedInstanced(Model* model) override;
 
-		void DrawIndexed(Quad* quad);
+		void DrawIndexed(Quad* quad) override;
 
 		template<typename T>
-		void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size);
+		void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size) override;
 
 		template<typename T>
-		void UpdateBuffer(IBuffer* dest, T* src, s32 size, eMapping mapping);
+		void UpdateBuffer(IBuffer* dest, T* src, s32 size, eMapping mapping) override;
 
 	private:
 		ID3D11DeviceContext* m_Context;

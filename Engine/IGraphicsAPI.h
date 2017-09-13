@@ -104,7 +104,7 @@ namespace graphics
 		_16BYTE_RGBA,
 	};
 
-	enum eTextureUsage
+	enum eUsage
 	{
 		DEFAULT_USAGE = 0,
 		IMMUTABLE_USAGE = 1,
@@ -141,6 +141,26 @@ namespace graphics
 		MAP_WRITE_NO_OVERWRITE
 	};
 
+	enum eElementSpecification
+	{
+		INPUT_PER_VERTEX_DATA,
+		INPUT_PER_INSTANCE_DATA,
+	};
+
+	enum eBindFlag
+	{
+		BIND_VERTEX_BUFFER,
+		BIND_INDEX_BUFFER,
+		BIND_CONSTANT_BUFFER,
+		BIND_SHADER_RESOURCE,
+		BIND_STREAM_OUTPUT,
+		BIND_RENDER_TARGET,
+		BIND_DEPTH_STENCIL,
+		BIND_UNORDERED_ACCESS,
+		BIND_DECODER,
+		BIND_VIDEO_ENCODER
+	};
+
 	struct Texture2DDesc
 	{
 		u32 m_Width = 0;
@@ -169,6 +189,29 @@ namespace graphics
 	struct DepthDesc
 	{
 		eTextureFormat m_Format = NO_FORMAT;
+	};
+
+	struct InputElementDesc
+	{
+		char* m_Semantic;
+		u32 m_SemanicIndex = 0;
+		eVertexFormat m_Format;
+		u32 m_InputSlot = 0;
+		u32 m_ByteOffset = 0;
+		eElementSpecification m_ElementSpecification;
+		u32 m_InstanceDataStepRate = 0;
+	};
+
+	struct BufferDesc
+	{
+		eBindFlag m_BindFlag;
+		eCPUAccessFlag m_CPUAccessFlag;
+		eUsage m_UsageFlag;
+		void* m_Data = nullptr;
+		s32 m_Size = 0;
+		s32 m_StructuredByteStride = 0;
+		s32 m_MiscFlags = 0;
+		s32 m_ByteWidth = 0;
 	};
 
 	class IGraphicsDevice;

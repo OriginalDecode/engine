@@ -2,7 +2,7 @@
 #include <CommonLib/HashString.h>
 
 #include <Engine/engine_shared.h>
-#include "IGraphicsAPI.h"
+#include <Engine/IGraphicsAPI.h>
 namespace graphics
 {
 	class IGraphicsContext;
@@ -23,9 +23,8 @@ namespace graphics
 		virtual IDepthStencilView* CreateDepthStencilView(const DepthDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name) = 0;
 
 		virtual IInputLayout* CreateInputLayout(CompiledShader* pShader, void* pLayout, s32 element_count) = 0;
-		virtual IBuffer* CreateBuffer(void* pBufferDesc) = 0;
-
-
+		virtual IBuffer* CreateBuffer(BufferDesc buffer_desc) = 0;
+		
 	private:
 	};
 };

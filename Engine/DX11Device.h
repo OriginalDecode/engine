@@ -23,8 +23,9 @@ namespace graphics
 		IShaderResourceView* CreateShaderResource(const ShaderResourceDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name) override;
 		IDepthStencilView* CreateDepthStencilView(const DepthDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name) override;
 
-		IInputLayout* CreateInputLayout(CompiledShader* pShader, void* pLayout, s32 element_count);
-		IBuffer* CreateBuffer(void* pBufferDesc);
+		IInputLayout* CreateInputLayout(CompiledShader* pShader, void* pLayout, s32 element_count) override;
+		IBuffer* CreateBuffer(BufferDesc buffer_desc) override;
+
 
 	private:
 		ID3D11Device* m_Device = nullptr;

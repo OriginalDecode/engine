@@ -191,9 +191,8 @@ namespace graphics
 #ifndef FINAL
 		DirectX11::HandleErrors(hr, "Failed to create DepthStencilView");
 		DirectX11::SetDebugName(dsv, debug_name);
-		return static_cast<IDepthStencilView*>(dsv);
 #endif
-
+		return static_cast<IDepthStencilView*>(dsv);
 	}
 
 	IInputLayout* DX11Device::CreateInputLayout(CompiledShader* pShader, void* pLayout, s32 element_count)
@@ -210,9 +209,38 @@ namespace graphics
 		return static_cast<IInputLayout*>(layout);
 	}
 
-	IBuffer* DX11Device::CreateBuffer(void* pBufferDesc)
+	IBuffer* DX11Device::CreateBuffer(BufferDesc buffer_desc)
 	{
+		ID3D11Buffer* buffer = nullptr;
+		D3D11_BUFFER_DESC desc;
+		desc.BindFlags = buffer_desc.m_BindFlag;
+		desc.CPUAccessFlags = DirectX11::GetCPUAccessFlag(buffer_desc.m_CPUAccessFlag);
+		desc.Usage = DirectX11::GetUsage(buffer_desc.m_UsageFlag);
+		desc.MiscFlags = buffer_desc.m_MiscFlags;
+		desc.StructureByteStride = buffer_desc.m_StructuredByteStride;
+		desc.ByteWidth = buffer_desc.m_ByteWidth;
 
+
+		D3D11_SUBRESOURCE_DATA srd;
+		HRESULT hr = S_OK;
+
+		if (buffer_desc.m_Data)
+		{
+			srd.pSysMem = buffer_desc.m_Data;
+			hr = m_Device->CreateBuffer(&desc, &srd, &buffer);
+		}
+		else
+		{
+			DL_WARNING("subresource data is null, this is fine, but the developer might not have intended for it to be null.");
+			hr = m_Device->CreateBuffer(&desc, nullptr, &buffer);
+		}
+
+#ifndef FINAL
+		DirectX11::HandleErrors(hr, "Failed to create buffer!");
+		DirectX11::SetDebugName(0, "Unknown_Buffer");
+#endif
+
+		return buffer;
 	}
 
 };

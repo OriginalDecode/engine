@@ -2,15 +2,21 @@
 #include "Quad.h"
 #include <Engine/Engine.h>
 #include <Engine/IGraphicsAPI.h>
+#include <Engine/IGraphicsDevice.h>
 #include <Engine/IGraphicsContext.h>
 
 void Quad::Initiate()
 {
 	m_ScreenpassShader = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
 
+	auto& device = Engine::GetAPI()->GetDevice();
+	// Vertex
 	const s32 vtx_count = 4;
 	const s32 stride = sizeof(VertexTypePosUV);
 	const s32 size = vtx_count * stride;
+	const s32 vtx_start = 0;
+	const s32 vtx_byte_offset = 0;
+	const s32 vtx_buffer_count = 1;
 	s8* data = new s8[size];
 
 	VertexTypePosUV vertices[vtx_count];
@@ -28,28 +34,33 @@ void Quad::Initiate()
 
 	memcpy(data, &vertices[0], size);
 
-// 	D3D11_INPUT_ELEMENT_DESC desc[] = {
-// 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-// 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,		0, 16,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
-// 	};
-// 
-// 	void* shader = m_ScreenpassShader->GetVertexShader()->compiledShader;
-// 	int size = m_ScreenpassShader->GetVertexShader()->shaderSize;
-// 
-// 	DirectX11* dx = Engine::GetInstance()->GetAPI();
-// 
-// 	HRESULT hr = dx->GetDevice()->CreateInputLayout(&desc[0], ARRAYSIZE(desc), shader, size, &m_InputLayout);
-// 
-// 	dx->SetDebugName(m_InputLayout, "Quad Vertex Layout");
-// 	dx->HandleErrors(hr, "Failed to create VertexLayout");
 
-	m_VertexWrapper = VertexWrapper(data, 0, 1, stride, 0, vtx_count, size, /*vertex buffer*/nullptr, /*input layout*/nullptr, graphics::TRIANGLE_LIST);
+	graphics::BufferDesc buf_desc;
+	buf_desc.m_Size = size;
+	buf_desc.m_Data = data;
+	buf_desc.m_CPUAccessFlag = graphics::WRITE;
+	buf_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
+	buf_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 
+	IBuffer* vertex_buffer = device.CreateBuffer(buf_desc);
+
+	graphics::InputElementDesc desc[] = {
+		{ "POSITION", 0, graphics::_16BYTE_RGBA, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, graphics::_8BYTE_RG, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
+	};
+	IInputLayout* layout = device.CreateInputLayout(m_ScreenpassShader->GetVertexShader(), desc, ARRSIZE(desc));
+
+	m_VertexWrapper = VertexWrapper(data, vtx_start, vtx_buffer_count, stride, vtx_byte_offset, vtx_count, size, vertex_buffer, layout, graphics::TRIANGLE_LIST);
 	
+
+
+	// Index
 	const graphics::eVertexFormat format = graphics::_4BYTE_R;
 	const s32 index_count = 6;
-	const s32 index_size = index_count * 4; //why *4?
+	const s32 index_size = index_count * 4; // there's 4 vertices, could that be the thing?
 	s8* index_data = new s8[index_size];
+	const s32 index_start = 0;
+	const s32 index_byte_offset = 0;
 
 	s32 indices[index_count];
 	indices[0] = 1;
@@ -58,34 +69,18 @@ void Quad::Initiate()
 	indices[3] = 2;
 	indices[4] = 3;
 	indices[5] = 1;
-
-
 	memcpy(index_data, &indices[0], index_size);
 
-	m_IndexWrapper = IndexWrapper(index_data, index_count, 0, index_size, format, 0, nullptr /*index buffer*/);
+	graphics::BufferDesc idx_desc;
+	idx_desc.m_Size = index_size;
+	idx_desc.m_Data = index_data;
+	idx_desc.m_CPUAccessFlag = graphics::READ;
+	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
+	idx_desc.m_UsageFlag = graphics::DEFAULT_USAGE;
 
+	IBuffer* index_buffer = device.CreateBuffer(idx_desc);
 
-
-	
-
-
-	//_____________________________
-
-// 	m_VertexBuffer.myVertexBuffer = dx->CreateVertexBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
-// 	dx->SetDebugName(m_VertexBuffer.myVertexBuffer, "Quad VertexBuffer");
-// 
-// 	m_VertexBuffer.myStride = m_VertexData.myStride;
-// 	m_VertexBuffer.myByteOffset = 0;
-// 	m_VertexBuffer.myStartSlot = 0;
-// 	m_VertexBuffer.myNrOfBuffers = 1;
-// 
-// 
-// 	//______________________________
-// 
-// 	m_IndexBuffer.myIndexBuffer = dx->CreateIndexBuffer(m_IndexData.mySize, m_IndexData.myIndexData);
-// 	dx->SetDebugName(m_VertexBuffer.myVertexBuffer, "Quad IndexBuffer");
-// 	m_IndexBuffer.myIndexBufferFormat = m_IndexData.myFormat;
-// 	m_IndexBuffer.myByteOffset = 0;
+	m_IndexWrapper = IndexWrapper(index_data, index_count, index_start, index_size, format, index_byte_offset, index_buffer);
 
 }
 

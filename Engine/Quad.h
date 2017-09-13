@@ -9,12 +9,9 @@
 class Quad
 {
 public:
-	Quad() = default;
-
-
-	void Initiate();
+	Quad(Effect* effect);
 	void Render();
-	Effect* GetShader() { return m_ScreenpassShader; }
+	Effect* GetShader() { return m_Effect; }
 
 	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
 	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }
@@ -25,6 +22,6 @@ private:
 	VertexWrapper m_VertexWrapper;
 	IndexWrapper m_IndexWrapper;
 
-	Effect* m_ScreenpassShader = nullptr;
+	Effect* m_Effect = nullptr;
 };
 

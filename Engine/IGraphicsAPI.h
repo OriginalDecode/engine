@@ -249,7 +249,7 @@ namespace graphics
 		virtual void ReleasePtr(void* ptr) = 0;
 
 		ISamplerState* GetSamplerState(eSamplerStates sampler_state) { return m_SamplerStates[sampler_state]; }
-
+		const CreateInfo& GetInfo() const { return m_CreateInfo; }
 	protected:
 		CreateInfo m_CreateInfo;
 		eGraphicsAPI m_ActiveAPI;

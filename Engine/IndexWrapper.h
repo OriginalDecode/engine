@@ -6,6 +6,7 @@
 class IndexWrapper
 {
 public:
+	IndexWrapper() = default;
 	IndexWrapper(s8* data, s32 index_count, s32 start, s32 size, graphics::eVertexFormat format, s32 byte_offset, IBuffer* buffer)
 		: m_Data(data)
 		, m_IndexCount(index_count)

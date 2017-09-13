@@ -4,6 +4,7 @@
 class InstanceWrapper
 {
 public:
+	InstanceWrapper() = default;
 	InstanceWrapper(s32 instance_count, s32 points_per_instance, s32 byte_offset, s32 stride, s32 start_index, s32 buffer_count, IBuffer* buffer, IInputLayout* input_layout )
 		: m_InstanceCount(instance_count)
 		, m_VerticesPerInstance(points_per_instance)

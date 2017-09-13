@@ -5,10 +5,8 @@
 #include <Engine/IGraphicsDevice.h>
 #include <Engine/IGraphicsContext.h>
 
-void Quad::Initiate()
+Quad::Quad(Effect* effect) : m_Effect(effect)
 {
-	m_ScreenpassShader = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
-
 	auto& device = Engine::GetAPI()->GetDevice();
 	// Vertex
 	const s32 vtx_count = 4;
@@ -48,10 +46,10 @@ void Quad::Initiate()
 		{ "POSITION", 0, graphics::_16BYTE_RGBA, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, graphics::_8BYTE_RG, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
 	};
-	IInputLayout* layout = device.CreateInputLayout(m_ScreenpassShader->GetVertexShader(), desc, ARRSIZE(desc));
+	IInputLayout* layout = device.CreateInputLayout(m_Effect->GetVertexShader(), desc, ARRSIZE(desc));
 
 	m_VertexWrapper = VertexWrapper(data, vtx_start, vtx_buffer_count, stride, vtx_byte_offset, vtx_count, size, vertex_buffer, layout, graphics::TRIANGLE_LIST);
-	
+
 
 
 	// Index
@@ -81,7 +79,6 @@ void Quad::Initiate()
 	IBuffer* index_buffer = device.CreateBuffer(idx_desc);
 
 	m_IndexWrapper = IndexWrapper(index_data, index_count, index_start, index_size, format, index_byte_offset, index_buffer);
-
 }
 
 void Quad::Render()

@@ -6,6 +6,7 @@
 class VertexWrapper
 {
 public:
+	VertexWrapper() = default;
 	VertexWrapper(s8* data,
 				  s32 vertex_start, 
 				  s32 buffer_count, 

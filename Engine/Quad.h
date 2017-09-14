@@ -10,7 +10,7 @@ class Quad
 {
 public:
 	Quad(Effect* effect);
-	void Render();
+	void Render(bool depth_on, Effect* override_effect = nullptr);
 	Effect* GetShader() { return m_Effect; }
 	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
 	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }

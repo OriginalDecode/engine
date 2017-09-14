@@ -24,7 +24,8 @@ namespace graphics
 
 		virtual IInputLayout* CreateInputLayout(CompiledShader* pShader, void* pLayout, s32 element_count) = 0;
 		virtual IBuffer* CreateBuffer(BufferDesc buffer_desc) = 0;
-		
+
+		virtual IDepthStencilState* CreateDepthStencilState() = 0; //needs to take in a desc
 	private:
 	};
 };

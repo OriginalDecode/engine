@@ -3,12 +3,16 @@
 
 #include <Engine/Model.h>
 #include <Engine/Quad.h>
+#include <Engine/DX11Device.h>
 
 namespace graphics
 {
 	DX11Context::DX11Context(ID3D11DeviceContext* context)
 		: m_Context(context)
 	{
+		auto& dev = Engine::GetAPI()->GetDevice();
+		m_EnableZ = static_cast<ID3D11DepthStencilState*>(dev.CreateDepthStencilState());
+		m_DisableZ = static_cast<ID3D11DepthStencilState*>(dev.CreateDepthStencilState());
 	}
 
 	void DX11Context::VSSetShaderResource(s32 start_slot, s32 count, void* resources)
@@ -160,7 +164,7 @@ namespace graphics
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
 	}
 
-	void DX11Context::DrawIndexed(Quad* quad)
+	void DX11Context::DrawIndexed(Quad* quad, bool depth_on)
 	{
 		const auto& vtx = quad->GetVertexWrapper();
 		const auto& idx = quad->GetIndexWrapper();
@@ -177,6 +181,8 @@ namespace graphics
 		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
 									DirectX11::GetFormat(idx.GetFormat()),
 									idx.GetByteOffset());
+
+		m_Context->OMSetDepthStencilState(depth_on ? m_EnableZ : m_DisableZ, 1);
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 	}
 

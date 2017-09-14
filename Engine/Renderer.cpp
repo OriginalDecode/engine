@@ -256,8 +256,8 @@ void Renderer::Render()
 
 	//ProcessWater();
 
-
-	m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
+	m_GBuffer.SetAsRenderTarget();
+	//m_DeferredRenderer->SetGBufferAsTarget(m_RenderContext);
 
 	//m_WaterPlane->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
 

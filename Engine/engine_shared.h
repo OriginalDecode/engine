@@ -34,6 +34,7 @@ typedef void IShaderBlob;
 typedef void IBuffer;
 typedef void IInputLayout;
 typedef void ISamplerState;
+typedef void IDepthStencilState;
 
 
 #if (UINTPTR_MAX == 0xffffffffffffffff)

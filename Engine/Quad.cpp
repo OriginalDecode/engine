@@ -93,12 +93,10 @@ Quad::Quad(Effect* effect) : m_Effect(effect)
 								  index_buffer);
 }
 
-void Quad::Render()
+void Quad::Render(bool depth_on, Effect* override_effect /*= nullptr*/)
 {
 	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
-	//Engine::GetAPI()->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
-	m_Effect->Use();
-	ctx.DrawIndexed(this);
-	m_Effect->Clear();
-	//Engine::GetAPI()->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+	override_effect ? override_effect->Use() : m_Effect->Use();
+	ctx.DrawIndexed(this, depth_on);
+	override_effect ? override_effect->Use() : m_Effect->Clear();
 }

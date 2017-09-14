@@ -2,7 +2,7 @@
 #pragma warning(disable : 4005)
 #pragma warning(disable : 4006)
 #pragma warning(disable : 4099)
-#include <d3dcompiler.h>
+#include <d3dcompiler.h> //this one needs to go, should the entire stdafx go away??
 
 //----------------------------------------
 // Common Utilities / Common Library
@@ -46,3 +46,7 @@
 
 
 
+
+#include <Engine/IGraphicsAPI.h>
+#include <Engine/IGraphicsDevice.h>
+#include <Engine/IGraphicsContext.h>

@@ -56,7 +56,7 @@ namespace graphics
 		void DrawInstanced(Model* model) override;
 		void DrawIndexedInstanced(Model* model) override;
 
-		void DrawIndexed(Quad* quad) override;
+		void DrawIndexed(Quad* quad, bool depth_on) override;
 
 		template<typename T>
 		void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size) override;
@@ -65,7 +65,14 @@ namespace graphics
 		void UpdateBuffer(IBuffer* dest, T* src, s32 size, eMapping mapping) override;
 
 	private:
-		ID3D11DeviceContext* m_Context;
+		ID3D11DeviceContext* m_Context = nullptr;
+
+		ID3D11DepthStencilState* m_DisableZ = nullptr;
+		ID3D11DepthStencilState* m_EnableZ = nullptr;
+
+
+
+
 	};
 
 	template<typename T>

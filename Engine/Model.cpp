@@ -13,36 +13,10 @@
 Model::~Model()
 {
 	m_Surfaces.DeleteAll();
-	for (Model* children : m_Children)
-	{
-		children->CleanUp();
-	}
 	m_Children.DeleteAll();
 
-	SAFE_RELEASE(m_ConstantBuffer);
-	DL_ASSERT_EXP(!m_ConstantBuffer, "Failed to release constant buffer!");
+	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
 
-	SAFE_RELEASE(m_VertexLayout);
-	SAFE_RELEASE(m_InstanceInputLayout);
-	SAFE_RELEASE(m_InstanceBuffer);
-}
-
-
-void Model::CleanUp()
-{
-	m_Surfaces.DeleteAll();
-	for (Model* children : m_Children)
-	{
-		children->CleanUp();
-	}
-	m_Children.DeleteAll();
-
-	SAFE_RELEASE(m_ConstantBuffer);
-	DL_ASSERT_EXP(!m_ConstantBuffer, "Failed to release constant buffer!");
-
-	SAFE_RELEASE(m_VertexLayout);
-	SAFE_RELEASE(m_InstanceInputLayout);
-	SAFE_RELEASE(m_InstanceBuffer);
 }
 
 void Model::Initiate(const std::string& filename)

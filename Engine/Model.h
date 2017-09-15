@@ -15,7 +15,6 @@ public:
 	Model() = default;
 	~Model();
 	virtual void Initiate(const std::string& filename);
-	void CleanUp();
 
 	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context) override;
 	void RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
@@ -58,23 +57,11 @@ private:
 	void RemoveOrientation();
 	CU::GrowingArray<Model*> m_Children;
 
-	//CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> m_InputLayoutDesc;
-	
-
 protected:
-	void InitInstanceBuffer();
 	void InitConstantBuffer();
 	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc) override;
 	
 	CU::GrowingArray<Surface*> m_Surfaces;
 	CU::GrowingArray<CU::Matrix44f> m_Orientations;
 
-
-
-	//CU::GrowingArray<SVertexTypePosCol> myVertices;
-	//CU::GrowingArray<s32> m_Indices;
-	//CU::Matrix44f myOrientation;
-	//IBuffer* m_InstanceBuffer = nullptr;
-	//D3D11_SUBRESOURCE_DATA m_InstanceData;
-	//const s32 m_InstanceCount = 5000;
 };

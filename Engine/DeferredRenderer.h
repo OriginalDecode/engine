@@ -16,9 +16,8 @@ namespace graphics
 class DeferredRenderer
 {
 public:
-	DeferredRenderer() = default;
+	DeferredRenderer();
 	~DeferredRenderer();
-	void Initiate(Texture* shadow_texture);
 	void DeferredRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context);
 	void SetRenderTarget();
 

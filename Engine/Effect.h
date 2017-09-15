@@ -11,6 +11,7 @@ public:
 	enum TextureSlot
 	{
 		DIFFUSE,
+		ALBEDO = DIFFUSE,
 		REFRACTION = DIFFUSE,
 		NORMAL,
 		LUMINANCE = NORMAL,

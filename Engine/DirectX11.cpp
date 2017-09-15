@@ -751,54 +751,60 @@ namespace graphics
 	{
 
 		//___________________________________________________
-		if (format & graphics::eTextureFormat::RGBA32_FLOAT)
+		if (format & graphics::RGBA32_FLOAT)
 			return DXGI_FORMAT_R32G32B32A32_FLOAT;
 
-		if (format & graphics::eTextureFormat::RGBA32_UINT)
+		if (format & graphics::RGBA32_UINT)
 			return DXGI_FORMAT_R32G32B32A32_UINT;
 
-		if (format & graphics::eTextureFormat::RGBA32_SINT)
+		if (format & graphics::RGBA32_SINT)
 			return DXGI_FORMAT_R32G32B32A32_SINT;
 
 
 		//___________________________________________________
-		if (format & graphics::eTextureFormat::RGB32_FLOAT)
+		if (format & graphics::RGB32_FLOAT)
 			return DXGI_FORMAT_R32G32B32_FLOAT;
 
-		if (format & graphics::eTextureFormat::RGB32_UINT)
+		if (format & graphics::RGB32_UINT)
 			return DXGI_FORMAT_R32G32B32_UINT;
 
-		if (format & graphics::eTextureFormat::RGB32_SINT)
+		if (format & graphics::RGB32_SINT)
 			return DXGI_FORMAT_R32G32B32_SINT;
 
 
 		//___________________________________________________
-		if (format & graphics::eTextureFormat::RGBA16_FLOAT)
+		if (format & graphics::RGBA16_FLOAT)
 			return DXGI_FORMAT_R16G16B16A16_FLOAT;
 
-		if (format & graphics::eTextureFormat::RGBA16_UINT)
+		if (format & graphics::RGBA16_UINT)
 			return DXGI_FORMAT_R16G16B16A16_UINT;
 
-		if (format & graphics::eTextureFormat::RGBA16_SINT)
+		if (format & graphics::RGBA16_SINT)
 			return DXGI_FORMAT_R16G16B16A16_SINT;
 
 		//___________________________________________________
 
-		if (format & graphics::eTextureFormat::RGBA8_UINT)
+		if (format & graphics::RGBA8_UINT)
 			return DXGI_FORMAT_R8G8B8A8_UINT;
 
-		if (format & graphics::eTextureFormat::RGBA8_SINT)
+		if (format & graphics::RGBA8_SINT)
 			return DXGI_FORMAT_R8G8B8A8_SINT;
 
 		//___________________________________________________
-		if (format & graphics::eTextureFormat::R32_TYPELESS)
+		if (format & graphics::R32_TYPELESS)
 			return DXGI_FORMAT_R32_TYPELESS;
 
-		if (format & graphics::eTextureFormat::R32_FLOAT)
+		if (format & graphics::R32_FLOAT)
 			return DXGI_FORMAT_R32_FLOAT;
 
-		if (format & graphics::eTextureFormat::DEPTH_32_FLOAT)
+		if (format & graphics::DEPTH_32_FLOAT)
 			return DXGI_FORMAT_D32_FLOAT;
+
+		if (format & graphics::R32_UINT)
+			return DXGI_FORMAT_R32_UINT;
+
+		if (format & graphics::RG32_FLOAT)
+			return DXGI_FORMAT_R32G32_FLOAT;
 
 
 		return DXGI_FORMAT_R32G32B32A32_FLOAT;

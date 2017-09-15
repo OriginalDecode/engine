@@ -5,6 +5,7 @@
 
 class VertexWrapper
 {
+	friend class ModelImporter;
 public:
 	VertexWrapper() = default;
 	VertexWrapper(s8* data,

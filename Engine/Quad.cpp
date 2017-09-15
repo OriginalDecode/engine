@@ -5,7 +5,8 @@
 #include <Engine/IGraphicsDevice.h>
 #include <Engine/IGraphicsContext.h>
 
-Quad::Quad(Effect* effect) : m_Effect(effect)
+Quad::Quad(Effect* effect) 
+	: m_Effect(effect)
 {
 	auto& device = Engine::GetAPI()->GetDevice();
 	// Vertex

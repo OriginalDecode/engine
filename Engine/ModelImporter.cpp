@@ -22,6 +22,8 @@ CModelImporter::CModelImporter()
 #endif
 }
 
+
+
 void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point)
 {
 	DL_ASSERT_EXP(someData, "Failed to process node. FBXModelData someData was null");
@@ -304,13 +306,6 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 			//myEngine->GetTexture(newPath); //All textures now get properly loaded.
 			TextureInfo newInfo;
 			newInfo.m_File = path;
-
-			if (path.find("metallic") != path.npos)
-			{
-				int apa;
-				apa = 5;
-			}
-
 
 			aiTextureType lType = static_cast< aiTextureType >( type );
 			//DL_MESSAGE("Type : %d, Name : %s", u32(lType), newPath.c_str());

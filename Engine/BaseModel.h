@@ -23,8 +23,6 @@ public:
 	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context) = 0;
 	virtual void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) = 0;
 
-	void SetupLayoutsAndBuffers();
-
 	void SetEffect(Effect* anEffect);
 
 	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
@@ -48,8 +46,6 @@ protected:
 	InstanceWrapper m_InstanceWrapper;
 
 	IBuffer* m_ConstantBuffer = nullptr;
-	
-	
 
 	struct cbVertex
 	{

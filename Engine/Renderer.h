@@ -105,9 +105,6 @@ private:
 	Texture*					m_ParticleBuffer		= nullptr;
 	Texture*					m_ParticleDiff			= nullptr;
 	Texture*					m_ParticleDepth			= nullptr;
-	class Quad*					m_Quad = nullptr;
-	Sprite*						mySprite				= nullptr;
-	Sprite*						myClearColor			= nullptr;
 
 	CLine3D*					m_Line					= nullptr;
 
@@ -119,8 +116,6 @@ private:
 
 	ShaderState m_LightState;
 
-	float m_SpriteWidth = 0.f;
-	float m_SpriteHeight = 0.f;
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)

@@ -34,28 +34,29 @@
 
 bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 {
-
-	m_RenderContext = graphics::RenderContext(Engine::GetInstance(), Engine::GetAPI()->GetDevice(), Engine::GetAPI()->GetContext(), Engine::GetAPI());
+	auto api = Engine::GetAPI();
+	m_RenderContext = graphics::RenderContext(Engine::GetInstance(), 
+											  api->GetDevice(), 
+											  api->GetContext(), 
+											  api);
 
 
 	mySynchronizer = synchronizer;
 	m_Camera = camera;
 
 	WindowSize window_size;
-	window_size.m_Height = m_API->GetInfo().m_WindowHeight;
-	window_size.m_Width = m_API->GetInfo().m_WindowWidth;
+	window_size.m_Height = api->GetInfo().m_WindowHeight;
+	window_size.m_Width = api->GetInfo().m_WindowWidth;
 
 	myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 
-	myPointLight = new PointLight; //Where should this live?
+	myPointLight = new PointLight; // This should live in some kind of light manager
 
 	m_DeferredRenderer = new DeferredRenderer; // Where should this live?
-	if (!m_DeferredRenderer->Initiate(0))
-		return false;
 
-	m_DepthTexture = new Texture; //Where should this live?
 
 	
+	m_DepthTexture = new Texture; //Where should this live?
 	m_DepthTexture->Initiate(window_size.m_Width, window_size.m_Height
 		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
 		, DXGI_FORMAT_R32_TYPELESS
@@ -64,19 +65,14 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 		, "Renderer : Depth");
 
 
-	m_SpriteHeight = 270.f;
-	m_SpriteWidth = 480.f;
 
-	mySprite = new Sprite;
-	mySprite->Initiate("Data/Textures/colors.dds", CU::Vector2f(m_SpriteWidth, m_SpriteHeight), CU::Vector2f(0.f, 0.f));
+	
 
-	myClearColor = new Sprite;
-	myClearColor->Initiate("Data/Textures/blank.dds", CU::Vector2f(128.f, 128.f), CU::Vector2f(0.f, 0.f));
-
+	
 	m_Line = new CLine3D; //Where should this live?
 	m_Line->Initiate();
 
-	bool success = m_LightPass.Initiate(m_DeferredRenderer->GetGBuffer(), 0);
+	bool success = m_LightPass.Initiate(m_GBuffer, 0);
 	DL_ASSERT_EXP(success, "failed to initiate lightpass!");
 
 	m_ParticleEmitter = new CEmitterInstance;
@@ -132,19 +128,6 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_Engine->AddTexture(m_ParticleDiff, "Particle Depth pass RTV");*/
 
 	m_Quad = new Quad;
-	m_Quad->Initiate();
-
-
-	m_cbParticleBuf = m_RenderContext.m_API->CreateConstantBuffer(sizeof(m_cbParticles));
-
-
-	m_CalcSSNormal.m_TexelSize.x = 1.f / window_size.m_Width;
-	m_CalcSSNormal.m_TexelSize.y = 1.f / window_size.m_Height;
-	m_cbCalcSSNormal = m_RenderContext.m_API->CreateConstantBuffer(sizeof(m_CalcSSNormal));
-
-
-	Effect* fx = m_Engine->GetEffect("Shaders/particle_normal.json");
-	fx->AddShaderResource(m_ParticleDiff, Effect::DEPTH);
 
 	m_Direction = CU::Vector3f(0.42f, 0.73f, 0.24f);
 
@@ -164,19 +147,11 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 	m_DebugTexture4 = new Texture;
 	m_DebugTexture4->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "roughness");
 
-
-	//m_Engine->AddTexture(m_DebugTexture0, "Scene Albedo");
-	//m_Engine->AddTexture(m_DebugTexture1, "Scene Normal");
-	//m_Engine->AddTexture(m_DebugTexture2, "Scene Depth");
-	//m_Engine->AddTexture(m_DebugTexture3, "Scene Metalness");
-	//m_Engine->AddTexture(m_DebugTexture4, "Scene Roughness"); 
-
-	const GBuffer& gbuffer = m_DeferredRenderer->GetGBuffer();
 	Effect* debug_textures = m_Engine->GetEffect("Shaders/debug_textures.json");
-	debug_textures->AddShaderResource(gbuffer.GetDiffuse(), Effect::DIFFUSE);
-	debug_textures->AddShaderResource(gbuffer.GetNormal(), Effect::NORMAL);
-	debug_textures->AddShaderResource(gbuffer.GetDepth(), Effect::DEPTH);
-	debug_textures->AddShaderResource(gbuffer.GetEmissive(), Effect::EMISSIVE);
+	debug_textures->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
+	debug_textures->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
+	debug_textures->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
+	debug_textures->AddShaderResource(m_GBuffer.GetEmissive(), Effect::EMISSIVE);
 
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 #endif
@@ -308,38 +283,14 @@ void Renderer::Render()
 	RenderNonDeferred3DCommands();
 */
 
-
-	//m_Quad->SetBuffers();
-
-
-	//ID3D11ShaderResourceView* srv[] = {
-	//	m_ParticleDiff->GetShaderView(),
-	//	m_ParticleBuffer->GetShaderView(),
-	//};
-
-	//m_RenderContext.m_API->SetVertexShader(m_Quad->GetShader()->GetVertexShader());
-	//m_RenderContext.m_API->SetPixelShader(Engine::GetInstance()->GetEffect("Shaders/T_Particle.json")->GetPixelShader());
-	//m_RenderContext.m_Context->PSSetShaderResources(0, ARRAYSIZE(srv), &srv[0]);
-
-	//m_cbParticles.m_ViewDir = m_Camera->GetAt();
-	//m_cbParticles.invProjection = CU::Math::InverseReal(m_Camera->GetPerspective());
-	//m_cbParticles.view = m_Camera->GetOrientation();
-
-	//m_RenderContext.m_API->UpdateConstantBuffer(m_cbParticleBuf, &m_cbParticles);
-
-	//m_RenderContext.m_Context->PSSetConstantBuffers(0, 1, &m_cbParticleBuf);
-
-	//m_Quad->Render();
-
-
 	//RenderParticles(m_Engine->GetEffect("Shaders/T_Particle.json"));
-// 	RenderLines();
-// 	Render2DCommands();
-// 
-// #if !defined(_PROFILE) && !defined(_FINAL)
-// 	m_Engine->GetEffect("Shaders/debug_ui.json")->Use();
+	//RenderLines();
+	//Render2DCommands();
+ 
+#if !defined(_PROFILE) && !defined(_FINAL)
+	//m_Engine->GetEffect("Shaders/debug_ui.json")->Use();
 	ImGui::Render();
-// #endif
+#endif
 // 	m_Engine->Present();
 
 #ifdef _PROFILE
@@ -374,7 +325,7 @@ void Renderer::WriteDebugTextures()
 		m_DebugTexture4->GetRenderTargetView(),
 	};
 	ctx.OMSetRenderTargets(ARRSIZE(rtv), rtv, nullptr);
-	m_DebugQuad->Render();
+	m_DebugQuad->Render(false);
 }
 #endif
 
@@ -411,8 +362,6 @@ void Renderer::ProcessWater()
 
 	m_Camera = old_camera;
 }
-
-
 
 void Renderer::RenderNonDeferred3DCommands()
 {
@@ -525,22 +474,22 @@ void Renderer::Render3DCommandsInstanced()
 
 void Renderer::RenderTerrain(bool override_effect)
 {
-	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-	m_API->SetRasterizer(eRasterizer::CULL_BACK);
-#ifdef _PROFILE
-	EASY_FUNCTION();
-#endif
-	for (Terrain* terrain : myTerrainArray)
-	{
-		if (!terrain->HasLoaded())
-			continue;
-		if (!override_effect)
-			terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
-		else
-			terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext, true);
-
-	}
+// 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+// 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+// 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
+// #ifdef _PROFILE
+// 	EASY_FUNCTION();
+// #endif
+// 	for (Terrain* terrain : myTerrainArray)
+// 	{
+// 		if (!terrain->HasLoaded())
+// 			continue;
+// 		if (!override_effect)
+// 			terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
+// 		else
+// 			terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext, true);
+// 
+// 	}
 }
 
 void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)

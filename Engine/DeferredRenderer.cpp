@@ -10,18 +10,8 @@
 #include <Engine/IGraphicsContext.h>
 
 
-DeferredRenderer::~DeferredRenderer()
+DeferredRenderer::DeferredRenderer()
 {
-	SAFE_DELETE(m_RenderQuad);
-	SAFE_DELETE(m_FinishedSceneTexture);
-	SAFE_DELETE(m_DepthStencilTexture);
-
-	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
-}
-
-void DeferredRenderer::Initiate(Texture* shadow_texture)
-{
-
 	const graphics::IGraphicsAPI* api = Engine::GetAPI();
 	WindowSize window_size;
 	window_size.m_Height = api->GetInfo().m_WindowHeight;
@@ -33,7 +23,7 @@ void DeferredRenderer::Initiate(Texture* shadow_texture)
 	scene_desc.m_Width = window_size.m_Width;
 	scene_desc.m_Height = window_size.m_Height;
 	scene_desc.m_Usage = graphics::DEFAULT_USAGE;
-	scene_desc.m_ResourceTypeBinding = graphics::SHADERRESOURCE |  graphics::RENDERTARGET;
+	scene_desc.m_ResourceTypeBinding = graphics::SHADERRESOURCE | graphics::RENDERTARGET;
 	scene_desc.m_TextureFormat = graphics::RGBA16_FLOAT;
 	scene_desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
 	m_FinishedSceneTexture = new Texture;
@@ -74,6 +64,15 @@ void DeferredRenderer::Initiate(Texture* shadow_texture)
 	//_______________________________________________________________________
 
 	m_RenderQuad = new Quad(m_AmbientPassShader);
+}
+
+DeferredRenderer::~DeferredRenderer()
+{
+	SAFE_DELETE(m_RenderQuad);
+	SAFE_DELETE(m_FinishedSceneTexture);
+	SAFE_DELETE(m_DepthStencilTexture);
+
+	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
 }
 
 void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context)

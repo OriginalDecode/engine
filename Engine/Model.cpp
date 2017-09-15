@@ -51,11 +51,11 @@ void Model::Initiate(const std::string& filename)
 	m_Orientations.Init(250);
 
 
-	for (const D3D11_INPUT_ELEMENT_DESC& el : myVertexFormat) //This is the next thing to go
-	{
-		m_InputLayoutDesc.Add(el);
-	}
- 
+// 	for (const D3D11_INPUT_ELEMENT_DESC& el : myVertexFormat) //This is the next thing to go
+// 	{
+// 		m_InputLayoutDesc.Add(el);
+// 	}
+//  
 // 	D3D11_INPUT_ELEMENT_DESC instance_info[4] = {
 // 
 // 		{ "INSTANCE", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0 , D3D11_INPUT_PER_INSTANCE_DATA, 1 },
@@ -72,14 +72,14 @@ void Model::Initiate(const std::string& filename)
 	// 	m_InputLayoutDesc.Add(instance_info[3]);
 
 
-	if (m_IsRoot == false)
-	{
-		InitVertexBuffer();
-		InitInputLayout();
-		InitIndexBuffer();
-		InitConstantBuffer();
-		//InitInstanceBuffer();
-	}
+// 	if (m_IsRoot == false)
+// 	{
+// 		InitVertexBuffer();
+// 		InitInputLayout();
+// 		InitIndexBuffer();
+// 		InitConstantBuffer();
+// 		//InitInstanceBuffer();
+// 	}
 
 	for (Model* child : m_Children)
 	{
@@ -130,23 +130,20 @@ void Model::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f&
 
 void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-
-	SetupLayoutsAndBuffers();
-
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+	
+// 	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
+// 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 
-	myEffect->Use();
+	m_Effect->Use();
 #ifdef _PROFILE
 	EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 #endif
-	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+	//render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 #ifdef _PROFILE
 	EASY_END_BLOCK;
 #endif
-	myEffect->Clear();
-	//RemoveOrientation();
+	m_Effect->Clear();
 }
 
 void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)

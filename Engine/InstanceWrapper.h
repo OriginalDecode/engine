@@ -3,6 +3,7 @@
 
 class InstanceWrapper
 {
+	friend class ModelImporter;
 public:
 	InstanceWrapper() = default;
 	InstanceWrapper(s32 instance_count, s32 points_per_instance, s32 byte_offset, s32 stride, s32 start_index, s32 buffer_count, IBuffer* buffer, IInputLayout* input_layout )
@@ -24,6 +25,7 @@ public:
 	s32 GetStride() const { return m_Stride; }
 	s32 GetStart() const { return m_Start; }
 	s32 GetBufferCount() const { return m_BufferCount; }
+	s32 GetSize() const { return m_Size; }
 	IBuffer* GetInstanceBuffer() const { return m_InstanceBuffer; }
 
 	IInputLayout* GetInputLayout() const { return m_InstanceInputLayout; }
@@ -44,6 +46,7 @@ private:
 
 	s32 m_Start = 0;
 	s32 m_BufferCount = 0;
+	s32 m_Size = 0;
 	IBuffer* m_InstanceBuffer = nullptr;
 	IInputLayout* m_InstanceInputLayout = nullptr;
 };

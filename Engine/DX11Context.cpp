@@ -132,6 +132,11 @@ namespace graphics
 		m_Context->CSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
 
+	void DX11Context::IASetInputLayout(IInputLayout* input_layout)
+	{
+		assert("not implemented!");
+	}
+
 	void DX11Context::IASetTopology(eTopology topology)
 	{
 		D3D_PRIMITIVE_TOPOLOGY d3d_topology = DirectX11::GetTopology(topology);

@@ -8,8 +8,6 @@ namespace graphics
 	class IGraphicsContext
 	{
 	public:
-		virtual void* GetContext() = 0;
-
 		virtual void VSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void PSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void GSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
@@ -43,8 +41,6 @@ namespace graphics
 
 		virtual void IASetInputLayout(IInputLayout* input_layout) = 0;
 		virtual void IASetTopology(eTopology topology) = 0;
-		virtual void IASetVertexBuffer() = 0;
-		virtual void IASetIndexBuffer() = 0;
 
 		virtual void OMSetRenderTargets(s32 num_views, IRenderTargetView* render_targets, IDepthStencilView* dsv) = 0;
 		virtual void ClearRenderTarget(IRenderTargetView* render_target, const float clear_color[4]) = 0;

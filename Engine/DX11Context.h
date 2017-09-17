@@ -8,6 +8,7 @@ namespace graphics
 {
 	class DX11Context : public IGraphicsContext
 	{
+		friend class DirectX11;
 	public:
 		DX11Context(ID3D11DeviceContext* context);
 		void VSSetShaderResource(s32 start_slot, s32 count, void* resources) override;

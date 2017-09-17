@@ -28,8 +28,7 @@ namespace graphics
 		virtual IBuffer* CreateConstantBuffer(s32 size) = 0;
 
 
-		virtual IDepthStencilState* CreateDepthStencilState() = 0; //needs to take in a desc
-	private:
+
 	};
 };
 

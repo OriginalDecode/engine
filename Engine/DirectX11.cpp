@@ -10,6 +10,10 @@
 
 #include <sstream>
 
+
+#include <Engine/DX11Device.h>
+#include <Engine/DX11Context.h>
+
 #define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
 
 constexpr float clear[4] = { 0.f, 0.f, 0.f, 0.f };
@@ -19,28 +23,22 @@ namespace graphics
 	DirectX11::DirectX11(CreateInfo info)
 		: IGraphicsAPI(info)
 	{
-		//m_EnableZ = static_cast<ID3D11DepthStencilState*>(dev.CreateDepthStencilState());
-		//m_DisableZ = static_cast<ID3D11DepthStencilState*>(dev.CreateDepthStencilState());
-
-	}
-
-	bool DirectX11::Initiate(CreateInfo create_info)
-	{
-		m_CreateInfo = create_info;
-		CreateAdapterList();
 		CreateDeviceAndSwapchain();
-		CreateDepthBuffer();
 		CreateDepthStencilStates();
-		CreateBackBuffer();
-		CreateViewport();
-		CreateRazterizers();
-		CreateBlendStates();
-		CreateSamplerStates();
+
+// 		CreateAdapterList();
+// 		CreateDepthBuffer();
+// 		CreateBackBuffer();
+// 		CreateViewport();
+// 		CreateRazterizers();
+// 		CreateBlendStates();
+// 		CreateSamplerStates();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-		ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, static_cast<ID3D11Device*>(**m_Device), static_cast<ID3D11DeviceContext*>(m_Context));
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11DeviceContext* pContext = static_cast<DX11Context*>(m_Context)->m_Context;
+		ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, pDevice, pContext);
 #endif
-		return true;
 	}
 
 	bool DirectX11::CleanUp()
@@ -62,44 +60,10 @@ namespace graphics
 
 		SAFE_DELETE(m_Viewport);
 
-		{
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::DEPTH_TEST)]);
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::LIGHT_MASK)]);
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::MASK_TEST)]);
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::READ_NO_WRITE_PARTICLE)]);
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::READ_NO_WRITE)]);
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::Z_DISABLED)]);
-			SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::Z_ENABLED)]);
-		}
-
-		{
-			SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::MSAA)]);
-			SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_FRONT)]);
-			SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
-			SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
-			SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::WIREFRAME)]);
-		}
-
-		{
-			SAFE_RELEASE(myBlendStates[u16(eBlendStates::BLEND_FALSE)]);
-			SAFE_RELEASE(myBlendStates[u16(eBlendStates::ALPHA_BLEND)]);
-			SAFE_RELEASE(myBlendStates[u16(eBlendStates::LIGHT_BLEND)]);
-			SAFE_RELEASE(myBlendStates[u16(eBlendStates::NO_BLEND)]);
-		}
-
-		{
-			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_CLAMP)]);
-			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_WRAP)]);
-			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_CLAMP)]);
-			SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_WRAP)]);
-		}
-
-		{
-			SAFE_RELEASE(m_DepthView);
-			SAFE_RELEASE(m_DepthBuffer);
-			SAFE_RELEASE(m_RenderTarget);
-			SAFE_RELEASE(m_Swapchain);
-		}
+		SAFE_RELEASE(m_DepthView);
+		SAFE_RELEASE(m_DepthBuffer);
+		SAFE_RELEASE(m_RenderTarget);
+		SAFE_RELEASE(m_Swapchain);
 
 
 
@@ -229,8 +193,8 @@ namespace graphics
 			type = D3D_DRIVER_TYPE_UNKNOWN;
 		}
 
-		ID3D11Device* pDevice = nullptr; // static_cast<ID3D11Device*>(**m_Device);
-
+		ID3D11Device* pDevice = nullptr;
+		ID3D11DeviceContext* pContext = nullptr;
 		HRESULT hr = D3D11CreateDeviceAndSwapChain(myAdapters[adapterString],
 												   type,
 												   nullptr,
@@ -242,7 +206,7 @@ namespace graphics
 												   &m_Swapchain,
 												   &pDevice,
 												   nullptr,
-												   &m_Context);
+												   &pContext);
 
 		if (pDevice == nullptr)
 		{
@@ -257,7 +221,7 @@ namespace graphics
 											   &m_Swapchain,
 											   &pDevice,
 											   nullptr,
-											   &m_Context);
+											   &pContext);
 		}
 
 		DL_ASSERT_EXP(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");
@@ -277,10 +241,9 @@ namespace graphics
 		const std::string swapchainName = "DirectX11 Swapchain Object";
 		m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, u32(swapchainName.size()), swapchainName.c_str());
 		pDevice->SetPrivateData(WKPDID_D3DDebugObjectName, u32(deviceName.size()), deviceName.c_str());
-		m_Device = reinterpret_cast<graphics::IDevice*>(pDevice);
 
-		m_Device = static_cast<graphics::IDevice*>(static_cast<void*>(pDevice));
-
+		m_Device = new DX11Device(pDevice);
+		m_Context = new DX11Context(pContext);
 
 	}
 
@@ -467,17 +430,6 @@ namespace graphics
 		}
 	}
 
-	void DirectX11::EnableZBuffer()
-	{
-		m_Context->OMSetDepthStencilState(myDepthStates[int(eDepthStencilState::Z_ENABLED)], 1);
-	}
-
-	void DirectX11::DisableZBuffer()
-	{
-		m_Context->OMSetDepthStencilState(myDepthStates[int(eDepthStencilState::Z_DISABLED)], 1);
-	}
-
-
 	void DirectX11::ReleasePtr(void* ptr)
 	{
 		IUnknown* pUnknown = static_cast<IUnknown*>(ptr);
@@ -521,14 +473,14 @@ namespace graphics
 	}
 
 
-#ifdef _DEBUG
-	void DirectX11::ReportLiveObjects()
-	{
-		m_Context->ClearState();
-		m_Context->Flush();
-		m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | (D3D11_RLDO_FLAGS)0x4);
-	}
-#endif
+// #ifdef _DEBUG
+// 	void DirectX11::ReportLiveObjects()
+// 	{
+// 		m_Context->ClearState();
+// 		m_Context->Flush();
+// 		m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | (D3D11_RLDO_FLAGS)0x4);
+// 	}
+// #endif
 
 	void DirectX11::SetViewport(void* viewport)
 	{
@@ -618,8 +570,7 @@ namespace graphics
 		desc.MultisampleEnable = false;
 		desc.AntialiasedLineEnable = false;
 
-
-		ID3D11Device* pDevice = static_cast<ID3D11Device*>(**m_Device);
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
 
 		desc.FillMode = D3D11_FILL_WIREFRAME;
 		desc.CullMode = D3D11_CULL_NONE;

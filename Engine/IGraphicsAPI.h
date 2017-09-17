@@ -26,9 +26,6 @@ namespace graphics
 		Z_DISABLED,
 		READ_NO_WRITE,
 		READ_NO_WRITE_PARTICLE,
-		MASK_TEST,
-		LIGHT_MASK,
-		DEPTH_TEST,
 		NOF_DSS
 	};
 
@@ -218,12 +215,6 @@ namespace graphics
 		s32 m_StructuredByteStride = 0;
 		s32 m_MiscFlags = 0;
 		s32 m_ByteWidth = 0;
-	};
-
-	struct DepthStencilDesc
-	{
-		bool m_ReadDepth;
-		bool m_WriteDepth;
 	};
 
 	class IGraphicsDevice;

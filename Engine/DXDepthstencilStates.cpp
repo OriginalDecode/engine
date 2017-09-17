@@ -34,8 +34,10 @@ void DirectX11::CreateDisabledDepthStencilState()
 	ZeroMemory(&stencilDesc, sizeof(stencilDesc));
 
 	stencilDesc.DepthEnable = false;
+
 	stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
 	stencilDesc.StencilEnable = true;
 	stencilDesc.StencilReadMask = 0xFF;
 	stencilDesc.StencilWriteMask = 0xFF;

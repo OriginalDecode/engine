@@ -32,62 +32,56 @@
 #include <Input/InputWrapper.h>
 #include <Engine/IGraphicsContext.h>
 
-bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
+Renderer::Renderer(Synchronizer* synchronizer)
+	: m_Synchronizer(synchronizer)
+	, m_Camera(Engine::GetInstance()->GetCamera())
 {
 	auto api = Engine::GetAPI();
-	m_RenderContext = graphics::RenderContext(Engine::GetInstance(), 
-											  api->GetDevice(), 
-											  api->GetContext(), 
+	m_RenderContext = graphics::RenderContext(Engine::GetInstance(),
+											  api->GetDevice(),
+											  api->GetContext(),
 											  api);
 
+	myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
+	m_DeferredRenderer = new DeferredRenderer; // Where should this live?
 
-	mySynchronizer = synchronizer;
-	m_Camera = camera;
 
 	WindowSize window_size;
 	window_size.m_Height = api->GetInfo().m_WindowHeight;
 	window_size.m_Width = api->GetInfo().m_WindowWidth;
 
-	myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 
-	myPointLight = new PointLight; // This should live in some kind of light manager
-
-	m_DeferredRenderer = new DeferredRenderer; // Where should this live?
+	//myPointLight = new PointLight; // This should live in some kind of light manager
 
 
-	
+
+
 	m_DepthTexture = new Texture; //Where should this live?
-	m_DepthTexture->Initiate(window_size.m_Width, window_size.m_Height
-		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-		, DXGI_FORMAT_R32_TYPELESS
-		, DXGI_FORMAT_R32_FLOAT
-		, DXGI_FORMAT_D32_FLOAT
-		, "Renderer : Depth");
-
-
-
-	
-
-	
-	m_Line = new CLine3D; //Where should this live?
-	m_Line->Initiate();
-
-	bool success = m_LightPass.Initiate(m_GBuffer, 0);
-	DL_ASSERT_EXP(success, "failed to initiate lightpass!");
-
-	m_ParticleEmitter = new CEmitterInstance;
-	m_ParticleEmitter->Initiate(mySynchronizer, m_DepthTexture);
-
-	m_Atmosphere.Initiate(1024.f, 1024.f, { 512.f, 0.f, 512.f });
+// 	m_DepthTexture->Initiate(window_size.m_Width, window_size.m_Height
+// 							 , DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
+// 							 , DXGI_FORMAT_R32_TYPELESS
+// 							 , DXGI_FORMAT_R32_FLOAT
+// 							 , DXGI_FORMAT_D32_FLOAT
+// 							 , "Renderer : Depth");
 
 
 	m_PostProcessManager.Initiate();
 	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR);
 
-	m_RenderContext.m_API = Engine::GetAPI();
-	m_RenderContext.m_Device = Engine::GetAPI()->GetDevice();
-	m_RenderContext.m_Context = Engine::GetAPI()->GetContext();
-	m_RenderContext.m_Engine = Engine::GetInstance();
+
+
+
+	m_Line = new CLine3D; //Where should this live?
+	m_Line->Initiate();
+
+	m_LightPass = graphics::LightPass(m_GBuffer);
+
+	m_ParticleEmitter = new CEmitterInstance;
+	m_ParticleEmitter->Initiate(m_Synchronizer, m_DepthTexture);
+
+	m_Atmosphere.Initiate(1024.f, 1024.f, { 512.f, 0.f, 512.f });
+
+
 
 	m_ShadowPass.Initiate(this);
 
@@ -99,35 +93,6 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 	m_WaterCamera = new Camera;
 	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.01f, 100.f, 90.f);
-
-
-	m_ParticleBuffer = new Texture;
-	m_ParticleBuffer->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
-
-
-	m_ParticleDiff = new Texture;
-	m_ParticleDiff->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "Particle Depth RTV");
-	//, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_UNORM, "Particle Render Target");
-
-	m_ParticleDepth = new Texture;
-	//m_ParticleDepth->Initiate(window_size.m_Width, window_size.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R32G32B32A32_FLOAT, "Particle Depth Render Target");
-	m_ParticleDepth->Initiate(window_size.m_Width, window_size.m_Height
-		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
-		, DXGI_FORMAT_R32_TYPELESS
-		, DXGI_FORMAT_R32_FLOAT
-		, DXGI_FORMAT_D32_FLOAT
-		, "Particle : DepthStencil ");
-
-
-	/*Engine::GetInstance()->GetEffect("Shaders/particle.json")->AddShaderResource(m_ParticleBuffer, Effect::NORMAL);
-	Engine::GetInstance()->GetEffect("Shaders/particle.json")->AddShaderResource(myDepthTexture, Effect::DEPTH);
-	Engine::GetInstance()->GetEffect("Shaders/deferred_pointlight.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
-	Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json")->AddShaderResource(m_ParticleBuffer, Effect::PARTICLES);
-	m_Engine->AddTexture(m_ParticleBuffer, "Particle Normal");
-	m_Engine->AddTexture(m_ParticleDepth, "Particle Depth pass Stencil");
-	m_Engine->AddTexture(m_ParticleDiff, "Particle Depth pass RTV");*/
-
-	m_Quad = new Quad;
 
 	m_Direction = CU::Vector3f(0.42f, 0.73f, 0.24f);
 
@@ -160,13 +125,11 @@ bool Renderer::Initiate(Synchronizer* synchronizer, Camera* camera)
 
 
 	m_GBuffer.Initiate();
-
-	return true;
 }
-//_________________________________
 
-bool Renderer::CleanUp()
+Renderer::~Renderer()
 {
+
 #if !defined(_PROFILE) && !defined(_FINAL)
 	SAFE_DELETE(m_DebugQuad);
 	SAFE_DELETE(m_DebugTexture0);
@@ -175,23 +138,15 @@ bool Renderer::CleanUp()
 	SAFE_DELETE(m_DebugTexture3);
 	SAFE_DELETE(m_DebugTexture4);
 #endif
-	SAFE_DELETE(m_ParticleBuffer);
-	SAFE_DELETE(m_ParticleDiff);
-	SAFE_DELETE(m_ParticleDepth);
 
-	SAFE_DELETE(m_Quad);
-	SAFE_RELEASE(m_cbParticleBuf);
-	SAFE_DELETE(m_ParticleBuffer);
-	m_LightPass.CleanUp();
 	m_ShadowPass.CleanUp();
 	m_DirectionalShadow.CleanUp();
 	m_PostProcessManager.CleanUp();
-	m_WaterPlane->CleanUp();
+
 	SAFE_DELETE(m_WaterCamera);
+	m_WaterPlane->CleanUp();
 	SAFE_DELETE(m_WaterPlane);
 	SAFE_DELETE(m_Line);
-	SAFE_DELETE(mySprite);
-	SAFE_DELETE(myClearColor);
 
 	SAFE_DELETE(m_DepthTexture);
 
@@ -199,8 +154,6 @@ bool Renderer::CleanUp()
 	SAFE_DELETE(m_WaterPlane);
 
 	SAFE_DELETE(myText);
-
-	SAFE_DELETE(myPointLight);
 
 	m_ParticleEmitter->CleanUp();
 	SAFE_DELETE(m_ParticleEmitter);
@@ -210,8 +163,6 @@ bool Renderer::CleanUp()
 	{
 		SAFE_DELETE(s);
 	}
-
-	return true;
 }
 
 void Renderer::Render()
@@ -305,6 +256,7 @@ void Renderer::Render()
 	mySynchronizer->RenderIsDone();
 
 }
+
 #if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::WriteDebugTextures()
 {
@@ -495,9 +447,9 @@ void Renderer::RenderTerrain(bool override_effect)
 void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 {
 	const auto& commands = mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
-	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+	/*m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-	m_API->SetRasterizer(eRasterizer::CULL_NONE);
+	m_API->SetRasterizer(eRasterizer::CULL_NONE);*/
 
 	/*for (s32 i = 0; i < commands.Size(); i++)
 	{

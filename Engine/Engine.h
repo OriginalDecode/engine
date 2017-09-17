@@ -203,8 +203,8 @@ private:
 	PhysicsManager* m_PhysicsManager = nullptr;
 	CFontManager* myFontManager = nullptr;
 	CU::TimeManager myTimeManager;
-	Synchronizer* mySynchronizer = nullptr;
-	Renderer* myRenderer = nullptr;
+	Synchronizer* m_Synchronizer = nullptr;
+	Renderer* m_Renderer = nullptr;
 	Camera* m_Camera = nullptr;
 
 

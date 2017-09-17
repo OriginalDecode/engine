@@ -119,8 +119,8 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	myFontManager = new CFontManager;
 	myFontManager->Initiate();
 
-	mySynchronizer = new Synchronizer;
-	mySynchronizer->Initiate();
+	m_Synchronizer = new Synchronizer;
+	m_Synchronizer->Initiate();
 
 	m_SegmentHandle.Initiate();
 
@@ -128,8 +128,8 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_Camera->CreatePerspectiveProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 10000.f, 90.f);
 	m_Camera->CreateOrthogonalProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 100.f);
 
-	myRenderer = new Renderer;
-	myRenderer->Initiate(mySynchronizer, m_Camera);
+	m_Renderer = new Renderer(m_Synchronizer);
+	m_Renderer->Initiate(m_Synchronizer, m_Camera);
 
 	m_PhysicsManager = new PhysicsManager;
 
@@ -170,8 +170,8 @@ bool Engine::CleanUp()
 	m_TerrainManager->CleanUp();
 	SAFE_DELETE(m_TerrainManager);
 
-	myRenderer->CleanUp();
-	SAFE_DELETE(myRenderer);
+	m_Renderer->CleanUp();
+	SAFE_DELETE(m_Renderer);
 
 	SAFE_DELETE(m_Camera);
 	SAFE_DELETE(myFontManager);
@@ -181,7 +181,7 @@ bool Engine::CleanUp()
 
 	SAFE_DELETE(m_LevelFactory);
 	SAFE_DELETE(myAssetsContainer);
-	SAFE_DELETE(mySynchronizer);
+	SAFE_DELETE(m_Synchronizer);
 	//DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
 	//SAFE_DELETE(myAPI);
 	PostMaster::Destroy();
@@ -201,7 +201,7 @@ TreeDweller* Engine::CreateEntity(const std::string& filepath, CU::Vector3f& pos
 
 void Engine::Update()
 {
-	if (!HasInitiated() && mySynchronizer->HasQuit()) 
+	if (!HasInitiated() && m_Synchronizer->HasQuit()) 
 		return;
 
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -214,7 +214,7 @@ void Engine::Update()
 		myTimeManager.Update();
 		myAssetsContainer->Update();
 	}
-	myRenderer->Render();
+	m_Renderer->Render();
 	m_PhysicsManager->Update();
 	m_Threadpool.Update();
 
@@ -228,7 +228,7 @@ void Engine::UpdateInput()
 
 int Engine::RegisterLight()
 {
-	return myRenderer->RegisterLight();
+	return m_Renderer->RegisterLight();
 }
 // 
 // HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
@@ -428,7 +428,7 @@ void Engine::OnExit()
 {
 	if (HasInitiated())
 	{
-		mySynchronizer->Quit();
+		m_Synchronizer->Quit();
 		CleanUp();
 	}
 }
@@ -453,7 +453,7 @@ void Engine::OnResize()
 
 Synchronizer* Engine::GetSynchronizer()
 {
-	return mySynchronizer;
+	return m_Synchronizer;
 }
 
 const SLocalTime& Engine::GetLocalTime()
@@ -471,7 +471,7 @@ Terrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vec
 {
 	Terrain* newTerrain = m_TerrainManager->GetTerrain(aFile);
 	newTerrain->Initiate(aFile, position, aSize);
-	myRenderer->AddTerrain(newTerrain);
+	m_Renderer->AddTerrain(newTerrain);
 	return newTerrain;
 }
 

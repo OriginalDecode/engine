@@ -6,7 +6,6 @@
 
 #include "LightStructs.h"
 #include "ShadowPass.h"
-#include "LightPass.h"
 #include "RenderCommand.h"
 #include "PostProcessManager.h"
 
@@ -14,10 +13,11 @@
 #include <Engine/Shadow_Directional.h>
 #include <Engine/ShaderState.h>
 #include <Engine/GBuffer.h>
+#include <Engine/RenderContext.h>
+#include <Engine/LightPass.h>
 
 
 class CLine3D;
-
 class Camera;
 class DeferredRenderer;
 class DirectionalLight;
@@ -28,17 +28,15 @@ class Synchronizer;
 class Texture;
 class CText;
 class Terrain;
-class LightPass;
 class SpotLight;
 class ShadowSpotlight;
 class CommandAllocator;
 class Renderer
 {
 public:
-	Renderer() = default;
+	Renderer(Synchronizer* synchronizer);
+	~Renderer();
 
-	bool Initiate(Synchronizer* synchronizer, Camera* camera);
-	bool CleanUp();
 
 	void Render();
 
@@ -69,52 +67,59 @@ private:
 	void RenderParticles(Effect* effect);
 	void RenderLines();
 
-	GBuffer m_GBuffer;
 
 
+	//instancing helper?
 	CU::GrowingArray<Model*> m_Models;
 	std::map<std::string, Model*> m_ModelsToRender;
+
 	CU::GrowingArray<Terrain*> myTerrainArray;
 
 	CU::Vector3f		m_Direction;
 	CU::Vector3f		m_OriginalDirection;
 	CU::Matrix33f		m_Orientation;
 
-	CU::GrowingArray<SpotLight*> m_Spotlights;
-
-	PostProcessManager			m_PostProcessManager;
-	LightPass					m_LightPass;
-	ShadowPass					m_ShadowPass;
-	Atmosphere					m_Atmosphere;
-
+	graphics::GBuffer m_GBuffer;
 	graphics::RenderContext		m_RenderContext;
 
+	graphics::LightPass			m_LightPass;
+	ShadowPass					m_ShadowPass;
+
+	PostProcessManager			m_PostProcessManager;
+
+	Atmosphere					m_Atmosphere;
+
+
+	//Do we need to hold these?
 	Camera*						m_Camera				= nullptr;
 	Camera*						m_WaterCamera			= nullptr;
 
+	//Does this have to be a pointer?
 	DeferredRenderer*			m_DeferredRenderer		= nullptr;
 
+	// move to a light manager
 	DirectionalLight*			myDirectionalLight		= nullptr;
 	PointLight*					myPointLight			= nullptr;
 	SpotLight*					mySpotlight				= nullptr;
+	CU::GrowingArray<SpotLight*> m_Spotlights; //This should be in a light manager
 
 
-	Synchronizer*				mySynchronizer			= nullptr;
+	Synchronizer*				m_Synchronizer			= nullptr;
 	CText*						myText					= nullptr;
 	Texture*					m_DepthTexture			= nullptr;
-	Texture*					m_ParticleBuffer		= nullptr;
-	Texture*					m_ParticleDiff			= nullptr;
-	Texture*					m_ParticleDepth			= nullptr;
 
 	CLine3D*					m_Line					= nullptr;
 
 	CEmitterInstance*			m_ParticleEmitter		= nullptr;
 
+	//How do we handle this?
 	ShadowDirectional			m_DirectionalShadow;
 
+
+
+	//this should be an object in the world and the render part should be separated
 	class WaterPlane*			m_WaterPlane				= nullptr; //Shouldn't be in here
 
-	ShaderState m_LightState;
 
 
 
@@ -135,6 +140,7 @@ public:
 	DeferredRenderer* GetDeferredRenderer() {	return m_DeferredRenderer; };
 
 #endif
+	//For pbl debugging.
 	IBuffer* m_PBLValues = nullptr;
 	struct 
 	{
@@ -143,25 +149,5 @@ public:
 		float d;
 		float d0;
 	} m_values;
-
-	struct cbParticle
-	{
-		CU::Matrix44f view;
-		CU::Matrix44f invProjection;
-		CU::Vector4f m_ViewDir;
-	} m_cbParticles;
-	IBuffer* m_cbParticleBuf;
-
-
-	struct cbCalcSSNormal
-	{
-		CU::Matrix44f m_Projection;
-		CU::Matrix44f m_InvProjection;
-		CU::Vector4f m_TexelSize;
-	} m_CalcSSNormal;
-	IBuffer* m_cbCalcSSNormal;
-
-
-
 
 };

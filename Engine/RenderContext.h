@@ -11,6 +11,7 @@ namespace graphics
 	class RenderContext
 	{
 	public:
+		RenderContext() = default;
 		RenderContext(Engine* engine, IGraphicsDevice& deivce, IGraphicsContext& ctx, IGraphicsAPI* api)
 			: m_Engine(engine)
 			, m_Device(&deivce)

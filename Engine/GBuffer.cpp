@@ -5,6 +5,41 @@
 #include <Engine/IGraphicsAPI.h>
 namespace graphics
 {
+
+	GBuffer::GBuffer()
+	{
+		const WindowSize windowSize = Engine::GetInstance()->GetInnerSize();
+		const float window_width = windowSize.m_Width;
+		const float window_height = windowSize.m_Height;
+
+		TextureDesc desc;
+		desc.m_Width = window_width;
+		desc.m_Height = window_height;
+		desc.m_Usage = graphics::DEFAULT_USAGE;
+		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
+		desc.m_ShaderResourceFormat = RGBA16_FLOAT;
+		desc.m_RenderTargetFormat = RGBA16_FLOAT;
+		m_Albedo = new Texture;
+		m_Albedo->Initiate(desc, "GBuffer : Albedo");
+
+		m_Emissive = new Texture;
+		m_Emissive->Initiate(desc, "GBuffer : Emissive");
+
+		m_Normal = new Texture;
+		m_Normal->Initiate(desc, "GBuffer : Normal");
+
+		m_Depth = new Texture;
+		desc.m_ShaderResourceFormat = RGBA32_FLOAT;
+		desc.m_RenderTargetFormat = RGBA32_FLOAT;
+		m_Depth->Initiate(desc, "GBuffer : Depth");
+
+		Effect* shader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
+		shader->AddShaderResource(m_Albedo, Effect::DIFFUSE);
+		shader->AddShaderResource(m_Normal, Effect::NORMAL);
+		shader->AddShaderResource(m_Depth, Effect::DEPTH);
+		shader->AddShaderResource(m_Emissive, Effect::EMISSIVE);
+	}
+
 	GBuffer::~GBuffer()
 	{
 		SAFE_DELETE(m_Albedo);
@@ -12,35 +47,6 @@ namespace graphics
 		SAFE_DELETE(m_Depth);
 		SAFE_DELETE(m_Emissive);
 	}
-
-	void GBuffer::Initiate()
-	{
-		const WindowSize windowSize = Engine::GetInstance()->GetInnerSize();
-
-		m_Albedo = new Texture;
-		/*myAlbedo->Initiate(windowSize.m_Width, windowSize.m_Height
-			, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-			, DXGI_FORMAT_R16G16B16A16_FLOAT
-			, "GBuffer : Albedo");
-	*/
-		m_Emissive = new Texture;
-		//myEmissive->Initiate(windowSize.m_Width, windowSize.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM, "GBuffer : Emissive");
-
-		m_Normal = new Texture;
-		//myNormal->Initiate(windowSize.m_Width, windowSize.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "GBuffer : Normal");
-
-		m_Depth = new Texture;
-		//myDepth->Initiate(windowSize.m_Width, windowSize.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R32G32B32A32_FLOAT, "GBuffer : Depth");
-
-		Effect* shader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
-		shader->AddShaderResource(m_Albedo, Effect::DIFFUSE);
-		shader->AddShaderResource(m_Normal, Effect::NORMAL);
-		shader->AddShaderResource(m_Depth, Effect::DEPTH);
-		shader->AddShaderResource(m_Emissive, Effect::EMISSIVE);
-
-
-	}
-
 
 	void GBuffer::Clear(float clear_color[4], const RenderContext& render_context)
 	{

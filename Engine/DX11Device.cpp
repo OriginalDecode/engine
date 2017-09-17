@@ -237,10 +237,23 @@ namespace graphics
 
 #ifndef FINAL
 		DirectX11::HandleErrors(hr, "Failed to create buffer!");
-		DirectX11::SetDebugName(0, "Unknown_Buffer");
+		DirectX11::SetDebugName(buffer, "Unknown_Buffer");
 #endif
 
 		return buffer;
+	}
+
+	IBuffer* DX11Device::CreateConstantBuffer(s32 size)
+	{
+		BufferDesc desc;
+		desc.m_ByteWidth = size;
+		desc.m_UsageFlag = DYNAMIC_USAGE;
+		desc.m_BindFlag = BIND_CONSTANT_BUFFER;
+		desc.m_CPUAccessFlag = WRITE;
+		desc.m_MiscFlags = 0;
+		desc.m_StructuredByteStride = 0;
+
+		return CreateBuffer(desc);
 	}
 
 };

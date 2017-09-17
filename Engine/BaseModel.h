@@ -30,9 +30,11 @@ public:
 	const InstanceWrapper& GetInstanceWrapper() const { return m_InstanceWrapper; }
 
 protected:
+	/*
 	void InitVertexBuffer();
 	void InitInputLayout();
 	void InitIndexBuffer();
+	*/
 	virtual void InitConstantBuffer() = 0;
 	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& rc) = 0;
 

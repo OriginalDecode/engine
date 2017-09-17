@@ -27,6 +27,8 @@ namespace graphics
 
 		IInputLayout* CreateInputLayout(CompiledShader* pShader, void* pLayout, s32 element_count) override;
 		IBuffer* CreateBuffer(BufferDesc buffer_desc) override;
+			
+		IBuffer* CreateConstantBuffer(s32 size) override;
 
 
 	private:

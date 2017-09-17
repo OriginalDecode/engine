@@ -11,6 +11,7 @@ namespace graphics
 	class LightPass
 	{
 	public:
+		LightPass() = default;
 		LightPass(const GBuffer& gbuffer);
 		~LightPass();
 		void RenderPointlight(PointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);

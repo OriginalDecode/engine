@@ -5,23 +5,21 @@ class Texture;
 class WaterPlane : public BaseModel
 {
 public:
-	WaterPlane() = default;
-
-	void Initiate(const CU::Vector3f& position);
-	void CleanUp();
+	WaterPlane();
+	~WaterPlane();
 
 	void SetPosition(const CU::Vector3f& position);
 
-	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection);
-	void Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection) override;
-	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection) override;
+	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context);
+	void Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) override;
+	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) override;
 
 	const CU::Vector3f& GetPosition() { return m_Orientation.GetPosition(); }
 
 	void SetupRefractionRender();
 	void SetupReflectionRender();
 	void SetClipPlane(const CU::Vector4f& plane);
-	Effect* GetEffect() { return myEffect; }
+	Effect* GetEffect() { return m_Effect; }
 private:
 	void CreatePlane();
 	void InitConstantBuffer() override;

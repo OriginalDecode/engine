@@ -5,12 +5,14 @@
 #include <vector>
 #include <Engine/ShaderFactory.h>
 #include <functional>
-#define SAFE_RELEASE_UNKNOWN(x) \
-IUnknown* unknown_pointer = static_cast< IUnknown* >( x ); \
-unknown_pointer->Release(); \
-unknown_pointer = nullptr; 
 
-typedef long HRESULT;
+
+
+// #define SAFE_RELEASE_UNKNOWN(x) \
+// IUnknown* unknown_pointer = static_cast< IUnknown* >( x ); \
+// unknown_pointer->Release(); \
+// unknown_pointer = nullptr; 
+
 
 //A ton of forward declarations. Maybe I should rewrite these things to something else
 

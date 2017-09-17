@@ -116,7 +116,7 @@ namespace graphics
 		STAGING_USAGE = 4,
 	};
 
-	enum eTextureBind
+	enum eTextureBind //might not be used???
 	{
 		NONE = 0,
 		RENDERTARGET = 1,
@@ -135,6 +135,7 @@ namespace graphics
 	{
 		TRIANGLE_LIST,
 		POINT_LIST,
+		_4_CONTROL_POINT_PATCHLIST,
 	};
 
 	enum eMapping
@@ -219,6 +220,12 @@ namespace graphics
 		s32 m_ByteWidth = 0;
 	};
 
+	struct DepthStencilDesc
+	{
+		bool m_ReadDepth;
+		bool m_WriteDepth;
+	};
+
 	class IGraphicsDevice;
 	class IGraphicsContext;
 	class IGraphicsAPI
@@ -254,6 +261,8 @@ namespace graphics
 		virtual void ReleasePtr(void* ptr) = 0;
 
 		ISamplerState* GetSamplerState(eSamplerStates sampler_state) { return m_SamplerStates[sampler_state]; }
+		IDepthStencilState* GetDepthStencilState(eDepthStencilState depthstencilstate) { return m_DepthStencilStates[depthstencilstate]; }
+
 		const CreateInfo& GetInfo() const { return m_CreateInfo; }
 	protected:
 		CreateInfo m_CreateInfo;
@@ -262,6 +271,7 @@ namespace graphics
 		IGraphicsContext* m_Context = nullptr;
 
 		ISamplerState* m_SamplerStates[NOF_SS];
+		IDepthStencilState* m_DepthStencilStates[NOF_DSS];
 
 	};
 

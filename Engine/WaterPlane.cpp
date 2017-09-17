@@ -2,59 +2,59 @@
 #include "WaterPlane.h"
 #include <Engine/Texture.h>
 
-void WaterPlane::Initiate(const CU::Vector3f& position)
+WaterPlane::WaterPlane()
 {
+	m_Effect = Engine::GetInstance()->GetEffect("Shaders/water.json");
 	m_Orientation.SetPosition(position);
 
-	myEffect = Engine::GetInstance()->GetEffect("Shaders/water.json");
 
 	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
 
 	m_Refraction = new Texture;
 	m_Refraction->Initiate(window_size.m_Width, window_size.m_Height
-		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
-		, DXGI_FORMAT_R16G16B16A16_FLOAT
-		, DXGI_FORMAT_R32_TYPELESS
-		, DXGI_FORMAT_R32_FLOAT
-		, DXGI_FORMAT_D32_FLOAT
-		, "Water : RefractionDepth");
+						   , DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
+						   , DXGI_FORMAT_R16G16B16A16_FLOAT
+						   , DXGI_FORMAT_R32_TYPELESS
+						   , DXGI_FORMAT_R32_FLOAT
+						   , DXGI_FORMAT_D32_FLOAT
+						   , "Water : RefractionDepth");
 
 	m_Reflection = new Texture;
-	m_Reflection-> Initiate(window_size.m_Width, window_size.m_Height
-		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
-		, DXGI_FORMAT_R16G16B16A16_FLOAT
-		, DXGI_FORMAT_R32_TYPELESS
-		, DXGI_FORMAT_R32_FLOAT
-		, DXGI_FORMAT_D32_FLOAT
-		, "Water : ReflectionDepth");
+	m_Reflection->Initiate(window_size.m_Width, window_size.m_Height
+						   , DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
+						   , DXGI_FORMAT_R16G16B16A16_FLOAT
+						   , DXGI_FORMAT_R32_TYPELESS
+						   , DXGI_FORMAT_R32_FLOAT
+						   , DXGI_FORMAT_D32_FLOAT
+						   , "Water : ReflectionDepth");
 
 	m_RefractionG.Initiate();
 	m_ReflectionG.Initiate();
 
-	myEffect->AddShaderResource(m_RefractionG.GetDiffuse(), Effect::REFRACTION);
-	myEffect->AddShaderResource(m_ReflectionG.GetDiffuse(), Effect::REFLECTION);
+	m_Effect->AddShaderResource(m_RefractionG.GetDiffuse(), Effect::REFRACTION);
+	m_Effect->AddShaderResource(m_ReflectionG.GetDiffuse(), Effect::REFLECTION);
 
 	Engine* engine = Engine::GetInstance();
 
-	myEffect->AddShaderResource(engine->GetTexture("Data/Textures/T_cubemap_level01.dds"), Effect::CUBEMAP);
-	myEffect->AddShaderResource(engine->GetTexture("Data/Textures/water_normal.dds"), Effect::NORMAL);
-	myEffect->AddShaderResource(engine->GetTexture("Data/Textures/water_dudv.dds"), Effect::DUDV);
+	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/T_cubemap_level01.dds"), Effect::CUBEMAP);
+	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/water_normal.dds"), Effect::NORMAL);
+	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/water_dudv.dds"), Effect::DUDV);
 
 
-//	engine->AddTexture(m_RefractionG.GetDiffuse(), "Refraction");
-//	engine->AddTexture(m_ReflectionG.GetDiffuse(), "Reflection");
+	//	engine->AddTexture(m_RefractionG.GetDiffuse(), "Refraction");
+	//	engine->AddTexture(m_ReflectionG.GetDiffuse(), "Reflection");
 	CreatePlane();
 	m_cbPixel = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbPixel));
-	
-	//engine->RegisterCheckBox(&m_RenderWireframe, "Waterplane : Wireframe");
 
+	//engine->RegisterCheckBox(&m_RenderWireframe, "Waterplane : Wireframe");
 }
 
-void WaterPlane::CleanUp()
+WaterPlane::~WaterPlane()
 {
 	SAFE_DELETE(m_Reflection);
 	SAFE_DELETE(m_Refraction);
-	SAFE_RELEASE(m_cbPixel);
+	Engine::GetAPI()->ReleasePtr(m_cbPixel);
+
 }
 
 void WaterPlane::SetPosition(const CU::Vector3f& position)
@@ -62,38 +62,36 @@ void WaterPlane::SetPosition(const CU::Vector3f& position)
 	m_Orientation.SetPosition(position);
 }
 
-void WaterPlane::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
+void WaterPlane::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
 	m_VertexMatrices.m_World = m_Orientation;
 	m_VertexMatrices.m_InvertedView = CU::Math::Inverse(camera_orientation);
 	m_VertexMatrices.m_Projection = camera_projection;
 	m_VertexMatrices.m_CameraPos = camera_orientation.GetPosition();
 	m_VertexMatrices.m_Time = Engine::GetInstance()->GetTotalTime();
-	render_context.m_API->UpdateConstantBuffer((m_ConstantBuffer), &m_VertexMatrices);
+	render_context.GetContext().UpdateConstantBuffer(m_ConstantBuffer, &m_VertexMatrices, sizeof(cbMatrices));
 }
 
-void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
+void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	render_context.m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 
-	render_context.m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
-	ID3D11SamplerState* sampler = render_context.m_API->GetSampler((s32)eSamplerStates::LINEAR_WRAP);
-	render_context.m_Context->PSSetSamplers(1, 1, &sampler);
+	auto& ctx = render_context.GetContext();
 
-	SetupLayoutsAndBuffers();
-	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
-	//render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+// 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+// 	render_context.m_API->SetBlendState(eBlendStates::BLEND_FALSE);
+// 	render_context.m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
-	render_context.m_Context->DSSetConstantBuffers(0, 1, &m_ConstantBuffer);
-	myEffect->Use();
-	render_context.m_Context->DrawIndexed(m_Indices.Size(),0,0);
-	myEffect->Clear();
+
+	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
+	ctx.DSSetConstantBuffer(0, 1, &m_ConstantBuffer);
+	m_Effect->Use();
+	ctx.DrawIndexed(this);
+	m_Effect->Clear();
 }
 
-void WaterPlane::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
+void WaterPlane::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
 	DL_ASSERT("water shadow?");
 }
@@ -186,17 +184,4 @@ void WaterPlane::CreatePlane()
 	InitInputLayout();
 	InitIndexBuffer();
 	InitConstantBuffer();
-}
-
-void WaterPlane::InitConstantBuffer()
-{
-	D3D11_BUFFER_DESC cbDesc;
-	ZeroMemory(&cbDesc, sizeof(cbDesc));
-	cbDesc.ByteWidth = sizeof(VertexBaseStruct);
-	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.MiscFlags = 0;
-	cbDesc.StructureByteStride = 0;
-	m_ConstantBuffer = Engine::GetAPI()->CreateBuffer(cbDesc);
 }

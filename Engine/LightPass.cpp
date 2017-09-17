@@ -12,11 +12,11 @@ namespace graphics
 		myEffect[eLight::POINTLIGHT] = Engine::GetInstance()->GetEffect("Shaders/deferred_pointlight.json");
 		myEffect[eLight::SPOTLIGHT] = Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json");
 
-		myEffect[eLight::POINTLIGHT]->AddShaderResource(gbuffer.GetAlbedo(), Effect::DIFFUSE);
+		myEffect[eLight::POINTLIGHT]->AddShaderResource(gbuffer.GetDiffuse(), Effect::DIFFUSE);
 		myEffect[eLight::POINTLIGHT]->AddShaderResource(gbuffer.GetNormal(), Effect::NORMAL);
 		myEffect[eLight::POINTLIGHT]->AddShaderResource(gbuffer.GetDepth(), Effect::DEPTH);
 
-		myEffect[eLight::SPOTLIGHT]->AddShaderResource(gbuffer.GetAlbedo(), Effect::DIFFUSE);
+		myEffect[eLight::SPOTLIGHT]->AddShaderResource(gbuffer.GetDiffuse(), Effect::DIFFUSE);
 		myEffect[eLight::SPOTLIGHT]->AddShaderResource(gbuffer.GetNormal(), Effect::NORMAL);
 		myEffect[eLight::SPOTLIGHT]->AddShaderResource(gbuffer.GetDepth(), Effect::DEPTH);
 

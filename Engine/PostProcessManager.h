@@ -21,8 +21,8 @@ public:
 		SSAO = BITFLAG(3),
 	};
 
-	s32 GetFlags() const { return m_PassFlags; }
 	PostProcessManager() = default;
+	s32 GetFlags() const { return m_PassFlags; }
 	void Initiate();
 	void CleanUp();
 

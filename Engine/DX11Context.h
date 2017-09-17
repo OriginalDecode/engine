@@ -51,10 +51,10 @@ namespace graphics
 		void Draw(s32 index_start, s32 index_count, s32 vertex_start) override;
 		void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) override;
 
-		void Draw(Model* model) override;
-		void DrawIndexed(Model* model) override;
-		void DrawInstanced(Model* model) override;
-		void DrawIndexedInstanced(Model* model) override;
+		void Draw(BaseModel* model) override;
+		void DrawIndexed(BaseModel* model) override;
+		void DrawInstanced(BaseModel* model) override;
+		void DrawIndexedInstanced(BaseModel* model) override;
 
 		void DrawIndexed(Quad* quad, bool depth_on) override;
 
@@ -64,11 +64,13 @@ namespace graphics
 		template<typename T>
 		void UpdateBuffer(IBuffer* dest, T* src, s32 size, eMapping mapping) override;
 
+		void SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth) override;
+
+
+
 	private:
 		ID3D11DeviceContext* m_Context = nullptr;
 
-		ID3D11DepthStencilState* m_DisableZ = nullptr;
-		ID3D11DepthStencilState* m_EnableZ = nullptr;
 
 
 

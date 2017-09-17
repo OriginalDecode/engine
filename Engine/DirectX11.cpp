@@ -19,6 +19,9 @@ namespace graphics
 	DirectX11::DirectX11(CreateInfo info)
 		: IGraphicsAPI(info)
 	{
+		//m_EnableZ = static_cast<ID3D11DepthStencilState*>(dev.CreateDepthStencilState());
+		//m_DisableZ = static_cast<ID3D11DepthStencilState*>(dev.CreateDepthStencilState());
+
 	}
 
 	bool DirectX11::Initiate(CreateInfo create_info)

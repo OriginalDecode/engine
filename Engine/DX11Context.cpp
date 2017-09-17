@@ -10,9 +10,6 @@ namespace graphics
 	DX11Context::DX11Context(ID3D11DeviceContext* context)
 		: m_Context(context)
 	{
-		auto& dev = Engine::GetAPI()->GetDevice();
-		m_EnableZ = static_cast<ID3D11DepthStencilState*>(dev.CreateDepthStencilState());
-		m_DisableZ = static_cast<ID3D11DepthStencilState*>(dev.CreateDepthStencilState());
 	}
 
 	void DX11Context::VSSetShaderResource(s32 start_slot, s32 count, void* resources)
@@ -158,7 +155,7 @@ namespace graphics
 		m_Context->ClearDepthStencilView(static_cast<ID3D11DepthStencilView*>(dsv), clear_flag, max_depth, 0);
 	}
 
-	void DX11Context::Draw(Model* model)
+	void DX11Context::Draw(BaseModel* model)
 	{
 		const auto& vtx = model->GetVertexWrapper();
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
@@ -186,7 +183,7 @@ namespace graphics
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 	}
 
-	void DX11Context::DrawIndexed(Model* model)
+	void DX11Context::DrawIndexed(BaseModel* model)
 	{
 		const auto& vtx = model->GetVertexWrapper();
 		const auto& idx = model->GetIndexWrapper();
@@ -207,14 +204,19 @@ namespace graphics
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 	}
 
-	void DX11Context::DrawInstanced(Model* model)
+	void DX11Context::SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth)
+	{
+		m_Context->OMSetDepthStencilState(static_cast<ID3D11DepthStencilState*>(pDepthStencilState), max_depth);
+	}
+
+	void DX11Context::DrawInstanced(BaseModel* model)
 	{
 		const auto& vtx = model->GetVertexWrapper();
 		const auto& ins = model->GetInstanceWrapper();
 		m_Context->DrawInstanced(ins.GetVertCountPerInstance(), ins.GetInstanceCount(), vtx.GetStart(), ins.GetStart());
 	}
 
-	void DX11Context::DrawIndexedInstanced(Model* model)
+	void DX11Context::DrawIndexedInstanced(BaseModel* model)
 	{
 		const auto& vtx = model->GetVertexWrapper();
 		const auto& idx = model->GetIndexWrapper();

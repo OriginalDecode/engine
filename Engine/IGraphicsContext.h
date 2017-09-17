@@ -1,7 +1,7 @@
 #pragma once
 
 class CompiledShader;
-class Model;
+class BaseModel;
 class Quad;
 namespace graphics
 {
@@ -57,10 +57,10 @@ namespace graphics
 		virtual void Draw(s32 index_start, s32 index_count, s32 vertex_start) = 0;
 		virtual void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) = 0;
 
-		virtual void Draw(Model* model) = 0;
-		virtual void DrawIndexed(Model* model) = 0;
-		virtual void DrawInstanced(Model* model) = 0;
-		virtual void DrawIndexedInstanced(Model* model) = 0;
+		virtual void Draw(BaseModel* model) = 0;
+		virtual void DrawIndexed(BaseModel* model) = 0;
+		virtual void DrawInstanced(BaseModel* model) = 0;
+		virtual void DrawIndexedInstanced(BaseModel* model) = 0;
 
 		virtual void DrawIndexed(Quad* quad, bool depth_on) = 0;
 
@@ -70,9 +70,10 @@ namespace graphics
 		template<typename T>
 		virtual void UpdateBuffer(IBuffer* dest, T* src, s32 size, eMapping mapping) = 0;
 
+		virtual void SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth) = 0;
 
-	private:
 
+	protected:
 
 	};
 };

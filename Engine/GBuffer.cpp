@@ -25,7 +25,7 @@ namespace graphics
 		m_Emissive = new Texture;
 		m_Emissive->Initiate(desc, "GBuffer : Emissive");
 
-		m_Normal = new Texture;
+		m_Normal = new Texture; 
 		m_Normal->Initiate(desc, "GBuffer : Normal");
 
 		m_Depth = new Texture;

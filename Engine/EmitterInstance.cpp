@@ -6,7 +6,7 @@
 void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_texture)
 {
 	myEngine = Engine::GetInstance();
-	mySynchronizer = aSynchronizer;
+	m_Synchronizer = aSynchronizer;
 	SParticleData data;
 	data.affectedByGravity = false;
 	data.lifeTime = 3.f;

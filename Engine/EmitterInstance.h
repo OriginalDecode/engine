@@ -39,7 +39,7 @@ private:
 
 	float myTimeToEmit;
 	IInputLayout* myInputLayout;
-	Synchronizer* mySynchronizer;
+	Synchronizer* m_Synchronizer;
 
 	ID3D11Buffer* myConstantBuffer;
 	VertexBaseStruct* myConstantStruct;

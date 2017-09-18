@@ -156,9 +156,7 @@ namespace graphics
 		u32 denominator = 1;
 
 		if (useVsync)
-		{
 			GetRefreshRate(numerator, denominator);
-		}
 
 		scDesc.BufferDesc.RefreshRate.Numerator = numerator;
 		scDesc.BufferDesc.RefreshRate.Denominator = denominator;
@@ -320,88 +318,6 @@ namespace graphics
 		return new_viewport;
 	}
 
-	ID3D11Buffer* DirectX11::CreateConstantBuffer(s32 size)
-	{
-		return CreateBuffer(size, nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, 0);
-	}
-
-	ID3D11Buffer* DirectX11::CreateVertexBuffer(s32 size, void* pData)
-	{
-		return CreateBuffer(size, pData, D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, 0);
-	}
-
-	ID3D11Buffer* DirectX11::CreateIndexBuffer(s32 size, void* pData)
-	{
-		return CreateBuffer(size, pData, D3D11_USAGE_DEFAULT, D3D11_BIND_INDEX_BUFFER, 0, 0, 0);
-	}
-
-	ID3D11Buffer* DirectX11::CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag /*= D3D11_USAGE_IMMUTABLE*/, u32 bind_flag /*= D3D11_BIND_VERTEX_BUFFER*/, u32 cpu_access_flag /*= 0*/, u32 misc_flag /*= 0*/, u32 structured_byte_width /*= 0*/)
-	{
-
-		D3D11_BUFFER_DESC buffer_desc;
-		ZeroMemory(&buffer_desc, sizeof(buffer_desc));
-		buffer_desc.Usage = usage_flag;
-		buffer_desc.ByteWidth = size;
-		buffer_desc.BindFlags = bind_flag;
-		buffer_desc.CPUAccessFlags = cpu_access_flag;
-		buffer_desc.MiscFlags = misc_flag;
-		buffer_desc.StructureByteStride = structured_byte_width; //investigate future use
-
-		ID3D11Buffer* return_value = nullptr;
-		HRESULT hr = S_OK;
-
-		D3D11_SUBRESOURCE_DATA srd;
-		if (pData)
-		{
-			srd.pSysMem = pData;
-			hr = static_cast<ID3D11Device*>(**m_Device)->CreateBuffer(&buffer_desc, &srd, &return_value);
-		}
-		else
-		{
-			hr = static_cast<ID3D11Device*>(**m_Device)->CreateBuffer(&buffer_desc, nullptr, &return_value);
-		}
-		HandleErrors(hr, "Failed to create buffer!");
-
-		return return_value;
-	}
-
-	ID3D11Buffer* DirectX11::CreateBuffer(D3D11_BUFFER_DESC buffer_desc)
-	{
-		HRESULT hr = S_OK;
-		ID3D11Buffer* buffer = nullptr;
-		hr = static_cast<ID3D11Device*>(**m_Device)->CreateBuffer(&buffer_desc, nullptr, &buffer);
-		HandleErrors(hr, "Failed to create buffer!");
-		return buffer;
-
-	}
-
-	void* DirectX11::CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements)
-	{
-		ID3D11InputLayout* return_value = nullptr;
-		HRESULT hr = static_cast<ID3D11Device*>(**m_Device)->CreateInputLayout(pLayout, num_layout_elements, pShader, shader_byte_size, &return_value);
-
-#ifdef _DEBUG
-		HandleErrors(hr, "CreateInputLayout : Failed to create input layout.");
-#endif
-		return return_value;
-	}
-
-
-	/*IInputLayout* DirectX11::CreateInputLayout(void* pShader, void* pLayout, s32 element_count)
-	{
-		ID3D11InputLayout* layout = nullptr;
-		HRESULT hr =
-
-
-
-	}*/
-
-	ID3D11SamplerState* DirectX11::GetSampler(s32 index)
-	{
-		return mySamplerStates[index];
-	}
-
-
 	void DirectX11::CreateAdapterList()
 	{
 		std::vector<IDXGIAdapter*> enumAdapter;
@@ -436,11 +352,6 @@ namespace graphics
 		pUnknown->Release();
 	}
 
-	std::string DirectX11::GetAPIName()
-	{
-		return m_CreateInfo.m_APIName;
-	}
-
 	void DirectX11::ResetViewport()
 	{
 		SetViewport(m_Viewport);
@@ -451,26 +362,26 @@ namespace graphics
 		m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthView);
 	}
 
-	void DirectX11::ClearDepthStencilState()
-	{
-		m_Context->OMSetDepthStencilState(nullptr, 0);
-	}
+// 	void DirectX11::ClearDepthStencilState()
+// 	{
+// 		m_Context->OMSetDepthStencilState(nullptr, 0);
+// 	}
 
-	void DirectX11::SetRasterizer(const eRasterizer& aRasterizer)
-	{
-		m_Context->RSSetState(myRasterizerStates[u16(aRasterizer)]);
-	}
-
-	void DirectX11::SetBlendState(const eBlendStates& blendState)
-	{
-		float blend[4] = { 0.f , 0.f , 0.f , 0.f };
-		m_Context->OMSetBlendState(myBlendStates[u16(blendState)], blend, 0xFFFFFFFF);
-	}
-
-	void DirectX11::SetSamplerState(const eSamplerStates& samplerState)
-	{
-		m_Context->PSSetSamplers(0, 1, &mySamplerStates[samplerState]);
-	}
+// 	void DirectX11::SetRasterizer(const eRasterizer& aRasterizer)
+// 	{
+// 		m_Context->RSSetState(myRasterizerStates[u16(aRasterizer)]);
+// 	}
+// 
+// 	void DirectX11::SetBlendState(const eBlendStates& blendState)
+// 	{
+// 		float blend[4] = { 0.f , 0.f , 0.f , 0.f };
+// 		m_Context->OMSetBlendState(myBlendStates[u16(blendState)], blend, 0xFFFFFFFF);
+// 	}
+// 
+// 	void DirectX11::SetSamplerState(const eSamplerStates& samplerState)
+// 	{
+// 		m_Context->PSSetSamplers(0, 1, &mySamplerStates[samplerState]);
+// 	}
 
 
 // #ifdef _DEBUG
@@ -482,10 +393,10 @@ namespace graphics
 // 	}
 // #endif
 
-	void DirectX11::SetViewport(void* viewport)
-	{
-		m_Context->RSSetViewports(1, static_cast<D3D11_VIEWPORT*>(viewport));
-	}
+// 	void DirectX11::SetViewport(void* viewport)
+// 	{
+// 		m_Context->RSSetViewports(1, static_cast<D3D11_VIEWPORT*>(viewport));
+// 	}
 
 	void DirectX11::OnAltEnter()
 	{
@@ -551,11 +462,6 @@ namespace graphics
 		SAFE_RELEASE(factory);
 	}
 
-	void DirectX11::CopyResource(void * pDestination, void * pSource)
-	{
-		m_Context->CopyResource(static_cast<ID3D11Resource*>(pDestination), static_cast<ID3D11Resource*>(pSource));
-	}
-
 	// Needs to be tweaked
 	void DirectX11::CreateRazterizers()
 	{
@@ -574,36 +480,31 @@ namespace graphics
 
 		desc.FillMode = D3D11_FILL_WIREFRAME;
 		desc.CullMode = D3D11_CULL_NONE;
-		pDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::WIREFRAME)]);
+		CreateRasterizerState(desc, WIREFRAME, "Wireframe");
 
 		desc.FillMode = D3D11_FILL_SOLID;
 		desc.CullMode = D3D11_CULL_BACK;
-		pDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
-
+		CreateRasterizerState(desc, CULL_BACK, "CULL_BACK");
+		
 		desc.FillMode = D3D11_FILL_SOLID;
 		desc.CullMode = D3D11_CULL_FRONT;
-		pDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::CULL_FRONT)]);
+		CreateRasterizerState(desc, CULL_FRONT, "CULL_FRONT");
 
 		desc.FillMode = D3D11_FILL_SOLID;
 		desc.CullMode = D3D11_CULL_NONE;
-		pDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
+		CreateRasterizerState(desc, CULL_NONE, "CULL_NONE");
 
+	}
 
-		desc.MultisampleEnable = true;
-		desc.AntialiasedLineEnable = true;
-		desc.FillMode = D3D11_FILL_SOLID;
-		desc.CullMode = D3D11_CULL_NONE;
-		pDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::MSAA)]);
-
+	void DirectX11::CreateRasterizerState(const D3D11_RASTERIZER_DESC& desc, eRasterizer rasterizer, const char* debugname)
+	{
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11RasterizerState* rasterstate = nullptr;
+		pDevice->CreateRasterizerState(&desc, &rasterstate);
+		m_RasterizerStates[rasterizer] = rasterstate;
 #ifdef _DEBUG
-		SetDebugName(myRasterizerStates[u16(eRasterizer::WIREFRAME)], "Wireframe Rasterizer");
-		SetDebugName(myRasterizerStates[u16(eRasterizer::CULL_BACK)], "CULL_BACK Rasterizer");
-		SetDebugName(myRasterizerStates[u16(eRasterizer::CULL_FRONT)], "CULL_FRONT Rasterizer");
-		SetDebugName(myRasterizerStates[u16(eRasterizer::CULL_NONE)], "CULL_NONE Rasterizer");
-		SetDebugName(myRasterizerStates[u16(eRasterizer::MSAA)], "MSAA Rasterizer");
+		SetDebugName(rasterstate, debugname);
 #endif
-
-
 	}
 
 	void DirectX11::GetRefreshRate(u32& aNumerator, u32& aDenominator)
@@ -636,9 +537,6 @@ namespace graphics
 		SAFE_RELEASE(adapter);
 		SAFE_RELEASE(factory);
 	}
-
-
-
 
 	void DirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
 	{
@@ -698,8 +596,6 @@ namespace graphics
 			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 		}
 	}
-
-
 
 	DXGI_FORMAT DirectX11::GetFormat(s32 format)
 	{

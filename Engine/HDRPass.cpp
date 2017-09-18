@@ -54,7 +54,7 @@ void HDRPass::CleanUp()
 	}
 }
 
-void HDRPass::Process(Texture* scene_texture)
+void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& render_context)
 {
 	//set buffers
 

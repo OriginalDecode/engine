@@ -14,7 +14,7 @@ public:
 	HDRPass() = default;
 	void Initiate();
 	void CleanUp();
-	void Process(Texture* scene_texture);
+	void Process(Texture* scene_texture, const graphics::RenderContext& render_context);
 	void OnResize();
 	bool toggle_debug = false;
 private:

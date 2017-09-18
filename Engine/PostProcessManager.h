@@ -7,8 +7,12 @@
 
 #include <Engine/engine_shared.h>
 
+
 class Texture;
-class Engine;
+namespace graphics
+{
+	class RenderContext;
+}
 
 class PostProcessManager
 {
@@ -21,12 +25,12 @@ public:
 		SSAO = BITFLAG(3),
 	};
 
-	PostProcessManager() = default;
-	s32 GetFlags() const { return m_PassFlags; }
-	void Initiate();
-	void CleanUp();
+	PostProcessManager();
+	~PostProcessManager();
 
-	void Process(Texture* current_frame_texture);
+	s32 GetFlags() const { return m_PassFlags; }
+
+	void Process(Texture* current_frame_texture, const graphics::RenderContext& render_context);
 
 	void SetPassesToProcess(s32 pass_flags);
 	void RemovePassToProcess(s32 pass_flag);
@@ -39,7 +43,5 @@ private:
 	MotionBlurPass	m_MotionBlurPass;
 	BloomPass		m_BloomPass;
 	SSAOPass		m_SSAOPass;
-
-	Engine* m_Engine = nullptr;
 };
 

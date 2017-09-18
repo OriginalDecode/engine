@@ -59,7 +59,7 @@ namespace graphics
 		virtual void DrawInstanced(BaseModel* model) = 0;
 		virtual void DrawIndexedInstanced(BaseModel* model) = 0;
 
-		virtual void DrawIndexed(Quad* quad, bool depth_on) = 0;
+		virtual void DrawIndexed(Quad* quad, bool depth_on = false) = 0;
 
 		template<typename T>
 		virtual void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size) = 0;

@@ -35,7 +35,6 @@ namespace graphics
 		CULL_BACK,
 		CULL_NONE,
 		CULL_FRONT,
-		MSAA,
 		NOF_RS
 	};
 
@@ -95,6 +94,8 @@ namespace graphics
 		R32_FLOAT = BITFLAG(15),
 		R32_UINT = BITFLAG(16),
 		DEPTH_32_FLOAT = BITFLAG(17),
+
+		RGBA8_UNORM = BITFLAG(18),
 	};
 
 	enum eVertexFormat
@@ -263,6 +264,7 @@ namespace graphics
 
 		ISamplerState* m_SamplerStates[NOF_SS];
 		IDepthStencilState* m_DepthStencilStates[NOF_DSS];
+		IRasterizerState* m_RasterizerStates[NOF_RS];
 
 	};
 

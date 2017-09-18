@@ -92,11 +92,15 @@ namespace graphics
 		void CreateBackBuffer();
 		void CreateViewport();
 		void CreateAdapterList();
-		void CreateRazterizers();
 		void CreateBlendStates();
 		void CreateSamplerStates();
 		
 		void GetRefreshRate(u32& aNumerator, u32& aDenominator);
+		
+		void CreateRazterizers();
+		void CreateRasterizerState(const D3D11_RASTERIZER_DESC& desc, eRasterizer rasterizer, const char* debugname);
+
+
 
 		IDXGISwapChain* m_Swapchain = nullptr; //very API specific
 		ID3D11Debug* m_Debug = nullptr;

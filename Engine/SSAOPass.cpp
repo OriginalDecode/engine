@@ -3,75 +3,63 @@
 
 #include <Engine/Engine.h>
 #include <Engine/Synchronizer.h>
+#include <Engine/IGraphicsContext.h>
+#include <Engine/RenderContext.h>
 
-void SSAOPass::Initiate()
+SSAOPass::SSAOPass()
 {
 	m_WindowSize = Engine::GetInstance()->GetInnerSize();
+
+	TextureDesc desc;
+	desc.m_ResourceTypeBinding = graphics::BIND_RENDER_TARGET | graphics::BIND_SHADER_RESOURCE;
+	desc.m_Width = m_WindowSize.m_Width;
+	desc.m_Height = m_WindowSize.m_Height;
+	desc.m_ShaderResourceFormat = graphics::RGBA8_UNORM;
+	desc.m_RenderTargetFormat = graphics::RGBA8_UNORM;
+
 	m_SSAOTexture = new Texture;
-	m_SSAOTexture->Initiate(
-		m_WindowSize.m_Width,
-		m_WindowSize.m_Height,
-		D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,
-		DXGI_FORMAT_R8G8B8A8_UNORM,
-		"SSAOPass | SSAOTexture");
+	m_SSAOTexture->Initiate(desc, "SSAOTexture");
 
-	m_ScreenQuad.Initiate();
 	m_SSAOShader = Engine::GetInstance()->GetEffect("Shaders/ssao.json");
+	m_ScreenQuad = new Quad(m_SSAOShader);
 
-	m_cbSSAO = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbSSAO));
-	m_cbBlur = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbBlur));
-	
-#if !defined(_PROFILE) && !defined(_FINAL)
-	//Engine::GetInstance()->AddTexture(m_SSAOTexture, "SSAO");
-#endif
+	m_cbSSAO = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSSAO));
+
 	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_SSAOTexture, Effect::SSAO);
+
 }
 
-void SSAOPass::CleanUp()
+SSAOPass::~SSAOPass()
 {
-
-	SAFE_RELEASE(m_cbBlur);
-	SAFE_RELEASE(m_cbSSAO);
-
+	Engine::GetAPI()->ReleasePtr(m_cbSSAO);
 	SAFE_DELETE(m_SSAOTexture);
-
-
 }
 
-void SSAOPass::Process(Texture* scene_texture)
+void SSAOPass::Process(Texture* scene_texture, const graphics::RenderContext& render_context)
 {
-	Engine* engine = Engine::GetInstance();
-	DirectX11* api = engine->GetAPI();
+	auto& ctx = render_context.GetContext();
 
+	const CU::Matrix44f& projection = CU::Math::InverseReal(render_context.GetEngine().GetCamera()->GetPerspective());
+	const CU::Matrix44f& view = render_context.GetEngine().GetCamera()->GetOrientation();
 
-	m_SSAOStruct.m_Projection = CU::Math::InverseReal(engine->GetCamera()->GetPerspective());
-	m_SSAOStruct.m_View = engine->GetCamera()->GetOrientation();
+	m_SSAOStruct.m_Projection = projection;
+	m_SSAOStruct.m_View = view;
 	
+	ctx.ClearRenderTarget(m_SSAOTexture->GetRenderTargetView(), clearcolor::black);
+	ctx.OMSetRenderTargets(1, m_SSAOTexture->GetRenderTargetView(), nullptr);
+	
+	ctx.UpdateConstantBuffer(m_cbSSAO, &m_SSAOStruct, sizeof(cbSSAO));
 
-
-	api->UpdateConstantBuffer(m_cbSSAO, &m_SSAOStruct);
-
-
-	m_ScreenQuad.SetBuffers();
-
-	IDevContext* ctx = api->GetContext();
-	float clear[4] = { 0.f, 0.f, 0.f, 0.f };
-	ctx->ClearRenderTargetView(m_SSAOTexture->GetRenderTargetView(), clear);
-
-	ID3D11RenderTargetView* rtv[] = {
-		m_SSAOTexture->GetRenderTargetView(),
-	};
-
-	ctx->PSSetConstantBuffers(0, 1, &m_cbSSAO);
-	ctx->OMSetRenderTargets(ARRAYSIZE(rtv), rtv, api->GetDepthView());
-
-	api->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+	ctx.PSSetConstantBuffer(0, 1, &m_cbSSAO);
+	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
 
 	m_SSAOShader->Use();
-	m_ScreenQuad.Render();
+	ctx.DrawIndexed(m_ScreenQuad);
 	m_SSAOShader->Clear();
 
-	ID3D11RenderTargetView* rtv0[ARRAYSIZE(rtv)] = { };
-	ctx->OMSetRenderTargets(ARRAYSIZE(rtv0), rtv0, api->GetDepthView());
+}
+
+void SSAOPass::OnResize()
+{
 
 }

@@ -120,7 +120,7 @@ private:
 	//this should be an object in the world and the render part should be separated
 	class WaterPlane*			m_WaterPlane				= nullptr; //Shouldn't be in here
 
-
+	bool m_RenderInstanced = true;
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)

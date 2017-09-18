@@ -35,7 +35,7 @@ typedef void IBuffer;
 typedef void IInputLayout;
 typedef void ISamplerState;
 typedef void IDepthStencilState;
-
+typedef void IRasterizerState;
 
 #if (UINTPTR_MAX == 0xffffffffffffffff)
 typedef u64 uptr;

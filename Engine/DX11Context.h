@@ -9,6 +9,7 @@ namespace graphics
 	class DX11Context : public IGraphicsContext
 	{
 		friend class DirectX11;
+		friend class DX11Device;
 	public:
 		DX11Context(ID3D11DeviceContext* context);
 		void VSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
@@ -34,6 +35,7 @@ namespace graphics
 
 		void VSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 		void PSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
+		void PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
 		void GSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 		void HSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 		void DSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
@@ -71,7 +73,10 @@ namespace graphics
 
 	private:
 		ID3D11DeviceContext* m_Context = nullptr;
+		void* GetContext() override { return m_Context; }
 
+		ID3D11DepthStencilState* m_EnableZ = nullptr;
+		ID3D11DepthStencilState* m_DisableZ = nullptr;
 
 
 

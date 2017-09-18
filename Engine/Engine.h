@@ -179,12 +179,16 @@ public:
 // 	void SelectEntity(u32 e);
 // 	void DeselectEntity();
 	memory::MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
+	const graphics::eSamplerStates GetCurrentSampler() const { return m_CurrentSampler; }
+	void SetCurrentSampler(const graphics::eSamplerStates& sampler) { m_CurrentSampler = sampler; }
 
 private:
 	Engine() = default;
 	static Engine* myInstance;
 	static graphics::IGraphicsAPI* m_API;
 	memory::MemorySegmentHandle m_SegmentHandle;
+
+	graphics::eSamplerStates m_CurrentSampler;
 
 
 	bool HasInitiated();

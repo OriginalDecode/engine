@@ -10,6 +10,8 @@ namespace graphics
 	DX11Context::DX11Context(ID3D11DeviceContext* context)
 		: m_Context(context)
 	{
+		m_DisableZ = static_cast<ID3D11DepthStencilState*>(Engine::GetAPI()->GetDepthStencilState(Z_DISABLED));
+		m_EnableZ = static_cast<ID3D11DepthStencilState*>(Engine::GetAPI()->GetDepthStencilState(Z_ENABLED));
 	}
 
 	void DX11Context::VSSetShaderResource(s32 start_slot, s32 count, void* resources)
@@ -112,6 +114,11 @@ namespace graphics
 		m_Context->PSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
 
+	void DX11Context::PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
+	{
+		PSSetSamplerState(0, 1, Engine::GetAPI()->GetSamplerState(samplerstate));
+	}
+
 	void DX11Context::GSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->GSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
@@ -170,6 +177,7 @@ namespace graphics
 	{
 		const auto& vtx = quad->GetVertexWrapper();
 		const auto& idx = quad->GetIndexWrapper();
+
 
 		m_Context->IASetInputLayout(static_cast<ID3D11InputLayout*>(vtx.GetInputLayout()));
 		m_Context->IASetPrimitiveTopology(DirectX11::GetTopology(vtx.GetTopology()));

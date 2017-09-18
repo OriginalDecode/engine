@@ -29,6 +29,8 @@ public:
 	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }
 	const InstanceWrapper& GetInstanceWrapper() const { return m_InstanceWrapper; }
 
+
+
 protected:
 	/*
 	void InitVertexBuffer();
@@ -38,7 +40,6 @@ protected:
 	virtual void InitConstantBuffer() = 0;
 	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& rc) = 0;
 
-	CU::Vector3f m_WHD; 
 	CU::Vector3f m_MaxPoint;
 	CU::Vector3f m_MinPoint;
 	Effect* m_Effect = nullptr;

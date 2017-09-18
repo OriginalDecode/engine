@@ -11,12 +11,12 @@ namespace graphics
 		DX11Device(ID3D11Device* device);
 
 
-		void* CreateVertexShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
-		void* CreatePixelShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
-		void* CreateGeometryShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
-		void* CreateHullShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
-		void* CreateDomainShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
-		void* CreateComputeShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
+		IVertexShader* CreateVertexShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
+		IPixelShader* CreatePixelShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
+		IGeometryShader* CreateGeometryShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
+		IHullShader* CreateHullShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
+		IDomainShader* CreateDomainShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
+		IComputeShader* CreateComputeShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
 		
 		void* CreateTextureFromFile(const cl::CHashString<128>& filepath, bool generate_mips, IGraphicsContext* ctx) override;
 		ITexture2D* CreateTexture2D(const Texture2DDesc& desc, const cl::CHashString<128>& debug_name) override;

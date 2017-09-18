@@ -14,7 +14,7 @@ namespace graphics
 	{
 	}
 
-	void* DX11Device::CreateVertexShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
+	IVertexShader* DX11Device::CreateVertexShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
 	{
 		ID3D11VertexShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -26,7 +26,7 @@ namespace graphics
 		return shader;
 	}
 
-	void* DX11Device::CreatePixelShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
+	IPixelShader* DX11Device::CreatePixelShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
 	{
 		ID3D11PixelShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -38,7 +38,7 @@ namespace graphics
 		return shader;
 	}
 
-	void* DX11Device::CreateGeometryShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
+	IGeometryShader* DX11Device::CreateGeometryShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
 	{
 		ID3D11GeometryShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -50,7 +50,7 @@ namespace graphics
 		return shader;
 	}
 
-	void* DX11Device::CreateHullShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
+	IHullShader* DX11Device::CreateHullShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
 	{
 		ID3D11HullShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -62,7 +62,7 @@ namespace graphics
 		return shader;
 	}
 
-	void* DX11Device::CreateDomainShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
+	IDomainShader* DX11Device::CreateDomainShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
 	{
 		ID3D11DomainShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -74,7 +74,7 @@ namespace graphics
 		return shader;
 	}
 
-	void* DX11Device::CreateComputeShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
+	IComputeShader* DX11Device::CreateComputeShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
 	{
 		ID3D11ComputeShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -88,13 +88,14 @@ namespace graphics
 
 	void* DX11Device::CreateTextureFromFile(const cl::CHashString<128>& filepath, bool generate_mips, IGraphicsContext* ctx)
 	{
+		DX11Context* pCtx = static_cast<DX11Context*>(ctx);
 		wchar_t* widepath = nullptr;
 		mbstowcs(widepath, filepath.c_str(), filepath.length());
 		ID3D11ShaderResourceView* srv = nullptr;
 		if (generate_mips)
 		{
 			HRESULT hr = DirectX::CreateDDSTextureFromFileEx(m_Device
-															 , static_cast<ID3D11DeviceContext*>(ctx->GetContext())
+															 , static_cast<ID3D11DeviceContext*>(pCtx->GetContext())
 															 , widepath
 															 , 0
 															 , D3D11_USAGE_DEFAULT

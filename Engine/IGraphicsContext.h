@@ -50,9 +50,9 @@ namespace graphics
 
 
 
-		virtual void Draw(s32 vertex_start, s32 vertex_count) = 0;
-		virtual void Draw(s32 index_start, s32 index_count, s32 vertex_start) = 0;
-		virtual void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) = 0;
+// 		virtual void Draw(s32 vertex_start, s32 vertex_count) = 0;
+// 		virtual void Draw(s32 index_start, s32 index_count, s32 vertex_start) = 0;
+// 		virtual void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) = 0;
 
 		virtual void Draw(BaseModel* model) = 0;
 		virtual void DrawIndexed(BaseModel* model) = 0;
@@ -61,14 +61,16 @@ namespace graphics
 
 		virtual void DrawIndexed(Quad* quad, bool depth_on = false) = 0;
 
-		template<typename T>
-		virtual void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size) = 0;
+		virtual void UpdateConstantBuffer(IBuffer* dest, void* src, s32 size) = 0;
 		
-		template<typename T>
-		virtual void UpdateBuffer(IBuffer* dest, T* src, s32 size, eMapping mapping) = 0;
+		virtual void UpdateBuffer(IBuffer* dest, void* src, s32 size, eMapping mapping) = 0;
 
 		virtual void SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth) = 0;
+		virtual void SetRasterizerState(IRasterizerState* pRasterizerState) = 0;
+		virtual void SetBlendState(IBlendState* pBlendState) = 0;
 
+		virtual void SetViewport(Viewport* viewport) = 0;
+		
 
 	protected:
 		virtual void* GetContext() = 0;

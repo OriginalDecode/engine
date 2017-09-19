@@ -30,6 +30,7 @@ namespace graphics
 	{
 	public:
 		DirectX11(CreateInfo info);
+		~DirectX11();
 		static void SetDebugName(void * pResource, cl::CHashString<128> debug_name);
 		static void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
 		static DXGI_FORMAT GetFormat(s32 format);
@@ -42,11 +43,10 @@ namespace graphics
 		void ReleasePtr(void* ptr) override;
 
 
+		void EndFrame() override;
+		void BeginFrame() override;
 		//__________________________
 		// Virtual Functions
-
-		bool Initiate(CreateInfo create_info) override;
-		bool CleanUp() override;
 
 		void Present(u8 anInterval, u8 flags) override;
 		void Clear() override;
@@ -54,20 +54,14 @@ namespace graphics
 		void OnAltEnter() override;
 		void OnResize() override;
 
-		void CopyResource(void * pDestination, void * pSource) override;
 
-		void SetViewport(void* viewport) override;
-		void* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y) override;
-
-		const CreateInfo& GetInfo() const { return m_CreateInfo; }
-
-		//__________________________
-		// DirectX Functions
-
-
+		Viewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y) override;
 		void ResetViewport();
 		void ResetRendertarget();
 
+		
+
+		void CopyResource(void * pDestination, void * pSource) override;
 		void ClearDepthStencilState();
 
 
@@ -80,9 +74,9 @@ namespace graphics
 
 		void ResetRenderTargetAndDepth();
 
-// #ifdef _DEBUG
-// 		void ReportLiveObjects();
-// #endif
+ #ifdef _DEBUG
+ 		void ReportLiveObjects();
+ #endif
 
 	private:
 		void CreateDeviceAndSwapchain();
@@ -90,7 +84,6 @@ namespace graphics
 
 		void CreateDepthBuffer();
 		void CreateBackBuffer();
-		void CreateViewport();
 		void CreateAdapterList();
 		void CreateBlendStates();
 		void CreateSamplerStates();
@@ -100,13 +93,11 @@ namespace graphics
 		void CreateRazterizers();
 		void CreateRasterizerState(const D3D11_RASTERIZER_DESC& desc, eRasterizer rasterizer, const char* debugname);
 
+		IDXGISwapChain* m_Swapchain = nullptr; 
 
 
-		IDXGISwapChain* m_Swapchain = nullptr; //very API specific
 		ID3D11Debug* m_Debug = nullptr;
-
-		D3D11_VIEWPORT* m_Viewport = nullptr; // should be moved to a general viewport class 
-
+		
 
 		//Should be moved to a default buffer object
 		ID3D11RenderTargetView* m_RenderTarget = nullptr;
@@ -114,11 +105,10 @@ namespace graphics
 		ID3D11Texture2D* m_DepthBuffer = nullptr;
 
 
-
-		//ID3D11RasterizerState*		myRasterizerStates[eRasterizer::NOF_RS];
 		//ID3D11BlendState*			myBlendStates[eBlendStates::NOF_BS];
 
-		std::unordered_map<std::string, IDXGIAdapter*> myAdapters;
+
+		std::unordered_map<std::string, IDXGIAdapter*> m_Adapters;
 		std::vector<std::string> myAdaptersName;
 		std::string myActiveAdapter;
 

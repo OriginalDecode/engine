@@ -401,6 +401,7 @@
     <ClInclude Include="VertexStructs.h" />
     <ClInclude Include="VertexTypes.h" />
     <ClInclude Include="VertexWrapper.h" />
+    <ClInclude Include="Viewport.h" />
     <ClInclude Include="VirtualFileSystem.h" />
     <ClInclude Include="Vulkan.h" />
     <ClInclude Include="WaterPlane.h" />
@@ -508,6 +509,7 @@
     <ClCompile Include="TreeDweller.cpp" />
     <ClCompile Include="TreeNode.cpp" />
     <ClCompile Include="TreeNodeBase.cpp" />
+    <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="VirtualFileSystem.cpp" />
     <ClCompile Include="Vulkan.cpp" />
     <ClCompile Include="WaterPlane.cpp" />

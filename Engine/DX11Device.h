@@ -9,7 +9,7 @@ namespace graphics
 		friend class DirectX11;
 	public:
 		DX11Device(ID3D11Device* device);
-
+		~DX11Device();
 
 		IVertexShader* CreateVertexShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;
 		IPixelShader* CreatePixelShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name) override;

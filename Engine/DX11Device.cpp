@@ -14,6 +14,12 @@ namespace graphics
 	{
 	}
 
+	DX11Device::~DX11Device()
+	{
+		m_Device->Release();
+		m_Device = nullptr;
+	}
+
 	IVertexShader* DX11Device::CreateVertexShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
 	{
 		ID3D11VertexShader* shader = nullptr;

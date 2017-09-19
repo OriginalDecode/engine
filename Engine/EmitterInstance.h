@@ -32,7 +32,7 @@ private:
 	void UpdateParticle(float aDeltaTime);
 	void Emit();
 	SEmitterData myData;
-	VertexBufferWrapper* myVertexBuffer;
+	VertexWrapper* myVertexBuffer;
 
 	CU::GrowingArray<SParticleObject> myParticles;
 	CU::Matrix44f myOrientation;

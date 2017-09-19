@@ -50,9 +50,9 @@ namespace graphics
 
 		void ClearDepthStencilView(IDepthStencilView* dsv, s32 clear_flag, s32 max_depth) override;
 
-		void Draw(s32 vertex_start, s32 vertex_count) override;
-		void Draw(s32 index_start, s32 index_count, s32 vertex_start) override;
-		void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) override;
+// 		void Draw(s32 vertex_start, s32 vertex_count) override;
+// 		void Draw(s32 index_start, s32 index_count, s32 vertex_start) override;
+// 		void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) override;
 
 		void Draw(BaseModel* model) override;
 		void DrawIndexed(BaseModel* model) override;
@@ -61,14 +61,13 @@ namespace graphics
 
 		void DrawIndexed(Quad* quad, bool depth_on) override;
 
-		template<typename T>
-		void UpdateConstantBuffer(IBuffer* dest, T* src, s32 size) override;
+		void UpdateConstantBuffer(IBuffer* dest, void* src, s32 size) override;
 
-		template<typename T>
-		void UpdateBuffer(IBuffer* dest, T* src, s32 size, eMapping mapping) override;
+		void UpdateBuffer(IBuffer* dest, void* src, s32 size, eMapping mapping) override;
 
 		void SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth) override;
-
+		void SetRasterizerState(IRasterizerState* pRasterizerState) override;
+		void SetBlendState(IBlendState* pBlendState) override;
 
 
 	private:
@@ -83,33 +82,6 @@ namespace graphics
 
 	};
 
-	template<typename T>
-	void DX11Context::UpdateBuffer(IBuffer* dest, T* src, s32 size, eMapping mapping)
-	{
-		D3D11_MAPPED_SUBRESOURCE msr;
-		m_Context->Map(dest, 0, DirectX11::GetMapping(mapping), 0, &msr);
 
-		if (msr.pData)
-		{
-			T* data = (T*)msr.pData;
-			memcpy(data, &src[0], size);
-		}
-		m_Context->Unmap(dest, 0);
-	}
-
-	template<typename T>
-	void DX11Context::UpdateConstantBuffer(IBuffer* dest, T* src, s32 size)
-	{
-		D3D11_MAPPED_SUBRESOURCE msr;
-		m_Context->Map(dest, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-
-		if (msr.pData)
-		{
-			T* data = (T*)msr.pData;
-			memcpy(data, &src[0], size);
-		}
-		m_Context->Unmap(dest, 0);
-
-	}
 
 };

@@ -68,6 +68,26 @@ const WindowSize& Window::GetInnerSize() const
 	return m_InnerSize;
 }
 
+void Window::OnAltEnter()
+{
+	m_IsFullscreen = !m_IsFullscreen;
+}
+
+void Window::OnPause()
+{
+
+}
+
+void Window::OnResume()
+{
+
+}
+
+void Window::OnExit()
+{
+
+}
+
 void Window::OnInactive()
 {
 	m_WindowIsActive = false;

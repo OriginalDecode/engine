@@ -287,29 +287,6 @@ void* Engine::CreateShader(void* pShader, eShaderType type, const cl::CHashStrin
 	return nullptr;
 }
 
-void Engine::Present()
-{
-	/*if (myInstance->m_States[(u16)eEngineStates::USE_VSYNC] == TRUE)
-		myAPI->Present(1, 0);
-	else
-		myAPI->Present(0, 0);*/
-}
-
-void Engine::Clear()
-{
-	//myAPI->Clear();
-}
-
-void Engine::EnableZ()
-{
-	//myAPI->EnableZBuffer();
-}
-
-void Engine::DisableZ()
-{
-	//myAPI->DisableZBuffer();
-}
-
 const WindowSize& Engine::GetWindowSize() const
 {
 	return m_Window.GetWindowSize();
@@ -410,8 +387,8 @@ void Engine::ToggleVsync()
 
 void Engine::OnAltEnter()
 {
-	if (myAPI)
-		myAPI->OnAltEnter();
+	m_Window.OnAltEnter();
+	m_API->OnAltEnter();
 }
 
 void Engine::OnPause()

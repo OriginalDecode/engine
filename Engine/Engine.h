@@ -18,6 +18,7 @@
 #include <Engine/SystemMonitor.h>
 #include <Engine/MemorySegmentHandle.h>
 #include <Engine/DebugHandle.h>
+#include <Engine/IGraphicsAPI.h>
 
 #include <string>
 
@@ -54,12 +55,6 @@ class Terrain;
 class Sprite;
 class InputHandle;
 class PhysicsManager;
-
-namespace graphics
-{
-	class IGraphicsAPI;
-};
-
 
 class Engine
 {
@@ -182,6 +177,9 @@ public:
 	const graphics::eSamplerStates GetCurrentSampler() const { return m_CurrentSampler; }
 	void SetCurrentSampler(const graphics::eSamplerStates& sampler) { m_CurrentSampler = sampler; }
 
+	bool VSync() const { return m_VSyncOn; }
+	void ToggleVSync() { m_VSyncOn = !m_VSyncOn; }
+
 private:
 	Engine() = default;
 	static Engine* myInstance;
@@ -189,6 +187,7 @@ private:
 	memory::MemorySegmentHandle m_SegmentHandle;
 
 	graphics::eSamplerStates m_CurrentSampler;
+	bool m_VSyncOn = false;
 
 
 	bool HasInitiated();

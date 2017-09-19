@@ -30,8 +30,6 @@ public:
 	void SetPosition(const CU::Vector3f& aPosition);
 	CU::Matrix44f& GetOrientation();
 	void SetOrientation(CU::Matrix44f orientation);
-	CU::Vector3f GetWHD() const { return m_WHD; }
-	void SetWHD(CU::Vector3f whd);
 
 
 	virtual void SetMaxPoint(CU::Vector3f max_point);

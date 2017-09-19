@@ -13,10 +13,8 @@
 
 #include <Engine/DX11Device.h>
 #include <Engine/DX11Context.h>
+#include <Engine/Viewport.h>
 
-#define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
-
-constexpr float clear[4] = { 0.f, 0.f, 0.f, 0.f };
 
 namespace graphics
 {
@@ -25,14 +23,8 @@ namespace graphics
 	{
 		CreateDeviceAndSwapchain();
 		CreateDepthStencilStates();
-
-// 		CreateAdapterList();
-// 		CreateDepthBuffer();
-// 		CreateBackBuffer();
-// 		CreateViewport();
-// 		CreateRazterizers();
-// 		CreateBlendStates();
-// 		CreateSamplerStates();
+		CreateRazterizers();
+		m_Viewport = CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
@@ -41,40 +33,30 @@ namespace graphics
 #endif
 	}
 
-	bool DirectX11::CleanUp()
+	DirectX11::~DirectX11()
 	{
 #if !defined(_PROFILE) && !defined(_FINAL)
 		ImGui_ImplDX11_Shutdown();
 #endif
-		for (auto it = myAdapters.begin(); it != myAdapters.end(); ++it)
+		SAFE_DELETE(m_Viewport);
+		for (auto it = m_Adapters.begin(); it != m_Adapters.end(); ++it)
 		{
 			SAFE_RELEASE(it->second);
 		}
 		m_Swapchain->SetFullscreenState(FALSE, nullptr);
-		//myEngineFlags[static_cast<u16>(eEngineFlags::FULLSCREEN)] = FALSE;
-
-		float blend[4];
-		BLACK_CLEAR(blend);
-		m_Context->OMSetBlendState(nullptr, blend, 0xFFFFFFFF);
-
-
-		SAFE_DELETE(m_Viewport);
 
 		SAFE_RELEASE(m_DepthView);
 		SAFE_RELEASE(m_DepthBuffer);
 		SAFE_RELEASE(m_RenderTarget);
 		SAFE_RELEASE(m_Swapchain);
 
+		ID3D11DeviceContext* ctx = static_cast<DX11Context*>(m_Context)->m_Context;
+		ctx->ClearState();
+		ctx->Flush();
 
+		SAFE_DELETE(m_Context);
+		SAFE_DELETE(m_Device);
 
-
-
-		m_Context->ClearState();
-		m_Context->Flush();
-		//Swap the full screen flags correctly if swapping between.
-		SAFE_RELEASE(m_Context);
-		ID3D11Device* pDevice = static_cast<ID3D11Device*>(**m_Device);
-		SAFE_RELEASE(pDevice);
 		if (m_Debug != nullptr)
 		{
 			std::stringstream ss;
@@ -88,9 +70,19 @@ namespace graphics
 #if defined (_DEBUG)
 		OutputDebugString("\nIntRef is something that D3D has internal. You cannot control these.\n\n");
 #endif
-
-		return true;
 	}
+
+	void DirectX11::BeginFrame()
+	{
+		Clear();
+	}
+
+	void DirectX11::EndFrame()
+	{
+		const bool vsync = Engine::GetInstance()->VSync();
+		Present(vsync ? 1 : 0, 0);
+	}
+
 
 	void DirectX11::Present(u8 anInterval, u8 flags)
 	{
@@ -99,26 +91,11 @@ namespace graphics
 
 	void DirectX11::Clear()
 	{
-		float color[4];
-		BLACK_CLEAR(color);
-		m_Context->ClearRenderTargetView(m_RenderTarget, color);
-		m_Context->ClearDepthStencilView(m_DepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+		m_Context->ClearRenderTarget(m_RenderTarget, clearcolor::black);
+		m_Context->ClearDepthStencilView(m_DepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f);
 	}
 
-	const std::string& DirectX11::GetAdapterName(u16 anIndex)
-	{
-		return myAdaptersName[anIndex];
-	}
-
-	void DirectX11::SetDebugName(void * pResource, cl::CHashString<128> debug_name)
-	{
-		if (!pResource)
-			return;
-
-		ID3D11DeviceChild* resource = static_cast<ID3D11DeviceChild*>(pResource);
-		resource->SetPrivateData(WKPDID_D3DDebugObjectName, debug_name.length(), debug_name.c_str());
-	}
-
+	
 	void DirectX11::SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value)
 	{
 		m_Context->OMSetDepthStencilState(myDepthStates[u16(depth_stencil_state)], depth_value);
@@ -181,7 +158,7 @@ namespace graphics
 		myActiveAdapter = adapterString;
 
 		D3D_DRIVER_TYPE type = D3D_DRIVER_TYPE_NULL;
-		if (myAdapters[adapterString] == nullptr)
+		if (m_Adapters[adapterString] == nullptr)
 		{
 			myActiveAdapter = "Unknown";
 			type = D3D_DRIVER_TYPE_HARDWARE;
@@ -193,33 +170,33 @@ namespace graphics
 
 		ID3D11Device* pDevice = nullptr;
 		ID3D11DeviceContext* pContext = nullptr;
-		HRESULT hr = D3D11CreateDeviceAndSwapChain(myAdapters[adapterString],
-												   type,
-												   nullptr,
-												   createDeviceFlags,
-												   requested_feature_levels,
-												   featureCount,
-												   D3D11_SDK_VERSION,
-												   &scDesc,
-												   &m_Swapchain,
-												   &pDevice,
-												   nullptr,
-												   &pContext);
+		HRESULT hr = D3D11CreateDeviceAndSwapChain(m_Adapters[adapterString],
+			type,
+			nullptr,
+			createDeviceFlags,
+			requested_feature_levels,
+			featureCount,
+			D3D11_SDK_VERSION,
+			&scDesc,
+			&m_Swapchain,
+			&pDevice,
+			nullptr,
+			&pContext);
 
 		if (pDevice == nullptr)
 		{
-			hr = D3D11CreateDeviceAndSwapChain(myAdapters[adapterString],
-											   type,
-											   nullptr,
-											   0,
-											   requested_feature_levels,
-											   featureCount,
-											   D3D11_SDK_VERSION,
-											   &scDesc,
-											   &m_Swapchain,
-											   &pDevice,
-											   nullptr,
-											   &pContext);
+			hr = D3D11CreateDeviceAndSwapChain(m_Adapters[adapterString],
+				type,
+				nullptr,
+				0,
+				requested_feature_levels,
+				featureCount,
+				D3D11_SDK_VERSION,
+				&scDesc,
+				&m_Swapchain,
+				&pDevice,
+				nullptr,
+				&pContext);
 		}
 
 		DL_ASSERT_EXP(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");
@@ -281,15 +258,16 @@ namespace graphics
 
 	void DirectX11::CreateBackBuffer()
 	{
-		HRESULT hr;
-		ID3D11Texture2D* backbuffer;
+		HRESULT hr = S_OK;
+		ID3D11Texture2D* backbuffer = nullptr;
 		hr = m_Swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backbuffer);
 		HandleErrors(hr, "Failed to get Buffer!");
 
 		hr = m_Swapchain->SetFullscreenState(FALSE, nullptr);
 		HandleErrors(hr, "Failed to set Fullscreen/Borderless");
 
-		hr = static_cast<ID3D11Device*>(**m_Device)->CreateRenderTargetView(backbuffer, NULL, &m_RenderTarget);
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		hr = pDevice->CreateRenderTargetView(backbuffer, NULL, &m_RenderTarget);
 		HandleErrors(hr, "Failed to create RenderTarget.");
 
 		SAFE_RELEASE(backbuffer);
@@ -299,12 +277,7 @@ namespace graphics
 #endif
 	}
 
-	void DirectX11::CreateViewport()
-	{
-		m_Viewport = static_cast<D3D11_VIEWPORT*>(CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0));
-	}
-
-	void* DirectX11::CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y)
+	Viewport* DirectX11::CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y)
 	{
 		D3D11_VIEWPORT* new_viewport = new D3D11_VIEWPORT;
 
@@ -315,7 +288,7 @@ namespace graphics
 		new_viewport->MinDepth = min_depth;
 		new_viewport->MaxDepth = max_depth;
 
-		return new_viewport;
+		return new Viewport(width, height, top_left_x, top_left_y, min_depth, max_depth, new_viewport);
 	}
 
 	void DirectX11::CreateAdapterList()
@@ -342,7 +315,7 @@ namespace graphics
 			std::wcstombs(dst, temp, 128);
 			std::string actualString(dst);
 			myAdaptersName.push_back(actualString);
-			myAdapters.insert(std::pair<std::string, IDXGIAdapter*>(actualString, enumAdapter[i]));
+			m_Adapters.insert(std::pair<std::string, IDXGIAdapter*>(actualString, enumAdapter[i]));
 		}
 	}
 
@@ -352,64 +325,36 @@ namespace graphics
 		pUnknown->Release();
 	}
 
-	void DirectX11::ResetViewport()
-	{
-		SetViewport(m_Viewport);
-	}
 
+	
 	void DirectX11::ResetRendertarget()
 	{
 		m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthView);
 	}
 
-// 	void DirectX11::ClearDepthStencilState()
-// 	{
-// 		m_Context->OMSetDepthStencilState(nullptr, 0);
-// 	}
-
-// 	void DirectX11::SetRasterizer(const eRasterizer& aRasterizer)
-// 	{
-// 		m_Context->RSSetState(myRasterizerStates[u16(aRasterizer)]);
-// 	}
-// 
-// 	void DirectX11::SetBlendState(const eBlendStates& blendState)
-// 	{
-// 		float blend[4] = { 0.f , 0.f , 0.f , 0.f };
-// 		m_Context->OMSetBlendState(myBlendStates[u16(blendState)], blend, 0xFFFFFFFF);
-// 	}
-// 
-// 	void DirectX11::SetSamplerState(const eSamplerStates& samplerState)
-// 	{
-// 		m_Context->PSSetSamplers(0, 1, &mySamplerStates[samplerState]);
-// 	}
 
 
-// #ifdef _DEBUG
-// 	void DirectX11::ReportLiveObjects()
-// 	{
-// 		m_Context->ClearState();
-// 		m_Context->Flush();
-// 		m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | (D3D11_RLDO_FLAGS)0x4);
-// 	}
-// #endif
-
-// 	void DirectX11::SetViewport(void* viewport)
-// 	{
-// 		m_Context->RSSetViewports(1, static_cast<D3D11_VIEWPORT*>(viewport));
-// 	}
+#ifdef _DEBUG
+	void DirectX11::ReportLiveObjects()
+	{
+		ID3D11DeviceContext* ctx = static_cast<DX11Context*>(m_Context)->m_Context;
+		ctx->ClearState();
+		ctx->Flush();
+		m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | (D3D11_RLDO_FLAGS)0x4);
+	}
+#endif
 
 	void DirectX11::OnAltEnter()
 	{
-		if (this && m_Swapchain)
+		if (!m_Swapchain)
+			return;
+
+		m_Swapchain->SetFullscreenState(FALSE, nullptr);
+		const Window& win = Engine::GetInstance()->GetWindow();
+		if (win.IsFullscreen())
 		{
-			m_Swapchain->SetFullscreenState(FALSE, nullptr);
-			//if (myEngineFlags[u16(eEngineFlags::FULLSCREEN)] == FALSE)
-			{
-				m_Swapchain->SetFullscreenState(TRUE, nullptr);
-				//myEngineFlags[u16(eEngineFlags::FULLSCREEN)] = TRUE;
-				return;
-			}
-			//myEngineFlags[u16(eEngineFlags::FULLSCREEN)] = FALSE;
+			m_Swapchain->SetFullscreenState(TRUE, nullptr);
+			return;
 		}
 	}
 
@@ -457,12 +402,11 @@ namespace graphics
 		scDesc.BufferDesc.RefreshRate.Numerator = numerator;
 		scDesc.BufferDesc.RefreshRate.Denominator = denominator;
 
-		hr = factory->CreateSwapChain(static_cast<IUnknown*>(**m_Device), &scDesc, &m_Swapchain);
+		hr = factory->CreateSwapChain(static_cast<DX11Device*>(m_Device)->m_Device, &scDesc, &m_Swapchain);
 
 		SAFE_RELEASE(factory);
 	}
 
-	// Needs to be tweaked
 	void DirectX11::CreateRazterizers()
 	{
 		D3D11_RASTERIZER_DESC desc;
@@ -485,7 +429,7 @@ namespace graphics
 		desc.FillMode = D3D11_FILL_SOLID;
 		desc.CullMode = D3D11_CULL_BACK;
 		CreateRasterizerState(desc, CULL_BACK, "CULL_BACK");
-		
+
 		desc.FillMode = D3D11_FILL_SOLID;
 		desc.CullMode = D3D11_CULL_FRONT;
 		CreateRasterizerState(desc, CULL_FRONT, "CULL_FRONT");
@@ -702,12 +646,28 @@ namespace graphics
 	{
 		if (topology == eTopology::TRIANGLE_LIST)
 			return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		if (topology == eTopology::_4_CONTROL_POINT_PATCHLIST)
+			return D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST;
+		if (topology == eTopology::POINT_LIST)
+			return D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+
+		return D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 	}
 
 	D3D11_MAP DirectX11::GetMapping(eMapping mapping)
 	{
 		return static_cast<D3D11_MAP>(mapping);
 	}
+
+	void DirectX11::SetDebugName(void * pResource, cl::CHashString<128> debug_name)
+	{
+		if (!pResource)
+			return;
+
+		ID3D11DeviceChild* resource = static_cast<ID3D11DeviceChild*>(pResource);
+		resource->SetPrivateData(WKPDID_D3DDebugObjectName, debug_name.length(), debug_name.c_str());
+	}
+
 
 };
 

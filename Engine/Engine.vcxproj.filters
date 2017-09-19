@@ -103,6 +103,12 @@
     <Filter Include="Utilities\Gizmo">
       <UniqueIdentifier>{66e4d076-68b2-458d-aaa6-bae7bf610d69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{c870797d-6e95-4414-a67d-acba300a8044}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory">
+      <UniqueIdentifier>{74fa6570-4a86-47ca-b567-d9f7b7c3fbef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -360,7 +366,6 @@
     <ClInclude Include="RenderCommand.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderState.h" />
     <ClInclude Include="CommandAllocator.h">
       <Filter>Allocators</Filter>
     </ClInclude>
@@ -373,26 +378,46 @@
     <ClInclude Include="ParticleData.h">
       <Filter>Particles</Filter>
     </ClInclude>
-    <ClInclude Include="RootTreeNode.h" />
     <ClInclude Include="TreeNodeBase.h">
       <Filter>World</Filter>
     </ClInclude>
-    <ClInclude Include="MemorySegmentHandle.h" />
-    <ClInclude Include="WaterPlane.h" />
-    <ClInclude Include="DebugHandle.h" />
-    <ClInclude Include="ImGuiRegisterStructs.h" />
     <ClInclude Include="IGraphicsContext.h">
       <Filter>APIs</Filter>
     </ClInclude>
     <ClInclude Include="IGraphicsDevice.h">
       <Filter>APIs</Filter>
     </ClInclude>
-    <ClInclude Include="DX11Device.h">
-      <Filter>APIs</Filter>
+    <ClInclude Include="DX11Context.h">
+      <Filter>APIs\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="DX11Context.h" />
-    <ClInclude Include="InstanceWrapper.h" />
-    <ClInclude Include="RenderContext.h" />
+    <ClInclude Include="DX11Device.h">
+      <Filter>APIs\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugHandle.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiRegisterStructs.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderContext.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterPlane.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderState.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="MemorySegmentHandle.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="RootTreeNode.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="InstanceWrapper.h">
+      <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Viewport.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -620,24 +645,39 @@
     <ClCompile Include="RenderCommand.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderState.cpp" />
     <ClCompile Include="CommandAllocator.cpp">
       <Filter>Allocators</Filter>
     </ClCompile>
     <ClCompile Include="SSAOPass.cpp">
       <Filter>Rendering\Passes</Filter>
     </ClCompile>
-    <ClCompile Include="RootTreeNode.cpp" />
     <ClCompile Include="TreeNodeBase.cpp">
       <Filter>World</Filter>
     </ClCompile>
-    <ClCompile Include="MemorySegmentHandle.cpp" />
-    <ClCompile Include="WaterPlane.cpp" />
-    <ClCompile Include="DebugHandle.cpp" />
-    <ClCompile Include="DX11Device.cpp">
-      <Filter>APIs</Filter>
+    <ClCompile Include="DX11Context.cpp">
+      <Filter>APIs\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="DX11Context.cpp" />
-    <ClCompile Include="RenderContext.cpp" />
+    <ClCompile Include="DX11Device.cpp">
+      <Filter>APIs\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugHandle.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderContext.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="WaterPlane.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderState.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="MemorySegmentHandle.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="RootTreeNode.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="Viewport.cpp" />
   </ItemGroup>
 </Project>

@@ -222,6 +222,16 @@ namespace graphics
 		m_Context->OMSetDepthStencilState(static_cast<ID3D11DepthStencilState*>(pDepthStencilState), max_depth);
 	}
 
+	void DX11Context::SetRasterizerState(IRasterizerState* pRasterizerState)
+	{
+		m_Context->RSSetState(static_cast<ID3D11RasterizerState*>(pRasterizerState));
+	}
+
+	void DX11Context::SetBlendState(IBlendState* pBlendState)
+	{
+		m_Context->OMSetBlendState(static_cast<ID3D11BlendState*>(pBlendState), blendcolor::black, 0xFFFFFFFF );
+	}
+
 	void DX11Context::DrawInstanced(BaseModel* model)
 	{
 		const auto& vtx = model->GetVertexWrapper();
@@ -263,5 +273,34 @@ namespace graphics
 									idx.GetByteOffset());
 
 		m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), ins.GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
+	}
+
+	void DX11Context::UpdateBuffer(IBuffer* dest, void* src, s32 size, eMapping mapping)
+	{
+		D3D11_MAPPED_SUBRESOURCE msr;
+		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(dest);
+		m_Context->Map(buffer, 0, DirectX11::GetMapping(mapping), 0, &msr);
+
+		if (msr.pData)
+		{
+			void* data = msr.pData;
+			memcpy(data, &src, size);
+		}
+		m_Context->Unmap(buffer, 0);
+	}
+
+	void DX11Context::UpdateConstantBuffer(IBuffer* dest, void* src, s32 size)
+	{
+		D3D11_MAPPED_SUBRESOURCE msr;
+		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(dest);
+		m_Context->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+		if (msr.pData)
+		{
+			void* data = msr.pData;
+			memcpy(data, &src, size);
+		}
+		m_Context->Unmap(buffer, 0);
+
 	}
 };

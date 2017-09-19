@@ -36,6 +36,7 @@ typedef void IInputLayout;
 typedef void ISamplerState;
 typedef void IDepthStencilState;
 typedef void IRasterizerState;
+typedef void IBlendState;
 
 #if (UINTPTR_MAX == 0xffffffffffffffff)
 typedef u64 uptr;
@@ -85,4 +86,9 @@ namespace clearcolor
 	constexpr float black[4] = { 0.f, 0.f, 0.f, 0.f };
 	constexpr float white[4] = { 1.f, 1.f, 1.f, 0.f };
 	constexpr float pink[4] = { 1.f, 0.51f, 0.96f, 0.f };
+};
+
+namespace blendcolor
+{
+	constexpr float black[4] = { 0.f, 0.f, 0.f, 0.f };
 };

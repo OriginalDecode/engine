@@ -10,18 +10,24 @@ typedef HWND__* HWND;
 
 struct WindowSize
 {
-	WindowSize() {};
-	WindowSize(float aWidth, float aHeight) : m_Width(aWidth), m_Height(aHeight) {};
-	float m_Width;
-	float m_Height;
+	WindowSize() = default;
+	WindowSize(float aWidth, float aHeight) 
+		: m_Width(aWidth)
+		, m_Height(aHeight) 
+	{
+	};
+	float m_Width = 0.f;
+	float m_Height = 0.f;
 };
 
 struct WindowCreateInfo
 {
 	u16 window_width = 0;
 	u16 window_height = 0;
+#ifdef _WINDEF_
 	HINSTANCE instance;
 	WNDPROC window_process;
+#endif
 };
 
 class Window
@@ -37,9 +43,11 @@ public:
 	void SetWindowText(const char* text);
 
 	const WindowSize& GetWindowSize() const;
+
+	/*
+		returns the size of the window inside the borders
+	*/
 	const WindowSize& GetInnerSize() const;
-public:
-	//________________
 
 	void OnAltEnter();
 	void OnPause();
@@ -48,12 +56,14 @@ public:
 	void OnInactive();
 	void OnActive();
 
-	//________________
+
+	bool IsFullscreen() const { return m_IsFullscreen; }
 
 private:
 	WindowCreateInfo m_CreateInfo;
 	HWND m_HWND;
 	bool m_WindowIsActive = false;
+	bool m_IsFullscreen = false;
 
 	WindowSize m_WindowSize;
 	WindowSize m_InnerSize;

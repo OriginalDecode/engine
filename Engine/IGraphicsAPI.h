@@ -220,12 +220,14 @@ namespace graphics
 
 	class IGraphicsDevice;
 	class IGraphicsContext;
+	class Viewport;
 	class IGraphicsAPI
 	{
 	public:
 		IGraphicsAPI(CreateInfo info);
-		virtual bool Initiate(CreateInfo create_info) = 0;
-		virtual bool CleanUp() = 0;
+
+		virtual void EndFrame() = 0;
+		virtual void BeginFrame() = 0;
 
 		virtual void Clear() = 0;
 		virtual void Present(u8 refresh_rate, u8 flags) = 0;
@@ -240,12 +242,8 @@ namespace graphics
 		virtual void CopyResource(void * pDestination, void * pSource) = 0;
 
 		eGraphicsAPI GetActiveAPI() const { return m_ActiveAPI; }
-
-		virtual void EnableZBuffer() = 0;
-		virtual void DisableZBuffer() = 0;
 		
-		virtual void SetViewport(void* viewport) = 0;
-		virtual void* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y) = 0;
+		virtual Viewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y) = 0;
 
 		virtual IGraphicsDevice& GetDevice() { return *m_Device; }
 		virtual IGraphicsContext& GetContext() { return *m_Context; }
@@ -254,6 +252,8 @@ namespace graphics
 
 		ISamplerState* GetSamplerState(eSamplerStates sampler_state) { return m_SamplerStates[sampler_state]; }
 		IDepthStencilState* GetDepthStencilState(eDepthStencilState depthstencilstate) { return m_DepthStencilStates[depthstencilstate]; }
+		IRasterizerState* GetRasterizerState(eRasterizer rasterizer) { return m_RasterizerStates[rasterizer]; }
+		IBlendState* GetBlendState(eBlendStates blendstate) { return m_BlendStates[blendstate]; }
 
 		const CreateInfo& GetInfo() const { return m_CreateInfo; }
 	protected:
@@ -261,10 +261,13 @@ namespace graphics
 		eGraphicsAPI m_ActiveAPI;
 		IGraphicsDevice* m_Device = nullptr;
 		IGraphicsContext* m_Context = nullptr;
+		Viewport* m_Viewport = nullptr;
+
 
 		ISamplerState* m_SamplerStates[NOF_SS];
 		IDepthStencilState* m_DepthStencilStates[NOF_DSS];
 		IRasterizerState* m_RasterizerStates[NOF_RS];
+		IBlendState* m_BlendStates[NOF_BS];
 
 	};
 

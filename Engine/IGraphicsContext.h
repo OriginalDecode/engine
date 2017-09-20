@@ -3,6 +3,7 @@
 class CompiledShader;
 class BaseModel;
 class Quad;
+class Line3D;
 namespace graphics
 {
 	class IGraphicsContext
@@ -60,9 +61,10 @@ namespace graphics
 		virtual void DrawIndexedInstanced(BaseModel* model) = 0;
 
 		virtual void DrawIndexed(Quad* quad, bool depth_on = false) = 0;
+		virtual void Draw(Line3D* line, bool depth_on = true) = 0;
+
 
 		virtual void UpdateConstantBuffer(IBuffer* dest, void* src, s32 size) = 0;
-		
 		virtual void UpdateBuffer(IBuffer* dest, void* src, s32 size, eMapping mapping) = 0;
 
 		virtual void SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth) = 0;

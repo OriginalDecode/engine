@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Synchronizer.h"
 #include <thread>
+#include <profile_defines.h>
 
 Synchronizer::~Synchronizer()
 {
@@ -71,6 +72,7 @@ void Synchronizer::Quit()
 
 void Synchronizer::WaitForRender()
 {
+	PROFILE_FUNCTION(profiler::colors::Amber);
 	while (!m_RenderDone)
 	{
 		std::this_thread::yield();
@@ -80,6 +82,7 @@ void Synchronizer::WaitForRender()
 
 void Synchronizer::WaitForLogic()
 {
+	PROFILE_FUNCTION(profiler::colors::Amber100);
 	while (!m_LogicDone)
 		std::this_thread::yield();
 

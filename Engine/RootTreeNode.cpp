@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "RootTreeNode.h"
 #include <Engine/Synchronizer.h>
+#include <profile_defines.h>
 void RootTreeNode::Initiate(float halfwidth, Octree* octree)
 {
 	m_HalfWidth = halfwidth;
@@ -19,9 +20,7 @@ void RootTreeNode::Initiate(float halfwidth, Octree* octree)
 
 void RootTreeNode::Update(float dt, bool paused)
 {
-#ifdef _PROFILE
-	EASY_FUNCTION();
-#endif
+	PROFILE_FUNCTION(profiler::colors::Green);
 	if (paused)
 		return;
 	TreeNodeBase::Update(dt, paused);
@@ -32,13 +31,9 @@ void RootTreeNode::Update(float dt, bool paused)
 			continue;
 
 		m_Pool.AddWork(Work([=]() {
-#ifdef _PROFILE
-			EASY_BLOCK("Node Update Thread");
-#endif
+			PROFILE_BLOCK("Node Update Thread");
 			node->Update(dt, paused);
-#ifdef _PROFILE
-			EASY_END_BLOCK;
-#endif
+			PROFILE_BLOCK_END;
 	}));
 }
 

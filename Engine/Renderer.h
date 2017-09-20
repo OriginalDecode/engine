@@ -17,7 +17,7 @@
 #include <Engine/LightPass.h>
 
 
-class CLine3D;
+class Line3D;
 class Camera;
 class DeferredRenderer;
 class DirectionalLight;
@@ -108,7 +108,7 @@ private:
 	CText*						myText					= nullptr;
 	Texture*					m_DepthTexture			= nullptr;
 
-	CLine3D*					m_Line					= nullptr;
+	Line3D*					m_Line					= nullptr;
 
 	CEmitterInstance*			m_ParticleEmitter		= nullptr;
 

@@ -60,6 +60,7 @@ namespace graphics
 		void DrawIndexedInstanced(BaseModel* model) override;
 
 		void DrawIndexed(Quad* quad, bool depth_on) override;
+		void Draw(Line3D* line, bool depth_on = true) override;
 
 		void UpdateConstantBuffer(IBuffer* dest, void* src, s32 size) override;
 

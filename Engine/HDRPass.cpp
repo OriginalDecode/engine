@@ -7,6 +7,8 @@
 #include "Synchronizer.h"
 #include "RenderCommand.h"
 
+#include <profile_defines.h>
+
 void HDRPass::Initiate()
 {
 	m_Engine = Engine::GetInstance();
@@ -56,6 +58,7 @@ void HDRPass::CleanUp()
 
 void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& render_context)
 {
+	PROFILE_FUNCTION(profiler::colors::Blue);
 	//set buffers
 
 	Viewport viewport;

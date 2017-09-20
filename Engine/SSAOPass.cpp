@@ -5,6 +5,7 @@
 #include <Engine/Synchronizer.h>
 #include <Engine/IGraphicsContext.h>
 #include <Engine/RenderContext.h>
+#include <profile_defines.h>
 
 SSAOPass::SSAOPass()
 {
@@ -37,6 +38,7 @@ SSAOPass::~SSAOPass()
 
 void SSAOPass::Process(Texture* scene_texture, const graphics::RenderContext& render_context)
 {
+	PROFILE_FUNCTION(profiler::colors::Blue);
 	auto& ctx = render_context.GetContext();
 
 	const CU::Matrix44f& projection = CU::Math::InverseReal(render_context.GetEngine().GetCamera()->GetPerspective());

@@ -24,9 +24,7 @@
 #include "imgui_impl_dx11.h"
 #include <Engine/WaterPlane.h>
 
-#ifdef _PROFILE
-#include <easy/profiler.h>
-#endif 
+#include <profile_defines.h>
 
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
@@ -55,7 +53,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR); //Can be read from a settings file
 
-	m_Line = new CLine3D; //Where should this live?
+	m_Line = new Line3D; //Where should this live?
 	m_Line->Initiate();
 
 	m_LightPass = graphics::LightPass(m_GBuffer);
@@ -140,9 +138,7 @@ void Renderer::Render()
 		return;
 	}
 
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Magenta);
-#endif
+	PROFILE_FUNCTION(profiler::colors::Magenta);
 	m_RenderContext.GetAPI().BeginFrame();
 
 	m_GBuffer.SetAsRenderTarget(m_DepthTexture, m_RenderContext);
@@ -188,13 +184,9 @@ void Renderer::Render()
 #endif
 	m_RenderContext.GetAPI().EndFrame();
 
-#ifdef _PROFILE
-	EASY_BLOCK("Waiting for Logic!");
-#endif
+
 	m_Synchronizer->WaitForLogic();
-#ifdef _PROFILE
-	EASY_END_BLOCK;
-#endif
+
 	Engine::GetInstance()->GetMemorySegmentHandle().Clear((s32)m_Synchronizer->GetCurrentBufferIndex());
 	m_Synchronizer->SwapBuffer();
 	m_Synchronizer->RenderIsDone();
@@ -212,7 +204,7 @@ void Renderer::WriteDebugTextures()
 	ctx.ClearRenderTarget(m_DebugTexture3->GetRenderTargetView(), clear);
 	ctx.ClearRenderTarget(m_DebugTexture4->GetRenderTargetView(), clear);
 
-	IRenderTargetView* rtv[] =
+	IRenderTargetView* rtv[] =	
 	{
 		m_DebugTexture0->GetRenderTargetView(),
 		m_DebugTexture1->GetRenderTargetView(),
@@ -262,9 +254,7 @@ void Renderer::ProcessWater()
 void Renderer::RenderNonDeferred3DCommands()
 {
 
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Amber);
-#endif
+	PROFILE_FUNCTION(profiler::colors::Amber);
 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::NO_DEFERRED_BUFFER);
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
@@ -282,14 +272,7 @@ void Renderer::RenderNonDeferred3DCommands()
 
 void Renderer::Render3DCommands()
 {
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Green);
-#endif
-
-#ifdef _PROFILE
-	EASY_BLOCK("RenderModels", profiler::colors::Amber);
-#endif
-
+	PROFILE_FUNCTION(profiler::colors::Green);
 	const CU::Matrix44f& orientation = m_Camera->GetOrientation();
 	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
 
@@ -317,22 +300,11 @@ void Renderer::Render3DCommands()
 			model->Render(orientation, perspective, m_RenderContext);
 		}
 	}
-
-#ifdef _PROFILE
-	EASY_END_BLOCK;
-#endif
-
 }
 
 void Renderer::Render3DCommandsInstanced()
 {
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Green);
-#endif
-
-#ifdef _PROFILE
-	EASY_BLOCK("RenderModels", profiler::colors::Amber);
-#endif
+	PROFILE_FUNCTION(profiler::colors::Green);
 	const CU::Matrix44f& orientation = m_Camera->GetOrientation();
 	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
@@ -364,9 +336,7 @@ void Renderer::RenderTerrain(bool override_effect)
 // 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 // 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 // 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
-// #ifdef _PROFILE
-// 	EASY_FUNCTION();
-// #endif
+// 	PROFILE_FUNCTION(profiler::colors::Green);
 // 	for (Terrain* terrain : myTerrainArray)
 // 	{
 // 		if (!terrain->HasLoaded())
@@ -462,21 +432,17 @@ void Renderer::Render2DCommands()
 void Renderer::RenderSpotlight()
 {
 // 
-// #ifdef _PROFILE
-// 	EASY_FUNCTION(profiler::colors::Purple);
-// #endif
+// 	PROFILE_FUNCTION(profiler::colors::Purple);
 // 	Effect* effect = m_LightPass.GetSpotlightEffect();
 // 
 // 	SpotlightData data;
 // 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER);
-// #ifdef _PROFILE
-// 	EASY_BLOCK("Spotlight Command Loop", profiler::colors::Red);
-// #endif
+
+// 	PROFILE_BLOCK("Spotlight Command Loop", profiler::colors::Red);
+
 // 	for (s32 i = 0; i < commands.Size(); i++)
 // 	{
-// #ifdef _PROFILE
-// 		EASY_BLOCK("Spotlight Command", profiler::colors::Red);
-// #endif
+// 		PROFILE_BLOCK("Spotlight Command", profiler::colors::Red);
 // 		auto command = reinterpret_cast<SpotlightCommand*>(commands[i]);
 // 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::SPOTLIGHT, "Expected Spotlight command type");
 // 
@@ -506,13 +472,9 @@ void Renderer::RenderSpotlight()
 // 		m_LightPass.RenderSpotlight(light, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
 // 		effect->Clear();
 // 
-// #ifdef _PROFILE
-// 		EASY_END_BLOCK;
-// #endif
+// 		PROFILE_BLOCK_END;
 // 	}
-// #ifdef _PROFILE
-// 	EASY_END_BLOCK;
-// #endif
+// 	PROFILE_BLOCK_END;
 // 
 // 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 // 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
@@ -522,9 +484,7 @@ void Renderer::RenderSpotlight()
 void Renderer::RenderPointlight()
 {
 // 
-// #ifdef _PROFILE
-// 	EASY_FUNCTION(profiler::colors::Purple);
-// #endif
+// 	PROFILE_FUNCTION(profiler::colors::Purple);
 // 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER);
 // 
 // 
@@ -532,9 +492,7 @@ void Renderer::RenderPointlight()
 // 	m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
 // 	Effect* effect = m_LightPass.GetPointlightEffect();
 // 	effect->Use();
-// #ifdef _PROFILE
-// 	EASY_BLOCK("Pointlight Command Loop", profiler::colors::Red);
-// #endif
+// 	PROFILE_BLOCK("Pointlight Command Loop", profiler::colors::Red);
 // 	for (s32 i = 0; i < commands.Size(); i++)
 // 	{
 // 		auto command = reinterpret_cast<PointlightCommand*>(commands[i]);
@@ -548,9 +506,7 @@ void Renderer::RenderPointlight()
 // 		CU::Matrix44f shadow_mvp;
 // 		m_LightPass.RenderPointlight(myPointLight, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
 // 	}
-// #ifdef _PROFILE
-// 	EASY_END_BLOCK;
-// #endif
+// 	PROFILE_BLOCK_END;
 // 	effect->Clear();
 // 
 // 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
@@ -593,9 +549,7 @@ void Renderer::RenderParticles(Effect* effect)
 void Renderer::RenderLines()
 {
 // 
-// #ifdef _PROFILE
-// 	EASY_FUNCTION(profiler::colors::Amber);
-// #endif
+// 	PROFILE_FUNCTION(profiler::colors::Amber);
 // 
 // 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 // 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
@@ -605,9 +559,7 @@ void Renderer::RenderLines()
 // 	m_API->GetContext()->OMSetRenderTargets(1, &backbuffer, depth);
 // 
 // 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::LINE_BUFFER);
-// #ifdef _PROFILE
-// 	EASY_BLOCK("Line Command Loop", profiler::colors::Red);
-// #endif
+// 	PROFILE_BLOCK("Line Command Loop", profiler::colors::Red);
 // 	for (s32 i = 0; i < commands.Size(); i++)
 // 	{
 // 		auto command = reinterpret_cast<LineCommand*>(commands[i]);
@@ -616,11 +568,9 @@ void Renderer::RenderLines()
 // 		m_Line->Update(command->m_Points[0], command->m_Points[1]);
 // 		m_Line->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
 // 	}
-// #ifdef _PROFILE
-// 	EASY_END_BLOCK;
-// #endif
+// 	PROFILE_BLOCK_END;
 // 
-// 
+//	
 // 	m_API->SetBlendState(eBlendStates::NO_BLEND);
 // 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 // 	m_API->SetRasterizer(eRasterizer::CULL_BACK);

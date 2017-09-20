@@ -1,85 +1,50 @@
 #include "stdafx.h"
 #include "Line3D.h"
 #include <DL_Debug.h>
-#include "VertexStructs.h"
 
-CLine3D::CLine3D()
-	: myFirstPoint({ 0, 0, 0, 1 }, { 1, 1, 1, 1 })
-	, mySecondPoint({ 0, 0, 0, 1 }, { 1, 1, 1, 1 })
+Line3D::Line3D()
+	: m_FirstPoint({ 0, 0, 0, 1 }, { 1, 1, 1, 1 })
+	, m_SecondPoint({ 0, 0, 0, 1 }, { 1, 1, 1, 1 })
 {
 }
 
-CLine3D::~CLine3D()
+Line3D::~Line3D()
 {
-	SAFE_RELEASE(myVertexLayout);
-	SAFE_RELEASE(myConstantBuffer);
-	SAFE_DELETE(myConstantStruct);
-	SAFE_DELETE(myVertexBuffer);
 }
 
-void CLine3D::Initiate(int aLineAmount /*= 256*/)
+void Line3D::Initiate(int aLineAmount /*= 256*/)
 {
-	myLineAmount = aLineAmount;
-	myAPI = Engine::GetAPI();
-	myEffect =  Engine::GetInstance()->GetEffect("Shaders/line.json");
+	m_LineAmount = aLineAmount;
+	m_Effect =  Engine::GetInstance()->GetEffect("Shaders/line.json");
 	CreateBuffer();
 	CreateConstantBuffer();
 }
 
-void CLine3D::Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint)
+void Line3D::Update(const LinePoint& first_point, const LinePoint& second_point, const graphics::RenderContext& render_context)
 {
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Purple);
-#endif
-	myFirstPoint = firstPoint;
-	mySecondPoint = secondPoint;
-	myVertices.RemoveAll();
-	myVertices.Add(myFirstPoint);
-	myVertices.Add(mySecondPoint);
+	PROFILE_FUNCTION(profiler::colors::Purple);
+	m_FirstPoint = first_point;
+	m_SecondPoint = second_point;
+	m_Vertices.RemoveAll();
+	m_Vertices.Add(m_FirstPoint);
+	m_Vertices.Add(m_SecondPoint);
 
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	myAPI->GetContext()->Map(myVertexBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-
-	if (mappedResource.pData != nullptr)
-	{
-		SLinePoint* data = (SLinePoint*)mappedResource.pData;
-
-		bool isSafe = sizeof(SLinePoint) == sizeof(myVertices[0]);
-		DL_ASSERT_EXP(isSafe, "[Line3DRenderer](UpdateVertexBuffer) : Not safe to copy.");
-		memcpy(data, &myVertices[0], sizeof(SLinePoint) * myVertices.Size());
-	}
-	myAPI->GetContext()->Unmap(myVertexBuffer->myVertexBuffer, 0);
+	render_context.GetContext().UpdateBuffer(m_VertexWrapper.GetVertexBuffer(),
+											 &m_Vertices[0], 
+											 sizeof(LinePoint) * m_Vertices.Size(), 
+											 graphics::MAP_WRITE_DISCARD);
 }
 
-void CLine3D::Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& projection)
+void Line3D::Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& projection, const graphics::RenderContext& render_context)
 {
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Green);
-#endif
-	ID3D11DeviceContext* context = myAPI->GetContext();
-
-	context->IASetInputLayout(myVertexLayout);
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-	context->IASetVertexBuffers(0, 1, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-	context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
-
-	//myAPI->SetVertexShader(myEffect->GetVertexShader() ? myEffect->GetVertexShader()->m_Shader: nullptr);
-	//myAPI->SetPixelShader(myEffect->GetPixelShader() ? myEffect->GetPixelShader()->m_Shader : nullptr);
-
-	myEffect->Use();
-
-	ID3D11ShaderResourceView* srv[1];
-	srv[0] = nullptr;
-	context->PSSetShaderResources(0, 1, &srv[0]);
-
-	SetMatrices(prevOrientation, projection);
-	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-
-	context->Draw(myVertices.Size(), 0);
-	myEffect->Clear();
+	PROFILE_FUNCTION(profiler::colors::Green);
+	UpdateConstantBuffer(prevOrientation, projection, render_context);
+	auto& ctx = render_context.GetContext();
+	ctx.VSSetConstantBuffer(0, 1, &m_LineBuffer);
+	ctx.Draw(this);
 }
 
-void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
+void Line3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
 {
 	float depth = max.z - min.z;
 	float width = max.x - min.x;
@@ -88,8 +53,8 @@ void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
 	CU::Vector3f point;
 	CU::Vector3f nextPoint;
 
-	SLinePoint p1;
-	SLinePoint p2;
+	LinePoint p1;
+	LinePoint p2;
 
 	point.x = min.x;
 	point.y = min.y;
@@ -108,8 +73,8 @@ void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
 	p2.position = nextPoint;
 	p2.color = CU::Vector4f(1, 1, 1, 1);
 
-	myVertices.Add(p2);
-	myVertices.Add(p2);
+	m_Vertices.Add(p2);
+	m_Vertices.Add(p2);
 
 	point = nextPoint;
 	point.z += depth;
@@ -123,8 +88,8 @@ void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
 	p2.position = nextPoint;
 	p2.color = CU::Vector4f(0, 0, 1, 1);
 
-	myVertices.Add(p2);
-	myVertices.Add(p2);
+	m_Vertices.Add(p2);
+	m_Vertices.Add(p2);
 
 	point = nextPoint;
 	point.y += height;
@@ -138,8 +103,8 @@ void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
 	p2.position = nextPoint;
 	p2.color = CU::Vector4f(1, 0, 0, 1);
 
-	myVertices.Add(p2);
-	myVertices.Add(p2);
+	m_Vertices.Add(p2);
+	m_Vertices.Add(p2);
 
 	point = nextPoint;
 	point.x += width;
@@ -154,105 +119,56 @@ void CLine3D::AddCube(const CU::Vector3f& min, const CU::Vector3f& max)
 	p2.position = nextPoint;
 	p2.color = CU::Vector4f(0, 1, 0, 1);
 
-	myVertices.Add(p2);
-	myVertices.Add(p2);
+	m_Vertices.Add(p2);
+	m_Vertices.Add(p2);
 
 }
 
-void CLine3D::CreateConstantBuffer()
+
+
+void Line3D::CreateBuffer()
 {
-	myConstantStruct = new VertexBaseStruct;
 
-	D3D11_BUFFER_DESC cbDesc;
-	ZeroMemory(&cbDesc, sizeof(cbDesc));
-	cbDesc.ByteWidth = sizeof(VertexBaseStruct);
-	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.MiscFlags = 0;
-	cbDesc.StructureByteStride = 0;
+	graphics::InputElementDesc desc;
+	desc.m_SemanicIndex = 0;
+	desc.m_ByteOffset = 0;
+	desc.m_ElementSpecification = graphics::INPUT_PER_VERTEX_DATA;
+	desc.m_InputSlot = 0;
+	desc.m_InstanceDataStepRate = 0;
 
-	HRESULT hr = myAPI->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-	myAPI->SetDebugName(myConstantBuffer, "Line3D Constant Buffer");
-	myAPI->HandleErrors(hr, "[Line3D] : Failed to Create Constant Buffer, ");
-}
-
-void CLine3D::CreateBuffer()
-{
-	HRESULT hr;
-	void* shader = myEffect->GetVertexShader()->compiledShader;
-	int size = myEffect->GetVertexShader()->shaderSize;
-
-	const D3D11_INPUT_ELEMENT_DESC Line3DRendererLayout[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	graphics::InputElementDesc layout[] = {
+		{ "POSITION", 0, graphics::_16BYTE_RGBA, 1, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, graphics::_16BYTE_RGBA, 1, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
 	};
+	auto& pDevice = Engine::GetAPI()->GetDevice();
+	IInputLayout* input_layout = pDevice.CreateInputLayout(m_Effect->GetVertexShader(), layout, ARRSIZE(layout));
 
-	UINT asize = ARRAYSIZE(Line3DRendererLayout);
+	graphics::BufferDesc buffer_desc;
+	buffer_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
+	buffer_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
+	buffer_desc.m_CPUAccessFlag = graphics::WRITE;
+	buffer_desc.m_ByteWidth = sizeof(LinePoint) * m_LineAmount;
 
-	hr = myAPI->GetDevice()->
-		CreateInputLayout(&Line3DRendererLayout[0], asize
-			, shader
-			, size
-			, &myVertexLayout);
-
-	myAPI->SetDebugName(myVertexLayout, "Line3D Vertex Layout");
-	myAPI->HandleErrors(hr, "Failed to create VertexLayout");
-
-	myVertexBuffer = new VertexBufferWrapper();
-	myVertexBuffer->myStride = sizeof(SLinePoint);
-	myVertexBuffer->myByteOffset = 0;
-	myVertexBuffer->myStartSlot = 0;
-	myVertexBuffer->myNrOfBuffers = 1;
-
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
-	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	vertexBufferDesc.MiscFlags = 0;
-	vertexBufferDesc.StructureByteStride = 0;
-
-	if (myVertexBuffer->myVertexBuffer)
-	{
-		myVertexBuffer->myVertexBuffer->Release();
-	}
-
-	vertexBufferDesc.ByteWidth = sizeof(SLinePoint) * myLineAmount;
-
-
-
-	hr = myAPI->GetDevice()->CreateBuffer(&vertexBufferDesc, nullptr, &myVertexBuffer->myVertexBuffer);
-	myAPI->SetDebugName(myVertexBuffer->myVertexBuffer, "Line3D : Vertex Buffer");
-	myAPI->HandleErrors(hr, "Failed to Create VertexBuffer!");
+	IBuffer* vertex_buffer = pDevice.CreateBuffer(buffer_desc);
+	m_VertexWrapper = VertexWrapper(nullptr, 0, 1, sizeof(m_cbLine), 0, 2, buffer_desc.m_ByteWidth, vertex_buffer, input_layout, graphics::POINT_LIST);
 }
 
-void CLine3D::SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+void Line3D::CreateConstantBuffer()
 {
-	DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
-	myConstantStruct->world = myOrientation;
-	myConstantStruct->invertedView = CU::Math::Inverse(aCameraOrientation);
-	myConstantStruct->projection = aCameraProjection;
-
-	D3D11_MAPPED_SUBRESOURCE msr;
-	Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-	if (msr.pData != nullptr)
-	{
-		VertexBaseStruct* ptr = (VertexBaseStruct*)msr.pData;
-		memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(VertexBaseStruct));
-	}
-
-	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
+	graphics::BufferDesc desc;
+	desc.m_ByteWidth = sizeof(m_cbLine);
+	desc.m_UsageFlag = graphics::DEFAULT_USAGE;
+	desc.m_BindFlag = graphics::BIND_CONSTANT_BUFFER;
+	desc.m_CPUAccessFlag = graphics::WRITE;
+	m_LineBuffer = Engine::GetAPI()->GetDevice().CreateBuffer(desc);
 }
 
-SLinePoint::SLinePoint(const CU::Vector4f& pos, const CU::Vector4f& col)
-	: position(pos)
-	, color(col)
+void Line3D::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-}
+	auto& ctx = render_context.GetContext();
+	m_cbLine.m_World = m_Orientation;
+ 	m_cbLine.m_View = CU::Math::Inverse(camera_orientation);
+ 	m_cbLine.m_Projection = camera_projection;
 
-SLinePoint::SLinePoint()
-{
-	color = { 255.f, 255.f, 255.f, 255.f };
+	ctx.UpdateConstantBuffer(m_LineBuffer, nullptr, sizeof(VertexBaseStruct));
 }

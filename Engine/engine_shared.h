@@ -4,11 +4,7 @@
 
 #include "EngineDefines.h"
 #include <Engine/RenderContext.h>
-
-#ifdef _PROFILE
-#include <easy/profiler.h>
-#include <easy/reader.h>
-#endif
+#include <profile_defines.h>
 
 #include <Windows.h>
 

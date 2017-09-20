@@ -418,6 +418,7 @@
       <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
     </ClInclude>
     <ClInclude Include="Viewport.h" />
+    <ClInclude Include="..\profile_defines.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">

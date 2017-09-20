@@ -74,7 +74,7 @@ void GizmoHandle::RenderBox()
 {
 	CU::Vector4f camera_position = Engine::GetInstance()->GetCamera()->GetPosition();
 	//float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
-	SLinePoint p1, p2, p3, p4, p5, p6, p7, p8;
+	LinePoint p1, p2, p3, p4, p5, p6, p7, p8;
 	p1.color = CU::Vector4f(1, 1, 1, 1);
 	p2.color = p1.color;
 	p3.color = p1.color;

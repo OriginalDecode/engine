@@ -3,64 +3,77 @@
 #include <Math/Matrix/Matrix44.h>
 #include <DataStructures/GrowingArray.h>
 
+#include <Engine/VertexWrapper.h>
 
-struct SLinePoint
+struct LinePoint
 {
-	SLinePoint(const CU::Vector4f& pos, const CU::Vector4f& col);
-	SLinePoint();
+	LinePoint(const CU::Vector4f& pos, const CU::Vector4f& col)
+		: position(pos)
+		, color(col)
+	{
+
+	}
+	LinePoint() { color = { 255.f, 255.f, 255.f, 255.f }; }
 	CU::Vector4f position;
 	CU::Vector4f color;
 };
 
-struct SLine
+struct Line
 {
-	SLinePoint first;
-	SLinePoint second;
+	LinePoint first;
+	LinePoint second;
 };
 
-class DirectX11;
+
+namespace graphics
+{
+	class RenderContext;
+};
 class Effect;
-struct VertexBufferWrapper;
-
-
 struct VertexBaseStruct;
-struct ID3D11InputLayout;
-struct ID3D11Buffer;
-class CLine3D
+class Line3D
 {
 public:
-	CLine3D();
-	~CLine3D();
+	Line3D();
+	~Line3D();
 
 	void Initiate(int aLineAmount = 256);
 
 
-	void Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint);
-	void Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& projection);
-
-	void AddLine(const SLine& aLine);
+	void Update(const LinePoint& firstPoint, const LinePoint& secondPoint, const graphics::RenderContext& render_context);
+	void Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& projection, const graphics::RenderContext& render_context);
 	void AddCube(const CU::Vector3f& min, const CU::Vector3f& max);
 
+	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
+	Effect* GetEffect() const { return m_Effect; }
 private:
 	void CreateConstantBuffer();
 	void CreateBuffer();
 
+	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
 
-	void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection);
+	LinePoint m_FirstPoint;
+	LinePoint m_SecondPoint;
 
-	SLinePoint myFirstPoint;
-	SLinePoint mySecondPoint;
+	CU::Matrix44f m_Orientation;
+	Effect* m_Effect = nullptr;
+	VertexWrapper m_VertexWrapper;
 
-	CU::Matrix44f myOrientation;
-	DirectX11* myAPI = nullptr;
-	Effect* myEffect = nullptr;
-	VertexBufferWrapper* myVertexBuffer = nullptr;
+	IBuffer* m_LineBuffer;
+	struct cbLine
+	{
+		CU::Matrix44f m_World;
+		CU::Matrix44f m_View;
+		CU::Matrix44f m_Projection;
+	} m_cbLine;
 
-	VertexBaseStruct* myConstantStruct = nullptr;
 
-	ID3D11InputLayout* myVertexLayout = nullptr;
-	ID3D11Buffer* myConstantBuffer = nullptr;
-	CU::GrowingArray<SLinePoint> myVertices;
-	int myLineAmount = 0;
+// 	VertexBufferWrapper* myVertexBuffer = nullptr;
+ 	//VertexBaseStruct* myConstantStruct = nullptr;
+
+	//ID3D11InputLayout* myVertexLayout = nullptr;
+	//ID3D11Buffer* myConstantBuffer = nullptr;
+	CU::GrowingArray<LinePoint> m_Vertices;
+	int m_LineAmount = 0;
 };
 

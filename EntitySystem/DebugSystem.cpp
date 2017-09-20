@@ -20,6 +20,7 @@
 #include <GizmoBase.h>
 #include <Engine/Model.h>
 #include <CommonLib/DataStructures/Hashmap/Hash.h>
+#include <profile_defines.h>
 DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
@@ -40,9 +41,7 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 	if (paused)
 		return;
 	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::TEXT, current_model, CU::Vector2f(0.75, 0)));
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Red);
-#endif
+	PROFILE_FUNCTION(profiler::colors::Red);
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (s32 i = 0; i < entities.Size(); i++)
 	{
@@ -380,7 +379,7 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation)
 {
 	return;
-	SLinePoint p1, p2, p3, p4, p5, p6, p7, p8;
+	LinePoint p1, p2, p3, p4, p5, p6, p7, p8;
 	p1.color = component.debugColor;
 	p2.color = p1.color;
 	p3.color = p1.color;

@@ -204,7 +204,7 @@ void TreeNodeBase::RenderBox()
 	if (!m_RenderBox)
 		return;
 
-	SLinePoint points[8];
+	LinePoint points[8];
 
 
 	switch (m_Depth)

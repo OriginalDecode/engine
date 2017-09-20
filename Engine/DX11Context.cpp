@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "DX11Context.h"
 
-#include <Engine/Model.h>
+#include <Engine/BaseModel.h>
 #include <Engine/Quad.h>
+#include <Engine/Line3D.h>
 #include <Engine/DX11Device.h>
 
 namespace graphics
@@ -141,7 +142,7 @@ namespace graphics
 
 	void DX11Context::IASetInputLayout(IInputLayout* input_layout)
 	{
-		assert("not implemented!");
+		m_Context->IASetInputLayout(static_cast<ID3D11InputLayout*>(input_layout));
 	}
 
 	void DX11Context::IASetTopology(eTopology topology)
@@ -173,13 +174,31 @@ namespace graphics
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
 	}
 
+	void DX11Context::Draw(Line3D* line, bool depth_on /*= true*/)
+	{
+		const auto& vtx = line->GetVertexWrapper();
+		const auto fx = line->GetEffect();
+		fx->Use();
+		IASetInputLayout(vtx.GetInputLayout());
+		m_Context->IASetPrimitiveTopology(DirectX11::GetTopology(vtx.GetTopology()));
+		m_Context->IASetVertexBuffers(vtx.GetStart(), 
+									  vtx.GetBufferCount(), 
+									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()), 
+									  &vtx.GetStride(),
+									  &vtx.GetByteOffset());
+		m_Context->OMSetDepthStencilState(depth_on ? m_EnableZ : m_DisableZ, 1);
+		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
+		fx->Clear();
+	}
+
 	void DX11Context::DrawIndexed(Quad* quad, bool depth_on)
 	{
 		const auto& vtx = quad->GetVertexWrapper();
 		const auto& idx = quad->GetIndexWrapper();
 
+		IASetInputLayout(vtx.GetInputLayout());
 
-		m_Context->IASetInputLayout(static_cast<ID3D11InputLayout*>(vtx.GetInputLayout()));
+
 		m_Context->IASetPrimitiveTopology(DirectX11::GetTopology(vtx.GetTopology()));
 
 		m_Context->IASetVertexBuffers(vtx.GetStart(),
@@ -201,7 +220,7 @@ namespace graphics
 		const auto& vtx = model->GetVertexWrapper();
 		const auto& idx = model->GetIndexWrapper();
 
-		m_Context->IASetInputLayout(static_cast<ID3D11InputLayout*>(vtx.GetInputLayout()));
+		IASetInputLayout(vtx.GetInputLayout());
 		m_Context->IASetPrimitiveTopology(DirectX11::GetTopology(vtx.GetTopology()));
 
 		m_Context->IASetVertexBuffers(vtx.GetStart(),
@@ -245,7 +264,7 @@ namespace graphics
 		const auto& idx = model->GetIndexWrapper();
 		const auto& ins = model->GetInstanceWrapper();
 
-		m_Context->IASetInputLayout(static_cast<ID3D11InputLayout*>(ins.GetInputLayout()));
+		IASetInputLayout(ins.GetInputLayout());
 
 		ID3D11Buffer* buffers[] = {
 			static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer()),

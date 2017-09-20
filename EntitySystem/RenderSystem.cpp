@@ -17,11 +17,8 @@
 
 #include "../Application/CameraHandle.h"
 #include "DebugComponent.h"
-#ifdef _PROFILE
-#include <easy/profiler.h>
-#endif
 #include <Engine/Engine.h>
-
+#include <profile_defines.h>
 //#define VISIBLE_CHECK
 
 RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
@@ -33,23 +30,17 @@ RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
 
 void RenderSystem::Update(float /*dt*/, bool paused)
 {
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Blue);
-#endif
+	PROFILE_FUNCTION(profiler::colors::Blue);
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 
-#ifdef _PROFILE
-	EASY_BLOCK("Render : Entity Loop");
-#endif
+	PROFILE_BLOCK("Render : Entity Loop");
 	for (int i = 0; i < entities.Size(); i++)
 	{
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
 
-#ifdef _PROFILE
-		EASY_BLOCK("Frustum collision check", profiler::colors::Green);
-#endif
+		PROFILE_BLOCK("Frustum collision check", profiler::colors::Green);
 #ifdef VISIBLE_CHECK
 		bool visible = false;
 		if (m_Manager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
@@ -85,9 +76,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		if(!visible)
 			continue;
 #endif
-#ifdef _PROFILE
-		EASY_END_BLOCK;
-#endif
+		PROFILE_BLOCK_END;
 
 		CU::Matrix44f t = translation.myOrientation;
 		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
@@ -109,9 +98,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 
 
 	}
-#ifdef _PROFILE
-	EASY_END_BLOCK;
-#endif
+	PROFILE_BLOCK_END;
 }
 
 bool RenderSystem::Inside(const CU::Vector4f& translation, const CU::Vector4f& direction, const CU::Vector4f& pos)

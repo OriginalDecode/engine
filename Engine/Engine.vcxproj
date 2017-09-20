@@ -295,6 +295,7 @@
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\profile_defines.h" />
     <ClInclude Include="AABB.h" />
     <ClInclude Include="AssetsContainer.h" />
     <ClInclude Include="Atmosphere.h" />

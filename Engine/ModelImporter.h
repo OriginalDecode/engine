@@ -363,7 +363,7 @@ template<typename T>
 void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 {
 	BaseModel* model = static_cast<BaseModel*>(out);
-	auto& vtx = model->m_VertexWrapper();
+	auto& vtx = model->m_VertexWrapper;
 
 	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float);
 	u32* vertexRawData = new u32[sizeOfBuffer];

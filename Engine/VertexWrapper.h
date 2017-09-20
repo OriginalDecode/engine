@@ -2,7 +2,7 @@
 #include <Engine/Engine.h>
 #include <Engine/engine_shared.h>
 #include <Engine/IGraphicsAPI.h>
-
+#include <Engine/VertexStructs.h>
 class VertexWrapper
 {
 	friend class ModelImporter;
@@ -43,6 +43,7 @@ public:
 	const u32& GetByteOffset() const { return m_ByteOffset; }
 	s32 GetVertexCount() const { return m_VertexCount; }
 	s32 GetBufferCount() const { return m_BufferCount; }
+	//Is this the same as the byteoffset?
 	s32 GetSize() const { return m_Size; }
 	IBuffer* GetVertexBuffer() const { return m_VertexBuffer; }
 

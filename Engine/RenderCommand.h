@@ -179,7 +179,7 @@ struct TextCommand : public RenderCommand
 
 struct LineCommand : public RenderCommand
 {
-	LineCommand(const SLinePoint& first, const SLinePoint& second, bool z_enabled)
+	LineCommand(const LinePoint& first, const LinePoint& second, bool z_enabled)
 		: RenderCommand(eCommandType::LINE)
 		, m_Points{ first, second }
 		, m_ZEnabled(z_enabled)
@@ -187,7 +187,7 @@ struct LineCommand : public RenderCommand
 	}
 
 	bool m_ZEnabled = false;
-	SLinePoint m_Points[2];
+	LinePoint m_Points[2];
 };
 
 struct ParticleCommand : public RenderCommand

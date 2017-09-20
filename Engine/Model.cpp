@@ -31,9 +31,7 @@ void Model::Initiate(const std::string& filename)
 
 void Model::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Blue);
-#endif
+	PROFILE_FUNCTION(profiler::colors::Blue);
 	for (Model* child : m_Children)
 	{
 		child->Render(camera_orientation, camera_projection, render_context);
@@ -46,18 +44,14 @@ void Model::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f&
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
 
-#ifdef _PROFILE
-		EASY_BLOCK("Model : DrawIndexed", profiler::colors::Blue100);
-#endif
+	PROFILE_BLOCK("Model : DrawIndexed", profiler::colors::Blue100);
 	for (Surface* surface : m_Surfaces)
 	{
 		surface->Activate(render_context);
 		render_context.GetContext().DrawIndexed(this);
 		surface->Deactivate();
 	}
-#ifdef _PROFILE
-	EASY_END_BLOCK;
-#endif
+	PROFILE_BLOCK_END;
 
 }
 
@@ -69,21 +63,15 @@ void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix
 // // 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
 // 
 // 	m_Effect->Use();
-// #ifdef _PROFILE
-// 	EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
-// #endif
+// 	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 // 	//render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
-// #ifdef _PROFILE
-// 	EASY_END_BLOCK;
-// #endif
+// 	PROFILE_BLOCK_END;
 // 	m_Effect->Clear();
 }
 
 void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Amber);
-#endif
+	PROFILE_FUNCTION(profiler::colors::Amber);
 	for (Model* child : m_Children)
 	{
 		child->RenderInstanced(camera_orientation, camera_projection, render_context);
@@ -98,18 +86,14 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
 	
-#ifdef _PROFILE
-	EASY_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
-#endif
+	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 	for (Surface* surface : m_Surfaces)
 	{
 		surface->Activate(render_context);
 		render_context.GetContext().DrawIndexedInstanced(this);
 		surface->Deactivate();
 	}
-#ifdef _PROFILE
-	EASY_END_BLOCK;
-#endif
+	PROFILE_BLOCK_END;
 
 	RemoveOrientation(); 
 
@@ -117,9 +101,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 
 void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Amber100);
-#endif
+	PROFILE_FUNCTION(profiler::colors::Amber100);
  	for (Model* child : m_Children)
  	{
  		child->ShadowRender(camera_orientation, camera_projection, render_context);
@@ -135,9 +117,7 @@ void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matr
 
 void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Amber100);
-#endif
+	PROFILE_FUNCTION(profiler::colors::Amber100);
 	for (Model* child : m_Children)
 	{
 		child->ShadowRenderInstanced(camera_orientation, camera_projection, render_context);

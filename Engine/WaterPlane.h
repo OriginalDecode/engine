@@ -10,17 +10,17 @@ public:
 
 	void SetPosition(const CU::Vector3f& position);
 
-	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context);
 	void Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) override;
 	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) override;
 
 	const CU::Vector3f& GetPosition() { return m_Orientation.GetPosition(); }
 
-	void SetupRefractionRender();
-	void SetupReflectionRender();
-	void SetClipPlane(const CU::Vector4f& plane);
+	void SetupRefractionRender(const graphics::RenderContext& render_context);
+	void SetupReflectionRender(const graphics::RenderContext& render_context);
+	void SetClipPlane(const CU::Vector4f& plane, const graphics::RenderContext& render_context);
 	Effect* GetEffect() { return m_Effect; }
 private:
+	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context);
 	void CreatePlane();
 
 	struct cbMatrices
@@ -33,9 +33,7 @@ private:
 	} m_VertexMatrices;
 
 	CU::Matrix44f m_Orientation;
-	CU::GrowingArray<int> m_Indices;
 
-	float m_ClearColor[4] = { 0, 0, 0, 0 };
 	Texture* m_Refraction = nullptr;
 	Texture* m_Reflection = nullptr;
 

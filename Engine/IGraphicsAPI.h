@@ -57,8 +57,9 @@ namespace graphics
 		MSAA_x16,
 		TRILINEAR,
 		BILINEAR,
-		LINEAR,
-		CLAMP,
+		LINEAR_WRAP,
+		LINEAR_CLAMP,
+		CUBEMAP,
 		NOF_SS
 	};
 
@@ -163,6 +164,12 @@ namespace graphics
 		BIND_UNORDERED_ACCESS,
 		BIND_DECODER,
 		BIND_VIDEO_ENCODER
+	};
+
+	enum eClearFlag
+	{
+		DEPTH,
+		STENCIL
 	};
 
 	struct Texture2DDesc

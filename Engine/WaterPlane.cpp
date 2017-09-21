@@ -5,31 +5,26 @@
 WaterPlane::WaterPlane()
 {
 	m_Effect = Engine::GetInstance()->GetEffect("Shaders/water.json");
-	m_Orientation.SetPosition(position);
 
 
 	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
+	const float window_width = window_size.m_Width;
+	const float window_height = window_size.m_Height;
+
+
+	TextureDesc desc;
+	desc.m_Width = window_width;
+	desc.m_Height = window_height;
+	desc.m_Usage = graphics::DEFAULT_USAGE;
+	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
+	desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
+	desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
 
 	m_Refraction = new Texture;
-	m_Refraction->Initiate(window_size.m_Width, window_size.m_Height
-						   , DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
-						   , DXGI_FORMAT_R16G16B16A16_FLOAT
-						   , DXGI_FORMAT_R32_TYPELESS
-						   , DXGI_FORMAT_R32_FLOAT
-						   , DXGI_FORMAT_D32_FLOAT
-						   , "Water : RefractionDepth");
+	m_Refraction->Initiate(desc, "Water : RefractionDepth");
 
 	m_Reflection = new Texture;
-	m_Reflection->Initiate(window_size.m_Width, window_size.m_Height
-						   , DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
-						   , DXGI_FORMAT_R16G16B16A16_FLOAT
-						   , DXGI_FORMAT_R32_TYPELESS
-						   , DXGI_FORMAT_R32_FLOAT
-						   , DXGI_FORMAT_D32_FLOAT
-						   , "Water : ReflectionDepth");
-
-	m_RefractionG.Initiate();
-	m_ReflectionG.Initiate();
+	m_Reflection->Initiate(desc, "Water : ReflectionDepth");
 
 	m_Effect->AddShaderResource(m_RefractionG.GetDiffuse(), Effect::REFRACTION);
 	m_Effect->AddShaderResource(m_ReflectionG.GetDiffuse(), Effect::REFLECTION);
@@ -39,14 +34,9 @@ WaterPlane::WaterPlane()
 	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/T_cubemap_level01.dds"), Effect::CUBEMAP);
 	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/water_normal.dds"), Effect::NORMAL);
 	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/water_dudv.dds"), Effect::DUDV);
-
-
-	//	engine->AddTexture(m_RefractionG.GetDiffuse(), "Refraction");
-	//	engine->AddTexture(m_ReflectionG.GetDiffuse(), "Reflection");
 	CreatePlane();
-	m_cbPixel = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbPixel));
+//	m_cbPixel = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbPixel));
 
-	//engine->RegisterCheckBox(&m_RenderWireframe, "Waterplane : Wireframe");
 }
 
 WaterPlane::~WaterPlane()
@@ -96,47 +86,42 @@ void WaterPlane::ShadowRender(const CU::Matrix44f& camera_orientation, const CU:
 	DL_ASSERT("water shadow?");
 }
 
-void WaterPlane::SetupRefractionRender()
+void WaterPlane::SetupRefractionRender(const graphics::RenderContext& render_context)
 {
-	m_RefractionG.Clear(m_ClearColor, render_context);
-	render_context.m_Context->ClearDepthStencilView(m_Refraction->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_RefractionG.Clear(clearcolor::black, render_context);
+	render_context.GetContext().ClearDepthStencilView(m_Refraction->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1.0f);
 	m_RefractionG.SetAsRenderTarget(m_Refraction, render_context);
 }
 
-void WaterPlane::SetupReflectionRender()
+void WaterPlane::SetupReflectionRender(const graphics::RenderContext& render_context)
 {
-	m_ReflectionG.Clear(m_ClearColor, render_context);
-	render_context.m_Context->ClearDepthStencilView(m_Reflection->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_ReflectionG.Clear(clearcolor::black, render_context);
+	render_context.GetContext().ClearDepthStencilView(m_Reflection->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1.0f);
 	m_ReflectionG.SetAsRenderTarget(m_Reflection, render_context);
 }
 
-void WaterPlane::SetClipPlane(const CU::Vector4f& plane)
+void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const graphics::RenderContext& render_context)
 {
 	m_PixelStruct.m_CompareValue = plane;
-	render_context.m_API->UpdateConstantBuffer(m_cbPixel, &m_PixelStruct);
-	render_context.m_Context->PSSetConstantBuffers(0, 1, &m_cbPixel);
+	render_context.GetContext().UpdateConstantBuffer(m_cbPixel, &m_PixelStruct, sizeof(m_PixelStruct));
+	render_context.GetContext().PSSetConstantBuffer(0, 1, m_cbPixel);
 }
 
 void WaterPlane::CreatePlane()
 {
 	auto& ctx = Engine::GetAPI()->GetContext();
-	auto& pDevice = Engine::GetAPI()->GetDevice();
+	auto& device = Engine::GetAPI()->GetDevice();
 
-	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+	graphics::InputElementDesc desc[] =
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "POSITION", 0, graphics::_16BYTE_RGBA, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, graphics::_12BYTE_RGB, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, graphics::_8BYTE_RG, 0, 28, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "BINORMAL", 0, graphics::_12BYTE_RGB, 0, 36, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, graphics::_12BYTE_RGB, 0, 48, graphics::INPUT_PER_VERTEX_DATA, 0 },
 	};
 
-// 	m_VertexFormat.ReInit(5);
-// 	m_VertexFormat.Add(vertexDesc[0]);
-// 	m_VertexFormat.Add(vertexDesc[1]);
-// 	m_VertexFormat.Add(vertexDesc[2]);
-// 	m_VertexFormat.Add(vertexDesc[3]);
-// 	m_VertexFormat.Add(vertexDesc[4]);
+	IInputLayout* pInputLayout = device.CreateInputLayout(m_Effect->GetVertexShader(), desc, ARRSIZE(desc));
 	
 	const float half_width = 2048.f;
 	CU::GrowingArray<SVertexPosNormUVBiTang> m_Vertices;
@@ -163,44 +148,84 @@ void WaterPlane::CreatePlane()
 	vert.uv = { 1, 1 };
 	m_Vertices.Add(vert);
 
-// 	m_VertexData.myNrOfVertexes = m_Vertices.Size();
-// 	m_VertexData.myStride = sizeof(SVertexPosNormUVBiTang);
-// 	m_VertexData.mySize = m_VertexData.myNrOfVertexes * m_VertexData.myStride;
-// 	m_VertexData.myVertexData = new char[m_VertexData.mySize]();
-// 	memcpy(m_VertexData.myVertexData, &m_Vertices[0], m_VertexData.mySize);
-
-	m_VertexWrapper = VertexWrapper();
-
-
-	CU::GrowingArray<int> m_Indices;
-	m_Indices.Add(0);
-	m_Indices.Add(1);
-	m_Indices.Add(2);
-
-	m_Indices.Add(3);
-	m_Indices.Add(2);
-	m_Indices.Add(1);
+	const s32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
+	const s32 vtx_count = m_Vertices.Size();
+	const s32 vtx_size = vtx_count * vtx_stride;
+	const s32 vtx_buff_count = 1;
+	const s32 vtx_start = 0;
+	const s32 vtx_byte_offset = 0;
+	s8* vtx_data = new s8[vtx_size];
+	memcpy(vtx_data, &m_Vertices[0], vtx_size);
 
 
+	graphics::BufferDesc vtx_desc;
+	vtx_desc.m_Size = vtx_size;
+	vtx_desc.m_Data = vtx_data;
+	vtx_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
+	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
+	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
+	vtx_desc.m_ByteWidth = vtx_size;
+
+	IBuffer* vtx_buffer = device.CreateBuffer(vtx_desc);
+
+	m_VertexWrapper = VertexWrapper(vtx_data,
+									vtx_start,
+									vtx_buff_count,
+									vtx_stride,
+									vtx_byte_offset,
+									vtx_count,
+									vtx_size,
+									vtx_buffer,
+									pInputLayout, 
+									graphics::TRIANGLE_LIST);
 
 
-	//m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
-	//m_IndexData.myIndexCount = m_Indices.Size();
-	//m_IndexData.mySize = m_IndexData.myIndexCount * 4;
-	//
-	//m_IndexData.myIndexData = new char[m_IndexData.mySize];
-	//memcpy(m_IndexData.myIndexData, &m_Indices[0], m_IndexData.mySize);
+	CU::GrowingArray<int> indices;
+	indices.Add(0);
+	indices.Add(1);
+	indices.Add(2);
+
+	indices.Add(3);
+	indices.Add(2);
+	indices.Add(1);
 
 
 
-	m_IndexWrapper = IndexWrapper();
+	const s32 idx_count = indices.Size();
+	const s32 idx_stride = sizeof(u32);
+	const s32 idx_size = idx_count * idx_stride;
+	const s32 idx_start = 0;
+	const s32 idx_byte_offset = 0;
+
+	s8* idx_data = new s8[idx_count];
+	memcpy(idx_data, &indices[0], idx_size);
+
+	graphics::BufferDesc idx_desc;
+	idx_desc.m_Size = idx_size;
+	idx_desc.m_Data = idx_data;
+	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
+	idx_desc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
+	idx_desc.m_StructuredByteStride = 0;
+	idx_desc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
+	idx_desc.m_MiscFlags = 0;
+	idx_desc.m_ByteWidth = idx_desc.m_Size;
+	IBuffer* idx_buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc);
+
+	m_IndexWrapper = IndexWrapper(idx_data, 
+								  idx_count, 
+								  idx_start, 
+								  idx_size, 
+								  graphics::R32_UINT, 
+								  idx_byte_offset, 
+								  idx_buffer);
 
 
-// 	InitVertexBuffer();
-// 	InitInputLayout();
-// 	InitIndexBuffer();
 
-	m_ConstantBuffer = pDevice.CreateConstantBuffer(sizeof(cbMatrices));
+
+
+
+	m_ConstantBuffer = device.CreateConstantBuffer(sizeof(cbMatrices));
+	m_cbPixel = device.CreateConstantBuffer(sizeof(cbPixel));
 
 
 }

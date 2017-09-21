@@ -19,6 +19,7 @@ namespace graphics
 		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
 		desc.m_ShaderResourceFormat = RGBA16_FLOAT;
 		desc.m_RenderTargetFormat = RGBA16_FLOAT;
+
 		m_Albedo = new Texture;
 		m_Albedo->Initiate(desc, "GBuffer : Albedo");
 
@@ -48,7 +49,7 @@ namespace graphics
 		SAFE_DELETE(m_Emissive);
 	}
 
-	void GBuffer::Clear(float clear_color[4], const RenderContext& render_context)
+	void GBuffer::Clear(const float* clear_color, const RenderContext& render_context)
 	{
 		auto& ctx = render_context.GetContext();
 		ctx.ClearRenderTarget(m_Albedo->GetRenderTargetView(), clear_color);

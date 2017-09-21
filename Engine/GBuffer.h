@@ -10,7 +10,7 @@ namespace graphics
 		GBuffer();
 		~GBuffer();
 
-		void Clear(float clear_color[4], const RenderContext& render_context);
+		void Clear(const float* clear_color, const RenderContext& render_context);
 		void SetAsRenderTarget(Texture* depth, const RenderContext& render_context);
 
 		Texture* GetDiffuse() const { return m_Albedo; }

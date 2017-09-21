@@ -2,6 +2,7 @@
 #include "VertexStructs.h"
 #include <Math/Matrix/Matrix44.h>
 #include <DataStructures/GrowingArray.h>
+
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
 #include "InstanceWrapper.h"

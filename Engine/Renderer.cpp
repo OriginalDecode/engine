@@ -140,7 +140,7 @@ void Renderer::Render()
 
 	PROFILE_FUNCTION(profiler::colors::Magenta);
 	m_RenderContext.GetAPI().BeginFrame();
-
+	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(m_DepthTexture, m_RenderContext);
 
 

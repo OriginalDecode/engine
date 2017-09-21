@@ -342,7 +342,7 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 	auto& idx = model->m_IndexWrapper;
 	u32* indexData = new u32[data->myIndexCount];
 	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
-	idx.m_IndexBufferFormat = graphics::RGB32_FLOAT;
+	idx.m_IndexBufferFormat = graphics::R32_UINT;
 	idx.m_Data = static_cast<s8*>(indexData);
 	idx.m_IndexCount = data->myIndexCount;
 	idx.m_Size = idx.m_IndexCount * sizeof(u32);

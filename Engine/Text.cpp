@@ -4,9 +4,9 @@
 #include "Effect.h"
 #include "Camera.h"
 
-CText::CText(const char* aFilepath, int aSize, int aBorderWidth)
+CText::CText(const char* filepath, int aSize, int aBorderWidth)
 {
-	myFont = Engine::GetInstance()->LoadFont(aFilepath, aSize, aBorderWidth);
+	myFont = Engine::GetInstance()->LoadFont(filepath, aSize, aBorderWidth);
 	myScale = { 1, 1 };
 }
 

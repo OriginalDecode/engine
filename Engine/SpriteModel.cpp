@@ -44,7 +44,7 @@ void SpriteModel::Initiate(Texture* aShaderResource, const CU::Math::Vector2<flo
 	CreateVertices();
 }
 
-void SpriteModel::Initiate(const cl::CHashString<128>& path)
+void SpriteModel::Initiate(const cl::HashString& path)
 {
 	myWindowSize = Engine::GetInstance()->GetWindowSize();
 	myEffect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");

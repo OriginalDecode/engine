@@ -6,7 +6,7 @@ class Camera;
 class CText
 {
 public:
-	CText(const char* aFilepath, int aSize, int aBorderWidth);
+	CText(const char* filepath, int aSize, int aBorderWidth);
 	~CText();
 
 	void Render(Camera* aCamera);

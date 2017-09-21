@@ -22,7 +22,6 @@ public:
 	Effect* GetEffect() { return m_Effect; }
 private:
 	void CreatePlane();
-	void InitConstantBuffer() override;
 
 	struct cbMatrices
 	{
@@ -34,15 +33,14 @@ private:
 	} m_VertexMatrices;
 
 	CU::Matrix44f m_Orientation;
-	CU::GrowingArray<SVertexPosNormUVBiTang> m_Vertices;
 	CU::GrowingArray<int> m_Indices;
 
 	float m_ClearColor[4] = { 0, 0, 0, 0 };
 	Texture* m_Refraction = nullptr;
 	Texture* m_Reflection = nullptr;
 
-	GBuffer m_RefractionG;
-	GBuffer m_ReflectionG;
+	graphics::GBuffer m_RefractionG;
+	graphics::GBuffer m_ReflectionG;
 
 	IBuffer* m_cbPixel = nullptr;
 	struct cbPixel
@@ -51,9 +49,5 @@ private:
 	} m_PixelStruct;
 
 
-#if !defined(_PROFILE) && !defined(_FINAL)
-
-	bool m_RenderWireframe = false;
-#endif
 };
 

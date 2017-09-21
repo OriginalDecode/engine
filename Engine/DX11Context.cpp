@@ -5,6 +5,7 @@
 #include <Engine/Quad.h>
 #include <Engine/Line3D.h>
 #include <Engine/DX11Device.h>
+#include <Engine/Viewport.h>
 
 namespace graphics
 {
@@ -249,6 +250,11 @@ namespace graphics
 	void DX11Context::SetBlendState(IBlendState* pBlendState)
 	{
 		m_Context->OMSetBlendState(static_cast<ID3D11BlendState*>(pBlendState), blendcolor::black, 0xFFFFFFFF );
+	}
+
+	void DX11Context::SetViewport(Viewport* viewport)
+	{
+		m_Context->RSSetViewports(1, static_cast<D3D11_VIEWPORT*>(viewport->GetViewport()));
 	}
 
 	void DX11Context::DrawInstanced(BaseModel* model)

@@ -89,7 +89,7 @@ public:
 	const WindowSize& GetWindowSize() const;
 	const WindowSize& GetInnerSize() const;
 
-	CFont* LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth);
+	CFont* LoadFont(const s8* filepath, u16 aFontWidth, u16 aBorderWidth);
 	float GetDeltaTime();
 	float GetTotalTime();
 	float GetFPS();
@@ -100,12 +100,12 @@ public:
 
 	//_________________________________________
 	// Get Resources
-	Texture* GetTexture(const cl::CHashString<128>& aFilePath);
-	Effect* GetEffect(const cl::CHashString<128>& aFilePath);
-	Model* GetModel(const cl::CHashString<128>& aFilePath);
-	Sprite* GetSprite(const cl::CHashString<128>& path);
+	Texture* GetTexture(const cl::HashString& filepath);
+	Effect* GetEffect(const cl::HashString& filepath);
+	Model* GetModel(const cl::HashString& filepath);
+	Sprite* GetSprite(const cl::HashString& filepath);
 
-	std::string LoadModel(std::string aFilePath, std::string effect, bool thread);
+	std::string LoadModel(std::string filepath, std::string effect, bool thread);
 	template<typename T>
 	std::string LoadModel(std::string filepath, std::string effect, T* pModel, bool thread);
 
@@ -154,7 +154,7 @@ public:
 	/* These 3 functions are very API specific */
 	//HRESULT CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
 	//HRESULT CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message);
-	void* CreateShader(void* pShader, eShaderType type, const cl::CHashString<128>& debug_name);
+	void* CreateShader(void* pShader, eShaderType type, const cl::HashString& debug_name);
 	/* END */
 
 

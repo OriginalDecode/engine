@@ -11,32 +11,29 @@ AssetsContainer::~AssetsContainer()
 {
 	SAFE_DELETE(m_ShaderFactory);
 	SAFE_DELETE(m_ModelLoader);
-	for (auto it = myModels.begin(); it != myModels.end(); it++)
-	{
-		it->second->CleanUp();
+	
+	for (auto it = m_Models.begin(); it != m_Models.end(); it++)
 		SAFE_DELETE(it->second);
-	}
 
-	for (auto it = myTextures.begin(); it != myTextures.end(); it++)
-	{
+	for (auto it = m_Textures.begin(); it != m_Textures.end(); it++)
 		SAFE_DELETE(it->second);
-	}
 
 	for (auto it = m_Sprites.begin(); it != m_Sprites.end(); it++)
-	{
 		SAFE_DELETE(it->second);
-	}
 
-	DELETE_MAP(myEffects);
+	for (auto it = m_Effects.begin(); it != m_Effects.end(); it++)
+		SAFE_DELETE(it->second);
+
+
 }
 
 void AssetsContainer::Initiate()
 {
 	m_ShaderFactory = new ShaderFactory;
 	m_ModelLoader = new CModelImporter;
-	myTextures.empty();
-	myEffects.empty();
-	myModels.empty();
+	m_Textures.empty();
+	m_Effects.empty();
+	m_Models.empty();
 	m_Sprites.empty();
 
 #ifndef FINAL
@@ -47,54 +44,55 @@ void AssetsContainer::Initiate()
 #endif
 }
 
-Texture* AssetsContainer::GetTexture(std::string aFilePath)
+Texture* AssetsContainer::GetTexture(const cl::HashString& path)
 {
-	if (cl::substr(aFilePath, ".dds") == false)
+
+	
+	if (path.contains(".dds") == false)
 	{
-		DL_MESSAGE("Failed to load %s, due to incorrect fileformat. Has to be .dds", aFilePath.c_str());
+		DL_MESSAGE("Failed to load %s, due to incorrect fileformat. Has to be .dds", path.c_str());
 		DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
 		return nullptr;
 	}
 
 	//mutex?
-	/*if (myTextures.find(aFilePath) == myTextures.end())
+	// TODO fix this shit
+	/*if (myTextures.find(filepath) == myTextures.end())
 	{*/
-		//myTextures.emplace(aFilePath, new Texture);
+		//myTextures.emplace(filepath, new Texture);
 /*
 		m_Engine->GetInstance()->GetThreadpool().AddWork(Work([=]() {
 
-			LoadTexture(aFilePath);
+			LoadTexture(filepath);
 
 		}));*/
 
 
-		if (!LoadTexture(aFilePath))
+		if (!LoadTexture(path))
 			return nullptr;
-		//DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
+		//DL_MESSAGE("Successfully loaded : %s", filepath.c_str());
 	//}
 
-	return myTextures[aFilePath];
+	return m_Textures[path];
 }
 
 
 
-Effect* AssetsContainer::GetEffect(const std::string& aFilePath)
+Effect* AssetsContainer::GetEffect(const cl::HashString& path)
 {
-	if (myEffects.find(aFilePath) == myEffects.end())
+	if (m_Effects.find(path) == m_Effects.end())
 	{
-		LoadEffect(aFilePath);
+		LoadEffect(path);
 	}
-	return myEffects[aFilePath];
+	return m_Effects[path];
 }
 
-Model* AssetsContainer::GetModel(const std::string& aFilePath)
+Model* AssetsContainer::GetModel(const cl::HashString& path)
 {
-	std::unordered_map<std::string, Model*>::iterator it;
-	it = myModels.find(aFilePath);
-
-	if (it == myModels.end())
+	auto it = m_Models.find(path);
+	if (it == m_Models.end())
 	{
-		DL_MESSAGE("Requested Model : %s", aFilePath.c_str());
+		DL_MESSAGE("Requested Model : %s", path.c_str());
 		DL_ASSERT("Failed to find requested model. Did you enter the correct path?");
 	}
 	return it->second;
@@ -111,36 +109,36 @@ void AssetsContainer::Update()
 
 void AssetsContainer::ReloadTexture(Texture* texture)
 {
-	texture->OnReload();
+	//texture->OnReload();
 }
 
-bool AssetsContainer::LoadTexture(std::string aFilePath)
+bool AssetsContainer::LoadTexture(const cl::HashString& filepath)
 {
 	BeginTicketMutex(&m_Mutex);
-	if (myTextures.find(aFilePath) == myTextures.end())
+	if (m_Textures.find(filepath) == m_Textures.end())
 	{
 		Texture* texture = new Texture;
-		if (texture->Load(aFilePath.c_str()) == false)
+		/*if (texture->Load(filepath) == false)
 		{
 			SAFE_DELETE(texture);
 			EndTicketMutex(&m_Mutex);
 			return false;
-		}
-		myTextures[aFilePath] = texture;
+		}*/
+		m_Textures[filepath] = texture;
 	}
 	EndTicketMutex(&m_Mutex);
 	return true;
 }
 
-Effect* AssetsContainer::LoadEffect(const std::string& aFilePath)
+Effect* AssetsContainer::LoadEffect(const cl::HashString& filepath)
 {
-	Effect* effect = new Effect(aFilePath);
+	Effect* effect = new Effect(filepath.c_str());
 	m_ShaderFactory->LoadShader(effect);
-	myEffects[aFilePath] = effect;
-	return myEffects[aFilePath];
+	m_Effects[filepath] = effect;
+	return m_Effects[filepath];
 }
 
-Sprite* AssetsContainer::LoadSprite(const cl::CHashString<128>& path)
+Sprite* AssetsContainer::LoadSprite(const cl::HashString& path)
 {
 	Sprite* sprite = new Sprite;
 	m_Sprites.emplace(path.GetHash(), sprite);
@@ -148,11 +146,11 @@ Sprite* AssetsContainer::LoadSprite(const cl::CHashString<128>& path)
 	return sprite;
 }
 
-Sprite* AssetsContainer::GetSprite(const cl::CHashString<128>& path)
+Sprite* AssetsContainer::GetSprite(const cl::HashString& path)
 {
 	for (auto it = m_Sprites.begin(); it != m_Sprites.end(); it++)
 	{
-		if (it->first != path.GetHash())
+		if (it->first != path)
 			continue;
 
 		return it->second;
@@ -161,39 +159,39 @@ Sprite* AssetsContainer::GetSprite(const cl::CHashString<128>& path)
 }
 
 
-std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect, bool thread)
+cl::HashString AssetsContainer::LoadModel(const cl::HashString& filepath, std::string effect, bool thread)
 {
-	if (aFilePath.find("default_cube") != aFilePath.npos)
+// 	if (filepath.find("default_cube") != filepath.npos)
+// 	{
+// 		Model* model = new Model;
+// 		model->SetEffect(LoadEffect(Engine::GetInstance()->GetVFS().GetFile(effect)));
+// 		model->CreateCube();
+// 		m_Models.emplace("default_cube", model);
+// 
+// 	}
+
+
+
+	if (m_Models.find(filepath) == m_Models.end())
 	{
+		DL_MESSAGE("Loading model : %s", filepath.c_str());
 		Model* model = new Model;
-		model->SetEffect(LoadEffect(Engine::GetInstance()->GetVFS().GetFile(effect)));
-		model->CreateCube();
-		myModels.emplace("default_cube", model);
-
-	}
-
-
-
-	if (myModels.find(aFilePath) == myModels.end())
-	{
-		DL_MESSAGE("Loading model : %s", aFilePath.c_str());
-		Model* model = new Model;
-		myModels.emplace(aFilePath, model);
+		m_Models.emplace(filepath, model);
 
 		if ( thread )
 		{
 			Engine::GetInstance()->GetThreadpool().AddWork(Work([=]() {
-				m_ModelLoader->LoadModel(model, aFilePath, effect);
-				model->Initiate(aFilePath);
+				m_ModelLoader->LoadModel(model, filepath.c_str(), effect);
+				model->Initiate(filepath.c_str());
 			}));
-			return aFilePath;
+			return filepath;
 		}
 		else
 		{
-			m_ModelLoader->LoadModel(model, aFilePath, effect);
-			model->Initiate(aFilePath);
-			return aFilePath;
+			m_ModelLoader->LoadModel(model, filepath.c_str(), effect);
+			model->Initiate(filepath.c_str());
+			return filepath;
 		}
 	}
-	return aFilePath;
+	return filepath;
 }

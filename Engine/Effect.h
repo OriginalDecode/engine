@@ -33,7 +33,7 @@ public:
 		_COUNT
 	};
 
-	Effect(const std::string& aFilePath);
+	Effect(const std::string& filepath);
 	Effect() = default;
 	CompiledShader* GetVertexShader() { return m_VertexShader; }
 	CompiledShader* GetPixelShader() { return m_PixelShader; }

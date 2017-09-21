@@ -5,7 +5,7 @@ class ShaderWarningHandler
 {
 public:
 	ShaderWarningHandler() = default;
-	std::string CheckWarning(const std::string& aWarningMessage, const std::string& aFilePath);
+	std::string CheckWarning(const std::string& aWarningMessage, const std::string& filepath);
 
 private:
 	CU::GrowingArray<std::string> myShader;

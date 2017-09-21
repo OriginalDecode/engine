@@ -11,7 +11,7 @@ struct SHeightMap
 	u8* myData;
 };
 
-SHeightMap Create(const char* aFilePath);
+SHeightMap Create(const char* filepath);
 
 class Terrain : public BaseModel
 {
@@ -27,7 +27,7 @@ public:
 
 
 	void Save(const std::string& aFilename);
-	void Load(const std::string& aFilePath);
+	void Load(const std::string& filepath);
 
 	void AddNormalMap(const std::string& filepath);
 	std::vector<float> GetVerticeArrayCopy();

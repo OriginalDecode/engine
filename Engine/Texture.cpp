@@ -12,7 +12,7 @@ Texture::~Texture()
 	api->ReleasePtr(m_RenderTargetView);
 }
 
-void Texture::Initiate(const TextureDesc& desc, const cl::CHashString<128>& debug_name)
+void Texture::Initiate(const TextureDesc& desc, const cl::HashString& debug_name)
 {
 	graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 	if (desc.m_TextureFormat != graphics::NO_FORMAT)
@@ -52,7 +52,7 @@ void Texture::Initiate(const TextureDesc& desc, const cl::CHashString<128>& debu
 	}
 }
 
-void Texture::InitiateAsDepthStencil(float width, float height, const cl::CHashString<128>& debug_name)
+void Texture::InitiateAsDepthStencil(float width, float height, const cl::HashString& debug_name)
 {
 	TextureDesc desc;
 	desc.m_Width = (s32)width;
@@ -66,7 +66,7 @@ void Texture::InitiateAsDepthStencil(float width, float height, const cl::CHashS
 	Initiate(desc, debug_name);
 }
 
-void Texture::InitiateAsRenderTarget(float width, float height, const cl::CHashString<128>& debug_name)
+void Texture::InitiateAsRenderTarget(float width, float height, const cl::HashString& debug_name)
 {
 	TextureDesc desc;
 	desc.m_Width = (s32)width;

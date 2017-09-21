@@ -3,9 +3,9 @@
 
 std::string JSONReader::ERROR_STR = "JSON_NO_STRING_FOUND";
 
-JSONReader::JSONReader(const std::string& aFilePath)
+JSONReader::JSONReader(const std::string& filepath)
 {
-	OpenDocument(aFilePath);
+	OpenDocument(filepath);
 }
 
 JSONReader::~JSONReader()
@@ -23,9 +23,9 @@ FRESULT JSONReader::OpenFile()
 	return toReturn;
 }
 
-void JSONReader::OpenDocument(const std::string & aFilePath)
+void JSONReader::OpenDocument(const std::string & filepath)
 {
-	myCurrentDocumentPath = aFilePath;
+	myCurrentDocumentPath = filepath;
 	OpenFile();
 	assert(myFile != NULL && "File could not be found!");
 	char buffer[2048]; //the buffer size determines how fast it can parse the file

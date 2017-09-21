@@ -23,9 +23,9 @@ public:
 	~Texture();
 
 
-	void Initiate(const TextureDesc& desc, const cl::CHashString<128>& debug_name);
-	void InitiateAsDepthStencil(float width, float height, const cl::CHashString<128>& debug_name);
-	void InitiateAsRenderTarget(float width, float height, const cl::CHashString<128>& debug_name);
+	void Initiate(const TextureDesc& desc, const cl::HashString& debug_name);
+	void InitiateAsDepthStencil(float width, float height, const cl::HashString& debug_name);
+	void InitiateAsRenderTarget(float width, float height, const cl::HashString& debug_name);
 
 
 	ITexture2D* GetDepthTexture() const { return m_DepthTexture; }

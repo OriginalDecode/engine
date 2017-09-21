@@ -129,7 +129,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_Camera->CreateOrthogonalProjection(m_Window.GetInnerSize().m_Width, m_Window.GetInnerSize().m_Height, 0.01f, 100.f);
 
 	m_Renderer = new Renderer(m_Synchronizer);
-	m_Renderer->Initiate(m_Synchronizer, m_Camera);
 
 	m_PhysicsManager = new PhysicsManager;
 
@@ -170,7 +169,6 @@ bool Engine::CleanUp()
 	m_TerrainManager->CleanUp();
 	SAFE_DELETE(m_TerrainManager);
 
-	m_Renderer->CleanUp();
 	SAFE_DELETE(m_Renderer);
 
 	SAFE_DELETE(m_Camera);
@@ -264,7 +262,7 @@ int Engine::RegisterLight()
 // 	return hr;
 // }
 
-void* Engine::CreateShader(void* pShader, eShaderType type, const cl::CHashString<128>& debug_name)
+void* Engine::CreateShader(void* pShader, eShaderType type, const cl::HashString& debug_name)
 {
 	graphics::IGraphicsDevice& device = m_API->GetDevice();
 	switch (type)
@@ -297,9 +295,9 @@ const WindowSize& Engine::GetInnerSize() const
 	return m_Window.GetInnerSize();
 }
 
-CFont* Engine::LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth)
+CFont* Engine::LoadFont(const s8* filepath, u16 aFontWidth, u16 aBorderWidth)
 {
-	return myFontManager->LoadFont(aFilepath, aFontWidth, aBorderWidth);
+	return myFontManager->LoadFont(filepath, aFontWidth, aBorderWidth);
 }
 
 float Engine::GetDeltaTime()
@@ -332,30 +330,30 @@ VirtualFileSystem& Engine::GetVFS()
 	return m_VirtualFileSystem;
 }
 
-Texture* Engine::GetTexture(const std::string& aFilePath)
+Texture* Engine::GetTexture(const cl::HashString& filepath)
 {
-	return myAssetsContainer->GetTexture(aFilePath);
+	return myAssetsContainer->GetTexture(filepath);
 }
 
-Effect* Engine::GetEffect(const std::string& aFilePath)
+Effect* Engine::GetEffect(const cl::HashString& filepath)
 {
-	return myAssetsContainer->GetEffect(m_VirtualFileSystem.GetFile(aFilePath));
+	return myAssetsContainer->GetEffect(m_VirtualFileSystem.GetFile(filepath));
 }
 
-Model* Engine::GetModel(const std::string& aFilePath)
+Model* Engine::GetModel(const cl::HashString& filepath)
 {
-	return myAssetsContainer->GetModel(aFilePath);
+	return myAssetsContainer->GetModel(filepath);
 }
 
-Sprite* Engine::GetSprite(const cl::CHashString<128>& path)
+Sprite* Engine::GetSprite(const cl::HashString& filepath)
 {
-	return myAssetsContainer->GetSprite(path);
+	return myAssetsContainer->GetSprite(filepath);
 }
 
-std::string Engine::LoadModel(std::string aFilePath, std::string effect, bool thread)
+std::string Engine::LoadModel(std::string filepath, std::string effect, bool thread)
 {
-	myAssetsContainer->LoadModel(aFilePath, effect, thread);
-	return aFilePath;
+	myAssetsContainer->LoadModel(filepath, effect, thread);
+	return filepath;
 }
 
 std::string string_together(u16 time, u16 to_compare)

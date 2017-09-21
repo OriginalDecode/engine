@@ -119,6 +119,9 @@ void WaterPlane::SetClipPlane(const CU::Vector4f& plane)
 
 void WaterPlane::CreatePlane()
 {
+	auto& ctx = Engine::GetAPI()->GetContext();
+	auto& pDevice = Engine::GetAPI()->GetDevice();
+
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -128,14 +131,15 @@ void WaterPlane::CreatePlane()
 		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
-	myVertexFormat.ReInit(5);
-	myVertexFormat.Add(vertexDesc[0]);
-	myVertexFormat.Add(vertexDesc[1]);
-	myVertexFormat.Add(vertexDesc[2]);
-	myVertexFormat.Add(vertexDesc[3]);
-	myVertexFormat.Add(vertexDesc[4]);
+// 	m_VertexFormat.ReInit(5);
+// 	m_VertexFormat.Add(vertexDesc[0]);
+// 	m_VertexFormat.Add(vertexDesc[1]);
+// 	m_VertexFormat.Add(vertexDesc[2]);
+// 	m_VertexFormat.Add(vertexDesc[3]);
+// 	m_VertexFormat.Add(vertexDesc[4]);
 	
 	const float half_width = 2048.f;
+	CU::GrowingArray<SVertexPosNormUVBiTang> m_Vertices;
 
 	SVertexPosNormUVBiTang vert;
 	vert.position = { -half_width, 0, -half_width };
@@ -159,6 +163,16 @@ void WaterPlane::CreatePlane()
 	vert.uv = { 1, 1 };
 	m_Vertices.Add(vert);
 
+// 	m_VertexData.myNrOfVertexes = m_Vertices.Size();
+// 	m_VertexData.myStride = sizeof(SVertexPosNormUVBiTang);
+// 	m_VertexData.mySize = m_VertexData.myNrOfVertexes * m_VertexData.myStride;
+// 	m_VertexData.myVertexData = new char[m_VertexData.mySize]();
+// 	memcpy(m_VertexData.myVertexData, &m_Vertices[0], m_VertexData.mySize);
+
+	m_VertexWrapper = VertexWrapper();
+
+
+	CU::GrowingArray<int> m_Indices;
 	m_Indices.Add(0);
 	m_Indices.Add(1);
 	m_Indices.Add(2);
@@ -167,21 +181,26 @@ void WaterPlane::CreatePlane()
 	m_Indices.Add(2);
 	m_Indices.Add(1);
 
-	m_VertexData.myNrOfVertexes = m_Vertices.Size();
-	m_VertexData.myStride = sizeof(SVertexPosNormUVBiTang);
-	m_VertexData.mySize = m_VertexData.myNrOfVertexes * m_VertexData.myStride;
-	m_VertexData.myVertexData = new char[m_VertexData.mySize]();
-	memcpy(m_VertexData.myVertexData, &m_Vertices[0], m_VertexData.mySize);
 
-	m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
-	m_IndexData.myIndexCount = m_Indices.Size();
-	m_IndexData.mySize = m_IndexData.myIndexCount * 4;
 
-	m_IndexData.myIndexData = new char[m_IndexData.mySize];
-	memcpy(m_IndexData.myIndexData, &m_Indices[0], m_IndexData.mySize);
 
-	InitVertexBuffer();
-	InitInputLayout();
-	InitIndexBuffer();
-	InitConstantBuffer();
+	//m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
+	//m_IndexData.myIndexCount = m_Indices.Size();
+	//m_IndexData.mySize = m_IndexData.myIndexCount * 4;
+	//
+	//m_IndexData.myIndexData = new char[m_IndexData.mySize];
+	//memcpy(m_IndexData.myIndexData, &m_Indices[0], m_IndexData.mySize);
+
+
+
+	m_IndexWrapper = IndexWrapper();
+
+
+// 	InitVertexBuffer();
+// 	InitInputLayout();
+// 	InitIndexBuffer();
+
+	m_ConstantBuffer = pDevice.CreateConstantBuffer(sizeof(cbMatrices));
+
+
 }

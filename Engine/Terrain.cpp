@@ -108,7 +108,7 @@ void Terrain::Save(const std::string& /*aFilename*/)
 	DL_ASSERT("Not implemented.");
 }
 
-void Terrain::Load(const std::string& /*aFilePath*/)
+void Terrain::Load(const std::string& /*filepath*/)
 {
 	DL_ASSERT("Not implemented.");
 }
@@ -287,9 +287,9 @@ float Terrain::GetHeight(unsigned int aIndex) const
 	return myHeightmap.myData[aIndex] / DIVIDE;
 }
 
-SHeightMap Create(const char* aFilePath)
+SHeightMap Create(const char* filepath)
 {
-	TGA32::Image* image = TGA32::Load(aFilePath);
+	TGA32::Image* image = TGA32::Load(filepath);
 
 	u32 width = image->myWidth;
 	u32 depth = image->myHeight;

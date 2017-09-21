@@ -16,7 +16,7 @@ public:
 	~Sprite();
 	void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 	//void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
-	void Initiate(const cl::CHashString<128>& path);
+	void Initiate(const cl::HashString& path);
 
 
 	void Render(Camera* aCamera);

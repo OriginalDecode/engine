@@ -20,7 +20,7 @@ namespace graphics
 		m_Device = nullptr;
 	}
 
-	IVertexShader* DX11Device::CreateVertexShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
+	IVertexShader* DX11Device::CreateVertexShader(IShaderBlob* pShader, const cl::HashString& debug_name)
 	{
 		ID3D11VertexShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -32,7 +32,7 @@ namespace graphics
 		return shader;
 	}
 
-	IPixelShader* DX11Device::CreatePixelShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
+	IPixelShader* DX11Device::CreatePixelShader(IShaderBlob* pShader, const cl::HashString& debug_name)
 	{
 		ID3D11PixelShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -44,7 +44,7 @@ namespace graphics
 		return shader;
 	}
 
-	IGeometryShader* DX11Device::CreateGeometryShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
+	IGeometryShader* DX11Device::CreateGeometryShader(IShaderBlob* pShader, const cl::HashString& debug_name)
 	{
 		ID3D11GeometryShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -56,7 +56,7 @@ namespace graphics
 		return shader;
 	}
 
-	IHullShader* DX11Device::CreateHullShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
+	IHullShader* DX11Device::CreateHullShader(IShaderBlob* pShader, const cl::HashString& debug_name)
 	{
 		ID3D11HullShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -68,7 +68,7 @@ namespace graphics
 		return shader;
 	}
 
-	IDomainShader* DX11Device::CreateDomainShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
+	IDomainShader* DX11Device::CreateDomainShader(IShaderBlob* pShader, const cl::HashString& debug_name)
 	{
 		ID3D11DomainShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -80,7 +80,7 @@ namespace graphics
 		return shader;
 	}
 
-	IComputeShader* DX11Device::CreateComputeShader(IShaderBlob* pShader, const cl::CHashString<128>& debug_name)
+	IComputeShader* DX11Device::CreateComputeShader(IShaderBlob* pShader, const cl::HashString& debug_name)
 	{
 		ID3D11ComputeShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -92,7 +92,7 @@ namespace graphics
 		return shader;
 	}
 
-	void* DX11Device::CreateTextureFromFile(const cl::CHashString<128>& filepath, bool generate_mips, IGraphicsContext* ctx)
+	void* DX11Device::CreateTextureFromFile(const cl::HashString& filepath, bool generate_mips, IGraphicsContext* ctx)
 	{
 		DX11Context* pCtx = static_cast<DX11Context*>(ctx);
 		wchar_t* widepath = nullptr;
@@ -131,7 +131,7 @@ namespace graphics
 		return srv;
 	}
 
-	ITexture2D* DX11Device::CreateTexture2D(const Texture2DDesc& desc, const cl::CHashString<128>& debug_name)
+	ITexture2D* DX11Device::CreateTexture2D(const Texture2DDesc& desc, const cl::HashString& debug_name)
 	{
 		D3D11_TEXTURE2D_DESC text_desc;
 		text_desc.Width = desc.m_Width;
@@ -155,7 +155,7 @@ namespace graphics
 		return static_cast<ITexture2D*>(texture);
 	}
 
-	IRenderTargetView* DX11Device::CreateRenderTarget(const RenderTargetDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name)
+	IRenderTargetView* DX11Device::CreateRenderTarget(const RenderTargetDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
 	{
 		ID3D11RenderTargetView* rtv = nullptr;
 		ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(pTexture);
@@ -167,7 +167,7 @@ namespace graphics
 		return static_cast<IRenderTargetView*>(rtv);
 	}
 
-	IShaderResourceView* DX11Device::CreateShaderResource(const ShaderResourceDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name)
+	IShaderResourceView* DX11Device::CreateShaderResource(const ShaderResourceDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
 	{
 		D3D11_SHADER_RESOURCE_VIEW_DESC view_desc;
 		view_desc.Format = DirectX11::GetFormat(desc.m_Format);
@@ -185,7 +185,7 @@ namespace graphics
 		return static_cast<IShaderResourceView*>(srv);
 	}
 
-	IDepthStencilView* DX11Device::CreateDepthStencilView(const DepthDesc& desc, ITexture2D* pTexture, const cl::CHashString<128>& debug_name)
+	IDepthStencilView* DX11Device::CreateDepthStencilView(const DepthDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
 	{
 		D3D11_DEPTH_STENCIL_VIEW_DESC depth_desc;
 		depth_desc.Format = DirectX11::GetFormat(desc.m_Format);

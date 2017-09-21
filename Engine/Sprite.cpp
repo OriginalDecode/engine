@@ -24,7 +24,7 @@ void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<f
 //	mySprite->Initiate(aShaderResource, aSize, aPosition);
 //}
 
-void Sprite::Initiate(const cl::CHashString<128>& path)
+void Sprite::Initiate(const cl::HashString& path)
 {
 	mySprite = new SpriteModel;
 	mySprite->Initiate(path);

@@ -2,8 +2,8 @@
 #include "Effect.h"
 #include <Engine/IGraphicsContext.h>
 
-Effect::Effect(const std::string& aFilePath)
-	: m_FileName(aFilePath)
+Effect::Effect(const std::string& filepath)
+	: m_FileName(filepath)
 {
 }
 

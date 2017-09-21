@@ -70,6 +70,8 @@ namespace graphics
 		void SetRasterizerState(IRasterizerState* pRasterizerState) override;
 		void SetBlendState(IBlendState* pBlendState) override;
 
+		void SetViewport(Viewport* viewport) override;
+
 
 	private:
 		ID3D11DeviceContext* m_Context = nullptr;

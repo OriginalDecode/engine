@@ -33,7 +33,7 @@ struct RenderCommand
 
 struct ModelCommand : public RenderCommand
 {
-	ModelCommand(const cl::CHashString<128>& key, const CU::Matrix44f& orientation, bool wireframe)
+	ModelCommand(const cl::HashString& key, const CU::Matrix44f& orientation, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Orientation(orientation)
 		, m_Wireframe(wireframe)
@@ -41,7 +41,7 @@ struct ModelCommand : public RenderCommand
 	{
 	}
 
-	ModelCommand(const cl::CHashString<128>& key, const CU::Vector3f& position, bool wireframe)
+	ModelCommand(const cl::HashString& key, const CU::Vector3f& position, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Wireframe(wireframe)
 		, m_Key(key)
@@ -49,7 +49,7 @@ struct ModelCommand : public RenderCommand
 		m_Orientation.SetPosition(position);
 	}
 
-	ModelCommand(const cl::CHashString<128>& key, const CU::Vector3f& position, bool wireframe, float roughness, float metalness) 
+	ModelCommand(const cl::HashString& key, const CU::Vector3f& position, bool wireframe, float roughness, float metalness) 
 		: RenderCommand(eCommandType::MODEL)
 		, m_Wireframe(wireframe)
 		, m_Key(key)
@@ -59,7 +59,7 @@ struct ModelCommand : public RenderCommand
 		m_Orientation.SetPosition(position);
 	}
 
-	cl::CHashString<128> m_Key;
+	cl::HashString m_Key;
 	CU::Matrix44f m_Orientation;
 	bool m_Wireframe = false;
 	float m_Roughness;
@@ -69,7 +69,7 @@ struct ModelCommand : public RenderCommand
 
 struct ModelCommandNonDeferred : public ModelCommand
 {
-	ModelCommandNonDeferred(const cl::CHashString<128>& key, const CU::Matrix44f& orientation, bool wireframe)
+	ModelCommandNonDeferred(const cl::HashString& key, const CU::Matrix44f& orientation, bool wireframe)
 		: ModelCommand(key, orientation, wireframe)
 	{
 	}
@@ -148,7 +148,7 @@ struct SpriteCommand : public RenderCommand
 	{
 	}*/
 
-	SpriteCommand(const cl::CHashString<128>& key, const CU::Vector2f& position)
+	SpriteCommand(const cl::HashString& key, const CU::Vector2f& position)
 		: RenderCommand(eCommandType::SPRITE)
 		, m_Key ( key )
 		, m_Position ( position ) 
@@ -157,7 +157,7 @@ struct SpriteCommand : public RenderCommand
 
 
 	//ID3D11ShaderResourceView* m_Resource = nullptr;
-	cl::CHashString<128> m_Key;
+	cl::HashString m_Key;
 	CU::Vector2f m_Position;
 };
 

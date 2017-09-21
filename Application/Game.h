@@ -45,7 +45,7 @@ private:
 
 	Texture* m_VolumeTexture = nullptr;
 	Sprite* m_MainCharacter = nullptr;
-	cl::CHashString<128> m_MainKey;
+	cl::HashString m_MainKey;
 
 	CU::Vector2f m_Position;
 

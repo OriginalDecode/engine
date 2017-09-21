@@ -339,7 +339,7 @@ template<typename T>
 void CModelImporter::FillIndexData(T* out, ModelData* data)
 {
 	BaseModel* model = static_cast<BaseModel*>(out);
-	auto& idx = model->m_IndexWrapper();
+	auto& idx = model->m_IndexWrapper;
 	u32* indexData = new u32[data->myIndexCount];
 	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
 	idx.m_IndexBufferFormat = graphics::RGB32_FLOAT;

@@ -220,7 +220,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	if (!el.IsArray())
 	{
-		component.myModelID = m_Engine->LoadModel(
+		component.m_ModelID = m_Engine->LoadModel(
 			el["model"].GetString(),
 			el["shader"].GetString(),
 			true);
@@ -228,8 +228,8 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 		if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
 			sponza = true;
-		component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
-		component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
+		component.m_MinPos = m_Engine->GetModel(component.m_ModelID)->GetMinPoint();
+		component.m_MaxPos = m_Engine->GetModel(component.m_ModelID)->GetMaxPoint();
 
 
 
@@ -246,7 +246,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 		component.scale = scale;
 		component.scale.w = 1.f;
 
-		CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
+		CU::Vector3f whd = m_Engine->GetModel(component.m_ModelID)->GetWHD();
 		m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
 		m_DwellerList.GetLast()->SetWHD(whd);
 	}
@@ -299,12 +299,12 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 	const JSONElement& el = entity_reader.GetElement("graphics");
-	component.myModelID = m_Engine->LoadModel(
+	component.m_ModelID = m_Engine->LoadModel(
 		el["model"].GetString(),
 		el["shader"].GetString(),
 		true);
-	component.m_MinPos = m_Engine->GetModel(component.myModelID)->GetMinPoint();
-	component.m_MaxPos = m_Engine->GetModel(component.myModelID)->GetMaxPoint();
+	component.m_MinPos = m_Engine->GetModel(component.m_ModelID)->GetMinPoint();
+	component.m_MaxPos = m_Engine->GetModel(component.m_ModelID)->GetMaxPoint();
 
 	component.scale = CU::Vector4f(1, 1, 1, 1);
 	component.m_Shadowed = false;
@@ -462,7 +462,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	if (!isLight)
 	{
 		RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
-		Model* model = m_Engine->GetModel(render.myModelID);
+		Model* model = m_Engine->GetModel(render.m_ModelID);
 		whd = model->GetWHD();
 		component.m_Rotation = render.m_Rotation;
 		component.m_MinPoint = model->GetMinPoint();

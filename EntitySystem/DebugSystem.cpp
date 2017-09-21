@@ -54,7 +54,7 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 		if (m_Manager.HasComponent(e, CreateFilter<Requires<RenderComponent>>()))
 		{
 			RenderComponent& r = GetComponent<RenderComponent>(e);
-			Model* m = Engine::GetInstance()->GetModel(r.myModelID);
+			Model* m = Engine::GetInstance()->GetModel(r.m_ModelID);
 			debug.m_MinPoint = m->GetMinPoint();//r.m_MinPos;
 			debug.m_MaxPoint = m->GetMaxPoint();//r.m_MaxPos;
 

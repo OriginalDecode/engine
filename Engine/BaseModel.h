@@ -25,17 +25,17 @@ public:
 	virtual void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) = 0;
 
 	void SetEffect(Effect* anEffect);
-
 	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
 	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }
 	const InstanceWrapper& GetInstanceWrapper() const { return m_InstanceWrapper; }
 
-
+	CU::Vector3f GetWHD() const { return m_WHD; }
 
 protected:
 	virtual void InitConstantBuffer() = 0;
 	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& rc) = 0;
 
+	CU::Vector3f m_WHD;
 	CU::Vector3f m_MaxPoint;
 	CU::Vector3f m_MinPoint;
 	Effect* m_Effect = nullptr;

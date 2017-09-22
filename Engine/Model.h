@@ -21,16 +21,11 @@ public:
 	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) override;
 	void ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
 
-
-
-
-
 	void AddChild(Model* aChild);
 
 	void SetPosition(const CU::Vector3f& aPosition);
 	CU::Matrix44f& GetOrientation();
 	void SetOrientation(CU::Matrix44f orientation);
-
 
 	virtual void SetMaxPoint(CU::Vector3f max_point);
 	virtual CU::Vector3f GetMaxPoint() const { return m_MaxPoint; }

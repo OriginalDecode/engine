@@ -320,11 +320,6 @@ float Engine::GetFrameTime()
 	return myTimeManager.GetFrameTime();
 }
 
-std::string Engine::GetAPIName()
-{
-	return myAPI->GetAPIName();
-}
-
 VirtualFileSystem& Engine::GetVFS()
 {
 	return m_VirtualFileSystem;
@@ -337,7 +332,7 @@ Texture* Engine::GetTexture(const cl::HashString& filepath)
 
 Effect* Engine::GetEffect(const cl::HashString& filepath)
 {
-	return myAssetsContainer->GetEffect(m_VirtualFileSystem.GetFile(filepath));
+	return myAssetsContainer->GetEffect(/*m_VirtualFileSystem.GetFile(filepath)*/0);
 }
 
 Model* Engine::GetModel(const cl::HashString& filepath)
@@ -350,10 +345,9 @@ Sprite* Engine::GetSprite(const cl::HashString& filepath)
 	return myAssetsContainer->GetSprite(filepath);
 }
 
-std::string Engine::LoadModel(std::string filepath, std::string effect, bool thread)
+cl::HashString Engine::LoadModel(const cl::HashString& filepath, std::string effect, bool thread)
 {
-	myAssetsContainer->LoadModel(filepath, effect, thread);
-	return filepath;
+	return myAssetsContainer->LoadModel(filepath, effect, thread);
 }
 
 std::string string_together(u16 time, u16 to_compare)

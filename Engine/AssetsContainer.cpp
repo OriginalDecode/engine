@@ -46,8 +46,6 @@ void AssetsContainer::Initiate()
 
 Texture* AssetsContainer::GetTexture(const cl::HashString& path)
 {
-
-	
 	if (path.contains(".dds") == false)
 	{
 		DL_MESSAGE("Failed to load %s, due to incorrect fileformat. Has to be .dds", path.c_str());
@@ -55,23 +53,8 @@ Texture* AssetsContainer::GetTexture(const cl::HashString& path)
 		return nullptr;
 	}
 
-	//mutex?
-	// TODO fix this shit
-	/*if (myTextures.find(filepath) == myTextures.end())
-	{*/
-		//myTextures.emplace(filepath, new Texture);
-/*
-		m_Engine->GetInstance()->GetThreadpool().AddWork(Work([=]() {
-
-			LoadTexture(filepath);
-
-		}));*/
-
-
-		if (!LoadTexture(path))
-			return nullptr;
-		//DL_MESSAGE("Successfully loaded : %s", filepath.c_str());
-	//}
+	if (!LoadTexture(path))
+		return nullptr;
 
 	return m_Textures[path];
 }
@@ -118,6 +101,7 @@ bool AssetsContainer::LoadTexture(const cl::HashString& filepath)
 	if (m_Textures.find(filepath) == m_Textures.end())
 	{
 		Texture* texture = new Texture;
+		Engine::GetAPI()->GetDevice();
 		/*if (texture->Load(filepath) == false)
 		{
 			SAFE_DELETE(texture);

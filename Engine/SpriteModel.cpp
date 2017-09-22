@@ -29,7 +29,7 @@ void SpriteModel::Initiate(const std::string& aTexturePath, const CU::Math::Vect
 	mySize = aSize;
 	myPosition = aPosition;
 	myTexture = Engine::GetInstance()->GetTexture(myTexturePath);
-	myEffect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");
+	m_Effect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");
 	CreateVertices();
 }
 
@@ -39,7 +39,7 @@ void SpriteModel::Initiate(Texture* aShaderResource, const CU::Math::Vector2<flo
 
 	mySize = aSize;
 	myPosition = aPosition;
-	myEffect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");
+	m_Effect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");
 	myTexture = aShaderResource;
 	CreateVertices();
 }
@@ -47,7 +47,7 @@ void SpriteModel::Initiate(Texture* aShaderResource, const CU::Math::Vector2<flo
 void SpriteModel::Initiate(const cl::HashString& path)
 {
 	myWindowSize = Engine::GetInstance()->GetWindowSize();
-	myEffect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");
+	m_Effect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");
 	myTexture = Engine::GetInstance()->GetTexture(path.c_str());
 
 	mySize.x = myTexture->GetWidth();
@@ -117,7 +117,7 @@ void SpriteModel::CreateVertices()
 
 void SpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 {
-	if (!myEffect)
+	if (!m_Effect)
 		return;
 	Engine::GetAPI()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
 
@@ -132,17 +132,17 @@ void SpriteModel::Render(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DC
 	UpdateConstantBuffer();
 	context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
 
-	myEffect->AddShaderResource(myTexture, Effect::DIFFUSE);
+	m_Effect->AddShaderResource(myTexture, Effect::DIFFUSE);
 
-	myEffect->Use();
+	m_Effect->Use();
 	context.DrawIndexed(6, 0, 0);
-	myEffect->Clear();
+	m_Effect->Clear();
 
 }
 
 Effect* SpriteModel::GetEffect()
 {
-	return myEffect;
+	return m_Effect;
 }
 
 const CU::Vector2f& SpriteModel::GetSize()
@@ -191,8 +191,8 @@ void SpriteModel::InitiateVertexBuffer()
 	hr = Engine::GetAPI()->GetDevice()->
 		CreateInputLayout(&myVertexFormat[0]
 			, myVertexFormat.Size()
-			, myEffect->GetVertexShader()->compiledShader
-			, myEffect->GetVertexShader()->shaderSize
+			, m_Effect->GetVertexShader()->compiledShader
+			, m_Effect->GetVertexShader()->shaderSize
 			, &myVertexLayout);
 	Engine::GetAPI()->SetDebugName(myVertexLayout, "SpriteModel Vertex Layout");
 	Engine::GetAPI()->HandleErrors(hr, "Failed to create VertexLayout");

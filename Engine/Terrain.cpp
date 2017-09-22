@@ -12,7 +12,7 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 	myDepth = aSize.y;
 	m_Filename = "Terrain";
 	m_IsRoot = false;
-	myEffect = Engine::GetInstance()->GetEffect("Shaders/terrain_base.json");
+	m_Effect = Engine::GetInstance()->GetEffect("Shaders/terrain_base.json");
 
 	TGA32::Image* image = TGA32::Load(aFile.c_str());
 	/*u8* data;*/
@@ -28,7 +28,7 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 
 	SAFE_DELETE(image);
 	CreateVertices(aSize.x, aSize.y, position);
-	mySurface = new Surface(myEffect);
+	mySurface = new Surface(m_Effect);
 	mySurface->AddTexture("Data/Textures/terrain.dds", Effect::DIFFUSE);
 	//mySurface->AddTexture("Data/Textures/default_textures/no-texture-bw.dds", _ROUGHNESS);
 
@@ -56,7 +56,7 @@ void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44
 {
 	SetupLayoutsAndBuffers();
  
-	myEffect->Use();
+	m_Effect->Use();
  
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
 	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
@@ -66,7 +66,7 @@ void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44
 	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
 	mySurface->Deactivate();
 
-	myEffect->Clear();
+	m_Effect->Clear();
 }
 
 void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool override_shader)

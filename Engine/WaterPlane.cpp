@@ -35,7 +35,6 @@ WaterPlane::WaterPlane()
 	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/water_normal.dds"), Effect::NORMAL);
 	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/water_dudv.dds"), Effect::DUDV);
 	CreatePlane();
-//	m_cbPixel = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbPixel));
 
 }
 
@@ -64,21 +63,17 @@ void WaterPlane::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, c
 
 void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-
 	auto& ctx = render_context.GetContext();
+	auto& api = render_context.GetAPI();
 
-
-// 	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-// 	render_context.m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-// 	render_context.m_API->SetRasterizer(m_RenderWireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
+	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
+	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+	ctx.SetRasterizerState(m_RenderWireframe ? api.GetRasterizerState(graphics::WIREFRAME) : api.GetRasterizerState(graphics::CULL_NONE));
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-
 	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
 	ctx.DSSetConstantBuffer(0, 1, &m_ConstantBuffer);
-	m_Effect->Use();
-	ctx.DrawIndexed(this);
-	m_Effect->Clear();
+	ctx.DrawIndexed(this, m_Effect);
 }
 
 void WaterPlane::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)

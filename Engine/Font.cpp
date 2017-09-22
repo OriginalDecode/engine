@@ -229,8 +229,8 @@ void CFont::CreateConstantBuffer()
 void CFont::UpdateBuffer()
 {
 	myColor = myDefaultColor;
-	SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
-	SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
+ 	SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
+ 	SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 
 	u32 count = u32(myText.length());
 	float z = 0.f;

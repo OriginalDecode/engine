@@ -54,10 +54,10 @@ namespace graphics
 // 		void Draw(s32 index_start, s32 index_count, s32 vertex_start) override;
 // 		void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) override;
 
-		void Draw(BaseModel* model) override;
-		void DrawIndexed(BaseModel* model) override;
-		void DrawInstanced(BaseModel* model) override;
-		void DrawIndexedInstanced(BaseModel* model) override;
+		void Draw(BaseModel* model, Effect* fx = nullptr) override;
+		void DrawIndexed(BaseModel* model, Effect* fx = nullptr) override;
+		void DrawInstanced(BaseModel* model, Effect* fx = nullptr) override;
+		void DrawIndexedInstanced(BaseModel* model, Effect* fx = nullptr) override;
 
 		void DrawIndexed(Quad* quad, bool depth_on) override;
 		void Draw(Line3D* line, bool depth_on = true) override;

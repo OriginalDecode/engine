@@ -53,39 +53,38 @@ private:
 	SFontData* myData = nullptr;
 	Effect* myEffect[2];
 
-	IInputLayout* myVertexLayout = nullptr;
-	D3D11_BUFFER_DESC* myVertexBufferDesc = nullptr;
-	D3D11_BUFFER_DESC* myIndexBufferDesc = nullptr;
-
-	D3D11_SUBRESOURCE_DATA* myInitData = nullptr;
-	ID3D11Buffer* myConstantBuffer = nullptr;
-
-	VertexBufferWrapper* myVertexBuffer = nullptr;
-	IndexBufferWrapper* myIndexBuffer = nullptr;
+// 	IInputLayout* myVertexLayout = nullptr;
+// 	D3D11_BUFFER_DESC* myVertexBufferDesc = nullptr;
+// 	D3D11_BUFFER_DESC* myIndexBufferDesc = nullptr;
+// 
+// 	D3D11_SUBRESOURCE_DATA* myInitData = nullptr;
+// 	ID3D11Buffer* myConstantBuffer = nullptr;
+// 
+// 	VertexBufferWrapper* myVertexBuffer = nullptr;
+// 	IndexBufferWrapper* myIndexBuffer = nullptr;
 	std::string myText = "NONE";
 
-	CU::Math::Vector2<float> mySize;
-	CU::GrowingArray<SVertexTypePosColUv> myVertices;
-	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
-	CU::GrowingArray<int> myIndices;
-
-	CU::TimeManager* myTimeManager = nullptr;
-
-	cl::SColor myDefaultColor;
-	cl::SColor myColor;
-
-	float myUpdateTime = 0.f;
-	float myRenderTime = 0.f;
-
-	int myUpdateTimer = 0.f;
-	int myRenderTimer = 0.f;
+// 	CU::Math::Vector2<float> mySize;
+// 	CU::GrowingArray<SVertexTypePosColUv> myVertices;
+// 	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
+// 	CU::GrowingArray<int> myIndices;
+// 
+// 	CU::TimeManager* myTimeManager = nullptr;
+// 
+// 	cl::SColor myDefaultColor;
+// 	cl::SColor myColor;
+// 
+// 	float myUpdateTime = 0.f;
+// 	float myRenderTime = 0.f;
+// 
+// 	int myUpdateTimer = 0.f;
+// 	int myRenderTimer = 0.f;
 
 	struct SFontConstantBuffer : public VertexBaseStruct
 	{
 		CU::Vector2f position = CU::Vector2f(0.f, 0.f);
 		CU::Vector2f scale = CU::Vector2f(1.f, 1.f);
-	} *myConstantStruct;
+	} myConstantStruct;
 
-	Engine* myEngine;
 
 };

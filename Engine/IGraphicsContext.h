@@ -55,10 +55,10 @@ namespace graphics
 // 		virtual void Draw(s32 index_start, s32 index_count, s32 vertex_start) = 0;
 // 		virtual void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) = 0;
 
-		virtual void Draw(BaseModel* model) = 0;
-		virtual void DrawIndexed(BaseModel* model) = 0;
-		virtual void DrawInstanced(BaseModel* model) = 0;
-		virtual void DrawIndexedInstanced(BaseModel* model) = 0;
+		virtual void Draw(BaseModel* model, Effect* fx = nullptr) = 0;
+		virtual void DrawIndexed(BaseModel* model, Effect* fx = nullptr) = 0;
+		virtual void DrawInstanced(BaseModel* model, Effect* fx = nullptr) = 0;
+		virtual void DrawIndexedInstanced(BaseModel* model, Effect* fx = nullptr) = 0;
 
 		virtual void DrawIndexed(Quad* quad, bool depth_on = false) = 0;
 		virtual void Draw(Line3D* line, bool depth_on = true) = 0;

@@ -46,6 +46,6 @@ private:
 		CU::Vector4f m_CompareValue;
 	} m_PixelStruct;
 
-
+	bool m_RenderWireframe = false;
 };
 

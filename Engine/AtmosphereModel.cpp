@@ -6,13 +6,8 @@
 AtmosphereModel::~AtmosphereModel()
 {
 	m_Surfaces.DeleteAll();
-	for (AtmosphereModel* children : m_Children)
-		children->CleanUp();
-
 	m_Children.DeleteAll();
-
-	//Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
-	//Engine::GetAPI()->ReleasePtr(m_VertexLayout);
+	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
 }
 
 void AtmosphereModel::Initiate(const std::string& filename)
@@ -20,9 +15,6 @@ void AtmosphereModel::Initiate(const std::string& filename)
 	//m_Filename = cl::substr(filename, "/", false, 0);
 	if ( m_IsRoot == false )
 	{
-		InitVertexBuffer();
-		InitInputLayout();
-		InitIndexBuffer();
 		InitConstantBuffer();
 	}
 
@@ -36,7 +28,7 @@ void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::
 {
 	for (AtmosphereModel* child : m_Children)
 	{
-		child->Render(camera_orientation, camera_projection);
+		child->Render(camera_orientation, camera_projection, render_context);
 	}
 
 	if (m_IsRoot || m_Surfaces.Empty())
@@ -45,12 +37,9 @@ void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 	auto& ctx = render_context.GetContext();
 	ctx.VSSetConstantBuffer(0, 1, m_ConstantBuffer);
-	ctx.PSSetSamplerState(0, 1, render_context.GetAPI().GetSamplerState(graphics::eSamplerStates::LINEAR));
+	ctx.PSSetSamplerState(0, 1, render_context.GetAPI().GetSamplerState(graphics::LINEAR_CLAMP));
 
-	m_Effect->Use();
-	ctx.DrawIndexed(this);
-	m_Effect->Clear();
-
+	ctx.DrawIndexed(this, m_Effect);
 }
 
 void AtmosphereModel::AddChild(AtmosphereModel* child)

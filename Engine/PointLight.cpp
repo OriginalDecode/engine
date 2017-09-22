@@ -5,7 +5,10 @@
 PointLight::PointLight()
 {
 	m_Model = new LightModel;
-	std::string key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/sphere.fbx", "Shaders/deferred_pointlight.json", 0, false);
+	cl::HashString key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/sphere.fbx",
+																	  "Shaders/deferred_pointlight.json", 
+																	  0, 
+																	  false);
 	m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
 
 	//m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx");
@@ -52,9 +55,9 @@ void PointLight::Update()
 
 void PointLight::Render(const CU::Matrix44f& camera_orientation, Camera* camera)
 {
-	render_context.m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
-	render_context.m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 1);
-	m_Model->Render(camera_orientation, camera->GetPerspective(), render_context);
+// 	render_context.m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
+// 	render_context.m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 1);
+// 	m_Model->Render(camera_orientation, camera->GetPerspective(), render_context);
 }
 
 const SPointlightData& PointLight::GetData() const

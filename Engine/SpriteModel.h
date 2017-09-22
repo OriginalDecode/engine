@@ -44,9 +44,7 @@ private:
 	void InitConstantBuffer();
 	void ConvertToNormalSpace();
 
-	std::string myTexturePath;
-	WindowSize myWindowSize;
-	Effect* myEffect = nullptr;
+	Effect* m_Effect = nullptr;
 
 	CU::Math::Vector2<float> myPosition;
 	CU::Math::Vector2<float> mySize;

@@ -169,10 +169,14 @@ namespace graphics
 		m_Context->ClearDepthStencilView(static_cast<ID3D11DepthStencilView*>(dsv), clear_flag, max_depth, 0);
 	}
 
-	void DX11Context::Draw(BaseModel* model)
+	void DX11Context::Draw(BaseModel* model, Effect* fx)
 	{
 		const auto& vtx = model->GetVertexWrapper();
+		if (fx)
+			fx->Use();
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
+		if (fx)
+			fx->Clear();
 	}
 
 	void DX11Context::Draw(Line3D* line, bool depth_on /*= true*/)
@@ -216,7 +220,7 @@ namespace graphics
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 	}
 
-	void DX11Context::DrawIndexed(BaseModel* model)
+	void DX11Context::DrawIndexed(BaseModel* model, Effect* fx)
 	{
 		const auto& vtx = model->GetVertexWrapper();
 		const auto& idx = model->GetIndexWrapper();
@@ -233,8 +237,11 @@ namespace graphics
 		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
 									DirectX11::GetFormat(idx.GetFormat()),
 									idx.GetByteOffset());
-
+		if (fx)
+			fx->Use();
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
+		if (fx)
+			fx->Clear();
 	}
 
 	void DX11Context::SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth)
@@ -257,14 +264,21 @@ namespace graphics
 		m_Context->RSSetViewports(1, static_cast<D3D11_VIEWPORT*>(viewport->GetViewport()));
 	}
 
-	void DX11Context::DrawInstanced(BaseModel* model)
+	void DX11Context::DrawInstanced(BaseModel* model, Effect* fx)
 	{
 		const auto& vtx = model->GetVertexWrapper();
 		const auto& ins = model->GetInstanceWrapper();
+		
+		if(fx)
+			fx->Use();
+		
 		m_Context->DrawInstanced(ins.GetVertCountPerInstance(), ins.GetInstanceCount(), vtx.GetStart(), ins.GetStart());
+	
+		if(fx)
+			fx->Clear();
 	}
 
-	void DX11Context::DrawIndexedInstanced(BaseModel* model)
+	void DX11Context::DrawIndexedInstanced(BaseModel* model, Effect* fx)
 	{
 		const auto& vtx = model->GetVertexWrapper();
 		const auto& idx = model->GetIndexWrapper();
@@ -297,7 +311,11 @@ namespace graphics
 									DirectX11::GetFormat(idx.GetFormat()),
 									idx.GetByteOffset());
 
+		if (fx)
+			fx->Use();
 		m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), ins.GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
+		if (fx)
+			fx->Clear();
 	}
 
 	void DX11Context::UpdateBuffer(IBuffer* dest, void* src, s32 size, eMapping mapping)

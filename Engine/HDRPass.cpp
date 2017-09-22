@@ -13,7 +13,6 @@ void HDRPass::Initiate()
 {
 	m_Engine = Engine::GetInstance();
 	m_WindowSize = m_Engine->GetInnerSize();
-	m_API = m_Engine->GetAPI();
 
 
 	m_HDRTexture = new Texture;

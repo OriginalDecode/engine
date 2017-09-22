@@ -8,6 +8,11 @@ class Effect;
 class Engine;
 class DirectX11;
 
+namespace graphics
+{
+	class Viewport;
+};
+
 class HDRPass
 {
 public:
@@ -21,7 +26,7 @@ private:
 	void Downsample(IRenderTargetView* render_target, IShaderResourceView* source);
 	void Tonemapping(IRenderTargetView* target, IShaderResourceView* source[2], s32 resource_count);
 
-	void FillViewportData(Viewport& viewport);
+	void FillViewportData(graphics::Viewport& viewport);
 
 	float y_height = 0.f;
 	float x_width = 0.f;

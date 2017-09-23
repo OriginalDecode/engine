@@ -28,10 +28,10 @@
 #include <Engine/Texture.h>
 #include <Input/ControllerInput.h>
 
-static std::string key = "Data/Model/sponza_pbr/sponza.fbx";
-static std::string cube = "Data/Model/cube.fbx";
-static std::string wall = "Data/Model/wall.fbx";
-static std::string default_cube = "default_cube";
+static cl::HashString key = "Data/Model/sponza_pbr/sponza.fbx";
+static cl::HashString cube = "Data/Model/cube.fbx";
+static cl::HashString wall = "Data/Model/wall.fbx";
+static cl::HashString default_cube = "default_cube";
 #define KEY_USED default_cube
 
 #include <CommonLib/HashString.h>

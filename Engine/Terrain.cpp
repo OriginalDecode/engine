@@ -10,7 +10,7 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 {
 	myWidth = aSize.x;
 	myDepth = aSize.y;
-	m_Filename = "Terrain";
+//	m_Filename = "Terrain";
 	m_IsRoot = false;
 	m_Effect = Engine::GetInstance()->GetEffect("Shaders/terrain_base.json");
 
@@ -43,16 +43,12 @@ void Terrain::CleanUp()
 {
 	myIndexes.clear();
 	myVertices.clear();
-
-	SAFE_RELEASE(m_VertexLayout);
-
 	SAFE_DELETE(mySurface);
-
-	SAFE_RELEASE(m_ConstantBuffer);
+	//Engine::GetAPI()->GetDevice().ReleasePtr(m_ConstantBuffer);
 
 }
 
-void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context)
 {
 	SetupLayoutsAndBuffers();
  
@@ -69,7 +65,7 @@ void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44
 	m_Effect->Clear();
 }
 
-void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, bool override_shader)
+void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context, bool override_shader)
 {
 	SetupLayoutsAndBuffers();
 
@@ -92,7 +88,7 @@ void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44
 	m_ClipEffect->Clear();
 }
 
-void Terrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
+void Terrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
 	SetupLayoutsAndBuffers();
 
@@ -219,7 +215,7 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	InitConstantBuffer();
 }
 
-void Terrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
+void Terrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context)
 {
 	myConstantStruct.world = myOrientation;
 	myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);

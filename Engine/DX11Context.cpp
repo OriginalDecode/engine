@@ -261,7 +261,18 @@ namespace graphics
 
 	void DX11Context::SetViewport(Viewport* viewport)
 	{
-		m_Context->RSSetViewports(1, static_cast<D3D11_VIEWPORT*>(viewport->GetViewport()));
+		D3D11_VIEWPORT* vp = static_cast<D3D11_VIEWPORT*>(viewport->GetViewport());
+
+		vp->Height = viewport->GetHeight();
+		vp->Width = viewport->GetWidth();
+
+		vp->MaxDepth = viewport->GetMaxDepth();
+		vp->MinDepth = viewport->GetMinDepth();
+
+		vp->TopLeftX = viewport->GetTopLeftX();
+		vp->TopLeftY = viewport->GetTopLeftY();
+
+		m_Context->RSSetViewports(1, vp);
 	}
 
 	void DX11Context::DrawInstanced(BaseModel* model, Effect* fx)

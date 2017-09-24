@@ -3,6 +3,7 @@
 #include "engine_shared.h"
 #include <Utilities.h>
 #include <Engine/IGraphicsAPI.h>
+
 struct TextureDesc
 {
 	s32 m_Width = 0;

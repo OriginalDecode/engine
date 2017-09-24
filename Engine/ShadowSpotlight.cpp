@@ -105,7 +105,7 @@ const CU::Matrix44f& ShadowSpotlight::GetMVP()
 #ifdef _DEBUG
 void ShadowSpotlight::Copy()
 {
-	Texture::CopyData(m_Holder->GetTexture(), m_DepthStencil->GetDepthTexture());
+//	Texture::CopyData(m_Holder->GetTexture(), m_DepthStencil->GetDepthTexture());
 }
 #endif
 

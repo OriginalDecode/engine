@@ -29,6 +29,8 @@ namespace graphics
 			
 		IBuffer* CreateConstantBuffer(s32 size) override;
 
+		IViewport* CreateViewport(s32 w, s32 h, s32 x, s32 y, float max_depth, float min_depth);
+
 
 	private:
 		ID3D11Device* m_Device = nullptr;

@@ -28,7 +28,6 @@ namespace graphics
 		virtual IBuffer* CreateConstantBuffer(s32 size) = 0;
 
 
-
 	};
 };
 

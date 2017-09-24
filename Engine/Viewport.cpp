@@ -21,4 +21,25 @@ namespace graphics
 		delete m_Viewport;
 		m_Viewport = nullptr;
 	}
+
+	void Viewport::OnResize()
+	{
+
+	}
+
+	void Viewport::OnAltEnter()
+	{
+
+	}
+
+	void Viewport::Copy(Viewport* dest, Viewport* src)
+	{
+		dest->m_Height = src->m_Height;
+		dest->m_Width = src->m_Width;
+		dest->m_TopLeftX = src->m_TopLeftX;
+		dest->m_TopLeftY = src->m_TopLeftY;
+		dest->m_MaxDepth = src->m_MaxDepth;
+		dest->m_MinDepth = src->m_MinDepth;
+	}
+
 };

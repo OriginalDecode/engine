@@ -12,6 +12,22 @@ namespace graphics
 
 		void OnResize();
 		void OnAltEnter();
+		
+		static void Copy(Viewport* dest, Viewport* src);
+
+		s32 GetWidth() const { return m_Width; }
+		s32 GetHeight() const { return m_Height; }
+		s32 GetTopLeftX() const { return m_TopLeftX; }
+		s32 GetTopLeftY() const { return m_TopLeftY; }
+		float GetMaxDepth() const { return m_MaxDepth; }
+		float GetMinDepth() const { return m_MinDepth; }
+
+		void SetWidth(s32 width) { m_Width = width; }
+		void SetHeight(s32 height) { m_Height = height; }
+		void SetTopLeftX(s32 top_left_x) { m_TopLeftX = top_left_x; }
+		void SetTopLeftY(s32 top_left_y) { m_TopLeftY = top_left_y; }
+		void SetMaxDepth(float max_depth) { m_MaxDepth = max_depth; }
+		void SetMinDepth(float min_depth) { m_MinDepth = min_depth; }
 
 	private:
 		IViewport* m_Viewport = nullptr;

@@ -656,7 +656,7 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 			pbl.m_PBLValues.m_Metalness = metal;
 			pbl.m_PBLValues.m_Roughness = (float)j / steps;
 
-			pbl.m_Buffer = m_Engine->GetAPI()->CreateConstantBuffer(sizeof(pbl.m_PBLValues));
+			//pbl.m_Buffer = m_Engine->GetAPI()->CreateConstantBuffer(sizeof(pbl.m_PBLValues));
 
 
 			auto& t = m_EntityManager->AddComponent<TranslationComponent>(e);
@@ -671,8 +671,8 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 			t.myOrientation.SetTranslation(translation);
 
 
-			std::string key = Engine::GetInstance()->LoadModel("Data/Model/ballen.fbx", "Shaders/debug_pbl.json", false);
-			Model* m = m_Engine->GetModel(key);
+			/*std::string key = Engine::GetInstance()->LoadModel("Data/Model/ballen.fbx", "Shaders/debug_pbl.json", false);
+			Model* m = m_Engine->GetModel(key);*/
 			m->AddTexture("Data/Textures/brickwall_normal.dds", Effect::NORMAL);
 
 			/*
@@ -687,9 +687,9 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 				}
 			}
 			*/
-
+/*
 			r.myModelID = key;
-			r.scale = CU::Vector4f(1, 1, 1, 1);
+			r.scale = CU::Vector4f(1, 1, 1, 1);*/
 
 			m_DwellerList.Add(new TreeDweller);
 			m_DwellerList.GetLast()->AddComponent(&t, TreeDweller::TRANSLATION);

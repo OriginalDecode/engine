@@ -53,11 +53,11 @@ void PointLight::Update()
 	myData.myRange = GetRange();
 }
 
-void PointLight::Render(const CU::Matrix44f& camera_orientation, Camera* camera)
+void PointLight::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-// 	render_context.m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
-// 	render_context.m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 1);
-// 	m_Model->Render(camera_orientation, camera->GetPerspective(), render_context);
+ 	//render_context.m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
+ 	//render_context.m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 1);
+ 	m_Model->Render(camera_orientation, camera_projection, render_context);
 }
 
 const SPointlightData& PointLight::GetData() const

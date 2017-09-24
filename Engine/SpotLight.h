@@ -12,7 +12,7 @@ public:
 	~SpotLight();
 	void Initiate();
 
-	void Render(const CU::Matrix44f& previousOrientation, Camera* aCamera);
+	void Render(const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
 
 	void SetData(const SpotlightData& data);
 	const SpotlightData& GetData() const;
@@ -26,10 +26,7 @@ private:
 	void SetPosition(const CU::Vector3f& aPosition);
 	void SetDirection(const CU::Vector4f& aDirection);
 	
-	IInputLayout* m_InputLayout = nullptr;
-
-	VertexDataWrapper m_VertexData;
-	VertexBufferWrapper m_VertexBuffer;
+	VertexWrapper m_VertexWrapper;
 
 
 	struct gsbuffer

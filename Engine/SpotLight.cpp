@@ -54,7 +54,7 @@ void SpotLight::Initiate()
 	m_psCBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(psbuffer));
 
 }
-
+/**
 void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera)
 {
 	render_context.m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
@@ -94,6 +94,11 @@ void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera
 	context->Draw(1, 0);
 	effect->Clear();
 
+}
+*/
+void SpotLight::Render(const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
+{
+	m_Model->Render(camera_view, camera_projection, render_context);
 }
 
 void SpotLight::SetData(const SpotlightData& data)

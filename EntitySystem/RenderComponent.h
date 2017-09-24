@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include "BaseComponent.h"
 #include <Math/Vector/Vector.h>
 #include <Engine/engine_shared.h>
@@ -8,7 +7,7 @@
 
 struct ModelInstance
 {
-	std::string m_ModelID;
+	cl::HashString m_ModelID;
 	CU::Matrix44f m_Orientation;
 	bool m_RenderWireframe = false;
 	bool m_Shadowed = true;

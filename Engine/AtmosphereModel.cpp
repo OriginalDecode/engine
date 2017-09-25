@@ -12,12 +12,7 @@ AtmosphereModel::~AtmosphereModel()
 
 void AtmosphereModel::Initiate(const std::string& filename)
 {
-	//m_Filename = cl::substr(filename, "/", false, 0);
-	if ( m_IsRoot == false )
-	{
-		InitConstantBuffer();
-	}
-
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbVertex));
 	for ( AtmosphereModel* child : m_Children )
 	{
 		child->Initiate(filename);
@@ -35,10 +30,9 @@ void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::
 		return;
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	auto& ctx = render_context.GetContext();
-	ctx.VSSetConstantBuffer(0, 1, m_ConstantBuffer);
-	ctx.PSSetSamplerState(0, 1, render_context.GetAPI().GetSamplerState(graphics::LINEAR_CLAMP));
 
+	auto& ctx = render_context.GetContext();
+	ctx.PSSetSamplerState(0, 1, Engine::GetInstance()->GetActiveSampler());
 	ctx.DrawIndexed(this, m_Effect);
 }
 

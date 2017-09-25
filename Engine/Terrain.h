@@ -1,6 +1,5 @@
 #pragma once
 #include "BaseModel.h"
-#include <standard_datatype.hpp>
 
 class Surface;
 
@@ -41,8 +40,6 @@ private:
 	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) override;
 
 	void CreateVertices(u32 width, u32 height, const CU::Vector3f& position);
-	void InitConstantBuffer();
-
 	void CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray);
 	float GetHeight(unsigned int aX, unsigned int aY) const;
 	float GetHeight(unsigned int aIndex) const;

@@ -2,7 +2,7 @@
 #include "VertexStructs.h"
 #include <Math/Matrix/Matrix44.h>
 #include <DataStructures/GrowingArray.h>
-
+#include "engine_shared.h"
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
 #include "InstanceWrapper.h"
@@ -32,7 +32,6 @@ public:
 	CU::Vector3f GetWHD() const { return m_WHD; }
 
 protected:
-	virtual void InitConstantBuffer() = 0;
 	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& rc) = 0;
 
 	CU::Vector3f m_WHD;

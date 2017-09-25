@@ -174,6 +174,7 @@ public:
 // 	void DeselectEntity();
 	memory::MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
 	const graphics::eSamplerStates GetCurrentSampler() const { return m_CurrentSampler; }
+	ISamplerState* GetActiveSampler() { return m_API->GetSamplerState(m_CurrentSampler); }
 	void SetCurrentSampler(const graphics::eSamplerStates& sampler) { m_CurrentSampler = sampler; }
 
 	bool VSync() const { return m_VSyncOn; }

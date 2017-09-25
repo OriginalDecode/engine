@@ -1,10 +1,13 @@
 #include "stdafx.h"
 #include "DirectX11.h"
-
+#include <Engine/DX11Device.h>
 namespace graphics
 {
 	void DirectX11::CreateBlendStates()
 	{
+		ID3D11Device* device = static_cast<DX11Device*>(m_Device)->m_Device;
+
+
 		D3D11_BLEND_DESC blendDesc;
 		blendDesc.AlphaToCoverageEnable = FALSE;
 		blendDesc.IndependentBlendEnable = FALSE;
@@ -19,9 +22,12 @@ namespace graphics
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
-		myDevice->CreateBlendState(&blendDesc, &myBlendStates[u16(eBlendStates::NO_BLEND)]);
-		SetDebugName(myBlendStates[u16(eBlendStates::NO_BLEND)], "NO_BLEND BlendState");
-
+		ID3D11BlendState* blend_state = nullptr;
+		device->CreateBlendState(&blendDesc, &blend_state);
+		m_BlendStates[NO_BLEND] = blend_state;
+#ifndef FINAL
+		SetDebugName(blend_state, "NO_BLEND BlendState");
+#endif
 		blendDesc.AlphaToCoverageEnable = FALSE;
 		blendDesc.IndependentBlendEnable = FALSE;
 		blendDesc.RenderTarget[0].BlendEnable = TRUE;
@@ -33,9 +39,12 @@ namespace graphics
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
-		myDevice->CreateBlendState(&blendDesc, &myBlendStates[u16(eBlendStates::LIGHT_BLEND)]);
-		SetDebugName(myBlendStates[u16(eBlendStates::LIGHT_BLEND)], "LIGHT_BLEND BlendState");
-
+		blend_state = nullptr;
+		device->CreateBlendState(&blendDesc, &blend_state);
+		m_BlendStates[LIGHT_BLEND] = blend_state;
+#ifndef FINAL
+		SetDebugName(blend_state, "LIGHT_BLEND BlendState");
+#endif
 		blendDesc.AlphaToCoverageEnable = FALSE;
 		blendDesc.IndependentBlendEnable = FALSE;
 		blendDesc.RenderTarget[0].BlendEnable = TRUE;
@@ -49,13 +58,19 @@ namespace graphics
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
-		myDevice->CreateBlendState(&blendDesc, &myBlendStates[u16(eBlendStates::ALPHA_BLEND)]);
-		SetDebugName(myBlendStates[u16(eBlendStates::ALPHA_BLEND)], "ALPHA_BLEND BlendState");
-
+		blend_state = nullptr;
+		device->CreateBlendState(&blendDesc, &blend_state);
+		m_BlendStates[ALPHA_BLEND] = blend_state;
+#ifndef FINAL
+		SetDebugName(blend_state, "ALPHA_BLEND BlendState");
+#endif
 		blendDesc.RenderTarget[0].BlendEnable = FALSE;
-		myDevice->CreateBlendState(&blendDesc, &myBlendStates[u16(eBlendStates::BLEND_FALSE)]);
-		SetDebugName(myBlendStates[u16(eBlendStates::BLEND_FALSE)], "BLEND_FALSE BlendState");
-
+		blend_state = nullptr;
+		device->CreateBlendState(&blendDesc, &blend_state);
+		m_BlendStates[BLEND_FALSE] = blend_state;
+#ifndef FINAL
+		SetDebugName(blend_state, "BLEND_FALSE BlendState");
+#endif
 		blendDesc.AlphaToCoverageEnable = FALSE;
 		blendDesc.IndependentBlendEnable = FALSE;
 		blendDesc.RenderTarget[0].BlendEnable = TRUE;
@@ -70,8 +85,10 @@ namespace graphics
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
-		myDevice->CreateBlendState(&blendDesc, &myBlendStates[u16(eBlendStates::PARTICLE_BLEND)]);
-		SetDebugName(myBlendStates[u16(eBlendStates::PARTICLE_BLEND)], "PARTICLE_BLEND BlendState");
-
+		device->CreateBlendState(&blendDesc, &blend_state);
+		m_BlendStates[PARTICLE_BLEND] = blend_state;
+#ifndef FINAL
+		SetDebugName(blend_state, "PARTICLE_BLEND BlendState");
+#endif
 	}
 };

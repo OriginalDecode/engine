@@ -21,6 +21,7 @@ class Texture
 {
 public:
 	Texture() = default;
+	Texture(IShaderResourceView* srv);
 	~Texture();
 
 

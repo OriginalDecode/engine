@@ -94,7 +94,6 @@ public:
 	float GetTotalTime();
 	float GetFPS();
 	float GetFrameTime();
-	std::string GetAPIName();
 
 	VirtualFileSystem& GetVFS();
 

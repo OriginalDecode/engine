@@ -37,7 +37,7 @@ public:
 
 private:
 #ifndef FINAL
-	CU::StaticArray<FileWatcher*, 4> m_Watchers;
+	FileWatcher* m_Watcher = nullptr;
 #endif
 
 
@@ -80,5 +80,4 @@ cl::HashString AssetsContainer::LoadModel(const cl::HashString& path, std::strin
 	}
 
 	return path;
-
 }

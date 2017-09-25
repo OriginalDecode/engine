@@ -2,6 +2,12 @@
 #include "Texture.h"
 #include <Engine/IGraphicsDevice.h>
 #include <Engine/Engine.h>
+
+Texture::Texture(IShaderResourceView* srv)
+	: m_ShaderResource(srv)
+{
+}
+
 Texture::~Texture()
 {
 	graphics::IGraphicsAPI* api = Engine::GetAPI();

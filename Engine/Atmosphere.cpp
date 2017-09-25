@@ -11,8 +11,8 @@
 
 Atmosphere::~Atmosphere()
 {
-	SAFE_RELEASE(m_PixelBuffer);
-	SAFE_RELEASE(m_VertexBuffer);
+	Engine::GetAPI()->ReleasePtr(m_PixelBuffer);
+	Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
 }
 
 void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position)

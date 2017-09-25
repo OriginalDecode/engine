@@ -659,7 +659,7 @@ namespace graphics
 		return static_cast<D3D11_MAP>(mapping);
 	}
 
-	void DirectX11::SetDebugName(void * pResource, HashString debug_name)
+	void DirectX11::SetDebugName(void * pResource, cl::HashString debug_name)
 	{
 		if (!pResource)
 			return;

@@ -24,6 +24,9 @@ AssetsContainer::~AssetsContainer()
 	for (auto it = m_Effects.begin(); it != m_Effects.end(); it++)
 		SAFE_DELETE(it->second);
 
+#ifndef FINAL
+	SAFE_DELETE(m_Watcher);
+#endif
 
 }
 
@@ -37,10 +40,7 @@ void AssetsContainer::Initiate()
 	m_Sprites.empty();
 
 #ifndef FINAL
-	for (s32 i = 0; i < m_Watchers.Capacity(); i++)
-	{
-		m_Watchers[i] = new FileWatcher;
-	}
+	m_Watcher = new FileWatcher;
 #endif
 }
 
@@ -84,10 +84,9 @@ Model* AssetsContainer::GetModel(const cl::HashString& path)
 void AssetsContainer::Update()
 {
 	m_ShaderFactory->Update();
-	for (FileWatcher* watcher : m_Watchers)
-	{
-		watcher->FlushChanges();
-	}
+#ifndef FINAL
+	m_Watcher->FlushChanges();
+#endif
 }
 
 void AssetsContainer::ReloadTexture(Texture* texture)
@@ -100,18 +99,18 @@ bool AssetsContainer::LoadTexture(const cl::HashString& filepath)
 	BeginTicketMutex(&m_Mutex);
 	if (m_Textures.find(filepath) == m_Textures.end())
 	{
-		Texture* texture = new Texture;
-		Engine::GetAPI()->GetDevice();
-		/*if (texture->Load(filepath) == false)
+		graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
+		IShaderResourceView* srv = device.CreateTextureFromFile(filepath, false, &Engine::GetAPI()->GetContext());
+		if (srv != nullptr)
 		{
-			SAFE_DELETE(texture);
+			Texture* texture = new Texture(srv);
+			m_Textures[filepath] = texture;
 			EndTicketMutex(&m_Mutex);
-			return false;
-		}*/
-		m_Textures[filepath] = texture;
+			return true;
+		}
 	}
 	EndTicketMutex(&m_Mutex);
-	return true;
+	return false;
 }
 
 Effect* AssetsContainer::LoadEffect(const cl::HashString& filepath)
@@ -145,17 +144,6 @@ Sprite* AssetsContainer::GetSprite(const cl::HashString& path)
 
 cl::HashString AssetsContainer::LoadModel(const cl::HashString& filepath, std::string effect, bool thread)
 {
-// 	if (filepath.find("default_cube") != filepath.npos)
-// 	{
-// 		Model* model = new Model;
-// 		model->SetEffect(LoadEffect(Engine::GetInstance()->GetVFS().GetFile(effect)));
-// 		model->CreateCube();
-// 		m_Models.emplace("default_cube", model);
-// 
-// 	}
-
-
-
 	if (m_Models.find(filepath) == m_Models.end())
 	{
 		DL_MESSAGE("Loading model : %s", filepath.c_str());

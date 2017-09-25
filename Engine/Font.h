@@ -50,35 +50,30 @@ private:
 	void CreateConstantBuffer();
 	void UpdateBuffer();
 	void UpdateConstantBuffer();
-	SFontData* myData = nullptr;
-	Effect* myEffect[2];
+	SFontData* m_Data = nullptr;
+	Effect* m_Effect[2];
 
 // 	IInputLayout* myVertexLayout = nullptr;
 // 	D3D11_BUFFER_DESC* myVertexBufferDesc = nullptr;
 // 	D3D11_BUFFER_DESC* myIndexBufferDesc = nullptr;
-// 
+ 
 // 	D3D11_SUBRESOURCE_DATA* myInitData = nullptr;
 // 	ID3D11Buffer* myConstantBuffer = nullptr;
-// 
+ 
 // 	VertexBufferWrapper* myVertexBuffer = nullptr;
 // 	IndexBufferWrapper* myIndexBuffer = nullptr;
-	std::string myText = "NONE";
+	std::string m_Text = "NONE";
 
 // 	CU::Math::Vector2<float> mySize;
-// 	CU::GrowingArray<SVertexTypePosColUv> myVertices;
 // 	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
-// 	CU::GrowingArray<int> myIndices;
-// 
-// 	CU::TimeManager* myTimeManager = nullptr;
-// 
-// 	cl::SColor myDefaultColor;
-// 	cl::SColor myColor;
-// 
-// 	float myUpdateTime = 0.f;
-// 	float myRenderTime = 0.f;
-// 
-// 	int myUpdateTimer = 0.f;
-// 	int myRenderTimer = 0.f;
+ 
+ 	CU::GrowingArray<SVertexTypePosColUv> myVertices;
+ 	CU::GrowingArray<int> myIndices;
+ 
+ 	cl::SColor m_DefaultColor;
+ 	cl::SColor m_Color;
+ 
+ 
 
 	struct SFontConstantBuffer : public VertexBaseStruct
 	{

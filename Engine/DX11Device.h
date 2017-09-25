@@ -18,7 +18,7 @@ namespace graphics
 		IDomainShader* CreateDomainShader(IShaderBlob* pShader, const cl::HashString& debug_name) override;
 		IComputeShader* CreateComputeShader(IShaderBlob* pShader, const cl::HashString& debug_name) override;
 		
-		void* CreateTextureFromFile(const cl::HashString& filepath, bool generate_mips, IGraphicsContext* ctx) override;
+		IShaderResourceView* CreateTextureFromFile(const cl::HashString& filepath, bool generate_mips, IGraphicsContext* ctx) override;
 		ITexture2D* CreateTexture2D(const Texture2DDesc& desc, const cl::HashString& debug_name) override;
 		IRenderTargetView* CreateRenderTarget(const RenderTargetDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name) override;
 		IShaderResourceView* CreateShaderResource(const ShaderResourceDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name) override;
@@ -28,9 +28,8 @@ namespace graphics
 		IBuffer* CreateBuffer(BufferDesc buffer_desc) override;
 			
 		IBuffer* CreateConstantBuffer(s32 size) override;
-
-		IViewport* CreateViewport(s32 w, s32 h, s32 x, s32 y, float max_depth, float min_depth);
-
+		IShaderBlob* CompileShaderFromFile(const cl::HashString& filepath, const char* entrypoint, const char* shader_type) override;
+		IShaderBlob* CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const cl::HashString& source_name, const char* entrypoint, const char* shader_type) override;
 
 	private:
 		ID3D11Device* m_Device = nullptr;

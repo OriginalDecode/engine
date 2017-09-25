@@ -192,7 +192,7 @@ namespace graphics
 		eTextureFormat m_Format = NO_FORMAT;
 	};
 
-	struct ShaderResourceDesc 
+	struct ShaderResourceDesc
 	{
 		eTextureFormat m_Format = NO_FORMAT;
 	};
@@ -204,6 +204,19 @@ namespace graphics
 
 	struct InputElementDesc
 	{
+		InputElementDesc() = default;
+
+		InputElementDesc(char* semantic, u32 index, eVertexFormat format, u32 slot, u32 byte_offset, eElementSpecification element_spec, u32 instance_step_rate)
+			: m_Semantic(semantic)
+			, m_SemanicIndex(index)
+			, m_Format(format)
+			, m_InputSlot(slot)
+			, m_ByteOffset(byte_offset)
+			, m_ElementSpecification(element_spec)
+			, m_InstanceDataStepRate(instance_step_rate)
+		{
+		}
+
 		char* m_Semantic;
 		u32 m_SemanicIndex = 0;
 		eVertexFormat m_Format;
@@ -249,7 +262,7 @@ namespace graphics
 		virtual void CopyResource(void * pDestination, void * pSource) = 0;
 
 		eGraphicsAPI GetActiveAPI() const { return m_ActiveAPI; }
-		
+
 		virtual Viewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y) = 0;
 
 		virtual IGraphicsDevice& GetDevice() { return *m_Device; }

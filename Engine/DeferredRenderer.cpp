@@ -94,7 +94,7 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 	ctx.OMSetRenderTargets(ARRSIZE(rtv), rtv, nullptr/*depth*/);
 
 	ctx.PSSetConstantBuffer(0, 1, m_ConstantBuffer);
-	ctx.PSSetSamplerState(0, 1, render_context.GetAPI().GetSamplerState(graphics::LINEAR));
+	ctx.PSSetSamplerState(0, 1, render_context.GetAPI().GetSamplerState(graphics::LINEAR_WRAP));
 
 	//render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
 

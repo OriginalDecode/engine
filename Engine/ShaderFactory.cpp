@@ -110,7 +110,7 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 	std::string to_hash(full_path + entrypoint);
 	u64 hash_key = Hash(to_hash.c_str());
 
-	sampler; // This is a generalized sampler, or a specified. Depending on the input
+	//sampler; // This is a generalized sampler, or a specified. Depending on the input
 
 
 	if (m_Shaders.find(hash_key) == m_Shaders.end())
@@ -158,21 +158,21 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 
 CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type, const std::string& feature_level /*= "_5_0"*/)
 {
-// 	ENGINE_LOG("Creating %s", file_path.c_str());
-// 
-// 	std::string shader_type(CheckType(type));
-// 	ID3D10Blob* compiled_shader = CompileShader(file_path, entrypoint, shader_type + feature_level);
-// 	if (!compiled_shader)
-// 		return nullptr;
-// 
-// 	CompiledShader* new_shader = new CompiledShader;
-// 	new_shader->m_Shader = Engine::GetInstance()->CreateShader(compiled_shader, type, file_path);
-// 	new_shader->m_Blob = compiled_shader;
-// 	new_shader->m_CompiledShader = compiled_shader->GetBufferPointer();
-// 	//new_shader->m_haderSize = compiled_shader->GetBufferSize();
-// 	new_shader->m_Entrypoint = entrypoint;
-// 	new_shader->m_Type = type;
-// 	return new_shader;
+ 	ENGINE_LOG("Creating %s", file_path.c_str());
+ 
+ 	std::string shader_type(CheckType(type));
+ 	ID3D10Blob* compiled_shader = CompileShader(file_path, entrypoint, shader_type + feature_level);
+ 	if (!compiled_shader)
+ 		return nullptr;
+ 
+ 	CompiledShader* new_shader = new CompiledShader;
+ 	new_shader->m_Shader = Engine::GetInstance()->CreateShader(compiled_shader, type, file_path);
+ 	new_shader->m_Blob = compiled_shader;
+ 	new_shader->m_CompiledShader = compiled_shader->GetBufferPointer();
+ 	//new_shader->m_haderSize = compiled_shader->GetBufferSize();
+ 	new_shader->m_Entrypoint = entrypoint;
+ 	new_shader->m_Type = type;
+ 	return new_shader;
 }
 
 #ifndef FINAL 
@@ -243,11 +243,11 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 #endif
 void* ShaderFactory::CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level)
 {
-	unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
-#ifdef _DEBUG 
-	shaderFlag |= D3D10_SHADER_DEBUG;
-	shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
-#endif
+// 	unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
+// #ifdef _DEBUG 
+// 	shaderFlag |= D3D10_SHADER_DEBUG;
+// 	shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
+// #endif
 
 	//ID3D10Blob* compiledShader = nullptr;
 	//ID3D10Blob* compilationMessage = nullptr;

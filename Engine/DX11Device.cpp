@@ -4,8 +4,7 @@
 #include <Engine/DX11Context.h>
 
 #include <DDSTextureLoader.h>
-
-
+#include <DL_Debug.h>
 namespace graphics
 {
 
@@ -92,7 +91,7 @@ namespace graphics
 		return shader;
 	}
 
-	void* DX11Device::CreateTextureFromFile(const cl::HashString& filepath, bool generate_mips, IGraphicsContext* ctx)
+	IShaderResourceView* DX11Device::CreateTextureFromFile(const cl::HashString& filepath, bool generate_mips, IGraphicsContext* ctx)
 	{
 		DX11Context* pCtx = static_cast<DX11Context*>(ctx);
 		wchar_t* widepath = nullptr;
@@ -264,5 +263,80 @@ namespace graphics
 	}
 
 	
+
+	IShaderBlob* DX11Device::CompileShaderFromFile(const cl::HashString& filepath, const char* entrypoint, const char* shader_type)
+	{
+		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
+	#ifdef _DEBUG 
+		shaderFlag |= D3D10_SHADER_DEBUG;
+		shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
+	#endif
+		ID3D10Blob* out_shader = nullptr;
+		ID3D10Blob* out_message = nullptr;
+
+		std::string feature_level(shader_type);
+		feature_level += "_5_0";
+
+		std::string path = filepath.c_str();
+
+		std::wstring wPath(path.begin(), path.end());
+
+		HRESULT hr = D3DCompileFromFile(
+			wPath.c_str(),
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			entrypoint,
+			feature_level.c_str(),
+			shaderFlag,
+			0,
+			&out_shader,
+			&out_message);
+		DirectX11::HandleErrors(hr, "Failed to compile shader from memory");	
+		
+		if (out_message != nullptr)
+		{
+			DL_WARNING("%s has generated warnings!", filepath.c_str());
+			DL_WARNING("\n%s", (char*)out_message->GetBufferPointer());
+		}
+
+		return out_shader;
+
+	}
+
+	IShaderBlob* DX11Device::CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const cl::HashString& source_name, const char* entrypoint, const char* shader_type)
+	{
+		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
+#ifdef _DEBUG 
+		shaderFlag |= D3D10_SHADER_DEBUG;
+		shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
+#endif
+		std::string feature_level(shader_type);
+		feature_level += "_5_0";
+
+		ID3D10Blob* out_shader = nullptr;
+		ID3D10Blob* out_message = nullptr;
+		HRESULT hr = D3DCompile(
+			 		pData,
+					data_byte_size,
+			 		source_name.c_str(),
+			 		nullptr,
+			 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			 		entrypoint,
+					feature_level.c_str(),
+					shaderFlag,
+			 		0,
+			 		&out_shader,
+			 		&out_message);
+		
+		DirectX11::HandleErrors(hr, "Failed to compile shader from memory");
+		if (out_message != nullptr)
+		{
+			DL_WARNING("%s has generated warnings!", source_name.c_str());
+			DL_WARNING("\n%s", (char*)out_message->GetBufferPointer());
+		}
+
+
+		return out_shader;
+	}
 
 };

@@ -11,40 +11,30 @@
 
 CFont::CFont(SFontData* aFontData)
 {
+	m_Data = aFontData;
+	m_Text = " ";
+	m_Effect[0] = Engine::GetInstance()->GetEffect("Shaders/font_outline.json");
+	m_Effect[1] = Engine::GetInstance()->GetEffect("Shaders/font.json");
 
-	myEngine = Engine::GetInstance();
-	myTimeManager = new CU::TimeManager();
-
-
-	myUpdateTimer = myTimeManager->CreateTimer();
-	myRenderTimer = myTimeManager->CreateTimer();
-
-	myData = aFontData;
-	myText = " ";
-	myEffect[0] = myEngine->GetEffect("Shaders/font_outline.json");
-	myEffect[1] = myEngine->GetEffect("Shaders/font.json");
-
-	myVertexBufferDesc = new D3D11_BUFFER_DESC();
-	myIndexBufferDesc = new D3D11_BUFFER_DESC();
-	myInitData = new D3D11_SUBRESOURCE_DATA();
+// 	myVertexBufferDesc = new D3D11_BUFFER_DESC();
+// 	myIndexBufferDesc = new D3D11_BUFFER_DESC();
+// 	myInitData = new D3D11_SUBRESOURCE_DATA();
 
 	CreateInputLayout();
 	CreateBuffer();
 	CreateIndexBuffer();
 	CreateConstantBuffer();
 
-	myDefaultColor.SetRGB(255, 255, 255);
-	myDefaultColor.SetA(255);
-	myColor = myDefaultColor;
+	m_DefaultColor.SetRGB(255, 255, 255);
+	m_DefaultColor.SetA(255);
+	m_Color = m_DefaultColor;
 
-	myRenderTime = 0.f;
-	myUpdateTime = 0.f;
 
 }
 
 CFont::~CFont()
 {
-	SAFE_DELETE(myIndexBuffer);
+	/*SAFE_DELETE(myIndexBuffer);
 	SAFE_DELETE(myVertexBuffer);
 
 	SAFE_DELETE(myVertexBufferDesc);
@@ -55,35 +45,27 @@ CFont::~CFont()
 	SAFE_RELEASE(myVertexLayout);
 
 	SAFE_DELETE(myConstantStruct);
-	SAFE_RELEASE(myConstantBuffer);
+	SAFE_RELEASE(myConstantBuffer);*/
 }
 
 void CFont::SetText(std::string aText)
 {
-	myTimeManager->GetTimer(myUpdateTimer).Update();
-	myUpdateTime = myTimeManager->GetTimer(myUpdateTimer).GetTotalTime().GetMilliseconds();
-
-	if (myText != aText)
+	if (m_Text != aText)
 	{
-		myText = aText;
+		m_Text = aText;
 		UpdateBuffer();
 	}
-
-	myTimeManager->GetTimer(myUpdateTimer).Update();
-	myUpdateTime = myTimeManager->GetTimer(myUpdateTimer).GetTotalTime().GetMilliseconds() - myUpdateTime;
 }
 
 const std::string& CFont::GetText() const
 {
-	return myText;
+	return m_Text;
 }
 
 void CFont::Render()
 {
-	myTimeManager->GetTimer(myRenderTimer).Update();
-	myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds();
 
-	if (!myEffect[0] || !myEffect[1])
+	if (!m_Effect[0] || !m_Effect[1])
 		return;
 	//myEffect->SetTexture(myData->myAtlasView, "FontTexture");
 
@@ -104,24 +86,22 @@ void CFont::Render()
 
 	for (int i = 0; i < 2; i++)
 	{
-		myEffect[i]->Use();
+		m_Effect[i]->Use();
 		//Engine::GetAPI()->SetPixelShader(myEffect[i]->GetPixelShader()->m_Shader);
-		ID3D11ShaderResourceView* srv = myData->myAtlasView;
+		ID3D11ShaderResourceView* srv = m_Data->myAtlasView;
 		context.PSSetShaderResources(0, 1, &srv);
 		context.DrawIndexed(myIndices.Size(), 0, 0);
-		myEffect[i]->Clear();
+		m_Effect[i]->Clear();
 
 	}
 
-	myTimeManager->GetTimer(myRenderTimer).Update();
-	myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds() - myRenderTime;
 
 	Engine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
 }
 
 ID3D11ShaderResourceView* CFont::GetAtlas()
 {
-	return myData->myAtlasView;
+	return m_Data->myAtlasView;
 }
 
 const CU::Math::Vector2<float>& CFont::GetSize()
@@ -131,7 +111,7 @@ const CU::Math::Vector2<float>& CFont::GetSize()
 
 const short CFont::GetFontPixelSize()
 {
-	return myData->myFontHeightWidth;
+	return m_Data->myFontHeightWidth;
 }
 
 float CFont::GetUpdateTime()
@@ -169,8 +149,8 @@ void CFont::CreateInputLayout()
 	myVertexFormat.Add(VertexLayoutPosColUV[2]);
 	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateInputLayout(&myVertexFormat[0]
 		, myVertexFormat.Size()
-		, myEffect[0]->GetVertexShader()->compiledShader
-		, myEffect[0]->GetVertexShader()->shaderSize
+		, m_Effect[0]->GetVertexShader()->compiledShader
+		, m_Effect[0]->GetVertexShader()->shaderSize
 		, &myVertexLayout);
 	Engine::GetAPI()->HandleErrors(hr, " [Font] : Input Layout.");
 	Engine::GetAPI()->SetDebugName(myVertexLayout, "Font Input Layout");
@@ -228,11 +208,11 @@ void CFont::CreateConstantBuffer()
 
 void CFont::UpdateBuffer()
 {
-	myColor = myDefaultColor;
+	m_Color = m_DefaultColor;
  	SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
  	SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
 
-	u32 count = u32(myText.length());
+	u32 count = u32(m_Text.length());
 	float z = 0.f;
 	float drawX = 0.f;
 	float drawY = -5.f;
@@ -244,14 +224,14 @@ void CFont::UpdateBuffer()
 	u32 skips = 0;
 	for (u32 i = 0, row = 0; i < count; i++)
 	{
-		SCharData& charData = myData->myCharData[myText[i]];
+		SCharData& charData = m_Data->myCharData[m_Text[i]];
 		
 		if (maxDrawY < charData.myHeight)
 		{
 			maxDrawY = charData.myHeight;
 		}
 
-		if (myText[i] == '\n')
+		if (m_Text[i] == '\n')
 		{
 			drawX = 0;
 			drawY -= (maxDrawY + 6);
@@ -259,25 +239,25 @@ void CFont::UpdateBuffer()
 			continue;
 		}
 
-		if (myText[i] == '#')
+		if (m_Text[i] == '#')
 		{
 			skips = 0;
-			if (myText[i + 2] != 'x')
+			if (m_Text[i + 2] != 'x')
 			{
-				std::string hex_code = "0x" + myText.substr(i + 1, 6) + "FF";
+				std::string hex_code = "0x" + m_Text.substr(i + 1, 6) + "FF";
 				unsigned int _color = (unsigned int)strtoul(hex_code.c_str(), nullptr, 16);
-				myColor.Convert(_color);
+				m_Color.Convert(_color);
 				i+=7;
 				skips = 8;
-				if (myText[i] != '(')
-					myColor = myDefaultColor;
+				if (m_Text[i] != '(')
+					m_Color = m_DefaultColor;
 				continue;
 			}
 			else
 			{ 
-				std::string hex_code = myText.substr(i + 3, 6) + "FF"; //might extend this with a lerp alpha in the future?
+				std::string hex_code = m_Text.substr(i + 3, 6) + "FF"; //might extend this with a lerp alpha in the future?
 				unsigned int _color = (unsigned int)strtoul(hex_code.c_str(), nullptr, 16);
-				myColor.Convert(_color);
+				m_Color.Convert(_color);
 				i += 9;
 				skips = 10;
 				continue;
@@ -286,9 +266,9 @@ void CFont::UpdateBuffer()
 			
 		}
 
-		if (myText[i] == ')') 
+		if (m_Text[i] == ')') 
 		{
-			myColor = myDefaultColor;
+			m_Color = m_DefaultColor;
 			continue;
 		}
 			
@@ -299,22 +279,22 @@ void CFont::UpdateBuffer()
 		float bottom = top + charData.myHeight;
 
 		v.myPosition = { left, bottom, z };
-		v.myColor = myColor.ToVec4(); //{ float(myColor.m_re / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
+		v.myColor = m_Color.ToVec4(); //{ float(myColor.m_re / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 		v.myUV = charData.myTopLeftUV;
 		myVertices.Add(v);
 
 		v.myPosition = { left, top, z };
-		v.myColor = myColor.ToVec4();// { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
+		v.myColor = m_Color.ToVec4();// { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 		v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
 		myVertices.Add(v);
 
 		v.myPosition = { right, bottom, z };
-		v.myColor = myColor.ToVec4(); //{ float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
+		v.myColor = m_Color.ToVec4(); //{ float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 		v.myUV = { charData.myBottomRightUV.x, charData.myTopLeftUV.y };
 		myVertices.Add(v);
 
 		v.myPosition = { right, top, z };
-		v.myColor = myColor.ToVec4(); // { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
+		v.myColor = m_Color.ToVec4(); // { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
 		v.myUV = charData.myBottomRightUV;
 		myVertices.Add(v);
 

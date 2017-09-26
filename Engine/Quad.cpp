@@ -8,6 +8,19 @@
 Quad::Quad(Effect* effect) 
 	: m_Effect(effect)
 {
+	FillVertexData(1.f, 1.f);
+	FillIndexData();
+}
+
+Quad::Quad(Effect* effect, float half_width, float half_height)
+	: m_Effect(effect)
+{
+	FillVertexData(half_width, half_height);
+	FillIndexData();
+}
+
+void Quad::FillVertexData(float half_width, float half_height)
+{
 	auto& device = Engine::GetAPI()->GetDevice();
 	// Vertex
 	const s32 vtx_count = 4;
@@ -19,16 +32,16 @@ Quad::Quad(Effect* effect)
 	s8* data = new s8[size];
 
 	VertexTypePosUV vertices[vtx_count];
-	vertices[0].myPosition = { -1, -1, 0, 1 };
+	vertices[0].myPosition = { -half_width, -half_height, 0, 1 };
 	vertices[0].myUV = { 0, 1 };
 
-	vertices[1].myPosition = { -1, 1, 0 , 1 };
+	vertices[1].myPosition = { -half_width, half_height, 0 , 1 };
 	vertices[1].myUV = { 0, 0 };
 
-	vertices[2].myPosition = { 1, -1, 0 , 1 };
+	vertices[2].myPosition = { half_width, -half_height, 0 , 1 };
 	vertices[2].myUV = { 1, 1 };
 
-	vertices[3].myPosition = { 1, 1, 0 , 1 };
+	vertices[3].myPosition = { half_width, half_height, 0 , 1 };
 	vertices[3].myUV = { 1, 0 };
 
 	memcpy(data, &vertices[0], size);
@@ -49,18 +62,21 @@ Quad::Quad(Effect* effect)
 	};
 	IInputLayout* layout = device.CreateInputLayout(m_Effect->GetVertexShader(), desc, ARRSIZE(desc));
 
-	m_VertexWrapper = VertexWrapper(data, 
-									vtx_start, 
-									vtx_buffer_count,
-									stride, vtx_byte_offset,
-									vtx_count, 
-									size, 
-									vertex_buffer, 
-									layout, 
-									graphics::TRIANGLE_LIST);
+	m_VertexWrapper = VertexWrapper(data,
+		vtx_start,
+		vtx_buffer_count,
+		stride, vtx_byte_offset,
+		vtx_count,
+		size,
+		vertex_buffer,
+		layout,
+		graphics::TRIANGLE_LIST);
+}
 
-	// Index
-	const graphics::eVertexFormat format = graphics::_4BYTE_R;
+void Quad::FillIndexData()
+{
+	auto& device = Engine::GetAPI()->GetDevice();
+	const graphics::eTextureFormat format = graphics::R32_UINT;
 	const s32 index_count = 6;
 	const s32 index_size = index_count * 4; // there's 4 vertices, could that be the thing?
 	s8* index_data = new s8[index_size];
@@ -85,13 +101,13 @@ Quad::Quad(Effect* effect)
 
 	IBuffer* index_buffer = device.CreateBuffer(idx_desc);
 
-	m_IndexWrapper = IndexWrapper(index_data, 
-								  index_count, 
-								  index_start, 
-								  index_size, 
-								  format, 
-								  index_byte_offset, 
-								  index_buffer);
+	m_IndexWrapper = IndexWrapper(index_data,
+		index_count,
+		index_start,
+		index_size,
+		format,
+		index_byte_offset,
+		index_buffer);
 }
 
 void Quad::Render(bool depth_on, Effect* override_effect /*= nullptr*/)

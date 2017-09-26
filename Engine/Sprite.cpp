@@ -1,21 +1,18 @@
 #include "stdafx.h"
 #include "Sprite.h"
 #include "Effect.h"
-#include "SpriteModel.h"
+#include <Engine/Quad.h>
 
 Sprite::~Sprite()
 {
-	delete mySprite;
-	mySprite = nullptr;
+	SAFE_DELETE(m_Quad);
 }
 
 void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 {
-	mySprite = new SpriteModel();
-	mySprite->Initiate(aTexturePath, aSize, aPosition);
-	myHotspot.x = 0;
-	myHotspot.y = 0;
-
+	m_Quad = new Quad(Engine::GetInstance()->GetEffect("Shaders/sprite.json"), aSize.x, aSize.y);
+	m_cbSprite = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSprite));
+	SetPosition(aPosition);
 }
 
 //void Sprite::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
@@ -26,10 +23,11 @@ void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<f
 
 void Sprite::Initiate(const cl::HashString& path)
 {
-	mySprite = new SpriteModel;
-	mySprite->Initiate(path);
-	
-
+	throw std::exception("Don't use this function");
+	DL_ASSERT("Don't use me at the moment");
+	m_cbSprite = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSprite));
+// 	m_Quad = new Quad(0, 1, 1);
+// 	mySprite->Initiate(path);
 }
 
 void Sprite::Render(Camera* aCamera)
@@ -37,17 +35,18 @@ void Sprite::Render(Camera* aCamera)
 	//mySprite->GetEffect()->SetScale({ 1, 1 });
 	//mySprite->GetEffect()->SetPosition(myPosition);
 	//mySprite->GetEffect()->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
-	mySprite->Render(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonal());
+	m_Quad->Render(false);
+	//mySprite->Render(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonal());
 }
 
 const CU::Vector2f& Sprite::GetPosition()
 {
-	return mySprite->GetPosition();
+	return myPosition;
 }
 
 CU::Vector2f Sprite::GetSize()
 {
-	return mySprite->GetSize();
+	return{ 0,0 };//mySprite->GetSize();
 }
 
 void Sprite::SetPosition(const CU::Math::Vector2<float>& aPosition)

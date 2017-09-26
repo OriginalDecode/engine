@@ -10,6 +10,10 @@ class Quad
 {
 public:
 	Quad(Effect* effect);
+	Quad(Effect* effect, float half_width, float half_height);
+
+
+
 	void Render(bool depth_on, Effect* override_effect = nullptr);
 	Effect* GetShader() { return m_Effect; }
 	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
@@ -18,6 +22,8 @@ public:
 	void SetTexture(Texture* texture) { m_QuadTexture = texture; }
 
 private:
+	void FillVertexData(float half_width, float half_height);
+	void FillIndexData();
 	VertexWrapper m_VertexWrapper;
 	IndexWrapper m_IndexWrapper;
 	Texture* m_QuadTexture = nullptr;

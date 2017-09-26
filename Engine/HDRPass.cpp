@@ -99,7 +99,6 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 	Tonemapping(m_HDRTexture->GetRenderTargetView(), sources, ARRAYSIZE(sources));
 
 	//m_API->ResetRendertarget();
-	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
 	ctx.PSSetShaderResource(0, 1, m_HDRTexture->GetShaderViewRef());
 	ctx.DrawIndexed(m_Quad, m_RenderToScreenEffect);
 }

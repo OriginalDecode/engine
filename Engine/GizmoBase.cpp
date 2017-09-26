@@ -7,7 +7,9 @@
 
 void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction)
 {
-	gizmo_handle.m_Key = Engine::GetInstance()->LoadModel(model_key, "Shaders/gizmo.json", true).c_str();
+	gizmo_handle.m_Key = Engine::GetInstance()->LoadModel(model_key.c_str(), 
+														  "Shaders/gizmo.json", 
+														  true);
 	gizmo_handle.m_DirColor = Engine::GetInstance()->GetTexture(texture_path.c_str());
 	gizmo_handle.m_Model = Engine::GetInstance()->GetModel(gizmo_handle.m_Key);
 

@@ -50,17 +50,19 @@ namespace graphics
 
 		void ClearDepthStencilView(IDepthStencilView* dsv, s32 clear_flag, s32 max_depth) override;
 
-// 		void Draw(s32 vertex_start, s32 vertex_count) override;
-// 		void Draw(s32 index_start, s32 index_count, s32 vertex_start) override;
-// 		void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) override;
 
 		void Draw(BaseModel* model, Effect* fx = nullptr) override;
+		void Draw(CEmitterInstance* emitter) override;
+		void Draw(Line3D* line, bool depth_on = true) override;
+
 		void DrawIndexed(BaseModel* model, Effect* fx = nullptr) override;
+		void DrawIndexed(Quad* quad, bool depth_on) override;
+		void DrawIndexed(CFont* font, Effect* effect) override;
+
 		void DrawInstanced(BaseModel* model, Effect* fx = nullptr) override;
+
 		void DrawIndexedInstanced(BaseModel* model, Effect* fx = nullptr) override;
 
-		void DrawIndexed(Quad* quad, bool depth_on) override;
-		void Draw(Line3D* line, bool depth_on = true) override;
 
 		void UpdateConstantBuffer(IBuffer* dest, void* src, s32 size) override;
 

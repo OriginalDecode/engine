@@ -1,27 +1,10 @@
 #pragma once
 #include "VertexStructs.h"
 #include "Utilities.h"
-
-struct D3D11_BUFFER_DESC;
-struct D3D11_INPUT_ELEMENT_DESC;
-struct D3D11_SUBRESOURCE_DATA;
-namespace CommonUtilities
-{
-	class TimeManager;
-}
-
-
-struct SInstance
-{
-	CU::Math::Vector2<float> myPosition;
-};
-
-struct VertexBufferWrapper;
-struct IndexBufferWrapper;
+#include <Engine/IGraphicsAPI.h>
 
 struct SFontData;
 class Effect;
-class Engine;
 class CFont
 {
 public:
@@ -41,45 +24,37 @@ public:
 	void SetPosition(const CU::Vector2f& aPosition);
 	void SetScale(const CU::Vector2f& aScale);
 	void SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
-
+	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
+	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }
 private:
 	void operator=(const CFont&) = delete;
-	void CreateInputLayout();
-	void CreateBuffer();
-	void CreateIndexBuffer();
-	void CreateConstantBuffer();
+	
 	void UpdateBuffer();
 	void UpdateConstantBuffer();
 	SFontData* m_Data = nullptr;
 	Effect* m_Effect[2];
 
-// 	IInputLayout* myVertexLayout = nullptr;
-// 	D3D11_BUFFER_DESC* myVertexBufferDesc = nullptr;
-// 	D3D11_BUFFER_DESC* myIndexBufferDesc = nullptr;
- 
-// 	D3D11_SUBRESOURCE_DATA* myInitData = nullptr;
-// 	ID3D11Buffer* myConstantBuffer = nullptr;
- 
-// 	VertexBufferWrapper* myVertexBuffer = nullptr;
-// 	IndexBufferWrapper* myIndexBuffer = nullptr;
 	std::string m_Text = "NONE";
 
-// 	CU::Math::Vector2<float> mySize;
-// 	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
+ 	CU::Vector2f m_Size;
  
- 	CU::GrowingArray<SVertexTypePosColUv> myVertices;
- 	CU::GrowingArray<int> myIndices;
+ 	CU::GrowingArray<SVertexTypePosColUv> m_Vertices;
+ 	CU::GrowingArray<int> m_Indices;
  
  	cl::SColor m_DefaultColor;
  	cl::SColor m_Color;
- 
- 
+	VertexWrapper m_VertexWrapper;
+	IndexWrapper m_IndexWrapper;
 
+	IBuffer* m_cbFont = nullptr;
 	struct SFontConstantBuffer : public VertexBaseStruct
 	{
 		CU::Vector2f position = CU::Vector2f(0.f, 0.f);
 		CU::Vector2f scale = CU::Vector2f(1.f, 1.f);
 	} myConstantStruct;
 
+
+	graphics::BufferDesc m_VertexDesc;
+	graphics::BufferDesc m_IndexDesc;
 
 };

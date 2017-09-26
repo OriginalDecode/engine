@@ -33,6 +33,7 @@ public:
 	s32 GetByteOffset() const { return m_ByteOffset; }
 	s32 GetStart() const { return m_Start; }
 	IBuffer* GetIndexBuffer() const { return m_IndexBuffer; }
+	void SetBuffer(IBuffer* buffer);
 private:
 
 	s8* m_Data = nullptr;
@@ -43,4 +44,10 @@ private:
 	s32 m_ByteOffset = 0;
 	IBuffer* m_IndexBuffer = nullptr;
 };
+
+void IndexWrapper::SetBuffer(IBuffer* buffer)
+{
+	Engine::GetAPI()->ReleasePtr(m_IndexBuffer);
+	m_IndexBuffer = buffer;
+}
 

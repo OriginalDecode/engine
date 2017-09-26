@@ -2,8 +2,10 @@
 
 class CompiledShader;
 class BaseModel;
+class CEmitterInstance;
 class Quad;
 class Line3D;
+class CFont;
 namespace graphics
 {
 	class IGraphicsContext
@@ -49,19 +51,18 @@ namespace graphics
 
 		virtual void ClearDepthStencilView(IDepthStencilView* dsv, s32 clear_flag, s32 max_depth) = 0;
 
-
-
-// 		virtual void Draw(s32 vertex_start, s32 vertex_count) = 0;
-// 		virtual void Draw(s32 index_start, s32 index_count, s32 vertex_start) = 0;
-// 		virtual void Draw(s32 index_count, s32 instance_count, s32 index_start, s32 vertex_start, s32 instance_start) = 0;
-
 		virtual void Draw(BaseModel* model, Effect* fx = nullptr) = 0;
+		virtual void Draw(CEmitterInstance* emitter) = 0;
+		virtual void Draw(Line3D* line, bool depth_on = true) = 0;
+
 		virtual void DrawIndexed(BaseModel* model, Effect* fx = nullptr) = 0;
+		virtual void DrawIndexed(Quad* quad, bool depth_on = false) = 0;
+		virtual void DrawIndexed(CFont* font, Effect* effect) = 0;
+
 		virtual void DrawInstanced(BaseModel* model, Effect* fx = nullptr) = 0;
+
 		virtual void DrawIndexedInstanced(BaseModel* model, Effect* fx = nullptr) = 0;
 
-		virtual void DrawIndexed(Quad* quad, bool depth_on = false) = 0;
-		virtual void Draw(Line3D* line, bool depth_on = true) = 0;
 
 
 		virtual void UpdateConstantBuffer(IBuffer* dest, void* src, s32 size) = 0;

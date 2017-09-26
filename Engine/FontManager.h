@@ -1,16 +1,11 @@
 #pragma once
 #include <DataStructures/StaticArray.h>
-#include <unordered_map>
-struct ID3D11Device;
-struct ID3D11ShaderResourceView;
-struct ID3D11RenderTargetView;
-struct ID3D11Texture2D;
+#include <map>
+
 struct FT_LibraryRec_;
 struct FT_FaceRec_;
 struct FT_GlyphRec_;
 struct FT_GlyphSlotRec_;
-
-
 
 struct SCharData
 {
@@ -36,7 +31,7 @@ struct SFontData
 	short myFontHeightWidth;
 	int* myAtlas;
 
-	ID3D11ShaderResourceView* myAtlasView;
+	IShaderResourceView* m_AtlasView;
 };
 
 
@@ -62,7 +57,7 @@ private:
 
 	FT_LibraryRec_* myLibrary;
 	const char* myFontPath;
-	std::unordered_map<std::string, SFontData*> myFontData;
+	std::map<std::string, SFontData*> myFontData;
 
 	void CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, int aBorderWidth);
 	void CalculateGlyphOffsets(const int index, FT_GlyphSlotRec_* glyph);

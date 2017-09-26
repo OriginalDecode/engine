@@ -6,16 +6,6 @@
 #include <Engine/ShaderFactory.h>
 #include <functional>
 
-
-
-// #define SAFE_RELEASE_UNKNOWN(x) \
-// IUnknown* unknown_pointer = static_cast< IUnknown* >( x ); \
-// unknown_pointer->Release(); \
-// unknown_pointer = nullptr; 
-
-
-//A ton of forward declarations. Maybe I should rewrite these things to something else
-
 struct IDXGISwapChain;
 struct ID3D11RenderTargetView;
 struct ID3D11DepthStencilView;
@@ -56,14 +46,7 @@ namespace graphics
 
 
 		Viewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y) override;
-		void ResetViewport();
 		void ResetRendertarget();
-
-		
-
-		void CopyResource(void * pDestination, void * pSource) override;
-		void ClearDepthStencilState();
-
 
 		ID3D11RenderTargetView* GetBackbuffer() { return m_RenderTarget; }
 		const ID3D11RenderTargetView* GetBackbuffer() const { return m_RenderTarget; }
@@ -75,7 +58,7 @@ namespace graphics
 		void ResetRenderTargetAndDepth();
 
  #ifdef _DEBUG
- 		void ReportLiveObjects();
+		void ReportLiveObjects();
  #endif
 
 	private:

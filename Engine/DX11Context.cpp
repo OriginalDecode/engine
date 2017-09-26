@@ -6,7 +6,7 @@
 #include <Engine/Line3D.h>
 #include <Engine/DX11Device.h>
 #include <Engine/Viewport.h>
-
+#include <Engine/EmitterInstance.h>
 namespace graphics
 {
 	DX11Context::DX11Context(ID3D11DeviceContext* context)
@@ -185,7 +185,7 @@ namespace graphics
 		const auto fx = line->GetEffect();
 		fx->Use();
 		IASetInputLayout(vtx.GetInputLayout());
-		m_Context->IASetPrimitiveTopology(DirectX11::GetTopology(vtx.GetTopology()));
+		IASetTopology(vtx.GetTopology());
 		m_Context->IASetVertexBuffers(vtx.GetStart(), 
 									  vtx.GetBufferCount(), 
 									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()), 
@@ -196,15 +196,54 @@ namespace graphics
 		fx->Clear();
 	}
 
+	void DX11Context::Draw(CEmitterInstance* emitter)
+	{
+		const auto& vtx = emitter->GetVertexWrapper();
+		const auto fx = emitter->GetEffect();
+		fx->Use();
+		IASetInputLayout(vtx.GetInputLayout());
+		IASetTopology(vtx.GetTopology());
+		m_Context->IASetVertexBuffers(vtx.GetStart(),
+									  vtx.GetBufferCount(),
+									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()),
+									  &vtx.GetStride(),
+									  &vtx.GetByteOffset());
+		m_Context->OMSetDepthStencilState(static_cast<ID3D11DepthStencilState*>(Engine::GetAPI()->GetDepthStencilState(READ_NO_WRITE_PARTICLE)), 1);
+		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
+		fx->Clear();
+	}
+
+	void DX11Context::DrawIndexed(CFont* font, Effect* effect)
+	{
+		const auto& vtx = font->GetVertexWrapper();
+		const auto& idx = font->GetIndexWrapper();
+		IASetInputLayout(vtx.GetInputLayout());
+		IASetTopology(vtx.GetTopology());
+
+		m_Context->IASetVertexBuffers(vtx.GetStart(),
+									  vtx.GetBufferCount(),
+									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()),
+									  &vtx.GetStride(),
+									  &vtx.GetByteOffset());
+
+		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
+									DirectX11::GetFormat(idx.GetFormat()),
+									idx.GetByteOffset());
+
+		m_Context->OMSetDepthStencilState(m_DisableZ, 1);
+
+		effect->Use();
+		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
+		effect->Clear();
+	}
+
 	void DX11Context::DrawIndexed(Quad* quad, bool depth_on)
 	{
 		const auto& vtx = quad->GetVertexWrapper();
 		const auto& idx = quad->GetIndexWrapper();
 
 		IASetInputLayout(vtx.GetInputLayout());
-
-
-		m_Context->IASetPrimitiveTopology(DirectX11::GetTopology(vtx.GetTopology()));
+		IASetTopology(vtx.GetTopology());
 
 		m_Context->IASetVertexBuffers(vtx.GetStart(),
 									  vtx.GetBufferCount(),
@@ -226,7 +265,7 @@ namespace graphics
 		const auto& idx = model->GetIndexWrapper();
 
 		IASetInputLayout(vtx.GetInputLayout());
-		m_Context->IASetPrimitiveTopology(DirectX11::GetTopology(vtx.GetTopology()));
+		IASetTopology(vtx.GetTopology());
 
 		m_Context->IASetVertexBuffers(vtx.GetStart(),
 									  vtx.GetBufferCount(),

@@ -43,14 +43,15 @@ public:
 	const u32& GetByteOffset() const { return m_ByteOffset; }
 	s32 GetVertexCount() const { return m_VertexCount; }
 	s32 GetBufferCount() const { return m_BufferCount; }
-	//Is this the same as the byteoffset?
 	s32 GetSize() const { return m_Size; }
 	IBuffer* GetVertexBuffer() const { return m_VertexBuffer; }
 
 	IInputLayout* GetInputLayout() const { return m_VertexInputLayout; }
 	graphics::eTopology GetTopology() const { return m_Topology; }
 
+	void SetVertexCount(const s32 vtx_count) { m_VertexCount = vtx_count; }
 
+	void SetBuffer(IBuffer* buffer);
 private:
 
 	s8* m_Data = nullptr;
@@ -64,3 +65,9 @@ private:
 	IInputLayout* m_VertexInputLayout = nullptr;
 	graphics::eTopology m_Topology = graphics::TRIANGLE_LIST;
 };
+
+void VertexWrapper::SetBuffer(IBuffer* buffer)
+{
+	Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
+	m_VertexBuffer = buffer;
+}

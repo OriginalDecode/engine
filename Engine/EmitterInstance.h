@@ -12,9 +12,8 @@ class CEmitterInstance
 {
 public:
 	CEmitterInstance() = default;
-
+	~CEmitterInstance();
 	void Initiate(Synchronizer* aSynchronizer, Texture* depth_texture);
-	void CleanUp();
 	void Update(float aDeltaTime);
 
 	void Render(CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, Effect* effect);
@@ -22,37 +21,36 @@ public:
 
 	void SetPosition(const CU::Vector3f& position);
 
+
+	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
+	Effect* GetEffect() { return myData.shader; }
 private:
 	void CreateBuffer();
-	void UpdateVertexBuffer();
-	void CreateConstantBuffer();
-	void CreateInputLayout();
-	void SetMatrices(CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection);
 
+	void UpdateVertexBuffer();
 	void UpdateParticle(float aDeltaTime);
+	void UpdateConstantBuffer(CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection);
 	void Emit();
+
 	SEmitterData myData;
-	VertexWrapper* myVertexBuffer;
+	VertexWrapper m_VertexWrapper;
 
 	CU::GrowingArray<SParticleObject> myParticles;
 	CU::Matrix44f myOrientation;
 
 	float myTimeToEmit;
-	IInputLayout* myInputLayout;
+
 	Synchronizer* m_Synchronizer;
+	VertexBaseStruct m_ConstantStruct;
 
-	ID3D11Buffer* myConstantBuffer;
-	VertexBaseStruct* myConstantStruct;
-	Engine* myEngine;
-
-
+	IBuffer* m_ConstantBuffer;
 	struct cbParticleVertex
 	{
 		CU::Matrix44f m_World;
 		CU::Matrix44f m_View;
 	} m_VertexCB;
 
-	ID3D11Buffer* m_GeometryBuffer;
+	IBuffer* m_GeometryBuffer;
 	struct cbParticleGeometry
 	{
 		CU::Matrix44f m_Projection;

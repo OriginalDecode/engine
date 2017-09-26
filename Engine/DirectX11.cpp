@@ -95,12 +95,6 @@ namespace graphics
 		m_Context->ClearDepthStencilView(m_DepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f);
 	}
 
-	
-	void DirectX11::SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value)
-	{
-		m_Context->OMSetDepthStencilState(myDepthStates[u16(depth_stencil_state)], depth_value);
-	}
-
 	void DirectX11::ResetRenderTargetAndDepth()
 	{
 		m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthView);
@@ -224,8 +218,7 @@ namespace graphics
 
 	void DirectX11::CreateDepthBuffer()
 	{
-		HRESULT hr;
-
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
 		D3D11_TEXTURE2D_DESC depthDesc;
 		ZeroMemory(&depthDesc, sizeof(depthDesc));
 
@@ -238,7 +231,7 @@ namespace graphics
 		depthDesc.SampleDesc.Quality = 0; //quality pattern
 		depthDesc.Usage = D3D11_USAGE_DEFAULT;
 		depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-		hr = static_cast<ID3D11Device*>(**m_Device)->CreateTexture2D(&depthDesc, NULL, &m_DepthBuffer);
+		HRESULT hr = pDevice->CreateTexture2D(&depthDesc, NULL, &m_DepthBuffer);
 		assert(!FAILED(hr) && "Failed to create texture for depthbuffer");
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC stencilDesc;
@@ -247,7 +240,8 @@ namespace graphics
 		stencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		stencilDesc.Texture2D.MipSlice = 0;
 
-		hr = static_cast<ID3D11Device*>(**m_Device)->CreateDepthStencilView(m_DepthBuffer, &stencilDesc, &m_DepthView);
+
+		hr = pDevice->CreateDepthStencilView(m_DepthBuffer, &stencilDesc, &m_DepthView);
 		DL_ASSERT_EXP(hr == S_OK, "Failed to create depth stenci");
 
 #ifdef _DEBUG

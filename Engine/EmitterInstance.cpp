@@ -3,9 +3,15 @@
 #include "AssetsContainer.h"
 #include <Randomizer.h>
 #include "VertexStructs.h"
+
+CEmitterInstance::~CEmitterInstance()
+{
+	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
+	Engine::GetAPI()->ReleasePtr(m_GeometryBuffer);
+}
+
 void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_texture)
 {
-	myEngine = Engine::GetInstance();
 	m_Synchronizer = aSynchronizer;
 	SParticleData data;
 	data.affectedByGravity = false;
@@ -17,11 +23,11 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	data.sizeDelta = 0.f;
 	data.alphaDelta = 0.f;
 
-	myData.diffuseTexture = myEngine->GetTexture("Data/Textures/particles/smoke.dds");
-	myData.normalTexture = myEngine->GetTexture("Data/Textures/particles/test_normal.dds");
+	myData.diffuseTexture = Engine::GetInstance()->GetTexture("Data/Textures/particles/smoke.dds");
+	myData.normalTexture = Engine::GetInstance()->GetTexture("Data/Textures/particles/test_normal.dds");
 
 	myData.lifeTime = -1.f;
-	myData.shader = myEngine->GetEffect("Shaders/particle.json");
+	myData.shader = Engine::GetInstance()->GetEffect("Shaders/particle.json");
 	myData.particleData = data;
 	myData.size = { 100.f, 10.f, 0.f };
 
@@ -34,30 +40,16 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	}
 
 	CreateBuffer();
-	CreateInputLayout();
-	CreateConstantBuffer();
-
-	Effect* shader = myEngine->GetEffect("Shaders/particle_offscreen.json");
-
-
 	myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);
 	//myData.shader->AddShaderResource(myData.normalTexture->GetShaderView(), Effect::NORMAL);
 
-	shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);
-	shader->AddShaderResource(myData.normalTexture->GetShaderView(), Effect::NORMAL);
+// 	Effect* shader = myEngine->GetEffect("Shaders/particle_offscreen.json");
+// 	shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);
+// 	shader->AddShaderResource(myData.normalTexture->GetShaderView(), Effect::NORMAL);
 
 
 
 	myTimeToEmit = 0.f;
-}
-
-void CEmitterInstance::CleanUp()
-{
-	SAFE_RELEASE(myInputLayout);
-	SAFE_DELETE(myVertexBuffer);
-	SAFE_RELEASE(myConstantBuffer);
-	SAFE_DELETE(myConstantStruct);
-	SAFE_RELEASE(m_GeometryBuffer);
 }
 
 void CEmitterInstance::Update(float aDeltaTime)
@@ -74,37 +66,14 @@ void CEmitterInstance::Update(float aDeltaTime)
 
 void CEmitterInstance::Render(CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, Effect* effect)
 {
-	if (!myConstantBuffer)
-		return;
-
 	UpdateVertexBuffer();
-
-	DirectX11* dx = Engine::GetAPI();
-	ID3D11DeviceContext* context = Engine::GetAPI()->GetContext();
-	context->IASetInputLayout(myInputLayout);
-
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-	context->IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-
-	if (!myData.shader->GetVertexShader())
-		return;
-
-	SetMatrices(camera_orientation, camera_projection);
-
-	context->VSSetConstantBuffers(0, 1, &myConstantBuffer);
-	context->GSSetConstantBuffers(0, 1, &m_GeometryBuffer);
-	context->PSSetConstantBuffers(0, 1, &m_GeometryBuffer);
-
-	//myData.shader->Use();
-	effect->Use();
-	context->Draw(myParticles.Size(), 0);
-	effect->Clear();
-	//myData.shader->Clear();
+	UpdateConstantBuffer(camera_orientation, camera_projection);
+	Engine::GetAPI()->GetContext().Draw(this);
 }
 
 void CEmitterInstance::RenderShadowed(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection)
 {
-
+	Engine::GetAPI()->GetContext().Draw(this);
 }
 
 void CEmitterInstance::SetPosition(const CU::Vector3f& position)
@@ -114,78 +83,74 @@ void CEmitterInstance::SetPosition(const CU::Vector3f& position)
 
 void CEmitterInstance::CreateBuffer()
 {
-	myVertexBuffer = new VertexBufferWrapper();
-	myVertexBuffer->myStride = sizeof(SParticleObject);
-	myVertexBuffer->myByteOffset = 0;
-	myVertexBuffer->myStartSlot = 0;
-	myVertexBuffer->myNrOfBuffers = 1;
+	graphics::InputElementDesc layout[] =
+	{
+		{ "POSITION", 0, graphics::_12BYTE_RGB, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "ALPHA", 0, graphics::_4BYTE_R, 0, 12, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "SIZE", 0, graphics::_4BYTE_R, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
+	};
 
-	HRESULT hr;
+	auto& device = Engine::GetAPI()->GetDevice();
 
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	vertexBufferDesc.MiscFlags = 0;
-	vertexBufferDesc.StructureByteStride = 0;
+	IInputLayout* layout = device.CreateInputLayout(myData.shader->GetVertexShader(), layout, ARRSIZE(layout));
 
-	if (myVertexBuffer->myVertexBuffer != nullptr)
-		myVertexBuffer->myVertexBuffer->Release();
+	const s32 vtx_stride = sizeof(SParticleObject);
+	const s32 vtx_start_slot = 0;
+	const s32 vtx_byte_offset = 0;
+	const s32 vtx_buffer_count = 1;
+	const s32 vtx_byte_width = vtx_stride * myParticles.Capacity();
+	const s32 vtx_count = myParticles.Capacity();
 
-	vertexBufferDesc.ByteWidth = sizeof(SParticleObject) * myParticles.Capacity();
+	graphics::BufferDesc vtx_buff_desc;
+	vtx_buff_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
+	vtx_buff_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
+	vtx_buff_desc.m_CPUAccessFlag = graphics::WRITE;
+	vtx_buff_desc.m_ByteWidth = vtx_byte_width;
+	vtx_buff_desc.m_Data = &myParticles[0];
 
-	D3D11_SUBRESOURCE_DATA vertexData;
-	ZeroMemory(&vertexData, sizeof(vertexData));
-	vertexData.pSysMem = reinterpret_cast<char*>(&myParticles[0]);
-	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myVertexBuffer->myVertexBuffer); //Added vertexData to this
-	Engine::GetAPI()->HandleErrors(hr, "Failed to Create Particle Vertex Buffer");
+	IBuffer* vtx_buffer =  device.CreateBuffer(vtx_buff_desc); 
+
+	m_VertexWrapper = VertexWrapper(nullptr, 
+									vtx_start_slot, 
+									vtx_buffer_count,
+									vtx_stride, 
+									vtx_byte_offset, 
+									vtx_count, 
+									vtx_byte_width, 
+									vtx_buffer, 
+									layout, 
+									graphics::POINT_LIST);
+
+	m_ConstantBuffer = device.CreateConstantBuffer(sizeof(cbParticleVertex));
+	m_GeometryBuffer = device.CreateConstantBuffer(sizeof(cbParticleGeometry));
+
 }
 
 void CEmitterInstance::UpdateVertexBuffer()
 {
-	if (myParticles.Size() > 0)
-	{
-		Engine::GetAPI()->UpdateConstantBuffer(myVertexBuffer->myVertexBuffer, &myParticles[0], sizeof(SParticleObject) * myParticles.Size());
-	}
+	if (myParticles.Empty())
+		return;
+
+	m_VertexWrapper.SetVertexCount(myParticles.Size());
+	Engine::GetAPI()->GetContext().UpdateConstantBuffer(m_VertexWrapper.GetVertexBuffer(), &myParticles[0], sizeof(SParticleObject) * myParticles.Size());
 }
 
-void CEmitterInstance::CreateConstantBuffer()
+void CEmitterInstance::UpdateConstantBuffer(CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
-	myConstantBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbParticleVertex));
-	Engine::GetAPI()->SetDebugName(myConstantBuffer, "EmitterInstance : Vertex Constant Buffer");
-
-	m_GeometryBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(cbParticleGeometry));
-	Engine::GetAPI()->SetDebugName(m_GeometryBuffer, "EmitterInstance : Geometry Constant Buffer");
-}
-
-void CEmitterInstance::CreateInputLayout()
-{
-	HRESULT hr = S_OK;
-
-	void* shader = myData.shader->GetVertexShader()->compiledShader;
-	int size = myData.shader->GetVertexShader()->shaderSize;
-
-	const D3D11_INPUT_ELEMENT_DESC layout[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{ "ALPHA", 0, DXGI_FORMAT_R32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "SIZE", 0, DXGI_FORMAT_R32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-
-	hr = Engine::GetAPI()->GetDevice()->CreateInputLayout(layout, ARRAYSIZE(layout), shader, size, &myInputLayout);
-	Engine::GetAPI()->HandleErrors(hr, "Failed to create InputLayout!");
-	Engine::GetAPI()->SetDebugName(myInputLayout, "Particle Input Layout");
-}
-
-void CEmitterInstance::SetMatrices(CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
-{
+	auto& ctx = Engine::GetAPI()->GetContext();
 	m_VertexCB.m_World = CU::Matrix44f();
 	m_VertexCB.m_View = CU::Math::Inverse(aCameraOrientation);
-	Engine::GetAPI()->UpdateConstantBuffer(myConstantBuffer, &m_VertexCB);
+	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_VertexCB, sizeof(m_VertexCB));
 
 	m_GeometryCB.m_Projection = aCameraProjection;
-	Engine::GetAPI()->UpdateConstantBuffer(m_GeometryBuffer, &m_GeometryCB);
+	ctx.UpdateConstantBuffer(m_GeometryBuffer, &m_GeometryCB, sizeof(m_GeometryCB));
+
+
+
+	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
+	ctx.GSSetConstantBuffer(0, 1, &m_GeometryBuffer);
+	ctx.PSSetConstantBuffer(0, 1, &m_GeometryBuffer);
+
 }
 
 void CEmitterInstance::UpdateParticle(float aDeltaTime)

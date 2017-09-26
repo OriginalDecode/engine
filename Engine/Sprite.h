@@ -28,6 +28,8 @@ public:
 	//void SetShaderView(ID3D11ShaderResourceView* srv);
 private:
 
+	void UpdateConstantBuffer();
+
 	Quad* m_Quad = nullptr;
 	CU::Matrix44f myOrientation;
 	CU::Vector2f myHotspot;

@@ -35,6 +35,7 @@ void Sprite::Render(Camera* aCamera)
 	//mySprite->GetEffect()->SetScale({ 1, 1 });
 	//mySprite->GetEffect()->SetPosition(myPosition);
 	//mySprite->GetEffect()->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
+	UpdateConstantBuffer();
 	m_Quad->Render(false);
 	//mySprite->Render(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonal());
 }
@@ -87,6 +88,11 @@ void Sprite::SetScale(const CU::Math::Vector2<float>& aScale)
 {
 	aScale;
 	//mySprite->GetEffect()->SetScale(aScale);
+}
+
+void Sprite::UpdateConstantBuffer()
+{
+	Engine::GetAPI()->GetContext().UpdateConstantBuffer(m_cbSprite, &m_cbStruct, sizeof(cbSprite));
 }
 
 //void Sprite::SetShaderView(ID3D11ShaderResourceView* srv)

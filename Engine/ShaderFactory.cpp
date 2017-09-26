@@ -156,23 +156,22 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 	m_Shaders[hash_key]->m_EffectPointers.Add(effect);
 }
 
-CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type, const std::string& feature_level /*= "_5_0"*/)
+CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type)
 {
  	ENGINE_LOG("Creating %s", file_path.c_str());
- 
+
  	std::string shader_type(CheckType(type));
- 	ID3D10Blob* compiled_shader = CompileShader(file_path, entrypoint, shader_type + feature_level);
+
+ 	IShaderBlob* compiled_shader = CompileShader(file_path, entrypoint, shader_type);
+
  	if (!compiled_shader)
  		return nullptr;
  
- 	CompiledShader* new_shader = new CompiledShader;
- 	new_shader->m_Shader = Engine::GetInstance()->CreateShader(compiled_shader, type, file_path);
- 	new_shader->m_Blob = compiled_shader;
- 	new_shader->m_CompiledShader = compiled_shader->GetBufferPointer();
- 	//new_shader->m_haderSize = compiled_shader->GetBufferSize();
- 	new_shader->m_Entrypoint = entrypoint;
- 	new_shader->m_Type = type;
- 	return new_shader;
+ 	return new CompiledShader(compiled_shader,
+							  Engine::GetInstance()->CreateShader(compiled_shader, type, file_path.c_str()), 
+							  type, 
+							  entrypoint.c_str(), 
+							  graphics::MSAA_x16);
 }
 
 #ifndef FINAL 
@@ -241,27 +240,9 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 	}
 }
 #endif
-void* ShaderFactory::CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level)
+IShaderBlob* ShaderFactory::CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& shader_type)
 {
-// 	unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
-// #ifdef _DEBUG 
-// 	shaderFlag |= D3D10_SHADER_DEBUG;
-// 	shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
-// #endif
-
-	//ID3D10Blob* compiledShader = nullptr;
-	//ID3D10Blob* compilationMessage = nullptr;
-
-
-	//HRESULT hr = Engine::GetInstance()->CompileShaderFromFile(file_path, entrypoint, feature_level, shaderFlag, compiledShader, compilationMessage);
-	//if (compilationMessage != nullptr)
-	//{
-	//	DL_WARNING("%s has generated warnings!", file_path.c_str());
-	//	DL_WARNING("\n%s", (char*)compilationMessage->GetBufferPointer());
-	//}
-	//Engine::GetInstance()->GetAPI()->HandleErrors(hr, "Failed to compile shader!");
-	void* pObj;
-	return pObj;
+	return Engine::GetAPI()->GetDevice().CompileShaderFromFile(file_path.c_str(), entrypoint.c_str(), shader_type.c_str());
 }
 
 void ShaderFactory::Update()
@@ -276,6 +257,4 @@ CompiledShader::~CompiledShader()
 {
 	Engine::GetAPI()->ReleasePtr(m_Blob);
 	Engine::GetAPI()->ReleasePtr(m_Shader);
-	m_Shader = nullptr;
-	m_CompiledShader = nullptr;
 }

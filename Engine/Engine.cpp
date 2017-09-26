@@ -262,7 +262,7 @@ int Engine::RegisterLight()
 // 	return hr;
 // }
 
-void* Engine::CreateShader(void* pShader, eShaderType type, const cl::HashString& debug_name)
+void* Engine::CreateShader(IShaderBlob* pShader, eShaderType type, const cl::HashString& debug_name)
 {
 	graphics::IGraphicsDevice& device = m_API->GetDevice();
 	switch (type)

@@ -9,6 +9,7 @@
 class Quad
 {
 public:
+	Quad();
 	Quad(Effect* effect);
 	Quad(Effect* effect, float half_width, float half_height);
 

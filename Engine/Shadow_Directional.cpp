@@ -38,18 +38,19 @@ void ShadowDirectional::CleanUp()
 
 void ShadowDirectional::SetViewport()
 {
-	Engine::GetAPI()->SetViewport(m_Viewport);
+	Engine::GetAPI()->GetContext().SetViewport(m_Viewport);
 }
 
 void ShadowDirectional::ClearTexture()
 {
-	render_context.m_Context->ClearRenderTargetView(m_ShadowDepth->GetRenderTargetView(), m_Clear);
-	render_context.m_Context->ClearDepthStencilView(m_ShadowDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
+	ctx.ClearRenderTarget(m_ShadowDepth->GetRenderTargetView(), clearcolor::black);
+	ctx.ClearDepthStencilView(m_ShadowDepthStencil->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1.0f);
 }
 
 void ShadowDirectional::SetTargets()
 {
-	render_context.m_Context->OMSetRenderTargets(1, m_ShadowDepth->GetRenderTargetRef(), m_ShadowDepthStencil->GetDepthView());
+	Engine::GetAPI()->GetContext().OMSetRenderTargets(1, m_ShadowDepth->GetRenderTargetRef(), m_ShadowDepthStencil->GetDepthView());
 }
 
 void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)

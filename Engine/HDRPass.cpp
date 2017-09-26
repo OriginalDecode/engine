@@ -9,7 +9,7 @@
 
 #include <profile_defines.h>
 #include <Engine/Viewport.h>
-
+#include <Engine/Quad.h>
 
 void HDRPass::Initiate()
 {
@@ -52,6 +52,8 @@ void HDRPass::Initiate()
 	m_HDREffect = Engine::GetInstance()->GetEffect("Shaders/tonemapping.json");
 	m_DownsampleEffect = Engine::GetInstance()->GetEffect("Shaders/downsample_hdr.json");
 	m_RenderToScreenEffect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
+
+	m_Quad = new Quad;
 }
 
 void HDRPass::CleanUp()
@@ -86,7 +88,7 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 
 	}
 
-	m_API->ResetViewport();// this goes back to the **DEFAULT DEFAULT ONE**
+	//m_API->ResetViewport();// this goes back to the **DEFAULT DEFAULT ONE**
 
 	IShaderResourceView* sources[] = {
 		scene_texture->GetShaderView(),
@@ -96,44 +98,29 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 
 	Tonemapping(m_HDRTexture->GetRenderTargetView(), sources, ARRAYSIZE(sources));
 
-	m_API->ResetRendertarget();
-	m_RenderToScreenEffect->Use();
-	IDevContext* ctx = m_API->GetContext();
-	ctx->PSSetShaderResources(0, 1, m_HDRTexture->GetShaderViewRef());
-	//no buffers has been set??????????????????????????????
-	ctx->DrawIndexed(6, 0, 0);
-
-	m_RenderToScreenEffect->Clear();
-
+	//m_API->ResetRendertarget();
+	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
+	ctx.PSSetShaderResource(0, 1, m_HDRTexture->GetShaderViewRef());
+	ctx.DrawIndexed(m_Quad, m_RenderToScreenEffect);
 }
 
 void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* source)
 {
-	IDevContext* ctx = m_API->GetContext();
-	ctx->OMSetRenderTargets(1, &render_target, nullptr);
-
-	const float clear[4] = { 0,0,0,0 };
-	ctx->ClearRenderTargetView(render_target, clear);
-
-	m_DownsampleEffect->Use();
-	ctx->PSSetShaderResources(0, 1, &source);
-	ctx->DrawIndexed(6, 0, 0);
-
-	m_DownsampleEffect->Clear();
+	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
+	ctx.OMSetRenderTargets(1, &render_target, nullptr);
+	ctx.ClearRenderTarget(render_target, clearcolor::black);
+	ctx.PSSetShaderResource(0, 1, &source);
+	ctx.DrawIndexed(m_Quad, m_DownsampleEffect);
 }
 
 void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source[2], s32 resource_count)
 {
-	IDevContext* ctx = m_API->GetContext();
-	const float clear[4] = { 0,0,0,0 };
-	ctx->ClearRenderTargetView(target, clear);
-	ctx->OMSetRenderTargets(1, &target, m_API->GetDepthView());
+	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
+	ctx.ClearRenderTarget(target, clearcolor::black);
+	ctx.OMSetRenderTargets(1, &target, nullptr);
 	
-	m_HDREffect->Use();
-	ctx->PSSetShaderResources(0, resource_count, source);
-
-	ctx->DrawIndexed(6, 0, 0);
-	m_HDREffect->Clear();
+	ctx.PSSetShaderResource(0, resource_count, source);
+	ctx.DrawIndexed(m_Quad, m_HDREffect);
 }
 
 void HDRPass::OnResize()

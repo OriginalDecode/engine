@@ -6,8 +6,7 @@
 class Texture;
 class Effect;
 class Engine;
-class DirectX11;
-
+class Quad;
 namespace graphics
 {
 	class Viewport;
@@ -31,7 +30,7 @@ private:
 	graphics::Viewport* m_ChangeableViewport = nullptr;
 
 	Texture*	m_HDRTexture = nullptr;
-
+	Quad*		m_Quad = nullptr;
 	Effect*		m_HDREffect = nullptr;
 	Effect*		m_DownsampleEffect = nullptr;
 	Effect*		m_RenderToScreenEffect = nullptr;

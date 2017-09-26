@@ -2,6 +2,13 @@
 
 #include <Engine/engine_shared.h>
 
+class Camera;
+class Texture;
+namespace graphics
+{
+	class Viewport;
+};
+
 class ShadowDirectional
 {
 public:
@@ -29,9 +36,8 @@ public:
 	Texture* GetDepthStencilTexture() { return m_ShadowDepthStencil; }
 
 private:
-	const float m_Clear[4] = { 0.f, 0.f, 0.f, 0.f };
 
-	Viewport*	m_Viewport				= nullptr;
+	graphics::Viewport*	m_Viewport				= nullptr;
 	Camera*		m_Camera				= nullptr;
 	Texture*	m_ShadowDepth			= nullptr;
 	Texture*	m_ShadowDepthStencil	= nullptr;

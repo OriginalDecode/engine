@@ -19,6 +19,13 @@ Quad::Quad(Effect* effect, float half_width, float half_height)
 	FillIndexData();
 }
 
+Quad::Quad()
+	: m_Effect(nullptr)
+{
+	FillVertexData(1.f, 1.f);
+	FillIndexData();
+}
+
 void Quad::FillVertexData(float half_width, float half_height)
 {
 	auto& device = Engine::GetAPI()->GetDevice();

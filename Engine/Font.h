@@ -14,12 +14,6 @@ public:
 	void SetText(std::string aText);
 	const std::string& GetText() const;
 	void Render();
-	ID3D11ShaderResourceView* GetAtlas();
-	const CU::Math::Vector2<float>& GetSize();
-	const short GetFontPixelSize();
-
-	float GetUpdateTime();
-	float GetRenderTime();
 
 	void SetPosition(const CU::Vector2f& aPosition);
 	void SetScale(const CU::Vector2f& aScale);

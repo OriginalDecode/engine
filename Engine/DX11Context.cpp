@@ -237,11 +237,15 @@ namespace graphics
 		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
 									DirectX11::GetFormat(idx.GetFormat()),
 									idx.GetByteOffset());
-		if (fx)
+		if (fx != nullptr)
+		{
 			fx->Use();
-		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
-		if (fx)
+			m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 			fx->Clear();
+			return;
+		}
+
+		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 	}
 
 	void DX11Context::SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth)

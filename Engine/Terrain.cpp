@@ -2,7 +2,6 @@
 #include "Terrain.h"
 #include "TGA32.h"
 #include "Surface.h"
-
 #define DIVIDE 255.f
 
 
@@ -35,6 +34,8 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 	m_ClipEffect = Engine::GetInstance()->GetEffect("Shaders/terrain_clip.json");
 	m_ClipEffect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain.dds"), Effect::DIFFUSE);
 
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(VertexBaseStruct));
+
 	m_HasLoaded = true;
 	return true;
 }
@@ -50,53 +51,43 @@ void Terrain::CleanUp()
 
 void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context)
 {
-	SetupLayoutsAndBuffers();
- 
-	m_Effect->Use();
- 
+	graphics::IGraphicsContext& ctx = render_context.GetContext();
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+	ctx.PSSetSamplerState(0, 1, render_context.GetEngine().GetActiveSampler());
  
 	mySurface->Activate(render_context);
-	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+	ctx.DrawIndexed(this);
 	mySurface->Deactivate();
 
-	m_Effect->Clear();
 }
 
+//For water????
 void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context, bool override_shader)
 {
-	SetupLayoutsAndBuffers();
 
-	m_ClipEffect->Use();
-
+	graphics::IGraphicsContext& ctx = render_context.GetContext();
 	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
+	ctx.PSSetSamplerState(0, 1, render_context.GetEngine().GetActiveSampler());
 
 	if (!override_shader)
 	{
 		mySurface->Activate(render_context);
-		render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+		ctx.DrawIndexed(this);
 		mySurface->Deactivate();
 	}
 	else
 	{
-		render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+		ctx.DrawIndexed(this, m_ClipEffect);
 	}
-	m_ClipEffect->Clear();
+
 }
 
 void Terrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-	SetupLayoutsAndBuffers();
-
+	graphics::IGraphicsContext& ctx = render_context.GetContext();
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
-	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-
-	render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
+	ctx.PSSetSamplerState(0, 1, render_context.GetEngine().GetActiveSampler());
+	ctx.DrawIndexed(this);
 }
 
 void Terrain::Save(const std::string& /*aFilename*/)
@@ -131,24 +122,9 @@ void Terrain::SetPosition(CU::Vector2f position)
 
 void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)
 {
-	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
 
-	myVertexFormat.ReInit(5);
-	myVertexFormat.Add(vertexDesc[0]);
-	myVertexFormat.Add(vertexDesc[1]);
-	myVertexFormat.Add(vertexDesc[2]);
-	myVertexFormat.Add(vertexDesc[3]);
-	myVertexFormat.Add(vertexDesc[4]);
 
 	CU::GrowingArray<SVertexPosNormUVBiTang> vertices;
-	CU::GrowingArray<u32> indexes;
 
 	for (u32 z = 0; z < myHeightmap.myDepth; z++)
 	{
@@ -168,9 +144,9 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 
 		}
 	}
-
 	CalculateNormals(vertices);
 
+	CU::GrowingArray<u32> indexes;
 	for (u32 z = 0; z < myHeightmap.myDepth - 1; ++z)
 	{
 		for (u32 x = 0; x < myHeightmap.myWidth - 1; ++x)
@@ -191,54 +167,84 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 		myIndexes.push_back(index);
 	}
 
+	graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 
-	//myVertexData = new VertexDataWrapper;
+	graphics::InputElementDesc inputdesc[] =
+	{
+		{ "POSITION", 0, graphics::_12BYTE_RGB, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, graphics::_12BYTE_RGB, 0, 12, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, graphics::_8BYTE_RG, 0, 24, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "BINORMAL", 0, graphics::_12BYTE_RGB, 0, 28, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, graphics::_12BYTE_RGB, 0, 40, graphics::INPUT_PER_VERTEX_DATA, 0 },
+	};
+	IInputLayout* pInputLayout = device.CreateInputLayout(m_Effect->GetVertexShader(), inputdesc, ARRSIZE(inputdesc));
 
-	m_VertexData.myNrOfVertexes = vertices.Size();
-	m_VertexData.myStride = sizeof(SVertexPosNormUVBiTang);
-	m_VertexData.mySize = m_VertexData.myNrOfVertexes * m_VertexData.myStride;
-	m_VertexData.myVertexData = new char[m_VertexData.mySize]();
-	memcpy(m_VertexData.myVertexData, &vertices[0], m_VertexData.mySize);
+	const s32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
+	const s32 vtx_count = myVertices.size();
+	const s32 vtx_size = vtx_count * vtx_stride;
+	const s32 vtx_buff_count = 1;
+	const s32 vtx_start = 0;
+	const s32 vtx_byte_offset = 0;
+	s8* vtx_data = new s8[vtx_size];
+	memcpy(vtx_data, &vertices[0], vtx_size);
 
+	graphics::BufferDesc vtx_desc;
+	vtx_desc.m_Size = vtx_size;
+	vtx_desc.m_Data = vtx_data;
+	vtx_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
+	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
+	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
+	vtx_desc.m_ByteWidth = vtx_size;
 
-	//myIndexData = new VertexIndexWrapper;
-	m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
-	m_IndexData.myIndexCount = indexes.Size();
-	m_IndexData.mySize = m_IndexData.myIndexCount * 4;
+	IBuffer* vtx_buffer = device.CreateBuffer(vtx_desc);
+	m_VertexWrapper = VertexWrapper(vtx_data,
+									vtx_start,
+									vtx_buff_count,
+									vtx_stride,
+									vtx_byte_offset,
+									vtx_count,
+									vtx_size,
+									vtx_buffer,
+									pInputLayout,
+									graphics::TRIANGLE_LIST);
 
-	m_IndexData.myIndexData = new char[m_IndexData.mySize];
-	memcpy(m_IndexData.myIndexData, &indexes[0], m_IndexData.mySize);
+	const s32 idx_count = indexes.Size();
+	const s32 idx_stride = sizeof(u32);
+	const s32 idx_size = idx_count * idx_stride;
+	const s32 idx_start = 0;
+	const s32 idx_byte_offset = 0;
 
-	InitVertexBuffer();
-	InitInputLayout();
-	InitIndexBuffer();
-	InitConstantBuffer();
+	s8* idx_data = new s8[idx_count];
+	memcpy(idx_data, &indexes[0], idx_size);
+
+	graphics::BufferDesc idx_desc;
+	idx_desc.m_Size = idx_size;
+	idx_desc.m_Data = idx_data;
+	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
+	idx_desc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
+	idx_desc.m_StructuredByteStride = 0;
+	idx_desc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
+	idx_desc.m_MiscFlags = 0;
+	idx_desc.m_ByteWidth = idx_desc.m_Size;
+	IBuffer* idx_buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc);
+
+	m_IndexWrapper = IndexWrapper(idx_data,
+								  idx_count,
+								  idx_start,
+								  idx_size,
+								  graphics::R32_UINT,
+								  idx_byte_offset,
+								  idx_buffer);
 }
 
 void Terrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context)
 {
+	graphics::IGraphicsContext& ctx = render_context.GetContext();
 	myConstantStruct.world = myOrientation;
 	myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);
 	myConstantStruct.projection = aCameraProjection;
-	render_context.m_API->UpdateConstantBuffer((m_ConstantBuffer), &myConstantStruct);
-
-
-}
-
-void Terrain::InitConstantBuffer()
-{
-	D3D11_BUFFER_DESC cbDesc;
-	ZeroMemory(&cbDesc, sizeof(cbDesc));
-	cbDesc.ByteWidth = sizeof(VertexBaseStruct);
-	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.MiscFlags = 0;
-	cbDesc.StructureByteStride = 0;
-
-	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &m_ConstantBuffer);
-	Engine::GetAPI()->SetDebugName(m_ConstantBuffer, "Model Constantbuffer : " + m_Filename);
-	Engine::GetAPI()->HandleErrors(hr, "[Terrain] : Failed to Create Constantbuffer, ");
+	ctx.UpdateConstantBuffer(m_ConstantBuffer, &myConstantStruct, sizeof(VertexBaseStruct));
+	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
 }
 
 void Terrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray)

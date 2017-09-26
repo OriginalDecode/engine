@@ -51,7 +51,6 @@ private:
 	CU::GrowingArray<Model*> m_Children;
 
 protected:
-	void InitConstantBuffer();
 	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc) override;
 	
 	CU::GrowingArray<Surface*> m_Surfaces;

@@ -673,7 +673,7 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 
 			/*std::string key = Engine::GetInstance()->LoadModel("Data/Model/ballen.fbx", "Shaders/debug_pbl.json", false);
 			Model* m = m_Engine->GetModel(key);*/
-			m->AddTexture("Data/Textures/brickwall_normal.dds", Effect::NORMAL);
+			//m->AddTexture("Data/Textures/brickwall_normal.dds", Effect::NORMAL);
 
 			/*
 			auto& c = m->GetChildModels(); 

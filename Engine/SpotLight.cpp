@@ -17,7 +17,7 @@ SpotLight::~SpotLight()
 
 void SpotLight::Initiate()
 {
-	std::string key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/deferred_spotlight.json", 0, false);
+	cl::HashString key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/deferred_spotlight.json", 0, false);
 	m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
 	m_Model->Initiate("cone.fbx");
 
@@ -25,33 +25,33 @@ void SpotLight::Initiate()
 	m_ShadowSpotlight->Initiate(2048.f);
 	m_ShadowSpotlight->GetCamera()->RotateAroundX(cl::DegreeToRad(90.f));
 
-	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/lightvolume_spot.json");
-	CompiledShader* shader = effect->GetVertexShader();
-
-	D3D11_INPUT_ELEMENT_DESC layout[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "ANGLE", 0, DXGI_FORMAT_R32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "RANGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "DIRECTION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-
-	m_InputLayout = Engine::GetAPI()->CreateInputLayout(shader->compiledShader, shader->shaderSize, layout, ARRAYSIZE(layout));
-
-	m_VertexBuffer.myStride = sizeof(spotlight);
-	m_VertexBuffer.myStartSlot = 0;
-	m_VertexBuffer.myNrOfBuffers = 1;
-	m_VertexBuffer.myByteOffset = 0;
-
-	m_VertexData.myNrOfVertexes = 1;
-	m_VertexData.myStride = sizeof(spotlight);
-	m_VertexData.mySize = m_VertexData.myNrOfVertexes * m_VertexData.myStride;
-	m_VertexData.myVertexData = new s8[m_VertexData.mySize];
-	m_VertexBuffer.myVertexBuffer = Engine::GetAPI()->CreateVertexBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
-
-	//Engine::GetInstance()->AddCheckBox(&s_Wireframe, "Wireframe Spotlight");
-	m_gsCBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(gsbuffer));
-	m_psCBuffer = Engine::GetAPI()->CreateConstantBuffer(sizeof(psbuffer));
+// 	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/lightvolume_spot.json");
+// 	CompiledShader* shader = effect->GetVertexShader();
+// 
+// 	D3D11_INPUT_ELEMENT_DESC layout[] =
+// 	{
+// 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+// 		{ "ANGLE", 0, DXGI_FORMAT_R32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+// 		{ "RANGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+// 		{ "DIRECTION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+// 	};
+// 
+// 	m_InputLayout = Engine::GetAPI()->CreateInputLayout(shader->compiledShader, shader->shaderSize, layout, ARRAYSIZE(layout));
+// 
+// 	m_VertexBuffer.myStride = sizeof(spotlight);
+// 	m_VertexBuffer.myStartSlot = 0;
+// 	m_VertexBuffer.myNrOfBuffers = 1;
+// 	m_VertexBuffer.myByteOffset = 0;
+// 
+// 	m_VertexData.myNrOfVertexes = 1;
+// 	m_VertexData.myStride = sizeof(spotlight);
+// 	m_VertexData.mySize = m_VertexData.myNrOfVertexes * m_VertexData.myStride;
+// 	m_VertexData.myVertexData = new s8[m_VertexData.mySize];
+// 	m_VertexBuffer.myVertexBuffer = Engine::GetAPI()->CreateVertexBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
+// 
+// 	//Engine::GetInstance()->AddCheckBox(&s_Wireframe, "Wireframe Spotlight");
+// 	m_gsCBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(gsbuffer));
+// 	m_psCBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(psbuffer));
 
 }
 /**

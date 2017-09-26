@@ -70,13 +70,13 @@ cl::HashString AssetsContainer::LoadModel(const cl::HashString& path, std::strin
 	{
 		Engine::GetInstance()->GetThreadpool().AddWork(Work([=]() {
 			m_ModelLoader->LoadModel(model, path.c_str(), effect_filepath);
-			model->Initiate(path);
+			model->Initiate(path.c_str());
 		}));
 	}
 	else
 	{
-		m_ModelLoader->LoadModel(model, path, effect_filepath);
-		model->Initiate(path);
+		m_ModelLoader->LoadModel(model, path.c_str(), effect_filepath);
+		model->Initiate(path.c_str());
 	}
 
 	return path;

@@ -19,7 +19,7 @@ bool ShadowPass::CleanUp()
 
 void ShadowPass::ProcessShadows(Camera* camera)
 {
-	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+	//render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
 	m_Renderer->Render3DShadows(camera->GetOrientation(), camera);
 }
 
@@ -29,21 +29,21 @@ void ShadowPass::ProcessShadows(ShadowSpotlight* shadow_spotlight)
 	shadow_spotlight->ClearTexture();
 	shadow_spotlight->SetTargets();
 	m_RenderToDepth->Use();
-	ProcessShadows(shadow_spotlight->GetCamera(), render_context);
+	ProcessShadows(shadow_spotlight->GetCamera());
 	m_RenderToDepth->Clear();
-	Engine::GetAPI()->ResetViewport();
+	//Engine::GetAPI()->ResetViewport();
 }
 
 void ShadowPass::ProcessShadows(ShadowDirectional* shadow_directional)
 {
 	PROFILE_FUNCTION(profiler::colors::DarkBlue);
 	shadow_directional->SetViewport();
-	shadow_directional->ClearTexture(render_context);
-	shadow_directional->SetTargets(render_context);
+	shadow_directional->ClearTexture();
+	shadow_directional->SetTargets();
 	m_RenderToDepth->Use();
-	ProcessShadows(shadow_directional->GetCamera(), render_context);
+	ProcessShadows(shadow_directional->GetCamera());
 	m_RenderToDepth->Clear();
-	Engine::GetAPI()->ResetViewport();
+	//Engine::GetAPI()->ResetViewport();
 }
 
 void ShadowPass::Activate()

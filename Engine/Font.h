@@ -21,7 +21,7 @@ public:
 	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
 	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }
 
-	const short& GetFontSize() const { return m_Data->myFontHeightWidth; }
+	const short& GetFontSize() const;
 private:
 	void operator=(const CFont&) = delete;
 	

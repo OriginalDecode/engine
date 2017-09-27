@@ -92,7 +92,7 @@ void CEmitterInstance::CreateBuffer()
 
 	auto& device = Engine::GetAPI()->GetDevice();
 
-	IInputLayout* layout = device.CreateInputLayout(myData.shader->GetVertexShader(), layout, ARRSIZE(layout));
+	IInputLayout* pLayout = device.CreateInputLayout(myData.shader->GetVertexShader(), layout, ARRSIZE(layout));
 
 	const s32 vtx_stride = sizeof(SParticleObject);
 	const s32 vtx_start_slot = 0;
@@ -118,7 +118,7 @@ void CEmitterInstance::CreateBuffer()
 									vtx_count, 
 									vtx_byte_width, 
 									vtx_buffer, 
-									layout, 
+									pLayout,
 									graphics::POINT_LIST);
 
 	m_ConstantBuffer = device.CreateConstantBuffer(sizeof(cbParticleVertex));

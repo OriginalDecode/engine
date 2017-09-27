@@ -104,7 +104,7 @@ namespace cl
 	template<s32 _SIZE /*= 30*/>
 	bool CHashString<_SIZE>::contains(const char* string) const
 	{
-		return (Horspool >= 0);
+		return (Horspool(string) >= 0);
 	}
 
 	template< s32 _SIZE /*= 30*/>

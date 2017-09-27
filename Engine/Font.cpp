@@ -107,6 +107,11 @@ void CFont::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCa
 	myConstantStruct.projection = anOrthogonalProjectionMatrix;
 }
 
+const short& CFont::GetFontSize() const
+{
+	return m_Data->myFontHeightWidth;
+}
+
 void CFont::UpdateBuffer()
 {
 	m_Color = m_DefaultColor;

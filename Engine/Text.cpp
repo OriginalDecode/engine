@@ -50,17 +50,3 @@ const CU::Math::Vector2<float>& CText::GetScale()
 	return myScale;
 }
 
-ID3D11ShaderResourceView* CText::GetAtlas()
-{
-	return myFont->GetAtlas();
-}
-
-float CText::GetRenderTime()
-{
-	return myFont->GetRenderTime();
-}
-
-float CText::GetUpdateTime()
-{
-	return myFont->GetUpdateTime();
-}

@@ -154,6 +154,35 @@ namespace graphics
 		return static_cast<ITexture2D*>(texture);
 	}
 
+	ITexture2D* DX11Device::CreateTexture2D(const Texture2DDesc& desc, s8* data, s32 pitch, const cl::HashString& debug_name)
+	{
+		D3D11_TEXTURE2D_DESC text_desc;
+		text_desc.Width = desc.m_Width;
+		text_desc.Height = desc.m_Height;
+		text_desc.MipLevels = 1;
+		text_desc.Format = DirectX11::GetFormat(desc.m_Format);
+		text_desc.SampleDesc.Count = 1;
+		text_desc.SampleDesc.Quality = 0;
+		text_desc.Usage = DirectX11::GetUsage(desc.m_Usage); //GetUsage
+		text_desc.BindFlags = DirectX11::GetBindFlag(desc.m_Binding); //GetBinding
+		text_desc.CPUAccessFlags = DirectX11::GetCPUAccessFlag(desc.m_CPUAccessFlag);
+		text_desc.MiscFlags = 0;
+		text_desc.ArraySize = 1;
+
+
+		D3D11_SUBRESOURCE_DATA _data;
+		_data.pSysMem = data;
+		_data.SysMemPitch = pitch;
+
+		ID3D11Texture2D* texture = nullptr;
+		HRESULT hr = m_Device->CreateTexture2D(&text_desc, &_data, &texture);
+#ifndef FINAL
+		DirectX11::HandleErrors(hr, "Failed to create Texture!");
+		DirectX11::SetDebugName(texture, debug_name);
+#endif
+		return static_cast<ITexture2D*>(texture);
+	}
+
 	IRenderTargetView* DX11Device::CreateRenderTarget(const RenderTargetDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
 	{
 		ID3D11RenderTargetView* rtv = nullptr;

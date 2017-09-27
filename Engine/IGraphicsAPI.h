@@ -259,7 +259,7 @@ namespace graphics
 		std::string GetAPIName() { return m_CreateInfo.m_APIName; }
 
 
-		virtual void CopyResource(void * pDestination, void * pSource) = 0;
+		//virtual void CopyResource(void * pDestination, void * pSource) = 0;
 
 		eGraphicsAPI GetActiveAPI() const { return m_ActiveAPI; }
 

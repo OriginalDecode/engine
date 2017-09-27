@@ -182,6 +182,7 @@ bool Engine::CleanUp()
 	SAFE_DELETE(m_Synchronizer);
 	//DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
 	//SAFE_DELETE(myAPI);
+	SAFE_DELETE(m_API);
 	PostMaster::Destroy();
 	Randomizer::Destroy();
 	return true;
@@ -332,7 +333,7 @@ Texture* Engine::GetTexture(const cl::HashString& filepath)
 
 Effect* Engine::GetEffect(const cl::HashString& filepath)
 {
-	return myAssetsContainer->GetEffect(/*m_VirtualFileSystem.GetFile(filepath)*/0);
+	return myAssetsContainer->GetEffect(m_VirtualFileSystem.GetFile(filepath.c_str()).c_str());
 }
 
 Model* Engine::GetModel(const cl::HashString& filepath)
@@ -369,7 +370,7 @@ std::string Engine::GetLocalTimeAsString()
 
 void Engine::ResetRenderTargetAndDepth()
 {
-	GetAPI()->ResetRenderTargetAndDepth();
+	//GetAPI()->ResetRenderTargetAndDepth();
 }
 
 void Engine::ToggleVsync()
@@ -416,8 +417,7 @@ void Engine::OnActive()
 
 void Engine::OnResize()
 {
-	if (myAPI)
-		myAPI->OnResize();
+	m_API->OnResize();
 }
 
 Synchronizer* Engine::GetSynchronizer()

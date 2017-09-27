@@ -134,7 +134,7 @@ void CModelImporter::LoadModel(T* pModel, std::string model_filepath, std::strin
 {
 	BeginTicketMutex(&m_LoaderMutex);
 
-	LoadModel(model_filepath, pModel, m_Engine->GetEffect(effect_filepath));
+	LoadModel(model_filepath, pModel, m_Engine->GetEffect(effect_filepath.c_str()));
 
 	EndTicketMutex(&m_LoaderMutex);
 }

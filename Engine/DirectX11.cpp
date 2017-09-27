@@ -19,8 +19,8 @@
 namespace graphics
 {
 	DirectX11::DirectX11(CreateInfo info)
-		: IGraphicsAPI(info)
 	{
+		m_CreateInfo = info;
 		CreateDeviceAndSwapchain();
 		CreateDepthStencilStates();
 		CreateRazterizers();

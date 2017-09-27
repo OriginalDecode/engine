@@ -121,7 +121,7 @@ private:
 
 
 	template<typename T>
-	void SetupInputLayout(ModelData* data, const CU::GrowingArray<graphics::InputElementDesc> element_desc);
+	void SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc);
 
 	void ProcessNode(aiNode* node, const aiScene* scene, FBXModelData* data, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point);
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point);
@@ -217,7 +217,7 @@ void CModelImporter::CreateModel(FBXModelData* someData, T* model, std::string f
 	if (someData->myData)
 	{
 		FillData(someData, model, filepath, effect);
-		model->myOrientation = someData->myOrientation;
+		model->m_Orientation = someData->myOrientation;
 	}
 
 	for (FBXModelData* child : someData->myChildren)
@@ -234,14 +234,14 @@ T* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect*
 
 	size_t pos = filepath.rfind('/');
 
-	model->m_Filename = filepath.substr(pos);
+	//model->m_Filename = filepath.substr(pos);
 	model->SetEffect(effect);
 
 
 	if (data->myData)
 	{
 		FillData(data, model, filepath, effect);
-		model->myOrientation = data->myOrientation;
+		model->m_Orientation = data->myOrientation;
 	}
 
 	for (FBXModelData* child : data->myChildren)
@@ -281,7 +281,7 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 }
 
 template<typename T>
-void CModelImporter::SetupInputLayout(ModelData* data, const CU::GrowingArray<graphics::InputElementDesc> element_desc)
+void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc)
 {
  	for (int i = 0; i < data->myLayout.Size(); ++i)
  	{
@@ -340,23 +340,22 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 {
 	BaseModel* model = static_cast<BaseModel*>(out);
 	auto& idx = model->m_IndexWrapper;
-	u32* indexData = new u32[data->myIndexCount];
+	s8* indexData = new s8[data->myIndexCount];
 	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
-	idx.m_IndexBufferFormat = graphics::R32_UINT;
-	idx.m_Data = static_cast<s8*>(indexData);
-	idx.m_IndexCount = data->myIndexCount;
-	idx.m_Size = idx.m_IndexCount * sizeof(u32);
+	const s32 idx_IndexBufferFormat = graphics::R32_UINT;
+	const s32 idx_IndexCount = data->myIndexCount;
+	const s32 idx_Size = idx_IndexCount * sizeof(u32);
 
 	graphics::BufferDesc idx_desc;
-	idx_desc.m_Size = idx.m_Size;
-	idx_desc.m_Data = idx.m_Data;
+	idx_desc.m_Size = idx_Size;
+	idx_desc.m_Data = (void*)indexData;
 	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
 	idx_desc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
 	idx_desc.m_StructuredByteStride = 0;
 	idx_desc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
 	idx_desc.m_MiscFlags = 0;
 	idx_desc.m_ByteWidth = idx_desc.m_Size;
-	idx.m_IndexBuffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc);
+	//idx.m_IndexBuffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc);
 }
 
 template<typename T>
@@ -366,31 +365,33 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	auto& vtx = model->m_VertexWrapper;
 
 	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float);
-	u32* vertexRawData = new u32[sizeOfBuffer];
+	s8* vertexRawData = new s8[sizeOfBuffer];
 	memcpy(vertexRawData, data->myVertexBuffer, sizeOfBuffer);
 
-	vtx.m_Data = static_cast<void*>(vertexRawData);
-	vtx.m_VertexCount = data->myVertexCount;
-	vtx.m_Size = sizeOfBuffer;
-	vtx.m_Stride = data->myVertexStride * sizeof(float);
+	const s8* vtx_Data = vertexRawData;
+	const s32 vtx_VertexCount = data->myVertexCount;
+	const s32 vtx_Size = sizeOfBuffer;
+	const s32 vtx_Stride = data->myVertexStride * sizeof(float);
+	const s32 vtx_start = 0;
+	const s32 vtx_buff_count = 1;
 
 	graphics::BufferDesc vtx_desc;
-	vtx_desc.m_Size = vtx.m_Size;
-	vtx_desc.m_Data = vtx.m_Data;
+	vtx_desc.m_Size = vtx_Size;
+	vtx_desc.m_Data = (void*)vtx_Data;
 	vtx_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	vtx_desc.m_StructuredByteStride = 0;
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
 	vtx_desc.m_MiscFlags = 0;
 	vtx_desc.m_ByteWidth = vtx.m_Size;
-	vtx.m_IndexBuffer = Engine::GetAPI()->GetDevice().CreateBuffer(vtx_desc);
+	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(vtx_desc);
 
 
 	CU::GrowingArray<graphics::InputElementDesc> element;
-	SetupInputLayout(data, element);
+	//SetupInputLayout(data, element);
 
-	vtx.m_VertexInputLayout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element, element.Size());
-
+	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element, element.Size());
+	vtx = VertexWrapper(vertexRawData, vtx_start, 1, vtx_Stride, 0, vtx_VertexCount, vtx_Size, buffer, layout, graphics::TRIANGLE_LIST);
 }
 
 template<typename T>
@@ -398,23 +399,26 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 {
 	BaseModel* model = static_cast<BaseModel*>(out);
 	auto& ins = model->m_InstanceWrapper;
-	ins.m_BufferCount = 1;
-	ins.m_Start = 0;
-	ins.m_Stride = sizeof(CU::Matrix44f);
-	ins.m_ByteOffset = 0;
-	ins.m_InstanceCount = 5000;
-	ins.m_Size = ins.m_InstanceCount * ins.m_Stride;
-	ins.m_IndicesPerInstance = model->m_IndexWrapper.GetIndexCount();
+	const s32 ins_BufferCount = 1;
+	const s32 ins_Start = 0;
+	const s32 ins_Stride = sizeof(CU::Matrix44f);
+	const s32 ins_ByteOffset = 0;
+	const s32 ins_InstanceCount = 5000;
+	const s32 ins_Size = ins_InstanceCount * ins_Stride;
+	const s32 ins_IndicesPerInstance = model->m_IndexWrapper.GetIndexCount();
 
 	graphics::BufferDesc desc;
 	desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	desc.m_CPUAccessFlag = graphics::WRITE;
-	desc.m_ByteWidth = ins.m_Size;
-	ins.m_InstanceBuffer = Engine::GetAPI()->GetDevice().CreateBuffer(desc);
+	desc.m_ByteWidth = ins_Size;
+	
+
+
+	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(desc);
 
 	CU::GrowingArray<graphics::InputElementDesc> element;
-	SetupInputLayout(data, element);
+	//SetupInputLayout(data, element);
 
 	s32 byte_offset = 0;
 	graphics::InputElementDesc instance[4] = {
@@ -429,6 +433,9 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	element.Add(instance[2]);
 	element.Add(instance[3]);
 
-	ins.m_InstanceInputLayout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element, element.Size());
+	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element, element.Size());
+
+	ins = InstanceWrapper(ins_InstanceCount, ins_IndicesPerInstance, ins_ByteOffset, ins_Stride, ins_Start, ins_BufferCount, buffer, layout);
+
 }
 

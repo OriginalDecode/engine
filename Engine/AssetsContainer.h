@@ -42,10 +42,10 @@ private:
 
 
 	Ticket_Mutex m_Mutex;
-	std::map<cl::HashString, Texture*> m_Textures;
-	std::map<cl::HashString, Effect*> m_Effects;
-	std::map<cl::HashString, Model*> m_Models;
-	std::map<cl::HashString, Sprite*> m_Sprites;
+	std::map<u64, Texture*> m_Textures;
+	std::map<u64, Effect*> m_Effects;
+	std::map<u64, Model*> m_Models;
+	std::map<u64, Sprite*> m_Sprites;
 
 	bool LoadTexture(const cl::HashString& filepath);
 	Effect* LoadEffect(const cl::HashString& filepath);
@@ -60,11 +60,11 @@ private:
 template<typename T>
 cl::HashString AssetsContainer::LoadModel(const cl::HashString& path, std::string effect_filepath, T* pModel, bool thread /*= true*/)
 {
-	if (m_Models.find(path) != m_Models.end())
+	if (m_Models.find(path.GetHash()) != m_Models.end())
 		return path;
 	DL_MESSAGE("Loading model : %s", path.c_str());
 	T* model = new T;
-	m_Models.emplace(path, model);
+	m_Models.emplace(path.GetHash(), model);
 
 	if (thread)
 	{

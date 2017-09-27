@@ -1,6 +1,5 @@
 #pragma once
 #include <Engine/engine_shared.h>
-#include <Engine/ShaderState.h>
 #include <CommonLib/HashString.h>
 #ifndef _WINDEF_
 struct HINSTANCE__;
@@ -244,8 +243,6 @@ namespace graphics
 	class IGraphicsAPI
 	{
 	public:
-		IGraphicsAPI(CreateInfo info);
-
 		virtual void EndFrame() = 0;
 		virtual void BeginFrame() = 0;
 
@@ -290,10 +287,4 @@ namespace graphics
 		IBlendState* m_BlendStates[NOF_BS];
 
 	};
-
-	IGraphicsAPI::IGraphicsAPI(CreateInfo info)
-		: m_CreateInfo(info)
-	{
-	}
-
 };

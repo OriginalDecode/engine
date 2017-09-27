@@ -18,6 +18,7 @@ namespace graphics
 };
 class BaseModel
 {
+	friend class CModelImporter;
 public:
 	BaseModel() = default;
 	virtual ~BaseModel() = 0;
@@ -33,7 +34,7 @@ public:
 
 protected:
 	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& rc) = 0;
-
+	CU::Matrix44f m_Orientation;
 	CU::Vector3f m_WHD;
 	CU::Vector3f m_MaxPoint;
 	CU::Vector3f m_MinPoint;

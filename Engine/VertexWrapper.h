@@ -5,7 +5,7 @@
 #include <Engine/VertexStructs.h>
 class VertexWrapper
 {
-	friend class ModelImporter;
+	friend class CModelImporter;
 public:
 	VertexWrapper() = default;
 	VertexWrapper(s8* data,

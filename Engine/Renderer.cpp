@@ -582,8 +582,8 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 	DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
 	Model* model =  engine.GetModel(command->m_Key);
 	model->AddOrientation(command->m_Orientation);
-	if (m_ModelsToRender.find(command->m_Key.c_str()) == m_ModelsToRender.end())
-		m_ModelsToRender.emplace(command->m_Key, model);
+	if (m_ModelsToRender.find(command->m_Key.GetHash()) == m_ModelsToRender.end())
+		m_ModelsToRender.emplace(command->m_Key.GetHash(), model);
 }
 
 //Move this to some kind of light manager

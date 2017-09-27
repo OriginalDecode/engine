@@ -71,7 +71,7 @@ private:
 
 	//instancing helper?
 	CU::GrowingArray<Model*> m_Models;
-	std::map<std::string, Model*> m_ModelsToRender;
+	std::map<u64, Model*> m_ModelsToRender;
 
 	CU::GrowingArray<Terrain*> myTerrainArray;
 

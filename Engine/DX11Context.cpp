@@ -7,6 +7,9 @@
 #include <Engine/DX11Device.h>
 #include <Engine/Viewport.h>
 #include <Engine/EmitterInstance.h>
+#include <Engine/VertexWrapper.h>
+#include <Engine/IndexWrapper.h>
+#include <Engine/InstanceWrapper.h>
 namespace graphics
 {
 	DX11Context::DX11Context(ID3D11DeviceContext* context)

@@ -294,7 +294,7 @@ namespace cl
 
 		for (int i = 0; i < pattern_size; ++i)
 		{
-			table[pattern_size[i]] = pattern_size - i - 1;
+			table[pattern[i]] = pattern_size - i - 1;
 		}
 
 

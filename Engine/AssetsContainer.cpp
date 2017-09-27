@@ -56,23 +56,23 @@ Texture* AssetsContainer::GetTexture(const cl::HashString& path)
 	if (!LoadTexture(path))
 		return nullptr;
 
-	return m_Textures[path];
+	return m_Textures[path.GetHash()];
 }
 
 
 
 Effect* AssetsContainer::GetEffect(const cl::HashString& path)
 {
-	if (m_Effects.find(path) == m_Effects.end())
+	if (m_Effects.find(path.GetHash()) == m_Effects.end())
 	{
 		LoadEffect(path);
 	}
-	return m_Effects[path];
+	return m_Effects[path.GetHash()];
 }
 
 Model* AssetsContainer::GetModel(const cl::HashString& path)
 {
-	auto it = m_Models.find(path);
+	auto it = m_Models.find(path.GetHash());
 	if (it == m_Models.end())
 	{
 		DL_MESSAGE("Requested Model : %s", path.c_str());
@@ -97,14 +97,14 @@ void AssetsContainer::ReloadTexture(Texture* texture)
 bool AssetsContainer::LoadTexture(const cl::HashString& filepath)
 {
 	BeginTicketMutex(&m_Mutex);
-	if (m_Textures.find(filepath) == m_Textures.end())
+	if (m_Textures.find(filepath.GetHash()) == m_Textures.end())
 	{
 		graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 		IShaderResourceView* srv = device.CreateTextureFromFile(filepath, false, &Engine::GetAPI()->GetContext());
 		if (srv != nullptr)
 		{
 			Texture* texture = new Texture(srv);
-			m_Textures[filepath] = texture;
+			m_Textures[filepath.GetHash()] = texture;
 			EndTicketMutex(&m_Mutex);
 			return true;
 		}
@@ -117,8 +117,8 @@ Effect* AssetsContainer::LoadEffect(const cl::HashString& filepath)
 {
 	Effect* effect = new Effect(filepath.c_str());
 	m_ShaderFactory->LoadShader(effect);
-	m_Effects[filepath] = effect;
-	return m_Effects[filepath];
+	m_Effects[filepath.GetHash()] = effect;
+	return m_Effects[filepath.GetHash()];
 }
 
 Sprite* AssetsContainer::LoadSprite(const cl::HashString& path)
@@ -133,7 +133,7 @@ Sprite* AssetsContainer::GetSprite(const cl::HashString& path)
 {
 	for (auto it = m_Sprites.begin(); it != m_Sprites.end(); it++)
 	{
-		if (it->first != path)
+		if (it->first != path.GetHash())
 			continue;
 
 		return it->second;
@@ -144,11 +144,11 @@ Sprite* AssetsContainer::GetSprite(const cl::HashString& path)
 
 cl::HashString AssetsContainer::LoadModel(const cl::HashString& filepath, std::string effect, bool thread)
 {
-	if (m_Models.find(filepath) == m_Models.end())
+	if (m_Models.find(filepath.GetHash()) == m_Models.end())
 	{
 		DL_MESSAGE("Loading model : %s", filepath.c_str());
 		Model* model = new Model;
-		m_Models.emplace(filepath, model);
+		m_Models.emplace(filepath.GetHash(), model);
 
 		if ( thread )
 		{

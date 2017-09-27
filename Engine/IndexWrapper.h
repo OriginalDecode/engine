@@ -45,7 +45,7 @@ private:
 	IBuffer* m_IndexBuffer = nullptr;
 };
 
-void IndexWrapper::SetBuffer(IBuffer* buffer)
+inline void IndexWrapper::SetBuffer(IBuffer* buffer)
 {
 	Engine::GetAPI()->ReleasePtr(m_IndexBuffer);
 	m_IndexBuffer = buffer;

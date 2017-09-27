@@ -139,24 +139,25 @@ void Renderer::Render()
 
 	PROFILE_FUNCTION(profiler::colors::Magenta);
 	m_RenderContext.GetAPI().BeginFrame();
-	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
-	m_GBuffer.SetAsRenderTarget(m_DepthTexture, m_RenderContext);
 
+	//	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
+	//	m_GBuffer.SetAsRenderTarget(m_DepthTexture, m_RenderContext);
+/*
 
 	if(m_RenderInstanced)
 		Render3DCommandsInstanced();
 	else 
-		Render3DCommands();
+		Render3DCommands();*/
 
 	//memcpy(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture(), sizeof(ITexture2D*));
 	//Texture::CopyData(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
 	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 	
-	RenderTerrain(false);
+	//RenderTerrain(false);
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	WriteDebugTextures();
+	//WriteDebugTextures();
 #endif
 
 
@@ -164,19 +165,18 @@ void Renderer::Render()
 	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
 	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
 
-	m_DeferredRenderer->DeferredRender(camera_orientation, camera_projection, shadow_mvp, m_Direction, m_RenderContext);
+	//m_DeferredRenderer->DeferredRender(camera_orientation, camera_projection, shadow_mvp, m_Direction, m_RenderContext);
 
 	//RenderPointlight();
 	//RenderSpotlight();
 
-	m_PostProcessManager.Process(m_DeferredRenderer->GetFinalTexture(), m_RenderContext);
+	/*m_PostProcessManager.Process(m_DeferredRenderer->GetFinalTexture(), m_RenderContext);
 
 	if (m_PostProcessManager.GetFlags() == 0)
-		return;
-		//m_DeferredRenderer->Finalize(m_RenderContext);
+	*/	//m_DeferredRenderer->Finalize(m_RenderContext);
 
-	RenderLines();
-	Render2DCommands();
+	//RenderLines();
+	//Render2DCommands();
  
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();

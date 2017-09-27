@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "WaterPlane.h"
 #include <Engine/Texture.h>
+#include <Engine/IGraphicsDevice.h>
+#include <Engine/IGraphicsContext.h>
+
 
 WaterPlane::WaterPlane()
 {

@@ -29,9 +29,10 @@ namespace graphics
 		static u32 GetCPUAccessFlag(s32 flags);
 		static D3D11_PRIMITIVE_TOPOLOGY GetTopology(eTopology topology);
 		static D3D11_MAP GetMapping(eMapping mapping);
-
+		static D3D11_INPUT_CLASSIFICATION GetInputClass(eElementSpecification el);
 		void ReleasePtr(void* ptr) override;
 
+		void Initiate() override;
 
 		void EndFrame() override;
 		void BeginFrame() override;

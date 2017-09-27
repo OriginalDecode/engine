@@ -100,6 +100,7 @@ namespace graphics
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
 
 		hr = device->CreateDepthStencilState(&stencilDesc, &depthstencil);
+		m_DepthStencilStates[READ_NO_WRITE_PARTICLE] = depthstencil;
 #ifndef FINAL
 		SetDebugName(depthstencil, "DepthStencilState ReadNoWriteParticle");
 		HandleErrors(hr, "Failed to create DepthStencilState!");

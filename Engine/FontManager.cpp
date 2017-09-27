@@ -184,9 +184,7 @@ CFont* CFontManager::LoadFont(const char* aFontPath, short aSize, int aBorderWid
 	ITexture2D* texture = api->GetDevice().CreateTexture2D(_desc, data, pitch, "AtlasTexture");
 	DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
 
-	graphics::ShaderResourceDesc srv_desc;
-	srv_desc.m_Format = graphics::RGBA8_UNORM;
-	fontData->m_AtlasView = api->GetDevice().CreateShaderResource(srv_desc, texture, "Font Atlas");
+	fontData->m_AtlasView = api->GetDevice().CreateShaderResource(_desc, texture, "Font Atlas");
 
 
 	api->ReleasePtr(texture);

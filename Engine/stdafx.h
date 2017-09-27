@@ -2,7 +2,6 @@
 #pragma warning(disable : 4005)
 #pragma warning(disable : 4006)
 #pragma warning(disable : 4099)
-#include <d3dcompiler.h> //this one needs to go, should the entire stdafx go away??
 
 //----------------------------------------
 // Common Utilities / Common Library
@@ -34,19 +33,9 @@
 #include "FileWatcher.h"
 #include "Font.h"
 #include "FontManager.h"
-#include "IndexWrapper.h"
 #include "Model.h"
 #include "ShaderFactory.h"
 #include "Text.h"
 #include "Texture.h"
 #include "VertexStructs.h"
 #include "VertexTypes.h"
-#include "VertexWrapper.h"
-#include "engine_shared.h"
-
-
-
-
-#include <Engine/IGraphicsAPI.h>
-#include <Engine/IGraphicsDevice.h>
-#include <Engine/IGraphicsContext.h>

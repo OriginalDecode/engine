@@ -23,7 +23,7 @@ DeferredRenderer::DeferredRenderer()
 	scene_desc.m_Width = window_size.m_Width;
 	scene_desc.m_Height = window_size.m_Height;
 	scene_desc.m_Usage = graphics::DEFAULT_USAGE;
-	scene_desc.m_ResourceTypeBinding = graphics::SHADERRESOURCE | graphics::RENDERTARGET;
+	scene_desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
 	scene_desc.m_TextureFormat = graphics::RGBA16_FLOAT;
 	scene_desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
 	m_FinishedSceneTexture = new Texture;
@@ -33,7 +33,7 @@ DeferredRenderer::DeferredRenderer()
 
 	TextureDesc depth_desc;
 	depth_desc.m_Usage = graphics::DEFAULT_USAGE;
-	depth_desc.m_ResourceTypeBinding = graphics::SHADERRESOURCE | graphics::DEPTHSTENCIL | graphics::RENDERTARGET;
+	depth_desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_DEPTH_STENCIL | graphics::BIND_RENDER_TARGET;
 	depth_desc.m_TextureFormat = graphics::RGBA16_FLOAT;
 	depth_desc.m_DepthTextureFormat = graphics::DEPTH_32_FLOAT;
 	depth_desc.m_RenderTargetFormat = graphics::R32_FLOAT;

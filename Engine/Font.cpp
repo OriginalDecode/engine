@@ -3,6 +3,9 @@
 #include "FontManager.h"
 #include "AssetsContainer.h"
 
+#include <Engine/VertexWrapper.h>
+#include <Engine/IndexWrapper.h>
+
 
 CFont::CFont(SFontData* aFontData)
 {

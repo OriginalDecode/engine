@@ -57,6 +57,7 @@ void Quad::FillVertexData(float half_width, float half_height)
 	graphics::BufferDesc buf_desc;
 	buf_desc.m_Size = size;
 	buf_desc.m_Data = data;
+	buf_desc.m_ByteWidth = size;
 	buf_desc.m_CPUAccessFlag = graphics::WRITE;
 	buf_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	buf_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
@@ -67,6 +68,9 @@ void Quad::FillVertexData(float half_width, float half_height)
 		{ "POSITION", 0, graphics::_16BYTE_RGBA, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, graphics::_8BYTE_RG, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
 	};
+
+	if (!m_Effect)
+		m_Effect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
 	IInputLayout* layout = device.CreateInputLayout(m_Effect->GetVertexShader(), desc, ARRSIZE(desc));
 
 	m_VertexWrapper = VertexWrapper(data,
@@ -102,7 +106,8 @@ void Quad::FillIndexData()
 	graphics::BufferDesc idx_desc;
 	idx_desc.m_Size = index_size;
 	idx_desc.m_Data = index_data;
-	idx_desc.m_CPUAccessFlag = graphics::READ;
+	idx_desc.m_ByteWidth = index_size;
+	idx_desc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
 	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
 	idx_desc.m_UsageFlag = graphics::DEFAULT_USAGE;
 

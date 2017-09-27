@@ -19,20 +19,21 @@ namespace graphics
 		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
 		desc.m_ShaderResourceFormat = RGBA16_FLOAT;
 		desc.m_RenderTargetFormat = RGBA16_FLOAT;
+		desc.m_TextureFormat = RGBA16_FLOAT;
 
 		m_Albedo = new Texture;
-		m_Albedo->Initiate(desc, "GBuffer : Albedo");
+		m_Albedo->Initiate(desc, false, "GBuffer : Albedo");
 
 		m_Emissive = new Texture;
-		m_Emissive->Initiate(desc, "GBuffer : Emissive");
+		m_Emissive->Initiate(desc, false, "GBuffer : Emissive");
 
 		m_Normal = new Texture; 
-		m_Normal->Initiate(desc, "GBuffer : Normal");
+		m_Normal->Initiate(desc, false, "GBuffer : Normal");
 
 		m_Depth = new Texture;
 		desc.m_ShaderResourceFormat = RGBA32_FLOAT;
 		desc.m_RenderTargetFormat = RGBA32_FLOAT;
-		m_Depth->Initiate(desc, "GBuffer : Depth");
+		m_Depth->Initiate(desc, false, "GBuffer : Depth");
 
 		Effect* shader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
 		shader->AddShaderResource(m_Albedo, Effect::DIFFUSE);

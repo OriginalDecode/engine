@@ -21,16 +21,7 @@ namespace graphics
 	DirectX11::DirectX11(CreateInfo info)
 	{
 		m_CreateInfo = info;
-		CreateDeviceAndSwapchain();
-		CreateDepthStencilStates();
-		CreateRazterizers();
-		m_Viewport = CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
 
-#if !defined(_PROFILE) && !defined(_FINAL)
-		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
-		ID3D11DeviceContext* pContext = static_cast<DX11Context*>(m_Context)->m_Context;
-		ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, pDevice, pContext);
-#endif
 	}
 
 	DirectX11::~DirectX11()
@@ -71,6 +62,21 @@ namespace graphics
 		OutputDebugString("\nIntRef is something that D3D has internal. You cannot control these.\n\n");
 #endif
 	}
+
+	void DirectX11::Initiate()
+	{
+		CreateDeviceAndSwapchain();
+		CreateRazterizers();
+		m_Viewport = CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11DeviceContext* pContext = static_cast<DX11Context*>(m_Context)->m_Context;
+		ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, pDevice, pContext);
+#endif
+
+	}
+
 
 	void DirectX11::BeginFrame()
 	{
@@ -165,32 +171,32 @@ namespace graphics
 		ID3D11Device* pDevice = nullptr;
 		ID3D11DeviceContext* pContext = nullptr;
 		HRESULT hr = D3D11CreateDeviceAndSwapChain(m_Adapters[adapterString],
-			type,
-			nullptr,
-			createDeviceFlags,
-			requested_feature_levels,
-			featureCount,
-			D3D11_SDK_VERSION,
-			&scDesc,
-			&m_Swapchain,
-			&pDevice,
-			nullptr,
-			&pContext);
+												   type,
+												   nullptr,
+												   createDeviceFlags,
+												   requested_feature_levels,
+												   featureCount,
+												   D3D11_SDK_VERSION,
+												   &scDesc,
+												   &m_Swapchain,
+												   &pDevice,
+												   nullptr,
+												   &pContext);
 
 		if (pDevice == nullptr)
 		{
 			hr = D3D11CreateDeviceAndSwapChain(m_Adapters[adapterString],
-				type,
-				nullptr,
-				0,
-				requested_feature_levels,
-				featureCount,
-				D3D11_SDK_VERSION,
-				&scDesc,
-				&m_Swapchain,
-				&pDevice,
-				nullptr,
-				&pContext);
+											   type,
+											   nullptr,
+											   0,
+											   requested_feature_levels,
+											   featureCount,
+											   D3D11_SDK_VERSION,
+											   &scDesc,
+											   &m_Swapchain,
+											   &pDevice,
+											   nullptr,
+											   &pContext);
 		}
 
 		DL_ASSERT_EXP(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");
@@ -212,6 +218,9 @@ namespace graphics
 		pDevice->SetPrivateData(WKPDID_D3DDebugObjectName, u32(deviceName.size()), deviceName.c_str());
 
 		m_Device = new DX11Device(pDevice);
+
+		CreateDepthStencilStates();
+
 		m_Context = new DX11Context(pContext);
 
 	}
@@ -315,12 +324,15 @@ namespace graphics
 
 	void DirectX11::ReleasePtr(void* ptr)
 	{
+		if (!ptr)
+			return;
 		IUnknown* pUnknown = static_cast<IUnknown*>(ptr);
 		pUnknown->Release();
 	}
 
 
-	
+
+
 	void DirectX11::ResetRendertarget()
 	{
 		m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthView);
@@ -614,12 +626,27 @@ namespace graphics
 	{
 		u32 output = 0;
 
-		if (binding & graphics::eTextureBind::SHADERRESOURCE)
+		if (binding & graphics::BIND_VERTEX_BUFFER)
+			output |= D3D11_BIND_VERTEX_BUFFER;
+		if (binding & graphics::BIND_INDEX_BUFFER)
+			output |= D3D11_BIND_INDEX_BUFFER;
+		if (binding & graphics::BIND_CONSTANT_BUFFER)
+			output |= D3D11_BIND_CONSTANT_BUFFER;
+		if (binding & graphics::BIND_SHADER_RESOURCE)
 			output |= D3D11_BIND_SHADER_RESOURCE;
-		if (binding & graphics::eTextureBind::RENDERTARGET)
+		if (binding & graphics::BIND_STREAM_OUTPUT)
+			output |= D3D11_BIND_STREAM_OUTPUT;
+		if (binding & graphics::BIND_RENDER_TARGET)
 			output |= D3D11_BIND_RENDER_TARGET;
-		if (binding& graphics::eTextureBind::DEPTHSTENCIL)
+		if (binding & graphics::BIND_DEPTH_STENCIL)
 			output |= D3D11_BIND_DEPTH_STENCIL;
+		if (binding & graphics::BIND_UNORDERED_ACCESS)
+			output |= D3D11_BIND_UNORDERED_ACCESS;
+		if (binding & graphics::BIND_DECODER)
+			output |= D3D11_BIND_DECODER;
+		if (binding & graphics::BIND_VIDEO_ENCODER)
+			output |= D3D11_BIND_VIDEO_ENCODER;
+
 
 		return output;
 	}
@@ -651,6 +678,19 @@ namespace graphics
 	D3D11_MAP DirectX11::GetMapping(eMapping mapping)
 	{
 		return static_cast<D3D11_MAP>(mapping);
+	}
+
+	D3D11_INPUT_CLASSIFICATION DirectX11::GetInputClass(eElementSpecification el)
+	{
+		if (el == INPUT_PER_VERTEX_DATA)
+			return D3D11_INPUT_PER_VERTEX_DATA;
+		if (el == INPUT_PER_INSTANCE_DATA)
+			return D3D11_INPUT_PER_INSTANCE_DATA;
+
+
+
+		DL_ASSERT("Shouldn't get here, invalid input element specification!");
+		return D3D11_INPUT_PER_VERTEX_DATA;
 	}
 
 	void DirectX11::SetDebugName(void * pResource, cl::HashString debug_name)

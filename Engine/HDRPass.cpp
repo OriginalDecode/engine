@@ -25,11 +25,12 @@ void HDRPass::Initiate()
 	desc.m_ResourceTypeBinding = graphics::BIND_RENDER_TARGET | graphics::BIND_SHADER_RESOURCE;
 	desc.m_Width = window_size.m_Width;
 	desc.m_Height = window_size.m_Height;
+	desc.m_TextureFormat = graphics::RGBA8_UNORM;
 	desc.m_ShaderResourceFormat = graphics::RGBA8_UNORM;
 	desc.m_RenderTargetFormat = graphics::RGBA8_UNORM;
 
 	m_HDRTexture = new Texture;
-	m_HDRTexture->Initiate(desc, "HDRPass | HDRTexture");
+	m_HDRTexture->Initiate(desc,  "HDRPass | HDRTexture");
 
 	s32 downsample_amount = s32(log(__min(window_size.m_Width, window_size.m_Height)) / log(2.f)) + 1; //can be changed
 	s32 sample_size = 1;
@@ -44,7 +45,7 @@ void HDRPass::Initiate()
 		desc.m_Width = sample_size;
 		desc.m_Height = sample_size;
 
-		m_Downsamples.GetLast()->Initiate(desc,	debug_name.str().c_str());
+		m_Downsamples.GetLast()->Initiate(desc,	false, debug_name.str().c_str());
 
 		sample_size *= 2.f;
 	}

@@ -4,7 +4,9 @@
 #include <Engine/DX11Context.h>
 
 #include <DDSTextureLoader.h>
+#include <d3dcompiler.h>
 #include <DL_Debug.h>
+#include <Engine/IGraphicsAPI.h>
 namespace graphics
 {
 
@@ -183,7 +185,7 @@ namespace graphics
 		return static_cast<ITexture2D*>(texture);
 	}
 
-	IRenderTargetView* DX11Device::CreateRenderTarget(const RenderTargetDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
+	IRenderTargetView* DX11Device::CreateRenderTarget(const Texture2DDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
 	{
 		ID3D11RenderTargetView* rtv = nullptr;
 		ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(pTexture);
@@ -195,8 +197,9 @@ namespace graphics
 		return static_cast<IRenderTargetView*>(rtv);
 	}
 
-	IShaderResourceView* DX11Device::CreateShaderResource(const ShaderResourceDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
+	IShaderResourceView* DX11Device::CreateShaderResource(const Texture2DDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
 	{
+		DL_ASSERT_EXP(pTexture, "pTexture was null!");
 		D3D11_SHADER_RESOURCE_VIEW_DESC view_desc;
 		view_desc.Format = DirectX11::GetFormat(desc.m_Format);
 		view_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -213,7 +216,19 @@ namespace graphics
 		return static_cast<IShaderResourceView*>(srv);
 	}
 
-	IDepthStencilView* DX11Device::CreateDepthStencilView(const DepthDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
+	IShaderResourceView* DX11Device::CreateShaderResource(ITexture2D* pTexture, const cl::HashString& debug_name)
+	{
+		ID3D11ShaderResourceView* srv = nullptr;
+		ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(pTexture);
+		HRESULT hr = m_Device->CreateShaderResourceView(tex, nullptr, &srv);
+#ifndef FINAL
+		DirectX11::HandleErrors(hr, "Failed to create ShaderResourceView");
+		DirectX11::SetDebugName(srv, debug_name);
+#endif
+		return static_cast<IShaderResourceView*>(srv);
+	}
+
+	IDepthStencilView* DX11Device::CreateDepthStencilView(const Texture2DDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
 	{
 		D3D11_DEPTH_STENCIL_VIEW_DESC depth_desc;
 		depth_desc.Format = DirectX11::GetFormat(desc.m_Format);
@@ -230,17 +245,35 @@ namespace graphics
 		return static_cast<IDepthStencilView*>(dsv);
 	}
 
-	IInputLayout* DX11Device::CreateInputLayout(CompiledShader* pShader, void* pLayout, s32 element_count)
+	IInputLayout* DX11Device::CreateInputLayout(CompiledShader* pShader, InputElementDesc* pLayout, const s32 element_count)
 	{
-		ID3D11InputLayout* layout = nullptr;
+		D3D11_INPUT_ELEMENT_DESC *desc = new D3D11_INPUT_ELEMENT_DESC[element_count];
 
+
+		for (s32 i = 0; i < element_count; i++)
+		{
+			const InputElementDesc& el = pLayout[i];
+			D3D11_INPUT_ELEMENT_DESC& desc_el = desc[i];
+
+			desc_el.SemanticName = el.m_Semantic;
+			desc_el.SemanticIndex = el.m_SemanicIndex;
+			desc_el.Format = DirectX11::GetFormat(el.m_Format);
+			desc_el.InputSlot = el.m_InputSlot;
+			desc_el.AlignedByteOffset = el.m_ByteOffset;
+			desc_el.InputSlotClass = DirectX11::GetInputClass(el.m_ElementSpecification);
+			desc_el.InstanceDataStepRate = el.m_InstanceDataStepRate;
+		}
+
+
+		ID3D11InputLayout* layout = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader->m_Blob);
 
-		HRESULT hr = m_Device->CreateInputLayout(static_cast<D3D11_INPUT_ELEMENT_DESC*>(pLayout), element_count, blob->GetBufferPointer(), blob->GetBufferSize(), &layout);
+		HRESULT hr = m_Device->CreateInputLayout(desc, element_count, blob->GetBufferPointer(), blob->GetBufferSize(), &layout);
 #ifndef FINAL
 		DirectX11::HandleErrors(hr, "Failed to create InputLayout");
 		DirectX11::SetDebugName(layout, "InputLayout");
 #endif
+		delete desc;
 		return static_cast<IInputLayout*>(layout);
 	}
 
@@ -248,7 +281,7 @@ namespace graphics
 	{
 		ID3D11Buffer* buffer = nullptr;
 		D3D11_BUFFER_DESC desc;
-		desc.BindFlags = buffer_desc.m_BindFlag;
+		desc.BindFlags = DirectX11::GetBindFlag(buffer_desc.m_BindFlag);
 		desc.CPUAccessFlags = DirectX11::GetCPUAccessFlag(buffer_desc.m_CPUAccessFlag);
 		desc.Usage = DirectX11::GetUsage(buffer_desc.m_UsageFlag);
 		desc.MiscFlags = buffer_desc.m_MiscFlags;

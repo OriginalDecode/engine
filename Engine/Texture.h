@@ -26,6 +26,7 @@ public:
 
 
 	void Initiate(const TextureDesc& desc, const cl::HashString& debug_name);
+	void Initiate(const TextureDesc& desc, bool create_from_texture, const cl::HashString& debug_name);
 	void InitiateAsDepthStencil(float width, float height, const cl::HashString& debug_name);
 	void InitiateAsRenderTarget(float width, float height, const cl::HashString& debug_name);
 

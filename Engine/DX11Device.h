@@ -21,11 +21,12 @@ namespace graphics
 		IShaderResourceView* CreateTextureFromFile(const cl::HashString& filepath, bool generate_mips, IGraphicsContext* ctx) override;
 		ITexture2D* CreateTexture2D(const Texture2DDesc& desc, const cl::HashString& debug_name) override;
 		ITexture2D* CreateTexture2D(const Texture2DDesc& desc, s8* data, s32 pitch, const cl::HashString& debug_name) override;
-		IRenderTargetView* CreateRenderTarget(const RenderTargetDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name) override;
-		IShaderResourceView* CreateShaderResource(const ShaderResourceDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name) override;
-		IDepthStencilView* CreateDepthStencilView(const DepthDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name) override;
+		IRenderTargetView* CreateRenderTarget(const Texture2DDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name) override;
+		IShaderResourceView* CreateShaderResource(const Texture2DDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name) override;
+		IShaderResourceView* CreateShaderResource(ITexture2D* pTexture, const cl::HashString& debug_name) override;
+		IDepthStencilView* CreateDepthStencilView(const Texture2DDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name) override;
 
-		IInputLayout* CreateInputLayout(CompiledShader* pShader, void* pLayout, s32 element_count) override;
+		IInputLayout* CreateInputLayout(CompiledShader* pShader, InputElementDesc* pLayout, const s32 element_count) override;
 		IBuffer* CreateBuffer(BufferDesc buffer_desc) override;
 			
 		IBuffer* CreateConstantBuffer(s32 size) override;

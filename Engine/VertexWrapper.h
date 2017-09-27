@@ -66,7 +66,7 @@ private:
 	graphics::eTopology m_Topology = graphics::TRIANGLE_LIST;
 };
 
-void VertexWrapper::SetBuffer(IBuffer* buffer)
+inline void VertexWrapper::SetBuffer(IBuffer* buffer)
 {
 	Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
 	m_VertexBuffer = buffer;

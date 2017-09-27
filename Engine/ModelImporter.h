@@ -20,6 +20,9 @@
 #include <Engine/Effect.h>
 
 
+#include <Engine/IGraphicsDevice.h>
+#include <Engine/IGraphicsContext.h>
+#include <Engine/IGraphicsAPI.h>
 class Engine;
 class aiNode;
 class aiMesh;
@@ -120,7 +123,6 @@ private:
 	void FillVertexData(T* out, ModelData* data, Effect* effect);
 
 
-	template<typename T>
 	void SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc);
 
 	void ProcessNode(aiNode* node, const aiScene* scene, FBXModelData* data, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point);
@@ -280,8 +282,7 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 
 }
 
-template<typename T>
-void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc)
+inline void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc)
 {
  	for (int i = 0; i < data->myLayout.Size(); ++i)
  	{
@@ -289,46 +290,46 @@ void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<graphics
 		graphics::InputElementDesc desc;
  		desc.m_SemanicIndex = 0;
  		desc.m_ByteOffset = currentLayout.myOffset;
- 		desc.m_ElementSpecification = INPUT_PER_VERTEX_DATA;
+ 		desc.m_ElementSpecification = graphics::INPUT_PER_VERTEX_DATA;
  		desc.m_InputSlot = 0;
  		desc.m_InstanceDataStepRate = 0;
  
  		if (currentLayout.myType == ModelData::VERTEX_POS)
  		{
 			desc.m_Semantic = "POSITION";
-			desc.m_Format = RGBA32_FLOAT;
+			desc.m_Format = graphics::_16BYTE_RGBA;
  		}
  		else if (currentLayout.myType == ModelData::VERTEX_NORMAL)
  		{
  			desc.m_Semantic = "NORMAL";
- 			desc.m_Format = RGBA32_FLOAT;
+ 			desc.m_Format = graphics::_16BYTE_RGBA;
  		}
  		else if (currentLayout.myType == ModelData::VERTEX_UV)
  		{
 			desc.m_Semantic = "TEXCOORD";
-			desc.m_Format = RG32_FLOAT;
+			desc.m_Format = graphics::_8BYTE_RG;
  		}
  		else if (currentLayout.myType == ModelData::VERTEX_BINORMAL)
  		{
 			desc.m_Semantic = "BINORMAL";
-			desc.m_Format = RGBA32_FLOAT;
+			desc.m_Format = graphics::_16BYTE_RGBA;
  		}
  		else if (currentLayout.myType == ModelData::VERTEX_TANGENT)
  		{
 			desc.m_Semantic = "TANGENT";
-			desc.m_Format = RGBA32_FLOAT;
+			desc.m_Format = graphics::_16BYTE_RGBA;
  		}
  		else if (currentLayout.myType == ModelData::VERTEX_SKINWEIGHTS)
  		{
  			break;
 			desc.m_Semantic = "WEIGHTS";
- 			desc.m_Format = RGBA32_FLOAT;
+ 			desc.m_Format = graphics::_16BYTE_RGBA;
  		}
  		else if (currentLayout.myType == ModelData::VERTEX_BONEID)
  		{
  			break;
 			desc.m_Semantic = "BONES";
- 			desc.m_Format = RGBA32_SINT;
+ 			desc.m_Format = graphics::_16BYTE_RGBA;
  		}
 		element_desc.Add(desc);
  	}
@@ -342,7 +343,7 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 	auto& idx = model->m_IndexWrapper;
 	s8* indexData = new s8[data->myIndexCount];
 	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
-	const s32 idx_IndexBufferFormat = graphics::R32_UINT;
+	const graphics::eTextureFormat idx_IndexBufferFormat = graphics::R32_UINT;
 	const s32 idx_IndexCount = data->myIndexCount;
 	const s32 idx_Size = idx_IndexCount * sizeof(u32);
 
@@ -355,6 +356,18 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 	idx_desc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
 	idx_desc.m_MiscFlags = 0;
 	idx_desc.m_ByteWidth = idx_desc.m_Size;
+
+	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc);
+
+	//IndexWrapper(s8* data, s32 index_count, s32 start, s32 size, graphics::eTextureFormat format, s32 byte_offset, IBuffer* buffer)
+	idx = IndexWrapper(indexData,
+					   idx_IndexCount, 
+					   0, 
+					   idx_Size, 
+					   idx_IndexBufferFormat, 
+					   0, 
+					   buffer);
+
 	//idx.m_IndexBuffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc);
 }
 
@@ -388,9 +401,9 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 
 
 	CU::GrowingArray<graphics::InputElementDesc> element;
-	//SetupInputLayout(data, element);
+	SetupInputLayout(data, element);
 
-	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element, element.Size());
+	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
 	vtx = VertexWrapper(vertexRawData, vtx_start, 1, vtx_Stride, 0, vtx_VertexCount, vtx_Size, buffer, layout, graphics::TRIANGLE_LIST);
 }
 
@@ -418,7 +431,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(desc);
 
 	CU::GrowingArray<graphics::InputElementDesc> element;
-	//SetupInputLayout(data, element);
+	SetupInputLayout(data, element);
 
 	s32 byte_offset = 0;
 	graphics::InputElementDesc instance[4] = {
@@ -433,7 +446,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	element.Add(instance[2]);
 	element.Add(instance[3]);
 
-	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element, element.Size());
+	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
 
 	ins = InstanceWrapper(ins_InstanceCount, ins_IndicesPerInstance, ins_ByteOffset, ins_Stride, ins_Start, ins_BufferCount, buffer, layout);
 

@@ -114,13 +114,6 @@ namespace graphics
 		STAGING_USAGE = 4,
 	};
 
-	enum eTextureBind //might not be used???
-	{
-		NONE = 0,
-		RENDERTARGET = 1,
-		DEPTHSTENCIL = 2,
-		SHADERRESOURCE = 4,
-	};
 
 	enum eCPUAccessFlag
 	{
@@ -153,16 +146,17 @@ namespace graphics
 
 	enum eBindFlag
 	{
-		BIND_VERTEX_BUFFER,
-		BIND_INDEX_BUFFER,
-		BIND_CONSTANT_BUFFER,
-		BIND_SHADER_RESOURCE,
-		BIND_STREAM_OUTPUT,
-		BIND_RENDER_TARGET,
-		BIND_DEPTH_STENCIL,
-		BIND_UNORDERED_ACCESS,
-		BIND_DECODER,
-		BIND_VIDEO_ENCODER
+		NONE,
+		BIND_VERTEX_BUFFER = 1,
+		BIND_INDEX_BUFFER = 2,
+		BIND_CONSTANT_BUFFER = 4,
+		BIND_SHADER_RESOURCE = 8,
+		BIND_STREAM_OUTPUT = 16,
+		BIND_RENDER_TARGET = 32,
+		BIND_DEPTH_STENCIL = 64,
+		BIND_UNORDERED_ACCESS = 128,
+		BIND_DECODER = 256,
+		BIND_VIDEO_ENCODER = 512
 	};
 
 	enum eClearFlag
@@ -178,27 +172,12 @@ namespace graphics
 		u32 m_MipLevels = 0;
 		eTextureFormat m_Format = RGBA32_FLOAT;
 		s32 m_Usage = DEFAULT_USAGE;
-		s32 m_Binding = SHADERRESOURCE;
+		s32 m_Binding = NONE;
 		s32 m_CPUAccessFlag = 0;
 		s32 m_MiscFlags = 0;
 		s32 m_ArraySize = 0;
 		s32 m_SampleCount = 0;
 		s32 m_SampleQuality = 0;
-	};
-
-	struct RenderTargetDesc : public Texture2DDesc
-	{
-		eTextureFormat m_Format = NO_FORMAT;
-	};
-
-	struct ShaderResourceDesc
-	{
-		eTextureFormat m_Format = NO_FORMAT;
-	};
-
-	struct DepthDesc
-	{
-		eTextureFormat m_Format = NO_FORMAT;
 	};
 
 	struct InputElementDesc
@@ -243,6 +222,9 @@ namespace graphics
 	class IGraphicsAPI
 	{
 	public:
+
+		virtual void Initiate() = 0;
+
 		virtual void EndFrame() = 0;
 		virtual void BeginFrame() = 0;
 

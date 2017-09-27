@@ -20,6 +20,8 @@ public:
 	void SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
 	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
 	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }
+
+	const short& GetFontSize() const { return m_Data->myFontHeightWidth; }
 private:
 	void operator=(const CFont&) = delete;
 	

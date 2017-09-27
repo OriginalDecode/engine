@@ -120,7 +120,6 @@ Renderer::~Renderer()
 
 	SAFE_DELETE(myText);
 
-	m_ParticleEmitter->CleanUp();
 	SAFE_DELETE(m_ParticleEmitter);
 
 	for (SpotLight* s : m_Spotlights)

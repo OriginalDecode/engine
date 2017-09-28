@@ -46,6 +46,8 @@ public:
 
 	IBuffer* GetIndexBuffer() const { return m_IndexBuffer; }
 	void SetBuffer(IBuffer* buffer);
+
+	void ReleaseBuffer();
 private:
 
 	s8* m_Data = nullptr;
@@ -59,7 +61,11 @@ private:
 
 inline void IndexWrapper::SetBuffer(IBuffer* buffer)
 {
-	Engine::GetAPI()->ReleasePtr(m_IndexBuffer);
 	m_IndexBuffer = buffer;
+}
+
+inline void IndexWrapper::ReleaseBuffer()
+{
+	Engine::GetAPI()->ReleasePtr(m_IndexBuffer);
 }
 

@@ -9,5 +9,5 @@ AssetFactory::AssetFactory()
 
 void AssetFactory::LoadModel(BaseModel* pModel, const cl::HashString& filepath, const cl::HashString& effectpath, bool thread /*= true*/)
 {
-	m_ModelImporter->LoadModel()
+	//m_ModelImporter->LoadModel()
 }

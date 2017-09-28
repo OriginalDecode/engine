@@ -66,6 +66,11 @@ cl::HashString AssetsContainer::LoadModel(const cl::HashString& path, std::strin
 	T* model = new T;
 	m_Models.emplace(path.GetHash(), model);
 
+		m_ModelLoader->LoadModel(model, path.c_str(), effect_filepath);
+		model->Initiate(path.c_str());
+
+		return path;
+
 	if (thread)
 	{
 		Engine::GetInstance()->GetThreadpool().AddWork(Work([=]() {
@@ -75,8 +80,6 @@ cl::HashString AssetsContainer::LoadModel(const cl::HashString& path, std::strin
 	}
 	else
 	{
-		m_ModelLoader->LoadModel(model, path.c_str(), effect_filepath);
-		model->Initiate(path.c_str());
 	}
 
 	return path;

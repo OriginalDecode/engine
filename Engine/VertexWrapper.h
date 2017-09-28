@@ -60,6 +60,7 @@ public:
 
 	void SetBuffer(IBuffer* buffer);
 	IBuffer* GetVertexBuffer() const { return m_VertexBuffer; }
+	void ReleaseBuffer();
 
 	void SetInputLayout(IInputLayout* layout) { m_VertexInputLayout = layout; }
 	IInputLayout* GetInputLayout() const { return m_VertexInputLayout; }
@@ -84,6 +85,10 @@ private:
 
 inline void VertexWrapper::SetBuffer(IBuffer* buffer)
 {
-	Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
 	m_VertexBuffer = buffer;
+}
+
+inline void VertexWrapper::ReleaseBuffer()
+{
+	Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
 }

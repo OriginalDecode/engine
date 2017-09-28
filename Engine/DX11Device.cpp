@@ -281,7 +281,7 @@ namespace graphics
 		return static_cast<IInputLayout*>(layout);
 	}
 
-	IBuffer* DX11Device::CreateBuffer(BufferDesc buffer_desc)
+	IBuffer* DX11Device::CreateBuffer(const BufferDesc& buffer_desc)
 	{
 		ID3D11Buffer* buffer = nullptr;
 		D3D11_BUFFER_DESC desc;

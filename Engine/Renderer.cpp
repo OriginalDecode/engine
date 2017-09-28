@@ -40,8 +40,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 											  api->GetContext(),
 											  api);
 
-	myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 
+	myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 	m_DeferredRenderer = new DeferredRenderer;
 
 	WindowSize window_size;

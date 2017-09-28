@@ -33,10 +33,9 @@ DeferredRenderer::DeferredRenderer()
 
 	TextureDesc depth_desc;
 	depth_desc.m_Usage = graphics::DEFAULT_USAGE;
-	depth_desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_DEPTH_STENCIL | graphics::BIND_RENDER_TARGET;
-	depth_desc.m_TextureFormat = graphics::RGBA16_FLOAT;
+	depth_desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_DEPTH_STENCIL /*should bind a render target*/;
+	depth_desc.m_TextureFormat = graphics::R32_TYPELESS;
 	depth_desc.m_DepthTextureFormat = graphics::DEPTH_32_FLOAT;
-	depth_desc.m_RenderTargetFormat = graphics::R32_FLOAT;
 	depth_desc.m_Width = window_size.m_Width;
 	depth_desc.m_Height = window_size.m_Height;
 
@@ -52,14 +51,7 @@ DeferredRenderer::DeferredRenderer()
 
 	//_______________________________________________________________________
 
-	graphics::BufferDesc desc;
-	desc.m_CPUAccessFlag = graphics::WRITE;
-	desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
-	desc.m_BindFlag = graphics::BIND_CONSTANT_BUFFER;
-	desc.m_MiscFlags = 0;
-	desc.m_StructuredByteStride = 0;
-	desc.m_ByteWidth = sizeof(m_ConstantStruct);
-	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateBuffer(desc);
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_ConstantStruct));
 
 	//_______________________________________________________________________
 

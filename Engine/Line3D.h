@@ -47,7 +47,6 @@ public:
 	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
 	Effect* GetEffect() const { return m_Effect; }
 private:
-	void CreateConstantBuffer();
 	void CreateBuffer();
 
 	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
@@ -68,11 +67,6 @@ private:
 	} m_cbLine;
 
 
-// 	VertexBufferWrapper* myVertexBuffer = nullptr;
- 	//VertexBaseStruct* myConstantStruct = nullptr;
-
-	//ID3D11InputLayout* myVertexLayout = nullptr;
-	//ID3D11Buffer* myConstantBuffer = nullptr;
 	CU::GrowingArray<LinePoint> m_Vertices;
 	int m_LineAmount = 0;
 };

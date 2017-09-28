@@ -96,14 +96,16 @@ namespace graphics
 	IShaderResourceView* DX11Device::CreateTextureFromFile(const cl::HashString& filepath, bool generate_mips, IGraphicsContext* ctx)
 	{
 		DX11Context* pCtx = static_cast<DX11Context*>(ctx);
-		wchar_t* widepath = nullptr;
-		mbstowcs(widepath, filepath.c_str(), filepath.length());
+		std::string path = filepath.c_str();
+		std::wstring wPath(path.begin(), path.end());
+
+
 		ID3D11ShaderResourceView* srv = nullptr;
 		if (generate_mips)
 		{
 			HRESULT hr = DirectX::CreateDDSTextureFromFileEx(m_Device
-															 , static_cast<ID3D11DeviceContext*>(pCtx->GetContext())
-															 , widepath
+				, static_cast<ID3D11DeviceContext*>(pCtx->GetContext())
+				, wPath.c_str()
 															 , 0
 															 , D3D11_USAGE_DEFAULT
 															 , D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET //has to be bound as a render target to actually generate the mips
@@ -121,11 +123,11 @@ namespace graphics
 		{
 			HRESULT hr = DirectX::CreateDDSTextureFromFile(m_Device
 														   , nullptr
-														   , widepath
+														   , wPath.c_str()
 														   , nullptr //might want to output to a texture2d object?
 														   , &srv);
 #ifndef FINAL
-			DL_ASSERT_EXP(hr != S_OK, "Failed to load texture");
+			DL_ASSERT_EXP(hr == S_OK, "Failed to load texture");
 #endif
 		}
 
@@ -230,7 +232,9 @@ namespace graphics
 
 	IDepthStencilView* DX11Device::CreateDepthStencilView(const Texture2DDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
 	{
-		D3D11_DEPTH_STENCIL_VIEW_DESC depth_desc;
+		D3D11_DEPTH_STENCIL_VIEW_DESC depth_desc; 
+		ZeroMemory(&depth_desc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
+
 		depth_desc.Format = DirectX11::GetFormat(desc.m_Format);
 		depth_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		depth_desc.Texture2D.MipSlice = 0;

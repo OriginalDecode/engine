@@ -46,12 +46,12 @@ void AssetsContainer::Initiate()
 
 Texture* AssetsContainer::GetTexture(const cl::HashString& path)
 {
-	if (path.contains(".dds") == false)
-	{
-		DL_MESSAGE("Failed to load %s, due to incorrect fileformat. Has to be .dds", path.c_str());
-		DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
-		return nullptr;
-	}
+// 	if (path.contains(".dds") == false)
+// 	{
+// 		DL_MESSAGE("Failed to load %s, due to incorrect fileformat. Has to be .dds", path.c_str());
+// 		DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
+// 		return nullptr;
+// 	}
 
 	if (!LoadTexture(path))
 		return nullptr;

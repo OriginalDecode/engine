@@ -1,6 +1,7 @@
 #pragma once
 #include <Engine/engine_shared.h>
 
+
 class InstanceWrapper
 {
 	friend class ModelImporter;
@@ -18,18 +19,43 @@ public:
 	{
 	}
 
+	~InstanceWrapper()
+	{
+		Engine::GetAPI()->ReleasePtr(m_InstanceInputLayout);
+		Engine::GetAPI()->ReleasePtr(m_InstanceBuffer);
+	}
+
+
+	void SetInstanceCount(s32 instance_count) { m_InstanceCount = instance_count; }
 	s32 GetInstanceCount() const { return m_InstanceCount; }
+
+	void SetVertexCountPerInstance(s32 vertices_per_instance ) { m_VerticesPerInstance = vertices_per_instance; }
 	s32 GetVertCountPerInstance() const { return m_VerticesPerInstance; }
+
+	void SetIndexCountPerInstance(s32 indices_per_instance) { m_IndicesPerInstance = indices_per_instance; }
 	s32 GetIndexCountPerInstance() const { return m_IndicesPerInstance; }
+
+	void SetByteOffset(s32 byte_offset) { m_ByteOffset = byte_offset; }
 	s32 GetByteOffset() const { return m_ByteOffset; }
+
+	void SetStride(s32 stride) { m_Stride = stride; }
 	s32 GetStride() const { return m_Stride; }
+
+	void SetStart(s32 start) { m_Start = start; }
 	s32 GetStart() const { return m_Start; }
+
+	void SetBufferCount(s32 buffer_count) { m_BufferCount = buffer_count; }
 	s32 GetBufferCount() const { return m_BufferCount; }
+
+	void SetSize(s32 size) { m_Size = size; }
 	s32 GetSize() const { return m_Size; }
+
+	void SetBuffer(IBuffer* buffer) { m_InstanceBuffer = buffer; }
 	IBuffer* GetInstanceBuffer() const { return m_InstanceBuffer; }
+	void ReleaseBuffer() { Engine::GetAPI()->ReleasePtr(m_InstanceBuffer); }
 
+	void SetInputLayout(IInputLayout* input_layout) { m_InstanceInputLayout = input_layout; }
 	IInputLayout* GetInputLayout() const { return m_InstanceInputLayout; }
-
 
 
 private:

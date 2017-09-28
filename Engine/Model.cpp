@@ -102,17 +102,17 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
 	PROFILE_FUNCTION(profiler::colors::Amber100);
- 	for (Model* child : m_Children)
- 	{
- 		child->ShadowRender(camera_orientation, camera_projection, render_context);
- 	}
+	for (Model* child : m_Children)
+	{
+		child->ShadowRender(camera_orientation, camera_projection, render_context);
+	}
  
- 	if (m_IsRoot)
- 		return;
+	if (m_IsRoot)
+		return;
  
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
- 	render_context.GetContext().DrawIndexed(this);
+	render_context.GetContext().DrawIndexed(this);
 }
 
 void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
@@ -137,7 +137,7 @@ void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const
 
 void Model::SetPosition(const CU::Vector3f& aPosition)
 {
-	m_Orientations[0].SetPosition(aPosition);
+	m_Orientation.SetPosition(aPosition);
 	for each (Model* child in m_Children)
 	{
 		child->SetPosition(aPosition);
@@ -146,15 +146,15 @@ void Model::SetPosition(const CU::Vector3f& aPosition)
 
 CU::Matrix44f& Model::GetOrientation()
 {
-	return m_Orientations[0];
+	return m_Orientation;
 }
 
 void Model::SetOrientation(CU::Matrix44f orientation)
 {
-	m_Orientations[0] = orientation;
+	m_Orientation = orientation;
 	for (Model* child : m_Children)
 	{
-		child->SetOrientation(m_Orientations[0]);
+		child->SetOrientation(m_Orientation);
 	}
 }
 
@@ -205,14 +205,14 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const 
 	if (m_IsRoot)
 		return;
 
-	m_ConstantStruct.m_World = m_Orientations[0];
+	m_ConstantStruct.m_World = m_Orientation;
 	m_ConstantStruct.m_InvertedView = CU::Math::Inverse(camera_orientation);
 	m_ConstantStruct.m_Projection = camera_projection;
 
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 
 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ConstantStruct, sizeof(m_ConstantStruct));
-	ctx.UpdateConstantBuffer(m_InstanceWrapper.GetInstanceBuffer(), &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
+	ctx.UpdateConstantBuffer(m_InstanceWrapper.GetInstanceBuffer(), &m_Orientation, m_Orientations.Size() * sizeof(CU::Matrix44f));
 
 	ctx.VSSetConstantBuffer(0, 1, m_ConstantBuffer);
 

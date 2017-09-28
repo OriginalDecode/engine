@@ -34,7 +34,7 @@ public:
 	CModelImporter();
 
 	//void LoadModel(std::string filepath, Model* model, std::string aEffectPath);
-	
+
 	template<typename T>
 	void LoadModel(T* pModel, std::string model_filepath, std::string effect_filepath);
 
@@ -128,7 +128,7 @@ private:
 	void ProcessNode(aiNode* node, const aiScene* scene, FBXModelData* data, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point);
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point);
 
-	void ExtractMaterials(aiMesh* mesh,const aiScene* scene, FBXModelData* data, std::string file);
+	void ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file);
 };
 
 template<typename T>
@@ -220,7 +220,7 @@ void CModelImporter::CreateModel(FBXModelData* someData, T* model, std::string f
 	if (someData->myData)
 	{
 		FillData(someData, model, filepath, effect);
-		//model->m_Orientation = someData->myOrientation;
+		model->m_Orientation = someData->myOrientation;
 	}
 
 	for (FBXModelData* child : someData->myChildren)
@@ -262,20 +262,20 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 
 	FillVertexData(out, data, effect);
 	FillIndexData(out, data);
-	//FillInstanceData(out, data, effect);
+	FillInstanceData(out, data, effect);
 	out->m_IsRoot = false;
 
 
-// 	Surface* newSurface = new Surface(0, data->myVertexCount, 0, data->myIndexCount, graphics::TRIANGLE_LIST);
-// 	newSurface->SetEffect(effect);
-// 	const CU::GrowingArray<TextureInfo>& info = someData->myTextureData->myTextures;
-// 
-// 	for (s32 i = 0; i < info.Size(); i++)
-// 	{
-// 		newSurface->AddTexture(info[i].m_File, info[i].m_Slot);
-// 	}
+	Surface* surface = new Surface(0, data->myVertexCount, 0, data->myIndexCount, graphics::TRIANGLE_LIST);
+	surface->SetEffect(effect);
+	const CU::GrowingArray<TextureInfo>& info = someData->myTextureData->myTextures;
 
-	//out->m_Surfaces.Add(newSurface);
+	for (s32 i = 0; i < info.Size(); i++)
+	{
+		surface->AddTexture(info[i].m_File, info[i].m_Slot);
+	}
+
+	out->m_Surfaces.Add(surface);
 
 
 	//out->SetMinPoint(data->m_MinPoint);
@@ -294,7 +294,7 @@ inline void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<g
 		desc.m_ElementSpecification = graphics::INPUT_PER_VERTEX_DATA;
 		desc.m_InputSlot = 0;
 		desc.m_InstanceDataStepRate = 0;
- 
+
 		if (currentLayout.myType == ModelData::VERTEX_POS)
 		{
 			desc.m_Semantic = "POSITION";
@@ -434,7 +434,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	desc.m_CPUAccessFlag = graphics::WRITE;
 	desc.m_ByteWidth = ins_Size;
-	
+
 
 
 	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(desc);
@@ -456,8 +456,12 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	element.Add(instance[3]);
 
 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
-//This one needs to be fixed and resovled as well.
+
+
+
 	ins = InstanceWrapper(ins_InstanceCount, ins_IndicesPerInstance, ins_ByteOffset, ins_Stride, ins_Start, ins_BufferCount, buffer, layout);
+
+
 
 }
 

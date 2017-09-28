@@ -43,9 +43,9 @@ void AtmosphereModel::AddChild(AtmosphereModel* child)
 
 void AtmosphereModel::SetOrientation(const CU::Matrix44f& orientation)
 {
-	m_Orientations[0] = orientation;
+	m_Orientation = orientation;
 	for ( AtmosphereModel* child : m_Children )
 	{
-		child->SetOrientation(m_Orientations[0]);
+		child->SetOrientation(m_Orientation);
 	}
 }

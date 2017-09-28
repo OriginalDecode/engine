@@ -34,6 +34,7 @@ public:
 	~VertexWrapper()
 	{
 		Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
+		Engine::GetAPI()->ReleasePtr(m_VertexInputLayout);
 		SAFE_DELETE(m_Data);
 	}
 

@@ -53,7 +53,6 @@ private:
 protected:
 	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc) override;
 	
-	CU::GrowingArray<Surface*> m_Surfaces;
 	CU::GrowingArray<CU::Matrix44f> m_Orientations;
 
 };

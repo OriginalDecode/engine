@@ -44,7 +44,7 @@ void LightModel::AddChild(LightModel* aChild)
 
 void LightModel::SetOrientation(const CU::Matrix44f& orientation)
 {
-	m_Orientations[0] = orientation;
+	m_Orientation = orientation;
 	for ( LightModel* child : m_Children )
 	{
 		child->SetOrientation(orientation);

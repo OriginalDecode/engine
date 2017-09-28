@@ -25,13 +25,25 @@ public:
 		SAFE_DELETE(m_Data);
 	}
 
-
+	void SetData(s8* data) { m_Data = data; }
 	s8* GetData() const { return m_Data; }
+
+	void SetIndexCount(s32 index_count) { m_IndexCount = index_count; }
 	s32 GetIndexCount() const { return m_IndexCount; }
+
+	void SetSize(s32 size) { m_Size = size; }
 	s32 GetSize() const { return m_Size; }
+
+	void SetFormat(graphics::eTextureFormat format) { m_IndexBufferFormat = format; }
 	graphics::eTextureFormat GetFormat() const { return m_IndexBufferFormat; }
+
+	void SetByteOffset(s32 byte_offset) { m_ByteOffset = byte_offset; }
 	s32 GetByteOffset() const { return m_ByteOffset; }
+
+	void SetStart(s32 start) { m_Start = start; }
 	s32 GetStart() const { return m_Start; }
+
+
 	IBuffer* GetIndexBuffer() const { return m_IndexBuffer; }
 	void SetBuffer(IBuffer* buffer);
 private:

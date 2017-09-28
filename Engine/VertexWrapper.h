@@ -37,21 +37,37 @@ public:
 		SAFE_DELETE(m_Data);
 	}
 
+	void SetData(s8* data) { m_Data = data; }
 	s8* GetData() const { return m_Data; }
+
+	void SetStart(s32 start) { m_Start = start; }
 	s32 GetStart() const { return m_Start; }
+
+	void SetStride(s32 stride) { m_Stride = stride; }
 	const u32& GetStride() const { return m_Stride; }
+
+	void SetByteOffset(s32 byte_offset) { m_ByteOffset = byte_offset; }
 	const u32& GetByteOffset() const { return m_ByteOffset; }
+
+	void SetVertexCount(s32 vertex_count) { m_VertexCount = vertex_count; }
 	s32 GetVertexCount() const { return m_VertexCount; }
+
+	void SetBufferCount(s32 count) { m_BufferCount = count; }
 	s32 GetBufferCount() const { return m_BufferCount; }
+
+	void SetSize(s32 size) { m_Size = size; }
 	s32 GetSize() const { return m_Size; }
-	IBuffer* GetVertexBuffer() const { return m_VertexBuffer; }
-
-	IInputLayout* GetInputLayout() const { return m_VertexInputLayout; }
-	graphics::eTopology GetTopology() const { return m_Topology; }
-
-	void SetVertexCount(const s32 vtx_count) { m_VertexCount = vtx_count; }
 
 	void SetBuffer(IBuffer* buffer);
+	IBuffer* GetVertexBuffer() const { return m_VertexBuffer; }
+
+	void SetInputLayout(IInputLayout* layout) { m_VertexInputLayout = layout; }
+	IInputLayout* GetInputLayout() const { return m_VertexInputLayout; }
+
+	void SetTopology(graphics::eTopology topology) { m_Topology = topology; }
+	graphics::eTopology GetTopology() const { return m_Topology; }
+
+
 private:
 
 	s8* m_Data = nullptr;

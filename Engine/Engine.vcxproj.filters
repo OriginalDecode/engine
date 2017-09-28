@@ -419,6 +419,7 @@
     </ClInclude>
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="..\profile_defines.h" />
+    <ClInclude Include="AssetFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -680,6 +681,7 @@
       <Filter>World</Filter>
     </ClCompile>
     <ClCompile Include="Viewport.cpp" />
+    <ClCompile Include="AssetFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

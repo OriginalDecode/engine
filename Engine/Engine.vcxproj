@@ -297,6 +297,7 @@
   <ItemGroup>
     <ClInclude Include="..\profile_defines.h" />
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="AssetFactory.h" />
     <ClInclude Include="AssetsContainer.h" />
     <ClInclude Include="Atmosphere.h" />
     <ClInclude Include="AtmosphereConstants.h" />
@@ -411,6 +412,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="AssetFactory.cpp" />
     <ClCompile Include="AssetsContainer.cpp" />
     <ClCompile Include="Atmosphere.cpp" />
     <ClCompile Include="AtmosphereModel.cpp" />

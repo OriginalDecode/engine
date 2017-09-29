@@ -13,6 +13,8 @@ namespace debug
 {
  	void DebugHandle::Update()
  	{
+		ImGui::NewFrame();
+
  		ImGui::SetNextWindowPos(ImVec2(0, 0));
  		ImGui::SetNextWindowSize(ImVec2(300, Engine::GetInstance()->GetInnerSize().m_Height));
  		ImGuiWindowFlags flags = 0;
@@ -29,6 +31,7 @@ namespace debug
  			ImGui::End();
  		}
  		ImGui::PopStyleVar();
+
  	}
  
 //  	s32 DebugHandle::RegisterMainWindow(DebugMainWindow window)

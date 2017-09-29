@@ -145,12 +145,13 @@ void Renderer::Render()
 
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(m_DepthTexture, m_RenderContext);
-/*
+
+	m_RenderContext.GetAPI().SetDefaultTargets();
 
 	if(m_RenderInstanced)
 		Render3DCommandsInstanced();
 	else 
-		Render3DCommands();*/
+		Render3DCommands();
 
 	//memcpy(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture(), sizeof(ITexture2D*));
 	//Texture::CopyData(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
@@ -162,7 +163,6 @@ void Renderer::Render()
 #if !defined(_PROFILE) && !defined(_FINAL)
 	//WriteDebugTextures();
 #endif
-
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
 	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
@@ -181,7 +181,6 @@ void Renderer::Render()
 	//RenderLines();
 	//Render2DCommands();
  
-	m_RenderContext.GetAPI().SetDefaultTargets();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();

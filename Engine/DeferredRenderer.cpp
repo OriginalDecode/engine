@@ -70,6 +70,7 @@ DeferredRenderer::~DeferredRenderer()
 void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context)
 {
 
+	auto& ctx = render_context.GetContext();
 	//why do I reset the viewport???
 	//render_context.m_API->ResetViewport();
  
@@ -80,7 +81,6 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 	//ID3D11DepthStencilView* depth = render_context.m_API->GetDepthView(); 
 	//Replace above depth thing
  
-	auto& ctx = render_context.GetContext();
 
 	ctx.ClearRenderTarget(rtv, clearcolor::black);
 	ctx.OMSetRenderTargets(ARRSIZE(rtv), rtv, nullptr/*depth*/);
@@ -90,12 +90,12 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 
 	//render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
 
-	//UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);
+	UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);
 
 	m_RenderQuad->Render(false);
 
 	//Why do I set the finished scene texture as render target? Is this to do post-processing?
-	ctx.OMSetRenderTargets(1, &rtv[0], m_DepthStencilTexture->GetDepthView());
+	//ctx.OMSetRenderTargets(1, &rtv[0], m_DepthStencilTexture->GetDepthView());
 }
 
 void DeferredRenderer::SetRenderTarget()

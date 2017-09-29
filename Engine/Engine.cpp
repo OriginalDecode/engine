@@ -451,7 +451,7 @@ CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepa
 
 	m_States[(u16)eEngineStates::LOADING] = TRUE;
 
-	//m_LevelFactory->CreatePBLLevel(8);
+	m_LevelFactory->CreatePBLLevel(8);
 	//m_LevelFactory->CreateLevel(level_filepath);
 
 	m_States[(u16)eEngineStates::LOADING] = FALSE;

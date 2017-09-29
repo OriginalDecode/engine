@@ -18,32 +18,32 @@ Atmosphere::~Atmosphere()
 void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position)
 {
 
-	m_OuterRadius = outer_radius;
-	m_OuterOrientation.SetPosition(position);
-
-	m_InnerRadius = inner_radius;
-	m_InnerOrientation.SetPosition(position);
+// 	m_OuterRadius = outer_radius;
+// 	m_OuterOrientation.SetPosition(position);
+// 
+// 	m_InnerRadius = inner_radius;
+// 	m_InnerOrientation.SetPosition(position);
 
 	//m_VertexBuffer = m_API->CreateConstantBuffer(sizeof(cbVertex));
 	//m_PixelBuffer = m_API->CreateConstantBuffer(sizeof(cbPixel));
 
-	m_OuterOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_OuterRadius, m_OuterRadius, m_OuterRadius, 1)) * m_OuterOrientation;
-	m_InnerOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_InnerRadius, m_InnerRadius, m_InnerRadius, 1)) * m_InnerOrientation;
+	//m_OuterOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_OuterRadius, m_OuterRadius, m_OuterRadius, 1)) * m_OuterOrientation;
+	//m_InnerOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_InnerRadius, m_InnerRadius, m_InnerRadius, 1)) * m_InnerOrientation;
 
-	const VirtualFileSystem& vfs = Engine::GetInstance()->GetVFS();
-	cl::HashString atmosphere = Engine::GetInstance()->LoadModel<AtmosphereModel>(vfs.GetFile("Models/atmosphere.fbx").c_str(),
-																				  "Shaders/skysphere.json",
-																				  m_OuterSphere, false);
-	m_OuterSphere = static_cast<AtmosphereModel*>(Engine::GetInstance()->GetModel(atmosphere.c_str()));
+	//const VirtualFileSystem& vfs = Engine::GetInstance()->GetVFS();
+// 	cl::HashString atmosphere = Engine::GetInstance()->LoadModel<AtmosphereModel>(vfs.GetFile("Models/atmosphere.fbx").c_str(),
+// 																				  "Shaders/skysphere.json",
+// 																				  m_OuterSphere, false);
+// 	m_OuterSphere = static_cast<AtmosphereModel*>(Engine::GetInstance()->GetModel(atmosphere.c_str()));
 
-	m_VertexStruct.m_InnerRadius = m_InnerRadius;
-	m_VertexStruct.m_OuterRadius = m_OuterRadius;
-
-	m_PixelStruct.m_InnerRadius = m_InnerRadius;
-	m_PixelStruct.m_OuterRadius = m_OuterRadius;
+// 	m_VertexStruct.m_InnerRadius = m_InnerRadius;
+// 	m_VertexStruct.m_OuterRadius = m_OuterRadius;
+// 
+// 	m_PixelStruct.m_InnerRadius = m_InnerRadius;
+// 	m_PixelStruct.m_OuterRadius = m_OuterRadius;
 
 	//m_InnerSphere->SetOrientation(m_InnerOrientation);
-	m_OuterSphere->SetOrientation(m_OuterOrientation);
+	//m_OuterSphere->SetOrientation(m_OuterOrientation);
 }
 
 void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth)

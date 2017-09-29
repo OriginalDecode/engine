@@ -226,7 +226,8 @@ void CModelImporter::CreateModel(FBXModelData* someData, T* model, std::string f
 
 	for (FBXModelData* child : someData->myChildren)
 	{
-		//model->AddChild(CreateChild<T>(child, filepath, effect)); 
+		child->m_Filename = filepath.c_str();
+		model->AddChild(CreateChild<T>(child, filepath, effect)); 
 	}
 
 }

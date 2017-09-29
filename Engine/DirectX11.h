@@ -47,7 +47,10 @@ namespace graphics
 
 
 		Viewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y) override;
-		void ResetRendertarget();
+
+		void SetDefaultTargets() override;
+
+
 
 		ID3D11RenderTargetView* GetBackbuffer() { return m_RenderTarget; }
 		const ID3D11RenderTargetView* GetBackbuffer() const { return m_RenderTarget; }
@@ -56,7 +59,6 @@ namespace graphics
 		ID3D11DepthStencilView* GetDepthView() { return m_DepthView; }
 		const ID3D11DepthStencilView* GetDepthView() const { return m_DepthView; }
 
-		void ResetRenderTargetAndDepth();
 
  #ifdef _DEBUG
 		void ReportLiveObjects();

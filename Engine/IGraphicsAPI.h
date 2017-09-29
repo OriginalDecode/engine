@@ -255,6 +255,9 @@ namespace graphics
 		IBlendState* GetBlendState(eBlendStates blendstate) { return m_BlendStates[blendstate]; }
 
 		const CreateInfo& GetInfo() const { return m_CreateInfo; }
+
+		virtual void SetDefaultTargets() = 0;
+
 	protected:
 		CreateInfo m_CreateInfo;
 		eGraphicsAPI m_ActiveAPI;

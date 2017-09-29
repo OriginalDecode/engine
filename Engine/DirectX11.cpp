@@ -107,11 +107,6 @@ namespace graphics
 		m_Context->ClearDepthStencilView(m_DepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f);
 	}
 
-	void DirectX11::ResetRenderTargetAndDepth()
-	{
-		m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthView);
-	}
-
 	void DirectX11::CreateDeviceAndSwapchain()
 	{
 		DXGI_SWAP_CHAIN_DESC scDesc;
@@ -300,6 +295,7 @@ namespace graphics
 		return new Viewport(width, height, top_left_x, top_left_y, min_depth, max_depth, new_viewport);
 	}
 
+	
 	void DirectX11::CreateAdapterList()
 	{
 		std::vector<IDXGIAdapter*> enumAdapter;
@@ -336,15 +332,10 @@ namespace graphics
 		pUnknown->Release();
 	}
 
-
-
-
-	void DirectX11::ResetRendertarget()
+	void DirectX11::SetDefaultTargets()
 	{
 		m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthView);
 	}
-
-
 
 #ifdef _DEBUG
 	void DirectX11::ReportLiveObjects()

@@ -30,6 +30,7 @@ namespace graphics
 		virtual IBuffer* CreateConstantBuffer(s32 size, const cl::HashString& debug_name) = 0;
 		virtual IShaderBlob* CompileShaderFromFile(const cl::HashString& filepath, const char* entrypoint, const char* shader_type) = 0;
 		virtual IShaderBlob* CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const cl::HashString& source_name, const char* entrypoint, const char* shader_type) = 0;
+
 	private:
 
 

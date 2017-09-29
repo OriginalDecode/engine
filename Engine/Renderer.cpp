@@ -143,8 +143,8 @@ void Renderer::Render()
 
 	m_RenderContext.GetAPI().BeginFrame();
 
-	//	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
-	//	m_GBuffer.SetAsRenderTarget(m_DepthTexture, m_RenderContext);
+	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
+	m_GBuffer.SetAsRenderTarget(m_DepthTexture, m_RenderContext);
 /*
 
 	if(m_RenderInstanced)
@@ -181,6 +181,8 @@ void Renderer::Render()
 	//RenderLines();
 	//Render2DCommands();
  
+	m_RenderContext.GetAPI().SetDefaultTargets();
+
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();
 #endif

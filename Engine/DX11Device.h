@@ -33,6 +33,7 @@ namespace graphics
 		IShaderBlob* CompileShaderFromFile(const cl::HashString& filepath, const char* entrypoint, const char* shader_type) override;
 		IShaderBlob* CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const cl::HashString& source_name, const char* entrypoint, const char* shader_type) override;
 
+
 	private:
 		ID3D11Device* m_Device = nullptr;
 

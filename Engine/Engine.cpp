@@ -207,7 +207,7 @@ void Engine::Update()
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	//UpdateDebugUI();
-	//m_DebugHandle.Update();
+	m_DebugHandle.Update();
 #endif
 	m_DeltaTime = myTimeManager.GetDeltaTime();
 	if (m_States[(u16)eEngineStates::LOADING] == FALSE)

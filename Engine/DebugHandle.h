@@ -9,7 +9,7 @@ namespace debug
 	public:
 		DebugHandle() = default;
 		~DebugHandle() { }
-
+		void Update();
 
 	private:
 

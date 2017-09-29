@@ -51,7 +51,7 @@ void Game::InitState(StateStack* state_stack)
 	m_Engine->LoadModel(key, "Shaders/debug_pbl.json", true);
 
 	//m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
-	m_Engine->LoadModel(KEY_USED, "Shaders/debug_pbl.json", true);
+	//m_Engine->LoadModel(KEY_USED, "Shaders/debug_pbl.json", true);
 
 // 	Effect* volume_shader = m_Engine->GetEffect("Shaders/volume.json");
 // 	m_VolumeTexture = new Texture;

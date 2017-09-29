@@ -21,11 +21,11 @@ namespace graphics
 		m_Effect[SPOTLIGHT]->AddShaderResource(gbuffer.GetDepth(), Effect::DEPTH);
 
 		graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
-		m_LightBuffers[POINTLIGHT_VERTEX] = device.CreateConstantBuffer(sizeof(PointlightConstantBuffer));
-		m_LightBuffers[POINTLIGHT_PIXEL] = device.CreateConstantBuffer(sizeof(PixelConstantBuffer));
+		m_LightBuffers[POINTLIGHT_VERTEX] = device.CreateConstantBuffer(sizeof(PointlightConstantBuffer), "LightPass PointlightVertex ConstBuffer");
+		m_LightBuffers[POINTLIGHT_PIXEL] = device.CreateConstantBuffer(sizeof(PixelConstantBuffer), "LightPass PointlightPixel ConstBuffer");
 
-		m_LightBuffers[SPOTLIGHT_VERTEX] = device.CreateConstantBuffer(sizeof(SpotlightConstantBuffer));
-		m_LightBuffers[SPOTLIGHT_PIXEL] = device.CreateConstantBuffer(sizeof(SpotPixelConstantBuffer));
+		m_LightBuffers[SPOTLIGHT_VERTEX] = device.CreateConstantBuffer(sizeof(SpotlightConstantBuffer), "LightPass SpotlightVertex ConstBuffer");
+		m_LightBuffers[SPOTLIGHT_PIXEL] = device.CreateConstantBuffer(sizeof(SpotPixelConstantBuffer), "LightPass SpotlightPixel ConstBuffer");
 	}
 
 	LightPass::~LightPass()

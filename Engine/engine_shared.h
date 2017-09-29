@@ -12,6 +12,9 @@
 
 #define BITFLAG(x) (1 << x)
 
+#define STRINGIFY(_class) #_class
+
+
 typedef s32 Entity;
 
 typedef void ITexture2D;

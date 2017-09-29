@@ -34,7 +34,7 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 	m_ClipEffect = Engine::GetInstance()->GetEffect("Shaders/terrain_clip.json");
 	m_ClipEffect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain.dds"), Effect::DIFFUSE);
 
-	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(VertexBaseStruct));
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(VertexBaseStruct), "Terrain ConstantBuffer");
 
 	m_HasLoaded = true;
 	return true;
@@ -196,7 +196,7 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
 	vtx_desc.m_ByteWidth = vtx_size;
 
-	IBuffer* vtx_buffer = device.CreateBuffer(vtx_desc);
+	IBuffer* vtx_buffer = device.CreateBuffer(vtx_desc, "Terrain VertexBuffer");
 	m_VertexWrapper = VertexWrapper(vtx_data,
 									vtx_start,
 									vtx_buff_count,
@@ -226,7 +226,7 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	idx_desc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
 	idx_desc.m_MiscFlags = 0;
 	idx_desc.m_ByteWidth = idx_desc.m_Size;
-	IBuffer* idx_buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc);
+	IBuffer* idx_buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc, "Terrain IndexBuffer");
 
 	m_IndexWrapper = IndexWrapper(idx_data,
 								  idx_count,

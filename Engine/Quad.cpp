@@ -62,7 +62,7 @@ void Quad::FillVertexData(float half_width, float half_height)
 	buf_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	buf_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 
-	IBuffer* vertex_buffer = device.CreateBuffer(buf_desc);
+	IBuffer* vertex_buffer = device.CreateBuffer(buf_desc, "Quad VertexBuffer");
 
 	graphics::InputElementDesc desc[] = {
 		{ "POSITION", 0, graphics::_16BYTE_RGBA, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
@@ -111,7 +111,7 @@ void Quad::FillIndexData()
 	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
 	idx_desc.m_UsageFlag = graphics::DEFAULT_USAGE;
 
-	IBuffer* index_buffer = device.CreateBuffer(idx_desc);
+	IBuffer* index_buffer = device.CreateBuffer(idx_desc, "Quad IndexBuffer");
 
 	m_IndexWrapper = IndexWrapper(index_data,
 		index_count,

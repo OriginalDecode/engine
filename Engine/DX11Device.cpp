@@ -281,7 +281,7 @@ namespace graphics
 		return static_cast<IInputLayout*>(layout);
 	}
 
-	IBuffer* DX11Device::CreateBuffer(const BufferDesc& buffer_desc)
+	IBuffer* DX11Device::CreateBuffer(const BufferDesc& buffer_desc, const cl::HashString& debug_name)
 	{
 		ID3D11Buffer* buffer = nullptr;
 		D3D11_BUFFER_DESC desc;
@@ -309,13 +309,13 @@ namespace graphics
 
 #ifndef FINAL
 		DirectX11::HandleErrors(hr, "Failed to create buffer!");
-		DirectX11::SetDebugName(buffer, "Unknown_Buffer");
+		DirectX11::SetDebugName(buffer, debug_name);
 #endif
 
 		return buffer;
 	}
 
-	IBuffer* DX11Device::CreateConstantBuffer(s32 size)
+	IBuffer* DX11Device::CreateConstantBuffer(s32 size, const cl::HashString& debug_name)
 	{
 		BufferDesc desc;
 		desc.m_ByteWidth = size;
@@ -325,7 +325,7 @@ namespace graphics
 		desc.m_MiscFlags = 0;
 		desc.m_StructuredByteStride = 0;
 
-		return CreateBuffer(desc);
+		return CreateBuffer(desc, debug_name);
 	}
 
 	

@@ -25,9 +25,9 @@ namespace graphics
 		virtual IDepthStencilView* CreateDepthStencilView(const Texture2DDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name) = 0;
 
 		virtual IInputLayout* CreateInputLayout(CompiledShader* pShader, InputElementDesc* pLayout, const s32 element_count) = 0;
-		virtual IBuffer* CreateBuffer(const BufferDesc& buffer_desc) = 0;
+		virtual IBuffer* CreateBuffer(const BufferDesc& buffer_desc, const cl::HashString& debug_name) = 0;
 
-		virtual IBuffer* CreateConstantBuffer(s32 size) = 0;
+		virtual IBuffer* CreateConstantBuffer(s32 size, const cl::HashString& debug_name) = 0;
 		virtual IShaderBlob* CompileShaderFromFile(const cl::HashString& filepath, const char* entrypoint, const char* shader_type) = 0;
 		virtual IShaderBlob* CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const cl::HashString& source_name, const char* entrypoint, const char* shader_type) = 0;
 	private:

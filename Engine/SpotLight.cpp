@@ -21,9 +21,9 @@ void SpotLight::Initiate()
 	m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
 	m_Model->Initiate("cone.fbx");
 
-	m_ShadowSpotlight = new ShadowSpotlight;
-	m_ShadowSpotlight->Initiate(2048.f);
-	m_ShadowSpotlight->GetCamera()->RotateAroundX(cl::DegreeToRad(90.f));
+// 	m_ShadowSpotlight = new ShadowSpotlight;
+// 	m_ShadowSpotlight->Initiate(2048.f);
+// 	m_ShadowSpotlight->GetCamera()->RotateAroundX(cl::DegreeToRad(90.f));
 
 // 	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/lightvolume_spot.json");
 // 	CompiledShader* shader = effect->GetVertexShader();

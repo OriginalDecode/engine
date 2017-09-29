@@ -108,7 +108,7 @@ void CEmitterInstance::CreateBuffer()
 	vtx_buff_desc.m_ByteWidth = vtx_byte_width;
 	vtx_buff_desc.m_Data = &myParticles[0];
 
-	IBuffer* vtx_buffer =  device.CreateBuffer(vtx_buff_desc); 
+	IBuffer* vtx_buffer =  device.CreateBuffer(vtx_buff_desc, "EmitterInstance Buffer"); 
 
 	m_VertexWrapper = VertexWrapper(nullptr, 
 									vtx_start_slot, 
@@ -121,8 +121,8 @@ void CEmitterInstance::CreateBuffer()
 									pLayout,
 									graphics::POINT_LIST);
 
-	m_ConstantBuffer = device.CreateConstantBuffer(sizeof(cbParticleVertex));
-	m_GeometryBuffer = device.CreateConstantBuffer(sizeof(cbParticleGeometry));
+	m_ConstantBuffer = device.CreateConstantBuffer(sizeof(cbParticleVertex), "EmitterInstance ConstantBuffer");
+	m_GeometryBuffer = device.CreateConstantBuffer(sizeof(cbParticleGeometry), "EmitterInstance GeometryConstBuffer");
 
 }
 

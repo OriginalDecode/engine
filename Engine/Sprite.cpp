@@ -11,7 +11,8 @@ Sprite::~Sprite()
 void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 {
 	m_Quad = new Quad(Engine::GetInstance()->GetEffect("Shaders/sprite.json"), aSize.x, aSize.y);
-	m_cbSprite = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSprite));
+
+	m_cbSprite = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSprite), "Sprite ConstantBuffer");
 	SetPosition(aPosition);
 }
 
@@ -25,7 +26,7 @@ void Sprite::Initiate(const cl::HashString& path)
 {
 	throw std::exception("Don't use this function");
 	DL_ASSERT("Don't use me at the moment");
-	m_cbSprite = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSprite));
+	m_cbSprite = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSprite), path + " Sprite - ConstantBuffer");
 // 	m_Quad = new Quad(0, 1, 1);
 // 	mySprite->Initiate(path);
 }

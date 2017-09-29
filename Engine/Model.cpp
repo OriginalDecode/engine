@@ -22,7 +22,9 @@ Model::~Model()
 void Model::Initiate(const std::string& filename)
 {
 	m_Orientations.Init(250);
-	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(VertexBaseStruct));
+	cl::HashString dbg(filename.c_str());
+
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(VertexBaseStruct), dbg + "Vertex ConstantBuffer");
 	for (Model* child : m_Children)
 	{
 		child->Initiate(filename);

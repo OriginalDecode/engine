@@ -67,6 +67,11 @@ namespace graphics
 	{
 		CreateDeviceAndSwapchain();
 		CreateRazterizers();
+		CreateDepthStencilStates();
+		CreateSamplerStates();
+		CreateBackBuffer();
+		CreateDepthBuffer();
+
 		m_Viewport = CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
 
 #if !defined(_PROFILE) && !defined(_FINAL)

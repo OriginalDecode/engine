@@ -79,7 +79,7 @@ private:
 
 		CU::Vector3f m_MinPoint;
 		CU::Vector3f m_MaxPoint;
-
+		cl::HashString m_Filename;
 
 	};
 
@@ -93,6 +93,7 @@ private:
 		CU::Matrix44f myOrientation;
 		ModelData* myData = nullptr;
 		TextureData* myTextureData = nullptr;
+		cl::HashString m_Filename;
 		CU::GrowingArray<FBXModelData*> myChildren;
 		void DeleteChildren();
 
@@ -178,7 +179,7 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 
 	aiNode* rootNode = scene->mRootNode;
 	FBXModelData* data = new FBXModelData;
-
+	data->m_Filename = filepath.c_str();
 	CU::Vector3f max_point, min_point;
 	ProcessNode(rootNode, scene, data, filepath, min_point, max_point);
 
@@ -259,7 +260,7 @@ template<typename T>
 void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepath, Effect* effect)
 {
 	ModelData* data = someData->myData;
-
+	data->m_Filename = someData->m_Filename;
 	FillVertexData(out, data, effect);
 	FillIndexData(out, data);
 	FillInstanceData(out, data, effect);
@@ -358,7 +359,7 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 	idx_desc.m_MiscFlags = 0;
 	idx_desc.m_ByteWidth = idx_desc.m_Size;
 
-	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc);
+	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc, data->m_Filename + "IndexBuffer");
 
 	idx.SetData(indexData);
 	idx.SetIndexCount(idx_IndexCount);
@@ -395,7 +396,7 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
 	vtx_desc.m_MiscFlags = 0;
 	vtx_desc.m_ByteWidth = vtx_desc.m_Size;
-	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(vtx_desc);
+	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(vtx_desc, data->m_Filename + "VertexBuffer");
 
 
 	CU::GrowingArray<graphics::InputElementDesc> element;
@@ -437,7 +438,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 
 
 
-	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(desc);
+	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(desc, data->m_Filename + "InstanceBuffer");
 
 	CU::GrowingArray<graphics::InputElementDesc> element;
 	SetupInputLayout(data, element);

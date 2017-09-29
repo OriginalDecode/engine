@@ -27,9 +27,9 @@ namespace graphics
 		IDepthStencilView* CreateDepthStencilView(const Texture2DDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name) override;
 
 		IInputLayout* CreateInputLayout(CompiledShader* pShader, InputElementDesc* pLayout, const s32 element_count) override;
-		IBuffer* CreateBuffer(const BufferDesc& buffer_desc) override;
+		IBuffer* CreateBuffer(const BufferDesc& buffer_desc, const cl::HashString& debug_name) override;
 			
-		IBuffer* CreateConstantBuffer(s32 size) override;
+		IBuffer* CreateConstantBuffer(s32 size, const cl::HashString& debug_name) override;
 		IShaderBlob* CompileShaderFromFile(const cl::HashString& filepath, const char* entrypoint, const char* shader_type) override;
 		IShaderBlob* CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const cl::HashString& source_name, const char* entrypoint, const char* shader_type) override;
 

@@ -164,7 +164,7 @@ void WaterPlane::CreatePlane()
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
 	vtx_desc.m_ByteWidth = vtx_size;
 
-	IBuffer* vtx_buffer = device.CreateBuffer(vtx_desc);
+	IBuffer* vtx_buffer = device.CreateBuffer(vtx_desc, "WaterPlane VertexBuffer");
 
 	m_VertexWrapper = VertexWrapper(vtx_data,
 									vtx_start,
@@ -207,7 +207,7 @@ void WaterPlane::CreatePlane()
 	idx_desc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
 	idx_desc.m_MiscFlags = 0;
 	idx_desc.m_ByteWidth = idx_desc.m_Size;
-	IBuffer* idx_buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc);
+	IBuffer* idx_buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc, "WaterPlane IndexBuffer");
 
 	m_IndexWrapper = IndexWrapper(idx_data, 
 								  idx_count, 
@@ -222,8 +222,8 @@ void WaterPlane::CreatePlane()
 
 
 
-	m_ConstantBuffer = device.CreateConstantBuffer(sizeof(cbMatrices));
-	m_cbPixel = device.CreateConstantBuffer(sizeof(cbPixel));
+	m_ConstantBuffer = device.CreateConstantBuffer(sizeof(cbMatrices), "WaterPlane Vertex - ConstantBuffer");
+	m_cbPixel = device.CreateConstantBuffer(sizeof(cbPixel), "WaterPlane Pixel - ConstantBuffer");
 
 
 }

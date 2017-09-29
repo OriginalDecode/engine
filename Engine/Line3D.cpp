@@ -17,7 +17,7 @@ void Line3D::Initiate(int aLineAmount /*= 256*/)
 	m_LineAmount = aLineAmount;
 	m_Effect =  Engine::GetInstance()->GetEffect("Shaders/line.json");
 	CreateBuffer();
-	m_LineBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_cbLine));
+	m_LineBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_cbLine), "Line3D ConstantBuffer");
 }
 
 void Line3D::Update(const LinePoint& first_point, const LinePoint& second_point, const graphics::RenderContext& render_context)
@@ -149,7 +149,7 @@ void Line3D::CreateBuffer()
 	buffer_desc.m_CPUAccessFlag = graphics::WRITE;
 	buffer_desc.m_ByteWidth = sizeof(LinePoint) * m_LineAmount;
 
-	IBuffer* vertex_buffer = pDevice.CreateBuffer(buffer_desc);
+	IBuffer* vertex_buffer = pDevice.CreateBuffer(buffer_desc, "Line3D VertexBuffer");
 	m_VertexWrapper = VertexWrapper(nullptr, 0, 1, sizeof(m_cbLine), 0, 2, buffer_desc.m_ByteWidth, vertex_buffer, input_layout, graphics::POINT_LIST);
 }
 

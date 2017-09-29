@@ -51,7 +51,7 @@ DeferredRenderer::DeferredRenderer()
 
 	//_______________________________________________________________________
 
-	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_ConstantStruct));
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_ConstantStruct), "DeferredRenderer ConstantBuffer");
 
 	//_______________________________________________________________________
 

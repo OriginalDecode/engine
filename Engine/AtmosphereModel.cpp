@@ -12,7 +12,7 @@ AtmosphereModel::~AtmosphereModel()
 
 void AtmosphereModel::Initiate(const std::string& filename)
 {
-	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbVertex));
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbVertex), "AtmosphereModel ConstantBuffer");
 	for ( AtmosphereModel* child : m_Children )
 	{
 		child->Initiate(filename);

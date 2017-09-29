@@ -261,7 +261,7 @@ template<typename T>
 void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepath, Effect* effect)
 {
 	ModelData* data = someData->myData;
-	data->m_Filename = someData->m_Filename;
+	data->m_Filename = filepath.c_str();
 	FillVertexData(out, data, effect);
 	FillIndexData(out, data);
 	FillInstanceData(out, data, effect);
@@ -352,7 +352,7 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 
 	graphics::BufferDesc idx_desc;
 	idx_desc.m_Size = idx_Size;
-	idx_desc.m_Data = (void*)indexData;
+	idx_desc.m_Data = indexData;
 	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
 	idx_desc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
 	idx_desc.m_StructuredByteStride = 0;
@@ -379,7 +379,8 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 
 	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float);
 	s8* vertexRawData = new s8[sizeOfBuffer];
-	memcpy(vertexRawData, data->myVertexBuffer, sizeOfBuffer);
+	DL_MESSAGE("Buffer Size : %d", sizeOfBuffer);
+	memcpy(vertexRawData, &data->myVertexBuffer[0], sizeOfBuffer);
 
 	s8* vtx_Data = vertexRawData;
 	const s32 vtx_VertexCount = data->myVertexCount;
@@ -390,7 +391,7 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 
 	graphics::BufferDesc vtx_desc;
 	vtx_desc.m_Size = vtx_Size;
-	vtx_desc.m_Data = (void*)vtx_Data;
+	vtx_desc.m_Data = vtx_Data;
 	vtx_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	vtx_desc.m_StructuredByteStride = 0;

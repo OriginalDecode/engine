@@ -226,13 +226,13 @@ void CFont::UpdateBuffer()
 	auto& device = Engine::GetAPI()->GetDevice();
 
 	m_VertexDesc.m_ByteWidth = sizeof(SVertexTypePosColUv) * m_Vertices.Size();
-	m_VertexDesc.m_Data = &m_Vertices[0];
+	//m_VertexDesc.m_Data = &m_Vertices[0];
 	m_VertexWrapper.ReleaseBuffer();
 	m_VertexWrapper.SetBuffer(device.CreateBuffer(m_VertexDesc, "Font VertexBuffer"));
 
 
 	m_IndexDesc.m_ByteWidth = sizeof(u32) * m_Indices.Size();
-	m_IndexDesc.m_Data = &m_Indices[0];
+	//m_IndexDesc.m_Data = &m_Indices[0];
 	m_IndexWrapper.ReleaseBuffer();
 	m_IndexWrapper.SetBuffer(device.CreateBuffer(m_IndexDesc, "Font IndexBuffer"));
 }

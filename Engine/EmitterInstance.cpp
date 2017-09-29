@@ -106,7 +106,7 @@ void CEmitterInstance::CreateBuffer()
 	vtx_buff_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	vtx_buff_desc.m_CPUAccessFlag = graphics::WRITE;
 	vtx_buff_desc.m_ByteWidth = vtx_byte_width;
-	vtx_buff_desc.m_Data = &myParticles[0];
+	//vtx_buff_desc.m_Data = &myParticles[0];
 
 	IBuffer* vtx_buffer =  device.CreateBuffer(vtx_buff_desc, "EmitterInstance Buffer"); 
 

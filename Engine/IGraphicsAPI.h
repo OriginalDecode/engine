@@ -209,7 +209,7 @@ namespace graphics
 		eBindFlag m_BindFlag;
 		eCPUAccessFlag m_CPUAccessFlag;
 		eUsage m_UsageFlag;
-		void* m_Data = nullptr;
+		s8* m_Data = nullptr;
 		s32 m_Size = 0;
 		s32 m_StructuredByteStride = 0;
 		s32 m_MiscFlags = 0;

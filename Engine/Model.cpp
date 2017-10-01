@@ -50,7 +50,7 @@ void Model::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f&
 	for (Surface* surface : m_Surfaces)
 	{
 		surface->Activate(render_context);
-		render_context.GetContext().DrawIndexed(this);
+		render_context.GetContext().DrawIndexed(this, m_Effect);
 		surface->Deactivate();
 	}
 	PROFILE_BLOCK_END;
@@ -92,7 +92,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 	for (Surface* surface : m_Surfaces)
 	{
 		surface->Activate(render_context);
-		render_context.GetContext().DrawIndexedInstanced(this);
+		render_context.GetContext().DrawIndexedInstanced(this, m_Effect);
 		surface->Deactivate();
 	}
 	PROFILE_BLOCK_END;

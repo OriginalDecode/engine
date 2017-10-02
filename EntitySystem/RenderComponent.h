@@ -7,7 +7,7 @@
 
 struct ModelInstance
 {
-	cl::HashString m_ModelID;
+	u64 m_ModelID;
 	CU::Matrix44f m_Orientation;
 	bool m_RenderWireframe = false;
 	bool m_Shadowed = true;
@@ -15,7 +15,7 @@ struct ModelInstance
 
 struct RenderComponent : public BaseComponent
 {
-	cl::HashString m_ModelID;
+	u64 m_ModelID;
 	CU::GrowingArray<ModelInstance> m_Instances;
 
 	CU::Vector4f scale;

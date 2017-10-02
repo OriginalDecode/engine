@@ -99,14 +99,25 @@ public:
 
 	//_________________________________________
 	// Get Resources
-	Texture* GetTexture(const cl::HashString& filepath);
-	Effect* GetEffect(const cl::HashString& filepath);
-	Model* GetModel(const cl::HashString& filepath);
-	Sprite* GetSprite(const cl::HashString& filepath);
+	Texture* GetTexture(u64 key);
+	Effect* GetEffect(u64 key);
+	Model* GetModel(u64 key);
+	Sprite* GetSprite(u64 key);
 
-	//cl::HashString LoadModel(const cl::HashString& filepath, std::string effect, bool thread);
+	Texture* GetTexture(const char* key);
+	Effect* GetEffect(const char* key);
+	Model* GetModel(const char* key);
+	Sprite* GetSprite(const char* key);
+
+
+	//std::string LoadModel(const std::string& filepath, std::string effect, bool thread);
 	template<typename T>
-	cl::HashString LoadModel(const cl::HashString& filepath, std::string effect, bool thread);
+	u64 LoadModel(const std::string& filepath, std::string effect, bool thread);
+
+	u64 LoadTexture(const std::string& path);
+	u64 LoadEffect(const std::string& path);
+	u64 LoadSprite(const std::string& path);
+
 
 	void ResetRenderTargetAndDepth();
 
@@ -153,7 +164,7 @@ public:
 	/* These 3 functions are very API specific */
 	//HRESULT CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
 	//HRESULT CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message);
-	void* CreateShader(IShaderBlob* pShader, eShaderType type, const cl::HashString& debug_name);
+	void* CreateShader(IShaderBlob* pShader, eShaderType type, const std::string& debug_name);
 	/* END */
 
 
@@ -170,8 +181,8 @@ public:
 		_COUNT
 	};
 
-// 	void SelectEntity(u32 e);
-// 	void DeselectEntity();
+	// 	void SelectEntity(u32 e);
+	// 	void DeselectEntity();
 	memory::MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
 	const graphics::eSamplerStates GetCurrentSampler() const { return m_CurrentSampler; }
 	ISamplerState* GetActiveSampler() { return m_API->GetSamplerState(m_CurrentSampler); }
@@ -233,7 +244,7 @@ private:
 };
 
 template<typename T>
-cl::HashString Engine::LoadModel(const cl::HashString& filepath, std::string effect, bool thread)
+u64 Engine::LoadModel(const std::string& filepath, std::string effect, bool thread)
 {
 	return myAssetsContainer->LoadModel<T>(filepath, effect, thread);
 }

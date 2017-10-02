@@ -44,7 +44,7 @@ public:
 	void Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& projection, const graphics::RenderContext& render_context);
 	void AddCube(const CU::Vector3f& min, const CU::Vector3f& max);
 
-	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
+	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }
 	Effect* GetEffect() const { return m_Effect; }
 private:
 	void CreateBuffer();

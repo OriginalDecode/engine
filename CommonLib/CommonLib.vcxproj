@@ -34,7 +34,6 @@
     <ClInclude Include="DataStructures\StaticArray.h" />
     <ClInclude Include="DataStructures\VectorOnStack.h" />
     <ClInclude Include="FileWatcher.h" />
-    <ClInclude Include="HashString.h" />
     <ClInclude Include="JSON\JSONReader.h" />
     <ClInclude Include="Math\Line\Line.h" />
     <ClInclude Include="Math\Line\LineVolume.h" />

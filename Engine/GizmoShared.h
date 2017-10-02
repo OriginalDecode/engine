@@ -23,7 +23,7 @@ struct GizmoHandle
 	void Initiate();
 
 	~GizmoHandle();
-	cl::HashString m_Key;
+	u64 m_Key;
 
 	Model* m_Model = nullptr;
 	Texture* m_DirColor = nullptr;

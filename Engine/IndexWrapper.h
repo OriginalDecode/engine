@@ -44,7 +44,7 @@ public:
 	s32 GetStart() const { return m_Start; }
 
 
-	IBuffer* GetIndexBuffer() const { return m_IndexBuffer; }
+	IBuffer* GetIndexBuffer() { return m_IndexBuffer; }
 	void SetBuffer(IBuffer* buffer);
 
 	void ReleaseBuffer();

@@ -51,11 +51,11 @@ public:
 	s32 GetSize() const { return m_Size; }
 
 	void SetBuffer(IBuffer* buffer) { m_InstanceBuffer = buffer; }
-	IBuffer* GetInstanceBuffer() const { return m_InstanceBuffer; }
+	IBuffer* GetInstanceBuffer() { return m_InstanceBuffer; }
 	void ReleaseBuffer() { Engine::GetAPI()->ReleasePtr(m_InstanceBuffer); }
 
 	void SetInputLayout(IInputLayout* input_layout) { m_InstanceInputLayout = input_layout; }
-	IInputLayout* GetInputLayout() const { return m_InstanceInputLayout; }
+	IInputLayout* GetInputLayout() { return m_InstanceInputLayout; }
 
 
 private:

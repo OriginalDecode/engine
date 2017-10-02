@@ -7,9 +7,9 @@
 
 void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction)
 {
-	gizmo_handle.m_Key = Engine::GetInstance()->LoadModel<Model>(model_key.c_str(), 
-														  "Shaders/gizmo.json", 
-														  true);
+	gizmo_handle.m_Key = Engine::GetInstance()->LoadModel<Model>(model_key.c_str(),
+																 "Shaders/gizmo.json",
+																 true);
 	gizmo_handle.m_DirColor = Engine::GetInstance()->GetTexture(texture_path.c_str());
 	gizmo_handle.m_Model = Engine::GetInstance()->GetModel(gizmo_handle.m_Key);
 
@@ -102,7 +102,7 @@ bool GizmoBase::Inside(const CU::Vector3f& position, GizmoHandle* result)
 	}
 	else if (m_Right.Inside(position))
 	{
-		result = &m_Right; 
+		result = &m_Right;
 		return true;
 	}
 

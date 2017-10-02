@@ -27,8 +27,11 @@ public:
 
 	void SetEffect(Effect* anEffect);
 	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
+	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }
 	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }
+	IndexWrapper& GetIndexWrapper() { return m_IndexWrapper; }
 	const InstanceWrapper& GetInstanceWrapper() const { return m_InstanceWrapper; }
+	InstanceWrapper& GetInstanceWrapper() { return m_InstanceWrapper; }
 
 	CU::Vector3f GetWHD() const { return m_WHD; }
 
@@ -48,7 +51,7 @@ protected:
 	IndexWrapper m_IndexWrapper;
 	InstanceWrapper m_InstanceWrapper;
 
-	cl::HashString m_FileName;
+	std::string m_FileName;
 	IBuffer* m_ConstantBuffer = nullptr;
 	struct cbVertex
 	{

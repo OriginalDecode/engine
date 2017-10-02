@@ -1,6 +1,5 @@
 #pragma once
 #include <standard_datatype.hpp>
-#include <CommonLib/HashString.h>
 
 #include "EngineDefines.h"
 #include <Engine/RenderContext.h>

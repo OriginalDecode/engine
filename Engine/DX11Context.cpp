@@ -121,7 +121,8 @@ namespace graphics
 
 	void DX11Context::PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
 	{
-		PSSetSamplerState(0, 1, Engine::GetAPI()->GetSamplerState(samplerstate));
+		ISamplerState* sampler = Engine::GetAPI()->GetSamplerState(samplerstate);
+		PSSetSamplerState(0, 1, &sampler);
 	}
 
 	void DX11Context::GSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
@@ -146,7 +147,8 @@ namespace graphics
 
 	void DX11Context::IASetInputLayout(IInputLayout* input_layout)
 	{
-		m_Context->IASetInputLayout(static_cast<ID3D11InputLayout*>(input_layout));
+		ID3D11InputLayout* pInputLayout = static_cast<ID3D11InputLayout*>(input_layout);
+		m_Context->IASetInputLayout(pInputLayout);
 	}
 
 	void DX11Context::IASetTopology(eTopology topology)
@@ -184,8 +186,8 @@ namespace graphics
 
 	void DX11Context::Draw(Line3D* line, bool depth_on /*= true*/)
 	{
-		const auto& vtx = line->GetVertexWrapper();
-		const auto fx = line->GetEffect();
+		auto& vtx = line->GetVertexWrapper();
+		auto fx = line->GetEffect();
 		fx->Use();
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
@@ -201,8 +203,8 @@ namespace graphics
 
 	void DX11Context::Draw(CEmitterInstance* emitter)
 	{
-		const auto& vtx = emitter->GetVertexWrapper();
-		const auto fx = emitter->GetEffect();
+		auto& vtx = emitter->GetVertexWrapper();
+		auto fx = emitter->GetEffect();
 		fx->Use();
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
@@ -218,8 +220,8 @@ namespace graphics
 
 	void DX11Context::DrawIndexed(CFont* font, Effect* effect)
 	{
-		const auto& vtx = font->GetVertexWrapper();
-		const auto& idx = font->GetIndexWrapper();
+		auto& vtx = font->GetVertexWrapper();
+		auto& idx = font->GetIndexWrapper();
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
 
@@ -242,8 +244,8 @@ namespace graphics
 
 	void DX11Context::DrawIndexed(Quad* quad, bool depth_on)
 	{
-		const auto& vtx = quad->GetVertexWrapper();
-		const auto& idx = quad->GetIndexWrapper();
+		auto& vtx = quad->GetVertexWrapper();
+		auto& idx = quad->GetIndexWrapper();
 
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
@@ -264,8 +266,8 @@ namespace graphics
 
 	void DX11Context::DrawIndexed(BaseModel* model, Effect* fx)
 	{
-		const auto& vtx = model->GetVertexWrapper();
-		const auto& idx = model->GetIndexWrapper();
+		auto& vtx = model->GetVertexWrapper();
+		auto& idx = model->GetIndexWrapper();
 
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
@@ -337,11 +339,12 @@ namespace graphics
 
 	void DX11Context::DrawIndexedInstanced(BaseModel* model, Effect* fx)
 	{
-		const auto& vtx = model->GetVertexWrapper();
-		const auto& idx = model->GetIndexWrapper();
-		const auto& ins = model->GetInstanceWrapper();
+		auto& vtx = model->GetVertexWrapper();
+		auto& idx = model->GetIndexWrapper();
+		auto& ins = model->GetInstanceWrapper();
 
-		IASetInputLayout(ins.GetInputLayout());
+		IInputLayout* input_layout = ins.GetInputLayout();
+		IASetInputLayout(input_layout);
 
 		ID3D11Buffer* buffers[] = {
 			static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer()),
@@ -392,6 +395,7 @@ namespace graphics
 	void DX11Context::UpdateConstantBuffer(IBuffer* dest, void* src, s32 size)
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
+		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(dest);
 		m_Context->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 

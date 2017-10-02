@@ -184,7 +184,7 @@ namespace graphics
 	{
 		InputElementDesc() = default;
 
-		InputElementDesc(char* semantic, u32 index, eVertexFormat format, u32 slot, u32 byte_offset, eElementSpecification element_spec, u32 instance_step_rate)
+		InputElementDesc(std::string semantic, u32 index, eVertexFormat format, u32 slot, u32 byte_offset, eElementSpecification element_spec, u32 instance_step_rate)
 			: m_Semantic(semantic)
 			, m_SemanicIndex(index)
 			, m_Format(format)
@@ -195,7 +195,7 @@ namespace graphics
 		{
 		}
 
-		char* m_Semantic;
+		std::string m_Semantic;
 		u32 m_SemanicIndex = 0;
 		eVertexFormat m_Format;
 		u32 m_InputSlot = 0;

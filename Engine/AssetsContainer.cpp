@@ -44,41 +44,44 @@ void AssetsContainer::Initiate()
 #endif
 }
 
-Texture* AssetsContainer::GetTexture(const cl::HashString& path)
+Texture* AssetsContainer::GetTexture(u64 key)
 {
-// 	if (path.contains(".dds") == false)
-// 	{
-// 		DL_MESSAGE("Failed to load %s, due to incorrect fileformat. Has to be .dds", path.c_str());
-// 		DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
-// 		return nullptr;
-// 	}
+	auto it = m_Textures.find(key);
 
-	if (!LoadTexture(path))
-		return nullptr;
+	if (it != m_Textures.end())
+		return it->second;
 
-	return m_Textures[path.GetHash()];
+	return nullptr;
 }
 
-
-
-Effect* AssetsContainer::GetEffect(const cl::HashString& path)
+Effect* AssetsContainer::GetEffect(u64 key)
 {
-	if (m_Effects.find(path.GetHash()) == m_Effects.end())
-	{
-		LoadEffect(path);
-	}
-	return m_Effects[path.GetHash()];
+	auto it = m_Effects.find(key);
+
+	if (it != m_Effects.end())
+		return it->second;
+
+	return nullptr;
 }
 
-Model* AssetsContainer::GetModel(const cl::HashString& path)
+Model* AssetsContainer::GetModel(u64 key)
 {
-	auto it = m_Models.find(path.GetHash());
-	if (it == m_Models.end())
-	{
-		DL_MESSAGE("Requested Model : %s", path.c_str());
-		DL_ASSERT("Failed to find requested model. Did you enter the correct path?");
-	}
-	return it->second;
+	auto it = m_Models.find(key);
+
+	if (it != m_Models.end())
+		return it->second;
+
+	return nullptr;
+}
+
+Sprite* AssetsContainer::GetSprite(u64 key)
+{
+	auto it = m_Sprites.find(key);
+
+	if (it != m_Sprites.end())
+		return it->second;
+
+	return nullptr;
 }
 
 void AssetsContainer::Update()
@@ -91,52 +94,66 @@ void AssetsContainer::Update()
 
 void AssetsContainer::ReloadTexture(Texture* texture)
 {
-	//texture->OnReload();
 }
 
-bool AssetsContainer::LoadTexture(const cl::HashString& filepath)
+u64 AssetsContainer::LoadTexture(const std::string& filepath)
 {
-	BeginTicketMutex(&m_Mutex);
-	if (m_Textures.find(filepath.GetHash()) == m_Textures.end())
+	static Ticket_Mutex texture_mutex;
+	BeginTicketMutex(&texture_mutex);
+
+	u64 hash = Hash(filepath.c_str());
+
+	if (m_Textures.find(hash) == m_Textures.end())
 	{
 		graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 		IShaderResourceView* srv = device.CreateTextureFromFile(filepath, false, &Engine::GetAPI()->GetContext());
 		if (srv != nullptr)
 		{
 			Texture* texture = new Texture(srv);
-			m_Textures[filepath.GetHash()] = texture;
-			EndTicketMutex(&m_Mutex);
-			return true;
+			m_Textures.emplace(hash, texture);
+			EndTicketMutex(&texture_mutex);
+			return Hash(filepath.c_str());
 		}
 	}
-	EndTicketMutex(&m_Mutex);
-	return false;
+	EndTicketMutex(&texture_mutex);
+	return Hash(filepath.c_str());
 }
 
-Effect* AssetsContainer::LoadEffect(const cl::HashString& filepath)
+u64 AssetsContainer::LoadEffect(const std::string& filepath)
 {
-	Effect* effect = new Effect(filepath.c_str());
-	m_ShaderFactory->LoadShader(effect);
-	m_Effects[filepath.GetHash()] = effect;
-	return m_Effects[filepath.GetHash()];
-}
+	static Ticket_Mutex effect_mutex;
+	BeginTicketMutex(&effect_mutex);
 
-Sprite* AssetsContainer::LoadSprite(const cl::HashString& path)
-{
-	Sprite* sprite = new Sprite;
-	m_Sprites.emplace(path.GetHash(), sprite);
-	sprite->Initiate(path);
-	return sprite;
-}
-
-Sprite* AssetsContainer::GetSprite(const cl::HashString& path)
-{
-	for (auto it = m_Sprites.begin(); it != m_Sprites.end(); it++)
+	u64 hash = Hash(filepath.c_str());
+	if (m_Effects.find(hash) == m_Effects.end())
 	{
-		if (it->first != path.GetHash())
-			continue;
-
-		return it->second;
+		Effect* effect = new Effect(filepath);
+		m_Effects.emplace(hash, effect);
+		m_ShaderFactory->LoadShader(effect);
+		EndTicketMutex(&effect_mutex);
+		return Hash(filepath.c_str());
 	}
-	return LoadSprite(path);
+
+	EndTicketMutex(&effect_mutex);
+	return Hash(filepath.c_str());
 }
+
+u64 AssetsContainer::LoadSprite(const std::string& path)
+{
+	static Ticket_Mutex sprite_mutex;
+	BeginTicketMutex(&sprite_mutex);
+
+	u64 hash = Hash(path.c_str());
+	if (m_Sprites.find(hash) == m_Sprites.end())
+	{
+		Sprite* sprite = new Sprite;
+		m_Sprites.emplace(hash, sprite);
+		sprite->Initiate(path);
+		EndTicketMutex(&sprite_mutex);
+		return Hash(path.c_str());
+	}
+
+	EndTicketMutex(&sprite_mutex);
+	return Hash(path.c_str());
+}
+

@@ -95,7 +95,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_Window.SetWindowText("engine");
 	m_Window.ShowWindow();
 
-
 	if (!m_Window.IsWindowActive())
 		m_Window.OnActive();
 
@@ -135,6 +134,8 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_PhysicsManager = new PhysicsManager;
 
 	m_Threadpool.Initiate("Engine - Worker");
+
+
 
 	m_EntityManager.Initiate();
 
@@ -202,7 +203,7 @@ TreeDweller* Engine::CreateEntity(const std::string& filepath, CU::Vector3f& pos
 
 void Engine::Update()
 {
-	if (!HasInitiated() && m_Synchronizer->HasQuit()) 
+	if (!HasInitiated() && m_Synchronizer->HasQuit())
 		return;
 
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -231,41 +232,8 @@ int Engine::RegisterLight()
 {
 	return m_Renderer->RegisterLight();
 }
-// 
-// HRESULT Engine::CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message)
-// {
-// 	std::wstring w_file_path(file_path.begin(), file_path.end());
-// 	HRESULT hr = D3DCompileFromFile(
-// 		w_file_path.c_str(),
-// 		nullptr,
-// 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-// 		entrypoint.c_str(),
-// 		feature_level.c_str(),
-// 		shader_flags,
-// 		0,
-// 		&out_compiled_shader,
-// 		&out_compile_message);
-// 	return hr;
-// }
-// 
-// HRESULT Engine::CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message)
-// {
-// 	HRESULT hr = D3DCompile(
-// 		pData,
-// 		size,
-// 		source_name.c_str(),
-// 		nullptr,
-// 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-// 		entrypoint.c_str(),
-// 		feature_level.c_str(),
-// 		0,
-// 		0,
-// 		&out_shader,
-// 		&out_message);
-// 	return hr;
-// }
 
-void* Engine::CreateShader(IShaderBlob* pShader, eShaderType type, const cl::HashString& debug_name)
+void* Engine::CreateShader(IShaderBlob* pShader, eShaderType type, const std::string& debug_name)
 {
 	graphics::IGraphicsDevice& device = m_API->GetDevice();
 	switch (type)
@@ -328,30 +296,69 @@ VirtualFileSystem& Engine::GetVFS()
 	return m_VirtualFileSystem;
 }
 
-Texture* Engine::GetTexture(const cl::HashString& filepath)
+Texture* Engine::GetTexture(u64 key)
 {
-	return myAssetsContainer->GetTexture(filepath);
+	return myAssetsContainer->GetTexture(key);
 }
 
-Effect* Engine::GetEffect(const cl::HashString& filepath)
+Texture* Engine::GetTexture(const char* key)
 {
-	return myAssetsContainer->GetEffect(m_VirtualFileSystem.GetFile(filepath.c_str()).c_str());
+	u64 hash = Hash(key);
+	Texture* texture = myAssetsContainer->GetTexture(hash);
+
+	if (texture)
+		return texture;
+
+
+	myAssetsContainer->LoadTexture(key);
+	return myAssetsContainer->GetTexture(hash);
 }
 
-Model* Engine::GetModel(const cl::HashString& filepath)
+Effect* Engine::GetEffect(u64 key)
 {
-	return myAssetsContainer->GetModel(filepath);
+	return myAssetsContainer->GetEffect(key);
 }
 
-Sprite* Engine::GetSprite(const cl::HashString& filepath)
+Effect* Engine::GetEffect(const char* key)
 {
-	return myAssetsContainer->GetSprite(filepath);
+	std::string file = m_VirtualFileSystem.GetFile(key);
+	u64 hash = Hash(file.c_str());
+	Effect* effect = myAssetsContainer->GetEffect(hash);
+
+	if (effect)
+		return effect;
+
+	myAssetsContainer->LoadEffect(file);
+	return myAssetsContainer->GetEffect(hash);
 }
 
-//cl::HashString Engine::LoadModel(const cl::HashString& filepath, std::string effect, bool thread)
-//{
-//	return myAssetsContainer->LoadModel(filepath, effect, thread);
-//}
+Model* Engine::GetModel(u64 key)
+{
+	return myAssetsContainer->GetModel(key);
+}
+
+Model* Engine::GetModel(const char* key)
+{
+	return myAssetsContainer->GetModel(Hash(key));
+}
+
+Sprite* Engine::GetSprite(u64 key)
+{
+	return myAssetsContainer->GetSprite(key);
+}
+
+Sprite* Engine::GetSprite(const char* key)
+{
+	u64 hash = Hash(key);
+	Sprite* sprite = myAssetsContainer->GetSprite(hash);
+
+	if (sprite)
+		return sprite;
+
+
+	myAssetsContainer->LoadEffect(key);
+	return myAssetsContainer->GetSprite(hash);
+}
 
 std::string string_together(u16 time, u16 to_compare)
 {
@@ -451,10 +458,26 @@ CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepa
 
 	m_States[(u16)eEngineStates::LOADING] = TRUE;
 
-	m_LevelFactory->CreatePBLLevel(8);
+	m_LevelFactory->CreatePBLLevel(1);
 	//m_LevelFactory->CreateLevel(level_filepath);
 
 	m_States[(u16)eEngineStates::LOADING] = FALSE;
 
 	return m_LevelFactory->GetDwellers();
 }
+
+u64 Engine::LoadTexture(const std::string& path)
+{
+	return myAssetsContainer->LoadTexture(m_VirtualFileSystem.GetFile(path));
+}
+
+u64 Engine::LoadEffect(const std::string& path)
+{
+	return myAssetsContainer->LoadEffect(m_VirtualFileSystem.GetFile(path));
+}
+
+u64 Engine::LoadSprite(const std::string& path)
+{
+	return myAssetsContainer->LoadSprite(m_VirtualFileSystem.GetFile(path));
+}
+

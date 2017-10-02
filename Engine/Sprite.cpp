@@ -22,11 +22,9 @@ void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<f
 //	mySprite->Initiate(aShaderResource, aSize, aPosition);
 //}
 
-void Sprite::Initiate(const cl::HashString& path)
+void Sprite::Initiate(const std::string& path)
 {
-	throw std::exception("Don't use this function");
-	DL_ASSERT("Don't use me at the moment");
-	m_cbSprite = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSprite), path + " Sprite - ConstantBuffer");
+	//m_cbSprite = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSprite), path + " Sprite - ConstantBuffer");
 // 	m_Quad = new Quad(0, 1, 1);
 // 	mySprite->Initiate(path);
 }

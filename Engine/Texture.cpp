@@ -18,12 +18,12 @@ Texture::~Texture()
 	api->ReleasePtr(m_RenderTargetView);
 }
 
-void Texture::Initiate(const TextureDesc& desc, const cl::HashString& debug_name)
+void Texture::Initiate(const TextureDesc& desc, const std::string& debug_name)
 {
 	Initiate(desc, true, debug_name);
 }
 
-void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const cl::HashString& debug_name)
+void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const std::string& debug_name)
 {
 	graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 	DL_ASSERT_EXP(desc.m_TextureFormat != graphics::NO_FORMAT, "invalid texture format!");
@@ -101,7 +101,7 @@ void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const 
 	}
 }
 
-void Texture::InitiateAsDepthStencil(float width, float height, const cl::HashString& debug_name)
+void Texture::InitiateAsDepthStencil(float width, float height, const std::string& debug_name)
 {
 	TextureDesc desc;
 	desc.m_Width = (s32)width;
@@ -116,7 +116,7 @@ void Texture::InitiateAsDepthStencil(float width, float height, const cl::HashSt
 	Initiate(desc, debug_name);
 }
 
-void Texture::InitiateAsRenderTarget(float width, float height, const cl::HashString& debug_name)
+void Texture::InitiateAsRenderTarget(float width, float height, const std::string& debug_name)
 {
 	TextureDesc desc;
 	desc.m_Width = (s32)width;

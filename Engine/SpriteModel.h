@@ -15,7 +15,7 @@
 //
 //// 	void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 //// 	void Initiate(Texture* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
-//// 	void Initiate(const cl::HashString& path);
+//// 	void Initiate(const std::string& path);
 //
 //
 //

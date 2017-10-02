@@ -28,10 +28,10 @@
 #include <Engine/Texture.h>
 #include <Input/ControllerInput.h>
 
-static cl::HashString key = "Data/Model/sponza_pbr/sponza.fbx";
-static cl::HashString cube = "Data/Model/cube.fbx";
-static cl::HashString wall = "Data/Model/wall.fbx";
-static cl::HashString default_cube = "default_cube";
+static std::string key = "Data/Model/sponza_pbr/sponza.fbx";
+static std::string cube = "Data/Model/cube.fbx";
+static std::string wall = "Data/Model/wall.fbx";
+static std::string default_cube = "default_cube";
 #define KEY_USED default_cube
 
 #include <CommonLib/HashString.h>
@@ -65,7 +65,10 @@ void Game::InitState(StateStack* state_stack)
 	//m_MainCharacter->Load("Data/Textures/main_character.dds");
 
 	//m_MainCharacter = m_Engine->GetSprite("Data/Textures/particles/test_normal.dds");
-	m_MainKey = "Data/Textures/main_character.dds";
+	Engine::GetInstance()->LoadSprite("Data/Textures/main_character.dds");
+	m_MainKey = Hash("Data/Textures/main_character.dds");
+
+
 	m_Engine->GetInputHandle()->AddController(0);
 	m_Position = { 1920.f / 2.f, 1080.f / 2.f };
 	//m_Engine->RegisterFloatSider(&s_CamSpeed, "Camera Move Speed", 0.f, 100.f);

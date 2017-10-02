@@ -31,7 +31,7 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 	//m_InnerOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_InnerRadius, m_InnerRadius, m_InnerRadius, 1)) * m_InnerOrientation;
 
 	//const VirtualFileSystem& vfs = Engine::GetInstance()->GetVFS();
-// 	cl::HashString atmosphere = Engine::GetInstance()->LoadModel<AtmosphereModel>(vfs.GetFile("Models/atmosphere.fbx").c_str(),
+// 	std::string atmosphere = Engine::GetInstance()->LoadModel<AtmosphereModel>(vfs.GetFile("Models/atmosphere.fbx").c_str(),
 // 																				  "Shaders/skysphere.json",
 // 																				  m_OuterSphere, false);
 // 	m_OuterSphere = static_cast<AtmosphereModel*>(Engine::GetInstance()->GetModel(atmosphere.c_str()));

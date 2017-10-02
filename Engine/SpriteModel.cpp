@@ -44,7 +44,7 @@
 //	CreateVertices();
 //}
 //
-//void SpriteModel::Initiate(const cl::HashString& path)
+//void SpriteModel::Initiate(const std::string& path)
 //{
 //	myWindowSize = Engine::GetInstance()->GetWindowSize();
 //	m_Effect = Engine::GetInstance()->GetEffect("Shaders/sprite.json");

@@ -60,11 +60,11 @@ public:
 	s32 GetSize() const { return m_Size; }
 
 	void SetBuffer(IBuffer* buffer);
-	IBuffer* GetVertexBuffer() const { return m_VertexBuffer; }
+	IBuffer* GetVertexBuffer() { return m_VertexBuffer; }
 	void ReleaseBuffer();
 
 	void SetInputLayout(IInputLayout* layout) { m_VertexInputLayout = layout; }
-	IInputLayout* GetInputLayout() const { return m_VertexInputLayout; }
+	IInputLayout* GetInputLayout() { return m_VertexInputLayout; }
 
 	void SetTopology(graphics::eTopology topology) { m_Topology = topology; }
 	graphics::eTopology GetTopology() const { return m_Topology; }

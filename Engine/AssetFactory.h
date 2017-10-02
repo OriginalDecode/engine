@@ -8,7 +8,7 @@ class AssetFactory
 public:
 	AssetFactory();
 
-	void LoadModel(BaseModel* pModel, const cl::HashString& filepath, const cl::HashString& effectpath, bool thread = true);
+	void LoadModel(BaseModel* pModel, const std::string& filepath, const std::string& effectpath, bool thread = true);
 
 
 private:

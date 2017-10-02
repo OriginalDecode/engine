@@ -33,7 +33,7 @@ struct RenderCommand
 
 struct ModelCommand : public RenderCommand
 {
-	ModelCommand(const cl::HashString& key, const CU::Matrix44f& orientation, bool wireframe)
+	ModelCommand(u64 key, const CU::Matrix44f& orientation, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Orientation(orientation)
 		, m_Wireframe(wireframe)
@@ -41,7 +41,7 @@ struct ModelCommand : public RenderCommand
 	{
 	}
 
-	ModelCommand(const cl::HashString& key, const CU::Vector3f& position, bool wireframe)
+	ModelCommand(u64 key, const CU::Vector3f& position, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Wireframe(wireframe)
 		, m_Key(key)
@@ -49,7 +49,7 @@ struct ModelCommand : public RenderCommand
 		m_Orientation.SetPosition(position);
 	}
 
-	ModelCommand(const cl::HashString& key, const CU::Vector3f& position, bool wireframe, float roughness, float metalness) 
+	ModelCommand(u64 key, const CU::Vector3f& position, bool wireframe, float roughness, float metalness) 
 		: RenderCommand(eCommandType::MODEL)
 		, m_Wireframe(wireframe)
 		, m_Key(key)
@@ -59,7 +59,7 @@ struct ModelCommand : public RenderCommand
 		m_Orientation.SetPosition(position);
 	}
 
-	cl::HashString m_Key;
+	u64 m_Key;
 	CU::Matrix44f m_Orientation;
 	bool m_Wireframe = false;
 	float m_Roughness;
@@ -69,7 +69,7 @@ struct ModelCommand : public RenderCommand
 
 struct ModelCommandNonDeferred : public ModelCommand
 {
-	ModelCommandNonDeferred(const cl::HashString& key, const CU::Matrix44f& orientation, bool wireframe)
+	ModelCommandNonDeferred(const u64& key, const CU::Matrix44f& orientation, bool wireframe)
 		: ModelCommand(key, orientation, wireframe)
 	{
 	}
@@ -77,17 +77,15 @@ struct ModelCommandNonDeferred : public ModelCommand
 
 struct ShadowCommand : public RenderCommand
 {
-	ShadowCommand(const std::string& key, const CU::Matrix44f& orientation, bool wireframe)
+	ShadowCommand(u64 key, const CU::Matrix44f& orientation, bool wireframe)
 		: RenderCommand(eCommandType::SHADOW)
 		, m_Orientation(orientation)
-		, m_Wireframe(wireframe)
+		, m_Key(key)
 	{
-		strcpy_s(m_Key, key.c_str());
 	}
 
-	char m_Key[128] = { '\0' };
+	u64 m_Key;
 	CU::Matrix44f m_Orientation;
-	bool m_Wireframe = false;
 };
 
 struct SpotlightCommand : public RenderCommand
@@ -134,30 +132,14 @@ struct PointlightCommand : public RenderCommand
 
 struct SpriteCommand : public RenderCommand
 {
-	/*SpriteCommand(ID3D11ShaderResourceView* pResource, const CU::Vector2f& position)
-		: RenderCommand(eCommandType::SPRITE)
-		, m_Resource(pResource)
-		, m_Position(position)
-	{
-	}*/
-
-	/*SpriteCommand(Texture* pResource, const CU::Vector2f& position)
-		: RenderCommand(eCommandType::SPRITE)
-		, m_Resource(pResource->GetShaderView())
-		, m_Position(position)
-	{
-	}*/
-
-	SpriteCommand(const cl::HashString& key, const CU::Vector2f& position)
+	SpriteCommand(u64& key, const CU::Vector2f& position)
 		: RenderCommand(eCommandType::SPRITE)
 		, m_Key ( key )
 		, m_Position ( position ) 
 	{
 	}
 
-
-	//ID3D11ShaderResourceView* m_Resource = nullptr;
-	cl::HashString m_Key;
+	u64 m_Key;
 	CU::Vector2f m_Position;
 };
 

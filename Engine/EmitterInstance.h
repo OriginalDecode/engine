@@ -22,7 +22,7 @@ public:
 	void SetPosition(const CU::Vector3f& position);
 
 
-	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
+	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }
 	Effect* GetEffect() { return myData.shader; }
 private:
 	void CreateBuffer();

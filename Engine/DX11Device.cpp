@@ -21,7 +21,7 @@ namespace graphics
 		m_Device = nullptr;
 	}
 
-	IVertexShader* DX11Device::CreateVertexShader(IShaderBlob* pShader, const cl::HashString& debug_name)
+	IVertexShader* DX11Device::CreateVertexShader(IShaderBlob* pShader, const std::string& debug_name)
 	{
 		ID3D11VertexShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -33,7 +33,7 @@ namespace graphics
 		return shader;
 	}
 
-	IPixelShader* DX11Device::CreatePixelShader(IShaderBlob* pShader, const cl::HashString& debug_name)
+	IPixelShader* DX11Device::CreatePixelShader(IShaderBlob* pShader, const std::string& debug_name)
 	{
 		ID3D11PixelShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -45,7 +45,7 @@ namespace graphics
 		return shader;
 	}
 
-	IGeometryShader* DX11Device::CreateGeometryShader(IShaderBlob* pShader, const cl::HashString& debug_name)
+	IGeometryShader* DX11Device::CreateGeometryShader(IShaderBlob* pShader, const std::string& debug_name)
 	{
 		ID3D11GeometryShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -57,7 +57,7 @@ namespace graphics
 		return shader;
 	}
 
-	IHullShader* DX11Device::CreateHullShader(IShaderBlob* pShader, const cl::HashString& debug_name)
+	IHullShader* DX11Device::CreateHullShader(IShaderBlob* pShader, const std::string& debug_name)
 	{
 		ID3D11HullShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -69,7 +69,7 @@ namespace graphics
 		return shader;
 	}
 
-	IDomainShader* DX11Device::CreateDomainShader(IShaderBlob* pShader, const cl::HashString& debug_name)
+	IDomainShader* DX11Device::CreateDomainShader(IShaderBlob* pShader, const std::string& debug_name)
 	{
 		ID3D11DomainShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -81,7 +81,7 @@ namespace graphics
 		return shader;
 	}
 
-	IComputeShader* DX11Device::CreateComputeShader(IShaderBlob* pShader, const cl::HashString& debug_name)
+	IComputeShader* DX11Device::CreateComputeShader(IShaderBlob* pShader, const std::string& debug_name)
 	{
 		ID3D11ComputeShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);
@@ -93,7 +93,7 @@ namespace graphics
 		return shader;
 	}
 
-	IShaderResourceView* DX11Device::CreateTextureFromFile(const cl::HashString& filepath, bool generate_mips, IGraphicsContext* ctx)
+	IShaderResourceView* DX11Device::CreateTextureFromFile(const std::string& filepath, bool generate_mips, IGraphicsContext* ctx)
 	{
 		DX11Context* pCtx = static_cast<DX11Context*>(ctx);
 		std::string path = filepath.c_str();
@@ -134,7 +134,7 @@ namespace graphics
 		return srv;
 	}
 
-	ITexture2D* DX11Device::CreateTexture2D(const Texture2DDesc& desc, const cl::HashString& debug_name)
+	ITexture2D* DX11Device::CreateTexture2D(const Texture2DDesc& desc, const std::string& debug_name)
 	{
 		D3D11_TEXTURE2D_DESC text_desc;
 		text_desc.Width = desc.m_Width;
@@ -158,7 +158,7 @@ namespace graphics
 		return static_cast<ITexture2D*>(texture);
 	}
 
-	ITexture2D* DX11Device::CreateTexture2D(const Texture2DDesc& desc, s8* data, s32 pitch, const cl::HashString& debug_name)
+	ITexture2D* DX11Device::CreateTexture2D(const Texture2DDesc& desc, s8* data, s32 pitch, const std::string& debug_name)
 	{
 		D3D11_TEXTURE2D_DESC text_desc;
 		text_desc.Width = desc.m_Width;
@@ -187,7 +187,7 @@ namespace graphics
 		return static_cast<ITexture2D*>(texture);
 	}
 
-	IRenderTargetView* DX11Device::CreateRenderTarget(const Texture2DDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
+	IRenderTargetView* DX11Device::CreateRenderTarget(const Texture2DDesc& desc, ITexture2D* pTexture, const std::string& debug_name)
 	{
 		ID3D11RenderTargetView* rtv = nullptr;
 		ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(pTexture);
@@ -199,7 +199,7 @@ namespace graphics
 		return static_cast<IRenderTargetView*>(rtv);
 	}
 
-	IShaderResourceView* DX11Device::CreateShaderResource(const Texture2DDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
+	IShaderResourceView* DX11Device::CreateShaderResource(const Texture2DDesc& desc, ITexture2D* pTexture, const std::string& debug_name)
 	{
 		DL_ASSERT_EXP(pTexture, "pTexture was null!");
 		D3D11_SHADER_RESOURCE_VIEW_DESC view_desc;
@@ -218,7 +218,7 @@ namespace graphics
 		return static_cast<IShaderResourceView*>(srv);
 	}
 
-	IShaderResourceView* DX11Device::CreateShaderResource(ITexture2D* pTexture, const cl::HashString& debug_name)
+	IShaderResourceView* DX11Device::CreateShaderResource(ITexture2D* pTexture, const std::string& debug_name)
 	{
 		ID3D11ShaderResourceView* srv = nullptr;
 		ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(pTexture);
@@ -230,7 +230,7 @@ namespace graphics
 		return static_cast<IShaderResourceView*>(srv);
 	}
 
-	IDepthStencilView* DX11Device::CreateDepthStencilView(const Texture2DDesc& desc, ITexture2D* pTexture, const cl::HashString& debug_name)
+	IDepthStencilView* DX11Device::CreateDepthStencilView(const Texture2DDesc& desc, ITexture2D* pTexture, const std::string& debug_name)
 	{
 		D3D11_DEPTH_STENCIL_VIEW_DESC depth_desc; 
 		ZeroMemory(&depth_desc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
@@ -259,7 +259,7 @@ namespace graphics
 			const InputElementDesc& el = pLayout[i];
 			D3D11_INPUT_ELEMENT_DESC& desc_el = desc[i];
 
-			desc_el.SemanticName = el.m_Semantic;
+			desc_el.SemanticName = el.m_Semantic.c_str();
 			desc_el.SemanticIndex = el.m_SemanicIndex;
 			desc_el.Format = DirectX11::GetFormat(el.m_Format);
 			desc_el.InputSlot = el.m_InputSlot;
@@ -278,10 +278,10 @@ namespace graphics
 		DirectX11::SetDebugName(layout, "InputLayout");
 #endif
 		delete desc;
-		return static_cast<IInputLayout*>(layout);
+		return layout;
 	}
 
-	IBuffer* DX11Device::CreateBuffer(const BufferDesc& buffer_desc, const cl::HashString& debug_name)
+	IBuffer* DX11Device::CreateBuffer(const BufferDesc& buffer_desc, const std::string& debug_name)
 	{
 		ID3D11Buffer* buffer = nullptr;
 		D3D11_BUFFER_DESC desc;
@@ -315,7 +315,7 @@ namespace graphics
 		return buffer;
 	}
 
-	IBuffer* DX11Device::CreateConstantBuffer(s32 size, const cl::HashString& debug_name)
+	IBuffer* DX11Device::CreateConstantBuffer(s32 size, const std::string& debug_name)
 	{
 		BufferDesc desc;
 		desc.m_ByteWidth = size;
@@ -330,7 +330,7 @@ namespace graphics
 
 	
 
-	IShaderBlob* DX11Device::CompileShaderFromFile(const cl::HashString& filepath, const char* entrypoint, const char* shader_type)
+	IShaderBlob* DX11Device::CompileShaderFromFile(const std::string& filepath, const char* entrypoint, const char* shader_type)
 	{
 		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
 	#ifdef _DEBUG 
@@ -369,7 +369,7 @@ namespace graphics
 
 	}
 
-	IShaderBlob* DX11Device::CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const cl::HashString& source_name, const char* entrypoint, const char* shader_type)
+	IShaderBlob* DX11Device::CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const std::string& source_name, const char* entrypoint, const char* shader_type)
 	{
 		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
 #ifdef _DEBUG 

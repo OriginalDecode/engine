@@ -41,7 +41,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 											  api);
 
 
-	myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
+	//myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 	m_DeferredRenderer = new DeferredRenderer;
 
 	WindowSize window_size;
@@ -118,7 +118,7 @@ Renderer::~Renderer()
 
 	SAFE_DELETE(m_DeferredRenderer);
 
-	SAFE_DELETE(myText);
+	//SAFE_DELETE(myText);
 
 	SAFE_DELETE(m_ParticleEmitter);
 
@@ -586,8 +586,8 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 	DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
 	Model* model =  engine.GetModel(command->m_Key);
 	model->AddOrientation(command->m_Orientation);
-	if (m_ModelsToRender.find(command->m_Key.GetHash()) == m_ModelsToRender.end())
-		m_ModelsToRender.emplace(command->m_Key.GetHash(), model);
+	if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
+		m_ModelsToRender.emplace(command->m_Key, model);
 }
 
 //Move this to some kind of light manager

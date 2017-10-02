@@ -67,11 +67,11 @@ namespace CommonUtilities
 
 	template<typename ObjectType, typename SizeType = int>
 	GrowingArray<ObjectType, SizeType>::GrowingArray()
+		: m_HasInited(false)
+		, myCapacity(0)
+		, mySize(0)
+		, myData(nullptr)
 	{
-		m_HasInited = false;
-		myCapacity = 0;
-		mySize = 0;
-		myData = nullptr;
 		Init(16);
 	};
 

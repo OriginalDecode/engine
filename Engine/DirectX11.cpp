@@ -690,7 +690,7 @@ namespace graphics
 		return D3D11_INPUT_PER_VERTEX_DATA;
 	}
 
-	void DirectX11::SetDebugName(void * pResource, cl::HashString debug_name)
+	void DirectX11::SetDebugName(void * pResource, std::string debug_name)
 	{
 		if (!pResource)
 			return;

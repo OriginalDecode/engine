@@ -129,7 +129,6 @@
     <ClInclude Include="DataStructures\Hashmap\Hash.h">
       <Filter>DataStructures\Hashmap</Filter>
     </ClInclude>
-    <ClInclude Include="HashString.h" />
     <ClInclude Include="Math\Line\LineVolume.h">
       <Filter>Math\Line</Filter>
     </ClInclude>

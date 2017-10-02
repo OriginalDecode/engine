@@ -15,7 +15,7 @@ LightModel::~LightModel()
 void LightModel::Initiate(const std::string& filename)
 {
 	//m_Filename = cl::substr(filename, "/", false, 0);
-	cl::HashString dbg(filename.c_str());
+	std::string dbg(filename.c_str());
 	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbVertex), dbg + " LightModel - ConstantBuffer");
 	for ( LightModel* child : m_Children )
 	{

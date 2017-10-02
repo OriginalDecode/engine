@@ -129,11 +129,11 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 	DL_MESSAGE("Vertex Buffer Array Size : %d", size);
 	data->myData->myVertexBuffer = new float[size];
 	ZeroMemory(data->myData->myVertexBuffer, sizeof(float)*size);
-
+	data->myData->m_VertexBufferSize = sizeof(float) * size;
 	DL_ASSERT_EXP(mesh->mNumVertices < size, "the amount of vertices was MORE!? than size");
 	data->myData->myIndicies = new u32[polygonCount * 3];
 	ZeroMemory(data->myData->myIndicies, sizeof(u32) * polygonCount * 3);
-
+	data->myData->m_IndexBufferSize = sizeof(u32) * polygonCount * 3;
 	CU::GrowingArray<u32> indices;
 	u32 vertCount = 0;
 
@@ -269,7 +269,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 
 	memcpy(data->myData->myIndicies, &indiceFix[0], sizeof(u32) * indiceFix.Size());
 
-	data->myData->myVertexStride = stride;
+	data->myData->myVertexStride = stride * sizeof(float);
 	data->myData->myVertexCount = vertCount;
 	data->myData->myIndexCount = indiceFix.Size();
 

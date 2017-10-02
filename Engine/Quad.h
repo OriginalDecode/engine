@@ -17,8 +17,8 @@ public:
 
 	void Render(bool depth_on, Effect* override_effect = nullptr);
 	Effect* GetShader() { return m_Effect; }
-	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
-	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }
+	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }
+	IndexWrapper& GetIndexWrapper() { return m_IndexWrapper; }
 
 	void SetTexture(Texture* texture) { m_QuadTexture = texture; }
 

@@ -18,8 +18,8 @@ public:
 	void SetPosition(const CU::Vector2f& aPosition);
 	void SetScale(const CU::Vector2f& aScale);
 	void SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix);
-	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
-	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }
+	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }
+	IndexWrapper& GetIndexWrapper() { return m_IndexWrapper; }
 
 	const short& GetFontSize() const;
 private:

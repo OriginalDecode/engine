@@ -22,7 +22,7 @@ Model::~Model()
 void Model::Initiate(const std::string& filename)
 {
 	m_Orientations.Init(250);
-	cl::HashString dbg(filename.c_str());
+	std::string dbg(filename.c_str());
 	m_FileName = dbg;
 	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(VertexBaseStruct), dbg + "Vertex ConstantBuffer");
 	for (Model* child : m_Children)
@@ -185,7 +185,8 @@ void Model::AddTexture(const std::string& path, Effect::TextureSlot slot)
 
 void Model::AddOrientation(CU::Matrix44f orientation)
 {
-	DL_ASSERT_EXP(m_Orientations.Size() >= m_InstanceWrapper.GetInstanceCount(), "Too many instances");
+	DL_ASSERT_EXP(m_Orientations.Size() < 5000, "Too many instances");
+
 	for (Model* child : m_Children)
 	{
 		child->AddOrientation(orientation);
@@ -214,9 +215,11 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const 
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 
 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ConstantStruct, sizeof(m_ConstantStruct));
-	ctx.UpdateConstantBuffer(m_InstanceWrapper.GetInstanceBuffer(), &m_Orientation, m_Orientations.Size() * sizeof(CU::Matrix44f));
+// 	ctx.UpdateConstantBuffer(m_InstanceWrapper.GetInstanceBuffer(), 
+// 							 &m_Orientations[0], 
+// 							 m_Orientations.Size() * sizeof(CU::Matrix44f));
 
-	ctx.VSSetConstantBuffer(0, 1, m_ConstantBuffer);
+	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
 
 }
 

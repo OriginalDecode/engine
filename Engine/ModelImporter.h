@@ -28,18 +28,6 @@ class aiNode;
 class aiMesh;
 class aiScene;
 
-
-void* operator new(size_t size, const char* filename, int line)
-{
-	void* ptr = new char[size];
-	std::stringstream ss;
-	ss << "\nsize : " << size << "\nfilename:" << filename << "\nline:" << line;
-	OutputDebugStringA(ss.str().c_str());
-
-	return ptr;
-}
-#define new new (__FILE__, __LINE__)
-
 class CModelImporter
 {
 public:
@@ -92,15 +80,16 @@ private:
 		float* myVertexBuffer = nullptr;
 		u32* myIndicies = nullptr;
 		u32 myVertexCount = 0;
+		u32 m_VertexBufferSize = 0;
+		u32 m_IndexBufferSize = 0;
 		u32 myVertexStride = 0; //byte distance between each vertex
 		u32 myIndexCount = 0;
 		CU::GrowingArray<TextureInfo> myTextures;
 		CU::GrowingArray<Layout> myLayout;
 
-
 		CU::Vector3f m_MinPoint;
 		CU::Vector3f m_MaxPoint;
-		cl::HashString m_Filename;
+		std::string m_Filename;
 
 	};
 
@@ -114,7 +103,7 @@ private:
 		CU::Matrix44f myOrientation;
 		ModelData* myData = nullptr;
 		TextureData* myTextureData = nullptr;
-		cl::HashString m_Filename;
+		std::string m_Filename;
 		CU::GrowingArray<FBXModelData*> myChildren;
 		void DeleteChildren();
 
@@ -274,7 +263,7 @@ T* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect*
 	for (FBXModelData* child : data->myChildren)
 	{
 		child->m_Filename = filepath.c_str();
-		model->AddChild(CreateChild<T>(child, filepath, effect));
+		model->AddChild(CreateChild<T>(child, filepath, effect)); //causes heap corruption.
 	}
 
 	return model;
@@ -360,15 +349,18 @@ template<typename T>
 void CModelImporter::FillIndexData(T* out, ModelData* data)
 {
 	auto& idx = out->m_IndexWrapper;
-	s8* indexData = new s8[data->myIndexCount];
-	ZeroMemory(indexData, sizeof(u32) * data->myIndexCount);
-	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
+
+	const s32 idx_buf_size = data->m_IndexBufferSize;
+
+	s8* indexData = new s8[idx_buf_size];
+	memcpy(indexData, &data->myIndicies[0], idx_buf_size);
+
 	const graphics::eTextureFormat idx_IndexBufferFormat = graphics::R32_UINT;
 	const s32 idx_IndexCount = data->myIndexCount;
 	const s32 idx_Size = idx_IndexCount * sizeof(u32);
 
 	graphics::BufferDesc idx_desc;
-	idx_desc.m_Size = idx_Size;
+	idx_desc.m_Size = idx_buf_size;
 	idx_desc.m_Data = indexData;
 	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
 	idx_desc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
@@ -382,7 +374,7 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 	idx.SetData(indexData);
 	idx.SetIndexCount(idx_IndexCount);
 	idx.SetStart(0);
-	idx.SetSize(idx_Size);
+	idx.SetSize(idx_buf_size);
 	idx.SetFormat(idx_IndexBufferFormat);
 	idx.SetByteOffset(0);
 	idx.SetBuffer(buffer);
@@ -394,21 +386,21 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	auto& vtx = out->m_VertexWrapper;
 
 	const s32 vtx_VertexCount = data->myVertexCount;
-	const s32 vtx_Stride = data->myVertexStride * sizeof(float);
+	const s32 vtx_Stride = data->myVertexStride;
 	const s32 vtx_start = 0;
 	const s32 vtx_buff_count = 1;
-	const s32 vtx_Size = vtx_VertexCount * vtx_Stride;
-	s8* vtx_Data = new s8[vtx_Size];
-	DL_MESSAGE("Buffer Size : %d", vtx_Size);
+	const s32 vtx_Size = data->m_VertexBufferSize;
+	s8* vtx_Data = new s8[data->m_VertexBufferSize];
 
-	memcpy(vtx_Data, data->myVertexBuffer, vtx_Size);
+	DL_MESSAGE("Buffer Size : %d", vtx_VertexCount);
+	memcpy(vtx_Data, &data->myVertexBuffer[0], data->m_VertexBufferSize);
 
 
 	graphics::BufferDesc vtx_desc;
-	vtx_desc.m_Size = vtx_Size;
+	vtx_desc.m_Size = vtx_VertexCount * vtx_Stride;
 	vtx_desc.m_Data = vtx_Data;
 	vtx_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
-	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
+	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE; 
 	vtx_desc.m_StructuredByteStride = 0;
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
 	vtx_desc.m_MiscFlags = 0;

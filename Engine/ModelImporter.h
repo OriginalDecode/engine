@@ -249,8 +249,10 @@ T* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect*
 		model->m_Orientation = data->myOrientation;
 	}
 
+
 	for (FBXModelData* child : data->myChildren)
 	{
+		child->m_Filename = filepath.c_str();
 		model->AddChild(CreateChild<T>(child, filepath, effect));
 	}
 
@@ -278,11 +280,6 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 	}
 
 	out->m_Surfaces.Add(surface);
-
-
-	//out->SetMinPoint(data->m_MinPoint);
-	//out->SetMaxPoint(data->m_MaxPoint);
-
 }
 
 inline void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc)
@@ -345,7 +342,8 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 	BaseModel* model = static_cast<BaseModel*>(out);
 	auto& idx = model->m_IndexWrapper;
 	s8* indexData = new s8[data->myIndexCount];
-	memcpy(indexData, &data->myIndicies[0], data->myIndexCount * sizeof(u32));
+	ZeroMemory(indexData, sizeof(u32) * data->myIndexCount);
+	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
 	const graphics::eTextureFormat idx_IndexBufferFormat = graphics::R32_UINT;
 	const s32 idx_IndexCount = data->myIndexCount;
 	const s32 idx_Size = idx_IndexCount * sizeof(u32);
@@ -380,7 +378,7 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float);
 	s8* vertexRawData = new s8[sizeOfBuffer];
 	DL_MESSAGE("Buffer Size : %d", sizeOfBuffer);
-	memcpy(vertexRawData, &data->myVertexBuffer[0], sizeOfBuffer);
+	memcpy(vertexRawData, data->myVertexBuffer, sizeOfBuffer);
 
 	s8* vtx_Data = vertexRawData;
 	const s32 vtx_VertexCount = data->myVertexCount;

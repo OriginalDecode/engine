@@ -7,7 +7,6 @@ PointLight::PointLight()
 	m_Model = new LightModel;
 	cl::HashString key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/sphere.fbx",
 																	  "Shaders/deferred_pointlight.json", 
-																	  0, 
 																	  false);
 	m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
 

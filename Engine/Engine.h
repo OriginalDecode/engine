@@ -104,9 +104,9 @@ public:
 	Model* GetModel(const cl::HashString& filepath);
 	Sprite* GetSprite(const cl::HashString& filepath);
 
-	cl::HashString LoadModel(const cl::HashString& filepath, std::string effect, bool thread);
+	//cl::HashString LoadModel(const cl::HashString& filepath, std::string effect, bool thread);
 	template<typename T>
-	cl::HashString LoadModel(const cl::HashString& filepath, std::string effect, T* pModel, bool thread);
+	cl::HashString LoadModel(const cl::HashString& filepath, std::string effect, bool thread);
 
 	void ResetRenderTargetAndDepth();
 
@@ -233,8 +233,8 @@ private:
 };
 
 template<typename T>
-cl::HashString Engine::LoadModel(const cl::HashString& filepath, std::string effect, T* pModel, bool thread)
+cl::HashString Engine::LoadModel(const cl::HashString& filepath, std::string effect, bool thread)
 {
-	return myAssetsContainer->LoadModel(filepath, effect, pModel, thread);
+	return myAssetsContainer->LoadModel<T>(filepath, effect, thread);
 }
 

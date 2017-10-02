@@ -23,7 +23,7 @@ void Model::Initiate(const std::string& filename)
 {
 	m_Orientations.Init(250);
 	cl::HashString dbg(filename.c_str());
-
+	m_FileName = dbg;
 	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(VertexBaseStruct), dbg + "Vertex ConstantBuffer");
 	for (Model* child : m_Children)
 	{
@@ -223,6 +223,15 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const 
 void Model::AddChild(Model* aChild)
 {
 	m_Children.Add(aChild);
+}
+
+void Model::AddSurface(Surface* surface)
+{
+	for (Model* child : m_Children)
+	{
+		AddSurface(surface);
+	}
+	m_Surfaces.Add(surface);
 }
 
 void Model::CreateCube()

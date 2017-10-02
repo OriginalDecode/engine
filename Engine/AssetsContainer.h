@@ -30,9 +30,9 @@ public:
 	Sprite* GetSprite(const cl::HashString& path);
 	Effect* GetEffect(const cl::HashString& path);
 	Model* GetModel(const cl::HashString& path);
-	cl::HashString LoadModel(const cl::HashString& path, std::string effect, bool thread = true);
+
 	template<typename T>
-	cl::HashString LoadModel(const cl::HashString& path, std::string effect_filepath, T* pModel, bool thread = true);
+	cl::HashString LoadModel(cl::HashString path, std::string effect_filepath, bool thread = true);
 
 
 private:
@@ -58,18 +58,13 @@ private:
 };
 
 template<typename T>
-cl::HashString AssetsContainer::LoadModel(const cl::HashString& path, std::string effect_filepath, T* pModel, bool thread /*= true*/)
+cl::HashString AssetsContainer::LoadModel(cl::HashString path, std::string effect_filepath, bool thread /*= true*/)
 {
 	if (m_Models.find(path.GetHash()) != m_Models.end())
 		return path;
-	DL_MESSAGE("Loading model : %s", path.c_str());
+
 	T* model = new T;
 	m_Models.emplace(path.GetHash(), model);
-
-		m_ModelLoader->LoadModel(model, path.c_str(), effect_filepath);
-		model->Initiate(path.c_str());
-
-		return path;
 
 	if (thread)
 	{
@@ -80,6 +75,8 @@ cl::HashString AssetsContainer::LoadModel(const cl::HashString& path, std::strin
 	}
 	else
 	{
+		m_ModelLoader->LoadModel(model, path.c_str(), effect_filepath);
+		model->Initiate(path.c_str());
 	}
 
 	return path;

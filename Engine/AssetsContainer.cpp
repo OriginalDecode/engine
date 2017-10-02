@@ -140,30 +140,3 @@ Sprite* AssetsContainer::GetSprite(const cl::HashString& path)
 	}
 	return LoadSprite(path);
 }
-
-
-cl::HashString AssetsContainer::LoadModel(const cl::HashString& filepath, std::string effect, bool thread)
-{
-	if (m_Models.find(filepath.GetHash()) == m_Models.end())
-	{
-		DL_MESSAGE("Loading model : %s", filepath.c_str());
-		Model* model = new Model;
-		m_Models.emplace(filepath.GetHash(), model);
-
-		if ( thread )
-		{
-			Engine::GetInstance()->GetThreadpool().AddWork(Work([=]() {
-				m_ModelLoader->LoadModel(model, filepath.c_str(), effect);
-				model->Initiate(filepath.c_str());
-			}));
-			return filepath;
-		}
-		else
-		{
-			m_ModelLoader->LoadModel(model, filepath.c_str(), effect);
-			model->Initiate(filepath.c_str());
-			return filepath;
-		}
-	}
-	return filepath;
-}

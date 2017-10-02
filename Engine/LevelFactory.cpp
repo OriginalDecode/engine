@@ -220,7 +220,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	if (!el.IsArray())
 	{
-		component.m_ModelID = m_Engine->LoadModel(
+		component.m_ModelID = m_Engine->LoadModel<Model>(
 			el["model"].GetString(),
 			el["shader"].GetString(),
 			true);
@@ -270,7 +270,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 			CU::Vector3f rel_rot;
 			entity_reader.ReadElement(obj["relative_rotation"], rel_rot);
 
-			instance.m_ModelID = m_Engine->LoadModel(key_value, shader, true);
+			instance.m_ModelID = m_Engine->LoadModel<Model>(key_value, shader, true);
 
 			instance.m_Orientation.SetPosition(rel_pos);
 			CU::Matrix44f t = instance.m_Orientation;
@@ -299,7 +299,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 	const JSONElement& el = entity_reader.GetElement("graphics");
-	component.m_ModelID = m_Engine->LoadModel(
+	component.m_ModelID = m_Engine->LoadModel<Model>(
 		el["model"].GetString(),
 		el["shader"].GetString(),
 		true);
@@ -671,7 +671,7 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 			t.myOrientation.SetTranslation(translation);
 
 
-			auto key = Engine::GetInstance()->LoadModel("Data/Model/ballen.fbx", "Shaders/debug_pbl.json", false);
+			auto key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl.json", false);
 			Model* m = m_Engine->GetModel(key);
 			m->AddTexture("Data/Textures/brickwall_normal.dds", Effect::NORMAL);
 

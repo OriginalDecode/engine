@@ -22,6 +22,7 @@ public:
 	void ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
 
 	void AddChild(Model* aChild);
+	virtual void AddSurface(Surface* surface) override;
 
 	void SetPosition(const CU::Vector3f& aPosition);
 	CU::Matrix44f& GetOrientation();

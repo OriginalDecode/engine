@@ -12,7 +12,7 @@ void CInstance::Initiate(const char* filepath, const std::string& effect, const 
 	switch (aModelType)
 	{
 		case eModelType::STATIC:
-		Engine::GetInstance()->LoadModel(filepath, effect, true);
+		Engine::GetInstance()->LoadModel<Model>(filepath, effect, true);
 		myModel = Engine::GetInstance()->GetModel(filepath);
 		break;
 		case eModelType::ANIMATED:

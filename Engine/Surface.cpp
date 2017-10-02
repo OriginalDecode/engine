@@ -68,7 +68,7 @@ void Surface::AddTexture(const std::string& file_path, Effect::TextureSlot slot)
 		sub += ".dds";
 	}
 
-	m_Material.AddResource(Engine::GetInstance()->GetTexture(sub.c_str()), sub, slot);
+	//m_Material.AddResource(Engine::GetInstance()->GetTexture(sub.c_str()), sub, slot);
 	
 }
 

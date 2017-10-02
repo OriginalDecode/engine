@@ -66,88 +66,88 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	engine->Initiate(w, h, anInstance, WindowProc);
 	DL_ASSERT_EXP(newApplication->Initiate(), "Failed to initiate game");
 
-	PRAWINPUTDEVICELIST device_list = 0;
-	UINT device_count;
-
-	if (GetRawInputDeviceList(NULL, &device_count, sizeof(RAWINPUTDEVICELIST)) != 0)
-	{
-		//failed
-	}
-	device_list = (PRAWINPUTDEVICELIST)malloc(sizeof(RAWINPUTDEVICELIST) * device_count);
-	if (GetRawInputDeviceList(device_list, &device_count, sizeof(RAWINPUTDEVICELIST)) == ((UINT)-1))
-	{
-		//failed
-	}
-
-
-	for (u32 i = 0; i < device_count; i++)
-	{
-		UINT size = 256;
-		TCHAR tbuffer[256];
-		if ( GetRawInputDeviceInfo(device_list[i].hDevice, RIDI_DEVICENAME, tbuffer, &size) < 0 )
-		{
-			// Error in reading device name
-		}
-
-
-		std::stringstream ss;
-		std::string str(tbuffer);
-
-		if ( str.find("VID") != str.npos )
-		{
-			if ( str.find("1532") != str.npos )
-			{
-				ss << "RAZER | ";
-			}
-			else if ( str.find("045E") != str.npos )
-			{
-				ss << "MICROSOFT |";
-			}
-			else if ( str.find("0D8C") != str.npos )
-			{
-				ss << "C-Media Electronics | ";
-			}
-			else if ( str.find("046D") != str.npos )
-			{
-				ss << "Logitech | ";
-			}
-			else if ( str.find("8087") != str.npos )
-			{
-				ss << "Intel |  ";
-			}
-			else if ( str.find("9886") != str.npos )
-			{
-				ss << "Audio Device | ";
-			}
-			else if ( str.find("054C") != str.npos )
-			{
-				ss << "SONY | ";
-			}
-		}
-
-		ss << tbuffer << "\n";
-
-		OutputDebugString(ss.str().c_str());
-
-		RAWINPUTDEVICE rid[1];
-		rid[0].usUsagePage = ( USHORT ) EUsagePage::DEFAULT;
-		rid[0].usUsage = GAMEPAD;
-		rid[0].dwFlags = 0;
-		rid[0].hwndTarget = engine->GetHWND();
-		if ( RegisterRawInputDevices(rid, 1, sizeof(rid[0])) == FALSE )
-		{
-			DL_MESSAGE("Failed to Register input device!");
-		}
-
-
-	}
+// 	PRAWINPUTDEVICELIST device_list = 0;
+// 	UINT device_count;
+// 
+// 	if (GetRawInputDeviceList(NULL, &device_count, sizeof(RAWINPUTDEVICELIST)) != 0)
+// 	{
+// 		//failed
+// 	}
+// 	device_list = (PRAWINPUTDEVICELIST)malloc(sizeof(RAWINPUTDEVICELIST) * device_count);
+// 	if (GetRawInputDeviceList(device_list, &device_count, sizeof(RAWINPUTDEVICELIST)) == ((UINT)-1))
+// 	{
+// 		//failed
+// 	}
+// 
+// 
+// 	for (u32 i = 0; i < device_count; i++)
+// 	{
+// 		UINT size = 256;
+// 		TCHAR tbuffer[256];
+// 		if ( GetRawInputDeviceInfo(device_list[i].hDevice, RIDI_DEVICENAME, tbuffer, &size) < 0 )
+// 		{
+// 			// Error in reading device name
+// 		}
+// 
+// 
+// 		std::stringstream ss;
+// 		std::string str(tbuffer);
+// 
+// 		if ( str.find("VID") != str.npos )
+// 		{
+// 			if ( str.find("1532") != str.npos )
+// 			{
+// 				ss << "RAZER | ";
+// 			}
+// 			else if ( str.find("045E") != str.npos )
+// 			{
+// 				ss << "MICROSOFT |";
+// 			}
+// 			else if ( str.find("0D8C") != str.npos )
+// 			{
+// 				ss << "C-Media Electronics | ";
+// 			}
+// 			else if ( str.find("046D") != str.npos )
+// 			{
+// 				ss << "Logitech | ";
+// 			}
+// 			else if ( str.find("8087") != str.npos )
+// 			{
+// 				ss << "Intel |  ";
+// 			}
+// 			else if ( str.find("9886") != str.npos )
+// 			{
+// 				ss << "Audio Device | ";
+// 			}
+// 			else if ( str.find("054C") != str.npos )
+// 			{
+// 				ss << "SONY | ";
+// 			}
+// 		}
+// 
+// 		ss << tbuffer << "\n";
+// 
+// 		OutputDebugString(ss.str().c_str());
+// 
+// 		RAWINPUTDEVICE rid[1];
+// 		rid[0].usUsagePage = ( USHORT ) EUsagePage::DEFAULT;
+// 		rid[0].usUsage = GAMEPAD;
+// 		rid[0].dwFlags = 0;
+// 		rid[0].hwndTarget = engine->GetHWND();
+// 		if ( RegisterRawInputDevices(rid, 1, sizeof(rid[0])) == FALSE )
+// 		{
+// 			DL_MESSAGE("Failed to Register input device!");
+// 		}
+// 
+// 
+// 	}
 
 	//if ( RegisterRawInputDevices(rid, 1, sizeof(rid[0])) == FALSE )
 	//{
 	//	DL_MESSAGE("Failed to Register input device!");
 	//}
 
-	free(device_list);
+	//free(device_list);
 	/*
 		raw input can block other windows messages. Is this something I want?>
 	

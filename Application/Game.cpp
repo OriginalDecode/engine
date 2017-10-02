@@ -48,7 +48,7 @@ void Game::InitState(StateStack* state_stack)
 		m_Engine->AddFunction("Data/Levels/level_03.level", [&]() { Initiate("Data/Levels/level_03.level"); });
 	#endif*/
 	Initiate("Data/Levels/level_03.level");
-	m_Engine->LoadModel(key, "Shaders/debug_pbl.json", true);
+	//m_Engine->LoadModel(key, "Shaders/debug_pbl.json", true);
 
 	//m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
 	//m_Engine->LoadModel(KEY_USED, "Shaders/debug_pbl.json", true);
@@ -248,12 +248,12 @@ void Game::OldUpdate(float dt)
 	}
 
 
-	CU::Vector3f pos = m_Camera->GetOrientation().GetPosition();
-	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75f, 0.1f), "\nx:%.3f\ny:%.3f\nz:%.3f\n#%s(%d)", pos.x, pos.y, pos.z,
-		((m_FPSToPrint >= 50.f) ? "00FF00" : (m_FPSToPrint < 25.f) ? "FF0000" : "FFFF00"), m_FPSToPrint));
+	//CU::Vector3f pos = m_Camera->GetOrientation().GetPosition();
+	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75f, 0.1f), "\nx:%.3f\ny:%.3f\nz:%.3f\n#%s(%d)", pos.x, pos.y, pos.z,
+	//	((m_FPSToPrint >= 50.f) ? "00FF00" : (m_FPSToPrint < 25.f) ? "FF0000" : "FFFF00"), m_FPSToPrint));
 
-	if (event_happen)
-		m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5f, 0.7f), "Hello World has been sent & recieved"));
+	//if (event_happen)
+	//	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5f, 0.7f), "Hello World has been sent & recieved"));
 
 	//AddRenderCommand(ModelCommand(KEY_USED, CU::Vector3f(5.f, 0.f, 5.f), false));
 

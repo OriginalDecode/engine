@@ -32,6 +32,8 @@ public:
 
 	CU::Vector3f GetWHD() const { return m_WHD; }
 
+	virtual void AddSurface(Surface* surface) = 0;
+
 protected:
 	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& rc) = 0;
 	CU::Matrix44f m_Orientation;
@@ -46,8 +48,8 @@ protected:
 	IndexWrapper m_IndexWrapper;
 	InstanceWrapper m_InstanceWrapper;
 
+	cl::HashString m_FileName;
 	IBuffer* m_ConstantBuffer = nullptr;
-
 	struct cbVertex
 	{
 		CU::Matrix44f m_World;

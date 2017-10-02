@@ -105,6 +105,11 @@ void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const graphics::RenderC
 	render_context.GetContext().PSSetConstantBuffer(0, 1, m_cbPixel);
 }
 
+void WaterPlane::AddSurface(Surface* surface)
+{
+
+}
+
 void WaterPlane::CreatePlane()
 {
 	auto& ctx = Engine::GetAPI()->GetContext();

@@ -22,8 +22,6 @@ CModelImporter::CModelImporter()
 #endif
 }
 
-
-
 void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point)
 {
 	DL_ASSERT_EXP(someData, "Failed to process node. FBXModelData someData was null");
@@ -32,6 +30,7 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 	{
 		aiMesh* mesh = aScene->mMeshes[aNode->mMeshes[i]];
 		ProcessMesh(mesh, aScene, someData, file, min_point, max_point);
+		DL_ASSERT_EXP(someData->myData, "Was null after ProcessMesh!?");
 	}
 
 	for ( u32 i = 0; i < aNode->mNumChildren; i++ )

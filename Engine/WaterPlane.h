@@ -19,6 +19,7 @@ public:
 	void SetupReflectionRender(const graphics::RenderContext& render_context);
 	void SetClipPlane(const CU::Vector4f& plane, const graphics::RenderContext& render_context);
 	Effect* GetEffect() { return m_Effect; }
+	void AddSurface(Surface* surface) override;
 private:
 	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context);
 	void CreatePlane();

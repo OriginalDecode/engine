@@ -348,10 +348,10 @@ Sprite* Engine::GetSprite(const cl::HashString& filepath)
 	return myAssetsContainer->GetSprite(filepath);
 }
 
-cl::HashString Engine::LoadModel(const cl::HashString& filepath, std::string effect, bool thread)
-{
-	return myAssetsContainer->LoadModel(filepath, effect, thread);
-}
+//cl::HashString Engine::LoadModel(const cl::HashString& filepath, std::string effect, bool thread)
+//{
+//	return myAssetsContainer->LoadModel(filepath, effect, thread);
+//}
 
 std::string string_together(u16 time, u16 to_compare)
 {

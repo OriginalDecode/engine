@@ -28,6 +28,18 @@ class aiNode;
 class aiMesh;
 class aiScene;
 
+
+void* operator new(size_t size, const char* filename, int line)
+{
+	void* ptr = new char[size];
+	std::stringstream ss;
+	ss << "\nsize : " << size << "\nfilename:" << filename << "\nline:" << line;
+	OutputDebugStringA(ss.str().c_str());
+
+	return ptr;
+}
+#define new new (__FILE__, __LINE__)
+
 class CModelImporter
 {
 public:
@@ -50,6 +62,15 @@ private:
 
 	struct ModelData
 	{
+		~ModelData()
+		{
+			delete myVertexBuffer;
+			myVertexBuffer = nullptr;
+
+			delete myIndicies;
+			myIndicies = nullptr;
+		}
+
 		enum LayoutType
 		{
 			VERTEX_POS,
@@ -68,7 +89,7 @@ private:
 			LayoutType myType;
 		};
 
-		float* myVertexBuffer;
+		float* myVertexBuffer = nullptr;
 		u32* myIndicies = nullptr;
 		u32 myVertexCount = 0;
 		u32 myVertexStride = 0; //byte distance between each vertex
@@ -124,6 +145,7 @@ private:
 	void FillVertexData(T* out, ModelData* data, Effect* effect);
 
 
+
 	void SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc);
 
 	void ProcessNode(aiNode* node, const aiScene* scene, FBXModelData* data, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point);
@@ -146,6 +168,7 @@ template<typename T>
 void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 {
 
+	DL_MESSAGE("Loading model : %s", filepath.c_str());
 
 #ifdef _DEBUG
 	m_TimeManager.Update();
@@ -178,11 +201,10 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	DL_ASSERT_EXP(scene, "ImportModel Failed. Could not read the requested file.");
 
 	aiNode* rootNode = scene->mRootNode;
-	FBXModelData* data = new FBXModelData;
+	FBXModelData* data = new FBXModelData; 
 	data->m_Filename = filepath.c_str();
 	CU::Vector3f max_point, min_point;
 	ProcessNode(rootNode, scene, data, filepath, min_point, max_point);
-
 	CreateModel(data, pModel, filepath, effect);
 
 	//pModel->SetMaxPoint(max_point);
@@ -217,7 +239,6 @@ template<typename T>
 void CModelImporter::CreateModel(FBXModelData* someData, T* model, std::string filepath, Effect* effect)
 {
 	model->SetEffect(effect);
-
 	if (someData->myData)
 	{
 		FillData(someData, model, filepath, effect);
@@ -236,7 +257,7 @@ template<typename T>
 T* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect* effect)
 {
 	T* model = new T;
-
+	model->m_IsRoot = false;
 	size_t pos = filepath.rfind('/');
 
 	//model->m_Filename = filepath.substr(pos);
@@ -267,7 +288,6 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 	FillVertexData(out, data, effect);
 	FillIndexData(out, data);
 	FillInstanceData(out, data, effect);
-	out->m_IsRoot = false;
 
 
 	Surface* surface = new Surface(0, data->myVertexCount, 0, data->myIndexCount, graphics::TRIANGLE_LIST);
@@ -279,7 +299,7 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 		surface->AddTexture(info[i].m_File, info[i].m_Slot);
 	}
 
-	out->m_Surfaces.Add(surface);
+	out->AddSurface(surface);
 }
 
 inline void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc)
@@ -339,8 +359,7 @@ inline void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<g
 template<typename T>
 void CModelImporter::FillIndexData(T* out, ModelData* data)
 {
-	BaseModel* model = static_cast<BaseModel*>(out);
-	auto& idx = model->m_IndexWrapper;
+	auto& idx = out->m_IndexWrapper;
 	s8* indexData = new s8[data->myIndexCount];
 	ZeroMemory(indexData, sizeof(u32) * data->myIndexCount);
 	memcpy(indexData, data->myIndicies, data->myIndexCount * sizeof(u32));
@@ -372,20 +391,18 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 template<typename T>
 void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 {
-	BaseModel* model = static_cast<BaseModel*>(out);
-	auto& vtx = model->m_VertexWrapper;
+	auto& vtx = out->m_VertexWrapper;
 
-	s32 sizeOfBuffer = data->myVertexCount * data->myVertexStride * sizeof(float);
-	s8* vertexRawData = new s8[sizeOfBuffer];
-	DL_MESSAGE("Buffer Size : %d", sizeOfBuffer);
-	memcpy(vertexRawData, data->myVertexBuffer, sizeOfBuffer);
-
-	s8* vtx_Data = vertexRawData;
 	const s32 vtx_VertexCount = data->myVertexCount;
-	const s32 vtx_Size = sizeOfBuffer;
 	const s32 vtx_Stride = data->myVertexStride * sizeof(float);
 	const s32 vtx_start = 0;
 	const s32 vtx_buff_count = 1;
+	const s32 vtx_Size = vtx_VertexCount * vtx_Stride;
+	s8* vtx_Data = new s8[vtx_Size];
+	DL_MESSAGE("Buffer Size : %d", vtx_Size);
+
+	memcpy(vtx_Data, data->myVertexBuffer, vtx_Size);
+
 
 	graphics::BufferDesc vtx_desc;
 	vtx_desc.m_Size = vtx_Size;
@@ -404,7 +421,7 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 
 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
 
-	vtx.SetData(vertexRawData);
+	vtx.SetData(vtx_Data);
 	vtx.SetStart(vtx_start);
 	vtx.SetBufferCount(1);
 	vtx.SetStride(vtx_Stride);
@@ -420,23 +437,20 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 template<typename T>
 void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 {
-	BaseModel* model = static_cast<BaseModel*>(out);
-	auto& ins = model->m_InstanceWrapper;
+	auto& ins = out->m_InstanceWrapper;
 	const s32 ins_BufferCount = 1;
 	const s32 ins_Start = 0;
 	const s32 ins_Stride = sizeof(CU::Matrix44f);
 	const s32 ins_ByteOffset = 0;
 	const s32 ins_InstanceCount = 5000;
 	const s32 ins_Size = ins_InstanceCount * ins_Stride;
-	const s32 ins_IndicesPerInstance = model->m_IndexWrapper.GetIndexCount();
+	const s32 ins_IndicesPerInstance = out->m_IndexWrapper.GetIndexCount();
 
 	graphics::BufferDesc desc;
 	desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	desc.m_CPUAccessFlag = graphics::WRITE;
 	desc.m_ByteWidth = ins_Size;
-
-
 
 	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(desc, data->m_Filename + "InstanceBuffer");
 
@@ -457,12 +471,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	element.Add(instance[3]);
 
 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
-
-
-
 	ins = InstanceWrapper(ins_InstanceCount, ins_IndicesPerInstance, ins_ByteOffset, ins_Stride, ins_Start, ins_BufferCount, buffer, layout);
-
-
 
 }
 

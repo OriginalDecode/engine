@@ -147,8 +147,7 @@ namespace graphics
 
 	void DX11Context::IASetInputLayout(IInputLayout* input_layout)
 	{
-		ID3D11InputLayout* pInputLayout = static_cast<ID3D11InputLayout*>(input_layout);
-		m_Context->IASetInputLayout(pInputLayout);
+		m_Context->IASetInputLayout(static_cast<ID3D11InputLayout*>(input_layout));
 	}
 
 	void DX11Context::IASetTopology(eTopology topology)

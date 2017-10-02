@@ -463,7 +463,17 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	element.Add(instance[3]);
 
 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
-	ins = InstanceWrapper(ins_InstanceCount, ins_IndicesPerInstance, ins_ByteOffset, ins_Stride, ins_Start, ins_BufferCount, buffer, layout);
+	//ins = InstanceWrapper(ins_InstanceCount, ins_IndicesPerInstance, ins_ByteOffset, ins_Stride, ins_Start, ins_BufferCount, buffer, layout);
+
+	ins.SetBuffer(buffer);
+	ins.SetInputLayout(layout);
+	ins.SetIndexCountPerInstance(ins_IndicesPerInstance);
+	ins.SetInstanceCount(ins_InstanceCount);
+	ins.SetByteOffset(ins_ByteOffset);
+	ins.SetStride(ins_Stride);
+	ins.SetBufferCount(ins_BufferCount);
+	
+
 
 }
 

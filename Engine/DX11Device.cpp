@@ -274,7 +274,13 @@ namespace graphics
 
 		HRESULT hr = m_Device->CreateInputLayout(desc, element_count, blob->GetBufferPointer(), blob->GetBufferSize(), &layout);
 #ifndef FINAL
-		DirectX11::HandleErrors(hr, "Failed to create InputLayout");
+
+		if (FAILED(hr))
+		{
+			DirectX11::HandleErrors(hr, "Failed to create InputLayout");
+			return nullptr;
+		}
+
 		DirectX11::SetDebugName(layout, "InputLayout");
 #endif
 		delete desc;

@@ -276,8 +276,11 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 	data->m_Filename = filepath.c_str();
 	FillVertexData(out, data, effect);
 	FillIndexData(out, data);
-	FillInstanceData(out, data, effect);
 
+	auto& vtx = out->m_VertexWrapper;
+	
+	if (!vtx.GetInputLayout())
+		FillInstanceData(out, data, effect);
 
 	Surface* surface = new Surface(0, data->myVertexCount, 0, data->myIndexCount, graphics::TRIANGLE_LIST);
 	surface->SetEffect(effect);
@@ -421,7 +424,10 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	vtx.SetVertexCount(vtx_VertexCount);
 	vtx.SetSize(vtx_Size);
 	vtx.SetBuffer(buffer);
-	vtx.SetInputLayout(layout);
+
+	if(layout)
+		vtx.SetInputLayout(layout);
+
 	vtx.SetTopology(graphics::TRIANGLE_LIST);
 
 }
@@ -463,7 +469,6 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	element.Add(instance[3]);
 
 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
-	//ins = InstanceWrapper(ins_InstanceCount, ins_IndicesPerInstance, ins_ByteOffset, ins_Stride, ins_Start, ins_BufferCount, buffer, layout);
 
 	ins.SetBuffer(buffer);
 	ins.SetInputLayout(layout);

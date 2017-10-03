@@ -545,7 +545,7 @@ namespace graphics
 		if (!toError.empty())
 		{
 			DL_MESSAGE("%s", toError.c_str());
-			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			//DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 		}
 	}
 

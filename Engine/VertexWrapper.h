@@ -53,7 +53,6 @@ public:
 	void SetVertexCount(s32 vertex_count) { m_VertexCount = vertex_count; }
 	s32 GetVertexCount() const { return m_VertexCount; }
 
-	void SetBufferCount(s32 count) { m_BufferCount = count; }
 	s32 GetBufferCount() const { return m_BufferCount; }
 
 	void SetSize(s32 size) { m_Size = size; }
@@ -87,9 +86,11 @@ private:
 inline void VertexWrapper::SetBuffer(IBuffer* buffer)
 {
 	m_VertexBuffer = buffer;
+	m_BufferCount++;
 }
 
 inline void VertexWrapper::ReleaseBuffer()
 {
 	Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
+	m_BufferCount--;
 }

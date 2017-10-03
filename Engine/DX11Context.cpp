@@ -175,12 +175,24 @@ namespace graphics
 
 	void DX11Context::Draw(BaseModel* model, Effect* fx)
 	{
-		const auto& vtx = model->GetVertexWrapper();
-		if (fx)
-			fx->Use();
+		auto& vtx = model->GetVertexWrapper();
+
+		IASetInputLayout(vtx.GetInputLayout());
+		IASetTopology(vtx.GetTopology());
+		ID3D11Buffer* pVtxBuffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
+		const u32 stride = vtx.GetStride();
+		const u32 offset = vtx.GetByteOffset();
+
+		m_Context->IASetVertexBuffers(0,
+									  1,
+									  &pVtxBuffer,
+									  &stride,
+									  &offset);
+		m_Context->OMSetDepthStencilState(m_EnableZ, 1);
+
+		fx->Use();
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
-		if (fx)
-			fx->Clear();
+		fx->Clear();
 	}
 
 	void DX11Context::Draw(Line3D* line, bool depth_on /*= true*/)
@@ -271,15 +283,24 @@ namespace graphics
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
 
-		m_Context->IASetVertexBuffers(vtx.GetStart(),
-									  vtx.GetBufferCount(),
-									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()),
-									  &vtx.GetStride(),
-									  &vtx.GetByteOffset());
 
-		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
-									DirectX11::GetFormat(idx.GetFormat()),
-									idx.GetByteOffset());
+		ID3D11Buffer* pVtxBuffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
+		const u32 stride = vtx.GetStride();
+		const u32 offset = vtx.GetByteOffset();
+
+		m_Context->IASetVertexBuffers(0,
+									  1,
+									  &pVtxBuffer,
+									  &stride,
+									  &offset);
+
+		ID3D11Buffer* pBuffer = static_cast<ID3D11Buffer*>(idx.GetIndexBuffer());
+		const DXGI_FORMAT format = DirectX11::GetFormat(idx.GetFormat());
+		const u32 idx_offset = idx.GetByteOffset();
+
+		m_Context->IASetIndexBuffer(pBuffer,
+									format,
+									idx_offset);
 		if (fx != nullptr)
 		{
 			fx->Use();
@@ -421,7 +442,7 @@ namespace graphics
 		}
 	}
 
-	void DX11Context::UpdateBuffer(IBuffer* dest, void* src, s32 size, eMapping mapping)
+	void DX11Context::UpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping, bool internal)
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(dest);
@@ -429,13 +450,13 @@ namespace graphics
 
 		if (msr.pData)
 		{
-			void* data = msr.pData;
-			memcpy(data, &src, size);
+			s8* data = (s8*)msr.pData;
+			memcpy(data, &src[0], size);
 		}
 		m_Context->Unmap(buffer, 0);
 	}
 
-	void DX11Context::UpdateConstantBuffer(IBuffer* dest, void* src, s32 size)
+	void DX11Context::UpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size, bool internal)
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
@@ -444,8 +465,8 @@ namespace graphics
 
 		if (msr.pData)
 		{
-			void* data = msr.pData;
-			memcpy(data, &src, size);
+			s8* data = (s8*)msr.pData;
+			memcpy(data, &src[0], size);
 		}
 		m_Context->Unmap(buffer, 0);
 

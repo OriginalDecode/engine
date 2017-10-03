@@ -408,6 +408,7 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	vtx_desc.m_StructuredByteStride = 0;
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
 	vtx_desc.m_MiscFlags = 0;
+	vtx_desc.m_StructuredByteStride = 0;
 	vtx_desc.m_ByteWidth = vtx_desc.m_Size;
 	IBuffer* buffer = device.CreateBuffer(vtx_desc, data->m_Filename + "VertexBuffer");
 
@@ -424,7 +425,6 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 
 	vtx.SetData(vtx_Data);
 	vtx.SetStart(vtx_start);
-	vtx.SetBufferCount(1);
 	vtx.SetStride(vtx_Stride);
 	vtx.SetByteOffset(0);
 	vtx.SetVertexCount(vtx_VertexCount);

@@ -65,8 +65,6 @@ namespace graphics
 		virtual void DrawIndexedInstanced(Model* model, Effect* fx = nullptr) = 0;
 
 
-		virtual void UpdateConstantBuffer(IBuffer* dest, void* src, s32 size) = 0;
-		virtual void UpdateBuffer(IBuffer* dest, void* src, s32 size, eMapping mapping) = 0;
 
 		virtual void SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth) = 0;
 		virtual void SetRasterizerState(IRasterizerState* pRasterizerState) = 0;
@@ -74,10 +72,48 @@ namespace graphics
 
 		virtual void SetViewport(Viewport* viewport) = 0;
 		
+		template<typename T>
+		void UpdateConstantBuffer(IBuffer*& dest, T* src);
+
+		template<typename T>
+		void UpdateConstantBuffer(IBuffer*& dest, T* src, s32 size);
+
+		template<typename T>
+		void UpdateBuffer(IBuffer*& dest, T* src, eMapping mapping);
+		template<typename T>
+		void UpdateBuffer(IBuffer*& dest, T* src, s32 size, eMapping mapping);
 
 	protected:
 		virtual void* GetContext() = 0;
 
+		virtual void UpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size, bool internal) = 0;
+		virtual void UpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping, bool internal) = 0;
 
 	};
+
+	template<typename T>
+	void graphics::IGraphicsContext::UpdateConstantBuffer(IBuffer*& dest, T* src, s32 size)
+	{
+		UpdateConstantBuffer(dest, (s8*)src, size, true);
+	}
+
+	template<typename T>
+	void graphics::IGraphicsContext::UpdateConstantBuffer(IBuffer*& dest, T* src)
+	{
+		UpdateConstantBuffer(dest, (s8*)src, sizeof(T), true);
+	}
+
+	template<typename T>
+	void graphics::IGraphicsContext::UpdateBuffer(IBuffer*& dest, T* src, eMapping mapping)
+	{
+		UpdateBuffer(dest, (s8*)src, sizeof(T), mapping, true);
+	}
+
+	template<typename T>
+	void graphics::IGraphicsContext::UpdateBuffer(IBuffer*& dest, T* src, s32 size, eMapping mapping)
+	{
+		UpdateBuffer(dest, (s8*)src, size, mapping, true);
+	}
+
+
 };

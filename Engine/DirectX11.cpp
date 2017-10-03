@@ -92,14 +92,14 @@ namespace graphics
 
 	void DirectX11::BeginFrame()
 	{
-		m_Context->ClearRenderTarget(m_RenderTarget, clearcolor::black);
+		m_Context->ClearRenderTarget(m_RenderTarget, clearcolor::blue);
 		m_Context->ClearDepthStencilView(m_DepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f);
 	}
 
 	void DirectX11::EndFrame()
 	{
 		const bool vsync = Engine::GetInstance()->VSync();
-		Present(vsync ? 1 : 0, 0);
+		Present(1, 0);
 	}
 
 
@@ -541,7 +541,7 @@ namespace graphics
 		if (!toError.empty())
 		{
 			DL_MESSAGE("%s", toError.c_str());
-			//DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 		}
 	}
 

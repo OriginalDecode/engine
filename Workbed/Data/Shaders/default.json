@@ -1,6 +1,6 @@
 {
     "VertexShader": {
-        "file": "deferred_base_instanced.vs",
+        "file": "deferred_base.vs",
         "entrypoint": "main"
     },
     "PixelShader": {

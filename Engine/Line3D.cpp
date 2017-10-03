@@ -29,7 +29,8 @@ void Line3D::Update(const LinePoint& first_point, const LinePoint& second_point,
 	m_Vertices.Add(m_FirstPoint);
 	m_Vertices.Add(m_SecondPoint);
 
-	render_context.GetContext().UpdateBuffer(m_VertexWrapper.GetVertexBuffer(),
+	IBuffer* pBuffer = m_VertexWrapper.GetVertexBuffer();
+	render_context.GetContext().UpdateBuffer(pBuffer,
 											 &m_Vertices[0], 
 											 sizeof(LinePoint) * m_Vertices.Size(), 
 											 graphics::MAP_WRITE_DISCARD);
@@ -161,5 +162,5 @@ void Line3D::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const
  	m_cbLine.m_View = CU::Math::Inverse(camera_orientation);
  	m_cbLine.m_Projection = camera_projection;
 
-	ctx.UpdateConstantBuffer(m_LineBuffer, nullptr, sizeof(VertexBaseStruct));
+	//ctx.UpdateConstantBuffer(m_LineBuffer, nullptr, sizeof(VertexBaseStruct));
 }

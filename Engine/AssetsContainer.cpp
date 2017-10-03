@@ -39,6 +39,10 @@ void AssetsContainer::Initiate()
 	m_Models.empty();
 	m_Sprites.empty();
 
+	u64 hash = Hash("default_cube");
+	auto it = m_Models.emplace(hash , new Model);
+	it.first->second->CreateCube();
+
 #ifndef FINAL
 	m_Watcher = new FileWatcher;
 #endif

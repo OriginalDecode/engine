@@ -132,7 +132,8 @@ void CEmitterInstance::UpdateVertexBuffer()
 		return;
 
 	m_VertexWrapper.SetVertexCount(myParticles.Size());
-	Engine::GetAPI()->GetContext().UpdateConstantBuffer(m_VertexWrapper.GetVertexBuffer(), &myParticles[0], sizeof(SParticleObject) * myParticles.Size());
+	IBuffer* pBuffer = m_VertexWrapper.GetVertexBuffer();
+	Engine::GetAPI()->GetContext().UpdateConstantBuffer(pBuffer, &myParticles[0]);
 }
 
 void CEmitterInstance::UpdateConstantBuffer(CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
@@ -140,10 +141,10 @@ void CEmitterInstance::UpdateConstantBuffer(CU::Matrix44f& aCameraOrientation, c
 	auto& ctx = Engine::GetAPI()->GetContext();
 	m_VertexCB.m_World = CU::Matrix44f();
 	m_VertexCB.m_View = CU::Math::Inverse(aCameraOrientation);
-	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_VertexCB, sizeof(m_VertexCB));
+	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_VertexCB);
 
 	m_GeometryCB.m_Projection = aCameraProjection;
-	ctx.UpdateConstantBuffer(m_GeometryBuffer, &m_GeometryCB, sizeof(m_GeometryCB));
+	ctx.UpdateConstantBuffer(m_GeometryBuffer, &m_GeometryCB);
 
 
 

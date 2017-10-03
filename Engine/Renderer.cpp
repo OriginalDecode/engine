@@ -148,7 +148,7 @@ void Renderer::Render()
 
 	//m_RenderContext.GetAPI().SetDefaultTargets();
 
-	if(m_RenderInstanced)
+	if(!m_RenderInstanced)
 		Render3DCommandsInstanced();
 	else 
 		Render3DCommands();
@@ -276,7 +276,7 @@ void Renderer::RenderNonDeferred3DCommands()
 void Renderer::Render3DCommands()
 {
 	PROFILE_FUNCTION(profiler::colors::Green);
-	const CU::Matrix44f& orientation = m_Camera->GetOrientation();
+	const CU::Matrix44f& orientation = m_Camera->GetCurrentOrientation();
 	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
 
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
@@ -284,7 +284,7 @@ void Renderer::Render3DCommands()
 	Engine& engine = m_RenderContext.GetEngine();
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
@@ -299,7 +299,6 @@ void Renderer::Render3DCommands()
 
 			Model* model = m_RenderContext.GetEngine().GetModel(command->m_Key);
 			model->SetOrientation(command->m_Orientation);
-			//m_RenderContext.GetAPI()->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 			model->Render(orientation, perspective, m_RenderContext);
 		}
 	}

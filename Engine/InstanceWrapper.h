@@ -50,8 +50,8 @@ public:
 	void SetSize(s32 size) { m_Size = size; }
 	s32 GetSize() const { return m_Size; }
 
-	void SetBuffer(IBuffer* buffer) { m_InstanceBuffer = buffer; }
 	IBuffer* GetInstanceBuffer() { return m_InstanceBuffer; }
+	void SetBuffer(IBuffer* buffer) { m_InstanceBuffer = buffer; }
 	void ReleaseBuffer() { Engine::GetAPI()->ReleasePtr(m_InstanceBuffer); }
 
 	void SetInputLayout(IInputLayout* input_layout) { m_InstanceInputLayout = input_layout; }

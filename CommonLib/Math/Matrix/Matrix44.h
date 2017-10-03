@@ -640,7 +640,7 @@ namespace CommonUtilities
 			temp.myMatrix[11] = 1.0f;
 
 			temp.myMatrix[14] = -scaling * aNearZ;
-			temp.myMatrix[15] = 0.0f;
+			temp.myMatrix[15] = 1.0f;
 			return temp;
 		}
 

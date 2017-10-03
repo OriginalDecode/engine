@@ -11,7 +11,6 @@ void Camera::CreatePerspectiveProjection(float width, float height, float near_p
 	m_ProjectionCreated = true;
 	m_CurrentFoV = fov;
 	m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, cl::DegreeToRad(m_CurrentFoV));
-	m_ProjectionMatrix.rows[3].w = 1;
 }
 
 void Camera::CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane)

@@ -8,20 +8,16 @@ cbuffer Matrices : register(b0)
 struct VS_INPUT
 {
 	float4 pos : POSITION;
-	float3 normal : NORMAL;
+	float4 normal : NORMAL;
 	float2 uv : TEXCOORD;
-	float3 binorm : BINORMAL;
-	float3 tang : TANGENT;
+	float4 binorm : BINORMAL;
+	float4 tang : TANGENT;
 };
 
 struct VS_OUTPUT
 {
 	float4 pos : SV_POSITION;
-	float3 normal : NORMAL;
-	float2 uv : TEXCOORD;
-	float3 binorm : BINORMAL;
-	float3 tang : TANGENT;
-	float4 worldpos : POSITION;
+	float4 normal : NORMAL;
 };
 
 VS_OUTPUT main(VS_INPUT input)
@@ -31,12 +27,8 @@ VS_OUTPUT main(VS_INPUT input)
 	output.pos = mul(input.pos, World);
 	output.pos = mul(output.pos, View);
 	output.pos = mul(output.pos, Projection);
-	output.uv = input.uv;
 	
 	output.normal = mul(input.normal, World);
-	output.binorm = mul(input.binorm, World);
-	output.tang  = mul(input.tang , World);
 	
-	output.worldpos = mul(input.pos, World);	
 	return output;
 };

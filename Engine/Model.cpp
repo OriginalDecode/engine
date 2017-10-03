@@ -33,6 +33,10 @@ void Model::Initiate(const std::string& filename)
 
 void Model::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
+	if (m_FileName.find("default_cube") != m_FileName.npos)
+		RenderCube(camera_orientation, camera_projection, render_context);
+
+
 	PROFILE_FUNCTION(profiler::colors::Blue);
 	for (Model* child : m_Children)
 	{
@@ -59,16 +63,9 @@ void Model::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f&
 
 void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
 {
-// 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-// 	
-// // 	render_context.m_Context->VSSetConstantBuffers(0, 1, &m_ConstantBuffer);
-// // 	render_context.m_API->SetSamplerState(eSamplerStates::LINEAR_WRAP);
-// 
-// 	m_Effect->Use();
-// 	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
-// 	//render_context.m_Context->DrawIndexed(m_IndexData.myIndexCount, 0, 0);
-// 	PROFILE_BLOCK_END;
-// 	m_Effect->Clear();
+	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
+	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
+	render_context.GetContext().Draw(this, m_Effect);
 }
 
 void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
@@ -87,7 +84,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
-	
+
 	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 	for (Surface* surface : m_Surfaces)
 	{
@@ -97,7 +94,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 	}
 	PROFILE_BLOCK_END;
 
-	RemoveOrientation(); 
+	RemoveOrientation();
 
 }
 
@@ -108,10 +105,10 @@ void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matr
 	{
 		child->ShadowRender(camera_orientation, camera_projection, render_context);
 	}
- 
+
 	if (m_IsRoot)
 		return;
- 
+
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
 	render_context.GetContext().DrawIndexed(this);
@@ -130,7 +127,7 @@ void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const
 		RemoveOrientation();
 		return;
 	}
-	
+
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
 
@@ -221,7 +218,8 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const 
 	//Need to check if instanced
 	if (m_InstanceWrapper.GetInstanceBuffer())
 	{
-		ctx.UpdateConstantBuffer(m_InstanceWrapper.GetInstanceBuffer(), &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
+		IBuffer* pBuffer = m_InstanceWrapper.GetInstanceBuffer();
+		ctx.UpdateConstantBuffer(pBuffer, &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
 	}
 	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
 
@@ -243,234 +241,282 @@ void Model::AddSurface(Surface* surface)
 
 void Model::CreateCube()
 {
-	assert(false&&"not implemented");
-// 	myVertexFormat.Init(ARRAYSIZE(DeferredBaseLayout));
-// 	for (s32 i = 0; i < ARRAYSIZE(DeferredBaseLayout); i++)
-// 	{
-// 		myVertexFormat.Add(DeferredBaseLayout[i]);
-// 	}
-// 
-// 	CU::GrowingArray<VertexTypePosNormUV> vertices;
-// 	vertices.Init(16);
-// 
-// #pragma region Vertex
-// 	VertexTypePosNormUV temp;
-// 	temp.myPosition = { -1.0f, 1.0f, -1.0f };
-// 	temp.myNormal = { 0.0f, 1.0f, 0.0f };
-// 	temp.myUV = { 0.0f, 0.0f };
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { 1.0f, 1.0f, -1.0f };
-// 	temp.myNormal = { 0.0f, 1.0f, 0.0f };
-// 	temp.myUV = { 1.0f, 0.0f };
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { 1.0f, 1.0f, 1.0f };
-// 	temp.myNormal = { 0.0f, 1.0f, 0.0f };
-// 	temp.myUV = { 1.0f, 1.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { -1.0f, 1.0f, 1.0f };
-// 	temp.myNormal = { 0.0f, 1.0f, 0.0f };
-// 	temp.myUV = { 0.0f, 1.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { -1.0f, -1.0f, -1.0f };
-// 	temp.myNormal = { 0.0f, -1.0f, 0.0f };
-// 	temp.myUV = { 0.0f, 0.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { 1.0f, -1.0f, -1.0f };
-// 	temp.myNormal = { 0.0f, -1.0f, 0.0f };
-// 	temp.myUV = { 1.0f, 0.0f };
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { 1.0f, -1.0f, 1.0f };
-// 	temp.myNormal = { 0.0f, -1.0f, 0.0f };
-// 	temp.myUV = { 1.0f, 1.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { -1.0f, -1.0f, 1.0f };
-// 	temp.myNormal = { 0.0f, -1.0f, 0.0f };
-// 	temp.myUV = { 0.0f, 1.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { -1.0f, -1.0f, 1.0f };
-// 	temp.myNormal = { -1.0f, 0.0f, 0.0f };
-// 	temp.myUV = { 0.0f, 0.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { -1.0f, -1.0f, -1.0f };
-// 	temp.myNormal = { -1.0f, 0.0f, 0.0f };
-// 	temp.myUV = { 1.0f, 0.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { -1.0f, 1.0f, -1.0f };
-// 	temp.myNormal = { -1.0f, 0.0f, 0.0f };
-// 	temp.myUV = { 1.0f, 1.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { -1.0f, 1.0f, 1.0f };
-// 	temp.myNormal = { -1.0f, 0.0f, 0.0f };
-// 	temp.myUV = { 0.0f, 1.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 
-// 	temp.myPosition = { 1.0f, -1.0f, 1.0f };
-// 	temp.myNormal = { 1.0f, 0.0f, 0.0f };
-// 	temp.myUV = { 0.0f, 0.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { 1.0f, -1.0f, -1.0f };
-// 	temp.myNormal = { 1.0f, 0.0f, 0.0f };
-// 	temp.myUV = { 1.0f, 0.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { 1.0f, 1.0f, -1.0f };
-// 	temp.myNormal = { 1.0f, 0.0f, 0.0f };
-// 	temp.myUV = { 1.0f, 1.0f };
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { 1.0f, 1.0f, 1.0f };
-// 	temp.myNormal = { 1.0f, 0.0f, 0.0f };
-// 	temp.myUV = { 0.0f, 1.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { -1.0f, -1.0f, -1.0f };
-// 	temp.myNormal = { 0.0f, 0.0f, -1.0f };
-// 	temp.myUV = { 0.0f, 0.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { 1.0f, -1.0f, -1.0f };
-// 	temp.myNormal = { 0.0f, 0.0f, -1.0f };
-// 	temp.myUV = { 1.0f, 0.0f };
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { 1.0f, 1.0f, -1.0f };
-// 	temp.myNormal = { 0.0f, 0.0f, -1.0f };
-// 	temp.myUV = { 1.0f, 1.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { -1.0f, 1.0f, -1.0f };
-// 	temp.myNormal = { 0.0f, 0.0f, -1.0f };
-// 	temp.myUV = { 0.0f, 1.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 
-// 	temp.myPosition = { -1.0f, -1.0f, 1.0f };
-// 	temp.myNormal = { 0.0f, 0.0f, 1.0f };
-// 	temp.myUV = { 0.0f, 0.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { 1.0f, -1.0f, 1.0f };
-// 	temp.myNormal = { 0.0f, 0.0f, 1.0f };
-// 	temp.myUV = { 1.0f, 0.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { 1.0f, 1.0f, 1.0f };
-// 	temp.myNormal = { 0.0f, 0.0f, 1.0f };
-// 	temp.myUV = { 1.0f, 1.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// 	temp.myPosition = { -1.0f, 1.0f, 1.0f };
-// 	temp.myNormal = { 0.0f, 0.0f, 1.0f };
-// 	temp.myUV = { 0.0f, 1.0f };
-// 
-// 	vertices.Add(temp);
-// 
-// #pragma endregion
-// 
-// 	m_VertexData.myNrOfVertexes = vertices.Size();
-// 	m_VertexData.myStride = sizeof(VertexTypePosNormUV);
-// 	m_VertexData.mySize = m_VertexData.myNrOfVertexes*m_VertexData.myStride;
-// 	//m_VertexData.myType = VertexTypePosNormUV;
-// 	m_VertexData.myVertexData = new char[m_VertexData.mySize]();
-// 	memcpy(m_VertexData.myVertexData, &vertices[0], m_VertexData.mySize);
-// 
-// 	m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
-// 	m_IndexData.myIndexCount = 6 * 6;
-// 	m_IndexData.mySize = m_IndexData.myIndexCount * 4;
-// 
-// 
-// 	CU::GrowingArray<int> indices;
-// 	indices.Init(32);
-// 
-// #pragma region Indices
-// 
-// 	indices.Add(3);
-// 	indices.Add(1);
-// 	indices.Add(0);
-// 
-// 	indices.Add(2);
-// 	indices.Add(1);
-// 	indices.Add(3);
-// 
-// 	indices.Add(6);
-// 	indices.Add(4);
-// 	indices.Add(5);
-// 
-// 	indices.Add(6);
-// 	indices.Add(7);
-// 	indices.Add(4);
-// 
-// 	indices.Add(11);
-// 	indices.Add(9);
-// 	indices.Add(8);
-// 
-// 	indices.Add(10);
-// 	indices.Add(9);
-// 	indices.Add(11);
-// 
-// 	indices.Add(14);
-// 	indices.Add(12);
-// 	indices.Add(13);
-// 
-// 	indices.Add(15);
-// 	indices.Add(12);
-// 	indices.Add(14);
-// 
-// 	indices.Add(19);
-// 	indices.Add(17);
-// 	indices.Add(16);
-// 
-// 	indices.Add(18);
-// 	indices.Add(17);
-// 	indices.Add(19);
-// 
-// 	indices.Add(22);
-// 	indices.Add(20);
-// 	indices.Add(21);
-// 
-// 	indices.Add(23);
-// 	indices.Add(20);
-// 	indices.Add(22);
-// 
-// #pragma endregion
-// 
-// 	m_IndexData.myIndexData = new char[m_IndexData.mySize]();
-// 	memcpy(m_IndexData.myIndexData, &indices[0], m_IndexData.mySize);
-// 	m_IsRoot = false;
-// 
-// 	Initiate("default_cube");
 
-	//InitVertexBuffer();
-	//InitIndexBuffer();
+
+	m_Effect = Engine::GetInstance()->GetEffect("Shaders/default.json");
+
+	CU::GrowingArray<SDefaultCube> vertices;
+
+#pragma region Vertex
+	SDefaultCube temp;
+	temp.m_Position = { -1.0f, 1.0f, -1.0f, 1.f };
+	temp.m_Normal = { 0.0f, 1.0f, 0.0f };
+	temp.m_UV = { 0.0f, 0.0f };
+	vertices.Add(temp);
+
+	temp.m_Position = { 1.0f, 1.0f, -1.0f , 1.f };
+	temp.m_Normal = { 0.0f, 1.0f, 0.0f };
+	temp.m_UV = { 1.0f, 0.0f };
+	vertices.Add(temp);
+
+	temp.m_Position = { 1.0f, 1.0f, 1.0f, 1.f };
+	temp.m_Normal = { 0.0f, 1.0f, 0.0f };
+	temp.m_UV = { 1.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { -1.0f, 1.0f, 1.0f, 1.f };
+	temp.m_Normal = { 0.0f, 1.0f, 0.0f };
+	temp.m_UV = { 0.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { -1.0f, -1.0f, -1.0f, 1.f };
+	temp.m_Normal = { 0.0f, -1.0f, 0.0f };
+	temp.m_UV = { 0.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { 1.0f, -1.0f, -1.0f, 1.f };
+	temp.m_Normal = { 0.0f, -1.0f, 0.0f };
+	temp.m_UV = { 1.0f, 0.0f };
+	vertices.Add(temp);
+
+	temp.m_Position = { 1.0f, -1.0f, 1.0f, 1.f };
+	temp.m_Normal = { 0.0f, -1.0f, 0.0f };
+	temp.m_UV = { 1.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { -1.0f, -1.0f, 1.0f, 1.f };
+	temp.m_Normal = { 0.0f, -1.0f, 0.0f };
+	temp.m_UV = { 0.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { -1.0f, -1.0f, 1.0f, 1.f };
+	temp.m_Normal = { -1.0f, 0.0f, 0.0f };
+	temp.m_UV = { 0.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { -1.0f, -1.0f, -1.0f, 1.f };
+	temp.m_Normal = { -1.0f, 0.0f, 0.0f };
+	temp.m_UV = { 1.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { -1.0f, 1.0f, -1.0f, 1.f };
+	temp.m_Normal = { -1.0f, 0.0f, 0.0f };
+	temp.m_UV = { 1.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { -1.0f, 1.0f, 1.0f , 1.f };
+	temp.m_Normal = { -1.0f, 0.0f, 0.0f };
+	temp.m_UV = { 0.0f, 1.0f };
+
+	vertices.Add(temp);
+
+
+	temp.m_Position = { 1.0f, -1.0f, 1.0f, 1.f };
+	temp.m_Normal = { 1.0f, 0.0f, 0.0f };
+	temp.m_UV = { 0.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { 1.0f, -1.0f, -1.0f, 1.f };
+	temp.m_Normal = { 1.0f, 0.0f, 0.0f };
+	temp.m_UV = { 1.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { 1.0f, 1.0f, -1.0f , 1.f };
+	temp.m_Normal = { 1.0f, 0.0f, 0.0f };
+	temp.m_UV = { 1.0f, 1.0f };
+	vertices.Add(temp);
+
+	temp.m_Position = { 1.0f, 1.0f, 1.0f, 1.f };
+	temp.m_Normal = { 1.0f, 0.0f, 0.0f };
+	temp.m_UV = { 0.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { -1.0f, -1.0f, -1.0f , 1.f };
+	temp.m_Normal = { 0.0f, 0.0f, -1.0f };
+	temp.m_UV = { 0.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { 1.0f, -1.0f, -1.0f , 1.f };
+	temp.m_Normal = { 0.0f, 0.0f, -1.0f };
+	temp.m_UV = { 1.0f, 0.0f };
+	vertices.Add(temp);
+
+	temp.m_Position = { 1.0f, 1.0f, -1.0f, 1.f };
+	temp.m_Normal = { 0.0f, 0.0f, -1.0f };
+	temp.m_UV = { 1.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { -1.0f, 1.0f, -1.0f , 1.f };
+	temp.m_Normal = { 0.0f, 0.0f, -1.0f };
+	temp.m_UV = { 0.0f, 1.0f };
+
+	vertices.Add(temp);
+
+
+	temp.m_Position = { -1.0f, -1.0f, 1.0f , 1.f };
+	temp.m_Normal = { 0.0f, 0.0f, 1.0f };
+	temp.m_UV = { 0.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { 1.0f, -1.0f, 1.0f , 1.f };
+	temp.m_Normal = { 0.0f, 0.0f, 1.0f };
+	temp.m_UV = { 1.0f, 0.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { 1.0f, 1.0f, 1.0f , 1.f };
+	temp.m_Normal = { 0.0f, 0.0f, 1.0f };
+	temp.m_UV = { 1.0f, 1.0f };
+
+	vertices.Add(temp);
+
+	temp.m_Position = { -1.0f, 1.0f, 1.0f , 1.f};
+	temp.m_Normal = { 0.0f, 0.0f, 1.0f };
+	temp.m_UV = { 0.0f, 1.0f };
+
+	vertices.Add(temp);
+
+#pragma endregion
+
+	m_VertexWrapper.SetVertexCount(vertices.Size());
+	m_VertexWrapper.SetStride(sizeof(SDefaultCube));
+	m_VertexWrapper.SetSize(vertices.Size() * sizeof(SDefaultCube));
+
+	s8* data = new s8[m_VertexWrapper.GetSize()];
+	memcpy(data, &vertices[0], m_VertexWrapper.GetSize());
+
+	m_VertexWrapper.SetData(data);
+
+	graphics::BufferDesc vtx_desc;
+	vtx_desc.m_Size = m_VertexWrapper.GetSize();
+	vtx_desc.m_Data = data;
+	vtx_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
+	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
+	vtx_desc.m_StructuredByteStride = 0;
+	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
+	vtx_desc.m_MiscFlags = 0;
+	vtx_desc.m_StructuredByteStride = 0;
+	vtx_desc.m_ByteWidth = vtx_desc.m_Size;
+	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(vtx_desc, "default cube VertexBuffer");
+	m_VertexWrapper.SetBuffer(buffer);
+
+	graphics::InputElementDesc elements[] = {
+		{ "POSITION", 0, graphics::_16BYTE_RGBA, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, graphics::_16BYTE_RGBA, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, graphics::_8BYTE_RG, 0, 32, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "BINORMAL", 0, graphics::_16BYTE_RGBA, 0, 40, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, graphics::_16BYTE_RGBA, 0, 56, graphics::INPUT_PER_VERTEX_DATA, 0 },
+	};
+
+	IInputLayout* pLayout = Engine::GetAPI()->GetDevice().CreateInputLayout(m_Effect->GetVertexShader(), &elements[0], ARRSIZE(elements));
+	m_VertexWrapper.SetInputLayout(pLayout);
+
+	m_VertexWrapper.SetStart(0);
+	m_VertexWrapper.SetByteOffset(0);
+
+	m_VertexWrapper.SetTopology(graphics::TRIANGLE_LIST);
+	m_IsRoot = false;
+
+	CU::GrowingArray<s32> indices;
+	indices.Init(32);
+#pragma region Indices
+
+	indices.Add(3);
+	indices.Add(1);
+	indices.Add(0);
+
+	indices.Add(2);
+	indices.Add(1);
+	indices.Add(3);
+
+	indices.Add(6);
+	indices.Add(4);
+	indices.Add(5);
+
+	indices.Add(6);
+	indices.Add(7);
+	indices.Add(4);
+
+	indices.Add(11);
+	indices.Add(9);
+	indices.Add(8);
+
+	indices.Add(10);
+	indices.Add(9);
+	indices.Add(11);
+
+	indices.Add(14);
+	indices.Add(12);
+	indices.Add(13);
+
+	indices.Add(15);
+	indices.Add(12);
+	indices.Add(14);
+
+	indices.Add(19);
+	indices.Add(17);
+	indices.Add(16);
+
+	indices.Add(18);
+	indices.Add(17);
+	indices.Add(19);
+
+	indices.Add(22);
+	indices.Add(20);
+	indices.Add(21);
+
+	indices.Add(23);
+	indices.Add(20);
+	indices.Add(22);
+
+#pragma endregion
+
+
+	auto& idx = m_IndexWrapper;
+	const s32 idx_buf_size = indices.Size() * sizeof(s32);
+
+	s8* indexData = new s8[idx_buf_size];
+	memcpy(indexData, &indices[0], idx_buf_size);
+
+	const graphics::eTextureFormat idx_IndexBufferFormat = graphics::R32_UINT;
+	const s32 idx_IndexCount = indices.Size();
+
+	graphics::BufferDesc idx_desc;
+	idx_desc.m_Size = idx_buf_size;
+	idx_desc.m_Data = indexData;
+	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
+	idx_desc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
+	idx_desc.m_StructuredByteStride = 0;
+	idx_desc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
+	idx_desc.m_MiscFlags = 0;
+	idx_desc.m_ByteWidth = idx_desc.m_Size;
+
+	IBuffer* pIdxBuffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc, "default_cube IndexBuffer");
+
+	idx.SetData(indexData);
+	idx.SetIndexCount(idx_IndexCount);
+	idx.SetStart(0);
+	idx.SetSize(idx_buf_size);
+	idx.SetFormat(idx_IndexBufferFormat);
+	idx.SetByteOffset(0);
+	idx.SetBuffer(pIdxBuffer);
+
+
+
+	Initiate("default_cube");
+
 }

@@ -45,6 +45,15 @@ struct SVertexPosNormUVBiTang
 	CU::Math::Vector3<float> tangent;
 };
 
+struct SDefaultCube
+{
+	CU::Vector4f m_Position;
+	CU::Vector4f m_Normal;
+	CU::Vector2f m_UV;
+	CU::Vector4f m_BiNormal;
+	CU::Vector4f m_Tangent;
+};
+
 struct VertexBaseStruct
 {
 	CU::Matrix44f world; 

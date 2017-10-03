@@ -82,6 +82,7 @@ inline void EndTicketMutex(Ticket_Mutex* mutex)
 namespace clearcolor
 {
 	constexpr float black[4] = { 0.f, 0.f, 0.f, 0.f };
+	constexpr float blue[4] = { 0.29f, 0.27f, 1.f,0.f };
 	constexpr float white[4] = { 1.f, 1.f, 1.f, 0.f };
 	constexpr float pink[4] = { 1.f, 0.51f, 0.96f, 0.f };
 };

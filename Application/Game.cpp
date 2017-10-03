@@ -31,7 +31,7 @@
 static std::string key = "Data/Model/sponza_pbr/sponza.fbx";
 static std::string cube = "Data/Model/cube.fbx";
 static std::string wall = "Data/Model/wall.fbx";
-static std::string default_cube = "default_cube";
+static u64 default_cube = Hash("default_cube");
 #define KEY_USED default_cube
 
 #include <CommonLib/HashString.h>
@@ -258,7 +258,7 @@ void Game::OldUpdate(float dt)
 	//if (event_happen)
 	//	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5f, 0.7f), "Hello World has been sent & recieved"));
 
-	//AddRenderCommand(ModelCommand(KEY_USED, CU::Vector3f(5.f, 0.f, 5.f), false));
+	AddRenderCommand(ModelCommand(KEY_USED, CU::Vector3f(5.f, 0.f, 5.f), false));
 
 	//AddRenderCommand(ModelCommand(key, CU::Vector3f(256, 0, 256), false));
 	/*CU::Matrix44f orientation;
@@ -269,7 +269,7 @@ void Game::OldUpdate(float dt)
 
 	HandleMovement(input_wrapper, entity_speed, dt);
 
-	m_World.Update(dt, m_Paused);
+	//m_World.Update(dt, m_Paused);
 }
 
 void Game::HandleMovement(InputWrapper* input_wrapper, float entity_speed, float dt)

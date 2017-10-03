@@ -75,6 +75,7 @@ namespace graphics
 		CreateSamplerStates();
 		CreateBackBuffer();
 		CreateDepthBuffer();
+		CreateBlendStates();
 
 		m_Viewport = CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
 		SetDefaultTargets();

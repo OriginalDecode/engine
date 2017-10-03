@@ -252,8 +252,6 @@ namespace graphics
 	IInputLayout* DX11Device::CreateInputLayout(CompiledShader* pShader, InputElementDesc* pLayout, const s32 element_count)
 	{
 		D3D11_INPUT_ELEMENT_DESC *desc = new D3D11_INPUT_ELEMENT_DESC[element_count];
-
-
 		for (s32 i = 0; i < element_count; i++)
 		{
 			const InputElementDesc& el = pLayout[i];
@@ -409,6 +407,28 @@ namespace graphics
 
 
 		return out_shader;
+	}
+
+	bool DX11Device::FindInputSemantic(const char* to_find, IShaderBlob* blob)
+	{
+		ID3D11ShaderReflection* pReflector = nullptr;
+		ID3D10Blob* pBlob = static_cast<ID3D10Blob*>(blob);
+		D3DReflect(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&pReflector);
+		D3D11_SHADER_DESC shader_desc;
+		pReflector->GetDesc(&shader_desc);
+		s32 input_count = shader_desc.InputParameters;
+
+		const u64 compare0 = Hash("INSTANCE");
+		for (s32 i = 0; i < shader_desc.InputParameters; i++)
+		{
+			D3D11_SIGNATURE_PARAMETER_DESC param_desc;
+			pReflector->GetInputParameterDesc(i, &param_desc);
+			const u64 semantic_hash = Hash(param_desc.SemanticName);
+			if (semantic_hash == compare0)
+				return true;
+		}
+
+		return false;
 	}
 
 };

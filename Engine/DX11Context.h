@@ -76,8 +76,8 @@ namespace graphics
 		void SetViewport(Viewport* viewport) override;
 
 
-	private:
 		ID3D11DeviceContext* m_Context = nullptr;
+	private:
 		void* GetContext() override { return m_Context; }
 
 		ID3D11DepthStencilState* m_EnableZ = nullptr;

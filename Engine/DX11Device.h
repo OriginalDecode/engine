@@ -33,6 +33,7 @@ namespace graphics
 		IShaderBlob* CompileShaderFromFile(const std::string& filepath, const char* entrypoint, const char* shader_type) override;
 		IShaderBlob* CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const std::string& source_name, const char* entrypoint, const char* shader_type) override;
 
+		bool FindInputSemantic(const char* to_find, IShaderBlob* blob) override;
 
 	private:
 		ID3D11Device* m_Device = nullptr;

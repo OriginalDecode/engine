@@ -39,8 +39,7 @@ namespace graphics
 		//__________________________
 		// Virtual Functions
 
-		void Present(u8 anInterval, u8 flags) override;
-		void Clear() override;
+		void Present(u8 anInterval, u8 flags);
 
 		void OnAltEnter() override;
 		void OnResize() override;

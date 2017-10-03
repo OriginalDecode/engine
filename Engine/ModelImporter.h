@@ -387,6 +387,7 @@ template<typename T>
 void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 {
 	auto& vtx = out->m_VertexWrapper;
+	graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 
 	const s32 vtx_VertexCount = data->myVertexCount;
 	const s32 vtx_Stride = data->myVertexStride;
@@ -408,13 +409,18 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
 	vtx_desc.m_MiscFlags = 0;
 	vtx_desc.m_ByteWidth = vtx_desc.m_Size;
-	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(vtx_desc, data->m_Filename + "VertexBuffer");
+	IBuffer* buffer = device.CreateBuffer(vtx_desc, data->m_Filename + "VertexBuffer");
 
 
 	CU::GrowingArray<graphics::InputElementDesc> element;
 	SetupInputLayout(data, element);
 
-	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
+	
+	if (!device.FindInputSemantic("INSTANCE", effect->GetVertexShader()->m_Blob))
+	{
+		IInputLayout* layout = device.CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
+		vtx.SetInputLayout(layout);
+	}
 
 	vtx.SetData(vtx_Data);
 	vtx.SetStart(vtx_start);
@@ -424,10 +430,6 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	vtx.SetVertexCount(vtx_VertexCount);
 	vtx.SetSize(vtx_Size);
 	vtx.SetBuffer(buffer);
-
-	if(layout)
-		vtx.SetInputLayout(layout);
-
 	vtx.SetTopology(graphics::TRIANGLE_LIST);
 
 }
@@ -477,7 +479,6 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	ins.SetByteOffset(ins_ByteOffset);
 	ins.SetStride(ins_Stride);
 	ins.SetBufferCount(ins_BufferCount);
-	
 
 
 }

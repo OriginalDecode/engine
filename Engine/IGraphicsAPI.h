@@ -228,8 +228,6 @@ namespace graphics
 		virtual void EndFrame() = 0;
 		virtual void BeginFrame() = 0;
 
-		virtual void Clear() = 0;
-		virtual void Present(u8 refresh_rate, u8 flags) = 0;
 
 		virtual void OnAltEnter() = 0;
 		virtual void OnResize() = 0;

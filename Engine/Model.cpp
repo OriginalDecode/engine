@@ -215,9 +215,9 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const 
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 
 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ConstantStruct, sizeof(m_ConstantStruct));
-// 	ctx.UpdateConstantBuffer(m_InstanceWrapper.GetInstanceBuffer(), 
-// 							 &m_Orientations[0], 
-// 							 m_Orientations.Size() * sizeof(CU::Matrix44f));
+ 	ctx.UpdateConstantBuffer(m_InstanceWrapper.GetInstanceBuffer(), 
+ 							 &m_Orientations[0], 
+ 							 m_Orientations.Size() * sizeof(CU::Matrix44f));
 
 	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
 

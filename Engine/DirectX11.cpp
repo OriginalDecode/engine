@@ -73,7 +73,7 @@ namespace graphics
 		CreateDepthBuffer();
 
 		m_Viewport = CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
-
+		m_Context->SetViewport(m_Viewport);
 #if !defined(_PROFILE) && !defined(_FINAL)
 		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
 		ID3D11DeviceContext* pContext = static_cast<DX11Context*>(m_Context)->m_Context;

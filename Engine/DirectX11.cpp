@@ -91,7 +91,8 @@ namespace graphics
 
 	void DirectX11::BeginFrame()
 	{
-		Clear();
+		m_Context->ClearRenderTarget(m_RenderTarget, clearcolor::black);
+		m_Context->ClearDepthStencilView(m_DepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f);
 	}
 
 	void DirectX11::EndFrame()
@@ -104,12 +105,6 @@ namespace graphics
 	void DirectX11::Present(u8 anInterval, u8 flags)
 	{
 		m_Swapchain->Present(anInterval, flags);
-	}
-
-	void DirectX11::Clear()
-	{
-		m_Context->ClearRenderTarget(m_RenderTarget, clearcolor::black);
-		m_Context->ClearDepthStencilView(m_DepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f);
 	}
 
 	void DirectX11::CreateDeviceAndSwapchain()

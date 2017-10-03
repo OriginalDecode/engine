@@ -28,6 +28,11 @@ namespace debug
 //  			HandleFloatSliders();
 //  			HandleFunctionButtons();
 			ImGui::Text("Hello World!");
+
+			std::stringstream camera_pos;
+			const auto& pos = Engine::GetInstance()->GetCamera()->GetPosition();
+			camera_pos << "x:" << pos.x << "\ny:" << pos.y << "\nz:" << pos.z;
+			ImGui::Text("%s", camera_pos.str().c_str());
  			ImGui::End();
  		}
  		ImGui::PopStyleVar();

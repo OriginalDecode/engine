@@ -62,6 +62,7 @@ namespace graphics
 		void DrawInstanced(BaseModel* model, Effect* fx = nullptr) override;
 
 		void DrawIndexedInstanced(BaseModel* model, Effect* fx = nullptr) override;
+		void DrawIndexedInstanced(Model* model, Effect* fx = nullptr) override;
 
 
 		void UpdateConstantBuffer(IBuffer* dest, void* src, s32 size) override;

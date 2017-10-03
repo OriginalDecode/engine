@@ -436,7 +436,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	const s32 ins_ByteOffset = 0;
 	const s32 ins_InstanceCount = 5000;
 	const s32 ins_Size = ins_InstanceCount * ins_Stride;
-	const s32 ins_IndicesPerInstance = out->m_IndexWrapper.GetIndexCount();
+	const s32 ins_IndicesPerInstance = data->myIndexCount; 
 
 	graphics::BufferDesc desc;
 	desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;

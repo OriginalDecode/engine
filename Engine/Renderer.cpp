@@ -143,10 +143,10 @@ void Renderer::Render()
 
 	m_RenderContext.GetAPI().BeginFrame();
 
-	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
-	m_GBuffer.SetAsRenderTarget(m_DepthTexture, m_RenderContext);
+// 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
+// 	m_GBuffer.SetAsRenderTarget(m_DepthTexture, m_RenderContext);
 
-	m_RenderContext.GetAPI().SetDefaultTargets();
+	//m_RenderContext.GetAPI().SetDefaultTargets();
 
 	if(m_RenderInstanced)
 		Render3DCommandsInstanced();

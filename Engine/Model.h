@@ -42,7 +42,7 @@ public:
 
 	void AddTexture(const std::string& path, Effect::TextureSlot slot);
 
-
+	s32 GetOrientationSize() const { return m_Orientations.Size(); }
 	void AddOrientation(CU::Matrix44f orientation);
 	void CreateCube();
 

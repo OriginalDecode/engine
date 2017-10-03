@@ -16,12 +16,16 @@
 #include <Engine/Viewport.h>
 
 
+
 namespace graphics
 {
+
+
+
+
 	DirectX11::DirectX11(CreateInfo info)
 	{
 		m_CreateInfo = info;
-
 	}
 
 	DirectX11::~DirectX11()
@@ -73,6 +77,7 @@ namespace graphics
 		CreateDepthBuffer();
 
 		m_Viewport = CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
+		SetDefaultTargets();
 		m_Context->SetViewport(m_Viewport);
 #if !defined(_PROFILE) && !defined(_FINAL)
 		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
@@ -292,7 +297,7 @@ namespace graphics
 		new_viewport->MinDepth = min_depth;
 		new_viewport->MaxDepth = max_depth;
 
-		return new Viewport(width, height, top_left_x, top_left_y, min_depth, max_depth, new_viewport);
+		return new Viewport(width, height, top_left_x, top_left_y, max_depth, min_depth, new_viewport);
 	}
 
 	

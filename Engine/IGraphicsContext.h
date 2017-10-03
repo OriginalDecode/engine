@@ -62,7 +62,7 @@ namespace graphics
 		virtual void DrawInstanced(BaseModel* model, Effect* fx = nullptr) = 0;
 
 		virtual void DrawIndexedInstanced(BaseModel* model, Effect* fx = nullptr) = 0;
-
+		virtual void DrawIndexedInstanced(Model* model, Effect* fx = nullptr) = 0;
 
 
 		virtual void UpdateConstantBuffer(IBuffer* dest, void* src, s32 size) = 0;

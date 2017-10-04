@@ -1,9 +1,3 @@
-//---------------------------------
-//	Deferred Base Vertex Shaders
-//---------------------------------
-//---------------------------------
-//	Constant Buffers
-//---------------------------------
 cbuffer Matrices : register(b0)
 {
 	row_major float4x4 World;
@@ -11,9 +5,6 @@ cbuffer Matrices : register(b0)
 	row_major float4x4 Projection;
 };
 
-//---------------------------------
-//	Deferred Base Vertex Structs
-//---------------------------------
 struct VS_INPUT
 {
 	float4 pos : POSITION;
@@ -25,6 +16,7 @@ struct VS_INPUT
 	float4 world1 : INSTANCE1;
 	float4 world2 : INSTANCE2;
 	float4 world3 : INSTANCE3;
+	float4 data0 : DATA;
 };
 
 struct VS_OUTPUT
@@ -35,6 +27,7 @@ struct VS_OUTPUT
 	float3 binorm : BINORMAL;
 	float3 tang : TANGENT;
 	float4 worldpos : POSITION;
+	float2 data0 : DATA;
 };
 
 //---------------------------------
@@ -49,6 +42,10 @@ VS_OUTPUT main(VS_INPUT input)
 	world_matrices._21_22_23_24 = input.world1;
 	world_matrices._31_32_33_34 = input.world2;
 	world_matrices._41_42_43_44 = input.world3;
+
+	output.data0.x = input.data0.x;
+	output.data0.y = input.data0.y;
+	
 
 	float4x4 out_matrix = mul(world_matrices, View);
 	out_matrix = mul(out_matrix, Projection);

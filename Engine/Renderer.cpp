@@ -584,7 +584,10 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 	const bool result = (command->m_CommandType == RenderCommand::MODEL);
 	DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
 	Model* model =  engine.GetModel(command->m_Key);
-	model->AddOrientation(command->m_Orientation);
+	GPUModelData data;
+	data.m_Orientation = command->m_Orientation;
+	data.m_PBLData = CU::Vector4f(command->m_Metalness, command->m_Roughness, 0, 0);
+	model->AddInstanceData(data);
 	if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
 		m_ModelsToRender.emplace(command->m_Key, model);
 }

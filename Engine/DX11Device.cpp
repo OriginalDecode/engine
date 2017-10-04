@@ -361,14 +361,14 @@ namespace graphics
 			0,
 			&out_shader,
 			&out_message);
-		DirectX11::HandleErrors(hr, "Failed to compile shader from memory");	
-		
+
 		if (out_message != nullptr)
 		{
 			DL_WARNING("%s has generated warnings!", filepath.c_str());
 			DL_WARNING("\n%s", (char*)out_message->GetBufferPointer());
 		}
 
+		DirectX11::HandleErrors(hr, "Failed to compile shader from file");	
 		return out_shader;
 
 	}

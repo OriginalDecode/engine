@@ -17,9 +17,10 @@ struct ps_input
 	float3 binorm : BINORMAL;
 	float3 tang : TANGENT;
 	float4 worldpos : POSITION;
+	float2 data0 : DATA;
 };
 
 float4 main_instanced(ps_input input) : SV_Target
 {
-	return float4(1,1,1,1);
+	return float4(1,1,1,1) * input.data0.x * input.data0.y; 
 };

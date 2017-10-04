@@ -437,7 +437,7 @@ namespace graphics
 		if (fx)
 		{
 			fx->Use();
-			m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->GetOrientationSize(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
+			m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
 			fx->Clear();
 		}
 	}

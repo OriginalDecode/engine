@@ -440,7 +440,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	auto& ins = out->m_InstanceWrapper;
 	const s32 ins_BufferCount = 1;
 	const s32 ins_Start = 0;
-	const s32 ins_Stride = sizeof(CU::Matrix44f);
+	const s32 ins_Stride = sizeof(CU::Matrix44f) + sizeof(CU::Vector4f);
 	const s32 ins_ByteOffset = 0;
 	const s32 ins_InstanceCount = 5000;
 	const s32 ins_Size = ins_InstanceCount * ins_Stride;
@@ -458,17 +458,19 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	SetupInputLayout(data, element);
 
 	s32 byte_offset = 0;
-	graphics::InputElementDesc instance[4] = {
+	graphics::InputElementDesc instance[] = {
 		{ "INSTANCE", 0, graphics::_16BYTE_RGBA, 1, 0, graphics::INPUT_PER_INSTANCE_DATA, 1 },
 		{ "INSTANCE", 1, graphics::_16BYTE_RGBA, 1, 16, graphics::INPUT_PER_INSTANCE_DATA, 1 },
 		{ "INSTANCE", 2, graphics::_16BYTE_RGBA, 1, 32, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-		{ "INSTANCE", 3, graphics::_16BYTE_RGBA, 1, 48, graphics::INPUT_PER_INSTANCE_DATA, 1 }
+		{ "INSTANCE", 3, graphics::_16BYTE_RGBA, 1, 48, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+		{ "DATA" , 0, graphics::_8BYTE_RG, 1, 64, graphics::INPUT_PER_INSTANCE_DATA, 1 },
 	};
 
 	element.Add(instance[0]);
 	element.Add(instance[1]);
 	element.Add(instance[2]);
 	element.Add(instance[3]);
+	element.Add(instance[4]);
 
 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
 

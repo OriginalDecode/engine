@@ -7,7 +7,13 @@
 #include "Effect.h"
 struct D3D11_INPUT_ELEMENT_DESC;
 
-static Ticket_Mutex g_ModelMutex;
+struct GPUModelData
+{
+	CU::Matrix44f m_Orientation;
+	CU::Vector4f m_PBLData;
+};
+
+
 class Model : public BaseModel
 {
 	friend class CModelImporter;
@@ -34,26 +40,28 @@ public:
 	virtual void SetMinPoint(CU::Vector3f min_point);
 	virtual CU::Vector3f GetMinPoint() const { return m_MinPoint; }
 
-	std::vector<float> GetVertices();
-	std::vector<s32> GetIndices();
-
 	CU::GrowingArray<Surface*>& GetSurfaces() { return m_Surfaces; }
 	CU::GrowingArray<Model*> GetChildModels() { return m_Children; }
 
 	void AddTexture(const std::string& path, Effect::TextureSlot slot);
 
-	s32 GetOrientationSize() const { return m_Orientations.Size(); }
-	void AddOrientation(CU::Matrix44f orientation);
+	s32 GetInstanceCount() const { return m_GPUData.Size(); }
+// 	void AddOrientation(CU::Matrix44f orientation);
+// 	void AddPBLData(CU::Vector2f data);
+	void AddInstanceData(GPUModelData data);
+
 	void CreateCube();
 
 private:
 	void RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
+	void RemoveGPUData();
+
 	void RemoveOrientation();
 	CU::GrowingArray<Model*> m_Children;
 
 protected:
 	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc) override;
 	
-	CU::GrowingArray<CU::Matrix44f> m_Orientations;
+	CU::GrowingArray<GPUModelData> m_GPUData;
 
 };

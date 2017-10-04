@@ -21,7 +21,7 @@ Model::~Model()
 
 void Model::Initiate(const std::string& filename)
 {
-	m_Orientations.Init(250);
+	m_GPUData.Init(250);
 	std::string dbg(filename.c_str());
 	m_FileName = dbg;
 	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbVertex), dbg + "Vertex ConstantBuffer");
@@ -76,9 +76,9 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 		child->RenderInstanced(camera_orientation, camera_projection, render_context);
 	}
 
-	if (m_IsRoot || m_Surfaces.Empty() || m_Orientations.Empty())
+	if (m_IsRoot || m_Surfaces.Empty() || m_GPUData.Empty())
 	{
-		RemoveOrientation();
+		RemoveGPUData();
 		return;
 	}
 
@@ -94,7 +94,7 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 	}
 	PROFILE_BLOCK_END;
 
-	RemoveOrientation();
+	RemoveGPUData();
 
 }
 
@@ -122,9 +122,9 @@ void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const
 		child->ShadowRenderInstanced(camera_orientation, camera_projection, render_context);
 	}
 
-	if (m_IsRoot || m_Orientations.Empty())
+	if (m_IsRoot || m_GPUData.Empty())
 	{
-		RemoveOrientation();
+		RemoveGPUData();
 		return;
 	}
 
@@ -180,25 +180,33 @@ void Model::AddTexture(const std::string& path, Effect::TextureSlot slot)
 	}
 }
 
-void Model::AddOrientation(CU::Matrix44f orientation)
-{
-	DL_ASSERT_EXP(m_Orientations.Size() < 5000, "Too many instances");
+// void Model::AddOrientation(CU::Matrix44f orientation)
+// {
+// 	DL_ASSERT_EXP(m_Orientations.Size() < 5000, "Too many instances");
+// 
+// 	for (Model* child : m_Children)
+// 	{
+// 		child->AddOrientation(orientation);
+// 	}
+// 
+// 	
+// 
+// 	m_Orientations.Add(orientation);
+// }
 
-	for (Model* child : m_Children)
-	{
-		child->AddOrientation(orientation);
-	}
-	m_Orientations.Add(orientation);
-}
+// void Model::AddPBLData(CU::Vector2f data)
+// {
+// 	m_PBLData.Add(data);
+// }
 
-void Model::RemoveOrientation()
-{
-	for (Model* child : m_Children)
-	{
-		child->RemoveOrientation();
-	}
-	m_Orientations.RemoveAll();
-}
+// void Model::RemoveOrientation()
+// {
+// 	for (Model* child : m_Children)
+// 	{
+// 		child->RemoveOrientation();
+// 	}
+// 	m_Orientations.RemoveAll();
+// }
 
 void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc)
 {
@@ -218,7 +226,7 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const 
 	if (m_InstanceWrapper.GetInstanceBuffer())
 	{
 		IBuffer* pBuffer = m_InstanceWrapper.GetInstanceBuffer();
-		ctx.UpdateConstantBuffer(pBuffer, &m_Orientations[0], m_Orientations.Size() * sizeof(CU::Matrix44f));
+		ctx.UpdateConstantBuffer(pBuffer, &m_GPUData[0], m_GPUData.Size() * (sizeof(CU::Matrix44f) + sizeof(CU::Vector4f)));
 	}
 	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
 
@@ -237,6 +245,28 @@ void Model::AddSurface(Surface* surface)
 	}
 	m_Surfaces.Add(surface);
 }
+
+void Model::AddInstanceData(GPUModelData data)
+{
+	for (Model* c : m_Children)
+	{
+		c->AddInstanceData(data);
+	}
+
+	m_GPUData.Add(data);
+
+}
+
+void Model::RemoveGPUData()
+{
+	for (Model* child : m_Children)
+	{
+		child->RemoveGPUData();
+	}
+	m_GPUData.RemoveAll();
+}
+
+
 
 void Model::CreateCube()
 {

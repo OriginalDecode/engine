@@ -148,7 +148,7 @@ void Renderer::Render()
 
 	//m_RenderContext.GetAPI().SetDefaultTargets();
 
-	if(!m_RenderInstanced)
+	if(m_RenderInstanced)
 		Render3DCommandsInstanced();
 	else 
 		Render3DCommands();

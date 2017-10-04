@@ -17,10 +17,10 @@ cbuffer Matrices : register(b0)
 struct VS_INPUT
 {
 	float4 pos : POSITION;
-	float3 normal : NORMAL;
+	float4 normal : NORMAL;
 	float2 uv : TEXCOORD;
-	float3 binorm : BINORMAL;
-	float3 tang : TANGENT;
+	float4 binorm : BINORMAL;
+	float4 tang : TANGENT;
 	float4 world0 : INSTANCE0;
 	float4 world1 : INSTANCE1;
 	float4 world2 : INSTANCE2;

@@ -65,7 +65,7 @@ void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix
 {
 	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
 	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
-	render_context.GetContext().Draw(this, m_Effect);
+	render_context.GetContext().DrawIndexed(this, m_Effect);
 }
 
 void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
@@ -199,7 +199,6 @@ void Model::RemoveOrientation()
 	}
 	m_Orientations.RemoveAll();
 }
-#include <Engine/DX11Context.h>
 
 void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc)
 {

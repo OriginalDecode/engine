@@ -20,7 +20,7 @@ namespace graphics
 		desc.m_ShaderResourceFormat = RGBA16_FLOAT;
 		desc.m_RenderTargetFormat = RGBA16_FLOAT;
 		desc.m_TextureFormat = RGBA16_FLOAT;
-
+		
 		m_Albedo = new Texture;
 		m_Albedo->Initiate(desc, false, "GBuffer : Albedo");
 

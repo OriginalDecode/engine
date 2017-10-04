@@ -36,13 +36,13 @@ void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const 
 		tex_desc.m_Height = desc.m_Height;
 		tex_desc.m_Width = desc.m_Width;
 		tex_desc.m_Format = desc.m_TextureFormat;
-		tex_desc.m_MipLevels = 0;
-		tex_desc.m_ArraySize = 0;
+		tex_desc.m_MipLevels = 1;
+		tex_desc.m_ArraySize = 1;
 		tex_desc.m_Usage = desc.m_Usage;
 		tex_desc.m_MiscFlags = 0;
 		tex_desc.m_SampleCount = 1;
 		tex_desc.m_SampleQuality = 0;
-		tex_desc.m_CPUAccessFlag = desc.m_CPUAccessFlag;
+		tex_desc.m_CPUAccessFlag = 0;
 		tex_desc.m_Binding = desc.m_ResourceTypeBinding;
 		graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 		m_Texture = device.CreateTexture2D(tex_desc, debug_name + "_Texture");

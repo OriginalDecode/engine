@@ -158,14 +158,7 @@ public:
 	// Should be refactored out of the engine stuff.
 
 
-	//_________________________________________
-	// Shader Creation
-	//This should probably be moved to the graphics API instead.
-	/* These 3 functions are very API specific */
-	//HRESULT CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
-	//HRESULT CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message);
 	void* CreateShader(IShaderBlob* pShader, eShaderType type, const std::string& debug_name);
-	/* END */
 
 
 	bool UseMouse() { return m_CameraUseMouse; }
@@ -181,8 +174,6 @@ public:
 		_COUNT
 	};
 
-	// 	void SelectEntity(u32 e);
-	// 	void DeselectEntity();
 	memory::MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
 	const graphics::eSamplerStates GetCurrentSampler() const { return m_CurrentSampler; }
 	ISamplerState* GetActiveSampler() { return m_API->GetSamplerState(m_CurrentSampler); }
@@ -192,7 +183,7 @@ public:
 	void ToggleVSync() { m_VSyncOn = !m_VSyncOn; }
 
 private:
-	Engine() = default;
+	Engine();
 	static Engine* myInstance;
 	static graphics::IGraphicsAPI* m_API;
 	memory::MemorySegmentHandle m_SegmentHandle;
@@ -213,20 +204,20 @@ private:
 	Window m_Window;
 	EntityManager m_EntityManager;
 
-	InputHandle* m_InputHandle = nullptr;
+	InputHandle* m_InputHandle       = nullptr;
 	PhysicsManager* m_PhysicsManager = nullptr;
-	CFontManager* myFontManager = nullptr;
+	CFontManager* myFontManager      = nullptr;
 	CU::TimeManager myTimeManager;
-	Synchronizer* m_Synchronizer = nullptr;
-	Renderer* m_Renderer = nullptr;
-	Camera* m_Camera = nullptr;
+	Synchronizer* m_Synchronizer     = nullptr;
+	Renderer* m_Renderer             = nullptr;
+	Camera* m_Camera                 = nullptr;
 
 
 	debug::DebugHandle m_DebugHandle;
 
 	AssetsContainer* myAssetsContainer = nullptr;
-	TerrainManager* m_TerrainManager = nullptr;
-	LevelFactory* m_LevelFactory = nullptr;
+	TerrainManager* m_TerrainManager   = nullptr;
+	LevelFactory* m_LevelFactory       = nullptr;
 	CSystemMonitor m_SystemMonitor;
 
 	std::bitset<(u16)eEngineStates::_COUNT> m_States;
@@ -235,12 +226,9 @@ private:
 
 	float m_DeltaTime = 0.f;
 
-	bool m_PauseInput = false;
-	bool m_CameraUseMouse = false;
-	bool m_IsEditingEntity;
-	bool m_EditLight = false;
-	bool m_RenderInstanced = true;
-	bool m_EditRender = false;
+	bool m_PauseInput : 1;
+	bool m_CameraUseMouse  : 1;
+	bool m_RenderInstanced : 1;
 };
 
 template<typename T>

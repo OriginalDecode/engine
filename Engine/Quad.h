@@ -13,7 +13,7 @@ public:
 	Quad(Effect* effect);
 	Quad(Effect* effect, float half_width, float half_height);
 
-	void Render(bool depth_on, Effect* override_effect = nullptr);
+	void Render(bool depth_on = false, Effect* override_effect = nullptr);
 	Effect* GetShader() { return m_Effect; }
 	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }
 	IndexWrapper& GetIndexWrapper() { return m_IndexWrapper; }
@@ -26,6 +26,6 @@ private:
 	VertexWrapper m_VertexWrapper;
 	IndexWrapper m_IndexWrapper;
 	Texture* m_QuadTexture = nullptr;
-	Effect* m_Effect = nullptr;
+	Effect* m_Effect       = nullptr;
 };
 

@@ -261,13 +261,20 @@ namespace graphics
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
 
+
+		ID3D11Buffer* pVtxBuffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
+		const u32 stride = vtx.GetStride();
+		const u32 offset = vtx.GetByteOffset();
+
 		m_Context->IASetVertexBuffers(vtx.GetStart(),
 									  vtx.GetBufferCount(),
-									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()),
-									  &vtx.GetStride(),
-									  &vtx.GetByteOffset());
+									  &pVtxBuffer,
+									  &stride,
+									  &offset);
 
-		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
+
+		ID3D11Buffer* pIdxBuffer = static_cast<ID3D11Buffer*>(idx.GetIndexBuffer());
+		m_Context->IASetIndexBuffer(pIdxBuffer,
 									DirectX11::GetFormat(idx.GetFormat()),
 									idx.GetByteOffset());
 

@@ -256,18 +256,34 @@ namespace graphics
 
 		virtual void SetDefaultTargets() = 0;
 
+		virtual void ResetViewport() = 0;
+
+		IRenderTargetView* GetBackbuffer() { return m_DefaultRenderTarget; }
+		const IRenderTargetView* GetBackbuffer() const { return m_DefaultRenderTarget; }
+		IRenderTargetView** GetBackbufferRef() { return &m_DefaultRenderTarget; }
+
+		IDepthStencilView* GetDepthView() { return m_DefaultDepthView; }
+		const IDepthStencilView* GetDepthView() const { return m_DefaultDepthView; }
+
 	protected:
 		CreateInfo m_CreateInfo;
 		eGraphicsAPI m_ActiveAPI;
-		IGraphicsDevice* m_Device = nullptr;
-		IGraphicsContext* m_Context = nullptr;
-		Viewport* m_Viewport = nullptr;
 
+		Viewport* m_Viewport						= nullptr;
+		IGraphicsDevice* m_Device					= nullptr;
+		IGraphicsContext* m_Context					= nullptr;
+
+		ITexture2D* m_DefaultDepthBuffer			= nullptr;
+		IDepthStencilView* m_DefaultDepthView		= nullptr;
+		IRenderTargetView* m_DefaultRenderTarget	= nullptr;
 
 		ISamplerState* m_SamplerStates[NOF_SS];
 		IDepthStencilState* m_DepthStencilStates[NOF_DSS];
 		IRasterizerState* m_RasterizerStates[NOF_RS];
 		IBlendState* m_BlendStates[NOF_BS];
+
+		
+
 
 	};
 };

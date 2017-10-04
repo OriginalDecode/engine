@@ -58,6 +58,13 @@ bool Engine::HasInitiated()
 	return (this && m_States[(u16)eEngineStates::INITIATED] == TRUE);
 }
 
+Engine::Engine()
+	: m_PauseInput(false)
+	, m_CameraUseMouse(false)
+	, m_RenderInstanced(true)
+{
+}
+
 Engine* Engine::myInstance = nullptr;
 graphics::IGraphicsAPI* Engine::m_API = nullptr;
 

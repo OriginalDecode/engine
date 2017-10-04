@@ -196,7 +196,7 @@ namespace graphics
 		DirectX11::HandleErrors(hr, "Failed to create RenderTargetView");
 		DirectX11::SetDebugName(rtv, debug_name);
 #endif
-		return static_cast<IRenderTargetView*>(rtv);
+		return rtv;
 	}
 
 	IShaderResourceView* DX11Device::CreateShaderResource(const Texture2DDesc& desc, ITexture2D* pTexture, const std::string& debug_name)

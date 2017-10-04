@@ -173,8 +173,8 @@ void Line3D::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const
 {
 	auto& ctx = render_context.GetContext();
 	m_cbLine.m_World = m_Orientation;
- 	m_cbLine.m_View = CU::Math::Inverse(camera_orientation);
- 	m_cbLine.m_Projection = camera_projection;
+	m_cbLine.m_View = CU::Math::Inverse(camera_orientation);
+	m_cbLine.m_Projection = camera_projection;
 
 	//ctx.UpdateConstantBuffer(m_LineBuffer, nullptr, sizeof(VertexBaseStruct));
 }

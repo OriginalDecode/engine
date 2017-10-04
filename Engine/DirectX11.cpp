@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "DirectX11.h"
 #include <DDSTextureLoader.h>
 #include <ScreenGrab.h>
@@ -64,10 +63,10 @@ namespace graphics
 			m_DepthStencilStates[i] = nullptr;
 		}
 
+		ReleasePtr(m_DefaultDepthView);
+		ReleasePtr(m_DefaultRenderTarget);
+		ReleasePtr(m_DefaultDepthBuffer);
 
-		SAFE_RELEASE(m_DepthView);
-		SAFE_RELEASE(m_DepthBuffer);
-		SAFE_RELEASE(m_RenderTarget);
 		SAFE_RELEASE(m_Swapchain);
 
 		ID3D11DeviceContext* ctx = static_cast<DX11Context*>(m_Context)->m_Context;
@@ -116,8 +115,11 @@ namespace graphics
 
 	void DirectX11::BeginFrame()
 	{
-		m_Context->ClearRenderTarget(m_RenderTarget, clearcolor::blue);
-		m_Context->ClearDepthStencilView(m_DepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f);
+
+		ID3D11RenderTargetView* pRenderTarget = static_cast<ID3D11RenderTargetView*>(m_DefaultRenderTarget);
+		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
+		m_Context->ClearRenderTarget(pRenderTarget, clearcolor::blue);
+		m_Context->ClearDepthStencilView(pDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f);
 	}
 
 	void DirectX11::EndFrame()
@@ -263,7 +265,9 @@ namespace graphics
 		depthDesc.SampleDesc.Quality = 0; //quality pattern
 		depthDesc.Usage = D3D11_USAGE_DEFAULT;
 		depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-		HRESULT hr = pDevice->CreateTexture2D(&depthDesc, NULL, &m_DepthBuffer);
+
+		ID3D11Texture2D* pDepthBuffer = nullptr;
+		HRESULT hr = pDevice->CreateTexture2D(&depthDesc, NULL, &pDepthBuffer);
 		assert(!FAILED(hr) && "Failed to create texture for depthbuffer");
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC stencilDesc;
@@ -272,14 +276,16 @@ namespace graphics
 		stencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		stencilDesc.Texture2D.MipSlice = 0;
 
-
-		hr = pDevice->CreateDepthStencilView(m_DepthBuffer, &stencilDesc, &m_DepthView);
+		ID3D11DepthStencilView* pDepthView = nullptr;
+		hr = pDevice->CreateDepthStencilView(pDepthBuffer, &stencilDesc, &pDepthView);
 		DL_ASSERT_EXP(hr == S_OK, "Failed to create depth stenci");
 
 #ifdef _DEBUG
-		SetDebugName(m_DepthBuffer, "DirectX11 DepthBuffer Object");
-		SetDebugName(m_DepthView, "DirectX11 DepthView Object");
+		SetDebugName(pDepthBuffer, "DirectX11 DepthBuffer Object");
+		SetDebugName(pDepthView, "DirectX11 DepthView Object");
 #endif
+		m_DefaultDepthBuffer = pDepthBuffer;
+		m_DefaultDepthView = pDepthView;
 	}
 
 	void DirectX11::CreateBackBuffer()
@@ -293,13 +299,18 @@ namespace graphics
 		HandleErrors(hr, "Failed to set Fullscreen/Borderless");
 
 		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
-		hr = pDevice->CreateRenderTargetView(backbuffer, NULL, &m_RenderTarget);
+		ID3D11RenderTargetView* pRenderTarget = nullptr;
+		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
+
+
+		hr = pDevice->CreateRenderTargetView(backbuffer, NULL, &pRenderTarget);
+		m_DefaultRenderTarget = pRenderTarget;
 		HandleErrors(hr, "Failed to create RenderTarget.");
 
 		SAFE_RELEASE(backbuffer);
-		m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthView);
+		m_Context->OMSetRenderTargets(1, &pRenderTarget, pDepthView);
 #ifdef _DEBUG
-		SetDebugName(m_RenderTarget, "DirectX11 RenderTarget(Back Buffer) object");
+		SetDebugName(pRenderTarget, "DirectX11 RenderTarget(Back Buffer) object");
 #endif
 	}
 
@@ -356,7 +367,14 @@ namespace graphics
 
 	void DirectX11::SetDefaultTargets()
 	{
-		m_Context->OMSetRenderTargets(1, &m_RenderTarget, m_DepthView);
+		ID3D11RenderTargetView* pRenderTarget = static_cast<ID3D11RenderTargetView*>(m_DefaultRenderTarget);
+		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
+		m_Context->OMSetRenderTargets(1, &pRenderTarget, pDepthView);
+	}
+
+	void DirectX11::ResetViewport()
+	{
+		m_Context->SetViewport(m_Viewport);
 	}
 
 #ifdef _DEBUG

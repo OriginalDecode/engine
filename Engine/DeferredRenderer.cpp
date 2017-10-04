@@ -45,6 +45,8 @@ DeferredRenderer::DeferredRenderer()
 	//_______________________________________________________________________
 
 	m_ScreenPassShader = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
+	m_ScreenPassShader->AddShaderResource(m_FinishedSceneTexture, Effect::DIFFUSE);
+
 	m_AmbientPassShader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
 	Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
 	m_AmbientPassShader->AddShaderResource(cubemap, Effect::CUBEMAP);
@@ -69,30 +71,19 @@ DeferredRenderer::~DeferredRenderer()
 
 void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context)
 {
-
 	auto& ctx = render_context.GetContext();
-	//why do I reset the viewport???
-	//render_context.m_API->ResetViewport();
+	render_context.GetAPI().ResetViewport();
  
-	IRenderTargetView* rtv[] = {
-		m_FinishedSceneTexture->GetRenderTargetView()
-	};
+	IDepthStencilView* depth = render_context.GetAPI().GetDepthView(); 
+	ctx.ClearRenderTarget(m_FinishedSceneTexture->GetRenderTargetView(), clearcolor::black);
+	ctx.OMSetRenderTargets(1, m_FinishedSceneTexture->GetRenderTargetRef(), depth);
 
-	//ID3D11DepthStencilView* depth = render_context.m_API->GetDepthView(); 
-	//Replace above depth thing
- 
+	ctx.PSSetConstantBuffer(0, 1, &m_ConstantBuffer);
+	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x1);
 
-	ctx.ClearRenderTarget(rtv, clearcolor::black);
-	ctx.OMSetRenderTargets(ARRSIZE(rtv), rtv, nullptr/*depth*/);
-
-	ctx.PSSetConstantBuffer(0, 1, m_ConstantBuffer);
-	ctx.PSSetSamplerState(0, 1, render_context.GetAPI().GetSamplerState(graphics::LINEAR_WRAP));
-
-	//render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
-
+	ctx.SetRasterizerState(render_context.GetAPI().GetRasterizerState(graphics::CULL_NONE));
 	UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);
-
-	m_RenderQuad->Render(false);
+	m_RenderQuad->Render();
 
 	//Why do I set the finished scene texture as render target? Is this to do post-processing?
 	//ctx.OMSetRenderTargets(1, &rtv[0], m_DepthStencilTexture->GetDepthView());
@@ -106,6 +97,12 @@ void DeferredRenderer::SetRenderTarget()
  
  void DeferredRenderer::Finalize() //unsure what this function does for me
  {
+	 auto api = Engine::GetAPI();
+	 api->GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x1);
+	 m_RenderQuad->Render(false, m_ScreenPassShader);
+
+
+
 // 	m_RenderQuad->Render(false, m_ScreenPassShader);
 // 	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
 // 	m_API->SetBlendState(eBlendStates::NO_BLEND);
@@ -135,11 +132,11 @@ void DeferredRenderer::SetRenderTarget()
 
 void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
 {
- 	m_ConstantStruct.m_CameraPos = camera_orientation.GetPosition();
- 	m_ConstantStruct.m_Projection = CU::Math::InverseReal(camera_projection);
- 	m_ConstantStruct.m_View = camera_orientation;
- 	m_ConstantStruct.m_ShadowMVP = shadow_mvp;
- 	m_ConstantStruct.m_Direction = light_dir;
+	m_ConstantStruct.m_CameraPos = camera_orientation.GetPosition();
+	m_ConstantStruct.m_Projection = CU::Math::InverseReal(camera_projection);
+	m_ConstantStruct.m_View = camera_orientation;
+	m_ConstantStruct.m_ShadowMVP = shadow_mvp;
+	m_ConstantStruct.m_Direction = light_dir;
  
 	auto& ctx = Engine::GetAPI()->GetContext();
 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ConstantStruct, sizeof(m_ConstantStruct));

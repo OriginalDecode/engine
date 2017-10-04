@@ -6,7 +6,7 @@ class LightModel : public Model
 {
 	friend class CModelImporter;
 public:
-	LightModel() = default;
+	LightModel();
 	~LightModel();
 	void Initiate(const std::string& filename) override;
 	void Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) override;

@@ -26,7 +26,7 @@ private:
 	void SetPosition(const CU::Vector3f& aPosition);
 	void SetDirection(const CU::Vector4f& aDirection);
 	
-	VertexWrapper m_VertexWrapper;
+	//VertexWrapper m_VertexWrapper;
 
 
 	struct gsbuffer

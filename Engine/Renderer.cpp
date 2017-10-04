@@ -56,7 +56,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Line = new Line3D; //Where should this live?
 	m_Line->Initiate();
 
-	m_LightPass = graphics::LightPass(m_GBuffer);
+	m_LightPass = new graphics::LightPass(m_GBuffer);
 
 	m_ParticleEmitter = new CEmitterInstance;
 	m_ParticleEmitter->Initiate(m_Synchronizer, m_DepthTexture);
@@ -119,13 +119,11 @@ Renderer::~Renderer()
 	SAFE_DELETE(m_DeferredRenderer);
 
 	//SAFE_DELETE(myText);
-
+	SAFE_DELETE(m_LightPass);
 	SAFE_DELETE(m_ParticleEmitter);
 
-	for (SpotLight* s : m_Spotlights)
-	{
-		SAFE_DELETE(s);
-	}
+	Engine::GetAPI()->ReleasePtr(m_ViewProjBuffer);
+	m_ViewProjBuffer = nullptr;
 }
 
 void Renderer::Render()

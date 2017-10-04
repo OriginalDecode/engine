@@ -10,6 +10,8 @@ Line3D::Line3D()
 
 Line3D::~Line3D()
 {
+	Engine::GetAPI()->ReleasePtr(m_LineBuffer);
+	m_LineBuffer = nullptr;
 }
 
 void Line3D::Initiate(int aLineAmount /*= 256*/)
@@ -151,7 +153,19 @@ void Line3D::CreateBuffer()
 	buffer_desc.m_ByteWidth = sizeof(LinePoint) * m_LineAmount;
 
 	IBuffer* vertex_buffer = pDevice.CreateBuffer(buffer_desc, "Line3D VertexBuffer");
-	m_VertexWrapper = VertexWrapper(nullptr, 0, 1, sizeof(m_cbLine), 0, 2, buffer_desc.m_ByteWidth, vertex_buffer, input_layout, graphics::POINT_LIST);
+
+	m_VertexWrapper.SetStart(0);
+	m_VertexWrapper.SetStride(sizeof(m_cbLine));
+	m_VertexWrapper.SetByteOffset(0);
+	m_VertexWrapper.SetVertexCount(2);
+	m_VertexWrapper.SetSize(buffer_desc.m_ByteWidth);
+	m_VertexWrapper.SetInputLayout(input_layout);
+	m_VertexWrapper.SetTopology(graphics::POINT_LIST);
+	m_VertexWrapper.SetBuffer(vertex_buffer);
+
+#ifdef _DEBUG
+	m_VertexWrapper.m_DebugName = DEBUG_NAME("Line", Line3D);
+#endif
 }
 
 

@@ -31,7 +31,7 @@ struct CompiledShader
 	std::string m_Entrypoint;
 	graphics::eSamplerStates m_SamplerState; //maybe?
 
-#ifndef FINAL
+#ifndef _FINAL
 	CU::GrowingArray<Effect*> m_EffectPointers; //used to rebuild shaders in runtime.
 #endif
 };

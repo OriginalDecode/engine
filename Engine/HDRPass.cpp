@@ -60,12 +60,13 @@ void HDRPass::Initiate()
 void HDRPass::CleanUp()
 {
 	SAFE_DELETE(m_HDRTexture);
-
 	for (Texture* texture : m_Downsamples)
 	{
 		delete texture;
 		texture = nullptr;
 	}
+	delete m_Quad;
+	m_Quad = nullptr;
 }
 
 void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& render_context)

@@ -222,7 +222,7 @@ namespace graphics
 	class IGraphicsAPI
 	{
 	public:
-
+		virtual ~IGraphicsAPI() {}
 		virtual void Initiate() = 0;
 
 		virtual void EndFrame() = 0;

@@ -106,20 +106,22 @@ void CEmitterInstance::CreateBuffer()
 	vtx_buff_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	vtx_buff_desc.m_CPUAccessFlag = graphics::WRITE;
 	vtx_buff_desc.m_ByteWidth = vtx_byte_width;
-	//vtx_buff_desc.m_Data = &myParticles[0];
 
 	IBuffer* vtx_buffer =  device.CreateBuffer(vtx_buff_desc, "EmitterInstance Buffer"); 
 
-	m_VertexWrapper = VertexWrapper(nullptr, 
-									vtx_start_slot, 
-									vtx_buffer_count,
-									vtx_stride, 
-									vtx_byte_offset, 
-									vtx_count, 
-									vtx_byte_width, 
-									vtx_buffer, 
-									pLayout,
-									graphics::POINT_LIST);
+	m_VertexWrapper.SetStart(vtx_start_slot);
+	m_VertexWrapper.SetBuffer(vtx_buffer);
+	m_VertexWrapper.SetStride(vtx_stride);
+	m_VertexWrapper.SetByteOffset(vtx_byte_offset);
+	m_VertexWrapper.SetVertexCount(vtx_count);
+	m_VertexWrapper.SetInputLayout(pLayout);
+	m_VertexWrapper.SetSize(vtx_byte_width);
+	m_VertexWrapper.SetTopology(graphics::POINT_LIST);
+	
+
+#ifdef _DEBUG
+	m_VertexWrapper.m_DebugName = DEBUG_NAME("particle", CEmitterInstance);
+#endif
 
 	m_ConstantBuffer = device.CreateConstantBuffer(sizeof(cbParticleVertex), "EmitterInstance ConstantBuffer");
 	m_GeometryBuffer = device.CreateConstantBuffer(sizeof(cbParticleGeometry), "EmitterInstance GeometryConstBuffer");

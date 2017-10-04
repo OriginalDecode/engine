@@ -181,7 +181,9 @@ void WaterPlane::CreatePlane()
 									vtx_buffer,
 									pInputLayout, 
 									graphics::TRIANGLE_LIST);
-
+#ifdef _DEBUG
+	m_VertexWrapper.m_DebugName = DEBUG_NAME("waterplane", WaterPlane);
+#endif
 
 	CU::GrowingArray<int> indices;
 	indices.Add(0);
@@ -223,7 +225,9 @@ void WaterPlane::CreatePlane()
 								  idx_buffer);
 
 
-
+#ifdef _DEBUG
+	m_IndexWrapper.m_DebugName = DEBUG_NAME("waterplane", WaterPlane);
+#endif
 
 
 

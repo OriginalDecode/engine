@@ -213,6 +213,10 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 									pInputLayout,
 									graphics::TRIANGLE_LIST);
 
+
+#ifdef _DEBUG
+	m_VertexWrapper.m_DebugName = DEBUG_NAME("particle_emitter", CEmitterInstance);
+#endif
 	const s32 idx_count = indexes.Size();
 	const s32 idx_stride = sizeof(u32);
 	const s32 idx_size = idx_count * idx_stride;
@@ -240,6 +244,10 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 								  graphics::R32_UINT,
 								  idx_byte_offset,
 								  idx_buffer);
+
+#ifdef _DEBUG
+	m_IndexWrapper.m_DebugName = DEBUG_NAME("particle_emitter", CEmitterInstance);
+#endif
 }
 
 void Terrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context)

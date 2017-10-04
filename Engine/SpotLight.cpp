@@ -13,13 +13,14 @@ SpotLight::~SpotLight()
 {
 	m_Model = nullptr;
 	SAFE_DELETE(m_ShadowSpotlight);
+
 }
 
 void SpotLight::Initiate()
 {
 	u64 key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx"
-																   , "Shaders/deferred_spotlight.json"
-																   , false);
+														   , "Shaders/deferred_spotlight.json"
+														   , false);
 	m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
 	m_Model->Initiate("cone.fbx");
 

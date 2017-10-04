@@ -381,6 +381,9 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 	idx.SetFormat(idx_IndexBufferFormat);
 	idx.SetByteOffset(0);
 	idx.SetBuffer(buffer);
+#ifdef _DEBUG
+	idx.m_DebugName = DEBUG_NAME_A(data->m_Filename, T);
+#endif
 }
 
 template<typename T>
@@ -431,6 +434,9 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	vtx.SetSize(vtx_Size);
 	vtx.SetBuffer(buffer);
 	vtx.SetTopology(graphics::TRIANGLE_LIST);
+#ifdef _DEBUG
+	vtx.m_DebugName = DEBUG_NAME_A(data->m_Filename, T);
+#endif
 
 }
 
@@ -482,6 +488,9 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	ins.SetStride(ins_Stride);
 	ins.SetBufferCount(ins_BufferCount);
 
+#ifdef _DEBUG
+	ins.m_DebugName = DEBUG_NAME_A(data->m_Filename, T);
+#endif
 
 }
 

@@ -40,6 +40,31 @@ namespace graphics
 		}
 		m_Swapchain->SetFullscreenState(FALSE, nullptr);
 
+		for (s32 i = 0; i < NOF_BS; i++)
+		{
+			ReleasePtr(m_BlendStates[i]);
+			m_BlendStates[i] = nullptr;
+		}
+
+		for (s32 i = 0; i < NOF_RS; i++)
+		{
+			ReleasePtr(m_RasterizerStates[i]);
+			m_RasterizerStates[i] = nullptr;
+		}
+
+		for (s32 i = 0; i < NOF_SS; i++)
+		{
+			ReleasePtr(m_SamplerStates[i]);
+			m_SamplerStates[i] = nullptr;
+		}
+
+		for (s32 i = 0; i < NOF_DSS; i++)
+		{
+			ReleasePtr(m_DepthStencilStates[i]);
+			m_DepthStencilStates[i] = nullptr;
+		}
+
+
 		SAFE_RELEASE(m_DepthView);
 		SAFE_RELEASE(m_DepthBuffer);
 		SAFE_RELEASE(m_RenderTarget);
@@ -57,8 +82,7 @@ namespace graphics
 			std::stringstream ss;
 			ss << "\nDebug is released last. Will report as Live Object! 0x" << m_Debug << "\nWatch out for false reports. \n====\n";
 			OutputDebugString(ss.str().c_str());
-
-			m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL /*| D3D11_RLDO_IGNORE_INTERNAL*/);
+			m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL  /*| D3D11_RLDO_IGNORE_INTERNAL*/);
 			SAFE_RELEASE(m_Debug);
 		}
 
@@ -147,7 +171,7 @@ namespace graphics
 		UINT createDeviceFlags = 0;
 
 #ifdef _DEBUG
-		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG | D3D11_RLDO_DETAIL;
+		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG ;
 #endif
 		UINT featureCount = ARRAYSIZE(requested_feature_levels);
 
@@ -220,9 +244,6 @@ namespace graphics
 		pDevice->SetPrivateData(WKPDID_D3DDebugObjectName, u32(deviceName.size()), deviceName.c_str());
 
 		m_Device = new DX11Device(pDevice);
-
-		CreateDepthStencilStates();
-
 		m_Context = new DX11Context(pContext);
 
 	}
@@ -344,7 +365,7 @@ namespace graphics
 		ID3D11DeviceContext* ctx = static_cast<DX11Context*>(m_Context)->m_Context;
 		ctx->ClearState();
 		ctx->Flush();
-		m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | (D3D11_RLDO_FLAGS)0x4);
+		m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY | (D3D11_RLDO_FLAGS)0x4);
 	}
 #endif
 

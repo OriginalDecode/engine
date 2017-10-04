@@ -34,7 +34,9 @@ public:
 	~VertexWrapper()
 	{
 		Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
+		m_VertexBuffer = nullptr;
 		Engine::GetAPI()->ReleasePtr(m_VertexInputLayout);
+		m_VertexInputLayout = nullptr;
 		SAFE_DELETE(m_Data);
 	}
 
@@ -68,6 +70,9 @@ public:
 	void SetTopology(graphics::eTopology topology) { m_Topology = topology; }
 	graphics::eTopology GetTopology() const { return m_Topology; }
 
+#ifdef _DEBUG
+	std::string m_DebugName;
+#endif
 
 private:
 

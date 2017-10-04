@@ -12,10 +12,13 @@ Texture::~Texture()
 {
 	graphics::IGraphicsAPI* api = Engine::GetAPI();
 	api->ReleasePtr(m_ShaderResource);
+	m_ShaderResource = nullptr;
 	api->ReleasePtr(m_DepthTexture);
+	m_DepthTexture = nullptr;
 	api->ReleasePtr(m_DepthStencilView);
-	api->ReleasePtr(m_DepthStencilShaderView);
+	m_DepthStencilView = nullptr;
 	api->ReleasePtr(m_RenderTargetView);
+	m_RenderTargetView = nullptr;
 }
 
 void Texture::Initiate(const TextureDesc& desc, const std::string& debug_name)

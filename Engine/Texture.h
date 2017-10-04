@@ -53,7 +53,7 @@ private:
 	};
 	union
 	{
-		IShaderResourceView* m_ShaderResource;
+		IShaderResourceView* m_ShaderResource = nullptr;
 		IShaderResourceView* m_DepthStencilShaderView;
 	};
 	IDepthStencilView* m_DepthStencilView = nullptr;

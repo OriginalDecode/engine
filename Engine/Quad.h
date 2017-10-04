@@ -13,8 +13,6 @@ public:
 	Quad(Effect* effect);
 	Quad(Effect* effect, float half_width, float half_height);
 
-
-
 	void Render(bool depth_on, Effect* override_effect = nullptr);
 	Effect* GetShader() { return m_Effect; }
 	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }

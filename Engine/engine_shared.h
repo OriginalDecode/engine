@@ -13,6 +13,9 @@
 
 #define STRINGIFY(_class) #_class
 
+#define DEBUG_NAME(name,_class) name  #_class
+#define DEBUG_NAME_A(str,_class) str + #_class
+
 
 typedef s32 Entity;
 

@@ -5,6 +5,7 @@
 
 #include <Engine/VertexWrapper.h>
 #include <Engine/IndexWrapper.h>
+#include <Engine/Effect.h>
 
 
 CFont::CFont(SFontData* aFontData)
@@ -49,6 +50,15 @@ CFont::CFont(SFontData* aFontData)
 	m_IndexDesc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
 	m_IndexDesc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
 
+#ifdef _DEBUG
+	//m_IndexWrapper.m_DebugName = DEBUG_NAME("Font", CFont);
+#endif
+
+
+#ifdef _DEBUG
+	//m_VertexWrapper.m_DebugName = DEBUG_NAME("Font", CFont);
+#endif
+	
 	m_DefaultColor.SetRGB(255, 255, 255);
 	m_DefaultColor.SetA(255);
 	m_Color = m_DefaultColor;

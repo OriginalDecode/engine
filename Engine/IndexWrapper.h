@@ -22,7 +22,8 @@ public:
 	~IndexWrapper()
 	{
 		Engine::GetAPI()->ReleasePtr(m_IndexBuffer);
-		SAFE_DELETE(m_Data);
+		m_IndexBuffer = nullptr;
+		delete m_Data;
 	}
 
 	void SetData(s8* data) { m_Data = data; }
@@ -48,6 +49,11 @@ public:
 	void SetBuffer(IBuffer* buffer);
 
 	void ReleaseBuffer();
+
+#ifdef _DEBUG
+	std::string m_DebugName;
+#endif
+
 private:
 
 	s8* m_Data = nullptr;
@@ -57,6 +63,7 @@ private:
 	graphics::eTextureFormat m_IndexBufferFormat;
 	s32 m_ByteOffset = 0;
 	IBuffer* m_IndexBuffer = nullptr;
+
 };
 
 inline void IndexWrapper::SetBuffer(IBuffer* buffer)

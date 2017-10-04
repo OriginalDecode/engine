@@ -405,11 +405,8 @@ void Engine::OnResume()
 
 void Engine::OnExit()
 {
-	if (HasInitiated())
-	{
-		m_Synchronizer->Quit();
-		CleanUp();
-	}
+	m_Synchronizer->Quit();
+	CleanUp();
 }
 
 void Engine::OnInactive()

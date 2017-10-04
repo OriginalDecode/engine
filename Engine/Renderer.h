@@ -82,7 +82,7 @@ private:
 	graphics::GBuffer m_GBuffer;
 	graphics::RenderContext		m_RenderContext;
 
-	graphics::LightPass			m_LightPass;
+	graphics::LightPass*		m_LightPass;
 	ShadowPass					m_ShadowPass;
 
 	PostProcessManager			m_PostProcessManager;

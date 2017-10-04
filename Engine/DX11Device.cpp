@@ -415,6 +415,7 @@ namespace graphics
 		ID3D10Blob* pBlob = static_cast<ID3D10Blob*>(blob);
 		D3DReflect(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&pReflector);
 		D3D11_SHADER_DESC shader_desc;
+
 		pReflector->GetDesc(&shader_desc);
 		s32 input_count = shader_desc.InputParameters;
 
@@ -430,5 +431,9 @@ namespace graphics
 
 		return false;
 	}
+
+
+
+
 
 };

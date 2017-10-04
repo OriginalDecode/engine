@@ -5,7 +5,7 @@
 #include <Engine/IGraphicsDevice.h>
 #include <Engine/IGraphicsContext.h>
 
-Quad::Quad(Effect* effect) 
+Quad::Quad(Effect* effect)
 	: m_Effect(effect)
 {
 	FillVertexData(1.f, 1.f);
@@ -73,15 +73,19 @@ void Quad::FillVertexData(float half_width, float half_height)
 		m_Effect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
 	IInputLayout* layout = device.CreateInputLayout(m_Effect->GetVertexShader(), desc, ARRSIZE(desc));
 
-	m_VertexWrapper = VertexWrapper(data,
-		vtx_start,
-		vtx_buffer_count,
-		stride, vtx_byte_offset,
-		vtx_count,
-		size,
-		vertex_buffer,
-		layout,
-		graphics::TRIANGLE_LIST);
+	m_VertexWrapper.SetData(data);
+	m_VertexWrapper.SetVertexCount(vtx_count);
+	m_VertexWrapper.SetStart(vtx_start);
+	m_VertexWrapper.SetStride(stride);
+	m_VertexWrapper.SetByteOffset(vtx_byte_offset);
+	m_VertexWrapper.SetSize(size);
+	m_VertexWrapper.SetBuffer(vertex_buffer);
+	m_VertexWrapper.SetInputLayout(layout);
+	m_VertexWrapper.SetTopology(graphics::TRIANGLE_LIST);
+
+#ifdef _DEBUG
+	m_VertexWrapper.m_DebugName = DEBUG_NAME_A(m_Effect->GetFileName(), Quad);
+#endif
 }
 
 void Quad::FillIndexData()
@@ -113,13 +117,18 @@ void Quad::FillIndexData()
 
 	IBuffer* index_buffer = device.CreateBuffer(idx_desc, "Quad IndexBuffer");
 
-	m_IndexWrapper = IndexWrapper(index_data,
-		index_count,
-		index_start,
-		index_size,
-		format,
-		index_byte_offset,
-		index_buffer);
+	m_IndexWrapper.SetData(index_data);
+	m_IndexWrapper.SetIndexCount(index_count);
+	m_IndexWrapper.SetStart(index_start);
+	m_IndexWrapper.SetSize(index_size);
+	m_IndexWrapper.SetFormat(format);
+	m_IndexWrapper.SetByteOffset(index_byte_offset);
+	m_IndexWrapper.SetBuffer(index_buffer);
+#ifdef _DEBUG
+	m_IndexWrapper.m_DebugName = DEBUG_NAME_A(m_Effect->GetFileName(), Quad);
+#endif
+
+
 }
 
 void Quad::Render(bool depth_on, Effect* override_effect /*= nullptr*/)

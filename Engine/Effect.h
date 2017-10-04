@@ -47,7 +47,9 @@ public:
 
 	void Use();
 	void Clear();
-
+#ifdef _DEBUG
+	const std::string& GetFileName() const { return m_FileName; }
+#endif
 private:
 	std::string m_FileName;
 

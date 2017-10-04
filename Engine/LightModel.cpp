@@ -3,20 +3,25 @@
 #include <Engine/IGraphicsContext.h>
 
 
+LightModel::LightModel()
+{
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbVertex), "LightModel - ConstantBuffer");
+}
+
 LightModel::~LightModel()
 {
 	m_Surfaces.DeleteAll();
 	m_Children.DeleteAll();
 
 	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
-	DL_ASSERT_EXP(!m_ConstantBuffer, "Failed to release constant buffer!");
+	m_ConstantBuffer = nullptr;
 }
+
 
 void LightModel::Initiate(const std::string& filename)
 {
 	//m_Filename = cl::substr(filename, "/", false, 0);
 	std::string dbg(filename.c_str());
-	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbVertex), dbg + " LightModel - ConstantBuffer");
 	for ( LightModel* child : m_Children )
 	{
 		child->Initiate(filename);

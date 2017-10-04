@@ -22,7 +22,9 @@ public:
 	~InstanceWrapper()
 	{
 		Engine::GetAPI()->ReleasePtr(m_InstanceInputLayout);
+		m_InstanceInputLayout = nullptr;
 		Engine::GetAPI()->ReleasePtr(m_InstanceBuffer);
+		m_InstanceBuffer = nullptr;
 	}
 
 
@@ -58,6 +60,9 @@ public:
 	IInputLayout* GetInputLayout() { return m_InstanceInputLayout; }
 
 
+#ifdef _DEBUG
+	std::string m_DebugName;
+#endif
 private:
 
 	s32 m_InstanceCount = 0;

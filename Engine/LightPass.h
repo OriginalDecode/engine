@@ -12,7 +12,6 @@ namespace graphics
 	class LightPass
 	{
 	public:
-		LightPass() = default;
 		LightPass(const GBuffer& gbuffer);
 		~LightPass();
 

@@ -158,8 +158,8 @@ namespace graphics
 
 	void DX11Context::OMSetRenderTargets(s32 num_views, IRenderTargetView* render_targets, IDepthStencilView* dsv)
 	{
-		m_Context->OMSetRenderTargets(num_views, 
-									  static_cast<ID3D11RenderTargetView*const*>(render_targets), 
+		m_Context->OMSetRenderTargets(num_views,
+									  static_cast<ID3D11RenderTargetView*const*>(render_targets),
 									  static_cast<ID3D11DepthStencilView*>(dsv));
 	}
 
@@ -202,9 +202,9 @@ namespace graphics
 		fx->Use();
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
-		m_Context->IASetVertexBuffers(vtx.GetStart(), 
-									  vtx.GetBufferCount(), 
-									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()), 
+		m_Context->IASetVertexBuffers(vtx.GetStart(),
+									  vtx.GetBufferCount(),
+									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()),
 									  &vtx.GetStride(),
 									  &vtx.GetByteOffset());
 		m_Context->OMSetDepthStencilState(depth_on ? m_EnableZ : m_DisableZ, 1);
@@ -324,7 +324,7 @@ namespace graphics
 
 	void DX11Context::SetBlendState(IBlendState* pBlendState)
 	{
-		m_Context->OMSetBlendState(static_cast<ID3D11BlendState*>(pBlendState), blendcolor::black, 0xFFFFFFFF );
+		m_Context->OMSetBlendState(static_cast<ID3D11BlendState*>(pBlendState), blendcolor::black, 0xFFFFFFFF);
 	}
 
 	void DX11Context::SetViewport(Viewport* viewport)
@@ -347,57 +347,57 @@ namespace graphics
 	{
 		const auto& vtx = model->GetVertexWrapper();
 		const auto& ins = model->GetInstanceWrapper();
-		
-		if(fx)
+
+		if (fx)
 			fx->Use();
-		
+
 		m_Context->DrawInstanced(ins.GetVertCountPerInstance(), ins.GetInstanceCount(), vtx.GetStart(), ins.GetStart());
-	
-		if(fx)
+
+		if (fx)
 			fx->Clear();
 	}
 
 	void DX11Context::DrawIndexedInstanced(BaseModel* model, Effect* fx)
 	{
 		std::bad_function_call;
-// 		auto& vtx = model->GetVertexWrapper();
-// 		auto& idx = model->GetIndexWrapper();
-// 		auto& ins = model->GetInstanceWrapper();
-// 
-// 		IInputLayout* input_layout = ins.GetInputLayout();
-// 		IASetInputLayout(input_layout);
-// 
-// 		ID3D11Buffer* buffers[] = {
-// 			static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer()),
-// 			static_cast<ID3D11Buffer*>(ins.GetInstanceBuffer())
-// 		};
-// 
-// 		u32 strides[] = {
-// 			vtx.GetStride(),
-// 			ins.GetStride()
-// 		};
-// 
-// 		u32 byte_offsets[] = {
-// 			vtx.GetByteOffset(),
-// 			ins.GetByteOffset()
-// 		};
-// 
-// 		m_Context->IASetVertexBuffers(ins.GetStart(),
-// 									  ins.GetBufferCount(),
-// 									  buffers,
-// 									  strides,
-// 									  byte_offsets);
-// 
-// 		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
-// 									DirectX11::GetFormat(idx.GetFormat()),
-// 									idx.GetByteOffset());
-// 
-// 		if (fx)
-// 		{
-// 			fx->Use();
-// 			m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->, idx.GetStart(), vtx.GetStart(), ins.GetStart());
-// 			fx->Clear();
-// 		}
+		// 		auto& vtx = model->GetVertexWrapper();
+		// 		auto& idx = model->GetIndexWrapper();
+		// 		auto& ins = model->GetInstanceWrapper();
+		// 
+		// 		IInputLayout* input_layout = ins.GetInputLayout();
+		// 		IASetInputLayout(input_layout);
+		// 
+		// 		ID3D11Buffer* buffers[] = {
+		// 			static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer()),
+		// 			static_cast<ID3D11Buffer*>(ins.GetInstanceBuffer())
+		// 		};
+		// 
+		// 		u32 strides[] = {
+		// 			vtx.GetStride(),
+		// 			ins.GetStride()
+		// 		};
+		// 
+		// 		u32 byte_offsets[] = {
+		// 			vtx.GetByteOffset(),
+		// 			ins.GetByteOffset()
+		// 		};
+		// 
+		// 		m_Context->IASetVertexBuffers(ins.GetStart(),
+		// 									  ins.GetBufferCount(),
+		// 									  buffers,
+		// 									  strides,
+		// 									  byte_offsets);
+		// 
+		// 		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
+		// 									DirectX11::GetFormat(idx.GetFormat()),
+		// 									idx.GetByteOffset());
+		// 
+		// 		if (fx)
+		// 		{
+		// 			fx->Use();
+		// 			m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->, idx.GetStart(), vtx.GetStart(), ins.GetStart());
+		// 			fx->Clear();
+		// 		}
 	}
 
 	void DX11Context::DrawIndexedInstanced(Model* model, Effect* fx /*= nullptr*/)
@@ -425,14 +425,14 @@ namespace graphics
 		};
 
 		m_Context->IASetVertexBuffers(ins.GetStart(),
-			ins.GetBufferCount(),
-			buffers,
-			strides,
-			byte_offsets);
+									  ARRSIZE(buffers),
+									  buffers,
+									  strides,
+									  byte_offsets);
 
 		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
-			DirectX11::GetFormat(idx.GetFormat()),
-			idx.GetByteOffset());
+									DirectX11::GetFormat(idx.GetFormat()),
+									idx.GetByteOffset());
 
 		if (fx)
 		{

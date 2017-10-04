@@ -55,13 +55,8 @@ public:
 private:
 	void RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
 	void RemoveGPUData();
-
-	void RemoveOrientation();
 	CU::GrowingArray<Model*> m_Children;
-
 protected:
 	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc) override;
-	
 	CU::GrowingArray<GPUModelData> m_GPUData;
-
 };

@@ -343,6 +343,7 @@
     <ClInclude Include="Instance.h" />
     <ClInclude Include="InstanceWrapper.h" />
     <ClInclude Include="LevelFactory.h" />
+    <ClInclude Include="LightManager.h" />
     <ClInclude Include="LightModel.h" />
     <ClInclude Include="LightPass.h" />
     <ClInclude Include="LightStructs.h" />
@@ -452,6 +453,7 @@
     <ClCompile Include="imgui_impl_dx11.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="LevelFactory.cpp" />
+    <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="LightModel.cpp" />
     <ClCompile Include="LightPass.cpp" />
     <ClCompile Include="Line3D.cpp" />
@@ -538,9 +540,6 @@
     <ProjectReference Include="..\PostMaster\PostMaster.vcxproj">
       <Project>{ef362edc-8fff-400b-a5ff-05a9bc551d65}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

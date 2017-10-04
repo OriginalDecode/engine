@@ -116,6 +116,7 @@ private:
 	ShadowDirectional			m_DirectionalShadow;
 
 
+	IBuffer*					m_ViewProjBuffer = nullptr;
 
 	//this should be an object in the world and the render part should be separated
 	class WaterPlane*			m_WaterPlane				= nullptr; //Shouldn't be in here

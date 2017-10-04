@@ -420,6 +420,7 @@
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="..\profile_defines.h" />
     <ClInclude Include="AssetFactory.h" />
+    <ClInclude Include="LightManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -682,8 +683,6 @@
     </ClCompile>
     <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="AssetFactory.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
+    <ClCompile Include="LightManager.cpp" />
   </ItemGroup>
 </Project>

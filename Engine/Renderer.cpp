@@ -93,7 +93,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 #endif
-
+	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
 	//m_PBLValues = m_Engine->GetAPI()->CreateConstantBuffer(sizeof(m_values));
 }
 
@@ -143,10 +143,20 @@ void Renderer::Render()
 
 	m_RenderContext.GetAPI().BeginFrame();
 
+
+	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
+	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
+	const CU::Matrix44f& camera_view_proj = CU::Math::Inverse(camera_orientation) * camera_projection;
+
 // 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 // 	m_GBuffer.SetAsRenderTarget(m_DepthTexture, m_RenderContext);
 
 	//m_RenderContext.GetAPI().SetDefaultTargets();
+
+	//http://jackieokay.com/2017/04/13/reflection1.html
+	//This is the view projection that all 3d models use, only need to do it once
+	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
+	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 
 	if(m_RenderInstanced)
 		Render3DCommandsInstanced();
@@ -165,8 +175,6 @@ void Renderer::Render()
 #endif
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
-	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
-	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
 
 	//m_DeferredRenderer->DeferredRender(camera_orientation, camera_projection, shadow_mvp, m_Direction, m_RenderContext);
 

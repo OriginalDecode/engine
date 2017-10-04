@@ -212,23 +212,19 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const 
 {
 	if (m_IsRoot)
 		return;
+ 	graphics::IGraphicsContext& ctx = rc.GetContext();
 
-	m_ConstantStruct.m_World = m_Orientation;
-	m_ConstantStruct.m_InvertedView = CU::Math::Inverse(camera_orientation);
-	m_ConstantStruct.m_Projection = camera_projection;
+// 	m_ConstantStruct.m_World = m_Orientation;
+// 	m_ConstantStruct.m_InvertedView = CU::Math::Inverse(camera_orientation);
+// 	m_ConstantStruct.m_Projection = camera_projection;
+// 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ConstantStruct, sizeof(cbVertex));
 
-	graphics::IGraphicsContext& ctx = rc.GetContext();
-
-	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ConstantStruct, sizeof(cbVertex));
-
-
-	//Need to check if instanced
 	if (m_InstanceWrapper.GetInstanceBuffer())
 	{
 		IBuffer* pBuffer = m_InstanceWrapper.GetInstanceBuffer();
 		ctx.UpdateConstantBuffer(pBuffer, &m_GPUData[0], m_GPUData.Size() * (sizeof(CU::Matrix44f) + sizeof(CU::Vector4f)));
 	}
-	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
+	//ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
 
 }
 

@@ -18,7 +18,6 @@ namespace debug
 
 	void DebugHandle::Update()
 	{
-		ImGui::NewFrame();
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
 		ImGui::SetNextWindowSize(ImVec2(300, Engine::GetInstance()->GetInnerSize().m_Height));
 		ImGuiWindowFlags flags = 0;
@@ -36,11 +35,11 @@ namespace debug
 			camera_pos << "x:" << pos.x << "\ny:" << pos.y << "\nz:" << pos.z;
 			ImGui::Text("%s", camera_pos.str().c_str());
 
-			if (ImGui::Checkbox("Debug Textures", &sDebugTextures))
-				sDebugTextures = !sDebugTextures;
-			
-			if(sDebugTextures)
+			ImGui::Checkbox("Debug Textures", &sDebugTextures);
+
+			if (sDebugTextures)
 				DebugTextures();
+
 
 			ImGui::End();
 		}
@@ -100,7 +99,7 @@ namespace debug
 		if (index < 0 || index >= static_cast<int>(vector.size()))
 			return false;
 		*out_text = vector.at(index).c_str();
-	
+
 		return true;
 	};
 
@@ -146,7 +145,7 @@ namespace debug
 		m_Labels.push_back(debug_name);
 	}
 
-	
+
 
 	// 
 	// 	void Engine::AddFunction(const std::string& label, std::function<void()> function)

@@ -1,4 +1,4 @@
-SamplerState linear_Wrap 	: register ( s0 );
+SamplerState sampler0 	: register ( s0 );
 Texture2D AlbedoTexture  	: register ( t0 );
 Texture2D NormalTexture  	: register ( t1 );
 Texture2D RoughnessTexture 	: register ( t2 );
@@ -42,7 +42,7 @@ struct ps_input_no_instance
 
 GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
 {
-	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv).rgb * 2 - 1;
+	float3 _normal = NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
 	float3 nnormal = normalize(input.normal.xyz );
 
 	float3 binorm = normalize(cross(input.normal, input.tang));
@@ -55,7 +55,10 @@ GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
 
 	GBuffer output;
 
-    output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);//float4(t,1);
+	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);
+	albedo.rgb = pow(albedo.rgb, 1 / 2.2f);
+
+	output.Albedo = albedo;
     output.Normal = float4(_normal, 1); //float4(_normal, 1);// input.data0.x);
     output.Depth.x = input.pos.z;
 	output.Depth.y = 0;
@@ -65,7 +68,7 @@ GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
 
 GBuffer main(VS_OUTPUT input) : SV_Target
 {
-	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv).rgb * 2 - 1;
+	float3 _normal = NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
 	float3 nnormal = normalize(input.normal.xyz );
 
 	float3 binorm = normalize(cross(input.normal, input.tang));
@@ -78,10 +81,10 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 
 	GBuffer output;
 
-	float metalness_override = MetalnessTexture.Sample(linear_Wrap, input.uv);
-	float roughness_override = RoughnessTexture.Sample(linear_Wrap, input.uv); 
+	float metalness_override = MetalnessTexture.Sample(sampler0, input.uv);
+	float roughness_override = RoughnessTexture.Sample(sampler0, input.uv); 
 
-    output.Albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);//float4(t,1);
+    output.Albedo = AlbedoTexture.Sample(sampler0, input.uv);//float4(t,1);
     output.Normal = float4(_normal, 1); //float4(_normal, 1);// input.data0.x);
     output.Depth.x = input.pos.z;
 	output.Depth.y = input.data0.y;
@@ -89,9 +92,9 @@ GBuffer main(VS_OUTPUT input) : SV_Target
     return output;
 
 
-/*	float4 opacity = OpacityTexture.Sample(linear_Wrap, input.uv);
+/*	float4 opacity = OpacityTexture.Sample(sampler0, input.uv);
 
-	float3 _normal = NormalTexture.Sample(linear_Wrap, input.uv).rgb * 2 - 1;
+	float3 _normal = NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
 	float3 nnormal = normalize(input.normal.xyz);
 
 	float3 binorm = normalize(cross(input.normal, input.tang));
@@ -103,18 +106,18 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	_normal *= 0.5;
 
 	output = (GBuffer)0;
-	float4 albedo = AlbedoTexture.Sample(linear_Wrap, input.uv);
+	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);
 
 
 	output.Albedo = albedo;
 	output.Albedo = pow(output.Albedo,  2.2);
 	
-	float4 metal = MetalnessTexture.Sample(linear_Wrap, input.uv);
+	float4 metal = MetalnessTexture.Sample(sampler0, input.uv);
 	float metalness = metal.r ;
 
 	output.Normal =  float4(_normal.rgb, metalness);
 	output.Depth.x = input.pos.z;
-	output.Depth.y = RoughnessTexture.Sample(linear_Wrap, input.uv).r;
+	output.Depth.y = RoughnessTexture.Sample(sampler0, input.uv).r;
 	output.Depth.w = 1;
 	
 	output.Emissive = float4(1,1,1,1);

@@ -75,7 +75,7 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 	ndc.y = (-input.clip.y / input.clip.w) / 2.0h + 0.5h;
 
 
-	float3 _normal = float3(0,1,0); //NormalTexture.Sample(linear_Wrap, input.uv).rgb * 2 - 1;
+	float3 _normal = float3(0,1,0); //NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
 	float3 normal = input.normal;
 	float3 nnormal = normalize(normal);
 

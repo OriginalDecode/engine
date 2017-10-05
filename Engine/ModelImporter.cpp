@@ -206,7 +206,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 					data->myData->myVertexBuffer[currIndex + addedSize] = normal.x;
 					data->myData->myVertexBuffer[currIndex + addedSize + 1] = normal.y;
 					data->myData->myVertexBuffer[currIndex + addedSize + 2] = normal.z;
-					data->myData->myVertexBuffer[currIndex + addedSize + 3] = 1;
+					data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
 					addedSize += NORMAL_STRIDE;
 				}
 
@@ -233,7 +233,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 					data->myData->myVertexBuffer[currIndex + addedSize] = binorm.x;
 					data->myData->myVertexBuffer[currIndex + addedSize + 1] = binorm.y;
 					data->myData->myVertexBuffer[currIndex + addedSize + 2] = binorm.z;
-					data->myData->myVertexBuffer[currIndex + addedSize + 3] = 1;
+					data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
 					addedSize += BINORMAL_STRIDE;
 
 					CU::Vector3f tangent(
@@ -247,7 +247,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 					data->myData->myVertexBuffer[currIndex + addedSize] = tangent.x;
 					data->myData->myVertexBuffer[currIndex + addedSize + 1] = tangent.y;
 					data->myData->myVertexBuffer[currIndex + addedSize + 2] = tangent.z;
-					data->myData->myVertexBuffer[currIndex + addedSize + 3] = 1;
+					data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
 					addedSize += TANGENT_STRIDE;
 				}
 

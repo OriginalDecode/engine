@@ -45,7 +45,7 @@ void Surface::Activate(const graphics::RenderContext& render_context)
 	if ( !myEffect )
 		return;
 
-	render_context.GetContext().IASetTopology(graphics::eTopology::TRIANGLE_LIST);
+	//render_context.GetContext().IASetTopology(graphics::eTopology::TRIANGLE_LIST);
 	m_Material.Use(myEffect);
 }
 

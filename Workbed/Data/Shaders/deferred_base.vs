@@ -34,6 +34,7 @@ VS_OUTPUT main(VS_INPUT input)
 
 	output.pos = mul(input.pos, orientation);
 	output.pos = mul(output.pos, camera_view_x_proj);	
+	output.uv = input.uv;
 
 	output.normal = mul(input.normal, orientation);
 	output.binorm = mul(input.binorm, orientation);

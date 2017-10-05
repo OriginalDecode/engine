@@ -14,7 +14,7 @@ namespace debug
 {
 
 	DebugHandle* DebugHandle::m_Instance = nullptr;
-	static bool sDebugTextures = true;
+	static bool sDebugTextures = false;
 
 	void DebugHandle::Update()
 	{

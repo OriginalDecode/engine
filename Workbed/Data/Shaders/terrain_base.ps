@@ -5,7 +5,7 @@
 //	Samplers & Textures
 //---------------------------------
 
-SamplerState linear_Wrap 	: register ( s0 );
+SamplerState sampler0 	: register ( s0 );
 Texture2D AlbedoTexture  	: register ( t0 );
 Texture2D NormalTexture  	: register ( t1 );
 Texture2D RoughnessTexture 	: register ( t2 );
@@ -44,6 +44,6 @@ struct VS_OUTPUT
 //---------------------------------
 float4 main(VS_OUTPUT input) : SV_Target
 {
-	return float4(0.2,0.2,0.2,1);//AlbedoTexture.Sample(linear_Wrap, input.uv);
+	return float4(0.2,0.2,0.2,1);//AlbedoTexture.Sample(sampler0, input.uv);
 
 }

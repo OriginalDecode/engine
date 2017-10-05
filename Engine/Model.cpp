@@ -182,12 +182,15 @@ void Model::AddTexture(const std::string& path, Effect::TextureSlot slot)
 
 void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc)
 {
-	if (m_IsRoot)
+	if (m_IsRoot )
 		return;
 
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 	if (m_InstanceWrapper.GetInstanceBuffer())
 	{
+		if (m_GPUData.Empty())
+			return;
+
 		IBuffer* pBuffer = m_InstanceWrapper.GetInstanceBuffer();
 		ctx.UpdateConstantBuffer(pBuffer, &m_GPUData[0], m_GPUData.Size() * (sizeof(CU::Matrix44f) + sizeof(CU::Vector4f)));
 	}

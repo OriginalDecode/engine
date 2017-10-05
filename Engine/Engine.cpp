@@ -88,6 +88,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	debug::DebugHandle::Create();
 	Randomizer::Create();
 	PostMaster::Create();
+	m_CurrentSampler = graphics::MSAA_x16;
 	//myWindowSize.m_Height = window_height;
 	//myWindowSize.m_Width = window_width;
 
@@ -459,7 +460,7 @@ CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepa
 
 	m_States[(u16)eEngineStates::LOADING] = TRUE;
 
-	m_LevelFactory->CreatePBLLevel(8);
+	m_LevelFactory->CreatePBLLevel(16);
 	//m_LevelFactory->CreateLevel(level_filepath);
 
 	m_States[(u16)eEngineStates::LOADING] = FALSE;

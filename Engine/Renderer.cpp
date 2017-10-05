@@ -137,19 +137,15 @@ Renderer::~Renderer()
 //http://jackieokay.com/2017/04/13/reflection1.html
 void Renderer::Render()
 {
-
 	if (m_Synchronizer->HasQuit())
 	{
 		m_Synchronizer->RenderIsDone();
 		return;
 	}
 
-
-
 	PROFILE_FUNCTION(profiler::colors::Magenta);
 
 	m_RenderContext.GetAPI().BeginFrame();
-
 
 	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
 	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
@@ -178,31 +174,6 @@ void Renderer::Render()
 									   m_RenderContext);
 	m_RenderContext.GetAPI().SetDefaultTargets();
 	m_DeferredRenderer->Finalize();
-
-
-
-
-	//m_RenderContext.GetAPI().SetDefaultTargets();
-	//memcpy(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture(), sizeof(ITexture2D*));
-	//Texture::CopyData(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
-
-	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
-
-	//RenderTerrain(false);
-
-
-
-
-	//RenderPointlight();
-	//RenderSpotlight();
-
-	/*m_PostProcessManager.Process(m_DeferredRenderer->GetFinalTexture(), m_RenderContext);
-
-	if (m_PostProcessManager.GetFlags() == 0)
-	*/	//m_DeferredRenderer->Finalize(m_RenderContext);
-
-	//RenderLines();
-	//Render2DCommands();
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)

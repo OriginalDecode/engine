@@ -149,8 +149,8 @@ void Renderer::Render()
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 
-	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
-	m_GBuffer.SetAsRenderTarget(m_DepthTexture, m_RenderContext);
+ 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
+ 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
 	if (m_RenderInstanced)
 		Render3DCommandsInstanced();
@@ -159,14 +159,14 @@ void Renderer::Render()
 
 
 
-	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
-	m_DeferredRenderer->DeferredRender(camera_orientation, 
-									   camera_projection, 
-									   shadow_mvp, 
-									   m_Direction, 
-									   m_RenderContext);
-	m_RenderContext.GetAPI().SetDefaultTargets();
-	m_DeferredRenderer->Finalize();
+ 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
+ 	m_DeferredRenderer->DeferredRender(camera_orientation, 
+ 									   camera_projection, 
+ 									   shadow_mvp, 
+ 									   m_Direction, 
+ 									   m_RenderContext);
+ 	m_RenderContext.GetAPI().SetDefaultTargets();
+ 	m_DeferredRenderer->Finalize();
 
 	//memcpy(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture(), sizeof(ITexture2D*));
 	//Texture::CopyData(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());

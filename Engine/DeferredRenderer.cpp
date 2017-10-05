@@ -25,6 +25,7 @@ DeferredRenderer::DeferredRenderer()
 	scene_desc.m_Usage = graphics::DEFAULT_USAGE;
 	scene_desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
 	scene_desc.m_TextureFormat = graphics::RGBA16_FLOAT;
+	scene_desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
 	scene_desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
 	m_FinishedSceneTexture = new Texture;
 	m_FinishedSceneTexture->Initiate(scene_desc, "DeferredRenderer - Finished Scene");
@@ -71,7 +72,7 @@ DeferredRenderer::~DeferredRenderer()
 
 void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context)
 {
-	auto& ctx = render_context.GetContext();
+	graphics::IGraphicsContext& ctx = render_context.GetContext();
 	render_context.GetAPI().ResetViewport();
  
 	IDepthStencilView* depth = render_context.GetAPI().GetDepthView(); 
@@ -99,6 +100,7 @@ void DeferredRenderer::SetRenderTarget()
  {
 	 auto api = Engine::GetAPI();
 	 api->GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x1);
+	 m_ScreenPassShader->AddShaderResource(m_FinishedSceneTexture, Effect::DIFFUSE);
 	 m_RenderQuad->Render(false, m_ScreenPassShader);
 
 

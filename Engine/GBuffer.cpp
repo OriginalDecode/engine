@@ -37,8 +37,8 @@ namespace graphics
 
 		Effect* shader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
 		shader->AddShaderResource(m_Albedo, Effect::DIFFUSE);
-		shader->AddShaderResource(m_Normal, Effect::NORMAL);
 		shader->AddShaderResource(m_Depth, Effect::DEPTH);
+		shader->AddShaderResource(m_Normal, Effect::NORMAL);
 		shader->AddShaderResource(m_Emissive, Effect::EMISSIVE);
 	}
 
@@ -69,7 +69,7 @@ namespace graphics
 			m_Emissive->GetRenderTargetView(),
 		};
 
-		render_context.GetContext().OMSetRenderTargets(ARRAYSIZE(target), target, depth->GetDepthView());
+		render_context.GetContext().OMSetRenderTargets(ARRAYSIZE(target), target, render_context.GetAPI().GetDepthView());
 	}
 
 };

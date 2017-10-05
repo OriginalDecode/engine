@@ -20,6 +20,7 @@ namespace graphics
 		static void SetDebugName(void * pResource, std::string debug_name);
 		static void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
 		static DXGI_FORMAT GetFormat(s32 format);
+		static DXGI_FORMAT GetFormat(eVertexFormat format);
 		static D3D11_USAGE GetUsage(s32 usage);
 		static u32 GetBindFlag(s32 binding);
 		static u32 GetCPUAccessFlag(s32 flags);

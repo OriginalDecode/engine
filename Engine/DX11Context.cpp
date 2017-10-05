@@ -15,8 +15,6 @@ namespace graphics
 	DX11Context::DX11Context(ID3D11DeviceContext* context)
 		: m_Context(context)
 	{
-		m_DisableZ = static_cast<ID3D11DepthStencilState*>(Engine::GetAPI()->GetDepthStencilState(Z_DISABLED));
-		m_EnableZ = static_cast<ID3D11DepthStencilState*>(Engine::GetAPI()->GetDepthStencilState(Z_ENABLED));
 	}
 
 	void DX11Context::VSSetShaderResource(s32 start_slot, s32 count, void* resources)
@@ -188,7 +186,7 @@ namespace graphics
 									  &pVtxBuffer,
 									  &stride,
 									  &offset);
-		m_Context->OMSetDepthStencilState(m_EnableZ, 1);
+		//m_Context->OMSetDepthStencilState(m_EnableZ, 1);
 
 		fx->Use();
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
@@ -207,7 +205,7 @@ namespace graphics
 									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()),
 									  &vtx.GetStride(),
 									  &vtx.GetByteOffset());
-		m_Context->OMSetDepthStencilState(depth_on ? m_EnableZ : m_DisableZ, 1);
+		//m_Context->OMSetDepthStencilState(depth_on ? m_EnableZ : m_DisableZ, 1);
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
 		fx->Clear();
 	}
@@ -246,7 +244,7 @@ namespace graphics
 									DirectX11::GetFormat(idx.GetFormat()),
 									idx.GetByteOffset());
 
-		m_Context->OMSetDepthStencilState(m_DisableZ, 1);
+		//m_Context->OMSetDepthStencilState(m_DisableZ, 1);
 
 		effect->Use();
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
@@ -278,7 +276,7 @@ namespace graphics
 									DirectX11::GetFormat(idx.GetFormat()),
 									idx.GetByteOffset());
 
-		m_Context->OMSetDepthStencilState(depth_on ? m_EnableZ : m_DisableZ, 1);
+		SetDepthState(Engine::GetAPI()->GetDepthStencilState(Z_DISABLED), 0);
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 	}
 

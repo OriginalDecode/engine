@@ -134,6 +134,7 @@ void Quad::FillIndexData()
 void Quad::Render(bool depth_on, Effect* override_effect /*= nullptr*/)
 {
 	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
+	ctx.SetRasterizerState(Engine::GetAPI()->GetRasterizerState(graphics::CULL_NONE));
 	override_effect ? override_effect->Use() : m_Effect->Use();
 	ctx.DrawIndexed(this, depth_on);
 	override_effect ? override_effect->Use() : m_Effect->Clear();

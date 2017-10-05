@@ -627,6 +627,10 @@ namespace graphics
 		if (format & graphics::RGBA8_SINT)
 			return DXGI_FORMAT_R8G8B8A8_SINT;
 
+		if (format & graphics::RGBA8_UNORM)
+			return DXGI_FORMAT_R8G8B8A8_UNORM;
+
+
 		//___________________________________________________
 		if (format & graphics::R32_TYPELESS)
 			return DXGI_FORMAT_R32_TYPELESS;
@@ -643,8 +647,23 @@ namespace graphics
 		if (format & graphics::RG32_FLOAT)
 			return DXGI_FORMAT_R32G32_FLOAT;
 
-
+		DL_ASSERT("invalid texture format");
 		return DXGI_FORMAT_R32G32B32A32_FLOAT;
+	}
+
+	DXGI_FORMAT DirectX11::GetFormat(eVertexFormat format)
+	{
+		if (format == eVertexFormat::_4BYTE_R)
+			return DXGI_FORMAT_R32_FLOAT;
+		if (format == eVertexFormat::_8BYTE_RG)
+			return DXGI_FORMAT_R32G32_FLOAT;
+		if (format == eVertexFormat::_12BYTE_RGB)
+			return DXGI_FORMAT_R32G32B32_FLOAT;
+		if (format == eVertexFormat::_16BYTE_RGBA)
+			return DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		DL_ASSERT("invalid vertex format");
+		return DXGI_FORMAT_UNKNOWN;
 	}
 
 	D3D11_USAGE DirectX11::GetUsage(s32 usage)

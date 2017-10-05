@@ -77,8 +77,6 @@ namespace graphics
 	private:
 		void* GetContext() override { return m_Context; }
 
-		ID3D11DepthStencilState* m_EnableZ = nullptr;
-		ID3D11DepthStencilState* m_DisableZ = nullptr;
 
 		void UpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size, bool internal) override;
 		void UpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping, bool internal) override;

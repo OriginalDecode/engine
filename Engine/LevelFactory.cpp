@@ -671,7 +671,7 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 			t.myOrientation.SetTranslation(translation);
 
 
-			auto key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/default.json", false);
+			auto key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl.json", false);
 			Model* m = m_Engine->GetModel(key);
 			m->AddTexture("Data/Textures/brickwall_normal.dds", Effect::NORMAL);
 

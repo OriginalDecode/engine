@@ -90,6 +90,8 @@ void Application::OnInactive()
 
 void Application::OnActive()
 {
+	if (!myEngine)
+		return;
 	myEngine->OnActive();
 }
 

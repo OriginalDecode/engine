@@ -127,6 +127,7 @@ void Texture::InitiateAsRenderTarget(float width, float height, const std::strin
 	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
 	desc.m_Usage = graphics::DEFAULT_USAGE;
 	desc.m_TextureFormat = graphics::RGBA16_FLOAT;
+	desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
 	desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
 
 	Initiate(desc, debug_name);

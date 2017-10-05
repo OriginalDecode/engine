@@ -32,6 +32,6 @@ gbuffer main_instanced(ps_input input) : SV_Target
 {
 	gbuffer output = (gbuffer)0;
 
-	output.albedo = float4(1,1,1,1) * input.data0.x * input.data0.y; 
+	output.albedo = float4(1,1,0,1) * input.data0.x * input.data0.y; 
 	return output;
 };

@@ -103,7 +103,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
-	//m_PBLValues = m_Engine->GetAPI()->CreateConstantBuffer(sizeof(m_values));
 }
 
 Renderer::~Renderer()
@@ -158,28 +157,32 @@ void Renderer::Render()
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 
- 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
- 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
+	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
+	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
-	if (m_RenderInstanced)
+	if (!m_RenderInstanced)
 		Render3DCommandsInstanced();
 	else
 		Render3DCommands();
 
 
-
 #if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
 #endif
- 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
- 	m_DeferredRenderer->DeferredRender(camera_orientation, 
- 									   camera_projection, 
- 									   shadow_mvp, 
- 									   m_Direction, 
- 									   m_RenderContext);
- 	m_RenderContext.GetAPI().SetDefaultTargets();
- 	m_DeferredRenderer->Finalize();
 
+	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
+	m_DeferredRenderer->DeferredRender(camera_orientation, 
+									   camera_projection, 
+									   shadow_mvp, 
+									   m_Direction, 
+									   m_RenderContext);
+	m_RenderContext.GetAPI().SetDefaultTargets();
+	m_DeferredRenderer->Finalize();
+
+
+
+
+	//m_RenderContext.GetAPI().SetDefaultTargets();
 	//memcpy(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture(), sizeof(ITexture2D*));
 	//Texture::CopyData(m_DepthTexture->GetDepthTexture(), m_DeferredRenderer->GetDepthStencil()->GetDepthTexture());
 
@@ -204,11 +207,6 @@ void Renderer::Render()
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();
-	if (ImGui::GetIO().WantCaptureMouse)
-	{
-		int apa;
-		apa = 5;
-	}
 #endif
 	m_RenderContext.GetAPI().EndFrame();
 

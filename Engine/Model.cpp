@@ -24,7 +24,7 @@ void Model::Initiate(const std::string& filename)
 	m_GPUData.Init(250);
 	std::string dbg(filename.c_str());
 	m_FileName = dbg;
-	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbVertex), dbg + "Vertex ConstantBuffer");
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), dbg + "Vertex ConstantBuffer");
 	for (Model* child : m_Children)
 	{
 		child->Initiate(filename);
@@ -180,34 +180,6 @@ void Model::AddTexture(const std::string& path, Effect::TextureSlot slot)
 	}
 }
 
-// void Model::AddOrientation(CU::Matrix44f orientation)
-// {
-// 	DL_ASSERT_EXP(m_Orientations.Size() < 5000, "Too many instances");
-// 
-// 	for (Model* child : m_Children)
-// 	{
-// 		child->AddOrientation(orientation);
-// 	}
-// 
-// 	
-// 
-// 	m_Orientations.Add(orientation);
-// }
-
-// void Model::AddPBLData(CU::Vector2f data)
-// {
-// 	m_PBLData.Add(data);
-// }
-
-// void Model::RemoveOrientation()
-// {
-// 	for (Model* child : m_Children)
-// 	{
-// 		child->RemoveOrientation();
-// 	}
-// 	m_Orientations.RemoveAll();
-// }
-
 void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc)
 {
 	if (m_IsRoot)
@@ -218,6 +190,11 @@ void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const 
 	{
 		IBuffer* pBuffer = m_InstanceWrapper.GetInstanceBuffer();
 		ctx.UpdateConstantBuffer(pBuffer, &m_GPUData[0], m_GPUData.Size() * (sizeof(CU::Matrix44f) + sizeof(CU::Vector4f)));
+	}
+	else
+	{
+		ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_Orientation[0], sizeof(CU::Matrix44f));
+		ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);
 	}
 }
 

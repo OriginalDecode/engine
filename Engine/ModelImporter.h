@@ -190,7 +190,7 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	DL_ASSERT_EXP(scene, "ImportModel Failed. Could not read the requested file.");
 
 	aiNode* rootNode = scene->mRootNode;
-	FBXModelData* data = new FBXModelData; 
+	FBXModelData* data = new FBXModelData;
 	data->m_Filename = filepath.c_str();
 	CU::Vector3f max_point, min_point;
 	ProcessNode(rootNode, scene, data, filepath, min_point, max_point);
@@ -237,7 +237,7 @@ void CModelImporter::CreateModel(FBXModelData* someData, T* model, std::string f
 	for (FBXModelData* child : someData->myChildren)
 	{
 		child->m_Filename = filepath.c_str();
-		model->AddChild(CreateChild<T>(child, filepath, effect)); 
+		model->AddChild(CreateChild<T>(child, filepath, effect));
 	}
 
 }
@@ -278,7 +278,7 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 	FillIndexData(out, data);
 
 	auto& vtx = out->m_VertexWrapper;
-	
+
 	if (!vtx.GetInputLayout())
 		FillInstanceData(out, data, effect);
 
@@ -407,7 +407,7 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	vtx_desc.m_Size = vtx_VertexCount * vtx_Stride;
 	vtx_desc.m_Data = vtx_Data;
 	vtx_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
-	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE; 
+	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	vtx_desc.m_StructuredByteStride = 0;
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
 	vtx_desc.m_MiscFlags = 0;
@@ -419,7 +419,7 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	CU::GrowingArray<graphics::InputElementDesc> element;
 	SetupInputLayout(data, element);
 
-	
+
 	if (!device.FindInputSemantic("INSTANCE", effect->GetVertexShader()->m_Blob))
 	{
 		IInputLayout* layout = device.CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
@@ -450,7 +450,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	const s32 ins_ByteOffset = 0;
 	const s32 ins_InstanceCount = 5000;
 	const s32 ins_Size = ins_InstanceCount * ins_Stride;
-	const s32 ins_IndicesPerInstance = data->myIndexCount; 
+	const s32 ins_IndicesPerInstance = data->myIndexCount;
 
 	graphics::BufferDesc desc;
 	desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;

@@ -21,10 +21,10 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
 	float4 pos : SV_POSITION;
-	float3 normal : NORMAL;
+	float4 normal : NORMAL;
 	float2 uv : TEXCOORD;
-	float3 binorm : BINORMAL;
-	float3 tang : TANGENT;
+	float4 binorm : BINORMAL;
+	float4 tang : TANGENT;
 	float4 worldpos : POSITION;
 	float2 data0 : DATA;
 };
@@ -53,7 +53,6 @@ VS_OUTPUT main(VS_INPUT input)
 	output.normal = mul(input.normal, world_matrices);
 	output.binorm = mul(input.binorm, world_matrices);
 	output.tang  = mul(input.tang , world_matrices);
-	
 	output.worldpos = mul(input.pos, world_matrices);
 	
 	return output;

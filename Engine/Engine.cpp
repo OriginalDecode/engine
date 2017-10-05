@@ -417,14 +417,12 @@ void Engine::OnExit()
 
 void Engine::OnInactive()
 {
-	if (HasInitiated())
-		m_Window.OnInactive();
+	m_Window.OnInactive();
 }
 
 void Engine::OnActive()
 {
-	if (HasInitiated())
-		m_Window.OnActive();
+	m_Window.OnActive();
 }
 
 void Engine::OnResize()

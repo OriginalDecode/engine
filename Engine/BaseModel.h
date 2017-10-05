@@ -53,12 +53,6 @@ protected:
 
 	std::string m_FileName;
 	IBuffer* m_ConstantBuffer = nullptr;
-	struct cbVertex
-	{
-		CU::Matrix44f m_World;
-		CU::Matrix44f m_InvertedView;
-		CU::Matrix44f m_Projection;
-	} m_ConstantStruct;
 
 	bool m_IsRoot = true;
 };

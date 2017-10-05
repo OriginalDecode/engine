@@ -32,12 +32,9 @@
 
 #include <Engine/LightModel.h>
 
-#ifdef _PROFILE
-#include <easy/profiler.h>
-#include <easy/reader.h>
-#endif
-
+#include <profile_defines.h>
 #include <Engine/IGraphicsDevice.h>
+#include <Engine/DebugHandle.h>
 
 
 #define REGISTERCOMPONENT(x) x,
@@ -88,6 +85,7 @@ Engine* Engine::GetInstance()
 
 bool Engine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 {
+	debug::DebugHandle::Create();
 	Randomizer::Create();
 	PostMaster::Create();
 	//myWindowSize.m_Height = window_height;
@@ -167,6 +165,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 bool Engine::CleanUp()
 {
+	debug::DebugHandle::Destroy();
 	m_EntityManager.CleanUp();
 
 	m_InputHandle->CleanUp();
@@ -215,7 +214,7 @@ void Engine::Update()
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	//UpdateDebugUI();
-	m_DebugHandle.Update();
+	debug::DebugHandle::GetInstance()->Update();
 #endif
 	m_DeltaTime = myTimeManager.GetDeltaTime();
 	if (m_States[(u16)eEngineStates::LOADING] == FALSE)

@@ -1,18 +1,25 @@
 #pragma once
 #include "ImGuiRegisterStructs.h"
-
-
+class Texture;
 namespace debug
 {
 	class DebugHandle
 	{
 	public:
-		DebugHandle() = default;
-		~DebugHandle() { }
+		static void Create() { m_Instance = new DebugHandle; }
+		static void Destroy() { delete m_Instance; m_Instance = nullptr; }
+		static DebugHandle* GetInstance() { return m_Instance; }
 		void Update();
 
+		void DebugTextures();
+		void AddTexture(void* srv, const std::string& debug_name);
+		void AddTexture(Texture* texture, const std::string& debug_name);
 	private:
 
+		static DebugHandle* m_Instance;
+
+		DebugHandle() = default;
+		~DebugHandle() { }
 		/**
 #if !defined(_PROFILE) && !defined(_FINAL)
 		bool SaveLevel();
@@ -50,15 +57,14 @@ namespace debug
 		};
 		CU::GrowingArray<slider> m_Sliders;
 		void UpdateDebugUI();
-		CU::GrowingArray<void*> m_DebugTextures;
-		std::vector<std::string> m_Labels;
 		std::vector<std::string> m_Levels;
 		typedef std::function<void()> callback;
 		std::vector<std::pair<std::string, callback>> m_Functions;
 
 #endif
 		*/
-
+		CU::GrowingArray<void*> m_DebugTextures;
+		std::vector<std::string> m_Labels;
 
 	};
 };

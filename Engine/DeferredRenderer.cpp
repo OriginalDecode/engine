@@ -96,7 +96,7 @@ void DeferredRenderer::SetRenderTarget()
 // 	myContext->OMSetRenderTargets(1, myFinishedSceneTexture->GetRenderTargetRef(), depth);
 }
  
- void DeferredRenderer::Finalize() //unsure what this function does for me
+ void DeferredRenderer::Finalize() 
  {
 	 auto api = Engine::GetAPI();
 	 api->GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x1);

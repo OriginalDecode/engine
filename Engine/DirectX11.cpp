@@ -106,8 +106,7 @@ namespace graphics
 #if !defined(_PROFILE) && !defined(_FINAL)
 		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
 		ID3D11DeviceContext* pContext = static_cast<DX11Context*>(m_Context)->m_Context;
-		if (!ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, pDevice, pContext))
-			DL_ASSERT("Failed to initialize ImGui");
+		ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, pDevice, pContext);
 #endif
 
 	}
@@ -115,7 +114,6 @@ namespace graphics
 
 	void DirectX11::BeginFrame()
 	{
-
 		ID3D11RenderTargetView* pRenderTarget = static_cast<ID3D11RenderTargetView*>(m_DefaultRenderTarget);
 		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
 		m_Context->ClearRenderTarget(pRenderTarget, clearcolor::blue);

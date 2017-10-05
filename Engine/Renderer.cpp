@@ -92,6 +92,15 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	debug_textures->AddShaderResource(m_GBuffer.GetEmissive(), Effect::EMISSIVE);
 
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
+
+
+	debug::DebugHandle::GetInstance()->AddTexture(m_DebugTexture0, "Albedo");
+	debug::DebugHandle::GetInstance()->AddTexture(m_DebugTexture1, "Normal");
+	debug::DebugHandle::GetInstance()->AddTexture(m_DebugTexture2, "Depth");
+	debug::DebugHandle::GetInstance()->AddTexture(m_DebugTexture3, "Metalness");
+	debug::DebugHandle::GetInstance()->AddTexture(m_DebugTexture4, "Roughness");
+
+
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
 	//m_PBLValues = m_Engine->GetAPI()->CreateConstantBuffer(sizeof(m_values));
@@ -159,6 +168,9 @@ void Renderer::Render()
 
 
 
+#if !defined(_PROFILE) && !defined(_FINAL)
+	WriteDebugTextures();
+#endif
  	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
  	m_DeferredRenderer->DeferredRender(camera_orientation, 
  									   camera_projection, 
@@ -175,9 +187,6 @@ void Renderer::Render()
 
 	//RenderTerrain(false);
 
-#if !defined(_PROFILE) && !defined(_FINAL)
-	//WriteDebugTextures();
-#endif
 
 
 
@@ -195,6 +204,11 @@ void Renderer::Render()
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();
+	if (ImGui::GetIO().WantCaptureMouse)
+	{
+		int apa;
+		apa = 5;
+	}
 #endif
 	m_RenderContext.GetAPI().EndFrame();
 

@@ -213,7 +213,6 @@ private:
 	Camera* m_Camera                 = nullptr;
 
 
-	debug::DebugHandle m_DebugHandle;
 
 	AssetsContainer* myAssetsContainer = nullptr;
 	TerrainManager* m_TerrainManager   = nullptr;

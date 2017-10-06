@@ -47,52 +47,6 @@ namespace debug
 
 	}
 
-	//  	s32 DebugHandle::RegisterMainWindow(DebugMainWindow window)
-	//  	{
-	//  		m_MainWindows.Add(window);
-	//  	}
-	//  
-	//  	s32 DebugHandle::RegisterWindow(float width, float height, float x_pos, float y_pos, const std::string& label)
-	//  	{
-	//  
-	//  	}
-
-
-
-	// 
-	// #if !defined(_PROFILE) && !defined(_FINAL)
-	// 
-	// 	bool Engine::SaveLevel()
-	// 	{
-	// 		static char file_name[512];
-	// 		if (ImGui::Begin("Filename"))
-	// 		{
-	// 
-	// 			ImGui::InputText("filename", file_name, 512);
-	// 			if (ImGui::Button("Save", ImVec2(100, 30)))
-	// 			{
-	// 				if (!cl::substr(file_name, ".level"))
-	// 				{
-	// 					DL_WARNINGBOX("Incorrect filetype, no file created!");
-	// 				}
-	// 				else
-	// 				{
-	// 					std::ofstream f(file_name);
-	// 					f << "Hello World!";
-	// 					f.flush();
-	// 					f.close();
-	// 					m_PauseInput = false;
-	// 					ImGui::End();
-	// 					return true;
-	// 				}
-	// 			}
-	// 		}
-	// 		ImGui::End();
-	// 
-	// 		return false;
-	// 	}
-	// 
-
 	static auto GetVector = [](void* vec, int index, const char** out_text)
 	{
 		auto& vector = *static_cast<std::vector<std::string>*>(vec);
@@ -144,6 +98,55 @@ namespace debug
 		m_DebugTextures.Add(static_cast<ID3D11ShaderResourceView*>(srv));
 		m_Labels.push_back(debug_name);
 	}
+
+
+	//  	s32 DebugHandle::RegisterMainWindow(DebugMainWindow window)
+	//  	{
+	//  		m_MainWindows.Add(window);
+	//  	}
+	//  
+	//  	s32 DebugHandle::RegisterWindow(float width, float height, float x_pos, float y_pos, const std::string& label)
+	//  	{
+	//  
+	//  	}
+
+
+
+	// 
+	// #if !defined(_PROFILE) && !defined(_FINAL)
+	// 
+	// 	bool Engine::SaveLevel()
+	// 	{
+	// 		static char file_name[512];
+	// 		if (ImGui::Begin("Filename"))
+	// 		{
+	// 
+	// 			ImGui::InputText("filename", file_name, 512);
+	// 			if (ImGui::Button("Save", ImVec2(100, 30)))
+	// 			{
+	// 				if (!cl::substr(file_name, ".level"))
+	// 				{
+	// 					DL_WARNINGBOX("Incorrect filetype, no file created!");
+	// 				}
+	// 				else
+	// 				{
+	// 					std::ofstream f(file_name);
+	// 					f << "Hello World!";
+	// 					f.flush();
+	// 					f.close();
+	// 					m_PauseInput = false;
+	// 					ImGui::End();
+	// 					return true;
+	// 				}
+	// 			}
+	// 		}
+	// 		ImGui::End();
+	// 
+	// 		return false;
+	// 	}
+	// 
+
+
 
 
 

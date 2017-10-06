@@ -76,16 +76,19 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, nnormal);
 	_normal = normalize(mul(_normal.xyz, tangentSpaceMatrix));
 
-	//_normal += 1;
-	//_normal *= 0.5;
+	_normal += 1;
+	_normal *= 0.5;
 
 	GBuffer output;
 
 	float metalness_override = MetalnessTexture.Sample(sampler0, input.uv);
 	float roughness_override = RoughnessTexture.Sample(sampler0, input.uv); 
 
-    output.Albedo = AlbedoTexture.Sample(sampler0, input.uv);//float4(t,1);
-    output.Normal = float4(_normal, 1); //float4(_normal, 1);// input.data0.x);
+	float4 albedo = float4(1,1,1,1);//AlbedoTexture.Sample(sampler0, input.uv);
+	albedo.rgb = pow(albedo.rgb, 1 / 2.2f);
+	output.Albedo = albedo;
+
+    output.Normal = float4(_normal, input.data0.x);
     output.Depth.x = input.pos.z;
 	output.Depth.y = input.data0.y;
     

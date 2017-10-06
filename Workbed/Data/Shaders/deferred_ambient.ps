@@ -69,14 +69,25 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
 	float4 normal = NormalTexture.Sample(sampler0, input.uv);
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
-
+	if(depth.r <= 0)
+		discard;	
 	albedo.rgb = pow(albedo.rgb, 2.2f);
 
 	float roughness = depth.y;
 	float metalness = normal.w;
     float4 pixel_pos = getWorldPos(input.uv, depth.x);
 
-    float NdL = dot(normal, light_direction);
+	float4 to_eye = normalize(camera_position - pixel_pos) * 2 - 1;
+	float3 refVec = reflect(to_eye.xyz, normal.xyz);
+	float4 cube = CubeMap.SampleLevel(sampler0, refVec, 9);
+	
 
-    return albedo * NdL;
+
+	return cube;
+	
+	float NdL = dot(normal, light_direction);
+
+
+
+    return albedo * NdL * metalness * roughness;
 };

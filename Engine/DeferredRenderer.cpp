@@ -80,7 +80,7 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 	ctx.OMSetRenderTargets(1, m_FinishedSceneTexture->GetRenderTargetRef(), depth);
 
 	ctx.PSSetConstantBuffer(0, 1, &m_ConstantBuffer);
-	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x1);
+	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
 
 	ctx.SetRasterizerState(render_context.GetAPI().GetRasterizerState(graphics::CULL_NONE));
 	UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);

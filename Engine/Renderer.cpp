@@ -156,7 +156,7 @@ void Renderer::Render()
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
-	if (!m_RenderInstanced)
+	if (m_RenderInstanced)
 		Render3DCommandsInstanced();
 	else
 		Render3DCommands();

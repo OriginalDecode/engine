@@ -79,8 +79,9 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, 
 	ctx.ClearRenderTarget(m_FinishedSceneTexture->GetRenderTargetView(), clearcolor::black);
 	ctx.OMSetRenderTargets(1, m_FinishedSceneTexture->GetRenderTargetRef(), depth);
 
-	ctx.PSSetConstantBuffer(0, 1, &m_ConstantBuffer);
+	ctx.PSSetConstantBuffer(1, 1, &m_ConstantBuffer);
 	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
+	ctx.PSSetSamplerState(1, 1, graphics::CUBEMAP);
 
 	ctx.SetRasterizerState(render_context.GetAPI().GetRasterizerState(graphics::CULL_NONE));
 	UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);
@@ -134,9 +135,9 @@ void DeferredRenderer::SetRenderTarget()
 
 void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
 {
-	m_ConstantStruct.m_CameraPos = camera_orientation.GetPosition();
-	m_ConstantStruct.m_Projection = CU::Math::InverseReal(camera_projection);
-	m_ConstantStruct.m_View = camera_orientation;
+	//m_ConstantStruct.m_CameraPos = camera_orientation.GetPosition();
+	//m_ConstantStruct.m_Projection = CU::Math::InverseReal(camera_projection);
+	//m_ConstantStruct.m_View = camera_orientation;
 	m_ConstantStruct.m_ShadowMVP = shadow_mvp;
 	m_ConstantStruct.m_Direction = light_dir;
  

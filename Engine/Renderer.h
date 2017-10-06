@@ -124,6 +124,14 @@ private:
 
 	bool m_RenderInstanced = true;
 
+	IBuffer* m_PerFramePixelBuffer = nullptr;
+	struct PerFramePixelBuffer
+	{
+		CU::Matrix44f m_Projection;
+		CU::Matrix44f m_View;
+		CU::Vector4f m_CameraPos;
+	} m_PerFramePixelStruct;
+
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	bool m_RenderLines = false;
@@ -140,16 +148,7 @@ public:
 	void SetRenderLines(bool render_lines) { m_RenderLines = render_lines; }
 	bool GetRenderLines() { return m_RenderLines; }
 	DeferredRenderer* GetDeferredRenderer() {	return m_DeferredRenderer; };
-
 #endif
-	//For pbl debugging.
-	IBuffer* m_PBLValues = nullptr;
-	struct 
-	{
-		float rough;
-		float metal;
-		float d;
-		float d0;
-	} m_values;
+
 
 };

@@ -103,6 +103,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
+	m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(PerFramePixelBuffer), "PerFramePixelBuffer");
 }
 
 Renderer::~Renderer()
@@ -153,9 +154,18 @@ void Renderer::Render()
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 
+	m_PerFramePixelStruct.m_Projection = CU::Math::Inverse(m_Camera->GetPerspective());
+	m_PerFramePixelStruct.m_View = m_Camera->GetOrientation();
+	m_PerFramePixelStruct.m_CameraPos = m_Camera->GetPosition();
+	m_RenderContext.GetContext().UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
+	m_RenderContext.GetContext().PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
+
+
+
+
+
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
-
 	if (m_RenderInstanced)
 		Render3DCommandsInstanced();
 	else
@@ -165,6 +175,7 @@ void Renderer::Render()
 #if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
 #endif
+
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_DeferredRenderer->DeferredRender(camera_orientation, 

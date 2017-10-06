@@ -19,37 +19,59 @@ namespace graphics
 		samplerDesc.MipLODBias = 0.f;
 
 		ID3D11SamplerState* sampler = nullptr;
-		pDevice->CreateSamplerState(&samplerDesc, &sampler);
+		HRESULT hr = pDevice->CreateSamplerState(&samplerDesc, &sampler);
 		m_SamplerStates[MSAA_x1] = sampler;
-#ifndef FINAL
+#ifndef _FINAL
+		HandleErrors(hr, "Failed to create Sampler");
 		SetDebugName(sampler, "MSAA_x1 Sampler");
 #endif
 
 		samplerDesc.MaxAnisotropy = 2; 
-		pDevice->CreateSamplerState(&samplerDesc, &sampler);
+		hr = pDevice->CreateSamplerState(&samplerDesc, &sampler);
 		m_SamplerStates[MSAA_x2] = sampler;
-#ifndef FINAL
+#ifndef _FINAL
+		HandleErrors(hr, "Failed to create Sampler");
 		SetDebugName(sampler, "MSAA_x2 Sampler");
 #endif
 		samplerDesc.MaxAnisotropy = 4;
-		pDevice->CreateSamplerState(&samplerDesc, &sampler);
+		hr = pDevice->CreateSamplerState(&samplerDesc, &sampler);
 		m_SamplerStates[MSAA_x4] = sampler;
-#ifndef FINAL
+#ifndef _FINAL
+		HandleErrors(hr, "Failed to create Sampler");
 		SetDebugName(sampler, "MSAA_x4 Sampler");
 #endif
 		samplerDesc.MaxAnisotropy = 8;
-		pDevice->CreateSamplerState(&samplerDesc, &sampler);
+		hr = pDevice->CreateSamplerState(&samplerDesc, &sampler);
 		m_SamplerStates[MSAA_x8] = sampler;
-#ifndef FINAL
+#ifndef _FINAL
+		HandleErrors(hr, "Failed to create Sampler");
 		SetDebugName(sampler, "MSAA_x8 Sampler");
 #endif
 		samplerDesc.MaxAnisotropy = 16;
-		pDevice->CreateSamplerState(&samplerDesc, &sampler);
+		hr = pDevice->CreateSamplerState(&samplerDesc, &sampler);
 		m_SamplerStates[MSAA_x16] = sampler;
-#ifndef FINAL
+#ifndef _FINAL
+		HandleErrors(hr, "Failed to create Sampler");
 		SetDebugName(sampler, "MSAA_x16 Sampler");
 #endif
 
+
+		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		samplerDesc.MinLOD = -FLT_MAX;
+		samplerDesc.MaxLOD = FLT_MAX;
+		samplerDesc.MipLODBias = 0.f;
+		samplerDesc.MaxAnisotropy = 1;
+		samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+
+		hr = pDevice->CreateSamplerState(&samplerDesc, &sampler);
+		m_SamplerStates[CUBEMAP] = sampler;
+#ifndef _FINAL
+		HandleErrors(hr, "Failed to create Sampler");
+		SetDebugName(sampler, "Cubemap Sampler");
+#endif
 
 
 

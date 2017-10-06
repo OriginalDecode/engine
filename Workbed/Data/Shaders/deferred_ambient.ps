@@ -1,21 +1,31 @@
-cbuffer Ambient : register(b0)
+
+
+cbuffer per_frame : register (b0)
+{
+	row_major float4x4 InvertedProjection;
+	row_major float4x4 View;
+	float4 CameraPosition;
+};
+
+cbuffer Ambient : register(b1)
 {
 	float4 camera_position;
-	row_major float4x4 InvertedProjection;
-	row_major float4x4 InvertedView;
+	row_major float4x4 InvertedProjection0;
+	row_major float4x4 InvertedView0;
 	row_major float4x4 ShadowMVP;
 	float4 light_direction;
 	float4 light_color;
 };
 
-SamplerState sampler0 : register ( s0 );
+SamplerState sampler0 : register (s0);
+SamplerState sampler1 : register (s1);
 
-Texture2D AlbedoTexture 	: register ( t0 );
-Texture2D NormalTexture  	: register ( t1 );
-Texture2D DepthTexture	 	: register ( t7 );
-Texture2D ShadowTexture		: register ( t8 );
-TextureCube CubeMap		 	: register ( t9 );
-Texture2D SSAOTexture		: register ( t10 );
+Texture2D AlbedoTexture 	: register (t0);
+Texture2D NormalTexture  	: register (t1);
+Texture2D DepthTexture	 	: register (t7);
+Texture2D ShadowTexture		: register (t8);
+TextureCube CubeMap		 	: register (t9);
+Texture2D SSAOTexture		: register (t10);
 
 struct VS_OUTPUT
 {
@@ -58,16 +68,16 @@ float4 getWorldPos(float2 tex_coord, float depth)
 	
 	world_pos = mul(world_pos, InvertedProjection);
 	world_pos = world_pos / world_pos.w;
-	world_pos = mul(world_pos, InvertedView);
+	world_pos = mul(world_pos, View);
     return world_pos;
 }
-
+// http://orsvarn.com/post/pbr-shader-source/
 // Source: https://github.com/godotengine/godot/blob/df573f5c3a76155842e43ea0dbab594e3944b114/drivers/gles3/shaders/scene.glsl
 float4 main(VS_OUTPUT input) : SV_Target
 {
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
-	float4 normal = NormalTexture.Sample(sampler0, input.uv);
+	float4 normal = NormalTexture.Sample(sampler0, input.uv) * 2 - 1;
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
 	if(depth.r <= 0)
 		discard;	
@@ -77,15 +87,14 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float metalness = normal.w;
     float4 pixel_pos = getWorldPos(input.uv, depth.x);
 
-	float4 to_eye = normalize(camera_position - pixel_pos) * 2 - 1;
-	float3 refVec = reflect(to_eye.xyz, normal.xyz);
-	float4 cube = CubeMap.SampleLevel(sampler0, refVec, 9);
+	float4 to_eye = normalize(CameraPosition - pixel_pos);
+	float3 refVec = normalize(reflect(to_eye.xyz, normal.xyz));
+	float4 cube = CubeMap.SampleLevel(sampler1, refVec, 0);
 	
 
-
+	float NdL = dot(normal, light_direction);
 	return cube;
 	
-	float NdL = dot(normal, light_direction);
 
 
 

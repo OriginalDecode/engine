@@ -120,7 +120,7 @@ namespace graphics
 	void DX11Context::PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
 	{
 		ISamplerState* sampler = Engine::GetAPI()->GetSamplerState(samplerstate);
-		PSSetSamplerState(0, 1, &sampler);
+		PSSetSamplerState(start_index, sampler_count, &sampler);
 	}
 
 	void DX11Context::GSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)

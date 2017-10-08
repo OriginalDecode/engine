@@ -649,12 +649,11 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 	{
 		for (s32 j = steps - 1, s = 0; j >= 0; j--, s++)
 		{
-			metal = (float)i / steps;
 			Entity e = m_EntityManager->CreateEntity();
 			auto& pbl = m_EntityManager->AddComponent<PBLComponent>(e);
 
-			pbl.m_PBLValues.m_Metalness = metal;
-			pbl.m_PBLValues.m_Roughness = (float)j / steps;
+			pbl.m_PBLValues.m_Metalness = (float)i / (steps + 1);
+			pbl.m_PBLValues.m_Roughness = (float)j / (steps + 1);
 
 			auto& t = m_EntityManager->AddComponent<TranslationComponent>(e);
 			auto& r = m_EntityManager->AddComponent<RenderComponent>(e);

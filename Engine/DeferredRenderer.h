@@ -18,20 +18,19 @@ class DeferredRenderer
 public:
 	DeferredRenderer();
 	~DeferredRenderer();
-	void DeferredRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context);
-	void SetRenderTarget();
+	void DeferredRender(const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context);
 
 	void Finalize();
 	Texture* GetFinalTexture() { return m_FinishedSceneTexture; }
 	Texture* GetDepthStencil() { return m_DepthStencilTexture; }
 
 
-	void SetColor(const CU::Vector4f& dir_color) { m_ConstantStruct.m_LightColor = dir_color; }//this is for the dir light only
+	void SetColor(const CU::Vector4f& dir_color) { m_ConstantStruct.m_LightColor = dir_color; }
 
 	void OnResize();
 
 private:
-	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir);
+	void UpdateConstantBuffer(const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir);
 
 	Quad* m_RenderQuad = nullptr;
 
@@ -48,12 +47,10 @@ private:
 
 	struct ConstantStruct
 	{
-		CU::Vector4f m_CameraPos;
-		CU::Matrix44f m_Projection;
-		CU::Matrix44f m_View;
 		CU::Matrix44f m_ShadowMVP;
-		// are the really needed or should they be moved to their own buffer?
+		//This should be its own buffer
 		CU::Vector4f m_Direction;
 		CU::Vector4f m_LightColor;
+
 	} m_ConstantStruct;
 };

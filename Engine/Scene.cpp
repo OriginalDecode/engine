@@ -98,8 +98,8 @@ void CScene::RenderLight()
 	{
 		DirectionalLight* dirLight = myDirectionalLights[i];
 
-		myDirectionalLightData[i].myLightColor = dirLight->GetColor();
-		myDirectionalLightData[i].myLightDirection = dirLight->GetDirection();
+		//myDirectionalLightData[i].myLightColor = dirLight->GetColor();
+		//myDirectionalLightData[i].myLightDirection = dirLight->GetDirection();
 	}
 
 	for (int i = 0; i < myPointLights.Size(); i++)

@@ -88,9 +88,9 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	albedo.rgb = pow(albedo.rgb, 1 / 2.2f);
 	output.Albedo = albedo;
 
-    output.Normal = float4(_normal, input.data0.x);
+    output.Normal = float4(_normal, pow(input.data0.x, 1/2.2f));
     output.Depth.x = input.pos.z;
-	output.Depth.y = input.data0.y;
+	output.Depth.y = pow(input.data0.y, 1/2.2f);
     
     return output;
 

@@ -160,10 +160,6 @@ void Renderer::Render()
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
 	m_RenderContext.GetContext().PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
 
-
-
-
-
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 	if (m_RenderInstanced)
@@ -178,11 +174,10 @@ void Renderer::Render()
 
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
-	m_DeferredRenderer->DeferredRender(camera_orientation, 
-									   camera_projection, 
-									   shadow_mvp, 
-									   m_Direction, 
-									   m_RenderContext);
+	m_DeferredRenderer->DeferredRender(shadow_mvp
+									   , m_Direction
+									   , m_RenderContext);
+
 	m_RenderContext.GetAPI().SetDefaultTargets();
 	m_DeferredRenderer->Finalize();
 

@@ -33,6 +33,10 @@ struct VS_OUTPUT
 	float2 uv	: TEXCOORD;
 };
 
+static const float k0 = 0.00098,
+			k1 = 0.9921; 
+static const float specMax = (2 / (0.0014 * 0.0014)) - 2;
+static const float g_MaxT = exp2(-10 / sqrt(specMax) - k0) / k1;
 static const float PI = 3.14159265;
 
 // GGX Specular
@@ -48,6 +52,8 @@ float SchlickFresnel(float u)
     return pow(m,5);
 };
 
+
+
 float GTR1(float NdH, float a)
 {
     if( a >= 1.0) 
@@ -57,6 +63,45 @@ float GTR1(float NdH, float a)
     float t = 1.0 + ( a2 - 1.0 ) * NdH * NdH;
     return ( a2 - 1.0) / (PI * log(a2) * t);
 };
+
+float RoughToSPow(float fRoughness)
+{
+	return (2 / (fRoughness * fRoughness)) - 2;
+}
+
+float GetSpecPowToMip(float fSpecPow, int nMips)
+{
+	float fSmulMaxT = (exp2(-10 / sqrt(fSpecPow)) - k0) / k1;
+	return float(nMips - 1) * (1 - clamp(fSmulMaxT / g_MaxT, 0.0, 1.0));
+}
+
+bool compare_f4_less(float4 a, float4 b)
+{
+	if(a.x > b.x)
+		return false;
+	if(a.y > b.y)
+		return false;
+	if(a.z > b.z)
+		return false;
+	if(a.w > b.w)
+		return false;
+	
+	return true;
+}
+
+bool compare_f4_greater(float4 a, float4 b)
+{
+	if(a.x < b.x)
+		return false;
+	if(a.y < b.y)
+		return false;
+	if(a.z < b.z)
+		return false;
+	if(a.w < b.w)
+		return false;
+	
+	return true;
+}
 
 
 float4 getWorldPos(float2 tex_coord, float depth)
@@ -75,28 +120,70 @@ float4 getWorldPos(float2 tex_coord, float depth)
 // Source: https://github.com/godotengine/godot/blob/df573f5c3a76155842e43ea0dbab594e3944b114/drivers/gles3/shaders/scene.glsl
 float4 main(VS_OUTPUT input) : SV_Target
 {
-
-	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
-	float4 normal = NormalTexture.Sample(sampler0, input.uv) * 2 - 1;
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
 	if(depth.r <= 0)
 		discard;	
-	albedo.rgb = pow(albedo.rgb, 2.2f);
 
-	float roughness = depth.y;
-	float metalness = normal.w;
+	int nMips = 0;
+	int width = 0;
+	int height = 0;
+	CubeMap.GetDimensions(0, width, height, nMips);
+
+
+	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
+	float4 normal = NormalTexture.Sample(sampler0, input.uv) * 2 - 1;
+
+	float roughness = pow(depth.y, 2.2);
+	float roughnessOffsetted = pow(8192, roughness);
+	float fakeLysSpecularPower = RoughToSPow(roughnessOffsetted);
+	float lysMipMap = GetSpecPowToMip(fakeLysSpecularPower, nMips);
+
+
+	float metalness = pow(normal.w, 2.2);
     float4 pixel_pos = getWorldPos(input.uv, depth.x);
 
 	float4 to_eye = normalize(CameraPosition - pixel_pos);
 	float3 refVec = normalize(reflect(to_eye.xyz, normal.xyz));
-	float4 cube = CubeMap.SampleLevel(sampler1, refVec, 0);
+
+	int mip = (1 - roughness) * nMips;
+	float4 cube = CubeMap.SampleLevel(sampler1, refVec, mip);
+	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, mip);
+	float4 metalness_albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
+	float4 diffuse = 1; // metalness_albedo * cube_ambient;
 	
+	float3 light_dir = float3(0,-1,0);
+	float3 light_col = float3(0.42, 0.1, 0.2);
+	float light_intensity = 1;
+	for(int i = 0; i < 0; i++)
+	{
+		// diffuse
+		diffuse += float4( ( saturate(dot(-light_dir, normal)) * 1 / PI) * 
+							light_col * light_intensity * albedo, 1.0f);
 
-	float NdL = dot(normal, light_direction);
-	return cube;
-	
+		//spec
+		/*float3 half_vec = normalize(-to_eye + light_dir);
+		float HdN = dot(half_vec, normal);
+		float NdL = max(dot(normal, -ligh_dir), 0);
+		float NdC = max(dot(normal, to_eye), 0);
 
+		float4 schlickFresnel = metalness_albedo + ( 1 - metalness_albedo ) *
+								(pow(1 - dot(-to_eye, half_vec), 5) / 
+								(6 - 5 * (1 - roughness)));*/
 
+	}
 
-    return albedo * NdL * metalness * roughness;
+	if(compare_f4_greater(metalness_albedo, float4(1,1,1,1)))
+	{
+		if(compare_f4_less(metalness_albedo, float4(1,1,1,1)))
+		{
+			metalness_albedo.r = 1;
+			metalness_albedo.g = 1;
+			metalness_albedo.b = 1;
+			metalness_albedo.a = 1;
+		}
+	}
+	diffuse += metalness_albedo;
+
+	return diffuse;// * cube;
+
 };

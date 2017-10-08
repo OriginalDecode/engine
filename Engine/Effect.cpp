@@ -7,12 +7,12 @@ Effect::Effect(const std::string& filepath)
 {
 }
 
-void Effect::AddShaderResource(void* pResource, TextureSlot slot)
+void Effect::AddShaderResource(IShaderResourceView* pResource, s32 slot)
 {
 	m_Resources[slot] = pResource;
 }
 
-void Effect::AddShaderResource(Texture* pResource, TextureSlot slot)
+void Effect::AddShaderResource(Texture* pResource, s32 slot)
 {
 	AddShaderResource(pResource->GetShaderView(), slot);
 }

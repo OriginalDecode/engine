@@ -28,19 +28,19 @@ void LightModel::Initiate(const std::string& filename)
 	}
 }
 
-void LightModel::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context)
+void LightModel::Render(const graphics::RenderContext& rc)
 {
 	for (LightModel* child : m_Children)
 	{
-		child->Render(aCameraOrientation, aCameraProjection, render_context);
+		child->Render(rc);
 	}
 
 	if (m_IsRoot)
 		return;
 
-	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
-	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetActiveSampler());
-	render_context.GetContext().Draw(this);
+	UpdateConstantBuffer(rc);
+	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetActiveSampler());
+	rc.GetContext().Draw(this);
 }
 
 void LightModel::AddChild(LightModel* aChild)

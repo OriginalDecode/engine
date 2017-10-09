@@ -1,43 +1,7 @@
 #pragma once
-#include <DataStructures/GrowingArray.h>
-#include <string>
-#include <Engine/Effect.h>
-#include <Engine/engine_shared.h>
-#include <Engine/IGraphicsAPI.h>
-struct ID3D11DeviceContext;
-enum D3D_PRIMITIVE_TOPOLOGY;
+#include <Engine/Material.h>
 
 class Texture;
-
-class Material
-{
-public:
-	Material() = default;
-	~Material()
-	{
-// 		for (ResourceBinding& r : m_Resources )
-// 		{
-// 			//SAFE_RELEASE(r.m_Resource);
-// 		}
-		
-	}
-	void AddResource(IShaderResourceView* pResource, const std::string& filename, Effect::TextureSlot slot);
-	void AddResource(Texture* pResource, const std::string& filename, Effect::TextureSlot slot);
-
-	void Use(Effect* pEffect);
-private:
-	struct ResourceBinding
-	{
-		IShaderResourceView* m_Resource;
-		Effect::TextureSlot m_Slot;
-		std::string m_ResourceName;
-	};
-
-	CU::GrowingArray<ResourceBinding> m_Resources;
-};
-
-
-
 class Surface
 {
 public:

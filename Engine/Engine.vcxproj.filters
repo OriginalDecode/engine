@@ -421,6 +421,8 @@
     <ClInclude Include="..\profile_defines.h" />
     <ClInclude Include="AssetFactory.h" />
     <ClInclude Include="LightManager.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="InstancingManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -684,5 +686,7 @@
     <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="AssetFactory.cpp" />
     <ClCompile Include="LightManager.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="InstancingManager.cpp" />
   </ItemGroup>
 </Project>

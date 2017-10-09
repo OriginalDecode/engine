@@ -342,6 +342,7 @@
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="InstanceWrapper.h" />
+    <ClInclude Include="InstancingManager.h" />
     <ClInclude Include="LevelFactory.h" />
     <ClInclude Include="LightManager.h" />
     <ClInclude Include="LightModel.h" />
@@ -349,6 +350,7 @@
     <ClInclude Include="LightStructs.h" />
     <ClInclude Include="Line3D.h" />
     <ClInclude Include="LinearAllocator.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="MemorySegmentHandle.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelImporter.h" />
@@ -452,12 +454,14 @@
     <ClCompile Include="imgui_draw.cpp" />
     <ClCompile Include="imgui_impl_dx11.cpp" />
     <ClCompile Include="Instance.cpp" />
+    <ClCompile Include="InstancingManager.cpp" />
     <ClCompile Include="LevelFactory.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="LightModel.cpp" />
     <ClCompile Include="LightPass.cpp" />
     <ClCompile Include="Line3D.cpp" />
     <ClCompile Include="LinearAllocator.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="MemorySegmentHandle.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelImporter.cpp" />

@@ -60,6 +60,7 @@ struct ModelCommand : public RenderCommand
 	}
 
 	u64 m_Key;
+	u64 m_MaterialKey;
 	CU::Matrix44f m_Orientation;
 	bool m_Wireframe = false;
 	float m_Roughness;

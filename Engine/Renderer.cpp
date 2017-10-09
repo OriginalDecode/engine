@@ -268,7 +268,7 @@ void Renderer::RenderNonDeferred3DCommands()
 		Model* model = m_RenderContext.GetEngine().GetModel(command->m_Key);
 		model->SetOrientation(command->m_Orientation);
 		//m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
-		model->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
+		model->Render(m_RenderContext);
 
 	}
 }
@@ -299,7 +299,7 @@ void Renderer::Render3DCommands()
 
 			Model* model = m_RenderContext.GetEngine().GetModel(command->m_Key);
 			model->SetOrientation(command->m_Orientation);
-			model->Render(orientation, perspective, m_RenderContext);
+			model->Render(m_RenderContext);
 		}
 	}
 }
@@ -329,7 +329,7 @@ void Renderer::Render3DCommandsInstanced()
 
 	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
 	{
-		it->second->RenderInstanced(orientation, perspective, m_RenderContext);
+		it->second->RenderInstanced(m_RenderContext);
 	}
 }
 
@@ -386,7 +386,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	const CU::Matrix44f& perspective = camera->GetPerspective();
 	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
 	{
-		it->second->ShadowRenderInstanced(orientation, perspective, m_RenderContext);
+		it->second->ShadowRenderInstanced(m_RenderContext);
 	}
 
 }
@@ -590,13 +590,24 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 	model->AddInstanceData(data);
 	if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
 		m_ModelsToRender.emplace(command->m_Key, model);
+
+
+	if (!m_InstancingManager.FindInstanceObject(command->m_MaterialKey))
+	{
+		InstanceObject new_instance;
+		new_instance.m_Material = m_RenderContext.GetEngine().GetMaterial(command->m_MaterialKey);
+		new_instance.m_Model = model;
+		m_InstancingManager.AddInstanceObject(new_instance);
+	}
+
+	m_InstancingManager.AddOrientationToInstance(command->m_MaterialKey, command->m_Orientation);
+
 }
 
 //Move this to some kind of light manager
 int Renderer::RegisterLight()
 {
 	SpotLight* s = new SpotLight;
-	s->Initiate();
 	m_Spotlights.Add(s);
 	return (m_Spotlights.Size() - 1);
 }

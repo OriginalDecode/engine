@@ -56,7 +56,7 @@ void PointLight::Render(const CU::Matrix44f& camera_orientation, const CU::Matri
 {
 	//render_context.m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
 	//render_context.m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 1);
-	m_Model->Render(camera_orientation, camera_projection, render_context);
+	m_Model->Render(render_context);
 }
 
 const SPointlightData& PointLight::GetData() const

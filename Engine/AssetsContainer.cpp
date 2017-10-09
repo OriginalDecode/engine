@@ -78,6 +78,15 @@ Model* AssetsContainer::GetModel(u64 key)
 	return nullptr;
 }
 
+Material* AssetsContainer::GetMaterial(u64 key)
+{
+	auto it = m_Materials.find(key);
+	if (it != m_Materials.end())
+		return it->second;
+
+	return nullptr;
+}
+
 Sprite* AssetsContainer::GetSprite(u64 key)
 {
 	auto it = m_Sprites.find(key);

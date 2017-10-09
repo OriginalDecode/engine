@@ -54,55 +54,52 @@ void WaterPlane::SetPosition(const CU::Vector3f& position)
 	m_Orientation.SetPosition(position);
 }
 
-void WaterPlane::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
+void WaterPlane::UpdateConstantBuffer(const graphics::RenderContext& rc)
 {
 	m_VertexMatrices.m_World = m_Orientation;
-	m_VertexMatrices.m_InvertedView = CU::Math::Inverse(camera_orientation);
-	m_VertexMatrices.m_Projection = camera_projection;
-	m_VertexMatrices.m_CameraPos = camera_orientation.GetPosition();
 	m_VertexMatrices.m_Time = Engine::GetInstance()->GetTotalTime();
-	render_context.GetContext().UpdateConstantBuffer(m_ConstantBuffer, &m_VertexMatrices, sizeof(cbMatrices));
+	rc.GetContext().UpdateConstantBuffer(m_ConstantBuffer, &m_VertexMatrices, sizeof(cbMatrices));
 }
 
-void WaterPlane::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
+void WaterPlane::Render(const graphics::RenderContext& rc)
 {
-	auto& ctx = render_context.GetContext();
-	auto& api = render_context.GetAPI();
+	auto& ctx = rc.GetContext();
+	auto& api = rc.GetAPI();
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 	ctx.SetRasterizerState(m_RenderWireframe ? api.GetRasterizerState(graphics::WIREFRAME) : api.GetRasterizerState(graphics::CULL_NONE));
 
-	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
+	UpdateConstantBuffer(rc);
 	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
 	ctx.DSSetConstantBuffer(0, 1, &m_ConstantBuffer);
 	ctx.DrawIndexed(this, m_Effect);
 }
 
-void WaterPlane::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
+void WaterPlane::ShadowRender(const graphics::RenderContext& rc)
 {
 	DL_ASSERT("water shadow?");
 }
 
-void WaterPlane::SetupRefractionRender(const graphics::RenderContext& render_context)
+void WaterPlane::SetupRefractionRender(const graphics::RenderContext& rc)
 {
-	m_RefractionG.Clear(clearcolor::black, render_context);
-	render_context.GetContext().ClearDepthStencilView(m_Refraction->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1.0f);
-	m_RefractionG.SetAsRenderTarget(m_Refraction, render_context);
+	m_RefractionG.Clear(clearcolor::black, rc);
+	rc.GetContext().ClearDepthStencilView(m_Refraction->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1.0f);
+	m_RefractionG.SetAsRenderTarget(m_Refraction, rc);
 }
 
-void WaterPlane::SetupReflectionRender(const graphics::RenderContext& render_context)
+void WaterPlane::SetupReflectionRender(const graphics::RenderContext& rc)
 {
-	m_ReflectionG.Clear(clearcolor::black, render_context);
-	render_context.GetContext().ClearDepthStencilView(m_Reflection->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1.0f);
-	m_ReflectionG.SetAsRenderTarget(m_Reflection, render_context);
+	m_ReflectionG.Clear(clearcolor::black, rc);
+	rc.GetContext().ClearDepthStencilView(m_Reflection->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1.0f);
+	m_ReflectionG.SetAsRenderTarget(m_Reflection, rc);
 }
 
-void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const graphics::RenderContext& render_context)
+void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const graphics::RenderContext& rc)
 {
 	m_PixelStruct.m_CompareValue = plane;
-	render_context.GetContext().UpdateConstantBuffer(m_cbPixel, &m_PixelStruct, sizeof(m_PixelStruct));
-	render_context.GetContext().PSSetConstantBuffer(0, 1, m_cbPixel);
+	rc.GetContext().UpdateConstantBuffer(m_cbPixel, &m_PixelStruct, sizeof(m_PixelStruct));
+	rc.GetContext().PSSetConstantBuffer(0, 1, m_cbPixel);
 }
 
 void WaterPlane::AddSurface(Surface* surface)

@@ -12,6 +12,8 @@ class Model;
 class Effect;
 class Texture;
 class Sprite;
+class Material;
+
 
 struct CompiledShader;
 
@@ -30,6 +32,7 @@ public:
 	Sprite* GetSprite(u64 key);
 	Effect* GetEffect(u64 key);
 	Model* GetModel(u64 key);
+	Material* GetMaterial(u64 key);
 
 	template<typename T>
 	u64 LoadModel(std::string path, std::string effect_filepath, bool thread = true);
@@ -49,7 +52,7 @@ private:
 	std::map<u64, Effect*> m_Effects;
 	std::map<u64, Model*> m_Models;
 	std::map<u64, Sprite*> m_Sprites;
-
+	std::map<u64, Material*> m_Materials;
 
 
 	ShaderFactory* m_ShaderFactory;

@@ -19,19 +19,19 @@ void AtmosphereModel::Initiate(const std::string& filename)
 	}
 }
 
-void AtmosphereModel::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
+void AtmosphereModel::Render(const graphics::RenderContext& rc)
 {
 	for (AtmosphereModel* child : m_Children)
 	{
-		child->Render(camera_orientation, camera_projection, render_context);
+		child->Render(rc);
 	}
 
 	if (m_IsRoot || m_Surfaces.Empty())
 		return;
 
-	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
+	UpdateConstantBuffer(rc);
 
-	auto& ctx = render_context.GetContext();
+	auto& ctx = rc.GetContext();
 	ctx.PSSetSamplerState(0, 1, Engine::GetInstance()->GetActiveSampler());
 	ctx.DrawIndexed(this, m_Effect);
 }

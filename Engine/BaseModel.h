@@ -22,8 +22,8 @@ class BaseModel
 public:
 	BaseModel() = default;
 	virtual ~BaseModel() = 0;
-	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context) = 0;
-	virtual void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) = 0;
+	virtual void Render(const graphics::RenderContext& rc) = 0;
+	virtual void ShadowRender(const graphics::RenderContext& rc) = 0;
 
 	void SetEffect(Effect* anEffect);
 	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
@@ -38,7 +38,7 @@ public:
 	virtual void AddSurface(Surface* surface) = 0;
 
 protected:
-	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& rc) = 0;
+	virtual void UpdateConstantBuffer(const graphics::RenderContext& rc) = 0;
 	CU::Matrix44f m_Orientation;
 	CU::GrowingArray<Surface*> m_Surfaces;
 

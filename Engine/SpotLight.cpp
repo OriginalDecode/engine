@@ -9,18 +9,11 @@
 
 static bool s_Wireframe = false;
 
-SpotLight::~SpotLight()
-{
-	m_Model = nullptr;
-	SAFE_DELETE(m_ShadowSpotlight);
-
-}
-
-void SpotLight::Initiate()
+SpotLight::SpotLight()
 {
 	u64 key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx"
-														   , "Shaders/deferred_spotlight.json"
-														   , false);
+		, "Shaders/deferred_spotlight.json"
+		, false);
 	m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
 	m_Model->Initiate("cone.fbx");
 
@@ -55,8 +48,15 @@ void SpotLight::Initiate()
 	// 	//Engine::GetInstance()->AddCheckBox(&s_Wireframe, "Wireframe Spotlight");
 	// 	m_gsCBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(gsbuffer));
 	// 	m_psCBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(psbuffer));
+}
+
+SpotLight::~SpotLight()
+{
+	m_Model = nullptr;
+	SAFE_DELETE(m_ShadowSpotlight);
 
 }
+
 /**
 void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera)
 {
@@ -99,9 +99,9 @@ void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera
 
 }
 */
-void SpotLight::Render(const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
+void SpotLight::Render(const graphics::RenderContext& render_context)
 {
-	m_Model->Render(camera_view, camera_projection, render_context);
+	m_Model->Render(render_context);
 }
 
 void SpotLight::SetData(const SpotlightData& data)

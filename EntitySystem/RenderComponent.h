@@ -8,6 +8,7 @@
 struct ModelInstance
 {
 	u64 m_ModelID;
+	u64 m_MaterialKey;
 	CU::Matrix44f m_Orientation;
 	bool m_RenderWireframe = false;
 	bool m_Shadowed = true;

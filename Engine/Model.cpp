@@ -31,49 +31,49 @@ void Model::Initiate(const std::string& filename)
 	}
 }
 
-void Model::Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
+void Model::Render(const graphics::RenderContext& rc)
 {
 	if (m_FileName.find("default_cube") != m_FileName.npos)
-		RenderCube(camera_orientation, camera_projection, render_context);
+		RenderCube(rc);
 
 
 	PROFILE_FUNCTION(profiler::colors::Blue);
 	for (Model* child : m_Children)
 	{
-		child->Render(camera_orientation, camera_projection, render_context);
+		child->Render(rc);
 	}
 
 	if (m_IsRoot || m_Surfaces.Empty())
 		return;
 
 
-	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
+	UpdateConstantBuffer(rc);
+	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
 
 	PROFILE_BLOCK("Model : DrawIndexed", profiler::colors::Blue100);
 	for (Surface* surface : m_Surfaces)
 	{
-		surface->Activate(render_context);
-		render_context.GetContext().DrawIndexed(this, m_Effect);
+		surface->Activate(rc);
+		rc.GetContext().DrawIndexed(this, m_Effect);
 		surface->Deactivate();
 	}
 	PROFILE_BLOCK_END;
 
 }
 
-void Model::RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
+void Model::RenderCube(const graphics::RenderContext& rc)
 {
-	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
-	render_context.GetContext().DrawIndexed(this, m_Effect);
+	UpdateConstantBuffer(rc);
+	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
+	rc.GetContext().DrawIndexed(this, m_Effect);
 }
 
-void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
+void Model::RenderInstanced(const graphics::RenderContext& rc)
 {
 	PROFILE_FUNCTION(profiler::colors::Amber);
 	for (Model* child : m_Children)
 	{
-		child->RenderInstanced(camera_orientation, camera_projection, render_context);
+		child->RenderInstanced(rc);
 	}
 
 	if (m_IsRoot || m_Surfaces.Empty() || m_GPUData.Empty())
@@ -82,14 +82,14 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 		return;
 	}
 
-	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
+	UpdateConstantBuffer(rc);
+	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
 
 	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 	for (Surface* surface : m_Surfaces)
 	{
-		surface->Activate(render_context);
-		render_context.GetContext().DrawIndexedInstanced(this, m_Effect);
+		surface->Activate(rc);
+		rc.GetContext().DrawIndexedInstanced(this, m_Effect);
 		surface->Deactivate();
 	}
 	PROFILE_BLOCK_END;
@@ -98,28 +98,28 @@ void Model::RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::M
 
 }
 
-void Model::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
+void Model::ShadowRender(const graphics::RenderContext& rc)
 {
 	PROFILE_FUNCTION(profiler::colors::Amber100);
 	for (Model* child : m_Children)
 	{
-		child->ShadowRender(camera_orientation, camera_projection, render_context);
+		child->ShadowRender(rc);
 	}
 
 	if (m_IsRoot)
 		return;
 
-	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
-	render_context.GetContext().DrawIndexed(this);
+	UpdateConstantBuffer(rc);
+	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
+	rc.GetContext().DrawIndexed(this);
 }
 
-void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
+void Model::ShadowRenderInstanced(const graphics::RenderContext& rc)
 {
 	PROFILE_FUNCTION(profiler::colors::Amber100);
 	for (Model* child : m_Children)
 	{
-		child->ShadowRenderInstanced(camera_orientation, camera_projection, render_context);
+		child->ShadowRenderInstanced(rc);
 	}
 
 	if (m_IsRoot || m_GPUData.Empty())
@@ -128,10 +128,10 @@ void Model::ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const
 		return;
 	}
 
-	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	render_context.GetContext().PSSetSamplerState(0, 1, render_context.GetEngine().GetCurrentSampler());
+	UpdateConstantBuffer(rc);
+	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
 
-	render_context.GetContext().DrawIndexedInstanced(this);
+	rc.GetContext().DrawIndexedInstanced(this);
 }
 
 void Model::SetPosition(const CU::Vector3f& aPosition)
@@ -180,7 +180,7 @@ void Model::AddTexture(const std::string& path, Effect::TextureSlot slot)
 	}
 }
 
-void Model::UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc)
+void Model::UpdateConstantBuffer(const graphics::RenderContext& rc)
 {
 	if (m_IsRoot )
 		return;

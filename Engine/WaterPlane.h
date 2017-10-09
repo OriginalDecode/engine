@@ -10,18 +10,18 @@ public:
 
 	void SetPosition(const CU::Vector3f& position);
 
-	void Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) override;
-	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) override;
+	void Render(const graphics::RenderContext& rc) override;
+	void ShadowRender(const graphics::RenderContext& rc) override;
 
 	const CU::Vector3f& GetPosition() { return m_Orientation.GetPosition(); }
 
-	void SetupRefractionRender(const graphics::RenderContext& render_context);
-	void SetupReflectionRender(const graphics::RenderContext& render_context);
-	void SetClipPlane(const CU::Vector4f& plane, const graphics::RenderContext& render_context);
+	void SetupRefractionRender(const graphics::RenderContext& rc);
+	void SetupReflectionRender(const graphics::RenderContext& rc);
+	void SetClipPlane(const CU::Vector4f& plane, const graphics::RenderContext& rc);
 	Effect* GetEffect() { return m_Effect; }
 	void AddSurface(Surface* surface) override;
 private:
-	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context);
+	void UpdateConstantBuffer(const graphics::RenderContext& rc);
 	void CreatePlane();
 
 	struct cbMatrices

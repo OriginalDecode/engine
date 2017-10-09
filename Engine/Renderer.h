@@ -15,6 +15,7 @@
 #include <Engine/GBuffer.h>
 #include <Engine/RenderContext.h>
 #include <Engine/LightPass.h>
+#include <Engine/InstancingManager.h>
 
 
 class Line3D;
@@ -90,6 +91,8 @@ private:
 
 	Atmosphere					m_Atmosphere;
 
+
+	InstancingManager m_InstancingManager;
 
 	//Do we need to hold these?
 	Camera*						m_Camera				= nullptr;

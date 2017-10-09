@@ -103,11 +103,15 @@ public:
 	Effect* GetEffect(u64 key);
 	Model* GetModel(u64 key);
 	Sprite* GetSprite(u64 key);
+	Material* GetMaterial(u64 key);
+
 
 	Texture* GetTexture(const char* key);
 	Effect* GetEffect(const char* key);
 	Model* GetModel(const char* key);
 	Sprite* GetSprite(const char* key);
+	Material* GetMaterial(const char* key);
+
 
 
 	//std::string LoadModel(const std::string& filepath, std::string effect, bool thread);

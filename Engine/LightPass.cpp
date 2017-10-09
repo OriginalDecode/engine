@@ -54,7 +54,7 @@ namespace graphics
 									const RenderContext& render_context) 
 	{
 		UpdateSpotlightBuffers(spotlight, camera_view, camera_projection, shadow_matrix, render_context);
-		spotlight->Render(camera_view, camera_projection, render_context);
+		spotlight->Render(render_context);
 	}
 
 	Effect* LightPass::GetPointlightEffect()

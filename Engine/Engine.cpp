@@ -366,6 +366,11 @@ Sprite* Engine::GetSprite(const char* key)
 	return myAssetsContainer->GetSprite(hash);
 }
 
+Material* Engine::GetMaterial(u64 key)
+{
+	return myAssetsContainer->GetMaterial(key);
+}
+
 std::string string_together(u16 time, u16 to_compare)
 {
 	std::string to_return;

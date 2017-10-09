@@ -8,11 +8,10 @@ class ShadowSpotlight;
 class SpotLight
 {
 public:
-	SpotLight() = default;
+	SpotLight();
 	~SpotLight();
-	void Initiate();
 
-	void Render(const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
+	void Render(const graphics::RenderContext& render_context);
 
 	void SetData(const SpotlightData& data);
 	const SpotlightData& GetData() const;

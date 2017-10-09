@@ -49,29 +49,29 @@ void Terrain::CleanUp()
 
 }
 
-void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context)
+void Terrain::Render(const graphics::RenderContext& rc)
 {
-	graphics::IGraphicsContext& ctx = render_context.GetContext();
-	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
-	ctx.PSSetSamplerState(0, 1, render_context.GetEngine().GetActiveSampler());
+	graphics::IGraphicsContext& ctx = rc.GetContext();
+	//UpdateConstantBuffer(rc);
+	ctx.PSSetSamplerState(0, 1, rc.GetEngine().GetActiveSampler());
  
-	mySurface->Activate(render_context);
+	mySurface->Activate(rc);
 	ctx.DrawIndexed(this);
 	mySurface->Deactivate();
 
 }
 
 //For water????
-void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context, bool override_shader)
+void Terrain::Render(const graphics::RenderContext& rc, bool override_shader)
 {
 
-	graphics::IGraphicsContext& ctx = render_context.GetContext();
-	UpdateConstantBuffer(aCameraOrientation, aCameraProjection, render_context);
-	ctx.PSSetSamplerState(0, 1, render_context.GetEngine().GetActiveSampler());
+	graphics::IGraphicsContext& ctx = rc.GetContext();
+	//UpdateConstantBuffer(rc);
+	ctx.PSSetSamplerState(0, 1, rc.GetEngine().GetActiveSampler());
 
 	if (!override_shader)
 	{
-		mySurface->Activate(render_context);
+		mySurface->Activate(rc);
 		ctx.DrawIndexed(this);
 		mySurface->Deactivate();
 	}
@@ -82,11 +82,11 @@ void Terrain::Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44
 
 }
 
-void Terrain::ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context)
+void Terrain::ShadowRender(const graphics::RenderContext& rc)
 {
-	graphics::IGraphicsContext& ctx = render_context.GetContext();
-	UpdateConstantBuffer(camera_orientation, camera_projection, render_context);
-	ctx.PSSetSamplerState(0, 1, render_context.GetEngine().GetActiveSampler());
+	graphics::IGraphicsContext& ctx = rc.GetContext();
+	//UpdateConstantBuffer(rc);
+	ctx.PSSetSamplerState(0, 1, rc.GetEngine().GetActiveSampler());
 	ctx.DrawIndexed(this);
 }
 
@@ -250,15 +250,13 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 #endif
 }
 
-void Terrain::UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context)
-{
-	graphics::IGraphicsContext& ctx = render_context.GetContext();
-	myConstantStruct.world = myOrientation;
-	myConstantStruct.invertedView = CU::Math::Inverse(aCameraOrientation);
-	myConstantStruct.projection = aCameraProjection;
-	ctx.UpdateConstantBuffer(m_ConstantBuffer, &myConstantStruct, sizeof(VertexBaseStruct));
-	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
-}
+// void Terrain::UpdateConstantBuffer(const graphics::RenderContext& rc)
+// {
+// 	graphics::IGraphicsContext& ctx = rc.GetContext();
+// 	myConstantStruct.world = myOrientation;
+// 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &myConstantStruct, sizeof(VertexBaseStruct));
+// 	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
+// }
 
 void Terrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray)
 {

@@ -22,10 +22,10 @@ public:
 	~Model();
 	virtual void Initiate(const std::string& filename);
 
-	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const graphics::RenderContext& render_context) override;
-	void RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
-	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context) override;
-	void ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
+	void Render(const graphics::RenderContext& rc) override;
+	void RenderInstanced(const graphics::RenderContext& rc);
+	void ShadowRender(const graphics::RenderContext& rc) override;
+	void ShadowRenderInstanced(const graphics::RenderContext& rc);
 
 	void AddChild(Model* aChild);
 	virtual void AddSurface(Surface* surface) override;
@@ -53,10 +53,10 @@ public:
 	void CreateCube();
 
 private:
-	void RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
+	void RenderCube(const graphics::RenderContext& rc);
 	void RemoveGPUData();
 	CU::GrowingArray<Model*> m_Children;
 protected:
-	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& rc) override;
+	void UpdateConstantBuffer(const graphics::RenderContext& rc) override;
 	CU::GrowingArray<GPUModelData> m_GPUData;
 };

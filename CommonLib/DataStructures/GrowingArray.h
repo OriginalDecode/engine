@@ -40,6 +40,7 @@ namespace CommonUtilities
 		inline int Capacity();
 
 		bool Empty() { return (mySize <= 0); }
+		const bool Empty() const { return (mySize <= 0); }
 
 		void Optimize();
 

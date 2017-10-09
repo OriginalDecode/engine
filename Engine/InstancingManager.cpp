@@ -13,8 +13,8 @@ bool InstancingManager::FindInstanceObject(u64 key)
 InstanceObject& InstancingManager::AddInstanceObject(InstanceObject instance_object)
 {
 	auto it = m_InstanceObjects.find(instance_object.m_Material->GetKey());
-	if (it == m_InstanceObjects.end())
-		return;
+	if (it != m_InstanceObjects.end())
+		return it->second;
 
 	m_InstanceObjects.insert(std::pair<u64, InstanceObject>(instance_object.m_Material->GetKey(), instance_object));
 
@@ -37,4 +37,26 @@ void InstancingManager::AddOrientationToInstance(u64 key, const CU::Matrix44f& o
 		return;
 
 	it->second.m_Orientations.Add(orientation);
+}
+
+void InstancingManager::DoInstancing(const graphics::RenderContext& rc)
+{
+	for (auto it = m_InstanceObjects.begin(); it != m_InstanceObjects.end(); it++)
+	{
+		
+		InstanceObject& instance = it->second;
+		
+		if(instance.m_Orientations.Empty())
+			continue;
+		
+		Model* pModel = instance.m_Model;
+		instance.m_Material->Use(pModel->GetEffect());
+		for (const CU::Matrix44f& mat : instance.m_Orientations)
+		{
+			pModel->AddOrientation(mat);
+		}
+
+		pModel->RenderInstanced(rc);
+		instance.m_Orientations.RemoveAll();
+	}
 }

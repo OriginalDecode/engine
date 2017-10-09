@@ -10,6 +10,7 @@
 #include <Engine/RenderContext.h>
 #include <Engine/IGraphicsContext.h>
 
+#include "profile_defines.h"
 Model::~Model()
 {
 	m_Surfaces.DeleteAll();
@@ -86,12 +87,7 @@ void Model::RenderInstanced(const graphics::RenderContext& rc)
 	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
 
 	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
-	for (Surface* surface : m_Surfaces)
-	{
-		surface->Activate(rc);
-		rc.GetContext().DrawIndexedInstanced(this, m_Effect);
-		surface->Deactivate();
-	}
+	rc.GetContext().DrawIndexedInstanced(this, m_Effect);
 	PROFILE_BLOCK_END;
 
 	RemoveGPUData();
@@ -213,6 +209,13 @@ void Model::AddSurface(Surface* surface)
 		AddSurface(surface);
 	}
 	m_Surfaces.Add(surface);
+}
+
+void Model::AddOrientation(CU::Matrix44f orientation)
+{
+	GPUModelData data;
+	data.m_Orientation = orientation;
+	AddInstanceData(data);
 }
 
 void Model::AddInstanceData(GPUModelData data)

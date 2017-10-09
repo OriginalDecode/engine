@@ -5,7 +5,7 @@
 #include <Engine/Synchronizer.h>
 #include <Engine/IGraphicsContext.h>
 #include <Engine/RenderContext.h>
-#include <profile_defines.h>
+#include <Engine/profile_defines.h>
 
 SSAOPass::SSAOPass()
 {

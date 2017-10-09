@@ -1,0 +1,8 @@
+{
+    "material": {
+        "albedo": "Data/Material/aluminum/Aluminum-Scuffed_basecolor.dds",
+        "normal": "Data/Material/aluminum/Aluminum-Scuffed_normal.dds",
+        "metalness": "Data/Material/aluminum/Aluminum-Scuffed_metallic.dds",
+        "roughness": "Data/Material/aluminum/Aluminum-Scuffed_roughness.dds"
+    }
+}

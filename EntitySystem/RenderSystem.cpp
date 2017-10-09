@@ -18,7 +18,7 @@
 #include "../Application/CameraHandle.h"
 #include "DebugComponent.h"
 #include <Engine/Engine.h>
-#include <profile_defines.h>
+#include <Engine/profile_defines.h>
 //#define VISIBLE_CHECK
 
 RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
@@ -30,7 +30,7 @@ RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
 
 void RenderSystem::Update(float /*dt*/, bool paused)
 {
-	PROFILE_FUNCTION(profiler::colors::Blue);
+	//PROFILE_FUNCTION(profiler::colors::Blue);
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 
 	PROFILE_BLOCK("Render : Entity Loop");
@@ -93,7 +93,12 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		if (m_Manager.HasComponent(e, CreateFilter<Requires<PBLComponent>>()))
 		{
 			auto& pbl = m_Manager.GetComponent<PBLComponent>(e);
-			AddRenderCommand(ModelCommand(render.m_ModelID, translation.myOrientation.GetPosition(), render.m_RenderWireframe, pbl.m_PBLValues.m_Roughness, pbl.m_PBLValues.m_Metalness));
+			AddRenderCommand(ModelCommand(render.m_ModelID
+										  , render.m_MaterialKey
+										  , translation.myOrientation.GetPosition()
+										  , render.m_RenderWireframe
+										  , pbl.m_PBLValues.m_Roughness
+										  , pbl.m_PBLValues.m_Metalness));
 		}
 
 

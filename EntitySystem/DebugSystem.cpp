@@ -20,7 +20,7 @@
 #include <GizmoBase.h>
 #include <Engine/Model.h>
 #include <CommonLib/DataStructures/Hashmap/Hash.h>
-#include <profile_defines.h>
+#include "profile_defines.h"
 DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
@@ -41,7 +41,6 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 	if (paused)
 		return;
 	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::TEXT, current_model, CU::Vector2f(0.75, 0)));
-	PROFILE_FUNCTION(profiler::colors::Red);
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (s32 i = 0; i < entities.Size(); i++)
 	{

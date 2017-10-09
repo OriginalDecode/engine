@@ -40,6 +40,8 @@ public:
 	u64 LoadTexture(const std::string& path);
 	u64 LoadEffect(const std::string& path);
 	u64 LoadSprite(const std::string& path);
+	u64 LoadMaterial(const std::string& path);
+
 
 
 private:

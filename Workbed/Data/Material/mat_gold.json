@@ -1,0 +1,8 @@
+{
+    "material": {
+        "albedo": "Data/Material/gold/gold-scuffed_basecolor.dds",
+        "normal": "Data/Material/gold/gold-scuffed_normal.dds",
+        "metalness": "Data/Material/gold/gold-scuffed_metallic.dds",
+        "roughness": "Data/Material/gold/gold-scuffed_roughness.dds"
+    }
+}

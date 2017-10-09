@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Synchronizer.h"
 #include <thread>
-#include <profile_defines.h>
+#include "profile_defines.h"
 
 Synchronizer::~Synchronizer()
 {

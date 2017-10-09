@@ -10,7 +10,7 @@ struct D3D11_INPUT_ELEMENT_DESC;
 struct GPUModelData
 {
 	CU::Matrix44f m_Orientation;
-	CU::Vector4f m_PBLData;
+	CU::Vector4f m_PBLData; //this one is not needed, but it's here for debug purpose
 };
 
 
@@ -46,7 +46,8 @@ public:
 	void AddTexture(const std::string& path, Effect::TextureSlot slot);
 
 	s32 GetInstanceCount() const { return m_GPUData.Size(); }
-// 	void AddOrientation(CU::Matrix44f orientation);
+	Effect* GetEffect() { return m_Effect; }
+	void AddOrientation(CU::Matrix44f orientation);
 // 	void AddPBLData(CU::Vector2f data);
 	void AddInstanceData(GPUModelData data);
 

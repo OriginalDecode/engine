@@ -20,7 +20,7 @@
 #include "../hashlist.h"
 #include "TreeDweller.h"
 #include <PBLComponent.h>
-
+#include <Engine/AssetFactory.h>
 void LevelFactory::Initiate()
 {
 	m_Engine = Engine::GetInstance();
@@ -645,6 +645,21 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 	float x_start = 5.f;
 	float z_start = 5.f;
 	float metal = 0.f;
+
+	Material* pGoldMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_gold.json");
+	Material* pAlumMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_aluminum.json");
+	Material* pCoppMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_copper.json");
+	Material* pMetaMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_metal.json");
+
+	Material* material[] = {
+		pGoldMaterial,
+		pAlumMaterial,
+		pCoppMaterial,
+		pMetaMaterial,
+	};
+
+
+	static s32 mat = 0;
 	for (s32 i = 0; i < steps; i++)
 	{
 		for (s32 j = steps - 1, s = 0; j >= 0; j--, s++)
@@ -669,20 +684,11 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 
 			auto key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false);
 			Model* m = m_Engine->GetModel(key);
-			m->AddTexture("Data/Textures/brickwall_normal.dds", Effect::NORMAL);
 
-			
-			auto& c = m->GetChildModels(); 
-			for (Model* child : c)
-			{
-				auto& s = child->GetSurfaces();
 
-				for (Surface* surface : s)
-				{
-					surface->AddTexture("Data/Textures/brickwall_normal.dds", Effect::NORMAL);
-				}
-			}
 			r.m_ModelID = key;
+			auto v = RANDOM(0, 4);
+			r.m_MaterialKey = material[v]->GetKey();
 			r.scale = CU::Vector4f(1, 1, 1, 1);
 
 			m_DwellerList.Add(new TreeDweller);

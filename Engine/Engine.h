@@ -55,6 +55,7 @@ class Terrain;
 class Sprite;
 class InputHandle;
 class PhysicsManager;
+class Material;
 
 class Engine
 {

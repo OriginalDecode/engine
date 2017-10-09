@@ -17,6 +17,7 @@ struct ModelInstance
 struct RenderComponent : public BaseComponent
 {
 	u64 m_ModelID;
+	u64 m_MaterialKey;
 	CU::GrowingArray<ModelInstance> m_Instances;
 
 	CU::Vector4f scale;

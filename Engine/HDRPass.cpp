@@ -6,8 +6,8 @@
 #include "DirectX11.h"
 #include "Synchronizer.h"
 #include "RenderCommand.h"
+#include <Engine/profile_defines.h>
 
-#include <profile_defines.h>
 #include <Engine/Viewport.h>
 #include <Engine/Quad.h>
 

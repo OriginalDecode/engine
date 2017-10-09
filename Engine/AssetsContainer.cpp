@@ -6,6 +6,7 @@
 #include "ShaderFactory.h"
 #include "Texture.h"
 #include <Engine/Sprite.h>
+#include <Engine/AssetFactory.h>
 
 AssetsContainer::~AssetsContainer()
 {
@@ -167,6 +168,24 @@ u64 AssetsContainer::LoadSprite(const std::string& path)
 	}
 
 	EndTicketMutex(&sprite_mutex);
+	return Hash(path.c_str());
+}
+
+u64 AssetsContainer::LoadMaterial(const std::string& path)
+{
+	static Ticket_Mutex material_mutex;
+	BeginTicketMutex(&material_mutex);
+
+	u64 hash = Hash(path.c_str());
+	if (m_Materials.find(hash) == m_Materials.end())
+	{
+		Material* material = new Material(hash);
+		m_Materials.emplace(hash, material);
+		AssetFactory::GetInstance().CreateMaterial(path, material);
+		EndTicketMutex(&material_mutex);
+		return Hash(path.c_str());
+	}
+	EndTicketMutex(&material_mutex);
 	return Hash(path.c_str());
 }
 

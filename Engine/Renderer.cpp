@@ -24,8 +24,6 @@
 #include "imgui_impl_dx11.h"
 #include <Engine/WaterPlane.h>
 
-#include <profile_defines.h>
-
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
 #include <Engine/IGraphicsContext.h>
@@ -327,10 +325,12 @@ void Renderer::Render3DCommandsInstanced()
 		}
 	}
 
-	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
-	{
-		it->second->RenderInstanced(m_RenderContext);
-	}
+	m_InstancingManager.DoInstancing(m_RenderContext);
+
+// 	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
+// 	{
+// 		it->second->RenderInstanced(m_RenderContext);
+// 	}
 }
 
 void Renderer::RenderTerrain(bool override_effect)
@@ -583,16 +583,16 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 	auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 	const bool result = (command->m_CommandType == RenderCommand::MODEL);
 	DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
+// 	GPUModelData data;
+// 	data.m_Orientation = command->m_Orientation;
+// 	data.m_PBLData = CU::Vector4f(command->m_Metalness, command->m_Roughness, 0, 0);
+// 	model->AddInstanceData(data);
+// 	if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
+// 		m_ModelsToRender.emplace(command->m_Key, model);
+
 	Model* model = engine.GetModel(command->m_Key);
-	GPUModelData data;
-	data.m_Orientation = command->m_Orientation;
-	data.m_PBLData = CU::Vector4f(command->m_Metalness, command->m_Roughness, 0, 0);
-	model->AddInstanceData(data);
-	if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
-		m_ModelsToRender.emplace(command->m_Key, model);
 
-
-	if (!m_InstancingManager.FindInstanceObject(command->m_MaterialKey))
+	if (command->m_MaterialKey > 0 && !m_InstancingManager.FindInstanceObject(command->m_MaterialKey))
 	{
 		InstanceObject new_instance;
 		new_instance.m_Material = m_RenderContext.GetEngine().GetMaterial(command->m_MaterialKey);

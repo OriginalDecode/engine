@@ -16,9 +16,8 @@ class EntityManager
 {
 public:
 	EntityManager() = default;
-
+	~EntityManager();
 	void Initiate();
-	void CleanUp();
 
 	void Reset();
 

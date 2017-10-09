@@ -81,6 +81,7 @@ float4 getWorldPos(float2 tex_coord, float depth)
 // Source: https://github.com/godotengine/godot/blob/df573f5c3a76155842e43ea0dbab594e3944b114/drivers/gles3/shaders/scene.glsl
 float4 main(VS_OUTPUT input) : SV_Target
 {
+
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
 	if(depth.r <= 0)
 		discard;	
@@ -105,22 +106,20 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 to_eye = normalize(CameraPosition - pixel_pos);
 	float3 refVec = normalize(reflect(to_eye.xyz, normal.xyz));
 
-	half4 reflection_fresnel = half4(ReflectionFresnel(albedo, normal.xyz, to_eye, roughnessOffsetted), 1);
+	half4 reflection_fresnel = half4(ReflectionFresnel(albedo.rgb, normal.xyz, to_eye, roughnessOffsetted), 1);
+	float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
 
 	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
-	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * (reflection_fresnel);
-
+	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo * reflection_fresnel;
+	cube_ambient = saturate(cube_ambient);
 	
-	float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
-	//float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
-	albedo = lerp(albedo, 0.0.rrrr, metalness);
+	albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
 
 	float4 diffuse = 0; // metalness_albedo * cube_ambient;
 	float4 spec = 0;
-	float3 light_dir = float3(0,-1,0);
+	float3 light_dir = float3(-1,-1,0);
 	float3 light_col = float3(1, 1, 1);
-	float light_intensity = 100;
-
+	float light_intensity = 10;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
 	float NdC = saturate(dot(normal, to_eye));
@@ -130,7 +129,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 		float SatNdL = saturate(dot(-light_dir, normal));
 
 		diffuse += float4( ( SatNdL * 1 / PI) * light_col * light_intensity * albedo, 1.0f);
-
 		//spec
 		float3 half_vec = normalize(-to_eye + light_dir);
 		float HdN = dot(half_vec, normal);
@@ -150,7 +148,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 		float m = rough2;
 		float m2 = m*m;
-		float denominator = HdN * HdN * (m2 - 1) +1;
+		float denominator = HdN * HdN * (m2 - 1) + 1;
 		float ggxDistr = m2 / (PI * denominator * denominator);
 		
 		float SchlickGGXGeo = (NdC / (NdC * (1 - rough2half ) + rough2half));
@@ -166,13 +164,12 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	}
 
-	diffuse += cube_ambient * albedo;
-
+	//diffuse += cube_ambient + cube;
 	float4 output = 0;
 
 
-	output += spec;// + diffuse;
-
+	// output += (spec * cube) * (diffuse * cube_ambient);
+	output += cube + cube_ambient;
 	//diffuse = saturate(diffuse);
 	//output = pow(abs(output), .4545);
 	output.a = 1;

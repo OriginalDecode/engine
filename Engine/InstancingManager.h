@@ -6,7 +6,10 @@
 
 class Model;
 class Material;
-
+namespace graphics
+{
+	class RenderContext;
+}
 struct InstanceObject
 {
 	InstanceObject() = default;
@@ -23,6 +26,8 @@ public:
 	InstanceObject& AddInstanceObject(InstanceObject instance_object);
 	const InstanceObject& GetInstanceObject(u64 key);
 	void AddOrientationToInstance(u64 key, const CU::Matrix44f& orientation);
+
+	void DoInstancing(const graphics::RenderContext& rc);
 
 private:
 	std::map<u64, InstanceObject> m_InstanceObjects; /* the key is the material */

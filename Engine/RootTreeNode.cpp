@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RootTreeNode.h"
 #include <Engine/Synchronizer.h>
-#include <profile_defines.h>
+#include <Engine/profile_defines.h>
 void RootTreeNode::Initiate(float halfwidth, Octree* octree)
 {
 	m_HalfWidth = halfwidth;

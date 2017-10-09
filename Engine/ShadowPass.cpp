@@ -5,6 +5,7 @@
 #include <Engine/Shadow_Directional.h>
 #include <Engine/ShadowSpotlight.h>
 
+#include "profile_defines.h"
 bool ShadowPass::Initiate(Renderer* renderer)
 {
 	m_RenderToDepth = Engine::GetInstance()->GetEffect("Shaders/render_depth.json");

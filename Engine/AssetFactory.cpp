@@ -3,11 +3,25 @@
 #include <Engine/ModelImporter.h>
 #include <Engine/Engine.h>
 #include <Engine/Material.h>
+
+AssetFactory* AssetFactory::m_Instance = nullptr;
+
 AssetFactory::AssetFactory()
 {
 	m_ModelImporter = new CModelImporter;
 }
 
+
+void AssetFactory::Create()
+{
+	m_Instance = new AssetFactory;
+}
+
+void AssetFactory::Destroy()
+{
+	delete m_Instance;
+	m_Instance = nullptr;
+}
 
 void AssetFactory::CreateMaterial(const std::string& filepath, Material* pMaterial)
 {

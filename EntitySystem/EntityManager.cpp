@@ -8,6 +8,17 @@
 #define FALSE 0
 
 
+EntityManager::~EntityManager()
+{
+	for (NodeEntityManager* manager : m_NodeManagers)
+	{
+		manager->CleanUp();
+		SAFE_DELETE(manager);
+	}
+
+	SAFE_DELETE(myComponents);
+}
+
 void EntityManager::Initiate()
 {
 	myComponents = new CComponentContainer(true);
@@ -17,17 +28,6 @@ void EntityManager::Initiate()
 		m_NodeManagers.Add(new NodeEntityManager);
 	}
 
-}
-
-void EntityManager::CleanUp()
-{
-	for (NodeEntityManager* manager : m_NodeManagers)
-	{
-		manager->CleanUp();
-		SAFE_DELETE(manager);
-	}
-
-	SAFE_DELETE(myComponents);
 }
 
 void EntityManager::Reset()

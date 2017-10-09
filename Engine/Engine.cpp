@@ -32,10 +32,9 @@
 
 #include <Engine/LightModel.h>
 
-#include <profile_defines.h>
 #include <Engine/IGraphicsDevice.h>
 #include <Engine/DebugHandle.h>
-
+#include <Engine/AssetFactory.h>
 
 #define REGISTERCOMPONENT(x) x,
 enum RegisteredComponents
@@ -85,6 +84,7 @@ Engine* Engine::GetInstance()
 
 bool Engine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 {
+	AssetFactory::Create();
 	debug::DebugHandle::Create();
 	Randomizer::Create();
 	PostMaster::Create();
@@ -167,7 +167,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 bool Engine::CleanUp()
 {
 	debug::DebugHandle::Destroy();
-	m_EntityManager.CleanUp();
+	AssetFactory::Destroy();
 
 	m_InputHandle->CleanUp();
 	SAFE_DELETE(m_InputHandle);
@@ -369,6 +369,19 @@ Sprite* Engine::GetSprite(const char* key)
 Material* Engine::GetMaterial(u64 key)
 {
 	return myAssetsContainer->GetMaterial(key);
+}
+
+Material* Engine::GetMaterial(const char* key)
+{
+	u64 hash = Hash(key);
+	Material* material = myAssetsContainer->GetMaterial(hash);
+
+	if (material)
+		return material;
+
+
+	myAssetsContainer->LoadMaterial(key);
+	return myAssetsContainer->GetMaterial(hash);
 }
 
 std::string string_together(u16 time, u16 to_compare)

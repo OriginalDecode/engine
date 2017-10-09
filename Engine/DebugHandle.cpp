@@ -2,14 +2,9 @@
 #include "DebugHandle.h"
 #include <Engine/Texture.h>
 
+
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include "imgui.h"
-#endif
-#ifdef _PROFILE
-#include <easy/profiler.h>
-#include <easy/reader.h>
-#endif
-
 namespace debug
 {
 
@@ -541,3 +536,4 @@ namespace debug
 	// 	}
 	// #endif
 };
+#endif

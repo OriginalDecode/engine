@@ -63,6 +63,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_ShadowPass.Initiate(this);
 
+
 	m_DirectionalShadow.Initiate(2048.f);
 
 	m_Direction = CU::Vector3f(0.42f, 0.73f, 0.24f);
@@ -165,6 +166,15 @@ void Renderer::Render()
 	else
 		Render3DCommands();
 
+
+	Camera* shadow_dir_cam = m_DirectionalShadow.GetCamera();
+
+	float distance = 200.f;
+	CU::Vector3f shadow_dir_pos = (m_Direction - (m_Direction * 2.f)) * distance;
+	shadow_dir_pos += m_Orientation.GetTranslation();
+	shadow_dir_cam->SetPosition(shadow_dir_pos);
+	shadow_dir_cam->SetAt(m_Direction);
+	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
@@ -325,12 +335,7 @@ void Renderer::Render3DCommandsInstanced()
 		}
 	}
 
-	m_InstancingManager.DoInstancing(m_RenderContext);
-
-// 	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
-// 	{
-// 		it->second->RenderInstanced(m_RenderContext);
-// 	}
+	m_InstancingManager.DoInstancing(m_RenderContext, false);
 }
 
 void Renderer::RenderTerrain(bool override_effect)
@@ -353,26 +358,9 @@ void Renderer::RenderTerrain(bool override_effect)
 
 void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 {
+
+
 	const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
-	/*m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-	m_API->SetRasterizer(eRasterizer::CULL_NONE);*/
-
-	/*for (s32 i = 0; i < commands.Size(); i++)
-	{
-		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-
-
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
-
-		Model* model = m_Engine->GetModel(command->m_Key);
-		if (!model)
-			continue;
-
-		model->SetOrientation(command->m_Orientation);
-		model->ShadowRender(orientation, camera->GetPerspective(), m_RenderContext);
-	}*/
-
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	for (s32 j = 0; j < 8; j++)
 	{
@@ -384,6 +372,12 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 	}
 
 	const CU::Matrix44f& perspective = camera->GetPerspective();
+
+	const CU::Matrix44f& view_proj = CU::Math::Inverse(orientation) * perspective;
+
+	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &view_proj, sizeof(CU::Matrix44f));
+
+
 	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
 	{
 		it->second->ShadowRenderInstanced(m_RenderContext);
@@ -583,15 +577,9 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 	auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 	const bool result = (command->m_CommandType == RenderCommand::MODEL);
 	DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
-// 	GPUModelData data;
-// 	data.m_Orientation = command->m_Orientation;
-// 	data.m_PBLData = CU::Vector4f(command->m_Metalness, command->m_Roughness, 0, 0);
-// 	model->AddInstanceData(data);
-// 	if (m_ModelsToRender.find(command->m_Key) == m_ModelsToRender.end())
-// 		m_ModelsToRender.emplace(command->m_Key, model);
 
 	Model* model = engine.GetModel(command->m_Key);
-
+	
 	if (command->m_MaterialKey > 0 && !m_InstancingManager.FindInstanceObject(command->m_MaterialKey))
 	{
 		InstanceObject new_instance;

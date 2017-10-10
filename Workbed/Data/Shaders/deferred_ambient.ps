@@ -117,7 +117,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float4 diffuse = 0; // metalness_albedo * cube_ambient;
 	float4 spec = 0;
-	float3 light_dir = float3(0,-1,0);
+	float3 light_dir = float3(0,0,-1);
 	float3 light_col = float3(1, 1, 1);
 	float light_intensity = 1;
 	float rough2 = roughness * roughness;
@@ -129,7 +129,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 		// diffuse
 		float SatNdL = saturate(dot(-light_dir, normal));
 
-		diffuse += float4( ( SatNdL * 1 / PI)  * albedo.rgb, 1.0f);
+		diffuse += float4( ( SatNdL * 1 / PI)  * light_col * albedo.rgb, 1.0f);
 	
 		//spec
 		float HdN = dot(half_vec, normal);
@@ -156,7 +156,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 		float k = rough2half;
 		float G1V = NdC * ( 1.f - k ) + k;
-		float G1L = NdL = ( 1.f - k ) + k;
+		float G1L = NdL * ( 1.f - k ) + k;
 		
 		float V = 0.25f / (G1V * G1L);
 		

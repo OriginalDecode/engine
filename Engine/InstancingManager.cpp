@@ -39,8 +39,10 @@ void InstancingManager::AddOrientationToInstance(u64 key, const CU::Matrix44f& o
 	it->second.m_Orientations.Add(orientation);
 }
 
-void InstancingManager::DoInstancing(const graphics::RenderContext& rc)
+void InstancingManager::DoInstancing(const graphics::RenderContext& rc, bool shadowing)
 {
+
+
 	for (auto it = m_InstanceObjects.begin(); it != m_InstanceObjects.end(); it++)
 	{
 		

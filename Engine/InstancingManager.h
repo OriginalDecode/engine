@@ -27,7 +27,7 @@ public:
 	const InstanceObject& GetInstanceObject(u64 key);
 	void AddOrientationToInstance(u64 key, const CU::Matrix44f& orientation);
 
-	void DoInstancing(const graphics::RenderContext& rc);
+	void DoInstancing(const graphics::RenderContext& rc, bool shadowing);
 
 private:
 	std::map<u64, InstanceObject> m_InstanceObjects; /* the key is the material */

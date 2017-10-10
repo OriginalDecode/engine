@@ -106,14 +106,14 @@ namespace graphics
 			HRESULT hr = DirectX::CreateDDSTextureFromFileEx(m_Device
 				, static_cast<ID3D11DeviceContext*>(pCtx->GetContext())
 				, wPath.c_str()
-															 , 0
-															 , D3D11_USAGE_DEFAULT
-															 , D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET //has to be bound as a render target to actually generate the mips
-															 , D3D11_CPU_ACCESS_READ
-															 , D3D11_RESOURCE_MISC_GENERATE_MIPS
-															 , false
-															 , nullptr //might want to output to a texture2d object?
-															 , &srv);
+				, 0
+				, D3D11_USAGE_DEFAULT
+				, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET //has to be bound as a render target to actually generate the mips
+				, D3D11_CPU_ACCESS_READ
+				, D3D11_RESOURCE_MISC_GENERATE_MIPS
+				, false
+				, nullptr //might want to output to a texture2d object?
+				, &srv);
 
 #ifndef FINAL
 			DL_ASSERT_EXP(hr != S_OK, "Failed to load texture");
@@ -122,10 +122,10 @@ namespace graphics
 		else
 		{
 			HRESULT hr = DirectX::CreateDDSTextureFromFile(m_Device
-														   , nullptr
-														   , wPath.c_str()
-														   , nullptr //might want to output to a texture2d object?
-														   , &srv);
+				, nullptr
+				, wPath.c_str()
+				, nullptr //might want to output to a texture2d object?
+				, &srv);
 #ifndef FINAL
 			DL_ASSERT_EXP(hr == S_OK, "Failed to load texture");
 #endif
@@ -232,7 +232,7 @@ namespace graphics
 
 	IDepthStencilView* DX11Device::CreateDepthStencilView(const Texture2DDesc& desc, ITexture2D* pTexture, const std::string& debug_name)
 	{
-		D3D11_DEPTH_STENCIL_VIEW_DESC depth_desc; 
+		D3D11_DEPTH_STENCIL_VIEW_DESC depth_desc;
 		ZeroMemory(&depth_desc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
 
 		depth_desc.Format = DirectX11::GetFormat(desc.m_Format);
@@ -332,15 +332,15 @@ namespace graphics
 		return CreateBuffer(desc, debug_name);
 	}
 
-	
+
 
 	IShaderBlob* DX11Device::CompileShaderFromFile(const std::string& filepath, const char* entrypoint, const char* shader_type)
 	{
 		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
-	#ifdef _DEBUG 
+#ifdef _DEBUG 
 		shaderFlag |= D3D10_SHADER_DEBUG;
 		shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
-	#endif
+#endif
 		ID3D10Blob* out_shader = nullptr;
 		ID3D10Blob* out_message = nullptr;
 
@@ -368,7 +368,7 @@ namespace graphics
 			DL_WARNING("\n%s", (char*)out_message->GetBufferPointer());
 		}
 
-		DirectX11::HandleErrors(hr, "Failed to compile shader from file");	
+		DirectX11::HandleErrors(hr, "Failed to compile shader from file");
 		return out_shader;
 
 	}
@@ -386,18 +386,18 @@ namespace graphics
 		ID3D10Blob* out_shader = nullptr;
 		ID3D10Blob* out_message = nullptr;
 		HRESULT hr = D3DCompile(
-			 		pData,
-					data_byte_size,
-			 		source_name.c_str(),
-			 		nullptr,
-			 		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-			 		entrypoint,
-					feature_level.c_str(),
-					shaderFlag,
-			 		0,
-			 		&out_shader,
-			 		&out_message);
-		
+			pData,
+			data_byte_size,
+			source_name.c_str(),
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			entrypoint,
+			feature_level.c_str(),
+			shaderFlag,
+			0,
+			&out_shader,
+			&out_message);
+
 		DirectX11::HandleErrors(hr, "Failed to compile shader from memory");
 		if (out_message != nullptr)
 		{

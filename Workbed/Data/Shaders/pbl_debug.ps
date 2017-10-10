@@ -85,7 +85,7 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	float roughness_override = RoughnessTexture.Sample(sampler0, input.uv).r; 
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);
-	albedo.rgb = pow(albedo.rgb, 1 / 2.2f);
+	albedo.rgb = pow(albedo.rgb, 2.2f);
 	output.Albedo = albedo;
 
     output.Normal = float4(_normal, override_pbl ? input.data0.x : metalness_override);

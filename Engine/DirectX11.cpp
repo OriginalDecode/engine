@@ -300,7 +300,6 @@ namespace graphics
 		ID3D11RenderTargetView* pRenderTarget = nullptr;
 		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
 
-
 		hr = pDevice->CreateRenderTargetView(backbuffer, NULL, &pRenderTarget);
 		m_DefaultRenderTarget = pRenderTarget;
 		HandleErrors(hr, "Failed to create RenderTarget.");

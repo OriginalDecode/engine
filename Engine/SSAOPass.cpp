@@ -29,7 +29,8 @@ SSAOPass::SSAOPass()
 
 	m_cbSSAO = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSSAO), "SSAO ConstantBuffer");
 
-	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_SSAOTexture, Effect::SSAO);
+	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
+	effect->AddShaderResource(m_SSAOTexture, Effect::SSAO);
 
 }
 

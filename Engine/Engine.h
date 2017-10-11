@@ -59,6 +59,7 @@ class Material;
 
 class Engine
 {
+	friend debug::DebugHandle;
 public:
 	static void Create();
 	static void Destroy();

@@ -328,14 +328,13 @@ Effect* Engine::GetEffect(u64 key)
 Effect* Engine::GetEffect(const char* key)
 {
 	std::string file = m_VirtualFileSystem.GetFile(key);
-	u64 hash = Hash(file.c_str());
-	Effect* effect = myAssetsContainer->GetEffect(hash);
+	Effect* effect = myAssetsContainer->GetEffect(Hash(file.c_str()));
 
 	if (effect)
 		return effect;
 
 	myAssetsContainer->LoadEffect(file);
-	return myAssetsContainer->GetEffect(hash);
+	return myAssetsContainer->GetEffect(Hash(file.c_str()));
 }
 
 Model* Engine::GetModel(u64 key)

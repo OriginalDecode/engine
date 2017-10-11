@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "DebugHandle.h"
 #include <Engine/Texture.h>
+#include <Engine/Engine.h>
+#include <Engine/Synchronizer.h>
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -13,6 +15,7 @@ namespace debug
 
 	void DebugHandle::Update()
 	{
+		Engine* pEngine = Engine::GetInstance();
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
 		ImGui::SetNextWindowSize(ImVec2(300, Engine::GetInstance()->GetInnerSize().m_Height));
 		ImGuiWindowFlags flags = 0;
@@ -23,7 +26,24 @@ namespace debug
 		if (ImGui::Begin("Information", &s_Open, flags))
 		{
 
-			ImGui::Text("Hello World!");
+
+			ImGui::Text("Delta Time : %.3f", pEngine->GetDeltaTime());
+			ImGui::Text("FPS : %.1f", pEngine->GetFPS());
+			ImGui::Text("CPU Usage : %.1f", pEngine->m_SystemMonitor.GetCPUUsage());
+			ImGui::Text("Memory Usage : %dmb", pEngine->m_SystemMonitor.GetMemoryUsage());
+			
+			//ImGui::Text("Model Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER).Size());
+			ImGui::Text("Model Commands : %d", pEngine->m_SegmentHandle.CommandSize((s32)pEngine->m_Synchronizer->GetCurrentBufferIndex()));
+			
+			ImGui::Text("Spotlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER).Size());
+			ImGui::Text("Pointlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER).Size());
+			ImGui::Text("Particle Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER).Size());
+			ImGui::Text("Sprite Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER).Size());
+			ImGui::Text("Text Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER).Size());
+			ImGui::Text("Line Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size());
+			
+			ImGui::Separator();
+
 
 			std::stringstream camera_pos;
 			const auto& pos = Engine::GetInstance()->GetCamera()->GetPosition();
@@ -36,10 +56,7 @@ namespace debug
 				DebugTextures();
 
 
-			for (DebugSlider<float> slider : m_Sliders)
-			{
-				ImGui::SliderFloat(slider.m_Label.c_str(), slider.m_Value, slider.m_Min, slider.m_Max);
-			}
+		
 
 
 

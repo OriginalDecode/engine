@@ -172,16 +172,16 @@ void Renderer::Render()
 
 	RenderTerrain(false);
 
-// 	if (m_RenderInstanced)
-// 		Render3DCommandsInstanced();
-// 	else
-// 		Render3DCommands();
+ 	if (m_RenderInstanced)
+ 		Render3DCommandsInstanced();
+ 	else
+ 		Render3DCommands();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
 #endif
 
-	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
+	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_DeferredRenderer->DeferredRender(shadow_mvp

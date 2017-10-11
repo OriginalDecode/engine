@@ -1,5 +1,6 @@
 #pragma once
 #include "ImGuiRegisterStructs.h"
+#include <CommonLib/DataStructures/GrowingArray.h>
 class Texture;
 namespace debug
 {
@@ -14,12 +15,17 @@ namespace debug
 		void DebugTextures();
 		void AddTexture(void* srv, const std::string& debug_name);
 		void AddTexture(Texture* texture, const std::string& debug_name);
+		void RegisterFloatSlider(DebugSlider<float> slider);
 	private:
 
 		static DebugHandle* m_Instance;
 
 		DebugHandle() = default;
 		~DebugHandle() { }
+
+		CU::GrowingArray<DebugSlider<float>> m_Sliders;
+
+
 		/**
 #if !defined(_PROFILE) && !defined(_FINAL)
 		bool SaveLevel();

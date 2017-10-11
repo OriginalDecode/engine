@@ -36,6 +36,13 @@ namespace debug
 				DebugTextures();
 
 
+			for (DebugSlider<float> slider : m_Sliders)
+			{
+				ImGui::SliderFloat(slider.m_Label.c_str(), slider.m_Value, slider.m_Min, slider.m_Max);
+			}
+
+
+
 			ImGui::End();
 		}
 		ImGui::PopStyleVar();
@@ -94,6 +101,11 @@ namespace debug
 		m_Labels.push_back(debug_name);
 	}
 
+
+	void DebugHandle::RegisterFloatSlider(DebugSlider<float> slider)
+	{
+		m_Sliders.Add(slider);
+	}
 
 	//  	s32 DebugHandle::RegisterMainWindow(DebugMainWindow window)
 	//  	{

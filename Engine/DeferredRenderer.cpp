@@ -27,8 +27,8 @@ DeferredRenderer::DeferredRenderer()
 	scene_desc.m_TextureFormat = graphics::RGBA16_FLOAT;
 	scene_desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
 	scene_desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
-	m_FinishedSceneTexture = new Texture;
-	m_FinishedSceneTexture->Initiate(scene_desc, "DeferredRenderer - Finished Scene");
+	m_Scene = new Texture;
+	m_Scene->Initiate(scene_desc, "DeferredRenderer - Finished Scene");
 
 	//_______________________________________________________________________
 
@@ -46,7 +46,7 @@ DeferredRenderer::DeferredRenderer()
 	//_______________________________________________________________________
 
 	m_ScreenPassShader = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
-	m_ScreenPassShader->AddShaderResource(m_FinishedSceneTexture, Effect::DIFFUSE);
+	m_ScreenPassShader->AddShaderResource(m_Scene, Effect::DIFFUSE);
 
 	m_AmbientPassShader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
 	Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
@@ -64,7 +64,7 @@ DeferredRenderer::DeferredRenderer()
 DeferredRenderer::~DeferredRenderer()
 {
 	SAFE_DELETE(m_RenderQuad);
-	SAFE_DELETE(m_FinishedSceneTexture);
+	SAFE_DELETE(m_Scene);
 	SAFE_DELETE(m_DepthStencilTexture);
 
 	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
@@ -76,15 +76,15 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& shadow_mvp, const CU:
 	render_context.GetAPI().ResetViewport();
  
 	IDepthStencilView* depth = render_context.GetAPI().GetDepthView(); 
-	ctx.ClearRenderTarget(m_FinishedSceneTexture->GetRenderTargetView(), clearcolor::black);
-	ctx.OMSetRenderTargets(1, m_FinishedSceneTexture->GetRenderTargetRef(), depth);
+	ctx.ClearRenderTarget(m_Scene->GetRenderTargetView(), clearcolor::black);
+	ctx.OMSetRenderTargets(1, m_Scene->GetRenderTargetRef(), depth);
+	UpdateConstantBuffer(shadow_mvp, light_dir);
 
 	ctx.PSSetConstantBuffer(1, 1, &m_ConstantBuffer);
 	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
 	ctx.PSSetSamplerState(1, 1, graphics::CUBEMAP);
 
 	ctx.SetRasterizerState(render_context.GetAPI().GetRasterizerState(graphics::CULL_NONE));
-	UpdateConstantBuffer(shadow_mvp, light_dir);
 	m_RenderQuad->Render();
 }
  
@@ -92,7 +92,7 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& shadow_mvp, const CU:
  {
 	 auto api = Engine::GetAPI();
 	 api->GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x1);
-	 m_ScreenPassShader->AddShaderResource(m_FinishedSceneTexture, Effect::DIFFUSE);
+	 m_ScreenPassShader->AddShaderResource(m_Scene, Effect::DIFFUSE);
 	 m_RenderQuad->Render(false, m_ScreenPassShader);
 }
 

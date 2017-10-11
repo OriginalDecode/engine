@@ -3,7 +3,7 @@
 namespace debug
 {
 
-	/*template<typename T>
+	template<typename T>
 	struct DebugSlider
 	{
 		DebugSlider() = default;
@@ -20,7 +20,7 @@ namespace debug
 		T* m_Value = nullptr;
 		std::string m_Label; 
 	};
-
+/**
 	template<typename T>
 	struct DebugButton
 	{

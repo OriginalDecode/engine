@@ -118,48 +118,70 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float4 diffuse = 0; // metalness_albedo * cube_ambient;
 	float4 spec = 0;
-	float3 light_dir = float3(0,-1,0);
+	float3 light_dir = float3(0,-1,0);//light_direction.xyz;
 	float3 light_col = float3(1, 1, 1);
-	float light_intensity = 1;
+	float light_intensity = 5;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
 	float NdC = saturate(dot(normal, to_eye));
 	float3 half_vec = normalize(-to_eye + light_dir);
-	for(int i = 0; i < 1; i++)
-	{
-		// diffuse
-		float SatNdL = saturate(dot(-light_dir, normal));
 
-		diffuse += float4( ( SatNdL * 1 / PI)  * light_col * albedo.rgb, 1.0f);
+	float4 newPos = pixel_pos + (normal * 0.4);
+	newPos.w = 1;
 	
-		//spec
-		float HdN = dot(half_vec, normal);
-		float NdL = max(dot(normal, -light_dir), 0);
-		float EdH = dot(-to_eye, half_vec);
-		float LdH = dot(light_dir, half_vec);
-		LdH = 1 - LdH;
-		LdH = pow(LdH, 5);
-		half4 schlickFresnel = LdH * ( 1 - metalness_albedo);
-		schlickFresnel = schlickFresnel / (6 - (5 * roughness));
-		schlickFresnel = metalness_albedo + schlickFresnel;
+	float4x4 world_matrices;
+	world_matrices._11_12_13_14 = float4(1,0,0,0);
+	world_matrices._21_22_23_24 = float4(0,1,0,0);
+	world_matrices._31_32_33_34 = float4(0,0,1,0);
+	world_matrices._41_42_43_44 = float4(0,0,0,1);
+	
+	float4 shadowVec = mul(newPos, ShadowMVP);
+	shadowVec.xyz /= shadowVec.w;
+	shadowVec.y = -shadowVec.y;
+	shadowVec.x = shadowVec.x;
+	shadowVec.xy += 1;
+	shadowVec.xy *= 0.5;
 
-		float m = rough2;
-		float m2 = m*m;
-		float denominator = HdN * HdN * (m2 - 1) + 1;
-		float ggxDistr = m2 / (PI * denominator * denominator);
-		
-		float SchlickGGXGeo = (NdC / (NdC * (1 - rough2half ) + rough2half));
+	float compareValue = shadowVec.z;
+	float sampleValue = ShadowTexture.Sample(sampler0, shadowVec.xy).r;
 
-		float k = rough2half;
-		float G1V = NdC * ( 1.f - k ) + k;
-		float G1L = NdL * ( 1.f - k ) + k;
-		
-		float V = 0.25f / (G1V * G1L);
-		
-		spec += saturate(((schlickFresnel * ggxDistr * V * NdL) * float4(light_col, 1)) * light_intensity);
+	if(sampleValue > compareValue)
+	{
+		for(int i = 0; i < 1; i++)
+		{
+			// diffuse
+			float SatNdL = saturate(dot(-light_dir, normal));
 
+			diffuse += float4( ( SatNdL * 1 / PI)  * light_col * albedo.rgb, 1.0f);
+
+			//spec
+			float HdN = dot(half_vec, normal);
+			float NdL = max(dot(normal, -light_dir), 0);
+			float EdH = dot(-to_eye, half_vec);
+			float LdH = dot(light_dir, half_vec);
+			LdH = 1 - LdH;
+			LdH = pow(LdH, 5);
+			half4 schlickFresnel = LdH * ( 1 - metalness_albedo);
+			schlickFresnel = schlickFresnel / (6 - (5 * roughness));
+			schlickFresnel = metalness_albedo + schlickFresnel;
+
+			float m = rough2;
+			float m2 = m*m;
+			float denominator = HdN * HdN * (m2 - 1) + 1;
+			float ggxDistr = m2 / (PI * denominator * denominator);
+
+			float SchlickGGXGeo = (NdC / (NdC * (1 - rough2half ) + rough2half));
+
+			float k = rough2half;
+			float G1V = NdC * ( 1.f - k ) + k;
+			float G1L = NdL * ( 1.f - k ) + k;
+
+			float V = 0.25f / (G1V * G1L);
+
+			spec += saturate(((schlickFresnel * ggxDistr * V * NdL) * float4(light_col, 1)) * light_intensity);
+
+		}
 	}
-
 	diffuse += cube_ambient * albedo;
 	diffuse = saturate(diffuse);
 	
@@ -178,19 +200,8 @@ float4 main(VS_OUTPUT input) : SV_Target
 	output.a = 1;
 	output = pow(output, .4545);
 
-	float4 newPos = pixel_pos + (normal * 0.4);
-	newPos.w = 1;
-	float4 shadowVec = mul(newPos, ShadowMVP);
-	shadowVec.xyz /= shadowVec.w;
-	shadowVec.y = -shadowVec.y;
-	shadowVec.x = shadowVec.x;
-	shadowVec.xy += 1;
-	shadowVec.xy *= 0.5;
-	float compareValue = shadowVec.z;
-	float sampleValue = ShadowTexture.Sample(sampler0, shadowVec.xy).x;
 
-	if(sampleValue < compareValue)
-		return float4(1,0,0,1);
+
 
 	return output;
 

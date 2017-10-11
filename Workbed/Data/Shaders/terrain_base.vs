@@ -1,20 +1,10 @@
-//---------------------------------
-//	Terrain Base Vertex Shaders
-//---------------------------------
-//---------------------------------
-//	Constant Buffers
-//---------------------------------
 cbuffer Matrices : register(b0)
 {
-	row_major float4x4 World;
-	row_major float4x4 View;
-	row_major float4x4 Projection;
-	float4 scale;
+	row_major float4x4 camera_view_x_proj;
 };
 
-//---------------------------------
-//	Terrain Base Vertex Structs
-//---------------------------------
+row_major float4x4 orientation  : register(b1);
+
 struct VS_INPUT
 {
 	float4 pos : POSITION;
@@ -35,25 +25,21 @@ struct VS_OUTPUT
 	float4 worldpos : POSITION;
 };
 
-//---------------------------------
-//	Terrain Base Vertex Shader
-//---------------------------------
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	
-	output.pos = mul(input.pos, World);
-	output.pos = mul(output.pos, View);
-	output.pos = mul(output.pos, Projection);
+	output.pos = mul(input.pos, orientation);
+	output.pos = mul(output.pos, camera_view_x_proj);	
 
 	output.uv2 = input.uv;
 	output.uv = input.uv * 10;
 
-	output.normal = mul(input.normal, World);
+	output.normal = mul(input.normal, orientation);
 	output.binorm = input.binorm;
-	output.tang  = mul(input.tang , World);
+	output.tang  = mul(input.tang , orientation);
 
-	output.worldpos = mul(input.pos, World);
+	output.worldpos = mul(input.pos, orientation);
 	
 	return output;
 };

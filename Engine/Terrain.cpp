@@ -9,7 +9,7 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 {
 	myWidth = aSize.x;
 	myDepth = aSize.y;
-//	m_Filename = "Terrain";
+	//	m_Filename = "Terrain";
 	m_IsRoot = false;
 	m_Effect = Engine::GetInstance()->GetEffect("Shaders/terrain_base.json");
 
@@ -34,7 +34,7 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 	m_ClipEffect = Engine::GetInstance()->GetEffect("Shaders/terrain_clip.json");
 	m_ClipEffect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain.dds"), Effect::DIFFUSE);
 
-	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(VertexBaseStruct), "Terrain ConstantBuffer");
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "Terrain ConstantBuffer");
 
 	m_HasLoaded = true;
 	return true;
@@ -52,9 +52,9 @@ void Terrain::CleanUp()
 void Terrain::Render(const graphics::RenderContext& rc)
 {
 	graphics::IGraphicsContext& ctx = rc.GetContext();
-	//UpdateConstantBuffer(rc);
+	UpdateConstantBuffer(rc);
 	ctx.PSSetSamplerState(0, 1, rc.GetEngine().GetActiveSampler());
- 
+
 	mySurface->Activate(rc);
 	ctx.DrawIndexed(this);
 	mySurface->Deactivate();
@@ -202,20 +202,19 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	vtx_desc.m_ByteWidth = vtx_size;
 
 	IBuffer* vtx_buffer = device.CreateBuffer(vtx_desc, "Terrain VertexBuffer");
-	m_VertexWrapper = VertexWrapper(vtx_data,
-									vtx_start,
-									vtx_buff_count,
-									vtx_stride,
-									vtx_byte_offset,
-									vtx_count,
-									vtx_size,
-									vtx_buffer,
-									pInputLayout,
-									graphics::TRIANGLE_LIST);
+	m_VertexWrapper.SetData(vtx_data);
+	m_VertexWrapper.SetStart(vtx_start);
+	m_VertexWrapper.SetStride(vtx_stride);
+	m_VertexWrapper.SetByteOffset(vtx_byte_offset);
+	m_VertexWrapper.SetVertexCount(vtx_count);
+	m_VertexWrapper.SetSize(vtx_size);
+	m_VertexWrapper.SetBuffer(vtx_buffer);
+	m_VertexWrapper.SetInputLayout(pInputLayout);
+	m_VertexWrapper.SetTopology(graphics::TRIANGLE_LIST);
 
 
 #ifdef _DEBUG
-	m_VertexWrapper.m_DebugName = DEBUG_NAME("particle_emitter", CEmitterInstance);
+	m_VertexWrapper.m_DebugName = DEBUG_NAME("particle_emitter", Terrain);
 #endif
 	const s32 idx_count = indexes.Size();
 	const s32 idx_stride = sizeof(u32);
@@ -237,26 +236,26 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	idx_desc.m_ByteWidth = idx_desc.m_Size;
 	IBuffer* idx_buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc, "Terrain IndexBuffer");
 
-	m_IndexWrapper = IndexWrapper(idx_data,
-								  idx_count,
-								  idx_start,
-								  idx_size,
-								  graphics::R32_UINT,
-								  idx_byte_offset,
-								  idx_buffer);
+	m_IndexWrapper.SetData(idx_data);
+	m_IndexWrapper.SetIndexCount(idx_count);
+	m_IndexWrapper.SetStart(idx_start);
+	m_IndexWrapper.SetSize(idx_size);
+	m_IndexWrapper.SetFormat(graphics::R32_UINT);
+	m_IndexWrapper.SetByteOffset(idx_byte_offset);
+	m_IndexWrapper.SetBuffer(idx_buffer);
 
 #ifdef _DEBUG
-	m_IndexWrapper.m_DebugName = DEBUG_NAME("particle_emitter", CEmitterInstance);
+	m_IndexWrapper.m_DebugName = DEBUG_NAME("particle_emitter", Terrain);
 #endif
 }
 
-// void Terrain::UpdateConstantBuffer(const graphics::RenderContext& rc)
-// {
-// 	graphics::IGraphicsContext& ctx = rc.GetContext();
-// 	myConstantStruct.world = myOrientation;
-// 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &myConstantStruct, sizeof(VertexBaseStruct));
-// 	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
-// }
+ void Terrain::UpdateConstantBuffer(const graphics::RenderContext& rc)
+ {
+ 	graphics::IGraphicsContext& ctx = rc.GetContext();
+ 	myConstantStruct.world = myOrientation;
+ 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_Orientation, sizeof(CU::Matrix44f));
+ 	ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);
+ }
 
 void Terrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray)
 {

@@ -21,7 +21,7 @@ public:
 	void DeferredRender(const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context);
 
 	void Finalize();
-	Texture* GetFinalTexture() { return m_FinishedSceneTexture; }
+	Texture* GetScene() { return m_Scene; }
 	Texture* GetDepthStencil() { return m_DepthStencilTexture; }
 
 
@@ -38,7 +38,7 @@ private:
 	Effect* m_ScreenPassShader = nullptr;
 
 	Texture* m_DepthStencilTexture = nullptr;
-	Texture* m_FinishedSceneTexture = nullptr;
+	Texture* m_Scene = nullptr;
 
 
 

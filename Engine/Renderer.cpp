@@ -92,17 +92,23 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 
-
-	debug::DebugHandle::GetInstance()->AddTexture(m_DebugTexture0, "Albedo");
-	debug::DebugHandle::GetInstance()->AddTexture(m_DebugTexture1, "Normal");
-	debug::DebugHandle::GetInstance()->AddTexture(m_DebugTexture2, "Depth");
-	debug::DebugHandle::GetInstance()->AddTexture(m_DebugTexture3, "Metalness");
-	debug::DebugHandle::GetInstance()->AddTexture(m_DebugTexture4, "Roughness");
+	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
+	pDebug->AddTexture(m_DebugTexture0, "Albedo");
+	pDebug->AddTexture(m_DebugTexture1, "Normal");
+	pDebug->AddTexture(m_DebugTexture2, "Depth");
+	pDebug->AddTexture(m_DebugTexture3, "Metalness");
+	pDebug->AddTexture(m_DebugTexture4, "Roughness");
 
 
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
 	m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(PerFramePixelBuffer), "PerFramePixelBuffer");
+
+
+	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(-1.f, 1.f, &m_Direction.x, "x"));
+	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(-1.f, 1.f, &m_Direction.y, "y"));
+	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(-1.f, 1.f, &m_Direction.z, "z"));
+
 }
 
 Renderer::~Renderer()
@@ -155,7 +161,7 @@ void Renderer::Render()
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 
-	m_PerFramePixelStruct.m_Projection = CU::Math::Inverse(m_Camera->GetPerspective());
+	m_PerFramePixelStruct.m_Projection = CU::Math::InverseReal(m_Camera->GetPerspective());
 	m_PerFramePixelStruct.m_View = m_Camera->GetOrientation();
 	m_PerFramePixelStruct.m_CameraPos = m_Camera->GetPosition();
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
@@ -163,6 +169,9 @@ void Renderer::Render()
 
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
+
+	RenderTerrain(false);
+
 	if (m_RenderInstanced)
 		Render3DCommandsInstanced();
 	else
@@ -171,22 +180,16 @@ void Renderer::Render()
 #if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
 #endif
-	Camera* shadow_dir_cam = m_DirectionalShadow.GetCamera();
 
-// 	float distance = 200.f;
-// 	CU::Vector3f shadow_dir_pos = (m_Direction - (m_Direction * 2.f)) * distance;
-// 	shadow_dir_pos += m_Orientation.GetTranslation();
-// 	shadow_dir_cam->SetPosition(shadow_dir_pos);
-// 	shadow_dir_cam->SetAt(m_Direction);
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
-
-
-
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_DeferredRenderer->DeferredRender(shadow_mvp
 									   , m_Direction
 									   , m_RenderContext);
+
+
+	//m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
 
 	m_RenderContext.GetAPI().SetDefaultTargets();
 	m_DeferredRenderer->Finalize();
@@ -290,8 +293,8 @@ void Renderer::Render3DCommands()
 	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
 
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
-	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 	Engine& engine = m_RenderContext.GetEngine();
+	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
@@ -340,20 +343,23 @@ void Renderer::Render3DCommandsInstanced()
 
 void Renderer::RenderTerrain(bool override_effect)
 {
-	// 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	// 	m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-	// 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
-	// 	PROFILE_FUNCTION(profiler::colors::Green);
-	// 	for (Terrain* terrain : myTerrainArray)
-	// 	{
-	// 		if (!terrain->HasLoaded())
-	// 			continue;
-	// 		if (!override_effect)
-	// 			terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext);
-	// 		else
-	// 			terrain->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), m_RenderContext, true);
-	// 
-	// 	}
+
+	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
+	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
+
+	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
+	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+	PROFILE_FUNCTION(profiler::colors::Green);
+	for (Terrain* terrain : myTerrainArray)
+	{
+		if (!terrain->HasLoaded())
+			continue;
+
+		if (!override_effect)
+			terrain->Render(m_RenderContext);
+	
+	}
 }
 
 void Renderer::Render3DShadows(const CU::Matrix44f&, Camera* camera)
@@ -369,7 +375,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera* camera)
 	Engine& engine = m_RenderContext.GetEngine();
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 	for (s32 top_tree_node = 0; top_tree_node < 8; top_tree_node++)
 	{

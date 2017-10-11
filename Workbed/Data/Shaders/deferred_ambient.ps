@@ -9,9 +9,6 @@ cbuffer per_frame : register (b0)
 
 cbuffer Ambient : register(b1)
 {
-	float4 camera_position;
-	row_major float4x4 InvertedProjection0;
-	row_major float4x4 InvertedView0;
 	row_major float4x4 ShadowMVP;
 	float4 light_direction;
 	float4 light_color;
@@ -93,13 +90,17 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
-	float4 normal = NormalTexture.Sample(sampler0, input.uv) * 2 - 1;
+	float4 normal = NormalTexture.Sample(sampler0, input.uv);
 
 	half roughness = depth.y;
 	half roughnessOffsetted = pow(roughness, 8192);
 	half lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips);
 
 	float metalness = normal.w;
+
+	normal *= 2;
+	normal -= 1;
+
 
     float4 pixel_pos = getWorldPos(input.uv, depth.x);
 
@@ -117,7 +118,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float4 diffuse = 0; // metalness_albedo * cube_ambient;
 	float4 spec = 0;
-	float3 light_dir = float3(0,0,-1);
+	float3 light_dir = float3(0,-1,0);
 	float3 light_col = float3(1, 1, 1);
 	float light_intensity = 1;
 	float rough2 = roughness * roughness;
@@ -141,11 +142,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 		half4 schlickFresnel = LdH * ( 1 - metalness_albedo);
 		schlickFresnel = schlickFresnel / (6 - (5 * roughness));
 		schlickFresnel = metalness_albedo + schlickFresnel;
-
-
-		/*float4 schlickFresnel = metalness_albedo + ( 1 - metalness_albedo ) *
-								(pow(1 - EdH, 5) / 
-								(6 - 5 * (1 - roughness)));*/
 
 		float m = rough2;
 		float m2 = m*m;
@@ -180,9 +176,22 @@ float4 main(VS_OUTPUT input) : SV_Target
 	output = saturate(output);
 
 	output.a = 1;
-
 	output = pow(output, .4545);
-	
+
+	float4 newPos = pixel_pos + (normal * 0.4);
+	newPos.w = 1;
+	float4 shadowVec = mul(newPos, ShadowMVP);
+	shadowVec.xyz /= shadowVec.w;
+	shadowVec.y = -shadowVec.y;
+	shadowVec.x = shadowVec.x;
+	shadowVec.xy += 1;
+	shadowVec.xy *= 0.5;
+	float compareValue = shadowVec.z;
+	float sampleValue = ShadowTexture.Sample(sampler0, shadowVec.xy).x;
+
+	if(sampleValue < compareValue)
+		return float4(1,0,0,1);
+
 	return output;
 
 };

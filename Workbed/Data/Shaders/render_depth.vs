@@ -1,10 +1,9 @@
-cbuffer Matrices : register(b0)
+cbuffer per_frame : register (b0)
 {
-	row_major float4x4 World;
-	row_major float4x4 View;
-	row_major float4x4 Projection;
-	float4 scale;
-};
+	row_major float4x4 camera_view_x_proj;
+}
+
+row_major float4x4 orientation : register (b1);
 
 struct VS_INPUT
 {
@@ -36,8 +35,7 @@ VS_OUTPUT main(VS_INPUT input)
 	world_matrices._31_32_33_34 = input.world2;
 	world_matrices._41_42_43_44 = input.world3;
 
-	float4x4 out_matrix = mul(world_matrices, View);
-	out_matrix = mul(out_matrix, Projection);
+	float4x4 out_matrix = mul(world_matrices, camera_view_x_proj);
 	output.pos = mul(input.pos, out_matrix);
 	output.worldpos = mul(input.pos, world_matrices);
 

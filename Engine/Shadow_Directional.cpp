@@ -5,7 +5,7 @@
 void ShadowDirectional::Initiate(float buffer_size)
 {
 	m_Camera = new Camera;
-	m_Camera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
+	m_Camera->CreateOrthographicProjection(200.f, 200.f, 1.f, 100.f);
 
 	m_Camera->SetPosition({ 55, 90, 55});
 	m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
@@ -61,5 +61,9 @@ void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)
 
 CU::Matrix44f ShadowDirectional::GetMVP()
 {
-	return CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetPerspective(); 
+	const CU::Matrix44f& orientation = m_Camera->GetCurrentOrientation();
+	const CU::Matrix44f& perspective = m_Camera->GetOrthographic();
+	const CU::Matrix44f& inv = CU::Math::Inverse(orientation);
+	const CU::Matrix44f& camera_view_proj = inv * perspective;
+	return  camera_view_proj;
 }

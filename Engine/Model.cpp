@@ -117,7 +117,9 @@ void Model::ShadowRenderInstanced(const graphics::RenderContext& rc)
 	{
 		child->ShadowRenderInstanced(rc);
 	}
-	if (m_IsRoot || m_GPUData.Empty())
+
+
+	if (m_IsRoot || m_GPUData.Empty() || m_Surfaces.Empty())
 	{
 		RemoveGPUData();
 		return;

@@ -48,7 +48,6 @@ private:
 	struct ConstantStruct
 	{
 		CU::Matrix44f m_ShadowMVP;
-		//This should be its own buffer
 		CU::Vector4f m_Direction;
 		CU::Vector4f m_LightColor;
 

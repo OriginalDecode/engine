@@ -146,6 +146,8 @@ void Renderer::Render()
 	PROFILE_FUNCTION(profiler::colors::Magenta);
 
 	m_RenderContext.GetAPI().BeginFrame();
+	m_RenderContext.GetAPI().ResetViewport();
+
 
 	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
 	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
@@ -166,7 +168,9 @@ void Renderer::Render()
 	else
 		Render3DCommands();
 
-
+#if !defined(_PROFILE) && !defined(_FINAL)
+	WriteDebugTextures();
+#endif
 	Camera* shadow_dir_cam = m_DirectionalShadow.GetCamera();
 
 // 	float distance = 200.f;
@@ -176,9 +180,7 @@ void Renderer::Render()
 // 	shadow_dir_cam->SetAt(m_Direction);
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
-#if !defined(_PROFILE) && !defined(_FINAL)
-	WriteDebugTextures();
-#endif
+
 
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();

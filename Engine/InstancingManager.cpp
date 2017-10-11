@@ -51,6 +51,9 @@ void InstancingManager::DoInstancing(const graphics::RenderContext& rc, bool sha
 
 		Model* pModel = instance.m_Model;
 
+
+
+
 		if(!shadowing)
 			instance.m_Material->Use(pModel->GetEffect());
 

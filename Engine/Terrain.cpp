@@ -2,7 +2,7 @@
 #include "Terrain.h"
 #include "TGA32.h"
 #include "Surface.h"
-#define DIVIDE 255.f
+#define DIVIDE 127.f
 
 
 bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
@@ -53,7 +53,7 @@ void Terrain::Render(const graphics::RenderContext& rc)
 {
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 	UpdateConstantBuffer(rc);
-	ctx.PSSetSamplerState(0, 1, rc.GetEngine().GetActiveSampler());
+	ctx.PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
 
 	mySurface->Activate(rc);
 	ctx.DrawIndexed(this);
@@ -184,14 +184,14 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	};
 	IInputLayout* pInputLayout = device.CreateInputLayout(m_Effect->GetVertexShader(), inputdesc, ARRSIZE(inputdesc));
 
-	const s32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
+	const s32 vtx_stride = sizeof(float);
 	const s32 vtx_count = myVertices.size();
 	const s32 vtx_size = vtx_count * vtx_stride;
 	const s32 vtx_buff_count = 1;
 	const s32 vtx_start = 0;
 	const s32 vtx_byte_offset = 0;
 	s8* vtx_data = new s8[vtx_size];
-	memcpy(vtx_data, &vertices[0], vtx_size);
+	memcpy(vtx_data, &myVertices[0], vtx_size);
 
 	graphics::BufferDesc vtx_desc;
 	vtx_desc.m_Size = vtx_size;
@@ -245,16 +245,16 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	m_IndexWrapper.SetBuffer(idx_buffer);
 
 #ifdef _DEBUG
-	m_IndexWrapper.m_DebugName = DEBUG_NAME("particle_emitter", Terrain);
+	m_IndexWrapper.m_DebugName = DEBUG_NAME("TerrainINdex", Terrain);
 #endif
 }
 
  void Terrain::UpdateConstantBuffer(const graphics::RenderContext& rc)
  {
- 	graphics::IGraphicsContext& ctx = rc.GetContext();
- 	myConstantStruct.world = myOrientation;
- 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_Orientation, sizeof(CU::Matrix44f));
- 	ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);
+	graphics::IGraphicsContext& ctx = rc.GetContext();
+	myConstantStruct.world = myOrientation;
+	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_Orientation, sizeof(CU::Matrix44f));
+	ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);
  }
 
 void Terrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray)

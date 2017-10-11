@@ -38,11 +38,11 @@ struct VertexTypePosNormUV
 
 struct SVertexPosNormUVBiTang
 {
-	CU::Math::Vector3<float> position;
-	CU::Math::Vector3<float> normal;
+	CU::Math::Vector4<float> position;
+	CU::Math::Vector4<float> normal;
 	CU::Math::Vector2<float> uv;
-	CU::Math::Vector3<float> binormal;
-	CU::Math::Vector3<float> tangent;
+	CU::Math::Vector4<float> binormal;
+	CU::Math::Vector4<float> tangent;
 };
 
 struct SDefaultCube

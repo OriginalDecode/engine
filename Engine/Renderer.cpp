@@ -172,16 +172,16 @@ void Renderer::Render()
 
 	RenderTerrain(false);
 
-	if (m_RenderInstanced)
-		Render3DCommandsInstanced();
-	else
-		Render3DCommands();
+// 	if (m_RenderInstanced)
+// 		Render3DCommandsInstanced();
+// 	else
+// 		Render3DCommands();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
 #endif
 
-	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
+	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_DeferredRenderer->DeferredRender(shadow_mvp
@@ -343,12 +343,11 @@ void Renderer::Render3DCommandsInstanced()
 
 void Renderer::RenderTerrain(bool override_effect)
 {
-
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 	PROFILE_FUNCTION(profiler::colors::Green);
 	for (Terrain* terrain : myTerrainArray)
@@ -356,8 +355,7 @@ void Renderer::RenderTerrain(bool override_effect)
 		if (!terrain->HasLoaded())
 			continue;
 
-		if (!override_effect)
-			terrain->Render(m_RenderContext);
+		terrain->Render(m_RenderContext);
 	
 	}
 }

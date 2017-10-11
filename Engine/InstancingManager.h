@@ -15,6 +15,7 @@ struct InstanceObject
 	InstanceObject() = default;
 	Model* m_Model = nullptr;
 	Material* m_Material = nullptr;
+	bool m_Shadowed = false;
 	CU::GrowingArray<CU::Matrix44f> m_Orientations;
 };
 

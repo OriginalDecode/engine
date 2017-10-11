@@ -7,7 +7,7 @@ void ShadowDirectional::Initiate(float buffer_size)
 	m_Camera = new Camera;
 	m_Camera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
 
-	m_Camera->SetPosition({ 5, 25, 5});
+	m_Camera->SetPosition({ 55, 90, 55});
 	m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
 
 	m_ShadowDepth = new Texture;
@@ -22,8 +22,9 @@ void ShadowDirectional::Initiate(float buffer_size)
 
 	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_ShadowDepthStencil->GetShaderView(), Effect::SHADOWMAP);
 
-	//Engine::GetInstance()->AddTexture(m_ShadowDepth, "Directional Shadow");
-	//Engine::GetInstance()->AddTexture(m_ShadowDepthStencil, "Directional Shadow Stencil");
+
+	debug::DebugHandle::GetInstance()->AddTexture(m_ShadowDepth, "Directional Shadow");
+	debug::DebugHandle::GetInstance()->AddTexture(m_ShadowDepthStencil, "Directional Shadow Stencil");
 
 
 }

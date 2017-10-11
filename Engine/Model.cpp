@@ -117,7 +117,6 @@ void Model::ShadowRenderInstanced(const graphics::RenderContext& rc)
 	{
 		child->ShadowRenderInstanced(rc);
 	}
-
 	if (m_IsRoot || m_GPUData.Empty())
 	{
 		RemoveGPUData();
@@ -128,6 +127,8 @@ void Model::ShadowRenderInstanced(const graphics::RenderContext& rc)
 	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
 
 	rc.GetContext().DrawIndexedInstanced(this);
+
+	RemoveGPUData();
 }
 
 void Model::SetPosition(const CU::Vector3f& aPosition)

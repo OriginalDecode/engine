@@ -169,11 +169,11 @@ void Renderer::Render()
 
 	Camera* shadow_dir_cam = m_DirectionalShadow.GetCamera();
 
-	float distance = 200.f;
-	CU::Vector3f shadow_dir_pos = (m_Direction - (m_Direction * 2.f)) * distance;
-	shadow_dir_pos += m_Orientation.GetTranslation();
-	shadow_dir_cam->SetPosition(shadow_dir_pos);
-	shadow_dir_cam->SetAt(m_Direction);
+// 	float distance = 200.f;
+// 	CU::Vector3f shadow_dir_pos = (m_Direction - (m_Direction * 2.f)) * distance;
+// 	shadow_dir_pos += m_Orientation.GetTranslation();
+// 	shadow_dir_cam->SetPosition(shadow_dir_pos);
+// 	shadow_dir_cam->SetAt(m_Direction);
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -315,10 +315,8 @@ void Renderer::Render3DCommands()
 void Renderer::Render3DCommandsInstanced()
 {
 	PROFILE_FUNCTION(profiler::colors::Green);
-	const CU::Matrix44f& orientation = m_Camera->GetOrientation();
-	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
-	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 
+	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 	Engine& engine = m_RenderContext.GetEngine();
@@ -356,11 +354,40 @@ void Renderer::RenderTerrain(bool override_effect)
 	// 	}
 }
 
-void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
+void Renderer::Render3DShadows(const CU::Matrix44f&, Camera* camera)
 {
+	const CU::Matrix44f& perspective = camera->GetPerspective();
+	const CU::Matrix44f& orientation = camera->GetCurrentOrientation();
+	const CU::Matrix44f& view_proj = CU::Math::Inverse(orientation) * perspective;
+	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &view_proj, sizeof(CU::Matrix44f));
+
+	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
+	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
+	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
+	Engine& engine = m_RenderContext.GetEngine();
+
+	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
+	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+	for (s32 top_tree_node = 0; top_tree_node < 8; top_tree_node++)
+	{
+		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, top_tree_node);
+		for (s32 i = 0; i < commands.Size(); i++)
+		{
+			ProcessCommand(commands, i, engine);
+		}
+	}
 
 
-	const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
+	m_InstancingManager.DoInstancing(m_RenderContext, true);
+
+
+	/*for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
+	{
+		it->second->ShadowRenderInstanced(m_RenderContext);
+	}*/
+
+	/*const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	for (s32 j = 0; j < 8; j++)
 	{
@@ -369,19 +396,9 @@ void Renderer::Render3DShadows(const CU::Matrix44f& orientation, Camera* camera)
 		{
 			ProcessCommand(commands, i, m_RenderContext.GetEngine());
 		}
-	}
+	}*/
 
-	const CU::Matrix44f& perspective = camera->GetPerspective();
-
-	const CU::Matrix44f& view_proj = CU::Math::Inverse(orientation) * perspective;
-
-	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &view_proj, sizeof(CU::Matrix44f));
-
-
-	for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
-	{
-		it->second->ShadowRenderInstanced(m_RenderContext);
-	}
+	
 
 }
 
@@ -585,6 +602,7 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 		InstanceObject new_instance;
 		new_instance.m_Material = m_RenderContext.GetEngine().GetMaterial(command->m_MaterialKey);
 		new_instance.m_Model = model;
+		new_instance.m_Shadowed = true; /* should be command->m_Shadowed or something*/
 		m_InstancingManager.AddInstanceObject(new_instance);
 	}
 

@@ -41,24 +41,31 @@ void InstancingManager::AddOrientationToInstance(u64 key, const CU::Matrix44f& o
 
 void InstancingManager::DoInstancing(const graphics::RenderContext& rc, bool shadowing)
 {
-
-
 	for (auto it = m_InstanceObjects.begin(); it != m_InstanceObjects.end(); it++)
 	{
-		
+
 		InstanceObject& instance = it->second;
-		
-		if(instance.m_Orientations.Empty())
+
+		if (instance.m_Orientations.Empty())
 			continue;
-		
+
 		Model* pModel = instance.m_Model;
-		instance.m_Material->Use(pModel->GetEffect());
+
+		if(!shadowing)
+			instance.m_Material->Use(pModel->GetEffect());
+
 		for (const CU::Matrix44f& mat : instance.m_Orientations)
 		{
 			pModel->AddOrientation(mat);
 		}
 
-		pModel->RenderInstanced(rc);
+		if (!shadowing)
+			pModel->RenderInstanced(rc);
+		else
+			pModel->ShadowRenderInstanced(rc);
+
 		instance.m_Orientations.RemoveAll();
+
+
 	}
 }

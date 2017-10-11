@@ -365,44 +365,6 @@ namespace graphics
 	void DX11Context::DrawIndexedInstanced(BaseModel* model, Effect* fx)
 	{
 		std::bad_function_call;
-		// 		auto& vtx = model->GetVertexWrapper();
-		// 		auto& idx = model->GetIndexWrapper();
-		// 		auto& ins = model->GetInstanceWrapper();
-		// 
-		// 		IInputLayout* input_layout = ins.GetInputLayout();
-		// 		IASetInputLayout(input_layout);
-		// 
-		// 		ID3D11Buffer* buffers[] = {
-		// 			static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer()),
-		// 			static_cast<ID3D11Buffer*>(ins.GetInstanceBuffer())
-		// 		};
-		// 
-		// 		u32 strides[] = {
-		// 			vtx.GetStride(),
-		// 			ins.GetStride()
-		// 		};
-		// 
-		// 		u32 byte_offsets[] = {
-		// 			vtx.GetByteOffset(),
-		// 			ins.GetByteOffset()
-		// 		};
-		// 
-		// 		m_Context->IASetVertexBuffers(ins.GetStart(),
-		// 									  ins.GetBufferCount(),
-		// 									  buffers,
-		// 									  strides,
-		// 									  byte_offsets);
-		// 
-		// 		m_Context->IASetIndexBuffer(static_cast<ID3D11Buffer*>(idx.GetIndexBuffer()),
-		// 									DirectX11::GetFormat(idx.GetFormat()),
-		// 									idx.GetByteOffset());
-		// 
-		// 		if (fx)
-		// 		{
-		// 			fx->Use();
-		// 			m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->, idx.GetStart(), vtx.GetStart(), ins.GetStart());
-		// 			fx->Clear();
-		// 		}
 	}
 
 	void DX11Context::DrawIndexedInstanced(Model* model, Effect* fx /*= nullptr*/)
@@ -444,7 +406,11 @@ namespace graphics
 			fx->Use();
 			m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
 			fx->Clear();
+			return;
 		}
+
+		m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
+
 	}
 
 	void DX11Context::UpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping, bool internal)

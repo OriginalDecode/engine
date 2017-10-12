@@ -70,6 +70,14 @@ struct ModelCommand : public RenderCommand
 		m_Orientation.SetPosition(position);
 	}
 
+	ModelCommand(u64 key, u64 material_key, const CU::Vector3f& position, bool wireframe)
+		: RenderCommand(eCommandType::MODEL)
+		, m_Wireframe(wireframe)
+		, m_Key(key)
+		, m_MaterialKey(material_key)
+	{
+		m_Orientation.SetPosition(position);
+	}
 
 	u64 m_Key = 0;
 	u64 m_MaterialKey = 0;

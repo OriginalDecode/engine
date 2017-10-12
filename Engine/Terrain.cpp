@@ -56,9 +56,10 @@ void Terrain::Render(const graphics::RenderContext& rc)
 	ISamplerState* sampler_state = rc.GetEngine().GetActiveSampler();//rc.GetAPI().GetSamplerState(graphics::LINEAR_WRAP);
 	ctx.PSSetSamplerState(0, 1, &sampler_state);
 
-	mySurface->Activate(rc);
+	//mySurface->Activate(rc);
+	m_Material->Use(m_Effect);
 	ctx.DrawIndexed(this);
-	mySurface->Deactivate();
+	//mySurface->Deactivate();
 
 }
 

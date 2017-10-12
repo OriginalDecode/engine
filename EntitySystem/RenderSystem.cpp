@@ -19,7 +19,7 @@
 #include "DebugComponent.h"
 #include <Engine/Engine.h>
 #include <Engine/profile_defines.h>
-//#define VISIBLE_CHECK
+#define VISIBLE_CHECK
 
 RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, RenderComponent>>())
@@ -73,7 +73,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 				visible = true;
 
 		}
-		if(!visible)
+		if (!visible)
 			continue;
 #endif
 		PROFILE_BLOCK_END;
@@ -84,22 +84,19 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		/*if (render.myModelID.empty())
 			DL_ASSERT("Empty key!");*/
 
-		/*for (const ModelInstance& i : render.m_Instances)
-		{
-			CU::Matrix44f txi = t * i.m_Orientation;
-			AddRenderCommand(ModelCommand(i.m_ModelID, txi, i.m_RenderWireframe));
-		}
-*/
-		if (m_Manager.HasComponent(e, CreateFilter<Requires<PBLComponent>>()))
-		{
-			auto& pbl = m_Manager.GetComponent<PBLComponent>(e);
-			AddRenderCommand(ModelCommand(render.m_ModelID
-										  , render.m_MaterialKey
-										  , translation.myOrientation.GetPosition()
-										  , render.m_RenderWireframe
-										  , pbl.m_PBLValues.m_Roughness
-										  , pbl.m_PBLValues.m_Metalness));
-		}
+			/*for (const ModelInstance& i : render.m_Instances)
+			{
+				CU::Matrix44f txi = t * i.m_Orientation;
+				AddRenderCommand(ModelCommand(i.m_ModelID, txi, i.m_RenderWireframe));
+			}
+	*/
+		//auto& pbl = m_Manager.GetComponent<PBLComponent>(e);
+		AddRenderCommand(ModelCommand(render.m_ModelID
+			, render.m_MaterialKey
+			, translation.myOrientation.GetPosition()
+			, render.m_RenderWireframe
+		));
+
 
 
 	}

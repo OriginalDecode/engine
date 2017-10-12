@@ -35,9 +35,10 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);//float4(0,1,0,1);
 	albedo = pow(albedo, 2.2);
 	output.Albedo = albedo;
-	
-	output.Normal = float4(0,1,0,0); //float4(NormalTexture.Sample(sampler0, input.uv).rgb, 0);
-	output.Depth = float4(input.pos.z, 1, 0, 1);
+	float roughness = RoughnessTexture.Sample(sampler0, input.uv).r;
+	output.Normal = NormalTexture.Sample(sampler0, input.uv) * 2 - 1;
+	output.Normal.w = 0;
+	output.Depth = float4(input.pos.z, roughness, 0, 0);
 	output.Emissive = float4(1,1,1,1);
 
 	return output;//AlbedoTexture.Sample(sampler0, input.uv);

@@ -391,27 +391,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera* camera)
 		}
 	}
 
-
 	m_InstancingManager.DoInstancing(m_RenderContext, true);
-
-
-	/*for (auto it = m_ModelsToRender.begin(); it != m_ModelsToRender.end(); it++)
-	{
-		it->second->ShadowRenderInstanced(m_RenderContext);
-	}*/
-
-	/*const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
-	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
-	for (s32 j = 0; j < 8; j++)
-	{
-		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
-		for (s32 i = 0; i < commands.Size(); i++)
-		{
-			ProcessCommand(commands, i, m_RenderContext.GetEngine());
-		}
-	}*/
-
-	
 
 }
 

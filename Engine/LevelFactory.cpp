@@ -44,7 +44,7 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 	const JSONElement& el = m_LevelReader.GetElement("root");
 
 	//CreateTerrain("Data/Textures/flat_height.tga");
-	m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
+	//m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
 
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
 	{
@@ -125,10 +125,10 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
 
-	/*CU::Vector3f new_pos = pos;
+	CU::Vector3f new_pos = pos;
 	new_pos.y += 5.f;
 	new_pos.x += 400.f;
-	new_pos.z += 400.f;*/
+	new_pos.z += 400.f;
 
 	//component.myOrientation.SetPosition(new_pos);
 
@@ -223,7 +223,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 		component.m_ModelID = m_Engine->LoadModel<Model>(
 			el["model"].GetString(),
 			el["shader"].GetString(),
-			true);
+			false);
 
 
 		if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
@@ -270,7 +270,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 			CU::Vector3f rel_rot;
 			entity_reader.ReadElement(obj["relative_rotation"], rel_rot);
 
-			instance.m_ModelID = m_Engine->LoadModel<Model>(key_value, shader, true);
+			instance.m_ModelID = m_Engine->LoadModel<Model>(key_value, shader, false);
 
 			instance.m_Orientation.SetPosition(rel_pos);
 			CU::Matrix44f t = instance.m_Orientation;
@@ -590,7 +590,13 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	/*Terrain* terrain = */m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(128, 128));
+	Terrain* terrain = m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, -4, 0), CU::Vector2f(128, 128));
+	Material* pGroundMaterial = m_Engine->GetMaterial("Data/Material/mat_grass.json");
+	terrain->SetMaterial(pGroundMaterial);
+
+
+
+
 	float uniform_height = -4;
 // 	Terrain* terrain = m_Engine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, uniform_height, 0), CU::Vector2f(512, 512));
 // 	terrain->AddNormalMap("Data/Textures/t0_n.dds");

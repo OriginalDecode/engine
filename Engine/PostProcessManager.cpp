@@ -5,7 +5,7 @@
 
 PostProcessManager::PostProcessManager()
 {
-	m_HDRPass.Initiate();
+//	m_HDRPass.Initiate();
 }
 
 PostProcessManager::~PostProcessManager()

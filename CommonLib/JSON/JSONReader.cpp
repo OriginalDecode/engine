@@ -1,11 +1,20 @@
 #include "JSONReader.h"
 #include <assert.h>
-
+#include <DL_Debug/DL_Debug.h>
 std::string JSONReader::ERROR_STR = "JSON_NO_STRING_FOUND";
 
 JSONReader::JSONReader(const std::string& filepath)
 {
-	OpenDocument(filepath);
+	bool _override = false;
+	std::string new_path;
+	if (filepath.find("T_Deferred") != filepath.npos)
+	{
+		DL_WARNING("incorrect shader used, falling back to regular shader");
+		new_path = "Data/Shaders/debug_pbl_instanced.json";
+		_override = true;
+	}
+	//if(filepath.find("/*T_Deferred*/))
+	OpenDocument(_override ? new_path : filepath);
 }
 
 JSONReader::~JSONReader()

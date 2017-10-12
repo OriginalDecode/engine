@@ -25,11 +25,17 @@ struct VS_OUTPUT
 	float4 worldpos : POSITION;
 };
 
+SamplerState sampler0 : register(s0);
+Texture2D HeightTexture : register (t7);
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	
-	output.pos = mul(input.pos, orientation);
+	float4 dv = HeightTexture.SampleLevel(sampler0, output.uv, 0);
+	float df = 0.30*dv.x + 0.59*dv.y + 0.11*dv.z;
+	float4 displacement = float4(input.normal.xyz * df * 0.5, 0) + input.pos; 
+
+	output.pos = mul(displacement, orientation);
 	output.pos = mul(output.pos, camera_view_x_proj);	
 
 	output.uv2 = input.uv;
@@ -39,7 +45,7 @@ VS_OUTPUT main(VS_INPUT input)
 	output.binorm = input.binorm;
 	output.tang  = mul(input.tang , orientation);
 
-	output.worldpos = mul(input.pos, orientation);
+	output.worldpos = mul(displacement, orientation);
 	
 	return output;
 };

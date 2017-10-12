@@ -18,14 +18,21 @@ namespace debug
 		void AddTexture(void* srv, const std::string& debug_name);
 		void AddTexture(Texture* texture, const std::string& debug_name);
 		void RegisterFloatSlider(DebugSlider<float> slider);
+		void RegisterIntValue(DebugTextValue<int> int_Value);
+
+		void AddText(std::string str);
+		void AddValueToPrint(s32* value);
+		
 	private:
 
 		static DebugHandle* m_Instance;
 
 		DebugHandle() = default;
 		~DebugHandle() { }
-
+		CU::GrowingArray<s32*> m_IntValuesToPrint;
+		CU::GrowingArray<std::string> m_Text;
 		CU::GrowingArray<DebugSlider<float>> m_Sliders;
+		CU::GrowingArray<DebugTextValue<int>> m_Values;
 
 
 		/**

@@ -183,7 +183,7 @@ u64 AssetsContainer::LoadMaterial(const std::string& path)
 		m_Materials.emplace(hash, material);
 		AssetFactory::GetInstance().CreateMaterial(path, material);
 		EndTicketMutex(&material_mutex);
-		return Hash(path.c_str());
+		return hash;
 	}
 	EndTicketMutex(&material_mutex);
 	return Hash(path.c_str());

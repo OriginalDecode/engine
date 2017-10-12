@@ -2,6 +2,7 @@
 #include "RootTreeNode.h"
 #include <Engine/Synchronizer.h>
 #include <Engine/profile_defines.h>
+#include <Engine/DebugHandle.h>
 void RootTreeNode::Initiate(float halfwidth, Octree* octree)
 {
 	m_HalfWidth = halfwidth;
@@ -12,6 +13,10 @@ void RootTreeNode::Initiate(float halfwidth, Octree* octree)
 
 	m_Pool.Initiate("RootNode - Worker");
 
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+	debug::DebugHandle::GetInstance()->AddValueToPrint(&m_DwellerCount);
+#endif
 	for (TreeNodeBase* child : m_Children)
 	{
 		child = nullptr;
@@ -31,7 +36,7 @@ void RootTreeNode::Update(float dt, bool paused)
 			continue;
 
 		m_Pool.AddWork(Work([=]() {
-			PROFILE_BLOCK("Node Update Thread");
+			PROFILE_BLOCK(node->m_Name.c_str());
 			node->Update(dt, paused);
 			PROFILE_BLOCK_END;
 	}));

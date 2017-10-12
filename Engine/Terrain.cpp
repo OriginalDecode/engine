@@ -51,10 +51,14 @@ void Terrain::CleanUp()
 
 void Terrain::Render(const graphics::RenderContext& rc)
 {
+	if (!m_Material)
+		return;
+
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 	UpdateConstantBuffer(rc);
-	ISamplerState* sampler_state = rc.GetEngine().GetActiveSampler();//rc.GetAPI().GetSamplerState(graphics::LINEAR_WRAP);
-	ctx.PSSetSamplerState(0, 1, &sampler_state);
+	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
+	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
+	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
 
 	//mySurface->Activate(rc);
 	m_Material->Use(m_Effect);

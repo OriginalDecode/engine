@@ -15,13 +15,16 @@ TreeNodeBase::~TreeNodeBase()
 		delete child;
 		child = nullptr;
 	}
+
 }
 
 void TreeNodeBase::Update(float dt, bool paused)
 {
 	PROFILE_FUNCTION(profiler::colors::Blue);
+	m_DwellerCount = m_Dwellers.Size();
+
 	//RenderBox();
-	m_NodeEntityManager->Update(dt, paused);
+	m_NodeEntityManager->Update(dt, m_Dwellers, paused);
 	return;
 	if (paused)
 		return;

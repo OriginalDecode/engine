@@ -10,7 +10,7 @@ Synchronizer::~Synchronizer()
 
 bool Synchronizer::Initiate()
 {
-	const s32 model_buffer_size = 60000 * sizeof(ModelCommand);
+	const s32 model_buffer_size = 600000 * sizeof(ModelCommand);
 	const s32 spotlight_buffer_size = 30000 * sizeof(SpotlightCommand);
 	const s32 particle_buffer_size = 30000 * sizeof(ParticleCommand);
 	const s32 line_buffer_size = 30000 * sizeof(LineCommand);

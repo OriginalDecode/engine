@@ -20,7 +20,24 @@ namespace debug
 		T* m_Value = nullptr;
 		std::string m_Label; 
 	};
-/**
+
+	template<typename T>
+	struct DebugTextValue
+	{
+		DebugTextValue() = default;
+		DebugTextValue(T* pValue, const std::string& label)
+			: m_Value(pValue)
+			, m_Label(label)
+		{
+		}
+
+		T* m_Value = nullptr;
+		std::string m_Label;
+
+	};
+	
+	
+	/**
 	template<typename T>
 	struct DebugButton
 	{

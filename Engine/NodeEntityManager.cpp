@@ -46,16 +46,14 @@ void NodeEntityManager::RemoveEntity(TreeDweller* entity)
 	m_Entities.RemoveCyclic(entity);
 }
 
-void NodeEntityManager::Update(float dt, bool paused)
+void NodeEntityManager::Update(float dt, const CU::GrowingArray<TreeDweller*>& dweller_list, bool paused)
 {
-
 	PROFILE_FUNCTION(profiler::colors::Red);
 
-	const CU::GrowingArray<Entity>& entities = GetEntities(CreateFilter<Requires<TranslationComponent>>());
-	PROFILE_BLOCK("Entity Update Flag", profiler::colors::Green);
-	for (s32 i = 0; i < entities.Size(); i++)
+	PROFILE_BLOCK("Update Entities", profiler::colors::Green);
+	for (TreeDweller* dweller : dweller_list)
 	{
-		Entity e = entities[i];
+		Entity e = dweller->GetEntity();
 		CameraHandle* handle = CameraHandle::GetInstance();
 		if (handle)
 		{

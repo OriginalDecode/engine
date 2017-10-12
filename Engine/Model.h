@@ -50,10 +50,21 @@ public:
 	void AddOrientation(CU::Matrix44f orientation);
 // 	void AddPBLData(CU::Vector2f data);
 	void AddInstanceData(GPUModelData data);
+	Material* GetMaterial() 
+	{ 
+		if (m_Material)
+			return m_Material;
 
+		for (Model* c : m_Children)
+		{
+			return c->GetMaterial();
+		}
+		return nullptr;
+	}
 	void CreateCube();
 
 private:
+	Material* GetMat() { return m_Material; }
 	void RenderCube(const graphics::RenderContext& rc);
 	void RemoveGPUData();
 	CU::GrowingArray<Model*> m_Children;

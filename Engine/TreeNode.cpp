@@ -10,9 +10,16 @@
 
 void TreeNode::Initiate(float halfwidth, Octree* octree)
 {
+	static int tree_node = 0;
+	std::stringstream ss;
+	ss << "TreeNode : " << tree_node++;
+	m_Name = ss.str();
 	m_HalfWidth = halfwidth;
 	m_Octree = octree;
 
+#if !defined(_PROFILE) && !defined(_FINAL)
+	debug::DebugHandle::GetInstance()->AddValueToPrint(&m_DwellerCount);
+#endif
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	if (m_Depth > 0)
 	{

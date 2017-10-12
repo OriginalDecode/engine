@@ -21,11 +21,15 @@
 #include "TreeDweller.h"
 #include <PBLComponent.h>
 #include <Engine/AssetFactory.h>
+#include <Engine/Material.h>
+static u64 s_Hash = 0;
 void LevelFactory::Initiate()
 {
 	m_Engine = Engine::GetInstance();
 	m_EntityManager = &m_Engine->GetEntityManager();
 	m_PhysicsManager = m_Engine->GetPhysicsManager();
+	Material* pMaterial = m_Engine->GetMaterial("Data/Material/mat_aluminum.json");
+	s_Hash = pMaterial->GetKey();
 }
 
 bool LevelFactory::CreateLevel(const std::string& level_path)
@@ -42,8 +46,7 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 	m_LevelReader.OpenDocument(level_path);
 
 	const JSONElement& el = m_LevelReader.GetElement("root");
-
-	//CreateTerrain("Data/Textures/flat_height.tga");
+	CreateTerrain("Data/Textures/flat_height.tga");
 	//m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
 
 	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
@@ -130,7 +133,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	new_pos.x += 400.f;
 	new_pos.z += 400.f;
 
-	//component.myOrientation.SetPosition(new_pos);
+	component.myOrientation.SetPosition(new_pos);
 
 
 	m_DwellerList.GetLast()->Initiate(e, TreeDweller::STATIC);
@@ -224,6 +227,19 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 			el["model"].GetString(),
 			el["shader"].GetString(),
 			false);
+		std::string s = el["model"].GetString();
+		Model* pModel = m_Engine->GetModel(component.m_ModelID);
+
+		if (pModel->GetMaterial())
+		{
+			u64 material_key = pModel->GetMaterial()->GetKey();
+			component.m_MaterialKey = m_Engine->GetModel(component.m_ModelID)->GetMaterial()->GetKey();
+		}
+		else
+		{
+			component.m_MaterialKey = s_Hash;
+		}
+
 
 
 		if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
@@ -590,7 +606,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	Terrain* terrain = m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, -4, 0), CU::Vector2f(128, 128));
+	Terrain* terrain = m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, -4, 0), CU::Vector2f(512, 512));
 	Material* pGroundMaterial = m_Engine->GetMaterial("Data/Material/mat_grass.json");
 	terrain->SetMaterial(pGroundMaterial);
 

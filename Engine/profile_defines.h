@@ -14,7 +14,6 @@
 #define PROFILE_BLOCK(name, ...) EASY_BLOCK(name, __VA_ARGS__)
 #define PROFILE_BLOCK_END EASY_END_BLOCK
 
-
 #else
 #define PROFILE_FUNCTION(color) 
 #define PROFILE_BLOCK(name, ...) 

@@ -102,8 +102,7 @@ void Game::Initiate(const std::string& level)
 	m_PauseState.InitState(m_StateStack);
 	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 
-	PostMaster::GetInstance()->Subscribe("hello_world", this);
-
+	//PostMaster::GetInstance()->Subscribe("hello_world", this);
 	//PostMaster::GetInstance()->Subscribe("left_click", this);
 }
 

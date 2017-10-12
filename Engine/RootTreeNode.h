@@ -11,6 +11,7 @@ public:
 	bool IsWorking() { return m_Pool.CurrentWorkFinished(); }
 private:
 	Threadpool m_Pool;
+	
 
 };
 

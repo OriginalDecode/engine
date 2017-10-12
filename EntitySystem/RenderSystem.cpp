@@ -20,7 +20,7 @@
 #include <Engine/Engine.h>
 #include "../Engine/profile_defines.h"
 
-#define VISIBLE_CHECK
+//#define VISIBLE_CHECK
 RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, RenderComponent>>())
 {
@@ -39,8 +39,8 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
 
-		PROFILE_BLOCK("Frustum collision check", profiler::colors::Green);
 #ifdef VISIBLE_CHECK
+		PROFILE_BLOCK("Frustum collision check", profiler::colors::Green);
 		bool visible = false;
 		const CU::Matrix44f& matrix = translation.myOrientation;
 		const CU::Vector4f forward = matrix.GetForward();
@@ -70,8 +70,8 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 
 		if (!visible)
 			continue;
-#endif
 		PROFILE_BLOCK_END;
+#endif
 
 		CU::Matrix44f t = translation.myOrientation;
 		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
@@ -111,6 +111,7 @@ void RenderSystem::AddRenderCommand(const ModelCommand& command)
 {
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	memory::CommandAllocator& allocator = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, m_Manager.GetMemoryBlockIndex());
+	DL_MESSAGE("Memory Block Index : %d", m_Manager.GetMemoryBlockIndex());
 	void * current = allocator.Alloc(sizeof(ModelCommand));
 	memcpy(current, &command, sizeof(ModelCommand));
 }

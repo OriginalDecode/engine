@@ -327,6 +327,18 @@ Texture* Engine::GetTexture(const char* key)
 	return myAssetsContainer->GetTexture(hash);
 }
 
+Material* Engine::GetMaterial(const char* key)
+{
+	Material* material = myAssetsContainer->GetMaterial(Hash(key));
+
+	if (material)
+		return material;
+
+
+	u64 hash = myAssetsContainer->LoadMaterial(key);
+	return myAssetsContainer->GetMaterial(hash);
+}
+
 Effect* Engine::GetEffect(u64 key)
 {
 	return myAssetsContainer->GetEffect(key);
@@ -377,18 +389,7 @@ Material* Engine::GetMaterial(u64 key)
 	return myAssetsContainer->GetMaterial(key);
 }
 
-Material* Engine::GetMaterial(const char* key)
-{
-	u64 hash = Hash(key);
-	Material* material = myAssetsContainer->GetMaterial(hash);
 
-	if (material)
-		return material;
-
-
-	myAssetsContainer->LoadMaterial(key);
-	return myAssetsContainer->GetMaterial(hash);
-}
 
 std::string string_together(u16 time, u16 to_compare)
 {

@@ -49,6 +49,7 @@ public:
 
 	void RemoveAllDwellers();
 
+	std::string m_Name;
 protected:
 	virtual void RenderBox();
 
@@ -67,6 +68,9 @@ protected:
 	CU::Vector3f m_CenterPosition;
 	s32 m_Depth = 0;
 	s32 m_MemoryBlockIndex = 0;
+
+	s32 m_DwellerCount = 0;
+
 
 
 };

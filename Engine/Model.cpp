@@ -79,7 +79,7 @@ void Model::RenderInstanced(const graphics::RenderContext& rc)
 		child->RenderInstanced(rc);
 	}
 
-	if (m_IsRoot || m_Surfaces.Empty() || m_GPUData.Empty())
+	if (m_IsRoot || m_GPUData.Empty())
 	{
 		RemoveGPUData();
 		return;
@@ -122,7 +122,7 @@ void Model::ShadowRenderInstanced(const graphics::RenderContext& rc)
 	}
 
 
-	if (m_IsRoot || m_GPUData.Empty() || m_Surfaces.Empty())
+	if (m_IsRoot || m_GPUData.Empty())
 	{
 		RemoveGPUData();
 		return;

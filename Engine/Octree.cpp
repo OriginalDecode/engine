@@ -17,6 +17,10 @@ void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 	m_Root.SetDepth(0);
 	m_Timer.CreateTimer();
 
+#if !defined(_PROFILE) && !defined(_FINAL)
+	debug::DebugHandle::GetInstance()->RegisterIntValue(debug::DebugTextValue<int>(&node_count, "Node Count"));
+#endif
+
 //	Engine::GetInstance()->AddCheckBox(&s_RenderTree, "Render Octree");
 
 }
@@ -56,12 +60,6 @@ void Octree::Update(float dt, bool paused)
 
 void Octree::MoveDown(TreeNodeBase* node, TreeDweller* dweller, s32 depth)
 {
-	//TreeNodeBase* remve_from = dweller->GetFirstNode();
-	/*if (remve_from)
-	{
-		assert(false && "should be removed already!");
-	}*/
-	// Potentially this function is very very slow
 	assert(depth >= 0 && "Depth was lower than 0?");
 
 	s32 index = 0;

@@ -282,20 +282,16 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 	if (!vtx.GetInputLayout())
 		FillInstanceData(out, data, effect);
 
-	Material* pMaterial = new Material;
-	//Surface* surface = new Surface(0, data->myVertexCount, 0, data->myIndexCount, graphics::TRIANGLE_LIST);
-	//surface->SetEffect(effect);
+	Material* pMaterial = new Material(Hash(filepath.c_str()));
 	const CU::GrowingArray<TextureInfo>& info = someData->myTextureData->myTextures;
 
 	for (s32 i = 0; i < info.Size(); i++)
 	{
 		Texture* pTexture = Engine::GetInstance()->GetTexture(info[i].m_File.c_str());
 		pMaterial->AddResource(pTexture, info[i].m_File, info[i].m_Slot);
-		//surface->AddTexture(info[i].m_File, info[i].m_Slot);
 	}
 
 	out->SetMaterial(pMaterial);
-	//out->AddSurface(surface);*/
 }
 
 inline void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc)

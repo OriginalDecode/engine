@@ -25,7 +25,7 @@ DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
-	PostMaster::GetInstance()->Subscribe(eMessageType::ON_LEFT_CLICK, this);
+	//PostMaster::GetInstance()->Subscribe(eMessageType::ON_LEFT_CLICK, this);
 	//PostMaster::GetInstance()->Subscribe("left_click", this);
 	m_CurrentEntity = -1;
 	m_MouseDeltaModifier = 100.f;
@@ -33,12 +33,12 @@ DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 
 DebugSystem::~DebugSystem()
 {
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_LEFT_CLICK, this);
+	//PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_LEFT_CLICK, this);
 }
 
 void DebugSystem::Update(float /*dt*/, bool paused)
 {
-		return;
+	return;
 	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::TEXT, current_model, CU::Vector2f(0.75, 0)));
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (s32 i = 0; i < entities.Size(); i++)

@@ -17,7 +17,7 @@ public:
 	void RemoveEntity(TreeDweller* entity);
 	//void AddSystem(BaseSystem* system);
 
-	void Update(float dt, bool paused);
+	void Update(float dt, const CU::GrowingArray<TreeDweller*>& dweller_list, bool paused);
 
 	const CU::GrowingArray<Entity>& GetEntities(ComponentFilter filter);
 	~NodeEntityManager();

@@ -31,17 +31,17 @@ namespace debug
 			ImGui::Text("FPS : %.1f", pEngine->GetFPS());
 			ImGui::Text("CPU Usage : %.1f", pEngine->m_SystemMonitor.GetCPUUsage());
 			ImGui::Text("Memory Usage : %dmb", pEngine->m_SystemMonitor.GetMemoryUsage());
-			
+
 			//ImGui::Text("Model Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER).Size());
 			ImGui::Text("Model Commands : %d", pEngine->m_SegmentHandle.CommandSize((s32)pEngine->m_Synchronizer->GetCurrentBufferIndex()));
-			
+
 			ImGui::Text("Spotlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER).Size());
 			ImGui::Text("Pointlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER).Size());
 			ImGui::Text("Particle Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER).Size());
 			ImGui::Text("Sprite Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER).Size());
 			ImGui::Text("Text Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER).Size());
 			ImGui::Text("Line Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size());
-			
+
 			ImGui::Separator();
 
 
@@ -55,10 +55,26 @@ namespace debug
 			if (sDebugTextures)
 				DebugTextures();
 
+			for (std::string str : m_Text)
+			{
+				ImGui::Text(str.c_str());
+			}
 
-		
+			for (auto& obj : m_Values)
+			{
+				std::stringstream ss;
+				ss << obj.m_Label << " : " << *obj.m_Value;
+				ImGui::Text(ss.str().c_str());
+			}
 
-
+			if (ImGui::BeginChild("Region", ImVec2(ImGui::GetWindowSize().x- 25.f, 200.f), false))
+			{
+				for (s32* v : m_IntValuesToPrint)
+				{
+					ImGui::Text("%d", *v);
+				}
+				ImGui::EndChild();
+			}
 
 			ImGui::End();
 		}
@@ -101,7 +117,6 @@ namespace debug
 			w_size.y = w_size.x / 1.777777777777777777777777777777778;
 			ImGui::SameLine();
 			ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-
 		}
 		ImGui::End();
 
@@ -122,6 +137,21 @@ namespace debug
 	void DebugHandle::RegisterFloatSlider(DebugSlider<float> slider)
 	{
 		m_Sliders.Add(slider);
+	}
+
+	void DebugHandle::RegisterIntValue(DebugTextValue<int> int_Value)
+	{
+		m_Values.Add(int_Value);
+	}
+
+	void DebugHandle::AddText(std::string str)
+	{
+		m_Text.Add(str);
+	}
+
+	void DebugHandle::AddValueToPrint(s32* value)
+	{
+		m_IntValuesToPrint.Add(value);
 	}
 
 	//  	s32 DebugHandle::RegisterMainWindow(DebugMainWindow window)

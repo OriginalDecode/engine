@@ -11,6 +11,7 @@ class DirectX11;
 class Effect;
 class Engine;
 class Surface;
+class Material;
 
 namespace graphics
 {
@@ -36,6 +37,7 @@ public:
 	CU::Vector3f GetWHD() const { return m_WHD; }
 
 	virtual void AddSurface(Surface* surface) = 0;
+	void SetMaterial(Material* pMaterial) { m_Material = pMaterial; }
 
 protected:
 	virtual void UpdateConstantBuffer(const graphics::RenderContext& rc) = 0;
@@ -53,6 +55,7 @@ protected:
 
 	std::string m_FileName;
 	IBuffer* m_ConstantBuffer = nullptr;
+	Material* m_Material = nullptr;
 
 	bool m_IsRoot = true;
 };

@@ -20,15 +20,15 @@ TreeNodeBase::~TreeNodeBase()
 void TreeNodeBase::Update(float dt, bool paused)
 {
 	PROFILE_FUNCTION(profiler::colors::Blue);
-	RenderBox();
+	//RenderBox();
 	m_NodeEntityManager->Update(dt, paused);
-
+	return;
 	if (paused)
 		return;
 
+	PROFILE_BLOCK("forEachDweller", profiler::colors::LightBlue);
 	for (TreeDweller* dweller : m_Dwellers)
 	{
-		PROFILE_BLOCK("forEachDweller", profiler::colors::LightBlue);
 		if (!dweller)
 			continue;
 
@@ -40,7 +40,6 @@ void TreeNodeBase::Update(float dt, bool paused)
 
 		for (const ComponentPair pair : list)
 		{
-			PROFILE_BLOCK("forEachComponentInEntity", profiler::colors::Cyan);
 			if (!pair.m_Component)
 				continue;
 			if (pair.m_Type & TreeDweller::TRANSLATION)
@@ -52,12 +51,11 @@ void TreeNodeBase::Update(float dt, bool paused)
 					break;
 				}
 			}
-			PROFILE_BLOCK_END;
 		}
 		if (found)
 			break;
-		PROFILE_BLOCK_END;
 	}
+	PROFILE_BLOCK_END;
 
 
 	if (!m_Dwellers.Empty() || HasEntities() || !m_Parent)

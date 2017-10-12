@@ -48,7 +48,11 @@ void NodeEntityManager::RemoveEntity(TreeDweller* entity)
 
 void NodeEntityManager::Update(float dt, bool paused)
 {
+
+	PROFILE_FUNCTION(profiler::colors::Red);
+
 	const CU::GrowingArray<Entity>& entities = GetEntities(CreateFilter<Requires<TranslationComponent>>());
+	PROFILE_BLOCK("Entity Update Flag", profiler::colors::Green);
 	for (s32 i = 0; i < entities.Size(); i++)
 	{
 		Entity e = entities[i];
@@ -63,7 +67,7 @@ void NodeEntityManager::Update(float dt, bool paused)
 				m_Components.SetUpdateFlag(e, false);
 		}
 	}
-
+	PROFILE_BLOCK_END;
 	for (BaseSystem* system : m_Systems)
 	{
 		system->Update(dt, paused);

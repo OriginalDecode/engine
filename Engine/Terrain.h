@@ -12,7 +12,6 @@ struct SHeightMap
 
 SHeightMap Create(const char* filepath);
 
-class Material;
 class Terrain : public BaseModel
 {
 public:
@@ -34,9 +33,7 @@ public:
 	std::vector<s32> GetIndexArrayCopy();
 	void SetPosition(CU::Vector2f position);
 	void AddSurface(Surface* surface) override;
-	void SetMaterial(Material* pMaterial) { m_Material = pMaterial; }
-	bool HasLoaded() const { return m_HasLoaded; }
-private:
+	bool HasLoaded() const { return m_HasLoaded; }private:
 	bool m_HasLoaded = false;
 	void UpdateConstantBuffer(const graphics::RenderContext& rc) override;
 
@@ -50,7 +47,6 @@ private:
 	/* Look into this */
 	std::vector<s32> myIndexes;
 	std::vector<float> myVertices;
-	Material* m_Material = nullptr;
 
 	CU::Matrix44f myOrientation;
 	u32 myWidth;

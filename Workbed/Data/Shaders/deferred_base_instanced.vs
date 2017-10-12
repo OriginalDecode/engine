@@ -27,7 +27,12 @@ struct VS_OUTPUT
 	float4 tang : TANGENT;
 	float4 worldpos : POSITION;
 	float2 data0 : DATA;
+	float4 displaced : DISPLACE;
 };
+
+SamplerState sampler0 : register(s0);
+Texture2D HeightTexture : register (t7);
+
 
 //---------------------------------
 //	Deferred Base Vertex Shader
@@ -42,18 +47,24 @@ VS_OUTPUT main(VS_INPUT input)
 	world_matrices._31_32_33_34 = input.world2;
 	world_matrices._41_42_43_44 = input.world3;
 
-	output.data0.x = input.data0.x;
-	output.data0.y = input.data0.y;
-
-	float4x4 out_matrix = mul(world_matrices, camera_view_x_proj);
-	
-	output.pos = mul(input.pos, out_matrix);
-	output.uv = input.uv;
-	
 	output.normal = mul(input.normal, world_matrices);
 	output.binorm = mul(input.binorm, world_matrices);
 	output.tang  = mul(input.tang , world_matrices);
 	output.worldpos = mul(input.pos, world_matrices);
 	
+	output.data0.x = input.data0.x;
+	output.data0.y = input.data0.y;
+
+	output.uv = input.uv;
+	float4 dv = HeightTexture.SampleLevel(sampler0, output.uv, 0);
+	output.displaced = dv;
+	float df = 0.30*dv.x + 0.59*dv.y + 0.11*dv.z;
+
+	float4 displacement = float4(input.normal.xyz * df * 0.5, 0) + input.pos; 
+	float4x4 out_matrix = mul(world_matrices, camera_view_x_proj);
+	
+	output.pos = mul(displacement, out_matrix);
+	
+
 	return output;
 };

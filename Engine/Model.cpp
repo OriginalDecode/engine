@@ -49,7 +49,9 @@ void Model::Render(const graphics::RenderContext& rc)
 
 
 	UpdateConstantBuffer(rc);
-	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
+	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
+	rc.GetContext().PSSetSamplerState(0, 1, pSampler);
+	rc.GetContext().VSSetSamplerState(0, 1, pSampler);
 
 	PROFILE_BLOCK("Model : DrawIndexed", profiler::colors::Blue100);
 	for (Surface* surface : m_Surfaces)
@@ -84,8 +86,9 @@ void Model::RenderInstanced(const graphics::RenderContext& rc)
 	}
 
 	UpdateConstantBuffer(rc);
-	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetCurrentSampler());
-
+	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
+	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
+	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
 	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 	rc.GetContext().DrawIndexedInstanced(this, m_Effect);
 	PROFILE_BLOCK_END;

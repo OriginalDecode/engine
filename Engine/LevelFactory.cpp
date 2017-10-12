@@ -649,13 +649,15 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 	Material* pAlumMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_aluminum.json");
 	Material* pCoppMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_copper.json");
 	Material* pMetaMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_metal.json");
+	Material* pStoneMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_octostone.json");
 
 	Material* material[] = {
-		pGoldMaterial,
+		pStoneMaterial,
+		/*pGoldMaterial,
 		pAlumMaterial,
 		pCoppMaterial,
 		pMetaMaterial,
-	};
+	*/ };
 
 
 	static s32 mat = 0;
@@ -686,7 +688,7 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 
 
 			r.m_ModelID = key;
-			auto v = RANDOM(0, 4);
+			auto v = RANDOM(0, ARRSIZE(material));
 			r.m_MaterialKey = material[v]->GetKey();
 			r.scale = CU::Vector4f(1, 1, 1, 1);
 

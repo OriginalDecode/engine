@@ -84,6 +84,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DebugTexture4 = new Texture;
 	m_DebugTexture4->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "roughness");
 
+	m_DebugTexture5 = new Texture;
+	m_DebugTexture5->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "emissive");
+
 	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
 	debug_textures->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
 	debug_textures->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
@@ -98,6 +101,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	pDebug->AddTexture(m_DebugTexture2, "Depth");
 	pDebug->AddTexture(m_DebugTexture3, "Metalness");
 	pDebug->AddTexture(m_DebugTexture4, "Roughness");
+	pDebug->AddTexture(m_DebugTexture5, "Emissive");
 
 
 #endif
@@ -120,6 +124,7 @@ Renderer::~Renderer()
 	SAFE_DELETE(m_DebugTexture2);
 	SAFE_DELETE(m_DebugTexture3);
 	SAFE_DELETE(m_DebugTexture4);
+	SAFE_DELETE(m_DebugTexture5);
 #endif
 
 	m_ShadowPass.CleanUp();
@@ -219,6 +224,7 @@ void Renderer::WriteDebugTextures()
 	ctx.ClearRenderTarget(m_DebugTexture2->GetRenderTargetView(), clear);
 	ctx.ClearRenderTarget(m_DebugTexture3->GetRenderTargetView(), clear);
 	ctx.ClearRenderTarget(m_DebugTexture4->GetRenderTargetView(), clear);
+	ctx.ClearRenderTarget(m_DebugTexture5->GetRenderTargetView(), clear);
 
 	IRenderTargetView* rtv[] =
 	{
@@ -227,6 +233,7 @@ void Renderer::WriteDebugTextures()
 		m_DebugTexture2->GetRenderTargetView(),
 		m_DebugTexture3->GetRenderTargetView(),
 		m_DebugTexture4->GetRenderTargetView(),
+		m_DebugTexture5->GetRenderTargetView(),
 	};
 	ctx.OMSetRenderTargets(ARRSIZE(rtv), rtv, nullptr);
 	m_DebugQuad->Render(false);

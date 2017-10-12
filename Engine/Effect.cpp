@@ -26,6 +26,7 @@ void Effect::Use()
 	context.SetHullShader(m_HullShader);
 	context.SetDomainShader(m_DomainShader);
 	context.SetComputeShader(m_ComputeShader);
+	context.VSSetShaderResource(0, _COUNT, m_Resources);
 	context.PSSetShaderResource(0, _COUNT, m_Resources);
 }
 
@@ -33,5 +34,6 @@ void Effect::Clear()
 {
 	void* resources[_COUNT] = {};
 	graphics::IGraphicsContext& context = Engine::GetAPI()->GetContext();
-	context.PSSetShaderResource(0, _COUNT, m_Resources);
+	context.VSSetShaderResource(0, _COUNT, resources);
+	context.PSSetShaderResource(0, _COUNT, resources);
 }

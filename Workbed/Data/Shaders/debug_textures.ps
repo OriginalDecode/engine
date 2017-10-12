@@ -17,6 +17,7 @@ struct Output
 	float4 Depth;
 	float4 Metalness;
 	float4 Roughness;
+	float4 Emissive;
 };
 
 Output main(VS_OUTPUT input) : SV_Target
@@ -29,7 +30,7 @@ Output main(VS_OUTPUT input) : SV_Target
 	output.Normal = float4(NormalTexture.Sample(sampler0, input.uv).rgb, 1);
 	output.Metalness = float4(NormalTexture.Sample(sampler0, input.uv).aaa, 1);
 	output.Roughness = float4(DepthTexture.Sample(sampler0, input.uv).yyy, 1);
-
+	output.Emissive = float4(EmissiveTexture.Sample(sampler0, input.uv).rgb, 1);
 	return output;
 
 };

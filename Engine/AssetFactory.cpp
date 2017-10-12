@@ -63,5 +63,11 @@ void AssetFactory::CreateMaterial(const std::string& filepath, Material* pMateri
 		pMaterial->AddResource(pEngine->GetTexture(emissive.c_str()), emissive, Effect::EMISSIVE);
 	}
 
+	if (reader.ElementHasMember(el, "heightmap"))
+	{
+		std::string heightmap = el["heightmap"].GetString();
+		pMaterial->AddResource(pEngine->GetTexture(heightmap.c_str()), heightmap, Effect::DEPTH);
+	}
+
 
 }

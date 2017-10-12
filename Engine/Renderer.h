@@ -144,6 +144,7 @@ private:
 	Texture* m_DebugTexture2 = nullptr; // Depth
 	Texture* m_DebugTexture3 = nullptr; // Roughness
 	Texture* m_DebugTexture4 = nullptr; // Metalness
+	Texture* m_DebugTexture5 = nullptr; //Emissive
 	Quad* m_DebugQuad = nullptr;
 	void WriteDebugTextures();
 

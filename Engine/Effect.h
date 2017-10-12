@@ -38,7 +38,8 @@ private:
 
 
 public:
-	//Try to keep this at the bottom of the class
+
+
 	enum TextureSlot
 	{
 		REGISTER_0,

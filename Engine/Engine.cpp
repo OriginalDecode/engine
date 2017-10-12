@@ -317,14 +317,13 @@ Texture* Engine::GetTexture(u64 key)
 
 Texture* Engine::GetTexture(const char* key)
 {
-	u64 hash = Hash(key);
-	Texture* texture = myAssetsContainer->GetTexture(hash);
+	Texture* texture = myAssetsContainer->GetTexture(Hash(key));
 
 	if (texture)
 		return texture;
 
 
-	myAssetsContainer->LoadTexture(key);
+	u64 hash = myAssetsContainer->LoadTexture(key);
 	return myAssetsContainer->GetTexture(hash);
 }
 

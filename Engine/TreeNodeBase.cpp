@@ -5,6 +5,7 @@
 #include <Engine/Synchronizer.h>
 #include <Engine/Octree.h>
 #include <Engine/Engine.h>
+#include <Engine/profile_defines.h>
 
 TreeNodeBase::~TreeNodeBase()
 {
@@ -18,6 +19,7 @@ TreeNodeBase::~TreeNodeBase()
 
 void TreeNodeBase::Update(float dt, bool paused)
 {
+	PROFILE_FUNCTION(profiler::colors::Blue);
 	RenderBox();
 	m_NodeEntityManager->Update(dt, paused);
 
@@ -26,6 +28,7 @@ void TreeNodeBase::Update(float dt, bool paused)
 
 	for (TreeDweller* dweller : m_Dwellers)
 	{
+		PROFILE_BLOCK("forEachDweller", profiler::colors::LightBlue);
 		if (!dweller)
 			continue;
 
@@ -34,8 +37,10 @@ void TreeNodeBase::Update(float dt, bool paused)
 
 		bool found = false;
 		const ComponentList& list = dweller->GetComponentPairList();
+
 		for (const ComponentPair pair : list)
 		{
+			PROFILE_BLOCK("forEachComponentInEntity", profiler::colors::Cyan);
 			if (!pair.m_Component)
 				continue;
 			if (pair.m_Type & TreeDweller::TRANSLATION)
@@ -47,14 +52,16 @@ void TreeNodeBase::Update(float dt, bool paused)
 					break;
 				}
 			}
+			PROFILE_BLOCK_END;
 		}
 		if (found)
 			break;
+		PROFILE_BLOCK_END;
 	}
+
 
 	if (!m_Dwellers.Empty() || HasEntities() || !m_Parent)
 		return;
-
 
 	for (s32 i = 0; i < 8; i++)
 	{
@@ -209,18 +216,18 @@ void TreeNodeBase::RenderBox()
 
 	switch (m_Depth)
 	{
-		case 0:
-			points[0].color = RED;
-			break;
-		case 1:
-			points[0].color = GREEN;
-			break;
-		case 2:
-			points[0].color = BLUE;
-			break;
-		case 3:
-			points[0].color = YELLOW;
-			break;
+	case 0:
+		points[0].color = RED;
+		break;
+	case 1:
+		points[0].color = GREEN;
+		break;
+	case 2:
+		points[0].color = BLUE;
+		break;
+	case 3:
+		points[0].color = YELLOW;
+		break;
 	}
 
 	points[1].color = points[0].color;
@@ -289,7 +296,7 @@ void TreeNodeBase::ToggleRenderBox(bool v)
 
 	for (TreeNodeBase* c : m_Children)
 	{
-		if(c) c->ToggleRenderBox(v);
+		if (c) c->ToggleRenderBox(v);
 	}
 
 	m_RenderBox = v;
@@ -300,7 +307,7 @@ void TreeNodeBase::RemoveAllDwellers()
 {
 	for (TreeNodeBase* c : m_Children)
 	{
-		if(c) c->RemoveAllDwellers();
+		if (c) c->RemoveAllDwellers();
 	}
 	m_Dwellers.RemoveAll();
 }

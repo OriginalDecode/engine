@@ -126,11 +126,11 @@ u64 AssetsContainer::LoadTexture(const std::string& filepath)
 			Texture* texture = new Texture(srv);
 			m_Textures.emplace(hash, texture);
 			EndTicketMutex(&texture_mutex);
-			return Hash(filepath.c_str());
+			return hash;
 		}
 	}
 	EndTicketMutex(&texture_mutex);
-	return Hash(filepath.c_str());
+	return hash;
 }
 
 u64 AssetsContainer::LoadEffect(const std::string& filepath)

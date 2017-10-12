@@ -37,9 +37,9 @@ void TreeNode::Update(float dt, bool paused)
 		if (!node)
 			continue;
 
-		//PROFILE_BLOCK("Child Node Update");
+		PROFILE_BLOCK("Child Node Update");
 		node->Update(dt, paused);
-		//PROFILE_BLOCK_END;
+		PROFILE_BLOCK_END;
 
 	}
 

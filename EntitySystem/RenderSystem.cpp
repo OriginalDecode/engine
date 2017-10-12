@@ -42,36 +42,32 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		PROFILE_BLOCK("Frustum collision check", profiler::colors::Green);
 #ifdef VISIBLE_CHECK
 		bool visible = false;
-		if (m_Manager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
-		{
-			DebugComponent& debug = GetComponent<DebugComponent>(e);
-			const CU::Matrix44f& matrix = translation.myOrientation;
-			const CU::Vector4f forward = matrix.GetForward();
-			const CU::Vector4f right = matrix.GetRight();
-			const CU::Vector4f up = matrix.GetUp();
-			const CU::Vector4f translation = matrix.GetTranslation();
+		const CU::Matrix44f& matrix = translation.myOrientation;
+		const CU::Vector4f forward = matrix.GetForward();
+		const CU::Vector4f right = matrix.GetRight();
+		const CU::Vector4f up = matrix.GetUp();
+		const CU::Vector4f translation0 = matrix.GetTranslation();
 
 
-			/* could be improved still, take a matrice instead? */
-			if (Inside(translation, up, render.m_MaxPos))
-				visible = true;
+		/* could be improved still, take a matrice instead? */
+		if (Inside(translation0, up, render.m_MaxPos))
+			visible = true;
 
-			if (Inside(translation, right, render.m_MaxPos))
-				visible = true;
+		if (Inside(translation0, right, render.m_MaxPos))
+			visible = true;
 
-			if (Inside(translation, forward, render.m_MaxPos))
-				visible = true;
+		if (Inside(translation0, forward, render.m_MaxPos))
+			visible = true;
 
-			if (Inside(translation, up, render.m_MinPos))
-				visible = true;
+		if (Inside(translation0, up, render.m_MinPos))
+			visible = true;
 
-			if (Inside(translation, right, render.m_MinPos))
-				visible = true;
+		if (Inside(translation0, right, render.m_MinPos))
+			visible = true;
 
-			if (Inside(translation, forward, render.m_MinPos))
-				visible = true;
+		if (Inside(translation0, forward, render.m_MinPos))
+			visible = true;
 
-		}
 		if (!visible)
 			continue;
 #endif
@@ -89,7 +85,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 				AddRenderCommand(ModelCommand(i.m_ModelID, txi, i.m_RenderWireframe));
 			}
 	*/
-		//auto& pbl = m_Manager.GetComponent<PBLComponent>(e);
+	//auto& pbl = m_Manager.GetComponent<PBLComponent>(e);
 		AddRenderCommand(ModelCommand(render.m_ModelID
 			, render.m_MaterialKey
 			, translation.myOrientation.GetPosition()

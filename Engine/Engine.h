@@ -59,7 +59,10 @@ class Material;
 
 class Engine
 {
+
+#if !defined(_PROFILE) && !defined(_FINAL)
 	friend debug::DebugHandle;
+#endif
 public:
 	static void Create();
 	static void Destroy();

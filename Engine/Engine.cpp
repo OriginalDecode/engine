@@ -33,7 +33,10 @@
 #include <Engine/LightModel.h>
 
 #include <Engine/IGraphicsDevice.h>
+
+#if !defined(_PROFILE) && !defined(_FINAL)
 #include <Engine/DebugHandle.h>
+#endif
 #include <Engine/AssetFactory.h>
 
 #define REGISTERCOMPONENT(x) x,
@@ -85,7 +88,10 @@ Engine* Engine::GetInstance()
 bool Engine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 {
 	AssetFactory::Create();
+
+#if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::Create();
+#endif
 	Randomizer::Create();
 	PostMaster::Create();
 	m_CurrentSampler = graphics::MSAA_x16;
@@ -166,7 +172,9 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 bool Engine::CleanUp()
 {
+#if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::Destroy();
+#endif
 	AssetFactory::Destroy();
 
 	m_InputHandle->CleanUp();

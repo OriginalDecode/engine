@@ -18,9 +18,9 @@
 #include "../Application/CameraHandle.h"
 #include "DebugComponent.h"
 #include <Engine/Engine.h>
-#include <Engine/profile_defines.h>
-#define VISIBLE_CHECK
+#include "../Engine/profile_defines.h"
 
+#define VISIBLE_CHECK
 RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, RenderComponent>>())
 {
@@ -32,7 +32,6 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 {
 	//PROFILE_FUNCTION(profiler::colors::Blue);
 	const CU::GrowingArray<Entity>& entities = GetEntities();
-
 	PROFILE_BLOCK("Render : Entity Loop");
 	for (int i = 0; i < entities.Size(); i++)
 	{

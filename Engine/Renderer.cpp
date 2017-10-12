@@ -108,11 +108,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
 	m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(PerFramePixelBuffer), "PerFramePixelBuffer");
 
-
-	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(-1.f, 1.f, &m_Direction.x, "x"));
-	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(-1.f, 1.f, &m_Direction.y, "y"));
-	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(-1.f, 1.f, &m_Direction.z, "z"));
-
 }
 
 Renderer::~Renderer()

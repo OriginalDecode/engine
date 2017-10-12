@@ -1,4 +1,6 @@
 #pragma once
+
+#if !defined(_PROFILE) && !defined(_FINAL)
 #include "ImGuiRegisterStructs.h"
 #include <CommonLib/DataStructures/GrowingArray.h>
 class Texture;
@@ -74,3 +76,4 @@ namespace debug
 
 	};
 };
+#endif

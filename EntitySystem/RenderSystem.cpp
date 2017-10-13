@@ -30,18 +30,11 @@ RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
 
 void RenderSystem::Update(float /*dt*/, bool paused)
 {
-	bool print_block = true;
 	//PROFILE_FUNCTION(profiler::colors::Blue);
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	PROFILE_BLOCK("Render : Entity Loop");
 	for (int i = 0; i < entities.Size(); i++)
 	{
-		if (print_block)
-		{
-			DL_MESSAGE("%d", m_Manager.GetMemoryBlockIndex());
-			print_block = false;
-		}
-
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
@@ -93,12 +86,16 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 			}
 	*/
 	//auto& pbl = m_Manager.GetComponent<PBLComponent>(e);
-		AddRenderCommand(ModelCommand(render.m_ModelID
+		/*AddRenderCommand(ModelCommand(render.m_ModelID
 			, render.m_MaterialKey
 			, translation.myOrientation.GetPosition()
 			, render.m_RenderWireframe
+		));*/
+		AddRenderCommand(ModelCommand(render.m_ModelID
+									  , render.m_MaterialKey
+									  , translation.myOrientation
+									  , render.m_RenderWireframe
 		));
-
 
 
 	}

@@ -97,8 +97,8 @@ void Game::Initiate(const std::string& level)
 	m_Camera = m_Engine->GetCamera();
 	m_Camera->SetPosition(CU::Vector3f(0, 0, 0));
 	CameraHandle::Create();
-	CameraHandle::GetInstance()->Initiate(&m_Orientation);
-	//CameraHandle::GetInstance()->Initiate(nullptr);
+	//CameraHandle::GetInstance()->Initiate(&m_Orientation);
+	CameraHandle::GetInstance()->Initiate(nullptr);
 	m_PauseState.InitState(m_StateStack);
 	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 

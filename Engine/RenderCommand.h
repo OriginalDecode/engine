@@ -41,6 +41,17 @@ struct ModelCommand : public RenderCommand
 	{
 	}
 
+	ModelCommand(u64 model_key, u64 material_key, const CU::Matrix44f& orientation, bool wireframe)
+		: RenderCommand(eCommandType::MODEL)
+		, m_Key(model_key)
+		, m_MaterialKey(material_key)
+		, m_Orientation(orientation)
+		, m_Wireframe(wireframe)
+	{
+	}
+
+
+
 	ModelCommand(u64 key, const CU::Vector3f& position, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Wireframe(wireframe)

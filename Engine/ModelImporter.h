@@ -282,6 +282,9 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 	if (!vtx.GetInputLayout())
 		FillInstanceData(out, data, effect);
 
+	if (filepath.find("ballen.fbx") != filepath.npos)
+		return;
+
 	Material* pMaterial = new Material(Hash(filepath.c_str()));
 	const CU::GrowingArray<TextureInfo>& info = someData->myTextureData->myTextures;
 

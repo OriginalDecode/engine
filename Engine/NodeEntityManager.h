@@ -11,6 +11,9 @@ public:
 	{
 		m_ID = m_Identifier++;
 	}
+	~NodeEntityManager();
+
+
 	void Initiate();
 	void CleanUp();
 	void AddEntity(TreeDweller* entity);
@@ -20,8 +23,7 @@ public:
 	void Update(float dt, const CU::GrowingArray<TreeDweller*>& dweller_list, bool paused);
 
 	const CU::GrowingArray<Entity>& GetEntities(ComponentFilter filter);
-	~NodeEntityManager();
-	s32 GetId() { return m_Identifier; }
+	s32 GetId() const { return m_Identifier; }
 
 	bool HasComponent(Entity e, ComponentFilter filter);
 

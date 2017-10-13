@@ -151,6 +151,11 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	m_EntityManager.Initiate();
 
+	m_EntityManager.AddSystem(	EntityManager::RENDER | 
+								EntityManager::PHYSICS | 
+								EntityManager::LIGHT | 
+								EntityManager::DEBUG );
+
 	m_EntityManager.AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
 
 #ifndef _EDITOR

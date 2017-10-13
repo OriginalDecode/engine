@@ -10,23 +10,18 @@
 
 EntityManager::~EntityManager()
 {
-	for (NodeEntityManager* manager : m_NodeManagers)
-	{
-		manager->CleanUp();
-		SAFE_DELETE(manager);
-	}
-
+	m_NodeManagers.DeleteAll();
 	SAFE_DELETE(myComponents);
 }
 
 void EntityManager::Initiate()
 {
 	myComponents = new CComponentContainer(true);
-	m_NodeManagers.Init(m_MaxNodeCount); //should be a continous block of memory?
-	for (s32 i = 0; i < m_MaxNodeCount; i++)
-	{
-		m_NodeManagers.Add(new NodeEntityManager);
-	}
+// 	m_NodeManagers.Init(m_MaxNodeCount); //should be a continous block of memory?
+// 	for (s32 i = 0; i < m_MaxNodeCount; i++)
+// 	{
+// 		m_NodeManagers.Add(new NodeEntityManager);
+// 	}
 
 }
 
@@ -91,6 +86,11 @@ float EntityManager::GetDeltaTime()
 	return myDeltaTime;
 }
 
+void EntityManager::AddSystem(s32 type)
+{
+	m_SystemsAdded |= type;
+}
+
 bool EntityManager::HasComponent(Entity e, ComponentFilter& filter)
 {
 	return myComponents->HasComponent(e, filter);
@@ -98,14 +98,26 @@ bool EntityManager::HasComponent(Entity e, ComponentFilter& filter)
 
 NodeEntityManager* EntityManager::RequestManager()
 {
-	for (s32 i = 0; i < m_MaxNodeCount; i++)
+	for (s32 i = 0; i < m_UsedManagers.Size(); i++)
 	{
-		if (m_Systems[i] == 0)
+		if (m_UsedManagers[i] == 0)
 		{
-			m_Systems[i] = 1;
+			m_UsedManagers[i] = 1;
 			return m_NodeManagers[i];
 		}
 	}
+
+	if (m_Systems.Size() < m_Max)
+	{
+		m_NodeManagers.Add(new NodeEntityManager());
+		m_UsedManagers.Add(0);
+		m_UsedManagers.GetLast() = 1;
+		return m_NodeManagers.GetLast();
+
+	}
+
+
+
 	DL_ASSERT("No free managers found, error!");
 	return nullptr;
 }
@@ -113,6 +125,18 @@ NodeEntityManager* EntityManager::RequestManager()
 void EntityManager::ReleaseManager(NodeEntityManager* manager)
 {
 	const s32 index = m_NodeManagers.Find(manager);
-	m_Systems[index] = 0;
+	m_UsedManagers[index] = 0;
+
+
+
+	/*for (s32 i = 0; i < m_NodeManagers.Size(); i++)
+	{
+		const NodeEntityManager& ec = m_NodeManagers[i];
+		if (ec.GetId() == manager.GetId())
+		{
+			m_Systems[i] = 0;
+			break;
+		}
+	}*/
 
 }

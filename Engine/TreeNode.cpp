@@ -22,12 +22,11 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 #endif
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	if (m_Depth > 0)
-	{
-		if (m_Depth == 1)
-			m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
-		else if (m_Parent)
-			m_NodeEntityManager = static_cast<TreeNode*>(m_Parent)->GetManager();
-	}
+		m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
+
+
+	m_NodeEntityManager->SetMemoryBlockIndex(m_Index);
+	m_NodeEntityManager->Initiate();
 
 	for (TreeNodeBase* child : m_Children)
 	{

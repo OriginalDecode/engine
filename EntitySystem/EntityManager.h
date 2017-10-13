@@ -12,9 +12,22 @@ class NodeEntityManager;
 class Synchronizer;
 class PhysicsManager;
 class BaseSystem;
+
+
+
 class EntityManager
 {
 public:
+
+	enum eSystemType
+	{
+		RENDER = BITFLAG(0),
+		AI = BITFLAG(1),
+		DEBUG = BITFLAG(2),
+		PHYSICS = BITFLAG(3),
+		LIGHT = BITFLAG(4),
+	};
+
 	EntityManager() = default;
 	~EntityManager();
 	void Initiate();
@@ -39,6 +52,9 @@ public:
 
 	float GetDeltaTime();
 
+	void AddSystem(s32 type);
+	s32 GetSystemFlag() const { return m_SystemsAdded; }
+
 	template <typename T>
 	void AddSystem();
 
@@ -52,7 +68,7 @@ public:
 
 	//void SetActiveNodeManager(NodeEntityManager* manager) { m_ActiveNode = manager; }
 	//NodeEntityManager* GetNodeManager() { return m_ActiveNode; }
-	
+
 	/*void RegisterManager(NodeEntityManager* manager);
 	void UnRegisterManager(NodeEntityManager* manager);
 	NodeEntityManager* GetManager(s32 index);*/
@@ -61,13 +77,13 @@ private:
 	NodeEntityManager* m_ActiveNode = nullptr;
 
 	CU::GrowingArray<NodeEntityManager*> m_NodeManagers;
-
+	CU::GrowingArray<s32> m_UsedManagers;
+	const s32 m_Max = (8 * 8 * 8 * 8 * 8);
 	Entity myNextEntity = 0;
 	CComponentContainer* myComponents = nullptr;
-	//CU::GrowingArray<BaseSystem*> mySystems;
+	CU::GrowingArray<BaseSystem*> m_Systems;
 	std::atomic<float> myDeltaTime = 0.f;
-	static const s32 m_MaxNodeCount = 9;
-	s32 m_Systems[m_MaxNodeCount];
+	s32 m_SystemsAdded;
 
 };
 
@@ -94,8 +110,8 @@ T& EntityManager::GetComponent(Entity aEntity)
 template <typename T>
 void EntityManager::AddSystem()
 {
-	for (NodeEntityManager* manager : m_NodeManagers)
-	{
-		manager->AddSystem<T>();
-	}
-} 
+		// 	for (NodeEntityManager* manager : m_NodeManagers)
+		// 	{
+		// 		manager->AddSystem<T>();
+		// 	}
+}

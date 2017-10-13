@@ -111,7 +111,7 @@ void RenderSystem::AddRenderCommand(const ModelCommand& command)
 {
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	memory::CommandAllocator& allocator = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, m_Manager.GetMemoryBlockIndex());
-	DL_MESSAGE("Memory Block Index : %d", m_Manager.GetMemoryBlockIndex());
+	//DL_MESSAGE("Memory Block Index : %d", m_Manager.GetMemoryBlockIndex());
 	void * current = allocator.Alloc(sizeof(ModelCommand));
 	memcpy(current, &command, sizeof(ModelCommand));
 }

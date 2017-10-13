@@ -79,6 +79,12 @@ void Model::RenderInstanced(const graphics::RenderContext& rc)
 		child->RenderInstanced(rc);
 	}
 
+	if (!m_IndexWrapper.GetIndexBuffer() && (!m_VertexWrapper.GetVertexBuffer() || !m_InstanceWrapper.GetInstanceBuffer()))
+	{
+		RemoveGPUData();
+		return;
+	}
+
 	if (m_IsRoot || m_GPUData.Empty())
 	{
 		RemoveGPUData();
@@ -119,6 +125,12 @@ void Model::ShadowRenderInstanced(const graphics::RenderContext& rc)
 	for (Model* child : m_Children)
 	{
 		child->ShadowRenderInstanced(rc);
+	}
+
+	if (!m_IndexWrapper.GetIndexBuffer() && (!m_VertexWrapper.GetVertexBuffer() || !m_InstanceWrapper.GetInstanceBuffer()))
+	{
+		RemoveGPUData();
+		return;
 	}
 
 

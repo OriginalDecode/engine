@@ -127,7 +127,7 @@ namespace graphics
 				, nullptr //might want to output to a texture2d object?
 				, &srv);
 #ifndef FINAL
-			DL_ASSERT_EXP(hr == S_OK, "Failed to load texture");
+			DirectX11::HandleErrors(hr, "Failed to load texture");
 #endif
 		}
 

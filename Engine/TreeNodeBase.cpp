@@ -200,7 +200,6 @@ bool TreeNodeBase::InsideNode(TreeDweller* dweller)
 void TreeNodeBase::SetMemoryBlockIndex(s32 index)
 {
 	m_MemoryBlockIndex = index;
-	m_NodeEntityManager->SetMemoryBlockIndex(m_MemoryBlockIndex);
 }
 
 #define RED CU::Vector4f(255.f,0.f,0.f,255.f)

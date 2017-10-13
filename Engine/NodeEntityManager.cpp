@@ -7,6 +7,11 @@
 #include <TranslationComponent.h>
 #include <Engine/Synchronizer.h>
 
+#include <EntitySystem/RenderSystem.h>
+#include <EntitySystem/DebugSystem.h>
+#include <EntitySystem/LightSystem.h>
+#include <EntitySystem/PhysicsSystem.h>
+
 void NodeEntityManager::SetMemoryBlockIndex(s32 index)
 {
 	m_MemoryBlockIndex = index;
@@ -16,6 +21,21 @@ s32 NodeEntityManager::m_Identifier = 0;
 
 void NodeEntityManager::Initiate()
 {
+	EntityManager& em = Engine::GetInstance()->GetEntityManager();
+	const s32 flag = em.GetSystemFlag();
+
+	if (flag & EntityManager::RENDER)
+		AddSystem<RenderSystem>();
+	if (flag & EntityManager::PHYSICS)
+		AddSystem<PhysicsSystem>();
+	if (flag & EntityManager::LIGHT)
+		AddSystem<LightSystem>();
+	if (flag & EntityManager::DEBUG)
+		AddSystem<DebugSystem>();
+
+
+
+
 }
 
 void NodeEntityManager::CleanUp()

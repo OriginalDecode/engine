@@ -30,6 +30,12 @@ protected:
 };
 
 template<typename T>
+T* BaseSystem::NewInstance(NodeEntityManager& manager)
+{
+	return new T(manager);
+}
+
+template<typename T>
 T& BaseSystem::GetComponent(Entity anEntity)
 {
 	return m_Manager.GetComponent<T>(anEntity);

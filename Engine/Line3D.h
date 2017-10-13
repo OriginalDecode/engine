@@ -38,18 +38,12 @@ public:
 	~Line3D();
 
 	void Initiate(int aLineAmount = 256);
-
-
-	void Update(const LinePoint& firstPoint, const LinePoint& secondPoint, const graphics::RenderContext& render_context);
-	void Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& projection, const graphics::RenderContext& render_context);
-	void AddCube(const CU::Vector3f& min, const CU::Vector3f& max);
+	void Render(LinePoint points[2], const graphics::RenderContext& render_context);
 
 	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }
 	Effect* GetEffect() const { return m_Effect; }
 private:
 	void CreateBuffer();
-
-	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const graphics::RenderContext& render_context);
 
 	LinePoint m_FirstPoint;
 	LinePoint m_SecondPoint;
@@ -59,13 +53,6 @@ private:
 	VertexWrapper m_VertexWrapper;
 
 	IBuffer* m_LineBuffer;
-	struct cbLine
-	{
-		CU::Matrix44f m_World;
-		CU::Matrix44f m_View;
-		CU::Matrix44f m_Projection;
-	} m_cbLine;
-
 
 	CU::GrowingArray<LinePoint> m_Vertices;
 	int m_LineAmount = 0;

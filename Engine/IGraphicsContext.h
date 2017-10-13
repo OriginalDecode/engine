@@ -86,33 +86,33 @@ namespace graphics
 	protected:
 		virtual void* GetContext() = 0;
 
-		virtual void UpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size, bool internal) = 0;
-		virtual void UpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping, bool internal) = 0;
+		virtual void _InternalUpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size) = 0;
+		virtual void _InternalUpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping) = 0;
 
 	};
 
 	template<typename T>
 	void graphics::IGraphicsContext::UpdateConstantBuffer(IBuffer*& dest, T* src, s32 size)
 	{
-		UpdateConstantBuffer(dest, (s8*)src, size, true);
+		_InternalUpdateConstantBuffer(dest, (s8*)src, size);
 	}
 
 	template<typename T>
 	void graphics::IGraphicsContext::UpdateConstantBuffer(IBuffer*& dest, T* src)
 	{
-		UpdateConstantBuffer(dest, (s8*)src, sizeof(T), true);
+		_InternalUpdateConstantBuffer(dest, (s8*)src, sizeof(T));
 	}
 
 	template<typename T>
 	void graphics::IGraphicsContext::UpdateBuffer(IBuffer*& dest, T* src, eMapping mapping)
 	{
-		UpdateBuffer(dest, (s8*)src, sizeof(T), mapping, true);
+		_InternalUpdateBuffer(dest, (s8*)src, sizeof(T), mapping);
 	}
 
 	template<typename T>
 	void graphics::IGraphicsContext::UpdateBuffer(IBuffer*& dest, T* src, s32 size, eMapping mapping)
 	{
-		UpdateBuffer(dest, (s8*)src, size, mapping, true);
+		_InternalUpdateBuffer(dest, (s8*)src, size, mapping);
 	}
 
 

@@ -724,13 +724,16 @@ namespace graphics
 			return D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST;
 		if (topology == eTopology::POINT_LIST)
 			return D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+		if (topology == eTopology::LINE_LIST)
+			return D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
 
 		return D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 	}
 
 	D3D11_MAP DirectX11::GetMapping(eMapping mapping)
 	{
-		return static_cast<D3D11_MAP>(mapping);
+		s32 _map = mapping + 1;
+		return static_cast<D3D11_MAP>(_map);
 	}
 
 	D3D11_INPUT_CLASSIFICATION DirectX11::GetInputClass(eElementSpecification el)

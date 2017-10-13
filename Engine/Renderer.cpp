@@ -172,10 +172,10 @@ void Renderer::Render()
 
 	RenderTerrain(false);
 
- 	if (m_RenderInstanced)
- 		Render3DCommandsInstanced();
- 	else
- 		Render3DCommands();
+	if (m_RenderInstanced)
+		Render3DCommandsInstanced();
+	else
+		Render3DCommands();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
@@ -193,6 +193,10 @@ void Renderer::Render()
 
 	m_RenderContext.GetAPI().SetDefaultTargets();
 	m_DeferredRenderer->Finalize();
+
+	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
+	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+	RenderLines();
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -358,7 +362,7 @@ void Renderer::RenderTerrain(bool override_effect)
 			continue;
 
 		terrain->Render(m_RenderContext);
-	
+
 	}
 }
 
@@ -549,32 +553,20 @@ void Renderer::RenderParticles(Effect* effect)
 
 void Renderer::RenderLines()
 {
-	// 
-	// 	PROFILE_FUNCTION(profiler::colors::Amber);
-	// 
-	// 	m_API->SetBlendState(eBlendStates::NO_BLEND);
-	// 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
-	// 
-	// 	ID3D11RenderTargetView* backbuffer = m_API->GetBackbuffer();
-	// 	ID3D11DepthStencilView* depth = m_DeferredRenderer->GetDepthStencil()->GetDepthView();
-	// 	m_API->GetContext()->OMSetRenderTargets(1, &backbuffer, depth);
-	// 
-	// 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::LINE_BUFFER);
-	// 	PROFILE_BLOCK("Line Command Loop", profiler::colors::Red);
-	// 	for (s32 i = 0; i < commands.Size(); i++)
-	// 	{
-	// 		auto command = reinterpret_cast<LineCommand*>(commands[i]);
-	// 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::LINE, "Expected Line command type");
-	// 		m_API->SetDepthStencilState(command->m_ZEnabled ? eDepthStencilState::Z_ENABLED : eDepthStencilState::Z_DISABLED, 1);
-	// 		m_Line->Update(command->m_Points[0], command->m_Points[1]);
-	// 		m_Line->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective());
-	// 	}
-	// 	PROFILE_BLOCK_END;
-	// 
-	//	
-	// 	m_API->SetBlendState(eBlendStates::NO_BLEND);
-	// 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	// 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
+
+	PROFILE_FUNCTION(profiler::colors::Amber);
+	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::LINE_BUFFER);
+	PROFILE_BLOCK("Line Command Loop", profiler::colors::Red);
+	for (s32 i = 0; i < commands.Size(); i++)
+	{
+		auto command = reinterpret_cast<LineCommand*>(commands[i]);
+		const bool result = command->m_CommandType == RenderCommand::LINE;
+		if (!result)
+			return;
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::LINE, "Expected Line command type");
+		m_Line->Render(command->m_Points, m_RenderContext);
+	}
+	PROFILE_BLOCK_END;
 }
 
 void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, Engine& engine)
@@ -584,7 +576,7 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 	DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
 
 	Model* model = engine.GetModel(command->m_Key);
-	
+
 	if (command->m_MaterialKey > 0 && !m_InstancingManager.FindInstanceObject(command->m_MaterialKey))
 	{
 		InstanceObject new_instance;

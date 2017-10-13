@@ -78,12 +78,9 @@ namespace graphics
 		void* GetContext() override { return m_Context; }
 
 
-		void UpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size, bool internal) override;
-		void UpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping, bool internal) override;
-
-
-
-
+		virtual void _InternalUpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size) override;
+		virtual void _InternalUpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping) override;
+		
 	};
 
 

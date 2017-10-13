@@ -197,15 +197,21 @@ namespace graphics
 	{
 		auto& vtx = line->GetVertexWrapper();
 		auto fx = line->GetEffect();
-		fx->Use();
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
+
+		u32 stride = vtx.GetStride();
+		u32 offset = vtx.GetByteOffset();
+		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
+
 		m_Context->IASetVertexBuffers(vtx.GetStart(),
 									  vtx.GetBufferCount(),
-									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()),
-									  &vtx.GetStride(),
-									  &vtx.GetByteOffset());
-		//m_Context->OMSetDepthStencilState(depth_on ? m_EnableZ : m_DisableZ, 1);
+									  &buffer,
+									  &stride,
+									  &offset);
+
+		SetDepthState(Engine::GetAPI()->GetDepthStencilState(Z_ENABLED), 1);
+		fx->Use();
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
 		fx->Clear();
 	}
@@ -413,21 +419,7 @@ namespace graphics
 
 	}
 
-	void DX11Context::UpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping, bool internal)
-	{
-		D3D11_MAPPED_SUBRESOURCE msr;
-		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(dest);
-		m_Context->Map(buffer, 0, DirectX11::GetMapping(mapping), 0, &msr);
-
-		if (msr.pData)
-		{
-			s8* data = (s8*)msr.pData;
-			memcpy(data, &src[0], size);
-		}
-		m_Context->Unmap(buffer, 0);
-	}
-
-	void DX11Context::UpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size, bool internal)
+	void DX11Context::_InternalUpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size)
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
@@ -440,6 +432,19 @@ namespace graphics
 			memcpy(data, &src[0], size);
 		}
 		m_Context->Unmap(buffer, 0);
+	}
 
+	void DX11Context::_InternalUpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping)
+	{
+		D3D11_MAPPED_SUBRESOURCE msr;
+		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(dest);
+		m_Context->Map(buffer, 0, DirectX11::GetMapping(mapping), 0, &msr);
+
+		if (msr.pData)
+		{
+			s8* data = (s8*)msr.pData;
+			memcpy(data, &src[0], size);
+		}
+		m_Context->Unmap(buffer, 0);
 	}
 };

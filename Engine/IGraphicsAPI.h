@@ -126,6 +126,7 @@ namespace graphics
 	{
 		TRIANGLE_LIST,
 		POINT_LIST,
+		LINE_LIST,
 		_4_CONTROL_POINT_PATCHLIST,
 	};
 
@@ -207,7 +208,7 @@ namespace graphics
 	struct BufferDesc
 	{
 		eBindFlag m_BindFlag;
-		eCPUAccessFlag m_CPUAccessFlag;
+		s32 m_CPUAccessFlag;
 		eUsage m_UsageFlag;
 		s8* m_Data = nullptr;
 		s32 m_Size = 0;

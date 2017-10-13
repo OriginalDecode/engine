@@ -23,7 +23,7 @@ void TreeNodeBase::Update(float dt, bool paused)
 	PROFILE_FUNCTION(profiler::colors::Blue);
 	m_DwellerCount = m_Dwellers.Size();
 
-	//RenderBox();
+	RenderBox();
 	m_NodeEntityManager->Update(dt, m_Dwellers, paused);
 	return;
 	if (paused)
@@ -200,6 +200,8 @@ bool TreeNodeBase::InsideNode(TreeDweller* dweller)
 void TreeNodeBase::SetMemoryBlockIndex(s32 index)
 {
 	m_MemoryBlockIndex = index;
+	m_NodeEntityManager->SetMemoryBlockIndex(m_MemoryBlockIndex);
+	m_NodeEntityManager->Initiate();
 }
 
 #define RED CU::Vector4f(255.f,0.f,0.f,255.f)
@@ -208,8 +210,6 @@ void TreeNodeBase::SetMemoryBlockIndex(s32 index)
 #define YELLOW CU::Vector4f(255.f,255.f,0.f,255.f)
 void TreeNodeBase::RenderBox()
 {
-	if (!m_RenderBox)
-		return;
 
 	LinePoint points[8];
 

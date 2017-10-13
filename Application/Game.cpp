@@ -97,8 +97,8 @@ void Game::Initiate(const std::string& level)
 	m_Camera = m_Engine->GetCamera();
 	m_Camera->SetPosition(CU::Vector3f(0, 0, 0));
 	CameraHandle::Create();
-	//CameraHandle::GetInstance()->Initiate(&m_Orientation);
-	CameraHandle::GetInstance()->Initiate(nullptr);
+	CameraHandle::GetInstance()->Initiate(&m_Orientation);
+	//CameraHandle::GetInstance()->Initiate(nullptr);
 	m_PauseState.InitState(m_StateStack);
 	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 
@@ -212,6 +212,12 @@ void Game::OldUpdate(float dt)
 // 		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
 // 		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, m_Player));
 // 	}
+
+
+	//CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
+
+
+
 
 	if (input_wrapper->OnDown(KButton::ESCAPE))
 	{

@@ -411,11 +411,10 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	vtx_desc.m_Data = vtx_Data;
 	vtx_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
-	vtx_desc.m_StructuredByteStride = 0;
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
-	vtx_desc.m_MiscFlags = 0;
-	vtx_desc.m_StructuredByteStride = 0;
 	vtx_desc.m_ByteWidth = vtx_desc.m_Size;
+	vtx_desc.m_StructuredByteStride = 0;
+	vtx_desc.m_MiscFlags = 0;
 	IBuffer* buffer = device.CreateBuffer(vtx_desc, data->m_Filename + "VertexBuffer");
 
 

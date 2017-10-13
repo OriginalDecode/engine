@@ -30,11 +30,18 @@ RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
 
 void RenderSystem::Update(float /*dt*/, bool paused)
 {
+	bool print_block = true;
 	//PROFILE_FUNCTION(profiler::colors::Blue);
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	PROFILE_BLOCK("Render : Entity Loop");
 	for (int i = 0; i < entities.Size(); i++)
 	{
+		if (print_block)
+		{
+			DL_MESSAGE("%d", m_Manager.GetMemoryBlockIndex());
+			print_block = false;
+		}
+
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		RenderComponent& render = GetComponent<RenderComponent>(e);
@@ -111,7 +118,6 @@ void RenderSystem::AddRenderCommand(const ModelCommand& command)
 {
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	memory::CommandAllocator& allocator = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, m_Manager.GetMemoryBlockIndex());
-	//DL_MESSAGE("Memory Block Index : %d", m_Manager.GetMemoryBlockIndex());
 	void * current = allocator.Alloc(sizeof(ModelCommand));
 	memcpy(current, &command, sizeof(ModelCommand));
 }

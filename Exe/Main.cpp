@@ -229,7 +229,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
 			//g_windowactive = false;
-			//newApplication->OnInactive();
+			newApplication->OnInactive();
 			//ShowCursor(!g_windowactive);
 		}
 		else

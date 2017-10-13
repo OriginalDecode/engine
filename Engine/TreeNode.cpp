@@ -25,8 +25,7 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 		m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
 
 
-	m_NodeEntityManager->SetMemoryBlockIndex(m_Index);
-	m_NodeEntityManager->Initiate();
+	
 
 	for (TreeNodeBase* child : m_Children)
 	{

@@ -189,7 +189,7 @@ void Renderer::Render()
 									   , m_RenderContext);
 
 
-	//m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
+	m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
 
 	m_RenderContext.GetAPI().SetDefaultTargets();
 	m_DeferredRenderer->Finalize();

@@ -50,6 +50,9 @@ void HDRPass::Initiate()
 		sample_size *= 2.f;
 	}
 
+	debug::DebugHandle::GetInstance()->AddTexture(m_Downsamples[downsample_amount - 1], "Downsample 0 ");
+	debug::DebugHandle::GetInstance()->AddTexture(m_Downsamples[downsample_amount - 2], "Downsample 1 ");
+
 	m_HDREffect = Engine::GetInstance()->GetEffect("Shaders/tonemapping.json");
 	m_DownsampleEffect = Engine::GetInstance()->GetEffect("Shaders/downsample_hdr.json");
 	m_RenderToScreenEffect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
@@ -78,7 +81,10 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 	ctx.SetViewport(m_DefaultViewport);
 	
 	const s32 downsamples = m_Downsamples.Size() - 1;
+	IBlendState* pBlend = render_context.GetAPI().GetBlendState(graphics::NO_BLEND);
+	ctx.SetBlendState(pBlend);
 	Downsample(m_Downsamples[downsamples]->GetRenderTargetView(), scene_texture->GetShaderView());
+
 
 	for (s32 i = downsamples - 1; i >= 0; --i)
 	{
@@ -86,11 +92,12 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 		m_ChangeableViewport->SetWidth(m_Downsamples[i]->GetWidth());
 		ctx.SetViewport(m_ChangeableViewport);
 
+		ctx.SetBlendState(pBlend);
 		Downsample(m_Downsamples[i]->GetRenderTargetView(), m_Downsamples[i + 1]->GetShaderView());
 
 	}
 
-	//m_API->ResetViewport();// this goes back to the **DEFAULT DEFAULT ONE**
+	render_context.GetAPI().ResetViewport();
 
 	IShaderResourceView* sources[] = {
 		scene_texture->GetShaderView(),
@@ -98,11 +105,11 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 		m_Downsamples[0]->GetShaderView() // average
 	};
 
-	Tonemapping(m_HDRTexture->GetRenderTargetView(), sources, ARRAYSIZE(sources));
+	Tonemapping(m_HDRTexture->GetRenderTargetView(), sources, ARRSIZE(sources));
 
-	//m_API->ResetRendertarget();
-	ctx.PSSetShaderResource(0, 1, m_HDRTexture->GetShaderViewRef());
-	ctx.DrawIndexed(m_Quad, m_RenderToScreenEffect);
+	render_context.GetAPI().SetDefaultTargets();
+	m_RenderToScreenEffect->AddShaderResource(m_HDRTexture, Effect::DIFFUSE);
+	m_Quad->Render(false, m_RenderToScreenEffect);
 }
 
 void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* source)
@@ -110,8 +117,8 @@ void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* 
 	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
 	ctx.OMSetRenderTargets(1, &render_target, nullptr);
 	ctx.ClearRenderTarget(render_target, clearcolor::black);
-	ctx.PSSetShaderResource(0, 1, &source);
-	ctx.DrawIndexed(m_Quad, m_DownsampleEffect);
+	m_DownsampleEffect->AddShaderResource(source, Effect::DIFFUSE);
+	m_Quad->Render(false, m_DownsampleEffect);
 }
 
 void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source[2], s32 resource_count)
@@ -120,8 +127,8 @@ void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source
 	ctx.ClearRenderTarget(target, clearcolor::black);
 	ctx.OMSetRenderTargets(1, &target, nullptr);
 	
-	ctx.PSSetShaderResource(0, resource_count, source);
-	ctx.DrawIndexed(m_Quad, m_HDREffect);
+	m_HDREffect->AddShaderResource(source[0], Effect::DIFFUSE);
+	m_Quad->Render(false, m_HDREffect);
 }
 
 void HDRPass::OnResize()

@@ -1,29 +1,13 @@
-//---------------------------------
-//	Deferred Base Pixel Shader
-//---------------------------------
-
-//---------------------------------
-//	Samplers & Textures
-//---------------------------------
-
 SamplerState linear_Clamp  : register ( s0 );
 Texture2D DiffuseTexture   : register ( t0 );
 Texture2D LuminanceTexture : register ( t1 );
 Texture2D AverageLumTexture : register ( t2 );
 
-//---------------------------------
-//	Render to Texture Vertex Structs
-//---------------------------------
 struct VS_OUTPUT
 {
 	float4 pos : SV_POSITION0;
 	float2 uv : TEXCOORD;
 };
-
-
-//---------------------------------
-//	Deferred Base Pixel Shader
-//---------------------------------
 
 static const float A = 0.22;
 static const float B = 0.30;

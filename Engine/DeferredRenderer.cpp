@@ -28,7 +28,7 @@ DeferredRenderer::DeferredRenderer()
 	scene_desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
 	scene_desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
 	m_Scene = new Texture;
-	m_Scene->Initiate(scene_desc, "DeferredRenderer - Finished Scene");
+	m_Scene->Initiate(scene_desc, "DeferredRenderer - Scene");
 
 	//_______________________________________________________________________
 

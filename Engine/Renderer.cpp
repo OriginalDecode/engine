@@ -192,7 +192,7 @@ void Renderer::Render()
 	m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
 
 	m_RenderContext.GetAPI().SetDefaultTargets();
-	m_DeferredRenderer->Finalize();
+	//m_DeferredRenderer->Finalize();
 
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);

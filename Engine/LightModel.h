@@ -15,15 +15,6 @@ public:
 private:
 
 	CU::GrowingArray<LightModel*> m_Children;
-
-	struct cbVertex
-	{
-		CU::Matrix44f& m_Orientation;
-		float m_Range;
-		float m_Angle;
-		CU::Vector2f padding;
-	};
-
 			
 };
 

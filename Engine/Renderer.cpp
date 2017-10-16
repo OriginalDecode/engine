@@ -459,7 +459,7 @@ void Renderer::RenderSpotlight()
 		SpotLight* light = m_Spotlights[command->m_LightID];
 		light->SetData(data);
 
- 		CU::Matrix44f shadow_mvp;
+		CU::Matrix44f shadow_mvp;
 		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
 		m_RenderContext.GetContext().SetDepthState(m_RenderContext.GetAPI().GetDepthStencilState(graphics::Z_ENABLED), 0);
 		m_LightPass->RenderSpotlight(light, m_Camera->GetOrientation(), m_Camera->GetPerspective(), shadow_mvp, m_RenderContext);

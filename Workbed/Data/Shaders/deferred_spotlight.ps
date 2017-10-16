@@ -20,7 +20,8 @@ struct VS_OUTPUT
 	float4 pos	: SV_POSITION;
 	float4 uv	: POSITION;
 	float2 cosAngle : COSANGLE;
-    float2 range : RANGE;
+    float range : RANGE;
+    float angle : ANGLE;
 };
 
 #include "PBL_Functions.hlsl"
@@ -44,7 +45,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float angularAttenuation = (1 - (1 - spotFactor) * ( 1 / ( 1 - cosCone))) / 2;
 	
 	float ln = length(vectors.toLight);
-	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range.x));
+	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
 
 	col.a = 1;
 	float3 directSpec =  (F * D * V);

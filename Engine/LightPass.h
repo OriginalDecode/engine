@@ -31,10 +31,16 @@ namespace graphics
 
 		struct PointlightConstantBuffer : public VertexBaseStruct
 		{
+			CU::Matrix44f projection;
+			CU::Vector4f scale;
 		} m_cbPointlightVtx;
 
-		struct SpotlightConstantBuffer : public VertexBaseStruct
+		struct SpotlightConstantBuffer
 		{
+			CU::Matrix44f m_Orientation;
+			float m_Range;
+			float m_Angle;
+			float dummy[14];
 		} m_cbSpotlightVtx;
 
 		struct PixelConstantBuffer
@@ -43,7 +49,6 @@ namespace graphics
 			CU::Vector4f m_Position;
 			CU::Vector4f m_CameraPosition;
 			CU::Matrix44f m_ShadowMVP;
-
 		} m_cbPointlightPix;
 
 		struct SpotPixelConstantBuffer : public PixelConstantBuffer

@@ -86,8 +86,8 @@ namespace graphics
 
 		//____________________________________________________________________________
 
-		m_cbPointlightPix.m_InvertedProjection = CU::Math::InverseReal(camera_projection);
-		m_cbPointlightPix.m_View = camera_view;
+	//	m_cbPointlightPix.m_InvertedProjection = CU::Math::InverseReal(camera_projection);
+		//m_cbPointlightPix.m_View = camera_view;
 		m_cbPointlightPix.m_Color = pointlight->GetColor();
 		m_cbPointlightPix.m_Position = pointlight->GetPosition();
 		m_cbPointlightPix.m_CameraPosition = camera_view.GetPosition();
@@ -108,20 +108,16 @@ namespace graphics
 		graphics::IGraphicsContext& context = Engine::GetAPI()->GetContext();
 		const SpotlightData& data = spotlight->GetData();
 
-		m_cbSpotlightVtx.world = data.myOrientation;
-		m_cbSpotlightVtx.invertedView = CU::Math::Inverse(camera_view);
-		m_cbSpotlightVtx.projection = camera_projection;
-		m_cbSpotlightVtx.scale.x = data.myRange;
-		m_cbSpotlightVtx.scale.y = data.myRange;
-		m_cbSpotlightVtx.scale.z = data.myAngle;
-		m_cbSpotlightVtx.scale.w = data.myAngle;
+		m_cbSpotlightVtx.m_Orientation = data.myOrientation;
+		m_cbSpotlightVtx.m_Range = data.myRange;
+		m_cbSpotlightVtx.m_Angle = data.myAngle;
 
 		context.UpdateConstantBuffer(m_LightBuffers[SPOTLIGHT_VERTEX], &m_cbSpotlightVtx, sizeof(SpotlightConstantBuffer));
 
 		//____________________________________________________________________________
 
-		m_cbSpotlightPix.m_InvertedProjection = CU::Math::InverseReal(camera_projection);
-		m_cbSpotlightPix.m_View = camera_view;
+		//m_cbSpotlightPix.m_InvertedProjection = CU::Math::InverseReal(camera_projection);
+		//m_cbSpotlightPix.m_View = camera_view;
 		m_cbSpotlightPix.m_Color = data.myLightColor;
 		m_cbSpotlightPix.m_Position = data.myOrientation.GetPosition();
 		m_cbSpotlightPix.m_CameraPosition = camera_view.GetPosition();
@@ -129,8 +125,8 @@ namespace graphics
 		m_cbSpotlightPix.m_ShadowMVP = shadow_matrix;
 		context.UpdateConstantBuffer(m_LightBuffers[SPOTLIGHT_PIXEL], &m_cbSpotlightPix, sizeof(SpotPixelConstantBuffer));
 
-		context.VSSetConstantBuffer(0, 1, &m_LightBuffers[SPOTLIGHT_VERTEX]);
-		context.PSSetConstantBuffer(0, 1, &m_LightBuffers[SPOTLIGHT_PIXEL]);
+		context.VSSetConstantBuffer(1, 1, &m_LightBuffers[SPOTLIGHT_VERTEX]);
+		context.PSSetConstantBuffer(1, 1, &m_LightBuffers[SPOTLIGHT_PIXEL]);
 
 	}
 };

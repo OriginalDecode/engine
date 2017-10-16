@@ -5,16 +5,12 @@
 
 LightModel::LightModel()
 {
-	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbVertex), "LightModel - ConstantBuffer");
 }
 
 LightModel::~LightModel()
 {
 	m_Surfaces.DeleteAll();
 	m_Children.DeleteAll();
-
-	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
-	m_ConstantBuffer = nullptr;
 }
 
 
@@ -38,9 +34,10 @@ void LightModel::Render(const graphics::RenderContext& rc)
 	if (m_IsRoot)
 		return;
 
-	UpdateConstantBuffer(rc);
-	rc.GetContext().PSSetSamplerState(0, 1, rc.GetEngine().GetActiveSampler());
-	rc.GetContext().Draw(this);
+	//UpdateConstantBuffer(rc);
+	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
+	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
+	rc.GetContext().Draw(this, m_Effect);
 }
 
 void LightModel::AddChild(LightModel* aChild)

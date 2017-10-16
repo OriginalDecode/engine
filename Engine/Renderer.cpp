@@ -34,9 +34,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 {
 	auto api = Engine::GetAPI();
 	m_RenderContext = graphics::RenderContext(Engine::GetInstance(),
-											  api->GetDevice(),
-											  api->GetContext(),
-											  api);
+		api->GetDevice(),
+		api->GetContext(),
+		api);
 
 
 	//myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
@@ -185,9 +185,10 @@ void Renderer::Render()
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_DeferredRenderer->DeferredRender(shadow_mvp
-									   , m_Direction
-									   , m_RenderContext);
-
+		, m_Direction
+		, m_RenderContext);
+	RenderSpotlight();
+	//RenderPointlight();
 
 	m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
 
@@ -436,54 +437,35 @@ void Renderer::Render2DCommands()
 
 void Renderer::RenderSpotlight()
 {
-	// 
-	// 	PROFILE_FUNCTION(profiler::colors::Purple);
-	// 	Effect* effect = m_LightPass.GetSpotlightEffect();
-	// 
-	// 	SpotlightData data;
-	// 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER);
 
-	// 	PROFILE_BLOCK("Spotlight Command Loop", profiler::colors::Red);
+	PROFILE_FUNCTION(profiler::colors::Purple);
 
-	// 	for (s32 i = 0; i < commands.Size(); i++)
-	// 	{
-	// 		PROFILE_BLOCK("Spotlight Command", profiler::colors::Red);
-	// 		auto command = reinterpret_cast<SpotlightCommand*>(commands[i]);
-	// 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::SPOTLIGHT, "Expected Spotlight command type");
-	// 
-	// 		data.myAngle = command->m_Angle;
-	// 		data.myRange = command->m_Range;
-	// 		data.myLightColor = command->m_Color;
-	// 		data.myLightPosition = command->m_Orientation.GetPosition();
-	// 		data.myOrientation = command->m_Orientation;
-	// 
-	// 		SpotLight* light = m_Spotlights[command->m_LightID];
-	// 		light->SetData(data);
-	// 
-	// 		CU::Matrix44f shadow_mvp;
-	// 		if (command->m_ShadowCasting)
-	// 		{
-	// 			ShadowSpotlight* shadow = light->GetShadowSpotlight();
-	// 			m_ShadowPass.ProcessShadows(shadow, m_RenderContext);
-	// 			shadow_mvp = shadow->GetMVP();
-	// 			effect->AddShaderResource(shadow->GetDepthStencil(), Effect::SHADOWMAP);
-	// 			m_DeferredRenderer->SetRenderTarget(m_RenderContext);
-	// 		}
-	// 
-	// 		m_API->SetRasterizer(eRasterizer::CULL_NONE);
-	// 		m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 0);
-	// 		//m_LightState.Use(m_RenderContext);
-	// 		effect->Use();
-	// 		m_LightPass.RenderSpotlight(light, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
-	// 		effect->Clear();
-	// 
-	// 		PROFILE_BLOCK_END;
-	// 	}
-	// 	PROFILE_BLOCK_END;
-	// 
-	// 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	// 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
+	SpotlightData data;
+	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER);
 
+	PROFILE_BLOCK("Spotlight Command Loop", profiler::colors::Red);
+
+	for (s32 i = 0; i < commands.Size(); i++)
+	{
+		auto command = reinterpret_cast<SpotlightCommand*>(commands[i]);
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::SPOTLIGHT, "Expected Spotlight command type");
+
+		data.myAngle = command->m_Angle;
+		data.myRange = command->m_Range;
+		data.myLightColor = command->m_Color;
+		data.myLightPosition = command->m_Orientation.GetPosition();
+		data.myOrientation = command->m_Orientation;
+
+		SpotLight* light = m_Spotlights[command->m_LightID];
+		light->SetData(data);
+
+ 		CU::Matrix44f shadow_mvp;
+		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
+		m_RenderContext.GetContext().SetDepthState(m_RenderContext.GetAPI().GetDepthStencilState(graphics::Z_ENABLED), 0);
+		m_LightPass->RenderSpotlight(light, m_Camera->GetOrientation(), m_Camera->GetPerspective(), shadow_mvp, m_RenderContext);
+
+	}
+	PROFILE_BLOCK_END;
 }
 
 void Renderer::RenderPointlight()

@@ -5,7 +5,7 @@
 
 LightModel::LightModel()
 {
-	//m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbVertex), "LightModel - ConstantBuffer");
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbVertex), "LightModel - ConstantBuffer");
 }
 
 LightModel::~LightModel()

@@ -112,7 +112,8 @@ void SpotLight::SetData(const SpotlightData& data)
 	SetDirection(myData.myOrientation.GetForward());
 	SetPosition(myData.myLightPosition);
 	//m_ShadowSpotlight->SetAngle(myData.myAngle);
-	const float buffer_size = m_ShadowSpotlight->GetBufferSize();
+	if(m_ShadowSpotlight)
+		const float buffer_size = m_ShadowSpotlight->GetBufferSize();
 	//m_ShadowSpotlight->GetCamera()->RecalculatePerspective(buffer_size, buffer_size, 0.1f, myData.myRange);
 }
 
@@ -127,7 +128,9 @@ void SpotLight::SetPosition(const CU::Vector3f& aPosition)
 	myData.myLightPosition = aPosition;
 	m_Data.m_Position = aPosition;
 	myData.myOrientation.SetPosition(aPosition);
-	m_ShadowSpotlight->GetCamera()->SetPosition(aPosition);
+
+	if(m_ShadowSpotlight)
+		m_ShadowSpotlight->GetCamera()->SetPosition(aPosition);
 }
 
 void SpotLight::SetDirection(const CU::Vector4f& aDirection)

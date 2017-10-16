@@ -1,10 +1,15 @@
-cbuffer Matrices : register(b0) 
+
+cbuffer per_frame : register (b0)
 {
-	row_major float4x4 World;
-	row_major float4x4 View;
-	row_major float4x4 Projection;
-	float2 range;
-    float2 angle;
+	row_major float4x4 camera_view_x_proj;
+};
+
+cbuffer per_object : register(b1) 
+{
+	row_major float4x4 orientation;
+	float range;
+    float angle;
+	float2 padding;
 };
 
 struct vsInput
@@ -31,9 +36,8 @@ psInput main(vsInput input)
     input.pos.z *= range.x;
     input.pos.w = 1.f;
 	
-	output.pos = mul(input.pos, World);
-	output.pos = mul(output.pos, View);
-	output.pos = mul(output.pos, Projection);
+	output.pos = mul(input.pos, orientation);
+	output.pos = mul(output.pos, camera_view_x_proj);
 	output.cosAngle.x = cos(angle.x / 2);
 	output.range.x = range.x;
 	output.range.y = angle.x;

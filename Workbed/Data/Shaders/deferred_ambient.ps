@@ -145,7 +145,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float compareValue = shadowVec.z;
 	float sampleValue = ShadowTexture.Sample(sampler0, shadowVec.xy).r;
 
-	if(sampleValue > compareValue)
+	if(sampleValue < compareValue)
 	{
 		for(int i = 0; i < 1; i++)
 		{
@@ -203,6 +203,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 
 
-	return output;
+	return output *3;
 
 };

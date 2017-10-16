@@ -39,8 +39,6 @@ namespace graphics
 
 		struct PixelConstantBuffer
 		{
-			CU::Matrix44f m_InvertedProjection;
-			CU::Matrix44f m_View;
 			CU::Vector4f m_Color;
 			CU::Vector4f m_Position;
 			CU::Vector4f m_CameraPosition;

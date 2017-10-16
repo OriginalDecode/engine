@@ -1,8 +1,11 @@
-
-cbuffer Spotlight : register( b0 )
+cbuffer per_frame : register(b0)
 {
 	row_major float4x4 InvertedProjection; 
 	row_major float4x4 InvertedView; 
+}
+
+cbuffer Spotlight : register( b1 )
+{
 	float4 color;
 	float4 position;
 	float4 camPosition;

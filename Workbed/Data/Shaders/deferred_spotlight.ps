@@ -118,7 +118,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	normal *= 2;
 	normal -= 1;
 	
-	float4 toLight = position - pixel_pos;
+	float4 toLight = normalize(position - pixel_pos);
 
 	float cosCone = input.cosAngle.x;
     float3 lightToPixel = normalize(-toLight);

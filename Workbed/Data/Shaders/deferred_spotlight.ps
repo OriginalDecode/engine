@@ -118,22 +118,21 @@ float4 main(VS_OUTPUT input) : SV_Target
 	normal *= 2;
 	normal -= 1;
 	
-	float4 toLight = normalize(position - pixel_pos);
+	float4 toLight = (position - pixel_pos);
 
 	float cosCone = input.cosAngle.x;
     float3 lightToPixel = normalize(-toLight);
-    float spotFactor = max(0, dot(lightToPixel, normalize(direction)));
-	float angularAttenuation =  ( 1 - (1 - spotFactor) * ( 1 / ( 1 - cosCone))) ;
+    float spotFactor = dot(lightToPixel, direction);
+	float angularAttenuation =    (  1 - (1 - spotFactor) *  1 / ( 1 - cosCone) );
 	float ln = length(toLight);
 	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
-
 
 	float4 to_eye = normalize(camPosition - pixel_pos);
 	float3 refVec = normalize(reflect(to_eye.xyz, normal.xyz));
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
 	float NdC = saturate(dot(normal, to_eye));
-	float3 half_vec = normalize(-to_eye + direction);
+	float3 half_vec = normalize(to_eye + direction);
 	half4 reflection_fresnel = half4(ReflectionFresnel(albedo.rgb, normal.xyz, to_eye, roughnessOffsetted), 1);
 	float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
 
@@ -152,14 +151,16 @@ float4 main(VS_OUTPUT input) : SV_Target
 	diffuse += cube_ambient * albedo;
 
 	float HdN = dot(half_vec, normal);
-	float NdL = max(dot(normal, -direction), 0);
+	float NdL = normalize(dot(normal, -direction));//max(dot(normal, -direction), 0);
+
 	float EdH = dot(-to_eye, half_vec);
+	
 	float LdH = dot(direction, half_vec);
 	LdH = 1 - LdH;
 	LdH = pow(LdH, 5);
 	half4 schlickFresnel = LdH * ( 1 - metalness_albedo);
 	schlickFresnel = schlickFresnel / (6 - (5 * roughness));
-	schlickFresnel = metalness_albedo + schlickFresnel;
+	schlickFresnel = saturate(metalness_albedo + schlickFresnel);
 
 	float m = rough2;
 	float m2 = m*m;
@@ -172,17 +173,17 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float G1V = NdC * ( 1.f - k ) + k;
 	float G1L = NdL * ( 1.f - k ) + k;
 
-	float V = 0.25f / (G1V * G1L);
+	float V = saturate(0.25f / (G1V * G1L));
 
-	spec +=  (((schlickFresnel * ggxDistr * V )));
+	spec +=  (schlickFresnel * (1 +ggxDistr) * (1+V)  );
 
 	float4 output = 0;
 	output = lerp(diffuse, cube, schlickFresnel);
 	output += spec;
-	output = saturate(output);
 	output.a = 1;
 
-	return diffuse * attenuation *  angularAttenuation;
+
+	return output * angularAttenuation * attenuation * float4(1,0,0,0);
 
 	//float4 col = color;
 

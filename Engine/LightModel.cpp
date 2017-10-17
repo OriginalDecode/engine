@@ -38,7 +38,7 @@ void LightModel::Render(const graphics::RenderContext& rc)
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
 	ctx.PSSetSamplerState(0, 1, &pSampler);
-	ctx.SetBlendState(rc.GetAPI().GetBlendState(graphics::LIGHT_BLEND));
+	ctx.SetBlendState(rc.GetAPI().GetBlendState(graphics::ALPHA_BLEND));
 	ctx.Draw(this, m_Effect);
 }
 

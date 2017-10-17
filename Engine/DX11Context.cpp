@@ -190,7 +190,7 @@ namespace graphics
 
 
 		//m_Context->OMSetDepthStencilState(/*m_EnableZ*/, 1);
-		SetDepthState(Engine::GetAPI()->GetDepthStencilState(Z_ENABLED), 1);
+		SetDepthState(Engine::GetAPI()->GetDepthStencilState(READ_NO_WRITE_PARTICLE), 1);
 		fx->Use();
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
 		fx->Clear();

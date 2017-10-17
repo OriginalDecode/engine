@@ -116,7 +116,7 @@ namespace graphics
 	{
 		ID3D11RenderTargetView* pRenderTarget = static_cast<ID3D11RenderTargetView*>(m_DefaultRenderTarget);
 		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
-		m_Context->ClearRenderTarget(pRenderTarget, clearcolor::blue);
+		m_Context->ClearRenderTarget(pRenderTarget, clearcolor::black);
 		m_Context->ClearDepthStencilView(pDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f);
 	}
 

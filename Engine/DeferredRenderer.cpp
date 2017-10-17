@@ -75,7 +75,7 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& shadow_mvp, const CU:
 	graphics::IGraphicsContext& ctx = render_context.GetContext();
 	render_context.GetAPI().ResetViewport();
  
-	IDepthStencilView* depth = render_context.GetAPI().GetDepthView(); 
+	IDepthStencilView* depth = render_context.GetAPI().GetDepthView();  //What kind of depth????????
 	ctx.ClearRenderTarget(m_Scene->GetRenderTargetView(), clearcolor::black);
 	ctx.OMSetRenderTargets(1, m_Scene->GetRenderTargetRef(), depth);
 	UpdateConstantBuffer(shadow_mvp, light_dir);

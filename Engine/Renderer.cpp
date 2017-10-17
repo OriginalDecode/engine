@@ -187,6 +187,9 @@ void Renderer::Render()
 	m_DeferredRenderer->DeferredRender(shadow_mvp
 		, m_Direction
 		, m_RenderContext);
+
+	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
+	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	RenderSpotlight();
 	//RenderPointlight();
 

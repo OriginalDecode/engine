@@ -35,9 +35,11 @@ void LightModel::Render(const graphics::RenderContext& rc)
 		return;
 
 	//UpdateConstantBuffer(rc);
+	graphics::IGraphicsContext& ctx = rc.GetContext();
 	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
-	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
-	rc.GetContext().Draw(this, m_Effect);
+	ctx.PSSetSamplerState(0, 1, &pSampler);
+	ctx.SetBlendState(rc.GetAPI().GetBlendState(graphics::LIGHT_BLEND));
+	ctx.Draw(this, m_Effect);
 }
 
 void LightModel::AddChild(LightModel* aChild)

@@ -13,7 +13,6 @@ cbuffer Spotlight : register( b1 )
     float4 direction;
 };
 
-Texture2D ShadowTexture	 : register ( t8 );
 
 struct VS_OUTPUT
 {
@@ -24,44 +23,198 @@ struct VS_OUTPUT
     float angle : ANGLE;
 };
 
-#include "PBL_Functions.hlsl"
+
+static const float k0 = 0.00098,
+			k1 = 0.9921; 
+static const float specMax = (2 / (0.0014 * 0.0014)) - 2;
+static const float g_MaxT = exp2(-10 / sqrt(specMax) - k0) / k1;
+static const float PI = 3.14159265;
+
+half RoughToSPow(half fRoughness)
+{
+	return (2.h / (fRoughness * fRoughness)) - 2.h;
+}
+
+half GetSpecPowToMip(float fSpecPow, int nMips)
+{
+	float fSmulMaxT = (exp2(-10 / sqrt(fSpecPow)) - k0) / k1;
+	return float(nMips - 1) * (1 - clamp(fSmulMaxT / g_MaxT, 0.0, 1.0));
+}
+
+float CalculateAttenuation(float someDistance)
+{
+	float attenuation = 1.f / (1.f + 0.1f * someDistance + 0.01f * someDistance * someDistance);
+	return attenuation;
+};
+
+float CalculateFalloff(float someDistance, float someRange)
+{
+	float fallOff = 0.9f - (someDistance / (someRange + 0.00001f));
+	return fallOff;
+};
+
+float CalculateTotalAttenuation(float someDistance, float someRange)
+{
+	float totalAttenuation = CalculateAttenuation(someDistance) * CalculateFalloff(someDistance, someRange);
+	return totalAttenuation;
+};
+
+half3 ReflectionFresnel(const half3 substance, const half3 light_dir, const half3 half_vec, half roughness)
+{
+	half LdotH = dot(light_dir, half_vec);
+	LdotH = saturate(LdotH);
+	LdotH = 1.0f - LdotH;
+	LdotH = pow(LdotH, 5);
+	half3 fresnel = LdotH * (1.f - substance);
+	fresnel = fresnel / (2 - 1 * roughness);
+	fresnel = substance + fresnel;
+	return fresnel;
+}
+
+SamplerState sampler0 	 : register (s0);
+SamplerState sampler1 : register (s1);
+Texture2D AlbedoTexture  : register (t0);
+Texture2D NormalTexture  : register (t1);
+Texture2D DepthTexture	 : register (t7);
+Texture2D ShadowTexture	 : register (t8);
+TextureCube CubeMap		 : register (t9);
+
+
+float4 getWorldPos(float2 tex_coord, float depth)
+{
+    float x = tex_coord.x * 2.f - 1.f;
+	float y = (1.f - tex_coord.y) * 2 - 1;
+	float z = depth;
+	float4 world_pos = float4(x, y, z, 1.f);
+	
+	world_pos = mul(world_pos, InvertedProjection);
+	world_pos = world_pos / world_pos.w;
+	world_pos = mul(world_pos, InvertedView);
+    return world_pos;
+}
+
 float4 main(VS_OUTPUT input) : SV_Target
 {
-	float4 col = color;
+
+	int nMips = 0;
+	int width = 0;
+	int height = 0;
+	CubeMap.GetDimensions(0, width, height, nMips);
+
 	input.uv /= input.uv.w;
 	float2 texCoord = input.uv.xy;
 
-	DeferredPixelData data = CalculateDeferredPixelData(texCoord);
-	LightVectors vectors = CalculateLightVectors(data, camPosition, position);
+	float4 depth = DepthTexture.Sample(sampler0, texCoord);
+	float4 albedo = AlbedoTexture.Sample(sampler0, texCoord);	
+	float4 normal = NormalTexture.Sample(sampler0, texCoord);
+
+	float4 pixel_pos = getWorldPos(texCoord, depth.r);
+	half roughness = depth.y;
+	half roughnessOffsetted = pow(roughness, 8192);
+	half lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips);
+
+	float metalness = normal.w;
+
+	normal *= 2;
+	normal -= 1;
 	
-	float3 F = saturate(Fresnel(data.substance, -vectors.light_dir, vectors.halfVec));
-	float3 D = saturate(D_GGX(vectors.HdotN,(data.roughness  ) / 2.f));
-	float3 V = saturate(V_SchlickForGGX((data.roughness ) / 2.f, vectors.NdotV, vectors.NdotL));
+	float4 toLight = position - pixel_pos;
 
 	float cosCone = input.cosAngle.x;
-    float3 lightToPixel = normalize(-vectors.toLight);
+    float3 lightToPixel = normalize(-toLight);
     float spotFactor = max(0, dot(lightToPixel, normalize(direction)));
-
-	float angularAttenuation = (1 - (1 - spotFactor) * ( 1 / ( 1 - cosCone))) / 2;
-	
-	float ln = length(vectors.toLight);
+	float angularAttenuation =  (1 - spotFactor) * ( 1 / ( 1 - cosCone)) / 2;
+	float ln = length(toLight);
 	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
 
-	col.a = 1;
-	float3 directSpec =  (F * D * V);
 
-	float3 final_color = ( directSpec * angularAttenuation * attenuation) * (col);
+	float4 to_eye = normalize(camPosition - pixel_pos);
+	float3 refVec = normalize(reflect(to_eye.xyz, normal.xyz));
+	float rough2 = roughness * roughness;
+	float rough2half = rough2 / 2;
+	float NdC = saturate(dot(normal, to_eye));
+	float3 half_vec = normalize(-to_eye + direction);
+	half4 reflection_fresnel = half4(ReflectionFresnel(albedo.rgb, normal.xyz, to_eye, roughnessOffsetted), 1);
+	float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
 
-	float4 newPos = data.world_pos + (data.normal * 0.4);
-	newPos.w = 1;
-	float4 shadowVec = mul(newPos, shadowMVP);
-	shadowVec.xyz /= shadowVec.w;
-	shadowVec.y = -shadowVec.y;
-	shadowVec.x = shadowVec.x;
-	shadowVec.xy += 1;
-	shadowVec.xy *= 0.5;
-	float compareValue = shadowVec.z;
-	float sampleValue = ShadowTexture.Sample(sampler0, shadowVec.xy).x;
+	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
+	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo * (1 - reflection_fresnel);
+	cube_ambient = saturate(cube_ambient);
+	
+	albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
 
-	return float4(final_color,1);
+	float4 diffuse = 0; // metalness_albedo * cube_ambient;
+	float4 spec = 0;
+	float SatNdL = saturate(dot(-direction, normal));
+
+	diffuse += float4( ( SatNdL * 1 / PI)  * float4(1,1,1,1) * albedo.rgb, 1.0f);
+
+	diffuse += cube_ambient * albedo;
+
+
+	float HdN = dot(half_vec, normal);
+	float NdL = max(dot(normal, -direction), 0);
+	float EdH = dot(-to_eye, half_vec);
+	float LdH = dot(direction, half_vec);
+	LdH = 1 - LdH;
+	LdH = pow(LdH, 5);
+	half4 schlickFresnel = LdH * ( 1 - metalness_albedo);
+	schlickFresnel = schlickFresnel / (6 - (5 * roughness));
+	schlickFresnel = metalness_albedo + schlickFresnel;
+
+	float m = rough2;
+	float m2 = m*m;
+	float denominator = HdN * HdN * (m2 - 1) + 1;
+	float ggxDistr = m2 / (PI * denominator * denominator);
+
+	float SchlickGGXGeo = (NdC / (NdC * (1 - rough2half ) + rough2half));
+
+	float k = rough2half;
+	float G1V = NdC * ( 1.f - k ) + k;
+	float G1L = NdL * ( 1.f - k ) + k;
+
+	float V = 0.25f / (G1V * G1L);
+
+	spec += saturate(((schlickFresnel * ggxDistr * V * NdL))) *500;
+
+
+	float4 output = 0;
+	output = lerp(diffuse, cube, schlickFresnel);
+	output += spec;
+	output = saturate(output);
+
+	output.a = 1;
+
+	return output  * angularAttenuation * attenuation;
+
+	//float4 col = color;
+
+	//DeferredPixelData data = CalculateDeferredPixelData(texCoord);
+	//LightVectors vectors = CalculateLightVectors(data, camPosition, position);
+	//
+	//float3 F = saturate(Fresnel(data.substance, -vectors.light_dir, vectors.halfVec));
+	//float3 D = saturate(D_GGX(vectors.HdotN,(data.roughness  ) / 2.f));
+	//float3 V = saturate(V_SchlickForGGX((data.roughness ) / 2.f, vectors.NdotV, vectors.NdotL));
+
+
+	//col.a = 1;
+	//float3 directSpec =  (F * D * V);
+
+	//float3 final_color = ( directSpec * angularAttenuation * attenuation) * (col);
+
+
+
+
+
+	//float4 newPos = data.world_pos + (data.normal * 0.4);
+	//newPos.w = 1;
+	//float4 shadowVec = mul(newPos, shadowMVP);
+	//shadowVec.xyz /= shadowVec.w;
+	//shadowVec.y = -shadowVec.y;
+	//shadowVec.x = shadowVec.x;
+	//shadowVec.xy += 1;
+	//shadowVec.xy *= 0.5;
+	//float compareValue = shadowVec.z;
+	//float sampleValue = ShadowTexture.Sample(sampler0, shadowVec.xy).x;
+
 };

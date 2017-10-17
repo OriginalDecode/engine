@@ -94,8 +94,8 @@ namespace graphics
 		m_cbPointlightPix.m_ShadowMVP = shadow_matrix;
 		context.UpdateConstantBuffer(m_LightBuffers[POINTLIGHT_PIXEL], &m_cbPointlightPix, sizeof(PixelConstantBuffer));
 
-		context.VSSetConstantBuffer(0, 1, &m_LightBuffers[POINTLIGHT_VERTEX]);
-		context.PSSetConstantBuffer(0, 1, &m_LightBuffers[POINTLIGHT_PIXEL]);
+		context.VSSetConstantBuffer(1, 1, &m_LightBuffers[POINTLIGHT_VERTEX]);
+		context.PSSetConstantBuffer(1, 1, &m_LightBuffers[POINTLIGHT_PIXEL]);
 
 	}
 

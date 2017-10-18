@@ -27,8 +27,9 @@ struct psInput
 psInput main(vsInput input)
 {
 	psInput output = (psInput)0;
+	float _angle = angle / 2;
 
-    float xyScale = tan(angle) * range;
+    float xyScale = tan(_angle) * range;
 	
 	input.pos.x *= xyScale; // scale
     input.pos.y *= xyScale;
@@ -37,9 +38,9 @@ psInput main(vsInput input)
 	
 	output.pos = mul(input.pos, orientation);
 	output.pos = mul(output.pos, camera_view_x_proj);
-	output.cosAngle.x = cos(angle / 2);
+	output.cosAngle.x = cos(_angle);
 	output.range = range;
-	output.angle = angle;
+	output.angle = _angle;
 
 	float x = output.pos.x;
 	float y = output.pos.y;

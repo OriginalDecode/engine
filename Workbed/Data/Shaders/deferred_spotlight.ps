@@ -105,6 +105,10 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float2 texCoord = input.uv.xy;
 
 	float4 depth = DepthTexture.Sample(sampler0, texCoord);
+	if ( depth.r <= 0) 
+		discard;
+
+
 	float4 albedo = AlbedoTexture.Sample(sampler0, texCoord);	
 	float4 normal = NormalTexture.Sample(sampler0, texCoord);
 
@@ -123,6 +127,8 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float cosCone = input.cosAngle.x;
     float3 lightToPixel = normalize(-toLight);
     float spotFactor = dot(lightToPixel, direction);
+
+
 	float angularAttenuation =    (   (1 - spotFactor) *  1 / ( 1 - cosCone) );
 	float ln = length(toLight);
 	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
@@ -180,7 +186,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 output = 0;
 	output = lerp(diffuse, cube, schlickFresnel);
 	output += spec;
-	output.a = 1;
 
 	return output * angularAttenuation * attenuation * float4(1,0,0,0);
 

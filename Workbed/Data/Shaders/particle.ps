@@ -1,6 +1,3 @@
-//---------------------------------
-//	Line3D Pixel Shader
-//---------------------------------
 
 SamplerState point_sample : register ( s0 );
 Texture2D ParticleTexture : register ( t0 );
@@ -22,9 +19,6 @@ cbuffer Matrices : register (b0)
 	float4 view_dir; 
 }
 
-//---------------------------------
-//	Line3D Pixel Shader
-//---------------------------------
 
 float CalculateAttenuation(float someDistance)
 {
@@ -72,12 +66,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	normal += 1;
 	normal *= 0.5;
 
-
-
 	float4 up = float4(0,1,0,1);
-	// float3 right = cross(up, float3(view_dir.xyz));
-
-	// normal = normalize(cross(right, view_dir));
 
 	float ln = length(toLight);
 	float attenuation = CalculateTotalAttenuation(ln, 10.f);

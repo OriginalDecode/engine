@@ -85,9 +85,10 @@ void CEmitterInstance::CreateBuffer()
 {
 	graphics::InputElementDesc layout[] =
 	{
-		{ "POSITION", 0, graphics::_12BYTE_RGB, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
-		{ "ALPHA", 0, graphics::_4BYTE_R, 0, 12, graphics::INPUT_PER_VERTEX_DATA, 0 },
-		{ "SIZE", 0, graphics::_4BYTE_R, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "POSITION", 0, graphics::_16BYTE_RGBA, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, graphics::_16BYTE_RGBA, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "ALPHA", 0, graphics::_4BYTE_R, 0, 32, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "SIZE", 0, graphics::_4BYTE_R, 0, 36, graphics::INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	auto& device = Engine::GetAPI()->GetDevice();

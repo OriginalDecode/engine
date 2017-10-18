@@ -195,7 +195,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 output = 0;
 	output = lerp(diffuse, cube, schlickFresnel);
 	output += spec;
-	output = saturate(output);
+	output = saturate(output) * 8;
 
 	output.a = 1;
 	//output = pow(output, .4545);

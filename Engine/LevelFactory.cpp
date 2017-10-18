@@ -430,6 +430,7 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 		//translation_component.myOrientation = CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(component.direction.x)) * translation_component.myOrientation;
 
 		m_LevelReader.ReadElement(it->value["angle"], component.angle);
+		component.angle *= 0.5f;
 		component.angle = cl::DegreeToRad(component.angle);
 		component.m_LightID = Engine::GetInstance()->RegisterLight();
 	}

@@ -38,7 +38,7 @@ psInput main(vsInput input)
 	
 	output.pos = mul(input.pos, orientation);
 	output.pos = mul(output.pos, camera_view_x_proj);
-	output.cosAngle.x = cos(_angle / 2);
+	output.cosAngle.x = cos(_angle );
 	output.range = range ;
 	output.angle = _angle ;
 

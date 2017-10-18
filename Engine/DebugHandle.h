@@ -23,6 +23,9 @@ namespace debug
 		void AddText(std::string str);
 		void AddValueToPrint(s32* value);
 		
+
+		void RegisterCheckbox(DebugCheckbox checkbox);
+
 	private:
 
 		static DebugHandle* m_Instance;
@@ -33,7 +36,7 @@ namespace debug
 		CU::GrowingArray<std::string> m_Text;
 		CU::GrowingArray<DebugSlider<float>> m_Sliders;
 		CU::GrowingArray<DebugTextValue<int>> m_Values;
-
+		CU::GrowingArray<DebugCheckbox> m_Checkboxes;
 
 		/**
 #if !defined(_PROFILE) && !defined(_FINAL)

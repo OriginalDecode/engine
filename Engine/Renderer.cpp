@@ -102,7 +102,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	pDebug->AddTexture(m_DebugTexture3, "Metalness");
 	pDebug->AddTexture(m_DebugTexture4, "Roughness");
 	pDebug->AddTexture(m_DebugTexture5, "Emissive");
-
+	pDebug->RegisterCheckbox(debug::DebugCheckbox(&m_LightModelWireframe, "Light Model Wireframe"));
 
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
@@ -463,7 +463,8 @@ void Renderer::RenderSpotlight()
 		light->SetData(data);
 
 		CU::Matrix44f shadow_mvp;
-		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
+		
+		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(m_LightModelWireframe ? graphics::WIREFRAME : graphics::CULL_NONE));
 		m_LightPass->RenderSpotlight(light, m_Camera->GetOrientation(), m_Camera->GetPerspective(), shadow_mvp, m_RenderContext);
 
 	}

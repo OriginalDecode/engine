@@ -138,7 +138,7 @@ private:
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	bool m_RenderLines = false;
-
+	bool m_LightModelWireframe = false;
 	Texture* m_DebugTexture0 = nullptr; // Albedo / Diffuse
 	Texture* m_DebugTexture1 = nullptr; // Normal
 	Texture* m_DebugTexture2 = nullptr; // Depth

@@ -52,29 +52,38 @@ namespace debug
 
 			ImGui::Checkbox("Debug Textures", &sDebugTextures);
 
+			for (DebugCheckbox& cb : m_Checkboxes)
+			{
+				ImGui::Checkbox(cb.m_Label.c_str(), cb.m_Toggleable);
+			}
+
 			if (sDebugTextures)
 				DebugTextures();
 
-			for (std::string str : m_Text)
+			/*for (std::string str : m_Text)
 			{
 				ImGui::Text(str.c_str());
 			}
-
-			for (auto& obj : m_Values)
+*/
+			/*for (auto& obj : m_Values)
 			{
 				std::stringstream ss;
 				ss << obj.m_Label << " : " << *obj.m_Value;
 				ImGui::Text(ss.str().c_str());
 			}
+*/
 
-			if (ImGui::BeginChild("Region", ImVec2(ImGui::GetWindowSize().x- 25.f, 200.f), false))
-			{
-				for (s32* v : m_IntValuesToPrint)
-				{
-					ImGui::Text("%d", *v);
-				}
-				ImGui::EndChild();
-			}
+
+
+
+// 			if (ImGui::BeginChild("Region", ImVec2(ImGui::GetWindowSize().x- 25.f, 200.f), false))
+// 			{
+// 				for (s32* v : m_IntValuesToPrint)
+// 				{
+// 					ImGui::Text("%d", *v);
+// 				}
+// 				ImGui::EndChild();
+// 			}
 
 			ImGui::End();
 		}
@@ -152,6 +161,11 @@ namespace debug
 	void DebugHandle::AddValueToPrint(s32* value)
 	{
 		m_IntValuesToPrint.Add(value);
+	}
+
+	void DebugHandle::RegisterCheckbox(DebugCheckbox checkbox)
+	{
+		m_Checkboxes.Add(checkbox);
 	}
 
 	//  	s32 DebugHandle::RegisterMainWindow(DebugMainWindow window)

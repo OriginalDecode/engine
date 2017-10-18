@@ -36,6 +36,22 @@ namespace debug
 
 	};
 	
+
+	struct DebugCheckbox
+	{
+		DebugCheckbox() = default;
+		DebugCheckbox(bool* pToggleable, const std::string& label)
+			: m_Toggleable(pToggleable)
+			, m_Label(label)
+		{
+
+		}
+		bool* m_Toggleable;
+		std::string m_Label;
+	};
+
+
+
 	
 	/**
 	template<typename T>

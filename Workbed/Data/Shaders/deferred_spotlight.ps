@@ -105,8 +105,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float2 texCoord = input.uv.xy;
 
 	float4 depth = DepthTexture.Sample(sampler0, texCoord);
-	if ( depth.r <= 0) 
-		discard;
+
 
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, texCoord);	
@@ -122,16 +121,18 @@ float4 main(VS_OUTPUT input) : SV_Target
 	normal *= 2;
 	normal -= 1;
 	
-	float4 toLight = (position - pixel_pos);
+	float4 toLight = (pixel_pos - position);
 
-	float cosCone = input.cosAngle.x;
-    float3 lightToPixel = normalize(-toLight);
-    float spotFactor = dot(lightToPixel, direction);
+	float cosCone = input.cosAngle.x ;
+    float3 lightToPixel = normalize(toLight);
+    float spotFactor = dot(lightToPixel, normalize(direction));
 
+	float angularAttenuation =    abs(  1 - (1 - spotFactor) *  1 / ( 1 - cosCone) ) ;
 
-	float angularAttenuation =    (   (1 - spotFactor) *  1 / ( 1 - cosCone) );
 	float ln = length(toLight);
 	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
+
+	// return (1-angularAttenuation) * attenuation;
 
 	float4 to_eye = normalize(camPosition - pixel_pos);
 	float3 refVec = normalize(reflect(to_eye.xyz, normal.xyz));
@@ -142,6 +143,8 @@ float4 main(VS_OUTPUT input) : SV_Target
 	half4 reflection_fresnel = half4(ReflectionFresnel(albedo.rgb, normal.xyz, to_eye, roughnessOffsetted), 1);
 	float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
 
+	float intensity = 100;
+
 	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
 	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo * (1 - reflection_fresnel);
 	cube_ambient = saturate(cube_ambient);
@@ -150,14 +153,14 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float4 diffuse = 0; // metalness_albedo * cube_ambient;
 	float4 spec = 0;
-	float SatNdL = saturate(dot(-direction, normal));
+	float SatNdL = saturate(dot(direction, normal));
 
-	diffuse += float4( ( SatNdL * 1 / PI)  * albedo.rgb, 1.0f);
+	diffuse += float4( ( SatNdL * 1 / PI)  * albedo.rgb, 1.0f) * intensity;
 
 	diffuse += cube_ambient * albedo;
 
 	float HdN = dot(half_vec, normal);
-	float NdL = normalize(dot(normal, -direction));//max(dot(normal, -direction), 0);
+	float NdL = normalize(dot(normal, direction));//max(dot(normal, -direction), 0);
 
 	float EdH = dot(-to_eye, half_vec);
 	
@@ -181,13 +184,15 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float V = saturate(0.25f / (G1V * G1L));
 
-	spec +=  (schlickFresnel * (1 +ggxDistr) * (1+V)  );
+	
 
+	spec +=  (schlickFresnel * (1 +ggxDistr) * (1+V)  );
+	spec *= intensity;
 	float4 output = 0;
 	output = lerp(diffuse, cube, schlickFresnel);
 	output += spec;
 
-	return output * angularAttenuation * attenuation * float4(1,0,0,0);
+	return output * (1-angularAttenuation) * attenuation * float4(1,0,0,0);
 
 	//float4 col = color;
 

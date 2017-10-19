@@ -7,7 +7,7 @@ cbuffer per_frame : register(b0)
 cbuffer Spotlight : register( b1 )
 {
 	float4 color;
-	float4 position;
+	float4 light_pos;
 	float4 camPosition;
 	row_major float4x4 shadowMVP;
     float4 direction;
@@ -64,29 +64,37 @@ float4 main(VS_OUTPUT input) : SV_Target
 {
 	input.uv /= input.uv.w;
 	float2 texCoord = input.uv.xy;
+
+	float4 diffuse = AlbedoTexture.Sample(sampler0, texCoord);
+	float4 normal = NormalTexture.Sample(sampler0, texCoord) * 2 - 1;
 	float4 depth = DepthTexture.Sample(sampler0, texCoord);
+	
+	
 	float4 world_pos = getWorldPos(texCoord, depth.r);
 
 	float cosCone = input.cosAngle.x ;
 	float angle = input.angle;
 
 
-
-	float4 toLight = position - world_pos;
+	float4 light_vec = light_pos - world_pos; 
 	float4 light_dir =  normalize(direction);
-    float3 toPixel = normalize(toLight);
-    float spotFactor = dot(toPixel, light_dir);
+    float3 toPixel = normalize(light_vec);
+    float spotFactor = dot(toPixel, -light_dir);
+	float ln = length(light_vec);
 
-
-	if(spotFactor < cosCone)
+	if(input.range < ln)
 		discard;
 
+	float ndl = dot(-toPixel, normal);
+
 	float angularAttenuation =     (1 - spotFactor) *  (1 / ( 1 - cosCone)) / 2   ;
-	float ln = length(toLight);
 	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
 	
+	float spot = pow(max(dot(-toPixel, light_dir),0), 1);
+	float att = spot / dot(1.f, float3(1.0, ln, ln*ln));
 
-	return angularAttenuation * attenuation;
+
+	return spot * att ;
 
 
 

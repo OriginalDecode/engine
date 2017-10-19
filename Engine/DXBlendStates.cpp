@@ -28,8 +28,6 @@ namespace graphics
 #ifndef FINAL
 		SetDebugName(blend_state, "NO_BLEND BlendState");
 #endif
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
 		blendDesc.RenderTarget[0].BlendEnable = TRUE;
 		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
 		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE; // dest blend makes it go bonkers?
@@ -37,6 +35,9 @@ namespace graphics
 		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
 		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE; //no difference between zero & one
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+		blendDesc.AlphaToCoverageEnable = FALSE;
+		blendDesc.IndependentBlendEnable = FALSE;
 
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
 		blend_state = nullptr;

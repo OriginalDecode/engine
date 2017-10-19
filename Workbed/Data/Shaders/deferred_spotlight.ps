@@ -20,6 +20,7 @@ struct VS_OUTPUT
 	float2 cosAngle : COSANGLE;
     float range : RANGE;
     float angle : ANGLE;
+	float4 world : WORLD;
 };
 
 float CalculateAttenuation(float someDistance)
@@ -76,25 +77,43 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float angle = input.angle;
 
 
-	float4 light_vec = light_pos - world_pos; 
 	float4 light_dir =  normalize(direction);
+	float4 light_vec = light_pos - input.world; 
     float3 toPixel = normalize(light_vec);
     float spotFactor = dot(toPixel, -light_dir);
 	float ln = length(light_vec);
 
-	if(input.range < ln)
+	return input.world;
+
+	if(spotFactor < cosCone)
 		discard;
 
 	float ndl = dot(-toPixel, normal);
 
-	float angularAttenuation =     (1 - spotFactor) *  (1 / ( 1 - cosCone)) / 2   ;
-	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
+	float angularAttenuation = ( 1.0 - ( 1.0 - spotFactor) *  1 / ( 1 - cosCone));
+	//float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
+
+	float falloff = 0.9 - (ln / max(input.range, 0.000001));
+	float _att = saturate(1.f * falloff);
+
+	float attenuation = _att * angularAttenuation; 
 	
-	float spot = pow(max(dot(-toPixel, light_dir),0), 1);
-	float att = spot / dot(1.f, float3(1.0, ln, ln*ln));
+	float4 final_color = float4(1,0,0,1);
+	final_color = saturate(ndl * final_color);
+	final_color *= 10.f;
+	final_color *= diffuse;
+	final_color *= attenuation;
 
 
-	return spot * att ;
+	return final_color;
+
+
+
+	
+	//float spot = pow(max(dot(-toPixel, light_dir),0), 1);
+	//float att = spot / dot(1.f, float3(1.0, ln, ln*ln));
+
+
 
 
 

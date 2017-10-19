@@ -75,6 +75,8 @@ void Game::InitState(StateStack* state_stack)
 	//m_Engine->AddFunction("Reload", [&] { Reload(); });
 }
 
+static const char* camera_file = "camera_pos";
+
 void Game::Initiate(const std::string& level)
 {
 	m_Synchronizer = m_Engine->GetSynchronizer();
@@ -102,6 +104,24 @@ void Game::Initiate(const std::string& level)
 	m_PauseState.InitState(m_StateStack);
 	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 
+
+
+	std::ifstream camera_load;
+	std::string line;
+	camera_load.open(camera_file);
+	if (camera_load.is_open())
+	{
+		CU::Matrix44f init_orientation;
+		int i = 0;
+		while (getline(camera_load, line))
+		{
+			init_orientation[i] = stof(line);
+			i++;
+		}
+		m_Camera->SetOrientation(init_orientation);
+	}
+
+
 	//PostMaster::GetInstance()->Subscribe("hello_world", this);
 	//PostMaster::GetInstance()->Subscribe("left_click", this);
 }
@@ -115,6 +135,24 @@ void Game::EndState()
 
 void Game::Render(bool render_through)
 {
+}
+
+void Game::SaveCameraPosition()
+{
+	std::ofstream camera_save;
+	camera_save.open(camera_file, std::ios::trunc);
+
+	if (camera_save.is_open())
+	{
+		for (size_t i = 0; i < 16; i++)
+		{
+			camera_save << m_Camera->GetOrientation()[i];
+			camera_save << "\n";
+		}
+
+		camera_save.flush();
+		camera_save.close();
+	}
 }
 
 void Game::Reload()
@@ -215,9 +253,14 @@ void Game::OldUpdate(float dt)
 
 
 	//CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
-
-
-
+	if (input_wrapper->IsDown(KButton::LCTRL))
+	{
+		if (input_wrapper->OnDown(KButton::S))
+		{
+			SaveCameraPosition();
+		}
+		return;
+	}
 
 	if (input_wrapper->OnDown(KButton::ESCAPE))
 	{

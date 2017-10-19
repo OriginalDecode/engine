@@ -64,25 +64,29 @@ float4 main(VS_OUTPUT input) : SV_Target
 {
 	input.uv /= input.uv.w;
 	float2 texCoord = input.uv.xy;
-
 	float4 depth = DepthTexture.Sample(sampler0, texCoord);
 	float4 world_pos = getWorldPos(texCoord, depth.r);
 
-	float4 toLight = (world_pos - position);
 	float cosCone = input.cosAngle.x ;
-    float3 lightToPixel = normalize(toLight);
-    float spotFactor = dot(lightToPixel, normalize(direction));
-	
-	if(spotFactor < cosCone )
+	float angle = input.angle;
+
+
+
+	float4 toLight = position - world_pos;
+	float4 light_dir =  normalize(direction);
+    float3 toPixel = normalize(toLight);
+    float spotFactor = dot(toPixel, light_dir);
+
+
+	if(spotFactor < cosCone)
 		discard;
 
-	float angularAttenuation =    1 -  ((1 - spotFactor) *  (1 / ( 1 - cosCone)))  ;
+	float angularAttenuation =     (1 - spotFactor) *  (1 / ( 1 - cosCone)) / 2   ;
 	float ln = length(toLight);
-	return ln;
 	float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
 	
 
-	return angularAttenuation;
+	return angularAttenuation * attenuation;
 
 
 

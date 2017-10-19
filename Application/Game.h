@@ -38,6 +38,8 @@ public:
 
 
 private:
+	void SaveCameraPosition();
+
 	void Reload();
 	void HandleEvent(u64 event, void* data) override;
 	bool event_happen = false;

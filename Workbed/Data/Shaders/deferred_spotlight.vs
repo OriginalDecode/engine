@@ -22,6 +22,7 @@ struct psInput
 	float2 cosAngle : COSANGLE;
     float range : RANGE;
     float angle : ANGLE;
+	float4 world : WORLD;
 };
 
 psInput main(vsInput input)
@@ -47,6 +48,6 @@ psInput main(vsInput input)
 	float w = output.pos.w;
 
 	output.uv = float4((float2(x + w, w - y)) * 0.5f, output.pos.zw);
-		
+	output.world = input.pos;
 	return output;
 };

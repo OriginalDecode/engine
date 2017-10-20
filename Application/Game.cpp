@@ -105,25 +105,38 @@ void Game::Initiate(const std::string& level)
 	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 
 
-
-	std::ifstream camera_load;
-	std::string line;
-	camera_load.open(camera_file);
-	if (camera_load.is_open())
+	bool read_camera = false;
+	if (read_camera)
 	{
-		CU::Matrix44f init_orientation;
-		int i = 0;
-		while (getline(camera_load, line))
+		std::ifstream camera_load;
+		std::string line;
+		camera_load.open(camera_file);
+		if (camera_load.is_open())
 		{
-			init_orientation[i] = stof(line);
-			i++;
+			CU::Matrix44f init_orientation;
+			int i = 0;
+			while (getline(camera_load, line))
+			{
+				init_orientation[i] = stof(line);
+				i++;
+			}
+			m_Camera->SetOrientation(init_orientation);
 		}
-		m_Camera->SetOrientation(init_orientation);
 	}
 
+	spotlight.Add(m_Engine->RegisterLight());
 
-	//PostMaster::GetInstance()->Subscribe("hello_world", this);
-	//PostMaster::GetInstance()->Subscribe("left_click", this);
+
+	spotorient = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * spotorient;
+	spotorient.SetPosition({ 5.f, 4.f, 5.f, 1.f });
+
+
+
+	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
+	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &degree, "Spotlight Degree"));
+	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &intensity, "Spotlight Intensity"));
+	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &range, "Spotlight Range"));
+
 }
 
 void Game::EndState()
@@ -160,7 +173,6 @@ void Game::Reload()
 	m_Paused = true;
 	m_World.CleanUp();
 	m_Engine->GetEntityManager().Reset();
-	//Initiate("Data/Levels/level_03.json");
 }
 
 void Game::HandleEvent(u64 event, void*)
@@ -298,21 +310,14 @@ void Game::OldUpdate(float dt)
 		entity_speed -= 1.f * dt;
 	}
 
-
-	//CU::Vector3f pos = m_Camera->GetOrientation().GetPosition();
-	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75f, 0.1f), "\nx:%.3f\ny:%.3f\nz:%.3f\n#%s(%d)", pos.x, pos.y, pos.z,
-	//	((m_FPSToPrint >= 50.f) ? "00FF00" : (m_FPSToPrint < 25.f) ? "FF0000" : "FFFF00"), m_FPSToPrint));
-
-	//if (event_happen)
-	//	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5f, 0.7f), "Hello World has been sent & recieved"));
-
-	//AddRenderCommand(ModelCommand(KEY_USED, CU::Vector3f(5.f, 0.f, 5.f), false));
-
-	//AddRenderCommand(ModelCommand(key, CU::Vector3f(256, 0, 256), false));
-	/*CU::Matrix44f orientation;
-	orientation.SetPosition(CU::Vector3f(50, 10, 50));
-	orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * orientation;
-	m_Synchronizer->AddRenderCommand(SpotlightCommand(0, 53, 12, 1, CU::Vector4f(255, 0, 0, 255), orientation, false));*/
+	m_Synchronizer->AddRenderCommand(SpotlightCommand(
+		spotlight.GetLast(),
+		cl::DegreeToRad(degree * 0.5f), 
+		range, 
+		intensity,
+		CU::Vector4f(1, 0, 0, 1), 
+		spotorient, 
+		false));
 
 
 	HandleMovement(input_wrapper, entity_speed, dt);

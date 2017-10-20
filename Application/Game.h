@@ -76,4 +76,9 @@ private:
 	int light = 0;
 
 
+	CU::GrowingArray<s32> spotlight;
+	CU::Matrix44f spotorient;
+	float degree = 45.f;
+	float range = 0.f;
+	float intensity = 0.f;
 };

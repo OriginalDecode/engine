@@ -549,8 +549,9 @@ void Renderer::RenderLines()
 		if (!result)
 			return;
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::LINE, "Expected Line command type");
-		m_Line->Render(command->m_Points, m_RenderContext);
+		m_Line->AddLine(command->m_Points);
 	}
+	m_Line->Render(0, m_RenderContext);
 	PROFILE_BLOCK_END;
 }
 

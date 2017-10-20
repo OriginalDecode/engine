@@ -60,6 +60,13 @@ namespace debug
 			if (sDebugTextures)
 				DebugTextures();
 
+			ImGui::Separator();
+			for (DebugSlider<float>& s : m_Sliders)
+			{
+				ImGui::SliderFloat(s.m_Label.c_str(), s.m_Value, s.m_Min, s.m_Max);
+			}
+
+
 			/*for (std::string str : m_Text)
 			{
 				ImGui::Text(str.c_str());

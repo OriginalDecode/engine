@@ -24,12 +24,10 @@ void Line3D::Render(LinePoint points[2], const graphics::RenderContext& rc)
 {
 	PROFILE_FUNCTION(profiler::colors::Green);
 
-	m_FirstPoint = points[0];
-	m_SecondPoint = points[1];
-	m_Vertices.RemoveAll();
-	m_Vertices.Add(m_FirstPoint);
-	m_Vertices.Add(m_SecondPoint);
-
+	//m_FirstPoint = points[0];
+	//m_SecondPoint = points[1];
+	if (m_Vertices.Empty())
+		return;
 	auto& ctx = rc.GetContext();
 	IBuffer* pBuffer = m_VertexWrapper.GetVertexBuffer();
 	ctx.UpdateBuffer(pBuffer,
@@ -38,9 +36,18 @@ void Line3D::Render(LinePoint points[2], const graphics::RenderContext& rc)
 					 graphics::MAP_WRITE_DISCARD);
 
  	ctx.UpdateConstantBuffer(m_LineBuffer, &m_Orientation[0]);
+	ctx.VSSetConstantBuffer(1, 1, &m_LineBuffer);
+
 
 	ctx.SetBlendState(rc.GetAPI().GetBlendState(graphics::NO_BLEND));
 	ctx.Draw(this);
+	m_Vertices.RemoveAll();
+}
+
+void Line3D::AddLine(LinePoint points[2])
+{
+	m_Vertices.Add(points[0]);
+	m_Vertices.Add(points[1]);
 }
 
 void Line3D::CreateBuffer()
@@ -64,7 +71,7 @@ void Line3D::CreateBuffer()
 	m_VertexWrapper.SetStart(0);
 	m_VertexWrapper.SetStride(sizeof(LinePoint));
 	m_VertexWrapper.SetByteOffset(0);
-	m_VertexWrapper.SetVertexCount(2);
+	m_VertexWrapper.SetVertexCount(m_LineAmount);
 	m_VertexWrapper.SetSize(buffer_desc.m_ByteWidth);
 	m_VertexWrapper.SetInputLayout(input_layout);
 	m_VertexWrapper.SetTopology(graphics::LINE_LIST);

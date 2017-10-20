@@ -37,13 +37,15 @@ public:
 	Line3D();
 	~Line3D();
 
-	void Initiate(int aLineAmount = 256);
+	void Initiate(int aLineAmount = 1024);
 	void Render(LinePoint points[2], const graphics::RenderContext& render_context);
 
 	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }
 	Effect* GetEffect() const { return m_Effect; }
+	void AddLine(LinePoint points[2]);
 private:
 	void CreateBuffer();
+	CU::GrowingArray<LinePoint> m_Points;
 
 	LinePoint m_FirstPoint;
 	LinePoint m_SecondPoint;

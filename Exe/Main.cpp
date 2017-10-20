@@ -36,9 +36,14 @@ enum class EUsagePage
 
 Application* newApplication = nullptr;
 static bool g_windowactive = false;
-
+#include <exception>
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
+
+
+	std::set_terminate([]() {   MessageBox(NULL, "WAOH", "crash!", MB_ICONWARNING); std::abort(); });
+
+
 #ifdef _PROFILE
 	profiler::startListen();
 #endif/* 1,777777777777777777777777777777778*/

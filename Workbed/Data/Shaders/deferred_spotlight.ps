@@ -78,12 +78,14 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 
 	float4 light_dir =  normalize(direction);
-	float4 light_vec = light_pos - input.world; 
+	float4 light_vec = light_pos - world_pos; 
     float3 toPixel = normalize(light_vec);
     float spotFactor = dot(toPixel, -light_dir);
 	float ln = length(light_vec);
 
-	return input.world;
+
+
+
 
 	if(spotFactor < cosCone)
 		discard;
@@ -98,6 +100,10 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float attenuation = _att * angularAttenuation; 
 	
+	return attenuation * 20;
+
+
+
 	float4 final_color = float4(1,0,0,1);
 	final_color = saturate(ndl * final_color);
 	final_color *= 10.f;

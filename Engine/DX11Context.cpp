@@ -285,7 +285,15 @@ namespace graphics
 									DirectX11::GetFormat(idx.GetFormat()),
 									idx.GetByteOffset());
 
-		SetDepthState(Engine::GetAPI()->GetDepthStencilState(Z_DISABLED), 0);
+		graphics::eDepthStencilState depth = Z_DISABLED;
+		s32 depth_compare = 0;
+		if (depth_on)
+		{
+			depth = READ_NO_WRITE_PARTICLE;
+			depth_compare = 1;
+		}
+
+		SetDepthState(Engine::GetAPI()->GetDepthStencilState(depth), depth_compare);
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 	}
 

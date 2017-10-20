@@ -5,17 +5,33 @@
 #include <Engine/ShadowSpotlight.h>
 
 #include <d3d11shader.h>
-
+#include <Engine/Quad.h>
 
 static bool s_Wireframe = false;
 
 SpotLight::SpotLight()
 {
-	u64 key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx"
+	Engine* pEngine = Engine::GetInstance();
+	u64 key = pEngine->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx"
 		, "Shaders/deferred_spotlight.json"
 		, false);
-	m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
+
+	m_Model = static_cast<LightModel*>(pEngine->GetModel(key));
 	m_Model->Initiate("cone.fbx");
+
+
+
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+
+	Texture* pQuadTex = pEngine->GetTexture("Data/Textures/lightbulb-on.dds");
+	Effect* pEffect = pEngine->GetEffect("Data/Shaders/world_plane.json");
+	pEffect->AddShaderResource(pQuadTex, Effect::DIFFUSE);
+	m_LightQuad = new Quad(pEffect, 0.5f, 0.5f);
+	m_QuadBuffer = pEngine->GetAPI()->GetDevice().CreateConstantBuffer(sizeof(quadbuffer), "quadbuffer");
+
+#endif
+
 
 	// 	m_ShadowSpotlight = new ShadowSpotlight;
 	// 	m_ShadowSpotlight->Initiate(2048.f);
@@ -52,6 +68,13 @@ SpotLight::SpotLight()
 
 SpotLight::~SpotLight()
 {
+
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+	SAFE_DELETE(m_LightQuad);
+	Engine::GetInstance()->GetAPI()->ReleasePtr(m_QuadBuffer);
+#endif
+
 	m_Model = nullptr;
 	SAFE_DELETE(m_ShadowSpotlight);
 
@@ -102,6 +125,17 @@ void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera
 void SpotLight::Render(const graphics::RenderContext& render_context)
 {
 	m_Model->Render(render_context);
+
+// #if !defined(_PROFILE) && !defined(_FINAL)
+// 	render_context.GetContext().SetBlendState(render_context.GetAPI().GetBlendState(graphics::ALPHA_BLEND));
+// 
+// 	m_LightQuadBuffer.invview = CU::Math::Inverse(render_context.GetEngine().GetCamera()->GetOrientation());
+// 	m_LightQuadBuffer.view = render_context.GetEngine().GetCamera()->GetOrientation();
+// 	m_LightQuadBuffer.proj = render_context.GetEngine().GetCamera()->GetPerspective();
+// 	render_context.GetContext().UpdateConstantBuffer(m_QuadBuffer, &m_LightQuadBuffer);
+// 	render_context.GetContext().VSSetConstantBuffer(0, 1, &m_QuadBuffer);
+// 	m_LightQuad->Render(true);
+// #endif
 }
 
 void SpotLight::SetData(const SpotlightData& data)

@@ -295,7 +295,6 @@
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\profile_defines.h" />
     <ClInclude Include="AABB.h" />
     <ClInclude Include="AssetFactory.h" />
     <ClInclude Include="AssetsContainer.h" />
@@ -364,6 +363,7 @@
     <ClInclude Include="ParticleData.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PostProcessManager.h" />
+    <ClInclude Include="profile_defines.h" />
     <ClInclude Include="Quad.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />

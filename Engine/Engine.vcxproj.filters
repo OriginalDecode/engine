@@ -418,11 +418,11 @@
       <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
     </ClInclude>
     <ClInclude Include="Viewport.h" />
-    <ClInclude Include="..\profile_defines.h" />
     <ClInclude Include="AssetFactory.h" />
     <ClInclude Include="LightManager.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="InstancingManager.h" />
+    <ClInclude Include="profile_defines.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">

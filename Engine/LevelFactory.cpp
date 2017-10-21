@@ -121,10 +121,11 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 	if (sponza)
 		sponza = false;
-	//#ifdef _EDITOR
-		//if(hasLight)
-			//CreateDebugComponent(e, hasLight, debug_flags);
-	//#endif
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+		if(hasLight)
+			CreateDebugComponent(e, hasLight, debug_flags);
+#endif
 
 	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
 
@@ -402,11 +403,20 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 		}
 	}
 
-	m_LevelReader.ReadElement(it->value["color"], component.color);
+	CU::Vector3f col;
+	m_LevelReader.ReadElement(it->value["color"], col);
 	m_LevelReader.ReadElement(it->value["range"], component.range);
-	component.color.x /= 255;
-	component.color.y /= 255;
-	component.color.z /= 255;
+
+	if (col > CU::Vector3f(1.f, 1.f, 1.f))
+		col /= 255.f;
+
+	component.color = col;
+
+
+
+	////component.color.x /= 255;
+	//component.color.y /= 255;
+	//component.color.z /= 255;
 
 	if (type == "pointlight")
 	{

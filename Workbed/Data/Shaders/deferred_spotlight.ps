@@ -67,9 +67,15 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float2 texCoord = input.uv.xy;
 
 	float4 diffuse = AlbedoTexture.Sample(sampler0, texCoord);
-	float4 normal = NormalTexture.Sample(sampler0, texCoord) * 2 - 1;
+	float4 normal = NormalTexture.Sample(sampler0, texCoord);
 	float4 depth = DepthTexture.Sample(sampler0, texCoord);
 	
+
+	float metalness = normal.w;
+
+	normal *= 2;
+	normal -= 1;
+
 	
 	float4 world_pos = getWorldPos(texCoord, depth.r);
 
@@ -90,7 +96,9 @@ float4 main(VS_OUTPUT input) : SV_Target
 	if(spotFactor < cosCone)
 		discard;
 
-	float ndl = dot(-toPixel, normal);
+
+
+	float ndl = dot(toPixel, normal);
 
 	float angularAttenuation = ( 1.0 - ( 1.0 - spotFactor) *  1 / ( 1 - cosCone));
 	//float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
@@ -100,12 +108,12 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float attenuation = _att * angularAttenuation; 
 	
-	return attenuation * 20;
 
 
 
-	float4 final_color = float4(1,0,0,1);
+	float4 final_color = color;
 	final_color = saturate(ndl * final_color);
+	return final_color;
 	final_color *= 10.f;
 	final_color *= diffuse;
 	final_color *= attenuation;

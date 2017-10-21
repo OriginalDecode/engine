@@ -289,7 +289,6 @@ namespace graphics
 		s32 depth_compare = 0;
 		if (depth_on)
 		{
-			depth = READ_NO_WRITE_PARTICLE;
 			depth_compare = 1;
 		}
 

@@ -126,16 +126,14 @@ void SpotLight::Render(const graphics::RenderContext& render_context)
 {
 	m_Model->Render(render_context);
 
-// #if !defined(_PROFILE) && !defined(_FINAL)
-// 	render_context.GetContext().SetBlendState(render_context.GetAPI().GetBlendState(graphics::ALPHA_BLEND));
-// 
-// 	m_LightQuadBuffer.invview = CU::Math::Inverse(render_context.GetEngine().GetCamera()->GetOrientation());
-// 	m_LightQuadBuffer.view = render_context.GetEngine().GetCamera()->GetOrientation();
-// 	m_LightQuadBuffer.proj = render_context.GetEngine().GetCamera()->GetPerspective();
-// 	render_context.GetContext().UpdateConstantBuffer(m_QuadBuffer, &m_LightQuadBuffer);
-// 	render_context.GetContext().VSSetConstantBuffer(0, 1, &m_QuadBuffer);
-// 	m_LightQuad->Render(true);
-// #endif
+ #if !defined(_PROFILE) && !defined(_FINAL)
+ 	render_context.GetContext().SetBlendState(render_context.GetAPI().GetBlendState(graphics::ALPHA_BLEND));
+ 
+ 	m_LightQuadBuffer.camera_orientation = render_context.GetEngine().GetCamera()->GetOrientation();
+ 	render_context.GetContext().UpdateConstantBuffer(m_QuadBuffer, &m_LightQuadBuffer);
+ 	render_context.GetContext().VSSetConstantBuffer(2, 1, &m_QuadBuffer);
+ 	m_LightQuad->Render(true);
+ #endif
 }
 
 void SpotLight::SetData(const SpotlightData& data)

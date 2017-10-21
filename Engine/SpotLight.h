@@ -69,9 +69,7 @@ private:
 	IBuffer* m_QuadBuffer = nullptr;
 	struct quadbuffer
 	{
-		CU::Matrix44f invview;
-		CU::Matrix44f view;
-		CU::Matrix44f proj;
+		CU::Matrix44f camera_orientation; //non inverted, we want the rotation
 	} m_LightQuadBuffer;
 
 	Quad* m_LightQuad = nullptr;

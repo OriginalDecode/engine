@@ -25,7 +25,7 @@ DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
-	//PostMaster::GetInstance()->Subscribe(eMessageType::ON_LEFT_CLICK, this);
+	PostMaster::GetInstance()->Subscribe(eMessageType::ON_LEFT_CLICK, this);
 	//PostMaster::GetInstance()->Subscribe("left_click", this);
 	m_CurrentEntity = -1;
 	m_MouseDeltaModifier = 100.f;
@@ -33,13 +33,12 @@ DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 
 DebugSystem::~DebugSystem()
 {
-	//PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_LEFT_CLICK, this);
+	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_LEFT_CLICK, this);
 }
 
 void DebugSystem::Update(float /*dt*/, bool paused)
 {
-	return;
-	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::TEXT, current_model, CU::Vector2f(0.75, 0)));
+	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75, 0), "Current Entity : %d", m_CurrentEntity));
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (s32 i = 0; i < entities.Size(); i++)
 	{
@@ -376,7 +375,6 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 
 void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation)
 {
-	return;
 	LinePoint p1, p2, p3, p4, p5, p6, p7, p8;
 	p1.color = component.debugColor;
 	p2.color = p1.color;

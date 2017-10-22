@@ -170,17 +170,17 @@ void Game::OldUpdate(float dt)
 
 	if (input_wrapper->OnDown(KButton::W))
 	{
-		pEventHandle->SendMessage("w_down");
+		pEventHandle->SendMessage("w_down", nullptr);
 	}
 
 	if (input_wrapper->OnDown(KButton::E))
 	{
-		pEventHandle->SendMessage("e_down");
+		pEventHandle->SendMessage("e_down", nullptr);
 	}
 
 	if (input_wrapper->OnDown(KButton::R))
 	{
-		pEventHandle->SendMessage("r_down");
+		pEventHandle->SendMessage("r_down", nullptr);
 	}
 
 

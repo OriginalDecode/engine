@@ -161,11 +161,29 @@ void Game::OldUpdate(float dt)
 	}
 
 	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
- 	if (input_wrapper->OnClick(MouseInput::LEFT))
- 	{
- 		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
- 		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, m_Player));
- 	}
+	PostMaster* pEventHandle = PostMaster::GetInstance();
+	if (input_wrapper->OnClick(MouseInput::LEFT))
+	{
+		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
+		pEventHandle->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, m_Player));
+	}
+
+	if (input_wrapper->OnDown(KButton::W))
+	{
+		pEventHandle->SendMessage("w_down");
+	}
+
+	if (input_wrapper->OnDown(KButton::E))
+	{
+		pEventHandle->SendMessage("e_down");
+	}
+
+	if (input_wrapper->OnDown(KButton::R))
+	{
+		pEventHandle->SendMessage("r_down");
+	}
+
+
 
 
 	if (input_wrapper->IsDown(KButton::LCTRL))
@@ -185,22 +203,21 @@ void Game::OldUpdate(float dt)
 	if (input_wrapper->IsDown(MouseInput::RIGHT))
 	{
 		m_Camera->Update(m_Engine->GetInputHandle()->GetDeltaCursorPos());
+
+		if (input_wrapper->IsDown(KButton::W))
+			m_Camera->Move(eDirection::FORWARD, s_CamSpeed * dt);
+		if (input_wrapper->IsDown(KButton::S))
+			m_Camera->Move(eDirection::BACK, -s_CamSpeed * dt);
+		if (input_wrapper->IsDown(KButton::A))
+			m_Camera->Move(eDirection::LEFT, -s_CamSpeed * dt);
+		if (input_wrapper->IsDown(KButton::D))
+			m_Camera->Move(eDirection::RIGHT, s_CamSpeed * dt);
+		if (input_wrapper->IsDown(KButton::SPACE))
+			m_Camera->Move(eDirection::UP, s_CamSpeed * dt);
+		if (input_wrapper->IsDown(KButton::X))
+			m_Camera->Move(eDirection::DOWN, -s_CamSpeed * dt);
+
 	}
-
-
-	if (input_wrapper->IsDown(KButton::W))
-		m_Camera->Move(eDirection::FORWARD, s_CamSpeed * dt);
-	if (input_wrapper->IsDown(KButton::S))
-		m_Camera->Move(eDirection::BACK, -s_CamSpeed * dt);
-	if (input_wrapper->IsDown(KButton::A))
-		m_Camera->Move(eDirection::LEFT, -s_CamSpeed * dt);
-	if (input_wrapper->IsDown(KButton::D))
-		m_Camera->Move(eDirection::RIGHT, s_CamSpeed * dt);
-	if (input_wrapper->IsDown(KButton::SPACE))
-		m_Camera->Move(eDirection::UP, s_CamSpeed * dt);
-	if (input_wrapper->IsDown(KButton::X))
-		m_Camera->Move(eDirection::DOWN, -s_CamSpeed * dt);
-
 
 	static float entity_speed = 0.2f;
 
@@ -215,11 +232,11 @@ void Game::OldUpdate(float dt)
 
 	m_Synchronizer->AddRenderCommand(SpotlightCommand(
 		spotlight.GetLast(),
-		cl::DegreeToRad(degree * 0.5f), 
-		range, 
+		cl::DegreeToRad(degree * 0.5f),
+		range,
 		intensity,
-		CU::Vector4f(1, 0, 0, 1), 
-		spotorient, 
+		CU::Vector4f(1, 0, 0, 1),
+		spotorient,
 		false));
 
 

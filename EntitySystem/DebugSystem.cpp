@@ -72,9 +72,11 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 	if (m_CurrentEntity > -1)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(m_CurrentEntity);
+
 		debug.m_PositionGizmo.Render();
 		debug.m_RotationGizmo.Render();
-		//debug.m_ScaleGizmo.Render();
+		debug.m_ScaleGizmo.Render();
+
 		if (m_Holding && m_Direction)
 		{
 			const CU::Vector2f& delta_pos = m_Engine->GetInputHandle()->GetDeltaCursorPos();

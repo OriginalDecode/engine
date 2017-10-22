@@ -576,6 +576,9 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 		position_gizmo.CreateGizmoHandle(gizmo_forward, "Data/Model/blue_arrow.fbx", "Data/Textures/blue.dds", GizmoHandle::eDirection::FORWARD);
 		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
+		position_gizmo.ToggleActive();
+
+		position_gizmo.Initiate(w_down);
 	}
 
 
@@ -603,14 +606,10 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 		rotation_gizmo.CreateGizmoHandle(gizmo_forward, "Data/Model/rotate_z.fbx", "Data/Textures/blue.dds", GizmoHandle::eDirection::Z);
 		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
-		rotation_gizmo.ToggleActive();
 
+		rotation_gizmo.Initiate(e_down);
 
 	}
-
-
-
-	//component.m_PositionGizmo.Initiate();
 }
 
 void LevelFactory::CreateTerrain(std::string terrain_path)

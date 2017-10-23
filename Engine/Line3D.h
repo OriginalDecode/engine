@@ -5,24 +5,6 @@
 
 #include <Engine/VertexWrapper.h>
 
-struct LinePoint
-{
-	LinePoint(const CU::Vector4f& pos, const CU::Vector4f& col)
-		: position(pos)
-		, color(col)
-	{
-
-	}
-	LinePoint() { color = { 255.f, 255.f, 255.f, 255.f }; }
-	CU::Vector4f position;
-	CU::Vector4f color;
-};
-
-struct Line
-{
-	LinePoint first;
-	LinePoint second;
-};
 
 
 namespace graphics

@@ -210,7 +210,7 @@ void TreeNodeBase::SetMemoryBlockIndex(s32 index)
 #define YELLOW CU::Vector4f(255.f,255.f,0.f,255.f)
 void TreeNodeBase::RenderBox()
 {
-
+	m_Lines.RemoveAll();
 	LinePoint points[8];
 
 
@@ -262,25 +262,24 @@ void TreeNodeBase::RenderBox()
 	points[7].position.y = m_CenterPosition.y + m_HalfWidth;
 
 
+	m_Lines.Add(Line(points[0], points[1]));
+	m_Lines.Add(Line(points[0], points[2]));
+	m_Lines.Add(Line(points[0], points[6]));
 
-	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[1], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[2], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[6], true));
+	m_Lines.Add(Line(points[1], points[3]));
+	m_Lines.Add(Line(points[1], points[7]));
 
-	m_Synchronizer->AddRenderCommand(LineCommand(points[1], points[3], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[1], points[7], true));
-
-	m_Synchronizer->AddRenderCommand(LineCommand(points[3], points[5], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[5], points[7], true));
+	m_Lines.Add(Line(points[3], points[5]));
+	m_Lines.Add(Line(points[5], points[7]));
 
 
-	m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[4], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[4], true));
+	m_Lines.Add(Line(points[6], points[4]));
+	m_Lines.Add(Line(points[2], points[4]));
 
-	m_Synchronizer->AddRenderCommand(LineCommand(points[4], points[5], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[3], true));
+	m_Lines.Add(Line(points[4], points[5]));
+	m_Lines.Add(Line(points[2], points[3]));
 
-	m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[7], true));
+	m_Lines.Add(Line(points[6], points[7]));
 
 }
 

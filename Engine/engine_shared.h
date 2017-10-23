@@ -7,6 +7,8 @@
 
 #include <Windows.h>
 
+#include "../CommonLib/Math/Vector/Vector.h"
+
 #define ARRSIZE(x) sizeof(x) / sizeof(x[0])
 
 #define BITFLAG(x) (1 << x)
@@ -15,6 +17,29 @@
 
 #define DEBUG_NAME(name,_class) name  #_class
 #define DEBUG_NAME_A(str,_class) str + #_class
+struct LinePoint
+{
+	LinePoint(const CU::Vector4f& pos, const CU::Vector4f& col)
+		: position(pos)
+		, color(col)
+	{
+
+	}
+	LinePoint() { color = { 255.f, 255.f, 255.f, 255.f }; }
+	CU::Vector4f position;
+	CU::Vector4f color;
+};
+
+struct Line
+{
+	Line() {}
+	Line(LinePoint first, LinePoint second)
+	{
+		m_Points[0] = first;
+		m_Points[1] = second;
+	}
+	LinePoint m_Points[2];
+};
 
 
 typedef s32 Entity;

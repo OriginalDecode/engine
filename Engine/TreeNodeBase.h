@@ -71,6 +71,9 @@ protected:
 
 	s32 m_DwellerCount = 0;
 
+	CU::GrowingArray<Line> m_Lines;
+public:
+	const CU::GrowingArray<Line>& GetLines() const { return m_Lines; }
 
 
 };

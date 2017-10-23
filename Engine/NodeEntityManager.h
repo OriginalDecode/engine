@@ -36,7 +36,7 @@ public:
 	
 
 	void SetMemoryBlockIndex(s32 index);
-	s32 GetMemoryBlockIndex() { return m_MemoryBlockIndex; }
+	s32 GetMemoryBlockIndex() const { return m_MemoryBlockIndex; }
 private:
 	static s32 m_Identifier;
 

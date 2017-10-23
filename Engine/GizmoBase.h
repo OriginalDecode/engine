@@ -1,11 +1,25 @@
 #pragma once
+#include <Engine/engine_shared.h>
 #include "GizmoShared.h"
 #include <Math/Vector/Vector.h>
-class GizmoBase
+#include <Subscriber.h>
+
+static const std::string w_down = ("w_down");
+static const u64 w_down_HASH = Hash("w_down");
+static const std::string e_down = ("e_down");
+static const u64 e_down_HASH = Hash("e_down");
+static const std::string r_down = ("r_down");
+static const u64 r_down_HASH = Hash("r_down");
+
+class GizmoBase : public Subscriber
 {
 public:
 	GizmoBase() = default;
-	void CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction);
+
+	void Initiate(std::string event);
+
+
+	void CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction );
 	void Render();
 	void RenderBoxes();
 
@@ -21,6 +35,11 @@ public:
 	bool Inside(const CU::Vector3f& position, GizmoHandle* result);
 
 private:
+	
+	virtual void HandleEvent(u64 event, void* data);
+
+
+
 	void OffsetGizmoHandle(GizmoHandle& gizmo_handle);
 	float m_GizmoHandleOffset;
 	GizmoHandle m_Right;  // red

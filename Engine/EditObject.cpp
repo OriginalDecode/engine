@@ -111,28 +111,28 @@ void EditObject::EditLight()
 			rgb[2] = l.color.z;
 
 			{
-				ImGui::ColorButton(r_color);
+				//ImGui::ColorButton(r_color);
 				ImGui::SameLine();
 				ImGui::SliderFloat("R", &rgb[0], 0, 1);
 				r_color = ImVec4(rgb[0], 0, 0, 1);
 			}
 
 			{
-				ImGui::ColorButton(g_color);
+				//ImGui::ColorButton(g_color);
 				ImGui::SameLine();
 				ImGui::SliderFloat("G", &rgb[1], 0, 1);
 				g_color = ImVec4(0, rgb[1], 0, 1);
 			}
 
 			{
-				ImGui::ColorButton(b_color);
+				//ImGui::ColorButton(b_color);
 				ImGui::SameLine();
 				ImGui::SliderFloat("B", &rgb[2], 0, 1);
 				b_color = ImVec4(0, 0, rgb[2], 1);
 			}
 
 			tot_color = ImVec4(rgb[0], rgb[1], rgb[2], 1);
-			ImGui::ColorButton(tot_color);
+			//ImGui::ColorButton(tot_color);
 
 
 			l.color.x = rgb[0];

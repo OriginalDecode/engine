@@ -6,6 +6,7 @@
 #include "GizmoBase.h"
 struct DebugComponent final : public BaseComponent
 {
+
 	~DebugComponent() { }
 	CU::PlaneVolume<float> m_OBB;
 	CU::Vector4f m_WHD;

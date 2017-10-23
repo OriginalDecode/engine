@@ -13,7 +13,7 @@ class Camera;
 class InputWrapper;
 class Texture;
 class Sprite;
-class Game : public State, public Subscriber
+class Game : public State
 {
 public:
 	Game() = default;
@@ -24,7 +24,6 @@ public:
 
 	void Update(float aDeltaTime) override;
 
-	void _2DGame(float dt);
 
 	void OldUpdate(float dt);
 
@@ -41,20 +40,12 @@ private:
 	void SaveCameraPosition();
 
 	void Reload();
-	void HandleEvent(u64 event, void* data) override;
-	bool event_happen = false;
-
-
-	Texture* m_VolumeTexture = nullptr;
-	Sprite* m_MainCharacter = nullptr;
-	u64 m_MainKey;
-
-	CU::Vector2f m_Position;
-
 
 	World m_World;
 	CPauseState m_PauseState;
+
 	CU::Vector3f pointHit;
+
 	TranslationComponent* component;
 	TreeDweller* m_Player = nullptr;
 	Camera* m_Camera = nullptr;
@@ -62,18 +53,16 @@ private:
 
 	CU::Matrix44f m_Orientation;
 
+	CMousePicker* m_Picker = nullptr;
 
 	Engine* m_Engine = nullptr;
-	CMousePicker* m_Picker = nullptr;
 	Synchronizer* m_Synchronizer = nullptr;
 	int m_FrameCount = 0;
 	int m_FPSToPrint = 0;
 	float m_AverageFPS = 0;
 	float m_Time = 0.f;
 
-	const char* m_ModelKey;
 
-	int light = 0;
 
 
 	CU::GrowingArray<s32> spotlight;

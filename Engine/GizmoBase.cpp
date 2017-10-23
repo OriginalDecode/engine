@@ -5,6 +5,13 @@
 #include "RenderCommand.h"
 #include <Math/Vector/Vector.h>
 
+#include <PostMaster.h>
+
+void GizmoBase::Initiate(std::string event)
+{
+	PostMaster::GetInstance()->Subscribe(event, this);
+}
+
 void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction)
 {
 	gizmo_handle.m_Key = Engine::GetInstance()->LoadModel<Model>(model_key.c_str(),
@@ -108,6 +115,12 @@ bool GizmoBase::Inside(const CU::Vector3f& position, GizmoHandle* result)
 
 	result = nullptr;
 	return false;
+}
+
+void GizmoBase::HandleEvent(u64 event, void* data)
+{
+	if (event == r_down_HASH || event == w_down_HASH || event == e_down_HASH)
+		ToggleActive();
 }
 
 void GizmoBase::OffsetGizmoHandle(GizmoHandle& gizmo_handle)

@@ -24,7 +24,8 @@ private:
 
 	void SetPosition(const CU::Vector3f& aPosition);
 	void SetDirection(const CU::Vector4f& aDirection);
-	
+
+
 	//VertexWrapper m_VertexWrapper;
 
 
@@ -58,5 +59,20 @@ private:
 	LightModel* m_Model = nullptr;
 	ShadowSpotlight* m_ShadowSpotlight = nullptr;
 	SpotlightData myData;
+
+
+
+
+
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+	IBuffer* m_QuadBuffer = nullptr;
+	struct quadbuffer
+	{
+		CU::Matrix44f camera_orientation; //non inverted, we want the rotation
+	} m_LightQuadBuffer;
+
+	Quad* m_LightQuad = nullptr;
+#endif
 };
 

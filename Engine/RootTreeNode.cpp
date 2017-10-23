@@ -52,7 +52,9 @@ void RootTreeNode::Update(float dt, bool paused)
 	{
 		if (!node)
 			continue;
-		for (auto& line : node->GetLines())
+		const CU::GrowingArray<Line>& line_list = node->GetLines();
+
+		for (const Line& line : line_list)
 		{ 
 			m_Synchronizer->AddRenderCommand(LineCommand(line.m_Points[0], line.m_Points[1], true));
 		}

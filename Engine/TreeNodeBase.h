@@ -72,9 +72,26 @@ protected:
 	s32 m_DwellerCount = 0;
 
 	CU::GrowingArray<Line> m_Lines;
+
 public:
 	void AddLine(Line line);
-	const CU::GrowingArray<Line>& GetLines() const { return m_Lines; }
 
+	const CU::GrowingArray<Line>& GetLines() 
+	{ 
+		for (TreeNodeBase* child : m_Children)
+		{
+			if(!child)
+				continue;
+
+			const CU::GrowingArray<Line>& lines = child->GetLines();
+
+			for (const Line& _line : lines)
+			{
+				m_Lines.Add(_line);
+			}
+		}
+		
+		return m_Lines;
+	}
 
 };

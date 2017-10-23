@@ -274,7 +274,6 @@ void TreeNodeBase::RenderBox()
 	AddLine(Line(points[4], points[5]));
 	AddLine(Line(points[2], points[3]));
 	AddLine(Line(points[6], points[7]));
-
 }
 
 void TreeNodeBase::AddLine(Line line)

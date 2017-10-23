@@ -9,7 +9,7 @@ void RootTreeNode::Initiate(float halfwidth, Octree* octree)
 	m_Octree = octree;
 
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
-	m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
+	m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager(this);
 
 	m_Pool.Initiate("RootNode - Worker");
 

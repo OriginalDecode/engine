@@ -73,6 +73,7 @@ protected:
 
 	CU::GrowingArray<Line> m_Lines;
 public:
+	void AddLine(Line line);
 	const CU::GrowingArray<Line>& GetLines() const { return m_Lines; }
 
 

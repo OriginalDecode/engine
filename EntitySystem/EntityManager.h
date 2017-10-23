@@ -60,7 +60,7 @@ public:
 
 	bool HasComponent(Entity e, ComponentFilter& filter);
 
-	NodeEntityManager* RequestManager();
+	NodeEntityManager* RequestManager(TreeNodeBase* node);
 	void ReleaseManager(NodeEntityManager* manager);
 
 

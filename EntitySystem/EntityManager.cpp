@@ -96,7 +96,7 @@ bool EntityManager::HasComponent(Entity e, ComponentFilter& filter)
 	return myComponents->HasComponent(e, filter);
 }
 
-NodeEntityManager* EntityManager::RequestManager()
+NodeEntityManager* EntityManager::RequestManager(TreeNodeBase* node)
 {
 	for (s32 i = 0; i < m_UsedManagers.Size(); i++)
 	{
@@ -109,7 +109,7 @@ NodeEntityManager* EntityManager::RequestManager()
 
 	if (m_Systems.Size() < m_Max)
 	{
-		m_NodeManagers.Add(new NodeEntityManager());
+		m_NodeManagers.Add(new NodeEntityManager(node));
 		m_UsedManagers.Add(0);
 		m_UsedManagers.GetLast() = 1;
 		return m_NodeManagers.GetLast();

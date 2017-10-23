@@ -3,11 +3,12 @@
 #include "TreeDweller.h"
 
 class BaseSystem;
-
+class TreeNodeBase;
 class NodeEntityManager
 {
 public:
-	NodeEntityManager()
+	NodeEntityManager(TreeNodeBase* node)
+		: m_Node(node)
 	{
 		m_ID = m_Identifier++;
 	}
@@ -37,9 +38,10 @@ public:
 
 	void SetMemoryBlockIndex(s32 index);
 	s32 GetMemoryBlockIndex() const { return m_MemoryBlockIndex; }
+	TreeNodeBase* GetTreeNode() { return m_Node; }
 private:
 	static s32 m_Identifier;
-
+	TreeNodeBase* m_Node = nullptr;
 	s32 m_MemoryBlockIndex = 0;
 
 	s32 m_ID = 0;

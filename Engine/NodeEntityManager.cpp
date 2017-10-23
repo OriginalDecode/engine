@@ -32,10 +32,6 @@ void NodeEntityManager::Initiate()
 		AddSystem<LightSystem>();
 	if (flag & EntityManager::DEBUG)
 		AddSystem<DebugSystem>();
-
-
-
-
 }
 
 void NodeEntityManager::CleanUp()

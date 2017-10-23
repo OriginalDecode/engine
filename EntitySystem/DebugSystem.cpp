@@ -491,19 +491,33 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p8.position += orientation.GetForward() * component.m_WHD.z;*/
 
 
-	
-	m_Synchronizer->AddRenderCommand(LineCommand(p1, p2, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p2, p3, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p3, p4, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p4, p1, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p1, p5, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p5, p6, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p6, p8, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p8, p7, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p7, p5, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p6, p4, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p7, p2, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p8, p3, true));
+
+	m_Manager.GetTreeNode()->AddLine(Line(p1, p2));
+	m_Manager.GetTreeNode()->AddLine(Line(p2, p3));
+	m_Manager.GetTreeNode()->AddLine(Line(p3, p4));
+	m_Manager.GetTreeNode()->AddLine(Line(p4, p1));
+	m_Manager.GetTreeNode()->AddLine(Line(p1, p5));
+	m_Manager.GetTreeNode()->AddLine(Line(p5, p6));
+	m_Manager.GetTreeNode()->AddLine(Line(p6, p8));
+	m_Manager.GetTreeNode()->AddLine(Line(p8, p7));
+	m_Manager.GetTreeNode()->AddLine(Line(p7, p5));
+	m_Manager.GetTreeNode()->AddLine(Line(p6, p4));
+	m_Manager.GetTreeNode()->AddLine(Line(p7, p2));
+	m_Manager.GetTreeNode()->AddLine(Line(p8, p3));
+
+
+	//m_Synchronizer->AddRenderCommand(LineCommand(p1, p2, true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(p2, p3, true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(p3, p4, true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(p4, p1, true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(p1, p5, true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(p5, p6, true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(p6, p8, true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(p8, p7, true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(p7, p5, true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(p6, p4, true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(p7, p2, true));
+	//m_Synchronizer->AddRenderCommand(LineCommand(p8, p3, true));
 	
 
 

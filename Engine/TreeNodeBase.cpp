@@ -262,25 +262,24 @@ void TreeNodeBase::RenderBox()
 	points[7].position.y = m_CenterPosition.y + m_HalfWidth;
 
 
-	m_Lines.Add(Line(points[0], points[1]));
-	m_Lines.Add(Line(points[0], points[2]));
-	m_Lines.Add(Line(points[0], points[6]));
+	AddLine(Line(points[0], points[1]));
+	AddLine(Line(points[0], points[2]));
+	AddLine(Line(points[0], points[6]));
+	AddLine(Line(points[1], points[3]));
+	AddLine(Line(points[1], points[7]));
+	AddLine(Line(points[3], points[5]));
+	AddLine(Line(points[5], points[7]));
+	AddLine(Line(points[6], points[4]));
+	AddLine(Line(points[2], points[4]));
+	AddLine(Line(points[4], points[5]));
+	AddLine(Line(points[2], points[3]));
+	AddLine(Line(points[6], points[7]));
 
-	m_Lines.Add(Line(points[1], points[3]));
-	m_Lines.Add(Line(points[1], points[7]));
+}
 
-	m_Lines.Add(Line(points[3], points[5]));
-	m_Lines.Add(Line(points[5], points[7]));
-
-
-	m_Lines.Add(Line(points[6], points[4]));
-	m_Lines.Add(Line(points[2], points[4]));
-
-	m_Lines.Add(Line(points[4], points[5]));
-	m_Lines.Add(Line(points[2], points[3]));
-
-	m_Lines.Add(Line(points[6], points[7]));
-
+void TreeNodeBase::AddLine(Line line)
+{
+	m_Lines.Add(line);
 }
 
 s32 TreeNodeBase::GetMemoryBlockIndex()

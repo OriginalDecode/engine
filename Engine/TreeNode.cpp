@@ -22,7 +22,7 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 #endif
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	if (m_Depth > 0)
-		m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
+		m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager(this);
 
 
 	

@@ -366,6 +366,7 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 //		Engine::GetInstance()->SelectEntity(closest.m_ID);
 		m_PrevID = prev_entity;
 		m_CurrentEntity = m_PrevID;
+		debug::DebugHandle::GetInstance()->SetEntity(m_CurrentEntity);
 		//bool has_render = node_manager.HasComponent(m_CurrentEntity, CreateFilter<Requires<RenderComponent>>());
 		//if ( has_render )
 		//{

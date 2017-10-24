@@ -86,7 +86,8 @@ namespace graphics
 
 		//____________________________________________________________________________
 
-	//	m_cbPointlightPix.m_InvertedProjection = CU::Math::InverseReal(camera_projection);
+		
+		//m_cbPointlightPix.m_InvertedProjection = CU::Math::InverseReal(camera_projection);
 		//m_cbPointlightPix.m_View = camera_view;
 		m_cbPointlightPix.m_Color = pointlight->GetColor();
 		m_cbPointlightPix.m_Position = pointlight->GetPosition();
@@ -120,8 +121,10 @@ namespace graphics
 		//m_cbSpotlightPix.m_View = camera_view;
 		m_cbSpotlightPix.m_Color = data.myLightColor;
 		m_cbSpotlightPix.m_Position = data.myOrientation.GetPosition();
+		m_cbSpotlightPix.m_Position.w = 1.f;
 		m_cbSpotlightPix.m_CameraPosition = camera_view.GetPosition();
 		m_cbSpotlightPix.m_Direction = data.myDirection;
+		m_cbSpotlightPix.m_Direction.w = 1.f;
 		m_cbSpotlightPix.m_ShadowMVP = shadow_matrix;
 		context.UpdateConstantBuffer(m_LightBuffers[SPOTLIGHT_PIXEL], &m_cbSpotlightPix, sizeof(SpotPixelConstantBuffer));
 

@@ -4,7 +4,10 @@
 #include <Engine/Engine.h>
 #include <Engine/Synchronizer.h>
 
-
+#include <EntitySystem/LightComponent.h>
+#include <EntitySystem/TranslationComponent.h>
+#include <EntitySystem/EntityManager.h>
+#include <EntitySystem/ComponentFilter.h>
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include "imgui.h"
 namespace debug
@@ -64,6 +67,44 @@ namespace debug
 			for (DebugSlider<float>& s : m_Sliders)
 			{
 				ImGui::SliderFloat(s.m_Label.c_str(), s.m_Value, s.m_Min, s.m_Max);
+			}
+
+			if(ImGui::Begin("Light"))
+			{
+
+				static float angle = 0;
+				ImGui::SliderAngle("Light Angle", &angle);
+
+				static float rot[3];
+				ImGui::SliderFloat3("Create rotation", rot, 0.f, 1.f);
+
+				static float intensity = 0;
+				ImGui::SliderFloat("Light Intensity", &intensity, 1.f, 1000.f);
+				static float col[3];
+				ImGui::ColorEdit3("Color", col);
+				auto& em = Engine::GetInstance()->GetEntityManager();
+				if (em.HasComponent(editing_entity, CreateFilter<Requires<LightComponent>>()))
+				{
+					LightComponent& comp = Engine::GetInstance()->GetEntityManager().GetComponent<LightComponent>(editing_entity);
+					TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(editing_entity);
+					comp.angle = angle;
+					comp.color.x = col[0];
+					comp.color.y = col[1];
+					comp.color.z = col[2];
+					comp.intensity = intensity;
+					
+					CU::Vector3f pos = t.myOrientation.GetPosition();
+					t.myOrientation.SetRotation3dX(cl::DegreeToRad(rot[0]));// = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rot[0]));
+					t.myOrientation.SetRotation3dY(cl::DegreeToRad(rot[1]));// = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rot[1]));
+					t.myOrientation.SetRotation3dZ(cl::DegreeToRad(rot[2]));// = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rot[2]));
+
+					//t.myOrientation.SetForward({ rot[0], rot[1], rot[2], 1.f });
+
+
+				}
+
+
+				ImGui::End();
 			}
 
 
@@ -168,6 +209,12 @@ namespace debug
 	void DebugHandle::AddValueToPrint(s32* value)
 	{
 		m_IntValuesToPrint.Add(value);
+	}
+
+	void DebugHandle::SetEntity(Entity e)
+	{
+		if(editing_entity == 0)
+			editing_entity = e;
 	}
 
 	void DebugHandle::RegisterCheckbox(DebugCheckbox checkbox)

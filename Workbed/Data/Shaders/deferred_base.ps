@@ -47,11 +47,9 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 
 	output = (GBuffer)0;
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);
-	if(albedo.a <= 0)
-		discard;
 
 	output.Albedo = albedo;
-	output.Albedo = pow(output.Albedo,  2.2);
+	output.Albedo = pow(output.Albedo, 2.2);
 	
 	float4 metal = MetalnessTexture.Sample(sampler0, input.uv);
 	float metalness = metal.r ;

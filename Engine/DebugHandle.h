@@ -22,12 +22,13 @@ namespace debug
 
 		void AddText(std::string str);
 		void AddValueToPrint(s32* value);
-		
+		void SetEntity(Entity e);
 
 		void RegisterCheckbox(DebugCheckbox checkbox);
 
 	private:
 
+		Entity editing_entity = 0;
 		static DebugHandle* m_Instance;
 
 		DebugHandle() = default;

@@ -129,11 +129,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 newPos = pixel_pos + (normal * 0.4);
 	newPos.w = 1;
 	
-	float4x4 world_matrices;
-	world_matrices._11_12_13_14 = float4(1,0,0,0);
-	world_matrices._21_22_23_24 = float4(0,1,0,0);
-	world_matrices._31_32_33_34 = float4(0,0,1,0);
-	world_matrices._41_42_43_44 = float4(0,0,0,1);
 	
 	float4 shadowVec = mul(newPos, ShadowMVP);
 	shadowVec.xyz /= shadowVec.w;

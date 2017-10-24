@@ -63,16 +63,6 @@ public:
 	NodeEntityManager* RequestManager(TreeNodeBase* node);
 	void ReleaseManager(NodeEntityManager* manager);
 
-
-	//CU::GrowingArray<BaseSystem*> GetSystems() { return mySystems; }
-
-	//void SetActiveNodeManager(NodeEntityManager* manager) { m_ActiveNode = manager; }
-	//NodeEntityManager* GetNodeManager() { return m_ActiveNode; }
-
-	/*void RegisterManager(NodeEntityManager* manager);
-	void UnRegisterManager(NodeEntityManager* manager);
-	NodeEntityManager* GetManager(s32 index);*/
-
 private:
 	NodeEntityManager* m_ActiveNode = nullptr;
 

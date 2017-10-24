@@ -50,10 +50,10 @@ Texture2D DepthTexture	 : register (t7);
 
 float4 getWorldPos(float2 tex_coord, float depth)
 {
-    float x = tex_coord.x * 2.f - 1.f;
-	float y = (1.f - tex_coord.y) * 2 - 1;
+    float x = tex_coord.x * 2.0f - 1.0f;
+	float y = (1.0f - tex_coord.y) * 2.0f - 1.0f;
 	float z = depth;
-	float4 world_pos = float4(x, y, z, 1.f);
+	float4 world_pos = float4(x, y, z, 1.0f);
 	
 	world_pos = mul(world_pos, InvertedProjection);
 	world_pos = world_pos / world_pos.w;
@@ -69,66 +69,41 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 diffuse = AlbedoTexture.Sample(sampler0, texCoord);
 	float4 normal = NormalTexture.Sample(sampler0, texCoord);
 	float4 depth = DepthTexture.Sample(sampler0, texCoord);
-	
-
 	float metalness = normal.w;
-
 	normal *= 2;
 	normal -= 1;
 
-	
+
 	float4 world_pos = getWorldPos(texCoord, depth.r);
 
 	float cosCone = input.cosAngle.x ;
 	float angle = input.angle;
 
-
-	float4 light_dir =  normalize(direction);
-	float4 light_vec = light_pos - world_pos; 
-    float3 toPixel = normalize(light_vec);
-    float spotFactor = dot(toPixel, -light_dir);
-	float ln = length(light_vec);
+	
+	float4 toPixel = world_pos - light_pos;
+	float4 lightVec = normalize(toPixel);
 
 
+    float spotFactor = dot(lightVec, normalize(direction));
 
 
-
-	if(spotFactor < cosCone)
+	if(spotFactor <= cosCone)
 		discard;
 
 
+	float ln = length(lightVec);
 
-	float ndl = dot(toPixel, normal);
 
 	float angularAttenuation = ( 1.0 - ( 1.0 - spotFactor) *  1 / ( 1 - cosCone));
-	//float attenuation = max(0, CalculateTotalAttenuation(ln, input.range));
 
-	float falloff = 0.9 - (ln / max(input.range, 0.000001));
-	float _att = saturate(1.f * falloff);
-
-	float attenuation = _att * angularAttenuation; 
-	
+	float linearAttenuation = CalculateTotalAttenuation(ln, input.range);
 
 
+
+	float attenuation =  angularAttenuation; 
 
 	float4 final_color = color;
-	final_color = saturate(ndl * final_color);
-	return final_color;
-	final_color *= 10.f;
-	final_color *= diffuse;
 	final_color *= attenuation;
 
-
 	return final_color;
-
-
-
-	
-	//float spot = pow(max(dot(-toPixel, light_dir),0), 1);
-	//float att = spot / dot(1.f, float3(1.0, ln, ln*ln));
-
-
-
-
-
 };

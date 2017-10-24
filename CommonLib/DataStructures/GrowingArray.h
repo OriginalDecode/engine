@@ -78,15 +78,18 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType /*= int*/>
 	void CommonUtilities::GrowingArray<ObjectType, SizeType>::Copy(GrowingArray& dest, const GrowingArray& src)
 	{
-		const SizeType _end = dest.Size() - 1;
 		const SizeType _newSize = dest.Size() + src.Size();
-		const int _byteSize = sizeof(ObjectType) * src.Size();
-		memcpy(&dest[_end], &src[0], _byteSize);
-		dest.mySize = _newSize;
-		if (dest.mySize >= dest.Capacity())
+
+		if (_newSize >= dest.Capacity())
 		{
 			dest.Resize(dest.Capacity() * 2);
 		}
+
+		const SizeType _end = dest.Size();
+		const int _byteSize = sizeof(ObjectType) * src.Size();
+		memcpy(&dest.myData[_end], &src.myData[0], _byteSize);
+		dest.mySize = _newSize;
+		
 	}
 
 	template<typename ObjectType, typename SizeType = int>

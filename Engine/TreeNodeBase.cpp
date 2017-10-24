@@ -290,13 +290,13 @@ void TreeNodeBase::CopyToParent(const CU::GrowingArray<Line>& in)
 	{
 		CU::GrowingArray<Line>::Copy(m_Lines, in);
 	}
-	/*else
+	else
 	{
 		static Ticket_Mutex list_ticket;
 		BeginTicketMutex(&list_ticket);
 		CU::GrowingArray<Line>::Copy(m_Lines, in);
 		EndTicketMutex(&list_ticket);
-	}*/
+	}
 }
 
 s32 TreeNodeBase::GetMemoryBlockIndex()

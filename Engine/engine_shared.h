@@ -98,7 +98,7 @@ inline void BeginTicketMutex(Ticket_Mutex* mutex)
 	u64 ticket = AtmoicAddU64(&mutex->ticket, 1); //AtomicAdd?
 	while (ticket != mutex->serving)
 	{
-
+		//should have a timer or something here in debug to auto crash
 	}
 
 };

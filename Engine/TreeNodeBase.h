@@ -13,7 +13,7 @@ class TreeNodeBase
 {
 public:
 
-	TreeNodeBase() = default;
+	TreeNodeBase();
 	virtual ~TreeNodeBase();
 
 	virtual void Initiate(float halfwidth, Octree* octree) = 0;
@@ -50,6 +50,7 @@ public:
 	void RemoveAllDwellers();
 
 	std::string m_Name;
+
 protected:
 	virtual void RenderBox();
 
@@ -73,25 +74,10 @@ protected:
 
 	CU::GrowingArray<Line> m_Lines;
 
+
+
 public:
 	void AddLine(Line line);
 
-	const CU::GrowingArray<Line>& GetLines() 
-	{ 
-		for (TreeNodeBase* child : m_Children)
-		{
-			if(!child)
-				continue;
-
-			const CU::GrowingArray<Line>& lines = child->GetLines();
-
-			for (const Line& _line : lines)
-			{
-				m_Lines.Add(_line);
-			}
-		}
-		
-		return m_Lines;
-	}
-
+	void CopyToParent(const CU::GrowingArray<Line>& in);
 };

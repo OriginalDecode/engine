@@ -14,7 +14,7 @@ Line3D::~Line3D()
 
 void Line3D::Initiate(int aLineAmount /*= 256*/)
 {
-	m_LineAmount = 512;
+	m_LineAmount = 2048;
 	m_Effect = Engine::GetInstance()->GetEffect("Shaders/line.json");
 	m_LineBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "Line Constant Buffer");
 	CreateBuffer();

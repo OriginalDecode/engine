@@ -6,6 +6,11 @@
 #include <Engine/Octree.h>
 #include <Engine/Engine.h>
 #include <Engine/profile_defines.h>
+#include <algorithm>
+TreeNodeBase::TreeNodeBase()
+{
+	m_Lines.Init(5000);
+}
 
 TreeNodeBase::~TreeNodeBase()
 {
@@ -25,9 +30,6 @@ void TreeNodeBase::Update(float dt, bool paused)
 
 	RenderBox();
 	m_NodeEntityManager->Update(dt, m_Dwellers, paused);
-	return;
-	if (paused)
-		return;
 
 	PROFILE_BLOCK("forEachDweller", profiler::colors::LightBlue);
 	for (TreeDweller* dweller : m_Dwellers)
@@ -58,6 +60,7 @@ void TreeNodeBase::Update(float dt, bool paused)
 		if (found)
 			break;
 	}
+
 	PROFILE_BLOCK_END;
 
 
@@ -279,6 +282,21 @@ void TreeNodeBase::RenderBox()
 void TreeNodeBase::AddLine(Line line)
 {
 	m_Lines.Add(line);
+}
+
+void TreeNodeBase::CopyToParent(const CU::GrowingArray<Line>& in)
+{
+	if (m_Depth > 0)
+	{
+		CU::GrowingArray<Line>::Copy(m_Lines, in);
+	}
+	else
+	{
+		static Ticket_Mutex list_ticket;
+		BeginTicketMutex(&list_ticket);
+		CU::GrowingArray<Line>::Copy(m_Lines, in);
+		EndTicketMutex(&list_ticket);
+	}
 }
 
 s32 TreeNodeBase::GetMemoryBlockIndex()

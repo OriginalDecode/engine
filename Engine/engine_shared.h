@@ -100,6 +100,7 @@ inline void BeginTicketMutex(Ticket_Mutex* mutex)
 	{
 
 	}
+
 };
 
 inline void EndTicketMutex(Ticket_Mutex* mutex)

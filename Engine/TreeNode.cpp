@@ -47,6 +47,7 @@ void TreeNode::Update(float dt, bool paused)
 		PROFILE_BLOCK_END;
 
 	}
+	m_Parent->CopyToParent(m_Lines);
 
 }
 

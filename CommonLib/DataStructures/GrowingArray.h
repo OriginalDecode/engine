@@ -9,6 +9,8 @@ namespace CommonUtilities
 	class GrowingArray
 	{
 	public:
+		static void Copy(GrowingArray& dest, const GrowingArray& src);
+
 		inline GrowingArray();
 		inline GrowingArray(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true);
 		inline GrowingArray(const GrowingArray& aGrowingArray);
@@ -65,6 +67,27 @@ namespace CommonUtilities
 		SizeType myCapacity = 16;
 		SizeType mySize = 0;
 	};
+
+
+	
+	/*
+		Copies all data from src to the end of dest and increase the size of dest
+
+	
+	*/
+	template<typename ObjectType, typename SizeType /*= int*/>
+	void CommonUtilities::GrowingArray<ObjectType, SizeType>::Copy(GrowingArray& dest, const GrowingArray& src)
+	{
+		const SizeType _end = dest.Size() - 1;
+		const SizeType _newSize = dest.Size() + src.Size();
+		const int _byteSize = sizeof(ObjectType) * src.Size();
+		memcpy(&dest[_end], &src[0], _byteSize);
+		dest.mySize = _newSize;
+		if (dest.mySize >= dest.Capacity())
+		{
+			dest.Resize(dest.Capacity() * 2);
+		}
+	}
 
 	template<typename ObjectType, typename SizeType = int>
 	GrowingArray<ObjectType, SizeType>::GrowingArray()
@@ -336,7 +359,7 @@ namespace CommonUtilities
 		}
 		else
 		{
-			memcpy(newMemory, myData, sizeof(ObjectType)*mySize);
+			memcpy(&newMemory[0], &myData[0], sizeof(ObjectType)*mySize);
 		}
 		delete[]myData;
 		myData = nullptr;

@@ -47,8 +47,18 @@ void TreeNode::Update(float dt, bool paused)
 		PROFILE_BLOCK_END;
 
 	}
-	m_Parent->CopyToParent(m_Lines);
+	if (m_Parent > 0)
+	{
+		m_Parent->CopyToParent(m_Lines);
+	}
+	else
+	{
+		static Ticket_Mutex list_ticket;
+		BeginTicketMutex(&list_ticket); 
+		m_Parent->CopyToParent(m_Lines);
+		EndTicketMutex(&list_ticket);
 
+	}
 }
 
 void TreeNode::SetManager(NodeEntityManager* manager)

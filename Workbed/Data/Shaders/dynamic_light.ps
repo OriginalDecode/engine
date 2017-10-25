@@ -1,0 +1,117 @@
+cbuffer per_frame : register(b0)
+{
+	row_major float4x4 InvertedProjection; 
+	row_major float4x4 InvertedView; 
+};
+
+cbuffer per_object : register(b1)
+{
+	float4 color;
+	float4 position;
+	float4 camPosition;
+	row_major float4x4 shadowMVP;
+#ifdef SPOTLIGHT
+    float4 direction;
+#endif
+};
+
+struct psInput
+{
+	float4 pos	: SV_POSITION;
+	float4 uv	: POSITION;
+	float range : RANGE;
+#ifdef SPOTLIGHT
+	float cosAngle : COSANGLE;
+    float angle : ANGLE;
+	float4 world : WORLD;
+#endif
+};
+
+float CalculateAttenuation(float someDistance)
+{
+	float attenuation = 1.f / (1.f + 0.1f * someDistance + 0.01f * someDistance * someDistance);
+	return saturate(attenuation);
+};
+
+float CalculateFalloff(float someDistance, float someRange)
+{
+	float fallOff = 0.9f - (someDistance / (someRange + 0.00001f));
+	return saturate(fallOff);
+};
+
+float CalculateTotalAttenuation(float someDistance, float someRange)
+{
+	float totalAttenuation = CalculateAttenuation(someDistance) * CalculateFalloff(someDistance, someRange);
+	return saturate(totalAttenuation);
+};
+
+
+float4 getWorldPos(float2 tex_coord, float depth)
+{
+    float x = tex_coord.x * 2.0f - 1.0f;
+	float y = (1.0f - tex_coord.y) * 2.0f - 1.0f;
+	float z = depth;
+	float4 world_pos = float4(x, y, z, 1.0f);
+	
+	world_pos = mul(world_pos, InvertedProjection);
+	world_pos = world_pos / world_pos.w;
+	world_pos = mul(world_pos, InvertedView);
+    return world_pos;
+}
+
+SamplerState sampler0 	 : register (s0);
+Texture2D AlbedoTexture  : register (t0);
+Texture2D NormalTexture  : register (t1);
+Texture2D DepthTexture	 : register (t7);
+
+
+float4 main(psInput input) : SV_Target
+{
+   	input.uv /= input.uv.w;
+	float2 texCoord = input.uv.xy;
+
+    float4 diffuse = AlbedoTexture.Sample(sampler0, texCoord);
+	float4 normal = NormalTexture.Sample(sampler0, texCoord);
+	float4 depth = DepthTexture.Sample(sampler0, texCoord);
+	float metalness = normal.w;
+	normal *= 2;
+	normal -= 1;
+	float4 world_pos = getWorldPos(texCoord, depth.r);
+    float4 final_color = 0;
+#ifdef SPOTLIGHT
+
+    float cosCone = input.cosAngle ;
+	float angle = input.angle;
+
+	float4 lightToPixel = position - world_pos;
+	float4 toPixel = world_pos - position;
+	float ln = length(lightToPixel);
+	return ln;
+
+	if(ln > input.range)
+		discard;
+
+	float4 lightVec = lightToPixel / ln;
+
+    float spotFactor = saturate(dot(lightVec, normal));
+
+	float angularAttenuation = ( 1.0 - ( 1.0 - spotFactor) *  1 / ( 1 - cosCone)) ;
+	float linearAttenuation = CalculateTotalAttenuation(ln, input.range);
+	float attenuation =  angularAttenuation; 
+    final_color = attenuation.xxxx;
+
+#endif
+
+#ifdef POINTLIGHT
+
+	float4 lightToPixel = position - world_pos;
+	float ln = length(lightToPixel);
+	float linearAttenuation = CalculateTotalAttenuation(ln, input.range);
+    final_color = linearAttenuation;
+    float NdL = dot(normal, normalize(lightToPixel));
+    final_color *= NdL;
+
+#endif
+
+    return final_color * color;
+};

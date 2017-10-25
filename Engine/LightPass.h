@@ -29,10 +29,11 @@ namespace graphics
 		void UpdatePointlightBuffers(PointLight* pointlight, const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
 		void UpdateSpotlightBuffers(SpotLight* spotlight, const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
 
-		struct PointlightConstantBuffer : public VertexBaseStruct
+		struct PointlightConstantBuffer
 		{
-			CU::Matrix44f projection;
-			CU::Vector4f scale;
+			CU::Matrix44f m_Orientation;
+			float m_Range;
+			float dummy[15];
 		} m_cbPointlightVtx;
 
 		struct SpotlightConstantBuffer

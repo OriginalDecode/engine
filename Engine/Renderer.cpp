@@ -68,6 +68,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_Direction = CU::Vector3f(0.42f, 0.73f, 0.24f);
 
+	myPointLight = new PointLight();
+
 #if !defined(_PROFILE) && !defined(_FINAL)
 	m_DebugTexture0 = new Texture;
 	m_DebugTexture0->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
@@ -131,7 +133,7 @@ Renderer::~Renderer()
 	SAFE_DELETE(m_DepthTexture);
 
 	SAFE_DELETE(m_DeferredRenderer);
-
+	SAFE_DELETE(myPointLight);
 	//SAFE_DELETE(myText);
 	SAFE_DELETE(m_LightPass);
 	SAFE_DELETE(m_ParticleEmitter);
@@ -193,7 +195,7 @@ void Renderer::Render()
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
 	m_RenderContext.GetContext().PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
 	RenderSpotlight();
-	//RenderPointlight();
+	RenderPointlight();
 
 	//m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
 
@@ -465,7 +467,7 @@ void Renderer::RenderSpotlight()
 		light->SetData(data);
 
 		CU::Matrix44f shadow_mvp;
-		
+
 		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(m_LightModelWireframe ? graphics::WIREFRAME : graphics::CULL_NONE));
 		m_LightPass->RenderSpotlight(light, m_Camera->GetOrientation(), m_Camera->GetPerspective(), shadow_mvp, m_RenderContext);
 
@@ -475,36 +477,25 @@ void Renderer::RenderSpotlight()
 
 void Renderer::RenderPointlight()
 {
-	// 
-	// 	PROFILE_FUNCTION(profiler::colors::Purple);
-	// 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER);
-	// 
-	// 
-	// 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
-	// 	m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 0);
-	// 	Effect* effect = m_LightPass.GetPointlightEffect();
-	// 	effect->Use();
-	// 	PROFILE_BLOCK("Pointlight Command Loop", profiler::colors::Red);
-	// 	for (s32 i = 0; i < commands.Size(); i++)
-	// 	{
-	// 		auto command = reinterpret_cast<PointlightCommand*>(commands[i]);
-	// 
-	// 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::POINTLIGHT, "Wrong command type in pointlight buffer.");
-	// 		m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
-	// 		myPointLight->SetPosition(command->m_Orientation.GetPosition());
-	// 		myPointLight->SetRange(command->m_Range);
-	// 		myPointLight->SetColor(CU::Vector4f(command->m_Color.x, command->m_Color.y, command->m_Color.z, 1));
-	// 		myPointLight->Update();
-	// 		CU::Matrix44f shadow_mvp;
-	// 		m_LightPass.RenderPointlight(myPointLight, m_Camera, m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
-	// 	}
-	// 	PROFILE_BLOCK_END;
-	// 	effect->Clear();
-	// 
-	// 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	// 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
-	// 
+	PROFILE_FUNCTION(profiler::colors::Purple);
+	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER);
 
+	PROFILE_BLOCK("Pointlight Command Loop", profiler::colors::Red);
+	for (s32 i = 0; i < commands.Size(); i++)
+	{
+		auto command = reinterpret_cast<PointlightCommand*>(commands[i]);
+
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::POINTLIGHT, "Wrong command type in pointlight buffer.");
+		myPointLight->SetPosition(command->m_Orientation.GetPosition());
+		myPointLight->SetRange(command->m_Range);
+		myPointLight->SetColor(CU::Vector4f(command->m_Color.x, command->m_Color.y, command->m_Color.z, 1));
+		myPointLight->Update();
+		CU::Matrix44f shadow_mvp;
+
+		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(m_LightModelWireframe ? graphics::WIREFRAME : graphics::CULL_NONE));
+		m_LightPass->RenderPointlight(myPointLight, m_Camera->GetOrientation(), m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
+	}
+	PROFILE_BLOCK_END;
 }
 
 void Renderer::RenderParticles(Effect* effect)

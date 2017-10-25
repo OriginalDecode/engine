@@ -40,30 +40,14 @@ void RootTreeNode::Update(float dt, bool paused)
 			PROFILE_BLOCK(node->m_Name.c_str());
 			node->Update(dt, paused);
 			PROFILE_BLOCK_END;
-	}));
-}
-
+		}));
+	}
 	do
 	{
 		m_Pool.Update();
 	} while (!m_Pool.CurrentWorkFinished()); //This cannot work if we start work and pop at the same time
 
 	for (const Line& line : m_Lines)
-	{
 		m_Synchronizer->AddRenderCommand(LineCommand(line.m_Points[0], line.m_Points[1], true));
-	}
-
-
-	/*for (TreeNodeBase* node : m_Children)
-	{*/
-		/*if (!node)
-			continue;
-		const CU::GrowingArray<Line>& line_list = node->GetLines();
-
-		for (const Line& line : line_list)
-		{
-		}*/
-	//}
-
 
 }

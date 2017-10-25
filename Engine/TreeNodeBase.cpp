@@ -286,17 +286,7 @@ void TreeNodeBase::AddLine(Line line)
 
 void TreeNodeBase::CopyToParent(const CU::GrowingArray<Line>& in)
 {
-	if (m_Depth > 0)
-	{
-		CU::GrowingArray<Line>::Copy(m_Lines, in);
-	}
-	else
-	{
-		static Ticket_Mutex list_ticket;
-		BeginTicketMutex(&list_ticket);
-		CU::GrowingArray<Line>::Copy(m_Lines, in);
-		EndTicketMutex(&list_ticket);
-	}
+	CU::GrowingArray<Line>::Copy(m_Lines, in);
 }
 
 s32 TreeNodeBase::GetMemoryBlockIndex()

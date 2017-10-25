@@ -75,20 +75,13 @@ namespace graphics
 	{
 		graphics::IGraphicsContext& context = Engine::GetAPI()->GetContext();
 
-		m_cbPointlightVtx.world = pointlight->GetOrientation();
-		m_cbPointlightVtx.invertedView = CU::Math::Inverse(camera_view);
-		m_cbPointlightVtx.projection = camera_projection;
-		m_cbPointlightVtx.scale.x = pointlight->GetRange();
-		m_cbPointlightVtx.scale.y = pointlight->GetRange();
-		m_cbPointlightVtx.scale.z = pointlight->GetRange();
-		m_cbPointlightVtx.scale.w = pointlight->GetRange();
+		m_cbPointlightVtx.m_Orientation = pointlight->GetOrientation();
+		m_cbPointlightVtx.m_Range = pointlight->GetRange();
 		context.UpdateConstantBuffer(m_LightBuffers[POINTLIGHT_VERTEX], &m_cbPointlightVtx, sizeof(PointlightConstantBuffer));
 
 		//____________________________________________________________________________
 
 		
-		//m_cbPointlightPix.m_InvertedProjection = CU::Math::InverseReal(camera_projection);
-		//m_cbPointlightPix.m_View = camera_view;
 		m_cbPointlightPix.m_Color = pointlight->GetColor();
 		m_cbPointlightPix.m_Position = pointlight->GetPosition();
 		m_cbPointlightPix.m_CameraPosition = camera_view.GetPosition();

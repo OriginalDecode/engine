@@ -156,8 +156,10 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 								EntityManager::LIGHT | 
 								EntityManager::DEBUG );
 
-	m_EntityManager.AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
 
+#if !defined(_FINAL) && !defined(_PROFILE)
+	m_EntityManager.AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
+#endif
 #ifndef _EDITOR
 	m_EntityManager.AddSystem<PhysicsSystem>();
 #endif

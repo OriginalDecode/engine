@@ -10,6 +10,7 @@ class Synchronizer;
 
 struct GizmoHandle;
 
+#if !defined(_FINAL) && !defined(_PROFILE)
 class DebugSystem : public BaseSystem, public Subscriber
 {
 public:
@@ -38,3 +39,4 @@ private:
 	std::string current_model;
 
 };
+#endif

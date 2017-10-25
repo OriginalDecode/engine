@@ -436,7 +436,7 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 		translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * translation.myOrientation;
 
 		m_LevelReader.ReadElement(it->value["angle"], component.angle);
-		component.angle = cl::DegreeToRad(component.angle * 0.5f);
+		component.angle = cl::DegreeToRad(component.angle);
 		component.m_LightID = Engine::GetInstance()->RegisterLight();
 	}
 
@@ -680,11 +680,11 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 
 	Material* material[] = {
 		pStoneMaterial,
-		/*pGoldMaterial,
+		pGoldMaterial,
 		pAlumMaterial,
 		pCoppMaterial,
 		pMetaMaterial,
-	*/ };
+	 };
 
 
 	static s32 mat = 0;

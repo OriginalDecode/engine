@@ -68,6 +68,9 @@ void Frustum::OnResize(float new_fov)
 
 void Frustum::DrawFrustum()
 {
+#if defined(_PROFILE) || defined(_FINAL)
+	return;
+#endif
 	LinePoint p1, p2, p3, p4, p5, p6, p7, p8;
 	p1.color = CU::Vector4f(0, 1, 0, 1);
 	p2.color = p1.color;

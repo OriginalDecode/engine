@@ -31,7 +31,7 @@ struct VS_OUTPUT
 };
 
 static const float k0 = 0.00098,
-			k1 = 0.9921; 
+				k1 = 0.9921; 
 static const float specMax = (2 / (0.0014 * 0.0014)) - 2;
 static const float g_MaxT = exp2(-10 / sqrt(specMax) - k0) / k1;
 static const float PI = 3.14159265;
@@ -92,7 +92,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
 	float4 normal = NormalTexture.Sample(sampler0, input.uv);
 
-	half roughness = depth.y;
+	half roughness = 1 - depth.y;
 	half roughnessOffsetted = pow(roughness, 8192);
 	half lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips);
 
@@ -173,7 +173,8 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 			float V = 0.25f / (G1V * G1L);
 
-			spec += saturate(((schlickFresnel * ggxDistr * V * NdL) * float4(light_col, 1)) * light_intensity);
+			spec += saturate(((schlickFresnel * ggxDistr * V * NdL) * float4(light_col, 1)) * 
+			light_intensity);
 
 		}
 	}
@@ -190,7 +191,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 output = 0;
 	output = lerp(diffuse, cube, schlickFresnel);
 	output += spec;
-	output = saturate(output) * 8;
+	output = saturate(output);
 
 	output.a = 1;
 	//output = pow(output, .4545);

@@ -29,7 +29,7 @@
 #include <Input/ControllerInput.h>
 
 #include <CommonLib/HashString.h>
-static float s_CamSpeed = 50.f;
+static float s_CamSpeed = 10.f;
 
 void Game::InitState(StateStack* state_stack)
 {
@@ -69,7 +69,7 @@ void Game::Initiate(const std::string& level)
 	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 
 
-	bool read_camera = false;
+	bool read_camera = true;
 	if (read_camera)
 	{
 		std::ifstream camera_load;
@@ -96,11 +96,12 @@ void Game::Initiate(const std::string& level)
 
 
 
+#if !defined(_FINAL) && !defined(_PROFILE)
 	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
 	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &degree, "Spotlight Degree"));
 	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &intensity, "Spotlight Intensity"));
 	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &range, "Spotlight Range"));
-
+#endif
 }
 
 void Game::EndState()

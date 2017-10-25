@@ -21,6 +21,9 @@
 #include <Engine/Model.h>
 #include <CommonLib/DataStructures/Hashmap/Hash.h>
 #include "profile_defines.h"
+
+#if !defined(_FINAL) && !defined(_PROFILE)
+
 DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
@@ -525,3 +528,4 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 
 }
 
+#endif

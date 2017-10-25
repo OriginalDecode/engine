@@ -30,8 +30,10 @@ void NodeEntityManager::Initiate()
 		AddSystem<PhysicsSystem>();
 	if (flag & EntityManager::LIGHT)
 		AddSystem<LightSystem>();
+#if !defined(_FINAL) && !defined(_PROFILE)
 	if (flag & EntityManager::DEBUG)
 		AddSystem<DebugSystem>();
+#endif
 }
 
 void NodeEntityManager::CleanUp()

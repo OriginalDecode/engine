@@ -197,10 +197,10 @@ void Renderer::Render()
 	RenderSpotlight();
 	RenderPointlight();
 
-	//m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
+	m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
 
-	m_RenderContext.GetAPI().SetDefaultTargets();
-	m_DeferredRenderer->Finalize();
+	/*m_RenderContext.GetAPI().SetDefaultTargets();
+	m_DeferredRenderer->Finalize();*/
 
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
@@ -468,7 +468,11 @@ void Renderer::RenderSpotlight()
 
 		CU::Matrix44f shadow_mvp;
 
+#if !defined(_FINAL) && !defined(_PROFILE)
 		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(m_LightModelWireframe ? graphics::WIREFRAME : graphics::CULL_NONE));
+#else
+		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
+#endif
 		m_LightPass->RenderSpotlight(light, m_Camera->GetOrientation(), m_Camera->GetPerspective(), shadow_mvp, m_RenderContext);
 
 	}
@@ -491,8 +495,11 @@ void Renderer::RenderPointlight()
 		myPointLight->SetColor(CU::Vector4f(command->m_Color.x, command->m_Color.y, command->m_Color.z, 1));
 		myPointLight->Update();
 		CU::Matrix44f shadow_mvp;
-
+#if !defined(_FINAL) && !defined(_PROFILE)
 		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(m_LightModelWireframe ? graphics::WIREFRAME : graphics::CULL_NONE));
+#else
+		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
+#endif
 		m_LightPass->RenderPointlight(myPointLight, m_Camera->GetOrientation(), m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
 	}
 	PROFILE_BLOCK_END;

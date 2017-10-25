@@ -94,7 +94,8 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	output.Depth.y = override_pbl ? input.data0.y : roughness_override;
 	output.Emissive = input.displaced;
     
-    return output;
+
+    return output ;
 
 
 /*	float4 opacity = OpacityTexture.Sample(sampler0, input.uv);

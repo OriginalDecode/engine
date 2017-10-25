@@ -213,6 +213,9 @@ void TreeNodeBase::SetMemoryBlockIndex(s32 index)
 #define YELLOW CU::Vector4f(255.f,255.f,0.f,255.f)
 void TreeNodeBase::RenderBox()
 {
+#if defined(_PROFILE) || defined(_FINAL)
+	return;
+#endif
 	m_Lines.RemoveAll();
 	LinePoint points[8];
 

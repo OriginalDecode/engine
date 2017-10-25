@@ -30,7 +30,7 @@ psInput main(vsInput input)
 	psInput output = (psInput)0;
 	float _angle = angle;
 
-	float _range = 5;
+	float _range = range;
 
 
     float xyScale = tan(_angle) * (_range );

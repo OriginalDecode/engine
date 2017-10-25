@@ -192,10 +192,13 @@ void Renderer::Render()
 
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+	m_RenderContext.GetContext().GSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
 	m_RenderContext.GetContext().PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
 	RenderSpotlight();
 	RenderPointlight();
+
+	RenderParticles(nullptr);
 
 	m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
 
@@ -507,33 +510,20 @@ void Renderer::RenderPointlight()
 
 void Renderer::RenderParticles(Effect* effect)
 {
-
-	// 	m_API->SetBlendState(eBlendStates::PARTICLE_BLEND);
-	// 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
-	// 	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 0);
-	// 
-	// 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER);
-	// 	for (s32 i = 0; i < commands.Size(); i++)
-	// 	{
-	// 		auto command = reinterpret_cast<ParticleCommand*>(commands[i]);
-	// 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::PARTICLE, "Expected particle command type");
-	// 		m_ParticleEmitter->SetPosition(command->m_Position);
-	// 
-	// 		m_ParticleEmitter->Update(m_Engine->GetDeltaTime());
-	// 
-	// 		//if ( !m_ProcessDirectionalShadows )
-	// 		//{
-	// 		//}
-	// 		//else
-	// 		//{
-	// 		//	m_API->GetContext()->PSSetShaderResources(1, 1, m_Engine->GetTexture("Data/Textures/hp.dds")->GetShaderViewRef());
-	// 		//}
-	// 		m_ParticleEmitter->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), effect);
-	// 	}
-	// 	m_API->SetRasterizer(eRasterizer::CULL_BACK);
-
-		//reset
-
+	m_RenderContext.GetContext().SetBlendState(m_RenderContext.GetAPI().GetBlendState(graphics::PARTICLE_BLEND));
+	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER);
+	for (s32 i = 0; i < commands.Size(); i++)
+	{
+		auto command = reinterpret_cast<ParticleCommand*>(commands[i]);
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::PARTICLE, "Expected particle command type");
+		m_ParticleEmitter->SetPosition(command->m_Position);
+	
+		m_ParticleEmitter->Update(m_RenderContext.GetEngine().GetDeltaTime());
+	
+		
+		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
+		m_ParticleEmitter->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), effect);
+	}
 }
 
 void Renderer::RenderLines()

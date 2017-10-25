@@ -6,6 +6,7 @@ cbuffer Matrices : register(b0)
 struct VS_OUTPUT
 {
 	float4 pos : SV_POSITION;
+	float4 normal : NORMAL;
 	float2 size : SIZE;
 	float2 alpha : ALPHA;
 	float2 uv : TEXCOORD;
@@ -35,10 +36,12 @@ void main(point VS_OUTPUT input[1], inout TriangleStream<VS_OUTPUT> triStream)
 	for(int i = 0; i < 4; ++i)
 	{
 		output.pos = (quadPos[i] * input[0].size.x * 2) + input[0].pos;
-		output.pos.z = output.pos.z / output.pos.w; 
+		// output.pos.z = output.pos.z / output.pos.w; 
 		output.pos = mul(output.pos, Projection);
 		output.uv.x = quadUV[i].x;
 		output.uv.y = quadUV[i].y;
+		
+		output.normal = quadPos[i];
 
 		output.alpha = input[0].alpha;
 		triStream.Append(output);

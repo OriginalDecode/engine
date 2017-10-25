@@ -151,8 +151,8 @@ void CEmitterInstance::UpdateConstantBuffer(CU::Matrix44f& aCameraOrientation, c
 
 
 
-	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
-	ctx.GSSetConstantBuffer(0, 1, &m_GeometryBuffer);
+	//ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
+	//ctx.GSSetConstantBuffer(0, 1, &m_GeometryBuffer);
 	ctx.PSSetConstantBuffer(0, 1, &m_GeometryBuffer);
 
 }

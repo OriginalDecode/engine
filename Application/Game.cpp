@@ -69,7 +69,7 @@ void Game::Initiate(const std::string& level)
 	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 
 
-	bool read_camera = true;
+	bool read_camera = false;
 	if (read_camera)
 	{
 		std::ifstream camera_load;
@@ -242,6 +242,7 @@ void Game::OldUpdate(float dt)
 
 
 	HandleMovement(input_wrapper, entity_speed, dt);
+	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 
 	m_World.Update(dt, m_Paused);
 }

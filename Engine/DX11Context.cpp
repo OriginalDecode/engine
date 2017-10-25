@@ -226,12 +226,17 @@ namespace graphics
 		fx->Use();
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
+
+		u32 stride = vtx.GetStride();
+		u32 offset = vtx.GetByteOffset();
+		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
+
 		m_Context->IASetVertexBuffers(vtx.GetStart(),
 									  vtx.GetBufferCount(),
-									  static_cast<ID3D11Buffer*const*>(vtx.GetVertexBuffer()),
-									  &vtx.GetStride(),
-									  &vtx.GetByteOffset());
-		m_Context->OMSetDepthStencilState(static_cast<ID3D11DepthStencilState*>(Engine::GetAPI()->GetDepthStencilState(READ_NO_WRITE_PARTICLE)), 1);
+									  &buffer,
+									  &stride,
+									  &offset);
+		SetDepthState(Engine::GetAPI()->GetDepthStencilState(READ_NO_WRITE_PARTICLE), 1);
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
 		fx->Clear();
 	}

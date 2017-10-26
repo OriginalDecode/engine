@@ -28,7 +28,7 @@
 #include <Input/InputWrapper.h>
 #include <Engine/IGraphicsContext.h>
 #include <Engine/DX11Context.h>
-#include <Engine/DX11Device.h>
+
 
 Renderer::Renderer(Synchronizer* synchronizer)
 	: m_Synchronizer(synchronizer)
@@ -36,9 +36,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 {
 	auto api = Engine::GetAPI();
 	m_RenderContext = graphics::RenderContext(Engine::GetInstance(),
-											  api->GetDevice(),
-											  api->GetContext(),
-											  api);
+		api->GetDevice(),
+		api->GetContext(),
+		api);
 
 
 	//myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
@@ -119,20 +119,19 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	TextureDesc desc;
 	desc.m_Width = window_size.m_Width;
 	desc.m_Height = window_size.m_Height;
-	desc.m_Usage = 0;
+	desc.m_Usage = graphics::STAGING_USAGE;
 	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE;
 	desc.m_ShaderResourceFormat = graphics::R32_UINT;
-	desc.m_TextureFormat = graphics::RGBA32_FLOAT;
-	desc.m_CPUAccessFlag = graphics::READ;
-	m_StagingTexture->Initiate(desc, false, "Staging Resource");
+	desc.m_TextureFormat = graphics::R32_UINT;
+	m_StagingTexture->Initiate(desc, "Staging Resource");
 
 
-	m_PixelData = new s8[window_size.m_Width * window_size.m_Height * 4];
 
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
 	m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(PerFramePixelBuffer), "PerFramePixelBuffer");
 
+	m_PixelData = new char[window_size.m_Width * window_size.m_Height];
 
 }
 
@@ -165,7 +164,6 @@ Renderer::~Renderer()
 	//SAFE_DELETE(myText);
 	SAFE_DELETE(m_LightPass);
 	SAFE_DELETE(m_ParticleEmitter);
-	m_Spotlights.DeleteAll();
 
 	Engine::GetAPI()->ReleasePtr(m_ViewProjBuffer);
 	m_ViewProjBuffer = nullptr;
@@ -202,6 +200,38 @@ void Renderer::Render()
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
 
+	//graphics::DX11Context& dx11ctx = static_cast<graphics::DX11Context&>(m_RenderContext.GetContext());
+	//ID3D11DeviceContext* ctx = static_cast<ID3D11DeviceContext*>(dx11ctx.GetContext());
+
+	//WindowSize window_size;
+	//window_size.m_Height = m_RenderContext.GetAPI().GetInfo().m_WindowHeight;
+	//window_size.m_Width = m_RenderContext.GetAPI().GetInfo().m_WindowWidth;
+	//
+	//ID3D11Resource* pResource = nullptr;
+	//ID3D11RenderTargetView* rtv = static_cast<ID3D11RenderTargetView*>(m_GBuffer.GetIDTexture()->GetRenderTargetView());
+	//ctx->CopyResource(m_StagingTexture->GetShaderView())
+
+
+	//ID3D11Resource* rtvResource = nullptr;
+	//
+
+
+
+
+	//rtv->GetResource(&rtvResource);
+	//ctx->CopyResource(pResource, rtvResource);
+
+	//D3D11_MAPPED_SUBRESOURCE msr;
+	//ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
+	//ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(m_GBuffer.GetIDTexture());
+
+	//ctx->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	//if (msr.pData)
+	//{
+	//	s8* data = (s8*)msr.pData;
+	//	memcpy(data, &src[0], size);
+	//}
+	//ctx->Unmap(buffer, 0);
 
 
 
@@ -212,62 +242,6 @@ void Renderer::Render()
 	else
 		Render3DCommands();
 
-	graphics::DX11Device& dx11dev = static_cast<graphics::DX11Device&>(m_RenderContext.GetDevice());
-	ID3D11Device* pDevice = static_cast<ID3D11Device*>(dx11dev.GetDevice());
-
-	graphics::DX11Context& dx11ctx = static_cast<graphics::DX11Context&>(m_RenderContext.GetContext());
-	ID3D11DeviceContext* ctx = static_cast<ID3D11DeviceContext*>(dx11ctx.GetContext());
-
-	WindowSize window_size;
-	window_size.m_Height = m_RenderContext.GetAPI().GetInfo().m_WindowHeight;
-	window_size.m_Width = m_RenderContext.GetAPI().GetInfo().m_WindowWidth;
-
-	ID3D11Texture2D* _IDTex = static_cast<ID3D11Texture2D*>(m_GBuffer.GetIDTexture()->GetTexture());
-
-	D3D11_TEXTURE2D_DESC desc;
-	desc.Width = window_size.m_Width;
-	desc.Height = window_size.m_Height;
-	desc.MipLevels = 1;
-	desc.ArraySize = 1;
-	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	desc.SampleDesc.Count = 1;
-	desc.SampleDesc.Quality = 0;
-	desc.Usage = D3D11_USAGE_STAGING;
-	desc.BindFlags = 0;
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-	desc.MiscFlags = 0;
-
-	ID3D11Texture2D * staging = nullptr;
-	pDevice->CreateTexture2D(&desc, nullptr, &staging);
-	ctx->CopyResource(staging, _IDTex);
-		
-
-	D3D11_MAPPED_SUBRESOURCE msr;
-	ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-	HRESULT hr = ctx->Map(staging, 0, D3D11_MAP_READ, 0, &msr);
-
-	if (msr.pData)
-	{
-		s8* data = (s8*)msr.pData;
-		memcpy(&m_PixelData[0], &data[0], window_size.m_Height * window_size.m_Width * 4);
-	}
-	ctx->Unmap(staging, 0);
-	staging->Release();
-
-	if (ImGui::Begin("test"))
-	{
-		auto cur_pos = m_RenderContext.GetEngine().GetInputHandle()->GetCursorPos();
-		int col;
-		u32 x = (u32)cur_pos.x;
-		u32 y = (u32)cur_pos.y;
-		col = m_PixelData[ x * y * 4];
-
-		u32 _entity_id = col;
-		ImGui::Text("%d", _entity_id);
-		ImGui::Text("X: %.3f, Y: %.3f", cur_pos.x, cur_pos.y);
-		ImGui::End();
-
-	}
 #if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
 #endif
@@ -276,11 +250,11 @@ void Renderer::Render()
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_DeferredRenderer->DeferredRender(shadow_mvp
-									   , m_Direction
-									   , m_RenderContext);
+		, m_Direction
+		, m_RenderContext);
 
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
-	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer); 
 	m_RenderContext.GetContext().GSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
 	m_RenderContext.GetContext().PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
@@ -569,7 +543,7 @@ void Renderer::RenderSpotlight()
 #endif
 		m_LightPass->RenderSpotlight(light, m_Camera->GetOrientation(), m_Camera->GetPerspective(), shadow_mvp, m_RenderContext);
 
-}
+	}
 	PROFILE_BLOCK_END;
 }
 
@@ -608,10 +582,10 @@ void Renderer::RenderParticles(Effect* effect)
 		auto command = reinterpret_cast<ParticleCommand*>(commands[i]);
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::PARTICLE, "Expected particle command type");
 		m_ParticleEmitter->SetPosition(command->m_Position);
-
+	
 		m_ParticleEmitter->Update(m_RenderContext.GetEngine().GetDeltaTime());
-
-
+	
+		
 		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
 		m_ParticleEmitter->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), effect);
 	}
@@ -658,7 +632,7 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 	GPUModelData model_data;
 	model_data.m_Orientation = command->m_Orientation;
 	model_data.m_ID = command->m_EntityID;
-
+	
 	m_InstancingManager.AddGPUDataToInstance(command->m_MaterialKey, model_data);
 }
 

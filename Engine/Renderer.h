@@ -152,7 +152,7 @@ private:
 	void WriteDebugTextures();
 
 	u32 entity_id = 0;
-	s8* m_PixelData = nullptr;
+	char* m_PixelData = nullptr;
 
 	Texture* m_StagingTexture = nullptr;
 

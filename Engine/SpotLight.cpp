@@ -68,8 +68,6 @@ SpotLight::SpotLight()
 
 SpotLight::~SpotLight()
 {
-
-
 #if !defined(_PROFILE) && !defined(_FINAL)
 	SAFE_DELETE(m_LightQuad);
 	Engine::GetInstance()->GetAPI()->ReleasePtr(m_QuadBuffer);

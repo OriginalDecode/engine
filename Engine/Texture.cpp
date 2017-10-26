@@ -42,7 +42,7 @@ void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const 
 		tex_desc.m_MiscFlags = 0;
 		tex_desc.m_SampleCount = 1;
 		tex_desc.m_SampleQuality = 0;
-		tex_desc.m_CPUAccessFlag = desc.m_CPUAccessFlag;
+		tex_desc.m_CPUAccessFlag = 0;
 		tex_desc.m_Binding = desc.m_ResourceTypeBinding;
 		graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 		m_Texture = device.CreateTexture2D(tex_desc, debug_name + "_Texture");

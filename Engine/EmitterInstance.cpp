@@ -24,7 +24,7 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	data.alphaDelta = 0.f;
 
 	myData.diffuseTexture = Engine::GetInstance()->GetTexture("Data/Textures/particles/smoke.dds");
-	myData.normalTexture = Engine::GetInstance()->GetTexture("Data/Textures/particles/test_normal.dds");
+	myData.normalTexture = Engine::GetInstance()->GetTexture("Data/Textures/particles/smoke_normal.dds");
 
 	myData.lifeTime = -1.f;
 	myData.shader = Engine::GetInstance()->GetEffect("Shaders/particle.json");
@@ -41,7 +41,7 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 
 	CreateBuffer();
 	myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);
-	//myData.shader->AddShaderResource(myData.normalTexture->GetShaderView(), Effect::NORMAL);
+	myData.shader->AddShaderResource(myData.normalTexture->GetShaderView(), Effect::NORMAL);
 
 // 	Effect* shader = myEngine->GetEffect("Shaders/particle_offscreen.json");
 // 	shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);

@@ -29,7 +29,7 @@
 #include <Input/ControllerInput.h>
 
 #include <CommonLib/HashString.h>
-static float s_CamSpeed = 10.f;
+static float s_CamSpeed = 50.f;
 
 void Game::InitState(StateStack* state_stack)
 {

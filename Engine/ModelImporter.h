@@ -282,6 +282,24 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 	if (!vtx.GetInputLayout())
 		FillInstanceData(out, data, effect);
 
+
+// 	if (filepath.find("plant") != filepath.npos)
+// 	{
+// 		Material* pMaterial = new Material(Hash("Plant"));
+// 		Engine* pEngine = Engine::GetInstance();
+// 		Texture* pAlbedo = pEngine->GetTexture("Data/Game_Models/T_plant_a_albedo.dds");
+// 		Texture* pNormal = pEngine->GetTexture("Data/Game_Models/T_plant_a_normal.dds");
+// 		Texture* pRough = pEngine->GetTexture("Data/Game_Models/T_plant_a_roughness.dds");
+// 		Texture* pMetal = pEngine->GetTexture("Data/Game_Models/T_empty_metalness.dds");
+// 
+// 		pMaterial->AddResource(pAlbedo, "", Effect::ALBEDO);
+// 		pMaterial->AddResource(pNormal, "", Effect::NORMAL);
+// 		pMaterial->AddResource(pRough, "", Effect::ROUGHNESS);
+// 		pMaterial->AddResource(pMetal, "", Effect::METALNESS);
+// 		out->SetMaterial(pMaterial);
+// 		return;
+// 	}
+
 	if (filepath.find("ballen.fbx") != filepath.npos)
 		return;
 

@@ -18,10 +18,10 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 diffuse = ParticleTexture.Sample(sampler0, input.uv);
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
 	float4 normal = NormalTexture.Sample(sampler0, input.uv);
-
-	float4 light_dir = float4(0,0,1,1);
-	float ndl = dot(input.normal, -light_dir);
+	float4 light_dir = float4(0,-1,0,1);
+	float ndl = dot( normal, -light_dir);
+	
 	return diffuse + (diffuse * ndl);
 
-	return float4(input.normal.rgb, 1);
+	return float4(normal.rgb, 1);
 };

@@ -305,7 +305,11 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 			//myEngine->GetTexture(newPath); //All textures now get properly loaded.
 			TextureInfo newInfo;
 			newInfo.m_File = path;
-
+			if (path.find("floor") != path.npos)
+			{
+				int apa;
+				apa = 5;
+			}
 			aiTextureType lType = static_cast< aiTextureType >( type );
 			//DL_MESSAGE("Type : %d, Name : %s", u32(lType), newPath.c_str());
 			switch ( lType )
@@ -337,12 +341,12 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 
 				case aiTextureType_REFLECTION: /* Misleading name, amirite? */
 				{
-					newInfo.m_Slot = Effect::METALNESS; // specular intensity (blender)
+					newInfo.m_Slot = Effect::METALNESS; // specular intensity (blender), metalness 
 				}break;
 
 				case aiTextureType_SPECULAR:
 				{
-					newInfo.m_Slot = Effect::METALNESS; // specular intensity (blender)
+					newInfo.m_Slot = Effect::ROUGHNESS; // specular intensity (blender), roughness???
 				}break;
 
 				case aiTextureType_HEIGHT:

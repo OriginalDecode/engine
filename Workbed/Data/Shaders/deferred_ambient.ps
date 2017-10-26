@@ -92,7 +92,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
 	float4 normal = NormalTexture.Sample(sampler0, input.uv);
 
-	half roughness = 1 - depth.y;
+	half roughness = depth.y;
 	half roughnessOffsetted = pow(roughness, 8192);
 	half lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips);
 

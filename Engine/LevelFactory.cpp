@@ -237,11 +237,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 			component.m_MaterialKey = m_Engine->GetModel(component.m_ModelID)->GetMaterial()->GetKey();
 		}
 		else
-		{
 			component.m_MaterialKey = s_Hash;
-		}
-
-
 
 		if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
 			sponza = true;

@@ -74,8 +74,8 @@ namespace graphics
 
 
 		ID3D11DeviceContext* m_Context = nullptr;
-	private:
 		void* GetContext() override { return m_Context; }
+	private:
 
 
 		virtual void _InternalUpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size) override;

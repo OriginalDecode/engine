@@ -10,13 +10,15 @@ struct D3D11_INPUT_ELEMENT_DESC;
 struct GPUModelData
 {
 	CU::Matrix44f m_Orientation;
-	CU::Vector4f m_PBLData; //this one is not needed, but it's here for debug purpose
+	CU::Vector4f m_PBLData;
+	u32 m_ID;
 };
 
 
 class Model : public BaseModel
 {
 	friend class CModelImporter;
+	friend class InstancingManager;
 public:
 	Model() = default;
 	~Model();

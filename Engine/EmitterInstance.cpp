@@ -87,8 +87,8 @@ void CEmitterInstance::CreateBuffer()
 	{
 		{ "POSITION", 0, graphics::_16BYTE_RGBA, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, graphics::_16BYTE_RGBA, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
-		{ "ALPHA", 0, graphics::_4BYTE_R, 0, 32, graphics::INPUT_PER_VERTEX_DATA, 0 },
-		{ "SIZE", 0, graphics::_4BYTE_R, 0, 36, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "ALPHA", 0, graphics::_4BYTE_R_FLOAT, 0, 32, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "SIZE", 0, graphics::_4BYTE_R_FLOAT, 0, 36, graphics::INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	auto& device = Engine::GetAPI()->GetDevice();

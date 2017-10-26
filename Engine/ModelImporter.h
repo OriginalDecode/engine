@@ -283,22 +283,22 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 		FillInstanceData(out, data, effect);
 
 
-// 	if (filepath.find("plant") != filepath.npos)
-// 	{
-// 		Material* pMaterial = new Material(Hash("Plant"));
-// 		Engine* pEngine = Engine::GetInstance();
-// 		Texture* pAlbedo = pEngine->GetTexture("Data/Game_Models/T_plant_a_albedo.dds");
-// 		Texture* pNormal = pEngine->GetTexture("Data/Game_Models/T_plant_a_normal.dds");
-// 		Texture* pRough = pEngine->GetTexture("Data/Game_Models/T_plant_a_roughness.dds");
-// 		Texture* pMetal = pEngine->GetTexture("Data/Game_Models/T_empty_metalness.dds");
-// 
-// 		pMaterial->AddResource(pAlbedo, "", Effect::ALBEDO);
-// 		pMaterial->AddResource(pNormal, "", Effect::NORMAL);
-// 		pMaterial->AddResource(pRough, "", Effect::ROUGHNESS);
-// 		pMaterial->AddResource(pMetal, "", Effect::METALNESS);
-// 		out->SetMaterial(pMaterial);
-// 		return;
-// 	}
+	// 	if (filepath.find("plant") != filepath.npos)
+	// 	{
+	// 		Material* pMaterial = new Material(Hash("Plant"));
+	// 		Engine* pEngine = Engine::GetInstance();
+	// 		Texture* pAlbedo = pEngine->GetTexture("Data/Game_Models/T_plant_a_albedo.dds");
+	// 		Texture* pNormal = pEngine->GetTexture("Data/Game_Models/T_plant_a_normal.dds");
+	// 		Texture* pRough = pEngine->GetTexture("Data/Game_Models/T_plant_a_roughness.dds");
+	// 		Texture* pMetal = pEngine->GetTexture("Data/Game_Models/T_empty_metalness.dds");
+	// 
+	// 		pMaterial->AddResource(pAlbedo, "", Effect::ALBEDO);
+	// 		pMaterial->AddResource(pNormal, "", Effect::NORMAL);
+	// 		pMaterial->AddResource(pRough, "", Effect::ROUGHNESS);
+	// 		pMaterial->AddResource(pMetal, "", Effect::METALNESS);
+	// 		out->SetMaterial(pMaterial);
+	// 		return;
+	// 	}
 
 	if (filepath.find("ballen.fbx") != filepath.npos)
 		return;
@@ -466,7 +466,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	auto& ins = out->m_InstanceWrapper;
 	const s32 ins_BufferCount = 1;
 	const s32 ins_Start = 0;
-	const s32 ins_Stride = sizeof(CU::Matrix44f) + sizeof(CU::Vector4f);
+	const s32 ins_Stride = sizeof(GPUModelData);
 	const s32 ins_ByteOffset = 0;
 	const s32 ins_InstanceCount = 5000;
 	const s32 ins_Size = ins_InstanceCount * ins_Stride;
@@ -482,14 +482,15 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 
 	CU::GrowingArray<graphics::InputElementDesc> element;
 	SetupInputLayout(data, element);
-
+	//constexpr int x = sizeof(unsigned int);
 	s32 byte_offset = 0;
 	graphics::InputElementDesc instance[] = {
 		{ "INSTANCE", 0, graphics::_16BYTE_RGBA, 1, 0, graphics::INPUT_PER_INSTANCE_DATA, 1 },
 		{ "INSTANCE", 1, graphics::_16BYTE_RGBA, 1, 16, graphics::INPUT_PER_INSTANCE_DATA, 1 },
 		{ "INSTANCE", 2, graphics::_16BYTE_RGBA, 1, 32, graphics::INPUT_PER_INSTANCE_DATA, 1 },
 		{ "INSTANCE", 3, graphics::_16BYTE_RGBA, 1, 48, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-		{ "DATA" , 0, graphics::_8BYTE_RG, 1, 64, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+		{ "DATA" , 0, graphics::_16BYTE_RGBA, 1, 64, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+		{ "ID" , 0, graphics::_4BYTE_R_UINT, 1, 80, graphics::INPUT_PER_INSTANCE_DATA, 1 },
 	};
 
 	element.Add(instance[0]);
@@ -497,6 +498,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	element.Add(instance[2]);
 	element.Add(instance[3]);
 	element.Add(instance[4]);
+	element.Add(instance[5]);
 
 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
 

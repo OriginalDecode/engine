@@ -17,6 +17,7 @@ struct GBuffer
 	float4 Normal;
 	float4 Depth;
 	float4 Emissive;
+	float4 IDTexture;
 };
 
 struct VS_OUTPUT
@@ -29,6 +30,7 @@ struct VS_OUTPUT
 	float4 worldpos : POSITION;
 	float2 data0 : DATA;
 	float4 displaced : DISPLACE;
+	unsigned int entity_id : ID;
 };
 
 struct ps_input_no_instance
@@ -67,6 +69,15 @@ GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
     return output;
 };
 
+float4 ToColor(unsigned int color)
+{
+	float a = ((color) & 0xFF) / 255.f;
+	float r = ((color >> 24) & 0xFF)  / 255.f;
+	float g = ((color >> 16) & 0xFF) / 255.f;
+	float b = ((color >> 8) & 0xFF) / 255.f;
+	return float4(r,g,b,1);
+};
+
 GBuffer main(VS_OUTPUT input) : SV_Target
 {
 	float3 _normal = NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
@@ -82,8 +93,8 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 
 	GBuffer output;
 	bool override_pbl = false;
-	float metalness_override = 1 - MetalnessTexture.Sample(sampler0, input.uv).r;
-	float roughness_override = 1 - RoughnessTexture.Sample(sampler0, input.uv).r; 
+	float metalness_override = MetalnessTexture.Sample(sampler0, input.uv).r;
+	float roughness_override = RoughnessTexture.Sample(sampler0, input.uv).r; 
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);
 	albedo.rgb = pow(albedo.rgb, 2.2);
@@ -93,8 +104,7 @@ GBuffer main(VS_OUTPUT input) : SV_Target
     output.Depth.x = input.pos.z;
 	output.Depth.y = override_pbl ? input.data0.y : roughness_override;
 	output.Emissive = input.displaced;
-    
-
+    output.IDTexture = ToColor(input.entity_id);
     return output ;
 
 

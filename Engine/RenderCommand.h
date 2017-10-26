@@ -50,6 +50,18 @@ struct ModelCommand : public RenderCommand
 	{
 	}
 
+#ifdef _DEBUG
+	ModelCommand(u64 model_key, u64 material_key, const CU::Matrix44f& orientation, bool wireframe, u32 entity_id)
+		: RenderCommand(eCommandType::MODEL)
+		, m_Key(model_key)
+		, m_MaterialKey(material_key)
+		, m_Orientation(orientation)
+		, m_Wireframe(wireframe)
+		, m_EntityID(entity_id)
+	{
+	}
+#endif
+
 
 
 	ModelCommand(u64 key, const CU::Vector3f& position, bool wireframe)
@@ -96,6 +108,9 @@ struct ModelCommand : public RenderCommand
 	bool m_Wireframe = false;
 	float m_Roughness = 0.f;
 	float m_Metalness = 0.f;
+#ifdef _DEBUG
+	u32 m_EntityID = 0;
+#endif
 
 };
 

@@ -100,7 +100,8 @@ namespace graphics
 
 	enum eVertexFormat
 	{
-		_4BYTE_R,
+		_4BYTE_R_FLOAT,
+		_4BYTE_R_UINT,
 		_8BYTE_RG,
 		_12BYTE_RGB,
 		_16BYTE_RGBA,

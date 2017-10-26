@@ -42,7 +42,7 @@ struct Line
 };
 
 
-typedef s32 Entity;
+typedef u32 Entity;
 
 typedef void ITexture2D;
 typedef void ITexture3D;

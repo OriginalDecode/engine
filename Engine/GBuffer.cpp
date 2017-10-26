@@ -35,11 +35,20 @@ namespace graphics
 		desc.m_RenderTargetFormat = RGBA32_FLOAT;
 		m_Depth->Initiate(desc, false, "GBuffer : Depth");
 
+
+		m_EntityIDTexture = new Texture;
+		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
+		desc.m_ShaderResourceFormat = R32_UINT;
+		desc.m_RenderTargetFormat = R32_UINT;
+		m_EntityIDTexture->Initiate(desc, false, "Entity ID");
+
+
 		Effect* shader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
 		shader->AddShaderResource(m_Albedo, Effect::DIFFUSE);
 		shader->AddShaderResource(m_Depth, Effect::DEPTH);
 		shader->AddShaderResource(m_Normal, Effect::NORMAL);
 		shader->AddShaderResource(m_Emissive, Effect::EMISSIVE);
+
 	}
 
 	GBuffer::~GBuffer()
@@ -48,6 +57,7 @@ namespace graphics
 		SAFE_DELETE(m_Normal);
 		SAFE_DELETE(m_Depth);
 		SAFE_DELETE(m_Emissive);
+		SAFE_DELETE(m_EntityIDTexture);
 	}
 
 	void GBuffer::Clear(const float* clear_color, const RenderContext& render_context)
@@ -57,6 +67,7 @@ namespace graphics
 		ctx.ClearRenderTarget(m_Normal->GetRenderTargetView(), clear_color);
 		ctx.ClearRenderTarget(m_Depth->GetRenderTargetView(), clear_color);
 		ctx.ClearRenderTarget(m_Emissive->GetRenderTargetView(), clear_color);
+		ctx.ClearRenderTarget(m_EntityIDTexture->GetRenderTargetView(), clear_color);
 	}
 
 	void GBuffer::SetAsRenderTarget(Texture* depth, const RenderContext& render_context)
@@ -67,6 +78,7 @@ namespace graphics
 			m_Normal->GetRenderTargetView(),
 			m_Depth->GetRenderTargetView(),
 			m_Emissive->GetRenderTargetView(),
+			m_EntityIDTexture->GetRenderTargetView(),
 		};
 
 		render_context.GetContext().OMSetRenderTargets(ARRAYSIZE(target), target, render_context.GetAPI().GetDepthView());

@@ -44,6 +44,7 @@ float4 getWorldPos(float2 tex_coord, float depth)
 
 float4 main(psInput input) : SV_Target
 {
+
    	input.uv /= input.uv.w;
 	float2 texCoord = input.uv.xy;
 
@@ -51,7 +52,7 @@ float4 main(psInput input) : SV_Target
 	float4 normal = NormalTexture.Sample(sampler0, texCoord);
 	float4 depth = DepthTexture.Sample(sampler0, texCoord);
 	float metalness = normal.w;
-	float roughness = depth.y;
+	float roughness = 1 - depth.y;
 	
 	normal *= 2;
 	normal -= 1;

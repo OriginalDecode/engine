@@ -3,8 +3,8 @@
 #include <DataStructures/GrowingArray.h>
 #include <Math/Matrix/Matrix44.h>
 #include <map>
+#include <Engine/Model.h>
 
-class Model;
 class Material;
 namespace graphics
 {
@@ -16,7 +16,7 @@ struct InstanceObject
 	Model* m_Model = nullptr;
 	Material* m_Material = nullptr;
 	bool m_Shadowed = false;
-	CU::GrowingArray<CU::Matrix44f> m_Orientations;
+	CU::GrowingArray<GPUModelData> m_GPUData;
 };
 
 class InstancingManager
@@ -26,7 +26,8 @@ public:
 	bool FindInstanceObject(u64 key);
 	InstanceObject& AddInstanceObject(InstanceObject instance_object);
 	const InstanceObject& GetInstanceObject(u64 key);
-	void AddOrientationToInstance(u64 key, const CU::Matrix44f& orientation);
+
+	void AddGPUDataToInstance(u64 key, GPUModelData data);
 
 	void DoInstancing(const graphics::RenderContext& rc, bool shadowing);
 

@@ -15,7 +15,9 @@ struct VS_INPUT
 	float4 world1 : INSTANCE1;
 	float4 world2 : INSTANCE2;
 	float4 world3 : INSTANCE3;
-	float4 data0 : DATA;
+	float3 data0 : DATA;
+	unsigned int entity_id : ID;
+
 };
 
 struct VS_OUTPUT
@@ -28,6 +30,7 @@ struct VS_OUTPUT
 	float4 worldpos : POSITION;
 	float2 data0 : DATA;
 	float4 displaced : DISPLACE;
+	unsigned int entity_id : ID;
 };
 
 SamplerState sampler0 : register(s0);
@@ -65,6 +68,7 @@ VS_OUTPUT main(VS_INPUT input)
 	
 	output.pos = mul(displacement, out_matrix);
 	
+	output.entity_id = input.entity_id;
 
 	return output;
 };

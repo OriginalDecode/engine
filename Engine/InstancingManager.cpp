@@ -30,13 +30,12 @@ const InstanceObject& InstancingManager::GetInstanceObject(u64 key)
 	return InstanceObject();
 }
 
-void InstancingManager::AddOrientationToInstance(u64 key, const CU::Matrix44f& orientation)
+void InstancingManager::AddGPUDataToInstance(u64 key, GPUModelData data)
 {
 	auto it = m_InstanceObjects.find(key);
 	if (it == m_InstanceObjects.end())
 		return;
-
-	it->second.m_Orientations.Add(orientation);
+	it->second.m_GPUData.Add(data);
 }
 
 void InstancingManager::DoInstancing(const graphics::RenderContext& rc, bool shadowing)
@@ -46,7 +45,7 @@ void InstancingManager::DoInstancing(const graphics::RenderContext& rc, bool sha
 
 		InstanceObject& instance = it->second;
 
-		if (instance.m_Orientations.Empty())
+		if (instance.m_GPUData.Empty())
 			continue;
 
 		Model* pModel = instance.m_Model;
@@ -54,20 +53,26 @@ void InstancingManager::DoInstancing(const graphics::RenderContext& rc, bool sha
 
 
 
-		if(!shadowing)
+		if (!shadowing)
 			instance.m_Material->Use(pModel->GetEffect());
 
-		for (const CU::Matrix44f& mat : instance.m_Orientations)
+
+		//CU::GrowingArray<GPUModelData>::Copy(pModel->m_GPUData, instance.m_GPUData);
+
+
+		for (const GPUModelData& data : instance.m_GPUData)
 		{
-			pModel->AddOrientation(mat);
+			pModel->AddInstanceData(data);
 		}
+
+
 
 		if (!shadowing)
 			pModel->RenderInstanced(rc);
 		else
 			pModel->ShadowRenderInstanced(rc);
 
-		instance.m_Orientations.RemoveAll();
+		instance.m_GPUData.RemoveAll();
 
 
 	}

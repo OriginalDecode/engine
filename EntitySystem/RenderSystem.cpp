@@ -95,6 +95,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 									  , render.m_MaterialKey
 									  , translation.myOrientation
 									  , render.m_RenderWireframe
+									  , e
 		));
 
 

@@ -147,8 +147,14 @@ private:
 	Texture* m_DebugTexture3 = nullptr; // Roughness
 	Texture* m_DebugTexture4 = nullptr; // Metalness
 	Texture* m_DebugTexture5 = nullptr; //Emissive
+	Texture* m_DebugTexture6 = nullptr; //entity id
 	Quad* m_DebugQuad = nullptr;
 	void WriteDebugTextures();
+
+	u32 entity_id = 0;
+	char* m_PixelData = nullptr;
+
+	Texture* m_StagingTexture = nullptr;
 
 public:
 	void SetRenderLines(bool render_lines) { m_RenderLines = render_lines; }

@@ -650,8 +650,10 @@ namespace graphics
 
 	DXGI_FORMAT DirectX11::GetFormat(eVertexFormat format)
 	{
-		if (format == eVertexFormat::_4BYTE_R)
+		if (format == eVertexFormat::_4BYTE_R_FLOAT)
 			return DXGI_FORMAT_R32_FLOAT;
+		if (format == eVertexFormat::_4BYTE_R_UINT)
+			return DXGI_FORMAT_R32_UINT;
 		if (format == eVertexFormat::_8BYTE_RG)
 			return DXGI_FORMAT_R32G32_FLOAT;
 		if (format == eVertexFormat::_12BYTE_RGB)

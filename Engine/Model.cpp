@@ -206,7 +206,7 @@ void Model::UpdateConstantBuffer(const graphics::RenderContext& rc)
 			return;
 
 		IBuffer* pBuffer = m_InstanceWrapper.GetInstanceBuffer();
-		ctx.UpdateConstantBuffer(pBuffer, &m_GPUData[0], m_GPUData.Size() * (sizeof(CU::Matrix44f) + sizeof(CU::Vector4f)));
+		ctx.UpdateConstantBuffer(pBuffer, &m_GPUData[0], m_GPUData.Size() * sizeof(GPUModelData));
 	}
 	else
 	{
@@ -260,8 +260,6 @@ void Model::RemoveGPUData()
 
 void Model::CreateCube()
 {
-
-
 	m_Effect = Engine::GetInstance()->GetEffect("Shaders/default.json");
 
 	CU::GrowingArray<SDefaultCube> vertices;

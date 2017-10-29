@@ -7,7 +7,7 @@
 #include <OnLeftClick.h>
 #include <PostMaster.h>
 #include "TypeID.h"
-#include "RenderComponent.h"
+#include "GraphicsComponent.h"
 #include "EntityManager.h"
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
@@ -51,16 +51,16 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 
 
 //#ifdef _EDITOR
-		if (m_Manager.HasComponent(e, CreateFilter<Requires<RenderComponent>>()))
+		if (m_Manager.HasComponent(e, CreateFilter<Requires<GraphicsComponent>>()))
 		{
-			RenderComponent& r = GetComponent<RenderComponent>(e);
-			Model* m = Engine::GetInstance()->GetModel(r.m_ModelID);
-			debug.m_MinPoint = m->GetMinPoint();//r.m_MinPos;
-			debug.m_MaxPoint = m->GetMaxPoint();//r.m_MaxPos;
+			//GraphicsComponent& r = GetComponent<GraphicsComponent>(e);
+			//Model* m = Engine::GetInstance()->GetModel(r.m_ModelID);
+			//debug.m_MinPoint = m->GetMinPoint();//r.m_MinPos;
+			//debug.m_MaxPoint = m->GetMaxPoint();//r.m_MaxPos;
 
 
-			r.m_MaxPos = CU::Vector3f(debug.m_MaxPoint.x, debug.m_MaxPoint.y, debug.m_MaxPoint.z); 
-			r.m_MinPos = CU::Vector3f(debug.m_MinPoint.x, debug.m_MinPoint.y, debug.m_MinPoint.z);
+			//r.m_MaxPos = CU::Vector3f(debug.m_MaxPoint.x, debug.m_MaxPoint.y, debug.m_MaxPoint.z); 
+			//r.m_MinPos = CU::Vector3f(debug.m_MinPoint.x, debug.m_MinPoint.y, debug.m_MinPoint.z);
 
 		}
 		RenderBox(debug, translation.myOrientation);

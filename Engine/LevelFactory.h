@@ -20,7 +20,11 @@ public:
 	void CreatePBLLevel(s32 steps);
 
 
+	void SaveLevel(std::string folder, std::string filename);
+
+
 private:
+	void CreateEntity(const std::string& entity_filepath);
 	void CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it);
 	void CreateTerrain(std::string terrain_path);
 

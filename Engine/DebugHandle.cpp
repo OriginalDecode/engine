@@ -83,7 +83,7 @@ namespace debug
 				static float col[3];
 				ImGui::ColorEdit3("Color", col);
 				auto& em = Engine::GetInstance()->GetEntityManager();
-				if (em.HasComponent(editing_entity, CreateFilter<Requires<LightComponent>>()))
+				if (em.HasComponents(editing_entity, CreateFilter<Requires<LightComponent>>()))
 				{
 					LightComponent& comp = Engine::GetInstance()->GetEntityManager().GetComponent<LightComponent>(editing_entity);
 					TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(editing_entity);

@@ -20,9 +20,9 @@ namespace CommonUtilities
 			const TYPE& operator[](const int& anIndex) const;
 			TYPE& operator[](const int& anIndex);
 
-			TYPE GetXRotation();
-			TYPE GetYRotation();
-			TYPE GetZRotation();
+			float GetXRotation() const;
+			float GetYRotation() const;
+			float GetZRotation() const;
 			static Matrix44<TYPE> CreateRotateAroundX(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateRotateAroundY(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateRotateAroundZ(const TYPE& aRadian);
@@ -96,6 +96,8 @@ namespace CommonUtilities
 				myMatrix[15] = aMatrix[15];
 			}
 
+			bool operator==(const Matrix44<TYPE>& m0);
+
 		private:
 			enum class RotationType
 			{
@@ -105,6 +107,20 @@ namespace CommonUtilities
 			};
 			const Matrix44<TYPE> Calculate(const RotationType& rotation, const TYPE& cos, const TYPE& sin);
 		};
+
+		template<typename TYPE>
+		bool Matrix44<TYPE>::operator==(const Matrix44<TYPE>& m0)
+		{
+			for (unsigned int i = 0; i < 16; i++)
+			{
+				if (m0[i] != myMatrix[i])
+					return false;
+			}
+
+			return true;
+		}
+
+		
 
 		template<typename TYPE>
 		Vector3<TYPE> Matrix44<TYPE>::GetGradRotations()
@@ -246,7 +262,6 @@ namespace CommonUtilities
 		{
 			return myMatrix[anIndex];
 		}
-
 	};
 };
 namespace CU = CommonUtilities;

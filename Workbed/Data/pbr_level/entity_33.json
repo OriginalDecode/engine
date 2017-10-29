@@ -1,0 +1,40 @@
+[
+    {
+        "component_type": "graphics",
+        "instances": [
+            {
+                "model_file": "data/model/ballen.fbx",
+                "material_file": "Data/Material/mat_octostone.json",
+                "relative_position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "relative_scale": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "relative_rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "shadowed": true
+            }
+        ]
+    },
+    {
+        "component_type": "translation",
+        "position": [
+            65.0,
+            1.0,
+            20.0
+        ],
+        "rotation": [
+            0.0,
+            -0.0,
+            0.0
+        ]
+    }
+]

@@ -11,6 +11,7 @@ class Material
 public:
 	Material() = default;
 	Material(u64 key);
+	void SetEffect(Effect* effect) { m_Effect = effect; }
 	void AddResource(IShaderResourceView* pResource, const std::string& filename, Effect::TextureSlot slot);
 	void AddResource(Texture* pResource, const std::string& filename, Effect::TextureSlot slot);
 
@@ -19,6 +20,7 @@ public:
 	void Use(Effect* pEffect);
 private:
 	u64 m_Key = 0;
+	Effect* m_Effect = nullptr;
 	struct ResourceBinding
 	{
 		IShaderResourceView* m_Resource;

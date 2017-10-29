@@ -91,7 +91,7 @@ void EntityManager::AddSystem(s32 type)
 	m_SystemsAdded |= type;
 }
 
-bool EntityManager::HasComponent(Entity e, ComponentFilter& filter)
+bool EntityManager::HasComponents(Entity e, ComponentFilter& filter)
 {
 	return myComponents->HasComponent(e, filter);
 }

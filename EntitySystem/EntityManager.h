@@ -1,4 +1,5 @@
 #pragma once
+#include "ComponentFilter.h"
 #include "ComponentContainer.h"
 #include "TypeID.h"
 #include "EntityTypes.h"
@@ -12,9 +13,6 @@ class NodeEntityManager;
 class Synchronizer;
 class PhysicsManager;
 class BaseSystem;
-
-
-
 class EntityManager
 {
 public:
@@ -58,7 +56,11 @@ public:
 	template <typename T>
 	void AddSystem();
 
-	bool HasComponent(Entity e, ComponentFilter& filter);
+	bool HasComponents(Entity e, ComponentFilter& filter);
+
+	template<typename T>
+	const bool HasComponent(Entity e);
+
 
 	NodeEntityManager* RequestManager(TreeNodeBase* node);
 	void ReleaseManager(NodeEntityManager* manager);
@@ -104,4 +106,10 @@ void EntityManager::AddSystem()
 		// 	{
 		// 		manager->AddSystem<T>();
 		// 	}
+}
+
+template<typename T>
+const bool EntityManager::HasComponent(Entity e)
+{
+	return HasComponents(e, CreateFilter<Requires<T>>());
 }

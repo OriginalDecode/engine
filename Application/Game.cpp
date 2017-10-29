@@ -35,7 +35,8 @@ void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
 	m_Engine = Engine::GetInstance();
-	Initiate("Data/Levels/level_01.level");
+	//Initiate("Data/Levels/level_01.level");
+	Initiate("Data/pbr_level/pbr_level.level");
 	m_Engine->GetInputHandle()->AddController(0);
 }
 

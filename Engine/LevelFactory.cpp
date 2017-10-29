@@ -2,12 +2,16 @@
 #include "LevelFactory.h"
 
 #include "Engine.h"
+
 #include <EntityManager.h>
 #include <PhysicsManager.h>
+
 #include "Terrain.h"
 
+
+//these should probably be moved
 #include <PhysicsComponent.h>
-#include <RenderComponent.h>
+#include <GraphicsComponent.h>
 #include <TranslationComponent.h>
 #include <DebugComponent.h>
 #include <LightComponent.h>
@@ -15,21 +19,23 @@
 #include <AIComponent.h>
 #include <NetworkComponent.h>
 #include <CameraComponent.h>
+//these should probably be moved
+
+
+
 #include <RigidBody.h>
 #include <GhostObject.h>
-#include "../hashlist.h"
+
 #include "TreeDweller.h"
-#include <PBLComponent.h>
+
 #include <Engine/AssetFactory.h>
 #include <Engine/Material.h>
-static u64 s_Hash = 0;
+
 void LevelFactory::Initiate()
 {
 	m_Engine = Engine::GetInstance();
 	m_EntityManager = &m_Engine->GetEntityManager();
 	m_PhysicsManager = m_Engine->GetPhysicsManager();
-	Material* pMaterial = m_Engine->GetMaterial("Data/Material/mat_aluminum.json");
-	s_Hash = pMaterial->GetKey();
 }
 
 bool LevelFactory::CreateLevel(const std::string& level_path)
@@ -45,16 +51,35 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 	//m_Engine->GetEntityManager()->Initiate();
 	m_LevelReader.OpenDocument(level_path);
 
-	const JSONElement& el = m_LevelReader.GetElement("root");
-	CreateTerrain("Data/Textures/flat_height.tga");
-	//m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
+	auto& doc = m_LevelReader.GetDocument();
 
-	for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
+	for (auto& obj : doc.GetArray())
 	{
-		CreateEntitiy(it->value["entity"].GetString(), it);
+		const auto& str = obj.GetString();
+		CreateEntity(str);
 	}
 
+
+	//const JSONElement& el = m_LevelReader.GetElement("root");
+	//CreateTerrain("Data/Textures/flat_height.tga");
+	//m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
+
+
+	/*for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
+	{
+		CreateEntitiy(it->value["entity"].GetString(), it);
+	}*/
+
 	return true;
+}
+
+void LevelFactory::CreateEntity(const std::string& entity_filepath)
+{
+	m_DwellerList.Add(new TreeDweller);
+
+
+	TreeDweller* pDweller = m_DwellerList.GetLast();
+
 }
 
 void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it)
@@ -68,6 +93,7 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 	s32 debug_flags = 0;
 
 	m_DwellerList.Add(new TreeDweller);
+
 
 
 	CU::Vector3f pos;
@@ -213,8 +239,8 @@ void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector
 
 void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
 {
-	m_EntityManager->AddComponent<RenderComponent>(entity_id);
-	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+	m_EntityManager->AddComponent<GraphicsComponent>(entity_id);
+	GraphicsComponent& component = m_EntityManager->GetComponent<GraphicsComponent>(entity_id);
 
 	const JSONElement& el = entity_reader.GetElement("graphics");
 	CU::Vector3f scale;
@@ -222,7 +248,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	CU::Vector3f rotation;
 	m_LevelReader.ReadElement(it->value["rotation"], rotation);
 
-	if (!el.IsArray())
+	/*if (!el.IsArray())
 	{
 		component.m_ModelID = m_Engine->LoadModel<Model>(
 			el["model"].GetString(),
@@ -239,8 +265,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 		else
 			component.m_MaterialKey = s_Hash;
 
-		if (el["model"] == "Data/Model/sponza/Sponza_2.fbx")
-			sponza = true;
+		
 		component.m_MinPos = m_Engine->GetModel(component.m_ModelID)->GetMinPoint();
 		component.m_MaxPos = m_Engine->GetModel(component.m_ModelID)->GetMaxPoint();
 
@@ -252,15 +277,12 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 		translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * translation.myOrientation;
 		translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rotation.x)) * translation.myOrientation;
 		translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rotation.y)) * translation.myOrientation;
-		//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundX(CL::DegreeToRad(rotation.x));
-		//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundZ(CL::DegreeToRad(rotation.z));
-		//translation.myOrientation = translation.myOrientation * CU::Matrix44f::CreateRotateAroundY(CL::DegreeToRad(rotation.y));
 
-		component.scale = scale;
-		component.scale.w = 1.f;
+		component.m_Scale = scale;
+		component.m_Scale.w = 1.f;
 
 		CU::Vector3f whd = m_Engine->GetModel(component.m_ModelID)->GetWHD();
-		m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
+		m_DwellerList.GetLast()->AddComponent<GraphicsComponent>(&component, TreeDweller::GRAPHICS);
 		m_DwellerList.GetLast()->SetWHD(whd);
 	}
 	else
@@ -296,21 +318,21 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 			component.m_Instances.Add(instance);
 
 
-			component.scale = scale;
-			component.scale.w = 1.f;
+			component.m_Scale = scale;
+			component.m_Scale.w = 1.f;
 
 			CU::Vector3f whd = m_Engine->GetModel(instance.m_ModelID)->GetWHD();
-			m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
+			m_DwellerList.GetLast()->AddComponent<GraphicsComponent>(&component, TreeDweller::GRAPHICS);
 			m_DwellerList.GetLast()->SetWHD(whd);
 		}
-	}
+	}*/
 }
 
 void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id)
 {
-	m_EntityManager->AddComponent<RenderComponent>(entity_id);
+	/*m_EntityManager->AddComponent<GraphicsComponent>(entity_id);
 
-	RenderComponent& component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
+	GraphicsComponent& component = m_EntityManager->GetComponent<GraphicsComponent>(entity_id);
 	const JSONElement& el = entity_reader.GetElement("graphics");
 	component.m_ModelID = m_Engine->LoadModel<Model>(
 		el["model"].GetString(),
@@ -320,7 +342,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	component.m_MaxPos = m_Engine->GetModel(component.m_ModelID)->GetMaxPoint();
 
 	component.scale = CU::Vector4f(1, 1, 1, 1);
-	component.m_Shadowed = false;
+	component.m_Shadowed = false;*/
 
 	//CU::Vector3f whd = m_Engine->GetModel(component.myModelID)->GetWHD();
 	//m_DwellerList.GetLast()->AddComponent<RenderComponent>(&component, TreeDweller::GRAPHICS);
@@ -459,7 +481,7 @@ void LevelFactory::CreateAIComponent(JSONReader& /*entity_reader*/, Entity entit
 	m_EntityManager->AddComponent<AIComponent>(entity_id);
 	AIComponent& component = m_EntityManager->GetComponent<AIComponent>(entity_id);
 	m_DwellerList.GetLast()->AddComponent<AIComponent>(&component, TreeDweller::AI);
-	//read behaviour trees and stuff here...
+	//read behavior trees and stuff here...
 }
 
 void LevelFactory::CreateNetworkComponent(JSONReader& /*entity_reader*/, Entity entity_id)
@@ -479,12 +501,12 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	CU::Vector3f whd;
 	if (!isLight)
 	{
-		RenderComponent& render = m_EntityManager->GetComponent<RenderComponent>(e);
-		Model* model = m_Engine->GetModel(render.m_ModelID);
-		whd = model->GetWHD();
-		component.m_Rotation = render.m_Rotation;
-		component.m_MinPoint = model->GetMinPoint();
-		component.m_MaxPoint = model->GetMaxPoint();
+// 		GraphicsComponent& render = m_EntityManager->GetComponent<GraphicsComponent>(e);
+// 		Model* model = m_Engine->GetModel(render.);
+// 		whd = model->GetWHD();
+// 		component.m_Rotation = render.m_Rotation;
+// 		component.m_MinPoint = model->GetMinPoint();
+// 		component.m_MaxPoint = model->GetMaxPoint();
 
 
 	}
@@ -667,12 +689,12 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 	float x_start = 5.f;
 	float z_start = 5.f;
 	float metal = 0.f;
-
-	Material* pGoldMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_gold.json");
-	Material* pAlumMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_aluminum.json");
-	Material* pCoppMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_copper.json");
-	Material* pMetaMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_metal.json");
-	Material* pStoneMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_octostone.json");
+	Engine* pEngine = Engine::GetInstance();
+	Material* pGoldMaterial = pEngine->GetMaterial("Data/Material/mat_gold.json");
+	Material* pAlumMaterial = pEngine->GetMaterial("Data/Material/mat_aluminum.json");
+	Material* pCoppMaterial = pEngine->GetMaterial("Data/Material/mat_copper.json");
+	Material* pMetaMaterial = pEngine->GetMaterial("Data/Material/mat_metal.json");
+	Material* pStoneMaterial = pEngine->GetMaterial("Data/Material/mat_octostone.json");
 
 	Material* material[] = {
 		pStoneMaterial,
@@ -682,20 +704,23 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 		pMetaMaterial,
 	 };
 
+	const char* files[] = {
+		"Data/Material/mat_gold.json",
+		"Data/Material/mat_aluminum.json",
+		"Data/Material/mat_copper.json",
+		"Data/Material/mat_metal.json",
+		"Data/Material/mat_octostone.json",
+	};
 
-	static s32 mat = 0;
+
 	for (s32 i = 0; i < steps; i++)
 	{
 		for (s32 j = steps - 1, s = 0; j >= 0; j--, s++)
 		{
 			Entity e = m_EntityManager->CreateEntity();
-			auto& pbl = m_EntityManager->AddComponent<PBLComponent>(e);
-
-			pbl.m_PBLValues.m_Metalness = (float)i / (steps + 1);
-			pbl.m_PBLValues.m_Roughness = (float)j / (steps + 1);
 
 			auto& t = m_EntityManager->AddComponent<TranslationComponent>(e);
-			auto& r = m_EntityManager->AddComponent<RenderComponent>(e);
+			auto& r = m_EntityManager->AddComponent<GraphicsComponent>(e);
 
 			CU::Vector4f translation;
 			translation.x = x_start + i * 15.f;
@@ -705,23 +730,105 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 
 			t.myOrientation.SetTranslation(translation);
 
+			auto v = RANDOM(0, ARRSIZE(material));
 
 			auto key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false);
 			Model* m = m_Engine->GetModel(key);
 
+			ModelInstance instance;
+			instance.m_Filename = "data/model/ballen.fbx";
+			instance.m_MaterialFile = files[v];
 
-			r.m_ModelID = key;
-			auto v = RANDOM(0, ARRSIZE(material));
-			r.m_MaterialKey = material[v]->GetKey();
-			r.scale = CU::Vector4f(1, 1, 1, 1);
+			Material* pMaterial = material[v];
+			pMaterial->SetEffect(pEngine->GetEffect("Shaders/debug_pbl_instanced.json"));
+
+			instance.m_MaterialKey = pMaterial->GetKey();
+			instance.m_ModelID = key;
+
+			r.m_Scale = CU::Vector4f(1, 1, 1, 1);
+
+			r.m_Instances.Add(instance);
 
 			m_DwellerList.Add(new TreeDweller);
 			m_DwellerList.GetLast()->AddComponent(&t, TreeDweller::TRANSLATION);
 			m_DwellerList.GetLast()->AddComponent(&r, TreeDweller::GRAPHICS);
-			m_DwellerList.GetLast()->AddComponent(&pbl, TreeDweller::PBL);
 			m_DwellerList.GetLast()->Initiate(e, TreeDweller::STATIC);
 		}
 
 	}
+
+	SaveLevel("data/pbr_level/", "pbr_level.level");
+
+}
+
+
+#include <JSON/include/writer.h>
+#include <JSON/include/prettywriter.h>
+#include <fstream>
+void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should be a static function.
+{
+
+	Engine* pEngine = Engine::GetInstance();
+	EntityManager& entity_manager = pEngine->GetEntityManager();
+	const EntityArray& entities = entity_manager.GetEntities();
+	rapidjson::StringBuffer _sb;
+	rapidjson::PrettyWriter<decltype(_sb)> _writer(_sb);
+
+	_writer.StartArray();
+
+	std::string _filename = "entity_";
+	for (Entity e : entities)
+	{
+		rapidjson::StringBuffer sb;
+		rapidjson::PrettyWriter<decltype(sb)> writer(sb);
+		char buf[100];
+		ZeroMemory(buf, sizeof(buf));
+		//memset(buf, 0, sizeof(buf));
+		sprintf_s(buf, "%s%s%d.json", folder.c_str(), _filename.c_str(), e);
+		_writer.String(buf);
+		
+		
+		writer.StartArray();
+		if (entity_manager.HasComponent<GraphicsComponent>(e))
+		{
+			const GraphicsComponent& c = entity_manager.GetComponent<GraphicsComponent>(e);
+			c.Serialize(writer);
+		}
+
+		if (entity_manager.HasComponent<PhysicsComponent>(e))
+		{
+			const PhysicsComponent& c = entity_manager.GetComponent<PhysicsComponent>(e);
+			c.Serialize(writer);
+		}
+
+		if (entity_manager.HasComponent<LightComponent>(e))
+		{
+			const LightComponent& c = entity_manager.GetComponent<LightComponent>(e);
+			c.Serialize(writer);
+		}
+
+		if (entity_manager.HasComponent<TranslationComponent>(e))
+		{
+			const TranslationComponent& c = entity_manager.GetComponent<TranslationComponent>(e);
+			c.Serialize(writer);
+		}
+		writer.EndArray();
+		
+
+		std::ofstream out(buf);
+		out << sb.GetString();
+		out.flush();
+		out.close();
+
+	}
+	_writer.EndArray();
+
+	std::string out_file = folder + filename;
+
+ 	std::ofstream out(out_file);
+ 	out << _sb.GetString();
+ 	out.flush();
+ 	out.close();
+
 
 }

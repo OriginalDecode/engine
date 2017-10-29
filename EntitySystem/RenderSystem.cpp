@@ -3,7 +3,7 @@
 #include <Engine.h>
 #include "../Engine/Model.h"
 #include "TranslationComponent.h"
-#include "RenderComponent.h"
+#include "GraphicsComponent.h"
 #include "LightComponent.h"
 #include "PBLComponent.h"
 
@@ -22,7 +22,7 @@
 
 //#define VISIBLE_CHECK
 RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
-	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, RenderComponent>>())
+	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, GraphicsComponent>>())
 {
 	mySynchronizer = m_Engine->GetSynchronizer();
 }
@@ -37,7 +37,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 	{
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-		RenderComponent& render = GetComponent<RenderComponent>(e);
+		GraphicsComponent& render = GetComponent<GraphicsComponent>(e);
 
 #ifdef VISIBLE_CHECK
 		PROFILE_BLOCK("Frustum collision check", profiler::colors::Green);
@@ -74,7 +74,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 #endif
 
 		CU::Matrix44f t = translation.myOrientation;
-		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
+		t = CU::Matrix44f::CreateScaleMatrix(render.m_Scale) * t;
 
 		/*if (render.myModelID.empty())
 			DL_ASSERT("Empty key!");*/
@@ -91,12 +91,15 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 			, translation.myOrientation.GetPosition()
 			, render.m_RenderWireframe
 		));*/
-		AddRenderCommand(ModelCommand(render.m_ModelID
-									  , render.m_MaterialKey
-									  , translation.myOrientation
-									  , render.m_RenderWireframe
-									  , e
-		));
+		
+		for (const auto& instance : render.m_Instances)
+		{
+			AddRenderCommand(ModelCommand(instance.m_ModelID
+										  , instance.m_MaterialKey
+										  , translation.myOrientation
+										  , render.m_RenderWireframe));
+		}
+
 
 
 	}

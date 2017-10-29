@@ -113,20 +113,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	pDebug->AddTexture(m_DebugTexture6, "Entity ID");
 	pDebug->RegisterCheckbox(debug::DebugCheckbox(&m_LightModelWireframe, "Light Model Wireframe"));
 
-
-
-	m_StagingTexture = new Texture;
-	TextureDesc desc;
-	desc.m_Width = window_size.m_Width;
-	desc.m_Height = window_size.m_Height;
-	desc.m_Usage = graphics::STAGING_USAGE;
-	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE;
-	desc.m_ShaderResourceFormat = graphics::R32_UINT;
-	desc.m_TextureFormat = graphics::R32_UINT;
-	m_StagingTexture->Initiate(desc, "Staging Resource");
-
-
-
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
 	m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(PerFramePixelBuffer), "PerFramePixelBuffer");
@@ -146,7 +132,6 @@ Renderer::~Renderer()
 	SAFE_DELETE(m_DebugTexture4);
 	SAFE_DELETE(m_DebugTexture5);
 	SAFE_DELETE(m_DebugTexture6);
-	SAFE_DELETE(m_StagingTexture);
 #endif
 	delete[] m_PixelData;
 	m_PixelData = nullptr;
@@ -199,42 +184,6 @@ void Renderer::Render()
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
-
-	//graphics::DX11Context& dx11ctx = static_cast<graphics::DX11Context&>(m_RenderContext.GetContext());
-	//ID3D11DeviceContext* ctx = static_cast<ID3D11DeviceContext*>(dx11ctx.GetContext());
-
-	//WindowSize window_size;
-	//window_size.m_Height = m_RenderContext.GetAPI().GetInfo().m_WindowHeight;
-	//window_size.m_Width = m_RenderContext.GetAPI().GetInfo().m_WindowWidth;
-	//
-	//ID3D11Resource* pResource = nullptr;
-	//ID3D11RenderTargetView* rtv = static_cast<ID3D11RenderTargetView*>(m_GBuffer.GetIDTexture()->GetRenderTargetView());
-	//ctx->CopyResource(m_StagingTexture->GetShaderView())
-
-
-	//ID3D11Resource* rtvResource = nullptr;
-	//
-
-
-
-
-	//rtv->GetResource(&rtvResource);
-	//ctx->CopyResource(pResource, rtvResource);
-
-	//D3D11_MAPPED_SUBRESOURCE msr;
-	//ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-	//ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(m_GBuffer.GetIDTexture());
-
-	//ctx->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-	//if (msr.pData)
-	//{
-	//	s8* data = (s8*)msr.pData;
-	//	memcpy(data, &src[0], size);
-	//}
-	//ctx->Unmap(buffer, 0);
-
-
-
 	RenderTerrain(false);
 
 	if (m_RenderInstanced)
@@ -263,10 +212,13 @@ void Renderer::Render()
 
 	RenderParticles(nullptr);
 
-	m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
-
-	/*m_RenderContext.GetAPI().SetDefaultTargets();
-	m_DeferredRenderer->Finalize();*/
+	if(m_PostProcessManager.GetFlags() != 0)
+		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
+	else
+	{
+		m_RenderContext.GetAPI().SetDefaultTargets();
+		m_DeferredRenderer->Finalize();
+	}
 
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);

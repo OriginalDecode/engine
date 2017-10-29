@@ -40,24 +40,27 @@ namespace CommonUtilities
 		\****************************/
 
 		template<typename T>
-		T Matrix44<T>::GetXRotation()
+		float Matrix44<T>::GetXRotation() const
 		{
-			float angle = atan2f(myMatrix[5], myMatrix[6]);
-			return static_cast<T>(angle);
+			if (myMatrix[5] == 1.f && myMatrix[6] == 0.f) //safes against pi/2 return value instead of 0 when default values
+				return 0.f;
+
+			return atan2f(myMatrix[5], myMatrix[6]);
 		}
 
 		template<typename T>
-		T Matrix44<T>::GetYRotation()
+		float Matrix44<T>::GetYRotation() const
 		{
-			float angle = atan2f(-myMatrix[8], sqrtf((2.f/myMatrix[5]) + (2.f / myMatrix[6])));
-			return static_cast<T>(angle);
+			return atan2f(-myMatrix[8], sqrtf((2.f/myMatrix[5]) + (2.f / myMatrix[6])));
 		}
 
 		template<typename T>
-		T Matrix44<T>::GetZRotation()
+		float Matrix44<T>::GetZRotation() const
 		{
-			float angle = atan2f(myMatrix[0], myMatrix[1]);
-			return static_cast<T>(angle);
+			if (myMatrix[0] == 1.f && myMatrix[1] == 0.f) //safes against pi/2 return value instead of 0 when default values
+				return 0.f;
+
+			return atan2f(myMatrix[0], myMatrix[1]);
 		}
 
 		template<typename TYPE>

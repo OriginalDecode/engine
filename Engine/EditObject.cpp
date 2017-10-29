@@ -2,7 +2,7 @@
 #include "EditObject.h"
 
 #include <LightComponent.h>
-#include <RenderComponent.h>
+#include <GraphicsComponent.h>
 #include <AIComponent.h>
 #include <NetworkComponent.h>
 #include <InputComponent.h>

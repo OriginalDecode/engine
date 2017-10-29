@@ -1,5 +1,18 @@
 [
     {
+        "component_type": "translation",
+        "position": [
+            65.0,
+            1.0,
+            110.0
+        ],
+        "rotation": [
+            0.0,
+            -0.0,
+            0.0
+        ]
+    },
+    {
         "component_type": "graphics",
         "instances": [
             {
@@ -22,19 +35,6 @@
                 ],
                 "shadowed": true
             }
-        ]
-    },
-    {
-        "component_type": "translation",
-        "position": [
-            65.0,
-            1.0,
-            110.0
-        ],
-        "rotation": [
-            0.0,
-            -0.0,
-            0.0
         ]
     }
 ]

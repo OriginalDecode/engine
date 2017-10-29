@@ -80,6 +80,26 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 
 	TreeDweller* pDweller = m_DwellerList.GetLast();
 
+	JSONReader reader(entity_filepath);
+	auto& doc = reader.GetDocument();
+	for (const rapidjson::Value& obj : doc.GetArray())
+	{
+
+		//deserialize code
+		auto type = obj["component_type"].GetString();
+		int apa;
+		apa = 5;
+
+		//const auto& str = obj->GetObject();
+
+		//auto _object = obj.GetObject();
+
+	}
+
+
+
+
+
 }
 
 void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it)
@@ -789,6 +809,13 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 		
 		
 		writer.StartArray();
+
+		if (entity_manager.HasComponent<TranslationComponent>(e))
+		{
+			const TranslationComponent& c = entity_manager.GetComponent<TranslationComponent>(e);
+			c.Serialize(writer);
+		}
+
 		if (entity_manager.HasComponent<GraphicsComponent>(e))
 		{
 			const GraphicsComponent& c = entity_manager.GetComponent<GraphicsComponent>(e);
@@ -807,11 +834,7 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 			c.Serialize(writer);
 		}
 
-		if (entity_manager.HasComponent<TranslationComponent>(e))
-		{
-			const TranslationComponent& c = entity_manager.GetComponent<TranslationComponent>(e);
-			c.Serialize(writer);
-		}
+	
 		writer.EndArray();
 		
 

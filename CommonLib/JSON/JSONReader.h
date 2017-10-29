@@ -51,11 +51,10 @@ public:
 
 	std::string OptionalReadElement(const JSONElement& el, const std::string& tag);
 
-
+	const rapidjson::Document& GetDocument() const { return myDocument; }
 
 private:
 
-	FRESULT OpenFile();
 	rapidjson::Document myDocument;
 	rapidjson::FileReadStream* myFileReaderStream;
 

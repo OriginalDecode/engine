@@ -5,16 +5,7 @@ std::string JSONReader::ERROR_STR = "JSON_NO_STRING_FOUND";
 
 JSONReader::JSONReader(const std::string& filepath)
 {
-	bool _override = false;
-	std::string new_path;
-	if (filepath.find("T_Deferred") != filepath.npos)
-	{
-		DL_WARNING("incorrect shader used, falling back to regular shader");
-		new_path = "Data/Shaders/debug_pbl_instanced.json";
-		_override = true;
-	}
-	//if(filepath.find("/*T_Deferred*/))
-	OpenDocument(_override ? new_path : filepath);
+	OpenDocument(filepath);
 }
 
 JSONReader::~JSONReader()
@@ -22,20 +13,15 @@ JSONReader::~JSONReader()
 	CloseDocument();
 }
 
-
-FRESULT JSONReader::OpenFile()
-{
-	FRESULT toReturn;
-	fopen_s(&myFile, myCurrentDocumentPath.c_str(), "r");
-	_get_errno(&toReturn);
-
-	return toReturn;
-}
-
 void JSONReader::OpenDocument(const std::string & filepath)
 {
 	myCurrentDocumentPath = filepath;
-	OpenFile();
+	
+	fopen_s(&myFile, myCurrentDocumentPath.c_str(), "r");
+	//int error_code = 0;
+	//_get_errno(&error_code);
+	//assert(error_code == 0 && "Failed to open file");
+
 	assert(myFile != NULL && "File could not be found!");
 	char buffer[2048]; //the buffer size determines how fast it can parse the file
 	myFileReaderStream = new rapidjson::FileReadStream(myFile, buffer, sizeof(buffer));

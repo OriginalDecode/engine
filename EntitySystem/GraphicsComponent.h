@@ -35,11 +35,54 @@ struct ModelInstance
 
 };
 
+
+struct GraphicsComponent : public BaseComponent
+{
+
+	template <typename Writer>
+	void Serialize(Writer& writer) const;
+
+	void Deserialize(const rapidjson::Value& json_value);
+
+	CU::GrowingArray<ModelInstance> m_Instances;
+
+	CU::Matrix44f m_Orientation;
+	CU::Vector4f m_Scale = { 1.f, 1.f, 1.f, 1.f };
+	CU::Vector4f m_Rotation;
+	CU::Vector4f m_MinPos;
+	CU::Vector4f m_MaxPos;
+
+	bool m_RenderWireframe = false;
+	bool m_Shadowed = true;
+};
+
+
+
+template <typename Writer>
+void GraphicsComponent::Serialize(Writer& writer) const
+{
+	writer.StartObject();
+	writer.String("component_type");
+	writer.String("graphics");
+
+	writer.String("instances");
+	writer.StartArray();
+	for (const ModelInstance& i : m_Instances)
+	{
+		i.Serialize(writer);
+	}
+	writer.EndArray();
+
+	writer.EndObject();
+
+}
+
+
 template <typename Writer>
 void ModelInstance::Serialize(Writer& writer) const
 {
 	writer.StartObject();
-	
+
 	writer.String("model_file");
 	writer.String(m_Filename.c_str(), (rapidjson::SizeType)m_Filename.length());
 
@@ -74,64 +117,4 @@ void ModelInstance::Serialize(Writer& writer) const
 	writer.Bool(m_Shadowed);
 
 	writer.EndObject();
-}
-
-//void ModelInstance::Deserialize(const rapidjson::Value& json_value)
-//{
-//	m_Filename = json_value["model_file"].GetString();	
-//	m_ModelID = Hash(m_Filename.c_str());
-//	m_MaterialFile = json_value["material_file"].GetString();
-//	m_MaterialKey = Hash(m_MaterialFile.c_str());
-//
-//	auto& pos = json_value["relative_position"].GetArray();
-//	m_Orientation.SetPosition({ (float)pos[0].GetDouble(), (float)pos[1].GetDouble(), (float)pos[2].GetDouble(), 1.f });
-//
-//	auto& scale = json_value["relative_scale"].GetArray();
-//	m_Scale = { (float)scale[0].GetDouble(), (float)scale[1].GetDouble(), (float)scale[2].GetDouble(), 1.f };
-//
-//	auto& rot = json_value["relative_rotation"].GetArray();
-//	m_Rotation = { (float)rot[0].GetDouble(), (float)rot[1].GetDouble(), (float)rot[2].GetDouble(), 1.f };
-//
-//	m_Shadowed = json_value["shadowed"].GetBool();
-//
-//}
-
-
-struct GraphicsComponent : public BaseComponent
-{
-
-	template <typename Writer>
-	void Serialize(Writer& writer) const;
-
-	void Deserialize(const rapidjson::Value& json_value);
-
-	CU::GrowingArray<ModelInstance> m_Instances;
-
-	CU::Matrix44f m_Orientation;
-	CU::Vector4f m_Scale;
-	CU::Vector4f m_Rotation;
-	CU::Vector4f m_MinPos;
-	CU::Vector4f m_MaxPos;
-
-	bool m_RenderWireframe = false;
-	bool m_Shadowed = true;
-};
-
-template <typename Writer>
-void GraphicsComponent::Serialize(Writer& writer) const
-{
-	writer.StartObject();
-	writer.String("component_type");
-	writer.String("graphics");
-
-	writer.String("instances");
-	writer.StartArray();
-	for (const ModelInstance& i : m_Instances)
-	{
-		i.Serialize(writer);
-	}
-	writer.EndArray();
-
-	writer.EndObject();
-
 }

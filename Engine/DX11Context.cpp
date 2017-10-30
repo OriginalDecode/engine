@@ -397,6 +397,8 @@ namespace graphics
 		IInputLayout* input_layout = ins.GetInputLayout();
 		IASetInputLayout(input_layout);
 
+		IASetTopology(vtx.GetTopology());
+
 		ID3D11Buffer* buffers[] = {
 			static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer()),
 			static_cast<ID3D11Buffer*>(ins.GetInstanceBuffer())

@@ -39,6 +39,9 @@ void LevelFactory::Initiate()
 	m_PhysicsManager = m_Engine->GetPhysicsManager();
 }
 
+static int g = 0;
+static int t = 0;
+
 bool LevelFactory::CreateLevel(const std::string& level_path)
 {
 	/*if (!CL::substr(level_path, ".level"))
@@ -59,7 +62,8 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 		const auto& str = obj.GetString();
 		CreateEntity(str);
 	}
-
+	int apa; 
+	apa = 5;
 
 	//const JSONElement& el = m_LevelReader.GetElement("root");
 	//CreateTerrain("Data/Textures/flat_height.tga");
@@ -82,6 +86,7 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	Entity e = m_EntityManager->CreateEntity();
 	JSONReader reader(entity_filepath);
 	auto& doc = reader.GetDocument();
+	
 	for (const rapidjson::Value& obj : doc.GetArray())
 	{
 		std::string type = obj["component_type"].GetString();
@@ -92,6 +97,7 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			TranslationComponent& c = m_EntityManager->GetComponent<TranslationComponent>(e);
 			c.Deserialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::TRANSLATION);
+			t++;
 		}
 
 
@@ -101,10 +107,12 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			GraphicsComponent& c = m_EntityManager->GetComponent<GraphicsComponent>(e);
 			c.Deserialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::GRAPHICS);
+			g++;
 		}
 	}
 
-
+	int apa;
+	apa = 5;
 
 
 

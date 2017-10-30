@@ -79,6 +79,8 @@ float4 getWorldPos(float2 tex_coord, float depth)
 float4 main(VS_OUTPUT input) : SV_Target
 {
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
+	if(depth.r <= 0.f)
+		discard;
 
 	int nMips = 0;
 	int width = 0;

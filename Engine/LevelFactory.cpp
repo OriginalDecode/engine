@@ -93,29 +93,22 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 
 		if (type.find("translation") != type.npos)
 		{
-			m_EntityManager->AddComponent<TranslationComponent>(e);
-			TranslationComponent& c = m_EntityManager->GetComponent<TranslationComponent>(e);
+			TranslationComponent& c = m_EntityManager->AddComponent<TranslationComponent>(e);
 			c.Deserialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::TRANSLATION);
 			t++;
 		}
 
-
 		if (type.find("graphics") != type.npos)
 		{
-			m_EntityManager->AddComponent<GraphicsComponent>(e);
-			GraphicsComponent& c = m_EntityManager->GetComponent<GraphicsComponent>(e);
+			GraphicsComponent& c = m_EntityManager->AddComponent<GraphicsComponent>(e);
 			c.Deserialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::GRAPHICS);
 			g++;
 		}
 	}
 
-	int apa;
-	apa = 5;
-
-
-
+	pDweller->Initiate(e, TreeDweller::STATIC);
 }
 
 void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it)

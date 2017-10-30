@@ -218,10 +218,10 @@ Camera* Engine::GetCamera()
 	return m_Camera;
 }
 
-TreeDweller* Engine::CreateEntity(const std::string& filepath, CU::Vector3f& position)
-{
-	return m_LevelFactory->CreateEntitiy(filepath, position);
-}
+//TreeDweller* Engine::CreateEntity(const std::string& filepath, CU::Vector3f& position)
+//{
+//	return m_LevelFactory->CreateEntitiy(filepath, position);
+//}
 
 void Engine::Update()
 {

@@ -1,11 +1,11 @@
 #pragma once
+#include "BaseComponent.h"
 #include "ComponentFilter.h"
 #include "ComponentContainer.h"
 #include "TypeID.h"
 #include "EntityTypes.h"
 #include <atomic>
 #include <Engine/Octree.h>
-#include "BaseComponent.h"
 #include "../CommonLib/DataStructures/GrowingArray.h"
 typedef CU::GrowingArray<Entity> EntityArray;
 class NodeEntityManager;

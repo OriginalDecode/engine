@@ -1,5 +1,4 @@
 #include "DebugSystem.h"
-#include <Engine.h>
 #include "DebugComponent.h"
 #include "TranslationComponent.h"
 #include <RenderCommand.h>
@@ -21,6 +20,7 @@
 #include <Engine/Model.h>
 #include <CommonLib/DataStructures/Hashmap/Hash.h>
 #include "profile_defines.h"
+#include <Engine.h>
 
 #if !defined(_FINAL) && !defined(_PROFILE)
 

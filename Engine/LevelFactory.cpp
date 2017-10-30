@@ -31,6 +31,7 @@
 #include <Engine/AssetFactory.h>
 #include <Engine/Material.h>
 
+
 void LevelFactory::Initiate()
 {
 	m_Engine = Engine::GetInstance();
@@ -76,24 +77,31 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 void LevelFactory::CreateEntity(const std::string& entity_filepath)
 {
 	m_DwellerList.Add(new TreeDweller);
-
-
 	TreeDweller* pDweller = m_DwellerList.GetLast();
 
+	Entity e = m_EntityManager->CreateEntity();
 	JSONReader reader(entity_filepath);
 	auto& doc = reader.GetDocument();
 	for (const rapidjson::Value& obj : doc.GetArray())
 	{
+		std::string type = obj["component_type"].GetString();
 
-		//deserialize code
-		auto type = obj["component_type"].GetString();
-		int apa;
-		apa = 5;
+		if (type.find("translation") != type.npos)
+		{
+			m_EntityManager->AddComponent<TranslationComponent>(e);
+			TranslationComponent& c = m_EntityManager->GetComponent<TranslationComponent>(e);
+			c.Deserialize(obj);
+			pDweller->AddComponent(&c, TreeDweller::TRANSLATION);
+		}
 
-		//const auto& str = obj->GetObject();
 
-		//auto _object = obj.GetObject();
-
+		if (type.find("graphics") != type.npos)
+		{
+			m_EntityManager->AddComponent<GraphicsComponent>(e);
+			GraphicsComponent& c = m_EntityManager->GetComponent<GraphicsComponent>(e);
+			c.Deserialize(obj);
+			pDweller->AddComponent(&c, TreeDweller::GRAPHICS);
+		}
 	}
 
 
@@ -104,86 +112,86 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 
 void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it)
 {
-	std::string data_path = "Data/Levels/";
-#define DATA_PATH data_path +
-
-	JSONReader entity_reader(DATA_PATH entity_filepath);
-	Entity e = m_EntityManager->CreateEntity();
-
-	s32 debug_flags = 0;
-
-	m_DwellerList.Add(new TreeDweller);
-
-
-
-	CU::Vector3f pos;
-	m_LevelReader.ReadElement(it->value["position"], pos);
-	CreateTranslationComponent(e, pos);
-	bool hasLight = true;
-	if (entity_reader.DocumentHasMember("graphics"))
-	{
-		CreateGraphicsComponent(entity_reader, e, it);
-		hasLight = false;
-		debug_flags |= EditObject::GRAPHICS;
-	}
-
-	if (entity_reader.DocumentHasMember("physics"))
-	{
-		CreatePhysicsComponent(entity_reader, e);
-		debug_flags |= EditObject::PHYSICS;
-	}
-
-	if (entity_reader.DocumentHasMember("camera"))
-	{
-		CreateCameraComponent(entity_reader, e);
-		//debug_flags |= EditObject::PHYSICS;
-	}
-	if (entity_reader.DocumentHasMember("light"))
-	{
-		CreateLightComponent(entity_reader, e, it);
-		debug_flags |= EditObject::LIGHT;
-	}
-
-	if (entity_reader.DocumentHasMember("controller"))
-	{
-		if (entity_reader.ReadElement("controller") == "input")
-		{
-			CreateInputComponent(entity_reader, e);
-			debug_flags |= EditObject::INPUT;
-		}
-		else if (entity_reader.ReadElement("controller") == "network")
-		{
-			CreateNetworkComponent(entity_reader, e);
-			debug_flags |= EditObject::NETWORK;
-		}
-		else if (entity_reader.ReadElement("controller") == "ai")
-		{
-			CreateAIComponent(entity_reader, e);
-			debug_flags |= EditObject::AI;
-		}
-		else
-			DL_ASSERT("Failed to find correct input controller tag!");
-	}
-
-	if (sponza)
-		sponza = false;
-
-#if !defined(_PROFILE) && !defined(_FINAL)
-		if(hasLight)
-			CreateDebugComponent(e, hasLight, debug_flags);
-#endif
-
-	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
-
-	CU::Vector3f new_pos = pos;
-	new_pos.y += 5.f;
-	new_pos.x += 400.f;
-	new_pos.z += 400.f;
-
-	component.myOrientation.SetPosition(new_pos);
-
-
-	m_DwellerList.GetLast()->Initiate(e, TreeDweller::STATIC);
+//	std::string data_path = "Data/Levels/";
+//#define DATA_PATH data_path +
+//
+//	JSONReader entity_reader(DATA_PATH entity_filepath);
+//	Entity e = m_EntityManager->CreateEntity();
+//
+//	s32 debug_flags = 0;
+//
+//	m_DwellerList.Add(new TreeDweller);
+//
+//
+//
+//	CU::Vector3f pos;
+//	m_LevelReader.ReadElement(it->value["position"], pos);
+//	CreateTranslationComponent(e, pos);
+//	bool hasLight = true;
+//	if (entity_reader.DocumentHasMember("graphics"))
+//	{
+//		CreateGraphicsComponent(entity_reader, e, it);
+//		hasLight = false;
+//		debug_flags |= EditObject::GRAPHICS;
+//	}
+//
+//	if (entity_reader.DocumentHasMember("physics"))
+//	{
+//		CreatePhysicsComponent(entity_reader, e);
+//		debug_flags |= EditObject::PHYSICS;
+//	}
+//
+//	if (entity_reader.DocumentHasMember("camera"))
+//	{
+//		CreateCameraComponent(entity_reader, e);
+//		//debug_flags |= EditObject::PHYSICS;
+//	}
+//	if (entity_reader.DocumentHasMember("light"))
+//	{
+//		CreateLightComponent(entity_reader, e, it);
+//		debug_flags |= EditObject::LIGHT;
+//	}
+//
+//	if (entity_reader.DocumentHasMember("controller"))
+//	{
+//		if (entity_reader.ReadElement("controller") == "input")
+//		{
+//			CreateInputComponent(entity_reader, e);
+//			debug_flags |= EditObject::INPUT;
+//		}
+//		else if (entity_reader.ReadElement("controller") == "network")
+//		{
+//			CreateNetworkComponent(entity_reader, e);
+//			debug_flags |= EditObject::NETWORK;
+//		}
+//		else if (entity_reader.ReadElement("controller") == "ai")
+//		{
+//			CreateAIComponent(entity_reader, e);
+//			debug_flags |= EditObject::AI;
+//		}
+//		else
+//			DL_ASSERT("Failed to find correct input controller tag!");
+//	}
+//
+//	if (sponza)
+//		sponza = false;
+//
+//#if !defined(_PROFILE) && !defined(_FINAL)
+//		if(hasLight)
+//			CreateDebugComponent(e, hasLight, debug_flags);
+//#endif
+//
+//	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
+//
+//	CU::Vector3f new_pos = pos;
+//	new_pos.y += 5.f;
+//	new_pos.x += 400.f;
+//	new_pos.z += 400.f;
+//
+//	component.myOrientation.SetPosition(new_pos);
+//
+//
+//	m_DwellerList.GetLast()->Initiate(e, TreeDweller::STATIC);
 
 	//TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
 
@@ -223,28 +231,28 @@ void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement
 
 TreeDweller* LevelFactory::CreateEntitiy(const std::string& entity_filepath, const CU::Vector3f& position)
 {
-	Entity e = m_EntityManager->CreateEntity();
-	JSONReader entity_reader(entity_filepath);
-	s32 debug_flags = 0;
-
-	TreeDweller* dweller = new TreeDweller;
-
-	CreateTranslationComponent(e, position);
-
-	if (entity_reader.DocumentHasMember("graphics"))
-	{
-		CreateGraphicsComponent(entity_reader, e);
-		debug_flags |= EditObject::GRAPHICS;
-	}
-
-	if (entity_reader.DocumentHasMember("physics"))
-	{
-		CreatePhysicsComponent(entity_reader, e);
-		debug_flags |= EditObject::PHYSICS;
-	}
-
-	dweller->Initiate(e, TreeDweller::eType::STATIC);
-	return dweller;
+// 	Entity e = m_EntityManager->CreateEntity();
+// 	JSONReader entity_reader(entity_filepath);
+// 	s32 debug_flags = 0;
+// 
+// 	TreeDweller* dweller = new TreeDweller;
+// 
+// 	CreateTranslationComponent(e, position);
+// 
+// 	if (entity_reader.DocumentHasMember("graphics"))
+// 	{
+// 		CreateGraphicsComponent(entity_reader, e);
+// 		debug_flags |= EditObject::GRAPHICS;
+// 	}
+// 
+// 	if (entity_reader.DocumentHasMember("physics"))
+// 	{
+// 		CreatePhysicsComponent(entity_reader, e);
+// 		debug_flags |= EditObject::PHYSICS;
+// 	}
+// 
+// 	dweller->Initiate(e, TreeDweller::eType::STATIC);
+	return nullptr;
 }
 
 
@@ -591,7 +599,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	component.m_OBB.AddPlane(plane0);
 
 
-	component.m_EditObject.Initiate(e, flags);
+//	component.m_EditObject.Initiate(e, flags);
 
 	{
 		PositionGizmo& position_gizmo = component.m_PositionGizmo;

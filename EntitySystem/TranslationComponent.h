@@ -8,6 +8,7 @@ struct TranslationComponent : public BaseComponent
 	template<typename Writer>
 	void Serialize(Writer& writer) const;
 
+	void Deserialize(const rapidjson::Value& value);
 };
 
 template<typename Writer>

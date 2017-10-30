@@ -51,12 +51,12 @@ void Game::Initiate(const std::string& level)
 	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel(level);
 	m_World.AddDwellers(dwellers);
 
-	m_Player = new TreeDweller;
+	/*m_Player = new TreeDweller;
 	m_Player->Initiate(m_Engine->GetEntityManager().CreateEntity(), TreeDweller::eType::DYNAMIC);
 	m_Engine->GetEntityManager().AddComponent<TranslationComponent>(m_Player->GetEntity());
 	TranslationComponent& translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
 	m_Player->AddComponent(&translation, TreeDweller::TRANSLATION | TreeDweller::DEBUG);
-	m_World.AddDweller(m_Player);
+	m_World.AddDweller(m_Player);*/
 
 	m_Picker = new CMousePicker;
 
@@ -67,7 +67,7 @@ void Game::Initiate(const std::string& level)
 	//CameraHandle::GetInstance()->Initiate(&m_Orientation);
 	CameraHandle::GetInstance()->Initiate(nullptr);
 	m_PauseState.InitState(m_StateStack);
-	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
+	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 
 
 	bool read_camera = false;

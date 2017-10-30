@@ -1,9 +1,8 @@
 #include "RenderSystem.h"
 
-#include <Engine.h>
+#include "GraphicsComponent.h"
 #include "../Engine/Model.h"
 #include "TranslationComponent.h"
-#include "GraphicsComponent.h"
 #include "LightComponent.h"
 #include "PBLComponent.h"
 
@@ -19,6 +18,7 @@
 #include "DebugComponent.h"
 #include <Engine/Engine.h>
 #include "../Engine/profile_defines.h"
+#include <Engine.h>
 
 //#define VISIBLE_CHECK
 RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
@@ -73,8 +73,8 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		PROFILE_BLOCK_END;
 #endif
 
-		CU::Matrix44f t = translation.myOrientation;
-		t = CU::Matrix44f::CreateScaleMatrix(render.m_Scale) * t;
+		CU::Matrix44f orientation = translation.myOrientation;
+		orientation = CU::Matrix44f::CreateScaleMatrix(render.m_Scale) * orientation;
 
 		/*if (render.myModelID.empty())
 			DL_ASSERT("Empty key!");*/
@@ -92,11 +92,12 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 			, render.m_RenderWireframe
 		));*/
 		
-		for (const auto& instance : render.m_Instances)
+		for (const ModelInstance& instance : render.m_Instances)
 		{
+			const CU::Matrix44f relative = orientation * instance.m_Orientation;
 			AddRenderCommand(ModelCommand(instance.m_ModelID
 										  , instance.m_MaterialKey
-										  , translation.myOrientation
+										  , relative //could be precalculated, and on physical objects this shouldn't even be used if it can be moved.
 										  , render.m_RenderWireframe));
 		}
 

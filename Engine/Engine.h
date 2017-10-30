@@ -19,9 +19,8 @@
 #include <Engine/MemorySegmentHandle.h>
 #include <Engine/DebugHandle.h>
 #include <Engine/IGraphicsAPI.h>
-
 #include <string>
-
+#include <queue>
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -191,6 +190,8 @@ public:
 	bool VSync() const { return m_VSyncOn; }
 	void ToggleVSync() { m_VSyncOn = !m_VSyncOn; }
 
+	u64 LoadModelA(std::string path, std::string effect, bool threaded);
+
 private:
 	Engine();
 	static Engine* myInstance;
@@ -229,7 +230,6 @@ private:
 	CSystemMonitor m_SystemMonitor;
 
 	std::bitset<(u16)eEngineStates::_COUNT> m_States;
-
 
 
 	float m_DeltaTime = 0.f;

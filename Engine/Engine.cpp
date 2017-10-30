@@ -277,6 +277,11 @@ void* Engine::CreateShader(IShaderBlob* pShader, eShaderType type, const std::st
 	return nullptr;
 }
 
+u64 Engine::LoadModelA(std::string path, std::string effect, bool threaded)
+{
+	return LoadModel<Model>(path, effect, threaded);
+}
+
 const WindowSize& Engine::GetWindowSize() const
 {
 	return m_Window.GetWindowSize();

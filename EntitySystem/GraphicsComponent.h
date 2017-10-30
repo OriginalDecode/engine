@@ -5,10 +5,16 @@
 #include <CommonLib/DataStructures/GrowingArray.h>
 #include <Math/Matrix/Matrix.h>
 
+#include <CommonLib/DataStructures/Hashmap/Hash.h>
+
+
+
 struct ModelInstance
 {
 	template <typename Writer>
 	void Serialize(Writer& writer) const;
+
+	void Deserialize(const rapidjson::Value& json_value);
 
 	std::string m_Filename;
 	std::string m_MaterialFile;
@@ -70,11 +76,34 @@ void ModelInstance::Serialize(Writer& writer) const
 	writer.EndObject();
 }
 
+//void ModelInstance::Deserialize(const rapidjson::Value& json_value)
+//{
+//	m_Filename = json_value["model_file"].GetString();	
+//	m_ModelID = Hash(m_Filename.c_str());
+//	m_MaterialFile = json_value["material_file"].GetString();
+//	m_MaterialKey = Hash(m_MaterialFile.c_str());
+//
+//	auto& pos = json_value["relative_position"].GetArray();
+//	m_Orientation.SetPosition({ (float)pos[0].GetDouble(), (float)pos[1].GetDouble(), (float)pos[2].GetDouble(), 1.f });
+//
+//	auto& scale = json_value["relative_scale"].GetArray();
+//	m_Scale = { (float)scale[0].GetDouble(), (float)scale[1].GetDouble(), (float)scale[2].GetDouble(), 1.f };
+//
+//	auto& rot = json_value["relative_rotation"].GetArray();
+//	m_Rotation = { (float)rot[0].GetDouble(), (float)rot[1].GetDouble(), (float)rot[2].GetDouble(), 1.f };
+//
+//	m_Shadowed = json_value["shadowed"].GetBool();
+//
+//}
+
+
 struct GraphicsComponent : public BaseComponent
 {
 
 	template <typename Writer>
 	void Serialize(Writer& writer) const;
+
+	void Deserialize(const rapidjson::Value& json_value);
 
 	CU::GrowingArray<ModelInstance> m_Instances;
 
@@ -102,31 +131,6 @@ void GraphicsComponent::Serialize(Writer& writer) const
 		i.Serialize(writer);
 	}
 	writer.EndArray();
-
-
-
-	/*auto& position = m_Orientation.GetPosition();
-	writer.String("position");
-	writer.StartArray();
-	writer.Double(position.x);
-	writer.Double(position.y);
-	writer.Double(position.z);
-	writer.EndArray();
-
-
-	writer.String("scale");
-	writer.StartArray();
-	writer.Double(m_Scale.x);
-	writer.Double(m_Scale.y);
-	writer.Double(m_Scale.z);
-	writer.EndArray();
-
-	writer.String("rotation");
-	writer.StartArray();
-	writer.Double(m_Rotation.x);
-	writer.Double(m_Rotation.y);
-	writer.Double(m_Rotation.z);
-	writer.EndArray();*/
 
 	writer.EndObject();
 

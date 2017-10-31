@@ -85,15 +85,12 @@ namespace cl
 	inline CU::Vector4f IntToCol(unsigned int col_as_int)
 	{
 		CU::Vector4f out;
-		out.w = (col_as_int) & 0xFF;
-		out.x = (col_as_int >> 8) & 0xFF;
-		out.y = (col_as_int >> 16) & 0xFF;
-		out.z = (col_as_int >> 24) & 0xFF;
+		out.z = (col_as_int) & 0xFF;
+		out.y = (col_as_int >> 8) & 0xFF;
+		out.x = (col_as_int>>16) & 0xFF;
 		return out;
 
 	};
-
-
 
 	float RadToDegree(float aRadian);
 	float DegreeToRad(float aDegree);

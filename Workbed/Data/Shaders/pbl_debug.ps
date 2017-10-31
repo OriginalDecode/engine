@@ -43,12 +43,12 @@ struct ps_input_no_instance
 	float4 worldpos : POSITION;
 };
 
-float4 ToColor(unsigned int e)
+float3 ToColor(unsigned int e)
 {
-	float r = ((e) & 0xFF) / 255.f;
-	float g = ((e >> 8) & 0xFF) / 255.f;
-	float b = ((e >> 16) & 0xFF) / 255.f;
-	return float4(r,g,b,1);
+	float b = ((e) & 0xFF);
+	float g = ((e >> 8) & 0xFF) ;
+	float r = ((e >> 16) & 0xFF);
+	return float3(r,g,b);
 };
 
 GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
@@ -104,7 +104,7 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	output.Depth.y = override_pbl ? input.data0.y : roughness_override;
 	output.Emissive = input.displaced;
 
-    output.IDTexture = ToColor(input.entity_id);
+    output.IDTexture = float4(ToColor(input.entity_id), 0);
 	
     return output ;
 };

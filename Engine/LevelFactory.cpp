@@ -8,7 +8,6 @@
 
 #include "Terrain.h"
 
-
 //these should probably be moved
 #include <PhysicsComponent.h>
 #include <GraphicsComponent.h>
@@ -21,8 +20,6 @@
 #include <CameraComponent.h>
 //these should probably be moved
 
-
-
 #include <RigidBody.h>
 #include <GhostObject.h>
 
@@ -30,7 +27,6 @@
 
 #include <Engine/AssetFactory.h>
 #include <Engine/Material.h>
-
 
 void LevelFactory::Initiate()
 {
@@ -48,8 +44,7 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 	const rapidjson::Document& doc = m_LevelReader.GetDocument();
 	for (auto& obj : doc.GetArray())
 	{
-		const auto& str = obj.GetString();
-		CreateEntity(str);
+		CreateEntity(obj.GetString());
 	}
 
 	//CreateTerrain("Data/Textures/flat_height.tga");
@@ -253,7 +248,6 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	component.myBody->SetEntity(entity_id);
 	m_PhysicsManager->Add(phys_body);
 }
-
 
 void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
 {
@@ -501,7 +495,6 @@ void LevelFactory::CreateTerrain(std::string terrain_path)
 	}));*/
 }
 
-
 void LevelFactory::CreatePBLLevel(s32 steps)
 {
 	
@@ -578,10 +571,9 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 
 	}
 
-	SaveLevel("data/pbr_level/", "pbr_level.level");
+	//SaveLevel("data/pbr_level/", "pbr_level.level");
 
 }
-
 
 #include <JSON/include/writer.h>
 #include <JSON/include/prettywriter.h>

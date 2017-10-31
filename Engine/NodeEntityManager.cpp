@@ -77,10 +77,10 @@ void NodeEntityManager::Update(float dt, const CU::GrowingArray<TreeDweller*>& d
 		{
 			TranslationComponent& t = GetComponent<TranslationComponent>(e);
 
+			if (CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.myOrientation.GetPosition()))
 				m_Components.SetUpdateFlag(e, true);
-			/*if (CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.myOrientation.GetPosition()))
 			else
-				m_Components.SetUpdateFlag(e, false);*/
+				m_Components.SetUpdateFlag(e, false);
 		}
 	}
 	PROFILE_BLOCK_END;

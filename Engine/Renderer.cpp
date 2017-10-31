@@ -242,16 +242,29 @@ void Renderer::Render()
  	ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
  	HRESULT hr = ctx->Map(staging, 0, D3D11_MAP_READ, 0, &msr);
  
-	int pix = 0;
+	u32 pix = 0;
+	//constexpr int x = sizeof(float);
+	float r;
+	float g;
+	float b;
  	if (msr.pData)
  	{
- 		u8* data = (u8*)msr.pData;
 
-		pix = data[1];
-		pix += 2;
-		pix /= 4;
+		int r_pitch = msr.RowPitch;
+		int d_pitch = msr.DepthPitch;
+ 		float* data = (float*)msr.pData;
+		r = data[0];
+		g = data[1];
+		b = data[2];
+		float _r = r * 65536.f;
+		float _g = g * 256.f;
+		float _b = b;
 
- 		//memcpy(&m_PixelData[0], &data[0], window_size.m_Height * window_size.m_Width * 4);
+		pix = _r + _g + _b;
+
+
+
+		
  	}
  	ctx->Unmap(staging, 0);
  	staging->Release();
@@ -259,7 +272,8 @@ void Renderer::Render()
 
 	if (ImGui::Begin(""))
 	{
-		ImGui::Text("pix : %d", pix);
+		ImGui::Text("R : %.0f\nG : %.0f\nB : %.0f", r,g,b);
+		ImGui::Text("Entity : %d", pix);
 		ImGui::End();
 	}
 
@@ -648,6 +662,8 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 	GPUModelData model_data;
 	model_data.m_Orientation = command->m_Orientation;
 	model_data.m_ID = command->m_EntityID;
+
+	CU::Vector4f col = cl::IntToCol(model_data.m_ID);
 
 	m_InstancingManager.AddGPUDataToInstance(command->m_MaterialKey, model_data);
 }

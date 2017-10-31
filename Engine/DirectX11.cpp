@@ -18,10 +18,6 @@
 
 namespace graphics
 {
-
-
-
-
 	DirectX11::DirectX11(CreateInfo info)
 	{
 		m_CreateInfo = info;
@@ -422,7 +418,6 @@ namespace graphics
 		scDesc.SampleDesc.Quality = 0;
 		scDesc.Windowed = true;
 		//scDesc.Windowed = false;
-
 
 
 		scDesc.Flags = 0;

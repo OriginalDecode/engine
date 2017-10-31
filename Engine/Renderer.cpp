@@ -28,6 +28,7 @@
 #include <Input/InputWrapper.h>
 #include <Engine/IGraphicsContext.h>
 #include <Engine/DX11Context.h>
+#include <Engine/DX11Device.h>
 
 
 Renderer::Renderer(Synchronizer* synchronizer)
@@ -73,26 +74,28 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	myPointLight = new PointLight();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	m_DebugTexture0 = new Texture;
-	m_DebugTexture0->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
 
-	m_DebugTexture1 = new Texture;
-	m_DebugTexture1->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "normal");
+	m_DebugTextures.Add(new Texture);
+	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
 
-	m_DebugTexture2 = new Texture;
-	m_DebugTexture2->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "depth");
 
-	m_DebugTexture3 = new Texture;
-	m_DebugTexture3->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "metalness");
+	m_DebugTextures.Add(new Texture);
+	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "normal");
 
-	m_DebugTexture4 = new Texture;
-	m_DebugTexture4->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "roughness");
+	m_DebugTextures.Add(new Texture);
+	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "depth");
 
-	m_DebugTexture5 = new Texture;
-	m_DebugTexture5->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "emissive");
+	m_DebugTextures.Add(new Texture);
+	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "metalness");
 
-	m_DebugTexture6 = new Texture;
-	m_DebugTexture6->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "entity_id");
+	m_DebugTextures.Add(new Texture);
+	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "roughness");
+
+	m_DebugTextures.Add(new Texture);
+	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "emissive");
+
+	m_DebugTextures.Add(new Texture);
+	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "entity_id");
 
 	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
 	debug_textures->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
@@ -104,14 +107,12 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 
 	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
-	pDebug->AddTexture(m_DebugTexture0, "Albedo");
-	pDebug->AddTexture(m_DebugTexture1, "Normal");
-	pDebug->AddTexture(m_DebugTexture2, "Depth");
-	pDebug->AddTexture(m_DebugTexture3, "Metalness");
-	pDebug->AddTexture(m_DebugTexture4, "Roughness");
-	pDebug->AddTexture(m_DebugTexture5, "Emissive");
-	pDebug->AddTexture(m_DebugTexture6, "Entity ID");
-	pDebug->RegisterCheckbox(debug::DebugCheckbox(&m_LightModelWireframe, "Light Model Wireframe"));
+	for (Texture* t : m_DebugTextures)
+	{
+		pDebug->AddTexture(t, t->GetDebugName());
+	}
+
+	//pDebug->RegisterCheckbox(debug::DebugCheckbox(&m_LightModelWireframe, "Light Model Wireframe"));
 
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
@@ -195,6 +196,76 @@ void Renderer::Render()
 	WriteDebugTextures();
 #endif
 
+	graphics::DX11Device& dx11dev = static_cast<graphics::DX11Device&>(m_RenderContext.GetDevice());
+	ID3D11Device* pDevice = static_cast<ID3D11Device*>(dx11dev.GetDevice());
+	graphics::DX11Context& dx11ctx = static_cast<graphics::DX11Context&>(m_RenderContext.GetContext());
+	ID3D11DeviceContext* ctx = static_cast<ID3D11DeviceContext*>(dx11ctx.GetContext());
+	WindowSize window_size;
+	window_size.m_Height = m_RenderContext.GetAPI().GetInfo().m_WindowHeight;
+	window_size.m_Width = m_RenderContext.GetAPI().GetInfo().m_WindowWidth;
+
+	ID3D11Texture2D* _IDTex = static_cast<ID3D11Texture2D*>(m_GBuffer.GetIDTexture()->GetTexture());
+
+	D3D11_TEXTURE2D_DESC desc;
+	desc.Width = 1;
+	desc.Height = 1;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.Usage = D3D11_USAGE_STAGING;
+	desc.BindFlags = 0;
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	desc.MiscFlags = 0;
+
+
+	const CU::Vector2f fPos = m_RenderContext.GetEngine().GetInputHandle()->GetCursorPos();
+	const CU::Vector2i iPos = { (s32)fPos.x, (s32)fPos.y };
+
+ 	D3D11_BOX region_box;
+
+	region_box.bottom = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height) + 1;
+	region_box.right = cl::ClampI(iPos.x, 0, (s32)window_size.m_Width) + 1;
+	region_box.back = 1;
+
+	region_box.top = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height);
+	region_box.left = cl::ClampI(iPos.x, 0, (s32)window_size.m_Width);
+	region_box.front = 0;
+ 
+ 	ID3D11Texture2D * staging = nullptr;
+ 	pDevice->CreateTexture2D(&desc, nullptr, &staging);
+ 	ctx->CopySubresourceRegion(staging, 0,0,0,0, _IDTex, 0, &region_box);
+ 
+ 
+ 	D3D11_MAPPED_SUBRESOURCE msr;
+ 	ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
+ 	HRESULT hr = ctx->Map(staging, 0, D3D11_MAP_READ, 0, &msr);
+ 
+	int pix = 0;
+ 	if (msr.pData)
+ 	{
+ 		u8* data = (u8*)msr.pData;
+
+		pix = data[1];
+		pix += 2;
+		pix /= 4;
+
+ 		//memcpy(&m_PixelData[0], &data[0], window_size.m_Height * window_size.m_Width * 4);
+ 	}
+ 	ctx->Unmap(staging, 0);
+ 	staging->Release();
+
+
+	if (ImGui::Begin(""))
+	{
+		ImGui::Text("pix : %d", pix);
+		ImGui::End();
+	}
+
+
+
+
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
@@ -203,7 +274,7 @@ void Renderer::Render()
 		, m_RenderContext);
 
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
-	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer); 
+	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	m_RenderContext.GetContext().GSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
 	m_RenderContext.GetContext().PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
@@ -212,7 +283,7 @@ void Renderer::Render()
 
 	RenderParticles(nullptr);
 
-	if(m_PostProcessManager.GetFlags() != 0)
+	if (m_PostProcessManager.GetFlags() != 0)
 		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
 	else
 	{
@@ -239,30 +310,23 @@ void Renderer::Render()
 
 }
 
+
+
 #if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::WriteDebugTextures()
 {
-	float clear[4] = { 0,0,0,0 };
+	float clear[4] = { 1,1,1,0 };
 	auto& ctx = m_RenderContext.GetContext();
-	ctx.ClearRenderTarget(m_DebugTexture0->GetRenderTargetView(), clear);
-	ctx.ClearRenderTarget(m_DebugTexture1->GetRenderTargetView(), clear);
-	ctx.ClearRenderTarget(m_DebugTexture2->GetRenderTargetView(), clear);
-	ctx.ClearRenderTarget(m_DebugTexture3->GetRenderTargetView(), clear);
-	ctx.ClearRenderTarget(m_DebugTexture4->GetRenderTargetView(), clear);
-	ctx.ClearRenderTarget(m_DebugTexture5->GetRenderTargetView(), clear);
-	ctx.ClearRenderTarget(m_DebugTexture6->GetRenderTargetView(), clear);
 
-	IRenderTargetView* rtv[] =
+	CU::GrowingArray<IRenderTargetView*> targets;
+	for (Texture* t: m_DebugTextures)
 	{
-		m_DebugTexture0->GetRenderTargetView(),
-		m_DebugTexture1->GetRenderTargetView(),
-		m_DebugTexture2->GetRenderTargetView(),
-		m_DebugTexture3->GetRenderTargetView(),
-		m_DebugTexture4->GetRenderTargetView(),
-		m_DebugTexture5->GetRenderTargetView(),
-		m_DebugTexture6->GetRenderTargetView(),
-	};
-	ctx.OMSetRenderTargets(ARRSIZE(rtv), rtv, nullptr);
+		IRenderTargetView* view = t->GetRenderTargetView();
+		ctx.ClearRenderTarget(view, clear);
+		targets.Add(view);
+	}
+
+	ctx.OMSetRenderTargets(targets.Size(), &targets[0], nullptr);
 	m_DebugQuad->Render(false);
 }
 #endif
@@ -534,10 +598,10 @@ void Renderer::RenderParticles(Effect* effect)
 		auto command = reinterpret_cast<ParticleCommand*>(commands[i]);
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::PARTICLE, "Expected particle command type");
 		m_ParticleEmitter->SetPosition(command->m_Position);
-	
+
 		m_ParticleEmitter->Update(m_RenderContext.GetEngine().GetDeltaTime());
-	
-		
+
+
 		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
 		m_ParticleEmitter->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), effect);
 	}
@@ -584,7 +648,7 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 	GPUModelData model_data;
 	model_data.m_Orientation = command->m_Orientation;
 	model_data.m_ID = command->m_EntityID;
-	
+
 	m_InstancingManager.AddGPUDataToInstance(command->m_MaterialKey, model_data);
 }
 

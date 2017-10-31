@@ -44,8 +44,13 @@ public:
 	s32 GetWidth() const { return m_Width; }
 	s32 GetHeight() const { return m_Height; }
 
-
+#ifdef _DEBUG
+	std::string GetDebugName() { return m_DebugName; }
+#endif
 private:
+#ifdef _DEBUG
+	std::string m_DebugName;
+#endif
 	union
 	{
 		ITexture2D* m_DepthTexture = nullptr;

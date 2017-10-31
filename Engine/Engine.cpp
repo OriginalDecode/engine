@@ -110,7 +110,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	if (!m_Window.IsWindowActive())
 		m_Window.OnActive();
 
-
 	graphics::CreateInfo create_info;
 	create_info.m_HWND = m_Window.GetHWND();
 	create_info.m_Instance = instance_handle;

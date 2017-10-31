@@ -28,6 +28,9 @@ void Texture::Initiate(const TextureDesc& desc, const std::string& debug_name)
 
 void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const std::string& debug_name)
 {
+#ifdef _DEBUG
+	m_DebugName = debug_name;
+#endif
 	graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 	DL_ASSERT_EXP(desc.m_TextureFormat != graphics::NO_FORMAT, "invalid texture format!");
 	if (desc.m_TextureFormat != graphics::NO_FORMAT)

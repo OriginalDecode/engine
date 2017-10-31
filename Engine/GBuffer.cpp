@@ -35,9 +35,9 @@ namespace graphics
 		desc.m_RenderTargetFormat = RGBA32_FLOAT;
 		m_Depth->Initiate(desc, false, "GBuffer : Depth");
 
-
 		m_EntityIDTexture = new Texture;
 		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
+		desc.m_TextureFormat = RGBA32_FLOAT;
 		desc.m_ShaderResourceFormat = R32_UINT;
 		desc.m_RenderTargetFormat = R32_UINT;
 		m_EntityIDTexture->Initiate(desc, false, "Entity ID");

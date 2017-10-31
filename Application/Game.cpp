@@ -70,6 +70,9 @@ void Game::Initiate(const std::string& level)
 	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 
 
+	
+
+
 	bool read_camera = false;
 	if (read_camera)
 	{

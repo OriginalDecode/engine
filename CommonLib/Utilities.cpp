@@ -44,7 +44,7 @@ namespace cl
 	}
 
 	// AA RR GG BB
-	int Color32Reverse(int x)
+	unsigned int Color32Reverse(unsigned int x)
 	{
 		return
 			((x & 0xFF000000) >> 24) |
@@ -69,6 +69,28 @@ namespace cl
 			((x & 0x00FF0000) >> 8) |
 			((x & 0x0000FF00) << 16) |
 			((x & 0x000000FF) << 8);
+	}
+
+	float ClampF(float value, float min, float max)
+	{
+		if (value > max)
+			return max;
+
+		if (value < min)
+			return min;
+
+		return value;
+	}
+
+	int ClampI(int value, int min, int max)
+	{
+		if (value > max)
+			return max;
+
+		if (value < min)
+			return min;
+
+		return value;
 	}
 
 	SColor::SColor(unsigned int color)

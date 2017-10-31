@@ -35,6 +35,8 @@ namespace graphics
 
 		bool FindInputSemantic(const char* to_find, IShaderBlob* blob) override;
 
+		ID3D11Device* GetDevice() { return m_Device; }
+
 	private:
 		ID3D11Device* m_Device = nullptr;
 

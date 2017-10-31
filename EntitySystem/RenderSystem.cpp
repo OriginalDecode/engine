@@ -98,7 +98,8 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 			AddRenderCommand(ModelCommand(instance.m_ModelID
 										  , instance.m_MaterialKey
 										  , relative //could be precalculated, and on physical objects this shouldn't even be used if it can be moved.
-										  , render.m_RenderWireframe));
+										  , render.m_RenderWireframe
+										  , e));
 		}
 
 

@@ -35,9 +35,6 @@ void LevelFactory::Initiate()
 	m_PhysicsManager = m_Engine->GetPhysicsManager();
 }
 
-static int g = 0;
-static int t = 0;
-
 bool LevelFactory::CreateLevel(const std::string& level_path)
 {
 	m_LevelReader.OpenDocument(level_path);
@@ -71,7 +68,6 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			TranslationComponent& c = m_EntityManager->AddComponent<TranslationComponent>(e);
 			c.Deserialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::TRANSLATION);
-			t++;
 		}
 
 		if (type.find("graphics") != type.npos)
@@ -79,8 +75,15 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			GraphicsComponent& c = m_EntityManager->AddComponent<GraphicsComponent>(e);
 			c.Deserialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::GRAPHICS);
-			g++;
 		}
+
+		if (type.find("light") != type.npos)
+		{
+			LightComponent& c = m_EntityManager->AddComponent<LightComponent>(e);
+			//c.Desrialize(obj);
+			pDweller->AddComponent(&c, TreeDweller::LIGHT);
+		}
+
 	}
 
 	pDweller->Initiate(e, TreeDweller::STATIC);

@@ -261,11 +261,10 @@ void Renderer::Render()
 		float _b = b;
 
 		pix = _r + _g + _b;
-
-
-
 		
  	}
+
+
  	ctx->Unmap(staging, 0);
  	staging->Release();
 

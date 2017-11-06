@@ -325,8 +325,11 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 
 	//const CU::GrowingArray<Entity>& entities = GetEntities();
 	CU::GrowingArray<entity_collisions> collisions;
-	for (Entity i = entities.Size() - 1; i >= 0; i--)
+	for (s32 i = entities.Size() - 1; i >= 0; i--)
 	{
+		if(i < 0)
+			continue;
+
 		Entity e = entities[i];
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
 		debug.debugColor = { 255.f,255.f,255.f,255.f };
@@ -336,7 +339,7 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 		for (float j = 0; j < 25.f; j += 0.05f)
 		{
 			CU::Vector3f step = (ray_dir * j);
-			CU::Vector3f new_pos = cam_pos + step;
+			CU::Vector3f new_pos = cam_pos + step; //cam_pos is the original position of the ray, should be renamed.
 
 			if (debug.m_OBB.Inside(new_pos))
 			{
@@ -417,19 +420,6 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	const CU::Vector4f up = orientation.GetUp();
 	const CU::Vector4f forward = orientation.GetForward();
 
-
-	/*if ( component.m_MinPoint.x < -0.f )
-	{
-		p1.color = CU::Vector4f(255.f,0.f,0.f,255.f);
-		p2.color = p1.color;
-		p3.color = p1.color;
-		p4.color = p1.color;
-		p5.color = p1.color;
-		p6.color = p1.color;
-		p7.color = p1.color;
-		p8.color = p1.color;
-	}*/
-
 	p1.position += right * component.m_MinPoint.x;
 	p1.position += up * component.m_MinPoint.y;
 	p1.position += forward * component.m_MinPoint.z;
@@ -462,70 +452,31 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p8.position += up * component.m_MaxPoint.y;
 	p8.position += forward * component.m_MaxPoint.z;
 
-	/*p1.position -= orientation.GetRight() * component.m_WHD.x;
-	p1.position -= orientation.GetUp() * component.m_WHD.y;
-	p1.position -= orientation.GetForward() * component.m_WHD.z;
-
-	p2.position += orientation.GetRight() * component.m_WHD.x;
-	p2.position -= orientation.GetUp() * component.m_WHD.y;
-	p2.position -= orientation.GetForward() * component.m_WHD.z;
-
-	p3.position += orientation.GetRight() * component.m_WHD.x;
-	p3.position -= orientation.GetUp() * component.m_WHD.y;
-	p3.position += orientation.GetForward() * component.m_WHD.z;
-
-	p4.position -= orientation.GetRight() * component.m_WHD.x;
-	p4.position -= orientation.GetUp() * component.m_WHD.y;
-	p4.position += orientation.GetForward() * component.m_WHD.z;
-
-	p5.position -= orientation.GetRight() * component.m_WHD.x;
-	p5.position += orientation.GetUp() * component.m_WHD.y;
-	p5.position -= orientation.GetForward() * component.m_WHD.z;
-
-	p6.position -= orientation.GetRight() * component.m_WHD.x;
-	p6.position += orientation.GetUp() * component.m_WHD.y;
-	p6.position += orientation.GetForward() * component.m_WHD.z;
-
-	p7.position += orientation.GetRight() * component.m_WHD.x;
-	p7.position += orientation.GetUp() * component.m_WHD.y;
-	p7.position -= orientation.GetForward() * component.m_WHD.z;
-
-	p8.position += orientation.GetRight() * component.m_WHD.x;
-	p8.position += orientation.GetUp() * component.m_WHD.y;
-	p8.position += orientation.GetForward() * component.m_WHD.z;*/
-
-
-
-	m_Manager.GetTreeNode()->AddLine(Line(p1, p2));
-	m_Manager.GetTreeNode()->AddLine(Line(p2, p3));
-	m_Manager.GetTreeNode()->AddLine(Line(p3, p4));
-	m_Manager.GetTreeNode()->AddLine(Line(p4, p1));
-	m_Manager.GetTreeNode()->AddLine(Line(p1, p5));
-	m_Manager.GetTreeNode()->AddLine(Line(p5, p6));
-	m_Manager.GetTreeNode()->AddLine(Line(p6, p8));
-	m_Manager.GetTreeNode()->AddLine(Line(p8, p7));
-	m_Manager.GetTreeNode()->AddLine(Line(p7, p5));
-	m_Manager.GetTreeNode()->AddLine(Line(p6, p4));
-	m_Manager.GetTreeNode()->AddLine(Line(p7, p2));
-	m_Manager.GetTreeNode()->AddLine(Line(p8, p3));
-
-
-	//m_Synchronizer->AddRenderCommand(LineCommand(p1, p2, true));
-	//m_Synchronizer->AddRenderCommand(LineCommand(p2, p3, true));
-	//m_Synchronizer->AddRenderCommand(LineCommand(p3, p4, true));
-	//m_Synchronizer->AddRenderCommand(LineCommand(p4, p1, true));
-	//m_Synchronizer->AddRenderCommand(LineCommand(p1, p5, true));
-	//m_Synchronizer->AddRenderCommand(LineCommand(p5, p6, true));
-	//m_Synchronizer->AddRenderCommand(LineCommand(p6, p8, true));
-	//m_Synchronizer->AddRenderCommand(LineCommand(p8, p7, true));
-	//m_Synchronizer->AddRenderCommand(LineCommand(p7, p5, true));
-	//m_Synchronizer->AddRenderCommand(LineCommand(p6, p4, true));
-	//m_Synchronizer->AddRenderCommand(LineCommand(p7, p2, true));
-	//m_Synchronizer->AddRenderCommand(LineCommand(p8, p3, true));
+	//m_Manager.GetTreeNode()->AddLine(Line(p1, p2));
+	//m_Manager.GetTreeNode()->AddLine(Line(p2, p3));
+	//m_Manager.GetTreeNode()->AddLine(Line(p3, p4));
+	//m_Manager.GetTreeNode()->AddLine(Line(p4, p1));
+	//m_Manager.GetTreeNode()->AddLine(Line(p1, p5));
+	//m_Manager.GetTreeNode()->AddLine(Line(p5, p6));
+	//m_Manager.GetTreeNode()->AddLine(Line(p6, p8));
+	//m_Manager.GetTreeNode()->AddLine(Line(p8, p7));
+	//m_Manager.GetTreeNode()->AddLine(Line(p7, p5));
+	//m_Manager.GetTreeNode()->AddLine(Line(p6, p4));
+	//m_Manager.GetTreeNode()->AddLine(Line(p7, p2));
+	//m_Manager.GetTreeNode()->AddLine(Line(p8, p3));
 	
-
-
-
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p1, p2), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p2, p3), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p3, p4), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p4, p1), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p1, p5), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p5, p6), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p6, p8), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p8, p7), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p7, p5), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p6, p4), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p7, p2), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p8, p3), false));
 }
 
 #endif

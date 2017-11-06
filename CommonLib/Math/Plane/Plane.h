@@ -73,11 +73,12 @@ namespace CommonUtilities
 	template<typename TYPE>
 	bool Plane<TYPE>::Inside(Math::Vector4 <TYPE> aPosition) const
 	{
-		const float result = Math::Dot<TYPE>(aPosition - myPoint, myNorm);
-		if (result > 0.f)
-			return false;
+		const Math::Vector4<TYPE> normalized = Math::GetNormalized(myPoint - aPosition);
+		const float result = Math::Dot<TYPE>(normalized, myNorm);
+		if (result >= 0.f)
+			return true;
 
-		return true;
+		return false;
 	}
 
 	template<typename TYPE>

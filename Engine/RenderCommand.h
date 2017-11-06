@@ -215,6 +215,14 @@ struct LineCommand : public RenderCommand
 	{
 	}
 
+	LineCommand(const Line& line, bool z_enabled)
+		: RenderCommand(eCommandType::LINE)
+		, m_Points{ line.m_Points[0], line.m_Points[1] }
+		, m_ZEnabled(z_enabled)
+	{
+	}
+
+
 	bool m_ZEnabled = false;
 	LinePoint m_Points[2];
 };

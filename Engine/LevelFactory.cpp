@@ -58,7 +58,7 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	Entity e = m_EntityManager->CreateEntity();
 	JSONReader reader(entity_filepath);
 	auto& doc = reader.GetDocument();
-	
+	s32 debug_flags = 0;
 	for (const rapidjson::Value& obj : doc.GetArray())
 	{
 		std::string type = obj["component_type"].GetString();
@@ -83,6 +83,10 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			//c.Desrialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::LIGHT);
 		}
+
+
+		CreateDebugComponent(e, false, debug_flags);
+
 
 	}
 

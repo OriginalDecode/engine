@@ -47,7 +47,7 @@ void RootTreeNode::Update(float dt, bool paused)
 		m_Pool.Update();
 	} while (!m_Pool.CurrentWorkFinished()); //This cannot work if we start work and pop at the same time
 
-	for (const Line& line : m_Lines)
-		m_Synchronizer->AddRenderCommand(LineCommand(line.m_Points[0], line.m_Points[1], true));
+// 	for (const Line& line : m_Lines)
+// 		m_Synchronizer->AddRenderCommand(LineCommand(line.m_Points[0], line.m_Points[1], true));
 
 }

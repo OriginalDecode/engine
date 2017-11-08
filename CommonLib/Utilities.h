@@ -2,6 +2,7 @@
 #include <string>
 #include <math.h>
 #include "Math/Vector/Vector.h"
+#include "Math/Matrix/Matrix.h"
 #include "DataStructures/GrowingArray.h"
 #include <thread>
 namespace cl
@@ -107,5 +108,6 @@ namespace cl
 	
 
 	std::string HandleVAArgs(const char* formatted_string, ...);
+
 
 };

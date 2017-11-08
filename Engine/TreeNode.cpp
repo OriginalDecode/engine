@@ -48,19 +48,19 @@ void TreeNode::Update(float dt, bool paused)
 
 	}
 
-#if !defined(_PROFILE) && !defined(_FINAL)
-	if (m_Parent > 0)
-	{
-		m_Parent->CopyToParent(m_Lines);
-	}
-	else
-	{
-		static Ticket_Mutex list_ticket;
-		BeginTicketMutex(&list_ticket); 
-		m_Parent->CopyToParent(m_Lines);
-		EndTicketMutex(&list_ticket);
-	}
-#endif
+//#if !defined(_PROFILE) && !defined(_FINAL)
+//	if (m_Parent > 0)
+//	{
+//		m_Parent->CopyToParent(m_Lines);
+//	}
+//	else
+//	{
+//		static Ticket_Mutex list_ticket;
+//		BeginTicketMutex(&list_ticket); 
+//		m_Parent->CopyToParent(m_Lines);
+//		EndTicketMutex(&list_ticket);
+//	}
+//#endif
 }
 
 void TreeNode::SetManager(NodeEntityManager* manager)

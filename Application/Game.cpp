@@ -171,7 +171,17 @@ void Game::OldUpdate(float dt)
 	{
 		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
 		pEventHandle->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, m_Player));
+		pos0 = m_Picker->GetRayStart();
+		pos1 = pos0 + (ray_dir * 25.f);
 	}
+
+	LinePoint p0, p1;
+	p0.color = { 255.f, 0.f , 255.f, 255.f };
+	p1 = p0;
+	p0.position = pos0;
+	p1.position = pos1;
+	m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, true));
+
 
 	if (input_wrapper->OnDown(KButton::W))
 	{
@@ -247,7 +257,6 @@ void Game::OldUpdate(float dt)
 
 	HandleMovement(input_wrapper, entity_speed, dt);
 	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
-
 	m_World.Update(dt, m_Paused);
 }
 

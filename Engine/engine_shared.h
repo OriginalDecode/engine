@@ -120,3 +120,6 @@ namespace blendcolor
 {
 	constexpr float black[4] = { 0.f, 0.f, 0.f, 0.f };
 };
+
+
+

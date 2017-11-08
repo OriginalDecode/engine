@@ -28,7 +28,7 @@ void RootTreeNode::Update(float dt, bool paused)
 	PROFILE_FUNCTION(profiler::colors::Green);
 	if (paused)
 		return;
-	m_Lines.RemoveAll();
+	//m_Lines.RemoveAll();
 	TreeNodeBase::Update(dt, paused);
 
 	for (TreeNodeBase* node : m_Children)

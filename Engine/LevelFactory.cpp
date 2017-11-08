@@ -334,11 +334,13 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	}
 	else
 	{
-		whd = { 0.25f,0.25f, 0.25f };
-		component.m_MinPoint = { -0.25,-0.25,-0.25 };
-		component.m_MaxPoint = { 0.25,0.25,0.25 };
+		
 
 	}
+
+	whd = { 0.25f,0.25f, 0.25f };
+	component.m_MinPoint = { -0.25,-0.25,-0.25 };
+	component.m_MaxPoint = { 0.25,0.25,0.25 };
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
 	CU::Vector3f pos = translation.myOrientation.GetPosition();
 

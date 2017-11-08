@@ -62,6 +62,9 @@ private:
 	float m_AverageFPS = 0;
 	float m_Time = 0.f;
 
+	CU::Vector3f pos0;
+	CU::Vector3f pos1;
+
 
 
 

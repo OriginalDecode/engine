@@ -196,89 +196,6 @@ void Renderer::Render()
 	WriteDebugTextures();
 #endif
 
-	graphics::DX11Device& dx11dev = static_cast<graphics::DX11Device&>(m_RenderContext.GetDevice());
-	ID3D11Device* pDevice = static_cast<ID3D11Device*>(dx11dev.GetDevice());
-	graphics::DX11Context& dx11ctx = static_cast<graphics::DX11Context&>(m_RenderContext.GetContext());
-	ID3D11DeviceContext* ctx = static_cast<ID3D11DeviceContext*>(dx11ctx.GetContext());
-	WindowSize window_size;
-	window_size.m_Height = m_RenderContext.GetAPI().GetInfo().m_WindowHeight;
-	window_size.m_Width = m_RenderContext.GetAPI().GetInfo().m_WindowWidth;
-
-	ID3D11Texture2D* _IDTex = static_cast<ID3D11Texture2D*>(m_GBuffer.GetIDTexture()->GetTexture());
-
-	D3D11_TEXTURE2D_DESC desc;
-	desc.Width = 1;
-	desc.Height = 1;
-	desc.MipLevels = 1;
-	desc.ArraySize = 1;
-	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	desc.SampleDesc.Count = 1;
-	desc.SampleDesc.Quality = 0;
-	desc.Usage = D3D11_USAGE_STAGING;
-	desc.BindFlags = 0;
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-	desc.MiscFlags = 0;
-
-
-	const CU::Vector2f fPos = m_RenderContext.GetEngine().GetInputHandle()->GetCursorPos();
-	const CU::Vector2i iPos = { (s32)fPos.x, (s32)fPos.y };
-
- 	D3D11_BOX region_box;
-
-	region_box.bottom = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height) + 1;
-	region_box.right = cl::ClampI(iPos.x, 0, (s32)window_size.m_Width) + 1;
-	region_box.back = 1;
-
-	region_box.top = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height);
-	region_box.left = cl::ClampI(iPos.x, 0, (s32)window_size.m_Width);
-	region_box.front = 0;
- 
- 	ID3D11Texture2D * staging = nullptr;
- 	pDevice->CreateTexture2D(&desc, nullptr, &staging);
- 	ctx->CopySubresourceRegion(staging, 0,0,0,0, _IDTex, 0, &region_box);
- 
- 
- 	D3D11_MAPPED_SUBRESOURCE msr;
- 	ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
- 	HRESULT hr = ctx->Map(staging, 0, D3D11_MAP_READ, 0, &msr);
- 
-	u32 pix = 0;
-	//constexpr int x = sizeof(float);
-	float r;
-	float g;
-	float b;
- 	if (msr.pData)
- 	{
-
-		int r_pitch = msr.RowPitch;
-		int d_pitch = msr.DepthPitch;
- 		float* data = (float*)msr.pData;
-		r = data[0];
-		g = data[1];
-		b = data[2];
-		float _r = r * 65536.f;
-		float _g = g * 256.f;
-		float _b = b;
-
-		pix = _r + _g + _b;
-		
- 	}
-
-
- 	ctx->Unmap(staging, 0);
- 	staging->Release();
-
-
-	if (ImGui::Begin(""))
-	{
-		ImGui::Text("R : %.0f\nG : %.0f\nB : %.0f", r,g,b);
-		ImGui::Text("Entity : %d", pix);
-		ImGui::End();
-	}
-
-
-
-
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
@@ -289,6 +206,7 @@ void Renderer::Render()
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	m_RenderContext.GetContext().GSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+
 	m_RenderContext.GetContext().UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
 	m_RenderContext.GetContext().PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
 	RenderSpotlight();

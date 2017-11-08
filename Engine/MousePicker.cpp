@@ -36,7 +36,7 @@ void CMousePicker::CalculateCurrentRay(float x, float y)
 	CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.f, 0.f); //Clip Space
 	CU::Vector4f eyeCoord = ToEyeCoords(clip);
 	CU::Vector3f ray = ToWorldCoords(eyeCoord);
-
+	m_RayStart = ray;
 	CU::Math::Normalize(ray);
 	myCurrentRay = ray;
 }
@@ -57,7 +57,7 @@ CU::Vector3f CMousePicker::ToWorldCoords(const CU::Vector4f& eyeCoords)
 
 CU::Vector2f CMousePicker::NormalizedSpace(float x, float y)
 {
-	x = x * 2.f / myEngine->GetWindowSize().m_Width - 1.f;
-	y = 1.f - (y * 2.f) / myEngine->GetWindowSize().m_Height;
+	x = x * 2.f / myEngine->GetInnerSize().m_Width - 1.f;
+	y = 1.f - (y * 2.f) / myEngine->GetInnerSize().m_Height;
 	return CU::Vector2f(x, y);
 }

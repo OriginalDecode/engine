@@ -34,6 +34,9 @@ void CMousePicker::CalculateCurrentRay(float x, float y)
 
 	cursorPos = NormalizedSpace(cursorPos.x, cursorPos.y);
 	CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.f, 0.f); //Clip Space
+	
+	
+	
 	CU::Vector4f eyeCoord = ToEyeCoords(clip);
 	CU::Vector3f ray = ToWorldCoords(eyeCoord);
 	m_RayStart = ray;

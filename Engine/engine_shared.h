@@ -33,6 +33,13 @@ struct LinePoint
 struct Line
 {
 	Line() {}
+	Line(CU::Vector4f start, CU::Vector4f end)
+	{
+		m_Points[0].position = start;
+		m_Points[0].color = { 255.f, 255.f , 255.f , 255.f };
+		m_Points[1].position = end;
+		m_Points[1].color = { 255.f, 255.f , 255.f , 255.f };
+	}
 	Line(LinePoint first, LinePoint second)
 	{
 		m_Points[0] = first;

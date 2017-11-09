@@ -158,7 +158,7 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 	}
 	
 	//UpdateOBBs();
-
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(pos0, pos1), true));
 }
 
 bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vector3f& ray_dir)
@@ -311,10 +311,12 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
 	UpdateOBBs();
 
-	CU::Vector3f cam_pos = CU::Vector3f(message.camera_pos_x, message.camera_pos_y, message.camera_pos_z);
-	CU::Vector3f ray_dir = CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z);
-	
-	
+	const CU::Vector3f cam_pos = CU::Vector3f(message.camera_pos_x, message.camera_pos_y, message.camera_pos_z);
+	const CU::Vector3f ray_dir = CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z);
+	const CU::Vector3f end_pos = cam_pos + (ray_dir * 25.f);
+	const CU::Vector3f origo = { end_pos.x, cam_pos.y, cam_pos.z };
+	pos0 = origo;
+
 	if ( CheckGizmoCollision(cam_pos, ray_dir) )
 		return;
 	//Should be optimized for a quad/oct -tree solution to only retrieve the entities in THIS part
@@ -332,14 +334,17 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 
 		Entity e = entities[i];
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
-		debug.debugColor = { 255.f,255.f,255.f,255.f };
+		debug.debugColor = { 255.f, 255.f, 255.f, 255.f };
+
+
+		
 
 
 
 		for (float j = 0; j < 25.f; j += 0.05f)
 		{
 			CU::Vector3f step = (ray_dir * j);
-			CU::Vector3f new_pos = cam_pos + step; //cam_pos is the original position of the ray, should be renamed.
+			CU::Vector3f new_pos = origo + step; //cam_pos is the original position of the ray, should be renamed.
 
 			if (debug.m_OBB.Inside(new_pos))
 			{
@@ -357,14 +362,19 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 	Entity prev_entity = -1;
 	for (const entity_collisions& collision : collisions)
 	{
-		float new_length = CU::Math::Length2(collision.m_Position - cam_pos);
+		float new_length = CU::Math::Length2(collision.m_Position - origo);
 		if (new_length < prev_length)
 		{
 			prev_length = new_length;
 			closest = collision;
 			prev_entity = closest.m_ID;
+			pos1 = collision.m_Position;
 		}
 	}
+
+
+
+
 	if (prev_entity == closest.m_ID)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(closest.m_ID);

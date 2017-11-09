@@ -38,8 +38,6 @@ private:
 	GizmoHandle* m_Direction = nullptr;
 	std::string current_model;
 
-	CU::Vector3f pos0;
-	CU::Vector3f pos1;
 
 };
 #endif

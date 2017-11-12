@@ -13,10 +13,6 @@ void RootTreeNode::Initiate(float halfwidth, Octree* octree)
 
 	m_Pool.Initiate("RootNode - Worker");
 
-
-#if !defined(_PROFILE) && !defined(_FINAL)
-	debug::DebugHandle::GetInstance()->AddValueToPrint(&m_DwellerCount);
-#endif
 	for (TreeNodeBase* child : m_Children)
 	{
 		child = nullptr;

@@ -1,6 +1,0 @@
-{
-	"graphics" : { 
-		"model" : "Data/Game_Models/SM_desk_a_corner_asymmetric_250_200_r.fbx",
-		"shader" : "Shaders/T_Deferred_Base.json"
-	} 
-}

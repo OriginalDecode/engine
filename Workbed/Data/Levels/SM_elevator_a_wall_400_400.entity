@@ -1,6 +1,0 @@
-{
-	"graphics" : { 
-		"model" : "Data/Game_Models/SM_elevator_a_wall_400_400.fbx",
-		"shader" : "Shaders/T_Deferred_Base.json"
-	} 
-}

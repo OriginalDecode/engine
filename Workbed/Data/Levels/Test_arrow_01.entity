@@ -1,6 +1,0 @@
-{
-	"graphics" : { 
-		"model" : "Data/Game_Models/Test_arrow_01.fbx",
-		"shader" : "Shaders/T_Deferred_Base.json"
-	} 
-}

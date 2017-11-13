@@ -1,6 +1,0 @@
-{
-	"graphics": { 
-		"model":"Data/Model/sponza/Sponza_2.fbx", 
-		"shader":"Shaders/T_Deferred_Base.json"
-	}
-}

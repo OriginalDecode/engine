@@ -1,6 +1,0 @@
-{
-	"graphics" : { 
-		"model" : "Data/Game_Models/SK_cyborg_3_idle.fbx",
-		"shader" : "Shaders/T_Deferred_Base.json"
-	} 
-}

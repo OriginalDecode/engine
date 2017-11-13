@@ -1,6 +1,0 @@
-{
-	"graphics" : { 
-		"model" : "Data/Game_Models/Test_temp_three mat_model_01.fbx",
-		"shader" : "Shaders/T_Deferred_Base.json"
-	} 
-}

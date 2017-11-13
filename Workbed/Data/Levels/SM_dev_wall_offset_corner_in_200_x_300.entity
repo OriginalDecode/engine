@@ -1,6 +1,0 @@
-{
-	"graphics" : { 
-		"model" : "Data/Game_Models/SM_dev_wall_offset_corner_in_200_x_300.fbx",
-		"shader" : "Shaders/T_Deferred_Base.json"
-	} 
-}

@@ -6,12 +6,33 @@
 
 #include <EntitySystem/LightComponent.h>
 #include <EntitySystem/TranslationComponent.h>
+#include <EntitySystem/GraphicsComponent.h>
 #include <EntitySystem/EntityManager.h>
 #include <EntitySystem/ComponentFilter.h>
+#include <vector>
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include "imgui.h"
 namespace debug
 {
+	static auto GetVector = [](void* vec, int index, const char** out_text)
+	{
+		auto& vector = *static_cast<std::vector<std::string>*>(vec);
+		if (index < 0 || index >= static_cast<int>(vector.size()))
+			return false;
+		*out_text = vector.at(index).c_str();
+
+		return true;
+	};
+
+	bool ListBox(const char* label, int* current_index, std::vector<std::string>& values)
+	{
+		if (values.empty())
+			return false;
+
+		return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size(), values.size());
+	}
+
+
 
 	DebugHandle* DebugHandle::m_Instance = nullptr;
 	static bool sDebugTextures = false;
@@ -69,22 +90,23 @@ namespace debug
 				ImGui::SliderFloat(s.m_Label.c_str(), s.m_Value, s.m_Min, s.m_Max);
 			}
 
-			if(ImGui::Begin("Light"))
+			auto& em = Engine::GetInstance()->GetEntityManager();
+			if (em.HasComponents(editing_entity, CreateFilter<Requires<LightComponent>>()))
 			{
-
-				static float angle = 0;
-				ImGui::SliderAngle("Light Angle", &angle);
-
-				static float rot[3];
-				ImGui::SliderFloat3("Create rotation", rot, 0.f, 1.f);
-
-				static float intensity = 0;
-				ImGui::SliderFloat("Light Intensity", &intensity, 1.f, 1000.f);
-				static float col[3];
-				ImGui::ColorEdit3("Color", col);
-				auto& em = Engine::GetInstance()->GetEntityManager();
-				if (em.HasComponents(editing_entity, CreateFilter<Requires<LightComponent>>()))
+				if (ImGui::Begin("Light"))
 				{
+
+					static float angle = 0;
+					ImGui::SliderAngle("Light Angle", &angle);
+
+					static float rot[3];
+					ImGui::SliderFloat3("Create rotation", rot, 0.f, 1.f);
+
+					static float intensity = 0;
+					ImGui::SliderFloat("Light Intensity", &intensity, 1.f, 1000.f);
+					static float col[3];
+					ImGui::ColorEdit3("Color", col);
+
 					LightComponent& comp = Engine::GetInstance()->GetEntityManager().GetComponent<LightComponent>(editing_entity);
 					TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(editing_entity);
 					comp.angle = angle;
@@ -92,7 +114,7 @@ namespace debug
 					comp.color.y = col[1];
 					comp.color.z = col[2];
 					comp.intensity = intensity;
-					
+
 					CU::Vector3f pos = t.myOrientation.GetPosition();
 					t.myOrientation.SetRotation3dX(cl::DegreeToRad(rot[0]));// = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rot[0]));
 					t.myOrientation.SetRotation3dY(cl::DegreeToRad(rot[1]));// = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rot[1]));
@@ -101,10 +123,56 @@ namespace debug
 					//t.myOrientation.SetForward({ rot[0], rot[1], rot[2], 1.f });
 
 
+					ImGui::End();
 				}
+			}
+
+			if (em.HasComponents(editing_entity, CreateFilter<Requires<GraphicsComponent>>()))
+			{
+				if (ImGui::Begin("Light"))
+				{
+					GraphicsComponent& g = Engine::GetInstance()->GetEntityManager().GetComponent<GraphicsComponent>(editing_entity);
+					TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(editing_entity);
 
 
-				ImGui::End();
+					for (s32 i = 0; i < g.m_Instances.Size(); i++)
+					{
+						const ModelInstance& instance = g.m_Instances[i];
+						ImGui::Text("Filename : %s\n", instance.m_Filename.c_str());
+						ImGui::Text("File Hash : %lu\n", instance.m_ModelID);
+						ImGui::Text("Material : %s\n", instance.m_MaterialFile.c_str());
+						ImGui::Text("Material Hash : %lu\n", instance.m_MaterialKey);
+					}
+
+
+
+
+
+					static std::vector<Material*> list_box;
+					static std::vector<std::string> names;
+					for (auto pair : Engine::GetInstance()->myAssetsContainer->m_Materials)
+					{
+						if (list_box.size() < Engine::GetInstance()->myAssetsContainer->m_Materials.size())
+						{
+							list_box.push_back(pair.second);
+
+							char buf[50];
+							ZeroMemory(&buf, 50 * sizeof(char));
+							sprintf_s(buf, "%lu", pair.second->GetKey());
+							names.push_back(buf);
+						}
+					}
+
+
+					static s32 index = 0;
+					ListBox("", &index, names);
+
+					g.m_Instances[0].m_MaterialKey = list_box[index]->GetKey();
+
+
+
+					ImGui::End();
+				}
 			}
 
 
@@ -113,12 +181,12 @@ namespace debug
 				ImGui::Text(str.c_str());
 			}
 */
-			/*for (auto& obj : m_Values)
-			{
-				std::stringstream ss;
-				ss << obj.m_Label << " : " << *obj.m_Value;
-				ImGui::Text(ss.str().c_str());
-			}
+/*for (auto& obj : m_Values)
+{
+	std::stringstream ss;
+	ss << obj.m_Label << " : " << *obj.m_Value;
+	ImGui::Text(ss.str().c_str());
+}
 */
 
 
@@ -139,23 +207,6 @@ namespace debug
 
 	}
 
-	static auto GetVector = [](void* vec, int index, const char** out_text)
-	{
-		auto& vector = *static_cast<std::vector<std::string>*>(vec);
-		if (index < 0 || index >= static_cast<int>(vector.size()))
-			return false;
-		*out_text = vector.at(index).c_str();
-
-		return true;
-	};
-
-	bool ListBox(const char* label, int* current_index, std::vector<std::string>& values)
-	{
-		if (values.empty())
-			return false;
-
-		return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size(), values.size());
-	}
 
 	void DebugHandle::DebugTextures()
 	{
@@ -213,8 +264,7 @@ namespace debug
 
 	void DebugHandle::SetEntity(Entity e)
 	{
-		if(editing_entity == 0)
-			editing_entity = e;
+		editing_entity = e;
 	}
 
 	void DebugHandle::RegisterCheckbox(DebugCheckbox checkbox)

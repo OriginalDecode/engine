@@ -4,7 +4,8 @@
 #include "engine_shared.h"
 #include <DataStructures/GrowingArray.h>
 #include <Engine/ModelImporter.h>
-#include <CommonLib/DataStructures/StaticArray.h>s
+#include <CommonLib/DataStructures/StaticArray.h>
+#include <Engine/DebugHandle.h>
 
 class FileWatcher;
 class ShaderFactory;
@@ -19,6 +20,7 @@ struct CompiledShader;
 
 class AssetsContainer
 {
+	friend debug::DebugHandle;
 public:
 	AssetsContainer() = default;
 	~AssetsContainer();

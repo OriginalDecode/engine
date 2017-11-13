@@ -110,7 +110,7 @@ void AssetsContainer::ReloadTexture(Texture* texture)
 {
 }
 
-u64 AssetsContainer::LoadTexture(const std::string& filepath)
+u64 AssetsContainer::LoadTexture(std::string filepath)
 {
 	static Ticket_Mutex texture_mutex;
 	BeginTicketMutex(&texture_mutex);
@@ -133,7 +133,7 @@ u64 AssetsContainer::LoadTexture(const std::string& filepath)
 	return hash;
 }
 
-u64 AssetsContainer::LoadEffect(const std::string& filepath)
+u64 AssetsContainer::LoadEffect(std::string filepath)
 {
 	static Ticket_Mutex effect_mutex;
 	BeginTicketMutex(&effect_mutex);
@@ -152,7 +152,7 @@ u64 AssetsContainer::LoadEffect(const std::string& filepath)
 	return Hash(filepath.c_str());
 }
 
-u64 AssetsContainer::LoadSprite(const std::string& path)
+u64 AssetsContainer::LoadSprite(std::string path)
 {
 	static Ticket_Mutex sprite_mutex;
 	BeginTicketMutex(&sprite_mutex);
@@ -171,7 +171,7 @@ u64 AssetsContainer::LoadSprite(const std::string& path)
 	return Hash(path.c_str());
 }
 
-u64 AssetsContainer::LoadMaterial(const std::string& path)
+u64 AssetsContainer::LoadMaterial(std::string path)
 {
 	static Ticket_Mutex material_mutex;
 	BeginTicketMutex(&material_mutex);
@@ -182,6 +182,9 @@ u64 AssetsContainer::LoadMaterial(const std::string& path)
 		Material* material = new Material(hash);
 		m_Materials.emplace(hash, material);
 		AssetFactory::GetInstance().CreateMaterial(path, material);
+#ifdef _DEBUG
+		debug::DebugHandle::GetInstance()->RegisterMaterial(material, path);
+#endif
 		EndTicketMutex(&material_mutex);
 		return hash;
 	}

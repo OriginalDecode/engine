@@ -39,10 +39,10 @@ public:
 	template<typename T>
 	u64 LoadModel(std::string path, std::string effect_filepath, bool thread = true);
 
-	u64 LoadTexture(const std::string& path);
-	u64 LoadEffect(const std::string& path);
-	u64 LoadSprite(const std::string& path);
-	u64 LoadMaterial(const std::string& path);
+	u64 LoadTexture(std::string path);
+	u64 LoadEffect(std::string path);
+	u64 LoadSprite(std::string path);
+	u64 LoadMaterial(std::string path);
 
 
 

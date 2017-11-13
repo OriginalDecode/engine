@@ -4,6 +4,8 @@
 #include "ImGuiRegisterStructs.h"
 #include <CommonLib/DataStructures/GrowingArray.h>
 class Texture;
+class Material;
+struct ModelInstance;
 namespace debug
 {
 	class DebugHandle
@@ -26,9 +28,12 @@ namespace debug
 
 		void RegisterCheckbox(DebugCheckbox checkbox);
 
+		void RegisterMaterial(Material* pMaterial, std::string lable);
+
 	private:
 
-		Entity editing_entity = 0;
+		Entity m_CurrEntity = 0;
+		Entity m_PrevEntity = 0;
 		static DebugHandle* m_Instance;
 
 		DebugHandle() = default;
@@ -38,6 +43,19 @@ namespace debug
 		CU::GrowingArray<DebugSlider<float>> m_Sliders;
 		CU::GrowingArray<DebugTextValue<int>> m_Values;
 		CU::GrowingArray<DebugCheckbox> m_Checkboxes;
+
+		CU::GrowingArray<void*> m_DebugTextures;
+		std::vector<std::string> m_Labels;
+
+		//These are the materials that you can choose from
+		std::vector<Material*> m_Materials;
+		std::vector<std::string> m_MaterialLabels;
+
+		//this is my current modelinstances
+		std::vector<ModelInstance*> m_ModelInstances;
+		std::vector<std::string> m_InstanceLabels;
+
+
 
 		/**
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -82,8 +100,6 @@ namespace debug
 
 #endif
 		*/
-		CU::GrowingArray<void*> m_DebugTextures;
-		std::vector<std::string> m_Labels;
 
 	};
 };

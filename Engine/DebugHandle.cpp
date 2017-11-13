@@ -14,6 +14,8 @@
 #include "imgui.h"
 namespace debug
 {
+	static s32 s_MaterialIndex = 0;
+
 	static auto GetVector = [](void* vec, int index, const char** out_text)
 	{
 		auto& vector = *static_cast<std::vector<std::string>*>(vec);
@@ -91,7 +93,7 @@ namespace debug
 			}
 
 			auto& em = Engine::GetInstance()->GetEntityManager();
-			if (em.HasComponents(editing_entity, CreateFilter<Requires<LightComponent>>()))
+			if (em.HasComponents(m_CurrEntity, CreateFilter<Requires<LightComponent>>()))
 			{
 				if (ImGui::Begin("Light"))
 				{
@@ -107,8 +109,8 @@ namespace debug
 					static float col[3];
 					ImGui::ColorEdit3("Color", col);
 
-					LightComponent& comp = Engine::GetInstance()->GetEntityManager().GetComponent<LightComponent>(editing_entity);
-					TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(editing_entity);
+					LightComponent& comp = Engine::GetInstance()->GetEntityManager().GetComponent<LightComponent>(m_CurrEntity);
+					TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_CurrEntity);
 					comp.angle = angle;
 					comp.color.x = col[0];
 					comp.color.y = col[1];
@@ -127,79 +129,83 @@ namespace debug
 				}
 			}
 
-			if (em.HasComponents(editing_entity, CreateFilter<Requires<GraphicsComponent>>()))
+			ImGui::Separator();
+
+			if (em.HasComponents(m_CurrEntity, CreateFilter<Requires<GraphicsComponent>>()))
 			{
-				if (ImGui::Begin("Light"))
+				ModelInstance* instance = nullptr;
+				static bool material_prompt = false;
+
+
+				GraphicsComponent& g = Engine::GetInstance()->GetEntityManager().GetComponent<GraphicsComponent>(m_CurrEntity);
+				TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_CurrEntity);
+
+				if (m_ModelInstances.empty())
 				{
-					GraphicsComponent& g = Engine::GetInstance()->GetEntityManager().GetComponent<GraphicsComponent>(editing_entity);
-					TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(editing_entity);
-
-
 					for (s32 i = 0; i < g.m_Instances.Size(); i++)
 					{
-						const ModelInstance& instance = g.m_Instances[i];
-						ImGui::Text("Filename : %s\n", instance.m_Filename.c_str());
-						ImGui::Text("File Hash : %lu\n", instance.m_ModelID);
-						ImGui::Text("Material : %s\n", instance.m_MaterialFile.c_str());
-						ImGui::Text("Material Hash : %lu\n", instance.m_MaterialKey);
+						ModelInstance* instance = &g.m_Instances[i];
+						m_ModelInstances.push_back(instance);
+						char buf[50];
+						ZeroMemory(&buf, 50 * sizeof(char));
+						sprintf_s(buf, "Instance : %d", i);
+						m_InstanceLabels.push_back(buf);
+
 					}
+				}
+
+				static s32 instance_index = -1;
+				ListBox("", &instance_index, m_InstanceLabels);
+				if (instance_index >= 0)
+				{
+					instance = m_ModelInstances[instance_index];
+
+					ImGui::Text("Filename : %s\n", instance->m_Filename.c_str());
+					//ImGui::Text("File Hash : %lu\n", instance->m_ModelID);
+					ImGui::Text("Material : %s\n", instance->m_MaterialFile.c_str());
 
 
-
-
-
-					static std::vector<Material*> list_box;
-					static std::vector<std::string> names;
-					for (auto pair : Engine::GetInstance()->myAssetsContainer->m_Materials)
+					for (s32 i = 0; i < m_MaterialLabels.size(); i++)
 					{
-						if (list_box.size() < Engine::GetInstance()->myAssetsContainer->m_Materials.size())
+						if (m_MaterialLabels[i].find(instance->m_MaterialFile.c_str()) != m_MaterialLabels[i].npos)
 						{
-							list_box.push_back(pair.second);
-
-							char buf[50];
-							ZeroMemory(&buf, 50 * sizeof(char));
-							sprintf_s(buf, "%lu", pair.second->GetKey());
-							names.push_back(buf);
+							s_MaterialIndex = i;
 						}
 					}
 
 
-					static s32 index = 0;
-					ListBox("", &index, names);
+					if (ImGui::Button("Edit Material", ImVec2(100, 25)))
+						material_prompt = !material_prompt;
 
-					g.m_Instances[0].m_MaterialKey = list_box[index]->GetKey();
+					//ImGui::Text("Material Hash : %lu\n", instance->m_MaterialKey);
 
-
-
-					ImGui::End();
 				}
+
+
+				if (ImGui::BeginChild("", ImVec2(300, 400)))
+				{
+
+					if (instance != nullptr)
+					{
+						ImGui::PushItemWidth(400.f);
+						ListBox("", &s_MaterialIndex, m_MaterialLabels);
+
+						u64 hash = m_Materials[s_MaterialIndex]->GetKey();
+						std::string name = m_MaterialLabels[s_MaterialIndex];
+
+
+						instance->m_MaterialFile = name;
+						instance->m_MaterialKey = hash;
+					}
+
+					ImGui::EndChild();
+				}
+				/*if (ImGui::Begin("edit_material", &material_prompt))
+				{
+					
+				}*/
 			}
 
-
-			/*for (std::string str : m_Text)
-			{
-				ImGui::Text(str.c_str());
-			}
-*/
-/*for (auto& obj : m_Values)
-{
-	std::stringstream ss;
-	ss << obj.m_Label << " : " << *obj.m_Value;
-	ImGui::Text(ss.str().c_str());
-}
-*/
-
-
-
-
-// 			if (ImGui::BeginChild("Region", ImVec2(ImGui::GetWindowSize().x- 25.f, 200.f), false))
-// 			{
-// 				for (s32* v : m_IntValuesToPrint)
-// 				{
-// 					ImGui::Text("%d", *v);
-// 				}
-// 				ImGui::EndChild();
-// 			}
 
 			ImGui::End();
 		}
@@ -264,12 +270,23 @@ namespace debug
 
 	void DebugHandle::SetEntity(Entity e)
 	{
-		editing_entity = e;
+		m_PrevEntity = m_CurrEntity;
+		m_CurrEntity = e;
+
+		m_ModelInstances.clear();
+		m_InstanceLabels.clear();
+
 	}
 
 	void DebugHandle::RegisterCheckbox(DebugCheckbox checkbox)
 	{
 		m_Checkboxes.Add(checkbox);
+	}
+
+	void DebugHandle::RegisterMaterial(Material* pMaterial, std::string lable)
+	{
+		m_Materials.push_back(pMaterial);
+		m_MaterialLabels.push_back(lable);
 	}
 
 	//  	s32 DebugHandle::RegisterMainWindow(DebugMainWindow window)

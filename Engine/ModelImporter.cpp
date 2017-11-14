@@ -302,16 +302,9 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 		path += fileName;
 		if ( fileName != "" )
 		{
-			//myEngine->GetTexture(newPath); //All textures now get properly loaded.
 			TextureInfo newInfo;
 			newInfo.m_File = path;
-			if (path.find("floor") != path.npos)
-			{
-				int apa;
-				apa = 5;
-			}
 			aiTextureType lType = static_cast< aiTextureType >( type );
-			//DL_MESSAGE("Type : %d, Name : %s", u32(lType), newPath.c_str());
 			switch ( lType )
 			{
 				case aiTextureType_DIFFUSE:

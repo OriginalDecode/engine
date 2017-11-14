@@ -196,8 +196,8 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	ProcessNode(rootNode, scene, data, filepath, min_point, max_point);
 	CreateModel(data, pModel, filepath, effect);
 
-	//pModel->SetMaxPoint(max_point);
-	//pModel->SetMinPoint(min_point);
+	pModel->SetMaxPoint(max_point);
+	pModel->SetMinPoint(min_point);
 
 	if (data->myTextureData)
 	{

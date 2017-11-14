@@ -68,6 +68,7 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			TranslationComponent& c = m_EntityManager->AddComponent<TranslationComponent>(e);
 			c.Deserialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::TRANSLATION);
+			debug_flags |= TreeDweller::TRANSLATION;
 		}
 
 		if (type.find("graphics") != type.npos)
@@ -75,6 +76,7 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			GraphicsComponent& c = m_EntityManager->AddComponent<GraphicsComponent>(e);
 			c.Deserialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::GRAPHICS);
+			debug_flags |= TreeDweller::GRAPHICS;
 		}
 
 		if (type.find("light") != type.npos)
@@ -82,10 +84,11 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			LightComponent& c = m_EntityManager->AddComponent<LightComponent>(e);
 			//c.Desrialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::LIGHT);
+			debug_flags |= TreeDweller::LIGHT;
 		}
 
-
-		CreateDebugComponent(e, false, debug_flags);
+		if(debug_flags > 0 )
+			CreateDebugComponent(e, false, debug_flags);
 
 
 	}
@@ -321,26 +324,21 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	m_DwellerList.GetLast()->AddComponent<DebugComponent>(&component, TreeDweller::DEBUG);
 
 	CU::Vector3f whd;
-	if (!isLight)
+	if (!isLight && m_EntityManager->HasComponent<GraphicsComponent>(e))
 	{
-// 		GraphicsComponent& render = m_EntityManager->GetComponent<GraphicsComponent>(e);
-// 		Model* model = m_Engine->GetModel(render.);
-// 		whd = model->GetWHD();
-// 		component.m_Rotation = render.m_Rotation;
-// 		component.m_MinPoint = model->GetMinPoint();
-// 		component.m_MaxPoint = model->GetMaxPoint();
-
-
+		GraphicsComponent& g = m_EntityManager->GetComponent<GraphicsComponent>(e);
+		Model* model = m_Engine->GetModel(g.m_Instances[0].m_Filename.c_str());
+		component.m_Rotation = g.m_Rotation;
+		component.m_MinPoint = model->GetMinPoint();
+		component.m_MaxPoint = model->GetMaxPoint();
 	}
 	else
 	{
-		
-
+		//whd = { 0.25f,0.25f, 0.25f };
+		component.m_MinPoint = { -0.25,-0.25,-0.25 };
+		component.m_MaxPoint = { 0.25,0.25,0.25 };
 	}
 
-	whd = { 0.25f,0.25f, 0.25f };
-	component.m_MinPoint = { -0.25,-0.25,-0.25 };
-	component.m_MaxPoint = { 0.25,0.25,0.25 };
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
 	CU::Vector3f pos = translation.myOrientation.GetPosition();
 

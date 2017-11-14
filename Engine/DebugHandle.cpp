@@ -3,6 +3,7 @@
 #include <Engine/Texture.h>
 #include <Engine/Engine.h>
 #include <Engine/Synchronizer.h>
+#include <Engine/LevelFactory.h>
 
 #include <EntitySystem/LightComponent.h>
 #include <EntitySystem/TranslationComponent.h>
@@ -182,7 +183,7 @@ namespace debug
 				}
 
 
-				if (ImGui::BeginChild("", ImVec2(300, 400)))
+				if (ImGui::BeginChild("", ImVec2(300, 100)))
 				{
 
 					if (instance != nullptr)
@@ -200,6 +201,13 @@ namespace debug
 
 					ImGui::EndChild();
 				}
+
+
+				if (ImGui::Button("save level", ImVec2(100, 25)))
+				{
+					LevelFactory::SaveLevel("data/pbr_level/", "pbr_level.level");
+				}
+
 				/*if (ImGui::Begin("edit_material", &material_prompt))
 				{
 					

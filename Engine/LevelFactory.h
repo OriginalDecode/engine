@@ -19,7 +19,7 @@ public:
 	void CreatePBLLevel(s32 steps);
 
 
-	void SaveLevel(std::string folder, std::string filename);
+	static void SaveLevel(std::string folder, std::string filename);
 
 
 private:

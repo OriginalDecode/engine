@@ -312,15 +312,18 @@ void DebugSystem::UpdateOBBs()
 //This needs to be optimized as hell./*
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
-	UpdateOBBs();
+	debug::DebugHandle::GetInstance()->ConfirmEntity();
+	//debug::DebugHandle::GetInstance()->SetEntity(m_ed)
 
-	const CU::Vector3f cam_pos = CU::Vector3f(message.camera_pos_x, message.camera_pos_y, message.camera_pos_z);
-	const CU::Vector3f ray_dir = CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z);
+	//UpdateOBBs();
 
-	if ( CheckGizmoCollision(cam_pos, ray_dir) )
-		return;
+	//const CU::Vector3f cam_pos = CU::Vector3f(message.camera_pos_x, message.camera_pos_y, message.camera_pos_z);
+	//const CU::Vector3f ray_dir = CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z);
 
-	const auto& entities = GetEntities();
+	/*if ( CheckGizmoCollision(cam_pos, ray_dir) )
+		return;*/
+
+	//const auto& entities = GetEntities();
 // 	CU::GrowingArray<entity_collisions> collisions;
 // 	for (s32 i = entities.Size() - 1; i >= 0; i--)
 // 	{

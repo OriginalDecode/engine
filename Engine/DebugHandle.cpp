@@ -12,6 +12,7 @@
 #include <EntitySystem/ComponentFilter.h>
 #include <vector>
 #if !defined(_PROFILE) && !defined(_FINAL)
+#include <CommonLib/reflector.h>
 #include "imgui.h"
 namespace debug
 {
@@ -94,7 +95,7 @@ namespace debug
 			}
 
 			auto& em = Engine::GetInstance()->GetEntityManager();
-			if (em.HasComponents(m_CurrEntity, CreateFilter<Requires<LightComponent>>()))
+			if (em.HasComponents(m_EditEntity, CreateFilter<Requires<LightComponent>>()))
 			{
 				if (ImGui::Begin("Light"))
 				{
@@ -110,8 +111,8 @@ namespace debug
 					static float col[3];
 					ImGui::ColorEdit3("Color", col);
 
-					LightComponent& comp = Engine::GetInstance()->GetEntityManager().GetComponent<LightComponent>(m_CurrEntity);
-					TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_CurrEntity);
+					LightComponent& comp = Engine::GetInstance()->GetEntityManager().GetComponent<LightComponent>(m_EditEntity);
+					TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_EditEntity);
 					comp.angle = angle;
 					comp.color.x = col[0];
 					comp.color.y = col[1];
@@ -132,14 +133,14 @@ namespace debug
 
 			ImGui::Separator();
 
-			if (em.HasComponents(m_CurrEntity, CreateFilter<Requires<GraphicsComponent>>()))
+			if (em.HasComponents(m_EditEntity, CreateFilter<Requires<GraphicsComponent>>()))
 			{
 				ModelInstance* instance = nullptr;
 				static bool material_prompt = false;
 
 
-				GraphicsComponent& g = Engine::GetInstance()->GetEntityManager().GetComponent<GraphicsComponent>(m_CurrEntity);
-				TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_CurrEntity);
+				GraphicsComponent& g = Engine::GetInstance()->GetEntityManager().GetComponent<GraphicsComponent>(m_EditEntity);
+				TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_EditEntity);
 
 				if (m_ModelInstances.empty())
 				{
@@ -297,6 +298,11 @@ namespace debug
 	{
 		m_Materials.push_back(pMaterial);
 		m_MaterialLabels.push_back(lable);
+	}
+
+	void DebugHandle::ConfirmEntity()
+	{
+		m_EditEntity = m_CurrEntity;
 	}
 
 	//  	s32 DebugHandle::RegisterMainWindow(DebugMainWindow window)

@@ -135,6 +135,7 @@
     <ClInclude Include="Math\Line\Line.h">
       <Filter>Math\Line</Filter>
     </ClInclude>
+    <ClInclude Include="reflector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JSON\JSONReader.cpp">

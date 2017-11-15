@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "hover.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "hover.ps",
+        "entrypoint": "main"
+    }
+}

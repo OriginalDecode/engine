@@ -239,12 +239,7 @@ void Engine::Update()
 	m_Renderer->Render();
 	m_PhysicsManager->Update();
 	m_Threadpool.Update();
-	if (m_HasPickedEntity)
-	{
-		debug::DebugHandle::GetInstance()->SetEntity(PickEntity(GetTexture("entity_id")));
-
-		m_HasPickedEntity = false;
-	}
+	debug::DebugHandle::GetInstance()->SetEntity(PickEntity(GetTexture("entity_id")));
 }
 
 void Engine::UpdateInput()

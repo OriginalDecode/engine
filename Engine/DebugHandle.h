@@ -29,11 +29,12 @@ namespace debug
 		void RegisterCheckbox(DebugCheckbox checkbox);
 
 		void RegisterMaterial(Material* pMaterial, std::string lable);
-
+		void ConfirmEntity();
 	private:
 
 		Entity m_CurrEntity = 0;
 		Entity m_PrevEntity = 0;
+		Entity m_EditEntity = 0;
 		static DebugHandle* m_Instance;
 
 		DebugHandle() = default;

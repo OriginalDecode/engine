@@ -53,6 +53,7 @@
     <ClInclude Include="Math\Vector\Vector4.h" />
     <ClInclude Include="Math\Vector\Vector4decl.h" />
     <ClInclude Include="Randomizer.h" />
+    <ClInclude Include="reflector.h" />
     <ClInclude Include="Threadpool.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Work.h" />

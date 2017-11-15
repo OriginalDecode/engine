@@ -8,6 +8,7 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
+class Texture;
 namespace graphics
 {
 	struct CreateInfo
@@ -114,7 +115,6 @@ namespace graphics
 		DYNAMIC_USAGE = 2,
 		STAGING_USAGE = 4,
 	};
-
 
 	enum eCPUAccessFlag
 	{
@@ -236,8 +236,6 @@ namespace graphics
 
 
 		std::string GetAPIName() { return m_CreateInfo.m_APIName; }
-
-
 		//virtual void CopyResource(void * pDestination, void * pSource) = 0;
 
 		eGraphicsAPI GetActiveAPI() const { return m_ActiveAPI; }
@@ -268,9 +266,8 @@ namespace graphics
 		const IDepthStencilView* GetDepthView() const { return m_DefaultDepthView; }
 
 
-#ifdef _DEBUG
-		virtual s32 PickEntity();
-#endif
+		virtual CU::Vector4f PickColor(Texture* pTexture) = 0;
+
 	protected:
 		CreateInfo m_CreateInfo;
 		eGraphicsAPI m_ActiveAPI;

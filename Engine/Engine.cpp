@@ -281,6 +281,12 @@ u64 Engine::LoadModelA(std::string path, std::string effect, bool threaded)
 	return LoadModel<Model>(path, effect, threaded);
 }
 
+s32 Engine::PickEntity(Texture* pTexture)
+{
+	CU::Vector4f color = m_API->PickColor(pTexture);
+	return (color.x + color.y + color.z);
+}
+
 const WindowSize& Engine::GetWindowSize() const
 {
 	return m_Window.GetWindowSize();
@@ -516,5 +522,10 @@ u64 Engine::LoadEffect(const std::string& path)
 u64 Engine::LoadSprite(const std::string& path)
 {
 	return myAssetsContainer->LoadSprite(m_VirtualFileSystem.GetFile(path));
+}
+
+void Engine::AddTexture(Texture* pTexture, u64 key)
+{
+	myAssetsContainer->AddTexture(pTexture, key);
 }
 

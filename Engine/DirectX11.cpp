@@ -13,6 +13,7 @@
 #include <Engine/DX11Device.h>
 #include <Engine/DX11Context.h>
 #include <Engine/Viewport.h>
+#include <Input/InputHandle.h>
 
 
 
@@ -22,7 +23,6 @@ namespace graphics
 	{
 		m_CreateInfo = info;
 
-#ifdef _DEBUG
 		m_PixelPickDesc.Width = 1;
 		m_PixelPickDesc.Height = 1;
 		m_PixelPickDesc.MipLevels = 1;
@@ -34,7 +34,6 @@ namespace graphics
 		m_PixelPickDesc.BindFlags = 0;
 		m_PixelPickDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 		m_PixelPickDesc.MiscFlags = 0;
-#endif
 	}
 
 	DirectX11::~DirectX11()
@@ -454,6 +453,64 @@ namespace graphics
 		hr = factory->CreateSwapChain(static_cast<DX11Device*>(m_Device)->m_Device, &scDesc, &m_Swapchain);
 
 		SAFE_RELEASE(factory);
+	}
+
+	CU::Vector4f DirectX11::PickColor(Texture* pTexture)
+	{
+		//this might have to run at the end of each frame, and we put in a request for the function in a command queue
+		graphics::DX11Device& dx11dev = static_cast<graphics::DX11Device&>(GetDevice());
+		ID3D11Device* pDevice = static_cast<ID3D11Device*>(dx11dev.GetDevice());
+
+		graphics::DX11Context& dx11ctx = static_cast<graphics::DX11Context&>(GetContext());
+		ID3D11DeviceContext* ctx = static_cast<ID3D11DeviceContext*>(dx11ctx.GetContext());
+
+		WindowSize window_size;
+		window_size.m_Height = m_CreateInfo.m_WindowHeight;
+		window_size.m_Width = m_CreateInfo.m_WindowWidth;
+
+		ID3D11Texture2D* _IDTex = static_cast<ID3D11Texture2D*>(pTexture->GetTexture());
+
+		const CU::Vector2f fPos = Engine::GetInstance()->GetInputHandle()->GetCursorPos();
+		const CU::Vector2i iPos = { (s32)fPos.x, (s32)fPos.y };
+
+		//this could be saved
+		D3D11_BOX region_box;
+
+		region_box.bottom = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height) + 1;
+		region_box.right = cl::ClampI(iPos.x, 0, (s32)window_size.m_Width) + 1;
+		region_box.back = 1;
+
+		region_box.top = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height);
+		region_box.left = cl::ClampI(iPos.x, 0, (s32)window_size.m_Width);
+		region_box.front = 0;
+
+		ID3D11Texture2D * staging = nullptr;
+		pDevice->CreateTexture2D(&m_PixelPickDesc, nullptr, &staging);
+		ctx->CopySubresourceRegion(staging, 0, 0, 0, 0, _IDTex, 0, &region_box);
+
+		D3D11_MAPPED_SUBRESOURCE msr;
+		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
+		HRESULT hr = ctx->Map(staging, 0, D3D11_MAP_READ, 0, &msr);
+
+		u32 pix = 0;
+		//constexpr int x = sizeof(float);
+		CU::Vector4f color;
+		if (msr.pData)
+		{
+
+			int r_pitch = msr.RowPitch;
+			int d_pitch = msr.DepthPitch;
+			float* data = (float*)msr.pData;
+			color.x = data[0] * 65536.f;
+			color.y = data[1] * 256.f;
+			color.z = data[2];
+			color.w = 1.f;
+		}
+		ctx->Unmap(staging, 0);
+		staging->Release();
+
+		return color;
+
 	}
 
 	void DirectX11::CreateRazterizers()

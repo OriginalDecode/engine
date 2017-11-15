@@ -44,7 +44,7 @@ namespace graphics
 		void OnAltEnter() override;
 		void OnResize() override;
 
-
+		CU::Vector4f PickColor(Texture* pTexture) override;
 
 	private:
 		void CreateDeviceAndSwapchain();
@@ -68,9 +68,14 @@ namespace graphics
 		std::vector<std::string> myAdaptersName;
 		std::string myActiveAdapter;
 
+		D3D11_TEXTURE2D_DESC m_PixelPickDesc;
+
+
+
+
+
 #ifdef _DEBUG
 		void ReportLiveObjects();
-		D3D11_TEXTURE2D_DESC m_PixelPickDesc;
 #endif
 
 	};

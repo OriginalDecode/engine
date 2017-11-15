@@ -58,7 +58,6 @@ class Material;
 
 class Engine
 {
-
 #if !defined(_PROFILE) && !defined(_FINAL)
 	friend debug::DebugHandle;
 #endif
@@ -126,6 +125,7 @@ public:
 	u64 LoadEffect(const std::string& path);
 	u64 LoadSprite(const std::string& path);
 
+	void AddTexture(Texture* pTexture, u64 key);
 
 	void ResetRenderTargetAndDepth();
 
@@ -191,6 +191,8 @@ public:
 	void ToggleVSync() { m_VSyncOn = !m_VSyncOn; }
 
 	u64 LoadModelA(std::string path, std::string effect, bool threaded);
+
+	s32 PickEntity(Texture* pTexture);
 
 private:
 	Engine();

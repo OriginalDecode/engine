@@ -30,6 +30,9 @@ public:
 
 	void ReloadTexture(Texture* texture);
 
+
+	void AddTexture(Texture* pTexture, u64 key);
+
 	Texture* GetTexture(u64 key);
 	Sprite* GetSprite(u64 key);
 	Effect* GetEffect(u64 key);

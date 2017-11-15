@@ -30,7 +30,7 @@
 
 #include <CommonLib/HashString.h>
 static float s_CamSpeed = 50.f;
-
+static s32 entity = 0;
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
@@ -105,6 +105,8 @@ void Game::Initiate(const std::string& level)
 	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &degree, "Spotlight Degree"));
 	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &intensity, "Spotlight Intensity"));
 	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &range, "Spotlight Range"));
+	pDebug->AddValueToPrint(&entity);
+
 #endif
 }
 
@@ -151,7 +153,6 @@ void Game::Update(float dt)
 
 }
 
-
 void Game::OldUpdate(float dt)
 {
 	m_FrameCount++;
@@ -177,29 +178,12 @@ void Game::OldUpdate(float dt)
 		pos0 = m_Camera->GetPosition();
 		pos1 = pos0 + (ray_dir * 25.f);
 	}
-/*
-	LinePoint p0, p1;
-	p0.color = { 255.f, 0.f , 255.f, 255.f };
-	p1 = p0;
-	p0.position = pos0;
-	p1.position = pos1;*/
-	//m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, true));
 
 
-	if (input_wrapper->OnDown(KButton::W))
-	{
-		pEventHandle->SendMessage("w_down", nullptr);
-	}
-
-	if (input_wrapper->OnDown(KButton::E))
-	{
-		pEventHandle->SendMessage("e_down", nullptr);
-	}
-
-	if (input_wrapper->OnDown(KButton::R))
-	{
-		pEventHandle->SendMessage("r_down", nullptr);
-	}
+// 	Texture* entity_texture = m_Engine->GetTexture("entity_id");
+// 	if(entity_texture)
+	//Can't call this function since it's using the device >.< async? deferred
+// 		entity = m_Engine->PickEntity(entity_texture);
 
 
 

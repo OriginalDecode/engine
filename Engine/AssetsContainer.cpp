@@ -110,6 +110,14 @@ void AssetsContainer::ReloadTexture(Texture* texture)
 {
 }
 
+void AssetsContainer::AddTexture(Texture* pTexture, u64 key)
+{
+	if (m_Textures.find(key) == m_Textures.end())
+	{
+		m_Textures.insert(std::pair<u64, Texture*>(key, pTexture));
+	}
+}
+
 u64 AssetsContainer::LoadTexture(std::string filepath)
 {
 	static Ticket_Mutex texture_mutex;

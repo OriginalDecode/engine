@@ -42,6 +42,8 @@ namespace graphics
 		desc.m_RenderTargetFormat = R32_UINT;
 		m_EntityIDTexture->Initiate(desc, false, "Entity ID");
 
+		Engine::GetInstance()->AddTexture(m_EntityIDTexture, Hash("entity_id"));
+
 
 		Effect* shader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
 		shader->AddShaderResource(m_Albedo, Effect::DIFFUSE);

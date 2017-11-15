@@ -267,6 +267,10 @@ namespace graphics
 		IDepthStencilView* GetDepthView() { return m_DefaultDepthView; }
 		const IDepthStencilView* GetDepthView() const { return m_DefaultDepthView; }
 
+
+#ifdef _DEBUG
+		virtual s32 PickEntity();
+#endif
 	protected:
 		CreateInfo m_CreateInfo;
 		eGraphicsAPI m_ActiveAPI;

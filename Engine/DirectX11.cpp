@@ -21,6 +21,20 @@ namespace graphics
 	DirectX11::DirectX11(CreateInfo info)
 	{
 		m_CreateInfo = info;
+
+#ifdef _DEBUG
+		m_PixelPickDesc.Width = 1;
+		m_PixelPickDesc.Height = 1;
+		m_PixelPickDesc.MipLevels = 1;
+		m_PixelPickDesc.ArraySize = 1;
+		m_PixelPickDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		m_PixelPickDesc.SampleDesc.Count = 1;
+		m_PixelPickDesc.SampleDesc.Quality = 0;
+		m_PixelPickDesc.Usage = D3D11_USAGE_STAGING;
+		m_PixelPickDesc.BindFlags = 0;
+		m_PixelPickDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+		m_PixelPickDesc.MiscFlags = 0;
+#endif
 	}
 
 	DirectX11::~DirectX11()

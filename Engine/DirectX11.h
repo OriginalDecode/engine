@@ -7,7 +7,7 @@
 struct IDXGISwapChain;
 struct ID3D11Debug;
 struct IDXGIAdapter;
-
+struct D3D11_TEXTURE2D_DESC;
 namespace graphics
 {
 	class DirectX11 : public IGraphicsAPI
@@ -47,9 +47,6 @@ namespace graphics
 
 
 	private:
- #ifdef _DEBUG
-		void ReportLiveObjects();
- #endif
 		void CreateDeviceAndSwapchain();
 		void CreateDepthStencilStates();
 
@@ -70,6 +67,11 @@ namespace graphics
 		std::unordered_map<std::string, IDXGIAdapter*> m_Adapters;
 		std::vector<std::string> myAdaptersName;
 		std::string myActiveAdapter;
+
+#ifdef _DEBUG
+		void ReportLiveObjects();
+		D3D11_TEXTURE2D_DESC m_PixelPickDesc;
+#endif
 
 	};
 };

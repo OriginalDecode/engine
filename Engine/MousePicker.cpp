@@ -33,7 +33,7 @@ void CMousePicker::CalculateCurrentRay(float x, float y)
 	cursorPos.y = y;
 
 	cursorPos = NormalizedSpace(cursorPos.x, cursorPos.y);
-	CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.f, 1.f); //Clip Space
+	CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.0f, 1.f); //Clip Space
 	
 	
 	
@@ -52,7 +52,7 @@ CU::Vector4f CMousePicker::ToEyeCoords(const CU::Vector4f& clipCoords)
 	rayOrigin.y /= rayOrigin.w;
 	rayOrigin.z /= rayOrigin.w;
 
-	return CU::Vector4f(rayOrigin.x, rayOrigin.y, 1.f, 1.f);
+	return CU::Vector4f(rayOrigin.x, rayOrigin.y, rayOrigin.z, 1.f);
 }
 
 CU::Vector3f CMousePicker::ToWorldCoords(const CU::Vector4f& eyeCoords)

@@ -180,10 +180,7 @@ void Game::OldUpdate(float dt)
 	}
 
 
-// 	Texture* entity_texture = m_Engine->GetTexture("entity_id");
-// 	if(entity_texture)
-	//Can't call this function since it's using the device >.< async? deferred
-// 		entity = m_Engine->PickEntity(entity_texture);
+
 
 
 

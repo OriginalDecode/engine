@@ -71,7 +71,7 @@ private:
 	CU::GrowingArray<NodeEntityManager*> m_NodeManagers;
 	CU::GrowingArray<s32> m_UsedManagers;
 	const s32 m_Max = (8 * 8 * 8 * 8 * 8);
-	Entity myNextEntity = 0;
+	Entity myNextEntity = 1;
 	CComponentContainer* myComponents = nullptr;
 	CU::GrowingArray<BaseSystem*> m_Systems;
 	std::atomic<float> myDeltaTime = 0.f;

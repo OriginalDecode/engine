@@ -239,7 +239,12 @@ void Engine::Update()
 	m_Renderer->Render();
 	m_PhysicsManager->Update();
 	m_Threadpool.Update();
+	if (m_HasPickedEntity)
+	{
+		debug::DebugHandle::GetInstance()->SetEntity(PickEntity(GetTexture("entity_id")));
 
+		m_HasPickedEntity = false;
+	}
 }
 
 void Engine::UpdateInput()
@@ -285,6 +290,11 @@ s32 Engine::PickEntity(Texture* pTexture)
 {
 	CU::Vector4f color = m_API->PickColor(pTexture);
 	return (color.x + color.y + color.z);
+}
+
+void Engine::PickEntity()
+{
+	m_HasPickedEntity = true;
 }
 
 const WindowSize& Engine::GetWindowSize() const

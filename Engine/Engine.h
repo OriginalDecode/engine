@@ -192,9 +192,9 @@ public:
 
 	u64 LoadModelA(std::string path, std::string effect, bool threaded);
 
-	s32 PickEntity(Texture* pTexture);
-
+	void PickEntity();
 private:
+	s32 PickEntity(Texture* pTexture);
 	Engine();
 	static Engine* myInstance;
 	static graphics::IGraphicsAPI* m_API;
@@ -206,7 +206,7 @@ private:
 
 	bool HasInitiated();
 
-
+	bool m_HasPickedEntity = false;
 
 	SLocalTime myLocalTime;
 

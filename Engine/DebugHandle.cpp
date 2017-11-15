@@ -278,6 +278,8 @@ namespace debug
 
 	void DebugHandle::SetEntity(Entity e)
 	{
+		if (e <= 0)
+			return;
 		m_PrevEntity = m_CurrEntity;
 		m_CurrEntity = e;
 

@@ -25,6 +25,7 @@ namespace debug
 		void AddText(std::string str);
 		void AddValueToPrint(s32* value);
 		void SetEntity(Entity e);
+		Entity GetEntity() const;
 
 		void RegisterCheckbox(DebugCheckbox checkbox);
 

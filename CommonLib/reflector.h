@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <vector>
 #include <map>
+#include "../standard_datatype.hpp"
 
 
 // This is the way we generate id's form types. This could be replaced with anything: custom number, a thing based on the name of the class, ect.
@@ -230,10 +231,19 @@ template class std::map<QuickTypeIdType, TypeDesc>;
 //
 // This is the class that holds the desciptons for every registered type.
 //--------------------------------------------------------------------------
-struct TypeRegister
+struct Reflector
 {
 	using MapTypes = std::map<QuickTypeIdType, TypeDesc>;
-	TypeRegister();
+
+	static void Create() { m_Instance = new Reflector(); }
+
+	static void Destroy() {	delete m_Instance; m_Instance = nullptr; }
+
+	static Reflector* GetInstance() { return m_Instance; }
+	static Reflector& Get() { return *m_Instance; }
+
+
+
 	template<typename T>
 	TypeDesc& registerType(const char* const name)
 	{
@@ -307,7 +317,7 @@ struct TypeRegister
 	M* getMemberByName(T& pObject, const char* name)
 	{
 		const MemberFieldDesc* mfd = find<T>()->findMemberByName(name);
-		int address = (int)&pObject;
+		u64 address = (u64)&pObject;
 		address += mfd->byteOffset;
 		return (M*)address;
 	};
@@ -315,7 +325,7 @@ struct TypeRegister
 	template<typename M, typename T>
 	M* getMember(T& pObject, const MemberFieldDesc* mfd)
 	{
-		int address = (int)&pObject;
+		u64 address = (u64)&pObject;
 		address += mfd->byteOffset;
 		return (M*)address;
 	};
@@ -326,23 +336,16 @@ struct TypeRegister
 		return getMember<M, T>(*pObject, mfd);
 	};
 
+private:
+	static Reflector* m_Instance;
+	Reflector();
+	~Reflector() { };
 
 	MapTypes m_registeredTypes;
 };
 
 // This is the variable that hold the reflected data. Usually you need only one per
 // application, but you could use more if you want.
-TypeRegister::TypeRegister()
-{
-	registerType<bool>("bool").constructable<bool>().copyable<bool>().compareable<bool>();
-	registerType<char>("char").constructable<char>().copyable<char>().compareable<char>();
-	registerType<int>("int").constructable<int>().copyable<int>().compareable<int>();
-	registerType<unsigned>("unsigned").constructable<unsigned>().copyable<unsigned>().compareable<unsigned>();
-	registerType<float>("float").constructable<float>().copyable<float>().compareable<float>();
-	registerType<double>("double").constructable<double>().copyable<double>().compareable<double>();
-}
-TypeRegister g_TypeRegister;
-
 
 
 
@@ -374,6 +377,6 @@ inline TypeDesc& TypeDesc::inherits()
 
 
 
-#define REGISTER_TYPE(type) g_TypeRegister.registerType<type>(#type)
+#define REGISTER_TYPE(type) Reflector::Get().registerType<type>(#type)
 #define MEMBER(TStruct, TMember) .member(#TMember, &TStruct::TMember)
 #define MEMBER_FLG(TStruct, TMember, Flags) .member(#TMember, &TStruct::TMember, Flags)

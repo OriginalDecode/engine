@@ -2,7 +2,7 @@
 #include "Texture.h"
 #include <Engine/IGraphicsDevice.h>
 #include <Engine/Engine.h>
-
+#include <CommonLib/reflector.h>
 Texture::Texture(IShaderResourceView* srv)
 	: m_ShaderResource(srv)
 {

@@ -3,11 +3,17 @@
 #include <Engine/engine_shared.h>
 #include <Engine/IGraphicsContext.h>
 #include <Engine/IGraphicsAPI.h>
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+#include <CommonLib/reflector.h>
+#endif
 namespace graphics
 {
 
 	GBuffer::GBuffer()
 	{
+
+
 		const WindowSize windowSize = Engine::GetInstance()->GetInnerSize();
 		const float window_width = windowSize.m_Width;
 		const float window_height = windowSize.m_Height;
@@ -35,6 +41,12 @@ namespace graphics
 		desc.m_RenderTargetFormat = RGBA32_FLOAT;
 		m_Depth->Initiate(desc, false, "GBuffer : Depth");
 
+#ifdef _DEBUG
+		m_HoverTexture = new Texture;
+		m_HoverTexture->Initiate(desc, false, "Hover ID");
+
+		Engine::GetInstance()->AddTexture(m_HoverTexture, Hash("hover_texture"));
+
 		m_EntityIDTexture = new Texture;
 		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
 		desc.m_TextureFormat = RGBA32_FLOAT;
@@ -45,11 +57,18 @@ namespace graphics
 		Engine::GetInstance()->AddTexture(m_EntityIDTexture, Hash("entity_id"));
 
 
+#endif
+
+
 		Effect* shader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
 		shader->AddShaderResource(m_Albedo, Effect::DIFFUSE);
 		shader->AddShaderResource(m_Depth, Effect::DEPTH);
 		shader->AddShaderResource(m_Normal, Effect::NORMAL);
 		shader->AddShaderResource(m_Emissive, Effect::EMISSIVE);
+		
+
+
+
 
 	}
 
@@ -59,7 +78,10 @@ namespace graphics
 		SAFE_DELETE(m_Normal);
 		SAFE_DELETE(m_Depth);
 		SAFE_DELETE(m_Emissive);
+#ifdef _DEBUG
 		SAFE_DELETE(m_EntityIDTexture);
+		SAFE_DELETE(m_HoverTexture);
+#endif
 	}
 
 	void GBuffer::Clear(const float* clear_color, const RenderContext& render_context)
@@ -69,7 +91,10 @@ namespace graphics
 		ctx.ClearRenderTarget(m_Normal->GetRenderTargetView(), clear_color);
 		ctx.ClearRenderTarget(m_Depth->GetRenderTargetView(), clear_color);
 		ctx.ClearRenderTarget(m_Emissive->GetRenderTargetView(), clear_color);
+#ifdef _DEBUG
 		ctx.ClearRenderTarget(m_EntityIDTexture->GetRenderTargetView(), clear_color);
+		ctx.ClearRenderTarget(m_HoverTexture->GetRenderTargetView(), clear_color);
+#endif
 	}
 
 	void GBuffer::SetAsRenderTarget(Texture* depth, const RenderContext& render_context)
@@ -80,7 +105,10 @@ namespace graphics
 			m_Normal->GetRenderTargetView(),
 			m_Depth->GetRenderTargetView(),
 			m_Emissive->GetRenderTargetView(),
+#ifdef _DEBUG
 			m_EntityIDTexture->GetRenderTargetView(),
+			m_HoverTexture->GetRenderTargetView(),
+#endif
 		};
 
 		render_context.GetContext().OMSetRenderTargets(ARRAYSIZE(target), target, render_context.GetAPI().GetDepthView());

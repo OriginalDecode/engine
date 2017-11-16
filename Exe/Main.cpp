@@ -1,6 +1,7 @@
 
 #include <Engine/Engine.h>
 #if !defined(_PROFILE) && !defined(_FINAL)
+#include <CommonLib/reflector.h>
 #include <Engine/imgui_impl_dx11.h>
 #endif
 #include <Engine/VirtualFileSystem.h>
@@ -42,6 +43,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 #ifdef _PROFILE
 	profiler::startListen();
 #endif/* 1,777777777777777777777777777777778*/
+	Reflector::Create();
 	DL_Debug::Debug::Create();
 	//double res16x9 = 1.777777777777777777777777777777778; best
 	const char* inputString = someCommandLines;
@@ -194,7 +196,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	DL_Debug::Debug::Destroy();
 	Engine::Destroy();
-
+	Reflector::Destroy();
 #ifdef _PROFILE
 	profiler::stopListen();
 #endif

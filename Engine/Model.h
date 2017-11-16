@@ -12,6 +12,7 @@ struct GPUModelData
 	CU::Matrix44f m_Orientation;
 	CU::Vector4f m_PBLData;
 	u32 m_ID;
+	u32 m_Hovering = false;
 };
 
 

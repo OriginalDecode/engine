@@ -351,9 +351,18 @@ namespace graphics
 
 		std::wstring wPath(path.begin(), path.end());
 
+		const D3D_SHADER_MACRO defines[] = {
+#if !defined(_PROFILE) && !defined(_FINAL)
+			"_DEBUG", "1",
+#else
+			"_FINAL", "1",
+#endif
+			0, 0
+		};
+
 		HRESULT hr = D3DCompileFromFile(
 			wPath.c_str(),
-			nullptr,
+			defines,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE,
 			entrypoint,
 			feature_level.c_str(),

@@ -491,6 +491,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 		{ "INSTANCE", 3, graphics::_16BYTE_RGBA, 1, 48, graphics::INPUT_PER_INSTANCE_DATA, 1 },
 		{ "DATA" , 0, graphics::_16BYTE_RGBA, 1, 64, graphics::INPUT_PER_INSTANCE_DATA, 1 },
 		{ "ID" , 0, graphics::_4BYTE_R_UINT, 1, 80, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+		{ "HOVER" , 0, graphics::_4BYTE_R_UINT, 1, 84, graphics::INPUT_PER_INSTANCE_DATA, 1 },
 	};
 
 	element.Add(instance[0]);
@@ -499,6 +500,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	element.Add(instance[3]);
 	element.Add(instance[4]);
 	element.Add(instance[5]);
+	element.Add(instance[6]);
 
 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
 

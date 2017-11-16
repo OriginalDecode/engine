@@ -18,13 +18,18 @@ namespace graphics
 		Texture* GetEmissive() const { return m_Emissive; }
 		Texture* GetDepth() const { return m_Depth; }
 
-
+#ifdef _DEBUG
 		Texture* GetIDTexture() const { return m_EntityIDTexture; }
+		Texture* GetHoverTexture() const { return m_HoverTexture; }
+#endif
 	private:
 		Texture* m_Albedo = nullptr;
 		Texture* m_Normal = nullptr;
 		Texture* m_Emissive = nullptr;
 		Texture* m_Depth = nullptr;
+#ifdef _DEBUG
 		Texture* m_EntityIDTexture = nullptr;
+		Texture* m_HoverTexture = nullptr;
+#endif
 	};
 };

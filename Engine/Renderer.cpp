@@ -30,6 +30,10 @@
 #include <Engine/DX11Context.h>
 #include <Engine/DX11Device.h>
 
+#if !defined(_PROFILE) && !defined(_FINAL)
+#include <CommonLib/reflector.h>
+#endif
+
 
 Renderer::Renderer(Synchronizer* synchronizer)
 	: m_Synchronizer(synchronizer)
@@ -97,12 +101,16 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "entity_id");
 
+	m_DebugTextures.Add(new Texture);
+	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "hover");
+
 	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
 	debug_textures->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
 	debug_textures->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
 	debug_textures->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
 	debug_textures->AddShaderResource(m_GBuffer.GetEmissive(), Effect::EMISSIVE);
 	debug_textures->AddShaderResource(m_GBuffer.GetIDTexture(), Effect::REGISTER_5);
+	debug_textures->AddShaderResource(m_GBuffer.GetHoverTexture(), Effect::REGISTER_6);
 
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 
@@ -126,13 +134,6 @@ Renderer::~Renderer()
 {
 #if !defined(_PROFILE) && !defined(_FINAL)
 	SAFE_DELETE(m_DebugQuad);
-	SAFE_DELETE(m_DebugTexture0);
-	SAFE_DELETE(m_DebugTexture1);
-	SAFE_DELETE(m_DebugTexture2);
-	SAFE_DELETE(m_DebugTexture3);
-	SAFE_DELETE(m_DebugTexture4);
-	SAFE_DELETE(m_DebugTexture5);
-	SAFE_DELETE(m_DebugTexture6);
 #endif
 	delete[] m_PixelData;
 	m_PixelData = nullptr;
@@ -246,7 +247,7 @@ void Renderer::Render()
 #if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::WriteDebugTextures()
 {
-	float clear[4] = { 1,1,1,0 };
+	float clear[4] = { 0,0,0,0 };
 	auto& ctx = m_RenderContext.GetContext();
 
 	CU::GrowingArray<IRenderTargetView*> targets;
@@ -579,7 +580,9 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 	GPUModelData model_data;
 	model_data.m_Orientation = command->m_Orientation;
 	model_data.m_ID = command->m_EntityID;
-
+#ifdef _DEBUG
+	model_data.m_Hovering = (command->m_EntityID == debug::DebugHandle::GetInstance()->GetEntity() ? 1 : 0);
+#endif
 	CU::Vector4f col = cl::IntToCol(model_data.m_ID);
 
 	m_InstancingManager.AddGPUDataToInstance(command->m_MaterialKey, model_data);

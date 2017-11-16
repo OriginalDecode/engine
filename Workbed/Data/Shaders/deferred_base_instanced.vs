@@ -16,8 +16,10 @@ struct VS_INPUT
 	float4 world2 : INSTANCE2;
 	float4 world3 : INSTANCE3;
 	float3 data0 : DATA;
+#ifdef _DEBUG
 	unsigned int entity_id : ID;
-
+	unsigned int  hovering : HOVER;
+#endif
 };
 
 struct VS_OUTPUT
@@ -30,7 +32,10 @@ struct VS_OUTPUT
 	float4 worldpos : POSITION;
 	float2 data0 : DATA;
 	float4 displaced : DISPLACE;
+#ifdef _DEBUG
 	unsigned int entity_id : ID;
+	unsigned int hovering : HOVER;
+#endif
 };
 
 SamplerState sampler0 : register(s0);
@@ -67,8 +72,10 @@ VS_OUTPUT main(VS_INPUT input)
 	float4x4 out_matrix = mul(world_matrices, camera_view_x_proj);
 	
 	output.pos = mul(displacement, out_matrix);
-	
+#ifdef _DEBUG	
 	output.entity_id = input.entity_id;
+	output.hovering = input.hovering;
+#endif
 
 	return output;
 };

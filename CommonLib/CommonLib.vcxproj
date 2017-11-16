@@ -65,6 +65,7 @@
     <ClCompile Include="JSON\JSONReader.cpp" />
     <ClCompile Include="Math\Quaternion\Quaternion.cpp" />
     <ClCompile Include="Randomizer.cpp" />
+    <ClCompile Include="reflector.cpp" />
     <ClCompile Include="Threadpool.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="Work.cpp" />

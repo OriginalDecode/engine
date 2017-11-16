@@ -132,7 +132,7 @@ namespace debug
 			}
 
 			ImGui::Separator();
-
+			ImGui::Text("Hovering : %d", m_CurrEntity);
 			if (em.HasComponents(m_EditEntity, CreateFilter<Requires<GraphicsComponent>>()))
 			{
 				ModelInstance* instance = nullptr;
@@ -287,6 +287,11 @@ namespace debug
 		m_ModelInstances.clear();
 		m_InstanceLabels.clear();
 
+	}
+
+	Entity DebugHandle::GetEntity() const
+	{
+		return m_CurrEntity;
 	}
 
 	void DebugHandle::RegisterCheckbox(DebugCheckbox checkbox)

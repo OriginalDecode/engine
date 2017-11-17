@@ -3,6 +3,7 @@ cbuffer per_frame : register( b0 )
 {
 	row_major float4x4 camera_view_x_proj;
 };
+
 struct VS_INPUT
 {
 	float4 pos : POSITION;
@@ -14,7 +15,6 @@ struct VS_INPUT
 	float4 world1 : INSTANCE1;
 	float4 world2 : INSTANCE2;
 	float4 world3 : INSTANCE3;
-	float3 data0 : DATA;
 };
 
 VS_OUTPUT main(VS_INPUT input)
@@ -31,9 +31,6 @@ VS_OUTPUT main(VS_INPUT input)
 	output.binorm = mul(input.binorm, world_matrices);
 	output.tang  = mul(input.tang , world_matrices);
 	output.worldpos = mul(input.pos, world_matrices);
-	
-	output.data0.x = input.data0.x;
-	output.data0.y = input.data0.y;
 
 	output.uv = input.uv;
 	float4 dv = HeightTexture.SampleLevel(sampler0, output.uv, 0);

@@ -73,10 +73,15 @@ void Model::RenderCube(const graphics::RenderContext& rc)
 
 void Model::RenderInstanced(const graphics::RenderContext& rc)
 {
+	RenderInstanced(rc, m_Effect);
+}
+
+void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_effect)
+{
 	PROFILE_FUNCTION(profiler::colors::Amber);
 	for (Model* child : m_Children)
 	{
-		child->RenderInstanced(rc);
+		child->RenderInstanced(rc, override_effect);
 	}
 
 	if (!m_IndexWrapper.GetIndexBuffer() && (!m_VertexWrapper.GetVertexBuffer() || !m_InstanceWrapper.GetInstanceBuffer()))
@@ -96,11 +101,10 @@ void Model::RenderInstanced(const graphics::RenderContext& rc)
 	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
 	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
 	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
-	rc.GetContext().DrawIndexedInstanced(this, m_Effect);
+	rc.GetContext().DrawIndexedInstanced(this, override_effect);
 	PROFILE_BLOCK_END;
 
 	RemoveGPUData();
-
 }
 
 void Model::ShadowRender(const graphics::RenderContext& rc)

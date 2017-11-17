@@ -27,6 +27,7 @@ public:
 
 	void Render(const graphics::RenderContext& rc) override;
 	void RenderInstanced(const graphics::RenderContext& rc);
+	void RenderInstanced(const graphics::RenderContext& rc, Effect* override_effect);
 	void ShadowRender(const graphics::RenderContext& rc) override;
 	void ShadowRenderInstanced(const graphics::RenderContext& rc);
 

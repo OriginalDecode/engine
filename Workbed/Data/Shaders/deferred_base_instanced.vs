@@ -18,7 +18,6 @@ struct VS_INPUT
 	float3 data0 : DATA;
 #ifdef _DEBUG
 	unsigned int entity_id : ID;
-	unsigned int  hovering : HOVER;
 #endif
 };
 
@@ -34,7 +33,6 @@ struct VS_OUTPUT
 	float4 displaced : DISPLACE;
 #ifdef _DEBUG
 	unsigned int entity_id : ID;
-	unsigned int hovering : HOVER;
 #endif
 };
 
@@ -74,7 +72,6 @@ VS_OUTPUT main(VS_INPUT input)
 	output.pos = mul(displacement, out_matrix);
 #ifdef _DEBUG	
 	output.entity_id = input.entity_id;
-	output.hovering = input.hovering;
 #endif
 
 	return output;

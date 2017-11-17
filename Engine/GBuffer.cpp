@@ -42,10 +42,6 @@ namespace graphics
 		m_Depth->Initiate(desc, false, "GBuffer : Depth");
 
 #ifdef _DEBUG
-		m_HoverTexture = new Texture;
-		m_HoverTexture->Initiate(desc, false, "Hover ID");
-
-		Engine::GetInstance()->AddTexture(m_HoverTexture, Hash("hover_texture"));
 
 		m_EntityIDTexture = new Texture;
 		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
@@ -65,10 +61,6 @@ namespace graphics
 		shader->AddShaderResource(m_Depth, Effect::DEPTH);
 		shader->AddShaderResource(m_Normal, Effect::NORMAL);
 		shader->AddShaderResource(m_Emissive, Effect::EMISSIVE);
-		
-
-
-
 
 	}
 
@@ -80,7 +72,6 @@ namespace graphics
 		SAFE_DELETE(m_Emissive);
 #ifdef _DEBUG
 		SAFE_DELETE(m_EntityIDTexture);
-		SAFE_DELETE(m_HoverTexture);
 #endif
 	}
 
@@ -93,7 +84,6 @@ namespace graphics
 		ctx.ClearRenderTarget(m_Emissive->GetRenderTargetView(), clear_color);
 #ifdef _DEBUG
 		ctx.ClearRenderTarget(m_EntityIDTexture->GetRenderTargetView(), clear_color);
-		ctx.ClearRenderTarget(m_HoverTexture->GetRenderTargetView(), clear_color);
 #endif
 	}
 
@@ -107,7 +97,6 @@ namespace graphics
 			m_Emissive->GetRenderTargetView(),
 #ifdef _DEBUG
 			m_EntityIDTexture->GetRenderTargetView(),
-			m_HoverTexture->GetRenderTargetView(),
 #endif
 		};
 

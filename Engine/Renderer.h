@@ -144,19 +144,20 @@ private:
 	bool m_LightModelWireframe = false;
 
 	CU::GrowingArray<Texture*> m_DebugTextures;
-
+	Texture* m_HoverTexture = nullptr;
+	Model* m_HoverModel = nullptr;
+	Effect* m_RenderHoverEffect = nullptr;
 	Quad* m_DebugQuad = nullptr;
 	void WriteDebugTextures();
 
-	u32 entity_id = 0;
-	char* m_PixelData = nullptr;
 
-	Texture* m_StagingTexture = nullptr;
 
 public:
 	void SetRenderLines(bool render_lines) { m_RenderLines = render_lines; }
 	bool GetRenderLines() { return m_RenderLines; }
 	DeferredRenderer* GetDeferredRenderer() {	return m_DeferredRenderer; };
+
+
 #endif
 
 

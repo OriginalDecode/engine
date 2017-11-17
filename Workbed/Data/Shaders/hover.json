@@ -1,6 +1,6 @@
 {
     "VertexShader": {
-        "file": "hover.vs",
+        "file": "deferred_base_instanced.vs",
         "entrypoint": "main"
     },
     "PixelShader": {

@@ -19,7 +19,6 @@ struct GBuffer
 	float4 Emissive;
 #ifdef _DEBUG
 	float4 IDTexture;
-	float4 HoverTexture;
 #endif
 };
 
@@ -35,7 +34,6 @@ struct VS_OUTPUT
 	float4 displaced : DISPLACE;
 #ifdef _DEBUG
 	unsigned int entity_id : ID;
-	unsigned int  hovering : HOVER;
 #endif
 };
 
@@ -114,12 +112,6 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	output.Emissive = input.displaced;
 #ifdef _DEBUG
     output.IDTexture = float4(ToColor(input.entity_id), 0);
-
-	if(input.hovering != 0)
-		output.HoverTexture = float4(1,0.68,0,1);
-	else
-		output.HoverTexture = float4(0,0,0,0);
-	
 #endif
 
 

@@ -20,7 +20,6 @@ namespace graphics
 
 #ifdef _DEBUG
 		Texture* GetIDTexture() const { return m_EntityIDTexture; }
-		Texture* GetHoverTexture() const { return m_HoverTexture; }
 #endif
 	private:
 		Texture* m_Albedo = nullptr;
@@ -29,7 +28,6 @@ namespace graphics
 		Texture* m_Depth = nullptr;
 #ifdef _DEBUG
 		Texture* m_EntityIDTexture = nullptr;
-		Texture* m_HoverTexture = nullptr;
 #endif
 	};
 };

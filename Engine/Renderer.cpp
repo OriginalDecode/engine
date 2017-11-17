@@ -32,6 +32,9 @@
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include <CommonLib/reflector.h>
+
+#include <EntitySystem/TranslationComponent.h>
+#include <EntitySystem/GraphicsComponent.h>
 #endif
 
 
@@ -79,6 +82,22 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 
+	
+
+	//pDebug->RegisterCheckbox(debug::DebugCheckbox(&m_LightModelWireframe, "Light Model Wireframe"));
+
+	TextureDesc desc;
+	desc.m_Width = window_size.m_Width;
+	desc.m_Height = window_size.m_Height;
+	desc.m_Usage = graphics::DEFAULT_USAGE;
+	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
+	desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
+	desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
+	desc.m_TextureFormat = graphics::RGBA16_FLOAT;
+	m_HoverTexture = new Texture;
+	m_HoverTexture->Initiate(desc, "HoverTexture");
+	m_RenderHoverEffect = Engine::GetInstance()->GetEffect("Shaders/hover.json");
+
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
 
@@ -110,7 +129,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	debug_textures->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
 	debug_textures->AddShaderResource(m_GBuffer.GetEmissive(), Effect::EMISSIVE);
 	debug_textures->AddShaderResource(m_GBuffer.GetIDTexture(), Effect::REGISTER_5);
-	debug_textures->AddShaderResource(m_GBuffer.GetHoverTexture(), Effect::REGISTER_6);
+	debug_textures->AddShaderResource(m_HoverTexture, Effect::REGISTER_6);
 
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 
@@ -120,13 +139,10 @@ Renderer::Renderer(Synchronizer* synchronizer)
 		pDebug->AddTexture(t, t->GetDebugName());
 	}
 
-	//pDebug->RegisterCheckbox(debug::DebugCheckbox(&m_LightModelWireframe, "Light Model Wireframe"));
-
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
 	m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(PerFramePixelBuffer), "PerFramePixelBuffer");
 
-	m_PixelData = new char[window_size.m_Width * window_size.m_Height];
 
 }
 
@@ -134,9 +150,9 @@ Renderer::~Renderer()
 {
 #if !defined(_PROFILE) && !defined(_FINAL)
 	SAFE_DELETE(m_DebugQuad);
+	SAFE_DELETE(m_HoverTexture);
+	m_DebugTextures.DeleteAll();
 #endif
-	delete[] m_PixelData;
-	m_PixelData = nullptr;
 
 	m_ShadowPass.CleanUp();
 	m_DirectionalShadow.CleanUp();
@@ -156,7 +172,6 @@ Renderer::~Renderer()
 	m_ViewProjBuffer = nullptr;
 }
 
-//http://jackieokay.com/2017/04/13/reflection1.html
 void Renderer::Render()
 {
 	if (m_Synchronizer->HasQuit())
@@ -170,18 +185,19 @@ void Renderer::Render()
 	m_RenderContext.GetAPI().BeginFrame();
 	m_RenderContext.GetAPI().ResetViewport();
 
+	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 
 	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
 	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
 	const CU::Matrix44f& camera_view_proj = CU::Math::Inverse(camera_orientation) * camera_projection;
-	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
-	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
+	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 
 	m_PerFramePixelStruct.m_Projection = CU::Math::InverseReal(m_Camera->GetPerspective());
 	m_PerFramePixelStruct.m_View = m_Camera->GetOrientation();
 	m_PerFramePixelStruct.m_CameraPos = m_Camera->GetPosition();
-	m_RenderContext.GetContext().UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
-	m_RenderContext.GetContext().PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
+	ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
+	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
 
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
@@ -195,6 +211,46 @@ void Renderer::Render()
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
+
+	ctx.ClearRenderTarget(m_HoverTexture->GetRenderTargetView(), clearcolor::black);
+	ctx.OMSetRenderTargets(1, m_HoverTexture->GetRenderTargetRef(), nullptr);
+
+
+	Entity e = debug::DebugHandle::GetInstance()->GetEntity();
+	if (e > 0)
+	{
+		Engine& engine = m_RenderContext.GetEngine();
+		const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(e);
+
+		m_HoverModel = engine.GetModel(graphics.m_Instances[0].m_ModelID);
+
+		if (m_HoverModel)
+		{
+			const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(e);
+			m_HoverModel->AddOrientation(translation.myOrientation);
+			m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
+
+			//ctx.DrawIndexedInstanced(m_HoverModel);
+			//m_HoverModel->RenderInstanced(m_RenderContext);
+		}
+	}
+
+
+
+
+	/*
+		== HOVER TEXTURE ==
+
+		Render Model to HoverTexture
+		Pass to Blur HoverTexture
+		Remove Original Data from HoverTexture and only have the newly blurred stuff Maybe not blur, hard outline?
+		And then pass this texture to the pblDebug and use when we render it finally.
+
+		== HOVER TEXTURE ==
+	*/
+
+
+
 #endif
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
@@ -204,12 +260,12 @@ void Renderer::Render()
 		, m_Direction
 		, m_RenderContext);
 
-	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
-	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
-	m_RenderContext.GetContext().GSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
+	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+	ctx.GSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 
-	m_RenderContext.GetContext().UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
-	m_RenderContext.GetContext().PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
+	ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
+	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
 	RenderSpotlight();
 	RenderPointlight();
 
@@ -223,8 +279,8 @@ void Renderer::Render()
 		m_DeferredRenderer->Finalize();
 	}
 
-	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
-	m_RenderContext.GetContext().VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
+	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	RenderLines();
 
 
@@ -251,7 +307,7 @@ void Renderer::WriteDebugTextures()
 	auto& ctx = m_RenderContext.GetContext();
 
 	CU::GrowingArray<IRenderTargetView*> targets;
-	for (Texture* t: m_DebugTextures)
+	for (Texture* t : m_DebugTextures)
 	{
 		IRenderTargetView* view = t->GetRenderTargetView();
 		ctx.ClearRenderTarget(view, clear);

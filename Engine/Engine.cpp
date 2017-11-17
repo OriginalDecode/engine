@@ -240,7 +240,11 @@ void Engine::Update()
 	m_Renderer->Render();
 	m_PhysicsManager->Update();
 	m_Threadpool.Update();
+
+#if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::GetInstance()->SetEntity(PickEntity(GetTexture("entity_id")));
+	//set target data in renderer.
+#endif
 }
 
 void Engine::UpdateInput()

@@ -1,0 +1,70 @@
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION0;
+	float2 uv : TEXCOORD;
+};
+
+cbuffer edge_detection : register ( b0 )
+{
+    float ScreenHeight;
+    float ScreenWidth;
+    float2 dummy;
+};
+
+float kernel_x[9] = {
+	+1,	0,	-1,
+	+2,	0,	-2,
+	+1,	0,	-1,
+};
+
+float kernel_y[9] = {
+	+1,	+2,	+1,
+	0,	0,	0,
+	-1,	-2,	-1,
+};
+
+Texture2D SceneTexture : register(t0);
+SamplerState sampler0 : register(s0);
+float4 main(VS_OUTPUT input) : SV_Target
+{
+    float4 lum = float4(0.30, 0.59, 0.11, 1);
+ 
+    float dx = 1.0 / ScreenWidth;
+    float dy = 1.0 / ScreenHeight;
+
+
+  // TOP ROW
+    float s11 = dot(SceneTexture.Sample(sampler0, input.uv + float2(-dx, -dy)), lum);   // LEFT
+    float s12 = dot(SceneTexture.Sample(sampler0, input.uv + float2(0, -dy)), lum);             // MIDDLE
+    float s13 = dot(SceneTexture.Sample(sampler0, input.uv + float2(dx, -dy)), lum);    // RIGHT
+ 
+  // MIDDLE ROW
+    float s21 = dot(SceneTexture.Sample(sampler0, input.uv + float2(-dx, 0)), lum);                // LEFT
+  // Omit center
+    float s23 = dot(SceneTexture.Sample(sampler0, input.uv + float2(dx, 0)), lum);                // RIGHT
+ 
+  // LAST ROW
+    float s31 = dot(SceneTexture.Sample(sampler0, input.uv + float2(-dx, dy)), lum);    // LEFT
+    float s32 = dot(SceneTexture.Sample(sampler0, input.uv + float2(0, dy)), lum);              // MIDDLE
+    float s33 = dot(SceneTexture.Sample(sampler0, input.uv + float2(dx, dy)), lum); // RIGHT
+ 
+  // Filter ... thanks internet
+    float t1 = s13 + s33 + (2 * s23) - s11 - (2 * s21) - s31;
+    float t2 = s31 + (2 * s32) + s33 - s11 - (2 * s12) - s13;
+ 
+    float4 col;
+ 
+    if (((t1 * t1) + (t2 * t2)) > 0.05) 
+    {
+        col = float4(0,0,0,1);
+    } 
+    else
+    {
+        col = float4(1,1,1,1);
+    }
+ 
+    return col;
+
+
+	// return output;
+};

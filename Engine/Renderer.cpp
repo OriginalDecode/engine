@@ -123,6 +123,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "hover");
 
+	m_DebugTextures.Add(new Texture);
+	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "edge");
+
 	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
 	debug_textures->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
 	debug_textures->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
@@ -138,6 +141,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	{
 		pDebug->AddTexture(t, t->GetDebugName());
 	}
+
+	m_cbDebugTex = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(m_DebugTexWriteData), "debug_tex");
+
 
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
@@ -279,6 +285,11 @@ void Renderer::Render()
 		m_DeferredRenderer->Finalize();
 	}
 
+	//Detect edges on specified texture
+	m_PostProcessManager.Process(m_HoverTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
+
+
+
 	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	RenderLines();
@@ -303,18 +314,16 @@ void Renderer::Render()
 #if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::WriteDebugTextures()
 {
-	float clear[4] = { 0,0,0,0 };
+	return;
 	auto& ctx = m_RenderContext.GetContext();
 
-	CU::GrowingArray<IRenderTargetView*> targets;
-	for (Texture* t : m_DebugTextures)
-	{
-		IRenderTargetView* view = t->GetRenderTargetView();
-		ctx.ClearRenderTarget(view, clear);
-		targets.Add(view);
-	}
+	const s32 index = debug::DebugHandle::GetInstance()->GetDebugTextureIndex();
 
-	ctx.OMSetRenderTargets(targets.Size(), &targets[0], nullptr);
+	m_DebugTexWriteData.m_Index = index;
+	ctx.UpdateConstantBuffer(m_cbDebugTex, &m_DebugTexWriteData);
+	ctx.PSSetConstantBuffer(0, 1, &m_cbDebugTex);
+	ctx.ClearRenderTarget(m_DebugTextures[index]->GetRenderTargetView(), clearcolor::black);
+	ctx.OMSetRenderTargets(1, m_DebugTextures[index]->GetRenderTargetRef(), nullptr);
 	m_DebugQuad->Render(false);
 }
 #endif

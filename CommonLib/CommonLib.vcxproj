@@ -58,6 +58,7 @@
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Work.h" />
     <ClInclude Include="Worker.h" />
+    <ClInclude Include="XML\XMLReader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp" />
@@ -70,6 +71,7 @@
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="Work.cpp" />
     <ClCompile Include="Worker.cpp" />
+    <ClCompile Include="XML\XMLReader.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DBC8372D-E04F-4BBB-8964-12022ADCA9F6}</ProjectGuid>

@@ -150,6 +150,13 @@ private:
 	Quad* m_DebugQuad = nullptr;
 	void WriteDebugTextures();
 
+	IBuffer* m_cbDebugTex = nullptr;
+	struct
+	{
+		s32 m_Index = 0;
+		s32 dummy[3];
+	} m_DebugTexWriteData;
+
 
 
 public:

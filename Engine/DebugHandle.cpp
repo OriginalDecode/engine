@@ -78,15 +78,15 @@ namespace debug
 			camera_pos << "x:" << pos.x << "\ny:" << pos.y << "\nz:" << pos.z;
 			ImGui::Text("%s", camera_pos.str().c_str());
 
-			ImGui::Checkbox("Debug Textures", &sDebugTextures);
+			//ImGui::Checkbox("Debug Textures", &sDebugTextures);
 
 			for (DebugCheckbox& cb : m_Checkboxes)
 			{
 				ImGui::Checkbox(cb.m_Label.c_str(), cb.m_Toggleable);
 			}
 
-			if (sDebugTextures)
-				DebugTextures();
+// 			if (sDebugTextures)
+// 				DebugTextures();
 
 			ImGui::Separator();
 			for (DebugSlider<float>& s : m_Sliders)
@@ -229,12 +229,11 @@ namespace debug
 		//ImGui::PushStyleVar(AutoSize)
 		if (ImGui::Begin("textures", &pOpen, ImGuiWindowFlags_AlwaysAutoResize))
 		{
-			static s32 index = 0;
 			ImGui::PushItemWidth(250.f);
-			ListBox("", &index, m_Labels);
+			ListBox("", &m_TextureIndex, m_Labels);
 			ImGui::PopItemWidth();
 
-			ImTextureID tex_id = m_DebugTextures[index];
+			ImTextureID tex_id = m_DebugTextures[m_TextureIndex];
 			ImVec2 w_size = ImGui::GetWindowSize();
 			w_size.x *= 0.65f;
 			w_size.y = w_size.x / 1.777777777777777777777777777777778;
@@ -308,6 +307,11 @@ namespace debug
 	void DebugHandle::ConfirmEntity()
 	{
 		m_EditEntity = m_CurrEntity;
+	}
+
+	s32 DebugHandle::GetDebugTextureIndex() const
+	{
+		return m_TextureIndex;
 	}
 
 	//  	s32 DebugHandle::RegisterMainWindow(DebugMainWindow window)

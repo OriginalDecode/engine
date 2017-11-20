@@ -360,6 +360,7 @@
     </ClInclude>
     <ClInclude Include="NodeEntityManager.h" />
     <ClInclude Include="Octree.h" />
+    <ClInclude Include="EdgeDetectionPass.h" />
     <ClInclude Include="ParticleData.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PostProcessManager.h" />
@@ -473,6 +474,7 @@
     </ClCompile>
     <ClCompile Include="NodeEntityManager.cpp" />
     <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="EdgeDetectionPass.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PostProcessManager.cpp" />
     <ClCompile Include="Quad.cpp" />

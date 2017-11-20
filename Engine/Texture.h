@@ -35,7 +35,7 @@ public:
 	ITexture2D* GetTexture() const { return m_Texture; }
 	IShaderResourceView* GetShaderView() { return m_ShaderResource; }
 	IShaderResourceView** GetShaderViewRef() { return &m_ShaderResource; }
-	IShaderResourceView* GetDepthStencilView() const { return m_DepthStencilShaderView; }
+ 	IShaderResourceView* GetDepthStencilView() const { return m_DepthStencilShaderView; }
 	IShaderResourceView** GetDSVResourceRef() { return &m_DepthStencilShaderView; }
 	IRenderTargetView*	GetRenderTargetView() const { return m_RenderTargetView; }
 	IRenderTargetView** GetRenderTargetRef() { return &m_RenderTargetView; }

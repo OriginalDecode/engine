@@ -4,7 +4,7 @@
 #include "MotionBlurPass.h"
 #include "BloomPass.h"
 #include "SSAOPass.h"
-
+#include "EdgeDetectionPass.h"
 #include <Engine/engine_shared.h>
 
 
@@ -23,6 +23,7 @@ public:
 		MOTIONBLUR = BITFLAG(1),
 		HDR = BITFLAG(2),
 		SSAO = BITFLAG(3),
+		EDGE_DETECTION = BITFLAG(4),
 	};
 
 	PostProcessManager();
@@ -31,6 +32,9 @@ public:
 	s32 GetFlags() const { return m_PassFlags; }
 
 	void Process(Texture* current_frame_texture, const graphics::RenderContext& render_context);
+	void Process(Texture* pTexture, s32 process_flag, const graphics::RenderContext& rc);
+
+
 
 	void SetPassesToProcess(s32 pass_flags);
 	void RemovePassToProcess(s32 pass_flag);
@@ -43,5 +47,6 @@ private:
 	MotionBlurPass	m_MotionBlurPass;
 	BloomPass		m_BloomPass;
 	SSAOPass		m_SSAOPass;
+	EdgeDetectionPass m_EdgeDetectionPass;
 };
 

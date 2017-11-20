@@ -2,7 +2,7 @@
 #include "tinyxml2.h"
 #include <string>
 #define XMLElement tinyxml2::XMLElement*
-namespace CommonUtilities
+namespace cl
 {
 	class XMLReader
 	{
@@ -47,4 +47,3 @@ namespace CommonUtilities
 	};
 
 }
-namespace CU = CommonUtilities;

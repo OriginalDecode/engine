@@ -31,6 +31,8 @@ namespace debug
 
 		void RegisterMaterial(Material* pMaterial, std::string lable);
 		void ConfirmEntity();
+		s32 GetDebugTextureIndex() const;
+
 	private:
 
 		Entity m_CurrEntity = 0;
@@ -56,6 +58,8 @@ namespace debug
 		//this is my current modelinstances
 		std::vector<ModelInstance*> m_ModelInstances;
 		std::vector<std::string> m_InstanceLabels;
+
+		s32 m_TextureIndex = 0;
 
 
 
@@ -103,6 +107,7 @@ namespace debug
 #endif
 		*/
 
+	public:
 	};
 };
 #endif

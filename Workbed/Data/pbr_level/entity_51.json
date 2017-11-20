@@ -4,7 +4,7 @@
         "position": [
             95.0,
             1.0,
-            50.0
+            35.0
         ],
         "rotation": [
             0.0,
@@ -17,7 +17,7 @@
         "instances": [
             {
                 "model_file": "data/model/ballen.fbx",
-                "material_file": "Data/Material/mat_aluminum.json",
+                "material_file": "Data/Material/mat_octostone.json",
                 "relative_position": [
                     0.0,
                     0.0,

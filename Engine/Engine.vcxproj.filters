@@ -418,12 +418,13 @@
       <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
     </ClInclude>
     <ClInclude Include="Viewport.h" />
-    <ClInclude Include="..\profile_defines.h" />
     <ClInclude Include="AssetFactory.h" />
     <ClInclude Include="LightManager.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="InstancingManager.h" />
     <ClInclude Include="RenderObject.h" />
+    <ClInclude Include="profile_defines.h" />
+    <ClInclude Include="EdgeDetectionPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -690,5 +691,6 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="InstancingManager.cpp" />
     <ClCompile Include="RenderObject.cpp" />
+    <ClCompile Include="EdgeDetectionPass.cpp" />
   </ItemGroup>
 </Project>

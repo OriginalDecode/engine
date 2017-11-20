@@ -15,7 +15,6 @@ SSAOPass::SSAOPass()
 	desc.m_ResourceTypeBinding = graphics::BIND_RENDER_TARGET | graphics::BIND_SHADER_RESOURCE;
 	desc.m_Width = m_WindowSize.m_Width;
 	desc.m_Height = m_WindowSize.m_Height;
-	//Should def be changed
 
 	desc.m_TextureFormat = graphics::RGBA8_UNORM;
 	desc.m_ShaderResourceFormat = graphics::RGBA8_UNORM;

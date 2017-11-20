@@ -1,7 +1,7 @@
 #include "XMLReader.h"
-#include <DL_Debug.h>
+#include <DL_Debug/DL_Debug.h>
 #include <string>
-namespace CommonUtilities
+namespace cl
 {
 	XMLReader::XMLReader()
 	{
@@ -23,12 +23,12 @@ namespace CommonUtilities
 
 		if (aFilePath == nullptr)
 		{
-			DL_DEBUG("File could not be loaded! %s", aFilePath);
+			//DL_DEBUG("File could not be loaded! %s", aFilePath);
 			DL_ASSERT_EXP(aFilePath == nullptr, "Filepath were a nullptr");
 		}
 		else if (myDocument->LoadFile(aFilePath) != 0)
 		{
-			DL_DEBUG("File could not be found! %s", aFilePath);
+			//DL_DEBUG("File could not be found! %s", aFilePath);
 			DL_ASSERT("File could not be found!");
 		}
 
@@ -41,7 +41,7 @@ namespace CommonUtilities
 
 		if (myDocumentIsOpen == false)
 		{
-			DL_DEBUG("Can't close XMLDocument!");
+			//DL_DEBUG("Can't close XMLDocument!");
 			DL_ASSERT("Can't close XMLDocument!")
 		}
 		else if (myDocumentIsOpen == true)
@@ -89,7 +89,7 @@ namespace CommonUtilities
 
 		if (myDocumentIsOpen == false)
 		{
-			DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
+			//DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
 			DL_ASSERT("XMLReader : Cannot Read Attribute, file not open!");
 		}
 		if (anElementToRead == nullptr)
@@ -109,7 +109,7 @@ namespace CommonUtilities
 
 		if (myDocumentIsOpen == false)
 		{
-			DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
+			//DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
 			DL_ASSERT("XMLReader : Cannot Read Attribute, file not open!");
 		}
 		if (anElementToRead == nullptr)
@@ -126,7 +126,7 @@ namespace CommonUtilities
 
 		if (myDocumentIsOpen == false)
 		{
-			DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
+			//DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
 			DL_ASSERT("XMLReader : Cannot Read Attribute, file not open!");
 		}
 		if (anElementToRead == nullptr)
@@ -143,7 +143,7 @@ namespace CommonUtilities
 
 		if (myDocumentIsOpen == false)
 		{
-			DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
+			//DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
 			DL_ASSERT("XMLReader : Cannot Read Attribute, file not open!");
 		}
 		if (anElementToRead == nullptr)
@@ -160,7 +160,7 @@ namespace CommonUtilities
 
 		if (myDocumentIsOpen == false)
 		{
-			DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
+			//DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
 			DL_ASSERT("XMLReader : Cannot Read Attribute, file not open!");
 		}
 		if (anElementToRead == nullptr)
@@ -185,7 +185,7 @@ namespace CommonUtilities
 			return true;
 		}
 
-		DL_DEBUG("No Attribute with %s name found!", anAttribute);
+		//DL_DEBUG("No Attribute with %s name found!", anAttribute);
 		DL_ASSERT("No Attribute found!");
 
 		return false;
@@ -199,7 +199,7 @@ namespace CommonUtilities
 		if (anElementToRead->QueryIntAttribute(anAttribute.c_str(), aTargetVar) == tinyxml2::XML_NO_ERROR)
 			return true;
 
-		DL_DEBUG("No Attribute with %s name found!", anAttribute);
+		//DL_DEBUG("No Attribute with %s name found!", anAttribute);
 		DL_ASSERT("No Attribute found!");
 
 		return false;
@@ -213,7 +213,7 @@ namespace CommonUtilities
 		if (anElementToRead->QueryDoubleAttribute(anAttribute.c_str(), aTargetVar) == tinyxml2::XML_NO_ERROR)
 			return true;
 
-		DL_DEBUG("No Attribute with %s name found!", anAttribute);
+		//DL_DEBUG("No Attribute with %s name found!", anAttribute);
 		DL_ASSERT("No Attribute found!");
 
 		return false;
@@ -227,7 +227,7 @@ namespace CommonUtilities
 		if (anElementToRead->QueryFloatAttribute(anAttribute.c_str(), aTargetVar) == tinyxml2::XML_NO_ERROR)
 			return true;
 
-		DL_DEBUG("No Attribute with %s name found!", anAttribute);
+		//DL_DEBUG("No Attribute with %s name found!", anAttribute);
 		DL_ASSERT("No Attribute found!");
 
 		return false;
@@ -241,7 +241,7 @@ namespace CommonUtilities
 		if (anElementToRead->QueryBoolAttribute(anAttribute.c_str(), aTargetVar) == tinyxml2::XML_NO_ERROR)
 			return true;
 
-		DL_DEBUG("No Attribute with %s name found!", anAttribute);
+		//DL_DEBUG("No Attribute with %s name found!", anAttribute);
 		DL_ASSERT("No Attribute found!");
 
 		return false;

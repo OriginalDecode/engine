@@ -161,9 +161,19 @@ namespace graphics
 									  static_cast<ID3D11DepthStencilView*>(dsv));
 	}
 
+	void DX11Context::OMSetRenderTargets(s32 num_views, Texture* render_targets, Texture* dsv)
+	{
+		OMSetRenderTargets(num_views, render_targets->GetRenderTargetView(), dsv->GetDepthStencilView());
+	}
+
 	void DX11Context::ClearRenderTarget(IRenderTargetView* render_target, const float clear_color[4])
 	{
 		m_Context->ClearRenderTargetView(static_cast<ID3D11RenderTargetView*>(render_target), clear_color);
+	}
+
+	void DX11Context::ClearRenderTarget(Texture* render_target, const float clear_color[4])
+	{
+		ClearRenderTarget(render_target->GetRenderTargetView(), clear_color);
 	}
 
 	void DX11Context::ClearDepthStencilView(IDepthStencilView* dsv, s32 clear_flag, s32 max_depth)

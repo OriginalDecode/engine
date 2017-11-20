@@ -1,41 +1,20 @@
-SamplerState sampler0	 	: register ( s0 );
-Texture2D AlbedoTexture  	: register ( t0 );
-Texture2D NormalTexture  	: register ( t1 );
-Texture2D EmissiveTexture	: register ( t4 );
-Texture2D DepthTexture		: register ( t7 );
-Texture2D IDTexture			: register ( t5 );
-Texture2D HoverTex			: register ( t6 );
+Texture2D textures[8]		: register( t0 );
+SamplerState sampler0		: register( s0 );
+
+cbuffer debug_information	: register( b0 )
+{
+	int index;
+	int dummy[3];
+};
+
 struct VS_OUTPUT
 {
 	float4 pos : SV_POSITION0;
 	float2 uv : TEXCOORD;
 };
 
-struct Output
+float4 main(VS_OUTPUT input) : SV_Target
 {
-	float4 Albedo;
-	float4 Normal;
-	float4 Depth;
-	float4 Metalness;
-	float4 Roughness;
-	float4 Emissive;
-	float4 IDTexture;
-	float4 Hover;
-};
-
-Output main(VS_OUTPUT input) : SV_Target
-{
-	Output output;
-	output = (Output)0;
-	output.Depth = float4(DepthTexture.Sample(sampler0, input.uv).xxx, 1) ;
-
-	output.Albedo = float4(AlbedoTexture.Sample(sampler0, input.uv).rgb, 1);
-	output.Normal = float4(NormalTexture.Sample(sampler0, input.uv).rgb, 1);
-	output.Metalness = float4(NormalTexture.Sample(sampler0, input.uv).aaa, 1);
-	output.Roughness = float4(DepthTexture.Sample(sampler0, input.uv).yyy, 1);
-	output.Emissive = float4(EmissiveTexture.Sample(sampler0, input.uv).rgb, 1);
-	output.IDTexture = float4(IDTexture.Sample(sampler0, input.uv).rgb, 1);
-	output.Hover = float4(HoverTex.Sample(sampler0, input.uv).rgb, 1);
-	return output;
-
+	
+	return float4(textures[7].Sample(sampler0, input.uv).rgb, 1);
 };

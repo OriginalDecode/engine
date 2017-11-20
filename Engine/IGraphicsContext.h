@@ -47,9 +47,12 @@ namespace graphics
 		virtual void IASetTopology(eTopology topology) = 0;
 
 		virtual void OMSetRenderTargets(s32 num_views, IRenderTargetView* render_targets, IDepthStencilView* dsv) = 0;
+		virtual void OMSetRenderTargets(s32 num_views, Texture* render_targets, Texture* dsv) = 0;
 		virtual void ClearRenderTarget(IRenderTargetView* render_target, const float clear_color[4]) = 0;
+		virtual void ClearRenderTarget(Texture* render_target, const float clear_color[4]) = 0;
 
 		virtual void ClearDepthStencilView(IDepthStencilView* dsv, s32 clear_flag, s32 max_depth) = 0;
+		virtual void ClearDepthStencilView(Texture* dsv, s32 clear_flag, s32 max_depth) = 0;
 
 		virtual void Draw(BaseModel* model, Effect* fx = nullptr) = 0;
 		virtual void Draw(CEmitterInstance* emitter) = 0;

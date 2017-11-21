@@ -19,12 +19,29 @@ namespace graphics
 
 	void DX11Context::VSSetShaderResource(s32 start_slot, s32 count, void* resources)
 	{
-		m_Context->VSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+		if (resources)
+		{
+			m_Context->PSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+		}
+		else
+		{
+			ID3D11ShaderResourceView* null_resource = nullptr;
+			m_Context->PSSetShaderResources(start_slot, count, &null_resource);
+		}
 	}
 
 	void DX11Context::PSSetShaderResource(s32 start_slot, s32 count, void* resources)
 	{
-		m_Context->PSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+		if (resources)
+		{
+			m_Context->PSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+		}
+		else
+		{
+			ID3D11ShaderResourceView* null_resource = nullptr;
+			m_Context->PSSetShaderResources(start_slot, count, &null_resource);
+		}
+
 	}
 
 	void DX11Context::GSSetShaderResource(s32 start_slot, s32 count, void* resources)

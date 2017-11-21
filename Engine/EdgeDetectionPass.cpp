@@ -4,8 +4,6 @@
 
 EdgeDetectionPass::EdgeDetectionPass()
 {
-	
-
 }
 
 
@@ -60,10 +58,10 @@ void EdgeDetectionPass::Process(Texture* pTexture, const graphics::RenderContext
 
 	rc.GetAPI().SetDefaultTargets();
 	Effect* pEffect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
-	pEffect->AddShaderResource(m_Result, Effect::DIFFUSE);
+	pEffect->AddShaderResource(m_Result, Effect::REGISTER_0);
 	m_ScreenQuad->Render(false, pEffect);
-
-
+	ctx.VSSetShaderResource(0, 1, nullptr);
+	ctx.PSSetShaderResource(0, 1, nullptr);
 }
 
 void EdgeDetectionPass::OnResize()

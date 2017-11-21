@@ -32,7 +32,7 @@ void Effect::Use()
 
 void Effect::Clear()
 {
-	void* resources[_COUNT] = {};
+	void* resources[_COUNT] = { };
 	graphics::IGraphicsContext& context = Engine::GetAPI()->GetContext();
 	context.VSSetShaderResource(0, _COUNT, resources);
 	context.PSSetShaderResource(0, _COUNT, resources);

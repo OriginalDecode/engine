@@ -98,6 +98,10 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_HoverTexture->Initiate(desc, "HoverTexture");
 	m_RenderHoverEffect = Engine::GetInstance()->GetEffect("Shaders/hover.json");
 
+	m_SelectedTexture = new Texture;
+	m_SelectedTexture->Initiate(desc, "SelectedTexture");
+
+
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
 
@@ -126,8 +130,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "edge");
 
-	Effect* pEdge = Engine::GetInstance()->GetEffect("Shaders/edge_detection.json");
-	pEdge->AddShaderResource(m_HoverTexture, Effect::DIFFUSE);
+	//Effect* pEdge = Engine::GetInstance()->GetEffect("Shaders/edge_detection.json");
+	//pEdge->AddShaderResource(m_HoverTexture, Effect::DIFFUSE);
 
 // 	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
 // 	debug_textures->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
@@ -231,41 +235,44 @@ void Renderer::Render()
 	ctx.OMSetRenderTargets(1, m_HoverTexture->GetRenderTargetRef(), nullptr);
 
 
-	Entity e = debug::DebugHandle::GetInstance()->GetEntity();
-	if (e > 0)
+	Engine& engine = m_RenderContext.GetEngine();
+	const Entity hover_e = debug::DebugHandle::GetInstance()->GetHoveredEntity();
+	const Entity selected_e = debug::DebugHandle::GetInstance()->GetSelectedEntity();
+	if (hover_e > 0)
 	{
-		Engine& engine = m_RenderContext.GetEngine();
-		const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(e);
+		const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(hover_e);
 
-		m_HoverModel = engine.GetModel(graphics.m_Instances[0].m_ModelID);
-
-		if (m_HoverModel)
+		for (const ModelInstance& instance : graphics.m_Instances)
 		{
-			const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(e);
-			m_HoverModel->AddOrientation(translation.myOrientation);
-			m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
-
-			//ctx.DrawIndexedInstanced(m_HoverModel);
-			//m_HoverModel->RenderInstanced(m_RenderContext);
+			m_HoverModel = engine.GetModel(instance.m_ModelID);
+			if (m_HoverModel)
+			{
+				const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(hover_e);
+				m_HoverModel->AddOrientation(translation.myOrientation);
+				m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
+			}
 		}
 	}
 
+	ctx.ClearRenderTarget(m_SelectedTexture->GetRenderTargetView(), clearcolor::black);
+	ctx.OMSetRenderTargets(1, m_SelectedTexture->GetRenderTargetRef(), nullptr);
+	if (selected_e > 0)
+	{
+		const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(hover_e);
 
+		for (const ModelInstance& instance : graphics.m_Instances)
+		{
+			m_SelectedModel = engine.GetModel(instance.m_ModelID);
+			if (m_SelectedModel)
+			{
+				const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(selected_e);
+				m_SelectedModel->AddOrientation(translation.myOrientation);
+				m_SelectedModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
+			}
+		}
 
-
-	/*
-		== HOVER TEXTURE ==
-
-		Render Model to HoverTexture
-		Pass to Blur HoverTexture
-		Remove Original Data from HoverTexture and only have the newly blurred stuff Maybe not blur, hard outline?
-		And then pass this texture to the pblDebug and use when we render it finally.
-
-		== HOVER TEXTURE ==
-	*/
-
-
-
+	
+	}
 #endif
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
@@ -299,6 +306,7 @@ void Renderer::Render()
 	}
 
 	m_PostProcessManager.Process(m_HoverTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
+	m_PostProcessManager.Process(m_SelectedTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
 	m_RenderContext.GetAPI().SetDefaultTargets();
 
 	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
@@ -652,7 +660,7 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 	model_data.m_Orientation = command->m_Orientation;
 	model_data.m_ID = command->m_EntityID;
 #ifdef _DEBUG
-	model_data.m_Hovering = (command->m_EntityID == debug::DebugHandle::GetInstance()->GetEntity() ? 1 : 0);
+	model_data.m_Hovering = (command->m_EntityID == debug::DebugHandle::GetInstance()->GetHoveredEntity() ? 1 : 0);
 #endif
 	CU::Vector4f col = cl::IntToCol(model_data.m_ID);
 

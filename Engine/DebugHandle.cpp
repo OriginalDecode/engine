@@ -288,9 +288,14 @@ namespace debug
 
 	}
 
-	Entity DebugHandle::GetEntity() const
+	Entity DebugHandle::GetHoveredEntity() const
 	{
 		return m_CurrEntity;
+	}
+
+	Entity DebugHandle::GetSelectedEntity() const
+	{
+		return m_EditEntity;
 	}
 
 	void DebugHandle::RegisterCheckbox(DebugCheckbox checkbox)

@@ -44,6 +44,7 @@ float4 main(VS_OUTPUT input) : SV_Target
     float4 sobel_edge_h = sample_points[2] + (2.0 * sample_points[5]) + sample_points[8] - (sample_points[0] + (2.0 * sample_points[3]) + sample_points[6]);
   	float4 sobel_edge_v = sample_points[0] + (2.0 * sample_points[1]) + sample_points[2] - (sample_points[6] + (2.0 * sample_points[7]) + sample_points[8]);
   
-    float4 sobel = sqrt((sobel_edge_h * sobel_edge_h) + (sobel_edge_v * sobel_edge_v));
-    return sobel; 
+    float sobel = sqrt((sobel_edge_h * sobel_edge_h) + (sobel_edge_v * sobel_edge_v));
+
+    return float4(sobel.xxxx);
 };

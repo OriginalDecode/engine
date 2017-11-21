@@ -54,6 +54,7 @@ void EdgeDetectionPass::Process(Texture* pTexture, const graphics::RenderContext
 	ctx.UpdateConstantBuffer(m_cbEdgeDetection, &m_EdgeDetectionData);
 	ctx.PSSetConstantBuffer(0, 1, &m_cbEdgeDetection);
 	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
+	m_ScreenQuad->GetShader()->AddShaderResource(pTexture, Effect::REGISTER_0);
 	m_ScreenQuad->Render();
 
 

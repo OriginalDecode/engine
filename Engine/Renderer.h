@@ -145,7 +145,10 @@ private:
 
 	CU::GrowingArray<Texture*> m_DebugTextures;
 	Texture* m_HoverTexture = nullptr;
+	Texture* m_SelectedTexture = nullptr;
 	Model* m_HoverModel = nullptr;
+	Model* m_SelectedModel = nullptr;
+
 	Effect* m_RenderHoverEffect = nullptr;
 	Quad* m_DebugQuad = nullptr;
 	void WriteDebugTextures();

@@ -1,7 +1,5 @@
 #pragma once
 
-
-#define _WINSOCKAPI_
 #include <network/network_api.h>
 
 #include <CommonLib/Math/Vector/Vector.h>
@@ -21,13 +19,13 @@
 #include <Engine/IGraphicsAPI.h>
 #include <string>
 #include <queue>
+
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
 struct HWND__;
 typedef HWND__* HWND;
 #endif
-
 
 struct SLocalTime
 {

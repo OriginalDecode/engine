@@ -16,8 +16,8 @@ WaterPlane::WaterPlane()
 
 
 	TextureDesc desc;
-	desc.m_Width = window_width;
-	desc.m_Height = window_height;
+	desc.m_Width = (s32)window_width;
+	desc.m_Height = (s32)window_height;
 	desc.m_Usage = graphics::DEFAULT_USAGE;
 	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
 	desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
@@ -76,7 +76,7 @@ void WaterPlane::Render(const graphics::RenderContext& rc)
 	ctx.DrawIndexed(this, m_Effect);
 }
 
-void WaterPlane::ShadowRender(const graphics::RenderContext& rc)
+void WaterPlane::ShadowRender(const graphics::RenderContext& /*rc*/)
 {
 	DL_ASSERT("water shadow?");
 }
@@ -84,14 +84,14 @@ void WaterPlane::ShadowRender(const graphics::RenderContext& rc)
 void WaterPlane::SetupRefractionRender(const graphics::RenderContext& rc)
 {
 	m_RefractionG.Clear(clearcolor::black, rc);
-	rc.GetContext().ClearDepthStencilView(m_Refraction->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1.0f);
+	rc.GetContext().ClearDepthStencilView(m_Refraction->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1);
 	m_RefractionG.SetAsRenderTarget(m_Refraction, rc);
 }
 
 void WaterPlane::SetupReflectionRender(const graphics::RenderContext& rc)
 {
 	m_ReflectionG.Clear(clearcolor::black, rc);
-	rc.GetContext().ClearDepthStencilView(m_Reflection->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1.0f);
+	rc.GetContext().ClearDepthStencilView(m_Reflection->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1);
 	m_ReflectionG.SetAsRenderTarget(m_Reflection, rc);
 }
 
@@ -102,14 +102,14 @@ void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const graphics::RenderC
 	rc.GetContext().PSSetConstantBuffer(0, 1, m_cbPixel);
 }
 
-void WaterPlane::AddSurface(Surface* surface)
+void WaterPlane::AddSurface(Surface* /*surface*/)
 {
 
 }
 
 void WaterPlane::CreatePlane()
 {
-	auto& ctx = Engine::GetAPI()->GetContext();
+	//auto& ctx = Engine::GetAPI()->GetContext();
 	auto& device = Engine::GetAPI()->GetDevice();
 
 	graphics::InputElementDesc desc[] =

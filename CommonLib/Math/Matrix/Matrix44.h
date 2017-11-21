@@ -823,7 +823,7 @@ namespace CommonUtilities
 
 			det = aMatrix.myMatrix[0] * inv[0] + aMatrix.myMatrix[1] * inv[4] + aMatrix.myMatrix[2] * inv[8] + aMatrix.myMatrix[3] * inv[12];
 
-			det = 1.0 / det;
+			det = static_cast<T>(1.0) / det;
 
 			Matrix44<T> returnMatrix;
 

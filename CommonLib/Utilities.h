@@ -86,9 +86,9 @@ namespace cl
 	inline CU::Vector4f IntToCol(unsigned int col_as_int)
 	{
 		CU::Vector4f out;
-		out.z = (col_as_int) & 0xFF;
-		out.y = (col_as_int >> 8) & 0xFF;
-		out.x = (col_as_int>>16) & 0xFF;
+		out.z = (float)((col_as_int) & 0xFF);
+		out.y = (float)((col_as_int >> 8) & 0xFF);
+		out.x = (float)((col_as_int >> 16) & 0xFF);
 		return out;
 
 	};

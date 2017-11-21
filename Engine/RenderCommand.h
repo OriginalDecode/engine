@@ -124,7 +124,7 @@ struct ModelCommandNonDeferred : public ModelCommand
 
 struct ShadowCommand : public RenderCommand
 {
-	ShadowCommand(u64 key, const CU::Matrix44f& orientation, bool wireframe)
+	ShadowCommand(u64 key, const CU::Matrix44f& orientation)
 		: RenderCommand(eCommandType::SHADOW)
 		, m_Orientation(orientation)
 		, m_Key(key)

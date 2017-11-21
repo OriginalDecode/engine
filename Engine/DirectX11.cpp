@@ -475,6 +475,11 @@ namespace graphics
 
 		//this could be saved
 		D3D11_BOX region_box;
+		CU::Vector4f color;
+
+		if (iPos.x > 1919 || iPos.x < 0 || iPos.y > 1080 || iPos.y < 0)
+			return color;
+			
 
 		region_box.bottom = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height) + 1;
 		region_box.right = cl::ClampI(iPos.x, 0, (s32)window_size.m_Width) + 1;
@@ -494,7 +499,6 @@ namespace graphics
 
 		u32 pix = 0;
 		//constexpr int x = sizeof(float);
-		CU::Vector4f color;
 		if (msr.pData)
 		{
 

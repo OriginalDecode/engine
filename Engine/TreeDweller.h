@@ -55,7 +55,7 @@ public:
 	void SetDepth(s32 depth) { m_Depth = depth; }
 	s32 GetDepth() const { return m_Depth; }
 
-	const CU::Vector3f& GetPosition() const;
+	const CU::Vector3f GetPosition() const;
 
 	void SetWHD(const CU::Vector3f& whd) { m_WHD = whd; }
 	const CU::Vector3f& GetWHD() const { return m_WHD; }

@@ -108,11 +108,11 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "depth");
 
-	m_DebugTextures.Add(new Texture);
-	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "metalness");
+	//m_DebugTextures.Add(new Texture);
+	//m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "metalness");
 
-	m_DebugTextures.Add(new Texture);
-	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "roughness");
+	//m_DebugTextures.Add(new Texture);
+	//m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "roughness");
 
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "emissive");
@@ -126,29 +126,38 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "edge");
 
-	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
-	debug_textures->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
-	debug_textures->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
-	debug_textures->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
-	debug_textures->AddShaderResource(m_GBuffer.GetEmissive(), Effect::EMISSIVE);
-	debug_textures->AddShaderResource(m_GBuffer.GetIDTexture(), Effect::REGISTER_5);
-	debug_textures->AddShaderResource(m_HoverTexture, Effect::REGISTER_6);
+	Effect* pEdge = Engine::GetInstance()->GetEffect("Shaders/edge_detection.json");
+	pEdge->AddShaderResource(m_HoverTexture, Effect::DIFFUSE);
+
+// 	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
+// 	debug_textures->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
+// 	debug_textures->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
+// 	debug_textures->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
+// 	debug_textures->AddShaderResource(m_GBuffer.GetEmissive(), Effect::EMISSIVE);
+// 	debug_textures->AddShaderResource(m_GBuffer.GetIDTexture(), Effect::REGISTER_5);
+// 	debug_textures->AddShaderResource(m_HoverTexture, Effect::REGISTER_6);
 
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 
 	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
+	pDebug->RegisterTexture(m_GBuffer.GetDiffuse());
+	pDebug->RegisterTexture(m_GBuffer.GetNormal());
+	pDebug->RegisterTexture(m_GBuffer.GetDepth());
+	pDebug->RegisterTexture(m_GBuffer.GetEmissive());
+	pDebug->RegisterTexture(m_GBuffer.GetIDTexture());
+	pDebug->RegisterTexture(m_HoverTexture);
+
 	for (Texture* t : m_DebugTextures)
 	{
 		pDebug->AddTexture(t, t->GetDebugName());
 	}
 
-	m_cbDebugTex = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(m_DebugTexWriteData), "debug_tex");
 
 
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
 	m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(PerFramePixelBuffer), "PerFramePixelBuffer");
-
+	m_PostProcessManager.Initiate();
 
 }
 
@@ -277,23 +286,24 @@ void Renderer::Render()
 
 	RenderParticles(nullptr);
 
+	//Detect edges on specified texture
+
 	if (m_PostProcessManager.GetFlags() != 0)
+	{
 		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
+	}
 	else
 	{
 		m_RenderContext.GetAPI().SetDefaultTargets();
 		m_DeferredRenderer->Finalize();
 	}
 
-	//Detect edges on specified texture
 	m_PostProcessManager.Process(m_HoverTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
-
-
+	m_RenderContext.GetAPI().SetDefaultTargets();
 
 	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	RenderLines();
-
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();
@@ -314,14 +324,12 @@ void Renderer::Render()
 #if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::WriteDebugTextures()
 {
-	return;
+	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
+	const s32 index = debug::DebugHandle::GetInstance()->GetDebugTextureIndex();
+	Texture* pTex = debug::DebugHandle::GetInstance()->GetTexture(index);
+	debug_textures->AddShaderResource(pTex, Effect::DIFFUSE);
 	auto& ctx = m_RenderContext.GetContext();
 
-	const s32 index = debug::DebugHandle::GetInstance()->GetDebugTextureIndex();
-
-	m_DebugTexWriteData.m_Index = index;
-	ctx.UpdateConstantBuffer(m_cbDebugTex, &m_DebugTexWriteData);
-	ctx.PSSetConstantBuffer(0, 1, &m_cbDebugTex);
 	ctx.ClearRenderTarget(m_DebugTextures[index]->GetRenderTargetView(), clearcolor::black);
 	ctx.OMSetRenderTargets(1, m_DebugTextures[index]->GetRenderTargetRef(), nullptr);
 	m_DebugQuad->Render(false);
@@ -384,8 +392,6 @@ void Renderer::RenderNonDeferred3DCommands()
 void Renderer::Render3DCommands()
 {
 	PROFILE_FUNCTION(profiler::colors::Green);
-	const CU::Matrix44f& orientation = m_Camera->GetCurrentOrientation();
-	const CU::Matrix44f& perspective = m_Camera->GetPerspective();
 
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 	Engine& engine = m_RenderContext.GetEngine();

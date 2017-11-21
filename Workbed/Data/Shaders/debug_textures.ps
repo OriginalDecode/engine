@@ -1,11 +1,5 @@
-Texture2D textures[8]		: register( t0 );
-SamplerState sampler0		: register( s0 );
-
-cbuffer debug_information	: register( b0 )
-{
-	int index;
-	int dummy[3];
-};
+Texture2D ScreenTexture : register( t0 );
+SamplerState sampler0 : register( s0 );
 
 struct VS_OUTPUT
 {
@@ -15,6 +9,5 @@ struct VS_OUTPUT
 
 float4 main(VS_OUTPUT input) : SV_Target
 {
-	
-	return float4(textures[7].Sample(sampler0, input.uv).rgb, 1);
+	return float4(ScreenTexture.Sample(sampler0, input.uv).rgb, 1);
 };

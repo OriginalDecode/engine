@@ -4,6 +4,20 @@
 
 EdgeDetectionPass::EdgeDetectionPass()
 {
+	
+
+}
+
+
+EdgeDetectionPass::~EdgeDetectionPass()
+{
+	Engine::GetAPI()->ReleasePtr(m_cbEdgeDetection);
+	SAFE_DELETE(m_Result);
+	SAFE_DELETE(m_ScreenQuad);
+}
+
+void EdgeDetectionPass::Initiate()
+{
 	m_WindowSize = Engine::GetInstance()->GetInnerSize();
 
 	TextureDesc desc;
@@ -18,8 +32,8 @@ EdgeDetectionPass::EdgeDetectionPass()
 	m_Result = new Texture;
 	m_Result->Initiate(desc, false, "EdgeDetection - Result");
 
-	Effect* debug_textures = Engine::GetInstance()->GetEffect("Shaders/debug_textures.json");
-	debug_textures->AddShaderResource(m_Result, Effect::REGISTER_7);
+	//Effect* debug_textures = Engine::GetInstance()->GetEffect("Shaders/debug_textures.json");
+	debug::DebugHandle::GetInstance()->RegisterTexture(m_Result);
 
 
 	m_cbEdgeDetection = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_EdgeDetectionData), "EdgeDetection cb");
@@ -28,19 +42,8 @@ EdgeDetectionPass::EdgeDetectionPass()
 	m_EdgeDetectionShader = Engine::GetInstance()->GetEffect("Shaders/edge_detection.json");
 	m_ScreenQuad = new Quad(m_EdgeDetectionShader);
 
-
-
 	m_EdgeDetectionData.m_Height = m_WindowSize.m_Height;
 	m_EdgeDetectionData.m_Width = m_WindowSize.m_Width;
-
-}
-
-
-EdgeDetectionPass::~EdgeDetectionPass()
-{
-	Engine::GetAPI()->ReleasePtr(m_cbEdgeDetection);
-	SAFE_DELETE(m_Result);
-	SAFE_DELETE(m_ScreenQuad);
 }
 
 void EdgeDetectionPass::Process(Texture* pTexture, const graphics::RenderContext& rc)
@@ -52,6 +55,14 @@ void EdgeDetectionPass::Process(Texture* pTexture, const graphics::RenderContext
 	ctx.PSSetConstantBuffer(0, 1, &m_cbEdgeDetection);
 	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
 	m_ScreenQuad->Render();
+
+
+	rc.GetAPI().SetDefaultTargets();
+	Effect* pEffect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
+	pEffect->AddShaderResource(m_Result, Effect::DIFFUSE);
+	m_ScreenQuad->Render(false, pEffect);
+
+
 }
 
 void EdgeDetectionPass::OnResize()

@@ -52,8 +52,8 @@ void HDRPass::Initiate()
 
 
 #if !defined(_FINAL) && !defined(_PROFILE)
-	debug::DebugHandle::GetInstance()->AddTexture(m_Downsamples[downsample_amount - 1], "Downsample 0 ");
-	debug::DebugHandle::GetInstance()->AddTexture(m_Downsamples[downsample_amount - 2], "Downsample 1 ");
+	//debug::DebugHandle::GetInstance()->AddTexture(m_Downsamples[downsample_amount - 1], "Downsample 0 ");
+	//debug::DebugHandle::GetInstance()->AddTexture(m_Downsamples[downsample_amount - 2], "Downsample 1 ");
 #endif
 	m_HDREffect = Engine::GetInstance()->GetEffect("Shaders/tonemapping.json");
 	m_DownsampleEffect = Engine::GetInstance()->GetEffect("Shaders/downsample_hdr.json");

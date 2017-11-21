@@ -44,7 +44,7 @@ public:
 	CFontManager();
 	~CFontManager();
 	void Initiate();
-	CFont* LoadFont(const char* aFontPath, short aFontWidth, int aBorderWidth);
+	CFont* LoadFont(const s8* aFontPath, u16 aFontWidth, u16 aBorderWidth);
 private:
 	void LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 		, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderWidth = 0);

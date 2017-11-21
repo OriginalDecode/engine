@@ -78,15 +78,15 @@ namespace debug
 			camera_pos << "x:" << pos.x << "\ny:" << pos.y << "\nz:" << pos.z;
 			ImGui::Text("%s", camera_pos.str().c_str());
 
-			//ImGui::Checkbox("Debug Textures", &sDebugTextures);
 
 			for (DebugCheckbox& cb : m_Checkboxes)
 			{
 				ImGui::Checkbox(cb.m_Label.c_str(), cb.m_Toggleable);
 			}
 
-// 			if (sDebugTextures)
-// 				DebugTextures();
+			ImGui::Checkbox("Debug Textures", &sDebugTextures);
+ 			if (sDebugTextures)
+ 				DebugTextures();
 
 			ImGui::Separator();
 			for (DebugSlider<float>& s : m_Sliders)

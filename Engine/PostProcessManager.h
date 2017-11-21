@@ -34,7 +34,7 @@ public:
 	void Process(Texture* current_frame_texture, const graphics::RenderContext& render_context);
 	void Process(Texture* pTexture, s32 process_flag, const graphics::RenderContext& rc);
 
-
+	void Initiate();
 
 	void SetPassesToProcess(s32 pass_flags);
 	void RemovePassToProcess(s32 pass_flag);

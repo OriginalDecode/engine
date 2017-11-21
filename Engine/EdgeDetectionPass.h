@@ -7,6 +7,8 @@ public:
 	EdgeDetectionPass();
 	~EdgeDetectionPass();
 
+	void Initiate();
+
 	void Process(Texture* pTexture, const graphics::RenderContext& rc);
 	void OnResize();
 

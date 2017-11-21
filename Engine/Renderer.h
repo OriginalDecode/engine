@@ -123,7 +123,7 @@ private:
 	ShadowDirectional			m_DirectionalShadow;
 
 
-	IBuffer*					m_ViewProjBuffer = nullptr;
+	IBuffer*					m_ViewProjBuffer = nullptr; 
 
 	//this should be an object in the world and the render part should be separated
 	class WaterPlane*			m_WaterPlane				= nullptr; //Shouldn't be in here
@@ -149,14 +149,6 @@ private:
 	Effect* m_RenderHoverEffect = nullptr;
 	Quad* m_DebugQuad = nullptr;
 	void WriteDebugTextures();
-
-	IBuffer* m_cbDebugTex = nullptr;
-	struct
-	{
-		s32 m_Index = 0;
-		s32 dummy[3];
-	} m_DebugTexWriteData;
-
 
 
 public:

@@ -53,7 +53,7 @@ void CFontManager::Initiate()
 	DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
 }
 
-CFont* CFontManager::LoadFont(const char* aFontPath, short aSize, int aBorderWidth)
+CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 {
 	std::string fontFolder = aFontPath;
 	if (!cl::substr(aFontPath, "/"))
@@ -66,7 +66,7 @@ CFont* CFontManager::LoadFont(const char* aFontPath, short aSize, int aBorderWid
 		fontFolder += "\\Fonts\\";
 		fontFolder += aFontPath;
 	}
-	short aFontWidth = aSize;
+	u16 aFontWidth = aSize;
 	int atlasSize = (aFontWidth * aFontWidth); //This is correct
 	atlasSize *= 2;
 	atlasSize += 2;

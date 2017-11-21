@@ -5,13 +5,19 @@
 
 PostProcessManager::PostProcessManager()
 {
-	m_HDRPass.Initiate();
 }
 
 PostProcessManager::~PostProcessManager()
 {
 	m_HDRPass.CleanUp();
 }
+
+void PostProcessManager::Initiate()
+{
+	m_HDRPass.Initiate();
+	m_EdgeDetectionPass.Initiate();
+}
+
 
 void PostProcessManager::Process(Texture* current_frame_texture, const graphics::RenderContext& render_context)
 {

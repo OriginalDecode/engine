@@ -24,8 +24,8 @@ void ShadowDirectional::Initiate(float buffer_size)
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	debug::DebugHandle::GetInstance()->AddTexture(m_ShadowDepth, "Directional Shadow");
-	debug::DebugHandle::GetInstance()->AddTexture(m_ShadowDepthStencil, "Directional Shadow Stencil");
+	//debug::DebugHandle::GetInstance()->AddTexture(m_ShadowDepth, "Directional Shadow");
+	//debug::DebugHandle::GetInstance()->AddTexture(m_ShadowDepthStencil, "Directional Shadow Stencil");
 #endif
 
 }

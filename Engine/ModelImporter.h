@@ -354,13 +354,11 @@ inline void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<g
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_SKINWEIGHTS)
 		{
-			break;
 			desc.m_Semantic = "WEIGHTS";
 			desc.m_Format = graphics::_16BYTE_RGBA;
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_BONEID)
 		{
-			break;
 			desc.m_Semantic = "BONES";
 			desc.m_Format = graphics::_16BYTE_RGBA;
 		}
@@ -482,8 +480,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 
 	CU::GrowingArray<graphics::InputElementDesc> element;
 	SetupInputLayout(data, element);
-	//constexpr int x = sizeof(unsigned int);
-	s32 byte_offset = 0;
+	//Reflect build input layout and compare the self made one from the model?
 	graphics::InputElementDesc instance[] = {
 		{ "INSTANCE", 0, graphics::_16BYTE_RGBA, 1, 0, graphics::INPUT_PER_INSTANCE_DATA, 1 },
 		{ "INSTANCE", 1, graphics::_16BYTE_RGBA, 1, 16, graphics::INPUT_PER_INSTANCE_DATA, 1 },

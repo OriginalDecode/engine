@@ -7,8 +7,8 @@
 
 bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
 {
-	myWidth = aSize.x;
-	myDepth = aSize.y;
+	myWidth = (u32)aSize.x;
+	myDepth = (u32)aSize.y;
 	//	m_Filename = "Terrain";
 	m_IsRoot = false;
 	m_Effect = Engine::GetInstance()->GetEffect("Shaders/terrain_base.json");
@@ -26,7 +26,7 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 	myHeightmap.myWidth = image->myWidth;
 
 	SAFE_DELETE(image);
-	CreateVertices(aSize.x, aSize.y, position);
+	CreateVertices(myWidth, myDepth, position);
 	mySurface = new Surface(m_Effect);
 	mySurface->AddTexture("Data/Textures/terrain.dds", Effect::DIFFUSE);
 	//mySurface->AddTexture("Data/Textures/default_textures/no-texture-bw.dds", _ROUGHNESS);
@@ -126,7 +126,7 @@ void Terrain::SetPosition(CU::Vector2f position)
 
 }
 
-void Terrain::AddSurface(Surface* surface)
+void Terrain::AddSurface(Surface* /*surface*/)
 {
 
 }

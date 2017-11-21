@@ -128,7 +128,7 @@ void Game::SaveCameraPosition()
 
 	if (camera_save.is_open())
 	{
-		for (size_t i = 0; i < 16; i++)
+		for (s32 i = 0; i < 16; i++)
 		{
 			camera_save << m_Camera->GetOrientation()[i];
 			camera_save << "\n";

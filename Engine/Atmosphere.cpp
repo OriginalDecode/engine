@@ -5,9 +5,10 @@
 #include <Engine/Engine.h>
 #include <Engine/Model.h>
 #include <Engine/Quad.h>
-#include <d3dcompiler.h>
-#include <string.h>
 #include <Engine/AtmosphereModel.h>
+#include <Engine/IGraphicsDevice.h>
+
+#include <string.h>
 
 Atmosphere::~Atmosphere()
 {
@@ -17,54 +18,51 @@ Atmosphere::~Atmosphere()
 
 void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position)
 {
+ 	m_OuterRadius = outer_radius;
+ 	m_OuterOrientation.SetPosition(position);
+ 
+ 	m_InnerRadius = inner_radius;
+ 	m_InnerOrientation.SetPosition(position);
 
-// 	m_OuterRadius = outer_radius;
-// 	m_OuterOrientation.SetPosition(position);
-// 
-// 	m_InnerRadius = inner_radius;
-// 	m_InnerOrientation.SetPosition(position);
+	graphics::IGraphicsDevice& device = Engine::GetInstance()->GetAPI()->GetDevice();
 
-	//m_VertexBuffer = m_API->CreateConstantBuffer(sizeof(cbVertex));
-	//m_PixelBuffer = m_API->CreateConstantBuffer(sizeof(cbPixel));
+	m_VertexBuffer = device.CreateConstantBuffer(sizeof(cbVertex), "Atmosphere cbVertex");
+	m_PixelBuffer =  device.CreateConstantBuffer(sizeof(cbPixel), "Atmosphere cbPixel");
 
-	//m_OuterOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_OuterRadius, m_OuterRadius, m_OuterRadius, 1)) * m_OuterOrientation;
-	//m_InnerOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_InnerRadius, m_InnerRadius, m_InnerRadius, 1)) * m_InnerOrientation;
+	m_OuterOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_OuterRadius, m_OuterRadius, m_OuterRadius, 1)) * m_OuterOrientation;
+	m_InnerOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_InnerRadius, m_InnerRadius, m_InnerRadius, 1)) * m_InnerOrientation;
 
-	//const VirtualFileSystem& vfs = Engine::GetInstance()->GetVFS();
-// 	std::string atmosphere = Engine::GetInstance()->LoadModel<AtmosphereModel>(vfs.GetFile("Models/atmosphere.fbx").c_str(),
-// 																				  "Shaders/skysphere.json",
-// 																				  m_OuterSphere, false);
-// 	m_OuterSphere = static_cast<AtmosphereModel*>(Engine::GetInstance()->GetModel(atmosphere.c_str()));
+	const VirtualFileSystem& vfs = Engine::GetInstance()->GetVFS();
+ 	u64 atmosphere = Engine::GetInstance()->LoadModel<AtmosphereModel>(vfs.GetFile("Models/atmosphere.fbx"), "Shaders/skysphere.json", false);
+ 	m_OuterSphere = static_cast<AtmosphereModel*>(Engine::GetInstance()->GetModel(atmosphere));
 
-// 	m_VertexStruct.m_InnerRadius = m_InnerRadius;
-// 	m_VertexStruct.m_OuterRadius = m_OuterRadius;
-// 
-// 	m_PixelStruct.m_InnerRadius = m_InnerRadius;
-// 	m_PixelStruct.m_OuterRadius = m_OuterRadius;
+ 	m_VertexStruct.m_InnerRadius = m_InnerRadius;
+ 	m_VertexStruct.m_OuterRadius = m_OuterRadius;
+ 
+ 	m_PixelStruct.m_InnerRadius = m_InnerRadius;
+ 	m_PixelStruct.m_OuterRadius = m_OuterRadius;
 
 	//m_InnerSphere->SetOrientation(m_InnerOrientation);
-	//m_OuterSphere->SetOrientation(m_OuterOrientation);
+	m_OuterSphere->SetOrientation(m_OuterOrientation);
 }
 
-void Atmosphere::Render(const CU::Matrix44f& orientation, Texture* depth)
+void Atmosphere::Render(const graphics::RenderContext& rc)
 {
-	//m_API->SetBlendState(eBlendStates::NO_BLEND);
-	//m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-	//m_API->SetRasterizer(eRasterizer::CULL_NONE);
+	Engine* pEngine = Engine::GetInstance();
+	graphics::IGraphicsContext& ctx = pEngine->GetAPI()->GetContext();
+	graphics::IGraphicsAPI* api = pEngine->GetAPI();
 
-	//UpdateCameraData();
+	ctx.SetBlendState(api->GetBlendState(graphics::NO_BLEND));
+	ctx.SetDepthState(api->GetDepthStencilState(graphics::Z_ENABLED), 1);
+	ctx.SetRasterizerState(api->GetRasterizerState(graphics::CULL_NONE));
 
-	//m_API->UpdateConstantBuffer(m_VertexBuffer, &m_VertexStruct);
-	//m_API->UpdateConstantBuffer(m_PixelBuffer, &m_PixelStruct);
+	//ctx.UpdateConstantBuffer(m_VertexBuffer, &m_VertexStruct);
+	//ctx.UpdateConstantBuffer(m_PixelBuffer, &m_PixelStruct);
 
-	//IDevContext* ctx = m_API->GetContext();
-	////ctx->OMSetRenderTargets(1, m_API->GetBackbufferRef(), depth->GetDepthView());
+	//ctx.VSSetConstantBuffer(1, 1, &m_VertexBuffer);
+	//ctx.PSSetConstantBuffer(0, 1, &m_PixelBuffer);
 
-	//ctx->VSSetConstantBuffers(1, 1, &m_VertexBuffer);
-	//ctx->PSSetConstantBuffers(0, 1, &m_PixelBuffer);
-
-	//m_OuterSphere->Render(orientation, m_Camera->GetPerspective(), render_context);
-	////m_InnerSphere->Render(orientation, m_Camera->GetPerspective(), render_context);
+	m_OuterSphere->Render(rc);
 
 }
 

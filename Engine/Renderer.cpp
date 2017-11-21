@@ -222,7 +222,9 @@ void Renderer::Render()
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
+	m_Atmosphere.Render(m_RenderContext);
 	RenderTerrain(false);
+
 
 	if (m_RenderInstanced)
 		Render3DCommandsInstanced();
@@ -231,57 +233,14 @@ void Renderer::Render()
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
-
-	ctx.ClearRenderTarget(m_HoverTexture->GetRenderTargetView(), clearcolor::black);
-	ctx.OMSetRenderTargets(1, m_HoverTexture->GetRenderTargetRef(), nullptr);
-
-
-	Engine& engine = m_RenderContext.GetEngine();
-	const Entity hover_e = debug::DebugHandle::GetInstance()->GetHoveredEntity();
-	const Entity selected_e = debug::DebugHandle::GetInstance()->GetSelectedEntity();
-	if (hover_e > 0)
-	{
-		const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(hover_e);
-
-		for (const ModelInstance& instance : graphics.m_Instances)
-		{
-			m_HoverModel = engine.GetModel(instance.m_ModelID);
-			if (m_HoverModel)
-			{
-				const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(hover_e);
-				m_HoverModel->AddOrientation(translation.myOrientation);
-				m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
-			}
-		}
-	}
-
-	ctx.ClearRenderTarget(m_SelectedTexture->GetRenderTargetView(), clearcolor::black);
-	ctx.OMSetRenderTargets(1, m_SelectedTexture->GetRenderTargetRef(), nullptr);
-	if (selected_e > 0)
-	{
-		const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(hover_e);
-
-		for (const ModelInstance& instance : graphics.m_Instances)
-		{
-			m_SelectedModel = engine.GetModel(instance.m_ModelID);
-			if (m_SelectedModel)
-			{
-				const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(selected_e);
-				m_SelectedModel->AddOrientation(translation.myOrientation);
-				m_SelectedModel->RenderInstanced(m_RenderContext, m_SelectedEffect);
-			}
-		}
-
-	
-	}
+	DrawHoveredEntity(ctx);
+	DrawSelectedEntity(ctx);
 #endif
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
-	m_DeferredRenderer->DeferredRender(shadow_mvp
-		, m_Direction
-		, m_RenderContext);
+	m_DeferredRenderer->DeferredRender(shadow_mvp, m_Direction, m_RenderContext);
 
 	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
@@ -306,10 +265,13 @@ void Renderer::Render()
 		m_DeferredRenderer->Finalize();
 	}
 
+
+#if !defined(_PROFILE) && !defined(_FINAL)
 	m_PostProcessManager.Process(m_HoverTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
 	m_PostProcessManager.Process(m_SelectedTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
-	m_RenderContext.GetAPI().SetDefaultTargets();
+#endif
 
+	m_RenderContext.GetAPI().SetDefaultTargets();
 	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	RenderLines();
@@ -328,7 +290,51 @@ void Renderer::Render()
 
 }
 
+void Renderer::DrawSelectedEntity(graphics::IGraphicsContext &ctx)
+{
+	ctx.ClearRenderTarget(m_SelectedTexture->GetRenderTargetView(), clearcolor::black);
+	ctx.OMSetRenderTargets(1, m_SelectedTexture->GetRenderTargetRef(), nullptr);
+	Engine& engine = m_RenderContext.GetEngine();
+	const Entity selected_e = debug::DebugHandle::GetInstance()->GetSelectedEntity();
+	if (selected_e > 0)
+	{
+		const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(selected_e);
 
+		for (const ModelInstance& instance : graphics.m_Instances)
+		{
+			m_SelectedModel = engine.GetModel(instance.m_ModelID);
+			if (m_SelectedModel)
+			{
+				const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(selected_e);
+				m_SelectedModel->AddOrientation(translation.myOrientation);
+				m_SelectedModel->RenderInstanced(m_RenderContext, m_SelectedEffect);
+			}
+		}
+	}
+}
+
+void Renderer::DrawHoveredEntity(graphics::IGraphicsContext &ctx)
+{
+	ctx.ClearRenderTarget(m_HoverTexture->GetRenderTargetView(), clearcolor::black);
+	ctx.OMSetRenderTargets(1, m_HoverTexture->GetRenderTargetRef(), nullptr);
+	Engine& engine = m_RenderContext.GetEngine();
+	const Entity hover_e = debug::DebugHandle::GetInstance()->GetHoveredEntity();
+	if (hover_e > 0)
+	{
+		const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(hover_e);
+
+		for (const ModelInstance& instance : graphics.m_Instances)
+		{
+			m_HoverModel = engine.GetModel(instance.m_ModelID);
+			if (m_HoverModel)
+			{
+				const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(hover_e);
+				m_HoverModel->AddOrientation(translation.myOrientation);
+				m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
+			}
+		}
+	}
+}
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::WriteDebugTextures()

@@ -26,7 +26,7 @@ void AtmosphereModel::Render(const graphics::RenderContext& rc)
 		child->Render(rc);
 	}
 
-	if (m_IsRoot || m_Surfaces.Empty())
+	if (m_IsRoot)
 		return;
 
 	UpdateConstantBuffer(rc);

@@ -42,7 +42,6 @@ public:
 	void Render();
 
 
-
 	void ProcessWater();
 
 	void AddTerrain(Terrain* someTerrain);
@@ -154,6 +153,8 @@ private:
 	Quad* m_DebugQuad = nullptr;
 	void WriteDebugTextures();
 
+	void DrawHoveredEntity(graphics::IGraphicsContext &ctx);
+	void DrawSelectedEntity(graphics::IGraphicsContext &ctx);
 
 public:
 	void SetRenderLines(bool render_lines) { m_RenderLines = render_lines; }

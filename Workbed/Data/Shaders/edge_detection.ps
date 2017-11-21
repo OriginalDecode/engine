@@ -37,7 +37,7 @@ void make_kernel(inout float4 n[9], float2 tex)
 
 float4 main(VS_OUTPUT input) : SV_Target
 {
-   
+    float4 col = SceneTexture.Sample(sampler0, input.uv);
     float4 sample_points[9];
     make_kernel(sample_points, input.uv);
 
@@ -46,5 +46,5 @@ float4 main(VS_OUTPUT input) : SV_Target
   
     float sobel = sqrt((sobel_edge_h * sobel_edge_h) + (sobel_edge_v * sobel_edge_v));
 
-    return float4(sobel.xxxx);
+    return float4(sobel.xxxx) * col;
 };

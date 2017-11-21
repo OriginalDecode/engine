@@ -97,6 +97,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_HoverTexture = new Texture;
 	m_HoverTexture->Initiate(desc, "HoverTexture");
 	m_RenderHoverEffect = Engine::GetInstance()->GetEffect("Shaders/hover.json");
+	m_SelectedEffect = Engine::GetInstance()->GetEffect("Shaders/selected.json");
 
 	m_SelectedTexture = new Texture;
 	m_SelectedTexture->Initiate(desc, "SelectedTexture");
@@ -267,7 +268,7 @@ void Renderer::Render()
 			{
 				const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(selected_e);
 				m_SelectedModel->AddOrientation(translation.myOrientation);
-				m_SelectedModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
+				m_SelectedModel->RenderInstanced(m_RenderContext, m_SelectedEffect);
 			}
 		}
 

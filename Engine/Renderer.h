@@ -150,6 +150,7 @@ private:
 	Model* m_SelectedModel = nullptr;
 
 	Effect* m_RenderHoverEffect = nullptr;
+	Effect* m_SelectedEffect = nullptr;
 	Quad* m_DebugQuad = nullptr;
 	void WriteDebugTextures();
 

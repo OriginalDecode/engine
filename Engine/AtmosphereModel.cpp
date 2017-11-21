@@ -17,6 +17,7 @@ void AtmosphereModel::Initiate(const std::string& filename)
 	{
 		child->Initiate(filename);
 	}
+	Model::Initiate(filename);
 }
 
 void AtmosphereModel::Render(const graphics::RenderContext& rc)
@@ -32,7 +33,7 @@ void AtmosphereModel::Render(const graphics::RenderContext& rc)
 	UpdateConstantBuffer(rc);
 
 	auto& ctx = rc.GetContext();
-	ctx.PSSetSamplerState(0, 1, Engine::GetInstance()->GetActiveSampler());
+	ctx.PSSetSamplerState(0, 1, Engine::GetInstance()->GetCurrentSampler());
 	ctx.DrawIndexed(this, m_Effect);
 }
 

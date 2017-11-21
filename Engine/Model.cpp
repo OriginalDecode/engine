@@ -200,7 +200,7 @@ void Model::AddTexture(const std::string& path, Effect::TextureSlot slot)
 
 void Model::UpdateConstantBuffer(const graphics::RenderContext& rc)
 {
-	if (m_IsRoot )
+	if (m_IsRoot)
 		return;
 
 	graphics::IGraphicsContext& ctx = rc.GetContext();

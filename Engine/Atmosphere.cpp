@@ -55,13 +55,6 @@ void Atmosphere::Render(const graphics::RenderContext& rc)
 	ctx.SetBlendState(api->GetBlendState(graphics::NO_BLEND));
 	ctx.SetDepthState(api->GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api->GetRasterizerState(graphics::CULL_NONE));
-
-	//ctx.UpdateConstantBuffer(m_VertexBuffer, &m_VertexStruct);
-	//ctx.UpdateConstantBuffer(m_PixelBuffer, &m_PixelStruct);
-
-	//ctx.VSSetConstantBuffer(1, 1, &m_VertexBuffer);
-	//ctx.PSSetConstantBuffer(0, 1, &m_PixelBuffer);
-
 	m_OuterSphere->Render(rc);
 
 }

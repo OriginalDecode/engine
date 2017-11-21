@@ -222,7 +222,6 @@ void Renderer::Render()
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
-	m_Atmosphere.Render(m_RenderContext);
 	RenderTerrain(false);
 
 
@@ -237,6 +236,7 @@ void Renderer::Render()
 	DrawSelectedEntity(ctx);
 #endif
 
+	//m_Atmosphere.Render(m_RenderContext);
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();

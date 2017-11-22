@@ -41,27 +41,61 @@ namespace graphics
 			ID3D11ShaderResourceView* null_resource = nullptr;
 			m_Context->PSSetShaderResources(start_slot, count, &null_resource);
 		}
-
 	}
 
 	void DX11Context::GSSetShaderResource(s32 start_slot, s32 count, void* resources)
 	{
-		m_Context->GSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+		if (resources)
+		{
+			m_Context->GSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+		}
+		else
+		{
+			ID3D11ShaderResourceView* null_resource = nullptr;
+			m_Context->GSSetShaderResources(start_slot, count, &null_resource);
+		}
 	}
 
 	void DX11Context::DSSetShaderResource(s32 start_slot, s32 count, void* resources)
 	{
-		m_Context->DSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+		if (resources)
+		{
+			m_Context->DSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+		}
+		else
+		{
+			ID3D11ShaderResourceView* null_resource = nullptr;
+			m_Context->DSSetShaderResources(start_slot, count, &null_resource);
+		}
+		//m_Context->DSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
 	}
 
 	void DX11Context::HSSetShaderResource(s32 start_slot, s32 count, void* resources)
 	{
-		m_Context->HSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+		if (resources)
+		{
+			m_Context->HSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+		}
+		else
+		{
+			ID3D11ShaderResourceView* null_resource = nullptr;
+			m_Context->HSSetShaderResources(start_slot, count, &null_resource);
+		}
+		//m_Context->HSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
 	}
 
 	void DX11Context::CSSetShaderResource(s32 start_slot, s32 count, void* resources)
 	{
-		m_Context->CSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+		if (resources)
+		{
+			m_Context->CSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+		}
+		else
+		{
+			ID3D11ShaderResourceView* null_resource = nullptr;
+			m_Context->CSSetShaderResources(start_slot, count, &null_resource);
+		}
+		//m_Context->CSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
 	}
 
 	void DX11Context::SetVertexShader(CompiledShader* shader)

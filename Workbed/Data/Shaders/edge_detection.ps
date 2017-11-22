@@ -17,8 +17,8 @@ SamplerState sampler0 : register(s0);
 void make_kernel(inout float4 n[9], float2 tex)
 {
 
-    float dx = 1.0 / ScreenWidth;
-    float dy = 1.0 / ScreenHeight;
+    float dx = (1.0 / ScreenWidth) * 2;
+    float dy = (1.0 / ScreenHeight) * 4;
     
     n[0] = SceneTexture.Sample(sampler0, tex + float2(-dx, -dy)); // LEFT
     n[1] = SceneTexture.Sample(sampler0, tex + float2(0, -dy));   // MIDDLE

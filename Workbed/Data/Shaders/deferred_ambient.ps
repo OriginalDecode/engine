@@ -119,7 +119,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 spec = 0;
 	float3 light_dir = float3(0,-1,0);//light_direction.xyz;
 	float3 light_col = float3(1, 1, 1);
-	float light_intensity = 5;
+	float light_intensity = 10;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
 	float NdC = saturate(dot(normal, to_eye));
@@ -127,8 +127,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float4 newPos = pixel_pos + (normal * 0.4);
 	newPos.w = 1;
-	
-	
 	float4 shadowVec = mul(newPos, ShadowMVP);
 	shadowVec.xyz /= shadowVec.w;
 	shadowVec.y = -shadowVec.y;
@@ -139,7 +137,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float compareValue = shadowVec.z;
 	float sampleValue = ShadowTexture.Sample(sampler0, shadowVec.xy).r;
 
-	if(sampleValue < compareValue)
+	if(sampleValue > compareValue)
 	{
 		for(int i = 0; i < 1; i++)
 		{

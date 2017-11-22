@@ -31,12 +31,17 @@ struct VS_OUTPUT
 
 GBuffer main(VS_OUTPUT input) : SV_Target
 {
+	float4 normal = float4(input.normal, 1);
+	normal += 1;
+	normal *= 0.5;
+
+
 	GBuffer output = (GBuffer)0;
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);//float4(0,1,0,1);
 	albedo = pow(albedo, 2.2);
 	output.Albedo = albedo;
-	float roughness = RoughnessTexture.Sample(sampler0, input.uv).r;
-	output.Normal = NormalTexture.Sample(sampler0, input.uv) * 2 - 1;
+	float roughness = 1; //RoughnessTexture.Sample(sampler0, input.uv).r;
+	output.Normal = normal; //NormalTexture.Sample(sampler0, input.uv) ;
 	output.Normal.w = 0;
 	output.Depth = float4(input.pos.z, roughness, 0, 0);
 	output.Emissive = float4(1,1,1,1);

@@ -21,12 +21,12 @@ namespace graphics
 	{
 		if (resources)
 		{
-			m_Context->PSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
+			m_Context->VSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
 		}
 		else
 		{
 			ID3D11ShaderResourceView* null_resource = nullptr;
-			m_Context->PSSetShaderResources(start_slot, count, &null_resource);
+			m_Context->VSSetShaderResources(start_slot, count, &null_resource);
 		}
 	}
 

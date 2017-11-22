@@ -236,7 +236,6 @@ void Renderer::Render()
 	DrawSelectedEntity(ctx);
 #endif
 
-	//m_Atmosphere.Render(m_RenderContext);
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
@@ -245,6 +244,8 @@ void Renderer::Render()
 	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	ctx.GSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+
+	m_Atmosphere.Render(m_RenderContext);
 
 	ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
 	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);

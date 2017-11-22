@@ -246,6 +246,8 @@ void Renderer::Render()
 	ctx.GSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	m_Atmosphere.Render(m_RenderContext);
 
+	m_Atmosphere.Render(m_RenderContext);
+
 	ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
 	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
 	RenderSpotlight();

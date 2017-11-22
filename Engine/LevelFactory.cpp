@@ -385,7 +385,6 @@ void LevelFactory::CreateTerrain(std::string terrain_path)
 
 void LevelFactory::CreatePBLLevel(s32 steps)
 {
-	
 	CreateTerrain("Data/Textures/flat_height.tga");
 	float height = 1.f;
 	float x_start = 5.f;
@@ -458,9 +457,6 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 		}
 
 	}
-
-	//SaveLevel("data/pbr_level/", "pbr_level.level");
-
 }
 
 #include <JSON/include/writer.h>

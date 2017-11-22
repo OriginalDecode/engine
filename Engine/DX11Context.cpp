@@ -276,7 +276,7 @@ namespace graphics
 
 		SetDepthState(Engine::GetAPI()->GetDepthStencilState(Z_ENABLED), 1);
 		fx->Use();
-		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
+		m_Context->Draw(vtx.GetVertexCount(), 0);
 		fx->Clear();
 	}
 

@@ -156,12 +156,6 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 			debug.m_DirtyFlag = true;
 		}
 	}
-	
-
-	
-
-
-	//UpdateOBBs();
 }
 
 bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vector3f& ray_dir)
@@ -309,83 +303,10 @@ void DebugSystem::UpdateOBBs()
 
 }
 
-//This needs to be optimized as hell./*
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
 	debug::DebugHandle::GetInstance()->ConfirmEntity();
-	//debug::DebugHandle::GetInstance()->SetEntity(m_ed)
-
-	//UpdateOBBs();
-
-	//const CU::Vector3f cam_pos = CU::Vector3f(message.camera_pos_x, message.camera_pos_y, message.camera_pos_z);
-	//const CU::Vector3f ray_dir = CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z);
-
-	/*if ( CheckGizmoCollision(cam_pos, ray_dir) )
-		return;*/
-
-	//const auto& entities = GetEntities();
-// 	CU::GrowingArray<entity_collisions> collisions;
-// 	for (s32 i = entities.Size() - 1; i >= 0; i--)
-// 	{
-// 		if(i < 0)
-// 			continue;
-// 
-// 		Entity e = entities[i];
-// 		DebugComponent& debug = GetComponent<DebugComponent>(e);
-// 		debug.debugColor = { 255.f, 255.f, 255.f, 255.f };
-// 
-// 		for (float j = 0; j < 25.f; j += 0.05f)
-// 		{
-// 			CU::Vector3f step = (ray_dir * j);
-// 			CU::Vector3f new_pos = cam_pos + step; //cam_pos is the original position of the ray, should be renamed.
-// 
-// 			if (debug.m_OBB.Inside(new_pos))
-// 			{
-// 				entity_collisions collision;
-// 				collision.m_ID = e;
-// 				collision.m_Position = new_pos;
-// 				collisions.Add(collision);
-// 				break;
-// 			}
-// 		}
-// 	}
-
-// 	float prev_length = FLT_MAX;
-// 	entity_collisions closest;
-// 	Entity prev_entity = -1;
-// 	for (const entity_collisions& collision : collisions)
-// 	{
-// 		float new_length = CU::Math::Length2(collision.m_Position - cam_pos);
-// 		if (new_length < prev_length)
-// 		{
-// 			prev_length = new_length;
-// 			closest = collision;
-// 			prev_entity = closest.m_ID;
-// 		}
-// 	}
-
-
-	//m_CurrentEntity = m_Engine->PickEntity(m_Engine->GetTexture("entity_id"));
 	m_Engine->PickEntity();
-	//debug::DebugHandle::GetInstance()->SetEntity(m_CurrentEntity);
-
-
-
-// 	if (prev_entity == closest.m_ID)
-// 	{
-// 		DebugComponent& debug = GetComponent<DebugComponent>(closest.m_ID);
-// 		debug.debugColor = { 255.f,0.f,0.f,255.f };
-// //		Engine::GetInstance()->SelectEntity(closest.m_ID);
-// 		m_PrevID = prev_entity;
-// 		m_CurrentEntity = m_PrevID;
-// 		debug::DebugHandle::GetInstance()->SetEntity(m_CurrentEntity);
-// 		//bool has_render = node_manager.HasComponent(m_CurrentEntity, CreateFilter<Requires<RenderComponent>>());
-// 		//if ( has_render )
-// 		//{
-// 			//RenderComponent& r = node_manager.GetComponent<RenderComponent>(m_CurrentEntity);
-// 			//current_model = r.myModelID;
-// 		//}
-// 	}
 }
 
 void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation)
@@ -400,20 +321,7 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p7.color = p1.color;
 	p8.color = p1.color;
 
-
-	//p1.position = orientation.GetTranslation();
-	//p1.position.y += 2.f;
-	//p1.color = { 255.f, 0.f, 255.f, 255.f };
-
-	//p2.position = orientation.GetTranslation();
-	//p2.position.y -= 2.f;
-	//p2.color = { 0.f, 255.f, 255.f, 255.f };
-
-	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
-
-	//return;
-
-	p1.position = orientation.GetTranslation(); // translation.myOrientation.GetTranslation();
+	p1.position = orientation.GetTranslation(); 
 	p2.position = p1.position;
 	p3.position = p1.position;
 	p4.position = p1.position;

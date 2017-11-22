@@ -14,7 +14,7 @@ Line3D::~Line3D()
 
 void Line3D::Initiate(int aLineAmount /*= 256*/)
 {
-	m_LineAmount = 256;
+	m_LineAmount = 512;
 	m_Effect = Engine::GetInstance()->GetEffect("Shaders/line.json");
 	m_LineBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "Line Constant Buffer");
 	CreateBuffer();
@@ -33,7 +33,7 @@ void Line3D::Render(LinePoint points[2], const graphics::RenderContext& rc)
 					 sizeof(LinePoint) * m_Vertices.Size(),
 					 graphics::MAP_WRITE_DISCARD);
 
- 	ctx.UpdateConstantBuffer(m_LineBuffer, &m_Orientation[0]);
+ 	ctx.UpdateConstantBuffer(m_LineBuffer, &m_Orientation);
 	ctx.VSSetConstantBuffer(1, 1, &m_LineBuffer);
 
 

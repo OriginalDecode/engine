@@ -26,7 +26,6 @@ VS_OUTPUT main(VS_INPUT input)
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	input.pos.w = 1;
 
-	output.pos = mul(input.pos, orientation);
 	output.pos = mul(input.pos, camera_view_x_proj);
 
 	output.color = input.color;

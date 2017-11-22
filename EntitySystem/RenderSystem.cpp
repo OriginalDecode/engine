@@ -75,22 +75,6 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 
 		CU::Matrix44f orientation = translation.myOrientation;
 		orientation = CU::Matrix44f::CreateScaleMatrix(render.m_Scale) * orientation;
-
-		/*if (render.myModelID.empty())
-			DL_ASSERT("Empty key!");*/
-
-			/*for (const ModelInstance& i : render.m_Instances)
-			{
-				CU::Matrix44f txi = t * i.m_Orientation;
-				AddRenderCommand(ModelCommand(i.m_ModelID, txi, i.m_RenderWireframe));
-			}
-	*/
-	//auto& pbl = m_Manager.GetComponent<PBLComponent>(e);
-		/*AddRenderCommand(ModelCommand(render.m_ModelID
-			, render.m_MaterialKey
-			, translation.myOrientation.GetPosition()
-			, render.m_RenderWireframe
-		));*/
 		
 		for (const ModelInstance& instance : render.m_Instances)
 		{

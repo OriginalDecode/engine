@@ -41,6 +41,8 @@ public:
 
 	void Render();
 
+	void SetupViewProj();
+
 
 	void ProcessWater();
 
@@ -136,6 +138,8 @@ private:
 		CU::Matrix44f m_View;
 		CU::Vector4f m_CameraPos;
 	} m_PerFramePixelStruct;
+
+	CU::Matrix44f m_ViewProj;
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)

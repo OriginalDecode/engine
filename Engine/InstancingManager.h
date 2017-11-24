@@ -30,7 +30,6 @@ public:
 	void AddGPUDataToInstance(u64 key, GPUModelData data);
 
 	void DoInstancing(const graphics::RenderContext& rc, bool shadowing);
-	void EndFrame();
 
 private:
 	std::map<u64, InstanceObject> m_InstanceObjects; /* the key is the material */

@@ -82,6 +82,10 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 
+	
+
+	//pDebug->RegisterCheckbox(debug::DebugCheckbox(&m_LightModelWireframe, "Light Model Wireframe"));
+
 	TextureDesc desc;
 	desc.m_Width = window_size.m_Width;
 	desc.m_Height = window_size.m_Height;
@@ -109,6 +113,12 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "depth");
 
+	//m_DebugTextures.Add(new Texture);
+	//m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "metalness");
+
+	//m_DebugTextures.Add(new Texture);
+	//m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "roughness");
+
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "emissive");
 
@@ -120,6 +130,17 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "edge");
+
+	//Effect* pEdge = Engine::GetInstance()->GetEffect("Shaders/edge_detection.json");
+	//pEdge->AddShaderResource(m_HoverTexture, Effect::DIFFUSE);
+
+// 	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
+// 	debug_textures->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
+// 	debug_textures->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
+// 	debug_textures->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
+// 	debug_textures->AddShaderResource(m_GBuffer.GetEmissive(), Effect::EMISSIVE);
+// 	debug_textures->AddShaderResource(m_GBuffer.GetIDTexture(), Effect::REGISTER_5);
+// 	debug_textures->AddShaderResource(m_HoverTexture, Effect::REGISTER_6);
 
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 
@@ -142,14 +163,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
 	m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(PerFramePixelBuffer), "PerFramePixelBuffer");
 	m_PostProcessManager.Initiate();
-
-	m_WaterPlane = new WaterPlane;
-	//m_WaterPlane->Initiate({ -512, 0, -512 });
-
-	m_WaterCamera = new Camera;
-	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.01f, 100.f, 90.f);
-
-
 
 }
 
@@ -194,46 +207,45 @@ void Renderer::Render()
 
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 
-	SetupViewProj();
-
-	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &m_ViewProj, sizeof(CU::Matrix44f));
+	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
+	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
+	const CU::Matrix44f& camera_view_proj = CU::Math::Inverse(camera_orientation) * camera_projection;
+	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
-	ctx.DSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 
-
-	//RenderTerrain(false);
-
-	ProcessWater();
-
-	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
-	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
-
-	if (m_RenderInstanced)
-		Render3DCommandsInstanced();
-	else
-		Render3DCommands();
-
-	m_WaterPlane->Render(m_RenderContext);
-
-#if !defined(_PROFILE) && !defined(_FINAL)
-	WriteDebugTextures();
-	DrawHoveredEntity(ctx);
-	DrawSelectedEntity(ctx);
-#endif
 	m_PerFramePixelStruct.m_Projection = CU::Math::InverseReal(m_Camera->GetPerspective());
 	m_PerFramePixelStruct.m_View = m_Camera->GetOrientation();
 	m_PerFramePixelStruct.m_CameraPos = m_Camera->GetPosition();
 	ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
 	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
 
+	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
+	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
+
+	RenderTerrain(false);
+
+
+	if (m_RenderInstanced)
+		Render3DCommandsInstanced();
+	else
+		Render3DCommands();
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+	WriteDebugTextures();
+	DrawHoveredEntity(ctx);
+	DrawSelectedEntity(ctx);
+#endif
+
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_DeferredRenderer->DeferredRender(shadow_mvp, m_Direction, m_RenderContext);
 
-	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &m_ViewProj, sizeof(CU::Matrix44f));
+	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	ctx.GSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+	m_Atmosphere.Render(m_RenderContext);
+
 	m_Atmosphere.Render(m_RenderContext);
 
 	ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
@@ -243,6 +255,7 @@ void Renderer::Render()
 
 	RenderParticles(nullptr);
 
+	//Detect edges on specified texture
 
 	if (m_PostProcessManager.GetFlags() != 0)
 	{
@@ -261,16 +274,13 @@ void Renderer::Render()
 #endif
 
 	m_RenderContext.GetAPI().SetDefaultTargets();
-	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &m_ViewProj, sizeof(CU::Matrix44f));
+	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	RenderLines();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();
 #endif
-
-	m_InstancingManager.EndFrame();
-
 	m_RenderContext.GetAPI().EndFrame();
 
 
@@ -280,13 +290,6 @@ void Renderer::Render()
 	m_Synchronizer->SwapBuffer();
 	m_Synchronizer->RenderIsDone();
 
-}
-
-void Renderer::SetupViewProj()
-{
-	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
-	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
-	m_ViewProj = CU::Math::Inverse(camera_orientation) * camera_projection;
 }
 
 void Renderer::DrawSelectedEntity(graphics::IGraphicsContext &ctx)
@@ -352,32 +355,36 @@ void Renderer::WriteDebugTextures()
 
 void Renderer::ProcessWater()
 {
-	memcpy(m_WaterCamera, m_Camera, sizeof(Camera)); //This seem extremely unsafe!
-	Camera* old_camera = m_Camera;
-	m_Camera = m_WaterCamera;
-
-
-	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &m_ViewProj, sizeof(CU::Matrix44f));
-	m_WaterPlane->SetupRefractionRender(m_RenderContext);
-	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 2.f }, m_RenderContext);
-	m_InstancingManager.DoInstancing(m_RenderContext, false);
-
-	CU::Vector3f position0 = old_camera->GetPosition();
-	m_Camera->SetPosition(position0);
-
-	float distance = 2 * (position0.y - m_WaterPlane->GetPosition().y);
-	position0.y -= distance;
-	m_Camera->SetPosition(position0);
-	m_Camera->InvertAll();
-	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &m_ViewProj, sizeof(CU::Matrix44f));
-	m_WaterPlane->SetupReflectionRender(m_RenderContext);
-	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, 2.f }, m_RenderContext);
-	m_InstancingManager.DoInstancing(m_RenderContext, false);
-
-	position0.y += distance;
-	m_Camera->SetPosition(position0);
-
-	m_Camera = old_camera;
+	// 	memcpy(m_WaterCamera, m_Camera, sizeof(Camera)); //This seem extremely unsafe!
+	// 	Camera* old_camera = m_Camera;
+	// 	m_Camera = m_WaterCamera;
+	// 
+	// 
+	// 	m_WaterPlane->SetupRefractionRender(m_RenderContext);
+	// 	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 2.f }, m_RenderContext);
+	// 	RenderTerrain(true);
+	// 
+	// 	Render3DCommandsInstanced();
+	// 
+	// 	CU::Vector3f position0 = old_camera->GetPosition();
+	// 	m_Camera->SetPosition(position0);
+	// 
+	// 	float distance = 2 * (position0.y - m_WaterPlane->GetPosition().y);
+	// 	position0.y -= distance;
+	// 	m_Camera->SetPosition(position0);
+	// 	m_Camera->InvertAll();
+	// 	m_WaterPlane->SetupReflectionRender(m_RenderContext);
+	// 	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, 2.f }, m_RenderContext);
+	// 	RenderTerrain(true);
+	// 
+	// 	Render3DCommandsInstanced();
+	// 	m_Atmosphere.Render(m_Camera->GetOrientation(), m_DepthTexture, m_RenderContext);
+	// 
+	// 	position0.y += distance;
+	// 	m_Camera->SetPosition(position0);
+	// 
+	// 
+	// 	m_Camera = old_camera;
 }
 
 void Renderer::RenderNonDeferred3DCommands()

@@ -14,32 +14,20 @@ WaterPlane::WaterPlane()
 	const float window_width = window_size.m_Width;
 	const float window_height = window_size.m_Height;
 
-	//DXGI_FORMAT_R16G16B16A16_FLOAT
-	//DXGI_FORMAT_R32_TYPELESS
-	//DXGI_FORMAT_R32_FLOAT
-	//DXGI_FORMAT_D32_FLOAT
+
 	TextureDesc desc;
 	desc.m_Width = (s32)window_width;
 	desc.m_Height = (s32)window_height;
 	desc.m_Usage = graphics::DEFAULT_USAGE;
 	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
-	desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
-	desc.m_TextureFormat = graphics::RGBA16_FLOAT;
 	desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
-
+	desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
 
 	m_Refraction = new Texture;
-	m_Refraction->Initiate(desc, true, "Water : RefractionDepth");
-
-	m_ReflectionDepth = new Texture;
-	m_ReflectionDepth->InitiateAsDepthStencil(window_width, window_height, "reflection_depth");
-
-	m_RefractionDepth = new Texture;
-	m_RefractionDepth->InitiateAsDepthStencil(window_width, window_height, "refraction_depth");
-
+	m_Refraction->Initiate(desc, "Water : RefractionDepth");
 
 	m_Reflection = new Texture;
-	m_Reflection->Initiate(desc, true, "Water : ReflectionDepth");
+	m_Reflection->Initiate(desc, "Water : ReflectionDepth");
 
 	m_Effect->AddShaderResource(m_RefractionG.GetDiffuse(), Effect::REFRACTION);
 	m_Effect->AddShaderResource(m_ReflectionG.GetDiffuse(), Effect::REFLECTION);
@@ -75,7 +63,6 @@ void WaterPlane::UpdateConstantBuffer(const graphics::RenderContext& rc)
 
 void WaterPlane::Render(const graphics::RenderContext& rc)
 {
-	
 	auto& ctx = rc.GetContext();
 	auto& api = rc.GetAPI();
 
@@ -84,8 +71,8 @@ void WaterPlane::Render(const graphics::RenderContext& rc)
 	ctx.SetRasterizerState(m_RenderWireframe ? api.GetRasterizerState(graphics::WIREFRAME) : api.GetRasterizerState(graphics::CULL_NONE));
 
 	UpdateConstantBuffer(rc);
-	ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);
-	ctx.DSSetConstantBuffer(1, 1, &m_ConstantBuffer);
+	ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
+	ctx.DSSetConstantBuffer(0, 1, &m_ConstantBuffer);
 	ctx.DrawIndexed(this, m_Effect);
 }
 
@@ -97,22 +84,22 @@ void WaterPlane::ShadowRender(const graphics::RenderContext& /*rc*/)
 void WaterPlane::SetupRefractionRender(const graphics::RenderContext& rc)
 {
 	m_RefractionG.Clear(clearcolor::black, rc);
-	rc.GetContext().ClearDepthStencilView(m_RefractionDepth->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1);
+	rc.GetContext().ClearDepthStencilView(m_Refraction->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1);
 	m_RefractionG.SetAsRenderTarget(m_Refraction, rc);
 }
 
 void WaterPlane::SetupReflectionRender(const graphics::RenderContext& rc)
 {
 	m_ReflectionG.Clear(clearcolor::black, rc);
-	rc.GetContext().ClearDepthStencilView(m_ReflectionDepth->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1);
+	rc.GetContext().ClearDepthStencilView(m_Reflection->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1);
 	m_ReflectionG.SetAsRenderTarget(m_Reflection, rc);
 }
 
 void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const graphics::RenderContext& rc)
 {
 	m_PixelStruct.m_CompareValue = plane;
-	rc.GetContext().UpdateConstantBuffer(m_cbPixel, &m_PixelStruct, sizeof(cbPixel));
-	rc.GetContext().PSSetConstantBuffer(0, 1, &m_cbPixel);
+	rc.GetContext().UpdateConstantBuffer(m_cbPixel, &m_PixelStruct, sizeof(m_PixelStruct));
+	rc.GetContext().PSSetConstantBuffer(0, 1, m_cbPixel);
 }
 
 void WaterPlane::AddSurface(Surface* /*surface*/)
@@ -181,16 +168,16 @@ void WaterPlane::CreatePlane()
 
 	IBuffer* vtx_buffer = device.CreateBuffer(vtx_desc, "WaterPlane VertexBuffer");
 
-	m_VertexWrapper.SetData(vtx_data);
-	m_VertexWrapper.SetStart(vtx_start);
-	m_VertexWrapper.SetStride(vtx_stride);
-	m_VertexWrapper.SetByteOffset(vtx_byte_offset);
-	m_VertexWrapper.SetVertexCount(vtx_count);
-	m_VertexWrapper.SetSize(vtx_size);
-	m_VertexWrapper.SetBuffer(vtx_buffer);
-	m_VertexWrapper.SetInputLayout(pInputLayout);
-	m_VertexWrapper.SetTopology(graphics::_4_CONTROL_POINT_PATCHLIST);
-
+	m_VertexWrapper = VertexWrapper(vtx_data,
+									vtx_start,
+									vtx_buff_count,
+									vtx_stride,
+									vtx_byte_offset,
+									vtx_count,
+									vtx_size,
+									vtx_buffer,
+									pInputLayout, 
+									graphics::TRIANGLE_LIST);
 #ifdef _DEBUG
 	m_VertexWrapper.m_DebugName = DEBUG_NAME("waterplane", WaterPlane);
 #endif
@@ -226,13 +213,13 @@ void WaterPlane::CreatePlane()
 	idx_desc.m_ByteWidth = idx_desc.m_Size;
 	IBuffer* idx_buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc, "WaterPlane IndexBuffer");
 
-	m_IndexWrapper.SetData(idx_data);
-	m_IndexWrapper.SetIndexCount(idx_count);
-	m_IndexWrapper.SetStart(idx_start);
-	m_IndexWrapper.SetSize(idx_size);
-	m_IndexWrapper.SetFormat(graphics::R32_UINT);
-	m_IndexWrapper.SetByteOffset(idx_byte_offset);
-	m_IndexWrapper.SetBuffer(idx_buffer);
+	m_IndexWrapper = IndexWrapper(idx_data, 
+								  idx_count, 
+								  idx_start, 
+								  idx_size, 
+								  graphics::R32_UINT, 
+								  idx_byte_offset, 
+								  idx_buffer);
 
 
 #ifdef _DEBUG

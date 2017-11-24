@@ -72,20 +72,8 @@ void InstancingManager::DoInstancing(const graphics::RenderContext& rc, bool sha
 		else
 			pModel->ShadowRenderInstanced(rc);
 
-
-
-	}
-}
-
-void InstancingManager::EndFrame()
-{
-	for (auto it = m_InstanceObjects.begin(); it != m_InstanceObjects.end(); it++)
-	{
-
-		InstanceObject& instance = it->second;
-		if (instance.m_GPUData.Empty())
-			continue;
-
 		instance.m_GPUData.RemoveAll();
+
+
 	}
 }

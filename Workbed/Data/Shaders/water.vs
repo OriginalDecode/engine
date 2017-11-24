@@ -1,11 +1,8 @@
-cbuffer per_frame : register( b0 )
+cbuffer Matrices : register(b0)
 {
-	row_major float4x4 camera_view_x_proj;
-};
-
-cbuffer Matrices : register(b1)
-{
-	row_major float4x4 orientation;
+	row_major float4x4 World;
+	row_major float4x4 View;
+	row_major float4x4 Projection;
 	float3 CameraPos;
 	float Time;
 };
@@ -38,10 +35,10 @@ VS_OUTPUT main(VS_INPUT input)
 	output.uv = input.uv;
 	output.clip = output.pos;
 
-	output.normal = mul(input.normal, orientation);
+	output.normal = mul(input.normal, World);
 	output.binorm = input.binorm;
-	output.tang  = mul(input.tang , orientation);
+	output.tang  = mul(input.tang , World);
 
-	output.worldpos = mul(input.pos, orientation);
+	output.worldpos = mul(input.pos, World);
 	return output;
 };

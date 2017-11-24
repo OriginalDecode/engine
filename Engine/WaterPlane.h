@@ -27,6 +27,8 @@ private:
 	struct cbMatrices
 	{
 		CU::Matrix44f m_World;
+		CU::Matrix44f m_InvertedView;
+		CU::Matrix44f m_Projection;
 		CU::Vector3f m_CameraPos;
 		float m_Time;
 	} m_VertexMatrices;
@@ -34,8 +36,6 @@ private:
 	CU::Matrix44f m_Orientation;
 
 	Texture* m_Refraction = nullptr;
-	Texture* m_RefractionDepth = nullptr;
-	Texture* m_ReflectionDepth = nullptr;
 	Texture* m_Reflection = nullptr;
 
 	graphics::GBuffer m_RefractionG;

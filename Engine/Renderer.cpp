@@ -229,7 +229,7 @@ void Renderer::Render()
 	if (m_RenderInstanced)
 		Render3DCommandsInstanced();
 	
-	ProcessWater();
+	//ProcessWater();
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 

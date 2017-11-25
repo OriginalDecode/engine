@@ -27,8 +27,6 @@ private:
 	struct cbMatrices
 	{
 		CU::Matrix44f m_World;
-		CU::Matrix44f m_InvertedView;
-		CU::Matrix44f m_Projection;
 		CU::Vector3f m_CameraPos;
 		float m_Time;
 	} m_VertexMatrices;

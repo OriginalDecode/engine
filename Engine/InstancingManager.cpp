@@ -42,38 +42,38 @@ void InstancingManager::DoInstancing(const graphics::RenderContext& rc, bool sha
 {
 	for (auto it = m_InstanceObjects.begin(); it != m_InstanceObjects.end(); it++)
 	{
-
 		InstanceObject& instance = it->second;
 
 		if (instance.m_GPUData.Empty())
 			continue;
 
 		Model* pModel = instance.m_Model;
-
-
-
-
 		if (!shadowing)
 			instance.m_Material->Use(pModel->GetEffect());
-
-
-		//CU::GrowingArray<GPUModelData>::Copy(pModel->m_GPUData, instance.m_GPUData);
-
 
 		for (const GPUModelData& data : instance.m_GPUData)
 		{
 			pModel->AddInstanceData(data);
 		}
 
-
-
 		if (!shadowing)
 			pModel->RenderInstanced(rc);
 		else
 			pModel->ShadowRenderInstanced(rc);
 
-		instance.m_GPUData.RemoveAll();
+		//instance.m_GPUData.RemoveAll();
+	}
+}
 
+void InstancingManager::EndFrame()
+{
+	for (auto it = m_InstanceObjects.begin(); it != m_InstanceObjects.end(); it++)
+	{
+		InstanceObject& instance = it->second;
+		if (instance.m_GPUData.Empty())
+			continue;
+
+		instance.m_GPUData.RemoveAll();
 
 	}
 }

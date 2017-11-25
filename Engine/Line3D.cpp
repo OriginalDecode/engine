@@ -14,7 +14,7 @@ Line3D::~Line3D()
 
 void Line3D::Initiate(int aLineAmount /*= 256*/)
 {
-	m_LineAmount = 512;
+	m_LineAmount = 2048;
 	m_Effect = Engine::GetInstance()->GetEffect("Shaders/line.json");
 	m_LineBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "Line Constant Buffer");
 	CreateBuffer();
@@ -27,14 +27,12 @@ void Line3D::Render(LinePoint points[2], const graphics::RenderContext& rc)
 	if (m_Vertices.Empty())
 		return;
 	auto& ctx = rc.GetContext();
+	m_VertexWrapper.SetVertexCount(m_Vertices.Size());
 	IBuffer* pBuffer = m_VertexWrapper.GetVertexBuffer();
 	ctx.UpdateBuffer(pBuffer,
 					 &m_Vertices[0],
 					 sizeof(LinePoint) * m_Vertices.Size(),
 					 graphics::MAP_WRITE_DISCARD);
-
- 	ctx.UpdateConstantBuffer(m_LineBuffer, &m_Orientation);
-	ctx.VSSetConstantBuffer(1, 1, &m_LineBuffer);
 
 
 	ctx.SetBlendState(rc.GetAPI().GetBlendState(graphics::NO_BLEND));
@@ -72,7 +70,7 @@ void Line3D::CreateBuffer()
 	m_VertexWrapper.SetStart(0);
 	m_VertexWrapper.SetStride(sizeof(LinePoint));
 	m_VertexWrapper.SetByteOffset(0);
-	m_VertexWrapper.SetVertexCount((m_LineAmount * 2));
+	m_VertexWrapper.SetVertexCount(1);
 	m_VertexWrapper.SetSize(buffer_desc.m_ByteWidth);
 	m_VertexWrapper.SetInputLayout(input_layout);
 	m_VertexWrapper.SetTopology(graphics::LINE_LIST);

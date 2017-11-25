@@ -1,8 +1,11 @@
-cbuffer Matrices : register(b0)
+cbuffer per_frame : register( b0 )
 {
-	row_major float4x4 World;
-	row_major float4x4 View;
-	row_major float4x4 Projection;
+	row_major float4x4 camera_view_x_proj;
+};
+
+cbuffer Matrices : register(b1)
+{
+	row_major float4x4 orientation;
 	float3 CameraPos;
 	float Time;
 };
@@ -48,11 +51,10 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, co
 	vertex_pos.y = vertex_pos.y + cos(Time * 2 - (vertex_pos.z - vertex_pos.x)) * 0.4h  ;
 	
 
-	output.pos = mul(float4(vertex_pos, 1), World);
+	output.pos = mul(float4(vertex_pos, 1), orientation);
 	output.worldpos = output.pos ;
 
-	output.pos = mul(output.pos, View);
-	output.pos = mul(output.pos, Projection);
+	output.pos = mul(output.pos, camera_view_x_proj);
 
 	output.clip = output.pos;
 

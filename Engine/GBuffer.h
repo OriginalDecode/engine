@@ -10,6 +10,8 @@ namespace graphics
 		GBuffer();
 		~GBuffer();
 
+		void Initiate(bool bind_textures);
+
 		void Clear(const float* clear_color, const RenderContext& render_context);
 		void SetAsRenderTarget(Texture* depth, const RenderContext& render_context);
 

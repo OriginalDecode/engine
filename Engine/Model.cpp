@@ -96,6 +96,10 @@ void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_
 		return;
 	}
 
+	rc.GetContext().SetDepthState(rc.GetAPI().GetDepthStencilState(graphics::Z_ENABLED), 1);
+	rc.GetContext().SetRasterizerState(rc.GetAPI().GetRasterizerState(graphics::CULL_BACK));
+	rc.GetContext().SetBlendState(rc.GetAPI().GetBlendState(graphics::BLEND_FALSE));
+
 	UpdateConstantBuffer(rc);
 	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
 	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);

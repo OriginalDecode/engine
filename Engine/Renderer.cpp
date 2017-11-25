@@ -51,6 +51,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	//myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 	m_DeferredRenderer = new DeferredRenderer;
+	m_GBuffer.Initiate(true);
 
 	WindowSize window_size;
 	window_size.m_Height = api->GetInfo().m_WindowHeight;
@@ -164,6 +165,11 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(PerFramePixelBuffer), "PerFramePixelBuffer");
 	m_PostProcessManager.Initiate();
 
+
+
+	m_WaterPlane = new WaterPlane; //creating this breaks everything.... rip
+	m_WaterCamera = new Camera;
+	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.01f, 100.f, 90.f);
 }
 
 Renderer::~Renderer()
@@ -174,14 +180,14 @@ Renderer::~Renderer()
 	m_DebugTextures.DeleteAll();
 #endif
 
+
 	m_ShadowPass.CleanUp();
 	m_DirectionalShadow.CleanUp();
 
+	SAFE_DELETE(m_WaterPlane);
 	SAFE_DELETE(m_WaterCamera);
 	SAFE_DELETE(m_Line);
-
 	SAFE_DELETE(m_DepthTexture);
-
 	SAFE_DELETE(m_DeferredRenderer);
 	SAFE_DELETE(myPointLight);
 	//SAFE_DELETE(myText);
@@ -219,6 +225,11 @@ void Renderer::Render()
 	ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
 	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
 
+
+	if (m_RenderInstanced)
+		Render3DCommandsInstanced();
+	
+	ProcessWater();
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
@@ -226,10 +237,10 @@ void Renderer::Render()
 
 
 	if (m_RenderInstanced)
-		Render3DCommandsInstanced();
+		m_InstancingManager.DoInstancing(m_RenderContext, false);
 	else
 		Render3DCommands();
-
+	m_WaterPlane->Render(m_RenderContext);
 #if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
 	DrawHoveredEntity(ctx);
@@ -281,6 +292,7 @@ void Renderer::Render()
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();
 #endif
+	m_InstancingManager.EndFrame();
 	m_RenderContext.GetAPI().EndFrame();
 
 
@@ -355,36 +367,29 @@ void Renderer::WriteDebugTextures()
 
 void Renderer::ProcessWater()
 {
-	// 	memcpy(m_WaterCamera, m_Camera, sizeof(Camera)); //This seem extremely unsafe!
-	// 	Camera* old_camera = m_Camera;
-	// 	m_Camera = m_WaterCamera;
-	// 
-	// 
-	// 	m_WaterPlane->SetupRefractionRender(m_RenderContext);
-	// 	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 2.f }, m_RenderContext);
-	// 	RenderTerrain(true);
-	// 
-	// 	Render3DCommandsInstanced();
-	// 
-	// 	CU::Vector3f position0 = old_camera->GetPosition();
-	// 	m_Camera->SetPosition(position0);
-	// 
-	// 	float distance = 2 * (position0.y - m_WaterPlane->GetPosition().y);
-	// 	position0.y -= distance;
-	// 	m_Camera->SetPosition(position0);
-	// 	m_Camera->InvertAll();
-	// 	m_WaterPlane->SetupReflectionRender(m_RenderContext);
-	// 	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, 2.f }, m_RenderContext);
-	// 	RenderTerrain(true);
-	// 
-	// 	Render3DCommandsInstanced();
-	// 	m_Atmosphere.Render(m_Camera->GetOrientation(), m_DepthTexture, m_RenderContext);
-	// 
-	// 	position0.y += distance;
-	// 	m_Camera->SetPosition(position0);
-	// 
-	// 
-	// 	m_Camera = old_camera;
+	memcpy(m_WaterCamera, m_Camera, sizeof(Camera)); //This seem extremely unsafe!
+	Camera* old_camera = m_Camera;
+	m_Camera = m_WaterCamera;
+
+	m_WaterPlane->SetupRefractionRender(m_RenderContext);
+	m_WaterPlane->SetClipPlane({ 0.f, -1.f, 0.f, 2.f }, m_RenderContext);
+	m_InstancingManager.DoInstancing(m_RenderContext, false);
+
+	CU::Vector3f position0 = old_camera->GetPosition();
+	m_Camera->SetPosition(position0);
+
+	float distance = 2 * (position0.y - m_WaterPlane->GetPosition().y);
+	position0.y -= distance;
+	m_Camera->SetPosition(position0);
+	m_Camera->InvertAll();
+	m_WaterPlane->SetupReflectionRender(m_RenderContext);
+	m_WaterPlane->SetClipPlane({ 0.f, 1.f, 0.f, 2.f }, m_RenderContext);
+	m_InstancingManager.DoInstancing(m_RenderContext, false);
+
+	position0.y += distance;
+	m_Camera->SetPosition(position0);
+
+	m_Camera = old_camera;
 }
 
 void Renderer::RenderNonDeferred3DCommands()
@@ -456,7 +461,6 @@ void Renderer::Render3DCommandsInstanced()
 		}
 	}
 
-	m_InstancingManager.DoInstancing(m_RenderContext, false);
 }
 
 void Renderer::RenderTerrain(bool override_effect)

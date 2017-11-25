@@ -184,7 +184,7 @@ void Game::OldUpdate(float dt)
 
 
 
-
+/*
 	if (input_wrapper->IsDown(KButton::LCTRL))
 	{
 		if (input_wrapper->OnDown(KButton::S))
@@ -192,7 +192,7 @@ void Game::OldUpdate(float dt)
 			SaveCameraPosition();
 		}
 		return;
-	}
+	}*/
 
 	if (input_wrapper->OnDown(KButton::ESCAPE))
 	{

@@ -1,0 +1,50 @@
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION0;
+	float2 uv : TEXCOORD;
+};
+
+cbuffer edge_detection : register ( b0 )
+{
+    float ScreenHeight;
+    float ScreenWidth;
+    float2 dummy;
+};
+
+Texture2D SceneTexture : register(t0);
+SamplerState sampler0 : register(s0);
+
+void make_kernel(inout float4 n[9], float2 tex)
+{
+
+    float dx = (1.0 / ScreenWidth) * 2;
+    float dy = (1.0 / ScreenHeight) * 4;
+    
+    n[0] = SceneTexture.Sample(sampler0, tex + float2(-dx, -dy)); // LEFT
+    n[1] = SceneTexture.Sample(sampler0, tex + float2(0, -dy));   // MIDDLE
+    n[2] = SceneTexture.Sample(sampler0, tex + float2(dx, -dy));  // RIGHT
+ 
+    // MIDDLE ROW
+    n[3] = SceneTexture.Sample(sampler0, tex + float2(-dx, 0));   // LEFT
+    n[4] = SceneTexture.Sample(sampler0, tex);              // MIDDLE
+    n[5] = SceneTexture.Sample(sampler0, tex + float2(dx, 0));    // RIGHT
+ 
+    // LAST ROW
+    n[6] = SceneTexture.Sample(sampler0, tex + float2(-dx, dy));  // LEFT
+    n[7] = SceneTexture.Sample(sampler0, tex + float2(0, dy));    // MIDDLE
+    n[8] = SceneTexture.Sample(sampler0, tex + float2(dx, dy));   // RIGHT
+};
+
+float4 main(VS_OUTPUT input) : SV_Target
+{
+    float4 col = SceneTexture.Sample(sampler0, input.uv);
+    float4 sample_points[9];
+    make_kernel(sample_points, input.uv);
+
+    float4 sobel_edge_h = sample_points[2] + (2.0 * sample_points[5]) + sample_points[8] - (sample_points[0] + (2.0 * sample_points[3]) + sample_points[6]);
+  	float4 sobel_edge_v = sample_points[0] + (2.0 * sample_points[1]) + sample_points[2] - (sample_points[6] + (2.0 * sample_points[7]) + sample_points[8]);
+  
+    float sobel = sqrt((sobel_edge_h * sobel_edge_h) + (sobel_edge_v * sobel_edge_v));
+
+    return float4(sobel.xxxx) * col;
+};

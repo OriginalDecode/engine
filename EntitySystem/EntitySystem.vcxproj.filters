@@ -37,9 +37,6 @@
     <ClInclude Include="TranslationComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="RenderComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="PhysicsComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
@@ -88,6 +85,10 @@
     <ClInclude Include="DebugSystem.h">
       <Filter>Systems</Filter>
     </ClInclude>
+    <ClInclude Include="PBLComponent.h" />
+    <ClInclude Include="GraphicsComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseSystem.cpp">
@@ -104,9 +105,6 @@
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="TranslationComponent.cpp">
@@ -135,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="DebugSystem.cpp">
       <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@
 
 #include <Engine/TreeNode.h>
 
-
+static bool s_RenderTree = false;
 void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 {
 	m_Position = world_position;
@@ -16,11 +16,19 @@ void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 	m_Root.SetPosition(m_Position);
 	m_Root.SetDepth(0);
 	m_Timer.CreateTimer();
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+	debug::DebugHandle::GetInstance()->RegisterIntValue(debug::DebugTextValue<int>(&node_count, "Node Count"));
+#endif
+
+//	Engine::GetInstance()->AddCheckBox(&s_RenderTree, "Render Octree");
+
 }
 
 void Octree::OnExit()
 {
 	m_Paused = true;
+	m_Root.RemoveAllDwellers();
 }
 
 void Octree::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
@@ -46,18 +54,12 @@ void Octree::Update(float dt, bool paused)
 		node_count--;
 	}
 	m_GarbageNodes.RemoveAll();
-
-	m_Root.Update(dt, paused ? paused : m_Paused);
+	m_Root.ToggleRenderBox(s_RenderTree);
+	m_Root.Update(dt, m_Paused);
 }
 
 void Octree::MoveDown(TreeNodeBase* node, TreeDweller* dweller, s32 depth)
 {
-	//TreeNodeBase* remve_from = dweller->GetFirstNode();
-	/*if (remve_from)
-	{
-		assert(false && "should be removed already!");
-	}*/
-	// Potentially this function is very very slow
 	assert(depth >= 0 && "Depth was lower than 0?");
 
 	s32 index = 0;
@@ -124,16 +126,11 @@ void Octree::MoveDown(TreeNodeBase* node, TreeDweller* dweller, s32 depth)
 		{
 			TreeNodeBase* child = CreateNode(node->GetPosition(), node->GetHalfWidth(), index, depth);
 			node->AddChild(child, index);
-
-			if (node->GetDepth() > 0)
-			{
-				static_cast<TreeNode*>(child)->SetManager(static_cast<TreeNode*>(node)->GetManager());
-				child->SetMemoryBlockIndex(node->GetMemoryBlockIndex());
-			}
-			else
-			{
+			if (depth < 2)
 				child->SetMemoryBlockIndex(index);
-			}
+			else
+				child->SetMemoryBlockIndex(node->GetMemoryBlockIndex());
+
 		}
 
 		MoveDown(node->GetChildByIndex(index), dweller, depth + 1);

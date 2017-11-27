@@ -1,19 +1,13 @@
-//---------------------------------
-//	Deferred Lightmesh Vertex Shaders
-//---------------------------------
-//---------------------------------
-//	Constant Buffers
-//---------------------------------
-cbuffer Matrices : register(b0) 
+cbuffer per_frame : register (b0)
 {
-	row_major float4x4 World;
-	row_major float4x4 View;
-	row_major float4x4 Projection;
-	float4 range;
+	row_major float4x4 camera_view_x_proj;
 };
-//---------------------------------
-//	Deferred Lightmesh Vertex Structs
-//---------------------------------
+
+cbuffer per_object : register(b1) 
+{
+	row_major float4x4 orientation;
+	float range;
+};
 
 struct VS_INPUT
 {
@@ -24,12 +18,9 @@ struct VS_OUTPUT
 {
 	float4 pos	: SV_POSITION;
 	float4 uv	: POSITION;
-	float4 range : RANGE;
+	float range : RANGE;
 };
 
-//---------------------------------
-//	Deferred Lightmesh Vertex Shader
-//---------------------------------
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
@@ -39,9 +30,8 @@ VS_OUTPUT main(VS_INPUT input)
 	input.pos *= scale; // scale
 	input.pos.w = 1.f;
 
-	output.pos = mul(input.pos, World);
-	output.pos = mul(output.pos, View);
-	output.pos = mul(output.pos, Projection);
+	output.pos = mul(input.pos, orientation);
+	output.pos = mul(output.pos, camera_view_x_proj);
 	output.range = range;
 	
 	float x = output.pos.x;

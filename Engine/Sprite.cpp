@@ -1,21 +1,19 @@
 #include "stdafx.h"
 #include "Sprite.h"
 #include "Effect.h"
-#include "SpriteModel.h"
+#include <Engine/Quad.h>
 
 Sprite::~Sprite()
 {
-	delete mySprite;
-	mySprite = nullptr;
+	SAFE_DELETE(m_Quad);
 }
 
 void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 {
-	mySprite = new SpriteModel();
-	mySprite->Initiate(aTexturePath, aSize, aPosition);
-	myHotspot.x = 0;
-	myHotspot.y = 0;
+	m_Quad = new Quad(Engine::GetInstance()->GetEffect("Shaders/sprite.json"), aSize.x, aSize.y);
 
+	m_cbSprite = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSprite), "Sprite ConstantBuffer");
+	SetPosition(aPosition);
 }
 
 //void Sprite::Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
@@ -24,12 +22,11 @@ void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<f
 //	mySprite->Initiate(aShaderResource, aSize, aPosition);
 //}
 
-void Sprite::Initiate(const cl::CHashString<128>& path)
+void Sprite::Initiate(const std::string& path)
 {
-	mySprite = new SpriteModel;
-	mySprite->Initiate(path);
-	
-
+	//m_cbSprite = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSprite), path + " Sprite - ConstantBuffer");
+// 	m_Quad = new Quad(0, 1, 1);
+// 	mySprite->Initiate(path);
 }
 
 void Sprite::Render(Camera* aCamera)
@@ -37,17 +34,19 @@ void Sprite::Render(Camera* aCamera)
 	//mySprite->GetEffect()->SetScale({ 1, 1 });
 	//mySprite->GetEffect()->SetPosition(myPosition);
 	//mySprite->GetEffect()->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonalMatrix());
-	mySprite->Render(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonal());
+	UpdateConstantBuffer();
+	m_Quad->Render(false);
+	//mySprite->Render(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonal());
 }
 
 const CU::Vector2f& Sprite::GetPosition()
 {
-	return mySprite->GetPosition();
+	return myPosition;
 }
 
 CU::Vector2f Sprite::GetSize()
 {
-	return mySprite->GetSize();
+	return{ 0,0 };//mySprite->GetSize();
 }
 
 void Sprite::SetPosition(const CU::Math::Vector2<float>& aPosition)
@@ -88,6 +87,11 @@ void Sprite::SetScale(const CU::Math::Vector2<float>& aScale)
 {
 	aScale;
 	//mySprite->GetEffect()->SetScale(aScale);
+}
+
+void Sprite::UpdateConstantBuffer()
+{
+	Engine::GetAPI()->GetContext().UpdateConstantBuffer(m_cbSprite, &m_cbStruct, sizeof(cbSprite));
 }
 
 //void Sprite::SetShaderView(ID3D11ShaderResourceView* srv)

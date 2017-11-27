@@ -117,6 +117,7 @@ void Camera::SetOrientation(const CU::Matrix44f& matrix)
 {
 	m_Orientation2 = m_Orientation;
 	m_Orientation = matrix;
+	OrientCamera();
 }
 
 void Camera::RotateAroundX(float rad)

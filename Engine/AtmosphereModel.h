@@ -10,15 +10,14 @@ public:
 	AtmosphereModel() = default;
 	~AtmosphereModel();
 	void Initiate(const std::string& filename) override;
-	void CleanUp();
 
+	void Render(const graphics::RenderContext& rc) override;
 
-	void Render(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
 	void AddChild(AtmosphereModel* child);
 	void SetOrientation(const CU::Matrix44f& orientation);
-private:
 
-	CU::GrowingArray<AtmosphereModel*> myChildren;
+private:
+	CU::GrowingArray<AtmosphereModel*> m_Children;
 
 };
 

@@ -1,25 +1,35 @@
 #pragma once
 
-
 class Texture;
-class GBuffer
+namespace graphics
 {
-public:
-	GBuffer() = default;
-	~GBuffer();
-	void Initiate();
-	void Clear(float* aClearColor, const RenderContext& render_context);
+	class RenderContext;
+	class GBuffer
+	{
+	public:
+		GBuffer();
+		~GBuffer();
 
-	void SetAsRenderTarget(Texture* aDepthTexture, const RenderContext& render_context);
+		void Initiate(bool bind_textures);
 
-	Texture* GetDiffuse() const;
-	Texture* GetNormal() const;
-	Texture* GetEmissive() const;
-	Texture* GetDepth() const;
+		void Clear(const float* clear_color, const RenderContext& render_context);
+		void SetAsRenderTarget(Texture* depth, const RenderContext& render_context);
 
-private:
-	Texture* myAlbedo = nullptr;
-	Texture* myNormal = nullptr;
-	Texture* myEmissive = nullptr;
-	Texture* myDepth = nullptr;
+		Texture* GetDiffuse() const { return m_Albedo; }
+		Texture* GetNormal() const { return m_Normal; }
+		Texture* GetEmissive() const { return m_Emissive; }
+		Texture* GetDepth() const { return m_Depth; }
+
+#ifdef _DEBUG
+		Texture* GetIDTexture() const { return m_EntityIDTexture; }
+#endif
+	private:
+		Texture* m_Albedo = nullptr;
+		Texture* m_Normal = nullptr;
+		Texture* m_Emissive = nullptr;
+		Texture* m_Depth = nullptr;
+#ifdef _DEBUG
+		Texture* m_EntityIDTexture = nullptr;
+#endif
+	};
 };

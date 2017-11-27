@@ -6,15 +6,15 @@ class LightModel : public Model
 {
 	friend class CModelImporter;
 public:
-	LightModel() = default;
+	LightModel();
 	~LightModel();
 	void Initiate(const std::string& filename) override;
-	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
-	void AddChild(LightModel* aChild);
+	void Render(const graphics::RenderContext& rc) override;
+	void AddChild(LightModel* child);
 	void SetOrientation(const CU::Matrix44f& orientation);
 private:
 
-	CU::GrowingArray<LightModel*> myChildren;
+	CU::GrowingArray<LightModel*> m_Children;
 			
 };
 

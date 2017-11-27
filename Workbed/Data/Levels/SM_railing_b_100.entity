@@ -1,6 +1,0 @@
-{
-	"graphics" : { 
-		"model" : "Data/Game_Models/SM_railing_b_100.fbx",
-		"shader" : "Shaders/T_Deferred_Base.json"
-	} 
-}

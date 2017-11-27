@@ -40,24 +40,27 @@ namespace CommonUtilities
 		\****************************/
 
 		template<typename T>
-		T Matrix44<T>::GetXRotation()
+		float Matrix44<T>::GetXRotation() const
 		{
-			float angle = atan2f(myMatrix[5], myMatrix[6]);
-			return static_cast<T>(angle);
+			if (myMatrix[5] == 1.f && myMatrix[6] == 0.f) //safes against pi/2 return value instead of 0 when default values
+				return 0.f;
+
+			return atan2f(myMatrix[5], myMatrix[6]);
 		}
 
 		template<typename T>
-		T Matrix44<T>::GetYRotation()
+		float Matrix44<T>::GetYRotation() const
 		{
-			float angle = atan2f(-myMatrix[8], sqrtf((2.f/myMatrix[5]) + (2.f / myMatrix[6])));
-			return static_cast<T>(angle);
+			return atan2f(-myMatrix[8], sqrtf((2.f/myMatrix[5]) + (2.f / myMatrix[6])));
 		}
 
 		template<typename T>
-		T Matrix44<T>::GetZRotation()
+		float Matrix44<T>::GetZRotation() const
 		{
-			float angle = atan2f(myMatrix[0], myMatrix[1]);
-			return static_cast<T>(angle);
+			if (myMatrix[0] == 1.f && myMatrix[1] == 0.f) //safes against pi/2 return value instead of 0 when default values
+				return 0.f;
+
+			return atan2f(myMatrix[0], myMatrix[1]);
 		}
 
 		template<typename TYPE>
@@ -640,7 +643,7 @@ namespace CommonUtilities
 			temp.myMatrix[11] = 1.0f;
 
 			temp.myMatrix[14] = -scaling * aNearZ;
-			temp.myMatrix[15] = 0.0f;
+			temp.myMatrix[15] = 1.0f;
 			return temp;
 		}
 
@@ -820,7 +823,7 @@ namespace CommonUtilities
 
 			det = aMatrix.myMatrix[0] * inv[0] + aMatrix.myMatrix[1] * inv[4] + aMatrix.myMatrix[2] * inv[8] + aMatrix.myMatrix[3] * inv[12];
 
-			det = 1.0 / det;
+			det = static_cast<T>(1.0) / det;
 
 			Matrix44<T> returnMatrix;
 

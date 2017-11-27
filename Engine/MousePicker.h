@@ -12,7 +12,7 @@ public:
 	//This is the ray direction
 	const CU::Vector3f& GetCurrentRay(float x, float y);
 	const CU::Vector3f& GetCurrentRay(CU::Vector2f pos);
-
+	const CU::Vector3f& GetRayStart() { return m_RayStart; }
 private:
 	void CalculateCurrentRay(float x, float y);
 	CU::Vector4f ToEyeCoords(const CU::Vector4f& clipCoords);
@@ -21,4 +21,5 @@ private:
 	CU::Vector3f myCurrentRay;
 	Camera* myCamera;
 	Engine* myEngine;
+	CU::Vector3f m_RayStart;
 };

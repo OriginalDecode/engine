@@ -9,26 +9,23 @@
 class Quad
 {
 public:
-	Quad() = default;
-	~Quad();
+	Quad();
+	Quad(Effect* effect);
+	Quad(Effect* effect, float half_width, float half_height);
 
+	void Render(bool depth_on = false, Effect* override_effect = nullptr);
+	Effect* GetShader() { return m_Effect; }
+	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }
+	IndexWrapper& GetIndexWrapper() { return m_IndexWrapper; }
 
-	void Initiate();
-	void SetBuffers();
-	void Render();
-	Effect* GetShader() { return m_ScreenpassShader; }
-
-
-
+	void SetTexture(Texture* texture) { m_QuadTexture = texture; }
 
 private:
-
-	IInputLayout* m_InputLayout = nullptr;
-	CU::GrowingArray<VertexTypePosUV> m_Vertices;
-	VertexBufferWrapper m_VertexBuffer;
-	VertexDataWrapper m_VertexData;
-	IndexBufferWrapper m_IndexBuffer;
-	IndexDataWrapper m_IndexData;
-	Effect* m_ScreenpassShader = nullptr;
+	void FillVertexData(float half_width, float half_height);
+	void FillIndexData();
+	VertexWrapper m_VertexWrapper;
+	IndexWrapper m_IndexWrapper;
+	Texture* m_QuadTexture = nullptr;
+	Effect* m_Effect       = nullptr;
 };
 

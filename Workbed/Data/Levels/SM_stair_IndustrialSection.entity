@@ -1,6 +1,0 @@
-{
-	"graphics" : { 
-		"model" : "Data/Game_Models/SM_stair_IndustrialSection.fbx",
-		"shader" : "Shaders/T_Deferred_Base.json"
-	} 
-}

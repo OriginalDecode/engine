@@ -5,9 +5,9 @@
 void ShadowDirectional::Initiate(float buffer_size)
 {
 	m_Camera = new Camera;
-	m_Camera->CreateOrthographicProjection(200.f, 200.f, 1.f, 1024.f);
+	m_Camera->CreateOrthographicProjection(200.f, 200.f, 1.f, 100.f);
 
-	m_Camera->SetPosition({ 5, 25, 5});
+	m_Camera->SetPosition({ 55, 90, 55});
 	m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
 
 	m_ShadowDepth = new Texture;
@@ -22,9 +22,11 @@ void ShadowDirectional::Initiate(float buffer_size)
 
 	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_ShadowDepthStencil->GetShaderView(), Effect::SHADOWMAP);
 
-	Engine::GetInstance()->AddTexture(m_ShadowDepth, "Directional Shadow");
-	Engine::GetInstance()->AddTexture(m_ShadowDepthStencil, "Directional Shadow Stencil");
 
+#if !defined(_PROFILE) && !defined(_FINAL)
+	//debug::DebugHandle::GetInstance()->AddTexture(m_ShadowDepth, "Directional Shadow");
+	//debug::DebugHandle::GetInstance()->AddTexture(m_ShadowDepthStencil, "Directional Shadow Stencil");
+#endif
 
 }
 
@@ -38,18 +40,19 @@ void ShadowDirectional::CleanUp()
 
 void ShadowDirectional::SetViewport()
 {
-	Engine::GetAPI()->SetViewport(m_Viewport);
+	Engine::GetAPI()->GetContext().SetViewport(m_Viewport);
 }
 
-void ShadowDirectional::ClearTexture(const RenderContext& render_context)
+void ShadowDirectional::ClearTexture()
 {
-	render_context.m_Context->ClearRenderTargetView(m_ShadowDepth->GetRenderTargetView(), m_Clear);
-	render_context.m_Context->ClearDepthStencilView(m_ShadowDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
+	ctx.ClearRenderTarget(m_ShadowDepth->GetRenderTargetView(), clearcolor::black);
+	ctx.ClearDepthStencilView(m_ShadowDepthStencil->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1.0f);
 }
 
-void ShadowDirectional::SetTargets(const RenderContext& render_context)
+void ShadowDirectional::SetTargets()
 {
-	render_context.m_Context->OMSetRenderTargets(1, m_ShadowDepth->GetRenderTargetRef(), m_ShadowDepthStencil->GetDepthView());
+	Engine::GetAPI()->GetContext().OMSetRenderTargets(1, m_ShadowDepth->GetRenderTargetRef(), m_ShadowDepthStencil->GetDepthView());
 }
 
 void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)
@@ -59,5 +62,9 @@ void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)
 
 CU::Matrix44f ShadowDirectional::GetMVP()
 {
-	return CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetPerspective(); 
+	const CU::Matrix44f& orientation = m_Camera->GetCurrentOrientation();
+	const CU::Matrix44f& perspective = m_Camera->GetOrthographic();
+	const CU::Matrix44f& inv = CU::Math::Inverse(orientation);
+	const CU::Matrix44f& camera_view_proj = inv * perspective;
+	return  camera_view_proj;
 }

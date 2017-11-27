@@ -13,7 +13,7 @@ class TreeNodeBase
 {
 public:
 
-	TreeNodeBase() = default;
+	TreeNodeBase();
 	virtual ~TreeNodeBase();
 
 	virtual void Initiate(float halfwidth, Octree* octree) = 0;
@@ -44,6 +44,13 @@ public:
 
 	virtual void SetMemoryBlockIndex(s32 index);
 	virtual s32 GetMemoryBlockIndex();
+
+	void ToggleRenderBox(bool v);
+
+	void RemoveAllDwellers();
+
+	std::string m_Name;
+
 protected:
 	virtual void RenderBox();
 
@@ -63,5 +70,14 @@ protected:
 	s32 m_Depth = 0;
 	s32 m_MemoryBlockIndex = 0;
 
+	s32 m_DwellerCount = 0;
 
+	CU::GrowingArray<Line> m_Lines;
+
+
+
+public:
+	void AddLine(Line line);
+
+	void CopyToParent(const CU::GrowingArray<Line>& in);
 };

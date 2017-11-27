@@ -1,0 +1,11 @@
+{
+    "VertexShader": {
+        "file": "deferred_base.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "pbl_debug.ps",
+        "entrypoint": "main_non_instanced",
+        "sampler": "ModelSampler"
+    }
+}

@@ -4,31 +4,39 @@
 
 #include "BaseModel.h"
 #include "engine_shared.h"
-
+#include "Effect.h"
 struct D3D11_INPUT_ELEMENT_DESC;
 
-static Ticket_Mutex g_ModelMutex;
+struct GPUModelData
+{
+	CU::Matrix44f m_Orientation;
+	CU::Vector4f m_PBLData;
+	u32 m_ID;
+	u32 m_Hovering = false;
+};
+
+
 class Model : public BaseModel
 {
 	friend class CModelImporter;
+	friend class InstancingManager;
 public:
 	Model() = default;
-	void CleanUp();
+	~Model();
 	virtual void Initiate(const std::string& filename);
 
-	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
-	void RenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context);
-	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
-	void ShadowRenderInstanced(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context);
+	void Render(const graphics::RenderContext& rc) override;
+	void RenderInstanced(const graphics::RenderContext& rc);
+	void RenderInstanced(const graphics::RenderContext& rc, Effect* override_effect);
+	void ShadowRender(const graphics::RenderContext& rc) override;
+	void ShadowRenderInstanced(const graphics::RenderContext& rc);
 
 	void AddChild(Model* aChild);
+	virtual void AddSurface(Surface* surface) override;
 
 	void SetPosition(const CU::Vector3f& aPosition);
 	CU::Matrix44f& GetOrientation();
 	void SetOrientation(CU::Matrix44f orientation);
-	CU::Vector3f GetWHD() const { return m_WHD; }
-	void SetWHD(CU::Vector3f whd);
-
 
 	virtual void SetMaxPoint(CU::Vector3f max_point);
 	virtual CU::Vector3f GetMaxPoint() const { return m_MaxPoint; }
@@ -36,38 +44,35 @@ public:
 	virtual void SetMinPoint(CU::Vector3f min_point);
 	virtual CU::Vector3f GetMinPoint() const { return m_MinPoint; }
 
-	std::vector<float> GetVertices();
-	std::vector<s32> GetIndices();
+	CU::GrowingArray<Surface*>& GetSurfaces() { return m_Surfaces; }
+	CU::GrowingArray<Model*> GetChildModels() { return m_Children; }
 
-	CU::GrowingArray<Surface*>& GetSurfaces() { return mySurfaces; }
-	CU::GrowingArray<Model*> GetChildModels() { return myChildren; }
+	void AddTexture(const std::string& path, Effect::TextureSlot slot);
 
+	s32 GetInstanceCount() const { return m_GPUData.Size(); }
+	Effect* GetEffect() { return m_Effect; }
 	void AddOrientation(CU::Matrix44f orientation);
-	void ClearOrientation();
+// 	void AddPBLData(CU::Vector2f data);
+	void AddInstanceData(GPUModelData data);
+	Material* GetMaterial() 
+	{ 
+		if (m_Material)
+			return m_Material;
+
+		for (Model* c : m_Children)
+		{
+			return c->GetMaterial();
+		}
+		return nullptr;
+	}
 	void CreateCube();
+
 private:
-	void RenderCube(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context);
-
-	void RemoveOrientation();
-	CU::GrowingArray<Model*> myChildren;
-	CU::GrowingArray<CU::Matrix44f> m_Orientations;
-	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> m_InputLayoutDesc;
-	IInputLayout* m_InstanceInputLayout = nullptr;
-
-
+	Material* GetMat() { return m_Material; }
+	void RenderCube(const graphics::RenderContext& rc);
+	void RemoveGPUData();
+	CU::GrowingArray<Model*> m_Children;
 protected:
-	void InitInstanceBuffer();
-	void InitConstantBuffer();
-	void UpdateConstantBuffer(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
-
-	CU::GrowingArray<SVertexTypePosCol> myVertices;
-	CU::GrowingArray<s32> m_Indices;
-
-	CU::GrowingArray<Surface*> mySurfaces;
-
-	CU::Matrix44f myOrientation;
-
-	IBuffer* m_InstanceBuffer = nullptr;
-	D3D11_SUBRESOURCE_DATA m_InstanceData;
-	const s32 m_InstanceCount = 500;
+	void UpdateConstantBuffer(const graphics::RenderContext& rc) override;
+	CU::GrowingArray<GPUModelData> m_GPUData;
 };

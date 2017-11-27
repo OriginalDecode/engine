@@ -1,6 +1,0 @@
-{ 
-	"blueprint":"Data/Levels/wall.blueprint", 
-	"position" : [ 100, 2, 25 ],
-	"scale" : [ 1, 1, 1 ],
-	"rotation" : [ 0, 0, 0 ]
-}

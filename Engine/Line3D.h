@@ -3,63 +3,42 @@
 #include <Math/Matrix/Matrix44.h>
 #include <DataStructures/GrowingArray.h>
 
+#include <Engine/VertexWrapper.h>
 
-struct SLinePoint
+
+
+namespace graphics
 {
-	SLinePoint(const CU::Vector4f& pos, const CU::Vector4f& col);
-	SLinePoint();
-	CU::Vector4f position;
-	CU::Vector4f color;
+	class RenderContext;
 };
-
-struct SLine
-{
-	SLinePoint first;
-	SLinePoint second;
-};
-
-class DirectX11;
 class Effect;
-struct VertexBufferWrapper;
-
-
 struct VertexBaseStruct;
-
-class CLine3D
+class Line3D
 {
 public:
-	CLine3D();
-	~CLine3D();
+	Line3D();
+	~Line3D();
 
-	void Initiate(int aLineAmount = 256);
+	void Initiate(int aLineAmount = 1024);
+	void Render(LinePoint points[2], const graphics::RenderContext& render_context);
 
-
-	void Update(const SLinePoint& firstPoint, const SLinePoint& secondPoint);
-	void Render(const CU::Matrix44f& prevOrientation, const CU::Matrix44f& projection);
-
-	void AddLine(const SLine& aLine);
-	void AddCube(const CU::Vector3f& min, const CU::Vector3f& max);
-
+	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }
+	Effect* GetEffect() const { return m_Effect; }
+	void AddLine(LinePoint points[2]);
 private:
-	void CreateConstantBuffer();
 	void CreateBuffer();
+	CU::GrowingArray<LinePoint> m_Points;
 
+	LinePoint m_FirstPoint;
+	LinePoint m_SecondPoint;
 
-	void SetMatrices(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection);
+	CU::Matrix44f m_Orientation;
+	Effect* m_Effect = nullptr;
+	VertexWrapper m_VertexWrapper;
 
-	SLinePoint myFirstPoint;
-	SLinePoint mySecondPoint;
+	IBuffer* m_LineBuffer;
 
-	CU::Matrix44f myOrientation;
-	DirectX11* myAPI = nullptr;
-	Effect* myEffect = nullptr;
-	VertexBufferWrapper* myVertexBuffer = nullptr;
-
-	VertexBaseStruct* myConstantStruct = nullptr;
-
-	IInputLayout* myVertexLayout = nullptr;
-	ID3D11Buffer* myConstantBuffer = nullptr;
-	CU::GrowingArray<SLinePoint> myVertices;
-	int myLineAmount = 0;
+	CU::GrowingArray<LinePoint> m_Vertices;
+	int m_LineAmount = 0;
 };
 

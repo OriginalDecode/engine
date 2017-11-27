@@ -1,6 +1,0 @@
-{
-	"graphics" : { 
-		"model" : "Data/Game_Models/SK_arm_idle_UI_cm.fbx",
-		"shader" : "Shaders/T_Deferred_Base.json"
-	} 
-}

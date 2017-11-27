@@ -4,7 +4,7 @@
 #include <Timer/TimeManager/TimeManager.h>
 
 #include <Engine/RootTreeNode.h>
-#define MAX_DEPTH 1
+#define MAX_DEPTH 5
 class Octree
 {
 	friend class TreeNodeBase;
@@ -39,5 +39,7 @@ private:
 
 
 	int node_count = 0;
+
+
 };
 

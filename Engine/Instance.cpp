@@ -7,13 +7,13 @@
 #include "Engine.h"
 
 
-void CInstance::Initiate(const char* aFilePath, const std::string& effect, const eModelType& aModelType)
+void CInstance::Initiate(const char* filepath, const std::string& effect, const eModelType& aModelType)
 {
 	switch (aModelType)
 	{
 		case eModelType::STATIC:
-		Engine::GetInstance()->LoadModel(aFilePath, effect, true);
-		myModel = Engine::GetInstance()->GetModel(aFilePath);
+		Engine::GetInstance()->LoadModel<Model>(filepath, effect, true);
+		myModel = Engine::GetInstance()->GetModel(filepath);
 		break;
 		case eModelType::ANIMATED:
 		DL_ASSERT("Not implemented!");

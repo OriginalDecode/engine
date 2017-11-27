@@ -28,46 +28,19 @@
 #include <Engine/Texture.h>
 #include <Input/ControllerInput.h>
 
-static std::string key = "Data/Model/sponza_pbr/sponza.fbx";
-static std::string cube = "Data/Model/cube.fbx";
-static std::string wall = "Data/Model/wall.fbx";
-static std::string default_cube = "default_cube";
-#define KEY_USED default_cube
-
 #include <CommonLib/HashString.h>
-
+static float s_CamSpeed = 50.f;
+static s32 entity = 0;
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
 	m_Engine = Engine::GetInstance();
-	/*
-	#if !defined(_PROFILE) && !defined(_FINAL)
-		m_Engine->AddFunction("Data/Levels/level_01.level", [&]() { Initiate("Data/Levels/level_01.level"); });
-		m_Engine->AddFunction("Data/Levels/level_02.level", [&]() { Initiate("Data/Levels/level_02.level"); });
-		m_Engine->AddFunction("Data/Levels/level_03.level", [&]() { Initiate("Data/Levels/level_03.level"); });
-	#endif*/
-	Initiate("Data/Levels/level_03.level");
-	m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
-
-	//m_Engine->LoadModel(key, "Shaders/deferred_base.json", true);
-	m_Engine->LoadModel(KEY_USED, "Shaders/volume.json", true);
-	Effect* volume_shader = m_Engine->GetEffect("Shaders/volume.json");
-
-	m_VolumeTexture = new Texture;
-	m_VolumeTexture->Initiate3DTexture(128, 128, 128, TextureFormat(2), 18, "Volume Texture");
-	m_VolumeTexture->Load("Data/Model/box_v3.dds");
-	volume_shader->AddShaderResource(m_VolumeTexture, Effect::_3DTEX);
-
-	light = m_Engine->RegisterLight();
-
-	//m_MainCharacter = new Texture;
-	//m_MainCharacter->Load("Data/Textures/main_character.dds");
-
-	//m_MainCharacter = m_Engine->GetSprite("Data/Textures/particles/test_normal.dds");
-	m_MainKey = "Data/Textures/main_character.dds";
+	//Initiate("Data/Levels/level_01.level");
+	Initiate("Data/pbr_level/pbr_level.level");
 	m_Engine->GetInputHandle()->AddController(0);
-	m_Position = { 1920.f / 2.f, 1080.f / 2.f };
 }
+
+static const char* camera_file = "camera_pos";
 
 void Game::Initiate(const std::string& level)
 {
@@ -78,12 +51,12 @@ void Game::Initiate(const std::string& level)
 	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel(level);
 	m_World.AddDwellers(dwellers);
 
-	m_Player = new TreeDweller;
+	/*m_Player = new TreeDweller;
 	m_Player->Initiate(m_Engine->GetEntityManager().CreateEntity(), TreeDweller::eType::DYNAMIC);
 	m_Engine->GetEntityManager().AddComponent<TranslationComponent>(m_Player->GetEntity());
 	TranslationComponent& translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
 	m_Player->AddComponent(&translation, TreeDweller::TRANSLATION | TreeDweller::DEBUG);
-	m_World.AddDweller(m_Player);
+	m_World.AddDweller(m_Player);*/
 
 	m_Picker = new CMousePicker;
 
@@ -94,8 +67,47 @@ void Game::Initiate(const std::string& level)
 	//CameraHandle::GetInstance()->Initiate(&m_Orientation);
 	CameraHandle::GetInstance()->Initiate(nullptr);
 	m_PauseState.InitState(m_StateStack);
-	component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
+	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 
+
+	
+
+
+	bool read_camera = false;
+	if (read_camera)
+	{
+		std::ifstream camera_load;
+		std::string line;
+		camera_load.open(camera_file);
+		if (camera_load.is_open())
+		{
+			CU::Matrix44f init_orientation;
+			int i = 0;
+			while (getline(camera_load, line))
+			{
+				init_orientation[i] = stof(line);
+				i++;
+			}
+			m_Camera->SetOrientation(init_orientation);
+		}
+	}
+
+	spotlight.Add(m_Engine->RegisterLight());
+
+
+	spotorient = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * spotorient;
+	spotorient.SetPosition({ 5.f, 4.f, 5.f, 1.f });
+
+
+	//PostMaster::GetInstance()->Subscribe()
+#if !defined(_FINAL) && !defined(_PROFILE)
+	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
+	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &degree, "Spotlight Degree"));
+	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &intensity, "Spotlight Intensity"));
+	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &range, "Spotlight Range"));
+	pDebug->AddValueToPrint(&entity);
+
+#endif
 }
 
 void Game::EndState()
@@ -109,63 +121,36 @@ void Game::Render(bool render_through)
 {
 }
 
+void Game::SaveCameraPosition()
+{
+	std::ofstream camera_save;
+	camera_save.open(camera_file, std::ios::trunc);
+
+	if (camera_save.is_open())
+	{
+		for (s32 i = 0; i < 16; i++)
+		{
+			camera_save << m_Camera->GetOrientation()[i];
+			camera_save << "\n";
+		}
+
+		camera_save.flush();
+		camera_save.close();
+	}
+}
+
+void Game::Reload()
+{
+	m_Paused = true;
+	m_World.CleanUp();
+	m_Engine->GetEntityManager().Reset();
+}
+
 void Game::Update(float dt)
 {
 	CameraHandle::GetInstance()->Update();
-	//_2DGame(dt);
 	OldUpdate(dt);
 
-}
-
-void Game::_2DGame(float dt)
-{
-	m_Synchronizer->AddRenderCommand(SpriteCommand(m_MainKey, m_Position));
-
-	ControllerInput * controller = m_Engine->GetInputHandle()->GetController(0);
-
-	const ControllerState& state = controller->GetState();
-	const ControllerState& prev = controller->GetPrevState();
-	if (state.m_Buttons & eA)
-	{
-		m_Position.y -= 100.f * dt;
-	}
-
-
-
-	float x_value = (float)state.m_ThumbLX;
-	float y_value = -(float)state.m_ThumbLY;
-
-	float magnitude = sqrt(x_value * x_value + y_value * y_value); //Do something to skip the sqrt?
-	float normalized = 0.f;
-	const float r_thumb_deadzone = 8689.f;
-
-	if (magnitude > r_thumb_deadzone)
-	{
-		if (magnitude > SHRT_MAX)
-			magnitude = SHRT_MAX;
-
-		magnitude -= r_thumb_deadzone;
-
-		normalized = magnitude / (SHRT_MAX - r_thumb_deadzone);
-
-	}
-	else
-	{
-		x_value = 0.f;
-		y_value = 0.f;
-	}
-
-
-	if (normalized < -0.5f || normalized > 0.5f)
-	{
-		x_value /= 2.f;
-		y_value /= 2.f;
-	}
-
-	m_Position.x += (x_value / 100.f * dt);
-	m_Position.y += (y_value / 100.f * dt);
-
-	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5f, 0.5f), "x: %.3f\ny: %.3f", m_Position.x, m_Position.y));
 }
 
 void Game::OldUpdate(float dt)
@@ -182,11 +167,32 @@ void Game::OldUpdate(float dt)
 	}
 
 	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
+	PostMaster* pEventHandle = PostMaster::GetInstance();
 	if (input_wrapper->OnClick(MouseInput::LEFT))
 	{
 		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
-		PostMaster::GetInstance()->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, m_Player));
+
+		pEventHandle->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, 
+			(void*)&m_Picker->GetRayStart(),			
+			m_Player));
+		pos0 = m_Camera->GetPosition();
+		pos1 = pos0 + (ray_dir * 25.f);
 	}
+
+
+
+
+
+
+/*
+	if (input_wrapper->IsDown(KButton::LCTRL))
+	{
+		if (input_wrapper->OnDown(KButton::S))
+		{
+			SaveCameraPosition();
+		}
+		return;
+	}*/
 
 	if (input_wrapper->OnDown(KButton::ESCAPE))
 	{
@@ -196,23 +202,21 @@ void Game::OldUpdate(float dt)
 	if (input_wrapper->IsDown(MouseInput::RIGHT))
 	{
 		m_Camera->Update(m_Engine->GetInputHandle()->GetDeltaCursorPos());
+
+		if (input_wrapper->IsDown(KButton::W))
+			m_Camera->Move(eDirection::FORWARD, s_CamSpeed * dt);
+		if (input_wrapper->IsDown(KButton::S))
+			m_Camera->Move(eDirection::BACK, -s_CamSpeed * dt);
+		if (input_wrapper->IsDown(KButton::A))
+			m_Camera->Move(eDirection::LEFT, -s_CamSpeed * dt);
+		if (input_wrapper->IsDown(KButton::D))
+			m_Camera->Move(eDirection::RIGHT, s_CamSpeed * dt);
+		if (input_wrapper->IsDown(KButton::SPACE))
+			m_Camera->Move(eDirection::UP, s_CamSpeed * dt);
+		if (input_wrapper->IsDown(KButton::X))
+			m_Camera->Move(eDirection::DOWN, -s_CamSpeed * dt);
+
 	}
-
-	float cam_speed = 50.f;
-
-	if (input_wrapper->IsDown(KButton::W))
-		m_Camera->Move(eDirection::FORWARD, cam_speed * dt);
-	if (input_wrapper->IsDown(KButton::S))
-		m_Camera->Move(eDirection::BACK, -cam_speed * dt);
-	if (input_wrapper->IsDown(KButton::A))
-		m_Camera->Move(eDirection::LEFT, -cam_speed * dt);
-	if (input_wrapper->IsDown(KButton::D))
-		m_Camera->Move(eDirection::RIGHT, cam_speed * dt);
-	if (input_wrapper->IsDown(KButton::SPACE))
-		m_Camera->Move(eDirection::UP, cam_speed * dt);
-	if (input_wrapper->IsDown(KButton::X))
-		m_Camera->Move(eDirection::DOWN, -cam_speed * dt);
-
 
 	static float entity_speed = 0.2f;
 
@@ -225,23 +229,18 @@ void Game::OldUpdate(float dt)
 		entity_speed -= 1.f * dt;
 	}
 
-
-	CU::Vector3f pos = m_Camera->GetOrientation().GetPosition();
-	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75f, 0.1f), "\nx:%.3f\ny:%.3f\nz:%.3f\n#%s(%d)", pos.x, pos.y, pos.z,
-		((m_FPSToPrint >= 50.f) ? "00FF00" : (m_FPSToPrint < 25.f) ? "FF0000" : "FFFF00"), m_FPSToPrint));
-
-	AddRenderCommand(ModelCommand(KEY_USED, CU::Vector3f(0.f, 10.f, 0.f), false));
-	AddRenderCommand(ModelCommand(key, CU::Vector3f(50, 0, 50), false));
-
-
-	CU::Matrix44f orientation;
-	orientation.SetPosition(CU::Vector3f(50, 10, 50));
-	orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * orientation;
-	m_Synchronizer->AddRenderCommand(SpotlightCommand(0, 53, 12, 1, CU::Vector4f(255, 0, 0, 255), orientation, false));
+	m_Synchronizer->AddRenderCommand(SpotlightCommand(
+		spotlight.GetLast(),
+		cl::DegreeToRad(degree * 0.5f),
+		range,
+		intensity,
+		CU::Vector4f(1, 0, 0, 1),
+		spotorient,
+		false));
 
 
 	HandleMovement(input_wrapper, entity_speed, dt);
-
+	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 	m_World.Update(dt, m_Paused);
 }
 

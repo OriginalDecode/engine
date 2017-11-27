@@ -6,184 +6,197 @@
 #include "ShaderFactory.h"
 #include "Texture.h"
 #include <Engine/Sprite.h>
+#include <Engine/AssetFactory.h>
 
 AssetsContainer::~AssetsContainer()
 {
 	SAFE_DELETE(m_ShaderFactory);
 	SAFE_DELETE(m_ModelLoader);
-	for (auto it = myModels.begin(); it != myModels.end(); it++)
-	{
-		it->second->CleanUp();
+	
+	for (auto it = m_Models.begin(); it != m_Models.end(); it++)
 		SAFE_DELETE(it->second);
-	}
 
-	for (auto it = myTextures.begin(); it != myTextures.end(); it++)
-	{
+	for (auto it = m_Textures.begin(); it != m_Textures.end(); it++)
 		SAFE_DELETE(it->second);
-	}
 
 	for (auto it = m_Sprites.begin(); it != m_Sprites.end(); it++)
-	{
 		SAFE_DELETE(it->second);
-	}
 
-	DELETE_MAP(myEffects);
+	for (auto it = m_Effects.begin(); it != m_Effects.end(); it++)
+		SAFE_DELETE(it->second);
+
+#ifndef FINAL
+	SAFE_DELETE(m_Watcher);
+#endif
+
 }
 
 void AssetsContainer::Initiate()
 {
-	m_Engine = Engine::GetInstance();
 	m_ShaderFactory = new ShaderFactory;
 	m_ModelLoader = new CModelImporter;
-	myTextures.empty();
-	myEffects.empty();
-	myModels.empty();
+	m_Textures.empty();
+	m_Effects.empty();
+	m_Models.empty();
 	m_Sprites.empty();
+
+// 	u64 hash = Hash("default_cube");
+// 	auto it = m_Models.emplace(hash , new Model);
+// 	it.first->second->CreateCube();
+
+#ifndef FINAL
+	m_Watcher = new FileWatcher;
+#endif
 }
 
-Texture* AssetsContainer::GetTexture(std::string aFilePath)
+Texture* AssetsContainer::GetTexture(u64 key)
 {
-	if (cl::substr(aFilePath, ".dds") == false)
-	{
-		DL_MESSAGE("Failed to load %s, due to incorrect fileformat. Has to be .dds", aFilePath.c_str());
-		DL_ASSERT("Failed to Load Texture, format not .dds. See log for more information.");
-		return nullptr;
-	}
+	auto it = m_Textures.find(key);
 
-	//mutex?
-	/*if (myTextures.find(aFilePath) == myTextures.end())
-	{*/
-		//myTextures.emplace(aFilePath, new Texture);
-/*
-		m_Engine->GetInstance()->GetThreadpool().AddWork(Work([=]() {
+	if (it != m_Textures.end())
+		return it->second;
 
-			LoadTexture(aFilePath);
-
-		}));*/
-
-
-		if (!LoadTexture(aFilePath))
-			return nullptr;
-		//DL_MESSAGE("Successfully loaded : %s", aFilePath.c_str());
-	//}
-
-	return myTextures[aFilePath];
+	return nullptr;
 }
 
-
-
-Effect* AssetsContainer::GetEffect(const std::string& aFilePath)
+Effect* AssetsContainer::GetEffect(u64 key)
 {
-	if (myEffects.find(aFilePath) == myEffects.end())
-	{
-		LoadEffect(aFilePath);
-	}
-	return myEffects[aFilePath];
+	auto it = m_Effects.find(key);
+
+	if (it != m_Effects.end())
+		return it->second;
+
+	return nullptr;
 }
 
-Model* AssetsContainer::GetModel(const std::string& aFilePath)
+Model* AssetsContainer::GetModel(u64 key)
 {
-	std::unordered_map<std::string, Model*>::iterator it;
-	it = myModels.find(aFilePath);
+	auto it = m_Models.find(key);
 
-	if (it == myModels.end())
-	{
-		DL_MESSAGE("Requested Model : %s", aFilePath.c_str());
-		DL_ASSERT("Failed to find requested model. Did you enter the correct path?");
-	}
-	return it->second;
+	if (it != m_Models.end())
+		return it->second;
+
+	return nullptr;
+}
+
+Material* AssetsContainer::GetMaterial(u64 key)
+{
+	auto it = m_Materials.find(key);
+	if (it != m_Materials.end())
+		return it->second;
+
+	return nullptr;
+}
+
+Sprite* AssetsContainer::GetSprite(u64 key)
+{
+	auto it = m_Sprites.find(key);
+
+	if (it != m_Sprites.end())
+		return it->second;
+
+	return nullptr;
 }
 
 void AssetsContainer::Update()
 {
 	m_ShaderFactory->Update();
+#ifndef FINAL
+	m_Watcher->FlushChanges();
+#endif
 }
 
 void AssetsContainer::ReloadTexture(Texture* texture)
 {
-	texture->OnReload();
 }
 
-bool AssetsContainer::LoadTexture(std::string aFilePath)
+void AssetsContainer::AddTexture(Texture* pTexture, u64 key)
 {
-	BeginTicketMutex(&m_Mutex);
-	if (myTextures.find(aFilePath) == myTextures.end())
+	if (m_Textures.find(key) == m_Textures.end())
 	{
-		Texture* texture = new Texture;
-		if (texture->Load(aFilePath.c_str()) == false)
-		{
-			SAFE_DELETE(texture);
-			EndTicketMutex(&m_Mutex);
-			return false;
-		}
-		myTextures[aFilePath] = texture;
+		m_Textures.insert(std::pair<u64, Texture*>(key, pTexture));
 	}
-	EndTicketMutex(&m_Mutex);
-	return true;
 }
 
-Effect* AssetsContainer::LoadEffect(const std::string& aFilePath)
+u64 AssetsContainer::LoadTexture(std::string filepath)
 {
-	Effect* effect = new Effect(aFilePath);
-	m_ShaderFactory->LoadShader(effect);
-	myEffects[aFilePath] = effect;
-	return myEffects[aFilePath];
-}
+	static Ticket_Mutex texture_mutex;
+	BeginTicketMutex(&texture_mutex);
 
-Sprite* AssetsContainer::LoadSprite(const cl::CHashString<128>& path)
-{
-	Sprite* sprite = new Sprite;
-	m_Sprites.emplace(path.GetHash(), sprite);
-	sprite->Initiate(path);
-	return sprite;
-}
+	u64 hash = Hash(filepath.c_str());
 
-Sprite* AssetsContainer::GetSprite(const cl::CHashString<128>& path)
-{
-	for (auto it = m_Sprites.begin(); it != m_Sprites.end(); it++)
+	if (m_Textures.find(hash) == m_Textures.end())
 	{
-		if (it->first != path.GetHash())
-			continue;
-
-		return it->second;
-	}
-	return LoadSprite(path);
-}
-
-
-std::string AssetsContainer::LoadModel(std::string aFilePath, std::string effect, bool thread)
-{
-	if (aFilePath.find("default_cube") != aFilePath.npos)
-	{
-		Model* model = new Model;
-		model->SetEffect(LoadEffect(m_Engine->GetVFS().GetFile(effect)));
-		model->CreateCube();
-		myModels.emplace("default_cube", model);
-
-	}
-
-
-
-	if (myModels.find(aFilePath) == myModels.end())
-	{
-		DL_MESSAGE("Loading model : %s", aFilePath.c_str());
-		Model* model = new Model;
-		myModels.emplace(aFilePath, model);
-
-		if ( thread )
+		graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
+		IShaderResourceView* srv = device.CreateTextureFromFile(filepath, false, &Engine::GetAPI()->GetContext());
+		if (srv != nullptr)
 		{
-			m_Engine->GetThreadpool().AddWork(Work([=]() {
-				m_ModelLoader->LoadModel(model, aFilePath, effect);
-				model->Initiate(aFilePath);
-			}));
-			return aFilePath;
-		}
-		else
-		{
-			m_ModelLoader->LoadModel(model, aFilePath, effect);
-			model->Initiate(aFilePath);
-			return aFilePath;
+			Texture* texture = new Texture(srv);
+			m_Textures.emplace(hash, texture);
+			EndTicketMutex(&texture_mutex);
+			return hash;
 		}
 	}
-	return aFilePath;
+	EndTicketMutex(&texture_mutex);
+	return hash;
 }
+
+u64 AssetsContainer::LoadEffect(std::string filepath)
+{
+	static Ticket_Mutex effect_mutex;
+	BeginTicketMutex(&effect_mutex);
+
+	u64 hash = Hash(filepath.c_str());
+	if (m_Effects.find(hash) == m_Effects.end())
+	{
+		Effect* effect = new Effect(filepath);
+		m_Effects.emplace(hash, effect);
+		m_ShaderFactory->LoadShader(effect);
+		EndTicketMutex(&effect_mutex);
+		return Hash(filepath.c_str());
+	}
+
+	EndTicketMutex(&effect_mutex);
+	return Hash(filepath.c_str());
+}
+
+u64 AssetsContainer::LoadSprite(std::string path)
+{
+	static Ticket_Mutex sprite_mutex;
+	BeginTicketMutex(&sprite_mutex);
+
+	u64 hash = Hash(path.c_str());
+	if (m_Sprites.find(hash) == m_Sprites.end())
+	{
+		Sprite* sprite = new Sprite;
+		m_Sprites.emplace(hash, sprite);
+		sprite->Initiate(path);
+		EndTicketMutex(&sprite_mutex);
+		return Hash(path.c_str());
+	}
+
+	EndTicketMutex(&sprite_mutex);
+	return Hash(path.c_str());
+}
+
+u64 AssetsContainer::LoadMaterial(std::string path)
+{
+	static Ticket_Mutex material_mutex;
+	BeginTicketMutex(&material_mutex);
+
+	u64 hash = Hash(path.c_str());
+	if (m_Materials.find(hash) == m_Materials.end())
+	{
+		Material* material = new Material(hash);
+		m_Materials.emplace(hash, material);
+		AssetFactory::GetInstance().CreateMaterial(path, material);
+#ifdef _DEBUG
+		debug::DebugHandle::GetInstance()->RegisterMaterial(material, path);
+#endif
+		EndTicketMutex(&material_mutex);
+		return hash;
+	}
+	EndTicketMutex(&material_mutex);
+	return Hash(path.c_str());
+}
+

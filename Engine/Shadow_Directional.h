@@ -2,6 +2,13 @@
 
 #include <Engine/engine_shared.h>
 
+class Camera;
+class Texture;
+namespace graphics
+{
+	class Viewport;
+};
+
 class ShadowDirectional
 {
 public:
@@ -14,8 +21,8 @@ public:
 	Camera* GetCamera() const { return m_Camera; }
 
 	void SetViewport();
-	void ClearTexture(const RenderContext& render_context);
-	void SetTargets(const RenderContext& render_context);
+	void ClearTexture();
+	void SetTargets();
 
 	void SetOrientation(const CU::Matrix44f& orientation);
 	const CU::Matrix44f& GetOrientation() { return m_Camera->GetOrientation(); }
@@ -29,9 +36,8 @@ public:
 	Texture* GetDepthStencilTexture() { return m_ShadowDepthStencil; }
 
 private:
-	const float m_Clear[4] = { 0.f, 0.f, 0.f, 0.f };
 
-	Viewport*	m_Viewport				= nullptr;
+	graphics::Viewport*	m_Viewport				= nullptr;
 	Camera*		m_Camera				= nullptr;
 	Texture*	m_ShadowDepth			= nullptr;
 	Texture*	m_ShadowDepthStencil	= nullptr;

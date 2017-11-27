@@ -10,17 +10,22 @@
 
 void TreeNode::Initiate(float halfwidth, Octree* octree)
 {
+	static int tree_node = 0;
+	std::stringstream ss;
+	ss << "TreeNode : " << tree_node++;
+	m_Name = ss.str();
 	m_HalfWidth = halfwidth;
 	m_Octree = octree;
 
+#if !defined(_PROFILE) && !defined(_FINAL)
+	debug::DebugHandle::GetInstance()->AddValueToPrint(&m_DwellerCount);
+#endif
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	if (m_Depth > 0)
-	{
-		if (m_Depth == 1)
-			m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager();
-		else if (m_Parent)
-			m_NodeEntityManager = static_cast<TreeNode*>(m_Parent)->GetManager();
-	}
+		m_NodeEntityManager = Engine::GetInstance()->GetEntityManager().RequestManager(this);
+
+
+	
 
 	for (TreeNodeBase* child : m_Children)
 	{
@@ -37,16 +42,25 @@ void TreeNode::Update(float dt, bool paused)
 		if (!node)
 			continue;
 
-#ifdef _PROFILE
-		EASY_BLOCK("Child Node Update");
-#endif
+		PROFILE_BLOCK("Child Node Update");
 		node->Update(dt, paused);
-#ifdef _PROFILE
-		EASY_END_BLOCK;
-#endif
+		PROFILE_BLOCK_END;
 
 	}
 
+//#if !defined(_PROFILE) && !defined(_FINAL)
+//	if (m_Parent > 0)
+//	{
+//		m_Parent->CopyToParent(m_Lines);
+//	}
+//	else
+//	{
+//		static Ticket_Mutex list_ticket;
+//		BeginTicketMutex(&list_ticket); 
+//		m_Parent->CopyToParent(m_Lines);
+//		EndTicketMutex(&list_ticket);
+//	}
+//#endif
 }
 
 void TreeNode::SetManager(NodeEntityManager* manager)

@@ -1,6 +1,0 @@
-{
-	"graphics" : { 
-		"model" : "Data/Game_Models/SM_muzzleflash4.fbx",
-		"shader" : "Shaders/T_Deferred_Base.json"
-	} 
-}

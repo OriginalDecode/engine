@@ -5,6 +5,7 @@
 
 namespace cl
 {
+
 	template<s32 _SIZE = 30>
 	class CHashString
 	{
@@ -40,6 +41,7 @@ namespace cl
 		CHashString& operator+=(const char aChar);
 
 		bool operator==(const CHashString &aString) const;
+		bool operator!=(const CHashString& string) const;
 		void operator=(const CHashString &aString);
 		void operator=(const char* aLiteralString); //assert
 
@@ -47,7 +49,7 @@ namespace cl
 
 		s32 find(const char* literal) const;
 		s32 find(const CHashString* string) const;
-
+		bool contains(const char* literal) const;
 
 		s32 length() const;
 		CHashString substr(const s32 start_index, const s32 len) const;
@@ -63,7 +65,13 @@ namespace cl
 		char m_String[_SIZE + 1];
 
 	};
-	typedef CHashString<> HashString;
+
+	template<s32 _SIZE /*= 30*/>
+	bool cl::CHashString<_SIZE>::operator!=(const CHashString& string) const
+	{
+		return m_HashValue != string.GetHash();
+	}
+
 
 	template< s32 _SIZE /*= 30*/>
 	u64 CHashString<_SIZE>::GetHash() const
@@ -90,7 +98,13 @@ namespace cl
 	template< s32 _SIZE /*= 30*/>
 	s32 CHashString<_SIZE>::find(const CHashString* string) const
 	{
-		return Find(aString->c_str());
+		return find(aString->c_str());
+	}
+
+	template<s32 _SIZE /*= 30*/>
+	bool CHashString<_SIZE>::contains(const char* string) const
+	{
+		return (Horspool(string) >= 0);
 	}
 
 	template< s32 _SIZE /*= 30*/>
@@ -280,7 +294,7 @@ namespace cl
 
 		for (int i = 0; i < pattern_size; ++i)
 		{
-			table[pattern_size[i]] = pattern_size - i - 1;
+			table[pattern[i]] = pattern_size - i - 1;
 		}
 
 
@@ -317,7 +331,5 @@ namespace cl
 		return m_String;
 	}
 
-
-
-
+	typedef CHashString<128> HashString;
 };

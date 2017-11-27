@@ -9,6 +9,8 @@ namespace CommonUtilities
 	class GrowingArray
 	{
 	public:
+		static void Copy(GrowingArray& dest, const GrowingArray& src);
+
 		inline GrowingArray();
 		inline GrowingArray(SizeType aNrOfRecommendedItems, bool aUseSafeModeFlag = true);
 		inline GrowingArray(const GrowingArray& aGrowingArray);
@@ -40,6 +42,7 @@ namespace CommonUtilities
 		inline int Capacity();
 
 		bool Empty() { return (mySize <= 0); }
+		const bool Empty() const { return (mySize <= 0); }
 
 		void Optimize();
 
@@ -65,13 +68,37 @@ namespace CommonUtilities
 		SizeType mySize = 0;
 	};
 
+
+	
+	/*
+		Copies all data from src to the end of dest and increase the size of dest
+
+	
+	*/
+	template<typename ObjectType, typename SizeType /*= int*/>
+	void CommonUtilities::GrowingArray<ObjectType, SizeType>::Copy(GrowingArray& dest, const GrowingArray& src)
+	{
+		const SizeType _newSize = dest.Size() + src.Size();
+
+		if (_newSize >= dest.Capacity())
+		{
+			dest.Resize(dest.Capacity() * 2);
+		}
+
+		const SizeType _end = dest.Size();
+		const int _byteSize = sizeof(ObjectType) * src.Size();
+		memcpy(&dest.myData[_end], &src.myData[0], _byteSize);
+		dest.mySize = _newSize;
+		
+	}
+
 	template<typename ObjectType, typename SizeType = int>
 	GrowingArray<ObjectType, SizeType>::GrowingArray()
+		: m_HasInited(false)
+		, myCapacity(0)
+		, mySize(0)
+		, myData(nullptr)
 	{
-		m_HasInited = false;
-		myCapacity = 0;
-		mySize = 0;
-		myData = nullptr;
 		Init(16);
 	};
 
@@ -335,7 +362,7 @@ namespace CommonUtilities
 		}
 		else
 		{
-			memcpy(newMemory, myData, sizeof(ObjectType)*mySize);
+			memcpy(&newMemory[0], &myData[0], sizeof(ObjectType)*mySize);
 		}
 		delete[]myData;
 		myData = nullptr;

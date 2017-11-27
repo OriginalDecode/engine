@@ -8,7 +8,7 @@ class JSONReader
 {
 public:
 	static std::string ERROR_STR;
-	JSONReader(const std::string& aFilePath);
+	JSONReader(const std::string& filepath);
 	JSONReader() = default;
 	~JSONReader();
 
@@ -42,19 +42,19 @@ public:
 	void ReadElement(const rapidjson::Value& element, float& out);
 
 
-	void OpenDocument(const std::string& aFilePath);
+	void OpenDocument(const std::string& filepath);
 	void CloseDocument();
 
 
 	std::string GetCurrentFile() { return myCurrentDocumentPath; }
 
 
+	std::string OptionalReadElement(const JSONElement& el, const std::string& tag);
 
-
+	const rapidjson::Document& GetDocument() const { return myDocument; }
 
 private:
 
-	FRESULT OpenFile();
 	rapidjson::Document myDocument;
 	rapidjson::FileReadStream* myFileReaderStream;
 

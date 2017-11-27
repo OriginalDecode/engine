@@ -5,10 +5,19 @@
 #include "RenderCommand.h"
 #include <Math/Vector/Vector.h>
 
+#include <PostMaster.h>
+
+void GizmoBase::Initiate(std::string event)
+{
+	PostMaster::GetInstance()->Subscribe(event, this);
+}
+
 void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction)
 {
-	gizmo_handle.m_Key = Engine::GetInstance()->LoadModel(model_key, "Shaders/gizmo.json", true);
-	gizmo_handle.m_DirColor = Engine::GetInstance()->GetTexture(texture_path);
+	gizmo_handle.m_Key = Engine::GetInstance()->LoadModel<Model>(model_key.c_str(),
+																 "Shaders/gizmo.json",
+																 true);
+	gizmo_handle.m_DirColor = Engine::GetInstance()->GetTexture(texture_path.c_str());
 	gizmo_handle.m_Model = Engine::GetInstance()->GetModel(gizmo_handle.m_Key);
 
 	CU::GrowingArray<Model*> children = gizmo_handle.m_Model->GetChildModels();
@@ -17,6 +26,7 @@ void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_k
 		CU::GrowingArray<Surface*>& surfaces = child->GetSurfaces();
 		for (Surface* surface : surfaces)
 		{
+			//I should be able to set a color instead of using a texture??????????
 			//surface->ClearTextures();
 			//surface->AddTexture(gizmo_handle.m_DirColor->GetShaderView(), Effect::DIFFUSE);
 		}
@@ -99,12 +109,18 @@ bool GizmoBase::Inside(const CU::Vector3f& position, GizmoHandle* result)
 	}
 	else if (m_Right.Inside(position))
 	{
-		result = &m_Right; 
+		result = &m_Right;
 		return true;
 	}
 
 	result = nullptr;
 	return false;
+}
+
+void GizmoBase::HandleEvent(u64 event, void* data)
+{
+	if (event == r_down_HASH || event == w_down_HASH || event == e_down_HASH)
+		ToggleActive();
 }
 
 void GizmoBase::OffsetGizmoHandle(GizmoHandle& gizmo_handle)

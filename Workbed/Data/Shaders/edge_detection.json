@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "render_to_texture.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "edge_detection.ps",
+        "entrypoint": "main"
+    }
+}

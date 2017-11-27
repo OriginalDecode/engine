@@ -3,25 +3,23 @@
 class SSAOPass
 {
 public:
-	SSAOPass() = default;
+	SSAOPass();
+	~SSAOPass();
 
-	void Initiate();
-	void CleanUp(); 
-	void Process(Texture* scene_texture);
+	void Process(Texture* scene_texture, const graphics::RenderContext& render_context);
+	void OnResize();
 private:
 
-	Quad		m_ScreenQuad;
 	WindowSize	m_WindowSize;
+
+	Quad*		m_ScreenQuad = nullptr;
 
 	Texture*	m_SSAOTexture = nullptr;
 	Texture*	m_DebugTexture	= nullptr;
 	Texture*	m_Test = nullptr;
 
-
 	Effect*		m_SSAOShader	= nullptr;
-	Effect*		m_BlurShader[2];
-
-
+	
 	IBuffer* m_cbSSAO = nullptr;
 	struct cbSSAO
 	{
@@ -29,15 +27,4 @@ private:
 		CU::Matrix44f m_View;
 	} m_SSAOStruct;
 
-
-	struct cbBlur
-	{
-		float m_Size;
-		CU::Vector3f dummy;
-	} m_BlurStruct;
-
-	IBuffer* m_cbBlur = nullptr;
-
-
 };
-

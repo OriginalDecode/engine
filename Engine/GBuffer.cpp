@@ -1,74 +1,108 @@
 #include "stdafx.h"
 #include "GBuffer.h"
+#include <Engine/engine_shared.h>
+#include <Engine/IGraphicsContext.h>
+#include <Engine/IGraphicsAPI.h>
 
-GBuffer::~GBuffer()
+#if !defined(_PROFILE) && !defined(_FINAL)
+#include <CommonLib/reflector.h>
+#endif
+namespace graphics
 {
-	SAFE_DELETE(myAlbedo);
-	SAFE_DELETE(myNormal);
-	SAFE_DELETE(myDepth);
-	SAFE_DELETE(myEmissive);
 
-}
-
-void GBuffer::Initiate()
-{
-	const WindowSize windowSize = Engine::GetInstance()->GetInnerSize();
-
-	myAlbedo = new Texture;
-	myAlbedo->Initiate(windowSize.m_Width, windowSize.m_Height
-		, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-		, DXGI_FORMAT_R16G16B16A16_FLOAT
-		, "GBuffer : Albedo");
-
-	myEmissive = new Texture;
-	myEmissive->Initiate(windowSize.m_Width, windowSize.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R8G8B8A8_UNORM, "GBuffer : Emissive");
-
-	myNormal = new Texture;
-	myNormal->Initiate(windowSize.m_Width, windowSize.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R16G16B16A16_FLOAT, "GBuffer : Normal");
-
-	myDepth = new Texture;
-	myDepth->Initiate(windowSize.m_Width, windowSize.m_Height, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE, DXGI_FORMAT_R32G32B32A32_FLOAT, "GBuffer : Depth");
-
-}
-
-void GBuffer::Clear(float* aClearColor, const RenderContext& render_context)
-{
-	render_context.m_Context->ClearRenderTargetView(myAlbedo->GetRenderTargetView(), aClearColor);
-	render_context.m_Context->ClearRenderTargetView(myNormal->GetRenderTargetView(), aClearColor);
-	render_context.m_Context->ClearRenderTargetView(myDepth->GetRenderTargetView(), aClearColor);
-	render_context.m_Context->ClearRenderTargetView(myEmissive->GetRenderTargetView(), aClearColor);
-}
-
-void GBuffer::SetAsRenderTarget(Texture* aDepthTexture, const RenderContext& render_context)
-{
-	ID3D11RenderTargetView* target[] = 
+	GBuffer::GBuffer()
 	{
-		myAlbedo->GetRenderTargetView(),
-		myNormal->GetRenderTargetView(),
-		myDepth->GetRenderTargetView(),
-		myEmissive->GetRenderTargetView(),
-	};
+	}
 
-	render_context.m_Context->OMSetRenderTargets(ARRAYSIZE(target), target, aDepthTexture->GetDepthView());
-}
+	GBuffer::~GBuffer()
+	{
+		SAFE_DELETE(m_Albedo);
+		SAFE_DELETE(m_Normal);
+		SAFE_DELETE(m_Depth);
+		SAFE_DELETE(m_Emissive);
+#ifdef _DEBUG
+		SAFE_DELETE(m_EntityIDTexture);
+#endif
+	}
 
-Texture* GBuffer::GetDiffuse() const
-{
-	return myAlbedo;
-}
+	void GBuffer::Initiate(bool bind_textures)
+	{
 
-Texture* GBuffer::GetNormal() const
-{
-	return myNormal;
-}
+		const WindowSize windowSize = Engine::GetInstance()->GetInnerSize();
+		const float window_width = windowSize.m_Width;
+		const float window_height = windowSize.m_Height;
 
-Texture* GBuffer::GetEmissive() const
-{
-	return myEmissive;
-}
+		TextureDesc desc;
+		desc.m_Width = window_width;
+		desc.m_Height = window_height;
+		desc.m_Usage = graphics::DEFAULT_USAGE;
+		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
+		desc.m_ShaderResourceFormat = RGBA16_FLOAT;
+		desc.m_RenderTargetFormat = RGBA16_FLOAT;
+		desc.m_TextureFormat = RGBA16_FLOAT;
 
-Texture* GBuffer::GetDepth() const
-{
-	return myDepth;
-}
+		m_Albedo = new Texture;
+		m_Albedo->Initiate(desc, false, "GBuffer : Albedo");
 
+		m_Emissive = new Texture;
+		m_Emissive->Initiate(desc, false, "GBuffer : Emissive");
+
+		m_Normal = new Texture;
+		m_Normal->Initiate(desc, false, "GBuffer : Normal");
+
+		m_Depth = new Texture;
+		desc.m_ShaderResourceFormat = RGBA32_FLOAT;
+		desc.m_RenderTargetFormat = RGBA32_FLOAT;
+		m_Depth->Initiate(desc, false, "GBuffer : Depth");
+
+#ifdef _DEBUG
+		m_EntityIDTexture = new Texture;
+		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
+		desc.m_TextureFormat = RGBA32_FLOAT;
+		desc.m_ShaderResourceFormat = R32_UINT;
+		desc.m_RenderTargetFormat = R32_UINT;
+		m_EntityIDTexture->Initiate(desc, false, "Entity ID");
+
+		Engine::GetInstance()->AddTexture(m_EntityIDTexture, Hash("entity_id"));
+#endif
+
+		if (bind_textures)
+		{
+
+			Effect* shader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
+			shader->AddShaderResource(m_Albedo, Effect::DIFFUSE);
+			shader->AddShaderResource(m_Depth, Effect::DEPTH);
+			shader->AddShaderResource(m_Normal, Effect::NORMAL);
+			shader->AddShaderResource(m_Emissive, Effect::EMISSIVE);
+		}
+	}
+
+	void GBuffer::Clear(const float* clear_color, const RenderContext& render_context)
+	{
+		auto& ctx = render_context.GetContext();
+		ctx.ClearRenderTarget(m_Albedo->GetRenderTargetView(), clear_color);
+		ctx.ClearRenderTarget(m_Normal->GetRenderTargetView(), clear_color);
+		ctx.ClearRenderTarget(m_Depth->GetRenderTargetView(), clear_color);
+		ctx.ClearRenderTarget(m_Emissive->GetRenderTargetView(), clear_color);
+#ifdef _DEBUG
+		ctx.ClearRenderTarget(m_EntityIDTexture->GetRenderTargetView(), clear_color);
+#endif
+	}
+
+	void GBuffer::SetAsRenderTarget(Texture* depth, const RenderContext& render_context)
+	{
+		IRenderTargetView* target[] =
+		{
+			m_Albedo->GetRenderTargetView(),
+			m_Normal->GetRenderTargetView(),
+			m_Depth->GetRenderTargetView(),
+			m_Emissive->GetRenderTargetView(),
+#ifdef _DEBUG
+			m_EntityIDTexture->GetRenderTargetView(),
+#endif
+		};
+
+		render_context.GetContext().OMSetRenderTargets(ARRAYSIZE(target), target, render_context.GetAPI().GetDepthView());
+	}
+
+};

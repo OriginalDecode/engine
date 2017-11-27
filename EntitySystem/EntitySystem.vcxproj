@@ -227,9 +227,10 @@
     <ClInclude Include="LightSystem.h" />
     <ClInclude Include="NetworkComponent.h" />
     <ClInclude Include="NetworkSystem.h" />
+    <ClInclude Include="PBLComponent.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PhysicsSystem.h" />
-    <ClInclude Include="RenderComponent.h" />
+    <ClInclude Include="GraphicsComponent.h" />
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="TranslationComponent.h" />
     <ClInclude Include="TypeID.h" />
@@ -248,7 +249,7 @@
     <ClCompile Include="NetworkSystem.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
-    <ClCompile Include="RenderComponent.cpp" />
+    <ClCompile Include="GraphicsComponent.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="TranslationComponent.cpp" />
   </ItemGroup>

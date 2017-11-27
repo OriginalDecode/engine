@@ -1,6 +1,6 @@
 #pragma once
-#include "engine_shared.h"
-#include <Engine/ShaderState.h>
+#include <Engine/engine_shared.h>
+#include <CommonLib/HashString.h>
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
@@ -8,172 +8,285 @@ struct HWND__;
 typedef HWND__* HWND;
 #endif
 
-// typedef void** GTexture2D;
-// typedef void** GTexture3D;
-// typedef void** GShaderResourceView;
-// typedef void** GDepthStencilView;
-// typedef void** GRenderTargetView;
-// typedef void** GViewport;
-// typedef void** GVertexShader;
-// typedef void** GPixelShader;
-// typedef void** GGeometryShader;
-// typedef void** GHullShader;
-// typedef void** GDomainShader;
-// typedef void** GComputeShader;
-// typedef void** GShaderBlob;
-// typedef void** GDevice;
-// typedef void** GContext;
-// typedef void** GBuffer;
-// typedef void** GInputLayout;
-
-
-struct CreateInfo
+class Texture;
+namespace graphics
 {
-	HWND m_HWND;
-	HINSTANCE m_Instance;
-	float m_WindowWidth = 0.f;
-	float m_WindowHeight = 0.f;
-	std::string m_APIName;
-};
+	struct CreateInfo
+	{
+		HWND m_HWND;
+		HINSTANCE m_Instance;
+		float m_WindowWidth = 0.f;
+		float m_WindowHeight = 0.f;
+		std::string m_APIName;
+	};
 
-enum class eEngineFlags
-{
-	FULLSCREEN,
-	_COUNT
-};
+	enum eDepthStencilState
+	{
+		Z_ENABLED,
+		Z_DISABLED,
+		READ_NO_WRITE,
+		READ_NO_WRITE_PARTICLE,
+		NOF_DSS
+	};
 
-enum class eDepthStencilState
-{
-	Z_ENABLED,
-	Z_DISABLED,
-	READ_NO_WRITE,
-	READ_NO_WRITE_PARTICLE,
-	MASK_TEST,
-	LIGHT_MASK,
-	DEPTH_TEST,
-	_COUNT
-};
+	enum eRasterizer
+	{
+		WIREFRAME,
+		CULL_BACK,
+		CULL_NONE,
+		CULL_FRONT,
+		NOF_RS
+	};
 
-enum class eRasterizer
-{
-	WIREFRAME,
-	CULL_BACK,
-	CULL_NONE,
-	CULL_FRONT,
-	MSAA,
-	_COUNT
-};
+	enum eBlendStates
+	{
+		NO_BLEND,
+		LIGHT_BLEND,
+		ALPHA_BLEND,
+		BLEND_FALSE,
+		PARTICLE_BLEND,
+		NOF_BS
+	};
 
-enum class eBlendStates
-{
-	NO_BLEND,
-	LIGHT_BLEND,
-	ALPHA_BLEND,
-	BLEND_FALSE,
-	PARTICLE_BLEND,
-	_COUNT
-};
+	enum eSamplerStates
+	{
+		MSAA_x1,
+		MSAA_x2,
+		MSAA_x4,
+		MSAA_x8,
+		MSAA_x16,
+		TRILINEAR,
+		BILINEAR,
+		LINEAR_WRAP,
+		LINEAR_CLAMP,
+		CUBEMAP,
+		NOF_SS
+	};
 
-enum class eSamplerStates
-{
-	LINEAR_CLAMP,
-	LINEAR_WRAP,
-	POINT_CLAMP,
-	POINT_WRAP,
-	MIP_SAMPLE,
-	NONE,
-	_COUNT
-};
+	enum eGraphicsAPI
+	{
+		NO_API = -1,
+		D3D11,
+		VULKAN,
+	};
 
-enum class eGraphicsAPI
-{
-	NONE = -1,
-	D3D11,
-	VULKAN,
-};
+	enum eTextureFormat
+	{
+		NO_FORMAT = BITFLAG(0),
+		RGBA32_FLOAT = BITFLAG(1),
+		RGBA32_UINT = BITFLAG(2),
+		RGBA32_SINT = BITFLAG(3),
+
+		RGB32_FLOAT = BITFLAG(4),
+		RGB32_UINT = BITFLAG(5),
+		RGB32_SINT = BITFLAG(6),
+
+		RG32_FLOAT = BITFLAG(7),
+		RG32_UINT = BITFLAG(8),
+
+		RGBA16_FLOAT = BITFLAG(9),
+		RGBA16_UINT = BITFLAG(10),
+		RGBA16_SINT = BITFLAG(11),
+
+		RGBA8_UINT = BITFLAG(12),
+		RGBA8_SINT = BITFLAG(13),
+
+		R32_TYPELESS = BITFLAG(14),
+		R32_FLOAT = BITFLAG(15),
+		R32_UINT = BITFLAG(16),
+		DEPTH_32_FLOAT = BITFLAG(17),
+
+		RGBA8_UNORM = BITFLAG(18),
+	};
+
+	enum eVertexFormat
+	{
+		_4BYTE_R_FLOAT,
+		_4BYTE_R_UINT,
+		_8BYTE_RG,
+		_12BYTE_RGB,
+		_16BYTE_RGBA,
+	};
+
+	enum eUsage
+	{
+		DEFAULT_USAGE = 0,
+		IMMUTABLE_USAGE = 1,
+		DYNAMIC_USAGE = 2,
+		STAGING_USAGE = 4,
+	};
+
+	enum eCPUAccessFlag
+	{
+		NO_ACCESS_FLAG = 0,
+		READ = 1,
+		WRITE = 2,
+	};
+
+	enum eTopology
+	{
+		TRIANGLE_LIST,
+		POINT_LIST,
+		LINE_LIST,
+		_4_CONTROL_POINT_PATCHLIST,
+	};
+
+	enum eMapping
+	{
+		MAP_READ,
+		MAP_WRITE,
+		MAP_READ_WRITE,
+		MAP_WRITE_DISCARD,
+		MAP_WRITE_NO_OVERWRITE
+	};
+
+	enum eElementSpecification
+	{
+		INPUT_PER_VERTEX_DATA,
+		INPUT_PER_INSTANCE_DATA,
+	};
+
+	enum eBindFlag
+	{
+		NONE,
+		BIND_VERTEX_BUFFER = 1,
+		BIND_INDEX_BUFFER = 2,
+		BIND_CONSTANT_BUFFER = 4,
+		BIND_SHADER_RESOURCE = 8,
+		BIND_STREAM_OUTPUT = 16,
+		BIND_RENDER_TARGET = 32,
+		BIND_DEPTH_STENCIL = 64,
+		BIND_UNORDERED_ACCESS = 128,
+		BIND_DECODER = 256,
+		BIND_VIDEO_ENCODER = 512
+	};
+
+	enum eClearFlag
+	{
+		DEPTH,
+		STENCIL
+	};
+
+	struct Texture2DDesc
+	{
+		u32 m_Width = 0;
+		u32 m_Height = 0;
+		u32 m_MipLevels = 0;
+		eTextureFormat m_Format = RGBA32_FLOAT;
+		s32 m_Usage = DEFAULT_USAGE;
+		s32 m_Binding = NONE;
+		s32 m_CPUAccessFlag = 0;
+		s32 m_MiscFlags = 0;
+		s32 m_ArraySize = 0;
+		s32 m_SampleCount = 0;
+		s32 m_SampleQuality = 0;
+	};
+
+	struct InputElementDesc
+	{
+		InputElementDesc() = default;
+
+		InputElementDesc(std::string semantic, u32 index, eVertexFormat format, u32 slot, u32 byte_offset, eElementSpecification element_spec, u32 instance_step_rate)
+			: m_Semantic(semantic)
+			, m_SemanicIndex(index)
+			, m_Format(format)
+			, m_InputSlot(slot)
+			, m_ByteOffset(byte_offset)
+			, m_ElementSpecification(element_spec)
+			, m_InstanceDataStepRate(instance_step_rate)
+		{
+		}
+
+		std::string m_Semantic;
+		u32 m_SemanicIndex = 0;
+		eVertexFormat m_Format;
+		u32 m_InputSlot = 0;
+		u32 m_ByteOffset = 0;
+		eElementSpecification m_ElementSpecification;
+		u32 m_InstanceDataStepRate = 0;
+	};
+
+	struct BufferDesc
+	{
+		eBindFlag m_BindFlag;
+		s32 m_CPUAccessFlag;
+		eUsage m_UsageFlag;
+		s8* m_Data = nullptr;
+		s32 m_Size = 0;
+		s32 m_StructuredByteStride = 0;
+		s32 m_MiscFlags = 0;
+		s32 m_ByteWidth = 0;
+	};
+
+	class IGraphicsDevice;
+	class IGraphicsContext;
+	class Viewport;
+	class IGraphicsAPI
+	{
+	public:
+		virtual ~IGraphicsAPI() {}
+		virtual void Initiate() = 0;
+
+		virtual void EndFrame() = 0;
+		virtual void BeginFrame() = 0;
 
 
-class IGraphicsAPI
-{
-public:
-	virtual bool Initiate(CreateInfo create_info) = 0;
-	virtual bool CleanUp() = 0;
-
-	virtual void Clear() = 0;
-	virtual void Present(u8 refresh_rate, u8 flags) = 0;
-
-	virtual void OnAltEnter() = 0;
-	virtual void OnResize() = 0;
+		virtual void OnAltEnter() = 0;
+		virtual void OnResize() = 0;
 
 
-	std::string GetAPIName() { return m_CreateInfo.m_APIName; }
+		std::string GetAPIName() { return m_CreateInfo.m_APIName; }
+		//virtual void CopyResource(void * pDestination, void * pSource) = 0;
 
-	virtual IDevice* GetDevice() = 0;
+		eGraphicsAPI GetActiveAPI() const { return m_ActiveAPI; }
 
-	virtual void CopyResource(void * pDestination, void * pSource) = 0;
+		virtual Viewport* CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y) = 0;
 
-	virtual void SetDebugName(void * pResource, std::string debug_name) = 0;
-	eGraphicsAPI GetActiveAPI() const { return m_ActiveAPI; }
+		virtual IGraphicsDevice& GetDevice() { return *m_Device; }
+		virtual IGraphicsContext& GetContext() { return *m_Context; }
 
-	virtual void EnableZBuffer() = 0;
-	virtual void DisableZBuffer() = 0;
+		virtual void ReleasePtr(void* ptr) = 0;
 
+		ISamplerState* GetSamplerState(eSamplerStates sampler_state) { return m_SamplerStates[sampler_state]; }
+		IDepthStencilState* GetDepthStencilState(eDepthStencilState depthstencilstate) { return m_DepthStencilStates[depthstencilstate]; }
+		IRasterizerState* GetRasterizerState(eRasterizer rasterizer) { return m_RasterizerStates[rasterizer]; }
+		IBlendState* GetBlendState(eBlendStates blendstate) { return m_BlendStates[blendstate]; }
 
-	virtual void* CreateBlendState(s32 render_target_write_mask
-		, s32 enable_blend_flags
-		, BlendState::BlendOp blend_op, BlendState::BlendFlag src_blend, BlendState::BlendFlag dest_blend
-		, BlendState::BlendOp alpha_blend_op, BlendState::BlendFlag src_blend_alpha, BlendState::BlendFlag dest_blend_alpha) = 0;
-	virtual void* CreateSamplerState(SamplerState::FilterMode filter_mode, SamplerState::UVAddressMode address_mode, u32 max_anisotropy, float mip_lod_bias, float min_lod, float max_lod, float border_color[4], SamplerState::ComparisonFunc comparison_function) = 0;
+		const CreateInfo& GetInfo() const { return m_CreateInfo; }
 
-	virtual void* CreateRasterizerState() = 0;
-	virtual void* CreateDepthstencilState() = 0;
+		virtual void SetDefaultTargets() = 0;
 
+		virtual void ResetViewport() = 0;
 
+		IRenderTargetView* GetBackbuffer() { return m_DefaultRenderTarget; }
+		const IRenderTargetView* GetBackbuffer() const { return m_DefaultRenderTarget; }
+		IRenderTargetView** GetBackbufferRef() { return &m_DefaultRenderTarget; }
 
-
-	/*
-	vulkan has
-	Vertex = Vertex
-	Fragment = Pixel
-	Geometry = Geometry
-	Compute = Compute
-	Tesselation Control = Hull
-	Tesselation Evaluation = Domain
-	*/
-	virtual void SetVertexShader(CompiledShader* vertex_shader) = 0;
-	virtual void SetPixelShader(CompiledShader* vertex_shader) = 0;
-	virtual void SetGeometryShader(CompiledShader* vertex_shader) = 0;
-	virtual void SetHullShader(CompiledShader* vertex_shader) = 0;
-	virtual void SetDomainShader(CompiledShader* vertex_shader) = 0;
-	virtual void SetComputeShader(CompiledShader* vertex_shader) = 0;
-
-	virtual void* CreateVertexShader(void* pBuffer, float buffer_size, const std::string& debug_name ) = 0;
-	virtual void* CreatePixelShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
-	virtual void* CreateGeometryShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
-	virtual void* CreateHullShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
-	virtual void* CreateDomainShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
-	virtual void* CreateComputeShader(void* pBuffer, float buffer_size, const std::string& debug_name) = 0;
-
-	virtual void SetShaderState(ShaderState& shader_state) = 0;
+		IDepthStencilView* GetDepthView() { return m_DefaultDepthView; }
+		const IDepthStencilView* GetDepthView() const { return m_DefaultDepthView; }
 
 
-	virtual void VSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-	virtual void PSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-	virtual void GSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-	virtual void DSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-	virtual void HSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
-	virtual void CSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
+		virtual CU::Vector4f PickColor(Texture* pTexture) = 0;
+
+	protected:
+		CreateInfo m_CreateInfo;
+		eGraphicsAPI m_ActiveAPI;
+
+		Viewport* m_Viewport						= nullptr;
+		IGraphicsDevice* m_Device					= nullptr;
+		IGraphicsContext* m_Context					= nullptr;
+
+		ITexture2D* m_DefaultDepthBuffer			= nullptr;
+		IDepthStencilView* m_DefaultDepthView		= nullptr;
+		IRenderTargetView* m_DefaultRenderTarget	= nullptr;
+
+		ISamplerState* m_SamplerStates[NOF_SS];
+		IDepthStencilState* m_DepthStencilStates[NOF_DSS];
+		IRasterizerState* m_RasterizerStates[NOF_RS];
+		IBlendState* m_BlendStates[NOF_BS];
+
+		
 
 
-
-	/*
-		The depth_value variable is what the depth buffer is testing against in that state. 0.0 - 1.0
-	*/
-	virtual void SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value) = 0;
-
-protected:
-	CreateInfo m_CreateInfo;
-	eGraphicsAPI m_ActiveAPI;
-
-	std::bitset<int(eEngineFlags::_COUNT)> myEngineFlags;
+	};
 };

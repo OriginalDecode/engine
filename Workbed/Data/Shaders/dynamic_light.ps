@@ -1,0 +1,131 @@
+#include "PBL_Functions.hlsl"
+cbuffer per_frame : register(b0)
+{
+	row_major float4x4 InvertedProjection; 
+	row_major float4x4 InvertedView; 
+};
+
+cbuffer per_object : register(b1)
+{
+	float4 color;
+	float4 position;
+	float4 cam_pos;
+	row_major float4x4 shadowMVP;
+#ifdef SPOTLIGHT
+    float4 direction;
+#endif
+};
+
+
+struct psInput
+{
+	float4 pos	: SV_POSITION;
+	float4 uv	: POSITION;
+	float range : RANGE;
+#ifdef SPOTLIGHT
+	float cosAngle : COSANGLE;
+    float angle : ANGLE;
+	float4 world : WORLD;
+#endif
+};
+
+float4 getWorldPos(float2 tex_coord, float depth)
+{
+    float x = tex_coord.x * 2.0f - 1.0f;
+	float y = (1.0f - tex_coord.y) * 2.0f - 1.0f;
+	float z = depth;
+	float4 world_pos = float4(x, y, z, 1.0f);
+	
+	world_pos = mul(world_pos, InvertedProjection);
+	world_pos = world_pos / world_pos.w;
+	world_pos = mul(world_pos, InvertedView);
+    return world_pos;
+}
+
+float4 main(psInput input) : SV_Target
+{
+
+   	input.uv /= input.uv.w;
+	float2 texCoord = input.uv.xy;
+
+    float4 albedo = AlbedoTexture.Sample(sampler0, texCoord);
+	float4 normal = NormalTexture.Sample(sampler0, texCoord);
+	float4 depth = DepthTexture.Sample(sampler0, texCoord);
+	float metalness = normal.w;
+	float roughness = 1 - depth.y;
+	
+	normal *= 2;
+	normal -= 1;
+	
+	float4 world_pos = getWorldPos(texCoord, depth.r);
+    float4 final_color = 1;
+
+	float4 lightToPixel = world_pos - position;
+	float4 toLight = position - world_pos;
+	float ln = length(toLight);
+	float4 light_dir = normalize(toLight);
+    float NdL = dot(normal, light_dir);
+
+	float4 to_eye = normalize(cam_pos - world_pos);	
+	float4 halfVec = normalize(light_dir + to_eye);
+
+	float HdN = SATURATE(dot(halfVec, normal));
+	float NdV = SATURATE(dot(normal, to_eye));
+
+	int nMips = 0;
+	int width = 0;
+	int height = 0;
+	CubeMap.GetDimensions(0, width, height, nMips);
+
+	half roughnessOffsetted = pow(roughness, 8192);
+	half lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips);
+	float3 refVec = normalize(reflect(to_eye.xyz, normal.xyz));
+	half4 reflection_fresnel = half4(ReflectionFresnel(albedo.rgb, normal.xyz, to_eye, roughnessOffsetted), 1);
+	float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
+
+	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
+	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo * (1 - reflection_fresnel);
+	cube_ambient = SATURATE(cube_ambient);
+
+	float4 diffuse = 0;
+	albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
+	float SatNdL = SATURATE(dot(-light_dir, normal));
+	diffuse += float4( ( SatNdL * 1 / PI)  * color * albedo.rgb, 1.0f);
+	
+	float4 fresnel = SATURATE(Fresnel(metalness_albedo, -light_dir, halfVec));
+	float Distr = SATURATE(D_GGX(HdN, roughness));
+	float V = SATURATE(V_SchlickForGGX(roughness, NdV, NdL));
+	float4 spec = 0;
+
+	float attenuation = 0;
+#ifdef SPOTLIGHT
+
+    float cosCone = input.cosAngle ;
+	float4 lightVec = normalize (lightToPixel);
+	float spotfactor = dot(lightVec, normalize(direction));
+
+	if(spotfactor < cosCone)
+		discard;
+
+	float angularAttenuation = ( 1.0 - ( 1.0 - spotfactor) *  1 / ( 1 - cosCone)) ;
+	float linearAttenuation = CalculateTotalAttenuation(ln, input.range) * 8;
+	attenuation = linearAttenuation * angularAttenuation;
+#endif
+
+#ifdef POINTLIGHT
+	attenuation = CalculateTotalAttenuation(ln, input.range) * 2;
+#endif
+	spec += SATURATE((((fresnel * Distr * V) * NdL) * color) ) ;
+
+
+	diffuse += cube_ambient * albedo;
+	diffuse = SATURATE(diffuse);
+
+	float4 output = 0;
+	output = lerp(diffuse, cube, fresnel);
+	output += spec;
+	output = SATURATE(output);
+	return output * attenuation;
+
+
+};

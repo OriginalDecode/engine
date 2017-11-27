@@ -1,10 +1,10 @@
 #pragma once
 #include "engine_shared.h"
+#include <Engine/GizmoBase.h>
 
 class Texture;
 class Camera;
 class Effect;
-#include <Engine/GizmoBase.h>
 class ShadowSpotlight
 {
 public:
@@ -33,27 +33,17 @@ public:
 
 	float GetBufferSize() const { return m_BufferSize; }
 
-#ifdef _DEBUG
-	void Copy();
-	Texture* GetHolder() { return m_Holder; }
-#endif
-
-
 private:
 	Effect* m_ShadowEffect	= nullptr;
 	Camera* m_Camera		= nullptr;
-	Viewport* m_Viewport	= nullptr;
+	graphics::Viewport* m_Viewport	= nullptr;
 
-	IDevContext* m_Context	= nullptr;
 
 	Texture* m_Depth		= nullptr;
 	Texture* m_DepthStencil = nullptr;
 
-#ifdef _DEBUG
-	Texture* m_Holder		= nullptr;
-#endif
-
 	float m_BufferSize		= 0.f;
+
 	CU::Vector3f m_Position;
 	CU::Vector3f m_Direction;
 

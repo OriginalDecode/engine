@@ -1,11 +1,3 @@
-//---------------------------------
-//	Deferred Ambient Vertex Shaders
-//---------------------------------
-
-//---------------------------------
-//	Deferred Ambient Vertex Structs
-//---------------------------------
-
 struct VS_INPUT
 {
 	float4 pos	: POSITION;
@@ -18,9 +10,6 @@ struct VS_OUTPUT
 	float2 uv	: TEXCOORD0;
 };
 
-//---------------------------------
-//	Deferred Ambient Vertex Shader
-//---------------------------------
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;

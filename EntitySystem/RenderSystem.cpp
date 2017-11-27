@@ -1,10 +1,10 @@
 #include "RenderSystem.h"
 
-#include <Engine.h>
+#include "GraphicsComponent.h"
 #include "../Engine/Model.h"
 #include "TranslationComponent.h"
-#include "RenderComponent.h"
 #include "LightComponent.h"
+#include "PBLComponent.h"
 
 /* Engine Includes */
 #include "Synchronizer.h"
@@ -16,15 +16,13 @@
 
 #include "../Application/CameraHandle.h"
 #include "DebugComponent.h"
-#ifdef _PROFILE
-#include <easy/profiler.h>
-#endif
 #include <Engine/Engine.h>
+#include "../Engine/profile_defines.h"
+#include <Engine.h>
 
 //#define VISIBLE_CHECK
-
 RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
-	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, RenderComponent>>())
+	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, GraphicsComponent>>())
 {
 	mySynchronizer = m_Engine->GetSynchronizer();
 }
@@ -32,83 +30,66 @@ RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
 
 void RenderSystem::Update(float /*dt*/, bool paused)
 {
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Blue);
-#endif
+	//PROFILE_FUNCTION(profiler::colors::Blue);
 	const CU::GrowingArray<Entity>& entities = GetEntities();
-
-#ifdef _PROFILE
-	EASY_BLOCK("Render : Entity Loop");
-#endif
+	PROFILE_BLOCK("Render : Entity Loop");
 	for (int i = 0; i < entities.Size(); i++)
 	{
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-		RenderComponent& render = GetComponent<RenderComponent>(e);
+		GraphicsComponent& render = GetComponent<GraphicsComponent>(e);
 
-#ifdef _PROFILE
-		EASY_BLOCK("Frustum collision check", profiler::colors::Green);
-#endif
 #ifdef VISIBLE_CHECK
+		PROFILE_BLOCK("Frustum collision check", profiler::colors::Green);
 		bool visible = false;
-		if (m_Manager.HasComponent(e, CreateFilter<Requires<DebugComponent>>()))
-		{
-			DebugComponent& debug = GetComponent<DebugComponent>(e);
-			const CU::Matrix44f& matrix = translation.myOrientation;
-			const CU::Vector4f forward = matrix.GetForward();
-			const CU::Vector4f right = matrix.GetRight();
-			const CU::Vector4f up = matrix.GetUp();
-			const CU::Vector4f translation = matrix.GetTranslation();
+		const CU::Matrix44f& matrix = translation.myOrientation;
+		const CU::Vector4f forward = matrix.GetForward();
+		const CU::Vector4f right = matrix.GetRight();
+		const CU::Vector4f up = matrix.GetUp();
+		const CU::Vector4f translation0 = matrix.GetTranslation();
 
 
-			/* could be improved still, take a matrice instead? */
-			if (Inside(translation, up, render.m_MaxPos))
-				visible = true;
+		/* could be improved still, take a matrice instead? */
+		if (Inside(translation0, up, render.m_MaxPos))
+			visible = true;
 
-			if (Inside(translation, right, render.m_MaxPos))
-				visible = true;
+		if (Inside(translation0, right, render.m_MaxPos))
+			visible = true;
 
-			if (Inside(translation, forward, render.m_MaxPos))
-				visible = true;
+		if (Inside(translation0, forward, render.m_MaxPos))
+			visible = true;
 
-			if (Inside(translation, up, render.m_MinPos))
-				visible = true;
+		if (Inside(translation0, up, render.m_MinPos))
+			visible = true;
 
-			if (Inside(translation, right, render.m_MinPos))
-				visible = true;
+		if (Inside(translation0, right, render.m_MinPos))
+			visible = true;
 
-			if (Inside(translation, forward, render.m_MinPos))
-				visible = true;
+		if (Inside(translation0, forward, render.m_MinPos))
+			visible = true;
 
-		}
-		if(!visible)
+		if (!visible)
 			continue;
-#endif
-#ifdef _PROFILE
-		EASY_END_BLOCK;
+		PROFILE_BLOCK_END;
 #endif
 
-		CU::Matrix44f t = translation.myOrientation;
-		t = CU::Matrix44f::CreateScaleMatrix(render.scale) * t;
-
-		/*if (render.myModelID.empty())
-			DL_ASSERT("Empty key!");*/
-
-
-		for (const ModelInstance& i : render.m_Instances)
+		CU::Matrix44f orientation = translation.myOrientation;
+		orientation = CU::Matrix44f::CreateScaleMatrix(render.m_Scale) * orientation;
+		
+		for (const ModelInstance& instance : render.m_Instances)
 		{
-			CU::Matrix44f txi = t * i.m_Orientation;
-			AddRenderCommand(ModelCommand(i.m_ModelID, txi, i.m_RenderWireframe));
+			const CU::Matrix44f relative = orientation * instance.m_Orientation;
+			AddRenderCommand(ModelCommand(instance.m_ModelID
+										  , instance.m_MaterialKey
+										  , relative //could be precalculated, and on physical objects this shouldn't even be used if it can be moved.
+										  , render.m_RenderWireframe
+										  , e));
 		}
 
-
-		//AddRenderCommand(ModelCommand(render.myModelID, t, render.m_RenderWireframe));
 
 
 	}
-#ifdef _PROFILE
-	EASY_END_BLOCK;
-#endif
+	PROFILE_BLOCK_END;
 }
 
 bool RenderSystem::Inside(const CU::Vector4f& translation, const CU::Vector4f& direction, const CU::Vector4f& pos)

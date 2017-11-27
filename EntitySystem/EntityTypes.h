@@ -6,7 +6,7 @@
 #define MAX_COMPONENTS_COUNT 32
 
 struct BaseComponent;
-typedef int Entity;
+typedef u32 Entity;
 
 typedef CU::GrowingArray<BaseComponent*> ComponentArray;
 typedef CU::StaticArray<int, MAX_COMPONENTS_COUNT> EntityComponentArray;

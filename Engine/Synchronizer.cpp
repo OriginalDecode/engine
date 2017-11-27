@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Synchronizer.h"
 #include <thread>
+#include "profile_defines.h"
 
 Synchronizer::~Synchronizer()
 {
@@ -9,7 +10,7 @@ Synchronizer::~Synchronizer()
 
 bool Synchronizer::Initiate()
 {
-	const s32 model_buffer_size = 30000 * sizeof(ModelCommand);
+	const s32 model_buffer_size = 600000 * sizeof(ModelCommand);
 	const s32 spotlight_buffer_size = 30000 * sizeof(SpotlightCommand);
 	const s32 particle_buffer_size = 30000 * sizeof(ParticleCommand);
 	const s32 line_buffer_size = 30000 * sizeof(LineCommand);
@@ -71,6 +72,7 @@ void Synchronizer::Quit()
 
 void Synchronizer::WaitForRender()
 {
+	PROFILE_FUNCTION(profiler::colors::Amber);
 	while (!m_RenderDone)
 	{
 		std::this_thread::yield();
@@ -80,6 +82,7 @@ void Synchronizer::WaitForRender()
 
 void Synchronizer::WaitForLogic()
 {
+	PROFILE_FUNCTION(profiler::colors::Amber100);
 	while (!m_LogicDone)
 		std::this_thread::yield();
 

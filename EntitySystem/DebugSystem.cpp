@@ -1,5 +1,4 @@
 #include "DebugSystem.h"
-#include <Engine.h>
 #include "DebugComponent.h"
 #include "TranslationComponent.h"
 #include <RenderCommand.h>
@@ -7,7 +6,7 @@
 #include <OnLeftClick.h>
 #include <PostMaster.h>
 #include "TypeID.h"
-#include "RenderComponent.h"
+#include "GraphicsComponent.h"
 #include "EntityManager.h"
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
@@ -20,6 +19,11 @@
 #include <GizmoBase.h>
 #include <Engine/Model.h>
 #include <CommonLib/DataStructures/Hashmap/Hash.h>
+#include "profile_defines.h"
+#include <Engine.h>
+
+#if !defined(_FINAL) && !defined(_PROFILE)
+
 DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
@@ -37,12 +41,7 @@ DebugSystem::~DebugSystem()
 
 void DebugSystem::Update(float /*dt*/, bool paused)
 {
-	if (paused)
-		return;
-	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::TEXT, current_model, CU::Vector2f(0.75, 0)));
-#ifdef _PROFILE
-	EASY_FUNCTION(profiler::colors::Red);
-#endif
+	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75, 0), "Current Entity : %d", m_CurrentEntity));
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	for (s32 i = 0; i < entities.Size(); i++)
 	{
@@ -52,16 +51,16 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 
 
 //#ifdef _EDITOR
-		if (m_Manager.HasComponent(e, CreateFilter<Requires<RenderComponent>>()))
+		if (m_Manager.HasComponent(e, CreateFilter<Requires<GraphicsComponent>>()))
 		{
-			RenderComponent& r = GetComponent<RenderComponent>(e);
-			Model* m = Engine::GetInstance()->GetModel(r.myModelID);
-			debug.m_MinPoint = m->GetMinPoint();//r.m_MinPos;
-			debug.m_MaxPoint = m->GetMaxPoint();//r.m_MaxPos;
+			//GraphicsComponent& r = GetComponent<GraphicsComponent>(e);
+			//Model* m = Engine::GetInstance()->GetModel(r.m_ModelID);
+			//debug.m_MinPoint = m->GetMinPoint();//r.m_MinPos;
+			//debug.m_MaxPoint = m->GetMaxPoint();//r.m_MaxPos;
 
 
-			r.m_MaxPos = CU::Vector3f(debug.m_MaxPoint.x, debug.m_MaxPoint.y, debug.m_MaxPoint.z); 
-			r.m_MinPos = CU::Vector3f(debug.m_MinPoint.x, debug.m_MinPoint.y, debug.m_MinPoint.z);
+			//r.m_MaxPos = CU::Vector3f(debug.m_MaxPoint.x, debug.m_MaxPoint.y, debug.m_MaxPoint.z); 
+			//r.m_MinPos = CU::Vector3f(debug.m_MinPoint.x, debug.m_MinPoint.y, debug.m_MinPoint.z);
 
 		}
 		RenderBox(debug, translation.myOrientation);
@@ -76,9 +75,11 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 	if (m_CurrentEntity > -1)
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(m_CurrentEntity);
+
 		debug.m_PositionGizmo.Render();
 		debug.m_RotationGizmo.Render();
-		//debug.m_ScaleGizmo.Render();
+		debug.m_ScaleGizmo.Render();
+
 		if (m_Holding && m_Direction)
 		{
 			const CU::Vector2f& delta_pos = m_Engine->GetInputHandle()->GetDeltaCursorPos();
@@ -155,9 +156,6 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 			debug.m_DirtyFlag = true;
 		}
 	}
-	
-	//UpdateOBBs();
-
 }
 
 bool DebugSystem::CheckGizmoCollision(const CU::Vector3f& cam_pos, const CU::Vector3f& ray_dir)
@@ -305,87 +303,15 @@ void DebugSystem::UpdateOBBs()
 
 }
 
-//This needs to be optimized as hell./*
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
-	UpdateOBBs();
-
-	CU::Vector3f cam_pos = CU::Vector3f(message.camera_pos_x, message.camera_pos_y, message.camera_pos_z);
-	CU::Vector3f ray_dir = CU::Vector3f(message.ray_dir_x, message.ray_dir_y, message.ray_dir_z);
-	
-	
-	if ( CheckGizmoCollision(cam_pos, ray_dir) )
-		return;
-	//Should be optimized for a quad/oct -tree solution to only retrieve the entities in THIS part
-	//NodeEntityManager& node_manager = message.m_Player->GetFirstNode()->GetManager();
-	const auto& entities = GetEntities();
-	//const EntityArray& entities = node_manager.GetEntities(myFilter);
-
-
-	//const CU::GrowingArray<Entity>& entities = GetEntities();
-	CU::GrowingArray<entity_collisions> collisions;
-	for (Entity i = entities.Size() - 1; i >= 0; i--)
-	{
-		Entity e = entities[i];
-		DebugComponent& debug = GetComponent<DebugComponent>(e);
-		debug.debugColor = { 255.f,255.f,255.f,255.f };
-
-
-
-		for (float j = 0; j < 25.f; j += 0.05f)
-		{
-			CU::Vector3f step = (ray_dir * j);
-			CU::Vector3f new_pos = cam_pos + step;
-
-			if (debug.m_OBB.Inside(new_pos))
-			{
-				entity_collisions collision;
-				collision.m_ID = e;
-				collision.m_Position = new_pos;
-				collisions.Add(collision);
-				break;
-			}
-		}
-	}
-
-	float prev_length = FLT_MAX;
-	entity_collisions closest;
-	Entity prev_entity = -1;
-	for (const entity_collisions& collision : collisions)
-	{
-		float new_length = CU::Math::Length2(collision.m_Position - cam_pos);
-		if (new_length < prev_length)
-		{
-			prev_length = new_length;
-			closest = collision;
-			prev_entity = closest.m_ID;
-		}
-	}
-	if (prev_entity == closest.m_ID)
-	{
-		DebugComponent& debug = GetComponent<DebugComponent>(closest.m_ID);
-		debug.debugColor = { 255.f,0.f,0.f,255.f };
-		Engine::GetInstance()->SelectEntity(closest.m_ID);
-		m_PrevID = prev_entity;
-		m_CurrentEntity = m_PrevID;
-		//bool has_render = node_manager.HasComponent(m_CurrentEntity, CreateFilter<Requires<RenderComponent>>());
-		//if ( has_render )
-		//{
-			//RenderComponent& r = node_manager.GetComponent<RenderComponent>(m_CurrentEntity);
-			//current_model = r.myModelID;
-		//}
-	}
+	debug::DebugHandle::GetInstance()->ConfirmEntity();
+	m_Engine->PickEntity();
 }
 
 void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation)
 {
-#if !defined(_PROFILE) && !defined(_FINAL)
-	if (!m_Engine->GetLineRendering())
-		return;
-#else
-	return;
-#endif
-	SLinePoint p1, p2, p3, p4, p5, p6, p7, p8;
+	LinePoint p1, p2, p3, p4, p5, p6, p7, p8;
 	p1.color = component.debugColor;
 	p2.color = p1.color;
 	p3.color = p1.color;
@@ -395,20 +321,7 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p7.color = p1.color;
 	p8.color = p1.color;
 
-
-	//p1.position = orientation.GetTranslation();
-	//p1.position.y += 2.f;
-	//p1.color = { 255.f, 0.f, 255.f, 255.f };
-
-	//p2.position = orientation.GetTranslation();
-	//p2.position.y -= 2.f;
-	//p2.color = { 0.f, 255.f, 255.f, 255.f };
-
-	//m_Synchronizer->AddRenderCommand(RenderCommand(eType::LINE_Z_ENABLE, p1, p2));
-
-	//return;
-
-	p1.position = orientation.GetTranslation(); // translation.myOrientation.GetTranslation();
+	p1.position = orientation.GetTranslation(); 
 	p2.position = p1.position;
 	p3.position = p1.position;
 	p4.position = p1.position;
@@ -420,19 +333,6 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	const CU::Vector4f right = orientation.GetRight();
 	const CU::Vector4f up = orientation.GetUp();
 	const CU::Vector4f forward = orientation.GetForward();
-
-
-	/*if ( component.m_MinPoint.x < -0.f )
-	{
-		p1.color = CU::Vector4f(255.f,0.f,0.f,255.f);
-		p2.color = p1.color;
-		p3.color = p1.color;
-		p4.color = p1.color;
-		p5.color = p1.color;
-		p6.color = p1.color;
-		p7.color = p1.color;
-		p8.color = p1.color;
-	}*/
 
 	p1.position += right * component.m_MinPoint.x;
 	p1.position += up * component.m_MinPoint.y;
@@ -466,55 +366,31 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p8.position += up * component.m_MaxPoint.y;
 	p8.position += forward * component.m_MaxPoint.z;
 
-	/*p1.position -= orientation.GetRight() * component.m_WHD.x;
-	p1.position -= orientation.GetUp() * component.m_WHD.y;
-	p1.position -= orientation.GetForward() * component.m_WHD.z;
-
-	p2.position += orientation.GetRight() * component.m_WHD.x;
-	p2.position -= orientation.GetUp() * component.m_WHD.y;
-	p2.position -= orientation.GetForward() * component.m_WHD.z;
-
-	p3.position += orientation.GetRight() * component.m_WHD.x;
-	p3.position -= orientation.GetUp() * component.m_WHD.y;
-	p3.position += orientation.GetForward() * component.m_WHD.z;
-
-	p4.position -= orientation.GetRight() * component.m_WHD.x;
-	p4.position -= orientation.GetUp() * component.m_WHD.y;
-	p4.position += orientation.GetForward() * component.m_WHD.z;
-
-	p5.position -= orientation.GetRight() * component.m_WHD.x;
-	p5.position += orientation.GetUp() * component.m_WHD.y;
-	p5.position -= orientation.GetForward() * component.m_WHD.z;
-
-	p6.position -= orientation.GetRight() * component.m_WHD.x;
-	p6.position += orientation.GetUp() * component.m_WHD.y;
-	p6.position += orientation.GetForward() * component.m_WHD.z;
-
-	p7.position += orientation.GetRight() * component.m_WHD.x;
-	p7.position += orientation.GetUp() * component.m_WHD.y;
-	p7.position -= orientation.GetForward() * component.m_WHD.z;
-
-	p8.position += orientation.GetRight() * component.m_WHD.x;
-	p8.position += orientation.GetUp() * component.m_WHD.y;
-	p8.position += orientation.GetForward() * component.m_WHD.z;*/
-
-
+	//m_Manager.GetTreeNode()->AddLine(Line(p1, p2));
+	//m_Manager.GetTreeNode()->AddLine(Line(p2, p3));
+	//m_Manager.GetTreeNode()->AddLine(Line(p3, p4));
+	//m_Manager.GetTreeNode()->AddLine(Line(p4, p1));
+	//m_Manager.GetTreeNode()->AddLine(Line(p1, p5));
+	//m_Manager.GetTreeNode()->AddLine(Line(p5, p6));
+	//m_Manager.GetTreeNode()->AddLine(Line(p6, p8));
+	//m_Manager.GetTreeNode()->AddLine(Line(p8, p7));
+	//m_Manager.GetTreeNode()->AddLine(Line(p7, p5));
+	//m_Manager.GetTreeNode()->AddLine(Line(p6, p4));
+	//m_Manager.GetTreeNode()->AddLine(Line(p7, p2));
+	//m_Manager.GetTreeNode()->AddLine(Line(p8, p3));
 	
-	m_Synchronizer->AddRenderCommand(LineCommand(p1, p2, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p2, p3, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p3, p4, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p4, p1, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p1, p5, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p5, p6, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p6, p8, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p8, p7, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p7, p5, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p6, p4, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p7, p2, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p8, p3, true));
-	
-
-
-
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p1, p2), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p2, p3), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p3, p4), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p4, p1), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p1, p5), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p5, p6), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p6, p8), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p8, p7), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p7, p5), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p6, p4), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p7, p2), false));
+	m_Synchronizer->AddRenderCommand(LineCommand(Line(p8, p3), false));
 }
 
+#endif

@@ -3,13 +3,7 @@
 #include <Engine/RenderCommand.h>
 #include <Engine/Engine.h>
 #include <Engine/Synchronizer.h>
-/*
 
-	Allocators should be under the same namespace as the segemtn handle. Might have to update the segment handle to be able to handle several different types of segments.
-	It's very clear that this class in its current state isn't very generic and does not have any further use more than to continue to use it as it is being used right now.
-	Should this class be something more towards. CommandAllocatorMemorySegmentHandle CAMS
-
-*/
 namespace memory
 {
 	void MemorySegmentHandle::Initiate(/*takes a memory_block, size, and offset */)

@@ -5,7 +5,7 @@ struct OnLeftClick : public Message
 {
 	OnLeftClick() : Message(eMessageType::COLLIDED){}
 
-	OnLeftClick(float rx, float ry, float rz, float cx, float cy, float cz, TreeDweller* player)
+	OnLeftClick(float rx, float ry, float rz, float cx, float cy, float cz, void* _offset, TreeDweller* player)
 		: Message(eMessageType::ON_LEFT_CLICK)
 		, ray_dir_x(rx)
 		, ray_dir_y(ry)
@@ -14,6 +14,7 @@ struct OnLeftClick : public Message
 		, camera_pos_y(cy)
 		, camera_pos_z(cz)
 		, m_Player(player)
+		, m_Offset(_offset)
 	{
 	}
 
@@ -25,6 +26,8 @@ struct OnLeftClick : public Message
 	float camera_pos_x;
 	float camera_pos_y;
 	float camera_pos_z;
+
+	void* m_Offset = nullptr;
 
 	TreeDweller* m_Player = nullptr;
 

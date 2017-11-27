@@ -1,5 +1,4 @@
 #include "LightSystem.h"
-#include <assert.h>
 #include "TranslationComponent.h"
 #include "LightComponent.h"
 

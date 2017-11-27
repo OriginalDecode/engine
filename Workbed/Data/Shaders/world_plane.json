@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "world_plane.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "world_plane.ps",
+        "entrypoint": "main"
+    }
+}

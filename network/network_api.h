@@ -1,6 +1,10 @@
 #pragma once
 //#include "NetIncludes.h"
 
+#ifndef _WINSOCKAPI_
+#define _WINSOCKAPI_
+#endif
+
 
 #ifdef _WIN32
 #define _WINSOCK_DEPRECATED_NO_WARNINGS

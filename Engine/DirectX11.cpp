@@ -1,911 +1,836 @@
 #include "stdafx.h"
 #include "DirectX11.h"
+#include <DDSTextureLoader.h>
+#include <ScreenGrab.h>
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+#include "imgui_impl_dx11.h"
+#endif
 
 #include <sstream>
 
-#define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
-#define PINK_CLEAR(v) v[0] = 1.f; v[1] = 0.07f; v[2] = 255.f; v[3] = 0.f;
 
-constexpr float clear[4] = { 0.f, 0.f, 0.f, 0.f };
+#include <Engine/DX11Device.h>
+#include <Engine/DX11Context.h>
+#include <Engine/Viewport.h>
+#include <Input/InputHandle.h>
 
 
-bool DirectX11::Initiate(CreateInfo create_info)
+
+namespace graphics
 {
-	m_CreateInfo = create_info;
-	CreateAdapterList();
-	CreateDeviceAndSwapchain();
-	CreateDepthBuffer();
-	CreateDepthStencilStates();
-	CreateBackBuffer();
-	CreateViewport();
-	CreateRazterizers();
-	CreateBlendStates();
-	CreateSamplerStates();
-
-	return true;
-}
-
-bool DirectX11::CleanUp()
-{
-	for ( auto it = myAdapters.begin(); it != myAdapters.end(); ++it )
+	DirectX11::DirectX11(CreateInfo info)
 	{
-		SAFE_RELEASE(it->second);
-	}
-	mySwapchain->SetFullscreenState(FALSE, nullptr);
-	myEngineFlags[static_cast<u16>(eEngineFlags::FULLSCREEN)] = FALSE;
+		m_CreateInfo = info;
 
-	float blend[4];
-	BLACK_CLEAR(blend);
-	myContext->OMSetBlendState(nullptr, blend, 0xFFFFFFFF);
-
-
-	SAFE_DELETE(myViewport);
-
-	{
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::DEPTH_TEST)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::LIGHT_MASK)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::MASK_TEST)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::READ_NO_WRITE_PARTICLE)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::READ_NO_WRITE)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::Z_DISABLED)]);
-		SAFE_RELEASE(myDepthStates[u16(eDepthStencilState::Z_ENABLED)]);
+		m_PixelPickDesc.Width = 1;
+		m_PixelPickDesc.Height = 1;
+		m_PixelPickDesc.MipLevels = 1;
+		m_PixelPickDesc.ArraySize = 1;
+		m_PixelPickDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		m_PixelPickDesc.SampleDesc.Count = 1;
+		m_PixelPickDesc.SampleDesc.Quality = 0;
+		m_PixelPickDesc.Usage = D3D11_USAGE_STAGING;
+		m_PixelPickDesc.BindFlags = 0;
+		m_PixelPickDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+		m_PixelPickDesc.MiscFlags = 0;
 	}
 
+	DirectX11::~DirectX11()
 	{
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::MSAA)]);
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_FRONT)]);
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
-		SAFE_RELEASE(myRasterizerStates[u16(eRasterizer::WIREFRAME)]);
-	}
+#if !defined(_PROFILE) && !defined(_FINAL)
+		ImGui_ImplDX11_Shutdown();
+#endif
+		SAFE_DELETE(m_Viewport);
+		for (auto it = m_Adapters.begin(); it != m_Adapters.end(); ++it)
+		{
+			SAFE_RELEASE(it->second);
+		}
+		m_Swapchain->SetFullscreenState(FALSE, nullptr);
 
-	{
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::BLEND_FALSE)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::ALPHA_BLEND)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::LIGHT_BLEND)]);
-		SAFE_RELEASE(myBlendStates[u16(eBlendStates::NO_BLEND)]);
-	}
+		for (s32 i = 0; i < NOF_BS; i++)
+		{
+			ReleasePtr(m_BlendStates[i]);
+			m_BlendStates[i] = nullptr;
+		}
 
-	{
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_CLAMP)]);
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::LINEAR_WRAP)]);
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_CLAMP)]);
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::POINT_WRAP)]);
-		SAFE_RELEASE(mySamplerStates[u16(eSamplerStates::NONE)]);
-	}
+		for (s32 i = 0; i < NOF_RS; i++)
+		{
+			ReleasePtr(m_RasterizerStates[i]);
+			m_RasterizerStates[i] = nullptr;
+		}
 
-	{
-		SAFE_RELEASE(myDepthView);
-		SAFE_RELEASE(myDepthBuffer);
-		SAFE_RELEASE(myRenderTarget);
-		SAFE_RELEASE(mySwapchain);
-	}
+		for (s32 i = 0; i < NOF_SS; i++)
+		{
+			ReleasePtr(m_SamplerStates[i]);
+			m_SamplerStates[i] = nullptr;
+		}
 
+		for (s32 i = 0; i < NOF_DSS; i++)
+		{
+			ReleasePtr(m_DepthStencilStates[i]);
+			m_DepthStencilStates[i] = nullptr;
+		}
 
+		ReleasePtr(m_DefaultDepthView);
+		ReleasePtr(m_DefaultRenderTarget);
+		ReleasePtr(m_DefaultDepthBuffer);
 
+		SAFE_RELEASE(m_Swapchain);
 
-	for ( ID3D11DepthStencilState* state : m_RegisteredDepthStates) 
-		SAFE_RELEASE(state);
+		ID3D11DeviceContext* ctx = static_cast<DX11Context*>(m_Context)->m_Context;
+		ctx->ClearState();
+		ctx->Flush();
 
+		SAFE_DELETE(m_Context);
+		SAFE_DELETE(m_Device);
 
-	for ( ID3D11SamplerState* state : m_RegisteredSamplerStates)
-		SAFE_RELEASE(state);
-
-	for ( ID3D11RasterizerState* state : m_RegisteredRasterStates)
-		SAFE_RELEASE(state);
-
-	for ( ID3D11BlendState* state : m_RegisteredBlendStates)
-		SAFE_RELEASE(state);
-
-
-	myContext->ClearState();
-	myContext->Flush();
-	//Swap the full screen flags correctly if swapping between.
-	SAFE_RELEASE(myContext);
-	SAFE_RELEASE(myDevice);
-	if ( myDebug != nullptr )
-	{
-		std::stringstream ss;
-		ss << "\nDebug is released last. Will report as Live Object! 0x" << myDebug << "\nWatch out for false reports. \n====\n";
-		OutputDebugString(ss.str().c_str());
-
-		myDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL /*| D3D11_RLDO_IGNORE_INTERNAL*/);
-		SAFE_RELEASE(myDebug);
-	}
+		if (m_Debug != nullptr)
+		{
+			std::stringstream ss;
+			ss << "\nDebug is released last. Will report as Live Object! 0x" << m_Debug << "\nWatch out for false reports. \n====\n";
+			OutputDebugString(ss.str().c_str());
+			m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL  /*| D3D11_RLDO_IGNORE_INTERNAL*/);
+			SAFE_RELEASE(m_Debug);
+		}
 
 #if defined (_DEBUG)
-	OutputDebugString("\nIntRef is something that D3D has internal. You cannot control these.\n\n");
+		OutputDebugString("\nIntRef is something that D3D has internal. You cannot control these.\n\n");
+#endif
+	}
+
+	void DirectX11::Initiate()
+	{
+		CreateDeviceAndSwapchain();
+		CreateRazterizers();
+		CreateDepthStencilStates();
+		CreateSamplerStates();
+		CreateBackBuffer();
+		CreateDepthBuffer();
+		CreateBlendStates();
+
+		m_Viewport = CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
+		SetDefaultTargets();
+		m_Context->SetViewport(m_Viewport);
+#if !defined(_PROFILE) && !defined(_FINAL)
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11DeviceContext* pContext = static_cast<DX11Context*>(m_Context)->m_Context;
+		ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, pDevice, pContext);
 #endif
 
-	return true;
-}
-
-void DirectX11::Present(u8 anInterval, u8 flags)
-{
-	mySwapchain->Present(anInterval, flags);
-}
-
-void DirectX11::Clear()
-{
-	float color[4];
-	BLACK_CLEAR(color);
-	myContext->ClearRenderTargetView(myRenderTarget, color);
-	myContext->ClearDepthStencilView(myDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
-}
-
-const std::string& DirectX11::GetAdapterName(u16 anIndex)
-{
-	return myAdaptersName[anIndex];
-}
-
-void DirectX11::SetDebugName(void * pResource, std::string debug_name)
-{
-	if ( pResource )
-	{
-		ID3D11DeviceChild* resource = static_cast<ID3D11DeviceChild*>(pResource);
-		resource->SetPrivateData(WKPDID_D3DDebugObjectName, (u32)debug_name.size(), debug_name.c_str());
 	}
-}
 
-void DirectX11::SetDepthStencilState(eDepthStencilState depth_stencil_state, s32 depth_value)
-{
-	myContext->OMSetDepthStencilState(myDepthStates[u16(depth_stencil_state)], depth_value);
-}
 
-void DirectX11::ResetRenderTargetAndDepth()
-{
-	myContext->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
-}
+	void DirectX11::BeginFrame()
+	{
+		ID3D11RenderTargetView* pRenderTarget = static_cast<ID3D11RenderTargetView*>(m_DefaultRenderTarget);
+		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
+		m_Context->ClearRenderTarget(pRenderTarget, clearcolor::black);
+		m_Context->ClearDepthStencilView(pDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f);
+	}
 
-void DirectX11::CreateDeviceAndSwapchain()
-{
-	DXGI_SWAP_CHAIN_DESC scDesc;
-	ZeroMemory(&scDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
+	void DirectX11::EndFrame()
+	{
+		const bool vsync = Engine::GetInstance()->VSync();
+		Present(1, 0);
+	}
 
-	scDesc.BufferCount = 1;
-	scDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-	scDesc.BufferDesc.Width = UINT(m_CreateInfo.m_WindowWidth);
-	scDesc.BufferDesc.Height = UINT(m_CreateInfo.m_WindowHeight);
-	scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	scDesc.OutputWindow = m_CreateInfo.m_HWND;
-	scDesc.SampleDesc.Count = 1;
-	scDesc.SampleDesc.Quality = 0;
-	if ( myEngineFlags[u16(eEngineFlags::FULLSCREEN)] == FALSE )
+
+	void DirectX11::Present(u8 anInterval, u8 flags)
+	{
+		m_Swapchain->Present(anInterval, flags);
+	}
+
+	void DirectX11::CreateDeviceAndSwapchain()
+	{
+		DXGI_SWAP_CHAIN_DESC scDesc;
+		ZeroMemory(&scDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
+
+		scDesc.BufferCount = 1;
+		scDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		scDesc.BufferDesc.Width = UINT(m_CreateInfo.m_WindowWidth);
+		scDesc.BufferDesc.Height = UINT(m_CreateInfo.m_WindowHeight);
+		scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		scDesc.OutputWindow = m_CreateInfo.m_HWND;
+		scDesc.SampleDesc.Count = 1;
+		scDesc.SampleDesc.Quality = 0;
 		scDesc.Windowed = true;
-	else
-		scDesc.Windowed = false;
+		//if (myEngineFlags[u16(eEngineFlags::FULLSCREEN)] == FALSE)
+		//scDesc.Windowed = false;
 
-	scDesc.Flags = 0;
-	scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	scDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	scDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	bool useVsync = false;
+		scDesc.Flags = 0;
+		scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+		scDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		scDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		bool useVsync = false;
 
-	u32 numerator = 0;
-	u32 denominator = 1;
+		u32 numerator = 0;
+		u32 denominator = 1;
 
-	if ( useVsync )
-	{
-		GetRefreshRate(numerator, denominator);
-	}
+		if (useVsync)
+			GetRefreshRate(numerator, denominator);
 
-	scDesc.BufferDesc.RefreshRate.Numerator = numerator;
-	scDesc.BufferDesc.RefreshRate.Denominator = denominator;
+		scDesc.BufferDesc.RefreshRate.Numerator = numerator;
+		scDesc.BufferDesc.RefreshRate.Denominator = denominator;
 
 
-	const D3D_FEATURE_LEVEL requested_feature_levels[] = {
-		D3D_FEATURE_LEVEL_11_0,
-	};
-	UINT createDeviceFlags = 0;
+		const D3D_FEATURE_LEVEL requested_feature_levels[] = {
+			D3D_FEATURE_LEVEL_11_0,
+		};
+		UINT createDeviceFlags = 0;
 
 #ifdef _DEBUG
-	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG | D3D11_RLDO_DETAIL;
+		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG ;
 #endif
-	UINT featureCount = ARRAYSIZE(requested_feature_levels);
+		UINT featureCount = ARRAYSIZE(requested_feature_levels);
 
-	//Make it work later.
+		//Make it work later.
 
-	JSONReader reader("Data/Config/game.json");
-	std::string adapterString;
-	reader.ReadElement("GraphicsAdapter", adapterString);
+		JSONReader reader("Data/Config/game.json");
+		std::string adapterString;
+		reader.ReadElement("GraphicsAdapter", adapterString);
 
-	myActiveAdapter = adapterString;
+		myActiveAdapter = adapterString;
 
-	D3D_DRIVER_TYPE type = D3D_DRIVER_TYPE_NULL;
-	if ( myAdapters[adapterString] == nullptr )
-	{
-		myActiveAdapter = "Unknown";
-		type = D3D_DRIVER_TYPE_HARDWARE;
-	}
-	else if ( type )
-	{
-		type = D3D_DRIVER_TYPE_UNKNOWN;
-	}
+		D3D_DRIVER_TYPE type = D3D_DRIVER_TYPE_NULL;
+		if (m_Adapters[adapterString] == nullptr)
+		{
+			myActiveAdapter = "Unknown";
+			type = D3D_DRIVER_TYPE_HARDWARE;
+		}
+		else if (type)
+		{
+			type = D3D_DRIVER_TYPE_UNKNOWN;
+		}
 
-	HRESULT hr = D3D11CreateDeviceAndSwapChain(
-		myAdapters[adapterString],
-		type,
-		nullptr,
-		createDeviceFlags,
-		requested_feature_levels,
-		featureCount,
-		D3D11_SDK_VERSION,
-		&scDesc,
-		&mySwapchain,
-		&myDevice,
-		nullptr,
-		&myContext);
+		ID3D11Device* pDevice = nullptr;
+		ID3D11DeviceContext* pContext = nullptr;
+		HRESULT hr = D3D11CreateDeviceAndSwapChain(m_Adapters[adapterString],
+												   type,
+												   nullptr,
+												   createDeviceFlags,
+												   requested_feature_levels,
+												   featureCount,
+												   D3D11_SDK_VERSION,
+												   &scDesc,
+												   &m_Swapchain,
+												   &pDevice,
+												   nullptr,
+												   &pContext);
 
-	if ( myDevice == nullptr )
-	{
-		hr = D3D11CreateDeviceAndSwapChain(
-			myAdapters[adapterString],
-			type,
-			nullptr,
-			0,
-			requested_feature_levels,
-			featureCount,
-			D3D11_SDK_VERSION,
-			&scDesc,
-			&mySwapchain,
-			&myDevice,
-			nullptr,
-			&myContext);
-	}
+		if (pDevice == nullptr)
+		{
+			hr = D3D11CreateDeviceAndSwapChain(m_Adapters[adapterString],
+											   type,
+											   nullptr,
+											   0,
+											   requested_feature_levels,
+											   featureCount,
+											   D3D11_SDK_VERSION,
+											   &scDesc,
+											   &m_Swapchain,
+											   &pDevice,
+											   nullptr,
+											   &pContext);
+		}
 
-	DL_ASSERT_EXP(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");
+		DL_ASSERT_EXP(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");
+
+
+
 
 #ifdef _DEBUG
-	hr = myDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&myDebug);
-	if ( hr != S_OK )
-	{
-		OutputDebugStringA("Failed to Query Debug Interface. myDebug is NULL.");
-	}
+		hr = pDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_Debug);
+		if (hr != S_OK)
+		{
+			OutputDebugStringA("Failed to Query Debug Interface. myDebug is NULL.");
+		}
 #endif
-	SetDebugName(myContext, "DirectX11 Context Object");
-	const std::string deviceName = "DirectX11 Device Object";
-	const std::string swapchainName = "DirectX11 Swapchain Object";
-	mySwapchain->SetPrivateData(WKPDID_D3DDebugObjectName, u32(swapchainName.size()), swapchainName.c_str());
-	myDevice->SetPrivateData(WKPDID_D3DDebugObjectName, u32(deviceName.size()), deviceName.c_str());
+		SetDebugName(m_Context, "DirectX11 Context Object");
+		const std::string deviceName = "DirectX11 Device Object";
+		const std::string swapchainName = "DirectX11 Swapchain Object";
+		m_Swapchain->SetPrivateData(WKPDID_D3DDebugObjectName, u32(swapchainName.size()), swapchainName.c_str());
+		pDevice->SetPrivateData(WKPDID_D3DDebugObjectName, u32(deviceName.size()), deviceName.c_str());
 
-}
+		m_Device = new DX11Device(pDevice);
+		m_Context = new DX11Context(pContext);
 
-void DirectX11::CreateDepthBuffer()
-{
-	HRESULT hr;
-
-	D3D11_TEXTURE2D_DESC depthDesc;
-	ZeroMemory(&depthDesc, sizeof(depthDesc));
-
-	depthDesc.Width = UINT(m_CreateInfo.m_WindowWidth);
-	depthDesc.Height = UINT(m_CreateInfo.m_WindowHeight);
-	depthDesc.MipLevels = 1;
-	depthDesc.ArraySize = 1;
-	depthDesc.Format = DXGI_FORMAT_D32_FLOAT;//DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthDesc.SampleDesc.Count = 1; //sample
-	depthDesc.SampleDesc.Quality = 0; //quality pattern
-	depthDesc.Usage = D3D11_USAGE_DEFAULT;
-	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	hr = myDevice->CreateTexture2D(&depthDesc, NULL, &myDepthBuffer);
-	assert(!FAILED(hr) && "Failed to create texture for depthbuffer");
-
-	D3D11_DEPTH_STENCIL_VIEW_DESC stencilDesc;
-	ZeroMemory(&stencilDesc, sizeof(stencilDesc));
-	stencilDesc.Format = depthDesc.Format;
-	stencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	stencilDesc.Texture2D.MipSlice = 0;
-
-	hr = myDevice->CreateDepthStencilView(myDepthBuffer, &stencilDesc, &myDepthView);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to create depth stenci");
-
-
-	SetDebugName(myDepthBuffer, "DirectX11 DepthBuffer Object");
-	SetDebugName(myDepthView, "DirectX11 DepthView Object");
-}
-
-void DirectX11::CreateBackBuffer()
-{
-	HRESULT hr;
-	ID3D11Texture2D* backbuffer;
-	hr = mySwapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backbuffer);
-	HandleErrors(hr, "Failed to get Buffer!");
-
-	hr = mySwapchain->SetFullscreenState(FALSE, nullptr);
-	HandleErrors(hr, "Failed to set Fullscreen/Borderless");
-
-	hr = myDevice->CreateRenderTargetView(backbuffer, NULL, &myRenderTarget);
-	HandleErrors(hr, "Failed to create RenderTarget.");
-
-	SAFE_RELEASE(backbuffer);
-	myContext->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
-	SetDebugName(myRenderTarget, "DirectX11 RenderTarget(Back Buffer) object");
-}
-
-void DirectX11::CreateViewport()
-{
-	myViewport = CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
-}
-
-D3D11_VIEWPORT* DirectX11::CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y)
-{
-	D3D11_VIEWPORT* new_viewport = new D3D11_VIEWPORT;
-
-	new_viewport->TopLeftX = top_left_x;
-	new_viewport->TopLeftY = top_left_y;
-	new_viewport->Width = FLOAT(width);
-	new_viewport->Height = FLOAT(height);
-	new_viewport->MinDepth = min_depth;
-	new_viewport->MaxDepth = max_depth;
-
-	return new_viewport;
-}
-
-IBuffer* DirectX11::CreateConstantBuffer(s32 size)
-{
-	return CreateBuffer(size, nullptr, D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, 0);
-}
-
-IBuffer* DirectX11::CreateVertexBuffer(s32 size, void* pData)
-{
-	return CreateBuffer(size, pData, D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, 0);
-}
-
-IBuffer* DirectX11::CreateIndexBuffer(s32 size, void* pData)
-{
-	return CreateBuffer(size, pData, D3D11_USAGE_DEFAULT, D3D11_BIND_INDEX_BUFFER, 0, 0, 0);
-}
-
-IBuffer* DirectX11::CreateBuffer(s32 size, void* pData, D3D11_USAGE usage_flag /*= D3D11_USAGE_IMMUTABLE*/, u32 bind_flag /*= D3D11_BIND_VERTEX_BUFFER*/, u32 cpu_access_flag /*= 0*/, u32 misc_flag /*= 0*/, u32 structured_byte_width /*= 0*/)
-{
-
-	D3D11_BUFFER_DESC buffer_desc;
-	ZeroMemory(&buffer_desc, sizeof(buffer_desc));
-	buffer_desc.Usage = usage_flag;
-	buffer_desc.ByteWidth = size;
-	buffer_desc.BindFlags = bind_flag;
-	buffer_desc.CPUAccessFlags = cpu_access_flag;
-	buffer_desc.MiscFlags = misc_flag;
-	buffer_desc.StructureByteStride = structured_byte_width; //investigate future use
-
-	IBuffer* return_value = nullptr;
-	HRESULT hr = S_OK;
-
-	D3D11_SUBRESOURCE_DATA srd;
-	if ( pData )
-	{
-		srd.pSysMem = pData;
-		hr = myDevice->CreateBuffer(&buffer_desc, &srd, &return_value);
 	}
-	else
+
+	void DirectX11::CreateDepthBuffer()
 	{
-		hr = myDevice->CreateBuffer(&buffer_desc, nullptr, &return_value);
-	}
-	HandleErrors(hr, "Failed to create buffer!");
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		D3D11_TEXTURE2D_DESC depthDesc;
+		ZeroMemory(&depthDesc, sizeof(depthDesc));
 
-	return return_value;
-}
+		depthDesc.Width = UINT(m_CreateInfo.m_WindowWidth);
+		depthDesc.Height = UINT(m_CreateInfo.m_WindowHeight);
+		depthDesc.MipLevels = 1;
+		depthDesc.ArraySize = 1;
+		depthDesc.Format = DXGI_FORMAT_D32_FLOAT;//DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthDesc.SampleDesc.Count = 1; //sample
+		depthDesc.SampleDesc.Quality = 0; //quality pattern
+		depthDesc.Usage = D3D11_USAGE_DEFAULT;
+		depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
-IBuffer* DirectX11::CreateBuffer(D3D11_BUFFER_DESC buffer_desc)
-{
-	HRESULT hr = S_OK;
-	IBuffer* buffer = nullptr;
-	hr = myDevice->CreateBuffer(&buffer_desc, nullptr, &buffer);
-	HandleErrors(hr, "Failed to create buffer!");
-	return buffer;
+		ID3D11Texture2D* pDepthBuffer = nullptr;
+		HRESULT hr = pDevice->CreateTexture2D(&depthDesc, NULL, &pDepthBuffer);
+		assert(!FAILED(hr) && "Failed to create texture for depthbuffer");
 
-}
+		D3D11_DEPTH_STENCIL_VIEW_DESC stencilDesc;
+		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
+		stencilDesc.Format = depthDesc.Format;
+		stencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		stencilDesc.Texture2D.MipSlice = 0;
 
-IInputLayout* DirectX11::CreateInputLayout(const void* pShader, s32 shader_byte_size, const D3D11_INPUT_ELEMENT_DESC* pLayout, s32 num_layout_elements)
-{
-	IInputLayout* return_value = nullptr;
-	HRESULT hr = myDevice->CreateInputLayout(pLayout, num_layout_elements, pShader, shader_byte_size, &return_value);
+		ID3D11DepthStencilView* pDepthView = nullptr;
+		hr = pDevice->CreateDepthStencilView(pDepthBuffer, &stencilDesc, &pDepthView);
+		DL_ASSERT_EXP(hr == S_OK, "Failed to create depth stenci");
 
 #ifdef _DEBUG
-	HandleErrors(hr, "CreateInputLayout : Failed to create input layout.");
+		SetDebugName(pDepthBuffer, "DirectX11 DepthBuffer Object");
+		SetDebugName(pDepthView, "DirectX11 DepthView Object");
+#endif
+		m_DefaultDepthBuffer = pDepthBuffer;
+		m_DefaultDepthView = pDepthView;
+	}
+
+	void DirectX11::CreateBackBuffer()
+	{
+		HRESULT hr = S_OK;
+		ID3D11Texture2D* backbuffer = nullptr;
+		hr = m_Swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backbuffer);
+		HandleErrors(hr, "Failed to get Buffer!");
+
+		hr = m_Swapchain->SetFullscreenState(FALSE, nullptr);
+		HandleErrors(hr, "Failed to set Fullscreen/Borderless");
+
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11RenderTargetView* pRenderTarget = nullptr;
+		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
+
+		hr = pDevice->CreateRenderTargetView(backbuffer, NULL, &pRenderTarget);
+		m_DefaultRenderTarget = pRenderTarget;
+		HandleErrors(hr, "Failed to create RenderTarget.");
+
+		SAFE_RELEASE(backbuffer);
+		m_Context->OMSetRenderTargets(1, &pRenderTarget, pDepthView);
+#ifdef _DEBUG
+		SetDebugName(pRenderTarget, "DirectX11 RenderTarget(Back Buffer) object");
+#endif
+	}
+
+	Viewport* DirectX11::CreateViewport(u16 width, u16 height, float min_depth, float max_depth, u16 top_left_x, u16 top_left_y)
+	{
+		D3D11_VIEWPORT* new_viewport = new D3D11_VIEWPORT;
+
+		new_viewport->TopLeftX = top_left_x;
+		new_viewport->TopLeftY = top_left_y;
+		new_viewport->Width = FLOAT(width);
+		new_viewport->Height = FLOAT(height);
+		new_viewport->MinDepth = min_depth;
+		new_viewport->MaxDepth = max_depth;
+
+		return new Viewport(width, height, top_left_x, top_left_y, max_depth, min_depth, new_viewport);
+	}
+
+	
+	void DirectX11::CreateAdapterList()
+	{
+		std::vector<IDXGIAdapter*> enumAdapter;
+		IDXGIFactory* factory = nullptr;
+		CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
+
+		IDXGIAdapter* adapter;
+
+		for (UINT i = 0; factory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND; ++i)
+		{
+			enumAdapter.push_back(adapter);
+		}
+		SAFE_RELEASE(factory);
+
+		for (u32 i = 0; i < enumAdapter.size(); ++i)
+		{
+			DXGI_ADAPTER_DESC adapterDesc;
+			enumAdapter[i]->GetDesc(&adapterDesc);
+			WCHAR* temp = adapterDesc.Description;
+			//adapterDesc.DedicatedVideoMemory;
+			s8 dst[128];
+			std::wcstombs(dst, temp, 128);
+			std::string actualString(dst);
+			myAdaptersName.push_back(actualString);
+			m_Adapters.insert(std::pair<std::string, IDXGIAdapter*>(actualString, enumAdapter[i]));
+		}
+	}
+
+	void DirectX11::ReleasePtr(void* ptr)
+	{
+		if (!ptr)
+			return;
+		IUnknown* pUnknown = static_cast<IUnknown*>(ptr);
+		pUnknown->Release();
+	}
+
+	void DirectX11::SetDefaultTargets()
+	{
+		ID3D11RenderTargetView* pRenderTarget = static_cast<ID3D11RenderTargetView*>(m_DefaultRenderTarget);
+		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
+		m_Context->OMSetRenderTargets(1, &pRenderTarget, pDepthView);
+	}
+
+	void DirectX11::ResetViewport()
+	{
+		m_Context->SetViewport(m_Viewport);
+	}
+
+#ifdef _DEBUG
+	void DirectX11::ReportLiveObjects()
+	{
+		ID3D11DeviceContext* ctx = static_cast<DX11Context*>(m_Context)->m_Context;
+		ctx->ClearState();
+		ctx->Flush();
+		m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY | (D3D11_RLDO_FLAGS)0x4);
+	}
 #endif
 
-	return return_value;
-}
-
-
-ID3D11SamplerState* DirectX11::GetSampler(s32 index)
-{
-	return mySamplerStates[index];
-}
-
-void DirectX11::CreateAdapterList()
-{
-	std::vector<IDXGIAdapter*> enumAdapter;
-	IDXGIFactory* factory = nullptr;
-	CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
-
-	IDXGIAdapter* adapter;
-
-	for ( UINT i = 0; factory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND; ++i )
+	void DirectX11::OnAltEnter()
 	{
-		enumAdapter.push_back(adapter);
-	}
-	SAFE_RELEASE(factory);
+		if (!m_Swapchain)
+			return;
 
-	for ( u32 i = 0; i < enumAdapter.size(); ++i )
-	{
-		DXGI_ADAPTER_DESC adapterDesc;
-		enumAdapter[i]->GetDesc(&adapterDesc);
-		WCHAR* temp = adapterDesc.Description;
-		//adapterDesc.DedicatedVideoMemory;
-		s8 dst[128];
-		std::wcstombs(dst, temp, 128);
-		std::string actualString(dst);
-		myAdaptersName.push_back(actualString);
-		myAdapters.insert(std::pair<std::string, IDXGIAdapter*>(actualString, enumAdapter[i]));
-	}
-}
-
-void DirectX11::EnableZBuffer()
-{
-	myContext->OMSetDepthStencilState(myDepthStates[int(eDepthStencilState::Z_ENABLED)], 1);
-}
-
-void DirectX11::DisableZBuffer()
-{
-	myContext->OMSetDepthStencilState(myDepthStates[int(eDepthStencilState::Z_DISABLED)], 1);
-}
-
-void DirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
-{
-	std::string toError;
-	switch ( aResult )
-	{
-		case D3D11_ERROR_FILE_NOT_FOUND:
+		m_Swapchain->SetFullscreenState(FALSE, nullptr);
+		const Window& win = Engine::GetInstance()->GetWindow();
+		if (win.IsFullscreen())
 		{
-			toError = (anErrorString + " File not found!");
-		}break;
-		case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
-		{
-			toError = (anErrorString + " Too many unique state objects!");
-		}break;
-		case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
-		{
-			toError = (anErrorString + " Too many view objects!");
-		}break;
-		case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
-		{
-			toError = (anErrorString + " Deferred Context Map Without Initial Discard!");
-		}break;
-		case DXGI_ERROR_INVALID_CALL:
-		{
-			toError = (anErrorString + " Invalid call!");
-		}break;
-		case DXGI_ERROR_WAS_STILL_DRAWING:
-		{
-			toError = (anErrorString + " Were still drawing!");
-		}break;
-		case E_FAIL:
-		{
-			toError = (anErrorString + " Failed!");
-		}break;
-		case E_INVALIDARG:
-		{
-			toError = (anErrorString + " One or more arguments were invalid!");
-		}break;
-		case E_OUTOFMEMORY:
-		{
-			toError = (anErrorString + " Out of Memory!");
-		}break;
-		case E_NOTIMPL:
-		{
-			toError = (anErrorString + " The method call isn't implemented with the passed parameter combination.");
-		}break;
-		case S_FALSE:
-		{
-			toError = (anErrorString + " Something went wrong. Returned false!");
-
-		}break;
-	}
-
-	if ( !toError.empty() )
-	{
-		DL_MESSAGE("%s", toError.c_str());
-		DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
-	}
-}
-
-std::string DirectX11::GetAPIName()
-{
-	return m_CreateInfo.m_APIName;
-}
-
-void DirectX11::ResetViewport()
-{
-	SetViewport(myViewport);
-}
-
-void DirectX11::ResetRendertarget()
-{
-	myContext->OMSetRenderTargets(1, &myRenderTarget, myDepthView);
-}
-
-void DirectX11::ClearDepthStencilState()
-{
-	myContext->OMSetDepthStencilState(nullptr, 0);
-}
-
-void DirectX11::SetRasterizer(const eRasterizer& aRasterizer)
-{
-	myContext->RSSetState(myRasterizerStates[u16(aRasterizer)]);
-}
-
-void DirectX11::SetBlendState(const eBlendStates& blendState)
-{
-	float blend[4] = { 0.f , 0.f , 0.f , 0.f };
-	myContext->OMSetBlendState(myBlendStates[u16(blendState)], blend, 0xFFFFFFFF);
-}
-
-void DirectX11::SetSamplerState(const eSamplerStates& samplerState)
-{
-	if ( samplerState == eSamplerStates::NONE )
-	{
-		myContext->PSSetSamplers(0, 0, nullptr);
-		return;
-	}
-	myContext->PSSetSamplers(0, 1, &mySamplerStates[u16(samplerState)]);
-}
-
-void DirectX11::SetVertexShader(CompiledShader* vertex_shader)
-{
-	myContext->VSSetShader(vertex_shader ? static_cast<IVertexShader*>(vertex_shader->m_Shader) : nullptr, nullptr, 0);
-}
-
-void DirectX11::SetPixelShader(CompiledShader* pixel_shader)
-{
-	myContext->PSSetShader(pixel_shader ? static_cast<IPixelShader*>(pixel_shader->m_Shader) : nullptr, nullptr, 0);
-}
-
-void DirectX11::SetGeometryShader(CompiledShader* geomtery_shader)
-{
-	myContext->GSSetShader(geomtery_shader ? static_cast<IGeometryShader*>(geomtery_shader->m_Shader) : nullptr, nullptr, 0);
-}
-
-void DirectX11::SetHullShader(CompiledShader* hull_shader)
-{
-	myContext->HSSetShader(hull_shader ? static_cast<IHullShader*>(hull_shader->m_Shader) : nullptr, nullptr, 0);
-}
-
-void DirectX11::SetDomainShader(CompiledShader* domain_shader)
-{
-	myContext->DSSetShader(domain_shader ? static_cast<IDomainShader*>(domain_shader->m_Shader) : nullptr, nullptr, 0);
-}
-
-void DirectX11::SetComputeShader(CompiledShader* compute_shader)
-{
-	myContext->CSSetShader(compute_shader ? static_cast<IComputeShader*>(compute_shader->m_Shader) : nullptr, nullptr, 0);
-}
-
-void* DirectX11::CreateVertexShader(void* pBuffer, float buffer_size, const std::string& debug_name)
-{
-	ID3D11VertexShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
-	HRESULT hr = myDevice->CreateVertexShader(pBuffer, buffer_size, nullptr, &shader);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to create vertex shader!");
-	SetDebugName(shader, debug_name);
-	return shader;
-}
-
-void* DirectX11::CreatePixelShader(void* pBuffer, float buffer_size, const std::string& debug_name)
-{
-	ID3D11PixelShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
-	HRESULT hr = myDevice->CreatePixelShader(pBuffer, buffer_size, nullptr, &shader);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to create pixel shader!");
-	SetDebugName(shader, debug_name);
-
-	return shader;
-}
-
-void* DirectX11::CreateGeometryShader(void* pBuffer, float buffer_size, const std::string& debug_name)
-{
-	ID3D11GeometryShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
-	HRESULT hr = myDevice->CreateGeometryShader(pBuffer, buffer_size, nullptr, &shader);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to create geometry shader!");
-	SetDebugName(shader, debug_name);
-
-	return shader;
-}
-
-void* DirectX11::CreateHullShader(void* pBuffer, float buffer_size, const std::string& debug_name)
-{
-	ID3D11HullShader* shader = nullptr;// static_cast< ID3D11VertexShader* >( shader );
-	HRESULT hr = myDevice->CreateHullShader(pBuffer, buffer_size, nullptr, &shader);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to create hull shader!");
-	SetDebugName(shader, debug_name);
-
-	return shader;
-}
-
-void* DirectX11::CreateDomainShader(void* pBuffer, float buffer_size, const std::string& debug_name)
-{
-	ID3D11DomainShader* shader = nullptr;
-	HRESULT hr = myDevice->CreateDomainShader(pBuffer, buffer_size, nullptr, &shader);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to create domain shader!");
-	SetDebugName(shader, debug_name);
-
-
-	return shader;
-}
-
-void* DirectX11::CreateComputeShader(void* pBuffer, float buffer_size, const std::string& debug_name)
-{
-	ID3D11ComputeShader* shader = nullptr;
-	HRESULT hr = myDevice->CreateComputeShader(pBuffer, buffer_size, nullptr, &shader);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to create compute shader!");
-	SetDebugName(shader, debug_name);
-	return shader;
-}
-
-void* DirectX11::CreateBlendState(s32 render_target_write_mask
-	, s32 enable_blend_flags
-	, BlendState::BlendOp blend_op, BlendState::BlendFlag src_blend, BlendState::BlendFlag dest_blend
-	, BlendState::BlendOp alpha_blend_op, BlendState::BlendFlag src_blend_alpha, BlendState::BlendFlag dest_blend_alpha)
-{
-	D3D11_BLEND_DESC blend_desc;
-
-	blend_desc.AlphaToCoverageEnable = (enable_blend_flags & BlendState::ALPHA_TO_COVERAGE);
-	blend_desc.IndependentBlendEnable = (enable_blend_flags & BlendState::INDEPENDANT_BLEND_ENABLED);;
-	blend_desc.RenderTarget[0].BlendEnable = (enable_blend_flags & BlendState::BLEND_ENABLED);
-
-	blend_desc.RenderTarget[0].SrcBlend = static_cast<D3D11_BLEND>(src_blend);
-	blend_desc.RenderTarget[0].DestBlend = static_cast<D3D11_BLEND>(dest_blend);
-	blend_desc.RenderTarget[0].BlendOp = static_cast<D3D11_BLEND_OP>(blend_op);
-
-	blend_desc.RenderTarget[0].SrcBlendAlpha = static_cast<D3D11_BLEND>(src_blend_alpha);
-	blend_desc.RenderTarget[0].DestBlendAlpha = static_cast<D3D11_BLEND>(dest_blend_alpha);
-	blend_desc.RenderTarget[0].BlendOpAlpha = static_cast<D3D11_BLEND_OP>(alpha_blend_op);
-
-	blend_desc.RenderTarget[0].RenderTargetWriteMask = render_target_write_mask;
-
-	ID3D11BlendState* blend_state = nullptr;
-	myDevice->CreateBlendState(&blend_desc, &blend_state);
-	m_RegisteredBlendStates.Add(blend_state);
-	return blend_state;
-}
-
-void* DirectX11::CreateSamplerState(SamplerState::FilterMode filter_mode, SamplerState::UVAddressMode address_mode, u32 max_anisotropy, float mip_lod_bias, float min_lod, float max_lod, float border_color[4], SamplerState::ComparisonFunc comparison_function)
-{
-	D3D11_SAMPLER_DESC sampler_desc;
-	sampler_desc.AddressU = static_cast<D3D11_TEXTURE_ADDRESS_MODE>(address_mode);
-	sampler_desc.AddressV = static_cast<D3D11_TEXTURE_ADDRESS_MODE>(address_mode);
-	sampler_desc.AddressW = static_cast<D3D11_TEXTURE_ADDRESS_MODE>(address_mode);
-	sampler_desc.Filter = static_cast<D3D11_FILTER>(filter_mode);
-
-	sampler_desc.MaxAnisotropy = max_anisotropy;
-	sampler_desc.MipLODBias = mip_lod_bias;
-	sampler_desc.MinLOD = min_lod;
-	sampler_desc.MaxLOD = max_lod;
-	sampler_desc.ComparisonFunc = static_cast<D3D11_COMPARISON_FUNC>(comparison_function);
-	//sampler_desc.BorderColor = border_color;
-
-
-	ID3D11SamplerState* sampler_state;
-	myDevice->CreateSamplerState(&sampler_desc, &sampler_state);
-	m_RegisteredSamplerStates.Add(sampler_state);
-	return sampler_state;
-}
-
-void DirectX11::SetShaderState(ShaderState& shader_state)
-{
-	ID3D11BlendState* blend_state = static_cast<ID3D11BlendState*>(shader_state.GetBlendState().GetState());
-	myContext->OMSetBlendState(blend_state, clear, 0xFFFFFFFF);
-
-	ID3D11RasterizerState* raster_state = static_cast<ID3D11RasterizerState*>(shader_state.GetRasterizerState().GetState());
-	myContext->RSSetState(raster_state);
-
-	ID3D11DepthStencilState* depth_state = static_cast<ID3D11DepthStencilState*>(shader_state.GetDepthstencilState().GetState());
-	myContext->OMSetDepthStencilState(depth_state, 0);
-
-	SetSamplerState([&](UINT, UINT, ID3D11SamplerState*const*) { &ID3D11DeviceContext::VSSetSamplers; }, shader_state, SamplerState::VERTEX_SHADER);
-	SetSamplerState([&](UINT, UINT, ID3D11SamplerState*const*) { &ID3D11DeviceContext::PSSetSamplers; }, shader_state, SamplerState::PIXEL_SHADER);
-	SetSamplerState([&](UINT, UINT, ID3D11SamplerState*const*) { &ID3D11DeviceContext::GSSetSamplers; }, shader_state, SamplerState::GEOMETRY_SHADER);
-	SetSamplerState([&](UINT, UINT, ID3D11SamplerState*const*) { &ID3D11DeviceContext::HSSetSamplers; }, shader_state, SamplerState::HULL_SHADER);
-	SetSamplerState([&](UINT, UINT, ID3D11SamplerState*const*) { &ID3D11DeviceContext::DSSetSamplers; }, shader_state, SamplerState::DOMAIN_SHADER);
-	SetSamplerState([&](UINT, UINT, ID3D11SamplerState*const*) { &ID3D11DeviceContext::CSSetSamplers; }, shader_state, SamplerState::COMPUTE_SHADER);
-
-}
-
-void DirectX11::VSSetShaderResource(s32 start_slot, s32 count, void* resources)
-{
-	myContext->VSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
-}
-
-void DirectX11::PSSetShaderResource(s32 start_slot, s32 count, void* resources)
-{
-	myContext->PSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
-}
-
-void DirectX11::GSSetShaderResource(s32 start_slot, s32 count, void* resources)
-{
-	myContext->GSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
-}
-
-void DirectX11::DSSetShaderResource(s32 start_slot, s32 count, void* resources)
-{
-	myContext->DSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
-}
-
-void DirectX11::HSSetShaderResource(s32 start_slot, s32 count, void* resources)
-{
-	myContext->HSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
-}
-
-void DirectX11::CSSetShaderResource(s32 start_slot, s32 count, void* resources)
-{
-	myContext->CSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
-}
-
-void DirectX11::SetSamplerState(std::function<void(UINT, UINT, ID3D11SamplerState*const*)> function, ShaderState& shader_state, s32 shader_type)
-{
-	CU::GrowingArray<SamplerState>& samplers = shader_state.GetSamplerState(shader_type);
-	for (SamplerState& sampler : samplers )
-	{
-		ID3D11SamplerState* sampler_state = static_cast<ID3D11SamplerState*>(sampler.GetState());
-		function(sampler.GetSlot(), 1, &sampler_state);
-	}
-}
-
-void DirectX11::ReportLiveObjects()
-{
-	myContext->ClearState();
-	myContext->Flush();
-	myDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | (D3D11_RLDO_FLAGS)0x4);
-}
-
-void DirectX11::SetViewport(Viewport* viewport)
-{
-	myContext->RSSetViewports(1, viewport);
-}
-
-void DirectX11::OnAltEnter()
-{
-	if ( this && mySwapchain )
-	{
-		mySwapchain->SetFullscreenState(FALSE, nullptr);
-		if ( myEngineFlags[u16(eEngineFlags::FULLSCREEN)] == FALSE )
-		{
-			mySwapchain->SetFullscreenState(TRUE, nullptr);
-			myEngineFlags[u16(eEngineFlags::FULLSCREEN)] = TRUE;
+			m_Swapchain->SetFullscreenState(TRUE, nullptr);
 			return;
 		}
-		myEngineFlags[u16(eEngineFlags::FULLSCREEN)] = FALSE;
 	}
-}
 
-void DirectX11::OnResize()
-{
-	mySwapchain->Release();
-	mySwapchain = nullptr;
+	void DirectX11::OnResize()
+	{
+		SAFE_RELEASE(m_Swapchain);
 
-	IDXGIFactory* factory;
-	HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
-	HandleErrors(hr, "(OnResize) Failed to create Factory!");
+		IDXGIFactory* factory;
+		HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
+		HandleErrors(hr, "(OnResize) Failed to create Factory!");
 
-	DXGI_SWAP_CHAIN_DESC scDesc;
-	ZeroMemory(&scDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
+		DXGI_SWAP_CHAIN_DESC scDesc;
+		ZeroMemory(&scDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	float sym_x = GetSystemMetrics(SM_CXSCREEN);
-	float sym_y = GetSystemMetrics(SM_CYSCREEN);
+		float sym_x = GetSystemMetrics(SM_CXSCREEN);
+		float sym_y = GetSystemMetrics(SM_CYSCREEN);
 
-	scDesc.BufferCount = 1;
-	scDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-	scDesc.BufferDesc.Width = UINT(sym_x);
-	scDesc.BufferDesc.Height = UINT(sym_y);
-	scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	scDesc.OutputWindow = m_CreateInfo.m_HWND;
-	scDesc.SampleDesc.Count = 1;
-	scDesc.SampleDesc.Quality = 0;
-	if ( myEngineFlags[u16(eEngineFlags::FULLSCREEN)] == FALSE )
+		scDesc.BufferCount = 1;
+		scDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		scDesc.BufferDesc.Width = UINT(sym_x);
+		scDesc.BufferDesc.Height = UINT(sym_y);
+		scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		scDesc.OutputWindow = m_CreateInfo.m_HWND;
+		scDesc.SampleDesc.Count = 1;
+		scDesc.SampleDesc.Quality = 0;
 		scDesc.Windowed = true;
-	else
-		scDesc.Windowed = false;
+		//scDesc.Windowed = false;
 
-	scDesc.Flags = 0;
-	scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	scDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	scDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	bool useVsync = false;
 
-	u32 numerator = 0;
-	u32 denominator = 1;
+		scDesc.Flags = 0;
+		scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+		scDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		scDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		bool useVsync = false;
 
-	if ( useVsync )
-	{
-		GetRefreshRate(numerator, denominator);
+		u32 numerator = 0;
+		u32 denominator = 1;
+
+		if (useVsync)
+		{
+			GetRefreshRate(numerator, denominator);
+		}
+
+		scDesc.BufferDesc.RefreshRate.Numerator = numerator;
+		scDesc.BufferDesc.RefreshRate.Denominator = denominator;
+
+		hr = factory->CreateSwapChain(static_cast<DX11Device*>(m_Device)->m_Device, &scDesc, &m_Swapchain);
+
+		SAFE_RELEASE(factory);
 	}
 
-	scDesc.BufferDesc.RefreshRate.Numerator = numerator;
-	scDesc.BufferDesc.RefreshRate.Denominator = denominator;
-
-	hr = factory->CreateSwapChain(myDevice, &scDesc, &mySwapchain);
-
-	SAFE_RELEASE(factory);
-}
-
-void DirectX11::CopyResource(void * pDestination, void * pSource)
-{
-	myContext->CopyResource(static_cast<ID3D11Resource*>(pDestination), static_cast<ID3D11Resource*>(pSource));
-}
-
-void DirectX11::CreateRazterizers()
-{
-	D3D11_RASTERIZER_DESC desc;
-	ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
-	desc.FrontCounterClockwise = false;
-	desc.DepthBias = false;
-	desc.DepthBiasClamp = 0;
-	desc.SlopeScaledDepthBias = 0;
-	desc.DepthClipEnable = false;
-	desc.ScissorEnable = false;
-	desc.MultisampleEnable = false;
-	desc.AntialiasedLineEnable = false;
-
-
-	desc.FillMode = D3D11_FILL_WIREFRAME;
-	desc.CullMode = D3D11_CULL_NONE;
-	myDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::WIREFRAME)]);
-	SetDebugName(myRasterizerStates[u16(eRasterizer::WIREFRAME)], "Wireframe Rasterizer");
-
-
-	desc.FillMode = D3D11_FILL_SOLID;
-	desc.CullMode = D3D11_CULL_BACK;
-	myDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::CULL_BACK)]);
-	SetDebugName(myRasterizerStates[u16(eRasterizer::CULL_BACK)], "CULL_BACK Rasterizer");
-
-	desc.FillMode = D3D11_FILL_SOLID;
-	desc.CullMode = D3D11_CULL_FRONT;
-	myDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::CULL_FRONT)]);
-	SetDebugName(myRasterizerStates[u16(eRasterizer::CULL_FRONT)], "CULL_FRONT Rasterizer");
-
-	desc.FillMode = D3D11_FILL_SOLID;
-	desc.CullMode = D3D11_CULL_NONE;
-	myDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::CULL_NONE)]);
-	SetDebugName(myRasterizerStates[u16(eRasterizer::CULL_NONE)], "CULL_NONE Rasterizer");
-
-
-	desc.MultisampleEnable = true;
-	desc.AntialiasedLineEnable = true;
-	desc.FillMode = D3D11_FILL_SOLID;
-	desc.CullMode = D3D11_CULL_NONE;
-	myDevice->CreateRasterizerState(&desc, &myRasterizerStates[u16(eRasterizer::MSAA)]);
-	SetDebugName(myRasterizerStates[u16(eRasterizer::MSAA)], "MSAA Rasterizer");
-
-
-
-}
-
-void DirectX11::GetRefreshRate(u32& aNumerator, u32& aDenominator)
-{
-	IDXGIFactory* factory;
-	IDXGIAdapter* adapter;
-	IDXGIOutput* adapterOutput;
-	unsigned int numModes;
-	DXGI_MODE_DESC* displayModeList;
-
-	HRESULT result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
-	result = factory->EnumAdapters(0, &adapter);
-	result = adapter->EnumOutputs(0, &adapterOutput);
-	adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL);
-	displayModeList = new DXGI_MODE_DESC[numModes];
-	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
-
-	for ( unsigned int i = 0; i < numModes; ++i )
+	CU::Vector4f DirectX11::PickColor(Texture* pTexture)
 	{
-		if ( displayModeList[i].Width == m_CreateInfo.m_WindowWidth && displayModeList[i].Height == m_CreateInfo.m_WindowHeight )
+		//this might have to run at the end of each frame, and we put in a request for the function in a command queue
+		graphics::DX11Device& dx11dev = static_cast<graphics::DX11Device&>(GetDevice());
+		ID3D11Device* pDevice = static_cast<ID3D11Device*>(dx11dev.GetDevice());
+
+		graphics::DX11Context& dx11ctx = static_cast<graphics::DX11Context&>(GetContext());
+		ID3D11DeviceContext* ctx = static_cast<ID3D11DeviceContext*>(dx11ctx.GetContext());
+
+		WindowSize window_size;
+		window_size.m_Height = m_CreateInfo.m_WindowHeight;
+		window_size.m_Width = m_CreateInfo.m_WindowWidth;
+
+		ID3D11Texture2D* _IDTex = static_cast<ID3D11Texture2D*>(pTexture->GetTexture());
+
+		const CU::Vector2f fPos = Engine::GetInstance()->GetInputHandle()->GetCursorPos();
+		const CU::Vector2i iPos = { (s32)fPos.x, (s32)fPos.y };
+
+		//this could be saved
+		D3D11_BOX region_box;
+		CU::Vector4f color;
+
+		if (iPos.x > 1919 || iPos.x < 0 || iPos.y > 1080 || iPos.y < 0)
+			return color;
+			
+
+		region_box.bottom = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height) + 1;
+		region_box.right = cl::ClampI(iPos.x, 0, (s32)window_size.m_Width) + 1;
+		region_box.back = 1;
+
+		region_box.top = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height);
+		region_box.left = cl::ClampI(iPos.x, 0, (s32)window_size.m_Width);
+		region_box.front = 0;
+
+		ID3D11Texture2D * staging = nullptr;
+		pDevice->CreateTexture2D(&m_PixelPickDesc, nullptr, &staging);
+		ctx->CopySubresourceRegion(staging, 0, 0, 0, 0, _IDTex, 0, &region_box);
+
+		D3D11_MAPPED_SUBRESOURCE msr;
+		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
+		HRESULT hr = ctx->Map(staging, 0, D3D11_MAP_READ, 0, &msr);
+
+		u32 pix = 0;
+		//constexpr int x = sizeof(float);
+		if (msr.pData)
 		{
-			aNumerator = displayModeList[i].RefreshRate.Numerator;
-			aDenominator = displayModeList[i].RefreshRate.Denominator;
+
+			int r_pitch = msr.RowPitch;
+			int d_pitch = msr.DepthPitch;
+			float* data = (float*)msr.pData;
+			color.x = data[0] * 65536.f;
+			color.y = data[1] * 256.f;
+			color.z = data[2];
+			color.w = 1.f;
+		}
+		ctx->Unmap(staging, 0);
+		staging->Release();
+
+		return color;
+
+	}
+
+	void DirectX11::CreateRazterizers()
+	{
+		D3D11_RASTERIZER_DESC desc;
+		ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
+		desc.FrontCounterClockwise = false;
+		desc.DepthBias = false;
+		desc.DepthBiasClamp = 0;
+		desc.SlopeScaledDepthBias = 0;
+		desc.DepthClipEnable = false;
+		desc.ScissorEnable = false;
+		desc.MultisampleEnable = false;
+		desc.AntialiasedLineEnable = false;
+
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+
+		desc.FillMode = D3D11_FILL_WIREFRAME;
+		desc.CullMode = D3D11_CULL_NONE;
+		CreateRasterizerState(desc, WIREFRAME, "Wireframe");
+
+		desc.FillMode = D3D11_FILL_SOLID;
+		desc.CullMode = D3D11_CULL_BACK;
+		CreateRasterizerState(desc, CULL_BACK, "CULL_BACK");
+
+		desc.FillMode = D3D11_FILL_SOLID;
+		desc.CullMode = D3D11_CULL_FRONT;
+		CreateRasterizerState(desc, CULL_FRONT, "CULL_FRONT");
+
+		desc.FillMode = D3D11_FILL_SOLID;
+		desc.CullMode = D3D11_CULL_NONE;
+		CreateRasterizerState(desc, CULL_NONE, "CULL_NONE");
+
+	}
+
+	void DirectX11::CreateRasterizerState(const D3D11_RASTERIZER_DESC& desc, eRasterizer rasterizer, const char* debugname)
+	{
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11RasterizerState* rasterstate = nullptr;
+		pDevice->CreateRasterizerState(&desc, &rasterstate);
+		m_RasterizerStates[rasterizer] = rasterstate;
+#ifdef _DEBUG
+		SetDebugName(rasterstate, debugname);
+#endif
+	}
+
+	void DirectX11::GetRefreshRate(u32& aNumerator, u32& aDenominator)
+	{
+		IDXGIFactory* factory;
+		IDXGIAdapter* adapter;
+		IDXGIOutput* adapterOutput;
+		unsigned int numModes;
+		DXGI_MODE_DESC* displayModeList;
+
+		HRESULT result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
+		result = factory->EnumAdapters(0, &adapter);
+		result = adapter->EnumOutputs(0, &adapterOutput);
+		adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL);
+		displayModeList = new DXGI_MODE_DESC[numModes];
+		result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
+
+		for (unsigned int i = 0; i < numModes; ++i)
+		{
+			if (displayModeList[i].Width == m_CreateInfo.m_WindowWidth && displayModeList[i].Height == m_CreateInfo.m_WindowHeight)
+			{
+				aNumerator = displayModeList[i].RefreshRate.Numerator;
+				aDenominator = displayModeList[i].RefreshRate.Denominator;
+			}
+		}
+
+		delete[] displayModeList;
+		displayModeList = nullptr;
+		SAFE_RELEASE(adapterOutput);
+		SAFE_RELEASE(adapter);
+		SAFE_RELEASE(factory);
+	}
+
+	void DirectX11::HandleErrors(const HRESULT& aResult, const std::string& anErrorString)
+	{
+		std::string toError;
+		switch (aResult)
+		{
+			case D3D11_ERROR_FILE_NOT_FOUND:
+			{
+				toError = (anErrorString + " File not found!");
+			}break;
+			case D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS:
+			{
+				toError = (anErrorString + " Too many unique state objects!");
+			}break;
+			case D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS:
+			{
+				toError = (anErrorString + " Too many view objects!");
+			}break;
+			case D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD:
+			{
+				toError = (anErrorString + " Deferred Context Map Without Initial Discard!");
+			}break;
+			case DXGI_ERROR_INVALID_CALL:
+			{
+				toError = (anErrorString + " Invalid call!");
+			}break;
+			case DXGI_ERROR_WAS_STILL_DRAWING:
+			{
+				toError = (anErrorString + " Were still drawing!");
+			}break;
+			case E_FAIL:
+			{
+				toError = (anErrorString + " Failed!");
+			}break;
+			case E_INVALIDARG:
+			{
+				toError = (anErrorString + " One or more arguments were invalid!");
+			}break;
+			case E_OUTOFMEMORY:
+			{
+				toError = (anErrorString + " Out of Memory!");
+			}break;
+			case E_NOTIMPL:
+			{
+				toError = (anErrorString + " The method call isn't implemented with the passed parameter combination.");
+			}break;
+			case S_FALSE:
+			{
+				toError = (anErrorString + " Something went wrong. Returned false!");
+
+			}break;
+		}
+
+		if (!toError.empty())
+		{
+			DL_MESSAGE("%s", toError.c_str());
+			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
 		}
 	}
 
-	delete[] displayModeList;
-	displayModeList = nullptr;
-	SAFE_RELEASE(adapterOutput);
-	SAFE_RELEASE(adapter);
-	SAFE_RELEASE(factory);
-}
+	DXGI_FORMAT DirectX11::GetFormat(s32 format)
+	{
+
+		//___________________________________________________
+		if (format & graphics::RGBA32_FLOAT)
+			return DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		if (format & graphics::RGBA32_UINT)
+			return DXGI_FORMAT_R32G32B32A32_UINT;
+
+		if (format & graphics::RGBA32_SINT)
+			return DXGI_FORMAT_R32G32B32A32_SINT;
+
+
+		//___________________________________________________
+		if (format & graphics::RGB32_FLOAT)
+			return DXGI_FORMAT_R32G32B32_FLOAT;
+
+		if (format & graphics::RGB32_UINT)
+			return DXGI_FORMAT_R32G32B32_UINT;
+
+		if (format & graphics::RGB32_SINT)
+			return DXGI_FORMAT_R32G32B32_SINT;
+
+
+		//___________________________________________________
+		if (format & graphics::RGBA16_FLOAT)
+			return DXGI_FORMAT_R16G16B16A16_FLOAT;
+
+		if (format & graphics::RGBA16_UINT)
+			return DXGI_FORMAT_R16G16B16A16_UINT;
+
+		if (format & graphics::RGBA16_SINT)
+			return DXGI_FORMAT_R16G16B16A16_SINT;
+
+		//___________________________________________________
+
+		if (format & graphics::RGBA8_UINT)
+			return DXGI_FORMAT_R8G8B8A8_UINT;
+
+		if (format & graphics::RGBA8_SINT)
+			return DXGI_FORMAT_R8G8B8A8_SINT;
+
+		if (format & graphics::RGBA8_UNORM)
+			return DXGI_FORMAT_R8G8B8A8_UNORM;
+
+
+		//___________________________________________________
+		if (format & graphics::R32_TYPELESS)
+			return DXGI_FORMAT_R32_TYPELESS;
+
+		if (format & graphics::R32_FLOAT)
+			return DXGI_FORMAT_R32_FLOAT;
+
+		if (format & graphics::DEPTH_32_FLOAT)
+			return DXGI_FORMAT_D32_FLOAT;
+
+		if (format & graphics::R32_UINT)
+			return DXGI_FORMAT_R32_UINT;
+
+		if (format & graphics::RG32_FLOAT)
+			return DXGI_FORMAT_R32G32_FLOAT;
+
+		DL_ASSERT("invalid texture format");
+		return DXGI_FORMAT_R32G32B32A32_FLOAT;
+	}
+
+	DXGI_FORMAT DirectX11::GetFormat(eVertexFormat format)
+	{
+		if (format == eVertexFormat::_4BYTE_R_FLOAT)
+			return DXGI_FORMAT_R32_FLOAT;
+		if (format == eVertexFormat::_4BYTE_R_UINT)
+			return DXGI_FORMAT_R32_UINT;
+		if (format == eVertexFormat::_8BYTE_RG)
+			return DXGI_FORMAT_R32G32_FLOAT;
+		if (format == eVertexFormat::_12BYTE_RGB)
+			return DXGI_FORMAT_R32G32B32_FLOAT;
+		if (format == eVertexFormat::_16BYTE_RGBA)
+			return DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		DL_ASSERT("invalid vertex format");
+		return DXGI_FORMAT_UNKNOWN;
+	}
+
+	D3D11_USAGE DirectX11::GetUsage(s32 usage)
+	{
+		if (usage == DEFAULT_USAGE)
+			return D3D11_USAGE_DEFAULT;
+		if (usage == IMMUTABLE_USAGE)
+			return D3D11_USAGE_IMMUTABLE;
+		if (usage == DYNAMIC_USAGE)
+			return D3D11_USAGE_DYNAMIC;
+		if (usage == STAGING_USAGE)
+			return D3D11_USAGE_STAGING;
+	}
+
+	u32 DirectX11::GetBindFlag(s32 binding)
+	{
+		u32 output = 0;
+
+		if (binding & graphics::BIND_VERTEX_BUFFER)
+			output |= D3D11_BIND_VERTEX_BUFFER;
+		if (binding & graphics::BIND_INDEX_BUFFER)
+			output |= D3D11_BIND_INDEX_BUFFER;
+		if (binding & graphics::BIND_CONSTANT_BUFFER)
+			output |= D3D11_BIND_CONSTANT_BUFFER;
+		if (binding & graphics::BIND_SHADER_RESOURCE)
+			output |= D3D11_BIND_SHADER_RESOURCE;
+		if (binding & graphics::BIND_STREAM_OUTPUT)
+			output |= D3D11_BIND_STREAM_OUTPUT;
+		if (binding & graphics::BIND_RENDER_TARGET)
+			output |= D3D11_BIND_RENDER_TARGET;
+		if (binding & graphics::BIND_DEPTH_STENCIL)
+			output |= D3D11_BIND_DEPTH_STENCIL;
+		if (binding & graphics::BIND_UNORDERED_ACCESS)
+			output |= D3D11_BIND_UNORDERED_ACCESS;
+		if (binding & graphics::BIND_DECODER)
+			output |= D3D11_BIND_DECODER;
+		if (binding & graphics::BIND_VIDEO_ENCODER)
+			output |= D3D11_BIND_VIDEO_ENCODER;
+
+
+		return output;
+	}
+
+	u32 DirectX11::GetCPUAccessFlag(s32 flags)
+	{
+		u32 output = 0;
+
+		if (flags & eCPUAccessFlag::READ)
+			output |= D3D11_CPU_ACCESS_READ;
+		if (flags& eCPUAccessFlag::WRITE)
+			output |= D3D11_CPU_ACCESS_WRITE;
+
+		return output;
+	}
+
+	D3D11_PRIMITIVE_TOPOLOGY DirectX11::GetTopology(eTopology topology)
+	{
+		if (topology == eTopology::TRIANGLE_LIST)
+			return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		if (topology == eTopology::_4_CONTROL_POINT_PATCHLIST)
+			return D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST;
+		if (topology == eTopology::POINT_LIST)
+			return D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+		if (topology == eTopology::LINE_LIST)
+			return D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+
+		return D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
+	}
+
+	D3D11_MAP DirectX11::GetMapping(eMapping mapping)
+	{
+		s32 _map = mapping + 1;
+		return static_cast<D3D11_MAP>(_map);
+	}
+
+	D3D11_INPUT_CLASSIFICATION DirectX11::GetInputClass(eElementSpecification el)
+	{
+		if (el == INPUT_PER_VERTEX_DATA)
+			return D3D11_INPUT_PER_VERTEX_DATA;
+		if (el == INPUT_PER_INSTANCE_DATA)
+			return D3D11_INPUT_PER_INSTANCE_DATA;
+
+
+
+		DL_ASSERT("Shouldn't get here, invalid input element specification!");
+		return D3D11_INPUT_PER_VERTEX_DATA;
+	}
+
+	void DirectX11::SetDebugName(void * pResource, std::string debug_name)
+	{
+		if (!pResource)
+			return;
+
+		ID3D11DeviceChild* resource = static_cast<ID3D11DeviceChild*>(pResource);
+		resource->SetPrivateData(WKPDID_D3DDebugObjectName, debug_name.length(), debug_name.c_str());
+	}
+
+
+};
+
 

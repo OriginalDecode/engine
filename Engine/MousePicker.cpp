@@ -33,10 +33,13 @@ void CMousePicker::CalculateCurrentRay(float x, float y)
 	cursorPos.y = y;
 
 	cursorPos = NormalizedSpace(cursorPos.x, cursorPos.y);
-	CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.f, 0.f); //Clip Space
+	CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.0f, 1.f); //Clip Space
+	
+	
+	
 	CU::Vector4f eyeCoord = ToEyeCoords(clip);
 	CU::Vector3f ray = ToWorldCoords(eyeCoord);
-
+	m_RayStart = ray;
 	CU::Math::Normalize(ray);
 	myCurrentRay = ray;
 }
@@ -45,19 +48,23 @@ CU::Vector4f CMousePicker::ToEyeCoords(const CU::Vector4f& clipCoords)
 {
 	CU::Matrix44f invertedProjection = CU::Math::InverseReal(myCamera->GetPerspective());
 	CU::Vector4f rayOrigin = invertedProjection * clipCoords;
-	return CU::Vector4f(rayOrigin.x, rayOrigin.y, 1.f, 0.f);
+	rayOrigin.x /= rayOrigin.w;
+	rayOrigin.y /= rayOrigin.w;
+	rayOrigin.z /= rayOrigin.w;
+
+	return CU::Vector4f(rayOrigin.x, rayOrigin.y, rayOrigin.z, 1.f);
 }
 
 CU::Vector3f CMousePicker::ToWorldCoords(const CU::Vector4f& eyeCoords)
 {
-	CU::Matrix44f view = CU::Math::Inverse(myCamera->GetOrientation());
+	CU::Matrix44f view = CU::Math::Inverse(myCamera->GetOrientation()); //doesn't account for the offset ???6
 	CU::Vector4f rayEnd = view * eyeCoords;
 	return CU::Vector3f(rayEnd.x, rayEnd.y, rayEnd.z);
 }
 
 CU::Vector2f CMousePicker::NormalizedSpace(float x, float y)
 {
-	x = x * 2.f / myEngine->GetWindowSize().m_Width - 1.f;
-	y = 1.f - (y * 2.f) / myEngine->GetWindowSize().m_Height;
+	x = x * 2.f / myEngine->GetInnerSize().m_Width - 1.f;
+	y = 1.f - (y * 2.f) / myEngine->GetInnerSize().m_Height;
 	return CU::Vector2f(x, y);
 }

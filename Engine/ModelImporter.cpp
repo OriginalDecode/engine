@@ -30,6 +30,7 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 	{
 		aiMesh* mesh = aScene->mMeshes[aNode->mMeshes[i]];
 		ProcessMesh(mesh, aScene, someData, file, min_point, max_point);
+		DL_ASSERT_EXP(someData->myData, "Was null after ProcessMesh!?");
 	}
 
 	for ( u32 i = 0; i < aNode->mNumChildren; i++ )
@@ -128,11 +129,11 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 	DL_MESSAGE("Vertex Buffer Array Size : %d", size);
 	data->myData->myVertexBuffer = new float[size];
 	ZeroMemory(data->myData->myVertexBuffer, sizeof(float)*size);
-
+	data->myData->m_VertexBufferSize = sizeof(float) * size;
 	DL_ASSERT_EXP(mesh->mNumVertices < size, "the amount of vertices was MORE!? than size");
 	data->myData->myIndicies = new u32[polygonCount * 3];
 	ZeroMemory(data->myData->myIndicies, sizeof(u32) * polygonCount * 3);
-
+	data->myData->m_IndexBufferSize = sizeof(u32) * polygonCount * 3;
 	CU::GrowingArray<u32> indices;
 	u32 vertCount = 0;
 
@@ -158,7 +159,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 				data->myData->myVertexBuffer[currIndex] = position.x;
 				data->myData->myVertexBuffer[currIndex + 1] = position.y;
 				data->myData->myVertexBuffer[currIndex + 2] = position.z;
-				data->myData->myVertexBuffer[currIndex + 3] = 0;
+				data->myData->myVertexBuffer[currIndex + 3] = 1;
 
 
 				if ( i != 0 )
@@ -268,7 +269,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 
 	memcpy(data->myData->myIndicies, &indiceFix[0], sizeof(u32) * indiceFix.Size());
 
-	data->myData->myVertexStride = stride;
+	data->myData->myVertexStride = stride * sizeof(float);
 	data->myData->myVertexCount = vertCount;
 	data->myData->myIndexCount = indiceFix.Size();
 
@@ -301,19 +302,9 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 		path += fileName;
 		if ( fileName != "" )
 		{
-			//myEngine->GetTexture(newPath); //All textures now get properly loaded.
 			TextureInfo newInfo;
 			newInfo.m_File = path;
-
-			if (path.find("metallic") != path.npos)
-			{
-				int apa;
-				apa = 5;
-			}
-
-
 			aiTextureType lType = static_cast< aiTextureType >( type );
-			//DL_MESSAGE("Type : %d, Name : %s", u32(lType), newPath.c_str());
 			switch ( lType )
 			{
 				case aiTextureType_DIFFUSE:
@@ -343,12 +334,12 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 
 				case aiTextureType_REFLECTION: /* Misleading name, amirite? */
 				{
-					newInfo.m_Slot = Effect::METALNESS; // specular intensity (blender)
+					newInfo.m_Slot = Effect::METALNESS; // specular intensity (blender), metalness 
 				}break;
 
 				case aiTextureType_SPECULAR:
 				{
-					newInfo.m_Slot = Effect::METALNESS; // specular intensity (blender)
+					newInfo.m_Slot = Effect::ROUGHNESS; // specular intensity (blender), roughness???
 				}break;
 
 				case aiTextureType_HEIGHT:

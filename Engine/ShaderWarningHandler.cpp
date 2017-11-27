@@ -5,9 +5,9 @@
 #include <fstream>
 #include <algorithm>
 
-std::string ShaderWarningHandler::CheckWarning(const std::string& aWarningMessage, const std::string& aFilePath)
+std::string ShaderWarningHandler::CheckWarning(const std::string& aWarningMessage, const std::string& filepath)
 {
-	myFilepath = aFilePath;
+	myFilepath = filepath;
 	s8 toFind[7] = { 'w', 'a', 'r', 'n','i','n','g' };
 	s8 toFind2[5] = { 'e','r','r','o','r' };
 

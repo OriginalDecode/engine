@@ -78,7 +78,7 @@ btRigidBody* RigidBody::InitAsSphere(float aRadius, float aMass, float aGravityF
 
 btRigidBody* RigidBody::InitWithMeshCollision(std::vector<float> vertices, std::vector<s32> indices)
 {
-	if (vertices.size() <= 0 || indices.size() <= 0)
+	if (vertices.empty() && indices.empty())
 		return nullptr;
 
 	s32 faceCount = (s32)indices.size() / 3;

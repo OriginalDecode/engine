@@ -5,6 +5,12 @@
 #include <Engine/Synchronizer.h>
 #include <Engine/Octree.h>
 #include <Engine/Engine.h>
+#include <Engine/profile_defines.h>
+#include <algorithm>
+TreeNodeBase::TreeNodeBase()
+{
+	m_Lines.Init(5000);
+}
 
 TreeNodeBase::~TreeNodeBase()
 {
@@ -14,16 +20,18 @@ TreeNodeBase::~TreeNodeBase()
 		delete child;
 		child = nullptr;
 	}
+
 }
 
 void TreeNodeBase::Update(float dt, bool paused)
 {
-	RenderBox();
-	m_NodeEntityManager->Update(dt, paused);
+	PROFILE_FUNCTION(profiler::colors::Blue);
+	m_DwellerCount = m_Dwellers.Size();
 
-	if (paused)
-		return;
+	//RenderBox();
+	m_NodeEntityManager->Update(dt, m_Dwellers, paused);
 
+	PROFILE_BLOCK("forEachDweller", profiler::colors::LightBlue);
 	for (TreeDweller* dweller : m_Dwellers)
 	{
 		if (!dweller)
@@ -34,6 +42,7 @@ void TreeNodeBase::Update(float dt, bool paused)
 
 		bool found = false;
 		const ComponentList& list = dweller->GetComponentPairList();
+
 		for (const ComponentPair pair : list)
 		{
 			if (!pair.m_Component)
@@ -52,9 +61,11 @@ void TreeNodeBase::Update(float dt, bool paused)
 			break;
 	}
 
+	PROFILE_BLOCK_END;
+
+
 	if (!m_Dwellers.Empty() || HasEntities() || !m_Parent)
 		return;
-
 
 	for (s32 i = 0; i < 8; i++)
 	{
@@ -193,6 +204,7 @@ void TreeNodeBase::SetMemoryBlockIndex(s32 index)
 {
 	m_MemoryBlockIndex = index;
 	m_NodeEntityManager->SetMemoryBlockIndex(m_MemoryBlockIndex);
+	m_NodeEntityManager->Initiate();
 }
 
 #define RED CU::Vector4f(255.f,0.f,0.f,255.f)
@@ -201,26 +213,27 @@ void TreeNodeBase::SetMemoryBlockIndex(s32 index)
 #define YELLOW CU::Vector4f(255.f,255.f,0.f,255.f)
 void TreeNodeBase::RenderBox()
 {
-	if (!m_RenderBox)
-		return;
-
-	SLinePoint points[8];
+#if defined(_PROFILE) || defined(_FINAL)
+	return;
+#endif
+	m_Lines.RemoveAll();
+	LinePoint points[8];
 
 
 	switch (m_Depth)
 	{
-		case 0:
-			points[0].color = RED;
-			break;
-		case 1:
-			points[0].color = GREEN;
-			break;
-		case 2:
-			points[0].color = BLUE;
-			break;
-		case 3:
-			points[0].color = YELLOW;
-			break;
+	case 0:
+		points[0].color = RED;
+		break;
+	case 1:
+		points[0].color = GREEN;
+		break;
+	case 2:
+		points[0].color = BLUE;
+		break;
+	case 3:
+		points[0].color = YELLOW;
+		break;
 	}
 
 	points[1].color = points[0].color;
@@ -255,29 +268,54 @@ void TreeNodeBase::RenderBox()
 	points[7].position.y = m_CenterPosition.y + m_HalfWidth;
 
 
+	AddLine(Line(points[0], points[1]));
+	AddLine(Line(points[0], points[2]));
+	AddLine(Line(points[0], points[6]));
+	AddLine(Line(points[1], points[3]));
+	AddLine(Line(points[1], points[7]));
+	AddLine(Line(points[3], points[5]));
+	AddLine(Line(points[5], points[7]));
+	AddLine(Line(points[6], points[4]));
+	AddLine(Line(points[2], points[4]));
+	AddLine(Line(points[4], points[5]));
+	AddLine(Line(points[2], points[3]));
+	AddLine(Line(points[6], points[7]));
+}
 
-	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[1], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[2], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[6], true));
+void TreeNodeBase::AddLine(Line line)
+{
+	m_Lines.Add(line);
+}
 
-	m_Synchronizer->AddRenderCommand(LineCommand(points[1], points[3], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[1], points[7], true));
-
-	m_Synchronizer->AddRenderCommand(LineCommand(points[3], points[5], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[5], points[7], true));
-
-
-	m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[4], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[4], true));
-
-	m_Synchronizer->AddRenderCommand(LineCommand(points[4], points[5], true));
-	m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[3], true));
-
-	m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[7], true));
-
+void TreeNodeBase::CopyToParent(const CU::GrowingArray<Line>& in)
+{
+	CU::GrowingArray<Line>::Copy(m_Lines, in);
 }
 
 s32 TreeNodeBase::GetMemoryBlockIndex()
 {
 	return m_MemoryBlockIndex;
+}
+
+void TreeNodeBase::ToggleRenderBox(bool v)
+{
+	if (v == m_RenderBox)
+		return;
+
+	for (TreeNodeBase* c : m_Children)
+	{
+		if (c) c->ToggleRenderBox(v);
+	}
+
+	m_RenderBox = v;
+
+}
+
+void TreeNodeBase::RemoveAllDwellers()
+{
+	for (TreeNodeBase* c : m_Children)
+	{
+		if (c) c->RemoveAllDwellers();
+	}
+	m_Dwellers.RemoveAll();
 }

@@ -129,13 +129,14 @@
     <ClInclude Include="DataStructures\Hashmap\Hash.h">
       <Filter>DataStructures\Hashmap</Filter>
     </ClInclude>
-    <ClInclude Include="HashString.h" />
     <ClInclude Include="Math\Line\LineVolume.h">
       <Filter>Math\Line</Filter>
     </ClInclude>
     <ClInclude Include="Math\Line\Line.h">
       <Filter>Math\Line</Filter>
     </ClInclude>
+    <ClInclude Include="reflector.h" />
+    <ClInclude Include="XML\XMLReader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JSON\JSONReader.cpp">
@@ -165,5 +166,7 @@
     <ClCompile Include="DataStructures\Hashmap\Hash.cpp">
       <Filter>DataStructures\Hashmap</Filter>
     </ClCompile>
+    <ClCompile Include="reflector.cpp" />
+    <ClCompile Include="XML\XMLReader.cpp" />
   </ItemGroup>
 </Project>

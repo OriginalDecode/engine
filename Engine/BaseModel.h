@@ -2,65 +2,60 @@
 #include "VertexStructs.h"
 #include <Math/Matrix/Matrix44.h>
 #include <DataStructures/GrowingArray.h>
+#include "engine_shared.h"
 #include "VertexWrapper.h"
 #include "IndexWrapper.h"
-struct D3D11_INPUT_ELEMENT_DESC;
-typedef struct ID3D11InputLayout IInputLayout;
-typedef struct ID3D11Buffer IBuffer;
-typedef struct ID3D11DeviceContext IDevContext;
-
+#include "InstanceWrapper.h"
 
 class DirectX11;
 class Effect;
 class Engine;
 class Surface;
+class Material;
 
-struct IndexDataWrapper;
-struct VertexBufferWrapper;
-struct VertexDataWrapper;
-struct IndexBufferWrapper;
-
+namespace graphics
+{
+	class RenderContext;
+};
 class BaseModel
 {
+	friend class CModelImporter;
 public:
 	BaseModel() = default;
 	virtual ~BaseModel() = 0;
-	virtual void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) = 0;
-	virtual void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) = 0;
-
-	void SetupLayoutsAndBuffers();
+	virtual void Render(const graphics::RenderContext& rc) = 0;
+	virtual void ShadowRender(const graphics::RenderContext& rc) = 0;
 
 	void SetEffect(Effect* anEffect);
+	const VertexWrapper& GetVertexWrapper() const { return m_VertexWrapper; }
+	VertexWrapper& GetVertexWrapper() { return m_VertexWrapper; }
+	const IndexWrapper& GetIndexWrapper() const { return m_IndexWrapper; }
+	IndexWrapper& GetIndexWrapper() { return m_IndexWrapper; }
+	const InstanceWrapper& GetInstanceWrapper() const { return m_InstanceWrapper; }
+	InstanceWrapper& GetInstanceWrapper() { return m_InstanceWrapper; }
 
+	CU::Vector3f GetWHD() const { return m_WHD; }
+
+	virtual void AddSurface(Surface* surface) = 0;
+	void SetMaterial(Material* pMaterial) { m_Material = pMaterial; }
+	//Material* GetMaterial() { return m_Material; }
 protected:
-	void InitVertexBuffer();
-	void InitInputLayout();
-	void InitIndexBuffer();
-	virtual void InitConstantBuffer() = 0;
-	virtual void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) = 0;
+	virtual void UpdateConstantBuffer(const graphics::RenderContext& rc) = 0;
+	CU::Matrix44f m_Orientation;
+	CU::GrowingArray<Surface*> m_Surfaces;
 
-	std::string m_Filename;
-	CU::Vector3f m_WHD; //to be removed
+	CU::Vector3f m_WHD;
 	CU::Vector3f m_MaxPoint;
 	CU::Vector3f m_MinPoint;
+	Effect* m_Effect = nullptr;
 
-	Effect* myEffect = nullptr;
-	IInputLayout* m_VertexLayout = nullptr;
-	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
+	VertexWrapper m_VertexWrapper;
+	IndexWrapper m_IndexWrapper;
+	InstanceWrapper m_InstanceWrapper;
 
-	VertexDataWrapper m_VertexData;
-	VertexBufferWrapper m_VertexBuffer;
-	IndexDataWrapper m_IndexData;
-	IndexBufferWrapper m_IndexBuffer;
-
-	IBuffer* myConstantBuffer = nullptr;
-
-	struct cbVertex
-	{
-		CU::Matrix44f m_World;
-		CU::Matrix44f m_InvertedView;
-		CU::Matrix44f m_Projection;
-	} m_ConstantStruct;
+	std::string m_FileName;
+	IBuffer* m_ConstantBuffer = nullptr;
+	Material* m_Material = nullptr;
 
 	bool m_IsRoot = true;
 };

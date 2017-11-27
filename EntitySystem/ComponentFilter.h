@@ -59,6 +59,8 @@ public:
 		return true;
 	}
 
+
+
 private:
 
 	EntityComponentArray myRequires;

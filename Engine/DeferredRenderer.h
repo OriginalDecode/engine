@@ -4,102 +4,52 @@
 #include "VertexStructs.h"
 #include <Engine/GBuffer.h>
 
-enum eDeferredType
-{
-	NONE,
-	ALBEDO,
-	NORMAL,
-	DEPTH,
-};
-
-class Camera;
-class DirectX11;
 class Effect;
-class Engine;
-class LightPass;
-class PointLight;
 class Texture;
+class Quad;
 
-struct IndexDataWrapper;
-struct VertexBufferWrapper;
-struct VertexDataWrapper;
-struct IndexBufferWrapper;
+namespace graphics
+{
+	class RenderContext;
+}
+
 class DeferredRenderer
 {
 public:
-	DeferredRenderer() = default;
+	DeferredRenderer();
 	~DeferredRenderer();
-	bool Initiate(Texture* shadow_texture);
-	void SetGBufferAsTarget(const RenderContext& render_context);
-	void SetBuffers(const RenderContext& render_context);
-	void DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const RenderContext& render_context);
-	void SetRenderTarget(const RenderContext& render_context);
+	void DeferredRender(const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context);
 
+	void Finalize();
+	Texture* GetScene() { return m_Scene; }
+	Texture* GetDepthStencil() { return m_DepthStencilTexture; }
 
-	void Finalize(const RenderContext& render_context);
-
-	Texture* GetFinalTexture();
-	Texture* GetSampleTexture();
-
-
-	//void RenderPointLight(CPointLight* pointlight, CCamera* aCamera, CU::Matrix44f& previousOrientation);
-	Texture* GetDepthStencil();
-	GBuffer& GetGBuffer();
-	void ToggleWireframe() { m_Wireframe = !m_Wireframe; }
 
 	void SetColor(const CU::Vector4f& dir_color) { m_ConstantStruct.m_LightColor = dir_color; }
 
+	void OnResize();
+
 private:
-	bool m_Wireframe = false;
-	void UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir);
+	void UpdateConstantBuffer(const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir);
 
-	void CreateFullscreenQuad();
-	void InitConstantBuffer();
-	void CreateBuffer();
-	void CreateIndexBuffer();
+	Quad* m_RenderQuad = nullptr;
 
-	float myClearColor[4];
-	Engine* myEngine = nullptr;
+	Effect* m_AmbientPassShader = nullptr;
+	Effect* m_ScreenPassShader = nullptr;
 
-	GBuffer m_GBuffer;
+	Texture* m_DepthStencilTexture = nullptr;
+	Texture* m_Scene = nullptr;
 
-	DirectX11* m_API = nullptr;
 
-	IDevContext* myContext = nullptr;
 
-	Effect* myAmbientPassShader = nullptr;
-	Effect* myScreenPassShader = nullptr;
 
-	Texture* myDepthStencil = nullptr;
-	Texture* m_SampleTexture = nullptr;
-	Texture* myFinishedSceneTexture = nullptr;
-	Texture* myCubeMap = nullptr;
+	IBuffer* m_ConstantBuffer; 
 
-	VertexDataWrapper* myVertexData = nullptr;
-	VertexBufferWrapper* m_VertexBuffer = nullptr;
-
-	IndexDataWrapper* myIndexData = nullptr;
-	IndexBufferWrapper* m_IndexBuffer = nullptr;
-
-	IInputLayout* myInputLayout = nullptr;
-
-	CU::GrowingArray<VertexTypePosUV> myVertices;
-	CU::GrowingArray<D3D11_INPUT_ELEMENT_DESC> myVertexFormat;
-
-	IBuffer* myConstantBuffer;
-	struct SConstantStruct
+	struct ConstantStruct
 	{
-		CU::Vector4f camPosition;
-		CU::Matrix44f invertedProjection;
-		CU::Matrix44f view;
 		CU::Matrix44f m_ShadowMVP;
 		CU::Vector4f m_Direction;
 		CU::Vector4f m_LightColor;
+
 	} m_ConstantStruct;
 };
-
-__forceinline Texture* DeferredRenderer::GetDepthStencil()
-{
-	DL_ASSERT_EXP(myDepthStencil != nullptr, "Deferred Depthstencil was null!");
-	return myDepthStencil;
-}

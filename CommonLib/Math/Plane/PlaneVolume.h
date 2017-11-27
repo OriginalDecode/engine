@@ -23,13 +23,11 @@ namespace CommonUtilities
 		};
 
 		template<typename TYPE>
-		bool PlaneVolume<TYPE>::Inside(const Math::Vector3<TYPE>& position) const
+		bool PlaneVolume<TYPE>::Inside(const Math::Vector3<TYPE>& point) const
 		{
-			Math::Vector4<TYPE> pos = { position.x,position.y,position.z, 1.f };
-
 			for ( const Plane<TYPE>& plane : m_Planes )
 			{
-				if ( !plane.Inside(pos) )
+				if ( !plane.Inside(point) )
 					return false;
 			}
 			return true;

@@ -1,6 +1,0 @@
-{
-	"graphics": {
-		"model": "Data/Game_Models/SM_dev_box.fbx",
-		"shader": "Shaders/deferred_base.json"
-	}
-}

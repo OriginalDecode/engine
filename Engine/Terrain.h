@@ -1,6 +1,5 @@
 #pragma once
 #include "BaseModel.h"
-#include <standard_datatype.hpp>
 
 class Surface;
 
@@ -11,7 +10,7 @@ struct SHeightMap
 	u8* myData;
 };
 
-SHeightMap Create(const char* aFilePath);
+SHeightMap Create(const char* filepath);
 
 class Terrain : public BaseModel
 {
@@ -20,29 +19,25 @@ public:
 
 	bool Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
 	void CleanUp();
-	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
-	void ShadowRender(const CU::Matrix44f& camera_orientation, const CU::Matrix44f& camera_projection, const RenderContext& render_context) override;
+	void Render(const graphics::RenderContext& rc) override;
+	void ShadowRender(const graphics::RenderContext& rc) override;
 
-	void Render(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context, bool override_shader);
+	void Render(const graphics::RenderContext& rc, bool override_shader);
 
 
 	void Save(const std::string& aFilename);
-	void Load(const std::string& aFilePath);
+	void Load(const std::string& filepath);
 
 	void AddNormalMap(const std::string& filepath);
 	std::vector<float> GetVerticeArrayCopy();
 	std::vector<s32> GetIndexArrayCopy();
 	void SetPosition(CU::Vector2f position);
-
-
-	bool HasLoaded() const { return m_HasLoaded; }
-private:
+	void AddSurface(Surface* surface) override;
+	bool HasLoaded() const { return m_HasLoaded; }private:
 	bool m_HasLoaded = false;
-	void UpdateConstantBuffer(const CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection, const RenderContext& render_context) override;
+	void UpdateConstantBuffer(const graphics::RenderContext& rc) override;
 
 	void CreateVertices(u32 width, u32 height, const CU::Vector3f& position);
-	void InitConstantBuffer();
-
 	void CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray);
 	float GetHeight(unsigned int aX, unsigned int aY) const;
 	float GetHeight(unsigned int aIndex) const;
@@ -52,7 +47,6 @@ private:
 	/* Look into this */
 	std::vector<s32> myIndexes;
 	std::vector<float> myVertices;
-
 
 	CU::Matrix44f myOrientation;
 	u32 myWidth;

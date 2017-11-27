@@ -1,0 +1,37 @@
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION;
+	float4 normal : NORMAL;
+};
+
+float4 main(VS_OUTPUT input) : SV_Target
+{
+	return float4(1,1,1,1);
+};
+
+struct ps_input
+{
+	float4 pos : SV_POSITION;
+	float3 normal : NORMAL;
+	float2 uv : TEXCOORD;
+	float3 binorm : BINORMAL;
+	float3 tang : TANGENT;
+	float4 worldpos : POSITION;
+	float2 data0 : DATA;
+};
+
+struct gbuffer
+{
+	float4 albedo;
+	float4 normal;
+	float4 depth;
+	float4 emissive;
+};
+
+gbuffer main_instanced(ps_input input) : SV_Target
+{
+	gbuffer output = (gbuffer)0;
+
+	output.albedo = float4(1,1,0,1) * input.data0.x * input.data0.y; 
+	return output;
+};

@@ -3,314 +3,111 @@
 #include "PointLight.h"
 #include <DL_Debug.h>
 #include "GBuffer.h"
-#define BLACK_CLEAR(v) v[0] = 0.f; v[1] = 0.f; v[2] = 0.f; v[3] = 0.f;
+
+#include <Engine/Quad.h>
+#include <Engine/IGraphicsAPI.h>
+#include <Engine/IGraphicsDevice.h>
+#include <Engine/IGraphicsContext.h>
+
+
+DeferredRenderer::DeferredRenderer()
+{
+	const graphics::IGraphicsAPI* api = Engine::GetAPI();
+	WindowSize window_size;
+	window_size.m_Height = api->GetInfo().m_WindowHeight;
+	window_size.m_Width = api->GetInfo().m_WindowWidth;
+
+	//_______________________________________________________________________
+
+	TextureDesc scene_desc;
+	scene_desc.m_Width = window_size.m_Width;
+	scene_desc.m_Height = window_size.m_Height;
+	scene_desc.m_Usage = graphics::DEFAULT_USAGE;
+	scene_desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
+	scene_desc.m_TextureFormat = graphics::RGBA16_FLOAT;
+	scene_desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
+	scene_desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
+	m_Scene = new Texture;
+	m_Scene->Initiate(scene_desc, "DeferredRenderer - Scene");
+
+	//_______________________________________________________________________
+
+	TextureDesc depth_desc;
+	depth_desc.m_Usage = graphics::DEFAULT_USAGE;
+	depth_desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_DEPTH_STENCIL /*should bind a render target*/;
+	depth_desc.m_TextureFormat = graphics::R32_TYPELESS;
+	depth_desc.m_DepthTextureFormat = graphics::DEPTH_32_FLOAT;
+	depth_desc.m_Width = window_size.m_Width;
+	depth_desc.m_Height = window_size.m_Height;
+
+	m_DepthStencilTexture = new Texture;
+	m_DepthStencilTexture->Initiate(depth_desc, "DeferredRenderer - DSV");
+
+	//_______________________________________________________________________
+
+	m_ScreenPassShader = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
+	m_ScreenPassShader->AddShaderResource(m_Scene, Effect::DIFFUSE);
+
+	m_AmbientPassShader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
+	Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
+	m_AmbientPassShader->AddShaderResource(cubemap, Effect::CUBEMAP);
+	Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json")->AddShaderResource(cubemap, Effect::CUBEMAP);
+	//Engine::GetInstance()->GetEffect("Shaders/deferred_pointlight.json");
+
+	//_______________________________________________________________________
+
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_ConstantStruct), "DeferredRenderer ConstantBuffer");
+
+	//_______________________________________________________________________
+
+	m_RenderQuad = new Quad(m_AmbientPassShader);
+}
 
 DeferredRenderer::~DeferredRenderer()
 {
-	SAFE_DELETE(myFinishedSceneTexture);
-	SAFE_DELETE(myDepthStencil);
-	SAFE_DELETE(m_VertexBuffer);
-	SAFE_DELETE(myVertexData);
-	SAFE_DELETE(m_IndexBuffer);
-	SAFE_DELETE(myIndexData);
-	SAFE_DELETE(m_SampleTexture);
+	SAFE_DELETE(m_RenderQuad);
+	SAFE_DELETE(m_Scene);
+	SAFE_DELETE(m_DepthStencilTexture);
 
-	SAFE_RELEASE(myInputLayout);
-	SAFE_RELEASE(myConstantBuffer);
+	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
 }
 
-bool DeferredRenderer::Initiate(Texture* shadow_texture)
+void DeferredRenderer::DeferredRender(const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context)
 {
-	m_API = Engine::GetAPI();
-	myContext = m_API->GetContext();
-	myEngine = Engine::GetInstance();
-	BLACK_CLEAR(myClearColor);
+	graphics::IGraphicsContext& ctx = render_context.GetContext();
+	render_context.GetAPI().ResetViewport();
+ 
+	IDepthStencilView* depth = render_context.GetAPI().GetDepthView();  //What kind of depth????????
+	ctx.ClearRenderTarget(m_Scene->GetRenderTargetView(), clearcolor::black);
+	ctx.OMSetRenderTargets(1, m_Scene->GetRenderTargetRef(), depth);
+	UpdateConstantBuffer(shadow_mvp, light_dir);
 
-	//WindowSize windowSize = Engine::GetInstance()->GetAPI()->GetInfo().
-	WindowSize window_size;
-	window_size.m_Height = m_API->GetInfo().m_WindowHeight;
-	window_size.m_Width = m_API->GetInfo().m_WindowWidth;
+	ctx.PSSetConstantBuffer(1, 1, &m_ConstantBuffer);
+	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
+	ctx.PSSetSamplerState(1, 1, graphics::CUBEMAP);
 
-	myFinishedSceneTexture = new Texture;
-	myFinishedSceneTexture->Initiate(window_size.m_Width, window_size.m_Height
-		, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-		, DXGI_FORMAT_R16G16B16A16_FLOAT
-		, "Texture : FinishedScene");
-
-	m_SampleTexture = new Texture;
-	m_SampleTexture->Initiate(window_size.m_Width, window_size.m_Height
-		, DEFAULT_USAGE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
-		, DXGI_FORMAT_R16G16B16A16_FLOAT
-		, "DeferredRenderer : SampleTexture");
-
-	myDepthStencil = new Texture;
-	myDepthStencil->Initiate(window_size.m_Width, window_size.m_Height
-		, DEFAULT_USAGE | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_RENDER_TARGET
-		, DXGI_FORMAT_R16G16B16A16_FLOAT
-		, DXGI_FORMAT_R32_TYPELESS
-		, DXGI_FORMAT_R32_FLOAT
-		, DXGI_FORMAT_D32_FLOAT
-		, "DeferredRenderer : DSV");
-
-	myCubeMap = myEngine->GetTexture("Data/Textures/T_cubemap_level01.dds");
-
-	myScreenPassShader = myEngine->GetEffect("Shaders/render_to_texture.json");
-
-	m_GBuffer.Initiate();
-	myAmbientPassShader = myEngine->GetEffect("Shaders/deferred_ambient.json");
-	myAmbientPassShader->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
-	myAmbientPassShader->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
-	myAmbientPassShader->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
-	myAmbientPassShader->AddShaderResource(m_GBuffer.GetEmissive(), Effect::EMISSIVE);
-	myAmbientPassShader->AddShaderResource(myCubeMap, Effect::CUBEMAP);
-
-
-	Effect* ssao_effect = Engine::GetInstance()->GetEffect("Shaders/ssao.json");
-	ssao_effect->AddShaderResource(myFinishedSceneTexture, Effect::DIFFUSE);
-	ssao_effect->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
-	ssao_effect->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
-
-
-
-
-	CreateFullscreenQuad();
-	InitConstantBuffer();
-	return true;
+	ctx.SetRasterizerState(render_context.GetAPI().GetRasterizerState(graphics::CULL_NONE));
+	m_RenderQuad->Render();
+}
+ 
+ void DeferredRenderer::Finalize() 
+ {
+	 auto api = Engine::GetAPI();
+	 api->GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x1);
+	 m_ScreenPassShader->AddShaderResource(m_Scene, Effect::DIFFUSE);
+	 m_RenderQuad->Render(false, m_ScreenPassShader);
 }
 
-void DeferredRenderer::SetGBufferAsTarget(const RenderContext& render_context)
+void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
 {
-	m_GBuffer.Clear(myClearColor, render_context);
-	render_context.m_Context->ClearDepthStencilView(myDepthStencil->GetDepthView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	m_GBuffer.SetAsRenderTarget(myDepthStencil, render_context);
-}
-
-void DeferredRenderer::SetBuffers(const RenderContext& render_context)
-{
-	render_context.m_Context->IASetInputLayout(myInputLayout);
-
-	render_context.m_Context->IASetVertexBuffers(m_VertexBuffer->myStartSlot
-		, m_VertexBuffer->myNrOfBuffers
-		, &m_VertexBuffer->myVertexBuffer
-		, &m_VertexBuffer->myStride
-		, &m_VertexBuffer->myByteOffset);
-
-	render_context.m_Context->IASetIndexBuffer(m_IndexBuffer->myIndexBuffer
-		, m_IndexBuffer->myIndexBufferFormat
-		, m_IndexBuffer->myByteOffset);
-
-	render_context.m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-}
-
-void DeferredRenderer::DeferredRender(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const RenderContext& render_context)
-{
-	UpdateConstantBuffer(previousOrientation, aProjection, shadow_mvp, light_dir);
-	SetBuffers(render_context);
-
-	render_context.m_API->ResetViewport();
-
-	ID3D11RenderTargetView* rtv[] = {
-		myFinishedSceneTexture->GetRenderTargetView()
-	};
-	ID3D11DepthStencilView* depth = render_context.m_API->GetDepthView();
-
-	render_context.m_Context->ClearRenderTargetView(rtv[0], myClearColor);
-	render_context.m_Context->OMSetRenderTargets(ARRAYSIZE(rtv), rtv, depth);
-
-	myAmbientPassShader->Use();
-	render_context.m_Context->PSSetConstantBuffers(0, 1, &myConstantBuffer);
-
-	render_context.m_API->SetSamplerState(eSamplerStates::MIP_SAMPLE);
-	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
-	render_context.m_API->SetRasterizer(eRasterizer::CULL_NONE);
-	render_context.m_Context->DrawIndexed(6, 0, 0);
-	render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-
-	myAmbientPassShader->Clear();
-
-	depth = myDepthStencil->GetDepthView();
-
-	myContext->OMSetRenderTargets(1, &rtv[0], depth);
-}
-
-void DeferredRenderer::SetRenderTarget(const RenderContext& render_context)
-{
-	ID3D11DepthStencilView* depth = myDepthStencil->GetDepthView();
-	myContext->OMSetRenderTargets(1, myFinishedSceneTexture->GetRenderTargetRef(), depth);
-}
-
-void DeferredRenderer::Finalize(const RenderContext& render_contexts)
-{
-	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);
-	m_API->SetBlendState(eBlendStates::NO_BLEND);
-	m_API->SetRasterizer(m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_NONE);
-
-	SetBuffers(render_contexts);
-
-	ID3D11ShaderResourceView* srv[] =
-	{
-		myFinishedSceneTexture->GetShaderView(),
-		myDepthStencil->GetShaderView(),
-	};
-
-	s32 num_srv = ARRAYSIZE(srv);
-
-	myContext->PSSetShaderResources(0, num_srv, &srv[0]);
-	m_API->SetSamplerState(eSamplerStates::POINT_CLAMP);
-
-	myScreenPassShader->Use();
-	myContext->DrawIndexed(6, 0, 0);
-	myScreenPassShader->Clear();
-
-	m_API->SetRasterizer(eRasterizer::CULL_BACK);
-	m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-}
-
-Texture* DeferredRenderer::GetFinalTexture()
-{
-	return myFinishedSceneTexture;
-}
-
-Texture* DeferredRenderer::GetSampleTexture()
-{
-	return m_SampleTexture;
-}
-
-void DeferredRenderer::InitConstantBuffer()
-{
-
-	D3D11_BUFFER_DESC cbDesc;
-	ZeroMemory(&cbDesc, sizeof(cbDesc));
-	cbDesc.ByteWidth = sizeof(SConstantStruct);
-	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.MiscFlags = 0;
-	cbDesc.StructureByteStride = 0;
-
-	HRESULT hr = m_API->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-	m_API->SetDebugName(myConstantBuffer, "Deferred Ambient Constant Buffer");
-	m_API->HandleErrors(hr, "[DeferredRenderer] : Failed to Create Constant Buffer, ");
-}
-
-void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& previousOrientation, const CU::Matrix44f& aProjection, const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir)
-{
-	m_ConstantStruct.camPosition = previousOrientation.GetPosition();
-	m_ConstantStruct.invertedProjection = CU::Math::InverseReal(aProjection);
-	m_ConstantStruct.view = previousOrientation;
 	m_ConstantStruct.m_ShadowMVP = shadow_mvp;
 	m_ConstantStruct.m_Direction = light_dir;
-
-	m_API->UpdateConstantBuffer(myConstantBuffer, &m_ConstantStruct);
+	auto& ctx = Engine::GetAPI()->GetContext();
+	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ConstantStruct, sizeof(ConstantStruct));
 }
 
-GBuffer& DeferredRenderer::GetGBuffer()
+void DeferredRenderer::OnResize()
 {
-	return m_GBuffer;
-}
-
-//This could be in the engine and return a quad object?
-void DeferredRenderer::CreateFullscreenQuad()
-{
-
-	myVertexFormat.ReInit(2);
-	myVertexFormat.Add(VertexLayoutPosUV[0]);
-	myVertexFormat.Add(VertexLayoutPosUV[1]);
-
-	CU::GrowingArray<VertexTypePosUV> vertices;
-	CU::GrowingArray<int> indices;
-	VertexTypePosUV v;
-	v.myPosition = { -1, -1, 0, 1 };
-	v.myUV = { 0, 1 };
-	vertices.Add(v);
-
-	v.myPosition = { -1, 1, 0, 1 };
-	v.myUV = { 0, 0 };
-	vertices.Add(v);
-
-	v.myPosition = { 1, -1, 0, 1 };
-	v.myUV = { 1, 1 };
-	vertices.Add(v);
-
-	v.myPosition = { 1, 1, 0, 1 };
-	v.myUV = { 1, 0 };
-	vertices.Add(v);
-
-
-	indices.Add(0);
-	indices.Add(1);
-	indices.Add(2);
-
-	indices.Add(3);
-	indices.Add(2);
-	indices.Add(1);
-
-	m_VertexBuffer = new VertexBufferWrapper;
-	myVertexData = new VertexDataWrapper;
-	m_IndexBuffer = new IndexBufferWrapper;
-	myIndexData = new IndexDataWrapper;
-
-	myVertexData->myNrOfVertexes = vertices.Size();
-	myVertexData->myStride = sizeof(VertexTypePosUV);
-	myVertexData->mySize = myVertexData->myNrOfVertexes*myVertexData->myStride;
-	myVertexData->myVertexData = new char[myVertexData->mySize]();
-	memcpy(myVertexData->myVertexData, &vertices[0], myVertexData->mySize);
-
-	myIndexData->myFormat = DXGI_FORMAT_R32_UINT;
-	myIndexData->myIndexCount = 6;
-	myIndexData->mySize = myIndexData->myIndexCount * 4;
-
-	myIndexData->myIndexData = new char[myIndexData->mySize];
-	memcpy(myIndexData->myIndexData, &indices[0], myIndexData->mySize);
-
-	CreateBuffer();
-	CreateIndexBuffer();
-}
-
-void DeferredRenderer::CreateBuffer()
-{
-	void* shader = myScreenPassShader->GetVertexShader()->compiledShader;
-	int size = myScreenPassShader->GetVertexShader()->shaderSize;
-
-	HRESULT hr = m_API->GetDevice()->CreateInputLayout(&myVertexFormat[0], myVertexFormat.Size(), shader, size, &myInputLayout);
-	m_API->SetDebugName(myInputLayout, "DeferredQuad Vertex Layout");
-	m_API->HandleErrors(hr, "Failed to create VertexLayout");
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	vertexBufferDesc.ByteWidth = myVertexData->mySize;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	vertexBufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA vertexData;
-	vertexData.pSysMem = static_cast<void*>(myVertexData->myVertexData);
-
-	hr = m_API->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &m_VertexBuffer->myVertexBuffer);
-	m_API->HandleErrors(hr, "Failed to Create VertexBuffer!");
-
-	m_VertexBuffer->myStride = myVertexData->myStride;
-	m_VertexBuffer->myByteOffset = 0;
-	m_VertexBuffer->myStartSlot = 0;
-	m_VertexBuffer->myNrOfBuffers = 1;
-}
-
-void DeferredRenderer::CreateIndexBuffer()
-{
-	D3D11_BUFFER_DESC indexDesc;
-	ZeroMemory(&indexDesc, sizeof(indexDesc));
-	indexDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexDesc.ByteWidth = myIndexData->mySize;
-	indexDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexDesc.CPUAccessFlags = 0;
-	indexDesc.MiscFlags = 0;
-	indexDesc.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA indexData;
-	ZeroMemory(&indexData, sizeof(indexData)), indexData.pSysMem = myIndexData->myIndexData;
-	HRESULT hr = m_API->GetDevice()->CreateBuffer(&indexDesc, &indexData, &m_IndexBuffer->myIndexBuffer);
-	m_API->HandleErrors(hr, "Failed to Create IndexBuffer");
-
-	m_IndexBuffer->myIndexBufferFormat = myIndexData->myFormat;
-	m_IndexBuffer->myByteOffset = 0;
+	SAFE_DELETE(m_RenderQuad);
+	m_RenderQuad = new Quad(m_AmbientPassShader);
 }

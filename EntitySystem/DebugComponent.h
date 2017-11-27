@@ -6,6 +6,7 @@
 #include "GizmoBase.h"
 struct DebugComponent final : public BaseComponent
 {
+
 	~DebugComponent() { }
 	CU::PlaneVolume<float> m_OBB;
 	CU::Vector4f m_WHD;
@@ -15,7 +16,7 @@ struct DebugComponent final : public BaseComponent
 
 	CU::Vector4f m_Rotation;
 	CU::Vector4f debugColor = { 255.f, 255.f, 255.f, 255.f };
-	EditObject m_EditObject;
+	//EditObject m_EditObject;
 
 	PositionGizmo m_PositionGizmo;
 	RotationGizmo m_RotationGizmo;

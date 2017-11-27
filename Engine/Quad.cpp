@@ -1,119 +1,141 @@
 #include "stdafx.h"
 #include "Quad.h"
+#include <Engine/Engine.h>
+#include <Engine/IGraphicsAPI.h>
+#include <Engine/IGraphicsDevice.h>
+#include <Engine/IGraphicsContext.h>
 
-
-Quad::~Quad()
+Quad::Quad(Effect* effect)
+	: m_Effect(effect)
 {
-	SAFE_RELEASE(m_InputLayout);
-	m_ScreenpassShader = nullptr;
+	FillVertexData(1.f, 1.f);
+	FillIndexData();
 }
 
-void Quad::Initiate()
+Quad::Quad(Effect* effect, float half_width, float half_height)
+	: m_Effect(effect)
 {
-	m_VertexData.myNrOfVertexes = 4;
-	m_VertexData.myStride = sizeof(VertexTypePosUV);
-	m_VertexData.mySize = m_VertexData.myNrOfVertexes * m_VertexData.myStride;
-	m_VertexData.myVertexData = new s8[m_VertexData.mySize];
+	FillVertexData(half_width, half_height);
+	FillIndexData();
+}
 
-	CU::GrowingArray<VertexTypePosUV> vertices;
-	CU::GrowingArray<s32> indices;
+Quad::Quad()
+	: m_Effect(nullptr)
+{
+	FillVertexData(1.f, 1.f);
+	FillIndexData();
+}
 
-	VertexTypePosUV vertex;
-	vertex.myPosition = { -1, -1, 0, 1 };
-	vertex.myUV = { 0, 1 };
-	vertices.Add(vertex);
+void Quad::FillVertexData(float half_width, float half_height)
+{
+	auto& device = Engine::GetAPI()->GetDevice();
+	// Vertex
+	const s32 vtx_count = 4;
+	const s32 stride = sizeof(VertexTypePosUV);
+	const s32 size = vtx_count * stride;
+	const s32 vtx_start = 0;
+	const s32 vtx_byte_offset = 0;
+	const s32 vtx_buffer_count = 1;
+	s8* data = new s8[size];
 
-	vertex.myPosition = { -1, 1, 0 , 1 };
-	vertex.myUV = { 0, 0 };
-	vertices.Add(vertex);
+	VertexTypePosUV vertices[vtx_count];
+	vertices[0].myPosition = { -half_width, -half_height, 0, 1 };
+	vertices[0].myUV = { 0, 1 };
 
-	vertex.myPosition = { 1, -1, 0 , 1 };
-	vertex.myUV = { 1, 1 };
-	vertices.Add(vertex);
+	vertices[1].myPosition = { -half_width, half_height, 0 , 1 };
+	vertices[1].myUV = { 0, 0 };
 
-	vertex.myPosition = { 1, 1, 0 , 1 };
-	vertex.myUV = { 1, 0 };
-	vertices.Add(vertex);
+	vertices[2].myPosition = { half_width, -half_height, 0 , 1 };
+	vertices[2].myUV = { 1, 1 };
 
-	memcpy(m_VertexData.myVertexData, &vertices[0], m_VertexData.mySize);
+	vertices[3].myPosition = { half_width, half_height, 0 , 1 };
+	vertices[3].myUV = { 1, 0 };
 
-	indices.Add(1);
-	indices.Add(0);
-	indices.Add(2);
-
-	indices.Add(2);
-	indices.Add(3);
-	indices.Add(1);
-
-	m_IndexData.myFormat = DXGI_FORMAT_R32_UINT;
-	m_IndexData.myIndexCount = 6;
-	m_IndexData.mySize = m_IndexData.myIndexCount * 4;
-	m_IndexData.myIndexData = new s8[m_IndexData.mySize];
-	memcpy(m_IndexData.myIndexData, &indices[0], m_IndexData.mySize);
+	memcpy(data, &vertices[0], size);
 
 
-	D3D11_INPUT_ELEMENT_DESC desc[] = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,		0, 16,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	graphics::BufferDesc buf_desc;
+	buf_desc.m_Size = size;
+	buf_desc.m_Data = data;
+	buf_desc.m_ByteWidth = size;
+	buf_desc.m_CPUAccessFlag = graphics::WRITE;
+	buf_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
+	buf_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
+
+	IBuffer* vertex_buffer = device.CreateBuffer(buf_desc, "Quad VertexBuffer");
+
+	graphics::InputElementDesc desc[] = {
+		{ "POSITION", 0, graphics::_16BYTE_RGBA, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, graphics::_8BYTE_RG, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
 	};
 
-	m_ScreenpassShader = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
+	if (!m_Effect)
+		m_Effect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
+	IInputLayout* layout = device.CreateInputLayout(m_Effect->GetVertexShader(), desc, ARRSIZE(desc));
 
+	m_VertexWrapper.SetData(data);
+	m_VertexWrapper.SetVertexCount(vtx_count);
+	m_VertexWrapper.SetStart(vtx_start);
+	m_VertexWrapper.SetStride(stride);
+	m_VertexWrapper.SetByteOffset(vtx_byte_offset);
+	m_VertexWrapper.SetSize(size);
+	m_VertexWrapper.SetBuffer(vertex_buffer);
+	m_VertexWrapper.SetInputLayout(layout);
+	m_VertexWrapper.SetTopology(graphics::TRIANGLE_LIST);
 
-	void* shader = m_ScreenpassShader->GetVertexShader()->compiledShader;
-	int size = m_ScreenpassShader->GetVertexShader()->shaderSize;
+#ifdef _DEBUG
+	m_VertexWrapper.m_DebugName = DEBUG_NAME_A(m_Effect->GetFileName(), Quad);
+#endif
+}
 
-	DirectX11* dx = Engine::GetInstance()->GetAPI();
+void Quad::FillIndexData()
+{
+	auto& device = Engine::GetAPI()->GetDevice();
+	const graphics::eTextureFormat format = graphics::R32_UINT;
+	const s32 index_count = 6;
+	const s32 index_size = index_count * 4; // there's 4 vertices, could that be the thing?
+	s8* index_data = new s8[index_size];
+	const s32 index_start = 0;
+	const s32 index_byte_offset = 0;
 
-	HRESULT hr = dx->GetDevice()->CreateInputLayout(&desc[0], ARRAYSIZE(desc), shader, size, &m_InputLayout);
+	s32 indices[index_count];
+	indices[0] = 1;
+	indices[1] = 0;
+	indices[2] = 2;
+	indices[3] = 2;
+	indices[4] = 3;
+	indices[5] = 1;
+	memcpy(index_data, &indices[0], index_size);
 
-	dx->SetDebugName(m_InputLayout, "Quad Vertex Layout");
-	dx->HandleErrors(hr, "Failed to create VertexLayout");
+	graphics::BufferDesc idx_desc;
+	idx_desc.m_Size = index_size;
+	idx_desc.m_Data = index_data;
+	idx_desc.m_ByteWidth = index_size;
+	idx_desc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
+	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
+	idx_desc.m_UsageFlag = graphics::DEFAULT_USAGE;
 
+	IBuffer* index_buffer = device.CreateBuffer(idx_desc, "Quad IndexBuffer");
 
-	//_____________________________
+	m_IndexWrapper.SetData(index_data);
+	m_IndexWrapper.SetIndexCount(index_count);
+	m_IndexWrapper.SetStart(index_start);
+	m_IndexWrapper.SetSize(index_size);
+	m_IndexWrapper.SetFormat(format);
+	m_IndexWrapper.SetByteOffset(index_byte_offset);
+	m_IndexWrapper.SetBuffer(index_buffer);
+#ifdef _DEBUG
+	m_IndexWrapper.m_DebugName = DEBUG_NAME_A(m_Effect->GetFileName(), Quad);
+#endif
 
-	m_VertexBuffer.myVertexBuffer = dx->CreateVertexBuffer(m_VertexData.mySize, m_VertexData.myVertexData);
-	dx->SetDebugName(m_VertexBuffer.myVertexBuffer, "Quad VertexBuffer");
-
-	m_VertexBuffer.myStride = m_VertexData.myStride;
-	m_VertexBuffer.myByteOffset = 0;
-	m_VertexBuffer.myStartSlot = 0;
-	m_VertexBuffer.myNrOfBuffers = 1;
-
-
-	//______________________________
-
-	m_IndexBuffer.myIndexBuffer = dx->CreateIndexBuffer(m_IndexData.mySize, m_IndexData.myIndexData);
-	dx->SetDebugName(m_VertexBuffer.myVertexBuffer, "Quad IndexBuffer");
-	m_IndexBuffer.myIndexBufferFormat = m_IndexData.myFormat;
-	m_IndexBuffer.myByteOffset = 0;
 
 }
 
-void Quad::SetBuffers()
+void Quad::Render(bool depth_on, Effect* override_effect /*= nullptr*/)
 {
-	IDevContext* ctx = Engine::GetInstance()->GetAPI()->GetContext();
-	ctx->IASetInputLayout(m_InputLayout);
-
-	ctx->IASetVertexBuffers(m_VertexBuffer.myStartSlot
-		, m_VertexBuffer.myNrOfBuffers
-		, &m_VertexBuffer.myVertexBuffer
-		, &m_VertexBuffer.myStride
-		, &m_VertexBuffer.myByteOffset);
-
-	ctx->IASetIndexBuffer(m_IndexBuffer.myIndexBuffer
-		, m_IndexBuffer.myIndexBufferFormat
-		, m_IndexBuffer.myByteOffset);
-
-	ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-}
-
-void Quad::Render()
-{
-	IDevContext* ctx = Engine::GetInstance()->GetAPI()->GetContext();
-	SetBuffers();
-	Engine::GetAPI()->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 1);
-	ctx->DrawIndexed(6, 0, 0);
-	Engine::GetAPI()->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
+	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
+	ctx.SetRasterizerState(Engine::GetAPI()->GetRasterizerState(graphics::CULL_NONE));
+	override_effect ? override_effect->Use() : m_Effect->Use();
+	ctx.DrawIndexed(this, depth_on);
+	override_effect ? override_effect->Use() : m_Effect->Clear();
 }

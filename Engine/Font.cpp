@@ -1,257 +1,154 @@
 #include "stdafx.h"
 #include "Font.h"
 #include "FontManager.h"
-
-#include "VertexWrapper.h"
-#include "IndexWrapper.h"
-
-#include <TimeManager.h>
 #include "AssetsContainer.h"
+
+#include <Engine/VertexWrapper.h>
+#include <Engine/IndexWrapper.h>
+#include <Engine/Effect.h>
 
 
 CFont::CFont(SFontData* aFontData)
 {
+	m_Data = aFontData;
+	m_Text = " ";
+	m_Effect[0] = Engine::GetInstance()->GetEffect("Shaders/font_outline.json");
+	m_Effect[0]->AddShaderResource(m_Data->m_AtlasView, Effect::DIFFUSE);
 
-	myEngine = Engine::GetInstance();
-	myTimeManager = new CU::TimeManager();
+	m_Effect[1] = Engine::GetInstance()->GetEffect("Shaders/font.json");
+	m_Effect[1]->AddShaderResource(m_Data->m_AtlasView, Effect::DIFFUSE);
+
+	m_cbFont = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(SFontConstantBuffer), "Font ConstantBuffer");
 
 
-	myUpdateTimer = myTimeManager->CreateTimer();
-	myRenderTimer = myTimeManager->CreateTimer();
+	graphics::InputElementDesc layout[] =
+	{
+		{ "POSITION", 0, graphics::_12BYTE_RGB, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, graphics::_16BYTE_RGBA, 0, 12, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, graphics::_8BYTE_RG, 0, 28, graphics::INPUT_PER_VERTEX_DATA, 0 }
 
-	myData = aFontData;
-	myText = " ";
-	myEffect[0] = myEngine->GetEffect("Shaders/font_outline.json");
-	myEffect[1] = myEngine->GetEffect("Shaders/font.json");
+	};
+	IInputLayout* input_layout = Engine::GetAPI()->GetDevice().CreateInputLayout(m_Effect[0]->GetVertexShader(), layout, ARRSIZE(layout));
 
-	myVertexBufferDesc = new D3D11_BUFFER_DESC();
-	myIndexBufferDesc = new D3D11_BUFFER_DESC();
-	myInitData = new D3D11_SUBRESOURCE_DATA();
 
-	CreateInputLayout();
-	CreateBuffer();
-	CreateIndexBuffer();
-	CreateConstantBuffer();
+	const s32 vtx_stride = sizeof(SVertexTypePosColUv);
+	const s32 vtx_byte_offset = 0;
+	const s32 vtx_start_slot = 0;
+	const s32 vtx_buffer_count = 1;
 
-	myDefaultColor.SetRGB(255, 255, 255);
-	myDefaultColor.SetA(255);
-	myColor = myDefaultColor;
+	m_VertexWrapper = VertexWrapper(nullptr, vtx_start_slot, vtx_buffer_count, vtx_stride, vtx_byte_offset, 0, 0, nullptr, input_layout, graphics::TRIANGLE_LIST);
 
-	myRenderTime = 0.f;
-	myUpdateTime = 0.f;
+	m_VertexDesc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
+	m_VertexDesc.m_UsageFlag = graphics::DYNAMIC_USAGE;
+	m_VertexDesc.m_CPUAccessFlag = graphics::WRITE;
+
+
+	const graphics::eTextureFormat format = graphics::R32_UINT;
+	const s32 idx_byte_offset = 0;
+
+	m_IndexDesc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
+	m_IndexDesc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
+	m_IndexDesc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
+
+#ifdef _DEBUG
+	//m_IndexWrapper.m_DebugName = DEBUG_NAME("Font", CFont);
+#endif
+
+
+#ifdef _DEBUG
+	//m_VertexWrapper.m_DebugName = DEBUG_NAME("Font", CFont);
+#endif
+	
+	m_DefaultColor.SetRGB(255, 255, 255);
+	m_DefaultColor.SetA(255);
+	m_Color = m_DefaultColor;
+
 
 }
 
 CFont::~CFont()
 {
-	SAFE_DELETE(myIndexBuffer);
-	SAFE_DELETE(myVertexBuffer);
-
-	SAFE_DELETE(myVertexBufferDesc);
-	SAFE_DELETE(myIndexBufferDesc);
-	SAFE_DELETE(myTimeManager);
-
-	SAFE_DELETE(myInitData);
-	SAFE_RELEASE(myVertexLayout);
-
-	SAFE_DELETE(myConstantStruct);
-	SAFE_RELEASE(myConstantBuffer);
+	Engine::GetAPI()->ReleasePtr(m_cbFont);
 }
 
 void CFont::SetText(std::string aText)
 {
-	myTimeManager->GetTimer(myUpdateTimer).Update();
-	myUpdateTime = myTimeManager->GetTimer(myUpdateTimer).GetTotalTime().GetMilliseconds();
-
-	if (myText != aText)
+	if (m_Text != aText)
 	{
-		myText = aText;
+		m_Text = aText;
 		UpdateBuffer();
 	}
-
-	myTimeManager->GetTimer(myUpdateTimer).Update();
-	myUpdateTime = myTimeManager->GetTimer(myUpdateTimer).GetTotalTime().GetMilliseconds() - myUpdateTime;
 }
 
 const std::string& CFont::GetText() const
 {
-	return myText;
+	return m_Text;
 }
 
 void CFont::Render()
 {
-	myTimeManager->GetTimer(myRenderTimer).Update();
-	myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds();
-
-	if (!myEffect[0] || !myEffect[1])
+	if (!m_Effect[0] || !m_Effect[1])
 		return;
-	//myEffect->SetTexture(myData->myAtlasView, "FontTexture");
 
-	Engine::GetAPI()->SetBlendState(eBlendStates::ALPHA_BLEND);
-	Engine::GetAPI()->SetSamplerState(eSamplerStates::LINEAR_CLAMP);
-	//CEngine::GetAPI()->SetRasterizer(eRasterizer::MSAA);
+	auto& api = *Engine::GetAPI();
+	auto& ctx = Engine::GetAPI()->GetContext();
 
-	ID3D11DeviceContext& context = *Engine::GetAPI()->GetContext();
-	context.IASetInputLayout(myVertexLayout);
-	context.IASetVertexBuffers(myVertexBuffer->myStartSlot, myVertexBuffer->myNrOfBuffers, &myVertexBuffer->myVertexBuffer, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-	context.IASetIndexBuffer(myIndexBuffer->myIndexBuffer, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
-	context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+	ctx.SetBlendState(api.GetBlendState(graphics::ALPHA_BLEND));
+	ctx.PSSetSamplerState(0, 1, Engine::GetInstance()->GetActiveSampler());
 	UpdateConstantBuffer();
 
-	//Engine::GetAPI()->SetVertexShader(myEffect[0]->GetVertexShader()->m_Shader);
-	context.VSSetConstantBuffers(0, 1, &myConstantBuffer);
+	ctx.DrawIndexed(this, m_Effect[0]);
+	ctx.DrawIndexed(this, m_Effect[1]);
 
-	for (int i = 0; i < 2; i++)
-	{
-		myEffect[i]->Use();
-		//Engine::GetAPI()->SetPixelShader(myEffect[i]->GetPixelShader()->m_Shader);
-		ID3D11ShaderResourceView* srv = myData->myAtlasView;
-		context.PSSetShaderResources(0, 1, &srv);
-		context.DrawIndexed(myIndices.Size(), 0, 0);
-		myEffect[i]->Clear();
-
-	}
-
-	myTimeManager->GetTimer(myRenderTimer).Update();
-	myRenderTime = myTimeManager->GetTimer(myRenderTimer).GetTotalTime().GetMilliseconds() - myRenderTime;
-
-	Engine::GetAPI()->SetBlendState(eBlendStates::NO_BLEND);
 }
 
-ID3D11ShaderResourceView* CFont::GetAtlas()
-{
-	return myData->myAtlasView;
-}
-
-const CU::Math::Vector2<float>& CFont::GetSize()
-{
-	return mySize;
-}
-
-const short CFont::GetFontPixelSize()
-{
-	return myData->myFontHeightWidth;
-}
-
-float CFont::GetUpdateTime()
-{
-	return myUpdateTime *1000.f;
-}
-
-float CFont::GetRenderTime()
-{
-	return myRenderTime *1000.f;
-}
 
 void CFont::SetPosition(const CU::Vector2f& aPosition)
 {
-	myConstantStruct->position = aPosition;
+	myConstantStruct.position = aPosition;
 }
 
 void CFont::SetScale(const CU::Vector2f& aScale)
 {
-	myConstantStruct->scale = aScale;
+	myConstantStruct.scale = aScale;
 }
 
 void CFont::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 {
-	myConstantStruct->world = anOrientation;
-	myConstantStruct->invertedView = CU::Math::Inverse(a2DCameraOrientation);
-	myConstantStruct->projection = anOrthogonalProjectionMatrix;
+	myConstantStruct.world = anOrientation;
+	myConstantStruct.invertedView = CU::Math::Inverse(a2DCameraOrientation);
+	myConstantStruct.projection = anOrthogonalProjectionMatrix;
 }
 
-void CFont::CreateInputLayout()
+const short& CFont::GetFontSize() const
 {
-	myVertexFormat.ReInit(3);
-	myVertexFormat.Add(VertexLayoutPosColUV[0]);
-	myVertexFormat.Add(VertexLayoutPosColUV[1]);
-	myVertexFormat.Add(VertexLayoutPosColUV[2]);
-	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateInputLayout(&myVertexFormat[0]
-		, myVertexFormat.Size()
-		, myEffect[0]->GetVertexShader()->compiledShader
-		, myEffect[0]->GetVertexShader()->shaderSize
-		, &myVertexLayout);
-	Engine::GetAPI()->HandleErrors(hr, " [Font] : Input Layout.");
-	Engine::GetAPI()->SetDebugName(myVertexLayout, "Font Input Layout");
-}
-
-void CFont::CreateBuffer()
-{
-	myVertexBuffer = new VertexBufferWrapper;
-	myVertexBuffer->myStride = sizeof(SVertexTypePosColUv);
-	myVertexBuffer->myByteOffset = 0;
-	myVertexBuffer->myStartSlot = 0;
-	myVertexBuffer->myNrOfBuffers = 1;
-	myVertexBuffer->myVertexBuffer = nullptr;
-
-	ZeroMemory(myVertexBufferDesc, sizeof(*myVertexBufferDesc));
-	myVertexBufferDesc->Usage = D3D11_USAGE_DYNAMIC;
-	myVertexBufferDesc->BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	myVertexBufferDesc->CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	myVertexBufferDesc->MiscFlags = 0;
-	myVertexBufferDesc->StructureByteStride = 0;
-}
-
-void CFont::CreateIndexBuffer()
-{
-	myIndexBuffer = new IndexBufferWrapper;
-	myIndexBuffer->myIndexBufferFormat = DXGI_FORMAT_R32_UINT;
-	myIndexBuffer->myByteOffset = 0;
-	myIndexBuffer->myIndexBuffer = nullptr;
-
-	ZeroMemory(myIndexBufferDesc, sizeof(*myIndexBufferDesc));
-	myIndexBufferDesc->Usage = D3D11_USAGE_IMMUTABLE;
-	myIndexBufferDesc->BindFlags = D3D11_BIND_INDEX_BUFFER;
-	myIndexBufferDesc->CPUAccessFlags = 0;
-	myIndexBufferDesc->MiscFlags = 0;
-	myIndexBufferDesc->StructureByteStride = 0;
-}
-
-void CFont::CreateConstantBuffer()
-{
-	myConstantStruct = new SFontConstantBuffer;
-
-	D3D11_BUFFER_DESC cbDesc;
-	ZeroMemory(&cbDesc, sizeof(cbDesc));
-	cbDesc.ByteWidth = sizeof(SFontConstantBuffer);
-	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.MiscFlags = 0;
-	cbDesc.StructureByteStride = 0;
-
-	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(&cbDesc, 0, &myConstantBuffer);
-	Engine::GetAPI()->SetDebugName(myConstantBuffer, "Font Constant Buffer");
-	Engine::GetAPI()->HandleErrors(hr, "[Font] : Failed to Create Constant Buffer, ");
+	return m_Data->myFontHeightWidth;
 }
 
 void CFont::UpdateBuffer()
 {
-	myColor = myDefaultColor;
-	SAFE_RELEASE(myVertexBuffer->myVertexBuffer);
-	SAFE_RELEASE(myIndexBuffer->myIndexBuffer);
+	m_Color = m_DefaultColor;
 
-	u32 count = u32(myText.length());
+	u32 count = u32(m_Text.length());
 	float z = 0.f;
 	float drawX = 0.f;
 	float drawY = -5.f;
 	float maxDrawY = 0.f;
-	myVertices.RemoveAll();
-	myIndices.RemoveAll();
+	m_Vertices.RemoveAll();
+	m_Indices.RemoveAll();
 
 	SVertexTypePosColUv v;
 	u32 skips = 0;
 	for (u32 i = 0, row = 0; i < count; i++)
 	{
-		SCharData& charData = myData->myCharData[myText[i]];
-		
+		SCharData& charData = m_Data->myCharData[m_Text[i]];
+
 		if (maxDrawY < charData.myHeight)
 		{
 			maxDrawY = charData.myHeight;
 		}
 
-		if (myText[i] == '\n')
+		if (m_Text[i] == '\n')
 		{
 			drawX = 0;
 			drawY -= (maxDrawY + 6);
@@ -259,39 +156,39 @@ void CFont::UpdateBuffer()
 			continue;
 		}
 
-		if (myText[i] == '#')
+		if (m_Text[i] == '#')
 		{
 			skips = 0;
-			if (myText[i + 2] != 'x')
+			if (m_Text[i + 2] != 'x')
 			{
-				std::string hex_code = "0x" + myText.substr(i + 1, 6) + "FF";
+				std::string hex_code = "0x" + m_Text.substr(i + 1, 6) + "FF";
 				unsigned int _color = (unsigned int)strtoul(hex_code.c_str(), nullptr, 16);
-				myColor.Convert(_color);
-				i+=7;
+				m_Color.Convert(_color);
+				i += 7;
 				skips = 8;
-				if (myText[i] != '(')
-					myColor = myDefaultColor;
+				if (m_Text[i] != '(')
+					m_Color = m_DefaultColor;
 				continue;
 			}
 			else
-			{ 
-				std::string hex_code = myText.substr(i + 3, 6) + "FF"; //might extend this with a lerp alpha in the future?
+			{
+				std::string hex_code = m_Text.substr(i + 3, 6) + "FF"; //might extend this with a lerp alpha in the future?
 				unsigned int _color = (unsigned int)strtoul(hex_code.c_str(), nullptr, 16);
-				myColor.Convert(_color);
+				m_Color.Convert(_color);
 				i += 9;
 				skips = 10;
 				continue;
 			}
 
-			
+
 		}
 
-		if (myText[i] == ')') 
+		if (m_Text[i] == ')')
 		{
-			myColor = myDefaultColor;
+			m_Color = m_DefaultColor;
 			continue;
 		}
-			
+
 
 		float left = drawX;
 		float right = left + charData.myWidth;
@@ -299,69 +196,62 @@ void CFont::UpdateBuffer()
 		float bottom = top + charData.myHeight;
 
 		v.myPosition = { left, bottom, z };
-		v.myColor = myColor.ToVec4(); //{ float(myColor.m_re / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
+		v.myColor = m_Color.ToVec4();
 		v.myUV = charData.myTopLeftUV;
-		myVertices.Add(v);
+		m_Vertices.Add(v);
 
 		v.myPosition = { left, top, z };
-		v.myColor = myColor.ToVec4();// { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
+		v.myColor = m_Color.ToVec4();
 		v.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
-		myVertices.Add(v);
+		m_Vertices.Add(v);
 
 		v.myPosition = { right, bottom, z };
-		v.myColor = myColor.ToVec4(); //{ float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
+		v.myColor = m_Color.ToVec4();
 		v.myUV = { charData.myBottomRightUV.x, charData.myTopLeftUV.y };
-		myVertices.Add(v);
+		m_Vertices.Add(v);
 
 		v.myPosition = { right, top, z };
-		v.myColor = myColor.ToVec4(); // { float(myColor.r / 255.f), float(myColor.g / 255.f), float(myColor.b / 255.f), 1.f };
+		v.myColor = m_Color.ToVec4();
 		v.myUV = charData.myBottomRightUV;
-		myVertices.Add(v);
+		m_Vertices.Add(v);
 
 		u32 startIndex = (i - skips - row) * 4.f;
 
-		myIndices.Add(startIndex + 1);
-		myIndices.Add(startIndex + 0);
-		myIndices.Add(startIndex + 2);
+		m_Indices.Add(startIndex + 1);
+		m_Indices.Add(startIndex + 0);
+		m_Indices.Add(startIndex + 2);
 
-		myIndices.Add(startIndex + 2);
-		myIndices.Add(startIndex + 3);
-		myIndices.Add(startIndex + 1);
+		m_Indices.Add(startIndex + 2);
+		m_Indices.Add(startIndex + 3);
+		m_Indices.Add(startIndex + 1);
 
 		drawX += charData.myBearingX;
 
 
 	}
 
-	if (myVertices.Size() <= 0)
+	if (m_Vertices.Size() <= 0)
 		return;
 
-	myVertexBufferDesc->ByteWidth = sizeof(SVertexTypePosColUv) * myVertices.Size();
-	myInitData->pSysMem = reinterpret_cast<char*>(&myVertices[0]);
-	HRESULT hr = Engine::GetAPI()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData, &myVertexBuffer->myVertexBuffer);
+	auto& device = Engine::GetAPI()->GetDevice();
 
-	Engine::GetAPI()->SetDebugName(myVertexBuffer->myVertexBuffer, "Font Vertex Buffer");
+	m_VertexDesc.m_ByteWidth = sizeof(SVertexTypePosColUv) * m_Vertices.Size();
+	//m_VertexDesc.m_Data = &m_Vertices[0];
+	m_VertexWrapper.ReleaseBuffer();
+	m_VertexWrapper.SetBuffer(device.CreateBuffer(m_VertexDesc, "Font VertexBuffer"));
 
-	myIndexBufferDesc->ByteWidth = sizeof(UINT) * myIndices.Size();
-	myInitData->pSysMem = reinterpret_cast<char*>(&myIndices[0]);
-	hr = Engine::GetAPI()->GetDevice()->CreateBuffer(myIndexBufferDesc, myInitData, &myIndexBuffer->myIndexBuffer);
 
-	Engine::GetAPI()->SetDebugName(myIndexBuffer->myIndexBuffer, "Font Index Buffer");
-
+	m_IndexDesc.m_ByteWidth = sizeof(u32) * m_Indices.Size();
+	//m_IndexDesc.m_Data = &m_Indices[0];
+	m_IndexWrapper.ReleaseBuffer();
+	m_IndexWrapper.SetBuffer(device.CreateBuffer(m_IndexDesc, "Font IndexBuffer"));
 }
 
 void CFont::UpdateConstantBuffer()
 {
-	DL_ASSERT_EXP(myConstantStruct != nullptr, "Vertex Constant Buffer Struct was null.");
+	auto& ctx = Engine::GetAPI()->GetContext();
+	ctx.UpdateConstantBuffer(m_cbFont, &myConstantStruct, sizeof(SFontConstantBuffer));
+	ctx.VSSetConstantBuffer(0, 1, &m_cbFont);
 
-	D3D11_MAPPED_SUBRESOURCE msr;
-	Engine::GetAPI()->GetContext()->Map(myConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-	if (msr.pData != nullptr)
-	{
-		SFontConstantBuffer* ptr = (SFontConstantBuffer*)msr.pData;
-		memcpy(ptr, &myConstantStruct->world.myMatrix[0], sizeof(SFontConstantBuffer));
-	}
-
-	Engine::GetAPI()->GetContext()->Unmap(myConstantBuffer, 0);
 }
 

@@ -77,8 +77,11 @@ void CComponentContainer::SetUpdateFlag(Entity entity, bool flag)
 
 	for ( EntityComponent& ec : myEntityComponents )
 	{
-		if ( ec.m_Entity == entity )
+		if (ec.m_Entity == entity)
+		{
 			ec.m_UpdateFlag = flag;
+			break;
+		}
 	}
 
 }
@@ -111,20 +114,13 @@ bool CComponentContainer::HasComponent(Entity e, ComponentFilter filter)
 	return false;
 }
 
+static ComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
 const CU::GrowingArray<Entity>& CComponentContainer::GetEntities(ComponentFilter aFilter)
 {
 	myEntitiesToReturn.RemoveAll();
-	/*for (int i = 0; i < myEntityComponents.Size(); i++)
-	{
-		if (aFilter.Compare(myEntityComponents[i]) == true)
-		{
-			myEntitiesToReturn.Add(i);
-		}
-	}*/
-	ComponentFilter filter = CreateFilter<Requires<TranslationComponent>>();
 	for ( const EntityComponent& ec : myEntityComponents )
 	{
-		if ( ec.m_UpdateFlag || filter == aFilter)
+		if ( ec.m_UpdateFlag )
 		{
 			if ( aFilter.Compare(ec.m_EntityArray) )
 			{

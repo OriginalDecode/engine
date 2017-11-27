@@ -1,10 +1,11 @@
 #pragma once
+#include "BaseComponent.h"
+#include "ComponentFilter.h"
 #include "ComponentContainer.h"
 #include "TypeID.h"
 #include "EntityTypes.h"
 #include <atomic>
 #include <Engine/Octree.h>
-#include "BaseComponent.h"
 #include "../CommonLib/DataStructures/GrowingArray.h"
 typedef CU::GrowingArray<Entity> EntityArray;
 class NodeEntityManager;
@@ -15,11 +16,21 @@ class BaseSystem;
 class EntityManager
 {
 public:
+
+	enum eSystemType
+	{
+		RENDER = BITFLAG(0),
+		AI = BITFLAG(1),
+		DEBUG = BITFLAG(2),
+		PHYSICS = BITFLAG(3),
+		LIGHT = BITFLAG(4),
+	};
+
 	EntityManager() = default;
-
+	~EntityManager();
 	void Initiate();
-	void CleanUp();
 
+	void Reset();
 
 	Entity CreateEntity();
 	void Clear();
@@ -29,7 +40,7 @@ public:
 	const EntityArray& GetEntities();
 
 	template<typename T>
-	void AddComponent(Entity aEntity);
+	T& AddComponent(Entity aEntity);
 
 	template<typename T>
 	void RemoveComponent(Entity aEntity, int aComponentID);
@@ -39,43 +50,41 @@ public:
 
 	float GetDeltaTime();
 
+	void AddSystem(s32 type);
+	s32 GetSystemFlag() const { return m_SystemsAdded; }
+
 	template <typename T>
 	void AddSystem();
 
-	bool HasComponent(Entity e, ComponentFilter& filter);
+	bool HasComponents(Entity e, ComponentFilter& filter);
 
-	NodeEntityManager* RequestManager();
+	template<typename T>
+	const bool HasComponent(Entity e);
+
+
+	NodeEntityManager* RequestManager(TreeNodeBase* node);
 	void ReleaseManager(NodeEntityManager* manager);
-
-
-	//CU::GrowingArray<BaseSystem*> GetSystems() { return mySystems; }
-
-	//void SetActiveNodeManager(NodeEntityManager* manager) { m_ActiveNode = manager; }
-	//NodeEntityManager* GetNodeManager() { return m_ActiveNode; }
-	
-	/*void RegisterManager(NodeEntityManager* manager);
-	void UnRegisterManager(NodeEntityManager* manager);
-	NodeEntityManager* GetManager(s32 index);*/
 
 private:
 	NodeEntityManager* m_ActiveNode = nullptr;
 
 	CU::GrowingArray<NodeEntityManager*> m_NodeManagers;
-
-	Entity myNextEntity = 0;
+	CU::GrowingArray<s32> m_UsedManagers;
+	const s32 m_Max = (8 * 8 * 8 * 8 * 8);
+	Entity myNextEntity = 1;
 	CComponentContainer* myComponents = nullptr;
-	//CU::GrowingArray<BaseSystem*> mySystems;
+	CU::GrowingArray<BaseSystem*> m_Systems;
 	std::atomic<float> myDeltaTime = 0.f;
-	static const s32 m_MaxNodeCount = 9;
-	s32 m_Systems[m_MaxNodeCount];
+	s32 m_SystemsAdded;
 
 };
 
 template<typename T>
-void EntityManager::AddComponent(Entity aEntity)
+T& EntityManager::AddComponent(Entity aEntity)
 {
 	T* component = new T();
 	myComponents->AddComponent(aEntity, component, CTypeID<BaseComponent>::GetID<T>());
+	return *component;
 }
 
 template<typename T>
@@ -93,8 +102,14 @@ T& EntityManager::GetComponent(Entity aEntity)
 template <typename T>
 void EntityManager::AddSystem()
 {
-	for (NodeEntityManager* manager : m_NodeManagers)
-	{
-		manager->AddSystem<T>();
-	}
-} 
+		// 	for (NodeEntityManager* manager : m_NodeManagers)
+		// 	{
+		// 		manager->AddSystem<T>();
+		// 	}
+}
+
+template<typename T>
+const bool EntityManager::HasComponent(Entity e)
+{
+	return HasComponents(e, CreateFilter<Requires<T>>());
+}

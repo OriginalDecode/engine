@@ -41,6 +41,7 @@ PhysicsManager::~PhysicsManager()
 	SAFE_DELETE(myCollisionDispatcher);
 	SAFE_DELETE(myBroadphaseInterface);
 	SAFE_DELETE(myDynamicsWorld);
+	SAFE_DELETE(myImpulseSolver);
 }
 
 void PhysicsManager::Add(btRigidBody* aBody)

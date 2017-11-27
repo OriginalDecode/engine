@@ -2,6 +2,7 @@
 #include <string>
 #include <math.h>
 #include "Math/Vector/Vector.h"
+#include "Math/Matrix/Matrix.h"
 #include "DataStructures/GrowingArray.h"
 #include <thread>
 namespace cl
@@ -9,10 +10,12 @@ namespace cl
 	unsigned long long nearest_Pow(unsigned long long aNum);
 	unsigned long long nearest_Pow_Under(unsigned long long aNum);
 
-	int Color32Reverse(int x);
+	unsigned int Color32Reverse(unsigned int x);
 	int MoveToRed(int x);
 	int MoveToGreen(int x);
 
+	float ClampF(float value, float min, float max);
+	int ClampI(int value, int min, int max);
 
 	/*
 		Drag Coefficient
@@ -80,6 +83,16 @@ namespace cl
 		}
 	};
 
+	inline CU::Vector4f IntToCol(unsigned int col_as_int)
+	{
+		CU::Vector4f out;
+		out.z = (float)((col_as_int) & 0xFF);
+		out.y = (float)((col_as_int >> 8) & 0xFF);
+		out.x = (float)((col_as_int >> 16) & 0xFF);
+		return out;
+
+	};
+
 	float RadToDegree(float aRadian);
 	float DegreeToRad(float aDegree);
 
@@ -95,4 +108,6 @@ namespace cl
 	
 
 	std::string HandleVAArgs(const char* formatted_string, ...);
+
+
 };

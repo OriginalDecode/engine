@@ -1,32 +1,13 @@
-//_________________________________
-//	Atmospheric Scattering Vertex Shaders
-//_________________________________
-//_________________________________
-//	Constant Buffers
-//_________________________________
 cbuffer Matrices : register(b0)
 {
-	row_major float4x4 World;
-	row_major float4x4 View;
-	row_major float4x4 Projection;
+	row_major float4x4 camera_view_x_proj;
 };
 
-cbuffer Positions : register(b1)
+cbuffer Matrices : register(b1)
 {
-	float4 camera_position;
-	float4 camera_dir;
-	float4 light_dir;
-	float4 light_pos;
-	float inner_radius;
-	float outer_radius;
-	float camera_magnitude;
-	float camera_magnitude2;
-
+	row_major float4x4 orientation;
 };
 
-//_________________________________
-//	Vertex Structs
-//_________________________________
 struct VS_INPUT
 {
 	float4 pos : POSITION;
@@ -47,20 +28,15 @@ struct VS_OUTPUT
 	float4 tex 		: TEX;
 };
 
-//_________________________________
-//	Atmospheric Scattering Vertex Shader
-//_________________________________
-
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-	output.pos = mul(input.pos, World);
-	output.pos = mul(output.pos, View);
-	output.pos = mul(output.pos, Projection);
+	output.pos = mul(input.pos, orientation);
+	output.pos = mul(output.pos, camera_view_x_proj);
 
-	output.normal = mul(input.normal, World);
+	output.normal = mul(input.normal, orientation);
 	output.binorm = input.binorm;
-	output.tang  = mul(input.tang , World);
+	output.tang  = mul(input.tang , orientation);
 
 	output.uv = input.uv;
 	

@@ -11,7 +11,7 @@ void Frustum::Initiate(float near_plane, float far_plane, float fov, const CU::M
 	m_FarPlane = far_plane;
 	m_NearPlane = near_plane;
 
-	const float rotation = cl::DegreeToRad(fov / 2.f) ;
+	const float rotation = cl::DegreeToRad(m_FOV) ;
 
 	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, near_plane), CU::Vector3f(0, 0, -1))); //near
 	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, far_plane), CU::Vector3f(0, 0, 1))); //far
@@ -68,7 +68,10 @@ void Frustum::OnResize(float new_fov)
 
 void Frustum::DrawFrustum()
 {
-	SLinePoint p1, p2, p3, p4, p5, p6, p7, p8;
+#if defined(_PROFILE) || defined(_FINAL)
+	return;
+#endif
+	LinePoint p1, p2, p3, p4, p5, p6, p7, p8;
 	p1.color = CU::Vector4f(0, 1, 0, 1);
 	p2.color = p1.color;
 	p3.color = p1.color;
@@ -190,6 +193,7 @@ void Frustum::DrawFrustum()
 
 void Frustum::UpdateOBB()
 {
+	return;
 	//TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 	CU::Vector4f up = m_Orientation->GetUp();
 	CU::Vector4f right = m_Orientation->GetRight();

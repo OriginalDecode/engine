@@ -7,6 +7,11 @@
 #include <TranslationComponent.h>
 #include <Engine/Synchronizer.h>
 
+#include <EntitySystem/RenderSystem.h>
+#include <EntitySystem/DebugSystem.h>
+#include <EntitySystem/LightSystem.h>
+#include <EntitySystem/PhysicsSystem.h>
+
 void NodeEntityManager::SetMemoryBlockIndex(s32 index)
 {
 	m_MemoryBlockIndex = index;
@@ -16,6 +21,19 @@ s32 NodeEntityManager::m_Identifier = 0;
 
 void NodeEntityManager::Initiate()
 {
+	EntityManager& em = Engine::GetInstance()->GetEntityManager();
+	const s32 flag = em.GetSystemFlag();
+
+	if (flag & EntityManager::RENDER)
+		AddSystem<RenderSystem>();
+	if (flag & EntityManager::PHYSICS)
+		AddSystem<PhysicsSystem>();
+	if (flag & EntityManager::LIGHT)
+		AddSystem<LightSystem>();
+#if !defined(_FINAL) && !defined(_PROFILE)
+	if (flag & EntityManager::DEBUG)
+		AddSystem<DebugSystem>();
+#endif
 }
 
 void NodeEntityManager::CleanUp()
@@ -46,24 +64,26 @@ void NodeEntityManager::RemoveEntity(TreeDweller* entity)
 	m_Entities.RemoveCyclic(entity);
 }
 
-void NodeEntityManager::Update(float dt, bool paused)
+void NodeEntityManager::Update(float dt, const CU::GrowingArray<TreeDweller*>& dweller_list, bool paused)
 {
-	const CU::GrowingArray<Entity>& entities = GetEntities(CreateFilter<Requires<TranslationComponent>>());
-	for (s32 i = 0; i < entities.Size(); i++)
-	{
-		Entity e = entities[i];
-		CameraHandle* handle = CameraHandle::GetInstance();
-		if ( handle)
-		{
-			TranslationComponent& t = GetComponent<TranslationComponent>(e);
+	PROFILE_FUNCTION(profiler::colors::Red);
 
-			if ( CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.myOrientation.GetPosition()) )
-				m_Components.SetUpdateFlag(e, true);
-			else
-				m_Components.SetUpdateFlag(e, false);
-		}
-	}
-
+	PROFILE_BLOCK("Update Entities", profiler::colors::Green);
+// 	for (TreeDweller* dweller : dweller_list)
+// 	{
+// 		Entity e = dweller->GetEntity();
+// 		CameraHandle* handle = CameraHandle::GetInstance();
+// 		if (handle)
+// 		{
+// 			TranslationComponent& t = GetComponent<TranslationComponent>(e);
+// 
+// 			if (CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.myOrientation.GetPosition()))
+// 				m_Components.SetUpdateFlag(e, true);
+// 			else
+// 				m_Components.SetUpdateFlag(e, false);
+// 		}
+// 	}
+	PROFILE_BLOCK_END;
 	for (BaseSystem* system : m_Systems)
 	{
 		system->Update(dt, paused);

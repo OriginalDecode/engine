@@ -1,30 +1,31 @@
 #pragma once
-#define _WINSOCKAPI_
+
 #include <network/network_api.h>
-#include "Window.h"
-#include "VirtualFileSystem.h"
+
 #include <CommonLib/Math/Vector/Vector.h>
 #include <CommonLib/Threadpool.h>
 
 #include <Timer/TimeManager/TimeManager.h>
-//#include <TimeManager/TimeManager.h>
-//#include <TimeManager.h>
 
-#include "engine_shared.h"
-#include <string>
-#include "../EntitySystem/EntityManager.h"
-#include "ShaderFactory.h"
+#include <EntitySystem/EntityManager.h>
+
+#include <Engine/VirtualFileSystem.h>
+#include <Engine/engine_shared.h>
+#include <Engine/Window.h>
+#include <Engine/ShaderFactory.h>
 #include <Engine/SystemMonitor.h>
 #include <Engine/MemorySegmentHandle.h>
+#include <Engine/DebugHandle.h>
+#include <Engine/IGraphicsAPI.h>
+#include <string>
+#include <queue>
+
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;
 struct HWND__;
 typedef HWND__* HWND;
 #endif
-
-class InputHandle;
-class PhysicsManager;
 
 struct SLocalTime
 {
@@ -33,21 +34,13 @@ struct SLocalTime
 	u16 second;
 };
 
-class AssetsContainer;
-class TerrainManager;
+//typedef struct ID3D10Blob IBlob;
 
-typedef struct ID3D10Blob IBlob;
+class TerrainManager;
+class AssetsContainer;
 class TreeDweller;
 class LevelFactory;
-
-enum eDeferredType;
-
-
-class DirectX11;
-class Vulkan;
-
 class Camera;
-class CConsole;
 class CFont;
 class CFontManager;
 class Model;
@@ -56,11 +49,16 @@ class Synchronizer;
 class Texture;
 class Effect;
 class Terrain;
-class IGraphicsAPI;
 class Sprite;
+class InputHandle;
+class PhysicsManager;
+class Material;
 
 class Engine
 {
+#if !defined(_PROFILE) && !defined(_FINAL)
+	friend debug::DebugHandle;
+#endif
 public:
 	static void Create();
 	static void Destroy();
@@ -71,13 +69,11 @@ public:
 	bool CleanUp();
 
 	void Update();
-	void Render();
 	void UpdateInput();
 
 	int RegisterLight();
 
-	static IGraphicsAPI* GetGraphicsAPI();
-	static DirectX11* GetAPI();
+	static graphics::IGraphicsAPI* GetAPI() { return m_API; }
 	//_________________________________________
 	// Settings
 	void ToggleVsync();
@@ -94,25 +90,40 @@ public:
 	const WindowSize& GetWindowSize() const;
 	const WindowSize& GetInnerSize() const;
 
-	CFont* LoadFont(const s8* aFilepath, u16 aFontWidth, u16 aBorderWidth);
+	CFont* LoadFont(const s8* filepath, u16 aFontWidth, u16 aBorderWidth);
 	float GetDeltaTime();
 	float GetTotalTime();
 	float GetFPS();
 	float GetFrameTime();
-	std::string GetAPIName();
 
 	VirtualFileSystem& GetVFS();
 
 	//_________________________________________
 	// Get Resources
-	Texture* GetTexture(const std::string& aFilePath);
-	Effect* GetEffect(const std::string& aFilePath);
-	Model* GetModel(const std::string& aFilePath);
-	Sprite* GetSprite(const cl::CHashString<128>& path);
+	Texture* GetTexture(u64 key);
+	Effect* GetEffect(u64 key);
+	Model* GetModel(u64 key);
+	Sprite* GetSprite(u64 key);
+	Material* GetMaterial(u64 key);
 
-	std::string LoadModel(std::string aFilePath, std::string effect, bool thread);
+
+	Texture* GetTexture(const char* key);
+	Effect* GetEffect(const char* key);
+	Model* GetModel(const char* key);
+	Sprite* GetSprite(const char* key);
+	Material* GetMaterial(const char* key);
+
+
+
+	//std::string LoadModel(const std::string& filepath, std::string effect, bool thread);
 	template<typename T>
-	std::string LoadModel(std::string filepath, std::string effect, T* pModel, bool thread);
+	u64 LoadModel(const std::string& filepath, std::string effect, bool thread);
+
+	u64 LoadTexture(const std::string& path);
+	u64 LoadEffect(const std::string& path);
+	u64 LoadSprite(const std::string& path);
+
+	void AddTexture(Texture* pTexture, u64 key);
 
 	void ResetRenderTargetAndDepth();
 
@@ -137,30 +148,29 @@ public:
 
 	//_________________________________________
 	// Gets
+	const Window& GetWindow() { return m_Window; }
+	const Window& GetWindow() const { return m_Window; }
+
 	const SLocalTime& GetLocalTime();
-	Window& GetWindow() { return m_Window; }
-	std::string GetLocalTimeAsString();
+	std::string GetLocalTimeAsString(); // should probably return a static buffered string instead that doesn't get newed all the time
 	InputHandle* GetInputHandle() { return m_InputHandle; }
+	// This can probably stay
+
 
 	//_________________________________________
 	// Level Creation, Loading, Saving
 	Terrain* CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize);
 	CU::GrowingArray<TreeDweller*> LoadLevel(const std::string& level_filepath);
+	// Should be refactored out of the engine stuff.
 
-	//_________________________________________
-	// Shader Creation
-	//This should probably be moved to the graphics API instead.
-	HRESULT CompileShaderFromFile(const std::string& file_path, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_compiled_shader, IBlob*& out_compile_message);
-	HRESULT CompileShaderFromMemory(const s8* pData, s32 size, const std::string& source_name, const std::string& entrypoint, const std::string& feature_level, s32 shader_flags, IBlob*& out_shader, IBlob* out_message);
 
-	void* CreateShader(IBlob* compiled_shader_blob, eShaderType type, const std::string& debug_name);
-	//CompiledShader CreateShader(IBlob* compiled_shader_blob, const std::string& shader_type, const std::string& debug_name, bool use);
+	void* CreateShader(IShaderBlob* pShader, eShaderType type, const std::string& debug_name);
 
 
 	bool UseMouse() { return m_CameraUseMouse; }
 	void ToggleUseMouse() { m_CameraUseMouse = !m_CameraUseMouse; }
 
-	const HWND& GetHWND() const { return myHWND; }
+	HWND GetHWND() const { return m_Window.GetHWND(); }
 
 	enum class eEngineStates
 	{
@@ -170,109 +180,68 @@ public:
 		_COUNT
 	};
 
-	void SelectEntity(u32 e);
-	void DeselectEntity();
 	memory::MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
-	struct ID3D11ShaderResourceView;
-#if !defined(_PROFILE) && !defined(_FINAL)
-	bool SaveLevel();
-	bool GetLineRendering();
-	void EditEntity();
-	void DebugTextures();
-	void AddTexture(Texture* texture, const std::string& debug_name);
-	void AddTexture(void* srv, const std::string& debug_name);
+	const graphics::eSamplerStates GetCurrentSampler() const { return m_CurrentSampler; }
+	ISamplerState* GetActiveSampler() { return m_API->GetSamplerState(m_CurrentSampler); }
+	void SetCurrentSampler(const graphics::eSamplerStates& sampler) { m_CurrentSampler = sampler; }
 
-	void RegisterCheckBox(bool* pBool, const std::string& box_name)
-	{
-		CheckBox box;
-		box.m_Name = box_name;
-		box.m_Toggle = pBool;
-		m_Checkboxes.Add(box);
-	}
+	bool VSync() const { return m_VSyncOn; }
+	void ToggleVSync() { m_VSyncOn = !m_VSyncOn; }
 
-	void AddFunction(const std::string& label, std::function<void()> function);
-	void CheckFolder(const std::string& path);
-	void AddCheckBox(bool* toggle, std::string label);
-	CU::GrowingArray<ID3D11ShaderResourceView*>& GetDebugTextures() { return m_DebugTextures;}
+	u64 LoadModelA(std::string path, std::string effect, bool threaded);
+
+	void PickEntity();
 private:
-	struct CheckBox
-	{
-		std::string m_Name;
-		bool* m_Toggle = false;
-	};
-	CU::GrowingArray<CheckBox> m_Checkboxes;
-
-	void UpdateDebugUI();
-	CU::GrowingArray<ID3D11ShaderResourceView*> m_DebugTextures;
-	std::vector<std::string> m_Labels;
-	std::vector<std::string> m_Levels;
-	std::vector<std::pair<std::string, std::function<void()>>> m_Functions;
-
-#endif
-private:
-
-	bool m_RenderInstanced = true;
-public:
-	bool GetRenderInstanced() { return m_RenderInstanced; }
-
-private:
+	s32 PickEntity(Texture* pTexture);
+	Engine();
+	static Engine* myInstance;
+	static graphics::IGraphicsAPI* m_API;
 	memory::MemorySegmentHandle m_SegmentHandle;
 
-	bool m_EditLight = false;
-	bool m_EditRender = false;
-
-
-	Engine() = default;
-	//void AddEntitySystems();
-	u32 m_EntityToEdit = 0;
-	bool m_IsEditingEntity;
+	graphics::eSamplerStates m_CurrentSampler;
+	bool m_VSyncOn = false;
 
 
 	bool HasInitiated();
-	bool m_CameraUseMouse = false;
 
-	static Engine* myInstance;
-	static IGraphicsAPI* myAPI;
-
-	Threadpool m_Threadpool;
-	VirtualFileSystem m_VirtualFileSystem;
+	bool m_HasPickedEntity = false;
 
 	SLocalTime myLocalTime;
-	HWND myHWND;
+
+
+	VirtualFileSystem m_VirtualFileSystem;
+	Threadpool m_Threadpool;
 	Window m_Window;
-	//DebugSystem m_DebugSystem;
 	EntityManager m_EntityManager;
 
-	InputHandle* m_InputHandle = nullptr;
-
+	InputHandle* m_InputHandle       = nullptr;
 	PhysicsManager* m_PhysicsManager = nullptr;
-
-	CFontManager* myFontManager = nullptr;
+	CFontManager* myFontManager      = nullptr;
 	CU::TimeManager myTimeManager;
-	Synchronizer* mySynchronizer = nullptr;
-	Renderer* myRenderer = nullptr;
+	Synchronizer* m_Synchronizer     = nullptr;
+	Renderer* m_Renderer             = nullptr;
+	Camera* m_Camera                 = nullptr;
 
-	Camera* m_Camera = nullptr;
 
 
-	CConsole* myConsole = nullptr;
 	AssetsContainer* myAssetsContainer = nullptr;
-	TerrainManager* m_TerrainManager = nullptr;
-	LevelFactory* m_LevelFactory = nullptr;
+	TerrainManager* m_TerrainManager   = nullptr;
+	LevelFactory* m_LevelFactory       = nullptr;
+	CSystemMonitor m_SystemMonitor;
 
 	std::bitset<(u16)eEngineStates::_COUNT> m_States;
-	CSystemMonitor m_SystemMonitor;
-	bool m_PauseInput = false;
+
+
 	float m_DeltaTime = 0.f;
 
-
-
-
+	bool m_PauseInput : 1;
+	bool m_CameraUseMouse  : 1;
+	bool m_RenderInstanced : 1;
 };
 
 template<typename T>
-std::string Engine::LoadModel(std::string filepath, std::string effect, T* pModel, bool thread)
+u64 Engine::LoadModel(const std::string& filepath, std::string effect, bool thread)
 {
-	return myAssetsContainer->LoadModel(filepath, effect, pModel, thread);
+	return myAssetsContainer->LoadModel<T>(filepath, effect, thread);
 }
 

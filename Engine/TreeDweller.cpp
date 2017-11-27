@@ -18,7 +18,7 @@ ComponentList& TreeDweller::GetComponentPairList()
 	return m_ComponentList;
 }
 
-const CU::Vector3f& TreeDweller::GetPosition() const
+const CU::Vector3f TreeDweller::GetPosition() const
 {
 	for (const ComponentPair& pair : m_ComponentList)
 	{

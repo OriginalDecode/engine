@@ -1,0 +1,9 @@
+{
+    "material": {
+        "albedo": "Data/Material/octostone/octostoneAlbedo.dds",
+        "normal": "Data/Material/octostone/octostoneNormalc.dds",
+        "metalness": "Data/Material/octostone/octostoneMetallic.dds",
+        "roughness": "Data/Material/octostone/octostoneRoughness2.dds",
+        "heightmap": "Data/Material/octostone/octostoneHeightc.dds"
+    }
+}

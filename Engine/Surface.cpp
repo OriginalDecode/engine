@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Surface.h"
 
-#include "DirectX11.h"
 #include "Engine.h"
 
 #include "Texture.h"
@@ -9,6 +8,7 @@
 
 #include "AssetsContainer.h"
 #include <DL_Debug.h>
+#include <Engine/IGraphicsContext.h>
 
 
 Surface::Surface(Effect* anEffect)
@@ -18,7 +18,7 @@ Surface::Surface(Effect* anEffect)
 	SetIndexCount(0);
 	SetIndexStart(0);
 	SetEffect(anEffect);
-	SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	SetPrimology(graphics::TRIANGLE_LIST);
 }
 
 Surface::Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount)
@@ -28,10 +28,10 @@ Surface::Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStar
 	SetIndexCount(aIndexCount);
 	SetIndexStart(aStartIndex);
 	SetEffect(anEffect);
-	SetPrimology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	SetPrimology(graphics::TRIANGLE_LIST);
 }
 
-Surface::Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology)
+Surface::Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, graphics::eTopology aPrimology)
 {
 	SetVertexCount(aVertexCount);
 	SetVertexStart(aStartVertex);
@@ -40,13 +40,13 @@ Surface::Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anInde
 	SetPrimology(aPrimology);
 }
 
-void Surface::Activate(const RenderContext& render_context)
+void Surface::Activate(const graphics::RenderContext& render_context)
 {
 	if ( !myEffect )
 		return;
 
-	render_context.m_Context->IASetPrimitiveTopology(myPrimologyType);
-	m_Material.Use(myEffect, render_context);
+	//render_context.GetContext().IASetTopology(graphics::eTopology::TRIANGLE_LIST);
+	m_Material.Use(myEffect);
 }
 
 void Surface::Deactivate()
@@ -68,7 +68,7 @@ void Surface::AddTexture(const std::string& file_path, Effect::TextureSlot slot)
 		sub += ".dds";
 	}
 
-	m_Material.AddResource(Engine::GetInstance()->GetTexture(sub), sub, slot);
+	m_Material.AddResource(Engine::GetInstance()->GetTexture(sub.c_str()), sub, slot);
 	
 }
 
@@ -107,31 +107,8 @@ void Surface::SetIndexCount(u32 aIndexCount)
 	myIndexCount = aIndexCount;
 }
 
-void Surface::SetPrimology(D3D_PRIMITIVE_TOPOLOGY aPrimology)
+void Surface::SetPrimology(graphics::eTopology topology)
 {
-	myPrimologyType = aPrimology;
+	m_Topology = topology;
 }
 
-
-void Material::AddResource(IShaderResourceView* pResource, const std::string& filename, Effect::TextureSlot slot)
-{
-	ResourceBinding binding;
-	binding.m_Resource = pResource;
-	binding.m_Slot = slot;
-	binding.m_ResourceName = filename;
-	m_Resources.Add(binding);
-}
-
-void Material::AddResource(Texture* pResource, const std::string& filename, Effect::TextureSlot slot)
-{
-	AddResource(pResource->GetShaderView(), filename, slot);
-}
-
-void Material::Use(Effect* pEffect, const RenderContext& render_context)
-{
-	for (const ResourceBinding& binding : m_Resources)
-	{
-		pEffect->AddShaderResource(binding.m_Resource, binding.m_Slot);
-	}
-	pEffect->Use();
-}

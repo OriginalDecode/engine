@@ -7,6 +7,6 @@ class MotionBlurPass
 {
 public:
 	MotionBlurPass() = default;
-	void Process(Texture* finished_texture);
+	void Process(Texture* finished_texture, const graphics::RenderContext& render_context);
 };
 

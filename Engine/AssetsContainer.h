@@ -4,60 +4,63 @@
 #include "engine_shared.h"
 #include <DataStructures/GrowingArray.h>
 #include <Engine/ModelImporter.h>
+#include <CommonLib/DataStructures/StaticArray.h>
+#include <Engine/DebugHandle.h>
+
 class FileWatcher;
 class ShaderFactory;
 class Model;
 class Effect;
 class Texture;
 class Sprite;
+class Material;
+
+
 struct CompiledShader;
-class Engine;
 
 class AssetsContainer
 {
+	friend debug::DebugHandle;
 public:
-
-	enum eRequestType
-	{
-		MODEL,
-		TEXTURE,
-		SHADER,
-		SPRITE,
-	};
-
-
 	AssetsContainer() = default;
 	~AssetsContainer();
-
 	void Initiate();
 
 	void Update();
 
 	void ReloadTexture(Texture* texture);
-	Texture* GetTexture(std::string aFilePath);
 
-	Sprite* GetSprite(const cl::CHashString<128>& path);
-	Effect* GetEffect(const std::string& aFilePath);
-	Model* GetModel(const std::string& aFilePath);
-	std::string LoadModel(std::string aFilePath, std::string effect, bool thread = true);
+
+	void AddTexture(Texture* pTexture, u64 key);
+
+	Texture* GetTexture(u64 key);
+	Sprite* GetSprite(u64 key);
+	Effect* GetEffect(u64 key);
+	Model* GetModel(u64 key);
+	Material* GetMaterial(u64 key);
+
 	template<typename T>
-	std::string LoadModel(std::string filepath, std::string effect_filepath, T* pModel, bool thread = true);
+	u64 LoadModel(std::string path, std::string effect_filepath, bool thread = true);
+
+	u64 LoadTexture(std::string path);
+	u64 LoadEffect(std::string path);
+	u64 LoadSprite(std::string path);
+	u64 LoadMaterial(std::string path);
+
 
 
 private:
-	Engine* m_Engine = nullptr;
-	FileWatcher* m_TextureWatcher = nullptr;
-	Ticket_Mutex m_Mutex;
-	Ticket_Mutex m_GetModelMutex;
-	std::unordered_map<std::string, Texture*> myTextures;
-	std::unordered_map<std::string, Effect*> myEffects;
-	std::unordered_map<std::string, Model*> myModels;
+#ifndef FINAL
+	FileWatcher* m_Watcher = nullptr;
+#endif
+
+
+	std::map<u64, Texture*> m_Textures;
+	std::map<u64, Effect*> m_Effects;
+	std::map<u64, Model*> m_Models;
 	std::map<u64, Sprite*> m_Sprites;
+	std::map<u64, Material*> m_Materials;
 
-	bool LoadTexture(std::string aFilePath);
-	Effect* LoadEffect(const std::string& aFilePath);
-
-	Sprite* LoadSprite(const cl::CHashString<128>& path);
 
 	ShaderFactory* m_ShaderFactory;
 	CModelImporter* m_ModelLoader;
@@ -65,27 +68,28 @@ private:
 };
 
 template<typename T>
-std::string AssetsContainer::LoadModel(std::string filepath, std::string effect_filepath, T* pModel, bool thread /*= true*/)
+u64 AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bool thread /*= true*/)
 {
-	if (myModels.find(filepath) != myModels.end())
-		return filepath;
-	DL_MESSAGE("Loading model : %s", filepath.c_str());
+	u64 hash = Hash(path.c_str());
+
+	if (m_Models.find(hash) != m_Models.end())
+		return hash;
+
 	T* model = new T;
-	myModels.emplace(filepath, model);
+	m_Models.emplace(hash, model);
 
 	if (thread)
 	{
-		m_Engine->GetThreadpool().AddWork(Work([=]() {
-			m_ModelLoader->LoadModel(model, filepath, effect_filepath);
-			model->Initiate(filepath);
+		Engine::GetInstance()->GetThreadpool().AddWork(Work([=]() {
+			m_ModelLoader->LoadModel(model, path, effect_filepath);
+			model->Initiate(path);
 		}));
 	}
 	else
 	{
-		m_ModelLoader->LoadModel(model, filepath, effect_filepath);
-		model->Initiate(filepath);
+		m_ModelLoader->LoadModel(model, path, effect_filepath);
+		model->Initiate(path);
 	}
 
-	return filepath;
-
+	return hash;
 }

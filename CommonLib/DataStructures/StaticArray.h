@@ -34,6 +34,8 @@ namespace CommonUtilities
 
 		bool operator==(const StaticArray<Type>& other);
 
+		int Capacity() { return m_Capacity; }
+
 	private:
 		Type myData[T2];
 		int m_Capacity = 0;

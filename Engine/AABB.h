@@ -26,7 +26,7 @@ namespace cl
 		CU::Vector3f m_MaxPos;
 		static const s32 array_size = 8;
 
-		SLinePoint m_Points[array_size];
+		LinePoint m_Points[array_size];
 		CU::Matrix44f m_PointsOrientation[array_size];
 
 		const CU::Matrix44f* m_Orientation;

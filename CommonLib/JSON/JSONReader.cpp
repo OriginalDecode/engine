@@ -1,11 +1,11 @@
 #include "JSONReader.h"
 #include <assert.h>
-
+#include <DL_Debug/DL_Debug.h>
 std::string JSONReader::ERROR_STR = "JSON_NO_STRING_FOUND";
 
-JSONReader::JSONReader(const std::string& aFilePath)
+JSONReader::JSONReader(const std::string& filepath)
 {
-	OpenDocument(aFilePath);
+	OpenDocument(filepath);
 }
 
 JSONReader::~JSONReader()
@@ -13,20 +13,15 @@ JSONReader::~JSONReader()
 	CloseDocument();
 }
 
-
-FRESULT JSONReader::OpenFile()
+void JSONReader::OpenDocument(const std::string & filepath)
 {
-	FRESULT toReturn;
+	myCurrentDocumentPath = filepath;
+	
 	fopen_s(&myFile, myCurrentDocumentPath.c_str(), "r");
-	_get_errno(&toReturn);
+	//int error_code = 0;
+	//_get_errno(&error_code);
+	//assert(error_code == 0 && "Failed to open file");
 
-	return toReturn;
-}
-
-void JSONReader::OpenDocument(const std::string & aFilePath)
-{
-	myCurrentDocumentPath = aFilePath;
-	OpenFile();
 	assert(myFile != NULL && "File could not be found!");
 	char buffer[2048]; //the buffer size determines how fast it can parse the file
 	myFileReaderStream = new rapidjson::FileReadStream(myFile, buffer, sizeof(buffer));
@@ -36,6 +31,8 @@ void JSONReader::OpenDocument(const std::string & aFilePath)
 
 void JSONReader::CloseDocument()
 {
+	if (!myFile)
+		return;
 	assert(myFile != nullptr && "File were not open. Did you forget to OpenDocument()?");
 	delete myFileReaderStream;
 	myFileReaderStream = nullptr;
@@ -174,6 +171,15 @@ std::string JSONReader::ReadElement(const JSONElement& el, const std::string& ta
 {
 	assert(el.HasMember(tag.c_str()) && "Failed to find tag!");
 	return el[tag.c_str()].GetString();
+}
+
+std::string JSONReader::OptionalReadElement(const JSONElement& el, const std::string& tag)
+{
+	//assert(el.HasMember(tag.c_str()) && "Failed to find tag!");
+	if(el.HasMember(tag.c_str()))
+		return el[tag.c_str()].GetString();
+
+	return std::string();
 }
 
 

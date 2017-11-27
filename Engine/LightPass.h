@@ -2,67 +2,79 @@
 #include "VertexStructs.h"
 #include "engine_shared.h"
 
-class GBuffer;
 class SpotLight;
-class LightPass
+class PointLight;
+namespace graphics
 {
-public:
-	LightPass() = default;
+	class GBuffer;
+	class RenderContext;
 
-	bool Initiate(const GBuffer& gbuffer, Texture* shadow_texture);
-	bool CleanUp();
-	void RenderPointlight(PointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
-	void RenderSpotlight(SpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
-	Effect* GetPointlightEffect();
-	Effect* GetSpotlightEffect();
-	bool HasInitiated();
-
-private:
-	void UpdatePointlightBuffers(PointLight* pointlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
-	void UpdateSpotlightBuffers(SpotLight* spotlight, Camera* aCamera, const CU::Matrix44f& previousOrientation, const CU::Matrix44f& shadow_matrix);
-
-	void CreateSpotlightBuffers();
-	void CreatePointlightBuffers();
-	struct PointlightConstantBuffer : public VertexBaseStruct
+	class LightPass
 	{
-	} myPointlightVertexConstantData; //Longest name.
+	public:
+		LightPass(const GBuffer& gbuffer);
+		~LightPass();
 
-	struct SpotlightConstantBuffer : public VertexBaseStruct
-	{
-	} mySpotlightVertexConstantData;
+		void RenderPointlight(PointLight* pointlight, 
+							  const CU::Matrix44f& camera_view, 
+							  const CU::Matrix44f& camera_projection, 
+							  const CU::Matrix44f& shadow_matrix, 
+							  const RenderContext& render_context);
+		void RenderSpotlight(SpotLight* spotlight, const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
 
-	struct PixelConstantBuffer
-	{
-		CU::Matrix44f myInvertedProjection;
-		CU::Matrix44f myView;
-		CU::Vector4f myColor;
-		CU::Vector4f myPosition;
-		CU::Vector4f myCameraPosition;
-		CU::Matrix44f m_ShadowMVP;
+		Effect* GetPointlightEffect();
+		Effect* GetSpotlightEffect();
 
-	} myPixelConstantStruct;
+	private:
+		void UpdatePointlightBuffers(PointLight* pointlight, const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
+		void UpdateSpotlightBuffers(SpotLight* spotlight, const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
 
-	struct SpotPixelConstantBuffer : public PixelConstantBuffer
-	{
-		CU::Vector4f myDirection;
-	} mySpotPixelConstantStruct;
+		struct PointlightConstantBuffer
+		{
+			CU::Matrix44f m_Orientation;
+			float m_Range;
+			float dummy[15];
+		} m_cbPointlightVtx;
 
-	enum eBuffer
-	{
-		POINTLIGHT_VERTEX,
-		POINTLIGHT_PIXEL,
-		SPOTLIGHT_VERTEX,
-		SPOTLIGHT_PIXEL,
-		NOF_BUFFERS
+		struct SpotlightConstantBuffer
+		{
+			CU::Matrix44f m_Orientation;
+			float m_Range;
+			float m_Angle;
+			float dummy[14];
+		} m_cbSpotlightVtx;
+
+		struct PixelConstantBuffer
+		{
+			CU::Vector4f m_Color;
+			CU::Vector4f m_Position;
+			CU::Vector4f m_CameraPosition;
+			CU::Matrix44f m_ShadowMVP;
+		} m_cbPointlightPix;
+
+		struct SpotPixelConstantBuffer : public PixelConstantBuffer
+		{
+			CU::Vector4f m_Direction;
+		} m_cbSpotlightPix;
+
+		enum eBuffer
+		{
+			POINTLIGHT_VERTEX,
+			POINTLIGHT_PIXEL,
+			SPOTLIGHT_VERTEX,
+			SPOTLIGHT_PIXEL,
+			NOF_BUFFERS
+		};
+		IBuffer* m_LightBuffers[NOF_BUFFERS];
+
+
+		enum eLight
+		{
+			POINTLIGHT,
+			SPOTLIGHT,
+			NOF_LIGHT_TYPES
+		};
+
+		Effect* m_Effect[NOF_LIGHT_TYPES];
 	};
-	ID3D11Buffer* myConstantBuffers[NOF_BUFFERS];
-
-	enum eLight
-	{
-		POINTLIGHT,
-		SPOTLIGHT,
-		NOF_LIGHT_TYPES
-	};
-
-	Effect* myEffect[NOF_LIGHT_TYPES];
 };

@@ -1,21 +1,15 @@
-//---------------------------------
-//	Water Vertex Shaders
-//---------------------------------
-//---------------------------------
-//	Constant Buffers
-//---------------------------------
-cbuffer Matrices : register(b0)
+cbuffer per_frame : register( b0 )
 {
-	row_major float4x4 World;
-	row_major float4x4 View;
-	row_major float4x4 Projection;
+	row_major float4x4 camera_view_x_proj;
+};
+
+cbuffer Matrices : register(b1)
+{
+	row_major float4x4 orientation;
 	float3 CameraPos;
 	float Time;
 };
 
-//---------------------------------
-//	Terrain Base Vertex Structs
-//---------------------------------
 struct VS_INPUT
 {
 	float4 pos : POSITION;
@@ -36,9 +30,6 @@ struct VS_OUTPUT
 	float4 clip : TEXCOORD1;
 };
 
-//---------------------------------
-//	Terrain Base Vertex Shader
-//---------------------------------
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
@@ -47,10 +38,10 @@ VS_OUTPUT main(VS_INPUT input)
 	output.uv = input.uv;
 	output.clip = output.pos;
 
-	output.normal = mul(input.normal, World);
+	output.normal = mul(input.normal, orientation);
 	output.binorm = input.binorm;
-	output.tang  = mul(input.tang , World);
+	output.tang  = mul(input.tang , orientation);
 
-	output.worldpos = mul(input.pos, World);
+	output.worldpos = mul(input.pos, orientation);
 	return output;
 };

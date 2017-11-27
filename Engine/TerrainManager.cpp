@@ -32,7 +32,7 @@ void TerrainManager::LoadTerrain(const std::string& terrain_name)
 	}
 }
 
-Terrain* TerrainManager::GetTerrain(u32 terrain_hash)
+Terrain* TerrainManager::GetTerrain(u64 terrain_hash)
 {
 	if (m_Terrain.find(terrain_hash) == m_Terrain.end())
 	{
@@ -41,7 +41,7 @@ Terrain* TerrainManager::GetTerrain(u32 terrain_hash)
 	return m_Terrain[terrain_hash];
 }
 
-void TerrainManager::LoadTerrain(u32 terrain_hash)
+void TerrainManager::LoadTerrain(u64 terrain_hash)
 {
 	Terrain* terrain = new Terrain;
 	m_Terrain[terrain_hash] = terrain;

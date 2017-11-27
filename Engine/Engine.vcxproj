@@ -296,6 +296,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="AssetFactory.h" />
     <ClInclude Include="AssetsContainer.h" />
     <ClInclude Include="Atmosphere.h" />
     <ClInclude Include="AtmosphereConstants.h" />
@@ -307,10 +308,12 @@
     <ClInclude Include="CommandAllocator.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Console.h" />
-    <ClInclude Include="DebugSystem.h" />
+    <ClInclude Include="DebugHandle.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX11.h" />
+    <ClInclude Include="DX11Context.h" />
+    <ClInclude Include="DX11Device.h" />
     <ClInclude Include="EditObject.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EmitterInstance.h" />
@@ -328,18 +331,25 @@
     <ClInclude Include="GizmoShared.h" />
     <ClInclude Include="HDRPass.h" />
     <ClInclude Include="IGraphicsAPI.h" />
+    <ClInclude Include="IGraphicsContext.h" />
+    <ClInclude Include="IGraphicsDevice.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
+    <ClInclude Include="ImGuiRegisterStructs.h" />
     <ClInclude Include="imgui_impl_dx11.h" />
     <ClInclude Include="imgui_internal.h" />
     <ClInclude Include="IndexWrapper.h" />
     <ClInclude Include="Instance.h" />
+    <ClInclude Include="InstanceWrapper.h" />
+    <ClInclude Include="InstancingManager.h" />
     <ClInclude Include="LevelFactory.h" />
+    <ClInclude Include="LightManager.h" />
     <ClInclude Include="LightModel.h" />
     <ClInclude Include="LightPass.h" />
     <ClInclude Include="LightStructs.h" />
     <ClInclude Include="Line3D.h" />
     <ClInclude Include="LinearAllocator.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="MemorySegmentHandle.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelImporter.h" />
@@ -350,13 +360,17 @@
     </ClInclude>
     <ClInclude Include="NodeEntityManager.h" />
     <ClInclude Include="Octree.h" />
+    <ClInclude Include="EdgeDetectionPass.h" />
     <ClInclude Include="ParticleData.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PostProcessManager.h" />
+    <ClInclude Include="profile_defines.h" />
     <ClInclude Include="Quad.h" />
     <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />
+    <ClInclude Include="RenderContext.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderObject.h" />
     <ClInclude Include="RootTreeNode.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderFactory.h" />
@@ -394,6 +408,7 @@
     <ClInclude Include="VertexStructs.h" />
     <ClInclude Include="VertexTypes.h" />
     <ClInclude Include="VertexWrapper.h" />
+    <ClInclude Include="Viewport.h" />
     <ClInclude Include="VirtualFileSystem.h" />
     <ClInclude Include="Vulkan.h" />
     <ClInclude Include="WaterPlane.h" />
@@ -402,6 +417,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="AssetFactory.cpp" />
     <ClCompile Include="AssetsContainer.cpp" />
     <ClCompile Include="Atmosphere.cpp" />
     <ClCompile Include="AtmosphereModel.cpp" />
@@ -411,10 +427,12 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommandAllocator.cpp" />
     <ClCompile Include="Console.cpp" />
-    <ClCompile Include="DebugSystem.cpp" />
+    <ClCompile Include="DebugHandle.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectX11.cpp" />
+    <ClCompile Include="DX11Context.cpp" />
+    <ClCompile Include="DX11Device.cpp" />
     <ClCompile Include="DXBlendStates.cpp" />
     <ClCompile Include="DXDepthstencilStates.cpp" />
     <ClCompile Include="DXSamplerStates.cpp" />
@@ -438,11 +456,14 @@
     <ClCompile Include="imgui_draw.cpp" />
     <ClCompile Include="imgui_impl_dx11.cpp" />
     <ClCompile Include="Instance.cpp" />
+    <ClCompile Include="InstancingManager.cpp" />
     <ClCompile Include="LevelFactory.cpp" />
+    <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="LightModel.cpp" />
     <ClCompile Include="LightPass.cpp" />
     <ClCompile Include="Line3D.cpp" />
     <ClCompile Include="LinearAllocator.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="MemorySegmentHandle.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelImporter.cpp" />
@@ -453,12 +474,15 @@
     </ClCompile>
     <ClCompile Include="NodeEntityManager.cpp" />
     <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="EdgeDetectionPass.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PostProcessManager.cpp" />
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="RenderCommand.cpp" />
+    <ClCompile Include="RenderContext.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="RootTreeNode.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderFactory.cpp" />
@@ -498,6 +522,7 @@
     <ClCompile Include="TreeDweller.cpp" />
     <ClCompile Include="TreeNode.cpp" />
     <ClCompile Include="TreeNodeBase.cpp" />
+    <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="VirtualFileSystem.cpp" />
     <ClCompile Include="Vulkan.cpp" />
     <ClCompile Include="WaterPlane.cpp" />

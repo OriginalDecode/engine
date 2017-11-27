@@ -1,7 +1,7 @@
 #pragma once
 #include <Math/Matrix/Matrix44.h>
 #include <Math/Plane/PlaneVolume.h>
-#include <string>
+#include <CommonLib/HashString.h>
 class Model;
 class Texture;
 
@@ -23,7 +23,7 @@ struct GizmoHandle
 	void Initiate();
 
 	~GizmoHandle();
-	std::string m_Key;
+	u64 m_Key;
 
 	Model* m_Model = nullptr;
 	Texture* m_DirColor = nullptr;

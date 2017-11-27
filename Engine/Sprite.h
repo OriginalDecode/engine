@@ -2,12 +2,10 @@
 #include "engine_shared.h"
 #include <Math/Matrix/Matrix.h>
 
-struct ID3D11ShaderResourceView;
 
 
 class Camera;
-class SpriteModel;
-
+class Quad;
 class Sprite
 {
 public:
@@ -16,7 +14,7 @@ public:
 	~Sprite();
 	void Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
 	//void Initiate(ID3D11ShaderResourceView* aShaderResource, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition);
-	void Initiate(const cl::CHashString<128>& path);
+	void Initiate(const std::string& path);
 
 
 	void Render(Camera* aCamera);
@@ -30,8 +28,18 @@ public:
 	//void SetShaderView(ID3D11ShaderResourceView* srv);
 private:
 
-	SpriteModel* mySprite = nullptr;
+	void UpdateConstantBuffer();
+
+	Quad* m_Quad = nullptr;
 	CU::Matrix44f myOrientation;
 	CU::Vector2f myHotspot;
 	CU::Vector2f myPosition;
+
+
+	struct cbSprite : public VertexBaseStruct
+	{
+		CU::Vector2f position = CU::Vector2f(0.f, 0.f);
+		CU::Vector2f scale = CU::Vector2f(1.f, 1.f);
+	} m_cbStruct;
+	IBuffer* m_cbSprite = nullptr;
 };

@@ -10,6 +10,7 @@ class Synchronizer;
 
 struct GizmoHandle;
 
+#if !defined(_FINAL) && !defined(_PROFILE)
 class DebugSystem : public BaseSystem, public Subscriber
 {
 public:
@@ -31,10 +32,12 @@ private:
 		CU::Vector3f m_Position;
 	};
 	float m_MouseDeltaModifier = 1.f;
-	Entity m_PrevID;
-	Entity m_CurrentEntity;
+	s32 m_PrevID;
+	s32 m_CurrentEntity;
 	bool m_Holding = false;
 	GizmoHandle* m_Direction = nullptr;
 	std::string current_model;
 
+
 };
+#endif

@@ -4,9 +4,9 @@
 #include "Effect.h"
 #include "Camera.h"
 
-CText::CText(const char* aFilepath, int aSize, int aBorderWidth)
+CText::CText(const s8* filepath, u16 aSize, u16 aBorderWidth)
 {
-	myFont = Engine::GetInstance()->LoadFont(aFilepath, aSize, aBorderWidth);
+	myFont = Engine::GetInstance()->LoadFont(filepath, aSize, aBorderWidth);
 	myScale = { 1, 1 };
 }
 
@@ -32,7 +32,7 @@ void CText::SetPosition(const CU::Math::Vector2<float>& aPosition)
 {
 	float w = Engine::GetInstance()->GetWindowSize().m_Width;
 	float h = Engine::GetInstance()->GetWindowSize().m_Height;
-	CU::Math::Vector2<float> pos(-(w * 0.5f), (h * 0.5f) - (myFont->GetFontPixelSize()));
+	CU::Math::Vector2<float> pos(-(w * 0.5f), (h * 0.5f) - (myFont->GetFontSize()));
 	//pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
 	//pos.y = -pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f) - (myFont->GetFontPixelSize());
 	pos.x = pos.x + (w * aPosition.x);
@@ -50,17 +50,3 @@ const CU::Math::Vector2<float>& CText::GetScale()
 	return myScale;
 }
 
-ID3D11ShaderResourceView* CText::GetAtlas()
-{
-	return myFont->GetAtlas();
-}
-
-float CText::GetRenderTime()
-{
-	return myFont->GetRenderTime();
-}
-
-float CText::GetUpdateTime()
-{
-	return myFont->GetUpdateTime();
-}

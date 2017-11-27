@@ -1,54 +1,19 @@
 #pragma once
-#include <DataStructures/GrowingArray.h>
-#include <string>
-#include <Engine/Effect.h>
-#include <Engine/engine_shared.h>
-struct ID3D11DeviceContext;
-enum D3D_PRIMITIVE_TOPOLOGY;
+#include <Engine/Material.h>
 
 class Texture;
-
-class Material
-{
-public:
-	Material() = default;
-	~Material()
-	{
-		for (ResourceBinding& r : m_Resources )
-		{
-			SAFE_RELEASE(r.m_Resource);
-		}
-		
-	}
-	void AddResource(IShaderResourceView* pResource, const std::string& filename, Effect::TextureSlot slot);
-	void AddResource(Texture* pResource, const std::string& filename, Effect::TextureSlot slot);
-
-	void Use(Effect* pEffect, const RenderContext& render_context);
-private:
-	struct ResourceBinding
-	{
-		IShaderResourceView* m_Resource;
-		Effect::TextureSlot m_Slot;
-		std::string m_ResourceName;
-	};
-
-	CU::GrowingArray<ResourceBinding> m_Resources;
-};
-
-
-
 class Surface
 {
 public:
 	Surface(Effect* anEffect);
 	Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount);
-	Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, D3D_PRIMITIVE_TOPOLOGY aPrimology);
+	Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, graphics::eTopology aPrimology);
 
 	void AddTexture(IShaderResourceView* texture, const std::string& filepath, Effect::TextureSlot slot);
 	void AddTexture(Texture* texture, const std::string& filepath, Effect::TextureSlot slot);
 	void AddTexture(const std::string& file_path, Effect::TextureSlot slot);
 
-	void Activate(const RenderContext& render_context);
+	void Activate(const graphics::RenderContext& render_context);
 	void Deactivate();
 
 	void SetEffect(Effect* anEffect);
@@ -59,7 +24,7 @@ public:
 	void SetIndexStart(u32 aStartIndex);
 	void SetIndexCount(u32 aIndexCount);
 
-	void SetPrimology(D3D_PRIMITIVE_TOPOLOGY aPrimology);
+	void SetPrimology(graphics::eTopology topology);
 
 	int GetIndexCount() const;
 	int GetVertexCount() const;
@@ -69,8 +34,7 @@ public:
 
 private:
 
-	D3D_PRIMITIVE_TOPOLOGY myPrimologyType;
-
+	graphics::eTopology m_Topology;
 	Material m_Material;
 	Effect* myEffect;
 

@@ -70,7 +70,8 @@ float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const f
 //---------------------------------
 GBuffer main(DS_OUTPUT input) : SV_Target
 {
-		float2 ndc = (input.clip.xy / input.clip.w) / 2 + 0.5;
+		
+	float2 ndc = (input.clip.xy / input.clip.w) / 2 + 0.5;
 	ndc.x = (input.clip.x / input.clip.w) / 2.0h + 0.5h;
 	ndc.y = (-input.clip.y / input.clip.w) / 2.0h + 0.5h;
 
@@ -120,14 +121,14 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 	float NdotL = dot(normal_col, float4(0, 1, 0, 1));
 
 	blend_value = pow(blend_value, 0.4);
-
-	float4 out_color = lerp(reflection, refraction, blend_value);
+	float4 out_color = float4(0,0,1,1) + normal_col;
+	//out_color = lerp(reflection, refraction, blend_value);
 	output.Albedo =  out_color * NdotL;
-
-	float metalness = 0.0f;
+	float metalness = 1.0f;
 	float roughness = 0.f;
-	output.Normal = float4(_normal.rgb, metalness);
-	output.Depth.y = roughness; 
+	output.Normal = float4(float3(0,1,0), metalness);
+	output.Depth.x = input.pos.z;
+	output.Depth.y = 1; 
 	output.Depth.w = 1;
 	output.Emissive = float4(1,1,1,1);
 	return output;

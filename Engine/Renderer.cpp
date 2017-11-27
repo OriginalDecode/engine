@@ -107,18 +107,11 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
 
-
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "normal");
 
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "depth");
-
-	//m_DebugTextures.Add(new Texture);
-	//m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "metalness");
-
-	//m_DebugTextures.Add(new Texture);
-	//m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "roughness");
 
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "emissive");
@@ -131,17 +124,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_DebugTextures.Add(new Texture);
 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "edge");
-
-	//Effect* pEdge = Engine::GetInstance()->GetEffect("Shaders/edge_detection.json");
-	//pEdge->AddShaderResource(m_HoverTexture, Effect::DIFFUSE);
-
-// 	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
-// 	debug_textures->AddShaderResource(m_GBuffer.GetDiffuse(), Effect::DIFFUSE);
-// 	debug_textures->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
-// 	debug_textures->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
-// 	debug_textures->AddShaderResource(m_GBuffer.GetEmissive(), Effect::EMISSIVE);
-// 	debug_textures->AddShaderResource(m_GBuffer.GetIDTexture(), Effect::REGISTER_5);
-// 	debug_textures->AddShaderResource(m_HoverTexture, Effect::REGISTER_6);
 
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 
@@ -157,8 +139,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	{
 		pDebug->AddTexture(t, t->GetDebugName());
 	}
-
-
 
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
@@ -240,7 +220,7 @@ void Renderer::Render()
 		m_InstancingManager.DoInstancing(m_RenderContext, false);
 	else
 		Render3DCommands();
-	m_WaterPlane->Render(m_RenderContext);
+	//m_WaterPlane->Render(m_RenderContext);
 #if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
 	DrawHoveredEntity(ctx);
@@ -255,6 +235,7 @@ void Renderer::Render()
 	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	ctx.GSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+	ctx.DSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	m_Atmosphere.Render(m_RenderContext);
 
 	m_Atmosphere.Render(m_RenderContext);

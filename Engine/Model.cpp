@@ -97,7 +97,7 @@ void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_
 	}
 
 	rc.GetContext().SetDepthState(rc.GetAPI().GetDepthStencilState(graphics::Z_ENABLED), 1);
-	rc.GetContext().SetRasterizerState(rc.GetAPI().GetRasterizerState(graphics::CULL_BACK));
+	rc.GetContext().SetRasterizerState(rc.GetAPI().GetRasterizerState(graphics::CULL_NONE));
 	rc.GetContext().SetBlendState(rc.GetAPI().GetBlendState(graphics::BLEND_FALSE));
 
 	UpdateConstantBuffer(rc);

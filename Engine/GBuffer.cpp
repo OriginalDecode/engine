@@ -55,21 +55,19 @@ namespace graphics
 		desc.m_RenderTargetFormat = RGBA32_FLOAT;
 		m_Depth->Initiate(desc, false, "GBuffer : Depth");
 
+#ifdef _DEBUG
+		m_EntityIDTexture = new Texture;
+		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
+		desc.m_TextureFormat = RGBA32_FLOAT;
+		desc.m_ShaderResourceFormat = R32_UINT;
+		desc.m_RenderTargetFormat = R32_UINT;
+		m_EntityIDTexture->Initiate(desc, false, "Entity ID");
+
+		Engine::GetInstance()->AddTexture(m_EntityIDTexture, Hash("entity_id"));
+#endif
+
 		if (bind_textures)
 		{
-#ifdef _DEBUG
-
-			m_EntityIDTexture = new Texture;
-			desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
-			desc.m_TextureFormat = RGBA32_FLOAT;
-			desc.m_ShaderResourceFormat = R32_UINT;
-			desc.m_RenderTargetFormat = R32_UINT;
-			m_EntityIDTexture->Initiate(desc, false, "Entity ID");
-
-			Engine::GetInstance()->AddTexture(m_EntityIDTexture, Hash("entity_id"));
-
-
-#endif
 
 			Effect* shader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
 			shader->AddShaderResource(m_Albedo, Effect::DIFFUSE);
@@ -87,8 +85,7 @@ namespace graphics
 		ctx.ClearRenderTarget(m_Depth->GetRenderTargetView(), clear_color);
 		ctx.ClearRenderTarget(m_Emissive->GetRenderTargetView(), clear_color);
 #ifdef _DEBUG
-		if(m_EntityIDTexture)
-			ctx.ClearRenderTarget(m_EntityIDTexture->GetRenderTargetView(), clear_color);
+		ctx.ClearRenderTarget(m_EntityIDTexture->GetRenderTargetView(), clear_color);
 #endif
 	}
 
@@ -101,7 +98,7 @@ namespace graphics
 			m_Depth->GetRenderTargetView(),
 			m_Emissive->GetRenderTargetView(),
 #ifdef _DEBUG
-			m_EntityIDTexture ? m_EntityIDTexture->GetRenderTargetView() : nullptr,
+			m_EntityIDTexture->GetRenderTargetView(),
 #endif
 		};
 

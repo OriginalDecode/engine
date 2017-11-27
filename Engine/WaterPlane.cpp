@@ -62,6 +62,7 @@ void WaterPlane::Render(const graphics::RenderContext& rc)
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
 	ctx.SetRasterizerState(m_RenderWireframe ? api.GetRasterizerState(graphics::WIREFRAME) : api.GetRasterizerState(graphics::CULL_NONE));
 
 	UpdateConstantBuffer(rc);
@@ -93,7 +94,7 @@ void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const graphics::RenderC
 {
 	m_PixelStruct.m_CompareValue = plane;
 	rc.GetContext().UpdateConstantBuffer(m_cbPixel, &m_PixelStruct, sizeof(m_PixelStruct));
-	rc.GetContext().PSSetConstantBuffer(0, 1, &m_cbPixel);
+	rc.GetContext().PSSetConstantBuffer(1, 1, &m_cbPixel);
 }
 
 void WaterPlane::AddSurface(Surface* /*surface*/)

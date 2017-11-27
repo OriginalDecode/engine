@@ -184,12 +184,12 @@ namespace debug
 				}
 
 
-				if (ImGui::BeginChild("", ImVec2(300, 100)))
+				if (ImGui::BeginChild("", ImVec2(250, 100)))
 				{
 
 					if (instance != nullptr)
 					{
-						ImGui::PushItemWidth(400.f);
+						ImGui::PushItemWidth(300.f);
 						ListBox("", &s_MaterialIndex, m_MaterialLabels);
 
 						u64 hash = m_Materials[s_MaterialIndex]->GetKey();

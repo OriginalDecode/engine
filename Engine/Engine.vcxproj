@@ -305,6 +305,7 @@
     <ClInclude Include="BaseModel.h" />
     <ClInclude Include="BloomPass.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CityGenerator.h" />
     <ClInclude Include="CommandAllocator.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Console.h" />
@@ -425,6 +426,7 @@
     <ClCompile Include="BaseModel.cpp" />
     <ClCompile Include="BloomPass.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CityGenerator.cpp" />
     <ClCompile Include="CommandAllocator.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="DebugHandle.cpp" />

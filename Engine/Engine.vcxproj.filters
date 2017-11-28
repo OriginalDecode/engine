@@ -109,6 +109,9 @@
     <Filter Include="Memory">
       <UniqueIdentifier>{74fa6570-4a86-47ca-b567-d9f7b7c3fbef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Factories">
+      <UniqueIdentifier>{201dfdf5-6b3a-418b-bf66-9772f05c2a65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -417,14 +420,29 @@
     <ClInclude Include="InstanceWrapper.h">
       <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
     </ClInclude>
-    <ClInclude Include="Viewport.h" />
-    <ClInclude Include="AssetFactory.h" />
-    <ClInclude Include="LightManager.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="InstancingManager.h" />
-    <ClInclude Include="RenderObject.h" />
     <ClInclude Include="profile_defines.h" />
-    <ClInclude Include="EdgeDetectionPass.h" />
+    <ClInclude Include="Viewport.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="EdgeDetectionPass.h">
+      <Filter>Rendering\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="InstancingManager.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderObject.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetFactory.h">
+      <Filter>Factories</Filter>
+    </ClInclude>
+    <ClInclude Include="CityGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -685,12 +703,27 @@
     <ClCompile Include="RootTreeNode.cpp">
       <Filter>World</Filter>
     </ClCompile>
-    <ClCompile Include="Viewport.cpp" />
-    <ClCompile Include="AssetFactory.cpp" />
-    <ClCompile Include="LightManager.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="InstancingManager.cpp" />
-    <ClCompile Include="RenderObject.cpp" />
-    <ClCompile Include="EdgeDetectionPass.cpp" />
+    <ClCompile Include="Viewport.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="EdgeDetectionPass.cpp">
+      <Filter>Rendering\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="InstancingManager.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderObject.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetFactory.cpp">
+      <Filter>Factories</Filter>
+    </ClCompile>
+    <ClCompile Include="CityGenerator.cpp" />
   </ItemGroup>
 </Project>

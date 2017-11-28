@@ -335,52 +335,6 @@ void LevelFactory::CreateTerrain(std::string terrain_path)
 	Terrain* terrain = m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, -4, 0), CU::Vector2f(512, 512));
 	Material* pGroundMaterial = m_Engine->GetMaterial("Data/Material/mat_grass.json");
 	terrain->SetMaterial(pGroundMaterial);
-
-
-
-
-	float uniform_height = -4;
-// 	Terrain* terrain = m_Engine->CreateTerrain("Data/Textures/t_0.tga", CU::Vector3f(0, uniform_height, 0), CU::Vector2f(512, 512));
-// 	terrain->AddNormalMap("Data/Textures/t0_n.dds");
-// 	terrain = m_Engine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, uniform_height, 510), CU::Vector2f(512, 512));
-// 	terrain->AddNormalMap("Data/Textures/t1_n.dds");
-// 	terrain = m_Engine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, uniform_height, 0), CU::Vector2f(512, 512));
-// 	terrain->AddNormalMap("Data/Textures/t2_n.dds");
-// 	terrain = m_Engine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, uniform_height, 510), CU::Vector2f(512, 512));
-// 	terrain->AddNormalMap("Data/Textures/t3_n.dds");
-	//m_Engine->GetThreadpool().AddWork(Work([=] {
-	//}));
-	//terrain->AddNormalMap("Data/Textures/t1_n.dds");
-	/*
-	Work([&](std::string texture) {
-		CTerrain* terrain = m_Engine->CreateTerrain(texture, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
-		terrain->AddNormalMap("Data/Textures/normal.dds");
-	});
-	*/
-
-	/*
-	myTerrain.Add(terrain);
-
-	terrain = myEngine->CreateTerrain("Data/Textures/t_1.tga", CU::Vector3f(0, 0, 510), CU::Vector2f(512, 512));
-	terrain->AddNormalMap("Data/Textures/t1_n.dds");
-	myTerrain.Add(terrain);
-
-	terrain = myEngine->CreateTerrain("Data/Textures/t_2.tga", CU::Vector3f(510, 0, 0), CU::Vector2f(512, 512));
-	terrain->AddNormalMap("Data/Textures/t2_n.dds");
-	myTerrain.Add(terrain);
-
-	terrain = myEngine->CreateTerrain("Data/Textures/t_3.tga", CU::Vector3f(510, 0, 510), CU::Vector2f(512, 512));
-	terrain->AddNormalMap("Data/Textures/t3_n.dds");
-	myTerrain.Add(terrain);
-
-	for (s32 i = 0; i < myTerrain.Size(); i++)
-	{
-		myTerrainBodies.Add(myPhysicsManager->CreateBody());
-		myPhysicsManager->Add(myTerrainBodies[i]->InitAsTerrain(myTerrain[i]->GetVerticeArrayCopy(), myTerrain[i]->GetIndexArrayCopy()));
-	}
-
-
-	}));*/
 }
 
 void LevelFactory::CreatePBLLevel(s32 steps)

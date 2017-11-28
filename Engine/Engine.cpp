@@ -37,6 +37,7 @@
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include <CommonLib/reflector.h>
 #include <Engine/DebugHandle.h>
+#include <Engine/CityGenerator.h>
 #endif
 #include <Engine/AssetFactory.h>
 
@@ -88,17 +89,6 @@ Engine* Engine::GetInstance()
 
 bool Engine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 {
-	AssetFactory::Create();
-
-#if !defined(_PROFILE) && !defined(_FINAL)
-	debug::DebugHandle::Create();
-#endif
-	Randomizer::Create();
-	PostMaster::Create();
-	m_CurrentSampler = graphics::MSAA_x16;
-	//myWindowSize.m_Height = window_height;
-	//myWindowSize.m_Width = window_width;
-
 	WindowCreateInfo window_create_info;
 	window_create_info.window_height = window_height;
 	window_create_info.window_width = window_width;
@@ -117,15 +107,26 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	create_info.m_WindowWidth = m_Window.GetInnerSize().m_Width;
 	create_info.m_WindowHeight = m_Window.GetInnerSize().m_Height;
 	create_info.m_APIName = "DirectX11";
+
 	m_API = new graphics::DirectX11(create_info);
 	m_API->Initiate();
+	
+	AssetFactory::Create();
+	myAssetsContainer = new AssetsContainer;
+	myAssetsContainer->Initiate();
 
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+	debug::DebugHandle::Create();
+	CityGenerator::Create();
+#endif
+	Randomizer::Create();
+	PostMaster::Create();
+	m_CurrentSampler = graphics::MSAA_x16;
+	
 
 	m_InputHandle = new InputHandle;
 	m_InputHandle->Initiate(m_Window.GetHWND(), instance_handle);
-
-	myAssetsContainer = new AssetsContainer;
-	myAssetsContainer->Initiate();
 
 	m_TerrainManager = new TerrainManager;
 
@@ -181,6 +182,7 @@ bool Engine::CleanUp()
 {
 #if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::Destroy();
+	CityGenerator::Destroy();
 #endif
 	AssetFactory::Destroy();
 

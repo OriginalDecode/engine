@@ -14,7 +14,9 @@ struct ModelInstance
 	template <typename Writer>
 	void Serialize(Writer& writer) const;
 
-	void Deserialize(const rapidjson::Value& json_value);
+	static void Deserialize(const rapidjson::Value& json_value, ModelInstance& instance);
+	static ModelInstance Deserialize(const rapidjson::Value& json_value);
+	//void Deserialize(const rapidjson::Value& json_value);
 
 	std::string m_Filename;
 	std::string m_MaterialFile;

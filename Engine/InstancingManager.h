@@ -24,15 +24,15 @@ class InstancingManager
 public:
 	InstancingManager() = default;
 	bool FindInstanceObject(u64 key);
-	InstanceObject& AddInstanceObject(InstanceObject instance_object);
-	const InstanceObject& GetInstanceObject(u64 key);
+	void AddInstanceObject(InstanceObject instance_object);
+	const InstanceObject& GetInstanceObject(u64 key, u64 model_key);
 
-	void AddGPUDataToInstance(u64 key, GPUModelData data);
+	void AddGPUDataToInstance(u64 material_key, u64 model_key, GPUModelData data);
 
 	void DoInstancing(const graphics::RenderContext& rc, bool shadowing);
 	void EndFrame();
 private:
-	std::map<u64, InstanceObject> m_InstanceObjects; /* the key is the material */
+	std::map<u64, std::map<u64, InstanceObject>> m_InstanceObjects; /* the key is the material */
 
 
 };

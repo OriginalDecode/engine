@@ -299,7 +299,7 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 	// 		out->SetMaterial(pMaterial);
 	// 		return;
 	// 	}
-
+	return;
 	if (filepath.find("ballen.fbx") != filepath.npos)
 		return;
 

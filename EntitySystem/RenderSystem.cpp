@@ -74,10 +74,11 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 #endif
 
 		CU::Matrix44f orientation = translation.myOrientation;
-		orientation = CU::Matrix44f::CreateScaleMatrix(render.m_Scale) * orientation;
 		
 		for (const ModelInstance& instance : render.m_Instances)
 		{
+			if(instance.m_Scale > 0.f)
+				orientation = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * orientation;
 			const CU::Matrix44f relative = orientation * instance.m_Orientation;
 			AddRenderCommand(ModelCommand(instance.m_ModelID
 										  , instance.m_MaterialKey

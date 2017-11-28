@@ -53,8 +53,6 @@ CityGenerator::CityGenerator()
 			}
 		}
 	}
-
-
 }
 
 

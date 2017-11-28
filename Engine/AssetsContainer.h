@@ -77,7 +77,7 @@ u64 AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bo
 
 	T* model = new T;
 	m_Models.emplace(hash, model);
-
+	model->SetKey(hash);
 	if (thread)
 	{
 		Engine::GetInstance()->GetThreadpool().AddWork(Work([=]() {

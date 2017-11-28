@@ -67,12 +67,15 @@ public:
 	}
 	void CreateCube();
 
+	void SetKey(u64 key) { m_Key = key; }
+	const u64 GetKey() const { return m_Key; }
 private:
 	Material* GetMat() { return m_Material; }
 	void RenderCube(const graphics::RenderContext& rc);
 	void RemoveGPUData();
 	CU::GrowingArray<Model*> m_Children;
 protected:
+	u64 m_Key = 0;
 	void UpdateConstantBuffer(const graphics::RenderContext& rc) override;
 	CU::GrowingArray<GPUModelData> m_GPUData;
 };

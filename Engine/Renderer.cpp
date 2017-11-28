@@ -658,7 +658,7 @@ void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, E
 #endif
 	CU::Vector4f col = cl::IntToCol(model_data.m_ID);
 
-	m_InstancingManager.AddGPUDataToInstance(command->m_MaterialKey, model_data);
+	m_InstancingManager.AddGPUDataToInstance(command->m_MaterialKey, command->m_Key, model_data);
 }
 
 //Move this to some kind of light manager

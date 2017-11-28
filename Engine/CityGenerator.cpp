@@ -38,16 +38,18 @@ CityGenerator::CityGenerator()
 		std::string _size = obj[s_Size].GetString();
 		if (_size.find(s_LargeBuilding) != _size.npos)
 		{
-			CU::GrowingArray<ModelInstance>& container = m_Instances[LARGE];
+			CU::GrowingArray<CU::GrowingArray<ModelInstance>>& container = m_Instances[LARGE];
 			for (const rapidjson::Value& value : obj[s_Buildings].GetArray())
 			{
+				CU::GrowingArray<ModelInstance> instances;
 				JSONReader building_reader(value.GetString());
 				auto& building_doc = building_reader.GetDocument();
 
 				for (auto& building : building_doc.GetArray())
 				{
-					container.Add(ModelInstance::Deserialize(building));
+					instances.Add(ModelInstance::Deserialize(building));
 				}
+				container.Add(instances);
 			}
 		}
 	}
@@ -77,6 +79,15 @@ void CityGenerator::CreateEntity()
 
 	GraphicsComponent& graphics = manager.AddComponent<GraphicsComponent>(entity);
 
+	for (s32 i = 0; i < _COUNT; i++)
+	{
+		//Test fitting
+		const s32 building = RANDOM(0, m_Instances[i].Size() - 1);
+		graphics.m_Instances = m_Instances[i][building];
+
+	}
+
+	//graphics.m_Instances = RANDOM(0, m_);
 
 
 }

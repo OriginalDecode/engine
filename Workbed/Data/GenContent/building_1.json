@@ -2,5 +2,9 @@
     {
         "model_file": "data/model/ballen.fbx",
         "material_file": "Data/Material/mat_octostone.json"
+    },
+    {
+        "model_file": "data/model/ballen.fbx",
+        "material_file": "Data/Material/mat_octostone.json"
     }
 ]

@@ -31,7 +31,7 @@ private:
 	void CreateSpline();
 	void CreateEntity(); 
 
-	CU::GrowingArray<ModelInstance> m_Instances[_COUNT]; //variations;
+	CU::GrowingArray<CU::GrowingArray<ModelInstance>> m_Instances[_COUNT]; //variations;
 
 
 

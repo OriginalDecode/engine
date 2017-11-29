@@ -69,7 +69,7 @@ void Game::Initiate(const std::string& level)
 	m_PauseState.InitState(m_StateStack);
 	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
 
-
+	m_Engine->RegisterFunction(5, [&] { Game::DoStuff(); });
 	
 
 
@@ -119,6 +119,11 @@ void Game::EndState()
 
 void Game::Render(bool render_through)
 {
+}
+
+void Game::DoStuff()
+{
+	OutputDebugString("magic");
 }
 
 void Game::SaveCameraPosition()

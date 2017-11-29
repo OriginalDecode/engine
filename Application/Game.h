@@ -37,6 +37,8 @@ public:
 
 
 private:
+	void DoStuff();
+
 	void SaveCameraPosition();
 
 	void Reload();

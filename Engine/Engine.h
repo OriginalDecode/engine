@@ -191,6 +191,9 @@ public:
 	u64 LoadModelA(std::string path, std::string effect, bool threaded);
 
 	void PickEntity();
+
+	void RegisterFunction(s32 tick, std::function<void()> func);
+
 private:
 	s32 PickEntity(Texture* pTexture);
 	Engine();
@@ -208,12 +211,23 @@ private:
 
 	SLocalTime myLocalTime;
 
-
 	VirtualFileSystem m_VirtualFileSystem;
 	Threadpool m_Threadpool;
 	Window m_Window;
 	EntityManager m_EntityManager;
 
+	struct Tick
+	{
+		CU::GrowingArray<std::function<void()>> m_Callbacks;
+		float m_MaxTime = 0.f;
+		float m_CurrTime = 0.f;
+	};
+
+	std::map<s32, Tick> m_Ticks;
+
+	float m_PrevTick = 0.f;
+	float m_CurrTick = 0.f;
+	void HandleTick();
 	InputHandle* m_InputHandle       = nullptr;
 	PhysicsManager* m_PhysicsManager = nullptr;
 	CFontManager* myFontManager      = nullptr;

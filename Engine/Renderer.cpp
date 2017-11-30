@@ -44,9 +44,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 {
 	auto api = Engine::GetAPI();
 	m_RenderContext = graphics::RenderContext(Engine::GetInstance(),
-		api->GetDevice(),
-		api->GetContext(),
-		api);
+											  api->GetDevice(),
+											  api->GetContext(),
+											  api);
 
 
 	//myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
@@ -83,7 +83,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 
-	
+
 
 	//pDebug->RegisterCheckbox(debug::DebugCheckbox(&m_LightModelWireframe, "Light Model Wireframe"));
 
@@ -208,7 +208,7 @@ void Renderer::Render()
 
 	if (m_RenderInstanced)
 		Render3DCommandsInstanced();
-	
+
 	//ProcessWater();
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
@@ -225,8 +225,11 @@ void Renderer::Render()
 
 	WriteDebugTextures();
 
-	DrawEntity(m_HoverTexture, ctx);
-	DrawEntity(m_SelectedTexture, ctx);
+	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
+	DrawEntity(m_HoverTexture, hovered, ctx);
+
+	const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
+	DrawEntity(m_SelectedTexture, selected, ctx);
 
 #endif
 
@@ -288,31 +291,31 @@ void Renderer::Render()
 
 }
 
-void Renderer::DrawEntity(Texture* pTex, graphics::IGraphicsContext &ctx)
+void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &ctx)
 {
+	if (e <= 0)
+		return;
+
 	ctx.ClearRenderTarget(pTex->GetRenderTargetView(), clearcolor::black);
 	ctx.OMSetRenderTargets(1, pTex->GetRenderTargetRef(), nullptr);
 	Engine& engine = m_RenderContext.GetEngine();
-	const Entity hover_e = debug::DebugHandle::GetInstance()->GetHoveredEntity();
-	if (hover_e > 0)
+	const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(e);
+
+	for (const ModelInstance& instance : graphics.m_Instances)
 	{
-		const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(hover_e);
+		m_HoverModel = engine.GetModel(instance.m_ModelID);
+		if (!m_HoverModel)
+			continue;
 
-		for (const ModelInstance& instance : graphics.m_Instances)
-		{
-			m_HoverModel = engine.GetModel(instance.m_ModelID);
-			if (m_HoverModel)
-			{
-				const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(hover_e);
-				CU::Matrix44f orientation = translation.myOrientation;
-				if (instance.m_Scale > 0.f)
-					orientation = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * orientation;
-				const CU::Matrix44f relative = orientation * instance.m_Orientation;
+		const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(e);
+		CU::Matrix44f orientation = translation.myOrientation;
+		if (instance.m_Scale > 0.f)
+			orientation = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * orientation;
+		const CU::Matrix44f relative = orientation * instance.m_Orientation;
 
-				m_HoverModel->AddOrientation(relative);
-				m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
-			}
-		}
+		m_HoverModel->AddOrientation(relative);
+		m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
+
 	}
 }
 

@@ -426,7 +426,7 @@ void Renderer::Render3DCommandsInstanced()
 		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, top_tree_node);
 		for (s32 i = 0; i < commands.Size(); i++)
 		{
-			ProcessCommand(commands, i, engine);
+			ProcessModelCommand(commands, i, engine);
 		}
 	}
 
@@ -471,7 +471,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera* camera)
 		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, top_tree_node);
 		for (s32 i = 0; i < commands.Size(); i++)
 		{
-			ProcessCommand(commands, i, engine);
+			ProcessModelCommand(commands, i, engine);
 		}
 	}
 
@@ -619,7 +619,7 @@ void Renderer::RenderLines()
 	PROFILE_BLOCK_END;
 }
 
-void Renderer::ProcessCommand(const memory::CommandAllocator& commands, s32 i, Engine& engine)
+void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32 i, Engine& engine)
 {
 	auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 	const bool result = (command->m_CommandType == RenderCommand::MODEL);

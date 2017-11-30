@@ -59,7 +59,7 @@ private:
 
 	void Render3DCommandsInstanced();
 
-	void ProcessCommand(const memory::CommandAllocator& commands, s32 i, Engine& engine);
+	void ProcessModelCommand(const memory::CommandAllocator& commands, s32 i, Engine& engine);
 
 	void RenderTerrain(bool override_effect);
 

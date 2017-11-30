@@ -153,8 +153,7 @@ private:
 	Quad* m_DebugQuad = nullptr;
 	void WriteDebugTextures();
 
-	void DrawHoveredEntity(graphics::IGraphicsContext &ctx);
-	void DrawSelectedEntity(graphics::IGraphicsContext &ctx);
+	void DrawEntity(Texture* pTex, graphics::IGraphicsContext &ctx);
 
 public:
 	void SetRenderLines(bool render_lines) { m_RenderLines = render_lines; }

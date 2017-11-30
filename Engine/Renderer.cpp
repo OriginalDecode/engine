@@ -222,9 +222,12 @@ void Renderer::Render()
 		Render3DCommands();
 	//m_WaterPlane->Render(m_RenderContext);
 #if !defined(_PROFILE) && !defined(_FINAL)
+
 	WriteDebugTextures();
-	DrawHoveredEntity(ctx);
-	DrawSelectedEntity(ctx);
+
+	DrawEntity(m_HoverTexture, ctx);
+	DrawEntity(m_SelectedTexture, ctx);
+
 #endif
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
@@ -285,33 +288,10 @@ void Renderer::Render()
 
 }
 
-void Renderer::DrawSelectedEntity(graphics::IGraphicsContext &ctx)
+void Renderer::DrawEntity(Texture* pTex, graphics::IGraphicsContext &ctx)
 {
-	ctx.ClearRenderTarget(m_SelectedTexture->GetRenderTargetView(), clearcolor::black);
-	ctx.OMSetRenderTargets(1, m_SelectedTexture->GetRenderTargetRef(), nullptr);
-	Engine& engine = m_RenderContext.GetEngine();
-	const Entity selected_e = debug::DebugHandle::GetInstance()->GetSelectedEntity();
-	if (selected_e > 0)
-	{
-		const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(selected_e);
-
-		for (const ModelInstance& instance : graphics.m_Instances)
-		{
-			m_SelectedModel = engine.GetModel(instance.m_ModelID);
-			if (m_SelectedModel)
-			{
-				const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(selected_e);
-				m_SelectedModel->AddOrientation(translation.myOrientation);
-				m_SelectedModel->RenderInstanced(m_RenderContext, m_SelectedEffect);
-			}
-		}
-	}
-}
-
-void Renderer::DrawHoveredEntity(graphics::IGraphicsContext &ctx)
-{
-	ctx.ClearRenderTarget(m_HoverTexture->GetRenderTargetView(), clearcolor::black);
-	ctx.OMSetRenderTargets(1, m_HoverTexture->GetRenderTargetRef(), nullptr);
+	ctx.ClearRenderTarget(pTex->GetRenderTargetView(), clearcolor::black);
+	ctx.OMSetRenderTargets(1, pTex->GetRenderTargetRef(), nullptr);
 	Engine& engine = m_RenderContext.GetEngine();
 	const Entity hover_e = debug::DebugHandle::GetInstance()->GetHoveredEntity();
 	if (hover_e > 0)
@@ -324,7 +304,12 @@ void Renderer::DrawHoveredEntity(graphics::IGraphicsContext &ctx)
 			if (m_HoverModel)
 			{
 				const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(hover_e);
-				m_HoverModel->AddOrientation(translation.myOrientation);
+				CU::Matrix44f orientation = translation.myOrientation;
+				if (instance.m_Scale > 0.f)
+					orientation = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * orientation;
+				const CU::Matrix44f relative = orientation * instance.m_Orientation;
+
+				m_HoverModel->AddOrientation(relative);
 				m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
 			}
 		}

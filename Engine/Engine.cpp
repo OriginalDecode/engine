@@ -72,6 +72,7 @@ void Engine::HandleTick()
 			for (auto& func : list)
 			{
 				func();
+				time = 0.f;
 			}
 		}
 	}
@@ -257,6 +258,7 @@ void Engine::Update()
 		myTimeManager.Update();
 		myAssetsContainer->Update();
 	}
+	HandleTick();
 	m_Renderer->Render();
 	m_PhysicsManager->Update();
 	m_Threadpool.Update();
@@ -327,7 +329,8 @@ void Engine::RegisterFunction(s32 tick, std::function<void()>  func)
 		_tick.m_MaxTime = (float)tick;
 		m_Ticks.emplace(tick, _tick);//m_Callbacks.emplace(tick, CU::GrowingArray<std::function<void()>>()).first;
 	}
-		
+
+	it = m_Ticks.find(tick);
 	it->second.m_Callbacks.Add(func);
 
 }

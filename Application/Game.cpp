@@ -51,27 +51,13 @@ void Game::Initiate(const std::string& level)
 	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel(level);
 	m_World.AddDwellers(dwellers);
 
-	/*m_Player = new TreeDweller;
-	m_Player->Initiate(m_Engine->GetEntityManager().CreateEntity(), TreeDweller::eType::DYNAMIC);
-	m_Engine->GetEntityManager().AddComponent<TranslationComponent>(m_Player->GetEntity());
-	TranslationComponent& translation = m_Engine->GetEntityManager().GetComponent<TranslationComponent>(m_Player->GetEntity());
-	m_Player->AddComponent(&translation, TreeDweller::TRANSLATION | TreeDweller::DEBUG);
-	m_World.AddDweller(m_Player);*/
-
 	m_Picker = new CMousePicker;
 
-	//m_Engine->ToggleVsync(); //settings
 	m_Camera = m_Engine->GetCamera();
 	m_Camera->SetPosition(CU::Vector3f(0, 0, 0));
 	CameraHandle::Create();
-	//CameraHandle::GetInstance()->Initiate(&m_Orientation);
 	CameraHandle::GetInstance()->Initiate(nullptr);
 	m_PauseState.InitState(m_StateStack);
-	//component = &m_Engine->GetEntityManager().GetComponent<TranslationComponent>(0);
-
-	m_Engine->RegisterFunction(5, [&] { Game::DoStuff(); });
-	
-
 
 	bool read_camera = false;
 	if (read_camera)
@@ -97,8 +83,6 @@ void Game::Initiate(const std::string& level)
 
 	spotorient = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * spotorient;
 	spotorient.SetPosition({ 5.f, 4.f, 5.f, 1.f });
-
-
 	//PostMaster::GetInstance()->Subscribe()
 #if !defined(_FINAL) && !defined(_PROFILE)
 	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
@@ -173,21 +157,16 @@ void Game::OldUpdate(float dt)
 
 	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
 	PostMaster* pEventHandle = PostMaster::GetInstance();
-	if (input_wrapper->OnClick(MouseInput::LEFT))
-	{
-		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
+	//if (input_wrapper->OnClick(MouseInput::LEFT))
+	//{
+	//	CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
 
-		pEventHandle->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, 
-			(void*)&m_Picker->GetRayStart(),			
-			m_Player));
-		pos0 = m_Camera->GetPosition();
-		pos1 = pos0 + (ray_dir * 25.f);
-	}
-
-
-
-
-
+	//	pEventHandle->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, 
+	//		(void*)&m_Picker->GetRayStart(),			
+	//		m_Player));
+	//	pos0 = m_Camera->GetPosition();
+	//	pos1 = pos0 + (ray_dir * 25.f);
+	//}
 
 /*
 	if (input_wrapper->IsDown(KButton::LCTRL))

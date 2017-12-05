@@ -18,7 +18,7 @@ public:
 	~DebugSystem();
 	void Update(float dt, bool paused) override;
 private:
-	//void HandleEvent(u64 event, void* data) override;
+	void HandleEvent(u64 event, void* data = nullptr) override;
 	void ReceiveMessage(const OnLeftClick& message) override;
 
 	void UpdateOBBs();

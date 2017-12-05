@@ -143,9 +143,9 @@ bool PostMaster::IsSubscribed(const eMessageType aMessageType, Subscriber* aSubs
 	return false;
 }
 
-void PostMaster::SendMessage(const std::string& event, void* data)
+void PostMaster::SendMessage(const char* event, void* data)
 {
-	u64 hash = Hash(event.c_str());
+	u64 hash = Hash(event);
 	SendMessage(hash, data);
 }
 
@@ -219,4 +219,14 @@ void PostMaster::QuickSort(CU::GrowingArray<SubscriberInfo> &aBuffer, const int 
 		QuickSort(aBuffer, aStart, upper - 1);
 	if (upper + 1 < aEnd)
 		QuickSort(aBuffer, upper + 1, aEnd);
+}
+
+void PostMaster::SendMessage(const u64& event)
+{
+	SendMessage(event, nullptr);
+}
+
+void PostMaster::SendMessage(const char* event)
+{
+	SendMessage(event, nullptr);
 }

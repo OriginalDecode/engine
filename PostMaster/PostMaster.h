@@ -43,12 +43,14 @@ public:
 	void UnSubscribe(Subscriber* aSubscriber);
 	bool IsSubscribed(const eMessageType aMessageType, Subscriber* aSubscriber);
 
-	template<typename Message>
-	void SendMessage(const Message& aMessage);
+	template<typename T>
+	void SendMessage(const T& aMessage);
 
-	void SendMessage(const std::string& event, void* data);
 	void SendMessage(const u64& event, void* data);
+	void SendMessage(const char* event, void* data);
 
+	void SendMessage(const u64& event);
+	void SendMessage(const char* event);
 private:
 	PostMaster();
 	~PostMaster();
@@ -61,8 +63,8 @@ private:
 	std::map<u64, CU::GrowingArray<SubscriberInfo>> m_EventSubscribers;
 };
 
-template<typename Message>
-void PostMaster::SendMessage(const Message& aMessage)
+template<typename T>
+void PostMaster::SendMessage(const T& aMessage)
 {
 	CU::GrowingArray<SubscriberInfo>& subscribers = mySubscribers[static_cast<int>(aMessage.myMessageType)];
 

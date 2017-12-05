@@ -157,16 +157,18 @@ void Game::OldUpdate(float dt)
 
 	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
 	PostMaster* pEventHandle = PostMaster::GetInstance();
-	//if (input_wrapper->OnClick(MouseInput::LEFT))
-	//{
-	//	CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
+	if (input_wrapper->OnClick(MouseInput::LEFT))
+	{
+		pEventHandle->SendMessage("pick_entity");
+		/*
+		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
 
-	//	pEventHandle->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, 
-	//		(void*)&m_Picker->GetRayStart(),			
-	//		m_Player));
-	//	pos0 = m_Camera->GetPosition();
-	//	pos1 = pos0 + (ray_dir * 25.f);
-	//}
+		pEventHandle->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, 
+			(void*)&m_Picker->GetRayStart(),			
+			m_Player));
+		pos0 = m_Camera->GetPosition();
+		pos1 = pos0 + (ray_dir * 25.f);*/
+	}
 
 /*
 	if (input_wrapper->IsDown(KButton::LCTRL))

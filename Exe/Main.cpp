@@ -10,7 +10,7 @@
 
 #include <Application/Application.h>
 #include <string>
-
+#include <PostMaster/PostMaster.h>
 #ifdef _PROFILE
 #include <easy/profiler.h>
 #endif
@@ -35,9 +35,9 @@ enum class EUsagePage
 	CONSUMER_AUDIO_CONTROL = 0x0C
 };
 
-Application* newApplication = nullptr;
-static bool g_windowactive = false;
-
+Application* application = nullptr;
+static bool s_WindowActive = false;
+Engine* engine = nullptr;
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
 #ifdef _PROFILE
@@ -53,7 +53,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	float w = 1920;
 	float h = 1080;
-	newApplication = new Application;
+	application = new Application;
 
 	Engine::Create();
 	
@@ -66,9 +66,9 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	engine->GetVFS().Register("Data/Texture", "Texture");
 
 	engine->Initiate(w, h, anInstance, WindowProc);
-	DL_ASSERT_EXP(newApplication->Initiate(), "Failed to initiate game");
+	DL_ASSERT_EXP(application->Initiate(), "Failed to initiate game");
 
-	g_windowactive = true;
+	s_WindowActive = true;
 	//ShowCursor(false);
 	MSG msg;
 	bool applicationIsRunning = true;
@@ -89,7 +89,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 			break;
 		}
 
-		if (newApplication->HasQuit() == true)
+		if (application->HasQuit() == true)
 		{
 			applicationIsRunning = false;
 			break;
@@ -103,9 +103,9 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	} while (applicationIsRunning == true);
 
-	newApplication->OnExit();
-	delete newApplication;
-	newApplication = nullptr;
+	application->OnExit();
+	delete application;
+	application = nullptr;
 
 	DL_Debug::Debug::Destroy();
 	Engine::Destroy();
@@ -144,25 +144,25 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
 			//g_windowactive = false;
-			newApplication->OnInactive();
+			application->OnInactive();
 			//ShowCursor(!g_windowactive);
 		}
 		else
 		{
 			//g_windowactive = true;
-			newApplication->OnActive();
+			application->OnActive();
 			//ShowCursor(!g_windowactive);
 		}
 	}break;
 	case WM_ENTERSIZEMOVE:
-		newApplication->OnPause();
+		//application->OnPause();
 		break;
 	case WM_EXITSIZEMOVE:
 
-		newApplication->OnResume();
+		application->OnResume();
 		break;
 	case WM_CLOSE:
-		newApplication->OnExit();
+		application->OnExit();
 		/* Unsure that this is needed since I can cleanup when the loop cancel */
 		break;
 	case WM_SYSCOMMAND:
@@ -173,7 +173,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		if (wParam == VK_RETURN)
 		{
 			if ((HIWORD(lParam) & KF_ALTDOWN))
-				newApplication->OnAltEnter();
+				application->OnAltEnter();
 		}break;
 	case WM_INPUT:
 	{

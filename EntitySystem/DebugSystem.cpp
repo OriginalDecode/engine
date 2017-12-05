@@ -29,6 +29,7 @@ DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 {
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	PostMaster::GetInstance()->Subscribe(eMessageType::ON_LEFT_CLICK, this);
+	PostMaster::GetInstance()->Subscribe("pick_entity", this);
 	//PostMaster::GetInstance()->Subscribe("left_click", this);
 	m_CurrentEntity = -1;
 	m_MouseDeltaModifier = 100.f;
@@ -285,6 +286,15 @@ void DebugSystem::UpdateOBBs()
 		debug.m_RotationGizmo.Update();
 	}
 
+}
+
+void DebugSystem::HandleEvent(u64 event, void* data /*= nullptr*/)
+{
+	if (event == Hash("pick_entity"))
+	{
+		debug::DebugHandle::GetInstance()->ConfirmEntity();
+		m_Engine->PickEntity();
+	}
 }
 
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)

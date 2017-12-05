@@ -10,7 +10,7 @@
 #define SLEEP_TIME 1000
 ShaderFactory::ShaderFactory()
 {
-#ifndef FINAL 
+#ifndef _FINAL 
 	for (int i = 0; i < 6; i++)
 	{
 		FileWatcher* watcher = new FileWatcher();
@@ -21,7 +21,7 @@ ShaderFactory::ShaderFactory()
 
 ShaderFactory::~ShaderFactory()
 {
-#ifndef FINAL 
+#ifndef _FINAL 
 	myFileWatchers.DeleteAll();
 #endif
 	DELETE_MAP(m_Shaders);
@@ -150,10 +150,9 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 
 #ifndef FINAL
 	myFileWatchers[(s32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint));
-#endif
-
 	DL_ASSERT_EXP(effect, "Effect pointer was null");
 	m_Shaders[hash_key]->m_EffectPointers.Add(effect);
+#endif
 }
 
 CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type)
@@ -247,10 +246,12 @@ IShaderBlob* ShaderFactory::CompileShader(const std::string& file_path, const st
 
 void ShaderFactory::Update()
 {
+#ifndef _FINAL
 	for (FileWatcher* watcher : myFileWatchers)
 	{
 		watcher->FlushChanges();
 	}
+#endif
 }
 
 CompiledShader::~CompiledShader()

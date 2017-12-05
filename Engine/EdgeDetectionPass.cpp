@@ -31,8 +31,9 @@ void EdgeDetectionPass::Initiate()
 	m_Result->Initiate(desc, false, "EdgeDetection - Result");
 
 	//Effect* debug_textures = Engine::GetInstance()->GetEffect("Shaders/debug_textures.json");
+#ifdef _DEBUG
 	debug::DebugHandle::GetInstance()->RegisterTexture(m_Result);
-
+#endif
 
 	m_cbEdgeDetection = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_EdgeDetectionData), "EdgeDetection cb");
 

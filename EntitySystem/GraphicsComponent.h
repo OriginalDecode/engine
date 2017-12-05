@@ -87,9 +87,13 @@ void ModelInstance::Serialize(Writer& writer) const
 
 	writer.String("model_file");
 	writer.String(m_Filename.c_str(), (rapidjson::SizeType)m_Filename.length());
+	//writer.String("model_key");
+	//writer.Number(m_ModelID);
 
 	writer.String("material_file");
 	writer.String(m_MaterialFile.c_str(), (rapidjson::SizeType)m_MaterialFile.length());
+	//writer.String("material_hash");
+	//writer.Number(m_MaterialKey);
 
 	auto& position = m_Orientation.GetPosition();
 

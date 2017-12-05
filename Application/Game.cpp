@@ -84,7 +84,7 @@ void Game::Initiate(const std::string& level)
 	spotorient = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * spotorient;
 	spotorient.SetPosition({ 5.f, 4.f, 5.f, 1.f });
 	//PostMaster::GetInstance()->Subscribe()
-#if !defined(_FINAL) && !defined(_PROFILE)
+#if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
 	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &degree, "Spotlight Degree"));
 	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &intensity, "Spotlight Intensity"));

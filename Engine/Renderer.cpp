@@ -82,9 +82,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	myPointLight = new PointLight();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-
-
-
 	//pDebug->RegisterCheckbox(debug::DebugCheckbox(&m_LightModelWireframe, "Light Model Wireframe"));
 
 	TextureDesc desc;
@@ -291,6 +288,7 @@ void Renderer::Render()
 
 }
 
+#if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &ctx)
 {
 	if (e <= 0)
@@ -319,7 +317,6 @@ void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &c
 	}
 }
 
-#if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::WriteDebugTextures()
 {
 	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
@@ -640,8 +637,8 @@ void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32
 
 	GPUModelData model_data;
 	model_data.m_Orientation = command->m_Orientation;
-	model_data.m_ID = command->m_EntityID;
 #ifdef _DEBUG
+	model_data.m_ID = command->m_EntityID;
 	model_data.m_Hovering = (command->m_EntityID == debug::DebugHandle::GetInstance()->GetHoveredEntity() ? 1 : 0);
 #endif
 	CU::Vector4f col = cl::IntToCol(model_data.m_ID);

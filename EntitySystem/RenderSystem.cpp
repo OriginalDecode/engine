@@ -84,7 +84,11 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 										  , instance.m_MaterialKey
 										  , relative //could be pre-calculated, and on physical objects this shouldn't even be used if it can be moved.
 										  , render.m_RenderWireframe
+#ifdef _DEBUG
 										  , e));
+#else 
+											));
+#endif
 		}
 
 

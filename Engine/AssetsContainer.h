@@ -20,7 +20,9 @@ struct CompiledShader;
 
 class AssetsContainer
 {
+#ifdef _DEBUG
 	friend debug::DebugHandle;
+#endif
 public:
 	AssetsContainer() = default;
 	~AssetsContainer();

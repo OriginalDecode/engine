@@ -87,12 +87,13 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			debug_flags |= TreeDweller::LIGHT;
 		}
 
+#ifdef _DEBUG
 		if(debug_flags > 0 )
 			CreateDebugComponent(e, false, debug_flags);
-
+#endif
 
 	}
-
+	reader.CloseDocument();
 	pDweller->Initiate(e, TreeDweller::STATIC);
 }
 

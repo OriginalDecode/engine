@@ -153,11 +153,11 @@ u64 AssetsContainer::LoadEffect(std::string filepath)
 		m_Effects.emplace(hash, effect);
 		m_ShaderFactory->LoadShader(effect);
 		EndTicketMutex(&effect_mutex);
-		return Hash(filepath.c_str());
+		return hash;
 	}
 
 	EndTicketMutex(&effect_mutex);
-	return Hash(filepath.c_str());
+	return hash;
 }
 
 u64 AssetsContainer::LoadSprite(std::string path)
@@ -172,11 +172,11 @@ u64 AssetsContainer::LoadSprite(std::string path)
 		m_Sprites.emplace(hash, sprite);
 		sprite->Initiate(path);
 		EndTicketMutex(&sprite_mutex);
-		return Hash(path.c_str());
+		return hash;
 	}
 
 	EndTicketMutex(&sprite_mutex);
-	return Hash(path.c_str());
+	return hash;
 }
 
 u64 AssetsContainer::LoadMaterial(std::string path)
@@ -197,6 +197,6 @@ u64 AssetsContainer::LoadMaterial(std::string path)
 		return hash;
 	}
 	EndTicketMutex(&material_mutex);
-	return Hash(path.c_str());
+	return hash;
 }
 

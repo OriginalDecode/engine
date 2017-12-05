@@ -391,14 +391,9 @@ Texture* Engine::GetTexture(const char* key)
 
 Material* Engine::GetMaterial(const char* key)
 {
-	Material* material = myAssetsContainer->GetMaterial(Hash(key));
-
-	if (material)
-		return material;
-
-
 	u64 hash = myAssetsContainer->LoadMaterial(key);
-	return myAssetsContainer->GetMaterial(hash);
+	Material* material = myAssetsContainer->GetMaterial(hash);
+	return material;
 }
 
 Effect* Engine::GetEffect(u64 key)
@@ -414,8 +409,8 @@ Effect* Engine::GetEffect(const char* key)
 	if (effect)
 		return effect;
 
-	myAssetsContainer->LoadEffect(file);
-	return myAssetsContainer->GetEffect(Hash(file.c_str()));
+	u64 hash = myAssetsContainer->LoadEffect(file);
+	return myAssetsContainer->GetEffect(hash);
 }
 
 Model* Engine::GetModel(u64 key)

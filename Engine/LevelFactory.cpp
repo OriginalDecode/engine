@@ -204,18 +204,25 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
 	m_DwellerList.GetLast()->AddComponent<DebugComponent>(&component, TreeDweller::DEBUG);
 
-	CU::Vector3f whd;
 	if (!isLight && m_EntityManager->HasComponent<GraphicsComponent>(e))
 	{
 		GraphicsComponent& g = m_EntityManager->GetComponent<GraphicsComponent>(e);
 		Model* model = m_Engine->GetModel(g.m_Instances[0].m_Filename.c_str());
+		CU::Vector4f scale = g.m_Instances[0].m_Scale;
+		if (scale.x <= 0.f && scale.y <= 0.f && scale.z <= 0.f)
+		{
+			scale.x = 1.f;
+			scale.y = 1.f;
+			scale.z = 1.f;
+			scale.w = 1.f;
+		}
+
 		component.m_Rotation = g.m_Rotation;
-		component.m_MinPoint = model->GetMinPoint();
-		component.m_MaxPoint = model->GetMaxPoint();
+		component.m_MinPoint = CU::Vector4f(model->GetMinPoint(), 1) * scale;
+		component.m_MaxPoint = CU::Vector4f(model->GetMaxPoint(), 1) * scale;
 	}
 	else
 	{
-		//whd = { 0.25f,0.25f, 0.25f };
 		component.m_MinPoint = { -0.25,-0.25,-0.25 };
 		component.m_MaxPoint = { 0.25,0.25,0.25 };
 	}
@@ -223,10 +230,6 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
 	CU::Vector3f pos = translation.myOrientation.GetPosition();
 
-	float x = whd.x;
-	float y = whd.y;
-	float z = whd.z;
-	component.m_WHD = whd;
 	CU::Plane<float> plane0;
 
 	CU::Vector4f up = translation.myOrientation.GetUp();
@@ -234,44 +237,44 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	CU::Vector4f forward = translation.myOrientation.GetForward();
 
 
-	CU::Vector4f position;
-	//x
-
-	position = translation.myOrientation.GetTranslation();
-	position += right * x;
-	plane0.InitWithPointAndNormal(position, right);
-	component.m_OBB.AddPlane(plane0);
-
-	position = translation.myOrientation.GetTranslation();
-	position -= right * x;
-	right -= (right * 2.f);
-	plane0.InitWithPointAndNormal(position, right);
-	component.m_OBB.AddPlane(plane0);
-
-	//y
-	position = translation.myOrientation.GetTranslation();
-	position += up * y;
-	plane0.InitWithPointAndNormal(position, up);
-	component.m_OBB.AddPlane(plane0);
-
-	position = translation.myOrientation.GetTranslation();
-	position -= up * y;
-	up -= (up * 2.f);
-	plane0.InitWithPointAndNormal(position, up);
-	component.m_OBB.AddPlane(plane0);
-
-	//z
-	position = translation.myOrientation.GetTranslation();
-	position += forward * z;
-	plane0.InitWithPointAndNormal(position, forward);
-	component.m_OBB.AddPlane(plane0);
-
-
-	position = translation.myOrientation.GetTranslation();
-	position -= forward * z;
-	forward -= (forward * 2.f);
-	plane0.InitWithPointAndNormal(position, forward);
-	component.m_OBB.AddPlane(plane0);
+// 	CU::Vector4f position;
+// 	//x
+// 
+// 	position = translation.myOrientation.GetTranslation();
+// 	position += right * x;
+// 	plane0.InitWithPointAndNormal(position, right);
+// 	component.m_OBB.AddPlane(plane0);
+// 
+// 	position = translation.myOrientation.GetTranslation();
+// 	position -= right * x;
+// 	right -= (right * 2.f);
+// 	plane0.InitWithPointAndNormal(position, right);
+// 	component.m_OBB.AddPlane(plane0);
+// 
+// 	//y
+// 	position = translation.myOrientation.GetTranslation();
+// 	position += up * y;
+// 	plane0.InitWithPointAndNormal(position, up);
+// 	component.m_OBB.AddPlane(plane0);
+// 
+// 	position = translation.myOrientation.GetTranslation();
+// 	position -= up * y;
+// 	up -= (up * 2.f);
+// 	plane0.InitWithPointAndNormal(position, up);
+// 	component.m_OBB.AddPlane(plane0);
+// 
+// 	//z
+// 	position = translation.myOrientation.GetTranslation();
+// 	position += forward * z;
+// 	plane0.InitWithPointAndNormal(position, forward);
+// 	component.m_OBB.AddPlane(plane0);
+// 
+// 
+// 	position = translation.myOrientation.GetTranslation();
+// 	position -= forward * z;
+// 	forward -= (forward * 2.f);
+// 	plane0.InitWithPointAndNormal(position, forward);
+// 	component.m_OBB.AddPlane(plane0);
 
 
 //	component.m_EditObject.Initiate(e, flags);

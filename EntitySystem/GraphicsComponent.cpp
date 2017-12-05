@@ -35,6 +35,13 @@ void ModelInstance::Deserialize(const rapidjson::Value& json_value, ModelInstanc
 	{
 		auto& scale = json_value[s_RelativeScale].GetArray();
 		instance.m_Scale = { (float)scale[0].GetDouble(), (float)scale[1].GetDouble(), (float)scale[2].GetDouble(), 1.f };
+		if (instance.m_Scale.x <= 0.f && instance.m_Scale.y <= 0.f && instance.m_Scale.z <= 0.f)
+		{
+			instance.m_Scale.x = 1.f;
+			instance.m_Scale.y = 1.f;
+			instance.m_Scale.z = 1.f;
+			instance.m_Scale.w = 1.f;
+		}
 	}
 
 	if (json_value.FindMember(s_RelativeRot) != json_value.MemberEnd())

@@ -360,6 +360,21 @@ namespace CommonUtilities
 		template<typename T>
 		bool operator<(const Vector4<T>& first, float scalar)
 		{
+			if (first.x >= scalar)
+				return false;
+			if (first.y >= scalar)
+				return false;
+			if (first.z >= scalar)
+				return false;
+			if (first.w >= scalar)
+				return false;
+
+			return true;
+		}
+
+		template<typename T>
+		bool operator<=(const Vector4<T>& first, float scalar)
+		{
 			if (first.x > scalar)
 				return false;
 			if (first.y > scalar)
@@ -374,6 +389,20 @@ namespace CommonUtilities
 		template<typename T>
 		bool operator>(const Vector4<T>& first, float scalar)
 		{
+			if (first.x <= scalar)
+				return false;
+			if (first.y <= scalar)
+				return false;
+			if (first.z <= scalar)
+				return false;
+			if (first.w <= scalar)
+				return false;
+			return true;
+		}
+
+		template<typename T>
+		bool operator>=(const Vector4<T>& first, float scalar)
+		{
 			if (first.x < scalar)
 				return false;
 			if (first.y < scalar)
@@ -384,6 +413,7 @@ namespace CommonUtilities
 				return false;
 			return true;
 		}
+
 
 
 

@@ -48,23 +48,7 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 		Entity e = entities[i];
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-
-
-//#ifdef _EDITOR
-		if (m_Manager.HasComponent(e, CreateFilter<Requires<GraphicsComponent>>()))
-		{
-			//GraphicsComponent& r = GetComponent<GraphicsComponent>(e);
-			//Model* m = Engine::GetInstance()->GetModel(r.m_ModelID);
-			//debug.m_MinPoint = m->GetMinPoint();//r.m_MinPos;
-			//debug.m_MaxPoint = m->GetMaxPoint();//r.m_MaxPos;
-
-
-			//r.m_MaxPos = CU::Vector3f(debug.m_MaxPoint.x, debug.m_MaxPoint.y, debug.m_MaxPoint.z); 
-			//r.m_MinPos = CU::Vector3f(debug.m_MinPoint.x, debug.m_MinPoint.y, debug.m_MinPoint.z);
-
-		}
 		RenderBox(debug, translation.myOrientation);
-//#endif
 	}
 
 	if (m_Engine->GetInputHandle()->GetInputWrapper()->OnRelease(MouseInput::LEFT))
@@ -333,6 +317,9 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	const CU::Vector4f right = orientation.GetRight();
 	const CU::Vector4f up = orientation.GetUp();
 	const CU::Vector4f forward = orientation.GetForward();
+
+
+
 
 	p1.position += right * component.m_MinPoint.x;
 	p1.position += up * component.m_MinPoint.y;

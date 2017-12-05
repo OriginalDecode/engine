@@ -442,7 +442,6 @@
     <ClInclude Include="AssetFactory.h">
       <Filter>Factories</Filter>
     </ClInclude>
-    <ClInclude Include="CityGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -724,6 +723,5 @@
     <ClCompile Include="AssetFactory.cpp">
       <Filter>Factories</Filter>
     </ClCompile>
-    <ClCompile Include="CityGenerator.cpp" />
   </ItemGroup>
 </Project>

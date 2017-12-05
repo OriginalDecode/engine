@@ -37,7 +37,6 @@
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include <CommonLib/reflector.h>
 #include <Engine/DebugHandle.h>
-#include <Engine/CityGenerator.h>
 #endif
 #include <Engine/AssetFactory.h>
 
@@ -137,7 +136,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::Create();
-	CityGenerator::Create();
 #endif
 	Randomizer::Create();
 	PostMaster::Create();
@@ -201,7 +199,6 @@ bool Engine::CleanUp()
 {
 #if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::Destroy();
-	CityGenerator::Destroy();
 #endif
 	AssetFactory::Destroy();
 

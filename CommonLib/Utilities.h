@@ -7,6 +7,8 @@
 #include <thread>
 namespace cl
 {
+	bool file_exist(std::string path);
+
 	unsigned long long nearest_Pow(unsigned long long aNum);
 	unsigned long long nearest_Pow_Under(unsigned long long aNum);
 

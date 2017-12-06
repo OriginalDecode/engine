@@ -44,22 +44,17 @@ void Model::Render(const graphics::RenderContext& rc)
 		child->Render(rc);
 	}
 
-	if (m_IsRoot || m_Surfaces.Empty())
+	if (m_IsRoot || (!m_IndexWrapper.GetIndexBuffer() && (!m_VertexWrapper.GetVertexBuffer())))
 		return;
 
 
 	UpdateConstantBuffer(rc);
 	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
-	rc.GetContext().PSSetSamplerState(0, 1, pSampler);
-	rc.GetContext().VSSetSamplerState(0, 1, pSampler);
+	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
+	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
 
 	PROFILE_BLOCK("Model : DrawIndexed", profiler::colors::Blue100);
-	for (Surface* surface : m_Surfaces)
-	{
-		surface->Activate(rc);
-		rc.GetContext().DrawIndexed(this, m_Effect);
-		surface->Deactivate();
-	}
+	rc.GetContext().DrawIndexed(this, m_Effect);
 	PROFILE_BLOCK_END;
 
 }

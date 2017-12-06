@@ -26,6 +26,12 @@ namespace cl
 		return false;
 	}
 
+	bool file_exist(std::string path)
+	{
+		std::ifstream stream(path.c_str());
+		return stream.good();
+	}
+
 	unsigned long long nearest_Pow(unsigned long long aNum)
 	{
 		aNum--;

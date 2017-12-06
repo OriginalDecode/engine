@@ -9,7 +9,6 @@
 #include "TerrainManager.h"
 
 #include "IGraphicsAPI.h"
-#include <d3dcompiler.h>
 
 #include "EditObject.h"
 
@@ -302,6 +301,12 @@ void* Engine::CreateShader(IShaderBlob* pShader, eShaderType type, const std::st
 
 u64 Engine::LoadModelA(std::string path, std::string effect, bool threaded)
 {
+	if (!cl::file_exist(path))
+	{
+		DL_ASSERT("Failed to find the file!");
+	}
+
+
 	return LoadModel<Model>(path, effect, threaded);
 }
 

@@ -74,7 +74,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 		size += polygonVertexCount * NORMAL_STRIDE;
 	}
 
-	if ( mesh->HasTextureCoords(0) )
+	if ( mesh->HasTextureCoords(0) ) //this is multiple coords D:
 	{
 		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_UV;
@@ -105,6 +105,12 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 		stride += TANGENT_STRIDE;
 		size += polygonVertexCount * TANGENT_STRIDE;
 	}
+
+	//if (mesh->HasVertexColors(0))
+	//{
+	//	mesh->mColors
+	//}
+
 
 	if ( mesh->HasBones() )
 	{

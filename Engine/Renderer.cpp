@@ -147,6 +147,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_WaterPlane = new WaterPlane; //creating this breaks everything.... rip
 	m_WaterCamera = new Camera;
 	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.01f, 100.f, 90.f);
+
+	Engine::GetInstance()->LoadModelA("Data/EngineAssets/view_gizmo.fbx", "Shaders/gizmo.json", false);
+
 }
 
 Renderer::~Renderer()
@@ -192,7 +195,7 @@ void Renderer::Render()
 
 	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
 	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
-	const CU::Matrix44f& camera_view_proj = CU::Math::Inverse(camera_orientation) * camera_projection;
+	CU::Matrix44f camera_view_proj = CU::Math::Inverse(camera_orientation) * camera_projection;
 	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 
@@ -272,6 +275,32 @@ void Renderer::Render()
 	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	RenderLines();
+
+
+	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
+	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_DISABLED), 1);
+	ctx.SetBlendState(api.GetBlendState(graphics::NO_BLEND));
+
+	const CU::Matrix44f& camera_orientation2 = m_Camera->Get2DOrientation();
+	const CU::Matrix44f& camera_projection2 = m_Camera->GetOrthogonal();
+	camera_view_proj = CU::Math::Inverse(camera_orientation2) * camera_projection2;
+	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
+	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+
+	CU::Matrix44f id;
+	id.SetPosition({ 0.f,0.f,5.f,1.f });
+	id = CU::Matrix44f::CreateScaleMatrix({ 0.2f,0.2f,0.2f,1.f }) * id;
+	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &id, sizeof(CU::Matrix44f));
+	ctx.VSSetConstantBuffer(1, 1, &m_ViewProjBuffer);
+
+	Model* pModel = Engine::GetInstance()->GetModel("Data/EngineAssets/view_gizmo.fbx");
+	pModel->Render(m_RenderContext);
+
+
+
+	//Render2DCommands();
+	
+
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();

@@ -4,6 +4,7 @@
 #include <string.h>
 
 #ifdef _WIN32
+#include <Objbase.h>
 #else
 #include <fcntl.h>
 #include <unistd.h>
@@ -45,7 +46,7 @@ s32 NetworkHandle::Connect(const char* ip, s16 port)
 	m_IPVersion = AF_INET;
 	m_SocketType = SOCK_DGRAM;
 	m_SocketProtocol = IPPROTO_UDP;
-	m_Socket = socket(m_IPVersion, m_SocketType, m_SocketProtocol);
+	m_Socket = (Socket)socket(m_IPVersion, m_SocketType, m_SocketProtocol);
 #ifdef _WIN32
 	//Setup nonblocking socket for windows.
 #else
@@ -76,13 +77,17 @@ s32 NetworkHandle::Connect(const char* ip, s16 port)
 			ConnectMessage net_message;
 			net_message.UnpackMessage(on_connect.m_Buffer, on_connect.m_Length);
 			printf("\n%s", net_message.m_ConnectMessage.c_str());
-			if(net_message.m_ID == CONNECTION_ACCEPTED)
+			if(net_message.IsType(CONNECTION_ACCEPTED))
 			{ 
-				m_GID = net_message.m_GID;
+#ifdef _WIN32
+				HRESULT result = CoCreateGuid(&m_GUID);
+				assert(result == S_OK && "failed to create guid");
+#endif
+				//m_GID = net_message.m_GID;
 				printf("Your GID is : %d", m_GID);
 				connected = true;
 			}
-			else if(net_message.m_ID == CONNECTION_REJECTED)
+			else if(net_message.IsType(CONNECTION_REJECTED))
 			{
 				connected = false;
 			}
@@ -127,7 +132,7 @@ s32 NetworkHandle::Host(s16 port)
 	if (result != 0)
 		return result;
 
-	m_Socket = socket(
+	m_Socket = (Socket)socket(
 		addr_res->ai_family
 		, addr_res->ai_socktype
 		, addr_res->ai_protocol);
@@ -171,6 +176,7 @@ s32 NetworkHandle::ReadType(const Buffer& buffer)
 
 void NetworkHandle::AddConnection(Connection& client)
 {
+
 	client.m_GID = ++m_GID; //server will always have an ID of 0 and will not need to be assigned one ahead of time?
 	m_Connections.push_back(client);
 }

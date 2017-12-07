@@ -1,6 +1,6 @@
 #pragma once
 #include "../../standard_datatype.hpp"
-constexpr u64 EngineEvents_on_active = 0xccccccccd92b888a;
-constexpr u64 EngineEvents_on_minimize = 0xcccccccc3399319a;
-constexpr u64 EngineEvents_on_maximize = 0xcccccccc4c4fadaf;
-constexpr u64 EngineEvents_on_inactive = 0xcccccccc2c0c3637;
+constexpr u64 EngineEvents_OnActive = 0x2c00021b888aea;
+constexpr u64 EngineEvents_OnMinimize = 0x2c000282817a90;
+constexpr u64 EngineEvents_OnMaximize = 0x2c0002fae0379a;
+constexpr u64 EngineEvents_OnInactive = 0x2c0002b40dedfd;

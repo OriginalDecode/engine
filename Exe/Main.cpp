@@ -140,6 +140,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	{
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
+			PostMaster::GetInstance()->SendMessage(EngineEvents_on_inactive);
 			//g_windowactive = false;
 			application->OnInactive();
 			//ShowCursor(!g_windowactive);

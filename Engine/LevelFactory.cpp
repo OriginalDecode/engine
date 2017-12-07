@@ -483,10 +483,10 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 
 	std::string out_file = folder + filename;
 
- 	std::ofstream out(out_file);
- 	out << _sb.GetString();
- 	out.flush();
- 	out.close();
+	std::ofstream out(out_file);
+	out << _sb.GetString();
+	out.flush();
+	out.close();
 
 
 }

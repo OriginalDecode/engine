@@ -34,7 +34,6 @@
 #include <Engine/IGraphicsDevice.h>
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-#include <CommonLib/reflector.h>
 #include <Engine/DebugHandle.h>
 #endif
 #include <Engine/AssetFactory.h>

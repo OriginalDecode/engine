@@ -15,7 +15,7 @@
 #include "LevelFactory.h"
 
 #include <Input/InputHandle.h>
-#include <PostMaster.h>
+#include <EventManager.h>
 #include <PhysicsManager.h>
 
 #include <DebugComponent.h>
@@ -136,7 +136,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	debug::DebugHandle::Create();
 #endif
 	Randomizer::Create();
-	PostMaster::Create();
+	EventManager::Create();
 	m_CurrentSampler = graphics::MSAA_x16;
 	
 
@@ -224,7 +224,7 @@ bool Engine::CleanUp()
 	//DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
 	//SAFE_DELETE(myAPI);
 	SAFE_DELETE(m_API);
-	PostMaster::Destroy();
+	EventManager::Destroy();
 	Randomizer::Destroy();
 	return true;
 }

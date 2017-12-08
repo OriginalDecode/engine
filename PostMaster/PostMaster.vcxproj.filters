@@ -9,11 +9,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PostMaster.cpp" />
     <ClCompile Include="Subscriber.cpp" />
+    <ClCompile Include="EventManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PostMaster.h" />
     <ClInclude Include="Subscriber.h" />
     <ClInclude Include="MessageEnum.h">
       <Filter>MessageEnum</Filter>
@@ -24,5 +23,6 @@
     <ClInclude Include="OnLeftClick.h">
       <Filter>Message</Filter>
     </ClInclude>
+    <ClInclude Include="EventManager.h" />
   </ItemGroup>
 </Project>

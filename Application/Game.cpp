@@ -16,7 +16,7 @@
 #include <Camera.h>
 #include "../Input/InputHandle.h"
 
-#include <PostMaster.h>
+#include <EventManager.h>
 #include <OnLeftClick.h>
 #include <StateStack.h>
 #include <Math/Vector/Vector.h>
@@ -156,7 +156,7 @@ void Game::OldUpdate(float dt)
 	}
 
 	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
-	PostMaster* pEventHandle = PostMaster::GetInstance();
+	EventManager* pEventHandle = EventManager::GetInstance();
 	if (input_wrapper->OnClick(MouseInput::LEFT))
 	{
 		pEventHandle->SendMessage("pick_entity");

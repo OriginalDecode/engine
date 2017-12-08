@@ -4,7 +4,7 @@
 #include <RenderCommand.h>
 #include <Synchronizer.h>
 #include <OnLeftClick.h>
-#include <PostMaster.h>
+#include <EventManager.h>
 #include "TypeID.h"
 #include "GraphicsComponent.h"
 #include "EntityManager.h"
@@ -28,8 +28,8 @@ DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
-	PostMaster::GetInstance()->Subscribe(eMessageType::ON_LEFT_CLICK, this);
-	PostMaster::GetInstance()->Subscribe("pick_entity", this);
+	EventManager::GetInstance()->Subscribe(eMessageType::ON_LEFT_CLICK, this);
+	EventManager::GetInstance()->Subscribe("pick_entity", this);
 	//PostMaster::GetInstance()->Subscribe("left_click", this);
 	m_CurrentEntity = -1;
 	m_MouseDeltaModifier = 100.f;
@@ -37,7 +37,7 @@ DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
 
 DebugSystem::~DebugSystem()
 {
-	PostMaster::GetInstance()->UnSubscribe(eMessageType::ON_LEFT_CLICK, this);
+	EventManager::GetInstance()->UnSubscribe(eMessageType::ON_LEFT_CLICK, this);
 }
 
 void DebugSystem::Update(float /*dt*/, bool paused)

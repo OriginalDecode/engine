@@ -1,9 +1,9 @@
-#include "PostMaster.h"
+#include "EventManager.h"
 #include <DL_Debug.h>
 #include "../CommonLib/DataStructures/Hashmap/Hash.h"
 
-PostMaster* PostMaster::myInstance = nullptr;
-PostMaster::PostMaster()
+EventManager* EventManager::myInstance = nullptr;
+EventManager::EventManager()
 {
 	for (int i = 0; i < static_cast<int>(eMessageType::COUNT); ++i)
 	{
@@ -12,7 +12,7 @@ PostMaster::PostMaster()
 }
 
 
-PostMaster::~PostMaster()
+EventManager::~EventManager()
 {
 	for (int i = 0; i < static_cast<int>(eMessageType::COUNT); ++i)
 	{
@@ -25,26 +25,26 @@ PostMaster::~PostMaster()
 	}
 }
 
-PostMaster* PostMaster::GetInstance()
+EventManager* EventManager::GetInstance()
 {
 	DL_ASSERT_EXP(myInstance != nullptr, "Need to create a Postmaster before getting it.");
 	return myInstance;
 }
 
-void PostMaster::Create()
+void EventManager::Create()
 {
 	DL_ASSERT_EXP(myInstance == nullptr, "Failed to create postmaster. Already created!");
-	myInstance = new PostMaster();
+	myInstance = new EventManager();
 }
 
-void PostMaster::Destroy()
+void EventManager::Destroy()
 {
 	DL_ASSERT_EXP(myInstance != nullptr, "Failed to destroy postmaster. Did you call Destroy twice or forget to create?");
 	delete myInstance;
 	myInstance = nullptr;
 }
 
-void PostMaster::Subscribe(const eMessageType aMessageType, Subscriber* aSubscriber, ePriorityLayer aPriority, bool aLetThrough)
+void EventManager::Subscribe(const eMessageType aMessageType, Subscriber* aSubscriber, ePriorityLayer aPriority, bool aLetThrough)
 {
 #ifdef _DEBUG
 	CU::GrowingArray<SubscriberInfo>& subscribers
@@ -71,13 +71,13 @@ void PostMaster::Subscribe(const eMessageType aMessageType, Subscriber* aSubscri
 	}
 }
 
-void PostMaster::Subscribe(const std::string& event, Subscriber* subscriber)
+void EventManager::Subscribe(const std::string& event, Subscriber* subscriber)
 {
 	u64 hash = Hash(event.c_str());
 	Subscribe(hash, subscriber);
 }
 
-void PostMaster::Subscribe(const u64& event, Subscriber* subscriber)
+void EventManager::Subscribe(const u64& event, Subscriber* subscriber)
 {
 	SubscriberInfo newSubscriber;
 	newSubscriber.mySubscriber = subscriber;
@@ -92,7 +92,7 @@ void PostMaster::Subscribe(const u64& event, Subscriber* subscriber)
 	m_EventSubscribers.at(event).Add(newSubscriber);
 }
 
-void PostMaster::UnSubscribe(const eMessageType aMessageType, Subscriber* aSubscriber)
+void EventManager::UnSubscribe(const eMessageType aMessageType, Subscriber* aSubscriber)
 {
 	CU::GrowingArray<SubscriberInfo>& subscribers
 		= mySubscribers[static_cast<int>(aMessageType)];
@@ -109,7 +109,7 @@ void PostMaster::UnSubscribe(const eMessageType aMessageType, Subscriber* aSubsc
 	SortSubscribers(subscribers);
 }
 
-void PostMaster::UnSubscribe(Subscriber* aSubscriber)
+void EventManager::UnSubscribe(Subscriber* aSubscriber)
 {
 	for (int i = 0; i < static_cast<int>(eMessageType::COUNT); ++i)
 	{
@@ -127,7 +127,7 @@ void PostMaster::UnSubscribe(Subscriber* aSubscriber)
 	}
 }
 
-bool PostMaster::IsSubscribed(const eMessageType aMessageType, Subscriber* aSubscriber)
+bool EventManager::IsSubscribed(const eMessageType aMessageType, Subscriber* aSubscriber)
 {
 	CU::GrowingArray<SubscriberInfo>& subscribers
 		= mySubscribers[static_cast<int>(aMessageType)];
@@ -143,13 +143,13 @@ bool PostMaster::IsSubscribed(const eMessageType aMessageType, Subscriber* aSubs
 	return false;
 }
 
-void PostMaster::SendMessage(const char* event, void* data)
+void EventManager::SendMessage(const char* event, void* data)
 {
 	u64 hash = Hash(event);
 	SendMessage(hash, data);
 }
 
-void PostMaster::SendMessage(const u64& event, void* data)
+void EventManager::SendMessage(const u64& event, void* data)
 {
 
 	auto item = m_EventSubscribers.find(event);
@@ -168,7 +168,7 @@ void PostMaster::SendMessage(const u64& event, void* data)
 	}
 }
 
-void PostMaster::SortSubscribers(CU::GrowingArray<SubscriberInfo> &aBuffer)
+void EventManager::SortSubscribers(CU::GrowingArray<SubscriberInfo> &aBuffer)
 {
 	int max = 0;
 	if (aBuffer.Size() < 3)
@@ -190,7 +190,7 @@ void PostMaster::SortSubscribers(CU::GrowingArray<SubscriberInfo> &aBuffer)
 	QuickSort(aBuffer, 0, aBuffer.Size() - 2);
 }
 
-void PostMaster::QuickSort(CU::GrowingArray<SubscriberInfo> &aBuffer, const int aStart, const int aEnd)
+void EventManager::QuickSort(CU::GrowingArray<SubscriberInfo> &aBuffer, const int aStart, const int aEnd)
 {
 	int lower = aStart + 1;
 	int upper = aEnd;
@@ -221,12 +221,12 @@ void PostMaster::QuickSort(CU::GrowingArray<SubscriberInfo> &aBuffer, const int 
 		QuickSort(aBuffer, upper + 1, aEnd);
 }
 
-void PostMaster::SendMessage(const u64& event)
+void EventManager::SendMessage(const u64& event)
 {
 	SendMessage(event, nullptr);
 }
 
-void PostMaster::SendMessage(const char* event)
+void EventManager::SendMessage(const char* event)
 {
 	SendMessage(event, nullptr);
 }

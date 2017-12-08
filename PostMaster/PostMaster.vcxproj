@@ -212,11 +212,11 @@
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageEnum.h" />
     <ClInclude Include="OnLeftClick.h" />
-    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="EventManager.h" />
     <ClInclude Include="Subscriber.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PostMaster.cpp" />
+    <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Subscriber.cpp" />
   </ItemGroup>
   <ItemGroup>

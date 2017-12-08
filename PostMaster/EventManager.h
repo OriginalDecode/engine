@@ -28,10 +28,10 @@ struct SubscriberInfo
 	bool myLetThrough = true;
 };
 
-class PostMaster
+class EventManager
 {
 public:
-	static PostMaster* GetInstance();
+	static EventManager* GetInstance();
 	static void Create();
 	static void Destroy();
 
@@ -52,9 +52,9 @@ public:
 	void SendMessage(const u64& event);
 	void SendMessage(const char* event);
 private:
-	PostMaster();
-	~PostMaster();
-	static PostMaster* myInstance;
+	EventManager();
+	~EventManager();
+	static EventManager* myInstance;
 	
 	void SortSubscribers(CU::GrowingArray<SubscriberInfo>& aSubscribers);
 	void QuickSort(CU::GrowingArray<SubscriberInfo>& aBuffer, const int aStart, const int aEnd);
@@ -64,7 +64,7 @@ private:
 };
 
 template<typename T>
-void PostMaster::SendMessage(const T& aMessage)
+void EventManager::SendMessage(const T& aMessage)
 {
 	CU::GrowingArray<SubscriberInfo>& subscribers = mySubscribers[static_cast<int>(aMessage.myMessageType)];
 

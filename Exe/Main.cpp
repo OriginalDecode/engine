@@ -9,7 +9,7 @@
 
 #include <Application/Application.h>
 #include <string>
-#include <PostMaster/PostMaster.h>
+#include <PostMaster/EventManager.h>
 #ifdef _PROFILE
 #include <easy/profiler.h>
 #endif
@@ -140,14 +140,14 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	{
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
-			PostMaster::GetInstance()->SendMessage(EngineEvents_OnInactive);
+			EventManager::GetInstance()->SendMessage(EngineEvents_OnInactive);
 			//g_windowactive = false;
 			application->OnInactive();
 			//ShowCursor(!g_windowactive);
 		}
 		else
 		{
-			PostMaster::GetInstance()->SendMessage(EngineEvents_OnActive);
+			EventManager::GetInstance()->SendMessage(EngineEvents_OnActive);
 			//g_windowactive = true;
 			application->OnActive();
 			//ShowCursor(!g_windowactive);

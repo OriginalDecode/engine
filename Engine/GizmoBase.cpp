@@ -5,11 +5,11 @@
 #include "RenderCommand.h"
 #include <Math/Vector/Vector.h>
 
-#include <PostMaster.h>
+#include <EventManager.h>
 
 void GizmoBase::Initiate(std::string event)
 {
-	PostMaster::GetInstance()->Subscribe(event, this);
+	EventManager::GetInstance()->Subscribe(event, this);
 }
 
 void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction)

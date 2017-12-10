@@ -140,14 +140,16 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	{
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
-			EventManager::GetInstance()->SendMessage(EngineEvents_OnInactive);
+			if (EventManager::GetInstance())
+				EventManager::GetInstance()->SendMessage(EngineEvents_OnInactive);
 			//g_windowactive = false;
 			application->OnInactive();
 			//ShowCursor(!g_windowactive);
 		}
 		else
 		{
-			EventManager::GetInstance()->SendMessage(EngineEvents_OnActive);
+			if(EventManager::GetInstance())
+				EventManager::GetInstance()->SendMessage(EngineEvents_OnActive);
 			//g_windowactive = true;
 			application->OnActive();
 			//ShowCursor(!g_windowactive);

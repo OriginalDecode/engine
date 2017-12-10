@@ -83,14 +83,12 @@ void Game::Initiate(const std::string& level)
 
 	spotorient = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * spotorient;
 	spotorient.SetPosition({ 5.f, 4.f, 5.f, 1.f });
-	//PostMaster::GetInstance()->Subscribe()
 #if !defined(_PROFILE) && !defined(_FINAL)
-	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
-	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &degree, "Spotlight Degree"));
-	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &intensity, "Spotlight Intensity"));
-	pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &range, "Spotlight Range"));
-	pDebug->AddValueToPrint(&entity);
-
+	//debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
+	//pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &degree, "Spotlight Degree"));
+	//pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &intensity, "Spotlight Intensity"));
+	//pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &range, "Spotlight Range"));
+	//pDebug->AddValueToPrint(&entity);
 #endif
 }
 
@@ -158,27 +156,7 @@ void Game::OldUpdate(float dt)
 	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
 	EventManager* pEventHandle = EventManager::GetInstance();
 	if (input_wrapper->OnClick(MouseInput::LEFT))
-	{
 		pEventHandle->SendMessage("pick_entity");
-		/*
-		CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
-
-		pEventHandle->SendMessage(OnLeftClick(ray_dir.x, ray_dir.y, ray_dir.z, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z, 
-			(void*)&m_Picker->GetRayStart(),			
-			m_Player));
-		pos0 = m_Camera->GetPosition();
-		pos1 = pos0 + (ray_dir * 25.f);*/
-	}
-
-/*
-	if (input_wrapper->IsDown(KButton::LCTRL))
-	{
-		if (input_wrapper->OnDown(KButton::S))
-		{
-			SaveCameraPosition();
-		}
-		return;
-	}*/
 
 	if (input_wrapper->OnDown(KButton::ESCAPE))
 	{

@@ -83,7 +83,9 @@ private:
 	Socket_Type m_SocketType;
 	Socket_Protocol m_SocketProtocol;
 	IP_Version m_IPVersion;
+#ifdef _WIN32 
 	GUID m_GUID;
+#endif
 	u32 m_GID = 0;
 	std::vector<Connection> m_Connections;
 	// sockaddr_in m_Connection; //List of these as host

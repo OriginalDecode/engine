@@ -3,14 +3,14 @@
 #include <Engine/Material.h>
 
 
-static const char* s_RelativeScale = "relative_scale";
-static const char* s_RelativePos = "relative_position";
-static const char* s_RelativeRot = "relative_rotation";
-static const char* s_MaterialFile = "material_file";
-static const char* s_Shader = "Shaders/debug_pbl_instanced.json";
-static const char* s_ModelFile = "model_file";
-static const char* s_Shadowed = "shadowed";
-static const char* s_Instances = "instances";
+constexpr char* s_RelativeScale = "relative_scale";
+constexpr char* s_RelativePos = "relative_position";
+constexpr char* s_RelativeRot = "relative_rotation";
+constexpr char* s_MaterialFile = "material_file";
+constexpr char* s_Shader = "Shaders/debug_pbl_instanced.json"; // This should be read from a file, this should be connected with the material
+constexpr char* s_ModelFile = "model_file";
+constexpr char* s_Shadowed = "shadowed";
+constexpr char* s_Instances = "instances";
 
 
 

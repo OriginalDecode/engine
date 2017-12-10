@@ -27,19 +27,16 @@ EventManager::~EventManager()
 
 EventManager* EventManager::GetInstance()
 {
-	DL_ASSERT_EXP(myInstance != nullptr, "Need to create a Postmaster before getting it.");
 	return myInstance;
 }
 
 void EventManager::Create()
 {
-	DL_ASSERT_EXP(myInstance == nullptr, "Failed to create postmaster. Already created!");
 	myInstance = new EventManager();
 }
 
 void EventManager::Destroy()
 {
-	DL_ASSERT_EXP(myInstance != nullptr, "Failed to destroy postmaster. Did you call Destroy twice or forget to create?");
 	delete myInstance;
 	myInstance = nullptr;
 }
@@ -47,8 +44,7 @@ void EventManager::Destroy()
 void EventManager::Subscribe(const eMessageType aMessageType, Subscriber* aSubscriber, ePriorityLayer aPriority, bool aLetThrough)
 {
 #ifdef _DEBUG
-	CU::GrowingArray<SubscriberInfo>& subscribers
-		= mySubscribers[static_cast<int>(aMessageType)];
+	CU::GrowingArray<SubscriberInfo>& subscribers = mySubscribers[static_cast<int>(aMessageType)];
 	for (int i = 0; i < subscribers.Size(); ++i)
 	{
 		DL_ASSERT_EXP(subscribers[i].mySubscriber != aSubscriber, "Tried to add the same subscriber to the same message twice.");

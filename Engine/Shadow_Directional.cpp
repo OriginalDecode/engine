@@ -5,7 +5,7 @@
 void ShadowDirectional::Initiate(float buffer_size)
 {
 	m_Camera = new Camera;
-	m_Camera->CreateOrthographicProjection(200.f, 200.f, 1.f, 100.f);
+	m_Camera->CreateOrthographicProjection(buffer_size, buffer_size, 1.f, 100.f);
 
 	m_Camera->SetPosition({ 55, 90, 55});
 	m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);

@@ -1,5 +1,4 @@
-[
-    {
+[{
         "component_type": "translation",
         "position": [
             5.0,
@@ -7,34 +6,31 @@
             5.0
         ],
         "rotation": [
-            0.0,
-            -0.0,
+            0.0, -0.0,
             0.0
         ]
     },
     {
         "component_type": "graphics",
-        "instances": [
-            {
-                "model_file": "data/gencontent/cube_100x100.fbx",
-                "material_file": "Data/Material/mat_aluminum.json",
-                "relative_position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "relative_scale": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "relative_rotation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "shadowed": true
-            }
-        ]
+        "instances": [{
+            "model_file": "data/engineassets/arrow_head.fbx",
+            "material_file": "Data/Material/mat_aluminum.json",
+            "relative_position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "relative_scale": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "relative_rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "shadowed": true
+        }]
     }
 ]

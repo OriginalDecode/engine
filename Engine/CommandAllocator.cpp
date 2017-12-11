@@ -21,13 +21,11 @@ namespace memory
 
 	void* CommandAllocator::Alloc(s32 size_in_bytes, u8 alignment /*= sizeof(void*)*/)
 	{
-		
-		u64 address = 0;
-		void* ptr0 = AtomicAddPtr(&m_CurrentPos, size_in_bytes, address);
+		AtomicAddPtr((void**)&m_CurrentPos, size_in_bytes);
+		void* ptr0 = AtomicAddPtr((void**)&m_CurrentPos, size_in_bytes);
 		AtomicAddU32(&m_UsedMemory, size_in_bytes);
 		AtomicAddS32(&m_NumberOfAllocations, 1);
 
-		void* ptr = (void*)(address - size_in_bytes);
 		return ptr0;
 		
 

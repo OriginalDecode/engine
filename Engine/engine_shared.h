@@ -112,11 +112,11 @@ inline s32 AtomicAddS32(s32 volatile *value, s32 toAdd)
 	return _return;
 };
 
-inline void* AtomicAddPtr(void* volatile* pointer, u64 size)
+inline void* AtomicAddPtr(void volatile *pointer, u64 size, u64 & out_addr)
 {
-	void* pAddr = (void*)((u64)pointer + size);
-	void * out = InterlockedExchangePointer(pointer, pAddr);
-	return out;
+	out_addr = _InterlockedExchange64((__int64 volatile *)pointer, ((u64)pointer + size));
+	return (void*)out_addr;
+
 }
 
 

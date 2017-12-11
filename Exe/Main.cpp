@@ -37,11 +37,8 @@ enum class EUsagePage
 Application* application = nullptr;
 static bool s_WindowActive = false;
 Engine* engine = nullptr;
-#include <objbase.h>
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
-	//HRESULT hr = CoInitialize(0);
-	//DL_ASSERT_EXP(hr == S_OK, "CoInitialize(0); failed");
 #ifdef _PROFILE
 	profiler::startListen();
 #endif/* 1,777777777777777777777777777777778*/

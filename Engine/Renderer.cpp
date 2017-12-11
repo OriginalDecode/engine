@@ -421,11 +421,23 @@ void Renderer::Render3DCommandsInstanced()
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
+
 	const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		ProcessModelCommand(commands, i, engine);
 	}
+
+
+	/*for (s32 top_tree_node = 0; top_tree_node < 8; top_tree_node++)
+	{
+		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, top_tree_node);
+		for (s32 i = 0; i < commands.Size(); i++)
+		{
+			ProcessModelCommand(commands, i, engine);
+		}
+	}
+*/
 }
 
 void Renderer::RenderTerrain(bool override_effect)

@@ -302,8 +302,8 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 {
 	CreateTerrain("Data/Textures/flat_height.tga");
 	float height = 1.f;
-	float x_start = 156.f;
-	float z_start = 156.f;
+	float x_start = 5.f;
+	float z_start = 5.f;
 	float metal = 0.f;
 	Engine* pEngine = Engine::GetInstance();
 	Material* pGoldMaterial = pEngine->GetMaterial("Data/Material/mat_gold.json");

@@ -43,6 +43,11 @@ void Application::Update()
 #ifdef _PROFILE
 	EASY_THREAD_SCOPE("LogicThread");
 #endif
+
+
+	HRESULT hr = CoInitialize(0);
+	DL_ASSERT_EXP(hr == S_OK, "CoInitialize(0); failed");
+
 	while (mySynchronizer->HasQuit() == false)
 	{
 

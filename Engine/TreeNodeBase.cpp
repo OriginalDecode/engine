@@ -28,7 +28,7 @@ void TreeNodeBase::Update(float dt, bool paused)
 	PROFILE_FUNCTION(profiler::colors::Blue);
 	m_DwellerCount = m_Dwellers.Size();
 
-	//RenderBox();
+	RenderBox();
 	m_NodeEntityManager->Update(dt, m_Dwellers, paused);
 
 	PROFILE_BLOCK("forEachDweller", profiler::colors::LightBlue);
@@ -268,18 +268,27 @@ void TreeNodeBase::RenderBox()
 	points[7].position.y = m_CenterPosition.y + m_HalfWidth;
 
 
-	AddLine(Line(points[0], points[1]));
-	AddLine(Line(points[0], points[2]));
-	AddLine(Line(points[0], points[6]));
-	AddLine(Line(points[1], points[3]));
-	AddLine(Line(points[1], points[7]));
-	AddLine(Line(points[3], points[5]));
-	AddLine(Line(points[5], points[7]));
-	AddLine(Line(points[6], points[4]));
-	AddLine(Line(points[2], points[4]));
-	AddLine(Line(points[4], points[5]));
-	AddLine(Line(points[2], points[3]));
-	AddLine(Line(points[6], points[7]));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[1], true));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[2], true));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[6], true));
+
+	m_Synchronizer->AddRenderCommand(LineCommand(points[1], points[3], true));
+	m_Synchronizer->AddRenderCommand(LineCommand(points[1], points[7], true));
+
+	m_Synchronizer->AddRenderCommand(LineCommand(points[3], points[5], true));
+
+	m_Synchronizer->AddRenderCommand(LineCommand(points[5], points[7], true));
+
+	m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[4], true));
+
+	m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[4], true));
+
+	m_Synchronizer->AddRenderCommand(LineCommand(points[4], points[5], true));
+
+	m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[3], true));
+
+	m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[7], true));
+
 }
 
 void TreeNodeBase::AddLine(Line line)

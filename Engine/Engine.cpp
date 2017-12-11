@@ -259,7 +259,7 @@ void Engine::Update()
 	m_Threadpool.Update();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	debug::DebugHandle::GetInstance()->SetEntity(PickEntity(GetTexture("entity_id")));
+	//debug::DebugHandle::GetInstance()->SetEntity(PickEntity(GetTexture("entity_id")));
 	//set target data in renderer.
 #endif
 }
@@ -545,8 +545,8 @@ CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepa
 
 	m_States[(u16)eEngineStates::LOADING] = TRUE;
 
-	//m_LevelFactory->CreatePBLLevel(24);
-	m_LevelFactory->CreateLevel(level_filepath);
+	m_LevelFactory->CreatePBLLevel(8);
+	//m_LevelFactory->CreateLevel(level_filepath);
 
 	m_States[(u16)eEngineStates::LOADING] = FALSE;
 

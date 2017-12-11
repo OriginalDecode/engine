@@ -94,19 +94,19 @@ struct Ticket_Mutex
 	u64 volatile serving = 0;
 };
 
-inline u64 AtmoicAddU64(u64 volatile *value, u64 toAdd)
+inline u64 AtomicAddU64(u64 volatile *value, u64 toAdd)
 {
 	u64 _return = _InterlockedExchange64((__int64 volatile *)value, (*value + toAdd));
 	return _return;
 };
 
-inline u32 AtmoicAddU32(u32 volatile *value, u32 toAdd)
+inline u32 AtomicAddU32(u32 volatile *value, u32 toAdd)
 {
 	u32 _return = InterlockedExchange((unsigned __int32 volatile *)value, (*value + toAdd));
 	return _return;
 };
 
-inline s32 AtmoicAddS32(s32 volatile *value, s32 toAdd)
+inline s32 AtomicAddS32(s32 volatile *value, s32 toAdd)
 {
 	s32 _return = InterlockedExchange((unsigned __int32 volatile *)value, (*value + toAdd));
 	return _return;
@@ -122,7 +122,7 @@ inline void* AtomicAddPtr(void volatile *pointer, u64 size, u64 & out_addr)
 
 inline void BeginTicketMutex(Ticket_Mutex* mutex)
 {
-	u64 ticket = AtmoicAddU64(&mutex->ticket, 1); //AtomicAdd?
+	u64 ticket = AtomicAddU64(&mutex->ticket, 1); //AtomicAdd?
 	while (ticket != mutex->serving)
 	{
 		//should have a timer or something here in debug to auto crash

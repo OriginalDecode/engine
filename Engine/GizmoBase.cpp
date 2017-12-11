@@ -7,9 +7,10 @@
 
 #include <EventManager.h>
 
-void GizmoBase::Initiate(std::string event)
+void GizmoBase::Initiate(std::string event, eGizmoType type)
 {
 	EventManager::GetInstance()->Subscribe(event, this);
+	m_Type = type;
 }
 
 void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction)
@@ -42,28 +43,47 @@ void GizmoBase::Render()
 
 	RenderBoxes();
 
+	LinePoint root;
+	LinePoint target;
+	root.position = m_Orientation.GetPosition();
+
 	Engine* engine = Engine::GetInstance();
-	CU::Vector4f camera_position = engine->GetCamera()->GetPosition();
-	float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
-	CU::Vector4f scale = CU::Vector4f(distance, distance, distance, 1);
-	//CU::Matrix44f scale_matrix = CU::Matrix44f::CreateScaleMatrix(scale);
-	CU::Matrix44f t = m_Right.m_Orientation;
-	//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
 	Synchronizer* sync = engine->GetSynchronizer();
-	sync->AddRenderCommand(ModelCommandNonDeferred(m_Right.m_Key, t, false));
+	CU::Vector4f camera_position = engine->GetCamera()->GetPosition();
+	const float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
+	CU::Vector4f scale = CU::Vector4f(distance, distance, distance, 1);
 
-	//__________________________
+	if (m_Type != ROTATE)
+	{
+		//CU::Matrix44f scale_matrix = CU::Matrix44f::CreateScaleMatrix(scale);
+		CU::Matrix44f t = m_Right.m_Orientation;
+		//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
+		sync->AddRenderCommand(ModelCommandNonDeferred(m_Right.m_Key, t, false));
+		root.color = CU::Vector4f(1, 0, 0, 1);
+		target.position = t.GetPosition();
+		target.color = root.color;
+		sync->AddRenderCommand(LineCommand(root, target, false));
 
-	t = m_Forward.m_Orientation;
-	//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
-	sync->AddRenderCommand(ModelCommandNonDeferred(m_Forward.m_Key, t, false));
+		//__________________________
 
-	//__________________________
+		t = m_Forward.m_Orientation;
+		//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
+		root.color = CU::Vector4f(0, 0, 1, 1);
+		target.position = t.GetPosition();
+		target.color = root.color;
+		sync->AddRenderCommand(ModelCommandNonDeferred(m_Forward.m_Key, t, false));
+		sync->AddRenderCommand(LineCommand(root, target, false));
 
-	t = m_Up.m_Orientation;
-	//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
-	sync->AddRenderCommand(ModelCommandNonDeferred(m_Up.m_Key, t, false));
+		//__________________________
 
+		t = m_Up.m_Orientation;
+		//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
+		root.color = CU::Vector4f(0, 1, 0, 1);
+		target.position = t.GetPosition();
+		target.color = root.color;
+		sync->AddRenderCommand(ModelCommandNonDeferred(m_Up.m_Key, t, false));
+		sync->AddRenderCommand(LineCommand(root, target, false));
+	}
 	//Update();
 }
 

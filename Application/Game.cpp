@@ -193,18 +193,18 @@ void Game::OldUpdate(float dt)
 		entity_speed -= 1.f * dt;
 	}
 
-// 	m_Synchronizer->AddRenderCommand(SpotlightCommand(
-// 		spotlight.GetLast(),
-// 		cl::DegreeToRad(degree * 0.5f),
-// 		range,
-// 		intensity,
-// 		CU::Vector4f(1, 0, 0, 1),
-// 		spotorient,
-// 		false));
+	m_Synchronizer->AddRenderCommand(SpotlightCommand(
+		spotlight.GetLast(),
+		cl::DegreeToRad(degree * 0.5f),
+		range,
+		intensity,
+		CU::Vector4f(1, 0, 0, 1),
+		spotorient,
+		false));
 
 
 	HandleMovement(input_wrapper, entity_speed, dt);
-	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
+	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 	m_World.Update(dt, m_Paused);
 }
 

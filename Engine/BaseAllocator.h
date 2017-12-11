@@ -11,7 +11,7 @@ namespace
 		return (void*)((reinterpret_cast<uptr>(address) + static_cast<uptr>(alignment - 1)) & ~(alignment - 1));
 	}
 
-	inline u8 AlignForwardAdjustment(void volatile* address, u8 alignment)
+	inline u8 AlignForwardAdjustment(const void* address, u8 alignment)
 	{
 		u8 adjustment = alignment - (reinterpret_cast<u64>(address) & static_cast<uptr>(alignment - 1));
 		if (adjustment == alignment)
@@ -20,7 +20,7 @@ namespace
 		return adjustment;
 	}
 
-	inline u8 AlignForwardAdjustmentWithHeader(void* address, u8 alignment, u8 headerSize)
+	inline u8 AlignForwardAdjustmentWithHeader(const void* address, u8 alignment, u8 headerSize)
 	{
 		u8 adjustment = AlignForwardAdjustment(address, alignment);
 

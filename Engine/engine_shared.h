@@ -96,20 +96,17 @@ struct Ticket_Mutex
 
 inline u64 AtmoicAddU64(u64 volatile *value, u64 toAdd)
 {
-	u64 _return = _InterlockedExchange64((__int64 volatile *)value, (*value + toAdd));
-	return _return;
+	return _InterlockedExchange64((__int64 volatile *)value, (*value + toAdd));
 };
 
 inline u32 AtmoicAddU32(u32 volatile *value, u32 toAdd)
 {
-	u32 _return = InterlockedExchange((unsigned __int32 volatile *)value, (*value + toAdd));
-	return _return;
+	return InterlockedExchange((unsigned __int32 volatile *) value, (*value + toAdd));
 };
 
 inline s32 AtmoicAddS32(s32 volatile *value, s32 toAdd)
 {
-	s32 _return = InterlockedExchange((unsigned __int32 volatile *)value, (*value + toAdd));
-	return _return;
+	return InterlockedExchange((unsigned __int32 volatile *)value, (*value + toAdd));
 };
 
 inline void* AtomicAddPtr(void volatile *pointer, u64 size, u64 & out_addr)

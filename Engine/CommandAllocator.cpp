@@ -23,12 +23,11 @@ namespace memory
 	{
 		
 		u64 address = 0;
-		m_CurrentPos = AtomicAddPtr(&m_CurrentPos, size_in_bytes, address);
+		m_CurrentPos = AtomicAddPtr(m_CurrentPos, size_in_bytes, address);
 		m_UsedMemory = AtmoicAddU32(&m_UsedMemory, size_in_bytes);
 		m_NumberOfAllocations = AtmoicAddS32(&m_NumberOfAllocations, 1);
 
-		void* ptr = (void*)(address - size_in_bytes);
-		return ptr;
+		return (void*)(address - size_in_bytes);
 		
 
 

@@ -11,26 +11,15 @@ static const u64 e_down_HASH = Hash("e_down");
 static const std::string r_down = ("r_down");
 static const u64 r_down_HASH = Hash("r_down");
 
-
-
-
 class GizmoBase : public Subscriber
 {
 public:
 	GizmoBase() = default;
 
-	enum eGizmoType
-	{
-		NONE,
-		SCALING,
-		ROTATE,
-		POSITION,
-	};
-
-	void Initiate(std::string event, eGizmoType type);
+	void Initiate(std::string event);
 
 
-	void CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction);
+	void CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction );
 	void Render();
 	void RenderBoxes();
 
@@ -57,7 +46,6 @@ private:
 	GizmoHandle m_Up; // green
 	GizmoHandle m_Forward; //blue
 	CU::Matrix44f m_Orientation;
-	eGizmoType m_Type = NONE;
 	bool m_Active = false;
 };
 

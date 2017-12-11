@@ -54,7 +54,7 @@ namespace memory
 		virtual void Dealloc(void* p) = 0;
 
 		void* GetStart() const { return m_Start; }
-		volatile void* GetCurrentPos() const { return m_CurrentPos; }
+		void* GetCurrentPos() const { return m_CurrentPos; }
 		s32 GetMemoryUsed() const { return m_UsedMemory; }
 		s32 GetAllocationSize() const { return m_AllocatedMemory; }
 		s32 Size() const { return m_NumberOfAllocations; }
@@ -64,10 +64,10 @@ namespace memory
 
 	protected:
 		void* m_Start = nullptr;
-		volatile void* m_CurrentPos = nullptr;
-		volatile s32 m_AllocatedMemory = 0;
-		volatile u32 m_UsedMemory = 0;
-		volatile s32 m_NumberOfAllocations = 0;
+		void* m_CurrentPos = nullptr;
+		s32 m_AllocatedMemory = 0;
+		s32 m_UsedMemory = 0;
+		s32 m_NumberOfAllocations = 0;
 
 	};
 };

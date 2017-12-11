@@ -204,7 +204,7 @@ void Game::OldUpdate(float dt)
 
 
 	HandleMovement(input_wrapper, entity_speed, dt);
-	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
+	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 	m_World.Update(dt, m_Paused);
 }
 

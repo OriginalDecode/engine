@@ -40,6 +40,10 @@ bool Application::Initiate()
 
 void Application::Update()
 {
+#if defined (_WIN32) || (_WIN64)
+	CoInitialize(0);
+#endif
+
 #ifdef _PROFILE
 	EASY_THREAD_SCOPE("LogicThread");
 #endif

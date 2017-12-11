@@ -8,6 +8,7 @@ namespace memory
 {
 	void MemorySegmentHandle::Initiate(/*takes a memory_block, size, and offset */)
 	{
+		return;
 		s32 allocation_size0 = 0;
 		void* memory_block0 = Engine::GetInstance()->GetSynchronizer()->GetMemoryBlock(eBufferType::MODEL_BUFFER, 0, allocation_size0);
 		s32 allocation_size1 = 0;

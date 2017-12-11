@@ -289,7 +289,7 @@ void Renderer::Render()
 
 	m_Synchronizer->WaitForLogic();
 
-	Engine::GetInstance()->GetMemorySegmentHandle().Clear((s32)m_Synchronizer->GetCurrentBufferIndex());
+	//Engine::GetInstance()->GetMemorySegmentHandle().Clear((s32)m_Synchronizer->GetCurrentBufferIndex());
 	m_Synchronizer->SwapBuffer();
 	m_Synchronizer->RenderIsDone();
 
@@ -399,8 +399,8 @@ void Renderer::Render3DCommands()
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	for (s32 j = 0; j < 8; j++)
 	{
-		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
-
+		//const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
+		const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
 		for (s32 i = 0; i < commands.Size(); i++)
 		{
 			auto command = reinterpret_cast<ModelCommand*>(commands[i]);

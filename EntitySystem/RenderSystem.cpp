@@ -80,7 +80,8 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 			if(instance.m_Scale > 0.f)
 				orientation = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * orientation;
 			const CU::Matrix44f relative = orientation * instance.m_Orientation;
-			AddRenderCommand(ModelCommand(instance.m_ModelID
+			//mySynchronizer->AddRenderCommand()
+			mySynchronizer->AddRenderCommand(ModelCommand(instance.m_ModelID
 										  , instance.m_MaterialKey
 										  , relative //could be pre-calculated, and on physical objects this shouldn't even be used if it can be moved.
 										  , render.m_RenderWireframe

@@ -44,9 +44,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 {
 	auto api = Engine::GetAPI();
 	m_RenderContext = graphics::RenderContext(Engine::GetInstance(),
-		api->GetDevice(),
-		api->GetContext(),
-		api);
+											  api->GetDevice(),
+											  api->GetContext(),
+											  api);
 
 
 	//myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
@@ -248,10 +248,10 @@ void Renderer::Render()
 
 	ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
 	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
-	//RenderSpotlight();
-	//RenderPointlight();
+	RenderSpotlight();
+	RenderPointlight();
 
-	//RenderParticles(nullptr);
+	RenderParticles(nullptr);
 
 	//Detect edges on specified texture
 
@@ -277,7 +277,7 @@ void Renderer::Render()
 	RenderLines();
 
 	//Render2DCommands();
-
+	
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -396,15 +396,20 @@ void Renderer::Render3DCommands()
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
-	const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
-	for (s32 i = 0; i < commands.Size(); i++)
+	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
+	for (s32 j = 0; j < 8; j++)
 	{
-		auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
+		//const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
+		const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
+		for (s32 i = 0; i < commands.Size(); i++)
+		{
+			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
+			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
-		Model* model = m_RenderContext.GetEngine().GetModel(command->m_Key);
-		model->SetOrientation(command->m_Orientation);
-		model->Render(m_RenderContext);
+			Model* model = m_RenderContext.GetEngine().GetModel(command->m_Key);
+			model->SetOrientation(command->m_Orientation);
+			model->Render(m_RenderContext);
+		}
 	}
 }
 
@@ -420,16 +425,7 @@ void Renderer::Render3DCommandsInstanced()
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
-
-
-	const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER);
-	for (s32 i = 0; i < commands.Size(); i++)
-	{
-		ProcessModelCommand(commands, i, engine);
-	}
-
-
-	/*for (s32 top_tree_node = 0; top_tree_node < 8; top_tree_node++)
+	for (s32 top_tree_node = 0; top_tree_node < 8; top_tree_node++)
 	{
 		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, top_tree_node);
 		for (s32 i = 0; i < commands.Size(); i++)
@@ -437,7 +433,7 @@ void Renderer::Render3DCommandsInstanced()
 			ProcessModelCommand(commands, i, engine);
 		}
 	}
-*/
+
 }
 
 void Renderer::RenderTerrain(bool override_effect)
@@ -588,7 +584,7 @@ void Renderer::RenderPointlight()
 		m_LightPass->RenderPointlight(myPointLight, m_Camera->GetOrientation(), m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
 	}
 	PROFILE_BLOCK_END;
-	}
+}
 
 void Renderer::RenderParticles(Effect* effect)
 {

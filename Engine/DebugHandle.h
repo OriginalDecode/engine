@@ -3,11 +3,13 @@
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include "ImGuiRegisterStructs.h"
 #include <CommonLib/DataStructures/GrowingArray.h>
+#include <CommonLib/Math/Matrix/Matrix.h>
 class Texture;
 class Material;
 struct ModelInstance;
 namespace debug
 {
+	void EditTransform(const float *cameraView, float *cameraProjection, float* matrix);
 	class DebugHandle
 	{
 	public:
@@ -37,7 +39,12 @@ namespace debug
 		void RegisterTexture(Texture* texture) { m_RegisteredSampleTextures.Add(texture); }
 		Texture* GetTexture(s32 index) { return m_RegisteredSampleTextures[index]; }
 
+		void SetObjectMatrix(CU::Matrix44f* mat);
+
+
 	private:
+
+		CU::Matrix44f* m_ObjectMatrix = nullptr;
 
 		Entity m_CurrEntity = 0;
 		Entity m_PrevEntity = 0;

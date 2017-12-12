@@ -1,8 +1,14 @@
 
 #include <Engine/Engine.h>
 #if !defined(_PROFILE) && !defined(_FINAL)
+#if defined (_WIN32) || (_WIN64)
 #include <Engine/imgui_impl_dx11.h>
+#else
+//non windows specific
 #endif
+#include <Engine/ImGuizmo.h>
+#endif
+
 #include <Engine/VirtualFileSystem.h>
 
 #include <DL_Debug/DL_Debug.h>
@@ -74,6 +80,8 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	{
 #if !defined(_PROFILE) && !defined(_FINAL)
 		ImGui_ImplDX11_NewFrame();
+		ImGuizmo::BeginFrame();
+		
 #endif
 		while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{

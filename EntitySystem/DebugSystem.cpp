@@ -55,6 +55,8 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 		RenderBox(debug, translation.myOrientation);
 	}
 
+	return;
+
 	if (m_Engine->GetInputHandle()->GetInputWrapper()->OnRelease(MouseInput::LEFT))
 	{
 		m_Holding = false;
@@ -299,6 +301,15 @@ void DebugSystem::HandleEvent(u64 event, void* data /*= nullptr*/)
 	{
 		debug::DebugHandle::GetInstance()->ConfirmEntity();
 		m_Engine->PickEntity();
+		Entity e = debug::DebugHandle::GetInstance()->GetSelectedEntity();
+		const CU::GrowingArray<Entity>& entities = GetEntities();
+		if (entities.Empty())
+			return;
+		if (entities.Find(e))
+		{
+			TranslationComponent& translation = GetComponent<TranslationComponent>(e);
+			debug::DebugHandle::GetInstance()->SetObjectMatrix(&translation.myOrientation);
+		}
 	}
 }
 

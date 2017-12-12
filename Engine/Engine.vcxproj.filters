@@ -442,6 +442,9 @@
     <ClInclude Include="AssetFactory.h">
       <Filter>Factories</Filter>
     </ClInclude>
+    <ClInclude Include="ImGuizmo.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -722,6 +725,9 @@
     </ClCompile>
     <ClCompile Include="AssetFactory.cpp">
       <Filter>Factories</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuizmo.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

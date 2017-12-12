@@ -31,6 +31,7 @@ struct ControllerState;
 
 		void CreatePerspectiveProjection(float width, float height, float near_plane, float far_plane, float fov);
 		const CU::Matrix44f& GetPerspective() const { return m_ProjectionMatrix; }
+		CU::Matrix44f& GetPerspective() { return m_ProjectionMatrix; }
 
 		void CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane);
 		const CU::Matrix44f& GetOrthogonal() const { return m_OrthogonalMatrix; }

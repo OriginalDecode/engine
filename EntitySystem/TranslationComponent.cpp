@@ -6,8 +6,13 @@ void TranslationComponent::Deserialize(const rapidjson::Value& value)
 	myOrientation.SetPosition({ (float)position[0].GetDouble(), (float)position[1].GetDouble(), (float)position[2].GetDouble(), 1.f });
 
 	auto& rotation = value["rotation"].GetArray();
-	myOrientation = CU::Matrix44f::CreateRotateAroundX((float)rotation[0].GetDouble() * (3.14f / 180.f)) * myOrientation;
-	myOrientation = CU::Matrix44f::CreateRotateAroundY((float)rotation[1].GetDouble() * (3.14f / 180.f)) * myOrientation;
-	myOrientation = CU::Matrix44f::CreateRotateAroundZ((float)rotation[2].GetDouble() * (3.14f / 180.f)) * myOrientation;
+
+	float x = (float)rotation[0].GetDouble();
+	float y = (float)rotation[1].GetDouble();
+	float z = (float)rotation[2].GetDouble();
+
+	myOrientation = CU::Matrix44f::CreateRotateAroundX(z) * myOrientation;
+	myOrientation = CU::Matrix44f::CreateRotateAroundY(y) * myOrientation;
+	myOrientation = CU::Matrix44f::CreateRotateAroundZ(x) * myOrientation;
 
 }

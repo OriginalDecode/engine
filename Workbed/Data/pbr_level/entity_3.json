@@ -4,29 +4,29 @@
         "position": [
             5.0,
             1.0,
-            35.0
+            2.9093408584594728
         ],
         "rotation": [
-            0.0,
-            -0.0,
-            0.0
+            -3.0531413555145265,
+            0,
+            -1.625899076461792
         ]
     },
     {
         "component_type": "graphics",
         "instances": [
             {
-                "model_file": "data/model/ballen.fbx",
-                "material_file": "Data/Material/mat_octostone.json",
+                "model_file": "data/engineassets/arrow_head.fbx",
+                "material_file": "Data/Material/mat_aluminum.json",
                 "relative_position": [
                     0.0,
                     0.0,
                     0.0
                 ],
                 "relative_scale": [
-                    0.0,
-                    0.0,
-                    0.0
+                    1.0,
+                    1.0,
+                    1.0
                 ],
                 "relative_rotation": [
                     0.0,

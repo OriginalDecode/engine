@@ -2,9 +2,9 @@
     {
         "component_type": "translation",
         "position": [
-            20.0,
+            5.0,
             1.0,
-            35.0
+            80.0
         ],
         "rotation": [
             0.0,
@@ -24,9 +24,9 @@
                     0.0
                 ],
                 "relative_scale": [
-                    0.0,
-                    0.0,
-                    0.0
+                    1.0,
+                    1.0,
+                    1.0
                 ],
                 "relative_rotation": [
                     0.0,

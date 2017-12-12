@@ -57,10 +57,7 @@ namespace CommonUtilities
 		template<typename T>
 		float Matrix44<T>::GetZRotation() const
 		{
-			if (myMatrix[0] == 1.f && myMatrix[1] == 0.f) //safes against pi/2 return value instead of 0 when default values
-				return 0.f;
-
-			return atan2f(myMatrix[0], myMatrix[1]);
+			return atan2f(myMatrix[4], myMatrix[5]);
 		}
 
 		template<typename TYPE>

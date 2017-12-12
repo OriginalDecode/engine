@@ -1,22 +1,3 @@
 [
-    "data/pbr_level/entity_0.json",
-    "data/pbr_level/entity_1.json",
-    "data/pbr_level/entity_2.json",
-    "data/pbr_level/entity_3.json",
-    "data/pbr_level/entity_4.json",
-    "data/pbr_level/entity_5.json",
-    "data/pbr_level/entity_6.json",
-    "data/pbr_level/entity_7.json",
-    "data/pbr_level/entity_8.json",
-    "data/pbr_level/entity_9.json",
-    "data/pbr_level/entity_10.json",
-    "data/pbr_level/entity_11.json",
-    "data/pbr_level/entity_12.json",
-    "data/pbr_level/entity_13.json",
-    "data/pbr_level/entity_14.json",
-    "data/pbr_level/entity_15.json",
-    "data/pbr_level/entity_16.json",
-    "data/pbr_level/entity_17.json",
-    "data/pbr_level/entity_18.json",
-    "data/pbr_level/entity_19.json"
+    "data/pbr_level/entity_1.json"
 ]

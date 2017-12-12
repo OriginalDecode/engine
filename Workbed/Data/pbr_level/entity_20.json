@@ -2,9 +2,9 @@
     {
         "component_type": "translation",
         "position": [
-            35.0,
+            20.0,
             1.0,
-            50.0
+            95.0
         ],
         "rotation": [
             0.0,
@@ -16,17 +16,17 @@
         "component_type": "graphics",
         "instances": [
             {
-                "model_file": "data/model/ballen.fbx",
-                "material_file": "Data/Material/mat_octostone.json",
+                "model_file": "data/gencontent/cube_100x100.fbx",
+                "material_file": "Data/Material/mat_aluminum.json",
                 "relative_position": [
                     0.0,
                     0.0,
                     0.0
                 ],
                 "relative_scale": [
-                    0.0,
-                    0.0,
-                    0.0
+                    8.0,
+                    8.0,
+                    8.0
                 ],
                 "relative_rotation": [
                     0.0,

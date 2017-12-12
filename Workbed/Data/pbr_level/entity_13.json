@@ -2,9 +2,9 @@
     {
         "component_type": "translation",
         "position": [
-            20.0,
+            5.0,
             1.0,
-            65.0
+            110.0
         ],
         "rotation": [
             0.0,
@@ -17,16 +17,16 @@
         "instances": [
             {
                 "model_file": "data/model/ballen.fbx",
-                "material_file": "Data/Material/mat_copper.json",
+                "material_file": "Data/Material/mat_octostone.json",
                 "relative_position": [
                     0.0,
                     0.0,
                     0.0
                 ],
                 "relative_scale": [
-                    0.0,
-                    0.0,
-                    0.0
+                    1.0,
+                    1.0,
+                    1.0
                 ],
                 "relative_rotation": [
                     0.0,

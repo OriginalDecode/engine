@@ -1,36 +1,40 @@
-[{
+[
+    {
         "component_type": "translation",
         "position": [
-            20.0,
+            5.0,
             1.0,
             5.0
         ],
         "rotation": [
-            0.0, -0.0,
-            0.0
+            0.024771569296717645,
+            -0.017091646790504457,
+            1.4137169122695923
         ]
     },
     {
         "component_type": "graphics",
-        "instances": [{
-            "model_file": "data/model/ballen.fbx",
-            "material_file": "Data/Material/mat_octostone.json",
-            "relative_position": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "relative_scale": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "relative_rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "shadowed": true
-        }]
+        "instances": [
+            {
+                "model_file": "data/engineassets/arrow_head.fbx",
+                "material_file": "Data/Material/mat_aluminum.json",
+                "relative_position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "relative_scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "relative_rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "shadowed": true
+            }
+        ]
     }
 ]

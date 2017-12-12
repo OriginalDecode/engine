@@ -631,14 +631,13 @@ void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32
 
 	Model* model = engine.GetModel(command->m_Key);
 
-	if (command->m_MaterialKey > 0 && !m_InstancingManager.FindInstanceObject(command->m_MaterialKey))
-	{
-		InstanceObject new_instance;
-		new_instance.m_Material = model->GetMaterial() ? model->GetMaterial() : m_RenderContext.GetEngine().GetMaterial(command->m_MaterialKey);
-		new_instance.m_Model = model;
-		new_instance.m_Shadowed = true; /* should be command->m_Shadowed or something*/
-		m_InstancingManager.AddInstanceObject(new_instance);
-	}
+	
+	InstanceObject new_instance;
+	new_instance.m_Material = model->GetMaterial() ? model->GetMaterial() : m_RenderContext.GetEngine().GetMaterial(command->m_MaterialKey);
+	new_instance.m_Model = model;
+	new_instance.m_Shadowed = true; /* should be command->m_Shadowed or something*/
+	m_InstancingManager.AddInstanceObject(new_instance);
+	
 
 	//m_InstancingManager.AddOrientationToInstance(command->m_MaterialKey, command->m_Orientation);
 

@@ -24,6 +24,7 @@ class InstancingManager
 public:
 	InstancingManager() = default;
 	bool FindInstanceObject(u64 key);
+	bool FindModel(u64 key) const;
 	void AddInstanceObject(InstanceObject instance_object);
 	const InstanceObject& GetInstanceObject(u64 key, u64 model_key);
 

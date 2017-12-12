@@ -111,5 +111,9 @@ namespace cl
 
 	std::string HandleVAArgs(const char* formatted_string, ...);
 
+	inline double TruncDecimal(double d, double p) 
+	{
+		return std::trunc(d * p) / p; // C++11
+	}
 
 };

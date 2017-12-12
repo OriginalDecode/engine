@@ -1,6 +1,7 @@
 #pragma once
 #include "Math/Matrix/Matrix44.h"
 #include "BaseComponent.h"
+#include <CommonLib/Utilities.h>
 struct TranslationComponent : public BaseComponent
 {
 	CU::Matrix44f myOrientation;
@@ -14,6 +15,7 @@ struct TranslationComponent : public BaseComponent
 template<typename Writer>
 void TranslationComponent::Serialize(Writer& writer) const
 {
+	writer.SetMaxDecimalPlaces(3);
 	writer.StartObject();
 	writer.String("component_type");
 	writer.String("translation");
@@ -26,19 +28,24 @@ void TranslationComponent::Serialize(Writer& writer) const
 	writer.Double(position.z);
 	writer.EndArray();
 
-
-
-
-	const float rotation_x = myOrientation.GetXRotation();
-	const float rotation_y = myOrientation.GetYRotation();
-	const float rotation_z = myOrientation.GetZRotation();
-
-	writer.String("rotation");
+	CU::Vector4f up = myOrientation.GetUp();
+	CU::Vector4f fwd = myOrientation.GetForward();
+	
+	writer.String("up");
 	writer.StartArray();
-	writer.Double(rotation_x);
-	writer.Double(rotation_y);
-	writer.Double(rotation_z);
+	writer.Double(up.x);
+	writer.Double(up.y);
+	writer.Double(up.z);
 	writer.EndArray();
+
+
+	writer.String("forward");
+	writer.StartArray();
+	writer.Double(fwd.x);
+	writer.Double(fwd.y);
+	writer.Double(fwd.z);
+	writer.EndArray();
+
 
 	writer.EndObject();
 }

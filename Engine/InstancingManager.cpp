@@ -11,24 +11,29 @@ bool InstancingManager::FindInstanceObject(u64 key)
 	return false;
 }
 
+bool InstancingManager::FindModel(u64 key) const
+{
 
+
+	return false;
+}
 
 void InstancingManager::AddInstanceObject(InstanceObject instance_object)
 {
 	const u64 material_key = instance_object.m_Material->GetKey();
 	const u64 model_key = instance_object.m_Model->GetKey();
 
-	if(m_InstanceObjects.find(material_key) == m_InstanceObjects.end())
+	if (m_InstanceObjects.find(material_key) == m_InstanceObjects.end())
+	{
 		m_InstanceObjects.emplace(material_key, std::map<u64, InstanceObject>());
+	}
 
-	std::map<u64, InstanceObject>& list = m_InstanceObjects.at(material_key);
-	list.emplace(model_key, instance_object);
-
-	//list.Add(instance_object);
-
-
-	//m_InstanceObjects.insert(std::pair<u64, std::map<u64, InstanceObject>(instance_object.m_Material->GetKey(), instance_object));
-
+	auto it = m_InstanceObjects.find(material_key);
+	if (it->second.find(model_key) == it->second.end())
+	{
+		std::map<u64, InstanceObject>& list = m_InstanceObjects.at(material_key);
+		list.emplace(model_key, instance_object);
+	}
 }
 
 const InstanceObject& InstancingManager::GetInstanceObject(u64 material_key, u64 model_key)

@@ -42,22 +42,19 @@ namespace CommonUtilities
 		template<typename T>
 		float Matrix44<T>::GetXRotation() const
 		{
-			if (myMatrix[5] == 1.f && myMatrix[6] == 0.f) //safes against pi/2 return value instead of 0 when default values
-				return 0.f;
-
-			return atan2f(myMatrix[5], myMatrix[6]);
+			return atan2f(myMatrix[6], myMatrix[10]);
 		}
 
 		template<typename T>
 		float Matrix44<T>::GetYRotation() const
 		{
-			return atan2f(-myMatrix[8], sqrtf((2.f/myMatrix[5]) + (2.f / myMatrix[6])));
+			return atan2f(-myMatrix[8], sqrtf((2.f/myMatrix[5]) + (2.f / myMatrix[6] + 0.00001f))) + 0.00001f;
 		}
 
 		template<typename T>
 		float Matrix44<T>::GetZRotation() const
 		{
-			return atan2f(myMatrix[4], myMatrix[5]);
+			return atan2f(myMatrix[1], myMatrix[0]);
 		}
 
 		template<typename TYPE>
@@ -68,7 +65,7 @@ namespace CommonUtilities
 			switch (rotation)
 			{
 				case RotationType::Axis_X:
-
+				{
 					matrix.myMatrix[0] = 1;
 					matrix.myMatrix[1] = 0;
 					matrix.myMatrix[2] = 0;
@@ -88,10 +85,10 @@ namespace CommonUtilities
 					matrix.myMatrix[13] = 0;
 					matrix.myMatrix[14] = 0;
 					matrix.myMatrix[15] = 1;
-					break;
+				} break;
 
 				case RotationType::Axis_Y:
-
+				{
 					matrix.myMatrix[0] = someCos;
 					matrix.myMatrix[1] = 0;
 					matrix.myMatrix[2] = -someSin;
@@ -112,10 +109,10 @@ namespace CommonUtilities
 					matrix.myMatrix[14] = 0;
 					matrix.myMatrix[15] = 1;
 
-					break;
+				} break;
 
 				case RotationType::Axis_Z:
-
+				{
 					matrix.myMatrix[0] = someCos;
 					matrix.myMatrix[1] = someSin;
 					matrix.myMatrix[2] = 0;
@@ -135,7 +132,7 @@ namespace CommonUtilities
 					matrix.myMatrix[13] = 0;
 					matrix.myMatrix[14] = 0;
 					matrix.myMatrix[15] = 1;
-					break;
+				} break;
 
 			}
 

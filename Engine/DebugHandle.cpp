@@ -149,8 +149,8 @@ namespace debug
 			}
 
 			ImGui::Checkbox("Debug Textures", &sDebugTextures);
- 			if (sDebugTextures)
- 				DebugTextures();
+			if (sDebugTextures)
+				DebugTextures();
 
 			ImGui::Separator();
 			for (DebugSlider<float>& s : m_Sliders)

@@ -23,11 +23,16 @@ namespace debug
 		static bool useSnap = false;
 		static float snap[3] = { 1.f, 1.f, 1.f };
 
-		if (ImGui::IsKeyPressed(90))
+		constexpr int w_key = 'W';
+		constexpr int r_key = 'R';
+		constexpr int e_key = 'E';
+
+
+		if (ImGui::IsKeyPressed(w_key))
 			mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-		if (ImGui::IsKeyPressed(69))
+		if (ImGui::IsKeyPressed(e_key))
 			mCurrentGizmoOperation = ImGuizmo::ROTATE;
-		if (ImGui::IsKeyPressed(82)) // r Key
+		if (ImGui::IsKeyPressed(r_key)) // r Key
 			mCurrentGizmoOperation = ImGuizmo::SCALE;
 		if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
 			mCurrentGizmoOperation = ImGuizmo::TRANSLATE;

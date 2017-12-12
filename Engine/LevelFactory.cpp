@@ -300,7 +300,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
 		position_gizmo.ToggleActive();
 
-		position_gizmo.Initiate(w_down);
+		position_gizmo.Initiate(w_down, GizmoBase::POSITION);
 	}
 
 
@@ -329,7 +329,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 		rotation_gizmo.CreateGizmoHandle(gizmo_forward, "Data/Model/rotate_z.fbx", "Data/Textures/blue.dds", GizmoHandle::eDirection::Z);
 		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
 
-		rotation_gizmo.Initiate(e_down);
+		rotation_gizmo.Initiate(e_down, GizmoBase::ROTATE);
 
 	}
 }

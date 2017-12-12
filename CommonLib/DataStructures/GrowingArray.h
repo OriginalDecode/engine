@@ -31,6 +31,7 @@ namespace CommonUtilities
 		inline void RemoveCyclic(const ObjectType& aObject);
 		inline void RemoveCyclicAtIndex(SizeType aItemNumber);
 		inline SizeType Find(const ObjectType& aObject);
+		const bool Find(const ObjectType& obj) const;
 
 		inline ObjectType& GetLast();
 		inline const ObjectType& GetLast() const;
@@ -68,6 +69,16 @@ namespace CommonUtilities
 		SizeType mySize = 0;
 	};
 
+	template<typename ObjectType, typename SizeType /*= int*/>
+	const bool CommonUtilities::GrowingArray<ObjectType, SizeType>::Find(const ObjectType& obj) const
+	{
+		for (SizeType i = 0; i < mySize; ++i)
+		{
+			if (myData[i] == obj)
+				return true;
+		}
+		return false;
+	}
 
 	
 	/*

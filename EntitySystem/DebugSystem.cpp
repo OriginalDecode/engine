@@ -44,6 +44,9 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 {
 	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75, 0), "Current Entity : %d", m_CurrentEntity));
 	const CU::GrowingArray<Entity>& entities = GetEntities();
+	if (entities.Empty())
+		return;
+
 	for (s32 i = 0; i < entities.Size(); i++)
 	{
 		Entity e = entities[i];
@@ -57,7 +60,9 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 		m_Holding = false;
 	}
 
-	if (m_CurrentEntity > -1)
+	m_CurrentEntity = debug::DebugHandle::GetInstance()->GetSelectedEntity();
+	
+	if (entities.Find(m_CurrentEntity))
 	{
 		DebugComponent& debug = GetComponent<DebugComponent>(m_CurrentEntity);
 

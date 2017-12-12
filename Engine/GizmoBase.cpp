@@ -10,7 +10,12 @@
 void GizmoBase::Initiate(std::string event, eGizmoType type)
 {
 	EventManager::GetInstance()->Subscribe(event, this);
+	
 	m_Type = type;
+
+	if (m_Type == POSITION)
+		m_Active = true;
+
 }
 
 void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction)

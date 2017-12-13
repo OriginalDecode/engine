@@ -13,7 +13,7 @@ public:
 	void Render(const graphics::RenderContext& rc) override;
 	void ShadowRender(const graphics::RenderContext& rc) override;
 
-	const CU::Vector3f& GetPosition() { return m_Orientation.GetPosition(); }
+	const CU::Vector3f GetPosition() { return m_Orientation.GetPosition(); }
 
 	void SetupRefractionRender(const graphics::RenderContext& rc);
 	void SetupReflectionRender(const graphics::RenderContext& rc);

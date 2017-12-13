@@ -30,6 +30,7 @@ namespace CommonUtilities
 			static Matrix44<TYPE> CreateOrthogonalMatrixLH(TYPE aWidth, TYPE aHeight, TYPE aNearZ, TYPE aFarZ);
 			static Matrix44<TYPE> CreateOrthographicMatrixLH(float width, float height, float near_plane, float far_plane);
 			static Matrix44<TYPE> CreateScaleMatrix(const Vector4<TYPE>& scale);
+			static Matrix44<TYPE> CreateScaleMatrix(const float x, const float y, const float z, const float w);
 			void RotateAroundPointX(const CU::Vector3f& point, float radian, float dt);
 			void RotateAroundPointY(const CU::Vector3f& point, float radian, float dt);
 			void RotateAroundPointZ(const CU::Vector3f& point, float radian, float dt);
@@ -43,6 +44,7 @@ namespace CommonUtilities
 			union
 			{
 				TYPE myMatrix[16];
+				TYPE mat[4][4];
 				Vector4<TYPE> rows[4];
 			};
 
@@ -72,6 +74,9 @@ namespace CommonUtilities
 			const Vector4<TYPE> GetForward() const;
 			const Vector4<TYPE> GetRight() const;
 			const Vector4<TYPE> GetUp() const;
+			const Vector4<TYPE> GetScale() const;
+
+
 			const Matrix44<TYPE> Inverse(Matrix44<TYPE>& aMatrix);
 			void Init(TYPE* aMatrix)
 			{
@@ -107,6 +112,7 @@ namespace CommonUtilities
 			};
 			const Matrix44<TYPE> Calculate(const RotationType& rotation, const TYPE& cos, const TYPE& sin);
 		};
+
 
 		template<typename TYPE>
 		bool Matrix44<TYPE>::operator==(const Matrix44<TYPE>& m0)

@@ -67,7 +67,6 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	engine->GetVFS().Register("Data/Shaders", "Shaders");
 	engine->GetVFS().Register("Data/Textures", "Textures");
 	engine->GetVFS().Register("Data/Model", "Models");
-	engine->GetVFS().Register("Data/Texture", "Texture");
 
 	engine->Initiate(w, h, anInstance, WindowProc);
 	DL_ASSERT_EXP(application->Initiate(), "Failed to initiate game");
@@ -81,7 +80,6 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 #if !defined(_PROFILE) && !defined(_FINAL)
 		ImGui_ImplDX11_NewFrame();
 		ImGuizmo::BeginFrame();
-		
 #endif
 		while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{

@@ -184,6 +184,18 @@ namespace CommonUtilities
 			return to_return;
 		}
 
+
+		template<typename TYPE>
+		CommonUtilities::Math::Matrix44<TYPE> CommonUtilities::Math::Matrix44<TYPE>::CreateScaleMatrix(const float x = 1.f, const float y = 1.f, const float z = 1.f, const float w = 1.f)
+		{
+			Matrix44<TYPE> to_return;
+			to_return.rows[0] = Vector4<TYPE>(x, 0, 0, 0);
+			to_return.rows[1] = Vector4<TYPE>(0, y, 0, 0);
+			to_return.rows[2] = Vector4<TYPE>(0, 0, z, 0);
+			to_return.rows[3] = Vector4<TYPE>(0, 0, 0, w);
+			return to_return;
+		}
+
 		template<typename TYPE>
 		void Matrix44<TYPE>::SetRotation3dX(const TYPE& aRadian)
 		{
@@ -285,6 +297,16 @@ namespace CommonUtilities
 		const Vector4<TYPE> Matrix44<TYPE>::GetUp() const
 		{
 			return Vector4<TYPE>(myMatrix[4], myMatrix[5], myMatrix[6], myMatrix[7]);
+		}
+
+		template<typename TYPE>
+		const Vector4<TYPE> CommonUtilities::Math::Matrix44<TYPE>::GetScale() const
+		{
+
+			TYPE sx = CU::Math::Length(rows[0]);
+			TYPE sy = CU::Math::Length(rows[1]);
+			TYPE sz = CU::Math::Length(rows[2]);
+			return Vector4<TYPE>(sx,sy,sz, 1);
 		}
 
 		template<typename TYPE>

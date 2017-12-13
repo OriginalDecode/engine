@@ -8,7 +8,7 @@ Sprite::~Sprite()
 	SAFE_DELETE(m_Quad);
 }
 
-void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
+void Sprite::Initiate(const std::string& /*aTexturePath*/, const CU::Math::Vector2<float>& aSize, const CU::Math::Vector2<float>& aPosition)
 {
 	m_Quad = new Quad(Engine::GetInstance()->GetEffect("Shaders/sprite.json"), aSize.x, aSize.y);
 
@@ -22,14 +22,14 @@ void Sprite::Initiate(const std::string& aTexturePath, const CU::Math::Vector2<f
 //	mySprite->Initiate(aShaderResource, aSize, aPosition);
 //}
 
-void Sprite::Initiate(const std::string& path)
+void Sprite::Initiate(const std::string& /*path*/)
 {
 	//m_cbSprite = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSprite), path + " Sprite - ConstantBuffer");
 // 	m_Quad = new Quad(0, 1, 1);
 // 	mySprite->Initiate(path);
 }
 
-void Sprite::Render(Camera* aCamera)
+void Sprite::Render(Camera* /*aCamera*/)
 {
 	//mySprite->GetEffect()->SetScale({ 1, 1 });
 	//mySprite->GetEffect()->SetPosition(myPosition);
@@ -54,8 +54,8 @@ void Sprite::SetPosition(const CU::Math::Vector2<float>& aPosition)
 	CU::Math::Vector2<float> pos = aPosition;
 	pos.x = pos.x + myHotspot.x;
 	pos.y = -pos.y - myHotspot.y;
-	pos.x = pos.x - (Engine::GetInstance()->GetWindowSize().m_Width * 0.5f);
-	pos.y = pos.y + (Engine::GetInstance()->GetWindowSize().m_Height * 0.5f);
+	pos.x = pos.x - (Engine::GetInstance()->GetInnerSize().m_Width * 0.5f);
+	pos.y = pos.y + (Engine::GetInstance()->GetInnerSize().m_Height * 0.5f);
 	myPosition = pos;
 	//mySprite->GetEffect()->SetPosition(myPosition);
 

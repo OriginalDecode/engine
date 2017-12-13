@@ -30,8 +30,8 @@ void CText::SetText(std::string aString)
 
 void CText::SetPosition(const CU::Math::Vector2<float>& aPosition)
 {
-	float w = Engine::GetInstance()->GetWindowSize().m_Width;
-	float h = Engine::GetInstance()->GetWindowSize().m_Height;
+	float w = Engine::GetInstance()->GetInnerSize().m_Width;
+	float h = Engine::GetInstance()->GetInnerSize().m_Height;
 	CU::Math::Vector2<float> pos(-(w * 0.5f), (h * 0.5f) - (myFont->GetFontSize()));
 	//pos.x = pos.x - (CEngine::GetInstance()->GetWindowSize().myWidth * 0.5f);
 	//pos.y = -pos.y + (CEngine::GetInstance()->GetWindowSize().myHeight * 0.5f) - (myFont->GetFontPixelSize());

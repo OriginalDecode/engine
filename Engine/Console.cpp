@@ -26,16 +26,18 @@ void CConsole::Initiate(Camera* aCamera)
 	myCamera = aCamera;
 	myIsActive = false;
 
-	myBottomLeftPosition = { (Engine::GetInstance()->GetWindowSize().m_Width / 2.f) + 4.f, (Engine::GetInstance()->GetWindowSize().m_Height / 2.f) - 24.f };
-	myTopLeftPosition = { (Engine::GetInstance()->GetWindowSize().m_Width / 2.f) + 4.f, 0.f };
+	const WindowSize& win_size = Engine::GetInstance()->GetInnerSize();
+
+	myBottomLeftPosition = { ((float)win_size.m_Width / 2.f) + 4.f, ((float)win_size.m_Height / 2.f) - 24.f };
+	myTopLeftPosition = { ((float)win_size.m_Width / 2.f) + 4.f, 0.f };
 
 	mySprite = new Sprite();
-	mySprite->Initiate("Data/Textures/colors.dds", { Engine::GetInstance()->GetWindowSize().m_Width / 2.f,
-														Engine::GetInstance()->GetWindowSize().m_Height / 2.f },
+	mySprite->Initiate("Data/Textures/colors.dds", { (float)win_size.m_Width / 2.f,
+														(float)win_size.m_Height / 2.f },
 														{ 0, 0 });
 
-	mySprite->SetHotspot({ -Engine::GetInstance()->GetWindowSize().m_Width / 4.f, Engine::GetInstance()->GetWindowSize().m_Height / 4.f });
-	mySprite->SetPosition({ Engine::GetInstance()->GetWindowSize().m_Width, 0 });
+	mySprite->SetHotspot({ -(float)win_size.m_Width / 4.f, (float)win_size.m_Height / 4.f });
+	mySprite->SetPosition({ (float)win_size.m_Width, 0 });
 
 	myText = new CText("Data/Font/OpenSans-Bold.ttf", 9, 1);
 	myText->SetPosition(myTopLeftPosition);

@@ -11,13 +11,13 @@ typedef HWND__* HWND;
 struct WindowSize
 {
 	WindowSize() = default;
-	WindowSize(float aWidth, float aHeight) 
-		: m_Width(aWidth)
-		, m_Height(aHeight) 
+	WindowSize(s32 width, s32 height) 
+		: m_Width(width)
+		, m_Height(height) 
 	{
 	};
-	float m_Width = 0.f;
-	float m_Height = 0.f;
+	s32 m_Width = 0;
+	s32 m_Height = 0;
 };
 
 struct WindowCreateInfo

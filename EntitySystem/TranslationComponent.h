@@ -28,8 +28,8 @@ void TranslationComponent::Serialize(Writer& writer) const
 	writer.Double(position.z);
 	writer.EndArray();
 
-	CU::Vector4f up = myOrientation.GetUp();
-	CU::Vector4f fwd = myOrientation.GetForward();
+	const CU::Vector4f up = CU::Math::GetNormalized(myOrientation.GetUp());
+	const CU::Vector4f fwd = CU::Math::GetNormalized(myOrientation.GetForward());
 	
 	writer.String("up");
 	writer.StartArray();
@@ -46,6 +46,14 @@ void TranslationComponent::Serialize(Writer& writer) const
 	writer.Double(fwd.z);
 	writer.EndArray();
 
+
+	const CU::Vector4f scale = myOrientation.GetScale();
+	writer.String("scale");
+	writer.StartArray();
+	writer.Double(scale.x);
+	writer.Double(scale.y);
+	writer.Double(scale.z);
+	writer.EndArray();
 
 	writer.EndObject();
 }

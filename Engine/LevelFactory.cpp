@@ -218,7 +218,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 			scale.w = 1.f;
 		}
 
-		component.m_Rotation = g.m_Rotation;
+		//component.m_Rotation = g.m_Rotation;
 		component.m_MinPoint = CU::Vector4f(model->GetMinPoint(), 1) * scale;
 		component.m_MaxPoint = CU::Vector4f(model->GetMaxPoint(), 1) * scale;
 	}
@@ -236,102 +236,6 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	CU::Vector4f up = translation.myOrientation.GetUp();
 	CU::Vector4f right = translation.myOrientation.GetRight();
 	CU::Vector4f forward = translation.myOrientation.GetForward();
-
-
-// 	CU::Vector4f position;
-// 	//x
-// 
-// 	position = translation.myOrientation.GetTranslation();
-// 	position += right * x;
-// 	plane0.InitWithPointAndNormal(position, right);
-// 	component.m_OBB.AddPlane(plane0);
-// 
-// 	position = translation.myOrientation.GetTranslation();
-// 	position -= right * x;
-// 	right -= (right * 2.f);
-// 	plane0.InitWithPointAndNormal(position, right);
-// 	component.m_OBB.AddPlane(plane0);
-// 
-// 	//y
-// 	position = translation.myOrientation.GetTranslation();
-// 	position += up * y;
-// 	plane0.InitWithPointAndNormal(position, up);
-// 	component.m_OBB.AddPlane(plane0);
-// 
-// 	position = translation.myOrientation.GetTranslation();
-// 	position -= up * y;
-// 	up -= (up * 2.f);
-// 	plane0.InitWithPointAndNormal(position, up);
-// 	component.m_OBB.AddPlane(plane0);
-// 
-// 	//z
-// 	position = translation.myOrientation.GetTranslation();
-// 	position += forward * z;
-// 	plane0.InitWithPointAndNormal(position, forward);
-// 	component.m_OBB.AddPlane(plane0);
-// 
-// 
-// 	position = translation.myOrientation.GetTranslation();
-// 	position -= forward * z;
-// 	forward -= (forward * 2.f);
-// 	plane0.InitWithPointAndNormal(position, forward);
-// 	component.m_OBB.AddPlane(plane0);
-
-
-//	component.m_EditObject.Initiate(e, flags);
-
-	{
-		PositionGizmo& position_gizmo = component.m_PositionGizmo;
-		GizmoHandle& gizmo_up = position_gizmo.GetUp();
-		GizmoHandle& gizmo_right = position_gizmo.GetRight();
-		GizmoHandle& gizmo_forward = position_gizmo.GetForward();
-
-		gizmo_up.m_Offset = 1.5f;
-		gizmo_right.m_Offset = 1.5f;
-		gizmo_forward.m_Offset = 1.5f;
-
-		position_gizmo.SetPosition(pos);
-		position_gizmo.CreateGizmoHandle(gizmo_up, "Data/Model/green_arrow.fbx", "Data/Textures/green.dds", GizmoHandle::eDirection::UP);
-		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(90.f) * 1) * gizmo_up.m_Orientation;
-
-		position_gizmo.CreateGizmoHandle(gizmo_right, "Data/Model/red_arrow.fbx", "Data/Textures/red.dds", GizmoHandle::eDirection::RIGHT);
-
-		position_gizmo.CreateGizmoHandle(gizmo_forward, "Data/Model/blue_arrow.fbx", "Data/Textures/blue.dds", GizmoHandle::eDirection::FORWARD);
-		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
-		position_gizmo.ToggleActive();
-
-		position_gizmo.Initiate(w_down, GizmoBase::POSITION);
-	}
-
-
-	{
-		RotationGizmo& rotation_gizmo = component.m_RotationGizmo;
-		GizmoHandle& gizmo_up = rotation_gizmo.GetUp();
-		GizmoHandle& gizmo_right = rotation_gizmo.GetRight();
-		GizmoHandle& gizmo_forward = rotation_gizmo.GetForward();
-
-		gizmo_right.m_Offset = 0.5f;
-		gizmo_forward.m_Offset = 0.5f;
-		rotation_gizmo.SetPosition(pos);
-
-		CU::Vector3f up_pos = pos;
-		up_pos.x += 0.5f;
-		up_pos.y -= 0.5f;
-		up_pos.z += 0.5f;
-		gizmo_up.SetPosition(up_pos);
-
-		rotation_gizmo.CreateGizmoHandle(gizmo_up, "Data/Model/rotate_y.fbx", "Data/Textures/green.dds", GizmoHandle::eDirection::Y);
-		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(90.f) * -1) * gizmo_up.m_Orientation;
-		gizmo_up.m_Orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f) * -1) * gizmo_up.m_Orientation;
-
-		rotation_gizmo.CreateGizmoHandle(gizmo_right, "Data/Model/rotate_x.fbx", "Data/Textures/red.dds", GizmoHandle::eDirection::X);
-
-		rotation_gizmo.CreateGizmoHandle(gizmo_forward, "Data/Model/rotate_z.fbx", "Data/Textures/blue.dds", GizmoHandle::eDirection::Z);
-		gizmo_forward.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(90.f) * -1) * gizmo_forward.m_Orientation;
-
-		rotation_gizmo.Initiate(e_down, GizmoBase::ROTATE);
-
-	}
 }
 
 void LevelFactory::CreateTerrain(std::string terrain_path)

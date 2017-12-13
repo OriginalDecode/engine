@@ -40,7 +40,7 @@ Surface::Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anInde
 	SetPrimology(aPrimology);
 }
 
-void Surface::Activate(const graphics::RenderContext& render_context)
+void Surface::Activate(const graphics::RenderContext& /*render_context*/)
 {
 	if ( !myEffect )
 		return;

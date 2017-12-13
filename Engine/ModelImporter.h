@@ -249,18 +249,13 @@ T* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect*
 {
 	T* model = new T;
 	model->m_IsRoot = false;
-	size_t pos = filepath.rfind('/');
-
-	//model->m_Filename = filepath.substr(pos);
 	model->SetEffect(effect);
-
 
 	if (data->myData)
 	{
 		FillData(data, model, filepath, effect);
 		model->m_Orientation = data->myOrientation;
 	}
-
 
 	for (FBXModelData* child : data->myChildren)
 	{
@@ -284,37 +279,7 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 	if (!vtx.GetInputLayout())
 		FillInstanceData(out, data, effect);
 
-
-	// 	if (filepath.find("plant") != filepath.npos)
-	// 	{
-	// 		Material* pMaterial = new Material(Hash("Plant"));
-	// 		Engine* pEngine = Engine::GetInstance();
-	// 		Texture* pAlbedo = pEngine->GetTexture("Data/Game_Models/T_plant_a_albedo.dds");
-	// 		Texture* pNormal = pEngine->GetTexture("Data/Game_Models/T_plant_a_normal.dds");
-	// 		Texture* pRough = pEngine->GetTexture("Data/Game_Models/T_plant_a_roughness.dds");
-	// 		Texture* pMetal = pEngine->GetTexture("Data/Game_Models/T_empty_metalness.dds");
-	// 
-	// 		pMaterial->AddResource(pAlbedo, "", Effect::ALBEDO);
-	// 		pMaterial->AddResource(pNormal, "", Effect::NORMAL);
-	// 		pMaterial->AddResource(pRough, "", Effect::ROUGHNESS);
-	// 		pMaterial->AddResource(pMetal, "", Effect::METALNESS);
-	// 		out->SetMaterial(pMaterial);
-	// 		return;
-	// 	}
 	return;
-	if (filepath.find("ballen.fbx") != filepath.npos)
-		return;
-
-	Material* pMaterial = new Material(Hash(filepath.c_str()));
-	const CU::GrowingArray<TextureInfo>& info = someData->myTextureData->myTextures;
-
-	for (s32 i = 0; i < info.Size(); i++)
-	{
-		Texture* pTexture = Engine::GetInstance()->GetTexture(info[i].m_File.c_str());
-		pMaterial->AddResource(pTexture, info[i].m_File, info[i].m_Slot);
-	}
-
-	out->SetMaterial(pMaterial);
 }
 
 inline void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc)

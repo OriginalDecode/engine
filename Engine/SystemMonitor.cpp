@@ -22,14 +22,14 @@ int CSystemMonitor::GetMemoryUsage(bool inKB)
 {
 	PROCESS_MEMORY_COUNTERS memCounter;
 	GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof(memCounter));
-	int toReturn = 0;
+	SIZE_T toReturn = 0;
 
 	toReturn = (memCounter.WorkingSetSize / 1024) / 1024;
 
 	if (inKB)
 		toReturn = memCounter.WorkingSetSize / 1024;
 
-	return toReturn;
+	return (int)toReturn;
 }
 
 float CSystemMonitor::GetCPUUsage()

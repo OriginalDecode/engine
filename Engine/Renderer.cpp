@@ -389,7 +389,6 @@ void Renderer::Render3DCommands()
 	PROFILE_FUNCTION(profiler::colors::Green);
 
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
-	Engine& engine = m_RenderContext.GetEngine();
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
@@ -436,7 +435,7 @@ void Renderer::Render3DCommandsInstanced()
 
 }
 
-void Renderer::RenderTerrain(bool override_effect)
+void Renderer::RenderTerrain(bool /*override_effect*/)
 {
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
@@ -523,6 +522,16 @@ void Renderer::Render2DCommands()
 
 }
 
+const float c0 = cosf(cl::DegreeToRad(0.f));
+const float c90 = cosf(cl::DegreeToRad(90.f));
+const float c180 = cosf(cl::DegreeToRad(180.f));
+const float c270 = cosf(cl::DegreeToRad(270.f));
+
+const float s0 = sinf(cl::DegreeToRad(0.f));
+const float s90 = sinf(cl::DegreeToRad(90.f));
+const float s180 = sinf(cl::DegreeToRad(180.f));
+const float s270 = sinf(cl::DegreeToRad(270.f));
+
 void Renderer::RenderSpotlight()
 {
 
@@ -548,6 +557,58 @@ void Renderer::RenderSpotlight()
 		light->SetData(data);
 
 		CU::Matrix44f shadow_mvp;
+
+#ifdef _DEBUG
+		CU::Vector4f col = { 0.72f, 0.51f,  0.25f, 1.f };
+		const int sides = 10;
+		const float range = data.myRange;
+		const float tan_angle = tan(data.myAngle);
+		const float a = tan_angle * data.myRange;
+		const float halfwidth = a / 2;
+		const int _360 = 360;
+		const int max = _360/ sides;
+		
+
+		LinePoint lamp;
+		lamp.color = col;
+		lamp.position = data.myLightPosition;
+
+		LinePoint _0deg, _90deg, _180deg, _270deg;
+		_0deg.color = _90deg.color = _180deg.color = _270deg.color = col;
+		
+
+
+		_0deg.position = { c0 * halfwidth + data.myLightPosition.x, -range, s0 * halfwidth + data.myLightPosition.z, 1 };
+		_90deg.position = { c90 * halfwidth + data.myLightPosition.x, -range, s90 * halfwidth + data.myLightPosition.z, 1 };
+		_180deg.position = { c180 * halfwidth + data.myLightPosition.x, -range, s180 * halfwidth + data.myLightPosition.z, 1 };
+		_270deg.position = { c270 * halfwidth + data.myLightPosition.x, -range, s270 * halfwidth + data.myLightPosition.z, 1 };
+
+
+		m_Synchronizer->AddRenderCommand(LineCommand(lamp, _0deg, true));
+		m_Synchronizer->AddRenderCommand(LineCommand(lamp, _90deg, true));
+		m_Synchronizer->AddRenderCommand(LineCommand(lamp, _180deg, true));
+		m_Synchronizer->AddRenderCommand(LineCommand(lamp, _270deg, true));
+
+
+		CU::Vector4f origo = data.myOrientation.GetPosition();
+		for (int i = 0; i < _360; i += max)
+		{
+
+			LinePoint p0, p1;
+			p0.color = col;
+			p1.color = col;
+
+
+			const float x = cl::DegreeToRad(i);
+			const float y = cl::DegreeToRad(i + max);
+
+			p0.position = { cosf(x) * halfwidth + data.myLightPosition.x, -range , sinf(x) * halfwidth + data.myLightPosition.z, 1.f };
+			p1.position = { cosf(y) * halfwidth + data.myLightPosition.x, -range , sinf(y) * halfwidth + data.myLightPosition.z, 1.f };
+
+			m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, true));
+		}
+#endif
+
 
 #if !defined(_FINAL) && !defined(_PROFILE)
 		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(m_LightModelWireframe ? graphics::WIREFRAME : graphics::CULL_NONE));

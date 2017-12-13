@@ -13,14 +13,7 @@ struct DebugComponent final : public BaseComponent
 
 	CU::Vector4f m_MinPoint;
 	CU::Vector4f m_MaxPoint;
-
-	CU::Vector4f m_Rotation;
 	CU::Vector4f debugColor = { 255.f, 255.f, 255.f, 255.f };
-	//EditObject m_EditObject;
-
-	PositionGizmo m_PositionGizmo;
-	RotationGizmo m_RotationGizmo;
-	ScaleGizmo m_ScaleGizmo;
 
 	bool m_DirtyFlag = false;
 

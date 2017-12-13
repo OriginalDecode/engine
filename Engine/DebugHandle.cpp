@@ -26,6 +26,7 @@ namespace debug
 		constexpr int w_key = 'W';
 		constexpr int r_key = 'R';
 		constexpr int e_key = 'E';
+		constexpr int s_key = 'S';
 
 
 		if (ImGui::IsKeyPressed(w_key))
@@ -57,7 +58,14 @@ namespace debug
 			if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
 				mCurrentGizmoMode = ImGuizmo::WORLD;
 		}
-		if (ImGui::IsKeyPressed(83))
+
+		if (mCurrentGizmoOperation == ImGuizmo::SCALE)
+			mCurrentGizmoMode = ImGuizmo::LOCAL;
+
+
+
+
+		if (ImGui::IsKeyPressed(s_key))
 			useSnap = !useSnap;
 		ImGui::Checkbox("", &useSnap);
 		ImGui::SameLine();
@@ -159,6 +167,8 @@ namespace debug
 			}
 
 			auto& em = Engine::GetInstance()->GetEntityManager();
+
+
 			if (em.HasComponents(m_EditEntity, CreateFilter<Requires<LightComponent>>()))
 			{
 				if (ImGui::Begin("Light"))
@@ -248,6 +258,7 @@ namespace debug
 				}
 
 
+
 				if (ImGui::BeginChild("", ImVec2(250, 100)))
 				{
 
@@ -273,25 +284,26 @@ namespace debug
 					LevelFactory::SaveLevel("data/pbr_level/", "pbr_level.level");
 				}
 
-				ImGui::SetNextWindowPos(ImVec2(250, 10));
-				ImGui::SetNextWindowSize(ImVec2(320, 240));
-				ImGui::Begin("Matrix Inspector");
+				ImGui::SetNextWindowPos(ImVec2(1200, 10));
+				ImGui::SetNextWindowSize(ImVec2(320, 300));
+				
+				if (ImGui::Begin("Entity Inspector"))
+				{
 
-				Camera* cam = Engine::GetInstance()->GetCamera();
-
-
-				CU::Matrix44f& orientation = CU::Math::Inverse(cam->GetOrientation());
-				CU::Matrix44f& perspective = cam->GetPerspective();
-				CU::Matrix44f& object_matrix = *m_ObjectMatrix;
-
-				if(m_ObjectMatrix)
-					EditTransform(orientation.myMatrix, perspective.myMatrix, m_ObjectMatrix->myMatrix);
-
-				ImGui::End();
+					ImGui::Text("Entity %d", m_EditEntity);
 
 
+					Camera* cam = Engine::GetInstance()->GetCamera();
+					CU::Matrix44f& orientation = CU::Math::Inverse(cam->GetOrientation());
+					CU::Matrix44f& perspective = cam->GetPerspective();
+					CU::Matrix44f& object_matrix = *m_ObjectMatrix;
+
+					if (m_ObjectMatrix)
+						EditTransform(orientation.myMatrix, perspective.myMatrix, m_ObjectMatrix->myMatrix);
+
+					ImGui::End();
+				}
 			}
-
 
 			ImGui::End();
 		}

@@ -77,7 +77,7 @@ namespace graphics
 		void* GetContext() override { return m_Context; }
 
 
-		virtual void ClearDepthStencilView(Texture* dsv, s32 clear_flag, s32 max_depth) { assert(false && "not implemented"); }
+		virtual void ClearDepthStencilView(Texture*, s32, s32) { assert(false && "not implemented"); }
 		virtual void ClearRenderTarget(Texture* render_target, const float clear_color[4]);
 		virtual void OMSetRenderTargets(s32 num_views, Texture* render_targets, Texture* dsv);
 

@@ -82,14 +82,16 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 		if (type.find("light") != type.npos)
 		{
 			LightComponent& c = m_EntityManager->AddComponent<LightComponent>(e);
-			//c.Desrialize(obj);
+			c.Deserialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::LIGHT);
 			debug_flags |= TreeDweller::LIGHT;
 		}
 
 #ifdef _DEBUG
-		if(debug_flags > 0 )
+		
 			CreateDebugComponent(e, false, debug_flags);
+			DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
+			component.m_Dweller = pDweller;
 #endif
 
 	}
@@ -204,7 +206,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	m_EntityManager->AddComponent<DebugComponent>(e);
 	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
 	m_DwellerList.GetLast()->AddComponent<DebugComponent>(&component, TreeDweller::DEBUG);
-
+	component.m_ComponentFlags = flags;
 	if (!isLight && m_EntityManager->HasComponent<GraphicsComponent>(e))
 	{
 		GraphicsComponent& g = m_EntityManager->GetComponent<GraphicsComponent>(e);

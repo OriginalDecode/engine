@@ -1,50 +1,56 @@
-[
-    {
+[{
         "component_type": "translation",
         "position": [
-            5.0,
-            1.0,
+            8.0,
+            2.0,
             5.0
         ],
         "up": [
-            -0.87,
-            0.49,
-            0.042
+            0.0, -0.0,
+            1.0
         ],
         "forward": [
-            0.066,
-            0.032,
-            0.997
+            0.0, -1.0, -0.0
         ],
         "scale": [
+            0.997,
             0.999,
-            7.894,
             0.999
         ]
     },
     {
         "component_type": "graphics",
-        "instances": [
-            {
-                "model_file": "data/engineassets/cube_100x100.fbx",
-                "material_file": "Data/Material/mat_aluminum.json",
-                "relative_position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "relative_scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "relative_rotation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "shadowed": true
-            }
-        ]
+        "instances": [{
+            "model_file": "data/engineassets/cube_100x100.fbx",
+            "material_file": "Data/Material/mat_aluminum.json",
+            "relative_position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "relative_scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "relative_rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "shadowed": true
+        }]
+    },
+    {
+        "component_type": "light",
+        "lighttype": 1,
+        "color": [
+            0.98,
+            0.0,
+            0.0
+        ],
+        "intensity": 700.0,
+        "angle": 0.401,
+        "range": 10.0
     }
 ]

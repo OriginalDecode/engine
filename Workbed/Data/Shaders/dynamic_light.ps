@@ -44,7 +44,6 @@ float4 getWorldPos(float2 tex_coord, float depth)
 
 float4 main(psInput input) : SV_Target
 {
-
    	input.uv /= input.uv.w;
 	float2 texCoord = input.uv.xy;
 
@@ -86,7 +85,6 @@ float4 main(psInput input) : SV_Target
 	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
 	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo * (1 - reflection_fresnel);
 	cube_ambient = SATURATE(cube_ambient);
-
 	float4 diffuse = 0;
 	albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
 	float SatNdL = SATURATE(dot(-light_dir, normal));
@@ -116,16 +114,12 @@ float4 main(psInput input) : SV_Target
 	attenuation = CalculateTotalAttenuation(ln, input.range) * 2;
 #endif
 	spec += SATURATE((((fresnel * Distr * V) * NdL) * color) ) ;
-
-
 	diffuse += cube_ambient * albedo;
 	diffuse = SATURATE(diffuse);
-
 	float4 output = 0;
 	output = lerp(diffuse, cube, fresnel);
 	output += spec;
 	output = SATURATE(output);
 	return output * attenuation;
-
 
 };

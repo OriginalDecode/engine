@@ -142,7 +142,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	
 
 
-	if(in_view && !in_shadow)
+	//if(in_view && !in_shadow)
 	{
 		for(int i = 0; i < 1; i++)
 		{
@@ -168,8 +168,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 			float G1V = NdC * ( 1.f - k ) + k;
 			float G1L = NdL * ( 1.f - k ) + k;
 			float V = 0.25f / (G1V * G1L);
-			spec += saturate(((schlickFresnel * ggxDistr * V * NdL) * float4(light_col, 1)) * 
-			light_intensity);
+			spec += saturate(((schlickFresnel * ggxDistr * V * NdL) * float4(light_col, 1)) * light_intensity);
 		}
 	}
 	diffuse += cube_ambient * albedo;

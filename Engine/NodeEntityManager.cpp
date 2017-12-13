@@ -64,6 +64,17 @@ void NodeEntityManager::RemoveEntity(TreeDweller* entity)
 	m_Entities.RemoveCyclic(entity);
 }
 
+void NodeEntityManager::AddComponent(TreeDweller* e)
+{
+	ComponentList& list = e->GetComponentPairList();
+	Entity id = e->GetEntity();
+	m_Components.AddEntity(id);
+	for (ComponentPair& pair : list)
+	{
+		m_Components.AddComponent(id, pair.m_Component, pair.m_ID);
+	}
+}
+
 void NodeEntityManager::Update(float dt, const CU::GrowingArray<TreeDweller*>& dweller_list, bool paused)
 {
 	PROFILE_FUNCTION(profiler::colors::Red);

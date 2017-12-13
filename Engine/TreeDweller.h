@@ -26,7 +26,6 @@ public:
 		NETWORK = 32,
 		INPUT = 64,
 		DEBUG = 128,
-		PBL = 256,
 	};
 
 	enum eType

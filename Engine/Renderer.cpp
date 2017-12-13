@@ -441,7 +441,7 @@ void Renderer::RenderTerrain(bool /*override_effect*/)
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 	PROFILE_FUNCTION(profiler::colors::Green);
 	for (Terrain* terrain : myTerrainArray)
@@ -560,7 +560,7 @@ void Renderer::RenderSpotlight()
 
 #ifdef _DEBUG
 		CU::Vector4f col = { 0.72f, 0.51f,  0.25f, 1.f };
-		const int sides = 10;
+		const int sides = 32;
 		const float range = data.myRange;
 		const float tan_angle = tan(data.myAngle);
 		const float a = tan_angle * data.myRange;

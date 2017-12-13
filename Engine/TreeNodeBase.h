@@ -27,7 +27,6 @@ public:
 	virtual void AddParent(TreeNodeBase* parent);
 	virtual TreeNodeBase* GetParent();
 
-
 	virtual void AddEntity(TreeDweller* dweller);
 	virtual void AddEntity(TreeDweller* dweller, s32 node);
 	virtual void RemoveEntity(TreeDweller* dweller);
@@ -50,7 +49,7 @@ public:
 	void RemoveAllDwellers();
 
 	std::string m_Name;
-
+	NodeEntityManager* GetManager() { return m_NodeEntityManager; }
 protected:
 	virtual void RenderBox();
 

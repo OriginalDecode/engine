@@ -81,8 +81,8 @@ void Game::Initiate(const std::string& level)
 	spotlight.Add(m_Engine->RegisterLight());
 
 
-	spotorient = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * spotorient;
-	spotorient.SetPosition({ 5.f, 4.f, 5.f, 1.f });
+	spotorient = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f)) * spotorient;
+	spotorient.SetPosition({ 5.f, -8.f, 5.f, 1.f });
 #if !defined(_PROFILE) && !defined(_FINAL)
 	//debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
 	//pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &degree, "Spotlight Degree"));

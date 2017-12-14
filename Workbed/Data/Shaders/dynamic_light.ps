@@ -102,8 +102,6 @@ float4 main(psInput input) : SV_Target
 	float4 lightVec = normalize (lightToPixel);
 	float spotfactor = dot(lightVec, normalize(direction));
 
-	if(spotfactor < cosCone)
-		discard;
 
 	float angularAttenuation = ( 1.0 - ( 1.0 - spotfactor) *  1 / ( 1 - cosCone)) ;
 	float linearAttenuation = CalculateTotalAttenuation(ln, input.range) * 8;

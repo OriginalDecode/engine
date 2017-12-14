@@ -148,11 +148,8 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 	m_EntityManager->AddComponent<LightComponent>(entity_id);
 	LightComponent& component = m_EntityManager->GetComponent<LightComponent>(entity_id);
 	m_DwellerList.GetLast()->AddComponent<LightComponent>(&component, TreeDweller::LIGHT);
-	//TranslationComponent& translation_component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
 
 	std::string type;
-
-
 	if (entity_reader.DocumentHasMember("light"))
 	{
 		const JSONElement& el = entity_reader.GetElement("light");
@@ -170,13 +167,6 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 		col /= 255.f;
 
 	component.color = col;
-
-
-
-	////component.color.x /= 255;
-	//component.color.y /= 255;
-	//component.color.z /= 255;
-
 	if (type == "pointlight")
 	{
 		component.myType = eLightType::ePOINTLIGHT;
@@ -242,7 +232,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	Terrain* terrain = m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, -4, 0), CU::Vector2f(512, 512));
+	Terrain* terrain = m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
 	Material* pGroundMaterial = m_Engine->GetMaterial("Data/Material/mat_grass.json");
 	terrain->SetMaterial(pGroundMaterial);
 }

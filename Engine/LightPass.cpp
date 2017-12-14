@@ -105,6 +105,7 @@ namespace graphics
 		m_cbSpotlightVtx.m_Orientation = data.myOrientation;
 		m_cbSpotlightVtx.m_Range = data.myRange;
 		m_cbSpotlightVtx.m_Angle = data.myAngle;
+		m_cbSpotlightVtx.m_Intensity = data.m_Intensity;
 
 		context.UpdateConstantBuffer(m_LightBuffers[SPOTLIGHT_VERTEX], &m_cbSpotlightVtx, sizeof(SpotlightConstantBuffer));
 

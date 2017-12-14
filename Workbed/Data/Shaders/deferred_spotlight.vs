@@ -8,12 +8,15 @@ cbuffer per_object : register(b1)
 	row_major float4x4 orientation;
 	float range;
     float angle;
+	float intensity;
 };
 
 struct vsInput
 {
 	float4 pos	: POSITION;
 };
+
+
 
 struct psInput
 {
@@ -22,6 +25,7 @@ struct psInput
     float range : RANGE;
 	float cosAngle : COSANGLE;
     float angle : ANGLE;
+	float intensity : INTENSITY;
 	float4 world : WORLD;
 };
 
@@ -32,8 +36,7 @@ psInput main(vsInput input)
 
 	float _range = range;
 
-
-    float xyScale = tan(_angle) * (_range );
+    float xyScale = tan(_angle ) * (_range);
 	
 	input.pos.x *= xyScale ; // scale
     input.pos.y *= xyScale;
@@ -46,7 +49,7 @@ psInput main(vsInput input)
 	
 	output.range = _range ;
 	output.angle = _angle; //in radians
-
+	output.intensity = intensity;
 	float x = output.pos.x;
 	float y = output.pos.y;
 	float w = output.pos.w;

@@ -41,7 +41,8 @@ namespace graphics
 			CU::Matrix44f m_Orientation;
 			float m_Range;
 			float m_Angle;
-			float dummy[14];
+			float m_Intensity = 0.f;
+			float dummy[13];
 		} m_cbSpotlightVtx;
 
 		struct PixelConstantBuffer

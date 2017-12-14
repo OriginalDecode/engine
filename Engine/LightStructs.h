@@ -22,6 +22,7 @@ struct SpotlightData
 	float myRange;
 	CU::Vector3f myDirection;
 	float myAngle;
+	float m_Intensity = 0.f;
 };
 
 struct SPointlightData

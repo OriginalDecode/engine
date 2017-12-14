@@ -552,6 +552,7 @@ void Renderer::RenderSpotlight()
 		data.myLightColor = command->m_Color;
 		data.myLightPosition = command->m_Orientation.GetPosition();
 		data.myOrientation = command->m_Orientation;
+		data.m_Intensity = command->m_Intensity;
 
 		SpotLight* light = m_Spotlights[command->m_LightID];
 		light->SetData(data);
@@ -564,7 +565,7 @@ void Renderer::RenderSpotlight()
 		const float range = data.myRange;
 		const float tan_angle = tan(data.myAngle);
 		const float a = tan_angle * data.myRange;
-		const float halfwidth = a / 2;
+		const float halfwidth = a ;
 		const int _360 = 360;
 		const int max = _360/ sides;
 		
@@ -577,11 +578,13 @@ void Renderer::RenderSpotlight()
 		_0deg.color = _90deg.color = _180deg.color = _270deg.color = col;
 		
 
+		const float y_pos = data.myLightPosition.y - range;
 
-		_0deg.position = { c0 * halfwidth + data.myLightPosition.x, -range, s0 * halfwidth + data.myLightPosition.z, 1 };
-		_90deg.position = { c90 * halfwidth + data.myLightPosition.x, -range, s90 * halfwidth + data.myLightPosition.z, 1 };
-		_180deg.position = { c180 * halfwidth + data.myLightPosition.x, -range, s180 * halfwidth + data.myLightPosition.z, 1 };
-		_270deg.position = { c270 * halfwidth + data.myLightPosition.x, -range, s270 * halfwidth + data.myLightPosition.z, 1 };
+
+		_0deg.position = { c0 * halfwidth + data.myLightPosition.x, y_pos, s0 * halfwidth + data.myLightPosition.z, 1 };
+		_90deg.position = { c90 * halfwidth + data.myLightPosition.x, y_pos, s90 * halfwidth + data.myLightPosition.z, 1 };
+		_180deg.position = { c180 * halfwidth + data.myLightPosition.x, y_pos, s180 * halfwidth + data.myLightPosition.z, 1 };
+		_270deg.position = { c270 * halfwidth + data.myLightPosition.x, y_pos, s270 * halfwidth + data.myLightPosition.z, 1 };
 
 
 		m_Synchronizer->AddRenderCommand(LineCommand(lamp, _0deg, true));
@@ -602,8 +605,8 @@ void Renderer::RenderSpotlight()
 			const float x = cl::DegreeToRad(i);
 			const float y = cl::DegreeToRad(i + max);
 
-			p0.position = { cosf(x) * halfwidth + data.myLightPosition.x, -range , sinf(x) * halfwidth + data.myLightPosition.z, 1.f };
-			p1.position = { cosf(y) * halfwidth + data.myLightPosition.x, -range , sinf(y) * halfwidth + data.myLightPosition.z, 1.f };
+			p0.position = { cosf(x) * halfwidth + data.myLightPosition.x, y_pos, sinf(x) * halfwidth + data.myLightPosition.z, 1.f };
+			p1.position = { cosf(y) * halfwidth + data.myLightPosition.x, y_pos , sinf(y) * halfwidth + data.myLightPosition.z, 1.f };
 
 			m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, true));
 		}

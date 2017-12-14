@@ -282,25 +282,23 @@ namespace debug
 						{
 							ImGui::BulletText("text");
 							LightComponent& l = em.GetComponent<LightComponent>(m_EditEntity);
-							static int type = 0;
+							static int type = (int)l.myType;
 							ImGui::InputInt("lighttype", &type);
 							l.myType = (eLightType)type;
 							
 							ImGui::InputFloat("Intensity", &l.intensity);
 							ImGui::InputFloat("Range", &l.range);
-							static float half_angle = 0.f;
+							static float half_angle = cl::RadToDegree(l.angle * 2);
 							ImGui::InputFloat("Angle", &half_angle);
-							l.angle = cl::DegreeToRad(half_angle * 0.5f);
-
-// 							static float forward[3];
-// 							ImGui::InputFloat3("Forward", forward);
-// 							l.
-
+							l.angle = cl::DegreeToRad(half_angle * 0.5f );
 
 							static float rgb[3];
+							rgb[0] = l.color.x;
+							rgb[1] = l.color.y;
+							rgb[2] = l.color.z;
+
 							ImGui::ColorEdit3("Color", rgb);
 							l.color = { rgb[0], rgb[1], rgb[2] };
-
 
 						}
 					}

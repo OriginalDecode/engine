@@ -149,7 +149,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.01f, 100.f, 90.f);
 
 	Engine::GetInstance()->LoadModelA("Data/EngineAssets/view_gizmo.fbx", "Shaders/gizmo.json", false);
-
+	m_Spotlights.Add(new SpotLight);
 }
 
 Renderer::~Renderer()
@@ -522,16 +522,6 @@ void Renderer::Render2DCommands()
 
 }
 
-const float c0 = cosf(cl::DegreeToRad(0.f));
-const float c90 = cosf(cl::DegreeToRad(90.f));
-const float c180 = cosf(cl::DegreeToRad(180.f));
-const float c270 = cosf(cl::DegreeToRad(270.f));
-
-const float s0 = sinf(cl::DegreeToRad(0.f));
-const float s90 = sinf(cl::DegreeToRad(90.f));
-const float s180 = sinf(cl::DegreeToRad(180.f));
-const float s270 = sinf(cl::DegreeToRad(270.f));
-
 void Renderer::RenderSpotlight()
 {
 
@@ -551,7 +541,9 @@ void Renderer::RenderSpotlight()
 		data.myRange = command->m_Range;
 		data.myLightColor = command->m_Color;
 		data.myLightPosition = command->m_Orientation.GetPosition();
-		data.myOrientation = command->m_Orientation;
+
+		data.myOrientation = command->m_Orientation; //I don't want this matrix to be scaled since it would have strange implications on how light is handled.
+
 		data.m_Intensity = command->m_Intensity;
 
 		SpotLight* light = m_Spotlights[command->m_LightID];
@@ -559,58 +551,6 @@ void Renderer::RenderSpotlight()
 
 		CU::Matrix44f shadow_mvp;
 
-#ifdef _DEBUG
-		CU::Vector4f col = { 0.72f, 0.51f,  0.25f, 1.f };
-		const int sides = 32;
-		const float range = data.myRange;
-		const float tan_angle = tan(data.myAngle);
-		const float a = tan_angle * data.myRange;
-		const float halfwidth = a ;
-		const int _360 = 360;
-		const int max = _360/ sides;
-		
-
-		LinePoint lamp;
-		lamp.color = col;
-		lamp.position = data.myLightPosition;
-
-		LinePoint _0deg, _90deg, _180deg, _270deg;
-		_0deg.color = _90deg.color = _180deg.color = _270deg.color = col;
-		
-
-		const float y_pos = data.myLightPosition.y - range;
-
-
-		_0deg.position = { c0 * halfwidth + data.myLightPosition.x, y_pos, s0 * halfwidth + data.myLightPosition.z, 1 };
-		_90deg.position = { c90 * halfwidth + data.myLightPosition.x, y_pos, s90 * halfwidth + data.myLightPosition.z, 1 };
-		_180deg.position = { c180 * halfwidth + data.myLightPosition.x, y_pos, s180 * halfwidth + data.myLightPosition.z, 1 };
-		_270deg.position = { c270 * halfwidth + data.myLightPosition.x, y_pos, s270 * halfwidth + data.myLightPosition.z, 1 };
-
-
-		m_Synchronizer->AddRenderCommand(LineCommand(lamp, _0deg, true));
-		m_Synchronizer->AddRenderCommand(LineCommand(lamp, _90deg, true));
-		m_Synchronizer->AddRenderCommand(LineCommand(lamp, _180deg, true));
-		m_Synchronizer->AddRenderCommand(LineCommand(lamp, _270deg, true));
-
-
-		CU::Vector4f origo = data.myOrientation.GetPosition();
-		for (int i = 0; i < _360; i += max)
-		{
-
-			LinePoint p0, p1;
-			p0.color = col;
-			p1.color = col;
-
-
-			const float x = cl::DegreeToRad(i);
-			const float y = cl::DegreeToRad(i + max);
-
-			p0.position = { cosf(x) * halfwidth + data.myLightPosition.x, y_pos, sinf(x) * halfwidth + data.myLightPosition.z, 1.f };
-			p1.position = { cosf(y) * halfwidth + data.myLightPosition.x, y_pos , sinf(y) * halfwidth + data.myLightPosition.z, 1.f };
-
-			m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, true));
-		}
-#endif
 
 
 #if !defined(_FINAL) && !defined(_PROFILE)

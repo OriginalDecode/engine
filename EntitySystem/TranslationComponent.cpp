@@ -20,22 +20,11 @@ void TranslationComponent::Deserialize(const rapidjson::Value& value)
 	CU::Vector4f vec_up = { up_x, up_y, up_z, 0 };
 	CU::Vector4f vec_fwd = { fwd_x, fwd_y, fwd_z, 0 };
 
-	CU::Vector4f right = CU::Math::Cross(vec_up, vec_fwd);
-	right.w = 0;
+	CU::Vector4f vec_rgt = CU::Math::Cross(vec_up, vec_fwd);
+	vec_rgt.w = 0;
 	
 	myOrientation.SetUp(vec_up);
 	myOrientation.SetForward(vec_fwd);
-	myOrientation.SetRight(right);
-
-
-	auto& scale = value["scale"].GetArray();
-
-	const float scale_x = (float)scale[0].GetDouble();
-	const float scale_y = (float)scale[1].GetDouble();
-	const float scale_z = (float)scale[2].GetDouble();
-
-	myOrientation = CU::Matrix44f::CreateScaleMatrix(scale_x, scale_y, scale_z, 1) * myOrientation;
-
-
+	myOrientation.SetRight(vec_rgt);
 
 }

@@ -10,6 +10,8 @@ struct TranslationComponent : public BaseComponent
 	void Serialize(Writer& writer) const;
 
 	void Deserialize(const rapidjson::Value& value);
+private:
+
 };
 
 template<typename Writer>
@@ -44,15 +46,6 @@ void TranslationComponent::Serialize(Writer& writer) const
 	writer.Double(fwd.x);
 	writer.Double(fwd.y);
 	writer.Double(fwd.z);
-	writer.EndArray();
-
-
-	const CU::Vector4f scale = myOrientation.GetScale();
-	writer.String("scale");
-	writer.StartArray();
-	writer.Double(scale.x);
-	writer.Double(scale.y);
-	writer.Double(scale.z);
 	writer.EndArray();
 
 	writer.EndObject();

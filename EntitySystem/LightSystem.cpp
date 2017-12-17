@@ -22,6 +22,7 @@ void LightSystem::Update(float /*aDeltaTime*/, bool paused)
 		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
 		LightComponent& light = GetComponent<LightComponent>(e);
+		
 
 		if (light.myType == eLightType::ePOINTLIGHT)
 			mySynchronizer->AddRenderCommand(PointlightCommand(0, light.range, light.intensity, light.color, translation.myOrientation));

@@ -430,8 +430,6 @@ namespace graphics
 		scDesc.SampleDesc.Count = 1;
 		scDesc.SampleDesc.Quality = 0;
 		scDesc.Windowed = true;
-		//scDesc.Windowed = false;
-
 
 		scDesc.Flags = 0;
 		scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;

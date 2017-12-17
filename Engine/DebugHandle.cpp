@@ -20,6 +20,8 @@
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include "imgui.h"
 #include "ImGuizmo.h"
+#include <PostMaster/EventManager.h>
+#include <hash/DebugEvents.h>
 namespace debug
 {
 	void EditTransform(const float *cameraView, float *cameraProjection, float* matrix)
@@ -117,6 +119,13 @@ namespace debug
 
 
 	DebugHandle* DebugHandle::m_Instance = nullptr;
+
+	DebugHandle::DebugHandle()
+	{
+		EventManager* mgr = EventManager::GetInstance();
+		//mgr->Subscribe(DebugEvents_OnRightClick, this);
+	}
+
 	static bool sDebugTextures = false;
 
 	void DebugHandle::Update()
@@ -253,8 +262,24 @@ namespace debug
 					LevelFactory::SaveLevel("data/pbr_level/", "pbr_level.level");
 				}
 
-				ImGui::SetNextWindowPos(ImVec2(1200, 10));
-				ImGui::SetNextWindowSize(ImVec2(320, 300));
+
+				if (ImGui::Button("Create new Entity"))
+				{
+					Entity e = em.CreateEntity();
+					LevelFactory::CreateEntity(e, em);
+				}
+
+
+
+
+
+				ImVec2 inspector_size;
+				inspector_size.x = 350;
+				inspector_size.y = Engine::GetInstance()->GetInnerSize().m_Height;
+
+
+				ImGui::SetNextWindowPos(ImVec2(1920-350, 0));
+				ImGui::SetNextWindowSize(inspector_size);
 
 				if (ImGui::Begin("Entity Inspector"))
 				{
@@ -285,12 +310,12 @@ namespace debug
 							static int type = (int)l.myType;
 							ImGui::InputInt("lighttype", &type);
 							l.myType = (eLightType)type;
-							
+
 							ImGui::InputFloat("Intensity", &l.intensity);
 							ImGui::InputFloat("Range", &l.range);
 							static float half_angle = cl::RadToDegree(l.angle * 2);
 							ImGui::InputFloat("Angle", &half_angle);
-							l.angle = cl::DegreeToRad(half_angle * 0.5f );
+							l.angle = cl::DegreeToRad(half_angle * 0.5f);
 
 							static float rgb[3];
 							rgb[0] = l.color.x;
@@ -315,50 +340,45 @@ namespace debug
 					if (ImGui::Button("Add Component"))
 						_open = !_open;
 
-					//ImGui::SetNextWindowPos(ImVec2(880, 10));
-					//ImGui::SetNextWindowSize(ImVec2(320, 300));
-
-					if (_open)
+					if (_open && ImGui::Begin(""))
 					{
-						if (ImGui::Begin(""))
+
+						if (c.m_ComponentFlags & (~TreeDweller::GRAPHICS) && ImGui::Button("Add Graphics"))
 						{
-
-							if (c.m_ComponentFlags & (~TreeDweller::GRAPHICS) && ImGui::Button("Add Graphics"))
-							{
-								c.m_ComponentFlags |= TreeDweller::GRAPHICS;
-								em.AddComponent<GraphicsComponent>(m_EditEntity);
-							}
-
-							if (c.m_ComponentFlags & (~TreeDweller::LIGHT) && ImGui::Button("Add Light"))
-							{
-								c.m_ComponentFlags |= TreeDweller::LIGHT;
-								LightComponent& l = em.AddComponent<LightComponent>(m_EditEntity);
-								TreeDweller* pDweller = static_cast<TreeDweller*>(c.m_Dweller);
-								pDweller->AddComponent(&l, TreeDweller::LIGHT);
-								pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
-							}
-
-							if (ImGui::Button("Add Physics"))
-							{
-								c.m_ComponentFlags |= TreeDweller::PHYSICS;
-								em.AddComponent<PhysicsComponent>(m_EditEntity);
-							}
-
-							if (ImGui::Button("Add AI"))
-							{
-								c.m_ComponentFlags |= TreeDweller::AI;
-								em.AddComponent<AIComponent>(m_EditEntity);
-							}
-
-							if (ImGui::Button("Add Network"))
-							{
-								c.m_ComponentFlags |= TreeDweller::NETWORK;
-								em.AddComponent<NetworkComponent>(m_EditEntity);
-							}
-
-							ImGui::End();
+							c.m_ComponentFlags |= TreeDweller::GRAPHICS;
+							em.AddComponent<GraphicsComponent>(m_EditEntity);
 						}
+
+						if (!(c.m_ComponentFlags & TreeDweller::LIGHT) && ImGui::Button("Add Light"))
+						{
+							c.m_ComponentFlags |= TreeDweller::LIGHT;
+							LightComponent& l = em.AddComponent<LightComponent>(m_EditEntity);
+							TreeDweller* pDweller = static_cast<TreeDweller*>(c.m_Dweller);
+							pDweller->AddComponent(&l, TreeDweller::LIGHT);
+							pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
+						}
+
+						if (ImGui::Button("Add Physics"))
+						{
+							c.m_ComponentFlags |= TreeDweller::PHYSICS;
+							em.AddComponent<PhysicsComponent>(m_EditEntity);
+						}
+
+						if (ImGui::Button("Add AI"))
+						{
+							c.m_ComponentFlags |= TreeDweller::AI;
+							em.AddComponent<AIComponent>(m_EditEntity);
+						}
+
+						if (ImGui::Button("Add Network")) //This will just indicate that the object will be synchronized
+						{
+							c.m_ComponentFlags |= TreeDweller::NETWORK;
+							em.AddComponent<NetworkComponent>(m_EditEntity);
+						}
+
+						ImGui::End();
 					}
+
 
 					ImGui::End();
 				}
@@ -470,6 +490,14 @@ namespace debug
 	void DebugHandle::SetObjectMatrix(CU::Matrix44f* mat)
 	{
 		m_ObjectMatrix = mat;
+	}
+
+	void DebugHandle::HandleEvent(u64 event, void* data /*= nullptr*/)
+	{
+		if (event == DebugEvents_OnRightClick)
+		{
+			//i know what to do
+		}
 	}
 
 };

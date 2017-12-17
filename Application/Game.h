@@ -13,7 +13,8 @@ class Camera;
 class InputWrapper;
 class Texture;
 class Sprite;
-class Game : public State
+
+class Game : public State, public Subscriber
 {
 public:
 	Game() = default;
@@ -34,7 +35,7 @@ public:
 	void EndState() override;
 	void Render(bool render_through) override;
 
-
+	void HandleEvent(u64 event, void* data) override;
 
 private:
 	void DoStuff();
@@ -64,15 +65,6 @@ private:
 	float m_AverageFPS = 0;
 	float m_Time = 0.f;
 
-	CU::Vector3f pos0;
-	CU::Vector3f pos1;
 
 
-
-
-	CU::GrowingArray<s32> spotlight;
-	CU::Matrix44f spotorient;
-	float degree = 45.f;
-	float range = 8.f;
-	float intensity = 1.f;
 };

@@ -4,13 +4,15 @@
 #include "ImGuiRegisterStructs.h"
 #include <CommonLib/DataStructures/GrowingArray.h>
 #include <CommonLib/Math/Matrix/Matrix.h>
+#include <PostMaster/Subscriber.h>
+
 class Texture;
 class Material;
 struct ModelInstance;
 namespace debug
 {
 	void EditTransform(const float *cameraView, float *cameraProjection, float* matrix);
-	class DebugHandle
+	class DebugHandle : public Subscriber
 	{
 	public:
 		static void Create() { m_Instance = new DebugHandle; }
@@ -41,7 +43,7 @@ namespace debug
 
 		void SetObjectMatrix(CU::Matrix44f* mat);
 
-
+		void HandleEvent(u64 event, void* data = nullptr);
 	private:
 
 		CU::Matrix44f* m_ObjectMatrix = nullptr;
@@ -51,7 +53,7 @@ namespace debug
 		Entity m_EditEntity = 0;
 		static DebugHandle* m_Instance;
 
-		DebugHandle() = default;
+		DebugHandle();
 		~DebugHandle() { }
 		CU::GrowingArray<s32*> m_IntValuesToPrint;
 		CU::GrowingArray<std::string> m_Text;

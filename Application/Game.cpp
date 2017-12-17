@@ -28,7 +28,9 @@
 #include <Engine/Texture.h>
 #include <Input/ControllerInput.h>
 
-#include <CommonLib/HashString.h>
+#ifdef _DEBUG
+#include "../include/hash/DebugEvents.h"
+#endif
 static float s_CamSpeed = 50.f;
 static s32 entity = 0;
 void Game::InitState(StateStack* state_stack)
@@ -59,6 +61,9 @@ void Game::Initiate(const std::string& level)
 	CameraHandle::GetInstance()->Initiate(nullptr);
 	m_PauseState.InitState(m_StateStack);
 
+
+	EventManager::GetInstance()->Subscribe(DebugEvents_AddEntity, this);
+
 	bool read_camera = false;
 	if (read_camera)
 	{
@@ -77,19 +82,6 @@ void Game::Initiate(const std::string& level)
 			m_Camera->SetOrientation(init_orientation);
 		}
 	}
-
-	spotlight.Add(m_Engine->RegisterLight());
-
-
-	spotorient = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f)) * spotorient;
-	spotorient.SetPosition({ 5.f, -8.f, 5.f, 1.f });
-#if !defined(_PROFILE) && !defined(_FINAL)
-	//debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
-	//pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &degree, "Spotlight Degree"));
-	//pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &intensity, "Spotlight Intensity"));
-	//pDebug->RegisterFloatSlider(debug::DebugSlider<float>(0.f, 180.f, &range, "Spotlight Range"));
-	//pDebug->AddValueToPrint(&entity);
-#endif
 }
 
 void Game::EndState()
@@ -101,6 +93,15 @@ void Game::EndState()
 
 void Game::Render(bool render_through)
 {
+}
+
+void Game::HandleEvent(u64 event, void* data)
+{
+	if (event == DebugEvents_AddEntity)
+	{
+		TreeDweller* dweller = static_cast<TreeDweller*>(data);
+		m_World.AddDweller(dweller);
+	}
 }
 
 void Game::DoStuff()
@@ -192,16 +193,6 @@ void Game::OldUpdate(float dt)
 	{
 		entity_speed -= 1.f * dt;
 	}
-
-	m_Synchronizer->AddRenderCommand(SpotlightCommand(
-		spotlight.GetLast(),
-		cl::DegreeToRad(degree * 0.5f),
-		range,
-		intensity,
-		CU::Vector4f(1, 0, 0, 1),
-		spotorient,
-		false));
-
 
 	HandleMovement(input_wrapper, entity_speed, dt);
 	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));

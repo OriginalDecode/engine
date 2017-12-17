@@ -28,6 +28,11 @@
 #include <Engine/AssetFactory.h>
 #include <Engine/Material.h>
 
+#ifdef _DEBUG
+#include "hash/DebugEvents.h"
+#include <PostMaster/EventManager.h>
+#endif
+
 void LevelFactory::Initiate()
 {
 	m_Engine = Engine::GetInstance();
@@ -97,6 +102,40 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	}
 	reader.CloseDocument();
 	pDweller->Initiate(e, TreeDweller::STATIC);
+}
+
+void LevelFactory::CreateEntity(Entity e, EntityManager& em)
+{
+	//m_DwellerList.Add(new TreeDweller);
+	TreeDweller* pDweller = new TreeDweller; // m_DwellerList.GetLast();
+	s32 debug_flags = 0;
+
+	{
+		TranslationComponent& c = em.AddComponent<TranslationComponent>(e);
+		pDweller->AddComponent(&c, TreeDweller::TRANSLATION);
+		debug_flags |= TreeDweller::TRANSLATION;
+	}
+
+	{
+		GraphicsComponent& c = em.AddComponent<GraphicsComponent>(e);
+		ModelInstance instance;
+		instance.m_MaterialKey = Engine::GetInstance()->GetMaterial("default")->GetKey();
+		instance.m_ModelID = Engine::GetInstance()->GetModel("default")->GetKey();
+		c.m_Instances.Add(instance);
+		pDweller->AddComponent(&c, TreeDweller::GRAPHICS);
+		debug_flags |= TreeDweller::GRAPHICS;
+	}
+
+	{
+		DebugComponent& c = em.AddComponent<DebugComponent>(e);
+		pDweller->AddComponent(&c, TreeDweller::DEBUG);
+		c.m_ComponentFlags = debug_flags;
+		c.m_Dweller = pDweller;
+	}
+
+	pDweller->Initiate(e, TreeDweller::STATIC);
+
+	EventManager::GetInstance()->SendMessage(DebugEvents_AddEntity, pDweller);
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)
@@ -220,14 +259,6 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 		component.m_MaxPoint = { 0.25,0.25,0.25 };
 	}
 
-	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
-	CU::Vector3f pos = translation.myOrientation.GetPosition();
-
-	CU::Plane<float> plane0;
-
-	CU::Vector4f up = translation.myOrientation.GetUp();
-	CU::Vector4f right = translation.myOrientation.GetRight();
-	CU::Vector4f forward = translation.myOrientation.GetForward();
 }
 
 void LevelFactory::CreateTerrain(std::string terrain_path)

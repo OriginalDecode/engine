@@ -13,6 +13,7 @@ public:
 
 	void Render(const graphics::RenderContext& render_context);
 
+
 	void SetData(const SpotlightData& data);
 	const SpotlightData& GetData() const;
 
@@ -21,6 +22,7 @@ public:
 	bool ShadowCasting() { return ( m_ShadowSpotlight ? true : false ); }
 
 private:
+	void RenderDebugCone();
 
 	void SetPosition(const CU::Vector3f& aPosition);
 	void SetDirection(const CU::Vector4f& aDirection);
@@ -59,11 +61,6 @@ private:
 	LightModel* m_Model = nullptr;
 	ShadowSpotlight* m_ShadowSpotlight = nullptr;
 	SpotlightData myData;
-
-
-
-
-
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	IBuffer* m_QuadBuffer = nullptr;

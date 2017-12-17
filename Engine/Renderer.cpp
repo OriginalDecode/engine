@@ -314,11 +314,9 @@ void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &c
 
 		const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(e);
 		CU::Matrix44f orientation = translation.myOrientation;
-		if (instance.m_Scale > 0.f)
-			orientation = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * orientation;
-		const CU::Matrix44f relative = orientation * instance.m_Orientation;
+		const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale)  * instance.m_Orientation;
 
-		m_HoverModel->AddOrientation(relative);
+		m_HoverModel->AddOrientation(relative * orientation);
 		m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
 
 	}
@@ -637,7 +635,7 @@ void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32
 
 	
 	InstanceObject new_instance;
-	new_instance.m_Material = model->GetMaterial() ? model->GetMaterial() : m_RenderContext.GetEngine().GetMaterial(command->m_MaterialKey);
+	new_instance.m_Material = model->GetMaterial() ? model->GetMaterial() : engine.GetMaterial(command->m_MaterialKey);
 	new_instance.m_Model = model;
 	new_instance.m_Shadowed = true; /* should be command->m_Shadowed or something*/
 	m_InstancingManager.AddInstanceObject(new_instance);
@@ -653,7 +651,7 @@ void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32
 #endif
 	CU::Vector4f col = cl::IntToCol(model_data.m_ID);
 
-	m_InstancingManager.AddGPUDataToInstance(command->m_MaterialKey, command->m_Key, model_data);
+	m_InstancingManager.AddGPUDataToInstance(new_instance.m_Material->GetKey(), model->GetKey(), model_data);
 }
 
 //Move this to some kind of light manager

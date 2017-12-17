@@ -50,6 +50,7 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 	}
 
 	CreateTerrain("Data/Textures/flat_height.tga");
+	m_LevelReader.CloseDocument();
 	//m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
 
 	return true;
@@ -120,7 +121,9 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		GraphicsComponent& c = em.AddComponent<GraphicsComponent>(e);
 		ModelInstance instance;
 		instance.m_MaterialKey = Engine::GetInstance()->GetMaterial("default")->GetKey();
+		instance.m_MaterialFile = "default";
 		instance.m_ModelID = Engine::GetInstance()->GetModel("default")->GetKey();
+		instance.m_Filename = "default";
 		c.m_Instances.Add(instance);
 		pDweller->AddComponent(&c, TreeDweller::GRAPHICS);
 		debug_flags |= TreeDweller::GRAPHICS;
@@ -409,6 +412,12 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 	_writer.EndArray();
 
 	std::string out_file = folder + filename;
+
+
+	
+	std::stringstream ss;
+	ss << _sb.GetString();
+	OutputDebugString(ss.str().c_str());
 
 	std::ofstream out(out_file);
 	out << _sb.GetString();

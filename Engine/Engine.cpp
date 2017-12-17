@@ -35,6 +35,8 @@
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include <Engine/DebugHandle.h>
+#include <Engine/ImGuizmo.h>
+#include <Engine/imgui.h>
 #endif
 #include <Engine/AssetFactory.h>
 
@@ -300,10 +302,7 @@ void* Engine::CreateShader(IShaderBlob* pShader, eShaderType type, const std::st
 
 u64 Engine::LoadModelA(std::string path, std::string effect, bool threaded)
 {
-	if (!cl::file_exist(path))
-	{
-		DL_ASSERT("Failed to find the file!");
-	}
+
 
 
 	return LoadModel<Model>(path, effect, threaded);
@@ -311,8 +310,14 @@ u64 Engine::LoadModelA(std::string path, std::string effect, bool threaded)
 
 s32 Engine::PickEntity(Texture* pTexture)
 {
-	CU::Vector4f color = m_API->PickColor(pTexture);
-	return (color.x + color.y + color.z);
+	static CU::Vector4f curr;
+
+	if (!ImGui::IsAnyWindowHovered())
+	{
+		if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+			curr = m_API->PickColor(pTexture);
+	}
+	return (curr.x + curr.y + curr.z);
 }
 
 void Engine::PickEntity()

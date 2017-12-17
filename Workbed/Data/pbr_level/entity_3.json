@@ -2,22 +2,27 @@
     {
         "component_type": "translation",
         "position": [
-            5.0,
             1.0,
-            2.9093408584594728
+            4.0,
+            13.0
         ],
-        "rotation": [
-            -3.0531413555145265,
-            0,
-            -1.625899076461792
+        "up": [
+            0.0,
+            1.0,
+            0.0
+        ],
+        "forward": [
+            0.0,
+            0.0,
+            1.0
         ]
     },
     {
         "component_type": "graphics",
         "instances": [
             {
-                "model_file": "data/engineassets/arrow_head.fbx",
-                "material_file": "Data/Material/mat_aluminum.json",
+                "model_file": "default",
+                "material_file": "default",
                 "relative_position": [
                     0.0,
                     0.0,
@@ -28,10 +33,15 @@
                     1.0,
                     1.0
                 ],
-                "relative_rotation": [
+                "up": [
                     0.0,
-                    0.0,
+                    1.0,
                     0.0
+                ],
+                "forward": [
+                    0.0,
+                    0.0,
+                    1.0
                 ],
                 "shadowed": true
             }

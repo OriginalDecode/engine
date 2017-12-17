@@ -57,7 +57,6 @@ namespace debug
 		ImGui::InputFloat3("Rt", matrixRotation, 3);
 		ImGui::InputFloat3("Sc", matrixScale, 3);
 		ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
-
 		if (mCurrentGizmoOperation != ImGuizmo::SCALE)
 		{
 			if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
@@ -291,9 +290,23 @@ namespace debug
 					CU::Matrix44f& orientation = CU::Math::Inverse(cam->GetOrientation());
 					CU::Matrix44f& perspective = cam->GetPerspective();
 					CU::Matrix44f& object_matrix = *m_ObjectMatrix;
+				
+					GraphicsComponent& g = em.GetComponent<GraphicsComponent>(m_EditEntity);
 
-					if (m_ObjectMatrix)
+
+					constexpr int t_key = 'T';
+					static bool bToggle = false;
+					if (ImGui::IsKeyPressed(t_key))
+						bToggle = !bToggle;
+
+					if (m_ObjectMatrix && !bToggle)
 						EditTransform(orientation.myMatrix, perspective.myMatrix, m_ObjectMatrix->myMatrix);
+
+					if (bToggle)
+					{
+						EditTransform(orientation.myMatrix, perspective.myMatrix, g.m_Instances[0].m_Orientation.myMatrix);
+					}
+
 
 
 					ImGui::Separator();
@@ -479,7 +492,11 @@ namespace debug
 
 	void DebugHandle::ConfirmEntity()
 	{
-		m_EditEntity = m_CurrEntity;
+		if (!ImGui::IsAnyWindowHovered())
+		{
+			if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver())
+				m_EditEntity = m_CurrEntity;
+		}
 	}
 
 	s32 DebugHandle::GetDebugTextureIndex() const

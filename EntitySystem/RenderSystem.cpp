@@ -77,14 +77,14 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		
 		for (const ModelInstance& instance : render.m_Instances)
 		{
-			if(instance.m_Scale > 0.f)
-				orientation = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * orientation;
+			/*if(instance.m_Scale > 0.f)
+				orientation = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * orientation;*/
 
-			const CU::Matrix44f relative = orientation * instance.m_Orientation;
+			const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * instance.m_Orientation;
 
 			AddRenderCommand(ModelCommand(instance.m_ModelID
 										  , instance.m_MaterialKey
-										  , relative //could be pre-calculated, and on physical objects this shouldn't even be used if it can be moved.
+										  , relative * orientation //could be pre-calculated, and on physical objects this shouldn't even be used if it can be moved.
 										  , render.m_RenderWireframe
 #ifdef _DEBUG
 										  , e));

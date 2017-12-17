@@ -2,36 +2,46 @@
     {
         "component_type": "translation",
         "position": [
-            20.0,
-            1.0,
-            5.0
+            27.739,
+            19.482,
+            35.159
         ],
-        "rotation": [
+        "up": [
             0.0,
-            -0.0,
-            0.0
+            0.999,
+            0.028
+        ],
+        "forward": [
+            0.0,
+            -0.028,
+            0.999
         ]
     },
     {
         "component_type": "graphics",
         "instances": [
             {
-                "model_file": "data/model/ballen.fbx",
-                "material_file": "Data/Material/mat_octostone.json",
+                "model_file": "default",
+                "material_file": "default",
                 "relative_position": [
                     0.0,
                     0.0,
                     0.0
                 ],
                 "relative_scale": [
-                    1.0,
-                    1.0,
-                    1.0
+                    60.246,
+                    42.0,
+                    4.791
                 ],
-                "relative_rotation": [
+                "up": [
                     0.0,
-                    0.0,
+                    1.0,
                     0.0
+                ],
+                "forward": [
+                    0.0,
+                    0.0,
+                    1.0
                 ],
                 "shadowed": true
             }

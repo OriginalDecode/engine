@@ -106,17 +106,30 @@ void ModelInstance::Serialize(Writer& writer) const
 
 
 	writer.String("relative_scale");
+	CU::Vector4f scale = m_Orientation.GetScale();
 	writer.StartArray();
-	writer.Double(m_Scale.x);
-	writer.Double(m_Scale.y);
-	writer.Double(m_Scale.z);
+	writer.Double(scale.x);
+	writer.Double(scale.y);
+	writer.Double(scale.z);
 	writer.EndArray();
 
-	writer.String("relative_rotation");
+
+	const CU::Vector4f up = CU::Math::GetNormalized(m_Orientation.GetUp());
+	const CU::Vector4f fwd = CU::Math::GetNormalized(m_Orientation.GetForward());
+
+	writer.String("up");
 	writer.StartArray();
-	writer.Double(m_Rotation.x);
-	writer.Double(m_Rotation.y);
-	writer.Double(m_Rotation.z);
+	writer.Double(up.x);
+	writer.Double(up.y);
+	writer.Double(up.z);
+	writer.EndArray();
+
+
+	writer.String("forward");
+	writer.StartArray();
+	writer.Double(fwd.x);
+	writer.Double(fwd.y);
+	writer.Double(fwd.z);
 	writer.EndArray();
 
 	writer.String("shadowed");

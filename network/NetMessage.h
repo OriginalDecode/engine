@@ -16,8 +16,9 @@ public:
 
 
 	StreamType m_Stream;
-	u64 m_MessageType;
-    u32 m_GID;
+	u64 m_MessageType; //8 byte
+    GUID m_GUID; //16 byte
+	
 protected:
 
 	virtual void Serialize(StreamType& stream);

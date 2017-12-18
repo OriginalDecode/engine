@@ -38,8 +38,8 @@ bool Window::Initiate(WindowCreateInfo window_create_info)
 
 	RECT inner_size;
 	GetClientRect(m_HWND, &inner_size);
-	m_InnerSize.m_Height = (float)inner_size.bottom;
-	m_InnerSize.m_Width = ( float ) inner_size.right;
+	m_InnerSize.m_Height = inner_size.bottom;
+	m_InnerSize.m_Width =  inner_size.right;
 
 
 #endif

@@ -106,11 +106,11 @@ void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const 
 	}
 }
 
-void Texture::InitiateAsDepthStencil(float width, float height, const std::string& debug_name)
+void Texture::InitiateAsDepthStencil(s32 width, s32 height, const std::string& debug_name)
 {
 	TextureDesc desc;
-	desc.m_Width = (s32)width;
-	desc.m_Height = (s32)height;
+	desc.m_Width = width;
+	desc.m_Height = height;
 	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_DEPTH_STENCIL;
 	desc.m_Usage = graphics::DEFAULT_USAGE;
 	desc.m_TextureFormat = graphics::R32_TYPELESS;
@@ -121,11 +121,11 @@ void Texture::InitiateAsDepthStencil(float width, float height, const std::strin
 	Initiate(desc, debug_name);
 }
 
-void Texture::InitiateAsRenderTarget(float width, float height, const std::string& debug_name)
+void Texture::InitiateAsRenderTarget(s32 width, s32 height, const std::string& debug_name)
 {
 	TextureDesc desc;
-	desc.m_Width = (s32)width;
-	desc.m_Height = (s32)height;
+	desc.m_Width = width;
+	desc.m_Height = height;
 	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
 	desc.m_Usage = graphics::DEFAULT_USAGE;
 	desc.m_TextureFormat = graphics::RGBA16_FLOAT;

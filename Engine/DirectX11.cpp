@@ -109,7 +109,7 @@ namespace graphics
 		CreateDepthBuffer();
 		CreateBlendStates();
 
-		m_Viewport = CreateViewport(m_CreateInfo.m_WindowWidth, m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
+		m_Viewport = CreateViewport((u16)m_CreateInfo.m_WindowWidth, (u16)m_CreateInfo.m_WindowHeight, 0.f, 1.f, 0, 0);
 		SetDefaultTargets();
 		m_Context->SetViewport(m_Viewport);
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -126,7 +126,7 @@ namespace graphics
 		ID3D11RenderTargetView* pRenderTarget = static_cast<ID3D11RenderTargetView*>(m_DefaultRenderTarget);
 		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
 		m_Context->ClearRenderTarget(pRenderTarget, clearcolor::black);
-		m_Context->ClearDepthStencilView(pDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f);
+		m_Context->ClearDepthStencilView(pDepthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1);
 	}
 
 	void DirectX11::EndFrame()
@@ -418,8 +418,8 @@ namespace graphics
 		DXGI_SWAP_CHAIN_DESC scDesc;
 		ZeroMemory(&scDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-		float sym_x = GetSystemMetrics(SM_CXSCREEN);
-		float sym_y = GetSystemMetrics(SM_CYSCREEN);
+		UINT sym_x = GetSystemMetrics(SM_CXSCREEN);
+		UINT sym_y = GetSystemMetrics(SM_CYSCREEN);
 
 		scDesc.BufferCount = 1;
 		scDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -494,14 +494,9 @@ namespace graphics
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		HRESULT hr = ctx->Map(staging, 0, D3D11_MAP_READ, 0, &msr);
-
-		u32 pix = 0;
-		//constexpr int x = sizeof(float);
+		DL_ASSERT_EXP(hr == S_OK , "Not ok pixel pick!");
 		if (msr.pData)
 		{
-
-			int r_pitch = msr.RowPitch;
-			int d_pitch = msr.DepthPitch;
 			float* data = (float*)msr.pData;
 			color.x = data[0] * 65536.f;
 			color.y = data[1] * 256.f;
@@ -576,7 +571,7 @@ namespace graphics
 
 		for (unsigned int i = 0; i < numModes; ++i)
 		{
-			if (displayModeList[i].Width == m_CreateInfo.m_WindowWidth && displayModeList[i].Height == m_CreateInfo.m_WindowHeight)
+			if (displayModeList[i].Width == (u32)m_CreateInfo.m_WindowWidth && displayModeList[i].Height == (u32)m_CreateInfo.m_WindowHeight)
 			{
 				aNumerator = displayModeList[i].RefreshRate.Numerator;
 				aDenominator = displayModeList[i].RefreshRate.Denominator;

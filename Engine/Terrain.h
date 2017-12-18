@@ -32,7 +32,6 @@ public:
 	std::vector<float> GetVerticeArrayCopy();
 	std::vector<s32> GetIndexArrayCopy();
 	void SetPosition(CU::Vector2f position);
-	void AddSurface(Surface* surface) override;
 	bool HasLoaded() const { return m_HasLoaded; }private:
 	bool m_HasLoaded = false;
 	void UpdateConstantBuffer(const graphics::RenderContext& rc) override;

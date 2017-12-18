@@ -36,15 +36,15 @@ void InstancingManager::AddInstanceObject(InstanceObject instance_object)
 	}
 }
 
-const InstanceObject& InstancingManager::GetInstanceObject(u64 material_key, u64 model_key)
-{
-	/*auto it = m_InstanceObjects.find(key);
-	if (it != m_InstanceObjects.end())
-		return it->second;
-		*/
-	DL_ASSERT("Instance not found");
-	return InstanceObject();
-}
+// const InstanceObject& InstancingManager::GetInstanceObject(u64 material_key, u64 model_key)
+// {
+// 	/*auto it = m_InstanceObjects.find(key);
+// 	if (it != m_InstanceObjects.end())
+// 		return it->second;
+// 		*/
+// 	DL_ASSERT("Instance not found");
+// 	return InstanceObject();
+// }
 
 void InstancingManager::AddGPUDataToInstance(u64 material_key, u64 model_key, GPUModelData data)
 {

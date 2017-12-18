@@ -14,6 +14,14 @@
 #include "ConnectMessage.h"
 
 
+NetworkHandle::NetworkHandle()
+{
+#ifdef _WIN32
+	HRESULT result = CoCreateGuid(&m_GUID);
+	assert(result == S_OK && "failed to create guid");
+#endif
+}
+
 void NetworkHandle::CleanUp()
 {
 #ifdef _WIN32
@@ -79,12 +87,7 @@ s32 NetworkHandle::Connect(const char* ip, s16 port)
 			printf("\n%s", net_message.m_ConnectMessage.c_str());
 			if(net_message.IsType(CONNECTION_ACCEPTED))
 			{ 
-#ifdef _WIN32
-				HRESULT result = CoCreateGuid(&m_GUID);
-				assert(result == S_OK && "failed to create guid");
-#endif
-				//m_GID = net_message.m_GID;
-				printf("Your GID is : %d", m_GID);
+
 				connected = true;
 			}
 			else if(net_message.IsType(CONNECTION_REJECTED))
@@ -177,7 +180,7 @@ s32 NetworkHandle::ReadType(const Buffer& buffer)
 void NetworkHandle::AddConnection(Connection& client)
 {
 
-	client.m_GID = ++m_GID; //server will always have an ID of 0 and will not need to be assigned one ahead of time?
+	//client.m_GID = ++m_GID; //server will always have an ID of 0 and will not need to be assigned one ahead of time?
 	m_Connections.push_back(client);
 }
 

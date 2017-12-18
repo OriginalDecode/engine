@@ -277,7 +277,7 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 	float height = 1.f;
 	float x_start = 5.f;
 	float z_start = 5.f;
-	float metal = 0.f;
+
 	Engine* pEngine = Engine::GetInstance();
 	Material* pGoldMaterial = pEngine->GetMaterial("Data/Material/mat_gold.json");
 	Material* pAlumMaterial = pEngine->GetMaterial("Data/Material/mat_aluminum.json");
@@ -322,7 +322,6 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 			auto v = RANDOM(0, ARRSIZE(material));
 
 			auto key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false);
-			Model* m = m_Engine->GetModel(key);
 
 			ModelInstance instance;
 			instance.m_Filename = "data/model/ballen.fbx";

@@ -226,8 +226,8 @@ void SpotLight::RenderDebugCone()
 		p0.color = col;
 		p1.color = col;
 
-		const float x = cl::DegreeToRad(i);
-		const float y = cl::DegreeToRad(i + max);
+		const float x = cl::DegreeToRad(static_cast<float>(i));
+		const float y = cl::DegreeToRad(static_cast<float>(i + max));
 
 		p0.position = { cosf(x) * halfwidth, y_pos, sinf(x) * halfwidth, 1.f };
 		p1.position = { cosf(y) * halfwidth, y_pos , sinf(y) * halfwidth, 1.f };

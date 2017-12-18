@@ -15,8 +15,8 @@ namespace graphics
 	{
 		HWND m_HWND;
 		HINSTANCE m_Instance;
-		float m_WindowWidth = 0.f;
-		float m_WindowHeight = 0.f;
+		s32 m_WindowWidth = 0;
+		s32 m_WindowHeight = 0;
 		std::string m_APIName;
 	};
 

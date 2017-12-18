@@ -223,14 +223,14 @@ void Model::AddChild(Model* aChild)
 	m_Children.Add(aChild);
 }
 
-void Model::AddSurface(Surface* surface)
-{
-	for (Model* child : m_Children)
-	{
-		AddSurface(surface);
-	}
-	m_Surfaces.Add(surface);
-}
+// void Model::AddSurface(Surface* surface)
+// {
+// 	for (Model* child : m_Children)
+// 	{
+// 		AddSurface(surface);
+// 	}
+// 	m_Surfaces.Add(surface);
+// }
 
 void Model::AddOrientation(CU::Matrix44f orientation)
 {

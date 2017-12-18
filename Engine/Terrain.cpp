@@ -126,11 +126,6 @@ void Terrain::SetPosition(CU::Vector2f position)
 
 }
 
-void Terrain::AddSurface(Surface* /*surface*/)
-{
-
-}
-
 void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)
 {
 

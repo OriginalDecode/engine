@@ -43,7 +43,7 @@ void AssetsContainer::Initiate()
 
 
 	u64 mod_key = LoadModel<Model>("data/engineassets/cube_100x100.fbx", "Shaders/debug_pbl_instanced.json", false);
-	u64 mat_key = LoadMaterial("Data/Material/mat_aluminum.json");
+	u64 mat_key = LoadMaterial("Data/Material/mat_default.json");
 
 	m_Models.emplace(Hash("default"), GetModel(mod_key));
 	m_Materials.emplace(Hash("default"), GetMaterial(mat_key));

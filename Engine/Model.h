@@ -32,7 +32,6 @@ public:
 	void ShadowRenderInstanced(const graphics::RenderContext& rc);
 
 	void AddChild(Model* aChild);
-	virtual void AddSurface(Surface* surface) override;
 
 	void SetPosition(const CU::Vector3f& aPosition);
 	CU::Matrix44f& GetOrientation();
@@ -52,17 +51,18 @@ public:
 	s32 GetInstanceCount() const { return m_GPUData.Size(); }
 	Effect* GetEffect() { return m_Effect; }
 	void AddOrientation(CU::Matrix44f orientation);
-// 	void AddPBLData(CU::Vector2f data);
 	void AddInstanceData(GPUModelData data);
 	Material* GetMaterial() 
 	{ 
-		if (m_Material)
-			return m_Material;
-
 		for (Model* c : m_Children)
 		{
 			return c->GetMaterial();
 		}
+		
+		if (m_Material)
+			return m_Material;
+
+
 		return nullptr;
 	}
 	void CreateCube();

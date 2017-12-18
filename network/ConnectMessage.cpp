@@ -6,11 +6,11 @@ ConnectMessage::ConnectMessage(s32 message_id, std::string connect_message)
 	m_ConnectMessage = connect_message;
 }
 
-ConnectMessage::ConnectMessage(s32 message_id, std::string connect_message, u32 gid)
+ConnectMessage::ConnectMessage(s32 message_id, std::string connect_message, GUID guid)
 {
 	m_MessageType = message_id;
 	m_ConnectMessage = connect_message;
-	m_GID = gid;
+	m_GUID = guid;
 }
 
 ConnectMessage::ConnectMessage(s32 message_id)

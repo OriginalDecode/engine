@@ -19,7 +19,6 @@ public:
 	void SetupReflectionRender(const graphics::RenderContext& rc);
 	void SetClipPlane(const CU::Vector4f& plane, const graphics::RenderContext& rc);
 	Effect* GetEffect() { return m_Effect; }
-	void AddSurface(Surface* surface) override;
 private:
 	void UpdateConstantBuffer(const graphics::RenderContext& rc);
 	void CreatePlane();

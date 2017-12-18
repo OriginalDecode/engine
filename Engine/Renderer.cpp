@@ -146,7 +146,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_WaterPlane = new WaterPlane; //creating this breaks everything.... rip
 	m_WaterCamera = new Camera;
-	m_WaterCamera->CreatePerspectiveProjection(window_size.m_Width, window_size.m_Height, 0.01f, 100.f, 90.f);
+	m_WaterCamera->CreatePerspectiveProjection((float)window_size.m_Width, (float)window_size.m_Height, 0.01f, 100.f, 90.f);
 
 	Engine::GetInstance()->LoadModelA("Data/EngineAssets/view_gizmo.fbx", "Shaders/gizmo.json", false);
 	m_Spotlights.Add(new SpotLight);
@@ -304,6 +304,8 @@ void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &c
 	ctx.ClearRenderTarget(pTex->GetRenderTargetView(), clearcolor::black);
 	ctx.OMSetRenderTargets(1, pTex->GetRenderTargetRef(), nullptr);
 	Engine& engine = m_RenderContext.GetEngine();
+	if (!engine.GetEntityManager().HasComponent<GraphicsComponent>(e))
+		return;
 	const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(e);
 
 	for (const ModelInstance& instance : graphics.m_Instances)
@@ -600,7 +602,6 @@ void Renderer::RenderParticles(Effect* effect)
 
 		m_ParticleEmitter->Update(m_RenderContext.GetEngine().GetDeltaTime());
 
-
 		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
 		m_ParticleEmitter->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), effect);
 	}
@@ -621,7 +622,7 @@ void Renderer::RenderLines()
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::LINE, "Expected Line command type");
 		m_Line->AddLine(command->m_Points);
 	}
-	m_Line->Render(0, m_RenderContext);
+	m_Line->Render(m_RenderContext);
 	PROFILE_BLOCK_END;
 }
 

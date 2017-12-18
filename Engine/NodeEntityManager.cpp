@@ -80,20 +80,20 @@ void NodeEntityManager::Update(float dt, const CU::GrowingArray<TreeDweller*>& d
 	PROFILE_FUNCTION(profiler::colors::Red);
 
 	PROFILE_BLOCK("Update Entities", profiler::colors::Green);
-// 	for (TreeDweller* dweller : dweller_list)
-// 	{
-// 		Entity e = dweller->GetEntity();
-// 		CameraHandle* handle = CameraHandle::GetInstance();
-// 		if (handle)
-// 		{
-// 			TranslationComponent& t = GetComponent<TranslationComponent>(e);
-// 
-// 			if (CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.myOrientation.GetPosition()))
-// 				m_Components.SetUpdateFlag(e, true);
-// 			else
-// 				m_Components.SetUpdateFlag(e, false);
-// 		}
-// 	}
+	for (TreeDweller* dweller : dweller_list)
+	{
+		Entity e = dweller->GetEntity();
+		CameraHandle* handle = CameraHandle::GetInstance();
+		if (handle)
+		{
+			TranslationComponent& t = GetComponent<TranslationComponent>(e);
+
+			if (CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.myOrientation.GetPosition()))
+				m_Components.SetUpdateFlag(e, true);
+			else
+				m_Components.SetUpdateFlag(e, false);
+		}
+ 	}
 	PROFILE_BLOCK_END;
 	for (BaseSystem* system : m_Systems)
 	{

@@ -26,7 +26,7 @@ public:
 	bool FindInstanceObject(u64 key);
 	bool FindModel(u64 key) const;
 	void AddInstanceObject(InstanceObject instance_object);
-	const InstanceObject& GetInstanceObject(u64 key, u64 model_key);
+//	const InstanceObject& GetInstanceObject(u64 key, u64 model_key);
 
 	void AddGPUDataToInstance(u64 material_key, u64 model_key, GPUModelData data);
 

@@ -29,9 +29,6 @@ void AddRenderCommand(const command_type command)\
 	memcpy(current, &command, sizeof(command_type));\
 };
 
-
-
-
 typedef CU::StaticArray<memory::CommandAllocator, 2> CommandBuffer;
 typedef CU::StaticArray<CommandBuffer, eBufferType::BUFFER_COUNT> CommandBuffers;
 
@@ -76,6 +73,16 @@ public:
 	ADD_COMMAND_FUNC(eBufferType::TEXT_BUFFER, TextCommand);
 
 	const memory::CommandAllocator& GetRenderCommands(const eBufferType& buffer_type) const;
+
+	const memory::CommandAllocator& GetLineBuffer() const { return GetRenderCommands(eBufferType::LINE_BUFFER); }
+	const memory::CommandAllocator& GetModelBuffer() const { return GetRenderCommands(eBufferType::MODEL_BUFFER); }
+	const memory::CommandAllocator& GetSpotlightBuffer() const { return GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER); }
+	const memory::CommandAllocator& GetPointlightBuffer() const { return GetRenderCommands(eBufferType::POINTLIGHT_BUFFER);	}
+	const memory::CommandAllocator& GetTextBuffer() const { return GetRenderCommands(eBufferType::TEXT_BUFFER); }
+	const memory::CommandAllocator& GetSpriteBuffer() const { return GetRenderCommands(eBufferType::SPRITE_BUFFER); }
+	const memory::CommandAllocator& GetParticleBuffer() const { return GetRenderCommands(eBufferType::PARTICLE_BUFFER); }
+	const memory::CommandAllocator& GetNonDeferredBuffer() const { return GetRenderCommands(eBufferType::NO_DEFERRED_BUFFER); }
+
 private:
 	CommandBuffers m_CommandBuffers;
 	volatile bool m_LogicDone = false;

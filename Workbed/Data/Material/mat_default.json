@@ -1,0 +1,7 @@
+{
+    "material": {
+        "albedo": "Data/Material/default/albedo.dds",
+        "metalness": "Data/Material/default/metalness.dds",
+        "roughness": "Data/Material/default/roughness.dds"
+    }
+}

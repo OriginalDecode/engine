@@ -5,6 +5,11 @@
 class Texture;
 class Camera;
 class Effect;
+namespace graphics
+{
+	class Viewport;
+}
+
 class ShadowSpotlight
 {
 public:
@@ -28,8 +33,8 @@ public:
 
 	void SetAngle(float angle);
 
-	const CU::Matrix44f& GetOrientation();
-	const CU::Matrix44f& GetMVP();
+	const CU::Matrix44f& GetOrientation() const;
+	const CU::Matrix44f GetMVP() const;
 
 	float GetBufferSize() const { return m_BufferSize; }
 

@@ -17,6 +17,7 @@ void NetMessage::UnpackMessage(s8* message, s32 length)
 		}
 		Deserialize(m_Stream);
 	}
+	//constexpr int s = sizeof(u64);
 }
 
 bool NetMessage::IsType(eNetMessageType message_type)
@@ -27,11 +28,11 @@ bool NetMessage::IsType(eNetMessageType message_type)
 void NetMessage::Serialize(StreamType& stream)
 {
 	SERIALIZE(m_Stream, m_MessageType);
-	SERIALIZE(m_Stream, m_GID);
+	SERIALIZE(m_Stream, m_GUID);
 }
 
 void NetMessage::Deserialize(StreamType& stream)
 {
 	DESERIALIZE(m_Stream, m_MessageType);
-	DESERIALIZE(m_Stream, m_GID);
+	DESERIALIZE(m_Stream, m_GUID);
 }

@@ -20,6 +20,7 @@ enum eDEBUGLOG
 	Font_Filter = 32,
 	Model_Filter = 64,
 	Warning_Filter = 128,
+	Network_Filter = 256,
 };
 #
 #ifdef _DEBUG
@@ -52,7 +53,7 @@ enum eDEBUGLOG
 #define RESOURCE_LOG(...)	DL_WRITELOG( Resource_Filter,	__VA_ARGS__)
 #define FONT_LOG(...)		DL_WRITELOG( Font_Filter,		__VA_ARGS__)
 #define MODEL_LOG(...)		DL_WRITELOG( Model_Filter,		__VA_ARGS__)
-
+#define LOG_NETWORK(...)	DL_WRITELOG( Network_Filter,	__VA_ARGS__)
 
 #define ALGORITHM_LOG(...)  DL_WRITELOG("Algorithm", __VA_ARGS__)
 #define ALGORITHM_LOG_EXP(expression, ...) if(expression){ DL_WRITELOG("Algorithm", __VA_ARGS__)}
@@ -91,6 +92,7 @@ enum eDEBUGLOG
 //expressions
 #define ENGINE_LOG_EXP(expression, ...)		
 #define ALGORITHM_LOG_EXP(expression, ...)
+#define LOG_NETWORK(...)
 #endif
 
 

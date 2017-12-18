@@ -83,7 +83,7 @@ void JSONReader::ReadElement(const std::string& tag, unsigned int& out)
 void JSONReader::ReadElement(const std::string& tag, float& out)
 {
 	if (DocumentHasMember(tag))
-		out = myDocument[tag.c_str()].GetDouble();
+		out = (float)myDocument[tag.c_str()].GetDouble();
 }
 
 void JSONReader::ReadElement(const std::string& tag, double& out)

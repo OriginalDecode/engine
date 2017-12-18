@@ -144,6 +144,8 @@ namespace DL_Debug
 					filter_tag = "Update";
 				else if (filter_flag & Warning_Filter)
 					filter_tag = "Warning";
+				else if (filter_flag & Network_Filter)
+					filter_tag = "Network";
 			}
 		}
 		else
@@ -156,7 +158,7 @@ namespace DL_Debug
 		output += "\n";
 		OutputDebugString(output.c_str());
 
-		myOutputFile << "[" << filter_tag << "]" << " : " << str << "\n";
+		myOutputFile << "[" << filter_tag << "] : " << str << "\n";
 		myOutputFile.flush();
 
 

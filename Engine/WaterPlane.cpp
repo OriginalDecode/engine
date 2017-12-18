@@ -14,8 +14,8 @@ WaterPlane::WaterPlane()
 	m_ReflectionG.Initiate(false);
 
 	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
-	const float window_width = window_size.m_Width;
-	const float window_height = window_size.m_Height;
+	const s32 window_width = window_size.m_Width;
+	const s32 window_height = window_size.m_Height;
 
 	m_Refraction = new Texture;
 	m_Refraction->InitiateAsDepthStencil(window_width, window_height, "Water : RefractionDepth");
@@ -95,11 +95,6 @@ void WaterPlane::SetClipPlane(const CU::Vector4f& plane, const graphics::RenderC
 	m_PixelStruct.m_CompareValue = plane;
 	rc.GetContext().UpdateConstantBuffer(m_cbPixel, &m_PixelStruct, sizeof(m_PixelStruct));
 	rc.GetContext().PSSetConstantBuffer(1, 1, &m_cbPixel);
-}
-
-void WaterPlane::AddSurface(Surface* /*surface*/)
-{
-
 }
 
 void WaterPlane::CreatePlane()

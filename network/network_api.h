@@ -23,6 +23,8 @@
 #include <vector>
 
 #include "standard_datatypes.h"
+#include <DL_Debug/DL_Debug.h>
+
 
 #ifdef _WIN32
 typedef s32 Socket_Type;
@@ -44,13 +46,13 @@ struct Buffer
 struct Connection
 {
 	sockaddr_in m_Connection;
-	u32 m_GID;
+	GUID m_GUID;
 };
 
 class NetworkHandle
 {
 public:
-	NetworkHandle() = default;
+	NetworkHandle();
 	bool HasStarted() { return m_HasStarted; }	
 	void CleanUp();
 
@@ -86,15 +88,18 @@ private:
 #ifdef _WIN32 
 	GUID m_GUID;
 #endif
-	u32 m_GID = 0;
 	std::vector<Connection> m_Connections;
-	// sockaddr_in m_Connection; //List of these as host
 };
 
 #define NO_FLAGS 0
+
 template<typename T>
 void NetworkHandle::Send(T message, sockaddr_in target)
 {
+	const size_t size = sizeof(T) + message.m_Stream.size();
+	const char* name = typeid(T).name();
+	LOG_NETWORK("Sending %s message. message size : %llu", name, size);
+
 	message.PackMessage();
 	s32 message_length = (s32)message.m_Stream.size();
 	assert(message_length > 0 && "Message Length was 0");
@@ -104,20 +109,21 @@ void NetworkHandle::Send(T message, sockaddr_in target)
 template<typename T>
 void NetworkHandle::Send(T message, bool exclude_sender)
 {
-	if(!m_IsHost)
-		message.m_GID = m_GID;
+
+	const size_t size = sizeof(T) + message.m_Stream.size();
+	const char* name = typeid(T).name();
+	LOG_NETWORK("Sending %s message. message size : %llu", name, size);
+	
 
 	message.PackMessage();
 	s32 message_length = (s32)message.m_Stream.size();
 	assert(message_length > 0 && "Message Length was 0");
-	for(s32 i = 0; i < m_Connections.size(); i++)
+
+	for(Connection& connection : m_Connections)
 	{
-		if(exclude_sender)
-		{
-			//the message does not contain the same sin_family as the actual connection.
-			if(message.m_GID == m_Connections[i].m_GID)
+		if(exclude_sender && message.m_GUID == connection.m_GUID)
 				continue;
-		}
-		sendto(m_Socket, &message.m_Stream[0], message_length, NO_FLAGS, (sockaddr*)&m_Connections[i].m_Connection, sizeof(m_Connections[i].m_Connection));
+	
+		sendto(m_Socket, &message.m_Stream[0], message_length, NO_FLAGS, (sockaddr*)&connection.m_Connection, sizeof(connection.m_Connection));
 	}
 }

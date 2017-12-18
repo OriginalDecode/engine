@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "ShadowSpotlight.h"
 #include <Utilities.h>
+#include <Engine/Viewport.h>
 
 bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f& direction, float buffer_size)
 {
 	m_BufferSize = buffer_size;
-	m_Viewport = Engine::GetAPI()->CreateViewport(m_BufferSize, m_BufferSize, 0.f, 1.f, 0, 0);
+	m_Viewport = Engine::GetAPI()->CreateViewport((u16)m_BufferSize, (u16)m_BufferSize, 0.f, 1.f, 0, 0);
 
 	m_Camera = new Camera;
 	m_Camera->CreatePerspectiveProjection(m_BufferSize, m_BufferSize, 1.f, 256.f, 90.f);
@@ -23,8 +24,8 @@ bool ShadowSpotlight::Initiate(const CU::Vector3f& position, const CU::Vector3f&
 	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
 	desc.m_TextureFormat = graphics::RGBA16_FLOAT;
 	desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
-	desc.m_Width = m_BufferSize;
-	desc.m_Height = m_BufferSize;
+	desc.m_Width = (s32)m_BufferSize;
+	desc.m_Height = (s32)m_BufferSize;
 
 
 	m_Depth = new Texture;
@@ -86,12 +87,12 @@ void ShadowSpotlight::SetAngle(float angle)
 	m_Camera->SetFOV(angle);
 }
 
-const CU::Matrix44f& ShadowSpotlight::GetOrientation()
+const CU::Matrix44f& ShadowSpotlight::GetOrientation() const
 {
 	return m_Camera->GetOrientation();
 }
 
-const CU::Matrix44f& ShadowSpotlight::GetMVP()
+const CU::Matrix44f ShadowSpotlight::GetMVP() const
 {
 	return (CU::Math::Inverse(m_Camera->GetOrientation()) * m_Camera->GetPerspective());
 }

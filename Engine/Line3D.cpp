@@ -20,7 +20,7 @@ void Line3D::Initiate(int aLineAmount /*= 256*/)
 	CreateBuffer();
 }
 
-void Line3D::Render(LinePoint points[2], const graphics::RenderContext& rc)
+void Line3D::Render(const graphics::RenderContext& rc)
 {
 	PROFILE_FUNCTION(profiler::colors::Green);
 

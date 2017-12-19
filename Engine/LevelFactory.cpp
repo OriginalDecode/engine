@@ -120,9 +120,9 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 	{
 		GraphicsComponent& c = em.AddComponent<GraphicsComponent>(e);
 		ModelInstance instance;
-		instance.m_MaterialKey = Engine::GetInstance()->GetMaterial("default")->GetKey();
+		instance.m_MaterialKey = g_DefaultMaterial; //Engine::GetInstance()->GetMaterial("default")->GetKey(); // this will work
 		instance.m_MaterialFile = "default";
-		instance.m_ModelID = Engine::GetInstance()->GetModel("default")->GetKey();
+		instance.m_ModelID = g_DefaultModel;
 		instance.m_Filename = "default";
 		c.m_Instances.Add(instance);
 		pDweller->AddComponent(&c, TreeDweller::GRAPHICS);

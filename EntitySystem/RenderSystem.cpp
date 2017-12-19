@@ -82,6 +82,8 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 
 			const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * instance.m_Orientation;
 
+			DL_ASSERT_EXP(instance.m_ModelID > 0, "Invalid Model Key!");
+
 			AddRenderCommand(ModelCommand(instance.m_ModelID
 										  , instance.m_MaterialKey
 										  , relative * orientation //could be pre-calculated, and on physical objects this shouldn't even be used if it can be moved.

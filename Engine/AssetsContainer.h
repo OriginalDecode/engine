@@ -15,9 +15,10 @@ class Texture;
 class Sprite;
 class Material;
 
+static u64 g_DefaultModel = Hash("default");
+static u64 g_DefaultMaterial = Hash("default");
 
 struct CompiledShader;
-
 class AssetsContainer
 {
 #ifdef _DEBUG
@@ -40,6 +41,9 @@ public:
 	Effect* GetEffect(u64 key);
 	Model* GetModel(u64 key);
 	Material* GetMaterial(u64 key);
+
+	u64 GetModelKey(const char* path) const;
+
 
 	template<typename T>
 	u64 LoadModel(std::string path, std::string effect_filepath, bool thread = true);

@@ -116,4 +116,6 @@ namespace cl
 		return std::trunc(d * p) / p; // C++11
 	}
 
+	const std::wstring ToWideStr(const std::string& str);
+
 };

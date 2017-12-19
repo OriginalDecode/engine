@@ -287,4 +287,9 @@ namespace cl
 		return buffer;
 	}
 
+	const std::wstring ToWideStr(const std::string& str)
+	{
+		 return std::wstring(str.begin(), str.end()); 
+	}
+
 }

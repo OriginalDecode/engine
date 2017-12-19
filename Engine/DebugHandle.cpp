@@ -180,7 +180,20 @@ namespace debug
 				ImGui::SliderFloat(s.m_Label.c_str(), s.m_Value, s.m_Min, s.m_Max);
 			}
 
+			if (ImGui::Button("save level", ImVec2(100, 25)))
+			{
+				LevelFactory::SaveLevel("data/pbr_level/", "pbr_level.level");
+			}
+
+
 			auto& em = Engine::GetInstance()->GetEntityManager();
+			if (ImGui::Button("Create new Entity"))
+			{
+				Entity e = em.CreateEntity();
+				LevelFactory::CreateEntity(e, em);
+			}
+
+
 
 			ImGui::Separator();
 			ImGui::Text("Hovering : %d", m_CurrEntity);
@@ -207,67 +220,56 @@ namespace debug
 					}
 				}
 
-				static s32 instance_index = -1;
-				ListBox("", &instance_index, m_InstanceLabels);
-				if (instance_index >= 0)
-				{
-					instance = m_ModelInstances[instance_index];
-
-					ImGui::Text("Filename : %s\n", instance->m_Filename.c_str());
-					//ImGui::Text("File Hash : %lu\n", instance->m_ModelID);
-					ImGui::Text("Material : %s\n", instance->m_MaterialFile.c_str());
-
-
-					for (s32 i = 0; i < m_MaterialLabels.size(); i++)
-					{
-						if (m_MaterialLabels[i].find(instance->m_MaterialFile.c_str()) != m_MaterialLabels[i].npos)
-						{
-							s_MaterialIndex = i;
-						}
-					}
-
-
-					if (ImGui::Button("Edit Material", ImVec2(100, 25)))
-						material_prompt = !material_prompt;
-
-					//ImGui::Text("Material Hash : %lu\n", instance->m_MaterialKey);
-
-				}
-
-
-
-				if (ImGui::BeginChild("", ImVec2(250, 100)))
-				{
-
-					if (instance != nullptr)
-					{
-						ImGui::PushItemWidth(300.f);
-						ListBox("", &s_MaterialIndex, m_MaterialLabels);
-
-						u64 hash = m_Materials[s_MaterialIndex]->GetKey();
-						std::string name = m_MaterialLabels[s_MaterialIndex];
+// 				static s32 instance_index = -1;
+// 				ListBox("", &instance_index, m_InstanceLabels);
+// 				if (instance_index >= 0)
+// 				{
+// 					instance = m_ModelInstances[instance_index];
+// 
+// 					ImGui::Text("Filename : %s\n", instance->m_Filename.c_str());
+// 					//ImGui::Text("File Hash : %lu\n", instance->m_ModelID);
+// 					ImGui::Text("Material : %s\n", instance->m_MaterialFile.c_str());
+// 
+// 
+// 					for (s32 i = 0; i < m_MaterialLabels.size(); i++)
+// 					{
+// 						if (m_MaterialLabels[i].find(instance->m_MaterialFile.c_str()) != m_MaterialLabels[i].npos)
+// 						{
+// 							s_MaterialIndex = i;
+// 						}
+// 					}
+// 
+// 
+// 					if (ImGui::Button("Edit Material", ImVec2(100, 25)))
+// 						material_prompt = !material_prompt;
+// 
+// 					//ImGui::Text("Material Hash : %lu\n", instance->m_MaterialKey);
+// 
+// 				}
 
 
-						instance->m_MaterialFile = name;
-						instance->m_MaterialKey = hash;
-					}
+// 
+// 				if (ImGui::BeginChild("", ImVec2(250, 100)))
+// 				{
+// 
+// 					if (instance != nullptr)
+// 					{
+// 						ImGui::PushItemWidth(300.f);
+// 						ListBox("", &s_MaterialIndex, m_MaterialLabels);
+// 
+// 						u64 hash = m_Materials[s_MaterialIndex]->GetKey();
+// 						std::string name = m_MaterialLabels[s_MaterialIndex];
+// 
+// 
+// 						instance->m_MaterialFile = name;
+// 						instance->m_MaterialKey = hash;
+// 					}
+// 
+// 					ImGui::EndChild();
+// 				}
 
-					ImGui::EndChild();
-				}
 
-
-				if (ImGui::Button("save level", ImVec2(100, 25)))
-				{
-					LevelFactory::SaveLevel("data/pbr_level/", "pbr_level.level");
-				}
-
-
-				if (ImGui::Button("Create new Entity"))
-				{
-					Entity e = em.CreateEntity();
-					LevelFactory::CreateEntity(e, em);
-				}
-
+				
 
 
 

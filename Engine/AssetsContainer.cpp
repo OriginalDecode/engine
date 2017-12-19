@@ -45,13 +45,12 @@ void AssetsContainer::Initiate()
 	u64 mod_key = LoadModel<Model>("data/engineassets/cube_100x100.fbx", "Shaders/debug_pbl_instanced.json", false);
 	u64 mat_key = LoadMaterial("Data/Material/mat_default.json");
 
-	m_Models.emplace(Hash("default"), GetModel(mod_key));
-	m_Materials.emplace(Hash("default"), GetMaterial(mat_key));
 
-// 	u64 hash = Hash("default_cube");
-// 	auto it = m_Models.emplace(hash , new Model);
-// 	it.first->second->CreateCube();
+	Model* pModel = GetModel(mod_key);
+	Material* pMaterial = GetMaterial(mat_key);
 
+	m_Models.emplace(g_DefaultModel, pModel);
+	m_Materials.emplace(g_DefaultMaterial, pMaterial);
 #ifndef FINAL
 	m_Watcher = new FileWatcher;
 #endif

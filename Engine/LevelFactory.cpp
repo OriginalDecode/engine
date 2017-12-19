@@ -124,6 +124,7 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		instance.m_MaterialFile = "default";
 		instance.m_ModelID = g_DefaultModel;
 		instance.m_Filename = "default";
+		instance.m_Scale = { 1.f, 1.f, 1.f, 1.f };
 		c.m_Instances.Add(instance);
 		pDweller->AddComponent(&c, TreeDweller::GRAPHICS);
 		debug_flags |= TreeDweller::GRAPHICS;

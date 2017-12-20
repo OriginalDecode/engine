@@ -40,9 +40,8 @@ DebugSystem::~DebugSystem()
 	EventManager::GetInstance()->UnSubscribe(eMessageType::ON_LEFT_CLICK, this);
 }
 
-void DebugSystem::Update(float /*dt*/, bool paused)
+void DebugSystem::Update(float /*dt*/, bool)
 {
-	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.75, 0), "Current Entity : %d", m_CurrentEntity));
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	if (entities.Empty())
 		return;
@@ -55,16 +54,7 @@ void DebugSystem::Update(float /*dt*/, bool paused)
 		RenderBox(debug, translation.myOrientation);
 	}
 
-	return;
-
-	if (m_Engine->GetInputHandle()->GetInputWrapper()->OnRelease(MouseInput::LEFT))
-	{
-		m_Holding = false;
-	}
-
-	m_CurrentEntity = debug::DebugHandle::GetInstance()->GetSelectedEntity();
-	
-	
+	return;	
 }
 
 void DebugSystem::HandleEvent(u64 event, void* data /*= nullptr*/)

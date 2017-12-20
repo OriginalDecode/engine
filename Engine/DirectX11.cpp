@@ -22,7 +22,7 @@ namespace graphics
 	DirectX11::DirectX11(CreateInfo info)
 	{
 		m_CreateInfo = info;
-
+		m_CreateInfo.m_APIName = "D3D11";
 		m_PixelPickDesc.Width = 1;
 		m_PixelPickDesc.Height = 1;
 		m_PixelPickDesc.MipLevels = 1;

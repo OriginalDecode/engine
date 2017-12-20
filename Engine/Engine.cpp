@@ -124,7 +124,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	create_info.m_Instance = instance_handle;
 	create_info.m_WindowWidth = m_Window.GetInnerSize().m_Width;
 	create_info.m_WindowHeight = m_Window.GetInnerSize().m_Height;
-	create_info.m_APIName = "DirectX11";
 
 	m_API = new graphics::DirectX11(create_info);
 	m_API->Initiate();

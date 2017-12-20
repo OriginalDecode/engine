@@ -83,9 +83,6 @@ GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
 
 GBuffer main(VS_OUTPUT input) : SV_Target
 {
-
-
-	
 	float3 _normal = NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
 	float3 nnormal = normalize(input.normal.xyz );
 

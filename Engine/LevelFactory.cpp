@@ -136,7 +136,7 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		c.m_ComponentFlags = debug_flags;
 		c.m_Dweller = pDweller;
 		c.m_MinPoint = CU::Vector4f(Engine::GetInstance()->GetModel(g_DefaultModel)->GetMinPoint(), 1) * CU::Vector4f(1,1,1,1);
-		c.m_MaxPoint = CU::Vector4f(Engine::GetInstance()->GetModel(g_DefaultModel)->GetMinPoint(), 1) * CU::Vector4f(1,1,1,1);
+		c.m_MaxPoint = CU::Vector4f(Engine::GetInstance()->GetModel(g_DefaultModel)->GetMaxPoint(), 1) * CU::Vector4f(1,1,1,1);
 	}
 
 	pDweller->Initiate(e, TreeDweller::STATIC);

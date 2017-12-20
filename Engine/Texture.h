@@ -29,6 +29,7 @@ public:
 	void Initiate(const TextureDesc& desc, bool create_from_texture, const std::string& debug_name);
 	void InitiateAsDepthStencil(s32 width, s32 height, const std::string& debug_name);
 	void InitiateAsRenderTarget(s32 width, s32 height, const std::string& debug_name);
+	void InitiateTextureArray(const char paths[], const char* debug_name);
 
 
 	ITexture2D* GetDepthTexture() const { return m_DepthTexture; }

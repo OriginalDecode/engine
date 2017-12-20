@@ -94,7 +94,7 @@ void PhysicsManager::Update()
 	float frame_time = Engine::GetInstance()->GetDeltaTime();
 	while (frame_time >= (1.f / 60.f))
 	{
-		myDynamicsWorld->stepSimulation(1.f / 60.f, 8);
+		myDynamicsWorld->stepSimulation(1.f / 60.f, 10);
 		frame_time -= (1.f / 60.f);
 	}
 }

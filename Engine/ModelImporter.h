@@ -28,7 +28,6 @@ class aiNode;
 class aiMesh;
 class aiScene;
 
-using _Int32 = int;
 
 class CModelImporter
 {

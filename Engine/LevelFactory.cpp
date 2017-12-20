@@ -131,6 +131,20 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 	}
 
 	{
+		PhysicsComponent& c = em.AddComponent<PhysicsComponent>(e);
+		c.m_Body = Engine::GetInstance()->GetPhysicsManager()->CreateBody();
+
+		Model* pModel = Engine::GetInstance()->GetModel(g_DefaultModel);
+		pModel = pModel->GetChildModels()[0];
+		//auto body = c.m_Body->InitWithMeshCollision(pModel->GetVertexWrapper().GetData(), pModel->GetIndexWrapper().GetData(), pModel->GetIndexWrapper().GetIndexCount(), pModel->GetVertexWrapper().GetVertexCount());
+		auto body = c.m_Body->InitAsBox(0.5, 0.5, 0.5, { 0.f,0.f,0.f });
+		Engine::GetInstance()->GetPhysicsManager()->Add(body);
+		
+		pDweller->AddComponent(&c, TreeDweller::PHYSICS);
+		debug_flags |= TreeDweller::PHYSICS;
+	}
+
+	{
 		DebugComponent& c = em.AddComponent<DebugComponent>(e);
 		pDweller->AddComponent(&c, TreeDweller::DEBUG);
 		c.m_ComponentFlags = debug_flags;
@@ -154,7 +168,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 	const JSONElement& el = entity_reader.GetElement("physics");
 	float object_mass = (float)el["mass"].GetDouble();
 
-	component.myBody = m_PhysicsManager->CreateBody();
+	component.m_Body = m_PhysicsManager->CreateBody();
 	btRigidBody* phys_body = nullptr;
 
 	TranslationComponent& translation_component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
@@ -167,16 +181,16 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 		//RenderComponent& render_component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 		//CModel* model = m_Engine->GetModel(render_component.myModelID);
 
-		phys_body = component.myBody->InitAsBox(200, 100, 100, translation_component.myOrientation.GetPosition());// ->GetVertices(), model->GetIndices()); //InitAsBox(1, 1, 1, { 0,0,0 });
+		phys_body = component.m_Body->InitAsBox(200, 100, 100, translation_component.myOrientation.GetPosition());// ->GetVertices(), model->GetIndices()); //InitAsBox(1, 1, 1, { 0,0,0 });
 
 	}
 	else if (shape == "box")
 	{
-		phys_body = component.myBody->InitAsBox(1, 1, 1, { 0,0,0 });
+		phys_body = component.m_Body->InitAsBox(1, 1, 1, { 0,0,0 });
 	}
 	else if (shape == "sphere")
 	{
-		phys_body = component.myBody->InitAsSphere(
+		phys_body = component.m_Body->InitAsSphere(
 			1, //Radius
 			object_mass, //Mass
 			m_PhysicsManager->GetGravityForce(), //Gravity
@@ -184,7 +198,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 			translation_component.myOrientation.GetPosition()); //Start position
 
 	}
-	component.myBody->SetEntity(entity_id);
+	component.m_Body->SetEntity(entity_id);
 	m_PhysicsManager->Add(phys_body);
 }
 

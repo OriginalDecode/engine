@@ -2,6 +2,6 @@
 #include <Physics/RigidBody.h>
 PhysicsComponent::~PhysicsComponent()
 {
-	delete myBody;
-	myBody = nullptr;
+	delete m_Body;
+	m_Body = nullptr;
 }

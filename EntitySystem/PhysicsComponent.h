@@ -5,7 +5,7 @@ class RigidBody;
 struct PhysicsComponent : public BaseComponent
 {
 	~PhysicsComponent();
-	RigidBody* myBody = nullptr;
+	RigidBody* m_Body = nullptr;
 	/* Data goes here */
 	bool m_IsPlayer = false;
 

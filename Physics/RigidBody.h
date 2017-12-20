@@ -22,7 +22,7 @@ public:
 	btRigidBody* InitAsPlane(const btVector3& aNormal);
 	btRigidBody* InitAsTerrain(std::vector<float> vertices, std::vector<s32> indices);
 	btRigidBody* InitAsSphere(float aRadius, float aMass, float aGravityForce, float anInitialResistance, const CU::Vector3f& aPosition);
-	btRigidBody* InitWithMeshCollision(std::vector<float> vertices, std::vector<s32> indices);
+	btRigidBody* InitWithMeshCollision(s8* const vertices, s8* const indices, const s32 const idx_count, const s32 const vtx_count);
 	btRigidBody* InitAsBox(float width, float height, float depth, CU::Vector3f position);
 
 	void SetResistanceDensity(float aDensity);

@@ -12,6 +12,7 @@
 #include <EntitySystem/GraphicsComponent.h>
 #include <EntitySystem/NetworkComponent.h>
 #include <EntitySystem/PhysicsComponent.h>
+#include <Physics/RigidBody.h>
 #include "NodeEntityManager.h"
 
 #include <EntitySystem/EntityManager.h>
@@ -220,59 +221,6 @@ namespace debug
 					}
 				}
 
-// 				static s32 instance_index = -1;
-// 				ListBox("", &instance_index, m_InstanceLabels);
-// 				if (instance_index >= 0)
-// 				{
-// 					instance = m_ModelInstances[instance_index];
-// 
-// 					ImGui::Text("Filename : %s\n", instance->m_Filename.c_str());
-// 					//ImGui::Text("File Hash : %lu\n", instance->m_ModelID);
-// 					ImGui::Text("Material : %s\n", instance->m_MaterialFile.c_str());
-// 
-// 
-// 					for (s32 i = 0; i < m_MaterialLabels.size(); i++)
-// 					{
-// 						if (m_MaterialLabels[i].find(instance->m_MaterialFile.c_str()) != m_MaterialLabels[i].npos)
-// 						{
-// 							s_MaterialIndex = i;
-// 						}
-// 					}
-// 
-// 
-// 					if (ImGui::Button("Edit Material", ImVec2(100, 25)))
-// 						material_prompt = !material_prompt;
-// 
-// 					//ImGui::Text("Material Hash : %lu\n", instance->m_MaterialKey);
-// 
-// 				}
-
-
-// 
-// 				if (ImGui::BeginChild("", ImVec2(250, 100)))
-// 				{
-// 
-// 					if (instance != nullptr)
-// 					{
-// 						ImGui::PushItemWidth(300.f);
-// 						ListBox("", &s_MaterialIndex, m_MaterialLabels);
-// 
-// 						u64 hash = m_Materials[s_MaterialIndex]->GetKey();
-// 						std::string name = m_MaterialLabels[s_MaterialIndex];
-// 
-// 
-// 						instance->m_MaterialFile = name;
-// 						instance->m_MaterialKey = hash;
-// 					}
-// 
-// 					ImGui::EndChild();
-// 				}
-
-
-				
-
-
-
 
 				ImVec2 inspector_size;
 				inspector_size.x = 350;
@@ -286,9 +234,29 @@ namespace debug
 				{
 
 					ImGui::Text("Entity %d", m_EditEntity);
+					static bool cam_attach = false;
+
+					if (!cam_attach && ImGui::Button("Attatch Camera"))
+						cam_attach = true;
+					else if (ImGui::Button("Detach Camera"))
+						cam_attach = false;
+
 
 
 					Camera* cam = Engine::GetInstance()->GetCamera();
+					if (cam_attach)
+					{
+
+						TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_EditEntity);
+						cam->SetPosition(t.myOrientation.GetPosition() + CU::Vector3f(10.f, 10.f, 10.f));
+
+
+
+
+
+					}
+
+
 					CU::Matrix44f& orientation = CU::Math::Inverse(cam->GetOrientation());
 					CU::Matrix44f& perspective = cam->GetPerspective();
 					CU::Matrix44f& object_matrix = *m_ObjectMatrix;
@@ -309,6 +277,9 @@ namespace debug
 						EditTransform(orientation.myMatrix, perspective.myMatrix, g.m_Instances[0].m_Orientation.myMatrix);
 					}
 
+					PhysicsComponent& phys = em.GetComponent<PhysicsComponent>(m_EditEntity);
+					if(ImGuizmo::IsUsing())
+						phys.m_Body->SetPosition(m_ObjectMatrix->GetPosition());
 
 
 					ImGui::Separator();

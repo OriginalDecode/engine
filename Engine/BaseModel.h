@@ -39,6 +39,8 @@ public:
 	//virtual void AddSurface(Surface* surface) = 0;
 	void SetMaterial(Material* pMaterial) { m_Material = pMaterial; }
 	//Material* GetMaterial() { return m_Material; }
+
+
 protected:
 	virtual void UpdateConstantBuffer(const graphics::RenderContext& rc) = 0;
 	CU::Matrix44f m_Orientation;

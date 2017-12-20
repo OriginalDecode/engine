@@ -31,6 +31,8 @@ public:
 	void ShadowRender(const graphics::RenderContext& rc) override;
 	void ShadowRenderInstanced(const graphics::RenderContext& rc);
 
+
+
 	void AddChild(Model* aChild);
 
 	void SetPosition(const CU::Vector3f& aPosition);

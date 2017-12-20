@@ -28,8 +28,16 @@ void PhysicsSystem::Update(float dt, bool paused)
 		PhysicsComponent& physics = GetComponent<PhysicsComponent>(e);
 
 
-		translation.myOrientation = physics.myBody->GetOrientation();
-		physics.myBody->Update(dt);
+		CU::Matrix44f copy = translation.myOrientation;
+		
+
+		translation.myOrientation = physics.m_Body->GetOrientation();
+		CU::Vector3f force = CU::Math::GetNormalized(translation.myOrientation.GetPosition() - copy.GetPosition());
+		force = { 1.f,0.f,1.f };
+		//if(CU::Math::Length(force) > 0.f)
+
+		physics.m_Body->Update(dt);
+			physics.m_Body->Impulse(force*10.f);
 
 
 	}

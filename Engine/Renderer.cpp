@@ -225,11 +225,11 @@ void Renderer::Render()
 
 	WriteDebugTextures();
 
-	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
-	DrawEntity(m_HoverTexture, hovered, ctx);
+	//const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
+	//DrawEntity(m_HoverTexture, hovered, ctx);
 
-	const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
-	DrawEntity(m_SelectedTexture, selected, ctx);
+	//const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
+	//DrawEntity(m_SelectedTexture, selected, ctx);
 
 #endif
 

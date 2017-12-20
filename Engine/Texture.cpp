@@ -135,3 +135,32 @@ void Texture::InitiateAsRenderTarget(s32 width, s32 height, const std::string& d
 	Initiate(desc, debug_name);
 
 }
+
+void Texture::InitiateTextureArray(const char paths[], const char* debug_name)
+{
+	D3D11_TEXTURE2D_DESC desc;
+	const u32 tex_count = ARRSIZE(paths);
+
+	ID3D11Resource* src[tex_count];
+
+	((ID3D11Texture2D*)src[0])->GetDesc(&desc);
+	
+	/* https://stackoverflow.com/questions/19364012/d3d11-creating-a-cube-map-from-6-images */
+
+	D3D11_TEXTURE2D_DESC arr_desc;
+	arr_desc.Width = 0;
+	arr_desc.Height = 0;
+	arr_desc.MipLevels = 0;
+	arr_desc.ArraySize = tex_count;
+	arr_desc.Format = desc.Format;
+	arr_desc.SampleDesc.Count = 1;
+	arr_desc.SampleDesc.Quality = 0;
+	arr_desc.Usage = D3D11_USAGE_DEFAULT;
+	arr_desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	arr_desc.CPUAccessFlags = 0;
+	arr_desc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+	
+
+
+
+}

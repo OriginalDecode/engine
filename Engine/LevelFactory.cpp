@@ -144,6 +144,7 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		debug_flags |= TreeDweller::PHYSICS;
 	}
 
+#ifdef _DEBUG
 	{
 		DebugComponent& c = em.AddComponent<DebugComponent>(e);
 		pDweller->AddComponent(&c, TreeDweller::DEBUG);
@@ -152,10 +153,13 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		c.m_MinPoint = CU::Vector4f(Engine::GetInstance()->GetModel(g_DefaultModel)->GetMinPoint(), 1) * CU::Vector4f(1,1,1,1);
 		c.m_MaxPoint = CU::Vector4f(Engine::GetInstance()->GetModel(g_DefaultModel)->GetMaxPoint(), 1) * CU::Vector4f(1,1,1,1);
 	}
+#endif
 
 	pDweller->Initiate(e, TreeDweller::STATIC);
 
+#ifdef _DEBUG
 	EventManager::GetInstance()->SendMessage(DebugEvents_AddEntity, pDweller);
+#endif
 }
 
 void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)

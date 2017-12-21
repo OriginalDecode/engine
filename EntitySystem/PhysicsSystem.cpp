@@ -18,9 +18,10 @@ PhysicsSystem::PhysicsSystem(NodeEntityManager& anEntityManager)
 
 void PhysicsSystem::Update(float dt, bool paused)
 {
+#ifdef _DEBUG
 	if (debug::DebugHandle::s_PausePhysics)
 		return;
-
+#endif
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 
 	for (Entity e : entities)

@@ -61,9 +61,9 @@ void Game::Initiate(const std::string& level)
 	CameraHandle::GetInstance()->Initiate(nullptr);
 	m_PauseState.InitState(m_StateStack);
 
-
+#ifdef _DEBUG
 	EventManager::GetInstance()->Subscribe(DebugEvents_AddEntity, this);
-
+#endif
 	bool read_camera = false;
 	if (read_camera)
 	{
@@ -97,11 +97,13 @@ void Game::Render(bool render_through)
 
 void Game::HandleEvent(u64 event, void* data)
 {
+#ifdef _DEBUG
 	if (event == DebugEvents_AddEntity)
 	{
 		TreeDweller* dweller = static_cast<TreeDweller*>(data);
 		m_World.AddDweller(dweller);
 	}
+#endif
 }
 
 void Game::DoStuff()

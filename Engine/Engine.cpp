@@ -309,14 +309,16 @@ u64 Engine::LoadModelA(std::string path, std::string effect, bool threaded)
 
 s32 Engine::PickEntity(Texture* pTexture)
 {
+#ifdef _DEBUG
 	static CU::Vector4f curr;
-
 	if (!ImGui::IsAnyWindowHovered())
 	{
 		if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
 			curr = m_API->PickColor(pTexture);
 	}
 	return (curr.x + curr.y + curr.z);
+#endif
+	return 0;
 }
 
 void Engine::PickEntity()

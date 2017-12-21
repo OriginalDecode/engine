@@ -298,8 +298,12 @@ void Renderer::Render()
 #if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &ctx)
 {
+	return;
 	if (e <= 0)
 		return;
+	
+	static CU::Matrix44f prev;
+	static CU::Matrix44f orientation;
 
 	ctx.ClearRenderTarget(pTex->GetRenderTargetView(), clearcolor::black);
 	ctx.OMSetRenderTargets(1, pTex->GetRenderTargetRef(), nullptr);
@@ -315,10 +319,14 @@ void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &c
 			continue;
 
 		const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(e);
-		CU::Matrix44f orientation = translation.GetOrientation();
+
+		prev = orientation;
+		orientation = translation.GetOrientation();
+
+
 		const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale)  * instance.m_Orientation;
 
-		m_HoverModel->AddOrientation(relative * orientation);
+		m_HoverModel->AddOrientation(relative * prev);
 		m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
 
 	}

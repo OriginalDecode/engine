@@ -16,7 +16,7 @@ RigidBody::~RigidBody()
 
 btRigidBody* RigidBody::InitAsPlane(const btVector3& aNormal)
 {
-	m_Shape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+	m_Shape = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
 	m_MotionState = new btDefaultMotionState();
 	m_Shape->setMargin(0.025f);
 	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, m_MotionState, m_Shape, btVector3(0, 0, 0));
@@ -161,23 +161,24 @@ void RigidBody::Update(float deltaTime)
 
 	const float v = 10.f;
 
-	if (myVelocity.x > v)
+	if (myVelocity.x >= v)
 		myVelocity.x = v;
-	if (myVelocity.x < -v)
+	if (myVelocity.x <= -v)
 		myVelocity.x = -v;
 
 
-	if (myVelocity.y > v)
+	if (myVelocity.y >= v)
 		myVelocity.y = v;
-	if (myVelocity.y < -v)
+	if (myVelocity.y <= -v)
 		myVelocity.y = -v;
 
-	if (myVelocity.z > v)
+	if (myVelocity.z >= v)
 		myVelocity.z = v;
-	if (myVelocity.z < -v)
+	if (myVelocity.z <= -v)
 		myVelocity.z = -v;
 
 	myBody->setLinearVelocity(btVector3(myVelocity.x, myVelocity.y, myVelocity.z));
+	//m_MotionState->l
 }
 
 btRigidBody* RigidBody::GetBody()
@@ -188,8 +189,9 @@ btRigidBody* RigidBody::GetBody()
 const CU::Matrix44f& RigidBody::GetOrientation()
 {
 	myWorldTranslation->getOpenGLMatrix(&m_Orientation.myMatrix[0]);
+	
 
-	CU::Vector3f axisX(1.f, 0.f, 0.f);
+	/*CU::Vector3f axisX(1.f, 0.f, 0.f);
 	CU::Vector3f axisY(0.f, 1.f, 0.f);
 	CU::Vector3f axisZ(0.f, 0.f, 1.f);
 
@@ -205,7 +207,7 @@ const CU::Matrix44f& RigidBody::GetOrientation()
 	m_Orientation[6] = axisY.z;
 	m_Orientation[8] = axisZ.x;
 	m_Orientation[9] = axisZ.y;
-	m_Orientation[10] = axisZ.z;
+	m_Orientation[10] = axisZ.z;*/
 
 	return m_Orientation;
 }

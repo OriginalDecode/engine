@@ -22,6 +22,7 @@ void PhysicsSystem::Update(float dt, bool paused)
 		return;
 
 	const CU::GrowingArray<Entity>& entities = GetEntities();
+
 	for (Entity e : entities)
 	{
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);

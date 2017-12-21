@@ -77,9 +77,7 @@ template<typename T>
 u64 AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bool thread /*= true*/)
 {
 	if (!cl::file_exist(path) && path.find("default") != 0)
-	{
 		DL_ASSERT("Failed to find the file!");
-	}
 
 	u64 hash = Hash(path.c_str());
 

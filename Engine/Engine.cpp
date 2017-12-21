@@ -244,7 +244,6 @@ void Engine::Update()
 {
 	if (!HasInitiated() && m_Synchronizer->HasQuit())
 		return;
-	DL_MESSAGE("Frame Start");
 	m_DeltaTime = myTimeManager.GetDeltaTime();
 	m_PhysicsManager->Update();
 	if (m_States[(u16)eEngineStates::LOADING] == FALSE)

@@ -8,14 +8,14 @@ struct TranslationComponent : public BaseComponent
 	void SetOrientation(const CU::Matrix44f& orientation)
 	{
 		myOrientation = orientation;
-		auto for_log = myOrientation.GetPosition();
-		DL_MESSAGE("Position : x%.6f, y:%.6f, z:%.6f", for_log.x, for_log.y, for_log.z);
+		//auto for_log = myOrientation.GetPosition();
+		//DL_MESSAGE("Position : x%.6f, y:%.6f, z:%.6f", for_log.x, for_log.y, for_log.z);
 	}
 
 	const CU::Matrix44f& GetOrientation() const 
 	{ 
-		auto for_log = myOrientation.GetPosition();
-		DL_MESSAGE("Position : x%.6f, y:%.6f, z:%.6f", for_log.x, for_log.y, for_log.z);
+		//auto for_log = myOrientation.GetPosition();
+		//DL_MESSAGE("Position : x%.6f, y:%.6f, z:%.6f", for_log.x, for_log.y, for_log.z);
 		return myOrientation; 
 	}
 

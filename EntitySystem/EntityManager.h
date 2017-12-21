@@ -102,10 +102,10 @@ T& EntityManager::GetComponent(Entity aEntity)
 template <typename T>
 void EntityManager::AddSystem()
 {
-		// 	for (NodeEntityManager* manager : m_NodeManagers)
-		// 	{
-		// 		manager->AddSystem<T>();
-		// 	}
+	// 	for (NodeEntityManager* manager : m_NodeManagers)
+	// 	{
+	// 		manager->AddSystem<T>();
+	// 	}
 }
 
 template<typename T>

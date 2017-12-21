@@ -92,8 +92,9 @@ float PhysicsManager::GetGravityForce()
 
 void PhysicsManager::Update()
 {
-	const float step = 1.f / 60.f;
-	m_Accumulation += Engine::GetInstance()->GetDeltaTime();
+	constexpr float step = 1.f / 60.f;
+	const float dt = Engine::GetInstance()->GetDeltaTime();
+	m_Accumulation += dt;
 	while (m_Accumulation >= step)
 	{
 		myDynamicsWorld->stepSimulation(step, 10);

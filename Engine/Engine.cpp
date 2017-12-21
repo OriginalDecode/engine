@@ -39,19 +39,21 @@
 #include <Engine/imgui.h>
 #endif
 #include <Engine/AssetFactory.h>
+#include <network/NetworkManager.h>
 
-#define REGISTERCOMPONENT(x) x,
-enum RegisteredComponents
-{
-#include "Components.h"
-};
-#undef REGISTERCOMPONENT
 
-#define REGISTERCOMPONENT(x) #x,
-const char* RegisteredComponentsStr[] = {
-#include "Components.h"
-};
-#undef REGISTERCOMPONENT
+// #define REGISTERCOMPONENT(x) x,
+// enum RegisteredComponents
+// {
+// #include "Components.h"
+// };
+// #undef REGISTERCOMPONENT
+// 
+// #define REGISTERCOMPONENT(x) #x,
+// const char* RegisteredComponentsStr[] = {
+// #include "Components.h"
+// };
+// #undef REGISTERCOMPONENT
 
 bool Engine::HasInitiated()
 {
@@ -174,8 +176,9 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 								EntityManager::DEBUG );
 
 
+
 #if !defined(_FINAL) && !defined(_PROFILE)
-	//m_EntityManager.AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
+	m_EntityManager.AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
 #endif
 #ifndef _EDITOR
 	m_EntityManager.AddSystem<PhysicsSystem>();
@@ -183,11 +186,13 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_EntityManager.AddSystem<RenderSystem>();
 	m_EntityManager.AddSystem<LightSystem>();
 	//m_EntityManager.AddSystem<InputSystem>();
-	//m_EntityManager.AddSystem<NetworkSystem>();
+	m_EntityManager.AddSystem<NetworkSystem>();
 #ifndef _EDITOR
 	//m_EntityManager.AddSystem<AISystem>();
 #endif 
 	//m_EntityManager.AddSystem<CameraSystem>();
+
+	m_NetManager = new network::NetworkManager;
 
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();

@@ -29,10 +29,11 @@
   <ItemGroup>
     <ClInclude Include="ChatMessage.h" />
     <ClInclude Include="ConnectMessage.h" />
+    <ClInclude Include="NetEntityData.h" />
     <ClInclude Include="NetIncludes.h" />
     <ClInclude Include="NetMessage.h" />
     <ClInclude Include="NetMessageTypes.h" />
-    <ClInclude Include="network_api.h" />
+    <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="RegisterNetEnums.h" />
     <ClInclude Include="serialize.h" />
     <ClInclude Include="standard_datatypes.h" />
@@ -42,7 +43,7 @@
     <ClCompile Include="ChatMessage.cpp" />
     <ClCompile Include="ConnectMessage.cpp" />
     <ClCompile Include="NetMessage.cpp" />
-    <ClCompile Include="network_api.cpp" />
+    <ClCompile Include="NetworkManager.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F98B4219-1F23-456A-AFD7-A5C39DE4784A}</ProjectGuid>

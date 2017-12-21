@@ -33,6 +33,8 @@
 #include <PostMaster/EventManager.h>
 #endif
 
+#include <network/NetworkManager.h>
+
 void LevelFactory::Initiate()
 {
 	m_Engine = Engine::GetInstance();
@@ -105,11 +107,14 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	pDweller->Initiate(e, TreeDweller::STATIC);
 }
 
+
+//https://stackoverflow.com/questions/6849287/c-callback-how-to-decouple-the-call-back-type
 void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 {
 	//m_DwellerList.Add(new TreeDweller);
 	TreeDweller* pDweller = new TreeDweller; // m_DwellerList.GetLast();
 	s32 debug_flags = 0;
+	Engine* engine = Engine::GetInstance();
 
 	{
 		TranslationComponent& c = em.AddComponent<TranslationComponent>(e);
@@ -132,26 +137,42 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 
 	{
 		PhysicsComponent& c = em.AddComponent<PhysicsComponent>(e);
-		c.m_Body = Engine::GetInstance()->GetPhysicsManager()->CreateBody();
+		c.m_Body = engine->GetPhysicsManager()->CreateBody();
 
-		Model* pModel = Engine::GetInstance()->GetModel(g_DefaultModel);
+		Model* pModel = engine->GetModel(g_DefaultModel);
 		pModel = pModel->GetChildModels()[0];
 		//auto body = c.m_Body->InitWithMeshCollision(pModel->GetVertexWrapper().GetData(), pModel->GetIndexWrapper().GetData(), pModel->GetIndexWrapper().GetIndexCount(), pModel->GetVertexWrapper().GetVertexCount());
 		auto body = c.m_Body->InitAsBox(0.5, 0.5, 0.5, { 0.f,0.f,0.f });
-		Engine::GetInstance()->GetPhysicsManager()->Add(body);
+		engine->GetPhysicsManager()->Add(body);
 		
 		pDweller->AddComponent(&c, TreeDweller::PHYSICS);
 		debug_flags |= TreeDweller::PHYSICS;
 	}
 
+	{
+		//This is only if the entity is local.
+		NetworkComponent& c = em.AddComponent<NetworkComponent>(e);
+		network::CreateGUID(&c.m_GUID);
+		network::NetworkManager* pNet = engine->GetNetworkManager();
+		c.m_Owner = pNet->GetGUID();
+		pDweller->AddComponent(&c, TreeDweller::NETWORK);
+		debug_flags |= TreeDweller::NETWORK;
+
+		TranslationComponent& translation = em.GetComponent<TranslationComponent>(e);
+
+		pNet->RegisterCallback(c.m_GUID, &translation.SetPosition);
+
+
+
+	}
 #ifdef _DEBUG
 	{
 		DebugComponent& c = em.AddComponent<DebugComponent>(e);
 		pDweller->AddComponent(&c, TreeDweller::DEBUG);
 		c.m_ComponentFlags = debug_flags;
 		c.m_Dweller = pDweller;
-		c.m_MinPoint = CU::Vector4f(Engine::GetInstance()->GetModel(g_DefaultModel)->GetMinPoint(), 1) * CU::Vector4f(1,1,1,1);
-		c.m_MaxPoint = CU::Vector4f(Engine::GetInstance()->GetModel(g_DefaultModel)->GetMaxPoint(), 1) * CU::Vector4f(1,1,1,1);
+		c.m_MinPoint = CU::Vector4f(engine->GetModel(g_DefaultModel)->GetMinPoint(), 1) * CU::Vector4f(1,1,1,1);
+		c.m_MaxPoint = CU::Vector4f(engine->GetModel(g_DefaultModel)->GetMaxPoint(), 1) * CU::Vector4f(1,1,1,1);
 	}
 #endif
 

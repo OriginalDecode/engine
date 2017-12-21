@@ -1,6 +1,5 @@
 #pragma once
 #include "../Include/hash/EngineEvents.h"
-#include <network/network_api.h>
 
 #include <CommonLib/Math/Vector/Vector.h>
 #include <CommonLib/Threadpool.h>
@@ -53,6 +52,11 @@ class Sprite;
 class InputHandle;
 class PhysicsManager;
 class Material;
+
+namespace network
+{
+	class NetworkManager;
+};
 
 class Engine
 {
@@ -139,12 +143,12 @@ public:
 
 	bool IsWindowActive() { return m_Window.IsWindowActive(); }
 
-	//_________________________________________
-	// Get Systems
 	Synchronizer* GetSynchronizer();
 	EntityManager& GetEntityManager() { return m_EntityManager; }
 	PhysicsManager* GetPhysicsManager() { return m_PhysicsManager; }
 	Threadpool& GetThreadpool() { return m_Threadpool; }
+	network::NetworkManager* GetNetworkManager() { return m_NetManager; }
+
 
 	//_________________________________________
 	// Gets
@@ -235,7 +239,7 @@ private:
 	Synchronizer* m_Synchronizer     = nullptr;
 	Renderer* m_Renderer             = nullptr;
 	Camera* m_Camera                 = nullptr;
-
+	network::NetworkManager* m_NetManager = nullptr;
 
 
 	AssetsContainer* myAssetsContainer = nullptr;

@@ -25,5 +25,3 @@ protected:
 	virtual void Deserialize(StreamType& stream);
 
 };
-
-

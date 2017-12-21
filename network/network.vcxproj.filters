@@ -24,9 +24,6 @@
     <ClInclude Include="NetMessageTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="network_api.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="serialize.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -45,18 +42,24 @@
     <ClInclude Include="RegisterNetEnums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NetEntityData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetMessage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="network_api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ChatMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ConnectMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -5,6 +5,11 @@
 struct TranslationComponent : public BaseComponent
 {
 
+	void SetPosition(const CU::Vector3f& pos)
+	{
+		myOrientation.SetPosition(pos);
+	}
+
 	void SetOrientation(const CU::Matrix44f& orientation)
 	{
 		myOrientation = orientation;

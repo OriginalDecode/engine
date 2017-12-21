@@ -6,7 +6,6 @@
 #include "../EntitySystem/TranslationComponent.h"
 #include "PauseState.h"
 #include <PostMaster/Subscriber.h>
-#include <network/network_api.h>
 class Synchronizer;
 class Engine;
 class CMousePicker;
@@ -47,7 +46,6 @@ private:
 
 	World m_World;
 	CPauseState m_PauseState;
-	NetworkHandle m_Handle;
 
 
 	CU::Vector3f pointHit;

@@ -1,24 +1,30 @@
 #include "ConnectMessage.h"
 
 ConnectMessage::ConnectMessage(s32 message_id, std::string connect_message)
+	: NetMessage((eNetMessageType)message_id)
+	, m_ConnectMessage(connect_message)
 {
-	m_MessageType = message_id;
-	m_ConnectMessage = connect_message;
 }
 
 ConnectMessage::ConnectMessage(s32 message_id, std::string connect_message, GUID guid)
+	: NetMessage((eNetMessageType)message_id)
+	, m_ConnectMessage(connect_message)
 {
-	m_MessageType = message_id;
-	m_ConnectMessage = connect_message;
 	m_GUID = guid;
 }
 
-ConnectMessage::ConnectMessage(s32 message_id)
+ConnectMessage::ConnectMessage(s32 message_id, GUID guid)
+	: NetMessage((eNetMessageType)message_id)
 {
-    m_MessageType = message_id;
+	m_GUID = guid;
 }
 
 
+
+ConnectMessage::ConnectMessage()
+	: NetMessage(eNetMessageType::REQUEST_CONNECTION)
+{
+}
 
 void ConnectMessage::Serialize(StreamType& stream)
 {

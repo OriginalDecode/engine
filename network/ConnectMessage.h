@@ -4,8 +4,8 @@
 class ConnectMessage : public NetMessage
 {
 public:
-    ConnectMessage() = default;
-    ConnectMessage(s32 message_id);
+	ConnectMessage();
+    ConnectMessage(s32 message_id, GUID guid);
     ConnectMessage(s32 message_id, std::string connect_message);
     ConnectMessage(s32 message_id, std::string connect_message, GUID guid);
     

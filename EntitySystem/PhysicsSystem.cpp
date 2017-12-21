@@ -27,6 +27,12 @@ void PhysicsSystem::Update(float dt, bool paused)
 	for (Entity e : entities)
 	{
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
+		if (translation.m_UpdatedOnNetwork)
+		{
+			translation.m_UpdatedOnNetwork = false;
+			continue;
+		}
+
 		PhysicsComponent& physics = GetComponent<PhysicsComponent>(e);
 
 		translation.SetOrientation(physics.m_Body->GetOrientation());

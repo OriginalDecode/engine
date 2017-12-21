@@ -8,7 +8,7 @@
 class NetMessage
 {
 public:
-	NetMessage() = default;
+	NetMessage(eNetMessageType type);
 	virtual ~NetMessage(); //set to default in .cpp
 	void PackMessage();
 	void UnpackMessage(s8* message, s32 length);

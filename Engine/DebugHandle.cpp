@@ -23,6 +23,7 @@
 #include "ImGuizmo.h"
 #include <PostMaster/EventManager.h>
 #include <hash/DebugEvents.h>
+#include <network/NetworkManager.h>
 namespace debug
 {
 	void EditTransform(const float *cameraView, float *cameraProjection, float* matrix)
@@ -123,6 +124,7 @@ namespace debug
 	DebugHandle::DebugHandle()
 	{
 		EventManager* mgr = EventManager::GetInstance();
+		mgr->Subscribe("create_entity", this);
 		//mgr->Subscribe(DebugEvents_OnRightClick, this);
 	}
 
@@ -188,15 +190,28 @@ namespace debug
 
 
 			auto& em = Engine::GetInstance()->GetEntityManager();
-			if (ImGui::Button("Create new Entity"))
+			if (Engine::GetInstance()->GetNetworkManager()->IsHost())
 			{
-				Entity e = em.CreateEntity();
-				LevelFactory::CreateEntity(e, em);
+				if (ImGui::Button("Create new Entity"))
+				{
+					Entity e = em.CreateEntity();
+					LevelFactory::CreateEntity(e, em);
+					//Engine::GetInstance()->GetNetworkManager()->Send(NetCreateEntity());
+				}
+
+				if (ImGui::Button("Pause Physics"))
+				{
+					s_PausePhysics = !s_PausePhysics;
+				}
+			}
+			if(ImGui::Button("Host Network"))
+			{
+				Engine::GetInstance()->GetNetworkManager()->Host(1313);
 			}
 
-			if (ImGui::Button("Pause Physics"))
+			if (ImGui::Button("Connect Network"))
 			{
-				s_PausePhysics = !s_PausePhysics;
+				Engine::GetInstance()->GetNetworkManager()->Connect("127.0.0.1", 1313);
 			}
 
 
@@ -496,6 +511,23 @@ namespace debug
 		{
 			//i know what to do
 		}
+		else if (event == Hash("create_entity"))
+		{
+			Engine* engine = Engine::GetInstance();
+			Entity e = engine->GetEntityManager().CreateEntity();
+			LevelFactory::CreateEntity(e, engine->GetEntityManager());
+			NetworkComponent& c = engine->GetEntityManager().GetComponent<NetworkComponent>(e);
+
+			GUID* d = static_cast<GUID*>(data);
+			c.m_GUID = *d;
+
+			TranslationComponent& t = engine->GetEntityManager().GetComponent<TranslationComponent>(e);
+			engine->GetNetworkManager()->AddReplicant(c.m_GUID, &t);
+		
+
+		}
+
+
 	}
 
 };

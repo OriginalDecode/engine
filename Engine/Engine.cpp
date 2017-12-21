@@ -131,6 +131,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_API->Initiate();
 
 
+	EventManager::Create();
 #if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::Create();
 #endif
@@ -139,7 +140,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	myAssetsContainer = new AssetsContainer;
 	myAssetsContainer->Initiate();
 	Randomizer::Create();
-	EventManager::Create();
 	m_CurrentSampler = graphics::MSAA_x16;
 	
 
@@ -196,6 +196,11 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();
+
+
+
+
+
 	return true;
 }
 
@@ -205,6 +210,7 @@ bool Engine::CleanUp()
 	debug::DebugHandle::Destroy();
 #endif
 	AssetFactory::Destroy();
+	SAFE_DELETE(m_NetManager);
 
 	m_InputHandle->CleanUp();
 	SAFE_DELETE(m_InputHandle);
@@ -257,7 +263,7 @@ void Engine::Update()
 		myAssetsContainer->Update();
 	}
 	
-
+	m_NetManager->Update();
 	m_Threadpool.Update();
 #if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::GetInstance()->Update();

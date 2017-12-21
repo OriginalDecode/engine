@@ -1,5 +1,10 @@
 #include "NetMessage.h"
 
+NetMessage::NetMessage(eNetMessageType type)
+{
+	m_MessageType = type;
+}
+
 NetMessage::~NetMessage() = default;
 
 void NetMessage::PackMessage()

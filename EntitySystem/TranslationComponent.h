@@ -2,7 +2,7 @@
 #include "Math/Matrix/Matrix44.h"
 #include "BaseComponent.h"
 #include <CommonLib/Utilities.h>
-struct TranslationComponent : public BaseComponent
+struct TranslationComponent : public BaseComponent, public NetReplicate
 {
 
 	void SetPosition(const CU::Vector3f& pos)
@@ -30,6 +30,9 @@ struct TranslationComponent : public BaseComponent
 
 	void Deserialize(const rapidjson::Value& value);
 	CU::Matrix44f myOrientation;
+
+	void OnNotify(eNetMessageType type, void* pData) override;
+	bool m_UpdatedOnNetwork = false;
 private:
 
 };

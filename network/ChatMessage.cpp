@@ -1,9 +1,9 @@
 #include "ChatMessage.h"
 
 ChatMessage::ChatMessage(std::string message)
+	: NetMessage(CHAT_MESSAGE)
+	, m_ChatMessage(message)
 {
-	m_MessageType = CHAT_MESSAGE;
-	m_ChatMessage = message;
 }
 
 void ChatMessage::Serialize(StreamType& stream)

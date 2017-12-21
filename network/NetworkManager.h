@@ -25,7 +25,8 @@
 
 #include "standard_datatypes.h"
 #include <DL_Debug/DL_Debug.h>
-
+#include <functional>
+#include <CommonLib/DataStructures/GrowingArray.h>
 #ifdef _WIN32
 typedef s32 Socket_Type;
 #else
@@ -34,6 +35,10 @@ typedef __socket_type Socket_Type;
 typedef s32 Socket;
 typedef s32 Socket_Protocol;
 typedef s32 IP_Version;
+namespace std
+{
+	class thread;
+};
 
 struct Buffer
 {
@@ -48,12 +53,20 @@ struct Connection
 	sockaddr_in m_Connection;
 	GUID m_GUID;
 };
-
-
-
-typedef void(*callback)(void*);
+struct NetReplicate;
 namespace network
 {
+	struct GUIDCompare
+	{
+		bool operator()(const GUID& lh, const GUID& rh) const
+		{
+			return memcmp(&lh, &rh, sizeof(rh)) < 0;
+		}
+
+
+	};
+
+
 	void CreateGUID(GUID* pGUID);
 
 
@@ -87,17 +100,20 @@ namespace network
 		static s32 ReadType(const Buffer& buffer);
 		const GUID& GetGUID() const { return m_GUID; }
 
+		void Update();
 
-		void RegisterCallback(GUID guid, callback* _callback);
+		void AddReplicant(GUID guid, NetReplicate* to_replicate);
 
 	private:
+		void HandleConnectionRequest(Buffer& buffer);
 
 		u8 m_CurrentBuffer = 0;
+		volatile bool m_IsDone = false;
+		std::thread* m_Recieve = nullptr;
 
-
-		//CU::GrowingArray<NetMessage> m_Messages;
+		CU::GrowingArray<Buffer> m_Messages[2];
 		
-		std::map<GUID, std::vector<callback*>> m_Callbacks;
+		std::map<GUID, std::vector<NetReplicate*>, GUIDCompare> m_Replicants;
 
 
 

@@ -11,24 +11,73 @@
 #define INVALID_SOCKET ~0
 #endif
 
-#include "ConnectMessage.h"
 
+#include <thread>
+#include <EntitySystem/BaseComponent.h>
+#include <engine/Synchronizer.h>
+#include <engine/Engine.h>
+#include <Postmaster/EventManager.h>
+
+#include "ConnectMessage.h"
+#include "NetEntityData.h"
+#include "NetCreateEntity.h"
 
 namespace network
 {
 	NetworkManager::NetworkManager()
 	{
 		network::CreateGUID(&m_GUID);
+		m_Recieve = new std::thread([&]() {
+			Synchronizer* pSync = Engine::GetInstance()->GetSynchronizer();
+			while (true)
+			{
+				if(m_Connections.size() <= 0)
+					std::this_thread::yield();
+
+				Buffer buffer = Receive();
+				m_Messages[m_CurrentBuffer ^ 1].Add(buffer);
+			}
+		});
 	}
 
 	void NetworkManager::CleanUp()
 	{
+		m_Recieve->join();
+		delete m_Recieve;
 #ifdef _WIN32
 		closesocket(m_Socket);
 		WSACleanup();
 #else
 		close(m_Socket);
 #endif
+	}
+
+	void NetworkManager::HandleConnectionRequest(Buffer& buffer)
+	{
+		if (!m_IsHost)
+			return;
+
+		printf("Connection Requested!\n");
+		if (m_Connections.size() < 8)
+		{
+			ConnectMessage data;
+			data.UnpackMessage(buffer.m_Buffer, buffer.m_Length);
+
+
+			Connection new_connection;
+			new_connection.m_Connection = buffer.m_Sender;
+			new_connection.m_GUID = data.m_GUID;
+
+
+			AddConnection(new_connection);
+			Send(ConnectMessage(CONNECTION_ACCEPTED, "Welcome to the server!"), new_connection.m_Connection);
+			printf("Connection Accepted\n");
+		}
+		else
+		{
+			Send(ConnectMessage(CONNECTION_REJECTED, "Server full"), buffer.m_Sender);
+			printf("Connection Rejected\n");
+		}
 	}
 
 	s32 NetworkManager::InitiateWSAData()
@@ -55,6 +104,11 @@ namespace network
 		m_SocketProtocol = IPPROTO_UDP;
 		m_Socket = (Socket)socket(m_IPVersion, m_SocketType, m_SocketProtocol);
 #ifdef _WIN32
+		DWORD non_blocking = 1;
+		if (ioctlsocket(m_Socket, FIONBIO, &non_blocking) != 0)
+		{
+			assert(false && "failed to makke nonblocking");
+		}
 		//Setup nonblocking socket for windows.
 #else
 		fcntl(m_Socket, F_SETFL, O_NONBLOCK);
@@ -73,8 +127,8 @@ namespace network
 
 		bool connected = false;
 		bool has_respons = false;
-		printf("\nSending connection requset to server...");
-		Send(ConnectMessage(REQUEST_CONNECTION), connection.m_Connection);
+		printf("\nSending connection request to server...");
+		Send(ConnectMessage(REQUEST_CONNECTION, m_GUID), connection.m_Connection);
 
 		while (has_respons == false)
 		{
@@ -86,7 +140,6 @@ namespace network
 				printf("\n%s", net_message.m_ConnectMessage.c_str());
 				if (net_message.IsType(CONNECTION_ACCEPTED))
 				{
-
 					connected = true;
 				}
 				else if (net_message.IsType(CONNECTION_REJECTED))
@@ -175,19 +228,62 @@ namespace network
 		return (s32)buffer.m_Buffer[0];
 	}
 
-	void NetworkManager::RegisterCallback(GUID guid, callback* _callback)
+	void NetworkManager::Update()
 	{
-		auto it = m_Callbacks.find(guid);
-		if (it != m_Callbacks.end())
+		for (Buffer message : m_Messages[m_CurrentBuffer])
 		{
-			it->second.push_back(_callback);
+			const s32 type = ReadType(message);
+			switch (type)
+			{
+				case eNetMessageType::REQUEST_CONNECTION:
+				{
+					HandleConnectionRequest(message);
+				} break;
+
+
+				case eNetMessageType::NET_ENTITY_DATA:
+				{
+					NetEntityData data;
+					data.UnpackMessage(message.m_Buffer, message.m_Length);
+
+					for (NetReplicate* replicants : m_Replicants[data.m_GUID])
+					{
+						CU::Vector3f pos(data.x, data.y, data.z);
+						replicants->OnNotify((eNetMessageType)type, (void*)&pos);
+					}
+
+				} break;
+
+				case eNetMessageType::NET_CREATE_ENTITY:
+				{
+					NetCreateEntity data;
+					data.UnpackMessage(message.m_Buffer, message.m_Length);
+					EventManager::GetInstance()->SendMessage("create_entity", &data.m_GUID);
+				} break;
+
+			}
 		}
+		m_Messages[m_CurrentBuffer].RemoveAll();
+		m_CurrentBuffer ^= 1;
+		m_IsDone = true;
+	}
+
+	void NetworkManager::AddReplicant(GUID guid, NetReplicate* to_replicate)
+	{
+		auto it = m_Replicants.find(guid);
+		if (it != m_Replicants.end())
+		{
+			it->second.push_back(to_replicate);
+			return;
+		}
+
+		m_Replicants.emplace(guid, std::vector<NetReplicate*>());
+		m_Replicants.at(guid).push_back(to_replicate);
+
 	}
 
 	void NetworkManager::AddConnection(Connection& client)
 	{
-
-		//client.m_GID = ++m_GID; //server will always have an ID of 0 and will not need to be assigned one ahead of time?
 		m_Connections.push_back(client);
 	}
 

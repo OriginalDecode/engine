@@ -29,6 +29,7 @@
   <ItemGroup>
     <ClInclude Include="ChatMessage.h" />
     <ClInclude Include="ConnectMessage.h" />
+    <ClInclude Include="NetCreateEntity.h" />
     <ClInclude Include="NetEntityData.h" />
     <ClInclude Include="NetIncludes.h" />
     <ClInclude Include="NetMessage.h" />
@@ -42,6 +43,7 @@
   <ItemGroup>
     <ClCompile Include="ChatMessage.cpp" />
     <ClCompile Include="ConnectMessage.cpp" />
+    <ClCompile Include="NetCreateEntity.cpp" />
     <ClCompile Include="NetMessage.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
   </ItemGroup>

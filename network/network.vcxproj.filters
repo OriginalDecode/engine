@@ -48,6 +48,9 @@
     <ClInclude Include="NetEntityData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NetCreateEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetMessage.cpp">
@@ -61,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="NetworkManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NetCreateEntity.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -28,3 +28,14 @@ void TranslationComponent::Deserialize(const rapidjson::Value& value)
 	myOrientation.SetRight(vec_rgt);
 
 }
+
+void TranslationComponent::OnNotify(eNetMessageType type, void* pData)
+{
+	if (type != eNetMessageType::NET_ENTITY_DATA)
+		return;
+
+	CU::Vector3f pos;
+	memcpy(&pos, pData, sizeof(float) * 3);
+	SetPosition(pos);
+	m_UpdatedOnNetwork = true;
+}

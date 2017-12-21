@@ -1,18 +1,17 @@
 #pragma once
 #include "NetMessage.h"
-#include <string.h>
-class ChatMessage : public NetMessage
+
+class NetCreateEntity: public NetMessage
 {
 public:
-	ChatMessage(std::string chat_message);
+	NetCreateEntity();
+	NetCreateEntity(GUID guid);
 
-	std::string m_ChatMessage;
+	GUID m_EntityGUID;
 
-private:
-
+private: 
 	void Serialize(StreamType& stream) override;
 	void Deserialize(StreamType& stream) override;
-
 };
 
 

@@ -34,6 +34,7 @@
 #endif
 
 #include <network/NetworkManager.h>
+#include <network/NetCreateEntity.h>
 
 void LevelFactory::Initiate()
 {
@@ -96,10 +97,10 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 		}
 
 #ifdef _DEBUG
-		
-			CreateDebugComponent(e, false, debug_flags);
-			DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
-			component.m_Dweller = pDweller;
+
+		CreateDebugComponent(e, false, debug_flags);
+		DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
+		component.m_Dweller = pDweller;
 #endif
 
 	}
@@ -111,10 +112,12 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 //https://stackoverflow.com/questions/6849287/c-callback-how-to-decouple-the-call-back-type
 void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 {
+	Engine* engine = Engine::GetInstance();
+	network::NetworkManager* pNet = engine->GetNetworkManager();
+
 	//m_DwellerList.Add(new TreeDweller);
 	TreeDweller* pDweller = new TreeDweller; // m_DwellerList.GetLast();
 	s32 debug_flags = 0;
-	Engine* engine = Engine::GetInstance();
 
 	{
 		TranslationComponent& c = em.AddComponent<TranslationComponent>(e);
@@ -135,6 +138,7 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		debug_flags |= TreeDweller::GRAPHICS;
 	}
 
+	if (pNet->IsHost())
 	{
 		PhysicsComponent& c = em.AddComponent<PhysicsComponent>(e);
 		c.m_Body = engine->GetPhysicsManager()->CreateBody();
@@ -144,7 +148,7 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		//auto body = c.m_Body->InitWithMeshCollision(pModel->GetVertexWrapper().GetData(), pModel->GetIndexWrapper().GetData(), pModel->GetIndexWrapper().GetIndexCount(), pModel->GetVertexWrapper().GetVertexCount());
 		auto body = c.m_Body->InitAsBox(0.5, 0.5, 0.5, { 0.f,0.f,0.f });
 		engine->GetPhysicsManager()->Add(body);
-		
+
 		pDweller->AddComponent(&c, TreeDweller::PHYSICS);
 		debug_flags |= TreeDweller::PHYSICS;
 	}
@@ -152,18 +156,16 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 	{
 		//This is only if the entity is local.
 		NetworkComponent& c = em.AddComponent<NetworkComponent>(e);
-		network::CreateGUID(&c.m_GUID);
-		network::NetworkManager* pNet = engine->GetNetworkManager();
-		c.m_Owner = pNet->GetGUID();
+		if (pNet->IsHost())
+		{
+			network::CreateGUID(&c.m_GUID);
+			c.m_Owner = pNet->GetGUID();
+			Engine::GetInstance()->GetNetworkManager()->Send(NetCreateEntity(c.m_GUID));
+		}
+		
+
 		pDweller->AddComponent(&c, TreeDweller::NETWORK);
 		debug_flags |= TreeDweller::NETWORK;
-
-		TranslationComponent& translation = em.GetComponent<TranslationComponent>(e);
-
-		pNet->RegisterCallback(c.m_GUID, &translation.SetPosition);
-
-
-
 	}
 #ifdef _DEBUG
 	{
@@ -171,8 +173,8 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		pDweller->AddComponent(&c, TreeDweller::DEBUG);
 		c.m_ComponentFlags = debug_flags;
 		c.m_Dweller = pDweller;
-		c.m_MinPoint = CU::Vector4f(engine->GetModel(g_DefaultModel)->GetMinPoint(), 1) * CU::Vector4f(1,1,1,1);
-		c.m_MaxPoint = CU::Vector4f(engine->GetModel(g_DefaultModel)->GetMaxPoint(), 1) * CU::Vector4f(1,1,1,1);
+		c.m_MinPoint = CU::Vector4f(engine->GetModel(g_DefaultModel)->GetMinPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
+		c.m_MaxPoint = CU::Vector4f(engine->GetModel(g_DefaultModel)->GetMaxPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
 	}
 #endif
 
@@ -333,7 +335,7 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 		pAlumMaterial,
 		pCoppMaterial,
 		pMetaMaterial,
-	 };
+	};
 
 	const char* files[] = {
 		"Data/Material/mat_gold.json",
@@ -412,8 +414,8 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 		//memset(buf, 0, sizeof(buf));
 		sprintf_s(buf, "%s%s%d.json", folder.c_str(), _filename.c_str(), e);
 		_writer.String(buf);
-		
-		
+
+
 		writer.StartArray();
 
 		if (entity_manager.HasComponent<TranslationComponent>(e))
@@ -440,9 +442,9 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 			c.Serialize(writer);
 		}
 
-	
+
 		writer.EndArray();
-		
+
 
 		std::ofstream out(buf);
 		out << sb.GetString();
@@ -455,7 +457,7 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 	std::string out_file = folder + filename;
 
 
-	
+
 	std::stringstream ss;
 	ss << _sb.GetString();
 	OutputDebugString(ss.str().c_str());

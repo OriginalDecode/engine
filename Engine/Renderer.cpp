@@ -225,11 +225,11 @@ void Renderer::Render()
 
 	WriteDebugTextures();
 
-	//const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
-	//DrawEntity(m_HoverTexture, hovered, ctx);
+	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
+	DrawEntity(m_HoverTexture, hovered, ctx);
 
-	//const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
-	//DrawEntity(m_SelectedTexture, selected, ctx);
+	const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
+	DrawEntity(m_SelectedTexture, selected, ctx);
 
 #endif
 
@@ -315,7 +315,7 @@ void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &c
 			continue;
 
 		const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(e);
-		CU::Matrix44f orientation = translation.myOrientation;
+		CU::Matrix44f orientation = translation.GetOrientation();
 		const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale)  * instance.m_Orientation;
 
 		m_HoverModel->AddOrientation(relative * orientation);

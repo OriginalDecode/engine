@@ -11,7 +11,12 @@ public:
 	virtual ~CollisionObject() { };
 	void SetEntity(s32 entity_id);
 	s32 GetEntity() const;
+	
 protected:
+
+
+
+
 	s32 m_EntityID;
 	btCollisionShape* m_Shape			= nullptr;
 	btDefaultMotionState* m_MotionState = nullptr;

@@ -18,12 +18,12 @@ btRigidBody* RigidBody::InitAsPlane(const btVector3& aNormal)
 {
 	m_Shape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
 	m_MotionState = new btDefaultMotionState();
+	m_Shape->setMargin(0.025f);
 	btRigidBody::btRigidBodyConstructionInfo bodyInfo(0, m_MotionState, m_Shape, btVector3(0, 0, 0));
 	//bodyInfo.m_friction = 1.5f;
 	//bodyInfo.m_restitution = 1.0f;
 
 	myBody = new btRigidBody(bodyInfo);
-
 	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
 
 	return myBody;
@@ -92,6 +92,7 @@ btRigidBody* RigidBody::InitWithMeshCollision(s8* const vertices, s8* const indi
 
 
 	btTriangleIndexVertexArray* triangle_list = new btTriangleIndexVertexArray(faceCount, locIndices, iStride, vtx_count, vtx, vStride);
+	//btConvexTriangleMeshShape()
 	m_Shape = new btBvhTriangleMeshShape(triangle_list, false, btVector3(0, 0, 0), btVector3(1, 1, 1), true);
 
 
@@ -121,6 +122,7 @@ btRigidBody* RigidBody::InitWithMeshCollision(s8* const vertices, s8* const indi
 btRigidBody* RigidBody::InitAsBox(float width, float height, float depth, CU::Vector3f position)
 {
 	m_Shape = new btBoxShape(btVector3(width, height, depth));
+	m_Shape->setMargin(0.025f);
 	btVector3 pos = btVector3(position.x, position.y, position.z); //initial position
 	m_MotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos));
 	btScalar mass = 10.f;
@@ -152,36 +154,30 @@ void RigidBody::SetPosition(const CU::Vector3f& aPosition)
 
 void RigidBody::Update(float deltaTime)
 {
-	return;
+	btVector3 linear_velocity = myBody->getLinearVelocity();
+	myVelocity.x = linear_velocity.getX();
+	myVelocity.y = linear_velocity.getY();
+	myVelocity.z = linear_velocity.getZ();
 
-	// 	const btTransform& transform = myBody->getWorldTransform();
-	// 	transform;
+	const float v = 10.f;
+
+	if (myVelocity.x > v)
+		myVelocity.x = v;
+	if (myVelocity.x < -v)
+		myVelocity.x = -v;
 
 
+	if (myVelocity.y > v)
+		myVelocity.y = v;
+	if (myVelocity.y < -v)
+		myVelocity.y = -v;
 
+	if (myVelocity.z > v)
+		myVelocity.z = v;
+	if (myVelocity.z < -v)
+		myVelocity.z = -v;
 
-	// 	btVector3 linear_velocity = myBody->getLinearVelocity();
-	// 	myVelocity.x = linear_velocity.getX();
-	// 	myVelocity.y = linear_velocity.getY();
-	// 	myVelocity.z = linear_velocity.getZ();
-	// 
-	// 	if (myVelocity.x > 50.f)
-	// 		myVelocity.x = 50.f;
-	// 	if (myVelocity.x < -50.f)
-	// 		myVelocity.x = -50.f;
-	// 
-	// 
-	// 	if (myVelocity.y > 50.f)
-	// 		myVelocity.y = 50.f;
-	// 	if (myVelocity.y < -50.f)
-	// 		myVelocity.y = -50.f;
-	// 
-	// 	if (myVelocity.z > 50.f)
-	// 		myVelocity.z = 50.f;
-	// 	if (myVelocity.z < -50.f)
-	// 		myVelocity.z = -50.f;
-	// 
-	// 	myBody->setLinearVelocity(btVector3(myVelocity.x, myVelocity.y, myVelocity.z));
+	myBody->setLinearVelocity(btVector3(myVelocity.x, myVelocity.y, myVelocity.z));
 }
 
 btRigidBody* RigidBody::GetBody()
@@ -216,7 +212,11 @@ const CU::Matrix44f& RigidBody::GetOrientation()
 
 void RigidBody::Impulse(const CU::Vector3f& anImpulseVector)
 {
-	myBody->applyForce(btVector3(anImpulseVector.x, anImpulseVector.y, anImpulseVector.z), btVector3(0.f, 0.f, 0.f));
+
+	//btVector3 relPos = hitPoint_in_world_space - rgBody.getCentreOfMassPosition();
+	btVector3 rel_pos = btu::ConvertVector(m_Orientation.GetPosition() - CU::Vector3f(0, 0, 1));
+	myBody->applyImpulse(btu::ConvertVector(anImpulseVector), rel_pos);
+	//myBody->applyForce(btVector3(anImpulseVector.x, anImpulseVector.y, anImpulseVector.z), btVector3(0.f, 0.f, 0.f));
 }
 
 CU::Vector3f RigidBody::GetLinearVelocity()

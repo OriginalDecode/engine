@@ -119,7 +119,7 @@ namespace debug
 
 
 	DebugHandle* DebugHandle::m_Instance = nullptr;
-
+	bool DebugHandle::s_PausePhysics = false;
 	DebugHandle::DebugHandle()
 	{
 		EventManager* mgr = EventManager::GetInstance();
@@ -194,6 +194,11 @@ namespace debug
 				LevelFactory::CreateEntity(e, em);
 			}
 
+			if (ImGui::Button("Pause Physics"))
+			{
+				s_PausePhysics = !s_PausePhysics;
+			}
+
 
 
 			ImGui::Separator();
@@ -248,7 +253,7 @@ namespace debug
 					{
 
 						TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_EditEntity);
-						cam->SetPosition(t.myOrientation.GetPosition() + CU::Vector3f(10.f, 10.f, 10.f));
+						cam->SetPosition2(t.GetOrientation().GetPosition() + CU::Vector3f(10.f, 10.f, 10.f));
 
 
 
@@ -280,6 +285,9 @@ namespace debug
 					PhysicsComponent& phys = em.GetComponent<PhysicsComponent>(m_EditEntity);
 					if(ImGuizmo::IsUsing())
 						phys.m_Body->SetPosition(m_ObjectMatrix->GetPosition());
+
+					const CU::Vector3f linVel = phys.m_Body->GetLinearVelocity();
+					ImGui::Text("Linear Velocity\nx:%.1f\ny:%.1f\nz:%.1f", linVel.x, linVel.y, linVel.z);
 
 
 					ImGui::Separator();

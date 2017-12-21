@@ -80,6 +80,9 @@ float4 main(VS_OUTPUT input) : SV_Target
 {
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
 
+	if(depth.x <= 0)
+		discard;
+
 	int nMips = 0;
 	int width = 0;
 	int height = 0;

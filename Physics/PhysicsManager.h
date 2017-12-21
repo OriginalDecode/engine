@@ -57,5 +57,6 @@ private:
 	CU::GrowingArray<btCollisionObject*> myBodies;
 
 	float m_Gravity = 0.f;
+	float m_Accumulation = 0.f;
 };
 

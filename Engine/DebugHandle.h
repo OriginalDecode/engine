@@ -15,6 +15,7 @@ namespace debug
 	class DebugHandle : public Subscriber
 	{
 	public:
+		static bool s_PausePhysics;
 		static void Create() { m_Instance = new DebugHandle; }
 		static void Destroy() { delete m_Instance; m_Instance = nullptr; }
 		static DebugHandle* GetInstance() { return m_Instance; }

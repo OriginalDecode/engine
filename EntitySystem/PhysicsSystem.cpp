@@ -8,6 +8,8 @@
 
 #include <Engine/Engine.h>
 
+#include <Engine/DebugHandle.h>
+
 PhysicsSystem::PhysicsSystem(NodeEntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, PhysicsComponent>>())
 {
@@ -16,29 +18,19 @@ PhysicsSystem::PhysicsSystem(NodeEntityManager& anEntityManager)
 
 void PhysicsSystem::Update(float dt, bool paused)
 {
-	if (paused)
+	if (debug::DebugHandle::s_PausePhysics)
 		return;
 
 	const CU::GrowingArray<Entity>& entities = GetEntities();
-	for (int i = 0; i < entities.Size(); i++)
+	for (Entity e : entities)
 	{
-		Entity e = entities[i];
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-
 		PhysicsComponent& physics = GetComponent<PhysicsComponent>(e);
 
+		translation.SetOrientation(physics.m_Body->GetOrientation());
 
-		CU::Matrix44f copy = translation.myOrientation;
-		
-
-		translation.myOrientation = physics.m_Body->GetOrientation();
-		CU::Vector3f force = CU::Math::GetNormalized(translation.myOrientation.GetPosition() - copy.GetPosition());
-		force = { 1.f,0.f,1.f };
-		//if(CU::Math::Length(force) > 0.f)
-
+		physics.m_Body->Impulse(CU::Vector3f(0,0,0.5));
 		physics.m_Body->Update(dt);
-			physics.m_Body->Impulse(force*10.f);
-
 
 	}
 }

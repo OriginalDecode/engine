@@ -181,7 +181,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 		//RenderComponent& render_component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
 		//CModel* model = m_Engine->GetModel(render_component.myModelID);
 
-		phys_body = component.m_Body->InitAsBox(200, 100, 100, translation_component.myOrientation.GetPosition());// ->GetVertices(), model->GetIndices()); //InitAsBox(1, 1, 1, { 0,0,0 });
+		phys_body = component.m_Body->InitAsBox(200, 100, 100, translation_component.GetOrientation().GetPosition());// ->GetVertices(), model->GetIndices()); //InitAsBox(1, 1, 1, { 0,0,0 });
 
 	}
 	else if (shape == "box")
@@ -195,7 +195,7 @@ void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity enti
 			object_mass, //Mass
 			m_PhysicsManager->GetGravityForce(), //Gravity
 			scientific_constants::pressure::air_pressure, //Air pressure / resistance
-			translation_component.myOrientation.GetPosition()); //Start position
+			translation_component.GetOrientation().GetPosition()); //Start position
 
 	}
 	component.m_Body->SetEntity(entity_id);
@@ -239,9 +239,9 @@ void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity
 		CU::Vector3f rotation;
 		m_LevelReader.ReadElement(it->value["rotation"], rotation);
 
-		translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rotation.x)) * translation.myOrientation;
-		translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rotation.y)) * translation.myOrientation;
-		translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * translation.myOrientation;
+		//translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rotation.x)) * translation.myOrientation;
+		//translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rotation.y)) * translation.myOrientation;
+		//translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * translation.myOrientation;
 
 		m_LevelReader.ReadElement(it->value["angle"], component.angle);
 		component.angle = cl::DegreeToRad(component.angle);
@@ -334,7 +334,7 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 			translation.z = z_start + s * 15.f;
 			translation.w = 1.f;
 
-			t.myOrientation.SetTranslation(translation);
+			//t.SetOrientation(translation);
 
 			auto v = RANDOM(0, ARRSIZE(material));
 

@@ -175,7 +175,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 
 #if !defined(_FINAL) && !defined(_PROFILE)
-	m_EntityManager.AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
+	//m_EntityManager.AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
 #endif
 #ifndef _EDITOR
 	m_EntityManager.AddSystem<PhysicsSystem>();
@@ -244,20 +244,21 @@ void Engine::Update()
 {
 	if (!HasInitiated() && m_Synchronizer->HasQuit())
 		return;
-
-#if !defined(_PROFILE) && !defined(_FINAL)
-	debug::DebugHandle::GetInstance()->Update();
-#endif
+	DL_MESSAGE("Frame Start");
 	m_DeltaTime = myTimeManager.GetDeltaTime();
+	m_PhysicsManager->Update();
 	if (m_States[(u16)eEngineStates::LOADING] == FALSE)
 	{
 		myTimeManager.Update();
 		myAssetsContainer->Update();
 	}
-	HandleTick();
-	m_Renderer->Render();
-	m_PhysicsManager->Update();
+	
+
 	m_Threadpool.Update();
+#if !defined(_PROFILE) && !defined(_FINAL)
+	debug::DebugHandle::GetInstance()->Update();
+#endif
+	m_Renderer->Render();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::GetInstance()->SetEntity(PickEntity(GetTexture("entity_id")));

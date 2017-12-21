@@ -24,7 +24,7 @@ const CU::Vector3f TreeDweller::GetPosition() const
 	{
 		if (pair.m_Type & TreeDweller::TRANSLATION)
 		{
-			return static_cast<TranslationComponent*>(pair.m_Component)->myOrientation.GetPosition();
+			return static_cast<TranslationComponent*>(pair.m_Component)->GetOrientation().GetPosition();
 		}
 	}
 	return CU::Vector3f();

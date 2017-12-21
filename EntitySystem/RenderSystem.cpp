@@ -33,11 +33,10 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 	//PROFILE_FUNCTION(profiler::colors::Blue);
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	PROFILE_BLOCK("Render : Entity Loop");
-	for (int i = 0; i < entities.Size(); i++)
+	for (Entity e : entities)
 	{
-		Entity e = entities[i];
-		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-		GraphicsComponent& render = GetComponent<GraphicsComponent>(e);
+		const TranslationComponent& translation = GetComponent<TranslationComponent>(e);
+		const GraphicsComponent& render = GetComponent<GraphicsComponent>(e);
 
 #ifdef VISIBLE_CHECK
 		PROFILE_BLOCK("Frustum collision check", profiler::colors::Green);
@@ -73,20 +72,16 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		PROFILE_BLOCK_END;
 #endif
 
-		CU::Matrix44f orientation = translation.myOrientation;
 		
 		for (const ModelInstance& instance : render.m_Instances)
 		{
-			/*if(instance.m_Scale > 0.f)
-				orientation = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * orientation;*/
-
 			const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * instance.m_Orientation;
 
 			DL_ASSERT_EXP(instance.m_ModelID > 0, "Invalid Model Key!");
 
 			AddRenderCommand(ModelCommand(instance.m_ModelID
 										  , instance.m_MaterialKey
-										  , relative * orientation //could be pre-calculated, and on physical objects this shouldn't even be used if it can be moved.
+										  , translation.GetOrientation() //could be pre-calculated, and on physical objects this shouldn't even be used if it can be moved.
 										  , render.m_RenderWireframe
 #ifdef _DEBUG
 										  , e));

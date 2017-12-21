@@ -89,13 +89,15 @@ float PhysicsManager::GetGravityForce()
 	return m_Gravity;
 }
 
+
 void PhysicsManager::Update()
 {
-	float frame_time = Engine::GetInstance()->GetDeltaTime();
-	while (frame_time >= (1.f / 60.f))
+	const float step = 1.f / 60.f;
+	m_Accumulation += Engine::GetInstance()->GetDeltaTime();
+	while (m_Accumulation >= step)
 	{
-		myDynamicsWorld->stepSimulation(1.f / 60.f, 10);
-		frame_time -= (1.f / 60.f);
+		myDynamicsWorld->stepSimulation(step, 10);
+		m_Accumulation -= step;
 	}
 }
 

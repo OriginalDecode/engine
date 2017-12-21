@@ -24,10 +24,10 @@ void NodeEntityManager::Initiate()
 	EntityManager& em = Engine::GetInstance()->GetEntityManager();
 	const s32 flag = em.GetSystemFlag();
 
-	if (flag & EntityManager::RENDER)
-		AddSystem<RenderSystem>();
 	if (flag & EntityManager::PHYSICS)
 		AddSystem<PhysicsSystem>();
+	if (flag & EntityManager::RENDER)
+		AddSystem<RenderSystem>();
 	if (flag & EntityManager::LIGHT)
 		AddSystem<LightSystem>();
 #if !defined(_FINAL) && !defined(_PROFILE)
@@ -88,7 +88,7 @@ void NodeEntityManager::Update(float dt, const CU::GrowingArray<TreeDweller*>& d
 		{
 			TranslationComponent& t = GetComponent<TranslationComponent>(e);
 
-			if (CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.myOrientation.GetPosition()))
+			if (CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.GetOrientation().GetPosition()))
 				m_Components.SetUpdateFlag(e, true);
 			else
 				m_Components.SetUpdateFlag(e, false);

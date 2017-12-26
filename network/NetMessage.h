@@ -2,6 +2,8 @@
 #include "serialize.h"
 #include "NetMessageTypes.h"
 #include "NetIncludes.h"
+#include "Objbase.h"
+
 #define SERIALIZE(stream, type) serialize(type,stream)
 #define DESERIALIZE(stream, type) type = deserialize<decltype(type)>(stream)
 

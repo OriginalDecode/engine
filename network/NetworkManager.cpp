@@ -27,6 +27,7 @@ namespace network
 	NetworkManager::NetworkManager()
 	{
 		network::CreateGUID(&m_GUID);
+
 		m_Recieve = new std::thread([&]() {
 			Synchronizer* pSync = Engine::GetInstance()->GetSynchronizer();
 			while (true)
@@ -258,6 +259,7 @@ namespace network
 				{
 					NetCreateEntity data;
 					data.UnpackMessage(message.m_Buffer, message.m_Length);
+					
 					EventManager::GetInstance()->SendMessage("create_entity", &data.m_GUID);
 				} break;
 

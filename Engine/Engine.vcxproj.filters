@@ -445,6 +445,7 @@
     <ClInclude Include="ImGuizmo.h">
       <Filter>imgui</Filter>
     </ClInclude>
+    <ClInclude Include="uuid.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">

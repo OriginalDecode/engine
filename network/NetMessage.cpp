@@ -22,7 +22,6 @@ void NetMessage::UnpackMessage(s8* message, s32 length)
 		}
 		Deserialize(m_Stream);
 	}
-	//constexpr int s = sizeof(u64);
 }
 
 bool NetMessage::IsType(eNetMessageType message_type)
@@ -33,11 +32,23 @@ bool NetMessage::IsType(eNetMessageType message_type)
 void NetMessage::Serialize(StreamType& stream)
 {
 	SERIALIZE(m_Stream, m_MessageType);
-	SERIALIZE(m_Stream, m_GUID);
+
+	OLECHAR* str;
+	HRESULT hr = StringFromCLSID(m_GUID, &str);
+	assert(hr == S_OK && "Failed to convert to string!");
+	SERIALIZE(m_Stream, str);
+	::CoTaskMemFree(str);
 }
 
 void NetMessage::Deserialize(StreamType& stream)
 {
 	DESERIALIZE(m_Stream, m_MessageType);
-	DESERIALIZE(m_Stream, m_GUID);
+
+	wchar_t* str = new wchar_t[128];
+	DESERIALIZE(m_Stream, str);
+	HRESULT hr = CLSIDFromString(str, &m_GUID);
+	assert(hr == S_OK && "Failed to convert to string!");
+	::CoTaskMemFree(str);
+	delete str;
+
 }

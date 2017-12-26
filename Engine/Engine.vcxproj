@@ -329,6 +329,7 @@
     </ClInclude>
     <ClInclude Include="GizmoBase.h" />
     <ClInclude Include="GizmoShared.h" />
+    <ClInclude Include="uuid.h" />
     <ClInclude Include="HDRPass.h" />
     <ClInclude Include="IGraphicsAPI.h" />
     <ClInclude Include="IGraphicsContext.h" />

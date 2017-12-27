@@ -42,6 +42,8 @@ enum class EUsagePage
 
 Application* application = nullptr;
 static bool s_WindowActive = false;
+static bool s_AppRunning = true;
+
 Engine* engine = nullptr;
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
@@ -55,8 +57,8 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	DL_Debug::Debug::GetInstance()->ActivateFilters(Update_Filter | Render_Filter | Physics_Filter | Resource_Filter | Engine_Filter | Font_Filter | Model_Filter);
 
-	float w = 1920;
-	float h = 1080;
+	float w = 1280;
+	float h = 720;
 	application = new Application;
 
 	Engine::Create();
@@ -74,7 +76,6 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	s_WindowActive = true;
 	//ShowCursor(false);
 	MSG msg;
-	bool applicationIsRunning = true;
 	do
 	{
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -89,13 +90,13 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 		if (msg.message == WM_QUIT || msg.message == WM_CLOSE)
 		{
-			applicationIsRunning = false;
+			s_AppRunning = false;
 			break;
 		}
 
 		if (application->HasQuit() == true)
 		{
-			applicationIsRunning = false;
+			s_AppRunning = false;
 			break;
 		}
 		engine->Update();
@@ -105,7 +106,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 		}*/
 
 
-	} while (applicationIsRunning == true);
+	} while (s_AppRunning == true);
 
 	application->OnExit();
 	delete application;
@@ -169,7 +170,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		application->OnResume();
 		break;
 	case WM_CLOSE:
-		application->OnExit();
+		s_AppRunning = false;
 		/* Unsure that this is needed since I can cleanup when the loop cancel */
 		break;
 	case WM_SYSCOMMAND:

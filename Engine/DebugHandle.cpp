@@ -190,7 +190,7 @@ namespace debug
 
 
 			auto& em = Engine::GetInstance()->GetEntityManager();
-			if (Engine::GetInstance()->GetNetworkManager()->IsHost())
+			if (Engine::GetInstance()->GetNetworkManager() && Engine::GetInstance()->GetNetworkManager()->IsHost())
 			{
 				if (ImGui::Button("Create new Entity"))
 				{

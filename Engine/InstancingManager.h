@@ -4,6 +4,7 @@
 #include <Math/Matrix/Matrix44.h>
 #include <map>
 #include <Engine/Model.h>
+#include <RefPointer.h>
 
 class Material;
 namespace graphics
@@ -13,7 +14,7 @@ namespace graphics
 struct InstanceObject
 {
 	InstanceObject() = default;
-	Model* m_Model = nullptr;
+	RefPointer<Model> m_Model = nullptr;
 	Material* m_Material = nullptr;
 	bool m_Shadowed = false;
 	CU::GrowingArray<GPUModelData> m_GPUData;

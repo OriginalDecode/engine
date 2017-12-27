@@ -143,7 +143,7 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		PhysicsComponent& c = em.AddComponent<PhysicsComponent>(e);
 		c.m_Body = engine->GetPhysicsManager()->CreateBody();
 
-		Model* pModel = engine->GetModel(g_DefaultModel);
+		Model* pModel = engine->GetModel<Model>(g_DefaultModel).GetData();
 		pModel = pModel->GetChildModels()[0];
 		//auto body = c.m_Body->InitWithMeshCollision(pModel->GetVertexWrapper().GetData(), pModel->GetIndexWrapper().GetData(), pModel->GetIndexWrapper().GetIndexCount(), pModel->GetVertexWrapper().GetVertexCount());
 		auto body = c.m_Body->InitAsBox(0.5, 0.5, 0.5, { 0.f,0.f,0.f });
@@ -173,8 +173,8 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		pDweller->AddComponent(&c, TreeDweller::DEBUG);
 		c.m_ComponentFlags = debug_flags;
 		c.m_Dweller = pDweller;
-		c.m_MinPoint = CU::Vector4f(engine->GetModel(g_DefaultModel)->GetMinPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
-		c.m_MaxPoint = CU::Vector4f(engine->GetModel(g_DefaultModel)->GetMaxPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
+		c.m_MinPoint = CU::Vector4f(engine->GetModel<Model>(g_DefaultModel)->GetMinPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
+		c.m_MaxPoint = CU::Vector4f(engine->GetModel<Model>(g_DefaultModel)->GetMaxPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
 	}
 #endif
 
@@ -286,7 +286,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 	if (!isLight && m_EntityManager->HasComponent<GraphicsComponent>(e))
 	{
 		GraphicsComponent& g = m_EntityManager->GetComponent<GraphicsComponent>(e);
-		Model* model = m_Engine->GetModel(g.m_Instances[0].m_Filename.c_str());
+		RefPointer<Model> model = m_Engine->GetModel<Model>(g.m_Instances[0].m_Filename.c_str());
 		CU::Vector4f scale = g.m_Instances[0].m_Scale;
 		if (scale.x <= 0.f && scale.y <= 0.f && scale.z <= 0.f)
 		{

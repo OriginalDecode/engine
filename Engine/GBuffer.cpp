@@ -21,7 +21,7 @@ namespace graphics
 		SAFE_DELETE(m_Depth);
 		SAFE_DELETE(m_Emissive);
 #ifdef _DEBUG
-		SAFE_DELETE(m_EntityIDTexture);
+		//SAFE_DELETE(m_EntityIDTexture); //responsibility moved to AssetsContainer
 #endif
 	}
 

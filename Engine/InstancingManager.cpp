@@ -71,7 +71,7 @@ void InstancingManager::DoInstancing(const graphics::RenderContext& rc, bool sha
 			if (instance.m_GPUData.Empty())
 				continue;
 
-			Model* pModel = instance.m_Model;
+			RefPointer<Model> pModel = instance.m_Model;
 			if (!shadowing)
 				instance.m_Material->Use(pModel->GetEffect());
 

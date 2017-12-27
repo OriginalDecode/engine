@@ -3,6 +3,12 @@
 #include <Engine/Synchronizer.h>
 #include <Engine/profile_defines.h>
 #include <Engine/DebugHandle.h>
+
+RootTreeNode::~RootTreeNode()
+{
+	m_Pool.CleanUp();
+}
+
 void RootTreeNode::Initiate(float halfwidth, Octree* octree)
 {
 	m_HalfWidth = halfwidth;

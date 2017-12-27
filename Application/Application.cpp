@@ -66,7 +66,7 @@ void Application::Update()
 
 		if (!m_States.UpdateCurrentState(deltaTime))
 		{
-			mySynchronizer->Quit();
+			break;
 		}
 
 		//myGame->Update(deltaTime);

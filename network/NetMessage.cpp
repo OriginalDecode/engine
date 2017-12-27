@@ -31,24 +31,24 @@ bool NetMessage::IsType(eNetMessageType message_type)
 
 void NetMessage::Serialize(StreamType& stream)
 {
-	SERIALIZE(m_Stream, m_MessageType);
+	SERIALIZE(stream, m_MessageType);
 
 	OLECHAR* str;
 	HRESULT hr = StringFromCLSID(m_GUID, &str);
 	assert(hr == S_OK && "Failed to convert to string!");
-	SERIALIZE(m_Stream, str);
+	SERIALIZE(stream, str);
 	::CoTaskMemFree(str);
 }
 
 void NetMessage::Deserialize(StreamType& stream)
 {
-	DESERIALIZE(m_Stream, m_MessageType);
-
-	wchar_t* str = new wchar_t[128];
-	DESERIALIZE(m_Stream, str);
-	HRESULT hr = CLSIDFromString(str, &m_GUID);
-	assert(hr == S_OK && "Failed to convert to string!");
-	::CoTaskMemFree(str);
-	delete str;
+	DESERIALIZE(stream, m_MessageType);
+	std::string guid;
+	guid.reserve(60);
+	DESERIALIZE(stream, guid);
+	//HRESULT hr = CLSIDFromString(str, &m_GUID);
+	//assert(hr == S_OK && "Failed to convert to string!");
+	//::CoTaskMemFree(str);
+	//delete str;
 
 }

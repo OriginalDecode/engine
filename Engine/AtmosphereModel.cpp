@@ -7,7 +7,7 @@ AtmosphereModel::~AtmosphereModel()
 {
 	m_Surfaces.DeleteAll();
 	m_Children.DeleteAll();
-	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
+	//Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
 }
 
 void AtmosphereModel::Initiate(const std::string& filename)

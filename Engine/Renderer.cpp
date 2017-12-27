@@ -144,7 +144,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 
 
-	m_WaterPlane = new WaterPlane; //creating this breaks everything.... rip
+	//m_WaterPlane = new WaterPlane; //creating this breaks everything.... rip
 	m_WaterCamera = new Camera;
 	m_WaterCamera->CreatePerspectiveProjection((float)window_size.m_Width, (float)window_size.m_Height, 0.01f, 100.f, 90.f);
 
@@ -164,7 +164,7 @@ Renderer::~Renderer()
 	m_ShadowPass.CleanUp();
 	m_DirectionalShadow.CleanUp();
 
-	SAFE_DELETE(m_WaterPlane);
+	//SAFE_DELETE(m_WaterPlane);
 	SAFE_DELETE(m_WaterCamera);
 	SAFE_DELETE(m_Line);
 	SAFE_DELETE(m_DepthTexture);
@@ -314,8 +314,8 @@ void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &c
 
 	for (const ModelInstance& instance : graphics.m_Instances)
 	{
-		m_HoverModel = engine.GetModel(instance.m_ModelID);
-		if (!m_HoverModel)
+		m_HoverModel = engine.GetModel<Model>(instance.m_ModelID);
+		if (!m_HoverModel.GetData())
 			continue;
 
 		const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(e);
@@ -384,7 +384,7 @@ void Renderer::RenderNonDeferred3DCommands()
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
 		//m_API->SetBlendState(eBlendStates::BLEND_FALSE);
-		Model* model = m_RenderContext.GetEngine().GetModel(command->m_Key);
+		RefPointer<Model> model = m_RenderContext.GetEngine().GetModel<Model>(command->m_Key);
 		model->SetOrientation(command->m_Orientation);
 		//m_API->SetRasterizer(command->m_Wireframe ? eRasterizer::WIREFRAME : eRasterizer::CULL_BACK);
 		model->Render(m_RenderContext);
@@ -413,7 +413,7 @@ void Renderer::Render3DCommands()
 			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
-			Model* model = m_RenderContext.GetEngine().GetModel(command->m_Key);
+			RefPointer<Model> model = m_RenderContext.GetEngine().GetModel<Model>(command->m_Key);
 			model->SetOrientation(command->m_Orientation);
 			model->Render(m_RenderContext);
 		}
@@ -640,7 +640,7 @@ void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32
 	const bool result = (command->m_CommandType == RenderCommand::MODEL);
 	DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
 
-	Model* model = engine.GetModel(command->m_Key);
+	RefPointer<Model> model = engine.GetModel<Model>(command->m_Key);
 
 	
 	InstanceObject new_instance;

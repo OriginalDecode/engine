@@ -34,7 +34,7 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 
 	const VirtualFileSystem& vfs = Engine::GetInstance()->GetVFS();
  	u64 atmosphere = Engine::GetInstance()->LoadModel<AtmosphereModel>(vfs.GetFile("Models/atmosphere.fbx"), "Shaders/skysphere.json", false);
- 	m_OuterSphere = static_cast<AtmosphereModel*>(Engine::GetInstance()->GetModel(atmosphere));
+ 	m_OuterSphere = Engine::GetInstance()->GetModel<Model>(atmosphere);
 
  	m_VertexStruct.m_InnerRadius = m_InnerRadius;
  	m_VertexStruct.m_OuterRadius = m_OuterRadius;

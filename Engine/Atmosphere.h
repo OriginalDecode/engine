@@ -1,10 +1,9 @@
 #pragma once
 #include <DataStructures/GrowingArray.h>
+#include <CommonLib/RefPointer.h>
+
 
 class Camera;
-class DirectX11;
-class Engine;
-class Texture;
 class AtmosphereModel;
 class Atmosphere
 {
@@ -16,9 +15,8 @@ public:
 	void Render(const graphics::RenderContext& rc);
 	void SetLightData(const CU::Vector4f& direction, const CU::Vector4f& position);
 private:
-	Camera* m_Camera							= nullptr;
-	//AtmosphereModel* m_InnerSphere				= nullptr;
-	AtmosphereModel* m_OuterSphere				= nullptr;
+	Camera* m_Camera = nullptr;
+	RefPointer<Model> m_OuterSphere;
 
 	float m_InnerRadius = 0.f;
 	float m_OuterRadius = 0.f;
@@ -36,7 +34,7 @@ private:
 		float m_CameraMagnitude;
 		float m_CameraMagnitude2;
 	} m_PixelStruct;
-	IBuffer* m_PixelBuffer						= nullptr;
+	IBuffer* m_PixelBuffer = nullptr;
 
 	struct cbVertex
 	{
@@ -49,7 +47,7 @@ private:
 		float m_CameraMagnitude;
 		float m_CameraMagnitude2;
 	} m_VertexStruct;
-	IBuffer* m_VertexBuffer						= nullptr;
+	IBuffer* m_VertexBuffer	= nullptr;
 
 	void UpdateCameraData();
 };

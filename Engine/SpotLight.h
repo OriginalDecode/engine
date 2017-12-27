@@ -2,6 +2,7 @@
 #include <Engine/engine_shared.h>
 #include "LightStructs.h"
 #include "VertexWrapper.h"
+#include <CommonLib/RefPointer.h>
 class Camera;
 class LightModel;
 class ShadowSpotlight;
@@ -58,7 +59,8 @@ private:
 		CU::Vector3f m_Direction;
 	} m_Data;
 
-	LightModel* m_Model = nullptr;
+	RefPointer<Model> m_Model;
+
 	ShadowSpotlight* m_ShadowSpotlight = nullptr;
 	SpotlightData myData;
 

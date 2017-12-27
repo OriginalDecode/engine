@@ -1,157 +1,157 @@
-#include "stdafx.h"
+#include "stdafx.h"/*
 #include "GizmoBase.h"
 #include "Surface.h"
 #include "Synchronizer.h"
 #include "RenderCommand.h"
 #include <Math/Vector/Vector.h>
 
-#include <EventManager.h>
-
-void GizmoBase::Initiate(std::string event, eGizmoType type)
-{
-	EventManager::GetInstance()->Subscribe(event, this);
-	
-	m_Type = type;
-
-	if (m_Type == POSITION)
-		m_Active = true;
-
-}
-
-void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction)
-{
-	gizmo_handle.m_Key = Engine::GetInstance()->LoadModel<Model>(model_key.c_str(),
-																 "Shaders/gizmo.json",
-																 true);
-	gizmo_handle.m_DirColor = Engine::GetInstance()->GetTexture(texture_path.c_str());
-	gizmo_handle.m_Model = Engine::GetInstance()->GetModel(gizmo_handle.m_Key);
-
-	CU::GrowingArray<Model*> children = gizmo_handle.m_Model->GetChildModels();
-	for (Model* child : children)
-	{
-		CU::GrowingArray<Surface*>& surfaces = child->GetSurfaces();
-		for (Surface* surface : surfaces)
-		{
-			//I should be able to set a color instead of using a texture??????????
-			//surface->ClearTextures();
-			//surface->AddTexture(gizmo_handle.m_DirColor->GetShaderView(), Effect::DIFFUSE);
-		}
-	}
-	gizmo_handle.direction = direction;
-	gizmo_handle.Initiate();
-}
-
-void GizmoBase::Render()
-{
-	if (!m_Active)
-		return;
-
-	RenderBoxes();
-
-	LinePoint root;
-	LinePoint target;
-	root.position = m_Orientation.GetPosition();
-
-	Engine* engine = Engine::GetInstance();
-	Synchronizer* sync = engine->GetSynchronizer();
-	CU::Vector4f camera_position = engine->GetCamera()->GetPosition();
-	const float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
-	CU::Vector4f scale = CU::Vector4f(distance, distance, distance, 1);
-
-	if (m_Type != ROTATE)
-	{
-		//CU::Matrix44f scale_matrix = CU::Matrix44f::CreateScaleMatrix(scale);
-		CU::Matrix44f t = m_Right.m_Orientation;
-		//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
-		sync->AddRenderCommand(ModelCommandNonDeferred(m_Right.m_Key, t, false));
-		root.color = CU::Vector4f(1, 0, 0, 1);
-		target.position = t.GetPosition();
-		target.color = root.color;
-		sync->AddRenderCommand(LineCommand(root, target, false));
-
-		//__________________________
-
-		t = m_Forward.m_Orientation;
-		//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
-		root.color = CU::Vector4f(0, 0, 1, 1);
-		target.position = t.GetPosition();
-		target.color = root.color;
-		sync->AddRenderCommand(ModelCommandNonDeferred(m_Forward.m_Key, t, false));
-		sync->AddRenderCommand(LineCommand(root, target, false));
-
-		//__________________________
-
-		t = m_Up.m_Orientation;
-		//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
-		root.color = CU::Vector4f(0, 1, 0, 1);
-		target.position = t.GetPosition();
-		target.color = root.color;
-		sync->AddRenderCommand(ModelCommandNonDeferred(m_Up.m_Key, t, false));
-		sync->AddRenderCommand(LineCommand(root, target, false));
-	}
-	//Update();
-}
-
-void GizmoBase::RenderBoxes()
-{
-	m_Up.RenderBox();
-	m_Right.RenderBox();
-	m_Forward.RenderBox();
-}
-
-void GizmoBase::Update()
-{
-	m_Up.Update();
-	m_Right.Update();
-	m_Forward.Update();
-}
-
-void GizmoBase::SetPosition(const CU::Vector3f& position)
-{
-	m_Orientation.SetPosition(position);
-
-	m_Forward.m_Orientation.SetPosition(position);
-	OffsetGizmoHandle(m_Forward);
-
-	m_Up.m_Orientation.SetPosition(position);
-	OffsetGizmoHandle(m_Up);
-
-	m_Right.m_Orientation.SetPosition(position);
-	OffsetGizmoHandle(m_Right);
-}
-
-bool GizmoBase::Inside(const CU::Vector3f& position, GizmoHandle* result)
-{
-	if (m_Forward.Inside(position))
-	{
-		result = &m_Forward;
-		return true;
-	}
-	else if (m_Up.Inside(position))
-	{
-		result = &m_Up;
-		return true;
-	}
-	else if (m_Right.Inside(position))
-	{
-		result = &m_Right;
-		return true;
-	}
-
-	result = nullptr;
-	return false;
-}
-
-void GizmoBase::HandleEvent(u64 event, void* data)
-{
-	if (event == r_down_HASH || event == w_down_HASH || event == e_down_HASH)
-		ToggleActive();
-}
-
-void GizmoBase::OffsetGizmoHandle(GizmoHandle& gizmo_handle)
-{
-	CU::Vector4f right = gizmo_handle.m_Orientation.GetRight();
-	CU::Vector4f position = gizmo_handle.m_Orientation.GetTranslation();
-	position = position + right * gizmo_handle.m_Offset;
-	gizmo_handle.m_Orientation.SetPosition(position);
-}
+#include <EventManager.h>*/
+// 
+// void GizmoBase::Initiate(std::string event, eGizmoType type)
+// {
+// 	EventManager::GetInstance()->Subscribe(event, this);
+// 	
+// 	m_Type = type;
+// 
+// 	if (m_Type == POSITION)
+// 		m_Active = true;
+// 
+// }
+// 
+// void GizmoBase::CreateGizmoHandle(GizmoHandle& gizmo_handle, std::string model_key, const std::string& texture_path, GizmoHandle::eDirection direction)
+// {
+// 	gizmo_handle.m_Key = Engine::GetInstance()->LoadModel<Model>(model_key.c_str(),
+// 																 "Shaders/gizmo.json",
+// 																 true);
+// 	gizmo_handle.m_DirColor = Engine::GetInstance()->GetTexture(texture_path.c_str());
+// 	gizmo_handle.m_Model = Engine::GetInstance()->GetModel(gizmo_handle.m_Key);
+// 
+// 	CU::GrowingArray<Model*> children = gizmo_handle.m_Model->GetChildModels();
+// 	for (Model* child : children)
+// 	{
+// 		CU::GrowingArray<Surface*>& surfaces = child->GetSurfaces();
+// 		for (Surface* surface : surfaces)
+// 		{
+// 			//I should be able to set a color instead of using a texture??????????
+// 			//surface->ClearTextures();
+// 			//surface->AddTexture(gizmo_handle.m_DirColor->GetShaderView(), Effect::DIFFUSE);
+// 		}
+// 	}
+// 	gizmo_handle.direction = direction;
+// 	gizmo_handle.Initiate();
+// }
+// 
+// void GizmoBase::Render()
+// {
+// 	if (!m_Active)
+// 		return;
+// 
+// 	RenderBoxes();
+// 
+// 	LinePoint root;
+// 	LinePoint target;
+// 	root.position = m_Orientation.GetPosition();
+// 
+// 	Engine* engine = Engine::GetInstance();
+// 	Synchronizer* sync = engine->GetSynchronizer();
+// 	CU::Vector4f camera_position = engine->GetCamera()->GetPosition();
+// 	const float distance = CU::Math::Length(m_Orientation.GetTranslation() - camera_position) * 0.5f;
+// 	CU::Vector4f scale = CU::Vector4f(distance, distance, distance, 1);
+// 
+// 	if (m_Type != ROTATE)
+// 	{
+// 		//CU::Matrix44f scale_matrix = CU::Matrix44f::CreateScaleMatrix(scale);
+// 		CU::Matrix44f t = m_Right.m_Orientation;
+// 		//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
+// 		sync->AddRenderCommand(ModelCommandNonDeferred(m_Right.m_Key, t, false));
+// 		root.color = CU::Vector4f(1, 0, 0, 1);
+// 		target.position = t.GetPosition();
+// 		target.color = root.color;
+// 		sync->AddRenderCommand(LineCommand(root, target, false));
+// 
+// 		//__________________________
+// 
+// 		t = m_Forward.m_Orientation;
+// 		//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
+// 		root.color = CU::Vector4f(0, 0, 1, 1);
+// 		target.position = t.GetPosition();
+// 		target.color = root.color;
+// 		sync->AddRenderCommand(ModelCommandNonDeferred(m_Forward.m_Key, t, false));
+// 		sync->AddRenderCommand(LineCommand(root, target, false));
+// 
+// 		//__________________________
+// 
+// 		t = m_Up.m_Orientation;
+// 		//t = CU::Matrix44f::CreateScaleMatrix(scale) * t;
+// 		root.color = CU::Vector4f(0, 1, 0, 1);
+// 		target.position = t.GetPosition();
+// 		target.color = root.color;
+// 		sync->AddRenderCommand(ModelCommandNonDeferred(m_Up.m_Key, t, false));
+// 		sync->AddRenderCommand(LineCommand(root, target, false));
+// 	}
+// 	//Update();
+// }
+// 
+// void GizmoBase::RenderBoxes()
+// {
+// 	m_Up.RenderBox();
+// 	m_Right.RenderBox();
+// 	m_Forward.RenderBox();
+// }
+// 
+// void GizmoBase::Update()
+// {
+// 	m_Up.Update();
+// 	m_Right.Update();
+// 	m_Forward.Update();
+// }
+// 
+// void GizmoBase::SetPosition(const CU::Vector3f& position)
+// {
+// 	m_Orientation.SetPosition(position);
+// 
+// 	m_Forward.m_Orientation.SetPosition(position);
+// 	OffsetGizmoHandle(m_Forward);
+// 
+// 	m_Up.m_Orientation.SetPosition(position);
+// 	OffsetGizmoHandle(m_Up);
+// 
+// 	m_Right.m_Orientation.SetPosition(position);
+// 	OffsetGizmoHandle(m_Right);
+// }
+// 
+// bool GizmoBase::Inside(const CU::Vector3f& position, GizmoHandle* result)
+// {
+// 	if (m_Forward.Inside(position))
+// 	{
+// 		result = &m_Forward;
+// 		return true;
+// 	}
+// 	else if (m_Up.Inside(position))
+// 	{
+// 		result = &m_Up;
+// 		return true;
+// 	}
+// 	else if (m_Right.Inside(position))
+// 	{
+// 		result = &m_Right;
+// 		return true;
+// 	}
+// 
+// 	result = nullptr;
+// 	return false;
+// }
+// 
+// void GizmoBase::HandleEvent(u64 event, void* data)
+// {
+// 	if (event == r_down_HASH || event == w_down_HASH || event == e_down_HASH)
+// 		ToggleActive();
+// }
+// 
+// void GizmoBase::OffsetGizmoHandle(GizmoHandle& gizmo_handle)
+// {
+// 	CU::Vector4f right = gizmo_handle.m_Orientation.GetRight();
+// 	CU::Vector4f position = gizmo_handle.m_Orientation.GetTranslation();
+// 	position = position + right * gizmo_handle.m_Offset;
+// 	gizmo_handle.m_Orientation.SetPosition(position);
+// }

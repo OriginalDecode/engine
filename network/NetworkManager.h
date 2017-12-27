@@ -62,12 +62,10 @@ namespace network
 		{
 			return memcmp(&lh, &rh, sizeof(rh)) < 0;
 		}
-
-
 	};
 
-
 	void CreateGUID(GUID* pGUID);
+
 
 
 	class NetworkManager
@@ -86,7 +84,7 @@ namespace network
 		template<typename T>
 		void Send(T message, bool exclude_sender = true);
 
-		Buffer Receive();
+		void Receive(Buffer& buffer_out);
 
 		bool IsHost() const { return m_IsHost; }
 

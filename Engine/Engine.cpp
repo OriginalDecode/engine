@@ -210,7 +210,9 @@ bool Engine::CleanUp()
 	debug::DebugHandle::Destroy();
 #endif
 	AssetFactory::Destroy();
+	m_NetManager->CleanUp();
 	SAFE_DELETE(m_NetManager);
+	//constexpr int v = sizeof(network::NetworkManager);
 
 	m_InputHandle->CleanUp();
 	SAFE_DELETE(m_InputHandle);
@@ -434,15 +436,6 @@ Effect* Engine::GetEffect(const char* key)
 	return myAssetsContainer->GetEffect(hash);
 }
 
-Model* Engine::GetModel(u64 key)
-{
-	return myAssetsContainer->GetModel(key);
-}
-
-Model* Engine::GetModel(const char* key)
-{
-	return myAssetsContainer->GetModel(Hash(key));
-}
 
 Sprite* Engine::GetSprite(u64 key)
 {

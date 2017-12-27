@@ -18,6 +18,7 @@
 #include <Engine/IGraphicsAPI.h>
 #include <string>
 #include <queue>
+#include <CommonLib/RefPointer.h>
 
 #ifndef _WINDEF_
 struct HINSTANCE__;
@@ -106,14 +107,17 @@ public:
 	// Get Resources
 	Texture* GetTexture(u64 key);
 	Effect* GetEffect(u64 key);
-	Model* GetModel(u64 key);
+
+	template<typename T>
+	RefPointer<T> GetModel(u64 key);
 	Sprite* GetSprite(u64 key);
 	Material* GetMaterial(u64 key);
 
 
 	Texture* GetTexture(const char* key);
 	Effect* GetEffect(const char* key);
-	Model* GetModel(const char* key);
+	template<typename T>
+	RefPointer<T> GetModel(const char* key);
 	Sprite* GetSprite(const char* key);
 	Material* GetMaterial(const char* key);
 
@@ -263,3 +267,14 @@ u64 Engine::LoadModel(const std::string& filepath, std::string effect, bool thre
 	return myAssetsContainer->LoadModel<T>(filepath, effect, thread);
 }
 
+template<typename T>
+RefPointer<T> Engine::GetModel(u64 key)
+{
+	return myAssetsContainer->GetModel<T>(key);
+}
+
+template<typename T>
+RefPointer<T> Engine::GetModel(const char* key)
+{
+	return GetModel<T>(Hash(key));
+}

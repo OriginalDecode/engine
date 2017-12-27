@@ -23,7 +23,7 @@ public:
 	{
 		Engine::GetAPI()->ReleasePtr(m_IndexBuffer);
 		m_IndexBuffer = nullptr;
-		delete m_Data;
+		delete[] m_Data;
 	}
 
 	void SetData(s8* data) { m_Data = data; }

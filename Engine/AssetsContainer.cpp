@@ -13,9 +13,6 @@ AssetsContainer::~AssetsContainer()
 	SAFE_DELETE(m_ShaderFactory);
 	SAFE_DELETE(m_ModelLoader);
 	
-	for (auto it = m_Models.begin(); it != m_Models.end(); it++)
-		SAFE_DELETE(it->second);
-
 	for (auto it = m_Textures.begin(); it != m_Textures.end(); it++)
 		SAFE_DELETE(it->second);
 
@@ -46,10 +43,10 @@ void AssetsContainer::Initiate()
 	u64 mat_key = LoadMaterial("Data/Material/mat_default.json");
 
 
-	Model* pModel = GetModel(mod_key);
+	RefPointer<Model> model = GetModel<Model>(mod_key);
 	Material* pMaterial = GetMaterial(mat_key);
 
-	m_Models.emplace(g_DefaultModel, pModel);
+	m_Models.emplace(g_DefaultModel, model);
 	m_Materials.emplace(g_DefaultMaterial, pMaterial);
 #ifndef FINAL
 	m_Watcher = new FileWatcher;
@@ -76,15 +73,7 @@ Effect* AssetsContainer::GetEffect(u64 key)
 	return nullptr;
 }
 
-Model* AssetsContainer::GetModel(u64 key)
-{
-	auto it = m_Models.find(key);
 
-	if (it != m_Models.end())
-		return it->second;
-
-	return nullptr;
-}
 
 Material* AssetsContainer::GetMaterial(u64 key)
 {
@@ -121,7 +110,8 @@ void AssetsContainer::AddTexture(Texture* pTexture, u64 key)
 {
 	if (m_Textures.find(key) == m_Textures.end())
 	{
-		m_Textures.insert(std::pair<u64, Texture*>(key, pTexture));
+		m_Textures.emplace(key, pTexture);
+		//m_Textures.insert(std::pair<u64, Texture*>(key, pTexture));
 	}
 }
 

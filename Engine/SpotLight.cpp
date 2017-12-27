@@ -27,12 +27,12 @@ const float s270 = sinf(cl::DegreeToRad(270.f));
 SpotLight::SpotLight()
 {
 	Engine* pEngine = Engine::GetInstance();
-	u64 key = pEngine->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx"
-		, "Shaders/deferred_spotlight.json"
-		, false);
+	u64 key = pEngine->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/deferred_spotlight.json", false);
 
-	m_Model = static_cast<LightModel*>(pEngine->GetModel(key));
-	m_Model->Initiate("cone.fbx");
+	
+	//m_Model = pEngine->GetModel<Model>(key);
+	//LightModel* model = static_cast<LightModel*>(m_Model.GetData());
+	//model->Initiate("cone.fbx");
 
 
 
@@ -90,7 +90,6 @@ SpotLight::~SpotLight()
 	Engine::GetInstance()->GetAPI()->ReleasePtr(m_QuadBuffer);
 #endif
 
-	m_Model = nullptr;
 	SAFE_DELETE(m_ShadowSpotlight);
 
 }
@@ -139,8 +138,7 @@ void SpotLight::Render(const CU::Matrix44f& previousOrientation, Camera* aCamera
 */
 void SpotLight::Render(const graphics::RenderContext& render_context)
 {
-	m_Model->Render(render_context);
-
+	static_cast<LightModel*>(m_Model.GetData())->Render(render_context);
 #if !defined(_PROFILE) && !defined(_FINAL)
 	//This should be drawn in the entity pass too.
  	render_context.GetContext().SetBlendState(render_context.GetAPI().GetBlendState(graphics::ALPHA_BLEND));

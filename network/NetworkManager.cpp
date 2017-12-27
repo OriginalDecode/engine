@@ -27,16 +27,23 @@ namespace network
 	NetworkManager::NetworkManager()
 	{
 		network::CreateGUID(&m_GUID);
+		
+		m_Messages[0].Init(2500);
+		m_Messages[1].Init(2500);
+
+		//constexpr int buffer_size = sizeof(Buffer);
+		//constexpr int buffer_size = ((sizeof(Buffer) * 2500) / 1024) / 1024;
+		//constexpr int msgsize = sizeof(m_Messages[0]);
+
 
 		m_Recieve = new std::thread([&]() {
 			Synchronizer* pSync = Engine::GetInstance()->GetSynchronizer();
-			while (true)
+			Buffer to_fill;
+			while (!pSync->HasQuit())
 			{
-				if(m_Connections.size() <= 0)
-					std::this_thread::yield();
-
-				Buffer buffer = Receive();
-				m_Messages[m_CurrentBuffer ^ 1].Add(buffer);
+				Receive(to_fill);
+				if (to_fill.m_Length > 0)
+					m_Messages[m_CurrentBuffer ^ 1].Add(to_fill);
 			}
 		});
 	}
@@ -106,11 +113,7 @@ namespace network
 		m_Socket = (Socket)socket(m_IPVersion, m_SocketType, m_SocketProtocol);
 #ifdef _WIN32
 		DWORD non_blocking = 1;
-		if (ioctlsocket(m_Socket, FIONBIO, &non_blocking) != 0)
-		{
-			assert(false && "failed to makke nonblocking");
-		}
-		//Setup nonblocking socket for windows.
+		assert(ioctlsocket(m_Socket, FIONBIO, &non_blocking) == 0 && "failed to makke nonblocking");
 #else
 		fcntl(m_Socket, F_SETFL, O_NONBLOCK);
 #endif
@@ -126,42 +129,11 @@ namespace network
 		connection.m_Connection.sin_port = htons(port);
 		connection.m_Connection.sin_addr.s_addr = inet_addr(ip);
 
-		bool connected = false;
-		bool has_respons = false;
+		//bool connected = false;
+		//bool has_respons = false;
 		printf("\nSending connection request to server...");
 		Send(ConnectMessage(REQUEST_CONNECTION, m_GUID), connection.m_Connection);
-
-		while (has_respons == false)
-		{
-			Buffer on_connect = Receive();
-			if (on_connect.m_Length > 0)
-			{
-				ConnectMessage net_message;
-				net_message.UnpackMessage(on_connect.m_Buffer, on_connect.m_Length);
-				printf("\n%s", net_message.m_ConnectMessage.c_str());
-				if (net_message.IsType(CONNECTION_ACCEPTED))
-				{
-					connected = true;
-				}
-				else if (net_message.IsType(CONNECTION_REJECTED))
-				{
-					connected = false;
-				}
-				has_respons = true;
-			}
-		}
-
-		if (connected)
-		{
-			printf("\nConnection established to server IP : %s", ip);
-			m_Connections.push_back(connection);
-		}
-		else
-		{
-			printf("\nFailed to establish connection to server IP : %s", ip);
-			return -3;
-		}
-
+		m_Connections.push_back(connection);
 		return 0;
 	}
 
@@ -203,20 +175,18 @@ namespace network
 		return 0;
 	}
 
-	Buffer NetworkManager::Receive()
+	void NetworkManager::Receive(Buffer& buffer_out) /* This takes a nasty amount of memory */
 	{
-		Buffer to_return;
+		const s32 max_len = 512;
 		socklen_t size = sizeof(sockaddr_in);
-		s8 buffer[512];
-		memset(&buffer, 0, sizeof(s8) * 512);
+		memset(&buffer_out.m_Buffer, 0, sizeof(s8) * max_len);
 
-		int length_of_packet = recvfrom(m_Socket, buffer, 512, 0, (sockaddr*)&to_return.m_Sender, &size);
-		to_return.m_Length = length_of_packet;
+		int length_of_packet = recvfrom(m_Socket, buffer_out.m_Buffer, max_len, 0, (sockaddr*)&buffer_out.m_Sender, &size);
+		buffer_out.m_Length = length_of_packet;
 
-		if (length_of_packet > 0)
-			memcpy(&to_return.m_Buffer, &buffer[0], length_of_packet * sizeof(s8));
+		//if (length_of_packet > 0)
+			//memcpy(&buffer_out.m_Buffer, &buffer[0], length_of_packet * sizeof(s8));
 
-		return to_return;
 	}
 
 	s32 NetworkManager::ReadType(s8 type_char)
@@ -262,6 +232,16 @@ namespace network
 					
 					EventManager::GetInstance()->SendMessage("create_entity", &data.m_GUID);
 				} break;
+
+				case eNetMessageType::CONNECTION_ACCEPTED:
+				{
+				} break;
+
+				case eNetMessageType::CONNECTION_REJECTED:
+				{
+					m_Connections.pop_back();
+				} break;
+
 
 			}
 		}

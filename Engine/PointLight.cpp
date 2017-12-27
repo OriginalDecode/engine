@@ -4,11 +4,16 @@
 
 PointLight::PointLight()
 {
-	m_Model = new LightModel;
+	//m_Model = new LightModel;
 	u64 key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/sphere.fbx", "Shaders/deferred_pointlight.json", false);
-	m_Model = static_cast<LightModel*>(Engine::GetInstance()->GetModel(key));
+	m_Model = Engine::GetInstance()->GetModel<Model>(key);
+	LightModel* model = static_cast<LightModel*>(m_Model.GetData());
+
+	//model->Initiate("cone.fbx");
+
 
 	//m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx");
+
 }
 
 void PointLight::SetPosition(const CU::Vector3f& aPosition)
@@ -54,7 +59,7 @@ void PointLight::Render(const CU::Matrix44f&, const CU::Matrix44f&, const graphi
 {
 	//render_context.m_API->SetBlendState(eBlendStates::LIGHT_BLEND);
 	//render_context.m_API->SetDepthStencilState(eDepthStencilState::READ_NO_WRITE, 1);
-	m_Model->Render(render_context);
+	static_cast<LightModel*>(m_Model.GetData())->Render(render_context);
 }
 
 const SPointlightData& PointLight::GetData() const

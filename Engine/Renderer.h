@@ -16,6 +16,7 @@
 #include <Engine/RenderContext.h>
 #include <Engine/LightPass.h>
 #include <Engine/InstancingManager.h>
+#include <CommonLib/RefPointer.h>
 
 
 class Line3D;
@@ -144,8 +145,8 @@ private:
 	CU::GrowingArray<Texture*> m_DebugTextures;
 	Texture* m_HoverTexture = nullptr;
 	Texture* m_SelectedTexture = nullptr;
-	Model* m_HoverModel = nullptr;
-	Model* m_SelectedModel = nullptr;
+	RefPointer<Model> m_HoverModel = nullptr;
+	RefPointer<Model> m_SelectedModel = nullptr;
 
 	Effect* m_RenderHoverEffect = nullptr;
 	Effect* m_SelectedEffect = nullptr;

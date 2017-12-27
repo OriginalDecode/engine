@@ -1,6 +1,7 @@
 #pragma once
 #include "LightStructs.h"
 #include <Engine/LightModel.h>
+#include <CommonLib/RefPointer.h>
 class PointLight
 {
 public:
@@ -21,7 +22,7 @@ public:
 
 	CU::Matrix44f GetOrientation();
 private:
-	LightModel* m_Model = nullptr;
+	RefPointer<Model> m_Model;// = nullptr;
 
 	CU::Matrix44f myOrientation;
 	CU::Vector3f myOriginalPosition;

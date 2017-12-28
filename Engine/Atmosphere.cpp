@@ -43,7 +43,7 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
  	m_PixelStruct.m_OuterRadius = m_OuterRadius;
 
 	//m_InnerSphere->SetOrientation(m_InnerOrientation);
-	m_OuterSphere->SetOrientation(m_OuterOrientation);
+	static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetOrientation(m_OuterOrientation);
 }
 
 void Atmosphere::Render(const graphics::RenderContext& rc)

@@ -74,59 +74,59 @@ RefPointer<T>::~RefPointer()
 
 
 //Shitty C version, that i tested for benji
-/*
+/**
 #include <stdio.h>
 #include <memory.h>
 
 struct RefCounter
 {
-int m_Count;
+	int m_Count;
 };
 
 void Increment(int* count)
 {
-count++;
+	count++;
 }
 
 int Decrement(int* count)
 {
-count--;
-return count;
+	count--;
+	return *count;
 }
 
 struct RefPointer
 {
-struct RefCounter* m_RefCounter;
-void* m_Data;
+	struct RefCounter* m_RefCounter;
+	void* m_Data;
 };
 
 void create_refpointer(struct RefPointer* pRefPointer)
 {
-pRefPointer->m_RefCounter = (struct RefCounter*)malloc(4);
-Increment(&pRefPointer->m_RefCounter->m_Count);
-pRefPointer->m_Data = 0;
+	pRefPointer->m_RefCounter = (struct RefCounter*)malloc(4);
+	Increment(&pRefPointer->m_RefCounter->m_Count);
+	pRefPointer->m_Data = 0;
 }
 
 void free_refpointer(struct RefPointer* pRefPointer)
 {
-if(Decrement(&pRefPointer->m_RefCounter->m_Count) <= 0)
-{
-free(pRefPointer->m_RefCounter);
-free(pRefPointer->m_Data);
-}
+	if (Decrement(&pRefPointer->m_RefCounter->m_Count) <= 0)
+	{
+		free(pRefPointer->m_RefCounter);
+		free(pRefPointer->m_Data);
+	}
 }
 
 int main()
 {
-struct RefPointer pointer;
-create_refpointer(&pointer);
+	struct RefPointer pointer;
+	create_refpointer(&pointer);
 
-const char* object = "hello world";
-pointer.m_Data = (void*)object;
+	const char* object = "hello world";
+	pointer.m_Data = (void*)object;
 
 
-free_refpointer(&pointer);
+	free_refpointer(&pointer);
 
-return 0;
+	return 0;
 }
 */

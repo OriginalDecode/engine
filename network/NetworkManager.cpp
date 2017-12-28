@@ -230,7 +230,7 @@ namespace network
 					NetCreateEntity data;
 					data.UnpackMessage(message.m_Buffer, message.m_Length);
 					
-					EventManager::GetInstance()->SendMessage("create_entity", &data.m_GUID);
+					EventManager::GetInstance()->SendMessage("create_entity", &data.m_EntityGUID);
 				} break;
 
 				case eNetMessageType::CONNECTION_ACCEPTED:

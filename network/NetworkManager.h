@@ -57,24 +57,11 @@ namespace network
 	{
 		bool operator()(const GUID& lh, const GUID& rh) const
 		{
-			return (lh.Data1 == rh.Data1 && lh.Data2 == rh.Data2 && lh.Data3 == rh.Data3 && lh.Data4 == rh.Data4);
-
-
-		/*	if (lh.Data1 != rh.Data1)
-				return false;
-			if (lh.Data2 != rh.Data2)
-				return false;
-			if (lh.Data3 != rh.Data3)
-				return false;
-			if(lh.Data4 != rh.Data4)
-				return false;
-			return true;*/
+			return memcmp(&lh, &rh, sizeof(GUID)) < 0;
 		}
 	};
 
 	void CreateGUID(GUID* pGUID);
-
-
 
 	class NetworkManager
 	{

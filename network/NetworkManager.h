@@ -53,7 +53,29 @@ struct Connection
 struct NetReplicate;
 namespace network
 {
+	struct GUIDCompare
+	{
+		bool operator()(const GUID& lh, const GUID& rh) const
+		{
+			return (lh.Data1 == rh.Data1 && lh.Data2 == rh.Data2 && lh.Data3 == rh.Data3 && lh.Data4 == rh.Data4);
+
+
+		/*	if (lh.Data1 != rh.Data1)
+				return false;
+			if (lh.Data2 != rh.Data2)
+				return false;
+			if (lh.Data3 != rh.Data3)
+				return false;
+			if(lh.Data4 != rh.Data4)
+				return false;
+			return true;*/
+		}
+	};
+
 	void CreateGUID(GUID* pGUID);
+
+
+
 	class NetworkManager
 	{
 	public:
@@ -97,13 +119,7 @@ namespace network
 
 		CU::GrowingArray<Buffer> m_Messages[2];
 		
-		struct Replica
-		{
-			GUID guid;
-			std::vector<NetReplicate*> m_ToReplicate;
-		};
-
-		std::vector<Replica> m_Replicants;
+		std::map<GUID, std::vector<NetReplicate*>, GUIDCompare> m_Replicants;
 
 
 

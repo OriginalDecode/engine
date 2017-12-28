@@ -297,17 +297,12 @@ namespace debug
 						//EditTransform(orientation.myMatrix, perspective.myMatrix, g.m_Instances[0].m_Orientation.myMatrix);
 					}
 
+					PhysicsComponent& phys = em.GetComponent<PhysicsComponent>(m_EditEntity);
+// 					if(ImGuizmo::IsUsing())
+// 						phys.m_Body->SetPosition(m_ObjectMatrix->GetPosition());
 
-					if (em.HasComponent<PhysicsComponent>(m_EditEntity))
-					{
-
-						PhysicsComponent& phys = em.GetComponent<PhysicsComponent>(m_EditEntity);
-						//if(ImGuizmo::IsUsing())
-						//	phys.m_Body->SetPosition(m_ObjectMatrix->GetPosition());
-
-						const CU::Vector3f linVel = phys.m_Body->GetLinearVelocity();
-						ImGui::Text("Linear Velocity\nx:%.1f\ny:%.1f\nz:%.1f", linVel.x, linVel.y, linVel.z);
-					}
+					const CU::Vector3f linVel = phys.m_Body->GetLinearVelocity();
+					ImGui::Text("Linear Velocity\nx:%.1f\ny:%.1f\nz:%.1f", linVel.x, linVel.y, linVel.z);
 
 
 					ImGui::Separator();

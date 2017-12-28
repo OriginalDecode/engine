@@ -44,6 +44,7 @@
     <ClCompile Include="ChatMessage.cpp" />
     <ClCompile Include="ConnectMessage.cpp" />
     <ClCompile Include="NetCreateEntity.cpp" />
+    <ClCompile Include="NetEntityData.cpp" />
     <ClCompile Include="NetMessage.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
   </ItemGroup>

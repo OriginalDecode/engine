@@ -1,8 +1,12 @@
 #include "NetMessage.h"
+#include <Engine/Engine.h>
+#include <network/NetworkManager.h>
 
 NetMessage::NetMessage(eNetMessageType type)
+	: m_MessageType(type)
+	, m_GUID(Engine::GetInstance()->GetNetworkManager()->GetGUID())
 {
-	m_MessageType = type;
+	
 }
 
 NetMessage::~NetMessage() = default;
@@ -32,23 +36,13 @@ bool NetMessage::IsType(eNetMessageType message_type)
 void NetMessage::Serialize(StreamType& stream)
 {
 	SERIALIZE(stream, m_MessageType);
-
-	OLECHAR* str;
-	HRESULT hr = StringFromCLSID(m_GUID, &str);
-	assert(hr == S_OK && "Failed to convert to string!");
-	SERIALIZE(stream, str);
-	::CoTaskMemFree(str);
+	SERIALIZE(stream, cl::GuidToString(m_GUID));
 }
 
 void NetMessage::Deserialize(StreamType& stream)
 {
 	DESERIALIZE(stream, m_MessageType);
 	std::string guid;
-	guid.reserve(60);
 	DESERIALIZE(stream, guid);
-	//HRESULT hr = CLSIDFromString(str, &m_GUID);
-	//assert(hr == S_OK && "Failed to convert to string!");
-	//::CoTaskMemFree(str);
-	//delete str;
-
+	m_GUID = cl::StrToGuid(guid);
 }

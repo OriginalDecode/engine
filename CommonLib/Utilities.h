@@ -117,5 +117,9 @@ namespace cl
 	}
 
 	const std::wstring ToWideStr(const std::string& str);
+	std::string GuidToString(const GUID& guid);
+
+	GUID StrToGuid(const std::string& str);
+
 
 };

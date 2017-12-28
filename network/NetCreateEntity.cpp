@@ -14,24 +14,15 @@ NetCreateEntity::NetCreateEntity(GUID guid)
 void NetCreateEntity::Serialize(StreamType& stream)
 {
 	NetMessage::Serialize(stream);
-
-	OLECHAR* guidString;
-	StringFromCLSID(m_EntityGUID, &guidString);
-	SERIALIZE(m_Stream, guidString);
-	::CoTaskMemFree(guidString);
-	//SERIALIZE(m_Stream, m_EntityGUID.Data4);
+	SERIALIZE(stream, cl::GuidToString(m_EntityGUID));
 }
 
 void NetCreateEntity::Deserialize(StreamType& stream)
 {
 	NetMessage::Deserialize(stream);
-	DESERIALIZE(m_Stream, m_EntityGUID.Data1);
-	DESERIALIZE(m_Stream, m_EntityGUID.Data2);
-	DESERIALIZE(m_Stream, m_EntityGUID.Data3);
-	//DESERIALIZE(m_Stream, m_EntityGUID.Data4);
-
-
-
+	std::string guid;
+	DESERIALIZE(stream, guid);
+	m_EntityGUID = cl::StrToGuid(guid);
 
 }
 

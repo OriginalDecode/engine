@@ -217,7 +217,7 @@ namespace network
 					NetEntityData data;
 					data.UnpackMessage(message.m_Buffer, message.m_Length);
 
-					for (NetReplicate* replicants : m_Replicants[data.m_GUID])
+					for (NetReplicate* replicants : m_Replicants[data.m_EntityGUID])
 					{
 						CU::Vector3f pos(data.x, data.y, data.z);
 						replicants->OnNotify((eNetMessageType)type, (void*)&pos);
@@ -260,7 +260,14 @@ namespace network
 		}
 
 		m_Replicants.emplace(guid, std::vector<NetReplicate*>());
-		m_Replicants.at(guid).push_back(to_replicate);
+
+		it = m_Replicants.find(guid);
+		if (it != m_Replicants.end())
+		{
+			it->second.push_back(to_replicate);
+		}
+
+		//m_Replicants[guid].push_back(to_replicate);
 
 	}
 

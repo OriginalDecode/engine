@@ -24,6 +24,7 @@ public:
 		DEBUG = BITFLAG(2),
 		PHYSICS = BITFLAG(3),
 		LIGHT = BITFLAG(4),
+		NETWORK = BITFLAG(5),
 	};
 
 	EntityManager() = default;

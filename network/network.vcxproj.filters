@@ -68,5 +68,8 @@
     <ClCompile Include="NetCreateEntity.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="NetEntityData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -173,7 +173,8 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_EntityManager.AddSystem(	EntityManager::RENDER | 
 								EntityManager::PHYSICS | 
 								EntityManager::LIGHT | 
-								EntityManager::DEBUG );
+								EntityManager::DEBUG |
+								EntityManager::NETWORK );
 
 
 

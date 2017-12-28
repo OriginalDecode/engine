@@ -1,16 +1,20 @@
 #include "stdafx.h"
-#include "../Application/CameraHandle.h"
-#include "NodeEntityManager.h"
-#include <BaseSystem.h>
-#include "Engine.h"
-#include <EntityManager.h>
-#include <TranslationComponent.h>
-#include <Engine/Synchronizer.h>
 
+#include "NodeEntityManager.h"
+
+#include <BaseSystem.h>
+#include <EntitySystem/NetworkSystem.h>
 #include <EntitySystem/RenderSystem.h>
 #include <EntitySystem/DebugSystem.h>
 #include <EntitySystem/LightSystem.h>
 #include <EntitySystem/PhysicsSystem.h>
+
+#include "../Application/CameraHandle.h"
+
+#include "Engine.h"
+#include <EntityManager.h>
+#include <Engine/Synchronizer.h>
+#include <TranslationComponent.h>
 
 void NodeEntityManager::SetMemoryBlockIndex(s32 index)
 {
@@ -24,6 +28,8 @@ void NodeEntityManager::Initiate()
 	EntityManager& em = Engine::GetInstance()->GetEntityManager();
 	const s32 flag = em.GetSystemFlag();
 
+	if (flag& EntityManager::NETWORK)
+		AddSystem<NetworkSystem>();
 	if (flag & EntityManager::PHYSICS)
 		AddSystem<PhysicsSystem>();
 	if (flag & EntityManager::RENDER)

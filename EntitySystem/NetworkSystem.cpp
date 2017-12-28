@@ -3,6 +3,7 @@
 #include <engine/Engine.h>
 #include <network/NetworkManager.h>
 #include "TranslationComponent.h"
+
 #include <network/NetEntityData.h>
 
 NetworkSystem::NetworkSystem(NodeEntityManager& anEntityManager)
@@ -25,6 +26,6 @@ void NetworkSystem::Update(float /*delta_time*/, bool /*paused*/)
 		const TranslationComponent& translation = m_Manager.GetComponent<TranslationComponent>(e);
 		const CU::Vector3f& pos = translation.GetOrientation().GetPosition();
 		float _realPos[3] = { pos.x,pos.y,pos.z };
-		m_NetManager->Send(NetEntityData(_realPos));
+		m_NetManager->Send(NetEntityData(net_c.m_GUID, _realPos));
 	}
 }

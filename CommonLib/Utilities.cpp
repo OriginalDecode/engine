@@ -1,5 +1,6 @@
 #include "Utilities.h"
-
+#include <comdef.h>
+#include <assert.h>
 namespace cl
 {
 	//if readCharacterBeforeToFind == true it will read everything BEFORE the character/word you entered but if it is false it will read the word you entered and everything after.
@@ -290,6 +291,24 @@ namespace cl
 	const std::wstring ToWideStr(const std::string& str)
 	{
 		 return std::wstring(str.begin(), str.end()); 
+	}
+
+	std::string GuidToString(const GUID& guid)
+	{
+		wchar_t* wstr = nullptr;
+		HRESULT hr = StringFromCLSID(guid, &wstr);
+		assert(hr == S_OK && "Failed to convert to string!");
+		_bstr_t converted(wstr);
+		::CoTaskMemFree(wstr);
+		return std::string(converted);
+	}
+
+	GUID StrToGuid(const std::string& str)
+	{
+		GUID out;
+		HRESULT hr = CLSIDFromString(ToWideStr(str).c_str(), &out);
+		assert(hr == S_OK && "Failed to convert string to GUID!");
+		return out;
 	}
 
 }

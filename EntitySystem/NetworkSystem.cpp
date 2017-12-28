@@ -12,8 +12,16 @@ NetworkSystem::NetworkSystem(NodeEntityManager& anEntityManager)
 {
 }
 
-void NetworkSystem::Update(float /*delta_time*/, bool /*paused*/)
+constexpr float update_time = 1.f / 15.f;
+
+void NetworkSystem::Update(float delta_time, bool /*paused*/)
 {
+	static float s_UpdateTime = 0.f;
+	s_UpdateTime += delta_time;
+
+	if (s_UpdateTime < update_time)
+		return;
+	s_UpdateTime = 0.f;
 
 	const EntityArray& entities = GetEntities();
 	for (Entity e : entities)

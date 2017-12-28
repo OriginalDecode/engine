@@ -217,12 +217,17 @@ namespace network
 					NetEntityData data;
 					data.UnpackMessage(message.m_Buffer, message.m_Length);
 
-					for (NetReplicate* replicants : m_Replicants[data.m_EntityGUID])
+					for (Replica& r : m_Replicants)
 					{
-						CU::Vector3f pos(data.x, data.y, data.z);
-						replicants->OnNotify((eNetMessageType)type, (void*)&pos);
+						if (memcmp(&r.guid, &data.m_EntityGUID, sizeof(GUID) == 0))
+						{
+							for (NetReplicate* replicant : r.m_ToReplicate)
+							{
+								CU::Vector3f pos(data.x, data.y, data.z);
+								replicant->OnNotify((eNetMessageType)type, (void*)&pos);
+							}
+						}
 					}
-
 				} break;
 
 				case eNetMessageType::NET_CREATE_ENTITY:
@@ -230,7 +235,7 @@ namespace network
 					NetCreateEntity data;
 					data.UnpackMessage(message.m_Buffer, message.m_Length);
 					
-					EventManager::GetInstance()->SendMessage("create_entity", &data.m_GUID);
+					EventManager::GetInstance()->SendMessage("create_entity", &data.m_EntityGUID);
 				} break;
 
 				case eNetMessageType::CONNECTION_ACCEPTED:
@@ -252,22 +257,20 @@ namespace network
 
 	void NetworkManager::AddReplicant(GUID guid, NetReplicate* to_replicate)
 	{
-		auto it = m_Replicants.find(guid);
-		if (it != m_Replicants.end())
+		for (Replica& r : m_Replicants)
 		{
-			it->second.push_back(to_replicate);
-			return;
+			if (memcmp(&r.guid, &guid, sizeof(GUID) == 0))
+			{
+				r.m_ToReplicate.push_back(to_replicate);
+				return;
+			}
 		}
 
-		m_Replicants.emplace(guid, std::vector<NetReplicate*>());
 
-		it = m_Replicants.find(guid);
-		if (it != m_Replicants.end())
-		{
-			it->second.push_back(to_replicate);
-		}
-
-		//m_Replicants[guid].push_back(to_replicate);
+		Replica new_replica;
+		new_replica.guid = guid;
+		new_replica.m_ToReplicate.push_back(to_replicate);
+		m_Replicants.push_back(new_replica);
 
 	}
 

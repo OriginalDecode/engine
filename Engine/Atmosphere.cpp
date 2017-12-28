@@ -55,7 +55,7 @@ void Atmosphere::Render(const graphics::RenderContext& rc)
 	ctx.SetBlendState(api->GetBlendState(graphics::NO_BLEND));
 	ctx.SetDepthState(api->GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api->GetRasterizerState(graphics::CULL_NONE));
-	m_OuterSphere->Render(rc);
+	static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->Render(rc);
 
 }
 

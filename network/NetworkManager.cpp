@@ -266,9 +266,6 @@ namespace network
 		{
 			it->second.push_back(to_replicate);
 		}
-
-		//m_Replicants[guid].push_back(to_replicate);
-
 	}
 
 	void NetworkManager::AddConnection(Connection& client)

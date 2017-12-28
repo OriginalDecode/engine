@@ -190,21 +190,22 @@ namespace debug
 
 
 			auto& em = Engine::GetInstance()->GetEntityManager();
-			if (Engine::GetInstance()->GetNetworkManager() && Engine::GetInstance()->GetNetworkManager()->IsHost())
-			{
-				if (ImGui::Button("Create new Entity"))
-				{
-					Entity e = em.CreateEntity();
-					LevelFactory::CreateEntity(e, em);
-					//Engine::GetInstance()->GetNetworkManager()->Send(NetCreateEntity());
-				}
 
-				if (ImGui::Button("Pause Physics"))
+			if (ImGui::Button("Create new Entity"))
+			{
+				Entity e = em.CreateEntity();
+				LevelFactory::CreateEntity(e, em);
+
+			}
+
+			if (ImGui::Button("Pause Physics"))
+			{
+				if (Engine::GetInstance()->GetNetworkManager() && Engine::GetInstance()->GetNetworkManager()->IsHost())
 				{
 					s_PausePhysics = !s_PausePhysics;
 				}
 			}
-			if(ImGui::Button("Host Network"))
+			if (ImGui::Button("Host Network"))
 			{
 				Engine::GetInstance()->GetNetworkManager()->Host(1313);
 			}
@@ -241,13 +242,15 @@ namespace debug
 					}
 				}
 
+				const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
 
 				ImVec2 inspector_size;
 				inspector_size.x = 350;
-				inspector_size.y = Engine::GetInstance()->GetInnerSize().m_Height;
+				inspector_size.y = window_size.m_Height;
 
 
-				ImGui::SetNextWindowPos(ImVec2(1920-350, 0));
+
+				ImGui::SetNextWindowPos(ImVec2(window_size.m_Width - 350, 0));
 				ImGui::SetNextWindowSize(inspector_size);
 
 				if (ImGui::Begin("Entity Inspector"))
@@ -280,7 +283,7 @@ namespace debug
 					CU::Matrix44f& orientation = CU::Math::Inverse(cam->GetOrientation());
 					CU::Matrix44f& perspective = cam->GetPerspective();
 					CU::Matrix44f& object_matrix = *m_ObjectMatrix;
-				
+
 					GraphicsComponent& g = em.GetComponent<GraphicsComponent>(m_EditEntity);
 
 
@@ -289,21 +292,21 @@ namespace debug
 					if (ImGui::IsKeyPressed(t_key))
 						bToggle = !bToggle;
 
-					//if (m_ObjectMatrix && !bToggle)
-						//EditTransform(orientation.myMatrix, perspective.myMatrix, m_ObjectMatrix->myMatrix);
+					if (m_ObjectMatrix && !bToggle)
+						EditTransform(orientation.myMatrix, perspective.myMatrix, m_ObjectMatrix->myMatrix);
 
 					if (bToggle)
+						EditTransform(orientation.myMatrix, perspective.myMatrix, g.m_Instances[0].m_Orientation.myMatrix);
+
+					if (em.HasComponent<PhysicsComponent>(m_EditEntity))
 					{
-						//EditTransform(orientation.myMatrix, perspective.myMatrix, g.m_Instances[0].m_Orientation.myMatrix);
+						PhysicsComponent& phys = em.GetComponent<PhysicsComponent>(m_EditEntity);
+						if (ImGuizmo::IsUsing())
+							phys.m_Body->SetPosition(m_ObjectMatrix->GetPosition());
+
+						const CU::Vector3f linVel = phys.m_Body->GetLinearVelocity();
+						ImGui::Text("Linear Velocity\nx:%.1f\ny:%.1f\nz:%.1f", linVel.x, linVel.y, linVel.z);
 					}
-
-					PhysicsComponent& phys = em.GetComponent<PhysicsComponent>(m_EditEntity);
-// 					if(ImGuizmo::IsUsing())
-// 						phys.m_Body->SetPosition(m_ObjectMatrix->GetPosition());
-
-					const CU::Vector3f linVel = phys.m_Body->GetLinearVelocity();
-					ImGui::Text("Linear Velocity\nx:%.1f\ny:%.1f\nz:%.1f", linVel.x, linVel.y, linVel.z);
-
 
 					ImGui::Separator();
 
@@ -523,7 +526,7 @@ namespace debug
 
 			TranslationComponent& t = engine->GetEntityManager().GetComponent<TranslationComponent>(e);
 			engine->GetNetworkManager()->AddReplicant(c.m_GUID, &t);
-		
+
 
 		}
 

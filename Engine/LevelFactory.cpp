@@ -138,7 +138,7 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		debug_flags |= TreeDweller::GRAPHICS;
 	}
 
-	if (pNet->IsHost())
+	/*if (pNet->IsHost())
 	{
 		PhysicsComponent& c = em.AddComponent<PhysicsComponent>(e);
 		c.m_Body = engine->GetPhysicsManager()->CreateBody();
@@ -151,7 +151,7 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 
 		pDweller->AddComponent(&c, TreeDweller::PHYSICS);
 		debug_flags |= TreeDweller::PHYSICS;
-	}
+	}*/
 
 	{
 		//This is only if the entity is local.

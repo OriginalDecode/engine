@@ -22,17 +22,16 @@
 #include "Texture.h"
 
 #include "imgui_impl_dx11.h"
-#include <Engine/WaterPlane.h>
 
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
+
 #include <Engine/IGraphicsContext.h>
 #include <Engine/DX11Context.h>
 #include <Engine/DX11Device.h>
+#include <Engine/WaterPlane.h>
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-#include <CommonLib/reflector.h>
-
 #include <EntitySystem/TranslationComponent.h>
 #include <EntitySystem/GraphicsComponent.h>
 #endif

@@ -17,6 +17,10 @@ namespace graphics
 		virtual IComputeShader* CreateComputeShader(IShaderBlob* pShader, const std::string& debug_name) = 0;
 
 		virtual IShaderResourceView* CreateTextureFromFile(const std::string& filepath, bool generate_mips, IGraphicsContext* ctx) = 0;
+		virtual IShaderResourceView* CreateTextureFromFile(const char* filepath, ITexture2D*& tex_out, bool generate_mips, IGraphicsContext* ctx) = 0;
+
+
+
 		virtual ITexture2D* CreateTexture2D(const Texture2DDesc& desc, const std::string& debug_name) = 0;
 		virtual ITexture2D* CreateTexture2D(const Texture2DDesc& desc, s8* data, s32 pitch, const std::string& debug_name) = 0;
 		virtual IRenderTargetView* CreateRenderTarget(const Texture2DDesc& desc, ITexture2D* pTexture, const std::string& debug_name) = 0;

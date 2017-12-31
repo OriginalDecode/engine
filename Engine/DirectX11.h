@@ -46,6 +46,9 @@ namespace graphics
 
 		CU::Vector4f PickColor(Texture* pTexture) override;
 
+		void SaveTextureToDisk(ID3D11Texture2D* texture_resource, const std::string& file_name);
+		void SaveTextureToDisk(ID3D11ShaderResourceView* texture_resource, const std::wstring& file_name);
+
 	private:
 		void CreateDeviceAndSwapchain();
 		void CreateDepthStencilStates();

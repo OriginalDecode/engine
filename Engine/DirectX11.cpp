@@ -180,7 +180,7 @@ namespace graphics
 		UINT createDeviceFlags = 0;
 
 #ifdef _DEBUG
-		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG ;
+		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 		UINT featureCount = ARRAYSIZE(requested_feature_levels);
 
@@ -334,7 +334,7 @@ namespace graphics
 		return new Viewport(width, height, top_left_x, top_left_y, max_depth, min_depth, new_viewport);
 	}
 
-	
+
 	void DirectX11::CreateAdapterList()
 	{
 		std::vector<IDXGIAdapter*> enumAdapter;
@@ -477,7 +477,7 @@ namespace graphics
 
 		if (iPos.x > 1919 || iPos.x < 0 || iPos.y > 1080 || iPos.y < 0)
 			return color;
-			
+
 
 		region_box.bottom = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height) + 1;
 		region_box.right = cl::ClampI(iPos.x, 0, (s32)window_size.m_Width) + 1;
@@ -494,7 +494,7 @@ namespace graphics
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		HRESULT hr = ctx->Map(staging, 0, D3D11_MAP_READ, 0, &msr);
-		DL_ASSERT_EXP(hr == S_OK , "Not ok pixel pick!");
+		DL_ASSERT_EXP(hr == S_OK, "Not ok pixel pick!");
 		if (msr.pData)
 		{
 			float* data = (float*)msr.pData;
@@ -508,6 +508,27 @@ namespace graphics
 
 		return color;
 
+	}
+
+	void DirectX11::SaveTextureToDisk(ID3D11Texture2D* texture_resource, const std::string& file_name)
+	{
+		ID3D11DeviceContext* ctx = static_cast<DX11Context*>(m_Context)->m_Context;
+		ID3D11Resource* resource = nullptr;
+		HRESULT hr = texture_resource->QueryInterface(IID_ID3D11Texture2D, (void**)&resource);
+		HandleErrors(hr, "Failed to query interface of texture_resource");
+		std::wstring middle_hand(file_name.begin(), file_name.end());
+		LPCWSTR new_name(middle_hand.c_str());
+		hr = DirectX::SaveDDSTextureToFile(ctx, resource, new_name);
+		resource->Release();
+	}
+
+	void DirectX11::SaveTextureToDisk(ID3D11ShaderResourceView* texture_resource, const std::wstring& file_name)
+	{
+		ID3D11DeviceContext* ctx = static_cast<DX11Context*>(m_Context)->m_Context;
+		ID3D11Resource* resource = nullptr;
+		texture_resource->GetResource(&resource);
+		HRESULT hr = DirectX::SaveDDSTextureToFile(ctx, resource, file_name.c_str());
+		DL_ASSERT_EXP(hr == S_OK, "failed to save. Sad");
 	}
 
 	void DirectX11::CreateRazterizers()

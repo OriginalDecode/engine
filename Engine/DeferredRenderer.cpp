@@ -17,6 +17,21 @@ DeferredRenderer::DeferredRenderer()
 	window_size.m_Height = api->GetInfo().m_WindowHeight;
 	window_size.m_Width = api->GetInfo().m_WindowWidth;
 
+
+	const char* cube[] = {
+		"Data/Textures/cube/miramar_lf.dds",
+		"Data/Textures/cube/miramar_rt.dds",
+		"Data/Textures/cube/miramar_up.dds",
+		"Data/Textures/cube/miramar_dn.dds",
+		"Data/Textures/cube/miramar_ft.dds",
+		"Data/Textures/cube/miramar_bk.dds",
+	};
+
+	constexpr size_t texCount = ARRSIZE(cube);
+
+	Texture* texCube = new Texture;
+	texCube->InitiateTextureArray(cube, texCount, "Array");
+
 	//_______________________________________________________________________
 
 	TextureDesc scene_desc;
@@ -49,10 +64,19 @@ DeferredRenderer::DeferredRenderer()
 	m_ScreenPassShader->AddShaderResource(m_Scene, Effect::DIFFUSE);
 
 	m_AmbientPassShader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
-	Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
+	//Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
+	Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/cube/cubeMapLayered.dds");
 	m_AmbientPassShader->AddShaderResource(cubemap, Effect::CUBEMAP);
-	Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json")->AddShaderResource(cubemap, Effect::CUBEMAP);
 	//Engine::GetInstance()->GetEffect("Shaders/deferred_pointlight.json");
+
+
+
+	//ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(texCube->GetTexture());
+
+	//Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json")->AddShaderResource(texCube, Effect::CUBEMAP);
+	//static_cast<graphics::DirectX11*>(Engine::GetAPI())->SaveTextureToDisk(tex, "cubefile.dds");
+
+
 
 	//_______________________________________________________________________
 

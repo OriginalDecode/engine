@@ -19,6 +19,8 @@ namespace graphics
 		IComputeShader* CreateComputeShader(IShaderBlob* pShader, const std::string& debug_name) override;
 		
 		IShaderResourceView* CreateTextureFromFile(const std::string& filepath, bool generate_mips, IGraphicsContext* ctx) override;
+		IShaderResourceView* CreateTextureFromFile(const char* filepath, ITexture2D*& tex_out, bool generate_mips, IGraphicsContext* ctx) override { return nullptr; }
+
 		ITexture2D* CreateTexture2D(const Texture2DDesc& desc, const std::string& debug_name) override;
 		ITexture2D* CreateTexture2D(const Texture2DDesc& desc, s8* data, s32 pitch, const std::string& debug_name) override;
 		IRenderTargetView* CreateRenderTarget(const Texture2DDesc& desc, ITexture2D* pTexture, const std::string& debug_name) override;

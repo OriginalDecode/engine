@@ -1,8 +1,12 @@
 #include "stdafx.h"
 #include "Texture.h"
 #include <Engine/IGraphicsDevice.h>
+#include <Engine/DX11Device.h>
+
 #include <Engine/Engine.h>
-#include <CommonLib/reflector.h>
+
+#include <DXTex/DirectXTex.h>
+
 Texture::Texture(IShaderResourceView* srv)
 	: m_ShaderResource(srv)
 {
@@ -136,21 +140,33 @@ void Texture::InitiateAsRenderTarget(s32 width, s32 height, const std::string& d
 
 }
 
-void Texture::InitiateTextureArray(const char paths[], const char* debug_name)
+
+
+void Texture::InitiateTextureArray(const char* paths[], const s32 const num_tex, const char* debug_name)
 {
-	D3D11_TEXTURE2D_DESC desc;
-	const u32 tex_count = ARRSIZE(paths);
-
-	ID3D11Resource* src[tex_count];
-
-	((ID3D11Texture2D*)src[0])->GetDesc(&desc);
+	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
+	ID3D11DeviceContext* ctx = nullptr;
+	device->GetImmediateContext(&ctx);
 	
-	/* https://stackoverflow.com/questions/19364012/d3d11-creating-a-cube-map-from-6-images */
+	const u32 tex_count = num_tex;
+	CU::GrowingArray<ID3D11ShaderResourceView*> src(tex_count);
+
+	for (u32 i = 0; i < tex_count; i++)
+	{
+		IShaderResourceView* resource = Engine::GetAPI()->GetDevice().CreateTextureFromFile(paths[i], false, &Engine::GetAPI()->GetContext());
+		src.Add(static_cast<ID3D11ShaderResourceView*>(resource));
+	}
+
+	D3D11_TEXTURE2D_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+	ID3D11Resource* resource = nullptr;
+	src[0]->GetResource(&resource);
+	((ID3D11Texture2D*)resource)->GetDesc(&desc);
 
 	D3D11_TEXTURE2D_DESC arr_desc;
-	arr_desc.Width = 0;
-	arr_desc.Height = 0;
-	arr_desc.MipLevels = 0;
+	arr_desc.Width = desc.Width;
+	arr_desc.Height = desc.Height;
+	arr_desc.MipLevels = 1;
 	arr_desc.ArraySize = tex_count;
 	arr_desc.Format = desc.Format;
 	arr_desc.SampleDesc.Count = 1;
@@ -160,7 +176,31 @@ void Texture::InitiateTextureArray(const char paths[], const char* debug_name)
 	arr_desc.CPUAccessFlags = 0;
 	arr_desc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 	
+	ID3D11Texture2D* texArray = nullptr;
+	HRESULT hr = device->CreateTexture2D(&arr_desc, nullptr, &texArray);
+	DL_ASSERT_EXP(hr == S_OK , "Failed to Create texture");
 
+	for (s32 i = 0; i < tex_count; i++)
+	{
+		ID3D11Resource* resource = nullptr;
+		src[i]->GetResource(&resource);
+		//target, index, x,y,z, resource, index, optional box
+		ctx->CopySubresourceRegion(texArray, i, 0, 0, 0, resource, 0, nullptr);
+	}
 
+	D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
+	viewDesc.Format = arr_desc.Format;
+	viewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+	viewDesc.TextureCube.MostDetailedMip = 0;
+	viewDesc.TextureCube.MipLevels = arr_desc.MipLevels;
 
+	ID3D11ShaderResourceView* srv = nullptr;
+	hr = device->CreateShaderResourceView(texArray, &viewDesc, &srv);
+	DL_ASSERT_EXP(hr == S_OK, "Failed to Create srv");
+	m_ShaderResource = srv;
+
+	DirectX::ScratchImage image;
+	hr = DirectX::CaptureTexture(device, ctx, texArray, image);
+	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");
+	DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, L"Cubemap.dds");
 }

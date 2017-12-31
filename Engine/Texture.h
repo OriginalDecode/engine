@@ -29,11 +29,12 @@ public:
 	void Initiate(const TextureDesc& desc, bool create_from_texture, const std::string& debug_name);
 	void InitiateAsDepthStencil(s32 width, s32 height, const std::string& debug_name);
 	void InitiateAsRenderTarget(s32 width, s32 height, const std::string& debug_name);
-	void InitiateTextureArray(const char paths[], const char* debug_name);
+	void InitiateTextureArray(const char* paths[], const s32 const num_tex, const char* debug_name);
 
 
 	ITexture2D* GetDepthTexture() const { return m_DepthTexture; }
 	ITexture2D* GetTexture() const { return m_Texture; }
+	ITexture2D* GetTexture() { return m_Texture; }
 	IShaderResourceView* GetShaderView() { return m_ShaderResource; }
 	IShaderResourceView** GetShaderViewRef() { return &m_ShaderResource; }
  	IShaderResourceView* GetDepthStencilView() const { return m_DepthStencilShaderView; }

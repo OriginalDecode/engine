@@ -106,9 +106,6 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	const CU::Vector4f up = orientation.GetUp();
 	const CU::Vector4f forward = orientation.GetForward();
 
-
-
-
 	p1.position += right * component.m_MinPoint.x;
 	p1.position += up * component.m_MinPoint.y;
 	p1.position += forward * component.m_MinPoint.z;
@@ -140,19 +137,6 @@ void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f
 	p8.position += right * component.m_MaxPoint.x;
 	p8.position += up * component.m_MaxPoint.y;
 	p8.position += forward * component.m_MaxPoint.z;
-
-	//m_Manager.GetTreeNode()->AddLine(Line(p1, p2));
-	//m_Manager.GetTreeNode()->AddLine(Line(p2, p3));
-	//m_Manager.GetTreeNode()->AddLine(Line(p3, p4));
-	//m_Manager.GetTreeNode()->AddLine(Line(p4, p1));
-	//m_Manager.GetTreeNode()->AddLine(Line(p1, p5));
-	//m_Manager.GetTreeNode()->AddLine(Line(p5, p6));
-	//m_Manager.GetTreeNode()->AddLine(Line(p6, p8));
-	//m_Manager.GetTreeNode()->AddLine(Line(p8, p7));
-	//m_Manager.GetTreeNode()->AddLine(Line(p7, p5));
-	//m_Manager.GetTreeNode()->AddLine(Line(p6, p4));
-	//m_Manager.GetTreeNode()->AddLine(Line(p7, p2));
-	//m_Manager.GetTreeNode()->AddLine(Line(p8, p3));
 	
 	m_Synchronizer->AddRenderCommand(LineCommand(Line(p1, p2), false));
 	m_Synchronizer->AddRenderCommand(LineCommand(Line(p2, p3), false));

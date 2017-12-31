@@ -7,8 +7,6 @@
 
 #include <CommonLib/DataStructures/Hashmap/Hash.h>
 
-
-
 struct ModelInstance
 {
 	template <typename Writer>
@@ -16,7 +14,6 @@ struct ModelInstance
 
 	static void Deserialize(const rapidjson::Value& json_value, ModelInstance& instance);
 	static ModelInstance Deserialize(const rapidjson::Value& json_value);
-	//void Deserialize(const rapidjson::Value& json_value);
 
 	std::string m_Filename;
 	std::string m_MaterialFile;
@@ -41,10 +38,8 @@ struct ModelInstance
 struct GraphicsComponent : public BaseComponent
 {
 
-	template <typename Writer>
-	void Serialize(Writer& writer) const;
-
-	void Deserialize(const rapidjson::Value& json_value);
+	void Serialize(JsonWriter& writer) const override;
+	void Deserialize(const rapidjson::Value& value) override;
 
 	CU::GrowingArray<ModelInstance> m_Instances;
 
@@ -59,27 +54,6 @@ struct GraphicsComponent : public BaseComponent
 };
 
 
-
-template <typename Writer>
-void GraphicsComponent::Serialize(Writer& writer) const
-{
-	writer.StartObject();
-	writer.String("component_type");
-	writer.String("graphics");
-
-	writer.String("instances");
-	writer.StartArray();
-	for (const ModelInstance& i : m_Instances)
-	{
-		i.Serialize(writer);
-	}
-	writer.EndArray();
-
-	writer.EndObject();
-
-}
-
-
 template <typename Writer>
 void ModelInstance::Serialize(Writer& writer) const
 {
@@ -87,13 +61,9 @@ void ModelInstance::Serialize(Writer& writer) const
 
 	writer.String("model_file");
 	writer.String(m_Filename.c_str(), (rapidjson::SizeType)m_Filename.length());
-	//writer.String("model_key");
-	//writer.Number(m_ModelID);
 
 	writer.String("material_file");
 	writer.String(m_MaterialFile.c_str(), (rapidjson::SizeType)m_MaterialFile.length());
-	//writer.String("material_hash");
-	//writer.Number(m_MaterialKey);
 
 	auto& position = m_Orientation.GetPosition();
 

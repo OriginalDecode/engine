@@ -41,7 +41,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 #ifdef VISIBLE_CHECK
 		PROFILE_BLOCK("Frustum collision check", profiler::colors::Green);
 		bool visible = false;
-		const CU::Matrix44f& matrix = translation.myOrientation;
+		const CU::Matrix44f& matrix = translation.m_Orientation;
 		const CU::Vector4f forward = matrix.GetForward();
 		const CU::Vector4f right = matrix.GetRight();
 		const CU::Vector4f up = matrix.GetUp();

@@ -70,7 +70,7 @@ void DebugSystem::HandleEvent(u64 event, void* data /*= nullptr*/)
 		if (entities.Find(e))
 		{
 			TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-			debug::DebugHandle::GetInstance()->SetObjectMatrix(&translation.myOrientation);
+			debug::DebugHandle::GetInstance()->SetObjectMatrix(&translation.m_Orientation);
 		}
 	}
 }

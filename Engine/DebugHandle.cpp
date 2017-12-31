@@ -1,5 +1,7 @@
 #include "stdafx.h"
+#if !defined(_PROFILE) && !defined(_FINAL)
 #include "DebugHandle.h"
+
 #include <Engine/Texture.h>
 #include <Engine/Engine.h>
 #include <Engine/Synchronizer.h>
@@ -12,18 +14,23 @@
 #include <EntitySystem/GraphicsComponent.h>
 #include <EntitySystem/NetworkComponent.h>
 #include <EntitySystem/PhysicsComponent.h>
+
 #include <Physics/RigidBody.h>
+#include <Physics/PhysicsManager.h>
+
 #include "NodeEntityManager.h"
 
 #include <EntitySystem/EntityManager.h>
 #include <EntitySystem/ComponentFilter.h>
+
 #include <vector>
-#if !defined(_PROFILE) && !defined(_FINAL)
+
 #include "imgui.h"
 #include "ImGuizmo.h"
 #include <PostMaster/EventManager.h>
 #include <hash/DebugEvents.h>
 #include <network/NetworkManager.h>
+
 namespace debug
 {
 	void EditTransform(const float *cameraView, float *cameraProjection, float* matrix)
@@ -125,6 +132,7 @@ namespace debug
 	{
 		EventManager* mgr = EventManager::GetInstance();
 		mgr->Subscribe("create_entity", this);
+		mgr->Subscribe("right_click", this);
 		//mgr->Subscribe(DebugEvents_OnRightClick, this);
 	}
 
@@ -370,10 +378,20 @@ namespace debug
 							pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
 						}
 
-						if (ImGui::Button("Add Physics"))
+						if (c.m_ComponentFlags & (~TreeDweller::PHYSICS) && ImGui::Button("Add Physics"))
 						{
 							c.m_ComponentFlags |= TreeDweller::PHYSICS;
-							em.AddComponent<PhysicsComponent>(m_EditEntity);
+							PhysicsComponent& phys = em.AddComponent<PhysicsComponent>(m_EditEntity);
+							phys.m_Body = Engine::GetInstance()->GetPhysicsManager()->CreateBody();
+
+							Model* pModel = Engine::GetInstance()->GetModel<Model>(g_DefaultModel).GetData();
+							pModel = pModel->GetChildModels()[0];
+							btRigidBody* body = phys.m_Body->InitAsBox(0.5, 0.5, 0.5, { 0.f,0.f,0.f });
+							Engine::GetInstance()->GetPhysicsManager()->Add(body);
+
+							TreeDweller* pDweller = static_cast<TreeDweller*>(c.m_Dweller);
+							pDweller->AddComponent(&phys, TreeDweller::PHYSICS);
+							pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
 						}
 
 						if (ImGui::Button("Add AI"))
@@ -527,6 +545,17 @@ namespace debug
 			TranslationComponent& t = engine->GetEntityManager().GetComponent<TranslationComponent>(e);
 			engine->GetNetworkManager()->AddReplicant(c.m_GUID, &t);
 
+		}
+		else if(event == Hash("right_click"))
+		{
+			CU::Vector3f intersection;
+			memcpy(&intersection, data, sizeof(CU::Vector3f));
+			
+			Engine* engine = Engine::GetInstance();
+			Entity e = engine->GetEntityManager().CreateEntity();
+			LevelFactory::CreateEntity(e, engine->GetEntityManager());
+			TranslationComponent& t = engine->GetEntityManager().GetComponent<TranslationComponent>(e);
+			t.SetPosition(intersection);
 
 		}
 

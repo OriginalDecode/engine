@@ -12,6 +12,7 @@ namespace memory
 
 		void Initiate();
 		CommandAllocator& GetCommandAllocator(s32 buffer, s32 index);
+		const CommandAllocator& GetCommandAllocator(s32 buffer, s32 index) const;
 		void Clear(s32 index);
 
 		s32 CommandSize(s32 index);

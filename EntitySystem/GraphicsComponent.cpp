@@ -12,8 +12,6 @@ constexpr char* s_ModelFile = "model_file";
 constexpr char* s_Shadowed = "shadowed";
 constexpr char* s_Instances = "instances";
 
-
-
 void ModelInstance::Deserialize(const rapidjson::Value& json_value, ModelInstance& instance)
 {
 	instance.m_Filename = json_value[s_ModelFile].GetString();
@@ -30,7 +28,7 @@ void ModelInstance::Deserialize(const rapidjson::Value& json_value, ModelInstanc
 		auto& pos = json_value[s_RelativePos].GetArray();
 		instance.m_Orientation.SetPosition({ (float)pos[0].GetDouble(), (float)pos[1].GetDouble(), (float)pos[2].GetDouble(), 1.f });
 	}
-	
+
 	if (json_value.FindMember(s_RelativeScale) != json_value.MemberEnd())
 	{
 		auto& scale = json_value[s_RelativeScale].GetArray();
@@ -81,6 +79,23 @@ ModelInstance ModelInstance::Deserialize(const rapidjson::Value& json_value)
 	ModelInstance instance;
 	ModelInstance::Deserialize(json_value, instance);
 	return instance;
+}
+
+void GraphicsComponent::Serialize(JsonWriter& writer) const
+{
+	writer.StartObject();
+	writer.String("component_type");
+	writer.String("graphics");
+
+	writer.String(s_Instances);
+	writer.StartArray();
+	for (const ModelInstance& instance : m_Instances)
+	{
+		instance.Serialize(writer);
+	}
+	writer.EndArray();
+
+	writer.EndObject();
 }
 
 void GraphicsComponent::Deserialize(const rapidjson::Value& json_value)

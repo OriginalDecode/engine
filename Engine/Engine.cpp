@@ -60,25 +60,6 @@ bool Engine::HasInitiated()
 	return (this && m_States[(u16)eEngineStates::INITIATED] == TRUE);
 }
 
-void Engine::HandleTick()
-{
-
-	for (auto it = m_Ticks.begin(); it != m_Ticks.end(); it++)
-	{
-		float& time = it->second.m_CurrTime;
-		time += m_DeltaTime;
-		if (time > it->second.m_MaxTime)
-		{
-			auto& list = it->second.m_Callbacks;
-			for (auto& func : list)
-			{
-				func();
-				time = 0.f;
-			}
-		}
-	}
-}
-
 Engine::Engine()
 	: m_PauseInput(false)
 	, m_CameraUseMouse(false)
@@ -338,22 +319,6 @@ s32 Engine::PickEntity(Texture* pTexture)
 void Engine::PickEntity()
 {
 	m_HasPickedEntity = true;
-}
-
-void Engine::RegisterFunction(s32 tick, std::function<void()>  func)
-{
-
-	auto& it = m_Ticks.find(tick);
-	if (it == m_Ticks.end())
-	{
-		Tick _tick;
-		_tick.m_MaxTime = (float)tick;
-		m_Ticks.emplace(tick, _tick);//m_Callbacks.emplace(tick, CU::GrowingArray<std::function<void()>>()).first;
-	}
-
-	it = m_Ticks.find(tick);
-	it->second.m_Callbacks.Add(func);
-
 }
 
 const WindowSize& Engine::GetWindowSize() const

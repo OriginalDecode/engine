@@ -14,6 +14,10 @@ NetworkSystem::NetworkSystem(NodeEntityManager& anEntityManager)
 
 constexpr float update_time = 1.f / 15.f;
 
+/*
+	Should this system do more than just send data?
+*/
+
 void NetworkSystem::Update(float delta_time, bool /*paused*/)
 {
 	static float s_UpdateTime = 0.f;

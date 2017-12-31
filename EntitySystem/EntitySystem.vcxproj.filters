@@ -89,6 +89,9 @@
     <ClInclude Include="GraphicsComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="ModelInstance.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseSystem.cpp">
@@ -137,5 +140,10 @@
     <ClCompile Include="GraphicsComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="ModelInstance.cpp" />
+    <ClCompile Include="DebugComponent.cpp" />
+    <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="NetworkComponent.cpp" />
+    <ClCompile Include="AIComponent.cpp" />
   </ItemGroup>
 </Project>

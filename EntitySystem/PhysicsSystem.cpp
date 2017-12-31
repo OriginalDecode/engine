@@ -34,10 +34,10 @@ void PhysicsSystem::Update(float dt, bool paused)
 		}
 
 		PhysicsComponent& physics = GetComponent<PhysicsComponent>(e);
-
 		translation.SetOrientation(physics.m_Body->GetOrientation());
 
-		physics.m_Body->Impulse(CU::Vector3f(0,0,0.5));
+
+		//physics.m_Body->Impulse(CU::Vector3f(0,0,0.5));
 		physics.m_Body->Update(dt);
 
 	}

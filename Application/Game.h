@@ -38,7 +38,6 @@ public:
 	void HandleEvent(u64 event, void* data) override;
 
 private:
-	void DoStuff();
 
 	void SaveCameraPosition();
 

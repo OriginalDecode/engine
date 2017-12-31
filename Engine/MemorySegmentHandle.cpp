@@ -33,6 +33,11 @@ namespace memory
 		return m_Segments[buffer][index];
 	}
 
+	const memory::CommandAllocator& MemorySegmentHandle::GetCommandAllocator(s32 buffer, s32 index) const
+	{
+		return m_Segments[buffer][index];
+	}
+
 	void MemorySegmentHandle::Clear(s32 index)
 	{
 		for (s32 i = 0; i < 8; i++)

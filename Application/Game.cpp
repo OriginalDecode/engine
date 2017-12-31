@@ -106,11 +106,6 @@ void Game::HandleEvent(u64 event, void* data)
 #endif
 }
 
-void Game::DoStuff()
-{
-	OutputDebugString("magic");
-}
-
 void Game::SaveCameraPosition()
 {
 	std::ofstream camera_save;
@@ -168,8 +163,11 @@ void Game::OldUpdate(float dt)
 
 	if (input_wrapper->IsDown(MouseInput::RIGHT))
 	{
-		m_Camera->Update(m_Engine->GetInputHandle()->GetDeltaCursorPos());
 
+		/*const CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
+		CU::Vector3f intersection = m_Engine->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), ray_dir);
+		pEventHandle->SendMessage("right_click", &intersection);*/
+		m_Camera->Update(m_Engine->GetInputHandle()->GetDeltaCursorPos());
 		if (input_wrapper->IsDown(KButton::W))
 			m_Camera->Move(eDirection::FORWARD, s_CamSpeed * dt);
 		if (input_wrapper->IsDown(KButton::S))
@@ -185,6 +183,7 @@ void Game::OldUpdate(float dt)
 
 	}
 
+	
 	static float entity_speed = 0.2f;
 
 	if (input_wrapper->IsDown(KButton::H))

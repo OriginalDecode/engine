@@ -225,6 +225,7 @@
     <ClInclude Include="InputSystem.h" />
     <ClInclude Include="LightComponent.h" />
     <ClInclude Include="LightSystem.h" />
+    <ClInclude Include="ModelInstance.h" />
     <ClInclude Include="NetworkComponent.h" />
     <ClInclude Include="NetworkSystem.h" />
     <ClInclude Include="PBLComponent.h" />
@@ -236,16 +237,21 @@
     <ClInclude Include="TypeID.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AIComponent.cpp" />
     <ClCompile Include="AISystem.cpp" />
     <ClCompile Include="BaseComponent.cpp" />
     <ClCompile Include="BaseSystem.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="ComponentContainer.cpp" />
+    <ClCompile Include="DebugComponent.cpp" />
     <ClCompile Include="DebugSystem.cpp" />
     <ClCompile Include="EntityManager.cpp" />
+    <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="LightSystem.cpp" />
+    <ClCompile Include="ModelInstance.cpp" />
+    <ClCompile Include="NetworkComponent.cpp" />
     <ClCompile Include="NetworkSystem.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />

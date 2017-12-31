@@ -423,16 +423,21 @@ void Renderer::Render3DCommandsInstanced()
 	PROFILE_FUNCTION(profiler::colors::Green);
 
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
+
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
+
 	Engine& engine = m_RenderContext.GetEngine();
+
+	const memory::MemorySegmentHandle& mem_handle = engine.GetMemorySegmentHandle();
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+
 	for (s32 top_tree_node = 0; top_tree_node < 8; top_tree_node++)
 	{
-		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, top_tree_node);
+		const auto& commands = mem_handle.GetCommandAllocator(current_buffer, top_tree_node);
 		for (s32 i = 0; i < commands.Size(); i++)
 		{
 			ProcessModelCommand(commands, i, engine);
@@ -646,18 +651,14 @@ void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32
 	new_instance.m_Model = model;
 	new_instance.m_Shadowed = true; /* should be command->m_Shadowed or something*/
 	m_InstancingManager.AddInstanceObject(new_instance);
-	
-
-	//m_InstancingManager.AddOrientationToInstance(command->m_MaterialKey, command->m_Orientation);
 
 	GPUModelData model_data;
 	model_data.m_Orientation = command->m_Orientation;
+
 #ifdef _DEBUG
 	model_data.m_ID = command->m_EntityID;
 	model_data.m_Hovering = (command->m_EntityID == debug::DebugHandle::GetInstance()->GetHoveredEntity() ? 1 : 0);
 #endif
-	CU::Vector4f col = cl::IntToCol(model_data.m_ID);
-
 	m_InstancingManager.AddGPUDataToInstance(new_instance.m_Material->GetKey(), model->GetKey(), model_data);
 }
 

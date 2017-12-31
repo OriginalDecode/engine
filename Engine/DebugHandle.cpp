@@ -281,10 +281,6 @@ namespace debug
 						TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_EditEntity);
 						cam->SetPosition2(t.GetOrientation().GetPosition() + CU::Vector3f(10.f, 10.f, 10.f));
 
-
-
-
-
 					}
 
 

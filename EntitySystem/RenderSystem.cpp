@@ -81,7 +81,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 
 			AddRenderCommand(ModelCommand(instance.m_ModelID
 										  , instance.m_MaterialKey
-										  , translation.GetOrientation() //could be pre-calculated, and on physical objects this shouldn't even be used if it can be moved.
+										  , relative * translation.GetOrientation()
 										  , render.m_RenderWireframe
 #ifdef _DEBUG
 										  , e));

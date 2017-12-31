@@ -33,9 +33,7 @@ void CMousePicker::CalculateCurrentRay(float x, float y)
 	cursorPos.y = y;
 
 	cursorPos = NormalizedSpace(cursorPos.x, cursorPos.y);
-	CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.0f, 1.f); //Clip Space
-	
-	
+	CU::Vector4f clip = CU::Vector4f(cursorPos.x, cursorPos.y, 1.f, 0.f); //Clip Space
 	
 	CU::Vector4f eyeCoord = ToEyeCoords(clip);
 	CU::Vector3f ray = ToWorldCoords(eyeCoord);
@@ -48,11 +46,7 @@ CU::Vector4f CMousePicker::ToEyeCoords(const CU::Vector4f& clipCoords)
 {
 	CU::Matrix44f invertedProjection = CU::Math::InverseReal(myCamera->GetPerspective());
 	CU::Vector4f rayOrigin = invertedProjection * clipCoords;
-	rayOrigin.x /= rayOrigin.w;
-	rayOrigin.y /= rayOrigin.w;
-	rayOrigin.z /= rayOrigin.w;
-
-	return CU::Vector4f(rayOrigin.x, rayOrigin.y, rayOrigin.z, 1.f);
+	return CU::Vector4f(rayOrigin.x, rayOrigin.y, 1.f, 0.f);
 }
 
 CU::Vector3f CMousePicker::ToWorldCoords(const CU::Vector4f& eyeCoords)

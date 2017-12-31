@@ -41,7 +41,7 @@ public:
 	RigidBody* CreateBody();
 	float GetGravityForce();
 	void Update();
-	CU::Vector3f RayCast(const CU::Vector3f& cameraPosition, const CU::Vector3f& target) const;
+	CU::Vector3f RayCast(const CU::Vector3f& cameraPosition, const CU::Vector3f& target, const float extent) const;
 
 
 private:

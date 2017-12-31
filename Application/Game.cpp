@@ -161,12 +161,19 @@ void Game::OldUpdate(float dt)
 		m_StateStack->PopCurrentMainState();
 	}
 
-	if (input_wrapper->IsDown(MouseInput::RIGHT))
-	{
+	static LinePoint p0, p1;
+	p0.position = m_Camera->GetPosition();
 
-		/*const CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
-		CU::Vector3f intersection = m_Engine->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), ray_dir);
-		pEventHandle->SendMessage("right_click", &intersection);*/
+	if (input_wrapper->OnClick(MouseInput::RIGHT))
+	{
+		const CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
+		CU::Vector3f intersection = m_Engine->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), ray_dir, 1000.f);
+		p1.position = intersection;
+		pEventHandle->SendMessage("right_click", &intersection);
+	}
+
+	if (input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->IsDown(MouseInput::RIGHT))
+	{
 		m_Camera->Update(m_Engine->GetInputHandle()->GetDeltaCursorPos());
 		if (input_wrapper->IsDown(KButton::W))
 			m_Camera->Move(eDirection::FORWARD, s_CamSpeed * dt);
@@ -196,6 +203,9 @@ void Game::OldUpdate(float dt)
 	}
 
 	HandleMovement(input_wrapper, entity_speed, dt);
+
+	//m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, false));
+
 	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 	m_World.Update(dt, m_Paused);
 }

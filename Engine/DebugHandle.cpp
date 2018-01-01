@@ -614,10 +614,11 @@ namespace debug
 
 
 		DebugComponent& d = em.AddComponent<DebugComponent>(e);
-		d.m_ComponentFlags |= (TreeDweller::GRAPHICS | TreeDweller::TRANSLATION);
+		d.m_ComponentFlags |= (TreeDweller::GRAPHICS | TreeDweller::TRANSLATION | TreeDweller::DEBUG);
 		TreeDweller* dweller = new TreeDweller;
 		dweller->AddComponent(&t, TreeDweller::TRANSLATION);
 		dweller->AddComponent(&g, TreeDweller::GRAPHICS);
+		dweller->AddComponent(&d, TreeDweller::DEBUG);
 
 		dweller->Initiate(e, TreeDweller::DYNAMIC);
 		d.m_Dweller = dweller;

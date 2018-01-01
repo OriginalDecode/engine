@@ -204,7 +204,6 @@ void Octree::MoveUp(TreeNodeBase* node, TreeDweller* dweller, s32 depth)
 {
 	assert(depth >= 0 && "MoveUp : Depth was lower than 0?");
 	TreeNodeBase* parent = node->GetParent();
-	node->RemoveEntity(dweller);
 	if (parent && !node->InsideNode(dweller))
 	{
 		MoveUp(parent, dweller, depth - 1);

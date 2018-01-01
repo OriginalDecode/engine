@@ -43,7 +43,7 @@ void TreeNodeBase::Update(float dt, bool paused)
 		bool found = false;
 		const ComponentList& list = dweller->GetComponentPairList();
 
-		for (const ComponentPair pair : list)
+		for (const ComponentPair& pair : list)
 		{
 			if (!pair.m_Component)
 				continue;
@@ -51,6 +51,7 @@ void TreeNodeBase::Update(float dt, bool paused)
 			{
 				if (m_Parent && !InsideNode(dweller))
 				{
+					RemoveEntity(dweller);
 					m_Octree->MoveUp(this, dweller, m_Depth);
 					found = true;
 					break;

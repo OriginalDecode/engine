@@ -164,13 +164,21 @@ void Game::OldUpdate(float dt)
 	static LinePoint p0, p1;
 	p0.position = m_Camera->GetPosition();
 
-	if (input_wrapper->OnClick(MouseInput::RIGHT))
+	if (!input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->OnClick(MouseInput::RIGHT))
 	{
 		const CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
 		CU::Vector3f intersection = m_Engine->GetPhysicsManager()->RayCast(m_Camera->GetPosition(), ray_dir, 1000.f);
 		p1.position = intersection;
-		pEventHandle->SendMessage("right_click", &intersection);
+
+		pEventHandle->SendMessage(DebugEvents_OnRightClick, &intersection);
 	}
+
+	if (input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->OnDown(KButton::C))
+		pEventHandle->SendMessage("copy_selected");
+
+	if (input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->OnDown(KButton::V))
+		pEventHandle->SendMessage("paste_new");
+
 
 	if (input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->IsDown(MouseInput::RIGHT))
 	{
@@ -187,9 +195,7 @@ void Game::OldUpdate(float dt)
 			m_Camera->Move(eDirection::UP, s_CamSpeed * dt);
 		if (input_wrapper->IsDown(KButton::X))
 			m_Camera->Move(eDirection::DOWN, -s_CamSpeed * dt);
-
 	}
-
 	
 	static float entity_speed = 0.2f;
 

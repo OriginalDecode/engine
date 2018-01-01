@@ -108,8 +108,6 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	pDweller->Initiate(e, TreeDweller::STATIC);
 }
 
-
-//https://stackoverflow.com/questions/6849287/c-callback-how-to-decouple-the-call-back-type
 void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 {
 	Engine* engine = Engine::GetInstance();
@@ -178,103 +176,11 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 	}
 #endif
 
-	pDweller->Initiate(e, TreeDweller::STATIC);
+	pDweller->Initiate(e, TreeDweller::DYNAMIC);
 
 #ifdef _DEBUG
 	EventManager::GetInstance()->SendMessage(DebugEvents_AddEntity, pDweller);
 #endif
-}
-
-void LevelFactory::CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id)
-{
-	m_EntityManager->AddComponent<PhysicsComponent>(entity_id);
-
-	PhysicsComponent& component = m_EntityManager->GetComponent<PhysicsComponent>(entity_id);
-	m_DwellerList.GetLast()->AddComponent<PhysicsComponent>(&component, TreeDweller::PHYSICS);
-
-	const JSONElement& el = entity_reader.GetElement("physics");
-	float object_mass = (float)el["mass"].GetDouble();
-
-	component.m_Body = m_PhysicsManager->CreateBody();
-	btRigidBody* phys_body = nullptr;
-
-	TranslationComponent& translation_component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
-
-
-
-	std::string shape = el["shape"].GetString();
-	if (shape == "mesh")
-	{
-		//RenderComponent& render_component = m_EntityManager->GetComponent<RenderComponent>(entity_id);
-		//CModel* model = m_Engine->GetModel(render_component.myModelID);
-
-		phys_body = component.m_Body->InitAsBox(200, 100, 100, translation_component.GetOrientation().GetPosition());// ->GetVertices(), model->GetIndices()); //InitAsBox(1, 1, 1, { 0,0,0 });
-
-	}
-	else if (shape == "box")
-	{
-		phys_body = component.m_Body->InitAsBox(1, 1, 1, { 0,0,0 });
-	}
-	else if (shape == "sphere")
-	{
-		phys_body = component.m_Body->InitAsSphere(
-			1, //Radius
-			object_mass, //Mass
-			m_PhysicsManager->GetGravityForce(), //Gravity
-			scientific_constants::pressure::air_pressure, //Air pressure / resistance
-			translation_component.GetOrientation().GetPosition()); //Start position
-
-	}
-	component.m_Body->SetEntity(entity_id);
-	m_PhysicsManager->Add(phys_body);
-}
-
-void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
-{
-	m_EntityManager->AddComponent<LightComponent>(entity_id);
-	LightComponent& component = m_EntityManager->GetComponent<LightComponent>(entity_id);
-	m_DwellerList.GetLast()->AddComponent<LightComponent>(&component, TreeDweller::LIGHT);
-
-	std::string type;
-	if (entity_reader.DocumentHasMember("light"))
-	{
-		const JSONElement& el = entity_reader.GetElement("light");
-		if (entity_reader.ElementHasMember(el, "type"))
-		{
-			type = el["type"].GetString();
-		}
-	}
-
-	CU::Vector3f col;
-	m_LevelReader.ReadElement(it->value["color"], col);
-	m_LevelReader.ReadElement(it->value["range"], component.range);
-
-	if (col > CU::Vector3f(1.f, 1.f, 1.f))
-		col /= 255.f;
-
-	component.color = col;
-	if (type == "pointlight")
-	{
-		component.myType = eLightType::ePOINTLIGHT;
-
-	}
-	else if (type == "spotlight")
-	{
-		component.myType = eLightType::eSPOTLIGHT;
-
-		TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
-		CU::Vector3f rotation;
-		m_LevelReader.ReadElement(it->value["rotation"], rotation);
-
-		//translation.myOrientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rotation.x)) * translation.myOrientation;
-		//translation.myOrientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rotation.y)) * translation.myOrientation;
-		//translation.myOrientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * translation.myOrientation;
-
-		m_LevelReader.ReadElement(it->value["angle"], component.angle);
-		component.angle = cl::DegreeToRad(component.angle);
-		component.m_LightID = Engine::GetInstance()->RegisterLight();
-	}
-
 }
 
 void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
@@ -296,7 +202,6 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 			scale.w = 1.f;
 		}
 
-		//component.m_Rotation = g.m_Rotation;
 		component.m_MinPoint = CU::Vector4f(model->GetMinPoint(), 1) * scale;
 		component.m_MaxPoint = CU::Vector4f(model->GetMaxPoint(), 1) * scale;
 	}

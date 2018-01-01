@@ -6,6 +6,7 @@
 #include <Engine/Engine.h>
 #include <Engine/Synchronizer.h>
 #include <Engine/LevelFactory.h>
+#include <Input/InputHandle.h>
 
 #include <EntitySystem/LightComponent.h>
 #include <EntitySystem/DebugComponent.h>
@@ -14,14 +15,13 @@
 #include <EntitySystem/GraphicsComponent.h>
 #include <EntitySystem/NetworkComponent.h>
 #include <EntitySystem/PhysicsComponent.h>
+#include <EntitySystem/EntityManager.h>
+#include <EntitySystem/ComponentFilter.h>
 
 #include <Physics/RigidBody.h>
 #include <Physics/PhysicsManager.h>
 
 #include "NodeEntityManager.h"
-
-#include <EntitySystem/EntityManager.h>
-#include <EntitySystem/ComponentFilter.h>
 
 #include <vector>
 
@@ -132,11 +132,214 @@ namespace debug
 	{
 		EventManager* mgr = EventManager::GetInstance();
 		mgr->Subscribe("create_entity", this);
-		mgr->Subscribe("right_click", this);
-		//mgr->Subscribe(DebugEvents_OnRightClick, this);
+		mgr->Subscribe(DebugEvents_OnRightClick, this);
+		mgr->Subscribe("copy_selected", this);
+		mgr->Subscribe("paste_new", this);
 	}
 
+
+
 	static bool sDebugTextures = false;
+	static bool s_RightClicked = false;
+	static bool s_OpenMenu = false;
+	static CU::Vector3f s_CreatePosition = CU::Vector3f(0, 0, 0);
+
+
+
+	void HandleWorldContextMenu(Engine* pEngine)
+	{
+		
+		static ImVec2 menu_pos;
+		if (s_RightClicked)
+		{
+			const CU::Vector2f& pos = pEngine->GetInputHandle()->GetCursorPos();
+			menu_pos = ImVec2(pos.x, pos.y);
+			s_RightClicked = !s_RightClicked;
+			s_OpenMenu = !s_OpenMenu;
+		}
+
+		if (s_OpenMenu)
+		{
+			ImGui::SetNextWindowPos(menu_pos);
+			ImGui::SetNextWindowSize(ImVec2(150, 200));
+			if (ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoResize))
+			{
+				if (ImGui::Button("Create Entity"))
+				{
+					Entity e = pEngine->GetEntityManager().CreateEntity();
+					LevelFactory::CreateEntity(e, pEngine->GetEntityManager());
+					TranslationComponent& t = pEngine->GetEntityManager().GetComponent<TranslationComponent>(e);
+					t.SetPosition(s_CreatePosition);
+					s_OpenMenu = false;
+				}
+
+				ImGui::End();
+			}
+		}
+	}
+
+
+	void HandleInspector(Entity m_EditEntity, CU::Matrix44f* m_ObjectMatrix, EntityManager &em)
+	{
+		const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
+
+		ImVec2 inspector_size;
+		inspector_size.x = 350;
+		inspector_size.y = window_size.m_Height;
+
+
+
+		ImGui::SetNextWindowPos(ImVec2(window_size.m_Width - 350, 0));
+		ImGui::SetNextWindowSize(inspector_size);
+
+		if (ImGui::Begin("Entity Inspector"))
+		{
+
+			ImGui::Text("Entity %d", m_EditEntity);
+			static bool cam_attach = false;
+
+			if (!cam_attach && ImGui::Button("Attatch Camera"))
+				cam_attach = true;
+			else if (ImGui::Button("Detach Camera"))
+				cam_attach = false;
+
+
+
+			Camera* cam = Engine::GetInstance()->GetCamera();
+			if (cam_attach)
+			{
+
+				TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_EditEntity);
+				cam->SetPosition2(t.GetOrientation().GetPosition() + CU::Vector3f(10.f, 10.f, 10.f));
+
+			}
+
+
+			CU::Matrix44f& orientation = CU::Math::Inverse(cam->GetOrientation());
+			CU::Matrix44f& perspective = cam->GetPerspective();
+			CU::Matrix44f& object_matrix = *m_ObjectMatrix;
+
+			GraphicsComponent& g = em.GetComponent<GraphicsComponent>(m_EditEntity);
+
+
+			constexpr int t_key = 'T';
+			static bool bToggle = false;
+			if (ImGui::IsKeyPressed(t_key))
+				bToggle = !bToggle;
+
+			if (m_ObjectMatrix && !bToggle)
+				EditTransform(orientation.myMatrix, perspective.myMatrix, m_ObjectMatrix->myMatrix);
+
+			if (bToggle)
+				EditTransform(orientation.myMatrix, perspective.myMatrix, g.m_Instances[0].m_Orientation.myMatrix);
+
+			if (em.HasComponent<PhysicsComponent>(m_EditEntity))
+			{
+				PhysicsComponent& phys = em.GetComponent<PhysicsComponent>(m_EditEntity);
+				if (ImGuizmo::IsUsing())
+					phys.m_Body->SetPosition(m_ObjectMatrix->GetPosition());
+
+				const CU::Vector3f linVel = phys.m_Body->GetLinearVelocity();
+				ImGui::Text("Linear Velocity\nx:%.1f\ny:%.1f\nz:%.1f", linVel.x, linVel.y, linVel.z);
+			}
+
+			ImGui::Separator();
+
+			DebugComponent& c = em.GetComponent<DebugComponent>(m_EditEntity);
+
+
+			if (c.m_ComponentFlags & TreeDweller::LIGHT)
+			{
+				if (ImGui::CollapsingHeader("Edit Light"))
+				{
+					ImGui::BulletText("text");
+					LightComponent& l = em.GetComponent<LightComponent>(m_EditEntity);
+					static int type = (int)l.myType;
+					ImGui::InputInt("lighttype", &type);
+					l.myType = (eLightType)type;
+
+					ImGui::InputFloat("Intensity", &l.intensity);
+					ImGui::InputFloat("Range", &l.range);
+					static float half_angle = cl::RadToDegree(l.angle * 2);
+					ImGui::InputFloat("Angle", &half_angle);
+					l.angle = cl::DegreeToRad(half_angle * 0.5f);
+
+					static float rgb[3];
+					rgb[0] = l.color.x;
+					rgb[1] = l.color.y;
+					rgb[2] = l.color.z;
+
+					ImGui::ColorEdit3("Color", rgb);
+					l.color = { rgb[0], rgb[1], rgb[2] };
+
+				}
+			}
+			if (c.m_ComponentFlags & TreeDweller::GRAPHICS)
+			{
+				if (ImGui::CollapsingHeader("Edit Graphics"))
+				{
+
+				}
+			}
+
+
+			static bool _open = false;
+			if (ImGui::Button("Add Component"))
+				_open = !_open;
+
+			if (_open && ImGui::Begin(""))
+			{
+
+				if (c.m_ComponentFlags & (~TreeDweller::GRAPHICS) && ImGui::Button("Add Graphics"))
+				{
+					c.m_ComponentFlags |= TreeDweller::GRAPHICS;
+					em.AddComponent<GraphicsComponent>(m_EditEntity);
+				}
+
+				if (!(c.m_ComponentFlags & TreeDweller::LIGHT) && ImGui::Button("Add Light"))
+				{
+					c.m_ComponentFlags |= TreeDweller::LIGHT;
+					LightComponent& l = em.AddComponent<LightComponent>(m_EditEntity);
+					TreeDweller* pDweller = static_cast<TreeDweller*>(c.m_Dweller);
+					pDweller->AddComponent(&l, TreeDweller::LIGHT);
+					pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
+				}
+
+				if (c.m_ComponentFlags & (~TreeDweller::PHYSICS) && ImGui::Button("Add Physics"))
+				{
+					c.m_ComponentFlags |= TreeDweller::PHYSICS;
+					PhysicsComponent& phys = em.AddComponent<PhysicsComponent>(m_EditEntity);
+					phys.m_Body = Engine::GetInstance()->GetPhysicsManager()->CreateBody();
+
+					Model* pModel = Engine::GetInstance()->GetModel<Model>(g_DefaultModel).GetData();
+					pModel = pModel->GetChildModels()[0];
+					btRigidBody* body = phys.m_Body->InitAsBox(0.5, 0.5, 0.5, { 0.f,0.f,0.f });
+					Engine::GetInstance()->GetPhysicsManager()->Add(body);
+
+					TreeDweller* pDweller = static_cast<TreeDweller*>(c.m_Dweller);
+					pDweller->AddComponent(&phys, TreeDweller::PHYSICS);
+					pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
+				}
+
+				if (ImGui::Button("Add AI"))
+				{
+					c.m_ComponentFlags |= TreeDweller::AI;
+					em.AddComponent<AIComponent>(m_EditEntity);
+				}
+
+				if (ImGui::Button("Add Network")) //This will just indicate that the object will be synchronized
+				{
+					c.m_ComponentFlags |= TreeDweller::NETWORK;
+					em.AddComponent<NetworkComponent>(m_EditEntity);
+				}
+
+				ImGui::End();
+			}
+
+
+			ImGui::End();
+		}
+	}
 
 	void DebugHandle::Update()
 	{
@@ -227,6 +430,7 @@ namespace debug
 
 			ImGui::Separator();
 			ImGui::Text("Hovering : %d", m_CurrEntity);
+
 			if (em.HasComponents(m_EditEntity, CreateFilter<Requires<GraphicsComponent>>()))
 			{
 				ModelInstance* instance = nullptr;
@@ -250,169 +454,15 @@ namespace debug
 					}
 				}
 
-				const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
+				HandleInspector(m_EditEntity, m_ObjectMatrix, em);
 
-				ImVec2 inspector_size;
-				inspector_size.x = 350;
-				inspector_size.y = window_size.m_Height;
-
-
-
-				ImGui::SetNextWindowPos(ImVec2(window_size.m_Width - 350, 0));
-				ImGui::SetNextWindowSize(inspector_size);
-
-				if (ImGui::Begin("Entity Inspector"))
-				{
-
-					ImGui::Text("Entity %d", m_EditEntity);
-					static bool cam_attach = false;
-
-					if (!cam_attach && ImGui::Button("Attatch Camera"))
-						cam_attach = true;
-					else if (ImGui::Button("Detach Camera"))
-						cam_attach = false;
-
-
-
-					Camera* cam = Engine::GetInstance()->GetCamera();
-					if (cam_attach)
-					{
-
-						TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_EditEntity);
-						cam->SetPosition2(t.GetOrientation().GetPosition() + CU::Vector3f(10.f, 10.f, 10.f));
-
-					}
-
-
-					CU::Matrix44f& orientation = CU::Math::Inverse(cam->GetOrientation());
-					CU::Matrix44f& perspective = cam->GetPerspective();
-					CU::Matrix44f& object_matrix = *m_ObjectMatrix;
-
-					GraphicsComponent& g = em.GetComponent<GraphicsComponent>(m_EditEntity);
-
-
-					constexpr int t_key = 'T';
-					static bool bToggle = false;
-					if (ImGui::IsKeyPressed(t_key))
-						bToggle = !bToggle;
-
-					if (m_ObjectMatrix && !bToggle)
-						EditTransform(orientation.myMatrix, perspective.myMatrix, m_ObjectMatrix->myMatrix);
-
-					if (bToggle)
-						EditTransform(orientation.myMatrix, perspective.myMatrix, g.m_Instances[0].m_Orientation.myMatrix);
-
-					if (em.HasComponent<PhysicsComponent>(m_EditEntity))
-					{
-						PhysicsComponent& phys = em.GetComponent<PhysicsComponent>(m_EditEntity);
-						if (ImGuizmo::IsUsing())
-							phys.m_Body->SetPosition(m_ObjectMatrix->GetPosition());
-
-						const CU::Vector3f linVel = phys.m_Body->GetLinearVelocity();
-						ImGui::Text("Linear Velocity\nx:%.1f\ny:%.1f\nz:%.1f", linVel.x, linVel.y, linVel.z);
-					}
-
-					ImGui::Separator();
-
-					DebugComponent& c = em.GetComponent<DebugComponent>(m_EditEntity);
-
-
-					if (c.m_ComponentFlags & TreeDweller::LIGHT)
-					{
-						if (ImGui::CollapsingHeader("Edit Light"))
-						{
-							ImGui::BulletText("text");
-							LightComponent& l = em.GetComponent<LightComponent>(m_EditEntity);
-							static int type = (int)l.myType;
-							ImGui::InputInt("lighttype", &type);
-							l.myType = (eLightType)type;
-
-							ImGui::InputFloat("Intensity", &l.intensity);
-							ImGui::InputFloat("Range", &l.range);
-							static float half_angle = cl::RadToDegree(l.angle * 2);
-							ImGui::InputFloat("Angle", &half_angle);
-							l.angle = cl::DegreeToRad(half_angle * 0.5f);
-
-							static float rgb[3];
-							rgb[0] = l.color.x;
-							rgb[1] = l.color.y;
-							rgb[2] = l.color.z;
-
-							ImGui::ColorEdit3("Color", rgb);
-							l.color = { rgb[0], rgb[1], rgb[2] };
-
-						}
-					}
-					if (c.m_ComponentFlags & TreeDweller::GRAPHICS)
-					{
-						if (ImGui::CollapsingHeader("Edit Graphics"))
-						{
-
-						}
-					}
-
-
-					static bool _open = false;
-					if (ImGui::Button("Add Component"))
-						_open = !_open;
-
-					if (_open && ImGui::Begin(""))
-					{
-
-						if (c.m_ComponentFlags & (~TreeDweller::GRAPHICS) && ImGui::Button("Add Graphics"))
-						{
-							c.m_ComponentFlags |= TreeDweller::GRAPHICS;
-							em.AddComponent<GraphicsComponent>(m_EditEntity);
-						}
-
-						if (!(c.m_ComponentFlags & TreeDweller::LIGHT) && ImGui::Button("Add Light"))
-						{
-							c.m_ComponentFlags |= TreeDweller::LIGHT;
-							LightComponent& l = em.AddComponent<LightComponent>(m_EditEntity);
-							TreeDweller* pDweller = static_cast<TreeDweller*>(c.m_Dweller);
-							pDweller->AddComponent(&l, TreeDweller::LIGHT);
-							pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
-						}
-
-						if (c.m_ComponentFlags & (~TreeDweller::PHYSICS) && ImGui::Button("Add Physics"))
-						{
-							c.m_ComponentFlags |= TreeDweller::PHYSICS;
-							PhysicsComponent& phys = em.AddComponent<PhysicsComponent>(m_EditEntity);
-							phys.m_Body = Engine::GetInstance()->GetPhysicsManager()->CreateBody();
-
-							Model* pModel = Engine::GetInstance()->GetModel<Model>(g_DefaultModel).GetData();
-							pModel = pModel->GetChildModels()[0];
-							btRigidBody* body = phys.m_Body->InitAsBox(0.5, 0.5, 0.5, { 0.f,0.f,0.f });
-							Engine::GetInstance()->GetPhysicsManager()->Add(body);
-
-							TreeDweller* pDweller = static_cast<TreeDweller*>(c.m_Dweller);
-							pDweller->AddComponent(&phys, TreeDweller::PHYSICS);
-							pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
-						}
-
-						if (ImGui::Button("Add AI"))
-						{
-							c.m_ComponentFlags |= TreeDweller::AI;
-							em.AddComponent<AIComponent>(m_EditEntity);
-						}
-
-						if (ImGui::Button("Add Network")) //This will just indicate that the object will be synchronized
-						{
-							c.m_ComponentFlags |= TreeDweller::NETWORK;
-							em.AddComponent<NetworkComponent>(m_EditEntity);
-						}
-
-						ImGui::End();
-					}
-
-
-					ImGui::End();
-				}
 			}
 
 			ImGui::End();
 		}
 		ImGui::PopStyleVar();
+
+		HandleWorldContextMenu(pEngine);
 
 	}
 
@@ -522,11 +572,71 @@ namespace debug
 		m_ObjectMatrix = mat;
 	}
 
+	static GraphicsComponent s_Graphics;
+	static TranslationComponent s_Translation;
+	static PhysicsComponent s_Physics;
+	static LightComponent s_Light;
+	bool s_HasNetwork = false;
+
+
+	void CopyEntity(Entity m_EditEntity)
+	{
+		Engine* engine = Engine::GetInstance();
+		EntityManager& em = engine->GetEntityManager();
+
+		DebugComponent& _debug = em.GetComponent<DebugComponent>(m_EditEntity);
+		s32 flags = _debug.m_ComponentFlags;
+
+		if (flags & TreeDweller::TRANSLATION)
+		{
+			s_Translation = em.GetComponent<TranslationComponent>(m_EditEntity);
+		}
+
+		if (flags & TreeDweller::GRAPHICS)
+		{
+			s_Graphics = em.GetComponent<GraphicsComponent>(m_EditEntity);
+		}
+	}
+
+
+	void PasteEntity()
+	{
+		Engine* engine = Engine::GetInstance();
+		EntityManager& em = engine->GetEntityManager();
+		Entity e = em.CreateEntity();
+
+		TranslationComponent& t = em.AddComponent<TranslationComponent>(e);
+		//t = s_Translation;
+
+		GraphicsComponent& g = em.AddComponent<GraphicsComponent>(e);
+		g = s_Graphics;
+		//memcpy(&g, &s_Graphics, sizeof(GraphicsComponent));
+
+
+		DebugComponent& d = em.AddComponent<DebugComponent>(e);
+		d.m_ComponentFlags |= (TreeDweller::GRAPHICS | TreeDweller::TRANSLATION);
+		TreeDweller* dweller = new TreeDweller;
+		dweller->AddComponent(&t, TreeDweller::TRANSLATION);
+		dweller->AddComponent(&g, TreeDweller::GRAPHICS);
+
+		dweller->Initiate(e, TreeDweller::DYNAMIC);
+		d.m_Dweller = dweller;
+
+		EventManager::GetInstance()->SendMessage(DebugEvents_AddEntity, dweller);
+	}
+
 	void DebugHandle::HandleEvent(u64 event, void* data /*= nullptr*/)
 	{
 		if (event == DebugEvents_OnRightClick)
 		{
-			//i know what to do
+			s_RightClicked = true;
+
+			CU::Vector3f intersection;
+			memcpy(&intersection, data, sizeof(CU::Vector3f));
+
+			s_CreatePosition = intersection;
+
+		
 		}
 		else if (event == Hash("create_entity"))
 		{
@@ -534,29 +644,25 @@ namespace debug
 			Entity e = engine->GetEntityManager().CreateEntity();
 			LevelFactory::CreateEntity(e, engine->GetEntityManager());
 			NetworkComponent& c = engine->GetEntityManager().GetComponent<NetworkComponent>(e);
-
-			GUID* d = static_cast<GUID*>(data);
-			c.m_GUID = *d;
+			memcpy(&c.m_GUID, data, sizeof(GUID));
 
 			TranslationComponent& t = engine->GetEntityManager().GetComponent<TranslationComponent>(e);
 			engine->GetNetworkManager()->AddReplicant(c.m_GUID, &t);
 
 		}
-		else if(event == Hash("right_click"))
+		else if (event == Hash("copy_selected"))
 		{
-			CU::Vector3f intersection;
-			memcpy(&intersection, data, sizeof(CU::Vector3f));
-			
-			Engine* engine = Engine::GetInstance();
-			Entity e = engine->GetEntityManager().CreateEntity();
-			LevelFactory::CreateEntity(e, engine->GetEntityManager());
-			TranslationComponent& t = engine->GetEntityManager().GetComponent<TranslationComponent>(e);
-			t.SetPosition(intersection);
+			CopyEntity(m_EditEntity);
+
+
+		}
+		else if (event == Hash("paste_new"))
+		{
+			PasteEntity();
+
 
 		}
 
-
 	}
-
 };
 #endif

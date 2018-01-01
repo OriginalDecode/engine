@@ -24,13 +24,10 @@ public:
 	static void CreateEntity(Entity e, EntityManager& em);
 private:
 	void CreateEntity(const std::string& entity_filepath);
-	void CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it);
 	void CreateTerrain(std::string terrain_path);
 
-	void CreatePhysicsComponent(JSONReader& entity_reader, Entity entity_id);
 
 
-	void CreateLightComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it);
 
 
 	CU::GrowingArray<TreeDweller*> m_DwellerList;

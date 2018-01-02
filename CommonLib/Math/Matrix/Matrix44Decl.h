@@ -13,6 +13,10 @@ namespace CommonUtilities
 		public:
 			Matrix44();
 			Matrix44(const Matrix44<TYPE>& aMatrix);
+			Matrix44(TYPE mat[16])
+				: myMatrix(mat)
+			{
+			}
 			~Matrix44();
 
 			Matrix44& operator=(const Matrix44& aMatrix);
@@ -41,9 +45,11 @@ namespace CommonUtilities
 			void SetPerspectiveFOV(float fov, float aspect_ratio);
 
 
+			//Matrix44<TYPE>& operator*=(const Matrix44<TYPE>& rhs);
+
 			union
 			{
-				TYPE myMatrix[16];
+				__declspec(align(16))TYPE myMatrix[16];
 				TYPE mat[4][4];
 				Vector4<TYPE> rows[4];
 			};
@@ -51,6 +57,7 @@ namespace CommonUtilities
 
 			void ConvertFromCol(const TYPE aColMatrix[16]);
 			void InitWithArray(const TYPE aColMatrix[16]);
+			static Matrix44<TYPE> Transpose(const Matrix44<TYPE>& mat);
 
 			Vector3<TYPE> GetRadRotations();
 			Vector3<TYPE> GetGradRotations();
@@ -113,6 +120,18 @@ namespace CommonUtilities
 			const Matrix44<TYPE> Calculate(const RotationType& rotation, const TYPE& cos, const TYPE& sin);
 		};
 
+		template<typename TYPE>
+		Matrix44<TYPE> Matrix44<TYPE>::Transpose(const Matrix44<TYPE>& mat)
+		{
+			Matrix44<TYPE> result = mat;
+			std::swap(result.myMatrix[1], result.myMatrix[4]);
+			std::swap(result.myMatrix[2], result.myMatrix[8]);
+			std::swap(result.myMatrix[3], result.myMatrix[12]);
+			std::swap(result.myMatrix[6], result.myMatrix[9]);
+			std::swap(result.myMatrix[7], result.myMatrix[13]);
+			std::swap(result.myMatrix[11], result.myMatrix[14]);
+			return result;
+		}
 
 		template<typename TYPE>
 		bool Matrix44<TYPE>::operator==(const Matrix44<TYPE>& m0)

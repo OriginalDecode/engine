@@ -161,6 +161,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\TimeManager\;$(SolutionDir)CommonLib\;$(SolutionDir);$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <AdditionalDependencies>CommonLib_$(Configuration).lib;DL_Debug_$(Configuration).lib;EntitySystem_$(Configuration).lib;Input_$(Configuration).lib;Physics_$(Configuration).lib;PostMaster_$(Configuration).lib;Timer_$(Configuration).lib;Engine_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -215,6 +216,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\TimeManager\;$(SolutionDir)CommonLib\;$(SolutionDir);$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>_WINSOCKAPI_;_FINAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -239,6 +241,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Timer\TimeManager\;$(SolutionDir)CommonLib\;$(SolutionDir);$(SolutionDir)Engine\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>_WINSOCKAPI_;_PROFILE;BUILD_WITH_EASY_PROFILER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

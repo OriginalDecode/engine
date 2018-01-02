@@ -1,6 +1,7 @@
 #pragma once
 #include "Matrix44Decl.h"
 #include "../Vector/Vector3.h"
+#include <xmmintrin.h>
 namespace CommonUtilities
 {
 	typedef Math::Matrix44<float> Matrix44f;
@@ -48,7 +49,7 @@ namespace CommonUtilities
 		template<typename T>
 		float Matrix44<T>::GetYRotation() const
 		{
-			return atan2f(-myMatrix[8], sqrtf((2.f/myMatrix[5]) + (2.f / myMatrix[6] + 0.00001f))) + 0.00001f;
+			return atan2f(-myMatrix[8], sqrtf((2.f / myMatrix[5]) + (2.f / myMatrix[6] + 0.00001f))) + 0.00001f;
 		}
 
 		template<typename T>
@@ -64,75 +65,75 @@ namespace CommonUtilities
 
 			switch (rotation)
 			{
-				case RotationType::Axis_X:
-				{
-					matrix.myMatrix[0] = 1;
-					matrix.myMatrix[1] = 0;
-					matrix.myMatrix[2] = 0;
-					matrix.myMatrix[3] = 0;
+			case RotationType::Axis_X:
+			{
+				matrix.myMatrix[0] = 1;
+				matrix.myMatrix[1] = 0;
+				matrix.myMatrix[2] = 0;
+				matrix.myMatrix[3] = 0;
 
-					matrix.myMatrix[4] = 0;
-					matrix.myMatrix[5] = someCos;
-					matrix.myMatrix[6] = someSin;
-					matrix.myMatrix[7] = 0;
+				matrix.myMatrix[4] = 0;
+				matrix.myMatrix[5] = someCos;
+				matrix.myMatrix[6] = someSin;
+				matrix.myMatrix[7] = 0;
 
-					matrix.myMatrix[8] = 0;
-					matrix.myMatrix[9] = -someSin;
-					matrix.myMatrix[10] = someCos;
-					matrix.myMatrix[11] = 0;
+				matrix.myMatrix[8] = 0;
+				matrix.myMatrix[9] = -someSin;
+				matrix.myMatrix[10] = someCos;
+				matrix.myMatrix[11] = 0;
 
-					matrix.myMatrix[12] = 0;
-					matrix.myMatrix[13] = 0;
-					matrix.myMatrix[14] = 0;
-					matrix.myMatrix[15] = 1;
-				} break;
+				matrix.myMatrix[12] = 0;
+				matrix.myMatrix[13] = 0;
+				matrix.myMatrix[14] = 0;
+				matrix.myMatrix[15] = 1;
+			} break;
 
-				case RotationType::Axis_Y:
-				{
-					matrix.myMatrix[0] = someCos;
-					matrix.myMatrix[1] = 0;
-					matrix.myMatrix[2] = -someSin;
-					matrix.myMatrix[3] = 0;
+			case RotationType::Axis_Y:
+			{
+				matrix.myMatrix[0] = someCos;
+				matrix.myMatrix[1] = 0;
+				matrix.myMatrix[2] = -someSin;
+				matrix.myMatrix[3] = 0;
 
-					matrix.myMatrix[4] = 0;
-					matrix.myMatrix[5] = 1;
-					matrix.myMatrix[6] = 0;
-					matrix.myMatrix[7] = 0;
+				matrix.myMatrix[4] = 0;
+				matrix.myMatrix[5] = 1;
+				matrix.myMatrix[6] = 0;
+				matrix.myMatrix[7] = 0;
 
-					matrix.myMatrix[8] = someSin;
-					matrix.myMatrix[9] = 0;
-					matrix.myMatrix[10] = someCos;
-					matrix.myMatrix[11] = 0;
+				matrix.myMatrix[8] = someSin;
+				matrix.myMatrix[9] = 0;
+				matrix.myMatrix[10] = someCos;
+				matrix.myMatrix[11] = 0;
 
-					matrix.myMatrix[12] = 0;
-					matrix.myMatrix[13] = 0;
-					matrix.myMatrix[14] = 0;
-					matrix.myMatrix[15] = 1;
+				matrix.myMatrix[12] = 0;
+				matrix.myMatrix[13] = 0;
+				matrix.myMatrix[14] = 0;
+				matrix.myMatrix[15] = 1;
 
-				} break;
+			} break;
 
-				case RotationType::Axis_Z:
-				{
-					matrix.myMatrix[0] = someCos;
-					matrix.myMatrix[1] = someSin;
-					matrix.myMatrix[2] = 0;
-					matrix.myMatrix[3] = 0;
+			case RotationType::Axis_Z:
+			{
+				matrix.myMatrix[0] = someCos;
+				matrix.myMatrix[1] = someSin;
+				matrix.myMatrix[2] = 0;
+				matrix.myMatrix[3] = 0;
 
-					matrix.myMatrix[4] = -someSin;
-					matrix.myMatrix[5] = someCos;
-					matrix.myMatrix[6] = 0;
-					matrix.myMatrix[7] = 0;
+				matrix.myMatrix[4] = -someSin;
+				matrix.myMatrix[5] = someCos;
+				matrix.myMatrix[6] = 0;
+				matrix.myMatrix[7] = 0;
 
-					matrix.myMatrix[8] = 0;
-					matrix.myMatrix[9] = 0;
-					matrix.myMatrix[10] = 1;
-					matrix.myMatrix[11] = 0;
+				matrix.myMatrix[8] = 0;
+				matrix.myMatrix[9] = 0;
+				matrix.myMatrix[10] = 1;
+				matrix.myMatrix[11] = 0;
 
-					matrix.myMatrix[12] = 0;
-					matrix.myMatrix[13] = 0;
-					matrix.myMatrix[14] = 0;
-					matrix.myMatrix[15] = 1;
-				} break;
+				matrix.myMatrix[12] = 0;
+				matrix.myMatrix[13] = 0;
+				matrix.myMatrix[14] = 0;
+				matrix.myMatrix[15] = 1;
+			} break;
 
 			}
 
@@ -174,7 +175,7 @@ namespace CommonUtilities
 		}
 
 		template<typename TYPE>
-		Matrix44<TYPE> Matrix44<TYPE>::CreateScaleMatrix(const Vector4<TYPE>& scale = Vector4<TYPE>(1,1,1,1))
+		Matrix44<TYPE> Matrix44<TYPE>::CreateScaleMatrix(const Vector4<TYPE>& scale = Vector4<TYPE>(1, 1, 1, 1))
 		{
 			Matrix44 to_return;
 			to_return.rows[0] = Vector4<TYPE>(scale.x, 0, 0, 0);
@@ -306,7 +307,7 @@ namespace CommonUtilities
 			TYPE sx = CU::Math::Length(rows[0]);
 			TYPE sy = CU::Math::Length(rows[1]);
 			TYPE sz = CU::Math::Length(rows[2]);
-			return Vector4<TYPE>(sx,sy,sz, 1);
+			return Vector4<TYPE>(sx, sy, sz, 1);
 		}
 
 		template<typename TYPE>
@@ -402,9 +403,9 @@ namespace CommonUtilities
 		template<typename TYPE>
 		const Matrix44<TYPE> operator*(const Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
 		{
-			Matrix44<TYPE> tempMatrix(aFirstMatrix);
-			tempMatrix *= aSecondMatrix;
-			return tempMatrix;
+			Matrix44<TYPE> out(aFirstMatrix);
+			out *= aSecondMatrix;
+			return out;
 		}
 
 		template<typename TYPE>
@@ -470,100 +471,37 @@ namespace CommonUtilities
 			return aFirstMatrix;
 		}
 
+
 		template<typename TYPE>
-		const Matrix44<TYPE> operator*=(Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
+		Matrix44<TYPE>& operator*=(Matrix44<TYPE>& left, const Matrix44<TYPE>& right)
 		{
-		
-			Matrix44<TYPE> originalFirst(aFirstMatrix);
+			const __m128 c0 = _mm_load_ps(&right.myMatrix[0]);
+			const __m128 c1 = _mm_load_ps(&right.myMatrix[4]);
+			const __m128 c2 = _mm_load_ps(&right.myMatrix[8]);
+			const __m128 c3 = _mm_load_ps(&right.myMatrix[12]);
 
-			aFirstMatrix.myMatrix[0] =
-				originalFirst.myMatrix[0] * aSecondMatrix.myMatrix[0] +
-				originalFirst.myMatrix[1] * aSecondMatrix.myMatrix[4] +
-				originalFirst.myMatrix[2] * aSecondMatrix.myMatrix[8] +
-				originalFirst.myMatrix[3] * aSecondMatrix.myMatrix[12];
-			aFirstMatrix.myMatrix[1] =
-				originalFirst.myMatrix[0] * aSecondMatrix.myMatrix[1] +
-				originalFirst.myMatrix[1] * aSecondMatrix.myMatrix[5] +
-				originalFirst.myMatrix[2] * aSecondMatrix.myMatrix[9] +
-				originalFirst.myMatrix[3] * aSecondMatrix.myMatrix[13];
-			aFirstMatrix.myMatrix[2] =
-				originalFirst.myMatrix[0] * aSecondMatrix.myMatrix[2] +
-				originalFirst.myMatrix[1] * aSecondMatrix.myMatrix[6] +
-				originalFirst.myMatrix[2] * aSecondMatrix.myMatrix[10] +
-				originalFirst.myMatrix[3] * aSecondMatrix.myMatrix[14];
-			aFirstMatrix.myMatrix[3] =
-				originalFirst.myMatrix[0] * aSecondMatrix.myMatrix[3] +
-				originalFirst.myMatrix[1] * aSecondMatrix.myMatrix[7] +
-				originalFirst.myMatrix[2] * aSecondMatrix.myMatrix[11] +
-				originalFirst.myMatrix[3] * aSecondMatrix.myMatrix[15];
+			float* leftPtr = &left.myMatrix[0];
+			for (size_t i = 0; i < 4; i++)
+			{
+				__m128 r0 = _mm_set1_ps(leftPtr[0 + (i * 4)]);
+				__m128 r1 = _mm_set1_ps(leftPtr[1 + (i * 4)]);
+				__m128 r2 = _mm_set1_ps(leftPtr[2 + (i * 4)]);
+				__m128 r3 = _mm_set1_ps(leftPtr[3 + (i * 4)]);
 
-			aFirstMatrix.myMatrix[4] =
-				originalFirst.myMatrix[4] * aSecondMatrix.myMatrix[0] +
-				originalFirst.myMatrix[5] * aSecondMatrix.myMatrix[4] +
-				originalFirst.myMatrix[6] * aSecondMatrix.myMatrix[8] +
-				originalFirst.myMatrix[7] * aSecondMatrix.myMatrix[12];
-			aFirstMatrix.myMatrix[5] =
-				originalFirst.myMatrix[4] * aSecondMatrix.myMatrix[1] +
-				originalFirst.myMatrix[5] * aSecondMatrix.myMatrix[5] +
-				originalFirst.myMatrix[6] * aSecondMatrix.myMatrix[9] +
-				originalFirst.myMatrix[7] * aSecondMatrix.myMatrix[13];
-			aFirstMatrix.myMatrix[6] =
-				originalFirst.myMatrix[4] * aSecondMatrix.myMatrix[2] +
-				originalFirst.myMatrix[5] * aSecondMatrix.myMatrix[6] +
-				originalFirst.myMatrix[6] * aSecondMatrix.myMatrix[10] +
-				originalFirst.myMatrix[7] * aSecondMatrix.myMatrix[14];
-			aFirstMatrix.myMatrix[7] =
-				originalFirst.myMatrix[4] * aSecondMatrix.myMatrix[3] +
-				originalFirst.myMatrix[5] * aSecondMatrix.myMatrix[7] +
-				originalFirst.myMatrix[6] * aSecondMatrix.myMatrix[11] +
-				originalFirst.myMatrix[7] * aSecondMatrix.myMatrix[15];
+				__m128 row = _mm_add_ps(
+					_mm_add_ps(
+						_mm_mul_ps(r0, c0), 
+						_mm_mul_ps(r1, c1)),	
+					_mm_add_ps(	
+						_mm_mul_ps(r2, c2), 
+						_mm_mul_ps(r3, c3)));
 
-			aFirstMatrix.myMatrix[8] =
-				originalFirst.myMatrix[8] * aSecondMatrix.myMatrix[0] +
-				originalFirst.myMatrix[9] * aSecondMatrix.myMatrix[4] +
-				originalFirst.myMatrix[10] * aSecondMatrix.myMatrix[8] +
-				originalFirst.myMatrix[11] * aSecondMatrix.myMatrix[12];
-			aFirstMatrix.myMatrix[9] =
-				originalFirst.myMatrix[8] * aSecondMatrix.myMatrix[1] +
-				originalFirst.myMatrix[9] * aSecondMatrix.myMatrix[5] +
-				originalFirst.myMatrix[10] * aSecondMatrix.myMatrix[9] +
-				originalFirst.myMatrix[11] * aSecondMatrix.myMatrix[13];
-			aFirstMatrix.myMatrix[10] =
-				originalFirst.myMatrix[8] * aSecondMatrix.myMatrix[2] +
-				originalFirst.myMatrix[9] * aSecondMatrix.myMatrix[6] +
-				originalFirst.myMatrix[10] * aSecondMatrix.myMatrix[10] +
-				originalFirst.myMatrix[11] * aSecondMatrix.myMatrix[14];
-			aFirstMatrix.myMatrix[11] =
-				originalFirst.myMatrix[8] * aSecondMatrix.myMatrix[3] +
-				originalFirst.myMatrix[9] * aSecondMatrix.myMatrix[7] +
-				originalFirst.myMatrix[10] * aSecondMatrix.myMatrix[11] +
-				originalFirst.myMatrix[11] * aSecondMatrix.myMatrix[15];
+				_mm_store_ps(&left.myMatrix[4 * i], row);
+			}
 
-			aFirstMatrix.myMatrix[12] =
-				originalFirst.myMatrix[12] * aSecondMatrix.myMatrix[0] +
-				originalFirst.myMatrix[13] * aSecondMatrix.myMatrix[4] +
-				originalFirst.myMatrix[14] * aSecondMatrix.myMatrix[8] +
-				originalFirst.myMatrix[15] * aSecondMatrix.myMatrix[12];
-			aFirstMatrix.myMatrix[13] =
-				originalFirst.myMatrix[12] * aSecondMatrix.myMatrix[1] +
-				originalFirst.myMatrix[13] * aSecondMatrix.myMatrix[5] +
-				originalFirst.myMatrix[14] * aSecondMatrix.myMatrix[9] +
-				originalFirst.myMatrix[15] * aSecondMatrix.myMatrix[13];
-			aFirstMatrix.myMatrix[14] =
-				originalFirst.myMatrix[12] * aSecondMatrix.myMatrix[2] +
-				originalFirst.myMatrix[13] * aSecondMatrix.myMatrix[6] +
-				originalFirst.myMatrix[14] * aSecondMatrix.myMatrix[10] +
-				originalFirst.myMatrix[15] * aSecondMatrix.myMatrix[14];
-			aFirstMatrix.myMatrix[15] =
-				originalFirst.myMatrix[12] * aSecondMatrix.myMatrix[3] +
-				originalFirst.myMatrix[13] * aSecondMatrix.myMatrix[7] +
-				originalFirst.myMatrix[14] * aSecondMatrix.myMatrix[11] +
-				originalFirst.myMatrix[15] * aSecondMatrix.myMatrix[15];
-
-			return aFirstMatrix;
-
+			return left;
 		}
-
+		
 		template<typename TYPE>
 		const Vector4<TYPE> operator*=(const Vector4<TYPE>& aVector, const Matrix44<TYPE>& aMatrix)
 		{
@@ -630,7 +568,7 @@ namespace CommonUtilities
 			float cos_fov = cos(0.5f * fov);
 			float width = cos_fov / sin_fov;
 			float height = width / aspect_ratio;
-			
+
 			myMatrix[0] = width;
 			myMatrix[5] = height;
 

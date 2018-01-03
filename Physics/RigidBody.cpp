@@ -5,6 +5,13 @@
 
 #include <Utilities.h>
 #include "engine_shared.h"
+
+RigidBody::RigidBody()
+	: m_IsEnabled(true)
+	, m_IsStatic(false)
+{
+}
+
 RigidBody::~RigidBody()
 {
 	SAFE_DELETE(myVertexArray);
@@ -123,13 +130,14 @@ btRigidBody* RigidBody::InitAsBox(float width, float height, float depth, CU::Ve
 {
 	m_Shape = new btBoxShape(btVector3(width, height, depth));
 	m_Shape->setMargin(0.025f);
-	btVector3 pos = btVector3(position.x, position.y, position.z); //initial position
+	btVector3 pos = btu::ConvertVector(position); //bt(position.x, position.y, position.z); //initial position
 	m_MotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos));
+
 	btScalar mass = 10.f;
 	btRigidBody::btRigidBodyConstructionInfo bodyInfo(mass, m_MotionState, m_Shape, btVector3(0, 0, 0));
 	myBody = new btRigidBody(bodyInfo);
-	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
 
+	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
 	return myBody;
 }
 
@@ -225,6 +233,16 @@ CU::Vector3f RigidBody::GetLinearVelocity()
 {
 	return CU::Vector3f(myBody->getLinearVelocity().getX(), myBody->getLinearVelocity().getY(), myBody->getLinearVelocity().getZ());
 }
+
+void RigidBody::SetStatic(bool is_static)
+{
+	m_IsStatic = is_static;
+	if (m_IsStatic)
+		myBody->setMassProps(0, btVector3(0, 0, 0));
+	else
+		myBody->setMassProps(myMass, btVector3(0, 0, 0));
+}
+
 //
 //void RigidBody::UpdateOrientation(const ControllerState& controller_state)
 //{

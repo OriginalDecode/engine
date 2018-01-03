@@ -17,7 +17,7 @@ class btTriangleIndexVertexArray;
 class RigidBody : public CollisionObject
 {
 public:
-	RigidBody() = default;
+	RigidBody();
 	~RigidBody() override;
 
 	btRigidBody* InitAsPlane(const btVector3& aNormal);
@@ -41,8 +41,11 @@ public:
 	void ToggleBody() { m_IsEnabled = !m_IsEnabled; }
 	btCollisionShape* GetShape() const { return m_Shape; }
 
+	void SetStatic(bool is_static);
+	bool IsStatic() const { return m_IsStatic; }
+
 private:
-	CU::Vector3f myVelocity; 
+	CU::Vector3f myVelocity;
 	CU::Vector3f myTerminalVelocity;
 
 	float myMass = 0.f;
@@ -52,16 +55,17 @@ private:
 	float myCrossSectionArea = 0.f;
 	float myResistanceDensity = 0.f;
 	float myRadius = 0.f;
-	
-	bool m_IsEnabled = true;
+
+	bool m_IsEnabled : 1;
+	bool m_IsStatic : 1;
 
 	CU::Quaternion m_Yaw;
 	CU::Quaternion m_Pitch;
 	CU::Vector2f m_CenterPoint;
 
-	btRigidBody* myBody							= nullptr;
-	btTransform* myWorldTranslation				= nullptr;
-	btTriangleIndexVertexArray* myVertexArray	= nullptr;
+	btRigidBody* myBody = nullptr;
+	btTransform* myWorldTranslation = nullptr;
+	btTriangleIndexVertexArray* myVertexArray = nullptr;
 
 
 };

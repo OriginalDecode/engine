@@ -282,6 +282,20 @@ namespace debug
 				}
 			}
 
+			if (c.m_ComponentFlags & TreeDweller::PHYSICS)
+			{
+				if (ImGui::CollapsingHeader("Physics"))
+				{
+					PhysicsComponent& phys = em.GetComponent<PhysicsComponent>(m_EditEntity);
+					RigidBody* body = phys.m_Body;
+					static bool is_static = body->IsStatic();
+					ImGui::Checkbox("Static", &is_static);
+					body->SetStatic(is_static);
+				}
+			}
+
+
+
 
 			static bool _open = false;
 			if (ImGui::Button("Add Component"))

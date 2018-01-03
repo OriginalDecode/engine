@@ -1,62 +1,47 @@
-[
-    {
+[{
         "component_type": "translation",
         "position": [
-            8.0,
-            2.0,
-            5.0
+            38.375,
+            0.499,
+            46.61
         ],
         "up": [
             0.0,
-            -0.0,
-            1.0
+            1.0,
+            0.0
         ],
         "forward": [
             0.0,
-            -1.0,
-            -0.0
+            0.0,
+            1.0
         ]
     },
     {
         "component_type": "graphics",
-        "instances": [
-            {
-                "model_file": "data/engineassets/cube_100x100.fbx",
-                "material_file": "Data/Material/mat_aluminum.json",
-                "relative_position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "relative_scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "up": [
-                    0.0,
-                    1.0,
-                    0.0
-                ],
-                "forward": [
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "shadowed": true
-            }
-        ]
-    },
-    {
-        "component_type": "light",
-        "lighttype": 1,
-        "color": [
-            0.98,
-            0.0,
-            0.0
-        ],
-        "intensity": 700.0,
-        "angle": 0.4,
-        "range": 10.0
+        "instances": [{
+            "model_file": "default",
+            "material_file": "default",
+            "relative_position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "relative_scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "up": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "forward": [
+                0.0,
+                0.0,
+                1.0
+            ],
+            "shadowed": true
+        }]
     }
 ]

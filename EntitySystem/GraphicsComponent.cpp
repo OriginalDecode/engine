@@ -83,9 +83,6 @@ ModelInstance ModelInstance::Deserialize(const rapidjson::Value& json_value)
 
 void GraphicsComponent::Serialize(JsonWriter& writer) const
 {
-	writer.StartObject();
-	writer.String("component_type");
-	writer.String("graphics");
 
 	writer.String(s_Instances);
 	writer.StartArray();

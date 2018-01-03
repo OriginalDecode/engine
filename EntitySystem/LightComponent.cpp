@@ -23,9 +23,6 @@ void LightComponent::Deserialize(const rapidjson::Value& value)
 
 void LightComponent::Serialize(JsonWriter& writer) const
 {
-	writer.StartObject();
-	writer.String("component_type");
-	writer.String("light");
 
 	writer.String(c_LightType);
 	if (myType == eLightType::eSPOTLIGHT)

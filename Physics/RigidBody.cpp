@@ -6,6 +6,8 @@
 #include <Utilities.h>
 #include "engine_shared.h"
 
+
+
 RigidBody::RigidBody()
 	: m_IsEnabled(true)
 	, m_IsStatic(false)
@@ -162,6 +164,9 @@ void RigidBody::SetPosition(const CU::Vector3f& aPosition)
 
 void RigidBody::Update(float deltaTime)
 {
+	if (!myBody)
+		return;
+
 	btVector3 linear_velocity = myBody->getLinearVelocity();
 	myVelocity.x = linear_velocity.getX();
 	myVelocity.y = linear_velocity.getY();
@@ -196,6 +201,10 @@ btRigidBody* RigidBody::GetBody()
 
 const CU::Matrix44f& RigidBody::GetOrientation()
 {
+	if (!m_Shape)
+		return CU::Matrix44f();
+
+
 	myWorldTranslation->getOpenGLMatrix(&m_Orientation.myMatrix[0]);
 	
 
@@ -243,14 +252,26 @@ void RigidBody::SetStatic(bool is_static)
 		myBody->setMassProps(myMass, btVector3(0, 0, 0));
 }
 
-//
-//void RigidBody::UpdateOrientation(const ControllerState& controller_state)
-//{
-//	m_CenterPoint.y -= ((float)controller_state.m_ThumbRY / SHRT_MAX) * 0.01f;
-//	m_CenterPoint.x += ((float)controller_state.m_ThumbRX / SHRT_MAX) * 0.01f;
-//
-//	m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
-//
-//	m_Pitch = CU::Quaternion(CU::Vector3f(1.f, 0.f, 0.f), m_CenterPoint.y);
-//	m_Yaw = CU::Quaternion(CU::Vector3f(0.f, 1.f, 0.f), m_CenterPoint.x);
-//}
+void RigidBody::SerializePhysicsData(unsigned char*& buffer_pointer, int& buffer_size)
+{
+	btDefaultSerializer* serializer = new btDefaultSerializer;
+
+	serializer->startSerialization();
+	m_Shape->serializeSingleShape(serializer);
+	serializer->finishSerialization();
+
+	serializer->getBufferPointer();
+	buffer_size = serializer->getCurrentBufferSize();
+
+	buffer_pointer = new unsigned char[buffer_size];
+	ZeroMemory(buffer_pointer, buffer_size);
+	memcpy(buffer_pointer, serializer->getBufferPointer(), buffer_size);
+
+
+
+	//FILE* file = fopen("testFile.bullet", "wb");
+	//fwrite(serializer->getBufferPointer(), serializer->getCurrentBufferSize(), 1, file);
+	//fclose(file);
+
+	delete serializer;
+}

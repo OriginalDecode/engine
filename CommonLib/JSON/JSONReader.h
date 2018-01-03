@@ -9,6 +9,7 @@ class JSONReader
 public:
 	static std::string ERROR_STR;
 	JSONReader(const std::string& filepath);
+
 	JSONReader() = default;
 	~JSONReader();
 
@@ -43,6 +44,7 @@ public:
 
 
 	void OpenDocument(const std::string& filepath);
+	void OpenDocument(const char* file_buffer);
 	void CloseDocument();
 
 

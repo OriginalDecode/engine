@@ -16,17 +16,20 @@ JSONReader::~JSONReader()
 void JSONReader::OpenDocument(const std::string & filepath)
 {
 	myCurrentDocumentPath = filepath;
-	
 	fopen_s(&myFile, myCurrentDocumentPath.c_str(), "r");
-	//int error_code = 0;
-	//_get_errno(&error_code);
-	//assert(error_code == 0 && "Failed to open file");
-
 	assert(myFile != NULL && "File could not be found!");
 	char buffer[2048]; //the buffer size determines how fast it can parse the file
 	myFileReaderStream = new rapidjson::FileReadStream(myFile, buffer, sizeof(buffer));
 	myDocument.ParseStream<0, rapidjson::UTF8<>, rapidjson::FileReadStream>(*myFileReaderStream);
 	assert(myFile != nullptr && "File were not open. Failed to open file, does it exist?");
+}
+
+void JSONReader::OpenDocument(const char* file_buffer)
+{
+	myDocument.Parse<rapidjson::kParseStopWhenDoneFlag>(file_buffer);
+	assert(!myDocument.HasParseError() && "file has a problem parsing");
+
+
 }
 
 void JSONReader::CloseDocument()

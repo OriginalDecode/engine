@@ -4,9 +4,6 @@
 void TranslationComponent::Serialize(JsonWriter& writer) const
 {
 	writer.SetMaxDecimalPlaces(3);
-	writer.StartObject();
-	writer.String("component_type");
-	writer.String("translation");
 
 	CU::Vector3f position = m_Orientation.GetPosition();
 	writer.String("position");

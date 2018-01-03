@@ -8,10 +8,11 @@ PhysicsComponent::~PhysicsComponent()
 
 void PhysicsComponent::Serialize(JsonWriter& writer) const
 {
-	assert(false && "not implemented!");
+	m_Body->Serialize(writer);
 }
 
 void PhysicsComponent::Deserialize(const rapidjson::Value& value)
 {
-	assert(false && "not implemented!");
+	m_Body = new RigidBody;
+	m_Body->Deserialize(value);
 }

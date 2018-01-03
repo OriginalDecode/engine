@@ -10,8 +10,6 @@ class btTransform;
 class btTriangleIndexVertexArray;
 
 
-
-
 //struct ControllerState;
 
 class RigidBody : public CollisionObject
@@ -44,7 +42,15 @@ public:
 	void SetStatic(bool is_static);
 	bool IsStatic() const { return m_IsStatic; }
 
+	template<typename Writer>
+	void Serialize(Writer& writer);
+
+	template<typename Value>
+	void Deserialize(const Value& value);
+
+	void SerializePhysicsData(unsigned char*& buffer_pointer, int& buffer_size);
 private:
+
 	CU::Vector3f myVelocity;
 	CU::Vector3f myTerminalVelocity;
 
@@ -69,4 +75,27 @@ private:
 
 
 };
+
+template<typename Writer>
+void RigidBody::Serialize(Writer& writer)
+{
+
+	writer.String("mass");
+	writer.Double(myMass);
+	writer.String("static");
+	writer.Bool(m_IsStatic);
+
+
+	
+
+
+	writer.EndObject();
+}
+
+template<typename Value>
+void RigidBody::Deserialize(const Value& value)
+{
+	myMass = (float)value["mass"].GetDouble();
+	m_IsStatic = value["static"].GetBool();
+}
 

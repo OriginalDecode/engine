@@ -36,6 +36,11 @@
 #include <network/NetworkManager.h>
 #include <network/NetCreateEntity.h>
 
+
+#include <JSON/include/writer.h>
+#include <JSON/include/prettywriter.h>
+#include <fstream>
+
 void LevelFactory::Initiate()
 {
 	m_Engine = Engine::GetInstance();
@@ -63,9 +68,46 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 {
 	m_DwellerList.Add(new TreeDweller);
 	TreeDweller* pDweller = m_DwellerList.GetLast();
-
 	Entity e = m_EntityManager->CreateEntity();
-	JSONReader reader(entity_filepath);
+
+
+	
+	//FILE* pFile = fopen(entity_filepath.c_str(), "rb");
+	//fseek(pFile, 0, SEEK_END);
+	//size_t size = ftell(pFile);
+	assert(cl::file_exist(entity_filepath) && "Failed to find file!");
+	std::ifstream file(entity_filepath.c_str(), std::ios::binary);
+
+	file.seekg(0, file.end);
+	size_t length = file.tellg();
+	file.seekg(0, file.beg);
+
+	char* data = new char[length];
+	file.read(data, length);
+	file.close();
+
+	int v;
+	memcpy(&v, &data[3], 4);
+
+	char* entity_data = new char[v + 1];
+	memcpy(&entity_data[0], &data[7], v);
+	std::string _data(entity_data);
+	entity_data[v + 1] = '\0';
+	JSONReader reader;
+	reader.OpenDocument(entity_data);
+
+
+
+	
+	delete[] data;
+
+
+
+
+
+
+
+	
 	auto& doc = reader.GetDocument();
 	s32 debug_flags = 0;
 	for (const rapidjson::Value& obj : doc.GetArray())
@@ -95,6 +137,15 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			pDweller->AddComponent(&c, TreeDweller::LIGHT);
 			debug_flags |= TreeDweller::LIGHT;
 		}
+
+		if (type.find("physics") != type.npos)
+		{
+			PhysicsComponent& c = m_EntityManager->AddComponent<PhysicsComponent>(e);
+			c.Deserialize(obj);
+			pDweller->AddComponent(&c, TreeDweller::PHYSICS);
+			debug_flags |= TreeDweller::PHYSICS;
+		}
+
 
 #ifdef _DEBUG
 
@@ -295,9 +346,6 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 	}
 }
 
-#include <JSON/include/writer.h>
-#include <JSON/include/prettywriter.h>
-#include <fstream>
 void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should be a static function.
 {
 
@@ -317,44 +365,89 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 		char buf[100];
 		ZeroMemory(buf, sizeof(buf));
 		//memset(buf, 0, sizeof(buf));
-		sprintf_s(buf, "%s%s%d.json", folder.c_str(), _filename.c_str(), e);
+		sprintf_s(buf, "%s%s%d.edb", folder.c_str(), _filename.c_str(), e);
+
 		_writer.String(buf);
 
-
 		writer.StartArray();
+
+		bool has_physics = false;
 
 		if (entity_manager.HasComponent<TranslationComponent>(e))
 		{
 			const TranslationComponent& c = entity_manager.GetComponent<TranslationComponent>(e);
+			writer.StartObject();
+			writer.String("component_type");
+			writer.String("translation");
 			c.Serialize(writer);
 		}
 
 		if (entity_manager.HasComponent<GraphicsComponent>(e))
 		{
 			const GraphicsComponent& c = entity_manager.GetComponent<GraphicsComponent>(e);
+			writer.StartObject();
+			writer.String("component_type");
+			writer.String("graphics");
 			c.Serialize(writer);
 		}
 
 		if (entity_manager.HasComponent<PhysicsComponent>(e))
 		{
 			const PhysicsComponent& c = entity_manager.GetComponent<PhysicsComponent>(e);
+			has_physics = true;
+			writer.StartObject();
+			writer.String("component_type");
+			writer.String("physics");
 			c.Serialize(writer);
+
 		}
 
 		if (entity_manager.HasComponent<LightComponent>(e))
 		{
 			const LightComponent& c = entity_manager.GetComponent<LightComponent>(e);
+			writer.StartObject();
+			writer.String("component_type");
+			writer.String("light");
 			c.Serialize(writer);
 		}
-
 
 		writer.EndArray();
 
 
-		std::ofstream out(buf);
-		out << sb.GetString();
-		out.flush();
-		out.close();
+		FILE* pFile = fopen(buf, "wb");
+		char ext[3] = { 'e', 'd', 'b' };
+		fwrite(ext, 3, 1, pFile);
+		int length = sb.GetLength();
+		fwrite(&length, sizeof(int), 1, pFile);
+		fwrite(sb.GetString(), length, 1, pFile);
+
+		if (has_physics)
+		{
+			unsigned char* data = nullptr;
+			int data_length = 0;
+			PhysicsComponent& phys = entity_manager.GetComponent<PhysicsComponent>(e);
+			RigidBody* body = phys.m_Body;
+			body->SerializePhysicsData(data, data_length);
+			assert(data != nullptr && "Serialized data was null");
+			fwrite(&data_length, sizeof(int), 1, pFile);
+			fwrite(data, data_length, 1, pFile);
+
+		}
+
+		fclose(pFile);
+
+		//sprintf_s(buf, "%s%s%d.edb", folder.c_str(), _filename.c_str(), e);
+
+
+		//_data.physics_length 
+
+		//fwrite(sb.GetLength());
+
+
+		//std::ofstream out(buf);
+		//out << sb.GetString();
+		//out.flush();
+		//out.close();
 
 	}
 	_writer.EndArray();

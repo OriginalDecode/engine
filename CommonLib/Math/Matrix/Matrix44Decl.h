@@ -47,6 +47,7 @@ namespace CommonUtilities
 
 			//Matrix44<TYPE>& operator*=(const Matrix44<TYPE>& rhs);
 
+
 			union
 			{
 				__declspec(align(16))TYPE myMatrix[16];
@@ -110,7 +111,9 @@ namespace CommonUtilities
 
 			bool operator==(const Matrix44<TYPE>& m0);
 
+			const Vector4<TYPE> GetColumn(int index) const;
 		private:
+
 			enum class RotationType
 			{
 				Axis_X,
@@ -119,6 +122,25 @@ namespace CommonUtilities
 			};
 			const Matrix44<TYPE> Calculate(const RotationType& rotation, const TYPE& cos, const TYPE& sin);
 		};
+
+		template<typename TYPE>
+		const Vector4<TYPE> Matrix44<TYPE>::GetColumn(int index) const
+		{
+			assert(index < 4 && index >= 0 && "invalid case!");
+			Vector4<TYPE> out;
+			switch (index)
+			{
+			case 0:
+				return Vector4<TYPE>(myMatrix[0], myMatrix[4], myMatrix[8], myMatrix[12]);
+			case 1:
+				return Vector4<TYPE>(myMatrix[1], myMatrix[5], myMatrix[9], myMatrix[13]);
+			case 2:
+				return Vector4<TYPE>(myMatrix[2], myMatrix[6], myMatrix[10], myMatrix[14]);
+			case 3:
+				return Vector4<TYPE>(myMatrix[3], myMatrix[7], myMatrix[11], myMatrix[15]);
+			}
+			return Vector4<TYPE>();
+		}
 
 		template<typename TYPE>
 		Matrix44<TYPE> Matrix44<TYPE>::Transpose(const Matrix44<TYPE>& mat)

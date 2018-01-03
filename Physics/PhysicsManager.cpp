@@ -24,7 +24,7 @@ PhysicsManager::PhysicsManager()
 
 	myDynamicsWorld->setGravity(btVector3(0, -m_Gravity, 0));
 	myZeroPlane = new RigidBody();
-	Add(myZeroPlane->InitAsPlane(btVector3(0, 1, 0)));
+	Add(myZeroPlane->InitAsPlane(btVector3(0, 0, 0)));
 }
 
 

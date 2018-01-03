@@ -316,9 +316,13 @@ namespace debug
 					btRigidBody* body = phys.m_Body->InitAsBox(0.5, 0.5, 0.5, { 0.f,0.f,0.f });
 					Engine::GetInstance()->GetPhysicsManager()->Add(body);
 
+					TranslationComponent& translation = em.GetComponent<TranslationComponent>(m_EditEntity);
+					phys.m_Body->SetPosition(translation.GetOrientation().GetPosition());
+
 					TreeDweller* pDweller = static_cast<TreeDweller*>(c.m_Dweller);
 					pDweller->AddComponent(&phys, TreeDweller::PHYSICS);
 					pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
+
 				}
 
 				if (ImGui::Button("Add AI"))

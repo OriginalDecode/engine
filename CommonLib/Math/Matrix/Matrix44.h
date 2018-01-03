@@ -505,16 +505,11 @@ namespace CommonUtilities
 		template<typename TYPE>
 		const Vector4<TYPE> operator*=(const Vector4<TYPE>& aVector, const Matrix44<TYPE>& aMatrix)
 		{
-
-			Vector4<TYPE> myFirstCollumn(aMatrix.myMatrix[0], aMatrix.myMatrix[4], aMatrix.myMatrix[8], aMatrix.myMatrix[12]);
-			Vector4<TYPE> mySecondCollumn(aMatrix.myMatrix[1], aMatrix.myMatrix[5], aMatrix.myMatrix[9], aMatrix.myMatrix[13]);
-			Vector4<TYPE> myThirdCollumn(aMatrix.myMatrix[2], aMatrix.myMatrix[6], aMatrix.myMatrix[10], aMatrix.myMatrix[14]);
-			Vector4<TYPE> myFourthCollumn(aMatrix.myMatrix[3], aMatrix.myMatrix[7], aMatrix.myMatrix[11], aMatrix.myMatrix[15]);
 			Vector4<TYPE> vector = aVector;
-			vector.x = Dot(aVector, myFirstCollumn);
-			vector.y = Dot(aVector, mySecondCollumn);
-			vector.z = Dot(aVector, myThirdCollumn);
-			vector.w = Dot(aVector, myFourthCollumn);
+			vector.x = Dot(aVector, aMatrix.GetColumn(0));
+			vector.y = Dot(aVector, aMatrix.GetColumn(1));
+			vector.z = Dot(aVector, aMatrix.GetColumn(2));
+			vector.w = Dot(aVector, aMatrix.GetColumn(3));
 
 			return vector;
 		}

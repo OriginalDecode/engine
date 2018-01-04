@@ -3,7 +3,13 @@
 #include "CommonLib/Math/Quaternion/Quaternion.h"
 #include "CommonLib/DataStructures/GrowingArray.h"
 #include "Engine/VertexStructs.h"
+
 #include <vector>
+
+
+
+//#include <Bullet3Serialize/Bullet2FileLoader/>
+
 class btVector3;
 class btRigidBody;
 class btTransform;
@@ -49,6 +55,7 @@ public:
 	void Deserialize(const Value& value);
 
 	void SerializePhysicsData(unsigned char*& buffer_pointer, int& buffer_size);
+	void DeserializePhysicsData(char* mem_buffer, int length);
 private:
 
 	CU::Vector3f myVelocity;
@@ -84,11 +91,6 @@ void RigidBody::Serialize(Writer& writer)
 	writer.Double(myMass);
 	writer.String("static");
 	writer.Bool(m_IsStatic);
-
-
-	
-
-
 	writer.EndObject();
 }
 
@@ -97,5 +99,12 @@ void RigidBody::Deserialize(const Value& value)
 {
 	myMass = (float)value["mass"].GetDouble();
 	m_IsStatic = value["static"].GetBool();
+
+
+	//btBulletWorldImporter
+
+
+	//btDefaultSerializer* deserializer = new btDefaultSerializer;
+
 }
 

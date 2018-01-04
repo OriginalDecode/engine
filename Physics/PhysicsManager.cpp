@@ -6,6 +6,8 @@
 #include <Engine/Engine.h>
 //Had to be included to add to phys world?
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
+#include <btBulletDynamicsCommon.h>
+#include <LinearMath/btVector3.h>
 
 PhysicsManager::PhysicsManager()
 	: m_Gravity(9.82f)

@@ -86,28 +86,37 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	file.read(data, length);
 	file.close();
 
-	int v;
-	memcpy(&v, &data[3], 4);
+	int pos = 0;
+
+	char ext[3] = { '\0' };
+	memcpy(&ext[0], &data[pos], 3);
+	pos += 3;
+	
+	int v = 0;
+	memcpy(&v, &data[pos], sizeof(int));
+	pos += sizeof(int);
 
 	char* entity_data = new char[v + 1];
-	memcpy(&entity_data[0], &data[7], v);
+	memcpy(&entity_data[0], &data[pos], v);
+	pos += v;
+
 	std::string _data(entity_data);
 	entity_data[v + 1] = '\0';
-	JSONReader reader;
-	reader.OpenDocument(entity_data);
+
+	int physics_length = 0;
+	memcpy(&physics_length, &data[pos], sizeof(int));
+	pos += sizeof(int);
 
 
+	char* physics_data = new char[physics_length];
+	memcpy(&physics_data[0], &data[pos], physics_length);
+	pos += physics_length;
 
-	
 	delete[] data;
 
 
-
-
-
-
-
-	
+	JSONReader reader;
+	reader.OpenDocument(entity_data);
 	auto& doc = reader.GetDocument();
 	s32 debug_flags = 0;
 	for (const rapidjson::Value& obj : doc.GetArray())
@@ -144,6 +153,11 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			c.Deserialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::PHYSICS);
 			debug_flags |= TreeDweller::PHYSICS;
+
+			c.m_Body->DeserializePhysicsData(physics_data, physics_length);
+
+
+
 		}
 
 

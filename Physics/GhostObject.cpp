@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GhostObject.h"
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
+#include <btBulletDynamicsCommon.h>
 
 GhostObject::~GhostObject()
 {

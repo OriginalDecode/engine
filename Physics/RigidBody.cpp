@@ -5,6 +5,8 @@
 
 #include <Utilities.h>
 #include "engine_shared.h"
+#include <btBulletDynamicsCommon.h>
+#include "../include/Bullet_Physics/Bullet3Serialize/Bullet2FileLoader/b3BulletFile.h"
 
 
 
@@ -267,11 +269,18 @@ void RigidBody::SerializePhysicsData(unsigned char*& buffer_pointer, int& buffer
 	ZeroMemory(buffer_pointer, buffer_size);
 	memcpy(buffer_pointer, serializer->getBufferPointer(), buffer_size);
 
-
-
-	//FILE* file = fopen("testFile.bullet", "wb");
-	//fwrite(serializer->getBufferPointer(), serializer->getCurrentBufferSize(), 1, file);
-	//fclose(file);
-
 	delete serializer;
+}
+
+void RigidBody::DeserializePhysicsData(char* mem_buffer, int length)
+{
+	//bParse::b3BulletFile file(mem_buffer, length);
+// 	file.parse(0);
+// 	file.m_collisionShapes[0];
+// 	file.m_rigidBodies[0];
+
+
+
+
+
 }

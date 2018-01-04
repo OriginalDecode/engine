@@ -5,4 +5,5 @@ namespace btu
 {
 	btVector3 ConvertVector(const CU::Vector3f& vec3);
 	CU::Vector3f ConvertVector(const btVector3& btVec3);
+
 };

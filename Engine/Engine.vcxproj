@@ -329,6 +329,7 @@
     </ClInclude>
     <ClInclude Include="GizmoBase.h" />
     <ClInclude Include="GizmoShared.h" />
+    <ClInclude Include="GraphicsView.h" />
     <ClInclude Include="Inspector.h" />
     <ClInclude Include="InspectorView.h" />
     <ClInclude Include="PhysicsView.h" />
@@ -455,6 +456,7 @@
     </ClCompile>
     <ClCompile Include="GizmoBase.cpp" />
     <ClCompile Include="GizmoShared.cpp" />
+    <ClCompile Include="GraphicsView.cpp" />
     <ClCompile Include="HDRPass.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="ImGuizmo.cpp" />
@@ -462,6 +464,7 @@
     <ClCompile Include="imgui_draw.cpp" />
     <ClCompile Include="imgui_impl_dx11.cpp" />
     <ClCompile Include="Inspector.cpp" />
+    <ClCompile Include="InspectorView.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="InstancingManager.cpp" />
     <ClCompile Include="LevelFactory.cpp" />

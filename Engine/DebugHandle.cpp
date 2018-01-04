@@ -396,22 +396,12 @@ namespace debug
 			camera_pos << "x:" << pos.x << "\ny:" << pos.y << "\nz:" << pos.z;
 			ImGui::Text("%s", camera_pos.str().c_str());
 
-
-			for (DebugCheckbox& cb : m_Checkboxes)
-			{
-				ImGui::Checkbox(cb.m_Label.c_str(), cb.m_Toggleable);
-			}
-
-			ImGui::Checkbox("Debug Textures", &sDebugTextures);
-			if (sDebugTextures)
-				DebugTextures();
+			//ImGui::Checkbox("Debug Textures", &sDebugTextures);
+			//if (sDebugTextures)
+			//	DebugTextures();
 
 			ImGui::Separator();
-			for (DebugSlider<float>& s : m_Sliders)
-			{
-				ImGui::SliderFloat(s.m_Label.c_str(), s.m_Value, s.m_Min, s.m_Max);
-			}
-
+			
 			if (ImGui::Button("save level", ImVec2(100, 25)))
 			{
 				LevelFactory::SaveLevel("data/pbr_level/", "pbr_level.level");
@@ -449,39 +439,41 @@ namespace debug
 			ImGui::Separator();
 			ImGui::Text("Hovering : %d", m_CurrEntity);
 
-			if (em.HasComponents(m_EditEntity, CreateFilter<Requires<GraphicsComponent>>()))
-			{
-				ModelInstance* instance = nullptr;
-				static bool material_prompt = false;
 
 
-				GraphicsComponent& g = Engine::GetInstance()->GetEntityManager().GetComponent<GraphicsComponent>(m_EditEntity);
-				TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_EditEntity);
-
-				if (m_ModelInstances.empty())
-				{
-					for (s32 i = 0; i < g.m_Instances.Size(); i++)
-					{
-						ModelInstance* instance = &g.m_Instances[i];
-						m_ModelInstances.push_back(instance);
-						char buf[50];
-						ZeroMemory(&buf, 50 * sizeof(char));
-						sprintf_s(buf, "Instance : %d", i);
-						m_InstanceLabels.push_back(buf);
-
-					}
-				}
-
-				HandleInspector(m_EditEntity, m_ObjectMatrix, em);
-
-			}
+// 			if (em.HasComponents(m_EditEntity, CreateFilter<Requires<GraphicsComponent>>()))
+// 			{
+// 				ModelInstance* instance = nullptr;
+// 				static bool material_prompt = false;
+// 
+// 
+// 				GraphicsComponent& g = Engine::GetInstance()->GetEntityManager().GetComponent<GraphicsComponent>(m_EditEntity);
+// 				TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_EditEntity);
+// 
+// 				if (m_ModelInstances.empty())
+// 				{
+// 					for (s32 i = 0; i < g.m_Instances.Size(); i++)
+// 					{
+// 						ModelInstance* instance = &g.m_Instances[i];
+// 						m_ModelInstances.push_back(instance);
+// 						char buf[50];
+// 						ZeroMemory(&buf, 50 * sizeof(char));
+// 						sprintf_s(buf, "Instance : %d", i);
+// 						m_InstanceLabels.push_back(buf);
+// 
+// 					}
+// 				}
+// 
+// 				HandleInspector(m_EditEntity, m_ObjectMatrix, em);
+// 
+// 			}
 
 			ImGui::End();
 		}
 		ImGui::PopStyleVar();
 
 		HandleWorldContextMenu(pEngine);
-
+		m_Inspector.Update(Engine::GetInstance()->GetDeltaTime());
 	}
 
 
@@ -544,6 +536,9 @@ namespace debug
 			return;
 		m_PrevEntity = m_CurrEntity;
 		m_CurrEntity = e;
+
+		m_Inspector.SetEntity(m_CurrEntity);
+
 
 		m_ModelInstances.clear();
 		m_InstanceLabels.clear();

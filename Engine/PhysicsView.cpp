@@ -6,8 +6,6 @@
 #include <Engine/TreeDweller.h>
 
 #include <EntitySystem/PhysicsComponent.h>
-#include <EntitySystem/EntityManager.h>
-
 #include <Physics/RigidBody.h>
 
 
@@ -22,7 +20,7 @@ PhysicsView::~PhysicsView()
 
 void PhysicsView::Update()
 {
-	if (m_ComponentFlags & (~TreeDweller::PHYSICS))
+	if (!(m_ComponentFlags & TreeDweller::PHYSICS))
 		return;
 
 	if (ImGui::CollapsingHeader("Physics"))

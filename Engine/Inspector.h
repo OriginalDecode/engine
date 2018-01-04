@@ -1,8 +1,8 @@
 #pragma once
-#include "InspectorView.h"
 #include <vector>
 
 class EntityManager;
+class InspectorView;
 class Inspector
 {
 public:

@@ -6,6 +6,8 @@
 #include <CommonLib/Math/Matrix/Matrix.h>
 #include <PostMaster/Subscriber.h>
 
+#include <Engine/Inspector.h>
+
 class Texture;
 class Material;
 struct ModelInstance;
@@ -46,6 +48,7 @@ namespace debug
 
 		void HandleEvent(u64 event, void* data = nullptr);
 	private:
+		Inspector m_Inspector;
 
 		CU::Matrix44f* m_ObjectMatrix = nullptr;
 

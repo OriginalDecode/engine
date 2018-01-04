@@ -1,6 +1,6 @@
 #pragma once
-
-class EntityManager;
+#include <engine/engine_shared.h>
+#include <EntitySystem/EntityManager.h>
 class InspectorView
 {
 public:
@@ -19,14 +19,3 @@ protected:
 
 
 };
-
-InspectorView::InspectorView(EntityManager& em)
-	: m_Manager(em)
-{
-}
-
-void InspectorView::SetEntity(Entity e, s32 component_flag)
-{
-	m_CurrentEntity = e;
-	m_ComponentFlags = component_flag;
-}

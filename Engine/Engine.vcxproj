@@ -329,6 +329,9 @@
     </ClInclude>
     <ClInclude Include="GizmoBase.h" />
     <ClInclude Include="GizmoShared.h" />
+    <ClInclude Include="Inspector.h" />
+    <ClInclude Include="InspectorView.h" />
+    <ClInclude Include="PhysicsView.h" />
     <ClInclude Include="uuid.h" />
     <ClInclude Include="HDRPass.h" />
     <ClInclude Include="IGraphicsAPI.h" />
@@ -458,6 +461,7 @@
     <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
     <ClCompile Include="imgui_impl_dx11.cpp" />
+    <ClCompile Include="Inspector.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="InstancingManager.cpp" />
     <ClCompile Include="LevelFactory.cpp" />
@@ -478,6 +482,7 @@
     <ClCompile Include="NodeEntityManager.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="EdgeDetectionPass.cpp" />
+    <ClCompile Include="PhysicsView.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PostProcessManager.cpp" />
     <ClCompile Include="Quad.cpp" />

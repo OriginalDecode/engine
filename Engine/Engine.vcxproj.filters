@@ -446,6 +446,9 @@
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="uuid.h" />
+    <ClInclude Include="Inspector.h" />
+    <ClInclude Include="InspectorView.h" />
+    <ClInclude Include="PhysicsView.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -730,5 +733,7 @@
     <ClCompile Include="ImGuizmo.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="Inspector.cpp" />
+    <ClCompile Include="PhysicsView.cpp" />
   </ItemGroup>
 </Project>

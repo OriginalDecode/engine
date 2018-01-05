@@ -1,6 +1,6 @@
 #pragma once
-#include <Engine/InspectorView.h>
-class GraphicsView : public InspectorView
+#include <Engine/TransformView.h>
+class GraphicsView : public TransformView
 {
 public:
 	GraphicsView(EntityManager& em);

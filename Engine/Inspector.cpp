@@ -3,9 +3,11 @@
 
 #include <Engine/Engine.h>
 #include <Engine/imgui.h>
+
 #include <Engine/InspectorView.h>
 #include <Engine/PhysicsView.h>
 #include <Engine/GraphicsView.h>
+#include <Engine/TransformView.h>
 
 #include <EntitySystem/EntityManager.h>
 #include <EntitySystem/DebugComponent.h>
@@ -15,8 +17,9 @@
 Inspector::Inspector()
 	: m_Manager(Engine::GetInstance()->GetEntityManager())
 {
-	m_Views.push_back(new PhysicsView(m_Manager));
+	m_Views.push_back(new TransformView(m_Manager));
 	m_Views.push_back(new GraphicsView(m_Manager));
+	m_Views.push_back(new PhysicsView(m_Manager));
 }
 
 
@@ -44,7 +47,6 @@ void Inspector::Update(float dt)
 
 		for (InspectorView* view : m_Views)
 			view->Update();
-
 
 		ImGui::End();
 	}

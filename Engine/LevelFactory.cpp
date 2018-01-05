@@ -93,8 +93,8 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	pos += 3;
 	
 	int v = 0;
-	memcpy(&v, &data[pos], sizeof(int));
-	pos += sizeof(int);
+	memcpy(&v, &data[pos], sizeof(s32));
+	pos += sizeof(s32);
 
 	char* entity_data = new char[v + 1];
 	memcpy(&entity_data[0], &data[pos], v);

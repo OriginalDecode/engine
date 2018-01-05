@@ -255,6 +255,10 @@ namespace graphics
 		m_Device = new DX11Device(pDevice);
 		m_Context = new DX11Context(pContext);
 
+		//ID3D11DeviceContext* pDeferredCtx;
+		//pDevice->CreateDeferredContext(0, &pDeferredCtx); //should be created with thread pools. What about commandlists?
+
+
 	}
 
 	void DirectX11::CreateDepthBuffer()

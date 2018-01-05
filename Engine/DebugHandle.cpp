@@ -33,77 +33,6 @@
 
 namespace debug
 {
-	void EditTransform(const float *cameraView, float *cameraProjection, float* matrix)
-	{
-		static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
-		static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
-		static bool useSnap = false;
-		static float snap[3] = { 1.f, 1.f, 1.f };
-
-		constexpr int w_key = 'W';
-		constexpr int r_key = 'R';
-		constexpr int e_key = 'E';
-		constexpr int s_key = 'S';
-
-
-		if (ImGui::IsKeyPressed(w_key))
-			mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-		if (ImGui::IsKeyPressed(e_key))
-			mCurrentGizmoOperation = ImGuizmo::ROTATE;
-		if (ImGui::IsKeyPressed(r_key)) // r Key
-			mCurrentGizmoOperation = ImGuizmo::SCALE;
-		if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
-			mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
-			mCurrentGizmoOperation = ImGuizmo::ROTATE;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
-			mCurrentGizmoOperation = ImGuizmo::SCALE;
-		float matrixTranslation[3], matrixRotation[3], matrixScale[3];
-		ImGuizmo::DecomposeMatrixToComponents(matrix, matrixTranslation, matrixRotation, matrixScale);
-		ImGui::InputFloat3("Tr", matrixTranslation, 3);
-		ImGui::InputFloat3("Rt", matrixRotation, 3);
-		ImGui::InputFloat3("Sc", matrixScale, 3);
-		ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
-		if (mCurrentGizmoOperation != ImGuizmo::SCALE)
-		{
-			if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
-				mCurrentGizmoMode = ImGuizmo::LOCAL;
-			ImGui::SameLine();
-			if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
-				mCurrentGizmoMode = ImGuizmo::WORLD;
-		}
-
-		if (mCurrentGizmoOperation == ImGuizmo::SCALE)
-			mCurrentGizmoMode = ImGuizmo::LOCAL;
-
-
-
-
-		if (ImGui::IsKeyPressed(s_key))
-			useSnap = !useSnap;
-		ImGui::Checkbox("", &useSnap);
-		ImGui::SameLine();
-
-		switch (mCurrentGizmoOperation)
-		{
-			case ImGuizmo::TRANSLATE:
-				ImGui::InputFloat3("Snap", &snap[0]);
-				break;
-			case ImGuizmo::ROTATE:
-				ImGui::InputFloat("Angle Snap", &snap[0]);
-				break;
-			case ImGuizmo::SCALE:
-				ImGui::InputFloat("Scale Snap", &snap[0]);
-				break;
-		}
-		ImGuiIO& io = ImGui::GetIO();
-		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-		ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, mCurrentGizmoMode, matrix, NULL, useSnap ? &snap[0] : NULL);
-	}
-
-
 	static s32 s_MaterialIndex = 0;
 
 	static auto GetVector = [](void* vec, int index, const char** out_text)
@@ -146,38 +75,9 @@ namespace debug
 
 
 
-	void HandleWorldContextMenu(Engine* pEngine)
-	{
-		
-		static ImVec2 menu_pos;
-		if (s_RightClicked)
-		{
-			const CU::Vector2f& pos = pEngine->GetInputHandle()->GetCursorPos();
-			menu_pos = ImVec2(pos.x, pos.y);
-			s_RightClicked = !s_RightClicked;
-			s_OpenMenu = !s_OpenMenu;
-		}
-
-		if (s_OpenMenu)
-		{
-			ImGui::SetNextWindowPos(menu_pos);
-			ImGui::SetNextWindowSize(ImVec2(150, 200));
-			if (ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoResize))
-			{
-				if (ImGui::Button("Create Entity"))
-				{
-					Entity e = pEngine->GetEntityManager().CreateEntity();
-					LevelFactory::CreateEntity(e, pEngine->GetEntityManager());
-					TranslationComponent& t = pEngine->GetEntityManager().GetComponent<TranslationComponent>(e);
-					t.SetPosition(s_CreatePosition);
-					s_OpenMenu = false;
-				}
-
-				ImGui::End();
-			}
-		}
-	}
-
+	void HandleWorldContextMenu(Engine* pEngine);
+	void CopyEntity(Entity m_EditEntity);
+	void PasteEntity();
 
 	void HandleInspector(Entity m_EditEntity, CU::Matrix44f* m_ObjectMatrix, EntityManager &em)
 	{
@@ -227,11 +127,11 @@ namespace debug
 			if (ImGui::IsKeyPressed(t_key))
 				bToggle = !bToggle;
 
-			if (m_ObjectMatrix && !bToggle)
-				EditTransform(orientation.myMatrix, perspective.myMatrix, m_ObjectMatrix->myMatrix);
-
-			if (bToggle)
-				EditTransform(orientation.myMatrix, perspective.myMatrix, g.m_Instances[0].m_Orientation.myMatrix);
+// 			if (m_ObjectMatrix && !bToggle)
+// 				EditTransform(orientation.myMatrix, perspective.myMatrix, m_ObjectMatrix->myMatrix);
+// 
+// 			if (bToggle)
+// 				EditTransform(orientation.myMatrix, perspective.myMatrix, g.m_Instances[0].m_Orientation.myMatrix);
 
 			if (em.HasComponent<PhysicsComponent>(m_EditEntity))
 			{
@@ -473,6 +373,7 @@ namespace debug
 		ImGui::PopStyleVar();
 
 		HandleWorldContextMenu(pEngine);
+
 		m_Inspector.Update(Engine::GetInstance()->GetDeltaTime());
 	}
 
@@ -585,59 +486,7 @@ namespace debug
 		m_ObjectMatrix = mat;
 	}
 
-	static GraphicsComponent s_Graphics;
-	static TranslationComponent s_Translation;
-	static PhysicsComponent s_Physics;
-	static LightComponent s_Light;
-	bool s_HasNetwork = false;
-
-
-	void CopyEntity(Entity m_EditEntity)
-	{
-		Engine* engine = Engine::GetInstance();
-		EntityManager& em = engine->GetEntityManager();
-
-		DebugComponent& _debug = em.GetComponent<DebugComponent>(m_EditEntity);
-		s32 flags = _debug.m_ComponentFlags;
-
-		if (flags & TreeDweller::TRANSLATION)
-		{
-			s_Translation = em.GetComponent<TranslationComponent>(m_EditEntity);
-		}
-
-		if (flags & TreeDweller::GRAPHICS)
-		{
-			s_Graphics = em.GetComponent<GraphicsComponent>(m_EditEntity);
-		}
-	}
-
-
-	void PasteEntity()
-	{
-		Engine* engine = Engine::GetInstance();
-		EntityManager& em = engine->GetEntityManager();
-		Entity e = em.CreateEntity();
-
-		TranslationComponent& t = em.AddComponent<TranslationComponent>(e);
-		//t = s_Translation;
-
-		GraphicsComponent& g = em.AddComponent<GraphicsComponent>(e);
-		g = s_Graphics;
-		//memcpy(&g, &s_Graphics, sizeof(GraphicsComponent));
-
-
-		DebugComponent& d = em.AddComponent<DebugComponent>(e);
-		d.m_ComponentFlags |= (TreeDweller::GRAPHICS | TreeDweller::TRANSLATION | TreeDweller::DEBUG);
-		TreeDweller* dweller = new TreeDweller;
-		dweller->AddComponent(&t, TreeDweller::TRANSLATION);
-		dweller->AddComponent(&g, TreeDweller::GRAPHICS);
-		dweller->AddComponent(&d, TreeDweller::DEBUG);
-
-		dweller->Initiate(e, TreeDweller::DYNAMIC);
-		d.m_Dweller = dweller;
-
-		EventManager::GetInstance()->SendMessage(DebugEvents_AddEntity, dweller);
-	}
+	
 
 	void DebugHandle::HandleEvent(u64 event, void* data /*= nullptr*/)
 	{
@@ -676,7 +525,94 @@ namespace debug
 
 
 		}
-
 	}
+
+	void HandleWorldContextMenu(Engine* pEngine)
+	{
+
+		static ImVec2 menu_pos;
+		if (s_RightClicked)
+		{
+			const CU::Vector2f& pos = pEngine->GetInputHandle()->GetCursorPos();
+			menu_pos = ImVec2(pos.x, pos.y);
+			s_RightClicked = !s_RightClicked;
+			s_OpenMenu = !s_OpenMenu;
+		}
+
+		if (s_OpenMenu)
+		{
+			ImGui::SetNextWindowPos(menu_pos);
+			ImGui::SetNextWindowSize(ImVec2(150, 200));
+			if (ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoResize))
+			{
+				if (ImGui::Button("Create Entity"))
+				{
+					Entity e = pEngine->GetEntityManager().CreateEntity();
+					LevelFactory::CreateEntity(e, pEngine->GetEntityManager());
+					TranslationComponent& t = pEngine->GetEntityManager().GetComponent<TranslationComponent>(e);
+					t.SetPosition(s_CreatePosition);
+					s_OpenMenu = false;
+				}
+
+				ImGui::End();
+			}
+		}
+	}
+
+
+	static GraphicsComponent s_Graphics;
+	static TranslationComponent s_Translation;
+	static PhysicsComponent s_Physics;
+	static LightComponent s_Light;
+	bool s_HasNetwork = false;
+
+	void PasteEntity()
+	{
+		Engine* engine = Engine::GetInstance();
+		EntityManager& em = engine->GetEntityManager();
+		Entity e = em.CreateEntity();
+
+		TranslationComponent& t = em.AddComponent<TranslationComponent>(e);
+		//t = s_Translation;
+
+		GraphicsComponent& g = em.AddComponent<GraphicsComponent>(e);
+		g = s_Graphics;
+		//memcpy(&g, &s_Graphics, sizeof(GraphicsComponent));
+
+
+		DebugComponent& d = em.AddComponent<DebugComponent>(e);
+		d.m_ComponentFlags |= (TreeDweller::GRAPHICS | TreeDweller::TRANSLATION | TreeDweller::DEBUG);
+		TreeDweller* dweller = new TreeDweller;
+		dweller->AddComponent(&t, TreeDweller::TRANSLATION);
+		dweller->AddComponent(&g, TreeDweller::GRAPHICS);
+		dweller->AddComponent(&d, TreeDweller::DEBUG);
+
+		dweller->Initiate(e, TreeDweller::DYNAMIC);
+		d.m_Dweller = dweller;
+
+		EventManager::GetInstance()->SendMessage(DebugEvents_AddEntity, dweller);
+	}
+
+	void CopyEntity(Entity m_EditEntity)
+	{
+		Engine* engine = Engine::GetInstance();
+		EntityManager& em = engine->GetEntityManager();
+
+		DebugComponent& _debug = em.GetComponent<DebugComponent>(m_EditEntity);
+		s32 flags = _debug.m_ComponentFlags;
+
+		if (flags & TreeDweller::TRANSLATION)
+		{
+			s_Translation = em.GetComponent<TranslationComponent>(m_EditEntity);
+		}
+
+		if (flags & TreeDweller::GRAPHICS)
+		{
+			s_Graphics = em.GetComponent<GraphicsComponent>(m_EditEntity);
+		}
+	}
+
+
+
 };
 #endif

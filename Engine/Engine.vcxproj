@@ -333,6 +333,7 @@
     <ClInclude Include="Inspector.h" />
     <ClInclude Include="InspectorView.h" />
     <ClInclude Include="PhysicsView.h" />
+    <ClInclude Include="TransformView.h" />
     <ClInclude Include="uuid.h" />
     <ClInclude Include="HDRPass.h" />
     <ClInclude Include="IGraphicsAPI.h" />
@@ -530,6 +531,7 @@
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TGA32.cpp" />
+    <ClCompile Include="TransformView.cpp" />
     <ClCompile Include="TreeDweller.cpp" />
     <ClCompile Include="TreeNode.cpp" />
     <ClCompile Include="TreeNodeBase.cpp" />

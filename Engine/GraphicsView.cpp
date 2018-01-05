@@ -5,7 +5,7 @@
 #include <Engine/imgui.h>
 
 GraphicsView::GraphicsView(EntityManager& em)
-	: InspectorView(em)
+	: TransformView(em)
 {
 }
 
@@ -22,6 +22,15 @@ void GraphicsView::Update()
 
 	if (ImGui::CollapsingHeader("Graphics"))
 	{
+
+		Camera* camera = Engine::GetInstance()->GetCamera();
+		const CU::Matrix44f orientation = CU::Math::Inverse(camera->GetOrientation());
+		CU::Matrix44f perspective = camera->GetPerspective();
+
+		//need a list of instances on this entity.
+
+		//TranslationComponent& translation = m_Manager.GetComponent<TranslationComponent>(m_CurrentEntity);
+		EditTransform(orientation.myMatrix, perspective.myMatrix, NULL);
 
 	}
 }

@@ -3,6 +3,7 @@
 #include "BaseComponent.h"
 #include "TranslationComponent.h"
 #include "../DL_Debug/DL_Debug.h"
+
 CComponentContainer::CComponentContainer(bool owner)
 	: myComponents(MAX_COMPONENTS_COUNT)
 	, myEntityComponents(2048)

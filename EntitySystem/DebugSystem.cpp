@@ -67,11 +67,11 @@ void DebugSystem::HandleEvent(u64 event, void* data /*= nullptr*/)
 		const CU::GrowingArray<Entity>& entities = GetEntities();
 		if (entities.Empty())
 			return;
-		if (entities.Find(e))
-		{
-			TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-			debug::DebugHandle::GetInstance()->SetObjectMatrix(&translation.m_Orientation);
-		}
+// 		if (entities.Find(e))
+// 		{
+// 			TranslationComponent& translation = GetComponent<TranslationComponent>(e);
+// 			debug::DebugHandle::GetInstance()->SetObjectMatrix(&translation.m_Orientation);
+// 		}
 	}
 }
 

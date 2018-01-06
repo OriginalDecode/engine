@@ -4,7 +4,9 @@
 #include <Engine/imgui.h>
 #include <Engine/ImGuizmo.h>
 
-#include	<EntitySystem/TranslationComponent.h>
+#include <EntitySystem/TranslationComponent.h>
+#include <EntitySystem/PhysicsComponent.h>
+#include <Physics/RigidBody.h>
 
 
 
@@ -20,10 +22,10 @@ TransformView::~TransformView()
 
 void TransformView::Update()
 {
-	if (!(m_ComponentFlags & TreeDweller::TRANSLATION))
+	if (m_CurrentEntity <= 0 || !(m_ComponentFlags & TreeDweller::TRANSLATION))
 		return;
-
-	if (ImGui::CollapsingHeader("Transform"))
+	
+	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		Camera* camera = Engine::GetInstance()->GetCamera();
 		const CU::Matrix44f orientation = CU::Math::Inverse(camera->GetOrientation());
@@ -31,8 +33,17 @@ void TransformView::Update()
 
 		TranslationComponent& translation = m_Manager.GetComponent<TranslationComponent>(m_CurrentEntity);
 		EditTransform(orientation.myMatrix, perspective.myMatrix, translation.m_Orientation.myMatrix);
-	}
 
+		if (m_ComponentFlags & TreeDweller::PHYSICS)
+		{
+			PhysicsComponent& physics = m_Manager.GetComponent<PhysicsComponent>(m_CurrentEntity);
+
+			if (ImGuizmo::IsUsing())
+				physics.m_Body->SetPosition(translation.m_Orientation.GetPosition());
+		}
+
+
+	}
 }
 
 void TransformView::EditTransform(const float *cameraView, float *cameraProjection, float* matrix)

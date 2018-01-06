@@ -147,7 +147,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_WaterCamera = new Camera;
 	m_WaterCamera->CreatePerspectiveProjection((float)window_size.m_Width, (float)window_size.m_Height, 0.01f, 100.f, 90.f);
 
-	Engine::GetInstance()->LoadModelA("Data/EngineAssets/view_gizmo.fbx", "Shaders/gizmo.json", false);
 	m_Spotlights.Add(new SpotLight);
 }
 

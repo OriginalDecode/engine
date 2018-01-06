@@ -13,7 +13,7 @@ public:
 	
 
 protected:
-	Entity m_CurrentEntity;
+	Entity m_CurrentEntity = 0;
 	s32 m_ComponentFlags;
 	EntityManager& m_Manager;
 

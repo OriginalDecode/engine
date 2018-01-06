@@ -133,15 +133,15 @@ namespace debug
 // 			if (bToggle)
 // 				EditTransform(orientation.myMatrix, perspective.myMatrix, g.m_Instances[0].m_Orientation.myMatrix);
 
-			if (em.HasComponent<PhysicsComponent>(m_EditEntity))
-			{
-				PhysicsComponent& phys = em.GetComponent<PhysicsComponent>(m_EditEntity);
-				if (ImGuizmo::IsUsing())
-					phys.m_Body->SetPosition(m_ObjectMatrix->GetPosition());
-
-				const CU::Vector3f linVel = phys.m_Body->GetLinearVelocity();
-				ImGui::Text("Linear Velocity\nx:%.1f\ny:%.1f\nz:%.1f", linVel.x, linVel.y, linVel.z);
-			}
+// 			if (em.HasComponent<PhysicsComponent>(m_EditEntity))
+// 			{
+// 				PhysicsComponent& phys = em.GetComponent<PhysicsComponent>(m_EditEntity);
+// 				if (ImGuizmo::IsUsing())
+// 					phys.m_Body->SetPosition(m_ObjectMatrix->GetPosition());
+// 
+// 				const CU::Vector3f linVel = phys.m_Body->GetLinearVelocity();
+// 				ImGui::Text("Linear Velocity\nx:%.1f\ny:%.1f\nz:%.1f", linVel.x, linVel.y, linVel.z);
+// 			}
 
 			ImGui::Separator();
 
@@ -296,10 +296,6 @@ namespace debug
 			camera_pos << "x:" << pos.x << "\ny:" << pos.y << "\nz:" << pos.z;
 			ImGui::Text("%s", camera_pos.str().c_str());
 
-			//ImGui::Checkbox("Debug Textures", &sDebugTextures);
-			//if (sDebugTextures)
-			//	DebugTextures();
-
 			ImGui::Separator();
 			
 			if (ImGui::Button("save level", ImVec2(100, 25)))
@@ -310,63 +306,31 @@ namespace debug
 
 			auto& em = Engine::GetInstance()->GetEntityManager();
 
-			if (ImGui::Button("Create new Entity"))
-			{
-				Entity e = em.CreateEntity();
-				LevelFactory::CreateEntity(e, em);
+// 			if (ImGui::Button("Create new Entity"))
+// 			{
+// 				Entity e = em.CreateEntity();
+// 				LevelFactory::CreateEntity(e, em);
+// 			}
 
-			}
-
-			if (ImGui::Button("Pause Physics"))
-			{
-				if (Engine::GetInstance()->GetNetworkManager() && Engine::GetInstance()->GetNetworkManager()->IsHost())
-				{
-					s_PausePhysics = !s_PausePhysics;
-				}
-			}
-			if (ImGui::Button("Host Network"))
-			{
-				Engine::GetInstance()->GetNetworkManager()->Host(1313);
-			}
-
-			if (ImGui::Button("Connect Network"))
-			{
-				Engine::GetInstance()->GetNetworkManager()->Connect("127.0.0.1", 1313);
-			}
-
-
+// 			if (ImGui::Button("Pause Physics"))
+// 			{
+// 				if (Engine::GetInstance()->GetNetworkManager() && Engine::GetInstance()->GetNetworkManager()->IsHost())
+// 				{
+// 					s_PausePhysics = !s_PausePhysics;
+// 				}
+// 			}
+// 			if (ImGui::Button("Host Network"))
+// 			{
+// 				Engine::GetInstance()->GetNetworkManager()->Host(1313);
+// 			}
+// 
+// 			if (ImGui::Button("Connect Network"))
+// 			{
+// 				Engine::GetInstance()->GetNetworkManager()->Connect("127.0.0.1", 1313);
+// 			}
 
 			ImGui::Separator();
 			ImGui::Text("Hovering : %d", m_CurrEntity);
-
-
-
-// 			if (em.HasComponents(m_EditEntity, CreateFilter<Requires<GraphicsComponent>>()))
-// 			{
-// 				ModelInstance* instance = nullptr;
-// 				static bool material_prompt = false;
-// 
-// 
-// 				GraphicsComponent& g = Engine::GetInstance()->GetEntityManager().GetComponent<GraphicsComponent>(m_EditEntity);
-// 				TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_EditEntity);
-// 
-// 				if (m_ModelInstances.empty())
-// 				{
-// 					for (s32 i = 0; i < g.m_Instances.Size(); i++)
-// 					{
-// 						ModelInstance* instance = &g.m_Instances[i];
-// 						m_ModelInstances.push_back(instance);
-// 						char buf[50];
-// 						ZeroMemory(&buf, 50 * sizeof(char));
-// 						sprintf_s(buf, "Instance : %d", i);
-// 						m_InstanceLabels.push_back(buf);
-// 
-// 					}
-// 				}
-// 
-// 				HandleInspector(m_EditEntity, m_ObjectMatrix, em);
-// 
-// 			}
 
 			ImGui::End();
 		}
@@ -438,7 +402,6 @@ namespace debug
 		m_PrevEntity = m_CurrEntity;
 		m_CurrEntity = e;
 
-		m_Inspector.SetEntity(m_CurrEntity);
 
 
 		m_ModelInstances.clear();
@@ -454,6 +417,7 @@ namespace debug
 	Entity DebugHandle::GetSelectedEntity() const
 	{
 		return m_EditEntity;
+
 	}
 
 	void DebugHandle::RegisterCheckbox(DebugCheckbox checkbox)
@@ -472,7 +436,10 @@ namespace debug
 		if (!ImGui::IsAnyWindowHovered())
 		{
 			if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver())
+			{
 				m_EditEntity = m_CurrEntity;
+				m_Inspector.SetEntity(m_EditEntity);
+			}
 		}
 	}
 

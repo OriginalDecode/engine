@@ -8,9 +8,23 @@
 #include <Engine/PhysicsView.h>
 #include <Engine/GraphicsView.h>
 #include <Engine/TransformView.h>
+#include <Engine/TreeDweller.h>
+#include <Engine/Octree.h>
+#include <Engine/NodeEntityManager.h>
 
 #include <EntitySystem/EntityManager.h>
 #include <EntitySystem/DebugComponent.h>
+#include <EntitySystem/TranslationComponent.h>
+#include <EntitySystem/GraphicsComponent.h>
+#include <EntitySystem/NetworkComponent.h>
+#include <EntitySystem/PhysicsComponent.h>
+#include <EntitySystem/AIComponent.h>
+#include <EntitySystem/InputComponent.h>
+#include <EntitySystem/LightComponent.h>
+
+#include <Physics/PhysicsManager.h>
+#include <Physics/RigidBody.h>
+
 
 
 
@@ -31,6 +45,50 @@ Inspector::~Inspector()
 	}
 }
 
+
+void Inspector::HandleAdd()
+{
+	DebugComponent& c = m_Manager.GetComponent<DebugComponent>(m_CurrentEntity);
+	TreeDweller* pDweller = static_cast<TreeDweller*>(c.m_Dweller);
+
+ 	if (!(c.m_ComponentFlags & TreeDweller::GRAPHICS) && ImGui::Button("Add Graphics"))
+ 	{
+ 		c.m_ComponentFlags |= TreeDweller::GRAPHICS;
+		GraphicsComponent& g = m_Manager.AddComponent<GraphicsComponent>(m_CurrentEntity);
+		pDweller->AddComponent(&g, TreeDweller::LIGHT);
+		pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
+ 	}
+ 
+ 	if (!(c.m_ComponentFlags & TreeDweller::LIGHT) && ImGui::Button("Add Light"))
+ 	{
+ 		c.m_ComponentFlags |= TreeDweller::LIGHT;
+ 		LightComponent& l = m_Manager.AddComponent<LightComponent>(m_CurrentEntity);
+ 		pDweller->AddComponent(&l, TreeDweller::LIGHT);
+ 		pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
+ 	}
+
+	if(ImGui::Button("Add Physics"))
+	{
+		if (!(c.m_ComponentFlags & TreeDweller::PHYSICS))
+		{
+			c.m_ComponentFlags |= TreeDweller::PHYSICS;
+			PhysicsComponent& phys = m_Manager.AddComponent<PhysicsComponent>(m_CurrentEntity);
+			phys.m_Body = Engine::GetInstance()->GetPhysicsManager()->CreateBody();
+
+			Model* pModel = Engine::GetInstance()->GetModel<Model>(g_DefaultModel).GetData();
+			pModel = pModel->GetChildModels()[0];
+			btRigidBody* body = phys.m_Body->InitAsBox(0.5, 0.5, 0.5, { 0.f,0.f,0.f });
+			Engine::GetInstance()->GetPhysicsManager()->Add(body);
+
+			TranslationComponent& translation = m_Manager.GetComponent<TranslationComponent>(m_CurrentEntity);
+			phys.m_Body->SetPosition(translation.GetOrientation().GetPosition());
+
+			pDweller->AddComponent(&phys, TreeDweller::PHYSICS);
+			pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
+		}
+	}
+}
+
 void Inspector::Update(float dt)
 {
 	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
@@ -44,9 +102,16 @@ void Inspector::Update(float dt)
 
 	if (ImGui::Begin("Entity Inspector"))
 	{
+		if (m_CurrentEntity <= 0)
+		{
+			ImGui::End();
+			return;
+		}
 
 		for (InspectorView* view : m_Views)
 			view->Update();
+
+		HandleAdd();
 
 		ImGui::End();
 	}

@@ -155,20 +155,20 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			debug_flags |= TreeDweller::PHYSICS;
 
 			c.m_Body->DeserializePhysicsData(physics_data, physics_length);
-
-
+			btRigidBody* body = c.m_Body->GetBody();
+			m_Engine->GetPhysicsManager()->Add(body);
 
 		}
+	}
 
 
 #ifdef _DEBUG
 
-		CreateDebugComponent(e, false, debug_flags);
-		DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
-		component.m_Dweller = pDweller;
+	CreateDebugComponent(e, false, debug_flags);
+	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
+	component.m_Dweller = pDweller;
 #endif
 
-	}
 	reader.CloseDocument();
 	pDweller->Initiate(e, TreeDweller::STATIC);
 }

@@ -155,7 +155,10 @@ void Texture::InitiateTextureArray(const char* paths[], const s32 const num_tex,
 	{
 		IShaderResourceView* resource = Engine::GetAPI()->GetDevice().CreateTextureFromFile(paths[i], false, &Engine::GetAPI()->GetContext());
 		src.Add(static_cast<ID3D11ShaderResourceView*>(resource));
+		ctx->GenerateMips(src[i]);
 	}
+
+
 
 	D3D11_TEXTURE2D_DESC desc;
 	ZeroMemory(&desc, sizeof(desc));
@@ -166,7 +169,7 @@ void Texture::InitiateTextureArray(const char* paths[], const s32 const num_tex,
 	D3D11_TEXTURE2D_DESC arr_desc;
 	arr_desc.Width = desc.Width;
 	arr_desc.Height = desc.Height;
-	arr_desc.MipLevels = 1;
+	arr_desc.MipLevels = desc.MipLevels;
 	arr_desc.ArraySize = tex_count;
 	arr_desc.Format = desc.Format;
 	arr_desc.SampleDesc.Count = 1;

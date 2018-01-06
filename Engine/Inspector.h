@@ -3,6 +3,8 @@
 
 class EntityManager;
 class InspectorView;
+struct DebugComponent;
+
 class Inspector
 {
 public:
@@ -13,10 +15,10 @@ public:
 	void Update(float dt);
 	void SetEntity(Entity e);
 private:
+	void HandleAdd();
 	Entity m_CurrentEntity;
 	std::vector<InspectorView*> m_Views;
 	EntityManager& m_Manager;
 
 
 };
-

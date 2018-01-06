@@ -5,7 +5,6 @@
 InspectorView::InspectorView(EntityManager& em) 
 	: m_Manager(em)
 {
-
 }
 
 void InspectorView::SetEntity(Entity e, s32 component_flag)

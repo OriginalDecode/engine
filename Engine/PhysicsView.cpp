@@ -27,10 +27,14 @@ void PhysicsView::Update()
 	{
 		PhysicsComponent& phys = m_Manager.GetComponent<PhysicsComponent>(m_CurrentEntity);
 		RigidBody* body = phys.m_Body;
-		static bool is_static = body->IsStatic();
-		ImGui::Checkbox("Static", &is_static);
-		body->SetStatic(is_static);
+
+		ImGui::Checkbox("Static", &body->IsStatic());
+		if (body->IsStatic())
+			body->SetStatic(true);
+
+
+		ImGui::InputFloat("Mass", &body->GetMass(), 3);
+		if (body->IsStatic() && body->GetMass() > 0.f)
+			body->SetStatic(false);
 	}
-
-
 }

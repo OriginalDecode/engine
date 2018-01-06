@@ -28,7 +28,7 @@ void TerrainManager::LoadTerrain(const std::string& terrain_name)
 	{
 		Terrain* terrain = new Terrain;
 		m_Terrain[Hash(terrain_name.c_str())] = terrain;
-		DL_MESSAGE("Failed to find terrain in container, creating new terrain object!");
+		//DL_MESSAGE("Failed to find terrain in container, creating new terrain object!");
 	}
 }
 

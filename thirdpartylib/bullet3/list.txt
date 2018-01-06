@@ -1,0 +1,29 @@
+ Volume in drive E is Red
+ Volume Serial Number is 708F-E3B6
+
+ Directory of E:\Programming\engine\thirdpartylib\bullet3
+
+06/01/2018  17:52           966,546 Bullet2FileLoader_Debug.lib
+06/01/2018  17:52         1,259,650 Bullet3Collision_Debug.lib
+06/01/2018  17:52            97,652 Bullet3Common_Debug.lib
+06/01/2018  17:52         1,020,472 Bullet3Dynamics_Debug.lib
+06/01/2018  17:52           458,320 Bullet3Geometry_Debug.lib
+06/01/2018  17:52         8,599,420 Bullet3OpenCL_clew_Debug.lib
+06/01/2018  17:52        11,514,860 BulletCollision_Debug.lib
+06/01/2018  17:52         6,847,290 BulletDynamics_Debug.lib
+06/01/2018  17:52           665,352 BulletFileLoader_Debug.lib
+06/01/2018  17:52         4,133,404 BulletInverseDynamicsUtils_Debug.lib
+06/01/2018  17:52           870,356 BulletInverseDynamics_Debug.lib
+06/01/2018  17:53        25,226,382 BulletRobotics_Debug.lib
+06/01/2018  17:52         2,730,828 BulletSoftBody_Debug.lib
+06/01/2018  17:52         1,655,748 BulletWorldImporter_Debug.lib
+06/01/2018  17:52         1,486,216 BulletXmlWorldImporter_Debug.lib
+06/01/2018  17:52         2,051,704 ConvexDecomposition_Debug.lib
+06/01/2018  17:52           318,546 GIMPACTUtils_Debug.lib
+06/01/2018  17:52         6,796,096 HACD_Debug.lib
+06/01/2018  17:52         1,075,674 LinearMath_Debug.lib
+              19 File(s)     77,774,516 bytes
+
+     Total Files Listed:
+              19 File(s)     77,774,516 bytes
+               0 Dir(s)  1,261,248,323,584 bytes free

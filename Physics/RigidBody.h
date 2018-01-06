@@ -53,7 +53,7 @@ public:
 	void Deserialize(const Value& value);
 
 	void SerializePhysicsData(unsigned char*& buffer_pointer, int& buffer_size);
-	btRigidBody* DeserializePhysicsData(char* mem_buffer, int length);
+	btRigidBody* DeserializePhysicsData(char* mem_buffer, int length, const CU::Vector3f& initial_pos);
 private:
 
 	CU::Vector3f myVelocity;

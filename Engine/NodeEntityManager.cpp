@@ -30,12 +30,16 @@ void NodeEntityManager::Initiate()
 
 	if (flag& EntityManager::NETWORK)
 		AddSystem<NetworkSystem>();
+
 	if (flag & EntityManager::PHYSICS)
 		AddSystem<PhysicsSystem>();
+
 	if (flag & EntityManager::RENDER)
 		AddSystem<RenderSystem>();
+
 	if (flag & EntityManager::LIGHT)
 		AddSystem<LightSystem>();
+
 #if !defined(_FINAL) && !defined(_PROFILE)
 	if (flag & EntityManager::DEBUG)
 		AddSystem<DebugSystem>();

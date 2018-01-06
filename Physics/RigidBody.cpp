@@ -157,11 +157,12 @@ void RigidBody::SetResistanceDensity(float aDensity)
 
 void RigidBody::SetPosition(const CU::Vector3f& aPosition)
 {
-
 	const btTransform& transform = myBody->getWorldTransform();
+	myBody->clearForces();
 	btTransform initial;
 	initial.setOrigin(btu::ConvertVector(aPosition));
 	initial.setRotation(btQuaternion(0, 0, 0, 1));
+
 	myBody->setWorldTransform(initial);
 	m_MotionState->setWorldTransform(initial);
 	myBody->activate();
@@ -289,7 +290,7 @@ void RigidBody::SerializePhysicsData(unsigned char*& buffer_pointer, int& buffer
 	delete serializer;
 }
 
-btRigidBody* RigidBody::DeserializePhysicsData(char* mem_buffer, int length)
+btRigidBody* RigidBody::DeserializePhysicsData(char* mem_buffer, int length, const CU::Vector3f& initial_pos)
 {
 	btBulletWorldImporter* importer = new btBulletWorldImporter;
  	importer->loadFileFromMemory(mem_buffer, length);
@@ -303,8 +304,10 @@ btRigidBody* RigidBody::DeserializePhysicsData(char* mem_buffer, int length)
 
 	m_MotionState = new btDefaultMotionState;
 	myBody->setMotionState(m_MotionState);
-
 	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
+
+	SetPosition(initial_pos);
+
 
  	delete importer;
  	return myBody;

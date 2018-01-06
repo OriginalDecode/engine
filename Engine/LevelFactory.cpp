@@ -70,12 +70,10 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	TreeDweller* pDweller = m_DwellerList.GetLast();
 	Entity e = m_EntityManager->CreateEntity();
 
-
-	
-	//FILE* pFile = fopen(entity_filepath.c_str(), "rb");
-	//fseek(pFile, 0, SEEK_END);
-	//size_t size = ftell(pFile);
 	assert(cl::file_exist(entity_filepath) && "Failed to find file!");
+	//FILE* pFile = fopen(entity_filepath.c_str(), "rb");
+	//size_t size = ftell(pFile);
+	//fseek(pFile, 0, SEEK_END);
 	std::ifstream file(entity_filepath.c_str(), std::ios::binary);
 
 	file.seekg(0, file.end);
@@ -92,16 +90,14 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	memcpy(&ext[0], &data[pos], 3);
 	pos += 3;
 	
-	int v = 0;
-	memcpy(&v, &data[pos], sizeof(s32));
+	int json_size = 0;
+	memcpy(&json_size, &data[pos], sizeof(s32));
 	pos += sizeof(s32);
 
-	char* entity_data = new char[v + 1];
-	memcpy(&entity_data[0], &data[pos], v);
-	pos += v;
+	char* entity_data = new char[json_size];
+	memcpy(&entity_data[0], &data[pos], json_size);
+	pos += json_size;
 
-	std::string _data(entity_data);
-	entity_data[v + 1] = '\0';
 
 	int physics_length = 0;
 	memcpy(&physics_length, &data[pos], sizeof(int));
@@ -111,9 +107,6 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	char* physics_data = new char[physics_length];
 	memcpy(&physics_data[0], &data[pos], physics_length);
 	pos += physics_length;
-
-	delete[] data;
-
 
 	JSONReader reader;
 	reader.OpenDocument(entity_data);
@@ -154,7 +147,8 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			pDweller->AddComponent(&c, TreeDweller::PHYSICS);
 			debug_flags |= TreeDweller::PHYSICS;
 
-			c.m_Body->DeserializePhysicsData(physics_data, physics_length);
+			TranslationComponent& t = m_EntityManager->GetComponent<TranslationComponent>(e);
+			c.m_Body->DeserializePhysicsData(physics_data, physics_length, t.GetOrientation().GetPosition());
 			btRigidBody* body = c.m_Body->GetBody();
 			m_Engine->GetPhysicsManager()->Add(body);
 
@@ -163,14 +157,15 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 
 
 #ifdef _DEBUG
-
 	CreateDebugComponent(e, false, debug_flags);
 	DebugComponent& component = m_EntityManager->GetComponent<DebugComponent>(e);
 	component.m_Dweller = pDweller;
 #endif
 
-	reader.CloseDocument();
-	pDweller->Initiate(e, TreeDweller::STATIC);
+	pDweller->Initiate(e, TreeDweller::DYNAMIC);
+	delete[] physics_data;
+	delete[] entity_data;
+	delete[] data;
 }
 
 void LevelFactory::CreateEntity(Entity e, EntityManager& em)
@@ -288,7 +283,7 @@ void LevelFactory::CreateTerrain(std::string terrain_path)
 void LevelFactory::CreatePBLLevel(s32 steps)
 {
 	CreateTerrain("Data/Textures/flat_height.tga");
-	float height = 1.f;
+	float height = 0.f;
 	float x_start = 5.f;
 	float z_start = 5.f;
 

@@ -83,6 +83,13 @@ private:
 template<typename T>
 T& EntityManager::AddComponent(Entity aEntity)
 {
+	if (HasComponent<T>(aEntity))
+	{
+		DL_ASSERT("Entity already contained this component type! Returning component");
+		return GetComponent<T>(aEntity);
+	}
+
+	
 	T* component = new T();
 	myComponents->AddComponent(aEntity, component, CTypeID<BaseComponent>::GetID<T>());
 	return *component;

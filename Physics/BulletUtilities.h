@@ -1,5 +1,8 @@
 #pragma once
-#include "../include/Bullet_Physics/LinearMath/btVector3.h"
+
+
+
+#include "../Include/bullet/LinearMath/btVector3.h"
 #include "CommonLib/Math/Matrix/Matrix44.h"
 namespace btu
 {

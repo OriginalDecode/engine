@@ -1,13 +1,14 @@
 #include "stdafx.h"
 #include "RigidBody.h"
 #include "PhysicsDefines.h"
-#include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
 
 #include <Utilities.h>
-#include "engine_shared.h"
-#include <btBulletDynamicsCommon.h>
-#include "../include/Bullet_Physics/Bullet3Serialize/Bullet2FileLoader/b3BulletFile.h"
+#include <Engine/engine_shared.h>
 
+#include "BulletFileLoader/bFile.h"
+#include "BulletWorldImporter/btBulletWorldImporter.h"
+#include "BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h"
+#include "btBulletDynamicsCommon.h"
 
 
 RigidBody::RigidBody()
@@ -134,12 +135,16 @@ btRigidBody* RigidBody::InitAsBox(float width, float height, float depth, CU::Ve
 {
 	m_Shape = new btBoxShape(btVector3(width, height, depth));
 	m_Shape->setMargin(0.025f);
-	btVector3 pos = btu::ConvertVector(position); //bt(position.x, position.y, position.z); //initial position
-	m_MotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), pos));
+	btVector3 pos = btu::ConvertVector(position);
 
+	m_MotionState = new btDefaultMotionState;
 	btScalar mass = 10.f;
-	btRigidBody::btRigidBodyConstructionInfo bodyInfo(mass, m_MotionState, m_Shape, btVector3(0, 0, 0));
+	myMass = mass;
+	btVector3 local_inertia;
+	m_Shape->calculateLocalInertia(mass, local_inertia);
+	btRigidBody::btRigidBodyConstructionInfo bodyInfo(mass, m_MotionState, m_Shape, local_inertia);
 	myBody = new btRigidBody(bodyInfo);
+
 
 	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
 	return myBody;
@@ -166,6 +171,8 @@ void RigidBody::SetPosition(const CU::Vector3f& aPosition)
 
 void RigidBody::Update(float deltaTime)
 {
+
+
 	if (!myBody)
 		return;
 
@@ -251,7 +258,16 @@ void RigidBody::SetStatic(bool is_static)
 	if (m_IsStatic)
 		myBody->setMassProps(0, btVector3(0, 0, 0));
 	else
+	{
 		myBody->setMassProps(myMass, btVector3(0, 0, 0));
+		myBody->setActivationState(ACTIVE_TAG);
+	}
+}
+
+void RigidBody::SetMass(float mass)
+{
+	myMass = mass;
+	myBody->setMassProps(myMass, btVector3(0, 0, 0));
 }
 
 void RigidBody::SerializePhysicsData(unsigned char*& buffer_pointer, int& buffer_size)
@@ -259,6 +275,7 @@ void RigidBody::SerializePhysicsData(unsigned char*& buffer_pointer, int& buffer
 	btDefaultSerializer* serializer = new btDefaultSerializer;
 
 	serializer->startSerialization();
+	myBody->serializeSingleObject(serializer);
 	m_Shape->serializeSingleShape(serializer);
 	serializer->finishSerialization();
 
@@ -272,15 +289,23 @@ void RigidBody::SerializePhysicsData(unsigned char*& buffer_pointer, int& buffer
 	delete serializer;
 }
 
-void RigidBody::DeserializePhysicsData(char* mem_buffer, int length)
+btRigidBody* RigidBody::DeserializePhysicsData(char* mem_buffer, int length)
 {
-	//bParse::b3BulletFile file(mem_buffer, length);
-// 	file.parse(0);
-// 	file.m_collisionShapes[0];
-// 	file.m_rigidBodies[0];
+	btBulletWorldImporter* importer = new btBulletWorldImporter;
+ 	importer->loadFileFromMemory(mem_buffer, length);
+ 	const int count = importer->getNumCollisionShapes();
+ 	m_Shape = importer->getCollisionShapeByIndex(0);
 
+	const int numRigidBodies = importer->getNumRigidBodies();
+	myBody = (btRigidBody*)importer->getRigidBodyByIndex(0);
+	
+	myBody->setCollisionShape(m_Shape);
 
+	m_MotionState = new btDefaultMotionState;
+	myBody->setMotionState(m_MotionState);
 
+	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
 
-
+ 	delete importer;
+ 	return myBody;
 }

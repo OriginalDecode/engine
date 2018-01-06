@@ -6,17 +6,10 @@
 
 #include <vector>
 
-
-
-//#include <Bullet3Serialize/Bullet2FileLoader/>
-
 class btVector3;
 class btRigidBody;
 class btTransform;
 class btTriangleIndexVertexArray;
-
-
-//struct ControllerState;
 
 class RigidBody : public CollisionObject
 {
@@ -39,7 +32,7 @@ public:
 	void Impulse(const CU::Vector3f& anImpulseVector);
 	CU::Vector3f GetLinearVelocity();
 	//void UpdateOrientation(const ControllerState& controller_state);
-	float GetMass() { return myMass; }
+	//float GetMass() { return myMass; }
 	float GetGravity() { return myGravity; }
 	bool IsEnabled() { return m_IsEnabled; }
 	void ToggleBody() { m_IsEnabled = !m_IsEnabled; }
@@ -47,6 +40,11 @@ public:
 
 	void SetStatic(bool is_static);
 	bool IsStatic() const { return m_IsStatic; }
+	bool& IsStatic() { return m_IsStatic; }
+
+	void SetMass(float mass);
+	float& GetMass() { return myMass; }
+
 
 	template<typename Writer>
 	void Serialize(Writer& writer);
@@ -55,7 +53,7 @@ public:
 	void Deserialize(const Value& value);
 
 	void SerializePhysicsData(unsigned char*& buffer_pointer, int& buffer_size);
-	void DeserializePhysicsData(char* mem_buffer, int length);
+	btRigidBody* DeserializePhysicsData(char* mem_buffer, int length);
 private:
 
 	CU::Vector3f myVelocity;
@@ -70,7 +68,7 @@ private:
 	float myRadius = 0.f;
 
 	bool m_IsEnabled : 1;
-	bool m_IsStatic : 1;
+	bool m_IsStatic;
 
 	CU::Quaternion m_Yaw;
 	CU::Quaternion m_Pitch;
@@ -100,11 +98,8 @@ void RigidBody::Deserialize(const Value& value)
 	myMass = (float)value["mass"].GetDouble();
 	m_IsStatic = value["static"].GetBool();
 
-
-	//btBulletWorldImporter
-
-
-	//btDefaultSerializer* deserializer = new btDefaultSerializer;
-
+	if (!m_IsStatic && myMass <= 0.f)
+		m_IsStatic = true;
+		
 }
 

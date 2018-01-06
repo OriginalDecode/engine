@@ -172,4 +172,7 @@
     <ClCompile Include="XML\XMLReader.cpp" />
     <ClCompile Include="ReferenceCounter.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis" />
+  </ItemGroup>
 </Project>

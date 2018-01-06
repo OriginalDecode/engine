@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+  <Type Name="CommonUtilities::GrowingArray&lt;*&gt;">
+    <DisplayString>{{size={mySize}}}</DisplayString>
+    <Expand>
+      <Item Name="[size]" ExcludeView="simple">mySize</Item>
+      <Item Name="[capacity]" ExcludeView="simple">myCapacity</Item>
+      <ArrayItems>
+        <Size>mySize</Size>
+        <ValuePointer>myData</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+</AutoVisualizer>

@@ -51,7 +51,7 @@ void DebugSystem::Update(float /*dt*/, bool)
 		Entity e = entities[i];
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-		//RenderBox(debug, translation.myOrientation);
+		RenderBox(debug, translation.m_Orientation);
 	}
 
 	return;	

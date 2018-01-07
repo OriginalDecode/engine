@@ -73,14 +73,16 @@ void Inspector::HandleAdd()
 		{
 			c.m_ComponentFlags |= TreeDweller::PHYSICS;
 			PhysicsComponent& phys = m_Manager.AddComponent<PhysicsComponent>(m_CurrentEntity);
+
+			GraphicsComponent& g = m_Manager.GetComponent<GraphicsComponent>(m_CurrentEntity);
+			TranslationComponent& translation = m_Manager.GetComponent<TranslationComponent>(m_CurrentEntity);
+
 			phys.m_Body = Engine::GetInstance()->GetPhysicsManager()->CreateBody();
 
-			Model* pModel = Engine::GetInstance()->GetModel<Model>(g_DefaultModel).GetData();
-			pModel = pModel->GetChildModels()[0];
-			btRigidBody* body = phys.m_Body->InitAsBox(0.5, 0.5, 0.5, { 0.f,0.f,0.f });
+
+			btRigidBody* body = phys.m_Body->InitAsBox(g.m_Instances[0].m_Scale * 2.f, { 0.f,0.f,0.f });
 			Engine::GetInstance()->GetPhysicsManager()->Add(body);
 
-			TranslationComponent& translation = m_Manager.GetComponent<TranslationComponent>(m_CurrentEntity);
 			phys.m_Body->SetPosition(translation.GetOrientation().GetPosition());
 
 			pDweller->AddComponent(&phys, TreeDweller::PHYSICS);

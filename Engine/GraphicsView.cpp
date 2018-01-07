@@ -45,7 +45,7 @@ void GraphicsView::Update()
 
 		c.m_Instances[0].m_Orientation = entity_mat;
 
-
+		c.m_Instances[0].m_Scale = c.m_Instances[0].m_Orientation.GetScale();
 
 	}
 }

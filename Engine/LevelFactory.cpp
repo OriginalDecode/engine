@@ -112,6 +112,7 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	reader.OpenDocument(entity_data);
 	auto& doc = reader.GetDocument();
 	s32 debug_flags = 0;
+	bool is_static = false;
 	for (const rapidjson::Value& obj : doc.GetArray())
 	{
 		std::string type = obj["component_type"].GetString();
@@ -151,6 +152,7 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 			c.m_Body->DeserializePhysicsData(physics_data, physics_length, t.GetOrientation().GetPosition());
 			btRigidBody* body = c.m_Body->GetBody();
 			m_Engine->GetPhysicsManager()->Add(body);
+			is_static = c.m_Body->IsStatic();
 
 		}
 	}
@@ -162,7 +164,7 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	component.m_Dweller = pDweller;
 #endif
 
-	pDweller->Initiate(e, TreeDweller::DYNAMIC);
+	pDweller->Initiate(e, (is_static ? TreeDweller::STATIC : TreeDweller::DYNAMIC));
 	delete[] physics_data;
 	delete[] entity_data;
 	delete[] data;

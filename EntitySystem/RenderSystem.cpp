@@ -89,9 +89,6 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 											));
 #endif
 		}
-
-
-
 	}
 	PROFILE_BLOCK_END;
 }

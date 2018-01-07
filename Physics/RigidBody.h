@@ -22,6 +22,7 @@ public:
 	btRigidBody* InitAsSphere(float aRadius, float aMass, float aGravityForce, float anInitialResistance, const CU::Vector3f& aPosition);
 	btRigidBody* InitWithMeshCollision(s8* const vertices, s8* const indices, const s32 const idx_count, const s32 const vtx_count);
 	btRigidBody* InitAsBox(float width, float height, float depth, CU::Vector3f position);
+	btRigidBody* InitAsBox(CU::Vector4f whd, CU::Vector3f position);
 
 	void SetResistanceDensity(float aDensity);
 	void SetPosition(const CU::Vector3f& aPosition);
@@ -45,6 +46,7 @@ public:
 	void SetMass(float mass);
 	float& GetMass() { return myMass; }
 
+	void SetScale(CU::Vector4f scale);
 
 	template<typename Writer>
 	void Serialize(Writer& writer);

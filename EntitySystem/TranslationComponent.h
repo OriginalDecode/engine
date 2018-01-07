@@ -15,6 +15,7 @@ struct TranslationComponent : public BaseComponent, public NetReplicate
 
 	bool m_UpdatedOnNetwork = false;
 	CU::Matrix44f m_Orientation;
+	CU::Matrix44f m_Scale;
 private:
 
 };

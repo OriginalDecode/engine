@@ -296,6 +296,7 @@ void Renderer::Render()
 #if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &ctx)
 {
+	return;
 	if (e <= 0)
 		return;
 	

@@ -24,3 +24,16 @@ namespace btu
 	}
 
 };
+
+btVector3& btVector3Ext::operator=(const CU::Vector4f& vec)
+{
+	m_floats[0] = vec.x;
+	m_floats[1] = vec.y;
+	m_floats[2] = vec.z;
+	return *this;
+}
+
+btVector3Ext::btVector3Ext(CU::Vector4f vec)
+{
+	*this = vec;
+}

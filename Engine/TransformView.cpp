@@ -6,6 +6,8 @@
 
 #include <EntitySystem/TranslationComponent.h>
 #include <EntitySystem/PhysicsComponent.h>
+#include <EntitySystem/GraphicsComponent.h>
+
 #include <Physics/RigidBody.h>
 
 
@@ -39,7 +41,12 @@ void TransformView::Update()
 			PhysicsComponent& physics = m_Manager.GetComponent<PhysicsComponent>(m_CurrentEntity);
 
 			if (ImGuizmo::IsUsing())
+			{
 				physics.m_Body->SetPosition(translation.m_Orientation.GetPosition());
+
+				GraphicsComponent& g = m_Manager.GetComponent<GraphicsComponent>(m_CurrentEntity);
+				physics.m_Body->SetScale(g.m_Instances[0].m_Scale);
+			}
 		}
 
 
@@ -63,21 +70,17 @@ void TransformView::EditTransform(const float *cameraView, float *cameraProjecti
 		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
 	if (ImGui::IsKeyPressed(e_key))
 		mCurrentGizmoOperation = ImGuizmo::ROTATE;
-	if (ImGui::IsKeyPressed(r_key)) // r Key
-		mCurrentGizmoOperation = ImGuizmo::SCALE;
+
 	if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
 		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
 	ImGui::SameLine();
 	if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
 		mCurrentGizmoOperation = ImGuizmo::ROTATE;
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
-		mCurrentGizmoOperation = ImGuizmo::SCALE;
+	
 	float matrixTranslation[3], matrixRotation[3], matrixScale[3];
 	ImGuizmo::DecomposeMatrixToComponents(matrix, matrixTranslation, matrixRotation, matrixScale);
 	ImGui::InputFloat3("Tr", matrixTranslation, 3);
 	ImGui::InputFloat3("Rt", matrixRotation, 3);
-	ImGui::InputFloat3("Sc", matrixScale, 3);
 	ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
 	if (mCurrentGizmoOperation != ImGuizmo::SCALE)
 	{
@@ -88,8 +91,6 @@ void TransformView::EditTransform(const float *cameraView, float *cameraProjecti
 			mCurrentGizmoMode = ImGuizmo::WORLD;
 	}
 
-	if (mCurrentGizmoOperation == ImGuizmo::SCALE)
-		mCurrentGizmoMode = ImGuizmo::LOCAL;
 
 	if (ImGui::IsKeyPressed(s_key))
 		useSnap = !useSnap;
@@ -103,9 +104,6 @@ void TransformView::EditTransform(const float *cameraView, float *cameraProjecti
 		break;
 	case ImGuizmo::ROTATE:
 		ImGui::InputFloat("Angle Snap", &snap[0]);
-		break;
-	case ImGuizmo::SCALE:
-		ImGui::InputFloat("Scale Snap", &snap[0]);
 		break;
 	}
 	ImGuiIO& io = ImGui::GetIO();

@@ -135,7 +135,6 @@ btRigidBody* RigidBody::InitAsBox(float width, float height, float depth, CU::Ve
 {
 	m_Shape = new btBoxShape(btVector3(width, height, depth));
 	m_Shape->setMargin(0.025f);
-	btVector3 pos = btu::ConvertVector(position);
 
 	m_MotionState = new btDefaultMotionState;
 	btScalar mass = 10.f;
@@ -145,9 +144,15 @@ btRigidBody* RigidBody::InitAsBox(float width, float height, float depth, CU::Ve
 	btRigidBody::btRigidBodyConstructionInfo bodyInfo(mass, m_MotionState, m_Shape, local_inertia);
 	myBody = new btRigidBody(bodyInfo);
 
+	//m_Shape->setLocalScaling(btVector3(width, height, depth));
 
 	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
 	return myBody;
+}
+
+btRigidBody* RigidBody::InitAsBox(CU::Vector4f whd, CU::Vector3f position)
+{
+	return InitAsBox(whd.x, whd.y, whd.z, position);
 }
 
 void RigidBody::SetResistanceDensity(float aDensity)
@@ -269,6 +274,11 @@ void RigidBody::SetMass(float mass)
 {
 	myMass = mass;
 	myBody->setMassProps(myMass, btVector3(0, 0, 0));
+}
+
+void RigidBody::SetScale(CU::Vector4f scale)
+{
+	m_Shape->setLocalScaling((btVector3Ext)scale);
 }
 
 void RigidBody::SerializePhysicsData(unsigned char*& buffer_pointer, int& buffer_size)

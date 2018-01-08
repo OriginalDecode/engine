@@ -13,6 +13,7 @@ class Camera;
 class InputWrapper;
 class Texture;
 class Sprite;
+class Player;
 
 class Game : public State, public Subscriber
 {
@@ -50,7 +51,7 @@ private:
 	CU::Vector3f pointHit;
 
 	TranslationComponent* component;
-	TreeDweller* m_Player = nullptr;
+	//TreeDweller* m_Player = nullptr;
 	Camera* m_Camera = nullptr;
 	Frustum m_Frustum;
 
@@ -60,6 +61,9 @@ private:
 
 	Engine* m_Engine = nullptr;
 	Synchronizer* m_Synchronizer = nullptr;
+	
+	Player* m_Player = nullptr;
+	
 	int m_FrameCount = 0;
 	int m_FPSToPrint = 0;
 	float m_AverageFPS = 0;

@@ -61,3 +61,18 @@ void ControllerInput::Vibrate(unsigned short aLeftVal, unsigned short aRightVal,
 	myRightMotorValue = aRightVal;
 	myLeftMotorValue = aLeftVal;
 }
+
+bool ControllerInput::IsDown(eXboxButton aKey)
+{
+	return (m_State.m_Buttons & static_cast<int>(aKey)) != 0;
+}
+
+bool ControllerInput::OnDown(eXboxButton aKey)
+{
+	return (((m_State.m_Buttons & static_cast<int>(aKey)) != 0) && ((m_PrevState.m_Buttons & static_cast<int>(aKey)) == 0));
+}
+
+bool ControllerInput::OnRelease(eXboxButton aKey)
+{
+	return (((m_State.m_Buttons & static_cast<int>(aKey)) == 0) && ((m_PrevState.m_Buttons & static_cast<int>(aKey)) != 0));
+}

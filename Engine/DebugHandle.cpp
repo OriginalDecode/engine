@@ -8,13 +8,6 @@
 #include <Engine/LevelFactory.h>
 #include <Input/InputHandle.h>
 
-#include <EntitySystem/LightComponent.h>
-#include <EntitySystem/DebugComponent.h>
-#include <EntitySystem/AIComponent.h>
-#include <EntitySystem/TranslationComponent.h>
-#include <EntitySystem/GraphicsComponent.h>
-#include <EntitySystem/NetworkComponent.h>
-#include <EntitySystem/PhysicsComponent.h>
 #include <EntitySystem/EntityManager.h>
 #include <EntitySystem/ComponentFilter.h>
 

@@ -47,6 +47,10 @@ public:
 	//void Update(float aDeltaTime);
 
 	void Vibrate(unsigned short aLeftVal = 0, unsigned short aRightVal = 0, float someTime = 0);
+	bool IsDown(eXboxButton aKey);
+	bool OnDown(eXboxButton aKey);
+	bool OnRelease(eXboxButton aKey);
+	
 
 private:
 	ControllerState m_State;

@@ -80,7 +80,7 @@ void Inspector::HandleAdd()
 			phys.m_Body = Engine::GetInstance()->GetPhysicsManager()->CreateBody();
 
 
-			btRigidBody* body = phys.m_Body->InitAsBox(g.m_Instances[0].m_Scale * 2.f, { 0.f,0.f,0.f });
+			btRigidBody* body = phys.m_Body->InitAsBox(0.5,0.5,0.5, { 0.f,0.f,0.f });
 			Engine::GetInstance()->GetPhysicsManager()->Add(body);
 
 			phys.m_Body->SetPosition(translation.GetOrientation().GetPosition());

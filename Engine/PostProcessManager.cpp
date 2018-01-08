@@ -22,22 +22,10 @@ void PostProcessManager::Initiate()
 void PostProcessManager::Process(Texture* current_frame_texture, const graphics::RenderContext& render_context)
 {
 	PROFILE_FUNCTION(profiler::colors::Green);
-
-
-	if (m_PassFlags & SSAO)
-		m_SSAOPass.Process(current_frame_texture, render_context);
-
-	if (m_PassFlags & HDR)
-		m_HDRPass.Process(current_frame_texture, render_context);
-
-	if (m_PassFlags & BLOOM)
-		m_BloomPass.Process(current_frame_texture, render_context);
-
-	if (m_PassFlags & MOTIONBLUR)
-		m_MotionBlurPass.Process(current_frame_texture, render_context);
+	Process(current_frame_texture, m_PassFlags, render_context);
 }
 
-void PostProcessManager::Process(Texture* pTexture, s32 process_flag, const graphics::RenderContext& rc)
+void PostProcessManager::Process(Texture* pTexture, s32 process_flag, const graphics::RenderContext& rc) //if you want to run a specific pass
 {
 
 	if (process_flag & SSAO)

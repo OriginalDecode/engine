@@ -1,9 +1,9 @@
 #pragma once
 #include "BaseComponent.h"
-#include <Math/Vector/Vector.h>
+#include <CommonLib/Math/Vector/Vector.h>
 #include <Engine/engine_shared.h>
 #include <CommonLib/DataStructures/GrowingArray.h>
-#include <Math/Matrix/Matrix.h>
+#include <CommonLib/Math/Matrix/Matrix.h>
 
 #include <CommonLib/DataStructures/Hashmap/Hash.h>
 

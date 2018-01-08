@@ -155,6 +155,25 @@ btRigidBody* RigidBody::InitAsBox(CU::Vector4f whd, CU::Vector3f position)
 	return InitAsBox(whd.x, whd.y, whd.z, position);
 }
 
+btRigidBody* RigidBody::Capsule(CU::Vector3f pos)
+{
+	m_Shape = new btCapsuleShape(1.f, 2.f);
+	m_Shape->setMargin(0.025f);
+
+	m_MotionState = new btDefaultMotionState;
+	btScalar mass = 10.f;
+	myMass = mass;
+	btVector3 local_inertia;
+	m_Shape->calculateLocalInertia(mass, local_inertia);
+
+
+	btRigidBody::btRigidBodyConstructionInfo info(mass, m_MotionState, m_Shape, local_inertia);
+	myBody = new btRigidBody(info);
+
+	myWorldTranslation = &m_MotionState->m_graphicsWorldTrans;
+	return myBody;
+}
+
 void RigidBody::SetResistanceDensity(float aDensity)
 {
 	myResistanceDensity = aDensity;
@@ -303,9 +322,9 @@ void RigidBody::SerializePhysicsData(unsigned char*& buffer_pointer, int& buffer
 btRigidBody* RigidBody::DeserializePhysicsData(char* mem_buffer, int length, const CU::Vector3f& initial_pos)
 {
 	btBulletWorldImporter* importer = new btBulletWorldImporter;
- 	importer->loadFileFromMemory(mem_buffer, length);
- 	const int count = importer->getNumCollisionShapes();
- 	m_Shape = importer->getCollisionShapeByIndex(0);
+	importer->loadFileFromMemory(mem_buffer, length);
+	const int count = importer->getNumCollisionShapes();
+	m_Shape = importer->getCollisionShapeByIndex(0);
 
 	const int numRigidBodies = importer->getNumRigidBodies();
 	myBody = (btRigidBody*)importer->getRigidBodyByIndex(0);
@@ -319,6 +338,6 @@ btRigidBody* RigidBody::DeserializePhysicsData(char* mem_buffer, int length, con
 	SetPosition(initial_pos);
 
 
- 	delete importer;
- 	return myBody;
+	delete importer;
+	return myBody;
 }

@@ -1,9 +1,8 @@
 #pragma once
 #include <string>
 #include "BaseComponent.h"
-#include "Math/Vector/Vector.h"
-#include "Math/Matrix/Matrix.h"
-
+#include <CommonLib/Math/Vector/Vector.h>
+#include <CommonLib/Math/Matrix/Matrix.h>
 
 enum class eLightType
 {

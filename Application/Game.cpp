@@ -27,12 +27,14 @@
 #include <Engine/Effect.h>
 #include <Engine/Texture.h>
 #include <Input/ControllerInput.h>
+#include <Engine/LevelFactory.h>
 
+#include "Player.h"
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
 #endif
 static float s_CamSpeed = 50.f;
-static s32 entity = 0;
+
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
@@ -43,7 +45,6 @@ void Game::InitState(StateStack* state_stack)
 }
 
 static const char* camera_file = "camera_pos";
-#include <Engine/LevelFactory.h>
 
 void Game::Initiate(const std::string& level)
 {
@@ -51,17 +52,13 @@ void Game::Initiate(const std::string& level)
 
 	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
 
-	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel(level);
+	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
 	m_World.AddDwellers(dwellers);
 
+	m_Player = new Player;
+	m_World.AddDweller(m_Player->Initiate());
+
 	m_Picker = new CMousePicker;
-
-
-	Entity player = m_Engine->GetEntityManager().CreateEntity();
-	auto& em = m_Engine->GetEntityManager();
-	LevelFactory::CreateEntity(player, em);
-	TranslationComponent& c = em.GetComponent<TranslationComponent>(player);
-
 
 	m_Camera = m_Engine->GetCamera();
 	m_Camera->SetPosition(CU::Vector3f(-5, 10, -5));
@@ -69,11 +66,8 @@ void Game::Initiate(const std::string& level)
 	m_Camera->RotateAroundX(cl::DegreeToRad(20.f));
 	m_Camera->Update(CU::Vector2f(0.f,0.f));
 	CameraHandle::Create();
-	CameraHandle::GetInstance()->Initiate(&c.m_Orientation);
+	CameraHandle::GetInstance()->Initiate(nullptr /* this should be the player, or a child matrix to the player (relative position with an offset that can rotate around the player object) */);
 	m_PauseState.InitState(m_StateStack);
-
-
-	
 
 #ifdef _DEBUG
 	EventManager::GetInstance()->Subscribe(DebugEvents_AddEntity, this);
@@ -101,8 +95,9 @@ void Game::Initiate(const std::string& level)
 void Game::EndState()
 {
 	m_World.CleanUp();
-	CameraHandle::Destroy();
+	CameraHandle::Destroy(); //this probably should not be deleted here if we want to be able to render things in a menu that isn't the game state.
 	SAFE_DELETE(m_Picker);
+	SAFE_DELETE(m_Player);
 }
 
 void Game::Render(bool render_through)
@@ -148,9 +143,8 @@ void Game::Reload()
 void Game::Update(float dt)
 {
 	CameraHandle::GetInstance()->Update();
+	m_Player->Update(dt);
 	OldUpdate(dt);
-
-	
 
 }
 
@@ -213,13 +207,96 @@ void Game::OldUpdate(float dt)
 			m_Camera->Move(eDirection::DOWN, -s_CamSpeed * dt);
 	}
 	
+	static float entity_speed = 0.2f;
 
-	//m_Engine->GetInputHandle()->GetController(0)->GetState()
-	m_Engine->GetInputHandle()->GetController(0)->GetState()
-	if(m_Engine->GetInputHandle()->GetController())
+	if (input_wrapper->IsDown(KButton::H))
+	{
+		entity_speed += 1.f * dt;
+	}
+	if (input_wrapper->IsDown(KButton::G))
+	{
+		entity_speed -= 1.f * dt;
+	}
 
+	HandleMovement(input_wrapper, entity_speed, dt);
 
+	//m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, false));
+
+	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 	m_World.Update(dt, m_Paused);
+}
+
+void Game::HandleMovement(InputWrapper* input_wrapper, float entity_speed, float dt)
+{
+	CU::Vector4f translation = m_Orientation.GetTranslation();
+	if (input_wrapper->IsDown(KButton::UP_ARROW))
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetForward();
+		translation += forward * entity_speed;
+	}
+	if (input_wrapper->IsDown(KButton::DOWN_ARROW))
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetForward();
+		translation += forward * -entity_speed;
+	}
+
+	if (input_wrapper->IsDown(KButton::LEFT_ARROW))
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetRight();
+		translation += forward * -entity_speed;
+	}
+
+	if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetRight();
+		translation += forward * entity_speed;
+	}
+
+	if (input_wrapper->IsDown(KButton::M))
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetUp();
+		translation += forward * entity_speed;
+	}
+
+	if (input_wrapper->IsDown(KButton::N))
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetUp();
+		translation += forward * -entity_speed;
+	}
+
+	if (input_wrapper->IsDown(KButton::M))
+	{
+		CU::Math::Vector4<float> forward = m_Orientation.GetUp();
+		translation += forward * entity_speed;
+	}
+
+	if (input_wrapper->IsDown(KButton::NUMPAD8))
+	{
+		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
+	}
+	if (input_wrapper->IsDown(KButton::NUMPAD2))
+	{
+		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), -cl::DegreeToRad(90.f) * dt);
+	}
+	if (input_wrapper->IsDown(KButton::NUMPAD4))
+	{
+		m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), -cl::DegreeToRad(90.f) * dt);
+	}
+	if (input_wrapper->IsDown(KButton::NUMPAD6))
+	{
+		m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
+	}
+	if (input_wrapper->IsDown(KButton::NUMPAD7))
+	{
+		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), -cl::DegreeToRad(90.f) * dt);
+	}
+	if (input_wrapper->IsDown(KButton::NUMPAD9))
+	{
+		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
+	}
+
+
+	m_Orientation.SetTranslation(translation);
 }
 
 void Game::AddRenderCommand(const ModelCommand& command)

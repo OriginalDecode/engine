@@ -38,22 +38,9 @@
 #include <Engine/ImGuizmo.h>
 #include <Engine/imgui.h>
 #endif
+
 #include <Engine/AssetFactory.h>
 #include <network/NetworkManager.h>
-
-
-// #define REGISTERCOMPONENT(x) x,
-// enum RegisteredComponents
-// {
-// #include "Components.h"
-// };
-// #undef REGISTERCOMPONENT
-// 
-// #define REGISTERCOMPONENT(x) #x,
-// const char* RegisteredComponentsStr[] = {
-// #include "Components.h"
-// };
-// #undef REGISTERCOMPONENT
 
 bool Engine::HasInitiated()
 {
@@ -172,10 +159,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();
 
-
-
-
-
 	return true;
 }
 
@@ -187,7 +170,6 @@ bool Engine::CleanUp()
 	AssetFactory::Destroy();
 	m_NetManager->CleanUp();
 	SAFE_DELETE(m_NetManager);
-	//constexpr int v = sizeof(network::NetworkManager);
 
 	m_InputHandle->CleanUp();
 	SAFE_DELETE(m_InputHandle);
@@ -210,8 +192,6 @@ bool Engine::CleanUp()
 	SAFE_DELETE(m_LevelFactory);
 	SAFE_DELETE(myAssetsContainer);
 	SAFE_DELETE(m_Synchronizer);
-	//DL_ASSERT_EXP(myAPI->CleanUp(), "Failed to clean up graphics API. Something was not set to null.");
-	//SAFE_DELETE(myAPI);
 	SAFE_DELETE(m_API);
 	EventManager::Destroy();
 	Randomizer::Destroy();
@@ -222,11 +202,6 @@ Camera* Engine::GetCamera()
 {
 	return m_Camera;
 }
-
-//TreeDweller* Engine::CreateEntity(const std::string& filepath, CU::Vector3f& position)
-//{
-//	return m_LevelFactory->CreateEntitiy(filepath, position);
-//}
 
 void Engine::Update()
 {

@@ -49,7 +49,6 @@ void Application::Update()
 #endif
 	while (mySynchronizer->HasQuit() == false)
 	{
-
 		float deltaTime = myEngine->GetDeltaTime();
 
 		myEngine->UpdateInput();
@@ -68,8 +67,6 @@ void Application::Update()
 		{
 			break;
 		}
-
-		//myGame->Update(deltaTime);
 
 		mySynchronizer->LogicIsDone();
 		mySynchronizer->WaitForRender();

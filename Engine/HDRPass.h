@@ -22,7 +22,7 @@ public:
 	void OnResize();
 private:
 	void Downsample(IRenderTargetView* render_target, IShaderResourceView* source);
-	void Tonemapping(IRenderTargetView* target, IShaderResourceView* source[2], s32 resource_count);
+	void Tonemapping(IRenderTargetView* target, IShaderResourceView* source[], s32 resource_count);
 
 	CU::GrowingArray<Texture*> m_Downsamples;
 
@@ -31,6 +31,7 @@ private:
 
 	Texture*	m_HDRTexture = nullptr;
 	Quad*		m_Quad = nullptr;
+	Effect*		m_ColorGrading = nullptr;
 	Effect*		m_HDREffect = nullptr;
 	Effect*		m_DownsampleEffect = nullptr;
 	Effect*		m_RenderToScreenEffect = nullptr;

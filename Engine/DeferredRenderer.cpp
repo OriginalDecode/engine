@@ -84,6 +84,7 @@ DeferredRenderer::DeferredRenderer()
 
 	//_______________________________________________________________________
 
+	Engine::GetInstance()->GetEffect("Shaders/color_grading.json")->AddShaderResource(m_Scene, Effect::NORMAL);
 	m_RenderQuad = new Quad(m_AmbientPassShader);
 }
 

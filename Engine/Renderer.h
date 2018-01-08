@@ -142,7 +142,9 @@ private:
 	bool m_RenderLines = false;
 	bool m_LightModelWireframe = false;
 
-	CU::GrowingArray<Texture*> m_DebugTextures;
+
+	Texture* m_DebugTexture = nullptr;
+	//CU::GrowingArray<Texture*> m_DebugTextures;
 	Texture* m_HoverTexture = nullptr;
 	Texture* m_SelectedTexture = nullptr;
 	RefPointer<Model> m_HoverModel = nullptr;

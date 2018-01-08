@@ -2,6 +2,7 @@ SamplerState linear_Clamp  : register ( s0 );
 Texture2D DiffuseTexture   : register ( t0 );
 Texture2D LuminanceTexture : register ( t1 );
 Texture2D AverageLumTexture : register ( t2 );
+Texture2D ColorStrip  : register ( t3 );
 
 struct VS_OUTPUT
 {
@@ -26,18 +27,33 @@ float4 Tonemap(float4 color)
 	return ((color*(A*color + C*B) + D*E) / (color*(A*color + B) + D*F)) - E / F;
 }
 
+float4 sampleAs3DTexture(float4 uv, float width) 
+{
+    float sliceSize = 1.0 / width;              // space of 1 slice
+    float slicePixelSize = sliceSize / width;           // space of 1 pixel
+    float sliceInnerSize = slicePixelSize * (width - 1.0);  // space of width pixels
+    float zSlice0 = min(floor(uv.z * width), width - 1.0);
+    float zSlice1 = min(zSlice0 + 1.0, width - 1.0);
+    float xOffset = slicePixelSize * 0.5 + uv.x * sliceInnerSize;
+    float s0 = xOffset + (zSlice0 * sliceSize);
+    float s1 = xOffset + (zSlice1 * sliceSize);
+    float4 slice0Color = ColorStrip.Sample(linear_Clamp, float2(s0, uv.y));
+    float4 slice1Color = ColorStrip.Sample(linear_Clamp, float2(s1, uv.y));
+    float zOffset = fmod(uv.z * width, 1.0);
+    float4 result = lerp(slice0Color, slice1Color, zOffset);
+    return result;
+};
+
 float4 main(VS_OUTPUT input) : SV_Target
 {	
 	float4 diffuse = DiffuseTexture.Sample(linear_Clamp, input.uv);
-	return diffuse;
-
 	float4 LumPixel = LuminanceTexture.Sample(linear_Clamp, input.uv);
 	float luminance = AverageLumTexture.Sample(linear_Clamp, input.uv).r;
 
 	luminance = min(max(luminance, lumMin), lumMax);
 	float exposure = (1.03 - (2 / (2 + log10(luminance + 1 ) ) ) ) ;
 
-	float4 color1 = (diffuse * (0.5)) / lumMin;
+	float4 color1 = (diffuse * (0.5)) / luminance;
 	float4 curr = Tonemap( 2 * diffuse);
 	float4 white_scale = 1 / Tonemap(WhitePoint);
 	float4 color = curr * white_scale;
@@ -45,9 +61,11 @@ float4 main(VS_OUTPUT input) : SV_Target
 	//float4 retColor = pow(color, 1/2.2);
 
 	float4 output = saturate(pow( color, .4545 ));
-
+	output = saturate(output  * color1); 
 	// output.rgb = (output.rgb - 0.5) * (1.0 + 0.3) + 0.5;
-	return saturate(output  * color1);
+	output = sampleAs3DTexture(output, 16);
+
+	return saturate(output);
 }
 
 /*

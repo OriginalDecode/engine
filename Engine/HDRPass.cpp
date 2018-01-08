@@ -48,6 +48,9 @@ void HDRPass::Initiate()
 		m_Downsamples.GetLast()->Initiate(desc,	false, debug_name.str().c_str());
 
 		sample_size *= 2.f;
+
+		debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
+		pDebug->RegisterTexture(m_Downsamples.GetLast(), debug_name.str().c_str());
 	}
 
 
@@ -58,6 +61,9 @@ void HDRPass::Initiate()
 	m_HDREffect = Engine::GetInstance()->GetEffect("Shaders/tonemapping.json");
 	m_DownsampleEffect = Engine::GetInstance()->GetEffect("Shaders/downsample_hdr.json");
 	m_RenderToScreenEffect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
+	//m_ColorGrading = Engine::GetInstance()->GetEffect("Shaders/color_grading.json");
+	u64 rgb = Engine::GetInstance()->LoadTexture("Data/Textures/RGBTable16x1.dds");
+	m_HDREffect->AddShaderResource(Engine::GetInstance()->GetTexture(rgb), Effect::REGISTER_3);
 
 	m_Quad = new Quad;
 }
@@ -105,8 +111,14 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 	Tonemapping(m_HDRTexture->GetRenderTargetView(), sources, ARRSIZE(sources));
 
 	render_context.GetAPI().SetDefaultTargets();
+	//ctx.OMSetRenderTargets(1, scene_texture->GetRenderTargetRef(), nullptr);
 	m_RenderToScreenEffect->AddShaderResource(m_HDRTexture, Effect::DIFFUSE);
 	m_Quad->Render(false, m_RenderToScreenEffect);
+
+	//m_ColorGrading->AddShaderResource(scene_texture, Effect::NORMAL);
+	//m_Quad->Render(false, m_ColorGrading);
+
+
 }
 
 void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* source)
@@ -118,13 +130,15 @@ void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* 
 	m_Quad->Render(false, m_DownsampleEffect);
 }
 
-void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source[2], s32 resource_count)
+void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source[], s32 resource_count)
 {
 	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
 	ctx.ClearRenderTarget(target, clearcolor::black);
 	ctx.OMSetRenderTargets(1, &target, nullptr);
 	
 	m_HDREffect->AddShaderResource(source[0], Effect::DIFFUSE);
+	m_HDREffect->AddShaderResource(source[1], Effect::LUMINANCE);
+	m_HDREffect->AddShaderResource(source[2], Effect::AVG_LUMINANCE);
 	m_Quad->Render(false, m_HDREffect);
 }
 

@@ -57,6 +57,7 @@ namespace debug
 		mgr->Subscribe(DebugEvents_OnRightClick, this);
 		mgr->Subscribe("copy_selected", this);
 		mgr->Subscribe("paste_new", this);
+		m_RegisteredSampleTextures.Init(32);
 	}
 
 
@@ -270,10 +271,7 @@ namespace debug
 			ImGui::Text("FPS : %.1f", pEngine->GetFPS());
 			ImGui::Text("CPU Usage : %.1f", pEngine->m_SystemMonitor.GetCPUUsage());
 			ImGui::Text("Memory Usage : %dmb", pEngine->m_SystemMonitor.GetMemoryUsage());
-
-			//ImGui::Text("Model Commands : %d", mySynchronizer->GetRenderCommands(eBufferType::MODEL_BUFFER).Size());
 			ImGui::Text("Model Commands : %d", pEngine->m_SegmentHandle.CommandSize((s32)pEngine->m_Synchronizer->GetCurrentBufferIndex()));
-
 			ImGui::Text("Spotlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER).Size());
 			ImGui::Text("Pointlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER).Size());
 			ImGui::Text("Particle Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER).Size());
@@ -296,31 +294,7 @@ namespace debug
 				LevelFactory::SaveLevel("data/pbr_level/", "pbr_level.level");
 			}
 
-
-			auto& em = Engine::GetInstance()->GetEntityManager();
-
-// 			if (ImGui::Button("Create new Entity"))
-// 			{
-// 				Entity e = em.CreateEntity();
-// 				LevelFactory::CreateEntity(e, em);
-// 			}
-
-// 			if (ImGui::Button("Pause Physics"))
-// 			{
-// 				if (Engine::GetInstance()->GetNetworkManager() && Engine::GetInstance()->GetNetworkManager()->IsHost())
-// 				{
-// 					s_PausePhysics = !s_PausePhysics;
-// 				}
-// 			}
-// 			if (ImGui::Button("Host Network"))
-// 			{
-// 				Engine::GetInstance()->GetNetworkManager()->Host(1313);
-// 			}
-// 
-// 			if (ImGui::Button("Connect Network"))
-// 			{
-// 				Engine::GetInstance()->GetNetworkManager()->Connect("127.0.0.1", 1313);
-// 			}
+			DebugTextures();
 
 			ImGui::Separator();
 			ImGui::Text("Hovering : %d", m_CurrEntity);
@@ -345,7 +319,7 @@ namespace debug
 			ListBox("", &m_TextureIndex, m_Labels);
 			ImGui::PopItemWidth();
 
-			ImTextureID tex_id = m_DebugTextures[m_TextureIndex];
+			ImTextureID tex_id = m_DebugTexture;
 			ImVec2 w_size = ImGui::GetWindowSize();
 			w_size.x *= 0.65f;
 			w_size.y = w_size.x / 1.777777777777777777777777777777778;
@@ -426,6 +400,9 @@ namespace debug
 
 	void DebugHandle::ConfirmEntity()
 	{
+		if (m_CurrEntity <= 0)
+			return;
+
 		if (!ImGui::IsAnyWindowHovered())
 		{
 			if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver())
@@ -439,6 +416,11 @@ namespace debug
 	s32 DebugHandle::GetDebugTextureIndex() const
 	{
 		return m_TextureIndex;
+	}
+
+	void DebugHandle::SetDebugTexture(Texture* tex)
+	{
+		m_DebugTexture = static_cast<ID3D11ShaderResourceView*>(tex->GetShaderView());
 	}
 
 	void DebugHandle::SetObjectMatrix(CU::Matrix44f* mat)

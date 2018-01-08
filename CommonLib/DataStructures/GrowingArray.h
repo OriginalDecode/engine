@@ -361,7 +361,7 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType = int>
 	inline void GrowingArray<ObjectType, SizeType>::Resize(SizeType aNewSize)
 	{
-
+		DL_ASSERT("resize");
 		myCapacity = aNewSize;
 		ObjectType *newMemory = new ObjectType[myCapacity];
 		if (mySafeFlag == true)

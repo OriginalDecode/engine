@@ -41,7 +41,13 @@ namespace debug
 		void ConfirmEntity();
 		s32 GetDebugTextureIndex() const;
 
-		void RegisterTexture(Texture* texture) { m_RegisteredSampleTextures.Add(texture); }
+		void SetDebugTexture(Texture* tex);
+
+		void RegisterTexture(Texture* texture, const char* name) 
+		{ 
+			m_Labels.push_back(name);
+			m_RegisteredSampleTextures.Add(texture); 
+		}
 		Texture* GetTexture(s32 index) { return m_RegisteredSampleTextures[index]; }
 
 		void SetObjectMatrix(CU::Matrix44f* mat);
@@ -64,6 +70,8 @@ namespace debug
 		CU::GrowingArray<DebugSlider<float>> m_Sliders;
 		CU::GrowingArray<DebugTextValue<int>> m_Values;
 		CU::GrowingArray<DebugCheckbox> m_Checkboxes;
+
+		void* m_DebugTexture = nullptr;
 
 		CU::GrowingArray<Texture*> m_RegisteredSampleTextures; //used for the debug textures
 		CU::GrowingArray<void*> m_DebugTextures;

@@ -32,6 +32,8 @@ void Texture::Initiate(const TextureDesc& desc, const std::string& debug_name)
 
 void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const std::string& debug_name)
 {
+	m_Width = desc.m_Width;
+	m_Height = desc.m_Height;
 #ifdef _DEBUG
 	m_DebugName = debug_name;
 #endif

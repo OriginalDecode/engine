@@ -99,42 +99,60 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_SelectedTexture = new Texture;
 	m_SelectedTexture->Initiate(desc, "SelectedTexture");
 
+	const char* names[] = {
+		"diffuse, albedo",
+		"normal",
+		"depth",
+		"emissive",
+		"entity_id",
+		"hover",
+		"edge"
+	};
 
-	m_DebugTextures.Add(new Texture);
-	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
 
-	m_DebugTextures.Add(new Texture);
-	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "normal");
+	m_DebugTexture = new Texture;
+	m_DebugTexture->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
 
-	m_DebugTextures.Add(new Texture);
-	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "depth");
 
-	m_DebugTextures.Add(new Texture);
-	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "emissive");
-
-	m_DebugTextures.Add(new Texture);
-	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "entity_id");
-
-	m_DebugTextures.Add(new Texture);
-	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "hover");
-
-	m_DebugTextures.Add(new Texture);
-	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "edge");
+// 	m_DebugTextures.Add(new Texture);
+// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
+// 
+// 	m_DebugTextures.Add(new Texture);
+// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "normal");
+// 
+// 	m_DebugTextures.Add(new Texture);
+// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "depth");
+// 
+// 	m_DebugTextures.Add(new Texture);
+// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "emissive");
+// 
+// 	m_DebugTextures.Add(new Texture);
+// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "entity_id");
+// 
+// 	m_DebugTextures.Add(new Texture);
+// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "hover");
+// 
+// 	m_DebugTextures.Add(new Texture);
+// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "edge");
 
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 
-	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
-	pDebug->RegisterTexture(m_GBuffer.GetDiffuse());
-	pDebug->RegisterTexture(m_GBuffer.GetNormal());
-	pDebug->RegisterTexture(m_GBuffer.GetDepth());
-	pDebug->RegisterTexture(m_GBuffer.GetEmissive());
-	pDebug->RegisterTexture(m_GBuffer.GetIDTexture());
-	pDebug->RegisterTexture(m_HoverTexture);
 
-	for (Texture* t : m_DebugTextures)
-	{
-		pDebug->AddTexture(t, t->GetDebugName());
-	}
+
+	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
+	pDebug->SetDebugTexture(m_DebugTexture);
+
+	pDebug->RegisterTexture(m_GBuffer.GetDiffuse(), names[0]);
+	pDebug->RegisterTexture(m_GBuffer.GetNormal(), names[1]);
+	pDebug->RegisterTexture(m_GBuffer.GetDepth(), names[2]);
+	pDebug->RegisterTexture(m_GBuffer.GetEmissive(), names[3]);
+	pDebug->RegisterTexture(m_GBuffer.GetIDTexture(), names[4]);
+	pDebug->RegisterTexture(m_HoverTexture, names[5]);
+	pDebug->RegisterTexture(m_SelectedTexture, names[6]);
+
+
+
+
 
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
@@ -155,7 +173,7 @@ Renderer::~Renderer()
 #if !defined(_PROFILE) && !defined(_FINAL)
 	SAFE_DELETE(m_DebugQuad);
 	SAFE_DELETE(m_HoverTexture);
-	m_DebugTextures.DeleteAll();
+	//m_DebugTextures.DeleteAll();
 #endif
 
 
@@ -348,8 +366,8 @@ void Renderer::WriteDebugTextures()
 	debug_textures->AddShaderResource(pTex, Effect::DIFFUSE);
 	auto& ctx = m_RenderContext.GetContext();
 
-	ctx.ClearRenderTarget(m_DebugTextures[index]->GetRenderTargetView(), clearcolor::black);
-	ctx.OMSetRenderTargets(1, m_DebugTextures[index]->GetRenderTargetRef(), nullptr);
+	ctx.ClearRenderTarget(m_DebugTexture->GetRenderTargetView(), clearcolor::black);
+	ctx.OMSetRenderTargets(1, m_DebugTexture->GetRenderTargetRef(), nullptr);
 	m_DebugQuad->Render(false);
 }
 #endif

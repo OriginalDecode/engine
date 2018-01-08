@@ -76,17 +76,20 @@ void Application::Update()
 
 void Application::OnPause()
 {
-	myEngine->OnPause();
+	if (myEngine)
+		myEngine->OnPause();
 }
 
 void Application::OnResume()
 {
-	myEngine->OnResume();
+	if (myEngine)
+		myEngine->OnResume();
 }
 
 void Application::OnInactive()
 {
-	myEngine->OnInactive();
+	if(myEngine)
+		myEngine->OnInactive();
 }
 
 void Application::OnActive()

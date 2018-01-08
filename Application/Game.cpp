@@ -52,11 +52,12 @@ void Game::Initiate(const std::string& level)
 
 	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
 
+	//m_Player = new Player;
+	//m_World.AddDweller(m_Player->Initiate());
+
 	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
 	m_World.AddDwellers(dwellers);
 
-	m_Player = new Player;
-	m_World.AddDweller(m_Player->Initiate());
 
 	m_Picker = new CMousePicker;
 
@@ -143,7 +144,7 @@ void Game::Reload()
 void Game::Update(float dt)
 {
 	CameraHandle::GetInstance()->Update();
-	m_Player->Update(dt);
+	//m_Player->Update(dt);
 	OldUpdate(dt);
 
 }

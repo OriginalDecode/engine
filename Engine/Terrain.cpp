@@ -130,7 +130,7 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 {
 
 
-	CU::GrowingArray<SVertexPosNormUVBiTang> vertices;
+	CU::GrowingArray<SVertexPosNormUVBiTang> vertices((myHeightmap.myDepth)*(myHeightmap.myWidth));
 
 	for (u32 z = 0; z < myHeightmap.myDepth; z++)
 	{
@@ -152,7 +152,7 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	}
 	CalculateNormals(vertices);
 
-	CU::GrowingArray<u32> indexes;
+	CU::GrowingArray<u32> indexes((myHeightmap.myDepth *  myHeightmap.myWidth) * 6 );
 	for (u32 z = 0; z < myHeightmap.myDepth - 1; ++z)
 	{
 		for (u32 x = 0; x < myHeightmap.myWidth - 1; ++x)

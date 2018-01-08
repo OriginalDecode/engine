@@ -244,6 +244,10 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 
 CU::GrowingArray<TreeDweller*> LevelFactory::LoadLevel(const char* level)
 {
+	Terrain* terrain = Engine::GetInstance()->CreateTerrain("Data/Textures/flat_height.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+	Material* pGroundMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
+	terrain->SetMaterial(pGroundMaterial);
+
 	JSONReader reader(level);
 	CU::GrowingArray<TreeDweller*> dwellers(500);
 	for (auto& obj : reader.GetDocument().GetArray())

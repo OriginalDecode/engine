@@ -140,7 +140,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 	data->myData->myIndicies = new u32[polygonCount * 3];
 	ZeroMemory(data->myData->myIndicies, sizeof(u32) * polygonCount * 3);
 	data->myData->m_IndexBufferSize = sizeof(u32) * polygonCount * 3;
-	CU::GrowingArray<u32> indices;
+	CU::GrowingArray<u32> indices(polygonCount * 3);
 	u32 vertCount = 0;
 
 	//CU::Vector3f min_point, max_point;
@@ -267,7 +267,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 	}
 
 	//Flips it to make it correct.
-	CU::GrowingArray<u32> indiceFix;
+	CU::GrowingArray<u32> indiceFix(indices.Capacity());
 	for ( s32 indice = indices.Size() - 1; indice >= 0; indice-- )
 	{
 		indiceFix.Add(indices[indice]);

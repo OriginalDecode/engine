@@ -71,9 +71,6 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	Entity e = m_EntityManager->CreateEntity();
 
 	assert(cl::file_exist(entity_filepath) && "Failed to find file!");
-	//FILE* pFile = fopen(entity_filepath.c_str(), "rb");
-	//size_t size = ftell(pFile);
-	//fseek(pFile, 0, SEEK_END);
 	std::ifstream file(entity_filepath.c_str(), std::ios::binary);
 
 	file.seekg(0, file.end);
@@ -244,6 +241,149 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 	EventManager::GetInstance()->SendMessage(DebugEvents_AddEntity, pDweller);
 #endif
 }
+
+CU::GrowingArray<TreeDweller*> LevelFactory::LoadLevel(const char* level)
+{
+	JSONReader reader(level);
+	CU::GrowingArray<TreeDweller*> dwellers(500);
+	for (auto& obj : reader.GetDocument().GetArray())
+	{
+		CreateEntity(obj.GetString(), dwellers);
+	}
+	reader.CloseDocument();
+
+	return dwellers;
+}
+
+
+void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<TreeDweller*>& out_dwellers)
+{
+	out_dwellers.Add(new TreeDweller);
+	TreeDweller* pDweller = out_dwellers.GetLast();
+	EntityManager& em = Engine::GetInstance()->GetEntityManager();
+	Entity e = em.CreateEntity();
+
+	assert(cl::file_exist(entity_filepath) && "Failed to find file!");
+	std::ifstream file(entity_filepath, std::ios::binary);
+
+	file.seekg(0, file.end);
+	size_t length = file.tellg();
+	file.seekg(0, file.beg);
+
+	char* data = new char[length];
+	file.read(data, length);
+	file.close();
+
+	int pos = 0;
+
+	char ext[3] = { '\0' };
+	memcpy(&ext[0], &data[pos], 3);
+	pos += 3;
+
+	int json_size = 0;
+	memcpy(&json_size, &data[pos], sizeof(s32));
+	pos += sizeof(s32);
+
+	char* entity_data = new char[json_size];
+	memcpy(&entity_data[0], &data[pos], json_size);
+	pos += json_size;
+
+
+	int physics_length = 0;
+	memcpy(&physics_length, &data[pos], sizeof(int));
+	pos += sizeof(int);
+
+
+	char* physics_data = new char[physics_length];
+	memcpy(&physics_data[0], &data[pos], physics_length);
+	pos += physics_length;
+
+	JSONReader reader;
+	reader.OpenDocument(entity_data);
+	auto& doc = reader.GetDocument();
+	s32 debug_flags = 0;
+	bool is_static = false;
+	bool is_light = false;
+	for (const rapidjson::Value& obj : doc.GetArray())
+	{
+		std::string type = obj["component_type"].GetString();
+
+		if (type.find("translation") != type.npos)
+		{
+			TranslationComponent& c = em.AddComponent<TranslationComponent>(e);
+			c.Deserialize(obj);
+			pDweller->AddComponent(&c, TreeDweller::TRANSLATION);
+			debug_flags |= TreeDweller::TRANSLATION;
+		}
+
+		if (type.find("graphics") != type.npos)
+		{
+			GraphicsComponent& c = em.AddComponent<GraphicsComponent>(e);
+			c.Deserialize(obj);
+			pDweller->AddComponent(&c, TreeDweller::GRAPHICS);
+			debug_flags |= TreeDweller::GRAPHICS;
+		}
+
+		if (type.find("light") != type.npos)
+		{
+			LightComponent& c = em.AddComponent<LightComponent>(e);
+			c.Deserialize(obj);
+			pDweller->AddComponent(&c, TreeDweller::LIGHT);
+			debug_flags |= TreeDweller::LIGHT;
+			is_light = true;
+		}
+
+		if (type.find("physics") != type.npos)
+		{
+			PhysicsComponent& c = em.AddComponent<PhysicsComponent>(e);
+			c.Deserialize(obj);
+			pDweller->AddComponent(&c, TreeDweller::PHYSICS);
+			debug_flags |= TreeDweller::PHYSICS;
+
+			TranslationComponent& t = em.GetComponent<TranslationComponent>(e);
+			c.m_Body->DeserializePhysicsData(physics_data, physics_length, t.GetOrientation().GetPosition());
+			btRigidBody* body = c.m_Body->GetBody();
+			Engine::GetInstance()->GetPhysicsManager()->Add(body);
+			is_static = c.m_Body->IsStatic();
+
+		}
+	}
+
+
+#ifdef _DEBUG
+	DebugComponent& debug = em.AddComponent<DebugComponent>(e);
+	pDweller->AddComponent(&debug, TreeDweller::DEBUG);
+	debug.m_ComponentFlags = debug_flags | TreeDweller::DEBUG;
+	if (is_light && em.HasComponent<GraphicsComponent>(e))
+	{
+		GraphicsComponent& g = em.GetComponent<GraphicsComponent>(e);
+		RefPointer<Model> model = Engine::GetInstance()->GetModel<Model>(g.m_Instances[0].m_Filename.c_str());
+		CU::Vector4f scale = g.m_Instances[0].m_Scale;
+		if (scale.x <= 0.f && scale.y <= 0.f && scale.z <= 0.f)
+		{
+			scale.x = 1.f;
+			scale.y = 1.f;
+			scale.z = 1.f;
+			scale.w = 1.f;
+		}
+
+		debug.m_MinPoint = CU::Vector4f(model->GetMinPoint(), 1) * scale;
+		debug.m_MaxPoint = CU::Vector4f(model->GetMaxPoint(), 1) * scale;
+	}
+	else
+	{
+		debug.m_MinPoint = { -0.25,-0.25,-0.25 };
+		debug.m_MaxPoint = { 0.25,0.25,0.25 };
+	}
+	debug.m_Dweller = pDweller;
+#endif
+
+	pDweller->Initiate(e, (is_static ? TreeDweller::STATIC : TreeDweller::DYNAMIC));
+	delete[] physics_data;
+	delete[] entity_data;
+	delete[] data;
+}
+
 
 void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 {

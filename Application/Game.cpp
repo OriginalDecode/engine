@@ -27,12 +27,14 @@
 #include <Engine/Effect.h>
 #include <Engine/Texture.h>
 #include <Input/ControllerInput.h>
+#include <Engine/LevelFactory.h>
 
+#include "Player.h"
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
 #endif
 static float s_CamSpeed = 50.f;
-static s32 entity = 0;
+
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
@@ -50,8 +52,11 @@ void Game::Initiate(const std::string& level)
 
 	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
 
-	CU::GrowingArray<TreeDweller*> dwellers = m_Engine->LoadLevel(level);
+	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
 	m_World.AddDwellers(dwellers);
+
+	m_Player = new Player;
+	m_World.AddDweller(m_Player->Initiate());
 
 	m_Picker = new CMousePicker;
 
@@ -61,7 +66,7 @@ void Game::Initiate(const std::string& level)
 	m_Camera->RotateAroundX(cl::DegreeToRad(20.f));
 	m_Camera->Update(CU::Vector2f(0.f,0.f));
 	CameraHandle::Create();
-	CameraHandle::GetInstance()->Initiate(nullptr);
+	CameraHandle::GetInstance()->Initiate(nullptr /* this should be the player, or a child matrix to the player (relative position with an offset that can rotate around the player object) */);
 	m_PauseState.InitState(m_StateStack);
 
 #ifdef _DEBUG
@@ -90,8 +95,9 @@ void Game::Initiate(const std::string& level)
 void Game::EndState()
 {
 	m_World.CleanUp();
-	CameraHandle::Destroy();
+	CameraHandle::Destroy(); //this probably should not be deleted here if we want to be able to render things in a menu that isn't the game state.
 	SAFE_DELETE(m_Picker);
+	SAFE_DELETE(m_Player);
 }
 
 void Game::Render(bool render_through)
@@ -137,6 +143,7 @@ void Game::Reload()
 void Game::Update(float dt)
 {
 	CameraHandle::GetInstance()->Update();
+	m_Player->Update(dt);
 	OldUpdate(dt);
 
 }

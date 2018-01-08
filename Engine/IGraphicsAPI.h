@@ -268,6 +268,7 @@ namespace graphics
 
 		virtual CU::Vector4f PickColor(Texture* pTexture) = 0;
 
+
 	protected:
 		CreateInfo m_CreateInfo;
 		eGraphicsAPI m_ActiveAPI;

@@ -1,5 +1,5 @@
 #pragma once
-#include "Math/Matrix/Matrix44.h"
+#include <CommonLib/Math/Matrix/Matrix.h>
 #include "BaseComponent.h"
 #include <CommonLib/Utilities.h>
 struct TranslationComponent : public BaseComponent, public NetReplicate

@@ -269,16 +269,27 @@ void Renderer::Render()
 	m_PostProcessManager.Process(m_SelectedTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
 #endif
 
-	m_RenderContext.GetAPI().SetDefaultTargets();
 	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	RenderLines();
 
 	//Render2DCommands();
-	
-
 
 #if !defined(_PROFILE) && !defined(_FINAL)
+	
+// 	ImGui::SetNextWindowPos(ImVec2(300,0));
+// 	ImVec2 _size;
+// 	_size.x = 1920 - 660;
+// 	_size.y = _size.x / 1.777777777777777777777777777777778;
+// 	ImGui::SetNextWindowSize(_size);
+// 	if (ImGui::Begin("Scene"))
+// 	{
+// 		Texture* tex = m_DeferredRenderer->GetScene();
+// 		ImGui::Image(tex->GetShaderView(), _size);
+// 		ImGui::End();
+// 	}
+// 
+// 	m_RenderContext.GetContext().ClearRenderTarget(m_RenderContext.GetAPI().GetBackbuffer(), clearcolor::black);
 	ImGui::Render();
 #endif
 	m_InstancingManager.EndFrame();
@@ -296,7 +307,6 @@ void Renderer::Render()
 #if !defined(_PROFILE) && !defined(_FINAL)
 void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &ctx)
 {
-	return;
 	if (e <= 0)
 		return;
 	

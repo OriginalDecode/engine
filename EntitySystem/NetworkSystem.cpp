@@ -20,6 +20,7 @@ constexpr float update_time = 1.f / 15.f;
 
 void NetworkSystem::Update(float delta_time, bool /*paused*/)
 {
+	return;
 	static float s_UpdateTime = 0.f;
 	s_UpdateTime += delta_time;
 

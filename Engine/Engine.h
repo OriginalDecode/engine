@@ -168,7 +168,7 @@ public:
 	//_________________________________________
 	// Level Creation, Loading, Saving
 	Terrain* CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize);
-	CU::GrowingArray<TreeDweller*> LoadLevel(const std::string& level_filepath);
+	CU::GrowingArray<TreeDweller*> LoadLevel(const std::string& level_filepath); // This hsould not be here,
 	// Should be refactored out of the engine stuff.
 
 

@@ -55,7 +55,7 @@ float4 main(VS_OUTPUT input) : SV_Target
     const float3 scale = ( lutSize - 1.0 ) / lutSize;
     const float3 offset = 1.0 / ( 2.0 * lutSize);
 	output = ColorStrip.Sample(linear_Clamp, scale * output, offset);
-	return output;
+	return saturate(output);
 	
 }
 

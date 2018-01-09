@@ -45,12 +45,10 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float4 output = saturate(pow( color, .4545 ));
 	output = saturate(output  * color1); 
-	// output.rgb = (output.rgb - 0.5) * (1.0 + 0.3) + 0.5;
 	const float3 lutSize = float3(16,16,16);
     const float3 scale = ( lutSize - 1.0 ) / lutSize;
     const float3 offset = 1.0 / ( 2.0 * lutSize);
-	// return saturate(output) * ColorStrip.Sample(linear_Clamp, scale * diffuse, offset);
-	return saturate(ColorStrip.Sample(linear_Clamp, scale * diffuse, offset));
+	return saturate(ColorStrip.Sample(linear_Clamp, scale * output, offset));
 }
 
 /*

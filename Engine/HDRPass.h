@@ -29,6 +29,7 @@ private:
 	graphics::Viewport* m_DefaultViewport = nullptr;
 	graphics::Viewport* m_ChangeableViewport = nullptr;
 
+	Texture* m_ColorGradingTex = nullptr;
 	Texture*	m_HDRTexture = nullptr;
 	Quad*		m_Quad = nullptr;
 	Effect*		m_ColorGrading = nullptr;

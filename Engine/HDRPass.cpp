@@ -62,14 +62,20 @@ void HDRPass::Initiate()
 	m_DownsampleEffect = Engine::GetInstance()->GetEffect("Shaders/downsample_hdr.json");
 	m_RenderToScreenEffect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
 	//m_ColorGrading = Engine::GetInstance()->GetEffect("Shaders/color_grading.json");
-	u64 rgb = Engine::GetInstance()->LoadTexture("Data/Textures/RGBTable16x1.dds");
-	m_HDREffect->AddShaderResource(Engine::GetInstance()->GetTexture(rgb), Effect::REGISTER_3);
+	//u64 rgb = Engine::GetInstance()->LoadTexture("Data/Textures/RGBTable16x1.dds");
+
+	m_ColorGradingTex = new Texture;
+	m_ColorGradingTex->Create3DTexture("Data/Textures/RGBTable16x1.dds", 16, 16, 0, "table"); 
+
+
+	m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);
 
 	m_Quad = new Quad;
 }
 
 void HDRPass::CleanUp()
 {
+	SAFE_DELETE(m_ColorGradingTex);
 	SAFE_DELETE(m_HDRTexture);
 	SAFE_DELETE(m_Quad);
 	m_Downsamples.DeleteAll();

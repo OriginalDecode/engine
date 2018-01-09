@@ -7,6 +7,7 @@
 #include <d3dcompiler.h>
 #include <DL_Debug.h>
 #include <Engine/IGraphicsAPI.h>
+#include <DXTK/WICTextureLoader.h>
 namespace graphics
 {
 
@@ -98,9 +99,21 @@ namespace graphics
 	IShaderResourceView* DX11Device::CreateTextureFromFile(const std::string& filepath, bool generate_mips, IGraphicsContext* ctx)
 	{
 		DX11Context* pCtx = static_cast<DX11Context*>(ctx);
+
 		std::wstring path = cl::ToWideStr(filepath);
 
 		ID3D11ShaderResourceView* srv = nullptr;
+
+
+		if (filepath.find(".dds") == filepath.npos)
+		{
+			HRESULT hr = DirectX::CreateWICTextureFromFile(m_Device, path.c_str(), nullptr, &srv);
+#ifndef FINAL
+			DirectX11::HandleErrors(hr, "Failed to load texture");
+#endif
+			return srv;
+		}
+
 		if (generate_mips)
 		{
 			HRESULT hr = DirectX::CreateDDSTextureFromFileEx(m_Device

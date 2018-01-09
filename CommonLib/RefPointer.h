@@ -25,9 +25,7 @@ private:
 
 template<typename T>
 RefPointer<T>::RefPointer()
-	: m_Refs(new ReferenceCounter)
 {
-	m_Refs->Increment();
 }
 
 template<typename T>

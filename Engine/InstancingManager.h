@@ -14,7 +14,7 @@ namespace graphics
 struct InstanceObject
 {
 	InstanceObject() = default;
-	RefPointer<Model> m_Model = nullptr;
+	RefPointer<Model> m_Model;
 	Material* m_Material = nullptr;
 	bool m_Shadowed = false;
 	CU::GrowingArray<GPUModelData> m_GPUData;

@@ -275,7 +275,7 @@ void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_heigh
 	ID3D11ShaderResourceView* srv = nullptr;
 	hr = device->CreateShaderResourceView(tex, &viewDesc, &srv);
 	DL_ASSERT_EXP(hr == S_OK, "Failed to Create srv");
-
+	m_ShaderResource = srv;
 // 	DirectX::ScratchImage image;
 // 	hr = DirectX::CaptureTexture(device, ctx, tex, image);
 // 	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");

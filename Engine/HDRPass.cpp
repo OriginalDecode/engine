@@ -68,7 +68,7 @@ void HDRPass::Initiate()
 	m_ColorGradingTex->Create3DTexture("Data/Textures/RGBTable16x1.dds", 16, 16, 0, "table"); 
 
 
-	m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);
+	//m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);
 
 	m_Quad = new Quad;
 }
@@ -142,9 +142,10 @@ void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source
 	ctx.ClearRenderTarget(target, clearcolor::black);
 	ctx.OMSetRenderTargets(1, &target, nullptr);
 	
-	m_HDREffect->AddShaderResource(source[0], Effect::DIFFUSE);
-	m_HDREffect->AddShaderResource(source[1], Effect::LUMINANCE);
-	m_HDREffect->AddShaderResource(source[2], Effect::AVG_LUMINANCE);
+	m_HDREffect->AddShaderResource(source[0], Effect::REGISTER_0);
+	m_HDREffect->AddShaderResource(source[1], Effect::REGISTER_1);
+	m_HDREffect->AddShaderResource(source[2], Effect::REGISTER_2);
+	m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);
 	m_Quad->Render(false, m_HDREffect);
 }
 

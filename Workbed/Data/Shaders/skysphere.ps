@@ -31,9 +31,9 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 orange = float4( 0.91, 0.55, 0.09, 1);
 	float4 blue = float4(0,0,1,1);
 
-	float4 output = saturate(lerp(float4(1,1,1,1), blue, height *4));
-	output = saturate(lerp(output, blue, height ));
-	output = saturate(lerp(output, apex_color, height ));
+	float4 output = lerp(float4(1,1,1,1), blue, height);
+//	output = saturate(lerp(output, blue, height ));
+	//output = lerp(output, apex_color, height );
 
 
 

@@ -65,7 +65,10 @@ void HDRPass::Initiate()
 	//u64 rgb = Engine::GetInstance()->LoadTexture("Data/Textures/RGBTable16x1.dds");
 
 	m_ColorGradingTex = new Texture;
-	m_ColorGradingTex->Create3DTexture("Data/Textures/RGBTable16x1.dds", 16, 16, 0, "table"); 
+	m_ColorGradingTex->Create3DTexture("Data/Textures/RGBTable16x1.dds", 16, 16, 0, "table");
+
+	m_ColorGradingTex2 = new Texture;
+	m_ColorGradingTex2->Create3DTexture("Data/Textures/RGBTable16x1_v2.dds", 16, 16, 0, "table");
 
 
 	//m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);
@@ -136,6 +139,9 @@ void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* 
 	m_Quad->Render(false, m_DownsampleEffect);
 }
 
+#include <input/InputHandle.h>
+#include <input/InputWrapper.h>
+
 void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source[], s32 resource_count)
 {
 	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
@@ -145,7 +151,10 @@ void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source
 	m_HDREffect->AddShaderResource(source[0], Effect::REGISTER_0);
 	m_HDREffect->AddShaderResource(source[1], Effect::REGISTER_1);
 	m_HDREffect->AddShaderResource(source[2], Effect::REGISTER_2);
-	m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);
+	if(Engine::GetInstance()->GetInputHandle()->GetInputWrapper()->IsDown(KButton::Q))
+		m_HDREffect->AddShaderResource(m_ColorGradingTex2, Effect::REGISTER_3);
+	else
+		m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);
 	m_Quad->Render(false, m_HDREffect);
 }
 

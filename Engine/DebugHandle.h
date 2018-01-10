@@ -53,7 +53,16 @@ namespace debug
 		void SetObjectMatrix(CU::Matrix44f* mat);
 
 		void HandleEvent(u64 event, void* data = nullptr);
+
+		void AddLUT(const char* lable, Texture* tex);
+
 	private:
+
+			
+		std::vector<std::string> m_LutLables;
+		std::vector<Texture*> m_LutTextures;
+
+
 		Inspector m_Inspector;
 
 		CU::Matrix44f* m_ObjectMatrix = nullptr;

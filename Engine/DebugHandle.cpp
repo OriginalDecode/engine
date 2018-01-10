@@ -6,6 +6,10 @@
 #include <Engine/Engine.h>
 #include <Engine/Synchronizer.h>
 #include <Engine/LevelFactory.h>
+#include <Engine/Renderer.h>
+#include <Engine/PostProcessManager.h>
+#include <Engine/HDRPass.h>
+
 #include <Input/InputHandle.h>
 
 #include <EntitySystem/EntityManager.h>
@@ -299,6 +303,13 @@ namespace debug
 			ImGui::Separator();
 			ImGui::Text("Hovering : %d", m_CurrEntity);
 
+			if (!m_LutLables.empty())
+			{
+				static int index = 0;
+				ListBox("", &index, m_LutLables);
+				Engine::GetInstance()->m_Renderer->m_PostProcessManager.GetHDRPass().SetLUT(m_LutTextures[index]);
+			}
+
 			ImGui::End();
 		}
 		ImGui::PopStyleVar();
@@ -467,6 +478,12 @@ namespace debug
 
 
 		}
+	}
+
+	void DebugHandle::AddLUT(const char* lable, Texture* tex)
+	{
+		m_LutLables.push_back(lable);
+		m_LutTextures.push_back(tex);
 	}
 
 	void HandleWorldContextMenu(Engine* pEngine)

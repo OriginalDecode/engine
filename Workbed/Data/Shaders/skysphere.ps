@@ -19,10 +19,8 @@ float4 main(VS_OUTPUT input) : SV_Target
 	//float2 texCoord = input.tex.xy;	
 	//float depth = DepthTexture.Sample(sampler0, texCoord).r;
 
-	float height = input.worldpos.y;
+	float height = saturate(input.worldpos.y);
 
-	if(height < 0.f)
-		height = 0.f;
 
 
 	float4 center_color = float4(0,1,1,1);
@@ -30,12 +28,11 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 twilight_purple = float4(0.13, 0, 0.27, 1);
 	float4 orange = float4( 0.91, 0.55, 0.09, 1);
 	float4 blue = float4(0,0,1,1);
-
 	float4 output = lerp(float4(1,1,1,1), blue, height);
 //	output = saturate(lerp(output, blue, height ));
 	//output = lerp(output, apex_color, height );
 
-
+	output = saturate(pow(output, 2.2));
 
 	return float4(output.rgb,1);
 }

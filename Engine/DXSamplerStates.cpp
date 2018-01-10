@@ -86,6 +86,21 @@ namespace graphics
 		SetDebugName(sampler, "Cubemap Sampler");
 #endif
 
+// 		samplerDesc = D3D11_SAMPLER_DESC();
+// 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+// 		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+// 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+// 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+// 		samplerDesc.MipLODBias = 0.f;
+// 		samplerDesc.MaxAnisotropy = 16;
+// 
+// 		hr = pDevice->CreateSamplerState(&samplerDesc, &sampler);
+// 		m_SamplerStates[TRILINEAR] = sampler;
+// #ifndef _FINAL
+// 		HandleErrors(hr, "Failed to create Sampler");
+// 		SetDebugName(sampler, "Linear Wrap Sampler");
+// #endif
+// 
 
 
 		// 	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;

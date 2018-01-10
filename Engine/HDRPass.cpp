@@ -10,7 +10,6 @@
 
 #include <Engine/Viewport.h>
 #include <Engine/Quad.h>
-
 void HDRPass::Initiate()
 {
 	WindowSize window_size = Engine::GetInstance()->GetInnerSize();
@@ -64,11 +63,35 @@ void HDRPass::Initiate()
 	//m_ColorGrading = Engine::GetInstance()->GetEffect("Shaders/color_grading.json");
 	//u64 rgb = Engine::GetInstance()->LoadTexture("Data/Textures/RGBTable16x1.dds");
 
+	//Default texture
 	m_ColorGradingTex = new Texture;
 	m_ColorGradingTex->Create3DTexture("Data/Textures/RGBTable16x1.dds", 16, 16, 0, "table");
 
-	m_ColorGradingTex2 = new Texture;
-	m_ColorGradingTex2->Create3DTexture("Data/Textures/RGBTable16x1_v2.dds", 16, 16, 0, "table");
+	std::vector<WIN32_FIND_DATA> filesInFolder;
+	WIN32_FIND_DATA fd;
+	HANDLE hFind = ::FindFirstFile("Data/Textures/lut/*.*", &fd);
+	if (hFind != INVALID_HANDLE_VALUE) {
+		do {
+			// read all (real) files in current folder
+			// , delete '!' read other 2 default folder . and ..
+			if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+				filesInFolder.push_back(fd);
+			}
+		} while (::FindNextFile(hFind, &fd));
+		::FindClose(hFind);
+	}
+
+	for (auto file : filesInFolder)
+	{
+		Texture* t = new Texture;
+
+		std::string path("Data/Textures/lut/");
+		path += file.cFileName;
+
+		t->Create3DTexture(path.c_str(), 16, 16, 0, file.cFileName);
+		debug::DebugHandle::GetInstance()->AddLUT(file.cFileName, t);
+	}
+
 
 
 	//m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);
@@ -148,13 +171,15 @@ void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source
 	ctx.ClearRenderTarget(target, clearcolor::black);
 	ctx.OMSetRenderTargets(1, &target, nullptr);
 	
+
+	ctx.PSSetSamplerState(0, 1, Engine::GetInstance()->GetCurrentSampler());
+	ISamplerState* linear = Engine::GetAPI()->GetSamplerState(graphics::LINEAR_WRAP);
+	ctx.PSSetSamplerState(1, 1, &linear);
+
 	m_HDREffect->AddShaderResource(source[0], Effect::REGISTER_0);
 	m_HDREffect->AddShaderResource(source[1], Effect::REGISTER_1);
 	m_HDREffect->AddShaderResource(source[2], Effect::REGISTER_2);
-	if(Engine::GetInstance()->GetInputHandle()->GetInputWrapper()->IsDown(KButton::Q))
-		m_HDREffect->AddShaderResource(m_ColorGradingTex2, Effect::REGISTER_3);
-	else
-		m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);
+	m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);
 	m_Quad->Render(false, m_HDREffect);
 }
 

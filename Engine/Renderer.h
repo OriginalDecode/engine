@@ -35,6 +35,9 @@ class ShadowSpotlight;
 class CommandAllocator;
 class Renderer
 {
+#if !defined(_PROFILE) && !defined(_FINAL)
+	friend debug::DebugHandle;
+#endif
 public:
 	Renderer(Synchronizer* synchronizer);
 	~Renderer();
@@ -52,6 +55,7 @@ public:
 	int RegisterLight();
 	void SetDirection(const CU::Vector3f& dir) { m_Direction = dir; }
 	Camera* GetDirectionalCamera() { return m_DirectionalShadow.GetCamera(); }
+
 
 private:
 	void RenderNonDeferred3DCommands();

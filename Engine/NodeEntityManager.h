@@ -36,6 +36,10 @@ public:
 	template<typename T>
 	void AddSystem();
 
+	s32 EntityCount() {
+		return m_Entities.Size();
+	}
+
 	
 
 	void SetMemoryBlockIndex(s32 index);

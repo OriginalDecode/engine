@@ -109,7 +109,7 @@ void LevelFactory::CreateEntity(const std::string& entity_filepath)
 	reader.OpenDocument(entity_data);
 	auto& doc = reader.GetDocument();
 	s32 debug_flags = 0;
-	bool is_static = true;
+	bool is_static = false;
 	for (const rapidjson::Value& obj : doc.GetArray())
 	{
 		std::string type = obj["component_type"].GetString();

@@ -12,27 +12,140 @@ struct VS_OUTPUT
 	float4 tex 		: TEX;
 };
 
+cbuffer data : register ( b0 )
+{
+	float4 m_ViewDir;
+	float4 m_ViewPos;
+	float4 m_LightDir;
+	float4 filler;
+};
+
+float2 RayVsSphere(float3 ray_origo, float3 ray_dir, float sphere_radius)
+{
+	const float a = dot(ray_dir, ray_dir);
+
+	const float b = 2.f * dot(ray_dir, ray_origo);
+	const float c = dot(ray_origo, ray_origo) - (sphere_radius * sphere_radius);
+	const float d = (b * b) - 4.f * a * c;
+
+	if (d < 0.0)
+		return float2(1e5, -1e5);
+
+	const float x = (-b - sqrt(d) ) / (2.f * a);
+	const float y = (-b + sqrt(d) ) / (2.f * a);
+
+	return float2(x, y);
+};
+
+float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
+				float sun_intensity, float planet_radius, float atmosphere_radius,
+				float3 rayleigh_coef, float mie_coef,
+				float rayleigh_scale_height, float mie_scale_height, float distr)
+{
+
+	view_dir = normalize(view_dir); 
+
+	const int iSteps = 16;
+	const int jSteps = 8;
+	const float PI = 3.141592;
+
+
+	float2 p = RayVsSphere(view_pos, view_dir, atmosphere_radius);
+
+	if (p.x > p.y)
+		return float3(0,0,0);
+
+	float2 c = RayVsSphere(view_pos, view_dir, planet_radius);
+	p.y = min(p.y, c.x);
+
+	float iStepSize = (p.y - p.x) / float(iSteps);
+	float iTime = 0.0f;
+	float3 totalRlh, totalMie; //total rayleigh & mie contribution
+	float iOdRlh, iOdMie;//optical distribution
+	iOdMie = iOdRlh = 0.0f;
+
+	float mu = dot(view_dir, light_dir);
+	float mu2 = mu*mu;
+	float dist2 = distr * distr;
+
+	float pRlh = 3.0 / (16.0 * PI) * (1.0 + mu2); // rayleigh phase func
+	float pMie = 3.0 / (8.0 * PI) * ((1.0 - dist2) * (mu2 + 1.0)) / (pow(1.0 + dist2 - 2.0 * mu * distr, 1.5) * (2.0 + dist2)); // mie phase func
+
+	for (int i = 0; i < iSteps; i++)
+	{
+		float3 iPos = view_pos + view_dir * (iTime + iStepSize * 0.5);
+		int iHeight = length(iPos) - planet_radius;
+
+		float odStepRlh = exp(-iHeight / rayleigh_scale_height) * iStepSize; //becomes 0
+		float odStepMie = exp(-iHeight / mie_scale_height) * iStepSize; // becomes 0
+
+		iOdRlh += odStepRlh;
+		iOdMie += odStepMie;
+
+		float jStepSize = RayVsSphere(iPos, light_dir, atmosphere_radius).y / float(jSteps);
+		float jTime = 0.0;
+
+		float jOdRlh = 0.0;
+		float jOdMie = 0.0;
+
+		for (int j = 0; j < jSteps; j++)
+		{
+			float3 jPos = iPos + light_dir * (jTime + jStepSize * 0.5);
+			float jHeight = length(jPos) - planet_radius;
+
+			jOdRlh += exp(-jHeight / rayleigh_scale_height) * jStepSize;
+			jOdMie += exp(-jHeight / mie_scale_height) * jStepSize;
+			jTime += jStepSize;
+		}
+
+		float attenX = exp(-(mie_coef * (iOdMie + jOdMie) + rayleigh_coef.x * (iOdRlh + jOdRlh)));
+		float attenY = exp(-(mie_coef * (iOdMie + jOdMie) + rayleigh_coef.y * (iOdRlh + jOdRlh)));
+		float attenZ = exp(-(mie_coef * (iOdMie + jOdMie) + rayleigh_coef.z* (iOdRlh + jOdRlh)));
+
+		float3 atten;
+		atten.x = attenX;
+		atten.y = attenY;
+		atten.z = attenZ;
+
+		totalRlh = totalRlh + (odStepRlh * atten);
+		totalMie = totalMie + (odStepMie * atten);
+
+		iTime += iStepSize;
+
+	}
+
+	return sun_intensity * ((pRlh * rayleigh_coef * totalRlh) + (pMie * mie_coef * totalMie));
+};
+
 float4 main(VS_OUTPUT input) : SV_Target
 {
-	//float4 tex = input.tex;
-	//input.tex /= input.tex.w;
-	//float2 texCoord = input.tex.xy;	
-	//float depth = DepthTexture.Sample(sampler0, texCoord).r;
+	const float3 rsc = float3(5.5e-6, 13.0e-6, 22.4e-6); //rayleigh scatter coefs
+	const double msc = 21e-6; //mie scatter coef
+	const double rsh = 8e3; // rayleigh scale height
+	const double msh = 1.2e3; //mie scale height
+	const double sunI = 15.0; //intensity of the sun
+	const double rPlanet = 6371e3;
+	const double rAtmosphere = 6471e3;
+	const double distr_factor = 0.758;
+	
+	float3 pSun = rAtmosphere;
+
+	float3 new_pos = m_ViewPos.xyz;
+	new_pos.y += rPlanet;
+
+	float3 test = normalize(input.worldpos.xyz);
+	float3 col = atmosphere(test, new_pos, float3(0,0,1), sunI, rPlanet, rAtmosphere, rsc, msc, rsh, msh, distr_factor);
+
+	col = saturate(pow(col, 1));
+	return float4(col, 1);
 
 	float height = saturate(input.worldpos.y);
-
-
-
 	float4 center_color = float4(0,1,1,1);
 	float4 apex_color = float4(0,0,0,1);
 	float4 twilight_purple = float4(0.13, 0, 0.27, 1);
 	float4 orange = float4( 0.91, 0.55, 0.09, 1);
 	float4 blue = float4(0,0,1,1);
 	float4 output = lerp(float4(1,1,1,1), blue, height);
-//	output = saturate(lerp(output, blue, height ));
-	//output = lerp(output, apex_color, height );
-
 	output = saturate(pow(output, 2.2));
-
 	return float4(output.rgb,1);
 }

@@ -25,14 +25,10 @@ private:
 
 	struct cbPixel
 	{
-		CU::Vector4f m_CameraPos;
-		CU::Vector4f m_CameraDir;
-		CU::Vector4f m_LightDir;
-		CU::Vector4f m_LightPos;
-		float m_InnerRadius;
-		float m_OuterRadius;
-		float m_CameraMagnitude;
-		float m_CameraMagnitude2;
+		CU::Vector4f view_dir;
+		CU::Vector4f view_pos;
+		CU::Vector4f light_dir;
+		CU::Vector4f x;
 	} m_PixelStruct;
 	IBuffer* m_PixelBuffer = nullptr;
 

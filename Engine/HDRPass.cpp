@@ -10,6 +10,10 @@
 
 #include <Engine/Viewport.h>
 #include <Engine/Quad.h>
+
+#include <input/InputHandle.h>
+#include <input/InputWrapper.h>
+
 void HDRPass::Initiate()
 {
 	WindowSize window_size = Engine::GetInstance()->GetInnerSize();
@@ -162,8 +166,6 @@ void HDRPass::Downsample(IRenderTargetView* render_target, IShaderResourceView* 
 	m_Quad->Render(false, m_DownsampleEffect);
 }
 
-#include <input/InputHandle.h>
-#include <input/InputWrapper.h>
 
 void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source[], s32 resource_count)
 {

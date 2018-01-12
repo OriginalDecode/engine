@@ -10,6 +10,7 @@ struct VS_OUTPUT
 	float3 tang 	: TANGENT;
 	float4 worldpos : POSITION;
 	float4 tex 		: TEX;
+	float4 view_dir : DIR;
 };
 
 cbuffer data : register ( b0 )
@@ -42,7 +43,7 @@ float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
 				float3 rayleigh_coef, float mie_coef,
 				float rayleigh_scale_height, float mie_scale_height, float distr)
 {
-
+	light_dir = normalize(light_dir);
 	view_dir = normalize(view_dir); 
 
 	const int iSteps = 16;
@@ -119,11 +120,19 @@ float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
 
 float4 main(VS_OUTPUT input) : SV_Target
 {
+	float4 tex = input.tex;
+	input.tex /= input.tex.w;
+	float2 texCoord = input.tex.xy;	
+	float depth = DepthTexture.Sample(sampler0, texCoord).r;
+	if(depth < 0)
+		discard;
+
+
 	const float3 rsc = float3(5.5e-6, 13.0e-6, 22.4e-6); //rayleigh scatter coefs
 	const double msc = 21e-6; //mie scatter coef
 	const double rsh = 8e3; // rayleigh scale height
 	const double msh = 1.2e3; //mie scale height
-	const double sunI = 15.0; //intensity of the sun
+	const double sunI = 6.0; //intensity of the sun
 	const double rPlanet = 6371e3;
 	const double rAtmosphere = 6471e3;
 	const double distr_factor = 0.758;
@@ -133,10 +142,12 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 new_pos = m_ViewPos.xyz;
 	new_pos.y += rPlanet;
 
-	float3 test = normalize(input.worldpos.xyz);
-	float3 col = atmosphere(test, new_pos, float3(0,0,1), sunI, rPlanet, rAtmosphere, rsc, msc, rsh, msh, distr_factor);
+	float3 dir = input.worldpos.xyz - new_pos;
 
-	col = saturate(pow(col, 1));
+	float3 pos = input.worldpos.xyz;
+	float3 col = atmosphere(input.view_dir, new_pos, float3(cos(m_LightDir.x), cos(m_LightDir.y), cos(m_LightDir.z)), sunI, rPlanet, rAtmosphere, rsc, msc, rsh, msh, distr_factor);
+
+	col = saturate(pow(col, 2.2));
 	return float4(col, 1);
 
 	float height = saturate(input.worldpos.y);

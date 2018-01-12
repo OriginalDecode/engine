@@ -62,9 +62,9 @@ void Game::Initiate(const std::string& level)
 	m_Picker = new CMousePicker;
 
 	m_Camera = m_Engine->GetCamera();
-	m_Camera->SetPosition(CU::Vector3f(-5, 10, -5));
-	m_Camera->RotateAroundY(cl::DegreeToRad(45.f));
-	m_Camera->RotateAroundX(cl::DegreeToRad(20.f));
+	m_Camera->SetPosition(CU::Vector3f(1024, 10, 1024));
+	//m_Camera->RotateAroundY(cl::DegreeToRad(45.f));
+	//m_Camera->RotateAroundX(cl::DegreeToRad(20.f));
 	m_Camera->Update(CU::Vector2f(0.f,0.f));
 	CameraHandle::Create();
 	CameraHandle::GetInstance()->Initiate(nullptr /* this should be the player, or a child matrix to the player (relative position with an offset that can rotate around the player object) */);

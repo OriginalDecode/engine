@@ -26,6 +26,7 @@ struct VS_OUTPUT
 	float3 tang 	: TANGENT;
 	float4 worldpos : POSITION;
 	float4 tex 		: TEX;
+	float4 view_dir : DIR;
 };
 
 VS_OUTPUT main(VS_INPUT input)
@@ -47,6 +48,7 @@ VS_OUTPUT main(VS_INPUT input)
 	output.tex = float4((float2(x + w, w - y)) * 0.5f, output.pos.zw);
 	output.worldpos = input.pos;
 
+	output.view_dir = input.pos;
 
 	return output;
 };

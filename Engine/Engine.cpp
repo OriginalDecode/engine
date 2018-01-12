@@ -75,6 +75,11 @@ Engine* Engine::GetInstance()
 	return myInstance;
 }
 
+const CU::Vector3f& Engine::GetLightDir()
+{
+	return m_Renderer->GetLightDirection();
+}
+
 bool Engine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 {
 	WindowCreateInfo window_create_info;

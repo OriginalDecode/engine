@@ -44,7 +44,5 @@ private:
 		float m_CameraMagnitude2;
 	} m_VertexStruct;
 	IBuffer* m_VertexBuffer	= nullptr;
-
-	void UpdateCameraData();
 };
 

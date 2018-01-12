@@ -16,6 +16,8 @@ Atmosphere::~Atmosphere()
 	Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
 }
 
+#define if_unlikely(cond) if(!(cond)); else //black magic statement
+
 void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position)
 {
  	m_OuterRadius = outer_radius;
@@ -38,12 +40,8 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 
  	m_VertexStruct.m_InnerRadius = m_InnerRadius;
  	m_VertexStruct.m_OuterRadius = m_OuterRadius;
-//  
-//  	m_PixelStruct.m_InnerRadius = m_InnerRadius;
-//  	m_PixelStruct.m_OuterRadius = m_OuterRadius;
 
-	//m_InnerSphere->SetOrientation(m_InnerOrientation);
-	static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetOrientation(m_OuterOrientation);
+	//atic_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetOrientation(m_OuterOrientation);
 }
 
 void Atmosphere::Render(const graphics::RenderContext& rc)
@@ -53,7 +51,12 @@ void Atmosphere::Render(const graphics::RenderContext& rc)
 	graphics::IGraphicsAPI* api = pEngine->GetAPI();
 
 
-	m_PixelStruct.light_dir = CU::Vector4f(0, -0.2, -1, 1);
+	m_PixelStruct.light_dir = Engine::GetInstance()->GetLightDir();
+	m_PixelStruct.light_dir.x = cl::DegreeToRad(m_PixelStruct.light_dir.x);
+	m_PixelStruct.light_dir.y = cl::DegreeToRad(m_PixelStruct.light_dir.y);
+	m_PixelStruct.light_dir.z = cl::DegreeToRad(m_PixelStruct.light_dir.z);
+	
+	m_PixelStruct.light_dir.w = 1;
 	m_PixelStruct.view_dir = pEngine->GetCamera()->GetAt();
 	m_PixelStruct.view_pos = pEngine->GetCamera()->GetPosition();
 
@@ -63,6 +66,8 @@ void Atmosphere::Render(const graphics::RenderContext& rc)
 	ctx.SetBlendState(api->GetBlendState(graphics::NO_BLEND));
 	ctx.SetDepthState(api->GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api->GetRasterizerState(graphics::CULL_NONE));
+	m_OuterOrientation.SetPosition(pEngine->GetCamera()->GetPosition());
+	static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetOrientation(m_OuterOrientation);
 	static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->Render(rc);
 
 }
@@ -71,24 +76,5 @@ void Atmosphere::SetLightData(const CU::Vector4f& direction, const CU::Vector4f&
 {
 	m_VertexStruct.m_LightDir = direction;
 	m_VertexStruct.m_LightPos = position;
-
-}
-
-void Atmosphere::UpdateCameraData()
-{
-// 	m_VertexStruct.m_CameraDir = m_Camera->GetAt();
-// 	m_VertexStruct.m_CameraPos = m_Camera->GetPosition();
-// 
-// 	m_PixelStruct.m_CameraDir = m_Camera->GetAt();
-// 	m_PixelStruct.m_CameraPos = m_Camera->GetPosition();
-// 
-// 	float camera_magnitude = CU::Math::Length(m_Camera->GetPosition());
-// 	float camera_magnitude2 = CU::Math::Length2(m_Camera->GetPosition());
-// 
-// 	m_PixelStruct.m_CameraMagnitude = camera_magnitude;
-// 	m_PixelStruct.m_CameraMagnitude2 = camera_magnitude2;
-// 
-// 	m_VertexStruct.m_CameraMagnitude = camera_magnitude;
-// 	m_VertexStruct.m_CameraMagnitude2 = camera_magnitude2;
 
 }

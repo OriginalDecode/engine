@@ -244,7 +244,7 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 
 CU::GrowingArray<TreeDweller*> LevelFactory::LoadLevel(const char* level)
 {
-	Terrain* terrain = Engine::GetInstance()->CreateTerrain("Data/Textures/flat_height.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+	Terrain* terrain = Engine::GetInstance()->CreateTerrain("Data/Textures/flat_height.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(2048, 2048));
 	Material* pGroundMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
 	terrain->SetMaterial(pGroundMaterial);
 
@@ -421,7 +421,7 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	Terrain* terrain = m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(512, 512));
+	Terrain* terrain = m_Engine->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(2048, 2048));
 	Material* pGroundMaterial = m_Engine->GetMaterial("Data/Material/mat_grass.json");
 	terrain->SetMaterial(pGroundMaterial);
 }

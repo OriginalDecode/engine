@@ -69,7 +69,7 @@ public:
 	static void Destroy();
 	static Engine* GetInstance();
 	static Engine& GetRef() { return *myInstance; }
-
+	const CU::Vector3f& GetLightDir();
 	bool Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc);
 	bool CleanUp();
 

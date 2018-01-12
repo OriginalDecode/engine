@@ -113,19 +113,20 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
 	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo * (1 - reflection_fresnel);
-	cube_ambient = (cube_ambient);
-	
 	albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
 
 	float4 diffuse = 0; // metalness_albedo * cube_ambient;
 	float4 spec = 0;
-	float3 light_dir = -normalize(light_direction.xyz);
-	float3 light_col = float3(1, 1, 1);
-	float light_intensity = 10;
+
+	float3 light_dir = light_direction.xyz;
+	float3 light_col = float3(1, 0, 0);
+	float light_intensity = 100;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
 	float NdC = saturate(dot(normal, to_eye)); //should this really be saturated?
-	float3 half_vec = normalize(-to_eye + light_dir);
+	float3 half_vec = (to_eye + light_dir) / length(to_eye + light_dir);
+
+	//float NdL = dot(light_dir, normal);
 
 	float4 newPos = pixel_pos + (normal * 0.4);
 	newPos.w = 1;
@@ -147,7 +148,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 		for(int i = 0; i < 1; i++)
 		{
 			// diffuse
-			float SatNdL = normalize(dot(-light_dir, normal));
+			float SatNdL = dot(-light_dir, normal);
 			diffuse += float4( ( SatNdL * 1 / PI)  * light_col * albedo.rgb, 1.0f);
 			//spec
 			float HdN = saturate(dot(half_vec, normal));
@@ -168,7 +169,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 			float G1V = NdC * ( 1.f - k ) + k;
 			float G1L = NdL * ( 1.f - k ) + k;
 			float V = 0.25f / (G1V * G1L);
-			spec += saturate(((schlickFresnel * ggxDistr * V * NdL) * float4(light_col, 1)) * light_intensity);
+			spec += saturate(((schlickFresnel * ggxDistr * V) * float4(light_col, 1)) * light_intensity) * NdL;
 		}
 	}
 	diffuse += cube_ambient * albedo;
@@ -185,5 +186,5 @@ float4 main(VS_OUTPUT input) : SV_Target
 	output += spec;
 //output = (output);
 
-	return output;
+	return saturate(output);
 };

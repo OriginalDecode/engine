@@ -287,9 +287,9 @@ namespace debug
 
 			ImGui::Text("Light Direction");
 			static float light_dir[3];
-			ImGui::SliderFloat("X", &light_dir[0], 0.f, 180.f);
-			ImGui::SliderFloat("Y", &light_dir[1], 0.f, 180.f);
-			ImGui::SliderFloat("Z", &light_dir[2], 0.f, 180.f);
+			ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
+			ImGui::SliderFloat("Y", &light_dir[1], 0.f, 1.f);
+			ImGui::SliderFloat("Z", &light_dir[2], -1.f, 1.f);
 			//ImGui::DragFloat3("Light Direction", light_dir, 0.1, 0.f, 1.f);
 
 			Engine::GetInstance()->m_Renderer->m_Direction = CU::Vector3f(light_dir[0], light_dir[1], light_dir[2]);

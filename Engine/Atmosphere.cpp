@@ -52,10 +52,6 @@ void Atmosphere::Render(const graphics::RenderContext& rc)
 
 
 	m_PixelStruct.light_dir = Engine::GetInstance()->GetLightDir();
-	m_PixelStruct.light_dir.x = cl::DegreeToRad(m_PixelStruct.light_dir.x);
-	m_PixelStruct.light_dir.y = cl::DegreeToRad(m_PixelStruct.light_dir.y);
-	m_PixelStruct.light_dir.z = cl::DegreeToRad(m_PixelStruct.light_dir.z);
-	
 	m_PixelStruct.light_dir.w = 1;
 	m_PixelStruct.view_dir = pEngine->GetCamera()->GetAt();
 	m_PixelStruct.view_pos = pEngine->GetCamera()->GetPosition();

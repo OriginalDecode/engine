@@ -145,7 +145,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 dir = input.worldpos.xyz - new_pos;
 
 	float3 pos = input.worldpos.xyz;
-	float3 col = atmosphere(input.view_dir, new_pos, float3(cos(m_LightDir.x), cos(m_LightDir.y), cos(m_LightDir.z)), sunI, rPlanet, rAtmosphere, rsc, msc, rsh, msh, distr_factor);
+	float3 col = atmosphere(input.view_dir, new_pos, m_LightDir, sunI, rPlanet, rAtmosphere, rsc, msc, rsh, msh, distr_factor);
 
 	col = saturate(pow(col, 2.2));
 	return float4(col, 1);

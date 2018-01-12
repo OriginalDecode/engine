@@ -50,7 +50,7 @@ void Game::Initiate(const std::string& level)
 {
 	m_Synchronizer = m_Engine->GetSynchronizer();
 
-	m_World.Initiate(CU::Vector3f(256, 256, 256)); //Might be a v2 instead and a set y pos 
+	m_World.Initiate(CU::Vector3f(1024, 1024, 1024)); //Might be a v2 instead and a set y pos 
 
 	//m_Player = new Player;
 	//m_World.AddDweller(m_Player->Initiate());

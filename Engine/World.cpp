@@ -12,7 +12,7 @@ void World::Initiate(CU::Vector3f position)
 {
 	m_WorldPos = position;
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
-	m_Octree.Initiate(position, 256.f);
+	m_Octree.Initiate(position, 1024);
 }
 
 void World::CleanUp()

@@ -20,6 +20,12 @@ namespace graphics
 
 	void ConstantBuffer::Bind(s32 index, ShaderBinding shader_binding, const RenderContext& rc)
 	{
+		const s32 idx[6] = { index, index, index, index, index, index };
+		Bind(idx, shader_binding, rc);
+	}
+
+	void ConstantBuffer::Bind(const s32 index[], ShaderBinding shader_binding, const RenderContext& rc)
+	{
 		IGraphicsContext& ctx = rc.GetContext();
 
 		s32 step = 0;
@@ -30,27 +36,27 @@ namespace graphics
 		}
 
 		if (shader_binding & VERTEX)
-			ctx.VSSetConstantBuffer(index, 1, &m_Buffer);
+			ctx.VSSetConstantBuffer(index[0], 1, &m_Buffer);
 
 
 		if (shader_binding & PIXEL)
-			ctx.PSSetConstantBuffer(index, 1, &m_Buffer);
+			ctx.PSSetConstantBuffer(index[1], 1, &m_Buffer);
 
 
 		if (shader_binding & GEOMETRY)
-			ctx.GSSetConstantBuffer(index, 1, &m_Buffer);
+			ctx.GSSetConstantBuffer(index[2], 1, &m_Buffer);
 
 
 		if (shader_binding & HULL)
-			ctx.HSSetConstantBuffer(index, 1, &m_Buffer);
+			ctx.HSSetConstantBuffer(index[3], 1, &m_Buffer);
 
 
 		if (shader_binding & DOMAINS)
-			ctx.DSSetConstantBuffer(index, 1, &m_Buffer);
+			ctx.DSSetConstantBuffer(index[4], 1, &m_Buffer);
 
 
 		if (shader_binding & COMPUTE)
-			ctx.CSSetConstantBuffer(index, 1, &m_Buffer);
-
+			ctx.CSSetConstantBuffer(index[5], 1, &m_Buffer);
 	}
+
 };

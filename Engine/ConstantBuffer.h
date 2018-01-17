@@ -33,6 +33,7 @@ namespace graphics
 		};
 
 		void Bind(s32 index, ShaderBinding shader_binding, const RenderContext& rc);
+		void Bind(const s32 index[], ShaderBinding shader_binding, const RenderContext& rc);
 		
 	private:
 		struct BufferVariable

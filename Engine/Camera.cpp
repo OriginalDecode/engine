@@ -113,6 +113,11 @@ void Camera::Update(const CU::Vector2f& cursor_pos)
 	OrientCamera();
 }
 
+void Camera::Update()
+{
+	m_InvProjectionMatrix = CU::Math::InverseReal(m_ProjectionMatrix);
+}
+
 void Camera::SetOrientation(const CU::Matrix44f& matrix)
 {
 	m_Orientation2 = m_Orientation;
@@ -282,5 +287,4 @@ void Camera::OrientCamera()
 	m_Orientation[9] = axisZ.y;
 	m_Orientation[10] = axisZ.z;
 
-	m_InvProjectionMatrix = CU::Math::InverseReal(m_ProjectionMatrix);
 }

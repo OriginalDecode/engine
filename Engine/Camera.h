@@ -4,118 +4,120 @@
 
 struct ControllerState;
 
-	enum class eDirection
-	{
-		FORWARD,
-		BACK,
-		UP,
-		DOWN,
-		LEFT,
-		RIGHT
-	};
+enum class eDirection
+{
+	FORWARD,
+	BACK,
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
+};
 
-	enum class eRotation
-	{
-		X_AXIS,
-		Y_AXIS,
-		Z_AXIS
-	};
-
-
-	class Camera
-	{
-	public:
-		Camera() = default;
-		void SetIsShadowCamera(bool is_shadow_camera) { m_IsShadowCamera = is_shadow_camera; }
-		bool IsShadowCamera() const { return m_IsShadowCamera; }
-
-		void CreatePerspectiveProjection(float width, float height, float near_plane, float far_plane, float fov);
-		const CU::Matrix44f& GetPerspective() const { return m_ProjectionMatrix; }
-		CU::Matrix44f& GetPerspective() { return m_ProjectionMatrix; }
-
-		const CU::Matrix44f& GetInvProjection() const { return m_InvProjectionMatrix; }
-		CU::Matrix44f& GetInvProjection() { return m_InvProjectionMatrix; }
-
-		void CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane);
-		const CU::Matrix44f& GetOrthogonal() const { return m_OrthogonalMatrix; }
-
-		void CreateOrthographicProjection(float width, float height, float near_plane, float far_plane);
-		const CU::Matrix44f& GetOrthographic() const { return m_ProjectionMatrix; }
-
-		CU::Vector3f RotateAroundPoint(const CU::Vector3f& position);
-
-		CU::Vector4f& GetPos() { return m_Orientation.rows[3]; }
-
-		CU::Matrix44f& GetOrientation() { return m_Orientation2; }
-		CU::Matrix44f& GetCurrentOrientation() { return m_Orientation; }
-		CU::Vector3f GetPosition() const { return m_Orientation2.GetPosition(); }
-		CU::Matrix44f& Get2DOrientation() { return my2DOrientation; }
-
-		const CU::Vector4f& GetAt() const { return m_Orientation2.GetForward(); }
-		void SetAt(const CU::Vector4f& at);
+enum class eRotation
+{
+	X_AXIS,
+	Y_AXIS,
+	Z_AXIS
+};
 
 
-		void Move(eDirection aDirection, float aSpeed);
-		void SetPosition(const CU::Vector3f& position);
-		void SetPosition2(const CU::Vector3f& position);
-		void SetTranslation(const CU::Vector4f& translation);
+class Camera
+{
+public:
+	Camera() = default;
+	void SetIsShadowCamera(bool is_shadow_camera) { m_IsShadowCamera = is_shadow_camera; }
+	bool IsShadowCamera() const { return m_IsShadowCamera; }
 
-		void Update(const ControllerState& controller_state);
-		void Update(const CU::Vector2f& cursor_pos );
+	void CreatePerspectiveProjection(float width, float height, float near_plane, float far_plane, float fov);
+	const CU::Matrix44f& GetPerspective() const { return m_ProjectionMatrix; }
+	CU::Matrix44f& GetPerspective() { return m_ProjectionMatrix; }
 
-		void SetOrientation(const CU::Matrix44f& matrix);
+	const CU::Matrix44f& GetInvProjection() const { return m_InvProjectionMatrix; }
+	CU::Matrix44f& GetInvProjection() { return m_InvProjectionMatrix; }
 
-		void RotateAroundX(float rad);
-		void RotateAroundY(float rad);
-		void RotateAroundZ(float rad);
+	void CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane);
+	const CU::Matrix44f& GetOrthogonal() const { return m_OrthogonalMatrix; }
 
-		void SetFOV(float field_of_view);
-	
-		/*	void IncreaseLookModifier() { m_LookSpeedModifier += 0.0001f; }
-		void DecreaseLookModifier() { m_LookSpeedModifier -= 0.0001f; }*/
+	void CreateOrthographicProjection(float width, float height, float near_plane, float far_plane);
+	const CU::Matrix44f& GetOrthographic() const { return m_ProjectionMatrix; }
 
+	CU::Vector3f RotateAroundPoint(const CU::Vector3f& position);
 
-		//void ToggleFreefly() { m_Controller = !m_Controller; }
-		//bool GetCanFreeFly() { return m_Controller; }
-		float GetFOV() { return m_CurrentFoV; }
-		float* GetFOVRef() { return &m_CurrentFoV; }
+	CU::Vector4f& GetPos() { return m_Orientation2.rows[3]; }
 
-		void RecalculatePerspective(float width, float height, float near_plane, float far_plane);
+	CU::Matrix44f& GetOrientation() { return m_Orientation2; }
+	CU::Matrix44f& GetCurrentOrientation() { return m_Orientation; }
+	CU::Vector3f GetPosition() const { return m_Orientation2.GetPosition(); }
+	CU::Matrix44f& Get2DOrientation() { return my2DOrientation; }
 
-		void InvertPitch();
-		void InvertRoll();
-		void InvertYaw();
-		void InvertAll();
-	private:
-		void UpdateOrientation();
-		float m_LookSpeedModifier = 0.005f;
-		float m_RotationDegree = 0.f;
-		void operator=(Camera&) = delete;
-		void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);
-		void MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed);
-		void MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed);
+	const CU::Vector4f& GetAt() const { return m_Orientation2.GetForward(); }
+	void SetAt(const CU::Vector4f& at);
 
 
-		void OrientCamera();
 
-		CU::Matrix44f m_Orientation;
-		CU::Matrix44f m_Orientation2;
-		CU::Matrix44f my2DOrientation;
+	void Move(eDirection aDirection, float aSpeed);
+	void SetPosition(const CU::Vector3f& position);
+	void SetPosition2(const CU::Vector3f& position);
+	void SetTranslation(const CU::Vector4f& translation);
 
-		bool m_ProjectionCreated = false;
-		CU::Matrix44f m_ProjectionMatrix;
-		CU::Matrix44f m_OrthogonalMatrix;
+	void Update(const ControllerState& controller_state);
+	void Update();
+	void Update(const CU::Vector2f& cursor_pos);
 
-		CU::Matrix44f m_InvProjectionMatrix;
+	void SetOrientation(const CU::Matrix44f& matrix);
 
-		float m_CurrentFoV = 90.f;
+	void RotateAroundX(float rad);
+	void RotateAroundY(float rad);
+	void RotateAroundZ(float rad);
 
-		float m_CameraSpeed = 50.f;
-		bool m_IsShadowCamera = false;
+	void SetFOV(float field_of_view);
 
-		CU::Vector2f m_CenterPoint;
-		CU::Quaternion m_Pitch;
-		CU::Quaternion m_Yaw;
-		CU::Quaternion m_Roll;
+	/*	void IncreaseLookModifier() { m_LookSpeedModifier += 0.0001f; }
+	void DecreaseLookModifier() { m_LookSpeedModifier -= 0.0001f; }*/
 
-	};
+
+	//void ToggleFreefly() { m_Controller = !m_Controller; }
+	//bool GetCanFreeFly() { return m_Controller; }
+	float GetFOV() { return m_CurrentFoV; }
+	float* GetFOVRef() { return &m_CurrentFoV; }
+
+	void RecalculatePerspective(float width, float height, float near_plane, float far_plane);
+
+	void InvertPitch();
+	void InvertRoll();
+	void InvertYaw();
+	void InvertAll();
+private:
+	void UpdateOrientation();
+	float m_LookSpeedModifier = 0.005f;
+	float m_RotationDegree = 0.f;
+	void operator=(Camera&) = delete;
+	void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);
+	void MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed);
+	void MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed);
+
+
+	void OrientCamera();
+
+	CU::Matrix44f m_Orientation;
+	CU::Matrix44f m_Orientation2;
+	CU::Matrix44f my2DOrientation;
+
+	bool m_ProjectionCreated = false;
+	CU::Matrix44f m_ProjectionMatrix;
+	CU::Matrix44f m_OrthogonalMatrix;
+
+	CU::Matrix44f m_InvProjectionMatrix;
+
+	float m_CurrentFoV = 90.f;
+
+	float m_CameraSpeed = 50.f;
+	bool m_IsShadowCamera = false;
+
+	CU::Vector2f m_CenterPoint;
+	CU::Quaternion m_Pitch;
+	CU::Quaternion m_Yaw;
+	CU::Quaternion m_Roll;
+
+};

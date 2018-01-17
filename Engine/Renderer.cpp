@@ -261,9 +261,9 @@ void Renderer::Render()
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	ctx.GSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 	ctx.DSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
-	m_Atmosphere.Render(m_RenderContext);
+	//m_Atmosphere.Render(m_RenderContext);
 
-	m_Atmosphere.Render(m_RenderContext);
+	//m_Atmosphere.Render(m_RenderContext);
 
 	/*ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(m_PerFramePixelStruct));
 	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);*/

@@ -285,8 +285,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>freetype_Release_x64.lib;DirectXTK_Release_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_Release.lib;easy_profiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype_Release_x64.lib;DirectXTK_Release_nW10.lib;d3d11.lib;D3DCompiler.lib;dxgi.lib;assimp_Release.lib;easy_profiler.lib;DirectXTex_Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)thirdpartylib\;$(SolutionDir)thirdpartylib\DirectXTex;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
     <CustomBuildStep>

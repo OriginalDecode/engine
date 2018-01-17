@@ -129,7 +129,12 @@ u64 AssetsContainer::LoadTexture(std::string filepath)
 		IShaderResourceView* srv = device.CreateTextureFromFile(filepath, tex, false, &Engine::GetAPI()->GetContext());
 		if (srv != nullptr)
 		{
-			Texture* texture = new Texture(srv, tex);
+			Texture* texture = nullptr;
+			
+			if (tex)
+				texture = new Texture(srv, tex);
+			else
+				texture = new Texture(srv);
 
 			m_Textures.emplace(hash, texture);
 			EndTicketMutex(&texture_mutex);

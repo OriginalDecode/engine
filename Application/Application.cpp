@@ -101,7 +101,6 @@ void Application::OnActive()
 
 void Application::OnExit()
 {
-	//myGame->CleanUp();
 	m_States.Clear();
 	myEngine->OnExit();
 	CleanUp();
@@ -109,7 +108,6 @@ void Application::OnExit()
 
 void Application::OnAltEnter()
 {
-	//myEngine->OnResize();
 	myEngine->OnAltEnter();
 }
 

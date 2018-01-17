@@ -62,7 +62,7 @@ void Game::Initiate(const std::string& level)
 	m_Picker = new CMousePicker;
 
 	m_Camera = m_Engine->GetCamera();
-	m_Camera->SetPosition(CU::Vector3f(1024, 10, 1024));
+	m_Camera->SetPosition(CU::Vector3f(0, 10, 0));
 	//m_Camera->RotateAroundY(cl::DegreeToRad(45.f));
 	//m_Camera->RotateAroundX(cl::DegreeToRad(20.f));
 	m_Camera->Update(CU::Vector2f(0.f,0.f));
@@ -175,6 +175,7 @@ void Game::OldUpdate(float dt)
 	static LinePoint p0, p1;
 	p0.position = m_Camera->GetPosition();
 
+#ifdef _DEBUG
 	if (!input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->OnClick(MouseInput::RIGHT))
 	{
 		const CU::Vector3f ray_dir = m_Picker->GetCurrentRay(input_wrapper->GetCursorPos());
@@ -183,12 +184,12 @@ void Game::OldUpdate(float dt)
 
 		pEventHandle->SendMessage(DebugEvents_OnRightClick, &intersection);
 	}
-
 	if (input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->OnDown(KButton::C))
 		pEventHandle->SendMessage("copy_selected");
 
 	if (input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->OnDown(KButton::V))
 		pEventHandle->SendMessage("paste_new");
+#endif
 
 
 	if (input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->IsDown(MouseInput::RIGHT))

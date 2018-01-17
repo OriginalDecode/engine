@@ -52,8 +52,10 @@ void HDRPass::Initiate()
 
 		sample_size *= 2.f;
 
+#ifdef _DEBUG
 		debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
 		pDebug->RegisterTexture(m_Downsamples.GetLast(), debug_name.str().c_str());
+#endif
 	}
 
 
@@ -85,6 +87,7 @@ void HDRPass::Initiate()
 		::FindClose(hFind);
 	}
 
+#ifdef _DEBUG
 	for (auto file : filesInFolder)
 	{
 		Texture* t = new Texture;
@@ -95,7 +98,7 @@ void HDRPass::Initiate()
 		t->Create3DTexture(path.c_str(), 16, 16, 0, file.cFileName);
 		debug::DebugHandle::GetInstance()->AddLUT(file.cFileName, t);
 	}
-
+#endif
 
 
 	//m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);

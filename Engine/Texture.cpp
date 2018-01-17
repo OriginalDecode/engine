@@ -12,6 +12,12 @@ Texture::Texture(IShaderResourceView* srv)
 {
 }
 
+Texture::Texture(IShaderResourceView* srv, ITexture2D* tex)
+	: m_ShaderResource(srv)
+	, m_Texture(tex)
+{
+}
+
 Texture::~Texture()
 {
 	graphics::IGraphicsAPI* api = Engine::GetAPI();

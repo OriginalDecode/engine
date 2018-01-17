@@ -451,6 +451,7 @@
     <ClInclude Include="PhysicsView.h" />
     <ClInclude Include="GraphicsView.h" />
     <ClInclude Include="TransformView.h" />
+    <ClInclude Include="ConstantBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -740,5 +741,6 @@
     <ClCompile Include="InspectorView.cpp" />
     <ClCompile Include="GraphicsView.cpp" />
     <ClCompile Include="TransformView.cpp" />
+    <ClCompile Include="ConstantBuffer.cpp" />
   </ItemGroup>
 </Project>

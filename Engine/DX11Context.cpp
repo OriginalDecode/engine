@@ -217,6 +217,21 @@ namespace graphics
 		OMSetRenderTargets(num_views, render_targets->GetRenderTargetView(), dsv->GetDepthStencilView());
 	}
 
+	void DX11Context::UpdateConstantBuffer(IBuffer*& dest, void* src, s32 size, s32 byte_place_in_buffer)
+	{
+		D3D11_MAPPED_SUBRESOURCE msr;
+		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
+		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(dest);
+		m_Context->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+		if (msr.pData)
+		{
+			s8* data = static_cast<s8*>(msr.pData);
+			memcpy(&data[byte_place_in_buffer], static_cast<s8*>(src), size);
+		}
+		m_Context->Unmap(buffer, 0);
+	}
+
 	void DX11Context::ClearRenderTarget(IRenderTargetView* render_target, const float clear_color[4])
 	{
 		m_Context->ClearRenderTargetView(static_cast<ID3D11RenderTargetView*>(render_target), clear_color);

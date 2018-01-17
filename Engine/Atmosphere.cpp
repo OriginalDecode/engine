@@ -20,11 +20,11 @@ Atmosphere::~Atmosphere()
 
 void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position)
 {
- 	m_OuterRadius = outer_radius;
- 	m_OuterOrientation.SetPosition(position);
+	m_OuterRadius = outer_radius;
+	m_OuterOrientation.SetPosition(position);
  
- 	m_InnerRadius = inner_radius;
- 	m_InnerOrientation.SetPosition(position);
+	m_InnerRadius = inner_radius;
+	m_InnerOrientation.SetPosition(position);
 
 	graphics::IGraphicsDevice& device = Engine::GetInstance()->GetAPI()->GetDevice();
 
@@ -35,13 +35,13 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 	m_InnerOrientation = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(m_InnerRadius, m_InnerRadius, m_InnerRadius, 1)) * m_InnerOrientation;
 
 	const VirtualFileSystem& vfs = Engine::GetInstance()->GetVFS();
- 	u64 atmosphere = Engine::GetInstance()->LoadModel<AtmosphereModel>(vfs.GetFile("Models/atmosphere.fbx"), "Shaders/skysphere.json", false);
- 	m_OuterSphere = Engine::GetInstance()->GetModel<Model>(atmosphere);
+	u64 atmosphere = Engine::GetInstance()->LoadModel<AtmosphereModel>(vfs.GetFile("Models/atmosphere.fbx"), "Shaders/skysphere.json", false);
+	m_OuterSphere = Engine::GetInstance()->GetModel<Model>(atmosphere);
 
- 	m_VertexStruct.m_InnerRadius = m_InnerRadius;
- 	m_VertexStruct.m_OuterRadius = m_OuterRadius;
+	m_VertexStruct.m_InnerRadius = m_InnerRadius;
+	m_VertexStruct.m_OuterRadius = m_OuterRadius;
 
-	//atic_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetOrientation(m_OuterOrientation);
+	static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetOrientation(m_OuterOrientation);
 }
 
 void Atmosphere::Render(const graphics::RenderContext& rc)
@@ -62,8 +62,8 @@ void Atmosphere::Render(const graphics::RenderContext& rc)
 	ctx.SetBlendState(api->GetBlendState(graphics::NO_BLEND));
 	ctx.SetDepthState(api->GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api->GetRasterizerState(graphics::CULL_NONE));
-	m_OuterOrientation.SetPosition(pEngine->GetCamera()->GetPosition());
-	static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetOrientation(m_OuterOrientation);
+	//m_OuterOrientation.SetPosition(pEngine->GetCamera()->GetPosition());
+	//static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetOrientation(m_OuterOrientation);
 	static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->Render(rc);
 
 }

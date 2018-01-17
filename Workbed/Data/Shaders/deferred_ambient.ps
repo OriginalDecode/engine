@@ -119,8 +119,8 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 spec = 0;
 
 	float3 light_dir = light_direction.xyz;
-	float3 light_col = float3(1, 0, 0);
-	float light_intensity = 100;
+	float3 light_col = float3(1, 1, 1);
+	float light_intensity = 10;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
 	float NdC = saturate(dot(normal, to_eye)); //should this really be saturated?

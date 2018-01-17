@@ -78,6 +78,8 @@ namespace graphics
 		template<typename T>
 		void UpdateConstantBuffer(IBuffer*& dest, T* src);
 
+		virtual void UpdateConstantBuffer(IBuffer*& dest, void* src, s32 size, s32 byte_place_in_buffer) = 0;
+
 		template<typename T>
 		void UpdateConstantBuffer(IBuffer*& dest, T* src, s32 size);
 
@@ -93,6 +95,8 @@ namespace graphics
 		virtual void _InternalUpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping) = 0;
 
 	};
+
+	
 
 	template<typename T>
 	void graphics::IGraphicsContext::UpdateConstantBuffer(IBuffer*& dest, T* src, s32 size)

@@ -33,6 +33,9 @@ struct ControllerState;
 		const CU::Matrix44f& GetPerspective() const { return m_ProjectionMatrix; }
 		CU::Matrix44f& GetPerspective() { return m_ProjectionMatrix; }
 
+		const CU::Matrix44f& GetInvProjection() const { return m_InvProjectionMatrix; }
+		CU::Matrix44f& GetInvProjection() { return m_InvProjectionMatrix; }
+
 		void CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane);
 		const CU::Matrix44f& GetOrthogonal() const { return m_OrthogonalMatrix; }
 
@@ -40,6 +43,8 @@ struct ControllerState;
 		const CU::Matrix44f& GetOrthographic() const { return m_ProjectionMatrix; }
 
 		CU::Vector3f RotateAroundPoint(const CU::Vector3f& position);
+
+		CU::Vector4f& GetPos() { return m_Orientation.rows[3]; }
 
 		CU::Matrix44f& GetOrientation() { return m_Orientation2; }
 		CU::Matrix44f& GetCurrentOrientation() { return m_Orientation; }
@@ -100,6 +105,9 @@ struct ControllerState;
 		bool m_ProjectionCreated = false;
 		CU::Matrix44f m_ProjectionMatrix;
 		CU::Matrix44f m_OrthogonalMatrix;
+
+		CU::Matrix44f m_InvProjectionMatrix;
+
 		float m_CurrentFoV = 90.f;
 
 		float m_CameraSpeed = 50.f;

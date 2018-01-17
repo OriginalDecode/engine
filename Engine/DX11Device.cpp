@@ -146,6 +146,59 @@ namespace graphics
 		return srv;
 	}
 
+	IShaderResourceView* DX11Device::CreateTextureFromFile(const std::string& filepath, ITexture2D*& tex_out, bool generate_mips, IGraphicsContext* ctx)
+	{
+		DX11Context* pCtx = static_cast<DX11Context*>(ctx);
+
+		std::wstring path = cl::ToWideStr(filepath);
+
+		ID3D11ShaderResourceView* srv = nullptr;
+		ID3D11Resource* resource = nullptr;
+
+		if (filepath.find(".dds") == filepath.npos)
+		{
+			HRESULT hr = DirectX::CreateWICTextureFromFile(m_Device, path.c_str(), &resource, &srv);
+#ifndef FINAL
+			DirectX11::HandleErrors(hr, "Failed to load texture");
+#endif
+			tex_out = resource;
+			return srv;
+		}
+
+		if (generate_mips)
+		{
+			HRESULT hr = DirectX::CreateDDSTextureFromFileEx(m_Device
+															 , static_cast<ID3D11DeviceContext*>(pCtx->GetContext())
+															 , path.c_str()
+															 , 0
+															 , D3D11_USAGE_DEFAULT
+															 , D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET //has to be bound as a render target to actually generate the mips
+															 , D3D11_CPU_ACCESS_READ
+															 , D3D11_RESOURCE_MISC_GENERATE_MIPS
+															 , false
+															 , &resource //might want to output to a texture2d object?
+															 , &srv);
+			tex_out = resource;
+
+#ifndef FINAL
+			DL_ASSERT_EXP(hr != S_OK, "Failed to load texture");
+#endif
+			return srv;
+		}
+
+		HRESULT hr = DirectX::CreateDDSTextureFromFile(m_Device
+													   , nullptr
+													   , path.c_str()
+													   , &resource //might want to output to a texture2d object?
+													   , &srv);
+		tex_out = resource;
+#ifndef FINAL
+		DirectX11::HandleErrors(hr, "Failed to load texture");
+#endif
+
+		return srv;
+	}
+
 	ITexture2D* DX11Device::CreateTexture2D(const Texture2DDesc& desc, const std::string& debug_name)
 	{
 		D3D11_TEXTURE2D_DESC text_desc;

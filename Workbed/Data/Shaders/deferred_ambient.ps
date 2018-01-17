@@ -52,7 +52,7 @@ half GetSpecPowToMip(float fSpecPow, int nMips)
 
 half3 ReflectionFresnel(const half3 substance, const half3 light_dir, const half3 half_vec, half roughness)
 {
-	half LdotH = saturate(dot(light_dir, half_vec));
+	half LdotH = (dot(light_dir, half_vec));
 	LdotH = 1.0f - LdotH;
 	LdotH = pow(LdotH, 5); //max(0, min(pow(LdotH, 5), 1));
 	half3 fresnel = LdotH * (1.f - substance);
@@ -112,79 +112,60 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 
 	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
-	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo * (1 - reflection_fresnel);
+	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo * reflection_fresnel;
+
+
 	albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
 
 	float4 diffuse = 0; // metalness_albedo * cube_ambient;
 	float4 spec = 0;
-
 	float3 light_dir = light_direction.xyz;
-	float3 light_col = float3(1, 0, 0);
-	float light_intensity = 100;
+	float3 light_col = float3(1, 1, 1);
+	float light_intensity = 1;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
-	float NdC = saturate(dot(normal, to_eye)); //should this really be saturated?
-	float3 half_vec = (to_eye + light_dir) / length(to_eye + light_dir);
+	float3 half_vec = normalize(light_dir + to_eye);
 
-	//float NdL = dot(light_dir, normal);
+	float NdC = dot(normal, to_eye); 
 
-	float4 newPos = pixel_pos + (normal * 0.4);
-	newPos.w = 1;
-	float4 shadowVec = mul(newPos, ShadowMVP);
-	shadowVec.xyz /= shadowVec.w;
-	shadowVec.y = -shadowVec.y;
-	shadowVec.x = shadowVec.x;
-	shadowVec.xy += 1;
-	shadowVec.xy *= 0.5;
-
-	float compareValue = shadowVec.z;
-	float sampleValue = ShadowTexture.Sample(sampler0, shadowVec.xy).r;
-
-	bool in_view = (shadowVec.x < 0 || shadowVec.x > 1 || shadowVec.y > 1 || shadowVec.y < 0);
-	in_view = !in_view;
-	const bool in_shadow = (sampleValue < compareValue); 
-	//if(in_view && !in_shadow)
+	for(int i = 0; i < 1; i++)
 	{
-		for(int i = 0; i < 1; i++)
-		{
-			// diffuse
-			float SatNdL = dot(-light_dir, normal);
-			diffuse += float4( ( SatNdL * 1 / PI)  * light_col * albedo.rgb, 1.0f);
-			//spec
-			float HdN = saturate(dot(half_vec, normal));
-			float NdL = saturate(dot(normal, light_dir));
-			float EdH = saturate(dot(-to_eye, half_vec));
-			float LdH = saturate(dot(light_dir, half_vec));
-			LdH = 1 - LdH;
-			LdH = pow(LdH, 5);
-			half4 schlickFresnel = LdH * ( 1 - metalness_albedo);
-			schlickFresnel = schlickFresnel / (6 - (5 * roughness));
-			schlickFresnel = metalness_albedo + schlickFresnel;
-			float m = rough2;
-			float m2 = m*m;
-			float denominator = HdN * HdN * (m2 - 1) + 1;
-			float ggxDistr = m2 / (PI * denominator * denominator);
-			float SchlickGGXGeo = (NdC / (NdC * (1 - rough2half ) + rough2half));
-			float k = rough2half;
-			float G1V = NdC * ( 1.f - k ) + k;
-			float G1L = NdL * ( 1.f - k ) + k;
-			float V = 0.25f / (G1V * G1L);
-			spec += saturate(((schlickFresnel * ggxDistr * V) * float4(light_col, 1)) * light_intensity) * NdL;
-		}
+		// diffuse
+		float SatNdL = dot(-light_dir, normal);
+		// diffuse += float4( ( SatNdL * 1 / PI)  * light_col * albedo.rgb, 1.0f);
+		//spec
+		float HdN = normalize(dot(half_vec, normal));
+		float NdL = normalize(dot(normal, light_dir));
+		float EdH = normalize(dot(-to_eye, half_vec));
+		float LdH = saturate(dot(light_dir, half_vec));
+		LdH = 1 - LdH;
+		LdH = pow(LdH, 5);
+		half4 schlickFresnel = LdH * ( 1 - metalness_albedo);
+		schlickFresnel = schlickFresnel / (6 - (5 * roughnessOffsetted));
+		schlickFresnel = metalness_albedo + schlickFresnel;
+		float m = rough2;
+		float m2 = m*m;
+		float denominator = HdN * HdN * (m2 - 1) + 1;
+		float ggxDistr = m2 / (PI * denominator * denominator);
+		float SchlickGGXGeo = (NdC / (NdC * (1 - rough2half ) + rough2half));
+		float k = rough2half;
+		float G1V = NdC * ( 1.f - k ) + k;
+		float G1L = NdL * ( 1.f - k ) + k;
+		float V = 0.25f / (G1V * G1L);
+		spec += (((schlickFresnel * ggxDistr * V) * float4(light_col, 1)) * light_intensity) * NdL;
 	}
-	diffuse += cube_ambient * albedo;
 	
+	diffuse += cube_ambient * albedo;
 	// float4 schlickFres = (metalness_albedo + ( 1 - metalness_albedo) * pow(1 - NdC, 5));
 		
 	float LdH = saturate(dot(light_dir, half_vec));
 	half4 schlickFresnel = LdH * ( 1 - metalness_albedo);
-	schlickFresnel = schlickFresnel / (6 - (5 * roughness));
+	schlickFresnel = schlickFresnel / (6 - (5 * roughnessOffsetted));
 	schlickFresnel = metalness_albedo + schlickFresnel;
+
 
 	float4 output = 0;
 	output = lerp(diffuse, cube, schlickFresnel);
 	output += spec;
-//output = (output);
-
-	return saturate(output);
+	return output;
 };

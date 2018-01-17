@@ -125,10 +125,12 @@ u64 AssetsContainer::LoadTexture(std::string filepath)
 	if (m_Textures.find(hash) == m_Textures.end())
 	{
 		graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
-		IShaderResourceView* srv = device.CreateTextureFromFile(filepath, false, &Engine::GetAPI()->GetContext());
+		ITexture2D* tex = nullptr;
+		IShaderResourceView* srv = device.CreateTextureFromFile(filepath, tex, false, &Engine::GetAPI()->GetContext());
 		if (srv != nullptr)
 		{
-			Texture* texture = new Texture(srv);
+			Texture* texture = new Texture(srv, tex);
+
 			m_Textures.emplace(hash, texture);
 			EndTicketMutex(&texture_mutex);
 			return hash;

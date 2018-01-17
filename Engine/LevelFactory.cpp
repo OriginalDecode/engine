@@ -292,20 +292,15 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 	memcpy(&entity_data[0], &data[pos], json_size);
 	pos += json_size;
 
-
-	int physics_length = 0;
-	memcpy(&physics_length, &data[pos], sizeof(int));
-	pos += sizeof(int);
-
-
-	char* physics_data = new char[physics_length];
-	memcpy(&physics_data[0], &data[pos], physics_length);
-	pos += physics_length;
+	
 
 	JSONReader reader;
 	reader.OpenDocument(entity_data);
+
 	auto& doc = reader.GetDocument();
+
 	s32 debug_flags = 0;
+
 	bool is_static = false;
 	bool is_light = false;
 	for (const rapidjson::Value& obj : doc.GetArray())
@@ -339,6 +334,15 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 
 		if (type.find("physics") != type.npos)
 		{
+
+			int physics_length = 0;
+			memcpy(&physics_length, &data[pos], sizeof(s32));
+			pos += sizeof(int);
+
+			char* physics_data = new char[physics_length];
+			memcpy(&physics_data[0], &data[pos], physics_length);
+			pos += physics_length;
+
 			PhysicsComponent& c = em.AddComponent<PhysicsComponent>(e);
 			c.Deserialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::PHYSICS);
@@ -349,6 +353,8 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 			btRigidBody* body = c.m_Body->GetBody();
 			Engine::GetInstance()->GetPhysicsManager()->Add(body);
 			is_static = c.m_Body->IsStatic();
+
+			delete[] physics_data;
 
 		}
 	}
@@ -383,7 +389,6 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 #endif
 
 	pDweller->Initiate(e, (is_static ? TreeDweller::STATIC : TreeDweller::DYNAMIC));
-	delete[] physics_data;
 	delete[] entity_data;
 	delete[] data;
 }

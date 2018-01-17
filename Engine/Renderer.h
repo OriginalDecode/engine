@@ -16,6 +16,8 @@
 #include <Engine/RenderContext.h>
 #include <Engine/LightPass.h>
 #include <Engine/InstancingManager.h>
+#include <Engine/ConstantBuffer.h>
+
 #include <CommonLib/RefPointer.h>
 
 
@@ -79,7 +81,6 @@ private:
 
 
 	//instancing helper?
-	CU::GrowingArray<Model*> m_Models;
 	std::map<u64, Model*> m_ModelsToRender;
 
 	CU::GrowingArray<Terrain*> myTerrainArray;
@@ -134,13 +135,15 @@ private:
 
 	bool m_RenderInstanced = true;
 
-	IBuffer* m_PerFramePixelBuffer = nullptr;
-	struct PerFramePixelBuffer
-	{
-		CU::Matrix44f m_Projection;
-		CU::Matrix44f m_View;
-		CU::Vector4f m_CameraPos;
-	} m_PerFramePixelStruct;
+// 	IBuffer* m_PerFramePixelBuffer = nullptr;
+// 	struct
+// 	{
+// 		CU::Matrix44f m_Projection;
+// 		CU::Matrix44f m_View;
+// 		CU::Vector4f m_CameraPos;
+// 	} m_PerFramePixelStruct;
+
+	graphics::ConstantBuffer m_PixelBuffer;
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -149,7 +152,6 @@ private:
 
 
 	Texture* m_DebugTexture = nullptr;
-	//CU::GrowingArray<Texture*> m_DebugTextures;
 	Texture* m_HoverTexture = nullptr;
 	Texture* m_SelectedTexture = nullptr;
 	RefPointer<Model> m_HoverModel = nullptr;

@@ -81,6 +81,7 @@ namespace graphics
 		virtual void ClearRenderTarget(Texture* render_target, const float clear_color[4]);
 		virtual void OMSetRenderTargets(s32 num_views, Texture* render_targets, Texture* dsv);
 
+		void UpdateConstantBuffer(IBuffer*& dest, void* src, s32 size, s32 byte_place_in_buffer) override;
 
 	private:
 

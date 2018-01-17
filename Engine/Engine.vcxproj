@@ -308,6 +308,7 @@
     <ClInclude Include="CommandAllocator.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Console.h" />
+    <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DebugHandle.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="DirectionalLight.h" />
@@ -434,6 +435,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommandAllocator.cpp" />
     <ClCompile Include="Console.cpp" />
+    <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="DebugHandle.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />

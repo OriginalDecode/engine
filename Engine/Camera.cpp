@@ -281,4 +281,6 @@ void Camera::OrientCamera()
 	m_Orientation[8] = axisZ.x;
 	m_Orientation[9] = axisZ.y;
 	m_Orientation[10] = axisZ.z;
+
+	m_InvProjectionMatrix = CU::Math::InverseReal(m_ProjectionMatrix);
 }

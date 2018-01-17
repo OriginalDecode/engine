@@ -69,7 +69,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_ParticleEmitter = new CEmitterInstance;
 	m_ParticleEmitter->Initiate(m_Synchronizer, m_DepthTexture);
 
-	m_Atmosphere.Initiate(1024, 1024, { 1024, 0.f, 1024.f });
+	m_Atmosphere.Initiate(2048, 2048, { 1024, -128.f, 1024.f });
 
 	m_ShadowPass.Initiate(this);
 
@@ -156,10 +156,13 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
-	m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(PerFramePixelBuffer), "PerFramePixelBuffer");
+	//m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(m_PerFramePixelStruct), "PerFramePixelBuffer");
 	m_PostProcessManager.Initiate();
 
-
+	m_PixelBuffer.RegisterVariable(&m_Camera->GetInvProjection());
+	m_PixelBuffer.RegisterVariable(&m_Camera->GetOrientation());
+	m_PixelBuffer.RegisterVariable(&m_Camera->GetPos());
+	m_PixelBuffer.Initiate();
 
 	//m_WaterPlane = new WaterPlane; //creating this breaks everything.... rip
 	m_WaterCamera = new Camera;
@@ -173,7 +176,6 @@ Renderer::~Renderer()
 #if !defined(_PROFILE) && !defined(_FINAL)
 	SAFE_DELETE(m_DebugQuad);
 	SAFE_DELETE(m_HoverTexture);
-	//m_DebugTextures.DeleteAll();
 #endif
 
 
@@ -186,7 +188,6 @@ Renderer::~Renderer()
 	SAFE_DELETE(m_DepthTexture);
 	SAFE_DELETE(m_DeferredRenderer);
 	SAFE_DELETE(myPointLight);
-	//SAFE_DELETE(myText);
 	SAFE_DELETE(m_LightPass);
 	SAFE_DELETE(m_ParticleEmitter);
 
@@ -215,11 +216,13 @@ void Renderer::Render()
 	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
 	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 
-	m_PerFramePixelStruct.m_Projection = CU::Math::InverseReal(m_Camera->GetPerspective());
-	m_PerFramePixelStruct.m_View = m_Camera->GetOrientation();
-	m_PerFramePixelStruct.m_CameraPos = m_Camera->GetPosition();
-	ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
-	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
+// 	m_PerFramePixelStruct.m_Projection = CU::Math::InverseReal(m_Camera->GetPerspective());
+// 	m_PerFramePixelStruct.m_View = m_Camera->GetOrientation();
+// 	m_PerFramePixelStruct.m_CameraPos = m_Camera->GetPosition();
+// 	ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(m_PerFramePixelStruct));
+// 	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
+
+	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
 
 
 	if (m_RenderInstanced)
@@ -262,8 +265,9 @@ void Renderer::Render()
 
 	m_Atmosphere.Render(m_RenderContext);
 
-	ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(PerFramePixelBuffer));
-	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
+	/*ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(m_PerFramePixelStruct));
+	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);*/
+	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
 	RenderSpotlight();
 	RenderPointlight();
 

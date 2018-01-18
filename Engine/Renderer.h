@@ -134,16 +134,9 @@ private:
 	class WaterPlane*			m_WaterPlane				= nullptr; //Shouldn't be in here
 
 	bool m_RenderInstanced = true;
-
-// 	IBuffer* m_PerFramePixelBuffer = nullptr;
-// 	struct
-// 	{
-// 		CU::Matrix44f m_Projection;
-// 		CU::Matrix44f m_View;
-// 		CU::Vector4f m_CameraPos;
-// 	} m_PerFramePixelStruct;
-
+	
 	graphics::ConstantBuffer m_PixelBuffer;
+	graphics::ConstantBuffer m_ViewProjection;
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)

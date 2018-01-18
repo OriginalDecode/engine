@@ -115,6 +115,7 @@ void Camera::Update(const CU::Vector2f& cursor_pos)
 
 void Camera::Update()
 {
+	m_ViewProj = CU::Math::Inverse(m_Orientation2) * m_ProjectionMatrix;
 	m_InvProjectionMatrix = CU::Math::InverseReal(m_ProjectionMatrix);
 }
 

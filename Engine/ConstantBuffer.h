@@ -1,6 +1,7 @@
 #pragma once
 #include <Engine/engine_shared.h>
 #include <vector>
+#include <string>
 namespace graphics
 {
 	class RenderContext;
@@ -17,10 +18,12 @@ namespace graphics
 		template<typename T>
 		void RegisterVariable(T* variable);
 
+
 		/*
 			Call this function after all the variables has been registered.
 		*/
-		void Initiate();
+
+		void Initiate(const char* debug_name = "unnamed");
 
 		enum ShaderBinding : s32
 		{
@@ -32,8 +35,8 @@ namespace graphics
 			COMPUTE = BITFLAG(5)
 		};
 
-		void Bind(s32 index, ShaderBinding shader_binding, const RenderContext& rc);
-		void Bind(const s32 index[], ShaderBinding shader_binding, const RenderContext& rc);
+		void Bind(s32 index, s32 shader_binding, const RenderContext& rc);
+		void Bind(const s32 index[], s32 shader_binding, const RenderContext& rc);
 		
 	private:
 		struct BufferVariable

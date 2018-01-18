@@ -81,7 +81,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	myPointLight = new PointLight();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	//pDebug->RegisterCheckbox(debug::DebugCheckbox(&m_LightModelWireframe, "Light Model Wireframe"));
 
 	TextureDesc desc;
 	desc.m_Width = window_size.m_Width;
@@ -112,36 +111,10 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_DebugTexture = new Texture;
 	m_DebugTexture->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
-
-
-// 	m_DebugTextures.Add(new Texture);
-// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
-// 
-// 	m_DebugTextures.Add(new Texture);
-// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "normal");
-// 
-// 	m_DebugTextures.Add(new Texture);
-// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "depth");
-// 
-// 	m_DebugTextures.Add(new Texture);
-// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "emissive");
-// 
-// 	m_DebugTextures.Add(new Texture);
-// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "entity_id");
-// 
-// 	m_DebugTextures.Add(new Texture);
-// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "hover");
-// 
-// 	m_DebugTextures.Add(new Texture);
-// 	m_DebugTextures.GetLast()->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "edge");
-
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
-
-
 
 	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
 	pDebug->SetDebugTexture(m_DebugTexture);
-
 	pDebug->RegisterTexture(m_GBuffer.GetDiffuse(), names[0]);
 	pDebug->RegisterTexture(m_GBuffer.GetNormal(), names[1]);
 	pDebug->RegisterTexture(m_GBuffer.GetDepth(), names[2]);
@@ -149,10 +122,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	pDebug->RegisterTexture(m_GBuffer.GetIDTexture(), names[4]);
 	pDebug->RegisterTexture(m_HoverTexture, names[5]);
 	pDebug->RegisterTexture(m_SelectedTexture, names[6]);
-
-
-
-
 
 #endif
 	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
@@ -162,7 +131,11 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_PixelBuffer.RegisterVariable(&m_Camera->GetInvProjection());
 	m_PixelBuffer.RegisterVariable(&m_Camera->GetOrientation());
 	m_PixelBuffer.RegisterVariable(&m_Camera->GetPos());
-	m_PixelBuffer.Initiate();
+	m_PixelBuffer.Initiate("PerFramePixel");
+
+	m_ViewProjection.RegisterVariable(&m_Camera->GetViewProjection());
+	m_ViewProjection.Initiate("ViewProj");
+
 
 	//m_WaterPlane = new WaterPlane; //creating this breaks everything.... rip
 	m_WaterCamera = new Camera;
@@ -213,15 +186,9 @@ void Renderer::Render()
 	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
 	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
 	CU::Matrix44f camera_view_proj = CU::Math::Inverse(camera_orientation) * camera_projection;
-	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
-	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
 
-// 	m_PerFramePixelStruct.m_Projection = CU::Math::InverseReal(m_Camera->GetPerspective());
-// 	m_PerFramePixelStruct.m_View = m_Camera->GetOrientation();
-// 	m_PerFramePixelStruct.m_CameraPos = m_Camera->GetPosition();
-// 	ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(m_PerFramePixelStruct));
-// 	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);
 
+	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
 	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
 
 
@@ -257,23 +224,15 @@ void Renderer::Render()
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_DeferredRenderer->DeferredRender(shadow_mvp, m_Direction, m_RenderContext);
 
-	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
-	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
-	ctx.GSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
-	ctx.DSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
-	//m_Atmosphere.Render(m_RenderContext);
+	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
+	m_Atmosphere.Render(m_RenderContext);
 
-	//m_Atmosphere.Render(m_RenderContext);
-
-	/*ctx.UpdateConstantBuffer(m_PerFramePixelBuffer, &m_PerFramePixelStruct, sizeof(m_PerFramePixelStruct));
-	ctx.PSSetConstantBuffer(0, 1, &m_PerFramePixelBuffer);*/
 	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
 	RenderSpotlight();
 	RenderPointlight();
 
 	RenderParticles(nullptr);
 
-	//Detect edges on specified texture
 
 	if (m_PostProcessManager.GetFlags() != 0)
 	{
@@ -287,31 +246,17 @@ void Renderer::Render()
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)
+	//Detect edges on specified texture
 	m_PostProcessManager.Process(m_HoverTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
 	m_PostProcessManager.Process(m_SelectedTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
 #endif
 
-	ctx.UpdateConstantBuffer(m_ViewProjBuffer, &camera_view_proj, sizeof(CU::Matrix44f));
-	ctx.VSSetConstantBuffer(0, 1, &m_ViewProjBuffer);
+	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
 	RenderLines();
 
 	//Render2DCommands();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	
-// 	ImGui::SetNextWindowPos(ImVec2(300,0));
-// 	ImVec2 _size;
-// 	_size.x = 1920 - 660;
-// 	_size.y = _size.x / 1.777777777777777777777777777777778;
-// 	ImGui::SetNextWindowSize(_size);
-// 	if (ImGui::Begin("Scene"))
-// 	{
-// 		Texture* tex = m_DeferredRenderer->GetScene();
-// 		ImGui::Image(tex->GetShaderView(), _size);
-// 		ImGui::End();
-// 	}
-// 
-// 	m_RenderContext.GetContext().ClearRenderTarget(m_RenderContext.GetAPI().GetBackbuffer(), clearcolor::black);
 	ImGui::Render();
 #endif
 	m_InstancingManager.EndFrame();

@@ -46,6 +46,10 @@ public:
 
 	CU::Vector4f& GetPos() { return m_Orientation2.rows[3]; }
 
+
+	CU::Matrix44f& GetViewProjection() { return m_ViewProj; }
+
+
 	CU::Matrix44f& GetOrientation() { return m_Orientation2; }
 	CU::Matrix44f& GetCurrentOrientation() { return m_Orientation; }
 	CU::Vector3f GetPosition() const { return m_Orientation2.GetPosition(); }
@@ -109,6 +113,7 @@ private:
 	CU::Matrix44f m_OrthogonalMatrix;
 
 	CU::Matrix44f m_InvProjectionMatrix;
+	CU::Matrix44f m_ViewProj;
 
 	float m_CurrentFoV = 90.f;
 

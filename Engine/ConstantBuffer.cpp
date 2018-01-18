@@ -3,8 +3,7 @@
 #include <Engine/IGraphicsDevice.h>
 namespace graphics
 {
-
-	void ConstantBuffer::Initiate()
+	void ConstantBuffer::Initiate(const char* debug_name)
 	{
 		DL_ASSERT_EXP(!m_Variables.empty(), "Register Variables before Initializing");
 
@@ -15,16 +14,16 @@ namespace graphics
 		}
 
 		IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
-		m_Buffer = device.CreateConstantBuffer(size, "Buffer");
+		m_Buffer = device.CreateConstantBuffer(size, debug_name);
 	}
 
-	void ConstantBuffer::Bind(s32 index, ShaderBinding shader_binding, const RenderContext& rc)
+	void ConstantBuffer::Bind(s32 index, s32 shader_binding, const RenderContext& rc)
 	{
 		const s32 idx[6] = { index, index, index, index, index, index };
 		Bind(idx, shader_binding, rc);
 	}
 
-	void ConstantBuffer::Bind(const s32 index[], ShaderBinding shader_binding, const RenderContext& rc)
+	void ConstantBuffer::Bind(const s32 index[], s32 shader_binding, const RenderContext& rc)
 	{
 		IGraphicsContext& ctx = rc.GetContext();
 

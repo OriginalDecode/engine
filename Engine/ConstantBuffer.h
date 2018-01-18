@@ -22,7 +22,6 @@ namespace graphics
 		/*
 			Call this function after all the variables has been registered.
 		*/
-
 		void Initiate(const char* debug_name = "unnamed");
 
 		enum ShaderBinding : s32
@@ -49,7 +48,6 @@ namespace graphics
 			}
 			void* variable = nullptr;
 			s32 size = 0;
-
 		};
 
 		IBuffer* m_Buffer = nullptr;

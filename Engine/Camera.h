@@ -26,36 +26,36 @@ class Camera
 {
 public:
 	Camera() = default;
-	void SetIsShadowCamera(bool is_shadow_camera) { m_IsShadowCamera = is_shadow_camera; }
-	bool IsShadowCamera() const { return m_IsShadowCamera; }
+	void SetIsShadowCamera(bool is_shadow_camera);
+	bool IsShadowCamera() const;
 
 	void CreatePerspectiveProjection(float width, float height, float near_plane, float far_plane, float fov);
-	const CU::Matrix44f& GetPerspective() const { return m_ProjectionMatrix; }
-	CU::Matrix44f& GetPerspective() { return m_ProjectionMatrix; }
+	const CU::Matrix44f& GetPerspective() const;
+	CU::Matrix44f& GetPerspective();
 
-	const CU::Matrix44f& GetInvProjection() const { return m_InvProjectionMatrix; }
-	CU::Matrix44f& GetInvProjection() { return m_InvProjectionMatrix; }
+	const CU::Matrix44f& GetInvProjection() const;
+	CU::Matrix44f& GetInvProjection();
 
 	void CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane);
-	const CU::Matrix44f& GetOrthogonal() const { return m_OrthogonalMatrix; }
+	const CU::Matrix44f& GetOrthogonal() const;
 
 	void CreateOrthographicProjection(float width, float height, float near_plane, float far_plane);
-	const CU::Matrix44f& GetOrthographic() const { return m_ProjectionMatrix; }
+	const CU::Matrix44f& GetOrthographic() const;
 
 	CU::Vector3f RotateAroundPoint(const CU::Vector3f& position);
 
-	CU::Vector4f& GetPos() { return m_Orientation2.rows[3]; }
+	CU::Vector4f& GetPos();
 
 
-	CU::Matrix44f& GetViewProjection() { return m_ViewProj; }
+	CU::Matrix44f& GetViewProjection();
 
 
-	CU::Matrix44f& GetOrientation() { return m_Orientation2; }
-	CU::Matrix44f& GetCurrentOrientation() { return m_Orientation; }
-	CU::Vector3f GetPosition() const { return m_Orientation2.GetPosition(); }
-	CU::Matrix44f& Get2DOrientation() { return my2DOrientation; }
+	CU::Matrix44f& GetOrientation();
+	CU::Matrix44f& GetCurrentOrientation();
+	CU::Vector3f GetPosition() const;
+	CU::Matrix44f& Get2DOrientation();
 
-	const CU::Vector4f& GetAt() const { return m_Orientation2.GetForward(); }
+	const CU::Vector4f& GetAt() const;
 	void SetAt(const CU::Vector4f& at);
 
 
@@ -83,8 +83,8 @@ public:
 
 	//void ToggleFreefly() { m_Controller = !m_Controller; }
 	//bool GetCanFreeFly() { return m_Controller; }
-	float GetFOV() { return m_CurrentFoV; }
-	float* GetFOVRef() { return &m_CurrentFoV; }
+	float GetFOV();
+	float* GetFOVRef();
 
 	void RecalculatePerspective(float width, float height, float near_plane, float far_plane);
 
@@ -108,7 +108,6 @@ private:
 	CU::Matrix44f m_Orientation2;
 	CU::Matrix44f my2DOrientation;
 
-	bool m_ProjectionCreated = false;
 	CU::Matrix44f m_ProjectionMatrix;
 	CU::Matrix44f m_OrthogonalMatrix;
 
@@ -119,6 +118,7 @@ private:
 
 	float m_CameraSpeed = 50.f;
 	bool m_IsShadowCamera = false;
+	bool m_ProjectionCreated = false;
 
 	CU::Vector2f m_CenterPoint;
 	CU::Quaternion m_Pitch;

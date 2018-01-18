@@ -5,6 +5,16 @@
 
 static constexpr float s_pi = 3.1415926535f;
 
+void Camera::SetIsShadowCamera(bool is_shadow_camera)
+{
+	m_IsShadowCamera = is_shadow_camera;
+}
+
+bool Camera::IsShadowCamera() const
+{
+	return m_IsShadowCamera;
+}
+
 void Camera::CreatePerspectiveProjection(float width, float height, float near_plane, float far_plane, float fov)
 {
 	DL_ASSERT_EXP(!m_ProjectionCreated, "Projection already created. Can't have two 3D projection matrices on same camera!");
@@ -13,9 +23,34 @@ void Camera::CreatePerspectiveProjection(float width, float height, float near_p
 	m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, cl::DegreeToRad(m_CurrentFoV));
 }
 
+CU::Matrix44f& Camera::GetPerspective()
+{
+	return m_ProjectionMatrix;
+}
+
+const CU::Matrix44f& Camera::GetPerspective() const
+{
+	return m_ProjectionMatrix;
+}
+
+CU::Matrix44f& Camera::GetInvProjection()
+{
+	return m_InvProjectionMatrix;
+}
+
+const CU::Matrix44f& Camera::GetInvProjection() const
+{
+	return m_InvProjectionMatrix;
+}
+
 void Camera::CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane)
 {
 	m_OrthogonalMatrix = CU::Matrix44f::CreateOrthogonalMatrixLH(width, height, near_plane, far_plane);
+}
+
+const CU::Matrix44f& Camera::GetOrthogonal() const
+{
+	return m_OrthogonalMatrix;
 }
 
 void Camera::CreateOrthographicProjection(float width, float height, float near_plane, float far_plane)
@@ -23,6 +58,11 @@ void Camera::CreateOrthographicProjection(float width, float height, float near_
 	DL_ASSERT_EXP(!m_ProjectionCreated, "Projection already created. Can't have two 3D projection matrices on same camera!");
 	m_ProjectionCreated = true;
 	m_ProjectionMatrix = CU::Matrix44f::CreateOrthographicMatrixLH(width, height, near_plane, far_plane);
+}
+
+const CU::Matrix44f& Camera::GetOrthographic() const
+{
+	return m_ProjectionMatrix;
 }
 
 CU::Vector3f Camera::RotateAroundPoint(const CU::Vector3f& position)
@@ -41,6 +81,41 @@ CU::Vector3f Camera::RotateAroundPoint(const CU::Vector3f& position)
 	m_Orientation.SetForward(new_forward);
 
 	return CU::Vector3f(position - original_pos);
+}
+
+CU::Vector4f& Camera::GetPos()
+{
+	return m_Orientation2.rows[3];
+}
+
+CU::Matrix44f& Camera::GetViewProjection()
+{
+	return m_ViewProj;
+}
+
+CU::Matrix44f& Camera::GetOrientation()
+{
+	return m_Orientation2;
+}
+
+CU::Matrix44f& Camera::GetCurrentOrientation()
+{
+	return m_Orientation;
+}
+
+CU::Vector3f Camera::GetPosition() const
+{
+	return m_Orientation2.GetPosition();
+}
+
+CU::Matrix44f& Camera::Get2DOrientation()
+{
+	return my2DOrientation;
+}
+
+const CU::Vector4f& Camera::GetAt() const
+{
+	return m_Orientation2.GetForward();
 }
 
 void Camera::SetPosition(const CU::Vector3f& position)
@@ -149,6 +224,16 @@ void Camera::SetFOV(float field_of_view)
 
 
 	m_ProjectionMatrix.SetPerspectiveFOV(cl::DegreeToRad(m_CurrentFoV), window_size.m_Height / window_size.m_Width);
+}
+
+float Camera::GetFOV()
+{
+	return m_CurrentFoV;
+}
+
+float* Camera::GetFOVRef()
+{
+	return &m_CurrentFoV;
 }
 
 void Camera::RecalculatePerspective(float width, float height, float near_plane, float far_plane)

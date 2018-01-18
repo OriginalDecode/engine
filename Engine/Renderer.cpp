@@ -127,9 +127,10 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	//m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(m_PerFramePixelStruct), "PerFramePixelBuffer");
 	m_PostProcessManager.Initiate();
 
+	CU::Matrix44f& inv = m_Camera->GetInvProjection();
+
 	m_PixelBuffer.RegisterVariable(&m_Camera->GetInvProjection());
 	m_PixelBuffer.RegisterVariable(&m_Camera->GetOrientation());
-	m_PixelBuffer.RegisterVariable(&m_Camera->GetPos());
 	m_PixelBuffer.Initiate("PerFramePixel");
 
 	m_ViewProjection.RegisterVariable(&m_Camera->GetViewProjection());
@@ -219,12 +220,12 @@ void Renderer::Render()
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
+	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
 	m_DeferredRenderer->DeferredRender(shadow_mvp, m_Direction, m_RenderContext);
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
 	m_Atmosphere.Render(m_RenderContext);
 
-	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
 	RenderSpotlight();
 	RenderPointlight();
 

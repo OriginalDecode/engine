@@ -4,7 +4,6 @@ cbuffer per_frame : register (b0)
 {
 	row_major float4x4 InvertedProjection;
 	row_major float4x4 View;
-	float4 CameraPosition;
 };
 
 cbuffer Ambient : register(b1)
@@ -77,6 +76,9 @@ float4 getWorldPos(float2 tex_coord, float depth)
 // Source: https://github.com/godotengine/godot/blob/df573f5c3a76155842e43ea0dbab594e3944b114/drivers/gles3/shaders/scene.glsl
 float4 main(VS_OUTPUT input) : SV_Target
 {
+
+	
+	float4 camera_position = View._m30_m31_m32_m33;
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
 
 	if(depth.x <= 0)
@@ -104,7 +106,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
     float4 pixel_pos = getWorldPos(input.uv, depth.x);
 
-	float4 to_eye = normalize(CameraPosition - pixel_pos);
+	float4 to_eye = normalize(camera_position - pixel_pos);
 	float3 refVec = normalize(reflect(to_eye.xyz, normal.xyz));
 
 	float4 reflection_fresnel = float4(ReflectionFresnel(albedo.rgb, normal.xyz, to_eye, roughnessOffsetted), 1);

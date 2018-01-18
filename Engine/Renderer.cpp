@@ -124,7 +124,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	pDebug->RegisterTexture(m_SelectedTexture, names[6]);
 
 #endif
-	m_ViewProjBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "View*Projection");
 	//m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(m_PerFramePixelStruct), "PerFramePixelBuffer");
 	m_PostProcessManager.Initiate();
 
@@ -164,8 +163,6 @@ Renderer::~Renderer()
 	SAFE_DELETE(m_LightPass);
 	SAFE_DELETE(m_ParticleEmitter);
 
-	Engine::GetAPI()->ReleasePtr(m_ViewProjBuffer);
-	m_ViewProjBuffer = nullptr;
 }
 
 void Renderer::Render()
@@ -444,10 +441,10 @@ void Renderer::RenderTerrain(bool /*override_effect*/)
 
 void Renderer::Render3DShadows(const CU::Matrix44f&, Camera* camera)
 {
-	const CU::Matrix44f& perspective = camera->GetPerspective();
-	const CU::Matrix44f& orientation = camera->GetCurrentOrientation();
-	const CU::Matrix44f& view_proj = CU::Math::Inverse(orientation) * perspective;
-	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &view_proj, sizeof(CU::Matrix44f));
+// 	const CU::Matrix44f& perspective = camera->GetPerspective();
+// 	const CU::Matrix44f& orientation = camera->GetCurrentOrientation();
+// 	const CU::Matrix44f& view_proj = CU::Math::Inverse(orientation) * perspective;
+// 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &view_proj, sizeof(CU::Matrix44f));
 
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();

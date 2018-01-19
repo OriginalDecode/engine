@@ -2,6 +2,8 @@
 #include "ConstantBuffer.h"
 #include <Engine/IGraphicsDevice.h>
 #include <Engine/DX11Context.h>
+#include <Engine/profile_defines.h>
+#include <Engine/Synchronizer.h>
 namespace graphics
 {
 	void ConstantBuffer::Initiate(const char* debug_name)
@@ -24,56 +26,61 @@ namespace graphics
 		Bind(idx, shader_binding, rc);
 	}
 
+	static u16 frame_index = 0;
+	static u16 prev_frame = 0;
+
 	void ConstantBuffer::Bind(const s32 index[], s32 shader_binding, const RenderContext& rc)
 	{
+		PROFILE_FUNCTION(profiler::colors::Orange);
+
 		IGraphicsContext& ctx = rc.GetContext();
 
 		ID3D11DeviceContext* _ctx = static_cast<ID3D11DeviceContext*>(static_cast<DX11Context&>(ctx).GetContext());
-
+		
+		
+		PROFILE_BLOCK("Mapping");
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-
-
 		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(m_Buffer);
-		_ctx->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		if (msr.pData)
+		if (_ctx->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr) == S_OK)
 		{
-			s8* data = static_cast<s8*>(msr.pData);
-
-			s32 step = 0;
-			for (BufferVariable& var : m_Variables)
+			if (msr.pData)
 			{
-				memcpy(&data[step], static_cast<s8*>(var.variable), var.size);
-				step += var.size;
+				s8* data = static_cast<s8*>(msr.pData);
+
+				s32 step = 0;
+				for (BufferVariable& var : m_Variables)
+				{
+					memcpy(&data[step], static_cast<s8*>(var.variable), var.size);
+					step += var.size;
+				}
 			}
-
-
+			_ctx->Unmap(buffer, 0);
 		}
-		_ctx->Unmap(buffer, 0);
+		PROFILE_BLOCK_END;
 
-	
+
+
+		PROFILE_BLOCK("Setting Constant Buffer");
 		if (shader_binding & VERTEX)
 			ctx.VSSetConstantBuffer(index[0], 1, &m_Buffer);
-
 
 		if (shader_binding & PIXEL)
 			ctx.PSSetConstantBuffer(index[1], 1, &m_Buffer);
 
-
 		if (shader_binding & GEOMETRY)
 			ctx.GSSetConstantBuffer(index[2], 1, &m_Buffer);
-
 
 		if (shader_binding & HULL)
 			ctx.HSSetConstantBuffer(index[3], 1, &m_Buffer);
 
-
 		if (shader_binding & DOMAINS)
 			ctx.DSSetConstantBuffer(index[4], 1, &m_Buffer);
 
-
 		if (shader_binding & COMPUTE)
 			ctx.CSSetConstantBuffer(index[5], 1, &m_Buffer);
+		PROFILE_BLOCK_END;
+
 	}
 
 };

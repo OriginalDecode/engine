@@ -42,11 +42,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	, m_Camera(Engine::GetInstance()->GetCamera())
 {
 	auto api = Engine::GetAPI();
-	m_RenderContext = graphics::RenderContext(Engine::GetInstance(),
-											  api->GetDevice(),
-											  api->GetContext(),
-											  api);
-
+	m_RenderContext = graphics::RenderContext(Engine::GetInstance(), api->GetDevice(), api->GetContext(), api);
 
 	//myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 	m_DeferredRenderer = new DeferredRenderer;
@@ -108,7 +104,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 		"edge"
 	};
 
-
 	m_DebugTexture = new Texture;
 	m_DebugTexture->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
@@ -124,7 +119,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	pDebug->RegisterTexture(m_SelectedTexture, names[6]);
 
 #endif
-	//m_PerFramePixelBuffer = m_RenderContext.GetDevice().CreateConstantBuffer(sizeof(m_PerFramePixelStruct), "PerFramePixelBuffer");
 	m_PostProcessManager.Initiate();
 
 	CU::Matrix44f& inv = m_Camera->GetInvProjection();
@@ -135,7 +129,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_ViewProjection.RegisterVariable(&m_Camera->GetViewProjection());
 	m_ViewProjection.Initiate("ViewProj");
-
 
 	//m_WaterPlane = new WaterPlane; //creating this breaks everything.... rip
 	m_WaterCamera = new Camera;
@@ -187,26 +180,19 @@ void Renderer::Render()
 
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
-	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
-
-
 	if (m_RenderInstanced)
 		Render3DCommandsInstanced();
 
-	//ProcessWater();
+	
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
-
 	RenderTerrain(false);
-
-
 	if (m_RenderInstanced)
 		m_InstancingManager.DoInstancing(m_RenderContext, false);
 	else
 		Render3DCommands();
-	//m_WaterPlane->Render(m_RenderContext);
-#if !defined(_PROFILE) && !defined(_FINAL)
 
+#if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
 
 	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
@@ -217,7 +203,7 @@ void Renderer::Render()
 
 #endif
 
-	m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
+	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
 
 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
@@ -230,7 +216,6 @@ void Renderer::Render()
 	RenderPointlight();
 
 	RenderParticles(nullptr);
-
 
 	if (m_PostProcessManager.GetFlags() != 0)
 	{
@@ -436,7 +421,6 @@ void Renderer::RenderTerrain(bool /*override_effect*/)
 			continue;
 
 		terrain->Render(m_RenderContext);
-
 	}
 }
 

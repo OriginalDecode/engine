@@ -85,6 +85,10 @@ u64 AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bo
 
 	u64 hash = Hash(path.c_str());
 
+	if (path.find("default") != path.npos)
+		return g_DefaultModel;
+
+
 	if (m_Models.find(hash) != m_Models.end())
 		return hash;
 

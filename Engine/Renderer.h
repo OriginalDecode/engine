@@ -117,7 +117,7 @@ private:
 
 
 	Synchronizer*				m_Synchronizer			= nullptr;
-	//CText*						myText					= nullptr;
+	CText*						m_Text				= nullptr;
 	Texture*					m_DepthTexture			= nullptr;
 
 	Line3D*					m_Line					= nullptr;

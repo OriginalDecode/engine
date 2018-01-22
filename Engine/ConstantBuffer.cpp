@@ -47,6 +47,7 @@ namespace graphics
 
 
 		PROFILE_BLOCK("Setting Constant Buffer");
+
 		if (shader_binding & VERTEX)
 			ctx.VSSetConstantBuffer(index[0], 1, &m_Buffer);
 
@@ -64,8 +65,8 @@ namespace graphics
 
 		if (shader_binding & COMPUTE)
 			ctx.CSSetConstantBuffer(index[5], 1, &m_Buffer);
+
 		PROFILE_BLOCK_END;
 
 	}
-
 };

@@ -44,7 +44,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	auto api = Engine::GetAPI();
 	m_RenderContext = graphics::RenderContext(Engine::GetInstance(), api->GetDevice(), api->GetContext(), api);
 
-	//myText = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
+	m_Text = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
 	m_DeferredRenderer = new DeferredRenderer;
 	m_GBuffer.Initiate(true);
 
@@ -237,7 +237,7 @@ void Renderer::Render()
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
 	RenderLines();
 
-	//Render2DCommands();
+	Render2DCommands();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();
@@ -454,6 +454,25 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera* camera)
 
 void Renderer::Render2DCommands()
 {
+	return;
+	PROFILE_FUNCTION(profiler::colors::Red);
+
+	IDepthStencilState* dss = m_RenderContext.GetAPI().GetDepthStencilState(graphics::Z_DISABLED);
+	IRasterizerState* rss = m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE);
+	m_RenderContext.GetContext().SetDepthState(dss, 0);
+	m_RenderContext.GetContext().SetRasterizerState(rss);
+	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER);
+	for (s32 i = 0; i < commands.Size(); i++)
+	{
+		auto command = reinterpret_cast<TextCommand*>(commands[i]);
+		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::TEXT, "Expected Text command type");
+		m_Text->SetText(command->m_TextBuffer);
+		m_Text->SetPosition(command->m_Position);
+		m_Text->Render(m_Camera);
+	}
+	
+	
+	//m_Text->Render(m_Camera);
 
 	// 	m_API->SetRasterizer(eRasterizer::CULL_NONE);
 	// 	m_API->SetDepthStencilState(eDepthStencilState::Z_DISABLED, 0);

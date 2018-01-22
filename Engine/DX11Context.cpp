@@ -344,7 +344,11 @@ namespace graphics
 	{
 		auto& vtx = font->GetVertexWrapper();
 		auto& idx = font->GetIndexWrapper();
-		IASetInputLayout(vtx.GetInputLayout());
+		IInputLayout* input = vtx.GetInputLayout();
+		IASetInputLayout(input);
+
+
+
 		IASetTopology(vtx.GetTopology());
 
 		m_Context->IASetVertexBuffers(vtx.GetStart(),

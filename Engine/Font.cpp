@@ -10,6 +10,8 @@
 
 CFont::CFont(SFontData* aFontData)
 {
+	m_Indices.Init(1024);
+	m_Vertices.Init(1024);
 	m_Data = aFontData;
 	m_Text = " ";
 	m_Effect[0] = Engine::GetInstance()->GetEffect("Shaders/font_outline.json");
@@ -23,32 +25,48 @@ CFont::CFont(SFontData* aFontData)
 
 	graphics::InputElementDesc layout[] =
 	{
-		{ "POSITION", 0, graphics::_12BYTE_RGB, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, graphics::_16BYTE_RGBA, 0, 12, graphics::INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, graphics::_8BYTE_RG, 0, 28, graphics::INPUT_PER_VERTEX_DATA, 0 }
+		{ "POSITION", 0, graphics::_16BYTE_RGBA, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, graphics::_16BYTE_RGBA, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, graphics::_8BYTE_RG, 0, 32, graphics::INPUT_PER_VERTEX_DATA, 0 }
 
 	};
-	IInputLayout* input_layout = Engine::GetAPI()->GetDevice().CreateInputLayout(m_Effect[0]->GetVertexShader(), layout, ARRSIZE(layout));
 
+	IInputLayout* input_layout = Engine::GetAPI()->GetDevice().CreateInputLayout(m_Effect[0]->GetVertexShader(), layout, ARRSIZE(layout));
 
 	const s32 vtx_stride = sizeof(SVertexTypePosColUv);
 	const s32 vtx_byte_offset = 0;
 	const s32 vtx_start_slot = 0;
 	const s32 vtx_buffer_count = 1;
 
-	m_VertexWrapper = VertexWrapper(nullptr, vtx_start_slot, vtx_buffer_count, vtx_stride, vtx_byte_offset, 0, 0, nullptr, input_layout, graphics::TRIANGLE_LIST);
+	//m_VertexWrapper = VertexWrapper(nullptr, vtx_start_slot, vtx_buffer_count, vtx_stride, vtx_byte_offset, 0, 0, nullptr, input_layout, graphics::TRIANGLE_LIST);
+
+
+	m_VertexWrapper.SetStart(vtx_start_slot);
+	m_VertexWrapper.SetStride(vtx_stride);
+	m_VertexWrapper.SetByteOffset(vtx_buffer_count);
+	m_VertexWrapper.SetInputLayout(input_layout);
+	m_VertexWrapper.SetTopology(graphics::TRIANGLE_LIST);
+
 
 	m_VertexDesc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	m_VertexDesc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	m_VertexDesc.m_CPUAccessFlag = graphics::WRITE;
+	
 
 
+	m_VertexDesc.m_Data = new s8[1024 * vtx_stride];
 	const graphics::eTextureFormat format = graphics::R32_UINT;
 	const s32 idx_byte_offset = 0;
 
 	m_IndexDesc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
 	m_IndexDesc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
 	m_IndexDesc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
+	m_IndexDesc.m_Data = new s8[1024 * sizeof(s32)];
+
+
+	m_IndexWrapper.SetStart(0);
+	m_IndexWrapper.SetFormat(format);
+	m_IndexWrapper.SetByteOffset(idx_byte_offset);
 
 #ifdef _DEBUG
 	//m_IndexWrapper.m_DebugName = DEBUG_NAME("Font", CFont);
@@ -69,6 +87,8 @@ CFont::CFont(SFontData* aFontData)
 CFont::~CFont()
 {
 	Engine::GetAPI()->ReleasePtr(m_cbFont);
+	delete m_IndexDesc.m_Data;
+	delete m_VertexDesc.m_Data;
 }
 
 void CFont::SetText(std::string aText)
@@ -94,7 +114,8 @@ void CFont::Render()
 	auto& ctx = Engine::GetAPI()->GetContext();
 
 	ctx.SetBlendState(api.GetBlendState(graphics::ALPHA_BLEND));
-	ctx.PSSetSamplerState(0, 1, Engine::GetInstance()->GetActiveSampler());
+	ISamplerState* state = Engine::GetInstance()->GetActiveSampler();
+	ctx.PSSetSamplerState(0, 1, &state);
 	UpdateConstantBuffer();
 
 	ctx.DrawIndexed(this, m_Effect[0]);
@@ -128,6 +149,8 @@ const short& CFont::GetFontSize() const
 void CFont::UpdateBuffer()
 {
 	m_Color = m_DefaultColor;
+	m_VertexWrapper.ReleaseBuffer();
+	m_IndexWrapper.ReleaseBuffer();
 
 	u32 count = u32(m_Text.length());
 	float z = 0.f;
@@ -236,14 +259,13 @@ void CFont::UpdateBuffer()
 	auto& device = Engine::GetAPI()->GetDevice();
 
 	m_VertexDesc.m_ByteWidth = sizeof(SVertexTypePosColUv) * m_Vertices.Size();
-	//m_VertexDesc.m_Data = &m_Vertices[0];
-	m_VertexWrapper.ReleaseBuffer();
+	memcpy(m_VertexDesc.m_Data, &m_Vertices[0], m_VertexDesc.m_ByteWidth);
+
+
 	m_VertexWrapper.SetBuffer(device.CreateBuffer(m_VertexDesc, "Font VertexBuffer"));
 
-
 	m_IndexDesc.m_ByteWidth = sizeof(u32) * m_Indices.Size();
-	//m_IndexDesc.m_Data = &m_Indices[0];
-	m_IndexWrapper.ReleaseBuffer();
+	memcpy(m_IndexDesc.m_Data, &m_Indices[0], m_IndexDesc.m_ByteWidth);
 	m_IndexWrapper.SetBuffer(device.CreateBuffer(m_IndexDesc, "Font IndexBuffer"));
 }
 

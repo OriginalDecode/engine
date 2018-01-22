@@ -11,8 +11,8 @@ cbuffer Matrices : register(b0)
 struct VS_INPUT
 {
 	float4 pos : POSITION;
-	float3 color : COLOR;
-	float2 uv : TEXCOORD;
+	float4 color : COLOR;
+	float4 uv : TEXCOORD;
 	
 };
 

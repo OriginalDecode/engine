@@ -56,17 +56,17 @@ void CConsole::Render()
 		if (myIsActive)
 		{
 
-			Engine::DisableZ();
-			mySprite->Render(myCamera);
-
-			for (int i = 0; i < myStrings.Size(); i++)
-			{
-				myText->SetText(myStrings[i]);
-				myText->SetPosition({ myTopLeftPosition.x, myTopLeftPosition.y + (i * 18) });
-				myText->Render(myCamera);
-			}
-			myInputText->Render(myCamera);
-			Engine::EnableZ();
+// 			Engine::DisableZ();
+// 			mySprite->Render(myCamera);
+// 
+// 			for (int i = 0; i < myStrings.Size(); i++)
+// 			{
+// 				myText->SetText(myStrings[i]);
+// 				myText->SetPosition({ myTopLeftPosition.x, myTopLeftPosition.y + (i * 18) });
+// 				myText->Render(myCamera);
+// 			}
+// 			myInputText->Render(myCamera);
+// 			Engine::EnableZ();
 		}
 	}
 }

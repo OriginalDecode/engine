@@ -238,6 +238,23 @@ namespace graphics
 		m_Context->Unmap(buffer, 0);
 	}
 
+	s8* DX11Context::Map(IBuffer* in_buffer)
+	{
+		PROFILE_FUNCTION(profiler::colors::Orange);
+		D3D11_MAPPED_SUBRESOURCE msr; //can I do this?
+		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
+		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(in_buffer);
+		HRESULT hr = m_Context->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		DirectX11::HandleErrors(hr, "Failed to map buffer");
+
+		return static_cast<s8*>(msr.pData);
+	}
+
+	void DX11Context::Unmap(IBuffer* buffer)
+	{
+		m_Context->Unmap(static_cast<ID3D11Buffer*>(buffer), 0);
+	}
+
 	void DX11Context::ClearRenderTarget(IRenderTargetView* render_target, const float clear_color[4])
 	{
 		m_Context->ClearRenderTargetView(static_cast<ID3D11RenderTargetView*>(render_target), clear_color);

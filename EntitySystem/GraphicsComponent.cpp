@@ -16,7 +16,8 @@ void ModelInstance::Deserialize(const rapidjson::Value& json_value, ModelInstanc
 {
 	instance.m_Filename = json_value[s_ModelFile].GetString();
 
-	instance.m_ModelID = Engine::GetInstance()->LoadModelA(instance.m_Filename, s_Shader, false);//Engine::GetInstance()->LoadModel<Model>(m_Filename, "s", true); //add request???
+	instance.m_ModelID = Engine::GetInstance()->LoadModelA(instance.m_Filename, s_Shader, false);
+	//instance.m_ModelID =  Engine::GetInstance()->LoadModel<Model>(instance.m_Filename, "s_Shader", true); 
 
 	instance.m_MaterialFile = json_value[s_MaterialFile].GetString();
 	Material* pMaterial = Engine::GetInstance()->GetMaterial(instance.m_MaterialFile.c_str());

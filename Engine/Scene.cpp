@@ -30,29 +30,29 @@ void CScene::Initiate(Camera* aCamera, bool aIs2DScene)
 
 void CScene::Render()
 {
-	if (!myIs2DScene)
-	{
-		RenderLight();
-		for (int i = 0; i < myInstances.Size(); i++)
-		{
-			//myInstances[i]->UpdateLight(myDirectionalLightData);
-			//myInstances[i]->UpdateLight(myPointLightData);
-//				myInstances[i]->Render(*myCamera);
-		}
-	}
-	else
-	{
-		Engine::DisableZ();
-		for (int i = 0; i < my2DInstances.Size(); i++)
-		{
-			my2DInstances[i]->Render(myCamera);
-		}
-		for (int i = 0; i < myText.Size(); i++)
-		{
-			myText[i]->Render(myCamera);
-		}
-		Engine::EnableZ();
-	}
+// 	if (!myIs2DScene)
+// 	{
+// 		RenderLight();
+// 		for (int i = 0; i < myInstances.Size(); i++)
+// 		{
+// 			//myInstances[i]->UpdateLight(myDirectionalLightData);
+// 			//myInstances[i]->UpdateLight(myPointLightData);
+// //				myInstances[i]->Render(*myCamera);
+// 		}
+// 	}
+// 	else
+// 	{
+// 		Engine::DisableZ();
+// 		for (int i = 0; i < my2DInstances.Size(); i++)
+// 		{
+// 			my2DInstances[i]->Render(myCamera);
+// 		}
+// 		for (int i = 0; i < myText.Size(); i++)
+// 		{
+// 			myText[i]->Render(myCamera);
+// 		}
+// 		Engine::EnableZ();
+	//}
 }
 
 void CScene::Update(float aDeltaTime)

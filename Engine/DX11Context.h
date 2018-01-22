@@ -82,7 +82,8 @@ namespace graphics
 		virtual void OMSetRenderTargets(s32 num_views, Texture* render_targets, Texture* dsv);
 
 		void UpdateConstantBuffer(IBuffer*& dest, void* src, s32 size, s32 byte_place_in_buffer) override;
-
+		s8* Map(IBuffer* buffer) override;
+		void Unmap(IBuffer* buffer) override;
 	private:
 
 

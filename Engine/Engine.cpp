@@ -164,11 +164,6 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();
 
-
-	
-
-
-
 	return true;
 }
 
@@ -243,7 +238,6 @@ void Engine::Update()
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::GetInstance()->SetEntity(PickEntity(GetTexture("entity_id")));
-	//set target data in renderer.
 #endif
 }
 
@@ -283,9 +277,6 @@ void* Engine::CreateShader(IShaderBlob* pShader, eShaderType type, const std::st
 
 u64 Engine::LoadModelA(std::string path, std::string effect, bool threaded)
 {
-
-
-
 	return LoadModel<Model>(path, effect, threaded);
 }
 

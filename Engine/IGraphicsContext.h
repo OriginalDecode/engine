@@ -88,6 +88,10 @@ namespace graphics
 		template<typename T>
 		void UpdateBuffer(IBuffer*& dest, T* src, s32 size, eMapping mapping);
 
+
+		virtual s8* Map(IBuffer* buffer) = 0;
+		virtual void Unmap(IBuffer* buffer) = 0;
+
 	protected:
 		virtual void* GetContext() = 0;
 

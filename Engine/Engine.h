@@ -87,11 +87,6 @@ public:
 
 	TreeDweller* CreateEntity(const std::string& filepath, CU::Vector3f& position);
 
-	static void Present();
-	static void Clear();
-	static void EnableZ();
-	static void DisableZ();
-
 	const WindowSize& GetWindowSize() const;
 	const WindowSize& GetInnerSize() const;
 

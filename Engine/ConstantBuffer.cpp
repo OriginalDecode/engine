@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "ConstantBuffer.h"
 #include <Engine/IGraphicsDevice.h>
-#include <Engine/DX11Context.h>
 #include <Engine/profile_defines.h>
-#include <Engine/Synchronizer.h>
+
 namespace graphics
 {
 	void ConstantBuffer::Initiate(const char* debug_name)
@@ -35,30 +34,16 @@ namespace graphics
 
 		IGraphicsContext& ctx = rc.GetContext();
 
-		ID3D11DeviceContext* _ctx = static_cast<ID3D11DeviceContext*>(static_cast<DX11Context&>(ctx).GetContext());
-		
-		
 		PROFILE_BLOCK("Mapping");
-		D3D11_MAPPED_SUBRESOURCE msr;
-		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
-		ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(m_Buffer);
-		if (_ctx->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr) == S_OK)
+		s8* data = ctx.Map(m_Buffer);
+		s32 step = 0;
+		for (BufferVariable& var : m_Variables)
 		{
-			if (msr.pData)
-			{
-				s8* data = static_cast<s8*>(msr.pData);
-
-				s32 step = 0;
-				for (BufferVariable& var : m_Variables)
-				{
-					memcpy(&data[step], static_cast<s8*>(var.variable), var.size);
-					step += var.size;
-				}
-			}
-			_ctx->Unmap(buffer, 0);
+			memcpy(&data[step], static_cast<s8*>(var.variable), var.size);
+			step += var.size;
 		}
+		ctx.Unmap(m_Buffer);
 		PROFILE_BLOCK_END;
-
 
 
 		PROFILE_BLOCK("Setting Constant Buffer");

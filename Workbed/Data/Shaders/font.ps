@@ -4,7 +4,7 @@ Texture2D FontTexture 	 : register ( t0 );
 struct VS_OUTPUT
 {
 	float4 pos : SV_POSITION;
-	float3 color : COLOR;
+	float4 color : COLOR;
 	float2 uv : TEXCOORD;
 };
 
@@ -12,7 +12,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 {
 	float4 text = FontTexture.Sample(sampler0, input.uv).rrrr * float4(input.color.rgb, 1);	
 	return text;
-
 };
 
 float4 outline(VS_OUTPUT input) : SV_Target

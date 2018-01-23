@@ -454,7 +454,6 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera* camera)
 
 void Renderer::Render2DCommands()
 {
-	return;
 	PROFILE_FUNCTION(profiler::colors::Red);
 
 	IDepthStencilState* dss = m_RenderContext.GetAPI().GetDepthStencilState(graphics::Z_DISABLED);

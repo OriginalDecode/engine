@@ -185,7 +185,7 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	};
 	IInputLayout* pInputLayout = device.CreateInputLayout(m_Effect->GetVertexShader(), inputdesc, ARRSIZE(inputdesc));
 
-	const s32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
+	constexpr s32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
 	const s32 vtx_count = vertices.Size();
 	const s32 vtx_size = vtx_count * vtx_stride;
 	const s32 vtx_buff_count = 1;

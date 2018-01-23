@@ -223,16 +223,16 @@ void Engine::Update()
 	
 	m_NetManager->Update();
 	m_Threadpool.Update();
+
 #if !defined(_PROFILE) && !defined(_FINAL)
 	static bool render_imgui = true;
-
-
 	if (m_InputHandle->GetInputWrapper()->OnDown(KButton::U))
 		render_imgui = !render_imgui;
 
 	if(render_imgui)
 		debug::DebugHandle::GetInstance()->Update();
 #endif
+
 	m_Camera->Update();
 	m_Renderer->Render();
 

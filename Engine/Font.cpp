@@ -28,7 +28,6 @@ CFont::CFont(SFontData* aFontData)
 		{ "POSITION", 0, graphics::_16BYTE_RGBA, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
 		{ "COLOR", 0, graphics::_16BYTE_RGBA, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, graphics::_8BYTE_RG, 0, 32, graphics::INPUT_PER_VERTEX_DATA, 0 }
-
 	};
 
 	IInputLayout* input_layout = Engine::GetAPI()->GetDevice().CreateInputLayout(m_Effect[0]->GetVertexShader(), layout, ARRSIZE(layout));
@@ -36,14 +35,13 @@ CFont::CFont(SFontData* aFontData)
 	const s32 vtx_stride = sizeof(SVertexTypePosColUv);
 	const s32 vtx_byte_offset = 0;
 	const s32 vtx_start_slot = 0;
-	const s32 vtx_buffer_count = 1;
 
 	//m_VertexWrapper = VertexWrapper(nullptr, vtx_start_slot, vtx_buffer_count, vtx_stride, vtx_byte_offset, 0, 0, nullptr, input_layout, graphics::TRIANGLE_LIST);
 
 
 	m_VertexWrapper.SetStart(vtx_start_slot);
 	m_VertexWrapper.SetStride(vtx_stride);
-	m_VertexWrapper.SetByteOffset(vtx_buffer_count);
+	m_VertexWrapper.SetByteOffset(0);
 	m_VertexWrapper.SetInputLayout(input_layout);
 	m_VertexWrapper.SetTopology(graphics::TRIANGLE_LIST);
 

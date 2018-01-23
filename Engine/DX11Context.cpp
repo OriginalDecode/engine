@@ -344,6 +344,9 @@ namespace graphics
 	{
 		auto& vtx = font->GetVertexWrapper();
 		auto& idx = font->GetIndexWrapper();
+
+		assert(vtx.GetBufferCount() > 0 && "Tried to bind 0 buffers!");
+
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
 

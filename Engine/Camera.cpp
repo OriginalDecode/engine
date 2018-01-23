@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Camera.h"
-//#include <SimpleMath.h>
 #include "../Input/ControllerInput.h"
 
 static constexpr float s_pi = 3.1415926535f;
@@ -46,9 +45,6 @@ const CU::Matrix44f& Camera::GetInvProjection() const
 void Camera::CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane)
 {
 	m_OrthogonalMatrix = CU::Matrix44f::CreateOrthogonalMatrixLH(width, height, near_plane, far_plane);
-
-	m_OrthogonalViewProj = CU::Math::Inverse(my2DOrientation) * m_OrthogonalMatrix;
-
 }
 
 const CU::Matrix44f& Camera::GetOrthogonal() const

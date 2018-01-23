@@ -23,10 +23,14 @@ struct VS_OUTPUT
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
+
+	
+
 	output.pos = mul(input.pos, view);
+	output.pos = input.pos;
 	output.pos.x += Position.x;
 	output.pos.y += Position.y; 	
-	output.pos = mul(output.pos, proj);
+	output.pos = mul(input.pos, proj);
 	output.color = input.color;	
 	output.uv = input.uv;
 	

@@ -3,13 +3,20 @@ struct ID3D11ShaderResourceView;
 
 class CFont;
 class Camera;
+
+namespace graphics
+{
+	class RenderContext;
+}
+
+
 class CText
 {
 public:
 	CText(const s8* filepath, u16 aSize, u16 aBorderWidth);
 	~CText();
 
-	void Render(Camera* aCamera);
+	void Render(const graphics::RenderContext& rc);
 	void SetText(std::string aString);
 	void SetPosition(const CU::Math::Vector2<float>& aPosition);
 	void SetScale(const CU::Math::Vector2<float>& aScale);

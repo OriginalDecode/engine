@@ -38,6 +38,7 @@ public:
 
 	void CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane);
 	const CU::Matrix44f& GetOrthogonal() const;
+	CU::Matrix44f& GetOrthogonal();
 
 	void CreateOrthographicProjection(float width, float height, float near_plane, float far_plane);
 	const CU::Matrix44f& GetOrthographic() const;
@@ -48,7 +49,7 @@ public:
 
 
 	CU::Matrix44f& GetViewProjection();
-
+	CU::Matrix44f& Get2DViewProjection();
 
 	CU::Matrix44f& GetOrientation();
 	CU::Matrix44f& GetCurrentOrientation();
@@ -77,12 +78,6 @@ public:
 
 	void SetFOV(float field_of_view);
 
-	/*	void IncreaseLookModifier() { m_LookSpeedModifier += 0.0001f; }
-	void DecreaseLookModifier() { m_LookSpeedModifier -= 0.0001f; }*/
-
-
-	//void ToggleFreefly() { m_Controller = !m_Controller; }
-	//bool GetCanFreeFly() { return m_Controller; }
 	float GetFOV();
 	float* GetFOVRef();
 
@@ -92,6 +87,7 @@ public:
 	void InvertRoll();
 	void InvertYaw();
 	void InvertAll();
+	CU::Matrix44f& GetInv2DView();
 private:
 	void UpdateOrientation();
 	float m_LookSpeedModifier = 0.005f;
@@ -113,6 +109,10 @@ private:
 
 	CU::Matrix44f m_InvProjectionMatrix;
 	CU::Matrix44f m_ViewProj;
+
+	CU::Matrix44f m_Inv2DView;
+
+	CU::Matrix44f m_OrthogonalViewProj;
 
 	float m_CurrentFoV = 90.f;
 

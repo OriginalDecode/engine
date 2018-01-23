@@ -15,12 +15,12 @@ CText::~CText()
 	SAFE_DELETE(myFont);
 }
 
-void CText::Render(Camera* aCamera)
+void CText::Render(const graphics::RenderContext& rc)
 {
 	myFont->SetPosition(myPosition);
 	myFont->SetScale(myScale);
-	myFont->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonal());
-	myFont->Render();
+	//myFont->SetMatrices(myOrientation, aCamera->Get2DOrientation(), aCamera->GetOrthogonal());
+	myFont->Render(rc);
 }
 
 void CText::SetText(std::string aString)

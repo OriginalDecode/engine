@@ -467,7 +467,7 @@ void Renderer::Render2DCommands()
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::TEXT, "Expected Text command type");
 		m_Text->SetText(command->m_TextBuffer);
 		m_Text->SetPosition(command->m_Position);
-		m_Text->Render(m_Camera);
+		m_Text->Render(m_RenderContext);
 	}
 	
 	

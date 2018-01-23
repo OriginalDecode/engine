@@ -46,9 +46,17 @@ const CU::Matrix44f& Camera::GetInvProjection() const
 void Camera::CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane)
 {
 	m_OrthogonalMatrix = CU::Matrix44f::CreateOrthogonalMatrixLH(width, height, near_plane, far_plane);
+
+	m_OrthogonalViewProj = CU::Math::Inverse(my2DOrientation) * m_OrthogonalMatrix;
+
 }
 
 const CU::Matrix44f& Camera::GetOrthogonal() const
+{
+	return m_OrthogonalMatrix;
+}
+
+CU::Matrix44f& Camera::GetOrthogonal()
 {
 	return m_OrthogonalMatrix;
 }
@@ -93,6 +101,11 @@ CU::Matrix44f& Camera::GetViewProjection()
 	return m_ViewProj;
 }
 
+CU::Matrix44f& Camera::Get2DViewProjection()
+{
+	return m_OrthogonalViewProj;
+}
+
 CU::Matrix44f& Camera::GetOrientation()
 {
 	return m_Orientation2;
@@ -110,6 +123,7 @@ CU::Vector3f Camera::GetPosition() const
 
 CU::Matrix44f& Camera::Get2DOrientation()
 {
+	my2DOrientation = CU::Math::Inverse(my2DOrientation);
 	return my2DOrientation;
 }
 
@@ -265,6 +279,7 @@ void Camera::InvertAll()
 	InvertRoll();
 	InvertYaw();
 }
+
 
 void Camera::SetAt(const CU::Vector4f& at)
 {

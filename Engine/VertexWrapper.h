@@ -96,6 +96,8 @@ inline void VertexWrapper::SetBuffer(IBuffer* buffer)
 
 inline void VertexWrapper::ReleaseBuffer()
 {
+	
 	Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
-	m_BufferCount--;
+	if(m_BufferCount > 0)
+		m_BufferCount--;
 }

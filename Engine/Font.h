@@ -2,9 +2,14 @@
 #include "VertexStructs.h"
 #include "Utilities.h"
 #include <Engine/IGraphicsAPI.h>
-
+#include <Engine/ConstantBuffer.h>
 struct SFontData;
-class Effect;
+class Effect; 
+namespace graphics
+{
+	class RenderContext;
+}
+
 class CFont
 {
 public:
@@ -13,7 +18,7 @@ public:
 
 	void SetText(std::string aText);
 	const std::string& GetText() const;
-	void Render();
+	void Render(const graphics::RenderContext& rc);
 
 	void SetPosition(const CU::Vector2f& aPosition);
 	void SetScale(const CU::Vector2f& aScale);
@@ -42,13 +47,18 @@ private:
 	VertexWrapper m_VertexWrapper;
 	IndexWrapper m_IndexWrapper;
 
+
+	graphics::ConstantBuffer m_Buffer;
+	CU::Vector2f m_Position;// = CU::Vector2f(0.f, 0.f);
+	CU::Vector2f m_Scale;// = CU::Vector2f(1.f, 1.f);
+/*
 	IBuffer* m_cbFont = nullptr;
 	struct SFontConstantBuffer : public VertexBaseStruct
 	{
 		CU::Vector2f position = CU::Vector2f(0.f, 0.f);
 		CU::Vector2f scale = CU::Vector2f(1.f, 1.f);
 	} myConstantStruct;
-
+*/
 
 	graphics::BufferDesc m_VertexDesc;
 	graphics::BufferDesc m_IndexDesc;

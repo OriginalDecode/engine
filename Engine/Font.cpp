@@ -20,7 +20,14 @@ CFont::CFont(SFontData* aFontData)
 	m_Effect[1] = Engine::GetInstance()->GetEffect("Shaders/font.json");
 	m_Effect[1]->AddShaderResource(m_Data->m_AtlasView, Effect::DIFFUSE);
 
-	m_cbFont = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(SFontConstantBuffer), "Font ConstantBuffer");
+	//m_cbFont = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(SFontConstantBuffer), "Font ConstantBuffer");
+	Camera* cam = Engine::GetInstance()->GetCamera();
+
+	m_Buffer.RegisterVariable(&cam->Get2DOrientation());
+	m_Buffer.RegisterVariable(&cam->GetOrthogonal());
+	m_Buffer.RegisterVariable(&m_Position);
+	m_Buffer.RegisterVariable(&m_Scale);
+	m_Buffer.Initiate("cbFont");
 
 
 	graphics::InputElementDesc layout[] =
@@ -32,7 +39,7 @@ CFont::CFont(SFontData* aFontData)
 
 	IInputLayout* input_layout = Engine::GetAPI()->GetDevice().CreateInputLayout(m_Effect[0]->GetVertexShader(), layout, ARRSIZE(layout));
 
-	const s32 vtx_stride = sizeof(SVertexTypePosColUv);
+	const s32 vtx_stride = 40;//sizeof(SVertexTypePosColUv);
 	const s32 vtx_byte_offset = 0;
 	const s32 vtx_start_slot = 0;
 
@@ -49,10 +56,12 @@ CFont::CFont(SFontData* aFontData)
 	m_VertexDesc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	m_VertexDesc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	m_VertexDesc.m_CPUAccessFlag = graphics::WRITE;
+	m_VertexDesc.m_Data = new s8[1024 * vtx_stride];
+	m_VertexDesc.m_MiscFlags = 0;
+	m_VertexDesc.m_StructuredByteStride = 0;
 	
 
 
-	m_VertexDesc.m_Data = new s8[1024 * vtx_stride];
 	const graphics::eTextureFormat format = graphics::R32_UINT;
 	const s32 idx_byte_offset = 0;
 
@@ -84,7 +93,7 @@ CFont::CFont(SFontData* aFontData)
 
 CFont::~CFont()
 {
-	Engine::GetAPI()->ReleasePtr(m_cbFont);
+	//Engine::GetAPI()->ReleasePtr(m_cbFont);
 	delete m_IndexDesc.m_Data;
 	delete m_VertexDesc.m_Data;
 }
@@ -103,7 +112,7 @@ const std::string& CFont::GetText() const
 	return m_Text;
 }
 
-void CFont::Render()
+void CFont::Render(const graphics::RenderContext& rc)
 {
 	if (!m_Effect[0] || !m_Effect[1])
 		return;
@@ -114,29 +123,30 @@ void CFont::Render()
 	ctx.SetBlendState(api.GetBlendState(graphics::ALPHA_BLEND));
 	ISamplerState* state = Engine::GetInstance()->GetActiveSampler();
 	ctx.PSSetSamplerState(0, 1, &state);
-	UpdateConstantBuffer();
+	//UpdateConstantBuffer();
+	m_Buffer.Bind(0, graphics::ConstantBuffer::VERTEX, rc);
 
-	ctx.DrawIndexed(this, m_Effect[0]);
 	ctx.DrawIndexed(this, m_Effect[1]);
+	//ctx.DrawIndexed(this, m_Effect[1]);
 
 }
 
 
 void CFont::SetPosition(const CU::Vector2f& aPosition)
 {
-	myConstantStruct.position = aPosition;
+	//myConstantStruct.position = aPosition;
 }
 
 void CFont::SetScale(const CU::Vector2f& aScale)
 {
-	myConstantStruct.scale = aScale;
+	//myConstantStruct.scale = aScale;
 }
 
 void CFont::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
 {
-	myConstantStruct.world = anOrientation;
-	myConstantStruct.invertedView = CU::Math::Inverse(a2DCameraOrientation);
-	myConstantStruct.projection = anOrthogonalProjectionMatrix;
+// 	myConstantStruct.world = anOrientation;
+// 	myConstantStruct.invertedView = CU::Math::Inverse(a2DCameraOrientation);
+// 	myConstantStruct.projection = anOrthogonalProjectionMatrix;
 }
 
 const short& CFont::GetFontSize() const
@@ -256,22 +266,25 @@ void CFont::UpdateBuffer()
 
 	auto& device = Engine::GetAPI()->GetDevice();
 
-	m_VertexDesc.m_ByteWidth = sizeof(SVertexTypePosColUv) * m_Vertices.Size();
+	m_VertexDesc.m_Size = sizeof(SVertexTypePosColUv) * m_Vertices.Size();
+	m_VertexDesc.m_ByteWidth = m_VertexDesc.m_Size;
 	memcpy(m_VertexDesc.m_Data, &m_Vertices[0], m_VertexDesc.m_ByteWidth);
-
-
 	m_VertexWrapper.SetBuffer(device.CreateBuffer(m_VertexDesc, "Font VertexBuffer"));
+	m_VertexWrapper.SetVertexCount(m_Vertices.Size());
+
+
 
 	m_IndexDesc.m_ByteWidth = sizeof(u32) * m_Indices.Size();
 	memcpy(m_IndexDesc.m_Data, &m_Indices[0], m_IndexDesc.m_ByteWidth);
 	m_IndexWrapper.SetBuffer(device.CreateBuffer(m_IndexDesc, "Font IndexBuffer"));
+	m_IndexWrapper.SetIndexCount(m_Indices.Size());
 }
 
 void CFont::UpdateConstantBuffer()
 {
-	auto& ctx = Engine::GetAPI()->GetContext();
-	ctx.UpdateConstantBuffer(m_cbFont, &myConstantStruct, sizeof(SFontConstantBuffer));
-	ctx.VSSetConstantBuffer(0, 1, &m_cbFont);
+// 	auto& ctx = Engine::GetAPI()->GetContext();
+// 	ctx.UpdateConstantBuffer(m_cbFont, &myConstantStruct, sizeof(SFontConstantBuffer));
+// 	ctx.VSSetConstantBuffer(0, 1, &m_cbFont);
 
 }
 

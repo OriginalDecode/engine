@@ -55,6 +55,7 @@ void CFontManager::Initiate()
 
 CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 {
+
 	std::string fontFolder = aFontPath;
 	if (!cl::substr(aFontPath, "/"))
 	{
@@ -67,9 +68,7 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 		fontFolder += aFontPath;
 	}
 	u16 aFontWidth = aSize;
-	int atlasSize = (aFontWidth * aFontWidth); //This is correct
-	atlasSize *= 2;
-	atlasSize += 2;
+	int atlasSize = (aFontWidth * aFontWidth) * 64; //This is correct
 	atlasSize = int(cl::nearest_Pow(atlasSize));
 	FONT_LOG("Font Size W/H: %d", atlasSize);
 	float atlasWidth = static_cast<float>(atlasSize); //have to be replaced.
@@ -102,8 +101,8 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 	FONT_LOG("Loading font:%s", myFontPath);
 	DL_ASSERT_EXP(!error, "Failed to load requested font.");
 
-	FT_F26Dot6 ftSize = (FT_F26Dot6)(fontData->myFontHeightWidth * (1 << 6));
-	error = FT_Set_Char_Size(face, ftSize, 0, 96, 0); // 96 = 100% scaling in Windows. 
+	FT_F26Dot6 ftSize = (FT_F26Dot6)(fontData->myFontHeightWidth * 64);
+	error = FT_Set_Char_Size(face, ftSize, 0, 96 * 64, 0); // 96 = 100% scaling in Windows. 
 	DL_ASSERT_EXP(!error, "[FontManager] : Failed to set pixel size!");
 
 #ifdef SAVE
@@ -202,9 +201,14 @@ void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 	, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderOffset)
 {
 	FT_Error error = FT_Load_Char(aFace, index, FT_LOAD_RENDER);
+	//FT_Error error = FT_Load_Glyph(aFace, index, FT_LOAD_RENDER);
 	DL_ASSERT_EXP(!error, "Failed to load glyph!");
 	FT_GlyphSlot slot = aFace->glyph;
 	FT_Bitmap bitmap = slot->bitmap;
+
+
+
+
 
 	int height = bitmap.rows;
 	int width = bitmap.width;
@@ -217,9 +221,10 @@ void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 	glyphData.myTopLeftUV = { (float(atlasX) / atlasWidth), (float(atlasY) / atlasHeight) };
 	glyphData.myBottomRightUV = { (float(atlasX + glyphData.myWidth) / atlasWidth), (float(atlasY + glyphData.myHeight) / atlasHeight) };
 
-	glyphData.myAdvanceX = slot->metrics.width / 64.f;
-	glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / 64.f) + (aBorderOffset * 2);
+	glyphData.myAdvanceX = slot->metrics.horiAdvance / 64.f;
+	glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / 64.f);
 	glyphData.myBearingY = ((slot->metrics.horiBearingY - slot->metrics.height) / 64.f);
+
 
 	if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
 	{
@@ -260,6 +265,7 @@ void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 			toSave = 0;
 			toSave |= bitmap.buffer[y * bitmap.width + x];
 			toSave = cl::Color32Reverse(toSave);
+		https://github.com/rougier/freetype-gl/blob/master/texture-font.c
 #endif
 		}
 	}

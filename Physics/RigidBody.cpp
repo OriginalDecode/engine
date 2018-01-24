@@ -174,6 +174,21 @@ btRigidBody* RigidBody::Capsule(CU::Vector3f pos)
 	return myBody;
 }
 
+btRigidBody* RigidBody::ConvexMesh(s8* const vertices, s8* const indices, const s32 const idx_count, const s32 const vtx_count)
+{
+	m_Shape = new btConvexTriangleMeshShape(nullptr);
+	m_Shape->setMargin(0.025f);
+
+	m_MotionState = new btDefaultMotionState;
+	myMass = 0.f;
+	m_IsStatic = true;
+	
+	btRigidBody::btRigidBodyConstructionInfo info(0, m_MotionState, m_Shape);
+	myBody = new btRigidBody(info);
+
+	return myBody;
+}
+
 void RigidBody::SetResistanceDensity(float aDensity)
 {
 	myResistanceDensity = aDensity;

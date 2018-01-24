@@ -222,7 +222,7 @@ void Game::OldUpdate(float dt)
 
 	HandleMovement(input_wrapper, entity_speed, dt);
 
-	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0,0), "Sup nerd"));
+	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5,0.5), "Sup nerd"));
 	//m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, false));
 	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 	m_World.Update(dt, m_Paused);

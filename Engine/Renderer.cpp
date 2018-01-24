@@ -44,7 +44,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	auto api = Engine::GetAPI();
 	m_RenderContext = graphics::RenderContext(Engine::GetInstance(), api->GetDevice(), api->GetContext(), api);
 
-	m_Text = new CText("Data/Font/OpenSans-Bold.ttf", 8, 1);
+	m_Text = new CText("Data/Font/OpenSans-Regular.ttf", 12, 0);
 	m_DeferredRenderer = new DeferredRenderer;
 	m_GBuffer.Initiate(true);
 
@@ -455,6 +455,9 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera* camera)
 void Renderer::Render2DCommands()
 {
 	PROFILE_FUNCTION(profiler::colors::Red);
+	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
+	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
+
 
 	IDepthStencilState* dss = m_RenderContext.GetAPI().GetDepthStencilState(graphics::Z_DISABLED);
 	IRasterizerState* rss = m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE);

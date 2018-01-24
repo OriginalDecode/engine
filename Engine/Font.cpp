@@ -23,6 +23,11 @@ CFont::CFont(SFontData* aFontData)
 	//m_cbFont = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(SFontConstantBuffer), "Font ConstantBuffer");
 	Camera* cam = Engine::GetInstance()->GetCamera();
 
+
+	m_Scale.x = 4.f;
+	m_Scale.y = 4.f;
+
+
 	m_Buffer.RegisterVariable(&cam->Get2DOrientation());
 	m_Buffer.RegisterVariable(&cam->GetOrthogonal());
 	m_Buffer.RegisterVariable(&m_Position);
@@ -123,9 +128,8 @@ void CFont::Render(const graphics::RenderContext& rc)
 	ctx.SetBlendState(api.GetBlendState(graphics::ALPHA_BLEND));
 	ISamplerState* state = Engine::GetInstance()->GetActiveSampler();
 	ctx.PSSetSamplerState(0, 1, &state);
-	//UpdateConstantBuffer();
-	m_Buffer.Bind(0, graphics::ConstantBuffer::VERTEX, rc);
 
+	m_Buffer.Bind(0, graphics::ConstantBuffer::VERTEX, rc);
 	ctx.DrawIndexed(this, m_Effect[1]);
 	//ctx.DrawIndexed(this, m_Effect[1]);
 
@@ -134,12 +138,12 @@ void CFont::Render(const graphics::RenderContext& rc)
 
 void CFont::SetPosition(const CU::Vector2f& aPosition)
 {
-	//myConstantStruct.position = aPosition;
+	m_Position = aPosition;
 }
 
 void CFont::SetScale(const CU::Vector2f& aScale)
 {
-	//myConstantStruct.scale = aScale;
+	m_Scale = aScale;
 }
 
 void CFont::SetMatrices(const CU::Matrix44f& anOrientation, CU::Matrix44f& a2DCameraOrientation, const CU::Matrix44f& anOrthogonalProjectionMatrix)
@@ -210,8 +214,6 @@ void CFont::UpdateBuffer()
 				skips = 10;
 				continue;
 			}
-
-
 		}
 
 		if (m_Text[i] == ')')
@@ -221,10 +223,10 @@ void CFont::UpdateBuffer()
 		}
 
 
-		float left = drawX;
-		float right = left + charData.myWidth;
-		float top = drawY + charData.myBearingY;
-		float bottom = top + charData.myHeight;
+		float left = drawX / 64;
+		float right = left + (charData.myWidth / 64.f);
+		float top = drawY + charData.myBearingY / 64;
+		float bottom = top + (charData.myHeight / 64.f);
 
 		v.myPosition = { left, bottom, z };
 		v.myColor = m_Color.ToVec4();
@@ -256,7 +258,7 @@ void CFont::UpdateBuffer()
 		m_Indices.Add(startIndex + 3);
 		m_Indices.Add(startIndex + 1);
 
-		drawX += charData.myBearingX;
+		drawX += charData.myAdvanceX;
 
 
 	}

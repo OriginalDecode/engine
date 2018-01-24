@@ -33,6 +33,7 @@ public:
 	void InitiateTextureArray(const char* paths[], const s32 const num_tex, const char* debug_name);
 	void Create3DTexture(const char* path, s32 slice_width, s32 slice_height, s32 slice_count, const char* debug_name);
 
+	static void SaveToDisk(const wchar_t* path, ITexture2D* tex);
 
 
 	ITexture2D* GetDepthTexture() const { return m_DepthTexture; }

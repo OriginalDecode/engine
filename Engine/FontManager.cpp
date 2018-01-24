@@ -15,7 +15,7 @@
 #include "Engine.h"
 #include <vector>
 #include <ScreenGrab.h>
-//#define SAVE
+#define SAVE
 #ifdef SAVE
 #define SAVE_DDS
 #ifndef SAVE_DDS
@@ -28,10 +28,12 @@
 #include <Engine/IGraphicsContext.h>
 #include <Engine/IGraphicsDevice.h>
 
-#define X_OFFSET 8
-#define X_START 2
-#define Y_OFFSET 8
+constexpr s32 x_offset = 8;
+constexpr s32 y_offset = 8;
+constexpr s32 x_start = 0;
 
+constexpr s32 multiple_baseline = 64;
+constexpr s32 dpi = 96;
 
 CFontManager::CFontManager()
 {
@@ -55,7 +57,6 @@ void CFontManager::Initiate()
 
 CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 {
-
 	std::string fontFolder = aFontPath;
 	if (!cl::substr(aFontPath, "/"))
 	{
@@ -67,15 +68,16 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 		fontFolder += "\\Fonts\\";
 		fontFolder += aFontPath;
 	}
-	u16 aFontWidth = aSize;
-	int atlasSize = (aFontWidth * aFontWidth) * 64; //This is correct
-	atlasSize = int(cl::nearest_Pow(atlasSize));
-	FONT_LOG("Font Size W/H: %d", atlasSize);
-	float atlasWidth = static_cast<float>(atlasSize); //have to be replaced.
-	float atlasHeight = static_cast<float>(atlasSize); //have to be replaced
+
+	u16 font_width = aSize;
+	int atlasSize = (font_width * font_width) * dpi;
+	atlasSize = int(cl::nearest_Pow_Under(atlasSize));
+	float atlasWidth = (float)atlasSize; //static_cast<float>(atlasSize) / 2;
+	float atlasHeight = (float)atlasSize; // static_cast<float>(atlasSize) / 2;
+	FONT_LOG("Font Size W: %d H: %d", (s32)atlasWidth, (s32)atlasHeight);
 
 	std::stringstream key;
-	key << aFontPath << "-" << aFontWidth;
+	key << aFontPath << "-" << font_width;
 	SFontData* fontData = nullptr;
 
 	if (myFontData.find(key.str()) == myFontData.end())
@@ -90,10 +92,11 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 		return new CFont(fontData);
 	}
 
-	fontData->myAtlas = new int[atlasSize * atlasSize];
-	ZeroMemory(fontData->myAtlas, (atlasSize * atlasSize) * sizeof(int));
+	const int total_size = (atlasWidth * atlasHeight);
+	fontData->myAtlas = new int[total_size];
+	ZeroMemory(fontData->myAtlas, total_size * sizeof(int));
 
-	fontData->myFontHeightWidth = aFontWidth;
+	fontData->myFontHeightWidth = font_width;
 	myFontPath = fontFolder.c_str();
 
 	FT_Face face;
@@ -101,15 +104,12 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 	FONT_LOG("Loading font:%s", myFontPath);
 	DL_ASSERT_EXP(!error, "Failed to load requested font.");
 
-	FT_F26Dot6 ftSize = (FT_F26Dot6)(fontData->myFontHeightWidth * 64);
-	error = FT_Set_Char_Size(face, ftSize, 0, 96 * 64, 0); // 96 = 100% scaling in Windows. 
+	FT_F26Dot6 ftSize = (FT_F26Dot6)(fontData->myFontHeightWidth * multiple_baseline);
+	error = FT_Set_Char_Size(face, ftSize, 0, dpi * multiple_baseline, 0); // 96 = 100% scaling in Windows. 
 	DL_ASSERT_EXP(!error, "[FontManager] : Failed to set pixel size!");
 
-#ifdef SAVE
-	CreateDirectory("Glyphs", NULL); //Creates a folder for the glyphs
-#endif
-	int atlasX = X_START;
-	int atlasY = 2;
+	int atlasX = x_start;
+	int atlasY = 0;
 	int currentMaxY = 0;
 
 	//Create a good spacing between words. 
@@ -118,7 +118,7 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 	FT_GlyphSlot space = face->glyph;
 	fontData->myWordSpacing = static_cast<short>(space->metrics.width / 256.f);
 
-	int currentMax = 256;
+	int currentMax = 127;
 	int currentI = 32;
 
 
@@ -128,9 +128,17 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 		DL_ASSERT_EXP(!error, "Failed to load glyph!");
 		FT_GlyphSlot slot = face->glyph;
 
+		FT_Matrix matrix = {
+			(int)((1.0 / multiple_baseline) * 0x10000L),
+			(int)((0.0) * 0x10000L),
+			(int)((0.0) * 0x10000L),
+			(int)((1.0) * 0x10000L) };
+
+		//FT_Set_Transform(face, &matrix, NULL);
+
 		if (atlasX + slot->bitmap.width + (aBorderWidth * 2) > atlasWidth)
 		{
-			atlasX = X_START;
+			atlasX = x_start;
 			atlasY = currentMaxY;
 		}
 		if (aBorderWidth > 0)
@@ -138,35 +146,13 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 			LoadOutline(i, atlasX, atlasY, atlasWidth, fontData, face, aBorderWidth);
 		}
 		LoadGlyph(i, atlasX, atlasY, currentMaxY, atlasWidth, atlasHeight, fontData, face, aBorderWidth);
+		
+
 	}
-#ifdef SAVE
-	DumpAtlas(fontData, atlasSize);
-#else
-// 	D3D11_SUBRESOURCE_DATA data;
-// 	data.pSysMem = fontData->myAtlas;
-// 	data.SysMemPitch = atlasSize * 4;
-// 
-// 	D3D11_TEXTURE2D_DESC info;
-// 	info.Width = atlasSize;
-// 	info.Height = atlasSize;
-// 	info.MipLevels = 1;
-// 	info.ArraySize = 1;
-// 	info.SampleDesc.Count = 1;
-// 	info.SampleDesc.Quality = 0;
-// 	info.MiscFlags = 0;
-// 	info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-// 	info.Usage = D3D11_USAGE_DYNAMIC;
-// 	info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-// 	info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-// 	TextureDesc desc;
-// 	desc.m_Width = atlasSize;
-// 	desc.m_Height = atlasSize;
-
 
 	graphics::Texture2DDesc _desc;
-	_desc.m_Width = atlasSize;
-	_desc.m_Height = atlasSize;
+	_desc.m_Width = (u32)atlasWidth;
+	_desc.m_Height = (u32)atlasHeight;
 	_desc.m_Format = graphics::RGBA8_UNORM;
 	_desc.m_CPUAccessFlag = graphics::WRITE;
 	_desc.m_Binding = graphics::BIND_SHADER_RESOURCE;
@@ -185,20 +171,22 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 
 	fontData->m_AtlasView = api->GetDevice().CreateShaderResource(_desc, texture, "Font Atlas");
 
-
-	api->ReleasePtr(texture);
+#ifdef SAVE
+	CreateDirectory("Atlas", NULL);
+	Texture::SaveToDisk(L"Atlas/atlas.dds", texture);
 #endif
+	api->ReleasePtr(texture);
 
 	fontData->myAtlasHeight = atlasSize;
 	fontData->myAtlasWidth = atlasSize;
-	fontData->myLineSpacing = (face->ascender - face->descender) / 64.f;
+	fontData->myLineSpacing = (face->ascender - face->descender) / multiple_baseline;
 	FT_Done_Face(face);
 	CFont* newFont = new CFont(fontData);
 	return newFont;
 }
 
 void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
-	, float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderOffset)
+							 , float atlasWidth, float atlasHeight, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderOffset)
 {
 	FT_Error error = FT_Load_Char(aFace, index, FT_LOAD_RENDER);
 	//FT_Error error = FT_Load_Glyph(aFace, index, FT_LOAD_RENDER);
@@ -206,24 +194,24 @@ void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 	FT_GlyphSlot slot = aFace->glyph;
 	FT_Bitmap bitmap = slot->bitmap;
 
+	const int height = bitmap.rows;
+	const int width = bitmap.width;
 
-
-
-
-	int height = bitmap.rows;
-	int width = bitmap.width;
-
+	
 	SCharData glyphData;
 	glyphData.myChar = static_cast<char>(index);
 	glyphData.myHeight = static_cast<short>(height + (aBorderOffset * 2));
 	glyphData.myWidth = static_cast<short>(width + (aBorderOffset * 2));
 
+	const float _width = atlasX + glyphData.myWidth;
+	const float _height = atlasY + glyphData.myHeight;
+
 	glyphData.myTopLeftUV = { (float(atlasX) / atlasWidth), (float(atlasY) / atlasHeight) };
 	glyphData.myBottomRightUV = { (float(atlasX + glyphData.myWidth) / atlasWidth), (float(atlasY + glyphData.myHeight) / atlasHeight) };
 
-	glyphData.myAdvanceX = slot->metrics.horiAdvance / 64.f;
-	glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / 64.f);
-	glyphData.myBearingY = ((slot->metrics.horiBearingY - slot->metrics.height) / 64.f);
+	glyphData.myAdvanceX = slot->metrics.horiAdvance / multiple_baseline;
+	glyphData.myBearingX = ((slot->metrics.horiBearingX + slot->metrics.width) / multiple_baseline);
+	glyphData.myBearingY = ((slot->metrics.horiBearingY - slot->metrics.height) / multiple_baseline);
 
 
 	if (glyphData.myTopLeftUV.x > 1 || glyphData.myTopLeftUV.y > 1 || glyphData.myBottomRightUV.x > 1 || glyphData.myBottomRightUV.y > 1)
@@ -233,16 +221,10 @@ void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 		FONT_LOG("TopLeftUV Y: %f", glyphData.myTopLeftUV.y);
 		FONT_LOG("BottomRightUV X: %f", glyphData.myBottomRightUV.x);
 		FONT_LOG("BottomRightUV Y: %f", glyphData.myBottomRightUV.y);
-#ifdef SAVE
-		DumpAtlas(aFontData, atlasWidth);
-#endif
 		DL_ASSERT("Tried to set a glyph UV to above 1. See log for more information.");
 	}
 
-#ifdef SAVE
-	int* gData = new int[bitmap.width * bitmap.rows];
-	ZeroMemory(gData, bitmap.width * bitmap.rows * sizeof(int));
-#endif
+
 	CalculateGlyphOffsets(index, slot);
 	for (int x = 0; x < width; x++)
 	{
@@ -252,49 +234,28 @@ void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 			{
 				continue;
 			}
-			int& saved = aFontData->myAtlas[((atlasY)+aBorderOffset + myOffset.yDelta + y) *
-				int(atlasWidth) + ((atlasX + aBorderOffset + myOffset.xDelta) + x)];
+			int& saved = aFontData->myAtlas[((atlasY) + y) * int(atlasWidth) + (atlasX + x)];
 			saved |= bitmap.buffer[y * bitmap.width + x];
 
-			if (y + (atlasY + Y_OFFSET) > maxY)
+			if (y + (atlasY + y_offset) > maxY)
 			{
-				maxY = y + (atlasY + Y_OFFSET);
+				maxY = y + (atlasY + y_offset);
 			}
-#ifdef SAVE
-			int& toSave = gData[y * bitmap.width + x];
-			toSave = 0;
-			toSave |= bitmap.buffer[y * bitmap.width + x];
-			toSave = cl::Color32Reverse(toSave);
-		https://github.com/rougier/freetype-gl/blob/master/texture-font.c
-#endif
+
+		//https://github.com/rougier/freetype-gl/blob/master/texture-font.c
 		}
 	}
 
-	atlasX = atlasX + width + X_OFFSET;
+	atlasX = atlasX + width + x_offset;
 	aFontData->myCharData[static_cast<char>(index)] = glyphData;
-
-#ifdef SAVE
-	if (bitmap.rows <= 0 || bitmap.pitch <= 0)
-	{
-		delete[] gData;
-		gData = nullptr;
-		return;
-	}
-
-	DumpGlyph(gData, index, width, height, bitmap.pitch);
-
-	delete[] gData;
-	gData = nullptr;
-#endif
 }
 
 void CFontManager::LoadOutline(const int index, const int atlasX, const int atlasY
-	, const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderOffset)
+							   , const float atlasWidth, SFontData* aFontData, FT_FaceRec_* aFace, int aBorderOffset)
 {
 	FT_Error err;
 	FT_Stroker stroker;
 	FT_Glyph glyph;
-
 
 	err = FT_Load_Char(aFace, index, FT_LOAD_NO_BITMAP);
 	DL_ASSERT_EXP(!err, "Failed to load glyph!");
@@ -311,7 +272,7 @@ void CFontManager::LoadOutline(const int index, const int atlasX, const int atla
 	err = FT_Stroker_New(myLibrary, &stroker);
 	DL_ASSERT_EXP(!err, "Failed to get glyph!");
 
-	FT_Stroker_Set(stroker, aBorderOffset * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+	FT_Stroker_Set(stroker, aBorderOffset * multiple_baseline, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
 	err = FT_Glyph_StrokeBorder(&glyph, stroker, 0, 1);
 	DL_ASSERT_EXP(err == 0, "Failed to stroke");
 
@@ -324,11 +285,7 @@ void CFontManager::LoadOutline(const int index, const int atlasX, const int atla
 	unsigned int width = bitmapGlyph->bitmap.width;
 	unsigned int height = bitmapGlyph->bitmap.rows;
 
-#ifdef SAVE
-	unsigned int pitch = bitmapGlyph->bitmap.pitch;
-	int* gData = new int[width * height];
-	ZeroMemory(gData, width * height * sizeof(int));
-#endif
+
 	CalculateOutlineOffsets(index, aFace, aBorderOffset);
 	for (u32 x = 0; x < width; x++)
 	{
@@ -340,120 +297,12 @@ void CFontManager::LoadOutline(const int index, const int atlasX, const int atla
 			data |= bitmapGlyph->bitmap.buffer[y * width + x];
 			data = cl::Color32Reverse(data);
 
-#ifdef SAVE
-			int& toSave = gData[y * width + x];
-			toSave = 0;
-			toSave |= bitmapGlyph->bitmap.buffer[y * width + x];
-			toSave = cl::Color32Reverse(toSave);
-#endif
 
 		}
 	}
 
-#ifdef SAVE
-	if (height <= 0 || pitch <= 0)
-	{
-		delete[] gData;
-		gData = nullptr;
-		return;
-	}
-
-	DumpGlyph(gData, index, width, height, pitch, true);
-
-	delete[] gData;
-	gData = nullptr;
-#endif
 	FT_Stroker_Done(stroker);
 }
-
-#ifdef SAVE
-void CFontManager::DumpAtlas(SFontData* fontData, int atlasSize)
-{
-	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = fontData->myAtlas;
-	data.SysMemPitch = atlasSize * 4;
-
-	D3D11_TEXTURE2D_DESC info;
-	info.Width = atlasSize;
-	info.Height = atlasSize;
-	info.MipLevels = 1;
-	info.ArraySize = 1;
-	info.SampleDesc.Count = 1;
-	info.SampleDesc.Quality = 0;
-	info.MiscFlags = 0;
-	info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	info.Usage = D3D11_USAGE_DYNAMIC;
-	info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-	ID3D11Texture2D* texture;
-	Engine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
-	DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
-	//Engine::GetAPI()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
-	//Engine::GetAPI()->SetDebugName(fontData->myAtlasView, "FontAtlas");
-
-	std::string name = "";
-	name = cl::substr(myFontPath, "\\", false, 1);
-	name = cl::substr(name, ".", true, 1);
-
-	if (cl::substr(myFontPath, "/"))
-	{
-		name = cl::substr(myFontPath, "/", false, 1);
-		name = cl::substr(name, ".", true, 1);
-	}
-
-
-// 	HRESULT hr = S_OK;
-// 	hr = Texture::SaveToFile(texture, "Glyphs/Atlas_" + name + "dds");
-// 	Engine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
-	SAFE_RELEASE(texture);
-}
-
-
-void CFontManager::DumpGlyph(int* source, int index, int width, int height, int pitch, bool /*isOutline*/)
-{
-	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = source;
-	data.SysMemPitch = pitch * 4;
-
-	D3D11_TEXTURE2D_DESC info;
-	info.Width = width;
-	info.Height = height;
-	info.MipLevels = 1;
-	info.ArraySize = 1;
-	info.SampleDesc.Count = 1;
-	info.SampleDesc.Quality = 0;
-	info.MiscFlags = 0;
-	info.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	info.Usage = D3D11_USAGE_DYNAMIC;
-	info.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	info.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-	ID3D11Texture2D* texture;
-	Engine::GetAPI()->GetDevice()->CreateTexture2D(&info, &data, &texture);
-	DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
-
-	//CEngine::GetAPI()->GetDevice()->CreateShaderResourceView(texture, nullptr, &fontData->myAtlasView);
-	//CEngine::GetAPI()->SetDebugName(fontData->myAtlasView, "FontAtlas");
-
-	std::string name = "";
-	name = cl::substr(myFontPath, "\\", false, 1);
-	name = cl::substr(name, ".", true, 1);
-
-	if (cl::substr(myFontPath, "/"))
-	{
-		name = cl::substr(myFontPath, "/", false, 1);
-		name = cl::substr(name, ".", true, 1);
-	}
-
-
-// 	HRESULT hr = S_OK;
-// 	hr = Texture::SaveToFile(texture, "Glyphs/Glpyh_" + name + std::to_string(index) + ".dds");
-// 	Engine::GetAPI()->HandleErrors(hr, "Failed to save texture because : ");
-	SAFE_RELEASE(texture);
-}
-
-#endif
 
 void CFontManager::CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, int aBorderOffset)
 {
@@ -474,7 +323,7 @@ void CFontManager::CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, 
 	err = FT_Stroker_New(myLibrary, &stroker);
 	DL_ASSERT_EXP(!err, "Failed to get glyph!");
 
-	FT_Stroker_Set(stroker, aBorderOffset * 64, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+	FT_Stroker_Set(stroker, aBorderOffset * multiple_baseline, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
 	err = FT_Glyph_StrokeBorder(&glyph, stroker, 0, 1);
 	DL_ASSERT_EXP(err == 0, "Failed to stroke");
 
@@ -585,6 +434,5 @@ void CFontManager::CountDeltas(const int& width, const int& height, int& deltaX,
 SFontData::~SFontData()
 {
 	SAFE_DELETE(myAtlas);
-	//SAFE_RELEASE(myAtlasView);
 }
 

@@ -23,7 +23,7 @@ struct VS_OUTPUT
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-	input.pos.xy *= 10;
+	input.pos.xy *= Scale;
 	input.pos.w = 1;
 	output.pos = mul(input.pos, view);
 	output.pos.x += Position.x;

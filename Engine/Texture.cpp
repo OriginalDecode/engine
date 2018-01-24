@@ -288,3 +288,17 @@ void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_heigh
 	//DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, L"3dTex.dds");
 
 }
+
+void Texture::SaveToDisk(const wchar_t* path, ITexture2D* tex)
+{
+	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
+	ID3D11DeviceContext* ctx = nullptr;
+	device->GetImmediateContext(&ctx);
+
+	ID3D11Texture2D* d3dTex = (ID3D11Texture2D*)tex;
+
+	DirectX::ScratchImage image;
+	HRESULT hr = DirectX::CaptureTexture(device, ctx, d3dTex, image);
+	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");
+	DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, path);
+}

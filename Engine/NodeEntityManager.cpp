@@ -97,14 +97,38 @@ void NodeEntityManager::Update(float dt, const CU::GrowingArray<TreeDweller*>& d
 		if (handle)
 		{
 			TranslationComponent& t = GetComponent<TranslationComponent>(e);
+			GraphicsComponent& c = GetComponent<GraphicsComponent>(e);
+			DebugComponent& d = GetComponent<DebugComponent>(e);
 
-			if (CameraHandle::GetInstance()->GetFrustum().InsideAABB(t.GetOrientation().GetPosition()))
+			const Frustum& frust = CameraHandle::GetInstance()->GetFrustum();
+
+			bool visible = false;
+
+			CU::Vector4f pos = t.GetOrientation().GetPosition();
+
+
+			visible |= frust.InsideAABB( pos - d.m_MinPoint);
+			visible |= frust.InsideAABB(pos + d.m_MaxPoint);
+			CU::Vector4f topLeft = pos + d.m_MaxPoint;
+			topLeft.x = pos.x - d.m_MinPoint.x;
+			visible |= frust.InsideAABB(topLeft);
+
+
+			CU::Vector4f botRight = pos - d.m_MinPoint;
+			botRight.x = pos.x + d.m_MaxPoint.x;
+			visible |= frust.InsideAABB(botRight);
+
+
+
+			
+			if (visible)
 				m_Components.SetUpdateFlag(e, true);
 			else
 				m_Components.SetUpdateFlag(e, false);
 		}
  	}
 	PROFILE_BLOCK_END;
+
 	for (BaseSystem* system : m_Systems)
 	{
 		system->Update(dt, paused);

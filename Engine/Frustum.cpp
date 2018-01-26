@@ -49,6 +49,14 @@ bool Frustum::InsideAABB(const CU::Vector3f& position) const
 	return false;
 }
 
+bool Frustum::InsideAABB(const CU::Vector4f& position) const
+{
+	if (position > m_Orientation->GetPosition() - m_FarPlane && position < m_Orientation->GetPosition() + m_FarPlane)
+		return true;
+
+	return false;
+}
+
 void Frustum::OnResize(float new_fov)
 {
 	const float rotation = sin(new_fov / 2.f);

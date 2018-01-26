@@ -412,7 +412,7 @@ void Renderer::RenderTerrain(bool /*override_effect*/)
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 	PROFILE_FUNCTION(profiler::colors::Green);
 	for (Terrain* terrain : myTerrainArray)

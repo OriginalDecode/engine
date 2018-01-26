@@ -13,6 +13,7 @@ public:
 
 	bool Inside(const CU::Vector3f& position, float radius) const;
 	bool InsideAABB(const CU::Vector3f& position) const;
+	bool InsideAABB(const CU::Vector4f& position) const;
 	void OnResize(float new_fov);
 private:
 	void DrawFrustum();

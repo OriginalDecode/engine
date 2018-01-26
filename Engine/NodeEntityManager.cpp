@@ -118,7 +118,7 @@ void NodeEntityManager::Update(float dt, const CU::GrowingArray<TreeDweller*>& d
 			botRight.x = pos.x + d.m_MaxPoint.x;
 			visible |= frust.InsideAABB(botRight);
 
-
+			//Would we be able to move this entirely to the GPU?
 
 			
 			if (visible)

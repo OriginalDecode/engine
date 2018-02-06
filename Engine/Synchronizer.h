@@ -51,29 +51,16 @@ public:
 
 	void* GetMemoryBlock(eBufferType buffer_type, s32 index, s32& size_of_block_out);
 
-
-	//ADD_COMMAND_FUNC(eBufferType::MODEL_BUFFER, ModelCommand);
-
-
-	void AddRenderCommand(const ModelCommand command)
-	{
-		if (m_QuitFlag)
-			return;
-		CommandBuffer& buffer = m_CommandBuffers[eBufferType::MODEL_BUFFER];
-		void* current = buffer[m_CurrentBuffer ^ 1].Alloc(sizeof(ModelCommand));
-		memcpy(current, &command, sizeof(ModelCommand));
-	};
-
-	ADD_COMMAND_FUNC(eBufferType::NO_DEFERRED_BUFFER, ModelCommandNonDeferred);
-	ADD_COMMAND_FUNC(eBufferType::SPOTLIGHT_BUFFER, SpotlightCommand);
-	ADD_COMMAND_FUNC(eBufferType::PARTICLE_BUFFER, ParticleCommand);
-	ADD_COMMAND_FUNC(eBufferType::LINE_BUFFER, LineCommand);
-	ADD_COMMAND_FUNC(eBufferType::POINTLIGHT_BUFFER, PointlightCommand);
-	ADD_COMMAND_FUNC(eBufferType::SPRITE_BUFFER, SpriteCommand);
-	ADD_COMMAND_FUNC(eBufferType::TEXT_BUFFER, TextCommand);
+	void AddRenderCommand(const ModelCommand& render_command);
+	void AddRenderCommand(const ModelCommandNonDeferred& render_command);
+	void AddRenderCommand(const SpotlightCommand& render_command);
+	void AddRenderCommand(const ParticleCommand& render_command);
+	void AddRenderCommand(const LineCommand& render_command);
+	void AddRenderCommand(const PointlightCommand& render_command);
+	void AddRenderCommand(const SpriteCommand& render_command);
+	void AddRenderCommand(const TextCommand& render_command);
 
 	const memory::CommandAllocator& GetRenderCommands(const eBufferType& buffer_type) const;
-
 	const memory::CommandAllocator& GetLineBuffer() const { return GetRenderCommands(eBufferType::LINE_BUFFER); }
 	const memory::CommandAllocator& GetModelBuffer() const { return GetRenderCommands(eBufferType::MODEL_BUFFER); }
 	const memory::CommandAllocator& GetSpotlightBuffer() const { return GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER); }
@@ -84,6 +71,9 @@ public:
 	const memory::CommandAllocator& GetNonDeferredBuffer() const { return GetRenderCommands(eBufferType::NO_DEFERRED_BUFFER); }
 
 private:
+	template<typename command>
+	void AddRenderCommand(eBufferType command_buffer_type, const command& render_command);
+
 	CommandBuffers m_CommandBuffers;
 	volatile bool m_LogicDone = false;
 	volatile bool m_RenderDone = false;
@@ -99,3 +89,13 @@ __forceinline bool Synchronizer::HasQuit()
 	return m_QuitFlag;
 }
 
+template<typename command>
+void Synchronizer::AddRenderCommand(eBufferType command_buffer_type, const command& render_command)
+{
+	if (m_QuitFlag)
+		return;
+
+	CommandBuffer& buffer = m_CommandBuffers[eBufferType::MODEL_BUFFER];
+	void* current = buffer[m_CurrentBuffer ^ 1].Alloc(sizeof(command));
+	memcpy(current, &render_command, sizeof(command));
+}

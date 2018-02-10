@@ -148,15 +148,17 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 col = atmosphere(input.view_dir, new_pos, m_LightDir, sunI, rPlanet, rAtmosphere, rsc, msc, rsh, msh, distr_factor);
 
 	col = saturate(pow(col, 2.2));
+
+
 	return float4(col, 1);
 
-	float height = saturate(input.worldpos.y);
-	float4 center_color = float4(0,1,1,1);
-	float4 apex_color = float4(0,0,0,1);
-	float4 twilight_purple = float4(0.13, 0, 0.27, 1);
-	float4 orange = float4( 0.91, 0.55, 0.09, 1);
-	float4 blue = float4(0,0,1,1);
-	float4 output = lerp(float4(1,1,1,1), blue, height);
-	output = saturate(pow(output, 2.2));
-	return float4(output.rgb,1);
+	//float height = saturate(input.worldpos.y);
+	//float4 center_color = float4(0,1,1,1);
+	//float4 apex_color = float4(0,0,0,1);
+	//float4 twilight_purple = float4(0.13, 0, 0.27, 1);
+	//float4 orange = float4( 0.91, 0.55, 0.09, 1);
+	//float4 blue = float4(0,0,1,1);
+	//float4 output = lerp(float4(1,1,1,1), blue, height);
+	//output = saturate(pow(output, 2.2));
+	//return float4(output.rgb,1);
 }

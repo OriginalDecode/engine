@@ -220,85 +220,11 @@ void Game::OldUpdate(float dt)
 		entity_speed -= 1.f * dt;
 	}
 
-	HandleMovement(input_wrapper, entity_speed, dt);
 
-	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5,0.5), "Sup nerd"));
+	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5,0.5), "Sup nerd"));
 	//m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, false));
 	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 	m_World.Update(dt, m_Paused);
-}
-
-void Game::HandleMovement(InputWrapper* input_wrapper, float entity_speed, float dt)
-{
-	CU::Vector4f translation = m_Orientation.GetTranslation();
-	if (input_wrapper->IsDown(KButton::UP_ARROW))
-	{
-		CU::Math::Vector4<float> forward = m_Orientation.GetForward();
-		translation += forward * entity_speed;
-	}
-	if (input_wrapper->IsDown(KButton::DOWN_ARROW))
-	{
-		CU::Math::Vector4<float> forward = m_Orientation.GetForward();
-		translation += forward * -entity_speed;
-	}
-
-	if (input_wrapper->IsDown(KButton::LEFT_ARROW))
-	{
-		CU::Math::Vector4<float> forward = m_Orientation.GetRight();
-		translation += forward * -entity_speed;
-	}
-
-	if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
-	{
-		CU::Math::Vector4<float> forward = m_Orientation.GetRight();
-		translation += forward * entity_speed;
-	}
-
-	if (input_wrapper->IsDown(KButton::M))
-	{
-		CU::Math::Vector4<float> forward = m_Orientation.GetUp();
-		translation += forward * entity_speed;
-	}
-
-	if (input_wrapper->IsDown(KButton::N))
-	{
-		CU::Math::Vector4<float> forward = m_Orientation.GetUp();
-		translation += forward * -entity_speed;
-	}
-
-	if (input_wrapper->IsDown(KButton::M))
-	{
-		CU::Math::Vector4<float> forward = m_Orientation.GetUp();
-		translation += forward * entity_speed;
-	}
-
-	if (input_wrapper->IsDown(KButton::NUMPAD8))
-	{
-		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
-	}
-	if (input_wrapper->IsDown(KButton::NUMPAD2))
-	{
-		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), -cl::DegreeToRad(90.f) * dt);
-	}
-	if (input_wrapper->IsDown(KButton::NUMPAD4))
-	{
-		m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), -cl::DegreeToRad(90.f) * dt);
-	}
-	if (input_wrapper->IsDown(KButton::NUMPAD6))
-	{
-		m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
-	}
-	if (input_wrapper->IsDown(KButton::NUMPAD7))
-	{
-		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), -cl::DegreeToRad(90.f) * dt);
-	}
-	if (input_wrapper->IsDown(KButton::NUMPAD9))
-	{
-		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
-	}
-
-
-	m_Orientation.SetTranslation(translation);
 }
 
 void Game::AddRenderCommand(const ModelCommand& command)

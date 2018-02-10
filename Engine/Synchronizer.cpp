@@ -112,3 +112,43 @@ const memory::CommandAllocator& Synchronizer::GetRenderCommands(const eBufferTyp
 {
 	return m_CommandBuffers[buffer_type][m_CurrentBuffer];
 }
+
+void Synchronizer::AddRenderCommand(const ModelCommand& render_command)
+{
+	AddRenderCommand(eBufferType::MODEL_BUFFER, render_command);
+}
+
+void Synchronizer::AddRenderCommand(const ModelCommandNonDeferred& render_command)
+{
+	AddRenderCommand(eBufferType::NO_DEFERRED_BUFFER, render_command);
+}
+
+void Synchronizer::AddRenderCommand(const SpotlightCommand& render_command)
+{
+	AddRenderCommand(eBufferType::SPOTLIGHT_BUFFER, render_command);
+}
+
+void Synchronizer::AddRenderCommand(const ParticleCommand& render_command)
+{
+	AddRenderCommand(eBufferType::PARTICLE_BUFFER, render_command);
+}
+
+void Synchronizer::AddRenderCommand(const LineCommand& render_command)
+{
+	AddRenderCommand(eBufferType::LINE_BUFFER, render_command);
+}
+
+void Synchronizer::AddRenderCommand(const SpriteCommand& render_command)
+{
+	AddRenderCommand(eBufferType::SPRITE_BUFFER, render_command);
+}
+
+void Synchronizer::AddRenderCommand(const TextCommand& render_command)
+{
+	AddRenderCommand(eBufferType::TEXT_BUFFER, render_command);
+}
+
+void Synchronizer::AddRenderCommand(const PointlightCommand& render_command)
+{
+	AddRenderCommand(eBufferType::POINTLIGHT_BUFFER, render_command);
+}

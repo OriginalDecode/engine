@@ -445,7 +445,6 @@
     <ClInclude Include="ImGuizmo.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="uuid.h" />
     <ClInclude Include="Inspector.h" />
     <ClInclude Include="InspectorView.h" />
     <ClInclude Include="PhysicsView.h" />

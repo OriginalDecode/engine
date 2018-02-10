@@ -335,7 +335,6 @@
     <ClInclude Include="InspectorView.h" />
     <ClInclude Include="PhysicsView.h" />
     <ClInclude Include="TransformView.h" />
-    <ClInclude Include="uuid.h" />
     <ClInclude Include="HDRPass.h" />
     <ClInclude Include="IGraphicsAPI.h" />
     <ClInclude Include="IGraphicsContext.h" />

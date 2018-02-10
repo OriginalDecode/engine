@@ -255,14 +255,15 @@ void Renderer::Render()
 }
 
 #if !defined(_PROFILE) && !defined(_FINAL)
+
+static CU::Matrix44f prev;
+static CU::Matrix44f orientation;
+
 void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &ctx)
 {
 	if (e <= 0)
 		return;
 	
-	static CU::Matrix44f prev;
-	static CU::Matrix44f orientation;
-
 	ctx.ClearRenderTarget(pTex->GetRenderTargetView(), clearcolor::black);
 	ctx.OMSetRenderTargets(1, pTex->GetRenderTargetRef(), nullptr);
 	Engine& engine = m_RenderContext.GetEngine();
@@ -278,6 +279,7 @@ void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &c
 
 		const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(e);
 
+		
 		prev = orientation;
 		orientation = translation.GetOrientation();
 

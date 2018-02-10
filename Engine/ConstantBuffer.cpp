@@ -25,8 +25,6 @@ namespace graphics
 		Bind(idx, shader_binding, rc);
 	}
 
-	static u16 frame_index = 0;
-	static u16 prev_frame = 0;
 
 	void ConstantBuffer::Bind(const s32 index[], s32 shader_binding, const RenderContext& rc)
 	{

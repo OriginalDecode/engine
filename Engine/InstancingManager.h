@@ -13,7 +13,10 @@ namespace graphics
 }
 struct InstanceObject
 {
-	InstanceObject() = default;
+	InstanceObject()
+	{
+		m_GPUData.Init(600);
+	}
 	RefPointer<Model> m_Model;
 	Material* m_Material = nullptr;
 	bool m_Shadowed = false;

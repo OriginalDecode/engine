@@ -10,6 +10,7 @@
 TreeNodeBase::TreeNodeBase()
 {
 	m_Lines.Init(5000);
+	m_Dwellers.Init(600);
 }
 
 TreeNodeBase::~TreeNodeBase()

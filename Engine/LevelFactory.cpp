@@ -431,9 +431,11 @@ void LevelFactory::CreateTerrain(std::string terrain_path)
 	terrain->SetMaterial(pGroundMaterial);
 }
 
-void LevelFactory::CreatePBLLevel(s32 steps)
+CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 steps)
 {
-	CreateTerrain("Data/Textures/flat_height.tga");
+
+	CU::GrowingArray<TreeDweller*> dwellers(steps * steps);
+	//CreateTerrain("Data/Textures/flat_height.tga");
 	float height = 0.f;
 	float x_start = 5.f;
 	float z_start = 5.f;
@@ -461,15 +463,15 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 		"Data/Material/mat_octostone.json",
 	};
 
-
+	EntityManager& em = Engine::GetInstance()->GetEntityManager();
 	for (s32 i = 0; i < steps; i++)
 	{
 		for (s32 j = steps - 1, s = 0; j >= 0; j--, s++)
 		{
-			Entity e = m_EntityManager->CreateEntity();
+			Entity e = em.CreateEntity();
 
-			auto& t = m_EntityManager->AddComponent<TranslationComponent>(e);
-			auto& r = m_EntityManager->AddComponent<GraphicsComponent>(e);
+			auto& t = em.AddComponent<TranslationComponent>(e);
+			auto& r = em.AddComponent<GraphicsComponent>(e);
 
 			CU::Vector4f translation;
 			translation.x = x_start + i * 15.f;
@@ -477,7 +479,7 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 			translation.z = z_start + s * 15.f;
 			translation.w = 1.f;
 
-			//t.SetOrientation(translation);
+			t.m_Orientation.SetTranslation(translation);
 
 			auto v = RANDOM(0, ARRSIZE(material));
 
@@ -486,6 +488,8 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 			ModelInstance instance;
 			instance.m_Filename = "data/model/ballen.fbx";
 			instance.m_MaterialFile = files[v];
+			instance.m_Scale = CU::Vector4f(1, 1, 1, 1);
+
 
 			Material* pMaterial = material[v];
 			pMaterial->SetEffect(pEngine->GetEffect("Shaders/debug_pbl_instanced.json"));
@@ -497,13 +501,15 @@ void LevelFactory::CreatePBLLevel(s32 steps)
 
 			r.m_Instances.Add(instance);
 
-			m_DwellerList.Add(new TreeDweller);
-			m_DwellerList.GetLast()->AddComponent(&t, TreeDweller::TRANSLATION);
-			m_DwellerList.GetLast()->AddComponent(&r, TreeDweller::GRAPHICS);
-			m_DwellerList.GetLast()->Initiate(e, TreeDweller::STATIC);
+			dwellers.Add(new TreeDweller);
+			dwellers.GetLast()->AddComponent(&t, TreeDweller::TRANSLATION);
+			dwellers.GetLast()->AddComponent(&r, TreeDweller::GRAPHICS);
+			dwellers.GetLast()->Initiate(e, TreeDweller::STATIC);
 		}
 
 	}
+
+	return dwellers;
 }
 
 void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should be a static function.

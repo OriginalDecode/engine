@@ -44,6 +44,7 @@ void NodeEntityManager::Initiate()
 	if (flag & EntityManager::DEBUG)
 		AddSystem<DebugSystem>();
 #endif
+	m_Entities.Init(600);
 }
 
 void NodeEntityManager::CleanUp()
@@ -97,31 +98,31 @@ void NodeEntityManager::Update(float dt, const CU::GrowingArray<TreeDweller*>& d
 		if (handle)
 		{
 			TranslationComponent& t = GetComponent<TranslationComponent>(e);
-			GraphicsComponent& c = GetComponent<GraphicsComponent>(e);
-			DebugComponent& d = GetComponent<DebugComponent>(e);
+			//GraphicsComponent& c = GetComponent<GraphicsComponent>(e);
+			//DebugComponent& d = GetComponent<DebugComponent>(e);
 
 			const Frustum& frust = CameraHandle::GetInstance()->GetFrustum();
 
-			bool visible = false;
+			//bool visible = false;
 
 			CU::Vector4f pos = t.GetOrientation().GetPosition();
 
 
-			visible |= frust.InsideAABB( pos - d.m_MinPoint);
-			visible |= frust.InsideAABB(pos + d.m_MaxPoint);
-			CU::Vector4f topLeft = pos + d.m_MaxPoint;
-			topLeft.x = pos.x - d.m_MinPoint.x;
-			visible |= frust.InsideAABB(topLeft);
+			//visible |= frust.InsideAABB( pos - d.m_MinPoint);
+			//visible |= frust.InsideAABB(pos + d.m_MaxPoint);
+			//CU::Vector4f topLeft = pos + d.m_MaxPoint;
+			//topLeft.x = pos.x - d.m_MinPoint.x;
+			//visible |= frust.InsideAABB(topLeft);
 
 
-			CU::Vector4f botRight = pos - d.m_MinPoint;
-			botRight.x = pos.x + d.m_MaxPoint.x;
-			visible |= frust.InsideAABB(botRight);
+			//CU::Vector4f botRight = pos - d.m_MinPoint;
+			//botRight.x = pos.x + d.m_MaxPoint.x;
+			//visible |= frust.InsideAABB(botRight);
 
-			//Would we be able to move this entirely to the GPU?
+			////Would we be able to move this entirely to the GPU?
 
 			
-			if (visible)
+			if (frust.InsideAABB(pos))
 				m_Components.SetUpdateFlag(e, true);
 			else
 				m_Components.SetUpdateFlag(e, false);

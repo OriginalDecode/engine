@@ -16,7 +16,7 @@ public:
 	bool CreateLevel(const std::string& level_path);
 	CU::GrowingArray<TreeDweller*> GetDwellers() { return m_DwellerList; }
 	
-	void CreatePBLLevel(s32 steps);
+	static CU::GrowingArray<TreeDweller*> CreatePBLLevel(s32 steps);
 
 
 	static void SaveLevel(std::string folder, std::string filename);

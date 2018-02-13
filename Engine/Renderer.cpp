@@ -626,14 +626,18 @@ void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32
 	DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
 
 	RefPointer<Model> model = engine.GetModel<Model>(command->m_Key);
+	Material* material = model->GetMaterial() ? model->GetMaterial() : engine.GetMaterial(command->m_MaterialKey);
+	const u64 key = material->GetKey();
 
-	
-	InstanceObject new_instance;
-	new_instance.m_Material = model->GetMaterial() ? model->GetMaterial() : engine.GetMaterial(command->m_MaterialKey);
-	new_instance.m_Model = model;
-	new_instance.m_Shadowed = true; /* should be command->m_Shadowed or something*/
-	m_InstancingManager.AddInstanceObject(new_instance);
 
+	if (!m_InstancingManager.FindInstanceObject(key))
+	{
+		InstanceObject new_instance;
+		new_instance.m_Material = material;
+		new_instance.m_Model = model;
+		new_instance.m_Shadowed = true; /* should be command->m_Shadowed or something*/
+		m_InstancingManager.AddInstanceObject(new_instance);
+	}
 	GPUModelData model_data;
 	model_data.m_Orientation = command->m_Orientation;
 
@@ -641,7 +645,7 @@ void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32
 	model_data.m_ID = command->m_EntityID;
 	model_data.m_Hovering = (command->m_EntityID == debug::DebugHandle::GetInstance()->GetHoveredEntity() ? 1 : 0);
 #endif
-	m_InstancingManager.AddGPUDataToInstance(new_instance.m_Material->GetKey(), model->GetKey(), model_data);
+	m_InstancingManager.AddGPUDataToInstance(key, model->GetKey(), model_data);
 }
 
 //Move this to some kind of light manager

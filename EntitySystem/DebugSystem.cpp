@@ -59,6 +59,7 @@ void DebugSystem::Update(float /*dt*/, bool)
 
 void DebugSystem::HandleEvent(u64 event, void* data /*= nullptr*/)
 {
+	return;
 	if (event == Hash("pick_entity"))
 	{
 		debug::DebugHandle::GetInstance()->ConfirmEntity();

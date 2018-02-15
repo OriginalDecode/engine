@@ -22,10 +22,10 @@ void Material::AddResource(Texture* pResource, const std::string& filename, Effe
 
 void Material::Use(Effect* pEffect)
 {
-	Effect* to_use = (pEffect ? pEffect : m_Effect);
+	Effect* _use = (pEffect ? pEffect : m_Effect);
 	for (const ResourceBinding& binding : m_Resources)
 	{
-		to_use->AddShaderResource(binding.m_Resource, binding.m_Slot);
+		_use->AddShaderResource(binding.m_Resource, binding.m_Slot);
 	}
-	to_use->Use();
+	_use->Use();
 }

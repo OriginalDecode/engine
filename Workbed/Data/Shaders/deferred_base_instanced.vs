@@ -65,7 +65,7 @@ VS_OUTPUT main(VS_INPUT input)
 	output.displaced = dv;
 	float df = 0.30*dv.x + 0.59*dv.y + 0.11*dv.z;
 
-	float4 displacement = float4(input.normal.xyz * df * 0.0, 0) + input.pos; 
+	float4 displacement = float4(input.normal.xyz * df * 1.0, 0) + input.pos; 
 	float4x4 out_matrix = mul(world_matrices, camera_view_x_proj);
 	
 	output.pos = mul(displacement, out_matrix);

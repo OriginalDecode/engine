@@ -1,0 +1,9 @@
+{
+    "material": {
+        "albedo": "Data/Material/rough_leather/rough_leather_albedo_1024.tiff",
+        "normal": "Data/Material/rough_leather/rough_leather_normal_1024.tiff",
+        "metalness": "Data/Material/default/metalness.dds",
+        "roughness": "Data/Material/rough_leather/rough_leather_roughness_1024.tiff",
+        "heightmap": "Data/Material/rough_leather/rough_leather_height_1024.tiff"
+    }
+}

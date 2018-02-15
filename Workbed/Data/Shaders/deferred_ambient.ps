@@ -51,7 +51,7 @@ half GetSpecPowToMip(float fSpecPow, int nMips)
 
 half3 ReflectionFresnel(const half3 substance, const half3 light_dir, const half3 half_vec, half roughness)
 {
-	half LdotH = (dot(light_dir, half_vec));
+	half LdotH = saturate(dot(light_dir, half_vec));
 	LdotH = 1.0f - LdotH;
 	LdotH = pow(LdotH, 5); //max(0, min(pow(LdotH, 5), 1));
 	half3 fresnel = LdotH * (1.f - substance);
@@ -76,8 +76,6 @@ float4 getWorldPos(float2 tex_coord, float depth)
 // Source: https://github.com/godotengine/godot/blob/df573f5c3a76155842e43ea0dbab594e3944b114/drivers/gles3/shaders/scene.glsl
 float4 main(VS_OUTPUT input) : SV_Target
 {
-
-	
 	float4 camera_position = View._m30_m31_m32_m33;
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
 
@@ -123,7 +121,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 spec = 0;
 	float3 light_dir = light_direction.xyz;
 	float3 light_col = float3(1, 1, 1);
-	float light_intensity = 1;
+	float light_intensity = 0;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
 	float3 half_vec = normalize(light_dir + to_eye);

@@ -51,21 +51,21 @@ void Inspector::HandleAdd()
 	DebugComponent& c = m_Manager.GetComponent<DebugComponent>(m_CurrentEntity);
 	TreeDweller* pDweller = static_cast<TreeDweller*>(c.m_Dweller);
 
- 	if (!(c.m_ComponentFlags & TreeDweller::GRAPHICS) && ImGui::Button("Add Graphics"))
- 	{
- 		c.m_ComponentFlags |= TreeDweller::GRAPHICS;
+	if (!(c.m_ComponentFlags & TreeDweller::GRAPHICS) && ImGui::Button("Add Graphics"))
+	{
+		c.m_ComponentFlags |= TreeDweller::GRAPHICS;
 		GraphicsComponent& g = m_Manager.AddComponent<GraphicsComponent>(m_CurrentEntity);
 		pDweller->AddComponent(&g, TreeDweller::LIGHT);
 		pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
- 	}
+	}
  
- 	if (!(c.m_ComponentFlags & TreeDweller::LIGHT) && ImGui::Button("Add Light"))
- 	{
- 		c.m_ComponentFlags |= TreeDweller::LIGHT;
- 		LightComponent& l = m_Manager.AddComponent<LightComponent>(m_CurrentEntity);
- 		pDweller->AddComponent(&l, TreeDweller::LIGHT);
- 		pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
- 	}
+	if (!(c.m_ComponentFlags & TreeDweller::LIGHT) && ImGui::Button("Add Light"))
+	{
+		c.m_ComponentFlags |= TreeDweller::LIGHT;
+		LightComponent& l = m_Manager.AddComponent<LightComponent>(m_CurrentEntity);
+		pDweller->AddComponent(&l, TreeDweller::LIGHT);
+		pDweller->GetFirstNode()->GetManager()->AddEntity(pDweller);
+	}
 
 	if(ImGui::Button("Add Physics"))
 	{
@@ -122,6 +122,7 @@ void Inspector::Update(float dt)
 
 void Inspector::SetEntity(Entity e)
 {
+	return;
 	m_CurrentEntity = e;
 	const s32 flags = m_Manager.GetComponent<DebugComponent>(e).m_ComponentFlags;
 	for (InspectorView* view : m_Views)

@@ -446,6 +446,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 steps)
 	Material* pCoppMaterial = pEngine->GetMaterial("Data/Material/mat_copper.json");
 	Material* pMetaMaterial = pEngine->GetMaterial("Data/Material/mat_metal.json");
 	Material* pStoneMaterial = pEngine->GetMaterial("Data/Material/mat_octostone.json");
+	Material* pLeatherMaterial = pEngine->GetMaterial("Data/Material/mat_rough_leather.json");
 
 	Material* material[] = {
 		pStoneMaterial,
@@ -453,6 +454,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 steps)
 		pAlumMaterial,
 		pCoppMaterial,
 		pMetaMaterial,
+		pLeatherMaterial,
 	};
 
 	const char* files[] = {
@@ -461,6 +463,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 steps)
 		"Data/Material/mat_copper.json",
 		"Data/Material/mat_metal.json",
 		"Data/Material/mat_octostone.json",
+		"Data/Material/mat_rough_leather.json",
 	};
 
 	EntityManager& em = Engine::GetInstance()->GetEntityManager();

@@ -118,7 +118,7 @@ namespace CommonUtilities
 	{
 		myCapacity = 0;
 		mySize = 0;
-		delete[]myData;
+		delete[] myData;
 		myData = nullptr;
 	};
 

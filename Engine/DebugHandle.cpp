@@ -287,7 +287,6 @@ namespace debug
 
 			ImGui::Text("Light Direction");
 			static float light_dir[3];
-			light_dir[1] = 1.f;
 			ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
 			ImGui::SliderFloat("Y", &light_dir[1], 0.f, 1.f);
 			ImGui::SliderFloat("Z", &light_dir[2], -1.f, 1.f);

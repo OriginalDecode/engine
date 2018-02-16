@@ -129,8 +129,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_ViewProjection.RegisterVariable(&m_Camera->GetViewProjection());
 	m_ViewProjection.Initiate("ViewProj");
-
-	//m_WaterPlane = new WaterPlane; //creating this breaks everything.... rip
 	m_WaterCamera = new Camera;
 	m_WaterCamera->CreatePerspectiveProjection((float)window_size.m_Width, (float)window_size.m_Height, 0.01f, 100.f, 90.f);
 

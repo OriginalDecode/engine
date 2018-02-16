@@ -3,6 +3,7 @@
         "albedo": "Data/Material/copper/oxidized-copper-albedo.dds",
         "normal": "Data/Material/copper/oxidized-copper-normal-ue.dds",
         "metalness": "Data/Material/copper/oxidized-copper-metal.dds",
-        "roughness": "Data/Material/copper/oxidized-coppper-roughness.dds"
+        "roughness": "Data/Material/copper/oxidized-coppper-roughness.dds",
+        "heightmap": "Data/Material/default/metalness.dds"
     }
 }

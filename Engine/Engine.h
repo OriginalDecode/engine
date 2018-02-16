@@ -14,11 +14,14 @@
 #include <Engine/ShaderFactory.h>
 #include <Engine/SystemMonitor.h>
 #include <Engine/MemorySegmentHandle.h>
-#include <Engine/DebugHandle.h>
 #include <Engine/IGraphicsAPI.h>
+
+#include <Engine/DebugHandle.h>
+
+#include <CommonLib/RefPointer.h>
+
 #include <string>
 #include <queue>
-#include <CommonLib/RefPointer.h>
 
 #ifndef _WINDEF_
 struct HINSTANCE__;
@@ -33,8 +36,6 @@ struct SLocalTime
 	u16 minute;
 	u16 second;
 };
-
-//typedef struct ID3D10Blob IBlob;
 
 class TerrainManager;
 class AssetsContainer;
@@ -163,7 +164,6 @@ public:
 	//_________________________________________
 	// Level Creation, Loading, Saving
 	Terrain* CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize);
-	CU::GrowingArray<TreeDweller*> LoadLevel(const std::string& level_filepath); // This hsould not be here,
 	// Should be refactored out of the engine stuff.
 
 
@@ -175,16 +175,9 @@ public:
 
 	HWND GetHWND() const { return m_Window.GetHWND(); }
 
-	enum class eEngineStates
-	{
-		USE_VSYNC,
-		INITIATED,
-		LOADING,
-		_COUNT
-	};
-
 	memory::MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
 	const graphics::eSamplerStates GetCurrentSampler() const { return m_CurrentSampler; }
+
 	ISamplerState* GetActiveSampler() { return m_API->GetSamplerState(m_CurrentSampler); }
 	void SetCurrentSampler(const graphics::eSamplerStates& sampler) { m_CurrentSampler = sampler; }
 
@@ -232,9 +225,6 @@ private:
 	TerrainManager* m_TerrainManager   = nullptr;
 	LevelFactory* m_LevelFactory       = nullptr;
 	CSystemMonitor m_SystemMonitor;
-
-	std::bitset<(u16)eEngineStates::_COUNT> m_States;
-
 
 	float m_DeltaTime = 0.f;
 

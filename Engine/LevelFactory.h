@@ -24,9 +24,9 @@ public:
 	static void CreateEntity(const char* entity_filepath, CU::GrowingArray<TreeDweller*>& out_dwellers);
 	static CU::GrowingArray<TreeDweller*> LoadLevel(const char* level);
 
+	static void CreateTerrain(std::string terrain_path);
 private:
 	void CreateEntity(const std::string& entity_filepath);
-	void CreateTerrain(std::string terrain_path);
 
 
 

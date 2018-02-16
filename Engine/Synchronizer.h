@@ -95,7 +95,7 @@ void Synchronizer::AddRenderCommand(eBufferType command_buffer_type, const comma
 	if (m_QuitFlag)
 		return;
 
-	CommandBuffer& buffer = m_CommandBuffers[eBufferType::MODEL_BUFFER];
+	CommandBuffer& buffer = m_CommandBuffers[command_buffer_type];
 	void* current = buffer[m_CurrentBuffer ^ 1].Alloc(sizeof(command));
 	memcpy(current, &render_command, sizeof(command));
 }

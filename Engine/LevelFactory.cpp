@@ -486,7 +486,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 steps)
 
 			auto v = RANDOM(0, ARRSIZE(material));
 
-			auto key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false);
+			u64 key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false);
 
 			ModelInstance instance;
 			instance.m_Filename = "data/model/ballen.fbx";

@@ -44,7 +44,7 @@
 
 bool Engine::HasInitiated()
 {
-	return (this && m_States[(u16)eEngineStates::INITIATED] == TRUE);
+	return true;
 }
 
 Engine::Engine()
@@ -215,12 +215,9 @@ void Engine::Update()
 	m_DeltaTime = myTimeManager.GetDeltaTime();
 	m_PhysicsManager->Update();
 
-	if (m_States[(u16)eEngineStates::LOADING] == FALSE)
-	{
-		myTimeManager.Update();
-		myAssetsContainer->Update();
-	}
-	
+	myTimeManager.Update();
+	myAssetsContainer->Update();
+
 	m_NetManager->Update();
 	m_Threadpool.Update();
 
@@ -428,7 +425,7 @@ void Engine::ResetRenderTargetAndDepth()
 
 void Engine::ToggleVsync()
 {
-	m_States[(u16)eEngineStates::USE_VSYNC] = !m_States[(u16)eEngineStates::USE_VSYNC];
+	//m_States[(u16)eEngineStates::USE_VSYNC] = !m_States[(u16)eEngineStates::USE_VSYNC];
 }
 
 void Engine::OnAltEnter()
@@ -490,19 +487,6 @@ Terrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vec
 	newTerrain->Initiate(aFile, position, aSize);
 	m_Renderer->AddTerrain(newTerrain);
 	return newTerrain;
-}
-
-CU::GrowingArray<TreeDweller*> Engine::LoadLevel(const std::string& level_filepath)
-{
-
-	m_States[(u16)eEngineStates::LOADING] = TRUE;
-
-	m_LevelFactory->CreatePBLLevel(24);
-	//m_LevelFactory->CreateLevel(level_filepath);
-
-	m_States[(u16)eEngineStates::LOADING] = FALSE;
-
-	return m_LevelFactory->GetDwellers();
 }
 
 u64 Engine::LoadTexture(const std::string& path)

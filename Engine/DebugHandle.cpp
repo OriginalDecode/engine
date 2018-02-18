@@ -22,8 +22,9 @@
 
 #include <vector>
 
-#include "imgui.h"
-#include "ImGuizmo.h"
+#include <imgui/imgui.h>
+#include <imgui/ImGuizmo.h>
+
 #include <PostMaster/EventManager.h>
 #include <hash/DebugEvents.h>
 #include <network/NetworkManager.h>
@@ -361,15 +362,15 @@ namespace debug
 	}
 
 
-	void DebugHandle::RegisterFloatSlider(DebugSlider<float> slider)
-	{
-		m_Sliders.Add(slider);
-	}
-
-	void DebugHandle::RegisterIntValue(DebugTextValue<int> int_Value)
-	{
-		m_Values.Add(int_Value);
-	}
+// 	void DebugHandle::RegisterFloatSlider(DebugSlider<float> slider)
+// 	{
+// 		m_Sliders.Add(slider);
+// 	}
+// 
+// 	void DebugHandle::RegisterIntValue(DebugTextValue<int> int_Value)
+// 	{
+// 		m_Values.Add(int_Value);
+// 	}
 
 	void DebugHandle::AddText(std::string str)
 	{
@@ -406,10 +407,10 @@ namespace debug
 
 	}
 
-	void DebugHandle::RegisterCheckbox(DebugCheckbox checkbox)
-	{
-		m_Checkboxes.Add(checkbox);
-	}
+// 	void DebugHandle::RegisterCheckbox(DebugCheckbox checkbox)
+// 	{
+// 		m_Checkboxes.Add(checkbox);
+// 	}
 
 	void DebugHandle::RegisterMaterial(Material* pMaterial, std::string lable)
 	{
@@ -424,11 +425,11 @@ namespace debug
 
 		if (!ImGui::IsAnyWindowHovered())
 		{
-			if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver())
-			{
-				m_EditEntity = m_CurrEntity;
-				m_Inspector.SetEntity(m_EditEntity);
-			}
+// 			if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver())
+// 			{
+// 				m_EditEntity = m_CurrEntity;
+// 				m_Inspector.SetEntity(m_EditEntity);
+// 			}
 		}
 	}
 

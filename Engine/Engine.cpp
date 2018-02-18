@@ -35,8 +35,8 @@
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include <Engine/DebugHandle.h>
-#include <Engine/ImGuizmo.h>
-#include <Engine/imgui.h>
+#include <imgui/ImGuizmo.h>
+#include <imgui/imgui.h>
 #endif
 
 #include <Engine/AssetFactory.h>
@@ -99,6 +99,8 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	create_info.m_Instance = instance_handle;
 	create_info.m_WindowWidth = m_Window.GetInnerSize().m_Width;
 	create_info.m_WindowHeight = m_Window.GetInnerSize().m_Height;
+
+	ImGui::CreateContext();
 
 	m_API = new graphics::DirectX11(create_info);
 	m_API->Initiate();
@@ -283,7 +285,7 @@ s32 Engine::PickEntity(Texture* pTexture)
 	static CU::Vector4f curr;
 	if (!ImGui::IsAnyWindowHovered())
 	{
-		if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+// 		if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
 			curr = m_API->PickColor(pTexture);
 	}
 	return (curr.x + curr.y + curr.z);

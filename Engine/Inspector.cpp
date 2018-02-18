@@ -2,7 +2,7 @@
 #include "Inspector.h"
 
 #include <Engine/Engine.h>
-#include <Engine/imgui.h>
+#include <imgui/imgui.h>
 
 #include <Engine/InspectorView.h>
 #include <Engine/PhysicsView.h>

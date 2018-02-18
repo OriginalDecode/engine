@@ -7,12 +7,10 @@
 
 #include <sstream>
 #include "Game.h"
-#include <imgui.h>
 #include "../Input/InputHandle.h"
 #include "../Input/InputWrapper.h"
 #include "../CommonLib/Utilities.h"
-#include <imgui.h>
-#include <imgui_impl_dx11.h>
+
 
 #ifdef _PROFILE
 #include <easy/profiler.h>

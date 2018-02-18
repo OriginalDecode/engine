@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseModel.h"
-
+#include "ConstantBuffer.h"
 class Surface;
 
 struct SHeightMap
@@ -34,7 +34,7 @@ public:
 	void SetPosition(CU::Vector2f position);
 	bool HasLoaded() const { return m_HasLoaded; }private:
 	bool m_HasLoaded = false;
-	void UpdateConstantBuffer(const graphics::RenderContext& rc) override;
+	void UpdateConstantBuffer(const graphics::RenderContext& rc) { };
 
 	void CreateVertices(u32 width, u32 height, const CU::Vector3f& position);
 	void CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray);
@@ -53,7 +53,8 @@ public:
 
 	Surface* mySurface = nullptr;
 
-	VertexBaseStruct myConstantStruct;
+	graphics::ConstantBuffer m_Buffer;
+	//VertexBaseStruct myConstantStruct;
 
 	Effect* m_ClipEffect = nullptr;
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-#include "ImGuiRegisterStructs.h"
 #include <CommonLib/DataStructures/GrowingArray.h>
 #include <CommonLib/Math/Matrix/Matrix.h>
 #include <PostMaster/Subscriber.h>
@@ -26,8 +25,8 @@ namespace debug
 		void DebugTextures();
 		void AddTexture(void* srv, const std::string& debug_name);
 		void AddTexture(Texture* texture, const std::string& debug_name);
-		void RegisterFloatSlider(DebugSlider<float> slider);
-		void RegisterIntValue(DebugTextValue<int> int_Value);
+		/*void RegisterFloatSlider(DebugSlider<float> slider);
+		void RegisterIntValue(DebugTextValue<int> int_Value);*/
 
 		void AddText(std::string str);
 		void AddValueToPrint(s32* value);
@@ -35,7 +34,7 @@ namespace debug
 		Entity GetHoveredEntity() const;
 		Entity GetSelectedEntity() const;
 
-		void RegisterCheckbox(DebugCheckbox checkbox);
+		//void RegisterCheckbox(DebugCheckbox checkbox);
 
 		void RegisterMaterial(Material* pMaterial, std::string lable);
 		void ConfirmEntity();
@@ -75,10 +74,10 @@ namespace debug
 		DebugHandle();
 		~DebugHandle() { }
 		CU::GrowingArray<s32*> m_IntValuesToPrint;
-		CU::GrowingArray<std::string> m_Text;
+		CU::GrowingArray<std::string> m_Text;/*
 		CU::GrowingArray<DebugSlider<float>> m_Sliders;
 		CU::GrowingArray<DebugTextValue<int>> m_Values;
-		CU::GrowingArray<DebugCheckbox> m_Checkboxes;
+		CU::GrowingArray<DebugCheckbox> m_Checkboxes;*/
 
 		void* m_DebugTexture = nullptr;
 

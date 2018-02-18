@@ -4,7 +4,7 @@
 #include <ScreenGrab.h>
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-#include "imgui_impl_dx11.h"
+#include <imgui/imgui_impl_dx11.h>
 #endif
 
 #include <sstream>

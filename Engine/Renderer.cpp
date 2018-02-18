@@ -21,7 +21,6 @@
 #include "GBuffer.h"
 #include "Texture.h"
 
-#include "imgui_impl_dx11.h"
 
 #include <Input/InputHandle.h>
 #include <Input/InputWrapper.h>
@@ -34,6 +33,7 @@
 #if !defined(_PROFILE) && !defined(_FINAL)
 #include <EntitySystem/TranslationComponent.h>
 #include <EntitySystem/GraphicsComponent.h>
+#include <imgui/imgui_impl_dx11.h>
 #endif
 
 

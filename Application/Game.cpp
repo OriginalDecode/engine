@@ -22,7 +22,6 @@
 #include <Math/Vector/Vector.h>
 #include "../Physics/PhysicsManager.h"
 #include "../EntitySystem/EntityManager.h"
-#include <imgui.h>
 #include "CameraHandle.h"
 #include <Engine/Effect.h>
 #include <Engine/Texture.h>

@@ -36,6 +36,11 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 
 	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "Terrain ConstantBuffer");
 
+
+	m_Buffer.RegisterVariable(&m_Orientation);
+	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetCamera()->GetOrientation());
+	m_Buffer.Initiate();
+
 	m_HasLoaded = true;
 	return true;
 }
@@ -56,6 +61,7 @@ void Terrain::Render(const graphics::RenderContext& rc)
 
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 	UpdateConstantBuffer(rc);
+	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX, rc);
 	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
 	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
 	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
@@ -250,13 +256,13 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 #endif
 }
 
- void Terrain::UpdateConstantBuffer(const graphics::RenderContext& rc)
- {
-	graphics::IGraphicsContext& ctx = rc.GetContext();
-	myConstantStruct.world = myOrientation;
-	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_Orientation, sizeof(CU::Matrix44f));
-	ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);
- }
+//  void Terrain::UpdateConstantBuffer(const graphics::RenderContext& rc)
+// {
+// 	graphics::IGraphicsContext& ctx = rc.GetContext();
+// 	myConstantStruct.world = myOrientation;
+// 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_Orientation, sizeof(CU::Matrix44f));
+// 	ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);
+// }
 
 void Terrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray)
 {

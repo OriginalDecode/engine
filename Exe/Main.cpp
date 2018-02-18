@@ -1,24 +1,24 @@
 
+#include <DL_Debug/DL_Debug.h>
+
 #include <Engine/Engine.h>
-#if !defined(_PROFILE) && !defined(_FINAL)
+#include <Engine/VirtualFileSystem.h>
+
+#include <Application/Application.h>
+#include <PostMaster/EventManager.h>
+
+#ifdef _PROFILE
+#include <easy/profiler.h>
+#else
+#include <imgui/ImGuizmo.h>
 #if defined (_WIN32) || (_WIN64)
-#include <Engine/imgui_impl_dx11.h>
+#include <imgui/imgui_impl_dx11.h>
 #else
 //non windows specific
 #endif
-#include <Engine/ImGuizmo.h>
 #endif
 
-#include <Engine/VirtualFileSystem.h>
-
-#include <DL_Debug/DL_Debug.h>
-
-#include <Application/Application.h>
 #include <string>
-#include <PostMaster/EventManager.h>
-#ifdef _PROFILE
-#include <easy/profiler.h>
-#endif
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -83,7 +83,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 		ImGui_ImplDX11_NewFrame();
 #elif
 #endif
-		ImGuizmo::BeginFrame();
+		//ImGuizmo::BeginFrame();
 #endif
 		while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{
@@ -125,12 +125,12 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 }
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #endif
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 #if !defined(_PROFILE) && !defined(_FINAL)
-	if (ImGui_ImplDX11_WndProcHandler(hWnd, message, wParam, lParam))
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
 		return true;
 #endif
 

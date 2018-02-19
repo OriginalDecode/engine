@@ -5,6 +5,7 @@
 #include "Math/Matrix/Matrix.h"
 #include "DataStructures/GrowingArray.h"
 #include <thread>
+#include <iso646.h>
 namespace cl
 {
 	bool file_exist(std::string path);
@@ -88,9 +89,9 @@ namespace cl
 	inline CU::Vector4f IntToCol(unsigned int col_as_int)
 	{
 		CU::Vector4f out;
-		out.z = (float)((col_as_int) & 0xFF);
-		out.y = (float)((col_as_int >> 8) & 0xFF);
-		out.x = (float)((col_as_int >> 16) & 0xFF);
+		out.z = (float)((col_as_int) bitand 0xFF);
+		out.y = (float)((col_as_int >> 8) bitand 0xFF);
+		out.x = (float)((col_as_int >> 16) bitand 0xFF);
 		return out;
 
 	};
@@ -106,9 +107,6 @@ namespace cl
 	unsigned int binomialCoef(int n, int k);
 
 	void SetThreadName(const std::thread::id& id, const char* name);
-
-	
-
 	std::string HandleVAArgs(const char* formatted_string, ...);
 
 	inline double TruncDecimal(double d, double p) 

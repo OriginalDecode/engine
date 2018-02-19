@@ -55,9 +55,9 @@ void Game::Initiate(const std::string& level)
 	//m_World.AddDweller(m_Player->Initiate());
 
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
-	CU::GrowingArray<TreeDweller*>dwellers = LevelFactory::CreatePBLLevel(8);
+	//CU::GrowingArray<TreeDweller*>dwellers = LevelFactory::CreatePBLLevel(8);
 	LevelFactory::CreateTerrain("Data/Textures/t_0.tga");
-	m_World.AddDwellers(dwellers);
+	//m_World.AddDwellers(dwellers);
 
 
 	m_Picker = new CMousePicker;
@@ -142,10 +142,95 @@ void Game::Reload()
 	m_Engine->GetEntityManager().Reset();
 }
 
+#include <engine/engine_shared.h>
+static float _lifetime = 0.f;
+static float _lifeTime2 = 0.f;
+static int _pointCount = 0;
+
+static bool second_curve = false;
+static bool done = false;
+static int _index = 0;
+static bool skip = true;
+
+CU::Vector3f _position;
+std::vector<CU::Vector3f> _pointList;
 void Game::Update(float dt)
 {
 	CameraHandle::GetInstance()->Update();
 	//m_Player->Update(dt);
+
+	const CU::Vector3f p0 = { 0, 0, 5 };
+	const CU::Vector3f p1 = { 5, 10, 5 };
+	const CU::Vector3f p2 = { 10, -10, 5 };
+	const CU::Vector3f p3 = { 15, 0, 5 };
+
+	const CU::Vector3f p10 = { 15, 0, 5 };
+	const CU::Vector3f p11 = { 20, 10, 5 };
+	const CU::Vector3f p12 = { 25, -10, 5 };
+	const CU::Vector3f p13 = { 30, 0, 5 };
+
+
+
+	m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p2, p3, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p10, p11, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p12, p13, true));
+
+	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
+
+
+	if (input_wrapper->IsDown(KButton::Y))
+	{
+		_lifetime += dt;
+
+		if (_lifetime > 1.f && second_curve)
+			done = true;
+
+		if (_lifetime <= 1.f)
+		{
+			_pointCount++;
+			if (_pointCount > _pointList.size())
+			{
+				if (!second_curve)
+				{
+					_position = cl::CubicBezier(p0, p1, p2, p3, _lifetime);
+					_pointList.push_back(_position);
+				}
+				else
+				{
+
+					_position = cl::CubicBezier(p10, p11, p12, p13, _lifetime);
+
+					if (!skip)
+						_pointList.push_back(_position);
+					else
+						skip = false;
+				}
+			}
+		}
+		else if(!done)
+		{
+			second_curve = true;
+			_lifetime = 0.f;
+		}
+
+	}
+
+	if (_lifetime > 1.f)
+	{
+		for (int i = 0; i < _pointList.size() - 1; i++)
+		{
+			m_Synchronizer->AddRenderCommand(LineCommand(_pointList[i], _pointList[i+1], false));
+		}
+	}
+
+	if(_pointList.size() > 0)
+		AddRenderCommand(ModelCommand(g_DefaultModel, g_DefaultMaterial, _pointList[_index], false));
+	
+	_index++;
+	if (_index >= _pointList.size())
+		_index = 0;
+
 	OldUpdate(dt);
 
 }

@@ -17,8 +17,6 @@ class Texture;
 class Sprite;
 class Material;
 
-static u64 g_DefaultModel = Hash("default");
-static u64 g_DefaultMaterial = Hash("default");
 
 struct CompiledShader;
 class AssetsContainer

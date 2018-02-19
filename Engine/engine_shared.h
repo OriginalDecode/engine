@@ -128,5 +128,6 @@ namespace blendcolor
 	constexpr float black[4] = { 0.f, 0.f, 0.f, 0.f };
 };
 
-
-
+#include "../CommonLib/DataStructures/Hashmap/Hash.h"
+static u64 g_DefaultModel = Hash("default");
+static u64 g_DefaultMaterial = Hash("default");

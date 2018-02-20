@@ -64,8 +64,8 @@ DeferredRenderer::DeferredRenderer()
 	m_ScreenPassShader->AddShaderResource(m_Scene, Effect::DIFFUSE);
 
 	m_AmbientPassShader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
-	Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
-	//Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/cube/cubeMapLayered.dds");
+	//Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
+	Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/cube/cubeMapLayered.dds");
 	m_AmbientPassShader->AddShaderResource(cubemap, Effect::CUBEMAP);
 	//Engine::GetInstance()->GetEffect("Shaders/deferred_pointlight.json");
 

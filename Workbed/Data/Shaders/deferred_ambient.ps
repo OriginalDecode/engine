@@ -111,7 +111,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
 
 
-	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
+	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel; //makes terrain look strange
 	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo * reflection_fresnel;
 
 
@@ -128,7 +128,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float NdC = dot(normal, to_eye); 
 
-	for(int i = 0; i < 1; i++)
+	for(int i = 0; i < 0; i++)
 	{
 		// diffuse
 		float SatNdL = dot(-light_dir, normal);

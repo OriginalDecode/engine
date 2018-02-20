@@ -35,13 +35,23 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	normal += 1;
 	normal *= 0.5;
 
+	float3 _normal = NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
+	float3 nnormal = normalize(input.normal.xyz );
+
+	float3 binorm = normalize(cross(input.normal, float3(1,0,0)));
+	float3 tang = normalize(cross(input.normal, binorm));
+	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, nnormal);
+	_normal = normalize(mul(_normal.xyz, tangentSpaceMatrix));
+
+	_normal += 1;
+	_normal *= 0.5;
 
 	GBuffer output = (GBuffer)0;
-	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);//float4(0,1,0,1);
+	float4 albedo = float4(119.f/255.f, 180.f/255.f, 41.f/255.f, 1); //AlbedoTexture.Sample(sampler0, input.uv);//float4(0,1,0,1);
 	albedo = pow(albedo, 2.2);
 	output.Albedo = albedo;
 	float roughness = 1; //RoughnessTexture.Sample(sampler0, input.uv).r;
-	output.Normal = normal; //NormalTexture.Sample(sampler0, input.uv) ;
+	output.Normal = float4(normal.rgb, 0);//NormalTexture.Sample(sampler0, input.uv) ;
 	output.Normal.w = 0;
 	output.Depth = float4(input.pos.z, roughness, 0, 0);
 	output.Emissive = float4(1,1,1,1);

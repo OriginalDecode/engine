@@ -2,7 +2,7 @@
 #include "Terrain.h"
 #include "TGA32.h"
 #include "Surface.h"
-#define DIVIDE 127.f
+#define DIVIDE 255.f
 
 
 bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
@@ -144,7 +144,7 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 		{
 			SVertexPosNormUVBiTang vertex;
 			vertex.position.x = position.x + float(x) * width / float(myHeightmap.myWidth);
-			vertex.position.y = position.y + myHeightmap.myData[(myHeightmap.myDepth - (1 + z)) * myHeightmap.myWidth + x] * 128.f / DIVIDE;
+			vertex.position.y = position.y + myHeightmap.myData[(myHeightmap.myDepth - (1 + z)) * myHeightmap.myWidth + x]; //* 128.f / DIVIDE;
 			vertex.position.z = position.z + float(z) * height / float(myHeightmap.myDepth);
 			vertex.uv.x = float(x) / float(myHeightmap.myWidth);
 			vertex.uv.y = float(1.f - z) / float(myHeightmap.myDepth);
@@ -256,14 +256,6 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 #endif
 }
 
-//  void Terrain::UpdateConstantBuffer(const graphics::RenderContext& rc)
-// {
-// 	graphics::IGraphicsContext& ctx = rc.GetContext();
-// 	myConstantStruct.world = myOrientation;
-// 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_Orientation, sizeof(CU::Matrix44f));
-// 	ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);
-// }
-
 void Terrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray)
 {
 
@@ -298,12 +290,12 @@ void Terrain::CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArr
 
 float Terrain::GetHeight(unsigned int aX, unsigned int aY) const
 {
-	return myHeightmap.myData[(myHeightmap.myDepth - (1 + aY)) * myHeightmap.myWidth + aX] / DIVIDE;
+	return myHeightmap.myData[(myHeightmap.myDepth - (1 + aY)) * myHeightmap.myWidth + aX];
 }
 
 float Terrain::GetHeight(unsigned int aIndex) const
 {
-	return myHeightmap.myData[aIndex] / DIVIDE;
+	return myHeightmap.myData[aIndex];
 }
 
 SHeightMap Create(const char* filepath)

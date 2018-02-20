@@ -1,8 +1,7 @@
 {
     "material": {
         "albedo": "Data/Material/grass/grass1-albedo3.dds",
-        "normal": "Data/Material/grass/grass1-normal2.dds",
-        "roughness": "Data/Material/grass/grass1-normal2.dds",
+        "roughness": "Data/Material/grass/grass1-rough.dds",
         "heightmap": "Data/Material/grass/grass1-height.dds"
     }
 }

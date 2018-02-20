@@ -56,7 +56,7 @@ void Game::Initiate(const std::string& level)
 
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
 	//CU::GrowingArray<TreeDweller*>dwellers = LevelFactory::CreatePBLLevel(8);
-	LevelFactory::CreateTerrain("Data/Textures/t_0.tga");
+	LevelFactory::CreateTerrain("Data/Textures/terrain/britannia.tga");
 	//m_World.AddDwellers(dwellers);
 
 
@@ -179,9 +179,9 @@ void Game::Update(float dt)
 	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
 
 
-	if (input_wrapper->IsDown(KButton::Y))
+	if (!done)
 	{
-		_lifetime += dt;
+		_lifetime += 0.016;
 
 		if (_lifetime > 1.f && second_curve)
 			done = true;

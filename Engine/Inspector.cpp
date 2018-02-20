@@ -93,6 +93,7 @@ void Inspector::HandleAdd()
 
 void Inspector::Update(float dt)
 {
+	return;
 	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
 
 	ImVec2 inspector_size;

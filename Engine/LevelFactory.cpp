@@ -426,10 +426,10 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 
 void LevelFactory::CreateTerrain(std::string terrain_path)
 {
-	Terrain* terrain = Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(1024, 1024));
+	Terrain* terrain = Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(2048, 2048));
 	Material* pGroundMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
 	terrain->SetMaterial(pGroundMaterial);
-	terrain->AddNormalMap("Data/Textures/t0_n.dds");
+	//terrain->AddNormalMap("Data/Textures/t0_n.dds");
 }
 
 CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 steps)

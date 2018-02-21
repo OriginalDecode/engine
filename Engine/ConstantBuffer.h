@@ -18,7 +18,6 @@ namespace graphics
 		template<typename T>
 		void RegisterVariable(T* variable);
 
-
 		/*
 			Call this function after all the variables has been registered.
 		*/

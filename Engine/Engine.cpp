@@ -318,6 +318,11 @@ float Engine::GetDeltaTime()
 	return m_DeltaTime;
 }
 
+float& Engine::GetDeltaTimeRef()
+{
+	return m_DeltaTime;
+}
+
 float Engine::GetTotalTime()
 {
 	return myTimeManager.GetMasterTimer().GetTotalTime().GetSeconds();

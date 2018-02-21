@@ -4,6 +4,20 @@
 #include "Surface.h"
 #define DIVIDE 255.f
 
+Terrain::Terrain(float halfwidth)
+{
+	m_Effect = Engine::GetInstance()->GetEffect("Data/Shaders/gpu_terrain.json");
+	CreatePlane(halfwidth);
+	m_IsRoot = false;
+	
+	m_Buffer.RegisterVariable(&m_Orientation);
+	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetCamera()->GetOrientation());
+	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetDeltaTimeRef());
+	m_Buffer.Initiate();
+
+	m_Material = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
+
+}
 
 bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
 {
@@ -60,8 +74,8 @@ void Terrain::Render(const graphics::RenderContext& rc)
 		return;
 
 	graphics::IGraphicsContext& ctx = rc.GetContext();
-	UpdateConstantBuffer(rc);
-	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX, rc);
+	//UpdateConstantBuffer(rc);
+	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
 	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
 	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
 	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
@@ -73,7 +87,6 @@ void Terrain::Render(const graphics::RenderContext& rc)
 
 }
 
-//For water????
 void Terrain::Render(const graphics::RenderContext& rc, bool override_shader)
 {
 
@@ -92,6 +105,27 @@ void Terrain::Render(const graphics::RenderContext& rc, bool override_shader)
 		ctx.DrawIndexed(this, m_ClipEffect);
 	}
 
+}
+
+void Terrain::Wireframe(const graphics::RenderContext& rc)
+{
+	graphics::IGraphicsContext& ctx = rc.GetContext();
+
+	CU::Vector4f translation = m_Orientation.GetTranslation();
+	const float offset = 0.5f;
+	translation.y += offset;
+	m_Orientation.SetTranslation(translation);
+
+	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
+
+	translation.y -= offset;
+	m_Orientation.SetTranslation(translation);
+
+	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
+	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
+	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
+
+	ctx.DrawIndexed(this, rc.GetEngine().GetEffect("Data/Shaders/wireframe_terrain.json"));
 }
 
 void Terrain::ShadowRender(const graphics::RenderContext& rc)

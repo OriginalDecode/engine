@@ -133,10 +133,19 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_WaterCamera->CreatePerspectiveProjection((float)window_size.m_Width, (float)window_size.m_Height, 0.01f, 100.f, 90.f);
 
 	m_Spotlights.Add(new SpotLight);
+
+
+
+	m_TestTerrain = new Terrain(2048.f);
+
+	m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
+
 }
 
 Renderer::~Renderer()
 {
+	delete m_TestTerrain;
+
 #if !defined(_PROFILE) && !defined(_FINAL)
 	SAFE_DELETE(m_DebugQuad);
 	SAFE_DELETE(m_HoverTexture);
@@ -171,6 +180,7 @@ void Renderer::Render()
 	m_RenderContext.GetAPI().ResetViewport();
 
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
+	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 
 	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
 	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
@@ -184,7 +194,19 @@ void Renderer::Render()
 	
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
-	RenderTerrain(false);
+
+	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
+	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
+	m_TestTerrain->Render(m_RenderContext);
+
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::WIREFRAME));
+	m_TestTerrain->Wireframe(m_RenderContext);
+
+
+
+
 	if (m_RenderInstanced)
 		m_InstancingManager.DoInstancing(m_RenderContext, false);
 	else
@@ -412,7 +434,11 @@ void Renderer::RenderTerrain(bool /*override_effect*/)
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
+#ifdef _DEBUG
+	ctx.SetRasterizerState(terrainWireframe ? api.GetRasterizerState(graphics::WIREFRAME) : api.GetRasterizerState(graphics::CULL_BACK));
+#else
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
+#endif
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 	PROFILE_FUNCTION(profiler::colors::Green);
 	for (Terrain* terrain : myTerrainArray)

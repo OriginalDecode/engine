@@ -344,6 +344,9 @@
     <ClInclude Include="Inspector.h" />
     <ClInclude Include="InspectorView.h" />
     <ClInclude Include="PhysicsView.h" />
+    <ClInclude Include="QuadTree.h" />
+    <ClInclude Include="QuadTreeNode.h" />
+    <ClInclude Include="TerrainSystem.h" />
     <ClInclude Include="TransformView.h" />
     <ClInclude Include="HDRPass.h" />
     <ClInclude Include="IGraphicsAPI.h" />
@@ -493,6 +496,8 @@
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PostProcessManager.cpp" />
     <ClCompile Include="Quad.cpp" />
+    <ClCompile Include="QuadTree.cpp" />
+    <ClCompile Include="QuadTreeNode.cpp" />
     <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="RenderCommand.cpp" />
     <ClCompile Include="RenderContext.cpp" />
@@ -531,6 +536,7 @@
     <ClCompile Include="SystemMonitor.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainManager.cpp" />
+    <ClCompile Include="TerrainSystem.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TGA32.cpp" />

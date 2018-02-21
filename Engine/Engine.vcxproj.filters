@@ -457,6 +457,9 @@
     <ClInclude Include="..\Include\imgui\imgui_impl_dx11.h">
       <Filter>Imgui</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainSystem.h" />
+    <ClInclude Include="QuadTree.h" />
+    <ClInclude Include="QuadTreeNode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -747,5 +750,8 @@
     <ClCompile Include="..\Include\imgui\imgui_impl_dx11.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
+    <ClCompile Include="TerrainSystem.cpp" />
+    <ClCompile Include="QuadTree.cpp" />
+    <ClCompile Include="QuadTreeNode.cpp" />
   </ItemGroup>
 </Project>

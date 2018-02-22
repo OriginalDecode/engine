@@ -40,6 +40,7 @@ public:
 	void SetMaterial(Material* pMaterial) { m_Material = pMaterial; }
 	//Material* GetMaterial() { return m_Material; }
 
+	void CreatePlane(float half_width);
 
 protected:
 	virtual void UpdateConstantBuffer(const graphics::RenderContext& rc) = 0;

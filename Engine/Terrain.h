@@ -15,11 +15,16 @@ SHeightMap Create(const char* filepath);
 class Terrain : public BaseModel
 {
 public:
+
 	Terrain() = default;
+	Terrain(float halfwidth);
+
+
 
 	bool Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
 	void CleanUp();
 	void Render(const graphics::RenderContext& rc) override;
+	void Wireframe(const graphics::RenderContext& rc);
 	void ShadowRender(const graphics::RenderContext& rc) override;
 
 	void Render(const graphics::RenderContext& rc, bool override_shader);

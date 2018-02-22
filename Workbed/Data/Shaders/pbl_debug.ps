@@ -106,7 +106,7 @@ GBuffer main(VS_OUTPUT input) : SV_Target
     output.Normal = float4(_normal, override_pbl ? input.data0.x : metalness_override);
     output.Depth.x = input.pos.z;
 	output.Depth.y = override_pbl ? input.data0.y : roughness_override;
-	output.Emissive = input.displaced;
+	output.Emissive = 0;//input.displaced;
 #ifdef _DEBUG
     output.IDTexture = float4(ToColor(input.entity_id), 0);
 #endif

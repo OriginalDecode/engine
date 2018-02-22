@@ -93,6 +93,7 @@ public:
 
 	CFont* LoadFont(const s8* filepath, u16 aFontWidth, u16 aBorderWidth);
 	float GetDeltaTime();
+	float& GetDeltaTimeRef();
 	float GetTotalTime();
 	float GetFPS();
 	float GetFrameTime();

@@ -132,7 +132,7 @@ namespace graphics
 	void DirectX11::EndFrame()
 	{
 		const bool vsync = Engine::GetInstance()->VSync();
-		Present(1, 0);
+		Present(0, 0);
 	}
 
 

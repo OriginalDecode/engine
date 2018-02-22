@@ -136,9 +136,13 @@ private:
 	graphics::ConstantBuffer m_ViewProjection;
 
 
+	Terrain* m_TestTerrain;
+
 #if !defined(_PROFILE) && !defined(_FINAL)
 	bool m_RenderLines = false;
 	bool m_LightModelWireframe = false;
+	bool terrainWireframe = false;
+
 
 
 	Texture* m_DebugTexture = nullptr;

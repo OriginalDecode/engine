@@ -21,7 +21,6 @@ public:
 	Effect* GetEffect() { return m_Effect; }
 private:
 	void UpdateConstantBuffer(const graphics::RenderContext& rc);
-	void CreatePlane();
 
 	struct cbMatrices
 	{

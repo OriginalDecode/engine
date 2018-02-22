@@ -16,6 +16,21 @@ namespace graphics
 		}
 
 		IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
+
+
+		s32 mul_of_16 = size % 16;
+		if (mul_of_16 != 0)
+		{
+			size += 16;
+			mul_of_16 = size % 16;
+			size -= mul_of_16;
+				
+			mul_of_16 = size % 16;
+			DL_ASSERT_EXP(mul_of_16 == 0, "Not mul of 16");
+
+		}
+
+
 		m_Buffer = device.CreateConstantBuffer(size, debug_name);
 	}
 

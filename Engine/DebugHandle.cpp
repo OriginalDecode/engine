@@ -301,7 +301,14 @@ namespace debug
 			ImGui::Text("%s", camera_pos.str().c_str());
 
 			ImGui::Separator();
-			
+		
+			static bool wireframe = false;
+			ImGui::Checkbox("Terrain Wireframe", &wireframe);
+
+			pEngine->m_Renderer->terrainWireframe = wireframe;
+
+
+
 			if (ImGui::Button("save level", ImVec2(100, 25)))
 			{
 				LevelFactory::SaveLevel("data/pbr_level/", "pbr_level.level");

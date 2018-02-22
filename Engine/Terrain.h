@@ -56,7 +56,6 @@ public:
 	u32 myWidth;
 	u32 myDepth;
 
-	Surface* mySurface = nullptr;
 
 	graphics::ConstantBuffer m_Buffer;
 	//VertexBaseStruct myConstantStruct;

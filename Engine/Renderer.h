@@ -35,6 +35,7 @@ class Terrain;
 class SpotLight;
 class ShadowSpotlight;
 class CommandAllocator;
+class TerrainSystem;
 class Renderer
 {
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -59,6 +60,7 @@ public:
 	const CU::Vector3f& GetLightDirection() { return m_Direction; }
 	Camera* GetDirectionalCamera() { return m_DirectionalShadow.GetCamera(); }
 
+	graphics::RenderContext& GetRenderContext() { return m_RenderContext; }
 
 private:
 	void RenderNonDeferred3DCommands();
@@ -137,6 +139,7 @@ private:
 
 
 	Terrain* m_TestTerrain;
+	TerrainSystem* m_TerrainSystem = nullptr;
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	bool m_RenderLines = false;

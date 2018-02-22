@@ -61,7 +61,7 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 	float metalness = 1.0f;
 	float roughness = 0.f;
 	GBuffer output = (GBuffer)0;
-	output.Albedo =  float4(0,1,0,1);
+	output.Albedo =  float4(0.2,0.2,0.2,1);
 	output.Normal = float4(float3(0,1,0), metalness);
 	
 	output.Depth = float4(input.pos.z,1,0,1);

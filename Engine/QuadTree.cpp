@@ -9,7 +9,8 @@
 QuadTree::QuadTree(float halfwidth, CU::Vector4f pos)
 {
 	m_Root = new QuadTreeNode(halfwidth, pos);
-
+	CU::Matrix44f camera_pos = Engine::GetInstance()->GetCamera()->GetOrientation();
+	m_Root->Insert(camera_pos.GetPosition());
 }
 
 

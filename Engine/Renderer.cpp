@@ -36,6 +36,8 @@
 #include <imgui/imgui_impl_dx11.h>
 #endif
 
+#include <Engine/TerrainSystem.h>
+
 
 Renderer::Renderer(Synchronizer* synchronizer)
 	: m_Synchronizer(synchronizer)
@@ -136,15 +138,16 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 
 
-	m_TestTerrain = new Terrain(2048.f);
-
+	//m_TestTerrain = new Terrain(2048.f);
 	m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
+	m_TerrainSystem = new TerrainSystem;
 
 }
 
 Renderer::~Renderer()
 {
 	delete m_TestTerrain;
+	delete m_TerrainSystem;
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	SAFE_DELETE(m_DebugQuad);
@@ -191,18 +194,23 @@ void Renderer::Render()
 	if (m_RenderInstanced)
 		Render3DCommandsInstanced();
 
-	
-	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
-	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
-	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
-	m_TestTerrain->Render(m_RenderContext);
 
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::WIREFRAME));
-	m_TestTerrain->Wireframe(m_RenderContext);
+	m_TerrainSystem->Update();
+
+
+	//m_GBuffer.Clear(clearcolor::black, m_RenderContext);
+	//m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
+
+	//ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
+	//ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+
+	//ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
+	//m_TestTerrain->Render(m_RenderContext);
+
+	//ctx.SetRasterizerState(api.GetRasterizerState(graphics::WIREFRAME));
+	//m_TestTerrain->Wireframe(m_RenderContext);
 
 
 

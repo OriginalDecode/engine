@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Terrain.h"
 #include "TGA32.h"
-#include "Surface.h"
 #define DIVIDE 255.f
 
 Terrain::Terrain(float halfwidth)
@@ -41,9 +40,6 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 
 	SAFE_DELETE(image);
 	CreateVertices(myWidth, myDepth, position);
-	mySurface = new Surface(m_Effect);
-	mySurface->AddTexture("Data/Textures/terrain.dds", Effect::DIFFUSE);
-	//mySurface->AddTexture("Data/Textures/default_textures/no-texture-bw.dds", _ROUGHNESS);
 
 	m_ClipEffect = Engine::GetInstance()->GetEffect("Shaders/terrain_clip.json");
 	m_ClipEffect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain.dds"), Effect::DIFFUSE);
@@ -63,7 +59,6 @@ void Terrain::CleanUp()
 {
 	myIndexes.clear();
 	myVertices.clear();
-	SAFE_DELETE(mySurface);
 	//Engine::GetAPI()->GetDevice().ReleasePtr(m_ConstantBuffer);
 
 }
@@ -72,8 +67,15 @@ void Terrain::Render(const graphics::RenderContext& rc)
 {
 	if (!m_Material)
 		return;
-
+	
 	graphics::IGraphicsContext& ctx = rc.GetContext();
+	graphics::IGraphicsAPI& api = rc.GetAPI();
+
+	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
+	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
+
 	//UpdateConstantBuffer(rc);
 	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
 	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
@@ -83,6 +85,10 @@ void Terrain::Render(const graphics::RenderContext& rc)
 	//mySurface->Activate(rc);
 	m_Material->Use(m_Effect);
 	ctx.DrawIndexed(this);
+
+
+
+
 	//mySurface->Deactivate();
 
 }
@@ -96,9 +102,7 @@ void Terrain::Render(const graphics::RenderContext& rc, bool override_shader)
 
 	if (!override_shader)
 	{
-		mySurface->Activate(rc);
 		ctx.DrawIndexed(this);
-		mySurface->Deactivate();
 	}
 	else
 	{
@@ -110,6 +114,11 @@ void Terrain::Render(const graphics::RenderContext& rc, bool override_shader)
 void Terrain::Wireframe(const graphics::RenderContext& rc)
 {
 	graphics::IGraphicsContext& ctx = rc.GetContext();
+
+	graphics::IGraphicsAPI& api = rc.GetAPI();
+
+	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
+	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
 	CU::Vector4f translation = m_Orientation.GetTranslation();
 	const float offset = 0.5f;
@@ -124,6 +133,7 @@ void Terrain::Wireframe(const graphics::RenderContext& rc)
 	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
 	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
 	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::WIREFRAME));
 
 	ctx.DrawIndexed(this, rc.GetEngine().GetEffect("Data/Shaders/wireframe_terrain.json"));
 }
@@ -148,7 +158,6 @@ void Terrain::Load(const std::string& /*filepath*/)
 
 void Terrain::AddNormalMap(const std::string& filepath)
 {
-	mySurface->AddTexture(filepath, Effect::NORMAL);
 }
 
 std::vector<float> Terrain::GetVerticeArrayCopy()
@@ -163,7 +172,7 @@ std::vector<s32> Terrain::GetIndexArrayCopy()
 
 void Terrain::SetPosition(CU::Vector2f position)
 {
-
+	//m_Orientation.SetPosition(CU::Vector4f(position.x, 0, position.y, 0));
 }
 
 void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)

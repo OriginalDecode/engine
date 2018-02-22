@@ -9,6 +9,7 @@
 #include <Engine/Renderer.h>
 #include <Engine/PostProcessManager.h>
 #include <Engine/HDRPass.h>
+#include <Engine/TerrainSystem.h>
 
 #include <Input/InputHandle.h>
 
@@ -28,7 +29,6 @@
 #include <PostMaster/EventManager.h>
 #include <hash/DebugEvents.h>
 #include <network/NetworkManager.h>
-
 namespace debug
 {
 	static s32 s_MaterialIndex = 0;
@@ -307,6 +307,10 @@ namespace debug
 
 			pEngine->m_Renderer->terrainWireframe = wireframe;
 
+			static float pos2[2];
+			ImGui::InputFloat2("Position", pos2, 1);
+			pEngine->m_Renderer->m_TerrainSystem->m_X = pos2[0];
+			pEngine->m_Renderer->m_TerrainSystem->m_Y = pos2[1];
 
 
 			if (ImGui::Button("save level", ImVec2(100, 25)))

@@ -189,6 +189,7 @@ public:
 
 	void PickEntity();
 
+	Renderer* GetRenderer() { return m_Renderer; }
 
 private:
 	s32 PickEntity(Texture* pTexture);

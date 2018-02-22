@@ -18,7 +18,7 @@ Surface::Surface(Effect* anEffect)
 	SetIndexCount(0);
 	SetIndexStart(0);
 	SetEffect(anEffect);
-	SetPrimology(graphics::TRIANGLE_LIST);
+	//SetPrimology(graphics::TRIANGLE_LIST);
 }
 
 Surface::Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount)
@@ -28,17 +28,17 @@ Surface::Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStar
 	SetIndexCount(aIndexCount);
 	SetIndexStart(aStartIndex);
 	SetEffect(anEffect);
-	SetPrimology(graphics::TRIANGLE_LIST);
+	//SetPrimology(graphics::TRIANGLE_LIST);
 }
 
-Surface::Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, graphics::eTopology aPrimology)
-{
-	SetVertexCount(aVertexCount);
-	SetVertexStart(aStartVertex);
-	SetIndexCount(anIndexCount);
-	SetIndexStart(aStartIndex);
-	SetPrimology(aPrimology);
-}
+// Surface::Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, graphics::eTopology aPrimology)
+// {
+// 	SetVertexCount(aVertexCount);
+// 	SetVertexStart(aStartVertex);
+// 	SetIndexCount(anIndexCount);
+// 	SetIndexStart(aStartIndex);
+// 	//SetPrimology(aPrimology);
+// }
 
 void Surface::Activate(const graphics::RenderContext& /*render_context*/)
 {
@@ -107,8 +107,8 @@ void Surface::SetIndexCount(u32 aIndexCount)
 	myIndexCount = aIndexCount;
 }
 
-void Surface::SetPrimology(graphics::eTopology topology)
-{
-	m_Topology = topology;
-}
-
+// void Surface::SetPrimology(graphics::eTopology topology)
+// {
+// 	m_Topology = topology;
+// }
+// 

@@ -30,11 +30,11 @@ struct ConstantOutputType
 float CalcFactor(float3 p, float3 eye)
 {
 	const float minDist = 10;
-	const float maxDist = 250;
+	const float maxDist = 100;
 
 	float d = distance(p, eye);
 	float s = saturate( ( d - minDist) / (maxDist - minDist));
-	return pow(2, (lerp(64, 2, s)));
+	return pow(2, (lerp(64, 0, s)));
 };
 
 
@@ -42,10 +42,10 @@ ConstantOutputType ColorPatchConstantFunction(InputPatch<VS_OUTPUT, 4> patch, ui
 {    
 	/* This will be rewritten to account the distance to camera too */
 
-	float3 cam_pos = patch[0].camera_pos.xyz;
+	float3 cam_pos = patch[patchId].camera_pos.xyz;
     ConstantOutputType output;
 
-	float3 pos = float3(512,0,512);
+	float3 pos = patch[patchId].pos.xyz;
 	float test = CalcFactor(pos, cam_pos);
 
     const int outer_factor = test; //64 max 

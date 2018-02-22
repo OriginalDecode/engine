@@ -43,7 +43,7 @@ VS_OUTPUT main(VS_INPUT input)
 	output.tang  = mul(input.tang , orientation);
 
 	output.camera_pos = camera._m30_m31_m32_m33;
+	output.worldpos = input.pos;//mul(input.pos, orientation);
 
-	output.worldpos = mul(input.pos, orientation);
 	return output;
 };

@@ -428,6 +428,10 @@ void LevelFactory::CreateTerrain(std::string terrain_path)
 {
 	Terrain* terrain = Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(1024, 1024));
 	Material* pGroundMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
+
+	//Should probably use a splatmap instead with a material list because we need to be able to map multiple roughnesses, metalness, albedo and normals
+	//Run with type and then count, TYPE : ALBEDO / DIFFUSE / 0, COUNT : 4 (this moves the next registry to 4 since 0,1,2,3 has been used for albedos  
+
 	terrain->SetMaterial(pGroundMaterial);
 	terrain->AddNormalMap("Data/Textures/t0_n.dds");
 }

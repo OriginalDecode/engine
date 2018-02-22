@@ -17,10 +17,7 @@ TerrainSystem::TerrainSystem()
 	pos.y = 1024;
 	m_Tree.Init(pos);
 
-	test::Position cam;
-	cam.x = 322;
-	cam.y = 129;
-	m_Tree.Insert(cam);
+
 }
 
 void TerrainSystem::Update()
@@ -32,11 +29,12 @@ void TerrainSystem::Update()
 
 void test::Leaf::Render()
 {
-
 	for (int i = 0; i < 4; i++)
 	{
 		if (m_Children[i])
+		{
 			m_Children[i]->Render();
+		}
 	}
 
 
@@ -54,13 +52,13 @@ void test::Leaf::Render()
 	p2.position = CU::Vector4f(pos1.x, 2.f, pos0.z, 1);
 	p3.position = CU::Vector4f(pos0.x, 2.f, pos1.z, 1);
 
-// 	
-// 	sync->AddRenderCommand(LineCommand(p0, p2, false));
-// 	sync->AddRenderCommand(LineCommand(p2, p1, false));
-// 	sync->AddRenderCommand(LineCommand(p1, p3, false));
-// 	sync->AddRenderCommand(LineCommand(p3, p0, false));
+ 	
+ 	sync->AddRenderCommand(LineCommand(p0, p2, false));
+ 	sync->AddRenderCommand(LineCommand(p2, p1, false));
+ 	sync->AddRenderCommand(LineCommand(p1, p3, false));
+ 	sync->AddRenderCommand(LineCommand(p3, p0, false));
 
-	if (m_Terrain)
+	if (m_Terrain )
 	{
 		m_Terrain->Render(Engine::GetInstance()->GetRenderer()->GetRenderContext());
 		m_Terrain->Wireframe(Engine::GetInstance()->GetRenderer()->GetRenderContext());
@@ -110,33 +108,54 @@ void test::Leaf::subdivide()
 	m_Children[2]->m_Parent = this;
 	m_Children[3]->m_Parent = this;
 
+
+	CU::Vector3f color;
+
+	switch(m_Index + 1)
+	{
+	case 1:
+		color = CU::Vector3f(1, 0, 0);
+		break;
+	case 2: 
+		color = CU::Vector3f(1, 1, 0);
+		break;
+	case 3:
+		color = CU::Vector3f(0, 1, 0);
+		break;
+	case 4:
+		color = CU::Vector3f(0, 0, 1);
+		break;
+	}
+
+
+
 	AABB bb = m_AABB;
 	bb.m_Halfwidth *= 0.5f;
 	bb.m_Pos.x = bb.m_Pos.x - bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y + bb.m_Halfwidth;
 	m_Children[0]->m_AABB = bb;
-	m_Children[0]->m_Terrain = new Terrain(bb.m_Halfwidth);
+	m_Children[0]->m_Terrain = new Terrain(bb.m_Halfwidth, color);
 	m_Children[0]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
 
 	bb.m_Pos = m_AABB.m_Pos;
 	bb.m_Pos.x = bb.m_Pos.x + bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y + bb.m_Halfwidth;
 	m_Children[1]->m_AABB = bb;
-	m_Children[1]->m_Terrain = new Terrain(bb.m_Halfwidth);
+	m_Children[1]->m_Terrain = new Terrain(bb.m_Halfwidth, color);
 	m_Children[1]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
 
 	bb.m_Pos = m_AABB.m_Pos;
 	bb.m_Pos.x = bb.m_Pos.x + bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y - bb.m_Halfwidth;
 	m_Children[2]->m_AABB = bb;
-	m_Children[2]->m_Terrain = new Terrain(bb.m_Halfwidth);
+	m_Children[2]->m_Terrain = new Terrain(bb.m_Halfwidth, color);
 	m_Children[2]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
 
 	bb.m_Pos = m_AABB.m_Pos;
 	bb.m_Pos.x = bb.m_Pos.x - bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y - bb.m_Halfwidth;
 	m_Children[3]->m_AABB = bb;
-	m_Children[3]->m_Terrain = new Terrain(bb.m_Halfwidth);
+	m_Children[3]->m_Terrain = new Terrain(bb.m_Halfwidth, color);
 	m_Children[3]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
 
 

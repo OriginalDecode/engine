@@ -44,6 +44,13 @@ struct DS_OUTPUT
 	float4 camerapos : POSITION1;
 };
 
+
+cbuffer b1 : register (b1)
+{
+	float3 color;
+	float dummy;
+}
+
 float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const float3 half_vector, float roughness)
 {
 	float LdotH = dot(light_dir, half_vector);
@@ -61,7 +68,7 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 	float metalness = 1.0f;
 	float roughness = 0.f;
 	GBuffer output = (GBuffer)0;
-	output.Albedo =  float4(0.2,0.2,0.2,1);
+	output.Albedo =  float4(color, 1);//float4(0.2,0.2,0.2,1);
 	output.Normal = float4(float3(0,1,0), metalness);
 	
 	output.Depth = float4(input.pos.z,1,0,1);
@@ -75,7 +82,7 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 GBuffer wireframe(DS_OUTPUT input) : SV_Target
 {
 	GBuffer output = (GBuffer)0;
-	output.Albedo =  1;
+	output.Albedo = 1;// float4(color, 1);
 	output.Normal = 1;//float4(float3(0,1,0), metalness);
 	
 	output.Depth = float4(input.pos.z,1,0,1);

@@ -17,9 +17,7 @@ class Terrain : public BaseModel
 public:
 
 	Terrain() = default;
-	Terrain(float halfwidth);
-
-
+	Terrain(float halfwidth, CU::Vector3f color = { 0,0,0 });
 
 	bool Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
 	void CleanUp();
@@ -55,9 +53,10 @@ public:
 	CU::Matrix44f myOrientation;
 	u32 myWidth;
 	u32 myDepth;
-
+	CU::Vector3f m_Color;
 
 	graphics::ConstantBuffer m_Buffer;
+	graphics::ConstantBuffer m_PixelBuffer;
 	//VertexBaseStruct myConstantStruct;
 
 	Effect* m_ClipEffect = nullptr;

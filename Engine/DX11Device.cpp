@@ -372,7 +372,7 @@ namespace graphics
 		}
 		else
 		{
-			DL_WARNING("subresource data is null, this is fine, but the developer might not have intended for it to be null.");
+			//DL_WARNING("subresource data is null, this is fine, but the developer might not have intended for it to be null.");
 			hr = m_Device->CreateBuffer(&desc, nullptr, &buffer);
 		}
 

@@ -3,7 +3,8 @@
 #include "TGA32.h"
 #define DIVIDE 255.f
 
-Terrain::Terrain(float halfwidth)
+Terrain::Terrain(float halfwidth, CU::Vector3f color)
+	: m_Color(color)
 {
 	m_Effect = Engine::GetInstance()->GetEffect("Data/Shaders/gpu_terrain.json");
 	CreatePlane(halfwidth);
@@ -13,6 +14,10 @@ Terrain::Terrain(float halfwidth)
 	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetCamera()->GetOrientation());
 	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetDeltaTimeRef());
 	m_Buffer.Initiate();
+
+	m_PixelBuffer.RegisterVariable(&m_Color);
+	m_PixelBuffer.Initiate();
+
 
 	m_Material = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
 
@@ -78,6 +83,7 @@ void Terrain::Render(const graphics::RenderContext& rc)
 
 	//UpdateConstantBuffer(rc);
 	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
+	m_PixelBuffer.Bind(1, graphics::ConstantBuffer::PIXEL, rc);
 	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
 	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
 	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
@@ -126,6 +132,7 @@ void Terrain::Wireframe(const graphics::RenderContext& rc)
 	m_Orientation.SetTranslation(translation);
 
 	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
+	m_PixelBuffer.Bind(1, graphics::ConstantBuffer::PIXEL, rc);
 
 	translation.y -= offset;
 	m_Orientation.SetTranslation(translation);
@@ -172,7 +179,7 @@ std::vector<s32> Terrain::GetIndexArrayCopy()
 
 void Terrain::SetPosition(CU::Vector2f position)
 {
-	//m_Orientation.SetPosition(CU::Vector4f(position.x, 0, position.y, 0));
+	m_Orientation.SetPosition(CU::Vector4f(position.x, 0, position.y, 1));
 }
 
 void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)

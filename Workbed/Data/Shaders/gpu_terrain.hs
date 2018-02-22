@@ -42,19 +42,31 @@ ConstantOutputType ColorPatchConstantFunction(InputPatch<VS_OUTPUT, 4> patch, ui
 {    
 	/* This will be rewritten to account the distance to camera too */
 
-	float3 cam_pos = patch[patchId].camera_pos.xyz;
+	float3 cam_pos = patch[0].camera_pos.xyz;
     ConstantOutputType output;
 
-	float3 pos = patch[patchId].pos.xyz;
+	float3 pos = patch[0].pos.xyz;
+
+ 	float3 e0 = 0.5f*(patch[0].pos.xyz + patch[1].pos.xyz);
+    float3 e2 = 0.5f*(patch[0].pos.xyz + patch[2].pos.xyz);
+	
+    float3 e1 = 0.5f*(patch[3].pos.xyz + patch[1].pos.xyz);
+    float3 e3 = 0.5f*(patch[3].pos.xyz + patch[2].pos.xyz);
+
+    float3  c = 0.25f*(patch[0].pos.xyz + patch[1].pos.xyz + patch[2].pos.xyz + patch[3].pos.xyz);
+
+
+
+
 	float test = CalcFactor(pos, cam_pos);
 
     const int outer_factor = test; //64 max 
-    const int inner_factor = test; //64 max 
+    const int inner_factor = CalcFactor(c, cam_pos); //64 max 
     // Set the tessellation factors for the three edges of the triangle.
-    output.edges[0] = outer_factor;
-    output.edges[1] = outer_factor;
-    output.edges[2] = outer_factor;
-	output.edges[3] = outer_factor;
+    output.edges[0] = CalcFactor(e0, cam_pos);
+    output.edges[1] = CalcFactor(e1, cam_pos);
+    output.edges[2] = CalcFactor(e2, cam_pos);
+	output.edges[3] = CalcFactor(e3, cam_pos);
 
 	output.uv[0] = outer_factor; 
 	output.uv[1] = outer_factor; 

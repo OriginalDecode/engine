@@ -59,7 +59,7 @@ RefPointer<T>::RefPointer(T* object)
 template<typename T>
 RefPointer<T>::~RefPointer()
 {
-	if (m_Refs->Decrement() <= 0)
+	if (m_Refs && m_Refs->Decrement() <= 0)
 	{
 		delete m_Data;
 		m_Data = nullptr;

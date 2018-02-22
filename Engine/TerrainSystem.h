@@ -35,7 +35,7 @@ namespace test
 		bool Insert(Position pos);
 		void subdivide();
 
-		void Render();
+		bool Render();
 
 		void Reset();
 		Terrain* m_Terrain = nullptr;

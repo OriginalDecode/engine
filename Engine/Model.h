@@ -54,19 +54,7 @@ public:
 	Effect* GetEffect() { return m_Effect; }
 	void AddOrientation(CU::Matrix44f orientation);
 	void AddInstanceData(GPUModelData data);
-	Material* GetMaterial() 
-	{ 
-		for (Model* c : m_Children)
-		{
-			return c->GetMaterial();
-		}
-		
-		if (m_Material)
-			return m_Material;
-
-
-		return nullptr;
-	}
+	Material* GetMaterial();
 	void CreateCube();
 
 	void SetKey(u64 key) { m_Key = key; }

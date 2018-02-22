@@ -1,12 +1,17 @@
 #include "stdafx.h"
 #include "Terrain.h"
 #include "TGA32.h"
+#include <Engine/Effect.h>
 #define DIVIDE 255.f
 
 Terrain::Terrain(float halfwidth, CU::Vector3f color)
 	: m_Color(color)
 {
 	m_Effect = Engine::GetInstance()->GetEffect("Data/Shaders/gpu_terrain.json");
+
+	myWidth = halfwidth / 2;
+	myDepth = halfwidth / 2;
+
 	CreatePlane(halfwidth);
 	m_IsRoot = false;
 	
@@ -18,7 +23,9 @@ Terrain::Terrain(float halfwidth, CU::Vector3f color)
 	m_PixelBuffer.RegisterVariable(&m_Color);
 	m_PixelBuffer.Initiate();
 
+	Engine::GetInstance()->LoadTexture("Data/Textures/terrain/britannia.png");
 
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain/britannia.png"), Effect::REGISTER_7);
 	m_Material = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
 
 }
@@ -127,7 +134,7 @@ void Terrain::Wireframe(const graphics::RenderContext& rc)
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
 	CU::Vector4f translation = m_Orientation.GetTranslation();
-	const float offset = 0.5f;
+	const float offset = 0.09f;
 	translation.y += offset;
 	m_Orientation.SetTranslation(translation);
 
@@ -179,7 +186,7 @@ std::vector<s32> Terrain::GetIndexArrayCopy()
 
 void Terrain::SetPosition(CU::Vector2f position)
 {
-	m_Orientation.SetPosition(CU::Vector4f(position.x, 0, position.y, 1));
+	m_Orientation.SetPosition(CU::Vector4f(position.x - myWidth, 0, position.y-myDepth, 1));
 }
 
 void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)

@@ -194,78 +194,62 @@ void Renderer::Render()
 	if (m_RenderInstanced)
 		Render3DCommandsInstanced();
 
-
-
+	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
+	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
 	m_TerrainSystem->Update();
-
-
-	//m_GBuffer.Clear(clearcolor::black, m_RenderContext);
-	//m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
-
-	//ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	//ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
-
-	//ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
-	//m_TestTerrain->Render(m_RenderContext);
-
-	//ctx.SetRasterizerState(api.GetRasterizerState(graphics::WIREFRAME));
-	//m_TestTerrain->Wireframe(m_RenderContext);
-
-
-
-
-	if (m_RenderInstanced)
-		m_InstancingManager.DoInstancing(m_RenderContext, false);
-	else
-		Render3DCommands();
-
-#if !defined(_PROFILE) && !defined(_FINAL)
-	WriteDebugTextures();
-
-	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
-	DrawEntity(m_HoverTexture, hovered, ctx);
-
-	const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
-	DrawEntity(m_SelectedTexture, selected, ctx);
-
-#endif
-
-	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
-
-	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
-	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
-	m_DeferredRenderer->DeferredRender(shadow_mvp, m_Direction, m_RenderContext);
-
-	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
-	m_Atmosphere.Render(m_RenderContext);
-
-	RenderSpotlight();
-	RenderPointlight();
-
-	RenderParticles(nullptr);
-
-	if (m_PostProcessManager.GetFlags() != 0)
-	{
-		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
-	}
-	else
-	{
-		m_RenderContext.GetAPI().SetDefaultTargets();
-		m_DeferredRenderer->Finalize();
-	}
-
-
-#if !defined(_PROFILE) && !defined(_FINAL)
-	//Detect edges on specified texture
-	m_PostProcessManager.Process(m_HoverTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
-	m_PostProcessManager.Process(m_SelectedTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
-#endif
-
-	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
-	RenderLines();
-
-	Render2DCommands();
+ 
+ 	if (m_RenderInstanced)
+ 		m_InstancingManager.DoInstancing(m_RenderContext, false);
+ 	else
+ 		Render3DCommands();
+ 
+ #if !defined(_PROFILE) && !defined(_FINAL)
+ 	WriteDebugTextures();
+ 
+ 	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
+ 	DrawEntity(m_HoverTexture, hovered, ctx);
+ 
+ 	const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
+ 	DrawEntity(m_SelectedTexture, selected, ctx);
+ 
+ #endif
+ 
+ 	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
+ 
+ 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
+ 	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
+ 	m_DeferredRenderer->DeferredRender(shadow_mvp, m_Direction, m_RenderContext);
+ 
+ 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
+ 	m_Atmosphere.Render(m_RenderContext);
+ 
+ 	RenderSpotlight();
+ 	RenderPointlight();
+ 
+ 	RenderParticles(nullptr);
+ 
+ 	if (m_PostProcessManager.GetFlags() != 0)
+ 	{
+ 		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
+ 	}
+ 	else
+ 	{
+ 		m_RenderContext.GetAPI().SetDefaultTargets();
+ 		m_DeferredRenderer->Finalize();
+ 	}
+ 
+ 
+ #if !defined(_PROFILE) && !defined(_FINAL)
+ 	//Detect edges on specified texture
+ 	m_PostProcessManager.Process(m_HoverTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
+ 	m_PostProcessManager.Process(m_SelectedTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
+ #endif
+ 
+ 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
+ 	RenderLines();
+ 
+ 	Render2DCommands();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();
@@ -659,6 +643,9 @@ void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32
 
 	RefPointer<Model> model = engine.GetModel<Model>(command->m_Key);
 	Material* material = model->GetMaterial() ? model->GetMaterial() : engine.GetMaterial(command->m_MaterialKey);
+	if (!material)
+		return;
+
 	const u64 key = material->GetKey();
 
 

@@ -13,8 +13,8 @@ TerrainSystem::TerrainSystem()
 
 
 	test::Position pos;
-	pos.x = 1024;
-	pos.y = 1024;
+	pos.x = 256;
+	pos.y = 256;
 	m_Tree.Init(pos);
 
 
@@ -27,13 +27,14 @@ void TerrainSystem::Update()
 	m_Tree.Draw();
 }
 
-void test::Leaf::Render()
+bool test::Leaf::Render()
 {
+	bool rendered = false;
 	for (int i = 0; i < 4; i++)
 	{
 		if (m_Children[i])
 		{
-			m_Children[i]->Render();
+			rendered |= m_Children[i]->Render();
 		}
 	}
 
@@ -47,10 +48,10 @@ void test::Leaf::Render()
 	pos1 -= m_AABB.m_Halfwidth;
 
 	LinePoint p0, p1, p2, p3;
-	p0.position = CU::Vector4f(pos1.x, 2.f, pos1.z, 1);
-	p1.position = CU::Vector4f(pos0.x, 2.f, pos0.z, 1);
-	p2.position = CU::Vector4f(pos1.x, 2.f, pos0.z, 1);
-	p3.position = CU::Vector4f(pos0.x, 2.f, pos1.z, 1);
+	p0.position = CU::Vector4f(pos1.x, 0.f, pos1.z, 1);
+	p1.position = CU::Vector4f(pos0.x, 0.f, pos0.z, 1);
+	p2.position = CU::Vector4f(pos1.x, 0.f, pos0.z, 1);
+	p3.position = CU::Vector4f(pos0.x, 0.f, pos1.z, 1);
 
  	
  	sync->AddRenderCommand(LineCommand(p0, p2, false));
@@ -58,12 +59,14 @@ void test::Leaf::Render()
  	sync->AddRenderCommand(LineCommand(p1, p3, false));
  	sync->AddRenderCommand(LineCommand(p3, p0, false));
 
-	if (m_Terrain )
-	{
-		m_Terrain->Render(Engine::GetInstance()->GetRenderer()->GetRenderContext());
-		m_Terrain->Wireframe(Engine::GetInstance()->GetRenderer()->GetRenderContext());
-	}
+ 	if (m_Terrain && !rendered)
+ 	{
+ 		m_Terrain->Render(Engine::GetInstance()->GetRenderer()->GetRenderContext());
+ 		m_Terrain->Wireframe(Engine::GetInstance()->GetRenderer()->GetRenderContext());
+		return true;
+ 	}
 
+	return rendered;
 }
 
 void test::Leaf::Reset()
@@ -130,32 +133,34 @@ void test::Leaf::subdivide()
 
 
 	AABB bb = m_AABB;
+	float halfwidth = bb.m_Halfwidth;
 	bb.m_Halfwidth *= 0.5f;
+
 	bb.m_Pos.x = bb.m_Pos.x - bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y + bb.m_Halfwidth;
 	m_Children[0]->m_AABB = bb;
-	m_Children[0]->m_Terrain = new Terrain(bb.m_Halfwidth, color);
+	m_Children[0]->m_Terrain = new Terrain(halfwidth, color);
 	m_Children[0]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
 
 	bb.m_Pos = m_AABB.m_Pos;
 	bb.m_Pos.x = bb.m_Pos.x + bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y + bb.m_Halfwidth;
 	m_Children[1]->m_AABB = bb;
-	m_Children[1]->m_Terrain = new Terrain(bb.m_Halfwidth, color);
+	m_Children[1]->m_Terrain = new Terrain(halfwidth, color);
 	m_Children[1]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
 
 	bb.m_Pos = m_AABB.m_Pos;
 	bb.m_Pos.x = bb.m_Pos.x + bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y - bb.m_Halfwidth;
 	m_Children[2]->m_AABB = bb;
-	m_Children[2]->m_Terrain = new Terrain(bb.m_Halfwidth, color);
+	m_Children[2]->m_Terrain = new Terrain(halfwidth, color);
 	m_Children[2]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
 
 	bb.m_Pos = m_AABB.m_Pos;
 	bb.m_Pos.x = bb.m_Pos.x - bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y - bb.m_Halfwidth;
 	m_Children[3]->m_AABB = bb;
-	m_Children[3]->m_Terrain = new Terrain(bb.m_Halfwidth, color);
+	m_Children[3]->m_Terrain = new Terrain(halfwidth, color);
 	m_Children[3]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
 
 
@@ -186,7 +191,7 @@ bool test::Leaf::Insert(Position pos)
 	if (m_Index >= 4)
 		return false;
 
-	if (m_Children[0] == nullptr)
+	if (m_Children[0] == nullptr )
 		subdivide();
 
 	for (int i = 0; i < 4; i++)
@@ -218,7 +223,7 @@ void test::QuadTree::Init(Position xy)
 {
 	m_Root = new Leaf;
 	m_Root->m_AABB.m_Pos = xy;
-	m_Root->m_AABB.m_Halfwidth = xy.x;
+	m_Root->m_AABB.m_Halfwidth = xy.x / 2;
 }
 
 void test::QuadTree::Insert(Position xy)

@@ -31,19 +31,22 @@ struct VS_OUTPUT
 	float4 camera_pos : POSITION2;
 };
 
+
+SamplerState sampler0 : register(s0);
+Texture2D HeightTexture : register (t7);
+
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	
 	output.pos = input.pos;
+
 	output.uv = input.uv;
 
-	output.normal = mul(input.normal, orientation);
-	output.binorm = input.binorm;
-	output.tang  = mul(input.tang , orientation);
-
 	output.camera_pos = camera._m30_m31_m32_m33;
-	output.worldpos = input.pos;//mul(input.pos, orientation);
+	output.worldpos = mul(input.pos, orientation);
+	output.worldpos.y = 1 - HeightTexture.SampleLevel(sampler0, input.uv, 0).r;
+
 
 	return output;
 };

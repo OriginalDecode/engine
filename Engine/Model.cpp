@@ -250,6 +250,22 @@ void Model::AddInstanceData(GPUModelData data)
 
 }
 
+Material* Model::GetMaterial()
+{
+	if (!this)
+		return nullptr;
+
+	for (Model* c : m_Children)
+	{
+		if(c) return c->GetMaterial();
+	}
+
+	if (m_Material) return m_Material;
+
+
+	return nullptr;
+}
+
 void Model::RemoveGPUData()
 {
 	for (Model* child : m_Children)

@@ -29,12 +29,12 @@ struct ConstantOutputType
 
 float CalcFactor(float3 p, float3 eye)
 {
-	const float minDist = 10;
-	const float maxDist = 100;
+	const float minDist = 1;
+	const float maxDist = 32;
 
 	float d = distance(p, eye);
 	float s = saturate( ( d - minDist) / (maxDist - minDist));
-	return pow(2, (lerp(64, 0, s)));
+	return pow(2, (lerp(6, 1, s)));
 };
 
 
@@ -47,16 +47,13 @@ ConstantOutputType ColorPatchConstantFunction(InputPatch<VS_OUTPUT, 4> patch, ui
 
 	float3 pos = patch[0].pos.xyz;
 
- 	float3 e0 = 0.5f*(patch[0].pos.xyz + patch[1].pos.xyz);
-    float3 e2 = 0.5f*(patch[0].pos.xyz + patch[2].pos.xyz);
+ 	float3 e0 = 0.5f*(patch[0].worldpos.xyz + patch[2].worldpos.xyz);
+    float3 e1 = 0.5f*(patch[0].worldpos.xyz + patch[1].worldpos.xyz);
 	
-    float3 e1 = 0.5f*(patch[3].pos.xyz + patch[1].pos.xyz);
-    float3 e3 = 0.5f*(patch[3].pos.xyz + patch[2].pos.xyz);
+    float3 e2 = 0.5f*(patch[1].worldpos.xyz + patch[3].worldpos.xyz);
+    float3 e3 = 0.5f*(patch[2].worldpos.xyz + patch[3].worldpos.xyz);
 
-    float3  c = 0.25f*(patch[0].pos.xyz + patch[1].pos.xyz + patch[2].pos.xyz + patch[3].pos.xyz);
-
-
-
+    float3  c = 0.25f * (patch[0].worldpos.xyz + patch[1].worldpos.xyz + patch[2].worldpos.xyz + patch[3].worldpos.xyz);
 
 	float test = CalcFactor(pos, cam_pos);
 

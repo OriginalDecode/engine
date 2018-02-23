@@ -41,11 +41,11 @@ VS_OUTPUT main(VS_INPUT input)
 	
 	output.pos = input.pos;
 
+
 	output.uv = input.uv;
 
 	output.camera_pos = camera._m30_m31_m32_m33;
 	output.worldpos = mul(input.pos, orientation);
-	output.worldpos.y = 1 - HeightTexture.SampleLevel(sampler0, input.uv, 0).r;
 
 
 	return output;

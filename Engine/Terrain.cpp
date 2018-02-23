@@ -23,10 +23,10 @@ Terrain::Terrain(float halfwidth, CU::Vector3f color)
 	m_PixelBuffer.RegisterVariable(&m_Color);
 	m_PixelBuffer.Initiate();
 
-	Engine::GetInstance()->LoadTexture("Data/Textures/terrain/britannia.png");
+	Engine::GetInstance()->LoadTexture("Data/Textures/terrain/britannia.dds");
 
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain/britannia.png"), Effect::REGISTER_7);
-	m_Material = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain/britannia.dds"), Effect::REGISTER_7);
+	//m_Material = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
 
 }
 
@@ -77,8 +77,8 @@ void Terrain::CleanUp()
 
 void Terrain::Render(const graphics::RenderContext& rc)
 {
-	if (!m_Material)
-		return;
+// 	if (!m_Material)
+// 		return;
 	
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 	graphics::IGraphicsAPI& api = rc.GetAPI();
@@ -94,10 +94,11 @@ void Terrain::Render(const graphics::RenderContext& rc)
 	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
 	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
 	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
+	rc.GetContext().DSSetSamplerState(0, 1, &pSampler);
 
 	//mySurface->Activate(rc);
-	m_Material->Use(m_Effect);
-	ctx.DrawIndexed(this);
+	//m_Material->Use(m_Effect);
+	ctx.DrawIndexed(this, m_Effect);
 
 
 

@@ -459,6 +459,7 @@ namespace graphics
 
 	CU::Vector4f DirectX11::PickColor(Texture* pTexture)
 	{
+		return CU::Vector4f(0.f,0.f,0.f,0.f);
 		//this might have to run at the end of each frame, and we put in a request for the function in a command queue
 		graphics::DX11Device& dx11dev = static_cast<graphics::DX11Device&>(GetDevice());
 		ID3D11Device* pDevice = static_cast<ID3D11Device*>(dx11dev.GetDevice());

@@ -27,7 +27,7 @@ struct ConstantOutputType
 };
 
 
-float CalcFactor(float3 p, float3 eye)
+float CalcFactor(float4 p, float4 eye)
 {
 	const float minDist = 1;
 	const float maxDist = 32;
@@ -42,37 +42,29 @@ ConstantOutputType ColorPatchConstantFunction(InputPatch<VS_OUTPUT, 4> patch, ui
 {    
 	/* This will be rewritten to account the distance to camera too */
 
-	float3 cam_pos = patch[0].camera_pos.xyz;
+	float4 cam_pos = patch[0].camera_pos;
     ConstantOutputType output;
 
-	float3 pos = patch[0].pos.xyz;
 
- 	float3 e0 = 0.5f*(patch[0].worldpos.xyz + patch[2].worldpos.xyz);
-    float3 e1 = 0.5f*(patch[0].worldpos.xyz + patch[1].worldpos.xyz);
+ 	float4 e0 = 0.5f * (patch[0].worldpos + patch[2].worldpos);
+    float4 e1 = 0.5f * (patch[0].worldpos + patch[1].worldpos);
 	
-    float3 e2 = 0.5f*(patch[1].worldpos.xyz + patch[3].worldpos.xyz);
-    float3 e3 = 0.5f*(patch[2].worldpos.xyz + patch[3].worldpos.xyz);
+    float4 e2 = 0.5f * (patch[1].worldpos + patch[3].worldpos);
+    float4 e3 = 0.5f * (patch[2].worldpos + patch[3].worldpos);
 
-    float3  c = 0.25f * (patch[0].worldpos.xyz + patch[1].worldpos.xyz + patch[2].worldpos.xyz + patch[3].worldpos.xyz);
+    float4 c = 0.25f * (patch[0].worldpos + patch[1].worldpos + patch[2].worldpos + patch[3].worldpos);
 
-	float test = CalcFactor(pos, cam_pos);
 
-    const int outer_factor = test; //64 max 
     const int inner_factor = CalcFactor(c, cam_pos); //64 max 
     // Set the tessellation factors for the three edges of the triangle.
-    output.edges[0] = CalcFactor(e0, cam_pos);
-    output.edges[1] = CalcFactor(e1, cam_pos);
-    output.edges[2] = CalcFactor(e2, cam_pos);
-	output.edges[3] = CalcFactor(e3, cam_pos);
-
-	output.uv[0] = outer_factor; 
-	output.uv[1] = outer_factor; 
-	output.uv[2] = outer_factor;
-	output.uv[3] = outer_factor;
+    output.edges[0] = 64;//CalcFactor(e0, cam_pos);
+    output.edges[1] = 64;//CalcFactor(e1, cam_pos);
+    output.edges[2] = 64;//CalcFactor(e2, cam_pos);
+	output.edges[3] = 64;//CalcFactor(e3, cam_pos);
 
     // Set the tessellation factor for tessallating inside the triangle.
-	output.inside[0] = inner_factor;
-	output.inside[1] = inner_factor;
+	output.inside[0] = 64;//inner_factor;
+	output.inside[1] = 64;//inner_factor;
 
     return output;
 }

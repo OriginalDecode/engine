@@ -68,10 +68,13 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 	float metalness = 1.0f;
 	float roughness = 0.f;
 	GBuffer output = (GBuffer)0;
-	output.Albedo =  float4(color, 1); 
-	output.Normal = float4(float3(0,1,0), 0);
+
+	float4 _color = float4(lerp(color, float3(1,1,1), input.worldpos.y), 1);
+
+	output.Albedo =  _color; //float4(color, 1); 
+	output.Normal = float4(0,1,0, 0);
 	
-	output.Depth = float4(input.pos.z,0,0,1);
+	output.Depth = float4(input.pos.z,0,0,0);
 	
 	output.Emissive = 0;
 
@@ -84,12 +87,12 @@ GBuffer wireframe(DS_OUTPUT input) : SV_Target
 	float metalness = 1.0f;
 	float roughness = 0.f;
 	GBuffer output = (GBuffer)0;
-	output.Albedo =  1; //float4(0,1,0,1);
+	output.Albedo =  0; //float4(0,1,0,1);
 	output.Normal = float4(float3(0,1,0), metalness);
 	
 	output.Depth = float4(input.pos.z,1,0,1);
 	
-	output.Emissive = float4(1,1,1,1);
+	output.Emissive = float4(0,0,0,0);
 
 	return output;
 

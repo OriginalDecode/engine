@@ -11,7 +11,6 @@ cbuffer Matrices : register(b1)
 	float3 padding;
 };
 
-
 struct HS_OUTPUT
 {
 	float4 pos : POSITION0;
@@ -41,6 +40,10 @@ struct DS_OUTPUT
 	float4 camerapos : POSITION1;
 };
 
+
+SamplerState sampler0 : register(s0);
+Texture2D HeightTexture : register (t7);
+
 [domain("quad")]
 DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, const OutputPatch<HS_OUTPUT, 4> patch)
 {
@@ -50,14 +53,17 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, co
 	vertex_pos.x = uvwCoord.x * patch[2].pos;
 	vertex_pos.z = uvwCoord.y * patch[2].pos;
 
+	const float y = HeightTexture.SampleLevel(sampler0, uvwCoord, 0).r;
+	vertex_pos.y = y * 8; 
+
 	output.pos = mul(float4(vertex_pos, 1), orientation);
+	output.worldpos = output.pos;
 	output.pos = mul(output.pos, camera_view_x_proj);
 
 
 	output.normal = patch[0].normal;
 	output.binorm = patch[0].binorm;
 	output.tang = patch[0].tang;
-	//output.worldpos = patch[0].worldpos;
 
 	output.uv =  uvwCoord.x * patch[1].uv + uvwCoord.y * patch[2].uv;
 

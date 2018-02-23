@@ -28,6 +28,7 @@ void Effect::Use()
 	context.SetComputeShader(m_ComputeShader);
 	context.VSSetShaderResource(0, _COUNT, m_Resources);
 	context.PSSetShaderResource(0, _COUNT, m_Resources);
+	context.DSSetShaderResource(REGISTER_7, 1, &m_Resources[REGISTER_7]);
 }
 
 void Effect::Clear()

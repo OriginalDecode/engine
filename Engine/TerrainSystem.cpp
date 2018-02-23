@@ -7,6 +7,8 @@
 #include <Engine/Renderer.h>
 #include <Engine/RenderContext.h>
 
+#include <engine/profile_defines.h>
+
 TerrainSystem::TerrainSystem()
 {
 	//m_Tree = QuadTree(1024.f, { 1024.f,0.f,1024.f, 1.f });
@@ -29,6 +31,7 @@ void TerrainSystem::Update()
 
 bool test::Leaf::Render()
 {
+	PROFILE_FUNCTION(profiler::colors::Red);
 	bool rendered = false;
 	for (int i = 0; i < 4; i++)
 	{
@@ -94,6 +97,8 @@ static int previous_index = 0;
 
 void test::Leaf::subdivide()
 {
+	PROFILE_FUNCTION(profiler::colors::Red500);
+
 	m_Children[0] = new Leaf;
 	m_Children[1] = new Leaf;
 	m_Children[2] = new Leaf;
@@ -131,16 +136,18 @@ void test::Leaf::subdivide()
 	}
 
 
-
+	PROFILE_BLOCK("create terrain", profiler::colors::Red700);
 	AABB bb = m_AABB;
 	float halfwidth = bb.m_Halfwidth;
 	bb.m_Halfwidth *= 0.5f;
 
+	PROFILE_BLOCK("create 1 terrain", profiler::colors::RedA100);
 	bb.m_Pos.x = bb.m_Pos.x - bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y + bb.m_Halfwidth;
 	m_Children[0]->m_AABB = bb;
 	m_Children[0]->m_Terrain = new Terrain(halfwidth, color);
 	m_Children[0]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
+	PROFILE_BLOCK_END;
 
 	bb.m_Pos = m_AABB.m_Pos;
 	bb.m_Pos.x = bb.m_Pos.x + bb.m_Halfwidth;
@@ -163,7 +170,7 @@ void test::Leaf::subdivide()
 	m_Children[3]->m_Terrain = new Terrain(halfwidth, color);
 	m_Children[3]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
 
-
+	PROFILE_BLOCK_END;
 }
 
 test::Leaf::Leaf()
@@ -182,6 +189,7 @@ test::Leaf::~Leaf()
 
 bool test::Leaf::Insert(Position pos)
 {
+	PROFILE_FUNCTION(profiler::colors::Red800);
 	if (!this)
 		return false;
 
@@ -208,6 +216,7 @@ void test::QuadTree::Draw()
 
 void test::QuadTree::Update(float x, float y)
 {
+	PROFILE_FUNCTION(profiler::colors::Red600);
 	test::Position pos;
 	pos.x = x;
 	pos.y = y;
@@ -228,6 +237,7 @@ void test::QuadTree::Init(Position xy)
 
 void test::QuadTree::Insert(Position xy)
 {
+	PROFILE_FUNCTION(profiler::colors::Red400);
 	m_Root->Insert(xy);
 }
 

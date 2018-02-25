@@ -1,6 +1,6 @@
 SamplerState sampler0 	: register ( s0 );
 
-Texture2D RefractionTexture	: register ( t0 );
+Texture2D AlbedoTexture		: register ( t0 );
 Texture2D NormalTexture  	: register ( t1 );
 Texture2D RoughnessTexture 	: register ( t2 );
 Texture2D ReflectionTexture	: register ( t3 );
@@ -69,12 +69,14 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 	float roughness = 0.f;
 	GBuffer output = (GBuffer)0;
 
-	float4 _color = float4(lerp(color, float3(1,1,1), input.worldpos.y), 1);
+	float4 _color = float4(lerp(float3(0,0,0), float3(1,1,1), input.worldpos.y / 255), 1);
 
-	output.Albedo =  _color; //float4(color, 1); 
-	output.Normal = float4(0,1,0, 0);
+	output.Albedo = AlbedoTexture.Sample(sampler0, input.uv);// * _color;// float4(color, 1); //float4(color, 1); 
+	output.Albedo = pow(output.Albedo, 2.2);
+	output.Albedo = _color;
+	output.Normal = float4(0,1,0, 1);
 	
-	output.Depth = float4(input.pos.z,0,0,0);
+	output.Depth = float4(input.pos.z,1,0,0);
 	
 	output.Emissive = 0;
 

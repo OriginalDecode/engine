@@ -17,7 +17,7 @@ class Terrain : public BaseModel
 public:
 
 	Terrain() = default;
-	Terrain(float halfwidth, CU::Vector3f color = { 0,0,0 });
+	Terrain(float halfwidth, CU::Vector2f tex[4], CU::Vector3f color = { 0,0,0 });
 
 	bool Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
 	void CleanUp();
@@ -35,7 +35,9 @@ public:
 	std::vector<float> GetVerticeArrayCopy();
 	std::vector<s32> GetIndexArrayCopy();
 	void SetPosition(CU::Vector2f position);
-	bool HasLoaded() const { return m_HasLoaded; }private:
+	bool HasLoaded() const { return m_HasLoaded; }
+private:
+
 	bool m_HasLoaded = false;
 	void UpdateConstantBuffer(const graphics::RenderContext& rc) { };
 
@@ -43,6 +45,9 @@ public:
 	void CalculateNormals(CU::GrowingArray<SVertexPosNormUVBiTang>& VertArray);
 	float GetHeight(unsigned int aX, unsigned int aY) const;
 	float GetHeight(unsigned int aIndex) const;
+
+	void CreatePlane(float halfwidth) override;
+
 
 	SHeightMap myHeightmap;
 
@@ -54,11 +59,15 @@ public:
 	u32 myWidth;
 	u32 myDepth;
 	CU::Vector3f m_Color;
+	CU::Vector2f m_UV[4];
+
 
 	graphics::ConstantBuffer m_Buffer;
 	graphics::ConstantBuffer m_PixelBuffer;
 	//VertexBaseStruct myConstantStruct;
 
 	Effect* m_ClipEffect = nullptr;
+
+	
 
 };

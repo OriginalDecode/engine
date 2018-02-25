@@ -4,27 +4,33 @@
 #include <Engine/Effect.h>
 #define DIVIDE 255.f
 
-Terrain::Terrain(float halfwidth, CU::Vector3f color)
+Terrain::Terrain(float halfwidth, CU::Vector2f tex[4], CU::Vector3f color)
 	: m_Color(color)
 {
 	m_Effect = Engine::GetInstance()->GetEffect("Data/Shaders/gpu_terrain.json");
+
+	for (int i = 0; i < 4; i++)
+		m_UV[i] = tex[i];
 
 	myWidth = halfwidth / 2;
 	myDepth = halfwidth / 2;
 
 	CreatePlane(halfwidth);
 	m_IsRoot = false;
-	
+
 	m_Buffer.RegisterVariable(&m_Orientation);
 	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetCamera()->GetOrientation());
 	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetDeltaTimeRef());
+	m_Buffer.RegisterVariable(&m_UV);
 	m_Buffer.Initiate();
 
 	m_PixelBuffer.RegisterVariable(&m_Color);
 	m_PixelBuffer.Initiate();
 
 	Engine::GetInstance()->LoadTexture("Data/Textures/terrain/britannia.dds");
+	Engine::GetInstance()->LoadTexture("Data/Material/grass/grass1-albedo3.dds");
 
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Material/grass/grass1-albedo3.dds"), Effect::REGISTER_0);
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain/britannia.dds"), Effect::REGISTER_7);
 	//m_Material = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
 
@@ -77,16 +83,16 @@ void Terrain::CleanUp()
 
 void Terrain::Render(const graphics::RenderContext& rc)
 {
-// 	if (!m_Material)
-// 		return;
-	
+	// 	if (!m_Material)
+	// 		return;
+
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 	graphics::IGraphicsAPI& api = rc.GetAPI();
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
 
 	//UpdateConstantBuffer(rc);
 	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
@@ -99,12 +105,7 @@ void Terrain::Render(const graphics::RenderContext& rc)
 	//mySurface->Activate(rc);
 	//m_Material->Use(m_Effect);
 	ctx.DrawIndexed(this, m_Effect);
-
-
-
-
 	//mySurface->Deactivate();
-
 }
 
 void Terrain::Render(const graphics::RenderContext& rc, bool override_shader)
@@ -187,7 +188,7 @@ std::vector<s32> Terrain::GetIndexArrayCopy()
 
 void Terrain::SetPosition(CU::Vector2f position)
 {
-	m_Orientation.SetPosition(CU::Vector4f(position.x - myWidth, 0, position.y-myDepth, 1));
+	m_Orientation.SetPosition(CU::Vector4f(position.x - myWidth, 0, position.y - myDepth, 1));
 }
 
 void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position)
@@ -216,7 +217,7 @@ void Terrain::CreateVertices(u32 width, u32 height, const CU::Vector3f& position
 	}
 	CalculateNormals(vertices);
 
-	CU::GrowingArray<u32> indexes((myHeightmap.myDepth *  myHeightmap.myWidth) * 6 );
+	CU::GrowingArray<u32> indexes((myHeightmap.myDepth *  myHeightmap.myWidth) * 6);
 	for (u32 z = 0; z < myHeightmap.myDepth - 1; ++z)
 	{
 		for (u32 x = 0; x < myHeightmap.myWidth - 1; ++x)
@@ -354,6 +355,115 @@ float Terrain::GetHeight(unsigned int aX, unsigned int aY) const
 float Terrain::GetHeight(unsigned int aIndex) const
 {
 	return myHeightmap.myData[aIndex];
+}
+
+void Terrain::CreatePlane(float halfwidth)
+{
+	PROFILE_FUNCTION(profiler::colors::Green);
+
+	auto& device = Engine::GetAPI()->GetDevice();
+	graphics::InputElementDesc desc[] =
+	{
+		{ "POSITION", 0, graphics::_16BYTE_RGBA, 0, 0, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, graphics::_12BYTE_RGB, 0, 16, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, graphics::_8BYTE_RG, 0, 28, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "BINORMAL", 0, graphics::_12BYTE_RGB, 0, 36, graphics::INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, graphics::_12BYTE_RGB, 0, 48, graphics::INPUT_PER_VERTEX_DATA, 0 },
+	};
+
+
+	CU::GrowingArray<SVertexPosNormUVBiTang> m_Vertices;
+
+	SVertexPosNormUVBiTang vert;
+	vert.position = { -halfwidth, 0, halfwidth, 1 };
+	vert.normal = { 0, 1, 0 };
+	vert.uv = { m_UV[0].x, m_UV[0].y };
+	m_Vertices.Add(vert);
+
+	vert.position = { -halfwidth, 0, -halfwidth, 1 };
+	vert.normal = { 0, 1, 0 };
+	vert.uv = { m_UV[1].x, m_UV[1].y };
+
+	m_Vertices.Add(vert);
+
+	vert.position = { halfwidth, 0, halfwidth, 1 };
+	vert.normal = { 0, 1, 0 };
+	vert.uv = { m_UV[2].x, m_UV[2].y };
+	m_Vertices.Add(vert);
+
+	vert.position = { halfwidth, 0, -halfwidth, 1 };
+	vert.normal = { 0, 1, 0 };
+	vert.uv = { m_UV[3].x, m_UV[3].y };
+	m_Vertices.Add(vert);
+
+	const s32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
+	const s32 vtx_count = m_Vertices.Size();
+	const s32 vtx_size = vtx_count * vtx_stride;
+	const s32 vtx_buff_count = 1;
+	const s32 vtx_start = 0;
+	const s32 vtx_byte_offset = 0;
+	s8* vtx_data = new s8[vtx_size];
+	memcpy(vtx_data, &m_Vertices[0], vtx_size);
+
+
+	graphics::BufferDesc vtx_desc;
+	vtx_desc.m_Size = vtx_size;
+	vtx_desc.m_Data = vtx_data;
+	vtx_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
+	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
+	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
+	vtx_desc.m_ByteWidth = vtx_size;
+
+	IBuffer* vtx_buffer = device.CreateBuffer(vtx_desc, "WaterPlane VertexBuffer");
+
+
+	
+	m_VertexWrapper.SetData(vtx_data);
+	m_VertexWrapper.SetStart(vtx_start);
+	m_VertexWrapper.SetStride(vtx_stride);
+	m_VertexWrapper.SetByteOffset(vtx_byte_offset);
+	m_VertexWrapper.SetVertexCount(vtx_count);
+	m_VertexWrapper.SetSize(vtx_size);
+	m_VertexWrapper.SetBuffer(vtx_buffer);
+	m_VertexWrapper.SetInputLayout(device.CreateInputLayout(m_Effect->GetVertexShader(), desc, ARRSIZE(desc)));
+	m_VertexWrapper.SetTopology(graphics::_4_CONTROL_POINT_PATCHLIST);
+
+	CU::GrowingArray<u32> indices;
+	indices.Add(0);
+	indices.Add(1);
+	indices.Add(2);
+
+	indices.Add(3);
+	indices.Add(2);
+	indices.Add(1);
+
+	const s32 idx_count = indices.Size();
+	const s32 idx_stride = sizeof(u32);
+	const s32 idx_size = idx_count * idx_stride;
+	const s32 idx_start = 0;
+	const s32 idx_byte_offset = 0;
+
+	s8* idx_data = new s8[idx_size];
+	memcpy(idx_data, &indices[0], idx_size);
+
+	graphics::BufferDesc idx_desc;
+	idx_desc.m_Size = idx_size;
+	idx_desc.m_Data = idx_data;
+	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
+	idx_desc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
+	idx_desc.m_StructuredByteStride = 0;
+	idx_desc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
+	idx_desc.m_MiscFlags = 0;
+	idx_desc.m_ByteWidth = idx_desc.m_Size;
+	IBuffer* idx_buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc, "WaterPlane IndexBuffer");
+
+	m_IndexWrapper.SetData(idx_data);
+	m_IndexWrapper.SetIndexCount(idx_count);
+	m_IndexWrapper.SetStart(idx_start);
+	m_IndexWrapper.SetSize(idx_size);
+	m_IndexWrapper.SetFormat(graphics::R32_UINT);
+	m_IndexWrapper.SetByteOffset(idx_byte_offset);
+	m_IndexWrapper.SetBuffer(idx_buffer);
 }
 
 SHeightMap Create(const char* filepath)

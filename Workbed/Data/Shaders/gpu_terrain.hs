@@ -55,16 +55,26 @@ ConstantOutputType ColorPatchConstantFunction(InputPatch<VS_OUTPUT, 4> patch, ui
     float4 c = 0.25f * (patch[0].worldpos + patch[1].worldpos + patch[2].worldpos + patch[3].worldpos);
 
 
+
+
+	
     const int inner_factor = CalcFactor(c, cam_pos); //64 max 
     // Set the tessellation factors for the three edges of the triangle.
-    output.edges[0] = 64;//CalcFactor(e0, cam_pos);
-    output.edges[1] = 64;//CalcFactor(e1, cam_pos);
-    output.edges[2] = 64;//CalcFactor(e2, cam_pos);
-	output.edges[3] = 64;//CalcFactor(e3, cam_pos);
+    output.edges[0] = 64; //CalcFactor(e0, cam_pos);
+    output.edges[1] = 64; //CalcFactor(e1, cam_pos);
+    output.edges[2] = 64; //CalcFactor(e2, cam_pos);
+	output.edges[3] = 64; //CalcFactor(e3, cam_pos);
+
+	output.uv[0] = patch[0].uv;
+	output.uv[1] = patch[1].uv;
+	output.uv[2] = patch[2].uv;
+	output.uv[3] = patch[3].uv;
+	
+
 
     // Set the tessellation factor for tessallating inside the triangle.
-	output.inside[0] = 64;//inner_factor;
-	output.inside[1] = 64;//inner_factor;
+	output.inside[0] = 64; //inner_factor;
+	output.inside[1] = 64; //inner_factor;
 
     return output;
 }

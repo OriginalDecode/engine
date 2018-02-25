@@ -31,6 +31,8 @@
 #include <network/NetworkManager.h>
 namespace debug
 {
+
+	static float light_dir[3];
 	static s32 s_MaterialIndex = 0;
 
 	static auto GetVector = [](void* vec, int index, const char** out_text)
@@ -57,6 +59,8 @@ namespace debug
 	bool DebugHandle::s_PausePhysics = false;
 	DebugHandle::DebugHandle()
 	{
+		light_dir[1] = 1.f;
+
 		EventManager* mgr = EventManager::GetInstance();
 		mgr->Subscribe("create_entity", this);
 		mgr->Subscribe(DebugEvents_OnRightClick, this);
@@ -287,7 +291,7 @@ namespace debug
 			ImGui::Separator();
 
 			ImGui::Text("Light Direction");
-			static float light_dir[3];
+			
 			ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
 			ImGui::SliderFloat("Y", &light_dir[1], 0.f, 1.f);
 			ImGui::SliderFloat("Z", &light_dir[2], -1.f, 1.f);

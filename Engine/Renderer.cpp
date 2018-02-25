@@ -74,7 +74,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_DirectionalShadow.Initiate(2048.f);
 
-	m_Direction = CU::Vector3f(0.42f, 0.73f, 0.24f);
+	m_Direction = CU::Vector3f(0.0f, 1.0f, 0.0f);
 
 	myPointLight = new PointLight();
 

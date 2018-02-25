@@ -45,16 +45,22 @@ SamplerState sampler0 : register(s0);
 Texture2D HeightTexture : register (t7);
 
 [domain("quad")]
-DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, const OutputPatch<HS_OUTPUT, 4> patch)
+DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, uint PatchID : SV_PrimitiveID , const OutputPatch<HS_OUTPUT, 4> patch)
 {
 	float3 vertex_pos = float3(1,1,1);
 	DS_OUTPUT output = (DS_OUTPUT)0;
 
 	vertex_pos.x = uvwCoord.x * patch[2].pos;
 	vertex_pos.z = uvwCoord.y * patch[2].pos;
+	output.worldpos = mul(float4(vertex_pos, 1), orientation);
 
-	const float y = HeightTexture.SampleLevel(sampler0, uvwCoord, 0).r;
-	vertex_pos.y = y * 8; 
+	float2 testUV;
+	testUV.x = (512 + output.worldpos.x) / 1024.f;
+	testUV.y = (512 - output.worldpos.z) / 1024.f;
+
+
+	const float y = HeightTexture.SampleLevel(sampler0, testUV, 0).r;
+	vertex_pos.y = y * 128; 
 
 	output.pos = mul(float4(vertex_pos, 1), orientation);
 	output.worldpos = output.pos;
@@ -65,7 +71,7 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, co
 	output.binorm = patch[0].binorm;
 	output.tang = patch[0].tang;
 
-	output.uv =  uvwCoord.x * patch[1].uv + uvwCoord.y * patch[2].uv;
+	output.uv =  uvwCoord;//uvwCoord.x * patch[1].uv + uvwCoord.y * patch[2].uv;
 
 	return output;
 }

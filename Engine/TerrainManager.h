@@ -10,6 +10,9 @@ public:
 	bool CleanUp();
 	Terrain* GetTerrain(u64 terrain_hash);
 	Terrain* GetTerrain(const std::string& terrain_name);
+
+	void AddTerrain(u64 hash, Terrain* terrain);
+
 private:
 	bool m_FinishedLoading = false;
 	std::map<u64, Terrain*> m_Terrain;

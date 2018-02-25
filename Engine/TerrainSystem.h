@@ -17,7 +17,7 @@ namespace test
 		float m_Halfwidth;
 
 		bool Intersect(Position position);
-
+		bool Intersect(Position position, float radius);
 
 
 	};
@@ -31,6 +31,7 @@ namespace test
 		Leaf* m_Parent = nullptr;
 		Leaf* m_Children[4];
 		int m_Size = 0;
+		int m_Depth = 0;
 		int m_Index = 0;
 		bool Insert(Position pos);
 		void subdivide();
@@ -40,6 +41,8 @@ namespace test
 		void Reset();
 		Terrain* m_Terrain = nullptr;
 
+
+		bool isNeighbour(test::Leaf* leaf);
 
 	};
 

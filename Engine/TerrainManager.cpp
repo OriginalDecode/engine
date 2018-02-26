@@ -46,9 +46,8 @@ void TerrainManager::LoadTerrain(const std::string& terrain_name)
 Terrain* TerrainManager::GetTerrain(u64 terrain_hash)
 {
 	if (m_Terrain.find(terrain_hash) == m_Terrain.end())
-	{
 		return nullptr;
-	}
+
 	return m_Terrain[terrain_hash];
 }
 

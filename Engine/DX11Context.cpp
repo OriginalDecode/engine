@@ -418,7 +418,11 @@ namespace graphics
 		ID3D11Buffer* pVtxBuffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
 		const u32 stride = vtx.GetStride();
 		const u32 offset = vtx.GetByteOffset();
-
+		m_Context->IASetVertexBuffers(1,
+			1,
+			&pVtxBuffer,
+			&stride,
+			&offset);
 		m_Context->IASetVertexBuffers(0,
 									  1,
 									  &pVtxBuffer,

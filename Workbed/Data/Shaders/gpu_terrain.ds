@@ -59,8 +59,8 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 	testUV.y = (1024 - output.worldpos.z) / 1024.f;
 
 
-	// const float y = HeightTexture.SampleLevel(sampler0, testUV, 0).r;
-	// vertex_pos.y = max(0, y * 128); 
+	const float y = HeightTexture.SampleLevel(sampler0, testUV, 0).r;
+	vertex_pos.y = y * 128;
 
 	output.pos = mul(float4(vertex_pos, 1), orientation);
 	output.worldpos = output.pos;

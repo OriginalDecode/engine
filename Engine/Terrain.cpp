@@ -36,6 +36,32 @@ Terrain::Terrain(float halfwidth, CU::Vector2f tex[4], CU::Vector3f color)
 
 }
 
+Terrain::Terrain(float halfwidth, CU::Vector3f color )
+{
+	m_Effect = Engine::GetInstance()->GetEffect("Data/Shaders/gpu_terrain.json");
+
+	myWidth = halfwidth / 2;
+	myDepth = halfwidth / 2;
+
+	CreatePlane(halfwidth);
+	m_IsRoot = false;
+
+	m_Buffer.RegisterVariable(&m_Orientation);
+	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetCamera()->GetOrientation());
+	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetDeltaTimeRef());
+	m_Buffer.RegisterVariable(&m_UV);
+	m_Buffer.Initiate();
+
+	m_PixelBuffer.RegisterVariable(&m_Color);
+	m_PixelBuffer.Initiate();
+
+	Engine::GetInstance()->LoadTexture("Data/Textures/terrain/t1..png");
+	Engine::GetInstance()->LoadTexture("Data/Material/grass/grass1-albedo3.dds");
+
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Material/grass/grass1-albedo3.dds"), Effect::REGISTER_0);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain/t1.png"), Effect::REGISTER_7);
+}
+
 bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
 {
 	myWidth = (u32)aSize.x;

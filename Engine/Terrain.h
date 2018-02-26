@@ -18,6 +18,7 @@ public:
 
 	Terrain() = default;
 	Terrain(float halfwidth, CU::Vector2f tex[4], CU::Vector3f color = { 0,0,0 });
+	Terrain(float halfwidth, CU::Vector3f color = { 0,0,0 });
 
 	bool Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize);
 	void CleanUp();

@@ -10,18 +10,40 @@
 #include <engine/profile_defines.h>
 #include <Engine/TerrainManager.h>
 
-#define MAX_DEPTH 6
+#define MAX_DEPTH 7
+constexpr float radius = 64.f;
+
+static const char* s_TerrainLevels[] = {
+	"1024",
+	"512",
+	"256",
+	"128",
+	"64",
+	"32",
+	"16",
+	"8",
+	"4",
+	"2"
+};
+
+static std::vector<u64> s_HashTerrain;
 
 TerrainSystem::TerrainSystem()
 {
-	//m_Tree = QuadTree(1024.f, { 1024.f,0.f,1024.f, 1.f });
-
+	TerrainManager* manager = Engine::GetInstance()->GetTerrainManager();
+	int width = 512;
+	for (int i = 0; i < MAX_DEPTH; i++)
+	{
+		Terrain* terrain = new Terrain(width);
+		s_HashTerrain.push_back(Hash(s_TerrainLevels[i]));
+		manager->AddTerrain(s_HashTerrain[i], terrain);
+		width *= 0.5f;
+	}
 
 	test::Position pos;
 	pos.x = 512;
 	pos.y = 512;
 	m_Tree.Init(pos);
-
 
 }
 
@@ -69,6 +91,7 @@ bool test::Leaf::Render()
 		sync->AddRenderCommand(LineCommand(p1, p3, false));
 		sync->AddRenderCommand(LineCommand(p3, p0, false));
 
+		m_Terrain->SetPosition(CU::Vector2f(m_AABB.m_Pos.x, m_AABB.m_Pos.y));
  		m_Terrain->Render(Engine::GetInstance()->GetRenderer()->GetRenderContext());
 		return true;
  	}
@@ -94,8 +117,6 @@ bool test::Leaf::isNeighbour(test::Leaf* leaf)
 	return true;
 }
 
-static int terrain_id = 0;
-
 void test::Leaf::subdivide()
 {
 	PROFILE_FUNCTION(profiler::colors::Red500);
@@ -114,6 +135,8 @@ void test::Leaf::subdivide()
 
 
 	CU::Vector2f uv[4];
+	TerrainManager* manager = Engine::GetInstance()->GetTerrainManager();
+	Terrain* terrain = manager->GetTerrain(s_HashTerrain[m_Depth]);
 
 	PROFILE_BLOCK("create terrain", profiler::colors::Red700);
 	AABB bb = m_AABB;
@@ -122,74 +145,32 @@ void test::Leaf::subdivide()
 
 	bb.m_Pos.x = bb.m_Pos.x - bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y + bb.m_Halfwidth;
+
 	m_Children[0]->m_AABB = bb;
-
-	TerrainManager* manager = Engine::GetInstance()->GetTerrainManager();
-	
-	PROFILE_BLOCK("create 1 terrain", profiler::colors::RedA100);
-	char temp[100];
-	sprintf_s(temp, 100, "%d", ++terrain_id);
-	u64 hash0 = Hash(temp);
-	Terrain* terrain = manager->GetTerrain(hash0);
-	if (!terrain)
-	{
-		terrain = new Terrain(halfwidth, uv, color);
-		manager->AddTerrain(hash0, terrain);
-
-	}
 	m_Children[0]->m_Terrain = terrain;
-	m_Children[0]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
-	PROFILE_BLOCK_END;
 
 	bb.m_Pos = m_AABB.m_Pos;
 	bb.m_Pos.x = bb.m_Pos.x + bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y + bb.m_Halfwidth;
-	m_Children[1]->m_AABB = bb;
 
-	sprintf_s(temp, 100, "%d", ++terrain_id);
-	hash0 = Hash(temp);
-	terrain = manager->GetTerrain(hash0);
-	if (!terrain)
-	{
-		terrain = new Terrain(halfwidth, uv, color);
-		manager->AddTerrain(hash0, terrain);
-	}
+	m_Children[1]->m_AABB = bb;
 	m_Children[1]->m_Terrain = terrain;
-	m_Children[1]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
 
 
 	bb.m_Pos = m_AABB.m_Pos;
 	bb.m_Pos.x = bb.m_Pos.x + bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y - bb.m_Halfwidth;
-	m_Children[2]->m_AABB = bb;
 
-	sprintf_s(temp, 100, "%d", ++terrain_id);
-	hash0 = Hash(temp);
-	terrain = manager->GetTerrain(hash0);
-	if (!terrain)
-	{
-		terrain = new Terrain(halfwidth, uv, color);
-		manager->AddTerrain(hash0, terrain);
-	}
+	m_Children[2]->m_AABB = bb;
 	m_Children[2]->m_Terrain = terrain;
-	m_Children[2]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
 
 
 	bb.m_Pos = m_AABB.m_Pos;
 	bb.m_Pos.x = bb.m_Pos.x - bb.m_Halfwidth;
 	bb.m_Pos.y = bb.m_Pos.y - bb.m_Halfwidth;
-	m_Children[3]->m_AABB = bb;
 
-	sprintf_s(temp, 100, "%d", ++terrain_id);
-	hash0 = Hash(temp);
-	terrain = manager->GetTerrain(hash0);
-	if (!terrain)
-	{
-		terrain = new Terrain(halfwidth, uv, color);
-		manager->AddTerrain(hash0, terrain);
-	}
+	m_Children[3]->m_AABB = bb;
 	m_Children[3]->m_Terrain = terrain;
-	m_Children[3]->m_Terrain->SetPosition(CU::Vector2f(bb.m_Pos.x, bb.m_Pos.y));
 
 
 	PROFILE_BLOCK_END;
@@ -209,7 +190,6 @@ test::Leaf::~Leaf()
 		delete m_Children[i];
 }
 
-constexpr float radius = 32.f;
 bool test::Leaf::Insert(Position pos)
 {
 	PROFILE_FUNCTION(profiler::colors::Red800);
@@ -230,7 +210,8 @@ bool test::Leaf::Insert(Position pos)
 	{
 		m_Children[i]->Insert(pos);
 	}
-	return false;
+
+	return true;
 }
 
 void test::QuadTree::Draw()
@@ -245,11 +226,9 @@ void test::QuadTree::Update(float x, float y)
 	pos.x = x;
 	pos.y = y;
 
-	terrain_id = 0;
 	m_Root->Reset();
 	if (m_Root->m_AABB.Intersect(pos, radius))
 		m_Root->Insert(pos);
-
 
 }
 

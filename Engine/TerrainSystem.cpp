@@ -10,7 +10,7 @@
 #include <engine/profile_defines.h>
 #include <Engine/TerrainManager.h>
 
-#define MAX_DEPTH 8
+#define MAX_DEPTH 6
 
 TerrainSystem::TerrainSystem()
 {
@@ -54,21 +54,22 @@ bool test::Leaf::Render()
 	pos1 -= m_AABB.m_Halfwidth;
 
 	LinePoint p0, p1, p2, p3;
-	p0.position = CU::Vector4f(pos1.x, 0.f, pos1.z, 1);
-	p1.position = CU::Vector4f(pos0.x, 0.f, pos0.z, 1);
-	p2.position = CU::Vector4f(pos1.x, 0.f, pos0.z, 1);
-	p3.position = CU::Vector4f(pos0.x, 0.f, pos1.z, 1);
+	p0.position = CU::Vector4f(pos1.x, -10.0f, pos1.z, 1);
+	p1.position = CU::Vector4f(pos0.x, -10.0f, pos0.z, 1);
+	p2.position = CU::Vector4f(pos1.x, -10.0f, pos0.z, 1);
+	p3.position = CU::Vector4f(pos0.x, -10.0f, pos1.z, 1);
+	
+ 
 
- 	
- 	sync->AddRenderCommand(LineCommand(p0, p2, false));
- 	sync->AddRenderCommand(LineCommand(p2, p1, false));
- 	sync->AddRenderCommand(LineCommand(p1, p3, false));
- 	sync->AddRenderCommand(LineCommand(p3, p0, false));
-
- 	if (m_Terrain && !rendered)
+ 	if (m_Terrain && !rendered && m_Depth >= MAX_DEPTH)
  	{
+
+		sync->AddRenderCommand(LineCommand(p0, p2, false));
+		sync->AddRenderCommand(LineCommand(p2, p1, false));
+		sync->AddRenderCommand(LineCommand(p1, p3, false));
+		sync->AddRenderCommand(LineCommand(p3, p0, false));
+
  		m_Terrain->Render(Engine::GetInstance()->GetRenderer()->GetRenderContext());
- 		//m_Terrain->Wireframe(Engine::GetInstance()->GetRenderer()->GetRenderContext());
 		return true;
  	}
 
@@ -80,13 +81,8 @@ void test::Leaf::Reset()
 	for (int i = 0; i < 4; i++)
 	{
 		if(m_Children[i])
-			m_Children[i]->Reset();
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		if (m_Children[i])
 		{
+			m_Children[i]->Reset();
 			delete m_Children[i];
 			m_Children[i] = nullptr;
 		}
@@ -211,7 +207,7 @@ test::Leaf::~Leaf()
 		delete m_Children[i];
 }
 
-constexpr float radius = 0.f;
+constexpr float radius = 32.f;
 bool test::Leaf::Insert(Position pos)
 {
 	PROFILE_FUNCTION(profiler::colors::Red800);

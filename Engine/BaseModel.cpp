@@ -70,7 +70,9 @@ void BaseModel::CreatePlane(float half_width)
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
 	vtx_desc.m_ByteWidth = vtx_size;
 
-	IBuffer* vtx_buffer = device.CreateBuffer(vtx_desc, "WaterPlane VertexBuffer");
+	char temp[100];
+	sprintf_s(temp, 100, "%s Vertex Buffer", typeid(this).name());
+	IBuffer* vtx_buffer = device.CreateBuffer(vtx_desc, temp);
 
 
 
@@ -111,7 +113,10 @@ void BaseModel::CreatePlane(float half_width)
 	idx_desc.m_CPUAccessFlag = graphics::NO_ACCESS_FLAG;
 	idx_desc.m_MiscFlags = 0;
 	idx_desc.m_ByteWidth = idx_desc.m_Size;
-	IBuffer* idx_buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc, "WaterPlane IndexBuffer");
+
+
+	sprintf_s(temp, 100, "%s Index Buffer", typeid(this).name());
+	IBuffer* idx_buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc, temp);
 
 	m_IndexWrapper.SetData(idx_data);
 	m_IndexWrapper.SetIndexCount(idx_count);

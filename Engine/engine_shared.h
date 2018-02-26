@@ -17,6 +17,10 @@
 
 #define DEBUG_NAME(name,_class) name  #_class
 #define DEBUG_NAME_A(str,_class) str + #_class
+
+#define CLASS_NAME_STR(_class) #_class
+
+
 struct LinePoint
 {
 	LinePoint(const CU::Vector4f& pos, const CU::Vector4f& col)

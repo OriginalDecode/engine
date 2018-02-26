@@ -54,14 +54,14 @@ bool test::Leaf::Render()
 	pos1 -= m_AABB.m_Halfwidth;
 
 	LinePoint p0, p1, p2, p3;
-	p0.position = CU::Vector4f(pos1.x, -10.0f, pos1.z, 1);
-	p1.position = CU::Vector4f(pos0.x, -10.0f, pos0.z, 1);
-	p2.position = CU::Vector4f(pos1.x, -10.0f, pos0.z, 1);
-	p3.position = CU::Vector4f(pos0.x, -10.0f, pos1.z, 1);
+	p0.position = CU::Vector4f(pos1.x, 0.0f, pos1.z, 1);
+	p1.position = CU::Vector4f(pos0.x, 0.0f, pos0.z, 1);
+	p2.position = CU::Vector4f(pos1.x, 0.0f, pos0.z, 1);
+	p3.position = CU::Vector4f(pos0.x, 0.0f, pos1.z, 1);
 	
  
 
- 	if (m_Terrain && !rendered && m_Depth >= MAX_DEPTH)
+ 	if (m_Terrain && !rendered)
  	{
 
 		sync->AddRenderCommand(LineCommand(p0, p2, false));
@@ -93,6 +93,8 @@ bool test::Leaf::isNeighbour(test::Leaf* leaf)
 {
 	return true;
 }
+
+static int terrain_id = 0;
 
 void test::Leaf::subdivide()
 {
@@ -126,7 +128,7 @@ void test::Leaf::subdivide()
 	
 	PROFILE_BLOCK("create 1 terrain", profiler::colors::RedA100);
 	char temp[100];
-	sprintf_s(temp, 100, "%d%d%d", m_Index, m_Depth, m_Children[0]->m_Index);
+	sprintf_s(temp, 100, "%d", ++terrain_id);
 	u64 hash0 = Hash(temp);
 	Terrain* terrain = manager->GetTerrain(hash0);
 	if (!terrain)
@@ -144,7 +146,7 @@ void test::Leaf::subdivide()
 	bb.m_Pos.y = bb.m_Pos.y + bb.m_Halfwidth;
 	m_Children[1]->m_AABB = bb;
 
-	sprintf_s(temp, 100, "%d%d%d", m_Index, m_Depth, m_Children[1]->m_Index);
+	sprintf_s(temp, 100, "%d", ++terrain_id);
 	hash0 = Hash(temp);
 	terrain = manager->GetTerrain(hash0);
 	if (!terrain)
@@ -161,7 +163,7 @@ void test::Leaf::subdivide()
 	bb.m_Pos.y = bb.m_Pos.y - bb.m_Halfwidth;
 	m_Children[2]->m_AABB = bb;
 
-	sprintf_s(temp, 100, "%d%d%d", m_Index, m_Depth, m_Children[2]->m_Index);
+	sprintf_s(temp, 100, "%d", ++terrain_id);
 	hash0 = Hash(temp);
 	terrain = manager->GetTerrain(hash0);
 	if (!terrain)
@@ -178,7 +180,7 @@ void test::Leaf::subdivide()
 	bb.m_Pos.y = bb.m_Pos.y - bb.m_Halfwidth;
 	m_Children[3]->m_AABB = bb;
 
-	sprintf_s(temp, 100, "%d%d%d", m_Index, m_Depth, m_Children[3]->m_Index);
+	sprintf_s(temp, 100, "%d", ++terrain_id);
 	hash0 = Hash(temp);
 	terrain = manager->GetTerrain(hash0);
 	if (!terrain)
@@ -243,6 +245,7 @@ void test::QuadTree::Update(float x, float y)
 	pos.x = x;
 	pos.y = y;
 
+	terrain_id = 0;
 	m_Root->Reset();
 	if (m_Root->m_AABB.Intersect(pos, radius))
 		m_Root->Insert(pos);

@@ -312,7 +312,7 @@ namespace graphics
 									  &stride,
 									  &offset);
 
-		SetDepthState(Engine::GetAPI()->GetDepthStencilState(Z_ENABLED), 1);
+		SetDepthState(Engine::GetAPI()->GetDepthStencilState(Z_DISABLED), 0);
 		fx->Use();
 		m_Context->Draw(vtx.GetVertexCount(), 0);
 		fx->Clear();

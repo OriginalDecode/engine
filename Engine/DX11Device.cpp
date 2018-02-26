@@ -405,7 +405,12 @@ namespace graphics
 #ifdef _DEBUG 
 		shaderFlag |= D3D10_SHADER_DEBUG;
 		shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
+		//shaderFlag |= D3D10_SHADER_WARNINGS_ARE_ERRORS;
+		shaderFlag |= D3D10_SHADER_AVOID_FLOW_CONTROL;
+#else
+		shaderFlag |= D3D10_SHADER_OPTIMIZATION_LEVEL3;
 #endif
+
 		ID3D10Blob* out_shader = nullptr;
 		ID3D10Blob* out_message = nullptr;
 
@@ -453,7 +458,10 @@ namespace graphics
 #ifdef _DEBUG 
 		shaderFlag |= D3D10_SHADER_DEBUG;
 		shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
+#else
+		shaderFlag |= D3D10_SHADER_OPTIMIZATION_LEVEL3;
 #endif
+
 		std::string feature_level(shader_type);
 		feature_level += "_5_0";
 

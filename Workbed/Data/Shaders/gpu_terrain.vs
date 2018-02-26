@@ -31,16 +31,12 @@ struct VS_OUTPUT
 	float4 camera_pos : POSITION2;
 };
 
-
-SamplerState sampler0 : register(s0);
-Texture2D HeightTexture : register (t7);
-
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	
 	output.pos = input.pos;
-
+	output.pos.w = 1;
 
 	output.uv = input.uv;
 

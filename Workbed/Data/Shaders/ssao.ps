@@ -37,8 +37,7 @@ float3 SSAOGetViewPosition(float2 uv)
 float3 SSAOGetWorldPosition(float2 uv)
 {
 	float3 worldPosition = SSAOGetViewPosition(uv);
-	worldPosition = mul(worldPosition, InvertedView);
-	return worldPosition.xyz;
+	return mul(float4(worldPosition, 1), InvertedView).xyz;
 }
 
 /*
@@ -101,7 +100,7 @@ struct ReturnTextures
 float4 main(VS_OUTPUT input) : SV_Target
 {
 	float4 normal = NormalTexture.Sample(SSAOSampler, input.uv) * 2 - 1;
-	float ao = CalculateSSAO(input.uv,normal);
+	float ao = CalculateSSAO(input.uv,normal.xyz);
 
 	ReturnTextures return_textures;
 	return_textures.m_Diffuse  = DiffuseTexture.Sample(SSAOSampler, input.uv);

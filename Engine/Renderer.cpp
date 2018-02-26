@@ -622,6 +622,8 @@ void Renderer::RenderLines()
 	PROFILE_FUNCTION(profiler::colors::Amber);
 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::LINE_BUFFER);
 	PROFILE_BLOCK("Line Command Loop", profiler::colors::Red);
+
+
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<LineCommand*>(commands[i]);

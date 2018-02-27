@@ -80,11 +80,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 camera_position = View._m30_m31_m32_m33;
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
 
-	const float emiss = Emissive.Sample(sampler0, input.uv).x;
-	if(emiss > 0.f)
-		return float4(emiss, emiss, emiss, emiss);
-
-
 	if(depth.x <= 0)
 		discard;
 
@@ -132,7 +127,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float rough2half = rough2 / 2;
 	float3 half_vec = normalize(light_dir + to_eye);
 
-	return base_col * dot(normal.rgb, light_dir);
+	//return base_col * dot(normal.rgb, light_dir);
 
 	float NdC = dot(normal, to_eye); 
 

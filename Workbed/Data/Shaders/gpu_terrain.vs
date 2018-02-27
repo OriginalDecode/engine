@@ -37,7 +37,9 @@ VS_OUTPUT main(VS_INPUT input)
 	
 	output.pos = input.pos;
 	output.pos.w = 1;
-
+	output.normal = input.normal;
+	output.tang = input.tang;
+	output.binorm = input.binorm;
 	output.uv = input.uv;
 
 	output.camera_pos = camera._m30_m31_m32_m33;

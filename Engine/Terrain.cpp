@@ -55,11 +55,11 @@ Terrain::Terrain(float halfwidth, CU::Vector3f color )
 	m_PixelBuffer.RegisterVariable(&m_Color);
 	m_PixelBuffer.Initiate();
 
-	Engine::GetInstance()->LoadTexture("Data/Textures/terrain/t1..png");
+	Engine::GetInstance()->LoadTexture("Data/Textures/terrain/britannia.dds");
 	Engine::GetInstance()->LoadTexture("Data/Material/grass/grass1-albedo3.dds");
 
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Material/grass/grass1-albedo3.dds"), Effect::REGISTER_0);
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain/t1.png"), Effect::REGISTER_7);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain/britannia.dds"), Effect::REGISTER_7);
 }
 
 bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)

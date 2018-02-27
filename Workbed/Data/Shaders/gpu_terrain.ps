@@ -71,10 +71,21 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 
 	float4 _color = float4(lerp(float3(0,0,0), float3(1,1,1), input.worldpos.y / 255), 1);
 
+
+	float3 _normal = float3(0,1,0);
+	float3 nnormal = normalize(_normal );
+
+	float3 binorm = normalize(cross(float3(0,1,0), float3(1,0,0)));
+	float3 tang = normalize(cross(float3(0,1,0), binorm));
+	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, nnormal);
+	_normal = normalize(mul(_normal.xyz, tangentSpaceMatrix));
+
+	_normal += 1;
+	_normal *= 0.5;
+
 	output.Albedo = AlbedoTexture.Sample(sampler0, input.uv);// * _color;// float4(color, 1); //float4(color, 1); 
 	output.Albedo = pow(output.Albedo, 2.2);
-	output.Albedo = _color;
-	output.Normal = float4(0,1,0, 1);
+	output.Normal = float4(_normal, 1);
 	
 	output.Depth = float4(input.pos.z,1,0,0);
 	

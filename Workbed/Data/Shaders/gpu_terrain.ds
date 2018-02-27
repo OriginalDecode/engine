@@ -68,9 +68,9 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 
 
 
-	output.normal = patch[0].normal;
+	output.normal = mul(patch[0].normal, orientation);
 	output.binorm = patch[0].binorm;
-	output.tang = patch[0].tang;
+	output.tang = mul(patch[0].tang, orientation);
 
 	output.uv =  uvwCoord;//uvwCoord.x * patch[1].uv + uvwCoord.y * patch[2].uv;
 

@@ -37,7 +37,8 @@ struct DS_OUTPUT
 	float3 tang : TANGENT;
 	float4 worldpos : POSITION0;	
 	float4 clip : TEXCOORD1;
-	float4 camerapos : POSITION1;
+	float4 camerapos : POSITION1;	
+	float2 worlduv : TEXCOORD2;
 };
 
 
@@ -60,7 +61,13 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 
 
 	const float y = HeightTexture.SampleLevel(sampler0, testUV, 0).r;
-	vertex_pos.y = y * 128;
+	float y_pos = y * 128;
+	vertex_pos.y = y_pos;
+
+
+	float4 vertex_normal = float4(testUV.x * 0.5, 1, testUV.y * 0.5, 1);
+	vertex_normal = normalize(vertex_normal);
+	vertex_normal.z = -vertex_normal.z;
 
 	output.pos = mul(float4(vertex_pos, 1), orientation);
 	output.worldpos = output.pos;
@@ -68,11 +75,11 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 
 
 
-	output.normal = mul(patch[0].normal, orientation);
+	output.normal = mul(vertex_normal, orientation);
 	output.binorm = patch[0].binorm;
 	output.tang = mul(patch[0].tang, orientation);
 
 	output.uv =  uvwCoord;//uvwCoord.x * patch[1].uv + uvwCoord.y * patch[2].uv;
-
+	output.worlduv = testUV;
 	return output;
 }

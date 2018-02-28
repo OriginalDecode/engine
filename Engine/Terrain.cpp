@@ -56,9 +56,11 @@ Terrain::Terrain(float halfwidth, CU::Vector3f color )
 	m_PixelBuffer.Initiate();
 
 	Engine::GetInstance()->LoadTexture("Data/Textures/terrain/britannia.dds");
+	Engine::GetInstance()->LoadTexture("Data/Textures/terrain/brit_n.dds");
 	Engine::GetInstance()->LoadTexture("Data/Material/grass/grass1-albedo3.dds");
 
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Material/grass/grass1-albedo3.dds"), Effect::REGISTER_0);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain/brit_n.dds"), Effect::NORMAL);
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain/britannia.dds"), Effect::REGISTER_7);
 }
 

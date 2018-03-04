@@ -148,6 +148,7 @@ void Camera::SetTranslation(const CU::Vector4f& translation)
 
 void Camera::Update(const ControllerState& controller_state)
 {
+	const float sensitivity = 0.05f;
 	float x_value = ( float ) controller_state.m_ThumbRX;
 	float y_value = ( float ) controller_state.m_ThumbRY;
 
@@ -178,8 +179,8 @@ void Camera::Update(const ControllerState& controller_state)
 		y_value /= 2.f;
 	}
 
-	m_CenterPoint.x += ( x_value / SHRT_MAX ) * m_LookSpeedModifier;
-	m_CenterPoint.y -= ( y_value / SHRT_MAX ) * m_LookSpeedModifier;
+	m_CenterPoint.x += ( x_value / SHRT_MAX ) * sensitivity;
+	m_CenterPoint.y -= ( y_value / SHRT_MAX ) * sensitivity;
 	m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
 
 	OrientCamera();
@@ -187,11 +188,13 @@ void Camera::Update(const ControllerState& controller_state)
 
 void Camera::Update(const CU::Vector2f& cursor_pos)
 {
+	const float sensitivity = 0.005f;
+
 	float x_value = cursor_pos.x;
 	float y_value = cursor_pos.y;
 
-	m_CenterPoint.x += x_value * m_LookSpeedModifier;
-	m_CenterPoint.y += y_value * m_LookSpeedModifier;
+	m_CenterPoint.x += x_value * sensitivity;
+	m_CenterPoint.y += y_value * sensitivity;
 	m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
 
 	OrientCamera();

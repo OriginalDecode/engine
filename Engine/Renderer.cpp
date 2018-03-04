@@ -139,8 +139,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 
 	//m_TestTerrain = new Terrain(2048.f);
-	m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
-	m_TerrainSystem = new TerrainSystem;
+	//m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
+	//m_TerrainSystem = new TerrainSystem;
 
 }
 
@@ -197,7 +197,7 @@ void Renderer::Render()
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 
-	m_TerrainSystem->Update();
+	//m_TerrainSystem->Update();
  
  	if (m_RenderInstanced)
  		m_InstancingManager.DoInstancing(m_RenderContext, false);

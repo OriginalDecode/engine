@@ -22,7 +22,7 @@ namespace CommonUtilities
 			static Matrix33<TYPE> CreateRotateAroundZ(TYPE aAngleInRadians);
 
 
-			CU::GrowingArray<TYPE, int> myMatrix;
+			TYPE m_Matrix[9];
 
 			void Rotate2D(TYPE aRadian);
 			void SetRotation2d(TYPE aRadian);

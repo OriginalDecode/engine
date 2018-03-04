@@ -32,7 +32,7 @@
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
 #endif
-static float s_CamSpeed = 50.f;
+static float s_CamSpeed = 1.f;
 
 void Game::InitState(StateStack* state_stack)
 {
@@ -55,15 +55,15 @@ void Game::Initiate(const std::string& level)
 	//m_World.AddDweller(m_Player->Initiate());
 
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
-	//CU::GrowingArray<TreeDweller*>dwellers = LevelFactory::CreatePBLLevel(8);
+	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 	//LevelFactory::CreateTerrain("Data/Textures/terrain/britannia.tga");
-	//m_World.AddDwellers(dwellers);
+	m_World.AddDwellers(dwellers);
 
 
 	m_Picker = new CMousePicker;
 
 	m_Camera = m_Engine->GetCamera();
-	m_Camera->SetPosition(CU::Vector3f(256, 10, 256));
+	m_Camera->SetPosition(CU::Vector3f(0, 10, 0));
 	//m_Camera->RotateAroundY(cl::DegreeToRad(45.f));
 	//m_Camera->RotateAroundX(cl::DegreeToRad(20.f));
 	m_Camera->Update(CU::Vector2f(0.f,0.f));
@@ -276,6 +276,58 @@ void Game::OldUpdate(float dt)
 	if (input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->OnDown(KButton::V))
 		pEventHandle->SendMessage("paste_new");
 #endif
+
+	if (input_wrapper->IsDown(KButton::NUMPAD8))
+		s_CamSpeed += 1.f * dt;
+
+	if (input_wrapper->IsDown(KButton::NUMPAD2))
+		s_CamSpeed -= 1.f * dt;
+
+	ControllerInput* input = m_Engine->GetInputHandle()->GetController(0);
+	const ControllerState& input_state = input->GetState();
+	m_Camera->Update(input->GetState());
+	
+	float x_value = (float)input_state.m_ThumbLX;
+	float y_value = (float)input_state.m_ThumbLY;
+
+	float magnitude = (x_value * x_value + y_value * y_value);
+	float normalized = 0.f;
+	const float r_thumb_deadzone = 8689.f;
+
+	if (magnitude > r_thumb_deadzone * r_thumb_deadzone)
+	{
+		if (magnitude > SHRT_MAX)
+			magnitude = SHRT_MAX;
+
+		magnitude -= r_thumb_deadzone;
+
+		normalized = magnitude / (SHRT_MAX - r_thumb_deadzone);
+
+	}
+	else
+	{
+		x_value = 0.f;
+		y_value = 0.f;
+	}
+
+	if (normalized < -0.5f || normalized > 0.5f)
+	{
+		x_value /= 2.f;
+		y_value /= 2.f;
+	}
+
+	if (x_value / SHRT_MAX > 0.15)
+		m_Camera->Move(eDirection::RIGHT, s_CamSpeed * dt);
+
+	if (x_value / SHRT_MAX < -0.15)
+		m_Camera->Move(eDirection::LEFT, -s_CamSpeed * dt);
+
+	if (y_value / SHRT_MAX > 0.15)
+		m_Camera->Move(eDirection::FORWARD, s_CamSpeed * dt);
+
+	if (y_value / SHRT_MAX < -0.15)
+		m_Camera->Move(eDirection::BACK	, -s_CamSpeed * dt);
+
 
 
 	if (input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->IsDown(MouseInput::RIGHT))

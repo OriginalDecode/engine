@@ -31,7 +31,7 @@ void TreeNodeBase::Update(float dt, bool paused)
 	if (m_NodeEntityManager->EntityCount() <= 0)
 		return;
 
-	RenderBox();
+	//RenderBox();
 	m_NodeEntityManager->Update(dt, m_Dwellers, paused);
 
 	PROFILE_BLOCK("forEachDweller", profiler::colors::LightBlue);

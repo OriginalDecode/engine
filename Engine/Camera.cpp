@@ -148,15 +148,14 @@ void Camera::SetTranslation(const CU::Vector4f& translation)
 
 void Camera::Update(const ControllerState& controller_state)
 {
-
 	float x_value = ( float ) controller_state.m_ThumbRX;
 	float y_value = ( float ) controller_state.m_ThumbRY;
 
-	float magnitude = sqrt(x_value * x_value + y_value * y_value); //Do something to skip the sqrt?
+	float magnitude = (x_value * x_value + y_value * y_value);
 	float normalized = 0.f;
 	const float r_thumb_deadzone = 8689.f;
 
-	if ( magnitude > r_thumb_deadzone )
+	if ( magnitude > r_thumb_deadzone * r_thumb_deadzone)
 	{
 		if ( magnitude > SHRT_MAX )
 			magnitude = SHRT_MAX;
@@ -231,7 +230,6 @@ void Camera::SetFOV(float field_of_view)
 	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
 	if ( field_of_view >= 60.f && field_of_view <= 120.f || m_IsShadowCamera)
 		m_CurrentFoV = field_of_view;
-
 
 	m_ProjectionMatrix.SetPerspectiveFOV(cl::DegreeToRad(m_CurrentFoV), window_size.m_Height / window_size.m_Width);
 }

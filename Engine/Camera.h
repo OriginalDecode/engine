@@ -90,7 +90,9 @@ public:
 	CU::Matrix44f& GetInv2DView();
 private:
 	void UpdateOrientation();
-	float m_LookSpeedModifier = 0.005f;
+
+	float m_LookSpeedModifier = 0.05f; //sensitivity
+
 	float m_RotationDegree = 0.f;
 	void operator=(Camera&) = delete;
 	void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);

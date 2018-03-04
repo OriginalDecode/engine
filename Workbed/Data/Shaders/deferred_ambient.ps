@@ -23,6 +23,7 @@ Texture2D DepthTexture	 	: register (t7);
 Texture2D ShadowTexture		: register (t8);
 TextureCube CubeMap		 	: register (t9);
 Texture2D SSAOTexture		: register (t10);
+TextureCube CubeMap2		 	: register (t11);
 
 struct VS_OUTPUT
 {
@@ -83,12 +84,14 @@ float4 main(VS_OUTPUT input) : SV_Target
 	if(depth.x <= 0)
 		discard;
 
-	int nMips = 0;
-	int width = 0;
-	int height = 0;
-	CubeMap.GetDimensions(0, width, height, nMips);
+	int nMips[2];
+	int width[2];
+	int height[2];
+	CubeMap.GetDimensions(0, width[0], height[0], nMips[0]);
+	CubeMap2.GetDimensions(0, width[1], height[1], nMips[1]);
 
-	float3 light_dir = -(light_direction.xyz + 0.0001);
+
+	float3 light_dir = (light_direction.xyz + 0.0001);
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
 	float4 normal = NormalTexture.Sample(sampler0, input.uv);
@@ -96,7 +99,8 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float roughness = depth.y;
 	
 	float roughnessOffsetted = pow(roughness, 8192);
-	float lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips);
+	float lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips[0]);
+	float specPow = GetSpecPowToMip(RoughToSPow(roughness), nMips[1]);
 
 	float metalness = normal.w;
 
@@ -107,9 +111,9 @@ float4 main(VS_OUTPUT input) : SV_Target
     float4 pixel_pos = getWorldPos(input.uv, depth.x);
 
 	float4 to_eye = normalize(camera_position - pixel_pos);
-	float3 refVec = reflect(-to_eye.xyz, normal.xyz);
+	float3 refVec = reflect(to_eye.xyz, normal.xyz);
 
-	float3 ref = ReflectionFresnel(albedo.rgb, -light_dir, to_eye, roughnessOffsetted);
+	float3 ref = ReflectionFresnel(albedo.rgb, normal.xyz, to_eye, roughnessOffsetted);
 
 	float4 reflection_fresnel = float4(ref, 1);
 	float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
@@ -118,13 +122,21 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel; //makes terrain look strange
 	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo * reflection_fresnel;
 
+	float4 cube2 = CubeMap2.SampleLevel(sampler1, -refVec, specPow) * reflection_fresnel; //makes terrain look strange
+	float4 cube_ambient2 = CubeMap2.SampleLevel(sampler1, normal, specPow) * metalness_albedo * reflection_fresnel;
+
+	float4 active_cube[2];
+	active_cube[0] = cube_ambient2;
+	active_cube[1]= cube2;
+
 
 	albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
 
-	float4 diffuse = 0; // metalness_albedo * cube_ambient;
+	float4 diffuse = 0;// metalness_albedo;// * cube_ambient2;
 	float4 spec = 0;
 	float3 light_col = float3(1, 1, 1);
-	float light_intensity = 1;
+	float3 light_col2 = float3(1, 1, 1);
+	float light_intensity = 10;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
 	float3 half_vec = normalize(light_dir + to_eye);
@@ -137,11 +149,9 @@ float4 main(VS_OUTPUT input) : SV_Target
 	for(int i = 0; i < 1; i++)
 	{
 		// diffuse
-		diffuse += float4( ( NdL * 1 / PI)  * light_col * albedo.rgb, 1.0f);
-		
+		 diffuse += float4( ( NdL * 1 / PI)  * light_col * albedo.rgb, 1.0f);		
 		//spec
 		float HdN = saturate(dot(half_vec, normal));
-		float EdH = saturate(dot(to_eye, half_vec));
 		float LdH = saturate(dot(light_dir, half_vec));
 		LdH = 1 - LdH;
 		LdH = pow(LdH, 5);
@@ -161,8 +171,10 @@ float4 main(VS_OUTPUT input) : SV_Target
 		spec += saturate(((schlickFresnel * ggxDistr * V) * float4(light_col, 1)) * light_intensity) * NdL;
 	}
 	
-	//diffuse += cube_ambient * albedo;
+	diffuse += active_cube[0] * albedo;
 		
+
+
 	float LdH = saturate(dot(light_dir, half_vec));
 	float4 schlickFresnel = LdH * ( 1 - metalness_albedo);
 	schlickFresnel = schlickFresnel / (6 - (5 * roughnessOffsetted));
@@ -170,7 +182,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 
 	float4 output = 0;
-	output = lerp(diffuse, cube, schlickFresnel);
+	output = lerp(diffuse, active_cube[1], schlickFresnel);
 	output += spec;
-	return saturate(output) * (NdL + 0.01);
+	return saturate(output);
 };

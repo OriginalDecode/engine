@@ -45,6 +45,7 @@ static bool s_WindowActive = false;
 static bool s_AppRunning = true;
 
 Engine* engine = nullptr;
+ 
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 {
 #ifdef _PROFILE
@@ -107,7 +108,6 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 		{
 			SetCursorPos(w / 2.f, h / 2.f);
 		}*/
-
 
 	} while (s_AppRunning == true);
 

@@ -91,6 +91,7 @@ public:
 
 private:
 	IShaderResourceView* m_Resources[_COUNT];
+	char m_UsedReg[_COUNT];
 
 
 };

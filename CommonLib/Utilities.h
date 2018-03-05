@@ -6,6 +6,7 @@
 #include "DataStructures/GrowingArray.h"
 #include <thread>
 #include <iso646.h>
+#include <vector>
 namespace cl
 {
 	bool file_exist(std::string path);
@@ -118,6 +119,17 @@ namespace cl
 	std::string GuidToString(const GUID& guid);
 
 	GUID StrToGuid(const std::string& str);
+
+
+	struct File
+	{
+		char filename[260];
+	};
+
+
+	std::vector<File> FindFilesInDirectory(const char* directory_path);
+
+
 
 
 };

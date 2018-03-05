@@ -71,6 +71,15 @@ namespace debug
 
 
 
+	DebugHandle::~DebugHandle()
+	{
+		for (Texture* t : m_LutTextures)
+		{
+			delete t;
+			t = nullptr;
+		}
+	}
+
 	static bool sDebugTextures = false;
 	static bool s_RightClicked = false;
 	static bool s_OpenMenu = false;

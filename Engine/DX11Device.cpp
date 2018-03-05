@@ -103,14 +103,15 @@ namespace graphics
 		std::wstring path = cl::ToWideStr(filepath);
 
 		ID3D11ShaderResourceView* srv = nullptr;
-
+		ID3D11Resource* resource = nullptr;
 
 		if (filepath.find(".dds") == filepath.npos)
 		{
-			HRESULT hr = DirectX::CreateWICTextureFromFile(m_Device, path.c_str(), nullptr, &srv);
+			HRESULT hr = DirectX::CreateWICTextureFromFile(m_Device, path.c_str(), &resource, &srv);
 #ifndef FINAL
 			DirectX11::HandleErrors(hr, "Failed to load texture");
 #endif
+			resource->Release();
 			return srv;
 		}
 
@@ -125,24 +126,25 @@ namespace graphics
 				, D3D11_CPU_ACCESS_READ
 				, D3D11_RESOURCE_MISC_GENERATE_MIPS
 				, false
-				, nullptr //might want to output to a texture2d object?
+				, &resource //might want to output to a texture2d object?
 				, &srv);
 
 #ifndef FINAL
 			DL_ASSERT_EXP(hr != S_OK, "Failed to load texture");
 #endif
+			resource->Release();
 			return srv;
 		}
 
 		HRESULT hr = DirectX::CreateDDSTextureFromFile(m_Device
 			, nullptr
 			, path.c_str()
-			, nullptr //might want to output to a texture2d object?
+			, &resource //might want to output to a texture2d object?
 			, &srv);
 #ifndef FINAL
 		DirectX11::HandleErrors(hr, "Failed to load texture");
 #endif
-
+		resource->Release();
 		return srv;
 	}
 

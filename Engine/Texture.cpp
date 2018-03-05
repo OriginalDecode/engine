@@ -267,9 +267,11 @@ void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_heigh
 			_tex->GetResource(&resource);
 			//target, index, x,y,z, resource, index, optional box
 			ctx->CopySubresourceRegion(tex, 0, 0, 0, z, resource, 0, &region_box);
+			resource->Release();
 			z++;
 		}
 	}
+
 
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
@@ -282,10 +284,10 @@ void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_heigh
 	hr = device->CreateShaderResourceView(tex, &viewDesc, &srv);
 	DL_ASSERT_EXP(hr == S_OK, "Failed to Create srv");
 	m_ShaderResource = srv;
-// 	DirectX::ScratchImage image;
-// 	hr = DirectX::CaptureTexture(device, ctx, tex, image);
-// 	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");
-	//DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, L"3dTex.dds");
+	tex->Release();
+	resource->Release();
+	_tex->Release();
+
 
 }
 

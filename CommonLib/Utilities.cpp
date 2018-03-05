@@ -311,4 +311,35 @@ namespace cl
 		return out;
 	}
 
+	std::vector<File> FindFilesInDirectory(const char* directory_path)
+	{
+		std::vector<File> files;
+#ifdef _WIN32
+
+		
+		WIN32_FIND_DATA fd;
+		HANDLE hFind = ::FindFirstFile(directory_path, &fd);
+		if (hFind != INVALID_HANDLE_VALUE) {
+			do 
+			{
+				File file;
+				ZeroMemory(&file, 260 * sizeof(char));
+
+				if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
+				{
+					memcpy(&file.filename, fd.cFileName, 260 * sizeof(char));
+				}
+				if(strlen(file.filename) > 0)
+					files.push_back(file);
+
+			} while (::FindNextFile(hFind, &fd));
+			::FindClose(hFind);
+		}
+#endif
+
+
+		return files;
+
+	}
+
 }

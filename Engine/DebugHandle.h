@@ -55,7 +55,6 @@ namespace debug
 
 		void AddLUT(const char* lable, Texture* tex);
 
-	private:
 
 			
 		std::vector<std::string> m_LutLables;
@@ -72,7 +71,7 @@ namespace debug
 		static DebugHandle* m_Instance;
 
 		DebugHandle();
-		~DebugHandle() { }
+		~DebugHandle();
 		CU::GrowingArray<s32*> m_IntValuesToPrint;
 		CU::GrowingArray<std::string> m_Text;/*
 		CU::GrowingArray<DebugSlider<float>> m_Sliders;

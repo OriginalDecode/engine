@@ -69,46 +69,33 @@ void HDRPass::Initiate()
 	//m_ColorGrading = Engine::GetInstance()->GetEffect("Shaders/color_grading.json");
 	//u64 rgb = Engine::GetInstance()->LoadTexture("Data/Textures/RGBTable16x1.dds");
 
-	//Default texture
-	m_ColorGradingTex = new Texture;
-	m_ColorGradingTex->Create3DTexture("Data/Textures/RGBTable16x1.dds", 16, 16, 0, "table");
+	////Default texture
+	//m_ColorGradingTex = new Texture;
+	//m_ColorGradingTex->Create3DTexture("Data/Textures/RGBTable16x1.dds", 16, 16, 0, "table");
 
-	std::vector<WIN32_FIND_DATA> filesInFolder;
-	WIN32_FIND_DATA fd;
-	HANDLE hFind = ::FindFirstFile("Data/Textures/lut/*.*", &fd);
-	if (hFind != INVALID_HANDLE_VALUE) {
-		do {
-			// read all (real) files in current folder
-			// , delete '!' read other 2 default folder . and ..
-			if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-				filesInFolder.push_back(fd);
-			}
-		} while (::FindNextFile(hFind, &fd));
-		::FindClose(hFind);
-	}
 
 #ifdef _DEBUG
+	std::vector<cl::File> filesInFolder = cl::FindFilesInDirectory("Data/Textures/lut/*.*");
 	for (auto file : filesInFolder)
 	{
 		Texture* t = new Texture;
+		if(!m_ColorGradingTex)
+			m_ColorGradingTex = t;
 
 		std::string path("Data/Textures/lut/");
-		path += file.cFileName;
+		path += file.filename;
 
-		t->Create3DTexture(path.c_str(), 16, 16, 0, file.cFileName);
-		debug::DebugHandle::GetInstance()->AddLUT(file.cFileName, t);
+		t->Create3DTexture(path.c_str(), 16, 16, 0, file.filename);
+		debug::DebugHandle::GetInstance()->AddLUT(file.filename, t);
 	}
 #endif
 
-
-	//m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);
 
 	m_Quad = new Quad;
 }
 
 void HDRPass::CleanUp()
 {
-	SAFE_DELETE(m_ColorGradingTex);
 	SAFE_DELETE(m_HDRTexture);
 	SAFE_DELETE(m_Quad);
 	m_Downsamples.DeleteAll();

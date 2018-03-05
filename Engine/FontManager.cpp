@@ -433,6 +433,7 @@ void CFontManager::CountDeltas(const int& width, const int& height, int& deltaX,
 
 SFontData::~SFontData()
 {
+	Engine::GetAPI()->ReleasePtr(m_AtlasView);
 	SAFE_DELETE(myAtlas);
 }
 

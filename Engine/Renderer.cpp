@@ -149,11 +149,15 @@ Renderer::~Renderer()
 	delete m_TestTerrain;
 	delete m_TerrainSystem;
 
+	m_Spotlights.DeleteAll();
+
 #if !defined(_PROFILE) && !defined(_FINAL)
+	SAFE_DELETE(m_DebugTexture);
 	SAFE_DELETE(m_DebugQuad);
 	SAFE_DELETE(m_HoverTexture);
+	SAFE_DELETE(m_SelectedTexture);
 #endif
-
+	SAFE_DELETE(m_Text);
 
 	m_ShadowPass.CleanUp();
 	m_DirectionalShadow.CleanUp();

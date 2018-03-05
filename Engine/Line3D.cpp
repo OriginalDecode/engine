@@ -10,6 +10,7 @@ Line3D::Line3D()
 
 Line3D::~Line3D()
 {
+	Engine::GetAPI()->ReleasePtr(m_LineBuffer);
 }
 
 void Line3D::Initiate(int aLineAmount /*= 256*/)

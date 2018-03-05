@@ -136,7 +136,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 spec = 0;
 	float3 light_col = float3(1, 1, 1);
 	float3 light_col2 = float3(1, 1, 1);
-	float light_intensity = 10;
+	float light_intensity = 1;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
 	float3 half_vec = normalize(light_dir + to_eye);
@@ -149,7 +149,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	for(int i = 0; i < 1; i++)
 	{
 		// diffuse
-		 diffuse += float4( ( NdL * 1 / PI)  * light_col * albedo.rgb, 1.0f);		
+		diffuse += float4( ( NdL * (1 / PI))  * light_col * albedo.rgb, 1.0f);		
 		//spec
 		float HdN = saturate(dot(half_vec, normal));
 		float LdH = saturate(dot(light_dir, half_vec));
@@ -171,8 +171,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 		spec += saturate(((schlickFresnel * ggxDistr * V) * float4(light_col, 1)) * light_intensity) * NdL;
 	}
 	
-	diffuse += active_cube[0] * albedo;
-		
+	// diffuse += active_cube[0] * albedo;
 
 
 	float LdH = saturate(dot(light_dir, half_vec));

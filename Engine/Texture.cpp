@@ -212,6 +212,7 @@ void Texture::InitiateTextureArray(const char* paths[], const s32 const num_tex,
 	hr = DirectX::CaptureTexture(device, ctx, texArray, image);
 	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");
 	DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, L"Cubemap.dds");
+	ctx->Release();
 }
 
 void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_height, s32 slice_count, const char* debug_name)
@@ -287,6 +288,7 @@ void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_heigh
 	tex->Release();
 	resource->Release();
 	_tex->Release();
+	ctx->Release();
 
 
 }
@@ -303,4 +305,5 @@ void Texture::SaveToDisk(const wchar_t* path, ITexture2D* tex)
 	HRESULT hr = DirectX::CaptureTexture(device, ctx, d3dTex, image);
 	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");
 	DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, path);
+	ctx->Release();
 }

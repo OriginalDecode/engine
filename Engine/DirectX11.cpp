@@ -90,7 +90,7 @@ namespace graphics
 			std::stringstream ss;
 			ss << "\nDebug is released last. Will report as Live Object! 0x" << m_Debug << "\nWatch out for false reports. \n====\n";
 			OutputDebugString(ss.str().c_str());
-			m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL  /*| D3D11_RLDO_IGNORE_INTERNAL*/);
+			m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL  | (D3D11_RLDO_FLAGS)0x4);
 			SAFE_RELEASE(m_Debug);
 		}
 

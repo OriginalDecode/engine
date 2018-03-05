@@ -79,6 +79,7 @@ namespace graphics
 		SAFE_RELEASE(m_Swapchain);
 
 		ID3D11DeviceContext* ctx = static_cast<DX11Context*>(m_Context)->m_Context;
+		ID3D11Device* dev = static_cast<DX11Device*>(m_Device)->m_Device;
 		ctx->ClearState();
 		ctx->Flush();
 
@@ -93,6 +94,11 @@ namespace graphics
 			m_Debug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL  | (D3D11_RLDO_FLAGS)0x4);
 			SAFE_RELEASE(m_Debug);
 		}
+
+
+		ctx->Release();
+		dev->Release();
+		
 
 #if defined (_DEBUG)
 		OutputDebugString("\nIntRef is something that D3D has internal. You cannot control these.\n\n");

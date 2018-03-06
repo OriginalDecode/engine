@@ -460,6 +460,8 @@
     <ClInclude Include="TerrainSystem.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="QuadTreeNode.h" />
+    <ClInclude Include="SSRPass.h" />
+    <ClInclude Include="IPostprocessPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -753,5 +755,6 @@
     <ClCompile Include="TerrainSystem.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="QuadTreeNode.cpp" />
+    <ClCompile Include="SSRPass.cpp" />
   </ItemGroup>
 </Project>

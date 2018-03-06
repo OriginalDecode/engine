@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "EdgeDetectionPass.h"
 #include <Engine/Texture.h>
+#include <Engine/Quad.h>
 
 EdgeDetectionPass::EdgeDetectionPass()
+	: IPostprocessPass()
 {
 }
 
@@ -11,7 +13,7 @@ EdgeDetectionPass::~EdgeDetectionPass()
 {
 	Engine::GetAPI()->ReleasePtr(m_cbEdgeDetection);
 	SAFE_DELETE(m_Result);
-	SAFE_DELETE(m_ScreenQuad);
+	SAFE_DELETE(m_Quad);
 }
 
 void EdgeDetectionPass::Initiate()
@@ -39,7 +41,7 @@ void EdgeDetectionPass::Initiate()
 
 
 	m_EdgeDetectionShader = Engine::GetInstance()->GetEffect("Shaders/edge_detection.json");
-	m_ScreenQuad = new Quad(m_EdgeDetectionShader);
+	m_Quad = new Quad(m_EdgeDetectionShader);
 
 	m_EdgeDetectionData.m_Height = m_WindowSize.m_Height;
 	m_EdgeDetectionData.m_Width = m_WindowSize.m_Width;
@@ -53,14 +55,14 @@ void EdgeDetectionPass::Process(Texture* pTexture, const graphics::RenderContext
 	ctx.UpdateConstantBuffer(m_cbEdgeDetection, &m_EdgeDetectionData);
 	ctx.PSSetConstantBuffer(0, 1, &m_cbEdgeDetection);
 	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
-	m_ScreenQuad->GetShader()->AddShaderResource(pTexture, Effect::REGISTER_0);
-	m_ScreenQuad->Render();
+	m_Quad->GetShader()->AddShaderResource(pTexture, Effect::REGISTER_0);
+	m_Quad->Render();
 
 
 	rc.GetAPI().SetDefaultTargets();
 	Effect* pEffect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
 	pEffect->AddShaderResource(m_Result, Effect::REGISTER_0);
-	m_ScreenQuad->Render(false, pEffect);
+	m_Quad->Render(false, pEffect);
 	ctx.VSSetShaderResource(0, 1, nullptr);
 	ctx.PSSetShaderResource(0, 1, nullptr);
 }
@@ -69,4 +71,5 @@ void EdgeDetectionPass::OnResize()
 {
 	//m_ScreenQuad->OnResize();
 	m_WindowSize = Engine::GetInstance()->GetInnerSize();
+	m_Quad->Resize(0, 0);
 }

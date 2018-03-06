@@ -139,3 +139,8 @@ void Quad::Render(bool depth_on, Effect* override_effect /*= nullptr*/)
 	ctx.DrawIndexed(this, depth_on);
 	override_effect ? override_effect->Use() : m_Effect->Clear();
 }
+
+void Quad::Resize(float new_width, float new_height)
+{
+
+}

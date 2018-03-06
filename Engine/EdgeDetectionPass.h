@@ -1,25 +1,24 @@
 #pragma once
-#include <Engine/Quad.h>
-
-class EdgeDetectionPass
+#include <Engine/IPostprocessPass.h>
+class EdgeDetectionPass : public IPostprocessPass
 {
 public:
 	EdgeDetectionPass();
-	~EdgeDetectionPass();
+	~EdgeDetectionPass() override;
 
 	void Initiate();
 
-	void Process(Texture* pTexture, const graphics::RenderContext& rc);
-	void OnResize();
+	void Process(Texture* pTexture, const graphics::RenderContext& rc) override;
+	void OnResize() override;
 
 private:
 
 	WindowSize	m_WindowSize;
-	Quad* m_ScreenQuad = nullptr;
-	Texture* m_Result = nullptr;
 
+	Texture* m_Result = nullptr;
 	Effect* m_EdgeDetectionShader = nullptr;
 	IBuffer* m_cbEdgeDetection = nullptr;
+
 	struct
 	{
 		float m_Width;

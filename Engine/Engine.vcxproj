@@ -343,9 +343,11 @@
     <ClInclude Include="GraphicsView.h" />
     <ClInclude Include="Inspector.h" />
     <ClInclude Include="InspectorView.h" />
+    <ClInclude Include="IPostprocessPass.h" />
     <ClInclude Include="PhysicsView.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="QuadTreeNode.h" />
+    <ClInclude Include="SSRPass.h" />
     <ClInclude Include="TerrainSystem.h" />
     <ClInclude Include="TransformView.h" />
     <ClInclude Include="HDRPass.h" />
@@ -519,6 +521,7 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteModel.cpp" />
     <ClCompile Include="SSAOPass.cpp" />
+    <ClCompile Include="SSRPass.cpp" />
     <ClCompile Include="StateStack.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

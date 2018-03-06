@@ -148,10 +148,9 @@ void Texture::InitiateAsRenderTarget(s32 width, s32 height, const std::string& d
 
 }
 
-
-
-void Texture::InitiateTextureArray(const char* paths[], const s32 const num_tex, const char* debug_name)
+void Texture::CreateTextureArray(const char* paths[], const s32 const num_tex, const char* filename)
 {
+
 	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
 	ID3D11DeviceContext* ctx = nullptr;
 	device->GetImmediateContext(&ctx);
@@ -163,7 +162,6 @@ void Texture::InitiateTextureArray(const char* paths[], const s32 const num_tex,
 	{
 		IShaderResourceView* resource = Engine::GetAPI()->GetDevice().CreateTextureFromFile(paths[i], false, &Engine::GetAPI()->GetContext());
 		src.Add(static_cast<ID3D11ShaderResourceView*>(resource));
-		//ctx->GenerateMips(src[i]);
 	}
 
 	D3D11_TEXTURE2D_DESC desc;
@@ -211,7 +209,7 @@ void Texture::InitiateTextureArray(const char* paths[], const s32 const num_tex,
 	DirectX::ScratchImage image;
 	hr = DirectX::CaptureTexture(device, ctx, texArray, image);
 	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");
-	DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, L"Cubemap.dds");
+	DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, cl::ToWideStr(filename).c_str());
 	ctx->Release();
 }
 

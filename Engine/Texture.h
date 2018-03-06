@@ -33,8 +33,6 @@ public:
 
 	//Used for cubemaps or 3d textures
 	void CreateTextureArray(const char* paths[], const s32 const num_tex, const char* filename);
-
-
 	void Create3DTexture(const char* path, s32 slice_width, s32 slice_height, s32 slice_count, const char* filename);
 
 	static void SaveToDisk(const wchar_t* path, ITexture2D* tex);
@@ -66,6 +64,7 @@ private:
 		ITexture2D* m_DepthTexture = nullptr;
 		ITexture2D* m_Texture;
 	};
+
 	union
 	{
 		IShaderResourceView* m_ShaderResource = nullptr;

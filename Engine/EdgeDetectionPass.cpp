@@ -13,7 +13,6 @@ EdgeDetectionPass::~EdgeDetectionPass()
 {
 	Engine::GetAPI()->ReleasePtr(m_cbEdgeDetection);
 	SAFE_DELETE(m_Result);
-	SAFE_DELETE(m_Quad);
 }
 
 void EdgeDetectionPass::Initiate()

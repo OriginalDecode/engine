@@ -1,25 +1,22 @@
 #pragma once
-#include <Engine/Quad.h>
-class SSAOPass
+
+#include <Engine/IPostprocessPass.h>
+
+class SSAOPass : public IPostprocessPass
 {
 public:
 	SSAOPass();
-	~SSAOPass();
+	~SSAOPass() override;
 
-	void Process(Texture* scene_texture, const graphics::RenderContext& render_context);
-	void OnResize();
+	void Process(Texture* scene, const graphics::RenderContext& rc) override;
+	void OnResize() override;
 private:
 
-	WindowSize	m_WindowSize;
-
-	Quad*		m_ScreenQuad = nullptr;
 
 	Texture*	m_SSAOTexture = nullptr;
 	Texture*	m_DebugTexture	= nullptr;
 	Texture*	m_Test = nullptr;
 
-	Effect*		m_SSAOShader	= nullptr;
-	
 	IBuffer* m_cbSSAO = nullptr;
 	struct cbSSAO
 	{

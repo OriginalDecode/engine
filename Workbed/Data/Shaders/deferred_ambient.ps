@@ -25,6 +25,7 @@ TextureCube CubeMap		 	: register (t9);
 Texture2D SSAOTexture		: register (t10);
 TextureCube CubeMap2		 	: register (t11);
 
+
 struct VS_OUTPUT
 {
 	float4 pos	: SV_POSITION0;
@@ -184,4 +185,9 @@ float4 main(VS_OUTPUT input) : SV_Target
 	output = lerp(diffuse, active_cube[1], schlickFresnel);
 	output += spec;
 	return saturate(output);
+
+	
 };
+
+
+

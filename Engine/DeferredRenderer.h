@@ -40,9 +40,6 @@ private:
 	Texture* m_DepthStencilTexture = nullptr;
 	Texture* m_Scene = nullptr;
 
-
-
-
 	IBuffer* m_ConstantBuffer; 
 
 	struct ConstantStruct

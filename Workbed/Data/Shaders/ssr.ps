@@ -1,0 +1,122 @@
+cbuffer SSR : register(b0)
+{
+	row_major float4x4 InvertedProjection;
+	row_major float4x4 InvertedView;
+    row_major float4x4 Projection;
+    row_major float4x4 View;
+    float4 CamPos;
+}
+
+Texture2D DiffuseTexture		: register ( t0 );
+Texture2D NormalTexture 	: register ( t1 );
+Texture2D DepthTexture 		: register ( t7 );
+SamplerState sampler0 	: register ( s0 );
+
+struct VS_OUTPUT
+{
+	float4 pos : SV_POSITION0;
+	float2 uv : TEXCOORD;
+};
+
+float4 getWorldPos(float2 tex_coord, float depth)
+{
+    float x = tex_coord.x * 2.f - 1.f;
+	float y = (1.f - tex_coord.y) * 2 - 1;
+	float z = depth;
+	float4 world_pos = float4(x, y, z, 1.f);
+	
+	world_pos = mul(world_pos, InvertedProjection);
+	world_pos = world_pos / world_pos.w;
+	world_pos = mul(world_pos, InvertedView);
+    return world_pos;
+};
+
+float ComputeDepth(float4 clippos)
+{
+    return clippos.z / clippos.w;
+};
+
+static const float  g_fRayhitThreshold = 0.9f;
+static const int g_iNumBinarySearchSteps = 16;
+static const int g_iMaxSteps = 16;
+static const float	g_fRayStep = 1.18f;
+float4 SSRBinarySearch(float3 vDir, inout float3 vHitCoord)
+{
+	float fDepth;
+
+	for (int i = 0; i < g_iNumBinarySearchSteps; i++)
+	{
+		float4 vProjectedCoord = mul(float4(vHitCoord, 1.0f), Projection);
+		vProjectedCoord.xy /= vProjectedCoord.w;
+		vProjectedCoord.xy = vProjectedCoord.xy * float2(0.5f, -0.5f) + float2(0.5f, 0.5f);
+
+		fDepth = DepthTexture.SampleLevel(sampler0, vProjectedCoord.xy, 0);
+		float fDepthDiff = vHitCoord.z - fDepth;
+
+		if (fDepthDiff <= 0.0f)
+			vHitCoord += vDir;
+
+		vDir *= 0.5f;
+		vHitCoord -= vDir;
+	}
+
+	float4 vProjectedCoord = mul(float4(vHitCoord, 1.0f), Projection);
+	vProjectedCoord.xy /= vProjectedCoord.w;
+	vProjectedCoord.xy = vProjectedCoord.xy * float2(0.5f, -0.5f) + float2(0.5f, 0.5f);
+
+	fDepth = DepthTexture.SampleLevel(sampler0, vProjectedCoord.xy, 0);
+	float fDepthDiff = vHitCoord.z - fDepth;
+
+	return float4(vProjectedCoord.xy, fDepth, abs(fDepthDiff) < g_fRayhitThreshold ? 1.0f : 0.0f);
+};
+
+float4 SSRRayMarch(float3 vDir, inout float3 vHitCoord)
+{
+	float fDepth;
+
+	for (int i = 0; i < g_iMaxSteps; i++)
+	{
+		vHitCoord += vDir;
+
+		float4 vProjectedCoord = mul(float4(vHitCoord, 1.0f), Projection);
+		vProjectedCoord.xy /= vProjectedCoord.w;
+		vProjectedCoord.xy = vProjectedCoord.xy * float2(0.5f, -0.5f) + float2(0.5f, 0.5f);
+
+
+
+		fDepth = DepthTexture.SampleLevel(sampler0, vProjectedCoord.xy, 0);
+
+		float fDepthDiff = vHitCoord.z - fDepth;
+
+		[branch]
+		if (fDepthDiff > 0.0f)
+			return SSRBinarySearch(vDir, vHitCoord);
+
+		vDir *= g_fRayStep;
+
+	}
+
+	return float4(0.0f, 0.0f, 0.0f, 0.0f);
+};
+
+float4 main(VS_OUTPUT input) : SV_Target
+{
+    float depth = DepthTexture.Sample(sampler0, input.uv).r;
+    float4 color = DiffuseTexture.Sample(sampler0, input.uv);
+    float4 world_pos = getWorldPos(input.uv, depth);
+    float3 normal = NormalTexture.Sample(sampler0, input.uv).xyz;
+
+    float3 view_dir = normalize(world_pos.xyz - CamPos.xyz);
+    float3 reflect_vec = normalize(reflect(view_dir, normal));
+    
+    if(depth <= 0)
+        return color;
+    
+    float3 pView = CamPos.xyz;
+
+    float4 vCoords = SSRRayMarch(reflect_vec, pView);
+
+	return DiffuseTexture.SampleLevel(sampler0, vCoords.xy, 0);
+
+    return depth.xxxx;
+}

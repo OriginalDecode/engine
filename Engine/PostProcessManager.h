@@ -5,6 +5,7 @@
 #include "BloomPass.h"
 #include "SSAOPass.h"
 #include "EdgeDetectionPass.h"
+#include "SSRPass.h"
 #include <Engine/engine_shared.h>
 
 
@@ -24,6 +25,7 @@ public:
 		HDR = BITFLAG(2),
 		SSAO = BITFLAG(3),
 		EDGE_DETECTION = BITFLAG(4),
+		SSR = BITFLAG(5),
 	};
 
 	PostProcessManager();
@@ -42,11 +44,12 @@ public:
 	HDRPass& GetHDRPass() { return m_HDRPass; }
 
 private:
-	s32				m_PassFlags;
-	HDRPass			m_HDRPass;
-	MotionBlurPass	m_MotionBlurPass;
-	BloomPass		m_BloomPass;
-	SSAOPass		m_SSAOPass;
-	EdgeDetectionPass m_EdgeDetectionPass;
+	s32					m_PassFlags;
+	HDRPass				m_HDRPass;
+	MotionBlurPass		m_MotionBlurPass;
+	BloomPass			m_BloomPass;
+	SSAOPass			m_SSAOPass;
+	EdgeDetectionPass	m_EdgeDetectionPass;
+	SSRPass				m_SSRPass;
 };
 

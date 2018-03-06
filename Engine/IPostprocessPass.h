@@ -21,8 +21,15 @@ public:
 	virtual void Process(Texture* scene, const graphics::RenderContext& rc) = 0;
 	virtual void OnResize() = 0;
 protected:
-	IPostprocessPass() = default;
-	Quad* m_Quad = nullptr;
+	IPostprocessPass()
+		: m_Quad(nullptr)
+		, m_Effect(nullptr)
+	{
+	};
+
+	Quad*	m_Quad;
+	Effect*	m_Effect;
+	WindowSize	m_WindowSize;
 
 
 

@@ -2,9 +2,23 @@
 #include "BloomPass.h"
 #include "profile_defines.h"
 
-void BloomPass::Process(Texture* finished_texture, const graphics::RenderContext& render_context)
+BloomPass::BloomPass()
+	: IPostprocessPass()
 {
 
+}
 
+BloomPass::~BloomPass()
+{
+
+}
+
+void BloomPass::Process(Texture* scene, const graphics::RenderContext& rc)
+{
+
+}
+
+void BloomPass::OnResize()
+{
 
 }

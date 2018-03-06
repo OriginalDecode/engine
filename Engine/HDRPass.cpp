@@ -136,8 +136,10 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 
 	Tonemapping(m_HDRTexture->GetRenderTargetView(), sources, ARRSIZE(sources));
 
-	render_context.GetAPI().SetDefaultTargets();
-	//ctx.OMSetRenderTargets(1, scene_texture->GetRenderTargetRef(), nullptr);
+	render_context.GetContext().PSSetShaderResource(0, 1, nullptr);
+	render_context.GetContext().VSSetShaderResource(0, 1, nullptr);
+
+	ctx.OMSetRenderTargets(1, scene_texture->GetRenderTargetRef(), nullptr);
 	m_RenderToScreenEffect->AddShaderResource(m_HDRTexture, Effect::DIFFUSE);
 	m_Quad->Render(false, m_RenderToScreenEffect);
 

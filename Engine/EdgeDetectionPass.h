@@ -1,5 +1,6 @@
 #pragma once
 #include <Engine/IPostprocessPass.h>
+
 class EdgeDetectionPass : public IPostprocessPass
 {
 public:

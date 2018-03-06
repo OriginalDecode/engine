@@ -43,7 +43,8 @@ void PostProcessManager::Process(Texture* pTexture, s32 process_flag, const grap
 	if (process_flag & EDGE_DETECTION)
 		m_EdgeDetectionPass.Process(pTexture, rc);
 	
-
+	if (process_flag & SSR)
+		m_SSRPass.Process(pTexture, rc);
 }
 
 void PostProcessManager::SetPassesToProcess(s32 pass_flags)

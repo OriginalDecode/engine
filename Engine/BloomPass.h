@@ -1,13 +1,17 @@
 #pragma once
+#include <Engine/IPostprocessPass.h>
 
-class Texture;
-
-class BloomPass
+class BloomPass : public IPostprocessPass
 {
 public:
-	BloomPass() = default;
+	BloomPass();
+	~BloomPass() override;
 
-	void Process(Texture* finished_texture, const graphics::RenderContext& render_context);
+
+	void Process(Texture* scene, const graphics::RenderContext& rc) override;
+	void OnResize() override;
+
+private:
 
 };
 

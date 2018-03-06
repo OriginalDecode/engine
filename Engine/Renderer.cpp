@@ -37,7 +37,7 @@
 #endif
 
 #include <Engine/TerrainSystem.h>
-
+#include <Engine/Quad.h>
 
 Renderer::Renderer(Synchronizer* synchronizer)
 	: m_Synchronizer(synchronizer)
@@ -50,6 +50,10 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DeferredRenderer = new DeferredRenderer;
 	m_GBuffer.Initiate(true);
 
+
+	Effect* effect = Engine::GetInstance()->GetEffect("Data/Shaders/ssr.json");
+	effect->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
+	effect->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
 	WindowSize window_size;
 	window_size.m_Height = api->GetInfo().m_WindowHeight;
 	window_size.m_Width = api->GetInfo().m_WindowWidth;
@@ -57,7 +61,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DepthTexture = new Texture; //Where should this live?
 	m_DepthTexture->InitiateAsDepthStencil(window_size.m_Width, window_size.m_Height, "Renderer : Depth");
 
-	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR); //Can be read from a settings file
+	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR | PostProcessManager::SSR); //Can be read from a settings file
 
 	m_Line = new Line3D; //Where should this live?
 	m_Line->Initiate();

@@ -2,12 +2,16 @@
 #include "SSAOPass.h"
 
 #include <Engine/Engine.h>
-#include <Engine/Synchronizer.h>
 #include <Engine/IGraphicsContext.h>
 #include <Engine/RenderContext.h>
+#include <Engine/Quad.h>
+
+#ifdef PROFILE
 #include <Engine/profile_defines.h>
+#endif
 
 SSAOPass::SSAOPass()
+	: IPostprocessPass()
 {
 	m_WindowSize = Engine::GetInstance()->GetInnerSize();
 
@@ -23,8 +27,8 @@ SSAOPass::SSAOPass()
 	m_SSAOTexture = new Texture;
 	m_SSAOTexture->Initiate(desc, false, "SSAOTexture");
 
-	m_SSAOShader = Engine::GetInstance()->GetEffect("Shaders/ssao.json");
-	m_ScreenQuad = new Quad(m_SSAOShader);
+	m_Effect = Engine::GetInstance()->GetEffect("Shaders/ssao.json");
+	m_Quad = new Quad(m_Effect);
 
 	m_cbSSAO = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbSSAO), "SSAO ConstantBuffer");
 
@@ -37,8 +41,6 @@ SSAOPass::~SSAOPass()
 {
 	Engine::GetAPI()->ReleasePtr(m_cbSSAO);
 	SAFE_DELETE(m_SSAOTexture);
-	delete m_ScreenQuad;
-	m_ScreenQuad = nullptr;
 }
 
 void SSAOPass::Process(Texture* scene_texture, const graphics::RenderContext& render_context)
@@ -60,9 +62,9 @@ void SSAOPass::Process(Texture* scene_texture, const graphics::RenderContext& re
 	ctx.PSSetConstantBuffer(0, 1, &m_cbSSAO);
 	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
 
-	m_SSAOShader->Use();
-	ctx.DrawIndexed(m_ScreenQuad);
-	m_SSAOShader->Clear();
+	m_Effect->Use();
+	ctx.DrawIndexed(m_Quad);
+	m_Effect->Clear();
 
 }
 

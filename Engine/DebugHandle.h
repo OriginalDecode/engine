@@ -10,8 +10,27 @@
 class Texture;
 class Material;
 struct ModelInstance;
+
 namespace debug
 {
+
+	struct TimingObjectDisplay
+	{
+		enum Type
+		{
+			_NULL,
+			ROOT,
+			CHILD,
+			END,
+		};
+
+		Type m_Type = _NULL;
+		std::string m_Text;
+		std::vector<TimingObjectDisplay> m_Children;
+	};
+
+
+
 	void EditTransform(const float *cameraView, float *cameraProjection, float* matrix);
 	class DebugHandle : public Subscriber
 	{
@@ -21,6 +40,8 @@ namespace debug
 		static void Destroy() { delete m_Instance; m_Instance = nullptr; }
 		static DebugHandle* GetInstance() { return m_Instance; }
 		void Update();
+
+		void ChildRecursive(const TimingObjectDisplay &root);
 
 		void DebugTextures();
 		void AddTexture(void* srv, const std::string& debug_name);
@@ -42,10 +63,10 @@ namespace debug
 
 		void SetDebugTexture(Texture* tex);
 
-		void RegisterTexture(Texture* texture, const char* name) 
-		{ 
+		void RegisterTexture(Texture* texture, const char* name)
+		{
 			m_Labels.push_back(name);
-			m_RegisteredSampleTextures.Add(texture); 
+			m_RegisteredSampleTextures.Add(texture);
 		}
 		Texture* GetTexture(s32 index) { return m_RegisteredSampleTextures[index]; }
 
@@ -56,7 +77,7 @@ namespace debug
 		void AddLUT(const char* lable, Texture* tex);
 
 
-			
+
 		std::vector<std::string> m_LutLables;
 		std::vector<Texture*> m_LutTextures;
 
@@ -70,8 +91,12 @@ namespace debug
 		Entity m_EditEntity = 0;
 		static DebugHandle* m_Instance;
 
-		DebugHandle();
-		~DebugHandle();
+		void AddTimingObject(const std::string& view_tree_and_time_string);
+
+		CU::GrowingArray<TimingObjectDisplay> m_TimingObjects;
+
+
+
 		CU::GrowingArray<s32*> m_IntValuesToPrint;
 		CU::GrowingArray<std::string> m_Text;/*
 		CU::GrowingArray<DebugSlider<float>> m_Sliders;
@@ -92,7 +117,7 @@ namespace debug
 		std::vector<ModelInstance*> m_ModelInstances;
 		std::vector<std::string> m_InstanceLabels;
 
-			
+
 		s32 m_TextureIndex = 0;
 
 
@@ -141,7 +166,10 @@ namespace debug
 #endif
 		*/
 
-	public:
+
+	private:
+		DebugHandle();
+		~DebugHandle();
 	};
 };
 #endif

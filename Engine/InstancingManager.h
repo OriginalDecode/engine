@@ -26,7 +26,7 @@ struct InstanceObject
 class InstancingManager
 {
 public:
-	InstancingManager() = default;
+	InstancingManager();
 	bool FindInstanceObject(u64 key);
 	bool FindModel(u64 key) const;
 	void AddInstanceObject(InstanceObject instance_object);

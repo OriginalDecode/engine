@@ -49,6 +49,8 @@ namespace graphics
 		void SaveTextureToDisk(ID3D11Texture2D* texture_resource, const std::string& file_name);
 		void SaveTextureToDisk(ID3D11ShaderResourceView* texture_resource, const std::wstring& file_name);
 
+		UINT64 GetFrequency() { return m_Frequency.Frequency; }
+
 	private:
 		void CreateDeviceAndSwapchain();
 		void CreateDepthStencilStates();
@@ -74,7 +76,11 @@ namespace graphics
 		D3D11_TEXTURE2D_DESC m_PixelPickDesc;
 
 
+		ID3D11Query* m_FrameQuery = nullptr;
 
+		ID3D11DeviceContext* m_IntContext = nullptr;
+		ID3D11Device* m_IntDevice = nullptr;
+		D3D11_QUERY_DATA_TIMESTAMP_DISJOINT  m_Frequency;
 
 
 #ifdef _DEBUG

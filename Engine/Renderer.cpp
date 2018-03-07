@@ -262,8 +262,8 @@ void Renderer::Render()
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();
 #endif
-	m_InstancingManager.EndFrame();
 	m_RenderContext.GetAPI().EndFrame();
+	m_InstancingManager.EndFrame();
 
 
 	m_Synchronizer->WaitForLogic();

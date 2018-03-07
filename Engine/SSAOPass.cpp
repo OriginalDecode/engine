@@ -6,7 +6,7 @@
 #include <Engine/RenderContext.h>
 #include <Engine/Quad.h>
 
-#ifdef PROFILE
+#ifdef _PROFILE
 #include <Engine/profile_defines.h>
 #endif
 

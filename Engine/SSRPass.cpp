@@ -6,7 +6,7 @@
 #include <Engine/RenderContext.h>
 #include <Engine/Quad.h>
 
-#ifdef PROFILE
+#ifdef _PROFILE
 #include <Engine/profile_defines.h>
 #endif
 
@@ -38,6 +38,7 @@ SSRPass::SSRPass()
 
 	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
 	pDebug->RegisterTexture(m_Reflection, "SSR");
+
 
 }
 

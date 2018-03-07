@@ -56,6 +56,71 @@ namespace debug
 
 
 	DebugHandle* DebugHandle::m_Instance = nullptr;
+
+
+	
+	
+	void SplitString(const std::string& str, std::vector<std::string>& vec)
+	{
+		size_t pos = str.find('|');
+		if (vec.size() > 0 && vec[vec.size() - 1].compare(str) == 0 && str.find("|", pos) == str.npos)
+		{
+			return;
+		}
+
+		std::string out = str.substr(0, pos);
+		vec.push_back(out);
+
+
+		
+
+		SplitString(str.substr(pos + 1), vec);
+
+	}
+
+
+	void DebugHandle::AddTimingObject(const std::string& view_tree_and_time_string)
+	{
+		std::vector<std::string> list;
+
+		SplitString(view_tree_and_time_string, list);
+
+		TimingObjectDisplay object;	
+		object.m_Type = TimingObjectDisplay::ROOT;
+		object.m_Text = list[0];
+
+
+		TimingObjectDisplay* last = nullptr;
+		for(size_t i = 1; i < list.size(); i++)
+		{
+		
+			TimingObjectDisplay tod;
+			tod.m_Type = (i != list.size() - 1) ? TimingObjectDisplay::CHILD : TimingObjectDisplay::END;
+			tod.m_Text = list[i];
+
+
+			if (last)
+			{
+				last->m_Children.push_back(tod);
+				last = &last->m_Children[object.m_Children.size() - 1];
+			}
+
+			if (object.m_Children.size() <= 0)
+			{
+				object.m_Children.push_back(tod);
+				last = &object.m_Children[object.m_Children.size()-1];
+
+			}
+
+
+
+		}
+		m_TimingObjects.Add(object);
+
+
+
+	}
+
 	bool DebugHandle::s_PausePhysics = false;
 	DebugHandle::DebugHandle()
 	{
@@ -299,6 +364,27 @@ namespace debug
 
 			ImGui::Separator();
 
+			for (const std::string& str : m_Text)
+			{
+				ImGui::Text("%s", str.c_str());
+			}
+
+
+			for (const TimingObjectDisplay& root : m_TimingObjects)
+			{
+				if (ImGui::TreeNode(root.m_Text.c_str()))
+				{
+					ChildRecursive(root);
+
+					ImGui::TreePop();
+				}
+
+			}
+
+
+
+			ImGui::Separator();
+
 			ImGui::Text("Light Direction");
 			
 			ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
@@ -350,6 +436,8 @@ namespace debug
 		HandleWorldContextMenu(pEngine);
 
 		m_Inspector.Update(Engine::GetInstance()->GetDeltaTime());
+		m_Text.RemoveAll();
+		m_TimingObjects.RemoveAll();
 	}
 
 
@@ -517,6 +605,27 @@ namespace debug
 	{
 		m_LutLables.push_back(lable);
 		m_LutTextures.push_back(tex);
+	}
+
+	void DebugHandle::ChildRecursive(const TimingObjectDisplay &root)
+	{
+		for (const TimingObjectDisplay& child : root.m_Children)
+		{
+			if (child.m_Type == TimingObjectDisplay::END)
+				ImGui::Text("%s", child.m_Text.c_str());
+
+			if (child.m_Type == TimingObjectDisplay::CHILD)
+			{
+
+				if (ImGui::TreeNode(child.m_Text.c_str()))
+				{
+					ChildRecursive(child);
+					ImGui::TreePop();
+				}
+			}
+		}
+
+
 	}
 
 	void HandleWorldContextMenu(Engine* pEngine)

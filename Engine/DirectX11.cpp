@@ -129,6 +129,7 @@ namespace graphics
 
 	void DirectX11::BeginFrame()
 	{
+		m_IntContext->Begin(m_FrameQuery);
 		ID3D11RenderTargetView* pRenderTarget = static_cast<ID3D11RenderTargetView*>(m_DefaultRenderTarget);
 		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
 		m_Context->ClearRenderTarget(pRenderTarget, clearcolor::black);
@@ -139,6 +140,10 @@ namespace graphics
 	{
 		const bool vsync = Engine::GetInstance()->VSync();
 		Present(0, 0);
+		m_IntContext->End(m_FrameQuery);
+		while (S_OK != m_IntContext->GetData(m_FrameQuery, &m_Frequency, sizeof(D3D11_QUERY_DATA_TIMESTAMP_DISJOINT), 0))
+		{
+		}
 	}
 
 
@@ -264,6 +269,14 @@ namespace graphics
 		//ID3D11DeviceContext* pDeferredCtx;
 		//pDevice->CreateDeferredContext(0, &pDeferredCtx); //should be created with thread pools. What about commandlists?
 
+
+		m_IntDevice = pDevice;
+		m_IntContext = pContext;
+
+		D3D11_QUERY_DESC qdesc;
+		qdesc.MiscFlags = 0;
+		qdesc.Query = D3D11_QUERY_TIMESTAMP_DISJOINT;
+		pDevice->CreateQuery(&qdesc, &m_FrameQuery);
 
 	}
 

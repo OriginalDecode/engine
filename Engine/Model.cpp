@@ -9,8 +9,9 @@
 
 #include <Engine/RenderContext.h>
 #include <Engine/IGraphicsContext.h>
-
+#ifdef _PROFILE
 #include "profile_defines.h"
+#endif
 Model::~Model()
 {
 	m_Surfaces.DeleteAll();
@@ -20,8 +21,11 @@ Model::~Model()
 
 }
 
+
+
 void Model::Initiate(const std::string& filename)
 {
+	
 	m_GPUData.Init(250);
 	std::string dbg(filename.c_str());
 	m_FileName = dbg;
@@ -74,6 +78,7 @@ void Model::RenderInstanced(const graphics::RenderContext& rc)
 void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_effect)
 {
 	PROFILE_FUNCTION(profiler::colors::Amber);
+
 	for (Model* child : m_Children)
 	{
 		child->RenderInstanced(rc, override_effect);

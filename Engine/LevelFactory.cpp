@@ -46,6 +46,7 @@ void LevelFactory::Initiate()
 	m_Engine = Engine::GetInstance();
 	m_EntityManager = &m_Engine->GetEntityManager();
 	m_PhysicsManager = m_Engine->GetPhysicsManager();
+	m_DwellerList.Init(SHRT_MAX);
 }
 
 bool LevelFactory::CreateLevel(const std::string& level_path)
@@ -244,12 +245,12 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 
 CU::GrowingArray<TreeDweller*> LevelFactory::LoadLevel(const char* level)
 {
+	CU::GrowingArray<TreeDweller*> dwellers(SHRT_MAX);
 	Terrain* terrain = Engine::GetInstance()->CreateTerrain("Data/Textures/flat_height.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(2048, 2048));
 	Material* pGroundMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
 	terrain->SetMaterial(pGroundMaterial);
 
 	JSONReader reader(level);
-	CU::GrowingArray<TreeDweller*> dwellers(500);
 	for (auto& obj : reader.GetDocument().GetArray())
 	{
 		CreateEntity(obj.GetString(), dwellers);
@@ -259,6 +260,33 @@ CU::GrowingArray<TreeDweller*> LevelFactory::LoadLevel(const char* level)
 	return dwellers;
 }
 
+CU::GrowingArray<TreeDweller*> LevelFactory::LoadLevelNoStatic(const char* level)
+{
+	Terrain* terrain = Engine::GetInstance()->CreateTerrain("Data/Textures/flat_height.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(2048, 2048));
+	Material* pGroundMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
+	terrain->SetMaterial(pGroundMaterial);
+	std::string folder = level;
+	size_t pos = folder.rfind('/');
+	folder = folder.substr(0, pos + 1);
+
+
+	JSONReader reader(level);
+	if (!reader.GetDocument().IsArray())
+	{
+		const JSONElement& el = reader.GetElement("root");
+
+
+		for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
+		{
+			CreateEntitiy(it->value["entity"].GetString(), it);
+		}
+
+	}
+
+	reader.CloseDocument();
+
+	return m_DwellerList;
+}
 
 void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<TreeDweller*>& out_dwellers)
 {
@@ -392,7 +420,6 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 	delete[] entity_data;
 	delete[] data;
 }
-
 
 void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 {
@@ -641,3 +668,144 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 
 
 }
+
+void LevelFactory::CreateEntitiy(const std::string& entity_filepath, JSONElement::ConstMemberIterator it)
+{
+	std::string data_path = "Data/Levels/";
+
+	JSONReader entity_reader(data_path + entity_filepath);
+	Entity e = m_EntityManager->CreateEntity();
+
+	s32 debug_flags = 0;
+
+	m_DwellerList.Add(new TreeDweller);
+
+
+	CU::Vector3f pos;
+	m_LevelReader.ReadElement(it->value["position"], pos);
+	CreateTranslationComponent(e, pos);
+	bool hasLight = true;
+	if (entity_reader.DocumentHasMember("graphics"))
+	{
+		CreateGraphicsComponent(entity_reader, e, it);
+		hasLight = false;
+		debug_flags |= TreeDweller::GRAPHICS;
+	}
+	if (entity_reader.DocumentHasMember("light"))
+	{
+		CreateLightComponent(entity_reader, e, it);
+		debug_flags |= TreeDweller::LIGHT;
+	}
+
+	CreateDebugComponent(e, hasLight, debug_flags);
+	
+
+
+	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(e);
+
+	CU::Vector3f new_pos = pos;
+	new_pos.y += 5.f;
+	new_pos.x += 400.f;
+	new_pos.z += 400.f;
+
+	component.m_Orientation.SetPosition(new_pos);
+
+
+	m_DwellerList.GetLast()->Initiate(e, TreeDweller::eType::STATIC);
+
+	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(e);
+}
+
+void LevelFactory::CreateTranslationComponent(Entity entity_id, const CU::Vector3f& position)
+{
+	m_EntityManager->AddComponent<TranslationComponent>(entity_id);
+
+	TranslationComponent& component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+	m_DwellerList.GetLast()->AddComponent<TranslationComponent>(&component, TreeDweller::TRANSLATION);
+}
+
+void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
+{
+	m_EntityManager->AddComponent<GraphicsComponent>(entity_id);
+
+	GraphicsComponent& component = m_EntityManager->GetComponent<GraphicsComponent>(entity_id);
+	const JSONElement& el = entity_reader.GetElement("graphics");
+	ModelInstance instance;
+	instance.m_ModelID = m_Engine->LoadModelA(
+		el["model"].GetString(),
+		"Shaders/debug_pbl_instanced.json",
+		true);
+	instance.m_Filename = el["model"].GetString();
+
+	component.m_MinPos = m_Engine->GetModel<Model>(instance.m_ModelID)->GetMinPoint();
+	component.m_MaxPos = m_Engine->GetModel<Model>(instance.m_ModelID)->GetMaxPoint();
+
+	CU::Vector3f scale;
+	m_LevelReader.ReadElement(it->value["scale"], scale);
+	CU::Vector3f rotation;
+	m_LevelReader.ReadElement(it->value["rotation"], rotation);
+
+	component.m_Rotation = rotation;
+
+	TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+	translation.m_Orientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * translation.m_Orientation;
+	translation.m_Orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rotation.x)) * translation.m_Orientation;
+	translation.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rotation.y)) * translation.m_Orientation;
+
+	component.m_Scale = scale;
+	component.m_Scale.w = 1.f;
+	component.m_Instances.Add(instance);
+	m_DwellerList.GetLast()->AddComponent<GraphicsComponent>(&component, TreeDweller::GRAPHICS);
+}
+
+void LevelFactory::CreateLightComponent(JSONReader& entity_reader, Entity entity_id, JSONElement::ConstMemberIterator it)
+{
+	m_EntityManager->AddComponent<LightComponent>(entity_id);
+	LightComponent& component = m_EntityManager->GetComponent<LightComponent>(entity_id);
+	m_DwellerList.GetLast()->AddComponent<LightComponent>(&component, TreeDweller::LIGHT);
+	TranslationComponent& translation_component = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+
+	std::string type;
+
+
+	if (entity_reader.DocumentHasMember("light"))
+	{
+		const JSONElement& el = entity_reader.GetElement("light");
+		if (entity_reader.ElementHasMember(el, "type"))
+		{
+			type = el["type"].GetString();
+		}
+	}
+
+	m_LevelReader.ReadElement(it->value["color"], component.color);
+	m_LevelReader.ReadElement(it->value["range"], component.range);
+
+	component.color.x /= 255;
+	component.color.y /= 255;
+	component.color.z /= 255;
+
+	if (type == "pointlight")
+	{
+		component.myType = eLightType::ePOINTLIGHT;
+
+	}
+	else if (type == "spotlight")
+	{
+		component.myType = eLightType::eSPOTLIGHT;
+
+		TranslationComponent& translation = m_EntityManager->GetComponent<TranslationComponent>(entity_id);
+		CU::Vector3f rotation;
+		m_LevelReader.ReadElement(it->value["rotation"], rotation);
+
+		translation.m_Orientation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(rotation.z)) * translation.m_Orientation;
+		translation.m_Orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(rotation.x)) * translation.m_Orientation;
+		translation.m_Orientation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(rotation.y)) * translation.m_Orientation;
+
+
+		m_LevelReader.ReadElement(it->value["angle"], component.angle);
+		component.angle = cl::DegreeToRad(component.angle);
+
+	}
+
+}
+

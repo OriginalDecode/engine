@@ -1,10 +1,10 @@
 {
     "VertexShader": {
-        "file": "deferred_base_instanced.vs",
+        "file": "deferred_base.vs",
         "entrypoint": "main"
     },
     "PixelShader": {
-        "file": "deferred_base.ps",
-        "entrypoint": "main"
+        "file": "pbl_debug.ps",
+        "entrypoint": "main_non_instanced"
     }
 }

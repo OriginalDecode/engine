@@ -44,7 +44,7 @@ void NodeEntityManager::Initiate()
 	if (flag & EntityManager::DEBUG)
 		AddSystem<DebugSystem>();
 #endif
-	m_Entities.Init(600);
+	m_Entities.Init(SHRT_MAX);
 }
 
 void NodeEntityManager::CleanUp()
@@ -105,7 +105,7 @@ void NodeEntityManager::Update(float dt, const CU::GrowingArray<TreeDweller*>& d
 
 			//bool visible = false;
 
-			CU::Vector4f pos = t.GetOrientation().GetPosition();
+			CU::Vector3f pos = t.GetOrientation().GetPosition();
 
 
 			//visible |= frust.InsideAABB( pos - d.m_MinPoint);

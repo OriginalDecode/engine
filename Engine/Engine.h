@@ -191,6 +191,9 @@ public:
 
 	Renderer* GetRenderer() { return m_Renderer; }
 	TerrainManager* GetTerrainManager() { return m_TerrainManager; }
+
+	LevelFactory* GetLevelFactory() { return m_LevelFactory; }
+
 private:
 	s32 PickEntity(Texture* pTexture);
 	Engine();

@@ -8,8 +8,8 @@ PointLight::PointLight()
 	u64 key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/sphere.fbx", "Shaders/deferred_pointlight.json", false);
 	m_Model = Engine::GetInstance()->GetModel<Model>(key);
 	LightModel* model = static_cast<LightModel*>(m_Model.GetData());
+	model->Initiate("cone.fbx");
 
-	//model->Initiate("cone.fbx");
 
 
 	//m_Model = Engine::GetInstance()->GetModel("Data/Model/lightMeshes/sphere.fbx");

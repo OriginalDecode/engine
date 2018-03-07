@@ -51,7 +51,7 @@ void DebugSystem::Update(float /*dt*/, bool)
 		Entity e = entities[i];
 		DebugComponent& debug = GetComponent<DebugComponent>(e);
 		TranslationComponent& translation = GetComponent<TranslationComponent>(e);
-		RenderBox(debug, translation.m_Orientation);
+		//RenderBox(debug, translation.m_Orientation);
 	}
 
 	return;	
@@ -84,6 +84,7 @@ void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 
 void DebugSystem::RenderBox(const DebugComponent& component, const CU::Matrix44f& orientation)
 {
+	
 	LinePoint p1, p2, p3, p4, p5, p6, p7, p8;
 	p1.color = component.debugColor;
 	p2.color = p1.color;

@@ -8,6 +8,7 @@ constexpr char* s_RelativePos = "relative_position";
 constexpr char* s_RelativeRot = "relative_rotation";
 constexpr char* s_MaterialFile = "material_file";
 constexpr char* s_Shader = "Shaders/debug_pbl_instanced.json"; // This should be read from a file, this should be connected with the material
+constexpr char* s_base = "Shaders/deferred_base.json";
 constexpr char* s_ModelFile = "model_file";
 constexpr char* s_Shadowed = "shadowed";
 constexpr char* s_Instances = "instances";
@@ -16,18 +17,26 @@ void ModelInstance::Deserialize(const rapidjson::Value& json_value, ModelInstanc
 {
 	instance.m_Filename = json_value[s_ModelFile].GetString();
 
-	instance.m_ModelID = Engine::GetInstance()->LoadModelA(instance.m_Filename, s_Shader, false);
+	instance.m_ModelID = Engine::GetInstance()->LoadModelA(instance.m_Filename, s_base, false);
 	//instance.m_ModelID =  Engine::GetInstance()->LoadModel<Model>(instance.m_Filename, "s_Shader", true); 
 
 	instance.m_MaterialFile = json_value[s_MaterialFile].GetString();
-	Material* pMaterial = Engine::GetInstance()->GetMaterial(instance.m_MaterialFile.c_str());
-	pMaterial->SetEffect(Engine::GetInstance()->GetEffect(s_Shader));
-	instance.m_MaterialKey = pMaterial->GetKey();
-
+	if (instance.m_MaterialFile.empty())
+	{
+		Material* pMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_copper.json");
+		pMaterial->SetEffect(Engine::GetInstance()->GetEffect(s_base));
+		instance.m_MaterialKey = pMaterial->GetKey();
+	}
+	else
+	{
+		Material* pMaterial = Engine::GetInstance()->GetMaterial(instance.m_MaterialFile.c_str());
+		pMaterial->SetEffect(Engine::GetInstance()->GetEffect(s_base));
+		instance.m_MaterialKey = pMaterial->GetKey();
+	}
 	if (json_value.FindMember(s_RelativePos) != json_value.MemberEnd())
 	{
 		auto& pos = json_value[s_RelativePos].GetArray();
-		instance.m_Orientation.SetPosition({ (float)pos[0].GetDouble(), (float)pos[1].GetDouble(), (float)pos[2].GetDouble(), 1.f });
+		//instance.m_Orientation.SetPosition({ (float)pos[0].GetDouble(), (float)pos[1].GetDouble(), (float)pos[2].GetDouble(), 1.f });
 	}
 
 	if (json_value.FindMember(s_RelativeScale) != json_value.MemberEnd())

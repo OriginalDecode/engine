@@ -10,7 +10,7 @@
 TreeNodeBase::TreeNodeBase()
 {
 	m_Lines.Init(5000);
-	m_Dwellers.Init(600);
+	m_Dwellers.Init(SHRT_MAX);
 }
 
 TreeNodeBase::~TreeNodeBase()
@@ -28,10 +28,11 @@ void TreeNodeBase::Update(float dt, bool paused)
 {
 	PROFILE_FUNCTION(profiler::colors::Blue);
 	m_DwellerCount = m_Dwellers.Size();
+	RenderBox();
+
 	if (m_NodeEntityManager->EntityCount() <= 0)
 		return;
 
-	//RenderBox();
 	m_NodeEntityManager->Update(dt, m_Dwellers, paused);
 
 	PROFILE_BLOCK("forEachDweller", profiler::colors::LightBlue);

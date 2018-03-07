@@ -54,7 +54,7 @@ void Octree::Update(float dt, bool)
 		node_count--;
 	}
 	m_GarbageNodes.RemoveAll();
-	m_Root.ToggleRenderBox(s_RenderTree);
+	//m_Root.ToggleRenderBox(s_RenderTree);
 	m_Root.Update(dt, m_Paused);
 }
 

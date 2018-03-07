@@ -4,7 +4,10 @@ cbuffer per_frame : register( b0 )
 	row_major float4x4 camera_view_x_proj;
 };
 
-row_major float4x4 orientation : register (b1);
+cbuffer per_object : register(b1)
+{
+	row_major float4x4 orientation;
+};
 
 struct VS_INPUT
 {

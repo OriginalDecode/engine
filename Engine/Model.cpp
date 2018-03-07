@@ -57,6 +57,8 @@ void Model::Render(const graphics::RenderContext& rc)
 	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
 	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
 
+
+
 	PROFILE_BLOCK("Model : DrawIndexed", profiler::colors::Blue100);
 	rc.GetContext().DrawIndexed(this, m_Effect);
 	PROFILE_BLOCK_END;

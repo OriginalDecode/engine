@@ -199,6 +199,7 @@ void Renderer::Render()
 
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
+	m_RenderInstanced = false;
 	if (m_RenderInstanced)
 		Render3DCommandsInstanced();
 
@@ -232,10 +233,10 @@ void Renderer::Render()
  	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
  	m_Atmosphere.Render(m_RenderContext);
  
- 	RenderSpotlight();
- 	RenderPointlight();
+ 	//RenderSpotlight();
+ 	//RenderPointlight();
  
- 	RenderParticles(nullptr);
+ 	//RenderParticles(nullptr);
  
  	if (m_PostProcessManager.GetFlags() != 0)
  	{

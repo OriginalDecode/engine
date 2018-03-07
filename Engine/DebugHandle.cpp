@@ -352,6 +352,7 @@ namespace debug
 		}
 	}
 
+	static char level_name[250];
 	void DebugHandle::Update()
 	{
 		Engine* pEngine = Engine::GetInstance();
@@ -428,9 +429,12 @@ namespace debug
 // 			pEngine->m_Renderer->m_TerrainSystem->m_Y = pos2[1];
 
 
+				ImGui::InputText("Level Name", level_name, 250);
 			if (ImGui::Button("save level", ImVec2(100, 25)))
 			{
-				LevelFactory::SaveLevel("data/pbr_level/", "pbr_level.level");
+				
+
+				LevelFactory::SaveLevel("data/pbr_level/", level_name);
 			}
 
 			DebugTextures();

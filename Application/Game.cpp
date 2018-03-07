@@ -38,8 +38,8 @@ void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
 	m_Engine = Engine::GetInstance();
-	//Initiate("Data/Levels/level_01.level");
-	Initiate("Data/pbr_level/pbr_level.level");
+	Initiate("Data/pbr_level/fps_level_01");
+	//Initiate("Data/pbr_level/pbr_level.level");
 	m_Engine->GetInputHandle()->AddController(0);
 }
 
@@ -54,10 +54,10 @@ void Game::Initiate(const std::string& level)
 	//m_Player = new Player;
 	//m_World.AddDweller(m_Player->Initiate());
 
-	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
+	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 	//LevelFactory::CreateTerrain("Data/Textures/terrain/britannia.tga");
-	//m_World.AddDwellers(dwellers);
+	m_World.AddDwellers(dwellers);
 
 
 	m_Picker = new CMousePicker;
@@ -216,16 +216,16 @@ void Game::Update(float dt)
 
 	}
 
-	if (_lifetime > 1.f)
-	{
-		for (int i = 0; i < _pointList.size() - 1; i++)
-		{
-			m_Synchronizer->AddRenderCommand(LineCommand(_pointList[i], _pointList[i+1], false));
-		}
-	}
+	//if (_lifetime > 1.f)
+	//{
+	//	for (int i = 0; i < _pointList.size() - 1; i++)
+	//	{
+	//		m_Synchronizer->AddRenderCommand(LineCommand(_pointList[i], _pointList[i+1], false));
+	//	}
+	//}
 
-	if(_pointList.size() > 0)
-		AddRenderCommand(ModelCommand(g_DefaultModel, g_DefaultMaterial, _pointList[_index], false));
+	//if(_pointList.size() > 0)
+		//AddRenderCommand(ModelCommand(g_DefaultModel, g_DefaultMaterial, _pointList[_index], false));
 	
 	_index++;
 	if (_index >= _pointList.size())

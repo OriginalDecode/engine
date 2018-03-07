@@ -61,7 +61,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DepthTexture = new Texture; //Where should this live?
 	m_DepthTexture->InitiateAsDepthStencil(window_size.m_Width, window_size.m_Height, "Renderer : Depth");
 
-	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR | PostProcessManager::SSR); //Can be read from a settings file
+	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR /*| PostProcessManager::SSR*/); //Can be read from a settings file
 
 	m_Line = new Line3D; //Where should this live?
 	m_Line->Initiate();

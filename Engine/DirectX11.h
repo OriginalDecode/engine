@@ -50,7 +50,7 @@ namespace graphics
 		void SaveTextureToDisk(ID3D11ShaderResourceView* texture_resource, const std::wstring& file_name);
 
 		UINT64 GetFrequency() { return m_Frequency.Frequency; }
-
+		bool Disjointed() { return m_Frequency.Disjoint; }
 	private:
 		void CreateDeviceAndSwapchain();
 		void CreateDepthStencilStates();

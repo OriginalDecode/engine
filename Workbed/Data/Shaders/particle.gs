@@ -1,6 +1,8 @@
 cbuffer Matrices : register(b0)
 {
 	row_major float4x4 Projection;
+	int index_x, index_y;
+	int x,y;
 };
 
 struct VS_OUTPUT
@@ -33,50 +35,58 @@ void main(point VS_OUTPUT input[1], inout TriangleStream<VS_OUTPUT> triStream)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 
-	for(int i = 0; i < 4; ++i)
-	{
-		output.pos = (quadPos[i] * input[0].size.x * 2) + input[0].pos;
-		// output.pos.z = output.pos.z / output.pos.w; 
-		output.pos = mul(output.pos, Projection);
-		output.uv.x = quadUV[i].x;
-		output.uv.y = quadUV[i].y;
-		
-		output.normal = quadPos[i];
 
-		output.alpha = input[0].alpha;
-		triStream.Append(output);
-	}
+	float width = 1024.f / 20.f;
+	float height = 512.f / 4.f;
+	float2 uv;
+	uv.x =  width / 1024.f;
+	uv.y = height / 512.f;
+
+	output.pos = (quadPos[0] * input[0].size.x) + input[0].pos;
+	output.pos.z /= output.pos.w;
+	output.pos = mul(output.pos, Projection);
+	output.uv.x = uv.x + uv.x * index_x;
+	output.uv.y = uv.y + uv.y * index_y;
+	output.normal = float4(1,0,0,1); //quadPos[0];
+	output.alpha = input[0].alpha;
+	triStream.Append(output);
+
+
+
+	output.pos = (quadPos[1] * input[0].size.x) + input[0].pos;
+	output.pos.z /= output.pos.w;
+	output.pos = mul(output.pos, Projection);
+	output.uv.x = uv.x + uv.x * index_x;
+	output.uv.y = uv.y * index_y;
+	output.normal = float4(0,1,0,1);
+	output.alpha = input[0].alpha;
+	triStream.Append(output);
+
+
+
+
+	output.pos = (quadPos[2] * input[0].size.x ) + input[0].pos;
+	output.pos.z /= output.pos.w;
+	output.pos = mul(output.pos, Projection);
+	output.uv.x = uv.x * index_x;
+	output.uv.y = uv.y + uv.y * index_y;
+	output.normal = float4(0,0,1,1);
+	output.alpha = input[0].alpha;
+	triStream.Append(output);
+
+
+
+
+	output.pos = (quadPos[3] * input[0].size.x) + input[0].pos;
+	output.pos.z /= output.pos.w;
+	output.pos = mul(output.pos, Projection);
+	output.uv.x = uv.x * index_x;
+	output.uv.y = uv.y * index_y;
+	output.normal = float4(1,1,0,1);
+	output.alpha = input[0].alpha;
+	triStream.Append(output);
+
+
+	
 	triStream.RestartStrip();
 };
-
-
-// //---------------------------------
-// //	Line3D Vertex Structs
-// //---------------------------------
-// struct VS_INPUT
-// {
-// 	float4 pos : POSITION;
-// 	float4 color : COLOR;
-// };
-
-// struct VS_OUTPUT
-// {
-// 	float4 pos : SV_POSITION;
-// 	float4 color : COLOR;
-// };
-
-
-// //---------------------------------
-// //	Line3D Vertex Shader
-// //---------------------------------
-
-// VS_OUTPUT VS(VS_INPUT input)
-// {
-// 	VS_OUTPUT output = (VS_OUTPUT)0;
-// 	output.pos = mul(input.pos, World);
-// 	output.pos = mul(output.pos, InvertedView);
-// 	output.pos = mul(output.pos, Projection);
-// 	output.color = input.color;
-	
-// 	return output;
-// };

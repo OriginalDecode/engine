@@ -23,7 +23,7 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	data.sizeDelta = 0.f;
 	data.alphaDelta = 0.f;
 
-	myData.diffuseTexture = Engine::GetInstance()->GetTexture("Data/Textures/particles/smoke.dds");
+	myData.diffuseTexture = Engine::GetInstance()->GetTexture("Data/Textures/particles/CandleSmoke01_20x4.dds");
 	myData.normalTexture = Engine::GetInstance()->GetTexture("Data/Textures/particles/smoke_normal.dds");
 
 	myData.lifeTime = -1.f;
@@ -33,10 +33,9 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 
 	myParticles.Init(256);
 
-	for (int i = 0; i < myParticles.Capacity(); i++)
+	for (int i = 0; i < 1; i++)
 	{
-		SParticleObject toAdd;
-		myParticles.Add(toAdd);
+		Emit();
 	}
 
 	CreateBuffer();
@@ -54,13 +53,13 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 
 void CEmitterInstance::Update(float aDeltaTime)
 {
-	myTimeToEmit -= aDeltaTime;
+	/*myTimeToEmit -= aDeltaTime;
 	if (myTimeToEmit < 0.f)
 	{
 		Emit();
 		myTimeToEmit = 0.2f;
 	}
-
+*/
 	UpdateParticle(aDeltaTime);
 }
 
@@ -139,6 +138,10 @@ void CEmitterInstance::UpdateVertexBuffer()
 	Engine::GetAPI()->GetContext().UpdateConstantBuffer(pBuffer, &myParticles[0]);
 }
 
+static int index_x = 0;
+static int index_y = 0;
+static float fps = 1.f/25.f;
+static float time = 0.f;
 void CEmitterInstance::UpdateConstantBuffer(CU::Matrix44f& aCameraOrientation, const CU::Matrix44f& aCameraProjection)
 {
 	auto& ctx = Engine::GetAPI()->GetContext();
@@ -146,14 +149,36 @@ void CEmitterInstance::UpdateConstantBuffer(CU::Matrix44f& aCameraOrientation, c
 	m_VertexCB.m_View = CU::Math::Inverse(aCameraOrientation);
 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_VertexCB);
 
+	if (time > fps)
+	{
+		index_x++;
+		time = 0.f;
+	}
+
+	if (index_x >= 20)
+	{
+		index_x = 0;
+		index_y++;
+	}
+
+	if (index_y >= 4)
+	{
+		index_y = 0;
+	}
+
+
+	time += Engine::GetInstance()->GetDeltaTime();
+
+	m_GeometryCB.index_x = index_x;
+	m_GeometryCB.index_y = index_y;
+
+
 	m_GeometryCB.m_Projection = aCameraProjection;
 	ctx.UpdateConstantBuffer(m_GeometryBuffer, &m_GeometryCB);
 
-
-
 	//ctx.VSSetConstantBuffer(0, 1, &m_ConstantBuffer);
-	//ctx.GSSetConstantBuffer(0, 1, &m_GeometryBuffer);
-	ctx.PSSetConstantBuffer(0, 1, &m_GeometryBuffer);
+	ctx.GSSetConstantBuffer(0, 1, &m_GeometryBuffer);
+	//ctx.PSSetConstantBuffer(0, 1, &m_GeometryBuffer);
 
 }
 
@@ -167,7 +192,7 @@ void CEmitterInstance::UpdateParticle(float aDeltaTime)
 			continue;
 		}
 		//myParticles[i].position += (myParticles[i].direction * myParticles[i].speed) * aDeltaTime;
-		myParticles[i].currLifeTime -= aDeltaTime;
+		//myParticles[i].currLifeTime -= aDeltaTime;
 		//myParticles[i].size += (1 * aDeltaTime);
 		//myParticles[i].alpha = myParticles[i].currLifeTime / myParticles[i].lifeTime;
 	}

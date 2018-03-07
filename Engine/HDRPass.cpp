@@ -140,6 +140,7 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 	render_context.GetContext().VSSetShaderResource(0, 1, nullptr);
 
 	ctx.OMSetRenderTargets(1, scene_texture->GetRenderTargetRef(), nullptr);
+	render_context.GetAPI().SetDefaultTargets();
 	m_RenderToScreenEffect->AddShaderResource(m_HDRTexture, Effect::DIFFUSE);
 	m_Quad->Render(false, m_RenderToScreenEffect);
 

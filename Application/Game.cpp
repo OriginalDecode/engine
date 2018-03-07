@@ -32,7 +32,7 @@
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
 #endif
-static float s_CamSpeed = 1.f;
+static float s_CamSpeed = 50.f;
 
 void Game::InitState(StateStack* state_stack)
 {
@@ -55,9 +55,9 @@ void Game::Initiate(const std::string& level)
 	//m_World.AddDweller(m_Player->Initiate());
 
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
-	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
+	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 	//LevelFactory::CreateTerrain("Data/Textures/terrain/britannia.tga");
-	m_World.AddDwellers(dwellers);
+	//m_World.AddDwellers(dwellers);
 
 
 	m_Picker = new CMousePicker;
@@ -361,7 +361,7 @@ void Game::OldUpdate(float dt)
 
 	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5,0.5), "Sup nerd"));
 	//m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, false));
-	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
+	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 	m_World.Update(dt, m_Paused);
 }
 

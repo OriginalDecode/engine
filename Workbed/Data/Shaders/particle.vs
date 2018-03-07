@@ -27,7 +27,7 @@ VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	output.pos = mul(input.pos, 1);
-	// output.pos = mul(output.pos, view_projection);
+	output.pos = mul(output.pos, view_projection);
 	output.size = input.size;
 	output.alpha = input.alpha;
 	

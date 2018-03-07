@@ -54,5 +54,7 @@ private:
 	struct cbParticleGeometry
 	{
 		CU::Matrix44f m_Projection;
+		int index_x, index_y;
+		int x,y;
 	} m_GeometryCB;
 };

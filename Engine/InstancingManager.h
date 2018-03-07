@@ -21,6 +21,9 @@ struct InstanceObject
 	Material* m_Material = nullptr;
 	bool m_Shadowed = false;
 	CU::GrowingArray<GPUModelData> m_GPUData;
+
+	UINT64 m_Start = 0;
+	UINT64 m_End = 0;
 };
 
 class InstancingManager

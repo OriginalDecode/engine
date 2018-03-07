@@ -143,11 +143,44 @@ void InstancingManager::EndFrame()
 
 	time *= 1000.f;
 	std::stringstream ss;
-	ss << "Rendering|Instancing|Model|" << time << " ms";
-	debug::DebugHandle::GetInstance()->AddText(ss.str());
 
 	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
+
+	
+	
+	ss << "Rendering|Instancing|Model|" << time << " ms";
+	//debug::DebugHandle::GetInstance()->AddText(ss.str());
 	pDebug->AddTimingObject(ss.str());
+	ss.str(std::string());
+
+	ss << "Rendering|Instancing2|Model|" << time << " ms";
+	//debug::DebugHandle::GetInstance()->AddText(ss.str());
+	pDebug->AddTimingObject(ss.str());
+	ss.str(std::string());
+
+	ss << "Rendering|Instancing2|Model2|" << time << " ms";
+	//debug::DebugHandle::GetInstance()->AddText(ss.str());
+	pDebug->AddTimingObject(ss.str());
+	ss.str(std::string());
+
+	ss << "Rendering2|Instancing|Model|" << time << " ms";
+	//debug::DebugHandle::GetInstance()->AddText(ss.str());
+	pDebug->AddTimingObject(ss.str());
+	ss.str(std::string());
+
+	ss << "Rendering2|Instancing2|Model|" << time << " ms";
+	//debug::DebugHandle::GetInstance()->AddText(ss.str());
+	pDebug->AddTimingObject(ss.str());
+	ss.str(std::string());
+
+	ss << "Rendering2|Instancing2|Model2|" << time << " ms";
+	//debug::DebugHandle::GetInstance()->AddText(ss.str());
+	pDebug->AddTimingObject(ss.str());
+	ss.str(std::string());
+
+
+
+
 
 	for (auto it = m_InstanceObjects.begin(); it != m_InstanceObjects.end(); it++)
 	{

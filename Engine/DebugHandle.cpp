@@ -85,37 +85,78 @@ namespace debug
 
 		SplitString(view_tree_and_time_string, list);
 
-		TimingObjectDisplay object;	
-		object.m_Type = TimingObjectDisplay::ROOT;
-		object.m_Text = list[0];
-
-
 		TimingObjectDisplay* last = nullptr;
+
+
+		bool found = false;
+		for (TimingObjectDisplay& obj : m_TimingObjects)
+		{
+			if (obj.m_Text.compare(list[0]) == 0)
+			{
+				found = true;
+				last = &obj;
+				break;
+			}
+		}
+
+		if (!found)
+		{
+			TimingObjectDisplay object;
+			object.m_Type = TimingObjectDisplay::ROOT;
+			object.m_Text = list[0];
+			m_TimingObjects.Add(object);
+			last = &m_TimingObjects.GetLast();
+		}
+
+
+
 		for(size_t i = 1; i < list.size(); i++)
 		{
 		
+			if (!last)
+				break;
 			TimingObjectDisplay tod;
 			tod.m_Type = (i != list.size() - 1) ? TimingObjectDisplay::CHILD : TimingObjectDisplay::END;
 			tod.m_Text = list[i];
 
+			bool found = false;
+			for (const TimingObjectDisplay& child : last->m_Children)
+			{
+				found = child.m_Text.compare(list[i]) == 0;
+				if (found)
+					break;
+			}
 
-			if (last)
+			if (!found || (tod.m_Type == TimingObjectDisplay::END))
 			{
 				last->m_Children.push_back(tod);
-				last = &last->m_Children[object.m_Children.size() - 1];
-			}
-
-			if (object.m_Children.size() <= 0)
-			{
-				object.m_Children.push_back(tod);
-				last = &object.m_Children[object.m_Children.size()-1];
-
+				last = &last->m_Children[last->m_Children.size() - 1];
 			}
 
 
+
+	
+// 			if (it == last->m_Children.end() 
+
+
+			//last->m_Children.
+
+			//if (last)
+			//{
+			//	last->m_Children.push_back(tod);
+			//	last = &last->m_Children[object.m_Children.size() - 1];
+			//}
+
+			//if (object.m_Children.size() <= 0)
+			//{
+			//	object.m_Children.push_back(tod);
+			//	last = &object.m_Children[object.m_Children.size()-1];
+
+			//}
 
 		}
-		m_TimingObjects.Add(object);
+
+			
 
 
 

@@ -19,8 +19,15 @@ public:
 
 	u64 GetKey() const { return m_Key; }
 
+
+	void Serialize(std::string file_name);
+
 	void Use(Effect* pEffect);
 private:
+
+
+	std::string GetFilename(Effect::TextureSlot slot);
+
 	u64 m_Key = 0;
 	Effect* m_Effect = nullptr;
 

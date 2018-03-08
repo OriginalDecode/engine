@@ -1,0 +1,7 @@
+{
+"material":{
+"albedo":"Data/Game_Models/T_tavla_1_albedo.dds",
+"normal":"Data/Game_Models/T_tavla_1_normal.dds",
+"metalness":"Data/Game_Models/T_empty_metalness.dds",
+"roughness":"Data/Game_Models/T_empty_roughness.dds"}
+}

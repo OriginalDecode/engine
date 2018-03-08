@@ -396,6 +396,10 @@ void Renderer::Render3DCommands()
 			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
 			RefPointer<Model> model = m_RenderContext.GetEngine().GetModel<Model>(command->m_Key);
+
+#ifdef _DEBUG
+			model->SetEntityID(command->m_EntityID);
+#endif
 			model->SetOrientation(command->m_Orientation);
 			model->Render(m_RenderContext);
 		}

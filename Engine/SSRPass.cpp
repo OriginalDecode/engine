@@ -36,9 +36,10 @@ SSRPass::SSRPass()
 	Effect* effect = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
 	effect->AddShaderResource(m_Reflection, Effect::SSR);*/
 
+#ifdef _DEBUG
 	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
 	pDebug->RegisterTexture(m_Reflection, "SSR");
-
+#endif
 
 }
 

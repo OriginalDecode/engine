@@ -7,6 +7,8 @@ cbuffer per_frame : register( b0 )
 cbuffer per_object : register(b1)
 {
 	row_major float4x4 orientation;
+	int ID;
+	int x,y,z;
 };
 
 struct VS_INPUT
@@ -27,6 +29,9 @@ struct VS_OUTPUT
 	float4 binorm : BINORMAL;
 	float4 tang : TANGENT;
 	float4 worldpos : POSITION;
+#ifdef _DEBUG
+	unsigned int entity_id : ID;
+#endif
 };
 
 VS_OUTPUT main(VS_INPUT input)
@@ -43,6 +48,8 @@ VS_OUTPUT main(VS_INPUT input)
 	output.binorm = mul(input.binorm, orientation);
 	output.tang  = mul(input.tang , orientation);
 	output.worldpos = mul(input.pos, orientation);
+
+	output.entity_id = ID;
 
 	return output;
 };

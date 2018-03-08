@@ -20,6 +20,47 @@ void Material::AddResource(Texture* pResource, const std::string& filename, Effe
 	AddResource(pResource->GetShaderView(), filename, slot);
 }
 
+
+
+
+void Material::Serialize(std::string file_name)
+{
+	size_t pos = file_name.rfind("/");
+	file_name = file_name.substr(pos + 1);
+	size_t end = file_name.rfind(".");
+	file_name = file_name.substr(0, end);
+
+	std::string str("Data/Material/");
+	str += file_name;
+	str += ".json";
+
+	std::ofstream output;
+	output.open(str.c_str(), std::ios::app);
+
+
+	if (output.is_open())
+	{
+		output << "{\n";
+		output << "\"material\":{\n";
+		output << "\"albedo\":\"";
+		output << GetFilename(Effect::ALBEDO).c_str();
+		output << "\",\n\"normal\":\"";
+		output << GetFilename(Effect::NORMAL).c_str();
+
+		output << "\",\n\"metalness\":\"";
+		output << GetFilename(Effect::METALNESS).c_str();
+
+		output << "\",\n\"roughness\":\"";
+		output << GetFilename(Effect::ROUGHNESS).c_str();
+
+		output << "\"}\n";
+		output << "}\n";
+
+		output.flush();
+		output.close();
+	}
+}
+
 void Material::Use(Effect* pEffect)
 {
 	Effect* _use = (pEffect ? pEffect : m_Effect);
@@ -28,4 +69,16 @@ void Material::Use(Effect* pEffect)
 		_use->AddShaderResource(binding.m_Resource, binding.m_Slot);
 	}
 	_use->Use();
+}
+
+std::string Material::GetFilename(Effect::TextureSlot slot)
+{
+	for (const ResourceBinding& b : m_Resources)
+	{
+		if (b.m_Slot == slot)
+		{
+			return b.m_ResourceName;
+		}
+	}
+	return "";
 }

@@ -107,6 +107,11 @@ void Surface::SetIndexCount(u32 aIndexCount)
 	myIndexCount = aIndexCount;
 }
 
+void Surface::serialize(const char* out)
+{
+	m_Material.Serialize(out);
+}
+
 // void Surface::SetPrimology(graphics::eTopology topology)
 // {
 // 	m_Topology = topology;

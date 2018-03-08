@@ -57,6 +57,15 @@ protected:
 	InstanceWrapper m_InstanceWrapper;
 
 	std::string m_FileName;
+
+
+	struct
+	{
+		CU::Matrix44f orientation;
+		int entityID;
+		int x, y, z;
+	} m_ObjectData;
+
 	IBuffer* m_ConstantBuffer = nullptr;
 	Material* m_Material = nullptr;
 

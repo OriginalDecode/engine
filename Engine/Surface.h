@@ -31,7 +31,7 @@ public:
 	int GetStartVertex() const;
 	int GetStartIndex() const;
 
-
+	void serialize(const char* out);
 private:
 
 	//graphics::eTopology m_Topology;

@@ -407,6 +407,43 @@ namespace debug
 			ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
 			ImGui::SliderFloat("Y", &light_dir[1], 0.f, 1.f);
 			ImGui::SliderFloat("Z", &light_dir[2], -1.f, 1.f);
+
+			ImGui::SliderFloat("Camera Speed", &m_CameraSpeed, 1.f, 100.f);
+			ImGui::SliderFloat("Camera Look Speed (C)", &m_ControllerLookSens, 0.f, 1.f);
+			ImGui::SliderFloat("Camera Look Speed (M)", &m_MouseLookSense, 0.f, 1.f);
+
+// 			ImGui::Separator();
+// 
+// 			static float up[3];
+// 			static float right[3];
+// 			static float forward[3];
+// 			ImGui::SliderFloat3("Up", up, 0.f, 360.f);
+// 			ImGui::SliderFloat3("Right", right, 0.f, 360.f);
+// 			ImGui::SliderFloat3("Forward", forward, 0.f, 360.f);
+// 
+// 			if (m_EditEntity > 0)
+// 			{
+// 				TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_EditEntity);
+// // 				t.m_Orientation = CU::Matrix44f::CreateRotateAroundX(xyz[0]) *  t.m_Orientation;
+// // 				t.m_Orientation = CU::Matrix44f::CreateRotateAroundY(xyz[1]) *  t.m_Orientation;
+// // 				t.m_Orientation = CU::Matrix44f::CreateRotateAroundZ(xyz[2]) *  t.m_Orientation;
+// 
+// 				CU::Vector4f vec_up = { cl::DegreeToRad(up[0]), cl::DegreeToRad(up[1]), cl::DegreeToRad(up[2]), 0 };
+// 				CU::Vector4f vec_fwd = { cl::DegreeToRad(forward[0]), cl::DegreeToRad(forward[1]), cl::DegreeToRad(forward[2]), 0 };
+// 
+// 				CU::Vector4f vec_rgt = CU::Math::Cross(vec_up, vec_fwd);
+// 				vec_rgt.w = 0;
+// 
+// 				t.m_Orientation.SetUp(vec_up);
+// 				t.m_Orientation.SetForward(vec_fwd);
+// 				t.m_Orientation.SetRight(vec_rgt);
+// 
+// 			}
+
+
+			ImGui::Separator();
+
+
 			//ImGui::DragFloat3("Light Direction", light_dir, 0.1, 0.f, 1.f);
 
 			Engine::GetInstance()->m_Renderer->m_Direction = CU::Vector3f(light_dir[0], light_dir[1], light_dir[2]);
@@ -554,12 +591,12 @@ namespace debug
 	{
 		if (m_CurrEntity <= 0)
 			return;
-
 		if (!ImGui::IsAnyWindowHovered())
 		{
+			m_EditEntity = m_CurrEntity;
 // 			if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver())
 // 			{
-// 				m_EditEntity = m_CurrEntity;
+// 				
 // 				m_Inspector.SetEntity(m_EditEntity);
 // 			}
 		}

@@ -275,13 +275,9 @@ void Game::OldUpdate(float dt)
 
 	if (input_wrapper->IsDown(KButton::LCTRL) && input_wrapper->OnDown(KButton::V))
 		pEventHandle->SendMessage("paste_new");
+	s_CamSpeed = debug::DebugHandle::GetInstance()->m_CameraSpeed;
 #endif
 
-	if (input_wrapper->IsDown(KButton::NUMPAD8))
-		s_CamSpeed += 1.f * dt;
-
-	if (input_wrapper->IsDown(KButton::NUMPAD2))
-		s_CamSpeed -= 1.f * dt;
 
 	ControllerInput* input = m_Engine->GetInputHandle()->GetController(0);
 	const ControllerState& input_state = input->GetState();

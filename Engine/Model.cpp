@@ -14,10 +14,15 @@
 #endif
 Model::~Model()
 {
+	if (!m_Surfaces.Empty())
+		m_Surfaces[0]->serialize(m_FileName.c_str());
+
 	m_Surfaces.DeleteAll();
 	m_Children.DeleteAll();
 
 	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
+
+
 
 }
 
@@ -29,7 +34,7 @@ void Model::Initiate(const std::string& filename)
 	m_GPUData.Init(250);
 	std::string dbg(filename.c_str());
 	m_FileName = dbg;
-	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), dbg + "Vertex ConstantBuffer");
+	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_ObjectData), dbg + "Vertex ConstantBuffer");
 	for (Model* child : m_Children)
 	{
 		child->Initiate(filename);
@@ -220,7 +225,9 @@ void Model::UpdateConstantBuffer(const graphics::RenderContext& rc)
 	}
 	else
 	{
-		ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_Orientation[0], sizeof(CU::Matrix44f));
+
+		m_ObjectData.orientation = m_Orientation;
+		ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ObjectData, sizeof(m_ObjectData));
 		ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);
 	}
 }
@@ -562,4 +569,13 @@ void Model::CreateCube()
 
 	Initiate("default_cube");
 
+}
+
+void Model::SetEntityID(int id)
+{
+	for (Model* pModel : m_Children)
+	{
+		pModel->SetEntityID(id);
+	}
+	m_ObjectData.entityID = id;
 }

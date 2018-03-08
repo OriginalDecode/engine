@@ -120,6 +120,9 @@ namespace debug
 
 		s32 m_TextureIndex = 0;
 
+		float m_CameraSpeed = 50.f;
+		float m_ControllerLookSens = 0.05f;
+		float m_MouseLookSense = 0.05f;
 
 
 		/**

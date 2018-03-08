@@ -45,6 +45,9 @@ struct ps_input_no_instance
 	float4 binorm : BINORMAL;
 	float4 tang : TANGENT;
 	float4 worldpos : POSITION;
+#ifdef _DEBUG
+	unsigned int entity_id : ID;
+#endif
 };
 
 float3 ToColor(unsigned int e)
@@ -71,7 +74,7 @@ GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
 	GBuffer output = (GBuffer)0;
 	bool override_pbl = false;
 	float metalness_override = MetalnessTexture.Sample(sampler0, input.uv).r;
-	float roughness_override = RoughnessTexture.Sample(sampler0, input.uv).r; 
+	float roughness_override = 1 -RoughnessTexture.Sample(sampler0, input.uv).r; 
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);
 	albedo.rgb = pow(albedo.rgb, 2.2);
@@ -81,7 +84,10 @@ GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
     output.Depth.x = input.pos.z;
 	output.Depth.y = override_pbl ? 1 : roughness_override;
 	output.Emissive = 0;//input.displaced;
-    
+#ifdef _DEBUG
+    output.IDTexture = float4(ToColor(input.entity_id), 0);
+#endif
+
     return output;
 };
 

@@ -60,6 +60,9 @@ public:
 
 	void SetKey(u64 key) { m_Key = key; }
 	const u64 GetKey() const { return m_Key; }
+
+	void SetEntityID(int id);
+
 private:
 	Material* GetMat() { return m_Material; }
 	void RenderCube(const graphics::RenderContext& rc);

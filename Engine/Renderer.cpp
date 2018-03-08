@@ -233,8 +233,9 @@ void Renderer::Render()
  	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
  	m_Atmosphere.Render(m_RenderContext);
  
- 	//RenderSpotlight();
- 	//RenderPointlight();
+	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
+ 	RenderSpotlight();
+ 	RenderPointlight();
  
  	//RenderParticles(nullptr);
  

@@ -13,7 +13,7 @@ public:
 	void AddChild(LightModel* child);
 	void SetOrientation(const CU::Matrix44f& orientation);
 private:
-
+	void AddSurface(Surface* p) override { delete p; p = nullptr; }
 	CU::GrowingArray<LightModel*> m_Children;
 			
 };

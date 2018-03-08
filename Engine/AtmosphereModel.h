@@ -17,6 +17,8 @@ public:
 	void SetOrientation(const CU::Matrix44f& orientation);
 
 private:
+	void AddSurface(Surface* p) override { delete p; p = nullptr; }
+
 	CU::GrowingArray<AtmosphereModel*> m_Children;
 
 };

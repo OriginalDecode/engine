@@ -35,6 +35,7 @@ public:
 
 	void AddChild(Model* aChild);
 
+	void AddSurface(Surface* surface);
 	void SetPosition(const CU::Vector3f& aPosition);
 	CU::Matrix44f& GetOrientation();
 	void SetOrientation(CU::Matrix44f orientation);

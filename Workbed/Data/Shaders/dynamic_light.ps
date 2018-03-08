@@ -64,7 +64,7 @@ float4 main(psInput input) : SV_Target
 	float4 toLight = position - world_pos;
 	float ln = length(toLight);
 	float4 light_dir = normalize(toLight);
-    float NdL = dot(normal, light_dir);
+    float NdL = saturate(dot(normal, light_dir));
 
 	float4 to_eye = normalize(cam_pos - world_pos);	
 	float4 halfVec = normalize(light_dir + to_eye);
@@ -97,7 +97,7 @@ float4 main(psInput input) : SV_Target
 	float4 spec = 0;
 
 	float attenuation = 0;
-	float intensity = 1;
+	float intensity = 10;
 #ifdef SPOTLIGHT
 
     float cosCone = input.cosAngle ;
@@ -117,6 +117,7 @@ float4 main(psInput input) : SV_Target
 #endif
 
 #ifdef POINTLIGHT
+	return float4(0,0,0,0);
 	attenuation = CalculateTotalAttenuation(ln, input.range) * 2;
 	spec += SATURATE((((fresnel * Distr * V) * NdL) * color) );
 #endif
@@ -126,6 +127,8 @@ float4 main(psInput input) : SV_Target
 	output = lerp(diffuse, cube, fresnel);
 	output += spec;
 	output = SATURATE(output);
+
+	
 	return (output * attenuation) * intensity;
 
 };

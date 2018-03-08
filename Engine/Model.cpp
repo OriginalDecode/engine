@@ -58,7 +58,7 @@ void Model::Render(const graphics::RenderContext& rc)
 	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
 
 
-
+	m_Surfaces[0]->Activate(rc);
 	PROFILE_BLOCK("Model : DrawIndexed", profiler::colors::Blue100);
 	rc.GetContext().DrawIndexed(this, m_Effect);
 	PROFILE_BLOCK_END;
@@ -230,14 +230,14 @@ void Model::AddChild(Model* aChild)
 	m_Children.Add(aChild);
 }
 
-// void Model::AddSurface(Surface* surface)
-// {
-// 	for (Model* child : m_Children)
-// 	{
-// 		AddSurface(surface);
-// 	}
-// 	m_Surfaces.Add(surface);
-// }
+ void Model::AddSurface(Surface* surface)
+ {
+ 	for (Model* child : m_Children)
+ 	{
+ 		AddSurface(surface);
+ 	}
+ 	m_Surfaces.Add(surface);
+ }
 
 void Model::AddOrientation(CU::Matrix44f orientation)
 {

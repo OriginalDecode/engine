@@ -277,6 +277,15 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 
 	if (!vtx.GetInputLayout())
 		FillInstanceData(out, data, effect);
+	if (filepath.find("cube_100x100") != filepath.npos)
+		return;
+
+	Surface* surface = new Surface(effect);
+	for (auto& tex : someData->myTextureData->myTextures)
+	{
+		surface->AddTexture(tex.m_File, tex.m_Slot);
+	}
+	out->AddSurface(surface);
 
 	return;
 }

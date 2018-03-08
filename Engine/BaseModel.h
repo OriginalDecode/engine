@@ -36,7 +36,7 @@ public:
 
 	CU::Vector3f GetWHD() const { return m_WHD; }
 
-	//virtual void AddSurface(Surface* surface) = 0;
+	virtual void AddSurface(Surface* surface) = 0;
 	void SetMaterial(Material* pMaterial) { m_Material = pMaterial; }
 	//Material* GetMaterial() { return m_Material; }
 

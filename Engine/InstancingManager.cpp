@@ -128,7 +128,7 @@ void InstancingManager::DoInstancing(const graphics::RenderContext& rc, bool sha
 
 void InstancingManager::EndFrame()
 {
-#ifdef _PROFILE
+#ifdef _DEBUG
 	ID3D11DeviceContext* ctx = static_cast<ID3D11DeviceContext*>(static_cast<graphics::DX11Context&>(Engine::GetAPI()->GetContext()).GetContext());
 	graphics::DirectX11* api = static_cast<graphics::DirectX11*>(Engine::GetAPI());
 	UINT64 freq = api->GetFrequency();

@@ -74,7 +74,6 @@ void HDRPass::Initiate()
 	//m_ColorGradingTex->Create3DTexture("Data/Textures/RGBTable16x1.dds", 16, 16, 0, "table");
 
 
-#ifdef _DEBUG
 	std::vector<cl::File> filesInFolder = cl::FindFilesInDirectory("Data/Textures/lut/*.*");
 	for (auto file : filesInFolder)
 	{
@@ -86,9 +85,10 @@ void HDRPass::Initiate()
 		path += file.filename;
 
 		t->Create3DTexture(path.c_str(), 16, 16, 0, file.filename);
+#ifdef _DEBUG
 		debug::DebugHandle::GetInstance()->AddLUT(file.filename, t);
-	}
 #endif
+	}
 
 
 	m_Quad = new Quad;

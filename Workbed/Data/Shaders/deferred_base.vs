@@ -49,7 +49,8 @@ VS_OUTPUT main(VS_INPUT input)
 	output.tang  = mul(input.tang , orientation);
 	output.worldpos = mul(input.pos, orientation);
 
+#ifdef _DEBUG
 	output.entity_id = ID;
-
+#endif
 	return output;
 };

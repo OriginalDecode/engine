@@ -14,6 +14,10 @@ cbuffer per_object : register(b1)
 struct vsInput
 {
 	float4 pos	: POSITION;
+	float4 normal : NORMAL;
+	float2 uv : TEXCOORD;
+	float4 binorm : BINORMAL;
+	float4 tang : TANGENT;
 };
 
 
@@ -21,6 +25,7 @@ struct vsInput
 struct psInput
 {
 	float4 pos	: SV_POSITION;
+	float4 normal : NORMAL;
 	float4 uv	: POSITION;
     float range : RANGE;
 	float cosAngle : COSANGLE;

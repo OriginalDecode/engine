@@ -283,6 +283,7 @@ static CU::Matrix44f orientation;
 
 void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &ctx)
 {
+	return;
 	if (e <= 0)
 		return;
 	
@@ -382,7 +383,7 @@ void Renderer::Render3DCommands()
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();

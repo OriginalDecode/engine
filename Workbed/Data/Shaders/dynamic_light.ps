@@ -20,6 +20,9 @@ cbuffer per_object : register(b1)
 struct psInput
 {
 	float4 pos	: SV_POSITION;
+#ifdef SPOTLIGHT
+	float4 normal : NORMAL;
+#endif
 	float4 uv	: POSITION;
 	float range : RANGE;
 #ifdef SPOTLIGHT
@@ -45,6 +48,9 @@ float4 getWorldPos(float2 tex_coord, float depth)
 
 float4 main(psInput input) : SV_Target
 {
+	#ifdef POINTLIGHT
+return float4(0,0,0,0);
+	#endif
    	input.uv /= input.uv.w;
 	float2 texCoord = input.uv.xy;
 
@@ -52,25 +58,64 @@ float4 main(psInput input) : SV_Target
 	float4 normal = NormalTexture.Sample(sampler0, texCoord);
 	float4 depth = DepthTexture.Sample(sampler0, texCoord);
 	float metalness = normal.w;
-	float roughness = 1 - depth.y;
+	float roughness = depth.y;
 	
 	normal *= 2;
 	normal -= 1;
 	
 	float4 world_pos = getWorldPos(texCoord, depth.r);
+
+
+#ifdef SPOTLIGHT
+
+	float3 _temp_lightdir = normalize(input.world.xyz - position.xyz);
+	float3 _V = normalize(cam_pos.xyz - input.world.xyz);
+	float ndotl = dot(-_temp_lightdir, normal.xyz);
+	return ndotl.xxxx;
+
+	float3 _L = normalize(position.xyz - input.world.xyz);
+
+
+	float LdLD = dot(_L, -_temp_lightdir);
+
+	float _spotscale = pow(max(LdLD, 0), 8);
+	return _spotscale.xxxx;
+
+	return float4(_L, 1);
+
+
+#endif
+
+
+
+
+
+
+
     float4 final_color = 1;
 
-	float4 lightToPixel = world_pos - position;
-	float4 toLight = position - world_pos;
+	float3 _pos = position.xyz;
+	float3 _worldpos = world_pos.xyz;
+
+	float3 lightToPixel = _worldpos - _pos;
+	float3 toLight = _pos - _worldpos;
 	float ln = length(toLight);
-	float4 light_dir = normalize(toLight);
-    float NdL = saturate(dot(normal, light_dir));
+	float3 light_dir = toLight / ln; //normalize(toLight);
+	#ifdef SPOTLIGHT
 
-	float4 to_eye = normalize(cam_pos - world_pos);	
-	float4 halfVec = normalize(light_dir + to_eye);
+	float n = dot(light_dir, normal);
+	return n.xxxx;
+	return float4(light_dir, 1);
+	#endif
+    float NdL = saturate(dot(normal.xyz, light_dir));
 
-	float HdN = SATURATE(dot(halfVec, normal));
-	float NdV = SATURATE(dot(normal, to_eye));
+
+
+	float3 to_eye = normalize(cam_pos.xyz - _worldpos);	
+	float3 halfVec = normalize(light_dir + to_eye);
+
+	float HdN = saturate(dot(halfVec, normal));
+	float NdV = saturate(dot(normal, to_eye));
 
 	int nMips = 0;
 	int width = 0;
@@ -85,48 +130,48 @@ float4 main(psInput input) : SV_Target
 
 	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
 	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo * (1 - reflection_fresnel);
-	cube_ambient = SATURATE(cube_ambient);
+	cube_ambient = saturate(cube_ambient);
 	float4 diffuse = 0;
 	albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
-	float SatNdL = SATURATE(dot(-light_dir, normal));
-	diffuse += float4( ( SatNdL * 1 / PI)  * color * albedo.rgb, 1.0f);
+	diffuse += float4( ( NdL * 1 / PI)  * color * albedo.rgb, 1.0f);
 	
-	float4 fresnel = SATURATE(Fresnel(metalness_albedo, -light_dir, halfVec));
-	float Distr = SATURATE(D_GGX(HdN, roughness));
-	float V = SATURATE(V_SchlickForGGX(roughness, NdV, NdL));
+	float4 fresnel = saturate(Fresnel(metalness_albedo, float4(light_dir.xyz, 1), float4(halfVec, 1)));
+	float Distr = saturate(D_GGX(HdN, roughness));
+	float V = saturate(V_SchlickForGGX(roughness, NdV, NdL));
 	float4 spec = 0;
 
 	float attenuation = 0;
-	float intensity = 10;
+	float intensity = 1;
 #ifdef SPOTLIGHT
 
     float cosCone = input.cosAngle ;
-	float4 lightVec = normalize(lightToPixel);
+	float3 lightVec = normalize(lightToPixel);
 	float spotfactor = dot(lightVec, -light_dir);
 	
+	return spotfactor.xxxx;
+
 	if(spotfactor < cosCone)
 		discard;
 
 	float angularAttenuation = ( 1.0 - ( 1.0 - spotfactor) *  1 / ( 1 - cosCone)) ;
 	float linearAttenuation = CalculateTotalAttenuation(ln, input.range) ;
-	
-
+	return angularAttenuation.xxxx;
 	attenuation = linearAttenuation * angularAttenuation ;
-	spec += SATURATE((((fresnel * Distr * V) * NdL) * color) );	
-	intensity = input.intensity;
+	spec += saturate((((fresnel * Distr * V) * NdL) * color) );	
+	// intensity = input.intensity;
 #endif
 
 #ifdef POINTLIGHT
 	return float4(0,0,0,0);
 	attenuation = CalculateTotalAttenuation(ln, input.range) * 2;
-	spec += SATURATE((((fresnel * Distr * V) * NdL) * color) );
+	spec += saturate((((fresnel * Distr * V) * NdL) * color) );
 #endif
 	diffuse += cube_ambient * albedo;
-	diffuse = SATURATE(diffuse);
+	diffuse = saturate(diffuse);
 	float4 output = 0;
 	output = lerp(diffuse, cube, fresnel);
 	output += spec;
-	output = SATURATE(output);
+	output = saturate(output);
 
 	
 	return (output * attenuation) * intensity;

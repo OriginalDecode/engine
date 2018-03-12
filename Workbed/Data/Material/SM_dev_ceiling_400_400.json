@@ -1,0 +1,14 @@
+{
+"material":{
+"albedo":"Data/Game_Models/T_ceiling_a_albedo.dds",
+"normal":"Data/Game_Models/T_ceiling_a_normal.dds",
+"metalness":"",
+"roughness":"Data/Game_Models/T_empty_roughness.dds"}
+}
+{
+"material":{
+"albedo":"Data/Game_Models/T_ceiling_a_albedo.dds",
+"normal":"Data/Game_Models/T_ceiling_a_normal.dds",
+"metalness":"",
+"roughness":"Data/Game_Models/T_empty_roughness.dds"}
+}

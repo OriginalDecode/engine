@@ -69,6 +69,28 @@ namespace graphics
 		HandleErrors(hr, "Failed to create Sampler");
 		SetDebugName(sampler, "Linear Wrap Sampler");
 #endif
+		samplerDesc = D3D11_SAMPLER_DESC();
+		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		samplerDesc.MinLOD = 0;
+		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		samplerDesc.MipLODBias = 2.f;
+		samplerDesc.MaxAnisotropy = 1;
+
+		hr = pDevice->CreateSamplerState(&samplerDesc, &sampler);
+		m_SamplerStates[LINEAR_CLAMP] = sampler;
+#ifndef _FINAL
+		HandleErrors(hr, "Failed to create Sampler");
+		SetDebugName(sampler, "Linear Clamp Sampler");
+#endif
+
+
+
+
+
+
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;

@@ -53,9 +53,16 @@ namespace graphics
 			CU::Matrix44f m_ShadowMVP;
 		} m_cbPointlightPix;
 
-		struct SpotPixelConstantBuffer : public PixelConstantBuffer
+		struct SpotPixelConstantBuffer
 		{
+			CU::Vector4f m_Color;
+			CU::Vector4f m_Position;
+			CU::Vector4f m_CameraPosition;
+			CU::Matrix44f m_ShadowMVP;
 			CU::Vector4f m_Direction;
+			float angle;
+			float range;
+			float x, y;
 		} m_cbSpotlightPix;
 
 		enum eBuffer

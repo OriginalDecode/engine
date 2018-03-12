@@ -382,6 +382,7 @@ void Renderer::Render3DCommands()
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 
+	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
@@ -575,13 +576,7 @@ void Renderer::RenderSpotlight()
 
 		CU::Matrix44f shadow_mvp;
 
-
-
-#if !defined(_FINAL) && !defined(_PROFILE)
-		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(m_LightModelWireframe ? graphics::WIREFRAME : graphics::CULL_NONE));
-#else
 		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
-#endif
 		m_LightPass->RenderSpotlight(light, m_Camera->GetOrientation(), m_Camera->GetPerspective(), shadow_mvp, m_RenderContext);
 
 	}

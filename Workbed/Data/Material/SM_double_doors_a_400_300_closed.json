@@ -7,10 +7,10 @@
 }
 {
 "material":{
-"albedo":"Data/Game_Models/T_plastic_electronics_black_dark_a_albedo.dds",
+"albedo":"Data/Game_Models/T_steel_a_albedo.dds",
 "normal":"Data/Game_Models/T_empty_normal.dds",
 "metalness":"Data/Game_Models/T_empty_metalness.dds",
-"roughness":"Data/Game_Models/T_plastic_electronics_roughness_semi_matt_a.dds"}
+"roughness":"Data/Game_Models/T_steel_a_roughness.dds"}
 }
 {
 "material":{
@@ -18,4 +18,11 @@
 "normal":"Data/Game_Models/T_empty_normal.dds",
 "metalness":"Data/Game_Models/T_empty_metalness.dds",
 "roughness":"Data/Game_Models/T_plastic_electronics_roughness_semi_matt_a.dds"}
+}
+{
+"material":{
+"albedo":"Data/Game_Models/T_steel_a_albedo.dds",
+"normal":"Data/Game_Models/T_empty_normal.dds",
+"metalness":"Data/Game_Models/T_empty_metalness.dds",
+"roughness":"Data/Game_Models/T_steel_a_roughness.dds"}
 }

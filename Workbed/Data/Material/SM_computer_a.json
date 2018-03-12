@@ -5,3 +5,17 @@
 "metalness":"Data/Game_Models/T_pc_metallic.dds",
 "roughness":"Data/Game_Models/T_pc_roughness.dds"}
 }
+{
+"material":{
+"albedo":"Data/Game_Models/T_pc_albedo.dds",
+"normal":"Data/Game_Models/T_pc_normal.dds",
+"metalness":"Data/Game_Models/T_pc_metallic.dds",
+"roughness":"Data/Game_Models/T_pc_roughness.dds"}
+}
+{
+"material":{
+"albedo":"Data/Game_Models/T_pc_albedo.dds",
+"normal":"Data/Game_Models/T_pc_normal.dds",
+"metalness":"Data/Game_Models/T_pc_metallic.dds",
+"roughness":"Data/Game_Models/T_pc_roughness.dds"}
+}

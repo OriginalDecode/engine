@@ -111,15 +111,21 @@ namespace graphics
 
 		//____________________________________________________________________________
 
-		//m_cbSpotlightPix.m_InvertedProjection = CU::Math::InverseReal(camera_projection);
-		//m_cbSpotlightPix.m_View = camera_view;
 		m_cbSpotlightPix.m_Color = data.myLightColor;
+		
 		m_cbSpotlightPix.m_Position = data.myOrientation.GetPosition();
 		m_cbSpotlightPix.m_Position.w = 1.f;
+		
 		m_cbSpotlightPix.m_CameraPosition = camera_view.GetPosition();
+		m_cbSpotlightPix.m_CameraPosition.w = 1.f;
+
 		m_cbSpotlightPix.m_Direction = data.myDirection;
 		m_cbSpotlightPix.m_Direction.w = 1.f;
+		
 		m_cbSpotlightPix.m_ShadowMVP = shadow_matrix;
+		m_cbSpotlightPix.angle = data.myAngle;
+		m_cbSpotlightPix.range = data.myRange;
+
 		context.UpdateConstantBuffer(m_LightBuffers[SPOTLIGHT_PIXEL], &m_cbSpotlightPix, sizeof(SpotPixelConstantBuffer));
 
 		context.VSSetConstantBuffer(1, 1, &m_LightBuffers[SPOTLIGHT_VERTEX]);

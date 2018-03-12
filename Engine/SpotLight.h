@@ -58,11 +58,11 @@ private:
 		float m_Range = 0.f;
 		CU::Vector3f m_Direction;
 	} m_Data;
+	SpotlightData myData;
 
 	RefPointer<Model> m_Model;
 
 	ShadowSpotlight* m_ShadowSpotlight = nullptr;
-	SpotlightData myData;
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	IBuffer* m_QuadBuffer = nullptr;

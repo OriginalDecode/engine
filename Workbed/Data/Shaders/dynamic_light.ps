@@ -46,6 +46,11 @@ float4 getWorldPos(float2 tex_coord, float depth)
     return world_pos;
 }
 
+float DegreeToRad(float aDegree)
+{
+	return aDegree * (3.1415926535 / 180.0);
+}
+
 float4 main(psInput input) : SV_Target
 {
 	#ifdef POINTLIGHT
@@ -65,33 +70,6 @@ return float4(0,0,0,0);
 	
 	float4 world_pos = getWorldPos(texCoord, depth.r);
 
-
-#ifdef SPOTLIGHT
-
-	float3 _temp_lightdir = normalize(input.world.xyz - position.xyz);
-	float3 _V = normalize(cam_pos.xyz - input.world.xyz);
-	float ndotl = dot(-_temp_lightdir, normal.xyz);
-	return ndotl.xxxx;
-
-	float3 _L = normalize(position.xyz - input.world.xyz);
-
-
-	float LdLD = dot(_L, -_temp_lightdir);
-
-	float _spotscale = pow(max(LdLD, 0), 8);
-	return _spotscale.xxxx;
-
-	return float4(_L, 1);
-
-
-#endif
-
-
-
-
-
-
-
     float4 final_color = 1;
 
 	float3 _pos = position.xyz;
@@ -101,15 +79,8 @@ return float4(0,0,0,0);
 	float3 toLight = _pos - _worldpos;
 	float ln = length(toLight);
 	float3 light_dir = toLight / ln; //normalize(toLight);
-	#ifdef SPOTLIGHT
 
-	float n = dot(light_dir, normal);
-	return n.xxxx;
-	return float4(light_dir, 1);
-	#endif
-    float NdL = saturate(dot(normal.xyz, light_dir));
-
-
+    float NdL = saturate(dot(light_dir, normal.xyz));
 
 	float3 to_eye = normalize(cam_pos.xyz - _worldpos);	
 	float3 halfVec = normalize(light_dir + to_eye);
@@ -145,17 +116,15 @@ return float4(0,0,0,0);
 #ifdef SPOTLIGHT
 
     float cosCone = input.cosAngle ;
-	float3 lightVec = normalize(lightToPixel);
-	float spotfactor = dot(lightVec, -light_dir);
+	float3 lightVec = normalize(toLight);
+	float spotfactor = dot(lightVec, light_dir);
 	
-	return spotfactor.xxxx;
 
 	if(spotfactor < cosCone)
 		discard;
 
 	float angularAttenuation = ( 1.0 - ( 1.0 - spotfactor) *  1 / ( 1 - cosCone)) ;
 	float linearAttenuation = CalculateTotalAttenuation(ln, input.range) ;
-	return angularAttenuation.xxxx;
 	attenuation = linearAttenuation * angularAttenuation ;
 	spec += saturate((((fresnel * Distr * V) * NdL) * color) );	
 	// intensity = input.intensity;
@@ -174,6 +143,6 @@ return float4(0,0,0,0);
 	output = saturate(output);
 
 	
-	return (output * attenuation) * intensity;
+	return (output * attenuation) * 1;
 
 };

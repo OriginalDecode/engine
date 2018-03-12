@@ -410,7 +410,7 @@ namespace debug
 
 			ImGui::SliderFloat("Camera Speed", &m_CameraSpeed, 1.f, 100.f);
 			ImGui::SliderFloat("Camera Look Speed (C)", &m_ControllerLookSens, 0.f, 1.f);
-			ImGui::SliderFloat("Camera Look Speed (M)", &m_MouseLookSense, 0.f, 1.f);
+			ImGui::SliderFloat("Camera Look Speed (M)", &m_MouseLookSense, 0.f, 0.1f);
 
 // 			ImGui::Separator();
 // 

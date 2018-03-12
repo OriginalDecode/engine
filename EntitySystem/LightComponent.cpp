@@ -16,7 +16,7 @@ void LightComponent::Deserialize(const rapidjson::Value& value)
 	color.z = (float)in_color[2].GetDouble() * 255;
 
 	intensity = (float)value[c_Intensity].GetDouble();
-	angle = (float)value[c_Angle].GetDouble();
+	angle = (float)value[c_Angle].GetDouble() / 2.f;
 	range = (float)value[c_Range].GetDouble();
 	
 }

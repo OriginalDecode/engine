@@ -73,10 +73,10 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_Atmosphere.Initiate(2048, 2048, { 1024, -128.f, 1024.f });
 
-	m_ShadowPass.Initiate(this);
-
-
-	m_DirectionalShadow.Initiate(2048.f);
+// 	m_ShadowPass.Initiate(this);
+// 
+// 
+// 	m_DirectionalShadow.Initiate(2048.f);
 
 	m_Direction = CU::Vector3f(0.0f, 1.0f, 0.0f);
 
@@ -163,8 +163,8 @@ Renderer::~Renderer()
 #endif
 	SAFE_DELETE(m_Text);
 
-	m_ShadowPass.CleanUp();
-	m_DirectionalShadow.CleanUp();
+	/*m_ShadowPass.CleanUp();
+	m_DirectionalShadow.CleanUp();*/
 
 	//SAFE_DELETE(m_WaterPlane);
 	SAFE_DELETE(m_WaterCamera);
@@ -226,7 +226,7 @@ void Renderer::Render()
  
  	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
  
- 	const CU::Matrix44f& shadow_mvp = m_DirectionalShadow.GetMVP();
+	const CU::Matrix44f shadow_mvp;// = m_DirectionalShadow.GetMVP();
  	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
  	m_DeferredRenderer->DeferredRender(shadow_mvp, m_Direction, m_RenderContext);
  
@@ -382,7 +382,7 @@ void Renderer::Render3DCommands()
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 
-	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
+	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));

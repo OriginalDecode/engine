@@ -12,3 +12,17 @@
 "metalness":"",
 "roughness":"Data/Game_Models/T_empty_roughness.dds"}
 }
+{
+"material":{
+"albedo":"Data/Game_Models/T_walls_concrete_a_color_a_albedo.dds",
+"normal":"Data/Game_Models/T_walls_concrete_a_normal.dds",
+"metalness":"",
+"roughness":"Data/Game_Models/T_empty_roughness.dds"}
+}
+{
+"material":{
+"albedo":"Data/Game_Models/T_walls_concrete_a_color_a_albedo.dds",
+"normal":"Data/Game_Models/T_walls_concrete_a_normal.dds",
+"metalness":"",
+"roughness":"Data/Game_Models/T_empty_roughness.dds"}
+}

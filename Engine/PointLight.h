@@ -22,6 +22,8 @@ public:
 
 	CU::Matrix44f GetOrientation();
 private:
+	void RenderSphere();
+
 	RefPointer<Model> m_Model;// = nullptr;
 
 	CU::Matrix44f myOrientation;

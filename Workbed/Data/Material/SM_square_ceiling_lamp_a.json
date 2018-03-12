@@ -19,3 +19,17 @@
 "metalness":"Data/Game_Models/T_empty_metalness.dds",
 "roughness":"Data/Game_Models/T_clean_paint_01_semi_shiney_roughness.dds"}
 }
+{
+"material":{
+"albedo":"Data/Game_Models/T_clean_paint_white_01_albedo.dds",
+"normal":"Data/Game_Models/T_empty_normal.dds",
+"metalness":"Data/Game_Models/T_empty_metalness.dds",
+"roughness":"Data/Game_Models/T_clean_paint_01_semi_shiney_roughness.dds"}
+}
+{
+"material":{
+"albedo":"Data/Game_Models/T_clean_paint_white_01_albedo.dds",
+"normal":"Data/Game_Models/T_empty_normal.dds",
+"metalness":"Data/Game_Models/T_empty_metalness.dds",
+"roughness":"Data/Game_Models/T_clean_paint_01_semi_shiney_roughness.dds"}
+}

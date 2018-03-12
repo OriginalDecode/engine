@@ -277,7 +277,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 
 	data->myData->myVertexStride = stride * sizeof(float);
 	data->myData->myVertexCount = vertCount;
-	data->myData->myIndexCount = indiceFix.Size();
+	data->myData->myIndexCount = indices.Size();
 
 
 	ExtractMaterials(mesh, scene, data, file);

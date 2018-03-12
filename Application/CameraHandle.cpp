@@ -22,7 +22,7 @@ void CameraHandle::Destroy()
 
 void CameraHandle::Initiate(CU::Matrix44f* orientation)
 {
-	float far_plane = 25.f;
+	float far_plane = 50.f;
 	float near_plane = 0.01f;
 
 	if ( !orientation )

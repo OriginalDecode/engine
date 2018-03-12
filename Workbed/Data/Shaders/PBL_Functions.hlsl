@@ -66,18 +66,15 @@ float4 Fresnel(const float4 aSubstance, const float4 aLightDir, const float4 aHa
 
 float CalculateAttenuation(float someDistance)
 {
-	float attenuation = 1.f / (1.f + 0.1f * someDistance + 0.01f * someDistance * someDistance);
-	return SATURATE(attenuation);
+	return 1.f / (1.f + 0.1f * someDistance + 0.01f * someDistance * someDistance);
 };
 
 float CalculateFalloff(float someDistance, float someRange)
 {
-	float fallOff = 0.9f - (someDistance / (someRange + 0.00001f));
-	return SATURATE(fallOff);
+	return 0.9f - (someDistance / (someRange + 0.00001f));
 };
 
 float CalculateTotalAttenuation(float someDistance, float someRange)
 {
-	float totalAttenuation = CalculateAttenuation(someDistance) * CalculateFalloff(someDistance, someRange);
-	return SATURATE(totalAttenuation);
+	return 1 * CalculateFalloff(someDistance, someRange);
 };

@@ -72,3 +72,8 @@ CU::Matrix44f PointLight::GetOrientation()
 	return myOrientation;
 }
 
+void PointLight::RenderSphere()
+{
+//Should be a transparent sphere
+}
+

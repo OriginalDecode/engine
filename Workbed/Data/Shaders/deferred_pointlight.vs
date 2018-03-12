@@ -24,7 +24,7 @@ struct VS_OUTPUT
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-	float4 scale = range;
+	float4 scale = range / 2;
 	scale.w = 1.f;
 	
 	input.pos *= scale; // scale
@@ -32,7 +32,7 @@ VS_OUTPUT main(VS_INPUT input)
 
 	output.pos = mul(input.pos, orientation);
 	output.pos = mul(output.pos, camera_view_x_proj);
-	output.range = range;
+	output.range = range / 2;
 	
 	float x = output.pos.x;
 	float y = output.pos.y;

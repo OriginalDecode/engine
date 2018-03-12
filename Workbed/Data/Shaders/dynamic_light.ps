@@ -56,7 +56,6 @@ float DegreeToRad(float aDegree)
 
 float4 main(psInput input) : SV_Target
 {
-
    	input.uv /= input.uv.w;
 	float2 texCoord = input.uv.xy;
 
@@ -64,12 +63,12 @@ float4 main(psInput input) : SV_Target
 	float4 normal = NormalTexture.Sample(sampler0, texCoord);
 	float4 depth = DepthTexture.Sample(sampler0, texCoord);
 	float metalness = normal.w;
-	float roughness = 1 - depth.y;
+	float roughness = 1 - albedo.a;
 	
 	normal *= 2;
 	normal -= 1;
 	
-	float4 world_pos = getWorldPos(texCoord, depth.r);
+	float4 world_pos = getWorldPos(texCoord, 1 - depth.r);
 
     float4 final_color = 1;
 
@@ -140,22 +139,32 @@ float4 main(psInput input) : SV_Target
 
 
 
+	intensity = 10;
 	spec += saturate((((schlickFresnel * Distr * V) * NdL) * color) );
-	intensity = input.intensity;
 #endif
 
 #ifdef POINTLIGHT
-	attenuation = CalculateTotalAttenuation(ln, input.range);
+	float pRadius = input.range / 2;
+	float3 pL = _pos - _worldpos;
+	float pDist = length(pL);
+	float pD = max(pDist - pRadius, 0);
+
+	float pDenom = ln / pRadius + 1;
+	float pAtten = 1 / (pDenom * pDenom);
+
+	pAtten = (pAtten - 0.0001) / ( 1 - 0.0001);
+	pAtten = max(pAtten, 0 );
+
+	attenuation = 0.9f - (ln / (input.range + 0.001)); //CalculateTotalAttenuation(ln, input.range / 2);
 	spec += saturate((((schlickFresnel * Distr * V) * NdL) * color) );
 #endif
 	
 	diffuse += cube_ambient * albedo;
 	float4 output = 0;
-	output = lerp(diffuse, cube, schlickFresnel);
-	output += spec;
+	output = lerp(diffuse, cube, schlickFresnel) * 0.42;
+	//output += spec;
 
-	return roughness.xxxx * attenuation;
 	
-	return saturate((output * attenuation));
+	return saturate((output * attenuation)) * intensity;
 
 };

@@ -97,7 +97,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
 	float4 normal = NormalTexture.Sample(sampler0, input.uv);
 	float4 base_col = albedo;
-	float roughness = 1 - depth.y;
+	float roughness = 1 - albedo.a;
 	
 	float roughnessOffsetted = pow(roughness, 8192);
 	float lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips[0]);
@@ -109,7 +109,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	normal -= 1;
 
 
-    float4 pixel_pos = getWorldPos(input.uv, depth.x);
+    float4 pixel_pos = getWorldPos(input.uv, 1 - depth.x);
 
 	float4 to_eye = normalize(camera_position - pixel_pos);
 	float3 refVec = reflect(to_eye.xyz, normal.xyz);
@@ -175,13 +175,11 @@ float4 main(VS_OUTPUT input) : SV_Target
 	
 	diffuse += active_cube[0] * albedo;
 
-
-	float LdH = saturate(dot(light_dir, half_vec));
+	float LdH = saturate(dot(-light_dir, half_vec));
 	float4 schlickFresnel = LdH * ( 1 - metalness_albedo);
 	schlickFresnel = schlickFresnel / (6 - (5 * roughnessOffsetted));
 	schlickFresnel = metalness_albedo + schlickFresnel;
 
-	return diffuse;
 	float4 output = 0;
 	output = lerp(diffuse, active_cube[1], schlickFresnel);
 	output += spec;

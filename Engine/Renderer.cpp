@@ -58,8 +58,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	window_size.m_Height = api->GetInfo().m_WindowHeight;
 	window_size.m_Width = api->GetInfo().m_WindowWidth;
 
-	m_DepthTexture = new Texture; //Where should this live?
-	m_DepthTexture->InitiateAsDepthStencil(window_size.m_Width, window_size.m_Height, "Renderer : Depth");
+	//m_DepthTexture = new Texture; //Where should this live?
+	//m_DepthTexture->InitiateAsDepthStencil(window_size.m_Width, window_size.m_Height, "Renderer : Depth");
 
 	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR /*| PostProcessManager::SSR*/); //Can be read from a settings file
 
@@ -169,7 +169,7 @@ Renderer::~Renderer()
 	//SAFE_DELETE(m_WaterPlane);
 	SAFE_DELETE(m_WaterCamera);
 	SAFE_DELETE(m_Line);
-	SAFE_DELETE(m_DepthTexture);
+	//SAFE_DELETE(m_DepthTexture);
 	SAFE_DELETE(m_DeferredRenderer);
 	SAFE_DELETE(myPointLight);
 	SAFE_DELETE(m_LightPass);

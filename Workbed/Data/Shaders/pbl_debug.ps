@@ -80,7 +80,11 @@ GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
 	albedo.rgb = pow(albedo.rgb, 2.2);
 	output.Albedo = albedo;
 
-    output.Normal = float4(_normal, override_pbl ? 1 : metalness_override);
+	output.Normal.rg = _normal.rg;
+	output.Normal.b = override_pbl ? 1 : metalness_override;
+	output.Normal.a = 0;
+
+    //output.Normal = float4(_normal, override_pbl ? 1 : metalness_override);
     output.Depth.x = input.pos.z;
 	output.Depth.y = override_pbl ? 1 : roughness_override;
 	output.Emissive = 0;//input.displaced;

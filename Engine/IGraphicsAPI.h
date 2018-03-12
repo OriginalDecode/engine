@@ -97,6 +97,9 @@ namespace graphics
 		DEPTH_32_FLOAT = BITFLAG(17),
 
 		RGBA8_UNORM = BITFLAG(18),
+		RGB10A2_TYPELESS = BITFLAG(19),
+		RGBA8_TYPELESS = BITFLAG(20),
+		sRGBA8 = BITFLAG(21),
 	};
 
 	enum eVertexFormat

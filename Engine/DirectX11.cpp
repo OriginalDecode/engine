@@ -755,6 +755,17 @@ namespace graphics
 		if (format & graphics::RG32_FLOAT)
 			return DXGI_FORMAT_R32G32_FLOAT;
 
+		if (format & graphics::RGB10A2_TYPELESS)
+			return DXGI_FORMAT_R10G10B10A2_TYPELESS;
+
+		if (format & graphics::RGBA8_TYPELESS)
+			return DXGI_FORMAT_R8G8B8A8_TYPELESS;
+
+		if (format & graphics::sRGBA8)
+			return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+		
+
+
 		DL_ASSERT("invalid texture format");
 		return DXGI_FORMAT_R32G32B32A32_FLOAT;
 	}

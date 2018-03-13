@@ -28,38 +28,38 @@ void BaseModel::CreatePlane(float half_width)
 
 	IInputLayout* pInputLayout = device.CreateInputLayout(m_Effect->GetVertexShader(), desc, ARRSIZE(desc));
 
-	CU::GrowingArray<SVertexPosNormUVBiTang> m_Vertices;
+	CU::GrowingArray<SVertexPosNormUVBiTang> vertices;
 
 	SVertexPosNormUVBiTang vert;
 	vert.position = { -half_width, 0, half_width, 1};
 	vert.normal = { 0, 1, 0 };
 	vert.uv = { 0, 0 };
-	m_Vertices.Add(vert);
+	vertices.Add(vert);
 
 	vert.position = { -half_width, 0, -half_width, 1 };
 	vert.normal = { 0, 1, 0 };
 	vert.uv = { 0, 1 };
 
-	m_Vertices.Add(vert);
+	vertices.Add(vert);
 
 	vert.position = { half_width, 0, half_width, 1 };
 	vert.normal = { 0, 1, 0 };
 	vert.uv = { 1, 0 };
-	m_Vertices.Add(vert);
+	vertices.Add(vert);
 
 	vert.position = { half_width, 0, -half_width, 1 };
 	vert.normal = { 0, 1, 0 };
 	vert.uv = { 1, 1 };
-	m_Vertices.Add(vert);
+	vertices.Add(vert);
 
 	const s32 vtx_stride = sizeof(SVertexPosNormUVBiTang);
-	const s32 vtx_count = m_Vertices.Size();
+	const s32 vtx_count = vertices.Size();
 	const s32 vtx_size = vtx_count * vtx_stride;
 	const s32 vtx_buff_count = 1;
 	const s32 vtx_start = 0;
 	const s32 vtx_byte_offset = 0;
 	s8* vtx_data = new s8[vtx_size];
-	memcpy(vtx_data, &m_Vertices[0], vtx_size);
+	memcpy(vtx_data, &vertices[0], vtx_size);
 
 
 	graphics::BufferDesc vtx_desc;

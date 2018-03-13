@@ -8,7 +8,6 @@ AssetFactory* AssetFactory::m_Instance = nullptr;
 
 AssetFactory::AssetFactory()
 {
-	m_ModelImporter = new CModelImporter;
 }
 
 

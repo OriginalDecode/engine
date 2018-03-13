@@ -71,7 +71,6 @@ private:
 
 
 	ShaderFactory* m_ShaderFactory;
-	CModelImporter* m_ModelLoader;
 
 };
 
@@ -81,8 +80,9 @@ u64 AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bo
 	if (!cl::file_exist(path) && path.find("default") != 0)
 		DL_ASSERT("Failed to find the file!");
 
+	
 	u64 hash = Hash(path.c_str());
-
+	Engine* engine = Engine::GetInstance();
 	if (path.find("default") != path.npos)
 		return g_DefaultModel;
 
@@ -90,19 +90,23 @@ u64 AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bo
 	if (m_Models.find(hash) != m_Models.end())
 		return hash;
 
+	Effect* effect = engine->GetEffect(effect_filepath.c_str());
+
 	m_Models.emplace(hash, RefPointer<Model>(new T));
 	T* model = static_cast<T*>(m_Models.at(hash).GetData());
 	model->SetKey(hash);
 	if (thread)
 	{
-		Engine::GetInstance()->GetThreadpool().AddWork(Work([=]() {
-			m_ModelLoader->LoadModel<T>(model, path, effect_filepath);
+		engine->GetThreadpool().AddWork(Work([=]() {
+			CModelImporter importer;
+			importer.LoadModel<T>(path, model, effect);
 			model->Initiate(path);
 		}));
 	}
 	else
 	{
-		m_ModelLoader->LoadModel<T>(model, path, effect_filepath);
+		CModelImporter importer;
+		importer.LoadModel<T>(path, model, effect);
 		model->Initiate(path);
 	}
 

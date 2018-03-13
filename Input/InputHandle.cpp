@@ -38,11 +38,8 @@ void InputHandle::CleanUp()
 	for (ControllerInput* c : m_Controller)
 	{
 		delete c;
-		c = nullptr;
 	}
-
 	delete m_Input;
-	m_Input = nullptr;
 }
 
 void InputHandle::Update(float dt)
@@ -61,11 +58,6 @@ void InputHandle::Update(float dt)
 void InputHandle::HandleInput()
 {
 	
-}
-
-void InputHandle::Bind(u32 hash, std::function<void()> function)
-{
-	m_Functions.emplace(hash, function);
 }
 
 float InputHandle::GetX()
@@ -93,12 +85,4 @@ float InputHandle::GetDY()
 ControllerInput* InputHandle::GetController(u16 controller_id)
 {
 	return m_Controller[controller_id]; 
-}
-
-void InputHandle::CallFunction(u32 hash)
-{
-	if (m_Functions.find(hash) != m_Functions.end())
-	{
-		m_Functions[hash]();
-	}
 }

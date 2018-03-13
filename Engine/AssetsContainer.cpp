@@ -11,7 +11,6 @@
 AssetsContainer::~AssetsContainer()
 {
 	SAFE_DELETE(m_ShaderFactory);
-	SAFE_DELETE(m_ModelLoader);
 	
 	for (auto it = m_Textures.begin(); it != m_Textures.end(); it++)
 		SAFE_DELETE(it->second);
@@ -31,7 +30,6 @@ AssetsContainer::~AssetsContainer()
 void AssetsContainer::Initiate()
 {
 	m_ShaderFactory = new ShaderFactory;
-	m_ModelLoader = new CModelImporter;
 	m_Textures.empty();
 	m_Effects.empty();
 	m_Models.empty();
@@ -195,7 +193,7 @@ u64 AssetsContainer::LoadMaterial(std::string path)
 		m_Materials.emplace(hash, material);
 		AssetFactory::GetInstance().CreateMaterial(path, material);
 #ifdef _DEBUG
-		debug::DebugHandle::GetInstance()->RegisterMaterial(material, path);
+		//debug::DebugHandle::GetInstance()->RegisterMaterial(material, path);
 #endif
 		EndTicketMutex(&material_mutex);
 		return hash;

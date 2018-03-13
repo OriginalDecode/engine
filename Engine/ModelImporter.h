@@ -34,8 +34,9 @@ class CModelImporter
 public:
 	CModelImporter();
 
+	
 	template<typename T>
-	void LoadModel(T* pModel, std::string model_filepath, std::string effect_filepath);
+	void LoadModel(std::string filepath, T* pModel, Effect* effect);
 
 private:
 	Engine* m_Engine = nullptr;
@@ -119,8 +120,7 @@ private:
 	template<typename T>
 	T* CreateChild(FBXModelData* data, std::string filepath, Effect* effect);
 
-	template<typename T>
-	void LoadModel(std::string filepath, T* pModel, Effect* effect);
+	
 
 	template<typename T>
 	void FillData(FBXModelData* data, T* model, std::string filepath, Effect* effect);
@@ -143,11 +143,11 @@ private:
 	void ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file);
 };
 
-template<typename T>
-void CModelImporter::LoadModel(T* pModel, std::string model_filepath, std::string effect_filepath)
-{
-	LoadModel(model_filepath, pModel, m_Engine->GetEffect(effect_filepath.c_str()));
-}
+//template<typename T>
+//void CModelImporter::LoadModel(T* pModel, std::string model_filepath, std::string effect_filepath)
+//{
+//	LoadModel(model_filepath, pModel, m_Engine->GetEffect(effect_filepath.c_str()));
+//}
 
 template<typename T>
 void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
@@ -157,7 +157,7 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 
 #ifdef _DEBUG
 	m_TimeManager.Update();
-	float loadTime = m_TimeManager.GetTimer(0).GetTotalTime().GetMilliseconds();
+	float loadTime = m_TimeManager.GetMasterTimer().GetTotalTime().GetMilliseconds();
 #endif
 	unsigned int processFlags =
 		aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
@@ -204,7 +204,7 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 
 #ifdef _DEBUG
 	m_TimeManager.Update();
-	loadTime = m_TimeManager.GetTimer(0).GetTotalTime().GetMilliseconds() - loadTime;
+	loadTime = m_TimeManager.GetMasterTimer().GetTotalTime().GetMilliseconds() - loadTime;
 	MODEL_LOG("%s took %fms to load. %s", filepath.c_str(), loadTime, (loadTime > 7000.f) ? "Check if it's saved as binary." : 0);
 #endif
 

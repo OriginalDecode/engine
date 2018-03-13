@@ -96,6 +96,8 @@ void HDRPass::Initiate()
 
 void HDRPass::CleanUp()
 {
+	delete m_DefaultViewport;
+	delete m_ChangeableViewport;
 	SAFE_DELETE(m_HDRTexture);
 	SAFE_DELETE(m_Quad);
 	m_Downsamples.DeleteAll();

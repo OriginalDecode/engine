@@ -20,7 +20,6 @@ private:
 	static AssetFactory* m_Instance; 
 	AssetFactory();
 	~AssetFactory() {}
-	CModelImporter* m_ModelImporter = nullptr;
 
 };
 

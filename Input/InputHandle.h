@@ -22,7 +22,6 @@ public:
 	void AddController(u16 controller_id);
 	void CleanUp();
 	void HandleInput();
-	void Bind(u32 hash, std::function<void()> function);
 
 
 	void Update(float dt = 0.f);
@@ -42,12 +41,10 @@ public:
 	InputWrapper* GetInputWrapper() { return m_Input; }
 
 private:
-	void CallFunction(u32 hash);
 	static constexpr s32 m_ControllerMaxAmount = 8;
 	s32 m_ControllerID;
 	ControllerInput* m_Controller[m_ControllerMaxAmount];
 	
-
 	InputWrapper* m_Input = nullptr;
-	std::map<u32, std::function<void()>> m_Functions;
+
 };

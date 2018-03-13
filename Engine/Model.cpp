@@ -12,21 +12,19 @@
 #ifdef _PROFILE
 #include "profile_defines.h"
 #endif
+
+
 Model::~Model()
 {
-	if (!m_Surfaces.Empty())
-		m_Surfaces[0]->serialize(m_FileName.c_str());
+	//if (!m_Surfaces.Empty())
+	//	m_Surfaces[0]->serialize(m_FileName.c_str());
+
+	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
 
 	m_Surfaces.DeleteAll();
 	m_Children.DeleteAll();
 
-	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
-
-
-
 }
-
-
 
 void Model::Initiate(const std::string& filename)
 {

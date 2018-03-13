@@ -46,6 +46,7 @@ SSRPass::SSRPass()
 
 SSRPass::~SSRPass()
 {
+	Engine::GetAPI()->ReleasePtr(m_Buffer);
 	delete m_Reflection;
 	m_Reflection = nullptr;
 }

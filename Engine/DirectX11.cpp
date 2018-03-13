@@ -41,6 +41,7 @@ namespace graphics
 #if !defined(_PROFILE) && !defined(_FINAL)
 		ImGui_ImplDX11_Shutdown();
 #endif
+		ReleasePtr(m_FrameQuery);
 		SAFE_DELETE(m_Viewport);
 		for (auto it = m_Adapters.begin(); it != m_Adapters.end(); ++it)
 		{

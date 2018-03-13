@@ -29,6 +29,7 @@ SpotLight::SpotLight()
 	Engine* pEngine = Engine::GetInstance();
 	u64 key = pEngine->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/deferred_spotlight.json", false);
 
+	int* apa = new int;
 	
 	m_Model = pEngine->GetModel<Model>(key);
 	LightModel* model = static_cast<LightModel*>(m_Model.GetData());

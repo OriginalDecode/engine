@@ -18,6 +18,7 @@
 #endif
 #endif
 
+#include "../optional_op.h"
 #include <string>
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -120,6 +121,10 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 #ifdef _PROFILE
 	profiler::stopListen();
 #endif
+
+	char temp[60];
+	sprintf_s(temp, "allocations %d %s\n", allocations, allocations > 0 ? "memory leaks!FAIL" : "" );
+	OutputDebugStringA(temp);
 
 	return 0;
 }

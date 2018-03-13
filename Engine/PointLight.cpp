@@ -28,9 +28,11 @@ PointLight::PointLight()
 PointLight::~PointLight()
 {
 #if !defined(_PROFILE) && !defined(_FINAL)
-	SAFE_DELETE(m_LightQuad);
+	delete m_LightQuad;
 	Engine::GetInstance()->GetAPI()->ReleasePtr(m_QuadBuffer);
+
 #endif
+
 }
 
 void PointLight::SetPosition(const CU::Vector3f& aPosition)

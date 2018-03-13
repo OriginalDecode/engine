@@ -483,7 +483,7 @@ namespace debug
 			{
 				static int index = 0;
 				ListBox("", &index, m_LutLables);
-				Engine::GetInstance()->m_Renderer->m_PostProcessManager.GetHDRPass().SetLUT(m_LutTextures[index]);
+				//Engine::GetInstance()->m_Renderer->m_PostProcessManager.GetHDRPass().SetLUT(m_LutTextures[index]);
 			}
 
 			ImGui::End();

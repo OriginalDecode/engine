@@ -6,11 +6,11 @@
 #include <Engine/DX11Device.h>
 
 
-ID3D11Query* g_QueryStart = nullptr;
-ID3D11Query* g_QueryEnd = nullptr;
+// ID3D11Query* g_QueryStart = nullptr;
+// ID3D11Query* g_QueryEnd = nullptr;
 InstancingManager::InstancingManager()
 {
-	D3D11_QUERY_DESC desc;
+	/*D3D11_QUERY_DESC desc;
 	desc.Query = D3D11_QUERY_TIMESTAMP;
 	desc.MiscFlags = 0;
 
@@ -18,7 +18,7 @@ InstancingManager::InstancingManager()
 	assert(hr == S_OK);
 
 	hr = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice()->CreateQuery(&desc, &g_QueryEnd);
-	assert(hr == S_OK);
+	assert(hr == S_OK);*/
 }
 
 bool InstancingManager::FindInstanceObject(u64 key)

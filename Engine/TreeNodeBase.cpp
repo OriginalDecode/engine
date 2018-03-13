@@ -9,8 +9,7 @@
 #include <algorithm>
 TreeNodeBase::TreeNodeBase()
 {
-	m_Lines.Init(5000);
-	m_Dwellers.Init(SHRT_MAX);
+	m_Dwellers.Init(16);
 }
 
 TreeNodeBase::~TreeNodeBase()
@@ -218,7 +217,6 @@ void TreeNodeBase::SetMemoryBlockIndex(s32 index)
 #define YELLOW CU::Vector4f(255.f,255.f,0.f,255.f)
 void TreeNodeBase::RenderBox()
 {
-	m_Lines.RemoveAll();
 	LinePoint points[8];
 
 
@@ -269,10 +267,6 @@ void TreeNodeBase::RenderBox()
 	points[7].position = points[6].position;
 	points[7].position.y = m_CenterPosition.y + m_HalfWidth;
 
-
-	
-
-
 	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[1], true));
 	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[2], true));
 	m_Synchronizer->AddRenderCommand(LineCommand(points[0], points[6], true));
@@ -285,16 +279,6 @@ void TreeNodeBase::RenderBox()
 	m_Synchronizer->AddRenderCommand(LineCommand(points[4], points[5], true));
 	m_Synchronizer->AddRenderCommand(LineCommand(points[2], points[3], true));
 	m_Synchronizer->AddRenderCommand(LineCommand(points[6], points[7], true));
-}
-
-void TreeNodeBase::AddLine(Line line)
-{
-	m_Lines.Add(line);
-}
-
-void TreeNodeBase::CopyToParent(const CU::GrowingArray<Line>& in)
-{
-	CU::GrowingArray<Line>::Copy(m_Lines, in);
 }
 
 s32 TreeNodeBase::GetMemoryBlockIndex()

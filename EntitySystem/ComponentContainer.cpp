@@ -6,14 +6,14 @@
 
 CComponentContainer::CComponentContainer(bool owner)
 	: myComponents(MAX_COMPONENTS_COUNT)
-	, myEntityComponents(SHRT_MAX)
-	, myEntitiesToReturn(SHRT_MAX)
+	, myEntityComponents(16)
+	, myEntitiesToReturn(16)
 	, m_Owner(owner)
 {
 	for ( int i = 0; i < MAX_COMPONENTS_COUNT; i++ )
 	{
 		myComponents.Add(ComponentArray());
-		myComponents[i].ReInit(SHRT_MAX);
+		myComponents[i].ReInit(16);
 	}
 }
 

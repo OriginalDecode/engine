@@ -45,14 +45,14 @@ psInput main(vsInput input)
 	
 	input.pos.x *= xyScale ; // scale
     input.pos.y *= xyScale;
-    input.pos.z *= _range;
+    input.pos.z *= _range ;
     input.pos.w = 1.f;
 	
 	output.pos = mul(input.pos, orientation);
 	output.pos = mul(output.pos, camera_view_x_proj);
 	output.cosAngle = cos(_angle); //beam width
 	
-	output.range = _range ;
+	output.range = _range * 1.25;
 	output.angle = _angle; //in radians
 	output.intensity = intensity;
 	float x = output.pos.x;

@@ -331,9 +331,12 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 
 	bool is_static = false;
 	bool is_light = false;
+	bool pointlight = false;
 	for (const rapidjson::Value& obj : doc.GetArray())
 	{
 		std::string type = obj["component_type"].GetString();
+
+		
 
 		if (type.find("translation") != type.npos)
 		{
@@ -341,14 +344,8 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 			c.Deserialize(obj);
 			pDweller->AddComponent(&c, TreeDweller::TRANSLATION);
 			debug_flags |= TreeDweller::TRANSLATION;
-		}
+		
 
-		if (type.find("graphics") != type.npos)
-		{
-			GraphicsComponent& c = em.AddComponent<GraphicsComponent>(e);
-			c.Deserialize(obj);
-			pDweller->AddComponent(&c, TreeDweller::GRAPHICS);
-			debug_flags |= TreeDweller::GRAPHICS;
 		}
 
 		if (type.find("light") != type.npos)
@@ -358,6 +355,23 @@ void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<Tr
 			pDweller->AddComponent(&c, TreeDweller::LIGHT);
 			debug_flags |= TreeDweller::LIGHT;
 			is_light = true;
+			TranslationComponent& t = em.GetComponent<TranslationComponent>(e);
+			if (c.myType == eLightType::ePOINTLIGHT)
+			{
+				CU::Vector3f pos = t.m_Orientation.GetPosition();
+				pos.y += 1.5f;
+				t.m_Orientation.SetPosition(pos);
+			}
+
+		}
+
+
+		if (type.find("graphics") != type.npos)
+		{
+			GraphicsComponent& c = em.AddComponent<GraphicsComponent>(e);
+			c.Deserialize(obj);
+			pDweller->AddComponent(&c, TreeDweller::GRAPHICS);
+			debug_flags |= TreeDweller::GRAPHICS;
 		}
 
 		if (type.find("physics") != type.npos)

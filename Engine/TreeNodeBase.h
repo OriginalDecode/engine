@@ -71,12 +71,7 @@ protected:
 
 	s32 m_DwellerCount = 0;
 
-	CU::GrowingArray<Line> m_Lines;
 
 
 
-public:
-	void AddLine(Line line);
-
-	void CopyToParent(const CU::GrowingArray<Line>& in);
 };

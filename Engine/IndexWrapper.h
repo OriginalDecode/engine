@@ -22,7 +22,6 @@ public:
 	~IndexWrapper()
 	{
 		Engine::GetAPI()->ReleasePtr(m_IndexBuffer);
-		m_IndexBuffer = nullptr;
 		delete[] m_Data;
 	}
 

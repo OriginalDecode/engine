@@ -133,13 +133,15 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 	}
 
 	DL_MESSAGE("Vertex Buffer Array Size : %d", size);
-	data->myData->myVertexBuffer = new float[size];
-	ZeroMemory(data->myData->myVertexBuffer, sizeof(float)*size);
-	data->myData->m_VertexBufferSize = sizeof(float) * size;
+
+	const u32 vtx_size = size;
+	data->myData->myVertexBuffer = new float[vtx_size];
+	ZeroMemory(data->myData->myVertexBuffer, sizeof(float) * vtx_size);
+	data->myData->m_VertexBufferSize = sizeof(float)*vtx_size;
 	DL_ASSERT_EXP(mesh->mNumVertices < size, "the amount of vertices was MORE!? than size");
-	data->myData->myIndicies = new u32[polygonCount * 3];
-	ZeroMemory(data->myData->myIndicies, sizeof(u32) * polygonCount * 3);
-	data->myData->m_IndexBufferSize = sizeof(u32) * polygonCount * 3;
+
+	
+
 	CU::GrowingArray<u32> indices(polygonCount * 3);
 	u32 vertCount = 0;
 
@@ -168,7 +170,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 				data->myData->myVertexBuffer[currIndex + 3] = 1;
 
 
-				if ( i != 0 )
+				if (i != 0)
 				{
 
 					min_point.x = min(position.x, min_point.x);
@@ -178,25 +180,8 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 					max_point.x = max(position.x, max_point.x);
 					max_point.y = max(position.y, max_point.y);
 					max_point.z = max(position.z, max_point.z);
-
-					/*if ( position.x <= min_point.x )
-						min_point.x = position.x;
-
-					if ( position.x > max_point.x )
-						data->myData->m_MaxPoint.x = position.x;
-
-					if ( position.y <= data->myData->m_MinPoint.y )
-						data->myData->m_MinPoint.y = position.y;
-
-					if ( position.y > data->myData->m_MaxPoint.y )
-						data->myData->m_MaxPoint.y = position.y;
-
-					if ( position.z <= data->myData->m_MinPoint.z )
-						data->myData->m_MinPoint.z = position.z;
-
-					if ( position.z > data->myData->m_MaxPoint.z )
-						data->myData->m_MaxPoint.z = position.z;*/
 				}
+					
 
 				if ( mesh->HasNormals() )
 				{
@@ -266,8 +251,14 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 		data->myData->m_MaxPoint = max_point;
 	}
 
+
+	const u32 indice_byte_width = sizeof(u32)* polygonCount * 3;
+	data->myData->myIndicies = new s8[indice_byte_width];
+	ZeroMemory(data->myData->myIndicies, indice_byte_width);
+	data->myData->m_IndexBufferSize = indice_byte_width;
+
 	//Flips it to make it correct.
-	CU::GrowingArray<u32> indiceFix(indices.Capacity());
+	CU::GrowingArray<u32> indiceFix(indices.Size());
 	for ( s32 indice = indices.Size() - 1; indice >= 0; indice-- )
 	{
 		indiceFix.Add(indices[indice]);
@@ -277,7 +268,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 
 	data->myData->myVertexStride = stride * sizeof(float);
 	data->myData->myVertexCount = vertCount;
-	data->myData->myIndexCount = indices.Size();
+	data->myData->myIndexCount = indiceFix.Size();
 
 
 	ExtractMaterials(mesh, scene, data, file);
@@ -395,15 +386,5 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 			}
 
 		}
-	}
-}
-
-void CModelImporter::FBXModelData::DeleteChildren()
-{
-	for (FBXModelData* child : myChildren)
-	{
-		child->DeleteChildren();
-		delete child->myData;
-		delete child->myTextureData;
 	}
 }

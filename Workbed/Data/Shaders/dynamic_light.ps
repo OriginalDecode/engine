@@ -139,32 +139,35 @@ float4 main(psInput input) : SV_Target
 
 
 
-	intensity = 10;
-	spec += saturate((((schlickFresnel * Distr * V) * NdL) * color) );
+	intensity = 1;
+	spec += saturate((((schlickFresnel * Distr * V) ) * color) );
 #endif
 
 #ifdef POINTLIGHT
-	float pRadius = input.range / 2;
+	float pRadius = input.range;
 	float3 pL = _pos - _worldpos;
 	float pDist = length(pL);
 	float pD = max(pDist - pRadius, 0);
 
-	float pDenom = ln / pRadius + 1;
+	float pDenom = ln / pRadius + 0.001 ;
 	float pAtten = 1 / (pDenom * pDenom);
 
 	pAtten = (pAtten - 0.0001) / ( 1 - 0.0001);
 	pAtten = max(pAtten, 0 );
 
-	attenuation = 0.9f - (ln / (input.range + 0.001)); //CalculateTotalAttenuation(ln, input.range / 2);
-	spec += saturate((((schlickFresnel * Distr * V) * NdL) * color) );
+	attenuation = 0.9f - pDenom ; //CalculateTotalAttenuation(ln, input.range / 2);
+
+	spec += (((schlickFresnel * Distr * V) )  ) ;
+	intensity ;
+	
 #endif
 	
 	diffuse += cube_ambient * albedo;
 	float4 output = 0;
-	output = lerp(diffuse, cube, schlickFresnel) * 0.42;
-	//output += spec;
+	output = lerp(diffuse, cube, schlickFresnel);
+	output += spec;
 
 	
-	return saturate((output * attenuation)) * intensity;
+	return saturate((output * attenuation)) * NdL * intensity;
 
 };

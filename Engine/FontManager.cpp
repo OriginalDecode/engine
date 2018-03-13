@@ -41,7 +41,6 @@ CFontManager::CFontManager()
 
 CFontManager::~CFontManager()
 {
-	myFontPath = nullptr;
 	FT_Done_FreeType(myLibrary);
 	for (auto it = myFontData.begin(); it != myFontData.end(); it++)
 	{
@@ -434,6 +433,6 @@ void CFontManager::CountDeltas(const int& width, const int& height, int& deltaX,
 SFontData::~SFontData()
 {
 	Engine::GetAPI()->ReleasePtr(m_AtlasView);
-	SAFE_DELETE(myAtlas);
+	delete[] myAtlas;
 }
 

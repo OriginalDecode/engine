@@ -2,10 +2,14 @@
 #include "LightStructs.h"
 #include <Engine/LightModel.h>
 #include <CommonLib/RefPointer.h>
+
+class Quad;
 class PointLight
 {
 public:
 	PointLight();
+	~PointLight();
+
 
 	void SetPosition(const CU::Vector3f& aPosition);
 	CU::Vector3f GetPosition();
@@ -31,5 +35,15 @@ private:
 	CU::Vector4f myColor;
 	SPointlightData myData;
 	float myRange;
+
+#if !defined(_PROFILE) && !defined(_FINAL)
+	IBuffer* m_QuadBuffer = nullptr;
+	struct quadbuffer
+	{
+		CU::Matrix44f camera_orientation; //non inverted, we want the rotation
+	} m_LightQuadBuffer;
+
+	Quad* m_LightQuad = nullptr;
+#endif
 
 };

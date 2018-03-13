@@ -44,7 +44,7 @@ void NodeEntityManager::Initiate()
 	if (flag & EntityManager::DEBUG)
 		AddSystem<DebugSystem>();
 #endif
-	m_Entities.Init(SHRT_MAX);
+	m_Entities.Init(16);
 }
 
 void NodeEntityManager::CleanUp()

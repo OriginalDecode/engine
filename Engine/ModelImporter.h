@@ -34,14 +34,11 @@ class CModelImporter
 public:
 	CModelImporter();
 
-	//void LoadModel(std::string filepath, Model* model, std::string aEffectPath);
-
 	template<typename T>
 	void LoadModel(T* pModel, std::string model_filepath, std::string effect_filepath);
 
 private:
 	Engine* m_Engine = nullptr;
-	Ticket_Mutex m_LoaderMutex;
 #pragma region Structs
 	struct TextureInfo //Anyway to remove this?
 	{
@@ -53,11 +50,6 @@ private:
 	{
 		~ModelData()
 		{
-			delete myVertexBuffer;
-			myVertexBuffer = nullptr;
-
-			delete myIndicies;
-			myIndicies = nullptr;
 		}
 
 		enum LayoutType
@@ -79,7 +71,7 @@ private:
 		};
 
 		float* myVertexBuffer = nullptr;
-		u32* myIndicies = nullptr;
+		s8* myIndicies = nullptr;
 		u32 myVertexCount = 0;
 		u32 m_VertexBufferSize = 0;
 		u32 m_IndexBufferSize = 0;
@@ -101,12 +93,19 @@ private:
 
 	struct FBXModelData
 	{
+		~FBXModelData()
+		{
+			myChildren.DeleteAll();
+			delete myData;
+			delete myTextureData;
+
+		}
+
 		CU::Matrix44f myOrientation;
 		ModelData* myData = nullptr;
 		TextureData* myTextureData = nullptr;
 		std::string m_Filename;
 		CU::GrowingArray<FBXModelData*> myChildren;
-		void DeleteChildren();
 
 	};
 #pragma endregion
@@ -147,11 +146,7 @@ private:
 template<typename T>
 void CModelImporter::LoadModel(T* pModel, std::string model_filepath, std::string effect_filepath)
 {
-	BeginTicketMutex(&m_LoaderMutex);
-
 	LoadModel(model_filepath, pModel, m_Engine->GetEffect(effect_filepath.c_str()));
-
-	EndTicketMutex(&m_LoaderMutex);
 }
 
 template<typename T>
@@ -200,21 +195,11 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	pModel->SetMaxPoint(max_point);
 	pModel->SetMinPoint(min_point);
 
-	if (data->myTextureData)
-	{
-		delete data->myTextureData;
-	}
 	if (data->myData)
-	{
-		delete[] data->myData->myIndicies;
-		delete[] data->myData->myVertexBuffer;
-	}
-	if (data && data->myData)
-	{
 		delete data->myData;
-	}
-	delete data;
 
+	delete data->myTextureData;
+	delete data;
 
 
 #ifdef _DEBUG
@@ -349,8 +334,8 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 
 	const s32 idx_buf_size = data->m_IndexBufferSize;
 
-	s8* indexData = new s8[idx_buf_size];
-	memcpy(indexData, &data->myIndicies[0], idx_buf_size);
+// 	s8* indexData = new s8[idx_buf_size];
+// 	memcpy(indexData, &data->myIndicies[0], idx_buf_size);
 
 	const graphics::eTextureFormat idx_IndexBufferFormat = graphics::R32_UINT;
 	const s32 idx_IndexCount = data->myIndexCount;
@@ -358,7 +343,7 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 
 	graphics::BufferDesc idx_desc;
 	idx_desc.m_Size = idx_buf_size;
-	idx_desc.m_Data = indexData;
+	idx_desc.m_Data = data->myIndicies;
 	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
 	idx_desc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
 	idx_desc.m_StructuredByteStride = 0;
@@ -368,7 +353,7 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 
 	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc, data->m_Filename + "IndexBuffer");
 
-	idx.SetData(indexData);
+	idx.SetData(data->myIndicies);
 	idx.SetIndexCount(idx_IndexCount);
 	idx.SetStart(0);
 	idx.SetSize(idx_buf_size);
@@ -391,15 +376,12 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	const s32 vtx_start = 0;
 	const s32 vtx_buff_count = 1;
 	const s32 vtx_Size = data->m_VertexBufferSize;
-	s8* vtx_Data = new s8[data->m_VertexBufferSize];
 
 	DL_MESSAGE("Buffer Size : %d", vtx_VertexCount);
-	memcpy(vtx_Data, &data->myVertexBuffer[0], data->m_VertexBufferSize);
-
 
 	graphics::BufferDesc vtx_desc;
 	vtx_desc.m_Size = vtx_VertexCount * vtx_Stride;
-	vtx_desc.m_Data = vtx_Data;
+	vtx_desc.m_Data = (s8*)data->myVertexBuffer;
 	vtx_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
@@ -419,7 +401,7 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 		vtx.SetInputLayout(layout);
 	}
 
-	vtx.SetData(vtx_Data);
+	vtx.SetData((s8*)data->myVertexBuffer);
 	vtx.SetStart(vtx_start);
 	vtx.SetStride(vtx_Stride);
 	vtx.SetByteOffset(0);

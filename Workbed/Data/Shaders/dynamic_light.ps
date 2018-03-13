@@ -80,13 +80,13 @@ float4 main(psInput input) : SV_Target
 	float ln = length(toLight);
 	float3 light_dir = toLight / ln; //normalize(toLight);
 
-    float NdL = normalize(dot(light_dir, normal.xyz));
+    float NdL = max(0,dot(normalize(toLight), normal.xyz));
 
 	float3 to_eye = normalize(cam_pos.xyz - _worldpos);	
 	float3 halfVec = normalize(light_dir + to_eye);
 
-	float HdN = normalize(dot(halfVec, normal));
-	float NdV = normalize(dot(normal, to_eye));
+	float HdN = dot(halfVec, normal);
+	float NdV = dot(normal, to_eye);
 
 	int nMips = 0;
 	int width = 0;
@@ -99,12 +99,11 @@ float4 main(psInput input) : SV_Target
 	float4 reflection_fresnel = float4(ReflectionFresnel(albedo.rgb, normal.xyz, to_eye, roughnessOffsetted), 1);
 	float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
 
-	float4 cube = 0; //CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
-	float4 cube_ambient = 0; //CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo *  reflection_fresnel;
+	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
+	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo *  reflection_fresnel;
 	float4 diffuse = 0;
 	//albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
 
-	diffuse += float4( ( NdL * 1 / PI) * color * albedo.rgb, 1.0f);
 
 	float LdH = saturate(dot(light_dir, halfVec));
 	LdH = 1 - LdH;
@@ -140,7 +139,7 @@ float4 main(psInput input) : SV_Target
 
 
 	intensity = 1;
-	spec += saturate((((schlickFresnel * Distr * V) ) * color) );
+	spec += saturate((((schlickFresnel * Distr * V) * NdL ) * color) );
 #endif
 
 #ifdef POINTLIGHT
@@ -155,19 +154,28 @@ float4 main(psInput input) : SV_Target
 	pAtten = (pAtten - 0.0001) / ( 1 - 0.0001);
 	pAtten = max(pAtten, 0 );
 
-	attenuation = 0.9f - pDenom ; //CalculateTotalAttenuation(ln, input.range / 2);
+	attenuation = saturate(CalculateTotalAttenuation(ln, input.range ));
 
-	spec += (((schlickFresnel * Distr * V) )  ) ;
+	float3 lightVec = normalize(toLight);
+	
+	// NdL = max(0, dot(normal, lightVec));
+
+	float fAtten = 1 / dot(0, float3(1, ln, ln * ln));
+
+	spec += saturate(((schlickFresnel * Distr * V)* NdL  )*color  ) ;
 	intensity ;
 	
 #endif
 	
+	diffuse += float4( ( NdL * 1 / PI) * color * albedo.rgb, 1.0f);
+
+
 	diffuse += cube_ambient * albedo;
 	float4 output = 0;
 	output = lerp(diffuse, cube, schlickFresnel);
 	output += spec;
 
 	
-	return saturate((output * attenuation)) * NdL * intensity;
+	return saturate((output * attenuation)) * intensity;
 
 };

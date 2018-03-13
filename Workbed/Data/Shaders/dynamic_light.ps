@@ -80,13 +80,13 @@ float4 main(psInput input) : SV_Target
 	float ln = length(toLight);
 	float3 light_dir = toLight / ln; //normalize(toLight);
 
-    float NdL = saturate(dot(light_dir, normal.xyz));
+    float NdL = normalize(dot(light_dir, normal.xyz));
 
 	float3 to_eye = normalize(cam_pos.xyz - _worldpos);	
 	float3 halfVec = normalize(light_dir + to_eye);
 
-	float HdN = saturate(dot(halfVec, normal));
-	float NdV = saturate(dot(normal, to_eye));
+	float HdN = normalize(dot(halfVec, normal));
+	float NdV = normalize(dot(normal, to_eye));
 
 	int nMips = 0;
 	int width = 0;

@@ -595,6 +595,7 @@ void Renderer::RenderPointlight()
 		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::POINTLIGHT, "Wrong command type in pointlight buffer.");
 		myPointLight->SetPosition(command->m_Orientation.GetPosition());
 		myPointLight->SetRange(command->m_Range);
+		//myPointLight->SetRange(debug::DebugHandle::GetInstance()->m_Range);
 		myPointLight->SetColor(CU::Vector4f(command->m_Color.x, command->m_Color.y, command->m_Color.z, 1));
 		myPointLight->Update();
 		CU::Matrix44f shadow_mvp;

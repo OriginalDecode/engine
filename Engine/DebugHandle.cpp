@@ -412,6 +412,8 @@ namespace debug
 			ImGui::SliderFloat("Camera Look Speed (C)", &m_ControllerLookSens, 0.f, 1.f);
 			ImGui::SliderFloat("Camera Look Speed (M)", &m_MouseLookSense, 0.f, 0.1f);
 
+			ImGui::SliderFloat("Global PL range", &m_Range, 0.f, 10.f);
+
 // 			ImGui::Separator();
 // 
 // 			static float up[3];
@@ -483,7 +485,7 @@ namespace debug
 			{
 				static int index = 0;
 				ListBox("", &index, m_LutLables);
-				//Engine::GetInstance()->m_Renderer->m_PostProcessManager.GetHDRPass().SetLUT(m_LutTextures[index]);
+				Engine::GetInstance()->m_Renderer->m_PostProcessManager.GetHDRPass().SetLUT(m_LutTextures[index]);
 			}
 
 			ImGui::End();

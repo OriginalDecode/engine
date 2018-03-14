@@ -32,7 +32,7 @@
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
 #endif
-static float s_CamSpeed = 50.f;
+static float s_CamSpeed = 1.f;
 
 void Game::InitState(StateStack* state_stack)
 {

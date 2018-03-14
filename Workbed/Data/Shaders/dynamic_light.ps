@@ -19,6 +19,7 @@ cbuffer per_object : register(b1)
 #endif
 };
 
+TextureCube cube2 : register( t11 );
 
 struct psInput
 {
@@ -81,7 +82,7 @@ float4 main(psInput input) : SV_Target
     float NdL = max(0,dot(normalize(toLight), normal.xyz));
 
 	float3 to_eye = normalize(cam_pos.xyz - _worldpos);	
-	float3 halfVec = normalize(light_dir + to_eye);
+	float3 halfVec = (light_dir + to_eye) / length(light_dir + to_eye);
 
 	float HdN = dot(halfVec, normal);
 	float NdV = dot(normal, to_eye);
@@ -95,8 +96,9 @@ float4 main(psInput input) : SV_Target
 	float lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips);
 	float3 refVec = reflect(to_eye.xyz, normal.xyz);
 	float4 reflection_fresnel = float4(ReflectionFresnel(albedo.rgb, normal.xyz, to_eye, roughnessOffsetted), 1);
-	float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
-
+	
+	// float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
+	float4 metalness_albedo = float4((0.04f - (0.04f * metalness)) + (albedo.rgb * metalness), 1.0);
 	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
 	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo *  reflection_fresnel;
 	float4 diffuse = 0;
@@ -118,7 +120,7 @@ float4 main(psInput input) : SV_Target
 	float attenuation = 0;
 	float intensity = 1;
 #ifdef SPOTLIGHT
-	return float4(0,0,0,0);
+
     float cosCone = cos(angle);
 	float3 lightVec = normalize(toLight);
 	float spotfactor = dot(normalize(lightToPixel), direction); //rho
@@ -131,17 +133,22 @@ float4 main(psInput input) : SV_Target
 	float dif = 3.14 / 2 - acos(angle);
 	float angularAttenuation = ( 1.0 - ( 1.0 - spotfactor) *  1 / ( 1 - cosCone)) ;
 	angularAttenuation= clamp((angle - rho) / dif, 0.0, 1.0);
-	float linearAttenuation = CalculateTotalAttenuation(ln, input.range) ;
+	float linearAttenuation = saturate(CalculateTotalAttenuation(ln, input.range) );
 	attenuation = linearAttenuation * angularAttenuation ;
+	
+	spec += schlickFresnel;
+	spec *= Distr;
+	spec *= V;
+	spec *= NdL;
+	spec *= color;
+	// spec *= intensity;
 
 
-
-	intensity = 1;
-	spec += saturate((((schlickFresnel * Distr * V) * NdL ) * color) );
 #endif
 
 #ifdef POINTLIGHT
-	float pRadius = input.range / 2;
+
+	float pRadius = input.range ;
 	float3 pL = _pos - _worldpos;
 	float pDist = length(pL);
 	float pD = max(pDist - pRadius, 0);
@@ -154,41 +161,30 @@ float4 main(psInput input) : SV_Target
 	
 
 	float fAtten = ( 1 - (1.f / (1.f + 0.1f * ln + 0.01f * ln * ln)));
-	float fFalloff = 0.9 - (ln / (pRadius + 0.0001));
-	attenuation = fFalloff * fAtten; //saturate(CalculateTotalAttenuation(ln, input.range ) );
 	
-	// attenuation = pAtten;
-
+	float fFalloff = 0.9 - (pDist / (pRadius + 0.0001));
+	attenuation = saturate(fFalloff) * fAtten; //saturate(CalculateTotalAttenuation(ln, input.range ) );
 	float3 lightVec = normalize(toLight);
-	
-	// NdL = max(0, dot(normal, lightVec));
-
-	//float fAtten = 1 / dot(0, float3(1, ln, ln * ln));
-
 	float fIntensity = intensity / pow(( ln / pRadius + 1),2);
 	intensity = fIntensity;
-
-
-
 
 	spec += schlickFresnel;
 	spec *= Distr;
 	spec *= V;
 	spec *= NdL;
 	spec *= color;
-	spec *= intensity;
-	spec = saturate(spec);
-	spec = 0;
+	// spec *= intensity;
 	
+
+
 #endif
-	
-	diffuse += float4( ( NdL * 1 / PI) * color * albedo.rgb, 1.0f);
+	//diffuse = metalness_albedo * cube_ambient;
+	diffuse += (float4( ( NdL * 1 / PI) * color * albedo.rgb, 1.0f));
 
-
-	diffuse += albedo;
+	diffuse += cube_ambient * albedo;
 	float4 output = 0;
-	output = diffuse; //lerp(diffuse, cube, schlickFresnel);
-	//output += spec;
+	output = lerp(diffuse, cube, schlickFresnel);
+	output += spec;
 	output *= attenuation;
 	output *= intensity;
 	output = saturate(output);

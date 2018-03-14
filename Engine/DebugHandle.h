@@ -123,6 +123,7 @@ namespace debug
 		float m_CameraSpeed = 50.f;
 		float m_ControllerLookSens = 0.005f;
 		float m_MouseLookSense = 0.005f;
+		float m_Range = 0.f;
 
 
 		/**

@@ -26,6 +26,16 @@ namespace graphics
 
 		m_LightBuffers[SPOTLIGHT_VERTEX] = device.CreateConstantBuffer(sizeof(SpotlightConstantBuffer), "LightPass SpotlightVertex ConstBuffer");
 		m_LightBuffers[SPOTLIGHT_PIXEL] = device.CreateConstantBuffer(sizeof(SpotPixelConstantBuffer), "LightPass SpotlightPixel ConstBuffer");
+
+
+
+
+		Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
+		m_Effect[SPOTLIGHT]->AddShaderResource(cubemap, Effect::CUBEMAP);
+		m_Effect[SPOTLIGHT]->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/cube/late/forest.dds"), Effect::REGISTER_11);
+
+		m_Effect[POINTLIGHT]->AddShaderResource(cubemap, Effect::CUBEMAP);
+		m_Effect[POINTLIGHT]->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/cube/late/forest.dds"), Effect::REGISTER_11);
 	}
 
 	LightPass::~LightPass()

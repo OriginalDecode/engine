@@ -35,15 +35,13 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 LumPixel = LuminanceTexture.Sample(sampler0, input.uv);
 	float luminance = AverageLumTexture.Sample(sampler0, input.uv).r;
 
-	//output = saturate(output);
 	const float3 lutSize = float3(16,16,16);
     const float3 scale =  (  lutSize - 1.f)  / lutSize;
     const float3 offset = 1.0 / ( 2.0 * lutSize);
 	float4 output = ColorStrip.Sample(sampler1, scale * diffuse + offset);
 	luminance = min(max(luminance, lumMin), lumMax);
 	float exposure = (1.03 - (2 / (2 + log10(luminance + 1 ) ) ) ) ;
-
-	float4 color1 = (output / 2) / luminance;
+	float4 color1 = (diffuse / 2) / luminance;
 	float4 whitescale = 1 / Tonemap(WhitePoint * luminance);
 	float lumScale = whitescale / luminance;
 	float4 color = output * lumScale;

@@ -97,7 +97,7 @@ private:
 	graphics::LightPass*		m_LightPass = nullptr;
 	ShadowPass					m_ShadowPass;
 
-	//PostProcessManager			m_PostProcessManager;
+	PostProcessManager			m_PostProcessManager;
 
 	Atmosphere					m_Atmosphere;
 

@@ -122,9 +122,9 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	profiler::stopListen();
 #endif
 
-	char temp[60];
-	sprintf_s(temp, "allocations %d %s\n", allocations, allocations > 0 ? "memory leaks!FAIL" : "" );
-	OutputDebugStringA(temp);
+	//char temp[60];
+	//sprintf_s(temp, "allocations %d %s\n", allocations, allocations > 0 ? "memory leaks!FAIL" : "" );
+	//OutputDebugStringA(temp);
 
 	return 0;
 }

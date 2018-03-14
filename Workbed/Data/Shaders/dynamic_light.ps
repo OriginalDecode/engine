@@ -70,8 +70,6 @@ float4 main(psInput input) : SV_Target
 	
 	float4 world_pos = getWorldPos(texCoord, 1 - depth.r);
 
-    float4 final_color = 1;
-
 	float3 _pos = position.xyz;
 	float3 _worldpos = world_pos.xyz;
 
@@ -120,7 +118,7 @@ float4 main(psInput input) : SV_Target
 	float attenuation = 0;
 	float intensity = 1;
 #ifdef SPOTLIGHT
-
+	return float4(0,0,0,0);
     float cosCone = cos(angle);
 	float3 lightVec = normalize(toLight);
 	float spotfactor = dot(normalize(lightToPixel), direction); //rho
@@ -143,39 +141,57 @@ float4 main(psInput input) : SV_Target
 #endif
 
 #ifdef POINTLIGHT
-	float pRadius = input.range;
+	float pRadius = input.range / 2;
 	float3 pL = _pos - _worldpos;
 	float pDist = length(pL);
 	float pD = max(pDist - pRadius, 0);
+	pL /= pDist;
 
-	float pDenom = ln / pRadius + 0.001 ;
+	float pDenom = pDist / pRadius + 1;
 	float pAtten = 1 / (pDenom * pDenom);
+	pAtten = (pAtten - 0.1) / ( 1 - 0.0001);
+	pAtten = max(pAtten, 0);
+	
 
-	pAtten = (pAtten - 0.0001) / ( 1 - 0.0001);
-	pAtten = max(pAtten, 0 );
-
-	attenuation = saturate(CalculateTotalAttenuation(ln, input.range ));
+	float fAtten = ( 1 - (1.f / (1.f + 0.1f * ln + 0.01f * ln * ln)));
+	float fFalloff = 0.9 - (ln / (pRadius + 0.0001));
+	attenuation = fFalloff * fAtten; //saturate(CalculateTotalAttenuation(ln, input.range ) );
+	
+	// attenuation = pAtten;
 
 	float3 lightVec = normalize(toLight);
 	
 	// NdL = max(0, dot(normal, lightVec));
 
-	float fAtten = 1 / dot(0, float3(1, ln, ln * ln));
+	//float fAtten = 1 / dot(0, float3(1, ln, ln * ln));
 
-	spec += saturate(((schlickFresnel * Distr * V)* NdL  )*color  ) ;
-	intensity ;
+	float fIntensity = intensity / pow(( ln / pRadius + 1),2);
+	intensity = fIntensity;
+
+
+
+
+	spec += schlickFresnel;
+	spec *= Distr;
+	spec *= V;
+	spec *= NdL;
+	spec *= color;
+	spec *= intensity;
+	spec = saturate(spec);
+	spec = 0;
 	
 #endif
 	
 	diffuse += float4( ( NdL * 1 / PI) * color * albedo.rgb, 1.0f);
 
 
-	diffuse += cube_ambient * albedo;
+	diffuse += albedo;
 	float4 output = 0;
-	output = lerp(diffuse, cube, schlickFresnel);
-	output += spec;
-
-	
-	return saturate((output * attenuation)) * intensity;
+	output = diffuse; //lerp(diffuse, cube, schlickFresnel);
+	//output += spec;
+	output *= attenuation;
+	output *= intensity;
+	output = saturate(output);
+	return output;
 
 };

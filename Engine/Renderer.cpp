@@ -61,7 +61,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	//m_DepthTexture = new Texture; //Where should this live?
 	//m_DepthTexture->InitiateAsDepthStencil(window_size.m_Width, window_size.m_Height, "Renderer : Depth");
 
-	//m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR /*| PostProcessManager::SSR*/); //Can be read from a settings file
+	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR /*| PostProcessManager::SSR*/); //Can be read from a settings file
 
 	m_Line = new Line3D; //Where should this live?
 	m_Line->Initiate();
@@ -125,7 +125,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	pDebug->RegisterTexture(m_SelectedTexture, names[6]);
 
 #endif
-	//m_PostProcessManager.Initiate();
+	m_PostProcessManager.Initiate();
 
 	CU::Matrix44f& inv = m_Camera->GetInvProjection();
 
@@ -237,18 +237,17 @@ void Renderer::Render()
  	RenderSpotlight();
  	RenderPointlight();
  
- 	//RenderParticles(nullptr);
-//  
-//  	if (m_PostProcessManager.GetFlags() != 0)
-//  	{
-//  		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
-//  	}
-//  	else
-//  	{
-//  	
-//  	}
-	m_RenderContext.GetAPI().SetDefaultTargets();
-	m_DeferredRenderer->Finalize();
+ 	RenderParticles(nullptr);
+  
+  	if (m_PostProcessManager.GetFlags() != 0)
+  	{
+  		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
+  	}
+  	else
+  	{
+		m_RenderContext.GetAPI().SetDefaultTargets();
+		m_DeferredRenderer->Finalize();
+  	}
  
  #if !defined(_PROFILE) && !defined(_FINAL)
  	//Detect edges on specified texture

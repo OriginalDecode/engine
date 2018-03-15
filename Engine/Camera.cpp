@@ -151,7 +151,7 @@ void Camera::Update(const ControllerState& controller_state)
 #ifdef _DEBUG
 	const float sensitivity = debug::DebugHandle::GetInstance()->m_ControllerLookSens;
 #else
-	const float sensitivity = 0.005f;
+	const float sensitivity = 0.05f;
 #endif
 	float x_value = ( float ) controller_state.m_ThumbRX;
 	float y_value = ( float ) controller_state.m_ThumbRY;
@@ -195,7 +195,7 @@ void Camera::Update(const CU::Vector2f& cursor_pos)
 #ifdef _DEBUG
 	const float sensitivity = debug::DebugHandle::GetInstance()->m_MouseLookSense;
 #else
-	const float sensitivity = 0.05f;
+	const float sensitivity = 0.005f;
 #endif
 	float x_value = cursor_pos.x;
 	float y_value = cursor_pos.y;

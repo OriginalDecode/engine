@@ -32,8 +32,8 @@
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
 #endif
-static float s_CamSpeed = 1.f;
-
+static float s_CamSpeed = 50.f;
+u64 hash = 0;
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
@@ -54,16 +54,17 @@ void Game::Initiate(const std::string& level)
 	//m_Player = new Player;
 	//m_World.AddDweller(m_Player->Initiate());
 
-	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
+	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 	//LevelFactory::CreateTerrain("Data/Textures/terrain/britannia.tga");
-	m_World.AddDwellers(dwellers);
+	//m_World.AddDwellers(dwellers);
 
+	hash = m_Engine->LoadModelA("Data/Model/sponza_pbr/sponza.fbx", "Shaders/deferred_base.json", false);
 
 	m_Picker = new CMousePicker;
 
 	m_Camera = m_Engine->GetCamera();
-	m_Camera->SetPosition(CU::Vector3f(256, 10, 256));
+	m_Camera->SetPosition(CU::Vector3f(0, 10, 0));
 	//m_Camera->RotateAroundY(cl::DegreeToRad(45.f));
 	//m_Camera->RotateAroundX(cl::DegreeToRad(20.f));
 	m_Camera->Update(CU::Vector2f(0.f,0.f));
@@ -227,6 +228,9 @@ void Game::Update(float dt)
 	//if(_pointList.size() > 0)
 		//AddRenderCommand(ModelCommand(g_DefaultModel, g_DefaultMaterial, _pointList[_index], false));
 	
+
+	AddRenderCommand(ModelCommand(hash, CU::Vector3f(0, 0, 0), false));
+
 	_index++;
 	if (_index >= _pointList.size())
 		_index = 0;

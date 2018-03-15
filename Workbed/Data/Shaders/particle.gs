@@ -43,19 +43,17 @@ void main(point VS_OUTPUT input[1], inout TriangleStream<VS_OUTPUT> triStream)
 	uv.y = height / 512.f;
 
 	output.pos = (quadPos[0] * input[0].size.x) + input[0].pos;
-	output.pos.z /= output.pos.w;
-	output.pos = mul(output.pos, Projection);
+	// output.pos = mul(output.pos, Projection);
 	output.uv.x = uv.x + uv.x * index_x;
 	output.uv.y = uv.y + uv.y * index_y;
 	output.normal = float4(1,0,0,1); //quadPos[0];
 	output.alpha = input[0].alpha;
 	triStream.Append(output);
 
-
+	output = (VS_OUTPUT)0;
 
 	output.pos = (quadPos[1] * input[0].size.x) + input[0].pos;
-	output.pos.z /= output.pos.w;
-	output.pos = mul(output.pos, Projection);
+	// output.pos = mul(output.pos, Projection);
 	output.uv.x = uv.x + uv.x * index_x;
 	output.uv.y = uv.y * index_y;
 	output.normal = float4(0,1,0,1);
@@ -63,11 +61,10 @@ void main(point VS_OUTPUT input[1], inout TriangleStream<VS_OUTPUT> triStream)
 	triStream.Append(output);
 
 
-
+	output = (VS_OUTPUT)0;
 
 	output.pos = (quadPos[2] * input[0].size.x ) + input[0].pos;
-	output.pos.z /= output.pos.w;
-	output.pos = mul(output.pos, Projection);
+	// output.pos = mul(output.pos, Projection);
 	output.uv.x = uv.x * index_x;
 	output.uv.y = uv.y + uv.y * index_y;
 	output.normal = float4(0,0,1,1);
@@ -75,11 +72,10 @@ void main(point VS_OUTPUT input[1], inout TriangleStream<VS_OUTPUT> triStream)
 	triStream.Append(output);
 
 
-
+	output = (VS_OUTPUT)0;
 
 	output.pos = (quadPos[3] * input[0].size.x) + input[0].pos;
-	output.pos.z /= output.pos.w;
-	output.pos = mul(output.pos, Projection);
+	// output.pos = mul(output.pos, Projection);
 	output.uv.x = uv.x * index_x;
 	output.uv.y = uv.y * index_y;
 	output.normal = float4(1,1,0,1);

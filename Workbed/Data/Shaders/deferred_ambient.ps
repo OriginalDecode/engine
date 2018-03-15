@@ -97,7 +97,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
 	float4 normal = NormalTexture.Sample(sampler0, input.uv);
 	float4 base_col = albedo;
-	float roughness = 1 - albedo.a;
+	float roughness = albedo.a;
 	
 	float roughnessOffsetted = pow(roughness, 8192);
 	float lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips[0]);
@@ -133,15 +133,15 @@ float4 main(VS_OUTPUT input) : SV_Target
 	// return metalness_albedo;
 	albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
 
-	float4 diffuse = 0; // metalness_albedo * cube_ambient2;
+	float4 diffuse = 0;// metalness_albedo * cube_ambient2;
 	float4 spec = 0;
 	float3 light_col = float3(1, 1, 1);
 	float3 light_col2 = float3(1, 1, 1);
 	float light_intensity = 1;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
-	float3 half_vec = (light_dir + to_eye) / length(light_dir + to_eye);
-    float NdL = max(0,dot(light_dir, normal.xyz));
+	float3 half_vec = (-light_dir + to_eye) / length(-light_dir + to_eye);
+    float NdL = max(0,dot(-light_dir, normal.xyz));
 
 	//return base_col * dot(normal.rgb, light_dir);
 
@@ -154,10 +154,10 @@ float4 main(VS_OUTPUT input) : SV_Target
 	schlickFresnel = schlickFresnel / (6 - (5 * roughnessOffsetted));
 	schlickFresnel = metalness_albedo + schlickFresnel;
 	
-	for(int i = 0; i < 0; i++)
+	for(int i = 0; i < 1; i++)
 	{
 		// diffuse
-		diffuse += float4( ( NdL * (1 / PI))  * light_col * albedo.rgb, 1.0f);		
+		diffuse += float4( ( NdL * (1 / PI))  *  albedo.rgb, 1.0f);		
 		//spec
 		float HdN = saturate(dot(half_vec, normal));
 		
@@ -181,7 +181,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 		//spec += saturate(((schlickFresnel * ggxDistr * V) * float4(light_col, 1)) * light_intensity) * NdL;
 	}
 	
-	diffuse += active_cube[0] * albedo;
+//	diffuse += active_cube[0] * albedo;
 
 	float4 output = 0;
 	output = lerp(diffuse, active_cube[1], schlickFresnel);

@@ -237,6 +237,10 @@ void Renderer::Render()
  	RenderSpotlight();
  	RenderPointlight();
  
+	IRenderTargetView* pRenderTarget = m_DeferredRenderer->GetScene()->GetRenderTargetView();
+	IDepthStencilView* pDepthStencil = m_RenderContext.GetAPI().GetDepthView();
+	m_RenderContext.GetContext().OMSetRenderTargets(1, &pRenderTarget, pDepthStencil);
+	//m_DeferredRenderer->GetDepthStencil();
  	RenderParticles(nullptr);
   
   	if (m_PostProcessManager.GetFlags() != 0)

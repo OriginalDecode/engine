@@ -77,6 +77,9 @@ GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
 	float roughness_override = RoughnessTexture.Sample(sampler0, input.uv).r; 
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);
+	if(albedo.a <= 0.1)
+		discard;
+
 	albedo.rgb = pow(albedo.rgb, 2.2);
 	output.Albedo = albedo;
 	output.Albedo.a = override_pbl ? 1 : roughness_override;

@@ -16,8 +16,8 @@
 
 Model::~Model()
 {
-	//if (!m_Surfaces.Empty())
-	//	m_Surfaces[0]->serialize(m_FileName.c_str());
+	if (!m_Surfaces.Empty())
+		m_Surfaces[0]->serialize(m_FileName.c_str());
 
 	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
 

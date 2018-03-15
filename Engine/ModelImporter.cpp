@@ -297,6 +297,19 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 		}
 		path += "/";
 		path += fileName;
+
+		if (fileName.find("rough") != fileName.npos)
+		{
+			int apa;
+			apa = 5;
+		}
+
+		if (fileName.find("metal") != fileName.npos)
+		{
+			int apa;
+			apa = 5;
+		}
+
 		if ( fileName != "" )
 		{
 			TextureInfo newInfo;
@@ -336,7 +349,7 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 
 				case aiTextureType_SPECULAR:
 				{
-					newInfo.m_Slot = Effect::ROUGHNESS; // specular intensity (blender), roughness???
+					newInfo.m_Slot = Effect::METALNESS; // Blender <- Roughness, Maya <- Metal
 				}break;
 
 				case aiTextureType_HEIGHT:

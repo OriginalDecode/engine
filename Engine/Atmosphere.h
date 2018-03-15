@@ -34,14 +34,7 @@ private:
 
 	struct cbVertex
 	{
-		CU::Vector4f m_CameraPos;
-		CU::Vector4f m_CameraDir;
-		CU::Vector4f m_LightDir;
-		CU::Vector4f m_LightPos;
-		float m_InnerRadius;
-		float m_OuterRadius;
-		float m_CameraMagnitude;
-		float m_CameraMagnitude2;
+		CU::Matrix44f orientation;
 	} m_VertexStruct;
 	IBuffer* m_VertexBuffer	= nullptr;
 };

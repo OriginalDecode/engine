@@ -39,7 +39,10 @@ public:
 	virtual void AddSurface(Surface* surface) = 0;
 	void SetMaterial(Material* pMaterial) { m_Material = pMaterial; }
 	//Material* GetMaterial() { return m_Material; }
-
+	virtual void SetIsInstanced(bool is_instanced)
+	{
+		m_IsInstanced = is_instanced;
+	}
 
 protected:
 	virtual void CreatePlane(float half_width);
@@ -70,4 +73,5 @@ protected:
 	Material* m_Material = nullptr;
 
 	bool m_IsRoot = true;
+	bool m_IsInstanced = false;
 };

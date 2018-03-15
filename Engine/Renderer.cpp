@@ -208,10 +208,8 @@ void Renderer::Render()
 
 	//m_TerrainSystem->Update();
  
- 	if (m_RenderInstanced)
- 		m_InstancingManager.DoInstancing(m_RenderContext, false);
- 	else
- 		Render3DCommands();
+ 	Render3DCommands();
+ 	m_InstancingManager.DoInstancing(m_RenderContext, false);
  
  #if !defined(_PROFILE) && !defined(_FINAL)
  	WriteDebugTextures();
@@ -399,8 +397,12 @@ void Renderer::Render3DCommands()
 		{
 			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
-
 			RefPointer<Model> model = m_RenderContext.GetEngine().GetModel<Model>(command->m_Key);
+			if (model->IsInstanced())
+			{
+				ProcessModelCommand(commands, i, m_RenderContext.GetEngine());
+				continue;
+			}
 
 #ifdef _DEBUG
 			model->SetEntityID(command->m_EntityID);
@@ -414,20 +416,9 @@ void Renderer::Render3DCommands()
 void Renderer::Render3DCommandsInstanced()
 {
 	PROFILE_FUNCTION(profiler::colors::Green);
-
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
-
-	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
-	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
-
 	Engine& engine = m_RenderContext.GetEngine();
-
 	const memory::MemorySegmentHandle& mem_handle = engine.GetMemorySegmentHandle();
-
-	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
-	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
-
 	for (s32 top_tree_node = 0; top_tree_node < 8; top_tree_node++)
 	{
 		const auto& commands = mem_handle.GetCommandAllocator(current_buffer, top_tree_node);

@@ -63,6 +63,8 @@ public:
 
 	void SetEntityID(int id);
 
+	void SetIsInstanced(bool is_instanced) override;
+	bool IsInstanced() const { return m_IsInstanced; }
 private:
 	Material* GetMat() { return m_Material; }
 	void RenderCube(const graphics::RenderContext& rc);

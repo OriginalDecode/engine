@@ -149,10 +149,11 @@ private:
 //	LoadModel(model_filepath, pModel, m_Engine->GetEffect(effect_filepath.c_str()));
 //}
 
+static bool instanced = false;
 template<typename T>
 void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 {
-
+	instanced = false;
 	DL_MESSAGE("Loading model : %s", filepath.c_str());
 
 #ifdef _DEBUG
@@ -192,6 +193,8 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	ProcessNode(rootNode, scene, data, filepath, min_point, max_point);
 	CreateModel(data, pModel, filepath, effect);
 
+
+	pModel->SetIsInstanced(instanced);
 	pModel->SetMaxPoint(max_point);
 	pModel->SetMinPoint(min_point);
 
@@ -262,6 +265,7 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 
 	if (!vtx.GetInputLayout())
 		FillInstanceData(out, data, effect);
+
 	if (filepath.find("cube_100x100") != filepath.npos)
 		return;
 
@@ -271,6 +275,7 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 		surface->AddTexture(tex.m_File, tex.m_Slot);
 	}
 	out->AddSurface(surface);
+	
 
 	return;
 }
@@ -465,6 +470,9 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	ins.SetByteOffset(ins_ByteOffset);
 	ins.SetStride(ins_Stride);
 	ins.SetBufferCount(ins_BufferCount);
+	instanced = true;
+
+	//out->SetIsInstanced(true);
 
 #ifdef _DEBUG
 	ins.m_DebugName = DEBUG_NAME_A(data->m_Filename, T);

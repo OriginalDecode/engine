@@ -35,6 +35,7 @@ void Model::Initiate(const std::string& filename)
 	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_ObjectData), dbg + "Vertex ConstantBuffer");
 	for (Model* child : m_Children)
 	{
+		child->SetIsInstanced(m_IsInstanced);
 		child->Initiate(filename);
 	}
 }
@@ -576,4 +577,13 @@ void Model::SetEntityID(int id)
 		pModel->SetEntityID(id);
 	}
 	m_ObjectData.entityID = id;
+}
+
+void Model::SetIsInstanced(bool is_instanced)
+{
+	m_IsInstanced = is_instanced;
+	for (Model* m : m_Children)
+	{
+		m->SetIsInstanced(m_IsInstanced);
+	}
 }

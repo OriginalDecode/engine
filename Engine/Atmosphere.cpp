@@ -38,8 +38,8 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 	u64 atmosphere = Engine::GetInstance()->LoadModel<AtmosphereModel>(vfs.GetFile("Models/atmosphere.fbx"), "Shaders/skysphere.json", false);
 	m_OuterSphere = Engine::GetInstance()->GetModel<Model>(atmosphere);
 
-	m_VertexStruct.m_InnerRadius = m_InnerRadius;
-	m_VertexStruct.m_OuterRadius = m_OuterRadius;
+	//m_VertexStruct.m_InnerRadius = m_InnerRadius;
+	//m_VertexStruct.m_OuterRadius = m_OuterRadius;
 
 	static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetOrientation(m_OuterOrientation);
 }
@@ -55,14 +55,18 @@ void Atmosphere::Render(const graphics::RenderContext& rc)
 	m_PixelStruct.light_dir.w = 1;
 	m_PixelStruct.view_dir = pEngine->GetCamera()->GetAt();
 	m_PixelStruct.view_pos = pEngine->GetCamera()->GetPosition();
+	//static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetPosition(pEngine->GetCamera()->GetPosition());
+	m_OuterOrientation.SetPosition(pEngine->GetCamera()->GetPos());
+	m_VertexStruct.orientation = m_OuterOrientation;
 
 	ctx.UpdateConstantBuffer(m_PixelBuffer, &m_PixelStruct);
+	ctx.UpdateConstantBuffer(m_VertexBuffer, &m_VertexStruct);
 	ctx.PSSetConstantBuffer(0, 1, &m_PixelBuffer);
+	ctx.VSSetConstantBuffer(1, 1, &m_VertexBuffer);
 	
 	ctx.SetBlendState(api->GetBlendState(graphics::NO_BLEND));
 	ctx.SetDepthState(api->GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api->GetRasterizerState(graphics::CULL_NONE));
-	//m_OuterOrientation.SetPosition(pEngine->GetCamera()->GetPosition());
 	//static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetOrientation(m_OuterOrientation);
 	static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->Render(rc);
 
@@ -70,7 +74,7 @@ void Atmosphere::Render(const graphics::RenderContext& rc)
 
 void Atmosphere::SetLightData(const CU::Vector4f& direction, const CU::Vector4f& position)
 {
-	m_VertexStruct.m_LightDir = direction;
-	m_VertexStruct.m_LightPos = position;
+	//m_VertexStruct.m_LightDir = direction;
+	//m_VertexStruct.m_LightPos = position;
 
 }

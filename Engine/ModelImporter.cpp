@@ -35,6 +35,13 @@ bool CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 		m_Pool.Update();
 	}
 
+	for (u32 i = 0; i < aNode->mNumMeshes; i++)
+	{
+		aiMesh* mesh = aScene->mMeshes[aNode->mMeshes[i]];
+		ProcessMesh(mesh, aScene, someData, file);
+		//DL_ASSERT_EXP(someData->myData, "Was null after ProcessMesh!?");
+	}
+
 
 	bool thread = true;
 	bool thread2 = false;
@@ -309,7 +316,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 
 	ExtractMaterials(mesh, scene, data, file);
 
-	fbx->myData = data;
+	fbx->m_Data = data;
 
 }
 

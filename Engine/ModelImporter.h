@@ -94,7 +94,6 @@ private:
 		{
 			myChildren.DeleteAll();
 			m_Data.DeleteAll();
-
 		}
 
 		CU::Matrix44f myOrientation;
@@ -119,7 +118,7 @@ private:
 	Threadpool m_Pool;
 
 	template<typename T>
-	void FillData(FBXModelData* data, T* model, std::string filepath, Effect* effect);
+	void FillData(ModelData* data, T* model, std::string filepath, Effect* effect);
 
 	template<typename T>
 	void FillInstanceData(T* out, ModelData* data, Effect* effect);
@@ -188,25 +187,17 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	data->m_Filename = filepath.c_str();
 	ProcessNode(rootNode, scene, data, filepath);
 	CreateModel(data, pModel, filepath, effect);
-	m_Pool.CleanUp();
-
-	pModel->SetIsInstanced(instanced);
-	//pModel->SetMaxPoint(max_point);
-	//pModel->SetMinPoint(min_point);
-
-/*	if (data->myData)
-		delete data->myData;*/
-
-	//delete data->myTextureData;
-	delete data;
-
 
 #ifdef _DEBUG
 	m_TimeManager.Update();
 	loadTime = m_TimeManager.GetMasterTimer().GetTotalTime().GetMilliseconds() - loadTime;
-	MODEL_LOG("%s took %fms to load. %s", filepath.c_str(), loadTime, (loadTime > 7000.f) ? "Check if it's saved as binary." : 0);
+	MODEL_LOG("%s took %fms to load. %s", filepath.c_str(), loadTime);
 #endif
+	
+	m_Pool.CleanUp();
+	pModel->SetIsInstanced(instanced);
 
+	delete data;
 }
 
 template<typename T>
@@ -230,13 +221,12 @@ void CModelImporter::CreateModel(FBXModelData* someData, T* model, std::string f
 template<typename T>
 T* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect* effect)
 {
-	T* model = new T;
-	model->m_IsRoot = false;
-	model->SetEffect(effect);
-
-	if (data->myData)
+	for (ModelData* _data : data->m_Data)
 	{
-		FillData(data, model, filepath, effect);
+		T* model = new T;
+		model->m_IsRoot = false;
+		model->SetEffect(effect);
+		FillData(_data, model, filepath, effect);
 		model->m_Orientation = data->myOrientation;
 	}
 
@@ -250,9 +240,8 @@ T* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect*
 }
 
 template<typename T>
-void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepath, Effect* effect)
+void CModelImporter::FillData(ModelData* data, T* out, std::string filepath, Effect* effect)
 {
-	ModelData* data = someData->myData;
 	data->m_Filename = filepath.c_str();
 	FillVertexData(out, data, effect);
 	FillIndexData(out, data);

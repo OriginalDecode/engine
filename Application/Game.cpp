@@ -59,7 +59,8 @@ void Game::Initiate(const std::string& level)
 	//LevelFactory::CreateTerrain("Data/Textures/terrain/britannia.tga");
 	//m_World.AddDwellers(dwellers);
 
-	hash = m_Engine->LoadModelA("Data/models/suntemple/suntemple.fbx", "Shaders/deferred_base.json", false);
+	hash = m_Engine->LoadModelA("Data/model/sponza_pbr/sponza.fbx", "Shaders/deferred_base.json", false);
+	//hash = m_Engine->LoadModelA("Data/models/suntemple/suntemple.fbx", "Shaders/deferred_base.json", false);
 
 	m_Picker = new CMousePicker;
 

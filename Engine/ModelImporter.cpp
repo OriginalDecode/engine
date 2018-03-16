@@ -22,28 +22,68 @@ CModelImporter::CModelImporter()
 #endif
 }
 
-void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point)
+
+//#define THREAD_IF(func, statement) if(statement) m_Engine->GetThreadpool().AddWork(Work([&]() { func; })); else func;
+
+bool CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelData* someData, std::string file)
 {
 	DL_ASSERT_EXP(someData, "Failed to process node. FBXModelData someData was null");
+	DL_ASSERT_EXP(aScene, "Scene is null");
 
-	for ( u32 i = 0; i < aNode->mNumMeshes; i++ )
+	while (m_Pool.HasWork())
 	{
-		m_Engine->GetThreadpool().AddWork(Work([&]() {
+		m_Pool.Update();
+	}
+
+
+	bool thread = true;
+	bool thread2 = false;
+	s32 _meshes_done = 0;
+	for (u32 i = 0; i < aNode->mNumMeshes; i++)
+	{
+		if (thread)
+		{
+			m_Pool.AddWork(Work([&, i] 
+			{
+				unsigned int index = aNode->mMeshes[i];
+				aiMesh* mesh = aScene->mMeshes[index];
+				ProcessMesh(mesh, aScene, someData, file);
+				//DL_ASSERT_EXP(someData->myData, "Was null after ProcessMesh!?");
+				_meshes_done++;
+			}));
+		}
+		else
+		{
 			aiMesh* mesh = aScene->mMeshes[aNode->mMeshes[i]];
-			ProcessMesh(mesh, aScene, someData, file, min_point, max_point);
-			DL_ASSERT_EXP(someData->myData, "Was null after ProcessMesh!?");
-		}));
+			ProcessMesh(mesh, aScene, someData, file);
+			//DL_ASSERT_EXP(someData->myData, "Was null after ProcessMesh!?");
+			_meshes_done++;
+		}
 	}
 
 	for ( u32 i = 0; i < aNode->mNumChildren; i++ )
 	{
 		someData->myChildren.Add(new FBXModelData);
-		ProcessNode(aNode->mChildren[i], aScene, someData->myChildren.GetLast(), file, min_point, max_point);
+		FBXModelData* data = someData->myChildren.GetLast();
+		aiNode* node = aNode->mChildren[i];
+		if (thread2)
+		{
+			m_Pool.AddWork(Work([=]() {
+				ProcessNode(node, aScene, data, file);
+			}));
+		}
+		else
+		{
+			ProcessNode(node, aScene, someData->myChildren.GetLast(), file);
+		}
 	}
+
+	return true;
+
 }
 
 
-void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* fbx, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point)
+void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* fbx, std::string file)
 {
 	//FBXModelData* data = fbx;
 	ModelData* data = new ModelData;
@@ -76,7 +116,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 		size += polygonVertexCount * NORMAL_STRIDE;
 	}
 
-	if ( mesh->HasTextureCoords(0) ) //this is multiple coords D:
+	if ( mesh->HasTextureCoords(0) ) //this is multiple coords 
 	{
 		ModelData::Layout newLayout;
 		newLayout.myType = ModelData::VERTEX_UV;
@@ -152,9 +192,13 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 
 			if ( mesh->HasPositions() )
 			{
-				CU::Vector4f position(mesh->mVertices[verticeIndex].x, mesh->mVertices[verticeIndex].y, mesh->mVertices[verticeIndex].z, 1);
-				CU::Matrix44f fixMatrix = CU::Math::CreateReflectionMatrixAboutAxis44(CU::Vector3f(1, 0, 0));
-				position = position * fixMatrix;
+				CU::Vector4f position(
+					mesh->mVertices[verticeIndex].x, 
+					mesh->mVertices[verticeIndex].y,
+					mesh->mVertices[verticeIndex].z, 
+					1);
+				/*CU::Matrix44f fixMatrix = CU::Math::CreateReflectionMatrixAboutAxis44(CU::Vector3f(1, 0, 0));
+				position = position * fixMatrix;*/
 
 				data->myVertexBuffer[currIndex] = position.x;
 				data->myVertexBuffer[currIndex + 1] = position.y;
@@ -162,7 +206,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 				data->myVertexBuffer[currIndex + 3] = 1;
 
 
-				if (i != 0)
+			/*	if (i != 0)
 				{
 
 					min_point.x = min(position.x, min_point.x);
@@ -172,7 +216,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 					max_point.x = max(position.x, max_point.x);
 					max_point.y = max(position.y, max_point.y);
 					max_point.z = max(position.z, max_point.z);
-				}
+				}*/
 					
 
 				if ( mesh->HasNormals() )
@@ -182,8 +226,8 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 						mesh->mNormals[verticeIndex].x,
 						mesh->mNormals[verticeIndex].y,
 						mesh->mNormals[verticeIndex].z);
-					normal = normal * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
-					CU::Math::Normalize(normal);
+					/*normal = normal * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
+					CU::Math::Normalize(normal);*/
 
 
 					data->myVertexBuffer[currIndex + addedSize] = normal.x;
@@ -210,8 +254,8 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 						mesh->mBitangents[verticeIndex].x,
 						mesh->mBitangents[verticeIndex].y,
 						mesh->mBitangents[verticeIndex].z);
-					binorm = binorm * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
-					CU::Math::Normalize(binorm);
+					/*binorm = binorm * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
+					CU::Math::Normalize(binorm);*/
 
 					data->myVertexBuffer[currIndex + addedSize] = binorm.x;
 					data->myVertexBuffer[currIndex + addedSize + 1] = binorm.y;
@@ -223,8 +267,8 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 						mesh->mTangents[verticeIndex].x,
 						mesh->mTangents[verticeIndex].y,
 						mesh->mTangents[verticeIndex].z);
-					tangent = tangent * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(-1, 0, 0));
-					CU::Math::Normalize(tangent);
+					/*tangent = tangent * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(-1, 0, 0));
+					CU::Math::Normalize(tangent);*/
 
 
 					data->myVertexBuffer[currIndex + addedSize] = tangent.x;
@@ -239,8 +283,8 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 			}
 		}
 
-		data->m_MinPoint = min_point;
-		data->m_MaxPoint = max_point;
+	/*	data->m_MinPoint = min_point;
+		data->m_MaxPoint = max_point;*/
 	}
 
 
@@ -249,18 +293,18 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 	ZeroMemory(data->myIndicies, indice_byte_width);
 	data->m_IndexBufferSize = indice_byte_width;
 
-	//Flips it to make it correct.
-	CU::GrowingArray<u32> indiceFix(indices.Size());
-	for ( s32 indice = indices.Size() - 1; indice >= 0; indice-- )
-	{
-		indiceFix.Add(indices[indice]);
-	}
+	////Flips it to make it correct.
+	//CU::GrowingArray<u32> indiceFix(indices.Size());
+	//for ( s32 indice = indices.Size() - 1; indice >= 0; indice-- )
+	//{
+	//	indiceFix.Add(indices[indice]);
+	//}
 
-	memcpy(data->myIndicies, &indiceFix[0], sizeof(u32) * indiceFix.Size());
+	memcpy(data->myIndicies, &indices[0], sizeof(u32) * indices.Size());
 
 	data->myVertexStride = stride * sizeof(float);
 	data->myVertexCount = vertCount;
-	data->myIndexCount = indiceFix.Size();
+	data->myIndexCount = indices.Size();
 
 
 	ExtractMaterials(mesh, scene, data, file);
@@ -290,18 +334,6 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelD
 		}
 		path += "/";
 		path += fileName;
-
-		if (fileName.find("rough") != fileName.npos)
-		{
-			int apa;
-			apa = 5;
-		}
-
-		if (fileName.find("metal") != fileName.npos)
-		{
-			int apa;
-			apa = 5;
-		}
 
 		if ( fileName != "" )
 		{

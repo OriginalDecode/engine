@@ -27,9 +27,7 @@ void Threadpool::Update()
 	FOR_EACH(myWorkers.Size())
 	{
 		if (myWorkOrders.size() <= 0)
-		{
 			break;
-		}
 
 		if (myWorkers[i].IsDone())
 		{

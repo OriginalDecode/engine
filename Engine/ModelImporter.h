@@ -23,6 +23,7 @@
 #include <Engine/IGraphicsDevice.h>
 #include <Engine/IGraphicsContext.h>
 #include <Engine/IGraphicsAPI.h>
+#include <CommonLib/Threadpool.h>
 class Engine;
 class aiNode;
 class aiMesh;
@@ -92,12 +93,12 @@ private:
 		~FBXModelData()
 		{
 			myChildren.DeleteAll();
-			delete myData;
+			m_Data.DeleteAll();
 
 		}
 
 		CU::Matrix44f myOrientation;
-		ModelData* myData = nullptr;
+		CU::GrowingArray<ModelData*> m_Data;
 		CU::GrowingArray<TextureInfo> myTextures;
 		std::string m_Filename;
 		CU::GrowingArray<FBXModelData*> myChildren;
@@ -115,6 +116,7 @@ private:
 	T* CreateChild(FBXModelData* data, std::string filepath, Effect* effect);
 
 	
+	Threadpool m_Pool;
 
 	template<typename T>
 	void FillData(FBXModelData* data, T* model, std::string filepath, Effect* effect);
@@ -131,8 +133,8 @@ private:
 
 	void SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc);
 
-	void ProcessNode(aiNode* node, const aiScene* scene, FBXModelData* data, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point);
-	void ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point);
+	bool ProcessNode(aiNode* node, const aiScene* scene, FBXModelData* data, std::string file);
+	void ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file);
 
 	void ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelData* data, std::string file);
 };
@@ -173,7 +175,8 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 								   //aiProcess_OptimizeGraph |
 								   //aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
 		0;
-
+	m_Pool.Initiate("model-importer");
+	//This code should be moved to release and kept running at release for fast load times in debug.
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filepath, processFlags);
 
@@ -183,17 +186,16 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	aiNode* rootNode = scene->mRootNode;
 	FBXModelData* data = new FBXModelData;
 	data->m_Filename = filepath.c_str();
-	CU::Vector3f max_point, min_point;
-	ProcessNode(rootNode, scene, data, filepath, min_point, max_point);
+	ProcessNode(rootNode, scene, data, filepath);
 	CreateModel(data, pModel, filepath, effect);
-
+	m_Pool.CleanUp();
 
 	pModel->SetIsInstanced(instanced);
-	pModel->SetMaxPoint(max_point);
-	pModel->SetMinPoint(min_point);
+	//pModel->SetMaxPoint(max_point);
+	//pModel->SetMinPoint(min_point);
 
-	if (data->myData)
-		delete data->myData;
+/*	if (data->myData)
+		delete data->myData;*/
 
 	//delete data->myTextureData;
 	delete data;
@@ -376,7 +378,7 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	const s32 vtx_buff_count = 1;
 	const s32 vtx_Size = data->m_VertexBufferSize;
 
-	DL_MESSAGE("Buffer Size : %d", vtx_VertexCount);
+	//DL_MESSAGE("Buffer Size : %d", vtx_VertexCount);
 
 	graphics::BufferDesc vtx_desc;
 	vtx_desc.m_Size = vtx_VertexCount * vtx_Stride;

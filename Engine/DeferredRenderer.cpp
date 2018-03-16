@@ -153,6 +153,8 @@ void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& shadow_mvp, con
 {
 	m_ConstantStruct.m_ShadowMVP = shadow_mvp;
 	m_ConstantStruct.m_Direction = light_dir;
+	m_ConstantStruct.m_ViewDir = Engine::GetInstance()->GetCamera()->GetAt();
+
 	auto& ctx = Engine::GetAPI()->GetContext();
 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ConstantStruct, sizeof(ConstantStruct));
 }

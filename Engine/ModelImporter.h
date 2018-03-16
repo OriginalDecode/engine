@@ -87,24 +87,18 @@ private:
 
 	};
 
-	struct TextureData
-	{
-		CU::GrowingArray<TextureInfo> myTextures;
-	};
-
 	struct FBXModelData
 	{
 		~FBXModelData()
 		{
 			myChildren.DeleteAll();
 			delete myData;
-			delete myTextureData;
 
 		}
 
 		CU::Matrix44f myOrientation;
 		ModelData* myData = nullptr;
-		TextureData* myTextureData = nullptr;
+		CU::GrowingArray<TextureInfo> myTextures;
 		std::string m_Filename;
 		CU::GrowingArray<FBXModelData*> myChildren;
 
@@ -140,7 +134,7 @@ private:
 	void ProcessNode(aiNode* node, const aiScene* scene, FBXModelData* data, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point);
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point);
 
-	void ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file);
+	void ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelData* data, std::string file);
 };
 
 //template<typename T>
@@ -201,7 +195,7 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	if (data->myData)
 		delete data->myData;
 
-	delete data->myTextureData;
+	//delete data->myTextureData;
 	delete data;
 
 
@@ -270,7 +264,7 @@ void CModelImporter::FillData(FBXModelData* someData, T* out, std::string filepa
 		return;
 
 	Surface* surface = new Surface(effect);
-	for (auto& tex : someData->myTextureData->myTextures)
+	for (auto& tex : data->myTextures)
 	{
 		surface->AddTexture(tex.m_File, tex.m_Slot);
 	}

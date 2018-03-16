@@ -47,6 +47,7 @@ private:
 		CU::Matrix44f m_ShadowMVP;
 		CU::Vector4f m_Direction;
 		CU::Vector4f m_LightColor;
+		CU::Vector4f m_ViewDir;
 
 	} m_ConstantStruct;
 };

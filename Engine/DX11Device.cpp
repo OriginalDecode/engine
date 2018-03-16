@@ -8,6 +8,7 @@
 #include <DL_Debug.h>
 #include <Engine/IGraphicsAPI.h>
 #include <DXTK/WICTextureLoader.h>
+#include <DXTex/DirectXTex.h>
 namespace graphics
 {
 
@@ -107,6 +108,24 @@ namespace graphics
 
 		if (filepath.find(".dds") == filepath.npos)
 		{
+
+			DirectX::ScratchImage image;
+			if (filepath.find(".tga") != filepath.npos || filepath.find(".TGA") != filepath.npos)
+			{
+				HRESULT hr = DirectX::LoadFromTGAFile(path.c_str(), nullptr, image);
+				assert(hr != S_OK);
+				hr = DirectX::CreateTexture(m_Device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), &resource);
+				assert(hr != S_OK);
+
+				hr = m_Device->CreateShaderResourceView(resource, nullptr, &srv);
+				assert(hr != S_OK);
+
+				resource->Release();
+				return srv;
+
+			}
+
+
 			HRESULT hr = DirectX::CreateWICTextureFromFile(m_Device, path.c_str(), &resource, &srv);
 #ifndef FINAL
 			DirectX11::HandleErrors(hr, "Failed to load texture");
@@ -159,6 +178,21 @@ namespace graphics
 
 		if (filepath.find(".dds") == filepath.npos)
 		{
+
+
+			DirectX::ScratchImage image;
+			if (filepath.find(".tga") != filepath.npos || filepath.find(".TGA") != filepath.npos)
+			{
+				DirectX::LoadFromTGAFile(path.c_str(), nullptr, image);
+				DirectX::CreateTexture(m_Device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), &resource);
+
+				m_Device->CreateShaderResourceView(resource, nullptr, &srv);
+				tex_out = resource;
+				return srv;
+
+			}
+
+
 			HRESULT hr = DirectX::CreateWICTextureFromFile(m_Device, path.c_str(), &resource, &srv);
 #ifndef FINAL
 			DirectX11::HandleErrors(hr, "Failed to load texture");

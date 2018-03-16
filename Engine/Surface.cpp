@@ -59,7 +59,7 @@ void Surface::Deactivate()
 void Surface::AddTexture(const std::string& file_path, Effect::TextureSlot slot)
 {
 	std::string sub = file_path;
-	if (file_path.find(".dds") == file_path.npos)
+	/*if (file_path.find(".dds") == file_path.npos)
 	{
 		DL_WARNING("Incorrect filetype! %s", file_path.c_str());
 
@@ -67,8 +67,10 @@ void Surface::AddTexture(const std::string& file_path, Effect::TextureSlot slot)
 		sub = file_path.substr(0, pos);
 		sub += ".dds";
 	}
+*/
 
-	m_Material.AddResource(Engine::GetInstance()->GetTexture(sub.c_str()), sub, slot);
+	Texture* texture = Engine::GetInstance()->GetTexture(sub.c_str());
+	m_Material.AddResource(texture, sub, slot);
 	
 }
 

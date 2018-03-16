@@ -55,11 +55,11 @@ void Game::Initiate(const std::string& level)
 	//m_World.AddDweller(m_Player->Initiate());
 
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
-	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
+	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 	//LevelFactory::CreateTerrain("Data/Textures/terrain/britannia.tga");
-	m_World.AddDwellers(dwellers);
+	//m_World.AddDwellers(dwellers);
 
-	hash = m_Engine->LoadModelA("Data/Model/sponza_pbr/sponza.fbx", "Shaders/deferred_base.json", false);
+	hash = m_Engine->LoadModelA("Data/models/suntemple/suntemple.fbx", "Shaders/deferred_base.json", false);
 
 	m_Picker = new CMousePicker;
 
@@ -172,10 +172,10 @@ void Game::Update(float dt)
 
 
 
-	m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, true));
+	/*m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, true));
 	m_Synchronizer->AddRenderCommand(LineCommand(p2, p3, true));
 	m_Synchronizer->AddRenderCommand(LineCommand(p10, p11, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p12, p13, true));
+	m_Synchronizer->AddRenderCommand(LineCommand(p12, p13, true));*/
 
 	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
 
@@ -361,7 +361,7 @@ void Game::OldUpdate(float dt)
 
 	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5,0.5), "Sup nerd"));
 	//m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, false));
-	m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
+	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 	m_World.Update(dt, m_Paused);
 }
 

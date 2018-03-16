@@ -28,9 +28,11 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 
 	for ( u32 i = 0; i < aNode->mNumMeshes; i++ )
 	{
-		aiMesh* mesh = aScene->mMeshes[aNode->mMeshes[i]];
-		ProcessMesh(mesh, aScene, someData, file, min_point, max_point);
-		DL_ASSERT_EXP(someData->myData, "Was null after ProcessMesh!?");
+		m_Engine->GetThreadpool().AddWork(Work([&]() {
+			aiMesh* mesh = aScene->mMeshes[aNode->mMeshes[i]];
+			ProcessMesh(mesh, aScene, someData, file, min_point, max_point);
+			DL_ASSERT_EXP(someData->myData, "Was null after ProcessMesh!?");
+		}));
 	}
 
 	for ( u32 i = 0; i < aNode->mNumChildren; i++ )
@@ -43,8 +45,8 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* aScene, FBXModelD
 
 void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* fbx, std::string file, CU::Vector3f& min_point, CU::Vector3f& max_point)
 {
-	FBXModelData* data = fbx;
-	data->myData = new ModelData;
+	//FBXModelData* data = fbx;
+	ModelData* data = new ModelData;
 
 	u32 polygonCount = mesh->mNumFaces;
 	u32 size = polygonCount * VERTEX_STRIDE;
@@ -57,7 +59,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 		newLayout.myType = ModelData::VERTEX_POS;
 		newLayout.mySize = VERTEX_STRIDE;
 		newLayout.myOffset = 0;
-		data->myData->myLayout.Add(newLayout);
+		data->myLayout.Add(newLayout);
 		size += polygonVertexCount * VERTEX_STRIDE;
 		stride += VERTEX_STRIDE;
 	}
@@ -68,7 +70,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 		newLayout.myType = ModelData::VERTEX_NORMAL;
 		newLayout.mySize = NORMAL_STRIDE;
 		newLayout.myOffset = stride * 4;
-		data->myData->myLayout.Add(newLayout);
+		data->myLayout.Add(newLayout);
 
 		stride += NORMAL_STRIDE;
 		size += polygonVertexCount * NORMAL_STRIDE;
@@ -80,7 +82,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 		newLayout.myType = ModelData::VERTEX_UV;
 		newLayout.mySize = UV_STRIDE;
 		newLayout.myOffset = stride * 4;
-		data->myData->myLayout.Add(newLayout);
+		data->myLayout.Add(newLayout);
 
 		stride += UV_STRIDE;
 		size += polygonVertexCount * UV_STRIDE;
@@ -92,7 +94,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 		newLayout.myType = ModelData::VERTEX_BINORMAL;
 		newLayout.mySize = BINORMAL_STRIDE;
 		newLayout.myOffset = stride * 4;
-		data->myData->myLayout.Add(newLayout);
+		data->myLayout.Add(newLayout);
 
 		stride += BINORMAL_STRIDE;
 		size += polygonVertexCount * BINORMAL_STRIDE;
@@ -100,17 +102,11 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 		newLayout.myType = ModelData::VERTEX_TANGENT;
 		newLayout.mySize = TANGENT_STRIDE;
 		newLayout.myOffset = stride * 4;
-		data->myData->myLayout.Add(newLayout);
+		data->myLayout.Add(newLayout);
 
 		stride += TANGENT_STRIDE;
 		size += polygonVertexCount * TANGENT_STRIDE;
 	}
-
-	//if (mesh->HasVertexColors(0))
-	//{
-	//	mesh->mColors
-	//}
-
 
 	if ( mesh->HasBones() )
 	{
@@ -118,7 +114,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 		newLayout.myType = ModelData::VERTEX_SKINWEIGHTS;
 		newLayout.mySize = SKINWEIGHT_STRIDE;
 		newLayout.myOffset = stride * 4;
-		data->myData->myLayout.Add(newLayout);
+		data->myLayout.Add(newLayout);
 
 		stride += SKINWEIGHT_STRIDE;
 		size += polygonVertexCount * SKINWEIGHT_STRIDE;
@@ -126,7 +122,7 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 		newLayout.myType = ModelData::VERTEX_BONEID;
 		newLayout.mySize = BONEID_STRIDE;
 		newLayout.myOffset = stride * 4;
-		data->myData->myLayout.Add(newLayout);
+		data->myLayout.Add(newLayout);
 
 		stride += BONEID_STRIDE;
 		size += polygonVertexCount * BONEID_STRIDE;
@@ -135,17 +131,13 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 	DL_MESSAGE("Vertex Buffer Array Size : %d", size);
 
 	const u32 vtx_size = size;
-	data->myData->myVertexBuffer = new float[vtx_size];
-	ZeroMemory(data->myData->myVertexBuffer, sizeof(float) * vtx_size);
-	data->myData->m_VertexBufferSize = sizeof(float)*vtx_size;
+	data->myVertexBuffer = new float[vtx_size];
+	ZeroMemory(data->myVertexBuffer, sizeof(float) * vtx_size);
+	data->m_VertexBufferSize = sizeof(float)*vtx_size;
 	DL_ASSERT_EXP(mesh->mNumVertices < size, "the amount of vertices was MORE!? than size");
-
-	
 
 	CU::GrowingArray<u32> indices(polygonCount * 3);
 	u32 vertCount = 0;
-
-	//CU::Vector3f min_point, max_point;
 
 	for ( u32 i = 0; i < mesh->mNumFaces; i++ )
 	{
@@ -164,10 +156,10 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 				CU::Matrix44f fixMatrix = CU::Math::CreateReflectionMatrixAboutAxis44(CU::Vector3f(1, 0, 0));
 				position = position * fixMatrix;
 
-				data->myData->myVertexBuffer[currIndex] = position.x;
-				data->myData->myVertexBuffer[currIndex + 1] = position.y;
-				data->myData->myVertexBuffer[currIndex + 2] = position.z;
-				data->myData->myVertexBuffer[currIndex + 3] = 1;
+				data->myVertexBuffer[currIndex] = position.x;
+				data->myVertexBuffer[currIndex + 1] = position.y;
+				data->myVertexBuffer[currIndex + 2] = position.z;
+				data->myVertexBuffer[currIndex + 3] = 1;
 
 
 				if (i != 0)
@@ -194,10 +186,10 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 					CU::Math::Normalize(normal);
 
 
-					data->myData->myVertexBuffer[currIndex + addedSize] = normal.x;
-					data->myData->myVertexBuffer[currIndex + addedSize + 1] = normal.y;
-					data->myData->myVertexBuffer[currIndex + addedSize + 2] = normal.z;
-					data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
+					data->myVertexBuffer[currIndex + addedSize] = normal.x;
+					data->myVertexBuffer[currIndex + addedSize + 1] = normal.y;
+					data->myVertexBuffer[currIndex + addedSize + 2] = normal.z;
+					data->myVertexBuffer[currIndex + addedSize + 3] = 0;
 					addedSize += NORMAL_STRIDE;
 				}
 
@@ -206,8 +198,8 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 					CU::Vector2f uv(mesh->mTextureCoords[0][verticeIndex].x, mesh->mTextureCoords[0][verticeIndex].y * -1.f);
 
 
-					data->myData->myVertexBuffer[currIndex + addedSize] = uv.x;
-					data->myData->myVertexBuffer[currIndex + addedSize + 1] = uv.y;
+					data->myVertexBuffer[currIndex + addedSize] = uv.x;
+					data->myVertexBuffer[currIndex + addedSize + 1] = uv.y;
 					addedSize += UV_STRIDE;
 				}
 
@@ -221,10 +213,10 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 					binorm = binorm * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
 					CU::Math::Normalize(binorm);
 
-					data->myData->myVertexBuffer[currIndex + addedSize] = binorm.x;
-					data->myData->myVertexBuffer[currIndex + addedSize + 1] = binorm.y;
-					data->myData->myVertexBuffer[currIndex + addedSize + 2] = binorm.z;
-					data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
+					data->myVertexBuffer[currIndex + addedSize] = binorm.x;
+					data->myVertexBuffer[currIndex + addedSize + 1] = binorm.y;
+					data->myVertexBuffer[currIndex + addedSize + 2] = binorm.z;
+					data->myVertexBuffer[currIndex + addedSize + 3] = 0;
 					addedSize += BINORMAL_STRIDE;
 
 					CU::Vector3f tangent(
@@ -235,10 +227,10 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 					CU::Math::Normalize(tangent);
 
 
-					data->myData->myVertexBuffer[currIndex + addedSize] = tangent.x;
-					data->myData->myVertexBuffer[currIndex + addedSize + 1] = tangent.y;
-					data->myData->myVertexBuffer[currIndex + addedSize + 2] = tangent.z;
-					data->myData->myVertexBuffer[currIndex + addedSize + 3] = 0;
+					data->myVertexBuffer[currIndex + addedSize] = tangent.x;
+					data->myVertexBuffer[currIndex + addedSize + 1] = tangent.y;
+					data->myVertexBuffer[currIndex + addedSize + 2] = tangent.z;
+					data->myVertexBuffer[currIndex + addedSize + 3] = 0;
 					addedSize += TANGENT_STRIDE;
 				}
 
@@ -247,15 +239,15 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 			}
 		}
 
-		data->myData->m_MinPoint = min_point;
-		data->myData->m_MaxPoint = max_point;
+		data->m_MinPoint = min_point;
+		data->m_MaxPoint = max_point;
 	}
 
 
 	const u32 indice_byte_width = sizeof(u32)* polygonCount * 3;
-	data->myData->myIndicies = new s8[indice_byte_width];
-	ZeroMemory(data->myData->myIndicies, indice_byte_width);
-	data->myData->m_IndexBufferSize = indice_byte_width;
+	data->myIndicies = new s8[indice_byte_width];
+	ZeroMemory(data->myIndicies, indice_byte_width);
+	data->m_IndexBufferSize = indice_byte_width;
 
 	//Flips it to make it correct.
 	CU::GrowingArray<u32> indiceFix(indices.Size());
@@ -264,20 +256,21 @@ void CModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelDat
 		indiceFix.Add(indices[indice]);
 	}
 
-	memcpy(data->myData->myIndicies, &indiceFix[0], sizeof(u32) * indiceFix.Size());
+	memcpy(data->myIndicies, &indiceFix[0], sizeof(u32) * indiceFix.Size());
 
-	data->myData->myVertexStride = stride * sizeof(float);
-	data->myData->myVertexCount = vertCount;
-	data->myData->myIndexCount = indiceFix.Size();
+	data->myVertexStride = stride * sizeof(float);
+	data->myVertexCount = vertCount;
+	data->myIndexCount = indiceFix.Size();
 
 
 	ExtractMaterials(mesh, scene, data, file);
 
+	fbx->myData = data;
+
 }
 
-void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file)
+void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelData* data, std::string file)
 {
-	data->myTextureData = new TextureData;
 
 	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 	for ( u32 i = 0; i < material->mNumProperties; i++ )
@@ -383,7 +376,7 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 			bool found = false;
 
 
-			const CU::GrowingArray<TextureInfo> texInfo = data->myTextureData->myTextures;
+			const CU::GrowingArray<TextureInfo> texInfo = data->myTextures;
 			for ( const TextureInfo& info : texInfo )
 			{
 				if ( info.m_File == newInfo.m_File && info.m_File == newInfo.m_File )
@@ -395,7 +388,7 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, FBXMod
 
 			if ( found == false )
 			{
-				data->myTextureData->myTextures.Add(newInfo);
+				data->myTextures.Add(newInfo);
 			}
 
 		}

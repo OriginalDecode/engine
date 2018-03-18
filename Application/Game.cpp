@@ -32,8 +32,10 @@
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
 #endif
-static float s_CamSpeed = 1000.f;
+static float s_CamSpeed = 50.f;
 
+#define LOAD_LEVEL
+#ifndef LOAD_LEVEL
 #define SUNTEMPEL
 #ifdef SUNTEMPEL
 u64 building = 0;
@@ -41,6 +43,7 @@ u64 building = 0;
 u64 building = 0;
 u64 pole = 0;
 u64 curtain = 0;
+#endif
 #endif
 
 void Game::InitState(StateStack* state_stack)
@@ -63,11 +66,13 @@ void Game::Initiate(const std::string& level)
 	//m_Player = new Player;
 	//m_World.AddDweller(m_Player->Initiate());
 
-	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
+#ifdef LOAD_LEVEL
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(16, 1, 3, CU::Vector3f(-110.f, 0.f, -16.f), 15.f, 0.f, 15.f);
 	//LevelFactory::CreateTerrain("Data/Textures/terrain/britannia.tga");
-	//m_World.AddDwellers(dwellers);
+	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
+	m_World.AddDwellers(dwellers);
+#else
 
 #ifdef SUNTEMPEL
 	building = m_Engine->LoadModelA("Data/models/suntemple/suntemple.fbx", "Shaders/deferred_base.json", false);
@@ -76,10 +81,11 @@ void Game::Initiate(const std::string& level)
 	building = m_Engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
 	pole = m_Engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
 #endif
+#endif
 	m_Picker = new CMousePicker;
 
 	m_Camera = m_Engine->GetCamera();
-	m_Camera->SetPosition(CU::Vector3f(0, 10, 0));
+	m_Camera->SetPosition(CU::Vector3f(256, 10, 256));
 	//m_Camera->RotateAroundY(cl::DegreeToRad(45.f));
 	//m_Camera->RotateAroundX(cl::DegreeToRad(20.f));
 	m_Camera->Update(CU::Vector2f(0.f,0.f));
@@ -243,11 +249,12 @@ void Game::Update(float dt)
 	//if(_pointList.size() > 0)
 		//AddRenderCommand(ModelCommand(g_DefaultModel, g_DefaultMaterial, _pointList[_index], false));
 	
-
+#ifndef LOAD_LEVEL
 	AddRenderCommand(ModelCommand(building, CU::Vector3f(0, 0, 0), false));
 #ifndef SUNTEMPEL
 	AddRenderCommand(ModelCommand(curtain, CU::Vector3f(0, 0, 0), false));
 	AddRenderCommand(ModelCommand(pole, CU::Vector3f(0, 0, 0), false));
+#endif
 #endif
 
 	_index++;

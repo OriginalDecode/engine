@@ -127,7 +127,7 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 									 //aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
 									 //aiProcess_ValidateDataStructure  | // perform a full validation of the loader's output
 									 //aiProcess_Triangulate | // Ensure all verticies are triangulated (each 3 vertices are triangle)
-									 //aiProcess_ConvertToLeftHanded | // convert everything to D3D left handed space (by default right-handed, for OpenGL)
+									 aiProcess_ConvertToLeftHanded | // convert everything to D3D left handed space (by default right-handed, for OpenGL)
 									 //aiProcess_SortByPType | // ?
 									 //aiProcess_ImproveCacheLocality | // improve the cache locality of the output vertices
 									 //aiProcess_RemoveRedundantMaterials | // remove redundant materials
@@ -427,6 +427,8 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 					mesh->mVertices[verticeIndex].y,
 					mesh->mVertices[verticeIndex].z,
 					1);
+				CU::Matrix44f fixMatrix = CU::Math::CreateReflectionMatrixAboutAxis44(CU::Vector3f(1, 0, 0));
+				position = position * fixMatrix;
 
 				data.myVertexBuffer[currIndex] = position.x;
 				data.myVertexBuffer[currIndex + 1] = position.y;
@@ -441,6 +443,8 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 						mesh->mNormals[verticeIndex].x,
 						mesh->mNormals[verticeIndex].y,
 						mesh->mNormals[verticeIndex].z);
+					normal = normal * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
+					CU::Math::Normalize(normal);
 
 					data.myVertexBuffer[currIndex + addedSize] = normal.x;
 					data.myVertexBuffer[currIndex + addedSize + 1] = normal.y;
@@ -466,7 +470,9 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 						mesh->mBitangents[verticeIndex].x,
 						mesh->mBitangents[verticeIndex].y,
 						mesh->mBitangents[verticeIndex].z);
-
+					binorm = binorm * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(1, 0, 0));
+					CU::Math::Normalize(binorm);
+					
 					data.myVertexBuffer[currIndex + addedSize] = binorm.x;
 					data.myVertexBuffer[currIndex + addedSize + 1] = binorm.y;
 					data.myVertexBuffer[currIndex + addedSize + 2] = binorm.z;
@@ -477,7 +483,8 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 						mesh->mTangents[verticeIndex].x,
 						mesh->mTangents[verticeIndex].y,
 						mesh->mTangents[verticeIndex].z);
-
+					tangent = tangent * CU::Math::CreateReflectionMatrixAboutAxis(CU::Vector3f(-1, 0, 0));
+					CU::Math::Normalize(tangent);
 
 					data.myVertexBuffer[currIndex + addedSize] = tangent.x;
 					data.myVertexBuffer[currIndex + addedSize + 1] = tangent.y;

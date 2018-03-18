@@ -23,6 +23,10 @@ public:
 	Texture() = default;
 	Texture(IShaderResourceView* srv);
 	Texture(IShaderResourceView* srv, ITexture2D* tex);
+#ifdef _DEBUG
+	Texture(IShaderResourceView* srv, std::string debug_name);
+	Texture(IShaderResourceView* srv, ITexture2D* tex, std::string debug_name);
+#endif
 	~Texture();
 
 

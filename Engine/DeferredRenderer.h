@@ -48,6 +48,7 @@ private:
 		CU::Vector4f m_Direction;
 		CU::Vector4f m_LightColor;
 		CU::Vector4f m_ViewDir;
+		CU::Vector4f m_CamPos;
 
 	} m_ConstantStruct;
 };

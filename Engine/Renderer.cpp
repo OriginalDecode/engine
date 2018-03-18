@@ -71,7 +71,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_ParticleEmitter = new CEmitterInstance;
 	m_ParticleEmitter->Initiate(m_Synchronizer, m_DepthTexture);
 
-	m_Atmosphere.Initiate(2048, 2048, { 1024, -128.f, 1024.f });
+	m_Atmosphere.Initiate(8192, 8192, { 1024, -128.f, 1024.f });
 
 // 	m_ShadowPass.Initiate(this);
 // 
@@ -106,8 +106,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 		"depth",
 		"emissive",
 		"entity_id",
-		"hover",
-		"edge"
+		"roughness",
+		"metalness"
 	};
 
 	m_DebugTexture = new Texture;
@@ -121,8 +121,11 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	pDebug->RegisterTexture(m_GBuffer.GetDepth(), names[2]);
 	pDebug->RegisterTexture(m_GBuffer.GetEmissive(), names[3]);
 	pDebug->RegisterTexture(m_GBuffer.GetIDTexture(), names[4]);
-	pDebug->RegisterTexture(m_HoverTexture, names[5]);
-	pDebug->RegisterTexture(m_SelectedTexture, names[6]);
+	pDebug->RegisterTexture(m_GBuffer.m_Roughenss, names[5]);
+	pDebug->RegisterTexture(m_GBuffer.m_Metalness, names[6]);
+
+	//pDebug->RegisterTexture(m_HoverTexture, names[5]);
+	//pDebug->RegisterTexture(m_SelectedTexture, names[6]);
 
 #endif
 	m_PostProcessManager.Initiate();

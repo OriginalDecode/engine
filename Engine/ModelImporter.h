@@ -35,7 +35,7 @@ class CModelImporter
 public:
 	CModelImporter();
 
-	
+
 	template<typename T>
 	void LoadModel(std::string filepath, T* pModel, Effect* effect);
 
@@ -50,10 +50,6 @@ private:
 
 	struct ModelData
 	{
-		~ModelData()
-		{
-		}
-
 		enum LayoutType
 		{
 			VERTEX_POS,
@@ -73,7 +69,7 @@ private:
 		};
 
 		float* myVertexBuffer = nullptr;
-		s8* myIndicies = nullptr;
+		s32* myIndicies = nullptr;
 		u32 myVertexCount = 0;
 		u32 m_VertexBufferSize = 0;
 		u32 m_IndexBufferSize = 0;
@@ -87,74 +83,45 @@ private:
 		std::string m_Filename;
 
 	};
-
-	struct FBXModelData
-	{
-		~FBXModelData()
-		{
-			myChildren.DeleteAll();
-			m_Data.DeleteAll();
-		}
-
-		CU::Matrix44f myOrientation;
-		CU::GrowingArray<ModelData*> m_Data;
-		CU::GrowingArray<TextureInfo> myTextures;
-		std::string m_Filename;
-		CU::GrowingArray<FBXModelData*> myChildren;
-
-	};
 #pragma endregion
 
-#ifdef _DEBUG
-	CU::TimeManager m_TimeManager;
-#endif
-
-	template<typename T>
-	void CreateModel(FBXModelData* data, T* model, std::string filepath, Effect* effect);
-	template<typename T>
-	T* CreateChild(FBXModelData* data, std::string filepath, Effect* effect);
-
-	
 	Threadpool m_Pool;
+	Effect* m_Effect;
 
 	template<typename T>
-	void FillData(ModelData* data, T* model, std::string filepath, Effect* effect);
+	void FillData(const ModelData& data, T* model, std::string filepath);
 
 	template<typename T>
-	void FillInstanceData(T* out, ModelData* data, Effect* effect);
+	void FillInstanceData(T* out, const ModelData& data, Effect* effect);
 
 	template<typename T>
-	void FillIndexData(T* out, ModelData* data);
+	void FillIndexData(T* out, const ModelData& data);
 	template<typename T>
-	void FillVertexData(T* out, ModelData* data, Effect* effect);
+	void FillVertexData(T* out, const ModelData& data, Effect* effect);
 
+	void SetupInputLayout(const ModelData& data, CU::GrowingArray<graphics::InputElementDesc>& element_desc);
 
+	template <typename T>
+	void ProcessNode(aiNode* aNode, const aiScene* scene, std::string file, T* parent);
 
-	void SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc);
+	template<typename T>
+	void ProcessMesh(unsigned int index, const aiScene* scene, std::string file, T* parent);
 
-	bool ProcessNode(aiNode* node, const aiScene* scene, FBXModelData* data, std::string file);
-	void ProcessMesh(aiMesh* mesh, const aiScene* scene, FBXModelData* data, std::string file);
-
-	void ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelData* data, std::string file);
+	void ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelData& data, std::string file);
 };
 
-//template<typename T>
-//void CModelImporter::LoadModel(T* pModel, std::string model_filepath, std::string effect_filepath)
-//{
-//	LoadModel(model_filepath, pModel, m_Engine->GetEffect(effect_filepath.c_str()));
-//}
-
 static bool instanced = false;
+
 template<typename T>
 void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 {
+	CU::TimeManager timer;
+
 	instanced = false;
 	DL_MESSAGE("Loading model : %s", filepath.c_str());
-
-#ifdef _DEBUG
-	m_TimeManager.Update();
-	float loadTime = m_TimeManager.GetMasterTimer().GetTotalTime().GetMilliseconds();
-#endif
+	m_Effect = effect;
+	timer.Update();
+	float loadTime = timer.GetMasterTimer().GetTotalTime().GetMilliseconds();
 	unsigned int processFlags =
 		aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
 									 //aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
@@ -178,98 +145,68 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	//This code should be moved to release and kept running at release for fast load times in debug.
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filepath, processFlags);
+	timer.Update();
+	float read_time = timer.GetMasterTimer().GetTotalTime().GetMilliseconds() - loadTime;
+	DL_MESSAGE("%s took %.1fms to read.", filepath.c_str(), read_time);
 
 	DL_MESSAGE_EXP(!scene, "%s", importer.GetErrorString());
 	DL_ASSERT_EXP(scene, "ImportModel Failed. Could not read the requested file.");
 
 	aiNode* rootNode = scene->mRootNode;
-	FBXModelData* data = new FBXModelData;
-	data->m_Filename = filepath.c_str();
-	ProcessNode(rootNode, scene, data, filepath);
-	CreateModel(data, pModel, filepath, effect);
+
+	ProcessNode(rootNode, scene, filepath, pModel);
+
+
+	m_Pool.CleanUp();
+	pModel->SetIsInstanced(instanced); 
+
+	timer.Update();
+
+	float _load_time = timer.GetMasterTimer().GetTotalTime().GetMilliseconds() - read_time;
+	DL_MESSAGE("%s took %.1fms to load.", filepath.c_str(), _load_time);
+
+	loadTime = timer.GetMasterTimer().GetTotalTime().GetMilliseconds() - loadTime;
+	DL_MESSAGE("%s took a total of %.1fms to load.", filepath.c_str(), loadTime);
 
 #ifdef _DEBUG
-	m_TimeManager.Update();
-	loadTime = m_TimeManager.GetMasterTimer().GetTotalTime().GetMilliseconds() - loadTime;
-	MODEL_LOG("%s took %fms to load. %s", filepath.c_str(), loadTime);
 #endif
-	
-	m_Pool.CleanUp();
-	pModel->SetIsInstanced(instanced);
-
-	delete data;
-}
-
-template<typename T>
-void CModelImporter::CreateModel(FBXModelData* someData, T* model, std::string filepath, Effect* effect)
-{
-	model->SetEffect(effect);
-	if (someData->myData)
-	{
-		FillData(someData, model, filepath, effect);
-		model->m_Orientation = someData->myOrientation;
-	}
-
-	for (FBXModelData* child : someData->myChildren)
-	{
-		child->m_Filename = filepath.c_str();
-		model->AddChild(CreateChild<T>(child, filepath, effect));
-	}
 
 }
 
 template<typename T>
-T* CModelImporter::CreateChild(FBXModelData* data, std::string filepath, Effect* effect)
+void CModelImporter::FillData(const ModelData& data, T* out, std::string filepath)
 {
-	for (ModelData* _data : data->m_Data)
-	{
-		T* model = new T;
-		model->m_IsRoot = false;
-		model->SetEffect(effect);
-		FillData(_data, model, filepath, effect);
-		model->m_Orientation = data->myOrientation;
-	}
-
-	for (FBXModelData* child : data->myChildren)
-	{
-		child->m_Filename = filepath.c_str();
-		model->AddChild(CreateChild<T>(child, filepath, effect)); //causes heap corruption.
-	}
-
-	return model;
-}
-
-template<typename T>
-void CModelImporter::FillData(ModelData* data, T* out, std::string filepath, Effect* effect)
-{
-	data->m_Filename = filepath.c_str();
-	FillVertexData(out, data, effect);
+	out->SetEffect(m_Effect);
+	//data.m_Filename = filepath;
+	size_t pos = filepath.rfind('/');
+	std::string path = filepath.substr(0, pos + 1);
+	FillVertexData(out, data, m_Effect);
 	FillIndexData(out, data);
 
 	auto& vtx = out->m_VertexWrapper;
 
 	if (!vtx.GetInputLayout())
-		FillInstanceData(out, data, effect);
+		FillInstanceData(out, data, m_Effect);
 
 	if (filepath.find("cube_100x100") != filepath.npos)
 		return;
 
-	Surface* surface = new Surface(effect);
-	for (auto& tex : data->myTextures)
+	Surface* surface = new Surface(m_Effect);
+	for (auto& tex : data.myTextures)
 	{
-		surface->AddTexture(tex.m_File, tex.m_Slot);
+		surface->AddTexture(path + tex.m_File, tex.m_Slot);
 	}
 	out->AddSurface(surface);
-	
+
 
 	return;
 }
 
-inline void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<graphics::InputElementDesc>& element_desc)
+inline void CModelImporter::SetupInputLayout(const ModelData& data, CU::GrowingArray<graphics::InputElementDesc>& element_desc)
 {
-	for (int i = 0; i < data->myLayout.Size(); ++i)
+	for (int i = 0; i < data.myLayout.Size(); ++i)
 	{
-		auto currentLayout = data->myLayout[i];
+		auto currentLayout = data.myLayout[i];
 		graphics::InputElementDesc desc;
 		desc.m_SemanicIndex = 0;
 		desc.m_ByteOffset = currentLayout.myOffset;
@@ -317,23 +254,291 @@ inline void CModelImporter::SetupInputLayout(ModelData* data, CU::GrowingArray<g
 }
 
 
+template <typename T>
+void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* scene, std::string file, T* parent)
+{
+
+	bool _thread = false;
+	bool thread2 = false;
+
+	volatile s32 _meshes_done = 0;
+	for (u32 i = 0; i < aNode->mNumMeshes; i++)
+	{
+		if (_thread)
+		{
+			m_Pool.AddWork(Work([&, i]
+			{
+				unsigned int index = aNode->mMeshes[i];
+				ProcessMesh<T>(index, scene, file, parent);
+				_meshes_done++;
+			}));
+		}
+		else
+		{
+			ProcessMesh<T>(aNode->mMeshes[i], scene, file, parent);
+			_meshes_done++;
+		}
+	}
+
+	while (_meshes_done < aNode->mNumMeshes)
+	{
+		m_Pool.Update();
+	}
+
+
+	for (u32 i = 0; i < aNode->mNumChildren; i++)
+	{
+		aiNode* node = aNode->mChildren[i];
+		if (thread2)
+		{
+			m_Pool.AddWork(Work([=] { ProcessNode<T>(node, scene, file, parent); }));
+		}
+		else
+		{
+			ProcessNode<T>(node, scene, file, parent);
+		}
+	}
+}
+
 template<typename T>
-void CModelImporter::FillIndexData(T* out, ModelData* data)
+void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::string file, T* parent)
+{
+	aiMesh* mesh = scene->mMeshes[index];
+	
+	ModelData data; // = new ModelData;
+
+	constexpr s32 TRIANGLE_VERTEX_COUNT = 3;
+	constexpr s32 VERTEX_STRIDE = 4;
+	constexpr s32 NORMAL_STRIDE = 4;
+	constexpr s32 BINORMAL_STRIDE = 4;
+	constexpr s32 TANGENT_STRIDE = 4;
+	constexpr s32 SKINWEIGHT_STRIDE = 4;
+	constexpr s32 BONEID_STRIDE = 4;
+	constexpr s32 UV_STRIDE = 2;
+
+	u32 polygonCount = mesh->mNumFaces;
+	u32 size = polygonCount * VERTEX_STRIDE;
+	u32 polygonVertexCount = polygonCount * 4;
+
+	u32 stride = 0;
+	if (mesh->HasPositions())
+	{
+		ModelData::Layout newLayout;
+		newLayout.myType = ModelData::VERTEX_POS;
+		newLayout.mySize = VERTEX_STRIDE;
+		newLayout.myOffset = 0;
+		data.myLayout.Add(newLayout);
+		size += polygonVertexCount * VERTEX_STRIDE;
+		stride += VERTEX_STRIDE;
+	}
+
+	if (mesh->HasNormals())
+	{
+		ModelData::Layout newLayout;
+		newLayout.myType = ModelData::VERTEX_NORMAL;
+		newLayout.mySize = NORMAL_STRIDE;
+		newLayout.myOffset = stride * 4;
+		data.myLayout.Add(newLayout);
+
+		stride += NORMAL_STRIDE;
+		size += polygonVertexCount * NORMAL_STRIDE;
+	}
+
+	if (mesh->HasTextureCoords(0)) //this is multiple coords 
+	{
+		ModelData::Layout newLayout;
+		newLayout.myType = ModelData::VERTEX_UV;
+		newLayout.mySize = UV_STRIDE;
+		newLayout.myOffset = stride * 4;
+		data.myLayout.Add(newLayout);
+
+		stride += UV_STRIDE;
+		size += polygonVertexCount * UV_STRIDE;
+	}
+
+	if (mesh->HasTangentsAndBitangents())
+	{
+		ModelData::Layout newLayout;
+		newLayout.myType = ModelData::VERTEX_BINORMAL;
+		newLayout.mySize = BINORMAL_STRIDE;
+		newLayout.myOffset = stride * 4;
+		data.myLayout.Add(newLayout);
+
+		stride += BINORMAL_STRIDE;
+		size += polygonVertexCount * BINORMAL_STRIDE;
+
+		newLayout.myType = ModelData::VERTEX_TANGENT;
+		newLayout.mySize = TANGENT_STRIDE;
+		newLayout.myOffset = stride * 4;
+		data.myLayout.Add(newLayout);
+
+		stride += TANGENT_STRIDE;
+		size += polygonVertexCount * TANGENT_STRIDE;
+	}
+
+	if (mesh->HasBones())
+	{
+		ModelData::Layout newLayout;
+		newLayout.myType = ModelData::VERTEX_SKINWEIGHTS;
+		newLayout.mySize = SKINWEIGHT_STRIDE;
+		newLayout.myOffset = stride * 4;
+		data.myLayout.Add(newLayout);
+
+		stride += SKINWEIGHT_STRIDE;
+		size += polygonVertexCount * SKINWEIGHT_STRIDE;
+
+		newLayout.myType = ModelData::VERTEX_BONEID;
+		newLayout.mySize = BONEID_STRIDE;
+		newLayout.myOffset = stride * 4;
+		data.myLayout.Add(newLayout);
+
+		stride += BONEID_STRIDE;
+		size += polygonVertexCount * BONEID_STRIDE;
+	}
+
+	//DL_MESSAGE("Vertex Buffer Array Size : %d", size);
+
+	const u32 vtx_size = size;
+	data.myVertexBuffer = new float[vtx_size];
+	ZeroMemory(data.myVertexBuffer, sizeof(float) * vtx_size);
+	data.m_VertexBufferSize = sizeof(float) * vtx_size;
+	DL_ASSERT_EXP(mesh->mNumVertices < size, "the amount of vertices was MORE!? than size");
+
+	const u32 index_count = polygonCount * 3;
+	CU::GrowingArray<u32> indices(index_count);
+
+	u32 vertCount = 0;
+	
+	for (u32 i = 0; i < mesh->mNumFaces; i++)
+	{
+		const aiFace* face = &mesh->mFaces[i];
+
+		for (s32 j = 2; j >= 0; j--)
+		{
+			u32 addedSize = VERTEX_STRIDE;
+			u32 currIndex = vertCount * stride;
+			DL_ASSERT_EXP(addedSize <= size, "addedSize was larger than the size of the array.");
+			u32 verticeIndex = face->mIndices[j];
+
+			if (mesh->HasPositions())
+			{
+				CU::Vector4f position(
+					mesh->mVertices[verticeIndex].x,
+					mesh->mVertices[verticeIndex].y,
+					mesh->mVertices[verticeIndex].z,
+					1);
+
+				data.myVertexBuffer[currIndex] = position.x;
+				data.myVertexBuffer[currIndex + 1] = position.y;
+				data.myVertexBuffer[currIndex + 2] = position.z;
+				data.myVertexBuffer[currIndex + 3] = 1;
+
+
+				if (mesh->HasNormals())
+				{
+
+					CU::Vector3f normal(
+						mesh->mNormals[verticeIndex].x,
+						mesh->mNormals[verticeIndex].y,
+						mesh->mNormals[verticeIndex].z);
+
+					data.myVertexBuffer[currIndex + addedSize] = normal.x;
+					data.myVertexBuffer[currIndex + addedSize + 1] = normal.y;
+					data.myVertexBuffer[currIndex + addedSize + 2] = normal.z;
+					data.myVertexBuffer[currIndex + addedSize + 3] = 0;
+					addedSize += NORMAL_STRIDE;
+				}
+
+				if (mesh->HasTextureCoords(0))
+				{
+					CU::Vector2f uv(mesh->mTextureCoords[0][verticeIndex].x, mesh->mTextureCoords[0][verticeIndex].y * -1.f);
+
+
+					data.myVertexBuffer[currIndex + addedSize] = uv.x;
+					data.myVertexBuffer[currIndex + addedSize + 1] = uv.y;
+					addedSize += UV_STRIDE;
+				}
+
+				if (mesh->HasTangentsAndBitangents())
+				{
+
+					CU::Vector3f binorm(
+						mesh->mBitangents[verticeIndex].x,
+						mesh->mBitangents[verticeIndex].y,
+						mesh->mBitangents[verticeIndex].z);
+
+					data.myVertexBuffer[currIndex + addedSize] = binorm.x;
+					data.myVertexBuffer[currIndex + addedSize + 1] = binorm.y;
+					data.myVertexBuffer[currIndex + addedSize + 2] = binorm.z;
+					data.myVertexBuffer[currIndex + addedSize + 3] = 0;
+					addedSize += BINORMAL_STRIDE;
+
+					CU::Vector3f tangent(
+						mesh->mTangents[verticeIndex].x,
+						mesh->mTangents[verticeIndex].y,
+						mesh->mTangents[verticeIndex].z);
+
+
+					data.myVertexBuffer[currIndex + addedSize] = tangent.x;
+					data.myVertexBuffer[currIndex + addedSize + 1] = tangent.y;
+					data.myVertexBuffer[currIndex + addedSize + 2] = tangent.z;
+					data.myVertexBuffer[currIndex + addedSize + 3] = 0;
+					addedSize += TANGENT_STRIDE;
+				}
+
+				indices.Add(verticeIndex);
+				//data.myIndicies[idx_count] = verticeIndex;
+				vertCount++;
+			}
+		}
+
+	}
+
+	data.myVertexStride = stride * sizeof(float);
+	data.myVertexCount = vertCount;
+	data.myIndexCount = indices.Size();
+
+
+	data.myIndicies = new s32[index_count];
+	ZeroMemory(data.myIndicies, sizeof(s32) * index_count);
+	data.m_IndexBufferSize = index_count * sizeof(s32);
+	
+	memcpy(data.myIndicies, &indices[0], indices.Size() * sizeof(s32));
+
+
+
+	ExtractMaterials(mesh, scene, data, mesh->mName.C_Str());
+
+	T* child = new T;
+	child->m_IsRoot = false;
+	FillData(data, child, file);
+
+	static Ticket_Mutex add_mutex;
+	BeginTicketMutex(&add_mutex);
+	parent->AddChild(child);
+	EndTicketMutex(&add_mutex);
+
+	//delete data;
+
+}
+
+template<typename T>
+void CModelImporter::FillIndexData(T* out, const ModelData& data)
 {
 	auto& idx = out->m_IndexWrapper;
 
-	const s32 idx_buf_size = data->m_IndexBufferSize;
+	const s32 idx_buf_size = data.m_IndexBufferSize;
 
-// 	s8* indexData = new s8[idx_buf_size];
-// 	memcpy(indexData, &data->myIndicies[0], idx_buf_size);
+	// 	s8* indexData = new s8[idx_buf_size];
+	// 	memcpy(indexData, &data->myIndicies[0], idx_buf_size);
 
 	const graphics::eTextureFormat idx_IndexBufferFormat = graphics::R32_UINT;
-	const s32 idx_IndexCount = data->myIndexCount;
+	const s32 idx_IndexCount = data.myIndexCount;
 	const s32 idx_Size = idx_IndexCount * sizeof(u32);
 
 	graphics::BufferDesc idx_desc;
 	idx_desc.m_Size = idx_buf_size;
-	idx_desc.m_Data = data->myIndicies;
+	idx_desc.m_Data = (s8*)data.myIndicies;
 	idx_desc.m_BindFlag = graphics::BIND_INDEX_BUFFER;
 	idx_desc.m_UsageFlag = graphics::IMMUTABLE_USAGE;
 	idx_desc.m_StructuredByteStride = 0;
@@ -341,9 +546,9 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 	idx_desc.m_MiscFlags = 0;
 	idx_desc.m_ByteWidth = idx_desc.m_Size;
 
-	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc, data->m_Filename + "IndexBuffer");
+	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(idx_desc, data.m_Filename + " IndexBuffer");
 
-	idx.SetData(data->myIndicies);
+	idx.SetData((s8*)data.myIndicies);
 	idx.SetIndexCount(idx_IndexCount);
 	idx.SetStart(0);
 	idx.SetSize(idx_buf_size);
@@ -351,34 +556,34 @@ void CModelImporter::FillIndexData(T* out, ModelData* data)
 	idx.SetByteOffset(0);
 	idx.SetBuffer(buffer);
 #ifdef _DEBUG
-	idx.m_DebugName = DEBUG_NAME_A(data->m_Filename, T);
+	idx.m_DebugName = DEBUG_NAME_A(data.m_Filename, T);
 #endif
 }
 
 template<typename T>
-void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
+void CModelImporter::FillVertexData(T* out, const ModelData& data, Effect* effect)
 {
 	auto& vtx = out->m_VertexWrapper;
 	graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 
-	const s32 vtx_VertexCount = data->myVertexCount;
-	const s32 vtx_Stride = data->myVertexStride;
+	const s32 vtx_VertexCount = data.myVertexCount;
+	const s32 vtx_Stride = data.myVertexStride;
 	const s32 vtx_start = 0;
 	const s32 vtx_buff_count = 1;
-	const s32 vtx_Size = data->m_VertexBufferSize;
+	const s32 vtx_Size = data.m_VertexBufferSize;
 
 	//DL_MESSAGE("Buffer Size : %d", vtx_VertexCount);
 
 	graphics::BufferDesc vtx_desc;
 	vtx_desc.m_Size = vtx_VertexCount * vtx_Stride;
-	vtx_desc.m_Data = (s8*)data->myVertexBuffer;
+	vtx_desc.m_Data = (s8*)data.myVertexBuffer;
 	vtx_desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
 	vtx_desc.m_UsageFlag = graphics::DYNAMIC_USAGE;
 	vtx_desc.m_CPUAccessFlag = graphics::WRITE;
 	vtx_desc.m_ByteWidth = vtx_desc.m_Size;
 	vtx_desc.m_StructuredByteStride = 0;
 	vtx_desc.m_MiscFlags = 0;
-	IBuffer* buffer = device.CreateBuffer(vtx_desc, data->m_Filename + "VertexBuffer");
+	IBuffer* buffer = device.CreateBuffer(vtx_desc, data.m_Filename + "VertexBuffer");
 
 
 	CU::GrowingArray<graphics::InputElementDesc> element;
@@ -391,7 +596,7 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 		vtx.SetInputLayout(layout);
 	}
 
-	vtx.SetData((s8*)data->myVertexBuffer);
+	vtx.SetData((s8*)data.myVertexBuffer);
 	vtx.SetStart(vtx_start);
 	vtx.SetStride(vtx_Stride);
 	vtx.SetByteOffset(0);
@@ -400,13 +605,13 @@ void CModelImporter::FillVertexData(T* out, ModelData* data, Effect* effect)
 	vtx.SetBuffer(buffer);
 	vtx.SetTopology(graphics::TRIANGLE_LIST);
 #ifdef _DEBUG
-	vtx.m_DebugName = DEBUG_NAME_A(data->m_Filename, T);
+	vtx.m_DebugName = DEBUG_NAME_A(data.m_Filename, T);
 #endif
 
 }
 
 template<typename T>
-void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
+void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* effect)
 {
 	auto& ins = out->m_InstanceWrapper;
 	const s32 ins_BufferCount = 1;
@@ -415,7 +620,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	const s32 ins_ByteOffset = 0;
 	const s32 ins_InstanceCount = 5000;
 	const s32 ins_Size = ins_InstanceCount * ins_Stride;
-	const s32 ins_IndicesPerInstance = data->myIndexCount;
+	const s32 ins_IndicesPerInstance = data.myIndexCount;
 
 	graphics::BufferDesc desc;
 	desc.m_BindFlag = graphics::BIND_VERTEX_BUFFER;
@@ -423,7 +628,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	desc.m_CPUAccessFlag = graphics::WRITE;
 	desc.m_ByteWidth = ins_Size;
 
-	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(desc, data->m_Filename + "InstanceBuffer");
+	IBuffer* buffer = Engine::GetAPI()->GetDevice().CreateBuffer(desc, data.m_Filename + "InstanceBuffer");
 
 	CU::GrowingArray<graphics::InputElementDesc> element;
 	SetupInputLayout(data, element);
@@ -460,7 +665,7 @@ void CModelImporter::FillInstanceData(T* out, ModelData* data, Effect* effect)
 	//out->SetIsInstanced(true);
 
 #ifdef _DEBUG
-	ins.m_DebugName = DEBUG_NAME_A(data->m_Filename, T);
+	ins.m_DebugName = DEBUG_NAME_A(data.m_Filename, T);
 #endif
 
 }

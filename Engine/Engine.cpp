@@ -133,7 +133,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_SegmentHandle.Initiate();
 
 	m_Camera = new Camera;
-	m_Camera->CreatePerspectiveProjection(m_Window.GetWindowSize().m_Width, m_Window.GetWindowSize().m_Height, 0.01f, 100.f, 90.f);
+	m_Camera->CreatePerspectiveProjection(m_Window.GetWindowSize().m_Width, m_Window.GetWindowSize().m_Height, 0.1f, 1000.f, 90.f);
 	m_Camera->CreateOrthogonalProjection(m_Window.GetWindowSize().m_Width, m_Window.GetWindowSize().m_Height, 0.01f, 100.f);
 
 	m_Renderer = new Renderer(m_Synchronizer);

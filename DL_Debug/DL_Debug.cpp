@@ -201,7 +201,7 @@ namespace DL_Debug
 
 	std::string Debug::HandleVAArgs(const char* aFormattedString, ...)
 	{
-		char buffer[SHRT_MAX];
+		char buffer[SHRT_MAX] = { '\0' };
 		va_list args;
 		va_start(args, aFormattedString);
 		vsprintf_s(buffer, aFormattedString, args);

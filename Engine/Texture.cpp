@@ -18,6 +18,23 @@ Texture::Texture(IShaderResourceView* srv, ITexture2D* tex)
 {
 }
 
+#ifdef _DEBUG
+
+Texture::Texture(IShaderResourceView* srv, ITexture2D* tex, std::string debug_name)
+	: m_DebugName(debug_name)
+	, m_ShaderResource(srv)
+	, m_Texture(tex)
+{
+}
+
+Texture::Texture(IShaderResourceView* srv, std::string debug_name)
+	: m_DebugName(debug_name)
+	, m_ShaderResource(srv)
+{
+}
+
+#endif
+
 Texture::~Texture()
 {
 	graphics::IGraphicsAPI* api = Engine::GetAPI();

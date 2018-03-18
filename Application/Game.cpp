@@ -32,8 +32,11 @@
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
 #endif
-static float s_CamSpeed = 50.f;
-u64 hash = 0;
+static float s_CamSpeed = 1000.f;
+u64 building = 0;
+u64 pole = 0;
+u64 curtain = 0;
+
 void Game::InitState(StateStack* state_stack)
 {
 	m_StateStack = state_stack;
@@ -56,10 +59,13 @@ void Game::Initiate(const std::string& level)
 
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::LoadLevel(level.c_str());
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
+	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(16, 1, 3, CU::Vector3f(-110.f, 0.f, -16.f), 15.f, 0.f, 15.f);
 	//LevelFactory::CreateTerrain("Data/Textures/terrain/britannia.tga");
-	//m_World.AddDwellers(dwellers);
+	m_World.AddDwellers(dwellers);
 
-	hash = m_Engine->LoadModelA("Data/model/sponza_pbr/sponza.fbx", "Shaders/deferred_base.json", false);
+	curtain = m_Engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);
+	building = m_Engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
+	pole = m_Engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
 	//hash = m_Engine->LoadModelA("Data/models/suntemple/suntemple.fbx", "Shaders/deferred_base.json", false);
 
 	m_Picker = new CMousePicker;
@@ -230,7 +236,9 @@ void Game::Update(float dt)
 		//AddRenderCommand(ModelCommand(g_DefaultModel, g_DefaultMaterial, _pointList[_index], false));
 	
 
-	AddRenderCommand(ModelCommand(hash, CU::Vector3f(0, 0, 0), false));
+	AddRenderCommand(ModelCommand(building, CU::Vector3f(0, 0, 0), false));
+	AddRenderCommand(ModelCommand(curtain, CU::Vector3f(0, 0, 0), false));
+	AddRenderCommand(ModelCommand(pole, CU::Vector3f(0, 0, 0), false));
 
 	_index++;
 	if (_index >= _pointList.size())

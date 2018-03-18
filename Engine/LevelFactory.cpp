@@ -479,12 +479,15 @@ void LevelFactory::CreateTerrain(std::string terrain_path)
 
 CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 steps)
 {
+	return CreatePBLLevel(steps, 1, steps, CU::Vector3f(5.f, 0.f, 5.f), 15.f, 0.f, 15.f);
+}
 
-	CU::GrowingArray<TreeDweller*> dwellers(steps * steps);
-	//CreateTerrain("Data/Textures/flat_height.tga");
-	float height = 0.f;
-	float x_start = 5.f;
-	float z_start = 5.f;
+CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_steps, s32 z_steps, const CU::Vector3f& pos, float x_spacing, float y_spacing, float z_spacing)
+{
+	CU::GrowingArray<TreeDweller*> dwellers(x_steps * y_steps * z_steps);
+	float x_start = pos.x;
+	float y_start = pos.y;
+	float z_start = pos.z;
 
 	Engine* pEngine = Engine::GetInstance();
 	Material* pGoldMaterial = pEngine->GetMaterial("Data/Material/mat_gold.json");
@@ -513,9 +516,9 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 steps)
 	};
 
 	EntityManager& em = Engine::GetInstance()->GetEntityManager();
-	for (s32 i = 0; i < steps; i++)
+	for (s32 i = 0; i < x_steps; i++)
 	{
-		for (s32 j = steps - 1, s = 0; j >= 0; j--, s++)
+		for (s32 j = z_steps - 1, s = 0; j >= 0; j--, s++)
 		{
 			Entity e = em.CreateEntity();
 
@@ -523,9 +526,9 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 steps)
 			auto& r = em.AddComponent<GraphicsComponent>(e);
 
 			CU::Vector4f translation;
-			translation.x = x_start + i * 15.f;
-			translation.y = height;
-			translation.z = z_start + s * 15.f;
+			translation.x = x_start + i * x_spacing;
+			translation.y = y_start + 0 * y_spacing;
+			translation.z = z_start + s * z_spacing;
 			translation.w = 1.f;
 
 			t.m_Orientation.SetTranslation(translation);

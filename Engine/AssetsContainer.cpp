@@ -35,8 +35,6 @@ void AssetsContainer::Initiate()
 	m_Models.empty();
 	m_Sprites.empty();
 
-
-
 	u64 mod_key = LoadModel<Model>("data/engineassets/cube_100x100.fbx", "Shaders/debug_pbl_instanced.json", false);
 	u64 mat_key = LoadMaterial("Data/Material/mat_default.json");
 
@@ -129,11 +127,17 @@ u64 AssetsContainer::LoadTexture(std::string filepath)
 		{
 			Texture* texture = nullptr;
 			
+#ifdef _DEBUG
+			if (tex)
+				texture = new Texture(srv, tex, filepath);
+			else
+				texture = new Texture(srv, filepath);
+#else
 			if (tex)
 				texture = new Texture(srv, tex);
 			else
 				texture = new Texture(srv);
-
+#endif
 			m_Textures.emplace(hash, texture);
 			EndTicketMutex(&texture_mutex);
 			return hash;

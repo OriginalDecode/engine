@@ -25,6 +25,7 @@ public:
 	CU::GrowingArray<TreeDweller*> GetDwellers() { return m_DwellerList; }
 	
 	static CU::GrowingArray<TreeDweller*> CreatePBLLevel(s32 steps);
+	static CU::GrowingArray<TreeDweller*> CreatePBLLevel(s32 x_steps, s32 y_steps, s32 z_steps, const CU::Vector3f& pos, float x_spacing, float y_spacing, float z_spacing);
 
 
 	static void SaveLevel(std::string folder, std::string filename);

@@ -19,6 +19,8 @@ struct GBuffer
 	float4 Emissive;
 #ifdef _DEBUG
 	float4 IDTexture;
+	float4 Roughness;
+	float4 Metalness;
 #endif
 };
 
@@ -80,14 +82,18 @@ GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
 	if(albedo.a <= 0.1)
 		discard;
 
-	// albedo.rgb = pow(albedo.rgb, 2.2);
+	albedo.rgb = pow(albedo.rgb, 2.2);
 	output.Albedo = albedo;
 	output.Albedo.a = override_pbl ? 1 : roughness_override;
-    output.Normal = float4(_normal, override_pbl ? 0 : metalness_override);
+    output.Normal = float4(_normal,1);
     output.Depth.x = 1 - input.pos.z;
+	output.Depth.y = roughness_override;
+	output.Depth.z = metalness_override;
 	output.Emissive = 0;//input.displaced;
 #ifdef _DEBUG
     output.IDTexture = float4(ToColor(input.entity_id), 0);
+	output.Roughness = roughness_override.xxxx;
+	output.Metalness = metalness_override.xxxx;
 #endif
 
     return output;
@@ -121,8 +127,9 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	output.Emissive = 0;//input.displaced;
 #ifdef _DEBUG
     output.IDTexture = float4(ToColor(input.entity_id), 0);
+	output.Roughness = roughness_override.xxxx;
+	output.Metalness = metalness_override.xxxx;
 #endif
-
 
     return output ;
 };

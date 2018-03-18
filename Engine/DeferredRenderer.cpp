@@ -85,24 +85,12 @@ DeferredRenderer::DeferredRenderer()
 	cubemap = engine->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
 	m_AmbientPassShader->AddShaderResource(cubemap, Effect::CUBEMAP);
 	m_AmbientPassShader->AddShaderResource(engine->GetTexture("Data/Textures/cube/late/forest.dds"), Effect::REGISTER_11);
-	//Texture* 
-
-
-
 
 
 	//Engine::GetInstance()->GetEffect("Shaders/deferred_pointlight.json");
-
-
-
 	//ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(texCube->GetTexture());
-
 	//Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json")->AddShaderResource(texCube, Effect::CUBEMAP);
 	//static_cast<graphics::DirectX11*>(Engine::GetAPI())->SaveTextureToDisk(tex, "cubefile.dds");
-
-
-
-
 
 	//_______________________________________________________________________
 
@@ -154,6 +142,7 @@ void DeferredRenderer::UpdateConstantBuffer(const CU::Matrix44f& shadow_mvp, con
 	m_ConstantStruct.m_ShadowMVP = shadow_mvp;
 	m_ConstantStruct.m_Direction = light_dir;
 	m_ConstantStruct.m_ViewDir = Engine::GetInstance()->GetCamera()->GetAt();
+	m_ConstantStruct.m_CamPos = Engine::GetInstance()->GetCamera()->GetOrientation().GetTranslation();
 
 	auto& ctx = Engine::GetAPI()->GetContext();
 	ctx.UpdateConstantBuffer(m_ConstantBuffer, &m_ConstantStruct, sizeof(ConstantStruct));

@@ -12,6 +12,7 @@ cbuffer Ambient : register(b1)
 	float4 light_direction;
 	float4 light_color;
 	float4 viewDir;
+	float4 camPos;
 };
 
 SamplerState sampler0 : register (s0);
@@ -57,9 +58,9 @@ float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const f
 {
 	float LdotH = saturate(dot(light_dir, half_vec));
 	LdotH = 1.0f - LdotH;
-	LdotH = pow(LdotH, 5); //max(0, min(pow(LdotH, 5), 1));
+	LdotH = max(0, min(pow(LdotH, 5), 1)); //max(0, min(pow(LdotH, 5), 1));
 	float3 fresnel = LdotH * (1.f - substance);
-	fresnel = fresnel / (2 - 1 * roughness);
+	fresnel = fresnel / (6 - 5 * roughness);
 	fresnel = substance + fresnel;
 	return fresnel;
 }
@@ -79,17 +80,8 @@ float4 getWorldPos(float2 tex_coord, float depth)
 // http://orsvarn.com/post/pbr-shader-source/
 // Source: https://github.com/godotengine/godot/blob/df573f5c3a76155842e43ea0dbab594e3944b114/drivers/gles3/shaders/scene.glsl
 
-float3 OrenNayarBRDF(float3 normal, 
-float3 view_dir, 
-float3 world_pos, 
-float3 light_dir, 
-float roughness,
-float3 albedo)
+float3 OrenNayarBRDF(float NdL, float NdV, float LdV, float roughness, float3 albedo)
 {
-	float NdL = dot ( normal, light_dir );
-	float NdV = dot ( normal, view_dir );
-	float LdV = dot ( light_dir, view_dir );
-
 	float s = LdV - NdL * NdV;
 	float t = lerp(1.0, max(NdL, NdV), step(0.0, s));
 
@@ -132,66 +124,121 @@ float D_GGX(float HdN, float r)
 }
 
 //f0 = reflectance at normal incidence (F)
-float3 Fresnel(float3 view_dir, float3 half_vec, float3 f0)
+float3 Fresnel(float fVdH, float3 f0)
 {
-	float VdH = dot(view_dir, half_vec);
-	VdH = 1 - VdH;
+	float VdH = 1 - fVdH;
 	VdH = pow(VdH, 5);
 
 	float3 F =  f0 + ( 1 - f0);
 	F *= VdH;	
 	return F;
+}
 
-	// LdH = pow(LdH, 5);
-	// float3 schlickFresnel = 0; //LdH * ( 1 - metalness_albedo);
-	//schlickFresnel = schlickFresnel / (6 - (5 * roughnessOffsetted));
-	//schlickFresnel = metalness_albedo + schlickFresnel;
+float3 fresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
+{
+	float fRough = 1 - roughness;
+	return F0 + (max(float3(fRough, fRough, fRough), F0) - F0) * pow(1 - cosTheta, 5);
+}
+
+float SchlickFresnel(float u)
+{
+	float m = clamp(1-u, 0, 1);
+	float m2 = m*m;
+	return m2*m2*m;
 }
 
 float4 main(VS_OUTPUT input) : SV_Target
 {
-	float4 camera_position = View._m30_m31_m32_m33;
-	float4 depth = DepthTexture.Sample(sampler0, input.uv);
+	float4 camera_position = camPos; //View._m30_m31_m32_m33;
 
 
-	int nMips[2];
-	int width[2];
-	int height[2];
-	CubeMap.GetDimensions(0, width[0], height[0], nMips[0]);
-	CubeMap2.GetDimensions(0, width[1], height[1], nMips[1]);
+	int nMips = 0, width = 0, height = 0;
+	CubeMap.GetDimensions(0, width, height, nMips);
 
 
-	float3 light_dir = -light_direction.xyz;
+	
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
-	return float4(albedo.rgb, 1);
-	
 	float4 normal = NormalTexture.Sample(sampler0, input.uv);
 	float4 base_col = float4(albedo.rgb, 1);
-	float roughness = 1 - albedo.a;
+	float4 depth = DepthTexture.Sample(sampler0, input.uv);
+	
+	float roughness = 1 - depth.y;
 	
 	float roughnessOffsetted = pow(roughness, 8192);
-	float lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips[0]);
-	float specPow = GetSpecPowToMip(RoughToSPow(roughness), nMips[1]);
+	float lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips);
 
-	float metalness = normal.w;
+	float metalness = depth.z;
 
 	normal *= 2;
 	normal -= 1;
 
+	float3 light_dir = -light_direction.xyz;
+    float NdL = max(0,dot(normal.xyz, -light_dir));
 
     float4 pixel_pos = getWorldPos(input.uv, 1 - depth.x);
 	float4 to_eye = normalize(camera_position - pixel_pos);
 
-	float3 refVec = reflect(to_eye.xyz, normal.xyz);
+	float3 half_vec = normalize(light_dir + to_eye); // / length(light_dir + viewDir);
+	float HdotN = dot(half_vec, normal);
+	float NdV = dot(normal, to_eye); 
+	float LdV = dot(light_dir, to_eye);
 
-	float3 ref = ReflectionFresnel(albedo.rgb, normal.xyz, to_eye, roughnessOffsetted);
+	float3 refVec = reflect(-to_eye.xyz, normal.xyz);
 
-	float4 reflection_fresnel = float4(ref, 1);
+	// float4 metalness_albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
 	//float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
-	float4 metalness_albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
+	float4 metalness_albedo = albedo - albedo * metalness;
+	float4 substance = (0.04 - 0.04 * metalness) + albedo * metalness;
+
+
+
+	float3 ref = ReflectionFresnel(substance.rgb, normal.xyz, to_eye, 1 - roughnessOffsetted);
+	float4 reflection_fresnel = float4( 1 - ref, 1);
+	float4 r0 = metalness_albedo * reflection_fresnel;
 	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * ( reflection_fresnel ); //makes terrain look strange
-	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * metalness_albedo * (  reflection_fresnel);
+	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap); // * metalness_albedo * (  1- reflection_fresnel);
+	return cube_ambient * r0;
+
+	return reflection_fresnel;
+
+	float4 irradiance = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * reflection_fresnel;// * metalness_albedo * (  reflection_fresnel);
+
+	float3 kS = Fresnel(NdV, metalness_albedo.rgb);
+	float3 kD = 1 - kS;
+	float3 _diffuse = irradiance.rgb * albedo.rgb;
+	float3 _ambient = (kD * _diffuse) * 1; // 1 should be AO
+
+
+	// float3 kS = fresnelSchlickRoughness(NdL, F0);
+
+
+	//DISNEY
+
+	float albedoLum = 0.3 * albedo.r + 0.6 * albedo.g + albedo.b * 0.1; 
+
+	float3 albedoTint = albedoLum > 0 ? albedo.rgb / albedoLum : float3(1,1,1); 
+
+	float LdotH = dot(light_dir, half_vec);
+
+	float FL = SchlickFresnel(NdL), FV = SchlickFresnel(NdV);
+	float Fd90 = 0.5 + 2 * (LdotH * LdotH) * roughness;
+	float Fd = albedoTint * lerp(1, Fd90, FL) * lerp(1, Fd90, FV);
+
+
+
+	float Fss90 = LdotH * LdotH * roughness;
+	float Fss = lerp(1, Fss90, FL) * lerp(1, Fss90, FV);
+	float ss = 1.25 * (Fss * (1 / (NdL  + NdV) - 0.5) + 0.5);
+
+
+	// float ax = max(0.0001, sqrt)
+
+	return saturate(lerp(Fd, ss, 0) * (1 / PI) * albedo);
+
+	return (1 /PI) * lerp(Fd, ss, 0) * ( 1 - metalness);
+
+
 
 	// return metalness_albedo;
 
@@ -202,29 +249,25 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float light_intensity = 1;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
-	float3 half_vec = normalize(light_dir + viewDir); // / length(light_dir + viewDir);
-    float NdL = max(0,dot(normal.xyz, -light_dir));
 
 	float3 radiance = CubeMap.SampleLevel(sampler1, normal, lysMipMap).rgb * (1 - reflection_fresnel);
 	//return base_col * dot(normal.rgb, light_dir);
-	float3 oren = OrenNayarBRDF(normal.xyz, viewDir, float3(0,0,0), light_dir, roughness, albedo.rgb);
+	float3 oren = OrenNayarBRDF(NdL, NdV, LdV, roughness, albedo.rgb);
 
-	float HdotN = dot(half_vec, normal);
-	float NdV = dot(normal, viewDir); 
+	return float4(oren, 1);
+
 	
 	float D = D_GGX(HdotN, roughness);
-	float3 F = Fresnel(light_dir, half_vec, radiance.rgb);
+	float3 F = Fresnel(NdV, radiance.rgb);
 	float G = Geometric_Smith_Schlick_GGX(roughness, NdV, NdL);
 	float3 cook = CookTorranceBRDF(D,F,G, NdL, NdV);
 	
 	float3 dif = albedo.rgb / 3.14;
 
+
 	float3 cFinal = float3(1,1,1) * NdL * ( dif * ( 1 - cook) + cook);
 	return float4(cFinal, 1);
 
-	return float4(cook, 1);
-	
-	return float4(oren, 1);
 	
 	float LdH = saturate(dot(light_dir, half_vec));
 	LdH = 1 - LdH;

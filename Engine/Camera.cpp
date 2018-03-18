@@ -235,6 +235,21 @@ void Camera::RotateAroundZ(float rad)
 	m_Orientation = CU::Matrix44f::CreateRotateAroundZ(rad) * m_Orientation;
 }
 
+void Camera::SetRotationX(float rad)
+{
+	m_Orientation.SetRotation3dX(rad);
+}
+
+void Camera::SetRotationY(float rad)
+{
+	m_Orientation.SetRotation3dY(rad);
+}
+
+void Camera::SetRotationZ(float rad)
+{
+	m_Orientation.SetRotation3dZ(rad);
+}
+
 void Camera::SetFOV(float field_of_view)
 {
 	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();

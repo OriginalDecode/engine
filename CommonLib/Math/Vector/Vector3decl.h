@@ -20,6 +20,13 @@ namespace CommonUtilities
 				z = vector.z;
 			}
 
+			Vector3(T in[3])
+				: x(in[0])
+				, y(in[1])
+				, z(in[2])
+			{
+			}
+
 			~Vector3();
 			T x;
 			T y;

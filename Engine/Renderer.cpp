@@ -73,10 +73,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	m_Atmosphere.Initiate(8192, 8192, { 1024, -128.f, 1024.f });
 
-// 	m_ShadowPass.Initiate(this);
-// 
-// 
-// 	m_DirectionalShadow.Initiate(2048.f);
+ 	m_ShadowPass.Initiate(this);
+ 	m_DirectionalShadow.Initiate(512.f);
 
 	m_Direction = CU::Vector3f(0.0f, 1.0f, 0.0f);
 
@@ -166,8 +164,8 @@ Renderer::~Renderer()
 #endif
 	SAFE_DELETE(m_Text);
 
-	/*m_ShadowPass.CleanUp();
-	m_DirectionalShadow.CleanUp();*/
+	m_ShadowPass.CleanUp();
+	m_DirectionalShadow.CleanUp();
 
 	//SAFE_DELETE(m_WaterPlane);
 	SAFE_DELETE(m_WaterCamera);
@@ -180,6 +178,20 @@ Renderer::~Renderer()
 
 }
 
+void Renderer::PrepareFrame()
+{
+	m_RenderContext.GetAPI().BeginFrame();
+	m_RenderContext.GetAPI().ResetViewport();
+
+
+	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
+	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
+	CU::Matrix44f camera_view_proj = CU::Math::Inverse(camera_orientation) * camera_projection;
+
+	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
+	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
+}
+
 void Renderer::Render()
 {
 	if (m_Synchronizer->HasQuit())
@@ -189,26 +201,10 @@ void Renderer::Render()
 	}
 
 	PROFILE_FUNCTION(profiler::colors::Magenta);
-
-	m_RenderContext.GetAPI().BeginFrame();
-	m_RenderContext.GetAPI().ResetViewport();
-
-	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
-	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
-
-	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
-	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
-	CU::Matrix44f camera_view_proj = CU::Math::Inverse(camera_orientation) * camera_projection;
-
+	PrepareFrame();
+	
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
-	m_RenderInstanced = false;
-	if (m_RenderInstanced)
-		Render3DCommandsInstanced();
-
-	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
-	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
-
 	//m_TerrainSystem->Update();
  
  	Render3DCommands();
@@ -218,16 +214,16 @@ void Renderer::Render()
  	WriteDebugTextures();
  
  	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
- 	DrawEntity(m_HoverTexture, hovered, ctx);
+ 	DrawEntity(m_HoverTexture, hovered);
  
  	const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
- 	DrawEntity(m_SelectedTexture, selected, ctx);
+ 	DrawEntity(m_SelectedTexture, selected);
  
  #endif
  
- 	//m_ShadowPass.ProcessShadows(&m_DirectionalShadow);
+ 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
  
-	const CU::Matrix44f shadow_mvp;// = m_DirectionalShadow.GetMVP();
+	const CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
  	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
  	m_DeferredRenderer->DeferredRender(shadow_mvp, m_Direction, m_RenderContext);
  
@@ -285,12 +281,13 @@ void Renderer::Render()
 static CU::Matrix44f prev;
 static CU::Matrix44f orientation;
 
-void Renderer::DrawEntity(Texture* pTex, Entity e, graphics::IGraphicsContext &ctx)
+void Renderer::DrawEntity(Texture* pTex, Entity e)
 {
 	return;
 	if (e <= 0)
 		return;
 	
+	auto& ctx = m_RenderContext.GetContext();
 	ctx.ClearRenderTarget(pTex->GetRenderTargetView(), clearcolor::black);
 	ctx.OMSetRenderTargets(1, pTex->GetRenderTargetRef(), nullptr);
 	Engine& engine = m_RenderContext.GetEngine();
@@ -455,32 +452,49 @@ void Renderer::RenderTerrain(bool /*override_effect*/)
 	}
 }
 
-void Renderer::Render3DShadows(const CU::Matrix44f&, Camera* camera)
+void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 {
+	PROFILE_FUNCTION(profiler::colors::Green);
+
 // 	const CU::Matrix44f& perspective = camera->GetPerspective();
 // 	const CU::Matrix44f& orientation = camera->GetCurrentOrientation();
 // 	const CU::Matrix44f& view_proj = CU::Math::Inverse(orientation) * perspective;
-// 	m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &view_proj, sizeof(CU::Matrix44f));
+	//m_ViewProjection.Bind()
+	//m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &view_proj, sizeof(CU::Matrix44f));
 
-	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
-	Engine& engine = m_RenderContext.GetEngine();
 
+	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
-	for (s32 top_tree_node = 0; top_tree_node < 8; top_tree_node++)
+
+	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
+	for (s32 j = 0; j < 8; j++)
 	{
-		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, top_tree_node);
+		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
+
 		for (s32 i = 0; i < commands.Size(); i++)
 		{
-			ProcessModelCommand(commands, i, engine);
+			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
+			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
+			RefPointer<Model> model = m_RenderContext.GetEngine().GetModel<Model>(command->m_Key);
+			if (model->IsInstanced())
+			{
+				ProcessModelCommand(commands, i, m_RenderContext.GetEngine());
+				continue;
+			}
+
+#ifdef _DEBUG
+			model->SetEntityID(command->m_EntityID);
+#endif
+			model->SetOrientation(command->m_Orientation);
+			model->Render(m_RenderContext);
 		}
 	}
 
 	m_InstancingManager.DoInstancing(m_RenderContext, true);
-
 }
 
 void Renderer::Render2DCommands()

@@ -76,6 +76,11 @@ public:
 	void RotateAroundY(float rad);
 	void RotateAroundZ(float rad);
 
+	void SetRotationX(float rad);
+	void SetRotationY(float rad);
+	void SetRotationZ(float rad);
+
+
 	void SetFOV(float field_of_view);
 
 	float GetFOV();

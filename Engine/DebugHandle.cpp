@@ -414,6 +414,14 @@ namespace debug
 
 			ImGui::SliderFloat("Global PL range", &m_Range, 0.f, 10.f);
 
+
+			ImGui::Separator();
+
+			ImGui::InputFloat3("SPos", m_CamPos);
+			ImGui::InputFloat3("SRot", m_CamRot);
+
+
+
 // 			ImGui::Separator();
 // 
 // 			static float up[3];

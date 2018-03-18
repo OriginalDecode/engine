@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Engine/engine_shared.h>
+#include "Engine/ConstantBuffer.h"
 
 class Camera;
 class Texture;
@@ -28,6 +29,7 @@ public:
 	const CU::Matrix44f& GetOrientation() { return m_Camera->GetOrientation(); }
 
 
+	void Update();
 
 	CU::Matrix44f GetMVP();
 	
@@ -35,9 +37,10 @@ public:
 	Texture* GetDepthTexture() { return m_ShadowDepth; }
 	Texture* GetDepthStencilTexture() { return m_ShadowDepthStencil; }
 
+	graphics::ConstantBuffer& GetConstBuffer() { return m_ConstBuffer; }
 private:
-
-	graphics::Viewport*	m_Viewport				= nullptr;
+	graphics::ConstantBuffer m_ConstBuffer;
+	graphics::Viewport*	m_Viewport		= nullptr;
 	Camera*		m_Camera				= nullptr;
 	Texture*	m_ShadowDepth			= nullptr;
 	Texture*	m_ShadowDepthStencil	= nullptr;

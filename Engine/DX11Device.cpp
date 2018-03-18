@@ -311,7 +311,7 @@ namespace graphics
 
 		ID3D11ShaderResourceView* srv = nullptr;
 		ID3D11Texture2D* tex = static_cast<ID3D11Texture2D*>(pTexture);
-		HRESULT hr = m_Device->CreateShaderResourceView(tex, nullptr, &srv);
+		HRESULT hr = m_Device->CreateShaderResourceView(tex, &view_desc, &srv);
 #ifndef FINAL
 		DirectX11::HandleErrors(hr, "Failed to create ShaderResourceView");
 		DirectX11::SetDebugName(srv, debug_name);

@@ -124,7 +124,8 @@ namespace debug
 		float m_ControllerLookSens = 0.005f;
 		float m_MouseLookSense = 0.005f;
 		float m_Range = 0.f;
-
+		float m_CamPos[3];
+		float m_CamRot[3];
 
 		/**
 #if !defined(_PROFILE) && !defined(_FINAL)

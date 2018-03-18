@@ -261,6 +261,21 @@ namespace graphics
 		{
 			OutputDebugStringA("Failed to Query Debug Interface. myDebug is NULL.");
 		}
+
+		D3D11_MESSAGE_ID hide[] = {
+			D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET,
+		};
+
+		D3D11_INFO_QUEUE_FILTER filters;
+		ZeroMemory(&filters, sizeof(D3D11_INFO_QUEUE_FILTER));
+		//filter.DenyList.Num
+		filters.DenyList.NumIDs = _countof(hide);
+		filters.DenyList.pIDList = hide;
+		ID3D11InfoQueue* info_queue = nullptr;
+		hr = m_Debug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&info_queue);
+		info_queue->AddStorageFilterEntries(&filters);
+		//info_queue->Release();
+
 #endif
 		SetDebugName(m_Context, "DirectX11 Context Object");
 		const std::string deviceName = "DirectX11 Device Object";

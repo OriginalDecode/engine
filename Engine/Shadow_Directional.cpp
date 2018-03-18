@@ -2,12 +2,13 @@
 #include "Shadow_Directional.h"
 #include <Engine/Effect.h>
 #include <Engine/Engine.h>
+
 void ShadowDirectional::Initiate(float buffer_size)
 {
 	m_Camera = new Camera;
 	m_Camera->CreateOrthographicProjection(buffer_size, buffer_size, 1.f, 100.f);
 
-	m_Camera->SetPosition({ 55, 90, 55});
+	//m_Camera->SetPosition({ 55, 90, 55});
 	m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
 
 	m_ShadowDepth = new Texture;
@@ -19,13 +20,15 @@ void ShadowDirectional::Initiate(float buffer_size)
 
 	m_Viewport = Engine::GetAPI()->CreateViewport(buffer_size, buffer_size, 0.f, 1.f, 0, 0);
 
+	m_ConstBuffer.RegisterVariable(&m_Camera->GetViewProjection());
+	m_ConstBuffer.Initiate("directional_shadow");
 
 	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_ShadowDepthStencil->GetShaderView(), Effect::SHADOWMAP);
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	//debug::DebugHandle::GetInstance()->AddTexture(m_ShadowDepth, "Directional Shadow");
-	//debug::DebugHandle::GetInstance()->AddTexture(m_ShadowDepthStencil, "Directional Shadow Stencil");
+	debug::DebugHandle::GetInstance()->RegisterTexture(m_ShadowDepth, "Directional Shadow");
+	debug::DebugHandle::GetInstance()->RegisterTexture(m_ShadowDepthStencil, "Directional Shadow Stencil");
 #endif
 
 }
@@ -60,11 +63,21 @@ void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)
 	m_Camera->SetOrientation(orientation); 
 }
 
+void ShadowDirectional::Update()
+{
+#ifdef _DEBUG
+	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
+	m_Camera->SetPosition(pDebug->m_CamPos);
+	m_Camera->SetRotationX(cl::DegreeToRad(pDebug->m_CamRot[0]));
+	m_Camera->SetRotationY(cl::DegreeToRad(pDebug->m_CamRot[1]));
+	m_Camera->SetRotationZ(cl::DegreeToRad(pDebug->m_CamRot[2]));
+#endif
+	m_Camera->Update();
+}
+
 CU::Matrix44f ShadowDirectional::GetMVP()
 {
-	const CU::Matrix44f& orientation = m_Camera->GetCurrentOrientation();
+	const CU::Matrix44f& orientation = CU::Math::Inverse(m_Camera->GetCurrentOrientation());
 	const CU::Matrix44f& perspective = m_Camera->GetOrthographic();
-	const CU::Matrix44f& inv = CU::Math::Inverse(orientation);
-	const CU::Matrix44f& camera_view_proj = inv * perspective;
-	return  camera_view_proj;
+	return orientation * perspective;
 }

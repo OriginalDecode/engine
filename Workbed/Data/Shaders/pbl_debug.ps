@@ -75,8 +75,9 @@ GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
 
 	GBuffer output = (GBuffer)0;
 	bool override_pbl = false;
-	float metalness_override = MetalnessTexture.Sample(sampler0, input.uv).r;
-	float roughness_override = RoughnessTexture.Sample(sampler0, input.uv).r; 
+	float4 metalness_override = MetalnessTexture.Sample(sampler0, input.uv);
+	float4 roughness_override = RoughnessTexture.Sample(sampler0, input.uv); 
+
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);
 	if(albedo.a <= 0.1)
@@ -87,12 +88,12 @@ GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
 	output.Albedo.a = override_pbl ? 1 : roughness_override;
     output.Normal = float4(_normal,1);
     output.Depth.x = 1 - input.pos.z;
-	output.Depth.y = roughness_override;
-	output.Depth.z = metalness_override;
+	output.Depth.y = metalness_override.a;
+	output.Depth.z = metalness_override.r;
 	output.Emissive = 0;//input.displaced;
 #ifdef _DEBUG
     output.IDTexture = float4(ToColor(input.entity_id), 0);
-	output.Roughness = roughness_override.xxxx;
+	output.Roughness = metalness_override.aaaa;
 	output.Metalness = metalness_override.xxxx;
 #endif
 
@@ -114,20 +115,20 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 
 	GBuffer output = (GBuffer)0;
 	bool override_pbl = false;
-	float metalness_override = MetalnessTexture.Sample(sampler0, input.uv).r;
-	float roughness_override = RoughnessTexture.Sample(sampler0, input.uv).r; 
+	float4 metalness_override = MetalnessTexture.Sample(sampler0, input.uv);
+	float4 roughness_override = RoughnessTexture.Sample(sampler0, input.uv); 
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);
 	albedo.rgb = pow(albedo.rgb, 2.2);
 	output.Albedo = albedo;
 
-    output.Normal = float4(_normal, override_pbl ? input.data0.x : metalness_override);
+    output.Normal = float4(_normal, override_pbl ? input.data0.x : metalness_override.r);
     output.Depth.x = input.pos.z;
-	output.Depth.y = override_pbl ? input.data0.y : roughness_override;
+	output.Depth.y = override_pbl ? input.data0.y : roughness_override.r;
 	output.Emissive = 0;//input.displaced;
 #ifdef _DEBUG
     output.IDTexture = float4(ToColor(input.entity_id), 0);
-	output.Roughness = roughness_override.xxxx;
+	output.Roughness = metalness_override.aaaa;
 	output.Metalness = metalness_override.xxxx;
 #endif
 

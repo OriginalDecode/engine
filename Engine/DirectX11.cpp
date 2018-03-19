@@ -76,6 +76,7 @@ namespace graphics
 		ReleasePtr(m_DefaultDepthView);
 		ReleasePtr(m_DefaultRenderTarget);
 		ReleasePtr(m_DefaultDepthBuffer);
+		ReleasePtr(m_InfoQueue);
 
 		SAFE_RELEASE(m_Swapchain);
 
@@ -99,7 +100,6 @@ namespace graphics
 
 		ctx->Release();
 		dev->Release();
-		
 
 #if defined (_DEBUG)
 		OutputDebugString("\nIntRef is something that D3D has internal. You cannot control these.\n\n");
@@ -271,10 +271,8 @@ namespace graphics
 		//filter.DenyList.Num
 		filters.DenyList.NumIDs = _countof(hide);
 		filters.DenyList.pIDList = hide;
-		ID3D11InfoQueue* info_queue = nullptr;
-		hr = m_Debug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&info_queue);
-		info_queue->AddStorageFilterEntries(&filters);
-		//info_queue->Release();
+		hr = m_Debug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&m_InfoQueue);
+		m_InfoQueue->AddStorageFilterEntries(&filters);
 
 #endif
 		SetDebugName(m_Context, "DirectX11 Context Object");

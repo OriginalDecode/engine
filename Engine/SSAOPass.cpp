@@ -41,6 +41,9 @@ SSAOPass::~SSAOPass()
 {
 	Engine::GetAPI()->ReleasePtr(m_cbSSAO);
 	SAFE_DELETE(m_SSAOTexture);
+	delete m_Quad;
+	m_Quad = nullptr;
+	
 }
 
 void SSAOPass::Process(Texture* scene_texture, const graphics::RenderContext& render_context)

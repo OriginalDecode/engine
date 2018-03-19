@@ -8,6 +8,7 @@ struct IDXGISwapChain;
 struct ID3D11Debug;
 struct IDXGIAdapter;
 struct D3D11_TEXTURE2D_DESC;
+struct ID3D11InfoQueue;
 namespace graphics
 {
 	class DirectX11 : public IGraphicsAPI
@@ -68,7 +69,8 @@ namespace graphics
 
 		IDXGISwapChain* m_Swapchain = nullptr; 
 		ID3D11Debug* m_Debug = nullptr;
-			
+		ID3D11InfoQueue* m_InfoQueue = nullptr;
+
 		std::unordered_map<std::string, IDXGIAdapter*> m_Adapters;
 		std::vector<std::string> myAdaptersName;
 		std::string myActiveAdapter;

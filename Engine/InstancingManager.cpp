@@ -91,37 +91,9 @@ void InstancingManager::DoInstancing(const graphics::RenderContext& rc, bool sha
 
 
 			if (!shadowing)
-			{
-#ifdef _PROFILE
-				ctx->End(g_QueryStart);
-				while (S_OK != ctx->GetData(g_QueryStart, &instance.m_Start, sizeof(UINT64), 0))
-				{
-				}
-#endif
 				pModel->RenderInstanced(rc);
-#ifdef _PROFILE
-				ctx->End(g_QueryEnd);
-				while (S_OK != ctx->GetData(g_QueryEnd, &instance.m_End, sizeof(UINT64), 0))
-				{
-				}
-#endif
-			}
 			else
-			{
-#ifdef _PROFILE
-				ctx->End(g_QueryStart);
-				while (S_OK != ctx->GetData(g_QueryStart, &instance.m_Start, sizeof(UINT64), 0))
-				{
-				}
-#endif
 				pModel->ShadowRenderInstanced(rc);
-#ifdef _PROFILE
-				ctx->End(g_QueryEnd);
-				while (S_OK != ctx->GetData(g_QueryEnd, &instance.m_End, sizeof(UINT64), 0))
-				{
-				}
-#endif
-			}
 		}
 	}
 }

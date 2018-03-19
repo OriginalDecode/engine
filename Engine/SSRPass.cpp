@@ -49,6 +49,8 @@ SSRPass::~SSRPass()
 	Engine::GetAPI()->ReleasePtr(m_Buffer);
 	delete m_Reflection;
 	m_Reflection = nullptr;
+	delete m_Quad;
+	m_Quad = nullptr;
 }
 
 void SSRPass::Process(Texture* scene, const graphics::RenderContext& rc)

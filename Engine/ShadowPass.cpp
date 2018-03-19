@@ -9,6 +9,7 @@
 bool ShadowPass::Initiate(Renderer* renderer)
 {
 	m_RenderToDepth = Engine::GetInstance()->GetEffect("Shaders/render_depth.json");
+	m_RenderToDepthInstanced = Engine::GetInstance()->GetEffect("Shaders/render_depth_instanced.json");
 	m_Renderer = renderer;
 
 
@@ -44,13 +45,15 @@ void ShadowPass::ProcessShadows(ShadowDirectional* shadow_directional, const gra
 	shadow_directional->SetViewport();
 	shadow_directional->ClearTexture();
 	shadow_directional->SetTargets();
-	m_RenderToDepth->Use();
+
+	//m_RenderToDepth->Use();
 
 	shadow_directional->Update();
 	shadow_directional->GetConstBuffer().Bind(0, graphics::ConstantBuffer::VERTEX, rc);
-
 	ProcessShadows(shadow_directional->GetCamera());
-	m_RenderToDepth->Clear();
+
+	//m_RenderToDepth->Clear();
+
 	//Engine::GetAPI()->ResetViewport();
 }
 

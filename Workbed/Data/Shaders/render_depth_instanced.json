@@ -1,0 +1,10 @@
+{
+    "VertexShader": {
+        "file": "render_depth.vs",
+        "entrypoint": "instance_main"
+    },
+    "PixelShader": {
+        "file": "render_depth.ps",
+        "entrypoint": "main"
+    }
+}

@@ -74,7 +74,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Atmosphere.Initiate(8192, 8192, { 1024, -128.f, 1024.f });
 
  	m_ShadowPass.Initiate(this);
- 	m_DirectionalShadow.Initiate(512.f);
+ 	m_DirectionalShadow.Initiate(2048.f);
 
 	m_Direction = CU::Vector3f(0.0f, 1.0f, 0.0f);
 
@@ -456,12 +456,6 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 {
 	PROFILE_FUNCTION(profiler::colors::Green);
 
-// 	const CU::Matrix44f& perspective = camera->GetPerspective();
-// 	const CU::Matrix44f& orientation = camera->GetCurrentOrientation();
-// 	const CU::Matrix44f& view_proj = CU::Math::Inverse(orientation) * perspective;
-	//m_ViewProjection.Bind()
-	//m_RenderContext.GetContext().UpdateConstantBuffer(m_ViewProjBuffer, &view_proj, sizeof(CU::Matrix44f));
-
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 
@@ -471,11 +465,11 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
-	for (s32 j = 0; j < 8; j++)
+	for (s32 j = 0; j < 8; ++j)
 	{
 		const auto& commands = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer, j);
 
-		for (s32 i = 0; i < commands.Size(); i++)
+		for (s32 i = 0; i < commands.Size(); ++i)
 		{
 			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
@@ -490,11 +484,14 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 			model->SetEntityID(command->m_EntityID);
 #endif
 			model->SetOrientation(command->m_Orientation);
-			model->Render(m_RenderContext);
+			Engine::GetInstance()->GetEffect("Shaders/render_depth.json")->Use();
+			model->ShadowRender(m_RenderContext);
 		}
 	}
 
+	Engine::GetInstance()->GetEffect("Shaders/render_depth_instanced.json")->Use();
 	m_InstancingManager.DoInstancing(m_RenderContext, true);
+	Engine::GetInstance()->GetEffect("Shaders/render_depth_instanced.json")->Clear();
 }
 
 void Renderer::Render2DCommands()

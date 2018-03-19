@@ -28,6 +28,7 @@ private:
 
 	Renderer* m_Renderer = nullptr;
 	Effect* m_RenderToDepth = nullptr;
+	Effect* m_RenderToDepthInstanced = nullptr;
 	Texture* m_DepthTexture = nullptr;
 
 

@@ -212,12 +212,11 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 reflection_fresnel = float4(ReflectionFresnel(substance.rgb, normal.xyz, to_eye, 1 - roughnessOffsetted), 1);
 	
 	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
-	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * float4(metalness_albedo.rgb,1) * (  1 - reflection_fresnel);
+	float3 irradiance = CubeMap.SampleLevel(sampler1, normal, nMips).rgb * metalness_albedo.rgb * ( 1 - reflection_fresnel.rgb);// * float4(metalness_albedo.rgb,1) * (  1 - reflection_fresnel);
+	float4 cube_ambient = CubeMap.SampleLevel(sampler1, normal, nMips) * float4(metalness_albedo.rgb,1) * (  1 - reflection_fresnel);
 	
 
-
-
-	float4 ambient = cube_ambient + cube;
+	float4 ambient = float4(irradiance,1) + cube;
 	float albedoLum = 0.3 * albedo.r + 0.6 * albedo.g + albedo.b * 0.1; 
 	float3 albedoTint = albedoLum > 0 ? albedo.rgb / albedoLum : float3(1,1,1); 
 
@@ -227,7 +226,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float4 diffuse = 0;// metalness_albedo * cube_ambient2;
 	float4 spec = 0;
-	float3 light_col = float3(1, 0.2, 0.1);
+	float3 light_col = float3(1, 1.0, 1.0);
 	float light_intensity = 1;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
@@ -236,12 +235,13 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float D = D_GGX(HdotN, roughness );
 	float3 F = Fresnel(NdV, substance.rgb);
-	float G = Geometric_Smith_Schlick_GGX((roughness) / 2, NdV, NdL);
+	float G = Geometric_Smith_Schlick_GGX((1 - roughness) / 2, NdV, NdL);
 	float3 cook = CookTorranceBRDF(D,F,G, NdL, NdV);
 
 
-	float3 directDiffuse = saturate(( 1-F ) * NdL * metalness_albedo * light_col);
-	float3 directSpec = F * D * G * NdL * light_col;
+	float3 directDiffuse = saturate(( 1-F ) * NdL * metalness_albedo * light_col) * light_intensity;
+	float3 directSpec = F * D * G * NdL * light_col * light_intensity;
+
 
 	return float4(saturate(ambient.rgb + directDiffuse + directSpec), 1);
 
@@ -255,7 +255,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	return reflection_fresnel;
 
-	float4 irradiance = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * reflection_fresnel;// * metalness_albedo * (  reflection_fresnel);
+	// float4 irradiance = CubeMap.SampleLevel(sampler1, normal, lysMipMap) * reflection_fresnel;// * metalness_albedo * (  reflection_fresnel);
 
 	float3 kS = Fresnel(NdV, metalness_albedo.rgb);
 	float3 kD = 1 - kS;

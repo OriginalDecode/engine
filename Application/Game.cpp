@@ -34,9 +34,9 @@
 #endif
 static float s_CamSpeed = 50.f;
 
-#define LOAD_LEVEL
+//#define LOAD_LEVEL
 #ifndef LOAD_LEVEL
-#define SUNTEMPEL
+//#define SUNTEMPEL
 #ifdef SUNTEMPEL
 u64 building = 0;
 #else
@@ -80,12 +80,14 @@ void Game::Initiate(const std::string& level)
 	curtain = m_Engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);
 	building = m_Engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
 	pole = m_Engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
+	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(16, 1, 3, CU::Vector3f(-110.f, 0.f, -16.f), 15.f, 0.f, 15.f);
+	m_World.AddDwellers(dwellers);
 #endif
 #endif
 	m_Picker = new CMousePicker;
 
 	m_Camera = m_Engine->GetCamera();
-	m_Camera->SetPosition(CU::Vector3f(256, 10, 256));
+	m_Camera->SetPosition(CU::Vector3f(0, 10, 0));
 	//m_Camera->RotateAroundY(cl::DegreeToRad(45.f));
 	//m_Camera->RotateAroundX(cl::DegreeToRad(20.f));
 	m_Camera->Update(CU::Vector2f(0.f,0.f));

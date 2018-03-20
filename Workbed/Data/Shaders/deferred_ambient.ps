@@ -163,7 +163,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 base_col = float4(albedo.rgb, 1);
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
 	
-	float roughness = depth.y;
+	float roughness = 1 - depth.y;
 	float metalness = depth.z;
 	
 	float roughnessOffsetted = pow(roughness, 8192);
@@ -179,7 +179,7 @@ float4 main(VS_OUTPUT input) : SV_Target
     float4 pixel_pos = getWorldPos(input.uv, 1 - depth.x);
 	float4 to_eye = normalize(camera_position - pixel_pos);
 
-	float3 half_vec = normalize(light_dir + to_eye); // / length(light_dir + viewDir);
+	float3 half_vec = normalize(light_dir - to_eye); // / length(light_dir + viewDir);
 	float HdotN = dot(half_vec, normal);
 	float NdV = dot(normal, to_eye); 
 	float LdV = dot(light_dir, to_eye);
@@ -239,11 +239,13 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float3 directDiffuse = 0, directSpec = 0;
 	
-	if(!in_shadow)
+	//if(!in_shadow)
 	{
 		directDiffuse = saturate(( 1-F ) * NdL * metalness_albedo * light_col) * light_intensity;
 		directSpec = F * D * G * NdL * light_col * light_intensity;
 	}
+
+	//return float4(directSpec,1);
 
 	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1);
 

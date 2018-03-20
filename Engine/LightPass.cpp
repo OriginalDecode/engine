@@ -30,12 +30,12 @@ namespace graphics
 
 
 
-		Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
-		m_Effect[SPOTLIGHT]->AddShaderResource(cubemap, Effect::CUBEMAP);
-		m_Effect[SPOTLIGHT]->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/cube/late/forest.dds"), Effect::REGISTER_11);
+		//Texture* cubemap = Engine::GetInstance()->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
+		//m_Effect[SPOTLIGHT]->AddShaderResource(cubemap, Effect::CUBEMAP);
+		//m_Effect[SPOTLIGHT]->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/cube/late/forest.dds"), Effect::REGISTER_11);
 
-		m_Effect[POINTLIGHT]->AddShaderResource(cubemap, Effect::CUBEMAP);
-		m_Effect[POINTLIGHT]->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/cube/late/forest.dds"), Effect::REGISTER_11);
+		//m_Effect[POINTLIGHT]->AddShaderResource(cubemap, Effect::CUBEMAP);
+		//m_Effect[POINTLIGHT]->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/cube/late/forest.dds"), Effect::REGISTER_11);
 	}
 
 	LightPass::~LightPass()

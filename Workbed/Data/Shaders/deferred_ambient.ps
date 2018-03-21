@@ -147,6 +147,26 @@ float SchlickFresnel(float u)
 	return m2*m2*m;
 }
 
+float2 poissonDisk[16] = { 
+   float2( -0.94201624, -0.39906216 ), 
+   float2( 0.94558609, -0.76890725 ), 
+   float2( -0.094184101, -0.92938870 ), 
+   float2( 0.34495938, 0.29387760 ), 
+   float2( -0.91588581, 0.45771432 ), 
+   float2( -0.81544232, -0.87912464 ), 
+   float2( -0.38277543, 0.27676845 ), 
+   float2( 0.97484398, 0.75648379 ), 
+   float2( 0.44323325, -0.97511554 ), 
+   float2( 0.53742981, -0.47373420 ), 
+   float2( -0.26496911, -0.41893023 ), 
+   float2( 0.79197514, 0.19090188 ), 
+   float2( -0.24188840, 0.99706507 ), 
+   float2( -0.81409955, 0.91437590 ), 
+   float2( 0.19984126, 0.78641367 ), 
+   float2( 0.14383161, -0.14100790 ) 
+};
+
+
 float4 main(VS_OUTPUT input) : SV_Target
 {
 	float4 camera_position = camPos; //View._m30_m31_m32_m33;
@@ -202,10 +222,19 @@ float4 main(VS_OUTPUT input) : SV_Target
 	shadowVec.xy += 1;
 	shadowVec.xy *= 0.5;
 
-
 	float compareValue = shadowVec.z;
-	float sampleValue = ShadowTexture.Sample(sampler0, shadowVec.xy).r;
 
+ 	float visibility = 1; 
+	for(int i = 0; i < 4; i++)
+	{
+		int index = i;
+		visibility -= 0.1 * (1 - ShadowTexture.Sample(sampler0, shadowVec.xy + poissonDisk[index] / 700 ).r);
+	}
+
+	float sampleValue =  ShadowTexture.Sample(sampler0, shadowVec.xy);
+
+
+	// visibility -= 0.2*( 1.0 - texture( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/700.0,  (ShadowCoord.z-bias)/ShadowCoord.w) ));
 
 	const bool in_view = (shadowVec.x < 0 || shadowVec.x > 1 || shadowVec.y > 1 || shadowVec.y < 0);
 	const bool in_shadow = (sampleValue < compareValue); 
@@ -239,17 +268,16 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float3 directDiffuse = 0, directSpec = 0;
 	
-	//if(!in_shadow)
-	{
+	 if(!in_shadow)
+	{	
 		directDiffuse = saturate(( 1-F ) * NdL * metalness_albedo * light_col) * light_intensity;
 		directSpec = F * D * G * NdL * light_col * light_intensity;
 	}
-
 	//return float4(directSpec,1);
 
-	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1);
+	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1) ;
 
-	return final.rgba;
+	return final * visibility;
 
 
 

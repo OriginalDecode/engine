@@ -314,6 +314,7 @@
     <ClInclude Include="BaseAllocator.h" />
     <ClInclude Include="BaseModel.h" />
     <ClInclude Include="BloomPass.h" />
+    <ClInclude Include="BlurPass.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CommandAllocator.h" />
     <ClInclude Include="Components.h" />
@@ -443,6 +444,7 @@
     <ClCompile Include="BaseAllocator.cpp" />
     <ClCompile Include="BaseModel.cpp" />
     <ClCompile Include="BloomPass.cpp" />
+    <ClCompile Include="BlurPass.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommandAllocator.cpp" />
     <ClCompile Include="Console.cpp" />

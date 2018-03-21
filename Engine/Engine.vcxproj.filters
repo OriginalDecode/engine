@@ -462,6 +462,7 @@
     <ClInclude Include="QuadTreeNode.h" />
     <ClInclude Include="SSRPass.h" />
     <ClInclude Include="IPostprocessPass.h" />
+    <ClInclude Include="BlurPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -756,5 +757,6 @@
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="QuadTreeNode.cpp" />
     <ClCompile Include="SSRPass.cpp" />
+    <ClCompile Include="BlurPass.cpp" />
   </ItemGroup>
 </Project>

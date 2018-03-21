@@ -53,7 +53,7 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	float roughness = 1; //RoughnessTexture.Sample(sampler0, input.uv).r;
 	output.Normal = float4(normal.rgb, 0);//NormalTexture.Sample(sampler0, input.uv) ;
 	output.Normal.w = 0;
-	output.Depth = float4(input.pos.z, roughness, 0, 0);
+	output.Depth = float4( 1 - input.pos.z, roughness, 0, 0);
 	output.Emissive = float4(1,1,1,1);
 
 	return output;//AlbedoTexture.Sample(sampler0, input.uv);

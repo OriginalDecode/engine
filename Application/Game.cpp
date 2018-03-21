@@ -65,6 +65,7 @@ void Game::Initiate(const std::string& level)
 
 	//m_Player = new Player;
 	//m_World.AddDweller(m_Player->Initiate());
+	//LevelFactory::CreateTerrain("Data/Textures/terrain/britannia.tga");
 
 #ifdef LOAD_LEVEL
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);

@@ -125,6 +125,7 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& shadow_mvp, const CU:
 	ctx.PSSetConstantBuffer(1, 1, &m_ConstantBuffer);
 	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_CLAMP);
 	ctx.PSSetSamplerState(1, 1, graphics::CUBEMAP);
+	ctx.PSSetSamplerState(2, 1, graphics::BILINEAR);
 
 	ctx.SetRasterizerState(render_context.GetAPI().GetRasterizerState(graphics::CULL_NONE));
 	m_RenderQuad->Render();

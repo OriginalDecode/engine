@@ -31,9 +31,9 @@
 Inspector::Inspector()
 	: m_Manager(Engine::GetInstance()->GetEntityManager())
 {
-	m_Views.push_back(new TransformView(m_Manager));
-	m_Views.push_back(new GraphicsView(m_Manager));
-	m_Views.push_back(new PhysicsView(m_Manager));
+	m_Views.emplace_back(new TransformView(m_Manager));
+	m_Views.emplace_back(new GraphicsView(m_Manager));
+	m_Views.emplace_back(new PhysicsView(m_Manager));
 }
 
 

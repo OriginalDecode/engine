@@ -11,8 +11,16 @@ void ShadowDirectional::Initiate(float buffer_size)
 	//m_Camera->SetPosition({ 55, 90, 55});
 	m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
 
+	TextureDesc desc;
+	desc.m_Width = buffer_size;
+	desc.m_Height = buffer_size;
+	desc.m_Usage = graphics::DEFAULT_USAGE;
+	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
+	desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
+	desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
+	desc.m_TextureFormat = graphics::RGBA16_FLOAT;
 	m_ShadowDepth = new Texture;
-	m_ShadowDepth->InitiateAsRenderTarget(buffer_size, buffer_size, "DirectionalShadows : RTV");
+	m_ShadowDepth->Initiate(desc, "DirectionalShadows : RTV");
 
 	m_ShadowDepthStencil = new Texture;
 	m_ShadowDepthStencil->InitiateAsDepthStencil(buffer_size, buffer_size, "DirectionalShadows : DSV");
@@ -23,7 +31,7 @@ void ShadowDirectional::Initiate(float buffer_size)
 	m_ConstBuffer.RegisterVariable(&m_Camera->GetViewProjection());
 	m_ConstBuffer.Initiate("directional_shadow");
 
-	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_ShadowDepthStencil->GetShaderView(), Effect::SHADOWMAP);
+	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_ShadowDepth->GetShaderView(), Effect::SHADOWMAP);
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)

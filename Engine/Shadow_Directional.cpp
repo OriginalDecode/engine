@@ -6,10 +6,10 @@
 void ShadowDirectional::Initiate(float buffer_size)
 {
 	m_Camera = new Camera;
-	m_Camera->CreateOrthographicProjection(256, 256, 1.0f, 100.f);
+	m_Camera->CreateOrthographicProjection(buffer_size, buffer_size, 0.1f, 100.f);
 
 	//m_Camera->SetPosition({ 55, 90, 55});
-	m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
+	//m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
 
 	TextureDesc desc;
 	desc.m_Width = buffer_size;
@@ -75,7 +75,7 @@ void ShadowDirectional::Update()
 {
 #ifdef _DEBUG
 	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
-	m_Camera->SetPosition(pDebug->m_CamPos);
+	//m_Camera->SetPosition(pDebug->m_CamPos);
 	m_Camera->SetRotationX(cl::DegreeToRad(pDebug->m_CamRot[0]));
 	m_Camera->SetRotationY(cl::DegreeToRad(pDebug->m_CamRot[1]));
 	m_Camera->SetRotationZ(cl::DegreeToRad(pDebug->m_CamRot[2]));

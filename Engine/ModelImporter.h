@@ -662,16 +662,17 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 
 	//void AddElement(semantic, vertexformat, slot, offset, instanced , semantic_index )
 
- /*	graphics::SInputLayout _layout;
- 	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA,	 1, sizeof(float4), true, 0);
- 	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA,	 1, sizeof(float4), true, 1);
- 	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA,	 1, sizeof(float4), true, 2);
-	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA,	 1, sizeof(float4), true, 3);
- 	_layout.AddElement("DATA",		graphics::_16BYTE_RGBA,	 1, sizeof(float4), true, 0);
-	_layout.AddElement("ID",		graphics::_4BYTE_R_UINT, 1, sizeof(u32),	true, 0);
-	_layout.AddElement("HOVER",		graphics::_4BYTE_R_UINT, 1, sizeof(u32),	true, 0);
+ 	graphics::SInputLayout _layout;
+	_layout.m_Elements = element;
+	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA, 1, true, 0);
+	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA, 1, true, 1);
+	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA, 1, true, 2);
+	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA, 1, true, 3);
+	_layout.AddElement("DATA",		graphics::_16BYTE_RGBA, 1, true, 0);
+	_layout.AddElement("ID",		graphics::_4BYTE_R_UINT, 1, true, 0);
+	_layout.AddElement("HOVER",		graphics::_4BYTE_R_UINT, 1, true, 0);
 
- 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), _layout);*/
+ 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), _layout);
 
 
 
@@ -679,28 +680,26 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 		Here we should create the shader inputs
 	*/
 
-
-	u32 offset = 0;
- 
- 	graphics::InputElementDesc instance[] = {
- 		{ "INSTANCE", 0, graphics::_16BYTE_RGBA, 1, 0, graphics::INPUT_PER_INSTANCE_DATA, 1 },
- 		{ "INSTANCE", 1, graphics::_16BYTE_RGBA, 1, 16, graphics::INPUT_PER_INSTANCE_DATA, 1 },
- 		{ "INSTANCE", 2, graphics::_16BYTE_RGBA, 1, 32, graphics::INPUT_PER_INSTANCE_DATA, 1 },
- 		{ "INSTANCE", 3, graphics::_16BYTE_RGBA, 1, 48, graphics::INPUT_PER_INSTANCE_DATA, 1 },
- 		{ "DATA" , 0, graphics::_16BYTE_RGBA, 1, 64, graphics::INPUT_PER_INSTANCE_DATA, 1 },
- 		{ "ID" , 0, graphics::_4BYTE_R_UINT, 1, 80, graphics::INPUT_PER_INSTANCE_DATA, 1 },
- 		{ "HOVER" , 0, graphics::_4BYTE_R_UINT, 1, 84, graphics::INPUT_PER_INSTANCE_DATA, 1 },
- 	};
- 
- 	element.Add(instance[0]);
- 	element.Add(instance[1]);
- 	element.Add(instance[2]);
- 	element.Add(instance[3]);
- 	element.Add(instance[4]);
- 	element.Add(instance[5]);
- 	element.Add(instance[6]);
- 
- 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
+// 
+// 	graphics::InputElementDesc instance[] = {
+// 		{ "INSTANCE", 0, graphics::_16BYTE_RGBA, 1, 0, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+// 		{ "INSTANCE", 1, graphics::_16BYTE_RGBA, 1, 16, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+// 		{ "INSTANCE", 2, graphics::_16BYTE_RGBA, 1, 32, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+// 		{ "INSTANCE", 3, graphics::_16BYTE_RGBA, 1, 48, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+// 		{ "DATA" , 0, graphics::_16BYTE_RGBA, 1, 64, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+// 		{ "ID" , 0, graphics::_4BYTE_R_UINT, 1, 80, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+// 		{ "HOVER" , 0, graphics::_4BYTE_R_UINT, 1, 84, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+// 	};
+// 
+// 	element.Add(instance[0]);
+// 	element.Add(instance[1]);
+// 	element.Add(instance[2]);
+// 	element.Add(instance[3]);
+// 	element.Add(instance[4]);
+// 	element.Add(instance[5]);
+// 	element.Add(instance[6]);
+//  
+//  	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
 
 
 	ins.SetBuffer(buffer);

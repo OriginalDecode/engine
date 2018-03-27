@@ -111,6 +111,9 @@ namespace graphics
 		_16BYTE_RGBA,
 	};
 
+
+
+
 	enum eUsage
 	{
 		DEFAULT_USAGE = 0,
@@ -212,15 +215,39 @@ namespace graphics
 
 	struct SInputLayout
 	{
-		void AddElement(const char* semantic, eVertexFormat format, u32 slot, u32 offset, bool instanced = false, u32 semantic_index = 0)
-		{
 
-			if (instanced)
-				m_Elements.Add(InputElementDesc(semantic, semantic_index, format, slot, m_Offset, INPUT_PER_INSTANCE_DATA, 1));
-			else
-				m_Elements.Add(InputElementDesc(semantic, semantic_index, format, slot, m_Offset, INPUT_PER_VERTEX_DATA, 0));
-			m_Offset += offset;
+		u32 GetByteSizeOfFormat(eVertexFormat format)
+		{
+			switch (format)
+			{
+			case _4BYTE_R_UINT:
+			case _4BYTE_R_FLOAT:
+				return 4;
+			case _8BYTE_RG:
+				return 8;
+			case _12BYTE_RGB:
+				return 12;
+			case _16BYTE_RGBA:
+				return 16;
+			}
+
+			return 0;
 		}
+
+		void AddElement(const char* semantic, eVertexFormat format, u32 slot, bool instanced = false, u32 semantic_index = 0)
+		{
+			eElementSpecification spec = instanced ? INPUT_PER_INSTANCE_DATA : INPUT_PER_VERTEX_DATA;
+			u32 instance_step_rate = instanced ? 1 : 0;
+			m_Elements.Add(InputElementDesc(semantic, semantic_index, format, slot, m_Offset, spec, instance_step_rate));
+			m_Offset += GetByteSizeOfFormat(format);
+		}
+
+		void AddElement(const InputElementDesc& obj)
+		{
+			m_Elements.Add(obj);
+		}
+
+
 		size_t m_Offset = 0;
 		CU::GrowingArray<InputElementDesc> m_Elements;
 

@@ -10,6 +10,6 @@ struct VS_OUTPUT
 
 float4 main(VS_OUTPUT input) : SV_Target
 {
-	float z = input.pos.z;
+	float z = 1  - input.pos.z;
 	return z.xxxx;
 }

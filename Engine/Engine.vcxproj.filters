@@ -463,6 +463,7 @@
     <ClInclude Include="SSRPass.h" />
     <ClInclude Include="IPostprocessPass.h" />
     <ClInclude Include="BlurPass.h" />
+    <ClInclude Include="shader_types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">

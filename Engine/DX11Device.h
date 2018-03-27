@@ -28,7 +28,9 @@ namespace graphics
 		IShaderResourceView* CreateShaderResource(ITexture2D* pTexture, const std::string& debug_name) override;
 		IDepthStencilView* CreateDepthStencilView(const Texture2DDesc& desc, ITexture2D* pTexture, const std::string& debug_name) override;
 
-		IInputLayout* CreateInputLayout(CompiledShader* pShader, InputElementDesc* pLayout, const s32 element_count) override;
+		IInputLayout* CreateInputLayout(CompiledShader* pShader, const InputElementDesc* const pLayout, const s32 element_count) override;
+		IInputLayout* CreateInputLayout(CompiledShader* vertex_shader, const SInputLayout& layout) override;
+
 		IBuffer* CreateBuffer(const BufferDesc& buffer_desc, const std::string& debug_name) override;
 			
 		IBuffer* CreateConstantBuffer(s32 size, const std::string& debug_name) override;

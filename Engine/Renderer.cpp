@@ -39,6 +39,9 @@
 #include <Engine/TerrainSystem.h>
 #include <Engine/Quad.h>
 
+#include "shader_types.h"
+
+
 Renderer::Renderer(Synchronizer* synchronizer)
 	: m_Synchronizer(synchronizer)
 	, m_Camera(Engine::GetInstance()->GetCamera())
@@ -79,6 +82,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Direction = CU::Vector3f(0.0f, 1.0f, 0.0f);
 
 	myPointLight = new PointLight();
+
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 

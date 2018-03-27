@@ -20,10 +20,11 @@
 #include <Engine/Effect.h>
 
 
+#include <Engine/IGraphicsAPI.h>
 #include <Engine/IGraphicsDevice.h>
 #include <Engine/IGraphicsContext.h>
-#include <Engine/IGraphicsAPI.h>
 #include <CommonLib/Threadpool.h>
+#include "shader_types.h"
 class Engine;
 class aiNode;
 class aiMesh;
@@ -640,25 +641,67 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 	CU::GrowingArray<graphics::InputElementDesc> element;
 	SetupInputLayout(data, element);
 	//Reflect build input layout and compare the self made one from the model?
-	graphics::InputElementDesc instance[] = {
-		{ "INSTANCE", 0, graphics::_16BYTE_RGBA, 1, 0, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-		{ "INSTANCE", 1, graphics::_16BYTE_RGBA, 1, 16, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-		{ "INSTANCE", 2, graphics::_16BYTE_RGBA, 1, 32, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-		{ "INSTANCE", 3, graphics::_16BYTE_RGBA, 1, 48, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-		{ "DATA" , 0, graphics::_16BYTE_RGBA, 1, 64, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-		{ "ID" , 0, graphics::_4BYTE_R_UINT, 1, 80, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-		{ "HOVER" , 0, graphics::_4BYTE_R_UINT, 1, 84, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+	// This should definitively create the vertex thing
+
+
+	/*	
+		This is standard for vertex shader and could be a thing to just include as a const and it could be changed based on what content
+	*/
+	/*const char* per_frame[] = {
+		"cbuffer per_frame : register( b0 )\n",
+		"{\n",
+		"	row_major float4x4 camera_view_x_proj;\n",
+		"};\n"
 	};
 
-	element.Add(instance[0]);
-	element.Add(instance[1]);
-	element.Add(instance[2]);
-	element.Add(instance[3]);
-	element.Add(instance[4]);
-	element.Add(instance[5]);
-	element.Add(instance[6]);
 
-	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
+	const char* input_layout[] = {
+		"struct vs_input\n",
+		"{\n",
+	};*/
+
+	//void AddElement(semantic, vertexformat, slot, offset, instanced , semantic_index )
+
+ /*	graphics::SInputLayout _layout;
+ 	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA,	 1, sizeof(float4), true, 0);
+ 	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA,	 1, sizeof(float4), true, 1);
+ 	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA,	 1, sizeof(float4), true, 2);
+	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA,	 1, sizeof(float4), true, 3);
+ 	_layout.AddElement("DATA",		graphics::_16BYTE_RGBA,	 1, sizeof(float4), true, 0);
+	_layout.AddElement("ID",		graphics::_4BYTE_R_UINT, 1, sizeof(u32),	true, 0);
+	_layout.AddElement("HOVER",		graphics::_4BYTE_R_UINT, 1, sizeof(u32),	true, 0);
+
+ 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), _layout);*/
+
+
+
+	/*
+		Here we should create the shader inputs
+	*/
+
+
+	u32 offset = 0;
+ 
+ 	graphics::InputElementDesc instance[] = {
+ 		{ "INSTANCE", 0, graphics::_16BYTE_RGBA, 1, 0, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+ 		{ "INSTANCE", 1, graphics::_16BYTE_RGBA, 1, 16, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+ 		{ "INSTANCE", 2, graphics::_16BYTE_RGBA, 1, 32, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+ 		{ "INSTANCE", 3, graphics::_16BYTE_RGBA, 1, 48, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+ 		{ "DATA" , 0, graphics::_16BYTE_RGBA, 1, 64, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+ 		{ "ID" , 0, graphics::_4BYTE_R_UINT, 1, 80, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+ 		{ "HOVER" , 0, graphics::_4BYTE_R_UINT, 1, 84, graphics::INPUT_PER_INSTANCE_DATA, 1 },
+ 	};
+ 
+ 	element.Add(instance[0]);
+ 	element.Add(instance[1]);
+ 	element.Add(instance[2]);
+ 	element.Add(instance[3]);
+ 	element.Add(instance[4]);
+ 	element.Add(instance[5]);
+ 	element.Add(instance[6]);
+ 
+ 	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
+
 
 	ins.SetBuffer(buffer);
 	ins.SetInputLayout(layout);

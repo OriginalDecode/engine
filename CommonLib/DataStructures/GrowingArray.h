@@ -69,6 +69,7 @@ namespace CommonUtilities
 		SizeType mySize = 0;
 	};
 
+
 	template<typename ObjectType, typename SizeType /*= int*/>
 	const bool CommonUtilities::GrowingArray<ObjectType, SizeType>::Find(const ObjectType& obj) const
 	{

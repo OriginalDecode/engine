@@ -209,6 +209,23 @@ namespace graphics
 		u32 m_InstanceDataStepRate = 0;
 	};
 
+
+	struct SInputLayout
+	{
+		void AddElement(const char* semantic, eVertexFormat format, u32 slot, u32 offset, bool instanced = false, u32 semantic_index = 0)
+		{
+
+			if (instanced)
+				m_Elements.Add(InputElementDesc(semantic, semantic_index, format, slot, m_Offset, INPUT_PER_INSTANCE_DATA, 1));
+			else
+				m_Elements.Add(InputElementDesc(semantic, semantic_index, format, slot, m_Offset, INPUT_PER_VERTEX_DATA, 0));
+			m_Offset += offset;
+		}
+		size_t m_Offset = 0;
+		CU::GrowingArray<InputElementDesc> m_Elements;
+
+	};
+
 	struct BufferDesc
 	{
 		eBindFlag m_BindFlag;

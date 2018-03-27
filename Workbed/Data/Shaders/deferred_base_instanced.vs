@@ -39,10 +39,6 @@ struct VS_OUTPUT
 SamplerState sampler0 : register(s0);
 Texture2D HeightTexture : register (t7);
 
-
-//---------------------------------
-//	Deferred Base Vertex Shader
-//---------------------------------
 VS_OUTPUT main(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;

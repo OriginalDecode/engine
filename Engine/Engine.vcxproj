@@ -348,6 +348,7 @@
     <ClInclude Include="PhysicsView.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="QuadTreeNode.h" />
+    <ClInclude Include="shader_types.h" />
     <ClInclude Include="SSRPass.h" />
     <ClInclude Include="TerrainSystem.h" />
     <ClInclude Include="TransformView.h" />

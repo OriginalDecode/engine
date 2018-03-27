@@ -350,7 +350,7 @@ namespace graphics
 		return static_cast<IDepthStencilView*>(dsv);
 	}
 
-	IInputLayout* DX11Device::CreateInputLayout(CompiledShader* pShader, InputElementDesc* pLayout, const s32 element_count)
+	IInputLayout* DX11Device::CreateInputLayout(CompiledShader* pShader, const InputElementDesc* const pLayout, const s32 element_count)
 	{
 		D3D11_INPUT_ELEMENT_DESC *desc = new D3D11_INPUT_ELEMENT_DESC[element_count];
 		for (s32 i = 0; i < element_count; i++)
@@ -384,6 +384,11 @@ namespace graphics
 #endif
 		delete desc;
 		return layout;
+	}
+
+	IInputLayout* DX11Device::CreateInputLayout(CompiledShader* vertex_shader, const SInputLayout& layout)
+	{
+		return CreateInputLayout(vertex_shader, &layout.m_Elements[0], layout.m_Elements.Size());
 	}
 
 	IBuffer* DX11Device::CreateBuffer(const BufferDesc& buffer_desc, const std::string& debug_name)

@@ -647,6 +647,39 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 	/*	
 		This is standard for vertex shader and could be a thing to just include as a const and it could be changed based on what content
 	*/
+
+
+	/*
+		if I were to write a shader strictly in cpp how would I write it?
+
+		Shader->AddBuffer(cbuffer_struct);
+	
+		void Shader::AddBuffer(cbuffer_struct) 
+		{
+			m_BufferCount;
+			const char _buffer[] = R"Buffer(
+
+				//Here we would have to break things down
+
+
+			)Buffer";
+			
+
+		}
+	
+	*/
+
+
+	const char per_frame[] = R"per_frame(
+		
+		cbuffer per_frame : register ( b0 );
+		{
+			row_major float4x4 camera_view_x_proj;
+		};		
+	
+
+	)per_frame";
+
 	/*const char* per_frame[] = {
 		"cbuffer per_frame : register( b0 )\n",
 		"{\n",
@@ -673,34 +706,6 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 	_layout.AddElement("HOVER",		graphics::_4BYTE_R_UINT, 1, true, 0);
 
  	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), _layout);
-
-
-
-	/*
-		Here we should create the shader inputs
-	*/
-
-// 
-// 	graphics::InputElementDesc instance[] = {
-// 		{ "INSTANCE", 0, graphics::_16BYTE_RGBA, 1, 0, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-// 		{ "INSTANCE", 1, graphics::_16BYTE_RGBA, 1, 16, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-// 		{ "INSTANCE", 2, graphics::_16BYTE_RGBA, 1, 32, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-// 		{ "INSTANCE", 3, graphics::_16BYTE_RGBA, 1, 48, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-// 		{ "DATA" , 0, graphics::_16BYTE_RGBA, 1, 64, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-// 		{ "ID" , 0, graphics::_4BYTE_R_UINT, 1, 80, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-// 		{ "HOVER" , 0, graphics::_4BYTE_R_UINT, 1, 84, graphics::INPUT_PER_INSTANCE_DATA, 1 },
-// 	};
-// 
-// 	element.Add(instance[0]);
-// 	element.Add(instance[1]);
-// 	element.Add(instance[2]);
-// 	element.Add(instance[3]);
-// 	element.Add(instance[4]);
-// 	element.Add(instance[5]);
-// 	element.Add(instance[6]);
-//  
-//  	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), &element[0], element.Size());
-
 
 	ins.SetBuffer(buffer);
 	ins.SetInputLayout(layout);

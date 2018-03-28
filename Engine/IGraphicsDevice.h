@@ -35,6 +35,10 @@ namespace graphics
 		virtual IBuffer* CreateBuffer(const BufferDesc& buffer_desc, const std::string& debug_name) = 0;
 
 		virtual IBuffer* CreateConstantBuffer(s32 size, const std::string& debug_name) = 0;
+
+
+
+		//virtual IShaderBlob* ConstructAndCompileShader(SInputLayout* inputlayout);
 		virtual IShaderBlob* CompileShaderFromFile(const std::string& filepath, const char* entrypoint, const char* shader_type) = 0;
 		virtual IShaderBlob* CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const std::string& source_name, const char* entrypoint, const char* shader_type) = 0;
 

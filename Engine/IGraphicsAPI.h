@@ -247,7 +247,6 @@ namespace graphics
 			m_Elements.Add(obj);
 		}
 
-
 		size_t m_Offset = 0;
 		CU::GrowingArray<InputElementDesc> m_Elements;
 

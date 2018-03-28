@@ -13,37 +13,25 @@ CModelImporter::CModelImporter()
 void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelData& data, std::string file)
 {
 	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-	for ( u32 i = 0; i < material->mNumProperties; i++ )
+	for (u32 i = 0; i < material->mNumProperties; i++)
 	{
 		aiMaterialProperty* prop = material->mProperties[i];
 		u32 type = prop->mSemantic;
-		aiString str;
-		material->GetTexture(static_cast< aiTextureType >( type ), 0, &str);
-		std::string path = cl::substr(file, "/", true, 0);
+		aiString texture_file;
+		material->GetTexture(static_cast<aiTextureType>(type), 0, &texture_file);
 
-		std::string fileName = cl::substr(str.C_Str(), "\\", false, 0);
-		if ( fileName.empty() )
-			fileName = cl::substr(str.C_Str(), "/", false, 0);
-		if ( cl::substr(str.C_Str(), "\\") )
+		assert(texture_file.length >= 0 && "Extracted a material with a string that was less than 0, data corruption?");
+		if (texture_file.length > 0)
 		{
-			fileName.erase(0, 1);
-		}
-		path += "/";
-		path += fileName;
 
+			std::string texture_info(texture_file.C_Str());
+			const size_t pos = texture_info.rfind("\\");
+			texture_info = texture_info.substr(pos + 1);
 
-		if (fileName.find("curtain") != fileName.npos || fileName.find("Curtain") != fileName.npos)
-		{
-			int apa;
-			apa = 5;
-		}
-
-		if ( fileName != "" )
-		{
 			TextureInfo newInfo;
-			newInfo.m_File = fileName;
-			aiTextureType lType = static_cast< aiTextureType >( type );
-			switch ( lType )
+			newInfo.m_File = texture_info;
+			aiTextureType lType = static_cast<aiTextureType>(type);
+			switch (lType)
 			{
 				case aiTextureType_DIFFUSE:
 				{
@@ -112,16 +100,16 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelD
 
 
 			const CU::GrowingArray<TextureInfo> texInfo = data.myTextures;
-			for ( const TextureInfo& info : texInfo )
+			for (const TextureInfo& info : texInfo)
 			{
-				if ( info.m_File == newInfo.m_File )
+				if (info.m_File == newInfo.m_File)
 				{
 					_found = true;
 					break;
 				}
 			}
 
-			if (_found == false )
+			if (_found == false)
 			{
 				data.myTextures.Add(newInfo);
 			}

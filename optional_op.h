@@ -1,85 +1,143 @@
 
-// #include <iostream>
-// #include <new>
+#include <iostream>
+#include <new>
 
-// #include <map>
-
-
-// struct memory_data
-// {
-// 	memory_data(void* p, const char* f, size_t l)
-// 		: pointer(p)
-// 		, file(f)
-// 		, line(l)
-// 	{
-// 	}
-// 	void* pointer;
-// 	const char* file;
-// 	size_t line;
-// };
-
-// static std::map<void*, memory_data> g_Memory;
-
-// static int allocations = 0;
-// void record_alloc(void* p, const char* file, size_t line)
-// {
-// 	char temp[100];
-
-// //	g_Memory.insert(std::make_pair(p, memory_data(p, file, line)));
+#include <map>
 
 
-// 	 sprintf_s(temp, "\nAllocation\n%x\n%s\n%ld\n", p, file, line);
-// 	// OutputDebugString(temp);
-// }
+struct memory_data
+{
+	memory_data() = default;
+	memory_data(void* p, const char* f, size_t l, size_t s)
+		: pointer(p)
+		, file(f)
+		, line(l)
+		, size(s)
+	{
+	}
+	void* pointer;
+	const char* file;
+	size_t line;
+	size_t size;
+};
 
-// void unrecord_alloc(void* p)
-// {
-// 	//auto& it = g_Memory.find(p);
-// 	//g_Memory.erase(it);
 
-// 	 char temp[100];
-// 	 sprintf_s(temp , "\nDealloc\n%x\n", p);
-// 	// OutputDebugString(temp);
-// }
+template<typename T>
+struct track_alloc : std::allocator<T>
+{
+	typedef typename std::allocator<T>::pointer pointer;
+	typedef typename std::allocator<T>::size_type size_type;
+
+	template<typename U>
+	struct rebind
+	{
+		typedef track_alloc<U> other;
+	};
+
+	track_alloc()
+	{
+	}
+
+	template<typename U>
+	track_alloc(track_alloc<U> const& u)
+		:std::allocator<T>(u)
+	{
+	}
+
+	pointer allocate(size_type size, std::allocator<void>::const_pointer = 0)
+	{
+		void* p = malloc(size * sizeof(T));
+		if (p == 0)
+			throw std::bad_alloc();
+
+		return static_cast<pointer>(p);
+	}
+
+	void deallocate(pointer p, size_type)
+	{
+		free(p);
+	}
+};
 
 
-// char* __file__ = "unknown";
-// size_t __line__ = 0;
+typedef std::map< void*, memory_data, std::less<void*>, track_alloc<std::pair<void* const, size_t> > > track_type;
 
-// void* operator new(size_t n)
-// {
-// 	allocations++;
-// 	void * p = malloc(n);
-// 	record_alloc(p, __file__, __line__);
-// 	__file__ = "unknown";
-// 	__line__ = 0;
 
-// 	return p;
-// }
+struct track_printer
+{
+	track_type* track;
+	track_printer(track_type* track)
+		:track(track)
+	{
+	}
 
-// void* operator new[](size_t n)
-// {
-// 	allocations++;
-// 	void * p = malloc(n);
-// 	record_alloc(p, __file__, __line__);
-// 	__file__ = "unknown";
-// 	__line__ = 0;
+	~track_printer()
+	{
+		track_type::const_iterator it = track->begin();
+		std::ofstream leak_track("leaks.txt", std::ios_base::trunc);
+		while (it != track->end())
+		{
+			std::string file(it->second.file);
 
-// 	return p;
-// }
 
-// void operator delete(void* p)
-// {
-// 	allocations--;
-// 	unrecord_alloc(p);
-// 	free(p);
-// }
+			if (!file.empty())
+			{
+				size_t pos = file.rfind('/');
+				file = file.substr(pos + 1);
+			}
+			leak_track << "Leak at " << it->first << " size: " << it->second.size << " file: " << file << " line: " << it->second.line << "\n";
+			leak_track.flush();
 
-// void operator delete[](void* p)
-// {
-// 	allocations--;
-// 	unrecord_alloc(p);
-// 	free(p);
-// }
+			//std::cerr << "TRACK: leaked at " << it->first << ", " << it->second.size << " bytes\n"; 
+			++it;
+		}
+		leak_track.close();
+	}
+};
 
-// #define new (__file__=__FILE__,__line__=__LINE__) && 0 ? NULL : new
+track_type * get_map()
+{
+	// don't use normal new to avoid infinite recursion.
+	static track_type* track = new (malloc(sizeof *track)) track_type;
+	static track_printer printer(track);
+	return track;
+}
+
+char* __file__ = "unknown";
+size_t __line__ = 0;
+
+void* operator new(size_t n)
+{
+	void * p = malloc(n);
+	(*get_map())[p] = memory_data(p, __file__, __line__, n);
+	__file__ = "unknown";
+	__line__ = 0;
+
+
+
+	return p;
+}
+
+void* operator new[](size_t n)
+{
+	void * p = malloc(n);
+	(*get_map())[p] = memory_data(p, __file__, __line__, n);
+	__file__ = "unknown";
+	__line__ = 0;
+
+	return p;
+}
+
+void operator delete(void* p)
+{
+	(*get_map()).erase(p);
+	free(p);
+}
+
+void operator delete[](void* p)
+{
+	(*get_map()).erase(p);
+	free(p);
+}
+
+#define new (__file__=__FILE__,__line__=__LINE__) && 0 ? NULL : new

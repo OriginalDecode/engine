@@ -19,7 +19,7 @@
 #endif
 
 #include <string>
-
+#include "optional_op.h"
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 enum ERawInputType
@@ -40,10 +40,9 @@ enum class EUsagePage
 	CONSUMER_AUDIO_CONTROL = 0x0C
 };
 
-Application* application = nullptr;
+Application* application = new Application;
 static bool s_WindowActive = false;
 static bool s_AppRunning = true;
-
 Engine* engine = nullptr;
  
 int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
@@ -60,7 +59,6 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	float w = 1920;
 	float h = 1080;
-	application = new Application;
 
 	Engine::Create();
 	
@@ -72,6 +70,7 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	engine->GetVFS().Register("Data/Model", "Models");
 
 	engine->Initiate(w, h, anInstance, WindowProc);
+
 	DL_ASSERT_EXP(application->Initiate(), "Failed to initiate game");
 
 	s_WindowActive = true;
@@ -158,7 +157,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			if (EventManager::GetInstance())
 				EventManager::GetInstance()->SendMessage(EngineEvents_OnInactive);
 			//g_windowactive = false;
-			application->OnInactive();
+			//application->OnInactive();
 			//ShowCursor(!g_windowactive);
 		}
 		else
@@ -166,7 +165,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			if(EventManager::GetInstance())
 				EventManager::GetInstance()->SendMessage(EngineEvents_OnActive);
 			//g_windowactive = true;
-			application->OnActive();
+			//application->OnActive();
 			//ShowCursor(!g_windowactive);
 		}
 	}break;

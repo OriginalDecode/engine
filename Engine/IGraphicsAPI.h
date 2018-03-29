@@ -238,7 +238,9 @@ namespace graphics
 		{
 			eElementSpecification spec = instanced ? INPUT_PER_INSTANCE_DATA : INPUT_PER_VERTEX_DATA;
 			u32 instance_step_rate = instanced ? 1 : 0;
+
 			m_Elements.Add(InputElementDesc(semantic, semantic_index, format, slot, m_Offset, spec, instance_step_rate));
+
 			m_Offset += GetByteSizeOfFormat(format);
 		}
 

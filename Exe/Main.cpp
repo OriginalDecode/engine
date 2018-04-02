@@ -1,3 +1,6 @@
+#ifndef _FINAL
+#include "optional_op.h"
+#endif
 
 #include <DL_Debug/DL_Debug.h>
 
@@ -19,7 +22,6 @@
 #endif
 
 #include <string>
-#include "optional_op.h"
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 enum ERawInputType
@@ -40,7 +42,7 @@ enum class EUsagePage
 	CONSUMER_AUDIO_CONTROL = 0x0C
 };
 
-Application* application = new Application;
+Application* application = nullptr;
 static bool s_WindowActive = false;
 static bool s_AppRunning = true;
 Engine* engine = nullptr;
@@ -61,8 +63,8 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	float h = 1080;
 
 	Engine::Create();
-	
 	Engine* engine = Engine::GetInstance();
+	application = new Application;
 
 
 	engine->GetVFS().Register("Data/Shaders", "Shaders");
@@ -91,24 +93,27 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 			DispatchMessage(&msg);
 		}
 
+
 		if (msg.message == WM_QUIT || msg.message == WM_CLOSE)
 		{
 			s_AppRunning = false;
 			break;
 		}
 
-		if (application->HasQuit() == true)
+
+		if (application->HasQuit())
 		{
 			s_AppRunning = false;
 			break;
 		}
+
 		engine->Update();
 		/*if (g_windowactive)
 		{
 			SetCursorPos(w / 2.f, h / 2.f);
 		}*/
 
-	} while (s_AppRunning == true);
+	} while (s_AppRunning);
 
 	application->OnExit();
 	delete application;
@@ -120,10 +125,10 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	profiler::stopListen();
 #endif
 
-	//char temp[60];
-	//sprintf_s(temp, "allocations %d %s\n", allocations, allocations > 0 ? "memory leaks!FAIL" : "" );
+	char temp[60];
+	sprintf_s(temp, "growingarray %d %d\n", g_Growingarray);
 	//OutputDebugStringA(temp);
-
+	OutputDebugString(temp);
 	
 	return 0;
 }
@@ -157,7 +162,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			if (EventManager::GetInstance())
 				EventManager::GetInstance()->SendMessage(EngineEvents_OnInactive);
 			//g_windowactive = false;
-			//application->OnInactive();
+			if(application)
+				application->OnInactive();
 			//ShowCursor(!g_windowactive);
 		}
 		else
@@ -165,7 +171,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			if(EventManager::GetInstance())
 				EventManager::GetInstance()->SendMessage(EngineEvents_OnActive);
 			//g_windowactive = true;
-			//application->OnActive();
+			if(application)
+				application->OnActive();
 			//ShowCursor(!g_windowactive);
 		}
 	}break;

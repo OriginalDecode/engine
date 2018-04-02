@@ -63,7 +63,6 @@ void StateStack::ResumeCurrentState()
 
 bool StateStack::UpdateCurrentState(float dt)
 {
-
 	if (m_GameStates.Size() > 0)
 	{
 		m_GameStates[m_MainIndex][m_SubIndex]->Update(dt);

@@ -122,7 +122,7 @@ void Game::Initiate(const std::string& level)
 void Game::EndState()
 {
 	m_World.CleanUp();
-	CameraHandle::Destroy(); //this probably should not be deleted here if we want to be able to render things in a menu that isn't the game state.
+	CameraHandle::Destroy(); //This should be moved to a more logical place.
 	SAFE_DELETE(m_Picker);
 	SAFE_DELETE(m_Player);
 }
@@ -287,9 +287,7 @@ void Game::OldUpdate(float dt)
 		pEventHandle->SendMessage("pick_entity");
 
 	if (input_wrapper->OnDown(KButton::ESCAPE))
-	{
 		m_StateStack->PopCurrentMainState();
-	}
 
 	static LinePoint p0, p1;
 	p0.position = m_Camera->GetPosition();

@@ -21,6 +21,9 @@ public:
 	Game() = default;
 
 	void InitState(StateStack* state_stack) override;
+	void EndState() override;
+
+	void HandleEvent(u64 event, void* data) override;
 
 	void Initiate(const std::string& level);
 
@@ -33,10 +36,8 @@ public:
 
 	void AddRenderCommand(const struct ModelCommand& command);
 
-	void EndState() override;
 	void Render(bool render_through) override;
 
-	void HandleEvent(u64 event, void* data) override;
 
 private:
 

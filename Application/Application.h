@@ -34,7 +34,7 @@ private:
 
 	Game m_Game;
 	Engine* myEngine;
-	Synchronizer* mySynchronizer;
+	Synchronizer* m_Synchronizer;
 
 	StateStack m_States;
 

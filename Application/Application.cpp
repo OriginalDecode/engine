@@ -1,3 +1,5 @@
+
+
 #include "Application.h"
 #include <thread>
 
@@ -18,34 +20,30 @@
 bool Application::Initiate()
 {
 	myEngine = Engine::GetInstance();
-	mySynchronizer = myEngine->GetSynchronizer();
-
-	/*myGame = new Game;
-	if (!myGame->Initiate())
-		return false;*/
-
+	m_Synchronizer = myEngine->GetSynchronizer();
 	m_States.PushState(&m_Game, StateStack::MAIN);
 
 	//Keep at the end of initiate...
+
 	myLogicThread = new std::thread([&] { Application::Update(); });
 #ifdef _DEBUG
 	cl::SetThreadName(myLogicThread->get_id(), "Logic Thread");
 #endif
-
+#if defined (_WIN32) || (_WIN64)
+	CoInitialize(0);
+#endif
 
 	return true;
 }
 
 void Application::Update()
 {
-#if defined (_WIN32) || (_WIN64)
-	CoInitialize(0);
-#endif
+
 
 #ifdef _PROFILE
 	EASY_THREAD_SCOPE("LogicThread");
 #endif
-	while (mySynchronizer->HasQuit() == false)
+	while (!m_Synchronizer->HasQuit())
 	{
 		float deltaTime = myEngine->GetDeltaTime();
 
@@ -63,33 +61,39 @@ void Application::Update()
 
 		if (!m_States.UpdateCurrentState(deltaTime))
 		{
+			m_Synchronizer->LogicIsDone();
+			m_Synchronizer->WaitForRender();
 			break;
 		}
 
-		mySynchronizer->LogicIsDone();
-		mySynchronizer->WaitForRender();
+		m_Synchronizer->LogicIsDone();
+		m_Synchronizer->WaitForRender();
 	}
 	myQuitFlag = true;
 }
 
 void Application::OnPause()
 {
-	myEngine->OnPause();
+	if (myEngine)
+		myEngine->OnPause();
 }
 
 void Application::OnResume()
 {
-	myEngine->OnResume();
+	if (myEngine)
+		myEngine->OnResume();
 }
 
 void Application::OnInactive()
 {
-	myEngine->OnInactive();
+	if (myEngine)
+		myEngine->OnInactive();
 }
 
 void Application::OnActive()
 {
-	myEngine->OnActive();
+	if (myEngine)
+		myEngine->OnActive();
 }
 
 void Application::OnExit()
@@ -116,7 +120,7 @@ bool Application::HasQuit()
 
 bool Application::CleanUp()
 {
-	if ( !myLogicThread )
+	if (!myLogicThread)
 		return true;
 
 	myLogicThread->join();

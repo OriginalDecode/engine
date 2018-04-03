@@ -125,11 +125,6 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 	profiler::stopListen();
 #endif
 
-	char temp[60];
-	sprintf_s(temp, "growingarray %d %d\n", g_Growingarray);
-	//OutputDebugStringA(temp);
-	OutputDebugString(temp);
-	
 	return 0;
 }
 

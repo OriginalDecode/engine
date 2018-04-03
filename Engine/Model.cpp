@@ -121,9 +121,7 @@ void Model::ShadowRender(const graphics::RenderContext& rc)
 {
 	PROFILE_FUNCTION(profiler::colors::Amber100);
 	for (Model* child : m_Children)
-	{
 		child->ShadowRender(rc);
-	}
 
 	if (m_IsRoot)
 		return;
@@ -137,9 +135,7 @@ void Model::ShadowRenderInstanced(const graphics::RenderContext& rc)
 {
 	PROFILE_FUNCTION(profiler::colors::Amber100);
 	for (Model* child : m_Children)
-	{
 		child->ShadowRenderInstanced(rc);
-	}
 
 	if (!m_IndexWrapper.GetIndexBuffer() && (!m_VertexWrapper.GetVertexBuffer() || !m_InstanceWrapper.GetInstanceBuffer()))
 	{

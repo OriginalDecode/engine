@@ -42,7 +42,5 @@ VS_OUTPUT main(VS_INPUT input)
 
 	output.camera_pos = camera._m30_m31_m32_m33;
 	output.worldpos = mul(input.pos, orientation);
-
-
 	return output;
 };

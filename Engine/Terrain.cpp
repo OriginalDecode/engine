@@ -15,6 +15,9 @@ void Terrain::SetupTextures()
 	Engine::GetInstance()->LoadTexture(GrayTile);
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(GrayTile), Effect::REGISTER_0);
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(Britannia), Effect::REGISTER_7);
+
+	Effect* e = Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json");
+	e->AddShaderResource(Engine::GetInstance()->GetTexture(Britannia), Effect::REGISTER_7);
 }
 
 Terrain::Terrain(float halfwidth, CU::Vector2f tex[4], CU::Vector3f color)
@@ -33,8 +36,6 @@ Terrain::Terrain(float halfwidth, CU::Vector2f tex[4], CU::Vector3f color)
 
 	m_Buffer.RegisterVariable(&m_Orientation);
 	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetCamera()->GetOrientation());
-	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetDeltaTimeRef());
-	m_Buffer.RegisterVariable(&m_UV);
 	m_Buffer.Initiate();
 
 	m_PixelBuffer.RegisterVariable(&m_Color);
@@ -56,8 +57,6 @@ Terrain::Terrain(float halfwidth, CU::Vector3f color )
 
 	m_Buffer.RegisterVariable(&m_Orientation);
 	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetCamera()->GetOrientation());
-	m_Buffer.RegisterVariable(&Engine::GetInstance()->GetDeltaTimeRef());
-	m_Buffer.RegisterVariable(&m_UV);
 	m_Buffer.Initiate();
 
 	m_PixelBuffer.RegisterVariable(&m_Color);
@@ -191,16 +190,12 @@ void Terrain::ShadowRender(const graphics::RenderContext& rc)
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
-
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
 
 	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
-	m_PixelBuffer.Bind(1, graphics::ConstantBuffer::PIXEL, rc);
-	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
-	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
-	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
-	rc.GetContext().DSSetSamplerState(0, 1, &pSampler);
 
+	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
+	rc.GetContext().DSSetSamplerState(0, 1, &pSampler);
 	ctx.DrawIndexed(this);
 }
 

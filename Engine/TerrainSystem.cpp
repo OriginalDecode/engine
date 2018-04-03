@@ -10,7 +10,7 @@
 #include <engine/profile_defines.h>
 #include <Engine/TerrainManager.h>
 
-#define MAX_DEPTH 7
+#define MAX_DEPTH 2
 constexpr float radius = 64.f;
 
 static const char* s_TerrainLevels[] = {

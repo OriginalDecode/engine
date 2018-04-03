@@ -463,13 +463,15 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 
-	Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json")->Use();
-	m_TerrainSystem->DrawShadow();
+	
 
 	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_FRONT));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+
+	Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json")->Use();
+	m_TerrainSystem->DrawShadow();
 
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	for (s32 j = 0; j < 8; ++j)

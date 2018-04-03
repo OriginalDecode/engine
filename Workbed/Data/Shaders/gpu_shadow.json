@@ -1,6 +1,6 @@
 {
     "VertexShader": {
-        "file": "gpu_terrain.vs",
+        "file": "gpu_shadow.vs",
         "entrypoint": "main"
     },
     "PixelShader": {

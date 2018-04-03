@@ -248,7 +248,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 albedoTint = albedoLum > 0 ? albedo.rgb / albedoLum : float3(1,1,1); 
 
 	ambient.rgb *= albedoTint;
-	ambient *= in_shadow ? 0.22 : 1;
+	// ambient *= in_shadow ? 0.22 : 1;
 	ambient.a = 1;
 
 

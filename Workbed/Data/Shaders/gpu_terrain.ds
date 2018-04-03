@@ -7,8 +7,6 @@ cbuffer Matrices : register(b1)
 {
 	row_major float4x4 orientation;
 	row_major float4x4 camera;
-	float Time;
-	float3 padding;
 };
 
 struct HS_OUTPUT
@@ -59,11 +57,9 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 	testUV.x = (1024 + output.worldpos.x) / 1024.f;
 	testUV.y = (1024 - output.worldpos.z) / 1024.f;
 
-
 	const float y = HeightTexture.SampleLevel(sampler0, testUV, 0).r;
 	float y_pos = y * 128;
 	vertex_pos.y = y_pos;
-
 
 	float4 vertex_normal = float4(testUV.x * 0.5, 1, testUV.y * 0.5, 1);
 	vertex_normal = normalize(vertex_normal);
@@ -72,8 +68,6 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 	output.pos = mul(float4(vertex_pos, 1), orientation);
 	output.worldpos = output.pos;
 	output.pos = mul(output.pos, camera_view_x_proj);
-
-
 
 	output.normal = mul(vertex_normal, orientation);
 	output.binorm = patch[0].binorm;

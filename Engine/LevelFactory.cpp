@@ -649,7 +649,7 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 			assert(data != nullptr && "Serialized data was null");
 			fwrite(&data_length, sizeof(int), 1, pFile);
 			fwrite(data, data_length, 1, pFile);
-
+			delete data;
 		}
 
 		fclose(pFile);

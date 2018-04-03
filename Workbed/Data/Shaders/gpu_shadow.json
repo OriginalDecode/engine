@@ -1,0 +1,18 @@
+{
+    "VertexShader": {
+        "file": "gpu_terrain.vs",
+        "entrypoint": "main"
+    },
+    "PixelShader": {
+        "file": "render_depth.ps",
+        "entrypoint": "RenderDepth"
+    },
+    "HullShader": {
+        "file": "gpu_terrain.hs",
+        "entrypoint": "main"
+    },
+    "DomainShader": {
+        "file": "gpu_terrain.ds",
+        "entrypoint": "main"
+    }
+}

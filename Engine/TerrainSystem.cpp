@@ -54,7 +54,25 @@ void TerrainSystem::Update()
 	m_Tree.Draw();
 }
 
-bool test::Leaf::Render()
+void TerrainSystem::DrawShadow()
+{
+	m_Tree.DrawShadow();
+}
+
+void test::Leaf::Render()
+{
+	Draw(false);
+	//Draw([&](Terrain* terrain) { terrain ? terrain->Render(Engine::GetInstance()->GetRenderer()->GetRenderContext()) : 0; });
+}
+
+void test::Leaf::DrawShadow()
+{
+	Draw(true);
+	//Draw([&](Terrain* terrain) { terrain ? terrain->ShadowRender(Engine::GetInstance()->GetRenderer()->GetRenderContext()) : 0; });
+
+}
+
+bool test::Leaf::Draw(bool shadow)
 {
 	PROFILE_FUNCTION(profiler::colors::Red);
 	bool rendered = false;
@@ -62,10 +80,9 @@ bool test::Leaf::Render()
 	{
 		if (m_Children[i])
 		{
-			rendered |= m_Children[i]->Render();
+			rendered |= m_Children[i]->Draw(shadow);
 		}
 	}
-
 
 	Synchronizer* sync = Engine::GetInstance()->GetSynchronizer();
 
@@ -80,11 +97,9 @@ bool test::Leaf::Render()
 	p1.position = CU::Vector4f(pos0.x, 0.0f, pos0.z, 1);
 	p2.position = CU::Vector4f(pos1.x, 0.0f, pos0.z, 1);
 	p3.position = CU::Vector4f(pos0.x, 0.0f, pos1.z, 1);
-	
- 
 
- 	if (m_Terrain && !rendered)
- 	{
+	if (m_Terrain && !rendered)
+	{
 
 		sync->AddRenderCommand(LineCommand(p0, p2, false));
 		sync->AddRenderCommand(LineCommand(p2, p1, false));
@@ -92,9 +107,14 @@ bool test::Leaf::Render()
 		sync->AddRenderCommand(LineCommand(p3, p0, false));
 
 		m_Terrain->SetPosition(CU::Vector2f(m_AABB.m_Pos.x, m_AABB.m_Pos.y));
- 		m_Terrain->Render(Engine::GetInstance()->GetRenderer()->GetRenderContext());
+
+		if (shadow)
+			m_Terrain->ShadowRender(Engine::GetInstance()->GetRenderer()->GetRenderContext());
+		else
+			m_Terrain->Render(Engine::GetInstance()->GetRenderer()->GetRenderContext());
+		
 		return true;
- 	}
+	}
 
 	return rendered;
 }
@@ -217,6 +237,11 @@ bool test::Leaf::Insert(Position pos)
 void test::QuadTree::Draw()
 {
 	m_Root->Render();
+}
+
+void test::QuadTree::DrawShadow()
+{
+	m_Root->DrawShadow();
 }
 
 void test::QuadTree::Update(float x, float y)

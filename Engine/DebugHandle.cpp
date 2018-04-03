@@ -71,9 +71,6 @@ namespace debug
 		std::string out = str.substr(0, pos);
 		vec.push_back(out);
 
-
-		
-
 		SplitString(str.substr(pos + 1), vec);
 
 	}

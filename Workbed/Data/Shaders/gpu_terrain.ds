@@ -79,7 +79,7 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 	output.binorm = patch[0].binorm;
 	output.tang = mul(patch[0].tang, orientation);
 
-	output.uv =  uvwCoord;//uvwCoord.x * patch[1].uv + uvwCoord.y * patch[2].uv;
+	output.uv =  uvwCoord;
 	output.worlduv = testUV;
 	return output;
 }

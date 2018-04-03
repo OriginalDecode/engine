@@ -4,6 +4,19 @@
 #include <Engine/Effect.h>
 #define DIVIDE 255.f
 
+
+
+const char* GrayTile = "Data/Textures/GrayTile.dds";
+const char* Britannia = "Data/Textures/terrain/britannia.dds";
+
+void Terrain::SetupTextures()
+{
+	Engine::GetInstance()->LoadTexture(Britannia);
+	Engine::GetInstance()->LoadTexture(GrayTile);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(GrayTile), Effect::REGISTER_0);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(Britannia), Effect::REGISTER_7);
+}
+
 Terrain::Terrain(float halfwidth, CU::Vector2f tex[4], CU::Vector3f color)
 	: m_Color(color)
 {
@@ -27,12 +40,7 @@ Terrain::Terrain(float halfwidth, CU::Vector2f tex[4], CU::Vector3f color)
 	m_PixelBuffer.RegisterVariable(&m_Color);
 	m_PixelBuffer.Initiate();
 
-	Engine::GetInstance()->LoadTexture("Data/Textures/terrain/britannia.dds");
-	Engine::GetInstance()->LoadTexture("Data/Material/grass/grass1-albedo3.dds");
-
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Material/grass/grass1-albedo3.dds"), Effect::REGISTER_0);
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain/britannia.dds"), Effect::REGISTER_7);
-	//m_Material = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
+	SetupTextures();
 
 }
 
@@ -55,13 +63,7 @@ Terrain::Terrain(float halfwidth, CU::Vector3f color )
 	m_PixelBuffer.RegisterVariable(&m_Color);
 	m_PixelBuffer.Initiate();
 
-	Engine::GetInstance()->LoadTexture("Data/Textures/terrain/britannia.dds");
-	Engine::GetInstance()->LoadTexture("Data/Textures/terrain/brit_n.dds");
-	Engine::GetInstance()->LoadTexture("Data/Material/grass/grass1-albedo3.dds");
-
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Material/grass/grass1-albedo3.dds"), Effect::REGISTER_0);
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain/brit_n.dds"), Effect::NORMAL);
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain/britannia.dds"), Effect::REGISTER_7);
+	SetupTextures();
 }
 
 bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, const CU::Vector2f& aSize)
@@ -185,8 +187,20 @@ void Terrain::Wireframe(const graphics::RenderContext& rc)
 void Terrain::ShadowRender(const graphics::RenderContext& rc)
 {
 	graphics::IGraphicsContext& ctx = rc.GetContext();
-	//UpdateConstantBuffer(rc);
-	ctx.PSSetSamplerState(0, 1, rc.GetEngine().GetActiveSampler());
+	graphics::IGraphicsAPI& api = rc.GetAPI();
+
+	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
+	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
+
+	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
+	m_PixelBuffer.Bind(1, graphics::ConstantBuffer::PIXEL, rc);
+	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
+	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
+	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
+	rc.GetContext().DSSetSamplerState(0, 1, &pSampler);
+
 	ctx.DrawIndexed(this);
 }
 

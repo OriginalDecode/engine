@@ -42,19 +42,19 @@ enum class EUsagePage
 	CONSUMER_AUDIO_CONTROL = 0x0C
 };
 
-Application* application = nullptr;
+Application* application = new Application;
 static bool s_WindowActive = false;
 static bool s_AppRunning = true;
 Engine* engine = nullptr;
  
-int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
+int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE, LPSTR args, int)
 {
 #ifdef _PROFILE
 	profiler::startListen();
 #endif/* 1,777777777777777777777777777777778*/
 	DL_Debug::Debug::Create();
 	//double res16x9 = 1.777777777777777777777777777777778; best
-	const char* inputString = someCommandLines;
+	const char* inputString = args;
 	std::string input(inputString);
 
 	DL_Debug::Debug::GetInstance()->ActivateFilters(Update_Filter | Render_Filter | Physics_Filter | Resource_Filter | Engine_Filter | Font_Filter | Model_Filter);
@@ -64,14 +64,13 @@ int WINAPI WinMain(HINSTANCE anInstance, HINSTANCE, LPSTR someCommandLines, int)
 
 	Engine::Create();
 	Engine* engine = Engine::GetInstance();
-	application = new Application;
 
 
 	engine->GetVFS().Register("Data/Shaders", "Shaders");
 	engine->GetVFS().Register("Data/Textures", "Textures");
 	engine->GetVFS().Register("Data/Model", "Models");
 
-	engine->Initiate(w, h, anInstance, WindowProc);
+	engine->Initiate(w, h, instance_handle, WindowProc);
 
 	DL_ASSERT_EXP(application->Initiate(), "Failed to initiate game");
 

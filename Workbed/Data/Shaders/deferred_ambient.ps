@@ -106,11 +106,9 @@ float3 CookTorranceBRDF(float D, float3 F, float G, float ndl, float ndv)
 //Schlick-GGX, Geometric Shadowing (G) , Smith schlick-GGX.
 float Geometric_Smith_Schlick_GGX(float r, float ndv, float ndl)
 {
-
 	float k = (r * r) * 0.5f;
 	float GV = ndv / (ndv * (1 - k) + k);
 	float GL = ndl / (ndl * (1 - k) + k);
-
 	return GV*GL;
 }
 
@@ -270,7 +268,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float3 directDiffuse = 0, directSpec = 0;
 	
-	if(!in_shadow)
+	//if(!in_shadow)
 	{	
 		directDiffuse = (saturate(( 1-F ) * NdL * metalness_albedo * light_col) * light_intensity);
 		directSpec = (F * D * G * NdL * light_col * light_intensity);
@@ -291,10 +289,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 kD = 1 - kS;
 	float3 _diffuse = irradiance.rgb * albedo.rgb;
 	float3 _ambient = (kD * _diffuse) * 1; // 1 should be AO
-
-
 	// float3 kS = fresnelSchlickRoughness(NdL, F0);
-
 
 
 	//DISNEY

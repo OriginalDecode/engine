@@ -36,7 +36,10 @@ namespace test
 		bool Insert(Position pos);
 		void subdivide();
 
-		bool Render();
+		void Render();
+		void DrawShadow();
+		bool Draw(bool shadow);
+
 
 		void Reset();
 		Terrain* m_Terrain = nullptr;
@@ -56,6 +59,7 @@ namespace test
 		void Init(Position xy);
 		void Insert(Position xy);
 		void Draw();
+		void DrawShadow();
 
 
 		void Update(float x, float y);
@@ -78,6 +82,7 @@ public:
 	TerrainSystem();
 
 	void Update();
+	void DrawShadow();
 
 	float m_X = 0.f;
 	float m_Y = 0.f;

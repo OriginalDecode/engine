@@ -18,6 +18,7 @@ public:
 
 	void Update();
 
+
 	void OnPause();
 	void OnResume();
 	void OnInactive();
@@ -25,6 +26,8 @@ public:
 	void OnExit();
 	void OnAltEnter();
 	void OnResize();
+
+
 	bool HasQuit();
 	bool CleanUp();
 private:

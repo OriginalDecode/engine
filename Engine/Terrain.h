@@ -38,6 +38,9 @@ public:
 	void SetPosition(CU::Vector2f position);
 	bool HasLoaded() const { return m_HasLoaded; }
 private:
+
+	void SetupTextures();
+
 	void AddSurface(Surface* p) override { delete p; p = nullptr; }
 
 	bool m_HasLoaded = false;

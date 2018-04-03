@@ -98,7 +98,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_HoverTexture->Initiate(desc, "HoverTexture");
 	m_RenderHoverEffect = Engine::GetInstance()->GetEffect("Shaders/hover.json");
 	m_SelectedEffect = Engine::GetInstance()->GetEffect("Shaders/selected.json");
-
+	Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json");
 	m_SelectedTexture = new Texture;
 	m_SelectedTexture->Initiate(desc, "SelectedTexture");
 
@@ -147,9 +147,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 
 
-	//m_TestTerrain = new Terrain(2048.f);
-	//m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
-	//m_TerrainSystem = new TerrainSystem;
+	m_TestTerrain = new Terrain(2048.f);
+	m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
+	m_TerrainSystem = new TerrainSystem;
 
 }
 
@@ -209,7 +209,7 @@ void Renderer::Render()
 	
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
-	//m_TerrainSystem->Update();
+	m_TerrainSystem->Update();
  
  	Render3DCommands();
  	m_InstancingManager.DoInstancing(m_RenderContext, false);
@@ -463,6 +463,9 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 
+	Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json")->Use();
+	m_TerrainSystem->DrawShadow();
+
 	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_FRONT));
@@ -496,6 +499,8 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 	Engine::GetInstance()->GetEffect("Shaders/render_depth_instanced.json")->Use();
 	m_InstancingManager.DoInstancing(m_RenderContext, true);
 	Engine::GetInstance()->GetEffect("Shaders/render_depth_instanced.json")->Clear();
+
+
 }
 
 void Renderer::Render2DCommands()

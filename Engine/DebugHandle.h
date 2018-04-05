@@ -126,6 +126,7 @@ namespace debug
 		float m_Range = 0.f;
 		float m_CamPos[3];
 		float m_CamRot[3];
+		float s_ShadowDir[3];
 
 		/**
 #if !defined(_PROFILE) && !defined(_FINAL)

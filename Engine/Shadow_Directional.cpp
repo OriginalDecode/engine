@@ -2,6 +2,8 @@
 #include "Shadow_Directional.h"
 #include <Engine/Effect.h>
 #include <Engine/Engine.h>
+#include <Engine/Renderer.h>
+
 
 void ShadowDirectional::Initiate(float buffer_size)
 {
@@ -38,6 +40,7 @@ void ShadowDirectional::Initiate(float buffer_size)
 	debug::DebugHandle::GetInstance()->RegisterTexture(m_ShadowDepth, "Directional Shadow");
 	debug::DebugHandle::GetInstance()->RegisterTexture(m_ShadowDepthStencil, "Directional Shadow Stencil");
 #endif
+	EventManager::GetInstance()->Subscribe("shadowdir.apply", this);
 
 }
 
@@ -80,12 +83,30 @@ void ShadowDirectional::Update()
 	m_Camera->SetRotationY(cl::DegreeToRad(pDebug->m_CamRot[1]));
 	m_Camera->SetRotationZ(cl::DegreeToRad(pDebug->m_CamRot[2]));
 #endif
+	CU::Vector3f pos = Engine::GetInstance()->GetCamera()->GetPosition();
+	pos.y = 10;
+	//m_Camera->SetPosition(pos);
 	m_Camera->Update();
+	//m_Camera->SetAt(CU::Vector4f(Engine::GetInstance()->GetRenderer()->GetLightDirection(), 1));
 }
 
 CU::Matrix44f ShadowDirectional::GetMVP()
 {
-	const CU::Matrix44f& orientation = CU::Math::Inverse(m_Camera->GetCurrentOrientation());
+	const CU::Matrix44f& orientation = CU::Math::Inverse(m_Camera->GetCurrentRotation() * m_Camera->GetCurrentOrientation());
 	const CU::Matrix44f& perspective = m_Camera->GetOrthographic();
 	return orientation * perspective;
+}
+
+void ShadowDirectional::HandleEvent(u64 event, void* pData)
+{
+#ifdef _DEBUG
+	if(event == Hash("shadowdir.apply"))
+	{
+		CU::Matrix44f rotation;
+		rotation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(debug::DebugHandle::GetInstance()->s_ShadowDir[2]));
+		rotation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(debug::DebugHandle::GetInstance()->s_ShadowDir[0])) * rotation;
+		rotation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(debug::DebugHandle::GetInstance()->s_ShadowDir[1])) * rotation;
+		m_Camera->SetRotation(rotation);
+	}
+#endif
 }

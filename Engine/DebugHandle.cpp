@@ -161,6 +161,7 @@ namespace debug
 	static bool sDebugTextures = false;
 	static bool s_RightClicked = false;
 	static bool s_OpenMenu = false;
+	static bool s_LightControls = true;
 	static CU::Vector3f s_CreatePosition = CU::Vector3f(0, 0, 0);
 
 
@@ -399,23 +400,57 @@ namespace debug
 
 			ImGui::Separator();
 
-			ImGui::Text("Light Direction");
 			
-			ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
-			ImGui::SliderFloat("Y", &light_dir[1], 0.f, 1.f);
-			ImGui::SliderFloat("Z", &light_dir[2], -1.f, 1.f);
 
-			ImGui::SliderFloat("Camera Speed", &m_CameraSpeed, 1.f, 100.f);
+
+			if (s_LightControls)
+			{
+				//ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowWidth() / 2, ImGui::GetWindowHeight() / 2));
+				//ImGui::SetNextWindowSize(ImVec2(300, Engine::GetInstance()->GetInnerSize().m_Height));
+				if (ImGui::Begin("Light controls", &s_LightControls, 0))
+				{
+
+					if (ImGui::TreeNode("Light Direction"))
+					{
+						ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
+						ImGui::SliderFloat("Y", &light_dir[1], 0.f, 1.f);
+						ImGui::SliderFloat("Z", &light_dir[2], -1.f, 1.f);
+
+						ImGui::TreePop();
+					}
+
+					ImGui::Separator();
+
+					if (ImGui::TreeNode("Shadow Direction"))
+					{
+						ImGui::SliderFloat("X", &s_ShadowDir[0], 0.f, 360.f);
+						ImGui::SliderFloat("Y", &s_ShadowDir[1], 0.f, 360.f);
+						ImGui::SliderFloat("Z", &s_ShadowDir[2], 0.f, 360.f);
+
+						if (ImGui::Button("Apply"))
+							EventManager::GetInstance()->SendMessage("shadowdir.apply");
+
+						ImGui::TreePop();
+					}
+
+
+					ImGui::End();
+				}
+
+			}
+
+
+
+
+
+			/*ImGui::SliderFloat("Camera Speed", &m_CameraSpeed, 1.f, 100.f);
 			ImGui::SliderFloat("Camera Look Speed (C)", &m_ControllerLookSens, 0.f, 1.f);
 			ImGui::SliderFloat("Camera Look Speed (M)", &m_MouseLookSense, 0.f, 0.1f);
-
-			ImGui::SliderFloat("Global PL range", &m_Range, 0.f, 10.f);
-
-
+*/
 			ImGui::Separator();
 
-			ImGui::InputFloat3("SPos", m_CamPos);
-			ImGui::InputFloat3("SRot", m_CamRot);
+
+		
 
 
 

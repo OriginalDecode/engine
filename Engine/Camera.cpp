@@ -125,7 +125,7 @@ CU::Matrix44f& Camera::Get2DOrientation()
 
 const CU::Vector4f& Camera::GetAt() const
 {
-	return m_Orientation2.GetForward();
+	return m_Orientation2.GetForward(); // This can't be correct
 }
 
 void Camera::SetPosition(const CU::Vector3f& position)
@@ -209,15 +209,16 @@ void Camera::Update(const CU::Vector2f& cursor_pos)
 
 void Camera::Update()
 {
-	m_ViewProj = CU::Math::Inverse(m_Orientation2) * m_ProjectionMatrix;
+	m_PixelOrientation = m_Rotation2 * m_Orientation2;
+	m_ViewProj = CU::Math::Inverse(m_PixelOrientation) * m_ProjectionMatrix;
 	m_InvProjectionMatrix = CU::Math::InverseReal(m_ProjectionMatrix);
+	
 }
 
 void Camera::SetOrientation(const CU::Matrix44f& matrix)
 {
 	m_Orientation2 = m_Orientation;
 	m_Orientation = matrix;
-	OrientCamera();
 }
 
 void Camera::RotateAroundX(float rad)
@@ -248,6 +249,13 @@ void Camera::SetRotationY(float rad)
 void Camera::SetRotationZ(float rad)
 {
 	m_Orientation.SetRotation3dZ(rad);
+}
+
+void Camera::SetRotation(const CU::Matrix44f& rot)
+{
+	m_Rotation2 = m_Rotation;
+	m_Rotation = rot;
+	OrientCamera();
 }
 
 void Camera::SetFOV(float field_of_view)
@@ -347,35 +355,36 @@ void Camera::UpdateOrientation()
 	axisZ = m_Yaw * m_Pitch * axisZ;
 
 	m_Orientation2 = m_Orientation;
+	m_Rotation2 = m_Rotation;
 
-	m_Orientation[0] = axisX.x;
-	m_Orientation[1] = axisX.y;
-	m_Orientation[2] = axisX.z;
+	m_Rotation[0] = axisX.x;
+	m_Rotation[1] = axisX.y;
+	m_Rotation[2] = axisX.z;
 
-	m_Orientation[4] = axisY.x;
-	m_Orientation[5] = axisY.y;
-	m_Orientation[6] = axisY.z;
+	m_Rotation[4] = axisY.x;
+	m_Rotation[5] = axisY.y;
+	m_Rotation[6] = axisY.z;
 
-	m_Orientation[8] = axisZ.x;
-	m_Orientation[9] = axisZ.y;
-	m_Orientation[10] = axisZ.z;
+	m_Rotation[8] = axisZ.x;
+	m_Rotation[9] = axisZ.y;
+	m_Rotation[10] = axisZ.z;
 }
 
 void Camera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)
 {
-	CU::Math::Vector4<float> forward = m_Orientation.GetForward();
+	CU::Math::Vector4<float> forward = m_Rotation.GetForward();
 	aPosition += forward * aSpeed;
 }
 
 void Camera::MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed)
 {
-	CU::Math::Vector4<float> up = m_Orientation.GetUp();
+	CU::Math::Vector4<float> up = m_Rotation.GetUp();
 	aPosition += up * aSpeed;
 }
 
 void Camera::MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed)
 {
-	CU::Math::Vector4<float> right = m_Orientation.GetRight();
+	CU::Math::Vector4<float> right = m_Rotation.GetRight();
 	aPosition += right * aSpeed;
 }
 
@@ -393,18 +402,18 @@ void Camera::OrientCamera()
 	axisY = m_Yaw * m_Pitch * axisY;
 	axisZ = m_Yaw * m_Pitch * axisZ;
 
-	m_Orientation2 = m_Orientation;
+	m_Rotation2 = m_Rotation;
 
-	m_Orientation[0] = axisX.x;
-	m_Orientation[1] = axisX.y;
-	m_Orientation[2] = axisX.z;
+	m_Rotation[0] = axisX.x;
+	m_Rotation[1] = axisX.y;
+	m_Rotation[2] = axisX.z;
 
-	m_Orientation[4] = axisY.x;
-	m_Orientation[5] = axisY.y;
-	m_Orientation[6] = axisY.z;
+	m_Rotation[4] = axisY.x;
+	m_Rotation[5] = axisY.y;
+	m_Rotation[6] = axisY.z;
 
-	m_Orientation[8] = axisZ.x;
-	m_Orientation[9] = axisZ.y;
-	m_Orientation[10] = axisZ.z;
+	m_Rotation[8] = axisZ.x;
+	m_Rotation[9] = axisZ.y;
+	m_Rotation[10] = axisZ.z;
 
 }

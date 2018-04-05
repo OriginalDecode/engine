@@ -47,6 +47,9 @@ public:
 
 	CU::Vector4f& GetPos();
 
+	CU::Matrix44f& GetCurrentRotation() { return m_Rotation; }
+	CU::Matrix44f& GetRotation() { return m_Rotation2; }
+
 
 	CU::Matrix44f& GetViewProjection();
 	CU::Matrix44f& Get2DViewProjection();
@@ -58,6 +61,8 @@ public:
 
 	const CU::Vector4f& GetAt() const;
 	void SetAt(const CU::Vector4f& at);
+
+
 
 
 
@@ -80,6 +85,8 @@ public:
 	void SetRotationY(float rad);
 	void SetRotationZ(float rad);
 
+	void SetRotation(const CU::Matrix44f& rot);
+
 
 	void SetFOV(float field_of_view);
 
@@ -93,6 +100,10 @@ public:
 	void InvertYaw();
 	void InvertAll();
 	CU::Matrix44f& GetInv2DView();
+
+
+	CU::Matrix44f& GetPixelOrientation() { return m_PixelOrientation; }
+
 private:
 	void UpdateOrientation();
 
@@ -107,6 +118,12 @@ private:
 
 	void OrientCamera();
 
+
+	CU::Matrix44f m_PixelOrientation;
+
+	CU::Matrix44f m_Rotation;
+	CU::Matrix44f m_Rotation2;
+
 	CU::Matrix44f m_Orientation;
 	CU::Matrix44f m_Orientation2;
 	CU::Matrix44f my2DOrientation;
@@ -117,7 +134,6 @@ private:
 	CU::Matrix44f m_InvProjectionMatrix;
 	CU::Matrix44f m_ViewProj;
 
-	CU::Matrix44f m_Inv2DView;
 
 	CU::Matrix44f m_OrthogonalViewProj;
 

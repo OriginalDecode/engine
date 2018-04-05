@@ -77,7 +77,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Atmosphere.Initiate(8192, 8192, { 1024, -128.f, 1024.f });
 
  	m_ShadowPass.Initiate(this);
- 	m_DirectionalShadow.Initiate(2048.f);
+ 	m_DirectionalShadow.Initiate(512);
 
 	m_Direction = CU::Vector3f(0.0f, 1.0f, 0.0f);
 
@@ -126,16 +126,13 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	pDebug->RegisterTexture(m_GBuffer.m_Roughenss, names[5]);
 	pDebug->RegisterTexture(m_GBuffer.m_Metalness, names[6]);
 
-	//pDebug->RegisterTexture(m_HoverTexture, names[5]);
-	//pDebug->RegisterTexture(m_SelectedTexture, names[6]);
-
 #endif
 	m_PostProcessManager.Initiate();
 
 	CU::Matrix44f& inv = m_Camera->GetInvProjection();
 
 	m_PixelBuffer.RegisterVariable(&m_Camera->GetInvProjection());
-	m_PixelBuffer.RegisterVariable(&m_Camera->GetOrientation());
+	m_PixelBuffer.RegisterVariable(&m_Camera->GetPixelOrientation());
 	m_PixelBuffer.Initiate("PerFramePixel");
 
 	m_ViewProjection.RegisterVariable(&m_Camera->GetViewProjection());
@@ -467,7 +464,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 
 	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_FRONT));
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
 	Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json")->Use();

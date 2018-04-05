@@ -90,7 +90,7 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 	_normal.y = 1;
 	output.Normal = float4(_normal, 1);
 	
-	output.Depth = float4(1 - input.pos.z, 0 , 0, 0);
+	output.Depth = float4(1 - input.pos.z, 1 , 0, 0);
 	
 	output.Emissive = 0;
 

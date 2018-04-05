@@ -2,7 +2,7 @@
 
 #include <Engine/engine_shared.h>
 #include "Engine/ConstantBuffer.h"
-
+#include "PostMaster/EventManager.h"
 class Camera;
 class Texture;
 namespace graphics
@@ -10,7 +10,7 @@ namespace graphics
 	class Viewport;
 };
 
-class ShadowDirectional
+class ShadowDirectional : public Subscriber
 {
 public:
 	ShadowDirectional() = default;
@@ -32,12 +32,13 @@ public:
 	void Update();
 
 	CU::Matrix44f GetMVP();
-	
+
 
 	Texture* GetDepthTexture() { return m_ShadowDepth; }
 	Texture* GetDepthStencilTexture() { return m_ShadowDepthStencil; }
 
 	graphics::ConstantBuffer& GetConstBuffer() { return m_ConstBuffer; }
+	void HandleEvent(u64 event, void* pData) override;
 private:
 	graphics::ConstantBuffer m_ConstBuffer;
 	graphics::Viewport*	m_Viewport		= nullptr;

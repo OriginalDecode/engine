@@ -16,7 +16,6 @@
 
 #include <TreeNode.h>
 #include <TreeDweller.h>
-#include <GizmoBase.h>
 #include <Engine/Model.h>
 #include <CommonLib/DataStructures/Hashmap/Hash.h>
 #include "profile_defines.h"

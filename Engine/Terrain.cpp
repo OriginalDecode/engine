@@ -8,16 +8,19 @@
 
 const char* GrayTile = "Data/Textures/GrayTile.dds";
 const char* Britannia = "Data/Textures/terrain/britannia.dds";
+const char* Flat = "Data/Textures/flat_height.dds";
+
+#define HEIGHTMAP Flat
 
 void Terrain::SetupTextures()
 {
-	Engine::GetInstance()->LoadTexture(Britannia);
+	Engine::GetInstance()->LoadTexture(HEIGHTMAP);
 	Engine::GetInstance()->LoadTexture(GrayTile);
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(GrayTile), Effect::REGISTER_0);
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(Britannia), Effect::REGISTER_7);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(HEIGHTMAP), Effect::REGISTER_7);
 
 	Effect* e = Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json");
-	e->AddShaderResource(Engine::GetInstance()->GetTexture(Britannia), Effect::REGISTER_7);
+	e->AddShaderResource(Engine::GetInstance()->GetTexture(HEIGHTMAP), Effect::REGISTER_7);
 }
 
 Terrain::Terrain(float halfwidth, CU::Vector2f tex[4], CU::Vector3f color)

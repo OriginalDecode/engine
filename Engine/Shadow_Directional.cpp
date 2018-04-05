@@ -8,7 +8,7 @@
 void ShadowDirectional::Initiate(float buffer_size)
 {
 	m_Camera = new Camera;
-	m_Camera->CreateOrthographicProjection(buffer_size, buffer_size, 0.1f, 100.f);
+	m_Camera->CreateOrthographicProjection(buffer_size, buffer_size, 0.1f, 1000.f);
 
 	//m_Camera->SetPosition({ 55, 90, 55});
 	//m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
@@ -84,7 +84,6 @@ void ShadowDirectional::Update()
 	m_Camera->SetRotationZ(cl::DegreeToRad(pDebug->m_CamRot[2]));
 #endif
 	CU::Vector3f pos = Engine::GetInstance()->GetCamera()->GetPosition();
-	pos.y = 10;
 	//m_Camera->SetPosition(pos);
 	m_Camera->Update();
 	//m_Camera->SetAt(CU::Vector4f(Engine::GetInstance()->GetRenderer()->GetLightDirection(), 1));

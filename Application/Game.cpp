@@ -81,7 +81,8 @@ void Game::Initiate(const std::string& level)
 	curtain = m_Engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);
 	building = m_Engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
 	pole = m_Engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
-	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(16, 1, 3, CU::Vector3f(-110.f, 0.f, -16.f), 15.f, 0.f, 15.f);
+	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
+	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(16, 1, 3, CU::Vector3f(-110.f, 0.f, -16.f), 15.f, 0.f, 15.f);
 	m_World.AddDwellers(dwellers);
 #endif
 #endif
@@ -252,13 +253,13 @@ void Game::Update(float dt)
 	//if(_pointList.size() > 0)
 		//AddRenderCommand(ModelCommand(g_DefaultModel, g_DefaultMaterial, _pointList[_index], false));
 	
-#ifndef LOAD_LEVEL
-	AddRenderCommand(ModelCommand(building, CU::Vector3f(0, 0, 0), false));
-#ifndef SUNTEMPEL
-	AddRenderCommand(ModelCommand(curtain, CU::Vector3f(0, 0, 0), false));
-	AddRenderCommand(ModelCommand(pole, CU::Vector3f(0, 0, 0), false));
-#endif
-#endif
+//#ifndef LOAD_LEVEL
+//	AddRenderCommand(ModelCommand(building, CU::Vector3f(0, 0, 0), false));
+//#ifndef SUNTEMPEL
+//	AddRenderCommand(ModelCommand(curtain, CU::Vector3f(0, 0, 0), false));
+//	AddRenderCommand(ModelCommand(pole, CU::Vector3f(0, 0, 0), false));
+//#endif
+//#endif
 
 	_index++;
 	if (_index >= _pointList.size())

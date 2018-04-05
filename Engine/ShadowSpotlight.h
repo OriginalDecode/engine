@@ -1,6 +1,5 @@
 #pragma once
 #include "engine_shared.h"
-#include <Engine/GizmoBase.h>
 
 class Texture;
 class Camera;

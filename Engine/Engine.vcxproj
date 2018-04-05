@@ -318,7 +318,6 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CommandAllocator.h" />
     <ClInclude Include="Components.h" />
-    <ClInclude Include="Console.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DebugHandle.h" />
     <ClInclude Include="DeferredRenderer.h" />
@@ -339,8 +338,6 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="GizmoBase.h" />
-    <ClInclude Include="GizmoShared.h" />
     <ClInclude Include="GraphicsView.h" />
     <ClInclude Include="Inspector.h" />
     <ClInclude Include="InspectorView.h" />
@@ -385,13 +382,11 @@
     <ClInclude Include="PostProcessManager.h" />
     <ClInclude Include="profile_defines.h" />
     <ClInclude Include="Quad.h" />
-    <ClInclude Include="RectangleBinPack.h" />
     <ClInclude Include="RenderCommand.h" />
     <ClInclude Include="RenderContext.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderObject.h" />
     <ClInclude Include="RootTreeNode.h" />
-    <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderFactory.h" />
     <ClInclude Include="ShaderState.h" />
     <ClInclude Include="ShaderWarningHandler.h" />
@@ -448,7 +443,6 @@
     <ClCompile Include="BlurPass.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommandAllocator.cpp" />
-    <ClCompile Include="Console.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="DebugHandle.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
@@ -471,8 +465,6 @@
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="GizmoBase.cpp" />
-    <ClCompile Include="GizmoShared.cpp" />
     <ClCompile Include="GraphicsView.cpp" />
     <ClCompile Include="HDRPass.cpp" />
     <ClCompile Include="Inspector.cpp" />
@@ -503,13 +495,11 @@
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="QuadTreeNode.cpp" />
-    <ClCompile Include="RectangleBinPack.cpp" />
     <ClCompile Include="RenderCommand.cpp" />
     <ClCompile Include="RenderContext.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="RootTreeNode.cpp" />
-    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderFactory.cpp" />
     <ClCompile Include="ShaderState.cpp" />
     <ClCompile Include="ShaderWarningHandler.cpp" />

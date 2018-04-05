@@ -62,17 +62,13 @@ public:
 	const CU::Vector4f& GetAt() const;
 	void SetAt(const CU::Vector4f& at);
 
-
-
-
-
 	void Move(eDirection aDirection, float aSpeed);
 	void SetPosition(const CU::Vector3f& position);
 	void SetPosition2(const CU::Vector3f& position);
 	void SetTranslation(const CU::Vector4f& translation);
 
-	void Update(const ControllerState& controller_state);
 	void Update();
+	void Update(const ControllerState& controller_state);
 	void Update(const CU::Vector2f& cursor_pos);
 
 	void SetOrientation(const CU::Matrix44f& matrix);
@@ -99,24 +95,21 @@ public:
 	void InvertRoll();
 	void InvertYaw();
 	void InvertAll();
-	CU::Matrix44f& GetInv2DView();
-
 
 	CU::Matrix44f& GetPixelOrientation() { return m_PixelOrientation; }
 
 private:
-	void UpdateOrientation();
-
-	float m_LookSpeedModifier = 0.005f; //sensitivity
-
-	float m_RotationDegree = 0.f;
 	void operator=(Camera&) = delete;
+
+
+	void UpdateOrientation();
 	void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);
 	void MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed);
 	void MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed);
-
-
 	void OrientCamera();
+
+	float m_LookSpeedModifier = 0.005f; //sensitivity
+	float m_RotationDegree = 0.f;
 
 
 	CU::Matrix44f m_PixelOrientation;

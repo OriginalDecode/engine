@@ -25,17 +25,11 @@
     <Filter Include="precompiled">
       <UniqueIdentifier>{ee7c4b62-c1db-4c97-b817-ebc32e6cdba3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene">
-      <UniqueIdentifier>{c6e20f0a-752b-4c44-9d83-08f4d88043e4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sprite">
       <UniqueIdentifier>{ac01b05d-b9c6-4f99-ae90-8db6432ad9fe}</UniqueIdentifier>
     </Filter>
     <Filter Include="Utilities">
       <UniqueIdentifier>{d59bf73d-12e7-43a3-81fa-4274d70f61bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utilities\Algorithms">
-      <UniqueIdentifier>{9294ad71-b1a9-4f43-8585-e73e393e8852}</UniqueIdentifier>
     </Filter>
     <Filter Include="Utilities\Vertex &amp; Index Wrapper &amp; Types">
       <UniqueIdentifier>{ed7f4016-5fff-476c-94ec-aed65f23c14d}</UniqueIdentifier>
@@ -70,9 +64,6 @@
     <Filter Include="Utilities\FileWatcher">
       <UniqueIdentifier>{a88ef690-d1ac-464c-afd0-8137e6a5df35}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Console">
-      <UniqueIdentifier>{3a1f7c40-925b-4af0-aaaf-616352a08e35}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utilities\SystemMonitor">
       <UniqueIdentifier>{f84abf60-8b66-45fc-a803-c22aa3330c1c}</UniqueIdentifier>
     </Filter>
@@ -93,12 +84,6 @@
     </Filter>
     <Filter Include="World">
       <UniqueIdentifier>{4fa57eca-e053-4eb3-ac16-d5c53883127b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Allocators">
-      <UniqueIdentifier>{cb1b4330-5634-491b-97a7-c23bb22f263b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utilities\Gizmo">
-      <UniqueIdentifier>{66e4d076-68b2-458d-aaa6-bae7bf610d69}</UniqueIdentifier>
     </Filter>
     <Filter Include="Debug">
       <UniqueIdentifier>{c870797d-6e95-4414-a67d-acba300a8044}</UniqueIdentifier>
@@ -141,9 +126,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>precompiled</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>Sprite</Filter>
     </ClInclude>
@@ -162,9 +144,6 @@
     <ClInclude Include="IndexWrapper.h">
       <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
     </ClInclude>
-    <ClInclude Include="RectangleBinPack.h">
-      <Filter>Utilities\Algorithms</Filter>
-    </ClInclude>
     <ClInclude Include="VertexStructs.h">
       <Filter>Utilities\Vertex &amp; Index Wrapper &amp; Types</Filter>
     </ClInclude>
@@ -176,9 +155,6 @@
     </ClInclude>
     <ClInclude Include="Text.h">
       <Filter>Text</Filter>
-    </ClInclude>
-    <ClInclude Include="Console.h">
-      <Filter>Console</Filter>
     </ClInclude>
     <ClInclude Include="LightStructs.h">
       <Filter>Light</Filter>
@@ -294,14 +270,8 @@
     <ClInclude Include="TreeDweller.h">
       <Filter>World</Filter>
     </ClInclude>
-    <ClInclude Include="BaseAllocator.h">
-      <Filter>Allocators</Filter>
-    </ClInclude>
     <ClInclude Include="Octree.h">
       <Filter>World</Filter>
-    </ClInclude>
-    <ClInclude Include="LinearAllocator.h">
-      <Filter>Allocators</Filter>
     </ClInclude>
     <ClInclude Include="PostProcessManager.h">
       <Filter>Rendering</Filter>
@@ -314,12 +284,6 @@
     </ClInclude>
     <ClInclude Include="BloomPass.h">
       <Filter>Rendering\Passes</Filter>
-    </ClInclude>
-    <ClInclude Include="GizmoShared.h">
-      <Filter>Utilities\Gizmo</Filter>
-    </ClInclude>
-    <ClInclude Include="GizmoBase.h">
-      <Filter>Utilities\Gizmo</Filter>
     </ClInclude>
     <ClInclude Include="VirtualFileSystem.h">
       <Filter>Utilities</Filter>
@@ -347,9 +311,6 @@
     </ClInclude>
     <ClInclude Include="RenderCommand.h">
       <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandAllocator.h">
-      <Filter>Allocators</Filter>
     </ClInclude>
     <ClInclude Include="SSAOPass.h">
       <Filter>Rendering\Passes</Filter>
@@ -421,12 +382,6 @@
     <ClInclude Include="AssetFactory.h">
       <Filter>Factories</Filter>
     </ClInclude>
-    <ClInclude Include="Inspector.h" />
-    <ClInclude Include="InspectorView.h" />
-    <ClInclude Include="PhysicsView.h" />
-    <ClInclude Include="GraphicsView.h" />
-    <ClInclude Include="TransformView.h" />
-    <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="..\Include\imgui\imgui_internal.h">
       <Filter>Imgui</Filter>
     </ClInclude>
@@ -457,13 +412,52 @@
     <ClInclude Include="..\Include\imgui\imgui_impl_dx11.h">
       <Filter>Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainSystem.h" />
-    <ClInclude Include="QuadTree.h" />
-    <ClInclude Include="QuadTreeNode.h" />
-    <ClInclude Include="SSRPass.h" />
-    <ClInclude Include="IPostprocessPass.h" />
-    <ClInclude Include="BlurPass.h" />
     <ClInclude Include="shader_types.h" />
+    <ClInclude Include="BlurPass.h">
+      <Filter>Rendering\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="IPostprocessPass.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SSRPass.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainSystem.h">
+      <Filter>Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsView.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Inspector.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="InspectorView.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsView.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformView.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadTreeNode.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadTree.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseAllocator.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandAllocator.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearAllocator.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -493,17 +487,11 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>precompiled</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>Sprite</Filter>
     </ClCompile>
     <ClCompile Include="SpriteModel.cpp">
       <Filter>Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="RectangleBinPack.cpp">
-      <Filter>Utilities\Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="Font.cpp">
       <Filter>Text</Filter>
@@ -513,9 +501,6 @@
     </ClCompile>
     <ClCompile Include="Text.cpp">
       <Filter>Text</Filter>
-    </ClCompile>
-    <ClCompile Include="Console.cpp">
-      <Filter>Console</Filter>
     </ClCompile>
     <ClCompile Include="DirectionalLight.cpp">
       <Filter>Light\Directional</Filter>
@@ -628,14 +613,8 @@
     <ClCompile Include="TreeDweller.cpp">
       <Filter>World</Filter>
     </ClCompile>
-    <ClCompile Include="BaseAllocator.cpp">
-      <Filter>Allocators</Filter>
-    </ClCompile>
     <ClCompile Include="Octree.cpp">
       <Filter>World</Filter>
-    </ClCompile>
-    <ClCompile Include="LinearAllocator.cpp">
-      <Filter>Allocators</Filter>
     </ClCompile>
     <ClCompile Include="PostProcessManager.cpp">
       <Filter>Rendering</Filter>
@@ -648,12 +627,6 @@
     </ClCompile>
     <ClCompile Include="BloomPass.cpp">
       <Filter>Rendering\Passes</Filter>
-    </ClCompile>
-    <ClCompile Include="GizmoShared.cpp">
-      <Filter>Utilities\Gizmo</Filter>
-    </ClCompile>
-    <ClCompile Include="GizmoBase.cpp">
-      <Filter>Utilities\Gizmo</Filter>
     </ClCompile>
     <ClCompile Include="VirtualFileSystem.cpp">
       <Filter>Utilities</Filter>
@@ -678,9 +651,6 @@
     </ClCompile>
     <ClCompile Include="RenderCommand.cpp">
       <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandAllocator.cpp">
-      <Filter>Allocators</Filter>
     </ClCompile>
     <ClCompile Include="SSAOPass.cpp">
       <Filter>Rendering\Passes</Filter>
@@ -733,12 +703,6 @@
     <ClCompile Include="AssetFactory.cpp">
       <Filter>Factories</Filter>
     </ClCompile>
-    <ClCompile Include="Inspector.cpp" />
-    <ClCompile Include="PhysicsView.cpp" />
-    <ClCompile Include="InspectorView.cpp" />
-    <ClCompile Include="GraphicsView.cpp" />
-    <ClCompile Include="TransformView.cpp" />
-    <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="..\Include\imgui\ImGuizmo.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
@@ -754,10 +718,47 @@
     <ClCompile Include="..\Include\imgui\imgui_impl_dx11.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="TerrainSystem.cpp" />
-    <ClCompile Include="QuadTree.cpp" />
-    <ClCompile Include="QuadTreeNode.cpp" />
-    <ClCompile Include="SSRPass.cpp" />
-    <ClCompile Include="BlurPass.cpp" />
+    <ClCompile Include="BlurPass.cpp">
+      <Filter>Rendering\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SSRPass.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainSystem.cpp">
+      <Filter>Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsView.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Inspector.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="InspectorView.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsView.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformView.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadTree.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadTreeNode.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseAllocator.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandAllocator.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearAllocator.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

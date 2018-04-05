@@ -1,17 +1,15 @@
 #pragma once
 
-#include "../CommonLib/DataStructures/GrowingArray.h"
-#include "../CommonLib/DataStructures/StaticArray.h"
+#include <CommonLib/DataStructures/GrowingArray.h>
+#include <CommonLib/DataStructures/StaticArray.h>
 
 #include "engine_shared.h"
-#include <Engine/IGraphicsAPI.h>
 
 #include <map>
+#include <Engine/IGraphicsAPI.h>
 
-class ShaderWarningHandler;
 class FileWatcher;
 class Effect;
-
 struct CompiledShader
 {
 	CompiledShader() = default;

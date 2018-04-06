@@ -29,8 +29,6 @@ struct VS_OUTPUT
 	float4 binorm : BINORMAL;
 	float4 tang : TANGENT;
 	float4 worldpos : POSITION;
-	float2 data0 : DATA;
-	float4 displaced : DISPLACE;
 #ifdef _DEBUG
 	unsigned int entity_id : ID;
 #endif
@@ -53,12 +51,12 @@ VS_OUTPUT main(VS_INPUT input)
 	output.tang  = mul(input.tang , world_matrices);
 	output.worldpos = mul(input.pos, world_matrices);
 
-	output.data0.x = input.data0.x;
-	output.data0.y = input.data0.y;
+	// output.data0.x = input.data0.x;
+	// output.data0.y = input.data0.y;
 
 	output.uv = input.uv;
 	float4 dv = HeightTexture.SampleLevel(sampler0, output.uv, 0);
-	output.displaced = dv;
+	// output.displaced = dv;
 	float df = 0.30*dv.x + 0.59*dv.y + 0.11*dv.z;
 
 	float4 displacement = float4(input.normal.xyz * df * 0.2, 0) + input.pos; 

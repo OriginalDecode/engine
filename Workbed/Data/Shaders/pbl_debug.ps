@@ -32,21 +32,6 @@ struct VS_OUTPUT
 	float4 binorm : BINORMAL;
 	float4 tang : TANGENT;
 	float4 worldpos : POSITION;
-	float2 data0 : DATA;
-	float4 displaced : DISPLACE;
-#ifdef _DEBUG
-	unsigned int entity_id : ID;
-#endif
-};
-
-struct ps_input_no_instance
-{
-	float4 pos : SV_POSITION;
-	float4 normal : NORMAL;
-	float2 uv : TEXCOORD;
-	float4 binorm : BINORMAL;
-	float4 tang : TANGENT;
-	float4 worldpos : POSITION;
 #ifdef _DEBUG
 	unsigned int entity_id : ID;
 #endif
@@ -60,7 +45,7 @@ float3 ToColor(unsigned int e)
 	return float3(r,g,b);
 };
 
-GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
+GBuffer main(VS_OUTPUT input) : SV_Target
 {
 	float3 _normal = NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
 	float3 nnormal = normalize(input.normal.xyz );
@@ -100,38 +85,38 @@ GBuffer main_non_instanced(ps_input_no_instance input) : SV_Target
     return output;
 };
 
-GBuffer main(VS_OUTPUT input) : SV_Target
-{
-	float3 _normal = NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
-	float3 nnormal = normalize(input.normal.xyz );
+// GBuffer main(VS_OUTPUT input) : SV_Target
+// {
+// 	float3 _normal = NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
+// 	float3 nnormal = normalize(input.normal.xyz );
 
-	float3 binorm = normalize(cross(input.normal.xyz, input.tang.xyz));
-	float3 tang = normalize(cross(input.normal.xyz, binorm));
-	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, nnormal);
-	_normal = normalize(mul(_normal.xyz, tangentSpaceMatrix));
+// 	float3 binorm = normalize(cross(input.normal.xyz, input.tang.xyz));
+// 	float3 tang = normalize(cross(input.normal.xyz, binorm));
+// 	float3x3 tangentSpaceMatrix = float3x3(tang, binorm, nnormal);
+// 	_normal = normalize(mul(_normal.xyz, tangentSpaceMatrix));
 
-	_normal += 1;
-	_normal *= 0.5;
+// 	_normal += 1;
+// 	_normal *= 0.5;
 
-	GBuffer output = (GBuffer)0;
-	bool override_pbl = false;
-	float4 metalness_override = MetalnessTexture.Sample(sampler0, input.uv);
-	float4 roughness_override = 1 - RoughnessTexture.Sample(sampler0, input.uv); 
+// 	GBuffer output = (GBuffer)0;
+// 	bool override_pbl = false;
+// 	float4 metalness_override = MetalnessTexture.Sample(sampler0, input.uv);
+// 	float4 roughness_override = 1 - RoughnessTexture.Sample(sampler0, input.uv); 
 
-	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);
-	albedo.rgb = pow(albedo.rgb, 2.2);
-	output.Albedo = albedo;
+// 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);
+// 	albedo.rgb = pow(albedo.rgb, 2.2);
+// 	output.Albedo = albedo;
 
-    output.Normal = float4(_normal, 1);
-    output.Depth.x = 1 - input.pos.z;
-	output.Depth.y = roughness_override.r;
-	output.Depth.z = metalness_override.r;
-	output.Emissive = 0;//input.displaced;
-#ifdef _DEBUG
-    output.IDTexture = float4(ToColor(input.entity_id), 0);
-	output.Roughness = roughness_override.rrrr;
-	output.Metalness = metalness_override.xxxx;
-#endif
+//     output.Normal = float4(_normal, 1);
+//     output.Depth.x = 1 - input.pos.z;
+// 	output.Depth.y = roughness_override.r;
+// 	output.Depth.z = metalness_override.r;
+// 	output.Emissive = 0;//input.displaced;
+// #ifdef _DEBUG
+//     output.IDTexture = float4(ToColor(input.entity_id), 0);
+// 	output.Roughness = roughness_override.rrrr;
+// 	output.Metalness = metalness_override.xxxx;
+// #endif
 
-    return output ;
-};
+//     return output ;
+// };

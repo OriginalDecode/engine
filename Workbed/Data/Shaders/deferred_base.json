@@ -5,6 +5,6 @@
     },
     "PixelShader": {
         "file": "pbl_debug.ps",
-        "entrypoint": "main_non_instanced"
+        "entrypoint": "main"
     }
 }

@@ -274,9 +274,9 @@ template <typename T>
 void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* scene, std::string file, T* parent)
 {
 
+
 	bool _thread = false;
 	bool thread2 = false;
-
 	volatile s32 _meshes_done = 0;
 	for (u32 i = 0; i < aNode->mNumMeshes; i++)
 	{

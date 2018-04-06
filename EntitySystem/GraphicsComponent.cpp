@@ -16,15 +16,7 @@ constexpr char* s_Instances = "instances";
 void ModelInstance::Deserialize(const rapidjson::Value& json_value, ModelInstance& instance)
 {
 	instance.m_Filename = json_value[s_ModelFile].GetString();
-
-// 	if (instance.m_Filename.compare("Data/Game_Models/SM_dev_wall_200_x_400.fbx") == 0)
-// 	{
-// 		instance.m_Filename = "Data/Game_Models/SM_dev_wall_400_x_400.fbx";
-// 	}
-
 	instance.m_ModelID = Engine::GetInstance()->LoadModelA(instance.m_Filename, s_base, false);
-	//instance.m_ModelID =  Engine::GetInstance()->LoadModel<Model>(instance.m_Filename, "s_Shader", true); 
-
 	instance.m_MaterialFile = json_value[s_MaterialFile].GetString();
 	if (instance.m_MaterialFile.empty())
 	{

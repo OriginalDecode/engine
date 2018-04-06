@@ -249,7 +249,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float albedoLum = 0.3 * albedo.r + 0.6 * albedo.g + albedo.b * 0.1; 
 	float3 albedoTint = albedoLum > 0 ? albedo.rgb / albedoLum : float3(1,1,1); 
 
-	ambient.rgb *= albedoTint;
+	//ambient.rgb *= albedoTint;
 	// ambient *= in_shadow ? 0.22 : 1;
 	ambient.a = 1;
 
@@ -264,7 +264,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float D = D_GGX(HdotN, roughness );
 	float3 F = Fresnel(VdH, substance.rgb);
-	float G = Geometric_Smith_Schlick_GGX((1 - roughness) / 2, VdH, NdL);
+	float G = Geometric_Smith_Schlick_GGX((1 - roughness) / 2, NdV, NdL);
 	float3 cook = CookTorranceBRDF(D,F,G, NdL, NdV);
 
 	float3 directDiffuse = 0, directSpec = 0;
@@ -278,7 +278,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	//return float4(directSpec,1);
 
-	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1)  * float4(light_col, 1);
+	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1) * float4(albedoTint, 1);///  * float4(light_col, 1);
 
 	return final;
 

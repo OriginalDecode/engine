@@ -109,7 +109,7 @@ float Geometric_Smith_Schlick_GGX(float r, float ndv, float ndl)
 	float k = (r * r) * 0.5f;
 	float GV = ndv / (ndv * (1 - k) + k);
 	float GL = ndl / (ndl * (1 - k) + k);
-	return GV*GL;
+	return GV * GL;
 }
 
 // GGX (Trowbridge-Reitz) (D) Normal Distribution Function , NDF
@@ -202,8 +202,10 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float HdotN = dot(half_vec, normal);
 	float NdV = dot(normal, to_eye); 
 	float LdV = dot(light_dir, to_eye);
+	float VdH = saturate(dot(to_eye, half_vec));
 
-	float3 refVec = reflect(-to_eye.xyz, normal.xyz);
+
+	float3 refVec = normalize(reflect(-to_eye.xyz, normal.xyz));
 
 	// float4 metalness_albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);
 	//float4 metalness_albedo = float4((0.04f - 0.04f * metalness) + albedo.rgb * metalness, 1.0);
@@ -240,42 +242,43 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float4 reflection_fresnel = float4(ReflectionFresnel(substance.rgb, normal.xyz, to_eye, 1 - roughnessOffsetted), 1);
 	
-	float4 cube = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
+	float4 radiance = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
 	float3 irradiance = CubeMap.SampleLevel(sampler1, normal, nMips).rgb * metalness_albedo.rgb * ( 1 - reflection_fresnel.rgb);
 
-	float4 ambient = float4(irradiance,1) + cube;
+	float4 ambient = float4(irradiance,1) + radiance;
 	float albedoLum = 0.3 * albedo.r + 0.6 * albedo.g + albedo.b * 0.1; 
 	float3 albedoTint = albedoLum > 0 ? albedo.rgb / albedoLum : float3(1,1,1); 
 
 	ambient.rgb *= albedoTint;
-	ambient *= in_shadow ? 0.22 : 1;
+	// ambient *= in_shadow ? 0.22 : 1;
 	ambient.a = 1;
 
 
 	float4 diffuse = 0;// metalness_albedo * cube_ambient2;
 	float4 spec = 0;
-	float3 light_col = float3(1, 1, 1);
+	float3 light_col = float3(1, 1.0, 1.0);
 	float light_intensity = 1;
 	float rough2 = roughness * roughness;
 	float rough2half = rough2 / 2;
 
 
-
 	float D = D_GGX(HdotN, roughness );
-	float3 F = Fresnel(NdV, substance.rgb);
+	float3 F = Fresnel(VdH, substance.rgb);
 	float G = Geometric_Smith_Schlick_GGX((1 - roughness) / 2, NdV, NdL);
 	float3 cook = CookTorranceBRDF(D,F,G, NdL, NdV);
 
 	float3 directDiffuse = 0, directSpec = 0;
 	
-	if(!in_shadow)
+	//if(!in_shadow)
 	{	
-		directDiffuse = (saturate(( 1-F ) * NdL * metalness_albedo * light_col) * light_intensity);
-		directSpec = (F * D * G * NdL * light_col * light_intensity);
+		directDiffuse = (saturate(( 1-F ) * NdL * metalness_albedo ) );
+		directSpec = (saturate(F * D * G) * NdL * light_col );
 	}
+
+
 	//return float4(directSpec,1);
 
-	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1) ;
+	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1)  * float4(light_col, 1);
 
 	return final;
 

@@ -73,7 +73,8 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		PROFILE_BLOCK_END;
 #endif
 
-		
+		CU::Matrix44f world;
+		world.SetPosition({ 512, 0, 512, 1 });
 		for (const ModelInstance& instance : render.m_Instances)
 		{
 			const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(1,1,1,1)) * instance.m_Orientation;
@@ -82,7 +83,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 
 			AddRenderCommand(ModelCommand(instance.m_ModelID
 										  , instance.m_MaterialKey
-										  , relative * translation.GetOrientation()
+										  , world * (relative * translation.GetOrientation())
 										  , render.m_RenderWireframe
 #ifdef _DEBUG
 										  , e));

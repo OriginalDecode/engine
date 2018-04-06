@@ -84,6 +84,12 @@ namespace CommonUtilities
 			const Vector4<TYPE> GetUp() const;
 			const Vector4<TYPE> GetScale() const;
 
+			void LookAt(const Vector3<TYPE>& eye, const Vector3<TYPE>& target, const Vector3<TYPE>& up);
+
+
+			void SetX(const Vector3<TYPE>& v);
+			void SetY(const Vector3<TYPE>& v);
+			void SetZ(const Vector3<TYPE>& v);
 
 			const Matrix44<TYPE> Inverse(Matrix44<TYPE>& aMatrix);
 			void Init(TYPE* aMatrix)
@@ -122,6 +128,44 @@ namespace CommonUtilities
 			};
 			const Matrix44<TYPE> Calculate(const RotationType& rotation, const TYPE& cos, const TYPE& sin);
 		};
+
+		template<typename TYPE>
+		void Matrix44<TYPE>::LookAt(const Vector3<TYPE>& eye, const Vector3<TYPE>& target, const Vector3<TYPE>& up)
+		{
+			Vector3<TYPE> z = eye - target;
+			z = GetNormalized<TYPE>(z);
+			Vector3<TYPE> x = Cross<TYPE>(up, z);
+			Vector3<TYPE> y = Cross<TYPE>(z, x);
+
+			SetX(x);
+			SetY(y);
+			SetZ(z);
+			//SetTranslation(eye);
+		}
+
+		template<typename TYPE>
+		void Matrix44<TYPE>::SetZ(const Vector3<TYPE>& v)
+		{
+			mat[2][0] = v.x;
+			mat[2][1] = v.y;
+			mat[2][2] = v.z;
+		}
+
+		template<typename TYPE>
+		void Matrix44<TYPE>::SetY(const Vector3<TYPE>& v)
+		{
+			mat[1][0] = v.x;
+			mat[1][1] = v.y;
+			mat[1][2] = v.z;
+		}
+
+		template<typename TYPE>
+		void Matrix44<TYPE>::SetX(const Vector3<TYPE>& v)
+		{
+			mat[0][0] = v.x;
+			mat[0][1] = v.y;
+			mat[0][2] = v.z;
+		}
 
 		template<typename TYPE>
 		const Vector4<TYPE> Matrix44<TYPE>::GetColumn(int index) const
@@ -258,7 +302,7 @@ namespace CommonUtilities
 
 			new_matrix[5] = 2.f / height;
 			
-			new_matrix[10] = 1.f / (far_plane - near_plane);
+			new_matrix[10] = -1.f / (far_plane - near_plane);
 
 			new_matrix[14] = near_plane / (near_plane - far_plane);
 			new_matrix[15] = 1.f;

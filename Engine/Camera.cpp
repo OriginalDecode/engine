@@ -209,6 +209,7 @@ void Camera::Update(const CU::Vector2f& cursor_pos)
 
 void Camera::Update()
 {
+	m_Orientation2 = m_Orientation;
 	m_PixelOrientation = m_Rotation2 * m_Orientation2;
 	m_ViewProj = CU::Math::Inverse(m_PixelOrientation) * m_ProjectionMatrix;
 	m_InvProjectionMatrix = CU::Math::InverseReal(m_ProjectionMatrix);
@@ -307,6 +308,13 @@ void Camera::InvertAll()
 	InvertYaw();
 }
 
+
+void Camera::LookAt(const CU::Vector3f& eye, const CU::Vector3f& target, const CU::Vector3f& up)
+{
+	m_Rotation.LookAt(eye, target, up);
+	SetPosition(eye);
+	OrientCamera();
+}
 
 void Camera::SetAt(const CU::Vector4f& at)
 {

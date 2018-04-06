@@ -3,6 +3,7 @@
 #include <Engine/Effect.h>
 #include <Engine/Engine.h>
 #include <Engine/Renderer.h>
+#include <Engine/Viewport.h>
 
 
 void ShadowDirectional::Initiate(float buffer_size)
@@ -85,8 +86,9 @@ void ShadowDirectional::Update()
 #endif
 	CU::Vector3f pos = Engine::GetInstance()->GetCamera()->GetPosition();
 	//m_Camera->SetPosition(pos);
-	m_Camera->Update();
 	//m_Camera->SetAt(CU::Vector4f(Engine::GetInstance()->GetRenderer()->GetLightDirection(), 1));
+	m_Camera->LookAt(m_Camera->GetPosition(), pos, CU::Vector3f(0, 1, 0));
+	m_Camera->Update();
 }
 
 CU::Matrix44f ShadowDirectional::GetMVP()

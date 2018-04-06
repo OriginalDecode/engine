@@ -89,10 +89,10 @@ void Game::Initiate(const std::string& level)
 	m_Picker = new CMousePicker;
 
 	m_Camera = m_Engine->GetCamera();
-	m_Camera->SetPosition(CU::Vector3f(0, 10, 0));
+	m_Camera->SetPosition(CU::Vector3f(512, 20, 512));
 	//m_Camera->RotateAroundY(cl::DegreeToRad(45.f));
 	//m_Camera->RotateAroundX(cl::DegreeToRad(20.f));
-	m_Camera->Update(CU::Vector2f(0.f,0.f));
+	m_Camera->Update();
 	CameraHandle::Create();
 	CameraHandle::GetInstance()->Initiate(nullptr /* this should be the player, or a child matrix to the player (relative position with an offset that can rotate around the player object) */);
 	m_PauseState.InitState(m_StateStack);
@@ -207,7 +207,7 @@ void Game::Update(float dt)
 
 	if (!done)
 	{
-		_lifetime += 0.016;
+		_lifetime += 0.016f;
 
 		if (_lifetime > 1.f && second_curve)
 			done = true;
@@ -253,13 +253,13 @@ void Game::Update(float dt)
 	//if(_pointList.size() > 0)
 		//AddRenderCommand(ModelCommand(g_DefaultModel, g_DefaultMaterial, _pointList[_index], false));
 	
-//#ifndef LOAD_LEVEL
-//	AddRenderCommand(ModelCommand(building, CU::Vector3f(0, 0, 0), false));
-//#ifndef SUNTEMPEL
-//	AddRenderCommand(ModelCommand(curtain, CU::Vector3f(0, 0, 0), false));
-//	AddRenderCommand(ModelCommand(pole, CU::Vector3f(0, 0, 0), false));
-//#endif
-//#endif
+#ifndef LOAD_LEVEL
+	AddRenderCommand(ModelCommand(building, CU::Vector3f(0, 0, 0), false));
+#ifndef SUNTEMPEL
+	AddRenderCommand(ModelCommand(curtain, CU::Vector3f(0, 0, 0), false));
+	AddRenderCommand(ModelCommand(pole, CU::Vector3f(0, 0, 0), false));
+#endif
+#endif
 
 	_index++;
 	if (_index >= _pointList.size())

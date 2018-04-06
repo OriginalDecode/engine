@@ -98,6 +98,8 @@ public:
 
 	CU::Matrix44f& GetPixelOrientation() { return m_PixelOrientation; }
 
+	void LookAt(const CU::Vector3f& eye, const CU::Vector3f& target, const CU::Vector3f& up);
+
 private:
 	void operator=(Camera&) = delete;
 

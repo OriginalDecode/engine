@@ -215,10 +215,10 @@ void Renderer::Render()
  	WriteDebugTextures();
  
  	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
- 	DrawEntity(m_HoverTexture, hovered);
+ 	//DrawEntity(m_HoverTexture, hovered);
  
  	const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
- 	DrawEntity(m_SelectedTexture, selected);
+ 	//DrawEntity(m_SelectedTexture, selected);
  
  #endif
  
@@ -284,7 +284,6 @@ static CU::Matrix44f orientation;
 
 void Renderer::DrawEntity(Texture* pTex, Entity e)
 {
-	return;
 	if (e <= 0)
 		return;
 	

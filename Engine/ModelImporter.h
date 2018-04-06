@@ -1,10 +1,12 @@
 #pragma once
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
 #include <Engine/Surface.h>
 #include "engine_shared.h"
+
 #ifdef _DEBUG
 #include <TimeManager.h>
 #endif
@@ -23,7 +25,12 @@
 #include <Engine/IGraphicsAPI.h>
 #include <Engine/IGraphicsDevice.h>
 #include <Engine/IGraphicsContext.h>
+
+//#define IMPORT_THREAD
+#ifdef IMPORT_THREAD
 #include <CommonLib/Threadpool.h>
+#endif
+
 #include "shader_types.h"
 class Engine;
 class aiNode;
@@ -86,7 +93,9 @@ private:
 	};
 #pragma endregion
 
+#ifdef IMPORT_THREAD
 	Threadpool m_Pool;
+#endif
 	Effect* m_Effect;
 
 	template<typename T>
@@ -142,7 +151,9 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 								   //aiProcess_OptimizeGraph |
 								   //aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
 		0;
+#ifdef IMPORT_THREAD
 	m_Pool.Initiate("model-importer");
+#endif
 	//This code should be moved to release and kept running at release for fast load times in debug.
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filepath, processFlags);
@@ -158,7 +169,11 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	ProcessNode(rootNode, scene, filepath, pModel);
 
 
+
+#ifdef IMPORT_THREAD
 	m_Pool.CleanUp();
+#endif
+
 	pModel->SetIsInstanced(instanced); 
 
 	timer.Update();
@@ -265,6 +280,7 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* scene, std::strin
 	volatile s32 _meshes_done = 0;
 	for (u32 i = 0; i < aNode->mNumMeshes; i++)
 	{
+#ifdef IMPORT_THREAD
 		if (_thread)
 		{
 			m_Pool.AddWork(Work([&, i]
@@ -275,26 +291,30 @@ void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* scene, std::strin
 			}));
 		}
 		else
+#endif
 		{
 			ProcessMesh<T>(aNode->mMeshes[i], scene, file, parent);
 			_meshes_done++;
 		}
 	}
 
+#ifdef IMPORT_THREAD
 	while (_meshes_done < aNode->mNumMeshes)
 	{
 		m_Pool.Update();
 	}
-
+#endif
 
 	for (u32 i = 0; i < aNode->mNumChildren; i++)
 	{
 		aiNode* node = aNode->mChildren[i];
+#ifdef IMPORT_THREAD
 		if (thread2)
 		{
 			m_Pool.AddWork(Work([=] { ProcessNode<T>(node, scene, file, parent); }));
 		}
 		else
+#endif
 		{
 			ProcessNode<T>(node, scene, file, parent);
 		}
@@ -724,3 +744,4 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 
 }
 
+#undef IMPORT_THREAD

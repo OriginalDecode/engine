@@ -264,7 +264,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float D = D_GGX(HdotN, roughness );
 	float3 F = Fresnel(VdH, substance.rgb);
-	float G = Geometric_Smith_Schlick_GGX((1 - roughness) / 2, NdV, NdL);
+	float G = Geometric_Smith_Schlick_GGX((1 - roughness) / 2, VdH, NdL);
 	float3 cook = CookTorranceBRDF(D,F,G, NdL, NdV);
 
 	float3 directDiffuse = 0, directSpec = 0;

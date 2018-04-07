@@ -105,9 +105,9 @@ private:
 
 
 	void UpdateOrientation();
-	void MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed);
-	void MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed);
-	void MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed);
+
+	void Move(CU::Vector4f& position, const CU::Vector4f& dir, float speed);
+
 	void OrientCamera();
 
 	float m_LookSpeedModifier = 0.005f; //sensitivity

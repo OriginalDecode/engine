@@ -331,25 +331,24 @@ void Camera::Move(eDirection aDirection, float aSpeed)
 	switch ( aDirection )
 	{
 		case eDirection::FORWARD:
-		MoveForwardAndBack(position, aSpeed);
-		break;
 		case eDirection::BACK:
-		MoveForwardAndBack(position, aSpeed);
-		break;
-		case eDirection::UP:
-		MoveUpAndDown(position, aSpeed);
+			Move(position, m_Rotation.GetForward(), aSpeed);
 		break;
 		case eDirection::DOWN:
-		MoveUpAndDown(position, aSpeed);
-		break;
-		case eDirection::LEFT:
-		MoveLeftAndRight(position, aSpeed);
+		case eDirection::UP:
+			Move(position, m_Rotation.GetUp(), aSpeed);
 		break;
 		case eDirection::RIGHT:
-		MoveLeftAndRight(position, aSpeed);
+		case eDirection::LEFT:
+			Move(position, m_Rotation.GetRight(), aSpeed);
 		break;
 	}
 	m_Orientation.SetTranslation(position);
+}
+
+void Camera::Move(CU::Vector4f& position, const CU::Vector4f& dir, float speed)
+{
+	position += dir * speed;
 }
 
 void Camera::UpdateOrientation()
@@ -377,25 +376,6 @@ void Camera::UpdateOrientation()
 	m_Rotation[9] = axisZ.y;
 	m_Rotation[10] = axisZ.z;
 }
-
-void Camera::MoveForwardAndBack(CU::Vector4f& aPosition, float aSpeed)
-{
-	CU::Math::Vector4<float> forward = m_Rotation.GetForward();
-	aPosition += forward * aSpeed;
-}
-
-void Camera::MoveUpAndDown(CU::Vector4f& aPosition, float aSpeed)
-{
-	CU::Math::Vector4<float> up = m_Rotation.GetUp();
-	aPosition += up * aSpeed;
-}
-
-void Camera::MoveLeftAndRight(CU::Vector4f& aPosition, float aSpeed)
-{
-	CU::Math::Vector4<float> right = m_Rotation.GetRight();
-	aPosition += right * aSpeed;
-}
-
 
 void Camera::OrientCamera()
 {

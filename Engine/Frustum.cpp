@@ -10,8 +10,9 @@ void Frustum::Initiate(float near_plane, float far_plane, float fov, const CU::M
 	m_Orientation = orientation;
 	m_FarPlane = far_plane;
 	m_NearPlane = near_plane;
-
-	const float rotation = cl::DegreeToRad(m_FOV) ;
+	m_Width = far_plane;
+	m_Height = far_plane;
+	const float rotation = cl::DegreeToRad(m_FOV / 2) ;
 
 	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, near_plane), CU::Vector3f(0, 0, -1))); //near
 	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, far_plane), CU::Vector3f(0, 0, 1))); //far
@@ -27,12 +28,37 @@ void Frustum::Initiate(float near_plane, float far_plane, float fov, const CU::M
 
 }
 
+void Frustum::Initiate(float height, float width, float near_plane, float far_plane, float fov, const CU::Matrix44f* orientation)
+{
+	m_FOV = fov;
+	m_Orientation = orientation;
+	m_FarPlane = far_plane;
+	m_NearPlane = near_plane;
+	m_Width = width;
+	m_Height = height;
+
+
+	const float rotation = cl::DegreeToRad(m_FOV);
+
+	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, near_plane), CU::Vector3f(0, 0, -1))); //near
+	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, far_plane), CU::Vector3f(0, 0, 1))); //far
+	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(rotation, 0, -rotation))); //right
+	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(-rotation, 0, -rotation))); //left
+	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, rotation, -rotation))); //up
+	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, -rotation, -rotation))); //down
+
+	m_UpLeft = CU::Vector4f(-width/2, +height/2, +far_plane, 1.f);
+	m_UpRight = CU::Vector4f(+width/2, +height/2, +far_plane, 1.f);
+	m_DownLeft = CU::Vector4f(-width/2, -height/2, +far_plane, 1.f);
+	m_DownRight = CU::Vector4f(+width/2, -height/2, +far_plane, 1.f);
+}
+
 void Frustum::Update()
 {
 	m_InvertedOrientation = CU::Math::Inverse(*m_Orientation);
 	CalcCorners();
 	//UpdateOBB();
-	//DrawFrustum();
+	DrawFrustum();
 }
 
 bool Frustum::Inside(const CU::Vector3f& position, float radius) const
@@ -43,10 +69,27 @@ bool Frustum::Inside(const CU::Vector3f& position, float radius) const
 
 bool Frustum::InsideAABB(const CU::Vector3f& position) const
 {
-	if ( position > m_Orientation->GetPosition() - m_FarPlane && position < m_Orientation->GetPosition() + m_FarPlane )
-		return true;
 
-	return false;
+	if (position.z > m_Orientation->GetPosition().z + m_FarPlane)
+		return false;
+
+	if (position.y > m_Orientation->GetPosition().y + m_Height / 2)
+		return false;
+
+	if (position.x > m_Orientation->GetPosition().x + m_Width / 2)
+		return false;
+
+	if (position.z < m_Orientation->GetPosition().z)
+		return false;
+
+	if (position.y < m_Orientation->GetPosition().y - m_Height / 2)
+		return false;
+
+	if (position.x < m_Orientation->GetPosition().x - m_Width / 2)
+		return false;
+
+
+	return true;
 }
 
 bool Frustum::InsideAABB(const CU::Vector4f& position) const
@@ -68,10 +111,10 @@ void Frustum::OnResize(float new_fov)
 	m_Volume.m_Planes[4] = ( CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, rotation, -rotation)) ); //up
 	m_Volume.m_Planes[5] = ( CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, -rotation, -rotation)) ); //down
 
-	m_UpLeft = CU::Vector4f(-m_FarPlane, +m_FarPlane, +m_FarPlane, 1.f);
-	m_UpRight = CU::Vector4f(+m_FarPlane, +m_FarPlane, +m_FarPlane, 1.f);
-	m_DownLeft = CU::Vector4f(-m_FarPlane, -m_FarPlane, +m_FarPlane, 1.f);
-	m_DownRight = CU::Vector4f(+m_FarPlane, -m_FarPlane, +m_FarPlane, 1.f);
+	m_UpLeft = CU::Vector4f(-m_Width / 2, +m_Height / 2, +m_FarPlane, 1.f);
+	m_UpRight = CU::Vector4f(+m_Width / 2, +m_Height / 2, +m_FarPlane, 1.f);
+	m_DownLeft = CU::Vector4f(-m_Width / 2, -m_Height / 2, +m_FarPlane, 1.f);
+	m_DownRight = CU::Vector4f(+m_Width / 2, -m_Height / 2, +m_FarPlane, 1.f);
 }
 
 void Frustum::DrawFrustum()
@@ -108,22 +151,22 @@ void Frustum::DrawFrustum()
 	const float half_width = m_FarPlane ;
 	p5.position = far_plane;
 
-	p5.position += ( left * half_width );
-	p5.position += ( down * half_width );
+	p5.position += ( left * m_Width / 2.f );
+	p5.position += ( down *  m_Height / 2.f);
 
 
 	p6.position = far_plane;
-	p6.position += ( left * half_width );
-	p6.position += ( up * half_width );
+	p6.position += ( left * m_Width / 2.f);
+	p6.position += ( up *  m_Height / 2.f);
 
 	p7.position = far_plane;
-	p7.position += ( right * half_width );
-	p7.position += ( down * half_width );
+	p7.position += ( right * m_Width / 2.f);
+	p7.position += ( down *  m_Height / 2.f);
 
 
 	p8.position = far_plane;
-	p8.position += ( right * half_width );
-	p8.position += ( up * half_width );
+	p8.position += ( right * m_Width / 2.f);
+	p8.position += ( up * m_Height /2.f );
 
 
 
@@ -255,6 +298,9 @@ void Frustum::CalcCorners()
 {
 	CU::Vector4f result = m_Orientation->GetTranslation();
 
+	auto sync = Engine::GetInstance()->GetSynchronizer();
+
+
 	result.x = fminf(result.x, ( m_UpLeft * *m_Orientation ).x);
 	result.y = fminf(result.y, ( m_UpLeft * *m_Orientation ).y);
 	result.z = fminf(result.z, ( m_UpLeft * *m_Orientation ).z);
@@ -275,7 +321,11 @@ void Frustum::CalcCorners()
 	m_MinPos.y = result.y;
 	m_MinPos.z = result.z;
 
-	result = CU::Vector4f();
+
+
+
+
+	result = m_Orientation->GetTranslation();
 	result.x = fmaxf(result.x, ( m_UpLeft * *m_Orientation ).x);
 	result.y = fmaxf(result.y, ( m_UpLeft * *m_Orientation ).y);
 	result.z = fmaxf(result.z, ( m_UpLeft * *m_Orientation ).z);
@@ -295,6 +345,16 @@ void Frustum::CalcCorners()
 	m_MaxPos.x = result.x;
 	m_MaxPos.y = result.y;
 	m_MaxPos.z = result.z;
+
+	CU::Vector4f min, max;
+	min = CU::Math::GetNormalized(m_MinPos);
+	max = CU::Math::GetNormalized(m_MaxPos);
+
+
+	std::stringstream ss;
+	ss << "minX : " << m_MinPos.x << "\nminY : " << m_MinPos.y << "\nminZ : " << m_MinPos.z
+		<< "\nmaxX : " << m_MaxPos.x << "\nmaxY : " << m_MaxPos.y << "\nmaxZ : " << m_MaxPos.z;
+	debug::DebugHandle::GetInstance()->AddText(ss.str());
 
 
 }

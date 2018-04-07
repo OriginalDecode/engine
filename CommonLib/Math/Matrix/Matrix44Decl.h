@@ -302,7 +302,7 @@ namespace CommonUtilities
 
 			new_matrix[5] = 2.f / height;
 			
-			new_matrix[10] = -1.f / (far_plane - near_plane);
+			new_matrix[10] = 1.f / (far_plane - near_plane);
 
 			new_matrix[14] = near_plane / (near_plane - far_plane);
 			new_matrix[15] = 1.f;

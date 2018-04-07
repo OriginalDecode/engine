@@ -77,7 +77,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Atmosphere.Initiate(8192, 8192, { 1024, -128.f, 1024.f });
 
  	m_ShadowPass.Initiate(this);
- 	m_DirectionalShadow.Initiate(512);
+ 	m_DirectionalShadow.Initiate(2048);
 
 	m_Direction = CU::Vector3f(0.0f, 1.0f, 0.0f);
 
@@ -467,7 +467,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
 	Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json")->Use();
-	m_TerrainSystem->DrawShadow();
+	//m_TerrainSystem->DrawShadow();
 
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	for (s32 j = 0; j < 8; ++j)

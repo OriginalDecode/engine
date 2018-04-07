@@ -167,6 +167,8 @@ void Texture::InitiateAsRenderTarget(s32 width, s32 height, const std::string& d
 
 void Texture::CreateTextureArray(const char* paths[], const s32 const num_tex, const char* filename)
 {
+	graphics::IGraphicsAPI* api = Engine::GetAPI();
+
 
 	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
 	ID3D11DeviceContext* ctx = nullptr;
@@ -177,8 +179,8 @@ void Texture::CreateTextureArray(const char* paths[], const s32 const num_tex, c
 
 	for (u32 i = 0; i < tex_count; i++)
 	{
-		IShaderResourceView* resource = Engine::GetAPI()->GetDevice().CreateTextureFromFile(paths[i], false, &Engine::GetAPI()->GetContext());
-		src.Add(static_cast<ID3D11ShaderResourceView*>(resource));
+		IShaderResourceView* srv = Engine::GetAPI()->GetDevice().CreateTextureFromFile(paths[i], false, &Engine::GetAPI()->GetContext());
+		src.Add(static_cast<ID3D11ShaderResourceView*>(srv));
 	}
 
 	D3D11_TEXTURE2D_DESC desc;
@@ -204,7 +206,7 @@ void Texture::CreateTextureArray(const char* paths[], const s32 const num_tex, c
 	HRESULT hr = device->CreateTexture2D(&arr_desc, nullptr, &texArray);
 	DL_ASSERT_EXP(hr == S_OK, "Failed to Create texture");
 
-	for (s32 i = 0; i < tex_count; i++)
+	for (u32 i = 0; i < tex_count; i++)
 	{
 		ID3D11Resource* resource = nullptr;
 		src[i]->GetResource(&resource);

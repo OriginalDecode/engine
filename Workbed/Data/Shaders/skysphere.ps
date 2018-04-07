@@ -50,7 +50,6 @@ float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
 	const int jSteps = 8;
 	const float PI = 3.141592;
 
-
 	float2 p = RayVsSphere(view_pos, view_dir, atmosphere_radius);
 
 	if (p.x > p.y)
@@ -60,10 +59,10 @@ float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
 	p.y = min(p.y, c.x);
 
 	float iStepSize = (p.y - p.x) / float(iSteps);
-	float iTime = 0.0f;
+	float iTime = 0.0;
 	float3 totalRlh, totalMie; //total rayleigh & mie contribution
 	float iOdRlh, iOdMie;//optical distribution
-	iOdMie = iOdRlh = 0.0f;
+	iOdMie = iOdRlh = 0.0;
 
 	float mu = dot(view_dir, light_dir);
 	float mu2 = mu*mu;
@@ -127,12 +126,11 @@ float4 main(VS_OUTPUT input) : SV_Target
 	if(depth < 0)
 		discard;
 
-
-	const float3 rsc = float3(5.5e-6, 13.0e-6, 22.4e-6); //rayleigh scatter coefs
-	const double msc = 21e-6; //mie scatter coef
-	const double rsh = 8e3; // rayleigh scale height
-	const double msh = 1.2e3; //mie scale height
-	const double sunI = 26.0; //intensity of the sun
+	const float3 rsc = float3(5.5e-6, 13.0e-6, 22.4e-6); 	// rayleigh scatter coefs
+	const double msc = 21e-6; 								// mie scatter coef
+	const double rsh = 8e3; 								// rayleigh scale height
+	const double msh = 1.2e3; 								// mie scale height
+	const double sunI = 26.0; 								// intensity of the sun
 	const double rPlanet = 6370e3;
 	const double rAtmosphere = 6471e3;
 	const double distr_factor = 0.758;
@@ -150,14 +148,4 @@ float4 main(VS_OUTPUT input) : SV_Target
 	col = saturate(pow(col, 2.2));
 
 	return float4(col, 1);
-
-	//float height = saturate(input.worldpos.y);
-	//float4 center_color = float4(0,1,1,1);
-	//float4 apex_color = float4(0,0,0,1);
-	//float4 twilight_purple = float4(0.13, 0, 0.27, 1);
-	//float4 orange = float4( 0.91, 0.55, 0.09, 1);
-	//float4 blue = float4(0,0,1,1);
-	//float4 output = lerp(float4(1,1,1,1), blue, height);
-	//output = saturate(pow(output, 2.2));
-	//return float4(output.rgb,1);
 }

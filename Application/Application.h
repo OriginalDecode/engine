@@ -31,6 +31,7 @@ public:
 	bool HasQuit();
 	bool CleanUp();
 private:
+	bool m_Initialized = false;
 	/* Threading */
 	std::thread* myLogicThread;
 	volatile bool myQuitFlag = false;

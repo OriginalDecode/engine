@@ -33,7 +33,8 @@ bool Application::Initiate()
 	CoInitialize(0);
 #endif
 
-	return true;
+	m_Initialized = true;
+	return m_Initialized;
 }
 
 void Application::Update()
@@ -74,26 +75,33 @@ void Application::Update()
 
 void Application::OnPause()
 {
-	if (myEngine)
-		myEngine->OnPause();
+	if (!m_Initialized)
+		return;
+
+	myEngine->OnPause();
 }
 
 void Application::OnResume()
 {
-	if (myEngine)
-		myEngine->OnResume();
+	if (!m_Initialized)
+		return;
+
+	myEngine->OnResume();
 }
 
 void Application::OnInactive()
 {
-	if (myEngine)
-		myEngine->OnInactive();
+	if (!m_Initialized)
+		return;
+
+	myEngine->OnInactive();
 }
 
 void Application::OnActive()
 {
-	if (myEngine)
-		myEngine->OnActive();
+	if (!m_Initialized)
+		return;
+	myEngine->OnActive();
 }
 
 void Application::OnExit()
@@ -105,11 +113,17 @@ void Application::OnExit()
 
 void Application::OnAltEnter()
 {
+	if (!m_Initialized)
+		return;
+
 	myEngine->OnAltEnter();
 }
 
 void Application::OnResize()
 {
+	if (!m_Initialized)
+		return;
+
 	myEngine->OnResize();
 }
 

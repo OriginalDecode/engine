@@ -54,8 +54,6 @@ private:
 	TranslationComponent* component;
 	//TreeDweller* m_Player = nullptr;
 	Camera* m_Camera = nullptr;
-	Frustum m_Frustum;
-
 	CU::Matrix44f m_Orientation;
 
 	CMousePicker* m_Picker = nullptr;

@@ -415,35 +415,36 @@ namespace CommonUtilities
 			return tempVector *= aMatrix;
 		}
 
-		template<typename TYPE>
-		const Vector4<TYPE> operator*(const Matrix44<TYPE>& matrix, const Vector4<TYPE>& vector)
-		{
-			Vector4<TYPE> toReturn;
-			toReturn.x = Dot(matrix.rows[0], vector);
-			toReturn.y = Dot(matrix.rows[1], vector);
-			toReturn.z = Dot(matrix.rows[2], vector);
-			toReturn.w = Dot(matrix.rows[3], vector);
-			return toReturn;
-		}
+// 		template<typename TYPE>
+// 		const Vector4<TYPE> operator*(const Matrix44<TYPE>& matrix, const Vector4<TYPE>& vector)
+// 		{
+// 			Vector4<TYPE> toReturn;
+// 			toReturn.x = Dot(matrix.rows[0], vector);
+// 			toReturn.y = Dot(matrix.rows[1], vector);
+// 			toReturn.z = Dot(matrix.rows[2], vector);
+// 			toReturn.w = Dot(matrix.rows[3], vector);
+// 			return toReturn;
+// 		}
+
+// 		template<typename TYPE>
+// 		const Vector3<TYPE> operator*(const Matrix44<TYPE>& matrix, const Vector3<TYPE>& vector)
+// 		{
+// 			return Vector3<TYPE>(
+// 				matrix.myMatrix[0] * vector.x + matrix.myMatrix[1] * vector.y + matrix.myMatrix[2] * vector.z,
+// 				matrix.myMatrix[4] * vector.x + matrix.myMatrix[5] * vector.y + matrix.myMatrix[6] * vector.z,
+// 				matrix.myMatrix[8] * vector.x + matrix.myMatrix[9] * vector.y + matrix.myMatrix[10] * vector.z);
+// 		}
+
+
+
 
 		template<typename TYPE>
-		const Vector3<TYPE> operator*(const Matrix44<TYPE>& matrix, const Vector3<TYPE>& vector)
+		Vector3<TYPE> operator*(const Vector3<TYPE>& v, const Matrix44<TYPE>& m)
 		{
 			return Vector3<TYPE>(
-				matrix.myMatrix[0] * vector.x + matrix.myMatrix[1] * vector.y + matrix.myMatrix[2] * vector.z,
-				matrix.myMatrix[4] * vector.x + matrix.myMatrix[5] * vector.y + matrix.myMatrix[6] * vector.z,
-				matrix.myMatrix[8] * vector.x + matrix.myMatrix[9] * vector.y + matrix.myMatrix[10] * vector.z);
-		}
-
-
-
-
-		template<typename TYPE>
-		const Vector3<TYPE> operator*(const Vector3<TYPE>& aVector, const Matrix44<TYPE>& aMatrix)
-		{
-			Vector4<TYPE> vector4(aVector.x, aVector.y, aVector.z, 1);
-			vector4 = vector4*aMatrix;
-			return Vector3<TYPE>(vector4.x, vector4.y, vector4.z);
+				m[0] * v.x + m[4] * v.y + m[8] * v.z,
+				m[1] * v.x + m[5] * v.y + m[9] * v.z,
+				m[2] * v.x + m[6] * v.y + m[10] * v.z);
 		}
 
 

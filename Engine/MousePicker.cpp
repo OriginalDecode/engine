@@ -45,14 +45,14 @@ void CMousePicker::CalculateCurrentRay(float x, float y)
 CU::Vector4f CMousePicker::ToEyeCoords(const CU::Vector4f& clipCoords)
 {
 	CU::Matrix44f invertedProjection = CU::Math::InverseReal(myCamera->GetPerspective());
-	CU::Vector4f rayOrigin = invertedProjection * clipCoords;
+	CU::Vector4f rayOrigin =  clipCoords * invertedProjection;
 	return CU::Vector4f(rayOrigin.x, rayOrigin.y, 1.f, 0.f);
 }
 
 CU::Vector3f CMousePicker::ToWorldCoords(const CU::Vector4f& eyeCoords)
 {
 	CU::Matrix44f view = CU::Math::Inverse(myCamera->GetOrientation()); //doesn't account for the offset ???6
-	CU::Vector4f rayEnd = view * eyeCoords;
+	CU::Vector4f rayEnd = eyeCoords * view;
 	return CU::Vector3f(rayEnd.x, rayEnd.y, rayEnd.z);
 }
 

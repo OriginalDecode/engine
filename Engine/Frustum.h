@@ -8,6 +8,7 @@ public:
 	Frustum() = default;
 
 	void Initiate(float near_plane, float far_plane, float fov, const CU::Matrix44f* orientation);
+	void Initiate(float height, float width, float near_plane, float far_plane, float fov, const CU::Matrix44f* orientation);
 
 	void Update();
 
@@ -34,6 +35,8 @@ private:
 	float m_FOV = 0.f;
 	float m_NearPlane = 0.f;
 	float m_FarPlane = 0.f;
+	float m_Width = 0.f;
+	float m_Height = 0.f;
 
 	void CalcCorners();
 

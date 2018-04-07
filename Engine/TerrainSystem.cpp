@@ -11,7 +11,6 @@
 #include <Engine/TerrainManager.h>
 
 #define MAX_DEPTH 2
-constexpr float radius = 64.f;
 
 static const char* s_TerrainLevels[] = {
 	"1024",
@@ -34,10 +33,10 @@ TerrainSystem::TerrainSystem()
 	int width = 512;
 	for (int i = 0; i < MAX_DEPTH; i++)
 	{
-		Terrain* terrain = new Terrain(width);
+		Terrain* terrain = new Terrain((float)width);
 		s_HashTerrain.push_back(Hash(s_TerrainLevels[i]));
 		manager->AddTerrain(s_HashTerrain[i], terrain);
-		width *= 0.5f;
+		width /= 2;
 	}
 
 	test::Position pos;
@@ -132,7 +131,7 @@ void test::Leaf::Reset()
 	}
 }
 
-bool test::Leaf::isNeighbour(test::Leaf* leaf)
+bool test::Leaf::isNeighbour(test::Leaf* /*leaf*/)
 {
 	return true;
 }
@@ -160,7 +159,6 @@ void test::Leaf::subdivide()
 
 	PROFILE_BLOCK("create terrain", profiler::colors::Red700);
 	AABB bb = m_AABB;
-	float halfwidth = bb.m_Halfwidth;
 	bb.m_Halfwidth *= 0.5f;
 
 	bb.m_Pos.x = bb.m_Pos.x - bb.m_Halfwidth;
@@ -217,7 +215,7 @@ bool test::Leaf::Insert(Position pos)
 	if (!this)
 		return false;
 
-	if (!m_AABB.Intersect(pos, radius))
+	if (!m_AABB.Intersect(pos, 64.f))
 		return false;
 
 	if (m_Depth >= MAX_DEPTH)
@@ -252,7 +250,7 @@ void test::QuadTree::Update(float x, float y)
 	pos.y = y;
 
 	m_Root->Reset();
-	if (m_Root->m_AABB.Intersect(pos, radius))
+	if (m_Root->m_AABB.Intersect(pos, 64.f))
 		m_Root->Insert(pos);
 
 }
@@ -261,7 +259,7 @@ void test::QuadTree::Init(Position xy)
 {
 	m_Root = new Leaf;
 	m_Root->m_AABB.m_Pos = xy;
-	m_Root->m_AABB.m_Halfwidth = 1024 / 2;
+	m_Root->m_AABB.m_Halfwidth = 1024.f / 2;
 }
 
 void test::QuadTree::Insert(Position xy)

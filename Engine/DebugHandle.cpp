@@ -518,7 +518,7 @@ namespace debug
 		HandleWorldContextMenu(pEngine);
 
 		m_Inspector.Update(Engine::GetInstance()->GetDeltaTime());
-		m_Text.RemoveAll();
+		//m_Text.RemoveAll();
 		m_TimingObjects.RemoveAll();
 	}
 
@@ -555,19 +555,9 @@ namespace debug
 		m_Labels.push_back(debug_name);
 	}
 
-
-	// 	void DebugHandle::RegisterFloatSlider(DebugSlider<float> slider)
-	// 	{
-	// 		m_Sliders.Add(slider);
-	// 	}
-	// 
-	// 	void DebugHandle::RegisterIntValue(DebugTextValue<int> int_Value)
-	// 	{
-	// 		m_Values.Add(int_Value);
-	// 	}
-
 	void DebugHandle::AddText(std::string str)
 	{
+		m_Text.RemoveAll();
 		m_Text.Add(str);
 	}
 

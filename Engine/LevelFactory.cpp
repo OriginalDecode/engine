@@ -479,7 +479,7 @@ void LevelFactory::CreateTerrain(std::string terrain_path)
 
 CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 steps)
 {
-	return CreatePBLLevel(steps, 1, steps, CU::Vector3f(-60.f, 0.f, -60.f), 15.f, 0.f, 15.f);
+	return CreatePBLLevel(steps, 1, steps, CU::Vector3f(512.f, 0.f, 512.f), 15.f, 0.f, 15.f);
 }
 
 CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_steps, s32 z_steps, const CU::Vector3f& pos, float x_spacing, float y_spacing, float z_spacing)

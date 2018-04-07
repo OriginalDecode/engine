@@ -31,3 +31,6 @@ typedef __int64 s64;
 typedef unsigned long long u64;
 typedef long long s64;
 #endif
+
+//typedef float float32;
+//typedef double float64;

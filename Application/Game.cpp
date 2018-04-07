@@ -90,11 +90,12 @@ void Game::Initiate(const std::string& level)
 
 	m_Camera = m_Engine->GetCamera();
 	m_Camera->SetPosition(CU::Vector3f(512, 20, 512));
-	//m_Camera->RotateAroundY(cl::DegreeToRad(45.f));
-	//m_Camera->RotateAroundX(cl::DegreeToRad(20.f));
+	m_Orientation.SetPosition(m_Camera->GetPosition());
+
 	m_Camera->Update();
 	CameraHandle::Create();
-	CameraHandle::GetInstance()->Initiate(nullptr /* this should be the player, or a child matrix to the player (relative position with an offset that can rotate around the player object) */);
+
+	CameraHandle::GetInstance()->Initiate(&m_Camera->GetPixelOrientation());// /* this should be the player, or a child matrix to the player (relative position with an offset that can rotate around the player object) */);
 	m_PauseState.InitState(m_StateStack);
 
 #ifdef _DEBUG
@@ -112,7 +113,7 @@ void Game::Initiate(const std::string& level)
 			int i = 0;
 			while (getline(camera_load, line))
 			{
-				init_orientation[i] = stof(line);
+				init_orientation[i] = stof(line); 
 				i++;
 			}
 			m_Camera->SetOrientation(init_orientation);
@@ -234,7 +235,7 @@ void Game::Update(float dt)
 				}
 			}
 		}
-		else if(!done)
+		else if (!done)
 		{
 			second_curve = true;
 			_lifetime = 0.f;
@@ -252,7 +253,7 @@ void Game::Update(float dt)
 
 	//if(_pointList.size() > 0)
 		//AddRenderCommand(ModelCommand(g_DefaultModel, g_DefaultMaterial, _pointList[_index], false));
-	
+/*
 #ifndef LOAD_LEVEL
 	AddRenderCommand(ModelCommand(building, CU::Vector3f(0, 0, 0), false));
 #ifndef SUNTEMPEL
@@ -260,7 +261,7 @@ void Game::Update(float dt)
 	AddRenderCommand(ModelCommand(pole, CU::Vector3f(0, 0, 0), false));
 #endif
 #endif
-
+*/
 	_index++;
 	if (_index >= _pointList.size())
 		_index = 0;
@@ -314,7 +315,7 @@ void Game::OldUpdate(float dt)
 	ControllerInput* input = m_Engine->GetInputHandle()->GetController(0);
 	const ControllerState& input_state = input->GetState();
 	m_Camera->Update(input->GetState());
-	
+
 	float x_value = (float)input_state.m_ThumbLX;
 	float y_value = (float)input_state.m_ThumbLY;
 
@@ -354,7 +355,7 @@ void Game::OldUpdate(float dt)
 		m_Camera->Move(eDirection::FORWARD, s_CamSpeed * dt);
 
 	if (y_value / SHRT_MAX < -0.15)
-		m_Camera->Move(eDirection::BACK	, -s_CamSpeed * dt);
+		m_Camera->Move(eDirection::BACK, -s_CamSpeed * dt);
 
 
 
@@ -374,21 +375,56 @@ void Game::OldUpdate(float dt)
 		if (input_wrapper->IsDown(KButton::X))
 			m_Camera->Move(eDirection::DOWN, -s_CamSpeed * dt);
 	}
-	
-	static float entity_speed = 0.2f;
 
-	if (input_wrapper->IsDown(KButton::H))
-	{
-		entity_speed += 1.f * dt;
-	}
-	if (input_wrapper->IsDown(KButton::G))
-	{
-		entity_speed -= 1.f * dt;
-	}
+
+	CU::Vector4f forward = m_Orientation.GetForward();
+	CU::Vector4f right = m_Orientation.GetRight();
+	CU::Vector4f up = m_Orientation.GetUp();
+	CU::Vector4f translation = m_Orientation.GetTranslation();
+
+	static float speed = 10.f;
+	if (input_wrapper->IsDown(KButton::NUMMINUS))
+		speed -= 0.5f * dt;
+	if (input_wrapper->IsDown(KButton::NUMADD))
+		speed += 0.5f * dt;
+
+	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5,0.5), "%.3f", speed));
+
+
+	if (input_wrapper->IsDown(KButton::UP_ARROW))
+		translation += forward * speed;
+
+	if (input_wrapper->IsDown(KButton::DOWN_ARROW))
+		translation += forward * -speed;
+
+	if (input_wrapper->IsDown(KButton::RIGHT_ARROW))
+		translation += right * speed;
+
+	if (input_wrapper->IsDown(KButton::LEFT_ARROW))
+		translation += right * -speed;
+
+	m_Orientation.SetTranslation(translation);
+
+
+	if (input_wrapper->IsDown(KButton::NUMPAD6))
+		m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
+
+	if (input_wrapper->IsDown(KButton::NUMPAD4))
+		m_Orientation.RotateAroundPointY(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
+
+	if (input_wrapper->IsDown(KButton::NUMPAD8))
+		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
+
+	if (input_wrapper->IsDown(KButton::NUMPAD2))
+		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
+
+
+
+
+
 
 
 	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5,0.5), "Sup nerd"));
-	//m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, false));
 	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 	m_World.Update(dt, m_Paused);
 }

@@ -121,11 +121,8 @@ void NodeEntityManager::Update(float dt, const CU::GrowingArray<TreeDweller*>& d
 
 			////Would we be able to move this entirely to the GPU?
 
-			
 			m_Components.SetUpdateFlag(e, true);
-			//if (frust.InsideAABB(pos))
-			//else
-				//m_Components.SetUpdateFlag(e, false);
+			
 		}
  	}
 	PROFILE_BLOCK_END;

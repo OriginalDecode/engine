@@ -73,17 +73,28 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		PROFILE_BLOCK_END;
 #endif
 
+
 		CU::Matrix44f world;
-		world.SetPosition({ 512, 0, 512, 1 });
+		//world.SetPosition({ 512, 0, 512, 1 });
 		for (const ModelInstance& instance : render.m_Instances)
 		{
+
 			const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(1,1,1,1)) * instance.m_Orientation;
+			const CU::Matrix44f orientation = world * (relative * translation.GetOrientation());
+
+			const Frustum& f = CameraHandle::GetInstance()->GetFrustum();
+
+		/*	if (!f.InsideAABB(orientation.GetPosition()))
+				continue;
+
+			if(!f.Inside(orientation.GetPosition(), 0))
+				continue;*/
 
 			DL_ASSERT_EXP(instance.m_ModelID > 0, "Invalid Model Key!");
 
 			AddRenderCommand(ModelCommand(instance.m_ModelID
 										  , instance.m_MaterialKey
-										  , world * (relative * translation.GetOrientation())
+										  , orientation
 										  , render.m_RenderWireframe
 #ifdef _DEBUG
 										  , e));

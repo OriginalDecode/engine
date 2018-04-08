@@ -21,6 +21,7 @@ struct GBuffer
 	float4 IDTexture;
 	float4 Roughness;
 	float4 Metalness;
+	float4 PureDepth;
 #endif
 };
 
@@ -73,6 +74,7 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	// output.Albedo.a = override_pbl ? 1 : roughness_override;
     output.Normal = float4(_normal,1);
     output.Depth.x = 1 - input.pos.z;
+
 	output.Depth.y = 1 - roughness_override.r;
 	output.Depth.z = metalness_override.r;
 	output.Emissive = 0;//input.displaced;

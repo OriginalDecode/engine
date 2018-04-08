@@ -16,6 +16,16 @@ public:
 	bool InsideAABB(const CU::Vector3f& position) const;
 	bool InsideAABB(const CU::Vector4f& position) const;
 	void OnResize(float new_fov);
+
+
+	inline float GetFarPlane() const { return m_FarPlane; }
+	inline float GetNearPlane() const { return m_NearPlane; }
+	inline float GetWidth() const { return m_Width; }
+	inline float GetHeight() const { return m_Height; }
+
+	CU::Vector3f GetPosition() const { return m_Orientation->GetPosition(); }
+	CU::Vector4f GetForward() const { return m_Orientation->GetForward(); }
+
 private:
 	void DrawFrustum();
 	void UpdateOBB();

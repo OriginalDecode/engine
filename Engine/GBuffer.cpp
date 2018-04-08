@@ -52,24 +52,24 @@ namespace graphics
 		m_Normal = new Texture;
 		m_Normal->Initiate(desc, false, "GBuffer : Normal");
 
-#ifdef _DEBUG
-
-		m_Metalness = new Texture;
-		m_Metalness->Initiate(desc, false, "GBuffer : Metalness");
-
-		m_Roughenss = new Texture;
-		m_Roughenss->Initiate(desc, false, "GBuffer : Roughenss");
-
-
-#endif
-
-
 		m_Depth = new Texture;
 		desc.m_ShaderResourceFormat = RGBA32_FLOAT;
 		desc.m_RenderTargetFormat = RGBA32_FLOAT;
 		m_Depth->Initiate(desc, false, "GBuffer : Depth");
 
 #ifdef _DEBUG
+
+		m_Depth2 = new Texture;
+		m_Depth2->Initiate(desc, false, "GBuffer : Pure Depth");
+
+		desc.m_ShaderResourceFormat = RGBA16_FLOAT;
+		desc.m_RenderTargetFormat = RGBA16_FLOAT;
+		m_Metalness = new Texture;
+		m_Metalness->Initiate(desc, false, "GBuffer : Metalness");
+
+		m_Roughenss = new Texture;
+		m_Roughenss->Initiate(desc, false, "GBuffer : Roughenss");
+
 		m_EntityIDTexture = new Texture;
 		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
 		desc.m_TextureFormat = RGBA32_FLOAT;
@@ -102,6 +102,7 @@ namespace graphics
 		ctx.ClearRenderTarget(m_Emissive->GetRenderTargetView(), clear_color);
 		ctx.ClearRenderTarget(m_Roughenss->GetRenderTargetView(), clear_color);
 		ctx.ClearRenderTarget(m_Metalness->GetRenderTargetView(), clear_color);
+		ctx.ClearRenderTarget(m_Depth2->GetRenderTargetView(), clear_color);
 #endif
 	}
 
@@ -117,6 +118,7 @@ namespace graphics
 			m_EntityIDTexture->GetRenderTargetView(),
 			m_Roughenss->GetRenderTargetView(),
 			m_Metalness->GetRenderTargetView(),
+			m_Depth2->GetRenderTargetView(),
 #endif
 		};
 

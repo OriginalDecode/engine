@@ -119,14 +119,14 @@ void InstancingManager::EndFrame()
 			time *= 1000.f;
 			std::stringstream ss;
 			ss << "Rendering|Instancing|Model|" << time << " ms";
-			pDebug->AddTimingObject(ss.str());
+			//pDebug->AddTimingObject(ss.str());
 			total += time;
 
 		}
 	}
 	std::stringstream ss;
 	ss << "Rendering|Instancing|Model|Total : " << total << " ms";
-	pDebug->AddTimingObject(ss.str());
+	//pDebug->AddTimingObject(ss.str());
 
 #endif
 

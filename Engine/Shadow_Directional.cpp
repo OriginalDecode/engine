@@ -4,15 +4,17 @@
 #include <Engine/Engine.h>
 #include <Engine/Renderer.h>
 #include <Engine/Viewport.h>
-
+#include <Engine/Frustum.h>
+#include <Application/CameraHandle.h>
 
 void ShadowDirectional::Initiate(float buffer_size)
 {
 	m_Camera = new Camera;
-	m_Camera->CreateOrthographicProjection(256, 256, 0.1f, 100.f);
+	m_Camera->CreateOrthographicProjection(512, 256, 0.1f, 1000.f);
 
 	m_Camera->SetPosition({ 512, 1, 512});
-	m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
+	m_Camera->RotateAroundY(cl::DegreeToRad(45.f) * 1.f);
+	m_Camera->RotateAroundX(cl::DegreeToRad(15.f) * 1.f);
 	m_Camera->Update();
 
 	TextureDesc desc;
@@ -86,10 +88,16 @@ void ShadowDirectional::Update()
 	m_Camera->SetRotationZ(cl::DegreeToRad(pDebug->m_CamRot[2]));
 #endif
 	CU::Vector3f pos = Engine::GetInstance()->GetCamera()->GetPosition();
+
 	//m_Camera->SetPosition(pos);
-	//m_Camera->SetAt(CU::Vector4f(Engine::GetInstance()->GetRenderer()->GetLightDirection(), 1));
-	//m_Camera->LookAt(m_Camera->GetPosition(), pos, CU::Vector3f(0, 1, 0));
-	//m_Camera->Update();
+	const Frustum& f = CameraHandle::GetInstance()->GetFrustum();
+	m_Camera->UpdateOrthographicProjection(f);
+
+	CU::Vector3f sun(1500, 1500, 1500);
+	sun *= Engine::GetInstance()->GetRenderer()->GetLightDirection();
+
+	m_Camera->LookAt(sun, pos, CU::Vector3f(0, 1, 0));
+	m_Camera->Update();
 }
 
 CU::Matrix44f ShadowDirectional::GetMVP()
@@ -109,6 +117,8 @@ void ShadowDirectional::HandleEvent(u64 event, void* pData)
 		rotation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(debug::DebugHandle::GetInstance()->s_ShadowDir[0])) * rotation;
 		rotation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(debug::DebugHandle::GetInstance()->s_ShadowDir[1])) * rotation;
 		m_Camera->SetRotation(rotation);
+		m_Camera->Update();
+
 	}
 #endif
 }

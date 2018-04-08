@@ -1,6 +1,7 @@
 #pragma once
-#include "../CommonLib/Math/Matrix/Matrix44.h"
-#include "../CommonLib/Math/Quaternion/Quaternion.h"
+#include <CommonLib/Math/Matrix/Matrix44.h>
+#include <CommonLib/Math/Quaternion/Quaternion.h>
+#include <Engine/Frustum.h>
 
 struct ControllerState;
 
@@ -99,6 +100,9 @@ public:
 	CU::Matrix44f& GetPixelOrientation() { return m_PixelOrientation; }
 
 	void LookAt(const CU::Vector3f& eye, const CU::Vector3f& target, const CU::Vector3f& up);
+	
+	void UpdateOrthographicProjection(const Frustum& view_frustum);
+
 
 private:
 	void operator=(Camera&) = delete;

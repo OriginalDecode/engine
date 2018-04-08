@@ -22,6 +22,19 @@ void Camera::CreatePerspectiveProjection(float width, float height, float near_p
 	m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, cl::DegreeToRad(m_CurrentFoV));
 }
 
+void Camera::CreateOrthographicProjection(float width, float height, float near_plane, float far_plane)
+{
+	DL_ASSERT_EXP(!m_ProjectionCreated, "Projection already created. Can't have two 3D projection matrices on same camera!");
+	m_ProjectionCreated = true;
+	m_ProjectionMatrix = CU::Matrix44f::CreateOrthographicMatrixLH(width, height, near_plane, far_plane);
+}
+
+void Camera::CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane)
+{
+	m_OrthogonalMatrix = CU::Matrix44f::CreateOrthogonalMatrixLH(width, height, near_plane, far_plane);
+}
+
+
 CU::Matrix44f& Camera::GetPerspective()
 {
 	return m_ProjectionMatrix;
@@ -42,10 +55,6 @@ const CU::Matrix44f& Camera::GetInvProjection() const
 	return m_InvProjectionMatrix;
 }
 
-void Camera::CreateOrthogonalProjection(float width, float height, float near_plane, float far_plane)
-{
-	m_OrthogonalMatrix = CU::Matrix44f::CreateOrthogonalMatrixLH(width, height, near_plane, far_plane);
-}
 
 const CU::Matrix44f& Camera::GetOrthogonal() const
 {
@@ -57,12 +66,7 @@ CU::Matrix44f& Camera::GetOrthogonal()
 	return m_OrthogonalMatrix;
 }
 
-void Camera::CreateOrthographicProjection(float width, float height, float near_plane, float far_plane)
-{
-	DL_ASSERT_EXP(!m_ProjectionCreated, "Projection already created. Can't have two 3D projection matrices on same camera!");
-	m_ProjectionCreated = true;
-	m_ProjectionMatrix = CU::Matrix44f::CreateOrthographicMatrixLH(width, height, near_plane, far_plane);
-}
+
 
 const CU::Matrix44f& Camera::GetOrthographic() const
 {
@@ -311,10 +315,11 @@ void Camera::InvertAll()
 
 void Camera::LookAt(const CU::Vector3f& eye, const CU::Vector3f& target, const CU::Vector3f& up)
 {
+	m_Rotation2 = m_Rotation;
 	m_Rotation.LookAt(eye, target, up);
-	SetPosition(eye);
-	OrientCamera();
+	//SetPosition(eye);
 }
+
 
 void Camera::SetAt(const CU::Vector4f& at)
 {
@@ -404,4 +409,11 @@ void Camera::OrientCamera()
 	m_Rotation[9] = axisZ.y;
 	m_Rotation[10] = axisZ.z;
 
+}
+
+void Camera::UpdateOrthographicProjection(const Frustum& view_frustum)
+{
+	m_ProjectionMatrix[0] = 2.f / view_frustum.GetWidth();// view_frustum.GetWidth(), view_frustum.GetHeight(), view_frustum.GetNearPlane(), view_frustum.GetFarPlane());
+	m_ProjectionMatrix[5] = 2.f / view_frustum.GetHeight();
+	m_ProjectionMatrix[10] = 1.f / (view_frustum.GetFarPlane() - view_frustum.GetNearPlane());
 }

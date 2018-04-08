@@ -109,7 +109,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 		"emissive",
 		"entity_id",
 		"roughness",
-		"metalness"
+		"metalness",
+		"pure depth"
 	};
 
 	m_DebugTexture = new Texture;
@@ -125,6 +126,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	pDebug->RegisterTexture(m_GBuffer.GetIDTexture(), names[4]);
 	pDebug->RegisterTexture(m_GBuffer.m_Roughenss, names[5]);
 	pDebug->RegisterTexture(m_GBuffer.m_Metalness, names[6]);
+	pDebug->RegisterTexture(m_GBuffer.m_Depth2, names[7]);
 
 #endif
 	m_PostProcessManager.Initiate();
@@ -206,6 +208,7 @@ void Renderer::Render()
 	
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
+	m_Atmosphere.Render(m_RenderContext);
 	m_TerrainSystem->Update();
  
  	Render3DCommands();
@@ -229,7 +232,6 @@ void Renderer::Render()
  	m_DeferredRenderer->DeferredRender(shadow_mvp, m_Direction, m_RenderContext);
  
  	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
- 	m_Atmosphere.Render(m_RenderContext);
  
 	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
  	RenderSpotlight();
@@ -463,11 +465,11 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 
 	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_FRONT));
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
 	Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json")->Use();
-	//m_TerrainSystem->DrawShadow();
+	m_TerrainSystem->DrawShadow();
 
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	for (s32 j = 0; j < 8; ++j)

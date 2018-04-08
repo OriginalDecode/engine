@@ -193,7 +193,7 @@ void Terrain::ShadowRender(const graphics::RenderContext& rc)
 
 	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_FRONT));
 
 	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
 

@@ -10,8 +10,10 @@ struct VS_OUTPUT
 
 float4 main(VS_OUTPUT input) : SV_Target
 {
-	float z = 1  - input.pos.z;
-	return float4(1,1,1,1);
+
+	//float z = (1000) / (1000 - 0.01) * ( 1 - ( 0.01 / input.pos.z));
+	float z = 1 - input.pos.z;
+	return z.xxxx;
 }
 
 struct DS_OUTPUT
@@ -29,6 +31,7 @@ struct DS_OUTPUT
 
 float4 RenderDepth(DS_OUTPUT input) : SV_Target
 {
+	// float z = (1000) / (1000 - 0.01) * ( 1 - ( 0.01 / input.pos.z));
 	float z = 1 - input.pos.z;
-	return float4(1,1,1,1);
+	return z.xxxx;
 }

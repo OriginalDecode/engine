@@ -44,6 +44,7 @@ namespace CommonUtilities
 
 			void SetPerspectiveFOV(float fov, float aspect_ratio);
 
+			void SetOrthographicProjection(float width, float height, float near_plane, float far_plane);
 
 			//Matrix44<TYPE>& operator*=(const Matrix44<TYPE>& rhs);
 
@@ -130,12 +131,24 @@ namespace CommonUtilities
 		};
 
 		template<typename TYPE>
+		void Matrix44<TYPE>::SetOrthographicProjection(float width, float height, float near_plane, float far_plane)
+		{
+			myMatrix[0] = 2.f / width;
+
+			myMatrix[5] = 2.f / height;
+
+			myMatrix[10] = 1.f / (far_plane - near_plane);
+
+			myMatrix[14] = near_plane / (near_plane - far_plane);
+			myMatrix[15] = 1.f;
+		}
+
+		template<typename TYPE>
 		void Matrix44<TYPE>::LookAt(const Vector3<TYPE>& eye, const Vector3<TYPE>& target, const Vector3<TYPE>& up)
 		{
-			Vector3<TYPE> z = eye - target;
-			z = GetNormalized<TYPE>(z);
-			Vector3<TYPE> x = Cross<TYPE>(up, z);
-			Vector3<TYPE> y = Cross<TYPE>(z, x);
+			Vector3<TYPE> z = GetNormalized(target - eye);
+			Vector3<TYPE> x = GetNormalized(Cross(up, z));
+			Vector3<TYPE> y = Cross(z, x);
 
 			SetX(x);
 			SetY(y);
@@ -297,15 +310,8 @@ namespace CommonUtilities
 		template<typename TYPE>
 		Matrix44<TYPE> CommonUtilities::Math::Matrix44<TYPE>::CreateOrthographicMatrixLH(float width, float height, float near_plane, float far_plane)
 		{
-			Matrix44<TYPE> new_matrix;
-			new_matrix[0] = 2.f / width;
-
-			new_matrix[5] = 2.f / height;
-			
-			new_matrix[10] = 1.f / (far_plane - near_plane);
-
-			new_matrix[14] = near_plane / (near_plane - far_plane);
-			new_matrix[15] = 1.f;
+ 			Matrix44<TYPE> new_matrix;
+			new_matrix.SetOrthographicProjection(width, height, near_plane, far_plane);
 			return new_matrix;
 		}
 

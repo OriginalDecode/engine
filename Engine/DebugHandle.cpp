@@ -78,6 +78,7 @@ namespace debug
 
 	void DebugHandle::AddTimingObject(const std::string& view_tree_and_time_string)
 	{
+		return;
 		std::vector<std::string> list;
 
 		SplitString(view_tree_and_time_string, list);
@@ -353,20 +354,19 @@ namespace debug
 	void DebugHandle::Update()
 	{
 		Engine* pEngine = Engine::GetInstance();
-		ImGui::SetNextWindowPos(ImVec2(0, 0));
-		ImGui::SetNextWindowSize(ImVec2(300, Engine::GetInstance()->GetInnerSize().m_Height));
+		/*	ImGui::SetNextWindowPos(ImVec2(0, 0));
+			ImGui::SetNextWindowSize(ImVec2(300, Engine::GetInstance()->GetInnerSize().m_Height));*/
 		ImGuiWindowFlags flags = 0;
-		flags |= ImGuiWindowFlags_NoTitleBar;
-		flags |= ImGuiWindowFlags_NoResize;
+		//flags |= ImGuiWindowFlags_NoTitleBar;
+		//flags |= ImGuiWindowFlags_NoResize;
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-		static bool s_Open = false;
-		if (ImGui::Begin("Information", &s_Open, flags))
+		static bool open = false;
+
+		if (ImGui::Begin("Information", &open, flags))
 		{
-
-
 			ImGui::Text("Delta Time : %.3f", pEngine->GetDeltaTime());
 			ImGui::Text("FPS : %.1f", pEngine->GetFPS());
-			ImGui::Text("CPU Usage : %.1f", pEngine->m_SystemMonitor.GetCPUUsage());
+			ImGui::Text("CPU Usage : %.1f", pEngine->m_SystemMonitor.GetCPUUsage()); /* does not show individual cores */
 			ImGui::Text("Memory Usage : %dmb", pEngine->m_SystemMonitor.GetMemoryUsage());
 			ImGui::Text("Model Commands : %d", pEngine->m_SegmentHandle.CommandSize((s32)pEngine->m_Synchronizer->GetCurrentBufferIndex()));
 			ImGui::Text("Spotlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER).Size());
@@ -383,151 +383,59 @@ namespace debug
 				ImGui::Text("%s", str.c_str());
 			}
 
-
-			for (const TimingObjectDisplay& root : m_TimingObjects)
-			{
-				if (ImGui::TreeNode(root.m_Text.c_str()))
-				{
-					ChildRecursive(root);
-
-					ImGui::TreePop();
-				}
-
-			}
-
-
-
 			ImGui::Separator();
-
-
-			//ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowWidth() / 2, ImGui::GetWindowHeight() / 2));
-			//ImGui::SetNextWindowSize(ImVec2(300, Engine::GetInstance()->GetInnerSize().m_Height));
-			static bool s_LightControls = false;
-			if (ImGui::Begin("Light controls", &s_LightControls, 0))
-			{
-
-				if (ImGui::TreeNode("Light Direction"))
-				{
-					ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
-					ImGui::SliderFloat("Y", &light_dir[1], 0.f, 1.f);
-					ImGui::SliderFloat("Z", &light_dir[2], -1.f, 1.f);
-
-					ImGui::TreePop();
-				}
-
-				ImGui::Separator();
-
-				if (ImGui::TreeNode("Shadow Direction"))
-				{
-					ImGui::SliderFloat("X", &s_ShadowDir[0], 0.f, 360.f);
-					ImGui::SliderFloat("Y", &s_ShadowDir[1], 0.f, 360.f);
-					ImGui::SliderFloat("Z", &s_ShadowDir[2], 0.f, 360.f);
-
-					if (ImGui::Button("Apply"))
-						EventManager::GetInstance()->SendMessage("shadowdir.apply");
-
-					ImGui::TreePop();
-				}
-
-
-			}
-			ImGui::End();
-
-
-
-			/*ImGui::SliderFloat("Camera Speed", &m_CameraSpeed, 1.f, 100.f);
-			ImGui::SliderFloat("Camera Look Speed (C)", &m_ControllerLookSens, 0.f, 1.f);
-			ImGui::SliderFloat("Camera Look Speed (M)", &m_MouseLookSense, 0.f, 0.1f);
-*/
-			// 			ImGui::Separator();
-			// 
-			// 			static float up[3];
-			// 			static float right[3];
-			// 			static float forward[3];
-			// 			ImGui::SliderFloat3("Up", up, 0.f, 360.f);
-			// 			ImGui::SliderFloat3("Right", right, 0.f, 360.f);
-			// 			ImGui::SliderFloat3("Forward", forward, 0.f, 360.f);
-			// 
-			// 			if (m_EditEntity > 0)
-			// 			{
-			// 				TranslationComponent& t = Engine::GetInstance()->GetEntityManager().GetComponent<TranslationComponent>(m_EditEntity);
-			// // 				t.m_Orientation = CU::Matrix44f::CreateRotateAroundX(xyz[0]) *  t.m_Orientation;
-			// // 				t.m_Orientation = CU::Matrix44f::CreateRotateAroundY(xyz[1]) *  t.m_Orientation;
-			// // 				t.m_Orientation = CU::Matrix44f::CreateRotateAroundZ(xyz[2]) *  t.m_Orientation;
-			// 
-			// 				CU::Vector4f vec_up = { cl::DegreeToRad(up[0]), cl::DegreeToRad(up[1]), cl::DegreeToRad(up[2]), 0 };
-			// 				CU::Vector4f vec_fwd = { cl::DegreeToRad(forward[0]), cl::DegreeToRad(forward[1]), cl::DegreeToRad(forward[2]), 0 };
-			// 
-			// 				CU::Vector4f vec_rgt = CU::Math::Cross(vec_up, vec_fwd);
-			// 				vec_rgt.w = 0;
-			// 
-			// 				t.m_Orientation.SetUp(vec_up);
-			// 				t.m_Orientation.SetForward(vec_fwd);
-			// 				t.m_Orientation.SetRight(vec_rgt);
-			// 
-			// 			}
-
-
-
-			//ImGui::DragFloat3("Light Direction", light_dir, 0.1, 0.f, 1.f);
-
-			Engine::GetInstance()->m_Renderer->m_Direction = CU::Vector3f(light_dir[0], light_dir[1], light_dir[2]);
-
+		
 			std::stringstream camera_pos;
 			const auto& pos = Engine::GetInstance()->GetCamera()->GetPosition();
 			camera_pos << "x:" << pos.x << "\ny:" << pos.y << "\nz:" << pos.z;
 			ImGui::Text("%s", camera_pos.str().c_str());
-
 			ImGui::Separator();
 
-			static bool wireframe = false;
-			ImGui::Checkbox("Terrain Wireframe", &wireframe);
+			//ImGui::Text("Hovering : %d", m_CurrEntity);
 
-			pEngine->m_Renderer->terrainWireframe = wireframe;
-
-			// 			static float pos2[2];
-			// 			ImGui::InputFloat2("Position", pos2, 1);
-			// 			pEngine->m_Renderer->m_TerrainSystem->m_X = pos2[0];
-			// 			pEngine->m_Renderer->m_TerrainSystem->m_Y = pos2[1];
-
-
-			ImGui::InputText("Level Name", level_name, 250);
-			if (ImGui::Button("save level", ImVec2(100, 25)))
+			if (ImGui::TreeNode("Lut Textures"))
 			{
-
-
-				LevelFactory::SaveLevel("data/pbr_level/", level_name);
+				if (!m_LutLables.empty())
+				{
+					static int index = 0;
+					ListBox("", &index, m_LutLables);
+					Engine::GetInstance()->m_Renderer->m_PostProcessManager.GetHDRPass().SetLUT(m_LutTextures[index]);
+				}
+				ImGui::TreePop();
 			}
-
-			DebugTextures();
-
-			ImGui::Separator();
-			ImGui::Text("Hovering : %d", m_CurrEntity);
-
-			if (!m_LutLables.empty())
-			{
-				static int index = 0;
-				ListBox("", &index, m_LutLables);
-				Engine::GetInstance()->m_Renderer->m_PostProcessManager.GetHDRPass().SetLUT(m_LutTextures[index]);
-			}
-
-			ImGui::End();
 		}
+		ImGui::End();
 		ImGui::PopStyleVar();
 
-		HandleWorldContextMenu(pEngine);
+		/* New Window */
+		static bool s_LightControls = false;
+		if (ImGui::Begin("Light controls", &s_LightControls, 0))
+		{
 
-		m_Inspector.Update(Engine::GetInstance()->GetDeltaTime());
-		//m_Text.RemoveAll();
-		m_TimingObjects.RemoveAll();
+			if (ImGui::TreeNode("Light Direction"))
+			{
+				ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
+				ImGui::SliderFloat("Y", &light_dir[1], 0.f, 1.f);
+				ImGui::SliderFloat("Z", &light_dir[2], -1.f, 1.f);
+
+				ImGui::TreePop();
+			}
+
+			ImGui::Separator();
+		}
+		ImGui::End();
+		/* End of new Window */
+
+		DebugTextures();
+
+
 	}
 
 
 	void DebugHandle::DebugTextures()
 	{
-		static bool pOpen = false;
-		//ImGui::PushStyleVar(AutoSize)
-		if (ImGui::Begin("textures", &pOpen, ImGuiWindowFlags_AlwaysAutoResize))
+		static bool open = false;
+		if (ImGui::Begin("textures", &open, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			ImGui::PushItemWidth(250.f);
 			ListBox("", &m_TextureIndex, m_Labels);
@@ -536,7 +444,7 @@ namespace debug
 			ImTextureID tex_id = m_DebugTexture;
 			ImVec2 w_size = ImGui::GetWindowSize();
 			w_size.x *= 0.65f;
-			w_size.y = w_size.x / 1.777777777777777777777777777777778;
+			w_size.y = w_size.x / 1.777777777777777777777777777777778; //Aspect ratio division.
 			ImGui::SameLine();
 			ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
 		}

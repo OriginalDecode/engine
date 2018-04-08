@@ -117,6 +117,33 @@ void Frustum::OnResize(float new_fov)
 	m_DownRight = CU::Vector4f(+m_Width / 2, -m_Height / 2, +m_FarPlane, 1.f);
 }
 
+CU::Vector3f Frustum::GetCenter() const
+{
+	CU::Vector3f pos;
+
+	CU::Vector3f points[8];
+	points[0] = { m_MinPos.x, m_MaxPos.y, m_MaxPos.z };
+	points[1] = { m_MaxPos.x, m_MaxPos.y, m_MaxPos.z };
+
+	points[2] = { m_MaxPos.x, m_MinPos.y, m_MaxPos.z };
+	points[3] = { m_MinPos.x, m_MinPos.y, m_MaxPos.z };
+
+	points[4] = { m_MinPos.x, m_MaxPos.y, m_MinPos.z };
+	points[5] = { m_MaxPos.x, m_MaxPos.y, m_MinPos.z };
+
+	points[6] = { m_MaxPos.x, m_MinPos.y, m_MinPos.z };
+	points[7] = { m_MinPos.x, m_MinPos.y, m_MinPos.z };
+
+
+
+	for (s32 i = 0; i < 8; ++i)
+		pos += points[i];
+
+	pos /= 8.f;
+
+	return pos;
+}
+
 void Frustum::DrawFrustum()
 {
 #if defined(_PROFILE) || defined(_FINAL)
@@ -298,9 +325,6 @@ void Frustum::CalcCorners()
 {
 	CU::Vector4f result = m_Orientation->GetTranslation();
 
-	auto sync = Engine::GetInstance()->GetSynchronizer();
-
-
 	result.x = fminf(result.x, ( m_UpLeft * *m_Orientation ).x);
 	result.y = fminf(result.y, ( m_UpLeft * *m_Orientation ).y);
 	result.z = fminf(result.z, ( m_UpLeft * *m_Orientation ).z);
@@ -320,10 +344,6 @@ void Frustum::CalcCorners()
 	m_MinPos.x = result.x;
 	m_MinPos.y = result.y;
 	m_MinPos.z = result.z;
-
-
-
-
 
 	result = m_Orientation->GetTranslation();
 	result.x = fmaxf(result.x, ( m_UpLeft * *m_Orientation ).x);
@@ -345,17 +365,5 @@ void Frustum::CalcCorners()
 	m_MaxPos.x = result.x;
 	m_MaxPos.y = result.y;
 	m_MaxPos.z = result.z;
-
-	CU::Vector4f min, max;
-	min = CU::Math::GetNormalized(m_MinPos);
-	max = CU::Math::GetNormalized(m_MaxPos);
-
-
-	std::stringstream ss;
-	ss << "minX : " << m_MinPos.x << "\nminY : " << m_MinPos.y << "\nminZ : " << m_MinPos.z
-		<< "\nmaxX : " << m_MaxPos.x << "\nmaxY : " << m_MaxPos.y << "\nmaxZ : " << m_MaxPos.z;
-	debug::DebugHandle::GetInstance()->AddText(ss.str());
-
-
 }
 

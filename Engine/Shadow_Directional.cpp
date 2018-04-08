@@ -10,12 +10,12 @@
 void ShadowDirectional::Initiate(float buffer_size)
 {
 	m_Camera = new Camera;
-	m_Camera->CreateOrthographicProjection(512, 256, 0.1f, 1000.f);
+	m_Camera->CreateOrthographicProjection(512, 512, 0.1f, 100.f);
 
-	m_Camera->SetPosition({ 512, 1, 512});
-	m_Camera->RotateAroundY(cl::DegreeToRad(45.f) * 1.f);
-	m_Camera->RotateAroundX(cl::DegreeToRad(15.f) * 1.f);
-	m_Camera->Update();
+// 	m_Camera->SetPosition({ 512, 1, 512});
+// 	m_Camera->RotateAroundY(cl::DegreeToRad(45.f) * 1.f);
+// 	m_Camera->RotateAroundX(cl::DegreeToRad(15.f) * 1.f);
+//	m_Camera->Update();
 
 	TextureDesc desc;
 	desc.m_Width = buffer_size;
@@ -80,24 +80,27 @@ void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)
 
 void ShadowDirectional::Update()
 {
-#ifdef _DEBUG
-	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
-	//m_Camera->SetPosition(pDebug->m_CamPos);
-	m_Camera->SetRotationX(cl::DegreeToRad(pDebug->m_CamRot[0]));
-	m_Camera->SetRotationY(cl::DegreeToRad(pDebug->m_CamRot[1]));
-	m_Camera->SetRotationZ(cl::DegreeToRad(pDebug->m_CamRot[2]));
-#endif
-	CU::Vector3f pos = Engine::GetInstance()->GetCamera()->GetPosition();
-
-	//m_Camera->SetPosition(pos);
+	Engine* engine = Engine::GetInstance();
+	CU::Vector4f pos = engine->GetCamera()->GetPosition();
+	CU::Vector4f forward = engine->GetCamera()->GetAt();
 	const Frustum& f = CameraHandle::GetInstance()->GetFrustum();
-	m_Camera->UpdateOrthographicProjection(f);
+	//m_Camera->UpdateOrthographicProjection(f);
+	CU::Vector4f center = f.GetCenter();
+	CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
 
-	CU::Vector3f sun(1500, 1500, 1500);
-	sun *= Engine::GetInstance()->GetRenderer()->GetLightDirection();
+	CU::Vector3f sun;
+	//sun *= dir;
 
-	m_Camera->LookAt(sun, pos, CU::Vector3f(0, 1, 0));
+	sun = (pos.AsVec3() + (dir * (f.GetFarPlane() - f.GetNearPlane()))) / 2.f;
+
+	m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0));
+	pos.x -= (f.GetWidth() / 2.f);
+	pos.z -= (f.GetFarPlane() / 2.f);
+	//pos -= forward * (f.GetFarPlane() / 2.f);
+	pos.y = 1;
+	m_Camera->SetPosition(pos.AsVec3());
 	m_Camera->Update();
+
 }
 
 CU::Matrix44f ShadowDirectional::GetMVP()
@@ -109,16 +112,4 @@ CU::Matrix44f ShadowDirectional::GetMVP()
 
 void ShadowDirectional::HandleEvent(u64 event, void* pData)
 {
-#ifdef _DEBUG
-	if(event == Hash("shadowdir.apply"))
-	{
-		CU::Matrix44f rotation;
-		rotation = CU::Matrix44f::CreateRotateAroundZ(cl::DegreeToRad(debug::DebugHandle::GetInstance()->s_ShadowDir[2]));
-		rotation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(debug::DebugHandle::GetInstance()->s_ShadowDir[0])) * rotation;
-		rotation = CU::Matrix44f::CreateRotateAroundY(cl::DegreeToRad(debug::DebugHandle::GetInstance()->s_ShadowDir[1])) * rotation;
-		m_Camera->SetRotation(rotation);
-		m_Camera->Update();
-
-	}
-#endif
 }

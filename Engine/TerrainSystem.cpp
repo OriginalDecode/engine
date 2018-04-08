@@ -12,6 +12,8 @@
 
 #define MAX_DEPTH 2
 
+
+static u64 s_RootTerrainHash = 0;
 static const char* s_TerrainLevels[] = {
 	"1024",
 	"512",
@@ -38,6 +40,10 @@ TerrainSystem::TerrainSystem()
 		manager->AddTerrain(s_HashTerrain[i], terrain);
 		width /= 2;
 	}
+	
+	s_RootTerrainHash = Hash("2048");
+	manager->AddTerrain(s_RootTerrainHash, new Terrain(1024.f));
+
 
 	test::Position pos;
 	pos.x = 512;
@@ -260,6 +266,9 @@ void test::QuadTree::Init(Position xy)
 	m_Root = new Leaf;
 	m_Root->m_AABB.m_Pos = xy;
 	m_Root->m_AABB.m_Halfwidth = 1024.f / 2;
+	TerrainManager* manager = Engine::GetInstance()->GetTerrainManager();
+	Terrain* terrain = manager->GetTerrain(s_RootTerrainHash);
+	m_Root->m_Terrain = terrain;
 }
 
 void test::QuadTree::Insert(Position xy)

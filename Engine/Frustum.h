@@ -26,11 +26,14 @@ public:
 	CU::Vector3f GetPosition() const { return m_Orientation->GetPosition(); }
 	CU::Vector4f GetForward() const { return m_Orientation->GetForward(); }
 
+	CU::Vector3f GetCenter() const;
+
 private:
 	void DrawFrustum();
 	void UpdateOBB();
 	const CU::Matrix44f* m_Orientation;
 	CU::Matrix44f m_InvertedOrientation;
+
 
 	CU::Vector4f m_UpLeft;
 	CU::Vector4f m_UpRight;

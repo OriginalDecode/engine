@@ -388,7 +388,7 @@ void Game::OldUpdate(float dt)
 	if (input_wrapper->IsDown(KButton::NUMADD))
 		speed += 0.5f * dt;
 
-	m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5,0.5), "%.3f", speed));
+	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5,0.5), "%.3f", speed));
 
 
 	if (input_wrapper->IsDown(KButton::UP_ARROW))
@@ -402,6 +402,12 @@ void Game::OldUpdate(float dt)
 
 	if (input_wrapper->IsDown(KButton::LEFT_ARROW))
 		translation += right * -speed;
+
+	if (input_wrapper->IsDown(KButton::PGDOWN))
+		translation += up * -speed;
+
+	if (input_wrapper->IsDown(KButton::PGUP))
+		translation += up * speed;
 
 	m_Orientation.SetTranslation(translation);
 
@@ -418,8 +424,11 @@ void Game::OldUpdate(float dt)
 	if (input_wrapper->IsDown(KButton::NUMPAD2))
 		m_Orientation.RotateAroundPointX(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
 
+	if (input_wrapper->IsDown(KButton::NUMPAD9))
+		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(90.f) * dt);
 
-
+	if (input_wrapper->IsDown(KButton::NUMPAD7))
+		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
 
 
 

@@ -153,7 +153,7 @@ namespace CommonUtilities
 			SetX(x);
 			SetY(y);
 			SetZ(z);
-			//SetTranslation(eye);
+			//SetTranslation({ eye, 1 });
 		}
 
 		template<typename TYPE>

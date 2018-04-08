@@ -1,6 +1,7 @@
 {
     "material": {
         "albedo": "Data/Material/metal/streakedmetal-albedo.dds",
+        "normal": "Data/Material/metal/streakedmetal-normal.dds",
         "metalness": "Data/Material/metal/streakedmetal-metalness.dds",
         "roughness": "Data/Material/metal/streakedmetal-roughness.dds",
         "heightmap": "Data/Material/default/metalness.dds"

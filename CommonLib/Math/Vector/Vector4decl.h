@@ -20,6 +20,14 @@ namespace CommonUtilities
 			T y;
 			T z;
 			T w;
+
+			Vector3<T> AsVec3() const
+			{
+				return Vector3<T>(x, y, z);
+			}
+
+
+
 		};
 	};
 }

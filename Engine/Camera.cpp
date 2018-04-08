@@ -317,7 +317,6 @@ void Camera::LookAt(const CU::Vector3f& eye, const CU::Vector3f& target, const C
 {
 	m_Rotation2 = m_Rotation;
 	m_Rotation.LookAt(eye, target, up);
-	//SetPosition(eye);
 }
 
 
@@ -413,6 +412,7 @@ void Camera::OrientCamera()
 
 void Camera::UpdateOrthographicProjection(const Frustum& view_frustum)
 {
+	//m_ProjectionMatrix.SetOrthographicProjection(view_frustum.GetWidth(), view_frustum.GetHeight(), view_frustum.GetNearPlane(), view_frustum.GetFarPlane());
 	m_ProjectionMatrix[0] = 2.f / view_frustum.GetWidth();// view_frustum.GetWidth(), view_frustum.GetHeight(), view_frustum.GetNearPlane(), view_frustum.GetFarPlane());
 	m_ProjectionMatrix[5] = 2.f / view_frustum.GetHeight();
 	m_ProjectionMatrix[10] = 1.f / (view_frustum.GetFarPlane() - view_frustum.GetNearPlane());

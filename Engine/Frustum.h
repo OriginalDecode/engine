@@ -26,6 +26,9 @@ public:
 	CU::Vector3f GetPosition() const { return m_Orientation->GetPosition(); }
 	CU::Vector4f GetForward() const { return m_Orientation->GetForward(); }
 
+	inline CU::Vector3f GetMin() const { return m_MinPos; }
+	inline CU::Vector3f GetMax() const { return m_MaxPos; }
+
 	CU::Vector3f GetCenter() const;
 
 private:

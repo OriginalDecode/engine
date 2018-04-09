@@ -412,8 +412,12 @@ void Camera::OrientCamera()
 
 void Camera::UpdateOrthographicProjection(const Frustum& view_frustum)
 {
-	//m_ProjectionMatrix.SetOrthographicProjection(view_frustum.GetWidth(), view_frustum.GetHeight(), view_frustum.GetNearPlane(), view_frustum.GetFarPlane());
-	m_ProjectionMatrix[0] = 2.f / view_frustum.GetWidth();// view_frustum.GetWidth(), view_frustum.GetHeight(), view_frustum.GetNearPlane(), view_frustum.GetFarPlane());
-	m_ProjectionMatrix[5] = 2.f / view_frustum.GetHeight();
+	const CU::Vector3f min_pos = view_frustum.GetMin();
+	const CU::Vector3f max_pos = view_frustum.GetMax();
+	const float width = max_pos.x - min_pos.x;
+	const float height = max_pos.y - min_pos.y;
+
+	m_ProjectionMatrix[0] = 2.f / width;
+	m_ProjectionMatrix[5] = 2.f / height;
 	m_ProjectionMatrix[10] = 1.f / (view_frustum.GetFarPlane() - view_frustum.GetNearPlane());
 }

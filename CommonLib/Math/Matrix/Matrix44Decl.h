@@ -31,8 +31,10 @@ namespace CommonUtilities
 			static Matrix44<TYPE> CreateRotateAroundY(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateRotateAroundZ(const TYPE& aRadian);
 			static Matrix44<TYPE> CreateProjectionMatrixLH(TYPE aNearZ, TYPE aFarZ, TYPE anAspectRatio, TYPE aFoVAngle);
+
 			static Matrix44<TYPE> CreateOrthogonalMatrixLH(TYPE aWidth, TYPE aHeight, TYPE aNearZ, TYPE aFarZ);
 			static Matrix44<TYPE> CreateOrthographicMatrixLH(float width, float height, float near_plane, float far_plane);
+
 			static Matrix44<TYPE> CreateScaleMatrix(const Vector4<TYPE>& scale);
 			static Matrix44<TYPE> CreateScaleMatrix(const float x, const float y, const float z, const float w);
 			void RotateAroundPointX(const CU::Vector3f& point, float radian, float dt);

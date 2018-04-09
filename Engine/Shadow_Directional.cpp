@@ -81,25 +81,22 @@ void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)
 void ShadowDirectional::Update()
 {
 	Engine* engine = Engine::GetInstance();
-	CU::Vector4f pos = engine->GetCamera()->GetPosition();
-	CU::Vector4f forward = engine->GetCamera()->GetAt();
+
+	const CU::Vector4f pos = engine->GetCamera()->GetPosition();
 	const Frustum& f = CameraHandle::GetInstance()->GetFrustum();
-	//m_Camera->UpdateOrthographicProjection(f);
-	CU::Vector4f center = f.GetCenter();
-	CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
+	const CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
+	const CU::Vector3f sun = (pos.AsVec3() + (dir * (f.GetFarPlane() - f.GetNearPlane() / 2.f)));
 
-	CU::Vector3f sun;
-	//sun *= dir;
 
-	sun = (pos.AsVec3() + (dir * (f.GetFarPlane() - f.GetNearPlane()))) / 2.f;
 
-	m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0));
-	pos.x -= (f.GetWidth() / 2.f);
-	pos.z -= (f.GetFarPlane() / 2.f);
-	//pos -= forward * (f.GetFarPlane() / 2.f);
-	pos.y = 1;
-	m_Camera->SetPosition(pos.AsVec3());
-	m_Camera->Update();
+	//update the projection matrix
+	m_Camera->UpdateOrthographicProjection(f);
+	//set the rotation of the camera
+	m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
+	//set the position of the camera
+	m_Camera->SetPosition(sun); //viewTranslation
+
+	m_Camera->Update(); // prepares the viewProjection matrix
 
 }
 

@@ -103,6 +103,7 @@ public:
 	
 	void UpdateOrthographicProjection(const Frustum& view_frustum);
 
+	CU::Vector3f GetTranslation() const { return (m_Rotation2 * m_Orientation2).GetPosition(); }
 
 private:
 	void operator=(Camera&) = delete;

@@ -62,7 +62,8 @@ void Model::Render(const graphics::RenderContext& rc)
 	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
 
 
-	m_Surfaces[0]->Activate(rc);
+	if(!m_Surfaces.Empty())
+		m_Surfaces[0]->Activate(rc);
 	PROFILE_BLOCK("Model : DrawIndexed", profiler::colors::Blue100);
 	rc.GetContext().DrawIndexed(this, m_Effect);
 	PROFILE_BLOCK_END;

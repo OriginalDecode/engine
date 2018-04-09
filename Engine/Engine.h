@@ -54,6 +54,7 @@ class Sprite;
 class InputHandle;
 class PhysicsManager;
 class Material;
+struct ModelCommand;
 
 namespace network
 {
@@ -193,6 +194,8 @@ public:
 	TerrainManager* GetTerrainManager() { return m_TerrainManager; }
 
 	LevelFactory* GetLevelFactory() { return m_LevelFactory; }
+
+	void AddRenderCommand(const ModelCommand& command);
 
 private:
 	s32 PickEntity(Texture* pTexture);

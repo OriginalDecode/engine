@@ -6,6 +6,7 @@
 #include <Engine/Viewport.h>
 #include <Engine/Frustum.h>
 #include <Application/CameraHandle.h>
+#include <Engine/RenderCommand.h>
 
 void ShadowDirectional::Initiate(float buffer_size)
 {
@@ -78,14 +79,20 @@ void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)
 	m_Camera->SetOrientation(orientation); 
 }
 
+#include <Engine/Engine.h>
+#include <Engine/Synchronizer.h>
+#include <Engine/RenderCommand.h>
+
 void ShadowDirectional::Update()
 {
 	Engine* engine = Engine::GetInstance();
 
-	const CU::Vector4f pos = engine->GetCamera()->GetPosition();
 	const Frustum& f = CameraHandle::GetInstance()->GetFrustum();
+	const CU::Vector4f pos = f.GetPosition(); 
 	const CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
-	const CU::Vector3f sun = (pos.AsVec3() + (dir * (f.GetFarPlane() - f.GetNearPlane() / 2.f)));
+	const CU::Vector3f sun = (f.GetCenter() + (dir * (f.GetFarPlane() - f.GetNearPlane() / 1.7f)));
+
+
 
 	//update the projection matrix
 	m_Camera->UpdateOrthographicProjection(f);
@@ -93,8 +100,18 @@ void ShadowDirectional::Update()
 	m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
 	//set the position of the camera
 	m_Camera->SetPosition(sun); //viewTranslation
-
 	m_Camera->Update(); // prepares the viewProjection matrix
+
+
+
+	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(f.GetCenter(), sun, true));
+
+	const CU::Vector4f cam_pos = m_Camera->GetTranslation();
+	const CU::Vector4f cam_dir = m_Camera->GetAt();
+
+	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos + cam_dir, pos, CU::Vector4f(1, 0, 0, 1), true));
+	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, cam_pos + cam_dir, CU::Vector4f(0, 1, 0, 1), true));
+	//Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(sun, pos, true));
 
 }
 

@@ -231,6 +231,15 @@ struct LineCommand : public RenderCommand
 	}
 
 
+	LineCommand(const CU::Vector4f& first, const CU::Vector4f& second, const CU::Vector4f& color, bool z_enabled)
+		: RenderCommand(eCommandType::LINE)
+		, m_ZEnabled(z_enabled)
+	{
+		m_Points[0].position = first;
+		m_Points[0].color = color;
+		m_Points[1].position = second;
+		m_Points[1].color = color;
+	}
 
 
 	bool m_ZEnabled = false;

@@ -264,7 +264,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	const bool in_view = (shadowVec.x < 0 || shadowVec.x > 1 || shadowVec.y > 1 || shadowVec.y < 0);
 
-	if(!in_shadow)
+	if(!in_shadow && !in_view)
 	{
 	directDiffuse = (saturate(( 1-F ) * NdL * metalness_albedo ) ) ;
 	directSpec = (saturate(F * D * G) * NdL * light_col ) ;

@@ -141,7 +141,7 @@ namespace CommonUtilities
 
 			myMatrix[10] = 1.f / (far_plane - near_plane);
 
-			myMatrix[14] = near_plane / (near_plane - far_plane);
+			myMatrix[14] = -near_plane / (near_plane - far_plane);
 			myMatrix[15] = 1.f;
 		}
 
@@ -160,6 +160,7 @@ namespace CommonUtilities
 			mat[3][1] = -Dot(y, eye); 
 			mat[3][2] = -Dot(z, eye); 
 			mat[3][3] = 1.f;
+			SetTranslation(eye);
 		}
 
 		template<typename TYPE>

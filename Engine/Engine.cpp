@@ -41,7 +41,7 @@
 
 #include <Engine/AssetFactory.h>
 #include <network/NetworkManager.h>
-
+#include <Engine/RenderCommand.h>
 bool Engine::HasInitiated()
 {
 	return true;
@@ -298,6 +298,14 @@ s32 Engine::PickEntity(Texture* pTexture)
 void Engine::PickEntity()
 {
 	m_HasPickedEntity = true;
+}
+
+void Engine::AddRenderCommand(const ModelCommand& command)
+{
+	const u16 current_buffer = m_Synchronizer->GetCurrentBufferIndex();
+	memory::CommandAllocator& allocator = m_SegmentHandle.GetCommandAllocator(current_buffer ^ 1, 0);
+	void * current = allocator.Alloc(sizeof(ModelCommand));
+	memcpy(current, &command, sizeof(ModelCommand));
 }
 
 const WindowSize& Engine::GetWindowSize() const

@@ -87,8 +87,6 @@ void ShadowDirectional::Update()
 	const CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
 	const CU::Vector3f sun = (pos.AsVec3() + (dir * (f.GetFarPlane() - f.GetNearPlane() / 2.f)));
 
-
-
 	//update the projection matrix
 	m_Camera->UpdateOrthographicProjection(f);
 	//set the rotation of the camera

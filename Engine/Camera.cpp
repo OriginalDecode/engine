@@ -420,4 +420,6 @@ void Camera::UpdateOrthographicProjection(const Frustum& view_frustum)
 	m_ProjectionMatrix[0] = 2.f / width;
 	m_ProjectionMatrix[5] = 2.f / height;
 	m_ProjectionMatrix[10] = 1.f / (view_frustum.GetFarPlane() - view_frustum.GetNearPlane());
+	m_ProjectionMatrix[14] = view_frustum.GetNearPlane() / (view_frustum.GetFarPlane() - view_frustum.GetNearPlane());
+	m_ProjectionMatrix[15] = 1.f;
 }

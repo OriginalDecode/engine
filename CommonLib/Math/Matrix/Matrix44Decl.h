@@ -152,34 +152,32 @@ namespace CommonUtilities
 			Vector3<TYPE> x = GetNormalized(Cross(up, z));
 			Vector3<TYPE> y = Cross(z, x);
 
-			SetX(x);
-			SetY(y);
-			SetZ(z);
-			//SetTranslation({ eye, 1 });
-		}
+			mat[0][0] = x.x; mat[0][1] = y.x; mat[0][2] = z.x;
+			mat[1][0] = x.y; mat[1][1] = y.y; mat[1][2] = z.y;
+			mat[2][0] = x.z; mat[2][1] = y.z; mat[2][2] = z.z;
 
-		template<typename TYPE>
-		void Matrix44<TYPE>::SetZ(const Vector3<TYPE>& v)
-		{
-			mat[2][0] = v.x;
-			mat[2][1] = v.y;
-			mat[2][2] = v.z;
-		}
-
-		template<typename TYPE>
-		void Matrix44<TYPE>::SetY(const Vector3<TYPE>& v)
-		{
-			mat[1][0] = v.x;
-			mat[1][1] = v.y;
-			mat[1][2] = v.z;
+			mat[3][0] = -Dot(x, eye); 
+			mat[3][1] = -Dot(y, eye); 
+			mat[3][2] = -Dot(z, eye); 
+			mat[3][3] = 1.f;
 		}
 
 		template<typename TYPE>
 		void Matrix44<TYPE>::SetX(const Vector3<TYPE>& v)
 		{
-			mat[0][0] = v.x;
-			mat[0][1] = v.y;
-			mat[0][2] = v.z;
+		
+		}
+
+		template<typename TYPE>
+		void Matrix44<TYPE>::SetY(const Vector3<TYPE>& v)
+		{
+			
+		}
+
+		template<typename TYPE>
+		void Matrix44<TYPE>::SetZ(const Vector3<TYPE>& v)
+		{
+		
 		}
 
 		template<typename TYPE>

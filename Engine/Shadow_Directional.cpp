@@ -97,7 +97,7 @@ void ShadowDirectional::Update()
 	//update the projection matrix
 	//m_Camera->UpdateOrthographicProjection(f);
 	//set the rotation of the camera
-	m_Camera->LookAt(sun, focus_point.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
+	m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
 	//set the position of the camera
 	//m_Camera->SetPosition(CU::Vector3f(1,1,1)); //viewTranslation
 	//m_Camera->Update(); // prepares the viewProjection matrix

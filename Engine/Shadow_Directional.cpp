@@ -7,6 +7,7 @@
 #include <Engine/Frustum.h>
 #include <Application/CameraHandle.h>
 #include <Engine/RenderCommand.h>
+#include <Engine/Engine.h>
 
 void ShadowDirectional::Initiate(float buffer_size)
 {
@@ -86,21 +87,20 @@ void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)
 void ShadowDirectional::Update()
 {
 	Engine* engine = Engine::GetInstance();
-
 	const Frustum& f = CameraHandle::GetInstance()->GetFrustum();
 	const CU::Vector4f pos = f.GetPosition(); 
 	const CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
 	const CU::Vector3f sun = (f.GetCenter() + (dir * (f.GetFarPlane() - f.GetNearPlane() / 1.7f)));
-
+	const CU::Vector4f focus_point = pos + engine->GetCamera()->GetAt() * f.GetNearPlane() * 5.f;
 
 
 	//update the projection matrix
-	m_Camera->UpdateOrthographicProjection(f);
+	//m_Camera->UpdateOrthographicProjection(f);
 	//set the rotation of the camera
-	m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
+	m_Camera->LookAt(sun, focus_point.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
 	//set the position of the camera
-	m_Camera->SetPosition(sun); //viewTranslation
-	m_Camera->Update(); // prepares the viewProjection matrix
+	//m_Camera->SetPosition(CU::Vector3f(1,1,1)); //viewTranslation
+	//m_Camera->Update(); // prepares the viewProjection matrix
 
 
 
@@ -109,7 +109,7 @@ void ShadowDirectional::Update()
 	const CU::Vector4f cam_pos = m_Camera->GetTranslation();
 	const CU::Vector4f cam_dir = m_Camera->GetAt();
 
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos + cam_dir, pos, CU::Vector4f(1, 0, 0, 1), true));
+	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, pos, CU::Vector4f(1, 0, 0, 1), true));
 	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, cam_pos + cam_dir, CU::Vector4f(0, 1, 0, 1), true));
 	//Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(sun, pos, true));
 
@@ -117,7 +117,7 @@ void ShadowDirectional::Update()
 
 CU::Matrix44f ShadowDirectional::GetMVP()
 {
-	const CU::Matrix44f& orientation = CU::Math::Inverse(m_Camera->GetCurrentRotation() * m_Camera->GetCurrentOrientation());
+	const CU::Matrix44f& orientation = CU::Math::Inverse(m_Camera->GetRotation() * m_Camera->GetOrientation());
 	const CU::Matrix44f& perspective = m_Camera->GetOrthographic();
 	return orientation * perspective;
 }

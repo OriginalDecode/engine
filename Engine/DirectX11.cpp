@@ -258,21 +258,19 @@ namespace graphics
 #ifdef _DEBUG
 		hr = pDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_Debug);
 		if (hr != S_OK)
-		{
 			OutputDebugStringA("Failed to Query Debug Interface. myDebug is NULL.");
-		}
 
-		D3D11_MESSAGE_ID hide[] = {
-			D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET,
-		};
+		//D3D11_MESSAGE_ID hide[] = {
+		//	D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET,
+		//};
 
-		D3D11_INFO_QUEUE_FILTER filters;
-		ZeroMemory(&filters, sizeof(D3D11_INFO_QUEUE_FILTER));
-		//filter.DenyList.Num
-		filters.DenyList.NumIDs = _countof(hide);
-		filters.DenyList.pIDList = hide;
-		hr = m_Debug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&m_InfoQueue);
-		m_InfoQueue->AddStorageFilterEntries(&filters);
+		//D3D11_INFO_QUEUE_FILTER filters;
+		//ZeroMemory(&filters, sizeof(D3D11_INFO_QUEUE_FILTER));
+		////filter.DenyList.Num
+		//filters.DenyList.NumIDs = _countof(hide);
+		//filters.DenyList.pIDList = hide;
+		//hr = m_Debug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&m_InfoQueue);
+		//m_InfoQueue->AddStorageFilterEntries(&filters);
 
 #endif
 		SetDebugName(m_Context, "DirectX11 Context Object");

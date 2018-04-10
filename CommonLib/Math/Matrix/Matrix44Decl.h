@@ -56,6 +56,12 @@ namespace CommonUtilities
 				__declspec(align(16))TYPE myMatrix[16];
 				TYPE mat[4][4];
 				Vector4<TYPE> rows[4];
+				struct {
+					float m00, m01, m02, m03;
+					float m10, m11, m12, m13;
+					float m20, m21, m22, m23;
+					float m30, m31, m32, m33;
+				};
 			};
 
 
@@ -88,11 +94,6 @@ namespace CommonUtilities
 			const Vector4<TYPE> GetScale() const;
 
 			void LookAt(const Vector3<TYPE>& eye, const Vector3<TYPE>& target, const Vector3<TYPE>& up);
-
-
-			void SetX(const Vector3<TYPE>& v);
-			void SetY(const Vector3<TYPE>& v);
-			void SetZ(const Vector3<TYPE>& v);
 
 			const Matrix44<TYPE> Inverse(Matrix44<TYPE>& aMatrix);
 			void Init(TYPE* aMatrix)
@@ -139,9 +140,9 @@ namespace CommonUtilities
 
 			myMatrix[5] = 2.f / height;
 
-			myMatrix[10] = 1.f / (far_plane - near_plane);
+			myMatrix[10] = -1.f / (far_plane - near_plane);
 
-			myMatrix[14] = -near_plane / (near_plane - far_plane);
+			myMatrix[14] = - (near_plane / (near_plane - far_plane));
 			myMatrix[15] = 1.f;
 		}
 
@@ -152,33 +153,10 @@ namespace CommonUtilities
 			Vector3<TYPE> x = GetNormalized(Cross(up, z));
 			Vector3<TYPE> y = Cross(z, x);
 
-			mat[0][0] = x.x; mat[0][1] = y.x; mat[0][2] = z.x;
-			mat[1][0] = x.y; mat[1][1] = y.y; mat[1][2] = z.y;
-			mat[2][0] = x.z; mat[2][1] = y.z; mat[2][2] = z.z;
-
-			mat[3][0] = -Dot(x, eye); 
-			mat[3][1] = -Dot(y, eye); 
-			mat[3][2] = -Dot(z, eye); 
-			mat[3][3] = 1.f;
-			SetTranslation(eye);
-		}
-
-		template<typename TYPE>
-		void Matrix44<TYPE>::SetX(const Vector3<TYPE>& v)
-		{
-		
-		}
-
-		template<typename TYPE>
-		void Matrix44<TYPE>::SetY(const Vector3<TYPE>& v)
-		{
-			
-		}
-
-		template<typename TYPE>
-		void Matrix44<TYPE>::SetZ(const Vector3<TYPE>& v)
-		{
-		
+			m00 = x.x;			m01 = y.x;			m02 = z.x;			m03 = 0.f;
+			m10 = x.y;			m11 = y.y;			m12 = z.y;			m13 = 0.f;
+			m20 = x.z;			m21 = y.z;			m22 = z.z;			m23 = 0.f;
+			m30 = -Dot(x, eye); m31 = -Dot(y, eye);	m32 = -Dot(z, eye);	m33 = 1.f;
 		}
 
 		template<typename TYPE>

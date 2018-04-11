@@ -347,6 +347,7 @@
     <ClInclude Include="QuadTreeNode.h" />
     <ClInclude Include="shader_types.h" />
     <ClInclude Include="SSRPass.h" />
+    <ClInclude Include="Stacktrace.h" />
     <ClInclude Include="TerrainSystem.h" />
     <ClInclude Include="TransformView.h" />
     <ClInclude Include="HDRPass.h" />

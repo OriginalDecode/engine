@@ -95,11 +95,16 @@ void ShadowDirectional::Update()
 
 
 	//update the projection matrix
-	//m_Camera->UpdateOrthographicProjection(f);
+	m_Camera->UpdateOrthographicProjection(f);
 	//set the rotation of the camera
 	m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
 	//set the position of the camera
-	//m_Camera->SetPosition(CU::Vector3f(1,1,1)); //viewTranslation
+	//m_Camera->SetPosition(sun); //viewTranslation
+
+	//m_ViewMatrix = m_Camera->GetOrientation() + m_Camera->GetRotation();
+
+
+
 	//m_Camera->Update(); // prepares the viewProjection matrix
 
 
@@ -119,6 +124,7 @@ CU::Matrix44f ShadowDirectional::GetMVP()
 {
 	const CU::Matrix44f& orientation = CU::Math::Inverse(m_Camera->GetRotation() * m_Camera->GetOrientation());
 	const CU::Matrix44f& perspective = m_Camera->GetOrthographic();
+	//return m_ViewMatrix * perspective;
 	return orientation * perspective;
 }
 

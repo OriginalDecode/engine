@@ -43,6 +43,7 @@ private:
 	graphics::ConstantBuffer m_ConstBuffer;
 	graphics::Viewport*	m_Viewport		= nullptr;
 	Camera*		m_Camera				= nullptr;
+	CU::Matrix44f m_ViewMatrix;
 	Texture*	m_ShadowDepth			= nullptr;
 	Texture*	m_ShadowDepthStencil	= nullptr;
 };

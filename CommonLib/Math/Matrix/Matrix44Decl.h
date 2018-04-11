@@ -149,7 +149,7 @@ namespace CommonUtilities
 		template<typename TYPE>
 		void Matrix44<TYPE>::LookAt(const Vector3<TYPE>& eye, const Vector3<TYPE>& target, const Vector3<TYPE>& up)
 		{
-			Vector3<TYPE> z = GetNormalized(target - eye);
+			Vector3<TYPE> z = GetNormalized(eye - target);
 			Vector3<TYPE> x = GetNormalized(Cross(up, z));
 			Vector3<TYPE> y = Cross(z, x);
 

@@ -131,8 +131,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 #endif
 	m_PostProcessManager.Initiate();
 
-	CU::Matrix44f& inv = m_Camera->GetInvProjection();
-
 	m_PixelBuffer.RegisterVariable(&m_Camera->GetInvProjection());
 	m_PixelBuffer.RegisterVariable(&m_Camera->GetPixelOrientation());
 	m_PixelBuffer.Initiate("PerFramePixel");

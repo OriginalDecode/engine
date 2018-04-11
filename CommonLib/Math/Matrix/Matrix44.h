@@ -453,7 +453,7 @@ namespace CommonUtilities
 		\****************************/
 
 		template<typename TYPE>
-		const Matrix44<TYPE> operator+=(const Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
+		const Matrix44<TYPE>& operator+=(Matrix44<TYPE>& aFirstMatrix, const Matrix44<TYPE>& aSecondMatrix)
 		{
 			for (int i = 0; i < 16; ++i)
 			{

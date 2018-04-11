@@ -86,6 +86,9 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE, LPSTR args, int)
 #endif
 		//ImGuizmo::BeginFrame();
 #endif
+
+
+		const char* a("asdknasd");
 		while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);

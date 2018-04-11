@@ -6,7 +6,7 @@
 //#include <memory>
 //#include <new>
 //#include <map>
-//
+//#include "../DL_Debug/StackWalker/StackWalker.h"
 //
 //struct memory_data
 //{
@@ -22,6 +22,8 @@
 //	const char* file;
 //	size_t line;
 //	size_t size;
+//	std::string callstack[4];
+//	//CallstackEntryList callstack;
 //};
 //
 //
@@ -42,8 +44,7 @@
 //	}
 //
 //	template<typename U>
-//	track_alloc(track_alloc<U> const& u)
-//		:std::allocator<T>(u)
+//	track_alloc(track_alloc<U> const& u) : std::allocator<T>(u)
 //	{
 //	}
 //
@@ -88,7 +89,21 @@
 //				size_t pos = file.rfind('/');
 //				file = file.substr(pos + 1);
 //			}
-//			leak_track << "Leak at " << it->first << " size: " << it->second.size << " file: " << file << " line: " << it->second.line << "\n";
+//			leak_track << "\nLeak at " << it->first << " size: " << it->second.size << " file: " << file << " line: " << it->second.line << "\n" << "callstack : \n";
+//
+//			std::string entry = it->second.callstack[0];
+//			leak_track << entry << "\n";
+//
+//			entry = it->second.callstack[1];
+//			leak_track << entry << "\n";
+//
+//			entry = it->second.callstack[2];
+//			leak_track << entry << "\n";
+//
+//			entry = it->second.callstack[3];
+//			leak_track << entry << "\n";
+//
+//
 //			++it;
 //		}
 //		leak_track.close();
@@ -109,6 +124,22 @@
 //void* operator new(size_t n)
 //{
 //	void * p = malloc(n);
+//
+//	//this shit calls new
+//	BaseStackWalker walker;
+//	walker.ShowCallstack(4);
+//
+//	memory_data data;
+//	data.file = __file__;
+//	data.line = __line__;
+//	data.pointer = p;
+//	data.size = n;
+//	for (int i = 0; i < 4; i++)
+//	{
+//		data.callstack[i] = walker.GetEntry(i);
+//	}
+//
+//
 //	(*get_map())[p] = memory_data(p, __file__, __line__, n);
 //	__file__ = "unknown";
 //	__line__ = 0;

@@ -84,10 +84,10 @@ namespace DL_Debug
 			"\n" << "Function: " << aFunctionName <<
 			"\n" << "Message: " << aString;
 
-		myOutputFile << "\nCallStack:";
+		myOutputFile << "\nCallStack:\n";
 
 		DL_Debug::StackWalker ss;
-		ss.ShowCallstack();
+		ss.ShowCallstack(4);
 
 		myOutputFile << "_________________________";
 		myOutputFile.flush();

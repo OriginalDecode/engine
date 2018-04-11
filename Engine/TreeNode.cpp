@@ -18,7 +18,7 @@ void TreeNode::Initiate(float halfwidth, Octree* octree)
 	m_Octree = octree;
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	debug::DebugHandle::GetInstance()->AddValueToPrint(&m_DwellerCount);
+	//debug::DebugHandle::GetInstance()->AddValueToPrint(&m_DwellerCount);
 #endif
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();
 	if (m_Depth > 0)

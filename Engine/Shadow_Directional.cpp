@@ -16,7 +16,7 @@ void ShadowDirectional::Initiate(float buffer_size)
 
 // 	m_Camera->SetPosition({ 512, 1, 512});
 // 	m_Camera->RotateAroundY(cl::DegreeToRad(45.f) * 1.f);
-// 	m_Camera->RotateAroundX(cl::DegreeToRad(15.f) * 1.f);
+ 	m_Camera->RotateAroundX(cl::DegreeToRad(-90.f) * 1.f);
 //	m_Camera->Update();
 
 	TextureDesc desc;
@@ -95,17 +95,17 @@ void ShadowDirectional::Update()
 
 
 	//update the projection matrix
-	m_Camera->UpdateOrthographicProjection(f);
+	//m_Camera->UpdateOrthographicProjection(f);
 	//set the rotation of the camera
-	m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
+	//m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
 	//set the position of the camera
-	//m_Camera->SetPosition(sun); //viewTranslation
+	m_Camera->SetPosition(sun); //viewTranslation
 
 	//m_ViewMatrix = m_Camera->GetOrientation() + m_Camera->GetRotation();
 
 
 
-	//m_Camera->Update(); // prepares the viewProjection matrix
+	m_Camera->Update(); // prepares the viewProjection matrix
 
 
 
@@ -116,7 +116,7 @@ void ShadowDirectional::Update()
 
 	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, pos, CU::Vector4f(1, 0, 0, 1), true));
 	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, cam_pos + cam_dir, CU::Vector4f(0, 1, 0, 1), true));
-	//Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(sun, pos, true));
+	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(sun, pos, true));
 
 }
 

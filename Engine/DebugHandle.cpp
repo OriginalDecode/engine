@@ -54,6 +54,8 @@ namespace debug
 	}
 
 
+	
+
 
 	DebugHandle* DebugHandle::m_Instance = nullptr;
 
@@ -438,7 +440,15 @@ namespace debug
 		if (ImGui::Begin("textures", &open, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			ImGui::PushItemWidth(250.f);
-			ListBox("", &m_TextureIndex, m_Labels);
+			for (DebugTextureCategory& c : m_Categories)
+			{
+				if (ImGui::TreeNode(c.category.c_str()))
+				{
+					ListBox("", &m_TextureIndex, c.labels);
+					ImGui::TreePop();
+				}
+
+			}
 			ImGui::PopItemWidth();
 
 			ImTextureID tex_id = m_DebugTexture;
@@ -452,26 +462,12 @@ namespace debug
 
 	}
 
-	void DebugHandle::AddTexture(Texture* texture, const std::string& debug_name)
-	{
-		AddTexture(texture->GetShaderView(), debug_name);
-	}
-
-	void DebugHandle::AddTexture(void* srv, const std::string& debug_name)
-	{
-		m_DebugTextures.Add(static_cast<ID3D11ShaderResourceView*>(srv));
-		m_Labels.push_back(debug_name);
-	}
+	
 
 	void DebugHandle::AddText(std::string str)
 	{
 		m_Text.RemoveAll();
 		m_Text.Add(str);
-	}
-
-	void DebugHandle::AddValueToPrint(s32* value)
-	{
-		m_IntValuesToPrint.Add(value);
 	}
 
 	void DebugHandle::SetEntity(Entity e)
@@ -499,11 +495,6 @@ namespace debug
 
 	}
 
-	// 	void DebugHandle::RegisterCheckbox(DebugCheckbox checkbox)
-	// 	{
-	// 		m_Checkboxes.Add(checkbox);
-	// 	}
-
 	void DebugHandle::RegisterMaterial(Material* pMaterial, std::string lable)
 	{
 		m_Materials.push_back(pMaterial);
@@ -517,11 +508,6 @@ namespace debug
 		if (!ImGui::IsAnyWindowHovered())
 		{
 			m_EditEntity = m_CurrEntity;
-			// 			if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver())
-			// 			{
-			// 				
-			// 				m_Inspector.SetEntity(m_EditEntity);
-			// 			}
 		}
 	}
 
@@ -533,6 +519,34 @@ namespace debug
 	void DebugHandle::SetDebugTexture(Texture* tex)
 	{
 		m_DebugTexture = static_cast<ID3D11ShaderResourceView*>(tex->GetShaderView());
+	}
+
+	void DebugHandle::RegisterTexture(Texture* texture, const char* name, const char* category)
+	{
+		//if (std::find(m_Categories.begin(), m_Categories.end(), [&](DebugTextureCategory& t) {
+		//	return t.category.compare(category) == 0;
+		//}) == m_Categories.end())
+		//	m_Categories.emplace_back(category);
+
+		m_RegisteredSampleTextures.Add(texture);
+		for ( DebugTextureCategory& c : m_Categories)
+		{ 
+			if (c.category.compare(category) == 0)
+			{
+				c.labels.emplace_back(name);
+				return;
+			}
+		}
+
+		m_Categories.emplace_back(category);
+
+
+
+	}
+
+	Texture* DebugHandle::GetTexture(s32 index)
+	{
+		return m_RegisteredSampleTextures[index];
 	}
 
 	void DebugHandle::SetObjectMatrix(CU::Matrix44f* mat)

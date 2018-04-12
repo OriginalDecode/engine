@@ -153,10 +153,10 @@ namespace CommonUtilities
 			Vector3<TYPE> x = GetNormalized(Cross(up, z));
 			Vector3<TYPE> y = Cross(z, x);
 
-			m00 = x.x;			m01 = y.x;			m02 = z.x;			m03 = 0.f;
-			m10 = x.y;			m11 = y.y;			m12 = z.y;			m13 = 0.f;
-			m20 = x.z;			m21 = y.z;			m22 = z.z;			m23 = 0.f;
-			m30 = -Dot(x, eye); m31 = -Dot(y, eye);	m32 = -Dot(z, eye);	m33 = 1.f;
+			m00 = x.x;			m01 = y.x;			m02 = -z.x;			m03 = 0.f;
+			m10 = x.y;			m11 = y.y;			m12 = -z.y;			m13 = 0.f;
+			m20 = x.z;			m21 = y.z;			m22 = -z.z;			m23 = 0.f;
+			//m30 = -Dot(x, eye); m31 = -Dot(y, eye);	m32 = -Dot(z, eye);	m33 = 1.f;
 		}
 
 		template<typename TYPE>

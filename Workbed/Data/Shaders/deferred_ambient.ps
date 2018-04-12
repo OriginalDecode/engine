@@ -221,14 +221,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 	shadowVec.xy *= 0.5;
 
 	float compareValue = shadowVec.z;
-
- 	float visibility = 1; 
-	for(int i = 0; i < 4; i++)
-	{
-		int index = i;
-		visibility -= 0.4 * (1 - ShadowTexture.Sample(sampler2, shadowVec.xy + poissonDisk[index] / 700 ).r);
-	}
-
 	float sampleValue =  ShadowTexture.Sample(sampler2, shadowVec.xy).r;
 	const bool in_shadow = (sampleValue < compareValue);// && compareValue > 0; 
 

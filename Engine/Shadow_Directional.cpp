@@ -90,16 +90,18 @@ void ShadowDirectional::Update()
 	const Frustum& f = CameraHandle::GetInstance()->GetFrustum();
 	const CU::Vector4f pos = f.GetPosition(); 
 	const CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
-	const CU::Vector3f sun = (f.GetCenter() + (dir * (f.GetFarPlane() - f.GetNearPlane() / 1.7f)));
-	const CU::Vector4f focus_point = pos + engine->GetCamera()->GetAt() * f.GetNearPlane() * 5.f;
+	const CU::Vector3f sun = (f.GetCenter() + (dir * ((f.GetFarPlane() - f.GetNearPlane()) / 1.7f)));
 
 
 	//update the projection matrix
-	//m_Camera->UpdateOrthographicProjection(f);
+	m_Camera->UpdateOrthographicProjection(f);
 	//set the rotation of the camera
+	
 	m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
+
+
 	//set the position of the camera
-	//m_Camera->SetPosition(sun); //viewTranslation
+	m_Camera->SetPosition(sun); //viewTranslation
 
 	//m_ViewMatrix = m_Camera->GetOrientation() + m_Camera->GetRotation();
 

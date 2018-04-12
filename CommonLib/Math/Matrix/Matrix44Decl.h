@@ -142,7 +142,7 @@ namespace CommonUtilities
 
 			myMatrix[10] = 1.f / (far_plane - near_plane);
 
-			myMatrix[14] = (near_plane / (far_plane - near_plane));
+			myMatrix[14] = (near_plane / ( near_plane - far_plane));
 			myMatrix[15] = 1.f;
 		}
 

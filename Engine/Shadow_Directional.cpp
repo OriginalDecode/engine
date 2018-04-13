@@ -87,27 +87,52 @@ void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)
 void ShadowDirectional::Update()
 {
 	Engine* engine = Engine::GetInstance();
-	const Frustum& f = CameraHandle::GetInstance()->GetFrustum();
+	Frustum& f = CameraHandle::GetInstance()->GetFrustum();
 	const CU::Vector4f pos = f.GetPosition(); 
 	const CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
 	const CU::Vector3f sun = (f.GetCenter() + (dir * ((f.GetFarPlane() - f.GetNearPlane()) / 1.7f)));
 
 
-	//update the projection matrix
-	m_Camera->UpdateOrthographicProjection(f);
-	//set the rotation of the camera
-	
-	m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
+	CU::Matrix44f rotation;
+	rotation.LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
+	CU::Matrix44f translation;
+	translation.SetPosition(sun); //viewTranslation
 
+	const CU::Matrix44f lightView = rotation + translation; // lightViewMatrix
+	CU::Vector4f* v = f.PointList();
+
+
+	//Translate the frustum points to lightspace
+	const CU::Vector4f far_upleft = (v[Frustum::UP_LEFT] + f.GetFarPlane()) * lightView;
+	const CU::Vector4f far_upright = (v[Frustum::UP_RIGHT] + f.GetFarPlane()) * lightView;
+	const CU::Vector4f far_downleft = (v[Frustum::DOWN_LEFT] + f.GetFarPlane()) * lightView;
+	const CU::Vector4f far_downright = (v[Frustum::DOWN_RIGHT] + f.GetFarPlane()) * lightView;
+
+	const CU::Vector4f near_upleft = (v[Frustum::UP_LEFT] + f.GetNearPlane()) * lightView;
+	const CU::Vector4f near_upright = (v[Frustum::UP_RIGHT] + f.GetNearPlane()) * lightView;
+	const CU::Vector4f near_downleft = (v[Frustum::DOWN_LEFT] + f.GetNearPlane()) * lightView;
+	const CU::Vector4f near_downright = (v[Frustum::DOWN_RIGHT] + f.GetNearPlane()) * lightView;
+
+	const CU::Vector4f center = (far_upright + far_upleft + far_downright + far_downleft + near_upright + near_upleft + near_downright + near_downleft) / 8.f;
+
+
+	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(center, pos, CU::Vector4f(0, 0, 1, 1), true));
+
+
+	m_Camera->SetPosition(sun);
+
+	//update the projection matrix
+	//set the rotation of the camera
+
+	//m_Camera->UpdateOrthographicProjection(f);
 
 	//set the position of the camera
-	m_Camera->SetPosition(sun); //viewTranslation
 
 	//m_ViewMatrix = m_Camera->GetOrientation() + m_Camera->GetRotation();
 
 
 
-	m_Camera->Update(); // prepares the viewProjection matrix
+	//m_Camera->Update(); // prepares the viewProjection matrix
 
 
 

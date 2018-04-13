@@ -12,7 +12,10 @@ public:
 	void Initiate(CU::Matrix44f* orientation);
 	void Update();
 	Camera* GetCamera();
-	const Frustum& GetFrustum();
+
+	const Frustum& GetFrustum() const;
+	Frustum& GetFrustum();
+
 private:
 	CameraHandle() = default;
 

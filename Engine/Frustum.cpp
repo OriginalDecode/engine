@@ -21,36 +21,11 @@ void Frustum::Initiate(float near_plane, float far_plane, float fov, const CU::M
 	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, rotation, -rotation))); //up
 	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, -rotation, -rotation))); //down
 
-	m_UpLeft = CU::Vector4f(-far_plane, +far_plane, +far_plane, 1.f);
-	m_UpRight = CU::Vector4f(+far_plane, +far_plane, +far_plane, 1.f);
-	m_DownLeft = CU::Vector4f(-far_plane, -far_plane, +far_plane, 1.f);
-	m_DownRight = CU::Vector4f(+far_plane, -far_plane, +far_plane, 1.f);
+	m_Points[UP_LEFT]	 = CU::Vector4f(0, 1, 1, 1.f);
+	m_Points[UP_RIGHT]	 = CU::Vector4f(1, 1, 1, 1.f);
+	m_Points[DOWN_LEFT]  = CU::Vector4f(0, 0, 1, 1.f);
+	m_Points[DOWN_RIGHT] = CU::Vector4f(1, 0, 1, 1.f);
 
-}
-
-void Frustum::Initiate(float height, float width, float near_plane, float far_plane, float fov, const CU::Matrix44f* orientation)
-{
-	m_FOV = fov;
-	m_Orientation = orientation;
-	m_FarPlane = far_plane;
-	m_NearPlane = near_plane;
-	m_Width = width;
-	m_Height = height;
-
-
-	const float rotation = cl::DegreeToRad(m_FOV);
-
-	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, near_plane), CU::Vector3f(0, 0, -1))); //near
-	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, far_plane), CU::Vector3f(0, 0, 1))); //far
-	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(rotation, 0, -rotation))); //right
-	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(-rotation, 0, -rotation))); //left
-	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, rotation, -rotation))); //up
-	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, -rotation, -rotation))); //down
-
-	m_UpLeft = CU::Vector4f(-width/2, +height/2, +far_plane, 1.f);
-	m_UpRight = CU::Vector4f(+width/2, +height/2, +far_plane, 1.f);
-	m_DownLeft = CU::Vector4f(-width/2, -height/2, +far_plane, 1.f);
-	m_DownRight = CU::Vector4f(+width/2, -height/2, +far_plane, 1.f);
 }
 
 void Frustum::Update()
@@ -111,10 +86,10 @@ void Frustum::OnResize(float new_fov)
 	m_Volume.m_Planes[4] = ( CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, rotation, -rotation)) ); //up
 	m_Volume.m_Planes[5] = ( CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, -rotation, -rotation)) ); //down
 
-	m_UpLeft = CU::Vector4f(-m_Width / 2, +m_Height / 2, +m_FarPlane, 1.f);
-	m_UpRight = CU::Vector4f(+m_Width / 2, +m_Height / 2, +m_FarPlane, 1.f);
-	m_DownLeft = CU::Vector4f(-m_Width / 2, -m_Height / 2, +m_FarPlane, 1.f);
-	m_DownRight = CU::Vector4f(+m_Width / 2, -m_Height / 2, +m_FarPlane, 1.f);
+	//m_UpLeft = CU::Vector4f(-m_Width / 2, +m_Height / 2, +m_FarPlane, 1.f);
+	//m_UpRight = CU::Vector4f(+m_Width / 2, +m_Height / 2, +m_FarPlane, 1.f);
+	//m_DownLeft = CU::Vector4f(-m_Width / 2, -m_Height / 2, +m_FarPlane, 1.f);
+	//m_DownRight = CU::Vector4f(+m_Width / 2, -m_Height / 2, +m_FarPlane, 1.f);
 }
 
 CU::Vector3f Frustum::GetCenter() const
@@ -325,42 +300,42 @@ void Frustum::CalcCorners()
 {
 	CU::Vector4f result = m_Orientation->GetTranslation();
 
-	result.x = fminf(result.x, ( m_UpLeft * *m_Orientation ).x);
-	result.y = fminf(result.y, ( m_UpLeft * *m_Orientation ).y);
-	result.z = fminf(result.z, ( m_UpLeft * *m_Orientation ).z);
+	result.x = fminf(result.x, (m_Points[UP_LEFT] * *m_Orientation).x);
+	result.y = fminf(result.y, (m_Points[UP_LEFT] * *m_Orientation).y);
+	result.z = fminf(result.z, (m_Points[UP_LEFT] * *m_Orientation).z);
 
-	result.x = fminf(result.x, ( m_UpRight * *m_Orientation ).x);
-	result.y = fminf(result.y, ( m_UpRight * *m_Orientation ).y);
-	result.z = fminf(result.z, ( m_UpRight * *m_Orientation ).z);
+	result.x = fminf(result.x, (m_Points[UP_RIGHT] * *m_Orientation).x);
+	result.y = fminf(result.y, (m_Points[UP_RIGHT] * *m_Orientation).y);
+	result.z = fminf(result.z, (m_Points[UP_RIGHT] * *m_Orientation).z);
 
-	result.x = fminf(result.x, ( m_DownLeft * *m_Orientation ).x);
-	result.y = fminf(result.y, ( m_DownLeft * *m_Orientation ).y);
-	result.z = fminf(result.z, ( m_DownLeft * *m_Orientation ).z);
+	result.x = fminf(result.x, (m_Points[DOWN_LEFT] * *m_Orientation).x);
+	result.y = fminf(result.y, (m_Points[DOWN_LEFT] * *m_Orientation).y);
+	result.z = fminf(result.z, (m_Points[DOWN_LEFT] * *m_Orientation).z);
 
-	result.x = fminf(result.x, ( m_DownRight * *m_Orientation ).x);
-	result.y = fminf(result.y, ( m_DownRight * *m_Orientation ).y);
-	result.z = fminf(result.z, ( m_DownRight * *m_Orientation ).z);
+	result.x = fminf(result.x, (m_Points[DOWN_RIGHT] * *m_Orientation).x);
+	result.y = fminf(result.y, (m_Points[DOWN_RIGHT] * *m_Orientation).y);
+	result.z = fminf(result.z, (m_Points[DOWN_RIGHT] * *m_Orientation).z);
 
 	m_MinPos.x = result.x;
 	m_MinPos.y = result.y;
 	m_MinPos.z = result.z;
 
 	result = m_Orientation->GetTranslation();
-	result.x = fmaxf(result.x, ( m_UpLeft * *m_Orientation ).x);
-	result.y = fmaxf(result.y, ( m_UpLeft * *m_Orientation ).y);
-	result.z = fmaxf(result.z, ( m_UpLeft * *m_Orientation ).z);
+	result.x = fmaxf(result.x, (m_Points[UP_LEFT] * *m_Orientation).x);
+	result.y = fmaxf(result.y, (m_Points[UP_LEFT] * *m_Orientation).y);
+	result.z = fmaxf(result.z, (m_Points[UP_LEFT] * *m_Orientation).z);
 
-	result.x = fmaxf(result.x, ( m_UpRight * *m_Orientation ).x);
-	result.y = fmaxf(result.y, ( m_UpRight * *m_Orientation ).y);
-	result.z = fmaxf(result.z, ( m_UpRight * *m_Orientation ).z);
+	result.x = fmaxf(result.x, (m_Points[UP_RIGHT] * *m_Orientation).x);
+	result.y = fmaxf(result.y, (m_Points[UP_RIGHT] * *m_Orientation).y);
+	result.z = fmaxf(result.z, (m_Points[UP_RIGHT] * *m_Orientation).z);
 
-	result.x = fmaxf(result.x, ( m_DownLeft * *m_Orientation ).x);
-	result.y = fmaxf(result.y, ( m_DownLeft * *m_Orientation ).y);
-	result.z = fmaxf(result.z, ( m_DownLeft * *m_Orientation ).z);
+	result.x = fmaxf(result.x, (m_Points[DOWN_LEFT] * *m_Orientation).x);
+	result.y = fmaxf(result.y, (m_Points[DOWN_LEFT] * *m_Orientation).y);
+	result.z = fmaxf(result.z, (m_Points[DOWN_LEFT] * *m_Orientation).z);
 
-	result.x = fmaxf(result.x, ( m_DownRight * *m_Orientation ).x);
-	result.y = fmaxf(result.y, ( m_DownRight * *m_Orientation ).y);
-	result.z = fmaxf(result.z, ( m_DownRight * *m_Orientation ).z);
+	result.x = fmaxf(result.x, (m_Points[DOWN_RIGHT] * *m_Orientation).x);
+	result.y = fmaxf(result.y, (m_Points[DOWN_RIGHT] * *m_Orientation).y);
+	result.z = fmaxf(result.z, (m_Points[DOWN_RIGHT] * *m_Orientation).z);
 
 	m_MaxPos.x = result.x;
 	m_MaxPos.y = result.y;

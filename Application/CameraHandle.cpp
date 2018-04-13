@@ -46,7 +46,12 @@ Camera* CameraHandle::GetCamera()
 	return m_Camera;
 }
 
-const Frustum& CameraHandle::GetFrustum()
+const Frustum& CameraHandle::GetFrustum() const
+{
+	return m_Frustum;
+}
+
+Frustum& CameraHandle::GetFrustum()
 {
 	return m_Frustum;
 }

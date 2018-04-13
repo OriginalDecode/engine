@@ -5,10 +5,19 @@
 class Frustum
 {
 public:
+	enum Point
+	{
+		UP_LEFT,
+		UP_RIGHT,
+		DOWN_LEFT,
+		DOWN_RIGHT,
+		_COUNT,
+	};
+
+
 	Frustum() = default;
 
 	void Initiate(float near_plane, float far_plane, float fov, const CU::Matrix44f* orientation);
-	void Initiate(float height, float width, float near_plane, float far_plane, float fov, const CU::Matrix44f* orientation);
 
 	void Update();
 
@@ -31,6 +40,9 @@ public:
 
 	CU::Vector3f GetCenter() const;
 
+	CU::Vector4f* PointList() { return &m_Points[0]; }
+
+
 private:
 	void DrawFrustum();
 	void UpdateOBB();
@@ -38,10 +50,9 @@ private:
 	CU::Matrix44f m_InvertedOrientation;
 
 
-	CU::Vector4f m_UpLeft;
-	CU::Vector4f m_UpRight;
-	CU::Vector4f m_DownLeft;
-	CU::Vector4f m_DownRight;
+	CU::Vector4f m_Points[_COUNT];
+
+
 
 	CU::Vector3f m_MaxPos;
 	CU::Vector3f m_MinPos;

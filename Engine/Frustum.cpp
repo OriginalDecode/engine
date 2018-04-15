@@ -21,10 +21,10 @@ void Frustum::Initiate(float near_plane, float far_plane, float fov, const CU::M
 	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, rotation, -rotation))); //up
 	m_Volume.AddPlane(CU::Plane<float>(CU::Vector3f(0, 0, 0), CU::Vector3f(0, -rotation, -rotation))); //down
 
-	m_Points[UP_LEFT]	 = CU::Vector4f(0, 1, 1, 1.f);
-	m_Points[UP_RIGHT]	 = CU::Vector4f(1, 1, 1, 1.f);
-	m_Points[DOWN_LEFT]  = CU::Vector4f(0, 0, 1, 1.f);
-	m_Points[DOWN_RIGHT] = CU::Vector4f(1, 0, 1, 1.f);
+	m_Points[UP_LEFT]	 = CU::Vector4f(-far_plane, far_plane, far_plane, 1.f);
+	m_Points[UP_RIGHT]	 = CU::Vector4f(far_plane, far_plane, far_plane, 1.f);
+	m_Points[DOWN_LEFT]  = CU::Vector4f(-far_plane, -far_plane, far_plane, 1.f);
+	m_Points[DOWN_RIGHT] = CU::Vector4f(far_plane, -far_plane, far_plane, 1.f);
 
 }
 
@@ -33,7 +33,7 @@ void Frustum::Update()
 	m_InvertedOrientation = CU::Math::Inverse(*m_Orientation);
 	CalcCorners();
 	//UpdateOBB();
-	DrawFrustum();
+	//DrawFrustum();
 }
 
 bool Frustum::Inside(const CU::Vector3f& position, float radius) const

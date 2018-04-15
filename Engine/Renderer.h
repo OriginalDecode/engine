@@ -57,7 +57,7 @@ public:
 
 	int RegisterLight();
 	void SetDirection(const CU::Vector3f& dir) { m_Direction = dir; }
-	const CU::Vector3f& GetLightDirection() { return m_Direction; }
+	CU::Vector3f GetLightDirection() { return m_Direction; }
 	Camera* GetDirectionalCamera() { return m_DirectionalShadow.GetCamera(); }
 
 	graphics::RenderContext& GetRenderContext() { return m_RenderContext; }

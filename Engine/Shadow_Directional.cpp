@@ -89,61 +89,22 @@ void ShadowDirectional::Update()
 	Engine* engine = Engine::GetInstance();
 	Frustum& f = CameraHandle::GetInstance()->GetFrustum();
 	const CU::Vector4f pos = f.GetPosition(); 
-	const CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
-	const CU::Vector3f sun = (f.GetCenter() + (dir * ((f.GetFarPlane() - f.GetNearPlane()) / 1.7f)));
+	CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
+	dir.z = -dir.z;
+	const CU::Vector3f sun = (pos.AsVec3() + (dir * ((f.GetFarPlane() - f.GetNearPlane()) / 1.7f)));
 
-
-	CU::Matrix44f rotation;
-	rotation.LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
-	CU::Matrix44f translation;
-	translation.SetPosition(sun); //viewTranslation
-
-	const CU::Matrix44f lightView = rotation + translation; // lightViewMatrix
-	CU::Vector4f* v = f.PointList();
-
-
-	//Translate the frustum points to lightspace
-	const CU::Vector4f far_upleft = (v[Frustum::UP_LEFT] + f.GetFarPlane()) * lightView;
-	const CU::Vector4f far_upright = (v[Frustum::UP_RIGHT] + f.GetFarPlane()) * lightView;
-	const CU::Vector4f far_downleft = (v[Frustum::DOWN_LEFT] + f.GetFarPlane()) * lightView;
-	const CU::Vector4f far_downright = (v[Frustum::DOWN_RIGHT] + f.GetFarPlane()) * lightView;
-
-	const CU::Vector4f near_upleft = (v[Frustum::UP_LEFT] + f.GetNearPlane()) * lightView;
-	const CU::Vector4f near_upright = (v[Frustum::UP_RIGHT] + f.GetNearPlane()) * lightView;
-	const CU::Vector4f near_downleft = (v[Frustum::DOWN_LEFT] + f.GetNearPlane()) * lightView;
-	const CU::Vector4f near_downright = (v[Frustum::DOWN_RIGHT] + f.GetNearPlane()) * lightView;
-
-	const CU::Vector4f center = (far_upright + far_upleft + far_downright + far_downleft + near_upright + near_upleft + near_downright + near_downleft) / 8.f;
-
-
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(center, pos, CU::Vector4f(0, 0, 1, 1), true));
-
-
+	m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
 	m_Camera->SetPosition(sun);
-
-	//update the projection matrix
-	//set the rotation of the camera
-
-	//m_Camera->UpdateOrthographicProjection(f);
-
-	//set the position of the camera
-
-	//m_ViewMatrix = m_Camera->GetOrientation() + m_Camera->GetRotation();
+	m_Camera->Update();
 
 
-
-	//m_Camera->Update(); // prepares the viewProjection matrix
-
-
-
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(f.GetCenter(), sun, true));
+	m_Camera->UpdateOrthographicProjection(f);
 
 	const CU::Vector4f cam_pos = m_Camera->GetTranslation();
 	const CU::Vector4f cam_dir = m_Camera->GetAt();
 
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, pos, CU::Vector4f(1, 0, 0, 1), true));
+	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos + cam_dir, f.GetCenter(), CU::Vector4f(1, 0, 0, 1), true));
 	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, cam_pos + cam_dir, CU::Vector4f(0, 1, 0, 1), true));
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(sun, pos, true));
 
 }
 
@@ -151,7 +112,6 @@ CU::Matrix44f ShadowDirectional::GetMVP()
 {
 	const CU::Matrix44f& orientation = CU::Math::Inverse(m_Camera->GetRotation() * m_Camera->GetOrientation());
 	const CU::Matrix44f& perspective = m_Camera->GetOrthographic();
-	//return m_ViewMatrix * perspective;
 	return orientation * perspective;
 }
 

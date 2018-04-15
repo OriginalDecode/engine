@@ -102,6 +102,7 @@ public:
 	void LookAt(const CU::Vector3f& eye, const CU::Vector3f& target, const CU::Vector3f& up);
 	
 	void UpdateOrthographicProjection(const Frustum& view_frustum);
+	void UpdateOrthographicProjection(CU::Vector3f min, CU::Vector3f max, float near_plane, float far_plane);
 
 	CU::Vector3f GetTranslation() const { return (m_Rotation2 * m_Orientation2).GetPosition(); }
 

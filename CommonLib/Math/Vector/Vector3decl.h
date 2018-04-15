@@ -31,6 +31,17 @@ namespace CommonUtilities
 			T x;
 			T y;
 			T z;
+
+
+// 			template<typename T>
+// 			inline Vector3<T> operator-(const Vector3<T>& rhs)
+// 			{
+// 				return Vector3<T>((aFirstVector.x - aSecondVector.x),
+// 					(aFirstVector.y - aSecondVector.y),
+// 								  (aFirstVector.z - aSecondVector.z));
+// 			}
+
+
 		} ;
 	};
 };

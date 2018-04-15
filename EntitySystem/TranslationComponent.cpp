@@ -51,12 +51,11 @@ void TranslationComponent::Deserialize(const rapidjson::Value& value)
 	const float fwd_y = (float)fwd[1].GetDouble();
 	const float fwd_z = (float)fwd[2].GetDouble();
 
-	CU::Vector4f vec_up = { up_x, up_y, up_z, 0 };
-	CU::Vector4f vec_fwd = { fwd_x, fwd_y, fwd_z, 0 };
+	CU::Vector3f vec_up = { up_x, up_y, up_z };
+	CU::Vector3f vec_fwd = { fwd_x, fwd_y, fwd_z };
 
-	CU::Vector4f vec_rgt = CU::Math::Cross(vec_up, vec_fwd);
-	vec_rgt.w = 0;
-	
+	CU::Vector3f vec_rgt = CU::Math::Cross(vec_up, vec_fwd);
+
 	m_Orientation.SetUp(vec_up);
 	m_Orientation.SetForward(vec_fwd);
 	m_Orientation.SetRight(vec_rgt);

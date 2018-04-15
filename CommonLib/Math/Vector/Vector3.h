@@ -183,8 +183,9 @@ namespace CommonUtilities
 		const T Length(const Vector3<T>& aVector)
 		{
 			return sqrtf((aVector.x * aVector.x) +
-				(aVector.y*aVector.y) +
-				(aVector.z*aVector.z));
+						(aVector.y*aVector.y) +
+						 (aVector.z*aVector.z));
+
 		};
 
 		template <typename T>
@@ -203,7 +204,11 @@ namespace CommonUtilities
 		template <typename T>
 		Vector3<T> GetNormalized(const Vector3<T>& aVector)
 		{
-			return aVector / Length(aVector);
+			T sqrt = Length(aVector);
+			if (sqrt > 0)
+				return aVector / sqrt;
+
+			return Vector3<T>(0, 0, 0);
 		}
 
 		template <typename T>

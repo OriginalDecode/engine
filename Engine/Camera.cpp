@@ -418,11 +418,11 @@ void Camera::UpdateOrthographicProjection(const Frustum& view_frustum)
 void Camera::UpdateOrthographicProjection(CU::Vector3f min, CU::Vector3f max, float near_plane, float far_plane)
 {
 	const float width = (max.x - min.x) / 2.f;
-	const float height = (max.y - min.y);
+	const float height = (max.y - min.y) / 2.f;
 
 	m_ProjectionMatrix[0] = 2.f / width;
 	m_ProjectionMatrix[5] = 2.f / height;
 	m_ProjectionMatrix[10] = 1.f / (far_plane - near_plane);
-	m_ProjectionMatrix[14] = -(near_plane / (near_plane - far_plane));
+	m_ProjectionMatrix[14] = (near_plane / (near_plane - far_plane));
 	m_ProjectionMatrix[15] = 1.f;
 }

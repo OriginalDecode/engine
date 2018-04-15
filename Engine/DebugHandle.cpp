@@ -220,22 +220,6 @@ namespace debug
 			if (ImGui::IsKeyPressed(t_key))
 				bToggle = !bToggle;
 
-			// 			if (m_ObjectMatrix && !bToggle)
-			// 				EditTransform(orientation.myMatrix, perspective.myMatrix, m_ObjectMatrix->myMatrix);
-			// 
-			// 			if (bToggle)
-			// 				EditTransform(orientation.myMatrix, perspective.myMatrix, g.m_Instances[0].m_Orientation.myMatrix);
-
-			// 			if (em.HasComponent<PhysicsComponent>(m_EditEntity))
-			// 			{
-			// 				PhysicsComponent& phys = em.GetComponent<PhysicsComponent>(m_EditEntity);
-			// 				if (ImGuizmo::IsUsing())
-			// 					phys.m_Body->SetPosition(m_ObjectMatrix->GetPosition());
-			// 
-			// 				const CU::Vector3f linVel = phys.m_Body->GetLinearVelocity();
-			// 				ImGui::Text("Linear Velocity\nx:%.1f\ny:%.1f\nz:%.1f", linVel.x, linVel.y, linVel.z);
-			// 			}
-
 			ImGui::Separator();
 
 			DebugComponent& c = em.GetComponent<DebugComponent>(m_EditEntity);
@@ -442,11 +426,11 @@ namespace debug
 			ImGui::PushItemWidth(250.f);
 			for (DebugTextureCategory& c : m_Categories)
 			{
-				if (ImGui::TreeNode(c.category.c_str()))
-				{
+// 				if (ImGui::TreeNode(c.category.c_str()))
+// 				{
 					ListBox("", &m_TextureIndex, c.labels);
-					ImGui::TreePop();
-				}
+// 					ImGui::TreePop();
+// 				}
 
 			}
 			ImGui::PopItemWidth();
@@ -539,9 +523,7 @@ namespace debug
 		}
 
 		m_Categories.emplace_back(category);
-
-
-
+		m_Categories.back().labels.emplace_back(name);
 	}
 
 	Texture* DebugHandle::GetTexture(s32 index)

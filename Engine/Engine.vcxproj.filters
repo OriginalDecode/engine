@@ -459,6 +459,7 @@
       <Filter>Memory</Filter>
     </ClInclude>
     <ClInclude Include="Stacktrace.h" />
+    <ClInclude Include="DownsamplePass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -761,5 +762,6 @@
     <ClCompile Include="LinearAllocator.cpp">
       <Filter>Memory</Filter>
     </ClCompile>
+    <ClCompile Include="DownsamplePass.cpp" />
   </ItemGroup>
 </Project>

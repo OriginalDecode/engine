@@ -6,8 +6,9 @@
 #include "SSAOPass.h"
 #include "EdgeDetectionPass.h"
 #include "SSRPass.h"
-#include <Engine/engine_shared.h>
+#include "DownsamplePass.h"
 
+#include <Engine/engine_shared.h>
 
 class Texture;
 namespace graphics
@@ -20,12 +21,13 @@ class PostProcessManager
 public:
 	enum ePasses
 	{
-		BLOOM = BITFLAG(0),
-		MOTIONBLUR = BITFLAG(1),
-		HDR = BITFLAG(2),
-		SSAO = BITFLAG(3),
-		EDGE_DETECTION = BITFLAG(4),
-		SSR = BITFLAG(5),
+		BLOOM			= 1 << 0,
+		MOTIONBLUR		= 1 << 1,
+		HDR				= 1 << 2,
+		SSAO			= 1 << 3,
+		EDGE_DETECTION	= 1 << 4,
+		SSR				= 1 << 5,
+		DOWNSAMPLE		= 1 << 6,
 	};
 
 	PostProcessManager();
@@ -51,5 +53,6 @@ private:
 	SSAOPass			m_SSAOPass;
 	EdgeDetectionPass	m_EdgeDetectionPass;
 	SSRPass				m_SSRPass;
+
 };
 

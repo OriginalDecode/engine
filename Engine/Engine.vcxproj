@@ -323,6 +323,7 @@
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX11.h" />
+    <ClInclude Include="DownsamplePass.h" />
     <ClInclude Include="DX11Context.h" />
     <ClInclude Include="DX11Device.h" />
     <ClInclude Include="EditObject.h" />
@@ -449,6 +450,7 @@
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectX11.cpp" />
+    <ClCompile Include="DownsamplePass.cpp" />
     <ClCompile Include="DX11Context.cpp" />
     <ClCompile Include="DX11Device.cpp" />
     <ClCompile Include="DXBlendStates.cpp" />

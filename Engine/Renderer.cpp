@@ -206,7 +206,6 @@ void Renderer::Render()
 	
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
-	m_Atmosphere.Render(m_RenderContext);
 	m_TerrainSystem->Update();
  
  	Render3DCommands();
@@ -239,6 +238,7 @@ void Renderer::Render()
 	IDepthStencilView* pDepthStencil = m_RenderContext.GetAPI().GetDepthView();
 	m_RenderContext.GetContext().OMSetRenderTargets(1, &pRenderTarget, pDepthStencil);
 	//m_DeferredRenderer->GetDepthStencil();
+	m_Atmosphere.Render(m_RenderContext);
  	RenderParticles(nullptr);
   
   	if (m_PostProcessManager.GetFlags() != 0)
@@ -250,7 +250,7 @@ void Renderer::Render()
 		m_RenderContext.GetAPI().SetDefaultTargets();
 		m_DeferredRenderer->Finalize();
   	}
- 
+
  #if !defined(_PROFILE) && !defined(_FINAL)
  	//Detect edges on specified texture
  	//m_PostProcessManager.Process(m_HoverTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);

@@ -58,22 +58,9 @@ void HDRPass::Initiate()
 #endif
 	}
 
-
-#if !defined(_FINAL) && !defined(_PROFILE)
-	//debug::DebugHandle::GetInstance()->AddTexture(m_Downsamples[downsample_amount - 1], "Downsample 0 ");
-	//debug::DebugHandle::GetInstance()->AddTexture(m_Downsamples[downsample_amount - 2], "Downsample 1 ");
-#endif
 	m_HDREffect = Engine::GetInstance()->GetEffect("Shaders/tonemapping.json");
 	m_DownsampleEffect = Engine::GetInstance()->GetEffect("Shaders/downsample_hdr.json");
 	m_RenderToScreenEffect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
-	//m_ColorGrading = Engine::GetInstance()->GetEffect("Shaders/color_grading.json");
-	//u64 rgb = Engine::GetInstance()->LoadTexture("Data/Textures/RGBTable16x1.dds");
-
-	////Default texture
-	//m_ColorGradingTex = new Texture;
-	//m_ColorGradingTex->Create3DTexture("Data/Textures/RGBTable16x1.dds", 16, 16, 0, "table");
-
-
 	std::vector<cl::File> filesInFolder = cl::FindFilesInDirectory("Data/Textures/lut/*.*");
 	for (auto file : filesInFolder)
 	{
@@ -108,8 +95,12 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 	PROFILE_FUNCTION(profiler::colors::Blue);
 	//set buffers
 
+
 	graphics::IGraphicsContext& ctx = render_context.GetContext();
 	ctx.SetViewport(m_DefaultViewport);
+
+
+	// DOWNSAMPLE START
 	
 	const s32 downsamples = m_Downsamples.Size() - 1;
 	IBlendState* pBlend = render_context.GetAPI().GetBlendState(graphics::NO_BLEND);
@@ -129,6 +120,10 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 	}
 
 	render_context.GetAPI().ResetViewport();
+	
+	// DOWNSAMPLE END
+
+
 
 	IShaderResourceView* sources[] = {
 		scene_texture->GetShaderView(),

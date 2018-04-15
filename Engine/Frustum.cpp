@@ -33,7 +33,7 @@ void Frustum::Update()
 	m_InvertedOrientation = CU::Math::Inverse(*m_Orientation);
 	CalcCorners();
 	//UpdateOBB();
-	//DrawFrustum();
+	DrawFrustum();
 }
 
 bool Frustum::Inside(const CU::Vector3f& position, float radius) const

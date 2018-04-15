@@ -16,11 +16,7 @@ void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 	m_Root.SetPosition(m_Position);
 	m_Root.SetDepth(0);
 	m_Timer.CreateTimer();
-
-#if !defined(_PROFILE) && !defined(_FINAL)
-//	debug::DebugHandle::GetInstance()->RegisterIntValue(debug::DebugTextValue<int>(&node_count, "Node Count"));
-#endif
-
+	
 //	Engine::GetInstance()->AddCheckBox(&s_RenderTree, "Render Octree");
 
 }

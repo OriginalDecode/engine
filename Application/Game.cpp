@@ -48,11 +48,22 @@ u64 curtain = 0;
 
 void Game::InitState(StateStack* state_stack)
 {
+	CU::TimeManager timer;
+	timer.Update();
+	float t0 = timer.GetMasterTimer().GetTotalTime().GetMilliseconds();
+
 	m_StateStack = state_stack;
 	m_Engine = Engine::GetInstance();
 	Initiate("Data/pbr_level/fps_level_01");
 	//Initiate("Data/pbr_level/pbr_level.level");
 	m_Engine->GetInputHandle()->AddController(0);
+
+	timer.Update();
+	float total = timer.GetMasterTimer().GetTotalTime().GetMilliseconds() - t0;
+	std::stringstream ss;
+	ss << "Time to initialize game " << total << " ms\n";
+	OutputDebugStringA(ss.str().c_str());
+
 }
 
 static const char* camera_file = "camera_pos";
@@ -95,7 +106,8 @@ void Game::Initiate(const std::string& level)
 	m_Camera->Update();
 	CameraHandle::Create();
 
-	CameraHandle::GetInstance()->Initiate(&m_Camera->GetPixelOrientation());// /* this should be the player, or a child matrix to the player (relative position with an offset that can rotate around the player object) */);
+	//CameraHandle::GetInstance()->Initiate(&m_Camera->GetPixelOrientation());// /* this should be the player, or a child matrix to the player (relative position with an offset that can rotate around the player object) */);
+	CameraHandle::GetInstance()->Initiate(&m_Orientation);
 	m_PauseState.InitState(m_StateStack);
 
 #ifdef _DEBUG
@@ -184,90 +196,7 @@ std::vector<CU::Vector3f> _pointList;
 void Game::Update(float dt)
 {
 	CameraHandle::GetInstance()->Update();
-	//m_Player->Update(dt);
-
-	const CU::Vector3f p0 = { 0, 0, 5 };
-	const CU::Vector3f p1 = { 5, 10, 5 };
-	const CU::Vector3f p2 = { 10, -10, 5 };
-	const CU::Vector3f p3 = { 15, 0, 5 };
-
-	const CU::Vector3f p10 = { 15, 0, 5 };
-	const CU::Vector3f p11 = { 20, 10, 5 };
-	const CU::Vector3f p12 = { 25, -10, 5 };
-	const CU::Vector3f p13 = { 30, 0, 5 };
-
-
-
-	/*m_Synchronizer->AddRenderCommand(LineCommand(p0, p1, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p2, p3, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p10, p11, true));
-	m_Synchronizer->AddRenderCommand(LineCommand(p12, p13, true));*/
-
-	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
-
-
-	if (!done)
-	{
-		_lifetime += 0.016f;
-
-		if (_lifetime > 1.f && second_curve)
-			done = true;
-
-		if (_lifetime <= 1.f)
-		{
-			_pointCount++;
-			if (_pointCount > _pointList.size())
-			{
-				if (!second_curve)
-				{
-					_position = cl::CubicBezier(p0, p1, p2, p3, _lifetime);
-					_pointList.push_back(_position);
-				}
-				else
-				{
-
-					_position = cl::CubicBezier(p10, p11, p12, p13, _lifetime);
-
-					if (!skip)
-						_pointList.push_back(_position);
-					else
-						skip = false;
-				}
-			}
-		}
-		else if (!done)
-		{
-			second_curve = true;
-			_lifetime = 0.f;
-		}
-
-	}
-
-	//if (_lifetime > 1.f)
-	//{
-	//	for (int i = 0; i < _pointList.size() - 1; i++)
-	//	{
-	//		m_Synchronizer->AddRenderCommand(LineCommand(_pointList[i], _pointList[i+1], false));
-	//	}
-	//}
-
-	//if(_pointList.size() > 0)
-		//AddRenderCommand(ModelCommand(g_DefaultModel, g_DefaultMaterial, _pointList[_index], false));
-/*
-#ifndef LOAD_LEVEL
-	AddRenderCommand(ModelCommand(building, CU::Vector3f(0, 0, 0), false));
-#ifndef SUNTEMPEL
-	AddRenderCommand(ModelCommand(curtain, CU::Vector3f(0, 0, 0), false));
-	AddRenderCommand(ModelCommand(pole, CU::Vector3f(0, 0, 0), false));
-#endif
-#endif
-*/
-	_index++;
-	if (_index >= _pointList.size())
-		_index = 0;
-
 	OldUpdate(dt);
-
 }
 
 void Game::OldUpdate(float dt)
@@ -377,9 +306,9 @@ void Game::OldUpdate(float dt)
 	}
 
 
-	CU::Vector4f forward = m_Orientation.GetForward();
-	CU::Vector4f right = m_Orientation.GetRight();
-	CU::Vector4f up = m_Orientation.GetUp();
+	const CU::Vector4f forward = m_Orientation.GetForward();
+	const CU::Vector4f right = m_Orientation.GetRight();
+	const CU::Vector4f up = m_Orientation.GetUp();
 	CU::Vector4f translation = m_Orientation.GetTranslation();
 
 	static float speed = 10.f;
@@ -430,11 +359,6 @@ void Game::OldUpdate(float dt)
 	if (input_wrapper->IsDown(KButton::NUMPAD7))
 		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
 
-
-
-
-	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5,0.5), "Sup nerd"));
-	//m_Synchronizer->AddRenderCommand(ParticleCommand(CU::Vector3f(5, 5, 5)));
 	m_World.Update(dt, m_Paused);
 }
 

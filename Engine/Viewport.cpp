@@ -16,6 +16,16 @@ namespace graphics
 	}
 
 
+	Viewport::Viewport(const Viewport& viewport)
+	{
+		m_Height = viewport.m_Height;
+		m_Width = viewport.m_Width;
+		m_TopLeftX = viewport.m_TopLeftX;
+		m_TopLeftY = viewport.m_TopLeftY;
+		m_MaxDepth = viewport.m_MaxDepth;
+		m_MinDepth = viewport.m_MinDepth;
+	}
+
 	Viewport::~Viewport()
 	{
 		delete m_Viewport;

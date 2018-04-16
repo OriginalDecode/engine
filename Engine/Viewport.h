@@ -5,6 +5,8 @@ namespace graphics
 	class Viewport
 	{
 	public:
+		Viewport() = default;
+		Viewport(const Viewport& viewport);
 		Viewport(s32 width, s32 height, s32 top_left_x, s32 top_left_y, float max_depth, float min_depth, IViewport* viewport);
 		~Viewport();
 

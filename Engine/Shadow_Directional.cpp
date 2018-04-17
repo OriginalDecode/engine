@@ -90,10 +90,12 @@ void ShadowDirectional::Update()
 	Frustum& f = CameraHandle::GetInstance()->GetFrustum();
 	const CU::Vector4f pos = f.GetPosition(); 
 	CU::Vector3f dir = engine->GetRenderer()->GetLightDirection();
-	dir.z = -dir.z;
+	//dir.z = -dir.z;
 	const CU::Vector3f sun = (pos.AsVec3() + (dir * ((f.GetFarPlane() - f.GetNearPlane()) / 1.7f)));
 
 	m_Camera->LookAt(sun, pos.AsVec3(), CU::Vector3f(0, 1, 0)); //viewRotation
+
+
 	m_Camera->SetPosition(sun);
 	m_Camera->Update();
 

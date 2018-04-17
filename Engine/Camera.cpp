@@ -422,7 +422,7 @@ void Camera::UpdateOrthographicProjection(CU::Vector3f min, CU::Vector3f max, fl
 
 	m_ProjectionMatrix[0] = 2.f / width;
 	m_ProjectionMatrix[5] = 2.f / height;
-	m_ProjectionMatrix[10] = 1.f / (far_plane - near_plane);
-	m_ProjectionMatrix[14] = (near_plane / (near_plane - far_plane));
+	m_ProjectionMatrix[10] = -1.f / (far_plane - near_plane);
+	m_ProjectionMatrix[14] = -(near_plane / (near_plane - far_plane));
 	m_ProjectionMatrix[15] = 1.f;
 }

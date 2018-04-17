@@ -114,7 +114,7 @@ float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
 
 	}
 
-	return sun_intensity * ((pRlh * rayleigh_coef * totalRlh) + (pMie * mie_coef * totalMie));
+	return ((pRlh * rayleigh_coef * totalRlh) + (pMie * mie_coef * totalMie)) * sun_intensity;
 };
 
 float4 main(VS_OUTPUT input) : SV_Target
@@ -139,6 +139,9 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float3 new_pos = m_ViewPos.xyz;
 	new_pos.y += rPlanet;
+
+	if(input.worldpos.y < 0.f)
+		return float4(0,0,0,1);
 
 	float3 dir = input.worldpos.xyz - new_pos;
 

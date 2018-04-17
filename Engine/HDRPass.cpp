@@ -92,8 +92,8 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 
 	IShaderResourceView* sources[] = {
 		scene_texture->GetShaderView(),
-		m_Downsampler.GetSample(m_Downsampler.SampleCount() - 1),
-		m_Downsampler.GetSample(0)
+		m_Downsampler.GetSample(m_Downsampler.SampleCount() - 1)->GetShaderView(),
+		m_Downsampler.GetSample(0)->GetShaderView(),
 	};
 
 	Tonemapping(m_HDRTexture->GetRenderTargetView(), sources, ARRSIZE(sources));

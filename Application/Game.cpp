@@ -106,8 +106,8 @@ void Game::Initiate(const std::string& level)
 	m_Camera->Update();
 	CameraHandle::Create();
 
-	//CameraHandle::GetInstance()->Initiate(&m_Camera->GetPixelOrientation());// /* this should be the player, or a child matrix to the player (relative position with an offset that can rotate around the player object) */);
-	CameraHandle::GetInstance()->Initiate(&m_Orientation);
+	CameraHandle::GetInstance()->Initiate(&m_Camera->GetPixelOrientation());// /* this should be the player, or a child matrix to the player (relative position with an offset that can rotate around the player object) */);
+	//CameraHandle::GetInstance()->Initiate(&m_Orientation);
 	m_PauseState.InitState(m_StateStack);
 
 #ifdef _DEBUG

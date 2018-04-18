@@ -129,7 +129,7 @@ CU::Matrix44f& Camera::Get2DOrientation()
 
 const CU::Vector4f& Camera::GetAt() const
 {
-	return m_Rotation2.GetForward();
+	return (m_Rotation2 * m_Orientation2).GetForward();
 }
 
 void Camera::SetPosition(const CU::Vector3f& position)
@@ -213,6 +213,7 @@ void Camera::Update(const CU::Vector2f& cursor_pos)
 
 void Camera::Update()
 {
+	m_Rotation2 = m_Rotation;
 	m_Orientation2 = m_Orientation;
 	m_PixelOrientation = m_Rotation2 * m_Orientation2;
 	m_ViewProj = CU::Math::Inverse(m_PixelOrientation) * m_ProjectionMatrix;
@@ -228,32 +229,32 @@ void Camera::SetOrientation(const CU::Matrix44f& matrix)
 
 void Camera::RotateAroundX(float rad)
 {
-	m_Orientation = CU::Matrix44f::CreateRotateAroundX(rad) * m_Orientation;
+	m_Rotation = CU::Matrix44f::CreateRotateAroundX(rad) * m_Rotation;
 }
 
 void Camera::RotateAroundY(float rad)
 {
-	m_Orientation = CU::Matrix44f::CreateRotateAroundY(rad) * m_Orientation;
+	m_Rotation = CU::Matrix44f::CreateRotateAroundY(rad) * m_Rotation;
 }
 
 void Camera::RotateAroundZ(float rad)
 {
-	m_Orientation = CU::Matrix44f::CreateRotateAroundZ(rad) * m_Orientation;
+	m_Rotation = CU::Matrix44f::CreateRotateAroundZ(rad) * m_Rotation;
 }
 
 void Camera::SetRotationX(float rad)
 {
-	m_Orientation.SetRotation3dX(rad);
+	m_Rotation.SetRotation3dX(rad);
 }
 
 void Camera::SetRotationY(float rad)
 {
-	m_Orientation.SetRotation3dY(rad);
+	m_Rotation.SetRotation3dY(rad);
 }
 
 void Camera::SetRotationZ(float rad)
 {
-	m_Orientation.SetRotation3dZ(rad);
+	m_Rotation.SetRotation3dZ(rad);
 }
 
 void Camera::SetRotation(const CU::Matrix44f& rot)
@@ -417,12 +418,12 @@ void Camera::UpdateOrthographicProjection(const Frustum& view_frustum)
 
 void Camera::UpdateOrthographicProjection(CU::Vector3f min, CU::Vector3f max, float near_plane, float far_plane)
 {
-	const float width = (max.x - min.x) / 2.f;
-	const float height = (max.y - min.y) / 2.f;
+	const float width = (max.x - min.x);
+	const float height = (max.y - min.y);
 
 	m_ProjectionMatrix[0] = 2.f / width;
 	m_ProjectionMatrix[5] = 2.f / height;
 	m_ProjectionMatrix[10] = -1.f / (far_plane - near_plane);
-	m_ProjectionMatrix[14] = -(near_plane / (near_plane - far_plane));
+	m_ProjectionMatrix[14] = (near_plane / (near_plane - far_plane));
 	m_ProjectionMatrix[15] = 1.f;
 }

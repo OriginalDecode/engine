@@ -140,9 +140,9 @@ namespace CommonUtilities
 
 			myMatrix[5] = 2.f / height;
 
-			myMatrix[10] = -1.f / (far_plane - near_plane);
+			myMatrix[10] = 1.f / (far_plane - near_plane);
 
-			myMatrix[14] = -(near_plane / ( near_plane - far_plane));
+			myMatrix[14] = near_plane / ( near_plane - far_plane);
 			myMatrix[15] = 1.f;
 		}
 
@@ -154,10 +154,10 @@ namespace CommonUtilities
 			Vector3<TYPE> y = Cross(z, x);
 
 
-			m00 = x.x;			m01 = y.x;			m02 = z.x;			m03 = -Dot(x, eye);
-			m10 = x.y;			m11 = y.y;			m12 = z.y;			m13 = -Dot(y, eye);
-			m20 = x.z;			m21 = y.z;			m22 = z.z;			m23 = -Dot(z, eye);
-			m30 = 0; m31 = 0;	m32 = 0;	m33 = 1.f;
+			m00 = x.x;			m01 = y.x;			m02 = z.x;			m03 = 0.f;//-Dot(x, eye);
+			m10 = x.y;			m11 = y.y;			m12 = z.y;			m13 = 0.f;//-Dot(y, eye);
+			m20 = x.z;			m21 = y.z;			m22 = z.z;			m23 = 0.f;//-Dot(z, eye);
+			m30 = 0;			m31 = 0;			m32 = 0;			m33 = 1.f;
 
 			*this = Transpose(*this);
 

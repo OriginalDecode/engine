@@ -94,7 +94,11 @@ void Game::Initiate(const std::string& level)
 	pole = m_Engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
 	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(16, 1, 3, CU::Vector3f(-110.f, 0.f, -16.f), 15.f, 0.f, 15.f);
-	m_World.AddDwellers(dwellers);
+
+
+
+	m_World.AddDwellers(dwellers); 
+
 #endif
 #endif
 	m_Picker = new CMousePicker;
@@ -359,7 +363,7 @@ void Game::OldUpdate(float dt)
 	if (input_wrapper->IsDown(KButton::NUMPAD7))
 		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
 
-	m_World.Update(dt, m_Paused);
+	m_World.Update(dt, m_Paused); //This function takes a long time
 }
 
 void Game::AddRenderCommand(const ModelCommand& command)

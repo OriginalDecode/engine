@@ -9,7 +9,7 @@
 #include <algorithm>
 TreeNodeBase::TreeNodeBase()
 {
-	m_Dwellers.Init(16);
+	m_Dwellers.Init(128);
 }
 
 TreeNodeBase::~TreeNodeBase()

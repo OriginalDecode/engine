@@ -31,7 +31,7 @@ RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
 void RenderSystem::Update(float /*dt*/, bool paused)
 {
 	//PROFILE_FUNCTION(profiler::colors::Blue);
-
+	
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	PROFILE_BLOCK("Render : Entity Loop");
 	for (Entity e : entities)

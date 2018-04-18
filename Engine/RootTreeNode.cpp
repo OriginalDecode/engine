@@ -30,7 +30,7 @@ void RootTreeNode::Update(float dt, bool paused)
 	PROFILE_FUNCTION(profiler::colors::Green);
 	if (paused)
 		return;
-	//m_Lines.RemoveAll();
+
 	TreeNodeBase::Update(dt, paused);
 
 	for (TreeNodeBase* node : m_Children)
@@ -44,6 +44,7 @@ void RootTreeNode::Update(float dt, bool paused)
 			PROFILE_BLOCK_END;
 		}));
 	}
+	
 	do
 	{
 		m_Pool.Update();

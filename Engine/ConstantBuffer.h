@@ -23,7 +23,7 @@ namespace graphics
 		*/
 		void Initiate(const char* debug_name = "unnamed");
 
-		enum ShaderBinding : s32
+		enum ShaderBinding : s8
 		{
 			VERTEX = BITFLAG(0),
 			PIXEL = BITFLAG(1),

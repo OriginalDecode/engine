@@ -140,7 +140,9 @@ namespace debug
 	bool DebugHandle::s_PausePhysics = false;
 	DebugHandle::DebugHandle()
 	{
+		light_dir[0] = 0.01f;
 		light_dir[1] = 1.f;
+		light_dir[2] = 0.01f;
 
 		EventManager* mgr = EventManager::GetInstance();
 		mgr->Subscribe("create_entity", this);

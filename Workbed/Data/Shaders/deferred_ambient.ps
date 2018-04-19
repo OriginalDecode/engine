@@ -220,9 +220,9 @@ float4 main(VS_OUTPUT input) : SV_Target
 	shadowVec.xy += 1;
 	shadowVec.xy *= 0.5;
 
-	float compareValue = 1 - shadowVec.z;
+	float compareValue = shadowVec.z;
 	float sampleValue =  ShadowTexture.Sample(sampler2, shadowVec.xy).r;
-	return sampleValue.xxxx;
+	// return sampleValue.xxxx;
 	return  compareValue.xxxx;// - sampleValue.xxxx);
 	
 	const bool in_shadow = (sampleValue > compareValue);// && compareValue > 0; 

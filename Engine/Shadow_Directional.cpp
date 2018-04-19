@@ -39,7 +39,7 @@ void ShadowDirectional::Initiate(float buffer_size)
 	m_ConstBuffer.RegisterVariable(&m_Camera->GetViewProjection());
 	m_ConstBuffer.Initiate("directional_shadow");
 
-	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_ShadowDepth->GetShaderView(), Effect::SHADOWMAP);
+	Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_ShadowDepthStencil->GetDepthStencilView(), Effect::SHADOWMAP);
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)

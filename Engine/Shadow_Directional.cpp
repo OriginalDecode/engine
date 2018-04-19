@@ -16,7 +16,7 @@ void ShadowDirectional::Initiate(float buffer_size)
 
 // 	m_Camera->SetPosition({ 512, 1, 512});
 // 	m_Camera->RotateAroundY(cl::DegreeToRad(45.f) * 1.f);
- 	m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
+ 	//m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
 //	m_Camera->Update();
 
 	TextureDesc desc;

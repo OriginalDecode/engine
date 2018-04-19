@@ -43,6 +43,9 @@ class Renderer
 #endif
 public:
 	Renderer(Synchronizer* synchronizer);
+
+	void InitiateDebug();
+
 	~Renderer();
 
 
@@ -142,7 +145,6 @@ private:
 	graphics::ConstantBuffer m_ViewProjection;
 
 
-	Terrain* m_TestTerrain;
 	TerrainSystem* m_TerrainSystem = nullptr;
 
 #if !defined(_PROFILE) && !defined(_FINAL)

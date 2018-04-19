@@ -53,7 +53,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_DeferredRenderer = new DeferredRenderer;
 	m_GBuffer.Initiate(true);
 
-
 	Effect* effect = Engine::GetInstance()->GetEffect("Data/Shaders/ssr.json");
 	effect->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
 	effect->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
@@ -61,12 +60,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	window_size.m_Height = api->GetInfo().m_WindowHeight;
 	window_size.m_Width = api->GetInfo().m_WindowWidth;
 
-	//m_DepthTexture = new Texture; //Where should this live?
-	//m_DepthTexture->InitiateAsDepthStencil(window_size.m_Width, window_size.m_Height, "Renderer : Depth");
-
 	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR /*| PostProcessManager::SSR*/); //Can be read from a settings file
 
-	m_Line = new Line3D; //Where should this live?
+	m_Line = new Line3D;
 	m_Line->Initiate();
 
 	m_LightPass = new graphics::LightPass(m_GBuffer);
@@ -77,14 +73,38 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Atmosphere.Initiate(8192, 8192, { 1024, -128.f, 1024.f });
 
  	m_ShadowPass.Initiate(this);
- 	m_DirectionalShadow.Initiate(2048);
+ 	m_DirectionalShadow.Initiate(2048.f);
 
 	m_Direction = CU::Vector3f(0.0f, 1.0f, 0.0f);
 
 	myPointLight = new PointLight();
 
+	InitiateDebug();
 
-#if !defined(_PROFILE) && !defined(_FINAL)
+	m_PostProcessManager.Initiate();
+
+	m_PixelBuffer.RegisterVariable(&m_Camera->GetInvProjection());
+	m_PixelBuffer.RegisterVariable(&m_Camera->GetPixelOrientation());
+	m_PixelBuffer.Initiate("PerFramePixel");
+
+	m_ViewProjection.RegisterVariable(&m_Camera->GetViewProjection());
+	m_ViewProjection.Initiate("ViewProj");
+	m_WaterCamera = new Camera;
+	m_WaterCamera->CreatePerspectiveProjection((float)window_size.m_Width, (float)window_size.m_Height, 0.01f, 100.f, 90.f);
+
+	m_Spotlights.Add(new SpotLight);
+
+	m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
+	m_TerrainSystem = new TerrainSystem;
+
+}
+
+void Renderer::InitiateDebug()
+{
+#ifdef _DEBUG
+	WindowSize window_size;
+	window_size.m_Height = Engine::GetAPI()->GetInfo().m_WindowHeight;
+	window_size.m_Width = Engine::GetAPI()->GetInfo().m_WindowWidth;
 
 	TextureDesc desc;
 	desc.m_Width = window_size.m_Width;
@@ -127,32 +147,12 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	pDebug->RegisterTexture(m_GBuffer.m_Roughenss, names[5]);
 	pDebug->RegisterTexture(m_GBuffer.m_Metalness, names[6]);
 	pDebug->RegisterTexture(m_GBuffer.m_Depth2, names[7]);
-
 #endif
-	m_PostProcessManager.Initiate();
-
-	m_PixelBuffer.RegisterVariable(&m_Camera->GetInvProjection());
-	m_PixelBuffer.RegisterVariable(&m_Camera->GetPixelOrientation());
-	m_PixelBuffer.Initiate("PerFramePixel");
-
-	m_ViewProjection.RegisterVariable(&m_Camera->GetViewProjection());
-	m_ViewProjection.Initiate("ViewProj");
-	m_WaterCamera = new Camera;
-	m_WaterCamera->CreatePerspectiveProjection((float)window_size.m_Width, (float)window_size.m_Height, 0.01f, 100.f, 90.f);
-
-	m_Spotlights.Add(new SpotLight);
-
-
-
-	m_TestTerrain = new Terrain(2048.f);
-	m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
-	m_TerrainSystem = new TerrainSystem;
-
 }
+
 
 Renderer::~Renderer()
 {
-	delete m_TestTerrain;
 	delete m_TerrainSystem;
 
 	m_Spotlights.DeleteAll();
@@ -171,7 +171,6 @@ Renderer::~Renderer()
 	//SAFE_DELETE(m_WaterPlane);
 	SAFE_DELETE(m_WaterCamera);
 	SAFE_DELETE(m_Line);
-	//SAFE_DELETE(m_DepthTexture);
 	SAFE_DELETE(m_DeferredRenderer);
 	SAFE_DELETE(myPointLight);
 	SAFE_DELETE(m_LightPass);
@@ -466,7 +465,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
 
 	Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json")->Use();
-	m_TerrainSystem->DrawShadow();
+	//m_TerrainSystem->DrawShadow();
 
 	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_FRONT));
 
@@ -565,7 +564,7 @@ void Renderer::Render2DCommands()
 
 void Renderer::RenderSpotlight()
 {
-
+	// Should be instanced
 	PROFILE_FUNCTION(profiler::colors::Purple);
 
 	SpotlightData data;
@@ -601,6 +600,7 @@ void Renderer::RenderSpotlight()
 
 void Renderer::RenderPointlight()
 {
+	//Should be instanced
 	PROFILE_FUNCTION(profiler::colors::Purple);
 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER);
 

@@ -56,12 +56,16 @@ void TerrainSystem::Update()
 {
 	CU::Vector4f pos = Engine::GetInstance()->GetCamera()->GetPos();
 	m_Tree.Update(pos.x, pos.z);
-	m_Tree.Draw();
 }
 
 void TerrainSystem::DrawShadow()
 {
 	m_Tree.DrawShadow();
+}
+
+void TerrainSystem::Draw()
+{
+	m_Tree.Draw();
 }
 
 void test::Leaf::Render()

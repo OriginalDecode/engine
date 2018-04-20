@@ -83,6 +83,8 @@ public:
 
 	void Update();
 	void DrawShadow();
+	void Draw();
+
 
 	float m_X = 0.f;
 	float m_Y = 0.f;

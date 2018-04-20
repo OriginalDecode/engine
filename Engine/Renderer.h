@@ -65,7 +65,9 @@ public:
 
 	graphics::RenderContext& GetRenderContext() { return m_RenderContext; }
 
+	void MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_resolution = 16);
 private:
+
 
 
 	void PrepareFrame();
@@ -139,7 +141,6 @@ private:
 	//this should be an object in the world and the render part should be separated
 	class WaterPlane*			m_WaterPlane				= nullptr; //Shouldn't be in here
 
-	bool m_RenderInstanced = true;
 	
 	graphics::ConstantBuffer m_PixelBuffer;
 	graphics::ConstantBuffer m_ViewProjection;

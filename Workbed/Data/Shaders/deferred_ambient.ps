@@ -257,7 +257,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float3 directDiffuse = 0, directSpec = 0;
 
-	const bool in_view = (shadowVec.x < 0 || shadowVec.x > 1 || shadowVec.y > 1 || shadowVec.y < 0);
+	const bool in_view = (shadowVec.x > 0 || shadowVec.x < 1 || shadowVec.y < 1 || shadowVec.y > 0);
 
 	if(!in_shadow)
 	{

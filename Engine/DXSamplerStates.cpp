@@ -2,6 +2,7 @@
 #include "DirectX11.h"
 #include <Engine/DX11Device.h>
 
+
 namespace graphics
 {
 	void DirectX11::CreateSamplerStates()
@@ -86,12 +87,17 @@ namespace graphics
 		SetDebugName(sampler, "Linear Clamp Sampler");
 #endif
 
+		//~=matrix;
 
 		samplerDesc = D3D11_SAMPLER_DESC();
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+		samplerDesc.BorderColor[0] = 1;
+		samplerDesc.BorderColor[1] = 1;
+		samplerDesc.BorderColor[2] = 1;
+		samplerDesc.BorderColor[3] = 1;
 		samplerDesc.MinLOD = 0;
 		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 		samplerDesc.MipLODBias = 2.f;

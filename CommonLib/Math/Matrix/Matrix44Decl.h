@@ -121,6 +121,13 @@ namespace CommonUtilities
 
 			bool operator==(const Matrix44<TYPE>& m0);
 
+			Matrix44<TYPE> operator~()
+			{
+				return InverseReal(*this);
+			}
+
+
+
 			const Vector4<TYPE> GetColumn(int index) const;
 		private:
 

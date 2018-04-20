@@ -97,6 +97,10 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
 	m_TerrainSystem = new TerrainSystem;
 
+	//MakeCubemap({ 512.f, 256.f, 512.f }, 1024);
+
+
+
 }
 
 void Renderer::InitiateDebug()
@@ -723,11 +727,11 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	graphics::IGraphicsDevice& device = api->GetDevice();
 	graphics::IGraphicsContext& ctx = api->GetContext();
 	ID3D11Device* _device = static_cast<graphics::DX11Device&>(device).GetDevice();
+	ID3D11DeviceContext* _ctx = nullptr;
+	_device->GetImmediateContext(&_ctx);
 
 	const s32 max_sides = 6;
-
 	s32 downsample_amount = s32(log(__min(max_resolution, max_resolution)) / log(2.f)) + 1; //can be changed
-
 	s32 resolution = max_resolution;
 	for (s32 i = 0; i < downsample_amount; i++)
 	{
@@ -753,36 +757,15 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	camera->CreatePerspectiveProjection(max_resolution, max_resolution, near_plane, far_plane, fov);
 
 	graphics::Viewport* viewport = api->CreateViewport(max_resolution, max_resolution, 0, 1, 0, 0);
-
 	ctx.SetViewport(viewport);
-
 	//forward, right, back, left | up, down,
-
-
-	TextureDesc desc;
+	TextureDesc texDesc;
 	
-	desc.m_Usage = graphics::DEFAULT_USAGE;
-	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
-	desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
-	desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
-	desc.m_TextureFormat = graphics::RGBA16_FLOAT;
-
-	CU::GrowingArray<CU::GrowingArray<Texture*>> textures(max_sides);
-	for (s32 i = 0; i < max_sides; ++i)
-	{
-		textures.Add(CU::GrowingArray<Texture*>(downsample_amount));
-		CU::GrowingArray<Texture*>& arr = textures[i];
-		s32 resolution = max_resolution;
-		for (s32 j = 0; j < arr.Capacity(); ++j)
-		{
-			Texture* tex = new Texture;
-			desc.m_Width = resolution;
-			desc.m_Height = resolution;
-			tex->Initiate(desc, "cube");
-			arr.Add(tex);
-			resolution /= 2;
-		}
-	}
+	texDesc.m_Usage = graphics::DEFAULT_USAGE;
+	texDesc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
+	texDesc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
+	texDesc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
+	texDesc.m_TextureFormat = graphics::RGBA16_FLOAT;
 
 	const s32 FORWARD = 0;
 	const s32 RIGHT = 1;
@@ -791,10 +774,13 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	const s32 UP = 4;
 	const s32 DOWN = 5;
 
+	Texture* cubemap[6];
 
 	for (s32 i = 0; i < 4; ++i)
 	{
-		ctx.OMSetRenderTargets(1, textures[i][0]->GetRenderTargetRef(), nullptr);
+		cubemap[i] = new Texture;
+		cubemap[i]->Initiate(texDesc, "");
+		ctx.OMSetRenderTargets(1, cubemap[i]->GetRenderTargetRef(), nullptr);
 
 		m_TerrainSystem->Draw();
 		m_Atmosphere.Render(m_RenderContext);
@@ -803,13 +789,13 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	camera->RotateAroundY(cl::DegreeToRad(90.f));
 	camera->RotateAroundX(cl::DegreeToRad(90.f));
 
-	ctx.OMSetRenderTargets(1, textures[UP][0]->GetRenderTargetRef(), nullptr);
+	ctx.OMSetRenderTargets(1, cubemap[UP]->GetRenderTargetRef(), nullptr);
 	m_TerrainSystem->Draw();
 	m_Atmosphere.Render(m_RenderContext);
 
 	camera->RotateAroundX(cl::DegreeToRad(180.f));
 
-	ctx.OMSetRenderTargets(1, textures[DOWN][0]->GetRenderTargetRef(), nullptr);
+	ctx.OMSetRenderTargets(1, cubemap[DOWN]->GetRenderTargetRef(), nullptr);
 	m_TerrainSystem->Draw();
 	m_Atmosphere.Render(m_RenderContext);
 
@@ -818,18 +804,32 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	// Downsample the textures
 	// __________________________________________________________________________________________________________________________________
 
+	DownsamplePass downsampler[6];
+	for (s32 i = 0; i < 6; ++i)
+	{
+		downsampler[i].Initiate(downsample_amount - 1, max_resolution, max_resolution, texDesc);
+		downsampler[i].Process(cubemap[i], m_RenderContext);
+	}
 
 
+	Texture::SaveToDisk(L"tex0.dds", downsampler[0].GetSample(0)->GetTexture());
+	/*DirectX::ScratchImage image;
+	HRESULT hr = DirectX::CaptureTexture(_device, _ctx, texArray, image);
+	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");*/
 
 
-
-
+	return;
 	// __________________________________________________________________________________________________________________________________
 	// Construct the cubemap
 	// __________________________________________________________________________________________________________________________________
 
-	ID3D11DeviceContext* _ctx = nullptr;
-	_device->GetImmediateContext(&_ctx);
+
+
+
+	//D3D11_SUBRESOURCE_DATA data[6];
+
+
+
 
 	const u32 tex_count = max_sides;
 	CU::GrowingArray<ID3D11ShaderResourceView*> src(tex_count);

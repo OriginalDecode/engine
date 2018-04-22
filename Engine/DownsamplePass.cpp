@@ -18,7 +18,7 @@ DownsamplePass::~DownsamplePass()
 
 }
 
-void DownsamplePass::Initiate(s32 sample_count, s32 width, s32 height, TextureDesc& desc)
+void DownsamplePass::Initiate(s32 sample_count, s32 width, s32 height, TextureDesc& desc, bool register_textures /* = false */)
 {
 
 	m_Downsampler = Engine::GetInstance()->GetEffect("Shaders/downsample_hdr.json");
@@ -38,11 +38,14 @@ void DownsamplePass::Initiate(s32 sample_count, s32 width, s32 height, TextureDe
 		desc.m_Height = sample_size;
 		m_Downsamples.Add(new Texture);
 
-#ifdef _DEBUG
 		std::stringstream debug_name;
+#ifdef _DEBUG
 		debug_name << "Downsample : " << sample_size << "x" << sample_size;
-		debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
-		pDebug->RegisterTexture(m_Downsamples.GetLast(), debug_name.str().c_str());
+		if (register_textures)
+		{
+			debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
+			pDebug->RegisterTexture(m_Downsamples.GetLast(), debug_name.str().c_str());
+		}
 #endif
 
 		m_Downsamples.GetLast()->Initiate(desc, false, debug_name.str());

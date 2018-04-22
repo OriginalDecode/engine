@@ -27,6 +27,7 @@ public:
 	void ShadowRender(const graphics::RenderContext& rc) override;
 
 	void Render(const graphics::RenderContext& rc, bool override_shader);
+	void Render(const graphics::RenderContext& rc, bool override_shader, bool skip_binding);
 
 
 	void Save(const std::string& aFilename);
@@ -37,6 +38,8 @@ public:
 	std::vector<s32> GetIndexArrayCopy();
 	void SetPosition(CU::Vector2f position);
 	bool HasLoaded() const { return m_HasLoaded; }
+
+	CU::Matrix44f& GetOrientation() { return m_Orientation; }
 private:
 
 	void SetupTextures();

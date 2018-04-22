@@ -13,7 +13,7 @@ public:
 	DownsamplePass() = default;
 	~DownsamplePass() override;
 
-	void Initiate(s32 sample_count, s32 width, s32 height, TextureDesc& desc);
+	void Initiate(s32 sample_count, s32 width, s32 height, TextureDesc& desc, bool register_textures = false);
 
 
 	void Process(Texture* scene, const graphics::RenderContext& rc) override;

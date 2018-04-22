@@ -40,7 +40,7 @@
 #include <Engine/Quad.h>
 
 #include "shader_types.h"
-
+#include <Engine/TerrainManager.h>
 
 Renderer::Renderer(Synchronizer* synchronizer)
 	: m_Synchronizer(synchronizer)
@@ -97,7 +97,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
 	m_TerrainSystem = new TerrainSystem;
 
-	//MakeCubemap({ 512.f, 256.f, 512.f }, 1024);
 
 
 
@@ -208,7 +207,7 @@ void Renderer::Render()
 	PrepareFrame();
 
 
-	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
+	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
 	m_TerrainSystem->Update();
 	m_TerrainSystem->Draw();
 
@@ -268,7 +267,15 @@ void Renderer::Render()
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();
+
+	if (m_CreateCubemaps)
+	{
+		MakeCubemap({ 512.f, 10.f, 512.f }, 1024);
+		m_CreateCubemaps = false;
+	}
+
 #endif
+
 	m_RenderContext.GetAPI().EndFrame();
 	m_InstancingManager.EndFrame();
 
@@ -721,6 +728,8 @@ void Renderer::AddTerrain(Terrain* someTerrain)
 
 void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_resolution /* = 16 */)
 {
+	delete m_Cubemap;
+
 
 	Engine* engine = Engine::GetInstance();
 	graphics::IGraphicsAPI* api = Engine::GetAPI();
@@ -731,165 +740,114 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	_device->GetImmediateContext(&_ctx);
 
 	const s32 max_sides = 6;
-	s32 downsample_amount = s32(log(__min(max_resolution, max_resolution)) / log(2.f)) + 1; //can be changed
-	s32 resolution = max_resolution;
-	for (s32 i = 0; i < downsample_amount; i++)
-	{
-		resolution /= 2;
-		if (resolution == min_resolution)
-		{
-			downsample_amount = i;
-			break;
-		}
-	}
-
-
-
-	// __________________________________________________________________________________________________________________________________
-	// Render to the texture
-	// __________________________________________________________________________________________________________________________________
-
-
 	Camera* camera = new Camera;
 	const float far_plane = 100000.f; //configurable parameter?
 	const float near_plane = 0.1f;
 	const float fov = 90.f;
 	camera->CreatePerspectiveProjection(max_resolution, max_resolution, near_plane, far_plane, fov);
+	camera->SetPosition(positon);
+
+	TextureDesc depth_desc;
+	depth_desc.m_Usage = graphics::DEFAULT_USAGE;
+	depth_desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_DEPTH_STENCIL /*should bind a render target*/;
+	depth_desc.m_TextureFormat = graphics::R32_TYPELESS;
+	depth_desc.m_DepthTextureFormat = graphics::DEPTH_32_FLOAT;
+	depth_desc.m_Width = max_resolution;
+	depth_desc.m_Height = max_resolution;
+
+	Texture* depth = nullptr;
+	depth = new Texture;
+	depth->Initiate(depth_desc, "");
+
 
 	graphics::Viewport* viewport = api->CreateViewport(max_resolution, max_resolution, 0, 1, 0, 0);
 	ctx.SetViewport(viewport);
 	//forward, right, back, left | up, down,
 	TextureDesc texDesc;
-	
 	texDesc.m_Usage = graphics::DEFAULT_USAGE;
 	texDesc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
 	texDesc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
 	texDesc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
 	texDesc.m_TextureFormat = graphics::RGBA16_FLOAT;
+	texDesc.m_MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
+	texDesc.m_MipCount = 8;
+	texDesc.m_Width = max_resolution;
+	texDesc.m_Height = max_resolution;
 
-	const s32 FORWARD = 0;
-	const s32 RIGHT = 1;
-	const s32 BACK = 2;
-	const s32 LEFT = 3;
-	const s32 UP = 4;
-	const s32 DOWN = 5;
+	TerrainManager* manager = Engine::GetInstance()->GetTerrainManager();
 
-	Texture* cubemap[6];
+	graphics::ConstantBuffer buffer;
+	buffer.RegisterVariable(&camera->GetViewProjection());
+	buffer.Initiate();
 
-	for (s32 i = 0; i < 4; ++i)
-	{
-		cubemap[i] = new Texture;
-		cubemap[i]->Initiate(texDesc, "");
-		ctx.OMSetRenderTargets(1, cubemap[i]->GetRenderTargetRef(), nullptr);
 
-		m_TerrainSystem->Draw();
+	graphics::ConstantBuffer terrain_buffer;
+	Terrain* terrain = manager->GetTerrain(Hash("2048"));
+	terrain_buffer.RegisterVariable(&terrain->GetOrientation());
+	terrain_buffer.RegisterVariable(&camera->GetOrientation());
+	terrain_buffer.Initiate();
+
+	const s32 RIGHT = 0;
+	const s32 LEFT = 1;
+	const s32 UP = 2;
+	const s32 DOWN = 3;
+	const s32 FORWARD = 4;
+	const s32 BACK = 5;
+	Texture* cubemap[max_sides];
+	s32 flags = graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS;
+
+	auto create_texture = [&](s32 index) {
+		cubemap[index] = new Texture;
+		cubemap[index]->Initiate(texDesc, false, "");
+
+		camera->Update();
+		buffer.Bind(0, flags, m_RenderContext);
+		terrain_buffer.Bind(1, flags, m_RenderContext);
+
+		ctx.ClearDepthStencilView(depth->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1);
+		ctx.ClearRenderTarget(cubemap[index], clearcolor::black);
+		ctx.OMSetRenderTargets(1, cubemap[index]->GetRenderTargetRef(), depth->GetDepthView());
+
+		
+		terrain->Render(m_RenderContext, false, true);
 		m_Atmosphere.Render(m_RenderContext);
-		camera->RotateAroundY(cl::DegreeToRad(90.f));
-	}
+	};
+
+
+	create_texture(FORWARD);
 	camera->RotateAroundY(cl::DegreeToRad(90.f));
-	camera->RotateAroundX(cl::DegreeToRad(90.f));
-
-	ctx.OMSetRenderTargets(1, cubemap[UP]->GetRenderTargetRef(), nullptr);
-	m_TerrainSystem->Draw();
-	m_Atmosphere.Render(m_RenderContext);
-
+	create_texture(RIGHT);
+	camera->RotateAroundY(cl::DegreeToRad(90.f));
+	create_texture(BACK);
+	camera->RotateAroundY(cl::DegreeToRad(90.f));
+	create_texture(LEFT);
+	camera->RotateAroundY(cl::DegreeToRad(90.f));
+	camera->RotateAroundX(cl::DegreeToRad(-90.f));
+	create_texture(UP);
 	camera->RotateAroundX(cl::DegreeToRad(180.f));
-
-	ctx.OMSetRenderTargets(1, cubemap[DOWN]->GetRenderTargetRef(), nullptr);
-	m_TerrainSystem->Draw();
-	m_Atmosphere.Render(m_RenderContext);
+	create_texture(DOWN);
 
 
-	// __________________________________________________________________________________________________________________________________
-	// Downsample the textures
-	// __________________________________________________________________________________________________________________________________
-
-	DownsamplePass downsampler[6];
-	for (s32 i = 0; i < 6; ++i)
+	for (s32 i = 0; i < max_sides; ++i)
 	{
-		downsampler[i].Initiate(downsample_amount - 1, max_resolution, max_resolution, texDesc);
-		downsampler[i].Process(cubemap[i], m_RenderContext);
+		_ctx->GenerateMips((ID3D11ShaderResourceView*)cubemap[i]->GetShaderView());
 	}
 
-
-	Texture::SaveToDisk(L"tex0.dds", downsampler[0].GetSample(0)->GetTexture());
-	/*DirectX::ScratchImage image;
-	HRESULT hr = DirectX::CaptureTexture(_device, _ctx, texArray, image);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");*/
+	m_Cubemap = new Texture;
+	m_Cubemap->CreateTextureArray(cubemap, max_sides, "atmosphere.dds");
+	engine->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_Cubemap, Effect::CUBEMAP);
 
 
-	return;
-	// __________________________________________________________________________________________________________________________________
-	// Construct the cubemap
-	// __________________________________________________________________________________________________________________________________
-
-
-
-
-	//D3D11_SUBRESOURCE_DATA data[6];
-
-
-
-
-	const u32 tex_count = max_sides;
-	CU::GrowingArray<ID3D11ShaderResourceView*> src(tex_count);
-
-	// 	for (u32 i = 0; i < tex_count; i++)
-	// 	{
-	// 		IShaderResourceView* srv = Engine::GetAPI()->GetDevice().CreateTextureFromFile(paths[i], false, &Engine::GetAPI()->GetContext());
-	// 		src.Add(static_cast<ID3D11ShaderResourceView*>(srv));
-	// 	}
-
-	D3D11_TEXTURE2D_DESC desc;
-	ZeroMemory(&desc, sizeof(desc));
-	ID3D11Resource* resource = nullptr;
-	src[0]->GetResource(&resource);
-	((ID3D11Texture2D*)resource)->GetDesc(&desc);
-
-	D3D11_TEXTURE2D_DESC arr_desc;
-	arr_desc.Width = desc.Width;
-	arr_desc.Height = desc.Height;
-	arr_desc.MipLevels = desc.MipLevels;
-	arr_desc.ArraySize = tex_count;
-	arr_desc.Format = desc.Format;
-	arr_desc.SampleDesc.Count = 1;
-	arr_desc.SampleDesc.Quality = 0;
-	arr_desc.Usage = D3D11_USAGE_DEFAULT;
-	arr_desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	arr_desc.CPUAccessFlags = 0;
-	arr_desc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
-
-	ID3D11Texture2D* texArray = nullptr;
-	HRESULT hr = _device->CreateTexture2D(&arr_desc, nullptr, &texArray);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to Create texture");
-
-	for (u32 i = 0; i < tex_count; i++)
-	{
-		ID3D11Resource* resource = nullptr;
-		src[i]->GetResource(&resource);
-		//target, index, x,y,z, resource, index, optional box
-		_ctx->CopySubresourceRegion(texArray, i, 0, 0, 0, resource, 0, nullptr);
-	}
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
-	viewDesc.Format = arr_desc.Format;
-	viewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
-	viewDesc.TextureCube.MostDetailedMip = 0;
-	viewDesc.TextureCube.MipLevels = arr_desc.MipLevels;
-
-	ID3D11ShaderResourceView* srv = nullptr;
-	hr = _device->CreateShaderResourceView(texArray, &viewDesc, &srv);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to Create srv");
-	//m_ShaderResource = srv;
-
-	DirectX::ScratchImage image;
-	hr = DirectX::CaptureTexture(_device, _ctx, texArray, image);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");
-	//DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, cl::ToWideStr(filename).c_str());
 	_ctx->Release();
-
-
 	delete camera;
 	delete viewport;
+	delete depth;
+	for (s32 i = 0; i < max_sides; i++)
+	{
+		delete cubemap[i];
+	}
+
+
+
 }
 

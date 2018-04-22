@@ -145,15 +145,13 @@ namespace cl
 
 	float RadToDegree(float aRadian)
 	{
-		return aRadian = aRadian * (180 / 3.1415926535f);
+		return aRadian * (180 / 3.1415926535f);
 	}
 
 	float DegreeToRad(float aDegree)
 	{
-		return aDegree = aDegree * (3.1415926535f / 180);
+		return aDegree * (3.1415926535f / 180);
 	}
-
-
 
 	CU::Vector2f Bezier(CU::Vector2f p1, CU::Vector2f p2, CU::Vector2f p3, float t)
 	{

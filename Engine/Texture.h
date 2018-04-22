@@ -15,6 +15,8 @@ struct TextureDesc
 	s32 m_ResourceTypeBinding = 0;
 	s32 m_Usage = 0;
 	s32 m_CPUAccessFlag = 0;
+	s32 m_MiscFlags = 0;
+	s32 m_MipCount = 1;
 };
 
 class Texture
@@ -32,12 +34,16 @@ public:
 
 	void Initiate(const TextureDesc& desc, const std::string& debug_name);
 	void Initiate(const TextureDesc& desc, bool create_from_texture, const std::string& debug_name);
+
+
 	void InitiateAsDepthStencil(s32 width, s32 height, const std::string& debug_name);
 	void InitiateAsRenderTarget(s32 width, s32 height, const std::string& debug_name);
 
 	//Used for cubemaps or 3d textures
 	void CreateTextureArray(const char* paths[], const s32 const num_tex, const char* filename);
+	void CreateTextureArray(Texture* textures[], const s32 const num_tex, const char* filename);
 	void Create3DTexture(const char* path, s32 slice_width, s32 slice_height, s32 slice_count, const char* filename);
+	//void Create3DTexture(Texture* textures[], s32 slice_width, s32 slice_height, s32 slice_count, const char* filename);
 
 	static void SaveToDisk(const wchar_t* path, ITexture2D* tex);
 

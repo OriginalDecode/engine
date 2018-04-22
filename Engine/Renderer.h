@@ -20,7 +20,6 @@
 
 #include <CommonLib/RefPointer.h>
 
-
 class Line3D;
 class Camera;
 class DeferredRenderer;
@@ -36,6 +35,7 @@ class SpotLight;
 class ShadowSpotlight;
 class CommandAllocator;
 class TerrainSystem;
+
 class Renderer
 {
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -168,11 +168,13 @@ private:
 
 	void DrawEntity(Texture* pTex, Entity e);
 
+	bool m_CreateCubemaps = false;
+	Texture* m_Cubemap = nullptr;
 public:
 	void SetRenderLines(bool render_lines) { m_RenderLines = render_lines; }
 	bool GetRenderLines() { return m_RenderLines; }
 	DeferredRenderer* GetDeferredRenderer() {	return m_DeferredRenderer; };
-
+	void CreateCubemaps() { m_CreateCubemaps = true; }
 
 #endif
 

@@ -43,7 +43,7 @@ void HDRPass::Initiate()
 	desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
 	desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
 
-	m_Downsampler.Initiate(downsample_amount, pow2, pow2, desc);
+	m_Downsampler.Initiate(downsample_amount, pow2, pow2, desc, true);
 
 	m_HDREffect = Engine::GetInstance()->GetEffect("Shaders/tonemapping.json");
 	m_RenderToScreenEffect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");

@@ -240,15 +240,15 @@ namespace graphics
 		D3D11_TEXTURE2D_DESC text_desc;
 		text_desc.Width = desc.m_Width;
 		text_desc.Height = desc.m_Height;
-		text_desc.MipLevels = 1;
+		text_desc.MipLevels = desc.m_MipLevels;
 		text_desc.Format = DirectX11::GetFormat(desc.m_Format);
-		text_desc.SampleDesc.Count = 1;
-		text_desc.SampleDesc.Quality = 0;
+		text_desc.SampleDesc.Count = desc.m_SampleCount;
+		text_desc.SampleDesc.Quality = desc.m_SampleQuality;
 		text_desc.Usage = DirectX11::GetUsage(desc.m_Usage); //GetUsage
 		text_desc.BindFlags = DirectX11::GetBindFlag(desc.m_Binding); //GetBinding
 		text_desc.CPUAccessFlags = DirectX11::GetCPUAccessFlag(desc.m_CPUAccessFlag);
-		text_desc.MiscFlags = 0;
-		text_desc.ArraySize = 1;
+		text_desc.MiscFlags = desc.m_MiscFlags;
+		text_desc.ArraySize = desc.m_ArraySize;
 
 		ID3D11Texture2D* texture = nullptr;
 		HRESULT hr = m_Device->CreateTexture2D(&text_desc, NULL, &texture);
@@ -264,15 +264,15 @@ namespace graphics
 		D3D11_TEXTURE2D_DESC text_desc;
 		text_desc.Width = desc.m_Width;
 		text_desc.Height = desc.m_Height;
-		text_desc.MipLevels = 1;
+		text_desc.MipLevels = desc.m_MipLevels;
 		text_desc.Format = DirectX11::GetFormat(desc.m_Format);
-		text_desc.SampleDesc.Count = 1;
-		text_desc.SampleDesc.Quality = 0;
+		text_desc.SampleDesc.Count = desc.m_SampleCount;
+		text_desc.SampleDesc.Quality = desc.m_SampleQuality;
 		text_desc.Usage = DirectX11::GetUsage(desc.m_Usage); //GetUsage
 		text_desc.BindFlags = DirectX11::GetBindFlag(desc.m_Binding); //GetBinding
 		text_desc.CPUAccessFlags = DirectX11::GetCPUAccessFlag(desc.m_CPUAccessFlag);
-		text_desc.MiscFlags = 0;
-		text_desc.ArraySize = 1;
+		text_desc.MiscFlags = desc.m_MiscFlags;
+		text_desc.ArraySize = desc.m_ArraySize;
 
 
 		D3D11_SUBRESOURCE_DATA _data;

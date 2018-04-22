@@ -28,6 +28,7 @@
 #include <Input/ControllerInput.h>
 #include <Engine/LevelFactory.h>
 
+#include <Engine/Renderer.h>
 #include "Player.h"
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
@@ -307,6 +308,11 @@ void Game::OldUpdate(float dt)
 			m_Camera->Move(eDirection::UP, s_CamSpeed * dt);
 		if (input_wrapper->IsDown(KButton::X))
 			m_Camera->Move(eDirection::DOWN, -s_CamSpeed * dt);
+	}
+
+	if (input_wrapper->OnDown(KButton::P))
+	{
+		m_Engine->GetRenderer()->CreateCubemaps();
 	}
 
 

@@ -158,6 +158,24 @@ void Terrain::Render(const graphics::RenderContext& rc, bool override_shader)
 
 }
 
+void Terrain::Render(const graphics::RenderContext& rc, bool override_shader, bool skip_binding)
+{
+	graphics::IGraphicsContext& ctx = rc.GetContext();
+	graphics::IGraphicsAPI& api = rc.GetAPI();
+
+	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
+	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
+	
+	m_PixelBuffer.Bind(1, graphics::ConstantBuffer::PIXEL, rc);
+	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
+	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
+	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
+	rc.GetContext().DSSetSamplerState(0, 1, &pSampler);
+	ctx.DrawIndexed(this, m_Effect);
+}
+
 void Terrain::Wireframe(const graphics::RenderContext& rc)
 {
 	graphics::IGraphicsContext& ctx = rc.GetContext();

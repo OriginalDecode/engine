@@ -62,16 +62,19 @@ void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const 
 #endif
 	graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 	DL_ASSERT_EXP(desc.m_TextureFormat != graphics::NO_FORMAT, "invalid texture format!");
+
+	graphics::Texture2DDesc tex_desc;
+	tex_desc.m_Height = desc.m_Height;
+	tex_desc.m_Width = desc.m_Width;
+
 	if (desc.m_TextureFormat != graphics::NO_FORMAT)
 	{
-		graphics::Texture2DDesc tex_desc;
-		tex_desc.m_Height = desc.m_Height;
-		tex_desc.m_Width = desc.m_Width;
+
 		tex_desc.m_Format = desc.m_TextureFormat;
-		tex_desc.m_MipLevels = 1;
+		tex_desc.m_MipLevels = desc.m_MipCount;
 		tex_desc.m_ArraySize = 1;
 		tex_desc.m_Usage = desc.m_Usage;
-		tex_desc.m_MiscFlags = 0;
+		tex_desc.m_MiscFlags = desc.m_MiscFlags;
 		tex_desc.m_SampleCount = 1;
 		tex_desc.m_SampleQuality = 0;
 		tex_desc.m_CPUAccessFlag = 0;
@@ -81,14 +84,11 @@ void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const 
 
 	if (desc.m_ShaderResourceFormat != graphics::NO_FORMAT)
 	{
-		graphics::Texture2DDesc tex_desc;
-		tex_desc.m_Height = desc.m_Height;
-		tex_desc.m_Width = desc.m_Width;
 		tex_desc.m_Format = desc.m_ShaderResourceFormat;
 		tex_desc.m_MipLevels = 0;
 		tex_desc.m_ArraySize = 0;
 		tex_desc.m_Usage = desc.m_Usage;
-		tex_desc.m_MiscFlags = 0;
+		tex_desc.m_MiscFlags = desc.m_MiscFlags;
 		tex_desc.m_SampleCount = 1;
 		tex_desc.m_SampleQuality = 0;
 		tex_desc.m_CPUAccessFlag = desc.m_CPUAccessFlag;
@@ -102,14 +102,11 @@ void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const 
 
 	if (desc.m_RenderTargetFormat != graphics::NO_FORMAT)
 	{
-		graphics::Texture2DDesc tex_desc;
-		tex_desc.m_Height = desc.m_Height;
-		tex_desc.m_Width = desc.m_Width;
 		tex_desc.m_Format = desc.m_RenderTargetFormat;
 		tex_desc.m_MipLevels = 0;
 		tex_desc.m_ArraySize = 0;
 		tex_desc.m_Usage = desc.m_Usage;
-		tex_desc.m_MiscFlags = 0;
+		tex_desc.m_MiscFlags = desc.m_MiscFlags;
 		tex_desc.m_SampleCount = 1;
 		tex_desc.m_SampleQuality = 0;
 		tex_desc.m_CPUAccessFlag = desc.m_CPUAccessFlag;
@@ -119,14 +116,11 @@ void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const 
 
 	if (desc.m_DepthTextureFormat != graphics::NO_FORMAT)
 	{
-		graphics::Texture2DDesc tex_desc;
-		tex_desc.m_Height = desc.m_Height;
-		tex_desc.m_Width = desc.m_Width;
 		tex_desc.m_Format = desc.m_DepthTextureFormat;
 		tex_desc.m_MipLevels = 0;
 		tex_desc.m_ArraySize = 0;
 		tex_desc.m_Usage = desc.m_Usage;
-		tex_desc.m_MiscFlags = 0;
+		tex_desc.m_MiscFlags = desc.m_MiscFlags;
 		tex_desc.m_SampleCount = 1;
 		tex_desc.m_SampleQuality = 0;
 		tex_desc.m_CPUAccessFlag = desc.m_CPUAccessFlag;
@@ -168,8 +162,6 @@ void Texture::InitiateAsRenderTarget(s32 width, s32 height, const std::string& d
 void Texture::CreateTextureArray(const char* paths[], const s32 const num_tex, const char* filename)
 {
 	graphics::IGraphicsAPI* api = Engine::GetAPI();
-
-
 	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
 	ID3D11DeviceContext* ctx = nullptr;
 	device->GetImmediateContext(&ctx);
@@ -212,6 +204,76 @@ void Texture::CreateTextureArray(const char* paths[], const s32 const num_tex, c
 		src[i]->GetResource(&resource);
 		//target, index, x,y,z, resource, index, optional box
 		ctx->CopySubresourceRegion(texArray, i, 0, 0, 0, resource, 0, nullptr);
+	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
+	viewDesc.Format = arr_desc.Format;
+	viewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+	viewDesc.TextureCube.MostDetailedMip = 0;
+	viewDesc.TextureCube.MipLevels = arr_desc.MipLevels;
+
+	ID3D11ShaderResourceView* srv = nullptr;
+	hr = device->CreateShaderResourceView(texArray, &viewDesc, &srv);
+	DL_ASSERT_EXP(hr == S_OK, "Failed to Create srv");
+	m_ShaderResource = srv;
+
+	DirectX::ScratchImage image;
+	hr = DirectX::CaptureTexture(device, ctx, texArray, image);
+	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");
+	DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, cl::ToWideStr(filename).c_str());
+	ctx->Release();
+}
+
+void Texture::CreateTextureArray(Texture* textures[], const s32 const num_tex, const char* filename)
+{
+	graphics::IGraphicsAPI* api = Engine::GetAPI();
+	ID3D11Device* device = static_cast<graphics::DX11Device&>(Engine::GetAPI()->GetDevice()).GetDevice();
+	ID3D11DeviceContext* ctx = nullptr;
+	device->GetImmediateContext(&ctx);
+
+	const u32 tex_count = num_tex;
+	CU::GrowingArray<ID3D11ShaderResourceView*> src(tex_count);
+
+	for (u32 i = 0; i < tex_count; i++)
+	{
+		IShaderResourceView* srv = textures[i]->GetShaderView();//Engine::GetAPI()->GetDevice().CreateTextureFromFile(paths[i], false, &Engine::GetAPI()->GetContext());
+		src.Add(static_cast<ID3D11ShaderResourceView*>(srv));
+	}
+
+	D3D11_TEXTURE2D_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+	ID3D11Resource* resource = nullptr;
+	src[0]->GetResource(&resource);
+	((ID3D11Texture2D*)resource)->GetDesc(&desc);
+
+	D3D11_TEXTURE2D_DESC arr_desc;
+	arr_desc.Width = desc.Width;
+	arr_desc.Height = desc.Height;
+	arr_desc.MipLevels = desc.MipLevels;
+	arr_desc.ArraySize = tex_count;
+	arr_desc.Format = desc.Format;
+	arr_desc.SampleDesc.Count = 1;
+	arr_desc.SampleDesc.Quality = 0;
+	arr_desc.Usage = D3D11_USAGE_DEFAULT;
+	arr_desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	arr_desc.CPUAccessFlags = 0;
+	arr_desc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+	ID3D11Texture2D* texArray = nullptr;
+
+	HRESULT hr = device->CreateTexture2D(&arr_desc, nullptr, &texArray);
+	DL_ASSERT_EXP(hr == S_OK, "Failed to Create texture");
+
+	for (u32 i = 0; i < tex_count; i++)
+	{
+		ID3D11Resource* resource = nullptr;
+		src[i]->GetResource(&resource);
+		//target, index, x,y,z, resource, index, optional box
+		for (s32 j = 0; j < desc.MipLevels; j++)
+		{
+
+			ctx->CopySubresourceRegion(texArray, (i * desc.MipLevels) + j, 0, 0, 0, resource, j, nullptr);
+		}
 	}
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
@@ -316,10 +378,8 @@ void Texture::SaveToDisk(const wchar_t* path, ITexture2D* tex)
 	ID3D11DeviceContext* ctx = nullptr;
 	device->GetImmediateContext(&ctx);
 
-	ID3D11Texture2D* d3dTex = (ID3D11Texture2D*)tex;
-
 	DirectX::ScratchImage image;
-	HRESULT hr = DirectX::CaptureTexture(device, ctx, d3dTex, image);
+	HRESULT hr = DirectX::CaptureTexture(device, ctx, (ID3D11Texture2D*)tex, image);
 	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");
 	DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, path);
 	ctx->Release();

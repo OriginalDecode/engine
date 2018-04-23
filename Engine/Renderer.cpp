@@ -759,7 +759,9 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	depth = new Texture;
 	depth->Initiate(depth_desc, "");
 
-
+	s32 downsample_amount = s32(log(__min(max_resolution, max_resolution)) / log(2.f)) + 1;
+	
+	
 	graphics::Viewport* viewport = api->CreateViewport(max_resolution, max_resolution, 0, 1, 0, 0);
 	ctx.SetViewport(viewport);
 	//forward, right, back, left | up, down,
@@ -770,7 +772,7 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	texDesc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
 	texDesc.m_TextureFormat = graphics::RGBA16_FLOAT;
 	texDesc.m_MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
-	texDesc.m_MipCount = 8;
+	texDesc.m_MipCount = downsample_amount;
 	texDesc.m_Width = max_resolution;
 	texDesc.m_Height = max_resolution;
 
@@ -797,20 +799,24 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	s32 flags = graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS;
 
 	auto create_texture = [&](s32 index) {
-		cubemap[index] = new Texture;
-		cubemap[index]->Initiate(texDesc, false, "");
+		Texture* rendertarget = new Texture;
+		rendertarget->Initiate(texDesc, false, "");
 
 		camera->Update();
 		buffer.Bind(0, flags, m_RenderContext);
 		terrain_buffer.Bind(1, flags, m_RenderContext);
 
 		ctx.ClearDepthStencilView(depth->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1);
-		ctx.ClearRenderTarget(cubemap[index], clearcolor::black);
-		ctx.OMSetRenderTargets(1, cubemap[index]->GetRenderTargetRef(), depth->GetDepthView());
+		ctx.ClearRenderTarget(rendertarget, clearcolor::black);
+		ctx.OMSetRenderTargets(1, rendertarget->GetRenderTargetRef(), depth->GetDepthView());
 
 		
 		terrain->Render(m_RenderContext, false, true);
 		m_Atmosphere.Render(m_RenderContext);
+
+		_ctx->GenerateMips((ID3D11ShaderResourceView*)rendertarget->GetShaderView());
+
+		cubemap[index] = rendertarget;
 	};
 
 

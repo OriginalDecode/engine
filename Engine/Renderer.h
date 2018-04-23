@@ -67,7 +67,7 @@ public:
 
 	void MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_resolution = 16);
 private:
-
+	float m_CubemapTimer = 0.f;
 
 
 	void PrepareFrame();

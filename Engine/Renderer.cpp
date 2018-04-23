@@ -270,7 +270,7 @@ void Renderer::Render()
 
 	if (m_CreateCubemaps)
 	{
-		MakeCubemap({ 512.f, 10.f, 512.f }, 1024);
+		MakeCubemap({ 512.f, 10.f, 512.f }, 2048);
 		m_CreateCubemaps = false;
 	}
 

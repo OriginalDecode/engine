@@ -3,7 +3,7 @@
         "albedo": "Data/Material/iron/rustediron-streaks_basecolor.png",
         "normal": "Data/Material/iron/rustediron-streaks_normal.png",
         "metalness": "Data/Material/iron/rustediron-streaks_metallic.png",
-        "roughness": "Data/Material/iron/rustediron-streaks_roughness.png",
+        "roughness": "Data/Material/iron/rustediron-streaks_roughness_2.png",
         "heightmap": "Data/Material/default/metalness.dds"
     }
 }

@@ -21,7 +21,7 @@
 #include <Engine.h>
 
 //#define VISIBLE_CHECK
-RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
+RenderSystem::RenderSystem(_EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, GraphicsComponent>>())
 {
 	mySynchronizer = m_Engine->GetSynchronizer();
@@ -30,13 +30,14 @@ RenderSystem::RenderSystem(NodeEntityManager& anEntityManager)
 
 void RenderSystem::Update(float /*dt*/, bool paused)
 {
-	//PROFILE_FUNCTION(profiler::colors::Blue);
-	
+	PROFILE_FUNCTION(profiler::colors::Blue);
+	Synchronizer* sync = Engine::GetInstance()->GetSynchronizer();
+
 	const CU::GrowingArray<Entity>& entities = GetEntities();
 	PROFILE_BLOCK("Render : Entity Loop");
 	for (Entity e : entities)
 	{
-		const TranslationComponent& translation = GetComponent<TranslationComponent>(e);
+		TranslationComponent translation = GetComponent<TranslationComponent>(e);
 		const GraphicsComponent& render = GetComponent<GraphicsComponent>(e);
 
 #ifdef VISIBLE_CHECK
@@ -73,7 +74,6 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		PROFILE_BLOCK_END;
 #endif
 
-
 		CU::Matrix44f world;
 		//world.SetPosition({ 512, 0, 512, 1 });
 		for (const ModelInstance& instance : render.m_Instances)
@@ -83,12 +83,6 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 			const CU::Matrix44f orientation = world * (relative * translation.GetOrientation());
 
 			const Frustum& f = CameraHandle::GetInstance()->GetFrustum();
-
-		/*	if (!f.InsideAABB(orientation.GetPosition()))
-				continue;
-
-			if(!f.Inside(orientation.GetPosition(), 0))
-				continue;*/
 
 			DL_ASSERT_EXP(instance.m_ModelID > 0, "Invalid Model Key!");
 
@@ -117,8 +111,16 @@ bool RenderSystem::Inside(const CU::Vector4f& translation, const CU::Vector4f& d
 
 void RenderSystem::AddRenderCommand(const ModelCommand& command)
 {
+#ifdef _PER_NODE_SYSTEM
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	memory::CommandAllocator& allocator = Engine::GetInstance()->GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, m_Manager.GetMemoryBlockIndex());
 	void * current = allocator.Alloc(sizeof(ModelCommand));
 	memcpy(current, &command, sizeof(ModelCommand));
+#else
+	Engine& engine = Engine::GetRef();
+	const u16 current_buffer = engine.GetSynchronizer()->GetCurrentBufferIndex();
+	memory::CommandAllocator& allocator = engine.GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, 0);
+	void * current = allocator.Alloc(sizeof(ModelCommand));
+	memcpy(current, &command, sizeof(ModelCommand));
+#endif
 }

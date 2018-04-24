@@ -11,13 +11,7 @@ class Quad;
 class IPostprocessPass
 {
 public:
-	virtual ~IPostprocessPass() 
-	{
-		delete m_Quad;
-		m_Quad = nullptr;
-
-	};
-
+	virtual ~IPostprocessPass()	{ };
 	virtual void Process(Texture* scene, const graphics::RenderContext& rc) = 0;
 	virtual void OnResize() = 0;
 protected:

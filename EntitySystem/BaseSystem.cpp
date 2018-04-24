@@ -1,13 +1,13 @@
 #include "BaseSystem.h"
 #include "../Engine/Engine.h"
 
-BaseSystem::BaseSystem(NodeEntityManager& anEntityManager)
+BaseSystem::BaseSystem(_EntityManager& anEntityManager)
 	: m_Manager(anEntityManager)
 	, m_Engine(Engine::GetInstance())
 {
 }
 
-BaseSystem::BaseSystem(NodeEntityManager& anEntityManager, const ComponentFilter& aFilter)
+BaseSystem::BaseSystem(_EntityManager& anEntityManager, const ComponentFilter& aFilter)
 	: m_Manager(anEntityManager)
 	, myFilter(aFilter)
 	, m_Engine(Engine::GetInstance())

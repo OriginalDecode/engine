@@ -6,7 +6,7 @@ class PhysicsManager;
 class PhysicsSystem : public BaseSystem 
 {
 public:
-	PhysicsSystem(NodeEntityManager& anEntityManager);
+	PhysicsSystem(_EntityManager& anEntityManager);
 
 	void Update(float dt, bool paused) override;
 

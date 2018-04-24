@@ -67,5 +67,7 @@ T& NodeEntityManager::GetComponent(Entity aEntity)
 template <typename T>
 void NodeEntityManager::AddSystem()
 {
+#ifdef _PER_NODE_SYSTEM
 	m_Systems.Add(new T(*this));
+#endif
 }

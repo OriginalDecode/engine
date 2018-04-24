@@ -10,7 +10,7 @@
 
 #include <Engine/DebugHandle.h>
 
-PhysicsSystem::PhysicsSystem(NodeEntityManager& anEntityManager)
+PhysicsSystem::PhysicsSystem(_EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<TranslationComponent, PhysicsComponent>>())
 {
 	myPhysicsManager = Engine::GetInstance()->GetPhysicsManager();

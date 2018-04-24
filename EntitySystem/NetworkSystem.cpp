@@ -6,7 +6,7 @@
 
 #include <network/NetEntityData.h>
 
-NetworkSystem::NetworkSystem(NodeEntityManager& anEntityManager)
+NetworkSystem::NetworkSystem(_EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<NetworkComponent>>())
 	, m_NetManager(Engine::GetInstance()->GetNetworkManager())
 {

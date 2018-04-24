@@ -8,7 +8,7 @@ namespace network
 class NetworkSystem : public BaseSystem
 {
 public:
-	NetworkSystem(NodeEntityManager& anEntityManager);
+	NetworkSystem(_EntityManager& anEntityManager);
 	void Update(float delta_time, bool paused) override;
 
 private:

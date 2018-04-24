@@ -32,7 +32,9 @@ void TreeNodeBase::Update(float dt, bool paused)
 	if (m_NodeEntityManager->EntityCount() <= 0)
 		return;
 
+#ifdef _PER_NODE_SYSTEM
 	m_NodeEntityManager->Update(dt, m_Dwellers, paused);
+#endif
 
 	PROFILE_BLOCK("forEachDweller", profiler::colors::LightBlue);
 	for (TreeDweller* dweller : m_Dwellers)
@@ -115,7 +117,10 @@ TreeNodeBase* TreeNodeBase::GetParent()
 void TreeNodeBase::AddEntity(TreeDweller* dweller)
 {
 	m_Dwellers.Add(dweller);
+#ifdef _PER_NODE_SYSTEM
 	m_NodeEntityManager->AddEntity(dweller);
+#endif
+
 }
 
 void TreeNodeBase::AddEntity(TreeDweller* dweller, s32 node)
@@ -126,8 +131,9 @@ void TreeNodeBase::AddEntity(TreeDweller* dweller, s32 node)
 void TreeNodeBase::RemoveEntity(TreeDweller* dweller)
 {
 	dweller->SetFirstNode(nullptr);
-
+#ifdef _PER_NODE_SYSTEM
 	m_NodeEntityManager->RemoveEntity(dweller);
+#endif
 	m_Dwellers.RemoveCyclic(dweller);
 }
 
@@ -207,8 +213,10 @@ bool TreeNodeBase::InsideNode(TreeDweller* dweller)
 void TreeNodeBase::SetMemoryBlockIndex(s32 index)
 {
 	m_MemoryBlockIndex = index;
+#ifdef _PER_NODE_SYSTEM
 	m_NodeEntityManager->SetMemoryBlockIndex(m_MemoryBlockIndex);
 	m_NodeEntityManager->Initiate();
+#endif
 }
 
 #define RED CU::Vector4f(255.f,0.f,0.f,255.f)

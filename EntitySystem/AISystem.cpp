@@ -1,7 +1,7 @@
 #include "AISystem.h"
 #include "AIComponent.h"
 
-AISystem::AISystem(NodeEntityManager& anEntityManager)
+AISystem::AISystem(_EntityManager& anEntityManager)
 	: BaseSystem(anEntityManager, CreateFilter<Requires<AIComponent>>())
 {
 }

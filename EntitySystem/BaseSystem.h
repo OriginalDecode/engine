@@ -2,15 +2,22 @@
 #include "ComponentFilter.h"
 #include "NodeEntityManager.h"
 #include "EntityManager.h"
-#include <Utilities.h>
+#include <CommonLib/Utilities.h>
 
 class Synchronizer;
 class Engine;
+#define _PER_NODE_SYSTEM
+#ifdef _PER_NODE_SYSTEM
+typedef NodeEntityManager _EntityManager;
+#else
+typedef EntityManager _EntityManager;
+#endif
+
 class BaseSystem
 {
 public:
-	BaseSystem(NodeEntityManager& anEntityManager);
-	BaseSystem(NodeEntityManager& anEntityManager, const ComponentFilter& aFilter);
+	BaseSystem(_EntityManager& anEntityManager);
+	BaseSystem(_EntityManager& anEntityManager, const ComponentFilter& aFilter);
 	virtual ~BaseSystem() = 0;
 
 	virtual void Update(float dt, bool paused) = 0;
@@ -24,16 +31,10 @@ private:
 
 protected:
 	ComponentFilter myFilter;
-	NodeEntityManager& m_Manager;
+	_EntityManager& m_Manager;
 	Engine* m_Engine = nullptr;
 	
 };
-
-template<typename T>
-T* BaseSystem::NewInstance(NodeEntityManager& manager)
-{
-	return new T(manager);
-}
 
 template<typename T>
 T& BaseSystem::GetComponent(Entity anEntity)

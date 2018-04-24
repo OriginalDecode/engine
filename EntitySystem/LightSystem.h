@@ -8,7 +8,7 @@ class EntityManager;
 class LightSystem : public BaseSystem
 {
 public:
-	LightSystem(NodeEntityManager& anEntityManager);
+	LightSystem(_EntityManager& anEntityManager);
 	void Update(float aDeltaTime, bool paused) override;
 private:
 	Synchronizer* mySynchronizer;

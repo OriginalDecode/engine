@@ -45,12 +45,10 @@ void EntityManager::Clear()
 	myNextEntity = 0;
 }
 
-void EntityManager::Update(float)
+void EntityManager::Update(float dt)
 {
-	/*myDeltaTime = aDelta;
-
 	const CU::GrowingArray<Entity>& entities = GetEntities();
-	for ( Entity e : entities )
+	/*for ( Entity e : entities )
 	{
 		if ( CameraHandle::GetInstance() )
 		{
@@ -61,13 +59,13 @@ void EntityManager::Update(float)
 			else
 				myComponents->SetUpdateFlag(e, false);
 		}
-	}
-
-
-	for ( BaseSystem* system :  )
-	{
-		system->Update(myDeltaTime);
 	}*/
+
+
+	for ( BaseSystem* system : m_Systems )
+	{
+		system->Update(dt, false);
+	}
 }
 
 const CU::GrowingArray<Entity>& EntityManager::GetEntities(ComponentFilter aFilter)

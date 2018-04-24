@@ -3,7 +3,7 @@
 class AISystem final : public BaseSystem
 {
 public:
-	AISystem(NodeEntityManager& anEntityManager);
+	AISystem(_EntityManager& anEntityManager);
 	void Update(float delta_time, bool paused) override;
 };
 

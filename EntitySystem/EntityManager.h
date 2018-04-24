@@ -119,14 +119,13 @@ T& EntityManager::GetComponent(Entity aEntity)
 {
 	return static_cast<T&>(myComponents->GetComponent(aEntity, CTypeID<BaseComponent>::GetID<T>()));
 }
-
+#define _PER_NODE_SYSTEM
 template <typename T>
 void EntityManager::AddSystem()
 {
-	// 	for (NodeEntityManager* manager : m_NodeManagers)
-	// 	{
-	// 		manager->AddSystem<T>();
-	// 	}
+#ifndef _PER_NODE_SYSTEM
+	m_Systems.Add(new T(*this));
+#endif
 }
 
 template<typename T>

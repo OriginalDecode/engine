@@ -8,6 +8,9 @@
 #include "Synchronizer.h"
 #include "RenderCommand.h"
 
+#include <EntitySystem/EntityManager.h>
+#include <Engine/Engine.h>
+
 void World::Initiate(CU::Vector3f position)
 {
 	m_WorldPos = position;
@@ -25,6 +28,9 @@ void World::CleanUp()
 void World::Update(float dt, bool paused)
 {
 	m_Octree.Update(dt, paused);
+#ifndef _PER_NODE_SYSTEM
+	Engine::GetInstance()->GetEntityManager().Update(dt);
+#endif
 }
 
 void World::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)

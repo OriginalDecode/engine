@@ -23,7 +23,7 @@
 
 #if !defined(_FINAL) && !defined(_PROFILE)
 
-DebugSystem::DebugSystem(NodeEntityManager& entity_manager)
+DebugSystem::DebugSystem(_EntityManager& entity_manager)
 	: BaseSystem(entity_manager, CreateFilter<Requires<TranslationComponent, DebugComponent>>())
 {
 	m_Synchronizer = Engine::GetInstance()->GetSynchronizer();

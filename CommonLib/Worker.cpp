@@ -3,9 +3,8 @@
 #include <thread>
 #include "Utilities.h"
 
-#ifdef _PROFILE
-#include <easy/profiler.h>
-#endif
+#include "engine/profile_defines.h"
+
 Worker::Worker()
 	: myIsDone(true)
 	, myIsRunning(true)
@@ -57,9 +56,8 @@ void Worker::CleanUp()
 
 void Worker::Run()
 {
-#ifdef _PROFILE
-	EASY_THREAD_SCOPE("Worker Thread");
-#endif
+	PROFILE_THREAD_SCOPE("Worker Thread");
+
 	while (myIsRunning)
 	{
 		while (myIsDone)

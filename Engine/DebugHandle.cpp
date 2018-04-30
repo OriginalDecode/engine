@@ -151,6 +151,9 @@ namespace debug
 		mgr->Subscribe("copy_selected", this);
 		mgr->Subscribe("paste_new", this);
 		m_RegisteredSampleTextures.Init(32);
+
+		ImGui::StyleColorsDark();
+
 	}
 
 
@@ -342,6 +345,10 @@ namespace debug
 	static char level_name[250];
 	void DebugHandle::Update()
 	{
+
+		//ImGui::ShowDemoWindow();
+		//ImGui::ShowStyleEditor();
+
 		Engine* pEngine = Engine::GetInstance();
 		/*	ImGui::SetNextWindowPos(ImVec2(0, 0));
 			ImGui::SetNextWindowSize(ImVec2(300, Engine::GetInstance()->GetInnerSize().m_Height));*/

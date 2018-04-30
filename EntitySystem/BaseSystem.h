@@ -6,7 +6,7 @@
 
 class Synchronizer;
 class Engine;
-#define _PER_NODE_SYSTEM
+//#define _PER_NODE_SYSTEM
 #ifdef _PER_NODE_SYSTEM
 typedef NodeEntityManager _EntityManager;
 #else

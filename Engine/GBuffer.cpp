@@ -23,6 +23,7 @@ namespace graphics
 #ifdef _DEBUG
 		SAFE_DELETE(m_Metalness);
 		SAFE_DELETE(m_Roughenss);
+		SAFE_DELETE(m_Depth2);
 		//SAFE_DELETE(m_EntityIDTexture); //responsibility moved to AssetsContainer
 #endif
 	}

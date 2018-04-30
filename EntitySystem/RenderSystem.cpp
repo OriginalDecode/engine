@@ -79,7 +79,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 		for (const ModelInstance& instance : render.m_Instances)
 		{
 
-			const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(CU::Vector4f(1,1,1,1)) * instance.m_Orientation;
+			const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale) * instance.m_Orientation;
 			const CU::Matrix44f orientation = world * (relative * translation.GetOrientation());
 
 			const Frustum& f = CameraHandle::GetInstance()->GetFrustum();

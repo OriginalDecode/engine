@@ -1,0 +1,9 @@
+{
+    "material": {
+        "albedo": "Data/Material/fingerprint/Fingerprints03_col.jpg",
+        "normal": "Data/Material/fingerprint/Fingerprints03_nrm.jpg",
+        "metalness": "Data/Material/fingerprint/Fingerprints03_mask.jpg",
+        "roughness": "Data/Material/fingerprint/Fingerprints03_rgh.jpg",
+        "heightmap": "Data/Material/default/metalness.dds"
+    }
+}

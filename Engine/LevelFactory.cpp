@@ -498,6 +498,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 		pEngine->GetMaterial("Data/Material/mat_octostone.json"),
 		pEngine->GetMaterial("Data/Material/mat_rough_leather.json"),
 		pEngine->GetMaterial("Data/Material/mat_rusted_iron.json"),
+		pEngine->GetMaterial("Data/Material/mat_fingerprint.json"),
 	};
 
 	const char* files[] = {
@@ -508,6 +509,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 		"Data/Material/mat_octostone.json",
 		"Data/Material/mat_rough_leather.json",
 		"Data/Material/mat_rusted_iron.json",
+		"Data/Material/mat_fingerprint.json",
 	};
 
 	EntityManager& em = Engine::GetInstance()->GetEntityManager();
@@ -528,6 +530,8 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 
 			t.m_Orientation.SetTranslation(translation);
 
+			float scale_factor = 0.5;
+
 			auto v = RANDOM(0, ARRSIZE(material));
 
 			u64 key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false);
@@ -535,7 +539,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 			ModelInstance instance;
 			instance.m_Filename = "data/model/ballen.fbx";
 			instance.m_MaterialFile = files[v];
-			instance.m_Scale = CU::Vector4f(1, 1, 1, 1);
+			instance.m_Scale = CU::Vector4f(scale_factor, scale_factor, scale_factor, 1);
 
 
 			Material* pMaterial = material[v];
@@ -544,7 +548,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 			instance.m_MaterialKey = pMaterial->GetKey();
 			instance.m_ModelID = key;
 
-			r.m_Scale = CU::Vector4f(1, 1, 1, 1);
+			r.m_Scale = CU::Vector4f(scale_factor, scale_factor, scale_factor, 1);
 
 			r.m_Instances.Add(instance);
 

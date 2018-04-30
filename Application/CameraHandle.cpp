@@ -22,7 +22,7 @@ void CameraHandle::Destroy()
 
 void CameraHandle::Initiate(CU::Matrix44f* orientation)
 {
-	float far_plane = 250.f;
+	float far_plane = 100.f;
 	float near_plane = 0.1f;
 
 	m_Camera = Engine::GetInstance()->GetCamera();

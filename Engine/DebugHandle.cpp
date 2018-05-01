@@ -399,6 +399,24 @@ namespace debug
 				}
 				ImGui::TreePop();
 			}
+
+
+			/*static Window* win = nullptr;
+			if (ImGui::Button("click me") && !win)
+			{
+
+				WindowCreateInfo wci;
+				wci.window_height = 720.f;
+				wci.window_width = 1280.f;
+				wci.window_process = (WNDPROC)Engine::GetInstance()->wndproc;
+				wci.instance = (HINSTANCE)Engine::GetInstance()->hinstance;
+
+				win = new Window;
+				win->Initiate(wci, WS_BORDER);
+				win->ShowWindow();
+			}*/
+
+
 		}
 		ImGui::End();
 		ImGui::PopStyleVar();

@@ -3,7 +3,7 @@
 
 
 
-bool Window::Initiate(WindowCreateInfo window_create_info)
+bool Window::Initiate(WindowCreateInfo window_create_info, u64 window_style )
 {
 	m_CreateInfo = window_create_info;
 	m_WindowSize.m_Height = window_create_info.window_height;
@@ -27,7 +27,7 @@ bool Window::Initiate(WindowCreateInfo window_create_info)
 	m_HWND = CreateWindow(
 		"WindowsClass"
 		, NULL
-		, WS_OVERLAPPEDWINDOW   //WS_POPUP, Borderless windowed
+		, window_style   //WS_POPUP, Borderless windowed
 		, s32(width) // start x
 		, s32(height) // start y
 		, s32(m_CreateInfo.window_width)

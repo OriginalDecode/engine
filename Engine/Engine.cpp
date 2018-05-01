@@ -82,12 +82,16 @@ const CU::Vector3f& Engine::GetLightDir()
 
 bool Engine::Initiate(float window_width, float window_height, HINSTANCE instance_handle, WNDPROC window_proc)
 {
+	wndproc = window_proc; //WNDPROC
+	hinstance = instance_handle; // HINSTANCE
+
+
 	WindowCreateInfo window_create_info;
 	window_create_info.window_height = window_height;
 	window_create_info.window_width = window_width;
 	window_create_info.window_process = window_proc;
 	window_create_info.instance = instance_handle;
-	m_Window.Initiate(window_create_info);
+	m_Window.Initiate(window_create_info, WS_OVERLAPPEDWINDOW);
 	m_Window.SetWindowText("engine");
 	m_Window.ShowWindow();
 

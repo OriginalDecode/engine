@@ -239,6 +239,11 @@ private:
 	bool m_PauseInput : 1;
 	bool m_CameraUseMouse  : 1;
 	bool m_RenderInstanced : 1;
+
+
+	void* hinstance = nullptr;
+	void* wndproc = nullptr;
+
 };
 
 template<typename T>

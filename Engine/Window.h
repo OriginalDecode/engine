@@ -34,7 +34,7 @@ class Window
 {
 public:
 	Window() = default;
-	bool Initiate(WindowCreateInfo window_create_info);
+	bool Initiate(WindowCreateInfo window_create_info, u64 window_style);
 	void ShowWindow();
 	HWND GetHWND() const { return m_HWND; }
 	HINSTANCE GetWindowInstance() { return m_CreateInfo.instance; }

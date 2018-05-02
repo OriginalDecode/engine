@@ -8,7 +8,6 @@ namespace graphics
 {
 	class DX11Context : public IGraphicsContext
 	{
-		friend class DirectX11;
 		friend class DX11Device;
 	public:
 		DX11Context(ID3D11DeviceContext* context);

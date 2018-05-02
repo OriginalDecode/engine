@@ -81,7 +81,7 @@ namespace graphics
 		SAFE_RELEASE(m_Swapchain);
 
 		ID3D11DeviceContext* ctx = static_cast<DX11Context*>(m_Context)->m_Context;
-		ID3D11Device* dev = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11Device* dev = static_cast<DX11Device*>(m_Device)->GetDevice();
 		ctx->ClearState();
 		ctx->Flush();
 
@@ -120,7 +120,7 @@ namespace graphics
 		SetDefaultTargets();
 		m_Context->SetViewport(m_Viewport);
 #if !defined(_PROFILE) && !defined(_FINAL)
-		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->GetDevice();
 		ID3D11DeviceContext* pContext = static_cast<DX11Context*>(m_Context)->m_Context;
 		ImGui_ImplDX11_Init(m_CreateInfo.m_HWND, pDevice, pContext);
 #endif
@@ -298,7 +298,7 @@ namespace graphics
 
 	void DirectX11::CreateDepthBuffer()
 	{
-		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->GetDevice();
 		D3D11_TEXTURE2D_DESC depthDesc;
 		ZeroMemory(&depthDesc, sizeof(depthDesc));
 
@@ -344,7 +344,7 @@ namespace graphics
 		hr = m_Swapchain->SetFullscreenState(FALSE, nullptr);
 		HandleErrors(hr, "Failed to set Fullscreen/Borderless");
 
-		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->GetDevice();
 		ID3D11RenderTargetView* pRenderTarget = nullptr;
 		ID3D11DepthStencilView* pDepthView = static_cast<ID3D11DepthStencilView*>(m_DefaultDepthView);
 
@@ -487,7 +487,7 @@ namespace graphics
 		scDesc.BufferDesc.RefreshRate.Numerator = numerator;
 		scDesc.BufferDesc.RefreshRate.Denominator = denominator;
 
-		hr = factory->CreateSwapChain(static_cast<DX11Device*>(m_Device)->m_Device, &scDesc, &m_Swapchain);
+		hr = factory->CreateSwapChain(static_cast<DX11Device*>(m_Device)->GetDevice(), &scDesc, &m_Swapchain);
 
 		SAFE_RELEASE(factory);
 	}
@@ -584,7 +584,7 @@ namespace graphics
 		desc.MultisampleEnable = false;
 		desc.AntialiasedLineEnable = false;
 
-		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->GetDevice();
 
 		desc.FillMode = D3D11_FILL_WIREFRAME;
 		desc.CullMode = D3D11_CULL_NONE;
@@ -606,7 +606,7 @@ namespace graphics
 
 	void DirectX11::CreateRasterizerState(const D3D11_RASTERIZER_DESC& desc, eRasterizer rasterizer, const char* debugname)
 	{
-		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->GetDevice();
 		ID3D11RasterizerState* rasterstate = nullptr;
 		pDevice->CreateRasterizerState(&desc, &rasterstate);
 		m_RasterizerStates[rasterizer] = rasterstate;

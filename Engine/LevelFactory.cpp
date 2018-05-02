@@ -498,7 +498,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 		pEngine->GetMaterial("Data/Material/mat_octostone.json"),
 		pEngine->GetMaterial("Data/Material/mat_rough_leather.json"),
 		pEngine->GetMaterial("Data/Material/mat_rusted_iron.json"),
-		pEngine->GetMaterial("Data/Material/mat_fingerprint.json"),
+		//pEngine->GetMaterial("Data/Material/mat_fingerprint.json"),
 	};
 
 	const char* files[] = {
@@ -509,7 +509,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 		"Data/Material/mat_octostone.json",
 		"Data/Material/mat_rough_leather.json",
 		"Data/Material/mat_rusted_iron.json",
-		"Data/Material/mat_fingerprint.json",
+		//"Data/Material/mat_fingerprint.json",
 	};
 
 	EntityManager& em = Engine::GetInstance()->GetEntityManager();

@@ -7,7 +7,7 @@ namespace graphics
 {
 	void DirectX11::CreateSamplerStates()
 	{
-		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->GetDevice();
 
 
 		D3D11_SAMPLER_DESC samplerDesc;

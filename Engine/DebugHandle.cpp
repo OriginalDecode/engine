@@ -345,6 +345,16 @@ namespace debug
 	static char level_name[250];
 	void DebugHandle::Update()
 	{
+		if (ImGui::Begin("Window"))
+		{
+			//ImGui::PushStyleColor(ImGuiCol_Button, color);
+			ImGui::Button("Tab1");
+			//ImGui::PopStyleColor();
+
+		}
+		ImGui::End();
+
+
 
 		//ImGui::ShowDemoWindow();
 		//ImGui::ShowStyleEditor();

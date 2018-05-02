@@ -4,9 +4,9 @@
 struct ID3D11Device;
 namespace graphics
 {
+	class DirectX11;
 	class DX11Device : public IGraphicsDevice
 	{
-		friend class DirectX11;
 	public:
 		DX11Device(ID3D11Device* device);
 		~DX11Device();

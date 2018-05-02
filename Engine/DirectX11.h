@@ -13,22 +13,13 @@ namespace graphics
 {
 	class DirectX11 : public IGraphicsAPI
 	{
+		friend class DX11Context;
+		friend class DX11Device;
 	public:
 		DirectX11(CreateInfo info);
 		~DirectX11();
 		
-		//INTERNAL USE FOR THE DX11DEVICE AND CONTEXT ONLY!
-		static void SetDebugName(void * pResource, std::string debug_name);
-		static void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
-		static DXGI_FORMAT GetFormat(s32 format);
-		static DXGI_FORMAT GetFormat(eVertexFormat format);
-		static D3D11_USAGE GetUsage(s32 usage);
-		static u32 GetBindFlag(s32 binding);
-		static u32 GetCPUAccessFlag(s32 flags);
-		static D3D11_PRIMITIVE_TOPOLOGY GetTopology(eTopology topology);
-		static D3D11_MAP GetMapping(eMapping mapping);
-		static D3D11_INPUT_CLASSIFICATION GetInputClass(eElementSpecification el);
-		//INTERNAL USE FOR THE DX11DEVICE AND CONTEXT ONLY!
+		
 
 		void Initiate() override;
 		void ReleasePtr(void* ptr) override;
@@ -53,6 +44,20 @@ namespace graphics
 		UINT64 GetFrequency() { return m_Frequency.Frequency; }
 		bool Disjointed() { return m_Frequency.Disjoint; }
 	private:
+
+		//INTERNAL USE FOR THE DX11DEVICE AND CONTEXT ONLY!
+		static void SetDebugName(void * pResource, std::string debug_name);
+		static void HandleErrors(const HRESULT& aResult, const std::string& anErrorString);
+		static DXGI_FORMAT GetFormat(s32 format);
+		static DXGI_FORMAT GetFormat(eVertexFormat format);
+		static D3D11_USAGE GetUsage(s32 usage);
+		static u32 GetBindFlag(s32 binding);
+		static u32 GetCPUAccessFlag(s32 flags);
+		static D3D11_PRIMITIVE_TOPOLOGY GetTopology(eTopology topology);
+		static D3D11_MAP GetMapping(eMapping mapping);
+		static D3D11_INPUT_CLASSIFICATION GetInputClass(eElementSpecification el);
+		//INTERNAL USE FOR THE DX11DEVICE AND CONTEXT ONLY!
+
 		void CreateDeviceAndSwapchain();
 		void CreateDepthStencilStates();
 

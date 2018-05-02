@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DX11Context.h"
 
+#include "DirectX11.h"
 #include <Engine/BaseModel.h>
 #include <Engine/Quad.h>
 #include <Engine/Line3D.h>

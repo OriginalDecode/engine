@@ -6,7 +6,7 @@ namespace graphics
 	void DirectX11::CreateDepthStencilStates()
 	{
 		DX11Device* dx11device = static_cast<DX11Device*>(m_Device);
-		ID3D11Device* device = dx11device->m_Device;
+		ID3D11Device* device = dx11device->GetDevice();
 
 		//__________________________________________________________
 		ID3D11DepthStencilState* depthstencil = nullptr;

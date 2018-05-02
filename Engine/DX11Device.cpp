@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "DirectX11.h"
 #include "DX11Device.h"
 #include <Engine/DX11Context.h>
 

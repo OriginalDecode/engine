@@ -5,7 +5,7 @@ namespace graphics
 {
 	void DirectX11::CreateBlendStates()
 	{
-		ID3D11Device* device = static_cast<DX11Device*>(m_Device)->m_Device;
+		ID3D11Device* device = static_cast<DX11Device*>(m_Device)->GetDevice();
 
 
 		D3D11_BLEND_DESC blendDesc;

@@ -42,6 +42,9 @@ namespace debug
 		static DebugHandle* GetInstance() { return m_Instance; }
 
 		void Update();
+
+		void Information();
+
 		void ChildRecursive(const TimingObjectDisplay &root);
 
 		void DebugTextures();

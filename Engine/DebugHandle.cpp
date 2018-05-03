@@ -32,7 +32,7 @@
 #include <CommonLib/Utilities.h>
 namespace debug
 {
-
+	static s32 widget_id = 0;
 	static float light_dir[3];
 	static s32 s_MaterialIndex = 0;
 
@@ -54,8 +54,15 @@ namespace debug
 		return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size(), values.size());
 	}
 
+	bool Combo(const char* label, int* currIndex, std::vector<std::string>& values)
+	{
+		if (values.empty())
+			return false;
 
-	
+		return ImGui::Combo(label, currIndex, GetVector, static_cast<void*>(&values), values.size());
+	}
+
+
 
 
 	DebugHandle* DebugHandle::m_Instance = nullptr;
@@ -347,92 +354,72 @@ namespace debug
 	{
 		if (ImGui::Begin("Window"))
 		{
-			//ImGui::PushStyleColor(ImGuiCol_Button, color);
-			ImGui::Button("Tab1");
-			//ImGui::PopStyleColor();
+			const ImGuiStyle& style = ImGui::GetStyle();
+			const ImVec4 active = style.Colors[ImGuiCol_ButtonHovered];
+			const ImVec4 inactive = style.Colors[ImGuiCol_Button];
 
+			static s32 button_idx = 0;
+
+			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 1) ? active : inactive);
+			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0);
+			if (ImGui::Button("Information"))
+				button_idx = 1;
+			ImGui::PopStyleColor();
+
+			ImGui::SameLine();
+
+			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 2) ? active : inactive);
+			if (ImGui::Button("Render Targets"))
+				button_idx = 2;
+			ImGui::PopStyleColor();
+
+			ImGui::SameLine();
+
+			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 3) ? active : inactive);
+			if (ImGui::Button("Tab3"))
+				button_idx = 3;
+			ImGui::PopStyleColor();
+			ImGui::PopStyleVar();
+
+
+			if (button_idx == 1)
+			{
+				Information();
+			}
+			else if (button_idx == 2)
+			{
+			
+				static int _item = 1;
+				ImGui::PushItemWidth(250.f);
+				for (DebugTextureCategory& c : m_Categories)
+				{
+					Combo("", &m_TextureIndex, c.labels);
+				}
+				ImGui::PopItemWidth();
+
+				ImVec2 w_size = ImGui::GetWindowSize();
+				w_size.x *= 0.65f;
+				w_size.y = w_size.x / 1.777777777777777777777777777777778; //Aspect ratio division.
+				ImTextureID tex_id = m_DebugTexture;
+				ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+
+				
+
+
+			}
+			else if (button_idx == 3)
+			{
+				ImGui::Text("Hello #Tab3");
+			}
 		}
 		ImGui::End();
 
-
-
-		//ImGui::ShowDemoWindow();
-		//ImGui::ShowStyleEditor();
-
-		Engine* pEngine = Engine::GetInstance();
 		/*	ImGui::SetNextWindowPos(ImVec2(0, 0));
 			ImGui::SetNextWindowSize(ImVec2(300, Engine::GetInstance()->GetInnerSize().m_Height));*/
-		ImGuiWindowFlags flags = 0;
-		//flags |= ImGuiWindowFlags_NoTitleBar;
-		//flags |= ImGuiWindowFlags_NoResize;
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-		static bool open = false;
-
-		if (ImGui::Begin("Information", &open, flags))
-		{
-			ImGui::Text("Delta Time : %.3f", pEngine->GetDeltaTime());
-			ImGui::Text("FPS : %.1f", pEngine->GetFPS());
-			ImGui::Text("CPU Usage : %.1f", pEngine->m_SystemMonitor.GetCPUUsage()); /* does not show individual cores */
-			ImGui::Text("Memory Usage : %dmb", pEngine->m_SystemMonitor.GetMemoryUsage());
-			ImGui::Text("Model Commands : %d", pEngine->m_SegmentHandle.CommandSize((s32)pEngine->m_Synchronizer->GetCurrentBufferIndex()));
-			ImGui::Text("Spotlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER).Size());
-			ImGui::Text("Pointlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER).Size());
-			ImGui::Text("Particle Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER).Size());
-			ImGui::Text("Sprite Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER).Size());
-			ImGui::Text("Text Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER).Size());
-			ImGui::Text("Line Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size());
-
-			ImGui::Separator();
-
-			for (const std::string& str : m_Text)
-			{
-				ImGui::Text("%s", str.c_str());
-			}
-
-			ImGui::Separator();
-		
-			std::stringstream camera_pos;
-			const auto& pos = Engine::GetInstance()->GetCamera()->GetPosition();
-			camera_pos << "x:" << pos.x << "\ny:" << pos.y << "\nz:" << pos.z;
-			ImGui::Text("%s", camera_pos.str().c_str());
-			ImGui::Separator();
-
-			//ImGui::Text("Hovering : %d", m_CurrEntity);
-
-			if (ImGui::TreeNode("Lut Textures"))
-			{
-				if (!m_LutLables.empty())
-				{
-					static int index = 0;
-					ListBox("", &index, m_LutLables);
-					Engine::GetInstance()->m_Renderer->m_PostProcessManager.GetHDRPass().SetLUT(m_LutTextures[index]);
-				}
-				ImGui::TreePop();
-			}
 
 
-			/*static Window* win = nullptr;
-			if (ImGui::Button("click me") && !win)
-			{
-
-				WindowCreateInfo wci;
-				wci.window_height = 720.f;
-				wci.window_width = 1280.f;
-				wci.window_process = (WNDPROC)Engine::GetInstance()->wndproc;
-				wci.instance = (HINSTANCE)Engine::GetInstance()->hinstance;
-
-				win = new Window;
-				win->Initiate(wci, WS_BORDER);
-				win->ShowWindow();
-			}*/
-
-
-		}
-		ImGui::End();
-		ImGui::PopStyleVar();
-
-		/* New Window */
-		static bool s_LightControls = false;
+			/* New Window */
+		/*static bool s_LightControls = false;
 		if (ImGui::Begin("Light controls", &s_LightControls, 0))
 		{
 
@@ -447,10 +434,10 @@ namespace debug
 
 			ImGui::Separator();
 		}
-		ImGui::End();
+		ImGui::End();*/
 		/* End of new Window */
 
-		DebugTextures();
+		//DebugTextures();
 
 
 	}
@@ -461,30 +448,27 @@ namespace debug
 		static bool open = false;
 		if (ImGui::Begin("textures", &open, ImGuiWindowFlags_AlwaysAutoResize))
 		{
+
+
 			ImGui::PushItemWidth(250.f);
 			for (DebugTextureCategory& c : m_Categories)
 			{
-// 				if (ImGui::TreeNode(c.category.c_str()))
-// 				{
-					ListBox("", &m_TextureIndex, c.labels);
-// 					ImGui::TreePop();
-// 				}
-
+				ListBox("", &m_TextureIndex, c.labels);
 			}
 			ImGui::PopItemWidth();
 
-			ImTextureID tex_id = m_DebugTexture;
 			ImVec2 w_size = ImGui::GetWindowSize();
 			w_size.x *= 0.65f;
 			w_size.y = w_size.x / 1.777777777777777777777777777777778; //Aspect ratio division.
 			ImGui::SameLine();
+			ImTextureID tex_id = m_DebugTexture;
 			ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
 		}
 		ImGui::End();
 
 	}
 
-	
+
 
 	void DebugHandle::AddText(std::string str)
 	{
@@ -551,8 +535,8 @@ namespace debug
 		//	m_Categories.emplace_back(category);
 
 		m_RegisteredSampleTextures.Add(texture);
-		for ( DebugTextureCategory& c : m_Categories)
-		{ 
+		for (DebugTextureCategory& c : m_Categories)
+		{
 			if (c.category.compare(category) == 0)
 			{
 				c.labels.emplace_back(name);
@@ -640,6 +624,73 @@ namespace debug
 		}
 
 
+	}
+
+	void DebugHandle::Information()
+	{
+
+		Engine* pEngine = Engine::GetInstance();
+		ImGuiWindowFlags flags = 0;
+		//flags |= ImGuiWindowFlags_NoTitleBar;
+		//flags |= ImGuiWindowFlags_NoResize;
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		static bool open = false;
+
+		if (ImGui::BeginChildFrame(1, ImVec2(ImGui::GetWindowWidth() - 10, 0), 0))
+		{
+			ImGui::Text("Delta Time : %.3f", pEngine->GetDeltaTime());
+			ImGui::Text("FPS : %.1f", pEngine->GetFPS());
+			ImGui::Text("CPU Usage : %.1f", pEngine->m_SystemMonitor.GetCPUUsage()); /* does not show individual cores */
+			ImGui::Text("Memory Usage : %dmb", pEngine->m_SystemMonitor.GetMemoryUsage());
+			ImGui::Text("Model Commands : %d", pEngine->m_SegmentHandle.CommandSize((s32)pEngine->m_Synchronizer->GetCurrentBufferIndex()));
+			ImGui::Text("Spotlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER).Size());
+			ImGui::Text("Pointlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER).Size());
+			ImGui::Text("Particle Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER).Size());
+			ImGui::Text("Sprite Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER).Size());
+			ImGui::Text("Text Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER).Size());
+			ImGui::Text("Line Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size());
+
+			ImGui::Separator();
+
+			std::stringstream camera_pos;
+			const auto& pos = Engine::GetInstance()->GetCamera()->GetPosition();
+			camera_pos << "x:" << pos.x << "\ny:" << pos.y << "\nz:" << pos.z;
+			ImGui::Text("%s", camera_pos.str().c_str());
+			ImGui::Separator();
+
+			//ImGui::Text("Hovering : %d", m_CurrEntity);
+
+			if (ImGui::TreeNode("Lut Textures"))
+			{
+				if (!m_LutLables.empty())
+				{
+					static int index = 0;
+					ListBox("", &index, m_LutLables);
+					Engine::GetInstance()->m_Renderer->m_PostProcessManager.GetHDRPass().SetLUT(m_LutTextures[index]);
+				}
+				ImGui::TreePop();
+			}
+
+
+			/*static Window* win = nullptr;
+			if (ImGui::Button("click me") && !win)
+			{
+
+				WindowCreateInfo wci;
+				wci.window_height = 720.f;
+				wci.window_width = 1280.f;
+				wci.window_process = (WNDPROC)Engine::GetInstance()->wndproc;
+				wci.instance = (HINSTANCE)Engine::GetInstance()->hinstance;
+
+				win = new Window;
+				win->Initiate(wci, WS_BORDER);
+				win->ShowWindow();
+			}*/
+
+
+		}
+		ImGui::EndChildFrame();
+		ImGui::PopStyleVar();
 	}
 
 	void HandleWorldContextMenu(Engine* pEngine)

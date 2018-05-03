@@ -361,13 +361,12 @@ namespace debug
 			static s32 button_idx = 0;
 
 			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 1) ? active : inactive);
-			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0);
+			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
+			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 			if (ImGui::Button("Information"))
 				button_idx = 1;
 			ImGui::PopStyleColor();
-
 			ImGui::SameLine();
-
 			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 2) ? active : inactive);
 			if (ImGui::Button("Render Targets"))
 				button_idx = 2;
@@ -379,7 +378,7 @@ namespace debug
 			if (ImGui::Button("Tab3"))
 				button_idx = 3;
 			ImGui::PopStyleColor();
-			ImGui::PopStyleVar();
+			ImGui::PopStyleVar(2);
 
 
 			if (button_idx == 1)

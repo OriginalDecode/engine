@@ -25,7 +25,6 @@ namespace graphics
 		Texture* m_EntityIDTexture = nullptr;
 		Texture* m_Roughenss = nullptr;
 		Texture* m_Metalness = nullptr;
-		Texture* m_Depth2 = nullptr;
 #endif
 
 	private:

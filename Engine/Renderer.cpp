@@ -21,10 +21,6 @@
 #include "GBuffer.h"
 #include "Texture.h"
 
-
-#include <Input/InputHandle.h>
-#include <Input/InputWrapper.h>
-
 #include <Engine/IGraphicsContext.h>
 #include <Engine/DX11Context.h>
 #include <Engine/DX11Device.h>
@@ -38,9 +34,9 @@
 
 #include <Engine/TerrainSystem.h>
 #include <Engine/Quad.h>
+#include <Engine/TerrainManager.h>
 
 #include "shader_types.h"
-#include <Engine/TerrainManager.h>
 
 Renderer::Renderer(Synchronizer* synchronizer)
 	: m_Synchronizer(synchronizer)
@@ -125,31 +121,19 @@ void Renderer::InitiateDebug()
 	m_SelectedTexture = new Texture;
 	m_SelectedTexture->Initiate(desc, "SelectedTexture");
 
-	const char* names[] = {
-		"diffuse, albedo",
-		"normal",
-		"depth",
-		"emissive",
-		"entity_id",
-		"roughness",
-		"metalness",
-		"pure depth"
-	};
-
 	m_DebugTexture = new Texture;
 	m_DebugTexture->InitiateAsRenderTarget(window_size.m_Width, window_size.m_Height, "diffuse, albedo");
 	m_DebugQuad = new Quad(Engine::GetInstance()->GetEffect("Shaders/debug_textures.json"));
 
 	debug::DebugHandle* pDebug = debug::DebugHandle::GetInstance();
 	pDebug->SetDebugTexture(m_DebugTexture);
-	pDebug->RegisterTexture(m_GBuffer.GetDiffuse(), names[0]);
-	pDebug->RegisterTexture(m_GBuffer.GetNormal(), names[1]);
-	pDebug->RegisterTexture(m_GBuffer.GetDepth(), names[2]);
-	pDebug->RegisterTexture(m_GBuffer.GetEmissive(), names[3]);
-	pDebug->RegisterTexture(m_GBuffer.GetIDTexture(), names[4]);
-	pDebug->RegisterTexture(m_GBuffer.m_Roughenss, names[5]);
-	pDebug->RegisterTexture(m_GBuffer.m_Metalness, names[6]);
-	pDebug->RegisterTexture(m_GBuffer.m_Depth2, names[7]);
+	pDebug->RegisterTexture(m_GBuffer.GetDiffuse(), "albedo");
+	pDebug->RegisterTexture(m_GBuffer.GetNormal(), "normal");
+	pDebug->RegisterTexture(m_GBuffer.GetDepth(), "depth");
+	pDebug->RegisterTexture(m_GBuffer.GetEmissive(), "emissive");
+	pDebug->RegisterTexture(m_GBuffer.GetIDTexture(), "entity_id");
+	pDebug->RegisterTexture(m_GBuffer.m_Roughenss, "roughness");
+	pDebug->RegisterTexture(m_GBuffer.m_Metalness, "metalness");
 #endif
 }
 
@@ -270,7 +254,7 @@ void Renderer::Render()
 
 	if (m_CreateCubemaps)
 	{
-		MakeCubemap({ 512.f, 10.f, 512.f }, 2048);
+		MakeCubemap({ 512.f, 10.f, 512.f }, 128);
 		m_CreateCubemaps = false;
 	}
 

@@ -122,6 +122,12 @@ struct ImVec2
 #endif
 };
 
+//const ImVec2 operator-(const ImVec2& lh, const ImVec2& rh)
+//{
+//	return ImVec2(lh.x - rh.x, lh.y - rh.y);
+//}
+//
+
 struct ImVec4
 {
     float x, y, z, w;

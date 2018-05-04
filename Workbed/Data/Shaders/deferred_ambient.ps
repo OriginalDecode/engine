@@ -202,6 +202,10 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float VdH = saturate(dot(to_eye, half_vec));
 
 
+	// if(input.uv.x < 0.25 && input.uv.x > 0.25 && input.uv.y < 0.25 && input.uv.y > 025)
+	// 	return normal;
+
+
 	float3 refVec = normalize(reflect(-to_eye.xyz, normal.xyz));
 
 	// float4 metalness_albedo = float4(lerp(0.04f.rrr, albedo.rgb, metalness), 1);

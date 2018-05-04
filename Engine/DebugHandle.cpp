@@ -352,6 +352,8 @@ namespace debug
 	static char level_name[250];
 	void DebugHandle::Update()
 	{
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
 		if (ImGui::Begin("Window"))
 		{
 			const ImGuiStyle& style = ImGui::GetStyle();
@@ -362,12 +364,16 @@ namespace debug
 
 			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 1) ? active : inactive);
 			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
-			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
+			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.1f, 0.0f));
 			if (ImGui::Button("Information"))
 				button_idx = 1;
 			ImGui::PopStyleColor();
-			ImGui::SameLine();
-			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 2) ? active : inactive);
+			//ImGui::SameLine();
+
+
+
+
+		/*	ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 2) ? active : inactive);
 			if (ImGui::Button("Render Targets"))
 				button_idx = 2;
 			ImGui::PopStyleColor();
@@ -377,7 +383,7 @@ namespace debug
 			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 3) ? active : inactive);
 			if (ImGui::Button("Tab3"))
 				button_idx = 3;
-			ImGui::PopStyleColor();
+			ImGui::PopStyleColor();*/
 			ImGui::PopStyleVar(2);
 
 
@@ -385,33 +391,35 @@ namespace debug
 			{
 				Information();
 			}
-			else if (button_idx == 2)
-			{
-			
-				static int _item = 1;
-				ImGui::PushItemWidth(250.f);
-				for (DebugTextureCategory& c : m_Categories)
-				{
-					Combo("", &m_TextureIndex, c.labels);
-				}
-				ImGui::PopItemWidth();
+			//else if (button_idx == 2)
+			//{
+			//
+			//	static int _item = 1;
+			//	ImGui::PushItemWidth(250.f);
+			//	for (DebugTextureCategory& c : m_Categories)
+			//	{
+			//		Combo("", &m_TextureIndex, c.labels);
+			//	}
+			//	ImGui::PopItemWidth();
 
-				ImVec2 w_size = ImGui::GetWindowSize();
-				w_size.x *= 0.65f;
-				w_size.y = w_size.x / 1.777777777777777777777777777777778; //Aspect ratio division.
-				ImTextureID tex_id = m_DebugTexture;
-				ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+			//	ImVec2 w_size = ImGui::GetWindowSize();
+			//	w_size.x = w_size.x - (style.WindowPadding.x * 2.f);
+			//	//w_size.x *= 0.65f;
+			//	w_size.y = w_size.x / 1.777777777777777777777777777777778; //Aspect ratio division.
+			//	ImTextureID tex_id = m_DebugTexture;
+			//	ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
 
-				
+			//	
 
 
-			}
-			else if (button_idx == 3)
-			{
-				ImGui::Text("Hello #Tab3");
-			}
+			//}
+			//else if (button_idx == 3)
+			//{
+			//	ImGui::Text("Hello #Tab3");
+			//}
 		}
 		ImGui::End();
+		ImGui::PopStyleVar();
 
 		/*	ImGui::SetNextWindowPos(ImVec2(0, 0));
 			ImGui::SetNextWindowSize(ImVec2(300, Engine::GetInstance()->GetInnerSize().m_Height));*/

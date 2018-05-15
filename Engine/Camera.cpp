@@ -157,21 +157,21 @@ void Camera::Update(const ControllerState& controller_state)
 #else
 	const float sensitivity = 0.05f;
 #endif
-	float x_value = ( float ) controller_state.m_ThumbRX;
-	float y_value = ( float ) controller_state.m_ThumbRY;
+	float x_value = (float)controller_state.m_ThumbRX;
+	float y_value = (float)controller_state.m_ThumbRY;
 
 	float magnitude = (x_value * x_value + y_value * y_value);
 	float normalized = 0.f;
 	const float r_thumb_deadzone = 8689.f;
 
-	if ( magnitude > r_thumb_deadzone * r_thumb_deadzone)
+	if (magnitude > r_thumb_deadzone * r_thumb_deadzone)
 	{
-		if ( magnitude > SHRT_MAX )
+		if (magnitude > SHRT_MAX)
 			magnitude = SHRT_MAX;
 
 		magnitude -= r_thumb_deadzone;
 
-		normalized = magnitude / ( SHRT_MAX - r_thumb_deadzone );
+		normalized = magnitude / (SHRT_MAX - r_thumb_deadzone);
 
 	}
 	else
@@ -181,14 +181,14 @@ void Camera::Update(const ControllerState& controller_state)
 	}
 
 
-	if ( normalized < -0.5f || normalized > 0.5f )
+	if (normalized < -0.5f || normalized > 0.5f)
 	{
 		x_value /= 2.f;
 		y_value /= 2.f;
 	}
 
-	m_CenterPoint.x += ( x_value / SHRT_MAX ) * sensitivity;
-	m_CenterPoint.y -= ( y_value / SHRT_MAX ) * sensitivity;
+	m_CenterPoint.x += (x_value / SHRT_MAX) * sensitivity;
+	m_CenterPoint.y -= (y_value / SHRT_MAX) * sensitivity;
 	m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
 
 	OrientCamera();
@@ -209,6 +209,13 @@ void Camera::Update(const CU::Vector2f& cursor_pos)
 	m_CenterPoint.y = fmaxf(fminf(1.57f, m_CenterPoint.y), -1.57f);
 
 	OrientCamera();
+
+
+	if (m_IsMoving)
+		Move(eDirection::FORWARD, 1.f);
+	else
+		Move(eDirection::FORWARD, -1.f);
+
 }
 
 void Camera::Update()
@@ -218,7 +225,7 @@ void Camera::Update()
 	m_PixelOrientation = m_Rotation2 * m_Orientation2;
 	m_ViewProj = CU::Math::Inverse(m_PixelOrientation) * m_ProjectionMatrix;
 	m_InvProjectionMatrix = CU::Math::InverseReal(m_ProjectionMatrix);
-	
+
 }
 
 void Camera::SetOrientation(const CU::Matrix44f& matrix)
@@ -267,7 +274,7 @@ void Camera::SetRotation(const CU::Matrix44f& rot)
 void Camera::SetFOV(float field_of_view)
 {
 	const WindowSize& window_size = Engine::GetInstance()->GetInnerSize();
-	if ( field_of_view >= 60.f && field_of_view <= 120.f || m_IsShadowCamera)
+	if (field_of_view >= 60.f && field_of_view <= 120.f || m_IsShadowCamera)
 		m_CurrentFoV = field_of_view;
 
 	m_ProjectionMatrix.SetPerspectiveFOV(cl::DegreeToRad(m_CurrentFoV), window_size.m_Height / window_size.m_Width);
@@ -327,33 +334,47 @@ void Camera::SetAt(const CU::Vector4f& at)
 	m_Orientation.SetForward(at);
 }
 
-void Camera::Move(eDirection aDirection, float aSpeed)
+void Camera::Move(eDirection aDirection, float acceleration)
 {
-	CU::Math::Vector4<float> position;
+	CU::Vector4f position;
 	m_Orientation2 = m_Orientation;
 
 	position = m_Orientation.GetTranslation();
-	switch ( aDirection )
+
+	switch (aDirection)
 	{
-		case eDirection::FORWARD:
-		case eDirection::BACK:
-			Move(position, m_Rotation.GetForward(), aSpeed);
+	case eDirection::FORWARD:
+		m_Direction += CU::Vector3f(0.f, 0.f, 1.f);
 		break;
-		case eDirection::DOWN:
-		case eDirection::UP:
-			Move(position, m_Rotation.GetUp(), aSpeed);
+	case eDirection::BACK:
+		m_Direction += CU::Vector3f(0.f, 0.f, -1.f);
 		break;
-		case eDirection::RIGHT:
-		case eDirection::LEFT:
-			Move(position, m_Rotation.GetRight(), aSpeed);
+	case eDirection::DOWN:
+		m_Direction += CU::Vector3f(0.f, -1.f, 0.f);
+		break;
+	case eDirection::UP:
+		m_Direction += CU::Vector3f(0.f, 1.f, 0.f);
+		break;
+	case eDirection::RIGHT:
+		m_Direction += CU::Vector3f(1.f, 0.f, 0.f);
+		break;
+	case eDirection::LEFT:
+		m_Direction += CU::Vector3f(-1.f, 0.f, 0.f);
 		break;
 	}
+
+	Move(position, m_Direction, acceleration);
 	m_Orientation.SetTranslation(position);
 }
 
-void Camera::Move(CU::Vector4f& position, const CU::Vector4f& dir, float speed)
+void Camera::Move(CU::Vector4f& position, const CU::Vector4f& dir, float acceleration)
 {
-	position += dir * speed;
+	m_Velocity += acceleration;
+	cl::clamp(m_Velocity, 0.f, 50.f);
+	position = cl::Lerp(position, position + dir * m_Velocity, 0.1);
+
+
+	//position += dir * m_Velocity;
 }
 
 void Camera::UpdateOrientation()
@@ -426,4 +447,15 @@ void Camera::UpdateOrthographicProjection(CU::Vector3f min, CU::Vector3f max, fl
 	m_ProjectionMatrix[10] = -1.f / (far_plane - near_plane);
 	m_ProjectionMatrix[14] = (near_plane / (near_plane - far_plane));
 	m_ProjectionMatrix[15] = 1.f;
+}
+
+void Camera::Reset()
+{
+	m_IsMoving = false;
+	m_Direction = CU::Vector3f(0.f, 0.f, 0.f);
+}
+
+void Camera::Moving()
+{
+	m_IsMoving = true;
 }

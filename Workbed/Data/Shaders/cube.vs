@@ -24,7 +24,5 @@ VS_OUTPUT main(VS_INPUT input)
 	output.Pos = mul(input.Pos, World);
 	output.Pos = mul(output.Pos, View);
 	output.Pos = mul(output.Pos, Projection);
-
-	output.Color = input.Color;
 	return output;
 }

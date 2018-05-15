@@ -12,7 +12,8 @@ enum class eDirection
 	UP,
 	DOWN,
 	LEFT,
-	RIGHT
+	RIGHT,
+	NONE,
 };
 
 enum class eRotation
@@ -63,7 +64,7 @@ public:
 	const CU::Vector4f& GetAt() const;
 	void SetAt(const CU::Vector4f& at);
 
-	void Move(eDirection aDirection, float aSpeed);
+	void Move(eDirection aDirection, float acceleration);
 	void SetPosition(const CU::Vector3f& position);
 	void SetPosition2(const CU::Vector3f& position);
 	void SetTranslation(const CU::Vector4f& translation);
@@ -105,6 +106,10 @@ public:
 	void UpdateOrthographicProjection(CU::Vector3f min, CU::Vector3f max, float near_plane, float far_plane);
 
 	CU::Vector3f GetTranslation() const { return (m_Rotation2 * m_Orientation2).GetPosition(); }
+
+	void Reset();
+	void Moving();
+	bool IsMoving() const { return m_IsMoving; }
 
 private:
 	void operator=(Camera&) = delete;
@@ -149,4 +154,7 @@ private:
 	CU::Quaternion m_Yaw;
 	CU::Quaternion m_Roll;
 
+	float m_Velocity = 0.f;
+	CU::Vector3f m_Direction;
+	bool m_IsMoving = false;
 };

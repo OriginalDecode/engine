@@ -18,6 +18,19 @@ namespace cl
 	int MoveToRed(int x);
 	int MoveToGreen(int x);
 
+	template<typename T>
+	void clamp(T& value, T min, T max)
+	{
+		value = (value < min) ? min : (value > max) ? max : value;
+	}
+
+	template<typename T>
+	inline T Lerp(const T start, T end, float alpha)
+	{
+		clamp(alpha, 0.f, 1.f);
+		return static_cast<T>(start + (end - start) * alpha);
+	}
+
 	float ClampF(float value, float min, float max);
 	int ClampI(int value, int min, int max);
 

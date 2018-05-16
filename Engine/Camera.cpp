@@ -211,11 +211,11 @@ void Camera::Update(const CU::Vector2f& cursor_pos)
 	OrientCamera();
 
 
-	if (m_IsMoving)
-		Move(eDirection::FORWARD, 1.f);
+	/*if (m_IsMoving)
+		Move(eDirection::NONE, 1.f);
 	else
-		Move(eDirection::FORWARD, -1.f);
-
+		Move(eDirection::NONE, -1.f);
+*/
 }
 
 void Camera::Update()
@@ -344,22 +344,22 @@ void Camera::Move(eDirection aDirection, float acceleration)
 	switch (aDirection)
 	{
 	case eDirection::FORWARD:
-		m_Direction += CU::Vector3f(0.f, 0.f, 1.f);
+		m_Direction += m_Rotation.GetForward().AsVec3();
 		break;
 	case eDirection::BACK:
-		m_Direction += CU::Vector3f(0.f, 0.f, -1.f);
+		m_Direction -= m_Rotation.GetForward().AsVec3();
 		break;
 	case eDirection::DOWN:
-		m_Direction += CU::Vector3f(0.f, -1.f, 0.f);
+		m_Direction -= m_Rotation.GetUp().AsVec3();
 		break;
 	case eDirection::UP:
-		m_Direction += CU::Vector3f(0.f, 1.f, 0.f);
+		m_Direction += m_Rotation.GetUp().AsVec3();
 		break;
 	case eDirection::RIGHT:
-		m_Direction += CU::Vector3f(1.f, 0.f, 0.f);
+		m_Direction += m_Rotation.GetRight().AsVec3();
 		break;
 	case eDirection::LEFT:
-		m_Direction += CU::Vector3f(-1.f, 0.f, 0.f);
+		m_Direction -= m_Rotation.GetRight().AsVec3();
 		break;
 	}
 
@@ -371,7 +371,8 @@ void Camera::Move(CU::Vector4f& position, const CU::Vector4f& dir, float acceler
 {
 	m_Velocity += acceleration;
 	cl::clamp(m_Velocity, 0.f, 50.f);
-	position = cl::Lerp(position, position + dir * m_Velocity, 0.1);
+	CU::Vector4f pos = position + dir * m_Velocity;
+	position = cl::Lerp(position, pos, 1);
 
 
 	//position += dir * m_Velocity;

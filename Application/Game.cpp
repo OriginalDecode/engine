@@ -33,7 +33,7 @@
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
 #endif
-static float s_CamSpeed = 50.f;
+static float s_CamSpeed = 10.f;
 
 //#define LOAD_LEVEL
 #ifndef LOAD_LEVEL
@@ -338,7 +338,7 @@ void Game::OldUpdate(float dt)
 		m_Camera->Moving();
 	}
 
-	if (m_Camera->IsMoving())
+	if (!m_Camera->IsMoving())
 	{
 		m_Camera->Move(eDirection::NONE, -acceleration);
 	}

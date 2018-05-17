@@ -18,8 +18,8 @@ namespace cl
 	int MoveToRed(int x);
 	int MoveToGreen(int x);
 
-	template<typename T>
-	void clamp(T& value, T min, T max)
+	template<typename T, typename T2>
+	void clamp(T& value, T2 min, T2 max)
 	{
 		value = (value < min) ? min : (value > max) ? max : value;
 	}

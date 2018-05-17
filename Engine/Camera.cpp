@@ -341,6 +341,13 @@ void Camera::Move(eDirection aDirection, float acceleration)
 
 	position = m_Orientation.GetTranslation();
 
+	auto __clamp = [](CU::Vector3f& dir) {
+		cl::clamp(dir.x, -1.f, 1.f);
+		cl::clamp(dir.y, -1.f, 1.f);
+		cl::clamp(dir.z, -1.f, 1.f);
+	};
+
+
 	switch (aDirection)
 	{
 	case eDirection::FORWARD:
@@ -363,19 +370,23 @@ void Camera::Move(eDirection aDirection, float acceleration)
 		break;
 	}
 
+	__clamp(m_Direction);
+
 	Move(position, m_Direction, acceleration);
 	m_Orientation.SetTranslation(position);
 }
 
 void Camera::Move(CU::Vector4f& position, const CU::Vector4f& dir, float acceleration)
 {
-	m_Velocity += acceleration;
-	cl::clamp(m_Velocity, 0.f, 50.f);
-	CU::Vector4f pos = position + dir * m_Velocity;
-	position = cl::Lerp(position, pos, 1);
+	m_Velocity = cl::Lerp(m_Velocity, m_Velocity + acceleration, 0.1);
+	cl::clamp(m_Velocity, 0.f, 10.f);
+	//CU::Vector4f pos = position + dir * m_Velocity;
+	if (m_Velocity <= 0.f)
+	{
+		m_Direction = CU::Vector3f(0, 0, 0);
+	}
 
-
-	//position += dir * m_Velocity;
+	position += dir * m_Velocity;
 }
 
 void Camera::UpdateOrientation()
@@ -453,7 +464,7 @@ void Camera::UpdateOrthographicProjection(CU::Vector3f min, CU::Vector3f max, fl
 void Camera::Reset()
 {
 	m_IsMoving = false;
-	m_Direction = CU::Vector3f(0.f, 0.f, 0.f);
+	//m_Direction = CU::Vector3f(0.f, 0.f, 0.f);
 }
 
 void Camera::Moving()

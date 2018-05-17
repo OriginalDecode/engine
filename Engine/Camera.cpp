@@ -223,6 +223,13 @@ void Camera::Update()
 
 	CU::Vector3f position = m_Orientation.GetPosition();
 	position = cl::Lerp(position, m_TargetPosition, 0.1);
+
+	const float len = CU::Math::Length(m_TargetPosition - position);
+	if (len < 1.f)
+	{
+		m_Direction = CU::Vector3f(0, 0, 0);
+	}
+
 	m_Orientation.SetPosition(position);
 }
 

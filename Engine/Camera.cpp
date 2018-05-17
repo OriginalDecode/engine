@@ -194,7 +194,7 @@ void Camera::Update(const ControllerState& controller_state)
 	OrientCamera();
 }
 
-void Camera::Update(const CU::Vector2f& cursor_pos)
+void Camera::Orient(const CU::Vector2f& cursor_pos)
 {
 #ifdef _DEBUG
 	const float sensitivity = debug::DebugHandle::GetInstance()->m_MouseLookSense;
@@ -211,11 +211,6 @@ void Camera::Update(const CU::Vector2f& cursor_pos)
 	OrientCamera();
 
 
-	/*if (m_IsMoving)
-		Move(eDirection::NONE, 1.f);
-	else
-		Move(eDirection::NONE, -1.f);
-*/
 }
 
 void Camera::Update()
@@ -226,6 +221,9 @@ void Camera::Update()
 	m_ViewProj = CU::Math::Inverse(m_PixelOrientation) * m_ProjectionMatrix;
 	m_InvProjectionMatrix = CU::Math::InverseReal(m_ProjectionMatrix);
 
+	CU::Vector3f position = m_Orientation.GetPosition();
+	position = cl::Lerp(position, m_TargetPosition, 0.1);
+	m_Orientation.SetPosition(position);
 }
 
 void Camera::SetOrientation(const CU::Matrix44f& matrix)
@@ -336,57 +334,48 @@ void Camera::SetAt(const CU::Vector4f& at)
 
 void Camera::Move(eDirection aDirection, float acceleration)
 {
-	CU::Vector4f position;
+	CU::Vector4f position, prevpos;
 	m_Orientation2 = m_Orientation;
 
 	position = m_Orientation.GetTranslation();
-
-	auto __clamp = [](CU::Vector3f& dir) {
-		cl::clamp(dir.x, -1.f, 1.f);
-		cl::clamp(dir.y, -1.f, 1.f);
-		cl::clamp(dir.z, -1.f, 1.f);
-	};
-
+	prevpos = position;
 
 	switch (aDirection)
 	{
 	case eDirection::FORWARD:
+		Move(position, m_Rotation.GetForward(), acceleration);
 		m_Direction += m_Rotation.GetForward().AsVec3();
 		break;
 	case eDirection::BACK:
+		Move(position, m_Rotation.GetForward(), acceleration);
 		m_Direction -= m_Rotation.GetForward().AsVec3();
 		break;
-	case eDirection::DOWN:
-		m_Direction -= m_Rotation.GetUp().AsVec3();
-		break;
 	case eDirection::UP:
+		Move(position, m_Rotation.GetUp(), acceleration);
 		m_Direction += m_Rotation.GetUp().AsVec3();
 		break;
+	case eDirection::DOWN:
+		Move(position, m_Rotation.GetUp(), acceleration);
+		m_Direction -= m_Rotation.GetUp().AsVec3();
+		break;
 	case eDirection::RIGHT:
+		Move(position, m_Rotation.GetRight(), acceleration);
 		m_Direction += m_Rotation.GetRight().AsVec3();
 		break;
 	case eDirection::LEFT:
+		Move(position, m_Rotation.GetRight(), acceleration);
 		m_Direction -= m_Rotation.GetRight().AsVec3();
 		break;
 	}
-
-	__clamp(m_Direction);
-
-	Move(position, m_Direction, acceleration);
+	CU::Math::Normalize(m_Direction);
+	
+	m_TargetPosition = position.AsVec3() + (m_Direction * 10.f);
 	m_Orientation.SetTranslation(position);
 }
 
 void Camera::Move(CU::Vector4f& position, const CU::Vector4f& dir, float acceleration)
 {
-	m_Velocity = cl::Lerp(m_Velocity, m_Velocity + acceleration, 0.1);
-	cl::clamp(m_Velocity, 0.f, 10.f);
-	//CU::Vector4f pos = position + dir * m_Velocity;
-	if (m_Velocity <= 0.f)
-	{
-		m_Direction = CU::Vector3f(0, 0, 0);
-	}
-
-	position += dir * m_Velocity;
+	position += dir * acceleration;
 }
 
 void Camera::UpdateOrientation()
@@ -459,15 +448,4 @@ void Camera::UpdateOrthographicProjection(CU::Vector3f min, CU::Vector3f max, fl
 	m_ProjectionMatrix[10] = -1.f / (far_plane - near_plane);
 	m_ProjectionMatrix[14] = (near_plane / (near_plane - far_plane));
 	m_ProjectionMatrix[15] = 1.f;
-}
-
-void Camera::Reset()
-{
-	m_IsMoving = false;
-	//m_Direction = CU::Vector3f(0.f, 0.f, 0.f);
-}
-
-void Camera::Moving()
-{
-	m_IsMoving = true;
 }

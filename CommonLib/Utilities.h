@@ -27,8 +27,7 @@ namespace cl
 	template<typename T>
 	inline T Lerp(const T start, T end, float alpha)
 	{
-		clamp(alpha, 0.f, 1.f);
-		return static_cast<T>(start + (end - start) * alpha);
+		return start + (end - start) * alpha;
 	}
 
 	float ClampF(float value, float min, float max);

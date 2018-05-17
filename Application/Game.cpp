@@ -33,7 +33,7 @@
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
 #endif
-static float s_CamSpeed = 10.f;
+static float s_CamSpeed = 50.f;
 
 //#define LOAD_LEVEL
 #ifndef LOAD_LEVEL
@@ -295,58 +295,33 @@ void Game::OldUpdate(float dt)
 
 	if (input_wrapper->IsDown(MouseInput::RIGHT))
 	{
-		m_Camera->Update(m_Engine->GetInputHandle()->GetDeltaCursorPos());
+		m_Camera->Orient(m_Engine->GetInputHandle()->GetDeltaCursorPos());
 	}
 
-	m_Camera->Reset();
+	
 
 	float acceleration = s_CamSpeed * dt;
 
 	if (input_wrapper->IsDown(KButton::W))
-	{
 		m_Camera->Move(eDirection::FORWARD, acceleration);
-		m_Camera->Moving();
-	}
 
 	if (input_wrapper->IsDown(KButton::S))
-	{
-		m_Camera->Move(eDirection::BACK, acceleration);
-		m_Camera->Moving();
-	}
+		m_Camera->Move(eDirection::BACK, -acceleration);
 
 	if (input_wrapper->IsDown(KButton::A))
-	{
-		m_Camera->Move(eDirection::LEFT, acceleration);
-		m_Camera->Moving();
-	}
+		m_Camera->Move(eDirection::LEFT, -acceleration);
 
 	if (input_wrapper->IsDown(KButton::D))
-	{
 		m_Camera->Move(eDirection::RIGHT, acceleration);
-		m_Camera->Moving();
-	}
 
 	if (input_wrapper->IsDown(KButton::SPACE))
-	{
 		m_Camera->Move(eDirection::UP, acceleration);
-		m_Camera->Moving();
-	}
 
 	if (input_wrapper->IsDown(KButton::X))
-	{
-		m_Camera->Move(eDirection::DOWN, acceleration);
-		m_Camera->Moving();
-	}
-
-	if (!m_Camera->IsMoving())
-	{
-		m_Camera->Move(eDirection::NONE, -acceleration);
-	}
+		m_Camera->Move(eDirection::DOWN, -acceleration);
 
 	if (input_wrapper->OnDown(KButton::P))
-	{
 		m_Engine->GetRenderer()->CreateCubemaps();
-	}
 
 
 	const CU::Vector4f forward = m_Orientation.GetForward();

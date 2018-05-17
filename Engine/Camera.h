@@ -71,7 +71,7 @@ public:
 
 	void Update();
 	void Update(const ControllerState& controller_state);
-	void Update(const CU::Vector2f& cursor_pos);
+	void Orient(const CU::Vector2f& cursor_pos);
 
 	void SetOrientation(const CU::Matrix44f& matrix);
 
@@ -107,9 +107,6 @@ public:
 
 	CU::Vector3f GetTranslation() const { return (m_Rotation2 * m_Orientation2).GetPosition(); }
 
-	void Reset();
-	void Moving();
-	bool IsMoving() const { return m_IsMoving; }
 
 private:
 	void operator=(Camera&) = delete;
@@ -156,5 +153,6 @@ private:
 
 	float m_Velocity = 0.f;
 	CU::Vector3f m_Direction;
-	bool m_IsMoving = false;
+
+	CU::Vector3f m_TargetPosition;
 };

@@ -136,6 +136,7 @@ void Camera::SetPosition(const CU::Vector3f& position)
 {
 	m_Orientation2 = m_Orientation;
 	m_Orientation.SetPosition(position);
+	m_TargetPosition = position;
 }
 
 void Camera::SetPosition2(const CU::Vector3f& position)

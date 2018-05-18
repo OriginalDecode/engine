@@ -362,12 +362,22 @@ namespace debug
 
 			static s32 button_idx = 0;
 
-			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 1) ? active : inactive);
 			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.1f, 0.0f));
+
+			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 1) ? active : inactive);
 			if (ImGui::Button("Information"))
 				button_idx = 1;
 			ImGui::PopStyleColor();
+
+			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 1) ? active : inactive);
+			if (ImGui::Button("Light Direction"))
+				button_idx = 2;
+			ImGui::PopStyleColor();
+
+
+
+
 			//ImGui::SameLine();
 
 
@@ -391,6 +401,19 @@ namespace debug
 			{
 				Information();
 			}
+			else if (button_idx == 2)
+			{
+				if (ImGui::BeginChildFrame(1, ImVec2(ImGui::GetWindowWidth() - 10, 0), 0))
+				{
+					ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
+					ImGui::SliderFloat("Y", &light_dir[1], 0.f, 1.f);
+					ImGui::SliderFloat("Z", &light_dir[2], -1.f, 1.f);
+					Engine::GetInstance()->m_Renderer->SetDirection(light_dir);
+				}
+				ImGui::EndChildFrame();
+			}
+
+
 			//else if (button_idx == 2)
 			//{
 			//

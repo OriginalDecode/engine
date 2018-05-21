@@ -370,15 +370,23 @@ namespace debug
 				button_idx = 1;
 			ImGui::PopStyleColor();
 
-			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 1) ? active : inactive);
+			ImGui::SameLine();
+
+			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 2) ? active : inactive);
 			if (ImGui::Button("Light Direction"))
 				button_idx = 2;
+			ImGui::PopStyleColor();
+
+			ImGui::SameLine();
+
+			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 3) ? active : inactive);
+			if (ImGui::Button("Textures"))
+				button_idx = 3;
 			ImGui::PopStyleColor();
 
 
 
 
-			//ImGui::SameLine();
 
 
 
@@ -397,12 +405,12 @@ namespace debug
 			ImGui::PopStyleVar(2);
 
 
-			if (button_idx == 1)
+			switch (button_idx)
 			{
+			case 1: {
 				Information();
-			}
-			else if (button_idx == 2)
-			{
+			} break;
+			case 2: {
 				if (ImGui::BeginChildFrame(1, ImVec2(ImGui::GetWindowWidth() - 10, 0), 0))
 				{
 					ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
@@ -411,35 +419,26 @@ namespace debug
 					Engine::GetInstance()->m_Renderer->SetDirection(light_dir);
 				}
 				ImGui::EndChildFrame();
+			} break;
+			case 3: {
+				static int _item = 1;
+				ImGui::PushItemWidth(250.f);
+				for (DebugTextureCategory& c : m_Categories)
+				{
+					Combo("", &m_TextureIndex, c.labels);
+				}
+				ImGui::PopItemWidth();
+
+				ImVec2 w_size = ImGui::GetWindowSize();
+				w_size.x = w_size.x - (style.WindowPadding.x * 2.f);
+				//w_size.x *= 0.65f;
+				w_size.y = w_size.x / 1.777777777777777777777777777777778; //Aspect ratio division.
+				ImTextureID tex_id = m_DebugTexture;
+				ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+			} break;
+
+
 			}
-
-
-			//else if (button_idx == 2)
-			//{
-			//
-			//	static int _item = 1;
-			//	ImGui::PushItemWidth(250.f);
-			//	for (DebugTextureCategory& c : m_Categories)
-			//	{
-			//		Combo("", &m_TextureIndex, c.labels);
-			//	}
-			//	ImGui::PopItemWidth();
-
-			//	ImVec2 w_size = ImGui::GetWindowSize();
-			//	w_size.x = w_size.x - (style.WindowPadding.x * 2.f);
-			//	//w_size.x *= 0.65f;
-			//	w_size.y = w_size.x / 1.777777777777777777777777777777778; //Aspect ratio division.
-			//	ImTextureID tex_id = m_DebugTexture;
-			//	ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-
-			//	
-
-
-			//}
-			//else if (button_idx == 3)
-			//{
-			//	ImGui::Text("Hello #Tab3");
-			//}
 		}
 		ImGui::End();
 		ImGui::PopStyleVar();

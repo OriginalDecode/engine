@@ -1,13 +1,14 @@
 #include "stdafx.h"
 #include "Shadow_Directional.h"
+#include <Application/CameraHandle.h>
+
 #include <Engine/Effect.h>
 #include <Engine/Engine.h>
 #include <Engine/Renderer.h>
 #include <Engine/Viewport.h>
 #include <Engine/Frustum.h>
-#include <Application/CameraHandle.h>
 #include <Engine/RenderCommand.h>
-#include <Engine/Engine.h>
+#include <Engine/Synchronizer.h>
 
 void ShadowDirectional::Initiate(float buffer_size)
 {
@@ -67,7 +68,7 @@ void ShadowDirectional::ClearTexture()
 {
 	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
 	ctx.ClearRenderTarget(m_ShadowDepth->GetRenderTargetView(), clearcolor::black);
-	ctx.ClearDepthStencilView(m_ShadowDepthStencil->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1.0f);
+	ctx.ClearDepthStencilView(m_ShadowDepthStencil->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1);
 }
 
 void ShadowDirectional::SetTargets()
@@ -80,9 +81,6 @@ void ShadowDirectional::SetOrientation(const CU::Matrix44f& orientation)
 	m_Camera->SetOrientation(orientation); 
 }
 
-#include <Engine/Engine.h>
-#include <Engine/Synchronizer.h>
-#include <Engine/RenderCommand.h>
 
 void ShadowDirectional::Update()
 {
@@ -102,8 +100,8 @@ void ShadowDirectional::Update()
 	const CU::Vector4f cam_pos = m_Camera->GetTranslation();
 	const CU::Vector4f cam_dir = m_Camera->GetAt();
 
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos + cam_dir, f.GetCenter(), CU::Vector4f(1, 0, 0, 1), true));
-	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, cam_pos + cam_dir, CU::Vector4f(0, 1, 0, 1), true));
+	//Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos + cam_dir, f.GetCenter(), CU::Vector4f(1, 0, 0, 1), true));
+	//Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, cam_pos + cam_dir, CU::Vector4f(0, 1, 0, 1), true));
 
 }
 

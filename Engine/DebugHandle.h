@@ -43,6 +43,8 @@ namespace debug
 
 		void Update();
 
+		void AddButton(const char* button_name);
+
 		void Information();
 
 		void ChildRecursive(const TimingObjectDisplay &root);

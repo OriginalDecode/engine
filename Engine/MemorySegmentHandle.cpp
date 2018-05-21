@@ -13,7 +13,7 @@ namespace memory
 		s32 allocation_size1 = 0;
 		void* memory_block1 = Engine::GetInstance()->GetSynchronizer()->GetMemoryBlock(eBufferType::MODEL_BUFFER, 1, allocation_size1);
 
-		DL_ASSERT_EXP(allocation_size0 == allocation_size1, "different sizes for double buffer?");
+		ASSERT(allocation_size0 == allocation_size1, "different sizes for double buffer?");
 
 		LinearAllocator alloc0 = LinearAllocator(allocation_size0, memory_block0);
 		LinearAllocator alloc1 = LinearAllocator(allocation_size1, memory_block1);

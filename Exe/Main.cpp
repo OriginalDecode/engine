@@ -20,6 +20,7 @@
 //non windows specific
 #endif
 #endif
+#include <CommonLib/XML/XMLReader.h>
 
 #include <string>
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -72,7 +73,7 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE, LPSTR args, int)
 
 	engine->Initiate(w, h, instance_handle, WindowProc);
 
-	DL_ASSERT_EXP(application->Initiate(), "Failed to initiate game");
+	ASSERT(application->Initiate(), "Failed to initiate game");
 
 	s_WindowActive = true;
 	//ShowCursor(false);

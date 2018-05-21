@@ -1,7 +1,7 @@
 #pragma once
 #include "tinyxml2.h"
 #include <string>
-#define XMLElement tinyxml2::XMLElement*
+typedef tinyxml2::XMLElement XMLElement;
 namespace cl
 {
 	class XMLReader
@@ -9,41 +9,31 @@ namespace cl
 
 	public:
 
-		XMLReader();
+		XMLReader(const char* path);
 		~XMLReader();
 
-		void OpenDoc(const char*  aFilePath);
+		void OpenDoc(const char* path);
 		void CloseDoc(); 
 
-		XMLElement FindFirstChildElement(const std::string&  aChildName);
-		XMLElement FindChildElement(XMLElement aParent);
-		
-		XMLElement ForceFindFirstChildElement(const std::string&  aChildName) const;
-		XMLElement ForceFindFirstChildElement(XMLElement aParent, const std::string&  aChildName) const;
+		XMLElement* FindFirstChildElement(const char* child);
+		XMLElement* FindChildElement(XMLElement* parent);
 
 
 
 		//Read Attribute
-		bool ReadAttribute(const XMLElement anElementToRead, const std::string&  anAttribute, std::string&  aTargetVar);
-		bool ReadAttribute(const XMLElement anElementToRead, const std::string&  anAttribute, int* aTargetVar);
-		bool ReadAttribute(const XMLElement anElementToRead, const std::string&  anAttribute, double* aTargetVar);
-		bool ReadAttribute(const XMLElement anElementToRead, const std::string&  anAttribute, float* aTargetVar);
-		bool ReadAttribute(const XMLElement anElementToRead, const std::string&  anAttribute, bool* aTargetVar);
+		bool ReadAttribute(const XMLElement* element, const char*  attribute, std::string&  var);
+		bool ReadAttribute(const XMLElement* element, const char*  attribute, int* var);
+		bool ReadAttribute(const XMLElement* element, const char*  attribute, double* var);
+		bool ReadAttribute(const XMLElement* element, const char*  attribute, float* var);
+		bool ReadAttribute(const XMLElement* element, const char*  attribute, bool* var);
 
-		//Force Read Attribute
-		bool ForceReadAttribute(const XMLElement anElementToRead, const std::string&  anAttribute, std::string&  aTargetVar);
-		bool ForceReadAttribute(const XMLElement anElementToRead, const std::string&  anAttribute, int* aTargetVar);
-		bool ForceReadAttribute(const XMLElement anElementToRead, const std::string&  anAttribute, double* aTargetVar);
-		bool ForceReadAttribute(const XMLElement anElementToRead, const std::string&  anAttribute, float* aTargetVar);
-		bool ForceReadAttribute(const XMLElement anElementToRead, const std::string&  anAttribute, bool* aTargetVar);
+		
 
 	private:
 
-		tinyxml2::XMLDocument* myDocument;
-
-		bool myDocumentIsOpen;
-		std::string myFilePath;
-
+		std::string m_File = "";
+		tinyxml2::XMLDocument* m_Document = nullptr;
+		bool m_IsOpen = false;
 	};
 
 }

@@ -65,7 +65,7 @@ BaseComponent& CComponentContainer::GetComponent(Entity anEntity, unsigned int a
 		{
 			
 			int componentIndex = ec.m_EntityArray[aComponentID];
-			DL_ASSERT_EXP(componentIndex >= 0, "invalid component index!");
+			ASSERT(componentIndex >= 0, "invalid component index!");
 			return *myComponents[aComponentID][componentIndex];
 		}
 	}

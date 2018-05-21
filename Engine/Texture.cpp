@@ -61,7 +61,7 @@ void Texture::Initiate(const TextureDesc& desc, bool create_from_texture, const 
 	m_DebugName = debug_name;
 #endif
 	graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
-	DL_ASSERT_EXP(desc.m_TextureFormat != graphics::NO_FORMAT, "invalid texture format!");
+	ASSERT(desc.m_TextureFormat != graphics::NO_FORMAT, "invalid texture format!");
 
 	graphics::Texture2DDesc tex_desc;
 	tex_desc.m_Height = desc.m_Height;
@@ -196,7 +196,7 @@ void Texture::CreateTextureArray(const char* paths[], const s32 const num_tex, c
 
 	ID3D11Texture2D* texArray = nullptr;
 	HRESULT hr = device->CreateTexture2D(&arr_desc, nullptr, &texArray);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to Create texture");
+	ASSERT(hr == S_OK, "Failed to Create texture");
 
 	for (u32 i = 0; i < tex_count; i++)
 	{
@@ -214,12 +214,12 @@ void Texture::CreateTextureArray(const char* paths[], const s32 const num_tex, c
 
 	ID3D11ShaderResourceView* srv = nullptr;
 	hr = device->CreateShaderResourceView(texArray, &viewDesc, &srv);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to Create srv");
+	ASSERT(hr == S_OK, "Failed to Create srv");
 	m_ShaderResource = srv;
 
 	DirectX::ScratchImage image;
 	hr = DirectX::CaptureTexture(device, ctx, texArray, image);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");
+	ASSERT(hr == S_OK, "Failed to capture texture");
 	DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, cl::ToWideStr(filename).c_str());
 	ctx->Release();
 }
@@ -262,7 +262,7 @@ void Texture::CreateTextureArray(Texture* textures[], const s32 const num_tex, c
 	ID3D11Texture2D* texArray = nullptr;
 
 	HRESULT hr = device->CreateTexture2D(&arr_desc, nullptr, &texArray);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to Create texture");
+	ASSERT(hr == S_OK, "Failed to Create texture");
 
 	for (u32 i = 0; i < tex_count; i++)
 	{
@@ -284,12 +284,12 @@ void Texture::CreateTextureArray(Texture* textures[], const s32 const num_tex, c
 
 	ID3D11ShaderResourceView* srv = nullptr;
 	hr = device->CreateShaderResourceView(texArray, &viewDesc, &srv);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to Create srv");
+	ASSERT(hr == S_OK, "Failed to Create srv");
 	m_ShaderResource = srv;
 
 	DirectX::ScratchImage image;
 	hr = DirectX::CaptureTexture(device, ctx, texArray, image);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");
+	ASSERT(hr == S_OK, "Failed to capture texture");
 	DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, cl::ToWideStr(filename).c_str());
 	ctx->Release();
 }
@@ -326,7 +326,7 @@ void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_heigh
 	_3Ddesc.MiscFlags = 0;
 
 	HRESULT hr = device->CreateTexture3D(&_3Ddesc, nullptr, &tex);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to Create tex");
+	ASSERT(hr == S_OK, "Failed to Create tex");
 
 	s32 z = 0;
 	for (s32 y = 0; y < height_count; y++)
@@ -362,7 +362,7 @@ void Texture::Create3DTexture(const char* path, s32 slice_width, s32 slice_heigh
 
 	ID3D11ShaderResourceView* srv = nullptr;
 	hr = device->CreateShaderResourceView(tex, &viewDesc, &srv);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to Create srv");
+	ASSERT(hr == S_OK, "Failed to Create srv");
 	m_ShaderResource = srv;
 	tex->Release();
 	resource->Release();
@@ -380,7 +380,7 @@ void Texture::SaveToDisk(const wchar_t* path, ITexture2D* tex)
 
 	DirectX::ScratchImage image;
 	HRESULT hr = DirectX::CaptureTexture(device, ctx, (ID3D11Texture2D*)tex, image);
-	DL_ASSERT_EXP(hr == S_OK, "Failed to capture texture");
+	ASSERT(hr == S_OK, "Failed to capture texture");
 	DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, path);
 	ctx->Release();
 }

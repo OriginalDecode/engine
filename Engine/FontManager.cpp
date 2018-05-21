@@ -51,7 +51,7 @@ CFontManager::~CFontManager()
 void CFontManager::Initiate()
 {
 	int error = FT_Init_FreeType(&myLibrary);
-	DL_ASSERT_EXP(!error, "Failed to initiate FreeType.");
+	ASSERT(!error, "Failed to initiate FreeType.");
 }
 
 CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
@@ -101,11 +101,11 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 	FT_Face face;
 	FT_Error error = FT_New_Face(myLibrary, myFontPath, 0, &face);
 	FONT_LOG("Loading font:%s", myFontPath);
-	DL_ASSERT_EXP(!error, "Failed to load requested font.");
+	ASSERT(!error, "Failed to load requested font.");
 
 	FT_F26Dot6 ftSize = (FT_F26Dot6)(fontData->myFontHeightWidth * multiple_baseline);
 	error = FT_Set_Char_Size(face, ftSize, 0, dpi * multiple_baseline, 0); // 96 = 100% scaling in Windows. 
-	DL_ASSERT_EXP(!error, "[FontManager] : Failed to set pixel size!");
+	ASSERT(!error, "[FontManager] : Failed to set pixel size!");
 
 	int atlasX = x_start;
 	int atlasY = 0;
@@ -113,7 +113,7 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 
 	//Create a good spacing between words. 
 	error = FT_Load_Char(face, 'x', FT_LOAD_DEFAULT);
-	DL_ASSERT_EXP(!error, "Failed to load glyph! x");
+	ASSERT(!error, "Failed to load glyph! x");
 	FT_GlyphSlot space = face->glyph;
 	fontData->myWordSpacing = static_cast<short>(space->metrics.width / 256.f);
 
@@ -124,7 +124,7 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 	for (int i = currentI; i < currentMax; i++)
 	{
 		error = FT_Load_Char(face, i, FT_LOAD_RENDER);
-		DL_ASSERT_EXP(!error, "Failed to load glyph!");
+		ASSERT(!error, "Failed to load glyph!");
 		FT_GlyphSlot slot = face->glyph;
 
 		FT_Matrix matrix = {
@@ -166,7 +166,7 @@ CFont* CFontManager::LoadFont(const s8* aFontPath, u16 aSize, u16 aBorderWidth)
 	const s32 pitch = atlasSize * channel_count;
 	s8* data = (s8*)fontData->myAtlas;
 	ITexture2D* texture = api->GetDevice().CreateTexture2D(_desc, data, pitch, "AtlasTexture");
-	DL_ASSERT_EXP(texture != nullptr, "Texture is nullptr!");
+	ASSERT(texture != nullptr, "Texture is nullptr!");
 
 	fontData->m_AtlasView = api->GetDevice().CreateShaderResource(_desc, texture, "Font Atlas");
 
@@ -189,7 +189,7 @@ void CFontManager::LoadGlyph(int index, int& atlasX, int& atlasY, int& maxY
 {
 	FT_Error error = FT_Load_Char(aFace, index, FT_LOAD_RENDER);
 	//FT_Error error = FT_Load_Glyph(aFace, index, FT_LOAD_RENDER);
-	DL_ASSERT_EXP(!error, "Failed to load glyph!");
+	ASSERT(!error, "Failed to load glyph!");
 	FT_GlyphSlot slot = aFace->glyph;
 	FT_Bitmap bitmap = slot->bitmap;
 
@@ -257,9 +257,9 @@ void CFontManager::LoadOutline(const int index, const int atlasX, const int atla
 	FT_Glyph glyph;
 
 	err = FT_Load_Char(aFace, index, FT_LOAD_NO_BITMAP);
-	DL_ASSERT_EXP(!err, "Failed to load glyph!");
+	ASSERT(!err, "Failed to load glyph!");
 	err = FT_Get_Glyph(aFace->glyph, &glyph);
-	DL_ASSERT_EXP(!err, "Failed to get glyph!");
+	ASSERT(!err, "Failed to get glyph!");
 
 	/*FT_Outline out = aFace->glyph->outline;
 	u32 c = out.n_points;
@@ -269,14 +269,14 @@ void CFontManager::LoadOutline(const int index, const int atlasX, const int atla
 	glyph->format = FT_GLYPH_FORMAT_OUTLINE;
 
 	err = FT_Stroker_New(myLibrary, &stroker);
-	DL_ASSERT_EXP(!err, "Failed to get glyph!");
+	ASSERT(!err, "Failed to get glyph!");
 
 	FT_Stroker_Set(stroker, aBorderOffset * multiple_baseline, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
 	err = FT_Glyph_StrokeBorder(&glyph, stroker, 0, 1);
-	DL_ASSERT_EXP(err == 0, "Failed to stroke");
+	ASSERT(err == 0, "Failed to stroke");
 
 	err = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, nullptr, true);
-	DL_ASSERT_EXP(err == 0, "Failed to add glyph to bitmap");
+	ASSERT(err == 0, "Failed to add glyph to bitmap");
 
 	//Bitmap width can be wrong on outline glyphs and creates an issue where they're not aligned with the regular glyphs.
 	FT_BitmapGlyph bitmapGlyph = reinterpret_cast<FT_BitmapGlyph>(glyph);
@@ -313,21 +313,21 @@ void CFontManager::CalculateOutlineOffsets(const int index, FT_FaceRec_* aFace, 
 	FT_Glyph glyph;
 
 	err = FT_Load_Char(aFace, index, FT_LOAD_NO_BITMAP);
-	DL_ASSERT_EXP(!err, "Failed to load glyph!");
+	ASSERT(!err, "Failed to load glyph!");
 	err = FT_Get_Glyph(aFace->glyph, &glyph);
-	DL_ASSERT_EXP(!err, "Failed to get glyph!");
+	ASSERT(!err, "Failed to get glyph!");
 
 	glyph->format = FT_GLYPH_FORMAT_OUTLINE;
 
 	err = FT_Stroker_New(myLibrary, &stroker);
-	DL_ASSERT_EXP(!err, "Failed to get glyph!");
+	ASSERT(!err, "Failed to get glyph!");
 
 	FT_Stroker_Set(stroker, aBorderOffset * multiple_baseline, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
 	err = FT_Glyph_StrokeBorder(&glyph, stroker, 0, 1);
-	DL_ASSERT_EXP(err == 0, "Failed to stroke");
+	ASSERT(err == 0, "Failed to stroke");
 
 	err = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, nullptr, true);
-	DL_ASSERT_EXP(err == 0, "Failed to add glyph to bitmap");
+	ASSERT(err == 0, "Failed to add glyph to bitmap");
 
 	FT_BitmapGlyph bitmapGlyph = reinterpret_cast<FT_BitmapGlyph>(glyph);
 

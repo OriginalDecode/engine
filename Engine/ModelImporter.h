@@ -162,7 +162,7 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	DL_MESSAGE("%s took %.1fms to read.", filepath.c_str(), read_time);
 
 	DL_MESSAGE_EXP(!scene, "%s", importer.GetErrorString());
-	DL_ASSERT_EXP(scene, "ImportModel Failed. Could not read the requested file.");
+	ASSERT(scene, "ImportModel Failed. Could not read the requested file.");
 
 	aiNode* rootNode = scene->mRootNode;
 
@@ -423,7 +423,7 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 	data.myVertexBuffer = new float[vtx_size];
 	ZeroMemory(data.myVertexBuffer, sizeof(float) * vtx_size);
 	data.m_VertexBufferSize = sizeof(float) * vtx_size;
-	DL_ASSERT_EXP(mesh->mNumVertices < size, "the amount of vertices was MORE!? than size");
+	ASSERT(mesh->mNumVertices < size, "the amount of vertices was MORE!? than size");
 
 	const u32 index_count = polygonCount * 3;
 	CU::GrowingArray<u32> indices(index_count);
@@ -438,7 +438,7 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 		{
 			u32 addedSize = VERTEX_STRIDE;
 			u32 currIndex = vertCount * stride;
-			DL_ASSERT_EXP(addedSize <= size, "addedSize was larger than the size of the array.");
+			ASSERT(addedSize <= size, "addedSize was larger than the size of the array.");
 			u32 verticeIndex = face->mIndices[j];
 
 			if (mesh->HasPositions())

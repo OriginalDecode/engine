@@ -47,7 +47,7 @@ void EventManager::Subscribe(const eMessageType aMessageType, Subscriber* aSubsc
 	CU::GrowingArray<SubscriberInfo>& subscribers = mySubscribers[static_cast<int>(aMessageType)];
 	for (int i = 0; i < subscribers.Size(); ++i)
 	{
-		DL_ASSERT_EXP(subscribers[i].mySubscriber != aSubscriber, "Tried to add the same subscriber to the same message twice.");
+		ASSERT(subscribers[i].mySubscriber != aSubscriber, "Tried to add the same subscriber to the same message twice.");
 	}
 #endif
 

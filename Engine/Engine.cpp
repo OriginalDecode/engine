@@ -59,19 +59,19 @@ graphics::IGraphicsAPI* Engine::m_API = nullptr;
 
 void Engine::Create()
 {
-	DL_ASSERT_EXP(myInstance == nullptr, "Instance already created!");
+	ASSERT(myInstance == nullptr, "Instance already created!");
 	myInstance = new Engine;
 }
 
 void Engine::Destroy()
 {
-	DL_ASSERT_EXP(myInstance != nullptr, "Can't destroy the instance before it's created. Did you call Destroy twice?");
+	ASSERT(myInstance != nullptr, "Can't destroy the instance before it's created. Did you call Destroy twice?");
 	SAFE_DELETE(myInstance);
 }
 
 Engine* Engine::GetInstance()
 {
-	DL_ASSERT_EXP(myInstance != nullptr, "Can't Get the instance before it's created. Did you call Destroy twice?");
+	ASSERT(myInstance != nullptr, "Can't Get the instance before it's created. Did you call Destroy twice?");
 	return myInstance;
 }
 

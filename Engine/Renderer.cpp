@@ -360,7 +360,7 @@ void Renderer::RenderNonDeferred3DCommands()
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<ModelCommandNonDeferred*>(commands[i]);
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
+		ASSERT(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 
 		//m_API->SetBlendState(eBlendStates::BLEND_FALSE);
 		RefPointer<Model> model = m_RenderContext.GetEngine().GetModel<Model>(command->m_Key);
@@ -391,7 +391,7 @@ void Renderer::Render3DCommands()
 		for (s32 i = 0; i < commands.Size(); i++)
 		{
 			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
+			ASSERT(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 			RefPointer<Model> model = m_RenderContext.GetEngine().GetModel<Model>(command->m_Key);
 			if (model->IsInstanced())
 			{
@@ -472,7 +472,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 		for (s32 i = 0; i < commands.Size(); ++i)
 		{
 			auto command = reinterpret_cast<ModelCommand*>(commands[i]);
-			DL_ASSERT_EXP(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
+			ASSERT(command->m_CommandType == RenderCommand::MODEL, "Incorrect command type! Expected MODEL");
 			RefPointer<Model> model = m_RenderContext.GetEngine().GetModel<Model>(command->m_Key);
 			if (model->IsInstanced())
 			{
@@ -511,7 +511,7 @@ void Renderer::Render2DCommands()
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<TextCommand*>(commands[i]);
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::TEXT, "Expected Text command type");
+		ASSERT(command->m_CommandType == RenderCommand::TEXT, "Expected Text command type");
 		m_Text->SetText(command->m_TextBuffer);
 		m_Text->SetPosition(command->m_Position);
 		m_Text->Render(m_RenderContext);
@@ -570,7 +570,7 @@ void Renderer::RenderSpotlight()
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<SpotlightCommand*>(commands[i]);
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::SPOTLIGHT, "Expected Spotlight command type");
+		ASSERT(command->m_CommandType == RenderCommand::SPOTLIGHT, "Expected Spotlight command type");
 
 		data.myAngle = command->m_Angle;
 		data.myRange = command->m_Range;
@@ -604,7 +604,7 @@ void Renderer::RenderPointlight()
 	{
 		auto command = reinterpret_cast<PointlightCommand*>(commands[i]);
 
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::POINTLIGHT, "Wrong command type in pointlight buffer.");
+		ASSERT(command->m_CommandType == RenderCommand::POINTLIGHT, "Wrong command type in pointlight buffer.");
 		myPointLight->SetPosition(command->m_Orientation.GetPosition());
 		myPointLight->SetRange(command->m_Range);
 		//myPointLight->SetRange(debug::DebugHandle::GetInstance()->m_Range);
@@ -628,7 +628,7 @@ void Renderer::RenderParticles(Effect* effect)
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<ParticleCommand*>(commands[i]);
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::PARTICLE, "Expected particle command type");
+		ASSERT(command->m_CommandType == RenderCommand::PARTICLE, "Expected particle command type");
 		m_ParticleEmitter->SetPosition(command->m_Position);
 
 		m_ParticleEmitter->Update(m_RenderContext.GetEngine().GetDeltaTime());
@@ -652,7 +652,7 @@ void Renderer::RenderLines()
 		const bool result = command->m_CommandType == RenderCommand::LINE;
 		if (!result)
 			return;
-		DL_ASSERT_EXP(command->m_CommandType == RenderCommand::LINE, "Expected Line command type");
+		ASSERT(command->m_CommandType == RenderCommand::LINE, "Expected Line command type");
 		m_Line->AddLine(command->m_Points);
 	}
 	m_Line->Render(m_RenderContext);
@@ -663,7 +663,7 @@ void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32
 {
 	auto command = reinterpret_cast<ModelCommand*>(commands[i]);
 	const bool result = (command->m_CommandType == RenderCommand::MODEL);
-	DL_ASSERT_EXP(result == true, "Incorrect command type! Expected MODEL");
+	ASSERT(result == true, "Incorrect command type! Expected MODEL");
 
 	RefPointer<Model> model = engine.GetModel<Model>(command->m_Key);
 	Material* material = model->GetMaterial() ? model->GetMaterial() : engine.GetMaterial(command->m_MaterialKey);

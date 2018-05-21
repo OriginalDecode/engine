@@ -201,7 +201,7 @@ namespace CommonUtilities
 	template<typename ObjectType, typename SizeType>
 	inline void GrowingArray<ObjectType, SizeType>::Add(const ObjectType& aObject)
 	{
-		DL_ASSERT_EXP(myCapacity > 0 , "Capacity is 0 or less");
+		ASSERT(myCapacity > 0 , "Capacity is 0 or less");
 		assert(this && "Growingarray not initilized. Failed to add");
 		assert(myData && "Data is broken, not inited!");
 		if (mySize >= myCapacity)

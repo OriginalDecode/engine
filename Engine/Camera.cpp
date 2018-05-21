@@ -16,7 +16,7 @@ bool Camera::IsShadowCamera() const
 
 void Camera::CreatePerspectiveProjection(float width, float height, float near_plane, float far_plane, float fov)
 {
-	DL_ASSERT_EXP(!m_ProjectionCreated, "Projection already created. Can't have two 3D projection matrices on same camera!");
+	ASSERT(!m_ProjectionCreated, "Projection already created. Can't have two 3D projection matrices on same camera!");
 	m_ProjectionCreated = true;
 	m_CurrentFoV = fov;
 	m_ProjectionMatrix = CU::Matrix44f::CreateProjectionMatrixLH(near_plane, far_plane, height / width, cl::DegreeToRad(m_CurrentFoV));
@@ -24,7 +24,7 @@ void Camera::CreatePerspectiveProjection(float width, float height, float near_p
 
 void Camera::CreateOrthographicProjection(float width, float height, float near_plane, float far_plane)
 {
-	DL_ASSERT_EXP(!m_ProjectionCreated, "Projection already created. Can't have two 3D projection matrices on same camera!");
+	ASSERT(!m_ProjectionCreated, "Projection already created. Can't have two 3D projection matrices on same camera!");
 	m_ProjectionCreated = true;
 	m_ProjectionMatrix = CU::Matrix44f::CreateOrthographicMatrixLH(width, height, near_plane, far_plane);
 }

@@ -3,250 +3,98 @@
 #include <string>
 namespace cl
 {
-	XMLReader::XMLReader()
+	XMLReader::XMLReader(const char* path)
 	{
-		myDocumentIsOpen = false;
-		myDocument = nullptr;
+		OpenDoc(path);
 	}
 
 	XMLReader::~XMLReader()
 	{
+		CloseDoc();
 	}
 
-	void XMLReader::OpenDoc(const char* aFilePath)
+	void XMLReader::OpenDoc(const char* path)
 	{
-		delete myDocument;
-		if (myDocument == nullptr)
-		{
-			myDocument = new tinyxml2::XMLDocument();
-		}
+		delete m_Document;
+		m_Document = new tinyxml2::XMLDocument;
 
-		if (aFilePath == nullptr)
-		{
-			//DL_DEBUG("File could not be loaded! %s", aFilePath);
-			DL_ASSERT_EXP(aFilePath == nullptr, "Filepath were a nullptr");
-		}
-		else if (myDocument->LoadFile(aFilePath) != 0)
-		{
-			//DL_DEBUG("File could not be found! %s", aFilePath);
-			DL_ASSERT("File could not be found!");
-		}
+		tinyxml2::XMLError err = m_Document->LoadFile(path);
 
-		myFilePath = aFilePath;
-		myDocumentIsOpen = true;
+		ASSERT(err  == 0, "An error occurred while loading the XML file");
+		m_File = path;
+		m_IsOpen = true;
 	}
 
 	void XMLReader::CloseDoc()
 	{
-
-		if (myDocumentIsOpen == false)
-		{
-			//DL_DEBUG("Can't close XMLDocument!");
-			DL_ASSERT("Can't close XMLDocument!")
-		}
-		else if (myDocumentIsOpen == true)
-		{
-			myDocumentIsOpen = false;
-			myFilePath = "";
-			delete myDocument;
-			myDocument = nullptr;
-		}
+		delete m_Document;
+		m_Document = nullptr;
+		m_IsOpen = false;
 	}
 
-	XMLElement XMLReader::ForceFindFirstChildElement(XMLElement aParent, const std::string& aChildName) const
+	XMLElement* XMLReader::FindFirstChildElement(const char* child)
 	{
-		DL_ASSERT_EXP(myDocumentIsOpen == false, "XMLReader : File not open!");
-
-		return aParent->FirstChildElement(aChildName.c_str());
+		ASSERT(m_IsOpen, "XMLReader : File not open!");
+		return m_Document->FirstChildElement(child);
 	}
 
-	XMLElement XMLReader::ForceFindFirstChildElement(const std::string& aChildName) const
+	XMLElement* XMLReader::FindChildElement(XMLElement* parent)
 	{
-		DL_ASSERT_EXP(myDocumentIsOpen == false, "XMLReader : File not open!");
-
-		return myDocument->FirstChildElement(aChildName.c_str());
+		ASSERT(m_IsOpen, "XMLReader : File not open!");
+		return parent->FirstChildElement();
 	}
 
-	XMLElement XMLReader::FindFirstChildElement(const std::string& aChildName)
+	bool XMLReader::ReadAttribute(const XMLElement* element, const char* attribute, bool* var)
 	{
-		DL_ASSERT_EXP(myDocumentIsOpen == false, "XMLReader : File not open!");
-		
-		return myDocument->FirstChildElement(aChildName.c_str());
-	}
+		ASSERT(m_IsOpen, "XMLReader : File not open!");
+		ASSERT(element->FindAttribute(attribute), "XMLReader : Failed to find attribute");
 
-	XMLElement XMLReader::FindChildElement(XMLElement aParent)
-	{
-		DL_ASSERT_EXP(myDocumentIsOpen == false, "XMLReader : File not open!");
-
-		return aParent->FirstChildElement();
-	}
-
-	
-	//Read Attribute
-	
-	bool XMLReader::ReadAttribute(const XMLElement anElementToRead, const std::string& anAttribute, std::string& aTargetVar)
-	{
-
-		if (myDocumentIsOpen == false)
-		{
-			//DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
-			DL_ASSERT("XMLReader : Cannot Read Attribute, file not open!");
-		}
-		if (anElementToRead == nullptr)
-			return false;
-
-		if (anElementToRead->FindAttribute(anAttribute.c_str()) != 0)
-		{
-			aTargetVar = anElementToRead->Attribute(anAttribute.c_str());
-			return true;
-		}
-
-		return false;
-	}
-	
-	bool XMLReader::ReadAttribute(const XMLElement anElementToRead, const std::string& anAttribute, int* aTargetVar)
-	{
-
-		if (myDocumentIsOpen == false)
-		{
-			//DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
-			DL_ASSERT("XMLReader : Cannot Read Attribute, file not open!");
-		}
-		if (anElementToRead == nullptr)
-			return false;
-
-		if (anElementToRead->QueryIntAttribute(anAttribute.c_str(), aTargetVar) == tinyxml2::XML_NO_ERROR)
+		if (element->QueryBoolAttribute(attribute, var) == tinyxml2::XML_NO_ERROR)
 			return true;
 
 		return false;
 	}
 
-	bool XMLReader::ReadAttribute(const XMLElement anElementToRead, const std::string& anAttribute, double* aTargetVar)
+	bool XMLReader::ReadAttribute(const XMLElement* element, const char* attribute, float* var)
 	{
+		ASSERT(m_IsOpen, "XMLReader : File not open!");
+		ASSERT(element->FindAttribute(attribute), "XMLReader : Failed to find attribute");
 
-		if (myDocumentIsOpen == false)
-		{
-			//DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
-			DL_ASSERT("XMLReader : Cannot Read Attribute, file not open!");
-		}
-		if (anElementToRead == nullptr)
-			return false;
-
-		if (anElementToRead->QueryDoubleAttribute(anAttribute.c_str(), aTargetVar) == tinyxml2::XML_NO_ERROR)
+		if (element->QueryFloatAttribute(attribute, var) == tinyxml2::XML_NO_ERROR)
 			return true;
 
 		return false;
 	}
 
-	bool XMLReader::ReadAttribute(const XMLElement anElementToRead, const std::string& anAttribute, float* aTargetVar)
+	bool XMLReader::ReadAttribute(const XMLElement* element, const char* attribute, double* var)
 	{
+		ASSERT(m_IsOpen, "XMLReader : File not open!");
+		ASSERT(element->FindAttribute(attribute), "XMLReader : Failed to find attribute");
 
-		if (myDocumentIsOpen == false)
-		{
-			//DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
-			DL_ASSERT("XMLReader : Cannot Read Attribute, file not open!");
-		}
-		if (anElementToRead == nullptr)
-			return false;
-
-		if (anElementToRead->QueryFloatAttribute(anAttribute.c_str(), aTargetVar) == tinyxml2::XML_NO_ERROR)
+		if (element->QueryDoubleAttribute(attribute, var) == tinyxml2::XML_NO_ERROR)
 			return true;
 
 		return false;
 	}
 
-	bool XMLReader::ReadAttribute(const XMLElement anElementToRead, const std::string& anAttribute, bool* aTargetVar)
+	bool XMLReader::ReadAttribute(const XMLElement* element, const char* attribute, int* var)
 	{
-
-		if (myDocumentIsOpen == false)
-		{
-			//DL_DEBUG("XMLReader : Cannot Read Attribute, file not open!");
-			DL_ASSERT("XMLReader : Cannot Read Attribute, file not open!");
-		}
-		if (anElementToRead == nullptr)
-			return false;
-
-		if (anElementToRead->QueryBoolAttribute(anAttribute.c_str(), aTargetVar) == tinyxml2::XML_NO_ERROR)
+		ASSERT(m_IsOpen, "XMLReader : File not open!");
+		ASSERT(element->FindAttribute(attribute), "XMLReader : Failed to find attribute");
+		if (element->QueryIntAttribute(attribute, var) == tinyxml2::XML_NO_ERROR)
 			return true;
 
 		return false;
 	}
 
-
-	//Force Read Attribute
-	bool XMLReader::ForceReadAttribute(const XMLElement anElementToRead, const std::string& anAttribute, std::string& aTargetVar)
+	bool XMLReader::ReadAttribute(const XMLElement* element, const char* attribute, std::string& var)
 	{
-		DL_ASSERT_EXP(myDocumentIsOpen == false, "XMLReader : File not open!");
+		ASSERT(m_IsOpen, "XMLReader : File not open!");
+		ASSERT(element->FindAttribute(attribute), "XMLReader : Failed to find attribute");
+		var = element->Attribute(attribute);
 
-
-		if (anElementToRead->FindAttribute(anAttribute.c_str()) != 0)
-		{
-			aTargetVar = anElementToRead->Attribute(anAttribute.c_str());
-			return true;
-		}
-
-		//DL_DEBUG("No Attribute with %s name found!", anAttribute);
-		DL_ASSERT("No Attribute found!");
-
-		return false;
+		return true;
 	}
-	
-	bool XMLReader::ForceReadAttribute(const XMLElement anElementToRead, const std::string& anAttribute, int* aTargetVar)
-	{
-		DL_ASSERT_EXP(myDocumentIsOpen == false, "XMLReader : File not open!");
-
-
-		if (anElementToRead->QueryIntAttribute(anAttribute.c_str(), aTargetVar) == tinyxml2::XML_NO_ERROR)
-			return true;
-
-		//DL_DEBUG("No Attribute with %s name found!", anAttribute);
-		DL_ASSERT("No Attribute found!");
-
-		return false;
-	}
-	
-	bool XMLReader::ForceReadAttribute(const XMLElement anElementToRead, const std::string& anAttribute, double* aTargetVar)
-	{
-		DL_ASSERT_EXP(myDocumentIsOpen == false, "XMLReader : File not open!");
-
-
-		if (anElementToRead->QueryDoubleAttribute(anAttribute.c_str(), aTargetVar) == tinyxml2::XML_NO_ERROR)
-			return true;
-
-		//DL_DEBUG("No Attribute with %s name found!", anAttribute);
-		DL_ASSERT("No Attribute found!");
-
-		return false;
-	}
-
-	bool XMLReader::ForceReadAttribute(const XMLElement anElementToRead, const std::string& anAttribute, float* aTargetVar)
-	{
-		DL_ASSERT_EXP(myDocumentIsOpen == false, "XMLReader : File not open!");
-
-
-		if (anElementToRead->QueryFloatAttribute(anAttribute.c_str(), aTargetVar) == tinyxml2::XML_NO_ERROR)
-			return true;
-
-		//DL_DEBUG("No Attribute with %s name found!", anAttribute);
-		DL_ASSERT("No Attribute found!");
-
-		return false;
-	}
-
-	bool XMLReader::ForceReadAttribute(const XMLElement anElementToRead, const std::string& anAttribute, bool* aTargetVar)
-	{
-		DL_ASSERT_EXP(myDocumentIsOpen == false, "XMLReader : File not open!");
-
-
-		if (anElementToRead->QueryBoolAttribute(anAttribute.c_str(), aTargetVar) == tinyxml2::XML_NO_ERROR)
-			return true;
-
-		//DL_DEBUG("No Attribute with %s name found!", anAttribute);
-		DL_ASSERT("No Attribute found!");
-
-		return false;
-	}
-
 
 }
 

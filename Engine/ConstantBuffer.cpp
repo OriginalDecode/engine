@@ -7,7 +7,7 @@ namespace graphics
 {
 	void ConstantBuffer::Initiate(const char* debug_name)
 	{
-		DL_ASSERT_EXP(!m_Variables.empty(), "Register Variables before Initializing");
+		ASSERT(!m_Variables.empty(), "Register Variables before Initializing");
 
 		s32 size = 0;
 		for (const BufferVariable& var : m_Variables)
@@ -26,7 +26,7 @@ namespace graphics
 			size -= mul_of_16;
 				
 			mul_of_16 = size % 16;
-			DL_ASSERT_EXP(mul_of_16 == 0, "Not mul of 16");
+			ASSERT(mul_of_16 == 0, "Not mul of 16");
 
 		}
 

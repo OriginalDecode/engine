@@ -150,7 +150,7 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 
 #ifndef FINAL
 	myFileWatchers[(s32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint));
-	DL_ASSERT_EXP(effect, "Effect pointer was null");
+	ASSERT(effect, "Effect pointer was null");
 	m_Shaders[hash_key]->m_EffectPointers.Add(effect);
 #endif
 }

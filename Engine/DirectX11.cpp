@@ -250,7 +250,7 @@ namespace graphics
 											   &pContext);
 		}
 
-		DL_ASSERT_EXP(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");
+		ASSERT(hr == S_OK, "Failed to Create (Device, Swapchain and Context)!");
 
 
 
@@ -324,7 +324,7 @@ namespace graphics
 
 		ID3D11DepthStencilView* pDepthView = nullptr;
 		hr = pDevice->CreateDepthStencilView(pDepthBuffer, &stencilDesc, &pDepthView);
-		DL_ASSERT_EXP(hr == S_OK, "Failed to create depth stenci");
+		ASSERT(hr == S_OK, "Failed to create depth stenci");
 
 #ifdef _DEBUG
 		SetDebugName(pDepthBuffer, "DirectX11 DepthBuffer Object");
@@ -534,7 +534,7 @@ namespace graphics
 		D3D11_MAPPED_SUBRESOURCE msr;
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		HRESULT hr = ctx->Map(staging, 0, D3D11_MAP_READ, 0, &msr);
-		DL_ASSERT_EXP(hr == S_OK, "Not ok pixel pick!");
+		ASSERT(hr == S_OK, "Not ok pixel pick!");
 		if (msr.pData)
 		{
 			float* data = (float*)msr.pData;
@@ -568,7 +568,7 @@ namespace graphics
 		ID3D11Resource* resource = nullptr;
 		texture_resource->GetResource(&resource);
 		HRESULT hr = DirectX::SaveDDSTextureToFile(ctx, resource, file_name.c_str());
-		DL_ASSERT_EXP(hr == S_OK, "failed to save. Sad");
+		ASSERT(hr == S_OK, "failed to save. Sad");
 	}
 
 	void DirectX11::CreateRazterizers()
@@ -701,7 +701,7 @@ namespace graphics
 		if (!toError.empty())
 		{
 			DL_MESSAGE("%s", toError.c_str());
-			DL_ASSERT_EXP(aResult == S_OK, toError.c_str());
+			ASSERT(aResult == S_OK, toError.c_str());
 		}
 	}
 

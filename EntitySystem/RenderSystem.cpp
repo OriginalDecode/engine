@@ -84,7 +84,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 
 			const Frustum& f = CameraHandle::GetInstance()->GetFrustum();
 
-			DL_ASSERT_EXP(instance.m_ModelID > 0, "Invalid Model Key!");
+			ASSERT(instance.m_ModelID > 0, "Invalid Model Key!");
 
 			AddRenderCommand(ModelCommand(instance.m_ModelID
 										  , instance.m_MaterialKey

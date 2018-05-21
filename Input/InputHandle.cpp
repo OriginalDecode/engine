@@ -27,10 +27,10 @@ void InputHandle::AddController(u16 controller_id)
 	char buf[128];
 	memset(&buf, 0, 128);
 	sprintf(buf, "Can't add more than %d controllers", m_ControllerMaxAmount);
-	DL_ASSERT_EXP(m_ControllerID < m_ControllerMaxAmount, buf);
+	ASSERT(m_ControllerID < m_ControllerMaxAmount, buf);
 #endif
 	m_Controller[m_ControllerID++] = new ControllerInput(controller_id);
-	DL_ASSERT_EXP(m_Controller[controller_id], "Failed to create a controller!");
+	ASSERT(m_Controller[controller_id], "Failed to create a controller!");
 }
 
 void InputHandle::CleanUp()

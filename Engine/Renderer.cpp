@@ -704,7 +704,7 @@ int Renderer::RegisterLight()
 void Renderer::AddTerrain(Terrain* someTerrain)
 {
 	myTerrainArray.Add(someTerrain);
-}
+}asd
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)

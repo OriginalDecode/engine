@@ -706,6 +706,8 @@ void Renderer::AddTerrain(Terrain* someTerrain)
 	myTerrainArray.Add(someTerrain);
 }
 
+
+#if !defined(_PROFILE) && !defined(_FINAL)
 #include "DX11Device.h"
 #include "DX11Context.h"
 #include <DXTex/DirectXTex.h>
@@ -840,4 +842,4 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 
 
 }
-
+#endif

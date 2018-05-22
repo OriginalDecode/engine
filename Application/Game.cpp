@@ -320,9 +320,11 @@ void Game::OldUpdate(float dt)
 	if (input_wrapper->IsDown(KButton::X))
 		m_Camera->Move(eDirection::DOWN, -acceleration);
 
+
+#if !defined(_PROFILE) && !defined(_FINAL)
 	if (input_wrapper->OnDown(KButton::P))
 		m_Engine->GetRenderer()->CreateCubemaps();
-
+#endif
 
 	const CU::Vector4f forward = m_Orientation.GetForward();
 	const CU::Vector4f right = m_Orientation.GetRight();

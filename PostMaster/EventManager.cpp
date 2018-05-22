@@ -14,15 +14,6 @@ EventManager::EventManager()
 
 EventManager::~EventManager()
 {
-// 	for (int i = 0; i < static_cast<int>(eMessageType::COUNT); ++i)
-// 	{
-// 		if (mySubscribers[i].Size() > 0)
-// 		{
-// 			DL_ASSERT("Subscriber not unsubscribed at Postmaster-Destroy.");
-// 		}
-// 
-// 		mySubscribers[i].RemoveAll();
-// 	}
 }
 
 EventManager* EventManager::GetInstance()

@@ -7,8 +7,14 @@ class Effect;
 class ShadowDirectional;
 class ShadowSpotlight;
 
+namespace debug
+{
+	class DebugHandle;
+};
 class ShadowPass
 {
+	friend debug::DebugHandle;
+
 public:
 
 	bool Initiate(Renderer* renderer);
@@ -19,8 +25,6 @@ public:
 
 	void Activate();
 	void DeActivate();
-
-
 
 private:
 	void ProcessShadows(Camera* camera);

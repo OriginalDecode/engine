@@ -417,6 +417,11 @@ namespace debug
 					ImGui::SliderFloat("Y", &light_dir[1], 0.f, 1.f);
 					ImGui::SliderFloat("Z", &light_dir[2], -1.f, 1.f);
 					Engine::GetInstance()->m_Renderer->SetDirection(light_dir);
+
+					//ImGui::SliderFloat("Distance")
+
+
+
 				}
 				ImGui::EndChildFrame();
 			} break;

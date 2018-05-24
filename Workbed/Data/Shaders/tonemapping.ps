@@ -34,7 +34,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	// if(input.uv.x < 0.5 && input.uv.x > 0.0 && input.uv.y < 0.5 && input.uv.y > 0.0)
 	// 	return diffuse;	
-	return pow(diffuse, .4545);
 	float4 LumPixel = LuminanceTexture.Sample(sampler0, input.uv);
 	float luminance = AverageLumTexture.Sample(sampler0, input.uv).r;
 

@@ -66,8 +66,6 @@ CU::Matrix44f& Camera::GetOrthogonal()
 	return m_OrthogonalMatrix;
 }
 
-
-
 const CU::Matrix44f& Camera::GetOrthographic() const
 {
 	return m_ProjectionMatrix;

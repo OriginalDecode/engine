@@ -94,10 +94,10 @@ namespace graphics
 		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-		samplerDesc.BorderColor[0] = 1;
-		samplerDesc.BorderColor[1] = 1;
-		samplerDesc.BorderColor[2] = 1;
-		samplerDesc.BorderColor[3] = 1;
+		samplerDesc.BorderColor[0] = 0;
+		samplerDesc.BorderColor[1] = 0;
+		samplerDesc.BorderColor[2] = 0;
+		samplerDesc.BorderColor[3] = 0;
 		samplerDesc.MinLOD = 0;
 		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 		samplerDesc.MipLODBias = 2.f;

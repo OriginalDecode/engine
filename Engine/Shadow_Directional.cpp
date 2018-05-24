@@ -15,24 +15,29 @@ void ShadowDirectional::Initiate(float buffer_size)
 	m_Camera = new Camera;
 	m_Camera->CreateOrthographicProjection(512, 512, 0.1f, 100.f);
 
-// 	m_Camera->SetPosition({ 512, 1, 512});
-// 	m_Camera->RotateAroundY(cl::DegreeToRad(45.f) * 1.f);
- 	//m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
-//	m_Camera->Update();
+	// 	m_Camera->SetPosition({ 512, 1, 512});
+	// 	m_Camera->RotateAroundY(cl::DegreeToRad(45.f) * 1.f);
+		//m_Camera->RotateAroundX(cl::DegreeToRad(90.f) * 1.f);
+	//	m_Camera->Update();
+	{
+		TextureDesc desc;
+		desc.m_Width = buffer_size;
+		desc.m_Height = buffer_size;
+		desc.m_Usage = graphics::DEFAULT_USAGE;
+		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
+		desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
+		desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
+		desc.m_TextureFormat = graphics::RGBA16_FLOAT;
+		m_ShadowDepth = new Texture;
+		m_ShadowDepth->Initiate(desc, "DirectionalShadows : RTV");
+	}
 
-	TextureDesc desc;
-	desc.m_Width = buffer_size;
-	desc.m_Height = buffer_size;
-	desc.m_Usage = graphics::DEFAULT_USAGE;
-	desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
-	desc.m_ShaderResourceFormat = graphics::RGBA16_FLOAT;
-	desc.m_RenderTargetFormat = graphics::RGBA16_FLOAT;
-	desc.m_TextureFormat = graphics::RGBA16_FLOAT;
-	m_ShadowDepth = new Texture;
-	m_ShadowDepth->Initiate(desc, "DirectionalShadows : RTV");
+	{
+		m_ShadowDepthStencil = new Texture;
+		m_ShadowDepthStencil->InitiateAsDepthStencil(buffer_size,buffer_size, "DirectionalShadows : DSV");
 
-	m_ShadowDepthStencil = new Texture;
-	m_ShadowDepthStencil->InitiateAsDepthStencil(buffer_size, buffer_size, "DirectionalShadows : DSV");
+	}
+	//m_ShadowDepthStencil->InitiateAsDepthStencil(buffer_size, buffer_size, "DirectionalShadows : DSV");
 
 
 	m_Viewport = Engine::GetAPI()->CreateViewport(buffer_size, buffer_size, 0.f, 1.f, 0, 0);
@@ -100,8 +105,8 @@ void ShadowDirectional::Update()
 	const CU::Vector4f cam_pos = m_Camera->GetTranslation();
 	const CU::Vector4f cam_dir = m_Camera->GetAt();
 
-	//Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos + cam_dir, f.GetCenter(), CU::Vector4f(1, 0, 0, 1), true));
-	//Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, cam_pos + cam_dir, CU::Vector4f(0, 1, 0, 1), true));
+	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos + cam_dir, f.GetCenter(), CU::Vector4f(1, 0, 0, 1), true));
+	Engine::GetInstance()->GetSynchronizer()->AddRenderCommand(LineCommand(cam_pos, cam_pos + cam_dir, CU::Vector4f(0, 1, 0, 1), true));
 
 }
 

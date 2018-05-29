@@ -1,0 +1,10 @@
+<object name="cubemaps">
+    <object>
+        <value name="+x"></value>
+        <value name="-x"></value>
+        <value name="+y"></value>
+        <value name="-y"></value>
+        <value name="+z"></value>
+        <value name="-z"></value>
+    </object>
+</object>

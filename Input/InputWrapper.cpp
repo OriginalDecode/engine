@@ -39,7 +39,7 @@ bool InputWrapper::CleanUp()
 void InputWrapper::Update()
 {
 	memcpy_s(&myPrevKeyState, sizeof(myPrevKeyState), myKeyState, sizeof(myKeyState));
-	HRESULT hr = myKeyboard->GetDeviceState(sizeof(myKeyState), (VOID**)&myKeyState);
+	HRESULT hr = myKeyboard->GetDeviceState(sizeof(myKeyState), (void**)&myKeyState);
 	if (FAILED(hr))
 	{
 		ZeroMemory(myKeyState, sizeof(myKeyState));
@@ -47,7 +47,7 @@ void InputWrapper::Update()
 	}
 
 	memcpy_s(&myPrevMouseState, sizeof(myPrevMouseState), &myMouseState, sizeof(myMouseState));
-	hr = myMouse->GetDeviceState(sizeof(DIMOUSESTATE), (VOID**)&myMouseState);
+	hr = myMouse->GetDeviceState(sizeof(DIMOUSESTATE), (void**)&myMouseState);
 	if (FAILED(hr))
 	{
 		ZeroMemory(&myMouseState, sizeof(myMouseState));

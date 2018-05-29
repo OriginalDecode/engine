@@ -91,14 +91,15 @@ namespace graphics
 	void GBuffer::Clear(const float* clear_color, const RenderContext& render_context)
 	{
 		auto& ctx = render_context.GetContext();
-		ctx.ClearRenderTarget(m_Albedo->GetRenderTargetView(), clear_color);
-		ctx.ClearRenderTarget(m_Normal->GetRenderTargetView(), clear_color);
-		ctx.ClearRenderTarget(m_Depth->GetRenderTargetView(), clear_color);
-		ctx.ClearRenderTarget(m_Emissive->GetRenderTargetView(), clear_color);
+		ctx.ClearRenderTarget(m_Albedo, clear_color);
+		ctx.ClearRenderTarget(m_Normal, clear_color);
+		ctx.ClearRenderTarget(m_Depth, clear_color);
+		ctx.ClearRenderTarget(m_Emissive, clear_color);
 #ifdef _DEBUG
-		ctx.ClearRenderTarget(m_Emissive->GetRenderTargetView(), clear_color);
-		ctx.ClearRenderTarget(m_Roughenss->GetRenderTargetView(), clear_color);
-		ctx.ClearRenderTarget(m_Metalness->GetRenderTargetView(), clear_color);
+		ctx.ClearRenderTarget(m_Emissive, clear_color);
+		ctx.ClearRenderTarget(m_Roughenss, clear_color);
+		ctx.ClearRenderTarget(m_Metalness, clear_color);
+		ctx.ClearRenderTarget(m_EntityIDTexture, clear_color);
 #endif
 	}
 

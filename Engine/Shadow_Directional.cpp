@@ -13,7 +13,7 @@
 void ShadowDirectional::Initiate(float buffer_size)
 {
 	m_Camera = new Camera;
-	m_Camera->CreateOrthographicProjection(512, 512, 0.1f, 100.f);
+	m_Camera->CreateOrthographicProjection(1024, 1024, 0.1f, 100.f);
 
 	// 	m_Camera->SetPosition({ 512, 1, 512});
 	// 	m_Camera->RotateAroundY(cl::DegreeToRad(45.f) * 1.f);

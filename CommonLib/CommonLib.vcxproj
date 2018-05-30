@@ -60,6 +60,7 @@
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Work.h" />
     <ClInclude Include="Worker.h" />
+    <ClInclude Include="XML\tinyxml2.h" />
     <ClInclude Include="XML\XMLReader.h" />
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +75,7 @@
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="Work.cpp" />
     <ClCompile Include="Worker.cpp" />
+    <ClCompile Include="XML\tinyxml2.cpp" />
     <ClCompile Include="XML\XMLReader.cpp" />
   </ItemGroup>
   <ItemGroup>

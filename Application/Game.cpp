@@ -28,6 +28,8 @@
 #include <Input/ControllerInput.h>
 #include <Engine/LevelFactory.h>
 
+#include <XML/XMLReader.h>
+
 #include <Engine/Renderer.h>
 #include "Player.h"
 #ifdef _DEBUG
@@ -95,10 +97,32 @@ void Game::Initiate(const std::string& level)
 	pole = m_Engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
 	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(16, 1, 3, CU::Vector3f(-110.f, 0.f, -16.f), 15.f, 0.f, 15.f);
-
-
-
 	m_World.AddDwellers(dwellers); 
+
+
+	cl::XMLReader reader("Data/Textures/cube/cubemaps.xml");
+			
+	std::vector<std::string> vec;
+	for (tinyxml2::XMLElement* el = reader.FindElement("value");; el = el->NextSiblingElement()) //this need to be simplified
+	{
+		std::string str;
+		reader.ReadAttribute(el, "name", str);
+		vec.emplace_back(str);
+	}
+
+/*
+
+	for (s32 i = 0; i < element_count; i++)
+	{
+		reader.ReadAttribute(object, "name", str[i]);
+		object = object->NextSiblingElement();
+	}
+*/
+	
+
+	
+
+
 
 #endif
 #endif

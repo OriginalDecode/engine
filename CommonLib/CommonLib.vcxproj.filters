@@ -139,6 +139,7 @@
     <ClInclude Include="XML\XMLReader.h" />
     <ClInclude Include="RefPointer.h" />
     <ClInclude Include="ReferenceCounter.h" />
+    <ClInclude Include="XML\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JSON\JSONReader.cpp">
@@ -171,6 +172,7 @@
     <ClCompile Include="reflector.cpp" />
     <ClCompile Include="XML\XMLReader.cpp" />
     <ClCompile Include="ReferenceCounter.cpp" />
+    <ClCompile Include="XML\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />

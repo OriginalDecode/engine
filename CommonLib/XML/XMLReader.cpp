@@ -19,7 +19,6 @@ namespace cl
 		m_Document = new tinyxml2::XMLDocument;
 
 		tinyxml2::XMLError err = m_Document->LoadFile(path);
-
 		ASSERT(err  == 0, "An error occurred while loading the XML file");
 		m_File = path;
 		m_IsOpen = true;
@@ -38,13 +37,38 @@ namespace cl
 		return m_Document->FirstChildElement(child);
 	}
 
-	tinyxml2::XMLElement* XMLReader::FindChildElement(tinyxml2::XMLElement* parent)
+	tinyxml2::XMLElement* XMLReader::GetFirstElement(tinyxml2::XMLElement* parent)
 	{
 		ASSERT(m_IsOpen, "XMLReader : File not open!");
 		return parent->FirstChildElement();
 	}
 
-	tinyxml2::XMLElement* XMLReader::FirstChild()
+	tinyxml2::XMLElement* XMLReader::FindElement(tinyxml2::XMLElement* pElement, const char* element_to_find)
+	{
+		if (tinyxml2::XMLElement* element = pElement->FirstChildElement(element_to_find))
+		{
+			return element;
+		}
+
+		for (auto* e = pElement->FirstChildElement(); e; e = pElement->NextSiblingElement())
+		{
+			if (tinyxml2::XMLElement* element = e->FirstChildElement(element_to_find))
+			{
+				return element;
+			}
+
+		}
+
+		return nullptr;
+
+	}
+
+	tinyxml2::XMLElement* XMLReader::FindElement(const char* element_to_find)
+	{
+		return FindElement(FirstElement(), element_to_find);
+	}
+
+	tinyxml2::XMLElement* XMLReader::FirstElement()
 	{
 		ASSERT(m_IsOpen, "XMLReader : File not open!");
 		return m_Document->FirstChildElement();
@@ -99,22 +123,5 @@ namespace cl
 		ASSERT(element->FindAttribute(attribute), "XMLReader : Failed to find attribute");
 		var = element->Attribute(attribute);
 		return true;
-
-
-		XMLElement el;
-		for (XMLElement& o : el)
-		{
-
-		}
 	}
-
-	
-
-	XMLElement::XMLElement(tinyxml2::XMLDocument* doc)
-	{
-	}
-
 }
-
-
-

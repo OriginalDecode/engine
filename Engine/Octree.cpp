@@ -7,6 +7,7 @@
 #include <Engine/TreeNode.h>
 
 static bool s_RenderTree = false;
+constexpr s32 MAX_DEPTH = 1;
 void Octree::Initiate(CU::Vector3f world_position, float world_half_width)
 {
 	m_Position = world_position;

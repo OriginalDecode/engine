@@ -1,10 +1,18 @@
 <cubemaps>
-    <cubemap elements="6">
-        <value name="+x"/>
-        <value name="-x"/>
-        <value name="+y"/>
-        <value name="-y"/>
-        <value name="+z"/>
-        <value name="-z"/>
+    <cubemap> <!-- comment -->
+        <value name="files"/>
+        <value name="files"/>
+        <value name="files"/>
+        <value name="files"/>
+        <value name="files"/>
+        <value name="files"/>
+    </cubemap>
+    <cubemap> <!-- comment -->
+        <value name="files"/>
+        <value name="files"/>
+        <value name="files"/>
+        <value name="files"/>
+        <value name="files"/>
+        <value name="files"/>
     </cubemap>
 </cubemaps>

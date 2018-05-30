@@ -36,12 +36,7 @@ void World::Update(float dt, bool paused)
 void World::AddDwellers(const CU::GrowingArray<TreeDweller*>& dwellers)
 {
 	m_Octree.AddDwellers(dwellers);
-
-
-	for (TreeDweller* dweller : dwellers)
-	{
-		m_WorldDwellers.Add(dweller);
-	}
+	m_WorldDwellers = dwellers;
 }
 
 void World::AddDweller(TreeDweller* dweller)

@@ -100,29 +100,14 @@ void Game::Initiate(const std::string& level)
 	m_World.AddDwellers(dwellers); 
 
 
-	cl::XMLReader reader("Data/Textures/cube/cubemaps.xml");
-			
-	std::vector<std::string> vec;
-	for (tinyxml2::XMLElement* el = reader.FindElement("value");; el = el->NextSiblingElement()) //this need to be simplified
-	{
-		std::string str;
-		reader.ReadAttribute(el, "name", str);
-		vec.emplace_back(str);
-	}
-
-/*
-
-	for (s32 i = 0; i < element_count; i++)
-	{
-		reader.ReadAttribute(object, "name", str[i]);
-		object = object->NextSiblingElement();
-	}
-*/
-	
-
-	
-
-
+	//cl::XMLReader reader("Data/Textures/cube/cubemaps.xml");
+	//std::vector<std::string> vec;
+	//for (tinyxml2::XMLElement* el = reader.FindElement("value");; el = el->NextSiblingElement()) //this need to be simplified
+	//{
+	//	std::string str;
+	//	reader.ReadAttribute(el, "name", str);
+	//	vec.emplace_back(str);
+	//}
 
 #endif
 #endif

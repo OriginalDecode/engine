@@ -25,14 +25,18 @@ TreeNodeBase::~TreeNodeBase()
 
 void TreeNodeBase::Update(float dt, bool paused)
 {
+	return;
 	PROFILE_FUNCTION(profiler::colors::Blue);
 	m_DwellerCount = m_Dwellers.Size();
 	//RenderBox();
+	if (m_DwellerCount <= 0)
+		return;
 
+
+#ifdef _PER_NODE_SYSTEM
 	if (m_NodeEntityManager->EntityCount() <= 0)
 		return;
 
-#ifdef _PER_NODE_SYSTEM
 	m_NodeEntityManager->Update(dt, m_Dwellers, paused);
 #endif
 

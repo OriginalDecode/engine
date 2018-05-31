@@ -33,6 +33,11 @@ struct RenderCommand
 
 struct ModelCommand : public RenderCommand
 {
+	ModelCommand()
+		: RenderCommand(eCommandType::MODEL)
+	{
+	}
+
 	ModelCommand(u64 key, const CU::Matrix44f& orientation, bool wireframe)
 		: RenderCommand(eCommandType::MODEL)
 		, m_Orientation(orientation)

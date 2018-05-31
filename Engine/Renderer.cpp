@@ -356,7 +356,7 @@ void Renderer::RenderNonDeferred3DCommands()
 {
 
 	PROFILE_FUNCTION(profiler::colors::Amber);
-	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::NO_DEFERRED_BUFFER);
+	const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::NO_DEFERRED_BUFFER);
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<ModelCommandNonDeferred*>(commands[i]);
@@ -507,7 +507,7 @@ void Renderer::Render2DCommands()
 	IRasterizerState* rss = m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE);
 	m_RenderContext.GetContext().SetDepthState(dss, 0);
 	m_RenderContext.GetContext().SetRasterizerState(rss);
-	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER);
+	const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER);
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<TextCommand*>(commands[i]);

@@ -47,7 +47,9 @@ void EntityManager::Clear()
 
 void EntityManager::Update(float dt)
 {
+
 	const CU::GrowingArray<Entity>& entities = GetEntities();
+	
 	/*for ( Entity e : entities )
 	{
 		if ( CameraHandle::GetInstance() )

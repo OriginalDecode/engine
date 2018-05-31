@@ -439,7 +439,9 @@ namespace graphics
 		return CreateBuffer(desc, debug_name);
 	}
 
-	IShaderBlob* DX11Device::CompileShaderFromFile(const std::string& filepath, const char* entrypoint, const char* shader_type, const char* material)
+
+
+	IShaderBlob* DX11Device::CompileShaderFromFile(const std::string& filepath, const char* entrypoint, const char* shader_type)
 	{
 		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
 #ifdef _DEBUG 
@@ -461,28 +463,12 @@ namespace graphics
 
 		std::wstring wPath(path.begin(), path.end());
 
-
-		//we could potentially create a list based on the thing we want to render
-
-		//enum MaterialType // this could be marked in the RenderComponent? We should be able to change easily. Could be baked into model
-		//{
-		//	WOOD,
-		//	STONE,
-		//	PLASTIC,
-		//};
-
-		//MaterialType type = WOOD;
-		//std::string material = "NO_MATERIAL";
-		//if (type == WOOD)
-		//	material = "WOOD";
-		
 		const D3D_SHADER_MACRO defines[] = {
 #if !defined(_PROFILE) && !defined(_FINAL)
 			"_DEBUG", "1",
 #else
 			"_FINAL", "1",
 #endif
-			strlen(material) > 0 ? material : "NO_MATERIAL", "1",
 			0, 0
 		};
 
@@ -500,7 +486,7 @@ namespace graphics
 		if (out_message != nullptr)
 		{
 			DL_WARNING("%s has generated warnings!", filepath.c_str());
-			DL_WARNING("%s", (char*)out_message->GetBufferPointer());
+			DL_WARNING("\n%s", (char*)out_message->GetBufferPointer());
 		}
 
 		DirectX11::HandleErrors(hr, "Failed to compile shader from file");
@@ -508,7 +494,7 @@ namespace graphics
 
 	}
 
-	IShaderBlob* DX11Device::CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const std::string& source_name, const char* entrypoint, const char* shader_type, const char* material)
+	IShaderBlob* DX11Device::CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const std::string& source_name, const char* entrypoint, const char* shader_type)
 	{
 		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
 #ifdef _DEBUG 

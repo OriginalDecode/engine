@@ -13,25 +13,11 @@ constexpr char* s_ModelFile = "model_file";
 constexpr char* s_Shadowed = "shadowed";
 constexpr char* s_Instances = "instances";
 
-#include <CommonLib/Randomizer.h>
 void ModelInstance::Deserialize(const rapidjson::Value& json_value, ModelInstance& instance)
 {
 	instance.m_Filename = json_value[s_ModelFile].GetString();
-
-	int r = RANDOM(0, 2);
-	std::string mat = "METAL";
-	if (r == 0)
-		mat = "WOOD";
-	else if (r == 1)
-		mat == "VEGETATION";
-
-
-
-	u64 effect = Engine::GetInstance()->LoadEffect(s_base, mat.c_str());
-
-	instance.m_ModelID = Engine::GetInstance()->LoadModelA(instance.m_Filename, Engine::GetInstance()->GetEffect(effect), false);
+	instance.m_ModelID = Engine::GetInstance()->LoadModelA(instance.m_Filename, s_base, false);
 	instance.m_MaterialFile = json_value[s_MaterialFile].GetString();
-
 	if (instance.m_MaterialFile.empty())
 	{
 		Material* pMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_copper.json");
@@ -44,7 +30,6 @@ void ModelInstance::Deserialize(const rapidjson::Value& json_value, ModelInstanc
 		pMaterial->SetEffect(Engine::GetInstance()->GetEffect(s_base));
 		instance.m_MaterialKey = pMaterial->GetKey();
 	}
-
 	if (json_value.FindMember(s_RelativePos) != json_value.MemberEnd())
 	{
 		auto& pos = json_value[s_RelativePos].GetArray();

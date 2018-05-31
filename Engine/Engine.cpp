@@ -286,11 +286,6 @@ u64 Engine::LoadModelA(std::string path, std::string effect, bool threaded)
 	return LoadModel<Model>(path, effect, threaded);
 }
 
-u64 Engine::LoadModelA(std::string path, Effect* effect, bool threaded)
-{
-	return LoadModel<Model>(path, effect, threaded);
-}
-
 s32 Engine::PickEntity(Texture* pTexture)
 {
 	return 0;
@@ -525,11 +520,6 @@ u64 Engine::LoadTexture(const std::string& path)
 u64 Engine::LoadEffect(const std::string& path)
 {
 	return myAssetsContainer->LoadEffect(m_VirtualFileSystem.GetFile(path));
-}
-
-u64 Engine::LoadEffect(const std::string& path, const char* material)
-{
-	return myAssetsContainer->LoadEffect(m_VirtualFileSystem.GetFile(path), material);
 }
 
 u64 Engine::LoadSprite(const std::string& path)

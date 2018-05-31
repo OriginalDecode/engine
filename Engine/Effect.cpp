@@ -7,15 +7,16 @@ Effect::Effect(const std::string& filepath)
 {
 }
 
-Effect::Effect(const std::string& filepath, const std::string& material)
-	: m_FileName(filepath)
-	, m_Material(material)
-{
-}
-
 void Effect::AddShaderResource(IShaderResourceView* pResource, s32 slot)
 {
+	/*if (m_UsedReg[slot] != 0)
+	{
+		DL_ASSERT("This slot is already occupied!");
+		return;
+	}*/
+	
 	m_Resources[slot] = pResource;
+	//m_UsedReg[slot] = 1;
 }
 
 void Effect::AddShaderResource(Texture* pResource, s32 slot)

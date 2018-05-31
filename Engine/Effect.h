@@ -9,7 +9,6 @@ class Effect
 public:
 
 	Effect(const std::string& filepath);
-	Effect(const std::string& filepath, const std::string& material);
 	Effect() = default;
 	CompiledShader* GetVertexShader() { return m_VertexShader; }
 	CompiledShader* GetPixelShader() { return m_PixelShader; }
@@ -21,8 +20,6 @@ public:
 	void AddShaderResource(IShaderResourceView* pResource, s32 slot);
 	void AddShaderResource(Texture* pResource, s32 slot);
 
-	const std::string& GetMaterial() const { return m_Material; }
-
 	void Use();
 	void Clear();
 #ifdef _DEBUG
@@ -30,7 +27,6 @@ public:
 #endif
 private:
 	std::string m_FileName;
-	std::string m_Material = "NONE";
 
 	CompiledShader* m_VertexShader		= nullptr;
 	CompiledShader* m_PixelShader		= nullptr;
@@ -38,6 +34,7 @@ private:
 	CompiledShader* m_HullShader		= nullptr;
 	CompiledShader* m_DomainShader		= nullptr;
 	CompiledShader* m_ComputeShader		= nullptr;
+
 
 
 public:

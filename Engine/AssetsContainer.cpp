@@ -149,13 +149,18 @@ u64 AssetsContainer::LoadTexture(std::string filepath)
 
 u64 AssetsContainer::LoadEffect(std::string filepath)
 {
+	return LoadEffect(filepath, "none");
+}
+
+u64 AssetsContainer::LoadEffect(std::string path, std::string material)
+{
 	static Ticket_Mutex effect_mutex;
 	BeginTicketMutex(&effect_mutex);
 
-	u64 hash = Hash(filepath.c_str());
+	u64 hash = Hash(path.c_str());
 	if (m_Effects.find(hash) == m_Effects.end())
 	{
-		Effect* effect = new Effect(filepath);
+		Effect* effect = new Effect(path);
 		m_Effects.emplace(hash, effect);
 		m_ShaderFactory->LoadShader(effect);
 		EndTicketMutex(&effect_mutex);

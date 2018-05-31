@@ -125,8 +125,12 @@ public:
 	template<typename T>
 	u64 LoadModel(const std::string& filepath, std::string effect, bool thread);
 
+	template<typename T>
+	u64 LoadModel(const std::string& filepath, Effect* effect, bool thread);
+
 	u64 LoadTexture(const std::string& path);
 	u64 LoadEffect(const std::string& path);
+	u64 LoadEffect(const std::string& path, const char* material);
 	u64 LoadSprite(const std::string& path);
 
 	void AddTexture(Texture* pTexture, u64 key);
@@ -187,6 +191,7 @@ public:
 	void ToggleVSync() { m_VSyncOn = !m_VSyncOn; }
 
 	u64 LoadModelA(std::string path, std::string effect, bool threaded);
+	u64 LoadModelA(std::string path, Effect* effect, bool threaded);
 
 	void PickEntity();
 
@@ -196,6 +201,7 @@ public:
 	LevelFactory* GetLevelFactory() { return m_LevelFactory; }
 
 	void AddRenderCommand(const ModelCommand& command);
+
 
 private:
 	s32 PickEntity(Texture* pTexture);
@@ -248,6 +254,12 @@ private:
 
 template<typename T>
 u64 Engine::LoadModel(const std::string& filepath, std::string effect, bool thread)
+{
+	return myAssetsContainer->LoadModel<T>(filepath, effect, thread);
+}
+
+template<typename T>
+u64 Engine::LoadModel(const std::string& filepath, Effect* effect, bool thread)
 {
 	return myAssetsContainer->LoadModel<T>(filepath, effect, thread);
 }

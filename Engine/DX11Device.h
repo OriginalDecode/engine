@@ -34,8 +34,8 @@ namespace graphics
 		IBuffer* CreateBuffer(const BufferDesc& buffer_desc, const std::string& debug_name) override;
 			
 		IBuffer* CreateConstantBuffer(s32 size, const std::string& debug_name) override;
-		IShaderBlob* CompileShaderFromFile(const std::string& filepath, const char* entrypoint, const char* shader_type) override;
-		IShaderBlob* CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const std::string& source_name, const char* entrypoint, const char* shader_type) override;
+		IShaderBlob* CompileShaderFromFile(const std::string& filepath, const char* entrypoint, const char* shader_type, const char* material) override;
+		IShaderBlob* CompileShaderFromMemory(const s8* pData, s32 data_byte_size, const std::string& source_name, const char* entrypoint, const char* shader_type, const char* material) override;
 
 		bool FindInputSemantic(const char* to_find, IShaderBlob* blob) override;
 

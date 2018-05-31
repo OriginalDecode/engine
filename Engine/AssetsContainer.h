@@ -43,32 +43,29 @@ public:
 
 	template<typename T>
 	RefPointer<T> GetModel(u64 key);
-
-	//u64 GetModelKey(const char* path) const;
-
-
+	
 	template<typename T>
 	u64 LoadModel(std::string path, std::string effect_filepath, bool thread = true);
 
+	template<typename T>
+	u64 LoadModel(std::string path, Effect* effect, bool thread = true);
+
 	u64 LoadTexture(std::string path);
 	u64 LoadEffect(std::string path);
+	u64 LoadEffect(std::string path, std::string material);
 	u64 LoadSprite(std::string path);
 	u64 LoadMaterial(std::string path);
-
-
 
 private:
 #ifndef FINAL
 	FileWatcher* m_Watcher = nullptr;
 #endif
 
-
 	std::map<u64, Texture*> m_Textures;
 	std::map<u64, Effect*> m_Effects;
 	std::map<u64, RefPointer<Model>> m_Models;
 	std::map<u64, Sprite*> m_Sprites;
 	std::map<u64, Material*> m_Materials;
-
 
 	ShaderFactory* m_ShaderFactory;
 
@@ -77,10 +74,17 @@ private:
 template<typename T>
 u64 AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bool thread /*= true*/)
 {
+	Effect* effect = Engine::GetInstance()->GetEffect(effect_filepath.c_str());
+	return LoadModel<T>(path, effect, thread);
+}
+
+template<typename T>
+u64 AssetsContainer::LoadModel(std::string path, Effect* effect, bool thread /*= true*/)
+{
 	if (!cl::file_exist(path) && path.find("default") != 0)
 		DL_ASSERT("Failed to find the file!");
 
-	
+
 	u64 hash = Hash(path.c_str());
 	Engine* engine = Engine::GetInstance();
 	if (path.find("default") != path.npos)
@@ -90,7 +94,6 @@ u64 AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bo
 	if (m_Models.find(hash) != m_Models.end())
 		return hash;
 
-	Effect* effect = engine->GetEffect(effect_filepath.c_str());
 
 	m_Models.emplace(hash, RefPointer<Model>(new T));
 	T* model = static_cast<T*>(m_Models.at(hash).GetData());

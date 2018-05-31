@@ -46,15 +46,15 @@ public:
 
 	std::map<u64, CompiledShader*> GetCompiledShaders() { return m_Shaders; }
 	
-	IShaderBlob* CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& shader_type);
+	IShaderBlob* CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& shader_type, const char* material);
 private:
 
 	void LoadShader(const std::string& filepath, const std::string& entrypoint, const std::string& sampler, eShaderType type, Effect* effect);
-	CompiledShader* CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type);
+	CompiledShader* CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type, const std::string& material );
 	std::map<u64, CompiledShader*> m_Shaders;
 #ifndef FINAL 
 	CU::StaticArray<FileWatcher*, (s32)eShaderType::_COUNT> myFileWatchers;
-	void OnReload(const std::string& file_path, const std::string& entrypoint);
+	void OnReload(const std::string& file_path, const std::string& entrypoint, const std::string& material);
 #endif
 
 };

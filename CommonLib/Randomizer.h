@@ -3,10 +3,10 @@
 #include <random>
 //if you input a higher value in min than max, it will crash. The following must be true. min <= max. Otherwise you will crash.
 
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#define max_value(a,b) (((a) > (b)) ? (a) : (b))
+#define min_value(a,b) (((a) < (b)) ? (a) : (b))
 
-#define RANDOM(a,b) Randomizer::GetInstance()->Rand(MIN(a,b) ,MAX(a,b))
+#define RANDOM(a,b) Randomizer::GetInstance()->Rand(min_value(a,b) ,max_value(a,b))
 
 #undef MIN
 #undef MAX

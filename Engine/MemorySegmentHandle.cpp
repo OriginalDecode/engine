@@ -25,19 +25,7 @@ namespace memory
 		{
 			m_Segments[0][i] = CommandAllocator(segment_size, sizeof(ModelCommand), alloc0.Alloc(segment_size));
 			m_Segments[1][i] = CommandAllocator(segment_size, sizeof(ModelCommand), alloc1.Alloc(segment_size));
-
-		/*	for (s32 j = 0; j < commands_per_segment; j++)
-			{
-				m_Segments[0][i].Alloc(sizeof(ModelCommand));
-				m_Segments[1][i].Alloc(sizeof(ModelCommand));
-			}
-			m_Segments[0][i].Clear();
-			m_Segments[1][i].Clear();*/
 		}
-
-	
-
-
 	}
 
 	CommandAllocator& MemorySegmentHandle::GetCommandAllocator(s32 buffer, s32 index)

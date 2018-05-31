@@ -107,14 +107,11 @@ std::string ToLower(const std::string& str)
 void ShaderFactory::LoadShader(const std::string& filepath, const std::string& entrypoint, const std::string& sampler, eShaderType type, Effect* effect)
 {
 	std::string full_path = Engine::GetInstance()->GetVFS().GetFolder("Shaders") + filepath;
-	std::string to_hash(full_path + entrypoint);
+	std::string to_hash(full_path + entrypoint + effect->GetMaterial());
 	u64 hash_key = Hash(to_hash.c_str());
 
-	//sampler; // This is a generalized sampler, or a specified. Depending on the input
-
-
 	if (m_Shaders.find(hash_key) == m_Shaders.end())
-		m_Shaders.emplace(hash_key, CreateShader(full_path, entrypoint, type));
+		m_Shaders.emplace(hash_key, CreateShader(full_path, entrypoint, type, effect->GetMaterial()));
 
 	switch (type)
 	{
@@ -149,35 +146,33 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 	}
 
 #ifndef FINAL
-	myFileWatchers[(s32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint));
+	myFileWatchers[(s32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint, effect->GetMaterial()));
 	ASSERT(effect, "Effect pointer was null");
 	m_Shaders[hash_key]->m_EffectPointers.Add(effect);
 #endif
 }
 
-CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type)
+CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const std::string& entrypoint, eShaderType type, const std::string& material)
 {
  	ENGINE_LOG("Creating %s", file_path.c_str());
 
  	std::string shader_type(CheckType(type));
 
- 	IShaderBlob* compiled_shader = CompileShader(file_path, entrypoint, shader_type);
-
+ 	IShaderBlob* compiled_shader = CompileShader(file_path, entrypoint, shader_type, material.c_str());
+	ASSERT(compiled_shader, "shader was null!");
  	if (!compiled_shader)
  		return nullptr;
  
- 	return new CompiledShader(compiled_shader,
-							  Engine::GetInstance()->CreateShader(compiled_shader, type, file_path.c_str()), 
-							  type, 
-							  entrypoint.c_str(), 
-							  graphics::MSAA_x16);
+	void* shader = Engine::GetInstance()->CreateShader(compiled_shader, type, file_path.c_str());
+
+ 	return new CompiledShader(compiled_shader, shader, type, entrypoint.c_str(), graphics::MSAA_x16);
 }
 
 #ifndef FINAL 
-void ShaderFactory::OnReload(const std::string& file_path, const std::string& entrypoint)
+void ShaderFactory::OnReload(const std::string& file_path, const std::string& entrypoint, const std::string& material)
 {
 	Sleep(SLEEP_TIME);
-	std::string fullpath = file_path + entrypoint;
+	std::string fullpath = file_path + entrypoint + material;
 	u64 hash_key = Hash(fullpath.c_str());
 
 	CU::GrowingArray<Effect*> effect_container;
@@ -185,7 +180,7 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 	if (m_Shaders.find(hash_key) != m_Shaders.end())
 	{
 		CompiledShader* shader = m_Shaders[hash_key];
-		new_shader = CreateShader(file_path, shader->m_Entrypoint, shader->m_Type);
+		new_shader = CreateShader(file_path, shader->m_Entrypoint, shader->m_Type, material.c_str());
 		if (new_shader != nullptr)
 		{
 			const CU::GrowingArray<Effect*>& effects = m_Shaders[hash_key]->m_EffectPointers;
@@ -239,9 +234,9 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 	}
 }
 #endif
-IShaderBlob* ShaderFactory::CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& shader_type)
+IShaderBlob* ShaderFactory::CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& shader_type, const char* material)
 {
-	return Engine::GetAPI()->GetDevice().CompileShaderFromFile(file_path.c_str(), entrypoint.c_str(), shader_type.c_str());
+	return Engine::GetAPI()->GetDevice().CompileShaderFromFile(file_path.c_str(), entrypoint.c_str(), shader_type.c_str(), material);
 }
 
 void ShaderFactory::Update()

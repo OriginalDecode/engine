@@ -121,7 +121,23 @@ void RenderSystem::AddRenderCommand(const ModelCommand& command)
 	Engine& engine = Engine::GetRef();
 	const u16 current_buffer = engine.GetSynchronizer()->GetCurrentBufferIndex();
 	memory::CommandAllocator& allocator = engine.GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, 0);
+
+
+	//	This stuff needs to be reinvestigated because this function is taking too long to process each frame!
+
+	CU::TimeManager manager;
+
+	manager.Update();
+	float start_time = manager.GetMasterTimer().GetTotalTime().GetMilliseconds();
+
 	void * current = allocator.Alloc(sizeof(ModelCommand));
 	memcpy(current, &command, sizeof(ModelCommand));
+	manager.Update();
+	float end_time = manager.GetMasterTimer().GetTotalTime().GetMilliseconds();
+
+
+	DL_MESSAGE("Render Command allocation | Start Time : %.3f, End Time : %.3f, Total : %.3f", start_time, end_time, end_time - start_time);
+
+
 #endif
 }

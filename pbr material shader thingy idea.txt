@@ -1,0 +1,36 @@
+struct MaterialVariables
+{
+    float specular, roughness, metalness, sheen;
+};
+
+This is the MaterialVariables, these can all be changed based on the material that we can setup beforehand
+
+enum EMaterials
+{
+    MAT_WOOD,
+    MAT_GLASS,
+    MAT_N
+    MATERIAL_COUNT
+};
+
+This is a list of all the added materials
+
+MaterialVariables m_Materials[MATERIAL_COUNT];
+This is the container where we store all the materials
+
+When we render a model with the material we will write the ID to a texture and then when we 
+do the PBR rendering we will first sample the material texture. When we do this we will get a number
+
+We can then go to our ConstantBuffers which should be equal to MATERIAL_COUNT
+
+That could result with fairly large buffers, but they don't need to be removed from the graphics card, so once they are commited 
+they should stay in the graphics cards memory until they are no longer needed at which point they should be removed.
+This is a place where streaming would be a thing that you should look into.
+
+cb LARGE_TABLE[MATERIAL_COUNT]
+{
+    Layout : MaterialVariables
+} 
+
+We should then be able to fetch the correct material id and use the correct tweaking variables for the requested material.
+This is for artist control obviously.

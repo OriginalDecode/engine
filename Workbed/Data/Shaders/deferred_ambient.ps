@@ -207,16 +207,34 @@ float4 main(VS_OUTPUT input) : SV_Target
 	shadowVec.y *= -1;
 	shadowVec.xy += 1;
 	shadowVec.xy *= 0.5;
-
 	float compareValue = shadowVec.z;
-	float sampleValue =  ShadowTexture.Sample(sampler2, shadowVec.xy).r;
-
 	const bool in_view = shadowVec.x > 0 && shadowVec.x < 1 && shadowVec.y > 0 && shadowVec.y < 1 && shadowVec.z < 1 && shadowVec.z > 0;
 
+	float pcfCount = 15;
+	float texCount = (pcfCount * 2 + 1) *  (pcfCount * 2 + 1);
+	float mapSize = 2048;
+	float texelSize = 1 / mapSize;
+	float total = 0.0;
+
+	for( int x = -pcfCount; x < pcfCount; x++)
+	{
+		for( int y = -pcfCount; y < pcfCount; y++)
+		{
+			float sampleValue =  ShadowTexture.Sample(sampler2, shadowVec.xy + float2(x,y) * texelSize).r;
+			const bool in_shadow = (sampleValue < compareValue) && in_view; 
+			total += in_shadow ? 1 : 0;
+		}
+	}	
+
+	total /= texCount;
+	total = max(0.0, total);
+	total = min(total, 1.0);
+
+
+	// float sampleValue =  ShadowTexture.Sample(sampler2, shadowVec.xy).r;
 	// return in_view ? float4(1,0,0,1) : float4(0,1,0,1);
 
 
-	const bool in_shadow = (sampleValue < compareValue) && in_view; 
 
 	float4 reflection_fresnel = float4(ReflectionFresnel(substance.rgb, normal.xyz, to_eye, 1 - roughnessOffsetted), 1);
 	
@@ -233,9 +251,9 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float3 light_col = float3(1, 1, 1);
 	float3 directDiffuse = 0, directSpec = 0;
-	directDiffuse = (saturate(( 1 - F ) * NdL * metalness_albedo ) ) * ( 1 - in_shadow);
-	directSpec = (saturate(F * D * G) * NdL * light_col ) * (1 - in_shadow);
-	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1) * float4(albedoTint, 1);
+	directDiffuse = (saturate(( 1 - F ) * NdL * metalness_albedo ) );// * ( 1 - in_shadow);
+	directSpec = (saturate(F * D * G) * NdL * light_col ) ;// * (1 - in_shadow);
+	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1) * float4(albedoTint, 1) - total;
 
 	return final;	
 };

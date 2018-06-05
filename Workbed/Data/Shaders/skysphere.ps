@@ -114,7 +114,12 @@ float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
 
 	}
 
-	return ((pRlh * rayleigh_coef * totalRlh) + (pMie * mie_coef * totalMie)) * sun_intensity;
+	float3 result = ((pRlh * rayleigh_coef * totalRlh) + (pMie * mie_coef * totalMie)) * sun_intensity; 
+
+	if(result.x <= 0 && result.y <= 0 && result.z <= 0)
+		return float3(1,0,0);
+
+	return result;
 };
 
 float4 main(VS_OUTPUT input) : SV_Target
@@ -130,7 +135,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	const double msc = 21e-6; 								// mie scatter coef
 	const double rsh = 8e3; 								// rayleigh scale height
 	const double msh = 1.2e3; 								// mie scale height
-	const double sunI = 26.0; 								// intensity of the sun
+	const double sunI = 20.0; 								// intensity of the sun
 	const double rPlanet = 6370e3;
 	const double rAtmosphere = 6471e3;
 	const double distr_factor = 0.758;
@@ -140,13 +145,13 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 new_pos = m_ViewPos.xyz;
 	new_pos.y += rPlanet;
 
-	if(input.worldpos.y < 0.f)
-		return float4(0,0,0,1);
 
 	float3 dir = input.worldpos.xyz - new_pos;
 
 	float3 pos = input.worldpos.xyz;
 	float3 col = atmosphere(input.view_dir, new_pos, m_LightDir, sunI, rPlanet, rAtmosphere, rsc, msc, rsh, msh, distr_factor);
+
+	col = clamp(col, 0, 1);
 
 	col = saturate(pow(col, 2.2));
 

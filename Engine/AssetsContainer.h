@@ -50,7 +50,7 @@ public:
 	template<typename T>
 	u64 LoadModel(std::string path, std::string effect_filepath, bool thread = true);
 
-	u64 LoadTexture(std::string path);
+	u64 LoadTexture(std::string path, bool make_mips = false);
 	u64 LoadEffect(std::string path);
 	u64 LoadSprite(std::string path);
 	u64 LoadMaterial(std::string path);

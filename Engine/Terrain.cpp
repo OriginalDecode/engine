@@ -16,6 +16,9 @@ void Terrain::SetupTextures()
 {
 	Engine::GetInstance()->LoadTexture(HEIGHTMAP);
 	Engine::GetInstance()->LoadTexture(GrayTile);
+	//Engine::GetInstance()->LoadTe
+
+
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(GrayTile), Effect::REGISTER_0);
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(HEIGHTMAP), Effect::REGISTER_7);
 

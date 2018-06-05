@@ -111,7 +111,7 @@ void AssetsContainer::AddTexture(Texture* pTexture, u64 key)
 	}
 }
 
-u64 AssetsContainer::LoadTexture(std::string filepath)
+u64 AssetsContainer::LoadTexture(std::string filepath, bool make_mips)
 {
 	static Ticket_Mutex texture_mutex;
 	BeginTicketMutex(&texture_mutex);
@@ -122,7 +122,7 @@ u64 AssetsContainer::LoadTexture(std::string filepath)
 	{
 		graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 		ITexture2D* tex = nullptr;
-		IShaderResourceView* srv = device.CreateTextureFromFile(filepath, tex, false, &Engine::GetAPI()->GetContext());
+		IShaderResourceView* srv = device.CreateTextureFromFile(filepath, tex, make_mips, &Engine::GetAPI()->GetContext());
 		if (srv != nullptr)
 		{
 			Texture* texture = nullptr;

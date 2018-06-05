@@ -125,7 +125,7 @@ public:
 	template<typename T>
 	u64 LoadModel(const std::string& filepath, std::string effect, bool thread);
 
-	u64 LoadTexture(const std::string& path);
+	u64 LoadTexture(const std::string& path, bool make_mips = false);
 	u64 LoadEffect(const std::string& path);
 	u64 LoadSprite(const std::string& path);
 

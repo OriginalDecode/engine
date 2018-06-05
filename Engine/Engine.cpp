@@ -512,9 +512,9 @@ Terrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vec
 	return newTerrain;
 }
 
-u64 Engine::LoadTexture(const std::string& path)
+u64 Engine::LoadTexture(const std::string& path, bool make_mips)
 {
-	return myAssetsContainer->LoadTexture(m_VirtualFileSystem.GetFile(path));
+	return myAssetsContainer->LoadTexture(m_VirtualFileSystem.GetFile(path), make_mips);
 }
 
 u64 Engine::LoadEffect(const std::string& path)

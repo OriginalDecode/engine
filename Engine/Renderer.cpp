@@ -66,7 +66,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_ParticleEmitter = new CEmitterInstance;
 	m_ParticleEmitter->Initiate(m_Synchronizer, m_DepthTexture);
 
-	m_Atmosphere.Initiate(8192, 8192, { 1024, -128.f, 1024.f });
+	m_Atmosphere.Initiate(1200, 1200, { 512, 0.f, 512.f });
 
 	m_ShadowPass.Initiate(this);
 	m_DirectionalShadow.Initiate(2048.f);

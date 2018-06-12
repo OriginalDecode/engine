@@ -176,6 +176,9 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
 	float4 normal = NormalTexture.Sample(sampler0, input.uv) * 2 - 1;
+
+	// return normal;
+
 	float4 base_col = float4(albedo.rgb, 1);
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
 	float roughness = 1 - depth.y;
@@ -210,7 +213,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float compareValue = shadowVec.z;
 	const bool in_view = shadowVec.x > 0 && shadowVec.x < 1 && shadowVec.y > 0 && shadowVec.y < 1 && shadowVec.z < 1 && shadowVec.z > 0;
 
-	float pcfCount = 15;
+	float pcfCount = 8;
 	float texCount = (pcfCount * 2 + 1) *  (pcfCount * 2 + 1);
 	float mapSize = 2048;
 	float texelSize = 1 / mapSize;
@@ -227,9 +230,8 @@ float4 main(VS_OUTPUT input) : SV_Target
 	}	
 
 	total /= texCount;
-	total = max(0.0, total);
-	total = min(total, 1.0);
-
+	total = 1 - total;
+	// return 1 - total.xxxx;
 
 	// float sampleValue =  ShadowTexture.Sample(sampler2, shadowVec.xy).r;
 	// return in_view ? float4(1,0,0,1) : float4(0,1,0,1);
@@ -249,11 +251,12 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 F = Fresnel(VdH, substance.rgb);
 	float G = Geometric_Smith_Schlick_GGX((1 - roughness) / 2, NdV, NdL);
 
+
 	float3 light_col = float3(1, 1, 1);
 	float3 directDiffuse = 0, directSpec = 0;
-	directDiffuse = (saturate(( 1 - F ) * NdL * metalness_albedo ) );// * ( 1 - in_shadow);
-	directSpec = (saturate(F * D * G) * NdL * light_col ) ;// * (1 - in_shadow);
-	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1) * float4(albedoTint, 1) - total;
+	directDiffuse = (saturate(( 1 - F ) * NdL * metalness_albedo ) ) * total;// * ( 1 - in_shadow);
+	directSpec = (saturate(F * D * G) * NdL * light_col ) * total;// * (1 - in_shadow);
+	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1) * float4(albedoTint, 1);
 
 	return final;	
 };

@@ -43,6 +43,34 @@ struct DS_OUTPUT
 SamplerState sampler0 : register(s0);
 Texture2D HeightTexture : register (t7);
 
+float3 FindNormal(float2 uv, float u)
+{
+    //u is one uint size, ie 1.0/texture size
+    float2 offsets[4];
+    offsets[0] = uv + float2(-u, 0);
+    offsets[1] = uv + float2(u, 0);
+    offsets[2] = uv + float2(0, -u);
+    offsets[3] = uv + float2(0, u);
+    
+
+    float hts[4];
+    for(int i = 0; i < 4; i++)
+    {
+        hts[i] = HeightTexture.SampleLevel(sampler0, offsets[i], 0).r; //tex2D(tex, offsets[i]).x;
+    }
+    
+    float2 _step = float2(0.0, 1.0);
+    
+    float3 va = normalize( float3(_step.xy, hts[1]-hts[0]) );
+    float3 vb = normalize( float3(_step.yx, hts[3]-hts[2]) );
+    
+
+	return float3(uv.x, uv.y, 1);
+	// return cos(uv.x).xxx;
+
+    return cross(va,vb).rbg; //you may not need to swizzle the normal
+}
+
 [domain("quad")]
 DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, uint PatchID : SV_PrimitiveID , const OutputPatch<HS_OUTPUT, 4> patch)
 {
@@ -53,23 +81,33 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 	vertex_pos.z = uvwCoord.y * patch[2].pos;
 	output.worldpos = mul(float4(vertex_pos, 1), orientation);
 
+	const float width = 1024;
+	const float depth = 1024;
+
 	float2 testUV;
-	testUV.x = (1024 + output.worldpos.x) / 1024.f;
-	testUV.y = (1024 - output.worldpos.z) / 1024.f;
+	
+	testUV.x = (output.worldpos.x) / width;
+	testUV.y = (output.worldpos.z) / depth;
 
-	const float y = HeightTexture.SampleLevel(sampler0, testUV, 0).r;
-	float y_pos = y * 128;
-	vertex_pos.y = y_pos;
 
-	float4 vertex_normal = float4(testUV.x * 0.5, 1, testUV.y * 0.5, 1);
-	vertex_normal = normalize(vertex_normal);
-	vertex_normal.z = -vertex_normal.z;
+	const float height = HeightTexture.SampleLevel(sampler0, testUV, 0).r * 128;
+	vertex_pos.y = height;
+
+	// float4 vertex_normal = float4(testUV.x * 0.5, 1, testUV.y * 0.5, 1);
+
+	float3 vertex_normal = FindNormal(testUV, 1.0 / width);
+
+	// vertex_normal = normalize(vertex_normal);
 
 	output.pos = mul(float4(vertex_pos, 1), orientation);
 	output.worldpos = output.pos;
 	output.pos = mul(output.pos, camera_view_x_proj);
 
-	output.normal = mul(vertex_normal, orientation);
+	output.normal = mul(float4(vertex_normal, 1), orientation);
+
+	// output.normal = float4((vertex_normal), 1);
+
+	// output.normal = (float4(vertex_normal, 1));
 	output.binorm = patch[0].binorm;
 	output.tang = mul(patch[0].tang, orientation);
 

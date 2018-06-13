@@ -53,10 +53,6 @@ ConstantOutputType ColorPatchConstantFunction(InputPatch<VS_OUTPUT, 4> patch, ui
     float4 e3 = 0.5f * (patch[2].worldpos + patch[3].worldpos);
 
     float4 c = 0.25f * (patch[0].worldpos + patch[1].worldpos + patch[2].worldpos + patch[3].worldpos);
-
-
-
-
 	
     const int inner_factor = CalcFactor(c, cam_pos); //64 max 
     // Set the tessellation factors for the three edges of the triangle.

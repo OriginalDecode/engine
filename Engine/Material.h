@@ -8,6 +8,21 @@
 #include <string>
 
 class Texture;
+
+
+
+struct MaterialData //Should be loaded from external file? Reload if needed?
+{
+	enum MaterialTypes
+	{
+		DEFAULT,
+		NOF_TYPES
+	};
+
+	float x, y, z, w;
+
+};
+
 class Material
 {
 public:
@@ -24,7 +39,7 @@ public:
 
 	void Use(Effect* pEffect);
 private:
-
+	MaterialData* m_Data = nullptr;
 
 	std::string GetFilename(Effect::TextureSlot slot);
 

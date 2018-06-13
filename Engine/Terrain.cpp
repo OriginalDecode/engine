@@ -10,7 +10,7 @@ const char* GrayTile = "Data/Textures/GrayTile.dds";
 const char* Britannia = "Data/Textures/terrain/britannia.dds";
 const char* Flat = "Data/Textures/flat_height.dds";
 
-#define HEIGHTMAP Flat
+#define HEIGHTMAP Britannia
 
 void Terrain::SetupTextures()
 {
@@ -139,6 +139,10 @@ void Terrain::Render(const graphics::RenderContext& rc)
 
 	//mySurface->Activate(rc);
 	//m_Material->Use(m_Effect);
+	//ctx.DrawIndexed(this, m_Effect);
+
+
+	ctx.SetRasterizerState(api.GetRasterizerState(graphics::WIREFRAME));
 	ctx.DrawIndexed(this, m_Effect);
 	//mySurface->Deactivate();
 }

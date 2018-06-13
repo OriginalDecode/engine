@@ -10,7 +10,6 @@
 #include "SpotLight.h"
 
 #include "Sprite.h"
-
 #include "EmitterInstance.h"
 
 #include "Terrain.h"
@@ -767,7 +766,6 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	graphics::ConstantBuffer buffer;
 	buffer.RegisterVariable(&camera->GetViewProjection());
 	buffer.Initiate();
-
 
 	graphics::ConstantBuffer terrain_buffer;
 	Terrain* terrain = manager->GetTerrain(Hash("2048"));

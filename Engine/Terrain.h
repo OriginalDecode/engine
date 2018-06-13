@@ -40,6 +40,7 @@ public:
 	bool HasLoaded() const { return m_HasLoaded; }
 
 	CU::Matrix44f& GetOrientation() { return m_Orientation; }
+
 private:
 
 	void SetupTextures();

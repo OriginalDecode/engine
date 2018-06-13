@@ -59,13 +59,13 @@ float3 FindNormal(float2 uv, float u)
         hts[i] = HeightTexture.SampleLevel(sampler0, offsets[i], 0).r; //tex2D(tex, offsets[i]).x;
     }
     
-    float2 _step = float2(0.0, 1.0);
+    float2 _step = float2(1.0, 0.0);
     
     float3 va = normalize( float3(_step.xy, hts[1]-hts[0]) );
     float3 vb = normalize( float3(_step.yx, hts[3]-hts[2]) );
     
 
-	return float3(uv.x, uv.y, 1);
+	// return float3(uv.x, uv.y, 1);
 	// return cos(uv.x).xxx;
 
     return cross(va,vb).rbg; //you may not need to swizzle the normal
@@ -103,7 +103,8 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 	output.worldpos = output.pos;
 	output.pos = mul(output.pos, camera_view_x_proj);
 
-	output.normal = mul(float4(vertex_normal, 1), orientation);
+	output.normal = float4(vertex_normal, 1);
+	// output.normal = mul(float4(vertex_normal, 1), orientation);
 
 	// output.normal = float4((vertex_normal), 1);
 

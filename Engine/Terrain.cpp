@@ -142,7 +142,7 @@ void Terrain::Render(const graphics::RenderContext& rc)
 	//ctx.DrawIndexed(this, m_Effect);
 
 
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::WIREFRAME));
+	//ctx.SetRasterizerState(api.GetRasterizerState(graphics::WIREFRAME));
 	ctx.DrawIndexed(this, m_Effect);
 	//mySurface->Deactivate();
 }

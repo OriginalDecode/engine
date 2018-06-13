@@ -177,7 +177,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
 	float4 normal = NormalTexture.Sample(sampler0, input.uv) * 2 - 1;
 
-	return normal;
+	// return normal;
 
 	float4 base_col = float4(albedo.rgb, 1);
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);
@@ -188,6 +188,8 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float lysMipMap = GetSpecPowToMip(RoughToSPow(roughness), nMips);
 	float3 light_dir = -light_direction.xyz;
     float NdL = max(0,dot(normal.xyz, -light_dir));
+
+	return NdL.xxxx;
 
     float4 pixel_pos = getWorldPos(input.uv, 1 - depth.x);
 

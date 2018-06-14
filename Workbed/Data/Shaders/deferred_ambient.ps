@@ -189,7 +189,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float3 light_dir = -light_direction.xyz;
     float NdL = max(0,dot(normal.xyz, -light_dir));
 
-	return NdL.xxxx;
 
     float4 pixel_pos = getWorldPos(input.uv, 1 - depth.x);
 

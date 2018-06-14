@@ -8,19 +8,23 @@
 
 const char* GrayTile = "Data/Textures/GrayTile.dds";
 const char* Britannia = "Data/Textures/terrain/britannia.dds";
+const char* BritanniaNomrmal = "Data/Textures/terrain/brit_n.dds";
 const char* Flat = "Data/Textures/flat_height.dds";
+const char* Grass = "Data/Textures/terrain.dds";
 
+#define ALBEDO Grass
 #define HEIGHTMAP Britannia
 
 void Terrain::SetupTextures()
 {
 	Engine::GetInstance()->LoadTexture(HEIGHTMAP);
-	Engine::GetInstance()->LoadTexture(GrayTile);
+	Engine::GetInstance()->LoadTexture(ALBEDO);
 	//Engine::GetInstance()->LoadTe
 
 
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(GrayTile), Effect::REGISTER_0);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(ALBEDO), Effect::REGISTER_0);
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(HEIGHTMAP), Effect::REGISTER_7);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(BritanniaNomrmal), Effect::NORMAL);
 
 	Effect* e = Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json");
 	e->AddShaderResource(Engine::GetInstance()->GetTexture(HEIGHTMAP), Effect::REGISTER_7);
@@ -132,10 +136,14 @@ void Terrain::Render(const graphics::RenderContext& rc)
 	//UpdateConstantBuffer(rc);
 	m_Buffer.Bind(1, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, rc);
 	m_PixelBuffer.Bind(1, graphics::ConstantBuffer::PIXEL, rc);
-	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
-	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
-	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
-	rc.GetContext().DSSetSamplerState(0, 1, &pSampler);
+	//ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
+	ISamplerState* pointSampler = rc.GetAPI().GetSamplerState(graphics::POINT_CLAMP);
+	ISamplerState* linearSampler = rc.GetAPI().GetSamplerState(graphics::LINEAR_CLAMP);
+	rc.GetContext().PSSetSamplerState(0, 1, &pointSampler);
+
+	rc.GetContext().VSSetSamplerState(0, 1, &pointSampler);
+	rc.GetContext().DSSetSamplerState(0, 1, &pointSampler);
+	rc.GetContext().DSSetSamplerState(1, 1, &linearSampler);
 
 	//mySurface->Activate(rc);
 	//m_Material->Use(m_Effect);

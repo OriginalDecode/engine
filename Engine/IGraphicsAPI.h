@@ -60,6 +60,8 @@ namespace graphics
 		LINEAR_WRAP,
 		LINEAR_CLAMP,
 		CUBEMAP,
+		POINT_CLAMP,
+		POINT_WRAP,
 		NOF_SS
 	};
 

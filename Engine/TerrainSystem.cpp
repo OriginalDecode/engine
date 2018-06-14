@@ -10,7 +10,7 @@
 #include <engine/profile_defines.h>
 #include <Engine/TerrainManager.h>
 
-#define MAX_DEPTH 2
+#define MAX_DEPTH 8
 
 
 static u64 s_RootTerrainHash = 0;

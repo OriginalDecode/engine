@@ -41,6 +41,7 @@ struct DS_OUTPUT
 
 
 SamplerState sampler0 : register(s0);
+SamplerState sampler1 : register(s1);
 Texture2D HeightTexture : register (t7);
 
 float3 FindNormal(float2 uv, float u)
@@ -56,7 +57,7 @@ float3 FindNormal(float2 uv, float u)
     float hts[4];
     for(int i = 0; i < 4; i++)
     {
-        hts[i] = HeightTexture.SampleLevel(sampler0, offsets[i], 0).r; //tex2D(tex, offsets[i]).x;
+        hts[i] = HeightTexture.SampleLevel(sampler0, offsets[i], 0).r * 32; //tex2D(tex, offsets[i]).x;
     }
     
     float2 _step = float2(1.0, 0.0);
@@ -90,7 +91,7 @@ DS_OUTPUT main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, ui
 	testUV.y = (output.worldpos.z) / depth;
 
 
-	const float height = HeightTexture.SampleLevel(sampler0, testUV, 0).r * 128;
+	const float height = HeightTexture.SampleLevel(sampler1, testUV, 0).r * 32;
 	vertex_pos.y = height;
 
 	// float4 vertex_normal = float4(testUV.x * 0.5, 1, testUV.y * 0.5, 1);

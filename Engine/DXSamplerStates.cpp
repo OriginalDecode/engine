@@ -63,6 +63,8 @@ namespace graphics
 		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 		samplerDesc.MipLODBias = 0.f;
 		samplerDesc.MaxAnisotropy = 16;
+		samplerDesc.MinLOD = 0;
+		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 		hr = pDevice->CreateSamplerState(&samplerDesc, &sampler);
 		m_SamplerStates[LINEAR_WRAP] = sampler;
@@ -127,6 +129,41 @@ namespace graphics
 #ifndef _FINAL
 		HandleErrors(hr, "Failed to create Sampler");
 		SetDebugName(sampler, "Cubemap Sampler");
+#endif
+
+
+		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		samplerDesc.MinLOD = 0;
+		samplerDesc.MaxLOD = FLT_MAX;
+		samplerDesc.MipLODBias = 0.f;
+		samplerDesc.MaxAnisotropy = 1;
+		samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+
+		hr = pDevice->CreateSamplerState(&samplerDesc, &sampler);
+		m_SamplerStates[POINT_CLAMP] = sampler;
+#ifndef _FINAL
+		HandleErrors(hr, "Failed to create Sampler");
+		SetDebugName(sampler, "point clamp Sampler");
+#endif
+
+		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.MinLOD = 0;
+		samplerDesc.MaxLOD = FLT_MAX;
+		samplerDesc.MipLODBias = 0.f;
+		samplerDesc.MaxAnisotropy = 1;
+		samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+
+		hr = pDevice->CreateSamplerState(&samplerDesc, &sampler);
+		m_SamplerStates[POINT_CLAMP] = sampler;
+#ifndef _FINAL
+		HandleErrors(hr, "Failed to create Sampler");
+		SetDebugName(sampler, "point wrap Sampler");
 #endif
 
 // 		samplerDesc = D3D11_SAMPLER_DESC();

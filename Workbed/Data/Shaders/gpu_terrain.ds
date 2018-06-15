@@ -57,7 +57,7 @@ float3 FindNormal(float2 uv, float u)
     float hts[4];
     for(int i = 0; i < 4; i++)
     {
-        hts[i] = HeightTexture.SampleLevel(sampler0, offsets[i], 0).r * 32; //tex2D(tex, offsets[i]).x;
+        hts[i] = HeightTexture.SampleLevel(sampler1, offsets[i], 0).r * 32; //tex2D(tex, offsets[i]).x;
     }
     
     float2 _step = float2(1.0, 0.0);

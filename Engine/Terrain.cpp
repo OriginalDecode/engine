@@ -12,7 +12,7 @@ const char* BritanniaNomrmal = "Data/Textures/terrain/brit_n.dds";
 const char* Flat = "Data/Textures/flat_height.dds";
 const char* Grass = "Data/Material/grass/grass1-albedo3.dds";
 
-#define ALBEDO Grass
+#define ALBEDO GrayTile
 #define HEIGHTMAP Britannia
 
 void Terrain::SetupTextures()

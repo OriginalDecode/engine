@@ -31,7 +31,7 @@ float4 Tonemap(float4 color)
 float4 main(VS_OUTPUT input) : SV_Target
 {	
 	float4 diffuse = DiffuseTexture.Sample(sampler0, input.uv);
-	return pow(diffuse, .4545);
+	// return pow(diffuse, .4545);
 	// if(input.uv.x < 0.5 && input.uv.x > 0.0 && input.uv.y < 0.5 && input.uv.y > 0.0)
 	// 	return diffuse;	
 	float4 LumPixel = LuminanceTexture.Sample(sampler0, input.uv);
@@ -41,6 +41,7 @@ float4 main(VS_OUTPUT input) : SV_Target
     const float3 scale =  (  lutSize - 1.f)  / lutSize;
     const float3 offset = 1.0 / ( 2.0 * lutSize);
 	float4 output = ColorStrip.Sample(sampler1, scale * diffuse + offset);
+	
 	luminance = min(max(luminance, lumMin), lumMax);
 	float exposure = (1.03 - (2 / (2 + log10(luminance + 1 ) ) ) ) ;
 	float4 color1 = (diffuse / 2) / luminance;

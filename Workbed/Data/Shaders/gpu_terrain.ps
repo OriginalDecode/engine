@@ -86,7 +86,7 @@ GBuffer main(DS_OUTPUT input) : SV_Target
 	output.Albedo = AlbedoTexture.Sample(sampler0, input.worlduv * 128); 
 	output.Albedo = pow(output.Albedo, 2.2);
 
-	float roughness = RoughnessTexture.Sample(sampler0, input.worlduv * 128).r;
+	float roughness = 1; //RoughnessTexture.Sample(sampler0, input.worlduv * 128).r;
 
 	output.Normal = float4(input.normal, 1);
 	

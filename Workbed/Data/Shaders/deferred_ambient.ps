@@ -214,7 +214,7 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float compareValue = shadowVec.z;
 	const bool in_view = shadowVec.x > 0 && shadowVec.x < 1 && shadowVec.y > 0 && shadowVec.y < 1 && shadowVec.z < 1 && shadowVec.z > 0;
 
-	float pcfCount = 8;
+	float pcfCount = 3;
 	float texCount = (pcfCount * 2 + 1) *  (pcfCount * 2 + 1);
 	float mapSize = 2048;
 	float texelSize = 1 / mapSize;
@@ -232,15 +232,21 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	total /= texCount;
 	total = 1 - total;
-	// return 1 - total.xxxx;
-
-	// float sampleValue =  ShadowTexture.Sample(sampler2, shadowVec.xy).r;
-	// return in_view ? float4(1,0,0,1) : float4(0,1,0,1);
 
 
+	float4 reflection_fresnel = float4(ReflectionFresnel(substance.rgb, light_dir, half_vec, 1 - roughnessOffsetted), 1);
 
-	float4 reflection_fresnel = float4(ReflectionFresnel(substance.rgb, normal.xyz, to_eye, 1 - roughnessOffsetted), 1);
-	
+
+// float3 ReflectionFresnel(const float3 substance, const float3 light_dir, const float3 half_vec, float roughness)
+	// float LdotH = saturate(dot(normal.xyz, to_eye));
+	// LdotH = 1.0f - LdotH;
+	// LdotH = max(0, min(pow(LdotH, 5), 1)); //max(0, min(pow(LdotH, 5), 1));
+	// float3 fresnel = LdotH * (1.f - substance);
+	// fresnel = fresnel / (6 - 5 * (1 - roughnessOffsetted));
+	// fresnel = substance + fresnel;
+	// return float4(fresnel, 1);
+
+
 	float4 radiance = CubeMap.SampleLevel(sampler1, refVec, lysMipMap) * reflection_fresnel;
 	float3 irradiance = CubeMap.SampleLevel(sampler1, normal, nMips).rgb * metalness_albedo.rgb * ( 1 - reflection_fresnel.rgb);
 

@@ -10,9 +10,9 @@ const char* GrayTile = "Data/Textures/GrayTile.dds";
 const char* Britannia = "Data/Textures/terrain/britannia.dds";
 const char* BritanniaNomrmal = "Data/Textures/terrain/brit_n.dds";
 const char* Flat = "Data/Textures/flat_height.dds";
-const char* Grass = "Data/Textures/terrain.dds";
+const char* Grass = "Data/Material/grass/grass1-albedo3.dds";
 
-#define ALBEDO Grass
+#define ALBEDO GrayTile
 #define HEIGHTMAP Britannia
 
 void Terrain::SetupTextures()
@@ -23,8 +23,11 @@ void Terrain::SetupTextures()
 
 
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(ALBEDO), Effect::REGISTER_0);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Material/grass/grass1-rough.dds"), Effect::ROUGHNESS);
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(HEIGHTMAP), Effect::REGISTER_7);
 	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(BritanniaNomrmal), Effect::NORMAL);
+
+	//m_Material = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
 
 	Effect* e = Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json");
 	e->AddShaderResource(Engine::GetInstance()->GetTexture(HEIGHTMAP), Effect::REGISTER_7);
@@ -146,11 +149,11 @@ void Terrain::Render(const graphics::RenderContext& rc)
 	rc.GetContext().DSSetSamplerState(1, 1, &linearSampler);
 
 	//mySurface->Activate(rc);
-	//m_Material->Use(m_Effect);
 	//ctx.DrawIndexed(this, m_Effect);
 
 
 	//ctx.SetRasterizerState(api.GetRasterizerState(graphics::WIREFRAME));
+	//m_Material->Use(m_Effect);
 	ctx.DrawIndexed(this, m_Effect);
 	//mySurface->Deactivate();
 }

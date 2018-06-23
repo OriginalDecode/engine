@@ -11,19 +11,22 @@ Texture2D Displacement		: register ( t8 );
 Texture2D LightmapTexture	: register ( t9 );
 Texture2D ShininessTexture	: register ( t10 );
 
-struct GBuffer
-{
-	float4 Albedo;
-	float4 Normal;
-	float4 Depth;
-	float4 Emissive;
-#ifdef _DEBUG
-	float4 IDTexture;
-	float4 Roughness;
-	float4 Metalness;
-	float4 PureDepth;
-#endif
-};
+/* can I make this a include thing?? */
+// struct GBuffer
+// {
+// 	float4 Albedo;
+// 	float4 Normal;
+// 	float4 Depth;
+// 	float4 Emissive;
+// #ifdef _DEBUG
+// 	float4 IDTexture;
+// 	float4 Roughness;
+// 	float4 Metalness;
+// 	float4 PureDepth;
+// #endif
+// };
+
+#include "../../../Engine/Gbuffer.h"
 
 struct VS_OUTPUT
 {

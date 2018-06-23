@@ -1,8 +1,9 @@
+#ifndef IS_SHADER
 #pragma once
-
 class Texture;
 namespace graphics
 {
+	typedef Texture* float4;
 	class RenderContext;
 	class GBuffer
 	{
@@ -19,19 +20,28 @@ namespace graphics
 		Texture* GetNormal() const { return m_Normal; }
 		Texture* GetEmissive() const { return m_Emissive; }
 		Texture* GetDepth() const { return m_Depth; }
-
 #ifdef _DEBUG
 		Texture* GetIDTexture() const { return m_EntityIDTexture; }
-		Texture* m_EntityIDTexture = nullptr;
-		Texture* m_Roughenss = nullptr;
-		Texture* m_Metalness = nullptr;
+#endif
+	private:
+#endif
+#ifdef IS_SHADER
+struct  GBuffer
+{
 #endif
 
-	private:
-		Texture* m_Albedo = nullptr;
-		Texture* m_Normal = nullptr;
-		Texture* m_Emissive = nullptr;
-		Texture* m_Depth = nullptr;
-
+		float4 m_Albedo;
+		float4 m_Normal;
+		float4 m_Depth;
+		float4 m_Emissive;
+	
+#ifdef _DEBUG 
+		float4 m_EntityIDTexture;
+		float4 m_Roughenss;
+		float4 m_Metalness;
+#endif
+#ifdef IS_SHADER
+}
+#endif
 	};
 };

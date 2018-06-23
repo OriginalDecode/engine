@@ -110,10 +110,10 @@ bool test::Leaf::Draw(bool shadow)
 	if (m_Terrain && !rendered)
 	{
 
-		sync->AddRenderCommand(LineCommand(p0, p2, false));
-		sync->AddRenderCommand(LineCommand(p2, p1, false));
-		sync->AddRenderCommand(LineCommand(p1, p3, false));
-		sync->AddRenderCommand(LineCommand(p3, p0, false));
+		//sync->AddRenderCommand(LineCommand(p0, p2, false));
+		//sync->AddRenderCommand(LineCommand(p2, p1, false));
+		//sync->AddRenderCommand(LineCommand(p1, p3, false));
+		//sync->AddRenderCommand(LineCommand(p3, p0, false));
 
 		m_Terrain->SetPosition(CU::Vector2f(m_AABB.m_Pos.x, m_AABB.m_Pos.y));
 

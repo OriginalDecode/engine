@@ -22,7 +22,7 @@ namespace graphics
 		SAFE_DELETE(m_Emissive);
 #ifdef _DEBUG
 		SAFE_DELETE(m_Metalness);
-		SAFE_DELETE(m_Roughenss);
+		SAFE_DELETE(m_Roughness);
 		//SAFE_DELETE(m_EntityIDTexture); //responsibility moved to AssetsContainer
 #endif
 	}
@@ -64,8 +64,8 @@ namespace graphics
 		m_Metalness = new Texture;
 		m_Metalness->Initiate(desc, false, "GBuffer : Metalness");
 
-		m_Roughenss = new Texture;
-		m_Roughenss->Initiate(desc, false, "GBuffer : Roughenss");
+		m_Roughness = new Texture;
+		m_Roughness->Initiate(desc, false, "GBuffer : Roughenss");
 
 		m_EntityIDTexture = new Texture;
 		desc.m_ResourceTypeBinding = graphics::BIND_SHADER_RESOURCE | graphics::BIND_RENDER_TARGET;
@@ -97,7 +97,7 @@ namespace graphics
 		ctx.ClearRenderTarget(m_Emissive, clear_color);
 #ifdef _DEBUG
 		ctx.ClearRenderTarget(m_Emissive, clear_color);
-		ctx.ClearRenderTarget(m_Roughenss, clear_color);
+		ctx.ClearRenderTarget(m_Roughness, clear_color);
 		ctx.ClearRenderTarget(m_Metalness, clear_color);
 		ctx.ClearRenderTarget(m_EntityIDTexture, clear_color);
 #endif
@@ -113,7 +113,7 @@ namespace graphics
 			m_Emissive->GetRenderTargetView(),
 #ifdef _DEBUG
 			m_EntityIDTexture->GetRenderTargetView(),
-			m_Roughenss->GetRenderTargetView(),
+			m_Roughness->GetRenderTargetView(),
 			m_Metalness->GetRenderTargetView(),
 #endif
 		};

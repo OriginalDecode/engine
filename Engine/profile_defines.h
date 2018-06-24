@@ -13,7 +13,7 @@
 #define PROFILE_FUNCTION(color) EASY_FUNCTION(color)
 #define PROFILE_BLOCK(name, ...) EASY_BLOCK(name, __VA_ARGS__)
 #define PROFILE_BLOCK_END EASY_END_BLOCK
-#define PROFILE_THREAD_SCOPE(name) EASY_THREAD_SCOPE(x);
+#define PROFILE_THREAD_SCOPE(name) EASY_THREAD_SCOPE(name);
 
 #else
 #define PROFILE_FUNCTION(color) 

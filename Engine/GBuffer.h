@@ -22,6 +22,8 @@ namespace graphics
 		Texture* GetDepth() const { return m_Depth; }
 #ifdef _DEBUG
 		Texture* GetIDTexture() const { return m_EntityIDTexture; }
+		Texture* GetRoughness() const { return m_Roughness; }
+		Texture* GetMetalness() const { return m_Metalness; }
 #endif
 	private:
 #endif
@@ -37,11 +39,12 @@ struct  GBuffer
 	
 #ifdef _DEBUG 
 		float4 m_EntityIDTexture;
-		float4 m_Roughenss;
+		float4 m_Roughness;
 		float4 m_Metalness;
 #endif
 #ifdef IS_SHADER
-}
-#endif
+};
+#else
 	};
 };
+#endif

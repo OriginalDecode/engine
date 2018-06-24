@@ -466,6 +466,7 @@ namespace graphics
 		const D3D_SHADER_MACRO defines[] = {
 #if !defined(_PROFILE) && !defined(_FINAL)
 			"_DEBUG", "1",
+			"IS_SHADER", "2",
 #else
 			"_FINAL", "1",
 #endif

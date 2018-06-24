@@ -131,8 +131,8 @@ void Renderer::InitiateDebug()
 	pDebug->RegisterTexture(m_GBuffer.GetDepth(), "depth");
 	pDebug->RegisterTexture(m_GBuffer.GetEmissive(), "emissive");
 	pDebug->RegisterTexture(m_GBuffer.GetIDTexture(), "entity_id");
-	pDebug->RegisterTexture(m_GBuffer.m_Roughenss, "roughness");
-	pDebug->RegisterTexture(m_GBuffer.m_Metalness, "metalness");
+	pDebug->RegisterTexture(m_GBuffer.GetRoughness(), "roughness");
+	pDebug->RegisterTexture(m_GBuffer.GetMetalness(), "metalness");
 #endif
 }
 

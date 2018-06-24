@@ -73,18 +73,18 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 		discard;
 
 	albedo.rgb = pow(albedo.rgb, 2.2);
-	output.Albedo = albedo;
+	output.m_Albedo = albedo;
 	// output.Albedo.a = override_pbl ? 1 : roughness_override;
-    output.Normal = float4(_normal,1);
-    output.Depth.x = 1 - input.pos.z;
+    output.m_Normal = float4(_normal,1);
+    output.m_Depth.x = 1 - input.pos.z;
 
-	output.Depth.y = 1 - roughness_override.r;
-	output.Depth.z = metalness_override.r;
-	output.Emissive = 0;//input.displaced;
+	output.m_Depth.y = 1 - roughness_override.r;
+	output.m_Depth.z = metalness_override.r;
+	output.m_Emissive = 0;//input.displaced;
 #ifdef _DEBUG
-    output.IDTexture = float4(ToColor(input.entity_id), 0);
-	output.Roughness = roughness_override.rrrr;
-	output.Metalness = metalness_override.xxxx;
+    output.m_EntityIDTexture = float4(ToColor(input.entity_id), 0);
+	output.m_Roughness = roughness_override.rrrr;
+	output.m_Metalness = metalness_override.xxxx;
 #endif
 
     return output;

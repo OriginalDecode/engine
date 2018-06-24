@@ -1,7 +1,6 @@
 #include "DL_Debug.h"
 #include <time.h>
 #include "../Engine/engine_shared.h"
-Ticket_Mutex dlDebug_Mutex;
 namespace DL_Debug
 {
 	Debug* Debug::myInstance = nullptr;
@@ -13,8 +12,12 @@ namespace DL_Debug
 
 	bool Debug::Create(std::string aFile)
 	{
-		ASSERT(myInstance == nullptr, "Debug file already created");
-		myInstance = new DL_Debug::Debug();
+		myInstance = new DL_Debug::Debug;
+
+		if (!myInstance)
+			return false;
+
+
 
 		time_t now = time(0);
 		struct tm tstruct;
@@ -30,13 +33,9 @@ namespace DL_Debug
 #else 
 		ss << "Logs\\" << aFile << "_" << buff << "_Release" << ".log"; //stringstream << folder << file << "seperator" << buff << "filetype";
 #endif
-		if (myInstance == nullptr)
-		{
-			return false;
-		}
-
+		
 		myInstance->myOutputFile.open(ss.str().c_str());
-		return (true); 
+		return true; 
 	}
 
 	bool Debug::Destroy()

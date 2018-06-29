@@ -31,6 +31,8 @@ struct ModelInstance
 	bool m_RenderWireframe = false;
 	bool m_Shadowed = true;
 
+	void* m_Command = nullptr;
+
 
 };
 

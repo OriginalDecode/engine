@@ -540,6 +540,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 			instance.m_Filename = "data/model/ballen.fbx";
 			instance.m_MaterialFile = files[v];
 			instance.m_Scale = CU::Vector4f(scale_factor, scale_factor, scale_factor, 1);
+			
 
 
 			Material* pMaterial = material[v];

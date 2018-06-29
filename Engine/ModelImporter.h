@@ -420,6 +420,8 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 	//DL_MESSAGE("Vertex Buffer Array Size : %d", size);
 
 	const u32 vtx_size = size;
+
+
 	data.myVertexBuffer = new float[vtx_size];
 	ZeroMemory(data.myVertexBuffer, sizeof(float) * vtx_size);
 	data.m_VertexBufferSize = sizeof(float) * vtx_size;

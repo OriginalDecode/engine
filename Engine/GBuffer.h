@@ -32,13 +32,13 @@ struct  GBuffer
 {
 #endif
 
-		float4 m_Albedo;
-		float4 m_Normal;
-		float4 m_Depth;
+		float4 m_Albedo; // rgb, metal
+		float4 m_Normal; // rgb, rough
+		float4 m_Depth; // r, emissive, spec, ao
 		float4 m_Emissive;
 	
 #ifdef _DEBUG 
-		float4 m_EntityIDTexture;
+		float4 m_EntityIDTexture; // 
 		float4 m_Roughness;
 		float4 m_Metalness;
 #endif

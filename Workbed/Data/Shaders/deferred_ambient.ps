@@ -177,7 +177,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 	float4 albedo = AlbedoTexture.Sample(sampler0, input.uv);	
 	float4 normal = NormalTexture.Sample(sampler0, input.uv) * 2 - 1;
 
-	// return normal;
 
 	float4 base_col = float4(albedo.rgb, 1);
 	float4 depth = DepthTexture.Sample(sampler0, input.uv);

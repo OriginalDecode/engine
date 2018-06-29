@@ -1,12 +1,10 @@
 #pragma once
 
 #include <random>
+#include "Utilities.h"
+
 //if you input a higher value in min than max, it will crash. The following must be true. min <= max. Otherwise you will crash.
-
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-
-#define RANDOM(a,b) Randomizer::GetInstance()->Rand(MIN(a,b) ,MAX(a,b))
+#define RANDOM(a,b) Randomizer::GetInstance()->Rand(cl::_min<decltype(a)>(a,b) , cl::_max<decltype(a)>(a,b))
 
 #undef MIN
 #undef MAX

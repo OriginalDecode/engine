@@ -24,6 +24,20 @@ namespace cl
 		value = (value < min) ? min : (value > max) ? max : value;
 	}
 
+
+	template<typename T>
+	constexpr T _min(T a, T b) 
+	{
+		return a > b ? b : a;
+	}
+
+	template<typename T>
+	constexpr T _max(T a, T b)
+	{
+		return a < b ? b : a;
+	}
+
+
 	template<typename T>
 	inline T Lerp(const T start, T end, float alpha)
 	{

@@ -35,6 +35,7 @@
 #ifdef _DEBUG
 #include "../include/hash/DebugEvents.h"
 #endif
+#include <CommonLib/Randomizer.h>
 static float s_CamSpeed = 50.f;
 
 //#define LOAD_LEVEL
@@ -48,6 +49,9 @@ u64 pole = 0;
 u64 curtain = 0;
 #endif
 #endif
+u64 japMap = 0;
+
+CU::GrowingArray<CU::Matrix44f> positions;
 
 static const char* camera_file = "camera_pos";
 
@@ -106,6 +110,28 @@ void Game::Initiate(const std::string& level)
 
 #endif
 #endif
+
+	int tree_count = RANDOM(128, 256);
+	for (int i = 0; i < tree_count; ++i)
+	{
+		float x = RANDOM(0.f, 1024.f);
+		//float y = RANDOM(0.f, 1024.f);
+		float z = RANDOM(0.f, 1024.f);
+
+		CU::Matrix44f orientation;
+		orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));
+		orientation.SetTranslation({ x, 0.f, z, 1.f });
+
+
+		positions.Add(orientation);
+
+		//positions.Add(CU::Vector3f(x, 0.f, z));
+
+	}
+
+
+	japMap = m_Engine->LoadModelA("Data/model/trees/japanese_maple/Japanese_Maple.fbx", "Shaders/deferred_base.json", false);
+
 	m_Picker = new CMousePicker;
 
 	m_Camera = m_Engine->GetCamera();
@@ -382,6 +408,14 @@ void Game::OldUpdate(float dt)
 
 	if (input_wrapper->IsDown(KButton::NUMPAD7))
 		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
+
+
+
+	for (const auto& p : positions)
+	{
+		AddRenderCommand(ModelCommand(japMap,p, false));
+	}
+
 
 	m_World.Update(dt, m_Paused); //This function takes a long time
 }

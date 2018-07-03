@@ -69,6 +69,7 @@ namespace graphics
 	{
 		NO_API = -1,
 		D3D11,
+		D3D12,
 		VULKAN,
 	};
 
@@ -331,6 +332,8 @@ namespace graphics
 		IDepthStencilView* m_DefaultDepthView		= nullptr;
 		IRenderTargetView* m_DefaultRenderTarget	= nullptr;
 
+
+		//all of these should probably live in the context and not API
 		ISamplerState* m_SamplerStates[NOF_SS];
 		IDepthStencilState* m_DepthStencilStates[NOF_DSS];
 		IRasterizerState* m_RasterizerStates[NOF_RS];

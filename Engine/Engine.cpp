@@ -504,14 +504,6 @@ const SLocalTime& Engine::GetLocalTime()
 	return myLocalTime;
 }
 
-Terrain* Engine::CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize)
-{
-	Terrain* newTerrain = m_TerrainManager->GetTerrain(aFile);
-	newTerrain->Initiate(aFile, position, aSize);
-	m_Renderer->AddTerrain(newTerrain);
-	return newTerrain;
-}
-
 u64 Engine::LoadTexture(const std::string& path, bool make_mips)
 {
 	return myAssetsContainer->LoadTexture(m_VirtualFileSystem.GetFile(path), make_mips);

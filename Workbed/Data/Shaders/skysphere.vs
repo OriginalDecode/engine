@@ -47,7 +47,6 @@ VS_OUTPUT main(VS_INPUT input)
 
 	output.tex = float4((float2(x + w, w - y)) * 0.5f, output.pos.zw);
 	output.worldpos = input.pos;
-
 	output.view_dir = input.pos;
 
 	return output;

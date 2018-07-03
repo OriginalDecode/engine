@@ -4,22 +4,26 @@ Texture2D DepthTexture : register ( t7 );
 struct VS_OUTPUT
 {
 	float4 pos 		: SV_POSITION;
-	float3 normal 	: NORMAL;
-	float2 uv 		: TEXCOORD;
-	float3 binorm 	: BINORMAL;
-	float3 tang 	: TANGENT;
-	float4 worldpos : POSITION;
-	float4 tex 		: TEX;
-	float4 view_dir : DIR;
+	float2 tex 		: TEXCOORD;
 };
 
-cbuffer data : register ( b0 )
+cbuffer per_frame : register (b0)
+{
+	row_major float4x4 InvertedProjection;
+	row_major float4x4 View;
+};
+
+cbuffer data : register ( b1 )
 {
 	float4 m_ViewDir;
 	float4 m_ViewPos;
 	float4 m_LightDir;
 	float4 filler;
 };
+
+static const int iSteps = 16;
+static const int jSteps = 8;
+static const float PI = 3.141592;
 
 float2 RayVsSphere(float3 ray_origo, float3 ray_dir, float sphere_radius)
 {
@@ -38,30 +42,60 @@ float2 RayVsSphere(float3 ray_origo, float3 ray_dir, float sphere_radius)
 	return float2(x, y);
 };
 
+float4 getWorldPos(float2 tex_coord, float depth)
+{
+    float x = tex_coord.x * 2.f - 1.f;
+	float y = (1.f - tex_coord.y) * 2 - 1;
+	float z = depth;
+	float4 world_pos = float4(x, y, z, 1.f);
+	
+	world_pos = mul(world_pos, InvertedProjection);
+	world_pos = world_pos / world_pos.w;
+	world_pos = mul(world_pos, View);
+    return world_pos;
+}
+
+
+float3 calculate_reileigh()
+{
+	return float3(0,0,0);
+}
+
+float3 calculate_mie()
+{
+	return float3(0,0,0);
+}
+
+float calculate_stepSize(float3 view_dir, float3 view_pos, float atmosphere_radius, float planet_radius)
+{
+	float2 p = RayVsSphere(view_pos, view_dir, atmosphere_radius);
+
+	if (p.x > p.y)
+		return 0.0;
+
+	float2 c = RayVsSphere(view_pos, view_dir, planet_radius);
+	p.y = min(p.y, c.x);
+
+	return (p.y - p.x) / float(iSteps);
+	
+}
+
+
+
 float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
 				float sun_intensity, float planet_radius, float atmosphere_radius,
 				float3 rayleigh_coef, float mie_coef,
 				float rayleigh_scale_height, float mie_scale_height, float distr)
 {
-	light_dir = normalize(light_dir);
-	view_dir = normalize(view_dir); 
 
-	const int iSteps = 16;
-	const int jSteps = 8;
-	const float PI = 3.141592;
 
-	float2 p = RayVsSphere(view_pos, view_dir, atmosphere_radius);
 
-	if (p.x > p.y)
-		return float3(0,0,0);
 
-	float2 c = RayVsSphere(view_pos, view_dir, planet_radius);
-	p.y = min(p.y, c.x);
+	float iStepSize = calculate_stepSize(view_dir, view_pos, atmosphere_radius, planet_radius);
 
-	float iStepSize = (p.y - p.x) / float(iSteps);
 	float iTime = 0.0;
-	float3 totalRlh, totalMie; //total rayleigh & mie contribution
-	float iOdRlh, iOdMie;//optical distribution
+	float3 totalRlh, totalMie; 	//total rayleigh & mie contribution
+	float iOdRlh, iOdMie;		//optical distribution
 	iOdMie = iOdRlh = 0.0;
 
 	float mu = dot(view_dir, light_dir);
@@ -73,7 +107,7 @@ float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
 
 	for (int i = 0; i < iSteps; i++)
 	{
-		float3 iPos = view_pos + view_dir * (iTime + iStepSize * 0.5);
+		float3 iPos = view_pos + view_dir * (iTime + iStepSize * 0.9);
 		int iHeight = length(iPos) - planet_radius;
 
 		float odStepRlh = exp(-iHeight / rayleigh_scale_height) * iStepSize; //becomes 0
@@ -90,7 +124,7 @@ float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
 
 		for (int j = 0; j < jSteps; j++)
 		{
-			float3 jPos = iPos + light_dir * (jTime + jStepSize * 0.5);
+			float3 jPos = iPos + light_dir * (jTime + jStepSize * 0.9);
 			float jHeight = length(jPos) - planet_radius;
 
 			jOdRlh += exp(-jHeight / rayleigh_scale_height) * jStepSize;
@@ -114,46 +148,60 @@ float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
 
 	}
 
-	float3 result = ((pRlh * rayleigh_coef * totalRlh) + (pMie * mie_coef * totalMie)) * sun_intensity; 
+	float3 result = ((pRlh * rayleigh_coef * totalRlh)  + (pMie * mie_coef * totalMie)) * sun_intensity; 
 
-	if(result.x <= 0 && result.y <= 0 && result.z <= 0)
-		return float3(1,0,0);
+	// if(result.x <= 0 && result.y <= 0 && result.z <= 0)
+	// 	return float3(1,0,0);
 
 	return result;
 };
 
 float4 main(VS_OUTPUT input) : SV_Target
 {
-	float4 tex = input.tex;
-	input.tex /= input.tex.w;
+	// float4 tex = input.tex;
+	// input.tex /= input.tex.w;
 	float2 texCoord = input.tex.xy;	
-	float depth = DepthTexture.Sample(sampler0, texCoord).r;
+	float depth = 1 - (DepthTexture.Sample(sampler0, texCoord).r);
 	if(depth < 0)
 		discard;
 
 	const float3 rsc = float3(5.5e-6, 13.0e-6, 22.4e-6); 	// rayleigh scatter coefs
-	const double msc = 21e-6; 								// mie scatter coef
-	const double rsh = 8e3; 								// rayleigh scale height
-	const double msh = 1.2e3; 								// mie scale height
-	const double sunI = 20.0; 								// intensity of the sun
-	const double rPlanet = 6370e3;
-	const double rAtmosphere = 6471e3;
-	const double distr_factor = 0.758;
+	const float msc = 21e-6; 								// mie scatter coef
+	const float rsh = 8e3; 								// rayleigh scale height
+	const float msh = 1.2e3; 								// mie scale height
+	const float sunI = 20.0; 								// intensity of the sun
+	const float rPlanet = 6370e3;
+	const float rAtmosphere = 6471e3;
+	const float distr_factor = 0.758;
 	
-	float3 pSun = rAtmosphere;
-
 	float3 new_pos = m_ViewPos.xyz;
 	new_pos.y += rPlanet;
 
 
-	float3 dir = input.worldpos.xyz - new_pos;
+	float3 world_pos = getWorldPos(texCoord, depth);
+	float3 view_dir = normalize(world_pos - m_ViewPos);
+	float3 light_dir = normalize(m_LightDir.xyz);
 
-	float3 pos = input.worldpos.xyz;
-	float3 col = atmosphere(input.view_dir, new_pos, m_LightDir, sunI, rPlanet, rAtmosphere, rsc, msc, rsh, msh, distr_factor);
+/* float3 atmosphere(
+				float3 view_dir, 
+				float3 view_pos, 
+				float3 light_dir,
+ 				float sun_intensity, 
+				float planet_radius,
+				float atmosphere_radius,
+ 				float3 rayleigh_coef, 
+				float mie_coef,
+ 				float rayleigh_scale_height, 
+				float mie_scale_height, 
+				float distr
+				)
+*/
 
-	col = clamp(col, 0, 1);
 
-	col = saturate(pow(col, 2.2));
+	float3 col = atmosphere(view_dir, new_pos, light_dir, sunI, rPlanet, rAtmosphere, rsc, msc, rsh, msh, distr_factor);
+
+
+	// col = saturate(pow(col, 2.2));
 
 	return float4(col, 1);
 }

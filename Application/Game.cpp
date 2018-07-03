@@ -112,6 +112,7 @@ void Game::Initiate(const std::string& level)
 #endif
 
 	int tree_count = RANDOM(128, 256);
+	tree_count = 0;
 	for (int i = 0; i < tree_count; ++i)
 	{
 		float x = RANDOM(0.f, 1024.f);
@@ -130,7 +131,7 @@ void Game::Initiate(const std::string& level)
 	}
 
 
-	japMap = m_Engine->LoadModelA("Data/model/trees/japanese_maple/Japanese_Maple.fbx", "Shaders/deferred_base.json", false);
+	//japMap = m_Engine->LoadModelA("Data/model/trees/japanese_maple/Japanese_Maple.fbx", "Shaders/deferred_base.json", false);
 
 	m_Picker = new CMousePicker;
 

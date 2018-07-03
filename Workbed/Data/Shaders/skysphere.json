@@ -1,6 +1,6 @@
 {
     "VertexShader": {
-        "file": "skysphere.vs",
+        "file": "render_to_texture.vs",
         "entrypoint": "main"
     },
     "PixelShader": {

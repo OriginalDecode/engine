@@ -32,10 +32,7 @@ public:
 	static void CreateEntity(Entity e, EntityManager& em);
 	static void CreateEntity(const char* entity_filepath, CU::GrowingArray<TreeDweller*>& out_dwellers);
 	static CU::GrowingArray<TreeDweller*> LoadLevel(const char* level);
-	CU::GrowingArray<TreeDweller*> LoadLevelNoStatic(const char* level);
 
-
-	static void CreateTerrain(std::string terrain_path);
 private:
 	void CreateEntity(const std::string& entity_filepath);
 

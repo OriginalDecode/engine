@@ -57,10 +57,7 @@ bool LevelFactory::CreateLevel(const std::string& level_path)
 	{
 		CreateEntity(obj.GetString());
 	}
-
-	CreateTerrain("Data/Textures/flat_height.tga");
 	m_LevelReader.CloseDocument();
-	//m_Engine->GetThreadpool().AddWork(Work([&]() {CreateTerrain("Data/Textures/flat_height.tga"); }));
 
 	return true;
 }
@@ -260,34 +257,6 @@ CU::GrowingArray<TreeDweller*> LevelFactory::LoadLevel(const char* level)
 	return dwellers;
 }
 
-CU::GrowingArray<TreeDweller*> LevelFactory::LoadLevelNoStatic(const char* level)
-{
-	Terrain* terrain = Engine::GetInstance()->CreateTerrain("Data/Textures/flat_height.tga", CU::Vector3f(0, 0, 0), CU::Vector2f(2048, 2048));
-	Material* pGroundMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
-	terrain->SetMaterial(pGroundMaterial);
-	std::string folder = level;
-	size_t pos = folder.rfind('/');
-	folder = folder.substr(0, pos + 1);
-
-
-	JSONReader reader(level);
-	if (!reader.GetDocument().IsArray())
-	{
-		const JSONElement& el = reader.GetElement("root");
-
-
-		for (JSONElement::ConstMemberIterator it = el.MemberBegin(); it != el.MemberEnd(); it++)
-		{
-			CreateEntitiy(it->value["entity"].GetString(), it);
-		}
-
-	}
-
-	reader.CloseDocument();
-
-	return m_DwellerList;
-}
-
 void LevelFactory::CreateEntity(const char* entity_filepath, CU::GrowingArray<TreeDweller*>& out_dwellers)
 {
 	out_dwellers.Add(new TreeDweller);
@@ -463,18 +432,6 @@ void LevelFactory::CreateDebugComponent(Entity e, bool isLight, s32 flags)
 		component.m_MaxPoint = { 0.25,0.25,0.25 };
 	}
 
-}
-
-void LevelFactory::CreateTerrain(std::string terrain_path)
-{
-	Terrain* terrain = Engine::GetInstance()->CreateTerrain(terrain_path, CU::Vector3f(0, 0, 0), CU::Vector2f(2048, 2048));
-	Material* pGroundMaterial = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
-
-	//Should probably use a splatmap instead with a material list because we need to be able to map multiple roughnesses, metalness, albedo and normals
-	//Run with type and then count, TYPE : ALBEDO / DIFFUSE / 0, COUNT : 4 (this moves the next registry to 4 since 0,1,2,3 has been used for albedos  
-
-	terrain->SetMaterial(pGroundMaterial);
-	//terrain->AddNormalMap("Data/Textures/t0_n.dds");
 }
 
 CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 steps)

@@ -90,10 +90,6 @@ private:
 	void RenderLines();
 
 
-
-	//instancing helper?
-	std::map<u64, Model*> m_ModelsToRender;
-
 	CU::GrowingArray<Terrain*> myTerrainArray;
 
 	CU::Vector3f		m_Direction;
@@ -108,6 +104,8 @@ private:
 
 	PostProcessManager			m_PostProcessManager;
 
+
+	Quad* m_Background = nullptr;
 	Atmosphere					m_Atmosphere;
 
 

@@ -163,12 +163,6 @@ public:
 	// This can probably stay
 
 
-	//_________________________________________
-	// Level Creation, Loading, Saving
-	Terrain* CreateTerrain(std::string aFile, CU::Vector3f position, CU::Vector2f aSize);
-	// Should be refactored out of the engine stuff.
-
-
 	void* CreateShader(IShaderBlob* pShader, eShaderType type, const std::string& debug_name);
 
 

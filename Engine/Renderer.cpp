@@ -92,6 +92,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
 	m_TerrainSystem = new TerrainSystem;
 
+	m_Background = new Quad(Engine::GetInstance()->GetEffect("Shaders/skysphere.json"));
 
 
 
@@ -223,8 +224,12 @@ void Renderer::Render()
 	IRenderTargetView* pRenderTarget = m_DeferredRenderer->GetScene()->GetRenderTargetView();
 	IDepthStencilView* pDepthStencil = m_RenderContext.GetAPI().GetDepthView();
 	m_RenderContext.GetContext().OMSetRenderTargets(1, &pRenderTarget, pDepthStencil);
-	//m_DeferredRenderer->GetDepthStencil();
+
+	IShaderResourceView* rsv = m_GBuffer.GetDepth()->GetDepthStencilView(); //m_DeferredRenderer->GetScene()->GetDepthStencilView();
+	m_RenderContext.GetContext().PSSetShaderResource(0, 1, &rsv);
 	m_Atmosphere.Render(m_RenderContext);
+	m_Background->Render(true);
+
 	RenderParticles(nullptr);
 
 	if (m_PostProcessManager.GetFlags() != 0)
@@ -680,6 +685,7 @@ void Renderer::ProcessModelCommand(const memory::CommandAllocator& commands, s32
 		new_instance.m_Shadowed = true; /* should be command->m_Shadowed or something*/
 		m_InstancingManager.AddInstanceObject(new_instance);
 	}
+
 	GPUModelData model_data;
 	model_data.m_Orientation = command->m_Orientation;
 
@@ -796,7 +802,7 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 
 		
 		terrain->Render(m_RenderContext, false, true);
-		m_Atmosphere.Render(m_RenderContext);
+		//m_Atmosphere.Render(m_RenderContext);
 
 		_ctx->GenerateMips((ID3D11ShaderResourceView*)rendertarget->GetShaderView());
 

@@ -12,7 +12,7 @@ public:
 	~Atmosphere();
 	void Initiate(float inner_radius, float outer_radius, const CU::Vector3f& position );
 
-	void Render(const graphics::RenderContext& rc);
+	void Render(const graphics::RenderContext& rc, Camera* active_camere);
 	void SetLightData(const CU::Vector4f& direction, const CU::Vector4f& position);
 private:
 	Camera* m_Camera = nullptr;

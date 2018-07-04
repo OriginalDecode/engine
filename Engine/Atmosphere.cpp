@@ -44,7 +44,7 @@ void Atmosphere::Initiate(float inner_radius, float outer_radius, const CU::Vect
 	//static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetOrientation(m_OuterOrientation);
 }
 
-void Atmosphere::Render(const graphics::RenderContext& rc)
+void Atmosphere::Render(const graphics::RenderContext& rc, Camera* active_camere)
 {
 	Engine* pEngine = Engine::GetInstance();
 	graphics::IGraphicsContext& ctx = pEngine->GetAPI()->GetContext();
@@ -53,23 +53,11 @@ void Atmosphere::Render(const graphics::RenderContext& rc)
 
 	m_PixelStruct.light_dir = Engine::GetInstance()->GetLightDir();
 	m_PixelStruct.light_dir.w = 1;
-	m_PixelStruct.view_dir = pEngine->GetCamera()->GetAt();
-	m_PixelStruct.view_pos = pEngine->GetCamera()->GetPosition();
-	//static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetPosition(pEngine->GetCamera()->GetPosition());
-	//m_OuterOrientation.SetPosition(pEngine->GetCamera()->GetPos());
-	//m_VertexStruct.orientation = m_OuterOrientation;
+	m_PixelStruct.view_dir = active_camere->GetAt();
+	m_PixelStruct.view_pos = active_camere->GetPosition();
 
 	ctx.UpdateConstantBuffer(m_PixelBuffer, &m_PixelStruct);
-	//ctx.UpdateConstantBuffer(m_VertexBuffer, &m_VertexStruct);
 	ctx.PSSetConstantBuffer(2, 1, &m_PixelBuffer);
-	//ctx.VSSetConstantBuffer(1, 1, &m_VertexBuffer);
-	
-	//ctx.SetBlendState(api->GetBlendState(graphics::NO_BLEND));
-	//ctx.SetDepthState(api->GetDepthStencilState(graphics::Z_ENABLED), 1);
-	//ctx.SetRasterizerState(api->GetRasterizerState(graphics::CULL_NONE));
-	//static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->SetOrientation(m_OuterOrientation);
-	//static_cast<AtmosphereModel*>(m_OuterSphere.GetData())->Render(rc);
-
 }
 
 void Atmosphere::SetLightData(const CU::Vector4f& direction, const CU::Vector4f& position)

@@ -215,7 +215,7 @@ void Renderer::Render()
 	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
 	m_DeferredRenderer->Prepare(shadow_mvp, m_Direction, m_RenderContext);
 
-	m_Atmosphere.Render(m_RenderContext);
+	m_Atmosphere.Render(m_RenderContext, m_Camera);
 	m_Background->Render(true);
 	m_DeferredRenderer->Draw();
 
@@ -802,10 +802,10 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 		ctx.ClearRenderTarget(rendertarget, clearcolor::black);
 		ctx.OMSetRenderTargets(1, rendertarget->GetRenderTargetRef(), depth->GetDepthView());
 
+		m_Atmosphere.Render(m_RenderContext, camera);
+		m_Background->Render(true);
 		
 		terrain->Render(m_RenderContext, false, true);
-		m_Atmosphere.Render(m_RenderContext);
-		m_Background->Render(true);
 
 		_ctx->GenerateMips((ID3D11ShaderResourceView*)rendertarget->GetShaderView());
 

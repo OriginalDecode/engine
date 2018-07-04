@@ -330,8 +330,12 @@ void Game::OldUpdate(float dt)
 	}
 
 	
+	float mul = 1.f;
 
-	float acceleration = s_CamSpeed * dt;
+	if (input_wrapper->IsDown(KButton::LCTRL))
+		mul = 100.f;
+
+	float acceleration = (s_CamSpeed * dt) * mul;
 
 	if (input_wrapper->IsDown(KButton::W))
 		m_Camera->Move(eDirection::FORWARD, acceleration);

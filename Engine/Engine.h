@@ -56,6 +56,23 @@ class PhysicsManager;
 class Material;
 struct ModelCommand;
 
+enum eRenderPass
+{
+	_AAAA,
+	_BBBB,
+	_CCCC,
+	ATMOSPHERE,
+	AMBIENT,
+	DIRECTIONAL_LIGHT,
+	SPOTLIGHT,
+	POINTLIGHT,
+	
+	POSTPROCESS,
+
+	NOF_PASSES,
+};
+
+
 namespace network
 {
 	class NetworkManager;

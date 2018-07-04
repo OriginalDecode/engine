@@ -61,7 +61,7 @@ void Atmosphere::Render(const graphics::RenderContext& rc)
 
 	ctx.UpdateConstantBuffer(m_PixelBuffer, &m_PixelStruct);
 	//ctx.UpdateConstantBuffer(m_VertexBuffer, &m_VertexStruct);
-	ctx.PSSetConstantBuffer(1, 1, &m_PixelBuffer);
+	ctx.PSSetConstantBuffer(2, 1, &m_PixelBuffer);
 	//ctx.VSSetConstantBuffer(1, 1, &m_VertexBuffer);
 	
 	//ctx.SetBlendState(api->GetBlendState(graphics::NO_BLEND));

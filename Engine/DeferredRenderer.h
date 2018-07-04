@@ -18,7 +18,11 @@ class DeferredRenderer
 public:
 	DeferredRenderer();
 	~DeferredRenderer();
-	void DeferredRender(const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context);
+
+
+	void Prepare(const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context);
+	void Draw();
+
 
 	void Finalize();
 	Texture* GetScene() { return m_Scene; }

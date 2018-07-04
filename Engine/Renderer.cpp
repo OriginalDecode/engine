@@ -192,8 +192,8 @@ void Renderer::Render()
 
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
-	m_TerrainSystem->Update();
-	m_TerrainSystem->Draw();
+	m_TerrainSystem->Update(); //should not be updated here
+	m_TerrainSystem->Draw(); //draws on the backbuffer?
 
 	Render3DCommands();
 	m_InstancingManager.DoInstancing(m_RenderContext, false);
@@ -213,7 +213,12 @@ void Renderer::Render()
 
 	const CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
-	m_DeferredRenderer->DeferredRender(shadow_mvp, m_Direction, m_RenderContext);
+	m_DeferredRenderer->Prepare(shadow_mvp, m_Direction, m_RenderContext);
+
+	m_Atmosphere.Render(m_RenderContext);
+	m_Background->Render(true);
+	m_DeferredRenderer->Draw();
+
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
 
@@ -225,12 +230,9 @@ void Renderer::Render()
 	IDepthStencilView* pDepthStencil = m_RenderContext.GetAPI().GetDepthView();
 	m_RenderContext.GetContext().OMSetRenderTargets(1, &pRenderTarget, pDepthStencil);
 
-	IShaderResourceView* rsv = m_GBuffer.GetDepth()->GetDepthStencilView(); //m_DeferredRenderer->GetScene()->GetDepthStencilView();
-	m_RenderContext.GetContext().PSSetShaderResource(0, 1, &rsv);
-	m_Atmosphere.Render(m_RenderContext);
-	m_Background->Render(true);
 
-	RenderParticles(nullptr);
+
+	//RenderParticles(nullptr);
 
 	if (m_PostProcessManager.GetFlags() != 0)
 	{
@@ -802,7 +804,8 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 
 		
 		terrain->Render(m_RenderContext, false, true);
-		//m_Atmosphere.Render(m_RenderContext);
+		m_Atmosphere.Render(m_RenderContext);
+		m_Background->Render(true);
 
 		_ctx->GenerateMips((ID3D11ShaderResourceView*)rendertarget->GetShaderView());
 

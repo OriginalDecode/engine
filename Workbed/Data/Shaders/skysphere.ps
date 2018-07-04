@@ -13,7 +13,7 @@ cbuffer per_frame : register (b0)
 	row_major float4x4 View;
 };
 
-cbuffer data : register ( b1 )
+cbuffer data : register ( b2 )
 {
 	float4 m_ViewDir;
 	float4 m_ViewPos;
@@ -162,8 +162,6 @@ float4 main(VS_OUTPUT input) : SV_Target
 	// input.tex /= input.tex.w;
 	float2 texCoord = input.tex.xy;	
 	float depth = 1 - (DepthTexture.Sample(sampler0, texCoord).r);
-	if(depth < 0)
-		discard;
 
 	const float3 rsc = float3(5.5e-6, 13.0e-6, 22.4e-6); 	// rayleigh scatter coefs
 	const float msc = 21e-6; 								// mie scatter coef

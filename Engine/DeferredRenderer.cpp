@@ -111,12 +111,12 @@ DeferredRenderer::~DeferredRenderer()
 
 	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
 }
-
-void DeferredRenderer::DeferredRender(const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context)
+ 
+void DeferredRenderer::Prepare(const CU::Matrix44f& shadow_mvp, const CU::Vector4f light_dir, const graphics::RenderContext& render_context)
 {
 	graphics::IGraphicsContext& ctx = render_context.GetContext();
 	render_context.GetAPI().ResetViewport();
- 
+
 	IDepthStencilView* depth = render_context.GetAPI().GetDepthView();  //What kind of depth????????
 	ctx.ClearRenderTarget(m_Scene->GetRenderTargetView(), clearcolor::black);
 	ctx.OMSetRenderTargets(1, m_Scene->GetRenderTargetRef(), depth);
@@ -128,10 +128,14 @@ void DeferredRenderer::DeferredRender(const CU::Matrix44f& shadow_mvp, const CU:
 	ctx.PSSetSamplerState(2, 1, graphics::BILINEAR);
 
 	ctx.SetRasterizerState(render_context.GetAPI().GetRasterizerState(graphics::CULL_NONE));
+}
+
+void DeferredRenderer::Draw()
+{
 	m_RenderQuad->Render();
 }
- 
- void DeferredRenderer::Finalize() 
+
+void DeferredRenderer::Finalize()
  {
 	 auto api = Engine::GetAPI();
 	 api->GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x1);

@@ -15,6 +15,7 @@
 #include <Engine/SystemMonitor.h>
 #include <Engine/MemorySegmentHandle.h>
 #include <Engine/IGraphicsAPI.h>
+#include <Engine/IGraphicsContext.h>
 
 #include <Engine/DebugHandle.h>
 
@@ -55,22 +56,6 @@ class InputHandle;
 class PhysicsManager;
 class Material;
 struct ModelCommand;
-
-enum eRenderPass
-{
-	_AAAA,
-	_BBBB,
-	_CCCC,
-	ATMOSPHERE,
-	AMBIENT,
-	DIRECTIONAL_LIGHT,
-	SPOTLIGHT,
-	POINTLIGHT,
-	
-	POSTPROCESS,
-
-	NOF_PASSES,
-};
 
 
 namespace network
@@ -191,8 +176,8 @@ public:
 	memory::MemorySegmentHandle& GetMemorySegmentHandle() { return m_SegmentHandle; }
 	const graphics::eSamplerStates GetCurrentSampler() const { return m_CurrentSampler; }
 
-	ISamplerState* GetActiveSampler() { return m_API->GetSamplerState(m_CurrentSampler); }
-	void SetCurrentSampler(const graphics::eSamplerStates& sampler) { m_CurrentSampler = sampler; }
+	//ISamplerState* GetActiveSampler() { return m_API->GetSamplerState(m_CurrentSampler); }
+	//void SetCurrentSampler(const graphics::eSamplerStates& sampler) { m_CurrentSampler = sampler; }
 
 	bool VSync() const { return m_VSyncOn; }
 	void ToggleVSync() { m_VSyncOn = !m_VSyncOn; }

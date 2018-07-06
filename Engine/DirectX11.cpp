@@ -609,7 +609,7 @@ namespace graphics
 		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->GetDevice();
 		ID3D11RasterizerState* rasterstate = nullptr;
 		pDevice->CreateRasterizerState(&desc, &rasterstate);
-		m_RasterizerStates[rasterizer] = rasterstate;
+		m_Context->m_RasterizerStates[rasterizer] = rasterstate;
 #ifdef _DEBUG
 		SetDebugName(rasterstate, debugname);
 #endif

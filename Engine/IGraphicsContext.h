@@ -1,4 +1,6 @@
 #pragma once
+#include "../engine/engine_shared.h"
+#include <Graphics/graphics_flags.h>
 
 class CompiledShader;
 class BaseModel;
@@ -6,10 +8,19 @@ class CEmitterInstance;
 class Quad;
 class Line3D;
 class CFont;
+class Model;
+class Texture;
+class Viewport;
+class Effect;
+
+
 namespace graphics
 {
+	
+
 	class IGraphicsContext
 	{
+		friend class IGraphicsAPI;
 	public:
 		virtual void VSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void PSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
@@ -35,12 +46,12 @@ namespace graphics
 
 		virtual void VSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
 		virtual void PSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
-		virtual void PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
 		virtual void GSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
 		virtual void HSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
 		virtual void DSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
 		virtual void CSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
 
+		virtual void PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
 
 
 		virtual void IASetInputLayout(IInputLayout* input_layout) = 0;
@@ -73,6 +84,12 @@ namespace graphics
 		virtual void SetRasterizerState(IRasterizerState* pRasterizerState) = 0;
 		virtual void SetBlendState(IBlendState* pBlendState) = 0;
 
+		virtual void SetDepthState(eDepthStencilState depth_state, s32 max_depth) = 0;
+		virtual void SetRasterState(eRasterizer raster_state) = 0;
+		virtual void SetBlendState(eBlendStates blend_state, const float blend_color[4], u32 mask) = 0;
+
+
+
 		virtual void SetViewport(Viewport* viewport) = 0;
 		
 		template<typename T>
@@ -97,6 +114,12 @@ namespace graphics
 
 		virtual void _InternalUpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size) = 0;
 		virtual void _InternalUpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping) = 0;
+
+		ISamplerState* m_SamplerStates[NOF_SS];
+		IDepthStencilState* m_DepthStencilStates[NOF_DSS];
+		IRasterizerState* m_RasterizerStates[NOF_RS];
+		IBlendState* m_BlendStates[NOF_BS];
+
 
 	};
 

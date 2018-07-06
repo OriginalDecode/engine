@@ -9,6 +9,7 @@ namespace graphics
 	class DX11Context : public IGraphicsContext
 	{
 		friend class DX11Device;
+		friend class DirectX11;
 	public:
 		DX11Context(ID3D11DeviceContext* context);
 		void VSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
@@ -71,6 +72,9 @@ namespace graphics
 
 		void SetViewport(Viewport* viewport) override;
 
+		void SetDepthState(eDepthStencilState depth_state, s32 max_depth) override;
+		void SetRasterState(eRasterizer raster_state) override;
+		void SetBlendState(eBlendStates blend_state, const float blend_color[4] = blendcolor::black, u32 mask = 0xFFFFFFFF) override;
 
 		ID3D11DeviceContext* m_Context = nullptr;
 		void* GetContext() override { return m_Context; }

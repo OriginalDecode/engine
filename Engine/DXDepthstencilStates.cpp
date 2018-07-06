@@ -3,6 +3,25 @@
 #include <Engine/DX11Device.h>
 namespace graphics
 {
+
+	// DirectX11 depthdesc
+	// 	BOOL DepthEnable;
+	// 	D3D11_DEPTH_WRITE_MASK DepthWriteMask;
+	// 	D3D11_COMPARISON_FUNC DepthFunc;
+	// 	BOOL StencilEnable;
+	// 	UINT8 StencilReadMask;
+	// 	UINT8 StencilWriteMask;
+	// 	D3D11_DEPTH_STENCILOP_DESC FrontFace;
+	// 	D3D11_DEPTH_STENCILOP_DESC BackFace;
+
+	struct DepthStencilDesc
+	{
+
+	};
+
+
+
+
 	void DirectX11::CreateDepthStencilStates()
 	{
 		DX11Device* dx11device = static_cast<DX11Device*>(m_Device);
@@ -32,7 +51,7 @@ namespace graphics
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 		HRESULT hr = device->CreateDepthStencilState(&stencilDesc, &depthstencil);
-		m_DepthStencilStates[Z_ENABLED] = depthstencil;
+		m_Context->m_DepthStencilStates[Z_ENABLED] = depthstencil;
 #ifndef FINAL
 		SetDebugName(depthstencil, "DepthstencilState Z_Enable");
 		HandleErrors(hr, "Failed to create DepthStencilState!");

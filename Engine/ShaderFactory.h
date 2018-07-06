@@ -13,12 +13,11 @@ class Effect;
 struct CompiledShader
 {
 	CompiledShader() = default;
-	CompiledShader(IShaderBlob* pShaderBlob, void* pShader, eShaderType shader_type, const char* entrypoint, graphics::eSamplerStates sampler)
+	CompiledShader(IShaderBlob* pShaderBlob, void* pShader, eShaderType shader_type, const char* entrypoint)
 		: m_Blob(pShaderBlob)
 		, m_Shader(pShader)
 		, m_Type(shader_type)
 		, m_Entrypoint(entrypoint)
-		, m_SamplerState(sampler)
 	{
 	}
 
@@ -27,7 +26,6 @@ struct CompiledShader
 	void* m_Shader = nullptr;
 	eShaderType m_Type;
 	std::string m_Entrypoint;
-	graphics::eSamplerStates m_SamplerState; //maybe?
 
 #ifndef _FINAL
 	CU::GrowingArray<Effect*> m_EffectPointers; //used to rebuild shaders in runtime.

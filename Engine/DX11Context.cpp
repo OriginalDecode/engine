@@ -177,8 +177,7 @@ namespace graphics
 
 	void DX11Context::PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
 	{
-		ISamplerState* sampler = Engine::GetAPI()->GetSamplerState(samplerstate);
-		PSSetSamplerState(start_index, sampler_count, &sampler);
+		PSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
 	}
 
 	void DX11Context::GSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
@@ -287,10 +286,6 @@ namespace graphics
 									  &stride,
 									  &offset);
 
-
-
-		//m_Context->OMSetDepthStencilState(/*m_EnableZ*/, 1);
-		SetDepthState(Engine::GetAPI()->GetDepthStencilState(READ_NO_WRITE), 1);
 		fx->Use();
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
 		fx->Clear();
@@ -313,7 +308,6 @@ namespace graphics
 									  &stride,
 									  &offset);
 
-		SetDepthState(Engine::GetAPI()->GetDepthStencilState(Z_ENABLED), 1);
 		fx->Use();
 		m_Context->Draw(vtx.GetVertexCount(), 0);
 		fx->Clear();
@@ -336,7 +330,6 @@ namespace graphics
 									  &buffer,
 									  &stride,
 									  &offset);
-		SetDepthState(Engine::GetAPI()->GetDepthStencilState(READ_NO_WRITE_PARTICLE), 1);
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
 		fx->Clear();
 	}
@@ -396,14 +389,6 @@ namespace graphics
 									DirectX11::GetFormat(idx.GetFormat()),
 									idx.GetByteOffset());
 
-		graphics::eDepthStencilState depth = Z_DISABLED;
-		s32 depth_compare = 0;
-		if (depth_on)
-		{
-			depth_compare = 1;
-		}
-
-		SetDepthState(Engine::GetAPI()->GetDepthStencilState(depth), depth_compare);
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 	}
 
@@ -417,7 +402,6 @@ namespace graphics
 
 		IASetInputLayout(vtx.GetInputLayout());
 		IASetTopology(vtx.GetTopology());
-
 
 		ID3D11Buffer* pVtxBuffer = static_cast<ID3D11Buffer*>(vtx.GetVertexBuffer());
 		const u32 stride = vtx.GetStride();
@@ -452,6 +436,11 @@ namespace graphics
 		m_Context->OMSetDepthStencilState(static_cast<ID3D11DepthStencilState*>(pDepthStencilState), max_depth);
 	}
 
+	void DX11Context::SetDepthState(eDepthStencilState depth_state, s32 max_depth)
+	{
+		m_Context->OMSetDepthStencilState(static_cast<ID3D11DepthStencilState*>(m_DepthStencilStates[depth_state]), max_depth);
+	}
+
 	void DX11Context::SetRasterizerState(IRasterizerState* pRasterizerState)
 	{
 		m_Context->RSSetState(static_cast<ID3D11RasterizerState*>(pRasterizerState));
@@ -460,6 +449,11 @@ namespace graphics
 	void DX11Context::SetBlendState(IBlendState* pBlendState)
 	{
 		m_Context->OMSetBlendState(static_cast<ID3D11BlendState*>(pBlendState), blendcolor::black, 0xFFFFFFFF);
+	}
+
+	void DX11Context::SetBlendState(eBlendStates blend_state, const float blend_color[4], u32 mask)
+	{
+		m_Context->OMSetBlendState(static_cast<ID3D11BlendState*>(m_BlendStates[blend_state]), blend_color, mask);
 	}
 
 	void DX11Context::SetViewport(Viewport* viewport)
@@ -573,4 +567,10 @@ namespace graphics
 		}
 		m_Context->Unmap(buffer, 0);
 	}
+
+	void DX11Context::SetRasterState(eRasterizer raster_state)
+	{
+		m_Context->RSSetState(static_cast<ID3D11RasterizerState*>(m_RasterizerStates[raster_state]));
+	}
+
 };

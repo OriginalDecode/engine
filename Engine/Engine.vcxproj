@@ -470,6 +470,7 @@
     </ClCompile>
     <ClCompile Include="GraphicsView.cpp" />
     <ClCompile Include="HDRPass.cpp" />
+    <ClCompile Include="IGraphicsContext.cpp" />
     <ClCompile Include="Inspector.cpp" />
     <ClCompile Include="InspectorView.cpp" />
     <ClCompile Include="Instance.cpp" />

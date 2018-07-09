@@ -49,30 +49,6 @@ namespace graphics
 		}
 		m_Swapchain->SetFullscreenState(FALSE, nullptr);
 
-		for (s32 i = 0; i < NOF_BS; i++)
-		{
-			ReleasePtr(m_BlendStates[i]);
-			m_BlendStates[i] = nullptr;
-		}
-
-		for (s32 i = 0; i < NOF_RS; i++)
-		{
-			ReleasePtr(m_RasterizerStates[i]);
-			m_RasterizerStates[i] = nullptr;
-		}
-
-		for (s32 i = 0; i < NOF_SS; i++)
-		{
-			ReleasePtr(m_SamplerStates[i]);
-			m_SamplerStates[i] = nullptr;
-		}
-
-		for (s32 i = 0; i < NOF_DSS; i++)
-		{
-			ReleasePtr(m_DepthStencilStates[i]);
-			m_DepthStencilStates[i] = nullptr;
-		}
-
 		ReleasePtr(m_DefaultDepthView);
 		ReleasePtr(m_DefaultRenderTarget);
 		ReleasePtr(m_DefaultDepthBuffer);
@@ -406,6 +382,7 @@ namespace graphics
 	{
 		if (!ptr)
 			return;
+
 		IUnknown* pUnknown = static_cast<IUnknown*>(ptr);
 		pUnknown->Release();
 	}
@@ -607,9 +584,12 @@ namespace graphics
 	void DirectX11::CreateRasterizerState(const D3D11_RASTERIZER_DESC& desc, eRasterizer rasterizer, const char* debugname)
 	{
 		ID3D11Device* pDevice = static_cast<DX11Device*>(m_Device)->GetDevice();
+		DX11Context* ctx = static_cast<DX11Context*>(m_Context);
+
+
 		ID3D11RasterizerState* rasterstate = nullptr;
 		pDevice->CreateRasterizerState(&desc, &rasterstate);
-		m_Context->m_RasterizerStates[rasterizer] = rasterstate;
+		ctx->m_RasterizerStates[rasterizer] = rasterstate;
 #ifdef _DEBUG
 		SetDebugName(rasterstate, debugname);
 #endif

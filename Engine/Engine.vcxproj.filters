@@ -763,5 +763,6 @@
       <Filter>Memory</Filter>
     </ClCompile>
     <ClCompile Include="DownsamplePass.cpp" />
+    <ClCompile Include="IGraphicsContext.cpp" />
   </ItemGroup>
 </Project>

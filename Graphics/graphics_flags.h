@@ -2,6 +2,7 @@
 
 namespace graphics
 {
+
 	enum eDepthStencilState
 	{
 		Z_ENABLED,
@@ -46,6 +47,33 @@ namespace graphics
 		POINT_WRAP,
 		NOF_SS
 	};
+
+	struct SamplerState
+	{
+
+
+		enum ShaderBinding
+		{
+			VERTEX_SHADER,
+			FRAGMENT_SHADER,
+			GEOMETRY_SHADER,
+			HULL_SHADER,
+			DOMAIN_SHADER,
+			COMPUTE_SHADER
+		};
+
+		SamplerState() = default;
+		SamplerState(eSamplerStates sampler_state, ShaderBinding binding)
+			: m_SamplerState(sampler_state)
+			, m_ShaderBinding(binding)
+		{
+		}
+
+		ShaderBinding m_ShaderBinding;
+		eSamplerStates m_SamplerState;
+
+	};
+
 
 	enum eTopology
 	{

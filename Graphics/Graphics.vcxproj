@@ -124,7 +124,7 @@
     <ClInclude Include="AtmospherePass.h" />
     <ClInclude Include="DebugRenderer.h" />
     <ClInclude Include="graphics_flags.h" />
-    <ClInclude Include="IRenderPass.h" />
+    <ClInclude Include="RenderPass.h" />
     <ClInclude Include="LightPass.h" />
   </ItemGroup>
   <ItemGroup>

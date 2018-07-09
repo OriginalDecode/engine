@@ -25,6 +25,7 @@ namespace CommonUtilities
 		inline const ObjectType& operator[](const SizeType& aIndex) const;
 
 		inline void Add(const ObjectType& aObject);
+
 		inline void Insert(SizeType aIndex, ObjectType& aObject);
 		inline void DeleteCyclic(ObjectType& aObject);
 		inline void DeleteCyclicAtIndex(SizeType aItemNumber);
@@ -68,6 +69,7 @@ namespace CommonUtilities
 		SizeType myCapacity = 16;
 		SizeType mySize = 0;
 	};
+
 
 	template<typename ObjectType, typename SizeType /*= int*/>
 	const bool CommonUtilities::GrowingArray<ObjectType, SizeType>::Find(const ObjectType& obj) const

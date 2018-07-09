@@ -16,12 +16,13 @@ class Effect;
 
 namespace graphics
 {
-	
-
 	class IGraphicsContext
 	{
 		friend class IGraphicsAPI;
 	public:
+
+		~IGraphicsContext();
+
 		virtual void VSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void PSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void GSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
@@ -51,7 +52,14 @@ namespace graphics
 		virtual void DSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
 		virtual void CSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) = 0;
 
+
+		virtual void VSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
 		virtual void PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
+		virtual void GSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
+		virtual void HSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
+		virtual void DSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
+		virtual void CSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) = 0;
+
 
 
 		virtual void IASetInputLayout(IInputLayout* input_layout) = 0;
@@ -120,9 +128,7 @@ namespace graphics
 		IRasterizerState* m_RasterizerStates[NOF_RS];
 		IBlendState* m_BlendStates[NOF_BS];
 
-
 	};
-
 	
 
 	template<typename T>

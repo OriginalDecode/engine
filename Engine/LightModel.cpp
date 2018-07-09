@@ -39,7 +39,7 @@ void LightModel::Render(const graphics::RenderContext& rc)
 	//ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
 	//ctx.PSSetSamplerState(0, 1, &pSampler);
 	//ctx.SetBlendState(rc.GetAPI().GetBlendState(graphics::LIGHT_BLEND)); //alpha blend does not work
-	ctx.Draw(this, m_Effect);
+	//ctx.Draw(this, m_Effect);
 }
 
 void LightModel::AddChild(LightModel* aChild)

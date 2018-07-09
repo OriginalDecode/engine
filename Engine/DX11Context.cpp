@@ -17,6 +17,7 @@ namespace graphics
 		: m_Context(context)
 	{
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::VSSetShaderResource(s32 start_slot, s32 count, void* resources)
 	{
@@ -30,6 +31,7 @@ namespace graphics
 			m_Context->VSSetShaderResources(start_slot, count, &null_resource);
 		}
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::PSSetShaderResource(s32 start_slot, s32 count, void* resources)
 	{
@@ -43,6 +45,7 @@ namespace graphics
 			m_Context->PSSetShaderResources(start_slot, count, &null_resource);
 		}
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::GSSetShaderResource(s32 start_slot, s32 count, void* resources)
 	{
@@ -56,6 +59,7 @@ namespace graphics
 			m_Context->GSSetShaderResources(start_slot, count, &null_resource);
 		}
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::DSSetShaderResource(s32 start_slot, s32 count, void* resources)
 	{
@@ -70,6 +74,7 @@ namespace graphics
 		}
 		//m_Context->DSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::HSSetShaderResource(s32 start_slot, s32 count, void* resources)
 	{
@@ -84,6 +89,7 @@ namespace graphics
 		}
 		//m_Context->HSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::CSSetShaderResource(s32 start_slot, s32 count, void* resources)
 	{
@@ -98,112 +104,157 @@ namespace graphics
 		}
 		//m_Context->CSSetShaderResources(start_slot, count, static_cast<ID3D11ShaderResourceView*const*>(resources));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetVertexShader(CompiledShader* shader)
 	{
 		m_Context->VSSetShader(shader ? static_cast<ID3D11VertexShader*>(shader->m_Shader) : nullptr, nullptr, 0);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetPixelShader(CompiledShader* shader)
 	{
 		m_Context->PSSetShader(shader ? static_cast<ID3D11PixelShader*>(shader->m_Shader) : nullptr, nullptr, 0);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetGeometryShader(CompiledShader* shader)
 	{
 		m_Context->GSSetShader(shader ? static_cast<ID3D11GeometryShader*>(shader->m_Shader) : nullptr, nullptr, 0);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetHullShader(CompiledShader* shader)
 	{
 		m_Context->HSSetShader(shader ? static_cast<ID3D11HullShader*>(shader->m_Shader) : nullptr, nullptr, 0);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetDomainShader(CompiledShader* shader)
 	{
 		m_Context->DSSetShader(shader ? static_cast<ID3D11DomainShader*>(shader->m_Shader) : nullptr, nullptr, 0);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetComputeShader(CompiledShader* shader)
 	{
 		m_Context->CSSetShader(shader ? static_cast<ID3D11ComputeShader*>(shader->m_Shader) : nullptr, nullptr, 0);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::VSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
 	{
-		PROFILE_FUNCTION(profiler::colors::Amber);
 		m_Context->VSSetConstantBuffers(start_index, buffer_count, static_cast<ID3D11Buffer*const*>(pBuffer));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::PSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
 	{
-		PROFILE_FUNCTION(profiler::colors::Blue);
 		m_Context->PSSetConstantBuffers(start_index, buffer_count, static_cast<ID3D11Buffer*const*>(pBuffer));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::GSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
 	{
-		PROFILE_FUNCTION(profiler::colors::Brick);
 		m_Context->GSSetConstantBuffers(start_index, buffer_count, static_cast<ID3D11Buffer*const*>(pBuffer));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::HSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
 	{
-		PROFILE_FUNCTION(profiler::colors::Coral);
 		m_Context->HSSetConstantBuffers(start_index, buffer_count, static_cast<ID3D11Buffer*const*>(pBuffer));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::DSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
 	{
-		PROFILE_FUNCTION(profiler::colors::DeepOrange);
 		m_Context->DSSetConstantBuffers(start_index, buffer_count, static_cast<ID3D11Buffer*const*>(pBuffer));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::CSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
 	{
-		PROFILE_FUNCTION(profiler::colors::Lime);
 		m_Context->CSSetConstantBuffers(start_index, buffer_count, static_cast<ID3D11Buffer*const*>(pBuffer));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::VSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->VSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
+	//_______________________________________________________________________
+
+	void DX11Context::VSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
+	{
+		VSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
+	}
+	//_______________________________________________________________________
 
 	void DX11Context::PSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->PSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
 	{
 		PSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::GSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->GSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
+	//_______________________________________________________________________
+
+	void DX11Context::GSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
+	{
+		GSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
+	}
+	//_______________________________________________________________________
 
 	void DX11Context::HSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->HSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
+	//_______________________________________________________________________
+
+	void DX11Context::HSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
+	{
+		HSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
+	}
+	//_______________________________________________________________________
 
 	void DX11Context::DSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->DSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
+	//_______________________________________________________________________
+
+	void DX11Context::DSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
+	{
+		DSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
+	}
+	//_______________________________________________________________________
 
 	void DX11Context::CSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers)
 	{
 		m_Context->CSSetSamplers(start_index, sampler_count, static_cast<ID3D11SamplerState*const*>(pSamplers));
 	}
+	//_______________________________________________________________________
+
+	void DX11Context::CSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate)
+	{
+		CSSetSamplerState(start_index, sampler_count, &m_SamplerStates[samplerstate]);
+	}
+	//_______________________________________________________________________
 
 	void DX11Context::IASetInputLayout(IInputLayout* input_layout)
 	{
 		m_Context->IASetInputLayout(static_cast<ID3D11InputLayout*>(input_layout));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::IASetTopology(eTopology topology)
 	{
@@ -217,11 +268,13 @@ namespace graphics
 									  static_cast<ID3D11RenderTargetView*const*>(render_targets),
 									  static_cast<ID3D11DepthStencilView*>(dsv));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::OMSetRenderTargets(s32 num_views, Texture* render_targets, Texture* dsv)
 	{
 		OMSetRenderTargets(num_views, render_targets->GetRenderTargetView(), dsv->GetDepthStencilView());
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::UpdateConstantBuffer(IBuffer*& dest, void* src, s32 size, s32 byte_place_in_buffer)
 	{
@@ -237,6 +290,7 @@ namespace graphics
 		}
 		m_Context->Unmap(buffer, 0);
 	}
+	//_______________________________________________________________________
 
 	s8* DX11Context::Map(IBuffer* in_buffer)
 	{
@@ -249,26 +303,31 @@ namespace graphics
 
 		return static_cast<s8*>(msr.pData);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::Unmap(IBuffer* buffer)
 	{
 		m_Context->Unmap(static_cast<ID3D11Buffer*>(buffer), 0);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::ClearRenderTarget(IRenderTargetView* render_target, const float clear_color[4])
 	{
 		m_Context->ClearRenderTargetView(static_cast<ID3D11RenderTargetView*>(render_target), clear_color);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::ClearRenderTarget(Texture* render_target, const float clear_color[4])
 	{
 		ClearRenderTarget(render_target->GetRenderTargetView(), clear_color);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::ClearDepthStencilView(IDepthStencilView* dsv, s32 clear_flag, s32 max_depth)
 	{
 		m_Context->ClearDepthStencilView(static_cast<ID3D11DepthStencilView*>(dsv), clear_flag, max_depth, 0);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::Draw(BaseModel* model, Effect* fx)
 	{
@@ -290,6 +349,7 @@ namespace graphics
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
 		fx->Clear();
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::Draw(Line3D* line, bool depth_on /*= true*/)
 	{
@@ -312,6 +372,7 @@ namespace graphics
 		m_Context->Draw(vtx.GetVertexCount(), 0);
 		fx->Clear();
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::Draw(CEmitterInstance* emitter)
 	{
@@ -333,6 +394,7 @@ namespace graphics
 		m_Context->Draw(vtx.GetVertexCount(), vtx.GetStart());
 		fx->Clear();
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::DrawIndexed(CFont* font, Effect* effect)
 	{
@@ -363,6 +425,7 @@ namespace graphics
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 		effect->Clear();
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::DrawIndexed(Quad* quad, bool depth_on)
 	{
@@ -391,6 +454,7 @@ namespace graphics
 
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::DrawIndexed(BaseModel* model, Effect* fx)
 	{
@@ -430,31 +494,37 @@ namespace graphics
 
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetDepthState(IDepthStencilState* pDepthStencilState, s32 max_depth)
 	{
 		m_Context->OMSetDepthStencilState(static_cast<ID3D11DepthStencilState*>(pDepthStencilState), max_depth);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetDepthState(eDepthStencilState depth_state, s32 max_depth)
 	{
 		m_Context->OMSetDepthStencilState(static_cast<ID3D11DepthStencilState*>(m_DepthStencilStates[depth_state]), max_depth);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetRasterizerState(IRasterizerState* pRasterizerState)
 	{
 		m_Context->RSSetState(static_cast<ID3D11RasterizerState*>(pRasterizerState));
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetBlendState(IBlendState* pBlendState)
 	{
 		m_Context->OMSetBlendState(static_cast<ID3D11BlendState*>(pBlendState), blendcolor::black, 0xFFFFFFFF);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetBlendState(eBlendStates blend_state, const float blend_color[4], u32 mask)
 	{
 		m_Context->OMSetBlendState(static_cast<ID3D11BlendState*>(m_BlendStates[blend_state]), blend_color, mask);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetViewport(Viewport* viewport)
 	{
@@ -471,6 +541,7 @@ namespace graphics
 
 		m_Context->RSSetViewports(1, vp);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::DrawInstanced(BaseModel* model, Effect* fx)
 	{
@@ -485,11 +556,13 @@ namespace graphics
 		if (fx)
 			fx->Clear();
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::DrawIndexedInstanced(BaseModel* model, Effect* fx)
 	{
 		std::bad_function_call;
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::DrawIndexedInstanced(Model* model, Effect* fx /*= nullptr*/)
 	{
@@ -538,6 +611,7 @@ namespace graphics
 		m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
 
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::_InternalUpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size)
 	{
@@ -553,6 +627,7 @@ namespace graphics
 		}
 		m_Context->Unmap(buffer, 0);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::_InternalUpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping)
 	{
@@ -567,6 +642,7 @@ namespace graphics
 		}
 		m_Context->Unmap(buffer, 0);
 	}
+	//_______________________________________________________________________
 
 	void DX11Context::SetRasterState(eRasterizer raster_state)
 	{

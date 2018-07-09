@@ -1,5 +1,5 @@
 #pragma once
-#include "IRenderPass.h"
+#include "RenderPass.h"
 
 //extern IRenderTargetView;
 
@@ -7,7 +7,7 @@ class SpotLight;
 class PointLight;
 namespace graphics
 {
-	class LightPass : public IRenderPass
+	class LightPass : public RenderPass
 	{
 	public:
 
@@ -26,7 +26,4 @@ namespace graphics
 
 
 	};
-
-
 };
-

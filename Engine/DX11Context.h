@@ -12,6 +12,8 @@ namespace graphics
 		friend class DirectX11;
 	public:
 		DX11Context(ID3D11DeviceContext* context);
+
+
 		void VSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
 		void PSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
 		void GSSetShaderResource(s32 start_slot, s32 count, void* resources) override;
@@ -35,11 +37,20 @@ namespace graphics
 
 		void VSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 		void PSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
-		void PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
 		void GSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 		void HSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 		void DSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
 		void CSSetSamplerState(s32 start_index, s32 sampler_count, ISamplerState* pSamplers) override;
+
+
+
+		void VSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
+		void PSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
+		void GSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
+		void HSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
+		void DSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
+		void CSSetSamplerState(s32 start_index, s32 sampler_count, eSamplerStates samplerstate) override;
+
 
 
 		void IASetInputLayout(IInputLayout* input_layout) override;

@@ -4,7 +4,7 @@
 namespace graphics
 {
 	AtmospherePass::AtmospherePass(eRenderPass pass, IGraphicsContext* ctx)
-		: IRenderPass(pass, ctx)
+		: RenderPass(pass, ctx)
 	{
 
 

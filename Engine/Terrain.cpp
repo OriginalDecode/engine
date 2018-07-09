@@ -163,7 +163,7 @@ void Terrain::Render(const graphics::RenderContext& rc, bool override_shader)
 
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 	//UpdateConstantBuffer(rc);
-	ctx.PSSetSamplerState(0, 1, rc.GetEngine().GetActiveSampler());
+	//ctx.PSSetSamplerState(0, 1, rc.GetEngine().GetActiveSampler());
 
 	if (!override_shader)
 	{

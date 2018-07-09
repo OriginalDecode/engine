@@ -7,7 +7,7 @@
 #include <Engine/Engine.h>
 #include <Engine/IGraphicsDevice.h>
 
-#define SLEEP_TIME 1000
+constexpr float SLEEP_TIME = 1000.f;
 ShaderFactory::ShaderFactory()
 {
 #ifndef _FINAL 
@@ -169,8 +169,7 @@ CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const 
  	return new CompiledShader(compiled_shader,
 							  Engine::GetInstance()->CreateShader(compiled_shader, type, file_path.c_str()), 
 							  type, 
-							  entrypoint.c_str(), 
-							  graphics::MSAA_x16);
+							  entrypoint.c_str());
 }
 
 #ifndef FINAL 

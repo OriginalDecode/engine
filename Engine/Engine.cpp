@@ -42,6 +42,9 @@
 #include <Engine/AssetFactory.h>
 #include <network/NetworkManager.h>
 #include <Engine/RenderCommand.h>
+
+#include "../Graphics/DebugRenderer.h"
+
 bool Engine::HasInitiated()
 {
 	return true;
@@ -52,6 +55,12 @@ Engine::Engine()
 	, m_CameraUseMouse(false)
 	, m_RenderInstanced(true)
 {
+	DebugRenderer::Create();
+}
+
+Engine::~Engine()
+{
+	DebugRenderer::Destroy();
 }
 
 Engine* Engine::myInstance = nullptr;

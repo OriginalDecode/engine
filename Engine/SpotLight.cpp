@@ -7,36 +7,17 @@
 #include <Engine/Quad.h>
 
 #ifdef _DEBUG
-#include <Engine/Synchronizer.h>
+#include "../Graphics/DebugRenderer.h"
 #endif
-
-static bool s_Wireframe = false;
-
-const float c0 = cosf(cl::DegreeToRad(0.f));
-const float c90 = cosf(cl::DegreeToRad(90.f));
-const float c180 = cosf(cl::DegreeToRad(180.f));
-const float c270 = cosf(cl::DegreeToRad(270.f));
-
-const float s0 = sinf(cl::DegreeToRad(0.f));
-const float s90 = sinf(cl::DegreeToRad(90.f));
-const float s180 = sinf(cl::DegreeToRad(180.f));
-const float s270 = sinf(cl::DegreeToRad(270.f));
-
-
 
 SpotLight::SpotLight()
 {
 	Engine* pEngine = Engine::GetInstance();
 	u64 key = pEngine->LoadModel<LightModel>("Data/Model/lightMeshes/cone.fbx", "Shaders/deferred_spotlight.json", false);
-
-	int* apa = new int;
-	
+		
 	m_Model = pEngine->GetModel<Model>(key);
 	LightModel* model = static_cast<LightModel*>(m_Model.GetData());
 	model->Initiate("cone.fbx");
-
-
-
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 
@@ -60,8 +41,7 @@ SpotLight::SpotLight()
 	// 	{
 	// 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	// 		{ "ANGLE", 0, DXGI_FORMAT_R32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	// 		{ "RANGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	// 		{ "DIRECTION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	// 		{ "RANGE", 0, DXGI_FORMA
 	// 	};
 	// 
 	// 	m_InputLayout = Engine::GetAPI()->CreateInputLayout(shader->compiledShader, shader->shaderSize, layout, ARRAYSIZE(layout));
@@ -71,7 +51,8 @@ SpotLight::SpotLight()
 	// 	m_VertexBuffer.myNrOfBuffers = 1;
 	// 	m_VertexBuffer.myByteOffset = 0;
 	// 
-	// 	m_VertexData.myNrOfVertexes = 1;
+	// 	m_VertexData.myNrOfVertexes = 1;T_R32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	// 		{ "DIRECTION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	// 	m_VertexData.myStride = sizeof(spotlight);
 	// 	m_VertexData.mySize = m_VertexData.myNrOfVertexes * m_VertexData.myStride;
 	// 	m_VertexData.myVertexData = new s8[m_VertexData.mySize];
@@ -149,7 +130,11 @@ void SpotLight::Render(const graphics::RenderContext& render_context)
  	m_LightQuad->Render(true);
 #endif
 #ifdef _DEBUG
-	RenderDebugCone();
+
+
+	DebugRenderer::GetInstance()->DrawCone(myData.myOrientation, { 0.72f, 1.0f, 0.5f, 1.f }, myData.myRange, myData.myAngle);
+
+	//RenderDebugCone();
 #endif
 
 }
@@ -171,73 +156,73 @@ const SpotlightData& SpotLight::GetData() const
 {
 	return myData;
 }
-
-#ifdef _DEBUG
-void SpotLight::RenderDebugCone()
-{
-
-	Synchronizer* sync = Engine::GetInstance()->GetSynchronizer();
-
-	const CU::Vector4f col = { 0.72f, 0.51f,  0.25f, 1.f };
-	const int sides = 32;
-	const float range = myData.myRange;
-	const float theta = tan(myData.myAngle);
-	const float halfwidth = theta * myData.myRange;
-	const int _360 = 360;
-	const int max = _360 / sides;
-
-
-	LinePoint lamp;
-	lamp.color = col;
-	lamp.position = myData.myOrientation.GetPosition();
-
-	LinePoint _0deg, _90deg, _180deg, _270deg;
-	_0deg.color = _90deg.color = _180deg.color = _270deg.color = col;
-
-
-	const float y_pos = range;
-
-
-	_0deg.position = { c0 * halfwidth, y_pos, s0 * halfwidth, 1 };
-	_90deg.position = { c90 * halfwidth, y_pos, s90 * halfwidth, 1 };
-	_180deg.position = { c180 * halfwidth, y_pos, s180 * halfwidth, 1 };
-	_270deg.position = { c270 * halfwidth, y_pos, s270 * halfwidth, 1 };
-
-
-	CU::Matrix44f _rot = myData.myOrientation;
-	_rot = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * _rot;
-
-	_0deg.position = _0deg.position	 * _rot;
-	_90deg.position = _90deg.position	 * _rot;
-	_180deg.position = _180deg.position * _rot;
-	_270deg.position = _270deg.position * _rot;
-
-	sync->AddRenderCommand(LineCommand(lamp, _0deg, true));
-	sync->AddRenderCommand(LineCommand(lamp, _90deg, true));
-	sync->AddRenderCommand(LineCommand(lamp, _180deg, true));
-	sync->AddRenderCommand(LineCommand(lamp, _270deg, true));
-
-
-	for (int i = 0; i < _360; i += max)
-	{
-
-		LinePoint p0, p1;
-		p0.color = col;
-		p1.color = col;
-
-		const float x = cl::DegreeToRad(static_cast<float>(i));
-		const float y = cl::DegreeToRad(static_cast<float>(i + max));
-
-		p0.position = { cosf(x) * halfwidth, y_pos, sinf(x) * halfwidth, 1.f };
-		p1.position = { cosf(y) * halfwidth, y_pos , sinf(y) * halfwidth, 1.f };
-
-		p0.position = p0.position * _rot;
-		p1.position = p1.position * _rot;
-
-		sync->AddRenderCommand(LineCommand(p0, p1, true));
-	}
-}
-#endif
+//
+//#ifdef _DEBUG
+//void SpotLight::RenderDebugCone()
+//{
+//
+//	Synchronizer* sync = Engine::GetInstance()->GetSynchronizer();
+//
+//	const CU::Vector4f col = { 0.72f, 0.51f,  0.25f, 1.f };
+//	const int sides = 32;
+//	const float range = myData.myRange;
+//	const float theta = tan(myData.myAngle);
+//	const float halfwidth = theta * myData.myRange;
+//	const int _360 = 360;
+//	const int max = _360 / sides;
+//
+//
+//	LinePoint lamp;
+//	lamp.color = col;
+//	lamp.position = myData.myOrientation.GetPosition();
+//
+//	LinePoint _0deg, _90deg, _180deg, _270deg;
+//	_0deg.color = _90deg.color = _180deg.color = _270deg.color = col;
+//
+//
+//	const float y_pos = range;
+//
+//
+//	_0deg.position = { c0 * halfwidth, y_pos, s0 * halfwidth, 1 };
+//	_90deg.position = { c90 * halfwidth, y_pos, s90 * halfwidth, 1 };
+//	_180deg.position = { c180 * halfwidth, y_pos, s180 * halfwidth, 1 };
+//	_270deg.position = { c270 * halfwidth, y_pos, s270 * halfwidth, 1 };
+//
+//
+//	CU::Matrix44f _rot = myData.myOrientation;
+//	_rot = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(90.f)) * _rot;
+//
+//	_0deg.position = _0deg.position	 * _rot;
+//	_90deg.position = _90deg.position	 * _rot;
+//	_180deg.position = _180deg.position * _rot;
+//	_270deg.position = _270deg.position * _rot;
+//
+//	sync->AddRenderCommand(LineCommand(lamp, _0deg, true));
+//	sync->AddRenderCommand(LineCommand(lamp, _90deg, true));
+//	sync->AddRenderCommand(LineCommand(lamp, _180deg, true));
+//	sync->AddRenderCommand(LineCommand(lamp, _270deg, true));
+//
+//
+//	for (int i = 0; i < _360; i += max)
+//	{
+//
+//		LinePoint p0, p1;
+//		p0.color = col;
+//		p1.color = col;
+//
+//		const float x = cl::DegreeToRad(static_cast<float>(i));
+//		const float y = cl::DegreeToRad(static_cast<float>(i + max));
+//
+//		p0.position = { cosf(x) * halfwidth, y_pos, sinf(x) * halfwidth, 1.f };
+//		p1.position = { cosf(y) * halfwidth, y_pos , sinf(y) * halfwidth, 1.f };
+//
+//		p0.position = p0.position * _rot;
+//		p1.position = p1.position * _rot;
+//
+//		sync->AddRenderCommand(LineCommand(p0, p1, true));
+//	}
+//}
+//#endif
 
 void SpotLight::SetPosition(const CU::Vector3f& aPosition)
 {

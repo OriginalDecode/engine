@@ -8,26 +8,30 @@ namespace graphics
 {
 	class GBuffer;
 	class RenderContext;
+};
+
+namespace graphics_deprecated
+{
 
 	class LightPass
 	{
 	public:
-		LightPass(const GBuffer& gbuffer);
+		LightPass(const graphics::GBuffer& gbuffer);
 		~LightPass();
 
 		void RenderPointlight(PointLight* pointlight, 
 							  const CU::Matrix44f& camera_view, 
 							  const CU::Matrix44f& camera_projection, 
 							  const CU::Matrix44f& shadow_matrix, 
-							  const RenderContext& render_context);
-		void RenderSpotlight(SpotLight* spotlight, const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
+							  const graphics::RenderContext& render_context);
+		void RenderSpotlight(SpotLight* spotlight, const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_matrix, const graphics::RenderContext& render_context);
 
 		Effect* GetPointlightEffect();
 		Effect* GetSpotlightEffect();
 
 	private:
-		void UpdatePointlightBuffers(PointLight* pointlight, const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
-		void UpdateSpotlightBuffers(SpotLight* spotlight, const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_matrix, const RenderContext& render_context);
+		void UpdatePointlightBuffers(PointLight* pointlight, const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_matrix, const graphics::RenderContext& render_context);
+		void UpdateSpotlightBuffers(SpotLight* spotlight, const CU::Matrix44f& camera_view, const CU::Matrix44f& camera_projection, const CU::Matrix44f& shadow_matrix, const graphics::RenderContext& render_context);
 
 		struct PointlightConstantBuffer
 		{

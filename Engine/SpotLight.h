@@ -23,7 +23,7 @@ public:
 	bool ShadowCasting() { return ( m_ShadowSpotlight ? true : false ); }
 
 private:
-	void RenderDebugCone();
+	//void RenderDebugCone(); //Move to debug renderer
 
 	void SetPosition(const CU::Vector3f& aPosition);
 	void SetDirection(const CU::Vector4f& aDirection);

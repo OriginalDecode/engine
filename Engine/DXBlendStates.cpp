@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "DirectX11.h"
 #include <Engine/DX11Device.h>
+#include <Engine/DX11Context.h>
 namespace graphics
 {
 	void DirectX11::CreateBlendStates()
 	{
 		ID3D11Device* device = static_cast<DX11Device*>(m_Device)->GetDevice();
+		DX11Context* ctx = static_cast<DX11Context*>(m_Context);
 
 
 		D3D11_BLEND_DESC blendDesc;
@@ -24,7 +26,7 @@ namespace graphics
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
 		ID3D11BlendState* blend_state = nullptr;
 		device->CreateBlendState(&blendDesc, &blend_state);
-		m_BlendStates[NO_BLEND] = blend_state;
+		ctx->m_BlendStates[NO_BLEND] = blend_state;
 #ifndef FINAL
 		SetDebugName(blend_state, "NO_BLEND BlendState");
 #endif
@@ -42,7 +44,7 @@ namespace graphics
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
 		blend_state = nullptr;
 		device->CreateBlendState(&blendDesc, &blend_state);
-		m_BlendStates[LIGHT_BLEND] = blend_state;
+		ctx->m_BlendStates[LIGHT_BLEND] = blend_state;
 #ifndef FINAL
 		SetDebugName(blend_state, "LIGHT_BLEND BlendState");
 #endif
@@ -61,14 +63,14 @@ namespace graphics
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
 		blend_state = nullptr;
 		device->CreateBlendState(&blendDesc, &blend_state);
-		m_BlendStates[ALPHA_BLEND] = blend_state;
+		ctx->m_BlendStates[ALPHA_BLEND] = blend_state;
 #ifndef FINAL
 		SetDebugName(blend_state, "ALPHA_BLEND BlendState");
 #endif
 		blendDesc.RenderTarget[0].BlendEnable = FALSE;
 		blend_state = nullptr;
 		device->CreateBlendState(&blendDesc, &blend_state);
-		m_BlendStates[BLEND_FALSE] = blend_state;
+		ctx->m_BlendStates[BLEND_FALSE] = blend_state;
 #ifndef FINAL
 		SetDebugName(blend_state, "BLEND_FALSE BlendState");
 #endif
@@ -87,7 +89,7 @@ namespace graphics
 
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
 		device->CreateBlendState(&blendDesc, &blend_state);
-		m_BlendStates[PARTICLE_BLEND] = blend_state;
+		ctx->m_BlendStates[PARTICLE_BLEND] = blend_state;
 #ifndef FINAL
 		SetDebugName(blend_state, "PARTICLE_BLEND BlendState");
 #endif

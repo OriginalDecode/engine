@@ -122,11 +122,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AtmospherePass.h" />
+    <ClInclude Include="DebugRenderer.h" />
     <ClInclude Include="graphics_flags.h" />
     <ClInclude Include="IRenderPass.h" />
+    <ClInclude Include="LightPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AtmospherePass.cpp" />
+    <ClCompile Include="DebugRenderer.cpp" />
+    <ClCompile Include="LightPass.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

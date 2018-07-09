@@ -60,7 +60,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Line = new Line3D;
 	m_Line->Initiate();
 
-	m_LightPass = new graphics::LightPass(m_GBuffer);
+	m_LightPass = new graphics_deprecated::LightPass(m_GBuffer);
 
 	m_ParticleEmitter = new CEmitterInstance;
 	m_ParticleEmitter->Initiate(m_Synchronizer, m_DepthTexture);
@@ -171,9 +171,9 @@ void Renderer::PrepareFrame()
 	m_RenderContext.GetAPI().ResetViewport();
 
 
-	const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
-	const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
-	CU::Matrix44f camera_view_proj = CU::Math::Inverse(camera_orientation) * camera_projection;
+	//const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
+	//const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
+	//CU::Matrix44f camera_view_proj = CU::Math::Inverse(camera_orientation) * camera_projection;
 
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
@@ -193,7 +193,7 @@ void Renderer::Render()
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
 	m_TerrainSystem->Update(); //should not be updated here
-	m_TerrainSystem->Draw(); //draws on the backbuffer?
+	m_TerrainSystem->Draw();
 
 	Render3DCommands();
 	m_InstancingManager.DoInstancing(m_RenderContext, false);
@@ -230,10 +230,6 @@ void Renderer::Render()
 	IDepthStencilView* pDepthStencil = m_RenderContext.GetAPI().GetDepthView();
 	m_RenderContext.GetContext().OMSetRenderTargets(1, &pRenderTarget, pDepthStencil);
 
-
-
-	//RenderParticles(nullptr);
-
 	if (m_PostProcessManager.GetFlags() != 0)
 	{
 		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
@@ -243,12 +239,6 @@ void Renderer::Render()
 		m_RenderContext.GetAPI().SetDefaultTargets();
 		m_DeferredRenderer->Finalize();
 	}
-
-#if !defined(_PROFILE) && !defined(_FINAL)
-	//Detect edges on specified texture
-	//m_PostProcessManager.Process(m_HoverTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
-	//m_PostProcessManager.Process(m_SelectedTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
-#endif
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
 	RenderLines();

@@ -153,6 +153,11 @@ namespace cl
 		return aDegree * (3.1415926535f / 180);
 	}
 
+	constexpr float _DegToRad(const float x)
+	{
+		return x * (3.14f / 180.f);
+	}
+
 	CU::Vector2f Bezier(CU::Vector2f p1, CU::Vector2f p2, CU::Vector2f p3, float t)
 	{
 		float xa = CalcPointOnCurve(p1.x, p2.x, t);

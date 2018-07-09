@@ -35,10 +35,10 @@ void LightModel::Render(const graphics::RenderContext& rc)
 		return;
 
 	//UpdateConstantBuffer(rc);
-	graphics::IGraphicsContext& ctx = rc.GetContext();
-	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
-	ctx.PSSetSamplerState(0, 1, &pSampler);
-	ctx.SetBlendState(rc.GetAPI().GetBlendState(graphics::LIGHT_BLEND)); //alpha blend does not work
+	//graphics::IGraphicsContext& ctx = rc.GetContext();
+	//ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
+	//ctx.PSSetSamplerState(0, 1, &pSampler);
+	//ctx.SetBlendState(rc.GetAPI().GetBlendState(graphics::LIGHT_BLEND)); //alpha blend does not work
 	ctx.Draw(this, m_Effect);
 }
 

@@ -99,7 +99,7 @@ private:
 	graphics::GBuffer m_GBuffer;
 	graphics::RenderContext		m_RenderContext;
 
-	graphics::LightPass*		m_LightPass = nullptr;
+	graphics_deprecated::LightPass*		m_LightPass = nullptr;
 	ShadowPass					m_ShadowPass;
 
 	PostProcessManager			m_PostProcessManager;

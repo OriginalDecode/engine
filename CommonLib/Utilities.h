@@ -126,8 +126,7 @@ namespace cl
 	float RadToDegree(float aRadian);
 	float DegreeToRad(float aDegree);
 
-
-
+	constexpr float _DegToRad(const float x);
 
 	float CalcPointOnCurve(float x, float y, float t);
 	CU::Vector2f Bezier(CU::Vector2f p1, CU::Vector2f p2, CU::Vector2f p3, float t);

@@ -7,6 +7,9 @@ enum eRenderPass
 	GBUFFER,
 	ATMOSPHERE,
 	AMBIENT,
+
+	LIGHTPASS,
+
 	DIRECTIONALLIGHT,
 	SPOTLIGHT,
 	POINTLIGHT,
@@ -41,7 +44,7 @@ namespace graphics
 			m_RasterState = raster_state;
 		}
 
-		virtual void SetBlendState(eBlendStates blend_state, const float blend_color[4], unsigned int mask)
+		virtual void SetBlendState(eBlendStates blend_state, const float blend_color[4] = blendcolor::black, unsigned int mask = 0xFFFFFFFF)
 		{
 			m_BlendState = blend_state;
 			m_BlendMask = mask;
@@ -57,7 +60,12 @@ namespace graphics
 			m_SamplerState = sampler_state;
 		}
 
+		virtual void Update() = 0;
+
 	protected:
+		//IRenderPass(IRenderTargetView* rtv, IDepthStencilView* dsv);
+
+
 		eRenderPass m_RenderPass = NOF_RENDERPASS;
 		IGraphicsContext* m_Context = nullptr;
 
@@ -81,7 +89,7 @@ namespace graphics
 		
 
 		IRenderTargetView* m_RenderTarget = nullptr;
-		IDepthStencilView* m_Depthview = nullptr;
+		IDepthStencilView* m_DepthView = nullptr;
 
 
 	};

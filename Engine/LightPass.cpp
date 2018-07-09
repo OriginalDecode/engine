@@ -5,9 +5,9 @@
 #include <Engine/engine_shared.h>
 #include <Engine/GBuffer.h>
 
-namespace graphics
+namespace graphics_deprecated
 {
-	LightPass::LightPass(const GBuffer& gbuffer)
+	LightPass::LightPass(const graphics::GBuffer& gbuffer)
 	{
 		m_Effect[POINTLIGHT] = Engine::GetInstance()->GetEffect("Shaders/deferred_pointlight.json");
 		m_Effect[POINTLIGHT]->AddShaderResource(gbuffer.GetDiffuse(), Effect::DIFFUSE);
@@ -51,7 +51,7 @@ namespace graphics
 									 const CU::Matrix44f& camera_view,
 									 const CU::Matrix44f& camera_projection,
 									 const CU::Matrix44f& shadow_matrix,
-									 const RenderContext& render_context) 
+									 const graphics::RenderContext& render_context)
 	{
 		UpdatePointlightBuffers(pointlight, camera_view, camera_projection, shadow_matrix, render_context);
 		pointlight->Render(camera_view, camera_projection, render_context);
@@ -61,7 +61,7 @@ namespace graphics
 									const CU::Matrix44f& camera_view,
 									const CU::Matrix44f& camera_projection,
 									const CU::Matrix44f& shadow_matrix,
-									const RenderContext& render_context) 
+									const graphics::RenderContext& render_context)
 	{
 		UpdateSpotlightBuffers(spotlight, camera_view, camera_projection, shadow_matrix, render_context);
 		spotlight->Render(render_context);
@@ -81,7 +81,7 @@ namespace graphics
 											const CU::Matrix44f& camera_view, 
 											const CU::Matrix44f& camera_projection, 
 											const CU::Matrix44f& shadow_matrix, 
-											const RenderContext& render_context)
+											const graphics::RenderContext& render_context)
 	{
 		graphics::IGraphicsContext& context = Engine::GetAPI()->GetContext();
 
@@ -107,7 +107,7 @@ namespace graphics
 										   const CU::Matrix44f& camera_view,
 										   const CU::Matrix44f& camera_projection,
 										   const CU::Matrix44f& shadow_matrix,
-										   const RenderContext& render_context) {
+										   const graphics::RenderContext& render_context) {
 
 		graphics::IGraphicsContext& context = Engine::GetAPI()->GetContext();
 		const SpotlightData& data = spotlight->GetData();

@@ -7,5 +7,8 @@ namespace graphics
 	public:
 		AtmospherePass(eRenderPass pass, IGraphicsContext* ctx);
 		~AtmospherePass();
+
+	private:
+
 	};
 };

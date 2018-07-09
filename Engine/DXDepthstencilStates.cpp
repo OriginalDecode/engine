@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DirectX11.h"
 #include <Engine/DX11Device.h>
+#include <Engine/DX11Context.h>
 namespace graphics
 {
 
@@ -14,18 +15,11 @@ namespace graphics
 	// 	D3D11_DEPTH_STENCILOP_DESC FrontFace;
 	// 	D3D11_DEPTH_STENCILOP_DESC BackFace;
 
-	struct DepthStencilDesc
-	{
-
-	};
-
-
-
-
 	void DirectX11::CreateDepthStencilStates()
 	{
 		DX11Device* dx11device = static_cast<DX11Device*>(m_Device);
 		ID3D11Device* device = dx11device->GetDevice();
+		DX11Context* ctx = static_cast<DX11Context*>(m_Context);
 
 		//__________________________________________________________
 		ID3D11DepthStencilState* depthstencil = nullptr;
@@ -51,7 +45,7 @@ namespace graphics
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 		HRESULT hr = device->CreateDepthStencilState(&stencilDesc, &depthstencil);
-		m_Context->m_DepthStencilStates[Z_ENABLED] = depthstencil;
+		ctx->m_DepthStencilStates[Z_ENABLED] = depthstencil;
 #ifndef FINAL
 		SetDebugName(depthstencil, "DepthstencilState Z_Enable");
 		HandleErrors(hr, "Failed to create DepthStencilState!");
@@ -63,7 +57,7 @@ namespace graphics
 		stencilDesc.DepthEnable = false;
 		 
 		hr = device->CreateDepthStencilState(&stencilDesc, &depthstencil);
-		m_DepthStencilStates[Z_DISABLED] = depthstencil;
+		ctx->m_DepthStencilStates[Z_DISABLED] = depthstencil;
 #ifndef FINAL
 		SetDebugName(depthstencil, "DepthstencilState Z_Disable");
 		HandleErrors(hr, "Failed to create DepthStencilState!");
@@ -91,7 +85,7 @@ namespace graphics
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
 
 		hr = device->CreateDepthStencilState(&stencilDesc, &depthstencil);
-		m_DepthStencilStates[READ_NO_WRITE] = depthstencil;
+		ctx->m_DepthStencilStates[READ_NO_WRITE] = depthstencil;
 #ifndef FINAL
 		SetDebugName(depthstencil, "DepthstencilState ReadNoWrite");
 		HandleErrors(hr, "Failed to create DepthStencilState!");
@@ -119,7 +113,7 @@ namespace graphics
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
 
 		hr = device->CreateDepthStencilState(&stencilDesc, &depthstencil);
-		m_DepthStencilStates[READ_NO_WRITE_PARTICLE] = depthstencil;
+		ctx->m_DepthStencilStates[READ_NO_WRITE_PARTICLE] = depthstencil;
 #ifndef FINAL
 		SetDebugName(depthstencil, "DepthStencilState ReadNoWriteParticle");
 		HandleErrors(hr, "Failed to create DepthStencilState!");

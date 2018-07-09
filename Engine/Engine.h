@@ -196,6 +196,7 @@ public:
 private:
 	s32 PickEntity(Texture* pTexture);
 	Engine();
+	~Engine();
 	static Engine* myInstance;
 	static graphics::IGraphicsAPI* m_API;
 	memory::MemorySegmentHandle m_SegmentHandle; //

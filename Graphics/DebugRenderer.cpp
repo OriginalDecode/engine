@@ -8,15 +8,18 @@ DebugRenderer* DebugRenderer::m_Instance = nullptr;
 
 constexpr int _360Degrees = 360;
 
-static const float c0		= cosf(cl::DegreeToRad(0.f));
-static const float c90		= cosf(cl::DegreeToRad(90.f));
-static const float c180		= cosf(cl::DegreeToRad(180.f));
-static const float c270		= cosf(cl::DegreeToRad(270.f));
 
-static const float s0		= sinf(cl::DegreeToRad(0.f));
-static const float s90		= sinf(cl::DegreeToRad(90.f));
-static const float s180		= sinf(cl::DegreeToRad(180.f));
-static const float s270		= sinf(cl::DegreeToRad(270.f));
+
+
+constexpr float c0 = 1.f;			//cosf(cl::DegreeToRad(0.f));
+constexpr float c90 = 0.f;			//cosf(cl::DegreeToRad(90.f));
+constexpr float c180 = -1.f;		//cosf(cl::DegreeToRad(180.f));
+constexpr float c270 = 0.f;			//cosf(cl::DegreeToRad(270.f));
+
+constexpr float s0 = 0.f;			//sinf(cl::DegreeToRad(0.f));
+constexpr float s90 = 1.f;			//sinf(cl::DegreeToRad(90.f));
+constexpr float s180 = 0.f;			//sinf(cl::DegreeToRad(180.f));
+constexpr float s270 = -1.f;		//sinf(cl::DegreeToRad(270.f));
 
 DebugRenderer::DebugRenderer()
 {

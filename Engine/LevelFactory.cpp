@@ -528,6 +528,10 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 	EntityManager& entity_manager = pEngine->GetEntityManager();
 	const EntityArray& entities = entity_manager.GetEntities();
 	rapidjson::StringBuffer _sb;
+
+	using new_type = decltype(_sb);
+
+
 	rapidjson::PrettyWriter<decltype(_sb)> _writer(_sb);
 
 	_writer.StartArray();

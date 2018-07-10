@@ -15,6 +15,7 @@ namespace graphics
 		~LightPass() override;
 
 		void Update() override;
+		
 
 	private:
 

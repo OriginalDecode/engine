@@ -3,18 +3,18 @@
 #include "../engine/IGraphicsContext.h"
 #include "../engine/engine_shared.h"
 #include <CommonLib/DataStructures/GrowingArray.h>
+#include "graphics_flags.h"
 
 enum eRenderPass
 {
 	GBUFFER,
+	
 	ATMOSPHERE,
-	AMBIENT,
 
-	LIGHTPASS,
+	AMBIENT, // IBL
 
-	DIRECTIONALLIGHT,
-	SPOTLIGHT,
-	POINTLIGHT,
+	LIGHTPASS, // Real light
+
 	POSTPROCESS,
 	NOF_RENDERPASS
 };
@@ -64,8 +64,7 @@ namespace graphics
 		float m_BlendColor[4];
 		unsigned int m_BlendMask = 0;
 
-
-		CU::GrowingArray<SamplerState> m_SamplerStates;
+		CU::StaticArray<CU::GrowingArray<SamplerState>, 6> m_SamplerStates;
 
 
 		IRenderTargetView* m_RenderTarget = nullptr;

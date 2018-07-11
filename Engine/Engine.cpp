@@ -43,7 +43,7 @@
 #include <network/NetworkManager.h>
 #include <Engine/RenderCommand.h>
 
-#include "../Graphics/DebugRenderer.h"
+#include <Engine/DebugRenderer.h>
 
 bool Engine::HasInitiated()
 {

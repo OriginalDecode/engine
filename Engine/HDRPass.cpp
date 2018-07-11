@@ -115,9 +115,8 @@ void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source
 	ctx.OMSetRenderTargets(1, &target, nullptr);
 	
 
-	ctx.PSSetSamplerState(0, 1, Engine::GetInstance()->GetCurrentSampler());
-	ISamplerState* linear = Engine::GetAPI()->GetSamplerState(graphics::LINEAR_WRAP);
-	ctx.PSSetSamplerState(1, 1, &linear);
+	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
+	ctx.PSSetSamplerState(1, 1, graphics::LINEAR_WRAP);
 
 	m_HDREffect->AddShaderResource(source[0], Effect::REGISTER_0);
 	m_HDREffect->AddShaderResource(source[1], Effect::REGISTER_1);

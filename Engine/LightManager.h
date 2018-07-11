@@ -5,6 +5,11 @@
 class SpotLight;
 class PointLight;
 class DirectionalLight;
+
+
+
+
+
 class LightManager
 {
 public:

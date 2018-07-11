@@ -460,6 +460,8 @@
     </ClInclude>
     <ClInclude Include="Stacktrace.h" />
     <ClInclude Include="DownsamplePass.h" />
+    <ClInclude Include="graphics_flags.h" />
+    <ClInclude Include="DebugRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -764,5 +766,6 @@
     </ClCompile>
     <ClCompile Include="DownsamplePass.cpp" />
     <ClCompile Include="IGraphicsContext.cpp" />
+    <ClCompile Include="DebugRenderer.cpp" />
   </ItemGroup>
 </Project>

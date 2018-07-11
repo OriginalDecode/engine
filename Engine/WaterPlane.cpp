@@ -62,10 +62,10 @@ void WaterPlane::Render(const graphics::RenderContext& rc)
 	auto& ctx = rc.GetContext();
 	auto& api = rc.GetAPI();
 
-	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+	ctx.SetDepthState(graphics::Z_ENABLED, 1);
+	ctx.SetBlendState(graphics::BLEND_FALSE);
 	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
-	ctx.SetRasterizerState(m_RenderWireframe ? api.GetRasterizerState(graphics::WIREFRAME) : api.GetRasterizerState(graphics::CULL_NONE));
+	ctx.SetRasterState(m_RenderWireframe ? graphics::WIREFRAME : graphics::CULL_NONE);
 
 	UpdateConstantBuffer(rc);
 	ctx.VSSetConstantBuffer(1, 1, &m_ConstantBuffer);

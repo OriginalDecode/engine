@@ -1,6 +1,6 @@
 #pragma once
-#include "../engine/engine_shared.h"
-#include <Graphics/graphics_flags.h>
+#include <Engine/engine_shared.h>
+#include <Engine/graphics_flags.h>
 
 class CompiledShader;
 class BaseModel;
@@ -94,7 +94,8 @@ namespace graphics
 
 		virtual void SetDepthState(eDepthStencilState depth_state, s32 max_depth) = 0;
 		virtual void SetRasterState(eRasterizer raster_state) = 0;
-		virtual void SetBlendState(eBlendStates blend_state, const float blend_color[4], u32 mask) = 0;
+		//virtual void SetBlendState(eBlendStates blend_state, const float blend_color[4], u32 mask) = 0;
+		virtual void SetBlendState(eBlendStates blend_state, const float blend_color[4] = blendcolor::black, u32 mask = 0xFFFFFFFF) = 0;
 
 
 

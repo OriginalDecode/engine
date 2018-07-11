@@ -23,8 +23,6 @@ bool ShadowPass::CleanUp()
 
 void ShadowPass::ProcessShadows(Camera* camera)
 {
-	//render_context.m_API->SetDepthStencilState(eDepthStencilState::Z_ENABLED, 1);
-
 	m_Renderer->Render3DShadows(camera->GetOrientation(), camera);
 }
 

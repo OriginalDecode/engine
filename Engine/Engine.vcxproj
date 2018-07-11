@@ -321,6 +321,7 @@
     <ClInclude Include="Components.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DebugHandle.h" />
+    <ClInclude Include="DebugRenderer.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectX11.h" />
@@ -341,6 +342,7 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="GraphicsView.h" />
+    <ClInclude Include="graphics_flags.h" />
     <ClInclude Include="Inspector.h" />
     <ClInclude Include="InspectorView.h" />
     <ClInclude Include="IPostprocessPass.h" />
@@ -448,6 +450,7 @@
     <ClCompile Include="CommandAllocator.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="DebugHandle.cpp" />
+    <ClCompile Include="DebugRenderer.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectX11.cpp" />

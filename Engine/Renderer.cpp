@@ -65,7 +65,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_ParticleEmitter = new CEmitterInstance;
 	m_ParticleEmitter->Initiate(m_Synchronizer, m_DepthTexture);
 
-	m_Atmosphere.Initiate(1200, 1200, { 512, 0.f, 512.f });
 
 	m_ShadowPass.Initiate(this);
 	m_DirectionalShadow.Initiate(2048.f);
@@ -92,6 +91,9 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_RenderContext.GetEngine().LoadEffect("Data/Shaders/wireframe_terrain.json");
 	m_TerrainSystem = new TerrainSystem;
 
+
+
+	m_Atmosphere.Initiate(1200, 1200, { 512, 0.f, 512.f });
 	m_Background = new Quad(Engine::GetInstance()->GetEffect("Shaders/skysphere.json"));
 
 
@@ -213,8 +215,8 @@ void Renderer::Render()
 
 	const CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
-	m_DeferredRenderer->Prepare(shadow_mvp, m_Direction, m_RenderContext);
 
+	m_DeferredRenderer->Prepare(shadow_mvp, m_Direction, m_RenderContext);
 	m_Atmosphere.Render(m_RenderContext, m_Camera);
 	m_Background->Render(true);
 	m_DeferredRenderer->Draw();
@@ -375,9 +377,9 @@ void Renderer::Render3DCommands()
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 
 	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
-	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
-	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+	ctx.SetDepthState(graphics::Z_ENABLED, 1);
+	ctx.SetRasterState(graphics::CULL_BACK);
+	ctx.SetBlendState(graphics::BLEND_FALSE);
 
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	for (s32 j = 0; j < 8; j++)
@@ -426,13 +428,13 @@ void Renderer::RenderTerrain(bool /*override_effect*/)
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 	graphics::IGraphicsAPI& api = m_RenderContext.GetAPI();
 
-	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
+	ctx.SetDepthState(graphics::Z_ENABLED, 1);
 #ifdef _DEBUG
-	ctx.SetRasterizerState(terrainWireframe ? api.GetRasterizerState(graphics::WIREFRAME) : api.GetRasterizerState(graphics::CULL_BACK));
+	ctx.SetRasterState(terrainWireframe ? graphics::WIREFRAME : graphics::CULL_BACK);
 #else
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_BACK));
+	ctx.SetRasterState(graphics::CULL_BACK);
 #endif
-	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+	ctx.SetBlendState(graphics::BLEND_FALSE);
 	PROFILE_FUNCTION(profiler::colors::Green);
 	for (Terrain* terrain : myTerrainArray)
 	{
@@ -452,13 +454,13 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 
 
 	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
-	ctx.SetDepthState(api.GetDepthStencilState(graphics::Z_ENABLED), 1);
-	ctx.SetBlendState(api.GetBlendState(graphics::BLEND_FALSE));
+	ctx.SetDepthState(graphics::Z_ENABLED, 1);
+	ctx.SetBlendState(graphics::BLEND_FALSE);
 
 	Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json")->Use();
 	//m_TerrainSystem->DrawShadow();
 
-	ctx.SetRasterizerState(api.GetRasterizerState(graphics::CULL_NONE));
+	ctx.SetRasterState(graphics::CULL_NONE);
 
 	const u16 current_buffer = Engine::GetInstance()->GetSynchronizer()->GetCurrentBufferIndex();
 	for (s32 j = 0; j < 8; ++j)
@@ -499,10 +501,9 @@ void Renderer::Render2DCommands()
 	graphics::IGraphicsContext& ctx = m_RenderContext.GetContext();
 
 
-	IDepthStencilState* dss = m_RenderContext.GetAPI().GetDepthStencilState(graphics::Z_DISABLED);
-	IRasterizerState* rss = m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE);
-	m_RenderContext.GetContext().SetDepthState(dss, 0);
-	m_RenderContext.GetContext().SetRasterizerState(rss);
+	ctx.SetDepthState(graphics::Z_DISABLED, 0);
+	ctx.SetRasterState(graphics::CULL_NONE);
+
 	const auto& commands = m_Synchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER);
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
@@ -561,8 +562,11 @@ void Renderer::RenderSpotlight()
 	SpotlightData data;
 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER);
 
+	auto& ctx = m_RenderContext.GetContext();
+
 	PROFILE_BLOCK("Spotlight Command Loop", profiler::colors::Red);
 
+	ctx.SetRasterState(graphics::CULL_NONE);
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
 		auto command = reinterpret_cast<SpotlightCommand*>(commands[i]);
@@ -582,7 +586,6 @@ void Renderer::RenderSpotlight()
 
 		CU::Matrix44f shadow_mvp;
 
-		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
 		m_LightPass->RenderSpotlight(light, m_Camera->GetOrientation(), m_Camera->GetPerspective(), shadow_mvp, m_RenderContext);
 
 	}
@@ -594,6 +597,8 @@ void Renderer::RenderPointlight()
 	//Should be instanced
 	PROFILE_FUNCTION(profiler::colors::Purple);
 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER);
+	auto& ctx = m_RenderContext.GetContext();
+
 
 	PROFILE_BLOCK("Pointlight Command Loop", profiler::colors::Red);
 	for (s32 i = 0; i < commands.Size(); i++)
@@ -608,9 +613,9 @@ void Renderer::RenderPointlight()
 		myPointLight->Update();
 		CU::Matrix44f shadow_mvp;
 #if !defined(_FINAL) && !defined(_PROFILE)
-		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(m_LightModelWireframe ? graphics::WIREFRAME : graphics::CULL_NONE));
+		ctx.SetRasterState(m_LightModelWireframe ? graphics::WIREFRAME : graphics::CULL_NONE);
 #else
-		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
+		ctx.SetRasterState(graphics::CULL_NONE);
 #endif
 		m_LightPass->RenderPointlight(myPointLight, m_Camera->GetOrientation(), m_Camera->GetOrientation(), shadow_mvp, m_RenderContext);
 	}
@@ -619,7 +624,9 @@ void Renderer::RenderPointlight()
 
 void Renderer::RenderParticles(Effect* effect)
 {
-	m_RenderContext.GetContext().SetBlendState(m_RenderContext.GetAPI().GetBlendState(graphics::PARTICLE_BLEND));
+	auto& ctx = m_RenderContext.GetContext();
+
+	ctx.SetBlendState(graphics::PARTICLE_BLEND);
 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER);
 	for (s32 i = 0; i < commands.Size(); i++)
 	{
@@ -629,7 +636,7 @@ void Renderer::RenderParticles(Effect* effect)
 
 		m_ParticleEmitter->Update(m_RenderContext.GetEngine().GetDeltaTime());
 
-		m_RenderContext.GetContext().SetRasterizerState(m_RenderContext.GetAPI().GetRasterizerState(graphics::CULL_NONE));
+		ctx.SetRasterState(graphics::CULL_NONE);
 		m_ParticleEmitter->Render(m_Camera->GetOrientation(), m_Camera->GetPerspective(), effect);
 	}
 }

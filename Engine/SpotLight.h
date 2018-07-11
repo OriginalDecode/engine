@@ -6,6 +6,7 @@
 class Camera;
 class LightModel;
 class ShadowSpotlight;
+
 class SpotLight
 {
 public:
@@ -65,6 +66,9 @@ private:
 	ShadowSpotlight* m_ShadowSpotlight = nullptr;
 
 #if !defined(_PROFILE) && !defined(_FINAL)
+
+	//This is for the debug icon in the world!
+
 	IBuffer* m_QuadBuffer = nullptr;
 	struct quadbuffer
 	{

@@ -1,7 +1,8 @@
 #pragma once
+
 #include <Engine/engine_shared.h>
-#include <CommonLib/HashString.h>
-#include <Graphics/graphics_flags.h>
+#include <Engine/graphics_flags.h>
+
 #ifndef _WINDEF_
 struct HINSTANCE__;
 typedef HINSTANCE__* HINSTANCE;

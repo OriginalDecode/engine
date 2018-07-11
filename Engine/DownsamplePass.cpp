@@ -61,10 +61,9 @@ void DownsamplePass::Process(Texture* scene, const graphics::RenderContext& rc)
 	PROFILE_FUNCTION(profiler::colors::Blue);
 
 	const s32 downsamples = m_Downsamples.Size() - 1;
-	IBlendState* pBlend = rc.GetAPI().GetBlendState(graphics::NO_BLEND);
 
 	graphics::IGraphicsContext& ctx = rc.GetContext();
-	ctx.SetBlendState(pBlend);
+	ctx.SetBlendState(graphics::NO_BLEND);
 
 
 	m_Viewport->SetHeight(m_Height);
@@ -78,7 +77,7 @@ void DownsamplePass::Process(Texture* scene, const graphics::RenderContext& rc)
 		m_Viewport->SetWidth(m_Downsamples[i]->GetWidth());
 		ctx.SetViewport(m_Viewport);
 
-		ctx.SetBlendState(pBlend);
+		ctx.SetBlendState(graphics::NO_BLEND);
 		Downsample(m_Downsamples[i]->GetRenderTargetView(), m_Downsamples[i + 1]->GetShaderView());
 
 	}

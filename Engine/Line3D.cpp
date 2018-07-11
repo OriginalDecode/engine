@@ -37,7 +37,7 @@ void Line3D::Render(const graphics::RenderContext& rc)
 					 graphics::MAP_WRITE_DISCARD);
 
 
-	ctx.SetBlendState(rc.GetAPI().GetBlendState(graphics::NO_BLEND));
+	ctx.SetBlendState(graphics::NO_BLEND);
 
 	ctx.Draw(this);
 	m_Vertices.RemoveAll();

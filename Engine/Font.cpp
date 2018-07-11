@@ -122,16 +122,13 @@ void CFont::Render(const graphics::RenderContext& rc)
 	if (!m_Effect[0] || !m_Effect[1])
 		return;
 
-	auto& api = *Engine::GetAPI();
 	auto& ctx = Engine::GetAPI()->GetContext();
 
-	ctx.SetBlendState(api.GetBlendState(graphics::ALPHA_BLEND));
-	ISamplerState* state = Engine::GetInstance()->GetActiveSampler();
-	ctx.PSSetSamplerState(0, 1, &state);
+	ctx.SetBlendState(graphics::ALPHA_BLEND);
+	ctx.PSSetSamplerState(0, 1, graphics::POINT_WRAP);
 
 	m_Buffer.Bind(0, graphics::ConstantBuffer::VERTEX, rc);
 	ctx.DrawIndexed(this, m_Effect[1]);
-	//ctx.DrawIndexed(this, m_Effect[1]);
 
 }
 

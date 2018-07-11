@@ -57,10 +57,8 @@ void Model::Render(const graphics::RenderContext& rc)
 
 
 	UpdateConstantBuffer(rc);
-	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
-	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
-	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
-
+	rc.GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x16);
+	rc.GetContext().VSSetSamplerState(0, 1, graphics::MSAA_x16);
 
 	if(!m_Surfaces.Empty())
 		m_Surfaces[0]->Activate(rc);
@@ -103,14 +101,15 @@ void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_
 		return;
 	}
 
-	rc.GetContext().SetDepthState(rc.GetAPI().GetDepthStencilState(graphics::Z_ENABLED), 1);
-	rc.GetContext().SetRasterizerState(rc.GetAPI().GetRasterizerState(graphics::CULL_BACK));
-	rc.GetContext().SetBlendState(rc.GetAPI().GetBlendState(graphics::BLEND_FALSE));
+	rc.GetContext().SetDepthState(graphics::Z_ENABLED, 1);
+	rc.GetContext().SetRasterState(graphics::CULL_BACK);
+	rc.GetContext().SetBlendState(graphics::BLEND_FALSE);
 
 	UpdateConstantBuffer(rc);
-	ISamplerState* pSampler = rc.GetEngine().GetActiveSampler();
-	rc.GetContext().PSSetSamplerState(0, 1, &pSampler);
-	rc.GetContext().VSSetSamplerState(0, 1, &pSampler);
+
+	rc.GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x16);
+	rc.GetContext().VSSetSamplerState(0, 1, graphics::MSAA_x16);
+
 	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 	rc.GetContext().DrawIndexedInstanced(this, override_effect);
 	PROFILE_BLOCK_END;

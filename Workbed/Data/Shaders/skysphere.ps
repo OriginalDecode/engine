@@ -24,6 +24,7 @@ cbuffer data : register ( b2 )
 static const int iSteps = 16;
 static const int jSteps = 8;
 static const float PI = 3.141592;
+static const float multiplier = 0.9;
 
 float2 RayVsSphere(float3 ray_origo, float3 ray_dir, float sphere_radius)
 {
@@ -104,7 +105,7 @@ float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
 
 	for (int i = 0; i < iSteps; i++)
 	{
-		float3 iPos = view_pos + view_dir * (iTime + iStepSize * 0.5);
+		float3 iPos = view_pos + view_dir * (iTime + iStepSize * multiplier);
 		int iHeight = length(iPos) - planet_radius;
 
 		float odStepRlh = exp(-iHeight / rayleigh_scale_height) * iStepSize; //becomes 0
@@ -121,7 +122,7 @@ float3 atmosphere(float3 view_dir, float3 view_pos, float3 light_dir,
 
 		for (int j = 0; j < jSteps; j++)
 		{
-			float3 jPos = iPos + light_dir * (jTime + jStepSize * 0.5);
+			float3 jPos = iPos + light_dir * (jTime + jStepSize * multiplier);
 			float jHeight = length(jPos) - planet_radius;
 
 			jOdRlh += exp(-jHeight / rayleigh_scale_height) * jStepSize;

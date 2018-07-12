@@ -172,11 +172,6 @@ void Renderer::PrepareFrame()
 	m_RenderContext.GetAPI().BeginFrame();
 	m_RenderContext.GetAPI().ResetViewport();
 
-
-	//const CU::Matrix44f& camera_orientation = m_Camera->GetOrientation();
-	//const CU::Matrix44f& camera_projection = m_Camera->GetPerspective();
-	//CU::Matrix44f camera_view_proj = CU::Math::Inverse(camera_orientation) * camera_projection;
-
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
 }
@@ -213,18 +208,11 @@ void Renderer::Render()
 
 	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 
-	const CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
-	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
-
-	m_DeferredRenderer->Prepare(shadow_mvp, m_Direction, m_RenderContext);
-	m_Atmosphere.Render(m_RenderContext, m_Camera);
-	m_Background->Render(true);
-	m_DeferredRenderer->Draw();
 
 
-	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
+	DrawIBL();
 
-	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
+
 	RenderSpotlight();
 	RenderPointlight();
 
@@ -268,6 +256,18 @@ void Renderer::Render()
 	m_Synchronizer->SwapBuffer();
 	m_Synchronizer->RenderIsDone();
 
+}
+
+void Renderer::DrawIBL()
+{
+	const CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
+	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
+	m_DeferredRenderer->Prepare(shadow_mvp, m_Direction, m_RenderContext);
+	m_Atmosphere.Render(m_RenderContext, m_Camera);
+	auto& ctx = m_RenderContext.GetContext();
+	ctx.SetDepthState(graphics::Z_DISABLED, 1);
+	m_Background->Render(true);
+	m_DeferredRenderer->Draw();
 }
 
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -557,6 +557,9 @@ void Renderer::Render2DCommands()
 void Renderer::RenderSpotlight()
 {
 	// Should be instanced
+	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
+	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
+
 	PROFILE_FUNCTION(profiler::colors::Purple);
 
 	SpotlightData data;
@@ -594,6 +597,9 @@ void Renderer::RenderSpotlight()
 
 void Renderer::RenderPointlight()
 {
+	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::GEOMETRY | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
+	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
+
 	//Should be instanced
 	PROFILE_FUNCTION(profiler::colors::Purple);
 	const auto commands = m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER);

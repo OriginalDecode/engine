@@ -51,6 +51,8 @@ public:
 
 	void Render();
 
+	void DrawIBL();
+
 
 	void ProcessWater();
 

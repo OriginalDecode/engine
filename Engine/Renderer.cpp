@@ -263,7 +263,7 @@ void Renderer::DrawIBL()
 	const CU::Matrix44f shadow_mvp = m_DirectionalShadow.GetMVP();
 	m_PixelBuffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
 	m_DeferredRenderer->Prepare(shadow_mvp, m_Direction, m_RenderContext);
-	m_Atmosphere.Render(m_RenderContext, m_Camera);
+	m_Atmosphere.UpdateBuffer(m_RenderContext, m_Camera);
 	auto& ctx = m_RenderContext.GetContext();
 	ctx.SetDepthState(graphics::Z_DISABLED, 1);
 	m_Background->Render(true);
@@ -735,7 +735,6 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	ID3D11DeviceContext* _ctx = nullptr;
 	_device->GetImmediateContext(&_ctx);
 
-	const s32 max_sides = 6;
 	Camera* camera = new Camera;
 	const float far_plane = 100000.f; //configurable parameter?
 	const float near_plane = 0.1f;
@@ -756,8 +755,8 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	depth->Initiate(depth_desc, "");
 
 	s32 downsample_amount = s32(log(__min(max_resolution, max_resolution)) / log(2.f)) + 1;
-	
-	
+
+
 	graphics::Viewport* viewport = api->CreateViewport(max_resolution, max_resolution, 0, 1, 0, 0);
 	ctx.SetViewport(viewport);
 	//forward, right, back, left | up, down,
@@ -784,14 +783,27 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	terrain_buffer.RegisterVariable(&camera->GetOrientation());
 	terrain_buffer.Initiate();
 
-	const s32 RIGHT = 0;
-	const s32 LEFT = 1;
-	const s32 UP = 2;
-	const s32 DOWN = 3;
-	const s32 FORWARD = 4;
-	const s32 BACK = 5;
-	Texture* cubemap[max_sides];
+
+	graphics::ConstantBuffer pixel_buffer;
+	pixel_buffer.RegisterVariable(&camera->GetInvProjection());
+	pixel_buffer.RegisterVariable(&camera->GetPixelOrientation());
+	pixel_buffer.Initiate();
+
+	enum : s32
+	{
+		RIGHT,
+		LEFT,
+		UP,
+		DOWN,
+		FORWARD,
+		BACK,
+		NOF_SIDES
+	};
+
+
+	Texture* cubemap[NOF_SIDES];
 	s32 flags = graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS;
+
 
 	auto create_texture = [&](s32 index) {
 		Texture* rendertarget = new Texture;
@@ -800,14 +812,15 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 		camera->Update();
 		buffer.Bind(0, flags, m_RenderContext);
 		terrain_buffer.Bind(1, flags, m_RenderContext);
+		pixel_buffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
 
 		ctx.ClearDepthStencilView(depth->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1);
 		ctx.ClearRenderTarget(rendertarget, clearcolor::black);
 		ctx.OMSetRenderTargets(1, rendertarget->GetRenderTargetRef(), depth->GetDepthView());
 
-		m_Atmosphere.Render(m_RenderContext, camera);
+		m_Atmosphere.UpdateBuffer(m_RenderContext, camera);
 		m_Background->Render(true);
-		
+
 		terrain->Render(m_RenderContext, false, true);
 
 		_ctx->GenerateMips((ID3D11ShaderResourceView*)rendertarget->GetShaderView());
@@ -830,13 +843,13 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	create_texture(DOWN);
 
 
-	for (s32 i = 0; i < max_sides; ++i)
+	for (s32 i = 0; i < NOF_SIDES; ++i)
 	{
 		_ctx->GenerateMips((ID3D11ShaderResourceView*)cubemap[i]->GetShaderView());
 	}
 
 	m_Cubemap = new Texture;
-	m_Cubemap->CreateTextureArray(cubemap, max_sides, "atmosphere.dds");
+	m_Cubemap->CreateTextureArray(cubemap, NOF_SIDES, "atmosphere.dds");
 	engine->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_Cubemap, Effect::CUBEMAP);
 
 
@@ -844,7 +857,7 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	delete camera;
 	delete viewport;
 	delete depth;
-	for (s32 i = 0; i < max_sides; i++)
+	for (s32 i = 0; i < NOF_SIDES; i++)
 	{
 		delete cubemap[i];
 	}

@@ -219,17 +219,6 @@ void Camera::Update()
 	m_PixelOrientation = m_Rotation2 * m_Orientation2;
 	m_ViewProj = CU::Math::Inverse(m_PixelOrientation) * m_ProjectionMatrix;
 	m_InvProjectionMatrix = CU::Math::InverseReal(m_ProjectionMatrix);
-
-	/*CU::Vector3f position = m_Orientation.GetPosition();
-	position = cl::Lerp(position, m_TargetPosition, 0.1);
-
-	const float len = CU::Math::Length(m_TargetPosition - position);
-	if (len < 1.f)
-	{
-		m_Direction = CU::Vector3f(0, 0, 0);
-	}
-*/
-	//m_Orientation.SetPosition(position);
 }
 
 void Camera::SetOrientation(const CU::Matrix44f& matrix)

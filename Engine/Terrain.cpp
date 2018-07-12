@@ -177,7 +177,6 @@ void Terrain::Render(const graphics::RenderContext& rc, bool override_shader)
 void Terrain::Render(const graphics::RenderContext& rc, bool override_shader, bool skip_binding)
 {
 	graphics::IGraphicsContext& ctx = rc.GetContext();
-	graphics::IGraphicsAPI& api = rc.GetAPI();
 
 	ctx.SetDepthState(graphics::Z_ENABLED, 1);
 	ctx.SetBlendState(graphics::BLEND_FALSE);

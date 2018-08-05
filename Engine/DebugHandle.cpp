@@ -572,17 +572,22 @@ namespace debug
 		//	m_Categories.emplace_back(category);
 
 		m_RegisteredSampleTextures.Add(texture);
-		for (DebugTextureCategory& c : m_Categories)
-		{
-			if (c.category.compare(category) == 0)
-			{
-				c.labels.emplace_back(name);
-				return;
-			}
-		}
+		//for (DebugTextureCategory& c : m_Categories)
+		//{
+		//	if (c.category.compare(category) == 0)
+		//	{
+		//		c.labels.emplace_back(name);
+		//		return;
+		//	}
+		//}
 
-		m_Categories.emplace_back(category);
-		m_Categories.back().labels.emplace_back(name);
+		//m_Categories.emplace_back(category);
+		//m_Categories.back().labels.emplace_back(name);
+	}
+
+	void DebugHandle::UnregisterTexture(Texture* t, const char* name)
+	{
+		
 	}
 
 	Texture* DebugHandle::GetTexture(s32 index)

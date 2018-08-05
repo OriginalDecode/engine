@@ -136,6 +136,7 @@ void Renderer::InitiateDebug()
 	pDebug->RegisterTexture(m_GBuffer.GetIDTexture(), "entity_id");
 	pDebug->RegisterTexture(m_GBuffer.GetRoughness(), "roughness");
 	pDebug->RegisterTexture(m_GBuffer.GetMetalness(), "metalness");
+
 #endif
 }
 
@@ -245,6 +246,10 @@ void Renderer::Render()
 	}
 
 #endif
+
+
+
+
 
 	m_RenderContext.GetAPI().EndFrame();
 	m_InstancingManager.EndFrame();
@@ -725,6 +730,7 @@ void Renderer::AddTerrain(Terrain* someTerrain)
 void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_resolution /* = 16 */)
 {
 	delete m_Cubemap;
+	m_Cubemap = nullptr;
 
 
 	Engine* engine = Engine::GetInstance();
@@ -805,19 +811,22 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	s32 flags = graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS;
 
 
+
 	auto create_texture = [&](s32 index) {
 		Texture* rendertarget = new Texture;
 		rendertarget->Initiate(texDesc, false, "");
+		
+		ctx.ClearDepthStencilView(depth->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1);
+		ctx.ClearRenderTarget(rendertarget, clearcolor::black);
+		ctx.OMSetRenderTargets(1, rendertarget->GetRenderTargetRef(), depth->GetDepthView());
 
 		camera->Update();
 		buffer.Bind(0, flags, m_RenderContext);
 		terrain_buffer.Bind(1, flags, m_RenderContext);
 		pixel_buffer.Bind(0, graphics::ConstantBuffer::PIXEL, m_RenderContext);
 
-		ctx.ClearDepthStencilView(depth->GetDepthView(), graphics::DEPTH | graphics::STENCIL, 1);
-		ctx.ClearRenderTarget(rendertarget, clearcolor::black);
-		ctx.OMSetRenderTargets(1, rendertarget->GetRenderTargetRef(), depth->GetDepthView());
 
+		ctx.SetDepthState(graphics::Z_DISABLED, 1);
 		m_Atmosphere.UpdateBuffer(m_RenderContext, camera);
 		m_Background->Render(true);
 
@@ -855,14 +864,17 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 
 	_ctx->Release();
 	delete camera;
+	camera = nullptr;
 	delete viewport;
+	viewport = nullptr;
 	delete depth;
-	for (s32 i = 0; i < NOF_SIDES; i++)
+	depth = nullptr;
+
+	for (Texture* t : cubemap)
 	{
-		delete cubemap[i];
+		delete t;
+		t = nullptr;
 	}
-
-
 
 }
 #endif

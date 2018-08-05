@@ -174,7 +174,7 @@ void Terrain::Render(const graphics::RenderContext& rc, bool override_shader)
 
 }
 
-void Terrain::Render(const graphics::RenderContext& rc, bool override_shader, bool skip_binding)
+void Terrain::Render(const graphics::RenderContext& rc, bool, bool)
 {
 	graphics::IGraphicsContext& ctx = rc.GetContext();
 

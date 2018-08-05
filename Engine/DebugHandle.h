@@ -65,6 +65,7 @@ namespace debug
 		void SetDebugTexture(Texture* tex);
 
 		void RegisterTexture(Texture* texture, const char* name, const char* category = "null");
+		void UnregisterTexture(Texture* t, const char* name);
 		Texture* GetTexture(s32 index);
 
 		void SetObjectMatrix(CU::Matrix44f* mat);

@@ -4,8 +4,15 @@
 #include "TranslationComponent.h"
 #include "../Application/CameraHandle.h"
 #include "NodeEntityManager.h"
-#define TRUE 1
-#define FALSE 0
+
+#include "DebugSystem.h"
+#include "PhysicsSystem.h"
+#include "RenderSystem.h"
+#include "LightSystem.h"
+#include "InputSystem.h"
+#include "AISystem.h"
+#include "NetworkSystem.h"
+#include "CameraSystem.h"
 
 
 EntityManager::~EntityManager()
@@ -88,6 +95,28 @@ float EntityManager::GetDeltaTime()
 void EntityManager::AddSystem(s32 type)
 {
 	m_SystemsAdded |= type;
+
+#ifndef _PER_NODE_SYSTEM
+	if (type & eSystemType::RENDER)
+		AddSystem<RenderSystem>();
+
+	if (type & eSystemType::AI)
+		AddSystem<AISystem>();
+
+	if (type & eSystemType::PHYSICS)
+		AddSystem<PhysicsSystem>();
+
+#if !defined(_FINAL) && !defined(_PROFILE)
+	if (type & eSystemType::DEBUG)
+		AddSystem<DebugSystem>();
+#endif
+
+	if (type & eSystemType::LIGHT)
+		AddSystem<LightSystem>();
+
+	if (type & eSystemType::NETWORK)
+		AddSystem<NetworkSystem>();
+#endif
 }
 
 bool EntityManager::HasComponents(Entity e, ComponentFilter& filter)

@@ -124,13 +124,13 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 #if !defined(_PROFILE) && !defined(_FINAL)
 	debug::DebugHandle::Create();
 #endif
-	
+
 	AssetFactory::Create();
 	myAssetsContainer = new AssetsContainer;
 	myAssetsContainer->Initiate();
 	Randomizer::Create();
 	m_CurrentSampler = graphics::MSAA_x16;
-	
+
 
 	m_InputHandle = new InputHandle;
 	m_InputHandle->Initiate(m_Window.GetHWND(), instance_handle);
@@ -146,7 +146,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_SegmentHandle.Initiate();
 
 	m_Camera = new Camera;
-	m_Camera->CreatePerspectiveProjection(m_Window.GetWindowSize().m_Width, m_Window.GetWindowSize().m_Height, 0.1f, 1000.f, 90.f);
+	m_Camera->CreatePerspectiveProjection(m_Window.GetWindowSize().m_Width, m_Window.GetWindowSize().m_Height, 0.1f, 1000.f, 90.f); //these variables should probably be exposed to a settings file
 	m_Camera->CreateOrthogonalProjection(m_Window.GetWindowSize().m_Width, m_Window.GetWindowSize().m_Height, 0.01f, 100.f);
 
 	m_Renderer = new Renderer(m_Synchronizer);
@@ -159,28 +159,19 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 
 	m_EntityManager.Initiate();
 
-	m_EntityManager.AddSystem(	EntityManager::RENDER | 
-								EntityManager::PHYSICS | 
-								EntityManager::LIGHT | 
-								EntityManager::DEBUG |
-								EntityManager::NETWORK );
+	s32 flags = 0;
+	flags |= EntityManager::RENDER;
+	flags |= EntityManager::PHYSICS;
+	flags |= EntityManager::LIGHT;
+	flags |= EntityManager::DEBUG;
+	flags |= EntityManager::NETWORK;
 
-
-
-#if !defined(_FINAL) && !defined(_PROFILE)
-	m_EntityManager.AddSystem<::DebugSystem>(); //Since the engine has it's own debug system, I had to do it like this
-#endif
-	m_EntityManager.AddSystem<PhysicsSystem>();
-	m_EntityManager.AddSystem<RenderSystem>();
-	m_EntityManager.AddSystem<LightSystem>();
-	m_EntityManager.AddSystem<NetworkSystem>();
+	m_EntityManager.AddSystem(flags);
 
 	m_NetManager = new network::NetworkManager;
 
 	m_LevelFactory = new LevelFactory;
 	m_LevelFactory->Initiate();
-
-
 
 	return true;
 }
@@ -244,7 +235,7 @@ void Engine::Update()
 	if (m_InputHandle->GetInputWrapper()->OnDown(KButton::U))
 		render_imgui = !render_imgui;
 
-	if(render_imgui)
+	if (render_imgui)
 		debug::DebugHandle::GetInstance()->Update();
 #endif
 
@@ -272,20 +263,20 @@ void* Engine::CreateShader(IShaderBlob* pShader, eShaderType type, const std::st
 	graphics::IGraphicsDevice& device = m_API->GetDevice();
 	switch (type)
 	{
-		case eShaderType::VERTEX:
-			return device.CreateVertexShader(pShader, debug_name);
-		case eShaderType::PIXEL:
-			return device.CreatePixelShader(pShader, debug_name);
-		case eShaderType::GEOMETRY:
-			return device.CreateGeometryShader(pShader, debug_name);
-		case eShaderType::HULL:
-			return device.CreateHullShader(pShader, debug_name);
-		case eShaderType::DOMAINS:
-			return device.CreateDomainShader(pShader, debug_name);
-		case eShaderType::COMPUTE:
-			return device.CreateComputeShader(pShader, debug_name);
-		default:
-			DL_ASSERT("Invalid shader type");
+	case eShaderType::VERTEX:
+		return device.CreateVertexShader(pShader, debug_name);
+	case eShaderType::PIXEL:
+		return device.CreatePixelShader(pShader, debug_name);
+	case eShaderType::GEOMETRY:
+		return device.CreateGeometryShader(pShader, debug_name);
+	case eShaderType::HULL:
+		return device.CreateHullShader(pShader, debug_name);
+	case eShaderType::DOMAINS:
+		return device.CreateDomainShader(pShader, debug_name);
+	case eShaderType::COMPUTE:
+		return device.CreateComputeShader(pShader, debug_name);
+	default:
+		DL_ASSERT("Invalid shader type");
 	}
 	return nullptr;
 }
@@ -302,8 +293,8 @@ s32 Engine::PickEntity(Texture* pTexture)
 	static CU::Vector4f curr;
 	if (!ImGui::IsAnyWindowHovered())
 	{
-// 		if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
-			curr = m_API->PickColor(pTexture);
+		// 		if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
+		curr = m_API->PickColor(pTexture);
 	}
 	return (curr.x + curr.y + curr.z);
 #endif

@@ -37,6 +37,7 @@ namespace cl
 		return a < b ? b : a;
 	}
 
+	void ToLower(std::string& str);
 
 	template<typename T>
 	inline T Lerp(const T start, T end, float alpha)

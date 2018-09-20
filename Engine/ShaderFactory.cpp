@@ -92,29 +92,17 @@ char* CheckType(eShaderType type)
 	return "invalid";
 }
 
-
-
-std::string ToLower(const std::string& str)
-{
-	std::string to_return = str;
-	for (s32 i = 0; i < to_return.length(); i++)
-	{
-		to_return[i] = tolower(str[i]);
-	}
-	return to_return;
-}
-
 void ShaderFactory::LoadShader(const std::string& filepath, const std::string& entrypoint, const std::string& sampler, eShaderType type, Effect* effect)
 {
 	std::string full_path = Engine::GetInstance()->GetVFS().GetFolder("Shaders") + filepath;
 	std::string to_hash(full_path + entrypoint);
 	u64 hash_key = Hash(to_hash.c_str());
-
-	//sampler; // This is a generalized sampler, or a specified. Depending on the input
-
-
+	
 	if (m_Shaders.find(hash_key) == m_Shaders.end())
 		m_Shaders.emplace(hash_key, CreateShader(full_path, entrypoint, type));
+
+	
+	//container->InsertShader(hash_key, )
 
 	switch (type)
 	{
@@ -166,10 +154,21 @@ CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const 
  	if (!compiled_shader)
  		return nullptr;
  
- 	return new CompiledShader(compiled_shader,
-							  Engine::GetInstance()->CreateShader(compiled_shader, type, file_path.c_str()), 
-							  type, 
-							  entrypoint.c_str());
+	void* shader = Engine::GetInstance()->CreateShader(compiled_shader, type, file_path.c_str());
+
+	auto container = Engine::GetInstance()->GetAssetsContainer();
+
+	std::string file;
+
+	size_t start = file_path.rfind("/");
+	file = file_path.substr(start + 1);
+
+	container->InsertShader(Hash(file.c_str()), shader);
+	
+ 	return new CompiledShader(	compiled_shader,
+								shader,
+								type, 
+								entrypoint.c_str());
 }
 
 #ifndef FINAL 

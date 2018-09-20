@@ -349,6 +349,9 @@
     <ClInclude Include="PhysicsView.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="QuadTreeNode.h" />
+    <ClInclude Include="RenderNode.h" />
+    <ClInclude Include="RenderNodeVegetation.h" />
+    <ClInclude Include="RenderPass.h" />
     <ClInclude Include="shader_types.h" />
     <ClInclude Include="SSRPass.h" />
     <ClInclude Include="Stacktrace.h" />
@@ -506,6 +509,7 @@
     <ClCompile Include="RenderCommand.cpp" />
     <ClCompile Include="RenderContext.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderNodeVegetation.cpp" />
     <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="RootTreeNode.cpp" />
     <ClCompile Include="ShaderFactory.cpp" />

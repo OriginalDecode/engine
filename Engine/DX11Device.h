@@ -12,7 +12,7 @@ namespace graphics
 		~DX11Device();
 
 		IVertexShader* CreateVertexShader(IShaderBlob* pShader, const std::string& debug_name) override;
-		IPixelShader* CreatePixelShader(IShaderBlob* pShader, const std::string& debug_name) override;
+		IFragmentShader* CreatePixelShader(IShaderBlob* pShader, const std::string& debug_name) override;
 		IGeometryShader* CreateGeometryShader(IShaderBlob* pShader, const std::string& debug_name) override;
 		IHullShader* CreateHullShader(IShaderBlob* pShader, const std::string& debug_name) override;
 		IDomainShader* CreateDomainShader(IShaderBlob* pShader, const std::string& debug_name) override;

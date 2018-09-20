@@ -35,6 +35,9 @@
 #include <Engine/Quad.h>
 #include <Engine/TerrainManager.h>
 
+#include <Engine/RenderNode.h>
+#include <Engine/RenderNodeVegetation.h>
+
 #include "shader_types.h"
 
 Renderer::Renderer(Synchronizer* synchronizer)
@@ -96,6 +99,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Atmosphere.Initiate(1200, 1200, { 512, 0.f, 512.f });
 	m_Background = new Quad(Engine::GetInstance()->GetEffect("Shaders/skysphere.json"));
 
+	m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 
 
 }
@@ -166,6 +170,8 @@ Renderer::~Renderer()
 	SAFE_DELETE(m_LightPass);
 	SAFE_DELETE(m_ParticleEmitter);
 
+	m_RenderNodes.DeleteAll();
+
 }
 
 void Renderer::PrepareFrame()
@@ -190,37 +196,43 @@ void Renderer::Render()
 
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
-	m_TerrainSystem->Update(); //should not be updated here
-	m_TerrainSystem->Draw();
+	//m_TerrainSystem->Update(); //should not be updated here
+	//m_TerrainSystem->Draw();
 
-	Render3DCommands();
-	m_InstancingManager.DoInstancing(m_RenderContext, false);
 
-#if !defined(_PROFILE) && !defined(_FINAL)
+
+	for (graphics::IRenderNode* node : m_RenderNodes)
+	{
+		node->Draw(m_RenderContext);
+	}
+
+
+
+
+
+//	Render3DCommands();
+//	m_InstancingManager.DoInstancing(m_RenderContext, false);
+//
+//#if !defined(_PROFILE) && !defined(_FINAL)
 	WriteDebugTextures();
-
-	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
-	//DrawEntity(m_HoverTexture, hovered);
-
-	const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
-	//DrawEntity(m_SelectedTexture, selected);
-
-#endif
-
-	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
-
-
-
-	DrawIBL();
-
-
-	RenderSpotlight();
-	RenderPointlight();
-
+//
+//	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
+//	//DrawEntity(m_HoverTexture, hovered);
+//
+//	const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
+//	//DrawEntity(m_SelectedTexture, selected);
+//
+//#endif
+//
+//	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
+//	DrawIBL();
+//	RenderSpotlight();
+//	RenderPointlight();
+//
 	IRenderTargetView* pRenderTarget = m_DeferredRenderer->GetScene()->GetRenderTargetView();
 	IDepthStencilView* pDepthStencil = m_RenderContext.GetAPI().GetDepthView();
 	m_RenderContext.GetContext().OMSetRenderTargets(1, &pRenderTarget, pDepthStencil);
-
+//
 	if (m_PostProcessManager.GetFlags() != 0)
 	{
 		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
@@ -230,21 +242,21 @@ void Renderer::Render()
 		m_RenderContext.GetAPI().SetDefaultTargets();
 		m_DeferredRenderer->Finalize();
 	}
-
-	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
-	RenderLines();
-
-	Render2DCommands();
-
+//
+//	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
+//	RenderLines();
+//
+//	Render2DCommands();
+//
 #if !defined(_PROFILE) && !defined(_FINAL)
 	ImGui::Render();
-
-	if (m_CreateCubemaps)
-	{
-		MakeCubemap({ 512.f, 10.f, 512.f }, 128);
-		m_CreateCubemaps = false;
-	}
-
+//
+//	if (m_CreateCubemaps)
+//	{
+//		MakeCubemap({ 512.f, 10.f, 512.f }, 128);
+//		m_CreateCubemaps = false;
+//	}
+//
 #endif
 
 
@@ -252,7 +264,7 @@ void Renderer::Render()
 
 
 	m_RenderContext.GetAPI().EndFrame();
-	m_InstancingManager.EndFrame();
+	//m_InstancingManager.EndFrame();
 
 
 	m_Synchronizer->WaitForLogic();

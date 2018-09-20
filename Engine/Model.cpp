@@ -60,8 +60,8 @@ void Model::Render(const graphics::RenderContext& rc)
 	rc.GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x16);
 	rc.GetContext().VSSetSamplerState(0, 1, graphics::MSAA_x16);
 
-	if(!m_Surfaces.Empty())
-		m_Surfaces[0]->Activate(rc);
+	//if(!m_Surfaces.Empty())
+	//	m_Surfaces[0]->Activate(rc);
 	PROFILE_BLOCK("Model : DrawIndexed", profiler::colors::Blue100);
 	rc.GetContext().DrawIndexed(this, m_Effect);
 	PROFILE_BLOCK_END;

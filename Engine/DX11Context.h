@@ -28,6 +28,14 @@ namespace graphics
 		void SetDomainShader(CompiledShader* shader) override;
 		void SetComputeShader(CompiledShader* shader) override;
 
+		void SetVertexShader(void* shader) override;
+		void SetPixelShader(void* shader) override;
+		void SetGeometryShader(void* shader) override;
+		void SetHullShader(void* shader) override;
+		void SetDomainShader(void* shader) override;
+		void SetComputeShader(void* shader) override;
+
+
 		void VSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
 		void PSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
 		void GSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) override;
@@ -103,7 +111,7 @@ namespace graphics
 
 		virtual void _InternalUpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size) override;
 		virtual void _InternalUpdateBuffer(IBuffer*& dest, s8* src, s32 size, eMapping mapping) override;
-		
+
 	};
 
 

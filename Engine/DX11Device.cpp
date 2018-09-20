@@ -36,7 +36,7 @@ namespace graphics
 		return shader;
 	}
 
-	IPixelShader* DX11Device::CreatePixelShader(IShaderBlob* pShader, const std::string& debug_name)
+	IFragmentShader* DX11Device::CreatePixelShader(IShaderBlob* pShader, const std::string& debug_name)
 	{
 		ID3D11PixelShader* shader = nullptr;
 		ID3D10Blob* blob = static_cast<ID3D10Blob*>(pShader);

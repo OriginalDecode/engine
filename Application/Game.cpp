@@ -111,24 +111,24 @@ void Game::Initiate(const std::string& level)
 #endif
 #endif
 
-	int tree_count = RANDOM(128, 256);
-	tree_count = 0;
-	for (int i = 0; i < tree_count; ++i)
-	{
-		float x = RANDOM(0.f, 1024.f);
-		//float y = RANDOM(0.f, 1024.f);
-		float z = RANDOM(0.f, 1024.f);
+	//int tree_count = RANDOM(128, 256);
+	//tree_count = 0;
+	//for (int i = 0; i < tree_count; ++i)
+	//{
+	//	float x = RANDOM(0.f, 1024.f);
+	//	//float y = RANDOM(0.f, 1024.f);
+	//	float z = RANDOM(0.f, 1024.f);
 
-		CU::Matrix44f orientation;
-		orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));
-		orientation.SetTranslation({ x, 0.f, z, 1.f });
+	//	CU::Matrix44f orientation;
+	//	orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));
+	//	orientation.SetTranslation({ x, 0.f, z, 1.f });
 
 
-		positions.Add(orientation);
+	//	positions.Add(orientation);
 
-		//positions.Add(CU::Vector3f(x, 0.f, z));
+	//	//positions.Add(CU::Vector3f(x, 0.f, z));
 
-	}
+	//}
 
 
 	//japMap = m_Engine->LoadModelA("Data/model/trees/japanese_maple/Japanese_Maple.fbx", "Shaders/deferred_base.json", false);
@@ -136,7 +136,7 @@ void Game::Initiate(const std::string& level)
 	m_Picker = new CMousePicker;
 
 	m_Camera = m_Engine->GetCamera();
-	m_Camera->SetPosition(CU::Vector3f(512, 20, 512));
+	m_Camera->SetPosition(CU::Vector3f(0, 20, 0));
 	m_Orientation.SetPosition(m_Camera->GetPosition());
 
 	m_Camera->Update();
@@ -416,10 +416,10 @@ void Game::OldUpdate(float dt)
 
 
 
-	for (const auto& p : positions)
+	/*for (const auto& p : positions)
 	{
 		AddRenderCommand(ModelCommand(japMap,p, false));
-	}
+	}*/
 
 
 	m_World.Update(dt, m_Paused); //This function takes a long time

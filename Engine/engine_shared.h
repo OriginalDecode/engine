@@ -62,7 +62,7 @@ typedef void IDepthStencilView;
 typedef void IRenderTargetView;
 typedef void IViewport;
 typedef void IVertexShader;
-typedef void IPixelShader;
+typedef void IFragmentShader;
 typedef void IGeometryShader;
 typedef void IHullShader;
 typedef void IDomainShader;

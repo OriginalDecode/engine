@@ -1,6 +1,7 @@
 #include "Utilities.h"
 #include <comdef.h>
 #include <assert.h>
+#include <algorithm>
 namespace cl
 {
 	//if readCharacterBeforeToFind == true it will read everything BEFORE the character/word you entered but if it is false it will read the word you entered and everything after.
@@ -76,6 +77,11 @@ namespace cl
 			((x & 0x00FF0000) >> 8) |
 			((x & 0x0000FF00) << 16) |
 			((x & 0x000000FF) << 8);
+	}
+
+	void ToLower(std::string& str)
+	{
+		std::transform(str.begin(), str.end(), str.begin(), tolower);
 	}
 
 	float ClampF(float value, float min, float max)

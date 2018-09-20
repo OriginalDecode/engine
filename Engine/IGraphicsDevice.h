@@ -11,7 +11,7 @@ namespace graphics
 	{
 	public:
 		virtual IVertexShader* CreateVertexShader(IShaderBlob* pShader, const std::string& debug_name) = 0;
-		virtual IPixelShader* CreatePixelShader(IShaderBlob* pShader, const std::string& debug_name) = 0;
+		virtual IFragmentShader* CreatePixelShader(IShaderBlob* pShader, const std::string& debug_name) = 0;
 		virtual IGeometryShader* CreateGeometryShader(IShaderBlob* pShader, const std::string& debug_name) = 0;
 		virtual IHullShader* CreateHullShader(IShaderBlob* pShader, const std::string& debug_name) = 0;
 		virtual IDomainShader* CreateDomainShader(IShaderBlob* pShader, const std::string& debug_name) = 0;

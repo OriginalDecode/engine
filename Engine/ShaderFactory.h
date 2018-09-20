@@ -16,18 +16,20 @@ struct CompiledShader
 	CompiledShader(IShaderBlob* pShaderBlob, void* pShader, eShaderType shader_type, const char* entrypoint)
 		: m_Blob(pShaderBlob)
 		, m_Shader(pShader)
+#ifndef _FINAL
 		, m_Type(shader_type)
 		, m_Entrypoint(entrypoint)
+#endif
 	{
 	}
 
 	~CompiledShader();
 	void* m_Blob = nullptr;
 	void* m_Shader = nullptr;
-	eShaderType m_Type;
-	std::string m_Entrypoint;
 
 #ifndef _FINAL
+	eShaderType m_Type;
+	std::string m_Entrypoint;
 	CU::GrowingArray<Effect*> m_EffectPointers; //used to rebuild shaders in runtime.
 #endif
 };

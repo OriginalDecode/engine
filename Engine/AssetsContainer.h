@@ -56,6 +56,10 @@ public:
 	u64 LoadMaterial(std::string path);
 
 
+	void* GetShader(const char* key);
+	void* GetShader(u64 key);
+
+	void InsertShader(u64 key, void* shader);
 
 private:
 #ifndef FINAL
@@ -68,6 +72,9 @@ private:
 	std::map<u64, RefPointer<Model>> m_Models;
 	std::map<u64, Sprite*> m_Sprites;
 	std::map<u64, Material*> m_Materials;
+
+	std::map<u64, void*> m_Shaders;
+
 
 
 	ShaderFactory* m_ShaderFactory;

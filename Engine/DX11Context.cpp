@@ -110,36 +110,72 @@ namespace graphics
 	{
 		m_Context->VSSetShader(shader ? static_cast<ID3D11VertexShader*>(shader->m_Shader) : nullptr, nullptr, 0);
 	}
+
+	void DX11Context::SetVertexShader(void* shader)
+	{
+		m_Context->VSSetShader(shader ? static_cast<ID3D11VertexShader*>(shader) : nullptr, nullptr, 0);
+	}
+
 	//_______________________________________________________________________
 
 	void DX11Context::SetPixelShader(CompiledShader* shader)
 	{
 		m_Context->PSSetShader(shader ? static_cast<ID3D11PixelShader*>(shader->m_Shader) : nullptr, nullptr, 0);
 	}
+
+	void DX11Context::SetPixelShader(void* shader)
+	{
+		m_Context->PSSetShader(shader ? static_cast<ID3D11PixelShader*>(shader) : nullptr, nullptr, 0);
+	}
+
 	//_______________________________________________________________________
 
 	void DX11Context::SetGeometryShader(CompiledShader* shader)
 	{
 		m_Context->GSSetShader(shader ? static_cast<ID3D11GeometryShader*>(shader->m_Shader) : nullptr, nullptr, 0);
 	}
+
+	void DX11Context::SetGeometryShader(void* shader)
+	{
+		m_Context->GSSetShader(shader ? static_cast<ID3D11GeometryShader*>(shader) : nullptr, nullptr, 0);
+	}
+
 	//_______________________________________________________________________
 
 	void DX11Context::SetHullShader(CompiledShader* shader)
 	{
 		m_Context->HSSetShader(shader ? static_cast<ID3D11HullShader*>(shader->m_Shader) : nullptr, nullptr, 0);
 	}
+
+	void DX11Context::SetHullShader(void* shader)
+	{
+		m_Context->HSSetShader(shader ? static_cast<ID3D11HullShader*>(shader) : nullptr, nullptr, 0);
+	}
+
 	//_______________________________________________________________________
 
 	void DX11Context::SetDomainShader(CompiledShader* shader)
 	{
 		m_Context->DSSetShader(shader ? static_cast<ID3D11DomainShader*>(shader->m_Shader) : nullptr, nullptr, 0);
 	}
+
+	void DX11Context::SetDomainShader(void* shader)
+	{
+		m_Context->DSSetShader(shader ? static_cast<ID3D11DomainShader*>(shader) : nullptr, nullptr, 0);
+	}
+
 	//_______________________________________________________________________
 
 	void DX11Context::SetComputeShader(CompiledShader* shader)
 	{
 		m_Context->CSSetShader(shader ? static_cast<ID3D11ComputeShader*>(shader->m_Shader) : nullptr, nullptr, 0);
 	}
+
+	void DX11Context::SetComputeShader(void* shader)
+	{
+		m_Context->CSSetShader(shader ? static_cast<ID3D11ComputeShader*>(shader) : nullptr, nullptr, 0);
+	}
+
 	//_______________________________________________________________________
 
 	void DX11Context::VSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer)
@@ -456,7 +492,7 @@ namespace graphics
 	}
 	//_______________________________________________________________________
 
-	void DX11Context::DrawIndexed(BaseModel* model, Effect* fx)
+	void DX11Context::DrawIndexed(BaseModel* model, Effect*)
 	{
 		auto& vtx = model->GetVertexWrapper();
 		auto& idx = model->GetIndexWrapper();
@@ -484,14 +520,7 @@ namespace graphics
 		m_Context->IASetIndexBuffer(pBuffer,
 									format,
 									idx_offset);
-		if (fx != nullptr)
-		{
-			fx->Use();
-			m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
-			fx->Clear();
-			return;
-		}
-
+	
 		m_Context->DrawIndexed(idx.GetIndexCount(), idx.GetStart(), vtx.GetStart());
 	}
 	//_______________________________________________________________________

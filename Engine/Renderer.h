@@ -36,6 +36,11 @@ class ShadowSpotlight;
 class CommandAllocator;
 class TerrainSystem;
 
+namespace graphics
+{
+	class IRenderNode;
+};
+
 class Renderer
 {
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -91,7 +96,7 @@ private:
 	void RenderParticles(Effect* effect);
 	void RenderLines();
 
-
+	CU::GrowingArray<graphics::IRenderNode*> m_RenderNodes;
 	CU::GrowingArray<Terrain*> myTerrainArray;
 
 	CU::Vector3f		m_Direction;

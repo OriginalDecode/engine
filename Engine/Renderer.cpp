@@ -58,7 +58,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	window_size.m_Height = api->GetInfo().m_WindowHeight;
 	window_size.m_Width = api->GetInfo().m_WindowWidth;
 
-	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR /*| PostProcessManager::SSR*/); //Can be read from a settings file
+	//m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR /*| PostProcessManager::SSR*/); //Can be read from a settings file
 
 	m_Line = new Line3D;
 	m_Line->Initiate();
@@ -214,7 +214,7 @@ void Renderer::Render()
 //	m_InstancingManager.DoInstancing(m_RenderContext, false);
 //
 //#if !defined(_PROFILE) && !defined(_FINAL)
-	WriteDebugTextures();
+	//WriteDebugTextures();
 //
 //	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
 //	//DrawEntity(m_HoverTexture, hovered);

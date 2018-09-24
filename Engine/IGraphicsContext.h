@@ -30,21 +30,19 @@ namespace graphics
 		virtual void HSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 		virtual void CSSetShaderResource(s32 start_slot, s32 count, void* resources) = 0;
 
-		virtual void SetVertexShader(CompiledShader* vertex_shader) = 0;
-		virtual void SetPixelShader(CompiledShader* vertex_shader) = 0;
-		virtual void SetGeometryShader(CompiledShader* vertex_shader) = 0;
-		virtual void SetHullShader(CompiledShader* vertex_shader) = 0;
-		virtual void SetDomainShader(CompiledShader* vertex_shader) = 0;
-		virtual void SetComputeShader(CompiledShader* vertex_shader) = 0;
+		virtual void SetVertexShader(CompiledShader* shader) = 0;
+		virtual void SetPixelShader(CompiledShader* shader) = 0;
+		virtual void SetGeometryShader(CompiledShader* shader) = 0;
+		virtual void SetHullShader(CompiledShader* shader) = 0;
+		virtual void SetDomainShader(CompiledShader* shader) = 0;
+		virtual void SetComputeShader(CompiledShader* shader) = 0;
 
-		virtual void SetVertexShader(void* vertex_shader) = 0;
-		virtual void SetPixelShader(void* vertex_shader) = 0;
-		virtual void SetGeometryShader(void* vertex_shader) = 0;
-		virtual void SetHullShader(void* vertex_shader) = 0;
-		virtual void SetDomainShader(void* vertex_shader) = 0;
-		virtual void SetComputeShader(void* vertex_shader) = 0;
-
-
+		virtual void SetVertexShader(void* shader) = 0;
+		virtual void SetPixelShader(void* shader) = 0;
+		virtual void SetGeometryShader(void* shader) = 0;
+		virtual void SetHullShader(void* shader) = 0;
+		virtual void SetDomainShader(void* shader) = 0;
+		virtual void SetComputeShader(void* shader) = 0;
 
 		virtual void VSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) = 0;
 		virtual void PSSetConstantBuffer(s32 start_index, s32 buffer_count, IBuffer* pBuffer) = 0;
@@ -128,6 +126,10 @@ namespace graphics
 		virtual void Unmap(IBuffer* buffer) = 0;
 
 	protected:
+
+		CompiledShader* m_ActiveShaders[SamplerState::NOF_TYPES];
+
+
 		virtual void* GetContext() = 0;
 
 		virtual void _InternalUpdateConstantBuffer(IBuffer*& dest, s8* src, s32 size) = 0;

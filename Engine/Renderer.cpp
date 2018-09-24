@@ -199,8 +199,12 @@ void Renderer::Render()
 	//m_TerrainSystem->Update(); //should not be updated here
 	//m_TerrainSystem->Draw();
 
+	auto& ctx = m_RenderContext.GetContext();
 
-
+	ctx.PSSetSamplerState(0, 1, graphics::LINEAR_WRAP);
+	ctx.SetDepthState(graphics::Z_ENABLED, 1);
+	ctx.SetRasterState(graphics::CULL_BACK);
+	ctx.SetBlendState(graphics::BLEND_FALSE);
 	for (graphics::IRenderNode* node : m_RenderNodes)
 	{
 		node->Draw(m_RenderContext);
@@ -214,7 +218,7 @@ void Renderer::Render()
 //	m_InstancingManager.DoInstancing(m_RenderContext, false);
 //
 //#if !defined(_PROFILE) && !defined(_FINAL)
-	//WriteDebugTextures();
+	WriteDebugTextures();
 //
 //	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
 //	//DrawEntity(m_HoverTexture, hovered);
@@ -225,23 +229,24 @@ void Renderer::Render()
 //#endif
 //
 //	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
-//	DrawIBL();
+	DrawIBL();
 //	RenderSpotlight();
 //	RenderPointlight();
 //
+
 	IRenderTargetView* pRenderTarget = m_DeferredRenderer->GetScene()->GetRenderTargetView();
 	IDepthStencilView* pDepthStencil = m_RenderContext.GetAPI().GetDepthView();
 	m_RenderContext.GetContext().OMSetRenderTargets(1, &pRenderTarget, pDepthStencil);
 //
-	if (m_PostProcessManager.GetFlags() != 0)
-	{
-		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
-	}
-	else
-	{
+// 	if (m_PostProcessManager.GetFlags() != 0)
+// 	{
+// 		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
+// 	}
+// 	else
+// 	{
 		m_RenderContext.GetAPI().SetDefaultTargets();
 		m_DeferredRenderer->Finalize();
-	}
+	//}
 //
 //	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
 //	RenderLines();

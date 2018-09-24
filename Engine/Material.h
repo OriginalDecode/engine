@@ -37,7 +37,7 @@ public:
 
 	void Serialize(std::string file_name);
 
-	void Use(Effect* pEffect);
+	void Use(Effect* pEffect, bool _override = false);
 private:
 	MaterialData* m_Data = nullptr;
 

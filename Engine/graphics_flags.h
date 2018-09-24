@@ -59,7 +59,8 @@ namespace graphics
 			GEOMETRY_SHADER,
 			HULL_SHADER,
 			DOMAIN_SHADER,
-			COMPUTE_SHADER
+			COMPUTE_SHADER,
+			NOF_TYPES
 		};
 
 		SamplerState() = default;

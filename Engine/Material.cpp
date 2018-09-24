@@ -61,12 +61,22 @@ void Material::Serialize(std::string file_name)
 	}
 }
 
-void Material::Use(Effect* pEffect)
+void Material::Use(Effect* pEffect, bool _override)
 {
 	Effect* _use = (pEffect ? pEffect : m_Effect);
+	auto& ctx = Engine::GetAPI()->GetContext();
 	for (const ResourceBinding& binding : m_Resources)
 	{
-		_use->AddShaderResource(binding.m_Resource, binding.m_Slot);
+
+		if (_override)
+		{
+			IShaderResourceView* view = binding.m_Resource;
+			ctx.PSSetShaderResource(binding.m_Slot, 1, &view);
+		}
+		else
+		{
+			_use->AddShaderResource(binding.m_Resource, binding.m_Slot);
+		}
 	}
 	_use->Use();
 }

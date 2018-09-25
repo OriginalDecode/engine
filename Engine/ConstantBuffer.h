@@ -25,12 +25,12 @@ namespace graphics
 
 		enum ShaderBinding : s8
 		{
-			VERTEX = BITFLAG(0),
-			PIXEL = BITFLAG(1),
-			GEOMETRY = BITFLAG(2),
-			HULL = BITFLAG(3),
-			DOMAINS = BITFLAG(4),
-			COMPUTE = BITFLAG(5)
+			VERTEX = BIT(0),
+			PIXEL = BIT(1),
+			GEOMETRY = BIT(2),
+			HULL = BIT(3),
+			DOMAINS = BIT(4),
+			COMPUTE = BIT(5)
 		};
 
 		void Bind(s32 index, s32 shader_binding, const RenderContext& rc);

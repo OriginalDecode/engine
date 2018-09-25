@@ -372,7 +372,6 @@ void Game::OldUpdate(float dt)
 	if (input_wrapper->IsDown(KButton::NUMADD))
 		speed += 0.5f * dt;
 
-	//m_Synchronizer->AddRenderCommand(TextCommandA(CU::Vector2f(0.5,0.5), "%.3f", speed));
 
 
 	if (input_wrapper->IsDown(KButton::UP_ARROW))
@@ -414,22 +413,5 @@ void Game::OldUpdate(float dt)
 	if (input_wrapper->IsDown(KButton::NUMPAD7))
 		m_Orientation.RotateAroundPointZ(m_Orientation.GetPosition(), cl::DegreeToRad(-90.f) * dt);
 
-
-
-	/*for (const auto& p : positions)
-	{
-		AddRenderCommand(ModelCommand(japMap,p, false));
-	}*/
-
-
 	m_World.Update(dt, m_Paused); //This function takes a long time
-}
-
-void Game::AddRenderCommand(const ModelCommand& command)
-{
-	Engine& engine = Engine::GetRef();
-	const u16 current_buffer = engine.GetSynchronizer()->GetCurrentBufferIndex();
-	memory::CommandAllocator& allocator = engine.GetMemorySegmentHandle().GetCommandAllocator(current_buffer ^ 1, 0);
-	void * current = allocator.Alloc(sizeof(ModelCommand));
-	memcpy(current, &command, sizeof(ModelCommand));
 }

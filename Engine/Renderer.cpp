@@ -196,7 +196,7 @@ void Renderer::Render()
 
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
-	//m_TerrainSystem->Update(); //should not be updated here
+	m_TerrainSystem->Update(); //should not be updated here
 	//m_TerrainSystem->Draw();
 
 	auto& ctx = m_RenderContext.GetContext();
@@ -205,16 +205,13 @@ void Renderer::Render()
 	ctx.SetDepthState(graphics::Z_ENABLED, 1);
 	ctx.SetRasterState(graphics::CULL_BACK);
 	ctx.SetBlendState(graphics::BLEND_FALSE);
+	
 	for (graphics::IRenderNode* node : m_RenderNodes)
 	{
 		node->Draw(m_RenderContext);
 	}
 
-
-
-
-
-//	Render3DCommands();
+	//	Render3DCommands();
 //	m_InstancingManager.DoInstancing(m_RenderContext, false);
 //
 //#if !defined(_PROFILE) && !defined(_FINAL)

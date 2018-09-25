@@ -143,7 +143,7 @@ bool Engine::Initiate(float window_width, float window_height, HINSTANCE instanc
 	m_Synchronizer = new Synchronizer;
 	m_Synchronizer->Initiate();
 
-	m_SegmentHandle.Initiate();
+	//m_SegmentHandle.Initiate();
 
 	m_Camera = new Camera;
 	m_Camera->CreatePerspectiveProjection(m_Window.GetWindowSize().m_Width, m_Window.GetWindowSize().m_Height, 0.1f, 1000.f, 90.f); //these variables should probably be exposed to a settings file
@@ -308,10 +308,10 @@ void Engine::PickEntity()
 
 void Engine::AddRenderCommand(const ModelCommand& command)
 {
-	const u16 current_buffer = m_Synchronizer->GetCurrentBufferIndex();
-	memory::CommandAllocator& allocator = m_SegmentHandle.GetCommandAllocator(current_buffer ^ 1, 0);
-	void * current = allocator.Alloc(sizeof(ModelCommand));
-	memcpy(current, &command, sizeof(ModelCommand));
+	//const u16 current_buffer = m_Synchronizer->GetCurrentBufferIndex();
+	//memory::CommandAllocator& allocator = m_SegmentHandle.GetCommandAllocator(current_buffer ^ 1, 0);
+	//void * current = allocator.Alloc(sizeof(ModelCommand));
+	//memcpy(current, &command, sizeof(ModelCommand));
 }
 
 const WindowSize& Engine::GetWindowSize() const

@@ -11,7 +11,7 @@
 
 #define ARRSIZE(x) sizeof(x) / sizeof(x[0])
 
-#define BITFLAG(x) (1 << x)
+#define BIT(x) (1 << x)
 
 #define STRINGIFY(_class) #_class
 

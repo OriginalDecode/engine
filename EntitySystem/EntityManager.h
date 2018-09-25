@@ -32,12 +32,12 @@ public:
 
 	enum eSystemType
 	{
-		RENDER = BITFLAG(0),
-		AI = BITFLAG(1),
-		DEBUG = BITFLAG(2),
-		PHYSICS = BITFLAG(3),
-		LIGHT = BITFLAG(4),
-		NETWORK = BITFLAG(5),
+		RENDER = BIT(0),
+		AI = BIT(1),
+		DEBUG = BIT(2),
+		PHYSICS = BIT(3),
+		LIGHT = BIT(4),
+		NETWORK = BIT(5),
 	};
 
 	EntityManager() = default;

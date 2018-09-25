@@ -34,8 +34,6 @@ public:
 
 	void HandleMovement(InputWrapper* input_wrapper, float entity_speed, float dt);
 
-	void AddRenderCommand(const struct ModelCommand& command);
-
 	void Render(bool render_through) override;
 
 

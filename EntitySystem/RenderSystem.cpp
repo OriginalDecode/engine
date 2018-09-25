@@ -76,6 +76,7 @@ void RenderSystem::Update(float /*dt*/, bool paused)
 
 		CU::Matrix44f world;
 		//world.SetPosition({ 512, 0, 512, 1 });
+		return;
 		for (const ModelInstance& instance : render.m_Instances)
 		{
 

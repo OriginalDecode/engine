@@ -218,7 +218,7 @@ void Renderer::Render()
 //	m_InstancingManager.DoInstancing(m_RenderContext, false);
 //
 //#if !defined(_PROFILE) && !defined(_FINAL)
-	WriteDebugTextures();
+	//WriteDebugTextures();
 //
 //	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
 //	//DrawEntity(m_HoverTexture, hovered);

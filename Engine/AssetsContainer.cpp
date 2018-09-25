@@ -206,22 +206,12 @@ u64 AssetsContainer::LoadMaterial(std::string path)
 	return hash;
 }
 
-void* AssetsContainer::GetShader(const char* key)
+CompiledShader* AssetsContainer::GetShader(const char* key)
 {
-	return GetShader(Hash(key));
+	return m_ShaderFactory->GetShader(Hash(key));
 }
 
-void* AssetsContainer::GetShader(u64 key)
+CompiledShader* AssetsContainer::GetShader(u64 key)
 {
-	auto it = m_Shaders.find(key);
-	if (it != m_Shaders.end())
-		return it->second;
-
-	return nullptr;
+	return m_ShaderFactory->GetShader(key);
 }
-
-void AssetsContainer::InsertShader(u64 key, void* shader)
-{
-	m_Shaders.insert(std::make_pair(key, shader));
-}
-

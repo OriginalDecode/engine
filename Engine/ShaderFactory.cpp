@@ -98,48 +98,21 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 	std::string to_hash(full_path + entrypoint);
 	u64 hash_key = Hash(to_hash.c_str());
 	
+	CompiledShader* shader = CreateShader(full_path, entrypoint, type);
 	if (m_Shaders.find(hash_key) == m_Shaders.end())
-		m_Shaders.emplace(hash_key, CreateShader(full_path, entrypoint, type));
-
+		m_Shaders.emplace(hash_key, shader);
 	
 	//container->InsertShader(hash_key, )
 
-	switch (type)
-	{
-		case eShaderType::VERTEX:
-		{
-			effect->m_VertexShader = m_Shaders[hash_key];
-		} break;
-		case eShaderType::PIXEL:
-		{
-			effect->m_PixelShader = m_Shaders[hash_key];
-		} break;
-		case eShaderType::GEOMETRY:
-		{
-			effect->m_GeometryShader = m_Shaders[hash_key];
-		} break;
-		case eShaderType::HULL:
-		{
-			effect->m_HullShader = m_Shaders[hash_key];
-		} break;
-		case eShaderType::DOMAINS:
-		{
-			effect->m_DomainShader = m_Shaders[hash_key];
-		} break;
-		case eShaderType::COMPUTE:
-		{
-			effect->m_ComputeShader = m_Shaders[hash_key];
-		} break;
-
-		default:
-			DL_ASSERT("No valid shader type");
-			break;
-	}
+	effect->m_Shaders[type] = m_Shaders[hash_key];
 
 #ifndef FINAL
 	myFileWatchers[(s32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint));
 	ASSERT(effect, "Effect pointer was null");
-	m_Shaders[hash_key]->m_EffectPointers.Add(effect);
+
+	m_Shaders[hash_key]->RegisterReload(effect);
+
+	//m_Shaders[hash_key]->m_EffectPointers.Add(effect);
 #endif
 }
 
@@ -156,14 +129,12 @@ CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const 
  
 	void* shader = Engine::GetInstance()->CreateShader(compiled_shader, type, file_path.c_str());
 
-	auto container = Engine::GetInstance()->GetAssetsContainer();
 
 	std::string file;
 
 	size_t start = file_path.rfind("/");
 	file = file_path.substr(start + 1);
 
-	container->InsertShader(Hash(file.c_str()), shader);
 	
  	return new CompiledShader(	compiled_shader,
 								shader,
@@ -178,68 +149,50 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 	std::string fullpath = file_path + entrypoint;
 	u64 hash_key = Hash(fullpath.c_str());
 
-	CU::GrowingArray<Effect*> effect_container;
+	CU::GrowingArray<ShaderReload*> effect_container;
 	CompiledShader* new_shader = nullptr;
 	if (m_Shaders.find(hash_key) != m_Shaders.end())
 	{
 		CompiledShader* shader = m_Shaders[hash_key];
 		new_shader = CreateShader(file_path, shader->m_Entrypoint, shader->m_Type);
+
+		//auto container = Engine::GetInstance()->GetAssetsContainer();
+		//container->InsertShader(Hash(file_path.c_str()), new_shader);
+
 		if (new_shader != nullptr)
 		{
-			const CU::GrowingArray<Effect*>& effects = m_Shaders[hash_key]->m_EffectPointers;
-			for (Effect* effect : effects)
+			const CU::GrowingArray<ShaderReload*>& objects = shader->m_Reloaders;
+			for (ShaderReload* reloader : objects)
 			{
-				effect_container.Add(effect);
+				effect_container.Add(reloader);
 			}
 
-			delete m_Shaders[hash_key];
-			m_Shaders[hash_key] = nullptr;
+			delete shader;
+			shader = nullptr;
 
 			m_Shaders[hash_key] = new_shader;
 		}
 	}
 
-
-	for (Effect* effect : effect_container)
+	for (ShaderReload* reloader : effect_container)
 	{
-		switch (new_shader->m_Type)
-		{
-			case eShaderType::VERTEX:
-			{
-				effect->m_VertexShader = m_Shaders[hash_key];
-			} break;
-			case eShaderType::PIXEL:
-			{
-				effect->m_PixelShader = m_Shaders[hash_key];
-			} break;
-			case eShaderType::GEOMETRY:
-			{
-				effect->m_GeometryShader = m_Shaders[hash_key];
-			} break;
-			case eShaderType::HULL:
-			{
-				effect->m_HullShader = m_Shaders[hash_key];
-			} break;
-			case eShaderType::DOMAINS:
-			{
-				effect->m_DomainShader = m_Shaders[hash_key];
-			} break;
-			case eShaderType::COMPUTE:
-			{
-				effect->m_ComputeShader = m_Shaders[hash_key];
-			} break;
-
-			default:
-				DL_ASSERT("No valid shader type");
-				break;
-		}
-		m_Shaders[hash_key]->m_EffectPointers.Add(effect);
+		reloader->Reload(m_Shaders[hash_key]);
 	}
 }
 #endif
 IShaderBlob* ShaderFactory::CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& shader_type)
 {
 	return Engine::GetAPI()->GetDevice().CompileShaderFromFile(file_path.c_str(), entrypoint.c_str(), shader_type.c_str());
+}
+
+CompiledShader* ShaderFactory::GetShader(u64 key)
+{
+	auto it = m_Shaders.find(key);
+
+	if (it != m_Shaders.end())
+		return it->second;
+
+	return nullptr;
 }
 
 void ShaderFactory::Update()

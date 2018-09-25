@@ -81,7 +81,7 @@ typedef u64 uptr;
 typedef u32 uptr;
 #endif
 
-enum class eShaderType : s32
+enum eShaderType
 {
 	VERTEX,
 	PIXEL,
@@ -89,7 +89,7 @@ enum class eShaderType : s32
 	HULL,
 	DOMAINS,
 	COMPUTE,
-	_COUNT
+	NOF_TYPES
 };
 
 struct Ticket_Mutex

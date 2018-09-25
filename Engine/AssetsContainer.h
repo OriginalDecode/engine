@@ -56,10 +56,9 @@ public:
 	u64 LoadMaterial(std::string path);
 
 
-	void* GetShader(const char* key);
-	void* GetShader(u64 key);
+	CompiledShader* GetShader(const char* key);
+	CompiledShader* GetShader(u64 key);
 
-	void InsertShader(u64 key, void* shader);
 
 private:
 #ifndef FINAL
@@ -73,7 +72,6 @@ private:
 	std::map<u64, Sprite*> m_Sprites;
 	std::map<u64, Material*> m_Materials;
 
-	std::map<u64, void*> m_Shaders;
 
 
 

@@ -1,41 +1,43 @@
 #pragma once
 #include "engine_shared.h"
+#include "ShaderFactory.h"
 
 struct CompiledShader;
 class Texture;
-class Effect
+
+class Effect : public ShaderReload
 {
 	friend class ShaderFactory;
 public:
 
 	Effect(const std::string& filepath);
-	Effect() = default;
-	CompiledShader* GetVertexShader() { return m_VertexShader; }
-	CompiledShader* GetPixelShader() { return m_PixelShader; }
-	CompiledShader* GetGeometryShader() { return m_GeometryShader; }
-	CompiledShader* GetHullShader() { return m_HullShader; }
-	CompiledShader* GetDomainShader() { return m_DomainShader; }
-	CompiledShader* GetComputeShader() { return m_ComputeShader; }
+	Effect();
+
+	CompiledShader* GetVertexShader() { return m_Shaders[VERTEX]; }
+	CompiledShader* GetPixelShader() { return m_Shaders[PIXEL]; }
+	CompiledShader* GetGeometryShader() { return m_Shaders[GEOMETRY]; }
+	CompiledShader* GetHullShader() { return m_Shaders[HULL]; }
+	CompiledShader* GetDomainShader() { return m_Shaders[DOMAINS]; }
+	CompiledShader* GetComputeShader() { return m_Shaders[COMPUTE]; }
 
 	void AddShaderResource(IShaderResourceView* pResource, s32 slot);
 	void AddShaderResource(Texture* pResource, s32 slot);
 
+	bool set_shaders = true;
+
 	void Use();
 	void Clear();
+
+	void Reload(CompiledShader* shader) override;
+
+
 #ifdef _DEBUG
 	const std::string& GetFileName() const { return m_FileName; }
 #endif
 private:
 	std::string m_FileName;
 
-	CompiledShader* m_VertexShader		= nullptr;
-	CompiledShader* m_PixelShader		= nullptr;
-	CompiledShader* m_GeometryShader	= nullptr;
-	CompiledShader* m_HullShader		= nullptr;
-	CompiledShader* m_DomainShader		= nullptr;
-	CompiledShader* m_ComputeShader		= nullptr;
-
-
+	CompiledShader* m_Shaders[eShaderType::NOF_TYPES];
 
 public:
 

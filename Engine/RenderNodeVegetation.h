@@ -13,10 +13,11 @@ namespace graphics
 
 		void Draw(const RenderContext& rc) override;
 
+		void Reload(CompiledShader* shader) override;
+
 	private:
 
-		IVertexShader* m_VertexShader;
-		IFragmentShader* m_PixelShader;
+		CompiledShader* m_Shaders[eShaderType::NOF_TYPES];
 
 		Model* m_Model = nullptr;
 

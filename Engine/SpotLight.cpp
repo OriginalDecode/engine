@@ -159,7 +159,7 @@ const SpotlightData& SpotLight::GetData() const
 
 void SpotLight::SetPosition(const CU::Vector3f& aPosition)
 {
-	m_Model->GetOrientation().SetPosition(aPosition);
+	m_Model->SetPosition(aPosition);
 	myData.myLightPosition = aPosition;
 	m_Data.m_Position = aPosition;
 	myData.myOrientation.SetPosition(aPosition);
@@ -173,7 +173,7 @@ void SpotLight::SetDirection(const CU::Vector4f& aDirection)
 	myData.myDirection.x = aDirection.x;
 	myData.myDirection.y = aDirection.y;
 	myData.myDirection.z = aDirection.z;
-	m_Model->GetOrientation().SetForward(aDirection);
+	m_Model->SetForward(aDirection);
 	m_Data.m_Direction = myData.myDirection;
 	//m_ShadowSpotlight->GetCamera()->SetAt(aDirection);
 }

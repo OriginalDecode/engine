@@ -47,11 +47,26 @@ void LightModel::AddChild(LightModel* aChild)
 	m_Children.Add(aChild);
 }
 
-void LightModel::SetOrientation(const CU::Matrix44f& orientation)
+void LightModel::SetOrientation(const CU::Matrix44f orientation)
 {
 	m_Orientation = orientation;
 	for ( LightModel* child : m_Children )
 	{
 		child->SetOrientation(orientation);
 	}
+}
+
+const CU::Matrix44f& LightModel::GetOrientation() const
+{
+	return m_Orientation;
+}
+
+void LightModel::SetPosition(const CU::Vector4f& v)
+{
+	m_Orientation.SetPosition(v);
+}
+
+void LightModel::SetForward(const CU::Vector4f& d)
+{
+	m_Orientation.SetForward(d);
 }

@@ -39,7 +39,13 @@ public:
 	void SetPosition(CU::Vector2f position);
 	bool HasLoaded() const { return m_HasLoaded; }
 
+	const CU::Matrix44f& GetOrientation() const override { return m_Orientation; }
 	CU::Matrix44f& GetOrientation() { return m_Orientation; }
+
+	void SetOrientation(const CU::Matrix44f m) override {};
+
+	void SetForward(const CU::Vector4f& d) override { m_Orientation.SetForward(d); }
+	void SetPosition(const CU::Vector4f& v) override { m_Orientation.SetPosition(v); }
 
 private:
 

@@ -7,21 +7,26 @@
 namespace graphics
 {
 	class RenderContext;
+
 	class IRenderNode : public ShaderReload
 	{
 	public:
+
+
 		IRenderNode() = default;
 		virtual ~IRenderNode() { };
 
 		virtual void Draw(const RenderContext& rc) = 0;
 		virtual void Reload(CompiledShader* shader) = 0;
 
-		virtual void AddInstance(const ModelInstance& instance) = 0;
+		virtual void AddInstance(const ModelInstance instance) = 0;
 
-		u64 GetType() const { return m_Type;  }
+		virtual u64 GetType() const = 0;
 	protected:
-		u64 m_Type;
 	};
 
+	
+
+	
 
 };

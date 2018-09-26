@@ -158,7 +158,7 @@ void Model::ShadowRenderInstanced(const graphics::RenderContext& rc)
 	RemoveGPUData();
 }
 
-void Model::SetPosition(const CU::Vector3f& aPosition)
+void Model::SetPosition(const CU::Vector4f& aPosition)
 {
 	m_Orientation.SetPosition(aPosition);
 	for each (Model* child in m_Children)
@@ -167,7 +167,12 @@ void Model::SetPosition(const CU::Vector3f& aPosition)
 	}
 }
 
-CU::Matrix44f& Model::GetOrientation()
+void Model::SetForward(const CU::Vector4f& d)
+{
+	m_Orientation.SetForward(d);
+}
+
+const CU::Matrix44f& Model::GetOrientation() const
 {
 	return m_Orientation;
 }

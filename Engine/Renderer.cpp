@@ -45,6 +45,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	: m_Synchronizer(synchronizer)
 	, m_Camera(Engine::GetInstance()->GetCamera())
 {
+	Engine* engine = Engine::GetInstance();
 	auto api = Engine::GetAPI();
 	m_RenderContext = graphics::RenderContext(Engine::GetInstance(), api->GetDevice(), api->GetContext(), api);
 
@@ -100,8 +101,26 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Atmosphere.Initiate(1200, 1200, { 512, 0.f, 512.f });
 	m_Background = new Quad(Engine::GetInstance()->GetEffect("Shaders/skysphere.json"));
 
+
 	m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
+
+	u64 curtain = engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);
+	u64 building = engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
+	u64 pole = engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
+
+
+	graphics::IRenderNode* veg = GetNode(graphics::RenderNodeGeneral::Type);
+	ModelInstance inst;
+	inst.SetModel(engine->GetModel<Model>(building).GetData());
+	veg->AddInstance(inst);
+
+	inst.SetModel(engine->GetModel<Model>(curtain).GetData());
+	veg->AddInstance(inst);
+
+	inst.SetModel(engine->GetModel<Model>(pole).GetData());
+	veg->AddInstance(inst);
+
 
 }
 

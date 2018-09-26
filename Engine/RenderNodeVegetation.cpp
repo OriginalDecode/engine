@@ -6,9 +6,9 @@
 
 namespace graphics
 {
+	u64 RenderNodeVegetation::Type = Hash(STRINGIFY(RenderNodeVegetation));
 	RenderNodeVegetation::RenderNodeVegetation()
 	{
-		m_Type = Hash(STRINGIFY(RenderNodeVegetation));
 
 		auto engine = Engine::GetInstance();
 
@@ -43,7 +43,7 @@ namespace graphics
 		m_Shaders[shader->m_Type] = shader;
 	}
 
-	void RenderNodeVegetation::AddInstance(const ModelInstance& instance)
+	void RenderNodeVegetation::AddInstance(const ModelInstance instance)
 	{
 		m_Models.push_back(instance);
 	}

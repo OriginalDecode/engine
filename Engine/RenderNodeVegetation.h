@@ -8,6 +8,7 @@ namespace graphics
 	class RenderNodeVegetation : public IRenderNode
 	{
 	public:
+
 		RenderNodeVegetation();
 		~RenderNodeVegetation() override;
 
@@ -15,8 +16,10 @@ namespace graphics
 
 		void Reload(CompiledShader* shader) override;
 
-		void AddInstance(const ModelInstance& instance) override;
+		void AddInstance(const ModelInstance instance) override;
 
+		static u64 Type;
+		u64 GetType() const { return Type; }
 	private:
 
 		CompiledShader* m_Shaders[eShaderType::NOF_TYPES];

@@ -136,7 +136,7 @@ void Game::Initiate(const std::string& level)
 	m_Picker = new CMousePicker;
 
 	m_Camera = m_Engine->GetCamera();
-	m_Camera->SetPosition(CU::Vector3f(0, 20, 0));
+	m_Camera->SetPosition(CU::Vector3f(512, 20, 0));
 	m_Orientation.SetPosition(m_Camera->GetPosition());
 
 	m_Camera->Update();

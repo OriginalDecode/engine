@@ -2,10 +2,9 @@
 #include "RenderNodeGeneral.h"
 namespace graphics
 {
-
+	u64 RenderNodeGeneral::Type = Hash(STRINGIFY(RenderNodeGeneral));
 	RenderNodeGeneral::RenderNodeGeneral()
 	{
-		m_Type = Hash(STRINGIFY(RenderNodeGeneral));
 		auto engine = Engine::GetInstance();
 		m_Shaders[VERTEX] = engine->GetAssetsContainer()->GetShader("Data/Shaders/deferred_base.vsmain");
 		m_Shaders[PIXEL] = engine->GetAssetsContainer()->GetShader("Data/Shaders/pbl_debug.psmain");
@@ -34,11 +33,10 @@ namespace graphics
 	void RenderNodeGeneral::Reload(CompiledShader* shader)
 	{
 		m_Shaders[shader->m_Type] = shader;
-
 	}
 
 
-	void RenderNodeGeneral::AddInstance(const ModelInstance& instance)
+	void RenderNodeGeneral::AddInstance(const ModelInstance instance)
 	{
 		m_Models.push_back(instance);
 	}

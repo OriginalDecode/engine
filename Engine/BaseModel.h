@@ -35,6 +35,12 @@ public:
 	const InstanceWrapper& GetInstanceWrapper() const { return m_InstanceWrapper; }
 	InstanceWrapper& GetInstanceWrapper() { return m_InstanceWrapper; }
 
+	virtual void SetOrientation(const CU::Matrix44f m) = 0;
+	virtual const CU::Matrix44f& GetOrientation() const = 0;
+	virtual void SetPosition(const CU::Vector4f& v) = 0;
+	virtual void SetForward(const CU::Vector4f& d) = 0;
+
+
 	CU::Vector3f GetWHD() const { return m_WHD; }
 
 	virtual void AddSurface(Surface* surface) = 0;

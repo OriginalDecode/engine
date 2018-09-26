@@ -36,9 +36,11 @@ public:
 	void AddChild(Model* aChild);
 
 	void AddSurface(Surface* surface);
-	void SetPosition(const CU::Vector3f& aPosition);
-	CU::Matrix44f& GetOrientation();
-	void SetOrientation(CU::Matrix44f orientation);
+
+	void SetPosition(const CU::Vector4f& aPosition) override;
+	void SetForward(const CU::Vector4f& d) override;
+	const CU::Matrix44f& GetOrientation() const override;
+	void SetOrientation(const CU::Matrix44f orientation) override;
 
 	virtual void SetMaxPoint(CU::Vector3f max_point);
 	virtual CU::Vector3f GetMaxPoint() const { return m_MaxPoint; }

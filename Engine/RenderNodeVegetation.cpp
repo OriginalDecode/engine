@@ -11,7 +11,12 @@ namespace graphics
 		auto engine = Engine::GetInstance();
 
 		engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
-		m_Model = Engine::GetInstance()->GetModel<Model>("Data/model/sponza_pbr/building.fbx").GetData();
+		engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);
+		engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
+
+		m_Models.push_back(Engine::GetInstance()->GetModel<Model>("Data/model/sponza_pbr/building.fbx").GetData());
+		m_Models.push_back(Engine::GetInstance()->GetModel<Model>("Data/model/sponza_pbr/curtain.fbx").GetData());
+		m_Models.push_back(Engine::GetInstance()->GetModel<Model>("Data/model/sponza_pbr/poles.fbx").GetData());
 
 		m_Shaders[VERTEX] = engine->GetAssetsContainer()->GetShader("Data/Shaders/deferred_base.vsmain");
 		m_Shaders[PIXEL] = engine->GetAssetsContainer()->GetShader("Data/Shaders/pbl_debug.psmain");
@@ -31,8 +36,10 @@ namespace graphics
 		rc.GetContext().SetVertexShader(m_Shaders[VERTEX]);
 		rc.GetContext().SetPixelShader(m_Shaders[PIXEL]);
 
-
-		m_Model->Render(rc);
+		for (Model* m : m_Models)
+		{
+			m->Render(rc);
+		}
 
 		//render the models
 

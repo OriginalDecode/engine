@@ -178,6 +178,8 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 	{
 		reloader->Reload(m_Shaders[hash_key]);
 	}
+	m_Shaders[hash_key]->m_Reloaders = effect_container;
+
 }
 #endif
 IShaderBlob* ShaderFactory::CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& shader_type)

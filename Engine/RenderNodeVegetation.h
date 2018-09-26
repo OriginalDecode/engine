@@ -19,7 +19,7 @@ namespace graphics
 
 		CompiledShader* m_Shaders[eShaderType::NOF_TYPES];
 
-		Model* m_Model = nullptr;
+		std::vector<Model*> m_Models;
 
 
 

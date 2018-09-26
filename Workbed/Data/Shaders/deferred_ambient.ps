@@ -264,8 +264,8 @@ float4 main(VS_OUTPUT input) : SV_Target
 
 	float3 light_col = float3(1, 1, 1);
 	float3 directDiffuse = 0, directSpec = 0;
-	directDiffuse = (saturate(( 1 - F ) * NdL * metalness_albedo ) ) * total;// * ( 1 - in_shadow);
-	directSpec = (saturate(F * D * G) * NdL * light_col ) * total;// * (1 - in_shadow);
+	directDiffuse = (saturate(( 1 - F ) * NdL * metalness_albedo ) ) * 1;// * ( 1 - in_shadow);
+	directSpec = (saturate(F * D * G) * NdL * light_col ) * 1;// * (1 - in_shadow);
 	float4 final = float4(saturate(ambient.rgb + directDiffuse + directSpec), 1) * float4(albedoTint, 1);
 
 	return final;	

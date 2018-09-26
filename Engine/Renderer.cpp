@@ -37,6 +37,7 @@
 
 #include <Engine/RenderNode.h>
 #include <Engine/RenderNodeVegetation.h>
+#include <Engine/RenderNodeGeneral.h>
 
 #include "shader_types.h"
 
@@ -100,7 +101,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Background = new Quad(Engine::GetInstance()->GetEffect("Shaders/skysphere.json"));
 
 	m_RenderNodes.Add(new graphics::RenderNodeVegetation);
-
+	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
 
 }
 
@@ -197,7 +198,6 @@ void Renderer::Render()
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
 	m_TerrainSystem->Update(); //should not be updated here
-	//m_TerrainSystem->Draw();
 
 	auto& ctx = m_RenderContext.GetContext();
 
@@ -211,59 +211,21 @@ void Renderer::Render()
 		node->Draw(m_RenderContext);
 	}
 
-	//	Render3DCommands();
-//	m_InstancingManager.DoInstancing(m_RenderContext, false);
-//
-//#if !defined(_PROFILE) && !defined(_FINAL)
-	//WriteDebugTextures();
-//
-//	const Entity hovered = debug::DebugHandle::GetInstance()->GetHoveredEntity();
-//	//DrawEntity(m_HoverTexture, hovered);
-//
-//	const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
-//	//DrawEntity(m_SelectedTexture, selected);
-//
-//#endif
-//
-//	m_ShadowPass.ProcessShadows(&m_DirectionalShadow, m_RenderContext);
 	DrawIBL();
-//	RenderSpotlight();
-//	RenderPointlight();
-//
 
-	IRenderTargetView* pRenderTarget = m_DeferredRenderer->GetScene()->GetRenderTargetView();
-	IDepthStencilView* pDepthStencil = m_RenderContext.GetAPI().GetDepthView();
-	m_RenderContext.GetContext().OMSetRenderTargets(1, &pRenderTarget, pDepthStencil);
-//
-// 	if (m_PostProcessManager.GetFlags() != 0)
-// 	{
-// 		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
-// 	}
-// 	else
-// 	{
-		m_RenderContext.GetAPI().SetDefaultTargets();
-		m_DeferredRenderer->Finalize();
-	//}
-//
-//	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX, m_RenderContext);
-//	RenderLines();
-//
-//	Render2DCommands();
-//
+	m_RenderContext.GetAPI().SetDefaultTargets();
+	m_DeferredRenderer->Finalize();
+
 #if !defined(_PROFILE) && !defined(_FINAL)
+
 	ImGui::Render();
-//
-//	if (m_CreateCubemaps)
-//	{
-//		MakeCubemap({ 512.f, 10.f, 512.f }, 128);
-//		m_CreateCubemaps = false;
-//	}
-//
+	if (m_CreateCubemaps)
+	{
+		MakeCubemap({ 512.f, 10.f, 512.f }, 128);
+		m_CreateCubemaps = false;
+	}
+
 #endif
-
-
-
-
 
 	m_RenderContext.GetAPI().EndFrame();
 	//m_InstancingManager.EndFrame();
@@ -307,7 +269,7 @@ void Renderer::DrawEntity(Texture* pTex, Entity e)
 		return;
 	const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(e);
 
-	for (const ModelInstance& instance : graphics.m_Instances)
+	for (const ModelInstanceCmpt& instance : graphics.m_Instances)
 	{
 		m_HoverModel = engine.GetModel<Model>(instance.m_ModelID);
 		if (!m_HoverModel.GetData())
@@ -891,4 +853,17 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	}
 
 }
+
+graphics::IRenderNode* Renderer::GetNode(u64 type)
+{
+	for (graphics::IRenderNode* node : m_RenderNodes)
+	{
+		if (node->GetType() == type)
+		{
+			return node;
+		}
+	}
+	return nullptr;
+}
+
 #endif

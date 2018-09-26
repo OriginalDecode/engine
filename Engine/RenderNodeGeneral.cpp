@@ -1,17 +1,12 @@
 #include "stdafx.h"
-#include "RenderNodeVegetation.h"
-#include <engine/Engine.h>
-#include <engine/AssetsContainer.h>
-#include <engine/Model.h>
-
+#include "RenderNodeGeneral.h"
 namespace graphics
 {
-	RenderNodeVegetation::RenderNodeVegetation()
+
+	RenderNodeGeneral::RenderNodeGeneral()
 	{
-		m_Type = Hash(STRINGIFY(RenderNodeVegetation));
-
+		m_Type = Hash(STRINGIFY(RenderNodeGeneral));
 		auto engine = Engine::GetInstance();
-
 		m_Shaders[VERTEX] = engine->GetAssetsContainer()->GetShader("Data/Shaders/deferred_base.vsmain");
 		m_Shaders[PIXEL] = engine->GetAssetsContainer()->GetShader("Data/Shaders/pbl_debug.psmain");
 
@@ -21,12 +16,11 @@ namespace graphics
 #endif
 	}
 
-
-	RenderNodeVegetation::~RenderNodeVegetation()
+	RenderNodeGeneral::~RenderNodeGeneral()
 	{
 	}
 
-	void RenderNodeVegetation::Draw(const RenderContext& rc)
+	void RenderNodeGeneral::Draw(const RenderContext& rc)
 	{
 		rc.GetContext().SetVertexShader(m_Shaders[VERTEX]);
 		rc.GetContext().SetPixelShader(m_Shaders[PIXEL]);
@@ -37,13 +31,14 @@ namespace graphics
 		}
 	}
 
-	
-	void RenderNodeVegetation::Reload(CompiledShader* shader)
+	void RenderNodeGeneral::Reload(CompiledShader* shader)
 	{
 		m_Shaders[shader->m_Type] = shader;
+
 	}
 
-	void RenderNodeVegetation::AddInstance(const ModelInstance& instance)
+
+	void RenderNodeGeneral::AddInstance(const ModelInstance& instance)
 	{
 		m_Models.push_back(instance);
 	}

@@ -182,7 +182,7 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 
 	{
 		GraphicsComponent& c = em.AddComponent<GraphicsComponent>(e);
-		ModelInstance instance;
+		ModelInstanceCmpt instance;
 		instance.m_MaterialKey = g_DefaultMaterial; //Engine::GetInstance()->GetMaterial("default")->GetKey(); // this will work
 		instance.m_MaterialFile = "default";
 		instance.m_ModelID = g_DefaultModel;
@@ -493,7 +493,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 
 			u64 key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false);
 
-			ModelInstance instance;
+			ModelInstanceCmpt instance;
 			instance.m_Filename = "data/model/ballen.fbx";
 			instance.m_MaterialFile = files[v];
 			instance.m_Scale = CU::Vector4f(scale_factor, scale_factor, scale_factor, 1);
@@ -514,6 +514,9 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 			dwellers.GetLast()->AddComponent(&t, TreeDweller::TRANSLATION);
 			dwellers.GetLast()->AddComponent(&r, TreeDweller::GRAPHICS);
 			dwellers.GetLast()->Initiate(e, TreeDweller::STATIC);
+
+
+
 		}
 
 	}
@@ -708,7 +711,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 
 	GraphicsComponent& component = m_EntityManager->GetComponent<GraphicsComponent>(entity_id);
 	const JSONElement& el = entity_reader.GetElement("graphics");
-	ModelInstance instance;
+	ModelInstanceCmpt instance;
 	instance.m_ModelID = m_Engine->LoadModelA(
 		el["model"].GetString(),
 		"Shaders/debug_pbl_instanced.json",

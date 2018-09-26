@@ -17,6 +17,7 @@ namespace graphics
 {
 	class RenderContext;
 };
+
 class BaseModel
 {
 	friend class CModelImporter;

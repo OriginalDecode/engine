@@ -465,6 +465,7 @@
     <ClInclude Include="RenderNode.h" />
     <ClInclude Include="RenderPass.h" />
     <ClInclude Include="RenderNodeVegetation.h" />
+    <ClInclude Include="RenderNodeGeneral.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -771,5 +772,6 @@
     <ClCompile Include="IGraphicsContext.cpp" />
     <ClCompile Include="DebugRenderer.cpp" />
     <ClCompile Include="RenderNodeVegetation.cpp" />
+    <ClCompile Include="RenderNodeGeneral.cpp" />
   </ItemGroup>
 </Project>

@@ -98,9 +98,9 @@ void Game::Initiate(const std::string& level)
 	building = m_Engine->LoadModelA("Data/models/suntemple/suntemple.fbx", "Shaders/deferred_base.json", false);
 #else
 	//curtain = m_Engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);
-	building = m_Engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
+	//building = m_Engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
 	//pole = m_Engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
-	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
+	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(16, 1, 3, CU::Vector3f(-110.f, 0.f, -16.f), 15.f, 0.f, 15.f);
 
 

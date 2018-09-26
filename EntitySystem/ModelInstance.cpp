@@ -1,9 +1,17 @@
-//#include "ModelInstance.h"
-//constexpr char* s_RelativeScale = "relative_scale";
-//constexpr char* s_RelativePos = "relative_position";
-//constexpr char* s_RelativeRot = "relative_rotation";
-//constexpr char* s_MaterialFile = "material_file";
-//constexpr char* s_ModelFile = "model_file";
-//constexpr char* s_Shadowed = "shadowed";
-//constexpr char* s_Instances = "instances";
-//constexpr char* s_Shader = "Shaders/debug_pbl_instanced.json"; // This should be read from a file, this should be connected with the material
+#include "ModelInstance.h"
+#include <Engine/BaseModel.h>
+
+void ModelInstance::SetModel(BaseModel* const model)
+{
+	m_Model = model;
+}
+
+void ModelInstance::SetOrientation(const CU::Matrix44f orientation)
+{
+	m_Orientation = orientation;
+}
+
+void ModelInstance::Draw(const graphics::RenderContext& rc) const
+{
+	m_Model->Render(rc);
+}

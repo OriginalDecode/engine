@@ -112,7 +112,7 @@ namespace debug
 		std::vector<std::string> m_MaterialLabels;
 
 		//this is my current modelinstances
-		std::vector<ModelInstance*> m_ModelInstances;
+		std::vector<ModelInstanceCmpt*> m_ModelInstances;
 		std::vector<std::string> m_InstanceLabels;
 
 

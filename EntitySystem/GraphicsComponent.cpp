@@ -13,7 +13,7 @@ constexpr char* s_ModelFile = "model_file";
 constexpr char* s_Shadowed = "shadowed";
 constexpr char* s_Instances = "instances";
 
-void ModelInstance::Deserialize(const rapidjson::Value& json_value, ModelInstance& instance)
+void ModelInstanceCmpt::Deserialize(const rapidjson::Value& json_value, ModelInstanceCmpt& instance)
 {
 	instance.m_Filename = json_value[s_ModelFile].GetString();
 	instance.m_ModelID = Engine::GetInstance()->LoadModelA(instance.m_Filename, s_base, false);
@@ -81,10 +81,10 @@ void ModelInstance::Deserialize(const rapidjson::Value& json_value, ModelInstanc
 	}
 }
 
-ModelInstance ModelInstance::Deserialize(const rapidjson::Value& json_value)
+ModelInstanceCmpt ModelInstanceCmpt::Deserialize(const rapidjson::Value& json_value)
 {
-	ModelInstance instance;
-	ModelInstance::Deserialize(json_value, instance);
+	ModelInstanceCmpt instance;
+	ModelInstanceCmpt::Deserialize(json_value, instance);
 	return instance;
 }
 
@@ -93,7 +93,7 @@ void GraphicsComponent::Serialize(JsonWriter& writer) const
 
 	writer.String(s_Instances);
 	writer.StartArray();
-	for (const ModelInstance& instance : m_Instances)
+	for (const ModelInstanceCmpt& instance : m_Instances)
 	{
 		instance.Serialize(writer);
 	}
@@ -106,6 +106,6 @@ void GraphicsComponent::Deserialize(const rapidjson::Value& json_value)
 {
 	for (const rapidjson::Value& value : json_value[s_Instances].GetArray())
 	{
-		m_Instances.Add(ModelInstance::Deserialize(value));
+		m_Instances.Add(ModelInstanceCmpt::Deserialize(value));
 	}
 }

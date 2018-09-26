@@ -2,6 +2,8 @@
 
 
 #include <engine/ShaderFactory.h>
+#include "ModelInstance.h"
+
 namespace graphics
 {
 	class RenderContext;
@@ -12,11 +14,13 @@ namespace graphics
 		virtual ~IRenderNode() { };
 
 		virtual void Draw(const RenderContext& rc) = 0;
-
 		virtual void Reload(CompiledShader* shader) = 0;
 
-	private:
+		virtual void AddInstance(const ModelInstance& instance) = 0;
 
+		u64 GetType() const { return m_Type;  }
+	protected:
+		u64 m_Type;
 	};
 
 

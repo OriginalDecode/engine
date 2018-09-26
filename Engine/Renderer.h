@@ -73,6 +73,9 @@ public:
 	graphics::RenderContext& GetRenderContext() { return m_RenderContext; }
 
 	void MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_resolution = 16);
+
+	graphics::IRenderNode* GetNode(u64 type);
+
 private:
 	float m_CubemapTimer = 0.f;
 

@@ -7,13 +7,14 @@
 
 #include <CommonLib/DataStructures/Hashmap/Hash.h>
 
-struct ModelInstance
+
+struct ModelInstanceCmpt
 {
 	template <typename Writer>
 	void Serialize(Writer& writer) const;
 
-	static void Deserialize(const rapidjson::Value& json_value, ModelInstance& instance);
-	static ModelInstance Deserialize(const rapidjson::Value& json_value);
+	static void Deserialize(const rapidjson::Value& json_value, ModelInstanceCmpt& instance);
+	static ModelInstanceCmpt Deserialize(const rapidjson::Value& json_value);
 
 	std::string m_Filename;
 	std::string m_MaterialFile;
@@ -43,7 +44,7 @@ struct GraphicsComponent : public BaseComponent
 	void Serialize(JsonWriter& writer) const override;
 	void Deserialize(const rapidjson::Value& value) override;
 
-	CU::GrowingArray<ModelInstance> m_Instances;
+	CU::GrowingArray<ModelInstanceCmpt> m_Instances;
 
 	CU::Matrix44f m_Orientation;
 	CU::Vector4f m_Scale = { 1.f, 1.f, 1.f, 1.f };
@@ -57,7 +58,7 @@ struct GraphicsComponent : public BaseComponent
 
 
 template <typename Writer>
-void ModelInstance::Serialize(Writer& writer) const
+void ModelInstanceCmpt::Serialize(Writer& writer) const
 {
 	writer.StartObject();
 

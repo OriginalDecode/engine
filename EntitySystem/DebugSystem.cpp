@@ -60,7 +60,7 @@ void DebugSystem::HandleEvent(u64 event, void* data /*= nullptr*/)
 {
 	if (event == Hash("pick_entity"))
 	{
-		debug::DebugHandle::GetInstance()->ConfirmEntity();
+		//debug::DebugHandle::GetInstance()->ConfirmEntity();
 // 		m_Engine->PickEntity();
 // 		Entity e = debug::DebugHandle::GetInstance()->GetSelectedEntity();
 // 		const CU::GrowingArray<Entity>& entities = GetEntities();
@@ -76,7 +76,7 @@ void DebugSystem::HandleEvent(u64 event, void* data /*= nullptr*/)
 
 void DebugSystem::ReceiveMessage(const OnLeftClick& message)
 {
-	debug::DebugHandle::GetInstance()->ConfirmEntity();
+	//debug::DebugHandle::GetInstance()->ConfirmEntity();
 	m_Engine->PickEntity();
 }
 

@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "RenderNodeGeneral.h"
+#include <engine/Model.h>
 namespace graphics
 {
 	u64 RenderNodeGeneral::Type = Hash(STRINGIFY(RenderNodeGeneral));
 	RenderNodeGeneral::RenderNodeGeneral()
 	{
 		auto engine = Engine::GetInstance();
-		m_Shaders[VERTEX] = engine->GetAssetsContainer()->GetShader("Data/Shaders/deferred_base.vsmain");
+		m_Shaders[VERTEX] = engine->GetAssetsContainer()->GetShader("Data/Shaders/deferred_base_instanced.vsmain");
 		m_Shaders[PIXEL] = engine->GetAssetsContainer()->GetShader("Data/Shaders/pbl_debug.psmain");
 
 #ifdef _DEBUG
@@ -24,9 +25,27 @@ namespace graphics
 		rc.GetContext().SetVertexShader(m_Shaders[VERTEX]);
 		rc.GetContext().SetPixelShader(m_Shaders[PIXEL]);
 
-		for (const ModelInstance& model_instance : m_Models)
+
+		rc.GetContext().SetDepthState(graphics::Z_ENABLED, 1);
+		rc.GetContext().SetRasterState(graphics::CULL_BACK);
+		rc.GetContext().SetBlendState(graphics::BLEND_FALSE);
+		rc.GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x1);
+		rc.GetContext().VSSetSamplerState(0, 1, graphics::MSAA_x1);
+
+		Model * model = nullptr;
+		for (auto& object : m_Models)
 		{
-			model_instance.Draw(rc);
+			std::vector<ModelInstance>& list = object.second;
+			
+			for (ModelInstance& instance : list)
+			{
+				model = static_cast<Model*>(instance.GetModel());
+				model->AddOrientation(instance.GetOrientation());
+				instance.UpdateMaterial();
+			}
+			model->GetSurface()->Activate(rc);
+			model->Render(rc);
+			model = nullptr;
 		}
 	}
 
@@ -38,7 +57,19 @@ namespace graphics
 
 	void RenderNodeGeneral::AddInstance(const ModelInstance instance)
 	{
-		m_Models.push_back(instance);
+		const u64 key = instance.GetMaterialKey();
+		auto it = m_Models.find(key);
+		if (it == m_Models.end())
+		{
+			m_Models.insert(std::make_pair(key, std::vector<ModelInstance>()));
+		}
+		
+		it = m_Models.find(key);
+		if (it != m_Models.end())
+		{
+			it->second.push_back(instance);
+		}
+
 	}
 
 };

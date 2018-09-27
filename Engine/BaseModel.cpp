@@ -13,6 +13,11 @@ void BaseModel::SetEffect(Effect* anEffect)
 	m_Effect = anEffect;
 }
 
+void BaseModel::SetSurface0(Surface* surface)
+{
+	m_Surfaces[0] = surface;
+}
+
 void BaseModel::CreatePlane(float half_width)
 {
 	auto& device = Engine::GetAPI()->GetDevice();

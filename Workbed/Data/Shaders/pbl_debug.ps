@@ -77,8 +77,8 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	if(albedo.a <= 0.1)
 		discard;
 
-	output.m_Albedo = pow(albedo, 2.2);
-	output.m_Albedo.a = 1.0;
+	albedo.rgb = pow(albedo.rgb, 2.2);
+	output.m_Albedo = albedo;
 	
 	// output.Albedo.a = override_pbl ? 1 : roughness_override;
 

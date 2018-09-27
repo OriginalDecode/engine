@@ -471,61 +471,39 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 		//"Data/Material/mat_fingerprint.json",
 	};
 
+
+	Effect* e = Engine::GetInstance()->GetEffect("Shaders/debug_pbl_instanced.json");
+	u64 key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false);
+	Model* model = Engine::GetInstance()->GetModel<Model>(key).GetData();
+	model->AddSurface(new Surface(e));
+
 	EntityManager& em = Engine::GetInstance()->GetEntityManager();
 	graphics::IRenderNode* general = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::Type);
 	for (s32 i = 0; i < x_steps; i++)
 	{
 		for (s32 j = z_steps - 1, s = 0; j >= 0; j--, s++)
 		{
-			//Entity e = em.CreateEntity();
-
-			//auto& t = em.AddComponent<TranslationComponent>(e);
-			//auto& r = em.AddComponent<GraphicsComponent>(e);
-
 			CU::Vector4f translation;
 			translation.x = x_start + i * x_spacing;
 			translation.y = y_start + 0 * y_spacing;
 			translation.z = z_start + s * z_spacing;
 			translation.w = 1.f;
 
-			//t.m_Orientation.SetTranslation(translation);
-
-			//float scale_factor = 0.5;
-
-			//auto v = RANDOM(0, ARRSIZE(material));
-
-			u64 key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/deferred_base.json", false);
-
-			//ModelInstanceCmpt instance;
-			//instance.m_Filename = "data/model/ballen.fbx";
-			//instance.m_MaterialFile = files[v];
-			//instance.m_Scale = CU::Vector4f(scale_factor, scale_factor, scale_factor, 1);
-			//
-
-
-			//Material* pMaterial = material[v];
-			//pMaterial->SetEffect(pEngine->GetEffect("Shaders/debug_pbl_instanced.json"));
-
-			//instance.m_MaterialKey = pMaterial->GetKey();
-			//instance.m_ModelID = key;
-
-			//r.m_Scale = CU::Vector4f(scale_factor, scale_factor, scale_factor, 1);
-
-			//r.m_Instances.Add(instance);
-
-			//dwellers.Add(new TreeDweller);
-			//dwellers.GetLast()->AddComponent(&t, TreeDweller::TRANSLATION);
-			//dwellers.GetLast()->AddComponent(&r, TreeDweller::GRAPHICS);
-			//dwellers.GetLast()->Initiate(e, TreeDweller::STATIC);
+			auto v = RANDOM(0, ARRSIZE(material));
 
 			ModelInstance _instance;
-			_instance.SetModel(Engine::GetInstance()->GetModel<Model>(key).GetData());
+			_instance.SetModel(model);
 
 			CU::Matrix44f orientation;
 			orientation.SetTranslation(translation);
 
 			_instance.SetOrientation(orientation);
 
+			Surface* new_surface = new Surface(e);
+			new_surface->SetMaterial(*material[v]);
+
+			_instance.SetSurface(new_surface);
+			_instance.SetMaterial(material[v]);
 			general->AddInstance(_instance);
 		}
 

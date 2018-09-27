@@ -33,9 +33,9 @@ struct CompiledShader
 	CompiledShader(IShaderBlob* pShaderBlob, void* pShader, eShaderType shader_type, const char* entrypoint)
 		: m_Blob(pShaderBlob)
 		, m_Shader(pShader)
-#ifndef _FINAL
 		, m_Type(shader_type)
 		, m_Entrypoint(entrypoint)
+#ifndef _FINAL
 #endif
 	{
 	}
@@ -44,10 +44,10 @@ struct CompiledShader
 	void* m_Blob = nullptr;
 	void* m_Shader = nullptr;
 
-#ifndef _FINAL
 	eShaderType m_Type;
 	std::string m_Entrypoint;
 
+#ifndef _FINAL
 	void RegisterReload(ShaderReload* reload)
 	{
 		m_Reloaders.Add(reload);

@@ -10,7 +10,7 @@ struct D3D11_INPUT_ELEMENT_DESC;
 struct GPUModelData
 {
 	CU::Matrix44f m_Orientation;
-	CU::Vector4f m_PBLData;
+	CU::Vector4f dummy;
 	u32 m_ID;
 	u32 m_Hovering = false;
 };
@@ -57,6 +57,8 @@ public:
 	Effect* GetEffect() { return m_Effect; }
 	void AddOrientation(CU::Matrix44f orientation);
 	void AddInstanceData(GPUModelData data);
+
+	void SetMaterial(Material* pMaterial) override;
 	Material* GetMaterial();
 	void CreateCube();
 
@@ -67,8 +69,10 @@ public:
 
 	void SetIsInstanced(bool is_instanced) override;
 	bool IsInstanced() const { return m_IsInstanced; }
+
+	void SetSurface0(Surface* surface) override;
+	Surface* GetSurface() { return m_Surfaces[0]; }
 private:
-	Material* GetMat() { return m_Material; }
 	void RenderCube(const graphics::RenderContext& rc);
 	void RemoveGPUData();
 	CU::GrowingArray<Model*> m_Children;

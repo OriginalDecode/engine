@@ -1,5 +1,6 @@
 #pragma once
 #include "RenderNode.h"
+#include <unordered_map>
 
 struct CompiledShader;
 namespace graphics
@@ -21,7 +22,7 @@ namespace graphics
 	private:
 		CompiledShader* m_Shaders[eShaderType::NOF_TYPES];
 
-		std::vector<ModelInstance> m_Models;
+		std::unordered_map<u64, std::vector<ModelInstance>> m_Models;
 
 
 	};

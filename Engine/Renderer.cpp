@@ -105,21 +105,21 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
 
-	u64 curtain = engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);
-	u64 building = engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
-	u64 pole = engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
+	//u64 curtain = engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);
+	//u64 building = engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
+	//u64 pole = engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
 
 
-	graphics::IRenderNode* veg = GetNode(graphics::RenderNodeGeneral::Type);
-	ModelInstance inst;
-	inst.SetModel(engine->GetModel<Model>(building).GetData());
-	veg->AddInstance(inst);
+	//graphics::IRenderNode* veg = GetNode(graphics::RenderNodeGeneral::Type);
+	//ModelInstance inst;
+	//inst.SetModel(engine->GetModel<Model>(building).GetData());
+	//veg->AddInstance(inst);
 
-	inst.SetModel(engine->GetModel<Model>(curtain).GetData());
-	veg->AddInstance(inst);
+	//inst.SetModel(engine->GetModel<Model>(curtain).GetData());
+	//veg->AddInstance(inst);
 
-	inst.SetModel(engine->GetModel<Model>(pole).GetData());
-	veg->AddInstance(inst);
+	//inst.SetModel(engine->GetModel<Model>(pole).GetData());
+	//veg->AddInstance(inst);
 
 
 }
@@ -873,6 +873,9 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 
 }
 
+
+#endif
+
 graphics::IRenderNode* Renderer::GetNode(u64 type)
 {
 	for (graphics::IRenderNode* node : m_RenderNodes)
@@ -884,5 +887,3 @@ graphics::IRenderNode* Renderer::GetNode(u64 type)
 	}
 	return nullptr;
 }
-
-#endif

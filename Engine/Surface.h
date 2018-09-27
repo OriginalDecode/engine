@@ -5,6 +5,7 @@ class Texture;
 class Surface
 {
 public:
+
 	Surface(Effect* anEffect);
 	Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount);
 	//Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, graphics::eTopology aPrimology);
@@ -32,6 +33,7 @@ public:
 	int GetStartIndex() const;
 
 	void serialize(const char* out);
+	void SetMaterial(Material copy);
 private:
 
 	//graphics::eTopology m_Topology;

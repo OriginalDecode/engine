@@ -42,9 +42,17 @@ void Model::Initiate(const std::string& filename)
 
 void Model::Render(const graphics::RenderContext& rc)
 {
-	if (m_FileName.find("default_cube") != m_FileName.npos)
-		RenderCube(rc);
+	if (m_IsInstanced)
+	{
+		RenderInstanced(rc, m_Effect);
+		return;
+	}
 
+	if (m_FileName.find("default_cube") != m_FileName.npos)
+	{
+		RenderCube(rc);
+		return;
+	}
 
 	PROFILE_FUNCTION(profiler::colors::Blue);
 	for (Model* child : m_Children)
@@ -101,16 +109,13 @@ void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_
 		return;
 	}
 
-	rc.GetContext().SetDepthState(graphics::Z_ENABLED, 1);
-	rc.GetContext().SetRasterState(graphics::CULL_BACK);
-	rc.GetContext().SetBlendState(graphics::BLEND_FALSE);
 
 	UpdateConstantBuffer(rc);
 
-	rc.GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x16);
-	rc.GetContext().VSSetSamplerState(0, 1, graphics::MSAA_x16);
 
 	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
+
+
 	rc.GetContext().DrawIndexedInstanced(this, override_effect);
 	PROFILE_BLOCK_END;
 
@@ -241,7 +246,7 @@ void Model::AddChild(Model* aChild)
  {
  	for (Model* child : m_Children)
  	{
- 		AddSurface(surface);
+ 		child->AddSurface(surface);
  	}
  	m_Surfaces.Add(surface);
  }
@@ -264,19 +269,20 @@ void Model::AddInstanceData(GPUModelData data)
 
 }
 
+void Model::SetMaterial(Material* pMaterial)
+{
+	if (m_Surfaces.Size() > 0 && m_Surfaces[0])
+	{
+		m_Surfaces[0]->SetMaterial(*pMaterial);
+		for (Model* c : m_Children)
+		{
+			c->SetMaterial(pMaterial);
+		}
+	}
+}
+
 Material* Model::GetMaterial()
 {
-	if (!this)
-		return nullptr;
-
-	for (Model* c : m_Children)
-	{
-		if(c) return c->GetMaterial();
-	}
-
-	if (m_Material) return m_Material;
-
-
 	return nullptr;
 }
 
@@ -587,4 +593,17 @@ void Model::SetIsInstanced(bool is_instanced)
 	{
 		m->SetIsInstanced(m_IsInstanced);
 	}
+}
+
+void Model::SetSurface0(Surface* surface)
+{
+	if (m_Surfaces.Empty())
+		return;
+	
+	for (Model* c : m_Children)
+	{
+		c->SetSurface0(surface);
+	}
+	m_Surfaces[0] = surface;
+
 }

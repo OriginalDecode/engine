@@ -114,6 +114,11 @@ void Surface::serialize(const char* out)
 	m_Material.Serialize(out);
 }
 
+void Surface::SetMaterial(Material copy)
+{
+	m_Material = copy;
+}
+
 // void Surface::SetPrimology(graphics::eTopology topology)
 // {
 // 	m_Topology = topology;

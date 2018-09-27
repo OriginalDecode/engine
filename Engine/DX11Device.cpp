@@ -466,10 +466,10 @@ namespace graphics
 		const D3D_SHADER_MACRO defines[] = {
 #if !defined(_PROFILE) && !defined(_FINAL)
 			"_DEBUG", "1",
-			"IS_SHADER", "2",
 #else
 			"_FINAL", "1",
 #endif
+			"IS_SHADER", "2",
 			0, 0
 		};
 
@@ -486,8 +486,9 @@ namespace graphics
 
 		if (out_message != nullptr)
 		{
-			DL_WARNING("%s has generated warnings!", filepath.c_str());
-			DL_WARNING("\n%s", (char*)out_message->GetBufferPointer());
+			char temp[512];
+			sprintf_s(temp, 512, "%s has generated warnings!\n%s", filepath.c_str(), (char*)out_message->GetBufferPointer());
+			OutputDebugString(temp);
 		}
 
 		DirectX11::HandleErrors(hr, "Failed to compile shader from file");

@@ -607,3 +607,11 @@ void Model::SetSurface0(Surface* surface)
 	m_Surfaces[0] = surface;
 
 }
+
+Surface* Model::GetSurface()
+{
+	if(m_Surfaces.Size() > 0)
+		return m_Surfaces[0];
+
+	return nullptr;
+}

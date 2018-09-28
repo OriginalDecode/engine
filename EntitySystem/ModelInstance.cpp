@@ -2,6 +2,10 @@
 #include <Engine/BaseModel.h>
 #include <Engine/Material.h>
 
+ModelInstance::~ModelInstance()
+{
+}
+
 void ModelInstance::SetModel(BaseModel* const model)
 {
 	m_Model = model;
@@ -15,6 +19,7 @@ void ModelInstance::SetOrientation(const CU::Matrix44f orientation)
 void ModelInstance::SetMaterial(Material* const pMaterial)
 {
 	m_Material = pMaterial;
+	m_Key = m_Material->GetKey();
 }
 
 void ModelInstance::Draw(const graphics::RenderContext& rc) const
@@ -31,11 +36,19 @@ void ModelInstance::SetSurface(Surface* const pSurface)
 
 void ModelInstance::UpdateMaterial()
 {
-	m_Model->SetSurface0(m_Surface);
-	m_Model->SetMaterial(m_Material);
+	if (m_Surface && m_Material)
+	{
+		m_Model->SetSurface0(m_Surface);
+		m_Model->SetMaterial(m_Material);
+	}
 }
 
 u64 ModelInstance::GetMaterialKey() const
 {
-	return m_Material->GetKey();
+	return m_Key;
+}
+
+void ModelInstance::SetMaterialKey(u64 key)
+{
+	m_Key = key;
 }

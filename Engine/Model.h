@@ -71,7 +71,7 @@ public:
 	bool IsInstanced() const { return m_IsInstanced; }
 
 	void SetSurface0(Surface* surface) override;
-	Surface* GetSurface() { return m_Surfaces[0]; }
+	Surface* GetSurface();
 private:
 	void RenderCube(const graphics::RenderContext& rc);
 	void RemoveGPUData();

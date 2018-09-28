@@ -14,6 +14,8 @@ class ModelInstance
 public:
 	ModelInstance() = default;
 
+	~ModelInstance();
+
 	void SetModel(BaseModel* const model);
 	void SetOrientation(const CU::Matrix44f orientation);
 	void SetMaterial(Material* const pMaterial);
@@ -27,8 +29,11 @@ public:
 	const CU::Matrix44f& GetOrientation() const { return  m_Orientation; }
 
 	u64 GetMaterialKey() const;
+	void SetMaterialKey(u64 key);
+
 
 private:
+	u64 m_Key;
 	Surface* m_Surface = nullptr;
 	BaseModel* m_Model = nullptr;
 	Material* m_Material = nullptr;

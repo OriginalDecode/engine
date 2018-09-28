@@ -43,7 +43,10 @@ namespace graphics
 				model->AddOrientation(instance.GetOrientation());
 				instance.UpdateMaterial();
 			}
-			model->GetSurface()->Activate(rc);
+
+			if(Surface* s = model->GetSurface())
+				s->Activate(rc);
+
 			model->Render(rc);
 			model = nullptr;
 		}

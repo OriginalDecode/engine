@@ -479,6 +479,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 
 	EntityManager& em = Engine::GetInstance()->GetEntityManager();
 	graphics::IRenderNode* general = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::Type);
+	
 	for (s32 i = 0; i < x_steps; i++)
 	{
 		for (s32 j = z_steps - 1, s = 0; j >= 0; j--, s++)

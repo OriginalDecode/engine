@@ -70,6 +70,7 @@ void TerrainSystem::Draw()
 
 void test::Leaf::Render()
 {
+
 	Draw(false);
 	//Draw([&](Terrain* terrain) { terrain ? terrain->Render(Engine::GetInstance()->GetRenderer()->GetRenderContext()) : 0; });
 }
@@ -244,7 +245,9 @@ bool test::Leaf::Insert(Position pos)
 
 void test::QuadTree::Draw()
 {
+	m_Root->m_Terrain->GetEffect()->Use();
 	m_Root->Render();
+	m_Root->m_Terrain->GetEffect()->Clear();
 }
 
 void test::QuadTree::DrawShadow()

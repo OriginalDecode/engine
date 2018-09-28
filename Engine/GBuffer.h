@@ -1,4 +1,7 @@
 #ifndef IS_SHADER
+
+
+
 #pragma once
 class Texture;
 namespace graphics

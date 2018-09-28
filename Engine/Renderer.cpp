@@ -217,6 +217,7 @@ void Renderer::Render()
 
 	m_ViewProjection.Bind(0, graphics::ConstantBuffer::VERTEX | graphics::ConstantBuffer::DOMAINS, m_RenderContext);
 	m_TerrainSystem->Update(); //should not be updated here
+	m_TerrainSystem->Draw();
 
 	auto& ctx = m_RenderContext.GetContext();
 

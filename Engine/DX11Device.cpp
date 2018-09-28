@@ -484,12 +484,12 @@ namespace graphics
 			&out_shader,
 			&out_message);
 
-		if (out_message != nullptr)
+		/*if (out_message != nullptr)
 		{
 			char temp[512];
 			sprintf_s(temp, 512, "%s has generated warnings!\n%s", filepath.c_str(), (char*)out_message->GetBufferPointer());
 			OutputDebugString(temp);
-		}
+		}*/
 
 		DirectX11::HandleErrors(hr, "Failed to compile shader from file");
 		return out_shader;

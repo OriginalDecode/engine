@@ -63,6 +63,18 @@ void Effect::Clear()
 	graphics::IGraphicsContext& context = Engine::GetAPI()->GetContext();
 	context.VSSetShaderResource(0, TextureSlot::_COUNT, resources);
 	context.PSSetShaderResource(0, TextureSlot::_COUNT, resources);
+
+	if (set_shaders)
+	{
+		graphics::IGraphicsContext& context = Engine::GetAPI()->GetContext();
+		CompiledShader* null = nullptr;
+		context.SetVertexShader(null);
+		context.SetPixelShader(null);
+		context.SetGeometryShader(null);
+		context.SetHullShader(null);
+		context.SetDomainShader(null);
+		context.SetComputeShader(null);
+	}
 }
 
 void Effect::Reload(CompiledShader* shader)

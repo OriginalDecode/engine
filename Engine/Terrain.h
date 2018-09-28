@@ -47,6 +47,7 @@ public:
 	void SetForward(const CU::Vector4f& d) override { m_Orientation.SetForward(d); }
 	void SetPosition(const CU::Vector4f& v) override { m_Orientation.SetPosition(v); }
 
+	Effect* GetEffect() { return m_Effect; }
 private:
 
 	void SetupTextures();

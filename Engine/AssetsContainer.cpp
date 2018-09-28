@@ -80,6 +80,11 @@ Material* AssetsContainer::GetMaterial(u64 key)
 	return nullptr;
 }
 
+Model* AssetsContainer::GetModelDirect(u64 key)
+{
+	return GetModel<Model>(key).GetData();
+}
+
 Sprite* AssetsContainer::GetSprite(u64 key)
 {
 	auto it = m_Sprites.find(key);

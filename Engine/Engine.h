@@ -194,7 +194,7 @@ public:
 	void AddRenderCommand(const ModelCommand& command);
 
 	AssetsContainer* GetAssetsContainer() { return myAssetsContainer; }
-
+	Model* GetModelDirect(u64 key);
 private:
 	s32 PickEntity(Texture* pTexture);
 	Engine();

@@ -36,6 +36,8 @@
 #include "../include/hash/DebugEvents.h"
 #endif
 #include <CommonLib/Randomizer.h>
+#include <Engine/RenderNodeGeneral.h>
+
 static float s_CamSpeed = 50.f;
 
 //#define LOAD_LEVEL
@@ -100,7 +102,7 @@ void Game::Initiate(const std::string& level)
 	//curtain = m_Engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);
 	//building = m_Engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
 	//pole = m_Engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
-	CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
+	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(8);
 	//CU::GrowingArray<TreeDweller*> dwellers = LevelFactory::CreatePBLLevel(16, 1, 3, CU::Vector3f(-110.f, 0.f, -16.f), 15.f, 0.f, 15.f);
 
 
@@ -110,28 +112,30 @@ void Game::Initiate(const std::string& level)
 
 #endif
 #endif
+	japMap = m_Engine->LoadModelA("Data/model/trees/japanese_maple/Japanese_Maple.fbx", "Shaders/debug_pbl_instanced.json", false);
+	Model* pModel = m_Engine->GetModelDirect(japMap);
+	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::Type);
 
-	//int tree_count = RANDOM(128, 256);
-	//tree_count = 0;
-	//for (int i = 0; i < tree_count; ++i)
-	//{
-	//	float x = RANDOM(0.f, 1024.f);
-	//	//float y = RANDOM(0.f, 1024.f);
-	//	float z = RANDOM(0.f, 1024.f);
+	int tree_count = RANDOM(128, 256);
+	for (int i = 0; i < tree_count; ++i)
+	{
+		float x = RANDOM(0.f, 1024.f);
+		//float y = RANDOM(0.f, 1024.f);
+		float z = RANDOM(0.f, 1024.f);
 
-	//	CU::Matrix44f orientation;
-	//	orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));
-	//	orientation.SetTranslation({ x, 0.f, z, 1.f });
+		CU::Matrix44f orientation;
+		orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));
+		orientation.SetTranslation({ x, 0.f, z, 1.f });
 
+		ModelInstance instance;
 
-	//	positions.Add(orientation);
+		instance.SetOrientation(orientation);
+		instance.SetMaterialKey(Hash("tree"));
+		instance.SetModel(pModel);
+		pNode->AddInstance(instance);
 
-	//	//positions.Add(CU::Vector3f(x, 0.f, z));
+	}
 
-	//}
-
-
-	//japMap = m_Engine->LoadModelA("Data/model/trees/japanese_maple/Japanese_Maple.fbx", "Shaders/deferred_base.json", false);
 
 	m_Picker = new CMousePicker;
 

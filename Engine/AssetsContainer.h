@@ -44,6 +44,8 @@ public:
 	template<typename T>
 	RefPointer<T> GetModel(u64 key);
 
+	Model* GetModelDirect(u64 key);
+
 	//u64 GetModelKey(const char* path) const;
 
 

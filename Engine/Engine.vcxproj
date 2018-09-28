@@ -351,6 +351,7 @@
     <ClInclude Include="QuadTreeNode.h" />
     <ClInclude Include="RenderNode.h" />
     <ClInclude Include="RenderNodeGeneral.h" />
+    <ClInclude Include="RenderNodeTerrain.h" />
     <ClInclude Include="RenderNodeVegetation.h" />
     <ClInclude Include="RenderPass.h" />
     <ClInclude Include="shader_types.h" />
@@ -511,6 +512,7 @@
     <ClCompile Include="RenderContext.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderNodeGeneral.cpp" />
+    <ClCompile Include="RenderNodeTerrain.cpp" />
     <ClCompile Include="RenderNodeVegetation.cpp" />
     <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="RootTreeNode.cpp" />

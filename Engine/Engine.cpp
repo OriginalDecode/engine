@@ -314,6 +314,11 @@ void Engine::AddRenderCommand(const ModelCommand& command)
 	//memcpy(current, &command, sizeof(ModelCommand));
 }
 
+Model* Engine::GetModelDirect(u64 key)
+{
+	return myAssetsContainer->GetModelDirect(key);
+}
+
 const WindowSize& Engine::GetWindowSize() const
 {
 	return m_Window.GetWindowSize();

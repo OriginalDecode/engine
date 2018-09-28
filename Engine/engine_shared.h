@@ -21,6 +21,7 @@
 #define CLASS_NAME_STR(_class) #_class
 
 
+
 struct LinePoint
 {
 	LinePoint(const CU::Vector4f& pos, const CU::Vector4f& col)

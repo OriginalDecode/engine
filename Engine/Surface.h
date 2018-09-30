@@ -34,6 +34,7 @@ public:
 
 	void serialize(const char* out);
 	void SetMaterial(Material copy);
+	const Material& GetMaterial() const;
 private:
 
 	//graphics::eTopology m_Topology;

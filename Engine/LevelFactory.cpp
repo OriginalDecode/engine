@@ -536,6 +536,7 @@ void LevelFactory::SaveLevel(std::string folder, std::string filename) //Should 
 		char buf[100];
 		ZeroMemory(buf, sizeof(buf));
 		//memset(buf, 0, sizeof(buf));
+		//edb means entity data block
 		sprintf_s(buf, "%s%s%d.edb", folder.c_str(), _filename.c_str(), e);
 
 		_writer.String(buf);

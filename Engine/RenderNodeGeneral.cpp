@@ -27,7 +27,7 @@ namespace graphics
 
 
 		rc.GetContext().SetDepthState(graphics::Z_ENABLED, 1);
-		rc.GetContext().SetRasterState(graphics::CULL_BACK);
+		rc.GetContext().SetRasterState(graphics::CULL_NONE);
 		rc.GetContext().SetBlendState(graphics::BLEND_FALSE);
 		rc.GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x1);
 		rc.GetContext().VSSetSamplerState(0, 1, graphics::MSAA_x1);
@@ -44,8 +44,8 @@ namespace graphics
 				instance.UpdateMaterial();
 			}
 
-			if(Surface* s = model->GetSurface())
-				s->Activate(rc);
+			//if(Surface* s = model->GetSurface())
+			//	s->Activate(rc);
 
 			model->Render(rc);
 			model = nullptr;

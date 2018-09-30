@@ -346,6 +346,7 @@
     <ClInclude Include="Inspector.h" />
     <ClInclude Include="InspectorView.h" />
     <ClInclude Include="IPostprocessPass.h" />
+    <ClInclude Include="ModelExporter.h" />
     <ClInclude Include="PhysicsView.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="QuadTreeNode.h" />
@@ -493,6 +494,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MemorySegmentHandle.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ModelExporter.cpp" />
     <ClCompile Include="ModelImporter.cpp" />
     <ClCompile Include="MotionBlurPass.cpp" />
     <ClCompile Include="MousePicker.cpp">

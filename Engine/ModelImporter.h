@@ -30,7 +30,7 @@
 #ifdef IMPORT_THREAD
 #include <CommonLib/Threadpool.h>
 #endif
-
+#include "ModelExporter.h"
 #include "shader_types.h"
 class Engine;
 class aiNode;
@@ -184,8 +184,21 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 	loadTime = timer.GetMasterTimer().GetTotalTime().GetMilliseconds() - loadTime;
 	DL_MESSAGE("%s took a total of %.1fms to load.", filepath.c_str(), loadTime);
 
-#ifdef _DEBUG
-#endif
+	ModelExporter exporter;
+
+	size_t pos = filepath.rfind("/");
+	if (pos == std::string::npos)
+		pos = filepath.rfind("\\");
+
+	size_t end = filepath.rfind(".");
+	end = end - pos;
+	std::string file = filepath.substr(pos + 1, end - 1);
+
+
+
+	char temp[256];
+	sprintf_s(temp, "data/exported/%s", file.c_str());
+	exporter.Export(pModel, temp);
 
 }
 

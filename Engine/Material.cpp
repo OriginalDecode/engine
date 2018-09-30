@@ -20,9 +20,6 @@ void Material::AddResource(Texture* pResource, const std::string& filename, Effe
 	AddResource(pResource->GetShaderView(), filename, slot);
 }
 
-
-
-
 void Material::Serialize(std::string file_name)
 {
 	size_t pos = file_name.rfind("/");

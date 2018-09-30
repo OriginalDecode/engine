@@ -115,8 +115,10 @@ void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_
 
 	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 
-
+	if (m_Surfaces[0])
+		m_Surfaces[0]->Activate(rc);
 	rc.GetContext().DrawIndexedInstanced(this, override_effect);
+
 	PROFILE_BLOCK_END;
 
 	RemoveGPUData();
@@ -610,8 +612,14 @@ void Model::SetSurface0(Surface* surface)
 
 Surface* Model::GetSurface()
 {
-	if(m_Surfaces.Size() > 0)
-		return m_Surfaces[0];
+	Surface* surface = nullptr;
 
-	return nullptr;
+	if(m_Surfaces.Size() > 0)
+		surface = m_Surfaces[0];
+
+	for (Model* c : m_Children)
+	{
+		return c->GetSurface();
+	}
+	return surface;
 }

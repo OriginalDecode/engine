@@ -119,6 +119,11 @@ void Surface::SetMaterial(Material copy)
 	m_Material = copy;
 }
 
+const Material& Surface::GetMaterial() const
+{
+	return m_Material;
+}
+
 // void Surface::SetPrimology(graphics::eTopology topology)
 // {
 // 	m_Topology = topology;

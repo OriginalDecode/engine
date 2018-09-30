@@ -25,6 +25,7 @@ struct MaterialData //Should be loaded from external file? Reload if needed?
 
 class Material
 {
+	friend class ModelExporter;
 public:
 	Material() = default;
 	Material(u64 key); // This key should be created when we create the material and never changed unless the version changes, which should happen only when we introduce new data and such.

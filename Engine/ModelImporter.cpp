@@ -35,37 +35,37 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelD
 			{
 				case aiTextureType_DIFFUSE:
 				{
-					newInfo.m_Slot = Effect::DIFFUSE;
+					newInfo.m_Slot = TextureSlot::DIFFUSE;
 				}break;
 
 				case aiTextureType_NORMALS:
 				{
-					newInfo.m_Slot = Effect::NORMAL;
+					newInfo.m_Slot = TextureSlot::NORMAL;
 				}break;
 
 				case aiTextureType_EMISSIVE:
 				{
-					newInfo.m_Slot = Effect::EMISSIVE;
+					newInfo.m_Slot = TextureSlot::EMISSIVE;
 				}break;
 
 				case aiTextureType_AMBIENT:
 				{
-					newInfo.m_Slot = Effect::AO;
+					newInfo.m_Slot = TextureSlot::AO;
 				}break;
 
 				case aiTextureType_OPACITY:
 				{
-					newInfo.m_Slot = Effect::OPACITY;
+					newInfo.m_Slot = TextureSlot::OPACITY;
 				}break;
 
 				case aiTextureType_REFLECTION: /* Misleading name, amirite? */
 				{
-					newInfo.m_Slot = Effect::METALNESS; // specular intensity (blender), metalness 
+					newInfo.m_Slot = TextureSlot::METALNESS; // specular intensity (blender), metalness 
 				}break;
 
 				case aiTextureType_SPECULAR:
 				{
-					newInfo.m_Slot = Effect::METALNESS; // Blender <- Roughness, Maya <- Metal
+					newInfo.m_Slot = TextureSlot::METALNESS; // Blender <- Roughness, Maya <- Metal
 				}break;
 
 				case aiTextureType_HEIGHT:
@@ -75,7 +75,7 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelD
 
 				case aiTextureType_SHININESS:
 				{
-					newInfo.m_Slot = Effect::ROUGHNESS; // specular hardness (blender)
+					newInfo.m_Slot = TextureSlot::ROUGHNESS; // specular hardness (blender)
 				}break;
 
 				case aiTextureType_DISPLACEMENT:

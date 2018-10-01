@@ -23,14 +23,14 @@ WaterPlane::WaterPlane()
 	m_Reflection = new Texture;
 	m_Reflection->InitiateAsDepthStencil(window_width, window_height, "Water : ReflectionDepth");
 
-	m_Effect->AddShaderResource(m_RefractionG.GetDiffuse(), Effect::REFRACTION);
-	m_Effect->AddShaderResource(m_ReflectionG.GetDiffuse(), Effect::REFLECTION);
+	m_Effect->AddShaderResource(m_RefractionG.GetDiffuse(), TextureSlot::REFRACTION);
+	m_Effect->AddShaderResource(m_ReflectionG.GetDiffuse(), TextureSlot::REFLECTION);
 
 	Engine* engine = Engine::GetInstance();
 
-	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/T_cubemap_level01.dds"), Effect::CUBEMAP);
-	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/water_normal.dds"), Effect::NORMAL);
-	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/water_dudv.dds"), Effect::DUDV);
+	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/T_cubemap_level01.dds"), TextureSlot::CUBEMAP);
+	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/water_normal.dds"), TextureSlot::NORMAL);
+	m_Effect->AddShaderResource(engine->GetTexture("Data/Textures/water_dudv.dds"), TextureSlot::DUDV);
 	CreatePlane(2048);
 	m_ConstantBuffer = engine->GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbMatrices), "waterplane vertex cb");
 	m_cbPixel = engine->GetAPI()->GetDevice().CreateConstantBuffer(sizeof(cbPixel), "waterplane pixel cb");

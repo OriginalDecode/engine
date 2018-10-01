@@ -359,6 +359,7 @@
     <ClInclude Include="SSRPass.h" />
     <ClInclude Include="Stacktrace.h" />
     <ClInclude Include="TerrainSystem.h" />
+    <ClInclude Include="TextureSlotEnum.h" />
     <ClInclude Include="TransformView.h" />
     <ClInclude Include="HDRPass.h" />
     <ClInclude Include="IGraphicsAPI.h" />

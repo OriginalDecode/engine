@@ -10,15 +10,15 @@ namespace graphics_deprecated
 	LightPass::LightPass(const graphics::GBuffer& gbuffer)
 	{
 		m_Effect[POINTLIGHT] = Engine::GetInstance()->GetEffect("Shaders/deferred_pointlight.json");
-		m_Effect[POINTLIGHT]->AddShaderResource(gbuffer.GetDiffuse(), Effect::DIFFUSE);
-		m_Effect[POINTLIGHT]->AddShaderResource(gbuffer.GetNormal(), Effect::NORMAL);
-		m_Effect[POINTLIGHT]->AddShaderResource(gbuffer.GetDepth(), Effect::DEPTH);
+		m_Effect[POINTLIGHT]->AddShaderResource(gbuffer.GetDiffuse(), TextureSlot::DIFFUSE);
+		m_Effect[POINTLIGHT]->AddShaderResource(gbuffer.GetNormal(), TextureSlot::NORMAL);
+		m_Effect[POINTLIGHT]->AddShaderResource(gbuffer.GetDepth(), TextureSlot::DEPTH);
 
 
 		m_Effect[SPOTLIGHT] = Engine::GetInstance()->GetEffect("Shaders/deferred_spotlight.json");
-		m_Effect[SPOTLIGHT]->AddShaderResource(gbuffer.GetDiffuse(), Effect::DIFFUSE);
-		m_Effect[SPOTLIGHT]->AddShaderResource(gbuffer.GetNormal(), Effect::NORMAL);
-		m_Effect[SPOTLIGHT]->AddShaderResource(gbuffer.GetDepth(), Effect::DEPTH);
+		m_Effect[SPOTLIGHT]->AddShaderResource(gbuffer.GetDiffuse(), TextureSlot::DIFFUSE);
+		m_Effect[SPOTLIGHT]->AddShaderResource(gbuffer.GetNormal(), TextureSlot::NORMAL);
+		m_Effect[SPOTLIGHT]->AddShaderResource(gbuffer.GetDepth(), TextureSlot::DEPTH);
 
 		graphics::IGraphicsDevice& device = Engine::GetAPI()->GetDevice();
 		m_LightBuffers[POINTLIGHT_VERTEX] = device.CreateConstantBuffer(sizeof(PointlightConstantBuffer), "LightPass PointlightVertex ConstBuffer");

@@ -57,13 +57,13 @@ void EdgeDetectionPass::Process(Texture* pTexture, const graphics::RenderContext
 	ctx.UpdateConstantBuffer(m_cbEdgeDetection, &m_EdgeDetectionData);
 	ctx.PSSetConstantBuffer(0, 1, &m_cbEdgeDetection);
 	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
-	m_Quad->GetShader()->AddShaderResource(pTexture, Effect::REGISTER_0);
+	m_Quad->GetShader()->AddShaderResource(pTexture, TextureSlot::REGISTER_0);
 	m_Quad->Render();
 
 
 	rc.GetAPI().SetDefaultTargets();
 	Effect* pEffect = Engine::GetInstance()->GetEffect("Shaders/render_to_texture.json");
-	pEffect->AddShaderResource(m_Result, Effect::REGISTER_0);
+	pEffect->AddShaderResource(m_Result, TextureSlot::REGISTER_0);
 	m_Quad->Render(false, pEffect);
 	ctx.VSSetShaderResource(0, 1, nullptr);
 	ctx.PSSetShaderResource(0, 1, nullptr);

@@ -51,7 +51,7 @@ public:
 	CU::GrowingArray<Surface*>& GetSurfaces() { return m_Surfaces; }
 	CU::GrowingArray<Model*> GetChildModels() { return m_Children; }
 
-	void AddTexture(const std::string& path, Effect::TextureSlot slot);
+	void AddTexture(const std::string& path, TextureSlot slot);
 
 	s32 GetInstanceCount() const { return m_GPUData.Size(); }
 	Effect* GetEffect() { return m_Effect; }

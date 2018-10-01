@@ -39,8 +39,8 @@ void CEmitterInstance::Initiate(Synchronizer* aSynchronizer, Texture* depth_text
 	}
 
 	CreateBuffer();
-	myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);
-	myData.shader->AddShaderResource(myData.normalTexture->GetShaderView(), Effect::NORMAL);
+	myData.shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), TextureSlot::DIFFUSE);
+	myData.shader->AddShaderResource(myData.normalTexture->GetShaderView(), TextureSlot::NORMAL);
 
 // 	Effect* shader = myEngine->GetEffect("Shaders/particle_offscreen.json");
 // 	shader->AddShaderResource(myData.diffuseTexture->GetShaderView(), Effect::DIFFUSE);

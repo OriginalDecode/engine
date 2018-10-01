@@ -56,7 +56,7 @@ void Surface::Deactivate()
 	myEffect->Clear();
 }
 
-void Surface::AddTexture(const std::string& file_path, Effect::TextureSlot slot)
+void Surface::AddTexture(const std::string& file_path, TextureSlot slot)
 {
 	std::string sub = file_path;
 	/*if (file_path.find(".dds") == file_path.npos)
@@ -74,12 +74,12 @@ void Surface::AddTexture(const std::string& file_path, Effect::TextureSlot slot)
 	
 }
 
-void Surface::AddTexture(IShaderResourceView* texture, const std::string& filepath, Effect::TextureSlot slot)
+void Surface::AddTexture(IShaderResourceView* texture, const std::string& filepath, TextureSlot slot)
 {
 	m_Material.AddResource(texture, filepath, slot);
 }
 
-void Surface::AddTexture(Texture* texture, const std::string& filepath, Effect::TextureSlot slot)
+void Surface::AddTexture(Texture* texture, const std::string& filepath, TextureSlot slot)
 {
 	m_Material.AddResource(texture, filepath, slot);
 }

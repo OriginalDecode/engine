@@ -89,7 +89,7 @@ void DownsamplePass::Downsample(IRenderTargetView* render_target, IShaderResourc
 	graphics::IGraphicsContext& ctx = Engine::GetAPI()->GetContext();
 	ctx.OMSetRenderTargets(1, &render_target, nullptr);
 	ctx.ClearRenderTarget(render_target, clearcolor::black);
-	m_Downsampler->AddShaderResource(source, Effect::DIFFUSE);
+	m_Downsampler->AddShaderResource(source, TextureSlot::DIFFUSE);
 	m_Quad->Render(false, m_Downsampler);
 }
 

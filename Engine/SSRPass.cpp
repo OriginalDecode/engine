@@ -77,7 +77,7 @@ void SSRPass::Process(Texture* scene, const graphics::RenderContext& rc)
 
 	rc.GetAPI().SetDefaultTargets();
 
-	m_Effect->AddShaderResource(scene, Effect::ALBEDO);
+	m_Effect->AddShaderResource(scene, TextureSlot::ALBEDO);
 	m_Effect->Use();
 	ctx.DrawIndexed(m_Quad);
 	m_Effect->Clear();

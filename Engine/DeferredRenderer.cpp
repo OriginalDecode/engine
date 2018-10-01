@@ -78,14 +78,14 @@ DeferredRenderer::DeferredRenderer()
 	Engine* engine = Engine::GetInstance();
 
 	m_ScreenPassShader = engine->GetEffect("Shaders/render_to_texture.json");
-	m_ScreenPassShader->AddShaderResource(m_Scene, Effect::DIFFUSE);
+	m_ScreenPassShader->AddShaderResource(m_Scene, TextureSlot::DIFFUSE);
 
 	m_AmbientPassShader = engine->GetEffect("Shaders/deferred_ambient.json");
 	Texture* cubemap = engine->GetTexture("Data/Textures/cube/cubeMapLayered.dds");
 	cubemap = engine->GetTexture("Data/Textures/church_horizontal_cross_cube_specular_pow2.dds");
 	//m_AmbientPassShader->AddShaderResource(cubemap, Effect::CUBEMAP);
-	m_AmbientPassShader->AddShaderResource(engine->GetTexture("Data/Textures/cube/sponza/sponza.dds"), Effect::CUBEMAP);
-	m_AmbientPassShader->AddShaderResource(engine->GetTexture("Data/Textures/cube/late/forest.dds"), Effect::REGISTER_11);
+	m_AmbientPassShader->AddShaderResource(engine->GetTexture("Data/Textures/cube/sponza/sponza.dds"), TextureSlot::CUBEMAP);
+	m_AmbientPassShader->AddShaderResource(engine->GetTexture("Data/Textures/cube/late/forest.dds"), TextureSlot::REGISTER_11);
 
 
 	//Engine::GetInstance()->GetEffect("Shaders/deferred_pointlight.json");
@@ -99,7 +99,7 @@ DeferredRenderer::DeferredRenderer()
 
 	//_______________________________________________________________________
 
-	Engine::GetInstance()->GetEffect("Shaders/color_grading.json")->AddShaderResource(m_Scene, Effect::NORMAL);
+	Engine::GetInstance()->GetEffect("Shaders/color_grading.json")->AddShaderResource(m_Scene, TextureSlot::NORMAL);
 	m_RenderQuad = new Quad(m_AmbientPassShader);
 }
 
@@ -140,7 +140,7 @@ void DeferredRenderer::Finalize()
  {
 	 auto api = Engine::GetAPI();
 	 api->GetContext().PSSetSamplerState(0, 1, graphics::MSAA_x1);
-	 m_ScreenPassShader->AddShaderResource(m_Scene, Effect::DIFFUSE);
+	 m_ScreenPassShader->AddShaderResource(m_Scene, TextureSlot::DIFFUSE);
 	 m_RenderQuad->Render(false, m_ScreenPassShader);
 }
 

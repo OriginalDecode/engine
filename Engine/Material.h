@@ -30,8 +30,8 @@ public:
 	Material() = default;
 	Material(u64 key); // This key should be created when we create the material and never changed unless the version changes, which should happen only when we introduce new data and such.
 	void SetEffect(Effect* effect) { m_Effect = effect; }
-	void AddResource(IShaderResourceView* pResource, const std::string& filename, Effect::TextureSlot slot);
-	void AddResource(Texture* pResource, const std::string& filename, Effect::TextureSlot slot);
+	void AddResource(IShaderResourceView* pResource, const std::string& filename, TextureSlot slot);
+	void AddResource(Texture* pResource, const std::string& filename, TextureSlot slot);
 
 	u64 GetKey() const { return m_Key; }
 
@@ -42,7 +42,7 @@ public:
 private:
 	MaterialData* m_Data = nullptr;
 
-	std::string GetFilename(Effect::TextureSlot slot);
+	std::string GetFilename(TextureSlot slot);
 
 	u64 m_Key = 0;
 	Effect* m_Effect = nullptr;
@@ -50,7 +50,7 @@ private:
 	struct ResourceBinding
 	{
 		IShaderResourceView* m_Resource;
-		Effect::TextureSlot m_Slot;
+		TextureSlot m_Slot;
 		std::string m_ResourceName;
 
 	};

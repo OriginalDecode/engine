@@ -203,7 +203,7 @@ void Model::SetMinPoint(CU::Vector3f min_point)
 	m_MinPoint = min_point;
 }
 
-void Model::AddTexture(const std::string& path, Effect::TextureSlot slot)
+void Model::AddTexture(const std::string& path, TextureSlot slot)
 {
 	for (Model* pChild : m_Children)
 	{

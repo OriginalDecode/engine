@@ -103,7 +103,7 @@ void HDRPass::Process(Texture* scene_texture, const graphics::RenderContext& ren
 
 	ctx.OMSetRenderTargets(1, scene_texture->GetRenderTargetRef(), nullptr);
 	render_context.GetAPI().SetDefaultTargets();
-	m_RenderToScreenEffect->AddShaderResource(m_HDRTexture, Effect::DIFFUSE);
+	m_RenderToScreenEffect->AddShaderResource(m_HDRTexture, TextureSlot::DIFFUSE);
 	m_Quad->Render(false, m_RenderToScreenEffect);
 
 }
@@ -118,10 +118,10 @@ void HDRPass::Tonemapping(IRenderTargetView* target, IShaderResourceView* source
 	ctx.PSSetSamplerState(0, 1, graphics::MSAA_x16);
 	ctx.PSSetSamplerState(1, 1, graphics::LINEAR_WRAP);
 
-	m_HDREffect->AddShaderResource(source[0], Effect::REGISTER_0);
-	m_HDREffect->AddShaderResource(source[1], Effect::REGISTER_1);
-	m_HDREffect->AddShaderResource(source[2], Effect::REGISTER_2);
-	m_HDREffect->AddShaderResource(m_ColorGradingTex, Effect::REGISTER_3);
+	m_HDREffect->AddShaderResource(source[0], TextureSlot::REGISTER_0);
+	m_HDREffect->AddShaderResource(source[1], TextureSlot::REGISTER_1);
+	m_HDREffect->AddShaderResource(source[2], TextureSlot::REGISTER_2);
+	m_HDREffect->AddShaderResource(m_ColorGradingTex, TextureSlot::REGISTER_3);
 	m_Quad->Render(false, m_HDREffect);
 }
 

@@ -23,7 +23,7 @@ SpotLight::SpotLight()
 
 	Texture* pQuadTex = pEngine->GetTexture("Data/Textures/lightbulb-on.dds");
 	Effect* pEffect = pEngine->GetEffect("Data/Shaders/world_plane.json");
-	pEffect->AddShaderResource(pQuadTex, Effect::DIFFUSE);
+	pEffect->AddShaderResource(pQuadTex, TextureSlot::DIFFUSE);
 	m_LightQuad = new Quad(pEffect, 0.5f, 0.5f);
 	m_QuadBuffer = pEngine->GetAPI()->GetDevice().CreateConstantBuffer(sizeof(quadbuffer), "quadbuffer");
 

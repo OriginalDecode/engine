@@ -15,10 +15,10 @@ CFont::CFont(SFontData* aFontData)
 	m_Data = aFontData;
 	m_Text = " ";
 	m_Effect[0] = Engine::GetInstance()->GetEffect("Shaders/font_outline.json");
-	m_Effect[0]->AddShaderResource(m_Data->m_AtlasView, Effect::DIFFUSE);
+	m_Effect[0]->AddShaderResource(m_Data->m_AtlasView, TextureSlot::DIFFUSE);
 
 	m_Effect[1] = Engine::GetInstance()->GetEffect("Shaders/font.json");
-	m_Effect[1]->AddShaderResource(m_Data->m_AtlasView, Effect::DIFFUSE);
+	m_Effect[1]->AddShaderResource(m_Data->m_AtlasView, TextureSlot::DIFFUSE);
 
 	//m_cbFont = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(SFontConstantBuffer), "Font ConstantBuffer");
 	Camera* cam = Engine::GetInstance()->GetCamera();

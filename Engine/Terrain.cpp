@@ -22,15 +22,15 @@ void Terrain::SetupTextures()
 	//Engine::GetInstance()->LoadTe
 
 
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(ALBEDO), Effect::REGISTER_0);
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Material/grass/grass1-rough.dds"), Effect::ROUGHNESS);
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(HEIGHTMAP), Effect::REGISTER_7);
-	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(BritanniaNomrmal), Effect::NORMAL);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(ALBEDO), TextureSlot::REGISTER_0);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Material/grass/grass1-rough.dds"), TextureSlot::ROUGHNESS);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(HEIGHTMAP), TextureSlot::REGISTER_7);
+	m_Effect->AddShaderResource(Engine::GetInstance()->GetTexture(BritanniaNomrmal), TextureSlot::NORMAL);
 
 	//m_Material = Engine::GetInstance()->GetMaterial("Data/Material/mat_grass.json");
 
 	Effect* e = Engine::GetInstance()->GetEffect("Shaders/gpu_shadow.json");
-	e->AddShaderResource(Engine::GetInstance()->GetTexture(HEIGHTMAP), Effect::REGISTER_7);
+	e->AddShaderResource(Engine::GetInstance()->GetTexture(HEIGHTMAP), TextureSlot::REGISTER_7);
 }
 
 Terrain::Terrain(float halfwidth, CU::Vector2f tex[4], CU::Vector3f color)
@@ -102,7 +102,7 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 	CreateVertices(myWidth, myDepth, position);
 
 	m_ClipEffect = Engine::GetInstance()->GetEffect("Shaders/terrain_clip.json");
-	m_ClipEffect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain.dds"), Effect::DIFFUSE);
+	m_ClipEffect->AddShaderResource(Engine::GetInstance()->GetTexture("Data/Textures/terrain.dds"), TextureSlot::DIFFUSE);
 
 	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(CU::Matrix44f), "Terrain ConstantBuffer");
 

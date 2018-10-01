@@ -6,7 +6,7 @@ Material::Material(u64 key)
 {
 }
 
-void Material::AddResource(IShaderResourceView* pResource, const std::string& filename, Effect::TextureSlot slot)
+void Material::AddResource(IShaderResourceView* pResource, const std::string& filename, TextureSlot slot)
 {
 	ResourceBinding binding;
 	binding.m_Resource = pResource;
@@ -15,7 +15,7 @@ void Material::AddResource(IShaderResourceView* pResource, const std::string& fi
 	m_Resources.Add(binding);
 }
 
-void Material::AddResource(Texture* pResource, const std::string& filename, Effect::TextureSlot slot)
+void Material::AddResource(Texture* pResource, const std::string& filename, TextureSlot slot)
 {
 	AddResource(pResource->GetShaderView(), filename, slot);
 }
@@ -40,15 +40,15 @@ void Material::Serialize(std::string file_name)
 		output << "{\n";
 		output << "\"material\":{\n";
 		output << "\"albedo\":\"";
-		output << GetFilename(Effect::ALBEDO).c_str();
+		output << GetFilename(TextureSlot::ALBEDO).c_str();
 		output << "\",\n\"normal\":\"";
-		output << GetFilename(Effect::NORMAL).c_str();
+		output << GetFilename(TextureSlot::NORMAL).c_str();
 
 		output << "\",\n\"metalness\":\"";
-		output << GetFilename(Effect::METALNESS).c_str();
+		output << GetFilename(TextureSlot::METALNESS).c_str();
 
 		output << "\",\n\"roughness\":\"";
-		output << GetFilename(Effect::ROUGHNESS).c_str();
+		output << GetFilename(TextureSlot::ROUGHNESS).c_str();
 
 		output << "\"}\n";
 		output << "}\n";
@@ -78,7 +78,7 @@ void Material::Use(Effect* pEffect, bool _override)
 
 }
 
-std::string Material::GetFilename(Effect::TextureSlot slot)
+std::string Material::GetFilename(TextureSlot slot)
 {
 	for (const ResourceBinding& b : m_Resources)
 	{

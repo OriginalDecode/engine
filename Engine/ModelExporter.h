@@ -35,6 +35,7 @@ public:
 
 private:
 	void WriteBlock(Model* const pModel, FILE* pOut);
+	void WriteBlock(Model* const pModel, int& total_byte_length, FILE* pOut);
 	void WriteSurface(Surface* const pSurface, FILE* pOut);
 	void WriteVertices(float* const pVertices, int vertex_count, FILE* pOut);
 	void WriteIndices(int* const pIndices, int indices_count, FILE* pOut);

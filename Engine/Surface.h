@@ -10,9 +10,9 @@ public:
 	Surface(Effect* anEffect, u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 aIndexCount);
 	//Surface(u32 aStartVertex, u32 aVertexCount, u32 aStartIndex, u32 anIndexCount, graphics::eTopology aPrimology);
 
-	void AddTexture(IShaderResourceView* texture, const std::string& filepath, Effect::TextureSlot slot);
-	void AddTexture(Texture* texture, const std::string& filepath, Effect::TextureSlot slot);
-	void AddTexture(const std::string& file_path, Effect::TextureSlot slot);
+	void AddTexture(IShaderResourceView* texture, const std::string& filepath, TextureSlot slot);
+	void AddTexture(Texture* texture, const std::string& filepath, TextureSlot slot);
+	void AddTexture(const std::string& file_path, TextureSlot slot);
 
 	void Activate(const graphics::RenderContext& render_context);
 	void Deactivate();

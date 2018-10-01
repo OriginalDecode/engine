@@ -81,10 +81,10 @@ namespace graphics
 		{
 
 			Effect* shader = Engine::GetInstance()->GetEffect("Shaders/deferred_ambient.json");
-			shader->AddShaderResource(m_Albedo, Effect::DIFFUSE);
-			shader->AddShaderResource(m_Depth, Effect::DEPTH);
-			shader->AddShaderResource(m_Normal, Effect::NORMAL);
-			shader->AddShaderResource(m_Emissive, Effect::EMISSIVE);
+			shader->AddShaderResource(m_Albedo, TextureSlot::DIFFUSE);
+			shader->AddShaderResource(m_Depth, TextureSlot::DEPTH);
+			shader->AddShaderResource(m_Normal, TextureSlot::NORMAL);
+			shader->AddShaderResource(m_Emissive, TextureSlot::EMISSIVE);
 		}
 	}
 

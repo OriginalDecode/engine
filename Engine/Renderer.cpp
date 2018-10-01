@@ -54,8 +54,8 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_GBuffer.Initiate(true);
 
 	Effect* effect = Engine::GetInstance()->GetEffect("Data/Shaders/ssr.json");
-	effect->AddShaderResource(m_GBuffer.GetDepth(), Effect::DEPTH);
-	effect->AddShaderResource(m_GBuffer.GetNormal(), Effect::NORMAL);
+	effect->AddShaderResource(m_GBuffer.GetDepth(), TextureSlot::DEPTH);
+	effect->AddShaderResource(m_GBuffer.GetNormal(), TextureSlot::NORMAL);
 	WindowSize window_size;
 	window_size.m_Height = api->GetInfo().m_WindowHeight;
 	window_size.m_Width = api->GetInfo().m_WindowWidth;
@@ -315,7 +315,7 @@ void Renderer::WriteDebugTextures()
 	Effect* debug_textures = m_RenderContext.GetEngine().GetEffect("Shaders/debug_textures.json");
 	const s32 index = debug::DebugHandle::GetInstance()->GetDebugTextureIndex();
 	Texture* pTex = debug::DebugHandle::GetInstance()->GetTexture(index);
-	debug_textures->AddShaderResource(pTex, Effect::DIFFUSE);
+	debug_textures->AddShaderResource(pTex, TextureSlot::DIFFUSE);
 	auto& ctx = m_RenderContext.GetContext();
 
 	ctx.ClearRenderTarget(m_DebugTexture->GetRenderTargetView(), clearcolor::black);
@@ -855,7 +855,7 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 
 	m_Cubemap = new Texture;
 	m_Cubemap->CreateTextureArray(cubemap, NOF_SIDES, "atmosphere.dds");
-	engine->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_Cubemap, Effect::CUBEMAP);
+	engine->GetEffect("Shaders/deferred_ambient.json")->AddShaderResource(m_Cubemap, TextureSlot::CUBEMAP);
 
 
 	_ctx->Release();

@@ -52,7 +52,7 @@ private:
 #pragma region Structs
 	struct TextureInfo //Anyway to remove this?
 	{
-		Effect::TextureSlot m_Slot;
+		TextureSlot m_Slot;
 		std::string m_File;
 	};
 
@@ -118,6 +118,10 @@ private:
 	void ProcessMesh(unsigned int index, const aiScene* scene, std::string file, T* parent);
 
 	void ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelData& data, std::string file);
+
+	template <typename T>
+	void Read(std::string path, T* pModel);
+
 };
 
 static bool instanced = false;
@@ -129,6 +133,15 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 
 	instanced = false;
 	DL_MESSAGE("Loading model : %s", filepath.c_str());
+
+	if (filepath.find("LPMF") != filepath.npos)
+	{
+		Read(filepath, pModel);
+		return;
+	}
+
+
+
 	m_Effect = effect;
 	timer.Update();
 	float loadTime = timer.GetMasterTimer().GetTotalTime().GetMilliseconds();
@@ -760,3 +773,37 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 }
 
 #undef IMPORT_THREAD
+
+template <typename T>
+void CModelImporter::Read(std::string path, T* pModel)
+{
+	FILE* hFile = fopen(path.c_str(), "rb");
+	assert(hFile && "failed to open file!");
+
+	size_t pos = 5;
+
+	if (hFile != nullptr)
+	{
+		std::ifstream file(path.c_str(), std::ios::binary);
+
+		file.seekg(0, file.end);
+		size_t length = file.tellg();
+		file.seekg(0, file.beg);
+
+		char* data = new char[length];
+		file.read(data, length);
+		file.close();
+
+
+		int vertex_count = 0;
+		memcpy(&vertex_count, &data[5], sizeof(int));
+
+
+
+
+
+
+		delete data;
+		data = nullptr;
+	}
+}

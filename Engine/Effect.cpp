@@ -7,7 +7,7 @@ Effect::Effect()
 	for (int i = 0; i < eShaderType::NOF_TYPES; i++)
 		m_Shaders[i] = nullptr;
 
-	for (int i = 0; i < TextureSlot::_COUNT; i++)
+	for (int i = 0; i < TextureSlot::SLOT_COUNT; i++)
 		m_Resources[i] = nullptr;
 }
 
@@ -18,7 +18,7 @@ Effect::Effect(const std::string& filepath)
 	for (int i = 0; i < eShaderType::NOF_TYPES; i++)
 		m_Shaders[i] = nullptr;
 
-	for (int i = 0; i < TextureSlot::_COUNT; i++)
+	for (int i = 0; i < TextureSlot::SLOT_COUNT; i++)
 		m_Resources[i] = nullptr;
 }
 
@@ -52,17 +52,17 @@ void Effect::Use()
 		context.SetComputeShader(m_Shaders[eShaderType::COMPUTE]);
 	}
 
-	context.VSSetShaderResource(0, TextureSlot::_COUNT, m_Resources);
-	context.PSSetShaderResource(0, TextureSlot::_COUNT, m_Resources);
+	context.VSSetShaderResource(0, TextureSlot::SLOT_COUNT, m_Resources);
+	context.PSSetShaderResource(0, TextureSlot::SLOT_COUNT, m_Resources);
 	context.DSSetShaderResource(REGISTER_7, 1, &m_Resources[REGISTER_7]);
 }
 
 void Effect::Clear()
 {
-	void* resources[TextureSlot::_COUNT] = { };
+	void* resources[TextureSlot::SLOT_COUNT] = { };
 	graphics::IGraphicsContext& context = Engine::GetAPI()->GetContext();
-	context.VSSetShaderResource(0, TextureSlot::_COUNT, resources);
-	context.PSSetShaderResource(0, TextureSlot::_COUNT, resources);
+	context.VSSetShaderResource(0, TextureSlot::SLOT_COUNT, resources);
+	context.PSSetShaderResource(0, TextureSlot::SLOT_COUNT, resources);
 
 	if (set_shaders)
 	{

@@ -122,6 +122,20 @@ private:
 	template <typename T>
 	void Read(std::string path, T* pModel);
 
+	template <typename T>
+	void ReadBlock(const char* data, int& position, T* pModel);
+
+
+	int _ReadInt(const char* data, int& position)
+	{
+		int out = 0;
+		memcpy(&out, &data[position], sizeof(int));
+		position += sizeof(int);
+
+		return out;
+	}
+
+
 };
 
 static bool instanced = false;
@@ -774,6 +788,7 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 
 #undef IMPORT_THREAD
 
+
 template <typename T>
 void CModelImporter::Read(std::string path, T* pModel)
 {
@@ -795,15 +810,57 @@ void CModelImporter::Read(std::string path, T* pModel)
 		file.close();
 
 
-		int vertex_count = 0;
-		memcpy(&vertex_count, &data[5], sizeof(int));
+		
 
-
-
+		int position = 3;
+		ReadBlock(data, position, pModel);
 
 
 
 		delete data;
 		data = nullptr;
 	}
+}
+
+template <typename T>
+void CModelImporter::ReadBlock(const char* data, int& position, T* pModel)
+{
+	int vertex_count = _ReadInt(data, position);
+	vertex_count = 0;
+
+	position += vertex_count * sizeof(float);
+
+	int index_count = _ReadInt(data, position);
+	index_count = 0;
+
+	position += index_count * sizeof(int);
+
+	//surface count
+	int surface_count = _ReadInt(data, position);
+	
+	for (int i = 0; i < surface_count; ++i)
+	{
+		
+		int length = _ReadInt(data, position);
+		
+		char* resource_name = new char[length];
+		memcpy(resource_name, &data[position], sizeof(char) * length);
+		position += sizeof(char) * length;
+
+		int slot_type_len = _ReadInt(data, position);
+		char* resource_type = new char[slot_type_len];
+		memcpy(resource_type, &data[position], sizeof(char) * slot_type_len);
+		position += sizeof(char) * slot_type_len;
+
+
+	}
+
+	int child_count = _ReadInt(data, position);
+	
+	for (int i = 0; i < child_count; ++i)
+	{
+		ReadBlock(data, position, pModel);
+	}
+
+
 }

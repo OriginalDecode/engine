@@ -38,6 +38,16 @@ class aiMesh;
 class aiScene;
 
 
+constexpr s32 TRIANGLE_VERTEX_COUNT = 3;
+constexpr s32 VERTEX_STRIDE = 4;
+constexpr s32 NORMAL_STRIDE = 4;
+constexpr s32 BINORMAL_STRIDE = 4;
+constexpr s32 TANGENT_STRIDE = 4;
+constexpr s32 SKINWEIGHT_STRIDE = 4;
+constexpr s32 BONEID_STRIDE = 4;
+constexpr s32 UV_STRIDE = 2;
+
+
 class CModelImporter
 {
 public:
@@ -367,15 +377,6 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 	aiMesh* mesh = scene->mMeshes[index];
 	
 	ModelData data; // = new ModelData;
-
-	constexpr s32 TRIANGLE_VERTEX_COUNT = 3;
-	constexpr s32 VERTEX_STRIDE = 4;
-	constexpr s32 NORMAL_STRIDE = 4;
-	constexpr s32 BINORMAL_STRIDE = 4;
-	constexpr s32 TANGENT_STRIDE = 4;
-	constexpr s32 SKINWEIGHT_STRIDE = 4;
-	constexpr s32 BONEID_STRIDE = 4;
-	constexpr s32 UV_STRIDE = 2;
 
 	u32 polygonCount = mesh->mNumFaces;
 	u32 size = polygonCount * VERTEX_STRIDE;
@@ -812,8 +813,11 @@ void CModelImporter::Read(std::string path, T* pModel)
 
 		
 
-		int position = 3;
+		int position = 0;
 		ReadBlock(data, position, pModel);
+
+
+
 
 
 
@@ -825,19 +829,22 @@ void CModelImporter::Read(std::string path, T* pModel)
 template <typename T>
 void CModelImporter::ReadBlock(const char* data, int& position, T* pModel)
 {
-	int vertex_count = _ReadInt(data, position);
-	vertex_count = 0;
 
+	ModelData data;
+
+	int vertex_count = _ReadInt(data, position);
 	position += vertex_count * sizeof(float);
 
-	int index_count = _ReadInt(data, position);
-	index_count = 0;
+	data.myVertexCount = vertex_count;
 
+
+	int index_count = _ReadInt(data, position);
 	position += index_count * sizeof(int);
 
-	//surface count
-	int surface_count = _ReadInt(data, position);
-	
+	data.myIndexCount = index_count;
+
+
+	/*int surface_count = _ReadInt(data, position);
 	for (int i = 0; i < surface_count; ++i)
 	{
 		
@@ -852,15 +859,16 @@ void CModelImporter::ReadBlock(const char* data, int& position, T* pModel)
 		memcpy(resource_type, &data[position], sizeof(char) * slot_type_len);
 		position += sizeof(char) * slot_type_len;
 
-
-	}
+	}*/
 
 	int child_count = _ReadInt(data, position);
-	
 	for (int i = 0; i < child_count; ++i)
 	{
-		ReadBlock(data, position, pModel);
-	}
 
+		T* child = new T;
+		child->m_IsRoot = false;
+		pModel->AddChild(child);
+		ReadBlock(data, position, child);
+	}
 
 }

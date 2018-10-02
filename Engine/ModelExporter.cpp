@@ -33,9 +33,6 @@ void ModelExporter::Export(Model* const pModel, const char* out)
 
 	if (hFile != nullptr)
 	{
-		const char* c = "Hai";
-		fwrite(&c, 3, 1, hFile);
-
 		WriteBlock(pModel, hFile);
 		fclose(hFile);
 	}
@@ -47,13 +44,20 @@ void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 	WriteVertices((float*)pModel->GetVertexWrapper().GetData(), pModel->GetVertexWrapper().GetVertexCount(), pOut);
 	WriteIndices((int*)pModel->GetIndexWrapper().GetData(), pModel->GetIndexWrapper().GetIndexCount(), pOut);
 
+
+
+
+
+
+
+
 	const CU::GrowingArray<Surface*> surfaces = pModel->GetSurfaces();
 	int surface_count = surfaces.Size();
-	fwrite(&surface_count, sizeof(int), 1, pOut);
-	for (Surface* surface : surfaces)
-	{
-		WriteSurface(surface, pOut);
-	}
+	//fwrite(&surface_count, sizeof(int), 1, pOut);
+	//for (Surface* surface : surfaces)
+	//{
+	//	WriteSurface(surface, pOut);
+	//}
 
 	const CU::GrowingArray<Model*> children = pModel->GetChildModels();
 
@@ -72,12 +76,12 @@ void ModelExporter::WriteSurface(Surface* const pSurface, FILE* pOut)
 	for (const Material::ResourceBinding& rb : material.m_Resources)
 	{
 		const int size = rb.m_ResourceName.length();
-		fwrite(&size, sizeof(int), 1, pOut);
-		fwrite(rb.m_ResourceName.c_str(), size, 1, pOut);
+		fwrite(&size, sizeof(int), 1, pOut); //4
+		fwrite(rb.m_ResourceName.c_str(), size, 1, pOut); //len
 	
 		const int len = strlen(texture_slots[rb.m_Slot]);
-		fwrite(&len, sizeof(int), 1, pOut);
-		fwrite(texture_slots[rb.m_Slot], len, 1, pOut);
+		fwrite(&len, sizeof(int), 1, pOut); //4
+		fwrite(texture_slots[rb.m_Slot], len, 1, pOut); //len
 
 	}
 }

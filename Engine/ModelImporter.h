@@ -151,6 +151,7 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 
 	instanced = false;
 	DL_MESSAGE("Loading model : %s", filepath.c_str());
+	m_Effect = effect;
 
 	if (filepath.find("LPMF") != filepath.npos)
 	{
@@ -160,7 +161,6 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 
 
 
-	m_Effect = effect;
 	timer.Update();
 	float loadTime = timer.GetMasterTimer().GetTotalTime().GetMilliseconds();
 	unsigned int processFlags =
@@ -249,6 +249,9 @@ void CModelImporter::FillData(const ModelData& data, T* out, std::string filepat
 		FillInstanceData(out, data, m_Effect);
 
 	if (filepath.find("cube_100x100") != filepath.npos)
+		return;
+
+	if (filepath.find("LPMF") != std::string::npos)
 		return;
 
 	Surface* surface = new Surface(m_Effect);
@@ -787,6 +790,7 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 template <typename T>
 void CModelImporter::Read(std::string path, T* pModel)
 {
+	pModel->m_FileName = path;
 	FILE* hFile = fopen(path.c_str(), "rb");
 	assert(hFile && "failed to open file!");
 

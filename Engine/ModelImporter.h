@@ -133,17 +133,11 @@ private:
 	void Read(std::string path, T* pModel);
 
 	template <typename T>
-	void ReadBlock(const char* data, int& position, T* pModel);
+	void ReadBlock(const char* data, u32& position, T* pModel);
 
+	template <typename T>
+	void ReadData(const char* data, u32& position, T& out);
 
-	int _ReadInt(const char* data, int& position)
-	{
-		int out = 0;
-		memcpy(&out, &data[position], sizeof(int));
-		position += sizeof(int);
-
-		return out;
-	}
 
 
 };
@@ -689,7 +683,7 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 	const s32 ins_Start = 0;
 	const s32 ins_Stride = sizeof(GPUModelData);
 	const s32 ins_ByteOffset = 0;
-	const s32 ins_InstanceCount = 5000;
+	const s32 ins_InstanceCount = 300;
 	const s32 ins_Size = ins_InstanceCount * ins_Stride;
 	const s32 ins_IndicesPerInstance = data.myIndexCount;
 
@@ -813,7 +807,7 @@ void CModelImporter::Read(std::string path, T* pModel)
 
 		
 
-		int position = 0;
+		u32 position = 0;
 		ReadBlock(data, position, pModel);
 
 
@@ -827,23 +821,85 @@ void CModelImporter::Read(std::string path, T* pModel)
 }
 
 template <typename T>
-void CModelImporter::ReadBlock(const char* data, int& position, T* pModel)
+void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 {
 
-	ModelData data;
+	ModelData model_data; // = new ModelData;
 
-	int vertex_count = _ReadInt(data, position);
-	position += vertex_count * sizeof(float);
+	u32 stride = 0;
+	//if (mesh->HasPositions())
+	{
+		ModelData::Layout newLayout;
+		newLayout.myType = ModelData::VERTEX_POS;
+		newLayout.mySize = VERTEX_STRIDE;
+		newLayout.myOffset = 0;
+		model_data.myLayout.Add(newLayout);
+		stride += VERTEX_STRIDE;
+	}
 
-	data.myVertexCount = vertex_count;
+	//if (mesh->HasNormals())
+	{
+		ModelData::Layout newLayout;
+		newLayout.myType = ModelData::VERTEX_NORMAL;
+		newLayout.mySize = NORMAL_STRIDE;
+		newLayout.myOffset = stride * 4;
+		model_data.myLayout.Add(newLayout);
+
+		stride += NORMAL_STRIDE;
+	}
+
+	//if (mesh->HasTextureCoords(0)) //this is multiple coords 
+	{
+		ModelData::Layout newLayout;
+		newLayout.myType = ModelData::VERTEX_UV;
+		newLayout.mySize = UV_STRIDE;
+		newLayout.myOffset = stride * 4;
+		model_data.myLayout.Add(newLayout);
+
+		stride += UV_STRIDE;
+	}
+
+	//if (mesh->HasTangentsAndBitangents())
+	{
+		ModelData::Layout newLayout;
+		newLayout.myType = ModelData::VERTEX_BINORMAL;
+		newLayout.mySize = BINORMAL_STRIDE;
+		newLayout.myOffset = stride * 4;
+		model_data.myLayout.Add(newLayout);
+
+		stride += BINORMAL_STRIDE;
+
+		newLayout.myType = ModelData::VERTEX_TANGENT;
+		newLayout.mySize = TANGENT_STRIDE;
+		newLayout.myOffset = stride * 4;
+		model_data.myLayout.Add(newLayout);
+
+		stride += TANGENT_STRIDE;
+	}
 
 
-	int index_count = _ReadInt(data, position);
-	position += index_count * sizeof(int);
+	model_data.myVertexStride = stride * sizeof(float);
 
-	data.myIndexCount = index_count;
+	ReadData(data, position, model_data.myVertexCount);
+	model_data.m_VertexBufferSize = model_data.myVertexCount * sizeof(float);
+	model_data.myVertexBuffer = new float[model_data.m_VertexBufferSize];
+
+	ZeroMemory(&model_data.myVertexBuffer[0], model_data.m_VertexBufferSize);
+
+	memcpy(&model_data.myVertexBuffer[0], &data[position], model_data.m_VertexBufferSize);
+
+	position += model_data.m_VertexBufferSize;
 
 
+	ReadData(data, position, model_data.myIndexCount);
+	model_data.m_IndexBufferSize = model_data.myIndexCount * sizeof(int);
+	model_data.myIndicies = new int[model_data.m_IndexBufferSize];
+
+	ZeroMemory(&model_data.myIndicies[0], model_data.m_IndexBufferSize);
+	memcpy(&model_data.myIndicies[0], &data[position], model_data.m_IndexBufferSize);
+	position += model_data.m_IndexBufferSize;
+
+	//data.myIndexCount = index_count;
 	/*int surface_count = _ReadInt(data, position);
 	for (int i = 0; i < surface_count; ++i)
 	{
@@ -860,8 +916,11 @@ void CModelImporter::ReadBlock(const char* data, int& position, T* pModel)
 		position += sizeof(char) * slot_type_len;
 
 	}*/
-
-	int child_count = _ReadInt(data, position);
+	if(model_data.myVertexCount > 0)
+		FillData(model_data, pModel, pModel->m_FileName);
+	
+	int child_count = 0;
+	ReadData(data, position, child_count);
 	for (int i = 0; i < child_count; ++i)
 	{
 
@@ -871,4 +930,11 @@ void CModelImporter::ReadBlock(const char* data, int& position, T* pModel)
 		ReadBlock(data, position, child);
 	}
 
+}
+
+template <typename T>
+void CModelImporter::ReadData(const char* data, u32& position, T& out)
+{
+	memcpy(&out, &data[position], sizeof(T));
+	position += sizeof(T);
 }

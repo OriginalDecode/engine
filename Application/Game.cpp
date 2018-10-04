@@ -112,17 +112,17 @@ void Game::Initiate(const std::string& level)
 
 #endif
 #endif
-	japMap = m_Engine->LoadModelA("Data/model/trees/japanese maple/lowpoly/Japanese_Maple_lowpoly.fbx", "Shaders/debug_pbl_instanced.json", false);
+	//japMap = m_Engine->LoadModelA("Data/model/trees/japanese maple/lowpoly/Japanese_Maple_lowpoly.fbx", "Shaders/debug_pbl_instanced.json", false);
 	//japMap = m_Engine->LoadModelA("Data/exported/Japanese_Maple_lowpoly.LPMF", "Shaders/debug_pbl_instanced.json", false);
-	Model* pModel = m_Engine->GetModelDirect(japMap);
+	Model* pModel = m_Engine->GetModelDirect(Hash("data/exported/cube_100x100.LPMF"));
 	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::Type);
 
-	int tree_count = RANDOM(128, 256);
+	int tree_count = 1; // RANDOM(1, 1);
 	for (int i = 0; i < tree_count; ++i)
 	{
-		float x = RANDOM(0.f, 1024.f);
+		float x = 0; RANDOM(0.f, 1024.f);
 		//float y = RANDOM(0.f, 1024.f);
-		float z = RANDOM(0.f, 1024.f);
+		float z = 0; RANDOM(0.f, 1024.f);
 
 		CU::Matrix44f orientation;
 		orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));
@@ -141,7 +141,7 @@ void Game::Initiate(const std::string& level)
 	m_Picker = new CMousePicker;
 
 	m_Camera = m_Engine->GetCamera();
-	m_Camera->SetPosition(CU::Vector3f(512, 20, 0));
+	m_Camera->SetPosition(CU::Vector3f(0, 20, 0));
 	m_Orientation.SetPosition(m_Camera->GetPosition());
 
 	m_Camera->Update();

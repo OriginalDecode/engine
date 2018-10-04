@@ -92,6 +92,16 @@ void ModelExporter::WriteVertices(float* const pVertices, int vertex_count, FILE
 	fwrite(&vertex_count, sizeof(int), 1, pOut);
 
 	fwrite(pVertices, sizeof(float) * vertex_count, 1, pOut);
+	OutputDebugString("\nVERTICES\n");
+
+	for (int i = 0; i < vertex_count * sizeof(float); i++)
+	{
+		char temp[100];
+		sprintf_s(temp, "%.3f\n", pVertices[i]);
+		OutputDebugString(temp);
+	}
+
+	OutputDebugString("\nVERTICES\n");
 
 }
 

@@ -115,7 +115,7 @@ void Model::RenderInstanced(const graphics::RenderContext& rc, Effect* override_
 
 	PROFILE_BLOCK("Model : DrawIndexedInstanced", profiler::colors::Amber100);
 
-	if (m_Surfaces[0])
+	if (m_Surfaces.Size() > 0 && m_Surfaces[0])
 		m_Surfaces[0]->Activate(rc);
 	rc.GetContext().DrawIndexedInstanced(this, override_effect);
 

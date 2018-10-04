@@ -155,7 +155,9 @@ void CModelImporter::LoadModel(std::string filepath, T* pModel, Effect* effect)
 
 	if (filepath.find("LPMF") != filepath.npos)
 	{
+		pModel->m_FileName = filepath;
 		Read(filepath, pModel);
+		pModel->SetIsInstanced(instanced);
 		return;
 	}
 
@@ -886,13 +888,27 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 
 	ReadData(data, position, model_data.myVertexCount);
 	model_data.m_VertexBufferSize = model_data.myVertexCount * sizeof(float);
-	model_data.myVertexBuffer = new float[model_data.m_VertexBufferSize];
+	model_data.myVertexBuffer = new float[model_data.myVertexCount];
 
 	ZeroMemory(&model_data.myVertexBuffer[0], model_data.m_VertexBufferSize);
 
 	memcpy(&model_data.myVertexBuffer[0], &data[position], model_data.m_VertexBufferSize);
 
+	OutputDebugString("\nVERTICES\n");
+
+	for (int i = 0; i < model_data.myVertexCount * sizeof(float); i++)
+	{
+		char temp[100];
+		sprintf_s(temp, "%.3f\n", model_data.myVertexBuffer[i]);
+		OutputDebugString(temp);
+	}
+
+	OutputDebugString("\nVERTICES\n");
+
+
 	position += model_data.m_VertexBufferSize;
+
+
 
 
 	ReadData(data, position, model_data.myIndexCount);
@@ -930,6 +946,7 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 
 		T* child = new T;
 		child->m_IsRoot = false;
+		child->m_FileName = pModel->m_FileName;
 		pModel->AddChild(child);
 		ReadBlock(data, position, child);
 	}

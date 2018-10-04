@@ -102,7 +102,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	m_Background = new Quad(Engine::GetInstance()->GetEffect("Shaders/skysphere.json"));
 
 
-	m_RenderNodes.Add(new graphics::RenderNodeVegetation);
+	//m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
 
 	//u64 curtain = engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);

@@ -405,6 +405,7 @@ namespace graphics
 
 
 		D3D11_SUBRESOURCE_DATA srd;
+		ZeroMemory(&srd, sizeof(D3D11_SUBRESOURCE_DATA));
 		HRESULT hr = S_OK;
 
 		if (buffer_desc.m_Data)

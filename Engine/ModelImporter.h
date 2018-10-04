@@ -887,38 +887,40 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 	model_data.myVertexStride = stride * sizeof(float);
 
 	ReadData(data, position, model_data.myVertexCount);
-	model_data.m_VertexBufferSize = model_data.myVertexCount * sizeof(float);
-	model_data.myVertexBuffer = new float[model_data.myVertexCount];
-
-	ZeroMemory(&model_data.myVertexBuffer[0], model_data.m_VertexBufferSize);
-
-	memcpy(&model_data.myVertexBuffer[0], &data[position], model_data.m_VertexBufferSize);
-
-	OutputDebugString("\nVERTICES\n");
-
-	for (int i = 0; i < model_data.myVertexCount * sizeof(float); i++)
+	if (model_data.myVertexCount > 0)
 	{
-		char temp[100];
-		sprintf_s(temp, "%.3f\n", model_data.myVertexBuffer[i]);
-		OutputDebugString(temp);
+		model_data.m_VertexBufferSize = model_data.myVertexCount * sizeof(float);
+		model_data.myVertexBuffer = new float[model_data.myVertexCount];
+
+		ZeroMemory(&model_data.myVertexBuffer[0], model_data.m_VertexBufferSize);
+		memcpy(&model_data.myVertexBuffer[0], &data[position], model_data.m_VertexBufferSize);
+
+		OutputDebugString("\nVERTICES\n");
+
+		for (int i = 0; i < model_data.myVertexCount; i++)
+		{
+			char temp[100];
+			sprintf_s(temp, "%.3f\n", model_data.myVertexBuffer[i]);
+			OutputDebugString(temp);
+		}
+
+		OutputDebugString("\nVERTICES\n");
+
+		position += model_data.m_VertexBufferSize;
 	}
-
-	OutputDebugString("\nVERTICES\n");
-
-
-	position += model_data.m_VertexBufferSize;
-
 
 
 
 	ReadData(data, position, model_data.myIndexCount);
-	model_data.m_IndexBufferSize = model_data.myIndexCount * sizeof(int);
-	model_data.myIndicies = new int[model_data.m_IndexBufferSize];
+	if (model_data.myIndexCount > 0)
+	{
+		model_data.m_IndexBufferSize = model_data.myIndexCount * sizeof(int);
+		model_data.myIndicies = new int[model_data.m_IndexBufferSize];
 
-	ZeroMemory(&model_data.myIndicies[0], model_data.m_IndexBufferSize);
-	memcpy(&model_data.myIndicies[0], &data[position], model_data.m_IndexBufferSize);
-	position += model_data.m_IndexBufferSize;
-
+		ZeroMemory(&model_data.myIndicies[0], model_data.m_IndexBufferSize);
+		memcpy(&model_data.myIndicies[0], &data[position], model_data.m_IndexBufferSize);
+		position += model_data.m_IndexBufferSize;
+	}
 	//data.myIndexCount = index_count;
 	/*int surface_count = _ReadInt(data, position);
 	for (int i = 0; i < surface_count; ++i)

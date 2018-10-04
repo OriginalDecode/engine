@@ -44,13 +44,6 @@ void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 	WriteVertices((float*)pModel->GetVertexWrapper().GetData(), pModel->GetVertexWrapper().GetVertexCount(), pOut);
 	WriteIndices((int*)pModel->GetIndexWrapper().GetData(), pModel->GetIndexWrapper().GetIndexCount(), pOut);
 
-
-
-
-
-
-
-
 	const CU::GrowingArray<Surface*> surfaces = pModel->GetSurfaces();
 	int surface_count = surfaces.Size();
 	//fwrite(&surface_count, sizeof(int), 1, pOut);
@@ -91,10 +84,10 @@ void ModelExporter::WriteVertices(float* const pVertices, int vertex_count, FILE
 	
 	fwrite(&vertex_count, sizeof(int), 1, pOut);
 
-	fwrite(pVertices, sizeof(float) * vertex_count, 1, pOut);
+	fwrite(pVertices, sizeof(float), vertex_count, pOut);
 	OutputDebugString("\nVERTICES\n");
 
-	for (int i = 0; i < vertex_count * sizeof(float); i++)
+	for (int i = 0; i < vertex_count; i++)
 	{
 		char temp[100];
 		sprintf_s(temp, "%.3f\n", pVertices[i]);
@@ -110,6 +103,6 @@ void ModelExporter::WriteIndices(int* const pIndices, int indices_count, FILE* p
 
 	fwrite(&indices_count, sizeof(int), 1, pOut);
 
-	fwrite(pIndices, sizeof(int) * indices_count, 1, pOut);
+	fwrite(pIndices, sizeof(int), indices_count, pOut);
 
 }

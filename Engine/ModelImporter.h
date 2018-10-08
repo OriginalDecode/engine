@@ -53,7 +53,6 @@ class CModelImporter
 public:
 	CModelImporter();
 
-
 	template<typename T>
 	void LoadModel(std::string filepath, T* pModel, Effect* effect);
 
@@ -127,6 +126,12 @@ private:
 	template<typename T>
 	void ProcessMesh(unsigned int index, const aiScene* scene, std::string file, T* parent);
 
+	void AddTangentData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount);
+
+	void AddBiNormalData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount);
+
+	
+
 	void ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelData& data, std::string file);
 
 	template <typename T>
@@ -138,7 +143,13 @@ private:
 	template <typename T>
 	void ReadData(const char* data, u32& position, T& out);
 
+	void AddBoneData(u32& stride, ModelData& data, u32& size, u32 polygonVertexCount);
+	
+	void AddVertexPositionData(u32 &stride, ModelData& data, u32 &size, u32 polygonVertexCount);
 
+	void AddVertexNormalData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount);
+	
+	void AddUVData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount);
 
 };
 
@@ -318,7 +329,6 @@ inline void CModelImporter::SetupInputLayout(const ModelData& data, CU::GrowingA
 	}
 }
 
-
 template <typename T>
 void CModelImporter::ProcessNode(aiNode* aNode, const aiScene* scene, std::string file, T* parent)
 {
@@ -375,87 +385,30 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 {
 	aiMesh* mesh = scene->mMeshes[index];
 	
-	ModelData data; // = new ModelData;
+	ModelData data;
 
 	u32 polygonCount = mesh->mNumFaces;
 	u32 size = polygonCount * VERTEX_STRIDE;
 	u32 polygonVertexCount = polygonCount * 4;
-
 	u32 stride = 0;
+
 	if (mesh->HasPositions())
-	{
-		ModelData::Layout newLayout;
-		newLayout.myType = ModelData::VERTEX_POS;
-		newLayout.mySize = VERTEX_STRIDE;
-		newLayout.myOffset = 0;
-		data.myLayout.Add(newLayout);
-		size += polygonVertexCount * VERTEX_STRIDE;
-		stride += VERTEX_STRIDE;
-	}
+		AddVertexPositionData(stride, data, size, polygonVertexCount);
 
 	if (mesh->HasNormals())
-	{
-		ModelData::Layout newLayout;
-		newLayout.myType = ModelData::VERTEX_NORMAL;
-		newLayout.mySize = NORMAL_STRIDE;
-		newLayout.myOffset = stride * 4;
-		data.myLayout.Add(newLayout);
+		AddVertexNormalData(stride, data, size, polygonVertexCount);
 
-		stride += NORMAL_STRIDE;
-		size += polygonVertexCount * NORMAL_STRIDE;
-	}
-
-	if (mesh->HasTextureCoords(0)) //this is multiple coords 
-	{
-		ModelData::Layout newLayout;
-		newLayout.myType = ModelData::VERTEX_UV;
-		newLayout.mySize = UV_STRIDE;
-		newLayout.myOffset = stride * 4;
-		data.myLayout.Add(newLayout);
-
-		stride += UV_STRIDE;
-		size += polygonVertexCount * UV_STRIDE;
-	}
+	if (mesh->HasTextureCoords(0)) //this is multiple coordinates 
+		AddUVData(stride, data, size, polygonVertexCount);
 
 	if (mesh->HasTangentsAndBitangents())
 	{
-		ModelData::Layout newLayout;
-		newLayout.myType = ModelData::VERTEX_BINORMAL;
-		newLayout.mySize = BINORMAL_STRIDE;
-		newLayout.myOffset = stride * 4;
-		data.myLayout.Add(newLayout);
-
-		stride += BINORMAL_STRIDE;
-		size += polygonVertexCount * BINORMAL_STRIDE;
-
-		newLayout.myType = ModelData::VERTEX_TANGENT;
-		newLayout.mySize = TANGENT_STRIDE;
-		newLayout.myOffset = stride * 4;
-		data.myLayout.Add(newLayout);
-
-		stride += TANGENT_STRIDE;
-		size += polygonVertexCount * TANGENT_STRIDE;
+		AddBiNormalData(stride, data, size, polygonVertexCount);
+		AddTangentData(stride, data, size, polygonVertexCount);
 	}
 
 	if (mesh->HasBones())
-	{
-		ModelData::Layout newLayout;
-		newLayout.myType = ModelData::VERTEX_SKINWEIGHTS;
-		newLayout.mySize = SKINWEIGHT_STRIDE;
-		newLayout.myOffset = stride * 4;
-		data.myLayout.Add(newLayout);
-
-		stride += SKINWEIGHT_STRIDE;
-		size += polygonVertexCount * SKINWEIGHT_STRIDE;
-
-		newLayout.myType = ModelData::VERTEX_BONEID;
-		newLayout.mySize = BONEID_STRIDE;
-		newLayout.myOffset = stride * 4;
-		data.myLayout.Add(newLayout);
-
-		stride += BONEID_STRIDE;
-		size += polygonVertexCount * BONEID_STRIDE;
-	}
+		AddBoneData(stride, data, size, polygonVertexCount);
 
 	//DL_MESSAGE("Vertex Buffer Array Size : %d", size);
 
@@ -787,7 +740,6 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 }
 
 #undef IMPORT_THREAD
-
 
 template <typename T>
 void CModelImporter::Read(std::string path, T* pModel)

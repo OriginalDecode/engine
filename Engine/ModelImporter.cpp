@@ -10,6 +10,57 @@ CModelImporter::CModelImporter()
 {
 }
 
+
+
+
+void CModelImporter::AddVertexNormalData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount)
+{
+	ModelData::Layout newLayout;
+	newLayout.myType = ModelData::VERTEX_NORMAL;
+	newLayout.mySize = NORMAL_STRIDE;
+	newLayout.myOffset = stride * 4;
+	data.myLayout.Add(newLayout);
+
+	stride += NORMAL_STRIDE;
+	size += polygonVertexCount * NORMAL_STRIDE;
+}
+
+void CModelImporter::AddUVData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount)
+{
+	ModelData::Layout newLayout;
+	newLayout.myType = ModelData::VERTEX_UV;
+	newLayout.mySize = UV_STRIDE;
+	newLayout.myOffset = stride * 4;
+	data.myLayout.Add(newLayout);
+
+	stride += UV_STRIDE;
+	size += polygonVertexCount * UV_STRIDE;
+}
+
+void CModelImporter::AddTangentData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount)
+{
+	ModelData::Layout newLayout;
+	newLayout.myType = ModelData::VERTEX_TANGENT;
+	newLayout.mySize = TANGENT_STRIDE;
+	newLayout.myOffset = stride * 4;
+	data.myLayout.Add(newLayout);
+
+	stride += TANGENT_STRIDE;
+	size += polygonVertexCount * TANGENT_STRIDE;
+}
+
+void CModelImporter::AddBiNormalData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount)
+{
+	ModelData::Layout newLayout;
+	newLayout.myType = ModelData::VERTEX_BINORMAL;
+	newLayout.mySize = BINORMAL_STRIDE;
+	newLayout.myOffset = stride * 4;
+	data.myLayout.Add(newLayout);
+
+	stride += BINORMAL_STRIDE;
+	size += polygonVertexCount * BINORMAL_STRIDE;
+}
+
 void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelData& data, std::string file)
 {
 	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -116,4 +167,35 @@ void CModelImporter::ExtractMaterials(aiMesh* mesh, const aiScene* scene, ModelD
 
 		}
 	}
+}
+
+void CModelImporter::AddVertexPositionData(u32 &stride, ModelData &data, u32 &size, u32 polygonVertexCount)
+{
+	ModelData::Layout newLayout;
+	newLayout.myType = ModelData::VERTEX_POS;
+	newLayout.mySize = VERTEX_STRIDE;
+	newLayout.myOffset = 0;
+	data.myLayout.Add(newLayout);
+	size += polygonVertexCount * VERTEX_STRIDE;
+	stride += VERTEX_STRIDE;
+}
+
+void CModelImporter::AddBoneData(u32& stride, ModelData& data, u32& size, u32 polygonVertexCount)
+{
+	ModelData::Layout newLayout;
+	newLayout.myType = ModelData::VERTEX_SKINWEIGHTS;
+	newLayout.mySize = SKINWEIGHT_STRIDE;
+	newLayout.myOffset = stride * 4;
+	data.myLayout.Add(newLayout);
+
+	stride += SKINWEIGHT_STRIDE;
+	size += polygonVertexCount * SKINWEIGHT_STRIDE;
+
+	newLayout.myType = ModelData::VERTEX_BONEID;
+	newLayout.mySize = BONEID_STRIDE;
+	newLayout.myOffset = stride * 4;
+	data.myLayout.Add(newLayout);
+
+	stride += BONEID_STRIDE;
+	size += polygonVertexCount * BONEID_STRIDE;
 }

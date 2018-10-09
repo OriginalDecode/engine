@@ -5,7 +5,7 @@
 #include "IndexWrapper.h"
 #include <string.h>
 #include <stdio.h>
-
+#include "ModelImporter.h"
 const char MODEL_EXT[5] = { 'L', 'P', 'M', 'F', '\0' }; //Linus Propriatary Model Format ¯\_(ツ)_/¯
 
 
@@ -41,7 +41,31 @@ void ModelExporter::Export(Model* const pModel, const char* out)
 
 void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 {
-	WriteVertices((float*)pModel->GetVertexWrapper().GetData(), pModel->GetVertexWrapper().GetVertexCount(), pOut);
+	//WriteVertices((float*)pModel->GetVertexWrapper().GetData(), pModel->GetVertexWrapper().GetVertexCount(), pOut);
+
+	const int vtx_count = pModel->GetVertexWrapper().GetVertexCount();
+	fwrite(&vtx_count, sizeof(int), 1, pOut);
+
+	CModelImporter::ModelData* data = (CModelImporter::ModelData*)pModel->model_data;
+	if (data)
+	{
+
+		if (vtx_count > 0)
+		{
+			int stride = data->myVertexStride;
+			stride = 0;
+			float* data = (float*)pModel->GetVertexWrapper().GetData();
+			for (size_t i = 0; i < vtx_count * sizeof(VertexData); i += sizeof(VertexData))
+			{
+				fwrite(&data[i + 0], sizeof(float), 1, pOut);
+				fwrite(&data[i + 1], sizeof(float), 1, pOut);
+				fwrite(&data[i + 2], sizeof(float), 1, pOut);
+				fwrite(&data[i + 3], sizeof(float), 1, pOut);
+			}
+		}
+
+	}
+
 	WriteIndices((int*)pModel->GetIndexWrapper().GetData(), pModel->GetIndexWrapper().GetIndexCount(), pOut);
 
 	const CU::GrowingArray<Surface*> surfaces = pModel->GetSurfaces();

@@ -21,6 +21,11 @@ public:
 
 	~IndexWrapper()
 	{
+		Reset();
+	}
+
+	void Reset()
+	{
 		Engine::GetAPI()->ReleasePtr(m_IndexBuffer);
 		delete[] m_Data;
 	}

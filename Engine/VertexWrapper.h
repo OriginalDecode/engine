@@ -33,6 +33,11 @@ public:
 
 	~VertexWrapper()
 	{
+		Reset();
+	}
+
+	void Reset()
+	{
 		Engine::GetAPI()->ReleasePtr(m_VertexBuffer);
 		m_VertexBuffer = nullptr;
 		Engine::GetAPI()->ReleasePtr(m_VertexInputLayout);

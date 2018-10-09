@@ -21,6 +21,11 @@ public:
 
 	~InstanceWrapper()
 	{
+		Reset();
+	}
+
+	void Reset()
+	{
 		Engine::GetAPI()->ReleasePtr(m_InstanceInputLayout);
 		m_InstanceInputLayout = nullptr;
 		Engine::GetAPI()->ReleasePtr(m_InstanceBuffer);

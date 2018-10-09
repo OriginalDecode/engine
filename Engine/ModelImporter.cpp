@@ -7,6 +7,7 @@
 
 CModelImporter::CModelImporter()
 	: m_Engine(Engine::GetInstance())
+	, m_Device(&Engine::GetAPI()->GetDevice())
 {
 }
 

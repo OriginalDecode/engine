@@ -306,13 +306,13 @@ void CModelImporter::FillData(const ModelData& data, T* out, std::string filepat
 	if (filepath.find("cube_100x100") != filepath.npos)
 		return;
 
-	if (filepath.find("LPMF") != std::string::npos)
-		return;
+	//if (filepath.find("LPMF") != std::string::npos)
+	//	return;
 
 	Surface* surface = new Surface(m_Effect);
 	for (auto& tex : data.myTextures)
 	{
-		surface->AddTexture(path + tex.m_File, tex.m_Slot);
+		surface->AddTexture(tex.m_File, tex.m_Slot);
 	}
 	out->AddSurface(surface);
 
@@ -936,32 +936,37 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 	
 	int surface_count = 0;
 	ReadData(data, position, surface_count);
-	
-	for (int i = 0; i < surface_count; ++i)
+	if (surface_count > 0)
 	{
-		
-		TextureInfo info;
+		int nof_bindings = 0;
+		ReadData(data, position, nof_bindings);
+		for (int i = 0; i < nof_bindings; ++i)
+		{
 
-		int length = 0;
-		ReadData(data, position, length);
-		
-		char* resource_name = new char[length + 1];
-		ZeroMemory(&resource_name[0], length);
-		resource_name[length] = '\0';
-		memcpy(&resource_name[0], &data[position], sizeof(char) * length);
-		info.m_File = resource_name;
+			TextureInfo info;
 
-		position += sizeof(char) * length;
+			int length = 0;
+			ReadData(data, position, length);
 
-		
-		int slot = 0;
-		ReadData(data, position, slot);
+			char* resource_name = new char[length + 1];
+			ZeroMemory(&resource_name[0], length);
+			resource_name[length] = '\0';
+			memcpy(&resource_name[0], &data[position], sizeof(char) * length);
+			info.m_File = resource_name;
 
-		info.m_Slot = static_cast<TextureSlot>(slot);
+			position += sizeof(char) * length;
 
-		model_data.myTextures.Add(info);
 
+			int slot = 0;
+			ReadData(data, position, slot);
+
+			info.m_Slot = static_cast<TextureSlot>(slot);
+
+			model_data.myTextures.Add(info);
+
+		}
 	}
+
 	if(model_data.myVertexCount > 0)
 		FillData(model_data, pModel, pModel->m_FileName);
 	

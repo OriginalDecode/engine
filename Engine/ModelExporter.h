@@ -30,10 +30,10 @@ private:
 
 
 template<typename T>
-void _fwrite(const T* pObj, size_t element_size, size_t element_count, FILE* fileHandle, std::ofstream* stream = nullptr)
+void _fwrite(const T* pObj, size_t element_size, size_t element_count, FILE* fileHandle, std::ofstream* stream = nullptr, std::string debug = "")
 {
 	fwrite(pObj, element_size, element_count, fileHandle);
 	if(stream)
-		*stream << *pObj << "\n";
+		*stream << debug << *pObj << "\n";
 }
 

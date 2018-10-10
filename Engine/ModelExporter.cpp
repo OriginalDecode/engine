@@ -68,7 +68,7 @@ void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 {
 
 	const int vtx_count = pModel->GetVertexWrapper().GetVertexCount();
-	_fwrite(&vtx_count, sizeof(int), 1, pOut, &output);
+	_fwrite(&vtx_count, sizeof(int), 1, pOut, &output, "vertex_count: ");
 	g_ByteSize += sizeof(int);
 	if (vtx_count > 0)
 	{
@@ -88,20 +88,20 @@ void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 
 
 	const int idx_count = pModel->GetIndexWrapper().GetIndexCount();
-	_fwrite(&idx_count, sizeof(int), 1, pOut, &output);
+	_fwrite(&idx_count, sizeof(int), 1, pOut, &output, "index_count: ");
 	g_ByteSize += sizeof(int);
 
 	if (idx_count > 0)
 	{
 		s8* data = pModel->GetIndexWrapper().GetData();
-		_fwrite(data, sizeof(int), idx_count, pOut, &output);
+		_fwrite(data, sizeof(int), idx_count, pOut, &output, "index_data:");
 		g_ByteSize += sizeof(int);
 	}
 
 	const CU::GrowingArray<Surface*> surfaces = pModel->GetSurfaces();
 	const int surface_count = surfaces.Size();
-	_fwrite(&surface_count, sizeof(int), 1, pOut, &output);
-	g_ByteSize += sizeof(int);
+	_fwrite(&surface_count, sizeof(int), 1, pOut, &output, "surface_count: ");
+
 	for (Surface* surface : surfaces)
 	{
 		WriteSurface(surface, pOut);
@@ -110,7 +110,7 @@ void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 	const CU::GrowingArray<Model*> children = pModel->GetChildModels();
 
 	int child_count = children.Size();
-	_fwrite(&child_count, sizeof(int), 1, pOut, &output);
+	_fwrite(&child_count, sizeof(int), 1, pOut, &output, "child_count: ");
 	g_ByteSize += sizeof(int);
 
 	for (Model* child : children)
@@ -122,16 +122,18 @@ void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 void ModelExporter::WriteSurface(Surface* const pSurface, FILE* pOut)
 {
 	const Material& material = pSurface->GetMaterial();
+	const int nof_bindings = material.m_Resources.Size();
+	_fwrite(&nof_bindings, sizeof(int), 1, pOut, &output, "material/nof_bindings: ");
 	for (const Material::ResourceBinding& rb : material.m_Resources)
 	{
 		const int size = rb.m_ResourceName.length();
-		_fwrite(&size, sizeof(int), 1, pOut, &output); //4
+		_fwrite(&size, sizeof(int), 1, pOut, &output, "material/filepath_length: "); //4
 		g_ByteSize += sizeof(int);
-		_fwrite(rb.m_ResourceName.c_str(), size, 1, pOut, &output); //len
+		_fwrite(rb.m_ResourceName.c_str(), size, 1, pOut, &output,"material/filepath: "); //len
 		g_ByteSize += size;
 
 		const int slot = rb.m_Slot;
-		_fwrite(&slot, sizeof(int), 1, pOut, &output);
+		_fwrite(&slot, sizeof(int), 1, pOut, &output, "material/bindslot: ");
 		g_ByteSize += sizeof(int);
 
 	}

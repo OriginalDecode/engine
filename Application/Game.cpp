@@ -112,7 +112,7 @@ void Game::Initiate(const std::string& level)
 
 #endif
 #endif
-	japMap = m_Engine->LoadModelA("Data/model/trees/japanese maple/lowpoly/Japanese_Maple_lowpoly.fbx", "Shaders/debug_pbl_instanced.json", false);
+	//japMap = m_Engine->LoadModelA("Data/model/trees/japanese maple/lowpoly/Japanese_Maple_lowpoly.fbx", "Shaders/debug_pbl_instanced.json", false);
 	japMap = m_Engine->LoadModelA("Data/exported/Japanese_Maple_lowpoly.LPMF", "Shaders/debug_pbl_instanced.json", false);
 	//Model* pModel = m_Engine->GetModelDirect(Hash("data/exported/cube_100x100.LPMF"));
 	//Model* pModel = m_Engine->GetModelDirect(Hash("data/exported/cube_100x100.LPMF"));

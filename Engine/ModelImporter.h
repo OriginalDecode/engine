@@ -21,6 +21,7 @@
 
 #include <Engine/Effect.h>
 
+#include <iostream>
 
 #include <Engine/IGraphicsAPI.h>
 #include <Engine/IGraphicsDevice.h>
@@ -55,6 +56,35 @@ struct VertexData
 	CU::Vector2f m_UV;
 	CU::Vector4f m_BiNormal;
 	CU::Vector4f m_Tangent;
+
+	friend std::ostream & operator<<(std::ostream& out, const VertexData& data)
+	{
+		out << data.m_Position.x << " ";
+		out << data.m_Position.y << " ";
+		out << data.m_Position.z << " ";
+		out << data.m_Position.w << " ";
+
+		out << data.m_Normal.x << " ";
+		out << data.m_Normal.y << " ";
+		out << data.m_Normal.z << " ";
+		out << data.m_Normal.w << " ";
+
+		out << data.m_UV.x << " ";
+		out << data.m_UV.y << " ";
+
+		out << data.m_BiNormal.x << " ";
+		out << data.m_BiNormal.y << " ";
+		out << data.m_BiNormal.z << " ";
+		out << data.m_BiNormal.w << " ";
+
+		out << data.m_Tangent.x << " ";
+		out << data.m_Tangent.y << " ";
+		out << data.m_Tangent.z << " ";
+		out << data.m_Tangent.w << " ";
+		return out;
+	}
+
+
 };
 
 class CModelImporter
@@ -952,6 +982,9 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 template <typename T>
 void CModelImporter::ReadData(const char* data, u32& position, T& out)
 {
+	char temp[100];
+	sprintf_s(temp, "position : %d\n", position);
+	OutputDebugString(temp);
 	memcpy(&out, &data[position], sizeof(T));
 	position += sizeof(T);
 }

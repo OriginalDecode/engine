@@ -9,6 +9,17 @@
 const char MODEL_EXT[5] = { 'L', 'P', 'M', 'F', '\0' }; //Linus Propriatary Model Format ¯\_(ツ)_/¯
 
 
+//make a readable file as well? for debugging
+std::ofstream output;
+
+void _fwrite(const VertexData* pObj, size_t element_size, size_t element_count, FILE* fileHandle, std::ofstream* stream = nullptr)
+{
+	fwrite(pObj, element_size, element_count, fileHandle);
+	if (stream)
+		*stream << *pObj << "\n";
+}
+
+
 ModelExporter::ModelExporter()
 {
 }
@@ -17,12 +28,23 @@ ModelExporter::~ModelExporter()
 {
 }
 
+int g_ByteSize = 0;
+
+
 void ModelExporter::Export(Model* const pModel, const char* out)
 {
-
+	g_ByteSize = 0;
 #ifdef WIN32
 	CreateDirectory("data/exported", NULL);
 #endif
+	std::string readable(out);
+	readable += ".txt";
+	output.open(readable);
+	if (output.is_open())
+	{
+
+	}
+
 
 	std::stringstream ss;
 	ss << out << "." << MODEL_EXT;
@@ -37,36 +59,49 @@ void ModelExporter::Export(Model* const pModel, const char* out)
 		fclose(hFile);
 	}
 
-}
+	output.flush();
+	output.close();
 
+
+}
 void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 {
 
 	const int vtx_count = pModel->GetVertexWrapper().GetVertexCount();
-	fwrite(&vtx_count, sizeof(int), 1, pOut);
-
+	_fwrite(&vtx_count, sizeof(int), 1, pOut, &output);
+	g_ByteSize += sizeof(int);
 	if (vtx_count > 0)
 	{
 		s8* data = pModel->GetVertexWrapper().GetData();
 		for (size_t i = 0; i < vtx_count * sizeof(VertexData); i += sizeof(VertexData))
 		{
 			fwrite(&data[i], sizeof(VertexData), 1, pOut);
+
+			VertexData vtx_data;
+			memcpy(&vtx_data, &data[i], sizeof(VertexData));
+			output << vtx_data << "\n";
+			
+			
+			g_ByteSize += sizeof(VertexData);
 		}
 	}
 
 
 	const int idx_count = pModel->GetIndexWrapper().GetIndexCount();
-	fwrite(&idx_count, sizeof(int), 1, pOut);
+	_fwrite(&idx_count, sizeof(int), 1, pOut, &output);
+	g_ByteSize += sizeof(int);
 
 	if (idx_count > 0)
 	{
 		s8* data = pModel->GetIndexWrapper().GetData();
-		fwrite(data, sizeof(int), idx_count, pOut);
+		_fwrite(data, sizeof(int), idx_count, pOut, &output);
+		g_ByteSize += sizeof(int);
 	}
 
 	const CU::GrowingArray<Surface*> surfaces = pModel->GetSurfaces();
 	const int surface_count = surfaces.Size();
-	fwrite(&surface_count, sizeof(int), 1, pOut);
+	_fwrite(&surface_count, sizeof(int), 1, pOut, &output);
+	g_ByteSize += sizeof(int);
 	for (Surface* surface : surfaces)
 	{
 		WriteSurface(surface, pOut);
@@ -75,7 +110,8 @@ void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 	const CU::GrowingArray<Model*> children = pModel->GetChildModels();
 
 	int child_count = children.Size();
-	fwrite(&child_count, sizeof(int), 1, pOut);
+	_fwrite(&child_count, sizeof(int), 1, pOut, &output);
+	g_ByteSize += sizeof(int);
 
 	for (Model* child : children)
 	{
@@ -89,43 +125,14 @@ void ModelExporter::WriteSurface(Surface* const pSurface, FILE* pOut)
 	for (const Material::ResourceBinding& rb : material.m_Resources)
 	{
 		const int size = rb.m_ResourceName.length();
-		fwrite(&size, sizeof(int), 1, pOut); //4
-		fwrite(rb.m_ResourceName.c_str(), size, 1, pOut); //len
-	
+		_fwrite(&size, sizeof(int), 1, pOut, &output); //4
+		g_ByteSize += sizeof(int);
+		_fwrite(rb.m_ResourceName.c_str(), size, 1, pOut, &output); //len
+		g_ByteSize += size;
+
 		const int slot = rb.m_Slot;
-		fwrite(&slot, sizeof(int), 1, pOut);
-
-		//const int len = strlen(texture_slots[rb.m_Slot]);
-		//fwrite(&len, sizeof(int), 1, pOut); //4
-		//fwrite(texture_slots[rb.m_Slot], len, 1, pOut); //len
+		_fwrite(&slot, sizeof(int), 1, pOut, &output);
+		g_ByteSize += sizeof(int);
 
 	}
-}
-
-void ModelExporter::WriteVertices(float* const pVertices, int vertex_count, FILE* pOut)
-{
-	
-	fwrite(&vertex_count, sizeof(int), 1, pOut);
-
-	fwrite(pVertices, sizeof(float), vertex_count, pOut);
-	OutputDebugString("\nVERTICES\n");
-
-	for (int i = 0; i < vertex_count; i++)
-	{
-		char temp[100];
-		sprintf_s(temp, "%.3f\n", pVertices[i]);
-		OutputDebugString(temp);
-	}
-
-	OutputDebugString("\nVERTICES\n");
-
-}
-
-void ModelExporter::WriteIndices(int* const pIndices, int indices_count, FILE* pOut)
-{
-
-	fwrite(&indices_count, sizeof(int), 1, pOut);
-
-	fwrite(pIndices, sizeof(int), indices_count, pOut);
-
 }

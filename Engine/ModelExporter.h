@@ -1,22 +1,6 @@
 #pragma once
 #include <stdio.h>
-
-
-struct ModelFormat
-{
-    struct Header
-    {
-        const int m_Length = sizeof(Header); //Minimum file size is always the size of the header
-    };
-    
-    struct Out
-    {
-        
-    };
-
-
-};
-
+#include <fstream>
 
 class VertexWrapper;
 class IndexWrapper;
@@ -43,4 +27,13 @@ private:
 
 
 };
+
+
+template<typename T>
+void _fwrite(const T* pObj, size_t element_size, size_t element_count, FILE* fileHandle, std::ofstream* stream = nullptr)
+{
+	fwrite(pObj, element_size, element_count, fileHandle);
+	if(stream)
+		*stream << *pObj << "\n";
+}
 

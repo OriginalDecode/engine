@@ -46,24 +46,13 @@ void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 	const int vtx_count = pModel->GetVertexWrapper().GetVertexCount();
 	fwrite(&vtx_count, sizeof(int), 1, pOut);
 
-	CModelImporter::ModelData* data = (CModelImporter::ModelData*)pModel->model_data;
-	if (data)
+	if (vtx_count > 0)
 	{
-
-		if (vtx_count > 0)
+		s8* data = pModel->GetVertexWrapper().GetData();
+		for (size_t i = 0; i < vtx_count * sizeof(VertexData); i += sizeof(VertexData))
 		{
-			int stride = data->myVertexStride;
-			stride = 0;
-			float* data = (float*)pModel->GetVertexWrapper().GetData();
-			for (size_t i = 0; i < vtx_count * sizeof(VertexData); i += sizeof(VertexData))
-			{
-				fwrite(&data[i + 0], sizeof(float), 1, pOut);
-				fwrite(&data[i + 1], sizeof(float), 1, pOut);
-				fwrite(&data[i + 2], sizeof(float), 1, pOut);
-				fwrite(&data[i + 3], sizeof(float), 1, pOut);
-			}
+			fwrite(&data[i], sizeof(VertexData), 1, pOut);
 		}
-
 	}
 
 	WriteIndices((int*)pModel->GetIndexWrapper().GetData(), pModel->GetIndexWrapper().GetIndexCount(), pOut);

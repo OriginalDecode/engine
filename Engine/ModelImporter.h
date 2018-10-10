@@ -856,23 +856,31 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 	ReadData(data, position, model_data.myVertexCount);
 	if (model_data.myVertexCount > 0)
 	{
-		model_data.m_VertexBufferSize = model_data.myVertexCount * (sizeof(float)*4);
-		model_data.myVertexBuffer = new float[model_data.myVertexCount * 4];
+		model_data.m_VertexBufferSize = model_data.myVertexCount * sizeof(VertexData);
+		s8* buffer = new s8[model_data.m_VertexBufferSize];
 
-		ZeroMemory(&model_data.myVertexBuffer[0], model_data.m_VertexBufferSize);
-		memcpy(&model_data.myVertexBuffer[0], &data[position], model_data.m_VertexBufferSize);
+		ZeroMemory(&buffer[0], model_data.m_VertexBufferSize);
+		memcpy(&buffer[0], &data[position], model_data.m_VertexBufferSize);
 
-		OutputDebugString("\nVERTICES\n");
+		//OutputDebugString("\nVERTICES\n");
 
-		for (int i = 0; i < model_data.myVertexCount; i++)
+		VertexData* list = new VertexData[model_data.myVertexCount];
+		ZeroMemory(&list[0], model_data.m_VertexBufferSize);
+		memcpy(&list[0], &buffer[0], model_data.m_VertexBufferSize);
+
+		for (size_t i = 0; i < model_data.myVertexCount; i++)
 		{
+			VertexData& d = list[i];
 			char temp[100];
-			sprintf_s(temp, "%.3f\n", model_data.myVertexBuffer[i]);
+			sprintf_s(temp, "X %.3f, Y %.3f, Z %.3f, W %.3f\n", d.m_Position.x, d.m_Position.y, d.m_Position.z, d.m_Position.w);
 			OutputDebugString(temp);
 		}
 
-		OutputDebugString("\nVERTICES\n");
+		//OutputDebugString("\nVERTICES\n");
 
+
+
+		model_data.myVertexBuffer = (float*)buffer;
 		position += model_data.m_VertexBufferSize;
 	}
 

@@ -288,7 +288,6 @@ u64 Engine::LoadModelA(std::string path, std::string effect, bool threaded)
 
 s32 Engine::PickEntity(Texture* pTexture)
 {
-	return 0;
 #ifdef _DEBUG
 	static CU::Vector4f curr;
 	if (!ImGui::IsAnyWindowHovered())
@@ -298,7 +297,6 @@ s32 Engine::PickEntity(Texture* pTexture)
 	}
 	return (curr.x + curr.y + curr.z);
 #endif
-	return 0;
 }
 
 void Engine::PickEntity()

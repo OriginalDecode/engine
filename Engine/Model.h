@@ -76,6 +76,9 @@ private:
 	void RenderCube(const graphics::RenderContext& rc);
 	void RemoveGPUData();
 	CU::GrowingArray<Model*> m_Children;
+
+	IBuffer* m_ModelID = nullptr;
+	int m_ModelIDHash = 0;
 protected:
 	u64 m_Key = 0;
 	void UpdateConstantBuffer(const graphics::RenderContext& rc) override;

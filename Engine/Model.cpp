@@ -20,6 +20,7 @@ Model::~Model()
 		m_Surfaces[0]->serialize(m_FileName.c_str());
 
 	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
+	Engine::GetAPI()->ReleasePtr(m_ModelID);
 
 	m_Surfaces.DeleteAll();
 	m_Children.DeleteAll();
@@ -33,6 +34,7 @@ void Model::Initiate(const std::string& filename)
 	std::string dbg(filename.c_str());
 	m_FileName = dbg;
 	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_ObjectData), dbg + "Vertex ConstantBuffer");
+	m_ModelID =	Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(int) * 4, "modelidhash");
 	for (Model* child : m_Children)
 	{
 		child->SetIsInstanced(m_IsInstanced);
@@ -229,6 +231,10 @@ void Model::UpdateConstantBuffer(const graphics::RenderContext& rc)
 
 		IBuffer* pBuffer = m_InstanceWrapper.GetInstanceBuffer();
 		ctx.UpdateConstantBuffer(pBuffer, &m_GPUData[0], m_GPUData.Size() * sizeof(GPUModelData));
+
+		ctx.UpdateConstantBuffer(m_ModelID, &m_ModelIDHash, sizeof(int) * 4);
+		ctx.PSSetConstantBuffer(1, 1, &m_ModelID);
+
 	}
 	else
 	{
@@ -581,11 +587,15 @@ void Model::CreateCube()
 
 void Model::SetEntityID(int id)
 {
+	
+
+
 	for (Model* pModel : m_Children)
 	{
 		pModel->SetEntityID(id);
 	}
-	m_ObjectData.entityID = id;
+	m_ModelIDHash = id;
+	//m_ObjectData.entityID = id;
 }
 
 void Model::SetIsInstanced(bool is_instanced)

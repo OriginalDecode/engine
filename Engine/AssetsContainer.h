@@ -117,6 +117,8 @@ u64 AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bo
 		model->Initiate(path);
 	}
 
+	model->SetEntityID(hash);
+
 	return hash;
 }
 

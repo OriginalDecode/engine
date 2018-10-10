@@ -427,8 +427,9 @@ namespace graphics
 		return buffer;
 	}
 
-	IBuffer* DX11Device::CreateConstantBuffer(s32 size, const std::string& debug_name)
+	IBuffer* DX11Device::CreateConstantBuffer(const s32 size, const std::string& debug_name)
 	{
+		ASSERT(size >= 16, "Size of buffer must be 16 or more");
 		BufferDesc desc;
 		desc.m_ByteWidth = size;
 		desc.m_UsageFlag = DYNAMIC_USAGE;

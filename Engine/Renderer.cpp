@@ -60,7 +60,7 @@ Renderer::Renderer(Synchronizer* synchronizer)
 	window_size.m_Height = api->GetInfo().m_WindowHeight;
 	window_size.m_Width = api->GetInfo().m_WindowWidth;
 
-	//m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR /*| PostProcessManager::SSR*/); //Can be read from a settings file
+	m_PostProcessManager.SetPassesToProcess(PostProcessManager::HDR /*| PostProcessManager::SSR*/); //Can be read from a settings file
 
 	m_Line = new Line3D;
 	m_Line->Initiate();
@@ -104,23 +104,6 @@ Renderer::Renderer(Synchronizer* synchronizer)
 
 	//m_RenderNodes.Add(new graphics::RenderNodeVegetation);
 	m_RenderNodes.Add(new graphics::RenderNodeGeneral);
-
-	//u64 curtain = engine->LoadModelA("Data/model/sponza_pbr/curtain.fbx", "Shaders/deferred_base.json", false);
-	//u64 building = engine->LoadModelA("Data/model/sponza_pbr/building.fbx", "Shaders/deferred_base.json", false);
-	//u64 pole = engine->LoadModelA("Data/model/sponza_pbr/poles.fbx", "Shaders/deferred_base.json", false);
-
-
-	//graphics::IRenderNode* veg = GetNode(graphics::RenderNodeGeneral::Type);
-	//ModelInstance inst;
-	//inst.SetModel(engine->GetModel<Model>(building).GetData());
-	//veg->AddInstance(inst);
-
-	//inst.SetModel(engine->GetModel<Model>(curtain).GetData());
-	//veg->AddInstance(inst);
-
-	//inst.SetModel(engine->GetModel<Model>(pole).GetData());
-	//veg->AddInstance(inst);
-
 
 }
 
@@ -231,10 +214,31 @@ void Renderer::Render()
 		node->Draw(m_RenderContext);
 	}
 
+	WriteDebugTextures();
+
+	//const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
+	//This wont work quite yet
+	//DrawEntity(m_SelectedTexture, selected);
+
 	DrawIBL();
 
-	m_RenderContext.GetAPI().SetDefaultTargets();
-	m_DeferredRenderer->Finalize();
+	//m_RenderContext.GetAPI().SetDefaultTargets();
+	//m_DeferredRenderer->Finalize();
+
+
+	if (m_PostProcessManager.GetFlags() != 0)
+	{
+		m_PostProcessManager.Process(m_DeferredRenderer->GetScene(), m_RenderContext);
+	}
+	else
+	{
+		m_RenderContext.GetAPI().SetDefaultTargets();
+		m_DeferredRenderer->Finalize();
+	}
+
+	m_PostProcessManager.Process(m_HoverTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
+
+
 
 #if !defined(_PROFILE) && !defined(_FINAL)
 
@@ -285,28 +289,12 @@ void Renderer::DrawEntity(Texture* pTex, Entity e)
 	ctx.ClearRenderTarget(pTex->GetRenderTargetView(), clearcolor::black);
 	ctx.OMSetRenderTargets(1, pTex->GetRenderTargetRef(), nullptr);
 	Engine& engine = m_RenderContext.GetEngine();
-	if (!engine.GetEntityManager().HasComponent<GraphicsComponent>(e))
-		return;
-	const GraphicsComponent& graphics = engine.GetEntityManager().GetComponent<GraphicsComponent>(e);
-
-	for (const ModelInstanceCmpt& instance : graphics.m_Instances)
+	
+	m_HoverModel = engine.GetModel<Model>(e);
+	if (m_HoverModel.GetData())
 	{
-		m_HoverModel = engine.GetModel<Model>(instance.m_ModelID);
-		if (!m_HoverModel.GetData())
-			continue;
-
-		const TranslationComponent& translation = engine.GetEntityManager().GetComponent<TranslationComponent>(e);
-
-
-		prev = orientation;
-		orientation = translation.GetOrientation();
-
-
-		const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale)  * instance.m_Orientation;
-
-		m_HoverModel->AddOrientation(relative * prev);
+		//m_HoverModel->AddOrientation(relative * prev);
 		m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
-
 	}
 }
 

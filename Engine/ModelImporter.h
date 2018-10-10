@@ -555,6 +555,7 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 
 	//delete data;
 
+
 }
 
 template<typename T>
@@ -876,6 +877,9 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 			OutputDebugString(temp);
 		}
 
+		delete[] list;
+		list = nullptr;
+
 		//OutputDebugString("\nVERTICES\n");
 
 
@@ -890,29 +894,44 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 	if (model_data.myIndexCount > 0)
 	{
 		model_data.m_IndexBufferSize = model_data.myIndexCount * sizeof(int);
-		model_data.myIndicies = new int[model_data.m_IndexBufferSize];
+		s8* buffer = new s8[model_data.m_IndexBufferSize];
 
-		ZeroMemory(&model_data.myIndicies[0], model_data.m_IndexBufferSize);
-		memcpy(&model_data.myIndicies[0], &data[position], model_data.m_IndexBufferSize);
+		ZeroMemory(&buffer[0], model_data.m_IndexBufferSize);
+		memcpy(&buffer[0], &data[position], model_data.m_IndexBufferSize);
+
+		model_data.myIndicies = (int*)buffer;
+
 		position += model_data.m_IndexBufferSize;
 	}
-	//data.myIndexCount = index_count;
-	/*int surface_count = _ReadInt(data, position);
+	
+	int surface_count = 0;
+	ReadData(data, position, surface_count);
+	
 	for (int i = 0; i < surface_count; ++i)
 	{
 		
-		int length = _ReadInt(data, position);
+		TextureInfo info;
+
+		int length = 0;
+		ReadData(data, position, length);
 		
-		char* resource_name = new char[length];
-		memcpy(resource_name, &data[position], sizeof(char) * length);
+		char* resource_name = new char[length + 1];
+		ZeroMemory(&resource_name[0], length);
+		resource_name[length] = '\0';
+		memcpy(&resource_name[0], &data[position], sizeof(char) * length);
+		info.m_File = resource_name;
+
 		position += sizeof(char) * length;
 
-		int slot_type_len = _ReadInt(data, position);
-		char* resource_type = new char[slot_type_len];
-		memcpy(resource_type, &data[position], sizeof(char) * slot_type_len);
-		position += sizeof(char) * slot_type_len;
+		
+		int slot = 0;
+		ReadData(data, position, slot);
 
-	}*/
+		info.m_Slot = static_cast<TextureSlot>(slot);
+
+		model_data.myTextures.Add(info);
+
+	}
 	if(model_data.myVertexCount > 0)
 		FillData(model_data, pModel, pModel->m_FileName);
 	

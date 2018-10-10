@@ -41,7 +41,6 @@ void ModelExporter::Export(Model* const pModel, const char* out)
 
 void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 {
-	//WriteVertices((float*)pModel->GetVertexWrapper().GetData(), pModel->GetVertexWrapper().GetVertexCount(), pOut);
 
 	const int vtx_count = pModel->GetVertexWrapper().GetVertexCount();
 	fwrite(&vtx_count, sizeof(int), 1, pOut);
@@ -55,15 +54,23 @@ void ModelExporter::WriteBlock(Model* const pModel, FILE* pOut)
 		}
 	}
 
-	WriteIndices((int*)pModel->GetIndexWrapper().GetData(), pModel->GetIndexWrapper().GetIndexCount(), pOut);
+
+	const int idx_count = pModel->GetIndexWrapper().GetIndexCount();
+	fwrite(&idx_count, sizeof(int), 1, pOut);
+
+	if (idx_count > 0)
+	{
+		s8* data = pModel->GetIndexWrapper().GetData();
+		fwrite(data, sizeof(int), idx_count, pOut);
+	}
 
 	const CU::GrowingArray<Surface*> surfaces = pModel->GetSurfaces();
-	int surface_count = surfaces.Size();
-	//fwrite(&surface_count, sizeof(int), 1, pOut);
-	//for (Surface* surface : surfaces)
-	//{
-	//	WriteSurface(surface, pOut);
-	//}
+	const int surface_count = surfaces.Size();
+	fwrite(&surface_count, sizeof(int), 1, pOut);
+	for (Surface* surface : surfaces)
+	{
+		WriteSurface(surface, pOut);
+	}
 
 	const CU::GrowingArray<Model*> children = pModel->GetChildModels();
 
@@ -85,9 +92,12 @@ void ModelExporter::WriteSurface(Surface* const pSurface, FILE* pOut)
 		fwrite(&size, sizeof(int), 1, pOut); //4
 		fwrite(rb.m_ResourceName.c_str(), size, 1, pOut); //len
 	
-		const int len = strlen(texture_slots[rb.m_Slot]);
-		fwrite(&len, sizeof(int), 1, pOut); //4
-		fwrite(texture_slots[rb.m_Slot], len, 1, pOut); //len
+		const int slot = rb.m_Slot;
+		fwrite(&slot, sizeof(int), 1, pOut);
+
+		//const int len = strlen(texture_slots[rb.m_Slot]);
+		//fwrite(&len, sizeof(int), 1, pOut); //4
+		//fwrite(texture_slots[rb.m_Slot], len, 1, pOut); //len
 
 	}
 }

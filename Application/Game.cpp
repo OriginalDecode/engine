@@ -112,9 +112,10 @@ void Game::Initiate(const std::string& level)
 
 #endif
 #endif
-	//japMap = m_Engine->LoadModelA("Data/model/trees/japanese maple/lowpoly/Japanese_Maple_lowpoly.fbx", "Shaders/debug_pbl_instanced.json", false);
+	japMap = m_Engine->LoadModelA("Data/model/trees/japanese maple/lowpoly/Japanese_Maple_lowpoly.fbx", "Shaders/debug_pbl_instanced.json", false);
 	//japMap = m_Engine->LoadModelA("Data/exported/Japanese_Maple_lowpoly.LPMF", "Shaders/debug_pbl_instanced.json", false);
-	Model* pModel = m_Engine->GetModelDirect(Hash("data/exported/cube_100x100.LPMF"));
+	//Model* pModel = m_Engine->GetModelDirect(Hash("data/exported/cube_100x100.LPMF"));
+	//Model* pModel = m_Engine->GetModelDirect(Hash("data/exported/cube_100x100.LPMF"));
 	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::Type);
 
 	int tree_count = 1; // RANDOM(1, 1);
@@ -132,7 +133,7 @@ void Game::Initiate(const std::string& level)
 
 		instance.SetOrientation(orientation);
 		instance.SetMaterialKey(Hash("tree"));
-		instance.SetModel(pModel);
+		instance.SetModel(Engine::GetInstance()->GetModelDirect(japMap));
 		pNode->AddInstance(instance);
 
 	}

@@ -220,7 +220,10 @@ void Renderer::Render()
 
 	if (selected > 0)
 	{
-		cl::SColor c(selected);
+
+		cl::Color col(selected);
+
+
 		Model* pModel = Engine::GetInstance()->GetModelDirect(selected);
 		int apa;
 		apa = 5;

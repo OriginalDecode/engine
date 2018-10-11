@@ -34,7 +34,7 @@ void Model::Initiate(const std::string& filename)
 	std::string dbg(filename.c_str());
 	m_FileName = dbg;
 	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_ObjectData), dbg + "Vertex ConstantBuffer");
-	m_ModelID =	Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(int) * 4, "modelidhash");
+	m_ModelID =	Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(float) * 4, "modelidhash");
 	for (Model* child : m_Children)
 	{
 		child->SetIsInstanced(m_IsInstanced);
@@ -232,7 +232,14 @@ void Model::UpdateConstantBuffer(const graphics::RenderContext& rc)
 		IBuffer* pBuffer = m_InstanceWrapper.GetInstanceBuffer();
 		ctx.UpdateConstantBuffer(pBuffer, &m_GPUData[0], m_GPUData.Size() * sizeof(GPUModelData));
 
-		ctx.UpdateConstantBuffer(m_ModelID, &m_Hash.m_Bits[0], sizeof(int) * 4);
+		cl::Color color(m_Hash.m_Bits[0]);
+		float fColor[4];
+		fColor[0] = color.r;
+		fColor[1] = color.g;
+		fColor[2] = color.b;
+		fColor[3] = color.a;
+
+		ctx.UpdateConstantBuffer(m_ModelID, &fColor[0], sizeof(fColor));
 		ctx.PSSetConstantBuffer(1, 1, &m_ModelID);
 
 	}

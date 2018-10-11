@@ -52,8 +52,7 @@ float4 ToColor(unsigned int e)
 
 cbuffer idBuffer : register(b1)
 {
-	int m_ID;
-	int dummy[3];
+	float r,g,b,a;
 };
 
 
@@ -101,7 +100,7 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	output.m_Depth.z = metalness_override.r;
 	output.m_Emissive = 0;//input.displaced;
 #ifdef _DEBUG
-    output.m_EntityIDTexture = ToColor(m_ID);
+    output.m_EntityIDTexture = float4(r,g,b,a); //ToColor(m_ID);
 	output.m_Roughness = float4(roughness_override.rgb, 1);
 	output.m_Metalness = float4(metalness_override.rgb, 1);
 #endif

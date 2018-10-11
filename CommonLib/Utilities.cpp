@@ -139,8 +139,8 @@ namespace cl
 	{
 		m_Alpha = (aColor) & 0xFF;
 		m_Blue = (aColor >> 8) & 0xFF;
-		m_Green = (aColor >> 16) & 0xFF;
-		m_Red = (aColor >> 24) & 0xFF;
+		m_Green = (aColor >> 8) & 0xFF;
+		m_Red = (aColor >> 16) & 0xFF;
 		_color = aColor;
 	}
 

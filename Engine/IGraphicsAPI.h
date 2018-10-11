@@ -159,7 +159,7 @@ namespace graphics
 		const IDepthStencilView* GetDepthView() const { return m_DefaultDepthView; }
 
 
-		virtual CU::Vector4f PickColor(Texture* pTexture) = 0;
+		virtual cl::Color PickColor(Texture* pTexture) = 0;
 
 
 	protected:

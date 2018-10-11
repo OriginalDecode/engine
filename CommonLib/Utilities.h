@@ -82,8 +82,8 @@ namespace cl
 
 	struct Color
 	{
-		Color();
-		Color(float red, float green, float blue, float alpha)
+		Color() = default;
+		Color(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha)
 		{
 			r = red;
 			g = green;
@@ -91,14 +91,14 @@ namespace cl
 			a = alpha;
 		};
 
-		Color(int c) : color(c){}
+		Color(unsigned int c) : color(c){}
 
 		union
 		{
-			int color;
-			char colors[4];
+			unsigned int color; //4byte
+			unsigned char colors[4]; //4byte
 			struct {
-				float r, g, b, a;
+				unsigned char r, g, b, a; 
 			};
 		};
 	};
@@ -145,6 +145,7 @@ namespace cl
 		out.z = (float)((col_as_int) bitand 0xFF);
 		out.y = (float)((col_as_int >> 8) bitand 0xFF);
 		out.x = (float)((col_as_int >> 16) bitand 0xFF);
+		out.w = (float)((col_as_int >> 24) bitand 0xFF);
 		return out;
 
 	};

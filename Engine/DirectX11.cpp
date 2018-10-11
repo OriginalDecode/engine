@@ -469,7 +469,7 @@ namespace graphics
 		SAFE_RELEASE(factory);
 	}
 
-	CU::Vector4f DirectX11::PickColor(Texture* pTexture)
+	cl::Color DirectX11::PickColor(Texture* pTexture)
 	{
 		
 		//this might have to run at the end of each frame, and we put in a request for the function in a command queue
@@ -490,10 +490,7 @@ namespace graphics
 
 		//this could be saved
 		D3D11_BOX region_box;
-		CU::Vector4f color;
-
-		if (iPos.x > 1919 || iPos.x < 0 || iPos.y > 1080 || iPos.y < 0)
-			return color;
+		
 
 
 		region_box.bottom = cl::ClampI(iPos.y, 0, (s32)window_size.m_Height) + 1;
@@ -515,15 +512,18 @@ namespace graphics
 		if (msr.pData)
 		{
 			float* data = (float*)msr.pData;
-			color.x = data[0] * 65536.f;
-			color.y = data[1] * 256.f;
-			color.z = data[2];
-			color.w = 1.f;
+
+			u8 r = data[0];
+			u8 g = data[1];
+			u8 b = data[2];
+			u8 a = data[3];
+
+			return cl::Color(r,g,b,a);
 		}
 		ctx->Unmap(staging, 0);
 		staging->Release();
 
-		return color;
+		return cl::Color();
 
 	}
 

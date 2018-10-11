@@ -286,17 +286,9 @@ HashType Engine::LoadModelA(std::string path, std::string effect, bool threaded)
 	return LoadModel<Model>(path, effect, threaded);
 }
 
-s32 Engine::PickEntity(Texture* pTexture)
+u32 Engine::PickEntity(Texture* pTexture)
 {
-#ifdef _DEBUG
-	static CU::Vector4f curr;
-	if (!ImGui::IsAnyWindowHovered())
-	{
-		// 		if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing())
-		curr = m_API->PickColor(pTexture);
-	}
-	return (curr.x + curr.y + curr.z + curr.w);
-#endif
+	return m_API->PickColor(pTexture).color;
 }
 
 void Engine::PickEntity()

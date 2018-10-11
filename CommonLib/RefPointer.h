@@ -11,7 +11,7 @@ public:
 
 	const int RefCount() const { return m_Refs->count(); }
 
-	T* GetData() { return m_Data; }
+	T* GetData() { if (m_Data) return m_Data; return nullptr; }
 
 	RefPointer& operator=(const RefPointer& r);
 

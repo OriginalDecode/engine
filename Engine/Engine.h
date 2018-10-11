@@ -196,7 +196,7 @@ public:
 	AssetsContainer* GetAssetsContainer() { return myAssetsContainer; }
 	Model* GetModelDirect(u64 key);
 private:
-	s32 PickEntity(Texture* pTexture);
+	u32 PickEntity(Texture* pTexture);
 	Engine();
 	~Engine();
 	static Engine* myInstance;

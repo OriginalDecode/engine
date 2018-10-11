@@ -136,3 +136,36 @@ namespace blendcolor
 #include "../CommonLib/DataStructures/Hashmap/Hash.h"
 static u64 g_DefaultModel = Hash("default");
 static u64 g_DefaultMaterial = Hash("default");
+
+struct HashType
+{
+	union
+	{
+		u64 m_Hash;
+		u32 m_Bits[2];
+	};
+
+	HashType() = default;
+
+	HashType(const HashType& other)
+	{
+		m_Hash = other.m_Hash;
+	}
+
+	HashType(const u64& other)
+	{
+		m_Hash = other;
+	}
+
+	bool operator<(const HashType& other) const
+	{
+		return (m_Bits[0] < other.m_Bits[0]);
+	}
+
+	HashType& operator=(const u64& lhv)
+	{
+		m_Hash = lhv;
+	}
+
+};
+

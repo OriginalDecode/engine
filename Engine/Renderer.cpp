@@ -216,7 +216,15 @@ void Renderer::Render()
 
 	WriteDebugTextures();
 
-	//const Entity selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
+	const u32 selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
+
+	if (selected > 0)
+	{
+		cl::SColor c(selected);
+		Model* pModel = Engine::GetInstance()->GetModelDirect(selected);
+		int apa;
+		apa = 5;
+	}
 	//This wont work quite yet
 	//DrawEntity(m_SelectedTexture, selected);
 
@@ -387,7 +395,7 @@ void Renderer::Render3DCommands()
 			}
 
 #ifdef _DEBUG
-			model->SetEntityID(command->m_EntityID);
+			//model->SetEntityID(command->m_EntityID);
 #endif
 			model->SetOrientation(command->m_Orientation);
 			model->Render(m_RenderContext);
@@ -468,7 +476,7 @@ void Renderer::Render3DShadows(const CU::Matrix44f&, Camera*)
 			}
 
 #ifdef _DEBUG
-			model->SetEntityID(command->m_EntityID);
+			//model->SetEntityID(command->m_EntityID.);
 #endif
 			model->SetOrientation(command->m_Orientation);
 			Engine::GetInstance()->GetEffect("Shaders/render_depth.json")->Use();

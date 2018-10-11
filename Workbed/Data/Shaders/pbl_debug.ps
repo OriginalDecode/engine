@@ -41,16 +41,27 @@ struct VS_OUTPUT
 #endif
 };
 
-float3 ToColor(unsigned int e)
+float4 ToColor(unsigned int e)
 {
-	float b = ((e) & 0xFF);
-	float g = ((e >> 8) & 0xFF) ;
-	float r = ((e >> 16) & 0xFF);
-	return float3(r,g,b);
+	float a = ((e) & 0xFF);
+	float b = ((e >> 8) & 0xFF);
+	float g = ((e >> 16) & 0xFF) ;
+	float r = ((e >> 24) & 0xFF);
+	return float4(r,g,b,a);
 };
+
+cbuffer idBuffer : register(b1)
+{
+	int m_ID;
+	int dummy[3];
+};
+
 
 GBuffer main(VS_OUTPUT input) : SV_Target
 {
+
+
+	
 	float3 _normal = NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
 	_normal.z = sqrt( 1 - pow((2*_normal.x), 2) + pow((2*_normal.y), 2)) / 2 + 0.5;
 
@@ -78,7 +89,7 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 		discard;
 
 	albedo.rgb = pow(albedo.rgb, 2.2);
-	output.m_Albedo = albedo;
+	output.m_Albedo = float4(albedo.rgb,1);
 	
 	// output.Albedo.a = override_pbl ? 1 : roughness_override;
 
@@ -90,7 +101,7 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 	output.m_Depth.z = metalness_override.r;
 	output.m_Emissive = 0;//input.displaced;
 #ifdef _DEBUG
-    output.m_EntityIDTexture = float4(ToColor(input.entity_id), 0);
+    output.m_EntityIDTexture = ToColor(m_ID);
 	output.m_Roughness = float4(roughness_override.rgb, 1);
 	output.m_Metalness = float4(metalness_override.rgb, 1);
 #endif

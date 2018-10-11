@@ -33,7 +33,9 @@ template<typename T>
 void _fwrite(const T* pObj, size_t element_size, size_t element_count, FILE* fileHandle, std::ofstream* stream = nullptr, std::string debug = "")
 {
 	fwrite(pObj, element_size, element_count, fileHandle);
+#ifdef OUTPUT_MODEL_EXPORT
 	if(stream)
 		*stream << debug << *pObj << "\n";
+#endif
 }
 

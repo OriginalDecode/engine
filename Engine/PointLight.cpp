@@ -5,8 +5,8 @@
 PointLight::PointLight()
 {
 	//m_Model = new LightModel;
-	u64 key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/sphere.fbx", "Shaders/deferred_pointlight.json", false);
-	m_Model = Engine::GetInstance()->GetModel<Model>(key);
+	HashType key = Engine::GetInstance()->LoadModel<LightModel>("Data/Model/lightMeshes/sphere.fbx", "Shaders/deferred_pointlight.json", false);
+	m_Model = Engine::GetInstance()->GetModel<Model>(key.m_Hash);
 	LightModel* model = static_cast<LightModel*>(m_Model.GetData());
 	model->Initiate("cone.fbx");
 

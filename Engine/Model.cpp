@@ -232,7 +232,7 @@ void Model::UpdateConstantBuffer(const graphics::RenderContext& rc)
 		IBuffer* pBuffer = m_InstanceWrapper.GetInstanceBuffer();
 		ctx.UpdateConstantBuffer(pBuffer, &m_GPUData[0], m_GPUData.Size() * sizeof(GPUModelData));
 
-		ctx.UpdateConstantBuffer(m_ModelID, &m_ModelIDHash, sizeof(int) * 4);
+		ctx.UpdateConstantBuffer(m_ModelID, &m_Hash.m_Bits[0], sizeof(int) * 4);
 		ctx.PSSetConstantBuffer(1, 1, &m_ModelID);
 
 	}
@@ -585,7 +585,7 @@ void Model::CreateCube()
 
 }
 
-void Model::SetEntityID(int id)
+void Model::SetEntityID(HashType id)
 {
 	
 
@@ -594,7 +594,7 @@ void Model::SetEntityID(int id)
 	{
 		pModel->SetEntityID(id);
 	}
-	m_ModelIDHash = id;
+	m_Hash = id;
 	//m_ObjectData.entityID = id;
 }
 

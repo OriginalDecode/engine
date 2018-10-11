@@ -35,13 +35,14 @@ void AssetsContainer::Initiate()
 	m_Models.empty();
 	m_Sprites.empty();
 
-	u64 mod_key = LoadModel<Model>("data/engineassets/cube_100x100.fbx", "Shaders/deferred_base.json", false);
+	HashType mod_key = LoadModel<Model>("data/engineassets/cube_100x100.fbx", "Shaders/deferred_base.json", false);
 	mod_key = LoadModel<Model>("data/exported/cube_100x100.LPMF", "Shaders/debug_pbl_instanced.json", false);
 	u64 mat_key = LoadMaterial("Data/Material/mat_default.json");
 
 
-	RefPointer<Model> model = GetModel<Model>(mod_key);
+	RefPointer<Model> model = GetModel<Model>(mod_key.m_Hash);
 	Material* pMaterial = GetMaterial(mat_key);
+
 
 	m_Models.emplace(g_DefaultModel, model);
 	m_Materials.emplace(g_DefaultMaterial, pMaterial);

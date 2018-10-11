@@ -893,27 +893,6 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 		ZeroMemory(&buffer[0], model_data.m_VertexBufferSize);
 		memcpy(&buffer[0], &data[position], model_data.m_VertexBufferSize);
 
-		//OutputDebugString("\nVERTICES\n");
-
-		VertexData* list = new VertexData[model_data.myVertexCount];
-		ZeroMemory(&list[0], model_data.m_VertexBufferSize);
-		memcpy(&list[0], &buffer[0], model_data.m_VertexBufferSize);
-
-		for (size_t i = 0; i < model_data.myVertexCount; i++)
-		{
-			VertexData& d = list[i];
-			char temp[100];
-			sprintf_s(temp, "X %.3f, Y %.3f, Z %.3f, W %.3f\n", d.m_Position.x, d.m_Position.y, d.m_Position.z, d.m_Position.w);
-			OutputDebugString(temp);
-		}
-
-		delete[] list;
-		list = nullptr;
-
-		//OutputDebugString("\nVERTICES\n");
-
-
-
 		model_data.myVertexBuffer = (float*)buffer;
 		position += model_data.m_VertexBufferSize;
 	}
@@ -987,9 +966,6 @@ void CModelImporter::ReadBlock(const char* data, u32& position, T* pModel)
 template <typename T>
 void CModelImporter::ReadData(const char* data, u32& position, T& out)
 {
-	char temp[100];
-	sprintf_s(temp, "position : %d\n", position);
-	OutputDebugString(temp);
 	memcpy(&out, &data[position], sizeof(T));
 	position += sizeof(T);
 }

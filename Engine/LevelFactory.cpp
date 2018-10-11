@@ -473,7 +473,7 @@ CU::GrowingArray<TreeDweller*> LevelFactory::CreatePBLLevel(s32 x_steps, s32 y_s
 
 
 	Effect* e = Engine::GetInstance()->GetEffect("Shaders/debug_pbl_instanced.json");
-	u64 key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false);
+	u64 key = Engine::GetInstance()->LoadModel<Model>("Data/Model/ballen.fbx", "Shaders/debug_pbl_instanced.json", false).m_Hash;
 	Model* model = Engine::GetInstance()->GetModel<Model>(key).GetData();
 	model->AddSurface(new Surface(e));
 
@@ -705,7 +705,7 @@ void LevelFactory::CreateGraphicsComponent(JSONReader& entity_reader, Entity ent
 	instance.m_ModelID = m_Engine->LoadModelA(
 		el["model"].GetString(),
 		"Shaders/debug_pbl_instanced.json",
-		true);
+		true).m_Hash;
 	instance.m_Filename = el["model"].GetString();
 
 	component.m_MinPos = m_Engine->GetModel<Model>(instance.m_ModelID)->GetMinPoint();

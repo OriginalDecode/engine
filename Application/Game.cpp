@@ -51,7 +51,7 @@ u64 pole = 0;
 u64 curtain = 0;
 #endif
 #endif
-u64 japMap = 0;
+HashType japMap;
 
 CU::GrowingArray<CU::Matrix44f> positions;
 
@@ -118,12 +118,12 @@ void Game::Initiate(const std::string& level)
 	//Model* pModel = m_Engine->GetModelDirect(Hash("data/exported/cube_100x100.LPMF"));
 	graphics::IRenderNode* pNode = Engine::GetInstance()->GetRenderer()->GetNode(graphics::RenderNodeGeneral::Type);
 
-	int tree_count = 1; // RANDOM(1, 1);
+	int tree_count = RANDOM(128, 255);
 	for (int i = 0; i < tree_count; ++i)
 	{
-		float x = 0; RANDOM(0.f, 1024.f);
+		float x = RANDOM(0.f, 1024.f);
 		//float y = RANDOM(0.f, 1024.f);
-		float z = 0; RANDOM(0.f, 1024.f);
+		float z = RANDOM(0.f, 1024.f);
 
 		CU::Matrix44f orientation;
 		orientation = CU::Matrix44f::CreateRotateAroundX(cl::DegreeToRad(-90.f));
@@ -133,7 +133,7 @@ void Game::Initiate(const std::string& level)
 
 		instance.SetOrientation(orientation);
 		instance.SetMaterialKey(Hash("tree"));
-		instance.SetModel(Engine::GetInstance()->GetModelDirect(japMap));
+		instance.SetModel(Engine::GetInstance()->GetModelDirect(japMap.m_Bits[0]));
 		pNode->AddInstance(instance);
 
 	}

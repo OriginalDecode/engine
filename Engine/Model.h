@@ -65,7 +65,7 @@ public:
 	void SetKey(u64 key) { m_Key = key; }
 	const u64 GetKey() const { return m_Key; }
 
-	void SetEntityID(int id);
+	void SetEntityID(HashType id);
 
 	void SetIsInstanced(bool is_instanced) override;
 	bool IsInstanced() const { return m_IsInstanced; }
@@ -78,7 +78,9 @@ private:
 	CU::GrowingArray<Model*> m_Children;
 
 	IBuffer* m_ModelID = nullptr;
-	int m_ModelIDHash = 0;
+
+	HashType m_Hash;
+
 protected:
 	u64 m_Key = 0;
 	void UpdateConstantBuffer(const graphics::RenderContext& rc) override;

@@ -50,7 +50,7 @@ public:
 
 
 	template<typename T>
-	u64 LoadModel(std::string path, std::string effect_filepath, bool thread = true);
+	HashType LoadModel(std::string path, std::string effect_filepath, bool thread = true);
 
 	u64 LoadTexture(std::string path, bool make_mips = false);
 	u64 LoadEffect(std::string path);
@@ -70,7 +70,7 @@ private:
 
 	std::map<u64, Texture*> m_Textures;
 	std::map<u64, Effect*> m_Effects;
-	std::map<u64, RefPointer<Model>> m_Models;
+	std::map<HashType, RefPointer<Model>> m_Models;
 	std::map<u64, Sprite*> m_Sprites;
 	std::map<u64, Material*> m_Materials;
 
@@ -82,17 +82,21 @@ private:
 };
 
 template<typename T>
-u64 AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bool thread /*= true*/)
+HashType AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bool thread /*= true*/)
 {
 	if (!cl::file_exist(path) && path.find("default") != 0)
 		DL_ASSERT("Failed to find the file!");
 
 	
-	u64 hash = Hash(path.c_str());
+	HashType hash;
+	hash.m_Hash = Hash(path.c_str());
+
 	Engine* engine = Engine::GetInstance();
 	if (path.find("default") != path.npos)
-		return g_DefaultModel;
-
+	{
+		hash.m_Hash = g_DefaultModel;
+		return hash;
+	}
 
 	if (m_Models.find(hash) != m_Models.end())
 		return hash;
@@ -101,7 +105,7 @@ u64 AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bo
 
 	m_Models.emplace(hash, RefPointer<Model>(new T));
 	T* model = static_cast<T*>(m_Models.at(hash).GetData());
-	model->SetKey(hash);
+	
 	if (thread)
 	{
 		engine->GetThreadpool().AddWork(Work([=]() {

@@ -65,6 +65,15 @@ namespace debug
 
 
 
+	void DebugHandle::ConfirmModel()
+	{
+		if (m_HoveredModel.m_Hash <= 0)
+			return;
+
+		m_SelectedModel = m_HoveredModel;
+
+	}
+
 	DebugHandle* DebugHandle::m_Instance = nullptr;
 
 
@@ -157,6 +166,7 @@ namespace debug
 		mgr->Subscribe(DebugEvents_OnRightClick, this);
 		mgr->Subscribe("copy_selected", this);
 		mgr->Subscribe("paste_new", this);
+		mgr->Subscribe("left_click", this);
 		m_RegisteredSampleTextures.Init(32);
 
 		ImGui::StyleColorsDark();
@@ -360,7 +370,7 @@ namespace debug
 			const ImVec4 active = style.Colors[ImGuiCol_ButtonHovered];
 			const ImVec4 inactive = style.Colors[ImGuiCol_Button];
 
-			static s32 button_idx = 0;
+			static s32 button_idx = 1;
 
 			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.1f, 0.0f));
@@ -636,8 +646,10 @@ namespace debug
 		else if (event == Hash("paste_new"))
 		{
 			PasteEntity();
-
-
+		}
+		else if (event == Hash("left_click"))
+		{
+			ConfirmModel();
 		}
 	}
 
@@ -699,6 +711,16 @@ namespace debug
 			camera_pos << "x:" << pos.x << "\ny:" << pos.y << "\nz:" << pos.z;
 			ImGui::Text("%s", camera_pos.str().c_str());
 			ImGui::Separator();
+
+			if (m_SelectedModel.m_Hash > 0)
+			{
+				ImGui::Text("Current Model (HASH): %llu", m_SelectedModel.m_Hash);
+				Model* model = Engine::GetInstance()->GetModelDirect(m_SelectedModel.m_Lower);
+				if (model)
+				{
+					ImGui::Text("Current Model (NAME): %s", model->GetFileName().c_str());
+				}
+			}
 
 			//ImGui::Text("Hovering : %d", m_CurrEntity);
 

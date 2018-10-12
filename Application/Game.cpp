@@ -133,7 +133,7 @@ void Game::Initiate(const std::string& level)
 
 		instance.SetOrientation(orientation);
 		instance.SetMaterialKey(Hash("tree"));
-		instance.SetModel(Engine::GetInstance()->GetModelDirect(japMap.m_Bits[0]));
+		instance.SetModel(Engine::GetInstance()->GetModelDirect(japMap.m_Lower));
 		pNode->AddInstance(instance);
 
 	}
@@ -257,7 +257,7 @@ void Game::OldUpdate(float dt)
 	InputWrapper* input_wrapper = m_Engine->GetInputHandle()->GetInputWrapper();
 	EventManager* pEventHandle = EventManager::GetInstance();
 	if (input_wrapper->OnClick(MouseInput::LEFT))
-		pEventHandle->SendMessage("pick_entity");
+		pEventHandle->SendMessage("left_click");
 
 	if (input_wrapper->OnDown(KButton::ESCAPE))
 		m_StateStack->PopCurrentMainState();

@@ -141,8 +141,11 @@ struct HashType
 {
 	union
 	{
-		u64 m_Hash;
-		u32 m_Bits[2];
+		u64 m_Hash = 0;
+		struct {
+			u32 m_Lower;
+			u32 m_Uppdater;
+		};
 	};
 
 	HashType() = default;
@@ -159,7 +162,7 @@ struct HashType
 
 	bool operator<(const HashType& other) const
 	{
-		return (m_Bits[0] < other.m_Bits[0]);
+		return (m_Lower < other.m_Lower);
 	}
 
 	HashType& operator=(const u64& lhv)

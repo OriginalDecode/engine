@@ -243,7 +243,7 @@ void Engine::Update()
 	m_Renderer->Render();
 
 #if !defined(_PROFILE) && !defined(_FINAL)
-	debug::DebugHandle::GetInstance()->SetEntity(PickEntity(GetTexture("entity_id")));
+	debug::DebugHandle::GetInstance()->SetHoveredModel(m_API->PickColor(GetTexture("entity_id")).color);
 #endif
 }
 

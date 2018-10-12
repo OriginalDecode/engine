@@ -53,7 +53,8 @@ public:
 
 	virtual void SetSurface0(Surface* surface);
 
-	void* model_data = nullptr;
+	const std::string GetFileName() const { return m_FileName; }
+
 protected:
 	virtual void CreatePlane(float half_width);
 	virtual void UpdateConstantBuffer(const graphics::RenderContext& rc) = 0;

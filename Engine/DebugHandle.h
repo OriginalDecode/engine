@@ -79,7 +79,14 @@ namespace debug
 		float m_MouseLookSense = 0.005f;
 		float m_CameraSpeed = 50.f;
 
+
+		void SetHoveredModel(HashType hash) { m_HoveredModel = hash; }
+		const HashType& GetModelHash() const { return m_SelectedModel; }
 	private:
+		void ConfirmModel();
+		HashType m_SelectedModel;
+		HashType m_HoveredModel;
+
 		std::vector<std::string> m_LutLables;
 		std::vector<Texture*> m_LutTextures;
 		Inspector m_Inspector;

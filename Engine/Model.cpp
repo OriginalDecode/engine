@@ -232,7 +232,7 @@ void Model::UpdateConstantBuffer(const graphics::RenderContext& rc)
 		IBuffer* pBuffer = m_InstanceWrapper.GetInstanceBuffer();
 		ctx.UpdateConstantBuffer(pBuffer, &m_GPUData[0], m_GPUData.Size() * sizeof(GPUModelData));
 
-		cl::Color color(m_Hash.m_Bits[0]);
+		cl::Color color(m_Hash.m_Lower);
 		float fColor[4];
 		fColor[0] = color.r;
 		fColor[1] = color.g;

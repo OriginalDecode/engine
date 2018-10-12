@@ -575,7 +575,6 @@ void CModelImporter::ProcessMesh(unsigned int index, const aiScene* scene, std::
 
 	T* child = new T;
 	child->m_IsRoot = false;
-	child->model_data = data;
 	FillData(*data, child, file);
 
 	static Ticket_Mutex add_mutex;

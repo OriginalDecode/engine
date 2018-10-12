@@ -32,6 +32,20 @@
 #include <CommonLib/Utilities.h>
 namespace debug
 {
+	const char* TEXTURE_SLOT_NAMES[] = {
+		"ALBEDO/DIFFUSE",
+		"NORMAL",
+		"ROUGHNESS",
+		"METALNESS",
+		"EMISSIVE",
+		"OPACTIY",
+		"AO",
+		"DEPTH",
+		"SHADOWMAP",
+		"CUBEMAP",
+	};
+
+
 	static s32 widget_id = 0;
 	static float light_dir[3];
 	static s32 s_MaterialIndex = 0;
@@ -46,12 +60,12 @@ namespace debug
 		return true;
 	};
 
-	bool ListBox(const char* label, int* current_index, std::vector<std::string>& values)
+	bool ListBox(const char* label, int* current_index, std::vector<std::string>& values, size_t height_in_items = -1)
 	{
 		if (values.empty())
 			return false;
 
-		return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size(), values.size());
+		return ImGui::ListBox(label, current_index, GetVector, static_cast<void*>(&values), values.size(), height_in_items);
 	}
 
 	bool Combo(const char* label, int* currIndex, std::vector<std::string>& values)
@@ -679,7 +693,10 @@ namespace debug
 
 
 	}
-
+	static int selected_index = -1;
+	static Model* model = nullptr;
+	static bool model_info = false;
+	static Model* selected_child = nullptr;
 	void DebugHandle::Information()
 	{
 
@@ -695,14 +712,14 @@ namespace debug
 			ImGui::Text("Delta Time : %.3f", pEngine->GetDeltaTime());
 			ImGui::Text("FPS : %.1f", pEngine->GetFPS());
 			ImGui::Text("CPU Usage : %.1f", pEngine->m_SystemMonitor.GetCPUUsage()); /* does not show individual cores */
-			ImGui::Text("Memory Usage : %dmb", pEngine->m_SystemMonitor.GetMemoryUsage());
+			ImGui::Text("Memory Usage : %dmb", pEngine->m_SystemMonitor.GetMemoryUsage());/*
 			ImGui::Text("Model Commands : %d", pEngine->m_SegmentHandle.CommandSize((s32)pEngine->m_Synchronizer->GetCurrentBufferIndex()));
 			ImGui::Text("Spotlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPOTLIGHT_BUFFER).Size());
 			ImGui::Text("Pointlight Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::POINTLIGHT_BUFFER).Size());
 			ImGui::Text("Particle Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::PARTICLE_BUFFER).Size());
 			ImGui::Text("Sprite Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::SPRITE_BUFFER).Size());
 			ImGui::Text("Text Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::TEXT_BUFFER).Size());
-			ImGui::Text("Line Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size());
+			ImGui::Text("Line Commands : %d", pEngine->m_Synchronizer->GetRenderCommands(eBufferType::LINE_BUFFER).Size());*/
 
 			ImGui::Separator();
 
@@ -715,11 +732,76 @@ namespace debug
 			if (m_SelectedModel.m_Hash > 0)
 			{
 				ImGui::Text("Current Model (HASH): %llu", m_SelectedModel.m_Hash);
-				Model* model = Engine::GetInstance()->GetModelDirect(m_SelectedModel.m_Lower);
+
+				if(model)
+					model->SetSelected(false);
+
+				model = Engine::GetInstance()->GetModelDirect(m_SelectedModel.m_Lower);
+
 				if (model)
 				{
 					ImGui::Text("Current Model (NAME): %s", model->GetFileName().c_str());
+					model->SetSelected(true);
+					auto& children = model->GetChildren();
+
+					char temp[100];
+					sprintf_s(temp, "Model\tChildren (%d)", children.Size());
+
+					if (ImGui::TreeNode(temp))
+					{
+
+						//ImGui::Text("Children (%d)", children.Size());
+
+						WriteChildren(children);
+
+
+						ImGui::TreePop();
+					}
+
+
 				}
+
+				if (selected_index >= 0)
+				{
+					ImVec2 pos = ImGui::GetWindowPos();
+					float width = ImGui::GetWindowWidth();
+					ImGui::SetNextWindowPos(ImVec2(pos.x + width, pos.y));
+					if(ImGui::Begin("Model Info", &model_info))
+					{
+						ImGui::Text("hello World");
+						ImGui::Text("child %d", selected_index);
+
+						if (selected_child->GetSurface())
+						{
+							const Material& mat = selected_child->GetSurface()->GetMaterial();
+							auto& resources = mat.GetResourceBindings();
+							std::vector<std::string> labels;
+							std::vector<IShaderResourceView*> shader_resources;
+							for (auto& resource : resources)
+							{
+								char temp[100];
+								size_t pos = resource.m_ResourceName.rfind('/');
+								std::string simplified = resource.m_ResourceName.substr(pos);
+
+								sprintf_s(temp, "Resource %s\tSlot %s(%d)", simplified.c_str(), TEXTURE_SLOT_NAMES[resource.m_Slot], resource.m_Slot);
+								labels.push_back(temp);
+								shader_resources.push_back(resource.m_Resource);
+							}
+							
+							static int selected_resource = -1;
+							ListBox("", &selected_resource, labels);
+
+						}
+
+
+
+						ImGui::End();
+					}
+				}
+
+
+
+
 			}
 
 			//ImGui::Text("Hovering : %d", m_CurrEntity);
@@ -755,6 +837,45 @@ namespace debug
 		}
 		ImGui::EndChildFrame();
 		ImGui::PopStyleVar();
+	}
+
+	void DebugHandle::WriteChildren(const CU::GrowingArray<Model *>& parent_list)
+	{
+		std::vector<std::string> labels;
+		std::vector<Model*> child_ptrs;
+		for (int i = 0; i < parent_list.Size(); ++i)
+		{
+			static bool selected = false;
+			Model* child = parent_list[i];
+
+
+			char temp[100];
+			sprintf_s(temp, "Child %d", i);
+			labels.push_back(temp);
+			child_ptrs.push_back(child);
+
+
+
+			//ImGui::Text("Child %d", i);
+			//ImGui::Selectable("Child", &selected);
+
+			auto& children = child->GetChildren();
+			if(children.Empty())
+				continue;
+
+			/*if(ImGui::TreeNode("Children"))
+			{
+				WriteChildren(children);
+				ImGui::TreePop();
+			}*/
+
+		}
+
+		ListBox("", &selected_index, labels);
+		if (selected_index >= 0)
+			selected_child = child_ptrs[selected_index];
+
+
 	}
 
 	void HandleWorldContextMenu(Engine* pEngine)

@@ -21,6 +21,7 @@ Model::~Model()
 
 	Engine::GetAPI()->ReleasePtr(m_ConstantBuffer);
 	Engine::GetAPI()->ReleasePtr(m_ModelID);
+	Engine::GetAPI()->ReleasePtr(m_IsSelectedBuffer);
 
 	m_Surfaces.DeleteAll();
 	m_Children.DeleteAll();
@@ -33,8 +34,12 @@ void Model::Initiate(const std::string& filename)
 	m_GPUData.Init(250);
 	std::string dbg(filename.c_str());
 	m_FileName = dbg;
+
 	m_ConstantBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(m_ObjectData), dbg + "Vertex ConstantBuffer");
+
 	m_ModelID =	Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(float) * 4, "modelidhash");
+	m_IsSelectedBuffer = Engine::GetAPI()->GetDevice().CreateConstantBuffer(sizeof(int) * 4, "is_selected");
+
 	for (Model* child : m_Children)
 	{
 		child->SetIsInstanced(m_IsInstanced);
@@ -241,6 +246,9 @@ void Model::UpdateConstantBuffer(const graphics::RenderContext& rc)
 
 		ctx.UpdateConstantBuffer(m_ModelID, &fColor[0], sizeof(fColor));
 		ctx.PSSetConstantBuffer(1, 1, &m_ModelID);
+
+		ctx.UpdateConstantBuffer(m_IsSelectedBuffer, &m_IsSelected, sizeof(int) * 4);
+		ctx.PSSetConstantBuffer(2, 1, &m_IsSelectedBuffer);
 
 	}
 	else
@@ -639,4 +647,13 @@ Surface* Model::GetSurface()
 		return c->GetSurface();
 	}
 	return surface;
+}
+
+void Model::SetSelected(bool is_selected)
+{
+	m_IsSelected = is_selected ? 1 : 0;
+	for (Model* c : m_Children)
+	{
+		c->SetSelected(is_selected);
+	}
 }

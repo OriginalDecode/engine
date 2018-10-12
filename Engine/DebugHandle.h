@@ -47,6 +47,8 @@ namespace debug
 
 		void Information();
 
+		void WriteChildren(const CU::GrowingArray<Model *>& children);
+
 		void ChildRecursive(const TimingObjectDisplay &root);
 
 		void DebugTextures();

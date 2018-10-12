@@ -144,7 +144,7 @@ struct HashType
 		u64 m_Hash = 0;
 		struct {
 			u32 m_Lower;
-			u32 m_Uppdater;
+			u32 m_Upper;
 		};
 	};
 

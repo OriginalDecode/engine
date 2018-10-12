@@ -174,7 +174,7 @@ private:
 	Quad* m_DebugQuad = nullptr;
 	void WriteDebugTextures();
 
-	void DrawEntity(Texture* pTex, Entity e);
+	void DrawModel(Texture* pTex, u32 selection);
 
 	bool m_CreateCubemaps = false;
 	Texture* m_Cubemap = nullptr;

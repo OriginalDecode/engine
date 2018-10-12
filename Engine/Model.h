@@ -72,6 +72,12 @@ public:
 
 	void SetSurface0(Surface* surface) override;
 	Surface* GetSurface();
+
+	void SetSelected(bool is_selected);
+
+
+	const CU::GrowingArray<Model*>& GetChildren() const { return m_Children; }
+
 private:
 	void RenderCube(const graphics::RenderContext& rc);
 	void RemoveGPUData();
@@ -80,6 +86,9 @@ private:
 	IBuffer* m_ModelID = nullptr;
 
 	HashType m_Hash;
+	IBuffer* m_IsSelectedBuffer = nullptr;
+
+	int m_IsSelected;
 
 protected:
 	u64 m_Key = 0;

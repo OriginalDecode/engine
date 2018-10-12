@@ -218,18 +218,7 @@ void Renderer::Render()
 
 	const u32 selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
 
-	if (selected > 0)
-	{
-
-		cl::Color col(selected);
-
-
-		Model* pModel = Engine::GetInstance()->GetModelDirect(selected);
-		int apa;
-		apa = 5;
-	}
-	//This wont work quite yet
-	//DrawEntity(m_SelectedTexture, selected);
+	//Draw(m_SelectedTexture, selected);
 
 	DrawIBL();
 
@@ -291,22 +280,30 @@ void Renderer::DrawIBL()
 static CU::Matrix44f prev;
 static CU::Matrix44f orientation;
 
-void Renderer::DrawEntity(Texture* pTex, Entity e)
+void Renderer::DrawModel(Texture* pTex, u32 selection)
 {
-	if (e <= 0)
+	if (selection <= 0)
 		return;
 
-	auto& ctx = m_RenderContext.GetContext();
-	ctx.ClearRenderTarget(pTex->GetRenderTargetView(), clearcolor::black);
-	ctx.OMSetRenderTargets(1, pTex->GetRenderTargetRef(), nullptr);
-	Engine& engine = m_RenderContext.GetEngine();
-	
-	m_HoverModel = engine.GetModel<Model>(e);
-	if (m_HoverModel.GetData())
-	{
-		//m_HoverModel->AddOrientation(relative * prev);
-		m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
-	}
+	//auto& ctx = m_RenderContext.GetContext();
+	//ctx.ClearRenderTarget(pTex->GetRenderTargetView(), clearcolor::black);
+	//ctx.OMSetRenderTargets(1, pTex->GetRenderTargetRef(), nullptr);
+	//Engine& engine = m_RenderContext.GetEngine();
+
+	//Model* pModel = Engine::GetInstance()->GetModelDirect(selection);
+
+
+	//prev = orientation;
+	//orientation = translation.GetOrientation();
+
+
+	//const CU::Matrix44f relative = CU::Matrix44f::CreateScaleMatrix(instance.m_Scale)  * instance.m_Orientation;
+	////m_HoverModel = engine.GetModel<Model>(e);
+	//if (/*m_HoverModel.GetData()*/0)
+	//{
+	//	m_HoverModel->AddOrientation(relative * prev);
+	//	m_HoverModel->RenderInstanced(m_RenderContext, m_RenderHoverEffect);
+	//}
 }
 
 void Renderer::WriteDebugTextures()

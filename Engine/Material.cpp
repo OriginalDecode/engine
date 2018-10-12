@@ -78,6 +78,11 @@ void Material::Use(Effect* pEffect, bool _override)
 
 }
 
+const CU::GrowingArray<Material::ResourceBinding>& Material::GetResourceBindings() const
+{
+	return m_Resources;
+}
+
 std::string Material::GetFilename(TextureSlot slot)
 {
 	for (const ResourceBinding& b : m_Resources)

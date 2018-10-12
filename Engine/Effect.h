@@ -6,26 +6,63 @@ struct CompiledShader;
 class Texture;
 
 
-#define TEXTURE_SLOT(x) x,
-#define TEXTURE_SLOT_ALT(x) x
 enum TextureSlot
 {
-#include "TextureSlotEnum.h"
+	REGISTER_0,
+	REGISTER_1,
+	REGISTER_2,
+	REGISTER_3,
+	REGISTER_4,
+	REGISTER_5,
+	REGISTER_6,
+	REGISTER_7,
+	REGISTER_8,
+	REGISTER_9,
+	REGISTER_10,
+	REGISTER_11,
+	REGISTER_12,
+
+	DIFFUSE = REGISTER_0,
+	ALBEDO = REGISTER_0,
+	REFRACTION = REGISTER_0,
+
+	NORMAL = REGISTER_1,
+	LUMINANCE = REGISTER_1,
+
+	ROUGHNESS = REGISTER_2,
+	AVG_LUMINANCE = REGISTER_2,
+
+	METALNESS = REGISTER_3,
+	REFLECTION = REGISTER_3,
+	LUMINANCE_COPY = REGISTER_3,
+
+	EMISSIVE = REGISTER_4,
+
+	OPACITY = REGISTER_5,
+	PARTICLES = REGISTER_5,
+
+	AO = REGISTER_6,
+
+	DEPTH = REGISTER_7,
+
+	SHADOWMAP = REGISTER_8,
+
+	CUBEMAP = REGISTER_9,
+
+	SSAO = REGISTER_10,
+
+	DUDV = REGISTER_11,
+	SSR = REGISTER_12,
+
 	SLOT_COUNT
 };
-#undef TEXTURE_SLOT
-#undef TEXTURE_SLOT_ALT
-
-#define TEXTURE_SLOT_ALT(x) #x,
-static const char* texture_slots[] = {
-#include "TextureSlotEnum.h"
-};
-#undef TEXTURE_SLOT_ALT
 
 class Effect : public ShaderReload
 {
 	friend class ShaderFactory;
 public:
+
+
 
 	Effect(const std::string& filepath);
 	Effect();

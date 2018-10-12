@@ -509,19 +509,20 @@ namespace graphics
 		ZeroMemory(&msr, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		HRESULT hr = ctx->Map(staging, 0, D3D11_MAP_READ, 0, &msr);
 		ASSERT(hr == S_OK, "Not ok pixel pick!");
+		u8 r, g, b, a;
 		if (msr.pData)
 		{
 			float* data = (float*)msr.pData;
 
-			u8 r = data[0];
-			u8 g = data[1];
-			u8 b = data[2];
-			u8 a = data[3];
+			r = data[0];
+			g = data[1];
+			b = data[2];
+			a = data[3];
 
-			return cl::Color(r,g,b,a);
 		}
 		ctx->Unmap(staging, 0);
 		staging->Release();
+		return cl::Color(r,g,b,a);
 
 		return cl::Color();
 

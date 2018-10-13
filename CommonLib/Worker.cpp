@@ -21,9 +21,7 @@ Worker::~Worker()
 void Worker::Initiate(const std::string& debug_name)
 {
 	myWorkThread = new std::thread([&] { Run(); });
-#ifdef _DEBUG
 	cl::SetThreadName(myWorkThread->get_id(), debug_name.c_str());
-#endif
 }
 
 bool Worker::IsDone() const

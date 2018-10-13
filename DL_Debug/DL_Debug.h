@@ -65,7 +65,7 @@ enum eDEBUGLOG
 
 #define DL_ASSERT(string)
 
-#define ASSERT(expression, string) expression
+#define ASSERT(expression, string)
 
 #define DL_PRINT(string) 
 //#define DL_DEBUG( ... )  

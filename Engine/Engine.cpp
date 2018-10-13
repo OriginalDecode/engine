@@ -304,6 +304,11 @@ void Engine::AddRenderCommand(const ModelCommand& command)
 	//memcpy(current, &command, sizeof(ModelCommand));
 }
 
+AssetsContainer* Engine::GetAssetsContainer()
+{
+	return myAssetsContainer;
+}
+
 Model* Engine::GetModelDirect(u64 key)
 {
 	return myAssetsContainer->GetModelDirect(key);
@@ -361,7 +366,7 @@ Texture* Engine::GetTexture(u64 key)
 
 Texture* Engine::GetTexture(const char* key)
 {
-	Texture* texture = myAssetsContainer->GetTexture(Hash(key));
+	Texture* texture = myAssetsContainer->GetTexture(cl::Hash(key));
 
 	if (texture)
 		return texture;
@@ -386,7 +391,7 @@ Effect* Engine::GetEffect(u64 key)
 Effect* Engine::GetEffect(const char* key)
 {
 	std::string file = m_VirtualFileSystem.GetFile(key);
-	Effect* effect = myAssetsContainer->GetEffect(Hash(file.c_str()));
+	Effect* effect = myAssetsContainer->GetEffect(cl::Hash(file.c_str()));
 
 	if (effect)
 		return effect;
@@ -403,7 +408,7 @@ Sprite* Engine::GetSprite(u64 key)
 
 Sprite* Engine::GetSprite(const char* key)
 {
-	u64 hash = Hash(key);
+	u64 hash = cl::Hash(key);
 	Sprite* sprite = myAssetsContainer->GetSprite(hash);
 
 	if (sprite)

@@ -44,8 +44,8 @@ void AssetsContainer::Initiate()
 	Material* pMaterial = GetMaterial(mat_key);
 
 
-	m_Models.emplace(g_DefaultModel, model);
-	m_Materials.emplace(g_DefaultMaterial, pMaterial);
+	m_Models.emplace(cl::Hash("default"), model);
+	m_Materials.emplace(cl::Hash("default"), pMaterial);
 #ifndef FINAL
 	m_Watcher = new FileWatcher;
 #endif
@@ -123,7 +123,7 @@ u64 AssetsContainer::LoadTexture(std::string filepath, bool make_mips)
 	static Ticket_Mutex texture_mutex;
 	BeginTicketMutex(&texture_mutex);
 
-	u64 hash = Hash(filepath.c_str());
+	u64 hash = cl::Hash(filepath.c_str());
 
 	if (m_Textures.find(hash) == m_Textures.end())
 	{
@@ -159,7 +159,7 @@ u64 AssetsContainer::LoadEffect(std::string filepath)
 	static Ticket_Mutex effect_mutex;
 	BeginTicketMutex(&effect_mutex);
 
-	u64 hash = Hash(filepath.c_str());
+	u64 hash = cl::Hash(filepath.c_str());
 	if (m_Effects.find(hash) == m_Effects.end())
 	{
 		Effect* effect = new Effect(filepath);
@@ -178,7 +178,7 @@ u64 AssetsContainer::LoadSprite(std::string path)
 	static Ticket_Mutex sprite_mutex;
 	BeginTicketMutex(&sprite_mutex);
 
-	u64 hash = Hash(path.c_str());
+	u64 hash = cl::Hash(path.c_str());
 	if (m_Sprites.find(hash) == m_Sprites.end())
 	{
 		Sprite* sprite = new Sprite;
@@ -197,7 +197,7 @@ u64 AssetsContainer::LoadMaterial(std::string path)
 	static Ticket_Mutex material_mutex;
 	BeginTicketMutex(&material_mutex);
 
-	u64 hash = Hash(path.c_str());
+	u64 hash = cl::Hash(path.c_str());
 	if (m_Materials.find(hash) == m_Materials.end())
 	{
 		Material* material = new Material(hash);
@@ -213,12 +213,12 @@ u64 AssetsContainer::LoadMaterial(std::string path)
 	return hash;
 }
 
-CompiledShader* AssetsContainer::GetShader(const char* key)
+CompiledShader* AssetsContainer::GetShader(const char* key) const
 {
-	return m_ShaderFactory->GetShader(Hash(key));
+	return m_ShaderFactory->GetShader(cl::Hash(key));
 }
 
-CompiledShader* AssetsContainer::GetShader(u64 key)
+ShaderFactory* AssetsContainer::GetShaderFactory()
 {
-	return m_ShaderFactory->GetShader(key);
+	return m_ShaderFactory;
 }

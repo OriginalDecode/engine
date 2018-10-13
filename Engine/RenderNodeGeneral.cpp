@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "RenderNodeGeneral.h"
 #include <engine/Model.h>
+#include <engine/Engine.h>
+#include <engine/AssetsContainer.h>
 namespace graphics
 {
-	u64 RenderNodeGeneral::Type = Hash(STRINGIFY(RenderNodeGeneral));
+	u64 RenderNodeGeneral::Type = cl::Hash(STRINGIFY(RenderNodeGeneral));
 	RenderNodeGeneral::RenderNodeGeneral()
 	{
-		auto engine = Engine::GetInstance();
+		Engine* engine = Engine::GetInstance();
 		m_Shaders[VERTEX] = engine->GetAssetsContainer()->GetShader("Data/Shaders/deferred_base_instanced.vsmain");
 		m_Shaders[PIXEL] = engine->GetAssetsContainer()->GetShader("Data/Shaders/pbl_debug.psmain");
 

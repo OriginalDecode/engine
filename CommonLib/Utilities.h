@@ -7,6 +7,7 @@
 #include <thread>
 #include <iso646.h>
 #include <vector>
+#include "../standard_datatype.hpp"
 namespace cl
 {
 	bool file_exist(std::string path);
@@ -184,7 +185,71 @@ namespace cl
 
 	std::vector<File> FindFilesInDirectory(const char* directory_path);
 
+	u64 Hash(std::string key);
 
 	
 
 };
+
+
+struct Ticket_Mutex
+{
+	u64 volatile ticket = 0;
+	u64 volatile serving = 0;
+};
+
+inline u64 AtmoicAddU64(u64 volatile *value, u64 toAdd)
+{
+	u64 result = _InterlockedExchange64((__int64 volatile *)value, (*value + toAdd));
+	return result;
+};
+
+inline void BeginTicketMutex(Ticket_Mutex* mutex)
+{
+	u64 ticket = AtmoicAddU64(&mutex->ticket, 1); //AtomicAdd?
+	while (ticket != mutex->serving)
+	{
+		//should have a timer or something here in debug to auto crash
+	}
+
+};
+
+inline void EndTicketMutex(Ticket_Mutex* mutex)
+{
+	mutex->serving++;
+};
+
+
+class ScopedMutex
+{
+public:
+	ScopedMutex(Ticket_Mutex& mutex, const char* name = "unknown")
+		:m_Mutex(mutex)
+	{
+#ifdef _PROFILER
+		std::string mutex_name = "mutex - ";
+		mutex_name += name;
+		PROFILE_BLOCK(mutex_name.c_str());
+#endif
+
+		BeginTicketMutex(&m_Mutex);
+
+	}
+
+	~ScopedMutex()
+	{
+		EndTicketMutex(&m_Mutex);
+
+#ifdef _PROFILER
+		PROFILE_BLOCK_END();
+#endif
+	}
+
+
+private:
+	Ticket_Mutex & m_Mutex;
+
+};
+
+#define SCOPEDMUTEX(x, y) ScopedMutex(x, y);
+

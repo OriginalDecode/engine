@@ -35,8 +35,6 @@ struct CompiledShader
 		, m_Shader(pShader)
 		, m_Type(shader_type)
 		, m_Entrypoint(entrypoint)
-#ifndef _FINAL
-#endif
 	{
 	}
 
@@ -67,11 +65,11 @@ public:
 	void LoadShader(Effect* anEffect);
 	void Update();
 
-	std::map<u64, CompiledShader*> GetCompiledShaders() { return m_Shaders; }
+	const std::map<u64, CompiledShader*>& GetCompiledShaders() const { return m_Shaders; }
 	
 	IShaderBlob* CompileShader(const std::string& file_path, const std::string& entrypoint, const std::string& shader_type);
 
-	CompiledShader* GetShader(u64 key);
+	__declspec(noinline) CompiledShader* GetShader(u64 key) const;
 
 
 

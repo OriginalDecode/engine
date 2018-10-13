@@ -19,7 +19,7 @@ bool TerrainManager::CleanUp()
 Terrain* TerrainManager::GetTerrain(const std::string& terrain_name)
 {
 	LoadTerrain(terrain_name);
-	return GetTerrain(Hash(terrain_name.c_str()));
+	return GetTerrain(cl::Hash(terrain_name.c_str()));
 }
 
 void TerrainManager::AddTerrain(u64 hash, Terrain* terrain)
@@ -35,10 +35,11 @@ void TerrainManager::AddTerrain(u64 hash, Terrain* terrain)
 
 void TerrainManager::LoadTerrain(const std::string& terrain_name)
 {
-	if (m_Terrain.find(Hash(terrain_name.c_str())) == m_Terrain.end())
+	u64 hash = cl::Hash(terrain_name);
+	if (m_Terrain.find(hash) == m_Terrain.end())
 	{
 		Terrain* terrain = new Terrain;
-		m_Terrain[Hash(terrain_name.c_str())] = terrain;
+		m_Terrain[hash] = terrain;
 		//DL_MESSAGE("Failed to find terrain in container, creating new terrain object!");
 	}
 }

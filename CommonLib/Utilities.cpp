@@ -2,6 +2,7 @@
 #include <comdef.h>
 #include <assert.h>
 #include <algorithm>
+#include "DataStructures/Hashmap/Hash.h"
 namespace cl
 {
 	//if readCharacterBeforeToFind == true it will read everything BEFORE the character/word you entered but if it is false it will read the word you entered and everything after.
@@ -272,6 +273,7 @@ void SetThreadName(DWORD dwThreadID, const char* threadName)
 #pragma warning(pop)
 }
 
+
 #include <vadefs.h>
 #include <stdarg.h>
 
@@ -350,5 +352,17 @@ namespace cl
 		return files;
 
 	}
+
+	u64 Hash(std::string key)
+	{
+		std::transform(key.begin(), key.end(), key.begin(), tolower);
+
+		u64 result;
+		MurmurHash3_x86_32(key.c_str(), key.length(), 0, &result);
+		return result;
+
+	}
+
+
 
 }

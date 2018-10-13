@@ -629,13 +629,13 @@ namespace graphics
 									DirectX11::GetFormat(idx.GetFormat()),
 									idx.GetByteOffset());
 
-		if (fx)
-		{
-			fx->Use();
-			m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
-			fx->Clear();
-			return;
-		}
+		//if (fx)
+		//{
+		//	//fx->Use();
+		//	m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
+		//	//fx->Clear();
+		//	return;
+		//}
 
 		m_Context->DrawIndexedInstanced(ins.GetIndexCountPerInstance(), model->GetInstanceCount(), idx.GetStart(), vtx.GetStart(), ins.GetStart());
 

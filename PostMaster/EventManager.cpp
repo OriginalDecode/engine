@@ -1,6 +1,6 @@
 #include "EventManager.h"
 #include <DL_Debug.h>
-#include "../CommonLib/DataStructures/Hashmap/Hash.h"
+#include "../CommonLib/Utilities.h"
 
 EventManager* EventManager::myInstance = nullptr;
 EventManager::EventManager()
@@ -60,7 +60,7 @@ void EventManager::Subscribe(const eMessageType aMessageType, Subscriber* aSubsc
 
 void EventManager::Subscribe(const std::string& event, Subscriber* subscriber)
 {
-	u64 hash = Hash(event.c_str());
+	u64 hash = cl::Hash(event.c_str());
 	Subscribe(hash, subscriber);
 }
 
@@ -132,7 +132,7 @@ bool EventManager::IsSubscribed(const eMessageType aMessageType, Subscriber* aSu
 
 void EventManager::SendMessage(const char* event, void* data)
 {
-	u64 hash = Hash(event);
+	u64 hash = cl::Hash(event);
 	SendMessage(hash, data);
 }
 

@@ -185,9 +185,9 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 	{
 		GraphicsComponent& c = em.AddComponent<GraphicsComponent>(e);
 		ModelInstanceCmpt instance;
-		instance.m_MaterialKey = g_DefaultMaterial; //Engine::GetInstance()->GetMaterial("default")->GetKey(); // this will work
+		instance.m_MaterialKey = cl::Hash("default"); //Engine::GetInstance()->GetMaterial("default")->GetKey(); // this will work
 		instance.m_MaterialFile = "default";
-		instance.m_ModelID = g_DefaultModel;
+		instance.m_ModelID = cl::Hash("default");
 		instance.m_Filename = "default";
 		instance.m_Scale = { 1.f, 1.f, 1.f, 1.f };
 		c.m_Instances.Add(instance);
@@ -230,8 +230,8 @@ void LevelFactory::CreateEntity(Entity e, EntityManager& em)
 		pDweller->AddComponent(&c, TreeDweller::DEBUG);
 		c.m_ComponentFlags = debug_flags;
 		c.m_Dweller = pDweller;
-		c.m_MinPoint = CU::Vector4f(engine->GetModel<Model>(g_DefaultModel)->GetMinPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
-		c.m_MaxPoint = CU::Vector4f(engine->GetModel<Model>(g_DefaultModel)->GetMaxPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
+		c.m_MinPoint = CU::Vector4f(engine->GetModel<Model>(cl::Hash("default"))->GetMinPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
+		c.m_MaxPoint = CU::Vector4f(engine->GetModel<Model>(cl::Hash("default"))->GetMaxPoint(), 1) * CU::Vector4f(1, 1, 1, 1);
 	}
 #endif
 

@@ -26,9 +26,7 @@ bool Application::Initiate()
 	//Keep at the end of initiate...
 
 	myLogicThread = new std::thread([&] { Application::Update(); });
-#ifdef _DEBUG
 	cl::SetThreadName(myLogicThread->get_id(), "Logic Thread");
-#endif
 #if defined (_WIN32) || (_WIN64)
 	CoInitialize(0);
 #endif

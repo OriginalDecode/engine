@@ -73,7 +73,8 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE, LPSTR args, int)
 
 	engine->Initiate(w, h, instance_handle, WindowProc);
 
-	ASSERT(application->Initiate(), "Failed to initiate game");
+	const bool success = application->Initiate();
+	ASSERT(success, "Failed to initiate game");
 
 	s_WindowActive = true;
 	//ShowCursor(false);

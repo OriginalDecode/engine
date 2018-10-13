@@ -76,6 +76,8 @@ public:
 
 	graphics::IRenderNode* GetNode(u64 type);
 
+	TerrainSystem* GetTerrainSystem() const { return m_TerrainSystem; }
+
 private:
 	float m_CubemapTimer = 0.f;
 

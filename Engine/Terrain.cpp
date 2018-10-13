@@ -86,19 +86,7 @@ bool Terrain::Initiate(const std::string& aFile, const CU::Vector3f position, co
 	m_IsRoot = false;
 	m_Effect = Engine::GetInstance()->GetEffect("Shaders/terrain_base.json");
 
-	TGA32::Image* image = TGA32::Load(aFile.c_str());
-	/*u8* data;*/
-	myHeightmap.myData = new u8[image->myWidth * image->myHeight];
-	for (int i = 0; i < image->myWidth * image->myHeight; ++i)
-	{
-		myHeightmap.myData[i] = image->myImage[i * 4];
-	}
-
-	//memcpy(&, &data, sizeof(u8) * (image->myWidth * image->myHeight));
-	myHeightmap.myDepth = image->myHeight;
-	myHeightmap.myWidth = image->myWidth;
-
-	SAFE_DELETE(image);
+	
 	CreateVertices(myWidth, myDepth, position);
 
 	m_ClipEffect = Engine::GetInstance()->GetEffect("Shaders/terrain_clip.json");

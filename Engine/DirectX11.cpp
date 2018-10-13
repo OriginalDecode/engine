@@ -118,7 +118,7 @@ namespace graphics
 	void DirectX11::EndFrame()
 	{
 		const bool vsync = Engine::GetInstance()->VSync();
-		Present(0, 0);
+		Present(1, 0);
 #ifdef _PROFILE
 		m_IntContext->End(m_FrameQuery);
 		while (S_OK != m_IntContext->GetData(m_FrameQuery, &m_Frequency, sizeof(D3D11_QUERY_DATA_TIMESTAMP_DISJOINT), 0))
@@ -130,7 +130,32 @@ namespace graphics
 
 	void DirectX11::Present(u8 anInterval, u8 flags)
 	{
-		m_Swapchain->Present(anInterval, flags);
+		HRESULT hr = m_Swapchain->Present(anInterval, flags);
+		ID3D11Device* device = static_cast<DX11Device*>(m_Device)->GetDevice();
+		switch (hr)
+		{
+			case DXGI_ERROR_DEVICE_HUNG:
+				OutputDebugString("device hung\n");
+				break;
+
+			case DXGI_ERROR_DEVICE_REMOVED:
+				OutputDebugString("removed\n");
+				break;
+
+			case DXGI_ERROR_DEVICE_RESET:
+				OutputDebugString("reset\n");
+				break;
+
+			case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
+				OutputDebugString("internal_error\n");
+				break;
+
+			case DXGI_ERROR_INVALID_CALL:
+				OutputDebugString("invalid_call\n");
+				break;
+		};
+	
+
 	}
 
 	void DirectX11::CreateDeviceAndSwapchain()
@@ -171,8 +196,8 @@ namespace graphics
 		};
 		UINT createDeviceFlags = 0;
 
-#ifdef _DEBUG
 		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#ifdef _DEBUG
 #endif
 		UINT featureCount = ARRAYSIZE(requested_feature_levels);
 
@@ -231,10 +256,9 @@ namespace graphics
 
 
 
-#ifdef _DEBUG
 		hr = pDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_Debug);
 		if (hr != S_OK)
-			OutputDebugStringA("Failed to Query Debug Interface. myDebug is NULL.");
+			OutputDebugStringA("Failed to Query Debug Interface. m_Debug is NULL.");
 
 		//D3D11_MESSAGE_ID hide[] = {
 		//	D3D11_MESSAGE_ID_DEVICE_DRAW_RENDERTARGETVIEW_NOT_SET,
@@ -248,7 +272,6 @@ namespace graphics
 		//hr = m_Debug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&m_InfoQueue);
 		//m_InfoQueue->AddStorageFilterEntries(&filters);
 
-#endif
 		SetDebugName(m_Context, "DirectX11 Context Object");
 		const std::string deviceName = "DirectX11 Device Object";
 		const std::string swapchainName = "DirectX11 Swapchain Object";
@@ -488,6 +511,24 @@ namespace graphics
 		const CU::Vector2f fPos = Engine::GetInstance()->GetInputHandle()->GetCursorPos();
 		const CU::Vector2i iPos = { (s32)fPos.x, (s32)fPos.y };
 
+		RECT rect;
+		if (GetWindowRect(Engine::GetInstance()->GetHWND(), &rect))
+		{
+			if (fPos.x > rect.right)
+				return cl::Color();
+
+			if (fPos.y > rect.bottom)
+				return cl::Color();
+
+			if (fPos.y < rect.top)
+				return cl::Color();
+
+			if (fPos.x < rect.left)
+				return cl::Color();
+		}
+
+		
+
 		//this could be saved
 		D3D11_BOX region_box;
 		
@@ -524,7 +565,7 @@ namespace graphics
 		staging->Release();
 		return cl::Color(r,g,b,a);
 
-		return cl::Color();
+		
 
 	}
 
@@ -682,7 +723,7 @@ namespace graphics
 		if (!toError.empty())
 		{
 			DL_MESSAGE("%s", toError.c_str());
-			ASSERT(aResult == S_OK, toError.c_str());
+			assert(aResult == S_OK, toError.c_str());
 		}
 	}
 

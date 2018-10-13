@@ -339,7 +339,7 @@ namespace debug
 					PhysicsComponent& phys = em.AddComponent<PhysicsComponent>(m_EditEntity);
 					phys.m_Body = Engine::GetInstance()->GetPhysicsManager()->CreateBody();
 
-					Model* pModel = Engine::GetInstance()->GetModel<Model>(g_DefaultModel).GetData();
+					Model* pModel = Engine::GetInstance()->GetModel<Model>(cl::Hash("default")).GetData();
 					pModel = pModel->GetChildModels()[0];
 					btRigidBody* body = phys.m_Body->InitAsBox(0.5, 0.5, 0.5, { 0.f,0.f,0.f });
 					Engine::GetInstance()->GetPhysicsManager()->Add(body);
@@ -639,7 +639,7 @@ namespace debug
 
 
 		}
-		else if (event == Hash("create_entity"))
+		else if (event == cl::Hash("create_entity"))
 		{
 			Engine* engine = Engine::GetInstance();
 			Entity e = engine->GetEntityManager().CreateEntity();
@@ -651,17 +651,17 @@ namespace debug
 			engine->GetNetworkManager()->AddReplicant(c.m_GUID, &t);
 
 		}
-		else if (event == Hash("copy_selected"))
+		else if (event == cl::Hash("copy_selected"))
 		{
 			CopyEntity(m_EditEntity);
 
 
 		}
-		else if (event == Hash("paste_new"))
+		else if (event == cl::Hash("paste_new"))
 		{
 			PasteEntity();
 		}
-		else if (event == Hash("left_click"))
+		else if (event == cl::Hash("left_click"))
 		{
 			ConfirmModel();
 		}

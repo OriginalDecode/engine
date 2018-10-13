@@ -445,6 +445,7 @@ namespace graphics
 
 	IShaderBlob* DX11Device::CompileShaderFromFile(const std::string& filepath, const char* entrypoint, const char* shader_type)
 	{
+
 		unsigned int shaderFlag = D3D10_SHADER_ENABLE_STRICTNESS;
 #ifdef _DEBUG 
 		shaderFlag |= D3D10_SHADER_DEBUG;
@@ -461,7 +462,9 @@ namespace graphics
 		std::string feature_level(shader_type);
 		feature_level += "_5_0";
 
-		std::string path = filepath.c_str();
+
+		size_t pos = filepath.rfind(entrypoint);
+		std::string path = filepath.substr(0, pos);
 
 		std::wstring wPath(path.begin(), path.end());
 
@@ -547,12 +550,12 @@ namespace graphics
 		pReflector->GetDesc(&shader_desc);
 		s32 input_count = shader_desc.InputParameters;
 
-		const u64 compare0 = Hash("INSTANCE");
+		const u64 compare0 = cl::Hash("INSTANCE");
 		for (s32 i = 0; i < shader_desc.InputParameters; i++)
 		{
 			D3D11_SIGNATURE_PARAMETER_DESC param_desc;
 			pReflector->GetInputParameterDesc(i, &param_desc);
-			const u64 semantic_hash = Hash(param_desc.SemanticName);
+			const u64 semantic_hash = cl::Hash(param_desc.SemanticName);
 			if (semantic_hash == compare0)
 				return true;
 		}

@@ -306,13 +306,18 @@ void CModelImporter::FillData(const ModelData& data, T* out, std::string filepat
 	if (filepath.find("cube_100x100") != filepath.npos)
 		return;
 
-	//if (filepath.find("LPMF") != std::string::npos)
+	bool custom_format = filepath.find("LPMF") != std::string::npos;
 	//	return;
 
 	Surface* surface = new Surface(m_Effect);
 	for (auto& tex : data.myTextures)
 	{
-		surface->AddTexture(tex.m_File, tex.m_Slot);
+
+		std::string new_path;
+		if (!custom_format)
+			new_path += path;
+
+		surface->AddTexture(new_path + tex.m_File, tex.m_Slot);
 	}
 	out->AddSurface(surface);
 
@@ -686,7 +691,7 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 	const s32 ins_Start = 0;
 	const s32 ins_Stride = sizeof(GPUModelData);
 	const s32 ins_ByteOffset = 0;
-	const s32 ins_InstanceCount = 300;
+	const s32 ins_InstanceCount = 4000;
 	const s32 ins_Size = ins_InstanceCount * ins_Stride;
 	const s32 ins_IndicesPerInstance = data.myIndexCount;
 
@@ -761,9 +766,11 @@ void CModelImporter::FillInstanceData(T* out, const ModelData& data, Effect* eff
 	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA, 1, true, 1);
 	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA, 1, true, 2);
 	_layout.AddElement("INSTANCE",	graphics::_16BYTE_RGBA, 1, true, 3);
-	_layout.AddElement("DATA",		graphics::_16BYTE_RGBA, 1, true, 0);
-	_layout.AddElement("ID",		graphics::_4BYTE_R_UINT, 1, true, 0);
-	_layout.AddElement("HOVER",		graphics::_4BYTE_R_UINT, 1, true, 0);
+
+	_layout.AddElement("DATA", graphics::_16BYTE_RGBA, 1, true, 0);
+#ifdef _DEBUG
+	_layout.AddElement("ID", graphics::_4BYTE_R_UINT, 1, true, 0);
+#endif
 
  	IInputLayout* layout = Engine::GetAPI()->GetDevice().CreateInputLayout(effect->GetVertexShader(), _layout);
 

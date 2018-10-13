@@ -58,10 +58,9 @@ public:
 	u64 LoadMaterial(std::string path);
 
 
-	CompiledShader* GetShader(const char* key);
-	CompiledShader* GetShader(u64 key);
+	CompiledShader* GetShader(const char* key) const;
 
-
+	ShaderFactory* GetShaderFactory();
 private:
 #ifndef FINAL
 	FileWatcher* m_Watcher = nullptr;
@@ -89,12 +88,12 @@ HashType AssetsContainer::LoadModel(std::string path, std::string effect_filepat
 
 	
 	HashType hash;
-	hash.m_Hash = Hash(path.c_str());
+	hash.m_Hash = cl::Hash(path.c_str());
 
 	Engine* engine = Engine::GetInstance();
 	if (path.find("default") != path.npos)
 	{
-		hash.m_Hash = g_DefaultModel;
+		hash.m_Hash = cl::Hash("default");
 		return hash;
 	}
 

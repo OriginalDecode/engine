@@ -193,7 +193,7 @@ public:
 
 	void AddRenderCommand(const ModelCommand& command);
 
-	AssetsContainer* GetAssetsContainer() { return myAssetsContainer; }
+	AssetsContainer* GetAssetsContainer();
 	Model* GetModelDirect(u64 key);
 private:
 	u32 PickEntity(Texture* pTexture);
@@ -260,5 +260,5 @@ RefPointer<T> Engine::GetModel(u64 key)
 template<typename T>
 RefPointer<T> Engine::GetModel(const char* key)
 {
-	return GetModel<T>(Hash(key));
+	return GetModel<T>(cl::Hash(key));
 }

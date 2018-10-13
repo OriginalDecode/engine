@@ -75,7 +75,6 @@ namespace test
 
 
 
-
 class TerrainSystem
 {
 public:
@@ -89,8 +88,17 @@ public:
 	float m_X = 0.f;
 	float m_Y = 0.f;
 
+	float GetHeight(int x, int y);
+
 private:
 	test::QuadTree m_Tree;
+	struct 
+	{
+		u32 myWidth;
+		u32 myDepth;
+		u8* myData;
+	} m_Heightmap;
+	
 
 };
 

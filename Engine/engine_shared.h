@@ -9,6 +9,7 @@
 
 #include "../CommonLib/Math/Vector/Vector.h"
 
+
 #define ARRSIZE(x) sizeof(x) / sizeof(x[0])
 
 #define BIT(x) (1 << x)
@@ -93,32 +94,6 @@ enum eShaderType
 	NOF_TYPES
 };
 
-struct Ticket_Mutex
-{
-	u64 volatile ticket = 0;
-	u64 volatile serving = 0;
-};
-
-inline u64 AtmoicAddU64(u64 volatile *value, u64 toAdd)
-{
-	u64 result = _InterlockedExchange64((__int64 volatile *)value, (*value + toAdd));
-	return result;
-};
-
-inline void BeginTicketMutex(Ticket_Mutex* mutex)
-{
-	u64 ticket = AtmoicAddU64(&mutex->ticket, 1); //AtomicAdd?
-	while (ticket != mutex->serving)
-	{
-		//should have a timer or something here in debug to auto crash
-	}
-
-};
-
-inline void EndTicketMutex(Ticket_Mutex* mutex)
-{
-	mutex->serving++;
-};
 
 namespace clearcolor
 {
@@ -133,9 +108,6 @@ namespace blendcolor
 	constexpr float black[4] = { 0.f, 0.f, 0.f, 0.f };
 };
 
-#include "../CommonLib/DataStructures/Hashmap/Hash.h"
-static u64 g_DefaultModel = Hash("default");
-static u64 g_DefaultMaterial = Hash("default");
 
 struct HashType
 {

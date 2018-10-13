@@ -179,8 +179,6 @@ Renderer::~Renderer()
 
 void Renderer::PrepareFrame()
 {
-	m_RenderContext.GetAPI().BeginFrame();
-	m_RenderContext.GetAPI().ResetViewport();
 
 	m_GBuffer.Clear(clearcolor::black, m_RenderContext);
 	m_GBuffer.SetAsRenderTarget(nullptr, m_RenderContext);
@@ -195,6 +193,12 @@ void Renderer::Render()
 	}
 
 	PROFILE_FUNCTION(profiler::colors::Magenta);
+	m_RenderContext.GetAPI().BeginFrame();
+	m_RenderContext.GetAPI().ResetViewport();
+
+	
+
+
 	PrepareFrame();
 
 
@@ -214,16 +218,17 @@ void Renderer::Render()
 		node->Draw(m_RenderContext);
 	}
 
+#ifdef _DEBUG
 	WriteDebugTextures();
 
 	const u32 selected = debug::DebugHandle::GetInstance()->GetSelectedEntity();
 
 	//Draw(m_SelectedTexture, selected);
-
+#endif
 	DrawIBL();
 
-	//m_RenderContext.GetAPI().SetDefaultTargets();
-	//m_DeferredRenderer->Finalize();
+	m_RenderContext.GetAPI().SetDefaultTargets();
+	m_DeferredRenderer->Finalize();
 
 
 	if (m_PostProcessManager.GetFlags() != 0)
@@ -236,8 +241,9 @@ void Renderer::Render()
 		m_DeferredRenderer->Finalize();
 	}
 
+#ifdef _DEBUG
 	m_PostProcessManager.Process(m_HoverTexture, PostProcessManager::EDGE_DETECTION, m_RenderContext);
-
+#endif
 
 
 #if !defined(_PROFILE) && !defined(_FINAL)
@@ -252,14 +258,11 @@ void Renderer::Render()
 #endif
 
 	m_RenderContext.GetAPI().EndFrame();
-	//m_InstancingManager.EndFrame();
-
-
 	m_Synchronizer->WaitForLogic();
-
-	Engine::GetInstance()->GetMemorySegmentHandle().Clear((s32)m_Synchronizer->GetCurrentBufferIndex());
-	m_Synchronizer->SwapBuffer();
 	m_Synchronizer->RenderIsDone();
+
+
+
 
 }
 
@@ -776,7 +779,7 @@ void Renderer::MakeCubemap(CU::Vector3f positon, s32 max_resolution, s32 min_res
 	buffer.Initiate();
 
 	graphics::ConstantBuffer terrain_buffer;
-	Terrain* terrain = manager->GetTerrain(Hash("2048"));
+	Terrain* terrain = manager->GetTerrain(cl::Hash("2048"));
 	terrain_buffer.RegisterVariable(&terrain->GetOrientation());
 	terrain_buffer.RegisterVariable(&camera->GetOrientation());
 	terrain_buffer.Initiate();

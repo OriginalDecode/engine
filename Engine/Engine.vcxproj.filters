@@ -778,5 +778,6 @@
     <ClCompile Include="RenderNodeGeneral.cpp" />
     <ClCompile Include="RenderNodeTerrain.cpp" />
     <ClCompile Include="ModelExporter.cpp" />
+    <ClCompile Include="engine_shared.cpp" />
   </ItemGroup>
 </Project>

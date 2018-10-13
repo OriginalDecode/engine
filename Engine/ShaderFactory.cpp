@@ -27,10 +27,12 @@ ShaderFactory::~ShaderFactory()
 	DELETE_MAP(m_Shaders);
 }
 
+static Ticket_Mutex shader_factory_mutex;
 void ShaderFactory::LoadShader(Effect* anEffect)
 {
+	SCOPEDMUTEX(shader_factory_mutex, "ShaderFactory");
 	std::string path = anEffect->m_FileName;
-	s32 pos = path.rfind("/");
+	size_t pos = path.rfind("/");
 	std::string sub = path.substr(0, pos + 1);
 
 	JSONReader reader(path);
@@ -94,17 +96,21 @@ char* CheckType(eShaderType type)
 
 void ShaderFactory::LoadShader(const std::string& filepath, const std::string& entrypoint, const std::string& sampler, eShaderType type, Effect* effect)
 {
-	std::string full_path = Engine::GetInstance()->GetVFS().GetFolder("Shaders") + filepath;
-	std::string to_hash(full_path + entrypoint);
-	u64 hash_key = Hash(to_hash.c_str());
+	std::string full_path = "data/shaders/";
+	full_path += filepath;
+	full_path += entrypoint;
+
+	u64 hash_key = cl::Hash(full_path.c_str());
 	
 	CompiledShader* shader = CreateShader(full_path, entrypoint, type);
+
+	assert(shader && "Shader was null, failed to create the shader!");
+
+
 	if (m_Shaders.find(hash_key) == m_Shaders.end())
 		m_Shaders.emplace(hash_key, shader);
 	
-	//container->InsertShader(hash_key, )
-
-	effect->m_Shaders[type] = m_Shaders[hash_key];
+	effect->m_Shaders[type] = shader;
 
 #ifndef FINAL
 	myFileWatchers[(s32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint));
@@ -124,17 +130,12 @@ CompiledShader* ShaderFactory::CreateShader(const std::string& file_path, const 
 
  	IShaderBlob* compiled_shader = CompileShader(file_path, entrypoint, shader_type);
 
+	assert(compiled_shader && "IShaderBlob was null! No shader created!");
+
  	if (!compiled_shader)
  		return nullptr;
  
 	void* shader = Engine::GetInstance()->CreateShader(compiled_shader, type, file_path.c_str());
-
-
-	std::string file;
-
-	size_t start = file_path.rfind("/");
-	file = file_path.substr(start + 1);
-
 	
  	return new CompiledShader(	compiled_shader,
 								shader,
@@ -147,7 +148,7 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 {
 	Sleep(SLEEP_TIME);
 	std::string fullpath = file_path + entrypoint;
-	u64 hash_key = Hash(fullpath.c_str());
+	u64 hash_key = cl::Hash(fullpath.c_str());
 
 	CU::GrowingArray<ShaderReload*> effect_container;
 	CompiledShader* new_shader = nullptr;
@@ -157,7 +158,7 @@ void ShaderFactory::OnReload(const std::string& file_path, const std::string& en
 		new_shader = CreateShader(file_path, shader->m_Entrypoint, shader->m_Type);
 
 		//auto container = Engine::GetInstance()->GetAssetsContainer();
-		//container->InsertShader(Hash(file_path.c_str()), new_shader);
+		//container->InsertShader(cl::Hash(file_path.c_str()), new_shader);
 
 		if (new_shader != nullptr)
 		{
@@ -187,7 +188,7 @@ IShaderBlob* ShaderFactory::CompileShader(const std::string& file_path, const st
 	return Engine::GetAPI()->GetDevice().CompileShaderFromFile(file_path.c_str(), entrypoint.c_str(), shader_type.c_str());
 }
 
-CompiledShader* ShaderFactory::GetShader(u64 key)
+CompiledShader* ShaderFactory::GetShader(u64 key) const
 {
 	auto it = m_Shaders.find(key);
 

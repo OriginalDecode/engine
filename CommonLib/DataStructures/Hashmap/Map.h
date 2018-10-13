@@ -64,7 +64,7 @@ namespace CommonUtilities
 		
 		assert(ValueExists(aValue) == false && "Value already exists in the array");
 		
-		unsigned int index = Hash(aKey);
+		unsigned int index = cl::Hash(aKey);
 
 		if (KeyExists(aKey) == true)
 		{
@@ -89,7 +89,7 @@ namespace CommonUtilities
 		assert(KeyExists(aKey) == true && "[Map] : Key does not exist.");
 
 
-		unsigned int index = Hash(aKey);
+		unsigned int index = cl::Hash(aKey);
 
 		for (int i = 0; i < myBuckets[index].Size(); ++i)
 		{
@@ -118,7 +118,7 @@ namespace CommonUtilities
 	template<MAP>
 	bool Map<MAP_TEMPLATE>::KeyExists(const Key &aKey)
 	{
-		unsigned int index = Hash(aKey);
+		unsigned int index = cl::Hash(aKey);
 
 		for (int i = 0; i < myBuckets[index].Size(); ++i)
 		{
@@ -135,7 +135,7 @@ namespace CommonUtilities
 	{
 		assert(KeyExists(aKey) != false && "[Map] : Key does not exist.");
 
-		unsigned int index = Hash(aKey);
+		unsigned int index = cl::Hash(aKey);
 
 		if (KeyExists(aKey) == true)
 		{

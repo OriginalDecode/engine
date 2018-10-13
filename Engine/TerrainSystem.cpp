@@ -10,8 +10,9 @@
 #include <engine/profile_defines.h>
 #include <Engine/TerrainManager.h>
 
-#define MAX_DEPTH 4
+#include "TGA32.h"
 
+#define MAX_DEPTH 4
 
 static u64 s_RootTerrainHash = 0;
 static const char* s_TerrainLevels[] = {
@@ -36,12 +37,12 @@ TerrainSystem::TerrainSystem()
 	for (int i = 0; i < MAX_DEPTH; i++)
 	{
 		Terrain* terrain = new Terrain((float)width);
-		s_HashTerrain.push_back(Hash(s_TerrainLevels[i]));
+		s_HashTerrain.push_back(cl::Hash(s_TerrainLevels[i]));
 		manager->AddTerrain(s_HashTerrain[i], terrain);
 		width /= 2;
 	}
 	
-	s_RootTerrainHash = Hash("2048");
+	s_RootTerrainHash = cl::Hash("2048");
 	manager->AddTerrain(s_RootTerrainHash, new Terrain(1024.f));
 
 
@@ -49,6 +50,21 @@ TerrainSystem::TerrainSystem()
 	pos.x = 512;
 	pos.y = 512;
 	m_Tree.Init(pos);
+
+
+	TGA32::Image* image = TGA32::Load("Data/Textures/terrain/britannia.tga");
+	m_Heightmap.myData = new u8[image->myWidth * image->myHeight];
+	for (int i = 0; i < image->myWidth * image->myHeight; ++i)
+	{
+		m_Heightmap.myData[i] = image->myImage[i];
+	}
+
+	m_Heightmap.myDepth = image->myHeight;
+	m_Heightmap.myWidth = image->myWidth;
+
+	SAFE_DELETE(image);
+
+
 
 }
 
@@ -66,6 +82,17 @@ void TerrainSystem::DrawShadow()
 void TerrainSystem::Draw()
 {
 	m_Tree.Draw();
+}
+
+float TerrainSystem::GetHeight(int x, int y)
+{
+	float yScale = 128.f / 255.f;
+	yScale *= 0.2f;
+	return m_Heightmap.myData[(m_Heightmap.myDepth - (1 + y)) * m_Heightmap.myWidth + x] *yScale;
+
+	//int pos = static_cast<int>(x * y);
+	//float height = m_Heightmap.myData[pos];
+	//return height;
 }
 
 void test::Leaf::Render()

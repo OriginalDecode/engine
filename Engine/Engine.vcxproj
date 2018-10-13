@@ -471,6 +471,7 @@
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EmitterInstance.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="engine_shared.cpp" />
     <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontManager.cpp" />

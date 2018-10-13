@@ -58,13 +58,14 @@ void DebugSystem::Update(float /*dt*/, bool)
 
 void DebugSystem::HandleEvent(u64 event, void* data /*= nullptr*/)
 {
-	if (event == Hash("pick_entity"))
+	if (event == cl::Hash("pick_entity"))
 	{
+#ifdef _DEBUG
 		debug::DebugHandle::GetInstance()->ConfirmEntity();
 		m_Engine->PickEntity();
  		Entity e = debug::DebugHandle::GetInstance()->GetSelectedEntity();
 		e = 0;
-
+#endif
 // 		const CU::GrowingArray<Entity>& entities = GetEntities();
 // 		if (entities.Empty())
 // 			return;

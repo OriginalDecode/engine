@@ -15,8 +15,10 @@ std::ofstream output;
 void _fwrite(const VertexData* pObj, size_t element_size, size_t element_count, FILE* fileHandle, std::ofstream* stream = nullptr)
 {
 	fwrite(pObj, element_size, element_count, fileHandle);
+#ifdef OUTPUT_MODEL_EXPORT
 	if (stream)
 		*stream << *pObj << "\n";
+#endif
 }
 
 

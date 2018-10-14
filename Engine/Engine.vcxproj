@@ -347,6 +347,8 @@
     <ClInclude Include="InspectorView.h" />
     <ClInclude Include="IPostprocessPass.h" />
     <ClInclude Include="ModelExporter.h" />
+    <ClInclude Include="ModelImporterFlags.h" />
+    <ClInclude Include="ModelImporterImpl.h" />
     <ClInclude Include="PhysicsView.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="QuadTreeNode.h" />

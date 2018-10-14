@@ -469,6 +469,8 @@
     <ClInclude Include="RenderNodeTerrain.h" />
     <ClInclude Include="ModelExporter.h" />
     <ClInclude Include="TextureSlotEnum.h" />
+    <ClInclude Include="ModelImporterImpl.h" />
+    <ClInclude Include="ModelImporterFlags.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">

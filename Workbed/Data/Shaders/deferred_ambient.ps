@@ -193,6 +193,7 @@ float4 main(VS_OUTPUT input) : SV_Target
     float NdL = max(0,dot(normal.xyz, -light_dir));
 
 
+
     float4 pixel_pos = getWorldPos(input.uv, 1 - depth.x);
 
 	float4 to_eye = normalize(camera_position - pixel_pos);

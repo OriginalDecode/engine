@@ -113,6 +113,8 @@ void ShaderFactory::LoadShader(const std::string& filepath, const std::string& e
 	effect->m_Shaders[type] = shader;
 
 #ifndef FINAL
+	full_path = "data/shaders/";
+	full_path += filepath;
 	myFileWatchers[(s32)type]->WatchFileChangeWithDependencies(full_path, std::bind(&ShaderFactory::OnReload, this, std::placeholders::_1, entrypoint));
 	ASSERT(effect, "Effect pointer was null");
 

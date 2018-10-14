@@ -74,7 +74,7 @@ namespace graphics
 		desc.m_RenderTargetFormat = R32_UINT;
 		m_EntityIDTexture->Initiate(desc, false, "Entity ID");
 
-		Engine::GetInstance()->AddTexture(m_EntityIDTexture, Hash("entity_id")); 
+		Engine::GetInstance()->AddTexture(m_EntityIDTexture, cl::Hash("entity_id")); 
 #endif
 
 		if (bind_textures)

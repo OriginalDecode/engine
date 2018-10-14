@@ -50,7 +50,7 @@ public:
 
 
 	template<typename T>
-	HashType LoadModel(std::string path, std::string effect_filepath, bool thread = true);
+	HashType LoadModel(std::string path, std::string effect_filepath, bool thread = true, int option = 0);
 
 	u64 LoadTexture(std::string path, bool make_mips = false);
 	u64 LoadEffect(std::string path);
@@ -81,7 +81,7 @@ private:
 };
 
 template<typename T>
-HashType AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bool thread /*= true*/)
+HashType AssetsContainer::LoadModel(std::string path, std::string effect_filepath, bool thread /*= true*/, int option)
 {
 	if (!cl::file_exist(path) && path.find("default") != 0)
 		DL_ASSERT("Failed to find the file!");
@@ -109,14 +109,14 @@ HashType AssetsContainer::LoadModel(std::string path, std::string effect_filepat
 	{
 		engine->GetThreadpool().AddWork(Work([=]() {
 			CModelImporter importer;
-			importer.LoadModel<T>(path, model, effect);
+			importer.LoadModel<T>(path, model, effect, option);
 			model->Initiate(path);
 		}));
 	}
 	else
 	{
 		CModelImporter importer;
-		importer.LoadModel<T>(path, model, effect);
+		importer.LoadModel<T>(path, model, effect, option);
 		model->Initiate(path);
 	}
 

@@ -125,7 +125,7 @@ public:
 
 	//std::string LoadModel(const std::string& filepath, std::string effect, bool thread);
 	template<typename T>
-	HashType LoadModel(const std::string& filepath, std::string effect, bool thread);
+	HashType LoadModel(const std::string& filepath, std::string effect, bool thread, int option = 0);
 
 	u64 LoadTexture(const std::string& path, bool make_mips = false);
 	u64 LoadEffect(const std::string& path);
@@ -182,7 +182,7 @@ public:
 	bool VSync() const { return m_VSyncOn; }
 	void ToggleVSync() { m_VSyncOn = !m_VSyncOn; }
 
-	HashType LoadModelA(std::string path, std::string effect, bool threaded);
+	HashType LoadModelA(std::string path, std::string effect, bool threaded, int option = 0);
 
 	void PickEntity();
 
@@ -246,9 +246,9 @@ private:
 };
 
 template<typename T>
-HashType Engine::LoadModel(const std::string& filepath, std::string effect, bool thread)
+HashType Engine::LoadModel(const std::string& filepath, std::string effect, bool thread, int option)
 {
-	return myAssetsContainer->LoadModel<T>(filepath, effect, thread);
+	return myAssetsContainer->LoadModel<T>(filepath, effect, thread, option);
 }
 
 template<typename T>

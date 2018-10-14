@@ -418,56 +418,56 @@ namespace debug
 
 
 
-		/*	ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 2) ? active : inactive);
-			if (ImGui::Button("Render Targets"))
-				button_idx = 2;
-			ImGui::PopStyleColor();
+			/*	ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 2) ? active : inactive);
+				if (ImGui::Button("Render Targets"))
+					button_idx = 2;
+				ImGui::PopStyleColor();
 
-			ImGui::SameLine();
+				ImGui::SameLine();
 
-			ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 3) ? active : inactive);
-			if (ImGui::Button("Tab3"))
-				button_idx = 3;
-			ImGui::PopStyleColor();*/
+				ImGui::PushStyleColor(ImGuiCol_Button, (button_idx == 3) ? active : inactive);
+				if (ImGui::Button("Tab3"))
+					button_idx = 3;
+				ImGui::PopStyleColor();*/
 			ImGui::PopStyleVar(2);
 
 
 			switch (button_idx)
 			{
-			case 1: {
-				Information();
-			} break;
-			case 2: {
-				if (ImGui::BeginChildFrame(1, ImVec2(ImGui::GetWindowWidth() - 10, 0), 0))
-				{
-					ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
-					ImGui::SliderFloat("Y", &light_dir[1], -1.f, 1.f);
-					ImGui::SliderFloat("Z", &light_dir[2], -1.f, 1.f);
-					Engine::GetInstance()->m_Renderer->SetDirection(light_dir);
+				case 1: {
+					Information();
+				} break;
+				case 2: {
+					if (ImGui::BeginChildFrame(1, ImVec2(ImGui::GetWindowWidth() - 10, 0), 0))
+					{
+						ImGui::SliderFloat("X", &light_dir[0], -1.f, 1.f);
+						ImGui::SliderFloat("Y", &light_dir[1], -1.f, 1.f);
+						ImGui::SliderFloat("Z", &light_dir[2], -1.f, 1.f);
+						Engine::GetInstance()->m_Renderer->SetDirection(light_dir);
 
-					//ImGui::SliderFloat("Distance")
+						//ImGui::SliderFloat("Distance")
 
 
 
-				}
-				ImGui::EndChildFrame();
-			} break;
-			case 3: {
-				static int _item = 1;
-				ImGui::PushItemWidth(250.f);
-				for (DebugTextureCategory& c : m_Categories)
-				{
-					Combo("", &m_TextureIndex, c.labels);
-				}
-				ImGui::PopItemWidth();
+					}
+					ImGui::EndChildFrame();
+				} break;
+				case 3: {
+					static int _item = 1;
+					ImGui::PushItemWidth(250.f);
+					for (DebugTextureCategory& c : m_Categories)
+					{
+						Combo("", &m_TextureIndex, c.labels);
+					}
+					ImGui::PopItemWidth();
 
-				ImVec2 w_size = ImGui::GetWindowSize();
-				w_size.x = w_size.x - (style.WindowPadding.x * 2.f);
-				//w_size.x *= 0.65f;
-				w_size.y = w_size.x / 1.777777777777777777777777777777778; //Aspect ratio division.
-				ImTextureID tex_id = m_DebugTexture;
-				ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
-			} break;
+					ImVec2 w_size = ImGui::GetWindowSize();
+					w_size.x = w_size.x - (style.WindowPadding.x * 2.f);
+					//w_size.x *= 0.65f;
+					w_size.y = w_size.x / 1.777777777777777777777777777777778; //Aspect ratio division.
+					ImTextureID tex_id = m_DebugTexture;
+					ImGui::Image(tex_id, w_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
+				} break;
 
 
 			}
@@ -611,7 +611,7 @@ namespace debug
 
 	void DebugHandle::UnregisterTexture(Texture* t, const char* name)
 	{
-		
+
 	}
 
 	Texture* DebugHandle::GetTexture(s32 index)
@@ -733,7 +733,7 @@ namespace debug
 			{
 				ImGui::Text("Current Model (HASH): %llu", m_SelectedModel.m_Hash);
 
-				if(model)
+				if (model)
 					model->SetSelected(false);
 
 				model = Engine::GetInstance()->GetModelDirect(m_SelectedModel.m_Lower);
@@ -763,37 +763,68 @@ namespace debug
 
 				if (selected_index >= 0)
 				{
+
+					std::vector<std::string> labels;
+					std::vector<IShaderResourceView*> shader_resources;
+					int text_width = 0;
+					if (selected_child->GetSurface())
+					{
+						const Material& mat = selected_child->GetSurface()->GetMaterial();
+						auto& resources = mat.GetResourceBindings();
+						
+						for (auto& resource : resources)
+						{
+							char temp[100];
+							size_t pos = resource.m_ResourceName.rfind('/');
+							std::string simplified = resource.m_ResourceName.substr(pos);
+
+							sprintf_s(temp, "Resource %s\tSlot %s(%d)", simplified.c_str(), TEXTURE_SLOT_NAMES[resource.m_Slot], resource.m_Slot);
+
+							const int length = strlen(temp);
+
+							if (text_width < length)
+								text_width = length;
+
+							labels.push_back(temp);
+							shader_resources.push_back(resource.m_Resource);
+
+
+						}
+					}
+
 					ImVec2 pos = ImGui::GetWindowPos();
 					float width = ImGui::GetWindowWidth();
 					ImGui::SetNextWindowPos(ImVec2(pos.x + width, pos.y));
-					if(ImGui::Begin("Model Info", &model_info))
+					if (ImGui::Begin("Model Info", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 					{
-						ImGui::Text("hello World");
 						ImGui::Text("child %d", selected_index);
 
-						if (selected_child->GetSurface())
+
+
+						static int selected_resource = -1;
+						ImGui::PushItemWidth((ImGui::GetFontSize() * text_width) * 0.65f) ;
+						ListBox("", &selected_resource, labels);
+						ImGui::PopItemWidth();
+
+						if (selected_resource >= 0)
 						{
-							const Material& mat = selected_child->GetSurface()->GetMaterial();
-							auto& resources = mat.GetResourceBindings();
-							std::vector<std::string> labels;
-							std::vector<IShaderResourceView*> shader_resources;
-							for (auto& resource : resources)
-							{
-								char temp[100];
-								size_t pos = resource.m_ResourceName.rfind('/');
-								std::string simplified = resource.m_ResourceName.substr(pos);
+							static float x = 512.f;
+							static float y = 512.f;
 
-								sprintf_s(temp, "Resource %s\tSlot %s(%d)", simplified.c_str(), TEXTURE_SLOT_NAMES[resource.m_Slot], resource.m_Slot);
-								labels.push_back(temp);
-								shader_resources.push_back(resource.m_Resource);
-							}
-							
-							static int selected_resource = -1;
-							ListBox("", &selected_resource, labels);
+							ImGui::Text("Width");
+							ImGui::SameLine(110.f);
+							ImGui::Text("Height");
+							ImGui::PushItemWidth(100.f);
+							ImGui::InputFloat("", &x);
+							ImGui::SameLine();
+							ImGui::InputFloat("", &y);
+							ImGui::PopItemWidth();
 
+
+							ImTextureID tex_id = shader_resources[selected_resource];
+
+							ImGui::Image(tex_id, ImVec2(x, y), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(1, 1, 1, 1));
 						}
-
-
 
 						ImGui::End();
 					}
@@ -860,7 +891,7 @@ namespace debug
 			//ImGui::Selectable("Child", &selected);
 
 			auto& children = child->GetChildren();
-			if(children.Empty())
+			if (children.Empty())
 				continue;
 
 			/*if(ImGui::TreeNode("Children"))

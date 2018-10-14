@@ -84,7 +84,9 @@ namespace debug
 
 		void SetHoveredModel(HashType hash) { m_HoveredModel = hash; }
 		const HashType& GetModelHash() const { return m_SelectedModel; }
+		void SetTextureToDraw(Texture* tex) { m_TextureToDraw = tex; }
 	private:
+		Texture* m_TextureToDraw = nullptr;
 		void ConfirmModel();
 		HashType m_SelectedModel;
 		HashType m_HoveredModel;

@@ -62,7 +62,9 @@ GBuffer main(VS_OUTPUT input) : SV_Target
 
 	
 	float3 _normal = NormalTexture.Sample(sampler0, input.uv).rgb * 2 - 1;
-	//_normal.z = sqrt( 1 - pow((2*_normal.x), 2) + pow((2*_normal.y), 2)) / 2 + 0.5;
+	// _normal.z = sqrt( 1 - pow((2*_normal.x), 2) + pow((2*_normal.y), 2)) / 2 + 0.5;
+
+	// _normal.z = saturate(_normal.z);
 
 	// z = ( square(1- ((2x-1)^2+(2y-1)^2) ) ) / 2 + 0.5
 	// // _normal.z = reconstructed_z;

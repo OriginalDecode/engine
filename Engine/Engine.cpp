@@ -281,9 +281,9 @@ void* Engine::CreateShader(IShaderBlob* pShader, eShaderType type, const std::st
 	return nullptr;
 }
 
-HashType Engine::LoadModelA(std::string path, std::string effect, bool threaded)
+HashType Engine::LoadModelA(std::string path, std::string effect, bool threaded, int option)
 {
-	return LoadModel<Model>(path, effect, threaded);
+	return LoadModel<Model>(path, effect, threaded, option);
 }
 
 u32 Engine::PickEntity(Texture* pTexture)

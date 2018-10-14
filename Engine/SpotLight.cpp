@@ -6,6 +6,8 @@
 
 #include <Engine/Quad.h>
 
+#include <Engine/LightModel.h>
+
 #ifdef _DEBUG
 #include <Engine/DebugRenderer.h>
 #endif

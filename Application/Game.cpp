@@ -40,6 +40,8 @@
 #include <Engine/Renderer.h>
 #include <Engine/TerrainSystem.h>
 
+#include <Engine/ModelImporterFlags.h>
+
 
 static float s_CamSpeed = 50.f;
 
@@ -117,7 +119,7 @@ void Game::Initiate(const std::string& level)
 #endif
 	//HashType sun_temple = m_Engine->LoadModelA("Data/model/sun_temple/SunTemple/SunTemple.fbx", "Shaders/deferred_base.json", false);
 	//HashType sun_temple = m_Engine->LoadModelA("Data/exported/SunTemple.LPMF", "Shaders/debug_pbl_instanced.json", false);
-	//japMap = m_Engine->LoadModelA("Data/model/trees/japanese maple/lowpoly/Japanese_Maple_lowpoly.fbx", "Shaders/debug_pbl_instanced.json", false);
+	//japMap = m_Engine->LoadModelA("Data/model/trees/japanese maple/lowpoly/Japanese_Maple_lowpoly.fbx", "Shaders/debug_pbl_instanced.json", false, ModelImportUtil::FLIP_NORMAL);
 	japMap = m_Engine->LoadModelA("Data/exported/Japanese_Maple_lowpoly.LPMF", "Shaders/debug_pbl_instanced.json", false);
 	//Model* pModel = m_Engine->GetModelDirect(cl::Hash("data/exported/cube_100x100.LPMF"));
 	//Model* pModel = m_Engine->GetModelDirect(cl::Hash("data/exported/cube_100x100.LPMF"));
